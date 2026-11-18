@@ -1,4 +1,5 @@
 import { paperEditorSmoke } from './paper-editor-browser-smoke.mjs';
+import { wiremodSmoke } from './wiremod-browser-smoke.mjs';
 // Real Chromium + production bundle smoke. No BYOND process or external browser.
 import { chromium } from 'playwright-core';
 import { readFile } from 'node:fs/promises';
@@ -129,7 +130,9 @@ try {
   assert.ok(!(await invalid.locator('body').textContent()).includes('PARTIAL'));
   await invalid.close();
   await paperEditorSmoke(browser, js, css);
-  console.log('PASS: production Chromium retained routes/actions, photo, Notes and flavor inert Unicode/read-only/replacement, manual and malformed fallback; fixtures, no native bridge/cache claim');
+  // Real clicks on the circuit editor: operation dropdown, info button, entity mark.
+  await wiremodSmoke(browser, js, css);
+  console.log('PASS: production Chromium retained routes/actions, circuit editor dropdown/info/entity clicks, photo, Notes and flavor inert Unicode/read-only/replacement, manual and malformed fallback; fixtures, no native bridge/cache claim');
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

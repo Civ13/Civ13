@@ -28,12 +28,38 @@ const COMPONENT_FIELDS = [
   'output_component_id',
 ];
 
+// Room kept for the info panel so it opens inside the window: it is 200px of
+// text plus padding wide, and a long description over a port list is this tall.
+const INFO_PANEL_WIDTH = 232;
+const INFO_PANEL_HEIGHT = 330;
+
+// The upstream editor draws an entity input as a button with the port's name
+// only, so a player could not see what the input holds. The name of the marked
+// thing (the server sends it as the port's value) is added to the button.
+const showMarkedEntity = (component: Data): Data => {
+  const ports = Array.isArray(component.input_ports)
+    ? (component.input_ports as Data[])
+    : [];
+  const held = (port: Data) =>
+    port.type === 'entity' &&
+    typeof port.current_data === 'string' &&
+    port.current_data.length > 0 &&
+    !port.connected_to?.length;
+  if (!ports.some(held)) return component;
+  return {
+    ...component,
+    input_ports: ports.map((port) =>
+      held(port) ? { ...port, name: `${port.name}: ${port.current_data}` } : port,
+    ),
+  };
+};
+
 export const WiremodCircuit = (props: ScreenProps) => {
   const catalog = Array.isArray(props.data.component_catalog)
     ? (props.data.component_catalog as Data[])
     : [];
   const components = Array.isArray(props.data.components)
-    ? (props.data.components as Data[])
+    ? (props.data.components as Data[]).map(showMarkedEntity)
     : [];
   const data = {
     ...props.data,
@@ -74,8 +100,16 @@ export const WiremodCircuit = (props: ScreenProps) => {
     );
     if (action === 'set_examined_component' && content) {
       const bounds = content.getBoundingClientRect();
-      adjusted.x = Number(adjusted.x) - bounds.left;
-      adjusted.y = Number(adjusted.y) - bounds.top;
+      const within = (value: number, room: number) =>
+        room > 0 ? Math.max(0, Math.min(value, room)) : value;
+      adjusted.x = within(
+        Number(adjusted.x) - bounds.left,
+        bounds.width - INFO_PANEL_WIDTH,
+      );
+      adjusted.y = within(
+        Number(adjusted.y) - bounds.top,
+        bounds.height - INFO_PANEL_HEIGHT,
+      );
     }
     props.act(action, adjusted);
   };

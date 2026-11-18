@@ -38,18 +38,18 @@
 
 /obj/item/circuit_component/compact_remote
 	display_name = "Compact Remote"
-	desc = "Sends a signal to the circuit whenever the compact remote is pressed."
+	desc = "The remote's button. Each press sends a signal on Signal, and User becomes the person who pressed it. Wire User into a text input to get their name."
 	removable = FALSE
 
 	var/datum/port/output/user_output
 	var/datum/port/output/signal_output
 
 /obj/item/circuit_component/compact_remote/populate_ports()
-	user_output = add_output_port("User", PORT_TYPE_STRING)
+	user_output = add_output_port("User", PORT_TYPE_ENTITY)
 	signal_output = add_output_port("Signal", PORT_TYPE_SIGNAL)
 
-// The user port carries the presser's visible name, never the mob itself: a
-// port must not keep a game object alive.
+// The user port carries a weak reference to the presser, never the mob itself:
+// a port must not keep a game object alive.
 /obj/item/circuit_component/compact_remote/proc/send_trigger(mob/user)
-	user_output.set_output(user ? "[user.name]" : null)
+	user_output.set_output(WEAKREF(user))
 	signal_output.set_output(COMPONENT_SIGNAL)

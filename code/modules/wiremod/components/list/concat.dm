@@ -2,6 +2,7 @@
 	name = "list concatenate component"
 	display_name = "List Concat"
 	category = "List"
+	desc = "Joins list A and list B into one list, with the entries of A first. A list holds at most 500 entries; any more are dropped."
 	operand_type = PORT_TYPE_LIST
 	result_type = PORT_TYPE_LIST
 

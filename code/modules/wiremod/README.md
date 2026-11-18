@@ -26,9 +26,13 @@ printer are not ported.
 
 ## What is here
 
-- `core/port.dm` - datatypes and ports. A port holds only null, a finite number,
-  text up to `PORT_MAX_STRING_LENGTH` bytes or a list of up to
-  `CIRCUIT_MAX_LIST_LENGTH` such values. It never holds a game object.
+- `datatypes/` - one file per datatype (any, number, string, boolean, signal,
+  list, option, entity), each a `/datum/circuit_datatype` subtype, and
+  `_datatype.dm` with the base type and the registry built from the subtypes.
+- `core/port.dm` - ports. A port holds only null, a finite number, text up to
+  `PORT_MAX_STRING_LENGTH` bytes, a list of up to `CIRCUIT_MAX_LIST_LENGTH`
+  numbers and texts, or the weak reference of a thing in the world. It never
+  holds a game object.
 - `core/component.dm` - `/obj/item/circuit_component`, the base component.
 - `core/operator.dm` - `/obj/item/circuit_component/operator`, the base of the
   components that work a Result out of inputs A and B.
@@ -37,19 +41,39 @@ printer are not ported.
 - `core/circuit_ui.dm` - the editor window: who may use it, the data it shows,
   its actions and its refreshes.
 - `core/variables.dm` - circuit variables and their getter and setter nodes.
-- `components/` - math, list, string and delay components.
+- `components/` - math, list, string, entity and delay components. Each has a
+  `desc`, which is what the editor's info button shows.
 - `shell/compact_remote.dm` - `/obj/item/compact_remote`, a handheld remote with
   a built-in circuit.
 - Constants are in `code/__defines/wiremod.dm`.
 
 ## How it is put together
 
-- **Datatypes.** Each `/datum/circuit_datatype` subtype in `core/port.dm` is one
+- **Datatypes.** Each `/datum/circuit_datatype` subtype in `datatypes/` is one
   datatype and holds everything about it: what a wire may deliver to it
   (`convert`), how a typed value is read (`parse_manual`) and the message for
-  one that cannot be, which outputs it accepts and its colour in the editor.
-  Defining a subtype registers it. `CIRCUIT_USER_TYPES` is the one list of the
-  types a player may type a value for or give a variable.
+  one that cannot be, which outputs it accepts, its colour in the editor and
+  what the editor is shown of a value (`ui_value`, `ui_data`). Defining a
+  subtype with a `datatype` name registers it (`wiremod_datatypes()`); the
+  editor code names no datatype's colour or rules. The colours are
+  tgstation's: any blue, number green, string orange, signal teal, boolean
+  red ("bad"), list white, option violet, entity purple. Two lists stay
+  explicit on purpose: `CIRCUIT_USER_TYPES`, the types a player may type a
+  value for, and `CIRCUIT_VARIABLE_TYPES`, the types a variable may have.
+- **Entities.** An entity is a person or an object (`/atom/movable`). A port or
+  variable holds its `/datum/weakref`, never the thing: the handle does not
+  keep it alive and stops resolving once it is deleted. A port holding one also
+  registers with `GLOB.destroyed_event` and empties itself when the thing is
+  deleted (`/datum/port/proc/hold` is the one place a port's value changes and
+  pairs the registering with the letting go); nothing is run from that
+  deletion. An entity reads as its name in a text input and in the editor,
+  cannot be typed, is never put in a list and is not saved. A component hands
+  a port `WEAKREF(thing)`.
+- **Marking.** tgstation marks a thing with a multitool and presses the entity
+  input. Here pressing an entity (or untyped) input marks the item in the
+  player's other hand, or the player when no other item is held; marking the
+  same thing again clears the input. The request carries only a flag, so a
+  player can mark only what they hold or themselves.
 - **Lists on ports are never changed in place.** `set_output()` stores a copy of
   what a component hands it, and a component that wants a different list builds
   a new one. A wire can therefore pass the same list to a list or untyped input
@@ -81,14 +105,23 @@ printer are not ported.
 Use an integrated circuit in hand to open the editor. Drag components in from
 the component menu, type values into unconnected inputs, pick an operation from
 the dropdown on operation inputs, and drag from an output to an input to connect
-them. An input takes one connection. Variables are made in the variable menu and
+them. The (i) button on a component shows what it does and lists its ports.
+An input takes one connection. Variables are made in the variable menu and
 read and written through getter and setter nodes. Lists come from String Split
 and pass between the list components. Pressing a signal input in the editor
 fires it by hand.
 
 The compact remote has a built-in signal source: use it in hand to fire its
-circuit, Alt-click it to edit the circuit. Its User output is the presser's
-visible name.
+circuit, Alt-click it to edit the circuit. Its User output is the presser as an
+entity; wired into a text input it gives their visible name. The Direction
+component gives the compass direction and distance to an entity within
+`CIRCUIT_DIRECTION_RANGE` tiles of the circuit.
+
+Not ported from tgstation's general components, and why: Speech, Sound and
+Light act on the world for everyone nearby and need a decision on spam and
+impersonation; Health, Species and the scanners read other players' state;
+GPS and Pathfind give positions with no range limit; Self needs shells other
+than the remote; To String is covered by wiring any value into a text input.
 
 ## Limits
 
@@ -125,3 +158,13 @@ made only in a circuit's editor; `code/game/mob/crafting_atlas_admin.dm` keeps
   qdel and the window transport, driven as an agent body's button presses.
 - `cd tgui && npx vitest run src/interfaces/WiremodCircuit.test.tsx` - the editor
   adapter.
+- `cd tgui && CHROMIUM_PATH=<chromium> node scripts/wiremod-browser-smoke.mjs` -
+  real clicks on the production bundle in Chromium: the operation dropdown
+  opens above the board and sends the chosen operation, the info button shows
+  the description and ports, an entity input sends a mark request. It is part
+  of `npm run test:browser`. `WIREMOD_SCREENSHOT_DIR=<dir>` saves screenshots.
+
+tgui-core draws Dropdown menus and Tooltips in a portal at the end of `<body>`.
+`tgui/src/styles.scss` loads its `Floating` stylesheet and puts `.Floating`
+above every layer a window stacks; without that the operation menu opened
+underneath the full-window editor and nothing could be picked.

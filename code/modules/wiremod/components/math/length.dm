@@ -2,6 +2,7 @@
 	name = "length component"
 	display_name = "Length"
 	category = "Math"
+	desc = "Counts the characters in a text or the entries in a list. Any other value leaves Length empty."
 
 	var/datum/port/input/value_input
 	var/datum/port/output/result

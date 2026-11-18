@@ -37,6 +37,10 @@ var/wiremod_runtime_error = FALSE
 		GLOB.moved_event = new
 		GLOB.dir_set_event = new
 		GLOB.destroyed_event = new
+		// The registration counts cleanup_events() works from (~cleanup.dm).
+		GLOB.global_listen_count = list()
+		GLOB.event_sources_count = list()
+		GLOB.event_listen_count = list()
 		movementMachine = new
 		if (!GLOB.nanomanager)
 			GLOB.nanomanager = new
@@ -52,6 +56,12 @@ var/wiremod_runtime_error = FALSE
 		return agent_control.agent_screen(C, req, TRUE)
 	catch(var/exception/e)
 		return "refused: [e.desc]"
+
+// Everything the open editor window was last sent, as the JSON it receives.
+// (agent_screen_rows() cuts long data short.)
+/proc/wiremod_window(mob/M)
+	var/datum/nanoui/ui = agent_find_screen(M, 1)
+	return ui ? json_encode(ui.agent_screen_data()) : ""
 
 /proc/wiremod_build(datum/agent_character/C, mob/living/human/H)
 	var/obj/item/compact_remote/remote = new(H)
@@ -95,6 +105,23 @@ var/wiremod_runtime_error = FALSE
 	circuit.refresh_editor_now()
 	rows = agent_screen_rows(H)
 	wiremod_check(isnull(circuit.editor_refresh_timer) && rows.len && findtext(rows[1]["data"], "\"current_data\":[dice.result.value]"), "the held refresh shows the editor the final state")
+	// The Operation dropdown: the editor sends the chosen text for the option
+	// port, exactly as a click on "Multiply" does (tgui/scripts/wiremod-browser-smoke.mjs).
+	wiremod_check(math.operation.value == "Add" && findtext(rows[1]["data"], "\"type\":\"option\"") && findtext(rows[1]["data"], "\"color\":\"violet\""), "the operation input reaches the window as a violet option port")
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = 3, "port_id" = 3, "input" = "Multiply"))
+	wiremod_check(math.operation.value == "Multiply", "choosing Multiply in the dropdown reaches the component through the window transport")
+	remote.attack_self(H)
+	wiremod_check(isnum(dice.result.value) && math.result.value == dice.result.value * 10, "the remote now rolls the die and multiplies by ten ([math.result.value])")
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = 3, "port_id" = 3, "input" = "Explode"))
+	wiremod_check(math.operation.value == "Multiply", "a text that is not one of the choices is ignored")
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = 3, "port_id" = 3, "input" = "Add"))
+	// The info button.
+	wiremod_press(C, list("act" = "set_examined_component", "component_id" = 3, "x" = 150, "y" = 90))
+	deltimer(circuit.editor_refresh_timer)
+	circuit.refresh_editor_now()
+	var/window = wiremod_window(H)
+	wiremod_check(findtext(window, "\"examined_name\":\"Arithmetic\"") && findtext(window, "\"examined_desc\":\"Works out a number from A and B") && findtext(window, "\"content\":\"In: Operation (option)\"") && findtext(window, "\"examined_rel_x\":150"), "the info button sends the component's description and its ports to the window")
+	wiremod_press(C, list("act" = "remove_examined_component"))
 	// Out-of-range and malformed requests change nothing and raise nothing.
 	for (var/bad in list("0", "-1", "99", "1.5", "abc", "1e9"))
 		wiremod_press(C, list("act" = "detach_component", "component_id" = bad))
@@ -134,8 +161,40 @@ var/wiremod_runtime_error = FALSE
 	remote.attack_self(H)
 	wiremod_check(!isnull(timer.timer_id), "the delay starts a real timer")
 	wiremod_check(H.l_hand != remote && H.r_hand != remote, "the probe holds the remote in its contents, not a hand slot")
+	// Entities: the press above left the presser on the User output as a weak
+	// reference, and the editor marks what the player holds.
+	var/obj/item/circuit_component/compact_remote/source = circuit.attached_components[1]
+	wiremod_check(source.user_output.value == WEAKREF(H) && istype(source.user_output.value, /datum/weakref), "the User output holds the presser's weak reference, never the mob")
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/direction", "rel_x" = 500, "rel_y" = 40))
+	var/obj/item/circuit_component/direction/finder = circuit.attached_components[circuit.attached_components.len]
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	wiremod_check(finder.target_input.value == WEAKREF(H) && finder.distance_output.value == 0, "with empty hands a player marks themselves on an entity input")
+	var/obj/item/integrated_circuit/marked = new(locate(7, 5, 1))
+	marked.name = "<i>marked</i>"
+	if (H.hand)
+		H.r_hand = marked
+	else
+		H.l_hand = marked
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	wiremod_check(finder.target_input.value == WEAKREF(marked) && finder.direction_output.value == "east" && finder.distance_output.value == 2, "the item in the other hand is marked, and found two tiles east ([finder.direction_output.value], [finder.distance_output.value])")
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = finder.circuit_id, "port_id" = 1, "input" = "\ref[H]"))
+	wiremod_check(finder.target_input.value == WEAKREF(marked), "an entity input takes no typed value, a ref included")
+	deltimer(circuit.editor_refresh_timer)
+	circuit.refresh_editor_now()
+	window = wiremod_window(H)
+	wiremod_check(findtext(window, "\"name\":\"Target\",\"type\":\"entity\",\"color\":\"purple\"") && findtext(window, "\"current_data\":\"<i>marked<") && !findtext(window, "\ref[marked]") && !findtext(window, "\ref[H]"), "the window is sent an entity as its name, never a reference")
+	var/list/listeners = GLOB.destroyed_event.event_sources[marked]
+	wiremod_check(listeners && (finder.target_input in listeners), "the port holding the marked item listens for its deletion")
+	H.l_hand = null
+	H.r_hand = null
+	var/marked_ref = "\ref[marked]"
+	listeners = null
+	qdel(marked)
+	marked = null
+	wiremod_check(isnull(finder.target_input.value), "deleting the marked item empties the input")
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
 	// Everything the remote owns, by ref.
-	var/list/refs = list("\ref[remote]", "\ref[circuit]")
+	var/list/refs = list("\ref[remote]", "\ref[circuit]", marked_ref)
 	for (var/obj/item/circuit_component/component in circuit.attached_components)
 		refs += "\ref[component]"
 		for (var/datum/port/port in component.input_ports + component.output_ports)
@@ -145,6 +204,10 @@ var/wiremod_runtime_error = FALSE
 	qdel(remote)
 	wiremod_check(QDELETED(circuit) && QDELETED(dice) && QDELETED(timer) && isnull(timer.timer_id) && !circuit.attached_components.len, "deleting the remote deletes its circuit and components and cancels the delay")
 	wiremod_check(!agent_open_screens(H).len, "deleting the remote closes its editor")
+	var/port_listeners = 0
+	for (var/datum/port/listener in GLOB.destroyed_event.event_sources[H])
+		port_listeners++
+	wiremod_check(!port_listeners && !QDELETED(H), "deleting the remote stops its ports listening for the presser, who is untouched")
 	return refs
 
 /proc/wiremod_checks()

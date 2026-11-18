@@ -2,6 +2,7 @@
 	name = "list add component"
 	display_name = "List Add"
 	category = "List"
+	desc = "Gives a copy of List with Value added at the end. A Value that is itself a list is added entry by entry. A full list (500 entries) comes out unchanged."
 
 	var/datum/port/input/list_input
 	var/datum/port/input/value_input

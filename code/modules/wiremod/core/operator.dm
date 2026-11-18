@@ -22,7 +22,7 @@
 	input_a = add_input_port("A", operand_type, trigger = PROC_REF(run_operation))
 	input_b = add_input_port("B", operand_type, trigger = PROC_REF(run_operation))
 	if(operations)
-		operation = add_input_port("Operation", PORT_TYPE_STRING, trigger = PROC_REF(run_operation), default = operations[1], options = operations)
+		operation = add_input_port("Operation", PORT_TYPE_OPTION, trigger = PROC_REF(run_operation), default = operations[1], options = operations)
 	result = add_output_port("Result", result_type)
 
 /obj/item/circuit_component/operator/proc/run_operation(datum/port/input/input)

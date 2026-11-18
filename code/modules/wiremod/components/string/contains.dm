@@ -2,6 +2,7 @@
 	name = "string contains component"
 	display_name = "String Contains"
 	category = "String"
+	desc = "Gives true if String contains Search, and false if it does not or if either is not set. Capital and small letters count as the same."
 
 	var/datum/port/input/haystack
 	var/datum/port/input/needle

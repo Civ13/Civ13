@@ -58,6 +58,7 @@
 // never handed out as an item.
 /obj/item/circuit_component/variable
 	display_name = "Variable"
+	desc = "Reads or writes a circuit variable: a named value the circuit keeps."
 	category = "Utility"
 	printed = TRUE
 
@@ -82,6 +83,7 @@
 
 /obj/item/circuit_component/variable/getter
 	display_name = "Variable Getter"
+	desc = "Gives the current value of its variable, and gives it again whenever the variable changes."
 
 	var/datum/port/output/value_output
 
@@ -97,6 +99,7 @@
 
 /obj/item/circuit_component/variable/setter
 	display_name = "Variable Setter"
+	desc = "Stores its Input in its variable whenever Input changes. Every getter of that variable then gives the new value."
 
 	var/datum/port/input/value_input
 

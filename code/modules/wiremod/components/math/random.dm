@@ -2,6 +2,7 @@
 	name = "random component"
 	display_name = "Random"
 	category = "Math"
+	desc = "Each signal on Trigger picks a whole number from Minimum to Maximum, both included. Nothing happens if Minimum is above Maximum or either is not set. The bounds are limited to 1,000,000 either side of zero."
 
 	var/datum/port/input/minimum
 	var/datum/port/input/maximum

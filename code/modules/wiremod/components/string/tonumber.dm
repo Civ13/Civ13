@@ -2,6 +2,7 @@
 	name = "string to number component"
 	display_name = "String to Number"
 	category = "String"
+	desc = "Reads the number at the start of String, such as 12 or -3.5. Text that does not start with a number leaves Number empty."
 
 	var/datum/port/input/value_input
 	var/datum/port/output/result

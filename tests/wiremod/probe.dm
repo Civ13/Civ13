@@ -27,6 +27,65 @@ var/datum/probe_globals/GLOB = new
 
 /datum/probe_globals
 	var/datum/probe_nanomanager/nanomanager = new
+	var/datum/probe_destroyed_event/destroyed_event = new
+
+// As code/datums/observation: a listener registers one proc per source, the
+// registry holds both by hard reference until unregistered, and a source's
+// registrations are dropped once its Destroy() has told the listeners.
+/datum/probe_destroyed_event
+	var/list/event_sources = list()
+
+/datum/probe_destroyed_event/proc/register(datum/event_source, datum/listener, proc_call)
+	if(!event_source || !listener || !proc_call)
+		return FALSE
+	if(!event_sources[event_source])
+		event_sources[event_source] = list()
+	event_sources[event_source][listener] = proc_call
+	return TRUE
+
+/datum/probe_destroyed_event/proc/unregister(datum/event_source, datum/listener, proc_call)
+	var/list/listeners = event_sources[event_source]
+	if(!listeners || !(listener in listeners))
+		return FALSE
+	listeners -= listener
+	if(!length(listeners))
+		event_sources -= event_source
+	return TRUE
+
+/datum/probe_destroyed_event/proc/raise_event(datum/event_source)
+	var/list/listeners = event_sources[event_source]
+	if(!listeners)
+		return
+	for(var/datum/listener in listeners.Copy())
+		call(listener, listeners[listener])(event_source)
+	event_sources -= event_source
+
+// How many registrations the registry holds for ports, in all.
+/datum/probe_destroyed_event/proc/port_listeners()
+	. = 0
+	for(var/datum/event_source in event_sources)
+		for(var/datum/port/listener in event_sources[event_source])
+			.++
+
+// As code/datums/weakref.dm: one handle per thing, which resolves only while
+// the thing is alive.
+/datum/weakref
+	var/reference
+
+/datum/weakref/New(datum/thing)
+	reference = "\ref[thing]"
+
+/datum/weakref/proc/resolve()
+	var/datum/thing = locate(reference)
+	return (!QDELETED(thing) && thing.weak_reference == src) ? thing : null
+
+/proc/WEAKREF(datum/input)
+	if(istype(input) && !QDELETED(input))
+		if(istype(input, /datum/weakref))
+			return input
+		if(!input.weak_reference)
+			input.weak_reference = new /datum/weakref(input)
+		return input.weak_reference
 
 // As the real one: returns how many open windows it refreshed. `watchers` is
 // the number of editors the probe pretends are open.
@@ -59,8 +118,14 @@ var/datum/probe_globals/GLOB = new
 /datum
 	var/gc_destroyed = 0
 	var/should_save = TRUE
+	var/datum/weakref/weak_reference
 
+// As the real one: the listeners hear of the deletion while the object is
+// already marked deleted, and its weak reference is dropped.
 /datum/proc/Destroy()
+	GLOB.destroyed_event.raise_event(src)
+	GLOB.destroyed_event.event_sources -= src
+	weak_reference = null
 	return
 
 /atom/movable/Destroy()
@@ -172,15 +237,24 @@ var/datum/probe_globals/GLOB = new
 	held = taken
 	return TRUE
 
+// The probe's mobs have one hand for held and one for other_hand.
+/mob/var/obj/item/other_hand
+
+/mob/proc/get_active_hand()
+	return held
+
+/mob/proc/get_inactive_hand()
+	return other_hand
+
 /mob/living
 /mob/observer
 
 /turf/probe_floor
 /world
 	turf = /turf/probe_floor
-	maxx = 5
+	maxx = 12
 	maxy = 5
-	maxz = 1
+	maxz = 2
 
 /world/OpenPort(port)
 	if(port == "none")
@@ -261,7 +335,8 @@ var/datum/probe_globals/GLOB = new
 	check(string.convert(5) == "5" && string.convert("x") == "x", "string port conversion")
 	check(length(string.convert(long_text(PORT_MAX_STRING_LENGTH + 50))) <= PORT_MAX_STRING_LENGTH, "string port caps its length")
 	var/mob/living/someone = new
-	check(isnull(any.convert(someone)) && isnull(string.convert(someone)) && isnull(any.convert(world)), "ports never hold a game object")
+	var/datum/circuit_datatype/entity = circuit_datatype_for(PORT_TYPE_ENTITY)
+	check(isnull(any.convert(someone)) && isnull(string.convert(someone)) && isnull(any.convert(world)) && isnull(entity.convert(someone)) && isnull(list_type.convert(someone)), "ports never hold a game object")
 	var/list/big = list()
 	for(var/i in 1 to CIRCUIT_MAX_LIST_LENGTH + 100)
 		big += i
@@ -617,7 +692,7 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, math, 1, long_text(PORT_MAX_STRING_LENGTH + 10))
 	check(math.input_a.value == 4, "a number input rejects text, infinity and oversized input")
 	act(circuit, user, "set_component_input", list("component_id" = 1, "port_id" = 1, "input" = 9, "marked_atom" = 1))
-	check(math.input_a.value == 4, "entity inputs are refused")
+	check(math.input_a.value == 4, "a number input cannot be marked with an entity")
 	act(circuit, user, "set_component_input", list("component_id" = 1, "port_id" = 1, "set_null" = 1))
 	check(isnull(math.input_a.value), "set_null clears an unwired input")
 	act(circuit, user, "set_component_input", list("component_id" = 1, "port_id" = 3, "set_null" = 1))
@@ -730,13 +805,14 @@ var/datum/probe_globals/GLOB = new
 	check(isnum(output_value(dice)), "pressing the remote triggers its circuit")
 	check(output_value(greeting) == "Probe Presser pressed it", "the remote reports who pressed it by name")
 	var/datum/circuit_variable/variable = circuit.circuit_variables["who"]
-	check(variable.value == "Probe Presser", "a variable stores the name, not the mob")
+	check(variable.value == WEAKREF(user) && output_value(source, 1) == WEAKREF(user), "the User output and a variable hold the presser's weak reference, not the mob")
 	var/holds_object = FALSE
 	for(var/obj/item/circuit_component/component in circuit.attached_components)
 		for(var/datum/port/port in component.input_ports + component.output_ports)
-			if(istype(port.value, /datum))
+			if(istype(port.value, /datum) && !istype(port.value, /datum/weakref))
 				holds_object = TRUE
-	check(!holds_object, "no port holds a reference to the presser")
+	check(!holds_object && !istype(variable.value, /atom), "no port holds a reference to the presser")
+	check(GLOB.destroyed_event.port_listeners() == 3, "the ports holding the presser listen for the presser's deletion ([GLOB.destroyed_event.port_listeners()])")
 	check(length(active_timers) == 1, "the pressed remote started its delay")
 
 	// Deleting the remote frees the whole graph: nothing may keep a reference.
@@ -748,6 +824,7 @@ var/datum/probe_globals/GLOB = new
 	qdel(remote)
 	check(circuit.gc_destroyed && source.gc_destroyed && dice.gc_destroyed && variable.gc_destroyed, "deleting the remote deletes its circuit, components and variables")
 	check(!length(active_timers), "deleting the remote cancels its timers")
+	check(!GLOB.destroyed_event.port_listeners() && !QDELETED(user), "deleting the remote stops its ports listening and leaves the presser alone")
 	return refs
 
 /proc/test_remote_and_cleanup(mob/living/user)
@@ -874,19 +951,25 @@ var/datum/probe_globals/GLOB = new
 	check(length(available) >= 16 && !bad && !both, "the two component lists hold component types, each once, each left-out type with a reason")
 	check(!length(unaccounted), "every component type is offered or listed as left out ([length(unaccounted)] in neither)")
 	var/list/catalog = wiremod_ui_component_catalog()
+	var/obj/item/circuit_component/base_component = /obj/item/circuit_component
 	var/usable = length(catalog) == length(available)
 	for(var/list/entry in catalog)
 		if(!length(entry["name"]) || !length(entry["input_ports"]) || !length(entry["output_ports"]) || entry["id"] != 0)
 			usable = FALSE
+		// The info button shows this text: every component says what it does.
+		if(!istext(entry["description"]) || length(entry["description"]) < 40 || entry["description"] == initial(base_component.desc) || findtext(entry["description"], "<"))
+			usable = FALSE
+			world.log << "no description: [entry["name"]]"
 		for(var/list/port in entry["input_ports"] + entry["output_ports"])
 			if(port["ref"] != "")
 				usable = FALSE
-	check(usable, "every offered component has a name and ports, and menu entries carry no port names")
+	check(usable, "every offered component has a name, a description and ports, and menu entries carry no port names")
 
 // One reading per datatype for what a player types.
 /proc/test_manual_values(mob/living/user)
 	// Each datatype is one handler that knows its own name and colour.
-	var/list/colours = list(PORT_TYPE_ANY = "blue", PORT_TYPE_NUMBER = "green", PORT_TYPE_BOOLEAN = "yellow", PORT_TYPE_STRING = "orange", PORT_TYPE_SIGNAL = "purple", PORT_TYPE_LIST = "grey")
+	// The colours are tgstation's, so its players recognise the types.
+	var/list/colours = list(PORT_TYPE_ANY = "blue", PORT_TYPE_NUMBER = "green", PORT_TYPE_BOOLEAN = "bad", PORT_TYPE_STRING = "orange", PORT_TYPE_SIGNAL = "teal", PORT_TYPE_LIST = "white", PORT_TYPE_OPTION = "violet", PORT_TYPE_ENTITY = "purple")
 	var/registered = TRUE
 	for(var/handler_type in typesof(/datum/circuit_datatype) - /datum/circuit_datatype)
 		var/datum/circuit_datatype/fresh = new handler_type
@@ -894,7 +977,7 @@ var/datum/probe_globals/GLOB = new
 		if(!known || known.type != handler_type || known != circuit_datatype_for(fresh.datatype) || known.color != colours[fresh.datatype])
 			registered = FALSE
 		colours -= fresh.datatype
-	check(registered && !length(colours), "every datatype has one handler with its own name and colour")
+	check(registered && !length(colours) && length(wiremod_datatypes()) == 8, "every datatype has one handler with its own name and colour")
 	check(wiremod_parse_boolean("On") == TRUE && wiremod_parse_boolean("off") == FALSE && wiremod_parse_boolean(2) == TRUE && wiremod_parse_boolean(0) == FALSE, "truth values are read from words and numbers")
 	check(isnull(wiremod_parse_boolean("maybe")) && isnull(wiremod_parse_boolean(null)) && isnull(wiremod_parse_boolean(list(1))) && isnull(wiremod_parse_boolean(1e30 * 1e30)), "anything else is not a truth value")
 	check(wiremod_ui_flag(1) == TRUE && wiremod_ui_flag("true") == TRUE && wiremod_ui_flag("maybe") == FALSE && wiremod_ui_flag(null) == FALSE, "a request flag that cannot be read is off")
@@ -933,11 +1016,11 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, join, 1, 5)
 	check(join.input_a.value == "5", "a text input turns a typed number into text")
 	var/list/sent_types = circuit.circuit_editor_data()["global_basic_types"]
-	var/settable = length(sent_types) == 4
-	for(var/type_key in list(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY))
+	var/settable = length(sent_types) == 5
+	for(var/type_key in list(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY, PORT_TYPE_ENTITY))
 		if(!(type_key in sent_types))
 			settable = FALSE
-	check(settable && !(PORT_TYPE_LIST in sent_types) && !(PORT_TYPE_SIGNAL in sent_types), "the editor is told the four types a player may set")
+	check(settable && !(PORT_TYPE_LIST in sent_types) && !(PORT_TYPE_SIGNAL in sent_types) && !(PORT_TYPE_OPTION in sent_types), "the editor is told the five types a variable may have")
 	// Text orders alphabetically.
 	enter(circuit, user, compare, 1, "apple")
 	enter(circuit, user, compare, 2, "banana")
@@ -1088,11 +1171,223 @@ var/datum/probe_globals/GLOB = new
 	check(manager.updates == start, "a deleted circuit sends no refresh")
 	manager.watchers = 0
 
+// What the editor's Operation dropdown does: it sends the chosen text for the
+// option port, and the circuit works with that operation from then on.
+/proc/test_operation_dropdown(mob/living/user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	enter(circuit, user, math, 1, 6)
+	enter(circuit, user, math, 2, 7)
+	check(output_value(math) == 13, "arithmetic starts on Add")
+	var/list/view = circuit.circuit_editor_data()["components"][1]["input_ports"][3]
+	check(view["type"] == PORT_TYPE_OPTION && view["color"] == "violet" && view["current_data"] == "Add" && islist(view["datatype_data"]) && ("Multiply" in view["datatype_data"]) && length(view["datatype_data"]) == 8, "the editor is sent the operation port as a violet option with its choices")
+	enter(circuit, user, math, 3, "Multiply")
+	check(math.operation.value == "Multiply" && output_value(math) == 42, "choosing Multiply in the dropdown multiplies ([output_value(math)])")
+	view = circuit.circuit_editor_data()["components"][1]["input_ports"][3]
+	check(view["current_data"] == "Multiply", "the editor is shown the chosen operation")
+	enter(circuit, user, math, 3, "Divide")
+	enter(circuit, user, math, 2, 0)
+	check(isnull(output_value(math)), "dividing by zero leaves the result empty")
+	enter(circuit, user, math, 3, "multiply")
+	enter(circuit, user, math, 3, 3)
+	check(math.operation.value == "Divide", "a text that is not one of the choices is ignored")
+	for(var/typepath in list(/obj/item/circuit_component/operator/comparison, /obj/item/circuit_component/operator/logic, /obj/item/circuit_component/string_case))
+		var/obj/item/circuit_component/component = print(circuit, user, typepath)
+		var/datum/port/input/choice = component.input_ports[length(component.input_ports)]
+		var/last = choice.options[length(choice.options)]
+		enter(circuit, user, component, length(component.input_ports), last)
+		check(choice.datatype == PORT_TYPE_OPTION && choice.value == last && choice.value != choice.options[1], "[component.display_name] takes a choice from its dropdown ([last])")
+	qdel(circuit)
+
+// The info button: the editor asks for a component and is sent its description
+// and one notice per port.
+/proc/test_info_panel(mob/living/user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	var/list/data = circuit.circuit_editor_data()
+	check(isnull(data["examined_name"]) && !length(data["examined_notices"]), "nothing is examined until the info button is pressed")
+	act(circuit, user, "set_examined_component", list("component_id" = 1, "x" = 120, "y" = 80))
+	data = circuit.circuit_editor_data()
+	var/list/notices = data["examined_notices"]
+	check(data["examined_name"] == "Arithmetic" && data["examined_desc"] == math.desc && findtext(data["examined_desc"], "Dividing by zero") && data["examined_rel_x"] == 120 && data["examined_rel_y"] == 80, "the info button shows the component's description where it was pressed")
+	check(length(notices) == 4 && notices[1]["content"] == "In: A (number)" && notices[1]["color"] == "green" && notices[3]["content"] == "In: Operation (option)" && notices[3]["color"] == "violet" && notices[4]["content"] == "Out: Result (number)", "the info panel lists every port with its type and colour")
+	act(circuit, user, "remove_examined_component")
+	check(isnull(circuit.circuit_editor_data()["examined_name"]), "clicking away closes the info panel")
+	// The variable nodes and the remote's source are not in the menu; they have descriptions too.
+	var/obj/item/circuit_component/base = /obj/item/circuit_component
+	for(var/typepath in list(/obj/item/circuit_component/variable/getter, /obj/item/circuit_component/variable/setter, /obj/item/circuit_component/compact_remote))
+		var/obj/item/circuit_component/described = typepath
+		check(length(initial(described.desc)) >= 40 && initial(described.desc) != initial(base.desc), "[typepath] has its own description")
+	qdel(circuit)
+
+/obj/item/probe_trinket
+	name = "<b>trinket</b>"
+
+// Builds a circuit whose ports hold a trinket, deletes the trinket and returns
+// its ref: only a leak can keep it findable afterwards.
+/proc/entity_lifecycle(mob/living/user)
+	var/datum/probe_nanomanager/manager = GLOB.nanomanager
+	var/obj/item/integrated_circuit/circuit = new(user)
+	user.held = circuit
+	var/obj/item/probe_trinket/trinket = new(user)
+	user.other_hand = trinket
+	var/obj/item/circuit_component/direction/finder = print(circuit, user, /obj/item/circuit_component/direction)
+	var/obj/item/circuit_component/operator/comparison/compare = print(circuit, user, /obj/item/circuit_component/operator/comparison)
+	var/obj/item/circuit_component/operator/string_concat/label = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
+	chat_log.Cut()
+	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	check(finder.target_input.value == WEAKREF(trinket) && !istype(finder.target_input.value, /atom), "marking an entity input stores the weak reference of the item in the other hand")
+	check(length(chat_log) == 1 && findtext(chat_log[1], "&lt;b&gt;trinket&lt;/b&gt;") && !findtext(chat_log[1], "<b>"), "the marked thing's name reaches chat escaped ([length(chat_log) ? chat_log[1] : ""])")
+	check(output_value(finder, 2) == 0 && isnull(output_value(finder, 1)), "a held target is on the circuit's own tile: distance 0, no direction")
+	// An untyped input can be marked too, and holds the same handle.
+	act(circuit, user, "set_component_input", list("component_id" = compare.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	user.other_hand = null
+	act(circuit, user, "set_component_input", list("component_id" = compare.circuit_id, "port_id" = 2, "marked_atom" = 1))
+	check(compare.input_a.value == WEAKREF(trinket) && compare.input_b.value == WEAKREF(user) && output_value(compare) == FALSE, "with nothing else in hand a player marks themselves; two different things are not equal")
+	user.other_hand = trinket
+	act(circuit, user, "set_component_input", list("component_id" = compare.circuit_id, "port_id" = 2, "marked_atom" = 1))
+	check(output_value(compare) == TRUE, "the same thing marked twice is equal")
+	// Into a text input an entity arrives as its name.
+	var/obj/item/circuit_component/variable/getter/reader
+	act(circuit, user, "add_variable", list("variable_name" = "thing", "variable_datatype" = PORT_TYPE_ENTITY))
+	act(circuit, user, "add_setter_or_getter", list("variable" = "thing", "is_setter" = 1))
+	var/obj/item/circuit_component/variable/setter/writer = circuit.attached_components[length(circuit.attached_components)]
+	act(circuit, user, "add_setter_or_getter", list("variable" = "thing", "is_setter" = 0))
+	reader = circuit.attached_components[length(circuit.attached_components)]
+	act(circuit, user, "set_component_input", list("component_id" = writer.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	var/datum/circuit_variable/variable = circuit.circuit_variables["thing"]
+	check(variable.value == WEAKREF(trinket) && output_value(reader) == WEAKREF(trinket) && reader.value_output.datatype == PORT_TYPE_ENTITY, "an entity variable keeps the weak reference and its getter gives it")
+	check(wire(circuit, user, reader, 1, label, 1) && label.input_a.value == "<b>trinket</b>", "an entity wired into a text input arrives as its name")
+	check(!wire(circuit, user, reader, 1, finder, 2) && isnull(compare.input_a.connected_output), "an entity output does not connect to a signal input")
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	check(!wire(circuit, user, reader, 1, math, 1), "an entity output does not connect to a number input")
+	// What the editor is sent: a name, never a reference.
+	var/list/target_view = circuit.circuit_editor_data()["components"][1]["input_ports"][1]
+	check(target_view["type"] == PORT_TYPE_ENTITY && target_view["color"] == "purple" && target_view["current_data"] == "<b>trinket</b>", "the editor is sent an entity input as its name, to be escaped by the window")
+	check(wiremod_display_value(WEAKREF(trinket)) == "<b>trinket</b>", "an entity's value is displayed as its name")
+	chat_log.Cut()
+	act(circuit, user, "get_component_value", list("component_id" = reader.circuit_id, "port_id" = 1))
+	check(length(chat_log) == 1 && findtext(chat_log[1], "&lt;b&gt;trinket") && !findtext(chat_log[1], "<b>"), "an entity output's value reaches chat escaped")
+	// Typing and other wrong requests do not set an entity.
+	enter(circuit, user, finder, 1, "the captain")
+	enter(circuit, user, finder, 1, 5)
+	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "input" = trinket))
+	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "input" = user, "marked_atom" = user))
+	act(circuit, user, "set_component_input", list("component_id" = label.circuit_id, "port_id" = 2, "marked_atom" = 1))
+	check(finder.target_input.value == WEAKREF(trinket) && isnull(label.input_b.value), "an entity cannot be typed, named by a request or marked on a text input")
+	var/list/everything = list()
+	for(var/obj/item/circuit_component/component in circuit.attached_components)
+		for(var/datum/port/port in component.input_ports + component.output_ports)
+			everything += port.value
+	everything += variable.value
+	var/hard = 0
+	var/weak = 0
+	for(var/held_value in everything)
+		if(istype(held_value, /datum/weakref))
+			weak++
+		else if(istype(held_value, /datum))
+			hard++
+	check(!hard && weak >= 6, "ports and variables hold weak references only ([weak] weak, [hard] hard)")
+	var/listening = GLOB.destroyed_event.port_listeners()
+	check(listening == weak - 1, "each port holding an entity listens for its deletion ([listening] of [weak - 1])")
+	// Marking the same thing again clears the input and stops the listening.
+	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	check(isnull(finder.target_input.value) && GLOB.destroyed_event.port_listeners() == listening - 1, "marking the same thing again clears the input")
+	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	// The trinket is deleted: every port lets go at once and an open editor is told.
+	manager.watchers = 1
+	sleep(CIRCUIT_UI_REFRESH_INTERVAL + 1)
+	var/updates = manager.updates
+	var/ref = "\ref[trinket]"
+	user.other_hand = null
+	act(circuit, user, "set_component_input", list("component_id" = compare.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	qdel(trinket)
+	var/still_held = 0
+	for(var/obj/item/circuit_component/component in circuit.attached_components)
+		for(var/datum/port/port in component.input_ports + component.output_ports)
+			if(istype(port.value, /datum/weakref) && port.value != WEAKREF(user))
+				still_held++
+	check(!still_held && isnull(finder.target_input.value) && isnull(output_value(reader)) && isnull(compare.input_b.value), "deleting the thing empties every port that held it")
+	check(compare.input_a.value == WEAKREF(user) && GLOB.destroyed_event.port_listeners() == 1, "a port holding something else keeps it")
+	check(manager.updates > updates, "an open editor is told when a held thing is deleted")
+	manager.watchers = 0
+	// The variable still has the dead handle; nothing can read a thing out of it.
+	check(isnull(wiremod_entity(variable.value)) && isnull(wiremod_entity_name(variable.value)) && isnull(circuit_datatype_for(PORT_TYPE_ENTITY).convert(variable.value)), "a dead weak reference resolves to nothing")
+	act(circuit, user, "add_setter_or_getter", list("variable" = "thing", "is_setter" = 0))
+	reader = circuit.attached_components[length(circuit.attached_components)]
+	check(isnull(output_value(reader)), "a new getter of a variable whose thing is gone gives nothing")
+	user.held = null
+	qdel(circuit)
+	check(!GLOB.destroyed_event.port_listeners(), "deleting the circuit stops every port listening")
+	return ref
+
+/proc/test_entities(mob/living/user)
+	var/datum/circuit_datatype/entity = circuit_datatype_for(PORT_TYPE_ENTITY)
+	var/datum/circuit_datatype/any = circuit_datatype_for(PORT_TYPE_ANY)
+	var/datum/circuit_datatype/string = circuit_datatype_for(PORT_TYPE_STRING)
+	var/datum/circuit_datatype/number = circuit_datatype_for(PORT_TYPE_NUMBER)
+	var/datum/circuit_datatype/boolean = circuit_datatype_for(PORT_TYPE_BOOLEAN)
+	var/datum/circuit_datatype/list_type = circuit_datatype_for(PORT_TYPE_LIST)
+	var/datum/weakref/handle = WEAKREF(user)
+	user.name = "Probe Presser"
+	check(entity.convert(handle) == handle && any.convert(handle) == handle && string.convert(handle) == "Probe Presser", "an entity is held as its weak reference and read as its name by a text port")
+	check(isnull(number.convert(handle)) && boolean.convert(handle) == FALSE && !length(list_type.convert(list(handle, 1))) == FALSE && length(list_type.convert(list(handle, 1))) == 1, "numbers, truth values and lists take no entity")
+	check(isnull(entity.convert(user)) && isnull(entity.convert("Probe Presser")) && isnull(entity.convert(5)) && isnull(entity.convert(list(handle))), "an entity port takes nothing but a weak reference")
+	var/datum/callback/plain = new(user, "restrained")
+	check(isnull(entity.convert(WEAKREF(plain))) && isnull(any.convert(WEAKREF(plain))) && isnull(entity.convert(WEAKREF(locate(1, 1, 1)))), "only a movable thing is an entity: no plain datum, no turf")
+	check(isnull(entity.parse_manual("Probe Presser")) && isnull(entity.parse_manual(handle)), "an entity cannot be typed")
+	check(entity.can_receive_from_datatype(PORT_TYPE_ENTITY) && entity.can_receive_from_datatype(PORT_TYPE_ANY) && !entity.can_receive_from_datatype(PORT_TYPE_STRING) && !entity.can_receive_from_datatype(PORT_TYPE_NUMBER), "an entity input accepts entity and untyped outputs only")
+	check(string.can_receive_from_datatype(PORT_TYPE_ENTITY) && any.can_receive_from_datatype(PORT_TYPE_ENTITY) && !number.can_receive_from_datatype(PORT_TYPE_ENTITY) && !boolean.can_receive_from_datatype(PORT_TYPE_ENTITY) && !list_type.can_receive_from_datatype(PORT_TYPE_ENTITY), "an entity output feeds entity, untyped and text inputs only")
+	check(!entity.should_save && !(PORT_TYPE_ENTITY in CIRCUIT_USER_TYPES), "the entity datatype stays out of saves and out of the typed types")
+
+/proc/test_entity_cleanup(mob/living/user)
+	var/ref = entity_lifecycle(user)
+	sleep(2)
+	var/datum/survivor = locate(ref)
+	check(isnull(survivor), "a deleted thing that ports held is garbage collected ([survivor ? survivor.type : "gone"])")
+	survivor = null
+
+/proc/test_new_components(mob/living/user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/obj/item/circuit_component/not/inverter = print(circuit, user, /obj/item/circuit_component/not)
+	enter(circuit, user, inverter, 1, "true")
+	check(output_value(inverter) == FALSE, "not: true becomes false")
+	enter(circuit, user, inverter, 1, "false")
+	check(output_value(inverter) == TRUE, "not: false becomes true")
+	act(circuit, user, "set_component_input", list("component_id" = inverter.circuit_id, "port_id" = 1, "set_null" = 1))
+	check(output_value(inverter) == TRUE, "not: an unset input counts as false")
+	// Direction: from the circuit (held by the user at 1,1) to a marked mob.
+	var/obj/item/circuit_component/direction/finder = print(circuit, user, /obj/item/circuit_component/direction)
+	var/mob/living/target = new(locate(4, 1, 1))
+	finder.target_input.set_input(WEAKREF(target))
+	check(output_value(finder, 1) == "east" && output_value(finder, 2) == 3, "direction: three tiles east ([output_value(finder, 1)], [output_value(finder, 2)])")
+	target.forceMove(locate(4, 4, 1))
+	check(output_value(finder, 2) == 3 && output_value(finder, 1) == "east", "direction: a target that moves is not followed until triggered")
+	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 2))
+	check(output_value(finder, 1) == "northeast" && output_value(finder, 2) == 3, "direction: a signal on Trigger looks again ([output_value(finder, 1)], [output_value(finder, 2)])")
+	target.forceMove(locate(1 + CIRCUIT_DIRECTION_RANGE, 1, 1))
+	finder.trigger.set_input(COMPONENT_SIGNAL)
+	check(output_value(finder, 2) == CIRCUIT_DIRECTION_RANGE, "direction: a target at the edge of its range is found")
+	target.forceMove(locate(2 + CIRCUIT_DIRECTION_RANGE, 1, 1))
+	finder.trigger.set_input(COMPONENT_SIGNAL)
+	check(isnull(output_value(finder, 1)) && isnull(output_value(finder, 2)), "direction: a target out of range gives nothing")
+	target.forceMove(locate(2, 1, 2))
+	finder.trigger.set_input(COMPONENT_SIGNAL)
+	check(isnull(output_value(finder, 1)) && isnull(output_value(finder, 2)), "direction: a target on another level gives nothing")
+	target.forceMove(locate(1, 2, 1))
+	finder.trigger.set_input(COMPONENT_SIGNAL)
+	check(output_value(finder, 1) == "north" && output_value(finder, 2) == 1, "direction: one tile north")
+	qdel(target)
+	finder.trigger.set_input(COMPONENT_SIGNAL)
+	check(isnull(finder.target_input.value) && isnull(output_value(finder, 1)) && isnull(output_value(finder, 2)), "direction: a deleted target gives nothing")
+	qdel(circuit)
+	check(!GLOB.destroyed_event.port_listeners(), "the direction circuit leaves no listener behind")
+
 /world/New()
 	world.OpenPort("none")
 	spawn(0)
 		var/mob/living/user = new(locate(1, 1, 1))
-		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_remote_and_cleanup))
+		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components))
 			try
 				call(test)(user)
 			catch(var/exception/failure)

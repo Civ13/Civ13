@@ -2,6 +2,7 @@
 	name = "arithmetic component"
 	display_name = "Arithmetic"
 	category = "Math"
+	desc = "Works out a number from A and B with the chosen Operation: add, subtract, multiply, divide, modulo (the remainder), power, minimum or maximum. It waits until both A and B are set. Dividing by zero, or a power with no real answer, leaves Result empty."
 	operand_type = PORT_TYPE_NUMBER
 	result_type = PORT_TYPE_NUMBER
 	operations = list("Add", "Subtract", "Multiply", "Divide", "Modulo", "Power", "Minimum", "Maximum")

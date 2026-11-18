@@ -29,6 +29,12 @@ def proc_body(text, header):
     return text[start:start + 1 + end.start()] if end else text[start:]
 
 
+def type_body(text, path):
+    """The definition block of a type: its vars, up to the next top-level line."""
+    start = re.search(r'(?m)^%s\n' % re.escape(path), text).start()
+    return proc_body(text[start:], path + '\n')
+
+
 class WiremodSource(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -38,6 +44,8 @@ class WiremodSource(unittest.TestCase):
         cls.ui = read(MODULE / 'core/circuit_ui.dm')
         cls.variables = read(MODULE / 'core/variables.dm')
         cls.port = read(MODULE / 'core/port.dm')
+        cls.datatypes = {path.stem: read(path) for path in sorted((MODULE / 'datatypes').glob('*.dm'))}
+        cls.types = '\n'.join(cls.datatypes.values())
         cls.component = read(MODULE / 'core/component.dm')
 
     def action_table(self):
@@ -54,7 +62,7 @@ class WiremodSource(unittest.TestCase):
 
     def test_every_module_file_is_included_once(self):
         dme = read(ROOT / 'civ13.dme')
-        self.assertGreaterEqual(len(self.files), 20)
+        self.assertGreaterEqual(len(self.files), 34)
         for path in self.files + [DEFINES]:
             include = '#include "%s"' % str(path.relative_to(ROOT)).replace('/', '\\')
             self.assertEqual(dme.count(include), 1, include)
@@ -85,18 +93,171 @@ class WiremodSource(unittest.TestCase):
                 self.assertNotRegex(line, r'[^(\s!]\s*[\w.\[\]?]+\s+in\s+(list\([^()]*\)|[\w.]+)\s*(\|\||&&)', '%s:%d' % (path, number))
 
     def test_ports_hold_plain_values_only(self):
-        for handler in ('any', 'number', 'boolean', 'string', 'signal', 'list'):
-            self.assertIn('/datum/circuit_datatype/%s' % handler, self.port)
-        base = proc_body(self.port, '/datum/circuit_datatype/proc/convert(value)')
+        base = proc_body(self.types, '/datum/circuit_datatype/proc/convert(value)')
         self.assertIn('wiremod_safe_value(value)', base)
-        self.assertIn('isnan(value) || isinf(value)', self.port)
-        self.assertIn('length(result) < CIRCUIT_MAX_LIST_LENGTH', self.port)
-        self.assertIn('copytext(value, 1, PORT_MAX_STRING_LENGTH + 1)', self.port)
-        # No handler turns an object into text or passes it through.
-        self.assertNotIn('/atom', self.port)
+        self.assertIn('isnan(value) || isinf(value)', self.types)
+        self.assertIn('length(result) < CIRCUIT_MAX_LIST_LENGTH', self.types)
+        self.assertIn('copytext(value, 1, PORT_MAX_STRING_LENGTH + 1)', self.types)
+        # Whatever is not a number, a text or a list is an entity or nothing.
+        safe = proc_body(self.types, '/proc/wiremod_safe_value(value)')
+        self.assertTrue(safe.rstrip().endswith('return wiremod_safe_entity(value)'))
+        # A list holds numbers and texts only: no entity, no object.
+        listed = proc_body(self.types, '/proc/wiremod_safe_list(value)')
+        self.assertNotIn('entity', code(listed))
+        self.assertNotIn('weakref', listed)
+
+    def test_each_datatype_is_one_file_and_one_registered_subtype(self):
+        # tgstation's model: a datatype is a subtype in its own file, the registry
+        # is built from the subtypes, and each says how it looks in the editor.
+        colours = {'any': 'blue', 'number': 'green', 'string': 'orange', 'signal': 'teal',
+                   'boolean': 'bad', 'list': 'white', 'option': 'violet', 'entity': 'purple'}
+        self.assertEqual(set(self.datatypes), set(colours) | {'_datatype'})
+        defines = read(DEFINES)
+        for name, colour in colours.items():
+            source = self.datatypes[name]
+            declared = re.findall(r'(?m)^(/datum/circuit_datatype(?:/\w+)+)$', source)
+            self.assertEqual(len(declared), 1, name)
+            self.assertTrue(declared[0].endswith('/' + name), name)
+            body = proc_body(source, declared[0] + '\n')
+            self.assertIn('datatype = PORT_TYPE_%s\n' % name.upper(), body)
+            self.assertIn('color = "%s"\n' % colour, body)
+            self.assertRegex(defines, r'(?m)^#define PORT_TYPE_%s "%s"$' % (name.upper(), name))
+        self.assertNotRegex(self.datatypes['_datatype'], r'(?m)^/datum/circuit_datatype/\w+$')
+        registry = proc_body(self.types, '/proc/wiremod_datatypes()')
+        self.assertIn('typesof(/datum/circuit_datatype) - /datum/circuit_datatype', registry)
+        self.assertIn('wiremod_datatypes()[type_key]', proc_body(self.types, '/proc/circuit_datatype_for('))
+        # Nothing outside the folder defines a datatype or lists them.
+        for path, source in self.sources.items():
+            if path.parent.name != 'datatypes':
+                self.assertNotRegex(source, r'(?m)^/datum/circuit_datatype', str(path))
+                self.assertNotIn('typesof(/datum/circuit_datatype', source)
+        # The editor data asks the datatype how a port looks; it names no colour
+        # and decides nothing by datatype.
+        view = proc_body(self.ui, '/proc/wiremod_ui_component_data(')
+        for field in ('"type" = input_port.datatype,', '"color" = handler.color,',
+                      '"current_data" = handler.ui_value(input_port.value)', 'handler.ui_data(input_port)',
+                      '"type" = output_port.datatype,', '"color" = output_port.datatype_handler.color,'):
+            self.assertIn(field, view)
+        self.assertNotIn('PORT_TYPE_', view)
+        for colour in set(colours.values()):
+            self.assertNotIn('"%s"' % colour, self.ui + self.port + self.variables)
+
+    def test_an_entity_is_only_ever_a_weak_reference(self):
+        entity = self.datatypes['entity']
+        # The handler takes a weak reference and nothing else; only a movable
+        # thing that still exists resolves.
+        self.assertIn('return wiremod_entity(value) ? value : null', proc_body(entity, '/proc/wiremod_safe_entity(value)'))
+        resolve = proc_body(entity, '/proc/wiremod_entity(value)')
+        self.assertLess(resolve.index('if(!istype(value, /datum/weakref))'), resolve.index('handle.resolve()'))
+        self.assertIn('var/atom/movable/target = handle.resolve()', resolve)
+        self.assertIn('return istype(target) ? target : null', resolve)
+        self.assertIn('return null', proc_body(entity, '/datum/circuit_datatype/entity/parse_manual(value)'))
+        joined = '\n'.join(self.sources.values())
+        # One place resolves a handle, and nothing builds or reads a ref by hand.
+        self.assertEqual(joined.count('.resolve()'), 1)
+        self.assertNotRegex(joined, r'\\ref|(?<![A-Z_])REF\(|\.reference\b')
+        # A port's value is written in one proc, which pairs listening for the
+        # thing's deletion with letting go of it.
+        self.assertEqual(len(re.findall(r'(?m)^\s*value = ', code(self.port))), 1)
+        hold = proc_body(self.port, '/datum/port/proc/hold(new_value)')
+        self.assertIn('value = new_value', hold)
+        self.assertLess(hold.index('destroyed_event?.unregister(watched, src, PROC_REF(entity_deleted))'), hold.index('value = new_value'))
+        self.assertLess(hold.index('value = new_value'), hold.index('destroyed_event?.register(watched, src, PROC_REF(entity_deleted))'))
+        self.assertEqual(joined.count('destroyed_event'), 2)
+        self.assertIn('hold(null)', proc_body(self.port, '/datum/port/Destroy()'))
+        # A deletion empties the port and runs nothing.
+        deleted = proc_body(self.port, '/datum/port/proc/entity_deleted(datum/source)')
+        self.assertIn('hold(null)', deleted)
+        for runner in ('queue_trigger', 'set_input', 'set_output', 'queue_input', 'trigger_component'):
+            self.assertNotIn(runner, deleted)
+        # Components hand a port WEAKREF(thing), never the thing.
         remote = read(MODULE / 'shell/compact_remote.dm')
         self.assertNotRegex(remote, r'set_output\(user\)')
-        self.assertIn('user.name', remote)
+        self.assertIn('user_output.set_output(WEAKREF(user))', remote)
+        self.assertIn('add_output_port("User", PORT_TYPE_ENTITY)', remote)
+        for path, source in self.sources.items():
+            for call in re.findall(r'set_(?:output|input)\(([^()]*(?:\([^()]*\))?[^()]*)\)', code(source)):
+                self.assertNotRegex(call, r'^(user|marked|target|here|there|src|usr|parent|loc)$', str(path))
+        # A player marks only what they hold or themselves: the request carries a
+        # flag, never the thing, and the names that reach chat are escaped.
+        marked = proc_body(self.ui, '/obj/item/integrated_circuit/proc/marked_entity(mob/user)')
+        self.assertIn('for(var/obj/item/held in list(user.get_active_hand(), user.get_inactive_hand()))', marked)
+        self.assertTrue(marked.rstrip().endswith('return user'))
+        self.assertNotIn('params', marked)
+        mark = proc_body(self.ui, '/obj/item/integrated_circuit/proc/mark_input(')
+        self.assertNotIn('params', mark)
+        self.assertLess(mark.index('if(!input_port.datatype_handler.takes_marked_entity)'), mark.index('marked_entity(user)'))
+        self.assertEqual(self.types.count('takes_marked_entity = TRUE'), 2)
+        for name in ('any', 'entity'):
+            self.assertIn('takes_marked_entity = TRUE', self.datatypes[name])
+        self.assertIn('var/datum/weakref/handle = WEAKREF(marked)', mark)
+        self.assertIn('input_port.set_input(handle)', mark)
+        self.assertIn('[html_encode(marked.name)]', mark)
+        self.assertNotRegex(mark, r'\[marked(\.name)?\]')
+        setting = proc_body(self.ui, '/obj/item/integrated_circuit/proc/act_set_component_input(')
+        self.assertLess(setting.index('input_port.connected_output'), setting.index('mark_input(input_port, user)'))
+        self.assertIn('if(!isnum(manual_value) && !istext(manual_value))', proc_body(self.ui, '/obj/item/integrated_circuit/proc/set_manual_input('))
+        # Every value shown in chat is escaped where it is printed.
+        self.assertIn('html_encode(wiremod_display_value(output_port.value))', self.ui)
+        self.assertEqual(self.ui.count('wiremod_display_value('), 2)
+        # Entities are not typed and not saved.
+        self.assertNotIn('PORT_TYPE_ENTITY', re.search(r'(?m)^#define CIRCUIT_USER_TYPES .*$', read(DEFINES)).group(0))
+        self.assertIn('should_save = FALSE', proc_body(self.types, '/datum/circuit_datatype\n'))
+
+    def test_every_component_says_what_it_does(self):
+        # The editor's info button shows desc; the base text says nothing useful.
+        base = re.search(r'desc = "([^"]+)"', proc_body(self.component, '/obj/item/circuit_component\n')).group(1)
+        available = re.findall(r'(?m)^\t\t(/obj/item/circuit_component/[\w/]+),$', proc_body(self.circuit, '/proc/wiremod_available_components()'))
+        described = available + ['/obj/item/circuit_component/variable/getter', '/obj/item/circuit_component/variable/setter',
+                                 '/obj/item/circuit_component/compact_remote']
+        joined = '\n'.join(self.sources.values())
+        for path in described:
+            body = type_body(joined, path)
+            match = re.search(r'(?m)^\tdesc = "([^"\n]+)"$', body)
+            self.assertIsNotNone(match, path)
+            text = match.group(1)
+            self.assertGreaterEqual(len(text), 40, path)
+            self.assertNotEqual(text, base, path)
+            self.assertTrue(text.endswith('.'), path)
+            # Plain text: nothing DM or HTML would read as markup, and no em dash.
+            self.assertNotRegex(text, r'[<>\[\]&\\]', path)
+            self.assertTrue(text.isascii(), path)
+        # The edge cases players asked about are written down.
+        for path, words in (('operator/arithmetic', 'Dividing by zero'), ('list_index', 'count from 1'),
+                            ('delay', 'from 1 to 600'), ('direction', 'more than 7 tiles')):
+            self.assertIn(words, type_body(joined, '/obj/item/circuit_component/' + path), path)
+        # The window is sent the description and one notice per port.
+        self.assertIn('"description" = component.desc,', self.ui)
+        self.assertIn('"examined_desc" = examined_component?.desc,', self.ui)
+        self.assertIn('"examined_notices" = examined_component ? wiremod_ui_component_notices(examined_component) : list(),', self.ui)
+        info = read(EDITOR / 'CircuitInfo.jsx')
+        for field in ('{desc}', 'val.content', 'val.color'):
+            self.assertIn(field, info)
+        notices = proc_body(self.ui, '/proc/wiremod_ui_component_notices(')
+        self.assertEqual(notices.count('"content" = '), 2)
+        self.assertEqual(notices.count('"color" = '), 2)
+        self.assertNotIn('"icon"', notices)
+
+    def test_popups_are_drawn_above_the_editor(self):
+        # tgui-core draws a Dropdown menu or Tooltip in a portal at the end of
+        # <body>. The editor is a fixed layer with its own z-index, so without
+        # the Floating stylesheet and a higher z-index the menu opened underneath
+        # it: the arrow flipped and nothing could be picked.
+        styles = read(ROOT / 'tgui/src/styles.scss')
+        self.assertIn("@use 'tgui-core/styles/components/Floating';", styles)
+        popup = int(re.search(r'(?m)^\.Floating \{ z-index: (\d+); \}$', styles).group(1))
+        layers = [int(value) for value in re.findall(r'z-index: (\d+)', styles + read(EDITOR / 'wiremod-compat.scss'))]
+        self.assertGreater(len(layers), 5)
+        self.assertEqual(popup, max(layers))
+        self.assertEqual(layers.count(popup), 1)
+        built = read(ROOT / 'UI/tgui/civ13-tgui.css')
+        self.assertRegex(built, r'\.Floating\{z-index:%d\}' % popup)
+        self.assertIn('.Floating--animated[data-transition=', built)
+        # Real clicks on the production bundle keep it that way.
+        smoke = read(ROOT / 'tgui/scripts/wiremod-browser-smoke.mjs')
+        for step in ("'.Dropdown__control'", 'Multiply', 'act/set_component_input', "'.CircuitInfo__Examined'", 'marked_atom'):
+            self.assertIn(step, smoke)
+        self.assertIn("wiremodSmoke(browser, js, css)", read(ROOT / 'tgui/scripts/browser-smoke.mjs'))
 
     def test_deleted_ports_and_components_release_each_other(self):
         destroy = proc_body(self.port, '/datum/port/Destroy()')
@@ -244,7 +405,7 @@ class WiremodSource(unittest.TestCase):
             return re.findall(r'(?m)^\t\t(/obj/item/circuit_component/[\w/]+)(?:,| = "[^"]{10,}",)$', proc_body(self.circuit, header))
         available = listed('/proc/wiremod_available_components()')
         unlisted = listed('/proc/wiremod_unlisted_components()')
-        self.assertGreaterEqual(len(available), 16)
+        self.assertGreaterEqual(len(available), 18)
         self.assertEqual(len(available), len(set(available)))
         self.assertEqual(len(unlisted), len(set(unlisted)))
         self.assertEqual(set(available) & set(unlisted), set())
@@ -277,6 +438,9 @@ class WiremodSource(unittest.TestCase):
             self.assertEqual(seen[('/obj/item/integrated_circuit', name)], core / home, name)
         self.assertEqual(seen[('/datum/circuit_variable', 'set_value')], core / 'variables.dm')
         self.assertEqual(seen[('/obj/item/circuit_component/operator', 'run_operation')], core / 'operator.dm')
+        for name in ('set_value', 'hold', 'entity_deleted'):
+            self.assertEqual(seen[('/datum/port', name)], core / 'port.dm', name)
+        self.assertEqual(seen[('/datum/circuit_datatype', 'convert')], MODULE / 'datatypes/_datatype.dm')
         self.assertFalse('nanomanager' in self.circuit)
         # The circuit lets go of a component through a hook, not by knowing its type.
         removal = proc_body(self.circuit, '/obj/item/integrated_circuit/proc/remove_component(')
@@ -287,13 +451,20 @@ class WiremodSource(unittest.TestCase):
         joined = '\n'.join(self.sources.values())
         # One list of truth words, one list of the types a player may set.
         self.assertEqual(joined.count('"true"'), 1)
-        self.assertIn('"true" = TRUE', proc_body(self.port, '/proc/wiremod_parse_boolean('))
+        self.assertIn('"true" = TRUE', proc_body(self.types, '/proc/wiremod_parse_boolean('))
         self.assertNotRegex(joined, r'lowertext\(\w+\) in list')
         self.assertNotIn('list(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN', joined)
         self.assertRegex(read(DEFINES), r'(?m)^#define CIRCUIT_USER_TYPES list\(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY\)$')
-        self.assertEqual(joined.count('CIRCUIT_USER_TYPES'), 3)
+        self.assertRegex(read(DEFINES), r'(?m)^#define CIRCUIT_VARIABLE_TYPES list\(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY, PORT_TYPE_ENTITY\)$')
+        # A typed value goes to a port of a listed type, or to an option port,
+        # whose own choices are the check.
+        self.assertEqual(joined.count('CIRCUIT_USER_TYPES'), 1)
+        self.assertIn('else if(("input" in params) && (input_port.options || (input_port.datatype in CIRCUIT_USER_TYPES)))', self.ui)
+        self.assertEqual(joined.count('CIRCUIT_VARIABLE_TYPES'), 2)
+        self.assertIn('"global_basic_types" = CIRCUIT_VARIABLE_TYPES,', self.ui)
+        self.assertIn('!(variable_datatype in CIRCUIT_VARIABLE_TYPES)', self.ui)
         for user in ('/datum/circuit_datatype/boolean/convert(', '/datum/circuit_datatype/boolean/parse_manual('):
-            self.assertIn('wiremod_parse_boolean(value)', proc_body(self.port, user))
+            self.assertIn('wiremod_parse_boolean(value)', proc_body(self.types, user))
         self.assertIn('wiremod_parse_boolean(value)', proc_body(self.ui, '/proc/wiremod_ui_flag('))
         manual = proc_body(self.ui, '/obj/item/integrated_circuit/proc/set_manual_input(')
         self.assertIn('input_port.datatype_handler.parse_manual(manual_value)', manual)
@@ -310,14 +481,14 @@ class WiremodSource(unittest.TestCase):
         receive = proc_body(self.port, '/datum/port/input/proc/receive_from(datum/port/output/output)')
         self.assertIn('if(islist(output.value) && !options && datatype_handler.keeps_port_lists)', receive)
         self.assertIn('set_value(output.value)', receive)
-        self.assertEqual(self.port.count('value = output.value'), 1)
-        self.assertEqual(self.port.count('keeps_port_lists = TRUE'), 2)
+        self.assertEqual(self.port.count('hold(output.value)'), 1)
+        self.assertEqual(self.types.count('keeps_port_lists = TRUE'), 2)
         for handler in ('any', 'list'):
-            self.assertIn('keeps_port_lists = TRUE', proc_body(self.port, '/datum/circuit_datatype/%s\n' % handler))
-        self.assertIn('var/keeps_port_lists = FALSE', self.port)
+            self.assertIn('keeps_port_lists = TRUE', proc_body(self.types, '/datum/circuit_datatype/%s\n' % handler))
+        self.assertIn('var/keeps_port_lists = FALSE', self.types)
         self.assertEqual(self.port.count('receive_from('), 3)
         self.assertIn('set_value(new_value)', proc_body(self.port, '/datum/port/output/proc/set_output('))
-        self.assertIn('var/list/result = list()', proc_body(self.port, '/proc/wiremod_safe_list('))
+        self.assertIn('var/list/result = list()', proc_body(self.types, '/proc/wiremod_safe_list('))
         # No component changes a port's list in place or writes a port's value itself.
         for path, source in self.sources.items():
             text = code(source)
@@ -346,6 +517,7 @@ class WiremodSource(unittest.TestCase):
         base = read(MODULE / 'core/operator.dm')
         ports = proc_body(base, '/obj/item/circuit_component/operator/populate_ports()')
         self.assertEqual(re.findall(r'add_(?:input|output)_port\("(\w+)"', ports), ['A', 'B', 'Operation', 'Result'])
+        self.assertIn('add_input_port("Operation", PORT_TYPE_OPTION,', ports)
         self.assertIn('default = operations[1], options = operations', ports)
         operators = {}
         for path, source in self.sources.items():
