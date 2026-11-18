@@ -110,3 +110,13 @@
 #define BOAT_DRAG_EASY 0.75   // Afloat, on rollers, or with hands enough.
 #define BOAT_DRAG_LIGHT 2
 #define BOAT_DRAG_HEAVY 6
+
+// Small boat upkeep (naval/small_boat_upkeep.dm). Wear and soak run 0 to 100.
+#define BOAT_WEAR_FRESH 0.05     // Per tile travelled on fresh water; salt doubles it.
+#define BOAT_LASH_SLACK 50       // Lashings this worn slow her.
+#define BOAT_LASH_LOOSE 75       // And this worn let water in.
+#define BOAT_SOAK_HEAVY 50
+#define BOAT_SOAK_LOGGED 80
+#define BOAT_DRESSING_TILES 600  // Tiles a dressing of fat or tar lasts.
+#define BOAT_DRY_PER_MINUTE 10   // Soak a hull loses for each minute ashore.
+#define BOAT_RAFT_NEW_WEAR 40    // A new raft is bound with bark and vines, not rope.

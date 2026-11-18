@@ -1711,6 +1711,7 @@
 #include "code\modules\naval\hull_watch.dm"
 #include "code\modules\naval\boat_hauling.dm"
 #include "code\modules\naval\outrigger_canoe.dm"
+#include "code\modules\naval\small_boat_upkeep.dm"
 #include "code\modules\naval\small_craft_leaks.dm"
 #include "code\modules\naval\hull_push.dm"
 #include "code\modules\naval\island_claim.dm"

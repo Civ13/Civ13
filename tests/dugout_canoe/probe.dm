@@ -48,6 +48,7 @@ var/canoe_runtime_error = FALSE
 		canoe_water_checks()
 		canoe_outrigger_checks()
 		canoe_hauling_checks()
+		canoe_upkeep_checks()
 	catch(var/exception/e)
 		canoe_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = canoe_failures, "runtime_error" = canoe_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -268,3 +269,78 @@ var/canoe_runtime_error = FALSE
 	C.ontop_o += new /obj/structure/closet/crate(C.loc)
 	canoe_check(!C.haul_refusal(), "afloat, cargo does not stop a tow")
 	canoe_check(findtext(D.haul_text(), "light enough") && findtext(R.small_craft_text(), "light enough"), "a look says how she drags")
+
+// Upkeep from use (code/modules/naval/small_boat_upkeep.dm).
+/proc/canoe_upkeep_checks()
+	map.windspeedvar = 1
+	var/obj/structure/vehicle/raft/R = new(locate(11, 25, 1))
+	var/obj/structure/vehicle/raft/dugout/D = new(locate(11, 26, 1))
+	var/obj/structure/vehicle/raft/dugout/outrigger/C = new(locate(11, 27, 1))
+	canoe_check(R.lash_wear == BOAT_RAFT_NEW_WEAR && !D.lash_wear && !C.lash_wear, "a new raft is part worn, a canoe is tight")
+	canoe_check(R.has_lashings() && !D.has_lashings() && C.has_lashings() && !R.soaks() && D.soaks() && C.soaks(), "who has lashings and who soaks")
+	canoe_check(!R.wear_delay() && R.step_delay(NORTH) == 12 && !R.leak_chance(), "a new raft is not slowed and is tight")
+	// Fresh water wears half as fast as salt.
+	R.boat_wear()
+	canoe_check(abs(R.lash_wear - (BOAT_RAFT_NEW_WEAR + BOAT_WEAR_FRESH)) < 0.001, "a fresh water tile wears the lashings a little")
+	R.forceMove(locate(13, 8, 1))
+	R.lash_wear = BOAT_RAFT_NEW_WEAR
+	R.boat_wear()
+	canoe_check(abs(R.lash_wear - (BOAT_RAFT_NEW_WEAR + BOAT_WEAR_FRESH * 2)) < 0.001, "a salt water tile wears twice as much")
+	R.lash_wear = BOAT_LASH_SLACK
+	canoe_check(R.wear_delay() == 2 && R.step_delay(NORTH) == 14 && !R.leak_chance(), "slack lashings slow her")
+	R.lash_wear = BOAT_LASH_LOOSE
+	canoe_check(R.leak_chance() == 30, "loose lashings let water in")
+	canoe_check(findtext(R.upkeep_text(), "loose"), "a look says the lashings are loose")
+	R.lash_wear = 100
+	R.boat_wear()
+	canoe_check(R.lash_wear == 100 && !QDELETED(R), "she never comes apart")
+	// A dugout hull soaks; dressing halves it and wears off.
+	D.boat_wear()
+	canoe_check(abs(D.soak - BOAT_WEAR_FRESH) < 0.001 && !D.lash_wear, "a dugout soaks and has no lashings to wear")
+	D.soak = 0
+	D.dressing = 2
+	D.boat_wear()
+	canoe_check(abs(D.soak - BOAT_WEAR_FRESH / 2) < 0.001 && D.dressing == 1, "a dressed hull soaks half as fast")
+	D.boat_wear()
+	canoe_check(!D.dressing, "the dressing wears off")
+	D.soak = BOAT_SOAK_HEAVY
+	canoe_check(D.wear_delay() == 1 && D.step_delay(NORTH) == 15, "a heavy hull is a little slower")
+	D.soak = BOAT_SOAK_LOGGED
+	canoe_check(D.wear_delay() == 3, "a waterlogged one much slower")
+	// Hauled out she dries by the minute.
+	D.pulledby = null
+	D.Move(locate(9, 26, 1), WEST)
+	canoe_check(D.x == 9 && !isnull(D.ashore_since), "hauled ashore she starts to dry")
+	D.ashore_since = world.time - 3 * 600
+	D.dry_out()
+	canoe_check(abs(D.soak - (BOAT_SOAK_LOGGED - 3 * BOAT_DRY_PER_MINUTE)) < 0.5, "three minutes ashore take 30 off her soak ([D.soak])")
+	D.ashore_since = world.time - 60 * 600
+	D.Move(locate(10, 26, 1), EAST)
+	canoe_check(D.x == 10 && !D.soak && isnull(D.ashore_since), "an hour ashore and she launches dry")
+	// The outrigger: both kinds of wear, and her sail.
+	C.lash_wear = BOAT_LASH_SLACK
+	C.soak = BOAT_SOAK_HEAVY
+	canoe_check(C.step_delay(NORTH) == 13 + 3, "an outrigger pays for slack lashings and a heavy hull")
+	C.lash_wear = 0
+	C.soak = 0
+	C.mast = TRUE
+	C.sail_set = TRUE
+	C.forceMove(locate(13, 8, 1))
+	map.windspeedvar = 2
+	for (var/i in 1 to 200)
+		C.sail_weather()
+	canoe_check(!C.sail_torn, "a moderate wind never tears the sail")
+	map.windspeedvar = 4
+	C.sail_set = FALSE
+	for (var/i in 1 to 200)
+		C.sail_weather()
+	canoe_check(!C.sail_torn, "a furled sail is safe in a gale")
+	C.sail_set = TRUE
+	for (var/i in 1 to 2000)
+		C.sail_weather()
+	canoe_check(C.sail_torn && C.sail_look == "mast_torn[C.dir]", "a sail left set in a gale tears, and shows it")
+	canoe_check(C.step_delay(NORTH) == 13, "a torn sail drives nothing")
+	canoe_check(findtext(C.upkeep_text(), "torn"), "a look says the sail is torn")
+	C.drop_sail(locate(13, 9, 1))
+	canoe_check(!C.sail_torn, "striking the mast clears the tear")
+	map.windspeedvar = 1
