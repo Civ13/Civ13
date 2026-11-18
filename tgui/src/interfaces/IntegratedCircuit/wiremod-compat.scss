@@ -1,0 +1,73 @@
+// Civ13 layout for tgstation's circuit editor. The editor measures pointer
+// positions against a 32px title bar (ABSOLUTE_Y_OFFSET in constants.ts), so the
+// toolbar is that bar and the canvas starts 32px down; otherwise every wire is
+// drawn one bar too high.
+.wiremod-window {
+  background: var(--color-base, #211c16);
+  inset: 0;
+  overflow: hidden;
+  position: fixed;
+  z-index: 20;
+}
+
+.wiremod-window__buttons {
+  align-items: center;
+  background: var(--civ-panel, #30271e);
+  border-bottom: 1px solid var(--civ-line, #66513b);
+  box-sizing: border-box;
+  display: flex;
+  height: 32px;
+  left: 0;
+  padding: 0 8px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+}
+
+.wiremod-window__content {
+  bottom: 0;
+  left: 0;
+  min-height: 0;
+  position: absolute;
+  right: 0;
+  top: 32px;
+}
+
+// The editor's buttons are icon-only and name Font Awesome icons. Civ13 ships
+// no icon font, so each icon the editor uses is drawn as a text glyph here.
+// The glyphs stay as CSS escapes: a literal non-ASCII character makes Sass put
+// a byte-order mark at the top of its output, which lands after the bundle's
+// licence banner and silently voids the first rule (tgui-core's :root values).
+.wiremod-window .Icon {
+  display: inline-block;
+  font-family: 'Segoe UI Symbol', 'DejaVu Sans', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  min-width: 1em;
+  text-align: center;
+}
+
+.wiremod-window .Icon.fa-cog::before { content: #{'"\\2699"'}; }
+.wiremod-window .Icon.fa-plus::before { content: '+'; }
+.wiremod-window .Icon.fa-minus::before { content: #{'"\\2212"'}; }
+.wiremod-window .Icon.fa-th-large::before { content: #{'"\\25A6"'}; }
+.wiremod-window .Icon.fa-times::before { content: #{'"\\00D7"'}; }
+.wiremod-window .Icon.fa-info::before { content: 'i'; }
+.wiremod-window .Icon.fa-upload::before { content: #{'"\\2191"'}; }
+.wiremod-window .Icon.fa-pen::before { content: #{'"\\270E"'}; }
+.wiremod-window .Icon.fa-save::before { content: #{'"\\2913"'}; }
+.wiremod-window .Icon.fa-book-open::before { content: #{'"\\2261"'}; }
+.wiremod-window .Icon.fa-list-ol::before { content: #{'"\\2261"'}; }
+.wiremod-window .Icon.fa-table-list::before { content: #{'"\\2637"'}; }
+.wiremod-window .Icon.fa-chevron-down::before { content: #{'"\\25BE"'}; }
+.wiremod-window .Icon.fa-chevron-left::before { content: #{'"\\25C2"'}; }
+.wiremod-window .Icon.fa-chevron-right::before { content: #{'"\\25B8"'}; }
+
+// A wire ends where this marker sits. Upstream leaves it on the port's top left
+// corner; here it is the port's centre.
+.wiremod-window .ObjectComponent__PortPos {
+  height: 0;
+  inset: 50% auto auto 50%;
+  width: 0;
+}

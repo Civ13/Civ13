@@ -13,6 +13,11 @@ var/global/list/crafting_atlas_admin_only = list(
 	/obj/item/weapon/book/divine = "A god's own book. Hidden divine mechanic; only an admin verb writes the original.",
 	/obj/item/cursedtreasure = "Cursed loot. Its effect is a discovery for players.",
 	/obj/item/weapon/moldy_ritual = "Event summoning scroll. Its effect is a discovery for players.",
+	// Integrated circuits, code/modules/wiremod/: no recipe, research or map placement yet.
+	// Take these out when players can make them.
+	/obj/item/integrated_circuit = "Admin spawn only; players cannot make it yet.",
+	/obj/item/circuit_component = "Admin spawn only; players cannot make it yet.",
+	/obj/item/compact_remote = "Admin spawn only; players cannot make it yet.",
 	// Magic, code/modules/magic/: anything not available on Nomads stays out of the public atlas.
 	// The atlas build fails if a magic type is not covered here.
 	/mob/living/simple_animal/golden_gnat = "Wizard Boy map only; not available on Nomads.",
