@@ -545,7 +545,9 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('/obj/structure/workshop_machine/shear_legs/proc/sling_reach()\n\treturn 1', lifting)
         self.assertEqual(lifting.count('get_dist(src, dropping) > sling_reach()'), 2)
         self.assertIn(rail + '/sling_reach()\n\treturn reach', crane)
-        self.assertIn('if (P.car_id == mine.car_id || P.density)', crane)
+        goods = (ROOT / 'code/modules/1713/train_goods.dm').read_text(encoding='utf-8')
+        self.assertIn('return train_crane_swings(src, load, choices, mine.car_id)', crane)
+        self.assertIn('if ((own_car && P.car_id == own_car) || P.density || (on && on.car_id == P.car_id))', goods)
         self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', crane))
         self.assertIn('RECIPE: /material/iron/,crane car kit,/obj/structure/train_car_kit/crane_car,40,', RECIPES)
         self.assertIn('RECIPE: /material/iron/,rail crane,%s,20,' % rail, RECIPES)
@@ -728,6 +730,39 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for state in ('track_worn', 'track_bad'):
             self.assertIn('"%s"' % state, wear)
             self.assertIn(state, states)
+
+    def test_freight_handling_is_worked_by_players(self):
+        goods = (ROOT / 'code/modules/1713/train_goods.dm').read_text(encoding='utf-8')
+        crane = (ROOT / 'code/modules/1713/train_crane.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_goods.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the pen is asked first by the train's own attackby, not overridden
+        servicing = (ROOT / 'code/modules/1713/train_servicing.dm').read_text(encoding='utf-8')
+        self.assertIn('card_use(', servicing)
+        self.assertNotIn('/obj/structure/trains/attackby', goods)
+        self.assertIn('card_line()', (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8'))
+        self.assertIn('car.card_text()', (ROOT / 'code/modules/1713/train_conductor.dm').read_text(encoding='utf-8'))
+        # both cranes share one set of swings
+        self.assertIn('train_crane_swings(src, load, ..(), null)', goods)
+        self.assertIn('train_crane_swings(src, load, choices, mine.car_id)', crane)
+        # yard fixtures stay put under a train
+        self.assertIn('/obj/structure/train_livestock_ramp', PLATFORMS)
+        # nothing runs on a timer and nothing is bought or sold
+        for word in ('spawn(', 'sleep(', 'while (true', 'process(', 'world.time', 'money', 'coin'):
+            self.assertNotIn(word, goods.split('// Nothing here buys or sells', 1)[1])
+        for name, value in (('LOADING_STAGE_MAX', '3000'), ('LOADING_STAGE_TIME', '40'), ('LIVESTOCK_RAMP_REACH', '3'),
+                            ('LIVESTOCK_RAMP_TIME', '40'), ('TRAIN_CARD_LENGTH', '40')):
+            self.assertRegex(goods, r'#define %s %s\b' % (name, re.escape(value)))
+            self.assertIn('#undef ' + name, goods)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        for path in ('/obj/structure/rail_depot/loading_stage', '/obj/structure/workshop_machine/shear_legs/crane/goods',
+                     '/obj/structure/train_livestock_ramp'):
+            self.assertIn(',%s,' % path, recipes)
+            self.assertIn('"%s" = "rail_steam"' % path, nodes)
+        yard = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        depot = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/rail_water.dmi')))
+        self.assertLessEqual({'goods_crane', 'goods_crane_haul', 'livestock_ramp'}, yard)
+        self.assertLessEqual({'loading_stage_empty', 'loading_stage_coal', 'loading_stage_ore', 'loading_stage_sand'}, depot)
 
     def test_track_works_buffer_stops_and_crossings(self):
         works = (ROOT / 'code/modules/1713/train_trackworks.dm').read_text(encoding='utf-8')

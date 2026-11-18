@@ -221,6 +221,9 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 	return ..()
 
 /obj/structure/trains/attackby(obj/item/W as obj, mob/user as mob)
+	// A pen writes the destination card (train_goods.dm).
+	if (card_use(W, user))
+		return TRUE
 	if (service_use(W, user))
 		return TRUE
 	return ..()
