@@ -183,6 +183,12 @@ var/list/open_air_probe_log = list()
 	open_air_view_link_around(3, 11, 2, 0, 0)
 	open_air_probe_check(open_air_probe_view(fresh), "other_allocation_links")
 	building_allocating_z = 0
+	// A viewer moving east is linked further east than one standing still.
+	var/turf/sky/building/ahead = locate(11, 11, 3)
+	open_air_view_link_around(3, 6, 11, 3, 0)
+	open_air_probe_check(!open_air_probe_view(ahead), "lead_not_without_movement")
+	open_air_view_link_around(3, 6, 11, 3, 0, 2, 0)
+	open_air_probe_check(open_air_probe_view(ahead) && !open_air_probe_view(locate(1, 11, 3)), "lead_links_ahead_only")
 	// Lighting is never shown second-hand; everything else counts as the cell.
 	var/atom/movable/lighting_overlay/L = /atom/movable/lighting_overlay
 	open_air_probe_check(initial(L.vis_flags) == VIS_HIDE, "lighting_hidden")

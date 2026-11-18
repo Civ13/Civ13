@@ -42,6 +42,10 @@
 // A viewer standing still is rescanned this often, for floors built or taken
 // away over open air.
 #define OPEN_AIR_VIEW_RESCAN 5 SECONDS
+// A moving viewer is linked further ahead by as many tiles as it moved since
+// the last scan, at most this many, so running or a flying ghost does not
+// reach the sky at the edge of the screen before the next scan.
+#define OPEN_AIR_VIEW_LEAD 10
 // Under the ground of the viewer's level (2) and under floors over open air
 // (1.99), over anything hidden under a floor. The open-air cell's own sky
 // sprite is taken off while it shows the level below.
@@ -267,6 +271,12 @@ var/global/open_air_view_any = FALSE
 	// resync until the viewer moves or the rescan time comes.
 	if (centre == open_air_view_centre && !pan_x && !pan_y && !open_air_view_in_sight && world.time < open_air_view_scanned_at + OPEN_AIR_VIEW_RESCAN)
 		return
+	var/turf/last = open_air_view_centre
+	var/lead_x = 0
+	var/lead_y = 0
+	if (last && last.z == centre.z)
+		lead_x = clamp(centre.x - last.x, -OPEN_AIR_VIEW_LEAD, OPEN_AIR_VIEW_LEAD)
+		lead_y = clamp(centre.y - last.y, -OPEN_AIR_VIEW_LEAD, OPEN_AIR_VIEW_LEAD)
 	open_air_view_centre = centre
 	open_air_view_scanned_at = world.time
 	var/list/size = getviewsize(view)
@@ -274,13 +284,14 @@ var/global/open_air_view_any = FALSE
 	var/ry = round(size[2] / 2) + OPEN_AIR_VIEW_MARGIN + pan_y
 	var/cx = centre.x + round(pixel_x / world.icon_size)
 	var/cy = centre.y + round(pixel_y / world.icon_size)
-	open_air_view_in_sight = open_air_view_link_around(centre.z, cx, cy, rx, ry)
+	open_air_view_in_sight = open_air_view_link_around(centre.z, cx, cy, rx, ry, lead_x, lead_y)
 
 // Links every open-air cell in the box around (cx, cy) on level z and resyncs
-// the views already there. Returns how many cells show the level below.
-/proc/open_air_view_link_around(z, cx, cy, rx, ry)
-	var/turf/low = locate(max(1, cx - rx), max(1, cy - ry), z)
-	var/turf/high = locate(min(world.maxx, cx + rx), min(world.maxy, cy + ry), z)
+// the views already there; the box reaches lead_x/lead_y tiles further on the
+// side the viewer is moving towards. Returns how many cells show the level below.
+/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)
+	var/turf/low = locate(max(1, cx - rx + min(0, lead_x)), max(1, cy - ry + min(0, lead_y)), z)
+	var/turf/high = locate(min(world.maxx, cx + rx + max(0, lead_x)), min(world.maxy, cy + ry + max(0, lead_y)), z)
 	if (!low || !high)
 		return 0
 	// A level being added is not ready to show or be shown; the other levels
@@ -323,4 +334,5 @@ var/global/list/open_air_views_fixed = list()
 
 #undef OPEN_AIR_VIEW_MARGIN
 #undef OPEN_AIR_VIEW_RESCAN
+#undef OPEN_AIR_VIEW_LEAD
 #undef OPEN_AIR_VIEW_LAYER
