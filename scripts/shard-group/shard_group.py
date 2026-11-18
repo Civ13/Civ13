@@ -816,7 +816,11 @@ class RegionHost(Host):
             answer['stage_cleared'] = True
         return answer
 
-    def request_stage(self):
+    def request_stage(self, urgent=False):
+        """Build the latest revision beside the running world. urgent: a person is waiting on
+        it (Save, update and restart, the in-game button, Build update), so it takes the group's
+        next compile ahead of the host service's background stages; a stage already queued in
+        the background is moved up the same way."""
         if not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
         self.check_disk('staging checks out and compiles a whole build')
@@ -829,10 +833,14 @@ class RegionHost(Host):
         try:
             descriptor = os.open(self.stage_lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except FileExistsError:
+            if urgent:
+                self.mark_stage_urgent()
             raise Refused('a build is already being staged')
         operation = secrets.token_hex(16)
         with os.fdopen(descriptor, 'w') as handle:
             handle.write(operation)
+        if urgent:
+            self.mark_stage_urgent()
         self.write_json(self.stage_file, {'operation': operation, 'phase': 'accepted', 'error': None,
                                           'updated': int(self.platform.now())})
         self.platform.detach([sys.executable, '-I', '-B', str(self.script), '--config', self.config['_path'],
@@ -866,9 +874,55 @@ class RegionHost(Host):
 
     @contextlib.contextmanager
     def compile_slot(self, wait_seconds=7200):
-        """One staged compile per group at a time, so a deploy never compiles every region at once."""
-        with self.group_slot('compile.lock', 'compile', self.stage_record, wait_seconds):
+        """One staged compile per group at a time, so a deploy never compiles every region at once.
+        A background stage lets a person's stage of another region go first."""
+        def yield_to_urgent():
+            return not self.urgent_marker().exists() and self.urgent_stage_waiting()
+        with self.group_slot('compile.lock', 'compile', self.stage_record, wait_seconds, yield_to=yield_to_urgent):
             yield
+
+    # Val (2026-11-18): Save, update and restart sat a long time before anything happened. The
+    # host service stages every region on each master commit, one compile at a time (about two
+    # to three minutes each), so the region a person was updating queued behind up to a dozen
+    # background builds. A stage a person waits on now marks itself in .staging/urgent, and
+    # background stages wait while one is queued.
+    def urgent_dir(self):
+        return self.repo.parent / '.staging' / 'urgent'
+
+    def urgent_marker(self):
+        return self.urgent_dir() / self.config['region']
+
+    def mark_stage_urgent(self):
+        marker = self.urgent_marker()
+        try:
+            marker.parent.mkdir(parents=True, exist_ok=True)
+            marker.write_text(str(self.stage_lock), encoding='utf-8')
+        except OSError:
+            pass  # only the order of the queue depends on it
+
+    def urgent_stage_waiting(self):
+        """Whether another region has a stage a person is waiting on. A marker whose stage has
+        ended (its stage.lock is gone) is stale and removed."""
+        try:
+            entries = list(self.urgent_dir().iterdir())
+        except OSError:
+            return False
+        waiting = False
+        for entry in entries:
+            if entry.name == self.config['region']:
+                continue
+            try:
+                lock = Path(entry.read_text(encoding='utf-8').strip())
+            except OSError:
+                continue  # being written or removed right now
+            if lock.name == 'stage.lock' and lock.exists():
+                waiting = True
+                continue
+            try:
+                entry.unlink()
+            except OSError:
+                pass
+        return waiting
 
     @contextlib.contextmanager
     def handover_slot(self, wait_seconds=7200):
@@ -877,12 +931,20 @@ class RegionHost(Host):
             yield
 
     @contextlib.contextmanager
-    def group_slot(self, name, what, record, wait_seconds):
+    def group_slot(self, name, what, record, wait_seconds, yield_to=None):
+        """Hold one of the group's slots (a lock file in .staging). yield_to: while it returns
+        True this waiter lets others take the slot first; that wait does not count against
+        wait_seconds, since the stages it waits for end on their own."""
         lock = self.repo.parent / '.staging' / name
         lock.parent.mkdir(parents=True, exist_ok=True)
         deadline = self.platform.now() + wait_seconds
         empty_since = None
         while True:
+            if yield_to is not None and yield_to():
+                record(phase='waiting for a requested build of another region')
+                self.platform.sleep(10)
+                deadline = max(deadline, self.platform.now() + wait_seconds)
+                continue
             try:
                 descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 break
@@ -965,6 +1027,23 @@ class RegionHost(Host):
             region = next(r for r in group['regions'] if r['id'] == self.config['region'])
             path = self.stage_dir()
             with self.compile_slot():
+                # The slot can take a while to come round, and master often moves meanwhile
+                # (deploy.bat pulls before it stages, so a stage the host service queued earlier
+                # would otherwise build the revision of its queueing and hand over onto that).
+                # Build what the group revision names now; this reads the local refs only.
+                try:
+                    newest = self.git_text(['rev-parse', group['revision']], group['repository'])
+                except RuntimeError:
+                    newest = latest
+                if HEX40.match(newest or '') and newest != latest:
+                    latest = newest
+                    if self.built_revision() == latest:
+                        self.stage_record(phase='current', revision=latest)
+                        return
+                    if self.staged_revision() == latest:
+                        self.stage_record(phase='ready', revision=latest)
+                        ready = True
+                        return
                 if not (path / '.git').exists():
                     if path.exists() and any(path.iterdir()):
                         raise RuntimeError('%s exists and is not a staging worktree' % path)
@@ -992,6 +1071,7 @@ class RegionHost(Host):
         finally:
             install = self.install_marker.exists()
             self.install_marker.unlink(missing_ok=True)
+            self.urgent_marker().unlink(missing_ok=True)
             self.stage_lock.unlink(missing_ok=True)
             if install and ready:
                 self.install_after_stage()
@@ -1136,7 +1216,7 @@ class RegionHost(Host):
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.install_marker.write_text('update\n', encoding='utf-8')
         try:
-            return dict(self.request_stage(), state='asleep')
+            return dict(self.request_stage(urgent=True), state='asleep')
         except Refused as refusal:
             if 'already being staged' in str(refusal):
                 # The running stage installs it when it finishes (it reads the marker last).
@@ -1246,7 +1326,7 @@ class RegionHost(Host):
             self.record(revision=latest)
             return
         try:
-            self.request_stage()
+            self.request_stage(urgent=True)
         except Refused as refusal:
             if 'already being staged' not in str(refusal):
                 raise RuntimeError('%s; the world was left running' % refusal)
@@ -3498,8 +3578,8 @@ def main(argv=None):
                         host.wait_for_byond()
                     if args.action == 'force-restart':
                         accepted[region['id']] = host.force_restart()
-                    elif args.action == 'stage':
-                        accepted[region['id']] = host.request_stage()
+                    elif args.action == 'stage':  # deploy.bat and the launcher's Build update: a person waits
+                        accepted[region['id']] = host.request_stage(urgent=True)
                     else:
                         accepted[region['id']] = host.request(args.action)
                 except Refused as refusal:

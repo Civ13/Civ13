@@ -433,6 +433,13 @@ take turns (`<root>/.staging/compile.lock`), so a deploy never compiles every
 region at once. Progress is in `data/shard-host/stage.json` (`phase` is
 `ready`, `current` or `failed` with `error`) and `status` shows it under
 `stage`, with `pending` true while a ready build is newer than the running one.
+A stage a person waits on (`stage`, deploy.bat, the in-game Save, update and
+restart, Update on an asleep region) writes `<root>/.staging/urgent/<id>`, and
+the host service's background stages let it take the next compile first
+(`waiting for a requested build of another region`); a background stage of the
+same region already in the queue is moved up the same way. When its turn comes
+a stage builds what the group `revision` names then (local refs, no fetch), so
+a stage queued before a pull never builds the older revision.
 A plain `update` of a stopped region takes the same compile slot at the same
 priority, and runs DreamMaker once more when it stops without reporting any
 result (killed or crashed while loading), so updating every region at once
