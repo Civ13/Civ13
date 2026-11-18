@@ -164,6 +164,8 @@ var/global/datum/bug_report_queue/bug_reports = new
 	last_report_at[key] = world.time
 	save()
 	log_admin("BUG REPORT #[R.id] from [who]: [R.title]")
+	// Staff in Discord hear about it too; CivilizationBot pings @Admin when no staff are online.
+	webhook_send_asay(who, bug_report_discord_line(time_stamp(), map ? map.ID : null, R.id, who, R.title, R.screenshot), "bugreport")
 	var/notice = "<span class='notice'><b>Bug report #[R.id]</b> from [html_encode(who)]: [html_encode(R.title)] (<a href='?src=\ref[src];bugreport=panel'>review</a>)</span>"
 	for (var/client/X in admins)
 		if (X.holder && (R_ADMIN & X.holder.rights))

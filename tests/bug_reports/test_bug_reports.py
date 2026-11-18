@@ -114,6 +114,19 @@ class BugReportSafety(unittest.TestCase):
         self.assertIn('R.status_code = L["status_code"]', read('code/datums/http.dm'))
 
 
+class BugReportDiscord(unittest.TestCase):
+    def test_new_report_notifies_staff_channel(self):
+        add = body(read(QUEUE), '/datum/bug_report_queue/proc/add_from(', '\n/proc/')
+        self.assertIn('webhook_send_asay(who, bug_report_discord_line(', add)
+        self.assertIn('"bugreport")', add)  # not "asay", so the bot can ping when no staff are on
+        self.assertLess(add.index('save()'), add.index('webhook_send_asay('))
+
+    def test_player_text_is_defused(self):
+        line = body(read(FORMAT), '/proc/bug_report_discord_line(', '\n\n')
+        self.assertIn('bug_report_cell(who)', line)
+        self.assertIn('bug_report_cell(title)', line)
+
+
 class BugReportScreenshots(unittest.TestCase):
     def test_compiled_after_the_queue(self):
         dme = read('civ13.dme')
