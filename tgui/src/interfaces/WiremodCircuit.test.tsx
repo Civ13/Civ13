@@ -18,7 +18,7 @@ const ui = (data: Data = {}): ScreenProps => ({
     screen_y: 0,
     component_catalog: [
       {
-        type: '/obj/item/circuit_component/arithmetic',
+        type: '/obj/item/circuit_component/operator/arithmetic',
         name: 'Arithmetic',
         description: 'Performs arithmetic.',
         category: 'Math',
@@ -31,7 +31,7 @@ const ui = (data: Data = {}): ScreenProps => ({
         // Ids are the circuit's own and differ from the place in the list:
         // these two are what is left after other components were removed.
         id: 4,
-        type: '/obj/item/circuit_component/arithmetic',
+        type: '/obj/item/circuit_component/operator/arithmetic',
         name: 'Arithmetic',
         description: 'Performs arithmetic.',
         category: 'Math',
@@ -50,7 +50,7 @@ const ui = (data: Data = {}): ScreenProps => ({
       },
       {
         id: 9,
-        type: '/obj/item/circuit_component/arithmetic',
+        type: '/obj/item/circuit_component/operator/arithmetic',
         name: 'Arithmetic',
         description: 'Performs arithmetic.',
         category: 'Math',
@@ -144,7 +144,7 @@ describe('tgstation Wiremod circuit editor', () => {
       components: [
         {
           id: 7,
-          type: '/obj/item/circuit_component/arithmetic',
+          type: '/obj/item/circuit_component/operator/arithmetic',
           name: 'Arithmetic',
           description: 'Performs arithmetic.',
           category: 'Math',
@@ -188,7 +188,7 @@ describe('tgstation Wiremod circuit editor', () => {
       components: [
         {
           id: 1,
-          type: '/obj/item/circuit_component/arithmetic',
+          type: '/obj/item/circuit_component/operator/arithmetic',
           name: 'Arithmetic',
           description: 'Performs arithmetic.',
           category: 'Math',
