@@ -117,6 +117,10 @@ def stage_rows(result, network, client):
                                        'see_invisible', 'los_presenter', 'compositor', 'tick_lag')}
         out.update(step_stats(row.get('step_gaps_ds') or [], row.get('tick_lag')))
         out['glide_vs_step'] = glide_match(out)
+        if out.get('kind') in ('walk', 'crowd'):
+            # A held key should carry the body several tiles per hold; one tile
+            # per hold means the key was taken by another window.
+            out['walk_valid'] = (out.get('moves') or 0) >= 2 * max(1, round((out.get('seconds') or 0) / 1.75))
         net = (network or {}).get(name)
         if net:
             seconds = row.get('seconds') or 1
@@ -192,6 +196,9 @@ def markdown(summary):
             closed = entry['closed'].get(role)
             cells.append('-' if value is None else (f'{value} ({closed:+.0%})' if closed is not None else f'{value}'))
         lines.append(f"| {entry['metric']} | {entry['human']} | {entry['ghost']} | " + ' | '.join(cells) + ' |')
+    invalid = [name for name, row in rows.items() if row.get('walk_valid') is False]
+    if invalid:
+        lines += ['', '**Not valid (the body moved one tile or less per held key):** ' + ', '.join(invalid)]
     lines += ['', '## Every stage', '']
     cols = ('tick_usage_avg', 'map_cpu_avg', 'kbps_down', 'scroll_hz', 'hitches_per_min', 'gap_p95_ms', 'tap_ms_p50', 'change_hz', 'step_ms_p50', 'glide_vs_step', 'images_max', 'screen_max')
     lines.append('| Stage | ' + ' | '.join(cols) + ' |')

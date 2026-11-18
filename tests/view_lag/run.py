@@ -72,6 +72,8 @@ class Window:
             getattr(self.gdi32, name).restype = ctypes.c_void_p
         self.hwnd = None
         self.box = None
+        self.closing = {}
+        self.want_focus = False
         self.screen = self.memory = self.bitmap = None
 
     def find(self):
@@ -106,6 +108,53 @@ class Window:
         self.user32.keybd_event(0x12, 0, KEYEVENTF_KEYUP, 0)
         time.sleep(0.3)
         return self.user32.GetForegroundWindow() == self.hwnd
+
+    def dismiss_dialogs(self, log):
+        """Closes stray client popups (prompts, the lobby panel) over the map.
+
+        A titled popup gets WM_CLOSE (Cancel), then IDOK if it is still there
+        next time; an untitled popup is hidden. Each one is logged.
+        """
+        found = []
+
+        @ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
+        def visit(hwnd, _):
+            owner = ctypes.c_ulong()
+            self.user32.GetWindowThreadProcessId(ctypes.c_void_p(hwnd), ctypes.byref(owner))
+            if owner.value == self.pid and hwnd != self.hwnd and self.user32.IsWindowVisible(ctypes.c_void_p(hwnd)):
+                found.append(hwnd)
+            return True
+
+        self.user32.EnumWindows(visit, None)
+        for hwnd in found:
+            rect = (ctypes.c_long * 4)()
+            self.user32.GetWindowRect(ctypes.c_void_p(hwnd), rect)
+            if rect[2] - rect[0] <= 50 or rect[3] - rect[1] <= 50:
+                continue
+            title = ctypes.create_unicode_buffer(256)
+            self.user32.GetWindowTextW(ctypes.c_void_p(hwnd), title, 256)
+            if title.value:
+                tries = self.closing.get(hwnd, 0)
+                if tries:
+                    self.user32.PostMessageW(ctypes.c_void_p(hwnd), 0x0111, 1, 0)  # WM_COMMAND IDOK
+                else:
+                    self.user32.PostMessageW(ctypes.c_void_p(hwnd), 0x0010, 0, 0)  # WM_CLOSE
+                self.closing[hwnd] = tries + 1
+            else:
+                self.user32.ShowWindow(ctypes.c_void_p(hwnd), 0)  # SW_HIDE
+            log(f'closed client dialog {title.value!r}')
+
+    def keep(self, log, stop):
+        """Background: keeps popups away and the window in front."""
+        while not stop.is_set():
+            try:
+                if self.hwnd or self.find():
+                    self.dismiss_dialogs(log)
+                    if self.want_focus:
+                        self.focus()
+            except OSError:
+                pass
+            stop.wait(0.5)
 
     def key(self, vk, down):
         scan = self.user32.MapVirtualKeyW(vk, 0)
@@ -182,7 +231,7 @@ class Stage:
         self.window, self.name, self.action, self.layout, self.shots = window, name, action, layout, shots
         self.frames, self.holds, self.taps = [], [], []
         self.stop = threading.Event()
-        self.focus_ok = window.focus()
+        self.focus_ok = window.user32.GetForegroundWindow() == window.hwnd
         self.box = window.place_box(layout)
         self.t0 = time.perf_counter()
         self.threads = [threading.Thread(target=self.capture, daemon=True), threading.Thread(target=self.act, daemon=True)]
@@ -230,6 +279,7 @@ class Stage:
 
     def finish(self):
         self.stop.set()
+        self.focus_ok = self.focus_ok and self.window.user32.GetForegroundWindow() == self.window.hwnd
         for thread in self.threads:
             thread.join(timeout=5)
         for vk in (VK_LEFT, VK_RIGHT):
@@ -263,6 +313,7 @@ def main():
     source = repo / ('.view_lag_' + uuid.uuid4().hex + '.dme')
     created = [source.with_suffix(suffix) for suffix in ('.dme', '.dmb', '.rsc', '.int', '.lk')]
     daemon = client = proxy = window = stage = None
+    keeper_stop = None
     client_data = {}
     try:
         dme = (repo / 'civ13.dme').read_text(encoding='utf-8-sig')
@@ -307,14 +358,15 @@ def main():
                     client_data[stage.name] = stage.finish()
                     stage = None
                 print(f'[{round(time.monotonic() - started)} s] {phase} {info.get("action")}', flush=True)
-                if phase.startswith(('settle_', 'switch_')) and window:
-                    window.focus()
                 if phase.startswith('measure_') and window:
                     stage = Stage(window, phase[len('measure_'):], info.get('action'), info.get('map'), output / 'shots')
                 last_phase = phase
             if phase == 'waiting_for_client' and client is None:
                 client = subprocess.Popen([str(args.byond_bin / 'dreamseeker.exe'), f'byond://127.0.0.1:{proxy_port}'])
                 window = Window(client.pid)
+                window.want_focus = True
+                keeper_stop = threading.Event()
+                threading.Thread(target=window.keep, args=(lambda text: print(f'[{round(time.monotonic() - started)} s] {text} during {last_phase}', flush=True), keeper_stop), daemon=True).start()
             time.sleep(0.05)
         if stage:
             client_data[stage.name] = stage.finish()
@@ -335,6 +387,8 @@ def main():
         if not summary['passed']:
             raise SystemExit(1)
     finally:
+        if keeper_stop:
+            keeper_stop.set()
         if stage:
             stage.finish()
         if window:

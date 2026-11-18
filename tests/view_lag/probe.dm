@@ -57,6 +57,12 @@ var/global/list/view_lag_off = list()
 		return
 	return ..()
 
+// No origin prompt for staged bodies: they take the birthplace people.
+/mob/living/human/choose_origin(climate)
+	if(!map || origin_id)
+		return FALSE
+	return apply_origin(land_origin_for(map.ID, climate), land_display_name(map), FALSE)
+
 /mob/living/human/view_lag_actor/ssd_check()
 	return FALSE
 
@@ -232,6 +238,11 @@ var/global/list/view_lag_off = list()
 		H.update_canmove()
 		body = H
 	if(C)
+		// No first-login questions or tutorial: their windows would cover the
+		// map and take the keyboard.
+		if(C.prefs)
+			C.prefs.first_choices_done = TRUE
+			C.prefs.tutorial_state = TUTORIAL_OFFERED
 		body.ckey = C.ckey
 		sleep(30)
 		C = body.client
@@ -258,6 +269,9 @@ var/global/list/view_lag_off = list()
 	M.dir = EAST
 	if(C)
 		C.los_dirty = TRUE
+		// Any window that opened since (a notice, a prompt) must not keep the
+		// keyboard: held arrows then stop after one tile.
+		winset(C, null, "mainwindow.macro=hotkeymode mapwindow.map.focus=true")
 
 /datum/view_lag_probe/proc/top_procs(text)
 	var/list/rows = json_decode(text)
@@ -402,6 +416,7 @@ var/global/list/view_lag_off = list()
 			wait_for("client_connected", 18000, "No client connected within 30 minutes")
 			C = clients[1]
 			sleep(100)
+			show_browse(C, null, "window=playersetup")
 			metrics["client"] = list("byond_version" = C.byond_version, "byond_build" = C.byond_build, "fps" = C.fps)
 		var/list/roles = splittext(world.params["roles"] || "ghost,human,human_no_los,human_no_trees,human_no_fov,human_no_ao,human_no_lighting,human_no_hud,human_all_off,ghost_repeat,human_repeat", ",")
 		for(var/role in roles)
