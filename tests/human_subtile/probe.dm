@@ -516,8 +516,8 @@ var/human_subtile_fixture_deer_watched = FALSE
 		if (PG.pulling != diag_crate || bounds_dist(PG, diag_crate) >= 32)
 			diag_held = FALSE
 			break
-	human_subtile_fixture_rows += list(list("scene" = "pull diagonal offset", "crate" = list(diag_crate.x, diag_crate.y, diag_crate.step_x, diag_crate.step_y), "body" = list(PG.x, PG.y, PG.step_x, PG.step_y), "gap" = bounds_dist(PG, diag_crate)))
-	human_subtile_fixture_assert(diag_held, "pull_diagonal_offset_keeps_hold")
+	// It ends lined up on the tile the body left.
+	human_subtile_fixture_assert(diag_held && diag_crate.loc == locate(16, 4, 1) && !diag_crate.step_x && !diag_crate.step_y, "pull_diagonal_offset_keeps_hold")
 	PG.pulling = null
 	diag_crate.pulledby = null
 	qdel(diag_crate)
