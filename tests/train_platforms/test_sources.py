@@ -422,7 +422,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('"center" = "boards", "side" = "boards", "bulk" = 600,', PLATFORMS)
         self.assertIn('"center" = "hopper", "side" = "hopper", "bulk" = 800, "hopper" = TRUE,', PLATFORMS)
         # The load weighs on the car, shows on every section and keeps it from being packed.
-        self.assertIn('+ bulk_weight()\n', PLATFORMS)
+        self.assertIn('+ bulk_weight() + tank_weight()\n', PLATFORMS)
         self.assertIn('var/image/heap = bulk_overlay()', PLATFORMS)
         self.assertIn('return "Unload the car first."', PLATFORMS)
         attack = PLATFORMS[PLATFORMS.index('/obj/structure/trains/platform/attackby('):]
@@ -444,6 +444,39 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for tone in ('coal', 'ore', 'sand'):
             for fill in (1, 2):
                 self.assertIn('state = "heap_%s_%d"' % (tone, fill), loads)
+
+    def test_tank_car_carries_one_liquid_as_a_count(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_tank.dm"'), 1)
+        tank = (ROOT / 'code/modules/1713/train_tank.dm').read_text(encoding='utf-8')
+        water = (ROOT / 'code/modules/1713/train_water.dm').read_text(encoding='utf-8')
+        self.assertIn('\tvar/tank_reagent = null', tank)
+        self.assertIn('\tvar/tank_amount = 0', tank)
+        self.assertIn('"center" = "steel", "side" = "boards", "tank" = 3600,', PLATFORMS)
+        self.assertEqual(PLATFORMS.count('"solid" = 1, "tank" = '), 4)
+        self.assertIn('fit" = list(/obj/structure/train_tank_valve, null, null)', PLATFORMS)
+        # The tank is solid on a car that is no locomotive body.
+        self.assertIn('var/solid = segment_layout()["solid"]', PLATFORMS)
+        self.assertIn('var/image/shell = tank_overlay()', PLATFORMS)
+        self.assertIn('return "Drain the tank first."', PLATFORMS)
+        attack = PLATFORMS[PLATFORMS.index('/obj/structure/trains/platform/attackby('):]
+        self.assertLess(attack.index('if (tank_use(W, user))'), attack.index('car_engine()'))
+        # A section draws its tank from its own layout: no search while the train moves.
+        overlay = tank[tank.index('/obj/structure/trains/platform/proc/tank_overlay('):]
+        overlay = overlay[:overlay.index('\n\n')]
+        self.assertNotIn('car_segments', overlay)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', tank))
+        # A water tower or crane fills a tank car the way it fills a tender.
+        self.assertIn('if (P.tank_takes("water"))', water)
+        self.assertIn('gave = P.tank_fill("water", T.water)', water)
+        for path, recipe in (('/obj/structure/train_car_kit/tank_car', 'tank car kit,/obj/structure/train_car_kit/tank_car,30,'),
+                             ('/obj/structure/train_tank_valve', 'tank valve,/obj/structure/train_tank_valve,4,')):
+            self.assertIn('RECIPE: /material/iron/,' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+        self.assertIn('state = "tank_valve"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi'))
+        loads = dmi_description(ROOT / 'icons/obj/vehicles/train_loads.dmi')
+        for part in 'fmdb':
+            self.assertIn('state = "tank_%s"' % part, loads)
 
     def test_native_fixture_preparation(self):
         generated = run.sources()

@@ -419,6 +419,35 @@ an empty one.
 
 Region travel does not carry bulk loads yet.
 
+## Tank car
+
+`train_tank.dm`. A tank car carries one liquid as a kind and a count, the
+way a tender carries its water: no reagent holder rides the train.
+
+- A layout with `"tank" = <units>` has a tank: the tank car 3600.
+  `tank_reagent` (a reagent id) and `tank_amount` live on the car's first
+  section (`tank_store()`). 600 units weigh as much as one section
+  (`tank_weight()`, added in `car_load_weight()`). A car with liquid in it
+  cannot be packed into a kit.
+- The four middle sections carry `"solid" = 1` and `"tank" = "f"`, `"d"`,
+  `"m"` or `"b"`: `apply_layout()` makes their rail tile dense, as it does
+  for a locomotive body, and `tank_overlay()` draws that part of the tank
+  from the section's own layout. The running boards either side stay
+  walkable behind handrails; the end sections are open platforms.
+- `train_tank_liquid()`: an open reagent container holding exactly one
+  liquid reagent. `tank_vessel()` pours it in, or fills an empty vessel
+  from the tank; it runs from `tank_use()` (the car's `attackby`, tank
+  sections only) and from the valve's `attackby`.
+- `/obj/structure/train_tank_valve` (4 iron, wrench to bolt) is fitted on
+  the first section. Used by hand it runs the tank out in 4 seconds
+  (`tank_run_out()`): water into the water towers within 3 tiles, a fuel a
+  locomotive lists in `tank_fuel_ids()` (the heavy diesel: diesel and
+  biodiesel) into the engines within 3 tiles.
+- A water tower or crane counts a tank car that is empty or holds water
+  among its `takers()` and fills it with `tank_fill()`.
+
+Region travel does not carry a tank's liquid yet.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:

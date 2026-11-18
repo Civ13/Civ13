@@ -43,6 +43,10 @@ heading, the rail tile and the tile right of it.
   `train_loads.dmi` (96 x 96, from the same script) holds
   `heap_<coal|ore|sand>_<1|2>`: a bulk load across one section of a car, part
   loaded and full ([trains.md](trains.md#bulk-freight)).
+- `tank_valve`: the valve and hose on a tank car's end platform.
+  `train_loads.dmi` also holds `tank_f`, `tank_d`, `tank_m` and `tank_b`:
+  the tank across one section of the car, front end, dome ring, plain ring
+  and rear end ([trains.md](trains.md#tank-car)).
 - `plough_item`: a snowplough on the ground. `train_plough.dmi` (96 x 96,
   from the same script) holds `plough_f` and `plough_b`, the plough on a
   car's front or rear end ([trains.md](trains.md#snow)).
@@ -108,6 +112,7 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | long_flatbed | bogie flatcar | rail_steam | 8 tiles: open plank deck, railings at the ends |
 | open_wagon | open wagon | rail_steam | 8 tiles: plank sides all round, drop doors in the middle of each side; 600 units of bulk ([trains.md](trains.md#bulk-freight)) |
 | hopper | hopper wagon | rail_steam | 6 tiles: steel sides all round, a floor of doors and the door lever; 800 units of bulk ([trains.md](trains.md#bulk-freight)) |
+| tank_car | tank car | rail_steam | 6 tiles: an end platform with the valve, a solid tank between two running boards with handrails; 3600 units of one liquid ([trains.md](trains.md#tank-car)) |
 | boxcar | boxcar | rail_steam | 8 tiles: boarded sides and roof, sliding doors in the middle of each side, closed ends |
 | bogie_coach | bogie coach | assembly_line | 8 tiles: a vestibule each end, twelve seats, windows |
 | brake_van | brake van | rail_steam | a veranda, then a cabin with a brake wheel and a seat; weighs 4 ([trains.md](trains.md#brakes)) |

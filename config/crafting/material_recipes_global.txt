@@ -2935,6 +2935,8 @@ RECIPE: /material/iron/,brake van kit,/obj/structure/train_car_kit/brake_van,24,
 RECIPE: /material/iron/,hopper wagon kit,/obj/structure/train_car_kit/hopper,28,450,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,hopper door lever,/obj/structure/train_hopper_lever,4,150,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,drop pit,/obj/structure/rail_drop_pit,8,200,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,tank car kit,/obj/structure/train_car_kit/tank_car,30,450,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,tank valve,/obj/structure/train_tank_valve,4,150,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,brake wheel,/obj/structure/train_brake_wheel,6,150,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,fire rake,/obj/item/train_fire_rake,2,80,0,0,trains,101,0,0,8,null
 RECIPE: /material/iron/,ash pit,/obj/structure/rail_ash_pit,6,200,1,1,trains,101,0,0,8,null
