@@ -1743,7 +1743,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/tea/empty" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/teapot" = "glassworking",
-		// --- gunpowder (11) ---
+		// --- gunpowder (9) ---
+		// The arquebus is the first matchlock and comes with Gunpowder; the
+		// better matchlock musket and tanegashima need Gunsmithing as well.
 		"/obj/item/ammo_magazine/emptypouch" = "gunpowder",
 		"/obj/item/stack/ammopart/blunderbuss" = "gunpowder",
 		"/obj/item/stack/ammopart/bullet" = "gunpowder",
@@ -1753,9 +1755,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/ancient/arquebus" = "gunpowder",
 		"/obj/item/weapon/gun/projectile/ancient/firelance" = "gunpowder",
 		"/obj/item/weapon/gun/projectile/ancient/handcannon" = "gunpowder",
-		"/obj/item/weapon/gun/projectile/ancient/matchlock" = "gunpowder",
-		"/obj/item/weapon/gun/projectile/ancient/tanegashima" = "gunpowder",
-		// --- gunsmithing (13) ---
+		// --- gunsmithing (15) ---
+		"/obj/item/weapon/gun/projectile/ancient/matchlock" = "gunsmithing",
+		"/obj/item/weapon/gun/projectile/ancient/tanegashima" = "gunsmithing",
 		"/obj/item/weapon/gun_mount" = "gunsmithing",
 		"/obj/item/blackpowder_part/stock/pistol" = "gunsmithing",
 		"/obj/item/blackpowder_part/stock/musket" = "gunsmithing",
