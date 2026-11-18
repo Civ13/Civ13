@@ -209,6 +209,47 @@ var/door_locks_runtime = null
 	door_locks_assert(lock_hand_access(H, maker, TRUE), "maker_knows_catch")
 	door_locks_assert(!lock_hand_access(H, thief, TRUE), "stranger_stopped")
 
+	// A jail door built without a key takes a padlock; its key locks it.
+	var/obj/structure/simple_door/key_door/custom/jail/steeljail/J = door_locks_door(10, 5, /obj/structure/simple_door/key_door/custom/jail/steeljail)
+	var/mob/living/human/jailer = door_locks_actor(9, 5, "Jailer")
+	var/obj/item/fitted_lock/padlock/jailpad = new
+	door_locks_hands(jailer, jailpad, null)
+	jailpad.attack_self(jailer)
+	var/obj/item/weapon/key/jailpadkey = jailer.l_hand
+	J.attackby(jailpad, jailer)
+	door_locks_assert(J.door_lock && J.door_lock.kind == "padlock", "padlock_on_keyless_jail")
+	J.attackby(jailpadkey, jailer)
+	door_locks_assert(J.door_lock.locked && !J.canOpen(jailer), "jail_padlocked")
+	J.attackby(jailpadkey, jailer)
+	door_locks_assert(!J.door_lock.locked && J.canOpen(jailer), "jail_padlock_unlocked")
+	var/turf/JT = J.loc
+	J.jail_dismantle()
+	door_locks_assert(locate(/obj/item/fitted_lock/padlock) in JT, "jail_dismantle_returns_padlock")
+
+	// A jail door keyed when built still takes a padlock, but no other lock;
+	// each key works its own lock.
+	var/obj/structure/simple_door/key_door/custom/jail/steeljail/KJ = door_locks_door(10, 2, /obj/structure/simple_door/key_door/custom/jail/steeljail)
+	KJ.custom_code = 4321
+	var/mob/living/human/warden = door_locks_actor(9, 2, "Warden")
+	var/obj/item/fitted_lock/warded/wardlock = new
+	door_locks_hands(warden, wardlock, driver)
+	KJ.attackby(wardlock, warden)
+	door_locks_assert(!KJ.door_lock && !QDELETED(wardlock), "keyed_jail_refuses_warded")
+	var/obj/item/fitted_lock/padlock/hasp = new
+	door_locks_hands(warden, hasp, null)
+	hasp.attack_self(warden)
+	var/obj/item/weapon/key/haspkey = warden.l_hand
+	KJ.attackby(hasp, warden)
+	door_locks_assert(KJ.door_lock && KJ.door_lock.kind == "padlock", "keyed_jail_takes_padlock")
+	var/obj/item/weapon/key/cellkey = new
+	cellkey.code = 4321
+	door_locks_hands(warden, cellkey, null)
+	KJ.attackby(cellkey, warden)
+	door_locks_assert(KJ.locked && !KJ.door_lock.locked, "cell_key_works_own_lock")
+	door_locks_hands(warden, haspkey, null)
+	KJ.attackby(haspkey, warden)
+	door_locks_assert(KJ.locked && KJ.door_lock.locked, "padlock_key_works_padlock")
+
 	// From inside, with the door unlocked, it comes down and the lock with it.
 	door_locks_hands(east, hammer, null)
 	var/turf/T = D.loc
