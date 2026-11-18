@@ -161,6 +161,7 @@ The body art is `loco_<kind>_<1-4><l|c|r>` in `train_platforms.dmi`.
 | Heavy diesel locomotive | 1.2 | 32 | 5 | diesel or biodiesel, 1 per unit (300) | front section |
 | Heavy armored locomotive | 2.4 | 40 | 10 | coal, wood, branches (300) | third section, armor doors |
 | Main-line steam locomotive | 1.4 | 60 | 10 | coal, wood, branches (400), from a tender | sixth section |
+| Main-line diesel locomotive | 1.2 | 64 | 9 | diesel or biodiesel, 1 per unit (600) | first and sixth sections |
 
 The step delays are the locomotive rows of [vehicle-speeds.md](vehicle-speeds.md);
 a heavy engine is no faster than its one-tile counterpart, it pulls about twice
@@ -490,6 +491,36 @@ the railway gun car's) and a
   deck tile of another car nearest the load ("Swing it onto ..."), and the
   clear ground tile off the track nearest the load ("Set it down beside the
   track"). Its own car's deck and dense sections are never offered.
+
+## Diesel working
+
+Code: `code/modules/1713/train_diesel.dm`. Tests: the `dieselmain/`,
+`multiple/` and `deadman/` checks of `tests/train_platforms`.
+
+What a diesel gives over steam is a small crew: no fire, no water, one driver.
+
+- **Two cabs.** The main-line diesel (`loco_dieselmain`, kit 100 steel,
+  `combustion`) is six sections with a cab at each end: `"cab"` is section 1,
+  the engine itself, and `"cab2"` section 6, closed by invisible `cab_end`
+  edges. `control_spot(user)` is the cab the user stands at and `rear_cab()`
+  the rear one. `leading_factor()` gives full speed only while the cab that
+  leads is manned (`cab_manned(1 or 2)`), else three quarters, so the driver
+  changes ends to run back. Body art is `loco_dieselmain_<1-6><l|c|r>`, the
+  roofs `roof_loco_dieselmain_<l|c|r>` and, for the rear cab,
+  `roof_loco_dieselmain_b<l|c|r>`.
+- **Working in multiple.** Engines whose `works_in_multiple()` is true (the
+  heavy and main-line diesels) and that are coupled next to each other, with
+  no car between, are linked: `linked_units(cars)` is the unbroken row as
+  car id -> engine. Starting or stopping one starts or stops the row
+  (`switch_linked()`), a cab of any of them works the unit that drives the
+  train (`linked_driver()`), and the driver's brake holds them all
+  (`refresh_consist()` counts linked units as the engine's own weight). Each
+  unit burns its own fuel, as helper engines do.
+- **Dead-man's handle.** `has_deadman()` engines are watched from the drive
+  loop each time the train is counted, every six tiles (`deadman_watch()`).
+  With nobody conscious and fit in a cab of the driving unit or a unit linked
+  to it (`deadman_held()`) for two looks running, the throttle closes and the
+  brake goes on.
 
 ## Snow
 

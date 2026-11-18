@@ -2183,6 +2183,148 @@ def loco_diesel(c, with_roof=False):
         c.stamp(row_canvas(roof_loco_diesel, c.tf), *row_offset(c, 0))
 
 
+DMAROON = ((204, 92, 82), (156, 50, 50), (120, 32, 38), (86, 20, 28), (46, 10, 16))
+
+
+def span(m, a, b):
+    """Rows a..b counted through the row map m, low row first."""
+    return (min(m(a), m(b)), max(m(a), m(b)))
+
+
+def diesel_cab_end(c, m):
+    """One cab of the main-line diesel. m maps a row counted from this end of
+    the engine to a row of the drawing, so the same cab is drawn at both ends."""
+    # nose: marker lights either side of the headcode panel
+    y0, y1 = span(m, 4, 9)
+    c.bevel(10, y0, 85, y1, YELLOW[0], YELLOW[1], YELLOW[2], outline=YELLOW[3])
+    for x in (28.5, 66.5):
+        c.disc(x, (y0 + y1) / 2.0, 2.4, [WHITE, FIRE[0], (220, 200, 120)], outline=STEEL_O)
+    y0, y1 = span(m, 5, 8)
+    c.rect(44, y0, 51, y1, YELLOW[3])
+    c.rect(45, y0 + 1, 50, y1 - 1, DMAROON[2])
+    for x in (16, 79):
+        c.put(x, m(6), RED[0])
+        c.put(x, m(7), RED[2])
+    # floor, desk and two seats
+    y0, y1 = span(m, 10, 31)
+    c.rect(10, y0, 85, y1, DMAROON[4])
+    y0, y1 = span(m, 13, 29)
+    for y in range(y0, y1 + 1):
+        for x in range(13, 83):
+            c.put(x, y, (116, 112, 104) if noise(x, y, 113) > 0.08 else (98, 94, 88))
+    y0, y1 = span(m, 13, 18)
+    c.bevel(15, y0, 62, y1, STEEL[2], STEEL[4], (30, 32, 38), outline=DARK)
+    for x, col in ((19, BRASS[0]), (24, BRASS[0]), (29, WHITE), (36, RED[0]), (40, (96, 220, 110)), (46, BRASS[0]),
+                   (52, WHITE), (57, RED[0])):
+        c.put(x, m(15), col)
+        c.put(x, m(16), mix(col, DARK, 0.5))
+    # the driver's brake valve and the dead-man's handle beside the desk
+    c.line(64, m(14), 68, m(17), STEEL[0])
+    c.put(69, m(18), RED[0])
+    c.disc(73.5, (m(15) + m(16)) / 2.0, 1.8, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    for x0 in (24, 58):
+        y0, y1 = span(m, 21, 28)
+        c.shade(x0 + 1, y0 + 1, x0 + 11, y1 + 2, 60)
+        c.bevel(x0, y0, x0 + 9, y1, (150, 96, 60), (112, 68, 42), (78, 46, 28), outline=(40, 22, 14))
+    # windscreen
+    y0, y1 = span(m, 10, 12)
+    c.rect(10, y0, 85, y1, DMAROON[4])
+    c.bands(11, m(11), 84, m(11), [DMAROON[1]], along=False)
+    for x0, x1 in ((15, 44), (51, 80)):
+        c.rect(x0, y0, x1, y1, GLASS[3])
+        c.bands(x0 + 1, m(11), x1 - 1, m(11), [GLASS[0]], along=False)
+        c.put(x0 + 3, m(11), WHITE)
+        c.put(x0 + 9, m(11), GLASS[1])
+    # side walls with their drop windows
+    for x0 in (10, 83):
+        y0, y1 = span(m, 10, 31)
+        c.rect(x0, y0, x0 + 2, y1, DMAROON[4])
+        c.rect(x0 + 1, y0 + 1, x0 + 1, y1 - 1, DMAROON[1])
+        glass_run(c, *span(m, 15, 25), x0=x0, x1=x0 + 2)
+    # back wall, with a door onto each walkway
+    y0, y1 = span(m, 30, 31)
+    c.rect(10, y0, 85, y1, DMAROON[4])
+    c.rect(11, m(30), 84, m(30), DMAROON[1])
+    for x0 in (14, 75):
+        c.rect(x0, y0, x0 + 6, y1, STEEL[4])
+        c.rect(x0 + 1, m(30), x0 + 5, m(30), STEEL[2])
+
+
+def loco_dieselmain(c, with_roof=False):
+    """A main-line diesel, 96 x 192: a cab at each end, the same from either
+    way, and the long hood between them over two six-wheel bogies."""
+    for y in (38, 50, 62, 129, 141, 153):
+        wheel(c, 6, y - 4, y + 4, True)
+        wheel(c, 87, y - 4, y + 4, False)
+    for y0 in (33, 124):
+        for x in (5, 90):
+            c.rect(x, y0, x, y0 + 34, STEEL[3])
+            for k in (5, 17, 29):
+                c.put(x, y0 + k, YELLOW[0])
+    # frame and walkways
+    c.rect(8, 3, 87, 188, DARK)
+    tread(c, 9, 4, 86, 187, face=STEEL[3], lit=STEEL[2], dark=STEEL[4], seams=False)
+    for x in (9, 86):
+        c.rect(x, 33, x, 158, YELLOW[1])
+        for y in range(34, 158, 8):
+            c.put(x, y, YELLOW[0])
+            c.put(x, y + 1, YELLOW[3])
+    beam(c, 0, 3, ramp=YELLOW, hazard=True)
+    beam(c, 188, 191, ramp=YELLOW, hazard=True)
+    diesel_cab_end(c, lambda y: y)
+    diesel_cab_end(c, lambda y: 191 - y)
+    # the long hood, a cream band along each shoulder
+    c.shade(74, 34, 77, 158, 80)
+    hood(c, 22, 32, 73, 159, DMAROON)
+    for x in (26, 69):
+        c.rect(x, 33, x, 158, CREAM[1])
+    # radiator grilles and fans at each end
+    for y0 in (35, 151):
+        for y in range(y0, y0 + 6):
+            c.rect(29, y, 66, y, DMAROON[4] if (y - y0) % 2 else STEEL[2])
+    fan(c, 47.5, 52.5, 8.0)
+    fan(c, 47.5, 138.5, 8.0)
+    # engine room doors, two each side of the exhausts
+    for y in (64, 76, 106, 118):
+        c.frame(29, y, 66, y + 9, DMAROON[4], 150)
+        c.rect(30, y + 1, 65, y + 1, DMAROON[0], 70)
+        c.rect(46, y + 5, 49, y + 5, STEEL[0])
+    # twin exhausts and the boiler-room hatch between them
+    for x in (38.5, 56.5):
+        c.shade(int(x) - 2, 93, int(x) + 5, 100, 50)
+        c.disc(x, 95.5, 3.2, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
+        c.disc(x, 95.5, 1.6, [(6, 6, 8), (6, 6, 8)], flat=True)
+    hatch(c, 44, 91, 51, 100, ramp=(DMAROON[1], DMAROON[2], DMAROON[3], DMAROON[4]))
+    for x, y in ((24, 34), (71, 34), (24, 157), (71, 157), (24, 95), (71, 95)):
+        c.put(x, y, YELLOW[0])
+
+
+def roof_loco_dieselmain(c, m=lambda y: y):
+    prof = [DMAROON[4], DMAROON[3], DMAROON[1], DMAROON[0], DMAROON[1], DMAROON[2], DMAROON[2], DMAROON[3],
+            DMAROON[4]]
+    y0, y1 = span(m, 9, 31)
+    c.bands(9, y0, 86, y1, across(prof, 78), along=True)
+    c.frame(9, y0, 86, y1, DMAROON[4])
+    c.rect(10, m(10), 85, m(10), CREAM[1])
+    c.rect(10, m(30), 85, m(30), DMAROON[3])
+    # twin horns, a ventilator and the aerial
+    for x in (36, 44):
+        y0, y1 = span(m, 13, 20)
+        c.shade(x + 1, y0 + 2, x + 3, y1 + 2, 60)
+        c.cyl(x, y0, x + 2, y1, BRASS, along=True)
+        c.rect(x, m(13), x + 2, m(13), BRASS[4])
+    y0, y1 = span(m, 14, 24)
+    hatch(c, 54, y0, 66, y1, ramp=(DMAROON[1], DMAROON[2], DMAROON[3], DMAROON[4]), handle=False)
+    for y in (17, 20):
+        c.rect(57, m(y), 63, m(y), DMAROON[4])
+    c.put(22, m(20), STEEL[0])
+    c.put(72, m(26), RED[0])
+
+
+def roof_loco_dieselmain_rear(c):
+    roof_loco_dieselmain(c, lambda y: 31 - y)
+
+
 def loco_armored(c, with_roof=False):
     # skirts hide the running gear
     for x0 in (4, 87):
@@ -2312,7 +2454,7 @@ def row_offset(c, seg, rows=4):
 LOCOS = {'steam': (loco_steam, roof_loco_steam), 'diesel': (loco_diesel, roof_loco_diesel),
          'armored': (loco_armored, roof_loco_armored)}
 # name -> (sections, the section under the cab roof); the others are 4 long
-LOCO_ROWS = {'mainline': (6, 5), 'diesel': (4, 0)}
+LOCO_ROWS = {'mainline': (6, 5), 'diesel': (4, 0), 'dieselmain': (6, 0)}
 
 
 def loco_rows(name):
@@ -2322,7 +2464,8 @@ def loco_rows(name):
 def loco_states():
     out = {}
     for name, (body, roof) in list(LOCOS.items()) + [('tender', (loco_tender, None)),
-                                                     ('mainline', (loco_mainline, roof_loco_steam))]:
+                                                     ('mainline', (loco_mainline, roof_loco_steam)),
+                                                     ('dieselmain', (loco_dieselmain, roof_loco_dieselmain))]:
         rows = loco_rows(name)[0]
         imgs = directions(body, w=96, h=rows * 32, order=HEADING)
         for seg in range(rows):
@@ -2333,6 +2476,10 @@ def loco_states():
         rimgs = directions(roof, w=96, h=32, order=HEADING)
         for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
             out['roof_loco_%s_%s' % (name, cn)] = slice_car(rimgs, 1, 0, col)
+    # the main-line diesel's rear cab: the same roof, facing the other way
+    rimgs = directions(roof_loco_dieselmain_rear, w=96, h=32, order=HEADING)
+    for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
+        out['roof_loco_dieselmain_b%s' % cn] = slice_car(rimgs, 1, 0, col)
     return out
 
 
@@ -2679,6 +2826,8 @@ def render_loco(states, name, heading, roof=True):
             im.alpha_composite(states['loco_%s_%d%s' % (name, seg + 1, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
             if roof and seg == cab:
                 im.alpha_composite(states['roof_loco_%s_%s' % (name, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
+            if roof and name == 'dieselmain' and seg == rows - 1:
+                im.alpha_composite(states['roof_loco_dieselmain_b%s' % cn][DIR_INDEX[heading]], (x * 32, y * 32))
     return im
 
 
@@ -2808,6 +2957,20 @@ def write_previews(out, states, gun):
     cab = render_loco(states, 'mainline', 'N', roof=False).crop((0, 160, 96, 192))
     im.alpha_composite(cab.resize((288, 96), Image.NEAREST), (16 + 3 * 112 + 16, express.height + 56))
     big(im, 3).save(out / 'mainline.png')
+
+    # the main-line diesel: two units in multiple with a coach heading east,
+    # then heading north and south with the cab roofs off and on
+    pair = train_east(states, gun, [render_loco(states, 'dieselmain', 'E', roof=False),
+                                    render_loco(states, 'dieselmain', 'E', roof=True),
+                                    render_car(states, 'bogie_coach', 'E', roof=True)])
+    im = Image.new('RGBA', (pair.width, pair.height + 208), (96, 120, 84, 255))
+    im.alpha_composite(pair, (0, 0))
+    im.alpha_composite(ground(pair.width, 208, seed=13), (0, pair.height))
+    for i, (heading, roof) in enumerate((('N', False), ('N', True), ('S', False), ('S', True))):
+        im.alpha_composite(render_loco(states, 'dieselmain', heading, roof=roof), (16 + i * 112, pair.height + 8))
+    cab = render_loco(states, 'dieselmain', 'N', roof=False).crop((0, 0, 96, 32))
+    im.alpha_composite(cab.resize((288, 96), Image.NEAREST), (16 + 4 * 112 + 16, pair.height + 56))
+    big(im, 3).save(out / 'mainline-diesel.png')
 
     # couplings: made, free, broken and taken off, on a train heading east
     def with_couplers(kind, front, rear, part='coupler'):

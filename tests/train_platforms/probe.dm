@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 250
+	maxx = 258
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2089,6 +2089,105 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
 	platform_check("tank/valve_fuels_a_diesel", fuelled && isnull(steam.tank_fuel_ids()) && ("tank_f" in sheet) && ("tank_m" in sheet) && ("tank_d" in sheet) && ("tank_b" in sheet) && ("tank_valve" in states))
 
+// Diesel working (train_diesel.dm): the two-cab main-line diesel, units in
+// multiple and the dead-man's handle.
+/proc/platform_diesel_run()
+	for (var/ty in 2 to 25)
+		platform_track(254, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/A = platform_car("loco_dieselmain", 254, 22, NORTH)
+	if (!istype(A))
+		platform_check("dieselmain/builds", FALSE)
+		return
+	var/list/body = platform_segments(A.connected)
+	var/obj/structure/trains/platform/rear = A.rear_cab()
+	var/obj/structure/trains/platform/hood = body[1]
+	var/ends = 0
+	if (rear)
+		for (var/obj/structure/train_part/edge/G in rear.deck_parts)
+			if (G.style == "cab_end" && G.density && !G.icon_state && G.dir == SOUTH)
+				ends++
+	var/art = ("loco_dieselmain_1c" in states) && ("loco_dieselmain_6r" in states) && ("roof_loco_dieselmain_l" in states) && ("roof_loco_dieselmain_bc" in states)
+	platform_check("dieselmain/builds", body.len == 5 && !A.density && hood.density && rear && rear.seg_index == 6 && rear.loc == platform_turf(254, 17) && !rear.density && ends == 3 && art && A.roof_images && A.roof_images.len == 3 && rear.roof_images && rear.roof_images.len == 3 && !hood.roof_images && A.car_load_weight() + 5 * hood.car_load_weight() == 9)
+
+	// Either cab drives it; the cab that leads has to be manned for full speed.
+	var/mob/living/human/platform_rider/driver = new(platform_turf(254, 22))
+	var/list/alone = train_consist_list(A)
+	var/front = A.control_spot(driver) == A && A.cab_manned(1) && !A.cab_manned(2) && A.cab_station(driver) == "all"
+	A.reverser = 1
+	var/ahead = A.leading_factor(alone)
+	A.reverser = -1
+	var/astern = A.leading_factor(alone)
+	driver.loc = platform_turf(255, 17)
+	var/back = A.control_spot(driver) == rear && A.cab_manned(2) && !A.cab_manned(1) && A.leading_factor(alone) == 1
+	A.reverser = 1
+	platform_check("dieselmain/drive_from_the_leading_cab", front && ahead == 1 && astern == 0.75 && back && A.leading_factor(alone) == 0.75)
+	driver.loc = platform_turf(254, 22)
+
+	// Units coupled next to each other work in multiple; a car between breaks it.
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/B = platform_car("loco_dieselmain", 254, 16, NORTH)
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 254, 10, NORTH)
+	var/obj/structure/trains/locomotive/heavy_diesel/C = platform_car("loco_diesel", 254, 6, NORTH)
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(257, 3))
+	var/list/single = A.linked_units()
+	B.hitch_front(shunter)
+	flat.hitch_front(shunter)
+	C.hitch_front(shunter)
+	var/list/units = A.linked_units()
+	var/list/far = C.linked_units()
+	var/obj/structure/trains/locomotive/coal/steam = new(platform_turf(257, 5))
+	platform_check("multiple/links_coupled_units", single && single.len == 1 && C.train_head() == A && units && units.len == 2 && units[A.car_id] == A && units[B.car_id] == B && far && far.len == 1 && far[C.car_id] == C && isnull(steam.linked_units()) && !steam.works_in_multiple())
+
+	// One cab starts and stops them all.
+	A.fuel = 100
+	B.fuel = 0
+	C.fuel = 100
+	A.work_control("Start the engine", driver)
+	var/dry = A.on && !B.on && !C.on
+	A.work_control("Stop the engine", driver)
+	B.fuel = 100
+	A.work_control("Start the engine", driver)
+	var/both = A.on && B.on && !C.on && findtext(A.state_text(), "2 units work in multiple, 2 running")
+	A.work_control("Stop the engine", driver)
+	platform_check("multiple/one_cab_starts_them_all", dry && both && !A.on && !B.on)
+	A.work_control("Start the engine", driver)
+
+	// A cab of a linked unit works the unit that drives the train.
+	var/own_cab = A.linked_driver() == A && B.linked_driver() == B
+	A.driving = TRUE
+	platform_check("multiple/any_cab_drives", own_cab && B.linked_driver() == A && C.linked_driver() == C)
+	A.driving = FALSE
+
+	// The driver's brake holds every linked unit.
+	A.refresh_consist()
+	var/held = 0
+	for (var/obj/structure/trains/car in train_consist_list(A))
+		if (car.car_id == A.car_id || car.car_id == B.car_id)
+			held += car.car_load_weight() * car.brake_hold()
+	platform_check("multiple/brake_holds_linked_units", A.consist_engines == 2 && A.consist_power == 128 && held > 17 && A.consist_own == held && A.linked && A.linked.len == 2)
+
+	// The dead-man's handle: nobody in a cab of the working units.
+	A.throttle = 2
+	A.braking = FALSE
+	var/manned = !A.deadman_watch() && !A.deadman_watch() && !A.deadman_watch() && A.throttle == 2
+	driver.loc = platform_turf(254, 11) // B's rear cab
+	var/linked_cab = A.deadman_held() && !A.deadman_watch()
+	driver.loc = platform_turf(254, 9) // the flatbed
+	var/first = A.deadman_watch()
+	var/kept = A.throttle == 2 && !A.braking
+	var/tripped = A.deadman_watch()
+	platform_check("deadman/trips_with_nobody_in_a_cab", manned && linked_cab && !first && kept && tripped && A.throttle == 0 && A.braking && !A.deadman_watch() && A.has_deadman() && C.has_deadman() && !steam.has_deadman())
+	driver.loc = platform_turf(254, 22)
+	driver.stat = UNCONSCIOUS
+	platform_check("deadman/needs_a_fit_driver", !A.cab_manned() && !A.deadman_held())
+	driver.stat = CONSCIOUS
+	A.braking = FALSE
+
+	// The whole body rolls, the rear cab and its rider with it.
+	var/mob/living/human/platform_rider/second = new(platform_turf(253, 17))
+	var/rolled = platform_step(A, 3)
+	platform_check("dieselmain/rolls", rolled == 3 && A.loc == platform_turf(254, 25) && rear.loc == platform_turf(254, 20) && heavy_parts_placed(A) && platform_parts_placed(body) && driver.loc == platform_turf(254, 25) && second.loc == platform_turf(253, 20) && C.loc == platform_turf(254, 9))
+
 // How many of a type stand on a car's deck.
 /proc/platform_fitted(list/segs, kind)
 	. = 0
@@ -2262,6 +2361,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_tank_run()
 		platform_stock_run()
 		platform_crane_run()
+		platform_diesel_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

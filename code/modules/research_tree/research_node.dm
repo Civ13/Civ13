@@ -1251,6 +1251,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/refinery" = "combustion",
 		"/obj/structure/refinery/biofuel" = "combustion",
 		"/obj/structure/train_car_kit/loco_diesel" = "combustion",
+		"/obj/structure/train_car_kit/loco_dieselmain" = "combustion",
 		// The bakelizer turns crude petroleum into plastic, so it belongs with the
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.

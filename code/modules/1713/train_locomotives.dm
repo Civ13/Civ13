@@ -72,6 +72,19 @@
 			list("edges" = list(), "solid" = 2),
 			list("edges" = list(), "solid" = 2),
 			list("edges" = list(), "solid" = 0)))
+	// The main-line diesel (train_diesel.dm): six sections with a cab at each
+	// end, "cab2" being the rear one, and a hood with walkways between them.
+	var/list/cab_end = list(list(-1, "back", "cab_end"), list(0, "back", "cab_end"), list(1, "back", "cab_end"))
+	layouts["loco_dieselmain"] = list(
+		"name" = "main-line diesel locomotive", "desc" = "A big diesel locomotive with a cab at each end and walkways along its hood. It runs on diesel or biodiesel, and works in multiple with other diesels coupled next to it.",
+		"body" = "dieselmain", "cab" = 1, "cab2" = 6, "roof" = "loco_dieselmain", "engine" = /obj/structure/trains/locomotive/heavy_diesel/mainline,
+		"segments" = list(
+			list("edges" = list(), "solid" = 0),
+			list("edges" = list(), "solid" = 1),
+			list("edges" = list(), "solid" = 1),
+			list("edges" = list(), "solid" = 1),
+			list("edges" = list(), "solid" = 1),
+			list("edges" = cab_end, "solid" = 0)))
 	// Not an engine: a tender is drawn and built the same way, in one piece.
 	layouts["tender"] = list(
 		"name" = "tender", "desc" = "A locomotive tender: a coal bunker and a water tank on wheels, with a shovelling plate at the front. Couple it next to a steam locomotive.",
@@ -187,8 +200,13 @@
 	return segs[1]["solid"]
 
 // The section the driver stands in: the engine itself or a section behind it.
-/obj/structure/trains/locomotive/proc/control_spot()
+// With two cabs (train_diesel.dm) it is the one user stands at.
+/obj/structure/trains/locomotive/proc/control_spot(mob/user)
 	var/list/L = body_layout()
+	if (user && L && L["cab2"] && get_dist(user, src) > 1)
+		var/obj/structure/trains/platform/rear = rear_cab()
+		if (rear && get_dist(user, rear) <= 1)
+			return rear
 	if (!L || L["cab"] == 1)
 		return src
 	for (var/obj/structure/trains/platform/P in range(body_length(), src))
@@ -431,7 +449,12 @@
 		to_chat(user, SPAN_WARNING("It is wrecked. A welding tool will get it running again."))
 	else if (health < initial(health))
 		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
-	to_chat(user, has_stations() ? "It is worked from its cab: the driver's stand on the right, the firebox door in the middle, the fireman's side on the left." : "It is driven from its cab.")
+	if (has_stations())
+		to_chat(user, "It is worked from its cab: the driver's stand on the right, the firebox door in the middle, the fireman's side on the left.")
+	else if (rear_cab())
+		to_chat(user, "It is driven from the cab at either end. Drive from the cab that leads: with nobody there to see the line it keeps to three quarters of its speed.")
+	else
+		to_chat(user, "It is driven from its cab.")
 
 /////////////////////////////////////////////////////////////////////////////
 // The three engines. Speeds are the locomotive rows of docs/vehicle-speeds.md;
@@ -504,6 +527,7 @@
 /obj/structure/trains/locomotive/heavy_diesel/examine(mob/user)
 	..()
 	heavy_examine(user)
+	diesel_examine(user)
 
 /obj/structure/trains/locomotive/coal/armored/heavy
 	name = "heavy armored locomotive"
@@ -570,6 +594,9 @@
 /obj/structure/train_car_kit/loco_diesel
 	name = "heavy diesel locomotive kit"
 	car_kind = "loco_diesel"
+/obj/structure/train_car_kit/loco_dieselmain
+	name = "main-line diesel locomotive kit"
+	car_kind = "loco_dieselmain"
 /obj/structure/train_car_kit/loco_armored
 	name = "heavy armored locomotive kit"
 	car_kind = "loco_armored"
