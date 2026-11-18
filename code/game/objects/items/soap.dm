@@ -49,14 +49,8 @@
 			var/turf/T = get_turf(src)
 			if(istype(user.loc, /turf/floor/beach/water))
 				keep_going = TRUE
-			else if(locate(/obj/structure/shower) in T.contents)
-				for (var/obj/A in T.contents) //Checking if the shower is on(bathtub open or shower on)
-					if(istype(A, /obj/structure/shower))
-						var/obj/structure/shower/Y = A
-						if(Y.on)
-							keep_going = TRUE
-						else keep_going = FALSE
-						break
+			else if(bath_water_at(T))
+				keep_going = TRUE
 			else if(locate(/obj/structure/sink) in T.contents)
 				keep_going = TRUE
 			else

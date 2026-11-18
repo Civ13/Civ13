@@ -585,6 +585,11 @@
 
 	if (Process_Grab())	return
 
+	// Lying in a bathtub, a direction climbs out that way (bathtubs.dm).
+	if (istype(mob.buckled, /obj/structure/shower/bathtub))
+		move_delay = world.time + 5
+		return mob.buckled.relaymove(mob, direct)
+
 	if (!mob.canmove)
 		return
 

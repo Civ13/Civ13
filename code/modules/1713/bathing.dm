@@ -87,11 +87,6 @@
 		return
 	return ..()
 
-/obj/structure/shower/bathtub/big/attack_hand(mob/living/M)
-	if (!on && needs_tank_water() && !station_take_water(M))
-		return
-	return ..()
-
 /obj/structure/shower/attackby(obj/item/I, mob/user)
 	if (needs_tank_water() && station_water_pour(I, user))
 		return TRUE
