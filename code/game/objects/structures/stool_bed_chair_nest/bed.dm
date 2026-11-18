@@ -74,6 +74,7 @@
 
 /obj/structure/bed/New(var/newloc, var/new_material, var/new_padding_material)
 	..(newloc)
+	all_beds += src
 	if (!istype(src, /obj/structure/bed/bunk) && !istype(src, /obj/structure/bed/bedroll) && !istype(src, /obj/structure/bed/custsofa))
 		color = null
 		if (!new_material)
@@ -90,6 +91,10 @@
 		update_icon()
 		if (get_material_name() == "wood")
 			flammable = TRUE
+
+/obj/structure/bed/Destroy()
+	all_beds -= src
+	return ..()
 
 /obj/structure/bed/get_material()
 	return material
