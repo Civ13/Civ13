@@ -1349,7 +1349,8 @@ SUITES = {
     'provinces': {'files': ('tests/provinces/test_source.py',),
         'paths': ('tests/provinces/', 'maps/provinces/'), 'shared_paths': (
             'scripts/provinces.py', 'scripts/terrain_heights.py', 'code/modules/provinces/provinces.dm',
-            'code/modules/provinces/province_stake.dm', 'code/game/mob/groups/faction_start.dm',
+            'code/modules/provinces/province_stake.dm', 'code/modules/provinces/province_holding.dm',
+            'code/game/mob/groups/recruitment_station.dm', 'code/game/mob/groups/faction_start.dm',
             'code/game/mob/groups/factions.dm',
             'maps/nomads/nomads_gaia.dmm', 'maps/nomads/nomads_americas_north.dmm',
             'maps/nomads/nomads_americas_south.dmm', 'maps/nomads/nomads_europe.dmm',

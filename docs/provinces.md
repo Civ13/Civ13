@@ -4,9 +4,9 @@ Each continent is cut into provinces that follow the land: coasts, big
 rivers, lakes, mountain ranges and narrow straits. Provinces are the units
 factions will hold on a continent (the continent control plan: recruitment
 stations work only in a province the faction holds, plus stake, ranks and
-sieges). So far the provinces and each faction's stake in them are counted and
-shown (Faction > Province Holdings, Admin > Land Status); nothing yet depends
-on who leads a province.
+sieges). Each faction's stake is counted and shown (Faction > Province Holdings,
+Admin > Land Status), sides take and lose provinces by it, and recruitment
+stations follow the holdings once the preview ends.
 
 ## Files
 
@@ -87,6 +87,30 @@ Code: `code/modules/provinces/province_stake.dm`. Reckoned every 10 minutes.
 Faction > Province Holdings shows a player which province they stand in,
 whether they count as a resident (and if not, why), and every province's
 stakes. Admin > Land Status shows the same table.
+
+## Holding
+
+Code: `code/modules/provinces/province_holding.dm`, run after each stake count.
+
+- A side (a nation, or a faction outside one) that leads an unheld province
+  for 72 hours in a row takes it.
+- A holder keeps it until a rival out-stakes it for 72 hours in a row: 6+
+  points from 4+ people, 35% of the stake there and 1.25 times the holder.
+- A holder below 6 points from 4 people is warned and loses the province
+  after 48 hours unless it recovers. Destroyed beds and halls are rebuilt in
+  that time or the province goes.
+- A side holds at most 3 provinces of a land. (The plan's 6 worldwide needs
+  the coordinator and is not built.)
+- Leaders are told when a hold slips, recovers, is challenged, taken or lost.
+
+**Stations.** On a land with provinces, a recruitment station works only in
+a province its faction's side holds, and only when that faction has 3
+residents of its own there. An idle station keeps its faction, policy and
+queue; examining it says why it is idle, and a leader cannot designate a
+station where it would be idle. Member starts use working stations only.
+Lands without provinces, such as expedition islands, keep every station
+working. The rules start 21 days after a world first counts stake
+(`province_rules_from`, durable), the 14-day preview plus 7 days' grace.
 
 ## Checks
 

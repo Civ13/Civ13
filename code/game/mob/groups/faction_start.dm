@@ -44,7 +44,7 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 /obj/map_metadata/proc/faction_start_turf(faction)
 	var/list/anchors = list()
 	for (var/obj/structure/recruitment_station/S in recruitment_stations)
-		if (!QDELETED(S) && S.faction == faction && isturf(S.loc))
+		if (!QDELETED(S) && S.faction == faction && isturf(S.loc) && !province_station_problem(S))
 			anchors += S
 	var/obj/structure/colony_charter/charter = colony_charter_of(faction)
 	if (charter)
