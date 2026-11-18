@@ -152,6 +152,38 @@ var/global/track_probe_runtime_error = FALSE
 	track_probe_lay(2, 11, EAST)
 	track_probe_check("switch/side_parallel", track_probe_dirs(2, 11) == "east+west" && track_probe_dirs(2, 10) == "east+west")
 
+	// Plain track beside a switcher draws its branch when the switcher is
+	// laid or turned, and goes back to plain track when it is taken up.
+	var/obj/structure/rails/PR = track_make_rail(track_probe_turf(12, 8), NORTH, FALSE)
+	var/obj/structure/rails/split/switcher/SN = new(track_probe_turf(11, 8))
+	SN.set_dir(SOUTH)
+	track_probe_check("switch/neighbour_branch_icon", PR.icon_state == "rails_split1")
+	qdel(SN)
+	track_probe_check("switch/neighbour_icon_reverts", PR.icon_state == "rails")
+
+	// A switcher set to split only shifts a car onto a rail beside it.
+	track_make_rail(track_probe_turf(21, 8), EAST, FALSE)
+	var/obj/structure/rails/split/switcher/SS = new(track_probe_turf(20, 8))
+	SS.set_dir(EAST)
+	SS.switched = "split"
+	var/obj/structure/trains/SC = new(track_probe_turf(20, 8))
+	var/list/route = SC.rail_target(EAST)
+	track_probe_check("switch/split_without_branch_runs_on", route && route[1] == track_probe_turf(21, 8))
+	track_make_rail(track_probe_turf(20, 9), EAST, FALSE)
+	route = SC.rail_target(EAST)
+	track_probe_check("switch/split_onto_branch", route && route[1] == track_probe_turf(20, 9))
+
+	// A curve sends a car round it, and one already heading out along a leg
+	// runs straight on even with track off the curve's other side.
+	var/obj/structure/rails/turn/TC = track_make_rail(track_probe_turf(25, 8), NORTH, TRUE)
+	track_make_rail(track_probe_turf(24, 8), EAST, FALSE)
+	track_make_rail(track_probe_turf(25, 9), NORTH, FALSE)
+	var/obj/structure/trains/CC = new(track_probe_turf(25, 8))
+	route = CC.rail_target(NORTH)
+	track_probe_check("curve/round", TC.turn_dir == WEST && route && route[1] == track_probe_turf(24, 8) && route[2] == WEST)
+	route = CC.rail_target(WEST)
+	track_probe_check("curve/leg_runs_on", route && route[1] == track_probe_turf(24, 8) && route[2] == WEST)
+
 	// Track cannot be laid twice or on water.
 	track_probe_check("lay/occupied", track_lay_problem(track_probe_turf(5, 2)))
 	var/turf/W = track_probe_turf(36, 2)

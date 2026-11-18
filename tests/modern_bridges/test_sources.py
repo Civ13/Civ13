@@ -38,7 +38,7 @@ class ModernBridgeSourceTests(unittest.TestCase):
         self.assertNotIn('/obj/covers/repairedfloor', BRIDGES)
 
     def test_crafting_allowed_while_standing_on_a_deck(self):
-        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8')
+        stack = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text(encoding='utf-8')
         self.assertIn('istype(get_turf(H), /turf/floor/beach/water/deep) && !bridge_deck_at(get_turf(H))', stack)
 
     def test_track_can_be_laid_on_a_deck(self):

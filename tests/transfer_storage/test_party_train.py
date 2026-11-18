@@ -62,8 +62,9 @@ class PartyTrainTests(unittest.TestCase):
         self.assertIn('if(rail_turf_on_map_edge(T))', walk)
         self.assertIn('index > RAIL_NETWORK_VISIT_LIMIT', walk)
         self.assertNotIn('sleep', walk)
-        self.assertIn('rail_network_serial++', proc(net, '/obj/structure/rails/New'))
-        self.assertIn('rail_network_serial++', proc(net, '/obj/structure/rails/Destroy'))
+        rails = read('code/modules/1713/trains.dm')
+        self.assertIn('rail_network_serial++', proc(rails, '/obj/structure/rails/New'))
+        self.assertIn('rail_network_serial++', proc(rails, '/obj/structure/rails/Destroy'))
         # The cache is process-local and never saved.
         self.assertIn('"track_serial", "track_turf", "track_ok"', proc(TRAIN, OFFICE + '/persistence_runtime_var'))
 

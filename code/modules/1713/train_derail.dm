@@ -127,7 +127,7 @@
 		return FALSE
 	var/heading = (way > 0) ? lead.train_heading() : OPPOSITE_DIR(lead.train_heading())
 	var/turf/ahead = get_step(lead, heading)
-	if (!ahead || (locate(/obj/structure/rails) in ahead))
+	if (!ahead || rail_at(ahead))
 		return FALSE // something else stopped it
 	if (locate(/obj/structure/rails/end) in lead.loc)
 		return FALSE // a buffer stop
@@ -154,7 +154,7 @@
 /obj/structure/trains/proc/rerail_problem()
 	if (!derailed)
 		return "\The [src] stands on the rails."
-	if (!(locate(/obj/structure/rails) in loc))
+	if (!isturf(loc) || !rail_at(loc))
 		return "There is no rail under \the [src]. Lay the track again first."
 	var/obj/structure/trains/locomotive/E = heavy_engine()
 	if (E && !train_breakdown_crane(E))

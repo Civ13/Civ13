@@ -98,7 +98,7 @@
 		return "You can't lay track there."
 	if ((istype(T, /turf/floor/beach/water) && !bridge_deck_at(T)) || istype(T, /turf/floor/trench))
 		return "Track needs firm, dry ground."
-	if (locate(/obj/structure/rails) in T)
+	if (rail_at(T))
 		return "There is already track there."
 	if (locate(/obj/structure/rail_bed) in T)
 		return "There are already sleepers there."
@@ -111,27 +111,17 @@
 /proc/track_piece_at(turf/T)
 	if (!T)
 		return null
-	var/obj/structure/rails/R = locate(/obj/structure/rails) in T
-	if (R)
-		return R
-	return locate(/obj/structure/rail_bed) in T
+	return rail_at(T) || (locate(/obj/structure/rail_bed) in T)
 
-// The directions a piece of track leads to.
+// The directions a piece of track leads to (rails answer for their own
+// shape: /obj/structure/rails/proc/exits() in trains.dm).
 /proc/track_piece_dirs(atom/piece)
 	if (istype(piece, /obj/structure/rail_bed))
 		var/obj/structure/rail_bed/B = piece
 		return B.shape_dirs()
-	if (istype(piece, /obj/structure/rails/rotate))
-		return cardinal.Copy()
-	if (istype(piece, /obj/structure/rails/turn))
-		var/obj/structure/rails/turn/RT = piece
-		if (RT.turn_dir)
-			return list(OPPOSITE_DIR(RT.dir), RT.turn_dir)
-		return list()
-	// A switcher's split route shifts a wagon onto the parallel track beside
-	// it without turning, so the side tile is not joined to it end to end.
 	if (istype(piece, /obj/structure/rails))
-		return list(piece.dir, OPPOSITE_DIR(piece.dir))
+		var/obj/structure/rails/R = piece
+		return R.exits()
 	return list()
 
 // The directions from piece's tile whose neighbouring track leads back to it.
