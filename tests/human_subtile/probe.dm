@@ -490,6 +490,37 @@ var/human_subtile_fixture_deer_watched = FALSE
 	human_subtile_fixture_assert(!PS.pulling && !snag_crate.pulledby, "pull_breaks_when_too_far")
 	qdel(snag_block)
 	qdel(snag_crate)
+	// Walking diagonally away from a thing dragged off the grid, the gap
+	// passes a tile before the body has wholly left its last tile. The thing
+	// keeps coming in pixels toward that tile instead of letting go.
+	human_subtile_fixture_phase = "headless pull diagonal offset"
+	var/mob/living/human/subtile_fixture/PG = human_subtile_fixture_actor(16, 3)
+	PG.set_human_subtile(TRUE)
+	var/glide_x = 16 * 32 - 3
+	var/glide_y = 3 * 32 + 11
+	human_subtile_fixture_glide_centre(PG, glide_x, glide_y)
+	var/obj/structure/diag_crate = new(locate(15, 2, 1))
+	diag_crate.anchored = FALSE
+	diag_crate.density = TRUE
+	diag_crate.step_x = 16
+	diag_crate.step_y = 4
+	PG.pulling = diag_crate
+	diag_crate.pulledby = PG
+	PG.human_subtile_pull_follow()
+	var/diag_held = TRUE
+	for (var/pulse in 1 to 24)
+		glide_x += 2
+		glide_y += 2
+		human_subtile_fixture_glide_centre(PG, glide_x, glide_y)
+		PG.human_subtile_pull_follow()
+		if (PG.pulling != diag_crate || bounds_dist(PG, diag_crate) >= 32)
+			diag_held = FALSE
+			break
+	human_subtile_fixture_rows += list(list("scene" = "pull diagonal offset", "crate" = list(diag_crate.x, diag_crate.y, diag_crate.step_x, diag_crate.step_y), "body" = list(PG.x, PG.y, PG.step_x, PG.step_y), "gap" = bounds_dist(PG, diag_crate)))
+	human_subtile_fixture_assert(diag_held, "pull_diagonal_offset_keeps_hold")
+	PG.pulling = null
+	diag_crate.pulledby = null
+	qdel(diag_crate)
 	// Swapping places keeps each body's exact position: the swapped body takes
 	// the other's pixel offset instead of carrying its own into a wall.
 	human_subtile_fixture_phase = "headless exact swap"
