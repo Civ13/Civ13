@@ -417,14 +417,14 @@
 		return FALSE
 	if (QDELETED(S) || get_turf(src) != start || stairs_destination(src, S) != destination)
 		return FALSE
-	if (pulling)
-		stop_pulling()
+	stairs_check_load(src, destination)
 	if (pulledby)
 		pulledby.stop_pulling()
 	stairs_moved_at = world.time
 	if (!S.stairwell_top)
 		stairs_refresh_top(S)
 	if (trench_climb_place(src, destination))
+		stairs_bring_load(src)
 		to_chat(src, SPAN_NOTICE("You climb up the stairs."))
 		return TRUE
 	return FALSE
@@ -466,13 +466,13 @@
 	var/mob/living/human/H = A
 	if (!persistence_movement_allowed(H, below))
 		return FALSE
-	if (H.pulling)
-		H.stop_pulling()
+	stairs_check_load(H, below)
 	if (H.pulledby)
 		H.pulledby.stop_pulling()
 	H.stairs_moved_at = world.time
 	if (!trench_climb_place(H, below) && H.loc != below)
 		return FALSE
+	stairs_bring_load(H)
 	to_chat(H, SPAN_NOTICE("You walk down the stairs."))
 	return TRUE
 

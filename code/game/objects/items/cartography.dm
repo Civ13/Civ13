@@ -59,10 +59,37 @@
 /proc/cartography_cell_size()
 	return max(CARTOGRAPHY_CELL, CEILING(max(world.maxx, world.maxy) / CARTOGRAPHY_MAX_CELLS, 1))
 
+// What a map shows under a ship or vehicle: the ground or sea she stands on,
+// as a turf type, or null when nothing that moves is on T. Ships, boats and
+// vehicles come and go, so a map never draws them.
+/proc/cartography_craft_ground(turf/T)
+	var/datum/vessel/V = vessel_at(T)
+	if (V)
+		var/datum/vessel_level/L = V.level_for_z(T.z)
+		var/original = L ? L.originals["[T.x],[T.y]"] : null
+		if (original && !ispath(original))
+			original = text2path("[original]")
+		return ispath(original, /turf) ? original : /turf/floor/beach/water/deep
+	for (var/datum/craft/C in crafts)
+		var/datum/craft_body/B = C.body
+		if (!B || istype(B, /datum/craft_body/template))
+			continue
+		if (istype(B, /datum/craft_body/built) || istype(B, /datum/craft_body/turfs))
+			if (!B.contains(T))
+				continue
+			var/datum/craft_body/turfs/TB = B
+			if (istype(TB) && TB.open_turf)
+				return TB.open_turf
+			return T.type
+	return null
+
 // One map character for a turf.
 /proc/cartography_terrain(turf/T)
 	if (!T)
 		return CARTOGRAPHY_UNKNOWN
+	var/craft_ground = cartography_craft_ground(T)
+	if (craft_ground)
+		return cartography_ground_char(craft_ground)
 	for (var/obj/covers/C in T)
 		if (istype(C, /obj/covers/road) || istype(C, /obj/covers/roads) || istype(C, /obj/covers/romanroad) || istype(C, /obj/covers/cobblestone))
 			return "r"
@@ -70,27 +97,31 @@
 	for (var/obj/structure/wild/W in T)
 		if (istype(W, /obj/structure/wild/tree) || istype(W, /obj/structure/wild/jungle) || istype(W, /obj/structure/wild/palm))
 			return "f"
-	if (istype(T, /turf/wall))
-		if (istype(T, /turf/wall/rockwall))
+	return cartography_ground_char(T.type)
+
+// The map character for a turf type, with nothing standing on it.
+/proc/cartography_ground_char(ground)
+	if (ispath(ground, /turf/wall))
+		if (ispath(ground, /turf/wall/rockwall))
 			return "m"
 		return "b"
-	if (istype(T, /turf/floor/beach/water))
-		if (istype(T, /turf/floor/beach/water/ice))
+	if (ispath(ground, /turf/floor/beach/water))
+		if (ispath(ground, /turf/floor/beach/water/ice))
 			return "i"
-		if (istype(T, /turf/floor/beach/water/deep))
+		if (ispath(ground, /turf/floor/beach/water/deep))
 			return "W"
 		return "w"
-	if (istype(T, /turf/floor/lava))
+	if (ispath(ground, /turf/floor/lava))
 		return "l"
-	if (istype(T, /turf/floor/beach/sand))
+	if (ispath(ground, /turf/floor/beach/sand))
 		return "s"
-	if (istype(T, /turf/floor/winter))
+	if (ispath(ground, /turf/floor/winter))
 		return "n"
-	if (istype(T, /turf/floor/grass))
+	if (ispath(ground, /turf/floor/grass))
 		return "g"
-	if (istype(T, /turf/floor/plating/road) || istype(T, /turf/floor/plating/cobblestone))
+	if (ispath(ground, /turf/floor/plating/road) || ispath(ground, /turf/floor/plating/cobblestone))
 		return "r"
-	if (istype(T, /turf/floor/wood) || istype(T, /turf/floor/carpet) || istype(T, /turf/floor/plating))
+	if (ispath(ground, /turf/floor/wood) || ispath(ground, /turf/floor/carpet) || ispath(ground, /turf/floor/plating))
 		return "b"
 	return "d"
 

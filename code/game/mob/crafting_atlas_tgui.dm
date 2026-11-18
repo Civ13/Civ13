@@ -721,6 +721,9 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	// instead of showing a lock the craft would not apply.
 	if (hint && crafting_recipe_allowed(viewer, "[result_path]"))
 		return ""
+	// A capstone's demonstration machine: say how to build the crude version.
+	if (hint)
+		return demonstration_kit_hint(viewer, result_path) || hint
 	return hint
 
 /mob/living/human/proc/refresh_recipe_knowledge_menus()

@@ -13,7 +13,7 @@ are blocked during preparation.
 |---|---|---|
 | Vegetable potage | Carrot, cabbage or tomato | 55 |
 | Hearty stew | One vegetable plus meat or beans | 60 |
-| Seasoned hearty stew | Meat or beans, two different vegetables, at least 0.5 units of salt | 65 |
+| Seasoned hearty stew | Meat or beans, two different vegetables, at least 0.5 units of salt, below brine strength (3 units per 100 water) | 65 |
 
 Use whole produce, not prepared dishes. Duplicate carrots do not count as two
 vegetable varieties. Rotten ingredients and trace scraps do not qualify. Beans
@@ -22,6 +22,13 @@ Existing crop gathering/farming, animal butchery, campfire, metal pot and bowl
 crafting routes supply the ingredients and equipment. Existing research/map
 restrictions still apply. Salt can be collected using the existing saltwater
 boiling route; it is optional for the first two tiers.
+
+Water poured into the pot brings its dissolved reagents with it, in the same
+share as the water taken. Seawater carries its salt (4 units per 100) into the
+pot, so a meal from any salt water, even mixed with fresh water, is salty: it
+is never seasoned, adding salt does not change that, and its salt makes the
+eater thirsty. Germs come along too but boiling kills them, both for prepared
+meals and simmered stew. Emptying the pot pours its reagents away.
 
 Hold an empty wooden or snack bowl and use it on the finished pot. Three bowls
 share the actual reagent pool, including its remaining fractional quantities;

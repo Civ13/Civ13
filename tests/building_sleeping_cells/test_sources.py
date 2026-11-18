@@ -32,7 +32,9 @@ class SleepingCellTests(unittest.TestCase):
     def test_waking_registers_the_cell(self):
         lighting = read('code/modules/multiz/building_lighting.dm')
         wake = body(lighting, '/turf/sky/building/proc/building_wake()')
-        self.assertIn('if (!turf_registry_add(src))', wake)
+        self.assertIn('if (turf_registry_add(src))\n\t\tturfs += src', wake)
+        # An already registered cell is lit if it still has no lighting.
+        self.assertIn('else if (lighting_overlay || !created_lighting_corners_and_overlays)\n\t\treturn', wake)
 
     def test_restore_leaves_sleeping_cells_unlit(self):
         zones = read('code/modules/persistence/zone_topology.dm')

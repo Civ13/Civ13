@@ -135,6 +135,8 @@
 	)
 
 	if (do_after(M, 10, src))
+		if (ladder_refuses_load(M))
+			return
 		var/destination_z = istop ? multiz_level_below(M.z) : multiz_level_above(M.z)
 		var/turf/destination = destination_z ? locate(src.x, src.y, destination_z) : null
 		if (!destination || !persistence_movement_allowed(M, destination) || (M.pulling && !persistence_movement_allowed(M.pulling, destination)))
@@ -424,6 +426,8 @@
 	)
 
 	if (do_after(M, 10, src))
+		if (ladder_refuses_load(M))
+			return
 		if (!target || !target.loc || !persistence_movement_allowed(M, target.loc) || (M.pulling && !persistence_movement_allowed(M.pulling, target.loc)))
 			return
 		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)

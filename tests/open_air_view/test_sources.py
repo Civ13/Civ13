@@ -74,8 +74,34 @@ class OpenAirView(unittest.TestCase):
         process = (ROOT / 'code/processes/open_air_view.dm').read_text()
         self.assertLess(process.index('open_air_view_busy()'), process.index('C.open_air_view_scan()'))
         busy = proc('/proc/open_air_view_busy()')
-        for guard in ('persistence_active_operation', 'persistence_save_in_progress', 'building_allocating_z'):
+        for guard in ('persistence_active_operation', 'persistence_save_in_progress', 'lighting_startup_in_progress'):
             self.assertIn(guard, busy)
+        # A level being added pauses only its own scan and the scan above it.
+        self.assertNotIn('building_allocating_z', busy)
+        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
+        self.assertIn('z == building_allocating_z || multiz_level_below(z) == building_allocating_z', link)
+
+    def test_moving_viewer_is_linked_ahead(self):
+        scan = proc('/client/proc/open_air_view_scan()')
+        self.assertIn('clamp(centre.x - last.x, -OPEN_AIR_VIEW_LEAD, OPEN_AIR_VIEW_LEAD)', scan)
+        self.assertLess(scan.index('var/turf/last = open_air_view_centre'), scan.index('open_air_view_centre = centre'))
+        self.assertIn('open_air_view_link_around(centre.z, cx, cy, rx, ry, lead_x, lead_y)', scan)
+
+    def test_one_failure_does_not_stop_the_scan(self):
+        process = (ROOT / 'code/processes/open_air_view.dm').read_text()
+        self.assertIn('try\n\t\t\tC.open_air_view_scan()\n\t\tcatch (var/exception/scan_error)', process)
+        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
+        self.assertIn('try\n\t\t\tT.open_air_view_refresh()\n\t\tcatch (var/exception/cell_error)', link)
+        self.assertIn('if (text == open_air_view_last_error)\n\t\treturn', SOURCE)
+
+    def test_existing_views_repair_and_wake(self):
+        refresh = proc('/turf/sky/building/proc/open_air_view_refresh(depth = 1, wake = TRUE)')
+        # A cell first linked from above is woken by a viewer on its own level.
+        self.assertLess(refresh.index('if (wake && !lighting_overlay)'), refresh.index('if (!open_air_view)'))
+        for line in ('if (icon)\n\t\t\ticon = null', 'if (!(open_air_view in vis_contents))'):
+            self.assertIn(line, refresh)
+        wake = (ROOT / 'code/modules/multiz/building_lighting.dm').read_text(encoding='utf-8-sig')
+        self.assertIn('else if (lighting_overlay || !created_lighting_corners_and_overlays)\n\t\treturn', wake)
 
 class LookUp(unittest.TestCase):
     def setUp(self):

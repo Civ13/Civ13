@@ -49,7 +49,7 @@ class Carriers(unittest.TestCase):
         self.assertIn("for (var/germ in germ_reagent_disease)", kill)
         for germ in ("cholera", "typhus", "plague", "worm_eggs", "malaria"):
             self.assertIn(f'"{germ}" = ', self.severe)
-        for path, count in (("oven.dm", 3), ("pot.dm", 2), ("cooked_meals.dm", 1)):
+        for path, count in (("oven.dm", 3), ("pot.dm", 3), ("cooked_meals.dm", 1)):
             text = read("code/game/objects/structures/kitchen/" + path)
             self.assertEqual(text.count("reagents.kill_germs()"), count, path)
             self.assertNotIn('del_reagent("cholera")', text)

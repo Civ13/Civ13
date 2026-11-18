@@ -69,13 +69,44 @@ class LiftingMachines(unittest.TestCase):
                 self.assertIn('..()', body)
                 continue
             carrying += 1
-            self.assertLess(body.index('if (ladder_refuses_load(M))'), body.index('do_after('))
+            wait = body.index('do_after(')
+            self.assertLess(body.index('if (ladder_refuses_load(M))'), wait)
+            # a pull picked up during the wait is caught before anything moves
+            after = body[wait:]
+            self.assertLess(after.index('if (ladder_refuses_load(M))'), after.index('M.pulling.persistence_set_'))
         self.assertEqual(carrying, 2)
 
-    def test_guard_only_refuses_a_pulled_heavy_object(self):
-        body = proc_body(SOURCE, '/proc/ladder_refuses_load(mob/M)')
-        self.assertIn('if (!M || !M.pulling || !needs_hoist(M.pulling))\n\t\treturn FALSE', body)
+    def test_load_rule_allows_what_makes_sense(self):
+        # Krunes report 2026-11-18: crates went up ladders though stairs
+        # dropped every pull. Val: allow it where it makes sense.
+        body = proc_body(SOURCE, '/proc/level_change_load_problem(')
+        # people and small animals come along on ladders, big animals do not
+        self.assertIn('if (ladder && L.mob_size > MOB_MEDIUM)', body)
+        # hoist-only loads go on neither ladders nor stairs
+        self.assertIn('if (needs_hoist(A))', body)
+        self.assertLess(body.index('if (needs_hoist(A))'), body.index('if (ladder && !isitem(A))'))
+        # wheeled carts are bumped up neither steps nor rungs
+        self.assertIn('if (is_wheeled_load(A))', body)
+        self.assertIn('/obj/structure/shopping_cart', type_list('wheeled_load_types'))
+        # on a ladder only loose items, no crates or furniture
+        self.assertIn('if (ladder && !isitem(A))', body)
+        guard = proc_body(SOURCE, '/proc/ladder_refuses_load(mob/M)')
+        self.assertIn('level_change_load_problem(M.pulling, TRUE)', guard)
         self.assertIn('if (!isobj(A))\n\t\treturn FALSE', proc_body(SOURCE, '/proc/needs_hoist('))
+
+    def test_stairs_bring_what_they_can_and_let_go_of_the_rest(self):
+        check = proc_body(SOURCE, '/proc/stairs_check_load(')
+        self.assertIn('level_change_load_problem(load, FALSE)', check)
+        self.assertIn('persistence_movement_allowed(load, destination)', check)
+        self.assertIn('M.stop_pulling()', check)
+        bring = proc_body(SOURCE, '/proc/stairs_bring_load(')
+        self.assertIn('M.pulling.forceMove(M.loc)', bring)
+        edge = (ROOT / 'code/modules/multiz/edge_climbing.dm').read_text(encoding='utf-8')
+        for name in ('/mob/living/human/proc/climb_stairs(', '/proc/stairs_soft_descent('):
+            body = proc_body(edge, name)
+            self.assertNotIn('stop_pulling()\n\tif (pulledby)', body.replace('H.', ''))
+            self.assertLess(body.index('stairs_check_load('), body.index('trench_climb_place('))
+            self.assertLess(body.index('trench_climb_place('), body.index('stairs_bring_load('))
 
     def test_haul_rechecks_the_load_and_landing_after_the_wait(self):
         body = proc_body(SOURCE, LEGS + '/proc/haul(')
