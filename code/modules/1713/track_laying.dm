@@ -391,6 +391,9 @@
 
 // A crowbar takes finished track apart; a hammer no longer turns rails into wood.
 /obj/structure/rails/attackby(obj/item/W, mob/user)
+	// Packing and resleepering worn track (train_trackwear.dm).
+	if (track_maintain(W, user))
+		return TRUE
 	if (is_tool(W, TOOL_HAMMER))
 		to_chat(user, SPAN_NOTICE("This track is already spiked down. Pry it up with a crowbar to take it apart."))
 		return TRUE

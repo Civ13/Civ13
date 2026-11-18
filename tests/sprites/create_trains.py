@@ -1224,6 +1224,28 @@ def turntable_pivot():
     return [c.image()]
 
 
+def track_wear(bad):
+    """What worn track shows between the rails, the same whichever way the
+    line runs: weeds in the ballast and dark, sunk patches; in a bad way,
+    more of both and the splintered ends of split sleepers."""
+    c = Canvas(32, 32)
+    tufts = ((13, 13), (20, 17), (15, 21)) + (((21, 12), (12, 18), (18, 22), (17, 14)) if bad else ())
+    for x, y in ((14, 16), (19, 20)) + (((12, 12), (21, 15), (16, 19)) if bad else ()):
+        c.rect(x, y, x + 2, y + 1, DARK, a=110)
+        c.put(x + 1, y, DARK, a=160)
+    if bad:
+        for x0, y0 in ((11, 15), (19, 13), (14, 22)):
+            for i, col in enumerate((WALNUT[3], WALNUT[1], WALNUT[0], WALNUT[1])):
+                c.put(x0 + i, y0 + (i % 2), col)
+            c.put(x0 + 4, y0 + 1, OXIDE[1])
+    for x, y in tufts:
+        c.put(x, y, GREEN[3])
+        c.put(x, y - 1, GREEN[1])
+        c.put(x - 1, y, GREEN[2])
+        c.put(x + 1, y - 1, GREEN[0])
+    return [c.image()]
+
+
 def turntable_pit(size):
     """The pit of a turntable from above: a brick wall round a gravel floor
     that falls into shadow under the upper-left wall, with the ring rail the
@@ -3167,6 +3189,8 @@ def platform_states():
     states['turntable_deck'] = directions(turntable_deck, order=HEADING)
     states['turntable_girders'] = directions(turntable_girders, order=HEADING)
     states['turntable_pivot'] = turntable_pivot()
+    states['track_worn'] = track_wear(False)
+    states['track_bad'] = track_wear(True)
     states['hand_lamp'] = hand_lamp(None)
     states['hand_lamp_white'] = hand_lamp('white')
     states['hand_lamp_red'] = hand_lamp('red')
@@ -3509,6 +3533,16 @@ def write_previews(out, states, gun):
             im.alpha_composite(states['turntable_girders'][DIR_INDEX[heading]], at)
         im.alpha_composite(states['turntable_pivot'][0], (x0 + 3 * 32, 8 + 2 * 32))
     big(im, 4).save(out / 'turntable.png')
+
+    # track wear: a line in good order, worn, and in a bad way
+    im = ground(3 * 48 + 16, 3 * 32 + 16, seed=41)
+    for k, name in enumerate((None, 'track_worn', 'track_bad')):
+        for y in range(3):
+            at = (16 + k * 48, 8 + y * 32)
+            im.alpha_composite(rail[DIR_INDEX['N']], at)
+            if name:
+                im.alpha_composite(states[name][0], at)
+    big(im, 6).save(out / 'trackwear.png')
 
     # off the rails: a derailed boxcar, the same car rerailed, and the jack
     im = ground(2 * 104 + 8 + 56, 8 * 32 + 16, seed=19)

@@ -29,6 +29,8 @@
 	girders.dir = dir
 	underlays = list(deck)
 	overlays = list(girders)
+	wear_image = null
+	show_wear()
 
 /obj/structure/rails/turntable/after_load()
 	..()
@@ -46,7 +48,7 @@
 	return null
 
 /obj/structure/rails/turntable/attackby(obj/item/W, mob/user)
-	if (is_tool(W, TOOL_CROWBAR) || is_tool(W, TOOL_HAMMER))
+	if (is_tool(W, TOOL_CROWBAR))
 		to_chat(user, SPAN_NOTICE("\The [src] is part of a turntable. Take the table up with a crowbar at its pivot."))
 		return TRUE
 	return ..()

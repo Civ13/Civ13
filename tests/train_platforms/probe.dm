@@ -2769,6 +2769,94 @@ var/global/platform_probe_runtime_error = FALSE
 	qdel(big)
 	platform_check("turntable/taken_up", findtext(busy_table, "off the table") && taken && !(locate(/obj/structure/rails/turntable) in platform_turf(316, 24)) && !(locate(/obj/structure/rails/turntable) in platform_turf(316, 19)))
 
+// Step 15: track wear. Traffic wears the rails, worn track brings the line
+// speed down, and a platelayer packs it or puts in new sleepers.
+/proc/platform_trackwear_run()
+	for (var/ty in 13 to 25)
+		platform_track(320, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/rails/R = locate(/obj/structure/rails) in platform_turf(320, 24)
+	var/sound = R && !R.wear && !R.wear_state() && !R.line_speed() && findtext(R.wear_text(), "good order")
+	R.take_traffic(10, 3)
+	var/slow = R.wear
+	R.take_traffic(10, 6)
+	var/fast = R.wear - slow
+	R.wear = 30
+	R.take_traffic(10, 3)
+	var/rough = R.wear - 30
+	R.take_traffic(8000, 3)
+	platform_check("trackwear/traffic_wears_the_rails", sound && abs(slow - 0.1) < 0.001 && abs(fast - 0.15) < 0.001 && abs(rough - 0.15) < 0.001 && R.wear == 100)
+	R.wear = 49
+	R.show_wear()
+	var/no_mark = R.wear_state() == 1 && !R.line_speed() && !R.wear_image && !R.overlays.len
+	R.wear = 49.95
+	R.take_traffic(10, 3)
+	var/worn = R.wear_state() == 2 && R.line_speed() == 5 && R.wear_image && R.wear_image.icon_state == "track_worn" && R.overlays.len == 1
+	R.wear = 80
+	R.show_wear()
+	platform_check("trackwear/worn_track_shows_and_slows", ("track_worn" in states) && ("track_bad" in states) && no_mark && worn && R.wear_state() == 3 && R.line_speed() == 2 && R.wear_image.icon_state == "track_bad" && R.overlays.len == 1 && findtext(R.wear_text(), "new sleepers"))
+
+	// The platelayer: a hammer packs rough and worn track, and bad track
+	// wants a new set of sleepers.
+	var/mob/living/human/platform_rider/ganger = new(platform_turf(321, 24))
+	var/obj/item/weapon/hammer/hammer = new(ganger.loc)
+	var/obj/item/stack/rail_sleepers/sleepers = new(ganger.loc)
+	sleepers.amount = 2
+	R.attackby(hammer, ganger)
+	var/too_far_gone = R.wear == 80
+	R.attackby(sleepers, ganger)
+	var/relaid = R.wear == 0 && sleepers.amount == 1 && !R.wear_image && !R.overlays.len
+	R.attackby(sleepers, ganger)
+	var/not_wasted = sleepers.amount == 1
+	R.wear = 60
+	R.show_wear()
+	R.attackby(hammer, ganger)
+	var/packed = R.wear == 30 && !R.wear_image
+	R.attackby(hammer, ganger)
+	platform_check("trackwear/platelayer_keeps_it_up", too_far_gone && relaid && not_wasted && packed && R.wear == 0 && !R.track_maintain(hammer, ganger))
+
+	// In the cab: told as the track gets worse, and off the rails when worn
+	// track is taken faster than its line speed.
+	var/obj/structure/trains/locomotive/E = platform_car("loco_steam", 320, 17, NORTH)
+	if (!istype(E))
+		platform_check("trackwear/cab_is_told", FALSE)
+		return
+	E.fuel = 100
+	E.on = TRUE
+	E.refresh_consist()
+	var/obj/structure/rails/under = locate(/obj/structure/rails) in E.loc
+	E.rail_speed = 6
+	var/clean = !E.meet_track() && under.wear > 0 && under.wear < 1 && !E.track_told
+	under.wear = 30
+	var/told_rough = !E.meet_track() && E.track_told == 1
+	under.wear = 60
+	E.rail_speed = 5
+	var/told_worn = !E.meet_track() && E.track_told == 2 && !E.derailed
+	under.wear = 85
+	E.rail_speed = 2
+	var/told_bad = !E.meet_track() && E.track_told == 3 && !E.derailed
+	platform_check("trackwear/cab_is_told", clean && told_rough && told_worn && told_bad)
+	under.attackby(hammer, ganger)
+	var/train_in_the_way = under.wear > 85
+	E.rail_speed = 2.5
+	var/off = E.meet_track()
+	platform_check("trackwear/too_fast_leaves_the_rails", train_in_the_way && off && E.derailed && E.rail_speed == 0)
+
+	// From the drive loop: a train run over a stretch leaves wear behind it.
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(320, 19))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	L.throttle = 1
+	L.drive()
+	var/limit = 300
+	while (L.driving && L.y < 23 && limit > 0)
+		sleep(1)
+		limit--
+	L.throttle = 0
+	var/obj/structure/rails/passed = locate(/obj/structure/rails) in platform_turf(320, 21)
+	platform_check("trackwear/driving_wears_the_line", L.y >= 21 && passed && passed.wear > 0)
+
 /proc/platform_stations_run()
 	for (var/ty in 2 to 25)
 		platform_track(290, ty, NORTH)
@@ -3027,6 +3115,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_big_warehouse_run()
 		platform_trackworks_run()
 		platform_turntable_run()
+		platform_trackwear_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
