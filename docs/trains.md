@@ -768,6 +768,37 @@ square, enough for a heavy locomotive or a four-tile car. The large one has
 - Not verified in a real client: the pit image at the edge of the screen,
   timed turning, and save and load of a laid table.
 
+
+## Track wear
+
+`train_trackwear.dm`. Every rail carries `wear`, 0 to 100. Nothing runs on a
+timer: an idle line does not decay.
+
+- **Traffic.** The drive loop calls `meet_track()` once a step, after the
+  snow. The rail under the leading car takes `TRACK_WEAR_RATE` (0.01) for
+  each unit of the train's weight (`take_traffic()`): doubled on a curve or
+  a switch, and half as much again above 5 tiles a second and once the tile
+  is already rough. A 40-weight train puts 0.4 on plain track, so a tile is
+  rough after about 60 such trains and worn after a hundred or so. Cars
+  rolling free do not count.
+- **States** (`wear_state()`): getting rough at 25, worn at 50, bad at 80.
+  Worn and bad track shows an overlay (`track_worn`, `track_bad`,
+  `show_wear()`), and `examine` says how the tile stands.
+- **Line speed** (`line_speed()`): worn track is good for 5 tiles a second
+  and bad track for 2. Faster than that the rails spread and the leading
+  car or engine leaves them (`leave_rails()`, as on a curve). One-tile
+  engines stall as they do on a curve.
+- **The cab** is told once as a stretch gets worse (`track_told`): rough,
+  then worn, then bad. Sound track clears it.
+- **Platelaying** (`track_maintain()`, asked first by the rails' own
+  `attackby()`): a hammer packs and spikes a rough or worn tile in 3
+  seconds and takes 30 off its wear. Bad track will not hold packing: a set
+  of railway sleepers used on it (5 seconds, one set) makes the tile new.
+  Sleepers also relay a worn tile. Neither is done under a train.
+- Turntable bridge rails wear and are packed like any others.
+- Not verified in a real client: the overlays on curves and switches, and
+  save and load of worn track.
+
 ## Wheel slip and sand
 
 An engine pulls only as hard as its wheels grip. Below 1.5 tiles a second,

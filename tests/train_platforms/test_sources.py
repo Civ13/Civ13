@@ -705,6 +705,30 @@ class TrainPlatformSourceTests(unittest.TestCase):
             self.assertIn('RECIPE: ' + recipe, RECIPES)
             self.assertIn('"%s" = "rail_steam"' % path, NODES)
 
+    def test_track_wear_is_a_count_on_the_rail(self):
+        wear = (ROOT / 'code/modules/1713/train_trackwear.dm').read_text(encoding='utf-8')
+        laying = (ROOT / 'code/modules/1713/track_laying.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_trackwear.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the drive loop asks once a step, after the snow
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        self.assertLess(drive.index('meet_snow()'), drive.index('if (meet_track())'))
+        self.assertEqual(TRAINS.count('meet_track()'), 1)
+        # platelaying is asked first by the rails' own attackby, not overridden
+        attack = laying[laying.index('/obj/structure/rails/attackby(obj/item/W, mob/user)'):]
+        self.assertLess(attack.index('if (track_maintain(W, user))'), attack.index('is_tool(W, TOOL_HAMMER)'))
+        self.assertNotIn('/obj/structure/rails/attackby', wear)
+        # nothing decays on a timer, and the limits match the documented ones
+        for word in ('spawn(', 'sleep(', 'while (', 'process(', 'world.time'):
+            self.assertNotIn(word, wear)
+        for name, value in (('TRACK_WEAR_RATE', '0.01'), ('TRACK_ROUGH', '25'), ('TRACK_WORN', '50'), ('TRACK_BAD', '80'),
+                            ('TRACK_WORN_SPEED', '5'), ('TRACK_BAD_SPEED', '2'), ('TRACK_PACK', '30')):
+            self.assertRegex(wear, r'#define %s %s\b' % (name, re.escape(value)))
+            self.assertIn('#undef ' + name, wear)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for state in ('track_worn', 'track_bad'):
+            self.assertIn('"%s"' % state, wear)
+            self.assertIn(state, states)
+
     def test_track_works_buffer_stops_and_crossings(self):
         works = (ROOT / 'code/modules/1713/train_trackworks.dm').read_text(encoding='utf-8')
         signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')

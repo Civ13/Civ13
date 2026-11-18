@@ -1244,6 +1244,9 @@ var/global/train_solo_move = FALSE
 			since++
 			// Snow on the line (train_snow.dm).
 			meet_snow()
+			// Wear on the track, and worn track taken too fast (train_trackwear.dm).
+			if (meet_track())
+				break
 			if (sanding > 0)
 				sanding--
 			if (steps % 8 == 0)
