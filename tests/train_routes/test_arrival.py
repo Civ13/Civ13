@@ -3,6 +3,7 @@ from pathlib import Path
 import unittest
 
 SOURCE = (Path(__file__).resolve().parents[2] / 'code/modules/persistence/train_arrival.dm').read_text()
+SOURCE_ROUTES = (Path(__file__).resolve().parents[2] / 'code/modules/persistence/train_routes.dm').read_text()
 
 
 class ArrivalContracts(unittest.TestCase):
@@ -27,8 +28,11 @@ class ArrivalContracts(unittest.TestCase):
         clear = SOURCE.split('/proc/train_arrival_clear(list/R)')[1].split('/obj/structure/region_gate/proc/train_arrival_after_load')[0]
         self.assertIn('train_route_revision(S) != R["revision"]', clear)
         self.assertIn('locate(P[1], P[2], P[3])', clear)
-        self.assertIn('!train_route_straight_rail(T, R["heading"])', clear)
-        self.assertIn('isliving(A)', clear)
+        # The same segment check that reserved the strip.
+        self.assertIn('!train_route_segment_clear(T, R["heading"], network)', clear)
+        segment = SOURCE_ROUTES.split('/proc/train_route_segment_clear(')[1].split('\n/')[0]
+        self.assertIn('!train_route_straight_rail(T, heading)', segment)
+        self.assertIn('isliving(A)', segment)
         self.assertNotIn('train_route_arrival_centres', clear)
 
     def test_saved_barrier_matches_exact_record(self):

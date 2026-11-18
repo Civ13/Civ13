@@ -35,10 +35,13 @@ class RouteContracts(unittest.TestCase):
     def test_no_partial_overflow_network(self):
         self.assertIn('if(pending.len > 50000) return null', ROUTES)
         self.assertIn('if(!islist(network)) return null', ROUTES)
+        # Cached only until a rail is laid or removed.
+        self.assertIn('if(train_route_network_cache_serial != rail_network_serial)', ROUTES)
 
     def test_arrival_full_consist_and_deck(self):
         self.assertIn('count > TRAIN_ROUTE_SEGMENTS_MAX', ROUTES)
-        self.assertIn('if(!left || !right)', ROUTES)
+        self.assertIn('if(!left || !right) return FALSE', ROUTES)
+        self.assertIn('if(!train_route_segment_clear(T, heading, network))', ROUTES)
         self.assertIn('!train_route_straight_rail(T, heading)', ROUTES)
         self.assertIn('return found == 1', ROUTES)
         self.assertIn('clear && centres.len == count', ROUTES)

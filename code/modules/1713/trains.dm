@@ -29,7 +29,7 @@
 	return ..()
 
 // The directions this piece of track leads to from its tile. Laying track
-// (track_laying.dm) and wear (train_trackwear.dm) read the shape from here.
+// (track_laying.dm) and train routing (rail_target) read the shape from here.
 /obj/structure/rails/proc/exits()
 	return list(dir, OPPOSITE_DIR(dir))
 
@@ -58,6 +58,12 @@
 			if (S.dir == want)
 				icon_state = "rails_split[half]"
 				set_dir(vertical ? S.dir : OPPOSITE_DIR(S.dir))
+
+// A loaded rail is restored before its neighbours have their saved facing, so
+// it draws the branch again once the whole level is back.
+/obj/structure/rails/regular/after_load()
+	..()
+	update_icon()
 
 /obj/structure/rails/regular/horizontal/New()
 	..()

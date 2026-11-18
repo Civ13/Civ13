@@ -81,14 +81,7 @@ var/global/train_arrival_hold_reason = null
 	if(train_route_inward(edge) != R["heading"]) return FALSE
 	for(var/list/P in centres)
 		var/turf/T = locate(P[1], P[2], P[3])
-		if(!T || !network[T] || !train_route_straight_rail(T, R["heading"])) return FALSE
-		var/turf/left = get_step(T, turn(R["heading"], 90))
-		var/turf/right = get_step(T, turn(R["heading"], -90))
-		if(!left || !right) return FALSE
-		for(var/turf/D in list(T, left, right))
-			if(D.density) return FALSE
-			for(var/atom/movable/A in D)
-				if(isliving(A) || istype(A, /obj/structure/trains) || istype(A, /obj/structure/train_part) || (A.density && !istype(A, /obj/structure/rails))) return FALSE
+		if(!train_route_segment_clear(T, R["heading"], network)) return FALSE
 	return TRUE
 
 /obj/structure/region_gate/proc/train_arrival_after_load()
