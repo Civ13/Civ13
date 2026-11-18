@@ -2912,7 +2912,7 @@ RECIPE: /material/iron/,ladder,/obj/item/weapon/siegeladder/metal,8,40,0,1,none,
 //*********************| IRON LOCOMOTIVES & TRACKS |**************************
 
 RECIPE: /material/iron/,rails,/obj/item/stack/rail_lengths,1,50,0,0,trains,93,0,0,8,null
-RECIPE: /material/wood/,railway sleepers,/obj/item/stack/rail_sleepers,1,40,0,0,trains,93,0,0,8,null
+RECIPE: /material/wood/,railway sleepers,/obj/item/stack/rail_sleepers,1,40,0,0,trains,22,0,0,8,null
 RECIPE: /material/iron/,rail switcher (to left),/obj/structure/rails/split/switcher,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail switcher (to right),/obj/structure/rails/split/switcher/right,2,50,1,1,trains,93,0,0,8,null
 RECIPE: /material/iron/,rail rotator platform,/obj/structure/rails/rotate,3,50,1,1,trains,93,0,0,8,null
@@ -2971,6 +2971,9 @@ RECIPE: /material/iron/,large turntable,/obj/structure/train_turntable/large,40,
 RECIPE: /material/wood/,loading stage,/obj/structure/rail_depot/loading_stage,24,300,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,goods crane,/obj/structure/workshop_machine/shear_legs/crane/goods,12,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/wood/,livestock ramp,/obj/structure/train_livestock_ramp,6,150,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,hand car,/obj/structure/trains/transport/handcar,6,200,1,1,trains,101,0,0,8,null
+RECIPE: /material/wood/,chaldron wagon,/obj/structure/trains/storage/chaldron,12,180,1,1,trains,22,0,0,8,null
+RECIPE: /material/wood/,wooden rails,/obj/item/stack/rail_lengths/wooden,2,50,0,0,trains,22,0,0,8,null
 RECIPE: /material/iron/,snowplough,/obj/item/train_snowplough,10,200,0,0,trains,101,0,0,8,null
 RECIPE: /material/steel/,automatic coupler,/obj/item/train_coupling/automatic,6,120,0,0,trains,140,0,0,8,null
 RECIPE: /material/steel/,bogie coach kit,/obj/structure/train_car_kit/bogie_coach,26,500,1,1,trains,140,0,0,8,null

@@ -217,8 +217,14 @@
 	var/curved = shape[2]
 	if (curved == istype(R, /obj/structure/rails/turn) && (curved ? R.dir == shape[1] : (shape[1] in list(R.dir, OPPOSITE_DIR(R.dir)))))
 		return R
+	var/was_wooden = R.wooden
+	var/was_worn = R.wear
 	qdel(R)
-	return track_make_rail(T, shape[1], curved)
+	var/obj/structure/rails/bent = track_make_rail(T, shape[1], curved)
+	bent.wear = was_worn
+	bent.set_wooden(was_wooden)
+	bent.show_wear()
+	return bent
 
 /proc/track_make_rail(turf/T, d, curved)
 	var/obj/structure/rails/R
@@ -243,6 +249,7 @@
 	layer = 2.5
 	dir = NORTH
 	var/railed = FALSE // rails sit on the sleepers, not yet spiked down
+	var/wooden = FALSE // and they are wooden rails (train_early.dm)
 	var/curved = FALSE // a /obj/structure/rails/turn facing dir once spiked
 
 /obj/structure/rail_bed/after_load()
@@ -252,7 +259,7 @@
 /obj/structure/rail_bed/update_icon()
 	if (railed)
 		icon_state = curved ? "rails_turn_left" : "rails"
-		color = "#c8c8c8"
+		color = wooden ? WOODEN_RAIL_COLOR : "#c8c8c8"
 	else
 		icon_state = "rails_background"
 		color = null
@@ -302,8 +309,10 @@
 	to_chat(user, SPAN_NOTICE("You start setting the rails on \the [src]."))
 	if (!do_after(user, TRACK_RAIL_TIME, src))
 		return FALSE
+	var/wood = istype(R, /obj/item/stack/rail_lengths/wooden)
 	if (railed || QDELETED(src) || !R.use(1))
 		return FALSE
+	wooden = wood
 	place_rails()
 	playsound(loc, 'sound/effects/clang.ogg', 50, TRUE)
 	user.visible_message(SPAN_NOTICE("[user] sets rails on the sleepers."), SPAN_NOTICE("You set the rails on the sleepers. Spike them down with a hammer."))
@@ -316,16 +325,21 @@
 	var/turf/T = get_turf(src)
 	var/d = dir
 	var/c = curved
+	var/w = wooden
 	qdel(src)
-	return track_make_rail(T, d, c)
+	var/obj/structure/rails/R = track_make_rail(T, d, c)
+	R.set_wooden(w)
+	return R
 
 // Lifts loose rails off the sleepers, or pries up bare sleepers; returns the item.
 /obj/structure/rail_bed/proc/pry()
 	var/turf/T = get_turf(src)
 	if (railed)
+		var/kind = wooden ? /obj/item/stack/rail_lengths/wooden : /obj/item/stack/rail_lengths
 		railed = FALSE
+		wooden = FALSE
 		update_icon()
-		return new /obj/item/stack/rail_lengths(T, 1)
+		return new kind(T, 1)
 	qdel(src)
 	return new /obj/item/stack/rail_sleepers(T, 1)
 
@@ -372,6 +386,7 @@
 		B.curved = istype(src, /obj/structure/rails/turn)
 		B.set_dir(dir)
 		B.railed = TRUE
+		B.wooden = wooden
 		B.update_icon()
 		. = B
 	else

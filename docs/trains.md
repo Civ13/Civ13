@@ -799,6 +799,52 @@ timer: an idle line does not decay.
 - Not verified in a real client: the overlays on curves and switches, and
   save and load of worn track.
 
+## Early rails
+
+`train_early.dm`. Rails before the steam engine, and the small things that
+still run on them after it.
+
+- **Hand car** (`/obj/structure/trains/transport/handcar`, 6 iron, Rail &
+  Steam). A one-tile car with a walking beam. A rider standing on its tile
+  clicks it to pump (`pump()`): one stroke every 0.8 seconds adds 0.5 tiles
+  a second to a light car, less to a heavy one, and sets the car rolling
+  free (`start_rolling()`, train_rolling.dm). It goes the way the rider
+  faces when that is along the track, else the way it was last pumped
+  (`pump_way`). One rider keeps up 1.5 tiles a second and two riders who
+  both pumped in the last 3 seconds 2.25 (`pump_crew()`). Pumping against
+  the roll takes twice a stroke off the speed. It rolls and coasts like any
+  free car, so it must be pumped to keep going. `pump_problem()` refuses a
+  rider who is not aboard, a pinned handbrake or seized axle, a train with
+  an engine or a draft animal on it, and a train over 4 in weight.
+- **Draft animals.** A horse or an ox (`is_draft_animal()`) is harnessed
+  to the car at either end of a train with no engine: drag the car onto
+  the animal, or use the car's Harness Animal verb (`player_harness()`, 3
+  seconds). It draws 4 in weight for each point of `draft_animal_pull()`:
+  8 for a horse, 4 for an ox, half that when starving
+  (`train_draft_load()`). The car listens for the animal's moves
+  (`GLOB.moved_event`): when the animal gets two tiles away the train
+  steps one tile after it (`draw()`), turning its order round first when
+  the animal is at the tail. There is no momentum: the train stops when
+  the animal does. The traces let go (`unharness()`) when the animal is
+  more than two tiles off or not along the line, a handbrake is on or an
+  axle seized, the load has grown too heavy, or an engine is coupled on.
+  The train slows a ridden animal by up to 3 of move delay
+  (`draft_drag()`, through `hitch_drag()`). Harnesses are not saved.
+- **Chaldron wagon** (`/obj/structure/trains/storage/chaldron`, 12 wood,
+  Wagons & Ships): a wooden storage wagon of 10 slots that weighs 0.6.
+- **Wooden rails** (`/obj/item/stack/rail_lengths/wooden`, 2 wood, Wagons &
+  Ships). Laid on sleepers and spiked like iron rails; the bed and the
+  finished rail carry `wooden` (`set_wooden()`), shown by a tint
+  (`WOODEN_RAIL_COLOR`, `code/__defines/trains.dm`) and the name
+  "wagonway". Prying gives wooden rails back. Hand cars, rolling cars and
+  animal-drawn trains wear no track at all (only `meet_track()` in an
+  engine's drive loop does); an engine wears wooden rails 8 times as fast
+  as iron (`TRACK_WOODEN_WEAR`). Railway sleepers moved to Wagons & Ships
+  so that a wagonway can be built before Rail & Steam.
+- Not verified in a real client: leading and riding a harnessed animal,
+  the feel of pumping, the tint on curves and switches, and save and load
+  of wooden track.
+
 ## Freight handling
 
 `train_goods.dm`. The goods yard: every load is put on and taken off by

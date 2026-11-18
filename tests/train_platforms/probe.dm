@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 334
+	maxx = 344
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2755,7 +2755,7 @@ var/global/platform_probe_runtime_error = FALSE
 
 	// The large table: eleven tiles of bridge. It is taken up with nothing
 	// on it, and goes with its pivot.
-	var/obj/structure/train_turntable/large/edge = new(platform_turf(332, 19))
+	var/obj/structure/train_turntable/large/edge = new(platform_turf(world.maxx - 2, 19))
 	var/near_edge = edge.lay_problem()
 	qdel(edge)
 	var/obj/structure/train_turntable/large/big = new(platform_turf(316, 19))
@@ -2975,6 +2975,121 @@ var/global/platform_probe_runtime_error = FALSE
 	var/long = wagon.set_card("A very long destination that runs right off the edge of any card") && length(wagon.card_text()) <= 40
 	var/wiped = wagon.set_card("") && isnull(tail.card_text()) && isnull(flat.card_text())
 	platform_check("goods/destination_cards", blank && carded && listed && long && wiped)
+
+// Early rails (train_early.dm): columns 338 and 341.
+/proc/platform_early_run()
+	for (var/ty in 2 to 25)
+		platform_track(338, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+
+	// The hand car: a rider on it pumps the beam and it rolls.
+	var/obj/structure/trains/transport/handcar/H = new(platform_turf(338, 4))
+	H.dir = NORTH
+	var/mob/living/human/platform_rider/pumper = new(platform_turf(338, 4))
+	var/mob/living/human/platform_rider/mate = new(platform_turf(337, 4))
+	pumper.dir = NORTH
+	var/afoot = findtext(H.pump_problem(mate), "Climb onto") && !H.pump(mate, NORTH) && isnull(H.pump_problem(pumper))
+	var/stroke = H.pump(pumper, NORTH)
+	var/list/motion = H.train_motion()
+	var/off = stroke && motion && abs(H.roll_speed - 0.8) < 0.01 && H.travel_way(motion) == NORTH && H.pump_way == NORTH && !H.pump(pumper, NORTH) && abs(H.roll_speed - 0.8) < 0.01
+	var/rolled = H.roll_step() > 0
+	platform_check("early/hand_car_is_pumped_along", afoot && off && rolled && H.y == 5 && pumper.loc == H.loc && H.roll_speed < 0.8 && ("handcar" in states))
+
+	// One rider keeps it to a steady speed, two go faster, and pumping
+	// against the roll stops it.
+	for (var/i in 1 to 6)
+		H.pumped["\ref[pumper]"] = world.time - 20
+		H.pump(pumper, EAST)
+	var/alone = abs(H.roll_speed - 1.5) < 0.01 && H.pump_crew() == 1
+	mate.loc = H.loc
+	for (var/i in 1 to 4)
+		H.pumped["\ref[mate]"] = world.time - 10
+		H.pump(mate, NORTH)
+	var/paired = H.pump_crew() == 2 && abs(H.roll_speed - 2.25) < 0.01
+	var/strokes = 0
+	while (H.roll_speed > 0 && strokes < 10)
+		H.pumped["\ref[pumper]"] = world.time - 20
+		H.pump(pumper, SOUTH)
+		strokes++
+	platform_check("early/hand_car_speed_and_braking", alone && paired && strokes == 2 && H.roll_speed == 0 && isnull(H.train_motion()) && H.pump_way == SOUTH)
+
+	// It will not move braked or overloaded.
+	H.set_handbrake(TRUE)
+	var/braked = findtext(H.pump_problem(pumper), "handbrake")
+	H.set_handbrake(FALSE)
+	H.train_weight = 5
+	var/heavy = findtext(H.pump_problem(pumper), "too heavy")
+	H.train_weight = initial(H.train_weight)
+	platform_check("early/hand_car_limits", braked && heavy && isnull(H.pump_problem(pumper)) && H.y == 5)
+	mate.loc = platform_turf(336, 3)
+	pumper.loc = platform_turf(336, 4)
+
+	// A horse harnessed to the end of a string of wagons draws it.
+	// The fixture boots without the global lists the observers count in.
+	if (!GLOB.event_sources_count)
+		GLOB.event_sources_count = list()
+	if (!GLOB.event_listen_count)
+		GLOB.event_listen_count = list()
+	var/obj/structure/trains/storage/chaldron/C1 = new(platform_turf(338, 14))
+	var/obj/structure/trains/storage/chaldron/C2 = new(platform_turf(338, 13))
+	var/obj/structure/trains/storage/chaldron/C3 = new(platform_turf(338, 12))
+	C1.dir = NORTH
+	C2.dir = NORTH
+	C3.dir = NORTH
+	C1.connected = C2
+	C2.connected = C3
+	var/mob/living/simple_animal/horse/horse = new(platform_turf(338, 15))
+	var/mob/living/simple_animal/train_probe_dummy/sheep = new(platform_turf(337, 14))
+	var/mob/living/simple_animal/horse/far_horse = new(platform_turf(341, 20))
+	var/refused = findtext(C1.harness_refusal(sheep), "Only a horse") && findtext(C2.harness_refusal(horse), "one end") && findtext(C1.harness_refusal(far_horse), "next to") && !C1.harness(sheep)
+	C1.train_weight = 20
+	var/overweight = findtext(C1.harness_refusal(horse), "too heavy")
+	C1.train_weight = initial(C1.train_weight)
+	var/in_traces = isnull(C1.harness_refusal(horse)) && C1.harness(horse) && C1.draft_animal == horse && horse.hitched_train == C1 && horse.hitch_drag() > 0 && findtext(C1.draft_line(), "harnessed") && isnull(C2.draft_line()) && findtext(C3.harness_refusal(far_horse), "already draws")
+	platform_check("early/horse_is_harnessed_to_an_end", refused && overweight && in_traces && train_draft_load(horse) == 8 && ("chaldron" in states))
+	qdel(sheep)
+	horse.forceMove(platform_turf(338, 16))
+	var/one = C1.y == 15 && C2.y == 14 && C3.y == 13
+	horse.forceMove(platform_turf(338, 17))
+	horse.forceMove(platform_turf(338, 18))
+	platform_check("early/train_follows_the_horse", one && C1.y == 17 && C2.y == 16 && C3.y == 15 && C1.draft_animal == horse && !C1.roll_speed && !C1.automovement)
+
+	// From the other end it draws the train back the way it came.
+	C1.unharness()
+	horse.forceMove(platform_turf(338, 14))
+	var/turned = !horse.hitched_train && !horse.hitch_drag() && C3.harness(horse) && C3.draft_animal == horse
+	horse.forceMove(platform_turf(338, 13))
+	platform_check("early/horse_draws_from_either_end", turned && C3.y == 14 && C2.y == 15 && C1.y == 16 && C3.train_head() == C3)
+
+	// A brake left on, or a horse that wanders off, lets the traces go.
+	C2.set_handbrake(TRUE)
+	horse.forceMove(platform_turf(338, 12))
+	var/held = !C3.draft_animal && !horse.hitched_train && C3.y == 14
+	C2.set_handbrake(FALSE)
+	var/again = C3.harness(horse) == FALSE && C3.draw() == FALSE
+	horse.forceMove(platform_turf(338, 13))
+	again = !again ? FALSE : C3.harness(horse)
+	horse.forceMove(platform_turf(341, 10))
+	platform_check("early/traces_come_loose", held && again && !C3.draft_animal && !horse.hitched_train && C3.y == 14)
+	qdel(horse)
+	qdel(far_horse)
+
+	// Wooden rails: laid like iron ones, and an engine wears them fast.
+	var/obj/structure/rail_bed/B = track_place_bed(platform_turf(341, 5), NORTH)
+	var/obj/item/stack/rail_lengths/wooden/timber = new(platform_turf(342, 5))
+	B.lay_rails(timber, pumper)
+	var/laid = B.railed && B.wooden && B.color == WOODEN_RAIL_COLOR
+	var/obj/structure/rails/W = B.spike()
+	var/obj/structure/rails/iron = locate() in platform_turf(338, 20)
+	var/wooden = istype(W) && W.wooden && W.color == WOODEN_RAIL_COLOR && W.name == "wagonway" && iron && !iron.wooden && isnull(iron.color)
+	W.take_traffic(10, 1)
+	var/before = iron.wear
+	iron.take_traffic(10, 1)
+	platform_check("early/wooden_rails_wear_under_an_engine", laid && wooden && abs(W.wear - 0.8) < 0.001 && abs(iron.wear - before - 0.1) < 0.001)
+	var/obj/structure/rail_bed/back = W.pry_apart()
+	var/loose = istype(back) && back.wooden && back.railed
+	var/obj/item/stack/rail_lengths/lifted = back ? back.pry() : null
+	platform_check("early/wooden_rails_come_up_as_wood", loose && istype(lifted, /obj/item/stack/rail_lengths/wooden) && lifted.color == WOODEN_RAIL_COLOR && back && !back.railed && !back.wooden)
 
 /proc/platform_stations_run()
 	for (var/ty in 2 to 25)
@@ -3236,6 +3351,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_turntable_run()
 		platform_trackwear_run()
 		platform_goods_run()
+		platform_early_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
