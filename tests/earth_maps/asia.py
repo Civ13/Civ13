@@ -2,7 +2,11 @@
 (the cape lies past 180, so it is written as 190)."""
 
 ASIA = {
-    'path': 'maps/earth_drafts/earth_asia.dmm',
+    'path': 'maps/nomads/nomads_earth_asia.dmm',
+    # A playable region (docs/earth-continents.md): the map carries this
+    # metadata and has height, current and flood files beside the other maps.
+    'metadata': '/obj/map_metadata/nomads/earth_asia',
+    'heights': 'maps/heights/nomads_earth_asia',
     'seed': 1206,
     'size': (1226, 854),
     'design_width': 800,

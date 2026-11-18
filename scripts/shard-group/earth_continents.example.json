@@ -1,7 +1,8 @@
 {
-  "_comment": "Earth-shaped continents (docs/earth-continents.md). Europe keeps its region id and port and only changes its map, as a fresh world. Africa takes the place of the desert and jungle regions: remove those two entries and add this one on a free port. The ids are fixed: Europe's east edge and Africa's north-east edge lead to asia, and Asia's west edge to europe and africa.",
+  "_comment": "Earth-shaped continents (docs/earth-continents.md). Europe and Asia keep their region ids and ports and only change their maps, as fresh worlds. Africa takes the place of the desert and jungle regions: remove those two entries and add this one on a free port. The ids are fixed: Europe's east edge and Africa's north-east edge lead to asia, and Asia's west edge to europe and africa.",
   "regions": [
     {"id": "europe", "name": "Europe", "kind": "SURFACE", "port": 1740, "map": "maps/nomads/nomads_earth_europe.dmm"},
-    {"id": "africa", "name": "Africa", "kind": "SURFACE", "port": 1741, "map": "maps/nomads/nomads_earth_africa.dmm"}
+    {"id": "africa", "name": "Africa", "kind": "SURFACE", "port": 1741, "map": "maps/nomads/nomads_earth_africa.dmm"},
+    {"id": "asia", "name": "Asia", "kind": "SURFACE", "port": 1743, "map": "maps/nomads/nomads_earth_asia.dmm"}
   ]
 }

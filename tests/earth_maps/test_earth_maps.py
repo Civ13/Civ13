@@ -4,7 +4,7 @@ Offline: reads the committed maps and the repository's region files. It checks
 that each land is the map its design last wrote, that it is well formed and
 within the measured size of the Americas regions. A draft must stay a draft:
 nothing a server builds or loads may name it. A playable land (Europe,
-Africa; docs/earth-continents.md) carries its metadata, has the height,
+Africa, Asia; docs/earth-continents.md) carries its metadata, has the height,
 current and flood files written with it, is registered in source and runs on
 over its crossing edges.
 """
@@ -21,7 +21,7 @@ sys.path.insert(0, str(HERE))
 
 DRAFTS = json.loads((HERE / 'drafts.json').read_text(encoding='utf-8'))
 NAMES = ('africa', 'antarctica', 'asia', 'europe', 'greenland', 'oceania')
-PLAYABLE = ('africa', 'europe')
+PLAYABLE = ('africa', 'asia', 'europe')
 DRAFT_NAMES = tuple(name for name in NAMES if name not in PLAYABLE)
 MEASURED_CELLS = 1050000   # the size the Americas regions were measured at (tests/americas_maps)
 FRESH_ICE = '/turf/floor/beach/water/ice'
@@ -197,19 +197,21 @@ class EarthRegions(unittest.TestCase):
     def test_crossing_edges_have_dry_ground_and_lead_to_asia(self):
         self.assertIn('edge_crossings = list("east" = "asia")', self.block('europe'))
         self.assertIn('edge_crossings = list("east" = list("asia" = list(0.68, 1)))', self.block('africa'))
-        asia = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_asia.dm').read_text(encoding='utf-8')
-        self.assertIn('edge_crossings = list("west" = list("africa" = list(0, 0.5), "europe" = list(0.5, 1)))', asia)
-        for name, (lo, hi) in (('europe', (0, 1)), ('africa', (0.68, 1))):
+        self.assertIn('edge_crossings = list("west" = list("africa" = list(0, 0.45), "europe" = list(0.45, 1)))',
+                      self.block('asia'))
+        for name, side, (lo, hi) in (('europe', 'east', (0, 1)), ('africa', 'east', (0.68, 1)),
+                                     ('asia', 'west', (0, 0.45)), ('asia', 'west', (0.45, 1))):
             keys, rows = self.maps[name]
             height = len(rows)
-            col = len(rows[0]) - 2
+            col = len(rows[0]) - 2 if side == 'east' else 0
+            step = -1 if side == 'east' else 1
             # Counted south to north, as region_edge.dm does.
             stretch = range(int(lo * height), int(hi * height))
             dry = [y for y in stretch if self.dry(self.turf_of(keys, rows[height - 1 - y][col:col + 2]))]
-            self.assertGreater(len(dry), 40, name)
+            self.assertGreater(len(dry), 40, (name, side, lo))
             # Arrivals are put three tiles in: that ground is mostly dry too.
-            inner = [y for y in dry if self.dry(self.turf_of(keys, rows[height - 1 - y][col - 6:col - 4]))]
-            self.assertGreater(len(inner), 0.8 * len(dry), name)
+            inner = [y for y in dry if self.dry(self.turf_of(keys, rows[height - 1 - y][col + 6 * step:col + 6 * step + 2]))]
+            self.assertGreater(len(inner), 0.8 * len(dry), (name, side, lo))
 
     def test_sea_lanes_know_africa_and_the_new_coasts(self):
         lanes = (ROOT / 'code/modules/naval/sea_lanes.dm').read_text(encoding='utf-8')
@@ -217,7 +219,8 @@ class EarthRegions(unittest.TestCase):
         self.assertIn('map.sea_coasts : here[3]', lanes)
         self.assertIn('sea_coasts = list("W", "N")', self.block('europe'))
         self.assertIn('sea_coasts = list("W", "S", "E")', self.block('africa'))
-        for name, sides in (('europe', 'WN'), ('africa', 'WSE')):
+        self.assertIn('sea_coasts = list("E", "S", "N")', self.block('asia'))
+        for name, sides in (('europe', 'WN'), ('africa', 'WSE'), ('asia', 'ESN')):
             keys, rows = self.maps[name]
             sea = {k for k, v in keys.items() if 'saltwater' in v or 'ice/salty' in v}
             edge = {'N': [rows[0][i:i + 2] for i in range(0, len(rows[0]), 2)],

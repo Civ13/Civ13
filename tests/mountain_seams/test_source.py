@@ -150,8 +150,8 @@ class SourceContract(unittest.TestCase):
         meta = METADATA.read_text(encoding='utf-8')
         self.assertEqual(meta.count('mountain_seams = TRUE'), 2)
         self.assertEqual(ASIA_METADATA.read_text(encoding='utf-8').count('\tmountain_seams = TRUE\n'), 1)
-        # The Earth-shaped Europe and Africa are one-level mountain maps too.
-        self.assertEqual(EARTH_METADATA.read_text(encoding='utf-8').count('\tmountain_seams = TRUE\n'), 2)
+        # The Earth-shaped Europe, Africa and Asia are one-level mountain maps too.
+        self.assertEqual(EARTH_METADATA.read_text(encoding='utf-8').count('\tmountain_seams = TRUE\n'), 3)
         self.assertIn('/obj/map_metadata/var/mountain_seams = FALSE', source())
         others = [p for p in (ROOT / 'code').rglob('*.dm')
                   if p not in (SOURCE, METADATA, ASIA_METADATA, EARTH_METADATA) and 'mountain_seams = TRUE' in p.read_text(encoding='utf-8', errors='replace')]

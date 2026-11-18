@@ -41,7 +41,7 @@
 		if (land_outfit && !QDELETED(src))
 			give_land_clothes(mob_area)
 		if (spawn_area_is_cold(mob_area))
-			if (land_outfit || map.ID != MAP_NOMADS_ASIA)
+			if (land_outfit || !(map.ID in list(MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_ASIA)))
 				if (map.ordinal_age <= 4)
 					if (map.ordinal_age == 0)
 						equip_to_slot_or_del(new /obj/item/clothing/suit/prehistoricfurcoat(src), slot_wear_suit)
@@ -155,7 +155,7 @@
 				else
 					equip_to_slot_or_del(new /obj/item/clothing/shoes/medieval(src), slot_shoes)
 					equip_to_slot_or_del(new /obj/item/clothing/under/medieval/leather(src), slot_w_uniform)
-			else if (map.ID == MAP_NOMADS_ASIA)
+			else if (map.ID == MAP_NOMADS_ASIA || map.ID == MAP_NOMADS_EARTH_ASIA)
 				spawn(5)
 					var/area/mob_area = get_area(src)
 					if (mob_area.climate == "tundra" || mob_area.climate == "taiga")
@@ -921,7 +921,7 @@
 //////////////////////////////////////////////////////
 ////////////////////////Nomads_Asia///////////////////
 //////////////////////////////////////////////////////
-		else if (map.ID == MAP_NOMADS_ASIA)
+		else if (map.ID == MAP_NOMADS_ASIA || map.ID == MAP_NOMADS_EARTH_ASIA)
 			spawn(5)
 				var/area/mob_area = get_area(src)
 				switch (mob_area.climate)
@@ -1202,7 +1202,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list(MAP_TESTING, MAP_NOMADS, MAP_JUNGLE_OF_THE_CHADS, MAP_PEPELSIBIRSK, MAP_NOMADS_AFRICA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_CONTINENTAL, MAP_NOMADS_DESERT, MAP_NOMADS_DIVIDE, MAP_NOMADS_EUROPE, MAP_NOMADS_EXTENDED, MAP_NOMADS_FROZEN_WASTELAND, MAP_NOMADS_GAIA, MAP_NOMADS_ICE_AGE, MAP_NOMADS_ISLAND, MAP_NOMADS_JUNGLE, MAP_NOMADS_KARAFUTO, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_MOUNTAIN, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_NORTH_AMERICA, MAP_NOMADS_OCEANIA, MAP_NOMADS_PANGEA, MAP_NOMADS_PERSISTENCE_BETA, MAP_NOMADS_STRANDED, MAP_NOMADS_UK, MAP_NOMADS_WASTELAND, MAP_NOMADS_WASTELAND_2, MAP_NOMADS_WASTELAND_3, MAP_COLONIA)
+	allowed_maps = list(MAP_TESTING, MAP_NOMADS, MAP_JUNGLE_OF_THE_CHADS, MAP_PEPELSIBIRSK, MAP_NOMADS_AFRICA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ASIA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_CONTINENTAL, MAP_NOMADS_DESERT, MAP_NOMADS_DIVIDE, MAP_NOMADS_EUROPE, MAP_NOMADS_EXTENDED, MAP_NOMADS_FROZEN_WASTELAND, MAP_NOMADS_GAIA, MAP_NOMADS_ICE_AGE, MAP_NOMADS_ISLAND, MAP_NOMADS_JUNGLE, MAP_NOMADS_KARAFUTO, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_MOUNTAIN, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_NORTH_AMERICA, MAP_NOMADS_OCEANIA, MAP_NOMADS_PANGEA, MAP_NOMADS_PERSISTENCE_BETA, MAP_NOMADS_STRANDED, MAP_NOMADS_UK, MAP_NOMADS_WASTELAND, MAP_NOMADS_WASTELAND_2, MAP_NOMADS_WASTELAND_3, MAP_COLONIA)
 
 	is_nomad = TRUE
 
