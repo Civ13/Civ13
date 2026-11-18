@@ -216,6 +216,8 @@
 	var/plough = plough_text()
 	if (plough)
 		to_chat(user, plough)
+	// The destination card (train_goods.dm).
+	to_chat(user, card_line())
 
 // Explosions strain the couplings of the cars they catch.
 /obj/structure/trains/ex_act(severity)

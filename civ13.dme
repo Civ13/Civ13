@@ -1084,6 +1084,7 @@
 #include "code\modules\1713\train_derail.dm"
 #include "code\modules\1713\train_diesel.dm"
 #include "code\modules\1713\train_freight.dm"
+#include "code\modules\1713\train_goods.dm"
 #include "code\modules\1713\train_locomotives.dm"
 #include "code\modules\1713\train_platforms.dm"
 #include "code\modules\1713\train_rolling.dm"
