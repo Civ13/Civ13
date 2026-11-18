@@ -31,6 +31,13 @@ class LobbyRelaySourceTests(unittest.TestCase):
         self.assertIn('webhook_send_lobby_arrival(C.key, "join_screen")', self.source)
         self.assertIn('webhook_send_lobby_arrival(C.key, "entered")', self.source)
 
+    def test_arrivals_carry_readable_text_for_older_bots(self):
+        arrival = self.source[self.source.index('/proc/webhook_send_lobby_arrival('):]
+        arrival = arrival[:arrival.index('\n/proc/')]
+        self.assertIn('"message" = line', arrival)
+        self.assertIn('entered the world.', arrival)
+        self.assertIn('is on the join screen.', arrival)
+
     def test_hidden_staff_and_restart_rush_get_no_notice(self):
         self.assertIn('C.holder.fakekey', self.source)
         arrival = self.source[self.source.index('/proc/lobby_relay_arrival('):]
