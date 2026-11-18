@@ -223,5 +223,16 @@ class WiremodSource(unittest.TestCase):
         self.assertIn('AGPL-3.0', third_party)
 
 
+    def test_players_craft_the_circuit_and_remote(self):
+        recipes = read(ROOT / 'config/crafting/material_recipes_global.txt')
+        admin_only = read(ROOT / 'code/game/mob/crafting_atlas_admin.dm')
+        for path in ('/obj/item/integrated_circuit', '/obj/item/compact_remote'):
+            line = re.search(r'^RECIPE: /material/electronics/,[^,]+,' + re.escape(path) + r',.*$', recipes, re.M)
+            self.assertIsNotNone(line, path)
+            self.assertNotIn('//', line.group(0))
+            self.assertNotIn(path + ' =', admin_only)
+        self.assertIn('/obj/item/circuit_component =', admin_only)
+
+
 if __name__ == '__main__':
     unittest.main()

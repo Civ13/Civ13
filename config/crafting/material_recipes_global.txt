@@ -468,6 +468,8 @@ RECIPE: /material/electronics/,automated fabricator,/obj/structure/factory_fabri
 RECIPE: /material/electronics/,stack arm,/obj/structure/factory_arm/stack,10,200,1,1,none,180,0,0,8,null
 RECIPE: /material/electronics/,computerized fabricator,/obj/structure/factory_fabricator/computerized,15,300,1,1,none,180,0,0,8,null
 RECIPE: /material/electronics/,3D printer,/obj/structure/factory_fabricator/printer,12,300,1,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,integrated circuit,/obj/item/integrated_circuit,4,100,0,1,none,205,0,0,8,null
+RECIPE: /material/electronics/,compact remote,/obj/item/compact_remote,5,100,0,1,none,205,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 
