@@ -681,7 +681,11 @@ class RegionPlatform(Platform):
         path = Path(self.config['repository'])
         (path / 'logs').mkdir(exist_ok=True)
         self.start_agent()
-        argv = [self.config['daemon'], dmb, str(port), '-trusted', '-close', '-invisible', '-log', STANDBY_LOG,
+        # -invisible would keep the world off the BYOND hub for good, even after the handover
+        # opens the region's port, so a public region's standby launches -public and stays
+        # hidden through world.visibility until then (Gaia, 2026-11-18).
+        argv = [self.config['daemon'], dmb, str(port), '-trusted', '-close',
+                '-public' if self.config['public'] else '-invisible', '-log', STANDBY_LOG,
                 '-params', 'standby=%d' % port]
         return detach(scoped(argv, self.config), path, None)
 
