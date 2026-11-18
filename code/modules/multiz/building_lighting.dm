@@ -34,11 +34,14 @@ var/global/list/building_levels_with_ground = list()
 		if (T.z == center.z)
 			T.building_wake()
 
+// A registered cell that still has no lighting (linked unwoken from the level
+// above, or left unlit by a restore) gets its lighting here too; it drew black.
 /turf/sky/building/proc/building_wake()
-	if (!turf_registry_add(src))
+	if (turf_registry_add(src))
+		turfs += src
+		calculate_window_coeff()
+	else if (lighting_overlay || !created_lighting_corners_and_overlays)
 		return
-	turfs += src
-	calculate_window_coeff()
 	if (map && map.zlevels_without_lighting.Find(z))
 		return
 	for (var/i = 1 to 4)

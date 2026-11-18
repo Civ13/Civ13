@@ -164,6 +164,25 @@ var/list/open_air_probe_log = list()
 	for (var/obj/effect/open_air_view/X in middle.vis_contents)
 		count++
 	open_air_probe_check(count == 1, "no_stacking")
+	// A view whose cell got the sky sprite back, or lost its vis_contents,
+	// repairs itself on the next scan instead of showing the sky.
+	var/turf/sky/building/healed = locate(5, 6, 3)
+	var/obj/effect/open_air_view/HV = open_air_probe_view(healed)
+	healed.icon = initial(healed.icon)
+	healed.vis_contents.Cut()
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	open_air_probe_check(HV && open_air_probe_view(healed) == HV && !healed.icon && (HV in healed.vis_contents), "view_repairs_itself")
+	// A level being added elsewhere does not stop the scan here; one being
+	// added under this level does.
+	var/turf/sky/building/fresh = locate(11, 2, 3)
+	open_air_probe_check(!open_air_probe_view(fresh), "fresh_cell_unlinked")
+	building_allocating_z = 2
+	open_air_probe_check(!open_air_view_busy(), "allocation_not_global")
+	open_air_probe_check(!open_air_view_link_around(3, 11, 2, 0, 0) && !open_air_probe_view(fresh), "allocating_below_skips")
+	building_allocating_z = 5
+	open_air_view_link_around(3, 11, 2, 0, 0)
+	open_air_probe_check(open_air_probe_view(fresh), "other_allocation_links")
+	building_allocating_z = 0
 	// Lighting is never shown second-hand; everything else counts as the cell.
 	var/atom/movable/lighting_overlay/L = /atom/movable/lighting_overlay
 	open_air_probe_check(initial(L.vis_flags) == VIS_HIDE, "lighting_hidden")
