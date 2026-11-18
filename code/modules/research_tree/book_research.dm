@@ -382,7 +382,7 @@
 		var/sample = FALSE
 		if (assigned_node)
 			for (var/stype in get_node_recipe_paths(assigned_node))
-				if (istype(W, stype))
+				if (istype(W, stype) && research_sample_node(W) == assigned_node)
 					sample = TRUE
 					break
 		if (!sample)
@@ -419,7 +419,7 @@
 		book_refresh_ui()
 		return
 	for (var/stype in get_node_recipe_paths(assigned_node))
-		if (!istype(W, stype))
+		if (!istype(W, stype) || research_sample_node(W) != assigned_node)
 			continue
 		if (!studied_samples)
 			studied_samples = list()

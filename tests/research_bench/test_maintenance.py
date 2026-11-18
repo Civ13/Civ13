@@ -142,6 +142,8 @@ class Case:
                         parent=lambda: self.events.append(('parent',)),
                         get_research_node=lambda _: self.node,
                         get_node_recipe_paths=lambda _: [WRENCH, HAMMER],
+                        # Both sample kinds are mapped straight to the bench's subject.
+                        research_sample_node=lambda w: self.bench.assigned_node if any(istype(w, p) for p in (WRENCH, HAMMER)) else None,
                         list=DMList, max=max, round=math.floor,
                         isnum=lambda x: isinstance(x, (int, float)),
                         clamp=lambda x, low, high: min(high, max(low, x)))
