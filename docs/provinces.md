@@ -246,6 +246,11 @@ every age:
   have phased in, and a wooden oil well over one stops (`has_source()`).
   Offshore rigs and fracking work everywhere. Lands that are not continents
   keep their springs.
+- Gaia's crop bonus (Val, 2026-11-18): a crop on Gaia that grows a stage has a
+  25% chance to grow another, up to the first harvest stage, so crops there
+  ripen about a quarter sooner and the harvest window stays whole. It wraps
+  `advance_stage_if_allowed()` and counts only a stage that really grew, so
+  pollution, seasons and greenhouses apply first.
 - Faction > Province Holdings and Admin > Land Status show the line.
 
 ## Rich provinces
