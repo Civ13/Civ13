@@ -205,6 +205,7 @@
 	var/datum/identity
 	var/datum/cycle = new /datum
 	stone_kiln_cycle = cycle
+	note_smelting(H, src)
 	if (amounts)
 		P.stone_kiln_reagent_identity = new /datum
 		P.stone_kiln_owner = cycle

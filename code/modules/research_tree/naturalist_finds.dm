@@ -6,7 +6,9 @@
 // an ore or rock, or the night sky. Each record is worth a twentieth of a
 // chapter in a subject of the matching discipline that the scholar could
 // research now. A book takes each kind of find once, and finds fill at most
-// three tenths of any one chapter. On a land reached by expedition a record
+// three tenths of any one chapter. Weather seen outdoors (once per kind a
+// season) and the waters beside you are Natural Science finds too (player
+// request relayed by Val, 2026-11-18). On a land reached by expedition a record
 // is worth double. Records on a sheet are used on a bench working on a
 // subject of that discipline.
 // ============================================================
@@ -66,6 +68,76 @@ var/global/list/find_not_animals = list(
 
 /proc/find_sky_kind()
 	return "sky:[lowertext("[season]")]"
+
+// The weather falling on H outdoors, as list(kind, name), or null. Each kind
+// is one find a season.
+/proc/find_weather(mob/living/human/H)
+	var/turf/T = get_turf(H)
+	var/area/A = get_area(H)
+	if (!T || !A || A.location != AREA_OUTSIDE)
+		return null
+	var/what = null
+	switch (weather_look_at(T))
+		if ("rain1", "rain2", "rain3")
+			what = "rain"
+		if ("monsoon")
+			what = "monsoon"
+		if ("snow1", "snow2")
+			what = "snow"
+		if ("snow_storm")
+			what = "blizzard"
+		if ("sandstorm")
+			what = "sandstorm"
+	if (!what && weather_wind_at(T) >= 3)
+		what = "gale"
+	if (!what && weather_heat_at(T))
+		what = "heat wave"
+	if (!what)
+		return null
+	return list("weather:[what]:[lowertext("[season]")]", "the [what]")
+
+// The kind of water T is, for a find: list(kind, name), or null.
+/proc/find_water(turf/T)
+	if (!istype(T, /turf/floor/beach/water) || T.density || istype(T, /turf/floor/beach/water/deep/saltwater/underwater))
+		return null
+	if (istype(T, /turf/floor/beach/water/ice))
+		return list("water:ice", "frozen water")
+	if (istype(T, /turf/floor/beach/water/swamp) || istype(T, /turf/floor/beach/water/deep/swamp))
+		return list("water:swamp", "a swamp")
+	if (istype(T, /turf/floor/beach/water/flooded))
+		return list("water:flood", "floodwater")
+	var/turf/floor/F = T
+	if (F.salty)
+		return list("water:sea", "the sea")
+	if (istype(T, /turf/floor/beach/water/jungle) || istype(T, /turf/floor/beach/water/deep/jungle))
+		return list("water:jungle", "a jungle river")
+	return list("water:fresh", "fresh water")
+
+// Finds that are no thing to point at: the sky, the weather and the waters
+// near H. Each is list(kind, discipline, name).
+/proc/find_place_targets(mob/living/human/H)
+	var/list/found = list()
+	if (!istype(H))
+		return found
+	if (find_sky_visible(H))
+		found += list(list(find_sky_kind(), "mathematics", FIND_SKY))
+	var/list/W = find_weather(H)
+	if (W)
+		found += list(list(W[1], "natural_science", W[2]))
+	var/list/waters = list()
+	for (var/turf/T in range(FIND_RANGE, H))
+		var/list/water = find_water(T)
+		if (water && !(water[1] in waters))
+			waters += water[1]
+			found += list(list(water[1], "natural_science", water[2]))
+	return found
+
+// Whether a place find of this kind is still there for H.
+/proc/find_place_still_here(mob/living/human/H, kind)
+	for (var/list/P in find_place_targets(H))
+		if (P[1] == kind)
+			return TRUE
+	return FALSE
 
 // Whether records made here count double.
 /proc/find_double_here()
@@ -135,7 +207,7 @@ var/global/list/find_not_animals = list(
 /proc/find_book_ok(obj/item/weapon/book/B)
 	return istype(B) && !istype(B, /obj/item/weapon/book/research/tree_book)
 
-// Things near H that can be recorded, label => list(kind, discipline, atom).
+// Things near H that can be recorded, label => list(kind, discipline, atom, name).
 /proc/find_targets(mob/living/human/H)
 	var/list/found = list()
 	if (!istype(H))
@@ -152,9 +224,9 @@ var/global/list/find_not_animals = list(
 			var/obj/item/organ_specimen/S = A
 			kind = S.find_kind()
 		if (!(label in found))
-			found[label] = list(kind, discipline, A)
-	if (find_sky_visible(H))
-		found["[FIND_SKY] ([scholar_disciplines["mathematics"]])"] = list(find_sky_kind(), "mathematics", null)
+			found[label] = list(kind, discipline, A, A.name)
+	for (var/list/P in find_place_targets(H))
+		found["[P[3]] ([scholar_disciplines[P[2]]])"] = list(P[1], P[2], null, P[3])
 	return found
 
 // Writes a finished record down. No waiting here. Returns the points added
@@ -196,7 +268,7 @@ var/global/list/find_not_animals = list(
 		return FALSE
 	var/list/found = find_targets(src)
 	if (!found.len)
-		to_chat(src, SPAN_WARNING("Nothing near you is worth recording. Stand within [FIND_RANGE] tiles of a living animal, a wild plant, an ore or a rock, a preserved specimen on an anatomy table, or stand outdoors at night to record the sky."))
+		to_chat(src, SPAN_WARNING("Nothing near you is worth recording. Stand within [FIND_RANGE] tiles of a living animal, a wild plant, an ore or a rock, water, or a preserved specimen on an anatomy table, or stand outdoors in rain, snow or a storm, or at night to record the sky."))
 		return FALSE
 	var/choice = found[1]
 	if (found.len > 1)
@@ -207,7 +279,7 @@ var/global/list/find_not_animals = list(
 	var/kind = entry[1]
 	var/discipline = entry[2]
 	var/atom/movable/thing = entry[3]
-	var/thing_name = thing ? thing.name : FIND_SKY
+	var/thing_name = entry[4]
 	var/node_id = null
 	if (!is_paper)
 		var/obj/item/weapon/book/B = carrier
@@ -235,7 +307,7 @@ var/global/list/find_not_animals = list(
 		return FALSE
 	if (!(carrier in list(l_hand, r_hand)))
 		return FALSE
-	if (thing ? (QDELETED(thing) || get_dist(src, thing) > FIND_RANGE + 2 || !find_discipline(thing)) : !find_sky_visible(src))
+	if (thing ? (QDELETED(thing) || get_dist(src, thing) > FIND_RANGE + 2 || !find_discipline(thing)) : !find_place_still_here(src, kind))
 		to_chat(src, SPAN_WARNING("You lost sight of what you were recording."))
 		return FALSE
 	var/points = commit_find(src, carrier, kind, discipline, thing_name, node_id)

@@ -122,6 +122,7 @@
 /obj/structure/furnace/attack_hand(var/mob/living/human/H)
 	if (!on && fuel > 1)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
+		note_smelting(H, src)
 		start_smelt()
 	else
 		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
