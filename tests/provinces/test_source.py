@@ -20,6 +20,7 @@ SOURCE = ROOT / 'code/modules/provinces/provinces.dm'
 STAKE = ROOT / 'code/modules/provinces/province_stake.dm'
 HOLDING = ROOT / 'code/modules/provinces/province_holding.dm'
 RESOURCES = ROOT / 'code/modules/provinces/continent_resources.dm'
+RANKS = ROOT / 'code/modules/provinces/province_ranks.dm'
 DME = ROOT / 'civ13.dme'
 # Map -> surface z, as scripts/provinces.py was run (docs/provinces.md).
 CONTINENTS = {
@@ -165,7 +166,7 @@ class Holding(unittest.TestCase):
 
     def test_numbers_match_the_plan(self):
         import re
-        expected = {'PROVINCE_GAIN_HOURS': 72, 'PROVINCE_LOSE_HOURS': 48, 'PROVINCE_CAP_PER_LAND': 3,
+        expected = {'PROVINCE_GAIN_HOURS': 72, 'PROVINCE_CAP_PER_LAND': 3,
                     'PROVINCE_STATION_RESIDENTS': 3, 'PROVINCE_PREVIEW_DAYS': 21}
         for name, value in expected.items():
             match = re.search(r'#define %s (\d+)' % name, self.text())
@@ -174,7 +175,9 @@ class Holding(unittest.TestCase):
             self.assertIn(f'#undef {name}', self.text())
 
     def test_rival_needs_the_margin_over_the_holder(self):
-        self.assertIn('G[1] < 0.35 * S["total"] || G[1] < 1.25 * holder_stake', self.text())
+        self.assertIn('G[1] < 0.35 * S["total"] || G[1] < margin * holder_stake', self.text())
+        self.assertIn('/proc/province_rival(list/S, holder, margin = 1.25)', self.text())
+        self.assertIn('province_rival(S, holder, province_rank_margin(rank))', self.text())
 
     def test_stations_follow_holdings(self):
         station = (ROOT / 'code/game/mob/groups/recruitment_station.dm').read_text(encoding='utf-8')
@@ -229,6 +232,48 @@ class ContinentResources(unittest.TestCase):
         self.assertIn('continent_ore_factor("gems")', (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8'))
         self.assertIn('continent_seam_amount(ore_type', (ROOT / 'code/modules/1713/mountain_seams.dm').read_text(encoding='utf-8'))
         self.assertIn('#include "code\\modules\\provinces\\continent_resources.dm"', DME.read_text(encoding='utf-8'))
+
+
+
+class Ranks(unittest.TestCase):
+    """Val (2026-11-18): a clear objective for city building and defence."""
+
+    def text(self):
+        return RANKS.read_text(encoding='utf-8')
+
+    def test_numbers(self):
+        text = self.text()
+        for line in ('#define RANK_SETTLEMENT 40', '#define RANK_DROP_HOURS 48', '#define RANK_MEMBERS_PER_RANK 3',
+                     '#define RANK_WATCHTOWER_RANGE 10', 'list("Camp", "Village", "Town", "City")',
+                     'if (2) return 1.35', 'if (3) return 1.5', 'if (4) return 1.6', 'return 1.25',
+                     'if (3) return 60', 'if (4) return 72', 'return 48'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        for needs in ('residents >= 4', 'residents >= 7', 'residents >= 11', 'residents >= 16', 'houses >= 3',
+                      'plots >= 4', 'plots >= 10', 'plots >= 20', 'guests >= 2', 'guests >= 4', 'guests >= 6',
+                      'ring["slits"] >= 12', 'province_strong_gates(gates) >= 2', 'ring["paved"] >= 60'):
+            self.assertIn(needs, text)
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+        self.assertNotIn(' in world', text)
+
+    def test_ring_never_leaves_the_settlement(self):
+        ring = self.text().split('/proc/province_ring(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('> RANK_SETTLEMENT)\n\t\t\t\treturn result', ring)
+        self.assertIn('if (province_indoors(N) || province_indoors(T))', ring)
+
+    def test_wiring(self):
+        holding = HOLDING.read_text(encoding='utf-8')
+        self.assertIn('province_rank_update(c, holder, S, name)', holding)
+        self.assertIn('province_rank_lose_hours(rank) * 36000', holding)
+        hall = (ROOT / 'code/game/mob/groups/faction_hall.dm').read_text(encoding='utf-8')
+        self.assertIn('province_ledger_show(user, src)', hall)
+        self.assertIn('+ province_rank_member_bonus(faction)', hall)
+        self.assertIn('province_rank_bed_extra(account, get_turf(H))',
+                      (ROOT / 'code/modules/research_tree/death_legacy.dm').read_text(encoding='utf-8'))
+        self.assertIn('#include "code\\modules\\provinces\\province_ranks.dm"', DME.read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':

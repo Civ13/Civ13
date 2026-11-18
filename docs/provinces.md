@@ -112,6 +112,43 @@ Lands without provinces, such as expedition islands, keep every station
 working. The rules start 21 days after a world first counts stake
 (`province_rules_from`, durable), the 14-day preview plus 7 days' grace.
 
+## Ranks
+
+Code: `code/modules/provinces/province_ranks.dm`, run with each holding update.
+A held province's **seat** is the holder's best standing hall there (not a
+nation assembly); the **settlement** is everything within 40 tiles of it. Using
+the seat's hall opens its **Province ledger**: rank, what each rank needs with
+ticks, and what the rank gives.
+
+| Rank | Seat | Residents | Also needs |
+| --- | --- | --- | --- |
+| Camp | council fire | 4 | - |
+| Village | longhouse | 7 | 3 members' beds under a roof, a well or cistern, a working recruitment station, 4 registered plots, 2 guest beds |
+| Town | town hall | 11 | a closed wall ring with a gate, a roofed upper floor within 10 tiles of a gate, the strongbox here with a sales or business tax, 10 plots, a market stall, 4 guest beds |
+| City | capitol | 16 | the whole ring of stone, brick or concrete, 12 arrow slits, gun loops or battlements in it, 2 gates with a portcullis or a murder hole above, 60 paved tiles inside, a research bench, 20 plots, 6 guest beds |
+
+Each rank needs its own list and every lower one. Residents are the side's
+resident accounts in the province (stake). Guest beds are fastened beds with no
+owner; plots count when their centre is in the settlement.
+
+- **The ring** is one flood fill from the seat on its level. Walls, palisades,
+  parapets, barricades and natural rock close it; a door or castle gate with
+  open sky on both sides is a gate, and a door with a roof on either side is an
+  inner door the fill passes through. Reaching the edge of the settlement box
+  means no ring. Paved tiles are plating floors (cobblestone, concrete, roads,
+  marble, tiles) inside it.
+- **Rising and falling:** a rank rises as soon as it is met. One that falls
+  short is told to the leaders and drops a rank after 48 hours, then another
+  48 hours later. Checks run at most once an hour; opening the ledger rechecks.
+- **What ranks give:** a rival needs 1.25 / 1.35 / 1.5 / 1.6 times the
+  holder's stake (Camp to City); a hold that slips lasts 48 / 48 / 60 / 72
+  hours; the side's best province adds 3 members a rank to each of its
+  factions' limits (`faction_infrastructure_limit`); a bed start in a Town's
+  settlement costs 1.5 times instead of double in death knowledge, in a City's
+  1.25 times (`province_rank_bed_extra`, death_legacy.dm).
+
+State: `faction_recruitment["province_ranks"]`: char -> list(rank, short since).
+
 ## Continent resources
 
 Code: `code/modules/provinces/continent_resources.dm`. Each continent is rich

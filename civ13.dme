@@ -1759,6 +1759,7 @@
 #include "code\modules\projectiles\targeting\targeting_triggers.dm"
 #include "code\modules\provinces\continent_resources.dm"
 #include "code\modules\provinces\province_holding.dm"
+#include "code\modules\provinces\province_ranks.dm"
 #include "code\modules\provinces\province_stake.dm"
 #include "code\modules\provinces\provinces.dm"
 #include "code\modules\reagents\Chemistry-Colours.dm"

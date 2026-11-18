@@ -69,7 +69,7 @@ var/global/list/faction_hall_tiers = list(
 /obj/map_metadata/proc/faction_infrastructure_limit(faction)
 	var/tier = faction_hall_tier(faction)
 	var/limit = tier ? faction_hall_tiers[tier][2] : FACTION_HALL_BASE_LIMIT
-	return limit + faction_colony_count(faction) * FACTION_HALL_COLONY_BONUS
+	return limit + faction_colony_count(faction) * FACTION_HALL_COLONY_BONUS + province_rank_member_bonus(faction) // province_ranks.dm
 
 // --- The hall ----------------------------------------------------------------
 
@@ -186,6 +186,7 @@ var/global/list/faction_hall_tiers = list(
 		return ..()
 	if (faction)
 		examine(user)
+		province_ledger_show(user, src) // province_ranks.dm: a seat's Province ledger
 		return
 	var/block = designate_block(user)
 	if (block)
