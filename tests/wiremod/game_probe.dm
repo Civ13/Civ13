@@ -64,9 +64,14 @@ var/wiremod_runtime_error = FALSE
 	return ui ? json_encode(ui.agent_screen_data()) : ""
 
 /proc/wiremod_build(datum/agent_character/C, mob/living/human/H)
-	var/obj/item/compact_remote/remote = new(H)
-	var/obj/item/integrated_circuit/circuit = remote.circuit
-	wiremod_check(circuit && circuit.loc == remote && circuit.attached_components.len == 1 && !circuit.should_save && !remote.should_save, "a compact remote is created with its circuit and stays out of saves")
+	var/obj/item/circuit_shell/compact_remote/remote = new(H)
+	wiremod_check(isnull(remote.circuit), "a compact remote starts without an integrated circuit")
+	var/obj/item/integrated_circuit/circuit = new(H)
+	H.put_in_hands(circuit)
+	remote.attackby(circuit, H)
+	wiremod_check(circuit.loc == remote, "the circuit moves into the remote")
+	wiremod_check(circuit.attached_components.len == 1 && circuit.attached_components[1] == remote.remote_input, "the remote attaches its signal source")
+	wiremod_check(!circuit.should_save && !remote.should_save, "the circuit and remote stay out of saves")
 	remote.AltClick(H)
 	var/list/rows = agent_screen_rows(H)
 	wiremod_check(rows.len == 1 && rows[1]["status"] == "interactive" && rows[1]["template"] == "wiremod_circuit.tmpl", "Alt-click opens the editor for the holder")
@@ -75,7 +80,7 @@ var/wiremod_runtime_error = FALSE
 	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/operator/arithmetic", "rel_x" = 40, "rel_y" = 290))
 	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/delay", "rel_x" = 400, "rel_y" = 290))
 	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/mob/living/human", "rel_x" = 0, "rel_y" = 0))
-	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/compact_remote", "rel_x" = 0, "rel_y" = 0))
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_shell/compact_remote", "rel_x" = 0, "rel_y" = 0))
 	wiremod_check(circuit.attached_components.len == 4 && circuit.contents.len == 4, "the editor prints listed components and nothing else")
 	if (circuit.attached_components.len != 4)
 		return null
@@ -193,6 +198,14 @@ var/wiremod_runtime_error = FALSE
 	marked = null
 	wiremod_check(isnull(finder.target_input.value), "deleting the marked item empties the input")
 	wiremod_press(C, list("act" = "set_component_input", "component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	// A screwdriver takes the circuit out and leaves the remote's button behind.
+	var/obj/item/weapon/screwdriver/driver = new(H)
+	H.a_intent = "help"
+	remote.attackby(driver, H)
+	wiremod_check(isnull(remote.circuit) && circuit.loc != remote && !QDELETED(remote.remote_input), "a screwdriver takes the circuit out and the remote keeps its button")
+	remote.attackby(circuit, H)
+	wiremod_check(remote.circuit == circuit && circuit.loc == remote && (remote.remote_input in circuit.attached_components), "the circuit goes back in with its signal source")
+	qdel(driver)
 	// Everything the remote owns, by ref.
 	var/list/refs = list("\ref[remote]", "\ref[circuit]", marked_ref)
 	for (var/obj/item/circuit_component/component in circuit.attached_components)
