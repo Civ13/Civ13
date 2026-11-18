@@ -1434,7 +1434,7 @@ class Host:
         if action == 'status':
             return 'host status refreshed'
         if action == 'stage':
-            self.request_stage()
+            self.request_stage(urgent=True)
             return 'building the latest update beside the running world'
         if action in ('update-when-empty-on', 'update-when-empty-off'):
             self.set_update_when_empty(action.endswith('-on'))
@@ -1501,7 +1501,7 @@ class Host:
             self.write_host_status()
 
     # -- staged builds (region groups only; see shard_group.RegionHost) ----------
-    def request_stage(self):
+    def request_stage(self, urgent=False):
         raise Refused('staged builds need a region host (scripts/shard-group)')
 
     def update_pending(self):
@@ -2049,7 +2049,7 @@ def main(argv=None):
         elif args.action in ('unlock', 'force-unlock'):
             result = host.unlock(force=args.action == 'force-unlock')
         elif args.action == 'stage':
-            result = host.request_stage()
+            result = host.request_stage(urgent=True)
         elif args.action == 'check-update':
             try:
                 result = host.check_update()

@@ -1838,6 +1838,67 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(host.built_revision(), NEWER)
         self.assertFalse(host.update_pending())
 
+    def test_a_background_stage_lets_a_requested_stage_compile_first(self):
+        # Val (2026-11-18): Save, update and restart for one region queued behind the host
+        # service's background stages of every other region, one compile at a time.
+        group, host = self.built()
+        deep = self.host(group, 'deep')
+        deep.log = lambda values: None
+        background = deep.request_stage()  # the host service's own stage of another region
+        wanted = host.request_stage(urgent=True)  # a person's Save, update and restart
+        self.assertTrue(host.urgent_marker().exists())
+        phases = []
+        def sleep(seconds):
+            phases.append(deep.read_json(deep.stage_file).get('phase'))
+            host.work('stage', wanted['operation'])  # the requested stage runs meanwhile
+            self.machine.clock += seconds
+        self.machine.sleep = sleep
+        deep.work('stage', background['operation'])
+        self.assertEqual(['waiting for a requested build of another region'], phases)
+        self.assertEqual('ready', host.read_json(host.stage_file)['phase'])
+        self.assertEqual('ready', deep.read_json(deep.stage_file)['phase'])
+        self.assertFalse(host.urgent_marker().exists(), 'the marker ends with its stage')
+        self.assertFalse(host.urgent_stage_waiting())
+
+    def test_a_queued_background_stage_is_moved_up_when_a_person_asks(self):
+        group, host = self.built()
+        queued = host.request_stage()
+        self.assertFalse(host.urgent_marker().exists())
+        with self.assertRaisesRegex(shard_group.Refused, 'already being staged'):
+            host.request_stage(urgent=True)
+        self.assertTrue(host.urgent_marker().exists())
+        deep = self.host(group, 'deep')
+        self.assertTrue(deep.urgent_stage_waiting())
+        self.assertFalse(host.urgent_stage_waiting(), 'a region never waits for itself')
+        host.work('stage', queued['operation'])
+        self.assertFalse(deep.urgent_stage_waiting())
+
+    def test_a_stale_urgent_marker_is_ignored_and_removed(self):
+        group, host = self.built()
+        host.mark_stage_urgent()  # its stage ended without clearing it (a killed worker)
+        deep = self.host(group, 'deep')
+        self.assertFalse(deep.urgent_stage_waiting())
+        self.assertFalse(host.urgent_marker().exists())
+
+    def test_a_stage_builds_the_revision_current_when_its_compile_slot_comes_round(self):
+        # A stage queued before deploy.bat pulled must not build (and hand over onto) the
+        # revision of its queueing.
+        group, host = self.built()
+        lock = host.repo.parent / '.staging' / 'compile.lock'
+        lock.parent.mkdir(parents=True, exist_ok=True)
+        lock.write_text('777')
+        self.machine.pids.add(777)
+        newest = 'f' * 40
+        def sleep(seconds):
+            self.machine.pids.discard(777)  # the other region's compile finishes
+            self.machine.revision = newest  # and master moved meanwhile
+            self.machine.clock += seconds
+        self.machine.sleep = sleep
+        host.work('stage', host.request_stage()['operation'])
+        stage = host.read_json(host.stage_file)
+        self.assertEqual(('ready', newest), (stage['phase'], stage['revision']), stage)
+        self.assertEqual(newest, host.staged_revision())
+
     def test_stage_does_nothing_for_a_current_build(self):
         group, host = self.built()
         self.machine.revision = REVISION
