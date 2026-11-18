@@ -154,24 +154,38 @@ var/naval_runtime_error = FALSE
 	// Launch: she slides 15 tiles to float clear of the shore, crew aboard.
 	var/mob/living/human/naval_probe/sailor = new(locate(10, 30, 2))
 	var/obj/structure/closet/crate/cargo = new(locate(12, 31, 2))
-	var/datum/vessel/schooner/S = post.launch()
-	naval_check(istype(S) && S.placed && S.ox == 21 && S.oy == 28 && S.dir == EAST && S.anchored && S.fuel == 0, "the schooner floats at (21, 28) bow east, anchored")
-	if (!istype(S))
+	var/obj/structure/hull_tiller/S = post.launch()
+	naval_check(istype(S) && S.craft && S.x == 22 && S.y == 30 && S.craft.body.heading() == EAST && S.craft.anchored, "the schooner floats as a built hull with her tiller where the wheel stood (22, 30), bow east, anchored")
+	if (!istype(S) || !S.craft)
 		return
-	naval_check(sailor.loc == locate(25, 30, 2) && cargo.loc == locate(27, 31, 2) && vessel_at(sailor.loc) == S, "the sailor and the crate went down the ways with her")
+	var/datum/craft/SC = S.craft
+	var/datum/craft_body/built/SB = SC.body
+	naval_check(istype(SB) && SB.tile_count() == 62 && SC.name == "sailing schooner" && SB.glides, "she is 62 tiles of hull named for her design, and she glides")
+	naval_check(sailor.loc == locate(25, 30, 2) && cargo.loc == locate(27, 31, 2) && craft_at(sailor.loc) == SC && craft_at(cargo.loc) == SC, "the sailor and the crate went down the ways with her")
 	naval_check(!post.design && !slipway_frame_count(post) && istype(locate(10, 30, 2), /turf/floor/beach/sand), "the berth is clear sand again and ready for another keel")
-	var/obj/structure/vessel_helm/wheel = locate() in locate(22, 30, 2)
 	var/masts = 0
-	for (var/turf/T in S.cells())
+	var/floors = 0
+	var/old_parts = 0
+	for (var/turf/T in SB.cells())
+		if (!istype(T, /turf/floor/beach/water))
+			old_parts++
+		for (var/obj/structure/vehicleparts/movement/sail/M in T)
+			if (M.sails)
+				masts++
+		for (var/obj/covers/repairedfloor/ship/F in T)
+			if (F.afloat)
+				floors++
 		for (var/obj/structure/vessel_mast/M in T)
-			masts++
-	naval_check(wheel && wheel.vessel == S && masts == 2, "her wheel is connected and both masts stand")
-	S.set_anchor(FALSE)
-	S.set_speed(VESSEL_SPEED_FULL)
-	S.stop_sailing()
-	naval_check(S.speed == VESSEL_SPEED_HALF, "under sail she makes half ahead at best")
-	naval_check(S.sail_tick() && S.ox == 25 && S.fuel == 0 && sailor.loc == locate(29, 30, 2), "she sails four tiles with no fuel, the sailor aboard")
-	naval_check(findtext(S.chart_text(), "Under sail"), "the chart says she is under sail")
+			old_parts++
+		for (var/obj/structure/vessel_helm/W in T)
+			old_parts++
+	naval_check(masts == 2 && floors == 62 && !old_parts, "two rigged masts, 62 ship floors afloat on the water and nothing of the old tile ship ([masts], [floors], [old_parts])")
+	naval_check(SC.fit_drives() == 2 && SC.thrust() > 0, "her two rigged masts are her drives ([SC.thrust()])")
+	SC.set_anchor(FALSE)
+	SC.set_speed(VESSEL_SPEED_HALF)
+	SC.stop_sailing()
+	naval_check(SC.sail_tick() && S.x == 23 && sailor.loc == locate(26, 30, 2), "she sails a tile at a time with the sailor aboard ([S.x])")
+	SC.set_anchor(TRUE)
 
 	// The freighter: a second berth further up the shore.
 	var/obj/structure/slipway/yard = new(locate(5, 45, 2))
@@ -229,8 +243,8 @@ var/naval_runtime_error = FALSE
 		for (var/y = 8, y <= 12, y++)
 			var/turf/T = locate(x, y, 2)
 			T.ChangeTurf(/turf/floor/trench/flooded/salty)
-	var/datum/vessel/schooner/docked = dock.launch()
-	naval_check(istype(docked) && docked.ox == 21 && docked.oy == 8, "flooded, the dock floats her out to the sea at (21, 8)")
+	var/obj/structure/hull_tiller/docked = dock.launch()
+	naval_check(istype(docked) && docked.craft && docked.x == 22 && docked.y == 10, "flooded, the dock floats her out to the sea, tiller at (22, 10)")
 
 	// Abandoning a project clears the berth.
 	dock.lay_keel(freighter)
@@ -238,7 +252,18 @@ var/naval_runtime_error = FALSE
 	dock.update_frames()
 	dock.abandon()
 	naval_check(!dock.design && !dock.pieces_done && !slipway_frame_count(dock), "abandoning a project clears the berth")
-	naval_check(naval_vessels.len == 3, "three ships afloat and no stray prototypes ([naval_vessels.len])")
+	naval_check(naval_vessels.len == 1, "the freighter is the one tile ship afloat, and no stray prototypes ([naval_vessels.len])")
+
+	// A schooner still afloat as a tile ship from before is turned into a built hull.
+	var/datum/vessel/schooner/legacy = new
+	naval_check(legacy.place(40, 20, 2, NORTH), "an old tile schooner is laid down ([legacy.last_refusal])")
+	var/datum/craft/legacy_craft = craft_of_vessel(legacy)
+	legacy_craft.register = new /datum/craft_register
+	var/datum/craft_register/legacy_papers = legacy_craft.register
+	var/obj/structure/closet/crate/legacy_cargo = new(locate(42, 25, 2))
+	var/obj/structure/hull_tiller/converted = vessel_to_built_hull(legacy)
+	naval_check(istype(converted) && converted.craft && converted.craft.register == legacy_papers && converted.craft.body.heading() == NORTH && converted.craft.body.tile_count() == 62, "she becomes a built hull bow north with her papers")
+	naval_check(QDELETED(legacy) && !(legacy in naval_vessels) && craft_at(legacy_cargo.loc) == converted.craft, "the tile ship is gone and her cargo is aboard the hull")
 
 /proc/naval_run()
 	try

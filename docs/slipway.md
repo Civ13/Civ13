@@ -63,12 +63,23 @@ bunkers, and the berth is free for the next keel.
 ## The ships
 
 - **Sailing schooner** (`/datum/vessel/schooner`): one wooden deck, two masts
-  (`/obj/structure/vessel_mast`) and the wheel at the stern. `fuel_burn()` is
-  zero, so she sails without fuel, and `top_speed` is half ahead.
+  and the wheel at the stern, 62 tiles. Right after `place()` the launch turns
+  her into a player-built hull (`code/modules/naval/slipway_hull.dm`,
+  `vessel_to_built_hull()`): the deck turfs go back to water, each cell gets a
+  ship floor (`/obj/covers/repairedfloor/ship`), each mast becomes a rigged
+  `/obj/structure/vehicleparts/movement/sail/premade` and the wheel a
+  `/obj/structure/hull_tiller` commissioned under her name, bow as launched.
+  From then on she sails like any built hull (pixel sailing near players,
+  ledger, rigging, anchors); her two sails make half ahead on a reach. A
+  schooner restored as a turf-built vessel from an older save is converted the
+  same way 5 seconds after the load (`/datum/vessel/proc/restored()`), keeping
+  her crew register and everything on her deck. A vessel whose cells were not
+  over open water (a flooded trench) is left as she is.
 - **Motor freighter** (`/datum/vessel/freighter`): a steel deck with a
   wheelhouse at the stern and a ladder down to the hold. Below the waterline
   are the cargo hold and, behind a bulkhead with a blast door, the engine room
   with the bunker filling point (400 units of diesel or petroleum). Two flooded
   compartments sink her.
 
-Both use the vessel helm, chart, anchor, hops and saved state like the carrier.
+The freighter uses the vessel helm, chart, anchor, hops and saved state like
+the carrier: her hold below the waterline is not something a built hull has.

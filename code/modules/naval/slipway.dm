@@ -334,7 +334,7 @@ var/global/list/slipway_designs = null
 	else if (action == "launch")
 		var/name_was = D.name
 		var/result = launch()
-		if (istype(result, /datum/vessel))
+		if (!istext(result))
 			log_game("[key_name(H)] launched a [name_was] from [src] at [x],[y],[z].")
 			to_chat(H, SPAN_NOTICE("You knock away the chocks."))
 		else
@@ -442,6 +442,11 @@ var/global/list/slipway_designs = null
 	design = null
 	pieces_done = 0
 	paid = list()
+	// A schooner sails as a hull of objects, like one built by hand (slipway_hull.dm).
+	if (V.sails_as_built_hull())
+		var/obj/structure/hull_tiller/tiller = vessel_to_built_hull(V)
+		if (tiller)
+			return tiller
 	return V
 
 // ---- The hull on the berth ----
