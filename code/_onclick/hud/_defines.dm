@@ -46,7 +46,6 @@
 // What is located at the required screen coordinates
 
 // Overlay
-#define ui_screen_cover "-2,1"
 #define ui_damageoverlay "CENTER-7,CENTER-7"
 #define ui_flash "WEST,SOUTH to EAST,NORTH"
 #define ui_pain "WEST,SOUTH to EAST,NORTH"
