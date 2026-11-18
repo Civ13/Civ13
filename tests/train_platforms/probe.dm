@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 232
+	maxx = 250
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2089,6 +2089,89 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
 	platform_check("tank/valve_fuels_a_diesel", fuelled && isnull(steam.tank_fuel_ids()) && ("tank_f" in sheet) && ("tank_m" in sheet) && ("tank_d" in sheet) && ("tank_b" in sheet) && ("tank_valve" in states))
 
+// How many of a type stand on a car's deck.
+/proc/platform_fitted(list/segs, kind)
+	. = 0
+	for (var/obj/structure/trains/platform/P in segs)
+		for (var/turf/T in train_platform_tiles(P.loc, P.dir))
+			for (var/atom/movable/AM in T)
+				if (AM.type == kind)
+					.++
+
+// Special stock (train_stock.dm).
+/proc/platform_stock_run()
+	for (var/tx in list(235, 241, 247))
+		for (var/ty in 2 to 25)
+			platform_track(tx, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+
+	// The stock car: slatted sides, straw and a sliding door each side.
+	var/obj/structure/trains/platform/stock = platform_car("stock_car", 235, 25, NORTH)
+	var/list/pens = platform_segments(stock)
+	var/list/SL = train_car_layout("stock_car")
+	var/obj/structure/trains/platform/gate_seg = pens[4]
+	var/obj/structure/train_part/edge/gate = null
+	var/slats = 0
+	for (var/obj/structure/trains/platform/P in pens)
+		for (var/obj/structure/train_part/edge/G in P.deck_parts)
+			if (G.style == "slat")
+				slats++
+	for (var/obj/structure/train_part/edge/G in gate_seg.deck_parts)
+		if (G.style == "slat_door")
+			gate = G
+	var/shut = gate && gate.is_door() && gate.density && findtext(gate.name, "door")
+	if (gate)
+		gate.set_open(TRUE)
+	platform_check("stock/slatted_car_with_sliding_doors", pens.len == 8 && SL["center"] == "straw" && SL["roof"] == "stock" && slats == 18 && shut && !gate.density && gate.icon_state == "edge_slat_door_open" && stock.icon_state == "deck_center_straw" && ("edge_slat" in states) && ("edge_slat_door" in states) && ("edge_slat_door_open" in states) && ("deck_side_straw" in states) && ("roof_stock_mc" in states))
+
+	// The ice car: one bunker at the front, cold lockers down both sides.
+	var/obj/structure/trains/platform/ice = platform_car("ice_car", 235, 16, NORTH)
+	var/list/bays = platform_segments(ice)
+	var/list/front = train_platform_tiles(ice.loc, ice.dir)
+	var/obj/structure/closet/ice_house/reefer/bunker = locate() in front[1]
+	var/obj/structure/closet/ice_house/cold_locker/locker = locate() in front[3]
+	var/obj/structure/trains/platform/far = bays[8]
+	var/list/back = train_platform_tiles(far.loc, far.dir)
+	var/obj/structure/closet/ice_house/cold_locker/last_locker = locate() in back[1]
+	var/obj/structure/trains/platform/under = train_ice_car(bunker)
+	platform_check("ice/built_with_a_bunker_and_lockers", bays.len == 8 && bunker && locker && last_locker && platform_fitted(bays, /obj/structure/closet/ice_house/reefer) == 1 && platform_fitted(bays, /obj/structure/closet/ice_house/cold_locker) == 11 && under && under.car_id == ice.car_id && !train_ice_car(stock) && ("edge_cold" in states) && ("edge_cold_door" in states) && ("edge_cold_door_open" in states) && ("roof_reefer_fc" in states) && ("ice_bunker" in states) && ("ice_bunker_open" in states) && ("cold_locker" in states) && ("cold_locker_open" in states))
+
+	// The lockers are as cold as the bunker on their car.
+	var/warm = !locker.is_cold() && !last_locker.is_cold() && last_locker.bunker() == bunker
+	bunker.cold = 60
+	var/cold = locker.is_cold() && last_locker.is_cold() && locker.bunker() == bunker && bunker.is_cold()
+	var/obj/structure/closet/ice_house/cold_locker/loose = new(platform_turf(238, 4))
+	var/obj/structure/closet/ice_house/reefer/spare = new(platform_turf(238, 5))
+	spare.cold = 60
+	platform_check("ice/lockers_cold_with_the_bunker", warm && cold && !loose.is_cold() && !loose.bunker() && bunker.slow_melt() && !spare.slow_melt() && findtext(bunker.slow_melt_text(), "insulated"))
+	bunker.cold = 0
+	platform_check("ice/melted_bunker_warms_the_lockers", !locker.is_cold() && !last_locker.is_cold())
+
+	// Snow and ice offered to a locker go into the bunker.
+	var/mob/living/human/platform_rider/hand = new(platform_turf(233, 12))
+	var/obj/item/weapon/ice_block/block = new(platform_turf(233, 12))
+	last_locker.attackby(block, hand)
+	var/obj/item/weapon/ice_block/wasted = new(platform_turf(233, 12))
+	loose.attackby(wasted, hand)
+	platform_check("ice/ice_goes_to_the_bunker", QDELETED(block) && bunker.cold == 180 && locker.is_cold() && !QDELETED(wasted) && !loose.is_cold())
+	qdel(wasted)
+	qdel(loose)
+	qdel(spare)
+
+	// The baggage and mail van.
+	var/obj/structure/trains/platform/mail = platform_car("mail_van", 247, 25, NORTH)
+	var/list/rooms = mail ? platform_segments(mail) : list()
+	platform_check("mail/sorting_office_and_baggage_room", mail && rooms.len == 8 && platform_fitted(rooms, /obj/structure/table/wood) == 2 && platform_fitted(rooms, /obj/structure/closet/cabinet) == 4 && platform_fitted(rooms, /obj/structure/closet/crate/large) == 2 && mail.roof_images && mail.roof_images.len == 3)
+
+	// The long sleeper and dining cars.
+	var/obj/structure/trains/platform/sleeper = platform_car("bogie_sleeper", 241, 25, NORTH)
+	var/list/berths = sleeper ? platform_segments(sleeper) : list()
+	var/obj/structure/trains/platform/dining = platform_car("bogie_dining", 241, 16, NORTH)
+	var/list/tables = dining ? platform_segments(dining) : list()
+	var/slept = berths.len == 8 && platform_fitted(berths, /obj/structure/bed) == 12
+	var/dined = tables.len == 8 && platform_fitted(tables, /obj/structure/oven/stove) == 1 && platform_fitted(tables, /obj/structure/sink) == 1 && platform_fitted(tables, /obj/structure/closet/fridge) == 1 && platform_fitted(tables, /obj/structure/table/modern/table) == 5 && platform_fitted(tables, /obj/structure/bed/chair/comfy/diner_booth) == 6
+	platform_check("long/sleeper_and_dining_cars", slept && dined)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -2121,6 +2204,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_snow_run()
 		platform_freight_run()
 		platform_tank_run()
+		platform_stock_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

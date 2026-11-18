@@ -43,6 +43,11 @@ heading, the rail tile and the tile right of it.
   `train_loads.dmi` (96 x 96, from the same script) holds
   `heap_<coal|ore|sand>_<1|2>`: a bulk load across one section of a car, part
   loaded and full ([trains.md](trains.md#bulk-freight)).
+- `edge_slat`, `edge_slat_door(_open)`, `deck_center_straw`,
+  `deck_side_straw` and the `roof_stock_*` set: the stock car. `edge_cold`,
+  `edge_cold_door(_open)`, the `roof_reefer_*` set, `ice_bunker(_open)` and
+  `cold_locker(_open)`: the ice car and its fittings
+  ([trains.md](trains.md#special-stock)).
 - `tank_valve`: the valve and hose on a tank car's end platform.
   `train_loads.dmi` also holds `tank_f`, `tank_d`, `tank_m` and `tank_b`:
   the tank across one section of the car, front end, dome ring, plain ring
@@ -113,6 +118,11 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | open_wagon | open wagon | rail_steam | 8 tiles: plank sides all round, drop doors in the middle of each side; 600 units of bulk ([trains.md](trains.md#bulk-freight)) |
 | hopper | hopper wagon | rail_steam | 6 tiles: steel sides all round, a floor of doors and the door lever; 800 units of bulk ([trains.md](trains.md#bulk-freight)) |
 | tank_car | tank car | rail_steam | 6 tiles: an end platform with the valve, a solid tank between two running boards with handrails; 3600 units of one liquid ([trains.md](trains.md#tank-car)) |
+| stock_car | stock car | rail_steam | 8 tiles: slatted sides, straw floor, a sliding slatted door in the middle of each side ([trains.md](trains.md#special-stock)) |
+| ice_car | ice car | rail_steam | 8 tiles: insulated white sides, an ice bunker at the front and eleven cold lockers ([trains.md](trains.md#special-stock)) |
+| mail_van | baggage and mail van | rail_steam | 8 tiles: a vestibule, two sorting tables and cabinets, side doors, a baggage room of crates and cabinets |
+| bogie_sleeper | bogie sleeper car | assembly_line | 8 tiles: a vestibule each end, twelve compartments with a bed each |
+| bogie_dining | bogie dining car | assembly_line | 8 tiles: a vestibule each end, a galley, five tables and six booths |
 | boxcar | boxcar | rail_steam | 8 tiles: boarded sides and roof, sliding doors in the middle of each side, closed ends |
 | bogie_coach | bogie coach | assembly_line | 8 tiles: a vestibule each end, twelve seats, windows |
 | brake_van | brake van | rail_steam | a veranda, then a cabin with a brake wheel and a seat; weighs 4 ([trains.md](trains.md#brakes)) |
