@@ -1095,6 +1095,7 @@
 #include "code\modules\1713\train_trackworks.dm"
 #include "code\modules\1713\train_stock.dm"
 #include "code\modules\1713\train_tank.dm"
+#include "code\modules\1713\train_turntable.dm"
 #include "code\modules\1713\train_warfare.dm"
 #include "code\modules\1713\train_water.dm"
 #include "code\modules\1713\rail_warehouse.dm"

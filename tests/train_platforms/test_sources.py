@@ -668,6 +668,43 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('derailed', states)
         self.assertIn('rerail_jack', states)
 
+    def test_turntable_is_a_pivot_with_bridge_rails(self):
+        table = (ROOT / 'code/modules/1713/train_turntable.dm').read_text(encoding='utf-8')
+        platforms = (ROOT / 'code/modules/1713/train_platforms.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_turntable.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the bridge is rails to a train, but not track a player bends or lifts
+        self.assertIn('/obj/structure/rails/turntable\n', table)
+        self.assertIn('/obj/structure/rails/turntable/pry_apart()\n\treturn null', table)
+        # it turns only what is whole on the bridge, with the pit clear
+        swing = table[table.index('/obj/structure/train_turntable/proc/swing(angle)'):]
+        swing = swing[:swing.index('/obj/structure/train_turntable/proc/in_reach(')]
+        self.assertIn('turn_problem()', swing)
+        self.assertLess(swing.index('cargo[AM] = rotated(T, angle)'), swing.index('TR.train_shift(places[TR], FALSE)'))
+        self.assertIn('P.place_parts(P.loc, P.dir)', swing)
+        self.assertIn('E.place_body()', swing)
+        self.assertIn('which is not on the table', table)
+        self.assertIn('is standing in the pit', table)
+        # the pivot and its pit are never deck cargo
+        self.assertIn('istype(AM, /obj/structure/train_turntable)', platforms)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, table)
+        for name in ('TURNTABLE_TIME', 'TURNTABLE_WEIGHT_TIME', 'TURNTABLE_TIME_MAX'):
+            self.assertIn('#undef ' + name, table)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for state in ('turntable_deck', 'turntable_girders', 'turntable_pivot'):
+            self.assertIn('"%s"' % state, table)
+            self.assertIn(state, states)
+        for sheet, size in (('train_turntable.dmi', 160), ('train_turntable_large.dmi', 352)):
+            text = dmi_description(ROOT / 'icons/obj/vehicles' / sheet)
+            self.assertIn('state = "pit"', text)
+            self.assertIn('width = %d' % size, text)
+            self.assertIn("'icons/obj/vehicles/%s'" % sheet, table)
+        for path, recipe in (
+                ('/obj/structure/train_turntable', '/material/iron/,turntable,/obj/structure/train_turntable,20,'),
+                ('/obj/structure/train_turntable/large', '/material/iron/,large turntable,/obj/structure/train_turntable/large,40,')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+
     def test_track_works_buffer_stops_and_crossings(self):
         works = (ROOT / 'code/modules/1713/train_trackworks.dm').read_text(encoding='utf-8')
         signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')
