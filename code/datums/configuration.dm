@@ -580,7 +580,9 @@ var/list/gamemode_cache = list()
 				else
 					log_misc("Unknown setting in configuration: '[name]'")
 
-	if (config.hub)
+	// A standby world (-params standby=PORT on its own port) stays off the hub until a
+	// handover opens the region's port (nomads_lifecycle.dm standby_open).
+	if (config.hub && !persistence_standby_launch(islist(world.params) ? world.params["standby"] : null, world.port))
 		world.visibility = TRUE
 	else
 		world.visibility = FALSE

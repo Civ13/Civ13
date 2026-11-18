@@ -708,6 +708,34 @@ class ShardGroupTests(unittest.TestCase):
         self.assertIn('persistence_standby_launch(islist(world.params) ? world.params["standby"] : null, world.port)', dm)
         self.assertIn('return isnum(launched) && launched == port', dm)
 
+    def test_a_public_standby_can_join_the_hub_after_its_handover(self):
+        # -invisible kept a standby off the BYOND hub even after it took over the
+        # region's port, so Gaia vanished from the hub (2026-11-18). A public region's
+        # standby launches -public; DM keeps it hidden until the handover opens it.
+        group = self.write_group()
+        platform = shard_group.RegionPlatform(shard_group.region_config(group, group['regions'][0]))
+        platform.config['repository'] = str(self.base)
+        platform.start_agent = lambda: None
+        launched = []
+        detach = shard_group.detach
+        shard_group.detach = lambda argv, cwd, log: launched.append(argv) or 4242
+        try:
+            for public in (True, False):
+                platform.config['public'] = public
+                platform.start_standby('region.b.dmb', 1755)
+        finally:
+            shard_group.detach = detach
+        self.assertIn('-public', launched[0])
+        self.assertNotIn('-invisible', launched[0])
+        self.assertIn('-invisible', launched[1])
+        self.assertNotIn('-public', launched[1])
+        root = Path(__file__).resolve().parents[2]
+        self.assertIn('visibility = 0', (root / 'code/hub.dm').read_text())
+        config = (root / 'code/datums/configuration.dm').read_text()
+        self.assertIn('if (config.hub && !persistence_standby_launch(islist(world.params) ? world.params["standby"] : null, world.port))', config)
+        lifecycle = (root / 'code/modules/persistence/nomads_lifecycle.dm').read_text()
+        self.assertIn('world.visibility = config && config.hub ? TRUE : FALSE', lifecycle)
+
     def host(self, group, region_id):
         region = next(r for r in group['regions'] if r['id'] == region_id)
         return shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
