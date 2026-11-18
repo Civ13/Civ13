@@ -83,7 +83,7 @@ class Harness:
         self.env=dict(FLAGS, world=self.world, sleep=sleep, isnull=lambda v:v is None,
             istype=lambda value,kind:isinstance(value,kind), MINING_CONTEXT_TYPE=type('Mining',(),{}),
             LEASE_TYPE=type('Lease',(),{}), new_progressbar=bar, qdel=lambda v:setattr(v,'deleted',True),
-            MINUTES=600, list=lambda *v:v, typed_iter=typed_iter, get_turf=lambda mob:mob.loc,
+            MINUTES=600, HYGIENE_LEVEL_DIRTY=75, list=lambda *v:v, typed_iter=typed_iter, get_turf=lambda mob:mob.loc,
             to_chat=lambda user,message:self.messages.append(message), SPAN_RED=lambda s:s,
             SPAN_NOTICE=lambda s:s, SPAN_WARNING=lambda s:s, WWalert=lambda *a:None,
             WWinput=lambda *a:actor.answer, usr=actor, map=SimpleNamespace(ID='ordinary'),
@@ -234,7 +234,7 @@ class RestingSleep(unittest.TestCase):
             with self.subTest(reason=reason):
                 actor=Actor(True)
                 if reason=='fleas':actor.wear_suit.fleas=True
-                elif reason=='hygiene':actor.hygiene=80
+                elif reason=='hygiene':actor.hygiene=74
                 elif reason=='bed':actor.loc.beds=[]
                 else:actor.sleeping=1
                 h=Harness(actor);self.assertFalse(h.run());self.assertEqual(h.wait_calls,[])

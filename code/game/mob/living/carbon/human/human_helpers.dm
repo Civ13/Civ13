@@ -127,7 +127,7 @@
 			to_chat(src, SPAN_RED("You toss and turn but your skin is crawling and you can not sleep."))
 			return
 
-	if (hygiene <= 80)
+	if (hygiene < HYGIENE_LEVEL_DIRTY) // the same "filthy" line as mood and self-examine
 		to_chat(src, SPAN_RED("You toss and turn but you are too filthy to sleep."))
 		return
 
