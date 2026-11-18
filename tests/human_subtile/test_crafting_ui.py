@@ -148,6 +148,8 @@ def restore_crafting_projection(path, source):
             # Audit fixes: an empty sandbag stops after its warning; ant shoveling returns the parent's result.
             ('SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n\t\t\treturn\n', 'SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n'),
             ('\t\t\tif (H.shoveling)\n\t\t\t\treturn ..()\n', '\t\t\tif (H.shoveling)\n\t\t\t\t..()\n'),
+            # Opening dug-out rock to the sky (tests/open_cave_roof).
+            ('\t\tif (open_cave_roof_attempt(H, C)) // open_cave_roof.dm\n\t\t\treturn\n', ''),
         )
     else:
         edits = ()

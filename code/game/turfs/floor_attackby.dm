@@ -357,6 +357,8 @@
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			start_pickaxe_mining(H, C)
 			return
+		if (open_cave_roof_attempt(H, C)) // open_cave_roof.dm
+			return
 
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 		var/mob/living/human/H = user
