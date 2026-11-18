@@ -121,7 +121,7 @@ var/ws_runtime_error = FALSE
 	S.severe = TRUE
 	weather_sample_time = -1
 	ws_check(weather_at(ice) == WEATHER_EXTREME && weather_look_at(ice) == "snow_storm", "a severe core over tundra is a blizzard")
-	ws_check(get_temp(ice) == -82, "blizzard temperature under the core")
+	ws_check(get_temp(ice) == round(climate_air_temperature(ice, get_area(ice)) - 10), "a blizzard is 10 C colder than the season ([get_temp(ice)])")
 	ws_check(local_precipitation(ice) == "snow", "ground snow sees the storm's snow")
 	var/list/chunk = weather_chunk_state(round(119 / 4), round(59 / 4), 1)
 	ws_check(islist(chunk) && chunk[1] == "snow_storm" && chunk[2] == 255, "drawn chunk under the core is a full blizzard")

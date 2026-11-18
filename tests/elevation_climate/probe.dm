@@ -64,6 +64,9 @@ var/climate_runtime_error = FALSE
 	climate_check(elevation_temperature_drop(high) == 0, "an invalid lapse rate is ignored")
 	map.elevation_lapse_c_per_km = 6.5
 	climate_text_checks(high, low)
+	map.elevation_lapse_c_per_km = 0
+	climate_normal_checks(low)
+	climate_terrain_checks(high, low)
 
 // Generated region maps carry their profile as text on the map metadata.
 /proc/climate_text_checks(turf/high, turf/low)
@@ -90,3 +93,59 @@ var/climate_runtime_error = FALSE
 	catch
 		refused_overlap = TRUE
 	climate_check(refused_overlap, "text rows still get the overlap check")
+
+// Climate normals (climate_normals.dm): smooth seasons, an additive day and
+// weather that adds rather than multiplies.
+/proc/climate_normal_checks(turf/T)
+	var/area/A = get_area(T)
+	A.location = AREA_OUTSIDE
+	A.weather = WEATHER_NONE
+	A.icon_state = ""
+	climate_check(climate_mean_at("temperate", "SUMMER", 0.5) == 20 && climate_mean_at("temperate", "WINTER", 0.5) == -2, "temperate mid-summer is 20 C and mid-winter -2 C")
+	climate_check(abs(climate_mean_at("temperate", "SPRING", 0.5) - 9) < 0.01 && abs(climate_mean_at("temperate", "FALL", 0.5) - 9) < 0.01, "spring and fall sit at the annual mean")
+	climate_check(abs(climate_mean_at("temperate", "FALL", 1) - climate_mean_at("temperate", "WINTER", 0)) < 0.01 && abs(climate_mean_at("temperate", "WINTER", 1) - climate_mean_at("temperate", "SPRING", 0)) < 0.01, "the year has no jump at a season change")
+	climate_check(climate_mean_at("temperate", "WINTER", 0.25) > climate_mean_at("temperate", "WINTER", 0.5), "early winter is milder than mid-winter")
+	climate_check(climate_mean_at("savanna", "Dry Season", 0.5) > climate_mean_at("savanna", "Wet Season", 0.5), "the dry season is the hot one")
+	climate_check(climate_mean_at("desert", "Wet Season", 0.5) < 30 && climate_mean_at("desert", "Dry Season", 0.5) > 25, "desert wet and dry seasons follow the desert, not one flat value")
+	climate_check(climate_mean_at("unknown", "SUMMER", 0.5) == 20, "an unknown climate keeps 20 C")
+	climate_check(climate_season_mean("tundra", "SUMMER") == 8 && climate_season_mean("desert", "WINTER") == 13, "tundra summers are above freezing and desert winters cool")
+	A.climate = "desert"
+	season = "SUMMER"
+	time_of_day = "Early Morning"
+	var/dawn = get_temp(T)
+	time_of_day = "Afternoon"
+	var/afternoon = get_temp(T)
+	climate_check(dawn == 25 && afternoon == 43, "a desert summer runs from 25 C at dawn to 43 C in the afternoon ([dawn], [afternoon])")
+	A.climate = "temperate"
+	season = "WINTER"
+	time_of_day = "Night"
+	var/winter_night = get_temp(T)
+	time_of_day = "Afternoon"
+	climate_check(winter_night < get_temp(T), "a winter night is colder than the afternoon, not warmer ([winter_night])")
+	time_of_day = "Evening"
+	var/dry = get_temp(T)
+	A.weather = WEATHER_WET
+	A.weather_intensity = 2
+	A.icon_state = "rain2"
+	climate_check(get_temp(T) < dry, "rain cools freezing air instead of warming it ([dry] -> [get_temp(T)])")
+	A.weather = WEATHER_EXTREME
+	A.icon_state = "snow_storm"
+	climate_check(get_temp(T) == round(climate_air_temperature(T, A) - 10), "a blizzard is 10 C below the season, not a flat -82 C ([get_temp(T)])")
+	A.weather = WEATHER_NONE
+	A.icon_state = ""
+	season = "SPRING"
+
+// Hills from a terrain height file cool the air at 6.5 C per km, 50 m a level.
+/proc/climate_terrain_checks(turf/high, turf/low)
+	climate_check(terrain_temperature_drop(high) == 0, "no height file, no hill cooling")
+	var/list/rows = list()
+	for (var/y = 1, y <= 10, y++)
+		rows += "aaaaa00000"
+	fdel("climate_probe_heights.txt")
+	text2file("civ13-terrain-heights 2\nsize 10 10\nz 1\n[jointext(rows, "\n")]\n", "climate_probe_heights.txt")
+	map.terrain_height_file = "climate_probe_heights.txt"
+	climate_check(terrain_temperature_drop(high) == 3.25 && terrain_temperature_drop(low) == 0, "a level-10 hill is 3.25 C colder ([terrain_temperature_drop(high)])")
+	climate_check(elevation_temperature_drop(high) == 3.25, "hill cooling counts without a lapse rate")
+	climate_check(get_temp(low) - get_temp(high) == 3 || get_temp(low) - get_temp(high) == 4, "the hilltop reads colder ([get_temp(low)] vs [get_temp(high)])")
+	map.terrain_height_file = null
+	fdel("climate_probe_heights.txt")

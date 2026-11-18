@@ -1,5 +1,5 @@
-"""Farmer's almanac source projection: its weather table and crop rule must
-match the production weather and farming code. Stdlib only; no BYOND runtime."""
+"""Farmer's almanac source projection: its weather table, temperatures and crop
+rule must match the production weather, climate and farming code. Stdlib only; no BYOND runtime."""
 import re
 import unittest
 from pathlib import Path
@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ALMANAC = (ROOT / 'code/modules/1713/farmers_almanac.dm').read_text(encoding='utf-8')
 WEATHER = (ROOT / 'code/modules/1713/weather.dm').read_text(encoding='utf-8')
+NORMALS = (ROOT / 'code/modules/1713/climate_normals.dm').read_text(encoding='utf-8')
 FARMING = (ROOT / 'code/game/objects/farming.dm').read_text(encoding='utf-8')
 SEASONS = ('WINTER', 'SPRING', 'SUMMER', 'FALL', 'Wet Season', 'Dry Season')
 CLIMATES = ('tundra', 'taiga', 'temperate', 'sea', 'semiarid', 'desert', 'savanna', 'jungle')
@@ -52,17 +53,11 @@ def production_weather():
     return table
 
 
-def production_temperatures():
-    source = body(WEATHER, '/proc/get_temp(var/atom/A)')
-    source = source[:source.index('\tswitch (time_of_day)')]
+def climate_normals():
+    """climate -> (cold mean, warm mean, daily swing) from climate_normals.dm."""
     table = {}
-    for seasons, season_text in blocks(source, 2):
-        flat = re.search(r'loc_temp = (-?\d+)', season_text)
-        per_climate = {names[0]: int(re.search(r'loc_temp = (-?\d+)', text).group(1))
-                       for names, text in blocks(season_text, 4)}
-        for season in seasons:
-            for climate in CLIMATES:
-                table[(climate, season)] = per_climate[climate] if per_climate else int(flat.group(1))
+    for name, cold, warm, swing in re.findall(r'\t"(\w+)" = list\((-?\d+), (-?\d+), (\d+)\)', NORMALS):
+        table[name] = (int(cold), int(warm), int(swing))
     return table
 
 
@@ -76,18 +71,28 @@ def almanac_table():
         if heading:
             climate = heading.group(1)
             continue
-        row = re.match(r'\t\t"([^"]+)" = list\((-?\d+), "([^"]*)", "([^"]*)"\)', line)
+        row = re.match(r'\t\t"([^"]+)" = list\("([^"]*)", "([^"]*)"\)', line)
         if row:
-            table[(climate, row.group(1))] = (int(row.group(2)), row.group(3), row.group(4))
+            table[(climate, row.group(1))] = (row.group(2), row.group(3))
     return table
 
 
 class FarmersAlmanacTests(unittest.TestCase):
-    def test_weather_table_matches_production_weather_and_temperatures(self):
-        weather, temperatures, almanac = production_weather(), production_temperatures(), almanac_table()
-        expected = {(c, s): (temperatures[(c, s)],) + weather[(c, s)] for c in CLIMATES for s in SEASONS}
+    def test_weather_table_matches_production_weather(self):
+        weather, almanac = production_weather(), almanac_table()
+        expected = {(c, s): weather[(c, s)] for c in CLIMATES for s in SEASONS}
         self.assertEqual(len(expected), 48)
         self.assertEqual(almanac, expected)
+
+    def test_temperatures_come_from_the_climate_normals(self):
+        # The almanac prints each season's middle from the same normals get_temp() uses.
+        self.assertIn('[climate_season_mean(climate, season_name)]&deg;C', ALMANAC)
+        self.assertIn('loc_temp = climate_air_temperature(A, mob_area)', body(WEATHER, '/proc/get_temp(var/atom/A)'))
+        normals = climate_normals()
+        self.assertEqual(sorted(normals), sorted(CLIMATES))
+        for climate, (cold, warm, swing) in normals.items():
+            self.assertLess(cold, warm, climate)
+            self.assertGreater(swing, 0, climate)
 
     def test_climate_map_list_matches_crop_growth(self):
         growth = FARMING[FARMING.index('var/currcl = a.climate'):]

@@ -79,9 +79,11 @@ unnecessary. This is a source/lifetime argument, not a measured native GC result
 
 ## Scope and verification
 
-Temperature coupling is opt-in per map. `elevation_lapse_c_per_km` on the map
-metadata defaults to 0, which leaves `get_temp()` and snowfall unchanged on
-every existing map. A map with elevation regions can set it (0 to 10; 6.5 is the
+Hills from a map's terrain height file always cool the air (6.5 C per km, 50 m
+a level; see [climate-normals.md](climate-normals.md)). Coupling to these
+authored metres is opt-in per map. `elevation_lapse_c_per_km` on the map
+metadata defaults to 0, which leaves the authored metres out of `get_temp()` and
+snowfall on every existing map. A map with elevation regions can set it (0 to 10; 6.5 is the
 standard atmosphere); `get_temp()` then subtracts `lapse * metres / 1000` before
 rounding and indoor insulation, so it also cools below-zero elevations less and
 warms them. `local_precipitation(turf)` in `code/modules/1713/elevation_climate.dm`

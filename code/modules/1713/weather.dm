@@ -416,100 +416,8 @@
 	if (!mob_area)
 		return loc_temp
 
-	switch (season)
-		if ("WINTER")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = -29
-				if ("sea")
-					loc_temp = -11
-				if ("tundra")
-					loc_temp = -60
-				if ("taiga")
-					loc_temp = -53
-				if ("semiarid")
-					loc_temp = 0
-				if ("desert")
-					loc_temp = 32
-				if ("jungle")
-					loc_temp = 30
-				if ("savanna")
-					loc_temp = 27
-
-		if ("FALL")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 7
-				if ("sea")
-					loc_temp = 11
-				if ("tundra")
-					loc_temp = -50
-				if ("taiga")
-					loc_temp = -35
-				if ("semiarid")
-					loc_temp = 12
-				if ("desert")
-					loc_temp = 34
-				if ("jungle")
-					loc_temp = 32
-				if ("savanna")
-					loc_temp = 29
-
-		if ("SUMMER")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 30
-				if ("sea")
-					loc_temp = 23
-				if ("tundra")
-					loc_temp = -25
-				if ("taiga")
-					loc_temp = -10
-				if ("semiarid")
-					loc_temp = 35
-				if ("desert")
-					loc_temp = 50
-				if ("jungle")
-					loc_temp = 40
-				if ("savanna")
-					loc_temp = 35
-
-		if ("SPRING")
-			switch (mob_area.climate)
-				if ("temperate")
-					loc_temp = 10
-				if ("sea")
-					loc_temp = 14
-				if ("tundra")
-					loc_temp = -35
-				if ("taiga")
-					loc_temp = -15
-				if ("semiarid")
-					loc_temp = 28
-				if ("desert")
-					loc_temp = 40
-				if ("jungle")
-					loc_temp = 34
-				if ("savanna")
-					loc_temp = 29
-		if ("Dry Season")
-			loc_temp = 45
-		if ("Wet Season")
-			loc_temp = 30
-
-	switch (time_of_day)
-		if ("Midday")
-			loc_temp *= 1.05
-		if ("Afternoon")
-			loc_temp *= 1.03
-		if ("Morning")
-			loc_temp *= 1.01
-		if ("Evening")
-			loc_temp *= 1.00 // default
-		if ("Early Morning")
-			loc_temp *= 0.96
-		if ("Night")
-			loc_temp *= 0.92
+	// The climate's air at this time of year and day (climate_normals.dm).
+	loc_temp = climate_air_temperature(A, mob_area)
 
 	// Underground the earth holds a steady cool temperature: no weather
 	// reaches it, and the season only moves it a little.
@@ -525,24 +433,9 @@
 
 	// The weather on this tile: a storm overhead or pinned zone weather.
 	var/local_weather = weather_at(A)
-	var/local_look = weather_look_at(A)
-	switch (local_weather)
-		if (WEATHER_NONE)
-			loc_temp *= 1.00
-		if (WEATHER_WET)
-			switch (weather_intensity_at(A))
-				if (1.0)
-					loc_temp *= 0.94
-				if (2.0)
-					loc_temp *= 0.93
-				if (3.0)
-					loc_temp *= 0.92
-		if (WEATHER_EXTREME)
-			if (local_look == "snow_storm")
-				loc_temp = -82
-			else if (local_look == "sandstorm")
-				loc_temp = 60
-	// Opt-in per-map lapse rate; zero on every existing map.
+	loc_temp += climate_weather_offset(A)
+	// High ground is colder: hills from the terrain height file, plus any
+	// authored geographic elevation (elevation_climate.dm).
 	loc_temp -= elevation_temperature_drop(A)
 	loc_temp = round(loc_temp)
 
