@@ -151,6 +151,28 @@ death there always sends the character home to the mainland: a bed there
 does not keep the home. A land world reads its chart about once a minute to
 know.
 
+### Claimed lands
+
+A faction's claim on a land across the sea can never be taken by another
+faction while the faction lives there (`code/modules/naval/island_claim.dm`):
+
+- The claim on the world chart is the colony's title. If the charter is
+  destroyed the colony still stands: arrivals still join it, it still counts
+  in the land samples, and its own leader (or a leader who travelled from the
+  faction's land) can plant the charter again. Nobody else can claim the land
+  meanwhile.
+- A claim lapses when the land has had fewer than 3 residents for 14 days in
+  a row: members on the colony's roster with a fastened bed of their own
+  there. Members are told when the count drops, and when it recovers. On a
+  lapse the charter comes down and the land goes back to `SETTLED`, open to
+  any faction's claim (op `unclaim`).
+- These lands have no provinces, so the colony's recruitment stations always
+  work ([provinces](provinces.md)). Examining the charter shows the claim's
+  standing.
+
+The check runs with the land's chart refresh (`land_stages_refresh_due`).
+State: `map.faction_recruitment["island_claim"] = list(parent, short since)`.
+
 Tests: `tests/naval_carrier/voyage_probe.dm` (see `tests/naval_carrier/README.md`),
 `python3 -B tests/transfer_storage/test_world_chart.py` (courses, land choices),
 `python3 -B tests/gaia_host/test_expedition_slots.py` (opening lands).
