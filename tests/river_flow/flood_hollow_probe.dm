@@ -85,7 +85,7 @@ var/hollow_runtime_error = FALSE
 	hollow_check(F.flooding, "a hollow with water counts as flooding for drawing")
 
 	var/list/state = F.snapshot()
-	hollow_check(state.len == 1 * 3 + 2 + 1 + 1 && state[5] == 1 && abs(state[6] - 5.5) < 0.001, "the hollow's water is saved ([json_encode(state)])")
+	hollow_check(state.len == 1 * 3 + 2 + 1 + 1 + 1 && state[5] == 1 && abs(state[6] - 5.5) < 0.001, "the hollow's water is saved ([json_encode(state)])")
 	var/datum/river_flood/G = river_flood_parse(hollow_probe_text(), 8, 6, 1)
 	hollow_check(G.restore(state) && abs(G.hollow_volume[1] - 5.5) < 0.001 && abs(G.hollow_level[1] - 2) < 0.001, "and loads back")
 	hollow_check(G.restore(list(1, state[2], state[3], state[4])) && G.hollow_volume[1] == 0, "a save from before hollows loads them dry")
