@@ -938,8 +938,16 @@ var/datum/probe_globals/GLOB = new
 		if(!(type_key in sent_types))
 			settable = FALSE
 	check(settable && !(PORT_TYPE_LIST in sent_types) && !(PORT_TYPE_SIGNAL in sent_types), "the editor is told the four types a player may set")
+	// Text orders alphabetically.
 	enter(circuit, user, compare, 1, "apple")
+	enter(circuit, user, compare, 2, "banana")
 	enter(circuit, user, compare, 3, "Less Than")
+	check(output_value(compare) == TRUE, "comparison: apple is less than banana")
+	enter(circuit, user, compare, 3, "Greater Than")
+	check(output_value(compare) == FALSE, "comparison: apple is not greater than banana")
+	enter(circuit, user, compare, 3, "Less Than or Equal")
+	enter(circuit, user, compare, 2, "apple")
+	check(output_value(compare) == TRUE, "comparison: equal text is less than or equal")
 	enter(circuit, user, compare, 2, 3)
 	check(isnull(output_value(compare)) || output_value(compare) == FALSE, "comparison: text and a number have no order")
 	qdel(circuit)

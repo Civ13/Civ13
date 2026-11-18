@@ -14,12 +14,14 @@
 			return !either_is_list && left == right
 		if("Not Equal")
 			return either_is_list || left != right
+	// Which side is the greater: positive for the left, negative for the right.
 	// Only two numbers or two texts have an order.
 	var/order
 	if(isnum(left) && isnum(right))
 		order = left > right ? 1 : (left < right ? -1 : 0)
 	else if(istext(left) && istext(right))
-		order = sorttext(left, right)
+		// sorttext() is positive when its arguments are already in ascending order.
+		order = sorttext(right, left)
 	else
 		return null
 	switch(chosen)
