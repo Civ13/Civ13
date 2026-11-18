@@ -35,6 +35,7 @@ PLATFORMS = ROOT / 'icons/obj/vehicles/train_platforms.dmi'
 GUN = ROOT / 'icons/obj/vehicles/railway_gun.dmi'
 WATER = ROOT / 'icons/obj/vehicles/rail_water.dmi'
 PLOUGH = ROOT / 'icons/obj/vehicles/train_plough.dmi'
+LOADS = ROOT / 'icons/obj/vehicles/train_loads.dmi'
 RAILS = ROOT / 'icons/obj/vehicles/trains.dmi'
 
 # ramps: lit, face, shade, outline
@@ -165,7 +166,31 @@ def carpet(c, x0, y0, x1, y1, border=True):
             c.rect(x, y0, x, y1, mix(base, deep, 0.6))
 
 
+def hopper_floor(c):
+    """The floor of a hopper: dark steel slope sheets falling to a pair of
+    drop doors down the middle of the car."""
+    c.rect(0, 0, 31, 31, BLACK[2])
+    for x in range(32):
+        d = abs(x - 15.5)
+        tone = BLACK[1] if d > 12 else (BLACK[2] if d > 7 else BLACK[3])
+        c.rect(x, 0, x, 31, tone)
+    for y in range(32):
+        for x in range(32):
+            if noise(x, y, 31) < 0.06:
+                c.put(x, y, mix(BLACK[2], OXIDE[2], 0.5))
+    # the doors and their hinge straps
+    c.rect(9, 0, 22, 31, BLACK[4])
+    c.rect(10, 1, 15, 30, BLACK[3])
+    c.rect(16, 1, 21, 30, mix(BLACK[3], BLACK[4], 0.5))
+    c.rect(10, 1, 10, 30, BLACK[1])
+    for y in (5, 15, 26):
+        c.rect(7, y, 24, y, STEEL[4])
+        c.put(8, y, STEEL[1])
+        c.put(23, y, STEEL[2])
+
+
 SURFACES = {
+    'hopper': hopper_floor,
     'wood': lambda c: planks(c, 0, 0, 31, 31, seed=1),
     'floor': lambda c: lino(c, 0, 0, 31, 31),
     'carpet': lambda c: carpet(c, 0, 0, 31, 31),
@@ -459,7 +484,22 @@ def edge_drop_door_open(c):
         c.put(1, y, BRASS[1])
 
 
+def edge_hopper(c):
+    """A hopper's steel side: a plate with a rolled top edge and pressed ribs."""
+    c.rect(0, 0, 4, 31, STEEL_O)
+    c.bands(1, 0, 3, 31, [BLACK[0], BLACK[1], BLACK[2]], along=True)
+    c.shade(5, 0, 5, 31, 90)
+    c.shade(6, 0, 6, 31, 40)
+    for y in (3, 11, 19, 27):
+        c.rect(0, y, 4, y + 1, STEEL_O)
+        c.rect(1, y, 3, y, STEEL[1])
+        c.rect(1, y + 1, 3, y + 1, STEEL[3])
+    for y in (7, 15, 23):
+        c.rivet(2, y, STEEL[0], BLACK[4])
+
+
 EDGES = {
+    'edge_hopper': edge_hopper,
     'edge_plank': edge_plank, 'edge_freight_door': edge_freight_door, 'edge_freight_door_open': edge_freight_door_open,
     'edge_side': edge_side, 'edge_drop_door': edge_drop_door, 'edge_drop_door_open': edge_drop_door_open,
     'edge_wall': edge_wall, 'edge_window': edge_window, 'edge_armor': edge_armor,
@@ -846,6 +886,73 @@ def sand_bin(full):
         c.rect(x, 28, x + 2, 32, STEEL_O)
         c.put(x + 1, 30, STEEL[1])
     return [c.image()]
+
+
+ROCK = ((166, 140, 120), (128, 104, 90), (94, 76, 68), (58, 46, 42))
+HEAPS = {'coal': COAL, 'ore': ROCK}
+
+
+def heap(tone, fill):
+    """A bulk load across one section of a car, 96 x 96 and centred on the
+    section's tile (car heading north): a ridge down the middle of the car
+    that runs on into the next section. fill 1 is a low ridge, 2 a full load."""
+    ramp = HEAPS.get(tone) or SAND
+
+    def draw(c):
+        half = 39 if fill == 2 else 24
+        for y in range(32, 64):
+            for x in range(96):
+                # ragged edge, the same on every section so the heaps join
+                edge = half + (noise(x // 3, y % 32, 51) - 0.5) * 5 + 2 * math.sin((y % 32) / 32 * 2 * math.pi)
+                d = abs(x - 47.5)
+                if d > edge:
+                    continue
+                n = noise(x // 2, (y % 32) // 2, 52 + fill)
+                # lit on the slope that faces the upper left, dark on the far one
+                slope = (47.5 - x) / half
+                lit = slope * 0.6 + (n - 0.5) * 1.1
+                col = ramp[0] if lit > 0.55 else (ramp[1] if lit > 0.05 else (ramp[2] if lit > -0.45 else ramp[3]))
+                if d > edge - 1.5:
+                    col = ramp[3]
+                elif d < 1.5 and n > 0.4:
+                    col = ramp[0]
+                c.put(x, y, col)
+    return directions(draw, w=96, h=96, order=HEADING)
+
+
+def load_states():
+    out = {}
+    for tone in ('coal', 'ore', 'sand'):
+        for fill in (1, 2):
+            out['heap_%s_%d' % (tone, fill)] = heap(tone, fill)
+    return out
+
+
+def drop_pit(tone):
+    """A drop pit between the rails of a track running north (train_freight.dm):
+    a timber-lined bin under a grating of iron bars. tone None is empty."""
+    def draw(c):
+        c.rect(9, 0, 22, 31, WALNUT[3])
+        c.rect(9, 0, 10, 31, WALNUT[1])
+        c.rect(21, 0, 22, 31, WALNUT[2])
+        c.rect(11, 0, 20, 31, DARK)
+        if tone:
+            ramp = HEAPS.get(tone) or SAND
+            for y in range(32):
+                for x in range(11, 21):
+                    n = noise(x // 2, y // 2, 81)
+                    c.put(x, y, ramp[1] if n > 0.55 else (ramp[2] if n > 0.2 else ramp[3]))
+                    if n > 0.88:
+                        c.put(x, y, ramp[0])
+        else:
+            c.speckle(11, 0, 20, 31, WALNUT[3], 0.2, seed=82)
+        # the grating
+        for y in range(1, 32, 4):
+            c.rect(9, y, 22, y, STEEL_O)
+            c.rect(10, y, 21, y, STEEL[3] if tone else STEEL[2])
+        for y in (0, 31):
+            c.rect(9, y, 22, y, STEEL_O)
+    return directions(draw, order=HEADING)
 
 
 def coupling_item():
@@ -2073,7 +2180,7 @@ def water_states():
 
 def platform_states():
     states = {}
-    for kind in ('wood', 'floor', 'carpet', 'steel', 'boards'):
+    for kind in ('wood', 'floor', 'carpet', 'steel', 'boards', 'hopper'):
         states['deck_center_' + kind] = deck_center(kind)
         states['deck_side_' + kind] = deck_side(kind)
     for name, draw in EDGES.items():
@@ -2097,6 +2204,9 @@ def platform_states():
     states['fire_rake'] = fire_rake()
     states['brake_shoes'] = brake_shoes()
     states['plough_item'] = plough_item()
+    states['drop_pit'] = drop_pit(None)
+    for tone in ('coal', 'ore', 'sand'):
+        states['drop_pit_' + tone] = drop_pit(tone)
     states['fusible_plug'] = fusible_plug()
     states['brake_wheel'] = brake_wheel(False)
     states['brake_wheel_on'] = brake_wheel(True)
@@ -2125,6 +2235,9 @@ _low = [(L, 'out', 'side'), (R, 'out', 'side')]
 _low_d = [(L, 'out', 'drop_door'), (R, 'out', 'drop_door')]
 _low_f = [(L, 'front', 'side'), (0, 'front', 'side'), (R, 'front', 'side')]
 _low_b = [(L, 'back', 'side'), (0, 'back', 'side'), (R, 'back', 'side')]
+_bin = [(L, 'out', 'hopper'), (R, 'out', 'hopper')]
+_bin_f = [(L, 'front', 'hopper'), (0, 'front', 'hopper'), (R, 'front', 'hopper')]
+_bin_b = [(L, 'back', 'hopper'), (0, 'back', 'hopper'), (R, 'back', 'hopper')]
 # mirrors train_car_layout() in code/modules/1713/train_platforms.dm
 CARS = {
     'flatbed': ('wood', 'wood', [_rails, [], [], _rails], None),
@@ -2139,6 +2252,7 @@ CARS = {
     'boxcar': ('boards', 'boards', [_van + _van_f, _van, _van, _van_d, _van_d, _van, _van, _van + _van_b], 'boxcar'),
     'open_wagon': ('boards', 'boards', [_low + _low_f, _low, _low, _low_d, _low_d, _low, _low, _low + _low_b], None),
     'long_flatbed': ('wood', 'wood', [_rails, [], [], [], [], [], [], _rails], None),
+    'hopper': ('hopper', 'hopper', [_bin + _bin_f, _bin, _bin, _bin, _bin, _bin + _bin_b], None),
     'brake_van': ('boards', 'boards', [_rails, _win + [(L, 'front', 'plank'), (0, 'front', 'door'), (R, 'front', 'plank')],
                                        _van, _win + [(L, 'back', 'plank'), (0, 'back', 'door'), (R, 'back', 'plank')]],
                   'boxcar'),
@@ -2399,6 +2513,54 @@ def write_previews(out, states, gun):
     im.alpha_composite(states['plough_item'][0].resize((64, 64), Image.NEAREST), (16, engine.height + 40))
     big(im, 3).save(out / 'snowplough.png')
 
+    # bulk freight: an open wagon of coal, a hopper empty, part loaded with
+    # sand and full of ore, and the drop pit empty and with each kind in it
+    loads = load_states()
+
+    def loaded(kind, heading, tone=None, fill=2):
+        car = render_car(states, kind, heading)
+        if not tone:
+            return car
+        rows = len(CARS[kind][2])
+        under = Image.new('RGBA', car.size, (0, 0, 0, 0))
+        for seg in range(rows):
+            x, y = tile_pos(heading, seg, 0, rows)
+            under.alpha_composite(loads['heap_%s_%d' % (tone, fill)][DIR_INDEX[heading]], (x * 32 - 32, y * 32 - 32))
+        # the heap lies on the deck, under the car's sides
+        base = Image.new('RGBA', car.size, (0, 0, 0, 0))
+        center, side, segs, _ = CARS[kind]
+        plain = dict(CARS)
+        CARS['_bare'] = (center, side, [[] for _ in segs], None)
+        base.alpha_composite(render_car(states, '_bare', heading))
+        del CARS['_bare']
+        base.alpha_composite(under)
+        CARS['_sides'] = (center, side, segs, None)
+        sides = render_car(states, kind, heading)
+        bare = render_car(states, '_sides', heading)
+        del CARS['_sides']
+        # keep only what the sides add over the bare deck
+        deck = Image.new('RGBA', car.size, (0, 0, 0, 0))
+        CARS['_bare'] = (center, side, [[] for _ in segs], None)
+        deck.alpha_composite(render_car(states, '_bare', heading))
+        del CARS['_bare']
+        px, dk, bs = sides.load(), deck.load(), base.load()
+        for yy in range(car.height):
+            for xx in range(car.width):
+                if px[xx, yy] != dk[xx, yy]:
+                    bs[xx, yy] = px[xx, yy]
+        return base
+    row = [loaded('open_wagon', 'E', 'coal'), loaded('hopper', 'E'), loaded('hopper', 'E', 'sand', 1), loaded('hopper', 'E', 'ore')]
+    im = ground(max(row[0].width + row[1].width, row[2].width + row[3].width) + 48, 2 * 104 + 72, seed=23)
+    im.alpha_composite(row[0], (8, 4))
+    im.alpha_composite(row[1], (16 + row[0].width, 4))
+    im.alpha_composite(row[2], (8, 108))
+    im.alpha_composite(row[3], (16 + row[2].width, 108))
+    for i, name in enumerate(('drop_pit', 'drop_pit_coal', 'drop_pit_ore', 'drop_pit_sand')):
+        x = 16 + i * 64
+        im.alpha_composite(read_dmi(RAILS)['rails'][DIR_INDEX['E']], (x, 2 * 104 + 20))
+        im.alpha_composite(states[name][DIR_INDEX['E']], (x, 2 * 104 + 20))
+    big(im, 3).save(out / 'bulk-freight.png')
+
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),
                                       ('boxcar', True), ('open_wagon', False), ('long_flatbed', False))):
@@ -2454,19 +2616,21 @@ def main(argv):
     gun = gun_states()
     water = water_states()
     plough = plough_states()
+    loads = load_states()
     if '--check' in argv:
         bad = [str(p.relative_to(ROOT)) for p, s, size, cols in ((PLATFORMS, states, (32, 32), 16), (GUN, gun, (96, 96), 2),
-                                                                 (WATER, water, (64, 64), 4), (PLOUGH, plough, (96, 96), 4))
+                                                                 (WATER, water, (64, 64), 4), (PLOUGH, plough, (96, 96), 4), (LOADS, loads, (96, 96), 4))
                if not same(p, s, size, cols)]
         if bad:
             print('out of date: ' + ', '.join(bad))
             return 1
-        print('train sheets match (%d + %d + %d + %d states)' % (len(states), len(gun), len(water), len(plough)))
+        print('train sheets match (%d + %d + %d + %d + %d states)' % (len(states), len(gun), len(water), len(plough), len(loads)))
         return 0
     write_dmi(PLATFORMS, states, cols=16)
     write_dmi(GUN, gun, size=(96, 96), cols=2)
     write_dmi(WATER, water, size=(64, 64), cols=4)
     write_dmi(PLOUGH, plough, size=(96, 96), cols=4)
+    write_dmi(LOADS, loads, size=(96, 96), cols=4)
     print('wrote %d platform states and the railway gun' % len(states))
     if '--preview' in argv:
         write_previews(Path(argv[argv.index('--preview') + 1]), states, gun)
