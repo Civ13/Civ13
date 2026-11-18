@@ -149,6 +149,7 @@
 		row[4] = null
 		row[5] = 0
 		province_tell_leaders(contender, "You now hold the [name]. Your recruitment stations there work.")
+	province_ruins_update(stakes) // province_upkeep.dm
 
 // Why a station here cannot recruit under the province rules, or null.
 /proc/province_station_problem(obj/structure/recruitment_station/S, faction = null)
