@@ -49,7 +49,9 @@ class Wiring(unittest.TestCase):
         self.assertIn('pit/tunnel_filled(mob/user)', read('code/modules/multiz/hole_ladder.dm'))
         # Packed earth must stay dense so flood_cellars.dm seepage skips it.
         cellars = read('code/modules/1713/flood_cellars.dm')
-        self.assertIn('if (T.density', cellars)
+        self.assertIn('return T && !T.density && istype(T, /turf/floor)', cellars)
+        self.assertIn('if (!cellar_holds_water(T) ||', cellars)
+        self.assertIn('if (!cellar_holds_water(N) ||', cellars)
 
 
 if __name__ == '__main__':
