@@ -12,6 +12,8 @@
 // Real hours a record lasts, and a bed must have been held before the death.
 #define DEATH_LEGACY_HOURS 24
 #define DEATH_LEGACY_BED_HOURS 24
+// A bed start costs like this many more returns: one doubles the loss.
+#define DEATH_LEGACY_BED_EXTRA 1
 // A weakness nobody came back to collect is dropped after a week.
 #define DEATH_LEGACY_WEAK_HOURS 168
 #define DEATH_LEGACY_LIMIT 500
@@ -203,9 +205,12 @@ var/global/death_legacy_test_hours = 0
 	var/bed = region_home_enabled() && B && B.valid_character_bed(null) && death_legacy_reachable(account, get_turf(B), FALSE)
 	var/who = "[record["name"]] [death_legacy_cause_text(record["cause"])]"
 	var/cost = death_legacy_loss_text(record["cause"], record["returns"])
+	var/bed_cost = death_legacy_loss_text(record["cause"], record["returns"] + DEATH_LEGACY_BED_EXTRA)
 	var/others = english_list(keeps, "", " or ")
+	if (bed && keeps.len)
+		return "\n\n[who]. Starting [others] keeps what they knew, less [cost]. Starting at your bed (the choice '[wilds]') keeps it less [bed_cost]."
 	if (bed)
-		return "\n\n[who]. Starting at your bed (the choice '[wilds]')[keeps.len ? " or [others]" : ""] keeps what they knew, less [cost]."
+		return "\n\n[who]. Starting at your bed (the choice '[wilds]') keeps what they knew, less [bed_cost]."
 	if (keeps.len)
 		return "\n\n[who]. Starting [others] keeps what they knew, less [cost]. Any other start begins with nothing."
 	return "\n\n[who] too far from your faction's station or a bed you had held for a day, so this character starts with nothing they knew."
@@ -231,7 +236,9 @@ var/global/death_legacy_test_hours = 0
 	H.started_with_faction = FALSE
 	if (!death_legacy_reachable(account, get_turf(H), by_station))
 		return FALSE
-	var/list/loss = death_legacy_loss(record["cause"], record["returns"])
+	// A bed only partly protects: it costs as much as one more return (Val, 2026-11-18).
+	var/charged = record["returns"] + (by_station ? 0 : DEATH_LEGACY_BED_EXTRA)
+	var/list/loss = death_legacy_loss(record["cause"], charged)
 	var/list/nodes = clean_recipe_node_ids(record["nodes"])
 	if (loss[4] > 0)
 		nodes.Cut(max(1, nodes.len - loss[4] + 1))
@@ -257,7 +264,7 @@ var/global/death_legacy_test_hours = 0
 			H.stats[stat] = kept
 	H.refresh_recipe_knowledge_menus()
 	to_chat(H, "<big><font color='#3d9e3d'><b>You remember what [record["name"]] knew.</b></font></big>")
-	to_chat(H, SPAN_NOTICE("Lost with that death: [death_legacy_loss_text(record["cause"], record["returns"])]. Another return within a day costs double."))
+	to_chat(H, SPAN_NOTICE("Lost with that death: [death_legacy_loss_text(record["cause"], charged)][by_station ? "" : ", double for starting at a bed instead of your faction's station"]. Another return within a day costs double."))
 	death_legacies[account] = list("at" = record["at"], "weak" = 0, "kept" = 0, "returns" = record["returns"] + 1, "used" = death_legacy_now())
 	return TRUE
 
@@ -359,6 +366,7 @@ var/global/death_legacy_test_hours = 0
 #undef DEATH_LEGACY_RANGE
 #undef DEATH_LEGACY_HOURS
 #undef DEATH_LEGACY_BED_HOURS
+#undef DEATH_LEGACY_BED_EXTRA
 #undef DEATH_LEGACY_WEAK_HOURS
 #undef DEATH_LEGACY_LIMIT
 #undef DEATH_WEAKNESS_SECONDS

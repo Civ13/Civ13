@@ -16,6 +16,13 @@ Any other start, a start in another land, or a start after the day has passed
 begins with nothing, as before. The lobby's starting place question says what
 each choice keeps.
 
+A bed only partly protects (Val, 2026-11-18): a start at the bed loses
+double what the table below says, as if it were one more return. A start
+beside a working recruitment station of the character's faction costs the
+table's amount. On a continent, stations work only in provinces the
+faction's side holds (docs/provinces.md), so holding land is the full
+protection.
+
 ## What a return costs
 
 | Cause | Lost |
