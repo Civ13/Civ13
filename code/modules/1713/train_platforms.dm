@@ -917,6 +917,12 @@ var/global/train_step_plain = FALSE
 /obj/structure/train_part/edge/attack_hand(mob/user)
 	if (!is_door() || !segment || !ishuman(user))
 		return ..()
+	// A locked door (train_conductor.dm) opens by hand from its own tile only.
+	if (is_locked())
+		if (locked_against(user))
+			to_chat(user, "\The [src] is locked.")
+			return TRUE
+		set_locked(FALSE)
 	set_open(!open)
 	var/bit = 1 << (edge_index - 1)
 	if (open)

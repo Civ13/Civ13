@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 258
+	maxx = 262
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2188,6 +2188,86 @@ var/global/platform_probe_runtime_error = FALSE
 	var/rolled = platform_step(A, 3)
 	platform_check("dieselmain/rolls", rolled == 3 && A.loc == platform_turf(254, 25) && rear.loc == platform_turf(254, 20) && heavy_parts_placed(A) && platform_parts_placed(body) && driver.loc == platform_turf(254, 25) && second.loc == platform_turf(253, 20) && C.loc == platform_turf(254, 9))
 
+// The conductor (train_conductor.dm). A coach is coupled behind the train the
+// diesel run left on column 254.
+/proc/platform_conductor_run()
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/platform/coach = platform_car("coach", 254, 5, NORTH)
+	if (!istype(coach))
+		platform_check("conductor/door_locks", FALSE)
+		return
+	var/mob/living/human/platform_rider/guard = new(platform_turf(253, 5))
+	var/mob/living/human/platform_rider/stranger = new(platform_turf(252, 5))
+	coach.hitch_front(guard)
+	var/obj/structure/train_part/edge/door = null
+	for (var/obj/structure/train_part/edge/G in coach.deck_parts)
+		if (G.is_door() && G.edge_kind == "out" && G.loc == guard.loc)
+			door = G
+	var/obj/item/train_key/key = new(guard.loc)
+	var/obj/item/weapon/wrench/wrong = new(guard.loc)
+	if (!door)
+		platform_check("conductor/door_locks", FALSE)
+		return
+	door.attackby(wrong, guard)
+	var/plain = !door.is_locked() && !door.open
+	door.attackby(key, guard)
+	var/locked = door.is_locked() && coach.locked_doors && door.locked_against(stranger) && !door.locked_against(guard)
+	door.attack_hand(stranger)
+	var/kept_out = !door.open && door.is_locked()
+	door.attack_hand(guard)
+	var/from_inside = door.open && !door.is_locked() && !coach.locked_doors
+	var/not_open = !door.set_locked(TRUE)
+	door.attack_hand(guard)
+	door.attackby(key, guard)
+	var/again = !door.open && door.is_locked()
+	door.open_by_force()
+	platform_check("conductor/door_locks", plain && locked && kept_out && from_inside && not_open && again && door.open && !door.is_locked() && coach.open_doors && ("carriage_key" in states))
+	door.attack_hand(guard)
+	door.attackby(key, guard)
+
+	// The guard's journal lists the train from the front.
+	var/obj/structure/trains/head = coach.train_head()
+	var/list/cars = train_consist_list(head)
+	var/obj/structure/trains/platform/flat = null
+	for (var/obj/structure/trains/platform/P in cars)
+		if (P.car_kind == "flatbed" && P.seg_index == 1)
+			flat = P
+	if (flat)
+		flat.set_handbrake(TRUE)
+	var/list/lines = train_list_lines(coach)
+	var/heading = lines.len == 6 && findtext(lines[1], "5 vehicles, [cars.len] tiles long") && findtext(lines[1], "Its engines pull 160 at full speed") && findtext(lines[1], "1 handbrake on")
+	var/rows = lines.len == 6 && findtext(lines[2], "1. main-line diesel locomotive") && findtext(lines[2], "running") && findtext(lines[4], "3. platform car") && findtext(lines[4], "handbrake on") && findtext(lines[5], "4. heavy diesel locomotive") && findtext(lines[5], "stopped") && findtext(lines[6], "5. passenger coach") && findtext(lines[6], "1 door locked")
+	var/mob/living/human/platform_rider/walker = new(platform_turf(261, 12))
+	platform_check("conductor/train_list", cars.len == 24 && heading && rows && train_beside(guard) == coach && train_beside(stranger) && isnull(train_beside(walker)) && !train_list_lines(null).len && ("guard_journal" in states))
+	if (flat)
+		flat.set_handbrake(FALSE)
+
+	// Tickets are written out and punched once.
+	var/obj/item/train_ticket_book/book = new(guard.loc)
+	var/obj/item/train_ticket_punch/punch = new(guard.loc)
+	var/obj/item/train_ticket/T = book.issue(guard, "Port Town", "2 silver")
+	var/written = istype(T) && T.name == "ticket to Port Town" && T.fare == "2 silver" && T.issuer == guard.name && T.icon_state == "ticket" && book.tickets == 39
+	if (T)
+		T.attackby(punch, guard)
+	var/punched = T && T.punched_by == guard.name && T.icon_state == "ticket_punched" && !T.punch(guard)
+	book.tickets = 0
+	platform_check("conductor/tickets", written && punched && isnull(book.issue(guard, "Port Town", null)) && ("ticket" in states) && ("ticket_punched" in states) && ("ticket_book" in states) && ("ticket_punch" in states))
+
+	// Flags shown at the rear are seen in the cabs at the front.
+	var/obj/item/train_flags/flags = new(guard.loc)
+	var/obj/structure/trains/locomotive/A = head
+	var/crew = 0
+	if (istype(A))
+		for (var/turf/tile in train_platform_tiles(A.loc, A.dir))
+			for (var/mob/living/human/H in tile)
+				crew++
+		var/obj/structure/trains/platform/rear = A.rear_cab()
+		for (var/turf/tile in train_platform_tiles(rear.loc, rear.dir))
+			for (var/mob/living/human/H in tile)
+				crew++
+	var/list/signals = train_hand_signals()
+	platform_check("conductor/hand_signals", crew == 2 && signals.len == 5 && flags.show_signal(guard, "Right away") == 2 && flags.show_signal(guard, "Danger") == 2 && !flags.show_signal(guard, "Wave") && !flags.show_signal(walker, "Stop") && ("signal_flags" in states))
+
 // How many of a type stand on a car's deck.
 /proc/platform_fitted(list/segs, kind)
 	. = 0
@@ -2362,6 +2442,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_stock_run()
 		platform_crane_run()
 		platform_diesel_run()
+		platform_conductor_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
