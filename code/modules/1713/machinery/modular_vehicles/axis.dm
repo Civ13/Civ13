@@ -830,6 +830,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		var/list/entry = matrix_current_locs[cell]
 		for (var/atom/movable/M in entry[2])
 			was_at[M] = entry[1]
+	// The swing is drawn by glide_turn(): the engine shows the moves at once.
+	glide_turn_hold(was_at)
+	var/list/was_glide_holder = craft_glide_holder
+	craft_glide_holder = glide_was
 	transforming_vehicle = TRUE
 	transform_tiles = turn_turfs
 	for (var/turf/T in turn_turfs)
@@ -894,8 +898,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			MB.dir = dir
 
 	catch(var/exception/e)
+		craft_glide_holder = was_glide_holder
 		release_transform_tiles(turn_turfs)
 		throw e
+	craft_glide_holder = was_glide_holder
 	release_transform_tiles(turn_turfs)
 	glide_turn(was_at)
 	refresh_passenger_vision()

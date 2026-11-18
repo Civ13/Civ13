@@ -11,8 +11,9 @@
 // With nobody near, or once a save starts, the next tick squares it and the
 // tile loop in axis.dm takes over again.
 //
-// Aircraft, frame ships and boats, towing rigs and vehicles with a trailer
-// stay on whole tiles.
+// Frame ships sail the same way (vehicle_offset_ship.dm). Aircraft, the axes
+// of one-object boats, towing rigs and vehicles with a trailer stay on whole
+// tiles.
 // ============================================================
 
 // Slowest coast, in pixels per tick, so it always reaches the square it rolls to.
@@ -27,9 +28,6 @@
 	var/tmp/offset_quiet_stop = FALSE               // TRUE when the last stop was no crash.
 
 /obj/structure/vehicleparts/axis/aircraft
-	offset_drive = FALSE
-
-/obj/structure/vehicleparts/axis/ship
 	offset_drive = FALSE
 
 /obj/structure/vehicleparts/axis/boat
@@ -168,6 +166,9 @@
 	if (moving && currentspeed > 0)
 		offset_coast = vehicle_offset_speed(vehicle_m_delay + 1)
 		speed = offset_coast * ticks
+		// Holding for something it does square on its tiles (a ship coming about).
+		if (vehicle_offset_hold())
+			speed = min(speed, vehicle_offset_to_square())
 	else
 		var/left = vehicle_offset_to_square()
 		if (!left || offset_coast <= 0)
@@ -242,10 +243,24 @@
 /obj/structure/vehicleparts/axis/add_transporting(var/trigger_mines = TRUE)
 	. = ..()
 	if (offset_committing && offset_mover)
+		. = vehicle_offset_filter_transporting()
+
+// Drops from transporting whatever the offset does not carry. Returns the count left.
+/obj/structure/vehicleparts/axis/proc/vehicle_offset_filter_transporting()
+	if (offset_committing && offset_mover)
 		for (var/atom/movable/M in transporting.Copy())
 			if (!offset_mover.carried[M])
 				transporting -= M
-		. = transporting.len
+	return transporting.len
+
+// TRUE while it should roll no further than the next square (ships coming about).
+/obj/structure/vehicleparts/axis/proc/vehicle_offset_hold()
+	return FALSE
+
+// Its own checks for the tiles it starts to overlap, before do_vehicle_check()
+// (a ship's sails and the wind). FALSE stops it.
+/obj/structure/vehicleparts/axis/proc/vehicle_offset_tile_ahead()
+	return TRUE
 
 // Its tile step under the offset is drawn by the offset, not glided.
 /obj/structure/vehicleparts/axis/glide_step(list/moved)
@@ -291,6 +306,8 @@
 	if (A.offset_drive && dir == A.vehicle_offset_heading() && (A.moving || A.offset_coast > 0))
 		if (!A.moving && !(A.engine && A.engine.on))
 			A.offset_quiet_stop = TRUE
+			return FALSE
+		if (!A.vehicle_offset_tile_ahead())
 			return FALSE
 		if (!A.do_vehicle_check())
 			return FALSE

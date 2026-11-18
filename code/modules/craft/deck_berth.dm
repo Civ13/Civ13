@@ -365,6 +365,7 @@ var/global/list/deck_berths = list()
 		return plan
 	A.moving = FALSE
 	A.stopmovementloop()
+	A.vehicle_offset_release()
 	if (!A.shift_vehicle_level(z, plan[1], plan[2]))
 		return "the falls foul and the boat stays where it is"
 	A.anchor = TRUE

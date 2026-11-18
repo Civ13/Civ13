@@ -28,6 +28,9 @@
 		movementsound()
 
 /obj/structure/vehicleparts/axis/ship/movementloop()
+	// With someone near she sails by pixels (craft/vehicle_offset_ship.dm).
+	if (ship_offset_movementloop())
+		return TRUE
 	if (moving && !movement_processes)
 		get_weight()
 		movement_processes++
@@ -289,6 +292,9 @@
 					if (other.axis && other.axis != src)
 						continue
 				transporting += M
+	// Her tile step under the pixel offset moves only what the offset carries.
+	if (offset_committing)
+		return vehicle_offset_filter_transporting()
 	return transporting.len
 
 
