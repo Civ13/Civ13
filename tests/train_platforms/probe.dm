@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 322
+	maxx = 334
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2755,7 +2755,7 @@ var/global/platform_probe_runtime_error = FALSE
 
 	// The large table: eleven tiles of bridge. It is taken up with nothing
 	// on it, and goes with its pivot.
-	var/obj/structure/train_turntable/large/edge = new(platform_turf(320, 19))
+	var/obj/structure/train_turntable/large/edge = new(platform_turf(332, 19))
 	var/near_edge = edge.lay_problem()
 	qdel(edge)
 	var/obj/structure/train_turntable/large/big = new(platform_turf(316, 19))
@@ -2856,6 +2856,125 @@ var/global/platform_probe_runtime_error = FALSE
 	L.throttle = 0
 	var/obj/structure/rails/passed = locate(/obj/structure/rails) in platform_turf(320, 21)
 	platform_check("trackwear/driving_wears_the_line", L.y >= 21 && passed && passed.wear > 0)
+
+// Freight handling (train_goods.dm): columns 326 and 330.
+/proc/platform_goods_run()
+	for (var/tx in list(326, 330))
+		for (var/ty in 2 to 25)
+			platform_track(tx, ty, NORTH)
+	var/list/depot_sheet = icon_states('icons/obj/vehicles/rail_water.dmi')
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+
+	// The loading stage: one kind heaped on it, run down the chute into a wagon.
+	var/obj/structure/trains/platform/wagon = platform_car("open_wagon", 326, 12, NORTH)
+	var/obj/structure/trains/platform/store = wagon.bulk_store()
+	var/obj/structure/rail_depot/loading_stage/stage = new(platform_turf(328, 9))
+	var/obj/item/stack/ore/coal/C = new(platform_turf(329, 8))
+	C.amount = 40
+	var/obj/item/stack/ore/iron/I = new(platform_turf(329, 8))
+	I.amount = 30
+	var/bare = stage.icon_state == "loading_stage_empty" && !stage.fill_takers() && !stage.take_off(50, platform_turf(329, 8))
+	var/heaped = stage.load_bulk(C) == 40 && stage.bulk_amount == 40 && stage.icon_state == "loading_stage_coal" && !stage.load_bulk(I) && I.amount == 30
+	var/list/near = stage.takers()
+	var/ran = near.len == 1 && near[1] == store && stage.fill_takers() == 40 && store.bulk_amount == 40 && store.bulk_path == "/obj/item/stack/ore/coal" && stage.bulk_amount == 0 && isnull(stage.bulk_path) && stage.icon_state == "loading_stage_empty"
+	platform_check("goods/loading_stage_fills_a_wagon", bare && heaped && ran && train_track_fixture(stage) && ("loading_stage_empty" in depot_sheet) && ("loading_stage_coal" in depot_sheet) && ("loading_stage_ore" in depot_sheet) && ("loading_stage_sand" in depot_sheet))
+
+	// A wagon of another kind takes nothing, a full one only what it has room
+	// for, and a shovel takes the heap back off.
+	var/other = stage.load_bulk(I) == 30 && stage.icon_state == "loading_stage_ore" && stage.fill_takers() == 0 && stage.bulk_amount == 30 && store.bulk_amount == 40
+	var/turf/side = platform_turf(329, 8)
+	var/off = stage.take_off(50, side) == 30 && stage.bulk_amount == 0 && isnull(stage.bulk_path)
+	var/dug = 0
+	for (var/obj/item/stack/ore/iron/S in side)
+		dug += S.amount
+		qdel(S)
+	var/obj/item/stack/ore/coal/more = new(side)
+	more.amount = 50
+	stage.load_bulk(more)
+	store.bulk_amount = wagon.bulk_max() - 20
+	var/mob/living/human/platform_rider/hand = new(platform_turf(329, 9))
+	stage.attack_hand(hand)
+	platform_check("goods/loading_stage_one_kind_and_no_overfill", other && off && dug == 30 && store.bulk_amount == wagon.bulk_max() && stage.bulk_amount == 30 && stage.icon_state == "loading_stage_coal")
+	stage.bulk_amount = 2990
+	var/obj/item/stack/ore/coal/last = new(side)
+	last.amount = 40
+	platform_check("goods/loading_stage_holds_so_much", stage.load_bulk(last) == 10 && last.amount == 30 && stage.bulk_amount == 3000 && !stage.load_bulk(last))
+	qdel(last)
+
+	// The goods crane: a load swings onto a car's deck, and off it again.
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 330, 12, NORTH)
+	var/obj/structure/workshop_machine/shear_legs/crane/goods/crane = new(platform_turf(332, 11))
+	var/obj/structure/closet/crate/load = new(platform_turf(333, 11))
+	var/list/choices = crane.haul_choices(load)
+	var/turf/aboard = null
+	var/turf/beside = null
+	for (var/label in choices)
+		if (findtext(label, "Swing it onto"))
+			aboard = choices[label]
+		if (findtext(label, "beside the track"))
+			beside = choices[label]
+	var/obj/structure/trains/platform/landed = train_deck_at(aboard)
+	var/on_car = aboard && landed && flat && landed.car_id == flat.car_id && get_dist(aboard, crane) <= 3 && crane.sling_reach() == 3
+	var/on_ground = beside && !train_deck_at(beside) && !(locate(/obj/structure/rails) in beside) && beside != load.loc
+	platform_check("goods/crane_swings_a_load_onto_a_car", on_car && on_ground && ("goods_crane" in states) && ("goods_crane_haul" in states))
+	if (aboard)
+		load.forceMove(aboard)
+	choices = crane.haul_choices(load)
+	var/turf/down = null
+	var/again = FALSE
+	for (var/label in choices)
+		if (findtext(label, "beside the track"))
+			down = choices[label]
+		if (findtext(label, "Swing it onto"))
+			again = TRUE
+	platform_check("goods/crane_sets_a_load_down", aboard && down && !train_deck_at(down) && !(locate(/obj/structure/rails) in down) && get_dist(down, crane) <= 3 && !again)
+
+	// The livestock ramp: it wants a car at its head and the door open.
+	var/obj/structure/trains/platform/stock = platform_car("stock_car", 326, 25, NORTH)
+	var/obj/structure/train_livestock_ramp/ramp = new(platform_turf(328, 22))
+	ramp.set_dir(WEST)
+	var/obj/structure/train_livestock_ramp/lone = new(platform_turf(328, 15))
+	lone.set_dir(WEST)
+	var/obj/structure/train_part/edge/gate = null
+	for (var/obj/structure/train_part/edge/G in platform_turf(327, 22))
+		if (G.is_door())
+			gate = G
+	var/mob/living/simple_animal/train_probe_dummy/cow = new(platform_turf(329, 22))
+	var/mob/living/simple_animal/train_probe_dummy/calf = new(platform_turf(329, 23))
+	var/mob/living/simple_animal/train_probe_dummy/stray = new(platform_turf(332, 22))
+	var/mob/living/human/platform_rider/drover = new(platform_turf(329, 21))
+	var/shut = gate && gate.density && findtext(ramp.ramp_problem(), "in the way") && !ramp.drive_aboard()
+	if (gate)
+		gate.set_open(TRUE)
+	platform_check("goods/ramp_wants_a_car_and_an_open_door", stock && shut && isnull(ramp.ramp_problem()) && ramp.car() && findtext(lone.ramp_problem(), "No car") && train_track_fixture(ramp) && ("livestock_ramp" in states))
+	qdel(lone)
+
+	// Penned animals go aboard, nearest first; people and strays stay.
+	var/went = ramp.work(drover, TRUE)
+	var/obj/structure/trains/platform/under_cow = train_deck_at(cow.loc)
+	var/obj/structure/trains/platform/under_calf = train_deck_at(calf.loc)
+	platform_check("goods/ramp_drives_animals_aboard", went == 2 && cow.loc == platform_turf(327, 22) && under_cow && under_calf && under_cow.car_id == stock.car_id && under_calf.car_id == stock.car_id && stray.loc == platform_turf(332, 22) && drover.loc == platform_turf(329, 21) && !ramp.drive_aboard() && train_livestock(cow) && !train_livestock(drover))
+	var/came = ramp.drive_off()
+	platform_check("goods/ramp_drives_animals_off", came == 2 && !train_deck_at(cow.loc) && !train_deck_at(calf.loc) && cow.loc != ramp.loc && calf.loc != ramp.loc && get_dist(cow, ramp) <= 3 && get_dist(calf, ramp) <= 3 && cow.x >= 328 && calf.x >= 328 && !ramp.drive_off())
+	cow.stat = DEAD
+	platform_check("goods/ramp_leaves_the_dead", !train_livestock(cow) && ramp.drive_aboard() == 1 && !train_deck_at(cow.loc) && train_deck_at(calf.loc))
+	qdel(cow)
+	qdel(calf)
+	qdel(stray)
+
+	// Destination cards: one to a car, read on examine and in the guard's journal.
+	var/list/segs = wagon.car_segments()
+	var/obj/structure/trains/platform/tail = segs[segs.len]
+	var/obj/item/weapon/wrench/tool = new(side)
+	var/blank = isnull(wagon.card_text()) && findtext(wagon.card_line(), "holder is empty") && !wagon.card_use(tool, hand)
+	var/carded = tail.set_card("Port Town, coal") && wagon.card_text() == "Port Town, coal" && tail.card_text() == "Port Town, coal" && !wagon.set_card("Port Town, coal") && findtext(tail.card_line(), "reads: Port Town, coal")
+	var/listed = FALSE
+	for (var/line in train_list_lines(wagon))
+		if (findtext(line, "carded \"Port Town, coal\""))
+			listed = TRUE
+	var/long = wagon.set_card("A very long destination that runs right off the edge of any card") && length(wagon.card_text()) <= 40
+	var/wiped = wagon.set_card("") && isnull(tail.card_text()) && isnull(flat.card_text())
+	platform_check("goods/destination_cards", blank && carded && listed && long && wiped)
 
 /proc/platform_stations_run()
 	for (var/ty in 2 to 25)
@@ -3116,6 +3235,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_trackworks_run()
 		platform_turntable_run()
 		platform_trackwear_run()
+		platform_goods_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

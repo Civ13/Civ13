@@ -135,6 +135,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	// A land across the sea keeps its chart current too: whether it is settled (land_choices.dm).
 	if(shard_group.kind == "EXPEDITION")
 		world_chart_refresh()
+		island_claim_check() // island_claim.dm
 	return land_stages_refresh()
 
 // The stage of a land: MAINLAND, CLOSED, FRONTIER, COLONY or OPEN.

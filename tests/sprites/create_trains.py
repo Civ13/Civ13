@@ -1387,6 +1387,112 @@ def coal_stage(fill):
     return [c.image()]
 
 
+def bulk_pile(c, cx, cy, r, seed, ramp):
+    """A heap of bulk in the four tones of ramp, lit from the upper left."""
+    for y in range(int(cy - r - 1), int(cy + r + 2)):
+        for x in range(int(cx - r - 1), int(cx + r + 2)):
+            d = math.hypot(x - cx, (y - cy) * 1.15) + noise(x, y, seed) * 2.2
+            if d > r:
+                continue
+            n = noise(x // 2, y // 2, seed + 1)
+            lit = (cx - x) + (cy - y)
+            tone = ramp[0] if (n > 0.8 and lit > -2) else (ramp[1] if n > 0.45 else (ramp[2] if n > 0.15 else ramp[3]))
+            c.put(x, y, ramp[3] if d > r - 1.2 else tone)
+
+
+def loading_stage(tone):
+    """A loading stage, 64 x 64 and centred on its tile: a timber deck on
+    trestle legs with kerb boards, an iron chute over its north edge and a
+    heap of coal, ore or sand. tone None is swept bare."""
+    c = Canvas(64, 64)
+    c.shade(12, 14, 57, 59, 70)
+    for x, y in ((7, 9), (52, 9), (7, 52), (52, 52)):
+        c.bevel(x, y, x + 4, y + 4, WALNUT[1], WALNUT[2], WALNUT[3], outline=DARK)
+    c.rect(8, 10, 55, 55, OLD_SEAM)
+    planks(c, 9, 11, 54, 54, tones=OLD_PLANK, seam=OLD_SEAM, seed=66)
+    # kerb boards down both sides and along the back
+    for x0, y0, x1, y1 in ((8, 10, 10, 55), (53, 10, 55, 55), (8, 53, 55, 55)):
+        c.bevel(x0, y0, x1, y1, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    # the front kerb, broken by the mouth of the chute
+    for x0, x1 in ((8, 23), (40, 55)):
+        c.bevel(x0, 10, x1, 12, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    ramp = (HEAPS.get(tone) or SAND) if tone else None
+    if ramp:
+        c.speckle(11, 13, 52, 52, ramp[2], 0.2, seed=67)
+        bulk_pile(c, 31, 33, 17, 68, ramp)
+        bulk_pile(c, 29, 28, 8, 69, ramp)
+    # the chute: a plate trough with raised sides, running out over the rails
+    c.rect(23, 0, 40, 14, STEEL_O)
+    c.bands(24, 0, 39, 13, [STEEL[1]] + [STEEL[3]] * 14 + [STEEL[4]], along=True)
+    c.rect(24, 0, 25, 13, STEEL[1])
+    c.rect(38, 0, 39, 13, STEEL[4])
+    for y in (2, 7, 12):
+        c.put(24, y, STEEL[0])
+        c.put(39, y, STEEL[2])
+    if ramp:
+        for y in range(1, 14):
+            for x in range(27, 37):
+                if noise(x, y, 70) > 0.55:
+                    c.put(x, y, ramp[1] if noise(x, y, 71) > 0.5 else ramp[3])
+    return [c.image()]
+
+
+def goods_crane(hauling):
+    """A hand crane for a goods yard from above: an iron post on a bolted
+    base, a winding drum with a crank handle either side, and a timber jib
+    with an iron strap reaching north to its sheave and hook."""
+    c = Canvas(32, 32)
+    c.shade(9, 17, 25, 30, 60)
+    c.disc(15.5, 21.5, 7.2, [STEEL[2], STEEL[3], STEEL[4]], outline=STEEL_O, flat=True)
+    for x, y in ((11, 17), (20, 17), (11, 26), (20, 26)):
+        c.put(x, y, STEEL[0])
+    # the jib
+    c.shade(15, 3, 19, 20, 50)
+    c.bevel(13, 2, 18, 21, TAN[0], TAN[1], TAN[2], outline=DARK)
+    for y in (6, 12, 18):
+        c.rect(13, y, 18, y, STEEL[3])
+    c.disc(15.5, 3.5, 2.4, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
+    c.rect(15, 5, 16, 19, DARK)
+    if hauling:
+        c.rect(14, 0, 17, 2, RED[1])
+        c.put(15, 1, RED[0])
+    else:
+        c.put(15, 1, STEEL[1])
+        c.put(16, 1, STEEL[3])
+        c.put(16, 0, STEEL[3])
+    # the drum and its cranks
+    c.bevel(10, 19, 21, 24, BLACK[0], BLACK[2], BLACK[4], outline=DARK)
+    for y in (20, 22):
+        c.rect(11, y, 20, y, BLACK[1])
+    for x0, x1 in ((6, 9), (22, 25)):
+        c.rect(x0, 21, x1, 22, STEEL_O)
+        c.rect(x0, 21, x1, 21, STEEL[1])
+    c.rect(5, 19 if hauling else 23, 6, 21 if hauling else 25, WALNUT[1])
+    c.rect(25, 23 if hauling else 19, 26, 25 if hauling else 21, WALNUT[1])
+    return [c.image()]
+
+
+def livestock_ramp(c):
+    """A livestock ramp whose head is to the north: cleated planks rising to
+    the car door, with a post-and-rail fence down each side."""
+    c.shade(5, 29, 28, 31, 70)
+    c.rect(5, 0, 26, 31, OLD_SEAM)
+    for y in range(32):
+        rise = 1.0 - y / 31.0
+        for x in range(6, 26):
+            tone = OLD_PLANK[(x // 5 * 3 + 2) % len(OLD_PLANK)]
+            col = OLD_SEAM if x % 5 == 0 else mix(tone, CREAM[1], 0.22 * rise)
+            c.put(x, y, mix(col, DARK, 0.16) if noise(x, y // 2, 97) > 0.86 else col)
+    for y in (3, 9, 15, 21, 27):
+        c.rect(6, y, 25, y, WALNUT[0])
+        c.rect(6, y + 1, 25, y + 1, WALNUT[3])
+    for x0 in (2, 27):
+        c.rect(x0, 0, x0 + 2, 31, DARK)
+        c.rect(x0 + 1, 0, x0 + 1, 31, WALNUT[1])
+        for y in (0, 10, 20, 29):
+            c.bevel(x0, y, x0 + 2, y + 2, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+
+
 def sand_bin(full):
     """A sand bin, 64 x 64 and centred on its tile: a boarded bin with a tin
     lid hinged back over half of it, dry sand (or bare boards) in the open half."""
@@ -3135,6 +3241,9 @@ def water_states():
     out['coal_stage_empty'] = coal_stage(0)
     out['coal_stage'] = coal_stage(1)
     out['coal_stage_full'] = coal_stage(2)
+    out['loading_stage_empty'] = loading_stage(None)
+    for tone in ('coal', 'ore', 'sand'):
+        out['loading_stage_' + tone] = loading_stage(tone)
     out['sand_bin_empty'] = sand_bin(False)
     out['sand_bin'] = sand_bin(True)
     return out
@@ -3189,6 +3298,9 @@ def platform_states():
     states['turntable_deck'] = directions(turntable_deck, order=HEADING)
     states['turntable_girders'] = directions(turntable_girders, order=HEADING)
     states['turntable_pivot'] = turntable_pivot()
+    states['goods_crane'] = goods_crane(False)
+    states['goods_crane_haul'] = goods_crane(True)
+    states['livestock_ramp'] = directions(livestock_ramp, order=HEADING)
     states['track_worn'] = track_wear(False)
     states['track_bad'] = track_wear(True)
     states['hand_lamp'] = hand_lamp(None)
@@ -3604,6 +3716,22 @@ def write_previews(out, states, gun):
     im.alpha_composite(water['coal_stage_full'][0], (16 + 64, 80))
     im.alpha_composite(water['sand_bin'][0], (16 + 160, 80))
     big(im, 3).save(out / 'depot.png')
+
+    # the goods yard: a loading stage empty and filled over an open wagon, the
+    # goods crane at rest and hauling, and a livestock ramp against a stock car
+    wagon = render_car(states, 'hopper', 'E')
+    stock = render_car(states, 'stock_car', 'E')
+    im = ground(wagon.width + stock.width + 96, 96 + 96 + 128, seed=23)
+    lay_track(im, y_tile=6)
+    for i, name in enumerate(('loading_stage_empty', 'loading_stage_coal', 'loading_stage_ore', 'loading_stage_sand')):
+        im.alpha_composite(water[name][0], (8 + i * 72, 8))
+    im.alpha_composite(states['goods_crane'][0], (8 + 4 * 72 + 16, 24))
+    im.alpha_composite(states['goods_crane_haul'][0], (8 + 4 * 72 + 64, 24))
+    im.alpha_composite(wagon, (16, 160))
+    im.alpha_composite(water['loading_stage_coal'][0], (16 + 64, 96))
+    im.alpha_composite(stock, (16 + wagon.width + 32, 160))
+    im.alpha_composite(states['livestock_ramp'][DIR_INDEX['N']], (16 + wagon.width + 32 + 128, 256))
+    big(im, 3).save(out / 'goods.png')
 
     # the snowplough: on the front of an engine heading east and north, and
     # the plough standing on the ground

@@ -64,39 +64,14 @@
 	return ..() && !rail_problem()
 
 // On top of the steam crane's raise and lower: the nearest clear deck of
-// another car, and the nearest clear ground off the track, both within reach.
+// another car, and the nearest clear ground off the track, both within reach
+// (train_crane_swings(), train_goods.dm).
 /obj/structure/workshop_machine/shear_legs/crane/steam/rail/haul_choices(atom/movable/load)
 	var/list/choices = ..()
-	var/turf/here = get_turf(src)
-	var/turf/from = get_turf(load)
-	var/obj/structure/trains/platform/mine = train_deck_at(here)
-	if (!mine || !from)
+	var/obj/structure/trains/platform/mine = train_deck_at(get_turf(src))
+	if (!mine)
 		return choices
-	var/turf/deck = null
-	var/turf/ground = null
-	var/deck_dist = 0
-	var/ground_dist = 0
-	var/deck_name = null
-	for (var/turf/T in range(reach, here))
-		if (T == from || !ledge_landing_clear(T))
-			continue
-		var/d = get_dist(T, from)
-		var/obj/structure/trains/platform/P = train_deck_at(T)
-		if (P)
-			if (P.car_id == mine.car_id || P.density)
-				continue
-			if (!deck || d < deck_dist)
-				deck = T
-				deck_dist = d
-				deck_name = P.name
-		else if (!rail_at(T) && (!ground || d < ground_dist))
-			ground = T
-			ground_dist = d
-	if (deck)
-		choices["Swing it onto the [deck_name]"] = deck
-	if (ground)
-		choices["Set it down beside the track"] = ground
-	return choices
+	return train_crane_swings(src, load, choices, mine.car_id)
 
 /obj/structure/workshop_machine/shear_legs/crane/steam/rail/examine(mob/user, distance)
 	..(user, distance)

@@ -799,6 +799,43 @@ timer: an idle line does not decay.
 - Not verified in a real client: the overlays on curves and switches, and
   save and load of worn track.
 
+## Freight handling
+
+`train_goods.dm`. The goods yard: every load is put on and taken off by
+players, and nothing here buys or sells.
+
+- **Loading stage** (`/obj/structure/rail_depot/loading_stage`, 24 wood).
+  It holds up to 3000 units of one kind of bulk (ore, coal or sand: what
+  `train_bulk_item()` allows). Stacks are tipped onto it (`load_bulk()`), a
+  shovel takes 50 back off (`take_off()`), and an empty hand runs the heap
+  down the chute in 4 seconds (`fill_takers()`) into the open wagons and
+  hoppers within 2 tiles (`takers()`, by `bulk_store()`). A car that holds
+  another kind takes nothing; a full car takes only what it has room for.
+  The other end of the trip is the drop pit (see Bulk freight).
+- **Goods crane** (`/obj/structure/workshop_machine/shear_legs/crane/goods`,
+  12 iron). A hand crane with a reach of 3. On top of what any hoist does,
+  `train_crane_swings()` offers the nearest clear deck of a car and the
+  nearest clear ground off the track. The crane car's rail crane uses the
+  same proc and never swings a load onto its own car.
+- **Livestock ramp** (`/obj/structure/train_livestock_ramp`, 6 wood). It
+  faces the car: the tile at its head (`head_tile()`) must be a deck with
+  no shut door or side in the way (`ramp_problem()`), so it stands two
+  tiles from the rails at a stock car's open door. The pen is the ground
+  within 3 tiles behind and beside it, off the track (`pen_tiles()`).
+  `drive_aboard()` moves the penned animals onto the car's free deck
+  tiles, nearest first; `drive_off()` moves the animals on the car into the
+  pen. Each takes 4 seconds (`work()`). `train_livestock()` leaves out
+  people, hostile animals, the dead and ridden mounts. A wrench turns it.
+- **Destination card.** Every car and engine has a holder
+  (`destination_card`, kept on the car's first section, `card_holder()`).
+  A pen writes up to 40 characters (`card_use()`, asked first by the
+  train's own `attackby()`); a blank card takes it out. `examine` reads
+  it, and the guard's journal notes `carded "..."` beside the car.
+- Loading stages, goods cranes and ramps are lineside fixtures
+  (`train_track_fixture()`): a passing train does not carry them off.
+- Not verified in a real client: the timed actions, the pen prompt and the
+  ramp's choice window, and save and load of a heaped stage or a card.
+
 ## Wheel slip and sand
 
 An engine pulls only as hard as its wheels grip. Below 1.5 tiles a second,
