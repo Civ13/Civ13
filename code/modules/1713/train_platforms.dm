@@ -268,6 +268,86 @@ var/global/train_step_plain = FALSE
 				list("edges" = bin_sides),
 				list("edges" = bin_sides),
 				list("edges" = bin_sides + bin_back)))
+		// Special stock (train_stock.dm). The stock car: slatted sides for
+		// air, straw on the floor, a sliding door in the middle of each side.
+		var/list/slat_sides = list(list(TRAIN_LEFT, "out", "slat"), list(TRAIN_RIGHT, "out", "slat"))
+		var/list/slat_doors = list(list(TRAIN_LEFT, "out", "slat_door"), list(TRAIN_RIGHT, "out", "slat_door"))
+		var/list/slat_front = list(list(TRAIN_LEFT, "front", "slat"), list(0, "front", "slat"), list(TRAIN_RIGHT, "front", "slat"))
+		var/list/slat_back = list(list(TRAIN_LEFT, "back", "slat"), list(0, "back", "slat"), list(TRAIN_RIGHT, "back", "slat"))
+		layouts["stock_car"] = list(
+			"name" = "stock car", "desc" = "A long livestock van on two bogies, with slatted sides for air and straw on the floor. Lead animals in through the sliding doors in the middle of each side and shut them in.",
+			"center" = "straw", "side" = "straw", "roof" = "stock",
+			"segments" = list(
+				list("edges" = slat_sides + slat_front),
+				list("edges" = slat_sides),
+				list("edges" = slat_sides),
+				list("edges" = slat_doors),
+				list("edges" = slat_doors),
+				list("edges" = slat_sides),
+				list("edges" = slat_sides),
+				list("edges" = slat_sides + slat_back)))
+		// The ice car: an insulated body, the ice bunker at the front and cold
+		// lockers down both sides.
+		var/list/cold_sides = list(list(TRAIN_LEFT, "out", "cold"), list(TRAIN_RIGHT, "out", "cold"))
+		var/list/cold_doors = list(list(TRAIN_LEFT, "out", "cold_door"), list(TRAIN_RIGHT, "out", "cold_door"))
+		var/list/cold_front = list(list(TRAIN_LEFT, "front", "cold"), list(0, "front", "cold"), list(TRAIN_RIGHT, "front", "cold"))
+		var/list/cold_back = list(list(TRAIN_LEFT, "back", "cold"), list(0, "back", "cold"), list(TRAIN_RIGHT, "back", "cold"))
+		var/list/lockers = list(/obj/structure/closet/ice_house/cold_locker, null, /obj/structure/closet/ice_house/cold_locker)
+		layouts["ice_car"] = list(
+			"name" = "ice car", "desc" = "A long insulated van on two bogies, painted white. Pack its ice bunker with snow or cut ice and the cold lockers down both sides keep food fresh on a long run.",
+			"center" = "boards", "side" = "boards", "roof" = "reefer",
+			"segments" = list(
+				list("edges" = cold_sides + cold_front, "fit" = list(/obj/structure/closet/ice_house/reefer, null, /obj/structure/closet/ice_house/cold_locker)),
+				list("edges" = cold_sides, "fit" = lockers),
+				list("edges" = cold_sides, "fit" = lockers),
+				list("edges" = cold_doors),
+				list("edges" = cold_doors),
+				list("edges" = cold_sides, "fit" = lockers),
+				list("edges" = cold_sides, "fit" = lockers),
+				list("edges" = cold_sides + cold_back, "fit" = lockers)))
+		// The baggage and mail van: a sorting office at the front, loading
+		// doors in the middle and the baggage room behind.
+		var/list/side_doors = list(list(TRAIN_LEFT, "out", "door"), list(TRAIN_RIGHT, "out", "door"))
+		layouts["mail_van"] = list(
+			"name" = "baggage and mail van", "desc" = "A long van for a passenger train: sorting tables and cabinets for the mail at the front, loading doors in the middle and a baggage room of crates and cabinets behind.",
+			"center" = "boards", "side" = "boards", "roof" = "coach",
+			"segments" = list(
+				list("edges" = vestibule),
+				list("edges" = windows, "fit" = list(/obj/structure/table/wood, null, /obj/structure/closet/cabinet)),
+				list("edges" = windows, "fit" = list(/obj/structure/table/wood, null, /obj/structure/closet/cabinet)),
+				list("edges" = side_doors),
+				list("edges" = side_doors),
+				list("edges" = walls, "fit" = list(/obj/structure/closet/crate/large, null, /obj/structure/closet/crate/large)),
+				list("edges" = walls, "fit" = list(/obj/structure/closet/cabinet, null, /obj/structure/closet/cabinet)),
+				list("edges" = walls + back_end)))
+		// The long sleeper and dining cars.
+		var/list/berths = list(/obj/structure/bed, null, /obj/structure/bed)
+		var/list/booths = list(/obj/structure/bed/chair/comfy/diner_booth, null, /obj/structure/bed/chair/comfy/diner_booth)
+		var/list/dining_tables = list(/obj/structure/table/modern/table, null, /obj/structure/table/modern/table)
+		layouts["bogie_sleeper"] = list(
+			"name" = "bogie sleeper car", "desc" = "A long carriage on two bogies: a vestibule at each end and twelve private sleeping compartments, each with a bed and a sliding door.",
+			"center" = "carpet", "side" = "floor", "roof" = "coach",
+			"segments" = list(
+				list("edges" = vestibule),
+				list("edges" = windows + compartment, "fit" = berths),
+				list("edges" = windows + compartment, "fit" = berths),
+				list("edges" = windows + compartment, "fit" = berths),
+				list("edges" = windows + compartment, "fit" = berths),
+				list("edges" = windows + compartment, "fit" = berths),
+				list("edges" = windows + compartment, "fit" = berths),
+				list("edges" = back_vestibule + list(list(TRAIN_LEFT, "front", "partition"), list(TRAIN_RIGHT, "front", "partition")))))
+		layouts["bogie_dining"] = list(
+			"name" = "bogie dining car", "desc" = "A long carriage on two bogies: a galley with a stove, sink and fridge, then tables and booths either side of the aisle.",
+			"center" = "floor", "side" = "floor", "roof" = "coach",
+			"segments" = list(
+				list("edges" = vestibule),
+				list("edges" = windows, "fit" = list(/obj/structure/oven/stove, null, /obj/structure/sink)),
+				list("edges" = windows, "fit" = list(/obj/structure/closet/fridge, null, /obj/structure/table/modern/table)),
+				list("edges" = windows, "fit" = booths),
+				list("edges" = windows, "fit" = dining_tables),
+				list("edges" = windows, "fit" = booths),
+				list("edges" = windows, "fit" = dining_tables),
+				list("edges" = back_vestibule, "fit" = booths)))
 		// The tank car (train_tank.dm): an end platform with the valve, then
 		// the tank itself between two running boards with handrails.
 		var/list/tank_rails = list(list(TRAIN_LEFT, "out", "rail"), list(TRAIN_RIGHT, "out", "rail"))
@@ -789,9 +869,9 @@ var/global/train_step_plain = FALSE
 	switch (style)
 		if ("window")
 			name = "[S.name] window"
-		if ("door", "inner_door", "armor_door", "freight_door", "drop_door")
+		if ("door", "inner_door", "armor_door", "freight_door", "drop_door", "slat_door", "cold_door")
 			name = "[S.name] door"
-		if ("plank", "side", "hopper")
+		if ("plank", "side", "hopper", "slat", "cold")
 			name = "[S.name] side"
 		if ("armor")
 			name = "[S.name] armor plate"
@@ -801,7 +881,7 @@ var/global/train_step_plain = FALSE
 			name = "[S.name] wall"
 
 /obj/structure/train_part/edge/proc/is_door()
-	return style == "door" || style == "inner_door" || style == "armor_door" || style == "freight_door" || style == "drop_door"
+	return style == "door" || style == "inner_door" || style == "armor_door" || style == "freight_door" || style == "drop_door" || style == "slat_door" || style == "cold_door"
 
 /obj/structure/train_part/edge/proc/is_armor()
 	return style == "armor" || style == "armor_door"

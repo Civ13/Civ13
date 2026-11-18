@@ -173,13 +173,25 @@
 	var/under_z = underground_level_z()
 	return under_z && T.z == under_z
 
+// Where the snow and ice last four times as long: underground, or in the
+// insulated body of an ice car (train_stock.dm).
+/obj/structure/closet/ice_house/proc/slow_melt()
+	return underground()
+
+/obj/structure/closet/ice_house/proc/slow_melt_text()
+	return "Down here in the cool earth it melts slowly."
+
+// What a close look tells about the cold left in it.
+/obj/structure/closet/ice_house/proc/cold_text(mob/user)
+	var/slow = slow_melt()
+	to_chat(user, cold > 0 ? SPAN_NOTICE("It holds enough cold for about [slow ? cold * (ICE_HOUSE_MELT_SECONDS_UNDERGROUND / ICE_HOUSE_MELT_SECONDS) : cold] minutes of warm weather.") : SPAN_WARNING("The snow and ice in it have all melted."))
+	if (slow)
+		to_chat(user, SPAN_NOTICE(slow_melt_text()))
+
 /obj/structure/closet/ice_house/examine(mob/user)
 	..()
 	if (get_dist(user, src) <= 1)
-		var/slow = underground()
-		to_chat(user, cold > 0 ? SPAN_NOTICE("It holds enough cold for about [slow ? cold * (ICE_HOUSE_MELT_SECONDS_UNDERGROUND / ICE_HOUSE_MELT_SECONDS) : cold] minutes of warm weather.") : SPAN_WARNING("The snow and ice in it have all melted."))
-		if (slow)
-			to_chat(user, SPAN_NOTICE("Down here in the cool earth it melts slowly."))
+		cold_text(user)
 
 /obj/structure/closet/ice_house/process_interval(configured_seconds = 2)
 	if (QDELETED(src) || cold <= 0)
@@ -189,7 +201,7 @@
 	last_tick = world.time
 	if (melt_seconds < ICE_HOUSE_MELT_SECONDS)
 		return
-	var/melt_after = underground() ? ICE_HOUSE_MELT_SECONDS_UNDERGROUND : ICE_HOUSE_MELT_SECONDS
+	var/melt_after = slow_melt() ? ICE_HOUSE_MELT_SECONDS_UNDERGROUND : ICE_HOUSE_MELT_SECONDS
 	if (melt_seconds < melt_after)
 		return
 	melt_seconds -= melt_after

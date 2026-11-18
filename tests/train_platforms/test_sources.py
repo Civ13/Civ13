@@ -478,6 +478,47 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for part in 'fmdb':
             self.assertIn('state = "tank_%s"' % part, loads)
 
+    def test_special_stock_and_the_ice_car(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_stock.dm"'), 1)
+        stock = (ROOT / 'code/modules/1713/train_stock.dm').read_text(encoding='utf-8')
+        ice = (ROOT / 'code/modules/1713/small_ancient.dm').read_text(encoding='utf-8')
+        food = (ROOT / 'code/modules/reagents/reagent_containers/food.dm').read_text(encoding='utf-8')
+        for kind in ('stock_car', 'ice_car', 'mail_van', 'bogie_sleeper', 'bogie_dining'):
+            self.assertIn('layouts["%s"] = list(' % kind, PLATFORMS)
+            self.assertIn('/obj/structure/train_car_kit/%s\n' % kind, stock)
+        self.assertIn('"center" = "straw", "side" = "straw", "roof" = "stock",', PLATFORMS)
+        self.assertIn('"center" = "boards", "side" = "boards", "roof" = "reefer",', PLATFORMS)
+        self.assertIn('|| style == "slat_door" || style == "cold_door"', PLATFORMS)
+        # The bunker and the lockers are ice houses, so food kept in them
+        # takes the ice house's decay step with no new branch in food.dm.
+        self.assertIn('/obj/structure/closet/ice_house/reefer\n', stock)
+        self.assertIn('/obj/structure/closet/ice_house/cold_locker\n', stock)
+        self.assertIn('else if (istype(loc, /obj/structure/closet/ice_house))', food)
+        self.assertIn('decaytimer += IH.is_cold() ? 50 : 300', food)
+        self.assertNotIn('train_', food)
+        self.assertIn('var/melt_after = slow_melt() ? ICE_HOUSE_MELT_SECONDS_UNDERGROUND : ICE_HOUSE_MELT_SECONDS', ice)
+        self.assertIn('/obj/structure/closet/ice_house/proc/slow_melt()\n\treturn underground()', ice)
+        # A locker keeps the bunker it found: no search each time food asks.
+        cold = stock[stock.index('/obj/structure/closet/ice_house/cold_locker/is_cold('):]
+        cold = cold[:cold.index('\n\n')]
+        self.assertNotIn('range(', cold)
+        self.assertIn('if (feed && !QDELETED(feed) && feed.z == z && get_dist(src, feed) <= COLD_LOCKER_REACH)\n\t\treturn feed', stock)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', stock))
+        for path, recipe, node in (
+                ('stock_car', '/material/iron/,stock car kit,/obj/structure/train_car_kit/stock_car,30,', 'rail_steam'),
+                ('ice_car', '/material/iron/,ice car kit,/obj/structure/train_car_kit/ice_car,34,', 'rail_steam'),
+                ('mail_van', '/material/iron/,baggage and mail van kit,/obj/structure/train_car_kit/mail_van,30,', 'rail_steam'),
+                ('bogie_sleeper', '/material/steel/,bogie sleeper car kit,/obj/structure/train_car_kit/bogie_sleeper,30,', 'assembly_line'),
+                ('bogie_dining', '/material/steel/,bogie dining car kit,/obj/structure/train_car_kit/bogie_dining,30,', 'assembly_line')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"/obj/structure/train_car_kit/%s" = "%s"' % (path, node), NODES)
+        states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
+        for state in ('edge_slat', 'edge_slat_door', 'edge_slat_door_open', 'edge_cold', 'edge_cold_door', 'edge_cold_door_open',
+                      'deck_center_straw', 'deck_side_straw', 'roof_stock_fl', 'roof_reefer_fl', 'ice_bunker', 'ice_bunker_open',
+                      'cold_locker', 'cold_locker_open'):
+            self.assertIn('state = "%s"' % state, states)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])

@@ -448,6 +448,29 @@ way a tender carries its water: no reagent holder rides the train.
 
 Region travel does not carry a tank's liquid yet.
 
+## Special stock
+
+`train_stock.dm` and the layouts in `train_car_layout()`.
+
+- `stock_car`: an eight-tile van with `slat` sides, `slat_door` sliding
+  doors and a `straw` floor. Animals ride as any living thing does; the
+  dense sides and shut doors keep them aboard.
+- `ice_car`: an eight-tile insulated van (`cold` sides, `cold_door`). It is
+  built with one `/obj/structure/closet/ice_house/reefer` (the ice bunker)
+  and eleven `/obj/structure/closet/ice_house/cold_locker`. Both are ice
+  houses (`small_ancient.dm`), so food kept in them takes the ice house's
+  decay step in `food.dm` with no new branch there.
+  - The bunker is packed with snow or cut ice like any ice house. On an ice
+    car (`train_ice_car()`) its `slow_melt()` is true: the ice lasts four
+    times as long, as it does underground.
+  - A locker holds no ice. `is_cold()` asks the bunker on its own car
+    (`bunker()`, found once within 8 tiles and kept in `feed` while it stays
+    in reach). Snow and ice offered to a locker go to that bunker.
+- `mail_van`: the baggage and mail van, with a coach roof for passenger
+  trains: sorting tables and cabinets, side doors, crates and cabinets.
+- `bogie_sleeper` and `bogie_dining`: the eight-tile sleeper (twelve
+  compartments) and dining car (galley, five tables, six booths).
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:

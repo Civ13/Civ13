@@ -66,6 +66,9 @@ COAL = ((70, 70, 80), (40, 40, 48), (24, 24, 30), (12, 12, 16))
 FIRE = ((255, 240, 170), (255, 176, 60), (226, 96, 28))
 WHITE = (255, 255, 255)
 DARK = (14, 14, 18)
+CREAM = ((252, 250, 240), (228, 224, 208), (190, 186, 170), (112, 108, 98))
+ICE = ((240, 250, 255), (196, 228, 246), (146, 192, 226), (86, 132, 180))
+STRAW = ((244, 222, 140), (218, 188, 104), (178, 146, 76), (122, 96, 48))
 
 DIR_INDEX = {'S': 0, 'N': 1, 'E': 2, 'W': 3}
 LEFT_OF = {'N': 'W', 'W': 'S', 'S': 'E', 'E': 'N'}
@@ -189,8 +192,25 @@ def hopper_floor(c):
         c.put(23, y, STEEL[2])
 
 
+def straw_floor(c):
+    """A stock car's floor: worn boards under a litter of straw."""
+    planks(c, 0, 0, 31, 31, tones=OLD_PLANK, seam=OLD_SEAM, seed=5)
+    for y in range(32):
+        for x in range(32):
+            n = noise(x // 5, y // 2, 61)
+            m = noise(x // 3, y, 62)
+            if n < 0.12:
+                continue  # a bare patch of board
+            c.put(x, y, STRAW[1] if m > 0.28 else STRAW[2])
+            if m > 0.93:
+                c.put(x, y, STRAW[0])
+            elif m < 0.035:
+                c.put(x, y, STRAW[3])
+
+
 SURFACES = {
     'hopper': hopper_floor,
+    'straw': straw_floor,
     'wood': lambda c: planks(c, 0, 0, 31, 31, seed=1),
     'floor': lambda c: lino(c, 0, 0, 31, 31),
     'carpet': lambda c: carpet(c, 0, 0, 31, 31),
@@ -428,6 +448,87 @@ def edge_freight_door_open(c):
     c.put(0, 1, STEEL[1])
 
 
+def edge_slat(c):
+    """A stock car's side: boards with gaps between them, on iron posts."""
+    wall_run(c, 0, 31, OXIDE)
+    for y in range(2, 32, 4):
+        # the gap between two slats: the floor shows through
+        c.clear(1, y, 2, y + 1)
+        c.shade(1, y, 2, y, 110)
+    for y in (7, 23):
+        c.rect(0, y, 3, y + 1, STEEL[4])
+        c.put(1, y, STEEL[1])
+
+
+def slat_leaf(c, y0, y1):
+    c.rect(0, y0, 3, y1, OXIDE[3])
+    c.bands(1, y0 + 1, 2, y1 - 1, [mix(OXIDE[0], WHITE, 0.2), OXIDE[1]], along=True)
+    for y in range(y0 + 3, y1 - 1, 4):
+        c.clear(1, y, 2, y)
+        c.shade(1, y, 2, y, 150)
+
+
+def edge_slat_door(c):
+    """The sliding door of a stock car, shut: a slatted leaf hung from a runner."""
+    wall_run(c, 0, 31, OXIDE)
+    slat_leaf(c, 2, 29)
+    c.rect(0, 0, 0, 31, STEEL[4])
+    for y in (3, 28):
+        c.rect(0, y, 1, y, STEEL[1])
+    c.rect(3, 14, 3, 17, STEEL[0])
+    c.put(4, 15, STEEL[2])
+    c.put(4, 16, STEEL[4])
+
+
+def edge_slat_door_open(c):
+    wall_run(c, 0, 2, OXIDE)
+    wall_run(c, 29, 31, OXIDE)
+    sill_plate(c, 3, 28)
+    c.rect(0, 0, 0, 31, STEEL[4])
+    c.rect(0, 0, 3, 2, OXIDE[3])
+    c.rect(1, 0, 2, 1, mix(OXIDE[0], WHITE, 0.2))
+    c.put(0, 1, STEEL[1])
+
+
+def edge_cold(c):
+    """An ice car's side: thick insulated boarding painted white, iron straps."""
+    wall_run(c, 0, 31, CREAM, thick=5)
+    for y in range(5, 32, 6):
+        c.rect(1, y, 3, y, CREAM[2])
+    for y in (10, 22):
+        c.rect(0, y, 4, y, STEEL[4])
+        c.put(1, y, STEEL[1])
+        c.put(3, y, STEEL[2])
+
+
+def edge_cold_door(c):
+    """The thick hinged door of an ice car, shut: strap hinges and a lever latch."""
+    wall_run(c, 0, 31, CREAM, thick=5)
+    c.rect(0, 3, 4, 28, CREAM[3])
+    c.bands(1, 4, 3, 27, [CREAM[0], CREAM[1], CREAM[2]], along=True)
+    for y in (6, 25):
+        c.rect(0, y, 4, y, STEEL_O)
+        c.rect(1, y, 3, y, STEEL[2])
+        c.put(1, y, STEEL[0])
+    # the latch bar on the inside face
+    c.rect(4, 13, 4, 18, STEEL[1])
+    c.put(5, 15, STEEL[0])
+    c.put(5, 16, STEEL[3])
+
+
+def edge_cold_door_open(c):
+    wall_run(c, 0, 2, CREAM, thick=5)
+    wall_run(c, 29, 31, CREAM, thick=5)
+    sill_plate(c, 3, 28, thick=5)
+    # the leaf swung in on its hinges, its thick edge showing
+    c.shade(6, 5, 27, 7, 70)
+    c.rect(5, 1, 26, 5, CREAM[3])
+    c.bands(6, 2, 25, 4, [CREAM[0], CREAM[1], CREAM[2]], along=False)
+    for x in (9, 22):
+        c.rect(x, 1, x, 5, STEEL[3])
+    c.put(24, 6, STEEL[0])
+
+
 SIDE_WOOD = (PLANK[0], PLANK[1], PLANK[4], PLANK_SEAM)
 
 
@@ -500,6 +601,8 @@ def edge_hopper(c):
 
 EDGES = {
     'edge_hopper': edge_hopper,
+    'edge_slat': edge_slat, 'edge_slat_door': edge_slat_door, 'edge_slat_door_open': edge_slat_door_open,
+    'edge_cold': edge_cold, 'edge_cold_door': edge_cold_door, 'edge_cold_door_open': edge_cold_door_open,
     'edge_plank': edge_plank, 'edge_freight_door': edge_freight_door, 'edge_freight_door_open': edge_freight_door_open,
     'edge_side': edge_side, 'edge_drop_door': edge_drop_door, 'edge_drop_door_open': edge_drop_door_open,
     'edge_wall': edge_wall, 'edge_window': edge_window, 'edge_armor': edge_armor,
@@ -1000,6 +1103,66 @@ def tank_valve():
     return [c.image()]
 
 
+def cold_chest(kind, opened):
+    """The fittings of an ice car, seen like the game's other furniture: the
+    zinc-lined ice bunker and a white cold locker, each shut and with its lid
+    stood up behind."""
+    c = Canvas(32, 32)
+    body = STEEL if kind == 'bunker' else CREAM
+    edge = STEEL_O if kind == 'bunker' else CREAM[3]
+    c.shade(3, 27, 29, 29, 60)
+    if opened:
+        # the lid stood up at the back, its lining out
+        c.bevel(3, 2, 28, 9, body[1], body[2], body[3], outline=edge)
+        c.rect(5, 4, 26, 7, STEEL[1] if kind == 'bunker' else CREAM[1])
+        c.rect(5, 7, 26, 7, STEEL[3] if kind == 'bunker' else CREAM[2])
+        # the well
+        c.bevel(3, 10, 28, 27, body[0], body[1], body[3], outline=edge)
+        c.rect(5, 11, 26, 19, DARK)
+        if kind == 'bunker':
+            # sawn blocks of ice, two courses
+            for by, off in ((12, 0), (16, 3)):
+                for bx in range(6 - off, 26, 7):
+                    x0, x1 = max(bx, 6), min(bx + 5, 25)
+                    c.rect(x0, by, x1, by + 2, ICE[1])
+                    c.rect(x0, by, x1 - 1, by, ICE[0])
+                    c.rect(x0 + 1, by + 2, x1, by + 2, ICE[2])
+            c.rect(5, 11, 26, 11, ICE[3])
+        else:
+            # two wire shelves in the cold dark
+            for y in (13, 17):
+                c.rect(6, y, 25, y, STEEL[3])
+                for x in range(7, 25, 3):
+                    c.put(x, y, STEEL[1])
+            c.rect(5, 11, 26, 11, CREAM[3])
+    else:
+        # the lid, with its rim and the front of the box under it
+        c.bevel(3, 6, 28, 16, body[0], body[1], body[2], outline=edge)
+        c.bevel(3, 16, 28, 27, body[1], body[2], body[3], outline=edge)
+        c.rect(4, 15, 27, 15, body[3])
+        if kind == 'bunker':
+            # the lifting ring and the rivets round the lid
+            c.ring(15.5, 11, 3.2, STEEL_O, width=1.3)
+            c.put(14, 9, STEEL[0])
+            for x in range(6, 27, 4):
+                c.put(x, 7, STEEL[0])
+                c.put(x, 25, STEEL[3])
+            # a block of ice painted on the front
+            c.rect(12, 19, 19, 23, ICE[3])
+            c.rect(13, 20, 18, 22, ICE[1])
+            c.put(13, 20, ICE[0])
+        else:
+            # strap hinges, the lever latch and a blue band
+            for x in (8, 23):
+                c.rect(x, 6, x, 10, STEEL[3])
+                c.put(x, 7, STEEL[0])
+            c.rect(4, 21, 27, 22, ICE[2])
+            c.rect(4, 21, 27, 21, ICE[1])
+            c.rect(14, 15, 17, 18, STEEL_O)
+            c.rect(15, 16, 16, 17, STEEL[0])
+    return [c.image()]
+
+
 def load_states():
     out = {}
     for part in 'fmdb':
@@ -1376,11 +1539,17 @@ def roof_armor(c):
     camo(c, 0, 0, 95, 95)
 
 
-def roof_boxcar(c):
+BOXCAR_ROOF = [(58, 24, 22), (122, 52, 40), (166, 78, 54), (184, 92, 62), (164, 76, 52),
+               (140, 60, 44), (114, 46, 38), (86, 34, 30), (52, 20, 20)]
+STOCK_ROOF = [(40, 28, 22), (92, 66, 48), (128, 96, 68), (146, 112, 80), (126, 94, 66),
+              (106, 78, 56), (86, 62, 46), (64, 46, 36), (38, 26, 20)]
+REEFER_ROOF = [(96, 94, 88), (188, 186, 174), (226, 224, 210), (244, 242, 230), (224, 222, 208),
+               (200, 198, 184), (172, 170, 158), (140, 138, 128), (88, 86, 80)]
+
+
+def roof_boxcar(c, prof=BOXCAR_ROOF, trim=OXIDE):
     """A boxcar's sheeted roof in freight oxide: seams across, a running
     board down the middle, grab irons at the front and the brake wheel aft."""
-    prof = [(58, 24, 22), (122, 52, 40), (166, 78, 54), (184, 92, 62), (164, 76, 52),
-            (140, 60, 44), (114, 46, 38), (86, 34, 30), (52, 20, 20)]
     c.bands(0, 0, 95, 95, across(prof), along=True)
     for y in range(96):
         # sheet seams, the same in every row so a long roof repeats cleanly
@@ -1396,12 +1565,12 @@ def roof_boxcar(c):
                 c.put(x, y, (226, 150, 110), 34)
     for y in (31, 63):
         c.shade(0, y, 95, y, 60)
-    c.frame(0, 0, 95, 95, OXIDE[3])
+    c.frame(0, 0, 95, 95, trim[3])
     for x in (1, 94):
-        c.rect(x, 1, x, 94, OXIDE[2])
-    c.rect(2, 1, 2, 94, mix(OXIDE[0], WHITE, 0.3), 120)
+        c.rect(x, 1, x, 94, trim[2])
+    c.rect(2, 1, 2, 94, mix(trim[0], WHITE, 0.3), 120)
     for y in (1, 94):
-        c.rect(1, y, 94, y, OXIDE[2])
+        c.rect(1, y, 94, y, trim[2])
     walkway(c, 42, 53, 2, 93)
     # grab irons at the front corner, by the ladder
     for y in (5, 9):
@@ -1418,7 +1587,37 @@ def roof_boxcar(c):
     c.disc(17, 86, 1.6, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
 
 
-ROOFS = {'coach': roof_coach, 'steel': roof_steel, 'armor': roof_armor, 'boxcar': roof_boxcar}
+def roof_stock(c):
+    """A stock car's roof: weathered boards and a louvred ventilator either
+    side of the running board in every section."""
+    roof_boxcar(c, STOCK_ROOF, WALNUT)
+    for y0 in (10, 42, 74):
+        for x0 in (16, 66):
+            c.shade(x0 + 1, y0 + 1, x0 + 14, y0 + 13, 60)
+            c.bevel(x0, y0, x0 + 13, y0 + 12, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+            for y in range(y0 + 2, y0 + 11, 3):
+                c.rect(x0 + 2, y, x0 + 11, y, DARK)
+                c.rect(x0 + 2, y + 1, x0 + 11, y + 1, WALNUT[0])
+
+
+def roof_reefer(c):
+    """An ice car's white roof, with the two icing hatches over the bunker at
+    its front end."""
+    roof_boxcar(c, REEFER_ROOF, CREAM)
+    for x0 in (8, 62):
+        c.shade(x0 + 1, 5, x0 + 26, 27, 60)
+        c.bevel(x0, 4, x0 + 24, 25, CREAM[0], CREAM[1], CREAM[2], outline=CREAM[3])
+        c.rect(x0 + 3, 7, x0 + 21, 7, CREAM[2])
+        # strap hinges at the back, the lifting handle at the front
+        for x in (x0 + 5, x0 + 19):
+            c.rect(x, 20, x, 26, STEEL[3])
+            c.put(x, 21, STEEL[0])
+        c.rect(x0 + 9, 9, x0 + 15, 9, STEEL_O)
+        c.rect(x0 + 10, 10, x0 + 14, 10, STEEL[1])
+
+
+ROOFS = {'coach': roof_coach, 'steel': roof_steel, 'armor': roof_armor, 'boxcar': roof_boxcar,
+         'stock': roof_stock, 'reefer': roof_reefer}
 
 
 def roof_states():
@@ -2262,7 +2461,7 @@ def water_states():
 
 def platform_states():
     states = {}
-    for kind in ('wood', 'floor', 'carpet', 'steel', 'boards', 'hopper'):
+    for kind in ('wood', 'floor', 'carpet', 'steel', 'boards', 'hopper', 'straw'):
         states['deck_center_' + kind] = deck_center(kind)
         states['deck_side_' + kind] = deck_side(kind)
     for name, draw in EDGES.items():
@@ -2287,6 +2486,10 @@ def platform_states():
     states['brake_shoes'] = brake_shoes()
     states['plough_item'] = plough_item()
     states['tank_valve'] = tank_valve()
+    states['ice_bunker'] = cold_chest('bunker', False)
+    states['ice_bunker_open'] = cold_chest('bunker', True)
+    states['cold_locker'] = cold_chest('locker', False)
+    states['cold_locker_open'] = cold_chest('locker', True)
     states['drop_pit'] = drop_pit(None)
     for tone in ('coal', 'ore', 'sand'):
         states['drop_pit_' + tone] = drop_pit(tone)
@@ -2321,6 +2524,15 @@ _low_b = [(L, 'back', 'side'), (0, 'back', 'side'), (R, 'back', 'side')]
 _bin = [(L, 'out', 'hopper'), (R, 'out', 'hopper')]
 _bin_f = [(L, 'front', 'hopper'), (0, 'front', 'hopper'), (R, 'front', 'hopper')]
 _bin_b = [(L, 'back', 'hopper'), (0, 'back', 'hopper'), (R, 'back', 'hopper')]
+_slat = [(L, 'out', 'slat'), (R, 'out', 'slat')]
+_slat_d = [(L, 'out', 'slat_door'), (R, 'out', 'slat_door')]
+_slat_f = [(L, 'front', 'slat'), (0, 'front', 'slat'), (R, 'front', 'slat')]
+_slat_b = [(L, 'back', 'slat'), (0, 'back', 'slat'), (R, 'back', 'slat')]
+_cold = [(L, 'out', 'cold'), (R, 'out', 'cold')]
+_cold_d = [(L, 'out', 'cold_door'), (R, 'out', 'cold_door')]
+_cold_f = [(L, 'front', 'cold'), (0, 'front', 'cold'), (R, 'front', 'cold')]
+_cold_b = [(L, 'back', 'cold'), (0, 'back', 'cold'), (R, 'back', 'cold')]
+_side_d = [(L, 'out', 'door'), (R, 'out', 'door')]
 # mirrors train_car_layout() in code/modules/1713/train_platforms.dm
 CARS = {
     'flatbed': ('wood', 'wood', [_rails, [], [], _rails], None),
@@ -2336,6 +2548,12 @@ CARS = {
     'open_wagon': ('boards', 'boards', [_low + _low_f, _low, _low, _low_d, _low_d, _low, _low, _low + _low_b], None),
     'long_flatbed': ('wood', 'wood', [_rails, [], [], [], [], [], [], _rails], None),
     'hopper': ('hopper', 'hopper', [_bin + _bin_f, _bin, _bin, _bin, _bin, _bin + _bin_b], None),
+    'stock_car': ('straw', 'straw', [_slat + _slat_f, _slat, _slat, _slat_d, _slat_d, _slat, _slat, _slat + _slat_b], 'stock'),
+    'ice_car': ('boards', 'boards', [_cold + _cold_f, _cold, _cold, _cold_d, _cold_d, _cold, _cold, _cold + _cold_b], 'reefer'),
+    'mail_van': ('boards', 'boards', [_vest, _win, _win, _side_d, _side_d, _walls, _walls, _walls + _back], 'coach'),
+    'bogie_sleeper': ('carpet', 'floor', [_vest] + [_win + _comp] * 6
+                      + [_side_d + _back + [(L, 'front', 'partition'), (R, 'front', 'partition')]], 'coach'),
+    'bogie_dining': ('floor', 'floor', [_vest] + [_win] * 6 + [_side_d + _back], 'coach'),
     'tank_car': ('steel', 'boards', [[], _rails, _rails, _rails, _rails, []], None),
     'brake_van': ('boards', 'boards', [_rails, _win + [(L, 'front', 'plank'), (0, 'front', 'door'), (R, 'front', 'plank')],
                                        _van, _win + [(L, 'back', 'plank'), (0, 'back', 'door'), (R, 'back', 'plank')]],
@@ -2674,6 +2892,29 @@ def write_previews(out, states, gun):
     im.alpha_composite(north, (east.width + 24, 8))
     im.alpha_composite(states['tank_valve'][0].resize((64, 64), Image.NEAREST), (16, east.height + 24))
     big(im, 3).save(out / 'tank-car.png')
+
+    # special stock: the stock car, ice car and mail van heading north, open
+    # and roofed, and the ice car's bunker and cold locker shut and open
+    kinds = ('stock_car', 'ice_car', 'mail_van')
+    im = ground(len(kinds) * 2 * 104 + 8 + 4 * 72, 264 + 16, seed=37)
+    for i, kind in enumerate(kinds):
+        car = render_car(states, kind, 'N', open_doors=(kind != 'mail_van'))
+        if kind == 'ice_car':
+            for seg in (0, 1, 2, 5, 6, 7):
+                for col in (L, R):
+                    x, y = tile_pos('N', seg, col, 8)
+                    name = 'ice_bunker' if (seg == 0 and col == L) else 'cold_locker'
+                    car.alpha_composite(states[name][0], (x * 32, y * 32))
+        im.alpha_composite(car, (8 + i * 208, 12))
+        im.alpha_composite(render_car(states, kind, 'N', roof=True), (8 + i * 208 + 104, 12))
+    for i, name in enumerate(('ice_bunker', 'ice_bunker_open', 'cold_locker', 'cold_locker_open')):
+        im.alpha_composite(states[name][0].resize((64, 64), Image.NEAREST), (len(kinds) * 208 + 8 + i * 72, 24))
+    big(im, 3).save(out / 'special-stock.png')
+
+    im = ground(4 * 104 + 8, 264 + 16, seed=41)
+    for i, (kind, roof) in enumerate((('bogie_sleeper', False), ('bogie_sleeper', True), ('bogie_dining', False), ('bogie_dining', True))):
+        im.alpha_composite(render_car(states, kind, 'N', roof=roof), (8 + i * 104, 12))
+    big(im, 3).save(out / 'long-sleeper-dining.png')
 
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),
