@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '7f2e3aac989644b6eaeaf54357e7f778b9c7de39'
+WIKI_REVIEWED_REVISION = 'b0cc9d29ebe38bea844ab944019a4ec0cf6d82d1'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('517b343000115473ef20f620eaddff20bd77414bd469a96fa8db57179074fffc', 'character skills traits languages'),
@@ -112,7 +112,7 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('57efc189cab58df379e3ccb0ea678e1108c3fea9ad7d66b0fad953679e446886', 'civilizations nomads gaia faction'),
+    'gamemodes/Civilizations_and_Nomads.md': ('555da1a11cb1a74c46e5b56ec87f63ad4e0a42e111ed48296293924ca1796183', 'civilizations nomads gaia faction'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
@@ -124,7 +124,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('fd5b7536a27a7fce99ae8cc0177cacbeadc8428a31a2d61567ed1e3069c9ae0b', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('a38a9b4ef445d2ddabb5ad8d9629a6ff8e106c07fc2a65851b1ca821d819e489', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
+    'guides/Guide_to_Your_First_Day.md': ('5cc29d092608a6c4a3d40a53e14f539ea272ef55d71420e6f54531d4c804e70e', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('22f7fa453bd84ee5ec8e1182466e22ca34543bcb5dac3815f31540694058066f', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('c25a6eeb304bb3f8a5a3dd7e479da15a15fb34ecbb8d2127d9179881aefd7efe', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
