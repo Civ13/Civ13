@@ -315,9 +315,13 @@
 	var/turf/T = locate(cx, cy, z)
 	if (!T)
 		return FALSE
+	var/turf/old_loc = loc
 	loc = T
 	step_x = px - cx * 32
 	step_y = py - cy * 32
+	// A raw loc change: views of the level below follow it (open_air_view.dm).
+	if (open_air_view_any)
+		open_air_view_moved(src, old_loc)
 	return TRUE
 
 // The body's position as BYOND's own lower-left filing: list(tile x, tile y,
