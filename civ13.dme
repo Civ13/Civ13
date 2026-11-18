@@ -1065,6 +1065,7 @@
 #include "code\modules\1713\train_crane.dm"
 #include "code\modules\1713\train_crashes.dm"
 #include "code\modules\1713\train_depot.dm"
+#include "code\modules\1713\train_derail.dm"
 #include "code\modules\1713\train_diesel.dm"
 #include "code\modules\1713\train_freight.dm"
 #include "code\modules\1713\train_locomotives.dm"

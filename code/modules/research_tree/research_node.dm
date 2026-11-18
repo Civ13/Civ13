@@ -2367,6 +2367,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/train_lever_frame" = "rail_steam",
 		"/obj/structure/train_token_instrument" = "rail_steam",
 		"/obj/item/train_signal_wire" = "rail_steam",
+		"/obj/item/train_jack" = "rail_steam",
 		"/obj/structure/rail_depot/coal_stage" = "rail_steam",
 		"/obj/structure/rail_depot/sand_bin" = "rail_steam",
 		"/obj/item/train_snowplough" = "rail_steam",

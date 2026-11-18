@@ -621,6 +621,38 @@ of furniture without breaking it. Faster, it deals up to 250 damage, knocks the
 person down beside the track and keeps going from 1 up; damage to objects and
 to both trains in a train-on-train bump scales the same way.
 
+## Leaving the rails
+
+Code: `code/modules/1713/train_derail.dm`. Tests: the `derail/` checks of
+`tests/train_platforms`.
+
+A derailment is not a crash: nothing is smashed, but the cars that come off
+(`derailed`, on every `/obj/structure/trains`) stop their train like a wreck
+does until they are put back.
+
+- **Too fast round a curve or through the branch of a switch.** After each
+  step the drive loop calls `curve_check()` with the leading car and where it
+  stood and faced: when it turned, or stepped sideways, at more than
+  `TRAIN_CURVE_SPEED` (3 tiles a second) the train leaves the rails. One
+  car or engine comes off, two from 1.5 times the limit and three from twice.
+  The first notch of every engine is under the limit.
+- **Off the end of the rails.** When the train could not step, the loop calls
+  `overrun_check()`: no rail ahead, no buffer stop under the leading car and
+  more than `TRAIN_OVERRUN_SPEED` (2 tiles a second) puts the leading car on
+  the ground. A lifted rail does the same.
+- `leave_rails()` takes the cars in the order they run, derails the leading
+  units (`train_unit_come_off()`: the leading half of a car, a whole heavy
+  engine with `set_derailed()`), stops the train and throws its riders with
+  `crash_jolt()`. Small one-tile engines only lose their fire, as in a crash.
+- **Rerailing.** A **rerailing jack** (`/obj/item/train_jack`, 6 iron,
+  `rail_steam`) on a derailed section lifts it back (`rerail()`), a section
+  at a time; there has to be rail under it (`rerail_problem()`). A heavy
+  engine also needs `train_breakdown_crane()`: the crane of a braced crane
+  car with fuel within five tiles, which spends one haul.
+
+Not built: damaged rails (rails have no wear) and trailing a switch set the
+wrong way (the track model has no trailing switches).
+
 ## Wheel slip and sand
 
 An engine pulls only as hard as its wheels grip. Below 1.5 tiles a second,

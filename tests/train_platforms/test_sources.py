@@ -640,6 +640,29 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('signal_clear', states)
         self.assertIn('train_token', states)
 
+    def test_trains_leave_the_rails_and_are_rerailed(self):
+        derail = (ROOT / 'code/modules/1713/train_derail.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_derail.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        self.assertIn('#define TRAIN_CURVE_SPEED 3 ', derail)
+        self.assertIn('#define TRAIN_OVERRUN_SPEED 2 ', derail)
+        # the first notch of the fastest engine is under the curve limit
+        fastest = min(float(v) for v in re.findall(r'max_train_speed = ([0-9.]+)', LOCOS + TRAINS))
+        self.assertLess(10 / fastest / 3, 3)
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward()')]
+        self.assertLess(drive.index('overrun_check()'), drive.index('if (curve_check(lead, lead_dir, lead_from))'))
+        self.assertIn('\treturn broken_down || derailed\n', TRAINS)
+        self.assertIn('if (P.wrecked || P.braced || P.derailed)', PLATFORMS)
+        servicing = (ROOT / 'code/modules/1713/train_servicing.dm').read_text(encoding='utf-8')
+        self.assertIn('\tif (istype(W, /obj/item/train_jack))\n\t\treturn jack_use(W, user)\n', servicing)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, derail)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        self.assertIn('RECIPE: /material/iron/,rerailing jack,/obj/item/train_jack,6,', RECIPES)
+        self.assertIn('"/obj/item/train_jack" = "rail_steam"', NODES)
+        self.assertIn('derailed', states)
+        self.assertIn('rerail_jack', states)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])

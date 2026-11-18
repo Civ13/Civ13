@@ -2955,6 +2955,7 @@ RECIPE: /material/iron/,semaphore signal,/obj/structure/train_lineside/signal,4,
 RECIPE: /material/iron/,lever frame,/obj/structure/train_lever_frame,10,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,token instrument,/obj/structure/train_token_instrument,8,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,coil of signal wire,/obj/item/train_signal_wire,2,60,0,0,trains,101,0,0,8,null
+RECIPE: /material/iron/,rerailing jack,/obj/item/train_jack,6,150,0,0,trains,101,0,0,8,null
 RECIPE: /material/wood/,coaling stage,/obj/structure/rail_depot/coal_stage,20,300,1,1,trains,101,0,0,8,null
 RECIPE: /material/wood/,sand bin,/obj/structure/rail_depot/sand_bin,8,200,1,1,trains,101,0,0,8,null
 RECIPE: /material/wood/,section board,/obj/structure/train_lineside/board,3,100,1,1,trains,101,0,0,8,null

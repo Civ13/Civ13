@@ -1664,6 +1664,55 @@ def wreck():
     return [c.image()]
 
 
+def derailed():
+    """Laid over the deck of a car that is off the rails: it leans, and its
+    boards have sprung."""
+    c = Canvas(32, 32)
+    # the deck leans away from the light: darker towards the low side
+    for y in range(32):
+        for x in range(32):
+            a = int(max(0, x + (y - 16) * 0.35 - 6) * 5.2)
+            if a > 0:
+                c.put(x, y, (10, 8, 6), min(a, 130))
+    c.rect(0, 0, 1, 31, (255, 244, 214), 70)
+    # sprung boards: lifted ends catch the light and throw a shadow
+    for x0, y0, n in ((5, 6, 9), (15, 13, 11), (8, 22, 8), (20, 27, 7)):
+        c.line(x0, y0, x0 + n, y0 - 2, PLANK[0])
+        c.line(x0, y0 + 1, x0 + n, y0 - 1, PLANK_SEAM)
+        c.line(x0 + 1, y0 + 2, x0 + n, y0, (10, 8, 6), 120)
+        c.put(x0 + n, y0 - 2, WHITE, 180)
+    # ballast thrown up onto the deck
+    for i in range(14):
+        x, y = int(noise(i, 1, 77) * 28) + 2, int(noise(i, 2, 77) * 28) + 2
+        c.put(x, y, (ASH[0], ASH[1], ASH[2])[i % 3])
+        c.put(x + 1, y + 1, ASH[3], 200)
+    return [c.image()]
+
+
+def rerail_jack():
+    """A screw jack: a foot plate, a tapered body, the screw and a ratchet bar."""
+    c = Canvas(32, 32)
+    c.shade(7, 27, 26, 29, 60)
+    c.bevel(8, 24, 23, 27, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    for y in range(12, 24):
+        half = 3 + (y - 12) // 3
+        c.rect(15 - half, y, 16 + half, y, STEEL_O)
+        c.rect(16 - half, y, 15 + half, y, RED[1])
+        c.put(16 - half, y, RED[0])
+        c.put(15 + half, y, RED[2])
+    c.rect(14, 5, 17, 12, STEEL_O)
+    c.rect(15, 5, 16, 11, STEEL[1])
+    for y in (6, 8, 10):
+        c.rect(15, y, 16, y, STEEL[4])
+    c.bevel(11, 2, 20, 5, STEEL[0], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.line(17, 14, 27, 9, STEEL_O)
+    c.line(17, 13, 27, 8, STEEL[1])
+    c.disc(27.5, 8.0, 1.6, [WALNUT[0], WALNUT[1]], outline=WALNUT[3])
+    c.rect(14, 13, 17, 15, BRASS[2])
+    c.put(14, 13, BRASS[0])
+    return [c.image()]
+
+
 def loco_armor(c):
     """Plate bolted over the old one-tile steam engine."""
     for x0 in (0, 27):
@@ -2906,6 +2955,8 @@ def platform_states():
     states['brace_up'] = lever(False)
     states['brace_down'] = lever(True)
     states['wreck'] = wreck()
+    states['derailed'] = derailed()
+    states['rerail_jack'] = rerail_jack()
     states['loco_armor'] = directions(loco_armor, order=HEADING)
     states.update(end_states())
     states['outrigger'] = directions(outrigger, order=EDGE)
@@ -3231,6 +3282,17 @@ def write_previews(out, states, gun):
     for i, name in enumerate(names):
         im.alpha_composite(states[name][0], (8 + i * 40, 8))
     big(im, 6).save(out / 'signals.png')
+
+    # off the rails: a derailed boxcar, the same car rerailed, and the jack
+    im = ground(2 * 104 + 8 + 56, 8 * 32 + 16, seed=19)
+    for i, off in enumerate((True, False)):
+        car = render_car(states, 'boxcar', 'N', roof=False)
+        if off:
+            for seg in range(4):
+                car.alpha_composite(states['derailed'][0], (32, seg * 32))
+        im.alpha_composite(car, (8 + i * 104, 8))
+    im.alpha_composite(states['rerail_jack'][0], (2 * 104 + 16, 24))
+    big(im, 3).save(out / 'derailed.png')
 
     # couplings: made, free, broken and taken off, on a train heading east
     def with_couplers(kind, front, rear, part='coupler'):
