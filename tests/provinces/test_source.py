@@ -21,6 +21,7 @@ STAKE = ROOT / 'code/modules/provinces/province_stake.dm'
 HOLDING = ROOT / 'code/modules/provinces/province_holding.dm'
 RESOURCES = ROOT / 'code/modules/provinces/continent_resources.dm'
 RANKS = ROOT / 'code/modules/provinces/province_ranks.dm'
+UPKEEP = ROOT / 'code/modules/provinces/province_upkeep.dm'
 DME = ROOT / 'civ13.dme'
 # Map -> surface z, as scripts/provinces.py was run (docs/provinces.md).
 CONTINENTS = {
@@ -276,6 +277,35 @@ class Ranks(unittest.TestCase):
         self.assertIn('province_rank_bed_extra(account, get_turf(H))',
                       (ROOT / 'code/modules/research_tree/death_legacy.dm').read_text(encoding='utf-8'))
         self.assertIn('#include "code\\modules\\provinces\\province_ranks.dm"', DME.read_text(encoding='utf-8'))
+
+
+
+class UpkeepAndRuins(unittest.TestCase):
+    def text(self):
+        return UPKEEP.read_text(encoding='utf-8')
+
+    def test_numbers(self):
+        text = self.text()
+        for line in ('if (2) return 50', 'if (3) return 150', 'if (4) return 400', 'round(base * 1.5)', 'base * 2',
+                     '#define RUIN_RESIDENTS 3', '#define RUIN_DAYS 14', '#define UPKEEP_WEEK 6048000'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+        self.assertNotIn(' in world', text)
+
+    def test_upkeep_never_takes_from_a_short_box(self):
+        take = self.text().split('/proc/province_upkeep_take(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertLess(take.index('if (B.coin_worth() < worth)'), take.index('M.use(count)'))
+
+    def test_ruins_wait_for_the_rules_and_wiring(self):
+        ruins = self.text().split('/proc/province_ruins_update(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('if (!province_rules_active())', ruins)
+        self.assertIn('province_ruins_update(stakes) // province_upkeep.dm', HOLDING.read_text(encoding='utf-8'))
+        self.assertIn('province_upkeep_paid(c, group, seat)', RANKS.read_text(encoding='utf-8'))
+        self.assertIn('#include "code\\modules\\provinces\\province_upkeep.dm"', DME.read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':

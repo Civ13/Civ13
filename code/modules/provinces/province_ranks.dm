@@ -359,6 +359,9 @@ var/global/list/province_rank_checks = list()
 		return check
 	var/obj/structure/faction_hall/seat = province_seat(c, group)
 	var/list/rows = seat ? province_rank_rows(seat, group, residents) : list()
+	var/rank = province_rank_of(c)
+	if (seat && rank >= 2) // a ranked settlement pays its upkeep (province_upkeep.dm)
+		rows += list(list(rank, "this week's upkeep paid from the strongbox", province_upkeep_paid(c, group, seat)))
 	check = list(world.time, seat, seat ? province_rank_met(rows) : 0, rows, group)
 	province_rank_checks[c] = check
 	return check
@@ -434,6 +437,7 @@ var/global/list/province_rank_checks = list()
 		if (seat != hall)
 			lines += "<p>This hall is not the seat: [seat ? "the [html_encode(seat.name)] at [seat.x],[seat.y] is" : "no standing hall is"].</p>"
 		lines += "<p>Rank: <b>[html_encode(province_rank_text(c) || "no rank yet")]</b>. Held [html_encode(province_holding_text(c))].</p>"
+		lines += "<p>[province_upkeep_text(c)]</p>"
 		lines += "<p>A rival needs [province_rank_margin(rank)] times your stake to take it, a hold that slips lasts [province_rank_lose_hours(rank)] hours, your side's best province adds [RANK_MEMBERS_PER_RANK] members a rank to each faction's limit, and a resident's bed start in this settlement costs [province_rank_bed_text(rank)] what a station start does.</p>"
 		var/list/table = list("<table class='regions'><tr><th>Rank</th><th>Needs</th><th></th></tr>")
 		for (var/list/row in check[4])

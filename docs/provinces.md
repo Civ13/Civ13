@@ -149,6 +149,26 @@ owner; plots count when their centre is in the settlement.
 
 State: `faction_recruitment["province_ranks"]`: char -> list(rank, short since).
 
+## Upkeep and ruins
+
+Code: `code/modules/provinces/province_upkeep.dm`.
+
+- **Upkeep.** A ranked settlement costs its seat's faction coin from the
+  faction's strongbox every week: nothing for a Camp, 50 silver for a Village,
+  150 for a Town, 400 for a City. The side's second ranked province on a land
+  costs 1.5 times and its third twice, highest rank first. The first week is
+  free. The charge is a checklist row of the current rank, so unpaid upkeep
+  warns the leaders and drops the rank after 48 hours unless the box is
+  refilled; it is tried again at every check (hourly, or when the ledger is
+  opened). The coin is spent (a money sink, no NPC is paid). State:
+  `faction_recruitment["province_upkeep"]`: char -> list(group, paid through,
+  unpaid).
+- **Ruins.** Once the station rules have started, a faction's registered plots
+  in a province where it has had fewer than 3 residents for 14 days in a row
+  are dropped from the register and their deeds go void. Buildings stay.
+  Province Holdings warns the faction while the 14 days run. State:
+  `faction_recruitment["province_ruins"]`: "char|faction" -> short since.
+
 ## Continent resources
 
 Code: `code/modules/provinces/continent_resources.dm`. Each continent is rich
