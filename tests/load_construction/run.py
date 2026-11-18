@@ -8,7 +8,7 @@ reschedules itself without yielding stalls the server.
 
 The run fails on a failure that known_failures.txt does not list, on a listed
 entry that no longer fails, and on a stall (no completion within --timeout).
-It also builds each drifting type twice and fails on a scalar field that the
+It also builds each atom type four times and fails on a scalar field that the
 restore constructor sets differently each time (the saver omits defaults, so
 such a field changes on every load) unless known_drift.txt lists it.
 Prints the evidence directory.

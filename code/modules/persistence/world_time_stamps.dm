@@ -4,9 +4,10 @@
 // "world.time - last_bumped <= 60" could block an action for hours. (A door
 // on Gaia stayed shut until the player's last_bumped was cleared by hand.)
 //
-// The saver writes every changed var on mobs and most objects, including tmp
-// vars. Name each world.time stamp here, with the types that own it, so it is
-// neither saved nor imported from an older save, and keeps its type default.
+// The saver writes every changed non-tmp var on mobs and most objects. Name
+// each world.time stamp that is not declared var/tmp here, with the types that
+// own it, so it is neither saved nor imported from an older save, and keeps
+// its type default. (Entries for tmp stamps predate the saver skipping tmp.)
 // A default of 0 or -1 means "ready" for a cooldown, and "since round start"
 // for an age stamp. tests/world_time_stamps fails when a new stamp on a saved
 // type appears without an entry here or a reviewed exception there.

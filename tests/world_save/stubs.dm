@@ -273,6 +273,9 @@ var/list/mutate_on_tick = null
 // player_reclaim.dm logs a dead body giving up its claim; fixtures keep no game log.
 /proc/log_game(text)
 	return
+// loading.dm notes a saved field the current code no longer has (code/world.dm).
+/proc/log_world(text)
+	world.log << text
 /mob/new_player
 	var/spawning = FALSE
 /mob/new_player/proc/close_spawn_windows()

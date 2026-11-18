@@ -245,7 +245,8 @@ Preserve it through cleanup, clear it only at accepted save admission, and verif
 lookup type/location because native refs can be recycled after deletion.
 
 <!-- 2026-10-18: restored input clocks and action locks -->
-The custom saver includes changed tmp fields. Mob next_click/next_move and
+The custom saver skips tmp fields since 2026-11-18 (`persistence_declared_tmp`);
+before that it included changed tmp fields. Mob next_click/next_move and
 may_do_after/may_do_mob are process-local deadlines/locks: exclude them on export
 and legacy import through persistence_runtime_var. Do not reset them on every
 Login or click, which would bypass live cooldowns/actions. The world-save

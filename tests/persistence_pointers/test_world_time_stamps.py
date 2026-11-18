@@ -176,26 +176,16 @@ class WorldTimeStampRegistry(unittest.TestCase):
                 missing.add(f'{name} on {owners}')
         self.assertEqual(sorted(missing), [], 'add these world.time stamps to world_time_stamps.dm or review them')
 
-    def test_tmp_vars_are_saved(self):
-        # The custom saver walks D.vars, which lists tmp vars too, and nothing
-        # on the export path asks issaved(). So var/tmp does not keep a stamp
-        # out of a save; only this registry or a persistence_runtime_var hook does.
+    def test_tmp_vars_are_skipped(self):
+        # The saver walks D.vars, tmp vars included; the base runtime hook
+        # excludes a field declared var/tmp, on export and import alike.
         functions = (CODE / 'modules/persistence/functions.dm').read_text()
-        get_saved = functions[functions.index('/datum/proc/get_saved_vars()'):]
-        get_saved = get_saved[:get_saved.index('\n/', 1)]
-        self.assertIn('for (var/key in src.vars)', get_saved)
-        self.assertNotIn('issaved', get_saved)
-        saving = (CODE / 'modules/persistence/saving.dm').read_text()
-        self.assertNotIn('issaved', saving)
-
-    def test_reviewed_reasons_do_not_rely_on_tmp(self):
-        # 18 stamps were once waved through as "var/tmp, never saved" and were
-        # in fact restored after every reboot (an animal could not bite, a ship
-        # stayed at sea with no timer). A reviewed reason must name a real cause.
-        for name, reason in REVIEWED.items():
-            with self.subTest(name=name):
-                self.assertNotIn('var/tmp', reason)
-                self.assertNotRegex(reason, r'\btmp\b')
+        base = functions[functions.index('/datum/proc/persistence_runtime_var(key)'):]
+        base = base[:base.index('\n/', 1)]
+        self.assertIn('persistence_declared_tmp(src, key)', base)
+        helper = functions[functions.index('/proc/persistence_declared_tmp(datum/D, key)'):]
+        helper = helper[:helper.index('\n/', 1)]
+        self.assertIn('!issaved(D.vars[key])', helper)
 
 
 if __name__ == '__main__':
