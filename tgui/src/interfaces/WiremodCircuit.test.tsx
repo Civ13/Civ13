@@ -28,7 +28,9 @@ const ui = (data: Data = {}): ScreenProps => ({
     ],
     components: [
       {
-        index: 1,
+        // Ids are the circuit's own and differ from the place in the list:
+        // these two are what is left after other components were removed.
+        id: 4,
         type: '/obj/item/circuit_component/arithmetic',
         name: 'Arithmetic',
         description: 'Performs arithmetic.',
@@ -42,12 +44,12 @@ const ui = (data: Data = {}): ScreenProps => ({
             name: 'Result',
             type: 'number',
             color: 'green',
-            ref: 'output-1-1',
+            ref: 'output-4-1',
           },
         ],
       },
       {
-        index: 2,
+        id: 9,
         type: '/obj/item/circuit_component/arithmetic',
         name: 'Arithmetic',
         description: 'Performs arithmetic.',
@@ -60,7 +62,7 @@ const ui = (data: Data = {}): ScreenProps => ({
             name: 'A',
             type: 'number',
             color: 'green',
-            ref: 'input-2-1',
+            ref: 'input-9-1',
             connected_to: [],
             current_data: null,
           },
@@ -86,9 +88,53 @@ describe('tgstation Wiremod circuit editor', () => {
     expect(props.act).toHaveBeenLastCalledWith('add_connection', {
       input_port_id: 1,
       output_port_id: 1,
-      input_component_id: 2,
-      output_component_id: 1,
+      input_component_id: 9,
+      output_component_id: 4,
     });
+  });
+
+  it('names a component by its id, not its place, after a removal', () => {
+    const props = ui();
+    const first = (props.data.components as Data[])[0];
+    const second = (props.data.components as Data[])[1];
+    const view = render(<WiremodCircuit {...props} />);
+    // The first component is removed: the second is now first in the list.
+    view.rerender(
+      <WiremodCircuit
+        {...props}
+        data={{ ...props.data, components: [second] }}
+      />,
+    );
+    expect(view.container.querySelectorAll('.ObjectComponent')).toHaveLength(1);
+    const titlebar = view.container.querySelector('.ObjectComponent__Titlebar');
+    fireEvent.mouseDown(titlebar!, { button: 0, clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(window, { clientX: 110, clientY: 110 });
+    fireEvent.mouseUp(titlebar!, { button: 0, clientX: 110, clientY: 110 });
+    expect(props.act).toHaveBeenCalled();
+    for (const call of (props.act as ReturnType<typeof vi.fn>).mock.calls) {
+      if ('component_id' in (call[1] ?? {})) {
+        expect(call[1].component_id).toBe(9);
+      }
+    }
+    expect(first.id).toBe(4);
+  });
+
+  it('sends nothing for a component the server gave no id', () => {
+    const props = ui();
+    const components = (props.data.components as Data[]).map((component) => {
+      const { id: _id, ...rest } = component;
+      return rest;
+    });
+    const view = render(
+      <WiremodCircuit {...props} data={{ ...props.data, components }} />,
+    );
+    const titlebar = view.container.querySelector('.ObjectComponent__Titlebar');
+    fireEvent.mouseDown(titlebar!, { button: 0, clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(window, { clientX: 100, clientY: 100 });
+    fireEvent.mouseMove(window, { clientX: 110, clientY: 110 });
+    fireEvent.mouseUp(titlebar!, { button: 0, clientX: 110, clientY: 110 });
+    expect(props.act).not.toHaveBeenCalled();
   });
 
   it('sends only text and numbers to the Civ13 window transport', () => {
@@ -97,7 +143,7 @@ describe('tgstation Wiremod circuit editor', () => {
     const props = ui({
       components: [
         {
-          index: 1,
+          id: 7,
           type: '/obj/item/circuit_component/arithmetic',
           name: 'Arithmetic',
           description: 'Performs arithmetic.',
@@ -110,7 +156,7 @@ describe('tgstation Wiremod circuit editor', () => {
               name: 'A',
               type: 'number',
               color: 'green',
-              ref: 'input-1-1',
+              ref: 'input-7-1',
               connected_to: [],
               current_data: 5,
             },
@@ -126,7 +172,7 @@ describe('tgstation Wiremod circuit editor', () => {
     expect(clear).toBeTruthy();
     fireEvent.click(clear!);
     expect(props.act).toHaveBeenLastCalledWith('set_component_input', {
-      component_id: 1,
+      component_id: 7,
       port_id: 1,
       set_null: 1,
     });
@@ -141,7 +187,7 @@ describe('tgstation Wiremod circuit editor', () => {
     const props = ui({
       components: [
         {
-          index: 1,
+          id: 1,
           type: '/obj/item/circuit_component/arithmetic',
           name: 'Arithmetic',
           description: 'Performs arithmetic.',
@@ -220,7 +266,7 @@ describe('tgstation Wiremod circuit editor', () => {
     fireEvent.mouseUp(titlebar!, { button: 0, clientX: 180, clientY: 160 });
 
     expect(props.act).toHaveBeenCalledWith('set_component_coordinates', {
-      component_id: 1,
+      component_id: 4,
       rel_x: 70,
       rel_y: 60,
     });

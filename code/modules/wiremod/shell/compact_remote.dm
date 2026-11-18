@@ -31,7 +31,7 @@
 	return TRUE
 
 /obj/item/compact_remote/AltClick(mob/user)
-	if(circuit && wiremod_circuit_state.can_use_topic(circuit, user) == STATUS_INTERACTIVE)
+	if(circuit?.can_be_edited_by(user))
 		circuit.ui_interact(user)
 		return
 	return ..()

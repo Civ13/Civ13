@@ -4,8 +4,9 @@
 
 The fixture holds code/__defines/wiremod.dm, every file under
 code/modules/wiremod and the probe; nothing else from the game. --source-root
-points at another checkout's files (for example the port as first submitted) to
-see which checks that version fails. --evidence-dir keeps the logs.
+points at another checkout's files to see which checks that version fails; the
+checkout needs the current type and field names for the probe to compile.
+--evidence-dir keeps the logs.
 """
 import argparse
 import json

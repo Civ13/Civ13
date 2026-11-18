@@ -28,11 +28,15 @@ var/datum/probe_globals/GLOB = new
 /datum/probe_globals
 	var/datum/probe_nanomanager/nanomanager = new
 
+// As the real one: returns how many open windows it refreshed. `watchers` is
+// the number of editors the probe pretends are open.
 /datum/probe_nanomanager
 	var/updates = 0
+	var/watchers = 0
 
 /datum/probe_nanomanager/proc/update_uis(datum/owner)
 	updates++
+	return watchers
 
 /proc/probe_chat(target, message)
 	chat_log += "[message]"
@@ -202,11 +206,6 @@ var/datum/probe_globals/GLOB = new
 		failures++
 		world.log << "FAIL [message]"
 
-// A field added by the audit, read by name so the probe also compiles against
-// the port as it was first submitted.
-/proc/field(datum/owner, name)
-	return (name in owner.vars) ? owner.vars[name] : null
-
 /proc/act(obj/item/integrated_circuit/circuit, mob/user, action, list/params)
 	try
 		circuit.ui_act(action, params ? params : list(), user, null)
@@ -221,8 +220,9 @@ var/datum/probe_globals/GLOB = new
 		return null
 	return circuit.attached_components[length(circuit.attached_components)]
 
+// What the editor calls a component: the number its circuit gave it.
 /proc/index_of(obj/item/integrated_circuit/circuit, obj/item/circuit_component/component)
-	return circuit.attached_components.Find(component)
+	return component.circuit_id
 
 /proc/wire(obj/item/integrated_circuit/circuit, mob/user, obj/item/circuit_component/source, output_index, obj/item/circuit_component/sink, input_index)
 	act(circuit, user, "add_connection", list(
@@ -282,11 +282,11 @@ var/datum/probe_globals/GLOB = new
 /proc/test_connections(mob/living/user)
 	var/obj/item/integrated_circuit/circuit = new(user)
 	var/obj/item/integrated_circuit/other = new(user)
-	var/obj/item/circuit_component/arithmetic/first = print(circuit, user, /obj/item/circuit_component/arithmetic)
-	var/obj/item/circuit_component/arithmetic/second = print(circuit, user, /obj/item/circuit_component/arithmetic)
-	var/obj/item/circuit_component/arithmetic/third = print(circuit, user, /obj/item/circuit_component/arithmetic)
-	var/obj/item/circuit_component/string_concat/text = print(circuit, user, /obj/item/circuit_component/string_concat)
-	var/obj/item/circuit_component/arithmetic/foreign = print(other, user, /obj/item/circuit_component/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/first = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/second = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/third = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	var/obj/item/circuit_component/operator/string_concat/text = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
+	var/obj/item/circuit_component/operator/arithmetic/foreign = print(other, user, /obj/item/circuit_component/operator/arithmetic)
 	check(first && second && third && text && foreign, "editor prints components")
 	if(!first || !second || !third || !text || !foreign)
 		return
@@ -332,7 +332,7 @@ var/datum/probe_globals/GLOB = new
 
 /proc/test_components(mob/living/user)
 	var/obj/item/integrated_circuit/circuit = new(user)
-	var/obj/item/circuit_component/arithmetic/math = print(circuit, user, /obj/item/circuit_component/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
 	enter(circuit, user, math, 1, 7.5)
 	enter(circuit, user, math, 2, 2)
 	var/list/expected = list("Subtract" = 5.5, "Multiply" = 15, "Divide" = 3.75, "Modulo" = 1.5, "Power" = 56.25, "Minimum" = 2, "Maximum" = 7.5, "Add" = 9.5)
@@ -352,7 +352,7 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, math, 2, 5000)
 	check(isnull(output_value(math)), "an overflowing power gives no value")
 
-	var/obj/item/circuit_component/comparison/compare = print(circuit, user, /obj/item/circuit_component/comparison)
+	var/obj/item/circuit_component/operator/comparison/compare = print(circuit, user, /obj/item/circuit_component/operator/comparison)
 	enter(circuit, user, compare, 1, 3)
 	enter(circuit, user, compare, 2, 4)
 	enter(circuit, user, compare, 3, "Less Than")
@@ -364,7 +364,7 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, compare, 3, "Equal")
 	check(output_value(compare) == TRUE, "comparison of equal text")
 
-	var/obj/item/circuit_component/logic/gate = print(circuit, user, /obj/item/circuit_component/logic)
+	var/obj/item/circuit_component/operator/logic/gate = print(circuit, user, /obj/item/circuit_component/operator/logic)
 	enter(circuit, user, gate, 1, 1)
 	enter(circuit, user, gate, 2, 0)
 	check(output_value(gate) == FALSE, "logic AND")
@@ -375,7 +375,7 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, gate, 2, "garbage")
 	check(gate.input_b.value == 0, "a boolean input rejects text that is not a truth value")
 
-	var/obj/item/circuit_component/string_concat/join = print(circuit, user, /obj/item/circuit_component/string_concat)
+	var/obj/item/circuit_component/operator/string_concat/join = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
 	enter(circuit, user, join, 1, "red,")
 	enter(circuit, user, join, 2, "Green,blue")
 	check(output_value(join) == "red,Green,blue", "string concat")
@@ -428,7 +428,7 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, drop, 2, "red")
 	var/list/dropped = output_value(drop)
 	check(length(dropped) == 3 && !("red" in dropped) && length(output_value(append)) == 4, "list remove takes from a copy")
-	var/obj/item/circuit_component/list_concat/merge = print(circuit, user, /obj/item/circuit_component/list_concat)
+	var/obj/item/circuit_component/operator/list_concat/merge = print(circuit, user, /obj/item/circuit_component/operator/list_concat)
 	wire(circuit, user, split, 1, merge, 1)
 	wire(circuit, user, drop, 1, merge, 2)
 	check(length(output_value(merge)) == 6, "list concat")
@@ -482,7 +482,7 @@ var/datum/probe_globals/GLOB = new
 /proc/test_limits(mob/living/user)
 	var/obj/item/integrated_circuit/circuit = new(user)
 	// A component wired to itself.
-	var/obj/item/circuit_component/arithmetic/loop = print(circuit, user, /obj/item/circuit_component/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/loop = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
 	enter(circuit, user, loop, 2, 1)
 	wire(circuit, user, loop, 1, loop, 1)
 	chat_log.Cut()
@@ -493,7 +493,7 @@ var/datum/probe_globals/GLOB = new
 	var/looped = output_value(loop)
 	check(isnum(looped) && looped > 0 && looped <= CIRCUIT_MAX_EXECUTIONS + 2, "a feedback loop stops at the execution limit (reached [looped])")
 	check(!circuit.is_executing && !length(circuit.execution_queue), "the circuit is idle after a feedback loop")
-	check(field(circuit, "overloaded_until") > world.time, "a feedback loop overloads the circuit")
+	check(circuit.overloaded_until > world.time, "a feedback loop overloads the circuit")
 	check(length(chat_log) && findtext(chat_log[length(chat_log)], "overload"), "the holder is told about the overload")
 	var/frozen = output_value(loop)
 	enter(circuit, user, loop, 2, 5)
@@ -505,8 +505,8 @@ var/datum/probe_globals/GLOB = new
 
 	// Two list concatenators feeding each other double the list on every pass.
 	var/obj/item/circuit_component/string_split/seed = print(circuit, user, /obj/item/circuit_component/string_split)
-	var/obj/item/circuit_component/list_concat/left = print(circuit, user, /obj/item/circuit_component/list_concat)
-	var/obj/item/circuit_component/list_concat/right = print(circuit, user, /obj/item/circuit_component/list_concat)
+	var/obj/item/circuit_component/operator/list_concat/left = print(circuit, user, /obj/item/circuit_component/operator/list_concat)
+	var/obj/item/circuit_component/operator/list_concat/right = print(circuit, user, /obj/item/circuit_component/operator/list_concat)
 	wire(circuit, user, seed, 1, left, 2)
 	wire(circuit, user, left, 1, right, 1)
 	wire(circuit, user, left, 1, right, 2)
@@ -545,7 +545,7 @@ var/datum/probe_globals/GLOB = new
 
 	// Component and variable counts.
 	for(var/i in 1 to CIRCUIT_MAX_COMPONENTS + 5)
-		act(circuit, user, "print_component", list("component_to_print" = "/obj/item/circuit_component/logic", "rel_x" = 0, "rel_y" = 0))
+		act(circuit, user, "print_component", list("component_to_print" = "/obj/item/circuit_component/operator/logic", "rel_x" = 0, "rel_y" = 0))
 	check(length(circuit.attached_components) == CIRCUIT_MAX_COMPONENTS && length(circuit.contents) == CIRCUIT_MAX_COMPONENTS, "the component limit holds and refused components are not left behind")
 	for(var/i in 1 to 40)
 		act(circuit, user, "add_variable", list("variable_name" = "v[i]", "variable_datatype" = PORT_TYPE_ANY, "is_list" = 1))
@@ -580,13 +580,13 @@ var/datum/probe_globals/GLOB = new
 
 /proc/test_untrusted_input(mob/living/user)
 	var/obj/item/integrated_circuit/circuit = new(user)
-	var/obj/item/circuit_component/arithmetic/math = print(circuit, user, /obj/item/circuit_component/arithmetic)
-	var/obj/item/circuit_component/arithmetic/second = print(circuit, user, /obj/item/circuit_component/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/second = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
 	enter(circuit, user, math, 1, 4)
 	enter(circuit, user, math, 2, 4)
 	var/atoms_before = length(world.contents)
 	// Only listed component types can be created.
-	for(var/bad_type in list("/mob/living", "/obj/item/compact_remote", "/obj/item/circuit_component", "/obj/item/circuit_component/variable/getter", "/obj/item/circuit_component/compact_remote", "/datum", "", 5, "/obj/item/circuit_component/arithmetic/"))
+	for(var/bad_type in list("/mob/living", "/obj/item/compact_remote", "/obj/item/circuit_component", "/obj/item/circuit_component/variable/getter", "/obj/item/circuit_component/operator", "/obj/item/circuit_component/arithmetic", "/obj/item/circuit_component/compact_remote", "/datum", "", 5, "/obj/item/circuit_component/operator/arithmetic/"))
 		act(circuit, user, "print_component", list("component_to_print" = bad_type, "rel_x" = 0, "rel_y" = 0))
 	check(length(circuit.attached_components) == 2 && length(world.contents) == atoms_before, "print_component only creates listed component types")
 	// Component and port numbers.
@@ -607,7 +607,7 @@ var/datum/probe_globals/GLOB = new
 	// Missing fields and wrong value types.
 	for(var/action in circuit.ui_actions("main"))
 		act(circuit, user, action, list())
-		act(circuit, user, action, list("component_id" = list(1), "port_id" = circuit, "input" = user, "variable" = 1, "variable_name" = 2, "display_name" = 3, "component_to_print" = /obj/item/circuit_component/arithmetic, "is_input" = "maybe", "variable_datatype" = 4))
+		act(circuit, user, action, list("component_id" = list(1), "port_id" = circuit, "input" = user, "variable" = 1, "variable_name" = 2, "display_name" = 3, "component_to_print" = /obj/item/circuit_component/operator/arithmetic, "is_input" = "maybe", "variable_datatype" = 4))
 	act(circuit, user, "not_an_action", list("component_id" = 1))
 	act(circuit, user, "set_component_input", null)
 	check(length(circuit.attached_components) == 2 && !length(circuit.circuit_variables), "requests with missing or mistyped fields are ignored")
@@ -692,7 +692,7 @@ var/datum/probe_globals/GLOB = new
 
 /proc/test_hand_components(mob/living/user)
 	var/obj/item/integrated_circuit/circuit = new(user.loc)
-	var/obj/item/circuit_component/logic/loose = new(user)
+	var/obj/item/circuit_component/operator/logic/loose = new(user)
 	user.held = loose
 	user.drops = 0
 	circuit.attackby(loose, user)
@@ -714,7 +714,7 @@ var/datum/probe_globals/GLOB = new
 	act(circuit, user, "detach_component", list("component_id" = 1))
 	check(length(circuit.attached_components) == 1 && !source.gc_destroyed, "the remote's signal source cannot be removed")
 	var/obj/item/circuit_component/random/dice = print(circuit, user, /obj/item/circuit_component/random)
-	var/obj/item/circuit_component/string_concat/greeting = print(circuit, user, /obj/item/circuit_component/string_concat)
+	var/obj/item/circuit_component/operator/string_concat/greeting = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
 	var/obj/item/circuit_component/delay/timer = print(circuit, user, /obj/item/circuit_component/delay)
 	check(dice && greeting && timer, "the remote's holder can edit its circuit")
 	check(wire(circuit, user, source, 2, dice, 3) && wire(circuit, user, source, 1, greeting, 1) && wire(circuit, user, source, 2, timer, 2), "remote outputs connect")
@@ -762,11 +762,329 @@ var/datum/probe_globals/GLOB = new
 		survivor = null
 	check(length(refs) >= 20 && !alive, "every object of a deleted remote is garbage collected ([alive] of [length(refs)] still referenced)")
 
+// A component keeps the number the editor knows it by; a removed component's
+// number is never given out again.
+/proc/test_stable_ids(mob/living/user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/obj/item/circuit_component/operator/arithmetic/first = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/second = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	var/obj/item/circuit_component/operator/arithmetic/third = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	check(first.circuit_id == 1 && second.circuit_id == 2 && third.circuit_id == 3, "components are numbered as they are added")
+	wire(circuit, user, third, 1, first, 1)
+	var/list/before = json_decode(json_encode(circuit.circuit_editor_data()))
+	var/list/third_before = before["components"][3]
+	check(third_before["id"] == 3 && third_before["output_ports"][1]["ref"] == "output-3-1", "the editor data names a component and its ports by its number")
+	check(before["components"][1]["input_ports"][1]["connected_to"][1] == "output-3-1", "a wire is named by the numbers of its two components")
+	act(circuit, user, "detach_component", list("component_id" = 2))
+	check(second.gc_destroyed && length(circuit.attached_components) == 2 && circuit.attached_components[2] == third, "removing the second component moves the third up the list")
+	check(third.circuit_id == 3 && first.circuit_id == 1, "the remaining components keep their numbers")
+	var/list/after = json_decode(json_encode(circuit.circuit_editor_data()))
+	var/list/third_after = after["components"][2]
+	check(third_after["id"] == 3 && third_after["output_ports"][1]["ref"] == "output-3-1" && after["components"][1]["input_ports"][1]["connected_to"][1] == "output-3-1", "port and wire names do not change when another component is removed")
+	// A request still in flight for the removed component must reach nothing.
+	act(circuit, user, "set_component_coordinates", list("component_id" = 2, "rel_x" = 777, "rel_y" = 777))
+	act(circuit, user, "set_component_input", list("component_id" = 2, "port_id" = 1, "input" = 55))
+	act(circuit, user, "set_examined_component", list("component_id" = 2, "x" = 1, "y" = 1))
+	act(circuit, user, "add_connection", list("input_component_id" = 2, "input_port_id" = 2, "output_component_id" = 1, "output_port_id" = 1))
+	act(circuit, user, "detach_component", list("component_id" = 2))
+	check(length(circuit.attached_components) == 2 && third.rel_x != 777 && first.rel_x != 777 && isnull(third.input_a.value) && isnull(third.input_b.connected_output) && isnull(circuit.examined_component), "a request for a removed component's number reaches no component")
+	act(circuit, user, "set_component_coordinates", list("component_id" = 3, "rel_x" = 321, "rel_y" = 123))
+	enter(circuit, user, third, 1, 8)
+	check(third.rel_x == 321 && third.rel_y == 123 && third.input_a.value == 8, "a request for a kept number reaches the same component after a removal")
+	var/obj/item/circuit_component/operator/logic/fourth = print(circuit, user, /obj/item/circuit_component/operator/logic)
+	check(fourth && fourth.circuit_id == 4 && isnull(circuit.component_by_id(2)), "a removed component's number is not given to a new component")
+	// A hand-inserted component gets a new number each time it goes in.
+	var/obj/item/circuit_component/operator/logic/loose = new(user)
+	circuit.add_component(loose)
+	var/first_id = loose.circuit_id
+	act(circuit, user, "detach_component", list("component_id" = first_id))
+	check(first_id == 5 && loose.circuit_id == 0 && isnull(loose.parent), "a component taken out has no number")
+	circuit.add_component(loose)
+	check(loose.circuit_id == 6 && isnull(circuit.component_by_id(first_id)), "a component put back gets a new number")
+	check(isnull(circuit.component_by_id(0)) && isnull(circuit.ui_component(0)) && isnull(circuit.ui_component(7)) && isnull(circuit.ui_component("6.5")), "numbers outside the ones handed out name nothing")
+	// The count stops where whole numbers would stop being exact, rather than repeat.
+	circuit.last_component_id = CIRCUIT_MAX_COMPONENT_ID
+	check(CIRCUIT_MAX_COMPONENT_ID + 1 != CIRCUIT_MAX_COMPONENT_ID && CIRCUIT_MAX_COMPONENT_ID < 16777216, "the last component number is one whole numbers still count past")
+	var/held = length(circuit.attached_components)
+	chat_log.Cut()
+	check(isnull(print(circuit, user, /obj/item/circuit_component/operator/logic)) && length(circuit.attached_components) == held && length(circuit.contents) == held && length(chat_log) == 1, "a circuit that has used up its numbers takes no more components")
+	qdel(circuit)
+
+// One table holds every action: its handler and its fields.
+/proc/test_action_table(mob/living/user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/list/table = circuit.ui_action_table()
+	var/list/actions = circuit.ui_actions("main")
+	var/complete = length(table) >= 15 && length(actions) == length(table)
+	var/list/handlers = list()
+	for(var/action in table)
+		var/list/entry = table[action]
+		if(!(action in actions) || !islist(entry) || !length(entry) || entry[1] != "act_[action]" || !hascall(circuit, entry[1]))
+			complete = FALSE
+			world.log << "bad action entry: [action]"
+			continue
+		handlers += entry[1]
+		var/list/fields = circuit.ui_action_fields("main", action)
+		if(!islist(fields) || length(fields) != length(entry) - 1)
+			complete = FALSE
+		for(var/position in 2 to length(entry))
+			if(!istext(entry[position]) || fields[position - 1] != entry[position])
+				complete = FALSE
+	check(complete, "every action has a handler named after it and its own fields")
+	var/unregistered = 0
+	for(var/handler in typesof(/obj/item/integrated_circuit/proc))
+		var/handler_name = "[handler]"
+		handler_name = copytext(handler_name, findlasttext(handler_name, "/") + 1)
+		if(findtext(handler_name, "act_") == 1 && !(handler_name in handlers))
+			unregistered++
+			world.log << "handler without an action: [handler_name]"
+	check(!unregistered, "every action handler is in the table")
+	check(isnull(circuit.ui_action_fields("main", "not_an_action")) && isnull(circuit.ui_action_fields("main", 3)) && isnull(circuit.ui_action_fields("main", null)), "an unknown action has no fields")
+	// A proc name is not an action: only table keys are dispatched.
+	var/before = length(circuit.attached_components)
+	act(circuit, user, "act_print_component", list("component_to_print" = "/obj/item/circuit_component/operator/logic"))
+	act(circuit, user, "add_component", list("component_to_print" = "/obj/item/circuit_component/operator/logic"))
+	act(circuit, user, "Destroy", list())
+	act(circuit, user, 1, list())
+	act(circuit, user, null, list())
+	check(length(circuit.attached_components) == before && !circuit.gc_destroyed, "only the table's actions are dispatched")
+	qdel(circuit)
+
+// Every component type is either offered by the editor or listed as left out.
+/proc/test_component_lists()
+	var/list/available = wiremod_available_components()
+	var/list/unlisted = wiremod_unlisted_components()
+	var/list/unaccounted = typesof(/obj/item/circuit_component) - /obj/item/circuit_component - /obj/item/circuit_component/probe_crash
+	var/both = 0
+	var/bad = 0
+	var/list/seen = list()
+	for(var/typepath in available)
+		if(!ispath(typepath, /obj/item/circuit_component) || (typepath in seen))
+			bad++
+		seen += typepath
+		if(typepath in unlisted)
+			both++
+		unaccounted -= typepath
+	for(var/typepath in unlisted)
+		if(!ispath(typepath, /obj/item/circuit_component) || !istext(unlisted[typepath]) || length(unlisted[typepath]) < 10)
+			bad++
+		unaccounted -= typepath
+	for(var/typepath in unaccounted)
+		world.log << "component type in neither list: [typepath]"
+	check(length(available) >= 16 && !bad && !both, "the two component lists hold component types, each once, each left-out type with a reason")
+	check(!length(unaccounted), "every component type is offered or listed as left out ([length(unaccounted)] in neither)")
+	var/list/catalog = wiremod_ui_component_catalog()
+	var/usable = length(catalog) == length(available)
+	for(var/list/entry in catalog)
+		if(!length(entry["name"]) || !length(entry["input_ports"]) || !length(entry["output_ports"]) || entry["id"] != 0)
+			usable = FALSE
+		for(var/list/port in entry["input_ports"] + entry["output_ports"])
+			if(port["ref"] != "")
+				usable = FALSE
+	check(usable, "every offered component has a name and ports, and menu entries carry no port names")
+
+// One reading per datatype for what a player types.
+/proc/test_manual_values(mob/living/user)
+	// Each datatype is one handler that knows its own name and colour.
+	var/list/colours = list(PORT_TYPE_ANY = "blue", PORT_TYPE_NUMBER = "green", PORT_TYPE_BOOLEAN = "yellow", PORT_TYPE_STRING = "orange", PORT_TYPE_SIGNAL = "purple", PORT_TYPE_LIST = "grey")
+	var/registered = TRUE
+	for(var/handler_type in typesof(/datum/circuit_datatype) - /datum/circuit_datatype)
+		var/datum/circuit_datatype/fresh = new handler_type
+		var/datum/circuit_datatype/known = circuit_datatype_for(fresh.datatype)
+		if(!known || known.type != handler_type || known != circuit_datatype_for(fresh.datatype) || known.color != colours[fresh.datatype])
+			registered = FALSE
+		colours -= fresh.datatype
+	check(registered && !length(colours), "every datatype has one handler with its own name and colour")
+	check(wiremod_parse_boolean("On") == TRUE && wiremod_parse_boolean("off") == FALSE && wiremod_parse_boolean(2) == TRUE && wiremod_parse_boolean(0) == FALSE, "truth values are read from words and numbers")
+	check(isnull(wiremod_parse_boolean("maybe")) && isnull(wiremod_parse_boolean(null)) && isnull(wiremod_parse_boolean(list(1))) && isnull(wiremod_parse_boolean(1e30 * 1e30)), "anything else is not a truth value")
+	check(wiremod_ui_flag(1) == TRUE && wiremod_ui_flag("true") == TRUE && wiremod_ui_flag("maybe") == FALSE && wiremod_ui_flag(null) == FALSE, "a request flag that cannot be read is off")
+	var/datum/circuit_datatype/boolean = circuit_datatype_for(PORT_TYPE_BOOLEAN)
+	var/same_words = TRUE
+	for(var/word in list("true", "yes", "on", "1", "TRUE", "false", "no", "off", "0", "Off", "maybe", "", "2"))
+		var/typed = boolean.parse_manual(word)
+		if(!isnull(typed) && typed != boolean.convert(word))
+			same_words = FALSE
+		if(isnull(typed) && boolean.convert(word) != FALSE)
+			same_words = FALSE
+	check(same_words, "a typed truth value and a wired one are read by the same words")
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/obj/item/circuit_component/operator/logic/gate = print(circuit, user, /obj/item/circuit_component/operator/logic)
+	enter(circuit, user, gate, 1, "ON")
+	check(gate.input_a.value == TRUE, "a boolean input takes a typed word")
+	enter(circuit, user, gate, 1, "off")
+	check(gate.input_a.value == FALSE, "a boolean input takes a typed negative")
+	enter(circuit, user, gate, 1, 1)
+	chat_log.Cut()
+	enter(circuit, user, gate, 1, "garbage")
+	check(gate.input_a.value == TRUE && length(chat_log) == 1 && findtext(chat_log[1], "Enter true or false."), "a boolean input refuses other text and says why")
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	enter(circuit, user, math, 1, "2.5")
+	chat_log.Cut()
+	enter(circuit, user, math, 1, "two")
+	check(math.input_a.value == 2.5 && length(chat_log) == 1 && findtext(chat_log[1], "Enter a valid number."), "a number input takes typed digits and refuses words")
+	var/obj/item/circuit_component/operator/comparison/compare = print(circuit, user, /obj/item/circuit_component/operator/comparison)
+	enter(circuit, user, compare, 1, "12")
+	check(compare.input_a.value == 12 && isnum(compare.input_a.value), "an untyped input reads plain digits as a number")
+	enter(circuit, user, compare, 1, "012")
+	check(compare.input_a.value == "012", "an untyped input keeps text that is not exactly a number")
+	enter(circuit, user, compare, 1, 7)
+	check(compare.input_a.value == 7, "an untyped input keeps a number")
+	var/obj/item/circuit_component/operator/string_concat/join = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
+	enter(circuit, user, join, 1, 5)
+	check(join.input_a.value == "5", "a text input turns a typed number into text")
+	var/list/sent_types = circuit.circuit_editor_data()["global_basic_types"]
+	var/settable = length(sent_types) == 4
+	for(var/type_key in list(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY))
+		if(!(type_key in sent_types))
+			settable = FALSE
+	check(settable && !(PORT_TYPE_LIST in sent_types) && !(PORT_TYPE_SIGNAL in sent_types), "the editor is told the four types a player may set")
+	enter(circuit, user, compare, 1, "apple")
+	enter(circuit, user, compare, 3, "Less Than")
+	enter(circuit, user, compare, 2, 3)
+	check(isnull(output_value(compare)) || output_value(compare) == FALSE, "comparison: text and a number have no order")
+	qdel(circuit)
+
+// A wire hands a list on without copying it; nothing may change a port's list.
+/proc/test_list_handoff(mob/living/user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/obj/item/circuit_component/string_split/split = print(circuit, user, /obj/item/circuit_component/string_split)
+	var/obj/item/circuit_component/list_add/append = print(circuit, user, /obj/item/circuit_component/list_add)
+	var/obj/item/circuit_component/list_remove/drop = print(circuit, user, /obj/item/circuit_component/list_remove)
+	var/obj/item/circuit_component/operator/list_concat/merge = print(circuit, user, /obj/item/circuit_component/operator/list_concat)
+	var/obj/item/circuit_component/list_index/pick_entry = print(circuit, user, /obj/item/circuit_component/list_index)
+	var/obj/item/circuit_component/length/size = print(circuit, user, /obj/item/circuit_component/length)
+	var/obj/item/circuit_component/operator/comparison/compare = print(circuit, user, /obj/item/circuit_component/operator/comparison)
+	var/obj/item/circuit_component/operator/string_concat/text = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
+	wire(circuit, user, split, 1, append, 1)
+	wire(circuit, user, split, 1, drop, 1)
+	wire(circuit, user, split, 1, merge, 1)
+	wire(circuit, user, split, 1, merge, 2)
+	wire(circuit, user, split, 1, pick_entry, 1)
+	wire(circuit, user, split, 1, size, 1)
+	wire(circuit, user, split, 1, compare, 1)
+	wire(circuit, user, split, 1, compare, 2)
+	check(!wire(circuit, user, split, 1, text, 1), "a list output still cannot feed a text input")
+	enter(circuit, user, append, 2, "d")
+	enter(circuit, user, drop, 2, "a")
+	enter(circuit, user, pick_entry, 2, 2)
+	enter(circuit, user, split, 1, "a,b,c")
+	var/list/source = split.result.value
+	check(islist(source) && length(source) == 3, "the split made a list")
+	check(append.list_input.value == source && merge.input_a.value == source && size.value_input.value == source, "list and untyped inputs take the output's list as it is")
+	check(jointext(source, ",") == "a,b,c", "no component changed the list it was handed")
+	check(jointext(output_value(append), ",") == "a,b,c,d" && jointext(output_value(drop), ",") == "b,c" && length(output_value(merge)) == 6 && output_value(pick_entry) == "b" && output_value(size) == 3, "the list components still give their results")
+	check(output_value(append) != source && output_value(drop) != source && output_value(merge) != source, "a result is a new list, never the input list")
+	enter(circuit, user, compare, 3, "Equal")
+	check(output_value(compare) == FALSE, "a list is not equal to a list, even the same one")
+	enter(circuit, user, compare, 3, "Not Equal")
+	check(output_value(compare) == TRUE, "a list is unequal to a list")
+	// What a component hands to an output is copied on the way in.
+	var/list/mine = list("x", "y")
+	split.result.set_output(mine)
+	mine += "z"
+	check(length(split.result.value) == 2 && split.result.value != mine && append.list_input.value == split.result.value, "an output keeps its own copy of the list it is given")
+	// A variable keeps its own copy too.
+	act(circuit, user, "add_variable", list("variable_name" = "kept", "variable_datatype" = PORT_TYPE_ANY, "is_list" = 1))
+	act(circuit, user, "add_setter_or_getter", list("variable" = "kept", "is_setter" = 1))
+	var/obj/item/circuit_component/variable/setter/setter = circuit.attached_components[length(circuit.attached_components)]
+	wire(circuit, user, split, 1, setter, 1)
+	var/datum/circuit_variable/variable = circuit.circuit_variables["kept"]
+	check(islist(variable.value) && length(variable.value) == 2 && variable.value != split.result.value, "a variable holds its own copy of a list")
+	// No component the editor offers changes a list it is handed.
+	split.result.set_output(list("p", "q", "r"))
+	var/list/shared = split.result.value
+	var/fed = 0
+	for(var/typepath in wiremod_available_components())
+		var/obj/item/circuit_component/offered = print(circuit, user, typepath)
+		if(!offered)
+			check(FALSE, "the circuit has room for [typepath]")
+			continue
+		for(var/position in 1 to length(offered.input_ports))
+			var/datum/port/input/fed_port = offered.input_ports[position]
+			if(wire(circuit, user, split, 1, offered, position) && fed_port.value == shared)
+				fed++
+		for(var/position in 1 to length(offered.input_ports))
+			var/datum/port/input/fed_port = offered.input_ports[position]
+			if(fed_port.datatype == PORT_TYPE_SIGNAL && !fed_port.connected_output)
+				act(circuit, user, "set_component_input", list("component_id" = offered.circuit_id, "port_id" = position))
+		act(circuit, user, "detach_component", list("component_id" = offered.circuit_id))
+	check(fed >= 10 && split.result.value == shared && jointext(shared, ",") == "p,q,r", "no offered component changes a list it is handed ([fed] inputs fed)")
+	// Every value in the circuit is still a plain bounded one.
+	var/plain = TRUE
+	for(var/obj/item/circuit_component/component in circuit.attached_components)
+		for(var/datum/port/port in component.input_ports + component.output_ports)
+			var/held = port.value
+			if(islist(held))
+				var/list/held_list = held
+				if(length(held_list) > CIRCUIT_MAX_LIST_LENGTH)
+					plain = FALSE
+				for(var/entry in held_list)
+					if(!isnum(entry) && !istext(entry))
+						plain = FALSE
+			else if(!isnull(held) && !isnum(held) && !istext(held))
+				plain = FALSE
+	check(plain, "every port still holds only plain bounded values")
+	// A value that is not a list is converted on every hop as before.
+	var/obj/item/circuit_component/operator/logic/gate = print(circuit, user, /obj/item/circuit_component/operator/logic)
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	enter(circuit, user, math, 1, 3)
+	enter(circuit, user, math, 2, 4)
+	wire(circuit, user, math, 1, gate, 1)
+	wire(circuit, user, math, 1, text, 1)
+	check(gate.input_a.value == TRUE && text.input_a.value == "7", "numbers are still converted for boolean and text inputs")
+	qdel(circuit)
+
+// A running circuit refreshes an open editor a few times a second at most, and
+// always sends the last state.
+/proc/test_refresh_coalescing(mob/living/user)
+	var/datum/probe_nanomanager/manager = GLOB.nanomanager
+	var/obj/item/integrated_circuit/circuit = new(user)
+	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
+	enter(circuit, user, math, 2, 1)
+	sleep(CIRCUIT_UI_REFRESH_INTERVAL + 1)
+	// Nobody watching: nothing is held back and no timer is kept.
+	var/start = manager.updates
+	for(var/i in 1 to 5)
+		enter(circuit, user, math, 1, i)
+	check(manager.updates == start + 5 && !length(active_timers) && isnull(circuit.editor_refresh_timer), "a circuit without an open editor keeps no refresh timer")
+	// An open editor: the first change is sent at once, the rest together.
+	manager.watchers = 1
+	start = manager.updates
+	for(var/i in 1 to 50)
+		enter(circuit, user, math, 1, i)
+	check(manager.updates == start + 1, "fifty runs in one tick send one refresh at once ([manager.updates - start])")
+	check(length(active_timers) == 1 && !isnull(circuit.editor_refresh_timer), "the later runs are held for one timed refresh")
+	check(output_value(math) == 51, "the circuit itself ran every time")
+	sleep(CIRCUIT_UI_REFRESH_INTERVAL + 1)
+	check(manager.updates == start + 2 && !length(active_timers) && isnull(circuit.editor_refresh_timer), "the held refresh is sent once, after the interval ([manager.updates - start])")
+	sleep(CIRCUIT_UI_REFRESH_INTERVAL + 1)
+	check(manager.updates == start + 2, "nothing more is sent while the circuit is idle")
+	// Spread over a second: a few refreshes, not one per run.
+	start = manager.updates
+	for(var/i in 1 to 10)
+		for(var/j in 1 to 10)
+			enter(circuit, user, math, 1, i * j)
+		sleep(1)
+	sleep(CIRCUIT_UI_REFRESH_INTERVAL + 1)
+	var/sent = manager.updates - start
+	check(sent >= 2 && sent <= round(10 / CIRCUIT_UI_REFRESH_INTERVAL) + 2, "a hundred runs over a second send a few refreshes ([sent])")
+	check(!length(active_timers), "no refresh timer is left behind")
+	// A circuit deleted with a refresh pending cancels it.
+	enter(circuit, user, math, 1, 1)
+	enter(circuit, user, math, 1, 2)
+	check(length(active_timers) == 1, "a refresh is pending")
+	start = manager.updates
+	qdel(circuit)
+	check(!length(active_timers), "deleting the circuit cancels its pending refresh")
+	sleep(CIRCUIT_UI_REFRESH_INTERVAL + 1)
+	check(manager.updates == start, "a deleted circuit sends no refresh")
+	manager.watchers = 0
+
 /world/New()
 	world.OpenPort("none")
 	spawn(0)
 		var/mob/living/user = new(locate(1, 1, 1))
-		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_remote_and_cleanup))
+		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_remote_and_cleanup))
 			try
 				call(test)(user)
 			catch(var/exception/failure)
