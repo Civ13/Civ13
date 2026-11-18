@@ -62,6 +62,7 @@ var/global/province_stake_cached_at = 0
 		return
 	var/list/A = map.province_activity()
 	var/today = province_day()
+	var/active = 0
 	for (var/client/C in clients)
 		var/mob/living/human/H = C.mob
 		if (!istype(H) || H.stat == DEAD || C.inactivity >= STAKE_AFK || IsGuestKey(C.key))
@@ -69,6 +70,7 @@ var/global/province_stake_cached_at = 0
 		var/account = faction_roster_account(H)
 		if (!account)
 			continue
+		active++
 		var/list/row = A[account]
 		if (!islist(row) || row.len != 2 || !isnum(row[1]) || !islist(row[2]))
 			row = list(0, list())
@@ -80,7 +82,9 @@ var/global/province_stake_cached_at = 0
 		for (var/d in days.Copy())
 			if (!isnum(text2num(d)) || text2num(d) <= today - STAKE_DAYS)
 				days -= d
+	province_hours_record(active) // province_siege.dm
 	province_holding_update() // province_holding.dm
+	province_siege_resume() // province_siege.dm, after a restart
 
 // list(total minutes, minutes in the last 7 days, days played of the last 7).
 /proc/province_activity_of(account)

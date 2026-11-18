@@ -1401,6 +1401,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/coin_die" = "early_economy",
 		"/obj/structure/boundary_stone" = "early_economy",
 		"/obj/structure/closet/crate/faction_strongbox" = "early_economy",
+		"/obj/structure/war_banner" = "early_economy",
 		"/obj/structure/closet/crate/money_changer" = "early_economy",
 		"/obj/item/stack/money/coppercoin" = "early_economy",
 		"/obj/item/stack/money/goldcoin" = "early_economy",
