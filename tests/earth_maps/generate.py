@@ -1,7 +1,7 @@
-"""Generate the draft lands of the rest of the Earth.
+"""Generate the lands of the rest of the Earth.
 
-    maps/earth_drafts/earth_europe.dmm
-    maps/earth_drafts/earth_africa.dmm
+    maps/nomads/nomads_earth_europe.dmm      (a region, with its height files)
+    maps/nomads/nomads_earth_africa.dmm      (a region, with its height files)
     maps/earth_drafts/earth_asia.dmm
     maps/earth_drafts/earth_oceania.dmm
     maps/earth_drafts/earth_antarctica.dmm
@@ -13,10 +13,12 @@ design files here), turned into terrain by tests/americas_maps/build.py. This
 file only feeds those designs to that builder; it changes nothing about the
 Americas maps.
 
-The lands are DRAFTS. They carry no map metadata, have no region id, are in no
-region group and no .dme, and have no height, current or flood files, so no
-server loads them. Making one playable means giving it metadata, generating
-those files and measuring its memory first (docs/earth-drafts.md).
+Europe and Africa are regions (docs/earth-continents.md): their maps carry
+map metadata and this writes their height, current and flood files under
+maps/heights as well. The rest are DRAFTS: no map metadata, no region id, in no
+region group or .dme, and no height files, so no server loads them. Making one
+playable means giving its design 'metadata' and 'heights', generating, and
+measuring its memory first (docs/earth-drafts.md).
 
 Run from the repository root (needs numpy and Pillow):
 
@@ -56,7 +58,7 @@ def build(name, width=None, height=None):
         turf, area, objects, stats, elev = builder.build(name, width, height)
     finally:
         del continents.MAPS[name]
-    objects = {spot: obj for spot, obj in objects.items() if obj}   # no metadata on a draft
+    objects = {spot: obj for spot, obj in objects.items() if obj}   # a draft has no metadata
     if spec.get('frozen'):
         # The ice cap: no meadow shows through the snow, and what little
         # water gathers on it is frozen over.
@@ -121,11 +123,20 @@ def main(argv=None):
             builder.preview(args.preview, turf, objects)
         if args.relief and args.only:
             relief_preview(args.relief, turf, objects, elev)
+        if lands.MAPS[name].get('heights') and not (args.out or args.no_map):
+            stats['sidecars'] = builder.write_sidecars(name, turf, elev, lands.MAPS[name]['heights'])
         print(name, out, stats)
     if not (args.out or args.no_map):
-        # Every draft on disk, so maps built one at a time still list together.
-        manifest = {name: {'path': spec['path'], 'size': list(spec['size']), 'sha256': digest(ROOT / spec['path'])}
-                    for name, spec in sorted(lands.MAPS.items()) if (ROOT / spec['path']).exists()}
+        # Every land on disk, so maps built one at a time still list together.
+        manifest = {}
+        for name, spec in sorted(lands.MAPS.items()):
+            if not (ROOT / spec['path']).exists():
+                continue
+            entry = {'path': spec['path'], 'size': list(spec['size']), 'sha256': digest(ROOT / spec['path'])}
+            if spec.get('heights'):
+                for kind, suffix in (('heights', '.txt'), ('flow', '.flow.txt'), ('flood', '.flood.txt')):
+                    entry[kind] = {'path': spec['heights'] + suffix, 'sha256': digest(ROOT / (spec['heights'] + suffix))}
+            manifest[name] = entry
         MANIFEST.write_text(json.dumps(manifest, indent=1, sort_keys=True) + '\n', encoding='utf-8', newline='\n')
 
 

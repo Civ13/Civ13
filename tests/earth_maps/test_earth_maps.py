@@ -1,9 +1,12 @@
-"""The draft lands of the rest of the Earth (tests/earth_maps/generate.py).
+"""The lands of the rest of the Earth (tests/earth_maps/generate.py).
 
 Offline: reads the committed maps and the repository's region files. It checks
-that each draft is the map its design last wrote, that it is well formed and
-within the measured size of the Americas regions, and, above all, that it is
-still a draft: nothing a server builds or loads may name it.
+that each land is the map its design last wrote, that it is well formed and
+within the measured size of the Americas regions. A draft must stay a draft:
+nothing a server builds or loads may name it. A playable land (Europe,
+Africa; docs/earth-continents.md) carries its metadata, has the height,
+current and flood files written with it, is registered in source and runs on
+over its crossing edges.
 """
 import hashlib
 import json
@@ -18,6 +21,8 @@ sys.path.insert(0, str(HERE))
 
 DRAFTS = json.loads((HERE / 'drafts.json').read_text(encoding='utf-8'))
 NAMES = ('africa', 'antarctica', 'asia', 'europe', 'greenland', 'oceania')
+PLAYABLE = ('africa', 'europe')
+DRAFT_NAMES = tuple(name for name in NAMES if name not in PLAYABLE)
 MEASURED_CELLS = 1050000   # the size the Americas regions were measured at (tests/americas_maps)
 FRESH_ICE = '/turf/floor/beach/water/ice'
 
@@ -49,7 +54,9 @@ class EarthDrafts(unittest.TestCase):
     def test_every_draft_is_listed(self):
         self.assertEqual(tuple(sorted(DRAFTS)), NAMES)
         on_disk = sorted(p.name for p in (ROOT / 'maps' / 'earth_drafts').glob('*.dmm'))
-        self.assertEqual(on_disk, sorted(Path(DRAFTS[name]['path']).name for name in NAMES))
+        self.assertEqual(on_disk, sorted(Path(DRAFTS[name]['path']).name for name in DRAFT_NAMES))
+        for name in PLAYABLE:
+            self.assertEqual(DRAFTS[name]['path'], 'maps/nomads/nomads_earth_%s.dmm' % name)
 
     def test_maps_are_what_the_designs_last_wrote(self):
         for name in NAMES:
@@ -68,7 +75,7 @@ class EarthDrafts(unittest.TestCase):
             self.assertEqual(used - set(keys), set(), name)
 
     def test_only_paths_the_americas_maps_use(self):
-        known = known_paths() | {FRESH_ICE}
+        known = known_paths() | {FRESH_ICE} | {'/obj/map_metadata/nomads/earth_%s' % name for name in PLAYABLE}
         for name in NAMES:
             keys, _ = self.maps[name]
             for value in keys.values():
@@ -89,10 +96,10 @@ class EarthDrafts(unittest.TestCase):
             self.assertGreaterEqual(placed, 8, name)
 
     def test_drafts_stay_out_of_every_build_and_region_list(self):
-        for name in NAMES:
+        for name in DRAFT_NAMES:
             keys, _ = self.maps[name]
             self.assertFalse(any('map_metadata' in value for value in keys.values()), name)
-        named = re.compile(r'earth_drafts|earth_(africa|antarctica|asia|europe|greenland|oceania)')
+        named = re.compile(r'earth_drafts|earth_(%s)' % '|'.join(DRAFT_NAMES))
         watched = [ROOT / 'civ13.dme', ROOT / 'code/processes/mapswap.dm']
         watched += sorted((ROOT / 'scripts' / 'shard-group').glob('*.json'))
         watched += sorted((ROOT / 'scripts' / 'windows' / 'host').glob('*.json'))
@@ -102,9 +109,13 @@ class EarthDrafts(unittest.TestCase):
 
     def test_designs_keep_inside_their_frames(self):
         import lands
+        self.assertEqual(lands.PLAYABLE, PLAYABLE)
         for name in NAMES:
             spec = lands.MAPS[name]
-            self.assertIsNone(spec['metadata'], name)
+            if name in PLAYABLE:
+                self.assertEqual(spec['metadata'], '/obj/map_metadata/nomads/earth_%s' % name)
+            else:
+                self.assertIsNone(spec['metadata'], name)
             self.assertEqual(list(spec['size']), DRAFTS[name]['size'], name)
             self.assertEqual(spec['path'], DRAFTS[name]['path'], name)
             west, east = spec['lon']
@@ -113,6 +124,121 @@ class EarthDrafts(unittest.TestCase):
             self.assertGreater(north, south, name)
             for lon, lat in spec['starts']:
                 self.assertTrue(east <= lon <= west and south <= lat <= north, '%s start %s' % (name, (lon, lat)))
+
+
+class EarthRegions(unittest.TestCase):
+    """The lands made into regions: Europe, and Africa in place of the Desert and Jungle."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.maps = {name: parse(ROOT / DRAFTS[name]['path']) for name in PLAYABLE}
+        cls.metadata = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_earth.dm').read_text(encoding='utf-8')
+
+    def block(self, name):
+        return self.metadata.split('/obj/map_metadata/nomads/earth_%s\n' % name)[1].split('\n\n')[0]
+
+    def turf_of(self, keys, key):
+        return next(p for p in re.sub(r'\{.*?\}', '', keys[key]).split(',') if p.startswith('/turf/'))
+
+    def dry(self, turf):
+        return (turf.startswith('/turf/floor') and 'water' not in turf and 'underground' not in turf
+                and 'lava' not in turf)
+
+    def test_metadata_sits_once_in_the_south_west_corner(self):
+        for name in PLAYABLE:
+            keys, rows = self.maps[name]
+            path = '/obj/map_metadata/nomads/earth_%s' % name
+            holders = [k for k, v in keys.items() if 'map_metadata' in v]
+            self.assertEqual(len(holders), 1, name)
+            self.assertTrue(keys[holders[0]].startswith(path + ','), name)
+            self.assertEqual(rows[-1][0:2], holders[0], name)
+            self.assertEqual(sum(row.count(holders[0]) for row in rows), 1, name)
+
+    def test_height_flow_and_flood_files_are_the_set_written_with_the_map(self):
+        sys.path.insert(0, str(ROOT / 'scripts'))
+        import terrain_heights
+        for name in PLAYABLE:
+            entry = DRAFTS[name]
+            for kind, suffix in (('heights', '.txt'), ('flow', '.flow.txt'), ('flood', '.flood.txt')):
+                self.assertEqual(entry[kind]['path'], 'maps/heights/nomads_earth_%s%s' % (name, suffix))
+                data = (ROOT / entry[kind]['path']).read_bytes().replace(b'\r\n', b'\n')
+                self.assertEqual(hashlib.sha256(data).hexdigest(), entry[kind]['sha256'],
+                                 '%s %s: rerun tests/earth_maps/generate.py' % (name, kind))
+            width, height, by_z = terrain_heights.read_heights(ROOT / entry['heights']['path'])
+            self.assertEqual((width, height, sorted(by_z)), (tuple(entry['size']) + ([1],)), name)
+            keys, rows = self.maps[name]
+            levels = by_z[1]
+            for y in range(0, height, 7):
+                for x in range(0, width, 7):
+                    wet = 'water' in self.turf_of(keys, rows[y][2 * x:2 * x + 2])
+                    self.assertEqual(levels[y][x] == 0, wet, (name, x, y))
+            self.assertGreaterEqual(max(max(r) for r in levels), 12, name)
+            self.assertIn('terrain_height_file = "%s"' % entry['heights']['path'], self.block(name))
+
+    def test_registered_in_source(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\game\\objects\\map_metadata\\nomads\\nomads_earth.dm"', dme)
+        defines = (ROOT / 'code/__defines/maps.dm').read_text(encoding='utf-8')
+        durable = (ROOT / 'code/modules/persistence/durable_nomads.dm').read_text(encoding='utf-8')
+        jobs = (ROOT / 'code/modules/1713/jobs/nomads.dm').read_text(encoding='utf-8')
+        supervisor = (ROOT / 'scripts/nomads-lifecycle/supervisor.py').read_text(encoding='utf-8')
+        group = json.loads((ROOT / 'scripts/shard-group/earth_continents.example.json').read_text(encoding='utf-8'))
+        regions = {r['id']: r['map'] for r in group['regions']}
+        self.assertEqual(regions, {name: DRAFTS[name]['path'] for name in PLAYABLE})
+        for name in PLAYABLE:
+            map_id = 'MAP_NOMADS_EARTH_%s' % name.upper()
+            self.assertIn('#define %s "NOMADS_EARTH_%s"' % (map_id, name.upper()), defines)
+            self.assertIn('ID = %s' % map_id, self.block(name))
+            self.assertIn('/obj/map_metadata/nomads/earth_%s,' % name, durable)
+            self.assertIn(map_id + ',', jobs)
+            self.assertIn("'NOMADS_EARTH_%s': 'nomads_earth_%s.dmm'" % (name.upper(), name), supervisor)
+            self.assertIn('new_player_start_z = 1', self.block(name))
+
+    def test_crossing_edges_have_dry_ground_and_lead_to_asia(self):
+        self.assertIn('edge_crossings = list("east" = "asia")', self.block('europe'))
+        self.assertIn('edge_crossings = list("east" = list("asia" = list(0.68, 1)))', self.block('africa'))
+        asia = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_asia.dm').read_text(encoding='utf-8')
+        self.assertIn('edge_crossings = list("west" = list("africa" = list(0, 0.5), "europe" = list(0.5, 1)))', asia)
+        for name, (lo, hi) in (('europe', (0, 1)), ('africa', (0.68, 1))):
+            keys, rows = self.maps[name]
+            height = len(rows)
+            col = len(rows[0]) - 2
+            # Counted south to north, as region_edge.dm does.
+            stretch = range(int(lo * height), int(hi * height))
+            dry = [y for y in stretch if self.dry(self.turf_of(keys, rows[height - 1 - y][col:col + 2]))]
+            self.assertGreater(len(dry), 40, name)
+            # Arrivals are put three tiles in: that ground is mostly dry too.
+            inner = [y for y in dry if self.dry(self.turf_of(keys, rows[height - 1 - y][col - 6:col - 4]))]
+            self.assertGreater(len(inner), 0.8 * len(dry), name)
+
+    def test_sea_lanes_know_africa_and_the_new_coasts(self):
+        lanes = (ROOT / 'code/modules/naval/sea_lanes.dm').read_text(encoding='utf-8')
+        self.assertIn('"africa" = list(12, 3, list("W", "S", "E"), TRUE),', lanes)
+        self.assertIn('map.sea_coasts : here[3]', lanes)
+        self.assertIn('sea_coasts = list("W", "N")', self.block('europe'))
+        self.assertIn('sea_coasts = list("W", "S", "E")', self.block('africa'))
+        for name, sides in (('europe', 'WN'), ('africa', 'WSE')):
+            keys, rows = self.maps[name]
+            sea = {k for k, v in keys.items() if 'saltwater' in v or 'ice/salty' in v}
+            edge = {'N': [rows[0][i:i + 2] for i in range(0, len(rows[0]), 2)],
+                    'S': [rows[-1][i:i + 2] for i in range(0, len(rows[-1]), 2)],
+                    'W': [row[0:2] for row in rows], 'E': [row[-2:] for row in rows]}
+            for side in sides:
+                self.assertGreater(sum(k in sea for k in edge[side]) / len(edge[side]), 0.7, (name, side))
+
+    def test_every_land_climate_has_seed_bushes_and_farm_ground_by_fresh_water(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('outdoor_bootstrap', ROOT / 'scripts/check-outdoor-bootstrap.py')
+        inventory = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(inventory)
+        climates, salt = inventory.load_inheritance()
+        for name in PLAYABLE:
+            report = inventory.audit('earth_' + name, climates, salt)
+            self.assertGreaterEqual(len(report['farm_ground_by_climate']), 4, name)
+            for climate, ground in report['farm_ground_by_climate'].items():
+                with self.subTest(map=name, climate=climate):
+                    self.assertGreaterEqual(report['bush_seeding_ground_by_climate'].get(climate, 0), 500)
+                    self.assertGreaterEqual(ground['ploughable_near_water'] + ground['clearable_near_water'], 100)
 
 
 if __name__ == '__main__':

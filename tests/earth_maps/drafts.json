@@ -1,7 +1,19 @@
 {
  "africa": {
-  "path": "maps/earth_drafts/earth_africa.dmm",
-  "sha256": "f136950b9e493c57ba0a63546c5fe0761ab781eab9ba202a7925a7ae44ca7495",
+  "flood": {
+   "path": "maps/heights/nomads_earth_africa.flood.txt",
+   "sha256": "c7b109cef98a566ec354df658e3f12080879dc29ba8db33e08a663e13db1ec30"
+  },
+  "flow": {
+   "path": "maps/heights/nomads_earth_africa.flow.txt",
+   "sha256": "0e6d28268e092e7c80c6ff6d3211096c6ef726d11a651e1921c51bb3fe913192"
+  },
+  "heights": {
+   "path": "maps/heights/nomads_earth_africa.txt",
+   "sha256": "56c98f1f95f16bceaf4d47c4761a3bc0124872a16ae353742164ee9eaffd207e"
+  },
+  "path": "maps/nomads/nomads_earth_africa.dmm",
+  "sha256": "dfe6c4005f36c6e84d40dbe61998a85b1dab4ec648c00572d750c9f4cf31fc53",
   "size": [
    976,
    1070
@@ -24,8 +36,20 @@
   ]
  },
  "europe": {
-  "path": "maps/earth_drafts/earth_europe.dmm",
-  "sha256": "1dad22deb2801a2ccba650ceed21c5d51f0dc14eeaaee7c77ef56d447f06503a",
+  "flood": {
+   "path": "maps/heights/nomads_earth_europe.flood.txt",
+   "sha256": "3a5557098fae548251119ca7f06e58146ee372756fc03faa92db9bf32c12ce0a"
+  },
+  "flow": {
+   "path": "maps/heights/nomads_earth_europe.flow.txt",
+   "sha256": "0fae0f27d6d47804ba91af68e80a43c553dd87492578d197bd6bad8e7c450d7f"
+  },
+  "heights": {
+   "path": "maps/heights/nomads_earth_europe.txt",
+   "sha256": "e47335c8be4db6428fc9693105cccc5c1bb551482a45f24a33d77bcd436557fb"
+  },
+  "path": "maps/nomads/nomads_earth_europe.dmm",
+  "sha256": "18faebb52666cb25a7e7e480e00fbe772805a38a2fc90c7fc8f5cc2957436343",
   "size": [
    1160,
    903

@@ -1,7 +1,11 @@
 """Europe, with the lands around the inner sea. Longitudes count east."""
 
 EUROPE = {
-    'path': 'maps/earth_drafts/earth_europe.dmm',
+    'path': 'maps/nomads/nomads_earth_europe.dmm',
+    # A playable region (docs/earth-continents.md): the map carries this
+    # metadata and has height, current and flood files beside the other maps.
+    'metadata': '/obj/map_metadata/nomads/earth_europe',
+    'heights': 'maps/heights/nomads_earth_europe',
     'seed': 1066,
     'size': (1160, 903),
     'design_width': 800,

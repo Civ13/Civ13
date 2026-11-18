@@ -1,7 +1,11 @@
 """Africa, with the desert peninsula to its east. Longitudes count east."""
 
 AFRICA = {
-    'path': 'maps/earth_drafts/earth_africa.dmm',
+    'path': 'maps/nomads/nomads_earth_africa.dmm',
+    # A playable region (docs/earth-continents.md): the map carries this
+    # metadata and has height, current and flood files beside the other maps.
+    'metadata': '/obj/map_metadata/nomads/earth_africa',
+    'heights': 'maps/heights/nomads_earth_africa',
     'seed': 1324,
     'size': (976, 1070),
     'design_width': 800,
