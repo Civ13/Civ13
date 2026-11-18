@@ -34,7 +34,7 @@
 	// the building levels, wherever it lies among them. Its two full planes must
 	// fit the measured profile whether or not the cave is dug yet.
 	var/cave = dug_underground_supported() ? 1 : 0
-	if (target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING) + cave)
+	if (target_z > building_base_maxz() + min(map.building_levels, initial(roof_limit)) + cave)
 		return FALSE
 	if (cave && !dug_underground_fits())
 		return FALSE

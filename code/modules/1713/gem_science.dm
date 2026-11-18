@@ -317,11 +317,6 @@
 		return
 	..()
 
-/obj/structure/drill/produce_minerals(var/ore_type, var/quantity)
-	if (diamond_bit)
-		quantity++
-	return ..(ore_type, quantity)
-
 /obj/structure/drill/examine(mob/user)
 	..()
 	if (diamond_bit)
@@ -393,13 +388,6 @@
 		to_chat(H, SPAN_NOTICE("You fit the crystal. \The [src] now also listens on [crystal_freq]kHz."))
 		return
 	..()
-
-// A crystal unit in a receiving radio also holds it to its second frequency.
-/obj/item/weapon/radio/check_freq(var/obj/original)
-	return ..() || radio_crystal_matches(original, freq, multifreq, multifreqlist)
-
-/obj/structure/radio/check_freq(var/obj/original)
-	return ..() || radio_crystal_matches(original, freq, multifreq, multifreqlist)
 
 /proc/radio_crystal_matches(obj/original, source_freq, source_multifreq, list/source_multifreqlist)
 	var/obj/item/weapon/radio/R = original

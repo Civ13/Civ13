@@ -14,7 +14,7 @@
 #define AGENT_CONTROL_RATE_PER_SECOND 30
 #define AGENT_CONTROL_MAX_JOBS 64
 #define AGENT_CONTROL_MAX_TEXT 4096
-#define AGENT_CONTROL_MAX_LIST 64
+// Agent control list cap: code/__defines/agent_control.dm
 
 var/global/datum/agent_control/agent_control = new
 

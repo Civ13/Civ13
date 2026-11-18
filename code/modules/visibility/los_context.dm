@@ -6,11 +6,7 @@
 #ifndef CIV13_ROOT_TREE_PRESENTATION
 #define CIV13_ROOT_TREE_PRESENTATION 1
 #endif
-#define LOS_DENY 0
-#define LOS_WORLD 1
-#define LOS_SURFACE 2
-#define LOS_OWN_SLOT 3
-#define LOS_SELF 4
+// Visibility verdicts: code/__defines/visibility.dm
 
 /client/var/tmp/datum/los_context/los_context
 var/global/list/los_active_contexts

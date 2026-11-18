@@ -61,11 +61,7 @@
 #define FISH_SHOAL_HERRING 60
 #define FISH_SHOAL_FREE 50
 
-#define FISH_WATER_SALT "salt"
-#define FISH_WATER_FRESH "fresh"
-#define FISH_WATER_JUNGLE "jungle"
-#define FISH_WATER_SWAMP "swamp"
-#define FISH_WATER_FLOODED "flooded"
+// Fishing water kinds: code/__defines/fishing.dm
 
 // "kind,cell x,cell y,z" -> /datum/fishing_ground
 var/global/list/fishing_grounds = list()

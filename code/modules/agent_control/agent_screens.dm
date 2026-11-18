@@ -21,11 +21,6 @@
 /proc/agent_screen_viewer(mob/M)
 	return M && !M.client && agent_characters.len && agent_character_for(M)
 
-/datum/nanoui/open()
-	if (agent_screen_viewer(user))
-		return agent_open()
-	return ..()
-
 /datum/nanoui/tgui/open()
 	if (agent_screen_viewer(user))
 		render_generation++

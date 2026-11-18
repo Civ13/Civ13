@@ -1,7 +1,4 @@
-#define STATE_EMPTY "empty"
-#define STATE_WATER "water"
-#define STATE_BOILING "boiling"
-#define STATE_STEWING "stew"
+// Cooking pot states: code/__defines/cooking.dm
 // what turns into what when we boil it?
 #define BOIL_MAP list(/obj/item/weapon/reagent_containers/food/snacks/spaghetti = /obj/item/weapon/reagent_containers/food/snacks/boiledspagetti, /obj/item/weapon/reagent_containers/food/snacks/rice = /obj/item/weapon/reagent_containers/food/snacks/boiledrice, /obj/item/weapon/reagent_containers/food/snacks/rawlobster = /obj/item/weapon/reagent_containers/food/snacks/rawlobster/boiled, /obj/item/weapon/reagent_containers/food/snacks/noodles = /obj/item/weapon/reagent_containers/food/snacks/ramen)
 

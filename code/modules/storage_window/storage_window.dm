@@ -15,12 +15,7 @@
 #define STORAGE_WINDOW_ICONS_PER_PUSH 40
 #define STORAGE_WINDOW_FLOOR_LIMIT 30
 #define STORAGE_WINDOW_QUEUE_LIMIT 40
-#define STORAGE_WINDOW_KIND_HANDS "hands"
-#define STORAGE_WINDOW_KIND_POCKETS "pockets"
-#define STORAGE_WINDOW_KIND_WORN "worn"
-#define STORAGE_WINDOW_KIND_NEAR "near"
-#define STORAGE_WINDOW_KIND_BODY "body"
-#define STORAGE_WINDOW_KIND_FLOOR "floor"
+// Storage window kinds: code/__defines/storage_window.dm
 
 /client
 	// Set once this client's browser could not run the storage window.

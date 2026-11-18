@@ -17,7 +17,7 @@
 // back up, to at most 420 km. Only the station's party can fire it.
 // ============================================================
 
-#define ORBIT_ALTITUDE_START 400
+// Orbit upkeep: code/__defines/space.dm
 #define ORBIT_ALTITUDE_MAX 420
 #define ORBIT_ALTITUDE_MIN 150
 #define ORBIT_ALTITUDE_LOW 300
@@ -32,7 +32,6 @@
 #define ORBIT_DRAG_STRIKE_CHANCE 20
 #define ORBIT_SKIM_STRIKE_CHANCE 50
 // Reboost thruster: propellant per burn, kilometres gained, tank size.
-#define ORBIT_REBOOST_COST 20
 #define ORBIT_REBOOST_KM 20
 #define ORBIT_THRUSTER_TANK 200
 #define ORBIT_REBOOST_DELAY 30

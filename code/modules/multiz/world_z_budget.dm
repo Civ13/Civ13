@@ -2,9 +2,7 @@
 // Each new z allocates the full native world plane, including unused sky.
 #define NEW_Z_CELL_CEILING 11500000
 #define NEW_Z_ROOF_CEILING 10
-// Gaia's live world (500 x 350 x 2 cells) is the measured production profile
-// (memory probes and save loads, 2026-11-05). See underground_admitted.
-#define NEW_Z_MEASURED_CELLS 350000
+// NEW_Z_MEASURED_CELLS: code/__defines/world_z.dm
 
 var/datum/world_z_budget/world_z_budget = new
 

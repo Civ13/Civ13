@@ -34,7 +34,7 @@ class BuildingStoreyTests(unittest.TestCase):
         admission = read('code/modules/multiz/building_admission.dm')
         self.assertIn('#define NEW_Z_BUILDING_MEASURED_CELLS 2100000\n', admission)
         admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
-        self.assertIn('target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING)', admitted)
+        self.assertIn('target_z > building_base_maxz() + min(map.building_levels, initial(roof_limit))', admitted)
         self.assertIn('<= NEW_Z_BUILDING_MEASURED_CELLS', admitted)
         self.assertIn('dug_underground_supported()', admitted)
 
@@ -45,7 +45,7 @@ class BuildingStoreyTests(unittest.TestCase):
         admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
         self.assertIn('if (map.building_level_standing && building_base_maxz() == 1 && !pending && world.maxx * world.maxy * (target_z - cave) <= NEW_Z_STANDING_MEASURED_CELLS)', admitted)
         # The map cap is checked first, so the clause never admits a level a map did not ask for.
-        self.assertLess(admitted.index('min(map.building_levels, NEW_Z_ROOF_CEILING)'), admitted.index('NEW_Z_STANDING_MEASURED_CELLS'))
+        self.assertLess(admitted.index('min(map.building_levels, initial(roof_limit))'), admitted.index('NEW_Z_STANDING_MEASURED_CELLS'))
         # Both Americas: surface, cave and ten open-air planes, the cave not
         # charged; an eleventh would not fit.
         for width, height in ((1132, 920), (848, 1224)):
@@ -90,7 +90,7 @@ class BuildingStoreyTests(unittest.TestCase):
         admission = read('code/modules/multiz/building_admission.dm')
         admitted = body(admission, '/datum/world_z_budget/building_admitted(target_z)')
         self.assertIn('var/cave = dug_underground_supported() ? 1 : 0', admitted)
-        self.assertIn('target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING) + cave', admitted)
+        self.assertIn('target_z > building_base_maxz() + min(map.building_levels, initial(roof_limit)) + cave', admitted)
         self.assertIn('if (cave && !dug_underground_fits())', admitted)
         dug = read('code/modules/multiz/dug_underground.dm')
         # The unformed cave costs about nothing until dug, so any measured surface fits it.

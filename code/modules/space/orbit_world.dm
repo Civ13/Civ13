@@ -22,7 +22,7 @@
 // ============================================================
 
 #define ORBIT_ARRIVAL_PLANE 1
-#define ORBIT_STATION_PLANE_QUOTA 6
+// Orbit stations: code/__defines/space.dm
 #define ORBIT_VACUUM_C -100
 
 // TRUE on an orbit world (the map, not the shard kind, so fixtures work).

@@ -17,9 +17,7 @@
 #define FLUID_IDLE_RECHECK 5 // an idle network looks again every this many steps
 #define FLUID_REBUILD_STEPS 30 // networks are rebuilt at least this often
 
-#define FLUID_TIER_SOURCE 1
-#define FLUID_TIER_BUFFER 2
-#define FLUID_TIER_SINK 3
+// Factory pipe tiers: code/__defines/factory.dm
 
 var/global/list/fluid_pipes = list()
 var/global/list/fluid_pumps = list()

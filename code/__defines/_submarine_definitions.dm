@@ -113,3 +113,16 @@
 #define SUB_SHORED_INFLOW 1           // cm of water per tick through a shored breach
 #define SUB_THERMOCLINE_DEPTH 60      // metres: sonar crossing the layer loses range
 #define SUB_THERMOCLINE_SHADOW 0.5    // range factor across the layer
+
+// Sea zones (seabed.dm)
+#define SEA_ZONE_SHELF 1
+#define SEA_ZONE_OPEN 2
+#define SEA_ZONE_DEEP 3
+#define SEA_ZONE_ABYSS 4
+
+// Lock-out air cost (submarine_air.dm)
+// Bank air spent blowing the lock-out chamber dry.
+#define SUB_AIR_LOCKIN_COST 60
+
+// Battery per tile (submarine_systems.dm)
+#define SUB_BATTERY_PER_TILE 2

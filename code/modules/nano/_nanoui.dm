@@ -409,6 +409,9 @@ nanoui is used to open and update nano browser uis
   * @return nothing
   */
 /datum/nanoui/proc/open()
+	// Agent-driven characters have no browser (agent_control/agent_screens.dm).
+	if (agent_screen_viewer(user))
+		return agent_open()
 	if (!user || !user.client)
 		return
 
