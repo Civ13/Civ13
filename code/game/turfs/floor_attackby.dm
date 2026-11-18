@@ -126,6 +126,8 @@
 
 	if (!C || !user)
 		return FALSE
+	if (province_rich_attackby(src, C, user)) // province_rich.dm
+		return TRUE
 	if (istype(src, /turf/floor/grass) && istype(C, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = C
 		if (F.sharpened)
@@ -901,19 +903,19 @@
 	legacy_remaining -= diamond_chance
 	var/bauxite_chance = mining_bauxite_chance(area_above) // Aluminium ore, from the Industrial age (aluminium.dm).
 	// Each continent's own resources (continent_resources.dm).
-	var/copper_chance = 12 * continent_ore_factor("copper")
-	var/tin_chance = 8 * continent_ore_factor("tin")
-	iron_chance *= continent_ore_factor("iron")
-	zinc_chance *= continent_ore_factor("zinc")
-	var/coal_chance = 2 * fuel_chance * continent_ore_factor("coal")
-	var/saltpeter_chance = fuel_chance * continent_ore_factor("saltpeter")
-	var/sulphur_chance = fuel_chance * continent_ore_factor("sulphur")
-	var/lead_chance = fuel_chance * continent_ore_factor("lead")
-	uranium_chance *= continent_ore_factor("uranium")
-	silver_chance *= continent_ore_factor("silver")
-	gold_chance *= continent_ore_factor("gold")
-	diamond_chance *= continent_ore_factor("diamond")
-	bauxite_chance *= continent_ore_factor("bauxite")
+	var/copper_chance = 12 * continent_ore_factor("copper", src)
+	var/tin_chance = 8 * continent_ore_factor("tin", src)
+	iron_chance *= continent_ore_factor("iron", src)
+	zinc_chance *= continent_ore_factor("zinc", src)
+	var/coal_chance = 2 * fuel_chance * continent_ore_factor("coal", src)
+	var/saltpeter_chance = fuel_chance * continent_ore_factor("saltpeter", src)
+	var/sulphur_chance = fuel_chance * continent_ore_factor("sulphur", src)
+	var/lead_chance = fuel_chance * continent_ore_factor("lead", src)
+	uranium_chance *= continent_ore_factor("uranium", src)
+	silver_chance *= continent_ore_factor("silver", src)
+	gold_chance *= continent_ore_factor("gold", src)
+	diamond_chance *= continent_ore_factor("diamond", src)
+	bauxite_chance *= continent_ore_factor("bauxite", src)
 	var/no_ore_chance = 100
 	for (var/chance in list(copper_chance, tin_chance, iron_chance, zinc_chance, coal_chance, saltpeter_chance, sulphur_chance, lead_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
 		no_ore_chance *= 1 - chance / 100

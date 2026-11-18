@@ -239,8 +239,43 @@ every age:
   once. Stockpiles are untouched.
 - Faction > Province Holdings and Admin > Land Status show the line.
 
-Still to come from the plan: rich provinces with renewable seams capped by
-rank, rubber trees, land oil only in the Desert, Gaia's crop bonus.
+## Rich provinces
+
+Code: `code/modules/provinces/province_rich.dm`.
+
+- Two provinces of each continent, three on one with more than 8, are rich in
+  one of its own resources, taking them in turn. They are the provinces with
+  the lowest `md5("<map id>|<char>|rich")`, so they follow the map and its
+  province file. There the resource comes three times as often instead of
+  twice (`continent_rate` with the mined turf).
+- Each has one **rich seam**: the open ground of the province nearest its
+  middle (sampled every 4 tiles), marked with the ore's sprite. A pickaxe
+  works it like a mountain seam (twice a rock wall's time) for a load of the
+  resource, without end, up to a daily cap: 4 loads unheld or unranked, then
+  6 / 10 / 16 / 24 for Camp to City (effective rank, so a won siege lowers
+  it). A side's third and later rich provinces on a land give half. Anyone can
+  work it; the holder decides who gets near. Resources open at their usual
+  age (iron Bronze, coal/lead/saltpeter/sulphur Iron, bauxite Industrial).
+- State: `faction_recruitment["province_rich"]`: char -> list(day, loads
+  taken). The marker is a runtime overlay, put back by each activity count.
+- Province Holdings, Land Status and the seat's ledger name them and the
+  seam's position.
+
+| Map | Rich provinces |
+| --- | --- |
+| nomads_gaia | West Riverlands (copper); North Coast (copper) |
+| nomads_jungle | North Jungle (tin); North-east Jungle (tin) |
+| nomads_americas_north | Central Riverlands (iron); Central Sands (lead); South Jungle (iron) |
+| nomads_europe | North-west Hills (coal); North-east Hills (zinc); East Hills (coal) |
+| nomads_asia | North-west Jungle (saltpeter); Central Sands (silver) |
+| nomads_desert | North-east Sands (sulphur); South-west Sands (sulphur) |
+| nomads_americas_south | West Jungle (gold); East Jungle (silver); North-east Jungle (bauxite) |
+| nomads_earth_europe | North Lowlands (coal); North-east Lowlands (zinc); South-east Riverlands (coal) |
+| nomads_earth_africa | North Sands (sulphur); East Jungle (tin); East Riverlands (sulphur) |
+| nomads_earth_asia | West Lowlands (saltpeter); North-west Riverlands (silver); South Jungle (saltpeter) |
+
+Still to come from the plan: an air cargo cap, rubber trees, land oil only in
+the Desert, Gaia's crop bonus.
 
 ## Checks
 

@@ -18,6 +18,7 @@
 // Nothing here sleeps.
 
 #define CONTINENT_HOME 2
+#define CONTINENT_RICH 3 // in the resource's rich provinces (province_rich.dm)
 #define CONTINENT_BULK 0.5
 #define CONTINENT_STRATEGIC 0.33
 #define CONTINENT_PHASE_DAYS 7
@@ -78,13 +79,13 @@
 		return max(rate, 0.75)
 	return rate
 
-// The final rate of resource here, before any phase-in.
-/proc/continent_rate(resource)
+// The final rate of resource here (at turf T when given), before any phase-in.
+/proc/continent_rate(resource, turf/T = null)
 	var/list/home = continent_home()
 	if (!home)
 		return 1
 	if (resource in home)
-		return CONTINENT_HOME
+		return T && province_rich_at(T) == resource ? CONTINENT_RICH : CONTINENT_HOME
 	if (map.ID == MAP_NOMADS_GAIA)
 		var/list/gaia = continent_gaia_rates()
 		if (!isnull(gaia[resource]))
@@ -93,8 +94,8 @@
 	return isnull(away[resource]) ? 1 : away[resource]
 
 // What a chance or an amount of resource is multiplied by when mined here now.
-/proc/continent_ore_factor(resource)
-	return continent_phased(continent_rate(resource))
+/proc/continent_ore_factor(resource, turf/T = null)
+	return continent_phased(continent_rate(resource, T))
 
 // The resource an ore type counts as, or null for one the continents leave alone.
 /proc/continent_ore_resource(ore_type)
@@ -111,11 +112,11 @@
 
 // A mountain seam's load (mountain_seams.dm): the amount to give, 0 when the
 // continent's lower rate leaves only stone this time.
-/proc/continent_seam_amount(ore_type, amount)
+/proc/continent_seam_amount(ore_type, amount, turf/T = null)
 	var/resource = continent_ore_resource(ore_type)
 	if (!resource)
 		return amount
-	var/factor = continent_ore_factor(resource)
+	var/factor = continent_ore_factor(resource, T)
 	if (factor < 1)
 		return prob(factor * 100) ? amount : 0
 	return round(amount * factor)
@@ -136,9 +137,13 @@
 	var/days = round((map.continent_resources_from() + 2 * CONTINENT_PHASE_DAYS * 864000 - world.realtime) / 864000, 0.1)
 	if (days > 0)
 		text += " The scarcer rates are phasing in over the next [days] days."
+	var/rich = province_rich_text() // province_rich.dm
+	if (rich)
+		text += " [rich]"
 	return text
 
 #undef CONTINENT_HOME
+#undef CONTINENT_RICH
 #undef CONTINENT_BULK
 #undef CONTINENT_STRATEGIC
 #undef CONTINENT_PHASE_DAYS

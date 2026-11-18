@@ -85,6 +85,7 @@ var/global/province_stake_cached_at = 0
 	province_hours_record(active) // province_siege.dm
 	province_holding_update() // province_holding.dm
 	province_siege_resume() // province_siege.dm, after a restart
+	province_rich_mark_all() // province_rich.dm
 
 // list(total minutes, minutes in the last 7 days, days played of the last 7).
 /proc/province_activity_of(account)
