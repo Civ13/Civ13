@@ -92,12 +92,17 @@ class PotKeepsDissolvedReagentsTest(unittest.TestCase):
 
     def test_empty_and_last_bowl_clear_the_pot(self):
         empty = self.body(self.pot, '/obj/structure/pot/verb/empty()')
-        self.assertIn('reagents.clear_reagents()\n\t\tfullness = 0\n\t\tif (meal_portions)', empty)
+        self.assertIn('reagents.clear_reagents()\n\t\tsalt_water = FALSE\n\t\tfullness = 0\n\t\tif (meal_portions)', empty)
         self.assertIn('food_toxin_origin = null\n\t\t\treagents.clear_reagents()', self.pot)
 
     def test_seawater_meal_is_not_seasoned(self):
         recipe = self.body(self.meals, '/obj/structure/pot/proc/meal_recipe()')
-        self.assertIn('!reagents_are_brine(reagents, fullness)', recipe)
+        self.assertIn('!salt_water && !reagents_are_brine(reagents, fullness)', recipe)
+        take = self.body(self.pot, '/obj/structure/pot/proc/take_dissolved(')
+        self.assertIn('if (D.id == "sodiumchloride")\n\t\t\tsalt_water = TRUE', take)
+        # Every way the pot empties forgets the salt water.
+        self.assertEqual(self.pot.count('salt_water = FALSE'), 3)  # var, last bowl, Empty
+        self.assertIn('salt_water = FALSE', self.body(self.meals, '/obj/structure/pot/proc/serve_meal('))
         # Seawater is 4% salt; brine starts at 3%, a seasoning pinch (0.5) is below it.
         self.assertGreater(0.04 * 100, 0.03 * 100)
         self.assertLess(0.5, 0.03 * 100)

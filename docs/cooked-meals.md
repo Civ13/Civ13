@@ -25,7 +25,8 @@ boiling route; it is optional for the first two tiers.
 
 Water poured into the pot brings its dissolved reagents with it, in the same
 share as the water taken. Seawater carries its salt (4 units per 100) into the
-pot, so a seawater meal is salty: it is never seasoned and its salt makes the
+pot, so a meal from any salt water, even mixed with fresh water, is salty: it
+is never seasoned, adding salt does not change that, and its salt makes the
 eater thirsty. Germs come along too but boiling kills them, both for prepared
 meals and simmered stew. Emptying the pot pours its reagents away.
 
