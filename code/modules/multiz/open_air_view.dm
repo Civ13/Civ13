@@ -201,11 +201,13 @@ var/global/open_air_view_any = FALSE
 	if (!below || depth > OPEN_AIR_VIEW_DEPTH || istype(src, /turf/sky/building/unformed) || open_air_view_floored())
 		open_air_view_clear()
 		return
+	// The client only draws a cell that is lit or within see_in_dark, and an
+	// asleep cell of an added level has no lighting of its own yet. A cell first
+	// linked from the level above (wake FALSE) is woken once a viewer on its own
+	// level scans it; until then it showed black there.
+	if (wake && !lighting_overlay)
+		building_wake()
 	if (!open_air_view)
-		// The client only draws a cell that is lit or within see_in_dark, and an
-		// asleep cell of an added level has no lighting of its own yet.
-		if (wake)
-			building_wake()
 		var/obj/effect/open_air_view/V = new
 		V.loc = null
 		// Southern cells draw over northern ones, so a tall sprite below (a
@@ -216,6 +218,15 @@ var/global/open_air_view_any = FALSE
 		// The sky sprite would hide the view (icon is not a saved turf field).
 		icon = null
 		V.open_air_show(below)
+	else
+		// Self-repair: a restored or reset look puts the sky sprite back over the
+		// view, and a cleared vis_contents drops it; both showed the sky.
+		if (icon)
+			icon = null
+		if (!(open_air_view in vis_contents))
+			vis_contents += open_air_view
+		if (open_air_view.shows != below)
+			open_air_view.open_air_show(below)
 	var/turf/sky/building/next = below
 	if (istype(next))
 		next.open_air_view_refresh(depth + 1, FALSE)
@@ -272,11 +283,30 @@ var/global/open_air_view_any = FALSE
 	var/turf/high = locate(min(world.maxx, cx + rx), min(world.maxy, cy + ry), z)
 	if (!low || !high)
 		return 0
+	// A level being added is not ready to show or be shown; the other levels
+	// keep their views (the whole scan used to stop for any allocation).
+	if (building_allocating_z && (z == building_allocating_z || multiz_level_below(z) == building_allocating_z))
+		return 0
 	. = 0
 	for (var/turf/sky/building/T in block(low, high))
-		T.open_air_view_refresh()
+		// One failing cell must not leave the rest of the screen showing the sky.
+		try
+			T.open_air_view_refresh()
+		catch (var/exception/cell_error)
+			open_air_view_error(cell_error, T)
 		if (T.open_air_view)
 			.++
+
+// Logs a scan failure once per distinct error, so a cell failing every second
+// does not flood the log and is still found.
+var/global/open_air_view_last_error = null
+
+/proc/open_air_view_error(exception/E, atom/where)
+	var/text = "[E ? E.name : "unknown"] at [E ? E.file : "?"]:[E ? E.line : "?"]"
+	if (text == open_air_view_last_error)
+		return
+	open_air_view_last_error = text
+	log_debug("Open air view: [text] ([where ? "[where.x],[where.y],[where.z]" : "no cell"])")
 
 // Views that no scan reaches (a murder hole's look at the tile under it),
 // resynced by the process every time it fires.
@@ -286,8 +316,10 @@ var/global/list/open_air_views_fixed = list()
 	for (var/obj/effect/open_air_view/V in open_air_views_fixed)
 		V.open_air_view_sync()
 
+// The saver owns turf fields and the lighting registry while it works, and a
+// lighting startup would make a woken cell wait (and the process look hung).
 /proc/open_air_view_busy()
-	return persistence_active_operation || persistence_save_in_progress || building_allocating_z
+	return persistence_active_operation || persistence_save_in_progress || lighting_startup_in_progress
 
 #undef OPEN_AIR_VIEW_MARGIN
 #undef OPEN_AIR_VIEW_RESCAN

@@ -12,7 +12,11 @@
 	if (open_air_view_busy())
 		return
 	for (var/client/C in clients)
-		C.open_air_view_scan()
+		// One failing viewer must not stop the scan for everyone after it.
+		try
+			C.open_air_view_scan()
+		catch (var/exception/scan_error)
+			open_air_view_error(scan_error, C.eye)
 		PROCESS_TICK_CHECK
 	open_air_view_sync_fixed()
 
