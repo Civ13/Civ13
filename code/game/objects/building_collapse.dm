@@ -201,7 +201,7 @@ var/global/building_collapse_running = FALSE
 	if (type_to_salvage)
 		salvage_type = type_to_salvage
 		salvage_amount = amount
-	if (icon_state == initial(icon_state))
+	if (!restoring && icon_state == initial(icon_state)) // a load keeps the saved look
 		icon = 'icons/obj/rubble.dmi'
 		icon_state = "rubble_[rubble_material()][rand(1, 3)]"
 

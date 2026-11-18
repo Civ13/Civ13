@@ -365,6 +365,17 @@ class RegressionPolicyTests(unittest.TestCase):
                     self.assertNotIn('workflow_dispatch', block)
                     self.assertNotIn('secrets.', block)
                     continue
+                if block.startswith('      - name: Verify every saveable type constructs the way a load does\n'):
+                    # Reviewed exception (Val, 2026-11-18): the constructor
+                    # sweep runs on every game build. Its controls stay opt-in.
+                    self.assertEqual(re.findall(r'^        if: (.+)$', block, re.M),
+                                     ["needs.changes.outputs.game == 'true' && steps.compile.outcome == 'success'"])
+                    self.assertIn('timeout-minutes: 20\n', block)
+                    self.assertIn('tests/load_construction/run.py --byond-bin', block)
+                    self.assertNotIn('--negative-control', block)
+                    self.assertNotIn('workflow_dispatch', block)
+                    self.assertNotIn('secrets.', block)
+                    continue
                 if block.startswith('      - name: ' + ROOF_NATIVE_NAME + '\n'):
                     # The reviewed roof fixture deliberately has no extensive
                     # or manual entry. Accept only its complete narrower guard.

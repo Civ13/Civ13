@@ -253,8 +253,6 @@
 /obj/item/weapon/reagent_containers/food/drinks/clay/smallclaypot icon_state
 /obj/item/weapon/reagent_containers/food/snacks/frogegg icon_state
 /obj/item/weapon/reagent_containers/food/snacks/hardtack/hardtacknale icon_state
-/obj/item/weapon/reagent_containers/food/snacks/poo icon_state
-/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer icon_state
 /obj/item/weapon/reagent_containers/pill icon_state
 /obj/item/weapon/soap/deluxe desc
 /obj/item/weapon/storage/fancy/cigarettes/randompack icon_state

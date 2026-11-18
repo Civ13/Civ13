@@ -499,7 +499,14 @@ class CheckoutRefsTests(unittest.TestCase):
                     self.assertIsInstance(node.value, bool)
             self.assertFalse(eval(compile(parsed, '<shallow build fixture>', 'eval'), {'__builtins__': {}}, {}), name)
 
-        for name in named.keys() - plumbing:
+        # Reviewed exception (Val, 2026-11-18): the load construction sweep
+        # needs no history and runs on every game build, after compilation.
+        always_on = 'Verify every saveable type constructs the way a load does'
+        self.assertEqual(re.findall(r'^        if: (.*)$', named[always_on], re.M),
+                         ["needs.changes.outputs.game == 'true' && steps.compile.outcome == 'success'"])
+        self.assertIn('tests/load_construction/run.py --byond-bin', named[always_on])
+        self.assertNotIn('--negative-control', named[always_on])
+        for name in named.keys() - plumbing - {always_on}:
             fixture_cannot_run(name, set())
         name = 'Compile Art of the Deal with current game declarations'
         original = named[name]

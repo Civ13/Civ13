@@ -35,7 +35,15 @@
 	var/shoe_wear = 0
 	var/adult_state = null
 
+// Breed stats and sex are rolled once, at first spawn. Under a load the saved
+// values arrive after the constructor, and a horse saved as a stallion (female
+// is omitted at its FALSE default) must not be re-rolled into a mare.
 /mob/living/simple_animal/horse/New()
+	..()
+	if (!restoring)
+		horse_apply_age()
+
+/mob/living/simple_animal/horse/on_runtime_spawn()
 	..()
 	if (!horse_speed)
 		horse_speed = rand(35, 65)
@@ -44,10 +52,6 @@
 	if (isnull(adult_state))
 		adult_state = initial(icon_living)
 		female = prob(50)
-	horse_apply_age()
-
-/mob/living/simple_animal/horse/on_runtime_spawn()
-	..()
 	horse_apply_age()
 
 // Only persistence worlds have wild horses; battle maps keep theirs saddled.

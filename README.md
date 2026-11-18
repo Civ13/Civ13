@@ -155,7 +155,7 @@ review. Each rule below names the check that guards it; run those checks with
   random stats go in `on_runtime_spawn()`; anything derived from a saved field
   is rebuilt in `after_load()`, never by a timer. A constructor that throws
   aborts the whole import. See `code/modules/persistence/restore_contract.dm`.
-  Guard: `tests/load_construction/run.py` (native, run by hand).
+  Guard: `tests/load_construction/run.py` (native; CI runs it on every game change).
 - **Do not save icons, images or sounds you can rebuild.** A savefile embeds a
   full copy of every resource held in a field, per entry; derived art once made
   up about 80% of a Gaia level file. Rebuild them from type defaults
