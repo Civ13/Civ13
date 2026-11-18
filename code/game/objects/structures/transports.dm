@@ -283,7 +283,7 @@
 /obj/structure/vehicle/raft
 	name = "raft"
 	desc = "A simple wood raft. Can be used to cross water."
-	icon = 'icons/obj/vehicles/vehicleparts.dmi'
+	icon = 'icons/obj/vehicles/raft.dmi'
 	icon_state = "raft"
 	anchored = FALSE
 	density = FALSE
@@ -797,6 +797,8 @@
 			update_customdesc()
 
 /obj/structure/vehicle/boat/proc/update_customdesc()
+	if (!engine || !fueltank)
+		return
 	desc = "A boat with a [engine.enginesize]cc engine. Has [fueltank.reagents.total_volume] of [fueltank.reagents.maximum_volume] units of fuel left."
 	return
 /obj/structure/vehicle/boat/update_overlay()

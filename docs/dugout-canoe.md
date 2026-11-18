@@ -30,4 +30,5 @@ it like a raft.
   `vehicle_offset_seat()` puts whoever gets on at the hull's own pixel offset.
 - Step delay 14, or 8 while the steerer holds a paddle in either hand (a raft is 12).
 - Refuses deep salt water (open sea), and any salt water while the wind there is 3 or more
-  (`weather_wind_at`). Fresh water is always fine. It cannot be dismantled.
+  (`weather_wind_at`). Fresh water is always fine. A hammer takes it apart for 6 wood when it is empty and out of deep water.
+- 4 wood and then 3 rope make it an [outrigger canoe](outrigger-canoe.md).
