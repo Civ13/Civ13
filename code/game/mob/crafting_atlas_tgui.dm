@@ -649,7 +649,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 				if (!entry["manual_hint"])
 					row["manual_hint"] = ""
 				else if (row["manual_hint"] && row["manual_hint"] != entry["manual_hint"])
-					row["manual_hint"] = "Needs a manual; select a variant for details"
+					row["manual_hint"] = "Not learned yet; select a variant for details"
 				if (row["research"] == "needed")
 					row["research"] = entry["research"]
 				if (!entry["retired"])
@@ -692,12 +692,36 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || H.knows_recipe_node(node_id))
 		return ""
+	// Book research worlds have no manuals: a subject is learned by reading
+	// its chapter (Val, 2026-11-18: a player holding the finished chapter was
+	// told to find a manual that does not exist).
+	if (map.book_research_enabled())
+		return crafting_node_chapter_hint(H, N)
 	return "Needs the [N.name] manual"
+
+/proc/crafting_node_chapter_hint(mob/living/human/H, datum/research_node/N)
+	var/list/missing = list()
+	for (var/req in N.prereqs)
+		if (!H.knows_recipe_node(req))
+			var/datum/research_node/R = get_research_node(req)
+			missing += R ? R.name : req
+	if (missing.len)
+		return "Learn [english_list(missing)] before [N.name]"
+	var/obj/item/weapon/book/B = H.carried_chapter_book(N.id)
+	if (B)
+		return "Read the [N.name] chapter in [B.name] (use it in hand) to learn it"
+	return "Read the [N.name] chapter to learn it"
 
 /proc/crafting_recipe_manual_hint(mob/viewer, result_path)
 	if (is_research_essential_recipe(result_path))
 		return ""
-	return crafting_node_manual_hint(viewer, get_recipe_node_req(result_path))
+	var/hint = crafting_node_manual_hint(viewer, get_recipe_node_req(result_path))
+	// The craft itself also admits work from a book a third written, guided
+	// work beside a teacher and demonstration kits: those rows stay usable
+	// instead of showing a lock the craft would not apply.
+	if (hint && crafting_recipe_allowed(viewer, "[result_path]"))
+		return ""
+	return hint
 
 /mob/living/human/proc/refresh_recipe_knowledge_menus()
 	if (!client)
