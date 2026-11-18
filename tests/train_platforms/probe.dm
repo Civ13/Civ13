@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 250
+	maxx = 262
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2089,6 +2089,185 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
 	platform_check("tank/valve_fuels_a_diesel", fuelled && isnull(steam.tank_fuel_ids()) && ("tank_f" in sheet) && ("tank_m" in sheet) && ("tank_d" in sheet) && ("tank_b" in sheet) && ("tank_valve" in states))
 
+// Diesel working (train_diesel.dm): the two-cab main-line diesel, units in
+// multiple and the dead-man's handle.
+/proc/platform_diesel_run()
+	for (var/ty in 2 to 25)
+		platform_track(254, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/A = platform_car("loco_dieselmain", 254, 22, NORTH)
+	if (!istype(A))
+		platform_check("dieselmain/builds", FALSE)
+		return
+	var/list/body = platform_segments(A.connected)
+	var/obj/structure/trains/platform/rear = A.rear_cab()
+	var/obj/structure/trains/platform/hood = body[1]
+	var/ends = 0
+	if (rear)
+		for (var/obj/structure/train_part/edge/G in rear.deck_parts)
+			if (G.style == "cab_end" && G.density && !G.icon_state && G.dir == SOUTH)
+				ends++
+	var/art = ("loco_dieselmain_1c" in states) && ("loco_dieselmain_6r" in states) && ("roof_loco_dieselmain_l" in states) && ("roof_loco_dieselmain_bc" in states)
+	platform_check("dieselmain/builds", body.len == 5 && !A.density && hood.density && rear && rear.seg_index == 6 && rear.loc == platform_turf(254, 17) && !rear.density && ends == 3 && art && A.roof_images && A.roof_images.len == 3 && rear.roof_images && rear.roof_images.len == 3 && !hood.roof_images && A.car_load_weight() + 5 * hood.car_load_weight() == 9)
+
+	// Either cab drives it; the cab that leads has to be manned for full speed.
+	var/mob/living/human/platform_rider/driver = new(platform_turf(254, 22))
+	var/list/alone = train_consist_list(A)
+	var/front = A.control_spot(driver) == A && A.cab_manned(1) && !A.cab_manned(2) && A.cab_station(driver) == "all"
+	A.reverser = 1
+	var/ahead = A.leading_factor(alone)
+	A.reverser = -1
+	var/astern = A.leading_factor(alone)
+	driver.loc = platform_turf(255, 17)
+	var/back = A.control_spot(driver) == rear && A.cab_manned(2) && !A.cab_manned(1) && A.leading_factor(alone) == 1
+	A.reverser = 1
+	platform_check("dieselmain/drive_from_the_leading_cab", front && ahead == 1 && astern == 0.75 && back && A.leading_factor(alone) == 0.75)
+	driver.loc = platform_turf(254, 22)
+
+	// Units coupled next to each other work in multiple; a car between breaks it.
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/B = platform_car("loco_dieselmain", 254, 16, NORTH)
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 254, 10, NORTH)
+	var/obj/structure/trains/locomotive/heavy_diesel/C = platform_car("loco_diesel", 254, 6, NORTH)
+	var/mob/living/human/platform_rider/shunter = new(platform_turf(257, 3))
+	var/list/single = A.linked_units()
+	B.hitch_front(shunter)
+	flat.hitch_front(shunter)
+	C.hitch_front(shunter)
+	var/list/units = A.linked_units()
+	var/list/far = C.linked_units()
+	var/obj/structure/trains/locomotive/coal/steam = new(platform_turf(257, 5))
+	platform_check("multiple/links_coupled_units", single && single.len == 1 && C.train_head() == A && units && units.len == 2 && units[A.car_id] == A && units[B.car_id] == B && far && far.len == 1 && far[C.car_id] == C && isnull(steam.linked_units()) && !steam.works_in_multiple())
+
+	// One cab starts and stops them all.
+	A.fuel = 100
+	B.fuel = 0
+	C.fuel = 100
+	A.work_control("Start the engine", driver)
+	var/dry = A.on && !B.on && !C.on
+	A.work_control("Stop the engine", driver)
+	B.fuel = 100
+	A.work_control("Start the engine", driver)
+	var/both = A.on && B.on && !C.on && findtext(A.state_text(), "2 units work in multiple, 2 running")
+	A.work_control("Stop the engine", driver)
+	platform_check("multiple/one_cab_starts_them_all", dry && both && !A.on && !B.on)
+	A.work_control("Start the engine", driver)
+
+	// A cab of a linked unit works the unit that drives the train.
+	var/own_cab = A.linked_driver() == A && B.linked_driver() == B
+	A.driving = TRUE
+	platform_check("multiple/any_cab_drives", own_cab && B.linked_driver() == A && C.linked_driver() == C)
+	A.driving = FALSE
+
+	// The driver's brake holds every linked unit.
+	A.refresh_consist()
+	var/held = 0
+	for (var/obj/structure/trains/car in train_consist_list(A))
+		if (car.car_id == A.car_id || car.car_id == B.car_id)
+			held += car.car_load_weight() * car.brake_hold()
+	platform_check("multiple/brake_holds_linked_units", A.consist_engines == 2 && A.consist_power == 128 && held > 17 && A.consist_own == held && A.linked && A.linked.len == 2)
+
+	// The dead-man's handle: nobody in a cab of the working units.
+	A.throttle = 2
+	A.braking = FALSE
+	var/manned = !A.deadman_watch() && !A.deadman_watch() && !A.deadman_watch() && A.throttle == 2
+	driver.loc = platform_turf(254, 11) // B's rear cab
+	var/linked_cab = A.deadman_held() && !A.deadman_watch()
+	driver.loc = platform_turf(254, 9) // the flatbed
+	var/first = A.deadman_watch()
+	var/kept = A.throttle == 2 && !A.braking
+	var/tripped = A.deadman_watch()
+	platform_check("deadman/trips_with_nobody_in_a_cab", manned && linked_cab && !first && kept && tripped && A.throttle == 0 && A.braking && !A.deadman_watch() && A.has_deadman() && C.has_deadman() && !steam.has_deadman())
+	driver.loc = platform_turf(254, 22)
+	driver.stat = UNCONSCIOUS
+	platform_check("deadman/needs_a_fit_driver", !A.cab_manned() && !A.deadman_held())
+	driver.stat = CONSCIOUS
+	A.braking = FALSE
+
+	// The whole body rolls, the rear cab and its rider with it.
+	var/mob/living/human/platform_rider/second = new(platform_turf(253, 17))
+	var/rolled = platform_step(A, 3)
+	platform_check("dieselmain/rolls", rolled == 3 && A.loc == platform_turf(254, 25) && rear.loc == platform_turf(254, 20) && heavy_parts_placed(A) && platform_parts_placed(body) && driver.loc == platform_turf(254, 25) && second.loc == platform_turf(253, 20) && C.loc == platform_turf(254, 9))
+
+// The conductor (train_conductor.dm). A coach is coupled behind the train the
+// diesel run left on column 254.
+/proc/platform_conductor_run()
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/platform/coach = platform_car("coach", 254, 5, NORTH)
+	if (!istype(coach))
+		platform_check("conductor/door_locks", FALSE)
+		return
+	var/mob/living/human/platform_rider/guard = new(platform_turf(253, 5))
+	var/mob/living/human/platform_rider/stranger = new(platform_turf(252, 5))
+	coach.hitch_front(guard)
+	var/obj/structure/train_part/edge/door = null
+	for (var/obj/structure/train_part/edge/G in coach.deck_parts)
+		if (G.is_door() && G.edge_kind == "out" && G.loc == guard.loc)
+			door = G
+	var/obj/item/train_key/key = new(guard.loc)
+	var/obj/item/weapon/wrench/wrong = new(guard.loc)
+	if (!door)
+		platform_check("conductor/door_locks", FALSE)
+		return
+	door.attackby(wrong, guard)
+	var/plain = !door.is_locked() && !door.open
+	door.attackby(key, guard)
+	var/locked = door.is_locked() && coach.locked_doors && door.locked_against(stranger) && !door.locked_against(guard)
+	door.attack_hand(stranger)
+	var/kept_out = !door.open && door.is_locked()
+	door.attack_hand(guard)
+	var/from_inside = door.open && !door.is_locked() && !coach.locked_doors
+	var/not_open = !door.set_locked(TRUE)
+	door.attack_hand(guard)
+	door.attackby(key, guard)
+	var/again = !door.open && door.is_locked()
+	door.open_by_force()
+	platform_check("conductor/door_locks", plain && locked && kept_out && from_inside && not_open && again && door.open && !door.is_locked() && coach.open_doors && ("carriage_key" in states))
+	door.attack_hand(guard)
+	door.attackby(key, guard)
+
+	// The guard's journal lists the train from the front.
+	var/obj/structure/trains/head = coach.train_head()
+	var/list/cars = train_consist_list(head)
+	var/obj/structure/trains/platform/flat = null
+	for (var/obj/structure/trains/platform/P in cars)
+		if (P.car_kind == "flatbed" && P.seg_index == 1)
+			flat = P
+	if (flat)
+		flat.set_handbrake(TRUE)
+	var/list/lines = train_list_lines(coach)
+	var/heading = lines.len == 6 && findtext(lines[1], "5 vehicles, [cars.len] tiles long") && findtext(lines[1], "Its engines pull 160 at full speed") && findtext(lines[1], "1 handbrake on")
+	var/rows = lines.len == 6 && findtext(lines[2], "1. main-line diesel locomotive") && findtext(lines[2], "running") && findtext(lines[4], "3. platform car") && findtext(lines[4], "handbrake on") && findtext(lines[5], "4. heavy diesel locomotive") && findtext(lines[5], "stopped") && findtext(lines[6], "5. passenger coach") && findtext(lines[6], "1 door locked")
+	var/mob/living/human/platform_rider/walker = new(platform_turf(261, 12))
+	platform_check("conductor/train_list", cars.len == 24 && heading && rows && train_beside(guard) == coach && train_beside(stranger) && isnull(train_beside(walker)) && !train_list_lines(null).len && ("guard_journal" in states))
+	if (flat)
+		flat.set_handbrake(FALSE)
+
+	// Tickets are written out and punched once.
+	var/obj/item/train_ticket_book/book = new(guard.loc)
+	var/obj/item/train_ticket_punch/punch = new(guard.loc)
+	var/obj/item/train_ticket/T = book.issue(guard, "Port Town", "2 silver")
+	var/written = istype(T) && T.name == "ticket to Port Town" && T.fare == "2 silver" && T.issuer == guard.name && T.icon_state == "ticket" && book.tickets == 39
+	if (T)
+		T.attackby(punch, guard)
+	var/punched = T && T.punched_by == guard.name && T.icon_state == "ticket_punched" && !T.punch(guard)
+	book.tickets = 0
+	platform_check("conductor/tickets", written && punched && isnull(book.issue(guard, "Port Town", null)) && ("ticket" in states) && ("ticket_punched" in states) && ("ticket_book" in states) && ("ticket_punch" in states))
+
+	// Flags shown at the rear are seen in the cabs at the front.
+	var/obj/item/train_flags/flags = new(guard.loc)
+	var/obj/structure/trains/locomotive/A = head
+	var/crew = 0
+	if (istype(A))
+		for (var/turf/tile in train_platform_tiles(A.loc, A.dir))
+			for (var/mob/living/human/H in tile)
+				crew++
+		var/obj/structure/trains/platform/rear = A.rear_cab()
+		for (var/turf/tile in train_platform_tiles(rear.loc, rear.dir))
+			for (var/mob/living/human/H in tile)
+				crew++
+	var/list/signals = train_hand_signals()
+	platform_check("conductor/hand_signals", crew == 2 && signals.len == 5 && flags.show_signal(guard, "Right away") == 2 && flags.show_signal(guard, "Danger") == 2 && !flags.show_signal(guard, "Wave") && !flags.show_signal(walker, "Stop") && ("signal_flags" in states))
+
 // How many of a type stand on a car's deck.
 /proc/platform_fitted(list/segs, kind)
 	. = 0
@@ -2262,6 +2441,8 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_tank_run()
 		platform_stock_run()
 		platform_crane_run()
+		platform_diesel_run()
+		platform_conductor_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

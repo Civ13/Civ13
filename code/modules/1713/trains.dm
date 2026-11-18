@@ -874,7 +874,7 @@ var/global/train_solo_move = FALSE
 
 /obj/structure/trains/locomotive/attack_hand(mob/living/user as mob)
 	// A heavy locomotive is driven from its cab (train_locomotives.dm).
-	var/atom/spot = control_spot()
+	var/atom/spot = control_spot(user)
 	if (!istype(user, /mob/living) || !spot || !(user in range(1, spot)))
 		if (body_kind && istype(user, /mob/living))
 			to_chat(user, "The controls are in the cab.")
@@ -884,12 +884,15 @@ var/global/train_solo_move = FALSE
 	if (!station)
 		to_chat(user, "Step into the cab: the driver's stand is on its right, the firebox door in the middle and the fireman's side on the left.")
 		return
-	boiler_tick()
-	var/list/choices = station_controls(station)
-	var/choice = player_input(user, "[station_text(station)][control_summary()]", "[name]", null, "anything", choices, TRUE)
-	if (!choice || QDELETED(src) || !(user in range(1, spot)) || cab_station(user) != station)
+	// Linked diesel units are driven as one (train_diesel.dm): any of their
+	// cabs works the unit that sets the pace.
+	var/obj/structure/trains/locomotive/E = linked_driver()
+	E.boiler_tick()
+	var/list/choices = E.station_controls(station)
+	var/choice = player_input(user, "[station_text(station)][E.control_summary()]", "[E.name]", null, "anything", choices, TRUE)
+	if (!choice || QDELETED(src) || QDELETED(E) || !(user in range(1, spot)) || cab_station(user) != station)
 		return
-	work_control(choice, user)
+	E.work_control(choice, user)
 
 // The controls worked from a station: "all" on an engine with one place.
 /obj/structure/trains/locomotive/proc/station_controls(station)
@@ -926,9 +929,11 @@ var/global/train_solo_move = FALSE
 				return
 			on = TRUE
 			started(user)
+			switch_linked(TRUE, user)
 		if ("Stop the engine")
 			on = FALSE
 			stopped(user)
+			switch_linked(FALSE, user)
 		if ("Throttle up")
 			if (!on)
 				to_chat(user, "[start_text] first.")
@@ -1060,7 +1065,12 @@ var/global/train_solo_move = FALSE
 	var/obj/structure/trains/lead = (way > 0) ? cars[1] : cars[cars.len]
 	var/obj/structure/trains/locomotive/E = istype(lead, /obj/structure/trains/locomotive) ? lead : lead.unit_engine()
 	if (E && (E == src || (E.on && !E.engine_disabled())))
-		return ((way > 0) != !!E.reversed) ? 1 : 0.75
+		var/ahead = ((way > 0) != !!E.reversed) // it runs the way it faces
+		// With a cab at each end (train_diesel.dm) it is the cab that leads
+		// that has to be manned.
+		if (E.rear_cab())
+			return E.cab_manned(ahead ? 1 : 2) ? 1 : 0.75
+		return ahead ? 1 : 0.75
 	return 0.5
 
 /obj/structure/trains/locomotive/proc/refresh_consist(steps_since = 0)
@@ -1068,6 +1078,7 @@ var/global/train_solo_move = FALSE
 	var/list/cars = train_consist_list(drive_head)
 	drive_tail = cars.len ? cars[cars.len] : src
 	lead_factor = leading_factor(cars)
+	linked = linked_units(cars)
 	consist_weight = 0
 	consist_power = 0
 	consist_engines = 0
@@ -1082,7 +1093,8 @@ var/global/train_solo_move = FALSE
 		car.wear_axles(steps_since)
 		// Brakes (train_brakes.dm): handbrakes on, and what the driver's brake
 		// holds. A brake that is on wears its shoes, and worn shoes hold less.
-		var/own = (car == src || (car_id && car.car_id == car_id))
+		// The driver's brake holds the engine and the units linked to it.
+		var/own = (car == src || (car_id && car.car_id == car_id) || (linked && car.car_id && linked[car.car_id]))
 		if (car.handbrake || (own && braking))
 			car.wear_shoes(steps_since)
 		if (car.handbrake || car.axle_seized)
@@ -1133,6 +1145,7 @@ var/global/train_solo_move = FALSE
 		return
 	driving = TRUE
 	automovement = TRUE
+	deadman_missed = 0
 	refresh_consist()
 	playsound(loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 	spawn(0)
@@ -1142,6 +1155,8 @@ var/global/train_solo_move = FALSE
 			if (since >= 6)
 				refresh_consist(since)
 				since = 0
+				// Nobody in the cab (train_diesel.dm).
+				deadman_watch()
 			boiler_tick()
 			var/target = cruise_speed()
 			var/heft = max(1, consist_weight / 6)

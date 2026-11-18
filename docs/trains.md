@@ -161,6 +161,7 @@ The body art is `loco_<kind>_<1-4><l|c|r>` in `train_platforms.dmi`.
 | Heavy diesel locomotive | 1.2 | 32 | 5 | diesel or biodiesel, 1 per unit (300) | front section |
 | Heavy armored locomotive | 2.4 | 40 | 10 | coal, wood, branches (300) | third section, armor doors |
 | Main-line steam locomotive | 1.4 | 60 | 10 | coal, wood, branches (400), from a tender | sixth section |
+| Main-line diesel locomotive | 1.2 | 64 | 9 | diesel or biodiesel, 1 per unit (600) | first and sixth sections |
 
 The step delays are the locomotive rows of [vehicle-speeds.md](vehicle-speeds.md);
 a heavy engine is no faster than its one-tile counterpart, it pulls about twice
@@ -490,6 +491,62 @@ the railway gun car's) and a
   deck tile of another car nearest the load ("Swing it onto ..."), and the
   clear ground tile off the track nearest the load ("Set it down beside the
   track"). Its own car's deck and dense sections are never offered.
+
+## Diesel working
+
+Code: `code/modules/1713/train_diesel.dm`. Tests: the `dieselmain/`,
+`multiple/` and `deadman/` checks of `tests/train_platforms`.
+
+What a diesel gives over steam is a small crew: no fire, no water, one driver.
+
+- **Two cabs.** The main-line diesel (`loco_dieselmain`, kit 100 steel,
+  `combustion`) is six sections with a cab at each end: `"cab"` is section 1,
+  the engine itself, and `"cab2"` section 6, closed by invisible `cab_end`
+  edges. `control_spot(user)` is the cab the user stands at and `rear_cab()`
+  the rear one. `leading_factor()` gives full speed only while the cab that
+  leads is manned (`cab_manned(1 or 2)`), else three quarters, so the driver
+  changes ends to run back. Body art is `loco_dieselmain_<1-6><l|c|r>`, the
+  roofs `roof_loco_dieselmain_<l|c|r>` and, for the rear cab,
+  `roof_loco_dieselmain_b<l|c|r>`.
+- **Working in multiple.** Engines whose `works_in_multiple()` is true (the
+  heavy and main-line diesels) and that are coupled next to each other, with
+  no car between, are linked: `linked_units(cars)` is the unbroken row as
+  car id -> engine. Starting or stopping one starts or stops the row
+  (`switch_linked()`), a cab of any of them works the unit that drives the
+  train (`linked_driver()`), and the driver's brake holds them all
+  (`refresh_consist()` counts linked units as the engine's own weight). Each
+  unit burns its own fuel, as helper engines do.
+- **Dead-man's handle.** `has_deadman()` engines are watched from the drive
+  loop each time the train is counted, every six tiles (`deadman_watch()`).
+  With nobody conscious and fit in a cab of the driving unit or a unit linked
+  to it (`deadman_held()`) for two looks running, the throttle closes and the
+  brake goes on.
+
+## The conductor
+
+Code: `code/modules/1713/train_conductor.dm`. Tests: the `conductor/` checks
+of `tests/train_platforms`.
+
+Four items put somebody in charge of the train behind the engine. All are
+`rail_steam`; none of them sells or buys anything.
+
+- **Guard's journal** (`/obj/item/train_list`, 1 leather). Used aboard or
+  beside a train (`train_beside()`), it prints `train_list_lines()`: a heading
+  with the vehicles, length, weight and what the engines pull, then a line a
+  vehicle from the front with its weight, engine state, handbrake, axle boxes,
+  wreck and locked doors.
+- **Carriage key** (`/obj/item/train_key`, 1 iron). On a closed car door it
+  toggles the lock: a bit per edge in the segment's `locked_doors`, like
+  `open_doors`. A locked door stays shut to a hand from outside
+  (`locked_against()`), opens and unlocks from its own tile, and is forced
+  with a crowbar (`open_by_force()`). Region travel does not carry the locks.
+- **Ticket book** (`/obj/item/train_ticket_book`, 1 leather, 40 tickets) and
+  **ticket punch** (`/obj/item/train_ticket_punch`, 1 iron). `issue()` writes
+  a `/obj/item/train_ticket` with its destination, fare and issuer; `punch()`
+  cancels it once.
+- **Signal flags** (`/obj/item/train_flags`, 2 cloth). `show_signal()` shows
+  one of `train_hand_signals()` to everyone in sight and tells the people in
+  every cab of the train the signaller is aboard or beside.
 
 ## Snow
 
