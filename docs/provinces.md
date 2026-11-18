@@ -240,6 +240,12 @@ every age:
   then at least three quarters, then final after 14 days
   (`faction_recruitment["continent_resources_from"]`). Raised rates apply at
   once. Stockpiles are untouched.
+- Land oil (Val, 2026-11-18): petroleum springs on land (`oil_fires.dm`) flow
+  only on desert ground (desert sand or dust) of the oil lands, the Desert and
+  Earth Africa. On other continents they run dry for good once the lowered rates
+  have phased in, and a wooden oil well over one stops (`has_source()`).
+  Offshore rigs and fracking work everywhere. Lands that are not continents
+  keep their springs.
 - Faction > Province Holdings and Admin > Land Status show the line.
 
 ## Rich provinces

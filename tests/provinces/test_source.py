@@ -241,6 +241,29 @@ class ContinentResources(unittest.TestCase):
 
 
 
+class LandOil(unittest.TestCase):
+    """Val (2026-11-18): land oil wells work only on desert ground, which means Africa's deserts."""
+
+    def test_springs_flow_only_on_oil_land_desert(self):
+        text = RESOURCES.read_text(encoding='utf-8')
+        self.assertIn('lands = list(MAP_NOMADS_DESERT, MAP_NOMADS_EARTH_AFRICA)', text)
+        self.assertIn('istype(T, /turf/floor/beach/sand/desert) || istype(T, /turf/floor/dirt/dust)', text)
+        # Off the continents springs flow as before; elsewhere they dry up with the phase-in.
+        self.assertIn('if (!continent_home())\n\t\treturn TRUE', text)
+        self.assertIn('return continent_phased(0) > 0', text)
+        self.assertIn('text += " [continent_land_oil_text()]"', text)
+
+    def test_springs_and_wells_ask(self):
+        spring = (ROOT / 'code/modules/1713/oil_fires.dm').read_text(encoding='utf-8')
+        self.assertIn('if (continent_land_oil_at(get_turf(src)))', spring)
+        self.assertIn("if (refill_pending || !isturf(loc) || !flows())", spring)
+        self.assertLess(spring.index('if (!flows())\n\t\tto_chat(user, SPAN_WARNING('), spring.index('if (counter <= 0)'))
+        well = (ROOT / 'code/modules/1713/production.dm').read_text(encoding='utf-8')
+        self.assertIn('return base && base.loc == loc && base.flows()', well)
+        # Offshore rigs keep their own source.
+        self.assertNotIn('flows()', (ROOT / 'code/modules/1713/offshore_rig.dm').read_text(encoding='utf-8'))
+
+
 class Ranks(unittest.TestCase):
     """Val (2026-11-18): a clear objective for city building and defence."""
 

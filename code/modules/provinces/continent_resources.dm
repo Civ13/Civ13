@@ -124,6 +124,35 @@
 		return prob(factor * 100) ? amount : 0
 	return round(amount * factor)
 
+// Land oil (Val, 2026-11-18): petroleum springs on land flow only on the desert
+// ground of the oil lands. Elsewhere on the continents they run dry once the
+// lowered rates have phased in; offshore wells and fracking work everywhere.
+/proc/continent_oil_lands()
+	var/static/list/lands = list(MAP_NOMADS_DESERT, MAP_NOMADS_EARTH_AFRICA)
+	return lands
+
+/proc/continent_desert_ground(turf/T)
+	return istype(T, /turf/floor/beach/sand/desert) || istype(T, /turf/floor/dirt/dust)
+
+// TRUE when a land petroleum spring at T gives oil.
+/proc/continent_land_oil_at(turf/T)
+	if (!continent_home())
+		return TRUE
+	if ((map.ID in continent_oil_lands()) && continent_desert_ground(T))
+		return TRUE
+	return continent_phased(0) > 0
+
+/proc/continent_land_oil_text()
+	if (map.ID in continent_oil_lands())
+		return "Petroleum springs flow on its desert ground and nowhere else."
+	return "Petroleum springs on land are dry here: land oil flows only on the desert ground of [english_list(continent_oil_land_names())]. Offshore wells and fracking still work."
+
+/proc/continent_oil_land_names()
+	var/list/names = list()
+	for (var/id in continent_oil_lands())
+		names += id == MAP_NOMADS_EARTH_AFRICA ? "Africa" : "the Desert"
+	return names
+
 // One line for Faction > Province Holdings and Admin > Land Status.
 /proc/continent_resources_text()
 	var/list/home = continent_home()
@@ -137,6 +166,7 @@
 	var/text = "This continent is rich in [english_list(names)]: they are found twice as often here. Other ores are scarcer than elsewhere, except iron."
 	if (map.ID == MAP_NOMADS_GAIA)
 		text += " Tin stays plentiful, but there is no bauxite or uranium."
+	text += " [continent_land_oil_text()]"
 	var/days = round((map.continent_resources_from() + 2 * CONTINENT_PHASE_DAYS * 864000 - world.realtime) / 864000, 0.1)
 	if (days > 0)
 		text += " The scarcer rates are phasing in over the next [days] days."
