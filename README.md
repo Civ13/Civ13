@@ -126,12 +126,14 @@ review. Each rule below names the check that guards it; run those checks with
 
 ### Persistence: what the saver really saves
 
-- **`var/tmp` does not keep a field out of a save.** The saver walks every
-  changed var on mobs, items and structures, tmp vars included. Exclude
-  process-local state in `persistence_runtime_var()` (see
-  `code/modules/persistence/functions.dm`), or, for a `world.time` stamp, in
-  `code/modules/persistence/world_time_stamps.dm`.
-  Guard: `tests/persistence_pointers/test_world_time_stamps.py`.
+- **Declare process-local state `var/tmp`.** The saver and loader skip tmp
+  fields (`persistence_declared_tmp()` in `code/modules/persistence/functions.dm`):
+  busy flags, action locks, cached refs, loops and cooldowns must not come back
+  after a restart. Until 2026-11-18 the saver wrote tmp fields too, and about
+  280 of them came back, stuck "busy" flags included. Anything a field needs
+  after a load is rebuilt in `after_load()`. For a non-tmp runtime field,
+  override `persistence_runtime_var()`. Guard: the world-save round trip
+  (`tests/world_save/run.sh`) checks that a tmp field is not restored.
 - **Never save a `world.time` stamp.** `world.time` starts at zero after every
   reboot, so a restored cooldown sits hours in the future: a door stayed shut,
   an animal could not bite, a ship stayed "at sea" with no timer to bring her

@@ -11,10 +11,10 @@ record did on Gaia on 2026-11-05 (#3681). A constructor that keeps
 rescheduling itself in the same tick, such as a spawner with `timer = 0`,
 stalls the server.
 
-Each atom type whose constructor moves a scalar field off its default is built a
-second time, both builds seeded from the type path, after the loader's
-omitted-offset reset. A field that differs between the two builds is restore
-drift: the saver omits a field at its default, so that object would come back
+Each atom type is built four times, each build from its own seed derived from
+the type path, after the loader's omitted-offset reset. A scalar field that any
+build moved off its default and that differs between builds is restore drift
+(two builds missed a coin flip such as `female = prob(50)` half the time): the saver omits a field at its default, so that object would come back
 with a fresh random value on every load. Move the work into
 `on_runtime_spawn()` (see `code/modules/persistence/restore_contract.dm`).
 

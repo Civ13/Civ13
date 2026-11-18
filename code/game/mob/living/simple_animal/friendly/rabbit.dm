@@ -31,7 +31,8 @@
 
 /mob/living/simple_animal/rabbit/New()
 	..()
-
+	if (restoring) // a load restores the saved coat and sprites
+		return
 	if (!body_color)
 		body_color = pick( list("black","grey","white") )
 	icon_state = "rabbit[body_color]"

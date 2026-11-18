@@ -35,6 +35,8 @@ var/global/roundtrip_capture_failure = FALSE
 	var/datum/test/next
 	var/obj/item/test/backlink
 	var/tmp/constructor_argument_count = -1
+	// Declared tmp with no explicit exclusion: the saver must leave it out.
+	var/tmp/busy = FALSE
 /datum/test/New()
 	constructor_argument_count = args.len
 	..()
@@ -55,11 +57,13 @@ var/global/roundtrip_capture_failure = FALSE
 	F["/format_version"] << 2
 	var/datum/test/original = new
 	original.value = 73
+	original.busy = TRUE
 	var/ref = map_storage.BuildVarDirectory(F, original)
 	map_storage.clear_bookkeeping()
 	var/datum/test/restored = map_storage.Load_Entry(F, ref)
 	check(restored && restored.constructor_argument_count == 0, "datum constructor received location argument")
 	check(restored.value == 73, "datum constructor probe value lost")
+	check(restored.busy == FALSE, "a var/tmp field was saved and restored")
 	map_storage.clear_bookkeeping()
 	qdel(original)
 	qdel(restored)

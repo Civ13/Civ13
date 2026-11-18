@@ -43,12 +43,16 @@
 	maxvol = 1000
 /obj/structure/fuelpump/premade/New()
 	..()
-	fueltype = pick("gasoline","diesel","biodiesel","pethanol","petroleum")
-	vol = maxvol
-	name = "[brand] [fueltype] pump"
-	price = 0.4
+	// A load restores the saved fuel and stock. Re-rolled here, a pump saved
+	// with the default fuel came back selling another one, refilled to the top.
+	if (!restoring)
+		fueltype = pick("gasoline","diesel","biodiesel","pethanol","petroleum")
+		vol = maxvol
+		name = "[brand] [fueltype] pump"
+		price = 0.4
 	do_color()
-	updatedesc()
+	if (!restoring)
+		updatedesc()
 
 /obj/structure/fuelpump/premade/gasoline/New()
 	..()

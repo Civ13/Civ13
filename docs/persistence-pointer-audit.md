@@ -1,8 +1,9 @@
 # Persistence pointer audit - issue #3407
 
 Audited 2026-10-29 against master `de1516089fc32a739ee04f747f48bd69d1950a53`.
-The custom saver includes changed tmp vars. Only explicitly classified runtime
-fields are omitted, on export and legacy import. Export does not erase live
+At the time of this audit the custom saver included changed tmp vars; since
+2026-11-18 it skips them (`persistence_declared_tmp`). Explicitly classified
+runtime fields are omitted too, on export and legacy import. Export does not erase live
 references. Unknown and durable links retain the cross-level rejection.
 
 | Candidate | Classification and evidence | Action |
