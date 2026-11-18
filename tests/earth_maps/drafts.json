@@ -28,8 +28,20 @@
   ]
  },
  "asia": {
-  "path": "maps/earth_drafts/earth_asia.dmm",
-  "sha256": "5e14ecd2579b38796622e0f02eb766d6de55cc7f5021d876d88bb74c70f1e782",
+  "flood": {
+   "path": "maps/heights/nomads_earth_asia.flood.txt",
+   "sha256": "5ef218cc18377fc081f27975c1a233bc377ae338be88f14ace12e6f68879beea"
+  },
+  "flow": {
+   "path": "maps/heights/nomads_earth_asia.flow.txt",
+   "sha256": "54f601b42f5f34609895aa5c7400e0a3aedbffd29d52975d88580ca6606b75d2"
+  },
+  "heights": {
+   "path": "maps/heights/nomads_earth_asia.txt",
+   "sha256": "c04b8bde4c9ba3b739a0ff76db54237b45fc9c325ce70ad5041076a3512a9711"
+  },
+  "path": "maps/nomads/nomads_earth_asia.dmm",
+  "sha256": "65f89e08a2f76f79ee12816ad2359355bdaf34b4083dc93019ed31d941e41e64",
   "size": [
    1226,
    854

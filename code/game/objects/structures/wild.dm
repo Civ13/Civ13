@@ -175,7 +175,7 @@ var/list/seed_list_jungle
 	var/area/caribbean/A = get_area(get_turf(src))
 	if (!A)
 		return
-	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE && map.ID != MAP_NOMADS_AMERICAS_NORTH && map.ID != MAP_NOMADS_AMERICAS_SOUTH && map.ID != MAP_NOMADS_ASIA && map.ID != MAP_NOMADS_EARTH_EUROPE && map.ID != MAP_NOMADS_EARTH_AFRICA)
+	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE && map.ID != MAP_NOMADS_AMERICAS_NORTH && map.ID != MAP_NOMADS_AMERICAS_SOUTH && map.ID != MAP_NOMADS_ASIA && map.ID != MAP_NOMADS_EARTH_EUROPE && map.ID != MAP_NOMADS_EARTH_AFRICA && map.ID != MAP_NOMADS_EARTH_ASIA)
 		return pick_seed_by_biome()
 	else
 		return pick_seed_by_biome(A.climate)

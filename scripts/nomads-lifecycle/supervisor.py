@@ -34,6 +34,7 @@ NOMADS_MAPS = {
     'NOMADS_AMERICAS_NORTH': 'nomads_americas_north.dmm',
     'NOMADS_AMERICAS_SOUTH': 'nomads_americas_south.dmm',
     'NOMADS_EARTH_AFRICA': 'nomads_earth_africa.dmm',
+    'NOMADS_EARTH_ASIA': 'nomads_earth_asia.dmm',
     'NOMADS_EARTH_EUROPE': 'nomads_earth_europe.dmm',
     'NOMADS_ICE_AGE': 'nomads_ice_age.dmm',
     'NOMADS_ISLAND': 'nomads_island.dmm',

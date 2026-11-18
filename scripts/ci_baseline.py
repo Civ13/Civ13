@@ -993,6 +993,8 @@ SUITES = {
     'earth_maps': {'files': ('tests/earth_maps/test_earth_maps.py',), 'timeout': 120,
         'paths': ('tests/earth_maps/', 'maps/earth_drafts/', 'tests/americas_maps/build.py',
                   'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
+                  'maps/nomads/nomads_earth_asia.dmm', 'maps/heights/nomads_earth_asia.txt',
+                  'maps/heights/nomads_earth_asia.flow.txt', 'maps/heights/nomads_earth_asia.flood.txt',
                   'maps/heights/nomads_earth_europe.txt', 'maps/heights/nomads_earth_europe.flow.txt',
                   'maps/heights/nomads_earth_europe.flood.txt', 'maps/heights/nomads_earth_africa.txt',
                   'maps/heights/nomads_earth_africa.flow.txt', 'maps/heights/nomads_earth_africa.flood.txt',

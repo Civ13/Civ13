@@ -270,13 +270,13 @@ measured cell count without a new memory benchmark.
 
 ## Earth continents and drafts
 
-[The Earth continents](../../earth-continents.md): Europe and Africa are
-generated regions (`maps/nomads/nomads_earth_{europe,africa}.dmm`, types
-`/obj/map_metadata/nomads/earth_europe` and `earth_africa`). Europe keeps the
-region id `europe`; Africa (`africa`) takes the place of the Desert and Jungle
-regions, and Asia's west edge leads into it. A design that names `metadata`
+[The Earth continents](../../earth-continents.md): Europe, Asia and Africa are
+generated regions (`maps/nomads/nomads_earth_{europe,asia,africa}.dmm`, types
+`/obj/map_metadata/nomads/earth_<land>`). Europe and Asia keep their region
+ids; Africa (`africa`) takes the place of the Desert and Jungle
+regions, and Asia's west edge leads into it and into Europe. A design that names `metadata`
 and `heights` in `tests/earth_maps/` is playable: `generate.py` writes its
 height, current and flood files and their digests into `drafts.json`.
-[The remaining drafts](../../earth-drafts.md) (`maps/earth_drafts/`: Asia,
-Oceania, Antarctica, Greenland) are not regions; the `earth_maps` offline suite
+[The remaining drafts](../../earth-drafts.md) (`maps/earth_drafts/`: Oceania,
+Antarctica, Greenland) are not regions; the `earth_maps` offline suite
 checks every land and fails if any build or region list names a draft.
