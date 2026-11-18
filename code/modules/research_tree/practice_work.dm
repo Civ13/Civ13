@@ -169,7 +169,7 @@ var/global/list/subject_deeds = list(
 		list("shutters", list("/obj/structure/simple_door/key_door/anyone/window_shutters/iron"), 1, 0.15, "Fit a set of iron shutters")),
 	"gunsmithing" = list(
 		list("arquebus", list("/obj/item/weapon/gun/projectile/ancient/arquebus"), 1, 0.2, "Make an arquebus"),
-		list("matchlock", list("/obj/item/weapon/gun/projectile/ancient/matchlock"), 1, 0.15, "Make a matchlock musket"),
+		list("handcannon", list("/obj/item/weapon/gun/projectile/ancient/handcannon"), 1, 0.15, "Make a handcannon"),
 		list("pouch", list("/obj/item/ammo_magazine/emptypouch"), 1, 0.15, "Make a bullet pouch")),
 	"haberdashery" = list(
 		list("hats", list("/obj/item/clothing/head/artisan", "/obj/item/clothing/head/cavalier", "/obj/item/clothing/head/phrigian_hat"), 2, 0.2, "Make 2 hats: artisan, cavalier or phrigian"),
@@ -244,7 +244,7 @@ var/global/list/subject_deeds = list(
 		list("walls", list("/obj/covers/stone_wall/brick"), 3, 0.15, "Raise 3 stone brick walls"),
 		list("door", list("/obj/structure/simple_door/key_door/anyone/fire_door"), 1, 0.15, "Build an iron-clad fire door")),
 	"rifling" = list(
-		list("musket", list("/obj/item/weapon/gun/projectile/ancient/matchlock"), 1, 0.2, "Make a matchlock musket"),
+		list("arquebus", list("/obj/item/weapon/gun/projectile/ancient/arquebus"), 1, 0.2, "Make an arquebus"),
 		list("bullets", list("/obj/item/stack/ammopart/bullet"), 3, 0.15, "Make iron bullets 3 times"),
 		list("anvil", list("/obj/structure/anvil/steel"), 1, 0.15, "Build a steel anvil")),
 	"steam_power" = list(
