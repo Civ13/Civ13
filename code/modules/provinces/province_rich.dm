@@ -38,6 +38,7 @@ var/global/list/province_rich_busy = list()
 		"silver" = list(/obj/item/stack/ore/silver, 2, 3),
 		"gold" = list(/obj/item/stack/ore/gold, 1, 2),
 		"bauxite" = list(/obj/item/stack/ore/bauxite, 3, 5),
+		"uranium" = list(/obj/item/stack/ore/uranium, 1, 2),
 	)
 	return ores
 
@@ -50,6 +51,8 @@ var/global/list/province_rich_busy = list()
 			return 2
 		if ("bauxite")
 			return 4
+		if ("uranium")
+			return 8
 	return 0
 
 // Province char -> the resource it is rich in, for this land; empty off the continents.

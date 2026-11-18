@@ -42,7 +42,7 @@ python3 scripts/provinces.py --map maps/nomads/nomads_gaia.dmm --z 2 \
 | Map | Surface z |
 | --- | --- |
 | nomads_gaia, nomads_desert, nomads_jungle | 2 |
-| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_africa, nomads_earth_asia | 1 |
+| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_africa, nomads_earth_asia, nomads_earth_oceania, nomads_earth_greenland, nomads_earth_antarctica | 1 |
 
 How the tool works:
 
@@ -222,6 +222,9 @@ every age:
 | Earth Europe | coal, zinc |
 | Earth Africa (replaces Desert and Jungle) | sulphur, tin |
 | Earth Asia | saltpeter, silver, gems and diamonds |
+| Earth Oceania | bauxite, uranium, gems |
+| Earth Greenland | zinc, lead, gold |
+| Earth Antarctica | coal |
 
 - Away from their home, bulk ores (copper, tin, coal, zinc) and precious finds
   (silver, gold, diamonds, gems) come at half the rate, strategic ores
@@ -255,7 +258,7 @@ Code: `code/modules/provinces/province_rich.dm`.
   6 / 10 / 16 / 24 for Camp to City (effective rank, so a won siege lowers
   it). A side's third and later rich provinces on a land give half. Anyone can
   work it; the holder decides who gets near. Resources open at their usual
-  age (iron Bronze, coal/lead/saltpeter/sulphur Iron, bauxite Industrial).
+  age (iron Bronze, coal/lead/saltpeter/sulphur Iron, bauxite Industrial, uranium from age 8).
 - State: `faction_recruitment["province_rich"]`: char -> list(day, loads
   taken). The marker is a runtime overlay, put back by each activity count.
 - Province Holdings, Land Status and the seat's ledger name them and the
@@ -273,6 +276,9 @@ Code: `code/modules/provinces/province_rich.dm`.
 | nomads_earth_europe | North Lowlands (coal); North-east Lowlands (zinc); South-east Riverlands (coal) |
 | nomads_earth_africa | North Sands (sulphur); East Jungle (tin); East Riverlands (sulphur) |
 | nomads_earth_asia | West Lowlands (saltpeter); North-west Riverlands (silver); South Jungle (saltpeter) |
+| nomads_earth_oceania | South Sands (bauxite); Central Riverlands (uranium); North-west Coast (bauxite) |
+| nomads_earth_greenland | South Lowlands (zinc); North-west Coast (lead); North-east Lowlands (gold) |
+| nomads_earth_antarctica | Central Coast (coal); South-east Plains (coal); North Lowlands (coal) |
 
 Still to come from the plan: an air cargo cap, rubber trees, land oil only in
 the Desert, Gaia's crop bonus.
