@@ -208,7 +208,7 @@
 
 /obj/structure/train_lineside/gate/examine(mob/user)
 	..()
-	to_chat(user, "The rails are to its [dir2text(dir)]. It stands [shut ? "shut across the road" : "open to the road"], with the other gates within [TRAIN_GATE_REACH] tiles of it. A wrench turns its post.")
+	to_chat(user, "The rails are to its [dir2text(dir)], and it wants a clear tile between it and them for the sides of wide cars. It stands [shut ? "shut across the road" : "open to the road"], with the other gates within [TRAIN_GATE_REACH] tiles of it. A wrench turns its post.")
 	if (crossing_frame())
 		to_chat(user, "It is worked by rodding from a signal box.")
 	if (passed)

@@ -2551,13 +2551,13 @@ var/global/platform_probe_runtime_error = FALSE
 
 	// The crossing: boards on the rails, a gate on the road either side.
 	var/obj/structure/train_crossing_boards/boards = new(platform_turf(304, 6))
-	var/obj/structure/train_lineside/gate/G1 = new(platform_turf(303, 6))
+	var/obj/structure/train_lineside/gate/G1 = new(platform_turf(302, 6))
 	G1.set_dir(EAST)
-	var/obj/structure/train_lineside/gate/G2 = new(platform_turf(305, 6))
+	var/obj/structure/train_lineside/gate/G2 = new(platform_turf(306, 6))
 	G2.set_dir(WEST)
-	var/obj/structure/train_lineside/gate/elsewhere = new(platform_turf(303, 16))
+	var/obj/structure/train_lineside/gate/elsewhere = new(platform_turf(302, 16))
 	elsewhere.set_dir(EAST)
-	var/mob/living/human/platform_rider/keeper = new(platform_turf(302, 6))
+	var/mob/living/human/platform_rider/keeper = new(platform_turf(302, 5))
 	var/obj/item/weapon/wrench/wrench = new(keeper.loc)
 	boards.attackby(wrench, keeper)
 	platform_check("trackworks/crossing_built", !boards.density && boards.dir != initial(boards.dir) && !G1.density && !G1.shut && G1.crossing_gates().len == 2 && (G2 in G1.crossing_gates()) && elsewhere.crossing_gates().len == 1 && (G1 in train_lineside))
@@ -2565,7 +2565,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/shut_moved = G1.set_shut(TRUE)
 	platform_check("trackworks/gates_swing_together", shut_moved && G1.shut && G2.shut && G1.density && G2.density && G2.icon_state == "crossing_gate_shut" && !elsewhere.shut && !G1.set_shut(TRUE))
 	G2.set_shut(FALSE)
-	var/obj/structure/closet/crate/large/cart = new(platform_turf(305, 6))
+	var/obj/structure/closet/crate/large/cart = new(platform_turf(306, 6))
 	cart.density = TRUE
 	var/blocked = G1.shut_problem()
 	qdel(cart)
@@ -2617,10 +2617,19 @@ var/global/platform_probe_runtime_error = FALSE
 	// The buffer stop: a train brought up to it stops against it.
 	var/obj/structure/train_buffer_stop/stop = new(platform_turf(304, 21))
 	stop.set_dir(NORTH)
-	var/obj/structure/trains/locomotive/A = platform_car("loco_steam", 304, 13, NORTH)
+	var/obj/structure/trains/locomotive/A = platform_car("loco_steam", 304, 5, NORTH)
 	if (!istype(A))
 		platform_check("trackworks/buffer_stop_holds", FALSE)
 		return
+	// What is built into the line stays there under the train on its way,
+	// and shut gates two tiles out are clear of its sides.
+	var/obj/structure/rail_ash_pit/pit = new(platform_turf(304, 8))
+	var/obj/structure/train_lineside/signal/near = new(platform_turf(305, 9))
+	near.set_dir(SOUTH)
+	var/obj/structure/trains/platform/behind_cab = A.connected
+	var/turf/freight_from = istype(behind_cab) ? get_step(behind_cab, EAST) : null
+	var/obj/item/weapon/wrench/freight = new(freight_from)
+	G1.set_shut(TRUE)
 	var/soft = stop.hold(0.4) && !stop.hits
 	var/hard = stop.hold(1) && stop.hits == 1 && !stop.hold(1.3)
 	stop.hits = 0
@@ -2630,11 +2639,13 @@ var/global/platform_probe_runtime_error = FALSE
 	A.on = TRUE
 	A.throttle = 1
 	A.drive()
-	var/limit = 600
+	var/limit = 1500
 	while (A.driving && A.automovement && limit > 0)
 		sleep(1)
 		limit--
 	A.throttle = 0
+	platform_check("trackworks/fixtures_stay_under_a_train", istype(behind_cab) && A.loc == platform_turf(304, 20) && boards.loc == platform_turf(304, 6) && pit.loc == platform_turf(304, 8) && near.loc == platform_turf(305, 9) && G1.loc == platform_turf(302, 6) && G2.loc == platform_turf(306, 6) && G1.shut && G2.density && freight.loc == get_step(behind_cab, EAST) && freight.loc != freight_from && train_track_fixture(boards) && train_track_fixture(G1) && !train_platform_carries(pit) && train_platform_carries(freight))
+	G1.set_shut(FALSE)
 	platform_check("trackworks/buffer_stop_holds", A.loc == platform_turf(304, 20) && !QDELETED(stop) && !A.derailed && A.health == initial(A.health) && !QDELETED(driver))
 	limit = 100
 	while (A.driving && limit > 0)

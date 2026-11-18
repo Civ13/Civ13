@@ -431,7 +431,23 @@ var/global/train_step_plain = FALSE
 		return FALSE
 	if (istype(AM, /obj/structure/wild) || istype(AM, /obj/structure/sign) || istype(AM, /obj/structure/lamp))
 		return FALSE
+	if (train_track_fixture(AM))
+		return FALSE
 	return TRUE
+
+// What is built into the line or stands beside it stays where it is when a
+// deck passes over or along it: pits and boards between the rails, posts,
+// gates, levers and the yard's coal, sand and water.
+/proc/train_track_fixture(atom/movable/AM)
+	if (istype(AM, /obj/structure/rail_ash_pit) || istype(AM, /obj/structure/rail_drop_pit) || istype(AM, /obj/structure/train_crossing_boards))
+		return TRUE
+	if (istype(AM, /obj/structure/train_lineside) || istype(AM, /obj/structure/train_buffer_stop) || istype(AM, /obj/structure/train_lever))
+		return TRUE
+	if (istype(AM, /obj/structure/train_lever_frame) || istype(AM, /obj/structure/train_token_instrument))
+		return TRUE
+	if (istype(AM, /obj/structure/rail_depot) || istype(AM, /obj/structure/rail_water))
+		return TRUE
+	return FALSE
 
 /////////////////////////////////////////////////////////////////////////////
 // Segments

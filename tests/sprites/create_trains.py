@@ -3409,8 +3409,9 @@ def write_previews(out, states, gun):
         for x in range(3):
             im.alpha_composite(rail[DIR_INDEX['E']], (x0 + x * 32, 8 + 2 * 32))
         im.alpha_composite(states['crossing_boards'][DIR_INDEX['E']], (x0 + 32, 8 + 2 * 32))
-        im.alpha_composite(states[name][DIR_INDEX['S']], (x0 + 32, 8 + 32))
-        im.alpha_composite(states[name][DIR_INDEX['N']], (x0 + 32, 8 + 3 * 32))
+        # two tiles from the rails, clear of the sides of wide cars
+        im.alpha_composite(states[name][DIR_INDEX['S']], (x0 + 32, 8))
+        im.alpha_composite(states[name][DIR_INDEX['N']], (x0 + 32, 8 + 4 * 32))
     big(im, 5).save(out / 'trackworks.png')
 
     # off the rails: a derailed boxcar, the same car rerailed, and the jack
