@@ -1,44 +1,32 @@
-/obj/item/circuit_component/arithmetic
+/obj/item/circuit_component/operator/arithmetic
 	name = "arithmetic component"
 	display_name = "Arithmetic"
 	category = "Math"
+	operand_type = PORT_TYPE_NUMBER
+	result_type = PORT_TYPE_NUMBER
+	operations = list("Add", "Subtract", "Multiply", "Divide", "Modulo", "Power", "Minimum", "Maximum")
+	needs_both_inputs = TRUE
 
-	var/datum/port/input/input_a
-	var/datum/port/input/input_b
-	var/datum/port/input/operation
-	var/datum/port/output/result
-
-/obj/item/circuit_component/arithmetic/populate_ports()
-	input_a = add_input_port("A", PORT_TYPE_NUMBER, trigger = PROC_REF(calculate))
-	input_b = add_input_port("B", PORT_TYPE_NUMBER, trigger = PROC_REF(calculate))
-	operation = add_input_port("Operation", PORT_TYPE_STRING, trigger = PROC_REF(calculate), default = "Add", options = list("Add", "Subtract", "Multiply", "Divide", "Modulo", "Power", "Minimum", "Maximum"))
-	result = add_output_port("Result", PORT_TYPE_NUMBER)
-
-/obj/item/circuit_component/arithmetic/proc/calculate(datum/port/input/input)
-	if(isnull(input_a.value) || isnull(input_b.value))
-		return
-	var/output
-	switch(operation.value)
+/obj/item/circuit_component/operator/arithmetic/operate(left, right, chosen)
+	switch(chosen)
 		if("Add")
-			output = input_a.value + input_b.value
+			return left + right
 		if("Subtract")
-			output = input_a.value - input_b.value
+			return left - right
 		if("Multiply")
-			output = input_a.value * input_b.value
+			return left * right
 		if("Divide")
-			if(input_b.value == 0)
-				output = null
-			else
-				output = input_a.value / input_b.value
+			if(right != 0)
+				return left / right
 		if("Modulo")
-			if(input_b.value != 0)
-				output = input_a.value %% input_b.value
+			if(right != 0)
+				return left %% right
 		if("Power")
 			// A negative base has no real fractional power, and zero has no negative one.
-			if(!(input_a.value < 0 && input_b.value != round(input_b.value)) && !(input_a.value == 0 && input_b.value < 0))
-				output = input_a.value ** input_b.value
+			if(!(left < 0 && right != round(right)) && !(left == 0 && right < 0))
+				return left ** right
 		if("Minimum")
-			output = min(input_a.value, input_b.value)
+			return min(left, right)
 		if("Maximum")
-			output = max(input_a.value, input_b.value)
-	result.set_output(output)
+			return max(left, right)
+	return null

@@ -208,7 +208,7 @@ const circuitParts = [
 ];
 add('circuit-editor', 'wiremod_circuit.tmpl', {
   on: 1, display_name: 'Dice roller', grid_mode: 1, screen_x: 0, screen_y: 0, is_admin: 0, components: circuitParts,
-  stored_designs: { '/obj/item/circuit_component/arithmetic': 1, '/obj/item/circuit_component/random': 1, '/obj/item/circuit_component/string_concat': 1 },
+  stored_designs: { '/obj/item/circuit_component/operator/arithmetic': 1, '/obj/item/circuit_component/random': 1, '/obj/item/circuit_component/operator/string_concat': 1 },
   component_catalog: [circuitParts[2], circuitParts[1], circuitParts[3]].map(part => ({ type: part.type, name: part.name, description: part.description, category: part.category, input_ports: part.input_ports.map(p => ({ ...p, ref: '', connected_to: [] })), output_ports: part.output_ports.map(p => ({ ...p, ref: '' })) })),
   global_basic_types: ['number', 'boolean', 'string', 'any'], variables: [{ name: 'last roll', datatype: 'number', color: 'green', is_list: 0 }],
   examined_name: null, examined_desc: null, examined_notices: [], examined_rel_x: 0, examined_rel_y: 0,
