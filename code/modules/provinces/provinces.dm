@@ -114,4 +114,5 @@
 	var/list/names = list()
 	for (var/c in P.names)
 		names += html_encode(P.names[c])
-	return "<p>Provinces of this land ([P.names.len]): [jointext(names, ", ")].[here ? " You are in the [html_encode(here)]." : ""]</p>" + province_standings_html()
+	var/resources = continent_resources_text() // continent_resources.dm
+	return "<p>Provinces of this land ([P.names.len]): [jointext(names, ", ")].[here ? " You are in the [html_encode(here)]." : ""]</p>[resources ? "<p>[resources]</p>" : ""]" + province_standings_html()
