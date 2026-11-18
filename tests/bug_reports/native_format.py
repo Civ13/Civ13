@@ -34,6 +34,8 @@ FIXTURE = r'''
 	out["title_empty"] = bug_report_issue_title("")
 	out["fence"] = bug_report_fence("x```y")
 	out["cell"] = bug_report_cell("a|b`c @d\nnext")
+	out["discord"] = bug_report_discord_line("12:00:00", "GAIA", 7, "Val/(Bob)", "<@&1> @everyone **boat** sinks", "7.png")
+	out["discord_bare"] = bug_report_discord_line("12:00:00", null, 8, "x", "t", null)
 	var/list/ctx = list("Map" = "Gaia", "Round" = "abc|def")
 	out["body"] = bug_report_issue_body("val", "it @broke #12", "", "work", ctx, "")
 	out["body_note"] = bug_report_issue_body("val", "x", "y", "z", list(), "look at turf.dm")
@@ -83,6 +85,10 @@ class BugReportFormat(unittest.TestCase):
 
     def test_cell(self):
         self.assertEqual(self.out['cell'], 'a b c  d next')
+
+    def test_discord_line(self):
+        self.assertEqual(self.out['discord'], '__**[12:00:00] (GAIA) BUG REPORT #7:**__ **Val/(Bob)**   &1   everyone   boat   sinks (with a screenshot) - review it in game with Admin > Bug Reports.')
+        self.assertEqual(self.out['discord_bare'], '__**[12:00:00] (NULL) BUG REPORT #8:**__ **x** t - review it in game with Admin > Bug Reports.')
 
     def test_body(self):
         body = self.out['body']

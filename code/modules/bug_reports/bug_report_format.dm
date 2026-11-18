@@ -54,6 +54,11 @@
 		text = replacetext(text, bad, " ")
 	return length(text) ? text : "-"
 
+// The staff Discord line for a new report (CivilizationBot's admin channel). Player text
+// goes through bug_report_cell, so it cannot @mention, link or break the markup.
+/proc/bug_report_discord_line(stamp, map_id, id, who, title, screenshot)
+	return "__**\[[stamp]] ([length("[map_id]") ? map_id : "NULL"]) BUG REPORT #[id]:**__ **[bug_report_cell(who)]** [bug_report_cell(title)][screenshot ? " (with a screenshot)" : ""] - review it in game with Admin > Bug Reports."
+
 // The issue title as filed: one line, capped, with a marker so in-game reports are easy
 // to find on GitHub.
 /proc/bug_report_issue_title(title)
