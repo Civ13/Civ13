@@ -313,9 +313,7 @@ var/global/list/obsidian_volcano_cells = list()
 	icon_state = "arrow_obsidian_flight"
 
 // Arrows and atlatl darts only: glass points were never fitted to crossbow bolts.
-/obj/item/ammo_casing/attach_arrowhead(obj/item/W, mob/user, shaft_path)
-	if (!istype(W, /obj/item/stack/arrowhead/obsidian))
-		return ..()
+/obj/item/ammo_casing/proc/attach_obsidian_arrowhead(obj/item/W, mob/user, shaft_path)
 	if (shaft_path != "/obj/item/ammo_casing/arrow" && shaft_path != "/obj/item/ammo_casing/atlatl_dart")
 		to_chat(user, SPAN_WARNING("An obsidian point is too brittle for that."))
 		return FALSE

@@ -231,6 +231,8 @@
 
 // Return FALSE only when research rejects an otherwise valid attachment.
 /obj/item/ammo_casing/proc/attach_arrowhead(obj/item/W, mob/user, shaft_path)
+	if (istype(W, /obj/item/stack/arrowhead/obsidian))
+		return attach_obsidian_arrowhead(W, user, shaft_path) // obsidian.dm
 	if (istype(W, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = W
 		if (F.sharpened)

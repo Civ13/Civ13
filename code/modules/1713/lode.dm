@@ -10,7 +10,7 @@
 #define LODE_GOLD_CHANCE 4 // percent per mined rock, from the Classical age
 #define LODE_SILVER_CHANCE 3
 #define LODE_LUMPS 4
-#define LODE_METAL 0.5 // metal ore in one load of crushed ore at full recovery
+// Lode metal per load: code/__defines/ore_processing.dm
 #define LODE_PAN_RECOVERY 0.2
 #define LODE_BUDDLE_RECOVERY 0.35
 #define PAN_CRUSHED_TIME 150

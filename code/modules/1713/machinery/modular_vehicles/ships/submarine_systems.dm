@@ -17,7 +17,7 @@
 
 // Battery capacity and costs, in battery units (one unit = one second of floodlights).
 #define SUB_BATTERY_MAX 5400
-#define SUB_BATTERY_PER_TILE 2
+// Battery per tile: code/__defines/_submarine_definitions.dm
 #define SUB_BATTERY_FLOODLIGHTS_PER_SECOND 1
 #define SUB_BATTERY_PING 30
 #define SUB_BATTERY_CHARGE_PER_SECOND 45

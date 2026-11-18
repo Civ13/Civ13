@@ -34,8 +34,7 @@
 #define SUB_AIR_STEP (2 SECONDS)
 // Longest single ledger step (the ledger caps its own steps at 10 s).
 #define SUB_AIR_MAX_STEP_SECONDS 10
-// Bank air spent blowing the lock-out chamber dry.
-#define SUB_AIR_LOCKIN_COST 60
+// Lock-out air cost: code/__defines/_submarine_definitions.dm
 // Oxygen share of bank air (refilling bottles takes oxygen).
 #define SUB_AIR_OXYGEN_SHARE 0.21
 

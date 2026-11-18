@@ -19,10 +19,7 @@
 #define PROJECTILE_MUZZLE_LOW 0.4
 #define PROJECTILE_ROOF_TOP 3
 #define PROJECTILE_HEIGHT_EPSILON 0.001
-// height_enter verdicts.
-#define PROJECTILE_HEIGHT_CLEAR 0
-#define PROJECTILE_HEIGHT_GROUND 1
-#define PROJECTILE_HEIGHT_OVER 2
+// Projectile height_enter verdicts: code/__defines/gun.dm
 
 // Absolute height of the shot over the starting tile; null when heights do not
 // apply to this shot (flat map, shells, shrapnel, aircraft guns).

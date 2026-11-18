@@ -25,8 +25,7 @@
 #define ORBIT_ROCKET_PROPELLANT 600
 #define ORBIT_ROCKET_SEATS 3
 #define ORBIT_ROCKET_CARGO_MAX 10
-// The epoch (map.ordinal_age) orbit opens in: 1969, as the Moon.
-#define ORBIT_MIN_AGE 7
+// Orbital flight: code/__defines/space.dm
 
 // TRUE when a pad here may fly to region id: an orbit region, from a world
 // that is not itself in orbit, once the epoch has reached 1969.

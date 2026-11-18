@@ -20,18 +20,11 @@
 /obj/map_metadata/proc/book_research_enabled()
 	return recipe_knowledge_enabled() && book_research
 
-#define BOOK_RESEARCH_REACH 1
-// Work while the bench runs (chat feedback, 2026-11-17): the scholar leading
-// the work counts while within this many tiles and in sight of the bench, at
-// full pace beside it and BOOK_RESEARCH_AWAY_RATE further off, so they can
-// craft, cook or build nearby. Their writing tool may rest on the bench.
-#define BOOK_RESEARCH_NEAR 3
-#define BOOK_RESEARCH_AWAY_RATE 0.75
+// Book research: code/__defines/research.dm
 // Taking a sample apart at a bench: the first kinds of thing per subject are
 // worth this share of it; later kinds the usual sample share.
 #define BOOK_SAMPLE_FIRST_KINDS 2
 #define BOOK_SAMPLE_FIRST_FRACTION 0.2
-#define BOOK_STUDY_TIME(tier) (600 + 300 * max(0, tier))
 
 /obj/item/weapon/book
 	var/research_chapters = ""
