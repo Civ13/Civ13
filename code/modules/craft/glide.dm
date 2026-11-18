@@ -219,8 +219,19 @@ var/global/list/craft_glide_holder = null
 		carried += M
 	glide_give_back(glide_was, carried)
 
+// Before do_matrix() moves anything: the engine draws a move at the glide a
+// thing has when it moves, so everything that would glide is set to move at
+// once; glide_turn() then draws the whole swing itself.
+/obj/structure/vehicleparts/axis/proc/glide_turn_hold(list/was_at)
+	if (!glide_was)
+		glide_was = list()
+	for (var/atom/movable/M in was_at)
+		if (!QDELETED(M) && craft_glides_natively(M))
+			glide_hold(glide_was, M, world.icon_size)
+
 // After do_matrix(): was_at maps each thing carried to the tile it left. The
-// turn is shown swinging round instead of snapping.
+// turn is shown swinging round instead of snapping: each thing is drawn where
+// it was and slides to its new place, easing in and out like a hull swinging.
 /obj/structure/vehicleparts/axis/proc/glide_turn(list/was_at)
 	var/time = glide_turn_time()
 	if (!glide_was)
@@ -229,7 +240,10 @@ var/global/list/craft_glide_holder = null
 		var/turf/from = was_at[M]
 		if (QDELETED(M) || !isturf(M.loc) || !istype(from) || M.z != from.z || M.invisibility >= 101)
 			continue
-		glide_swing(glide_was, M, M.x - from.x, M.y - from.y, time)
+		var/dx = M.x - from.x
+		var/dy = M.y - from.y
+		if (dx || dy)
+			glide_slide(M, dx, dy, time, SINE_EASING)
 	if (!moving)
 		glide_rest()
 

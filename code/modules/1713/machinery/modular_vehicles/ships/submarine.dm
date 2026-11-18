@@ -135,6 +135,8 @@ var/global/list/submarine_stripe_paints = list(
 		return reason
 	var/turf/here = boat_turf()
 	var/target = diving ? multiz_level_below(here.z) : multiz_level_above(here.z)
+	// Square on her tiles first: the level change moves whole tiles.
+	vehicle_offset_settle()
 	if (!shift_level(target))
 		return "The ballast tanks jam. Try again."
 	submerged = diving

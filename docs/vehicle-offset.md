@@ -72,9 +72,9 @@ hulls under way (`vehicle_offset_hull.dm`) and frame vehicles
 
 - `/obj/structure/vehicleparts/axis/movementloop()` is overridden in
   `vehicle_offset_frame.dm`; `axis.dm` keeps the tile loop and is called
-  through `..()` whenever pixels are off. Aircraft, frame ships and boats
-  (`offset_drive = FALSE`), towing rigs (`tow_out`, `tow_in`) and vehicles
-  with a cargo trailer hitched stay on whole tiles.
+  through `..()` whenever pixels are off. Aircraft, the axes of one-object
+  boats (`offset_drive = FALSE`), towing rigs (`tow_out`, `tow_in`) and
+  vehicles with a cargo trailer hitched stay on whole tiles.
 - While a player is within 12 tiles plus its `maxdist`, and no save is
   running, each tick moves `vehicle_offset_speed(vehicle_m_delay + 1)`
   pixels the way it faces (or backs). The frames are the body; the wheels,
@@ -91,6 +91,26 @@ hulls under way (`vehicle_offset_hull.dm`) and frame vehicles
   nobody carried. With the engine cut while coasting it stops square at the
   next tile edge. A turn (`do_matrix()`) squares it first and swings round on
   whole tiles.
+
+## Frame ships
+
+`vehicle_offset_ship.dm` sails workshop-built ships (`axis/ship`, submarines
+included) the same way. `ships/axis.dm`'s `movementloop()` asks
+`ship_offset_movementloop()` first and keeps its tile loop for when nobody is
+near. Under sail `check_sails()` sets her gear and pace before she gets under
+way. Each time she starts to overlap the water ahead, `can_cover()` runs
+`vehicle_offset_tile_ahead()` (load, `check_sails()`, sails set and whole)
+and then `do_vehicle_check()`; she stops as on whole tiles, nobody thrown
+off. After each tile step `vehicle_offset_stepped()` checks her degaussing
+coil and naval mines. A turn ordered while she is between squares is held
+(`offset_turn`, `vehicle_offset_hold()` caps her pace at the next square)
+and made once she is square, so she never jumps back to her tile before
+coming about. A davit hoist and a submarine's dive or surfacing square her
+first, since those level changes move whole tiles.
+
+Turns of every frame vehicle are drawn by `glide_turn()`: before the moves
+`glide_turn_hold()` sets everything that would glide to move at once, then
+each thing is drawn where it was and slides to its new place.
 
 ## Walking on a moving deck
 

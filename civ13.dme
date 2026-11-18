@@ -1494,6 +1494,7 @@
 #include "code\modules\craft\vehicle_offset_ride.dm"
 #include "code\modules\craft\vehicle_offset_hull.dm"
 #include "code\modules\craft\vehicle_offset_frame.dm"
+#include "code\modules\craft\vehicle_offset_ship.dm"
 #include "code\modules\craft\vehicle_papers.dm"
 #include "code\modules\craft\vehicle_tow.dm"
 #include "code\modules\craft\vehicle_turret.dm"
