@@ -3,7 +3,8 @@
 // refuses a berth with no deep water ahead, lays a keel, takes materials a
 // piece at a time and shows the hull growing from stern to bow; a finished
 // schooner slides down the ways with her crew aboard and sails without fuel;
-// a freighter gets her hold, engine room and ladders below; a dry dock must
+// a freighter comes off as a built hull with her hold, engine and ladder below
+// the waterline, and the hold sails with her through the rock; a dry dock must
 // be flooded first; the frames are rebuilt after a load, never saved.
 /world
 	hub = ""
@@ -194,37 +195,79 @@ var/naval_runtime_error = FALSE
 	yard.lay_keel(freighter)
 	naval_check(slipway_frame_count(yard) == 132, "the freighter's berth is 132 tiles, part of it in the water")
 	slipway_finish(yard)
-	var/datum/vessel/freighter/F = yard.launch()
-	naval_check(istype(F) && F.ox == 21 && F.oy == 42 && F.base_z == 2, "the freighter floats at (21, 42)")
-	if (!istype(F))
+	var/obj/structure/hull_tiller/FT = yard.launch()
+	naval_check(istype(FT) && FT.craft && FT.z == 2, "the freighter comes off the ways as a built hull with a tiller")
+	if (!istype(FT) || !FT.craft)
 		return
-	var/obj/structure/vessel_bunker/valve
-	var/obj/structure/multiz/ladder/up/up
-	var/obj/structure/multiz/ladder/down
-	var/hold_tiles = 0
-	for (var/turf/T in F.cells())
-		if (T.z == 1)
-			if (istype(T, /turf/floor/sub_deck/freighter))
-				hold_tiles++
-			if (!valve)
-				valve = locate() in T
-			if (!up)
-				up = locate() in T
-		else if (!down)
-			for (var/obj/structure/multiz/ladder/L in T)
-				if (L.type == /obj/structure/multiz/ladder)
-					down = L
-	naval_check(hold_tiles == 82 && F.compartments().len == 2, "below the waterline she has 82 tiles of hold and engine room in two compartments")
-	naval_check(valve && valve.ship() == F && istype(valve.loc, /turf/floor/sub_deck/freighter/engine_room), "the bunker filling point is in the engine room")
-	naval_check(up && down && down.target == up && up.target == down, "the deck ladder pairs with the hold ladder")
-	F.set_anchor(FALSE)
-	F.set_speed(VESSEL_SPEED_SLOW)
-	F.stop_sailing()
-	naval_check(!F.sail_tick() && F.ox == 21 && findtext(F.last_refusal, "dry"), "with dry bunkers the freighter does not move")
-	F.bunker(100)
-	F.set_speed(VESSEL_SPEED_SLOW)
-	F.stop_sailing()
-	naval_check(F.sail_tick() && F.ox == 23 && F.fuel == 100 - VESSEL_FUEL_PER_STEP, "with fuel she makes two tiles at slow ahead")
+	var/datum/craft/FC = FT.craft
+	var/datum/craft_body/built/FB = FC.body
+	naval_check(FB.tile_count() == 132 && FB.lower_tile_count() == 82 && FB.heading() == EAST, "she has 132 tiles of deck and 82 of hold, bow east ([FB.tile_count()], [FB.lower_tile_count()])")
+	var/hollow = 0
+	for (var/turf/floor/plating/ship_hold/H in block(locate(1, 1, 1), locate(world.maxx, world.maxy, 1)))
+		hollow++
+	naval_check(hollow == 82, "her hold is hollowed out of the rock, nowhere else ([hollow])")
+	var/walls = 0
+	for (var/turf/T in FB.cells())
+		if (locate(/obj/covers/metal) in T)
+			walls++
+	naval_check(walls == 9, "the wheelhouse walls are built walls on her deck ([walls])")
+	var/obj/structure/engine/internal/diesel/engine = null
+	var/obj/structure/multiz/ladder/up/up = null
+	var/obj/structure/multiz/ladder/down = null
+	for (var/atom/movable/M in FB.aboard())
+		if (istype(M, /obj/structure/engine/internal/diesel))
+			engine = M
+		else if (istype(M, /obj/structure/multiz/ladder/up))
+			up = M
+		else if (M.type == /obj/structure/multiz/ladder)
+			down = M
+	naval_check(engine && engine.z == 1 && istype(engine.fueltank, /obj/item/weapon/reagent_containers/glass/barrel) && FB.carries(get_turf(engine)), "a diesel engine with its fuel barrel stands in the engine room below")
+	naval_check(up && down && down.target == up && up.target == down && up.z == 1 && down.z == 2, "the deck ladder pairs with the hold ladder")
+	var/bunkers_left = 0
+	for (var/obj/structure/vessel_bunker/B in world)
+		if (!QDELETED(B))
+			bunkers_left++
+	naval_check(!bunkers_left, "the old bunker filling point is gone")
+	FC.fit_drives()
+	naval_check(FC.max_speed() == VESSEL_SPEED_SLOW, "with her engine stopped she can only be poled along")
+	engine.fueltank.reagents.add_reagent("diesel", 200)
+	engine.on = TRUE
+	FC.fit_drives()
+	naval_check(FC.max_speed() == VESSEL_SPEED_FULL, "with her engine running she makes full ahead ([FC.thrust()] for [FC.mass()])")
+	engine.on = FALSE
+	// One tile ahead: the hold, its cargo and its ladder go with her.
+	var/list/hold_before = FB.lower_cells()
+	var/turf/hold_spot = null
+	for (var/turf/L in hold_before)
+		if (!L.density && !(locate(/obj/structure) in L))
+			hold_spot = L
+			break
+	var/obj/structure/closet/crate/hold_cargo = new(hold_spot)
+	var/turf/start = FB.origin()
+	var/list/was_hollow = list()
+	for (var/turf/L in hold_before)
+		was_hollow[L] = TRUE
+	naval_check(FB.move_to(start.x + 1, start.y, EAST), "she moves a tile ahead with her hold ([FB.last_refusal])")
+	naval_check(hold_cargo.loc == locate(hold_spot.x + 1, hold_spot.y, 1) && engine.z == 1 && up.target == down && down.target == up && up.x == down.x && up.y == down.y, "the hold's cargo, engine and ladder came with her")
+	var/list/hold_after = FB.lower_cells()
+	var/now_hollow = 0
+	var/closed = 0
+	var/left = 0
+	for (var/turf/L in hold_after)
+		if (istype(L, /turf/floor/plating/ship_hold))
+			now_hollow++
+		was_hollow -= L
+	for (var/turf/L in was_hollow)
+		left++
+		if (istype(L, /turf/wall/rockwall))
+			closed++
+	naval_check(now_hollow == 82 && left && closed == left, "the rock ahead is hollowed and closes behind her ([now_hollow], [closed] of [left])")
+	var/origins_ok = TRUE
+	for (var/turf/L in hold_after)
+		var/obj/covers/C = hull_hold_cover(L)
+		if (!C || hull_hold_origin_path(C.hold_origin) != /turf/wall/rockwall)
+			origins_ok = FALSE
+	naval_check(origins_ok, "every hold floor remembers the rock it hollowed")
 
 	// A dry dock: a trench berth must be flooded before the launch.
 	var/obj/structure/slipway/dock = new(locate(5, 10, 2))
@@ -252,7 +295,7 @@ var/naval_runtime_error = FALSE
 	dock.update_frames()
 	dock.abandon()
 	naval_check(!dock.design && !dock.pieces_done && !slipway_frame_count(dock), "abandoning a project clears the berth")
-	naval_check(naval_vessels.len == 1, "the freighter is the one tile ship afloat, and no stray prototypes ([naval_vessels.len])")
+	naval_check(!naval_vessels.len, "no tile ship is left afloat, and no stray prototypes ([naval_vessels.len])")
 
 	// A schooner still afloat as a tile ship from before is turned into a built hull.
 	var/datum/vessel/schooner/legacy = new
@@ -264,6 +307,18 @@ var/naval_runtime_error = FALSE
 	var/obj/structure/hull_tiller/converted = vessel_to_built_hull(legacy)
 	naval_check(istype(converted) && converted.craft && converted.craft.register == legacy_papers && converted.craft.body.heading() == NORTH && converted.craft.body.tile_count() == 62, "she becomes a built hull bow north with her papers")
 	naval_check(QDELETED(legacy) && !(legacy in naval_vessels) && craft_at(legacy_cargo.loc) == converted.craft, "the tile ship is gone and her cargo is aboard the hull")
+
+	// So is an old tile freighter, her bunkers going into the engine's barrel.
+	var/datum/vessel/freighter/old_freighter = new
+	naval_check(old_freighter.place(45, 2, 2, EAST), "an old tile freighter is laid down ([old_freighter.last_refusal])")
+	old_freighter.bunker(100)
+	var/obj/structure/hull_tiller/refit = vessel_to_built_hull(old_freighter)
+	var/datum/craft_body/built/RB = refit ? refit.craft.body : null
+	var/obj/structure/engine/internal/diesel/refit_engine = null
+	if (RB)
+		for (var/obj/structure/engine/internal/diesel/E in RB.aboard())
+			refit_engine = E
+	naval_check(RB && RB.lower_tile_count() == 82 && refit_engine && refit_engine.fueltank.reagents.get_reagent_amount("diesel") == 100, "she becomes a built hull with her hold, and her fuel is in the barrel")
 
 /proc/naval_run()
 	try

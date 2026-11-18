@@ -613,6 +613,8 @@ var/global/list/sea_crossing_marked = list()
 	// Only her own deck packs for the crossing; an upper deck would be lost.
 	if (istype(B) && B.upper_tile_count())
 		return "She cannot cross the sea with an upper deck yet. Take down the roofs over her deck first."
+	if (istype(B) && B.lower_tile_count())
+		return "She cannot cross the sea with a hold yet."
 	if (!istype(B))
 		return "She is not commissioned."
 	if (!admin_crossing && !B.at_map_edge())

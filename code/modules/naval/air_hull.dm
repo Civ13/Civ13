@@ -423,6 +423,10 @@ var/global/list/air_hull_crafts = list()
 /datum/craft_body/built/air/upper_z()
 	return 0
 
+// No hold: what lies below her is the ground she flies over.
+/datum/craft_body/built/air/lower_z()
+	return 0
+
 // TRUE while she stands on the ground rather than hanging in the open air.
 /datum/craft_body/built/air/proc/landed()
 	if (!placed())
