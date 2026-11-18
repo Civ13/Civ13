@@ -9,6 +9,8 @@
 //   province after 48 hours (up to 72 for a ranked settlement) unless it recovers. A destroyed bed or hall is a
 //   fall like any other, so it has the same 48 hours to be rebuilt.
 // - A nation, or a faction outside one, holds at most 3 provinces of a land.
+// - A take or a loss that falls due waits for the province's daily defence
+//   window (province_siege.dm), so a side asleep in another time zone is safe.
 // A recruitment station works on a continent only in a province its side
 // holds, and only for a faction with 3 residents of its own there. Lands
 // without provinces (islands, expedition lands, older maps) keep every
@@ -109,7 +111,9 @@
 		var/holder = row[1]
 		var/name = P.names[c]
 		// A ranked settlement is harder to take and slower to lose (province_ranks.dm).
-		var/rank = holder ? province_rank_of(c) : 0
+		var/rank = holder ? province_rank_effective(c) : 0 // province_siege.dm
+		// Who holds it changes only in its defence window (province_siege.dm).
+		var/window = province_in_window(c)
 		var/contender = holder ? province_rival(S, holder, province_rank_margin(rank)) : S["lead"]
 		if (holder)
 			var/list/groups = S["groups"]
@@ -120,7 +124,7 @@
 			else if (!row[3])
 				row[3] = now
 				province_tell_leaders(holder, "Your hold on the [name] is slipping: you need at least 6 stake from 4 residents there. You lose it in [province_rank_lose_hours(rank)] hours unless you recover.")
-			else if (now - row[3] >= province_rank_lose_hours(rank) * 36000)
+			else if (now - row[3] >= province_rank_lose_hours(rank) * 36000 && window)
 				province_tell_leaders(holder, "You have lost the [name].")
 				row[1] = null
 				row[2] = 0
@@ -137,7 +141,7 @@
 			if (holder)
 				province_tell_leaders(holder, "[province_group_name(contender)] now has more stake than you in the [name]. Hold it for [PROVINCE_GAIN_HOURS] hours or lose it.")
 			continue
-		if (now - row[5] < PROVINCE_GAIN_HOURS * 36000)
+		if (now - row[5] < PROVINCE_GAIN_HOURS * 36000 || !window)
 			continue
 		if (province_holdings_count(contender) >= PROVINCE_CAP_PER_LAND)
 			continue
@@ -181,7 +185,7 @@
 		parts += html_encode(rank)
 	if (islist(row) && row.len == 5)
 		if (holder && row[3])
-			parts += "slipping, [round(max(0, province_rank_lose_hours(province_rank_of(c)) * 36000 - (world.realtime - row[3])) / 36000)] h left"
+			parts += "slipping, [round(max(0, province_rank_lose_hours(province_rank_effective(c)) * 36000 - (world.realtime - row[3])) / 36000)] h left"
 		if (row[4])
 			parts += "[html_encode(province_group_name(row[4]))] taking it in [round(max(0, PROVINCE_GAIN_HOURS * 36000 - (world.realtime - row[5])) / 36000)] h"
 	return jointext(parts, ", ")

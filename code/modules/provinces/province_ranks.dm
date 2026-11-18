@@ -87,7 +87,7 @@ var/global/list/province_rank_checks = list()
 	var/best = 0
 	for (var/c in map.province_holders())
 		if (province_holder_of(c) == group)
-			best = max(best, province_rank_of(c))
+			best = max(best, province_rank_effective(c)) // province_siege.dm
 	return best * RANK_MEMBERS_PER_RANK
 
 // The extra a bed start costs in death knowledge, as returns (2 ** extra times
@@ -104,7 +104,7 @@ var/global/list/province_rank_checks = list()
 	var/c = P.char_at(T.x, T.y)
 	if (!c || province_holder_of(c) != group)
 		return 1
-	var/rank = province_rank_of(c)
+	var/rank = province_rank_effective(c)
 	if (rank < 3)
 		return 1
 	var/obj/structure/faction_hall/seat = province_seat(c, group)
@@ -433,11 +433,14 @@ var/global/list/province_rank_checks = list()
 		var/list/G = islist(groups) ? groups[group] : null
 		var/list/check = province_rank_check(c, group, islist(G) ? G[2] : 0, TRUE)
 		var/obj/structure/faction_hall/seat = check[2]
-		var/rank = province_rank_of(c)
+		var/rank = province_rank_effective(c)
 		if (seat != hall)
 			lines += "<p>This hall is not the seat: [seat ? "the [html_encode(seat.name)] at [seat.x],[seat.y] is" : "no standing hall is"].</p>"
 		lines += "<p>Rank: <b>[html_encode(province_rank_text(c) || "no rank yet")]</b>. Held [html_encode(province_holding_text(c))].</p>"
 		lines += "<p>[province_upkeep_text(c)]</p>"
+		if (province_rich_resource(c)) // province_rich.dm
+			lines += "<p>The [html_encode(name)] is rich in [province_rich_resource(c)]: its seam gives [province_rich_cap(c)] loads a day at this rank ([province_rich_left(c)] left today).</p>"
+		lines += "<p>[html_encode(province_siege_text(c))] Rivals can besiege the seat only in this window, and who holds the province changes only then.</p>"
 		lines += "<p>A rival needs [province_rank_margin(rank)] times your stake to take it, a hold that slips lasts [province_rank_lose_hours(rank)] hours, your side's best province adds [RANK_MEMBERS_PER_RANK] members a rank to each faction's limit, and a resident's bed start in this settlement costs [province_rank_bed_text(rank)] what a station start does.</p>"
 		var/list/table = list("<table class='regions'><tr><th>Rank</th><th>Needs</th><th></th></tr>")
 		for (var/list/row in check[4])

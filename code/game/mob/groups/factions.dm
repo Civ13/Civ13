@@ -16,6 +16,7 @@
 		verbs += /mob/living/human/proc/faction_papers
 		verbs += /mob/living/human/proc/faction_treaties
 		verbs += /mob/living/human/proc/province_holdings
+		verbs += /mob/living/human/proc/province_defence_window
 
 /mob/living/human/proc/make_nation()
 	if (map.civilizations)
@@ -36,6 +37,7 @@
 		verbs += /mob/living/human/proc/faction_papers
 		verbs += /mob/living/human/proc/faction_treaties
 		verbs += /mob/living/human/proc/province_holdings
+		verbs += /mob/living/human/proc/province_defence_window
 
 /mob/living/human/proc/make_tribesman()
 	verbs += /mob/living/human/proc/transfer_faction

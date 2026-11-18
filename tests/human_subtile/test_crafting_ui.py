@@ -69,6 +69,8 @@ def restore_crafting_projection(path, source):
             # (tests/bump_mining).
             ('\tif (!T.start_pickaxe_mining(src, P, TRUE))\n\t\treturn FALSE\n\thalt_held_movement_toward(T)\n\treturn TRUE\n',
              '\treturn T.start_pickaxe_mining(src, P, TRUE)\n'),
+            # A province's rich seam takes a pickaxe first (tests/provinces).
+            ('\tif (province_rich_attackby(src, C, user)) // province_rich.dm\n\t\treturn TRUE\n', ''),
         ):
             source = replace_reviewed_once(source, current, previous)
         # Mining balance is a separately checked production change. Invert only
@@ -82,7 +84,7 @@ def restore_crafting_projection(path, source):
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '044b56a40bdce30e3849786cec946a2c5f3c8139b5e1372f7bab0f5ee81c91be':
+        if hashlib.sha256(mining.encode()).hexdigest() != '379d8fd99464af8a1582feef04eda0c696189b23c8493443a474ba5dfd11d6b0':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]

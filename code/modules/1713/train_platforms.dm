@@ -394,6 +394,7 @@ var/global/train_step_plain = FALSE
 				list("edges" = list()),
 				list("edges" = rails)))
 		train_locomotive_layouts(layouts)
+		train_electric_layouts(layouts)
 	return layouts[kind]
 
 // How many tiles long a car of this kind is.

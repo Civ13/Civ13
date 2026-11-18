@@ -26,6 +26,7 @@
 	var/list/rows = list()
 	// Province character -> name, in file order.
 	var/list/names = list()
+	var/surface_z = 0 // the level the file was cut from (its z line)
 	var/error = null
 
 // The province character at x, y, or null.
@@ -59,6 +60,9 @@
 	if (P.maxx != world_maxx || P.maxy != world_maxy)
 		P.error = "size [size[2]]x[size[3]] does not match the world ([world_maxx]x[world_maxy])"
 		return P
+	var/list/zline = splittext(lines[3], " ")
+	if (zline.len == 2 && zline[1] == "z")
+		P.surface_z = text2num(zline[2])
 	var/i = 4 // line 3 names the surface z, which every level shares
 	while (i <= lines.len && findtext(lines[i], "province ") == 1)
 		var/rest = copytext(lines[i], 10)

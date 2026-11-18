@@ -14,10 +14,12 @@ given, so `apply_speed_class()` hands it the interval less that overhead.
 | Propeller plane at cruise, full throttle | 0.8 | ladder `car` x 0.5, `aircraft_step_delay` |
 | Propeller plane in low flight, full throttle | 1.2 | ladder `car` x 0.75, floor 1.2 |
 | Diesel locomotive, full throttle, rated load | 1.2 | `locomotive/max_train_speed` |
+| Electric locomotive under a live line, full throttle, rated load | 1.2 | `locomotive/max_train_speed` |
 | Car with a light hull (extra top gear) | 1.2 | ladder, load factor floor |
 | Main-line steam locomotive, full throttle, rated load | 1.4 | `locomotive/coal/mainline` |
 | Car, 5th gear | 1.6 | ladder `car` |
 | Steam locomotive, full throttle, rated load | 2 | `locomotive/coal/max_train_speed` |
+| Tram under a live line, full throttle | 2 | `locomotive/electric/tram` |
 | Motorcycle, 120cc or larger | 1.6 | `axis/bike/check_enginepower` |
 | Pedal bicycle, unloaded, on a road | 1.8 | `bicycle_step_delay` |
 | Person running | about 1.9 | `get_run_delay` |

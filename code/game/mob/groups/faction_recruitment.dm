@@ -536,6 +536,7 @@ var/global/list/recruitment_combat_skills = list("rifle", "pistol", "swords", "b
 	faction_rename_assoc_key(S["policies"], old_name, new_name)
 	faction_rename_assoc_key(S["audit"], old_name, new_name)
 	faction_roster_rename(old_name, new_name)
+	province_rename_faction(old_name, new_name) // province_siege.dm
 	var/list/apps = S["applications"]
 	for (var/id in apps)
 		var/list/A = apps[id]

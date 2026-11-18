@@ -206,7 +206,7 @@ var/global/mountain_seam_marked = FALSE
 	var/amount = 0
 	if (ore_type)
 		var/list/row = mountain_seam_ores()[ore_type]
-		amount = continent_seam_amount(ore_type, rand(row[3], row[4]))
+		amount = continent_seam_amount(ore_type, rand(row[3], row[4]), T)
 		if (amount < 1)
 			ore_type = null
 	var/obj/item/stack/material/stone/S = new /obj/item/stack/material/stone(T)

@@ -42,7 +42,7 @@ python3 scripts/provinces.py --map maps/nomads/nomads_gaia.dmm --z 2 \
 | Map | Surface z |
 | --- | --- |
 | nomads_gaia, nomads_desert, nomads_jungle | 2 |
-| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_africa | 1 |
+| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_africa, nomads_earth_asia | 1 |
 
 How the tool works:
 
@@ -169,6 +169,41 @@ Code: `code/modules/provinces/province_upkeep.dm`.
   Province Holdings warns the faction while the 14 days run. State:
   `faction_recruitment["province_ruins"]`: "char|faction" -> short since.
 
+## Sieges
+
+Code: `code/modules/provinces/province_siege.dm`.
+
+- **Defence window.** Every held province has a daily defence window of 3
+  hours (4 when the side holds two or more provinces of the land). A leader
+  picks its start among the server's 8 busiest hours with Faction > Defence
+  Window; a change takes effect 72 hours later and cannot be made while a
+  siege is declared. Until one is picked, the busiest hour is the start. The
+  busy hours are a slow average of active players by UTC hour, recorded with
+  each activity count.
+- **Holdings move only in the window.** A take or a loss that falls due
+  (`province_holding.dm`) waits until the province's window is open, so a side
+  asleep in another time zone cannot lose a province overnight.
+- **Declaring.** A leader of a rival faction plants a war banner (wood, the
+  economy section) in the province and declares at it. The faction must be 7
+  days old, have 4 members with 2 hours played on the land, and hold 100
+  silver in its strongbox. A province besieged lately is immune for 3 days, a
+  side whose siege failed waits 3 days, and on Gaia only a Town or City can be
+  besieged. The siege begins in the first window at least 24 hours later.
+- **The siege.** In the window the attackers capture the seat by standing
+  within 3 tiles of it with no connected defender there for 10, 15, 20 or 30
+  minutes (unranked or Camp, Village, Town, City). If nobody comes the deposit
+  is spent; if they came and the window closes, the siege fails. Breaking the
+  banner calls it off, with the same 3-day wait.
+- **Success** suspends one rank's benefits (margin, loss hours, members, bed
+  cost) for 7 days and makes the province immune for 3. Against a Camp or an
+  unranked holder, or on the same side's second success within 14 days, it
+  also starts the holder's loss warning.
+- State: `faction_recruitment["province_sieges"]`: char -> window, pending
+  window, siege, immunity, suspension, wins and cooldowns;
+  `["province_hours"]`: 24 hourly averages. The siege loop ticks every 10
+  seconds only while a siege is declared and restarts after a reboot from
+  the activity count. A faction rename carries all province state over.
+
 ## Continent resources
 
 Code: `code/modules/provinces/continent_resources.dm`. Each continent is rich
@@ -186,6 +221,7 @@ every age:
 | South America | gold, silver, bauxite |
 | Earth Europe | coal, zinc |
 | Earth Africa (replaces Desert and Jungle) | sulphur, tin |
+| Earth Asia | saltpeter, silver, gems and diamonds |
 
 - Away from their home, bulk ores (copper, tin, coal, zinc) and precious finds
   (silver, gold, diamonds, gems) come at half the rate, strategic ores
@@ -203,8 +239,43 @@ every age:
   once. Stockpiles are untouched.
 - Faction > Province Holdings and Admin > Land Status show the line.
 
-Still to come from the plan: rich provinces with renewable seams capped by
-rank, rubber trees, land oil only in the Desert, Gaia's crop bonus.
+## Rich provinces
+
+Code: `code/modules/provinces/province_rich.dm`.
+
+- Two provinces of each continent, three on one with more than 8, are rich in
+  one of its own resources, taking them in turn. They are the provinces with
+  the lowest `md5("<map id>|<char>|rich")`, so they follow the map and its
+  province file. There the resource comes three times as often instead of
+  twice (`continent_rate` with the mined turf).
+- Each has one **rich seam**: the open ground of the province nearest its
+  middle (sampled every 4 tiles), marked with the ore's sprite. A pickaxe
+  works it like a mountain seam (twice a rock wall's time) for a load of the
+  resource, without end, up to a daily cap: 4 loads unheld or unranked, then
+  6 / 10 / 16 / 24 for Camp to City (effective rank, so a won siege lowers
+  it). A side's third and later rich provinces on a land give half. Anyone can
+  work it; the holder decides who gets near. Resources open at their usual
+  age (iron Bronze, coal/lead/saltpeter/sulphur Iron, bauxite Industrial).
+- State: `faction_recruitment["province_rich"]`: char -> list(day, loads
+  taken). The marker is a runtime overlay, put back by each activity count.
+- Province Holdings, Land Status and the seat's ledger name them and the
+  seam's position.
+
+| Map | Rich provinces |
+| --- | --- |
+| nomads_gaia | West Riverlands (copper); North Coast (copper) |
+| nomads_jungle | North Jungle (tin); North-east Jungle (tin) |
+| nomads_americas_north | Central Riverlands (iron); Central Sands (lead); South Jungle (iron) |
+| nomads_europe | North-west Hills (coal); North-east Hills (zinc); East Hills (coal) |
+| nomads_asia | North-west Jungle (saltpeter); Central Sands (silver) |
+| nomads_desert | North-east Sands (sulphur); South-west Sands (sulphur) |
+| nomads_americas_south | West Jungle (gold); East Jungle (silver); North-east Jungle (bauxite) |
+| nomads_earth_europe | North Lowlands (coal); North-east Lowlands (zinc); South-east Riverlands (coal) |
+| nomads_earth_africa | North Sands (sulphur); East Jungle (tin); East Riverlands (sulphur) |
+| nomads_earth_asia | West Lowlands (saltpeter); North-west Riverlands (silver); South Jungle (saltpeter) |
+
+Still to come from the plan: an air cargo cap, rubber trees, land oil only in
+the Desert, Gaia's crop bonus.
 
 ## Checks
 
