@@ -51,7 +51,9 @@
 			return 0
 	if (!starch || !vegetables.len || nutrition < 4 || volume > reagents.maximum_volume)
 		return 0
-	if (protein && vegetables.len >= 2 && reagents.get_reagent_amount("sodiumchloride") >= 0.5)
+	// Seawater cooking leaves brine-strength salt: salty, not seasoned.
+	var/salt = reagents.get_reagent_amount("sodiumchloride")
+	if (protein && vegetables.len >= 2 && salt >= 0.5 && !reagents_are_brine(reagents, fullness))
 		return 3
 	return protein ? 2 : 1
 

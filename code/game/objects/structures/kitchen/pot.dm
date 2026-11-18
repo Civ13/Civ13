@@ -48,6 +48,24 @@
 	I.reagents.trans_to_holder(reagents, free)
 	visible_message("<span class = 'notice'>[H] pours the contents of [I] into the pot.</span>")
 
+// Filling the pot with water brings along whatever is dissolved in it, in the
+// same share as the water taken: seawater's salt and river germs go into the
+// pot instead of staying behind in the vessel. Boiling later kills the germs;
+// the salt stays in the food.
+/obj/structure/pot/proc/take_dissolved(obj/item/I, fraction, water_id)
+	if (fraction <= 0 || !I.reagents)
+		return
+	if (food_toxin_amounts(I.reagents).len)
+		note_food_toxin("[food_toxin_cause(I)], poured from [I.name]")
+	for (var/datum/reagent/D in I.reagents.reagent_list.Copy())
+		if (D.id == water_id)
+			continue
+		var/amount = min(D.volume * fraction, reagents.maximum_volume - reagents.total_volume)
+		if (amount <= 0)
+			continue
+		reagents.add_reagent(D.id, amount, D.data)
+		I.reagents.remove_reagent(D.id, amount)
+
 /obj/structure/pot/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
@@ -74,6 +92,7 @@
 		else
 			// Only take the water that fits; the rest stays in the vessel.
 			var/rem = min(R.volume, 100 - fullness)
+			take_dissolved(I, rem / R.volume, R.id)
 			I.reagents.remove_reagent(R.id, rem)
 			fullness += rem
 			fullness = min(fullness, 100)
@@ -154,6 +173,7 @@
 		if (bowls <= 0)
 			state = STATE_EMPTY
 			food_toxin_origin = null
+			reagents.clear_reagents()
 			stew_desc = ""
 			stew_nutriment_desc.Cut()
 			stew_nutriment = 0
@@ -229,6 +249,9 @@
 								stew_nutriment += round(F.reagents.get_reagent_amount("nutriment")/bowls)
 								stew_protein += round(F.reagents.get_reagent_amount("protein")/bowls)
 								stew_nutriment_desc |= F.name
+					// Boiling kills germs from the water, but salt stays in the stew.
+					reagents.del_reagent("food_poisoning")
+					reagents.kill_germs()
 					for (var/datum/reagent/R in reagents.reagent_list)
 						R.volume /= bowls
 					reagents.update_total()
@@ -245,7 +268,7 @@
 
 /obj/structure/pot/examine(mob/user)
 	..(user)
-	to_chat(user, "Prepare meal: full water, potato or corn, and carrot, cabbage or tomato. Add meat or beans for hearty stew; two different vegetables and half a unit of salt make it seasoned. Keep a lit fire within one tile during preparation. Three bowls share the actual ingredients.")
+	to_chat(user, "Prepare meal: full water, potato or corn, and carrot, cabbage or tomato. Add meat or beans for hearty stew; two different vegetables and half a unit of salt make it seasoned. Boiling kills germs in the water, but seawater leaves its salt in the pot: the meal comes out too salty to count as seasoned and makes you thirsty. Keep a lit fire within one tile during preparation. Three bowls share the actual ingredients.")
 	if (meal_portions)
 		to_chat(user, "Prepared meal quality [meal_quality]/3: [meal_portions] portions remain.")
 	if (state == STATE_STEWING && stew_desc)
@@ -281,10 +304,11 @@
 		visible_message("<span class = 'warning'>[usr] finishes emptying the pot.</span>")
 		state = STATE_EMPTY
 		food_toxin_origin = null
+		// Tipping the pot out pours away its water and anything dissolved in it.
+		reagents.clear_reagents()
+		fullness = 0
 		if (meal_portions)
-			reagents.clear_reagents()
 			meal_portions = 0
 			meal_quality = 0
 			meal_has_meat = FALSE
-			fullness = 0
 		update_icon()
