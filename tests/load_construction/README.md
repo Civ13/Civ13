@@ -26,6 +26,10 @@ The run fails in any of these cases:
   pair no longer drifts (remove it);
 - the sweep does not finish within `--timeout` seconds.
 
+CI runs the sweep in the build job on every change that compiles the game, and
+its three negative controls when the suite is introduced or extensive
+regressions are requested.
+
 Progress lines in the evidence `runtime.log` (one every 200 types) narrow a
 stall down. Use `--range START STOP` to bisect it.
 

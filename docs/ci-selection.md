@@ -191,6 +191,11 @@ When introducing a new suite, add a guarded step/job using the reusable
 if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests), 'tests/new_suite')
 ```
 
+One native suite runs on every game build instead (Val, 2026-11-18):
+`tests/load_construction/run.py` constructs every saveable type the way a load
+does, right after compilation. Its negative controls keep the introduced-test
+guard above.
+
 New standalone workflows must expose `workflow_dispatch` and use the same
 introduced-test guard on their test job. The detector does not execute arbitrary
 new tests: a reviewed workflow step must register the suite runner. Grouped

@@ -146,7 +146,8 @@
 	decay = 20*600
 	New()
 		..()
-		icon_state = pick("poop1", "poop2", "poop3", "poop4", "poop5", "poop6", "poop7")
+		if (!restoring) // a load keeps the saved look
+			icon_state = pick("poop1", "poop2", "poop3", "poop4", "poop5", "poop6", "poop7")
 		reagents.add_reagent("poo", 10)
 		biteamount = 3
 
@@ -159,7 +160,8 @@
 	fertilizer_value = 10
 	New()
 		..()
-		icon_state = pick("animal1", "animal2", "animal3")
+		if (!restoring) // a load keeps the saved look
+			icon_state = pick("animal1", "animal2", "animal3")
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer
 	name = "compost"
@@ -170,7 +172,8 @@
 	fertilizer_value = 60
 	New()
 		..()
-		icon_state = pick("animal1", "animal2", "animal3")
+		if (!restoring) // a load keeps the saved look
+			icon_state = pick("animal1", "animal2", "animal3")
 
 /obj/item/stack/dung
 	icon = 'icons/effects/pooeffect.dmi'

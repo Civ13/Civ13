@@ -15,7 +15,6 @@
 /datum/category_item/player_setup_item/general
 /datum/category_item/player_setup_item/general/basic
 /datum/category_item/player_setup_item/general/body
-/datum/category_item/player_setup_item/general/test
 /datum/category_item/player_setup_item/player_global
 /datum/category_item/player_setup_item/player_global/settings
 /datum/extension            # nothing attaches extensions to saved atoms

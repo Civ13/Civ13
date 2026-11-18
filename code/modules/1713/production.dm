@@ -2239,9 +2239,12 @@
 	else
 		to_chat(user, "<span class='notice'>The [src] is less than half full and the composting process is in progress.</span>")
 
+// A load starts composting in after_load, once the saved stock is in. Here it
+// would sweep saved waste lying nearby into a stock the load then overwrites.
 /obj/structure/compost/New()
 	..()
-	initialize()
+	if (!restoring)
+		initialize()
 
 /obj/structure/compost/proc/add(var/obj/item/W, var/mob/living/human/H, amount_to_add)
 	current += amount_to_add
