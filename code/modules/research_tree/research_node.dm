@@ -1449,6 +1449,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/power_meter" = "electricity",
 		"/obj/structure/power_point/outlet" = "electricity",
 		"/obj/structure/power_point/pole" = "electricity",
+		// Electric traction (train_electric.dm).
+		"/obj/structure/train_catenary" = "electricity",
+		"/obj/structure/train_car_kit/loco_electric" = "electricity",
+		"/obj/structure/train_car_kit/loco_tram" = "electricity",
 		"/obj/structure/civ_generator/waterwheel" = "electricity",
 		"/obj/structure/plating_bath" = "electricity",
 		"/obj/structure/aluminium_works/digester" = "aluminium_refining",

@@ -993,7 +993,7 @@ var/global/train_solo_move = FALSE
 				to_chat(user, "[start_text] first.")
 				return
 			if (steam_factor() <= 0)
-				to_chat(user, "<span class = 'warning'>There is not enough steam yet. Wait for the pressure to rise.</span>")
+				to_chat(user, "<span class = 'warning'>[no_power_text()]</span>")
 				return
 			throttle = min(LOCO_NOTCHES, throttle + 1)
 			braking = FALSE
@@ -1062,6 +1062,14 @@ var/global/train_solo_move = FALSE
 	return 1
 
 /obj/structure/trains/locomotive/proc/boiler_tick()
+	return
+
+// What the driver is told when steam_factor() gives nothing to pull with.
+/obj/structure/trains/locomotive/proc/no_power_text()
+	return "There is not enough steam yet. Wait for the pressure to rise."
+
+// The drive loop has ended and the train stands (train_electric.dm).
+/obj/structure/trains/locomotive/proc/drive_ended()
 	return
 
 /obj/structure/trains/locomotive/proc/steam_use(notch, weight, tiles = 1)
@@ -1294,6 +1302,7 @@ var/global/train_solo_move = FALSE
 		driving = FALSE
 		automovement = FALSE
 		set_light(0)
+		drive_ended()
 
 // Forward: the front car of the train leads. When that is not this engine,
 // the engine pushes it, burning its own fuel.
