@@ -2447,7 +2447,7 @@ class HandoverTests(unittest.TestCase):
                         'handover': world['handover'], 'error': save_error if world['handover'] == 'saving' else None}
             if port == me.STANDBY:
                 if action == 'standby_load':
-                    standby['standby'] = 'loading'
+                    standby.update(standby='loading', operation=operation)
                     return {'ok': True, 'operation': operation}
                 if action == 'standby_open':
                     standby['standby'] = None
@@ -2463,14 +2463,14 @@ class HandoverTests(unittest.TestCase):
                         standby['standby'] = 'loaded'
                 ready = standby['standby'] == 'loaded'
                 return {'ok': True, 'ready': ready, 'busy': False, 'session': me.STANDBY_SESSION, 'standby': standby['standby'],
-                        'restart_hold': not ready, 'error': None}
+                        'operation': standby.get('operation'), 'restart_hold': not ready, 'error': None}
             raise OSError('nothing listens on %d' % port)
 
         machine.query = query
         start_standby = machine.start_standby
 
         def boot(dmb, port):
-            standby.update(standby=None, loading=0)  # a fresh process
+            standby.update(standby=None, loading=0, operation=None)  # a fresh process
             machine.up.add(port)
             return start_standby(dmb, port)
         machine.start_standby = boot
@@ -2766,6 +2766,73 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(self.machine.up, set(), 'neither world runs')
         self.assertFalse(host.running_file.exists(), 'the watchdog leaves it down')
         self.assertEqual(host.built_revision(), REVISION)
+
+    def late(self, trigger, times=1, taken=True):
+        """trigger gets no reply in time (a big map's world past the 15 s reply), times over;
+        taken: the world still did what it asked."""
+        query = self.machine.query
+        late = []
+
+        def slow(port, token, action='status', operation=None, session=None, extra=None):
+            if action == trigger and len(late) < times:
+                late.append(action)
+                if taken:
+                    query(port, token, action, operation, session, extra)
+                raise TimeoutError('timed out')
+            return query(port, token, action, operation, session, extra)
+        self.machine.query = slow
+        return late
+
+    def test_a_standby_load_answered_late_is_not_a_failed_handover(self):
+        # Earth Europe, 2026-11-18: standby_load timed out at 15 s while the standby opened the save.
+        group, host = self.staged()
+        late = self.late('standby_load')
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertEqual(late, ['standby_load'])
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'], 'sent once')
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_a_standby_load_that_was_not_taken_is_sent_again(self):
+        group, host = self.staged()
+        self.late('standby_load', taken=False)
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'])
+
+    def test_a_handover_release_answered_late_still_switches(self):
+        # Oceania and Antarctica, 2026-11-18: handover_release timed out and left a loaded standby running.
+        group, host = self.staged()
+        self.late('handover_release')
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertIn(self.LIVE, self.machine.up, 'the new world answers on the region port')
+
+    def test_a_handover_release_not_taken_is_sent_again(self):
+        group, host = self.staged()
+        self.late('handover_release', taken=False)
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'])
+
+    def test_a_release_that_never_answers_stops_the_standby(self):
+        group, host = self.staged()
+        self.late('handover_release', times=10 ** 6, taken=False)
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertIn('handover_release', state['error'])
+        self.assertIn((['kill_tree', 200], None), self.machine.calls, 'the loaded standby is stopped')
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names[-1], 'handover_cancel', 'the old world resumes')
+        self.assertIn(self.LIVE, self.machine.up, 'the old world stays the region')
 
     def test_a_forced_handover_is_not_counted_as_a_failed_build(self):
         group, host = self.staged()

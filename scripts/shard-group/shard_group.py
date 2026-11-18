@@ -100,6 +100,10 @@ STANDBY_PORT_OFFSET = 10  # the standby's loopback control port unless the regio
 STANDBY_LOG = 'logs/world.standby.log'
 SWITCH_SECONDS = 120  # how long the old world may take to close its port after it is released
 OPEN_SECONDS = 180  # how long the loaded standby is asked to take the region port
+# A world answers a request only at its next yield, and a large land can run longer than the
+# 15 s reply time first: Earth Europe's standby_load and the Oceania and Antarctica
+# handover_release timed out that way (2026-11-18). How long such a request is checked and resent.
+ASK_SECONDS = 180
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
 DEFAULT_UPDATE_CHECK_MINUTES = 5  # how often an empty or sleeping region fetches to look for an update
 DEFAULT_MIN_FREE_DISK_MB = 2048  # stage and handover refuse below this much free disk (min_free_disk_mb)
@@ -1571,7 +1575,9 @@ class RegionHost(Host):
             # load added to the pause). Both only read map_saves; the switch waits for it.
             backup = self.start_backup(saves, backups, operation)
             self.record(phase='loading the standby', generation=generation, backup=str(backups / operation))
-            answer = self.platform.query(spare_port, token, 'standby_load', operation, standby_session)
+            answer = self.ask_world(spare_port, token, 'standby_load', operation, standby_session,
+                                    taken=lambda s: s.get('operation') == operation,
+                                    untaken=lambda s: s.get('standby') == 'waiting')
             if answer.get('operation') != operation:
                 raise RuntimeError('the standby world did not accept the load: %s' % (answer.get('error') or 'no operation in its reply'))
             self.wait_world(spare_port, token, lambda s: s.get('ready') and not s.get('restart_hold'),
@@ -1596,7 +1602,19 @@ class RegionHost(Host):
             self.stop_standby(spare_port, standby_pid)
             raise
         self.record(phase='switching')
-        self.platform.query(port, token, 'handover_release', operation, session)
+        try:
+            self.ask_world(port, token, 'handover_release', operation, session,
+                           taken=lambda s: s.get('handover') == 'released', untaken=lambda s: s.get('handover') == 'saved',
+                           gone_is_taken=True)
+        except Exception:
+            # Not released: the old world stays the region, so the loaded standby must not keep
+            # its port (the next handover would be refused with the standby port in use).
+            self.stop_standby(spare_port, standby_pid)
+            try:
+                self.platform.query(port, token, 'handover_cancel', operation, session)
+            except (OSError, RuntimeError, ValueError):
+                pass
+            raise
         # world.OpenPort on a port another process still holds fails and closes the standby's
         # own port (measured on 516.1688), so the old world's port must be free first.
         deadline = self.platform.now() + SWITCH_SECONDS
@@ -1653,6 +1671,35 @@ class RegionHost(Host):
         except (OSError, RuntimeError) as error:
             self.record(checkout_warning=str(error)[:300])
         self.record(phase='handed over', revision=revision, generation=generation, build=spare, staged=True)
+
+    def ask_world(self, port, token, action, operation, session, taken, untaken, gone_is_taken=False):
+        """Send a handover request that a busy world may answer late. A request that gets no
+        reply in time (OSError: a timeout or reset, not a refusal) is checked through status:
+        taken(status) means the world took it, untaken(status) that it did not, so it is sent
+        again. A refusal raises at once. Returns the reply or the status that showed it taken."""
+        deadline = self.platform.now() + ASK_SECONDS
+        while True:
+            try:
+                return self.platform.query(port, token, action, operation, session)
+            except OSError as error:
+                self.record(phase='%s got no reply in time (%s); checking the world' % (action, error))
+                last = error
+            while True:
+                if self.platform.now() > deadline:
+                    raise RuntimeError('%s: the world did not answer (%s)' % (action, last))
+                self.platform.sleep(5)
+                if not self.platform.listening(port):
+                    if gone_is_taken:
+                        return {'ok': True}
+                    continue
+                try:
+                    status = self.platform.query(port, token)
+                except (OSError, RuntimeError, ValueError):
+                    continue  # still busy
+                if taken(status):
+                    return status
+                if untaken(status):
+                    break  # send it again
 
     def wait_world(self, port, token, done, timeout, what, standby=False):
         """Poll a world's lifecycle status until done(status) is true; its status.
