@@ -206,9 +206,11 @@ var/global/datum/open_air_client_probe/open_air_client_probe = new
 		floor_patch(up, centre.x - 6, centre.y - 1, centre.x - 4, centre.y + 1)
 		var/turf/roof = locate(centre.x - 5, centre.y, up)
 		// Who and what stands below.
+		var/list/below_people = list()
 		for(var/i in 0 to 2)
 			var/mob/living/human/P = new(locate(centre.x + i, centre.y + 1 - i, centre.z))
 			P.dir = SOUTH
+			below_people += P
 		new /mob/living/simple_animal/deer(locate(centre.x + 2, centre.y + 2, centre.z))
 		new /obj/structure/closet/crate(locate(centre.x - 1, centre.y - 2, centre.z))
 		// A wooden floor on the ground, which must show over the ground turf.
@@ -223,7 +225,21 @@ var/global/datum/open_air_client_probe/open_air_client_probe = new
 		var/turf/sky/building/over = locate(centre.x, centre.y, up)
 		require(over.open_air_view && over.open_air_view.shows == centre, "The cell over the centre does not show the ground")
 		pass("cells_linked", list("views" = views))
+		// People below are shown by proxies on the open-air cells above them.
+		for(var/mob/living/human/P in below_people)
+			require(P.open_air_proxy && P.open_air_proxy.loc == locate(P.x, P.y, up) && (P in P.open_air_proxy.vis_contents), "[P] below has no proxy above it")
+		pass("proxies_shown")
 		shot("1_roof_midday")
+		// One of them walks two tiles east; the proxy follows (it glides in
+		// game; the still shows where it ends up).
+		var/mob/living/human/walker = below_people[1]
+		var/obj/effect/open_air_proxy/WP = walker.open_air_proxy
+		for(var/step in 1 to 2)
+			walker.Move(get_step(walker, EAST), EAST)
+			sleep(5)
+		require(walker.open_air_proxy == WP && WP.loc == locate(walker.x, walker.y, up), "The proxy did not follow the walker")
+		pass("proxy_follows_walker")
+		shot("6_after_walk")
 		mark("dark_night")
 		set_daylight("Dark Night")
 		shot("2_roof_night")
