@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '6b1b1c0df449cc9cf6dc865d5953df7ccd70f05a'
+WIKI_REVIEWED_REVISION = '8838f64514f20440250eda65e996ce50bfffeb8f'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('517b343000115473ef20f620eaddff20bd77414bd469a96fa8db57179074fffc', 'character skills traits languages'),
@@ -78,7 +78,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('475ff55f74e75f793f96017ef22bd1d55ad7c97c65b9004dff9248c884393ba3', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('15c4e063bd9826fa9c4410f0000c747706f2d702401a53c994a211edde991293', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('ba33f58bb26dee02bb94dc91ade0bae6fee3effa9f775536be396ef5567eafcf', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('24b870c09bbebbf103a2d14ba1a5c149d11b55ae5603d48838ea357896f8f16b', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('78978bc3f36321ef3ec2faac33df4f26aca6a519962b88fa5d8a474db8b01f19', 'exercise training strength weights running fatigue'),
@@ -99,7 +99,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Resource_Extraction.md': ('fb49a558b9496163d62a4b8243cdc8eccb8992c849939d88a6ef56267428da38', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('c2296407eb2fb037c88c89e26ed0fbb5a5c5a34a679d8286b7a034e463ce8b7c', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('fdfc149841f0ef717de53abd3e2101306d14afe82c4dfe4ce108cbf16cc42759', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Trains.md': ('c0cf3d2d1ac6d0111bd697c8562718c801491f373542248a9a2a17c466b447fe', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Weapons.md': ('53212ce39296517ee1be760209af2d6787fca5fbd0fb4bea341db726da11416a', 'weapons gun reload ammunition'),

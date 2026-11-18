@@ -548,6 +548,44 @@ Four items put somebody in charge of the train behind the engine. All are
   one of `train_hand_signals()` to everyone in sight and tells the people in
   every cab of the train the signaller is aboard or beside.
 
+## Signals
+
+Code: `code/modules/1713/train_signals.dm`. Tests: the `signals/` checks of
+`tests/train_platforms`.
+
+Everything here is `rail_steam`. Nothing stops a train by itself: signals and
+tokens tell the crew what to do, and mark who did not.
+
+- **Lineside posts** (`/obj/structure/train_lineside`) stand up to two tiles
+  to the side of the centre of the track and speak to trains running their
+  `dir`; a wrench turns one. They are kept in `train_lineside`. The driving
+  engine calls `lineside_watch()` when it starts and each time the train is
+  counted (every six tiles): a post up to ten tiles ahead of the leading car
+  is read out to `cab_crew()` once (`sighting()`), and one that was read and
+  is no longer ahead is passed (`passed_by()`).
+- **Semaphore signal** (`/obj/structure/train_lineside/signal`, 4 iron).
+  Danger until put to clear (`set_clear()`), by hand at the post. A train that
+  passes it at danger is seen to, `passed` counts it and its frame rings.
+- **Lever frame** (`/obj/structure/train_lever_frame`, 10 iron) works up to
+  eight signals and switch levers within forty tiles. A **coil of signal wire**
+  (`/obj/item/train_signal_wire`, 2 iron) used on the frame and then on a
+  signal or `/obj/structure/train_lever` writes the frame's `frame_id` to
+  their `worked_by`; used again it takes them off. What is wired does not
+  move by hand. `pull()` works one lever and `locked_by()` is the
+  interlocking: a signal does not clear while a wired signal that faces it
+  along the same line is clear (`train_signals_oppose()`), a switch does not
+  move while a wired signal within ten tiles of it is clear, and a signal
+  always goes back to danger.
+- **Token instruments** (`/obj/structure/train_token_instrument`, 8 iron)
+  are wired as a pair with the same wire, up to 150 tiles apart, and share a
+  `section`. `draw_token()` gives the one `/obj/item/train_token` of the
+  section, and no second while it exists; `restore_token()` takes it back at
+  either end.
+- **Section board** (`/obj/structure/train_lineside/board`, 3 wood), marked
+  for a section with the wire from a paired instrument. The cab is told
+  whether `carries_token()` holds: the token is in a pocket, in a hand or on
+  the floor of an engine of the train. Passing without it is seen and counted.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:
@@ -582,6 +620,38 @@ crawl) a train shoves a person off the rails with 5 damage and stops in front
 of furniture without breaking it. Faster, it deals up to 250 damage, knocks the
 person down beside the track and keeps going from 1 up; damage to objects and
 to both trains in a train-on-train bump scales the same way.
+
+## Leaving the rails
+
+Code: `code/modules/1713/train_derail.dm`. Tests: the `derail/` checks of
+`tests/train_platforms`.
+
+A derailment is not a crash: nothing is smashed, but the cars that come off
+(`derailed`, on every `/obj/structure/trains`) stop their train like a wreck
+does until they are put back.
+
+- **Too fast round a curve or through the branch of a switch.** After each
+  step the drive loop calls `curve_check()` with the leading car and where it
+  stood and faced: when it turned, or stepped sideways, at more than
+  `TRAIN_CURVE_SPEED` (3 tiles a second) the train leaves the rails. One
+  car or engine comes off, two from 1.5 times the limit and three from twice.
+  The first notch of every engine is under the limit.
+- **Off the end of the rails.** When the train could not step, the loop calls
+  `overrun_check()`: no rail ahead, no buffer stop under the leading car and
+  more than `TRAIN_OVERRUN_SPEED` (2 tiles a second) puts the leading car on
+  the ground. A lifted rail does the same.
+- `leave_rails()` takes the cars in the order they run, derails the leading
+  units (`train_unit_come_off()`: the leading half of a car, a whole heavy
+  engine with `set_derailed()`), stops the train and throws its riders with
+  `crash_jolt()`. Small one-tile engines only lose their fire, as in a crash.
+- **Rerailing.** A **rerailing jack** (`/obj/item/train_jack`, 6 iron,
+  `rail_steam`) on a derailed section lifts it back (`rerail()`), a section
+  at a time; there has to be rail under it (`rerail_problem()`). A heavy
+  engine also needs `train_breakdown_crane()`: the crane of a braced crane
+  car with fuel within five tiles, which spends one haul.
+
+Not built: damaged rails (rails have no wear) and trailing a switch set the
+wrong way (the track model has no trailing switches).
 
 ## Wheel slip and sand
 

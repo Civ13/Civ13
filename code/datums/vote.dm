@@ -115,7 +115,7 @@ var/global/last_persistence_save_vote_time = 0
 		active_request.completion = completion.Copy()
 		time_remaining = round(duration / 10)
 		for (var/client/C in clients)
-			if (C) show_browse(C, interface(C), "window=vote;size=500x800")
+			if (C) show_window(C, TRUE)
 		return active_request
 	var/initiator = null
 	var/started_time = null
@@ -125,7 +125,8 @@ var/global/last_persistence_save_vote_time = 0
 	var/default = null
 	var/list/choices = list()
 	var/list/voted = list()
-	var/list/voting = list()
+	var/list/voting = list() // clients with the vote window open
+	var/tally_changed = FALSE // a vote came in since the open windows were last updated
 	var/list/current_votes = list()
 	var/list/additional_text = list()
 	var/win_threshold = 0.65
@@ -170,10 +171,12 @@ var/global/last_persistence_save_vote_time = 0
 
 			if (world.time >= H.deadline)
 				result(H)
-			else
-				for (var/client/C in voting.Copy())
-					if (C)
-						show_browse(C, vote.interface(C),"window=vote")
+			else if (tally_changed)
+				// The open window counts down by itself, so it is only told about new
+				// vote counts. Re-sending the whole page every second reloaded it in
+				// front of every voter and reopened it after they had closed it.
+				tally_changed = FALSE
+				push_tally()
 
 	proc/autogamemode()
 		if (!map.gamemode_vote)
@@ -388,6 +391,7 @@ var/global/last_persistence_save_vote_time = 0
 				voted |= ckey
 				choices[choices[vote]]++	//check this
 				current_votes[ckey] = vote
+				tally_changed = TRUE
 				return vote
 		return FALSE
 
@@ -576,10 +580,35 @@ var/global/last_persistence_save_vote_time = 0
 
 			for (var/client/C in clients)
 				if (C)
-					show_browse(C, interface(C), "window=vote;size=500x800")
+					show_window(C, TRUE)
 
 			return TRUE
 		return FALSE
+
+	// Opens (or redraws) the vote window for one client. Closing it with the
+	// title bar X tells Topic, so a closed window stays closed.
+	proc/show_window(client/C, sized = FALSE)
+		if (!C)
+			return
+		show_browse(C, interface(C), sized ? "window=vote;size=500x800" : "window=vote")
+		if (C.mob)
+			onclose(C.mob, "vote", src)
+
+	// Sends the current vote counts and seconds left to every open vote window
+	// without reloading it.
+	proc/push_tally()
+		if (!mode)
+			return
+		var/list/counts = list()
+		for (var/i = 1, i <= choices.len, i++)
+			counts += (choices[choices[i]] || 0)
+		var/list/data = list("generation" = generation, "counts" = counts, "left" = time_remaining)
+		var/payload = list2params(list(json_encode(data)))
+		for (var/client/C in voting.Copy())
+			if (!C)
+				voting -= C
+				continue
+			C << output(payload, "vote.browser:voteUpdate")
 
 	proc/interface(var/client/C)
 		if (!C)	return
@@ -592,7 +621,7 @@ var/global/last_persistence_save_vote_time = 0
 		if (mode)
 			if (question)	. += "<h2>Vote: '[question]'</h2>"
 			else			. += "<h2>Vote: [capitalize(mode)]</h2>"
-			. += "Time Left: [time_remaining] s<hr>"
+			. += "Time Left: <span id='vote-left'>[time_remaining]</span> s<hr>"
 			. += "<table width = '100%'><tr><td align = 'center'><b>Choices</b></td><td align = 'center'><b>Votes</b></td>"
 			if (admin)
 				. += "<td align = 'center'><b>Admin</b></td>"
@@ -620,9 +649,9 @@ var/global/last_persistence_save_vote_time = 0
 				if (disabled.Find(choices[i]))
 					continue
 				else if (current_votes[C.ckey] == i)
-					. += "<td><b><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a></b>[display_desc]</td><td align = 'center'>[votes]</td>"
+					. += "<td><b><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a></b>[display_desc]</td><td align = 'center' id='vote-count-[i]'>[votes]</td>"
 				else
-					. += "<td><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center'>[votes]</td>"
+					. += "<td><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center' id='vote-count-[i]'>[votes]</td>"
 				if (additional_text.len >= i)
 					. += additional_text[i]
 				if (admin)
@@ -630,6 +659,19 @@ var/global/last_persistence_save_vote_time = 0
 				. += "</tr>"
 
 			. += "</table><hr>"
+			// Counts down locally and takes new counts from push_tally().
+			. += {"<script>
+var voteGen = [generation];
+var voteLeft = [time_remaining];
+function voteShowLeft() { var e = document.getElementById('vote-left'); if (e) e.innerHTML = Math.max(0, voteLeft); }
+setInterval(function () { voteLeft--; voteShowLeft(); }, 1000);
+function voteUpdate(json) {
+	var d; try { d = JSON.parse(json); } catch (err) { return; }
+	if (!d || d.generation != voteGen) return;
+	voteLeft = d.left; voteShowLeft();
+	for (var i = 0; i < d.counts.length; i++) { var c = document.getElementById('vote-count-' + (i + 1)); if (c) c.innerHTML = d.counts\[i\]; }
+}
+</script>"}
 			if (admin)
 				. += "(<a href='?src=\ref[src];generation=[generation];vote=end' title='Close the vote now on the current votes'>End Vote Now</a>) "
 			if (admin && mode != "map")
@@ -664,6 +706,9 @@ var/global/last_persistence_save_vote_time = 0
 
 	Topic(href,href_list[],hsrc)
 		if (!usr || !usr.client)	return	//not necessary but meh...just in-case somebody does something stupid
+		if (href_list["close"]) // closed with the title bar X (see show_window)
+			voting -= usr.client
+			return
 		if (href_list["vote"] && (mode || href_list["generation"]) && text2num(href_list["generation"]) != generation) return
 		switch(href_list["vote"])
 			if ("close")
@@ -727,4 +772,4 @@ var/global/last_persistence_save_vote_time = 0
 	set name = "Vote"
 
 	if (vote)
-		show_browse(src, vote.interface(client),"window=vote;size=500x800")
+		vote.show_window(client, TRUE)

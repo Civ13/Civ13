@@ -608,6 +608,61 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('ticket', states)
         self.assertIn('ticket_punched', states)
 
+    def test_signals_frames_and_tokens(self):
+        signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_signals.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the cab reads the line when it starts and each time the train is counted
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward()')]
+        self.assertEqual(drive.count('lineside_watch()'), 2)
+        self.assertLess(drive.index('lineside_seen = null'), drive.index('spawn(0)'))
+        self.assertLess(drive.index('deadman_watch()'), drive.rindex('lineside_watch()'))
+        # a wired signal or switch does not move by hand
+        self.assertIn('if (worked_by && train_frame_by_id(worked_by, src))', signals)
+        lever = TRAINS[TRAINS.index('/obj/structure/train_lever/attack_hand('):]
+        self.assertLess(lever.index('train_frame_by_id(worked_by, src)'), lever.index('throw_switch("split")'))
+        # a signal always goes back to danger; the token is one object
+        self.assertIn('\t\tif (S.clear)\n\t\t\treturn null // a signal always goes back to danger\n', signals)
+        self.assertIn('\tif (train_token_out(section))\n', signals)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, signals)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for path, recipe, state in (
+                ('/obj/structure/train_lineside/signal', '/material/iron/,semaphore signal,/obj/structure/train_lineside/signal,4,', 'signal_danger'),
+                ('/obj/structure/train_lever_frame', '/material/iron/,lever frame,/obj/structure/train_lever_frame,10,', 'lever_frame'),
+                ('/obj/structure/train_token_instrument', '/material/iron/,token instrument,/obj/structure/train_token_instrument,8,', 'token_instrument'),
+                ('/obj/item/train_signal_wire', '/material/iron/,coil of signal wire,/obj/item/train_signal_wire,2,', 'signal_wire'),
+                ('/obj/structure/train_lineside/board', '/material/wood/,section board,/obj/structure/train_lineside/board,3,', 'section_board')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+            self.assertIn('icon_state = "%s"' % state, signals)
+            self.assertIn(state, states)
+        self.assertIn('signal_clear', states)
+        self.assertIn('train_token', states)
+
+    def test_trains_leave_the_rails_and_are_rerailed(self):
+        derail = (ROOT / 'code/modules/1713/train_derail.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_derail.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        self.assertIn('#define TRAIN_CURVE_SPEED 3 ', derail)
+        self.assertIn('#define TRAIN_OVERRUN_SPEED 2 ', derail)
+        # the first notch of the fastest engine is under the curve limit
+        fastest = min(float(v) for v in re.findall(r'max_train_speed = ([0-9.]+)', LOCOS + TRAINS))
+        self.assertLess(10 / fastest / 3, 3)
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward()')]
+        self.assertLess(drive.index('overrun_check()'), drive.index('if (curve_check(lead, lead_dir, lead_from))'))
+        self.assertIn('\treturn broken_down || derailed\n', TRAINS)
+        self.assertIn('if (P.wrecked || P.braced || P.derailed)', PLATFORMS)
+        servicing = (ROOT / 'code/modules/1713/train_servicing.dm').read_text(encoding='utf-8')
+        self.assertIn('\tif (istype(W, /obj/item/train_jack))\n\t\treturn jack_use(W, user)\n', servicing)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, derail)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        self.assertIn('RECIPE: /material/iron/,rerailing jack,/obj/item/train_jack,6,', RECIPES)
+        self.assertIn('"/obj/item/train_jack" = "rail_steam"', NODES)
+        self.assertIn('derailed', states)
+        self.assertIn('rerail_jack', states)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])

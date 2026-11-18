@@ -35,5 +35,28 @@ class SwordSheathUnlock(unittest.TestCase):
                 self.assertGreaterEqual(rows[path], sword_max)
 
 
+class SampleNode(unittest.TestCase):
+    """A subtype mapped to its own node must not count as a sample for its parent's node."""
+
+    def nearest_node(self, path):
+        mapping = dict(re.findall(r'"(/obj/[\w/]+)"\s*=\s*"(\w+)"', NODES.read_text(encoding='utf-8-sig')))
+        best = max((p for p in mapping if path == p or path.startswith(p + '/')), key=len)
+        return mapping[best]
+
+    def test_small_sheaths_are_not_bronze_samples(self):
+        self.assertEqual(self.nearest_node('/obj/item/clothing/accessory/storage/sheath'), 'bronze_weapons')
+        self.assertEqual(self.nearest_node('/obj/item/clothing/accessory/storage/sheath/knife'), 'basic_tools')
+        self.assertEqual(self.nearest_node('/obj/item/clothing/accessory/storage/sheath/neck'), 'basic_tools')
+
+    def test_sample_checks_use_nearest_node(self):
+        bench = (ROOT / 'code/modules/research_tree/research_bench.dm').read_text(encoding='utf-8-sig')
+        book = (ROOT / 'code/modules/research_tree/book_research.dm').read_text(encoding='utf-8-sig')
+        self.assertEqual(bench.count('research_sample_node(W) != assigned_node'), 1)
+        self.assertEqual(book.count('research_sample_node(W) != assigned_node'), 1)
+        self.assertEqual(book.count('research_sample_node(W) == assigned_node'), 1)
+        helper = NODES.read_text(encoding='utf-8-sig').split('/proc/research_sample_node(obj/W)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('plen > best_len && istype(W, ptype)', helper)
+
+
 if __name__ == '__main__':
     unittest.main()

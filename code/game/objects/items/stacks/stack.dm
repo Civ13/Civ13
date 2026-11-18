@@ -487,7 +487,10 @@
 			to_chat(H, "<span class = 'danger'>You don't know how to make this.</span>")
 			return
 
-		if (!istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
+		// Jail doors take a fitted lock (a padlock on the bars, say), so a key is
+		// optional: holding one still builds the door keyed to it.
+		var/jail_recipe = findtext(recipe.title, "jail")
+		if (!jail_recipe && !istype(H.l_hand, /obj/item/weapon/key) && !istype(H.r_hand, /obj/item/weapon/key))
 			to_chat(user, "<span class = 'warning'>You need to have a key in one of your hands to make a locked door.</span>")
 			return
 
@@ -495,7 +498,9 @@
 		if (!key || !istype(key))
 			key = H.r_hand
 		if (!key || !istype(key))
-			return // should never happen
+			key = null
+			if (!jail_recipe)
+				return // should never happen
 
 		if (key)
 			var/list/chosen = craft_product_options(user, recipe, options)

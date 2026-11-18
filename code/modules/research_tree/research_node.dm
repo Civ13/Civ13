@@ -32,6 +32,24 @@ var/global/list/recipe_node_requirements = list()
 		return null
 	return recipe_node_requirements[result_path_string]
 
+// The research node a sample teaches: the mapping of its nearest mapped type.
+// A subtype with its own node (a knife sheath under the sword sheath) teaches
+// that node, not its parent's.
+/proc/research_sample_node(obj/W)
+	if (!W)
+		return null
+	get_node_recipe_paths(null) // builds recipe_paths_by_node
+	var/best_node = null
+	var/best_len = 0
+	for (var/nid in recipe_paths_by_node)
+		for (var/ptype in recipe_paths_by_node[nid])
+			// Ancestor paths are prefixes, so the longest match is the nearest.
+			var/plen = length("[ptype]")
+			if (plen > best_len && istype(W, ptype))
+				best_len = plen
+				best_node = nid
+	return best_node
+
 // Reverse index: node id => list of unique recipe display names it unlocks.
 // Built lazily (not at boot) and cached, since craftlist_lists is only
 // populated partway through world/New() -- by the time any player actually
@@ -2344,6 +2362,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/train_ticket_book" = "rail_steam",
 		"/obj/item/train_list" = "rail_steam",
 		"/obj/item/train_flags" = "rail_steam",
+		"/obj/structure/train_lineside/signal" = "rail_steam",
+		"/obj/structure/train_lineside/board" = "rail_steam",
+		"/obj/structure/train_lever_frame" = "rail_steam",
+		"/obj/structure/train_token_instrument" = "rail_steam",
+		"/obj/item/train_signal_wire" = "rail_steam",
+		"/obj/item/train_jack" = "rail_steam",
 		"/obj/structure/rail_depot/coal_stage" = "rail_steam",
 		"/obj/structure/rail_depot/sand_bin" = "rail_steam",
 		"/obj/item/train_snowplough" = "rail_steam",

@@ -185,26 +185,37 @@
 	else
 		icon_state = "lever_pulled"
 
+// Sets the switches this lever works. TRUE when it moved.
+/obj/structure/train_lever/proc/throw_switch(state)
+	if (switched == state)
+		return FALSE
+	switched = state
+	for (var/obj/structure/rails/split/switcher/S in range(2,src))
+		S.switched = state
+		S.update_icon()
+	update_icon()
+	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+	return TRUE
+
 /obj/structure/train_lever/attack_hand(mob/living/user as mob)
 	if (istype(user, /mob/living))
+		// Worked by rodding from a signal box (train_signals.dm).
+		if (worked_by && train_frame_by_id(worked_by, src))
+			to_chat(user, "\The [src] is worked by rodding from a signal box; it does not move by hand.")
+			return
 		if (switched == "forward")
-			switched = "split"
-			for (var/obj/structure/rails/split/switcher/S in range(2,src))
-				S.switched = "split"
-				S.update_icon()
+			throw_switch("split")
 			visible_message("<span class = 'notice'>[user] moves the lever into the splitting position!</span>", "<span class = 'notice'>You move the lever into the splitting position!</span>")
-			update_icon()
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			return
 		else
-			switched = "forward"
-			for (var/obj/structure/rails/split/switcher/S in range(2,src))
-				S.switched = "forward"
-				S.update_icon()
+			throw_switch("forward")
 			visible_message("<span class = 'notice'>[user] moves the lever into the forward position!</span>", "<span class = 'notice'>You move the lever into the forward position!</span>")
-			update_icon()
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			return
+
+/obj/structure/train_lever/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/train_signal_wire))
+		var/obj/item/train_signal_wire/wire = W
+		wire.use_on(src, user)
+		return
+	return ..()
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -1123,7 +1134,7 @@ var/global/train_solo_move = FALSE
 	return throttle / LOCO_NOTCHES
 
 /obj/structure/trains/locomotive/proc/engine_disabled()
-	return broken_down
+	return broken_down || derailed
 
 // 0 when the engine pulls its rated load or more; below 1 it is overloaded.
 /obj/structure/trains/locomotive/proc/pull_ratio()
@@ -1147,6 +1158,9 @@ var/global/train_solo_move = FALSE
 	automovement = TRUE
 	deadman_missed = 0
 	refresh_consist()
+	// Signals and section boards right ahead (train_signals.dm).
+	lineside_seen = null
+	lineside_watch()
 	playsound(loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 	spawn(0)
 		var/steps = 0
@@ -1157,6 +1171,8 @@ var/global/train_solo_move = FALSE
 				since = 0
 				// Nobody in the cab (train_diesel.dm).
 				deadman_watch()
+				// Signals and section boards (train_signals.dm).
+				lineside_watch()
 			boiler_tick()
 			var/target = cruise_speed()
 			var/heft = max(1, consist_weight / 6)
@@ -1184,11 +1200,21 @@ var/global/train_solo_move = FALSE
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
+			var/obj/structure/trains/lead = (train_way() > 0) ? drive_head : drive_tail
+			if (!lead || QDELETED(lead))
+				lead = src
+			var/lead_dir = lead.dir
+			var/turf/lead_from = lead.loc
 			var/moved = (train_way() > 0) ? process_rail_forward() : process_rail_reverse()
 			if (QDELETED(src))
 				return
 			if (!moved)
+				// Off the end of the rails at speed (train_derail.dm).
+				overrun_check()
 				throttle = 0
+				break
+			// Too fast round a curve or through a switch (train_derail.dm).
+			if (curve_check(lead, lead_dir, lead_from))
 				break
 			steps++
 			since++

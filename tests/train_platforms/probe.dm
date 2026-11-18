@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 262
+	maxx = 284
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2268,6 +2268,230 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/signals = train_hand_signals()
 	platform_check("conductor/hand_signals", crew == 2 && signals.len == 5 && flags.show_signal(guard, "Right away") == 2 && flags.show_signal(guard, "Danger") == 2 && !flags.show_signal(guard, "Wave") && !flags.show_signal(walker, "Stop") && ("signal_flags" in states))
 
+// Signals and single-line working (train_signals.dm), on column 266.
+/proc/platform_signals_run()
+	for (var/ty in 2 to 25)
+		platform_track(266, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/A = platform_car("loco_diesel", 266, 12, NORTH)
+	if (!istype(A))
+		platform_check("signals/semaphore", FALSE)
+		return
+	var/mob/living/human/platform_rider/driver = new(platform_turf(266, 12))
+	var/mob/living/human/platform_rider/signalman = new(platform_turf(268, 17))
+
+	// A semaphore is worked by hand at the post and speaks to one direction.
+	var/obj/structure/train_lineside/signal/S = new(platform_turf(268, 18))
+	S.set_dir(NORTH)
+	var/obj/structure/train_lineside/signal/far = new(platform_turf(263, 18))
+	far.set_dir(NORTH)
+	var/starts = !S.clear && S.icon_state == "signal_danger"
+	S.attack_hand(signalman)
+	var/cleared = S.clear && S.icon_state == "signal_clear"
+	S.attack_hand(signalman)
+	var/obj/item/weapon/wrench/wrench = new(signalman.loc)
+	S.attackby(wrench, signalman)
+	var/turned = S.dir == EAST
+	S.set_dir(NORTH)
+	platform_check("signals/semaphore", starts && cleared && !S.clear && turned && S.ahead_of(A, NORTH) == 6 && S.ahead_of(A, SOUTH) == -6 && isnull(far.ahead_of(A, NORTH)) && (S in train_lineside) && ("signal_danger" in states) && ("signal_clear" in states))
+	qdel(far)
+
+	// A single line: two instruments wired as a pair hold one token.
+	var/obj/item/train_signal_wire/wire = new(signalman.loc)
+	var/obj/structure/train_token_instrument/I1 = new(platform_turf(262, 4))
+	var/obj/structure/train_token_instrument/I2 = new(platform_turf(262, 22))
+	var/unwired = isnull(I1.draw_token(null)) && isnull(wire.run_to(driver))
+	wire.run_to(I1)
+	wire.run_to(I2)
+	var/paired = I1.section && I1.section == I2.section && I1.partner() == I2 && I2.partner() == I1
+	var/obj/item/train_token/token = I1.draw_token(signalman)
+	var/one_only = istype(token) && token.section == I1.section && train_token_out(I1.section) == token && isnull(I2.draw_token(signalman)) && findtext(token.name, "single line")
+	var/obj/item/train_token/stray = new(signalman.loc)
+	stray.section = "elsewhere"
+	var/wrong = !I2.restore_token(stray, null) && !QDELETED(stray)
+	qdel(stray)
+	platform_check("signals/token_instruments", unwired && paired && one_only && wrong && ("token_instrument" in states) && ("train_token" in states) && ("signal_wire" in states))
+
+	// The cab reads what it comes up to; a signal passed at danger and a
+	// section entered without its token are marked.
+	var/obj/structure/train_lineside/board/B = new(platform_turf(264, 16))
+	B.set_dir(NORTH)
+	wire.run_to(B)
+	var/obj/structure/train_lineside/signal/back = new(platform_turf(268, 22))
+	back.set_dir(SOUTH)
+	A.reverser = 1
+	A.refresh_consist()
+	A.lineside_seen = null
+	var/crew = A.cab_crew()
+	var/first = A.lineside_watch()
+	var/list/read = A.lineside_seen
+	var/sighted = !first && read && read.len == 2 && (S in read) && (B in read) && !(back in read) && findtext(S.sighting(A), "danger") && findtext(B.sighting(A), "not on the engine")
+	var/rolled = platform_step(A, 7)
+	var/second = A.lineside_watch()
+	platform_check("signals/passed_at_danger", (driver in crew) && sighted && rolled == 7 && second == 2 && S.passed == 1 && B.passed == 1 && !back.passed && isnull(A.lineside_seen) && B.section == I1.section && ("section_board" in states))
+
+	// With a clear signal and the token on the engine nothing is marked.
+	var/obj/structure/train_lineside/signal/S2 = new(platform_turf(264, 24))
+	S2.set_dir(NORTH)
+	S2.set_clear(TRUE)
+	var/obj/structure/train_lineside/board/B2 = new(platform_turf(268, 23))
+	B2.set_dir(NORTH)
+	wire.run_to(B2)
+	var/without = !A.carries_token(I1.section)
+	token.loc = driver
+	var/third = A.lineside_watch()
+	read = A.lineside_seen
+	var/sighted_clear = !third && read && read.len == 2 && findtext(S2.sighting(A), "clear") && findtext(B2.sighting(A), "is on the engine")
+	rolled = platform_step(A, 6)
+	var/fourth = A.lineside_watch()
+	platform_check("signals/clear_road", without && A.carries_token(I1.section) && sighted_clear && rolled == 6 && fourth == 2 && !S2.passed && !B2.passed && S.passed == 1)
+	var/restored = I2.restore_token(token, null) && isnull(train_token_out(I1.section))
+	var/obj/item/train_token/again = I2.draw_token(null)
+	platform_check("signals/token_returns", restored && istype(again) && again.section == I2.section && isnull(I1.draw_token(null)))
+
+	// The lever frame works signals and switches by wire, interlocked.
+	var/obj/structure/train_lever_frame/frame = new(platform_turf(262, 12))
+	var/obj/structure/train_lever/lever = new(platform_turf(262, 14))
+	var/obj/structure/rails/split/switcher/points = new(platform_turf(262, 15))
+	var/needs_frame = findtext(wire.run_to(lever), "lever frame") && !lever.worked_by
+	wire.run_from = null
+	needs_frame = needs_frame && findtext(wire.run_to(S), "lever frame") && !S.worked_by
+	wire.run_to(frame)
+	wire.run_to(S)
+	wire.run_to(back)
+	wire.run_to(lever)
+	var/obj/structure/train_lineside/signal/remote = new(platform_turf(200, 2))
+	var/too_far = findtext(wire.run_to(remote), "too far") && !remote.worked_by
+	qdel(remote)
+	var/list/worked = frame.worked()
+	var/wired = frame.frame_id && S.worked_by == frame.frame_id && lever.worked_by == frame.frame_id && worked.len == 3 && train_frame_by_id(frame.frame_id, S) == frame
+	S.attack_hand(signalman)
+	lever.attack_hand(signalman)
+	var/not_by_hand = !S.clear && lever.switched == "forward"
+	var/pulled = frame.pull(S, signalman) && S.clear
+	// A clear signal locks the switch near it and the signal that faces it.
+	var/locked = !frame.pull(lever, signalman) && lever.switched == "forward" && !frame.pull(back, signalman) && !back.clear && train_signals_oppose(S, back) && train_signals_oppose(back, S) && !train_signals_oppose(S, S2)
+	var/restored_lever = frame.pull(S, signalman) && !S.clear
+	var/thrown = frame.pull(lever, signalman) && lever.switched == "split" && points.switched == "split" && findtext(frame.lever_label(lever), "branch")
+	var/opposing = frame.pull(back, signalman) && back.clear && !frame.pull(S, signalman) && !S.clear
+	wire.run_to(S)
+	worked = frame.worked()
+	var/unwired_again = !S.worked_by && worked.len == 2 && !frame.pull(S, signalman)
+	S.attack_hand(signalman)
+	platform_check("signals/lever_frame", needs_frame && too_far && wired && not_by_hand && pulled && locked && restored_lever && thrown && opposing && unwired_again && S.clear && ("lever_frame" in states))
+
+// Leaving the rails (train_derail.dm): north up column 274, then east along
+// y = 20.
+/proc/platform_derail_run()
+	for (var/ty in 2 to 20)
+		platform_track(274, ty, NORTH)
+	for (var/tx in 275 to 282)
+		platform_track(tx, 20, EAST)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/A = platform_car("loco_steam", 274, 8, NORTH)
+	if (!istype(A))
+		platform_check("derail/speed_is_what_matters", FALSE)
+		return
+	var/list/body = platform_segments(A.connected)
+	var/mob/living/simple_animal/train_probe_dummy/driver = new(A.loc)
+	var/driver_health = driver.health
+
+	// Slow round a curve is safe, and so is fast along the straight.
+	A.rail_speed = 2.9
+	var/slow = !A.curve_check(A, EAST, get_step(A, SOUTH))
+	A.rail_speed = 5
+	var/straight = !A.curve_check(A, NORTH, get_step(A, SOUTH))
+	A.rail_speed = 0
+	platform_check("derail/speed_is_what_matters", slow && straight && !A.derailed && !A.overrun_check() && !A.engine_disabled())
+
+	// Driven flat out into the curve, the engine leaves the rails there.
+	A.fuel = 200
+	A.on = TRUE
+	A.throttle = 3
+	A.drive()
+	var/top = 0
+	var/limit = 400
+	while (A.driving && limit > 0)
+		top = max(top, A.rail_speed)
+		sleep(1)
+		limit--
+	var/off = 0
+	for (var/obj/structure/trains/platform/P in body)
+		if (P.derailed)
+			off++
+	platform_check("derail/too_fast_round_the_curve", !A.driving && top > 3 && A.derailed && A.loc == platform_turf(275, 20) && A.dir == EAST && off == body.len && body.len >= 2 && !A.on && A.throttle == 0 && !A.broken_down && A.health == initial(A.health) && driver.health < driver_health && ("derailed" in states))
+
+	// It stands there: the engine is dead and the train does not step.
+	A.on = TRUE
+	A.throttle = 3
+	A.refresh_consist()
+	platform_check("derail/derailed_train_stands", A.engine_disabled() && A.cruise_speed() == 0 && train_consist_obstacle(A, get_step(A, EAST), EAST) && platform_step(A, 1) == 0 && A.loc == platform_turf(275, 20))
+	A.on = FALSE
+	A.throttle = 0
+
+	// A heavy engine is too much for a jack: it takes a braced, fired crane.
+	var/mob/living/human/platform_rider/hand = new(platform_turf(276, 19))
+	var/obj/item/train_jack/jack = new(hand.loc)
+	var/obj/structure/trains/platform/hood = body[1]
+	var/too_heavy = findtext(A.rerail_problem(), "crane car") && findtext(hood.rerail_problem(), "crane car") && !A.rerail() && A.service_use(jack, hand) && A.derailed
+	var/obj/structure/trains/platform/crane_car = platform_car("crane_car", 274, 16, NORTH)
+	var/list/crane_segs = platform_segments(crane_car)
+	var/obj/structure/workshop_machine/shear_legs/crane/steam/rail/crane = locate() in platform_turf(274, 15)
+	var/list/front = crane_car ? train_platform_tiles(crane_car.loc, crane_car.dir) : list(null)
+	var/obj/structure/railway_gun_brace/lever = locate() in front[1]
+	var/unbraced = crane && lever && findtext(A.rerail_problem(), "crane car")
+	for (var/obj/structure/trains/platform/P in crane_segs)
+		P.last_moved = -1000
+	if (lever)
+		lever.set_braced(TRUE)
+	var/unfired = crane && isnull(crane.rail_problem()) && isnull(train_breakdown_crane(A))
+	if (crane)
+		crane.fuel = 5
+	var/ready = crane && train_breakdown_crane(A) == crane && isnull(A.rerail_problem())
+	var/lifted = hood.rerail()
+	off = 0
+	for (var/obj/structure/trains/platform/P in body)
+		if (P.derailed)
+			off++
+	platform_check("derail/heavy_engine_needs_a_crane", too_heavy && unbraced && unfired && ready && lifted && !A.derailed && !off && !A.engine_disabled() && crane.fuel == 4 && findtext(A.rerail_problem(), "stands on the rails"))
+
+	// A car comes off by its leading half and is jacked back a section at a time.
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 274, 10, NORTH)
+	var/list/segs = platform_segments(flat)
+	var/obj/structure/trains/platform/second = segs.len >= 2 ? segs[2] : null
+	var/obj/structure/trains/platform/third = segs.len >= 3 ? segs[3] : null
+	var/came_off = train_unit_come_off(segs) && flat.derailed && second && second.derailed && third && !third.derailed && !flat.come_off() && !flat.wrecked && flat.health == initial(flat.health)
+	var/blocked = train_consist_obstacle(flat, get_step(flat, NORTH), NORTH) ? TRUE : FALSE
+	var/obj/structure/rails/under = second ? (locate(/obj/structure/rails) in second.loc) : null
+	var/turf/rail_tile = under ? under.loc : null
+	if (under)
+		under.loc = null
+	var/no_rail = second && findtext(second.rerail_problem(), "no rail") && !second.rerail()
+	if (under)
+		under.loc = rail_tile
+	var/jacked = third.service_use(jack, hand) && isnull(flat.rerail_problem()) && flat.rerail() && second.rerail() && !flat.derailed && !second.derailed && !flat.rerail()
+	platform_check("derail/car_jacked_back_on", segs.len == 4 && came_off && blocked && no_rail && jacked && !train_consist_obstacle(flat, get_step(flat, NORTH), NORTH) && ("rerail_jack" in states))
+
+	// Off the end of the rails at speed; a buffer stop or a crawl is no derailment.
+	A.reverser = 1
+	A.refresh_consist()
+	var/obj/structure/rails/ahead = locate(/obj/structure/rails) in get_step(A, EAST)
+	var/turf/ahead_tile = ahead ? ahead.loc : null
+	A.rail_speed = 2.5
+	var/rails_ahead = ahead && !A.overrun_check()
+	if (ahead)
+		ahead.loc = null
+	A.rail_speed = 1.5
+	var/crawl = !A.overrun_check()
+	A.rail_speed = 2.5
+	var/obj/structure/rails/end/stop = new(A.loc)
+	var/buffered = !A.overrun_check() && !A.derailed
+	stop.loc = null
+	var/ran_off = A.overrun_check() && A.derailed && A.rail_speed == 0
+	if (ahead)
+		ahead.loc = ahead_tile
+	platform_check("derail/off_the_end", rails_ahead && crawl && buffered && ran_off && A.engine_disabled())
+
 // How many of a type stand on a car's deck.
 /proc/platform_fitted(list/segs, kind)
 	. = 0
@@ -2443,6 +2667,8 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_crane_run()
 		platform_diesel_run()
 		platform_conductor_run()
+		platform_signals_run()
+		platform_derail_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

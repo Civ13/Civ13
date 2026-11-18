@@ -17,6 +17,9 @@ in `door_fittings.dm`:
 - a spring latch locks itself when the door shuts;
 - a padlock fits a crate with no tool, keeps it shut, and a crowbar on harm
   intent breaks it;
+- a jail door built without a key takes a padlock, locks with its key and
+  returns the padlock when dismantled; a jail door keyed when built refuses a
+  warded lock but takes a padlock, and each key works only its own lock;
 - a clay seal stops nobody and breaks on opening; a knot ties and unties; a
   hidden catch lets its maker in and stops a stranger;
 - no runtime errors.
