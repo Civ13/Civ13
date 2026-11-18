@@ -1599,7 +1599,7 @@
 // The petroleum source this well draws from: the colocated spring here, a
 // seabed oil field for offshore rigs (offshore_rig.dm).
 /obj/structure/oilwell/proc/has_source()
-	return base && base.loc == loc
+	return base && base.loc == loc && base.flows()
 
 // One due batch into the work barrel.
 /obj/structure/oilwell/proc/pump_batch()
