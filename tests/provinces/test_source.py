@@ -264,6 +264,17 @@ class LandOil(unittest.TestCase):
         self.assertNotIn('flows()', (ROOT / 'code/modules/1713/offshore_rig.dm').read_text(encoding='utf-8'))
 
 
+class GaiaCrops(unittest.TestCase):
+    """Val (2026-11-18): crops grow faster on Gaia."""
+
+    def test_extra_stage_only_on_gaia_before_harvest(self):
+        text = RESOURCES.read_text(encoding='utf-8')
+        self.assertIn('#define CONTINENT_GAIA_CROPS 25', text)
+        self.assertIn('/obj/structure/farming/plant/advance_stage_if_allowed(allow_stage)\n\tvar/before = stage\n\t. = ..(allow_stage)', text)
+        self.assertIn('if (stage > before && stage < readyStageMin && map && map.ID == MAP_NOMADS_GAIA && prob(CONTINENT_GAIA_CROPS))\n\t\tstageGrowth()', text)
+        self.assertIn('Crops grow about a quarter faster here.', text)
+
+
 class Ranks(unittest.TestCase):
     """Val (2026-11-18): a clear objective for city building and defence."""
 

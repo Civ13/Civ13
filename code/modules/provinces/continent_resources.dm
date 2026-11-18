@@ -22,6 +22,7 @@
 #define CONTINENT_BULK 0.5
 #define CONTINENT_STRATEGIC 0.33
 #define CONTINENT_PHASE_DAYS 7
+#define CONTINENT_GAIA_CROPS 25 // percent: Gaia's crops grow about a quarter faster
 
 // Map id -> the resources it is rich in.
 /proc/continent_home_resources()
@@ -153,6 +154,15 @@
 		names += id == MAP_NOMADS_EARTH_AFRICA ? "Africa" : "the Desert"
 	return names
 
+// Gaia's crop bonus (Val, 2026-11-18): the start continent is the best place
+// for food. A crop that grows a stage there sometimes grows a second, short of
+// its harvest so the harvest window stays whole. Only crops on Gaia.
+/obj/structure/farming/plant/advance_stage_if_allowed(allow_stage)
+	var/before = stage
+	. = ..(allow_stage)
+	if (stage > before && stage < readyStageMin && map && map.ID == MAP_NOMADS_GAIA && prob(CONTINENT_GAIA_CROPS))
+		stageGrowth()
+
 // One line for Faction > Province Holdings and Admin > Land Status.
 /proc/continent_resources_text()
 	var/list/home = continent_home()
@@ -165,7 +175,7 @@
 		names += resource
 	var/text = "This continent is rich in [english_list(names)]: they are found twice as often here. Other ores are scarcer than elsewhere, except iron."
 	if (map.ID == MAP_NOMADS_GAIA)
-		text += " Tin stays plentiful, but there is no bauxite or uranium."
+		text += " Tin stays plentiful, but there is no bauxite or uranium. Crops grow about a quarter faster here."
 	text += " [continent_land_oil_text()]"
 	var/days = round((map.continent_resources_from() + 2 * CONTINENT_PHASE_DAYS * 864000 - world.realtime) / 864000, 0.1)
 	if (days > 0)
@@ -180,3 +190,4 @@
 #undef CONTINENT_BULK
 #undef CONTINENT_STRATEGIC
 #undef CONTINENT_PHASE_DAYS
+#undef CONTINENT_GAIA_CROPS
