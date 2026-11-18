@@ -28,7 +28,7 @@ DME = ROOT / 'civ13.dme'
 CONTINENTS = {
     'nomads_gaia': 2, 'nomads_americas_north': 1, 'nomads_americas_south': 1,
     'nomads_europe': 1, 'nomads_asia': 1, 'nomads_desert': 2, 'nomads_jungle': 2,
-    'nomads_earth_europe': 1, 'nomads_earth_africa': 1,
+    'nomads_earth_europe': 1, 'nomads_earth_africa': 1, 'nomads_earth_asia': 1,
 }
 
 
