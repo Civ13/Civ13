@@ -323,7 +323,7 @@ SUITES = {
             'tests/faction_membership/probe.dm', 'tests/faction_recruitment/probe.dm',
             'tests/research_persistence/probe.dm', 'code/game/mob/groups/faction_membership.dm',
             'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/faction_rename.dm',
-            'code/game/mob/groups/factions.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/game/mob/groups/factions.dm', 'code/game/objects/structures/stool_bed_chair_nest/bed.dm', 'code/modules/research_tree/research_faction.dm',
             'code/modules/research_tree/_research_tree_defines.dm',
             'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
     'paper_bin_appearance': {'files': ('tests/paper_bin_appearance/test_appearance.py',),
@@ -1349,6 +1349,8 @@ SUITES = {
     'provinces': {'files': ('tests/provinces/test_source.py',),
         'paths': ('tests/provinces/', 'maps/provinces/'), 'shared_paths': (
             'scripts/provinces.py', 'scripts/terrain_heights.py', 'code/modules/provinces/provinces.dm',
+            'code/modules/provinces/province_stake.dm', 'code/game/mob/groups/faction_start.dm',
+            'code/game/mob/groups/factions.dm',
             'maps/nomads/nomads_gaia.dmm', 'maps/nomads/nomads_americas_north.dmm',
             'maps/nomads/nomads_americas_south.dmm', 'maps/nomads/nomads_europe.dmm',
             'maps/nomads/nomads_asia.dmm', 'maps/nomads/nomads_desert.dmm', 'maps/nomads/nomads_jungle.dmm')},

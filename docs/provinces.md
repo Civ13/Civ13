@@ -4,8 +4,9 @@ Each continent is cut into provinces that follow the land: coasts, big
 rivers, lakes, mountain ranges and narrow straits. Provinces are the units
 factions will hold on a continent (the continent control plan: recruitment
 stations work only in a province the faction holds, plus stake, ranks and
-sieges). This first step only adds the provinces themselves. Nothing in play
-uses them yet; admins see them under Admin > Land Status.
+sieges). So far the provinces and each faction's stake in them are counted and
+shown (Faction > Province Holdings, Admin > Land Status); nothing yet depends
+on who leads a province.
 
 ## Files
 
@@ -63,6 +64,29 @@ How the tool works:
 The output is deterministic. Review the render before committing, and rerun
 after changing a map's land, water, heights or rivers. Names and border
 characters may be edited by hand; rerunning the tool overwrites them.
+
+## Stake
+
+Code: `code/modules/provinces/province_stake.dm`. Reckoned every 10 minutes.
+
+- **Resident, 1 point.** An account on the faction's roster for 72 hours,
+  whose claimed bed has been theirs for 72 hours and stands within 40 tiles of
+  one of the faction's fastened halls or on a plot the faction registered.
+  The account must have played 10 hours in all on this land, and 4 active
+  hours over at least 3 different days of the last 7. Activity is counted
+  every 10 minutes for each player with a living character who is not idle
+  (10 minutes without input), in `map.faction_recruitment["province_activity"]`.
+  A resident counts in the province their bed stands in.
+- **Hall.** 2 points per tier of the faction's best standing hall in the
+  province, never more than its resident points there.
+- **Nations pool.** Factions of one nation add up. Pooled residents count 1
+  each up to 10, a half each up to 30 and a quarter after that.
+- **Leading.** The largest stake with at least 6 points from at least 4
+  accounts, 35% of the stake there and 1.25 times the runner-up.
+
+Faction > Province Holdings shows a player which province they stand in,
+whether they count as a resident (and if not, why), and every province's
+stakes. Admin > Land Status shows the same table.
 
 ## Checks
 

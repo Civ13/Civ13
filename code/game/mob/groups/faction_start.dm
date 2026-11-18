@@ -20,6 +20,7 @@ var/global/list/recruitment_stations = list() // every recruitment station, for 
 	..()
 	if (map && map.allows_custom_factions())
 		map.faction_roster_touch(src)
+	province_activity_start() // province_stake.dm
 
 // --- Member starts ---------------------------------------------------------
 
