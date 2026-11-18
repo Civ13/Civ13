@@ -1039,6 +1039,7 @@
 		found_ore = TRUE
 	// Every ore find shares one rubble batch, rather than minting stone per ore.
 	if (found_ore)
+		note_field_work(H, "mining") // Natural Science field work (natural_science_work.dm).
 		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
 		bonusstone.amount = rand(8,12)
 		if (H)

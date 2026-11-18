@@ -1857,6 +1857,7 @@
 #include "code\modules\research_tree\study_fields.dm"
 #include "code\modules\research_tree\team_research.dm"
 #include "code\modules\research_tree\compare_notes.dm"
+#include "code\modules\research_tree\natural_science_work.dm"
 #include "code\modules\research_tree\naturalist_finds.dm"
 #include "code\modules\research_tree\recipe_gates.dm"
 #include "code\modules\research_tree\tech_tree_view.dm"

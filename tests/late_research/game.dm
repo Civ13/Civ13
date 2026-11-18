@@ -1034,6 +1034,29 @@ var/late_wait_result = TRUE
 	expedition_land_info = list()
 	late_check(!find_double_here(), "and the usual amount at home")
 	late_check(!find_sky_visible(null) && find_sky_kind() == "sky:[lowertext(season)]", "the night sky is one find a season")
+// Natural Science from mining, smelting and firing, and weather and water finds.
+/proc/late_test_natural_science_work()
+	var/mob/living/human/late_fixture/smith = new(locate(1,3,1))
+	smith.name = "Agricola"
+	var/obj/structure/furnace/F = new(locate(2,3,1))
+	F.iron = 30
+	late_check(F.smelt_charge() == 30 && note_smelting(smith, F) && smith.field_work_amount("smelting") == 30, "iron ore in a lit bloomery counts as smelting")
+	var/obj/structure/furnace/lime_kiln/L = new(locate(3,3,1))
+	late_check(!L.smelt_charge() && !note_smelting(smith, L), "lime burning is not smelting")
+	var/obj/structure/oven/O = new(locate(4,3,1))
+	new /obj/item/stack/ore/glass(O)
+	late_check(note_firing(smith, O) && smith.field_work_amount("firing") == 1, "glass sand in a lit oven counts as firing")
+	late_check(!note_firing(smith, O) && smith.field_work_amount("firing") == 1, "lighting it again counts the same sand nothing more")
+	var/before = smith.field_work_amount("mining")
+	late_check(note_field_work(smith, "mining") && smith.field_work_amount("mining") == before + 1, "an ore vein counts as mining")
+	for (var/id in list("alloys_smelting", "steelmaking_smelting", "early_cells_mining", "glassworking_firing", "combustion_reactions"))
+		var/list/E = field_experiments[id]
+		late_check(islist(E) && node_discipline(E[1]) == "natural_science" && (id in node_field_experiments(E[1])), "[id] is field work for a Natural Science subject")
+	late_check(isnull(find_water(locate(5,5,1))) && isnull(find_weather(null)), "dry ground and nobody are no water or weather find")
+	var/list/places = find_place_targets(smith)
+	for (var/list/P in places)
+		late_check(P[2] in scholar_disciplines, "a place find belongs to a discipline")
+
 // Reaching a milestone in a body skill teaches its scholarship (learning_by_doing.dm).
 /proc/late_test_skill_mastery()
 	var/mob/living/human/late_fixture/hand = new(locate(1,1,1))
@@ -1187,6 +1210,7 @@ var/late_wait_result = TRUE
 		late_test_trade_learning()
 		late_test_compare_notes()
 		late_test_naturalist_finds()
+		late_test_natural_science_work()
 		late_test_subject_deeds()
 		late_test_skill_mastery()
 		late_test_teams()
