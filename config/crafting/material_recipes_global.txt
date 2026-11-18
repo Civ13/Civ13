@@ -431,11 +431,11 @@ RECIPE: /material/leather/,pilot goggles,/obj/item/clothing/glasses/pilot,1,60,0
 
 //*****************| LEATHER WEAPON ACCESSORIES |***************************
 
-RECIPE: /material/leather/,sword sheath,/obj/item/clothing/accessory/storage/sheath,1,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/storage/sheath/longer,1,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,1,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,1,80,0,1,weapon accessories,0,39,0,2,null
-RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,2,80,0,1,weapon accessories,0,39,0,2,null
+RECIPE: /material/leather/,sword sheath,/obj/item/clothing/accessory/storage/sheath,1,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,longer sword sheath,/obj/item/clothing/accessory/storage/sheath/longer,1,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,longsword sheath,/obj/item/clothing/accessory/storage/sheath/longsword,1,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,katana sheath,/obj/item/clothing/accessory/storage/sheath/katana,1,80,0,1,weapon accessories,0,39,0,8,null
+RECIPE: /material/leather/,daisho sheath,/obj/item/clothing/accessory/storage/sheath/daisho,2,80,0,1,weapon accessories,0,39,0,8,null
 RECIPE: /material/leather/,knife sheath,/obj/item/clothing/accessory/storage/sheath/knife,1,40,0,1,weapon accessories,0,0,0,8,null
 RECIPE: /material/leather/,boot sheath,/obj/item/clothing/accessory/storage/sheath/fitting,1,40,0,1,weapon accessories,0,0,0,8,null
 RECIPE: /material/leather/,sleeve sheath,/obj/item/clothing/accessory/storage/sheath/fitting/sleeve,1,40,0,1,weapon accessories,0,0,0,8,null
