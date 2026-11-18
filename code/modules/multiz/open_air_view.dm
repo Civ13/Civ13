@@ -22,6 +22,16 @@
 // once. The views are never saved (turf vis_contents are not recorded, the
 // fields are tmp).
 //
+// Proxies: what stands below a cell is not held in the cell's view. Each such
+// movable gets one proxy on the open-air cell above it, a real map object that
+// holds the movable in its own vis_contents and follows it with the movable's
+// own glide, so people and animals below walk smoothly instead of jumping a
+// tile at a time (a movable drawn inside another object cannot glide). Being
+// in the viewer's view(), a proxy is listed on the right-click menu under the
+// name of what it shows, and Examine reads the real thing; every click and
+// drag on it acts on the open-air cell. A proxy sits under any floor and under
+// the cell's own sky sprite, so it is only seen where the cell shows below.
+//
 // Clicks: everything shown through open air counts as the open-air cell itself
 // (VIS_INHERIT_ID), so grabbing open air to climb down, building on it and
 // placing ladders work as before, and nothing below can be clicked from above.
@@ -76,6 +86,9 @@
 	color = OPEN_AIR_VIEW_SHADE
 	// The turf this view shows, and the copy of its look.
 	var/tmp/turf/shows = null
+	// The open-air cell holding this view; null for views no cell holds (a
+	// murder hole's), which keep what stands below in their own vis_contents.
+	var/tmp/turf/sky/building/cell = null
 	var/tmp/obj/effect/open_air_view_ground/ground = null
 	var/tmp/ground_appearance = null
 
@@ -121,6 +134,109 @@ var/global/open_air_view_any = FALSE
 /proc/open_air_view_shows_movable(atom/movable/A)
 	return !(A.vis_flags & VIS_HIDE) && !istype(A, /obj/effect/open_air_view)
 
+// TRUE when this view leaves what stands below to proxies (see above). A proxy
+// itself, seen one level further up, is held in the view like before.
+/obj/effect/open_air_view/proc/open_air_view_proxies(atom/movable/A)
+	return cell && cell.open_air_view == src && !istype(A, /obj/effect/open_air_proxy)
+
+/obj/effect/open_air_proxy
+	name = "something below"
+	anchored = TRUE
+	simulated = FALSE
+	should_save = FALSE
+	density = FALSE
+	appearance_flags = KEEP_TOGETHER
+	plane = FLOOR_PLANE
+	layer = OPEN_AIR_VIEW_LAYER + 0.01
+	color = OPEN_AIR_VIEW_SHADE
+	// Glides only; never turns or flicks with a step.
+	animate_movement = SLIDE_STEPS
+	var/tmp/atom/movable/shows = null
+
+/atom/movable/var/tmp/obj/effect/open_air_proxy/open_air_proxy = null
+var/global/list/open_air_proxies = list()
+
+/obj/effect/open_air_proxy/Destroy()
+	if (shows && shows.open_air_proxy == src)
+		shows.open_air_proxy = null
+	shows = null
+	vis_contents.Cut()
+	open_air_proxies -= src
+	return ..()
+
+// The open-air cell that shows the turf A stands on, or null.
+/proc/open_air_proxy_cell(atom/movable/A)
+	var/turf/T = A.loc
+	if (!isturf(T) || !T.open_air_shown_by || !open_air_view_shows_movable(A) || istype(A, /obj/effect/open_air_proxy))
+		return null
+	for (var/obj/effect/open_air_view/V in T.open_air_shown_by)
+		if (V.shows == T && V.open_air_view_proxies(A))
+			return V.cell
+	return null
+
+// Puts A's proxy on the open-air cell above it, moved with A's glide, or drops
+// the proxy once nothing above shows A.
+/proc/open_air_proxy_update(atom/movable/A)
+	var/turf/sky/building/cell = open_air_proxy_cell(A)
+	var/obj/effect/open_air_proxy/P = A.open_air_proxy
+	if (!cell)
+		if (P)
+			qdel(P)
+		return
+	if (!P || QDELETED(P))
+		P = new
+		P.loc = null
+		P.shows = A
+		P.vis_contents += A
+		A.open_air_proxy = P
+		open_air_proxies += P
+	if (P.name != A.name)
+		P.name = A.name
+	// Southern things draw over northern ones, and keep their own order.
+	var/want_layer = OPEN_AIR_VIEW_LAYER + 0.01 + 0.009 * (world.maxy - cell.y) / max(1, world.maxy) + clamp(A.layer, 0, 20) * 0.00005
+	if (P.layer != want_layer)
+		P.layer = want_layer
+	P.glide_size = A.glide_size
+	// A raw loc change: no Enter/Entered, so nothing falls through open air.
+	if (P.loc != cell)
+		P.loc = cell
+	if (P.step_x != A.step_x)
+		P.step_x = A.step_x
+	if (P.step_y != A.step_y)
+		P.step_y = A.step_y
+
+// Clicks and drags act on the open-air cell, as before proxies.
+/obj/effect/open_air_proxy/Click(location, control, params)
+	var/turf/T = loc
+	return T ? T.Click(T, control, params) : null
+
+/obj/effect/open_air_proxy/DblClick(location, control, params)
+	var/turf/T = loc
+	return T ? T.DblClick(T, control, params) : null
+
+/obj/effect/open_air_proxy/MouseDrop(over_object, src_location, over_location, src_control, over_control, params)
+	var/turf/T = loc
+	return T ? T.MouseDrop(over_object, T, over_location, src_control, over_control, params) : null
+
+/obj/effect/open_air_proxy/MouseDrop_T(atom/dropping, mob/user)
+	var/turf/T = loc
+	return T ? T.MouseDrop_T(dropping, user) : null
+
+// Examine reads what is shown (right-click > Examine on it).
+/obj/effect/open_air_proxy/examine(mob/user, var/distance = -1, var/infix = "", var/suffix = "")
+	if (shows && !QDELETED(shows))
+		return shows.examine(user, distance, infix, suffix)
+	return ..()
+
+// Drops a proxy whose thing went, or follows a raw loc change. Run by the
+// process for every proxy each time it fires.
+/obj/effect/open_air_proxy/proc/open_air_proxy_check()
+	var/atom/movable/A = shows
+	if (!A || QDELETED(A) || A.open_air_proxy != src)
+		qdel(src)
+	else
+		open_air_proxy_update(A)
+
 // Brings the copy in line with the turf below: its look, what stands on it,
 // and the view under open air.
 /obj/effect/open_air_view/proc/open_air_view_sync()
@@ -144,7 +260,10 @@ var/global/open_air_view_any = FALSE
 	// stepping between tiles): each is shown once, by the view of its loc.
 	for (var/atom/movable/A in below)
 		if (A.loc == below && open_air_view_shows_movable(A))
-			want += A
+			if (open_air_view_proxies(A))
+				open_air_proxy_update(A)
+			else
+				want += A
 	var/turf/sky/building/next = below
 	if (istype(next) && next.open_air_view)
 		want += next.open_air_view
@@ -157,22 +276,28 @@ var/global/open_air_view_any = FALSE
 
 // Called after a movable moves with Move() or forceMove(): the views of the
 // turf it left drop it, the views of the turf it entered show it.
+// A step within the same tile (old_loc == loc) only moves its proxy.
 /proc/open_air_view_moved(atom/movable/A, atom/old_loc)
 	var/turf/from = old_loc
-	if (isturf(from) && from.open_air_shown_by)
+	if (from != A.loc && isturf(from) && from.open_air_shown_by)
 		for (var/obj/effect/open_air_view/V in from.open_air_shown_by)
 			V.vis_contents -= A
 	var/turf/into = A.loc
 	if (isturf(into) && into.open_air_shown_by && open_air_view_shows_movable(A))
 		for (var/obj/effect/open_air_view/V in into.open_air_shown_by)
-			if (!(A in V.vis_contents))
+			if (!V.open_air_view_proxies(A) && !(A in V.vis_contents))
 				V.vis_contents += A
+	if (A.open_air_proxy || (isturf(into) && into.open_air_shown_by))
+		open_air_proxy_update(A)
 
 /atom/movable/Destroy()
 	var/turf/T = loc
 	if (isturf(T) && T.open_air_shown_by)
 		for (var/obj/effect/open_air_view/V in T.open_air_shown_by)
 			V.vis_contents -= src
+	if (open_air_proxy)
+		qdel(open_air_proxy)
+		open_air_proxy = null
 	return ..()
 
 /turf/sky/building/var/tmp/obj/effect/open_air_view/open_air_view = null
@@ -214,6 +339,7 @@ var/global/open_air_view_any = FALSE
 		// tree) overhangs the open air north of it instead of being cut off.
 		V.layer = OPEN_AIR_VIEW_LAYER + 0.009 * (world.maxy - y) / max(1, world.maxy)
 		open_air_view = V
+		V.cell = src
 		vis_contents += V
 		// The sky sprite would hide the view (icon is not a saved turf field).
 		icon = null
@@ -243,6 +369,9 @@ var/global/open_air_view_any = FALSE
 			above.vis_contents -= open_air_view
 	qdel(open_air_view)
 	open_air_view = null
+	// What stood below is no longer seen from here.
+	for (var/obj/effect/open_air_proxy/P in src)
+		qdel(P)
 
 /turf/sky/building/ChangeTurf(var/path, var/tell_universe = 1, var/force_lighting_update = FALSE, datum/durable_nomads_event/nomads_event = null)
 	open_air_view_clear()
