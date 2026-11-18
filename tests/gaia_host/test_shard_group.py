@@ -2080,6 +2080,61 @@ class StagedBuildTests(unittest.TestCase):
         host.watch_step(None)
         self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('stage', 'restart')])
 
+    def tdm_built(self, kind='BARRACKS'):
+        # A TDM group (Val, 2026-11-18): rounds never save, so an empty world just restarts.
+        self.group['persistent'] = False
+        self.group['regions'][0]['kind'] = kind
+        self.group['regions'][1]['kind'] = 'BATTLE' if kind == 'BARRACKS' else 'BARRACKS'
+        self.group['regions'][1]['map'] = 'maps/small/tiny.dmm'
+        if kind == 'BATTLE':
+            self.group['mainland'] = 'deep'
+        group, host = self.built()
+        self.machine.up = {1720}
+        self.machine.query = lambda *args, **kwargs: {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32,
+                                                      'persistence_mode': 0}
+        return group, host
+
+    def test_an_empty_tdm_barracks_restarts_onto_the_update(self):
+        group, host = self.tdm_built()
+        idle, wait = host.watch_step(None)
+        self.assertEqual('stage', self.machine.detached[-1][-2], 'built beside the running world first')
+        self.assertEqual(30, wait)
+        host.work('stage', self.machine.detached[-1][-1])
+        host.watch_step(idle)
+        self.assertEqual('restart', self.machine.detached[-1][-2])
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] == 'handover'], 'no save to hand over')
+
+    def test_a_tdm_barracks_waits_while_the_battle_sends_players_back(self):
+        group, host = self.tdm_built()
+        host.work('stage', host.request_stage()['operation'])
+        rotation = self.base / 'regions' / 'deep' / 'data' / 'shard-host' / 'rotation.json'
+        rotation.parent.mkdir(parents=True, exist_ok=True)
+        rotation.write_text(json.dumps({'state': 'building', 'map': 'karak'}))
+        self.machine.detached.clear()
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] == 'restart'])
+        rotation.write_text(json.dumps({'state': 'ready', 'map': 'karak'}))
+        host.watch_step(None)
+        self.assertEqual('restart', self.machine.detached[-1][-2])
+
+    def test_a_failed_tdm_restart_is_not_retried_for_the_same_build(self):
+        group, host = self.tdm_built()
+        host.work('stage', host.request_stage()['operation'])
+        host.watch_step(None)
+        self.assertEqual('restart', self.machine.detached[-1][-2])
+        host.lock.unlink(missing_ok=True)
+        host.record(action='restart', phase='failed', error='the world did not start')
+        self.machine.detached.clear()
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] == 'restart'])
+
+    def test_a_tdm_battle_world_updates_only_between_rounds(self):
+        group, host = self.tdm_built(kind='BATTLE')
+        self.machine.detached.clear()
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('stage', 'restart')],
+                         'battle_mapswap.py takes the update when its round ends')
+
     def test_an_asleep_region_builds_the_update_and_wakes_on_it(self):
         group, host = self.built()
         self.machine.pids = {77}
