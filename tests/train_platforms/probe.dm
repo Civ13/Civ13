@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 300
+	maxx = 306
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2541,6 +2541,114 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/structure/rail_stored_unit/loose = W.stored_units()[1]
 	platform_check("bigstore/no_coupling_no_hitch", W.retrieve_unit(loose) == F && F.loc == platform_turf(298, 13) && !last.connected)
 
+// Track works (docs/trains.md#track-works): a buffer stop at the end of a
+// line, and a level crossing with gates worked by hand and from a frame.
+/proc/platform_trackworks_run()
+	for (var/ty in 2 to 21)
+		platform_track(304, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("trackworks/art", ("buffer_stop" in states) && ("crossing_boards" in states) && ("crossing_gate_shut" in states) && ("crossing_gate_open" in states))
+
+	// The crossing: boards on the rails, a gate on the road either side.
+	var/obj/structure/train_crossing_boards/boards = new(platform_turf(304, 6))
+	var/obj/structure/train_lineside/gate/G1 = new(platform_turf(303, 6))
+	G1.set_dir(EAST)
+	var/obj/structure/train_lineside/gate/G2 = new(platform_turf(305, 6))
+	G2.set_dir(WEST)
+	var/obj/structure/train_lineside/gate/elsewhere = new(platform_turf(303, 16))
+	elsewhere.set_dir(EAST)
+	var/mob/living/human/platform_rider/keeper = new(platform_turf(302, 6))
+	var/obj/item/weapon/wrench/wrench = new(keeper.loc)
+	boards.attackby(wrench, keeper)
+	platform_check("trackworks/crossing_built", !boards.density && boards.dir != initial(boards.dir) && !G1.density && !G1.shut && G1.crossing_gates().len == 2 && (G2 in G1.crossing_gates()) && elsewhere.crossing_gates().len == 1 && (G1 in train_lineside))
+	platform_check("trackworks/gates_speak_both_ways", G1.speaks_to(NORTH) && G1.speaks_to(SOUTH) && !G1.speaks_to(EAST) && G2.speaks_to(NORTH) && G1.ahead_of(platform_turf(304, 2), NORTH) == 4)
+	var/shut_moved = G1.set_shut(TRUE)
+	platform_check("trackworks/gates_swing_together", shut_moved && G1.shut && G2.shut && G1.density && G2.density && G2.icon_state == "crossing_gate_shut" && !elsewhere.shut && !G1.set_shut(TRUE))
+	G2.set_shut(FALSE)
+	var/obj/structure/closet/crate/large/cart = new(platform_turf(305, 6))
+	cart.density = TRUE
+	var/blocked = G1.shut_problem()
+	qdel(cart)
+	platform_check("trackworks/gates_do_not_shut_on_a_cart", !G1.shut && !G1.density && findtext(blocked, "in the way") && !G1.shut_problem())
+	// One line to the cab for the crossing, and one mark when it is run
+	// over with the gates open.
+	var/list/lines = list()
+	for (var/obj/structure/train_lineside/gate/G in list(G1, G2))
+		var/line = G.sighting(null)
+		if (line)
+			lines += line
+		G.passed_by(null)
+	G1.set_shut(TRUE)
+	var/list/shut_lines = list()
+	for (var/obj/structure/train_lineside/gate/G in list(G1, G2))
+		var/line = G.sighting(null)
+		if (line)
+			shut_lines += line
+		G.passed_by(null)
+	platform_check("trackworks/cab_is_told", lines.len == 1 && findtext(lines[1], "open to the road") && shut_lines.len == 1 && findtext(shut_lines[1], "shut to the road") && G1.passed + G2.passed == 1)
+	G1.set_shut(FALSE)
+
+	// From a lever frame: one lever for the crossing, locked with the signal
+	// that reads over it.
+	var/obj/structure/train_lever_frame/F = new(platform_turf(302, 8))
+	var/obj/structure/train_lineside/signal/S = new(platform_turf(306, 3))
+	S.set_dir(NORTH)
+	var/obj/item/train_signal_wire/wire = new(keeper.loc)
+	wire.run_to(F)
+	var/joined = wire.run_to(G1)
+	wire.run_to(S)
+	var/list/now = F.worked()
+	// The signal reads over the gates ahead of it, not over those behind.
+	S.set_dir(SOUTH)
+	var/behind = !train_signal_over_gate(S, G1)
+	S.set_dir(NORTH)
+	platform_check("trackworks/frame_takes_the_gates", findtext(joined, "One lever") && now.len == 2 && (G1 in now) && !(G2 in now) && G2.crossing_frame() == F && findtext(F.lever_label(G1), "crossing gates") && train_signal_over_gate(S, G1) && train_signal_over_gate(S, G2) && behind)
+	G2.attack_hand(keeper)
+	var/held = findtext(F.locked_by(S), "open to the road") && !F.pull(S, null) && !S.clear && !G2.shut
+	platform_check("trackworks/signal_waits_for_the_gates", held)
+	var/shut_by_lever = F.pull(G1, null) && G1.shut && G2.shut
+	var/cleared = F.pull(S, null) && S.clear
+	var/locked = findtext(F.locked_by(G1), "clear over the crossing") && !F.pull(G1, null) && G1.shut
+	var/restored = F.pull(S, null) && !S.clear && F.pull(G1, null) && !G1.shut && !G2.shut
+	platform_check("trackworks/gates_locked_under_a_clear_signal", shut_by_lever && cleared && locked && restored)
+	var/off = wire.run_to(G2)
+	platform_check("trackworks/gates_come_off_the_frame", findtext(off, "by hand again") && !G1.crossing_frame() && F.worked().len == 1)
+
+	// The buffer stop: a train brought up to it stops against it.
+	var/obj/structure/train_buffer_stop/stop = new(platform_turf(304, 21))
+	stop.set_dir(NORTH)
+	var/obj/structure/trains/locomotive/A = platform_car("loco_steam", 304, 13, NORTH)
+	if (!istype(A))
+		platform_check("trackworks/buffer_stop_holds", FALSE)
+		return
+	var/soft = stop.hold(0.4) && !stop.hits
+	var/hard = stop.hold(1) && stop.hits == 1 && !stop.hold(1.3)
+	stop.hits = 0
+	platform_check("trackworks/buffer_stop_limits", soft && hard && stop.density)
+	var/mob/living/simple_animal/train_probe_dummy/driver = new(A.loc)
+	A.fuel = 200
+	A.on = TRUE
+	A.throttle = 1
+	A.drive()
+	var/limit = 600
+	while (A.driving && A.automovement && limit > 0)
+		sleep(1)
+		limit--
+	A.throttle = 0
+	platform_check("trackworks/buffer_stop_holds", A.loc == platform_turf(304, 20) && !QDELETED(stop) && !A.derailed && A.health == initial(A.health) && !QDELETED(driver))
+	limit = 100
+	while (A.driving && limit > 0)
+		sleep(1)
+		limit--
+	// At speed it is smashed, and the train with it; the rails stay.
+	A.rail_speed = 6
+	var/struck = A.rail_hit(platform_turf(304, 21), NORTH, 1.6)
+	var/scrap = 0
+	for (var/obj/item/stack/material/M in platform_turf(304, 21))
+		scrap++
+	platform_check("trackworks/buffer_stop_smashed", struck && QDELETED(stop) && scrap == 1 && (locate(/obj/structure/rails) in platform_turf(304, 21)) && A.loc == platform_turf(304, 20))
+	A.rail_speed = 0
+
 /proc/platform_stations_run()
 	for (var/ty in 2 to 25)
 		platform_track(290, ty, NORTH)
@@ -2797,6 +2905,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_derail_run()
 		platform_stations_run()
 		platform_big_warehouse_run()
+		platform_trackworks_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

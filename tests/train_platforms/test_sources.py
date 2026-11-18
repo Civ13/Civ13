@@ -204,7 +204,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         crashes = (ROOT / 'code/modules/1713/train_crashes.dm').read_text(encoding='utf-8')
         hit = TRAINS[TRAINS.index('/obj/structure/trains/proc/rail_hit('):TRAINS.index('/obj/structure/trains/proc/car_load_weight()')]
         # Another train, a solid object and a blocked deck all end in train_crash().
-        self.assertEqual(hit.count('train_crash('), 4)
+        self.assertEqual(hit.count('train_crash('), 5)
         self.assertLess(hit.index('if (train_crash(TF, impact, fdir))'), hit.index('hits \\the [TF]!'))
         self.assertIn('tail.train_crash(clearance, impact, fdir)', TRAINS)
         # Only a running train crashes, and never into its own cars.
@@ -667,6 +667,36 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('"/obj/item/train_jack" = "rail_steam"', NODES)
         self.assertIn('derailed', states)
         self.assertIn('rerail_jack', states)
+
+    def test_track_works_buffer_stops_and_crossings(self):
+        works = (ROOT / 'code/modules/1713/train_trackworks.dm').read_text(encoding='utf-8')
+        signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_trackworks.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the stop is asked before the ordinary crash on a solid object
+        hit = TRAINS[TRAINS.index('/obj/structure/trains/proc/rail_hit('):]
+        hit = hit[:hit.index('/obj/structure/trains/proc/process_rail_movement(')]
+        self.assertLess(hit.index('if (stop.hold(impact))'), hit.index('is_structure_impact_part(O)'))
+        self.assertLess(hit.index('if (stop.hold(impact))'), hit.index('stop.smash()'))
+        # gates are lineside posts: cabs read them, frames lock them
+        self.assertIn('/obj/structure/train_lineside/gate/speaks_to(heading)', works)
+        self.assertIn('for (var/obj/structure/train_lineside/gate/G in train_lineside)', signals)
+        self.assertIn('if (!G.shut && train_signal_over_gate(S, G))', signals)
+        self.assertIn('if (S.clear && train_signal_over_gate(S, G))', signals)
+        self.assertIn('if (crossing_frame())', works)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, works)
+        for name in ('TRAIN_BUFFER_HOLD', 'TRAIN_GATE_TIME', 'TRAIN_GATE_REACH'):
+            self.assertIn('#undef ' + name, works)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for path, recipe, state in (
+                ('/obj/structure/train_buffer_stop', '/material/iron/,buffer stop,/obj/structure/train_buffer_stop,4,', 'buffer_stop'),
+                ('/obj/structure/train_crossing_boards', '/material/wood/,crossing boards,/obj/structure/train_crossing_boards,2,', 'crossing_boards'),
+                ('/obj/structure/train_lineside/gate', '/material/wood/,crossing gate,/obj/structure/train_lineside/gate,4,', 'crossing_gate_open')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+            self.assertIn('icon_state = "%s"' % state, works)
+            self.assertIn(state, states)
+        self.assertIn('crossing_gate_shut', states)
 
     def test_stations_whistles_and_lamps(self):
         stations = (ROOT / 'code/modules/1713/train_stations.dm').read_text(encoding='utf-8')
