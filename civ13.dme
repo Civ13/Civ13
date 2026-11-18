@@ -1704,6 +1704,7 @@
 #include "code\modules\naval\hull_watch.dm"
 #include "code\modules\naval\small_craft_leaks.dm"
 #include "code\modules\naval\hull_push.dm"
+#include "code\modules\naval\island_claim.dm"
 #include "code\modules\naval\land_choices.dm"
 #include "code\modules\naval\land_resources.dm"
 #include "code\modules\naval\magnetic_signature.dm"
