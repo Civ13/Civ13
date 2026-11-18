@@ -432,6 +432,8 @@
 	singular_name = "rock"
 	flammable = TRUE
 	attackby(var/obj/W as obj, var/mob/living/human/H as mob)
+		if (rubber_cure_attackby(src, W, H)) // rubber_tapping.dm
+			return
 		if (istype(W, /obj/item/weapon/reagent_containers/glass/extraction_kit))
 			var/obj/item/weapon/reagent_containers/glass/extraction_kit/ET = W
 			if (ET.reagents.total_volume > 0)

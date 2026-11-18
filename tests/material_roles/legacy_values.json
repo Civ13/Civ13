@@ -249,6 +249,11 @@
  "/material/rope": {
   "hardness": "10"
  },
+ "/material/rubber": {
+  "hardness": "20",
+  "weight": "8",
+  "integrity": "25"
+ },
  "/material/sandstone": {
   "hardness": "45",
   "weight": "22",

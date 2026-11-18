@@ -178,6 +178,7 @@
 	if (map.ID == MAP_NOMADS_GAIA)
 		text += " Tin stays plentiful, but there is no bauxite or uranium. Crops grow about a quarter faster here."
 	text += " [continent_land_oil_text()]"
+	text += " [rubber_text()]" // rubber_tapping.dm
 	var/frack = fracking_text() // province_fracking.dm
 	if (frack)
 		text += " [frack]"

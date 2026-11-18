@@ -257,6 +257,14 @@ every age:
   within 3 tiles of the rig and fouls the groundwater for a day: wells and
   puddles within 6 tiles (any level) draw dirty water through
   `has_nearby_fecal_waste()`. Lands that are not continents frack as before.
+- Rubber trees (Val, 2026-11-18; `code/modules/1713/rubber_tapping.dm`): in
+  the Jungle, Earth Africa and Earth Asia a living jungle tree is a rubber
+  tree. An open container used on it, with a knife in the other hand, catches
+  10 latex; the tree bleeds again after 20 minutes. Other continents have none;
+  lands that are not continents keep theirs. A container of 10 latex used on a
+  sulphur rock cures one sheet of rubber (`/material/rubber`), which makes
+  insulated cable with copper, rubberises an airship gas cell and makes rubber
+  boots, as plastic does.
 - Faction > Province Holdings and Admin > Land Status show the line.
 
 ## Rich provinces
