@@ -78,13 +78,19 @@ class OpenAirView(unittest.TestCase):
             self.assertIn(guard, busy)
         # A level being added pauses only its own scan and the scan above it.
         self.assertNotIn('building_allocating_z', busy)
-        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry)')
+        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
         self.assertIn('z == building_allocating_z || multiz_level_below(z) == building_allocating_z', link)
+
+    def test_moving_viewer_is_linked_ahead(self):
+        scan = proc('/client/proc/open_air_view_scan()')
+        self.assertIn('clamp(centre.x - last.x, -OPEN_AIR_VIEW_LEAD, OPEN_AIR_VIEW_LEAD)', scan)
+        self.assertLess(scan.index('var/turf/last = open_air_view_centre'), scan.index('open_air_view_centre = centre'))
+        self.assertIn('open_air_view_link_around(centre.z, cx, cy, rx, ry, lead_x, lead_y)', scan)
 
     def test_one_failure_does_not_stop_the_scan(self):
         process = (ROOT / 'code/processes/open_air_view.dm').read_text()
         self.assertIn('try\n\t\t\tC.open_air_view_scan()\n\t\tcatch (var/exception/scan_error)', process)
-        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry)')
+        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
         self.assertIn('try\n\t\t\tT.open_air_view_refresh()\n\t\tcatch (var/exception/cell_error)', link)
         self.assertIn('if (text == open_air_view_last_error)\n\t\treturn', SOURCE)
 
