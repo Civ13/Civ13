@@ -16672,7 +16672,7 @@
       "name": "Tap a rubber tree for latex",
       "file": "code/modules/1713/rubber_tapping.dm",
       "line": 81,
-      "source_commit": "f6f557cc047e15b8a308e6a6e2ee84f41aaf5323",
+      "source_commit": "2e335ae1ceacae09b5da78f26b21a771b2fa2747",
       "inputs": [],
       "outputs": [
         "latex"
@@ -16694,7 +16694,7 @@
       "name": "Cure latex into rubber",
       "file": "code/modules/1713/rubber_tapping.dm",
       "line": 109,
-      "source_commit": "f6f557cc047e15b8a308e6a6e2ee84f41aaf5323",
+      "source_commit": "2e335ae1ceacae09b5da78f26b21a771b2fa2747",
       "inputs": [
         "latex",
         "/obj/item/stack/ore/sulphur"

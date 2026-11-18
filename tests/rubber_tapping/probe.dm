@@ -40,6 +40,18 @@ var/rubber_wait_ok = TRUE
 /obj/item/stack/ore/sulphur/rubber_cure_wait(mob/living/human/H)
 	return rubber_wait_ok
 
+/proc/rubber_sheets(mob/living/human/H)
+	. = 0
+	for (var/obj/item/stack/material/rubber/R in get_turf(H))
+		. += R.amount
+	for (var/obj/item/stack/material/rubber/R in H)
+		. += R.amount
+
+/proc/rubber_cable_units(turf/T)
+	. = 0
+	for (var/obj/item/stack/cable_coil/C in T)
+		. += C.amount
+
 /proc/rubber_checks(mob/living/human/rubber_probe/H, turf/T)
 	var/obj/structure/wild/jungle/J = new(locate(5, 7, 1))
 	var/obj/item/weapon/reagent_containers/glass/bucket/B = new(H)
@@ -53,13 +65,28 @@ var/rubber_wait_ok = TRUE
 	rubber_check(B.reagents.get_reagent_amount("latex") == 10 && J.health == J.maxhealth, "with a knife the bucket catches 10 latex ([B.reagents.get_reagent_amount("latex")])")
 	J.attackby(B, H)
 	rubber_check(B.reagents.get_reagent_amount("latex") == 10, "the cut bleeds again only after the wait")
-	J.latex_tapped_at -= 12001
+	J.latex_tapped_at -= 11000
+	J.attackby(B, H)
+	rubber_check(B.reagents.get_reagent_amount("latex") == 10, "the tree is still bled out after eighteen minutes")
+	J.latex_tapped_at -= 1001
 	rubber_wait_ok = FALSE
 	J.attackby(B, H)
 	rubber_wait_ok = TRUE
 	rubber_check(B.reagents.get_reagent_amount("latex") == 10, "an interrupted tapping gives nothing")
 	J.attackby(B, H)
 	rubber_check(B.reagents.get_reagent_amount("latex") == 20, "after the wait it gives 10 more")
+	var/obj/item/weapon/reagent_containers/glass/bucket/full = new(H)
+	full.reagents.add_reagent("water", full.reagents.maximum_volume - 5)
+	J.latex_tapped_at -= 12001
+	J.attackby(full, H)
+	rubber_check(!full.reagents.has_reagent("latex") && J.latex_bled_out() == FALSE, "a container without room for 10 latex taps nothing and leaves the tree ready")
+	H.other_hand = null
+	J.latex_tapped_at = null
+	H.a_intent = I_HARM
+	J.attackby(B, H)
+	H.a_intent = I_HELP
+	rubber_check(B.reagents.get_reagent_amount("latex") == 20, "in harm intent a container taps nothing")
+	H.other_hand = K
 	J.attackby(K, H)
 	rubber_check(J.health < J.maxhealth, "a knife on its own still cuts at the tree")
 	var/obj/structure/wild/jungle/acacia/A = new(locate(7, 7, 1))
@@ -79,15 +106,22 @@ var/rubber_wait_ok = TRUE
 		R = locate() in H
 	rubber_check(R && R.amount == 1 && S.amount == 2 && B.reagents.get_reagent_amount("latex") == 10, "10 latex and a sulphur rock cure into a sheet of rubber")
 	B.reagents.remove_reagent("latex", 5)
+	var/sheets_before = rubber_sheets(H)
 	S.attackby(B, H)
-	rubber_check(S.amount == 2 && B.reagents.get_reagent_amount("latex") == 5, "5 latex is not enough")
+	rubber_check(S.amount == 2 && B.reagents.get_reagent_amount("latex") == 5 && rubber_sheets(H) == sheets_before, "5 latex is not enough")
+	B.reagents.add_reagent("latex", 5)
+	persistence_save_in_progress = TRUE
+	S.attackby(B, H)
+	persistence_save_in_progress = FALSE
+	rubber_check(S.amount == 2 && B.reagents.get_reagent_amount("latex") == 10 && rubber_sheets(H) == sheets_before, "no curing finishes during a world save")
 	rubber_check(get_material_by_name("rubber") && R && R.material && R.material.name == "rubber", "rubber is a material")
 	// Uses.
 	var/obj/item/stack/material/copper/C = new(T)
 	C.amount = 2
 	R.amount = 2
+	var/cable_before = rubber_cable_units(get_turf(R))
 	R.attackby(C, H)
-	rubber_check(R.amount == 1 && C.amount == 1 && (locate(/obj/item/stack/cable_coil) in get_turf(R)), "rubber and copper make insulated cable")
+	rubber_check(R.amount == 1 && C.amount == 1 && rubber_cable_units(get_turf(R)) == cable_before + 1, "rubber and copper make one unit of insulated cable")
 
 /world/New()
 	OpenPort("none")

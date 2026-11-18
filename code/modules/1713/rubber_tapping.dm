@@ -12,10 +12,11 @@
 // trades: it insulates copper into cable, rubberises an airship gas cell and
 // makes rubber boots.
 //
-// The tapping wait is runtime only. Nothing here sleeps.
+// The tapping wait is runtime only (world.time, never saved: world_time_stamps.dm). In harm intent a container
+// hits the tree as before. Nothing here sleeps.
 
 #define RUBBER_TAP_LATEX 10
-#define RUBBER_TAP_WAIT 12000 // twenty minutes, in world.realtime tenths
+#define RUBBER_TAP_WAIT 12000 // twenty minutes of world.time
 #define RUBBER_TAP_TIME 60
 #define RUBBER_CURE_LATEX 10
 #define RUBBER_CURE_TIME 40
@@ -43,7 +44,10 @@
 /obj/item/stack/material/rubber/update_icon()
 	icon_state = "sheet-plastic[pile_suffix(amount, list(13, 26, 39))]"
 
-/obj/structure/wild/jungle/var/tmp/latex_tapped_at = 0
+/obj/structure/wild/jungle/var/tmp/latex_tapped_at = null // world.time of the last tap
+
+/obj/structure/wild/jungle/proc/latex_bled_out()
+	return !isnull(latex_tapped_at) && world.time < latex_tapped_at + RUBBER_TAP_WAIT
 
 /proc/rubber_lands()
 	var/static/list/lands = list(MAP_NOMADS_JUNGLE, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ASIA)
@@ -79,7 +83,7 @@
 
 // An open container used on a jungle tree (wild.dm). TRUE when it was handled.
 /proc/rubber_tap_attackby(obj/structure/wild/jungle/J, obj/item/W, mob/living/human/H)
-	if (!istype(W, /obj/item/weapon/reagent_containers) || !ishuman(H) || J.type != /obj/structure/wild/jungle)
+	if (!istype(W, /obj/item/weapon/reagent_containers) || !ishuman(H) || J.type != /obj/structure/wild/jungle || H.a_intent == I_HARM)
 		return FALSE
 	var/obj/item/weapon/reagent_containers/RG = W
 	if (!J.rubber_tree())
@@ -91,17 +95,19 @@
 	if (!is_tool(H.get_inactive_hand(), TOOL_KNIFE))
 		to_chat(H, SPAN_WARNING("Hold a knife in your other hand to score the bark."))
 		return TRUE
-	if (RG.reagents.get_free_space() <= 0)
-		to_chat(H, SPAN_WARNING("\The [RG] is full."))
+	if (RG.reagents.get_free_space() < RUBBER_TAP_LATEX)
+		to_chat(H, SPAN_WARNING("\The [RG] needs room for [RUBBER_TAP_LATEX] units of latex."))
 		return TRUE
-	if (world.realtime < J.latex_tapped_at + RUBBER_TAP_WAIT)
+	if (J.latex_bled_out())
 		to_chat(H, SPAN_NOTICE("The cuts on \the [J] have bled out for now. Try another tree, or come back later."))
 		return TRUE
 	H.visible_message(SPAN_NOTICE("[H] scores the bark of \the [J] and holds \the [RG] under the cut."), SPAN_NOTICE("You score the bark of \the [J] and hold \the [RG] under the cut."))
-	if (!J.rubber_tap_wait(H) || QDELETED(J) || RG.loc != H || !RG.reagents || world.realtime < J.latex_tapped_at + RUBBER_TAP_WAIT)
+	if (!J.rubber_tap_wait(H) || QDELETED(J) || !J.rubber_tree() || RG.loc != H || !RG.reagents || !RG.is_open_container())
 		return TRUE
-	J.latex_tapped_at = world.realtime
-	RG.reagents.add_reagent("latex", min(RG.reagents.get_free_space(), RUBBER_TAP_LATEX))
+	if (!is_tool(H.get_inactive_hand(), TOOL_KNIFE) || RG.reagents.get_free_space() < RUBBER_TAP_LATEX || J.latex_bled_out())
+		return TRUE
+	J.latex_tapped_at = world.time
+	RG.reagents.add_reagent("latex", RUBBER_TAP_LATEX)
 	to_chat(H, SPAN_NOTICE("Milky latex runs down the cut into \the [RG]."))
 	return TRUE
 
@@ -113,7 +119,7 @@
 		to_chat(H, SPAN_WARNING("You need [RUBBER_CURE_LATEX] units of latex to cure a sheet of rubber."))
 		return TRUE
 	H.visible_message(SPAN_NOTICE("[H] works crushed sulphur into the latex."), SPAN_NOTICE("You work crushed sulphur into the latex and let it cure."))
-	if (!S.rubber_cure_wait(H) || QDELETED(S) || !W.reagents || !W.reagents.has_reagent("latex", RUBBER_CURE_LATEX) || !S.use(1))
+	if (!S.rubber_cure_wait(H) || persistence_save_in_progress || QDELETED(S) || !W.reagents || !W.reagents.has_reagent("latex", RUBBER_CURE_LATEX) || !S.use(1))
 		return TRUE
 	W.reagents.remove_reagent("latex", RUBBER_CURE_LATEX)
 	var/obj/item/stack/material/rubber/R = new(get_turf(H), 1)

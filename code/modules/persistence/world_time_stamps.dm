@@ -38,6 +38,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"timeofdeath" = list(/mob),
 	"last_special" = list(/mob/living),
 	"next_weather_scan" = list(/mob/living),
+	"latex_tapped_at" = list(/obj/structure/wild/jungle),
 	"announcement_cooldown" = list(/mob/living/human),
 	"soap_cooldown" = list(/mob/living/human),
 	"last_flu_sneeze" = list(/mob/living/human),
