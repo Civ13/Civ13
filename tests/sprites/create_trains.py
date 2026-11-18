@@ -24,7 +24,7 @@ Released under Civ13 AGPL-3.0.
 import math
 import sys
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageChops
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from trainkit import (Canvas, EDGE, HEADING, directions, mix, noise, ramp_at,  # noqa: E402
@@ -1491,6 +1491,61 @@ def livestock_ramp(c):
         c.rect(x0 + 1, 0, x0 + 1, 31, WALNUT[1])
         for y in (0, 10, 20, 29):
             c.bevel(x0, y, x0 + 2, y + 2, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+
+
+def handcar(c):
+    """A hand car heading north: a plank deck on four flanged wheels, with a
+    pump pillar in the middle and a walking beam across it, a handle at each
+    end."""
+    c.shade(6, 6, 27, 30, 70)
+    # wheels showing past the deck edge
+    for x0 in (3, 26):
+        for y0 in (6, 21):
+            c.bevel(x0, y0, x0 + 2, y0 + 5, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    c.rect(5, 3, 26, 28, PLANK_SEAM)
+    planks(c, 6, 4, 25, 27, tones=PLANK, seam=PLANK_SEAM, seed=171)
+    c.rect(5, 3, 26, 3, STEEL[3])
+    c.rect(5, 28, 26, 28, STEEL[4])
+    for x in (6, 25):
+        for y in (5, 15, 26):
+            c.put(x, y, STEEL[1])
+    # the pillar and its frame
+    c.bevel(12, 11, 19, 20, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    c.rect(14, 13, 17, 18, BLACK[3])
+    # the walking beam, lying across the car
+    c.shade(4, 16, 28, 18, 50)
+    c.bevel(3, 14, 28, 16, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.disc(15.5, 15.0, 2.2, [BRASS[0], BRASS[1], BRASS[3]], outline=DARK)
+    # the handles: a wooden bar across each end of the beam
+    for x0 in (1, 28):
+        c.bevel(x0, 10, x0 + 2, 20, TAN[0], TAN[1], TAN[3], outline=DARK)
+
+
+def chaldron(c):
+    """A chaldron wagon heading north: a timber body with sloping sides seen
+    from above, iron-strapped, on four wooden wheels."""
+    c.shade(5, 5, 28, 30, 70)
+    for x0 in (2, 27):
+        for y0 in (6, 20):
+            c.bevel(x0, y0, x0 + 2, y0 + 6, WALNUT[1], WALNUT[2], WALNUT[3], outline=DARK)
+    # the rim
+    c.bevel(4, 2, 27, 29, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+    # the sloping sides, darker towards the floor
+    for i, tone in enumerate((OLD_PLANK[0], OLD_PLANK[1], OLD_PLANK[2], OLD_PLANK[4])):
+        c.rect(6 + i, 4 + i, 25 - i, 27 - i, tone)
+    c.rect(10, 8, 21, 23, OLD_SEAM)
+    planks(c, 11, 9, 20, 22, tones=tuple(mix(t, DARK, 0.35) for t in OLD_PLANK), seam=DARK, seed=173)
+    # corner seams of the slope
+    for i in range(4):
+        for x, y in ((6 + i, 4 + i), (25 - i, 4 + i), (6 + i, 27 - i), (25 - i, 27 - i)):
+            c.put(x, y, OLD_SEAM)
+    # iron straps over the rim
+    for y in (9, 22):
+        c.rect(4, y, 9, y, STEEL[3])
+        c.rect(22, y, 27, y, STEEL[3])
+    # the draw bar
+    c.rect(14, 0, 17, 2, STEEL_O)
+    c.rect(15, 0, 16, 1, STEEL[2])
 
 
 def sand_bin(full):
@@ -3301,6 +3356,8 @@ def platform_states():
     states['goods_crane'] = goods_crane(False)
     states['goods_crane_haul'] = goods_crane(True)
     states['livestock_ramp'] = directions(livestock_ramp, order=HEADING)
+    states['handcar'] = directions(handcar, order=HEADING)
+    states['chaldron'] = directions(chaldron, order=HEADING)
     states['track_worn'] = track_wear(False)
     states['track_bad'] = track_wear(True)
     states['hand_lamp'] = hand_lamp(None)
@@ -3732,6 +3789,23 @@ def write_previews(out, states, gun):
     im.alpha_composite(stock, (16 + wagon.width + 32, 160))
     im.alpha_composite(states['livestock_ramp'][DIR_INDEX['N']], (16 + wagon.width + 32 + 128, 256))
     big(im, 3).save(out / 'goods.png')
+
+    # early rails: a hand car on iron track, a string of chaldron wagons on a
+    # wooden wagonway (the game tints the same rails), and both from the end
+    im = ground(9 * 32, 5 * 32, seed=29)
+    lay_track(im, y_tile=1)
+    strip = Image.new('RGBA', (im.width, 32), (0, 0, 0, 0))
+    for x in range(0, im.width, 32):
+        strip.alpha_composite(read_dmi(RAILS)['rails'][DIR_INDEX['E']], (x, 0))
+    tint = Image.new('RGBA', strip.size, (0xb9, 0x82, 0x4a, 255))
+    wood = ImageChops.multiply(strip, tint)
+    im.alpha_composite(wood, (0, 3 * 32))
+    im.alpha_composite(states['handcar'][DIR_INDEX['E']], (2 * 32, 32))
+    im.alpha_composite(states['handcar'][DIR_INDEX['N']], (6 * 32, 32))
+    for i in range(3):
+        im.alpha_composite(states['chaldron'][DIR_INDEX['E']], ((1 + i) * 32, 3 * 32))
+    im.alpha_composite(states['chaldron'][DIR_INDEX['N']], (6 * 32, 3 * 32))
+    big(im, 4).save(out / 'early-rails.png')
 
     # the snowplough: on the front of an engine heading east and north, and
     # the plough standing on the ground

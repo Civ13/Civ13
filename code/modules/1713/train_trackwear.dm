@@ -23,6 +23,7 @@
 #define TRACK_PACK 30 // wear one round of packing takes off
 #define TRACK_PACK_TIME 30
 #define TRACK_RESLEEPER_TIME 50
+#define TRACK_WOODEN_WEAR 8 // how much faster an engine wears wooden rails (train_early.dm)
 
 /obj/structure/rails
 	var/wear = 0
@@ -30,6 +31,7 @@
 
 /obj/structure/rails/after_load()
 	..()
+	set_wooden(wooden)
 	show_wear()
 
 // 0 sound, 1 getting rough, 2 worn, 3 bad.
@@ -70,6 +72,8 @@
 		amount *= 2
 	if (speed > TRACK_WORN_SPEED)
 		amount *= 1.5
+	if (wooden)
+		amount *= TRACK_WOODEN_WEAR
 	var/before = wear_state()
 	if (before >= 1)
 		amount *= 1.5
@@ -89,6 +93,8 @@
 
 /obj/structure/rails/examine(mob/user)
 	..()
+	if (wooden)
+		to_chat(user, "These are wooden rails. Hand cars and wagons drawn by animals do them no harm, but an engine wears them out fast.")
 	to_chat(user, wear_text())
 
 // Platelaying, asked first by attackby() (track_laying.dm). TRUE when W was
@@ -169,3 +175,4 @@
 #undef TRACK_PACK
 #undef TRACK_PACK_TIME
 #undef TRACK_RESLEEPER_TIME
+#undef TRACK_WOODEN_WEAR
