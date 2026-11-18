@@ -251,6 +251,7 @@
 	var/railed = FALSE // rails sit on the sleepers, not yet spiked down
 	var/wooden = FALSE // and they are wooden rails (train_early.dm)
 	var/curved = FALSE // a /obj/structure/rails/turn facing dir once spiked
+	var/wear = 0 // the sleepers' wear, kept while the spikes are out (train_trackwear.dm)
 
 /obj/structure/rail_bed/after_load()
 	..()
@@ -326,9 +327,13 @@
 	var/d = dir
 	var/c = curved
 	var/w = wooden
+	var/worn = wear
 	qdel(src)
 	var/obj/structure/rails/R = track_make_rail(T, d, c)
 	R.set_wooden(w)
+	// Pulling the spikes and driving them again does not mend the sleepers.
+	R.wear = worn
+	R.show_wear()
 	return R
 
 // Lifts loose rails off the sleepers, or pries up bare sleepers; returns the item.
@@ -387,6 +392,7 @@
 		B.set_dir(dir)
 		B.railed = TRUE
 		B.wooden = wooden
+		B.wear = wear
 		B.update_icon()
 		. = B
 	else
