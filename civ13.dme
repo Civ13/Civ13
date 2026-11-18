@@ -1759,6 +1759,7 @@
 #include "code\modules\projectiles\targeting\targeting_overlay.dm"
 #include "code\modules\projectiles\targeting\targeting_triggers.dm"
 #include "code\modules\provinces\continent_resources.dm"
+#include "code\modules\provinces\province_fracking.dm"
 #include "code\modules\provinces\province_holding.dm"
 #include "code\modules\provinces\province_ranks.dm"
 #include "code\modules\provinces\province_rich.dm"

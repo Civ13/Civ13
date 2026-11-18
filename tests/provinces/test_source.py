@@ -275,6 +275,31 @@ class GaiaCrops(unittest.TestCase):
         self.assertIn('Crops grow about a quarter faster here.', text)
 
 
+class Fracking(unittest.TestCase):
+    """Val (2026-11-18): Americas frack in later eras at the cost of their land; options 1-4."""
+
+    def test_rules(self):
+        text = (ROOT / 'code/modules/provinces/province_fracking.dm').read_text(encoding='utf-8')
+        for line in ('lands = list(MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH)', '#define FRACK_POLLUTION 25',
+                     '#define FRACK_POLLUTION_RADIUS 3', '#define FRACK_FOUL_RANGE 6', '#define FRACK_FOUL_TIME 864000',
+                     'if (!holder || holder != side)', 'pollution_emit(T, FRACK_POLLUTION, FRACK_POLLUTION_RADIUS)',
+                     'if (!continent_home()) // continent_resources.dm\n\t\treturn null'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+
+    def test_wiring(self):
+        rig = (ROOT / 'code/modules/1713/hydraulic_fracturing.dm').read_text(encoding='utf-8')
+        self.assertLess(rig.index('var/refusal = fracking_refusal(H, get_turf(src))'), rig.index('if (!fracture_batch() || !check_power())\n\t\tstop_drilling()\n\t\tto_chat'))
+        self.assertIn('output.reagents.add_reagent("petroleum", 50)\n\t\tfracking_batch_cost(src)', rig)
+        sink = (ROOT / 'code/game/objects/structures/watercloset.dm').read_text(encoding='utf-8')
+        self.assertIn('latrine_fouls_near(src) || fracking_fouls_near(src)', sink)
+        self.assertIn('#include "code\\modules\\provinces\\province_fracking.dm"', DME.read_text(encoding='utf-8'))
+
+
 class Ranks(unittest.TestCase):
     """Val (2026-11-18): a clear objective for city building and defence."""
 

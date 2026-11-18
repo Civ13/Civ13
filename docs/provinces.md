@@ -251,6 +251,12 @@ every age:
   ripen about a quarter sooner and the harvest window stays whole. It wraps
   `advance_stage_if_allowed()` and counts only a stage that really grew, so
   pollution, seasons and greenhouses apply first.
+- Fracking (Val, 2026-11-18; `province_fracking.dm`): on the continents a
+  hydraulic fracturing rig works only in North and South America, and only in
+  a province held by the operator's side. Each batch emits 25 ground pollution
+  within 3 tiles of the rig and fouls the groundwater for a day: wells and
+  puddles within 6 tiles (any level) draw dirty water through
+  `has_nearby_fecal_waste()`. Lands that are not continents frack as before.
 - Faction > Province Holdings and Admin > Land Status show the line.
 
 ## Rich provinces

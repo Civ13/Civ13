@@ -127,7 +127,8 @@
 
 // Land oil (Val, 2026-11-18): petroleum springs on land flow only on the desert
 // ground of the oil lands. Elsewhere on the continents they run dry once the
-// lowered rates have phased in; offshore wells and fracking work everywhere.
+// lowered rates have phased in; offshore wells work everywhere and fracking in
+// the Americas (province_fracking.dm).
 /proc/continent_oil_lands()
 	var/static/list/lands = list(MAP_NOMADS_DESERT, MAP_NOMADS_EARTH_AFRICA)
 	return lands
@@ -146,7 +147,7 @@
 /proc/continent_land_oil_text()
 	if (map.ID in continent_oil_lands())
 		return "Petroleum springs flow on its desert ground and nowhere else."
-	return "Petroleum springs on land are dry here: land oil flows only on the desert ground of [english_list(continent_oil_land_names())]. Offshore wells and fracking still work."
+	return "Petroleum springs on land are dry here: land oil flows only on the desert ground of [english_list(continent_oil_land_names())]. Offshore wells still work[(map.ID in fracking_lands()) ? ", and so does fracking" : ""]."
 
 /proc/continent_oil_land_names()
 	var/list/names = list()
@@ -177,6 +178,9 @@
 	if (map.ID == MAP_NOMADS_GAIA)
 		text += " Tin stays plentiful, but there is no bauxite or uranium. Crops grow about a quarter faster here."
 	text += " [continent_land_oil_text()]"
+	var/frack = fracking_text() // province_fracking.dm
+	if (frack)
+		text += " [frack]"
 	var/days = round((map.continent_resources_from() + 2 * CONTINENT_PHASE_DAYS * 864000 - world.realtime) / 864000, 0.1)
 	if (days > 0)
 		text += " The scarcer rates are phasing in over the next [days] days."
