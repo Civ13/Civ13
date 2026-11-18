@@ -881,6 +881,9 @@ SUITES = {
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
+    # The vote window updates in place instead of reloading every second; source checks, no BYOND runtime.
+    'vote_window': {'files': ('tests/vote_window/test_vote_window.py',),
+        'paths': ('tests/vote_window/',), 'shared_paths': ('code/datums/vote.dm',)},
     # TDM servers vote only between team battle epochs; source projection, no BYOND runtime.
     'tdm_map_vote': {'files': ('tests/tdm_map_vote/test_tdm_epochs.py',),
         'paths': ('tests/tdm_map_vote/',), 'shared_paths': ('code/processes/mapswap.dm',)},
