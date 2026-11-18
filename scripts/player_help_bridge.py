@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '1f783cbdd50090df0db44b548373d66d1f93e515'
+WIKI_REVIEWED_REVISION = '0a6ebd6e6fff4a9644e3bf97634257e5cf3cbcc9'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('517b343000115473ef20f620eaddff20bd77414bd469a96fa8db57179074fffc', 'character skills traits languages'),
@@ -85,13 +85,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Factory_Automation.md': ('e49b07d8eea1fe3c785b450c486e4b412e9ab4e4d0df30c8e9dc1dc34f666be0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('e2aacede46531404822e89c781900d27362411e58d66937794c59258e5b3d77b', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('1b0cb495916de8649525deabdd27273a00a9b188129619e850412cd2d351d50d', 'fishing fish rod bait'),
-    'guides/Guide_to_Hygiene.md': ('a505634dbd6b57699568ffa7f4b178c5a118897fcd8bcb65cebac7bbc2b4a27b', 'hygiene clean washing soap detergent laundry'),
+    'guides/Guide_to_Hygiene.md': ('b3095af166adac2c4ec9245086e9d0e3755ff1ce1261398650e8ae1f6a7e7168', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('2e6344de888ecbff65a2433e7ea512b4deef6e9c8fdb717d94050237a38d7376', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('2cba37d02346964588303f5470f9252424d20bef190e114e3e41a1b86c1e1e41', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
-    'guides/Guide_to_Ranching.md': ('65a1edcdf4444cd66e39d5db5a9eebcdfc99ca5fad8af73784f8b04c099c53e0', 'ranching livestock animal breeding'),
+    'guides/Guide_to_Ranching.md': ('0763963aa0eab5a2e8430c66c9ae9e1f3347f99ca1f19bdb7e2f4cf120d1aacc', 'ranching livestock animal breeding'),
     'guides/Guide_to_Beekeeping.md': ('b977db7511ce86997466d4f929d03099d7f7f8e03c7336356534f5d6c5e7c8f6', 'bees bee beekeeping hive hives honey honeycomb beeswax wax candle swarm sting stings smoker extractor pollination mead sealing veil'),
     'guides/Guide_to_Mice.md': ('f458302a6b440e2d63417b553f75446470dcf256920a0f216f03ad5263fd3584', 'mice mouse nest nests rats pests vermin mousetrap poison bait fleas plague cats wildcat'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
@@ -102,7 +102,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trains.md': ('6abcd062d8d341584db666b61ffe09b829b98940d941f89904597ba73134a5a1', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Gunsmithing.md': ('1a693d4d52cad020b47e51a4dc7ccdbe096fb085726d1414ec48e7902d9c17a6', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket'),
+    'guides/Guide_to_Gunsmithing.md': ('f58521c86d5e74c0598718226516020edb66682ac24ad008e0fc3a1b634d71d3', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket'),
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('fc23f954b4a8120e96ff5ca78be457261658aadf18490fe6401780851dd174fa', 'new player beginner start first round basics'),
     'Hotkeys.md': ('cdfc3d45160e026c877c7e96c5fdd5ad4964c823ba652ffb0946bf270b9f25fc', 'hotkeys hotkey keys keyboard controls key press'),
