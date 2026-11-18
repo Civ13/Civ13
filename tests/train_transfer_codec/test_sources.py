@@ -1,5 +1,6 @@
 """Offline safety contracts, not native execution of the DM codec."""
 from pathlib import Path
+import re
 import unittest
 ROOT = Path(__file__).resolve().parents[2]
 S = (ROOT / 'code/modules/persistence/train_transfer_codec.dm').read_text()
@@ -9,7 +10,7 @@ class CodecContracts(unittest.TestCase):
         capture = S.split('/proc/train_transfer_capture', 1)[1].split('/proc/train_transfer_decode', 1)[0]
         self.assertNotIn('qdel(', capture)
         self.assertLess(capture.index('if(!train_transfer_decode'), capture.index('for(var/atom/movable/A in cars + loads)'))
-        self.assertIn('car in cars || cars.len >= TRAIN_TRANSFER_SEGMENTS', capture)
+        self.assertIn('(car in cars) || cars.len >= TRAIN_TRANSFER_SEGMENTS', capture)
 
     def test_bounded_explicit_codecs(self):
         apply = S.split('/proc/train_transfer_apply_structure_state', 1)[1].split('// API result', 1)[0]
@@ -80,6 +81,50 @@ class CodecContracts(unittest.TestCase):
         self.assertIn('"journey" = journey', capture)
         self.assertLess(capture.index('if(!train_transfer_decode'), capture.index('A.train_transfer_journey = journey'))
         self.assertIn('C.train_transfer_built = FALSE', capture)
+
+    def test_membership_tests_are_bracketed(self):
+        # DM's "in" binds looser than || and &&: "a || b in L" is "(a || b) in L".
+        for line in S.splitlines():
+            code = line.split('//', 1)[0]
+            if 'for(' in code or ' in ' not in code or not ('||' in code or '&&' in code):
+                continue
+            stripped = re.sub(r'\((?:[^()]|\([^()]*\))* in (?:[^()]|\([^()]*\))*\)', '', code)
+            stripped = re.sub(r'\((?:[^()]|\([^()]*\))* in (?:[^()]|\([^()]*\))*\)', '', stripped)
+            self.assertNotRegex(stripped, r'\S in \S', line)
+
+    def test_state_is_a_fixed_projection_with_the_limits_of_its_files(self):
+        fields = S.split('/proc/train_transfer_state_fields', 1)[1].split('/proc/train_transfer_state_valid', 1)[0]
+        defines = {}
+        for name in ('train_couplings', 'train_servicing', 'train_water', 'train_adhesion'):
+            text = (ROOT / 'code/modules/1713' / (name + '.dm')).read_text()
+            defines.update(re.findall(r'(?m)^#define (\w+) (-?\d+)', text))
+        for key, low, high in [('front_coupling', 'TRAIN_COUPLING_NONE', 'TRAIN_COUPLING_HEALTH'),
+                               ('rear_coupling', 'TRAIN_COUPLING_NONE', 'TRAIN_COUPLING_HEALTH'),
+                               ('brake_shoes', None, 'TRAIN_SHOES_FULL'), ('tender_water', None, 'TENDER_WATER_MAX'),
+                               ('tender_fuel', None, 'TENDER_FUEL_MAX'), ('sand', None, 'TRAIN_SAND_MAX')]:
+            self.assertIn('"%s" = list(%s, %s)' % (key, defines[low] if low else '0', defines[high]), fields)
+        self.assertIn('"axle_oil" = list(-%s, %s)' % (defines['TRAIN_HOT_SEIZE'], defines['TRAIN_OIL_FULL']), fields)
+        valid = S.split('/proc/train_transfer_state_valid', 1)[1].split('/proc/train_transfer_car_state', 1)[0]
+        self.assertIn('state.len != fields.len', valid)
+        self.assertIn('ispath(text2path(value), /obj/item/stack/ore)', valid)
+        self.assertIn('\t\telse\n\t\t\treturn FALSE\n\treturn TRUE', valid)
+        apply = S.split('/proc/train_transfer_apply_car_state', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('!train_transfer_state_valid(car.type, state)', apply)
+        self.assertIn('for(var/key in train_transfer_state_fields(car.type))', apply)
+
+    def test_heavy_locomotives_travel_as_the_head_of_their_body(self):
+        decode = S.split('/proc/train_transfer_decode', 1)[1].split('/proc/train_transfer_build', 1)[0]
+        self.assertIn('M["version"] != 2', decode)
+        self.assertIn('S.len != 11', decode)
+        self.assertIn('if(S["car_kind"] != body || !train_transfer_string(S["car_id"]) || S["seg_index"] != 1', decode)
+        self.assertIn('if(!body && layout["engine"]) return null', decode)
+        self.assertIn('(S["car_id"] in car_ids)', decode)
+        self.assertIn('if(!islist(entry)) return null', decode)
+        capture = S.split('/proc/train_transfer_capture', 1)[1].split('/proc/train_transfer_decode', 1)[0]
+        self.assertIn('if(car.derailed)', capture)
+        self.assertIn('E.engine_disabled()', capture)
+        build = S.split('/proc/train_transfer_build', 1)[1].split('/proc/train_transfer_remove', 1)[0]
+        self.assertLess(build.index('train_transfer_apply_car_state(car, S["state"])'), build.index('L.build_body()'))
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,8 +3,8 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 10
-	maxy = 10
+	maxx = 12
+	maxy = 24
 	maxz = 1
 	turf = /turf/floor/dirt
 	area = /area/caribbean
@@ -116,6 +116,136 @@ var/global/train_codec_runtime_error = FALSE
 	var/obj/structure/bed/B = new(locate(7, 7, 1))
 	B.overlays += image(B.icon, "custom")
 	train_codec_check("custom_bed_overlay_refused", !train_transfer_structure_state(B))
+/proc/train_codec_kit(kind, x, y)
+	var/obj/structure/train_car_kit/K = new(locate(x, y, 1))
+	K.set_kind(kind)
+	K.furnished = TRUE
+	return K.assemble(NORTH)
+/proc/train_codec_chain(obj/structure/trains/head)
+	var/list/cars = list()
+	while(head && cars.len < 64)
+		cars += head
+		head = head.connected
+	return cars
+// A copy of the manifest with one change made by the caller, as wire text.
+/proc/train_codec_refused(list/M)
+	return !train_transfer_decode(json_encode(M))
+// A main-line diesel and a loaded hopper: capture, wire, build and the
+// manifests a hostile or stale sender could offer instead.
+/proc/train_codec_heavy_probe()
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/E = train_codec_kit("loco_dieselmain", 3, 22)
+	var/list/unit = train_codec_chain(E)
+	train_codec_check("heavy_engine_assembled", istype(E) && unit.len == 6)
+	var/obj/structure/trains/platform/last = unit[unit.len]
+	var/obj/structure/trains/platform/H = train_codec_kit("hopper", 3, 16)
+	last.connected = H
+	var/list/cars = train_codec_chain(E)
+	E.fuel = 321.4
+	E.sand = 7
+	E.mileage = 1234
+	E.front_coupling = 40
+	last.rear_auto = TRUE
+	H.front_auto = TRUE
+	H.bulk_path = "/obj/item/stack/ore/coal"
+	H.bulk_amount = 300
+	H.update_bulk()
+	H.handbrake = TRUE
+	H.axle_oil = -20.6
+	H.brake_shoes = 120
+	var/list/capture = train_transfer_capture(E, "ckey:trainfixture", "alpha", "beta", "station")
+	if(capture["error"]) world.log << "CODEC DIAG capture error: [capture["error"]]"
+	var/list/M = capture["manifest"]
+	train_codec_check("heavy_capture", islist(M) && M["version"] == 2 && length(M["segments"]) == cars.len)
+	if(!islist(M)) return
+	var/text = json_encode(M)
+	var/list/wire = train_transfer_decode(text)
+	train_codec_check("heavy_wire_valid", islist(wire))
+	if(!islist(wire)) return
+	var/list/S1 = wire["segments"][1]
+	train_codec_check("heavy_engine_segment", S1["type"] == "[E.type]" && S1["car_kind"] == "loco_dieselmain" && S1["seg_index"] == 1 && S1["fuel"] == 321 && S1["car_id"] == E.car_id)
+	var/levers = 0
+	for(var/list/entity in wire["entities"])
+		var/list/payload = entity["payload"]
+		if(entity["kind"] == "fitting" && payload["type"] == "/obj/structure/train_hopper_lever") levers++
+	train_codec_check("hopper_lever_travels", levers == 1)
+	// The source is removed before the destination builds; the fixture has no
+	// garbage collector, so the removed objects' tags are cleared by hand.
+	var/list/gone = capture["cars"] + capture["loads"]
+	train_transfer_remove(M["id"], M["journey"])
+	for(var/atom/movable/A in gone) A.train_transfer_id = null
+	var/list/centres = list()
+	for(var/i in 1 to cars.len) centres += locate(8, 23 - i, 1)
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/B = train_transfer_build(wire, centres)
+	var/list/built = train_codec_chain(B)
+	train_codec_check("heavy_build", istype(B) && B != E && built.len == cars.len && B.loc == centres[1] && B.car_id == S1["car_id"] && length(B.body_parts) >= 2)
+	if(!istype(B) || built.len != cars.len) return
+	var/sections = TRUE
+	for(var/i in 2 to 6)
+		var/obj/structure/trains/platform/P = built[i]
+		if(!istype(P) || P.seg_index != i || P.car_id != B.car_id || P.car_kind != "loco_dieselmain" || !length(P.deck_parts) || P.car_engine() != B) sections = FALSE
+	train_codec_check("heavy_body_sections", sections && B.rear_cab() == built[6])
+	train_codec_check("engine_state_roundtrip", B.fuel == 321 && B.sand == 7 && B.mileage == 1234 && B.front_coupling == 40 && !B.on)
+	var/obj/structure/trains/platform/BL = built[6]
+	var/obj/structure/trains/platform/BH = built[7]
+	train_codec_check("car_state_roundtrip", BL.rear_auto && BH.front_auto && BH.bulk_path == "/obj/item/stack/ore/coal" && BH.bulk_amount == 300 && BH.bulk_fill == 1 && BH.handbrake && BH.axle_oil == -21 && BH.brake_shoes == 120)
+	var/rebuilt = 0
+	for(var/obj/structure/train_hopper_lever/lever in range(1, BH)) rebuilt++
+	train_codec_check("lever_rebuilt", rebuilt == 1)
+	var/list/X = json_decode(text)
+	var/list/segments = X["segments"]
+	segments.Cut(6, 7)
+	train_codec_check("truncated_body_refused", train_codec_refused(X))
+	X = json_decode(text)
+	segments = X["segments"]
+	segments.Cut(1, 2)
+	train_codec_check("headless_body_refused", train_codec_refused(X))
+	X = json_decode(text)
+	X["segments"][1]["state"]["front_coupling"] = 101
+	train_codec_check("state_range_refused", train_codec_refused(X))
+	X = json_decode(text)
+	X["segments"][1]["state"]["icon"] = "custom"
+	train_codec_check("unknown_state_refused", train_codec_refused(X))
+	X = json_decode(text)
+	var/list/stateless = X["segments"][7]
+	stateless -= "state"
+	train_codec_check("missing_state_refused", train_codec_refused(X))
+	X = json_decode(text)
+	X["segments"][7]["state"]["bulk_path"] = "/obj/item/weapon/gun"
+	train_codec_check("bad_bulk_refused", train_codec_refused(X))
+	X = json_decode(text)
+	X["segments"][7]["state"]["bulk_amount"] = 801
+	train_codec_check("overload_refused", train_codec_refused(X))
+	X = json_decode(text)
+	X["version"] = 1
+	train_codec_check("old_version_refused", train_codec_refused(X))
+	X = json_decode(text)
+	for(var/i in 7 to cars.len) X["segments"][i]["car_id"] = S1["car_id"]
+	train_codec_check("shared_car_id_refused", train_codec_refused(X))
+	X = json_decode(text)
+	X["segments"][1]["fuel"] = 601
+	train_codec_check("fuel_limit_refused", train_codec_refused(X))
+	X = json_decode(text)
+	X["segments"][1]["type"] = "/obj/structure/trains/locomotive"
+	train_codec_check("plain_engine_body_refused", train_codec_refused(X))
+	train_codec_check("unchanged_copy_admitted", !train_codec_refused(json_decode(text)))
+	BL.derailed = TRUE
+	var/list/again = train_transfer_capture(B, "ckey:trainfixture", "beta", "alpha", "station")
+	train_codec_check("derailed_refused", istext(again["error"]))
+	BL.derailed = FALSE
+	B.broken_down = TRUE
+	again = train_transfer_capture(B, "ckey:trainfixture", "beta", "alpha", "station")
+	train_codec_check("broken_engine_refused", istext(again["error"]))
+	B.broken_down = FALSE
+	var/obj/structure/trains/locomotive/coal/mainline/steam = new(locate(11, 22, 1))
+	steam.water = 55.5
+	steam.pressure = 40
+	steam.clinker = 30
+	steam.plug_dropped = TRUE
+	steam.injector = FALSE
+	var/list/steam_state = train_transfer_car_state(steam)
+	var/list/steam_wire = islist(steam_state) ? json_decode(json_encode(steam_state)) : null
+	var/obj/structure/trains/locomotive/coal/mainline/other = new(locate(11, 10, 1))
+	train_codec_check("steam_state_roundtrip", train_transfer_apply_car_state(other, steam_wire) && other.water == 56 && other.pressure == 40 && other.clinker == 30 && other.plug_dropped && !other.injector)
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -127,6 +257,7 @@ var/global/train_codec_runtime_error = FALSE
 	try
 		train_codec_probe()
 		train_codec_baseline_probe()
+		train_codec_heavy_probe()
 	catch(var/exception/E)
 		train_codec_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

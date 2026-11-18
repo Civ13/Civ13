@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 294
+	maxx = 300
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -502,7 +502,7 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("heavy/body_art", E.icon_state == "loco_steam_1c" && cab.icon_state == "loco_steam_3c" && heavy_parts_placed(E) && platform_parts_placed(body))
 	platform_check("heavy/solid_and_cab", boiler.density && bunker.density && !cab.density && E.control_spot() == cab)
 	platform_check("heavy/cab_roof_only", cab.roofed() && cab.roof_images && cab.roof_images.len == 3 && !boiler.roofed())
-	platform_check("heavy/one_piece", findtext(boiler.dismantle_problem(), "one piece") && rail_warehouse_too_long(E) && rail_warehouse_too_long(bunker))
+	platform_check("heavy/one_piece", findtext(boiler.dismantle_problem(), "one piece") && rail_warehouse_unit(bunker).len == 4 && rail_warehouse_unit(bunker)[1] == E && rail_warehouse_whole_length(E) == 4)
 	var/mob/living/human/platform_rider/driver = new(platform_turf(61, 10))
 	// The fire is fed at the firebox door in the middle of the cab, not from
 	// the fireman's side where the driver stands here.
@@ -2493,6 +2493,54 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("derail/off_the_end", rails_ahead && crawl && buffered && ran_off && A.engine_disabled())
 
 // Stations and warnings (train_stations.dm), on column 290.
+// A heavy locomotive goes into the rail warehouse whole and comes out as it
+// went in (docs/trains.md#heavy-locomotives).
+/proc/platform_big_warehouse_run()
+	for (var/y in 2 to 25)
+		platform_track(298, y, NORTH)
+	var/obj/structure/rail_warehouse/W = new(platform_turf(296, 13))
+	W.dir = EAST
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/E = platform_car("loco_dieselmain", 298, 19, NORTH)
+	var/list/body = istype(E) ? platform_segments(E.connected) : list()
+	var/obj/structure/trains/platform/last = body.len ? body[body.len] : null
+	var/obj/structure/trains/transport/flatbed/F = new(platform_turf(298, 13))
+	F.dir = NORTH
+	last.connected = F
+	E.fuel = 321
+	E.sand = 7
+	E.mileage = 1234
+	E.front_coupling = 40
+	last.rear_auto = TRUE
+	var/obj/item/stack/material/iron/cab_load = new(platform_turf(297, 19))
+	var/list/unit = rail_warehouse_unit(last)
+	platform_check("bigstore/engine_is_one_unit", body.len == 5 && unit.len == 6 && unit[1] == E && unit[6] == last && W.rear_units().len == 1)
+	F.derailed = TRUE
+	platform_check("bigstore/refuses_derailed", findtext(W.store_problem(list(F)), "rails"))
+	F.derailed = FALSE
+	platform_check("bigstore/whole_train_stored", W.put_away(null, null, TRUE) == 2 && W.stored_units().len == 2 && !isturf(E.loc) && !isturf(last.loc) && !isturf(cab_load.loc))
+	var/parts_left = 0
+	for (var/x in 297 to 299)
+		for (var/y in 13 to 19)
+			for (var/obj/structure/train_part/P in platform_turf(x, y))
+				parts_left++
+	platform_check("bigstore/nothing_left_on_the_map", !parts_left && !E.body_parts && !E.coupler_f)
+	var/obj/structure/rail_stored_unit/engine_unit = null
+	var/obj/structure/rail_stored_unit/wagon_unit = null
+	for (var/obj/structure/rail_stored_unit/U in W.stored_units())
+		if (U.unit_length == 6)
+			engine_unit = U
+		else
+			wagon_unit = U
+	platform_check("bigstore/engine_rolls_out", engine_unit && !W.retrieve_problem(engine_unit, W.retrieve_place(engine_unit)) && W.retrieve_unit(engine_unit) == E && E.loc == platform_turf(298, 19) && last.loc == platform_turf(298, 14) && E.dir == NORTH)
+	platform_check("bigstore/engine_whole_again", heavy_parts_placed(E) && platform_parts_placed(body) && E.rear_cab() == last && last.car_engine() == E && E.coupler_f && last.coupler_r)
+	platform_check("bigstore/state_kept", E.fuel == 321 && E.sand == 7 && E.mileage == 1234 && E.front_coupling == 40 && last.rear_auto && cab_load.loc == platform_turf(297, 19))
+	platform_check("bigstore/wagon_couples_behind", wagon_unit && W.retrieve_unit(wagon_unit) == F && last.connected == F && F.loc == platform_turf(298, 13))
+	// A car with no coupling on its drawbar rolls out but is not hitched.
+	platform_check("bigstore/wagon_stored_again", W.put_away(null, list(F), FALSE) == 1 && !last.connected)
+	F.front_coupling = -1
+	var/obj/structure/rail_stored_unit/loose = W.stored_units()[1]
+	platform_check("bigstore/no_coupling_no_hitch", W.retrieve_unit(loose) == F && F.loc == platform_turf(298, 13) && !last.connected)
+
 /proc/platform_stations_run()
 	for (var/ty in 2 to 25)
 		platform_track(290, ty, NORTH)
@@ -2748,6 +2796,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_signals_run()
 		platform_derail_run()
 		platform_stations_run()
+		platform_big_warehouse_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

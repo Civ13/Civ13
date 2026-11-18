@@ -4,8 +4,8 @@
 // one at a time (or the whole train) and puts them away. Taking a car out
 // rolls it onto the track behind the train standing in the bay and couples it.
 //
-// A stored unit (a platform car's four segments, or a one-tile locomotive or
-// wagon) is moved, with everything on its deck, into holder objects inside
+// A stored unit (the sections of a platform car, a heavy locomotive with its
+// body sections, or a one-tile locomotive or wagon) is moved, with everything on its deck, into holder objects inside
 // the post. Nothing of it is on the map, rendered or simulated, and world
 // saves carry it as ordinary nested contents of the post, cargo included.
 
@@ -84,6 +84,17 @@
 
 // The segments of the unit TR belongs to, front first.
 /proc/rail_warehouse_unit(obj/structure/trains/TR)
+	// A heavy locomotive (train_locomotives.dm) is its engine and the body
+	// sections behind it: the warehouse takes it whole.
+	var/obj/structure/trains/locomotive/E = istype(TR, /obj/structure/trains/locomotive) ? TR : TR.unit_engine()
+	if (istype(E) && E.body_kind)
+		var/list/unit = list(E)
+		for (var/i in 2 to E.body_length())
+			for (var/obj/structure/trains/platform/S in range(E.body_length(), E))
+				if (S.car_id == E.car_id && S.seg_index == i)
+					unit += S
+					break
+		return unit
 	if (!istype(TR, /obj/structure/trains/platform))
 		return list(TR)
 	var/obj/structure/trains/platform/P = TR
@@ -95,16 +106,15 @@
 				ordered += S
 	return ordered
 
-// Heavy locomotives (train_locomotives.dm) are an engine and three body
-// sections; the warehouse does not take them apart.
-/proc/rail_warehouse_too_long(obj/structure/trains/S)
-	if (istype(S, /obj/structure/trains/locomotive))
-		var/obj/structure/trains/locomotive/E = S
-		return !!E.body_kind
-	if (istype(S, /obj/structure/trains/platform))
-		var/obj/structure/trains/platform/P = S
-		return !!P.car_engine()
-	return FALSE
+// How many sections the unit that starts with front should have.
+/proc/rail_warehouse_whole_length(obj/structure/trains/front)
+	if (istype(front, /obj/structure/trains/locomotive))
+		var/obj/structure/trains/locomotive/E = front
+		return E.body_length()
+	if (istype(front, /obj/structure/trains/platform))
+		var/obj/structure/trains/platform/P = front
+		return P.car_length()
+	return 1
 
 /proc/rail_warehouse_unit_name(list/unit)
 	var/obj/structure/trains/front = unit[1]
@@ -142,12 +152,10 @@
 	if (stored_units().len >= capacity)
 		return "The warehouse is full: it holds [capacity] cars."
 	var/list/bay = bay()
-	for (var/obj/structure/trains/S in unit)
-		if (rail_warehouse_too_long(S))
-			return "A heavy locomotive is too long to put away."
-	var/obj/structure/trains/platform/whole = unit[1]
-	if (istype(whole) && unit.len != whole.car_length())
+	if (unit.len != rail_warehouse_whole_length(unit[1]))
 		return "\The [unit[1]] is not whole."
+	if (unit.len > bay.len)
+		return "\The [unit[1]] is too long for the warehouse."
 	for (var/turf/T in bay)
 		for (var/obj/structure/trains/TR in T)
 			if (TR.automovement)
@@ -155,6 +163,8 @@
 	for (var/obj/structure/trains/S in unit)
 		if (!(S.loc in bay))
 			return "\The [S] is not all the way inside the warehouse."
+		if (S.derailed)
+			return "Put \the [S] back on the rails first."
 		if (S.buckled_mob)
 			return "Get everyone off \the [S] first."
 		if (istype(S, /obj/structure/trains/locomotive) && S.on)
@@ -170,7 +180,7 @@
 
 // The tiles a unit's segment carries: its deck for a platform, else its own tile.
 /proc/rail_warehouse_unit_tiles(obj/structure/trains/S)
-	if (istype(S, /obj/structure/trains/platform))
+	if (S.wide_body())
 		var/list/tiles = train_platform_tiles(S.loc, S.dir)
 		for (var/i in list(1, 3))
 			if (tiles[i] && train_centre_of_other(tiles[i], S))
@@ -210,6 +220,10 @@
 				if (istype(S, /obj/structure/trains/platform))
 					var/obj/structure/trains/platform/P = S
 					P.clear_parts()
+				if (istype(S, /obj/structure/trains/locomotive))
+					var/obj/structure/trains/locomotive/E = S
+					E.clear_body()
+				S.clear_couplers()
 				S.set_light(0)
 				S.persistence_set_loc(H)
 	return U
@@ -301,9 +315,15 @@
 		P.last_moved = world.time
 		P.apply_layout()
 	var/obj/structure/trains/front = segments[1]
+	var/obj/structure/trains/locomotive/engine = front
+	if (istype(engine) && engine.body_kind)
+		engine.build_body()
 	var/obj/structure/trains/coupled = place[3]
-	if (coupled && front)
+	// It couples on only where both drawbars still carry a sound coupling.
+	if (coupled && front && coupled.coupling_at(coupled.reversed) > 0 && front.coupling_at(TRUE) > 0)
 		coupled.connected = front
+	for (var/obj/structure/trains/S in segments + coupled)
+		S.update_couplers()
 	qdel(U)
 	return front
 

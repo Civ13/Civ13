@@ -13,13 +13,13 @@
 /obj/structure/trains/var/train_transfer_built = FALSE
 
 /proc/train_transfer_path(text)
-	var/static/list/paths = list(/obj/structure/trains, /obj/structure/trains/storage, /obj/structure/trains/storage/miningcart, /obj/structure/trains/storage/tender, /obj/structure/trains/storage/closed, /obj/structure/trains/transport, /obj/structure/trains/transport/flatbed, /obj/structure/trains/transport/cabin, /obj/structure/trains/locomotive, /obj/structure/trains/locomotive/coal, /obj/structure/trains/platform)
+	var/static/list/paths = list(/obj/structure/trains, /obj/structure/trains/storage, /obj/structure/trains/storage/miningcart, /obj/structure/trains/storage/tender, /obj/structure/trains/storage/closed, /obj/structure/trains/transport, /obj/structure/trains/transport/flatbed, /obj/structure/trains/transport/cabin, /obj/structure/trains/locomotive, /obj/structure/trains/locomotive/coal, /obj/structure/trains/platform, /obj/structure/trains/locomotive/coal/heavy, /obj/structure/trains/locomotive/coal/mainline, /obj/structure/trains/locomotive/coal/armored/heavy, /obj/structure/trains/locomotive/heavy_diesel, /obj/structure/trains/locomotive/heavy_diesel/mainline)
 	for(var/path in paths)
 		if(text == "[path]") return path
 	return null
 
 /proc/train_transfer_fitting_path(text)
-	var/static/list/paths = list(/obj/structure/bed, /obj/structure/bed/chair/comfy/blue, /obj/structure/bed/chair/comfy/diner_booth, /obj/structure/table/modern/table)
+	var/static/list/paths = list(/obj/structure/bed, /obj/structure/bed/chair/comfy/blue, /obj/structure/bed/chair/comfy/diner_booth, /obj/structure/table/modern/table, /obj/structure/train_brake_wheel, /obj/structure/train_hopper_lever, /obj/structure/train_tank_valve)
 	for(var/path in paths)
 		if(text == "[path]") return path
 	return null
@@ -29,6 +29,86 @@
 
 /proc/train_transfer_string(value, limit = 100)
 	return istext(value) && length(value) > 0 && length(value) <= limit
+
+// The car kind of a heavy locomotive's body ("loco_steam"), or null for
+// anything else. The engine is the first section of that car.
+/proc/train_transfer_body_kind(path)
+	if(!ispath(path, /obj/structure/trains/locomotive)) return null
+	var/obj/structure/trains/locomotive/L = path
+	var/kind = initial(L.body_kind)
+	return kind ? "loco_[kind]" : null
+
+/proc/train_transfer_wide(path)
+	return path == /obj/structure/trains/platform || !!train_transfer_body_kind(path)
+
+/proc/train_transfer_health_limit(path)
+	var/obj/structure/trains/T = path
+	return max(1500, initial(T.health))
+
+/proc/train_transfer_fuel_limit(path)
+	if(!ispath(path, /obj/structure/trains/locomotive)) return 0
+	var/obj/structure/trains/locomotive/L = path
+	return max(100, initial(L.max_fuel))
+
+// The working state a section keeps over a journey: field -> list(lowest,
+// highest) for a whole number, "flag", "bulk" (an ore stack type as text, or
+// null) or "liquid" (a reagent id, or null). Nothing else is read from a car
+// or written to one. The limits are the ones of train_couplings.dm,
+// train_servicing.dm, train_water.dm and train_adhesion.dm
+// (tests/train_transfer_codec checks them against those files).
+/proc/train_transfer_state_fields(path)
+	if(!train_transfer_path("[path]")) return null
+	var/list/fields = list("handbrake" = "flag", "front_coupling" = list(-1, 100), "rear_coupling" = list(-1, 100), "front_auto" = "flag", "rear_auto" = "flag", "front_plough" = "flag", "rear_plough" = "flag", "axle_oil" = list(-150, 600), "axle_seized" = "flag", "brake_shoes" = list(0, 300), "tender_water" = list(0, 2400))
+	if(ispath(path, /obj/structure/trains/platform))
+		fields += list("locked_doors" = list(0, 65535), "bulk_path" = "bulk", "bulk_amount" = list(0, 100000), "bulk_fill" = list(0, 2), "tank_reagent" = "liquid", "tank_amount" = list(0, 100000), "tender_fuel" = list(0, 1500))
+	if(ispath(path, /obj/structure/trains/locomotive))
+		fields += list("sand" = list(0, 20), "mileage" = list(0, 1000000))
+	if(ispath(path, /obj/structure/trains/locomotive/coal))
+		var/obj/structure/trains/locomotive/coal/C = path
+		fields += list("water" = list(0, initial(C.max_water)), "boiler_water" = list(0, initial(C.max_boiler)), "pressure" = list(0, 100), "injector" = "flag", "plug_dropped" = "flag", "clinker" = list(0, 100), "scale" = list(0, 100))
+	return fields
+
+/proc/train_transfer_state_valid(path, list/state)
+	var/list/fields = train_transfer_state_fields(path)
+	if(!fields || !islist(state) || state.len != fields.len) return FALSE
+	for(var/key in fields)
+		if(!(key in state)) return FALSE
+		var/value = state[key]
+		var/rule = fields[key]
+		if(islist(rule))
+			if(!train_transfer_number(value, rule[1], rule[2])) return FALSE
+		else if(rule == "flag")
+			if(!(value in list(FALSE, TRUE))) return FALSE
+		else if(rule == "bulk")
+			if(!isnull(value) && (!train_transfer_string(value) || !ispath(text2path(value), /obj/item/stack/ore))) return FALSE
+		else if(rule == "liquid")
+			if(!isnull(value) && (!train_transfer_string(value) || !islist(chemical_reagents_list) || !chemical_reagents_list[value])) return FALSE
+		else
+			return FALSE
+	return TRUE
+
+// Reads the whitelisted state off a car. Amounts travel as whole numbers.
+/proc/train_transfer_car_state(obj/structure/trains/car)
+	var/list/fields = train_transfer_state_fields(car.type)
+	if(!fields) return null
+	var/list/state = list()
+	for(var/key in fields)
+		var/value = car.vars[key]
+		var/rule = fields[key]
+		if(islist(rule))
+			if(!isnum(value)) return null
+			state[key] = clamp(round(value, 1), rule[1], rule[2])
+		else if(rule == "flag")
+			state[key] = !!value
+		else
+			state[key] = value ? "[value]" : null
+	return train_transfer_state_valid(car.type, state) ? state : null
+
+/proc/train_transfer_apply_car_state(obj/structure/trains/car, list/state)
+	if(!car || !train_transfer_state_valid(car.type, state)) return FALSE
+	for(var/key in train_transfer_state_fields(car.type))
+		car.vars[key] = state[key]
+	return TRUE
 
 // Explicit projection for bounded fittings. Unknown durable fields refuse,
 // instead of silently resetting a customized structure to its type defaults.
@@ -146,13 +226,17 @@
 	var/list/cars = list()
 	var/obj/structure/trains/car = head
 	while(car)
-		if(car in cars || cars.len >= TRAIN_TRANSFER_SEGMENTS) return list("error" = "The consist is cyclic or too long.")
+		if((car in cars) || cars.len >= TRAIN_TRANSFER_SEGMENTS) return list("error" = "The consist is cyclic or too long.")
 		if(!train_transfer_path("[car.type]") || !isturf(car.loc) || length(car.contents)) return list("error" = "This car or its contained load cannot travel yet.")
 		if(car.health <= 0) return list("error" = "Repair the train before travelling.")
 		if(car.reversed) return list("error" = "Every car must face the front of the train to travel between regions.")
+		if(car.derailed) return list("error" = "Put the whole train back on the rails first.")
 		if(istype(car, /obj/structure/trains/platform))
 			var/obj/structure/trains/platform/P = car
 			if(P.braced || P.wrecked) return list("error" = "Unbrace and repair the train first.")
+		if(istype(car, /obj/structure/trains/locomotive))
+			var/obj/structure/trains/locomotive/E = car
+			if(E.engine_disabled()) return list("error" = "Repair the locomotive before travelling.")
 		if(cars.len)
 			var/obj/structure/trains/previous = cars[cars.len]
 			if(car.dir != head.dir || car.loc != get_step(previous, turn(head.dir, 180))) return list("error" = "Stage the whole train on straight track before travelling.")
@@ -163,7 +247,7 @@
 	var/id = head.train_transfer_id
 	if(isnull(journey))
 		journey = md5("[id]-[source]-[destination]-[world.realtime]-[rand(1, 1000000000)]")
-	var/list/M = list("kind" = "train", "version" = 1, "id" = id, "journey" = journey, "party" = party, "source" = source, "destination" = destination, "station" = station, "segments" = list(), "entities" = list(), "accounts" = list())
+	var/list/M = list("kind" = "train", "version" = 2, "id" = id, "journey" = journey, "party" = party, "source" = source, "destination" = destination, "station" = station, "segments" = list(), "entities" = list(), "accounts" = list())
 	var/list/segments = M["segments"]
 	var/list/entities = M["entities"]
 	var/list/accounts = M["accounts"]
@@ -171,11 +255,18 @@
 	var/list/claimed = list()
 	for(var/i = 1, i <= cars.len, i++)
 		car = cars[i]
-		var/list/S = list("id" = "[id]:s[i]", "type" = "[car.type]", "dir" = car.dir, "health" = car.health, "on" = !!car.on, "fuel" = 0, "car_kind" = "", "car_id" = "", "seg_index" = 0, "open_doors" = 0)
+		var/list/S = list("id" = "[id]:s[i]", "type" = "[car.type]", "dir" = car.dir, "health" = max(1, round(car.health, 1)), "on" = !!car.on, "fuel" = 0, "car_kind" = "", "car_id" = "", "seg_index" = 0, "open_doors" = 0, "state" = train_transfer_car_state(car))
+		if(!S["state"]) return list("error" = "[car.name] is in a state that cannot travel yet.")
 		var/list/tiles = list(null, car.loc, null)
 		if(istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
-			S["fuel"] = L.fuel
+			S["fuel"] = clamp(round(L.fuel, 1), 0, train_transfer_fuel_limit(L.type))
+			// A heavy locomotive is the first section of its own body.
+			if(L.body_kind)
+				S["car_kind"] = "loco_[L.body_kind]"
+				S["car_id"] = L.car_id
+				S["seg_index"] = 1
+				tiles = train_platform_tiles(car.loc, car.dir)
 		if(istype(car, /obj/structure/trains/platform))
 			var/obj/structure/trains/platform/P = car
 			S["car_kind"] = P.car_kind
@@ -189,7 +280,7 @@
 			if(!T) continue
 			if(slot != 2 && train_centre_of_other(T, car)) continue
 			for(var/atom/movable/A in T)
-				if(A in cars || istype(A, /obj/structure/train_part) || claimed[A] || !train_platform_carries(A)) continue
+				if((A in cars) || istype(A, /obj/structure/train_part) || claimed[A] || !train_platform_carries(A)) continue
 				if(entities.len >= TRAIN_TRANSFER_ENTITIES) return list("error" = "Too many objects aboard.")
 				var/list/E = list("id" = "[id]:e[entities.len + 1]", "segment" = i, "slot" = slot, "dir" = A.dir, "anchored" = !!A.anchored)
 				if(istype(A, /mob/living/human))
@@ -245,39 +336,57 @@
 		M = json_decode(text)
 	catch
 		return null
-	if(!islist(M) || M["kind"] != "train" || M["version"] != 1 || !train_transfer_string(M["id"]) || !party_train_valid_party(M["party"])) return null
+	if(!islist(M) || M["kind"] != "train" || M["version"] != 2 || !train_transfer_string(M["id"]) || !party_train_valid_party(M["party"])) return null
 	for(var/key in list("journey", "source", "destination", "station"))
 		if(!train_transfer_string(M[key])) return null
 	var/list/segments = M["segments"]
 	var/list/entities = M["entities"]
 	var/list/accounts = M["accounts"]
 	if(!islist(segments) || !segments.len || segments.len > TRAIN_TRANSFER_SEGMENTS || !islist(entities) || entities.len > TRAIN_TRANSFER_ENTITIES || !islist(accounts)) return null
+	// A typed loop skips what is not a list: refuse those entries outright.
+	for(var/entry in segments + entities)
+		if(!islist(entry)) return null
 	var/list/ids = list()
 	for(var/list/S in segments)
-		if(!islist(S) || !train_transfer_string(S["id"]) || S["id"] in ids) return null
+		if(!islist(S) || !train_transfer_string(S["id"]) || (S["id"] in ids)) return null
 		ids += S["id"]
 		var/path = train_transfer_path(S["type"])
-		if(!path || !(S["dir"] in cardinal) || !train_transfer_number(S["health"], 1, 1500) || !(S["on"] in list(FALSE, TRUE)) || !train_transfer_number(S["fuel"], 0, 100)) return null
+		if(!path || S.len != 11 || !(S["dir"] in cardinal) || !train_transfer_number(S["health"], 1, train_transfer_health_limit(path)) || !(S["on"] in list(FALSE, TRUE)) || !train_transfer_number(S["fuel"], 0, train_transfer_fuel_limit(path))) return null
+		var/body = train_transfer_body_kind(path)
 		if(path == /obj/structure/trains/platform)
 			if(!train_car_layout(S["car_kind"]) || !train_transfer_string(S["car_id"]) || !train_transfer_number(S["seg_index"], 1, train_car_length(S["car_kind"])) || !train_transfer_number(S["open_doors"], 0, 65535)) return null
+		else if(body)
+			if(S["car_kind"] != body || !train_transfer_string(S["car_id"]) || S["seg_index"] != 1 || S["open_doors"] != 0) return null
 		else if(S["car_kind"] != "" || S["car_id"] != "" || S["seg_index"] != 0 || S["open_doors"] != 0)
 			return null
-	// A platform is a complete car of its kind's length, never a truncated prefix.
+		if(!train_transfer_state_valid(path, S["state"])) return null
+	// A platform car or a heavy locomotive is complete, of its kind's
+	// length, never a truncated prefix; a locomotive body only ever
+	// follows its own engine, and no two vehicles share a car id.
+	var/list/car_ids = list()
 	for(var/i = 1, i <= segments.len, i++)
 		var/list/S = segments[i]
-		if(S["type"] != "/obj/structure/trains/platform") continue
+		var/body = train_transfer_body_kind(train_transfer_path(S["type"]))
+		if(S["type"] != "/obj/structure/trains/platform" && !body) continue
 		var/car_len = train_car_length(S["car_kind"])
-		if(S["seg_index"] != 1 || i + car_len - 1 > segments.len) return null
-		for(var/j = 1, j <= car_len, j++)
+		if(S["seg_index"] != 1 || i + car_len - 1 > segments.len || (S["car_id"] in car_ids)) return null
+		var/list/layout = train_car_layout(S["car_kind"])
+		if(!body && layout["engine"]) return null
+		car_ids += S["car_id"]
+		for(var/j = 2, j <= car_len, j++)
 			var/list/part = segments[i + j - 1]
-			if(part["type"] != S["type"] || part["seg_index"] != j || part["car_id"] != S["car_id"] || part["car_kind"] != S["car_kind"]) return null
+			if(part["type"] != "/obj/structure/trains/platform" || part["seg_index"] != j || part["car_id"] != S["car_id"] || part["car_kind"] != S["car_kind"]) return null
+		// A load of bulk or liquid fits the car that carries it.
+		if(!body)
+			var/list/first = S["state"]
+			if(first["bulk_amount"] > layout["bulk"] || first["tank_amount"] > (isnum(layout["tank"]) ? layout["tank"] : 0)) return null
 		i += car_len - 1
 	var/list/owners = list()
 	for(var/list/E in entities)
 		if(!islist(E) || !train_transfer_string(E["id"]) || (E["id"] in ids) || !train_transfer_number(E["segment"], 1, segments.len) || !train_transfer_number(E["slot"], 1, 3) || !(E["dir"] in cardinal) || !(E["anchored"] in list(FALSE, TRUE))) return null
 		ids += E["id"]
 		var/list/S = segments[E["segment"]]
-		if(S["type"] != "/obj/structure/trains/platform" && E["slot"] != 2) return null
+		if(!train_transfer_wide(train_transfer_path(S["type"])) && E["slot"] != 2) return null
 		switch(E["kind"])
 			if("character")
 				var/list/P = region_travel_decode(E["payload"])
@@ -298,7 +407,7 @@
 	if(accounts.len != owners.len) return null
 	var/list/checked_accounts = list()
 	for(var/account in accounts)
-		if(!(account in owners) || account in checked_accounts) return null
+		if(!(account in owners) || (account in checked_accounts)) return null
 		checked_accounts += account
 	return M
 
@@ -325,7 +434,7 @@
 	// region_travel_build can clear another body's account ownership. Refuse
 	// that conflict before constructing anything, rather than trying to undo it.
 	for(var/mob/living/human/existing_body in human_mob_list)
-		if(!QDELETED(existing_body) && existing_body.persistence_owner_ckey in M["accounts"]) return null
+		if(!QDELETED(existing_body) && (existing_body.persistence_owner_ckey in M["accounts"])) return null
 	var/list/first_segment = M["segments"][1]
 	if(isnull(heading)) heading = first_segment["dir"]
 	if(!(heading in cardinal)) return null
@@ -340,7 +449,7 @@
 		if(!isturf(T)) return null
 		var/list/S = segments[i]
 		var/list/tiles = train_platform_tiles(T, heading)
-		if(S["type"] == "/obj/structure/trains/platform" && (!tiles[1] || !tiles[3])) return null
+		if(train_transfer_wide(train_transfer_path(S["type"])) && (!tiles[1] || !tiles[3])) return null
 	for(var/i = 1, i <= segments.len, i++)
 		var/list/S = segments[i]
 		var/path = train_transfer_path(S["type"])
@@ -355,9 +464,13 @@
 		car.health = S["health"]
 		car.on = FALSE
 		car.automovement = FALSE
+		train_transfer_apply_car_state(car, S["state"])
 		if(istype(car, /obj/structure/trains/locomotive))
 			var/obj/structure/trains/locomotive/L = car
 			L.fuel = S["fuel"]
+			if(L.body_kind)
+				L.car_id = S["car_id"]
+				L.build_body()
 		if(istype(car, /obj/structure/trains/platform))
 			var/obj/structure/trains/platform/P = car
 			P.car_kind = S["car_kind"]
@@ -369,6 +482,7 @@
 			var/obj/structure/trains/previous = cars[cars.len]
 			previous.connected = car
 		cars += car
+	for(var/obj/structure/trains/car in cars) car.update_couplers()
 	for(var/list/E in M["entities"])
 		var/obj/structure/trains/car = cars[E["segment"]]
 		var/list/tiles = train_platform_tiles(car.loc, car.dir)

@@ -132,7 +132,8 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | brake_van | brake van | rail_steam | a veranda, then a cabin with a brake wheel and a seat; weighs 4 ([trains.md](trains.md#brakes)) |
 
 An 8-tile car weighs 4 empty, twice a four-wheel car. The rail warehouse and
-the inter-region railway take cars of either length.
+the inter-region railway take cars of either length, and heavy locomotives
+whole.
 
 ## Kits, assembly and dismantling
 
@@ -185,8 +186,9 @@ between them; the straight track running past it, `RAIL_WAREHOUSE_REACH` (6)
 tiles either way of the centre line, is the bay. Players build the walls and
 roof around it however they like; the track carries on through both ends.
 
-A unit is a platform car (all its segments) or a one-tile train object
-(locomotive, tender, wagon). The post puts away units with nothing hitched
+A unit is a platform car (all its segments), a heavy locomotive (its engine
+and body sections together) or a one-tile train object (locomotive, tender,
+wagon). A derailed unit is refused until it is back on the rails. The post puts away units with nothing hitched
 behind them, so a train standing in the bay is unloaded from the back, one
 car at a time or all at once. A unit must be wholly inside the bay, stopped,
 with nobody aboard and, for a railway gun car, its outriggers raised.
@@ -198,7 +200,8 @@ world saves carry it as nested contents of the post. A stored platform segment
 keeps no deck parts (`apply_layout()` stops when its loc is not a turf).
 
 Taking a unit out rolls it onto the bay track behind the rear of the train in
-the bay, facing the same way, and couples it; furniture turns with it if the
+the bay, facing the same way, and couples it where both drawbars carry a
+sound coupling; furniture turns with it if the
 car faces another way than when it was stored. In an empty bay it rolls to the
 far end it faces. The tiles it needs (and the deck tiles either side for a
 platform car) must be straight bay track and clear.
