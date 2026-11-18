@@ -113,6 +113,14 @@
 			trial = B
 	return reference || trial
 
+// A carried book holding node_id's finished chapter, or null: reading it is
+// how the subject is learned (crafting hints name it).
+/mob/living/human/proc/carried_chapter_book(node_id)
+	for (var/obj/item/weapon/book/B in get_demonstration_carried())
+		if (!istype(B, /obj/item/weapon/book/research/tree_book) && B.has_research_chapter(node_id))
+			return B
+	return null
+
 // The subject a prototype of result_path_string would be for, if H may make one.
 /proc/subject_prototype_node(mob/living/human/H, result_path_string)
 	if (!istype(H) || !istext(result_path_string) || !map || !map.book_research_enabled())
