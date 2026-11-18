@@ -46,6 +46,7 @@ var/canoe_runtime_error = FALSE
 		locate(13, 8, 1):ChangeTurf(/turf/floor/beach/water/shallowsaltwater, FALSE, FALSE)
 		canoe_log_checks()
 		canoe_water_checks()
+		canoe_outrigger_checks()
 	catch(var/exception/e)
 		canoe_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = canoe_failures, "runtime_error" = canoe_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -123,3 +124,101 @@ var/canoe_runtime_error = FALSE
 	C.ontop_o += K
 	C.vehicle_offset_seat()
 	canoe_check(K.step_x == C.step_x && K.step_y == C.step_y, "a crate loaded on an off-centre canoe rides at its offset")
+
+// The outrigger canoe (code/modules/naval/outrigger_canoe.dm).
+/proc/canoe_outrigger_checks()
+	map.windspeedvar = 1
+	var/mob/living/human/canoe_probe/B = new(locate(5, 20, 1))
+	var/obj/structure/vehicle/raft/dugout/D = new(locate(6, 20, 1))
+	D.update_icon()
+	canoe_check(D.icon_state == "dugout" && !D.pixel_w, "a plain dugout keeps her own sprite")
+	canoe_check(!D.canoe_work_refusal(), "an empty canoe ashore can be worked on")
+	D.ontop += B
+	canoe_check(D.canoe_work_refusal(), "a canoe with someone aboard cannot")
+	D.ontop -= B
+	D.booms_fitted = TRUE
+	D.update_icon()
+	canoe_check(D.icon == OUTRIGGER_ICON && D.icon_state == "outrigger_fitted" && D.pixel_w == -32 && D.pixel_z == -32, "booms fitted shows the half-built outrigger")
+	D.driver = B
+	B.dir = EAST
+	canoe_check(!D.do_vehicle_check(), "she will not go with the booms unlashed")
+	D.driver = null
+	D.canoe_salvage(locate(6, 21, 1))
+	var/obj/item/stack/material/wood/SW = locate() in locate(6, 21, 1)
+	canoe_check(SW && SW.amount == 6 + OUTRIGGER_BOOM_WOOD, "taking a fitted dugout apart gives her wood and the booms back ([SW ? SW.amount : "none"])")
+	D.bilge = 2
+	D.become_outrigger(B)
+	var/obj/structure/vehicle/raft/dugout/outrigger/C = locate() in locate(6, 20, 1)
+	canoe_check(C && QDELETED(D) && C.bilge == 2, "lashing turns the dugout into an outrigger, water and all")
+	if (!C)
+		return
+	C.bilge = 0
+	canoe_check(C.icon_state == "outrigger" && C.pixel_w == -32 && C.mobcapacity == 2 && C.storagecapacity == 1, "the outrigger's sprite and seats")
+	// The open sea and the wind.
+	C.forceMove(locate(12, 5, 1))
+	var/mob/living/human/canoe_probe/H = new(locate(12, 5, 1))
+	C.driver = H
+	C.ontop += H
+	H.dir = EAST
+	canoe_check(C.do_vehicle_check(), "the open sea is hers")
+	C.forceMove(locate(12, 8, 1))
+	H.forceMove(locate(12, 8, 1))
+	map.windspeedvar = 3
+	canoe_check(C.do_vehicle_check(), "she rides out a wind that beaches a dugout")
+	map.windspeedvar = 4
+	canoe_check(!C.do_vehicle_check(), "a gale on salt water is refused")
+	map.windspeedvar = 1
+	// Seats: further apart than a dugout's, and no lift.
+	var/mob/living/human/canoe_probe/P = new(C.loc)
+	C.ontop += P
+	C.dir = EAST
+	C.updatepassdir()
+	canoe_check(H.pixel_x == 8 && P.pixel_x == -8 && !H.pixel_y && !P.pixel_y, "two sit eight pixels fore and aft ([H.pixel_x],[H.pixel_y] / [P.pixel_x],[P.pixel_y])")
+	C.ontop -= P
+	// Paddle, then sail.
+	canoe_check(C.step_delay(NORTH) == 13, "unpaddled she makes a tile in 13")
+	H.r_hand = new /obj/item/weapon/paddle(H)
+	canoe_check(C.step_delay(NORTH) == 7, "paddled, in 7")
+	C.mast = TRUE
+	C.sail_path = "/obj/item/sail/wool"
+	C.update_icon()
+	canoe_check(C.sail_look == "mast_furled[C.dir]" && C.overlays.len == 1, "a furled sail shows on her")
+	canoe_check(C.step_delay(NORTH) == 7, "a furled sail changes nothing")
+	C.sail_set = TRUE
+	C.update_icon()
+	canoe_check(C.sail_look == "mast_set[C.dir]" && C.overlays.len == 1, "a set sail replaces the furled one")
+	map.windspeedvar = 4
+	var/reach = 100
+	for (var/d in list(NORTH, SOUTH, EAST, WEST))
+		reach = min(reach, C.step_delay(d))
+	canoe_check(reach < 7, "a gale drives her faster than the paddle on her best heading ([reach])")
+	map.windspeedvar = 0
+	canoe_check(C.step_delay(NORTH) == 7, "in a calm the paddle is quicker")
+	map.windspeedvar = 1
+	C.drop_sail(locate(13, 9, 1))
+	C.update_icon()
+	canoe_check(!C.mast && !C.overlays.len && (locate(/obj/item/sail/wool) in locate(13, 9, 1)), "striking the mast gives the same sail back")
+	// The outboard.
+	var/obj/structure/engine/internal/gasoline/E = new(C)
+	E.enginesize = 400
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small/T = new(C)
+	C.engine = E
+	C.fueltank = T
+	C.update_icon()
+	canoe_check(C.icon_state == "outrigger_motor", "an engine shows on her stern")
+	canoe_check(C.motor_delay() == 3 && C.motor_burn() == 0.4, "400cc: a tile in 3 for 0.4 fuel")
+	C.motor_on = TRUE
+	canoe_check(C.step_delay(NORTH) == 7 && !C.motor_on, "a dry tank stops the engine")
+	T.reagents.add_reagent("gasoline", 10)
+	C.motor_on = TRUE
+	canoe_check(C.step_delay(NORTH) == 3 && C.under_power, "with fuel the engine sets the pace")
+	H.dir = NORTH
+	C.dir = NORTH
+	GLOB.global_listen_count = list()
+	GLOB.event_sources_count = list()
+	GLOB.event_listen_count = list()
+	C.do_move(NORTH)
+	canoe_check(C.y == 9 && abs(T.reagents.get_reagent_amount("gasoline") - 9.6) < 0.01, "a tile under power burns its fuel ([T.reagents.get_reagent_amount("gasoline")])")
+	C.drop_outboard(locate(13, 10, 1))
+	C.update_icon()
+	canoe_check(!C.engine && !C.fueltank && E.loc == locate(13, 10, 1) && T.loc == locate(13, 10, 1) && C.icon_state == "outrigger", "the wrench leaves engine and tank beside her")

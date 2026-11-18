@@ -63,7 +63,8 @@ class DugoutSource(unittest.TestCase):
         self.assertIn('/obj/structure/vehicle/raft/dugout\n', self.text)
         check = proc_body(self.text, '/obj/structure/vehicle/raft/dugout/do_vehicle_check()')
         self.assertIn('/turf/floor/beach/water/deep', check)
-        self.assertIn('weather_wind_at(W) >= DUGOUT_ROUGH_WIND', check)
+        self.assertIn('weather_wind_at(W) >= rough_wind', check)
+        self.assertIn('var/rough_wind = DUGOUT_ROUGH_WIND', self.text)
         self.assertIn('return ..()', check)
 
     def test_char_before_hollow(self):

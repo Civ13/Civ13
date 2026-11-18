@@ -139,6 +139,11 @@ class Sources(unittest.TestCase):
         # Canal steps stop rafts and boats (canals.dm).
         canal_raft='\tif (canal_step_blocked(get_turf(src), DT))\n\t\tto_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))\n\t\treturn FALSE\n'
         canal_boat='\tif (canal_step_blocked(get_turf(src), T))\n\t\tto_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))\n\t\tmoving = FALSE\n\t\tstopmovementloop()\n\t\treturn FALSE\n'
+        # The raft's own sheet and the engineless boat description guard (small boats rework).
+        for new,old in (("\ticon = 'icons/obj/vehicles/raft.dmi'\n\ticon_state = \"raft\"\n","\ticon = 'icons/obj/vehicles/vehicleparts.dmi'\n\ticon_state = \"raft\"\n"),
+                ('/obj/structure/vehicle/boat/proc/update_customdesc()\n\tif (!engine || !fueltank)\n\t\treturn\n','/obj/structure/vehicle/boat/proc/update_customdesc()\n')):
+            self.assertEqual(s.count(new),1)
+            s=s.replace(new,old)
         for canal in (canal_raft,canal_boat):
             self.assertEqual(s.count(canal),1)
             s=s.replace(canal,'')

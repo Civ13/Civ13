@@ -93,3 +93,12 @@
 #define HULL_DEPTH_AWASH 4
 #define HULL_DEPTH_LISTING 5
 #define HULL_DEPTH_FULL 6
+
+// Outrigger canoes (naval/outrigger_canoe.dm). The sheet is 96x96 with the
+// hull on the middle tile (tests/sprites/create_small_boats.py).
+#define OUTRIGGER_ICON 'icons/obj/vehicles/outrigger.dmi'
+#define OUTRIGGER_BOOM_WOOD 4   // Wood for the two booms and the float.
+#define OUTRIGGER_LASH_ROPE 3   // Rope that lashes them on.
+#define OUTRIGGER_MIN_ENGINE 100
+#define OUTRIGGER_MAX_ENGINE 400
+#define OUTRIGGER_MAX_TANK 150
