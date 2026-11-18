@@ -80,6 +80,13 @@ var/list/open_air_probe_log = list()
 	open_air_probe_check(S && (walker in S.vis_contents), "walker_shown")
 	walker.forceMove(ground)
 	open_air_probe_check(!(walker in S.vis_contents) && (walker in W.vis_contents), "walker_follows_moves")
+	// Something overlapping two tiles (a body between steps) is in both turfs'
+	// contents but is shown once, by the view of its loc.
+	var/obj/structure/straddler = new /obj/structure(locate(5, 4, 1))
+	straddler.step_y = 20
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	open_air_probe_check((straddler in locate(5, 5, 1)) && (straddler in S.vis_contents) && !(straddler in W.vis_contents), "straddler_shown_once")
+	qdel(straddler)
 	// Something put down without Move() shows at the next resync; something
 	// deleted goes at once.
 	var/obj/item/rods = new /obj/item(ground)

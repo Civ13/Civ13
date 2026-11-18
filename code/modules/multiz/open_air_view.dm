@@ -140,8 +140,10 @@ var/global/open_air_view_any = FALSE
 		look.vis_flags = VIS_INHERIT_PLANE | VIS_INHERIT_ID | VIS_INHERIT_LAYER
 		ground.appearance = look
 	var/list/want = list(ground)
+	// A turf's contents also list movables that only overlap it (a body
+	// stepping between tiles): each is shown once, by the view of its loc.
 	for (var/atom/movable/A in below)
-		if (open_air_view_shows_movable(A))
+		if (A.loc == below && open_air_view_shows_movable(A))
 			want += A
 	var/turf/sky/building/next = below
 	if (istype(next) && next.open_air_view)
