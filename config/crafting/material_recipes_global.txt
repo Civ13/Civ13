@@ -301,6 +301,7 @@ RECIPE: /material/leather/,barter mat,/obj/structure/barter_mat,3,40,1,1,economy
 RECIPE: /material/wood/,trading balance,/obj/item/weighing_balance,2,40,0,1,economy & production,0,0,0,8,null
 RECIPE: /material/bronze/,coin die,/obj/item/coin_die,1,60,0,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,strongbox,/obj/structure/closet/crate/faction_strongbox,10,120,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/wood/,war banner,/obj/structure/war_banner,8,90,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,money changer's table,/obj/structure/closet/crate/money_changer,6,80,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,gavel block,/obj/item/weapon/gavelblock,1,30,0,1,paper & printing,0,0,0,8,null
 RECIPE: /material/wood/,gavel hammer,/obj/item/weapon/gavelhammer,1,30,0,1,paper & printing,0,0,0,8,null

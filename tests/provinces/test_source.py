@@ -22,6 +22,7 @@ HOLDING = ROOT / 'code/modules/provinces/province_holding.dm'
 RESOURCES = ROOT / 'code/modules/provinces/continent_resources.dm'
 RANKS = ROOT / 'code/modules/provinces/province_ranks.dm'
 UPKEEP = ROOT / 'code/modules/provinces/province_upkeep.dm'
+SIEGE = ROOT / 'code/modules/provinces/province_siege.dm'
 DME = ROOT / 'civ13.dme'
 # Map -> surface z, as scripts/provinces.py was run (docs/provinces.md).
 CONTINENTS = {
@@ -306,6 +307,57 @@ class UpkeepAndRuins(unittest.TestCase):
         self.assertIn('province_ruins_update(stakes) // province_upkeep.dm', HOLDING.read_text(encoding='utf-8'))
         self.assertIn('province_upkeep_paid(c, group, seat)', RANKS.read_text(encoding='utf-8'))
         self.assertIn('#include "code\\modules\\provinces\\province_upkeep.dm"', DME.read_text(encoding='utf-8'))
+
+
+class Sieges(unittest.TestCase):
+    def text(self):
+        return SIEGE.read_text(encoding='utf-8')
+
+    def test_numbers(self):
+        text = self.text()
+        for line in ('#define SIEGE_WINDOW_HOURS 3', '#define SIEGE_BUSY_HOURS 8', '#define SIEGE_WINDOW_DELAY_HOURS 72',
+                     '#define SIEGE_NOTICE_HOURS 24', '#define SIEGE_DEPOSIT 100', '#define SIEGE_SUSPEND_DAYS 7',
+                     '#define SIEGE_IMMUNE_DAYS 3', '#define SIEGE_REPEAT_DAYS 14', '#define SIEGE_COOLDOWN_DAYS 3',
+                     'if (2) return 15', 'if (3) return 20', 'if (4) return 30', 'return 10'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+        self.assertNotIn(' in world', text)
+
+    def test_defenders_pause_the_capture(self):
+        step = self.text().split('/proc/province_siege_step(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertLess(step.index('if (defenders)'), step.index('siege["progress"] += SIEGE_TICK'))
+        self.assertIn('H.client', step)
+
+    def test_deposit_spent_only_when_nobody_came(self):
+        step = self.text().split('/proc/province_siege_step(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertEqual(step.count('province_upkeep_take('), 1)
+        self.assertLess(step.index('if (siege["shown"])'), step.index('province_upkeep_take('))
+
+    def test_holdings_change_only_in_the_window(self):
+        holding = HOLDING.read_text(encoding='utf-8')
+        self.assertIn('var/window = province_in_window(c)', holding)
+        self.assertIn('province_rank_lose_hours(rank) * 36000 && window', holding)
+        self.assertIn('PROVINCE_GAIN_HOURS * 36000 || !window', holding)
+        self.assertIn('province_rank_effective(c)', holding)
+
+    def test_wiring(self):
+        ranks = RANKS.read_text(encoding='utf-8')
+        self.assertIn('province_rank_effective(c)', ranks)
+        self.assertIn('province_siege_text(c)', ranks)
+        stake = STAKE.read_text(encoding='utf-8')
+        self.assertIn('province_hours_record(active)', stake)
+        self.assertIn('province_siege_resume()', stake)
+        self.assertIn('#include "code\\modules\\provinces\\province_siege.dm"', DME.read_text(encoding='utf-8'))
+        factions = (ROOT / 'code/game/mob/groups/factions.dm').read_text(encoding='utf-8')
+        self.assertEqual(factions.count('verbs += /mob/living/human/proc/province_defence_window'), 2)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        self.assertIn('/obj/structure/war_banner', recipes)
+        self.assertIn('province_rename_faction(old_name, new_name)',
+                      (ROOT / 'code/game/mob/groups/faction_recruitment.dm').read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':
