@@ -30,6 +30,14 @@ class DeathLegacyTests(unittest.TestCase):
         self.assertLess(bed.index('bed.persistence_bed_assigned_at = death_legacy_now()'),
                         bed.index('bed.persistence_bed_owner_ckey = client.ckey'))
 
+    def test_a_bed_start_costs_double(self):
+        legacy = read('code/modules/research_tree/death_legacy.dm')
+        self.assertIn('#define DEATH_LEGACY_BED_EXTRA 1', legacy)
+        self.assertIn('var/charged = record["returns"] + (by_station ? 0 : DEATH_LEGACY_BED_EXTRA)', legacy)
+        self.assertIn('death_legacy_loss(record["cause"], charged)', legacy)
+        # The loss doubles with each charged return (2 ** returns).
+        self.assertIn('var/times = 2 ** clamp(returns, 0, 6)', legacy)
+
     def test_the_record_is_saved_checked_and_loaded(self):
         self.assertIn('round_state["death_legacy"] = death_legacy', read('code/modules/persistence/saving.dm'))
         self.assertIn('death_legacy_loaded(transfer_round_state)', read('code/modules/persistence/loading.dm'))
