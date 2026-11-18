@@ -40,6 +40,23 @@ class ShutdownNoticeSources(unittest.TestCase):
         self.assertIn('warn_seconds = warn_seconds)', read('code/modules/persistence/admin.dm'))
         self.assertIn('planned_shutdown_status_text()', read('code/game/mob/mob.dm'))
 
+    def test_round_save_and_shutdown_notices_name_their_region(self):
+        webhooks = read('code/modules/webhooks/webhooks.dm')
+        helper = webhooks[webhooks.index('/proc/webhook_add_region('):]
+        helper = helper[:helper.index('\n/proc/', 1)]
+        self.assertIn('shard_group.enabled', helper)
+        self.assertIn('query["region"] = shard_group.region', helper)
+        self.assertIn('query["region_name"] = copytext(shard_group.name, 1, 81)', helper)
+        for proc in ('/proc/webhook_send_round_start(', '/proc/webhook_send_world_save('):
+            body = webhooks[webhooks.index(proc):]
+            body = body[:body.index('\n/proc/', 1)]
+            self.assertIn('webhook_add_region(query)', body, proc)
+        notice = read('code/modules/persistence/shutdown_notice.dm')
+        body = notice[notice.index('/proc/planned_shutdown_webhook('):]
+        self.assertLess(body.index('webhook_add_region(query)'), body.index('webhook_send("shutdown_notice", query)'))
+        # The standalone countdown probe compiles shutdown_notice.dm alone, so it stubs the helper.
+        self.assertIn('/proc/webhook_add_region(list/query) return query', read('tests/shutdown_notice/probe.dm'))
+
 
 if __name__ == '__main__':
     unittest.main()
