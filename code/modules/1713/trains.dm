@@ -625,7 +625,7 @@ var/global/train_solo_move = FALSE
 		automovement = FALSE
 		set_light(0)
 		return FALSE
-	set_light(2)
+	set_light(lamp_range)
 	return TRUE
 
 // What this car weighs with its load, for the locomotive's pull.
@@ -913,6 +913,8 @@ var/global/train_solo_move = FALSE
 	if (station == "all" || station == "driver")
 		choices += list("Throttle up", "Throttle down", "Brake", "Sand the rails")
 		choices += (reverser > 0) ? "Reverser to backward" : "Reverser to forward"
+		// Warnings and the headlamp (train_stations.dm).
+		choices += list("Sound the [whistle_name()]", "Ring the bell", headlamp ? "Put out the headlamp" : "Light the headlamp")
 	if (station == "all" || station == "fireman")
 		choices += extra_controls()
 	return choices
@@ -965,6 +967,15 @@ var/global/train_solo_move = FALSE
 		if ("Sand the rails")
 			if (!sand_rails(user))
 				return
+		if ("Sound the whistle", "Sound the horn")
+			sound_whistle(user)
+			return
+		if ("Ring the bell")
+			sound_bell(user)
+			return
+		if ("Light the headlamp", "Put out the headlamp")
+			set_headlamp(!headlamp, user)
+			return
 		if ("Reverser to backward", "Reverser to forward")
 			if (rail_speed > 0)
 				to_chat(user, "<span class = 'warning'>Stop the train before you move the reverser.</span>")
@@ -981,7 +992,7 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive/proc/control_summary()
 	var/where = reverser > 0 ? "forward" : "backward"
 	var/pinned = train_handbrakes()
-	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", engine brake on" : ""][pinned ? ", [pinned] handbrake\s on in the train" : ""]. [speed_text()]. [sand_text()]"
+	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", engine brake on" : ""][pinned ? ", [pinned] handbrake\s on in the train" : ""]. [speed_text()].[night_text()] [sand_text()]"
 
 /obj/structure/trains/locomotive/proc/state_text()
 	return "Engine [on ? "running" : "stopped"]."
@@ -1088,7 +1099,8 @@ var/global/train_solo_move = FALSE
 	drive_head = train_head()
 	var/list/cars = train_consist_list(drive_head)
 	drive_tail = cars.len ? cars[cars.len] : src
-	lead_factor = leading_factor(cars)
+	// In the dark with no light ahead it runs blind (train_stations.dm).
+	lead_factor = leading_factor(cars) * night_factor()
 	linked = linked_units(cars)
 	consist_weight = 0
 	consist_power = 0
@@ -1310,7 +1322,7 @@ var/global/train_solo_move = FALSE
 	if (!.)
 		automovement = FALSE
 	else
-		set_light(2)
+		set_light(lamp_range)
 
 // Fuel used for one tile: idling costs little, a full throttle on a heavy
 // train costs most. About a hundred tiles a firebox at full load.

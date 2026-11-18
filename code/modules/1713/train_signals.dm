@@ -78,6 +78,10 @@ var/global/list/train_instruments = list()
 		return null
 	return along
 
+// TRUE when it speaks to trains running this way.
+/obj/structure/train_lineside/proc/speaks_to(heading)
+	return dir == heading
+
 // What the cab crew of an engine coming up to it are told.
 /obj/structure/train_lineside/proc/sighting(obj/structure/trains/locomotive/L)
 	return null
@@ -616,7 +620,7 @@ var/global/list/train_instruments = list()
 	var/list/now = list()
 	var/list/crew = null
 	for (var/obj/structure/train_lineside/S in train_lineside)
-		if (S.dir != heading || !isturf(S.loc))
+		if (!S.speaks_to(heading) || !isturf(S.loc))
 			continue
 		var/ahead = S.ahead_of(lead, heading)
 		if (isnull(ahead))
