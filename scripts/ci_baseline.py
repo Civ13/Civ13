@@ -286,6 +286,10 @@ SUITES = {
     'stethoscope_examination': {'files': ('tests/stethoscope/test_examination.py',),
         'paths': ('tests/stethoscope/', 'code/game/objects/items/clothing/under/accessories/stethoscope.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'sword_sheaths': {'files': ('tests/sword_sheaths/test_unlock.py',),
+        # material_recipes_global.txt and research_node.dm already select every suite.
+        'paths': ('tests/sword_sheaths/',
+                  'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm')},
     'katana_sheath': {'files': ('tests/katana_sheath/test_sheath.py',),
         'paths': ('tests/katana_sheath/', 'code/game/objects/items/clothing/under/accessories/sheaths.dm',
                   'code/game/objects/items/clothing/under/accessories/storage.dm',

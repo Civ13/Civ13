@@ -594,6 +594,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/sword/gladius" = "bronze_weapons",
 		"/obj/item/weapon/material/sword/khopesh" = "bronze_weapons",
 		"/obj/item/weapon/material/sword/xiphos" = "bronze_weapons",
+		// Short sword sheath holds the bronze swords above, so it unlocks with them.
+		"/obj/item/clothing/accessory/storage/sheath" = "bronze_weapons",
 		"/obj/item/weapon/shield/bronze" = "bronze_weapons",
 		"/obj/item/weapon/shield/egyptian" = "bronze_weapons",
 		"/obj/item/weapon/shield/iron" = "bronze_weapons",
@@ -2515,9 +2517,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/lift_drive/steam" = "steam_power",
 		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
-		// --- steel_blades (6) ---
+		// --- steel_blades (5) ---
 		"/obj/item/wrist_loop/sword_knot" = "steel_blades",
-		"/obj/item/clothing/accessory/storage/sheath" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/daisho" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/katana" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/longer" = "steel_blades",
