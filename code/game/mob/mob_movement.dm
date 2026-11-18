@@ -832,8 +832,9 @@
 		if (mob.pulling)
 
 			// A step interrupted mid-tile west or south leaves loc two tiles
-			// from the pulled object while the bodies still touch.
-			var/pull_touching = (mob.step_x || mob.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32
+			// from the pulled object while the bodies still touch, and a thing
+			// dragged off the grid can sit diagonally with both corners blocked.
+			var/pull_touching = (mob.step_x || mob.step_y || mob.pulling.step_x || mob.pulling.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32
 			if (!mob.pulling.Adjacent(mob) && !pull_touching)
 				mob.stop_pulling()
 
