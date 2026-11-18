@@ -31,7 +31,7 @@ class ArrivalContracts(unittest.TestCase):
         # The same segment check that reserved the strip.
         self.assertIn('!train_route_segment_clear(T, R["heading"], network)', clear)
         segment = SOURCE_ROUTES.split('/proc/train_route_segment_clear(')[1].split('\n/')[0]
-        self.assertIn('!train_route_straight_rail(T, heading)', segment)
+        self.assertIn('!rail_straight_along(T, heading)', segment)
         self.assertIn('isliving(A)', segment)
         self.assertNotIn('train_route_arrival_centres', clear)
 

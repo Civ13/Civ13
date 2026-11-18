@@ -201,6 +201,25 @@ var/global/track_probe_runtime_error = FALSE
 	route = CC.rail_target(WEST)
 	track_probe_check("curve/leg_runs_on", route && route[1] == track_probe_turf(24, 8) && route[2] == WEST)
 
+	// A car only rolls onto a rail that leads back the way it comes; a
+	// switcher also takes it off its branch, a rotator from any side.
+	track_make_rail(track_probe_turf(33, 8), NORTH, FALSE)
+	var/obj/structure/trains/EC = new(track_probe_turf(32, 8))
+	track_probe_check("enter/refuses_crossways", !EC.rail_canmove(EAST))
+	track_make_rail(track_probe_turf(31, 8), EAST, FALSE)
+	track_probe_check("enter/along", EC.rail_canmove(WEST))
+	var/obj/structure/rails/split/switcher/ES = new(track_probe_turf(36, 8))
+	ES.set_dir(EAST)
+	var/obj/structure/trains/BC = new(track_probe_turf(36, 9))
+	var/obj/structure/trains/FC = new(track_probe_turf(36, 7))
+	track_probe_check("enter/switcher_from_branch", BC.rail_canmove(SOUTH) && !FC.rail_canmove(NORTH))
+	new /obj/structure/rails/rotate(track_probe_turf(38, 8))
+	var/obj/structure/trains/RC = new(track_probe_turf(38, 9))
+	track_probe_check("enter/rotator_any_side", RC.rail_canmove(SOUTH))
+	// One rule for straight track: plain rail lying along the heading.
+	track_probe_check("straight/along", rail_straight_along(track_probe_turf(33, 8), SOUTH) && !rail_straight_along(track_probe_turf(33, 8), EAST))
+	track_probe_check("straight/not_switch", !rail_straight_along(track_probe_turf(36, 8), EAST) && !rail_straight_along(track_probe_turf(35, 8), EAST))
+
 	// Track cannot be laid twice or on water.
 	track_probe_check("lay/occupied", track_lay_problem(track_probe_turf(5, 2)))
 	var/turf/W = track_probe_turf(36, 2)

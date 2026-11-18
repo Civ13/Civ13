@@ -14,6 +14,21 @@ var/global/rail_network_serial = 0
 /proc/rail_at(turf/T)
 	return T && (locate(/obj/structure/rails) in T)
 
+// Whether T is straight plain track running along heading: every rail there
+// is plain (no switch, curve, rotator or turntable) and lies that way. Car
+// kits, warehouse bays and arriving trains all ask this.
+/proc/rail_straight_along(turf/T, heading)
+	if (!T || !(heading in cardinal))
+		return FALSE
+	var/found = FALSE
+	for (var/obj/structure/rails/R in T)
+		if (istype(R, /obj/structure/rails/split) || istype(R, /obj/structure/rails/turn) || istype(R, /obj/structure/rails/rotate) || istype(R, /obj/structure/rails/turntable))
+			return FALSE
+		if (R.dir != heading && R.dir != OPPOSITE_DIR(heading))
+			return FALSE
+		found = TRUE
+	return found
+
 // The way the track on T runs (a cardinal), or null: fixtures dug under the
 // line, such as ash and drop pits, lie along it.
 /proc/rail_dir_at(turf/T)
