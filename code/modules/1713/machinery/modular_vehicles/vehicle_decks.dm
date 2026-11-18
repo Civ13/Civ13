@@ -401,7 +401,7 @@
 		return FALSE
 	var/list/L = layout()
 	// A locomotive has a roof over its cab only (train_locomotives.dm).
-	if (L && L["body"] && seg_index != L["cab"])
+	if (L && L["body"] && seg_index != L["cab"] && seg_index != L["cab2"])
 		return FALSE
 	return L && L["roof"]
 
@@ -416,7 +416,7 @@
 	var/list/segs = L["segments"]
 	var/row = seg_index <= 1 ? "f" : (seg_index >= segs.len ? "b" : "m")
 	if (L["body"])
-		row = ""
+		row = (L["cab2"] && seg_index == L["cab2"]) ? "b" : "" // the rear cab's roof faces the other way
 	var/list/states = train_roof_states()
 	var/list/made = list()
 	for (var/i in 1 to 3)

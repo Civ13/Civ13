@@ -887,6 +887,11 @@ var/global/train_step_plain = FALSE
 			name = "[S.name] armor plate"
 		if ("rail")
 			name = "[S.name] railing"
+		if ("cab_end")
+			// The windscreen of a rear cab: it is part of the body's art.
+			name = "[S.name] windscreen"
+			icon_state = null
+			mouse_opacity = 0
 		else
 			name = "[S.name] wall"
 

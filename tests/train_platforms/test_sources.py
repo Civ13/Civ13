@@ -134,7 +134,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         diesel = LOCOS[LOCOS.index('layouts["loco_diesel"]'):]
         self.assertNotIn('"stations"', diesel[:diesel.index('"segments"')])
         # The menu and each control are checked against where the user stands.
-        self.assertIn('\tvar/list/choices = station_controls(station)\n', TRAINS)
+        self.assertIn('\tvar/list/choices = E.station_controls(station)\n', TRAINS)
         self.assertIn('\tif (!(choice in station_controls(cab_station(user))))\n\t\treturn\n', TRAINS)
         self.assertIn('\tif ((is_tool(W, TOOL_SHOVEL) || fuel_value(W)) && !at_firebox(user))\n', TRAINS)
         # Six sections with the cab last; coal and water ride in the tender.
@@ -549,6 +549,38 @@ class TrainPlatformSourceTests(unittest.TestCase):
         loads = dmi_description(ROOT / 'icons/obj/vehicles/train_loads.dmi')
         for state in ('rail_crane', 'rail_crane_haul'):
             self.assertIn('state = "%s"' % state, loads)
+
+    def test_diesels_work_in_multiple_with_a_deadman(self):
+        diesel = (ROOT / 'code/modules/1713/train_diesel.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_diesel.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the two-cab engine is a layout with a second cab and its own kit
+        layout = LOCOS[LOCOS.index('layouts["loco_dieselmain"]'):LOCOS.index('layouts["tender"]')]
+        self.assertIn('"cab" = 1, "cab2" = 6, "roof" = "loco_dieselmain"', layout)
+        self.assertEqual(layout.count('"solid" = 1'), 4)
+        self.assertIn('list("edges" = cab_end, "solid" = 0)', layout)
+        self.assertIn('/obj/structure/train_car_kit/loco_dieselmain\n\tname = "main-line diesel locomotive kit"\n\tcar_kind = "loco_dieselmain"\n', LOCOS)
+        self.assertIn('/obj/structure/trains/locomotive/heavy_diesel/mainline\n\tname = "main-line diesel locomotive"', diesel)
+        self.assertIn('"/obj/structure/train_car_kit/loco_dieselmain" = "combustion"', NODES)
+        self.assertIn('RECIPE: /material/steel/,main-line diesel locomotive kit,/obj/structure/train_car_kit/loco_dieselmain,100,', RECIPES)
+        decks = (ROOT / 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm').read_text(encoding='utf-8')
+        self.assertIn('seg_index != L["cab"] && seg_index != L["cab2"]', decks)
+        # no new loops: linking, the brake and the dead-man ride on the drive loop
+        for word in ('spawn(', 'sleep(', 'while ('):
+            self.assertNotIn(word, diesel)
+        self.assertIn('\tlinked = linked_units(cars)\n', TRAINS)
+        self.assertIn('(linked && car.car_id && linked[car.car_id])', TRAINS)
+        loop = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        self.assertIn('\t\t\t\trefresh_consist(since)\n\t\t\t\tsince = 0\n', loop)
+        self.assertIn('\t\t\t\tdeadman_watch()\n', loop)
+        self.assertIn('var/obj/structure/trains/locomotive/E = linked_driver()', TRAINS)
+        self.assertIn('if (H.stat == CONSCIOUS && !H.incapacitated())', diesel)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for seg in '123456':
+            for col in 'lcr':
+                self.assertIn('loco_dieselmain_%s%s' % (seg, col), states)
+        for col in 'lcr':
+            self.assertIn('roof_loco_dieselmain_%s' % col, states)
+            self.assertIn('roof_loco_dieselmain_b%s' % col, states)
 
     def test_native_fixture_preparation(self):
         generated = run.sources()
