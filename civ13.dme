@@ -1070,6 +1070,7 @@
 #include "code\modules\1713\train_servicing.dm"
 #include "code\modules\1713\train_shunting.dm"
 #include "code\modules\1713\train_snow.dm"
+#include "code\modules\1713\train_tank.dm"
 #include "code\modules\1713\train_warfare.dm"
 #include "code\modules\1713\train_water.dm"
 #include "code\modules\1713\rail_warehouse.dm"

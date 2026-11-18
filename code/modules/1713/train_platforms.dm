@@ -268,6 +268,19 @@ var/global/train_step_plain = FALSE
 				list("edges" = bin_sides),
 				list("edges" = bin_sides),
 				list("edges" = bin_sides + bin_back)))
+		// The tank car (train_tank.dm): an end platform with the valve, then
+		// the tank itself between two running boards with handrails.
+		var/list/tank_rails = list(list(TRAIN_LEFT, "out", "rail"), list(TRAIN_RIGHT, "out", "rail"))
+		layouts["tank_car"] = list(
+			"name" = "tank car", "desc" = "A riveted iron tank on a bogie frame, with running boards down both sides and a valve on its end platform. It carries one liquid at a time: water, oil, fuel, milk or drink.",
+			"center" = "steel", "side" = "boards", "tank" = 3600,
+			"segments" = list(
+				list("edges" = list(), "fit" = list(/obj/structure/train_tank_valve, null, null)),
+				list("edges" = tank_rails, "solid" = 1, "tank" = "f"),
+				list("edges" = tank_rails, "solid" = 1, "tank" = "d"),
+				list("edges" = tank_rails, "solid" = 1, "tank" = "m"),
+				list("edges" = tank_rails, "solid" = 1, "tank" = "b"),
+				list("edges" = list())))
 		// The guard's van: an open veranda, then a cabin with the brake wheel.
 		// Ballasted, so its brake holds twice the weight of an ordinary car.
 		layouts["brake_van"] = list(
@@ -353,7 +366,7 @@ var/global/train_step_plain = FALSE
 // A deck's weight counts the people and furniture on its three tiles.
 /obj/structure/trains/platform/car_load_weight()
 	var/list/L = layout()
-	var/w = ((L && L["weight"]) ? L["weight"] : train_weight) + bulk_weight()
+	var/w = ((L && L["weight"]) ? L["weight"] : train_weight) + bulk_weight() + tank_weight()
 	for (var/turf/T in train_platform_tiles(loc, dir))
 		for (var/atom/movable/AM in T)
 			if (isliving(AM))
@@ -406,7 +419,7 @@ var/global/train_step_plain = FALSE
 	name = wrecked ? "wrecked [L["name"]]" : L["name"]
 	desc = L["desc"]
 	var/body = L["body"]
-	var/solid = body ? segment_layout()["solid"] : 0
+	var/solid = segment_layout()["solid"] // a locomotive's body or a tank car's tank
 	icon_state = body ? "loco_[body]_[seg_index]c" : "deck_center_[L["center"]]"
 	density = solid >= 1
 	clear_parts()
@@ -465,6 +478,10 @@ var/global/train_step_plain = FALSE
 	var/image/heap = bulk_overlay()
 	if (heap)
 		overlays += heap
+	// A tank car's tank stands over its middle sections (train_tank.dm).
+	var/image/shell = tank_overlay()
+	if (shell)
+		overlays += shell
 	var/end_row = car_end_row()
 	if (!end_row)
 		return
@@ -607,11 +624,16 @@ var/global/train_step_plain = FALSE
 	var/bulk = bulk_text()
 	if (bulk)
 		to_chat(user, bulk)
+	var/tank = tank_text()
+	if (tank)
+		to_chat(user, tank)
 
 /obj/structure/trains/platform/attackby(obj/item/W as obj, mob/user as mob)
 	if (tender_load(W, user))
 		return
 	if (bulk_use(W, user))
+		return
+	if (tank_use(W, user))
 		return
 	var/obj/structure/trains/locomotive/E = car_engine()
 	if (E && (E.takes_fuel(W) || istype(W, /obj/item/stack/ore/glass) || (is_tool(W, TOOL_WELDER) && !wrecked && health >= initial(health))))
@@ -649,6 +671,8 @@ var/global/train_step_plain = FALSE
 		return "The car is not whole."
 	if (front.bulk_amount > 0)
 		return "Unload the car first."
+	if (front.tank_amount > 0)
+		return "Drain the tank first."
 	for (var/obj/structure/trains/platform/P in list(front, back))
 		var/ahead = (P == front) ? !reversed : reversed
 		if (ahead ? P.lead_car() : P.connected)

@@ -274,7 +274,7 @@
 			best = T
 	return best
 
-// Everything within reach that takes water: steam engines and tenders.
+// Everything within reach that takes water: steam engines, tenders and tank cars.
 /obj/structure/rail_water/proc/takers()
 	var/list/found = list()
 	for (var/obj/structure/trains/TR in range(reach, src))
@@ -287,6 +287,11 @@
 				var/obj/structure/trains/locomotive/coal/E = TR.unit_engine()
 				if (istype(E))
 					taker = E
+				else if (istype(TR, /obj/structure/trains/platform))
+					// a tank car that is empty or carries water (train_tank.dm)
+					var/obj/structure/trains/platform/P = TR
+					if (P.tank_takes("water"))
+						taker = P.tank_store()
 		if (taker && !(taker in found))
 			found += taker
 	return found
@@ -303,6 +308,9 @@
 			var/obj/structure/trains/locomotive/coal/E = taker
 			E.boiler_tick()
 			gave = E.add_water(T.water)
+		else if (!taker.tender_store())
+			var/obj/structure/trains/platform/P = taker
+			gave = P.tank_fill("water", T.water)
 		else
 			gave = taker.tender_add_water(T.water)
 		T.water -= gave
@@ -317,7 +325,7 @@
 		to_chat(user, "No water tower stands within [WATER_CRANE_PIPE] tiles to feed it.")
 	else if (T != src)
 		to_chat(user, "It draws from a water tower holding [round(T.water)] units.")
-	to_chat(user, "Stop a steam locomotive or tender beside it and use it with an empty hand to fill up. A wrench turns it.")
+	to_chat(user, "Stop a steam locomotive, tender or tank car beside it and use it with an empty hand to fill up. A wrench turns it.")
 
 /obj/structure/rail_water/attack_hand(mob/living/user as mob)
 	if (!istype(user) || busy)
@@ -345,7 +353,7 @@
 		to_chat(user, "Everything here is full.")
 
 /obj/structure/rail_water/proc/nothing_to_fill(mob/living/user)
-	to_chat(user, "No steam locomotive or tender stands within reach of \the [src].")
+	to_chat(user, "No steam locomotive, tender or tank car that takes water stands within reach of \the [src].")
 
 /obj/structure/rail_water/attackby(obj/item/W as obj, mob/user as mob)
 	if (is_tool(W, TOOL_WRENCH))

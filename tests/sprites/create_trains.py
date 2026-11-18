@@ -920,8 +920,90 @@ def heap(tone, fill):
     return directions(draw, w=96, h=96, order=HEADING)
 
 
+def tank_shell(part):
+    """A tank car's tank across one section, 96 x 96 and centred on the
+    section's tile (car heading north): a black riveted barrel 46 pixels wide
+    standing over the rail tile and the inner edge of both running boards.
+    part f and b are the dished ends, m a plain ring, d the ring under the
+    filling dome."""
+    def draw(c):
+        x0, x1 = 25, 70
+        y0, y1 = (36 if part == 'f' else 32), (59 if part == 'b' else 63)
+        # the shadow the barrel throws on the running board
+        c.shade(x1 + 1, y0 + 2, x1 + 3, y1, 70)
+        for y in range(y0, y1 + 1):
+            inset = 0
+            depth = (y - y0) if part == 'f' else ((y1 - y) if part == 'b' else 99)
+            if depth < 7:
+                inset = int(round(9 * (1 - math.sqrt(1 - ((7 - depth) / 7.0) ** 2))))
+            c.cyl(x0 + inset, y, x1 - inset, y, BLACK)
+            if depth == 0:
+                c.rect(x0 + inset, y, x1 - inset, y, BLACK[4])
+            elif depth == 6:
+                # the seam where the dished end is riveted to the barrel
+                for x in range(x0 + 2, x1 - 1, 3):
+                    c.put(x, y, BLACK[0] if x < 44 else BLACK[1])
+        # the straps that hold the barrel to its cradles
+        for y in ((52,) if part == 'f' else ((43,) if part == 'b' else (36, 59))):
+            c.rect(x0, y, x1, y, STEEL_O)
+            c.rect(x0 + 1, y, x1 - 1, y, STEEL[3])
+            for x in (34, 38, 42):
+                c.put(x, y, STEEL[1])
+            c.put(x0 + 1, y + 1, STEEL_O)
+            c.put(x1 - 1, y + 1, STEEL_O)
+        # a ring of rivets round each plate joint
+        if part in ('m', 'd'):
+            for x in range(x0 + 2, x1 - 1, 3):
+                c.put(x, 47 if part == 'm' else 33, BLACK[0] if x < 44 else (BLACK[1] if x < 58 else BLACK[3]))
+        if part == 'd':
+            # the filling dome, its hinged lid and the safety valve beside it
+            c.shade(40, 41, 58, 58, 60)
+            c.disc(47.5, 47.5, 9, [BLACK[0], BLACK[1], BLACK[2], BLACK[3], BLACK[4]], outline=DARK)
+            c.disc(47.5, 47.5, 5.5, [STEEL[0], STEEL[1], STEEL[2], STEEL[3], STEEL[4]], outline=STEEL_O)
+            c.rect(46, 41, 49, 42, STEEL_O)
+            c.put(47, 47, STEEL[0])
+            c.rect(47, 52, 48, 53, BRASS[1])
+            c.disc(61.5, 47.5, 2.2, [BRASS[0], BRASS[1], BRASS[2], BRASS[3]], outline=BRASS[4])
+        if part == 'm':
+            # the ladder rungs up to the walkway along the top
+            for y in range(38, 58, 4):
+                c.rect(45, y, 50, y, STEEL[2])
+                c.put(45, y, STEEL[0])
+            c.rect(44, 37, 44, 57, STEEL_O)
+            c.rect(51, 37, 51, 57, STEEL_O)
+    return directions(draw, w=96, h=96, order=HEADING)
+
+
+def tank_valve():
+    """The valve on a tank car's end platform: a red hand wheel on the outlet
+    pipe and a coil of hose beside it."""
+    c = Canvas(32, 32)
+    c.shade(5, 24, 27, 29, 60)
+    # the outlet pipe and its flange
+    c.cyl(13, 3, 18, 14, STEEL)
+    c.bevel(11, 12, 20, 15, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    # the hand wheel
+    c.ring(15.5, 13.5, 7, RED[3], width=2.6)
+    c.ring(15.5, 13.5, 7, RED[1], width=1.4)
+    for dx, dy in ((1, 0), (0, 1), (-1, 0), (0, -1)):
+        for k in range(1, 7):
+            c.put(15.5 + dx * k, 13.5 + dy * k, RED[2])
+    c.disc(15.5, 13.5, 2.0, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
+    c.put(11, 9, RED[0])
+    c.put(12, 8, RED[0])
+    # the hose, coiled on the deck
+    c.ring(16, 24, 5.5, DARK, width=2.6)
+    c.ring(16, 24, 5.5, BLACK[1], width=1.2)
+    c.ring(16, 24, 2.5, BLACK[2], width=1.2)
+    c.rect(21, 22, 24, 23, BRASS[2])
+    c.put(24, 22, BRASS[0])
+    return [c.image()]
+
+
 def load_states():
     out = {}
+    for part in 'fmdb':
+        out['tank_' + part] = tank_shell(part)
     for tone in ('coal', 'ore', 'sand'):
         for fill in (1, 2):
             out['heap_%s_%d' % (tone, fill)] = heap(tone, fill)
@@ -2204,6 +2286,7 @@ def platform_states():
     states['fire_rake'] = fire_rake()
     states['brake_shoes'] = brake_shoes()
     states['plough_item'] = plough_item()
+    states['tank_valve'] = tank_valve()
     states['drop_pit'] = drop_pit(None)
     for tone in ('coal', 'ore', 'sand'):
         states['drop_pit_' + tone] = drop_pit(tone)
@@ -2253,6 +2336,7 @@ CARS = {
     'open_wagon': ('boards', 'boards', [_low + _low_f, _low, _low, _low_d, _low_d, _low, _low, _low + _low_b], None),
     'long_flatbed': ('wood', 'wood', [_rails, [], [], [], [], [], [], _rails], None),
     'hopper': ('hopper', 'hopper', [_bin + _bin_f, _bin, _bin, _bin, _bin, _bin + _bin_b], None),
+    'tank_car': ('steel', 'boards', [[], _rails, _rails, _rails, _rails, []], None),
     'brake_van': ('boards', 'boards', [_rails, _win + [(L, 'front', 'plank'), (0, 'front', 'door'), (R, 'front', 'plank')],
                                        _van, _win + [(L, 'back', 'plank'), (0, 'back', 'door'), (R, 'back', 'plank')]],
                   'boxcar'),
@@ -2560,6 +2644,36 @@ def write_previews(out, states, gun):
         im.alpha_composite(read_dmi(RAILS)['rails'][DIR_INDEX['E']], (x, 2 * 104 + 20))
         im.alpha_composite(states[name][DIR_INDEX['E']], (x, 2 * 104 + 20))
     big(im, 3).save(out / 'bulk-freight.png')
+
+    # the tank car heading east and north, with its tank over the middle
+    # sections and the valve on the front platform
+    def tank_car(heading):
+        car = render_car(states, 'tank_car', heading)
+        im = Image.new('RGBA', (car.width + 64, car.height + 64), (0, 0, 0, 0))
+        im.alpha_composite(car, (32, 32))
+        for seg, part in ((1, 'f'), (2, 'd'), (3, 'm'), (4, 'b')):
+            x, y = tile_pos(heading, seg, 0, 6)
+            im.alpha_composite(loads['tank_' + part][DIR_INDEX[heading]], (x * 32, y * 32))
+        x, y = tile_pos(heading, 0, L, 6)
+        im.alpha_composite(states['tank_valve'][0], (32 + x * 32, 32 + y * 32))
+        # the handrails stand above the barrel
+        rails = Image.new('RGBA', car.size, (0, 0, 0, 0))
+        CARS['_bare'] = (CARS['tank_car'][0], CARS['tank_car'][1], [[] for _ in range(6)], None)
+        bare = render_car(states, '_bare', heading)
+        del CARS['_bare']
+        px, bp, rp = car.load(), bare.load(), rails.load()
+        for yy in range(car.height):
+            for xx in range(car.width):
+                if px[xx, yy] != bp[xx, yy]:
+                    rp[xx, yy] = px[xx, yy]
+        im.alpha_composite(rails, (32, 32))
+        return im.crop((32, 32, 32 + car.width, 32 + car.height))
+    east, north = tank_car('E'), tank_car('N')
+    im = ground(east.width + north.width + 40, max(east.height + 24, north.height + 16), seed=31)
+    im.alpha_composite(east, (8, 8))
+    im.alpha_composite(north, (east.width + 24, 8))
+    im.alpha_composite(states['tank_valve'][0].resize((64, 64), Image.NEAREST), (16, east.height + 24))
+    big(im, 3).save(out / 'tank-car.png')
 
     im = ground(6 * 104 + 8 + 2 * 264, 264 + 16, seed=9)
     for i, (kind, roof) in enumerate((('bogie_coach', False), ('bogie_coach', True), ('boxcar', False),

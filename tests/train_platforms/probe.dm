@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 226
+	maxx = 232
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2018,6 +2018,77 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
 	platform_check("freight/pit_holds_one_kind", wrong && part && dug_out == 50 && from_pit && from_pit.amount == 50 && emptied && ("heap_coal_1" in sheet) && ("heap_ore_2" in sheet) && ("heap_sand_2" in sheet) && ("drop_pit" in states) && ("drop_pit_sand" in states) && ("edge_hopper" in states) && ("deck_center_hopper" in states) && ("deck_side_hopper" in states))
 
+// The tank car (train_tank.dm).
+/proc/platform_tank_run()
+	for (var/ty in 2 to 25)
+		platform_track(229, ty, NORTH)
+	var/obj/structure/trains/platform/car = platform_car("tank_car", 229, 12, NORTH)
+	var/list/segs = platform_segments(car)
+	var/obj/structure/trains/platform/store = car.tank_store()
+	var/obj/structure/trains/platform/last = segs[segs.len]
+	var/obj/structure/trains/platform/shell = segs[2]
+	var/list/front = train_platform_tiles(car.loc, car.dir)
+	var/obj/structure/train_tank_valve/valve = locate() in front[1]
+	var/list/flat = train_car_layout("long_flatbed")
+	var/base = store.car_load_weight()
+	var/built = segs.len == 6 && car.tank_max() == 3600 && store == car && last.tank_store() == store && valve && valve.tank() == car && !flat["tank"]
+	var/shape = shell.density && !car.density && !last.density && shell.tank_shell() && !car.tank_shell() && shell.tank_overlay() && !car.tank_overlay() && findtext(last.tank_text(), "is empty")
+	platform_check("tank/built_with_a_tank_and_a_valve", built && shape)
+
+	// An open vessel of one liquid pours in at the tank, not at the end platform.
+	var/mob/living/human/platform_rider/hand = new(platform_turf(227, 11))
+	var/obj/item/weapon/reagent_containers/glass/bucket/pail = new(platform_turf(227, 11))
+	pail.reagents.clear_reagents()
+	pail.reagents.add_reagent("water", 60)
+	var/ignored = !car.tank_use(pail, hand) && store.tank_amount == 0
+	var/poured = shell.tank_use(pail, hand) && store.tank_amount == 60 && store.tank_reagent == "water" && pail.reagents.total_volume == 0
+	platform_check("tank/poured_in_at_the_tank", ignored && poured && train_tank_liquid(pail) == null && abs(store.car_load_weight() - base - 0.1) < 0.001 && findtext(shell.tank_text(), "60 of 3600 units of water") && findtext(car.dismantle_problem(), "Drain"))
+
+	// One liquid at a time, plain liquids only, and no more than it holds.
+	pail.reagents.add_reagent("diesel", 40)
+	var/other = train_tank_liquid(pail) == "diesel" && !car.tank_takes("diesel") && shell.tank_use(pail, hand) && store.tank_amount == 60 && pail.reagents.get_reagent_amount("diesel") == 40
+	pail.reagents.add_reagent("water", 10)
+	var/mixed = isnull(train_tank_liquid(pail)) && shell.tank_use(pail, hand) && store.tank_amount == 60 && pail.reagents.total_volume == 50
+	var/topped = car.tank_fill("water", 5000) == 3540 && store.tank_amount == 3600 && !car.tank_takes("water") && !car.tank_fill("water", 10) && !car.tank_fill("diesel", 10)
+	platform_check("tank/one_liquid_and_no_more_than_it_holds", other && mixed && topped && isnull(train_tank_liquid(null)) && isnull(train_tank_liquid(hand)))
+
+	// An empty vessel held to the tank or the valve is filled.
+	pail.reagents.clear_reagents()
+	var/holds = pail.reagents.maximum_volume
+	valve.attackby(pail, hand)
+	var/drawn = holds > 0 && pail.reagents.get_reagent_amount("water") == holds && store.tank_amount == 3600 - holds
+	store.tank_amount = 5
+	pail.reagents.clear_reagents()
+	var/dregs = shell.tank_use(pail, hand) && pail.reagents.get_reagent_amount("water") == 5 && store.tank_amount == 0 && isnull(store.tank_reagent) && car.tank_draw(10) == 0
+	platform_check("tank/drawn_off_into_a_vessel", drawn && dregs)
+
+	// The valve runs water into a water tower beside the track.
+	var/dry = car.tank_fill("water", 1000) == 1000 && car.tank_run_out(valve) == 0 && store.tank_amount == 1000
+	var/obj/structure/rail_water/tower/TW = new(platform_turf(231, 11))
+	var/ran = car.tank_run_out(valve) == 1000 && TW.water == 1000 && store.tank_amount == 0 && isnull(store.tank_reagent)
+	TW.water = 5900
+	car.tank_fill("water", 400)
+	var/part = car.tank_run_out(valve) == 100 && TW.water == 6000 && store.tank_amount == 300
+	platform_check("tank/valve_fills_a_water_tower", dry && ran && part)
+
+	// A water tower fills a tank car that is empty or carries water.
+	var/list/reach = TW.takers()
+	var/gave = TW.fill_takers()
+	var/filled = reach.len == 1 && reach[1] == store && gave == 3300 && store.tank_amount == 3600 && TW.water == 2700 && !TW.takers().len
+	car.tank_draw(3600)
+	car.tank_fill("diesel", 500)
+	platform_check("tank/water_tower_fills_a_tank_car", filled && !TW.takers().len && TW.fill_takers() == 0 && store.tank_reagent == "diesel" && TW.water == 2700)
+
+	// Fuel runs into a heavy diesel locomotive standing by the valve.
+	var/obj/structure/trains/locomotive/heavy_diesel/DL = platform_car("loco_diesel", 229, 17, NORTH)
+	if (istype(DL))
+		DL.fuel = 0
+	var/fuelled = istype(DL) && car.tank_run_out(valve) == 300 && DL.fuel == 300 && store.tank_amount == 200 && car.tank_run_out(valve) == 0
+	var/obj/structure/trains/locomotive/coal/steam = new(platform_turf(229, 23))
+	var/list/sheet = icon_states('icons/obj/vehicles/train_loads.dmi')
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("tank/valve_fuels_a_diesel", fuelled && isnull(steam.tank_fuel_ids()) && ("tank_f" in sheet) && ("tank_m" in sheet) && ("tank_d" in sheet) && ("tank_b" in sheet) && ("tank_valve" in states))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -2049,6 +2120,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_depot_run()
 		platform_snow_run()
 		platform_freight_run()
+		platform_tank_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
