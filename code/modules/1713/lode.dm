@@ -76,9 +76,9 @@
 	if (!map || map.ordinal_age < 1)
 		return 0
 	var/lode_type = null
-	if (prob(LODE_GOLD_CHANCE * continent_ore_factor("gold"))) // continent_resources.dm
+	if (prob(LODE_GOLD_CHANCE * continent_ore_factor("gold", src))) // continent_resources.dm
 		lode_type = /obj/item/stack/ore/gold_quartz
-	else if (prob(LODE_SILVER_CHANCE * continent_ore_factor("silver")))
+	else if (prob(LODE_SILVER_CHANCE * continent_ore_factor("silver", src)))
 		lode_type = /obj/item/stack/ore/silver_lode
 	if (!lode_type)
 		return 0

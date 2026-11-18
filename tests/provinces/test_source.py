@@ -23,6 +23,7 @@ RESOURCES = ROOT / 'code/modules/provinces/continent_resources.dm'
 RANKS = ROOT / 'code/modules/provinces/province_ranks.dm'
 UPKEEP = ROOT / 'code/modules/provinces/province_upkeep.dm'
 SIEGE = ROOT / 'code/modules/provinces/province_siege.dm'
+RICH = ROOT / 'code/modules/provinces/province_rich.dm'
 DME = ROOT / 'civ13.dme'
 # Map -> surface z, as scripts/provinces.py was run (docs/provinces.md).
 CONTINENTS = {
@@ -229,11 +230,11 @@ class ContinentResources(unittest.TestCase):
     def test_mining_uses_the_factors(self):
         mining = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text(encoding='utf-8')
         for ore in ('copper', 'tin', 'iron', 'zinc', 'coal', 'saltpeter', 'sulphur', 'lead', 'uranium', 'silver', 'gold', 'diamond', 'bauxite'):
-            self.assertIn(f'continent_ore_factor("{ore}")', mining)
+            self.assertIn(f'continent_ore_factor("{ore}", src)', mining)
         self.assertIn('prob(copper_chance)', mining)
         self.assertNotIn('if (prob(12))', mining)
-        self.assertIn('continent_ore_factor("gold")', (ROOT / 'code/modules/1713/lode.dm').read_text(encoding='utf-8'))
-        self.assertIn('continent_ore_factor("gems")', (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8'))
+        self.assertIn('continent_ore_factor("gold", src)', (ROOT / 'code/modules/1713/lode.dm').read_text(encoding='utf-8'))
+        self.assertIn('continent_ore_factor("gems", src)', (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8'))
         self.assertIn('continent_seam_amount(ore_type', (ROOT / 'code/modules/1713/mountain_seams.dm').read_text(encoding='utf-8'))
         self.assertIn('#include "code\\modules\\provinces\\continent_resources.dm"', DME.read_text(encoding='utf-8'))
 
@@ -358,6 +359,68 @@ class Sieges(unittest.TestCase):
         self.assertIn('/obj/structure/war_banner', recipes)
         self.assertIn('province_rename_faction(old_name, new_name)',
                       (ROOT / 'code/game/mob/groups/faction_recruitment.dm').read_text(encoding='utf-8'))
+
+
+class RichProvinces(unittest.TestCase):
+    def text(self):
+        return RICH.read_text(encoding='utf-8')
+
+    def picks(self):
+        """The rich provinces each continent gets, computed as province_rich_list does."""
+        import hashlib
+        import re
+        defines = dict(re.findall(r'#define (MAP_NOMADS_\w+) "(\w+)"',
+                                  (ROOT / 'code/__defines/maps.dm').read_text(encoding='utf-8')))
+        homes = re.findall(r'(MAP_NOMADS_\w+) = list\(([^)]*)\)', RESOURCES.read_text(encoding='utf-8'))
+        ores = set(re.findall(r'^\t\t"(\w+)" = list\(/obj/item/stack/ore/', self.text(), re.M))
+        out = {}
+        for define, listed in homes:
+            map_id = defines[define]
+            name = 'nomads_' + map_id.lower().replace('nomads_', '')
+            candidates = [r.strip().strip('"') for r in listed.split(',') if r.strip().strip('"') in ores]
+            names = {}
+            for line in (ROOT / 'maps/provinces' / f'{name}.txt').read_text(encoding='utf-8').splitlines()[3:]:
+                if not line.startswith('province '):
+                    break
+                names[line[9]] = line[11:]
+            want = 3 if len(names) > 8 else 2
+            order = {c: int(hashlib.md5(f'{map_id}|{c}|rich'.encode()).hexdigest()[:4], 16) for c in names}
+            chosen = sorted(order, key=lambda c: (order[c], c))[:want]
+            out[name] = [(names[c], candidates[i % len(candidates)]) for i, c in enumerate(chosen)]
+        return out
+
+    def test_every_continent_has_rich_provinces_of_its_own_resources(self):
+        picks = self.picks()
+        self.assertEqual(set(picks), set(CONTINENTS))
+        for name, rich in picks.items():
+            self.assertIn(len(rich), (2, 3), name)
+            self.assertEqual(len({p for p, _ in rich}), len(rich), name)
+
+    def test_docs_list_the_rich_provinces(self):
+        docs = (ROOT / 'docs/provinces.md').read_text(encoding='utf-8')
+        for name, rich in self.picks().items():
+            line = next((l for l in docs.splitlines() if l.startswith(f'| {name} |')), None)
+            self.assertIsNotNone(line, name)
+            for province, resource in rich:
+                self.assertIn(f'{province} ({resource})', line)
+
+    def test_numbers_and_wiring(self):
+        text = self.text()
+        for line in ('#define RICH_LOADS_UNRANKED 4', 'if (1) loads = 6', 'if (2) loads = 10', 'if (3) loads = 16',
+                     'if (4) loads = 24', 'before >= 2 ? max(1, round(loads / 2)) : loads'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+        self.assertNotIn(' in world', text)
+        self.assertIn('#define CONTINENT_RICH 3', RESOURCES.read_text(encoding='utf-8'))
+        floor = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text(encoding='utf-8')
+        self.assertIn('province_rich_attackby(src, C, user)', floor)
+        self.assertIn('continent_ore_factor("copper", src)', floor)
+        self.assertIn('province_rich_mark_all()', STAKE.read_text(encoding='utf-8'))
+        self.assertIn('#include "code\\modules\\provinces\\province_rich.dm"', DME.read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':

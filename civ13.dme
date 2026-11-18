@@ -1761,6 +1761,7 @@
 #include "code\modules\provinces\continent_resources.dm"
 #include "code\modules\provinces\province_holding.dm"
 #include "code\modules\provinces\province_ranks.dm"
+#include "code\modules\provinces\province_rich.dm"
 #include "code\modules\provinces\province_siege.dm"
 #include "code\modules\provinces\province_stake.dm"
 #include "code\modules\provinces\province_upkeep.dm"
