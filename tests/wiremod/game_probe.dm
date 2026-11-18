@@ -1,0 +1,168 @@
+// Full-game probe for integrated circuits: the whole of civ13.dme (without maps)
+// with real items, mobs, windows, qdel and timers. Every editor action goes
+// through the real window transport as an agent body's button press.
+// Run: python3 tests/ecology_spawning/run_linux.py . tests/wiremod/game_probe.dm
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 10
+	maxy = 10
+	maxz = 1
+	turf = /turf
+	area = /area
+	visibility = 0
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+/mob/living/human/wiremod_probe/New()
+	return
+/mob/living/human/wiremod_probe/update_icons()
+	return
+/mob/living/human/wiremod_probe/movement_delay()
+	return 1
+var/wiremod_failures = 0
+var/wiremod_runtime_error = FALSE
+/proc/wiremod_check(condition, label)
+	if (!condition)
+		wiremod_failures++
+	world.log << "[condition ? "PASS" : "FAIL"]: [label]"
+/world/Error(exception/e)
+	wiremod_runtime_error = TRUE
+	world.log << "runtime error [e] [e.file]:[e.line]"
+/world/New()
+	OpenPort("none")
+	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		movementMachine = new
+		if (!GLOB.nanomanager)
+			GLOB.nanomanager = new
+		wiremod_checks()
+	catch(var/exception/e)
+		wiremod_check(FALSE, "exception [e] [e.file]:[e.line] [e.desc]")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = wiremod_failures, "runtime_error" = wiremod_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
+	del(world)
+
+/proc/wiremod_press(datum/agent_character/C, list/req)
+	req["screen"] = 1
+	try
+		return agent_control.agent_screen(C, req, TRUE)
+	catch(var/exception/e)
+		return "refused: [e.desc]"
+
+/proc/wiremod_build(datum/agent_character/C, mob/living/human/H)
+	var/obj/item/compact_remote/remote = new(H)
+	var/obj/item/integrated_circuit/circuit = remote.circuit
+	wiremod_check(circuit && circuit.loc == remote && circuit.attached_components.len == 1 && !circuit.should_save && !remote.should_save, "a compact remote is created with its circuit and stays out of saves")
+	remote.AltClick(H)
+	var/list/rows = agent_screen_rows(H)
+	wiremod_check(rows.len == 1 && rows[1]["status"] == "interactive" && rows[1]["template"] == "wiremod_circuit.tmpl", "Alt-click opens the editor for the holder")
+	wiremod_check(rows.len && ("print_component" in rows[1]["actions"]) && findtext(rows[1]["data"], "Compact Remote") && findtext(rows[1]["data"], "\"datatype_data\":\[\"Add\""), "the editor lists its actions, the remote's source and the operation choices")
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/random", "rel_x" = 200, "rel_y" = 40))
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/arithmetic", "rel_x" = 40, "rel_y" = 290))
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/delay", "rel_x" = 400, "rel_y" = 290))
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/mob/living/human", "rel_x" = 0, "rel_y" = 0))
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/compact_remote", "rel_x" = 0, "rel_y" = 0))
+	wiremod_check(circuit.attached_components.len == 4 && circuit.contents.len == 4, "the editor prints listed components and nothing else")
+	if (circuit.attached_components.len != 4)
+		return null
+	var/obj/item/circuit_component/random/dice = circuit.attached_components[2]
+	var/obj/item/circuit_component/arithmetic/math = circuit.attached_components[3]
+	var/obj/item/circuit_component/delay/timer = circuit.attached_components[4]
+	wiremod_check(dice.rel_x == 200 && dice.rel_y == 40 && dice.printed, "a printed component lands where it was dropped")
+	// Signal -> Random trigger, Random result -> Arithmetic A, B = 10.
+	wiremod_press(C, list("act" = "add_connection", "input_component_id" = 2, "input_port_id" = 3, "output_component_id" = 1, "output_port_id" = 2))
+	wiremod_press(C, list("act" = "add_connection", "input_component_id" = 3, "input_port_id" = 1, "output_component_id" = 2, "output_port_id" = 1))
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = 3, "port_id" = 2, "input" = 10))
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = 2, "port_id" = 1, "input" = 1))
+	wiremod_press(C, list("act" = "set_component_input", "component_id" = 2, "port_id" = 2, "input" = 6))
+	wiremod_check(dice.trigger.connected_output == circuit.attached_components[1].output_ports[2] && math.input_a.connected_output == dice.result && math.input_b.value == 10, "connections and typed values arrive through the window transport")
+	// A text output cannot feed a number input.
+	wiremod_press(C, list("act" = "add_connection", "input_component_id" = 3, "input_port_id" = 2, "output_component_id" = 1, "output_port_id" = 1))
+	wiremod_check(isnull(math.input_b.connected_output), "an incompatible connection is refused")
+	remote.attack_self(H)
+	wiremod_check(isnum(dice.result.value) && dice.result.value >= 1 && dice.result.value <= 6 && math.result.value == dice.result.value + 10, "pressing the remote rolls the die and adds ten ([math.result.value])")
+	rows = agent_screen_rows(H)
+	wiremod_check(rows.len && findtext(rows[1]["data"], "\"current_data\":[dice.result.value]"), "the editor data refreshes after a press")
+	// Out-of-range and malformed requests change nothing and raise nothing.
+	for (var/bad in list("0", "-1", "99", "1.5", "abc", "1e9"))
+		wiremod_press(C, list("act" = "detach_component", "component_id" = bad))
+		wiremod_press(C, list("act" = "set_component_input", "component_id" = bad, "port_id" = 1, "input" = 5))
+		wiremod_press(C, list("act" = "add_connection", "input_component_id" = bad, "input_port_id" = bad, "output_component_id" = 1, "output_port_id" = bad))
+	wiremod_press(C, list("act" = "detach_component", "component_id" = 1))
+	wiremod_press(C, list("act" = "remove_variable", "variable_name" = 1))
+	wiremod_press(C, list("act" = "add_setter_or_getter", "variable" = 1, "is_setter" = 1))
+	wiremod_check(circuit.attached_components.len == 4, "bad component numbers and the fixed signal source are left alone")
+	wiremod_check(findtext(wiremod_press(C, list("act" = "toggle")), "refused") == 1, "an action the editor does not offer is refused by the transport")
+	// A label with markup.
+	wiremod_press(C, list("act" = "set_display_name", "display_name" = "<b>Dice</b> roller"))
+	wiremod_check(circuit.display_name == "bDiceb roller" && circuit.name == "integrated circuit (bDiceb roller)", "a label keeps only plain characters ([circuit.name])")
+	circuit.examine(H)
+	// A feedback loop: Arithmetic result back into its own B.
+	wiremod_press(C, list("act" = "add_connection", "input_component_id" = 3, "input_port_id" = 2, "output_component_id" = 3, "output_port_id" = 1))
+	wiremod_check(circuit.overloaded_until > world.time && !circuit.is_executing && !circuit.execution_queue.len && isnum(math.result.value), "a feedback loop overloads the circuit instead of hanging")
+	wiremod_press(C, list("act" = "remove_connection", "component_id" = 3, "is_input" = 1, "port_id" = 2))
+	wiremod_check(isnull(math.input_b.connected_output), "the loop can be unwired while overloaded")
+	// Variables.
+	wiremod_press(C, list("act" = "add_variable", "variable_name" = "last roll", "variable_datatype" = "number", "is_list" = 0, "is_assoc_list" = 0))
+	wiremod_press(C, list("act" = "add_setter_or_getter", "variable" = "last roll", "is_setter" = 1, "rel_x" = 10, "rel_y" = 10))
+	wiremod_check(circuit.circuit_variables.len == 1 && circuit.attached_components.len == 5, "a variable and its setter are added")
+	// Delay: started by the remote's signal, cancelled by deleting the remote.
+	wiremod_press(C, list("act" = "add_connection", "input_component_id" = 4, "input_port_id" = 2, "output_component_id" = 1, "output_port_id" = 2))
+	circuit.overloaded_until = 0
+	remote.attack_self(H)
+	wiremod_check(!isnull(timer.timer_id), "the delay starts a real timer")
+	wiremod_check(H.l_hand != remote && H.r_hand != remote, "the probe holds the remote in its contents, not a hand slot")
+	// Everything the remote owns, by ref.
+	var/list/refs = list("\ref[remote]", "\ref[circuit]")
+	for (var/obj/item/circuit_component/component in circuit.attached_components)
+		refs += "\ref[component]"
+		for (var/datum/port/port in component.input_ports + component.output_ports)
+			refs += "\ref[port]"
+	for (var/variable_name in circuit.circuit_variables)
+		refs += "\ref[circuit.circuit_variables[variable_name]]"
+	qdel(remote)
+	wiremod_check(QDELETED(circuit) && QDELETED(dice) && QDELETED(timer) && isnull(timer.timer_id) && !circuit.attached_components.len, "deleting the remote deletes its circuit and components and cancels the delay")
+	wiremod_check(!agent_open_screens(H).len, "deleting the remote closes its editor")
+	return refs
+
+/proc/wiremod_checks()
+	var/mob/living/human/wiremod_probe/H = new(locate(5, 5, 1))
+	H.species = new /datum/species/human
+	H.stat = CONSCIOUS
+	H.canmove = TRUE
+	var/datum/agent_character/C = new
+	C.body = H
+	agent_characters[H] = C
+	usr = H
+	var/list/refs = wiremod_build(C, H)
+	if (!refs)
+		return
+	// Without the garbage process, qdel parks each object in delayed_garbage
+	// until that process starts. Emptying it leaves only real references, and
+	// nothing hard-deletes here: an object still findable is still referenced.
+	delayed_garbage.Cut()
+	delayed_hard_garbage.Cut()
+	sleep(5)
+	var/alive = 0
+	for (var/ref in refs)
+		var/datum/survivor = locate(ref)
+		if (survivor)
+			alive++
+			world.log << "still referenced: [survivor.type]"
+		survivor = null
+	wiremod_check(refs.len >= 20 && !alive, "every object of the deleted remote is released ([alive] of [refs.len] still referenced)")
+	// A loose circuit on the ground: a neighbour may edit it, a ghost may not.
+	var/obj/item/integrated_circuit/loose = new(locate(6, 5, 1))
+	loose.attack_self(H)
+	wiremod_check(agent_open_screens(H).len == 1, "an adjacent player can open a circuit on the ground")
+	wiremod_check(wiremod_circuit_state.can_use_topic(loose, new /mob/observer/ghost(locate(6, 5, 1))) == STATUS_CLOSE, "a ghost cannot use the editor")
+	H.forceMove(locate(1, 1, 1))
+	wiremod_check(wiremod_circuit_state.can_use_topic(loose, H) == STATUS_CLOSE, "a distant player cannot use the editor")
+	var/before = loose.attached_components.len
+	loose.ui_act("print_component", list("component_to_print" = "/obj/item/circuit_component/logic"), H, null)
+	wiremod_check(loose.attached_components.len == before, "a distant player's request is ignored")
+	qdel(loose)

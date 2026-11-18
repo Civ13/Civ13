@@ -1,7 +1,10 @@
 Civ13 tgui production dependency license inventory
 
 Reference: tgstation/tgstation@bf6f771a1e221e06938978e36bbaf78543f85ebe
-Civ13 adaptation code: repository AGPL-3.0. No upstream game assets copied.
+Civ13 adaptation code: repository AGPL-3.0.
+Integrated circuit editor (src/interfaces/IntegratedCircuit, src/interfaces/common/Connections.tsx):
+copied from tgstation/tgstation@bacb22efd80de34f9b992ec3c731a1321147119e, AGPL-3.0; the grid image is CC BY-SA 3.0.
+Credit: the /tg/station 13 contributors. No other upstream application files or game assets are copied.
 This inventory conservatively includes all production dependencies.
 
 ========================================================================

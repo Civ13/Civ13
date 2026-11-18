@@ -12,7 +12,7 @@ module.exports = {
     publicPath: '',
     clean: false,
   },
-  resolve: { extensions: ['.tsx', '.ts', '.js'] },
+  resolve: { extensions: ['.tsx', '.ts', '.jsx', '.js'] },
   module: { rules: [
     { test: /\.[tj]sx?$/, use: { loader: 'builtin:swc-loader', options: {
       jsc: { parser: { syntax: 'typescript', tsx: true },

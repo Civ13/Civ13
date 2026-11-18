@@ -4,8 +4,17 @@
 @use 'tgui-core/styles/vars-components';
 @use 'tgui-core/styles/reset';
 @use 'tgui-core/styles/components/Button';
+@use 'tgui-core/styles/components/Dropdown';
+@use 'tgui-core/styles/components/Flex';
+@use 'tgui-core/styles/components/Input';
+@use 'tgui-core/styles/components/NumberInput';
+@use 'tgui-core/styles/components/ProgressBar';
 @use 'tgui-core/styles/components/Section';
 @use 'tgui-core/styles/components/NoticeBox';
+@use 'tgui-core/styles/components/Stack';
+@use 'tgui-core/styles/components/Tooltip';
+@use './interfaces/IntegratedCircuit/IntegratedCircuit';
+@use './interfaces/IntegratedCircuit/wiremod-compat';
 :root { color-scheme: dark; --color-base: #211c16; --color-primary: #b48c4d; --color-section: #30271e; --color-text: #eee5d3; }
 // Civ13 palette. Use these names; add a colour here before using it a third time.
 :root { --civ-line: #66513b; --civ-dim: #bfae96; --civ-bg: #211c16; --civ-text: #eee5d3; --civ-faint: #a99b87; --civ-panel: #30271e; --civ-accent: #b48c4d; --civ-highlight: #ffd985; --civ-line-soft: #54432f; --civ-link: #9ed2ff; --civ-chip: #443623; --civ-good: #c4e8c0; --civ-raised: #3a3020; --civ-warn: #f3c79a; --civ-good-line: #6caa68; --civ-good-bg: #253b25; --civ-missing: #f0b062; --civ-muted: #c9b9a0; --civ-warn-line: #c77a39; --civ-accent-line: #a98b4d; --civ-info-line: #6fb3e0; --civ-inset: #262019; --civ-info-bg: #1f3342; --civ-bad: #ef8a80; --civ-bad-text: #ffd9d4; }
