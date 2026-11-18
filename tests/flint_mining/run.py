@@ -87,7 +87,7 @@ def source_checks():
     call = mining.find('mining_flint_nodules(H, area_above)')
     if call < 0:
         failures.append('mining_proc must roll flint nodules')
-    elif call > mining.find('if (prob(12))'):
+    elif call > mining.find('if (prob(copper_chance))'):
         failures.append('the flint roll must come before the ore rolls so every mined wall gets it')
     if '#define FLINT_NODULE_CHANCE 20' not in flint or '#define FLINT_NODULE_CHANCE_SANDY 5' not in flint:
         failures.append('flint nodule chances changed; update docs/flint-mining.md with them')

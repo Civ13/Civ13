@@ -19,6 +19,7 @@ from terrain_heights import read_dmm  # noqa: E402
 SOURCE = ROOT / 'code/modules/provinces/provinces.dm'
 STAKE = ROOT / 'code/modules/provinces/province_stake.dm'
 HOLDING = ROOT / 'code/modules/provinces/province_holding.dm'
+RESOURCES = ROOT / 'code/modules/provinces/continent_resources.dm'
 DME = ROOT / 'civ13.dme'
 # Map -> surface z, as scripts/provinces.py was run (docs/provinces.md).
 CONTINENTS = {
@@ -187,6 +188,47 @@ class Holding(unittest.TestCase):
         self.assertIn('return map && map.province_map() && world.realtime >= map.province_rules_from()', self.text())
         self.assertNotIn('sleep(', self.text())
         self.assertNotIn('spawn(', self.text())
+
+
+
+class ContinentResources(unittest.TestCase):
+    """Val (2026-11-18): each continent rich in its own resource; Gaia not for the endgame."""
+
+    def text(self):
+        return RESOURCES.read_text(encoding='utf-8')
+
+    def test_every_continent_has_a_home_resource(self):
+        import re
+        homes = dict(re.findall(r'(MAP_NOMADS_\w+) = list\(([^)]*)\)', self.text()))
+        expected = {'MAP_NOMADS_GAIA': 'copper', 'MAP_NOMADS_JUNGLE': 'tin', 'MAP_NOMADS_AMERICAS_NORTH': 'iron',
+                    'MAP_NOMADS_EUROPE': 'coal', 'MAP_NOMADS_ASIA': 'saltpeter', 'MAP_NOMADS_DESERT': 'sulphur',
+                    'MAP_NOMADS_AMERICAS_SOUTH': 'bauxite'}
+        for name, resource in expected.items():
+            self.assertIn(f'"{resource}"', homes.get(name, ''), name)
+        self.assertEqual(len(homes), len(CONTINENTS))
+
+    def test_rates(self):
+        text = self.text()
+        for line in ('#define CONTINENT_HOME 2', '#define CONTINENT_BULK 0.5', '#define CONTINENT_STRATEGIC 0.33',
+                     '#define CONTINENT_PHASE_DAYS 7', '"iron" = 1', '"bauxite" = 0, "uranium" = 0', '"tin" = 1'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        self.assertIn('return max(rate, 0.75)', text)
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+
+    def test_mining_uses_the_factors(self):
+        mining = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text(encoding='utf-8')
+        for ore in ('copper', 'tin', 'iron', 'zinc', 'coal', 'saltpeter', 'sulphur', 'lead', 'uranium', 'silver', 'gold', 'diamond', 'bauxite'):
+            self.assertIn(f'continent_ore_factor("{ore}")', mining)
+        self.assertIn('prob(copper_chance)', mining)
+        self.assertNotIn('if (prob(12))', mining)
+        self.assertIn('continent_ore_factor("gold")', (ROOT / 'code/modules/1713/lode.dm').read_text(encoding='utf-8'))
+        self.assertIn('continent_ore_factor("gems")', (ROOT / 'code/modules/1713/gemstones.dm').read_text(encoding='utf-8'))
+        self.assertIn('continent_seam_amount(ore_type', (ROOT / 'code/modules/1713/mountain_seams.dm').read_text(encoding='utf-8'))
+        self.assertIn('#include "code\\modules\\provinces\\continent_resources.dm"', DME.read_text(encoding='utf-8'))
 
 
 if __name__ == '__main__':

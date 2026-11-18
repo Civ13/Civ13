@@ -294,6 +294,9 @@ var/global/province_stake_cached_at = 0
 		lines += "<p>You count as a resident of the [html_encode(province_name_at(get_turf(B)))] for [html_encode(faction)].</p>"
 	lines += "<p>Stake: each resident member is 1 point, and a hall adds 2 points a tier, never more than the faction's residents there. Nations pool their members' stake. A side leads a province with at least [STAKE_LEAD_POINTS] points from [STAKE_LEAD_ACCOUNTS] people, [STAKE_LEAD_SHARE * 100]% of the stake there and [STAKE_LEAD_MARGIN] times the next side. Updated every 10 minutes.</p>"
 	lines += "<p>[province_rules_text()]</p>"
+	var/resources = continent_resources_text() // continent_resources.dm
+	if (resources)
+		lines += "<p>[resources]</p>"
 	lines += province_standings_html(faction)
 	var/datum/browser/popup = new(src, "province_holdings", "Province Holdings", 760, 520)
 	popup.add_head_content("<style>table.regions{border-collapse:collapse;width:100%}table.regions th,table.regions td{padding:3px 6px;text-align:left;border-bottom:1px solid #444}</style>")

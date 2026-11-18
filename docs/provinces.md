@@ -112,6 +112,41 @@ Lands without provinces, such as expedition islands, keep every station
 working. The rules start 21 days after a world first counts stake
 (`province_rules_from`, durable), the 14-day preview plus 7 days' grace.
 
+## Continent resources
+
+Code: `code/modules/provinces/continent_resources.dm`. Each continent is rich
+in its own resources and short of the others, so no one continent leads to
+every age:
+
+| Continent | Rich in (2x) |
+| --- | --- |
+| Gaia (start) | copper |
+| Jungle | tin |
+| North America | iron, lead |
+| Europe | coal, zinc |
+| Asia | saltpeter, silver, gems and diamonds |
+| Desert | sulphur |
+| South America | gold, silver, bauxite |
+
+- Away from their home, bulk ores (copper, tin, coal, zinc) and precious finds
+  (silver, gold, diamonds, gems) come at half the rate, strategic ores
+  (saltpeter, sulphur, lead, bauxite) at a third. Iron stays normal everywhere.
+- Gaia keeps tin at the normal rate, so a new player reaches bronze and iron
+  alone, and has no bauxite or uranium: from combustion on, a faction needs
+  imports or a foothold on another continent.
+- The factors apply to rock walls (`floor_attackby.dm`), gold and silver lodes
+  (`lode.dm`), gem pockets (`gemstones.dm`) and the Americas' mountain seams
+  (`mountain_seams.dm`; a scarce seam load sometimes gives only stone).
+  Expedition islands and battle maps mine as before.
+- Lowered rates phase in: normal for 7 days after a world first uses them,
+  then at least three quarters, then final after 14 days
+  (`faction_recruitment["continent_resources_from"]`). Raised rates apply at
+  once. Stockpiles are untouched.
+- Faction > Province Holdings and Admin > Land Status show the line.
+
+Still to come from the plan: rich provinces with renewable seams capped by
+rank, rubber trees, land oil only in the Desert, Gaia's crop bonus.
+
 ## Checks
 
 `python3 tests/provinces/test_source.py` (offline suite `provinces`): every

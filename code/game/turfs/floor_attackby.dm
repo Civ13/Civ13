@@ -900,8 +900,22 @@
 	var/diamond_chance = legacy_remaining * 0.01
 	legacy_remaining -= diamond_chance
 	var/bauxite_chance = mining_bauxite_chance(area_above) // Aluminium ore, from the Industrial age (aluminium.dm).
+	// Each continent's own resources (continent_resources.dm).
+	var/copper_chance = 12 * continent_ore_factor("copper")
+	var/tin_chance = 8 * continent_ore_factor("tin")
+	iron_chance *= continent_ore_factor("iron")
+	zinc_chance *= continent_ore_factor("zinc")
+	var/coal_chance = 2 * fuel_chance * continent_ore_factor("coal")
+	var/saltpeter_chance = fuel_chance * continent_ore_factor("saltpeter")
+	var/sulphur_chance = fuel_chance * continent_ore_factor("sulphur")
+	var/lead_chance = fuel_chance * continent_ore_factor("lead")
+	uranium_chance *= continent_ore_factor("uranium")
+	silver_chance *= continent_ore_factor("silver")
+	gold_chance *= continent_ore_factor("gold")
+	diamond_chance *= continent_ore_factor("diamond")
+	bauxite_chance *= continent_ore_factor("bauxite")
 	var/no_ore_chance = 100
-	for (var/chance in list(12, 8, iron_chance, zinc_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
+	for (var/chance in list(copper_chance, tin_chance, iron_chance, zinc_chance, coal_chance, saltpeter_chance, sulphur_chance, lead_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
 		no_ore_chance *= 1 - chance / 100
 	var/found_ore = FALSE
 	if (H)
@@ -912,7 +926,7 @@
 	mining_cinnabar(H) // Independent of the ore rolls; see mercury.dm.
 	mining_lode(H) // Independent of the ore rolls; see lode.dm.
 	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
-	if (prob(12))
+	if (prob(copper_chance))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 		mineral.amount = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -922,7 +936,7 @@
 			var/ore_colour = M ? M.icon_colour : "#b87333"
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[ore_colour]><b>copper</font></b> ore!"))
 		found_ore = TRUE
-	if (prob(8))
+	if (prob(tin_chance))
 		var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
 		mineral.amount = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -949,7 +963,7 @@
 			var/material/M = get_material_by_name("zinc")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>calamine</font></b> (zinc ore)!"))
 		found_ore = TRUE
-	if (prob(2 * fuel_chance) && fuel_chance)
+	if (prob(coal_chance))
 		var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
 		mineral.amount = rand(24,32)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -957,7 +971,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(fuel_chance) && fuel_chance)
+	if (prob(saltpeter_chance))
 		var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -965,7 +979,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(fuel_chance) && fuel_chance)
+	if (prob(sulphur_chance))
 		var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -974,7 +988,7 @@
 			if (H)
 				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(fuel_chance) && fuel_chance)
+	if (prob(lead_chance))
 		var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
