@@ -296,6 +296,11 @@ class TrainPlatformSourceTests(unittest.TestCase):
         # Stored units are nested contents of the post, so world saves carry them.
         self.assertIn('var/obj/structure/rail_stored_unit/U = new(src)', WAREHOUSE)
         self.assertNotIn('should_save = FALSE', WAREHOUSE)
+        # A heavy locomotive is stored whole and rebuilt when it rolls out.
+        self.assertNotIn('too long to put away', WAREHOUSE)
+        self.assertIn('E.clear_body()', WAREHOUSE)
+        self.assertIn('engine.build_body()', WAREHOUSE)
+        self.assertIn('coupled.coupling_at(coupled.reversed) > 0 && front.coupling_at(TRUE) > 0', WAREHOUSE)
         # A stored platform segment has no deck until it rolls out again.
         layout = SOURCE[SOURCE.index('/obj/structure/trains/platform/proc/apply_layout()'):]
         self.assertLess(layout.index('if (!isturf(loc))'), layout.index('deck_parts = list()'))

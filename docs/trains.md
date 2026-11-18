@@ -174,8 +174,11 @@ body hits people standing beside the rails (`sweep_sides()`).
 
 Explosions wear the steam and diesel engines down to `broken_down`, and the
 armored one to `disabled`, instead of deleting them; a welding tool repairs
-them. Heavy locomotives cannot be packed back into a kit, put away in a rail
-warehouse, or sent over an inter-region railway.
+them. A heavy locomotive cannot be packed back into a kit. A rail warehouse
+takes it whole, engine and body sections as one unit (`rail_warehouse_unit()`),
+and it comes out as it went in. The inter-region record
+(`train_transfer_codec.dm`) carries it the same way: the engine as the first
+section of its own body. That record is still not wired to player departure.
 
 ## Cab stations and the main-line engine
 
@@ -312,7 +315,8 @@ states.
   are let go roll on by themselves.
 
 A hook and screw link and an automatic coupler couple to each other by hand
-only. Region travel and the warehouse do not carry the kind of coupling yet.
+only. A stored car keeps its couplings; one rolled out of a warehouse hitches
+on only where both drawbars carry a sound coupling.
 
 ## Servicing
 
@@ -376,8 +380,14 @@ A wrench on an engine at half that distance or more starts the overhaul
 (`overhaul_by()`): the engine stopped, standing in the bay of a rail
 warehouse (`engine_shed()`), 10 iron or steel in the other hand, 60 seconds.
 
-Region travel and the warehouse do not carry axle oil, clinker, brake shoes,
-scale or mileage yet.
+A car in a rail warehouse is the car itself, so it keeps all of this. The
+inter-region record carries a fixed list of working state per section
+(`train_transfer_state_fields()`): couplings and their kind, ploughs,
+handbrake, axle oil and a seized axle, brake shoes, tender water and fuel,
+locked doors, a bulk or liquid load, and an engine's sand, mileage, tank and
+boiler water, pressure, injector, fusible plug, clinker and scale. Amounts
+travel as whole numbers inside the limits of their own files; a derailed,
+wrecked or broken-down train is refused.
 
 ## The depot
 
@@ -627,8 +637,8 @@ coupling of a free end (`plough_use()` from `coupler_use()`: the plough to
 fit, a wrench to take it off, 6 seconds, train standing) and shows as an
 overlay on that coupling from `icons/obj/vehicles/train_plough.dmi` (96 x 96).
 When the end that leads the train carries one, `meet_snow()` clears the tile
-(`/turf/proc/plough_snow()`) and the train keeps its speed. Region travel and
-the warehouse do not carry ploughs yet.
+(`/turf/proc/plough_snow()`) and the train keeps its speed. A plough stays on a
+stored car and is carried by the inter-region record.
 
 ## Reversing
 
