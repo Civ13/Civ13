@@ -2829,9 +2829,10 @@ def span(m, a, b):
     return (min(m(a), m(b)), max(m(a), m(b)))
 
 
-def diesel_cab_end(c, m):
+def diesel_cab_end(c, m, ramp=None):
     """One cab of the main-line diesel. m maps a row counted from this end of
     the engine to a row of the drawing, so the same cab is drawn at both ends."""
+    ramp = ramp or DMAROON
     # nose: marker lights either side of the headcode panel
     y0, y1 = span(m, 4, 9)
     c.bevel(10, y0, 85, y1, YELLOW[0], YELLOW[1], YELLOW[2], outline=YELLOW[3])
@@ -2839,13 +2840,13 @@ def diesel_cab_end(c, m):
         c.disc(x, (y0 + y1) / 2.0, 2.4, [WHITE, FIRE[0], (220, 200, 120)], outline=STEEL_O)
     y0, y1 = span(m, 5, 8)
     c.rect(44, y0, 51, y1, YELLOW[3])
-    c.rect(45, y0 + 1, 50, y1 - 1, DMAROON[2])
+    c.rect(45, y0 + 1, 50, y1 - 1, ramp[2])
     for x in (16, 79):
         c.put(x, m(6), RED[0])
         c.put(x, m(7), RED[2])
     # floor, desk and two seats
     y0, y1 = span(m, 10, 31)
-    c.rect(10, y0, 85, y1, DMAROON[4])
+    c.rect(10, y0, 85, y1, ramp[4])
     y0, y1 = span(m, 13, 29)
     for y in range(y0, y1 + 1):
         for x in range(13, 83):
@@ -2866,8 +2867,8 @@ def diesel_cab_end(c, m):
         c.bevel(x0, y0, x0 + 9, y1, (150, 96, 60), (112, 68, 42), (78, 46, 28), outline=(40, 22, 14))
     # windscreen
     y0, y1 = span(m, 10, 12)
-    c.rect(10, y0, 85, y1, DMAROON[4])
-    c.bands(11, m(11), 84, m(11), [DMAROON[1]], along=False)
+    c.rect(10, y0, 85, y1, ramp[4])
+    c.bands(11, m(11), 84, m(11), [ramp[1]], along=False)
     for x0, x1 in ((15, 44), (51, 80)):
         c.rect(x0, y0, x1, y1, GLASS[3])
         c.bands(x0 + 1, m(11), x1 - 1, m(11), [GLASS[0]], along=False)
@@ -2876,13 +2877,13 @@ def diesel_cab_end(c, m):
     # side walls with their drop windows
     for x0 in (10, 83):
         y0, y1 = span(m, 10, 31)
-        c.rect(x0, y0, x0 + 2, y1, DMAROON[4])
-        c.rect(x0 + 1, y0 + 1, x0 + 1, y1 - 1, DMAROON[1])
+        c.rect(x0, y0, x0 + 2, y1, ramp[4])
+        c.rect(x0 + 1, y0 + 1, x0 + 1, y1 - 1, ramp[1])
         glass_run(c, *span(m, 15, 25), x0=x0, x1=x0 + 2)
     # back wall, with a door onto each walkway
     y0, y1 = span(m, 30, 31)
-    c.rect(10, y0, 85, y1, DMAROON[4])
-    c.rect(11, m(30), 84, m(30), DMAROON[1])
+    c.rect(10, y0, 85, y1, ramp[4])
+    c.rect(11, m(30), 84, m(30), ramp[1])
     for x0 in (14, 75):
         c.rect(x0, y0, x0 + 6, y1, STEEL[4])
         c.rect(x0 + 1, m(30), x0 + 5, m(30), STEEL[2])
@@ -2937,14 +2938,15 @@ def loco_dieselmain(c, with_roof=False):
         c.put(x, y, YELLOW[0])
 
 
-def roof_loco_dieselmain(c, m=lambda y: y):
-    prof = [DMAROON[4], DMAROON[3], DMAROON[1], DMAROON[0], DMAROON[1], DMAROON[2], DMAROON[2], DMAROON[3],
-            DMAROON[4]]
+def roof_loco_dieselmain(c, m=lambda y: y, ramp=None):
+    ramp = ramp or DMAROON
+    prof = [ramp[4], ramp[3], ramp[1], ramp[0], ramp[1], ramp[2], ramp[2], ramp[3],
+            ramp[4]]
     y0, y1 = span(m, 9, 31)
     c.bands(9, y0, 86, y1, across(prof, 78), along=True)
-    c.frame(9, y0, 86, y1, DMAROON[4])
+    c.frame(9, y0, 86, y1, ramp[4])
     c.rect(10, m(10), 85, m(10), CREAM[1])
-    c.rect(10, m(30), 85, m(30), DMAROON[3])
+    c.rect(10, m(30), 85, m(30), ramp[3])
     # twin horns, a ventilator and the aerial
     for x in (36, 44):
         y0, y1 = span(m, 13, 20)
@@ -2952,15 +2954,229 @@ def roof_loco_dieselmain(c, m=lambda y: y):
         c.cyl(x, y0, x + 2, y1, BRASS, along=True)
         c.rect(x, m(13), x + 2, m(13), BRASS[4])
     y0, y1 = span(m, 14, 24)
-    hatch(c, 54, y0, 66, y1, ramp=(DMAROON[1], DMAROON[2], DMAROON[3], DMAROON[4]), handle=False)
+    hatch(c, 54, y0, 66, y1, ramp=(ramp[1], ramp[2], ramp[3], ramp[4]), handle=False)
     for y in (17, 20):
-        c.rect(57, m(y), 63, m(y), DMAROON[4])
+        c.rect(57, m(y), 63, m(y), ramp[4])
     c.put(22, m(20), STEEL[0])
     c.put(72, m(26), RED[0])
 
 
 def roof_loco_dieselmain_rear(c):
     roof_loco_dieselmain(c, lambda y: 31 - y)
+
+
+# ---------------------------------------------------------------------------
+# Electric traction: the box-cab electric, the tram and the overhead line
+
+def pantograph(c, cy):
+    """A pantograph seen from above: four roof insulators, the folding frame
+    and the collector head lying across the track."""
+    c.shade(30, cy - 5, 70, cy + 11, 50)
+    c.frame(37, cy - 7, 59, cy + 8, STEEL[3])
+    for x in (37, 59):
+        for y in (cy - 7, cy + 8):
+            c.disc(x + 0.5, y + 0.5, 2.0, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    for x, y in ((38, cy - 6), (58, cy - 6)):
+        c.line(x, y, 48, cy, STEEL[1])
+    for x, y in ((38, cy + 7), (58, cy + 7)):
+        c.line(x, y, 48, cy + 1, STEEL[1])
+    c.bevel(26, cy - 1, 69, cy + 2, COPPER[0], COPPER[1], COPPER[3], outline=DARK)
+    for x in (24, 70):
+        c.rect(x, cy, x + 1, cy + 1, STEEL[2])
+    c.disc(47.5, cy + 0.5, 1.6, [STEEL[0], STEEL[2]], flat=True)
+
+
+def loco_electric(c, with_roof=False):
+    """A box-cab electric, 96 x 128: a cab at each end, the same from either
+    way, and an equipment hood between them that carries two pantographs."""
+    for y in (38, 50, 77, 89):
+        wheel(c, 6, y - 4, y + 4, True)
+        wheel(c, 87, y - 4, y + 4, False)
+    for y0 in (33, 72):
+        for x in (5, 90):
+            c.rect(x, y0, x, y0 + 22, STEEL[3])
+            c.put(x, y0 + 11, YELLOW[0])
+    # frame and walkways
+    c.rect(8, 3, 87, 124, DARK)
+    tread(c, 9, 4, 86, 123, face=STEEL[3], lit=STEEL[2], dark=STEEL[4], seams=False)
+    for x in (9, 86):
+        c.rect(x, 33, x, 94, YELLOW[1])
+        for y in range(34, 94, 8):
+            c.put(x, y, YELLOW[0])
+            c.put(x, y + 1, YELLOW[3])
+    beam(c, 0, 3, ramp=YELLOW, hazard=True)
+    beam(c, 124, 127, ramp=YELLOW, hazard=True)
+    diesel_cab_end(c, lambda y: y, ramp=GREEN)
+    diesel_cab_end(c, lambda y: 127 - y, ramp=GREEN)
+    # the equipment hood, a cream band along each shoulder
+    c.shade(74, 34, 77, 94, 80)
+    hood(c, 22, 32, 73, 95, GREEN)
+    for x in (26, 69):
+        c.rect(x, 33, x, 94, CREAM[1])
+    # the bus bar between the pantographs and the resistor grilles under it
+    c.rect(47, 46, 48, 82, COPPER[2])
+    c.frame(30, 58, 65, 69, GREEN[4])
+    for y in range(59, 69):
+        c.rect(31, y, 64, y, GREEN[4] if y % 2 else STEEL[2])
+    c.rect(47, 59, 48, 68, COPPER[0])
+    pantograph(c, 44)
+    pantograph(c, 83)
+    for x, y in ((24, 34), (71, 34), (24, 93), (71, 93)):
+        c.put(x, y, YELLOW[0])
+
+
+def roof_loco_electric(c):
+    roof_loco_dieselmain(c, ramp=GREEN)
+
+
+def roof_loco_electric_rear(c):
+    roof_loco_dieselmain(c, lambda y: 31 - y, ramp=GREEN)
+
+
+def tram_end(c, m):
+    """One driving platform of the tram; m maps a row counted from this end
+    to a row of the drawing, as in diesel_cab_end()."""
+    # the fender and the dash with its one big lamp
+    y0, y1 = span(m, 0, 3)
+    c.bevel(16, y0, 79, y1, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.rect(44, y0, 51, y1, STEEL_O)
+    c.rect(45, y0 + 1, 50, y1 - 1, STEEL[3])
+    y0, y1 = span(m, 4, 7)
+    c.bevel(12, y0, 83, y1, DMAROON[0], DMAROON[1], DMAROON[3], outline=DMAROON[4])
+    c.rect(13, m(5), 82, m(5), CREAM[1])
+    c.disc(47.5, (y0 + y1) / 2.0, 2.2, [WHITE, FIRE[0], (220, 200, 120)], outline=STEEL_O)
+    # the platform floor
+    y0, y1 = span(m, 8, 29)
+    c.rect(12, y0, 83, y1, PLANK_SEAM)
+    planks(c, 13, y0, 82, y1, seed=181)
+    # the dash sides, open behind them for the steps
+    for x0 in (12, 81):
+        a, b = span(m, 8, 13)
+        c.rect(x0, a, x0 + 2, b, DMAROON[4])
+        c.rect(x0 + 1, a, x0 + 1, b, DMAROON[1])
+    for x0 in (7, 84):
+        a, b = span(m, 15, 28)
+        c.rect(x0, a, x0 + 4, b, DARK)
+        tread(c, x0 + 1, a + 1, x0 + 3, b - 1, face=STEEL[3], lit=STEEL[2], dark=STEEL[4], seams=False)
+    # the controller with its brass handle, and the handbrake wheel
+    a, b = span(m, 10, 15)
+    c.shade(37, a + 1, 46, b + 2, 60)
+    c.bevel(36, a, 44, b, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    c.disc(40.5, (a + b) / 2.0, 1.8, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.line(41, m(12), 45, m(14), BRASS[0])
+    c.shade(55, a + 1, 62, b + 2, 50)
+    c.ring(57.5, (a + b) / 2.0, 3.2, BRASS[1])
+    c.ring(57.5, (a + b) / 2.0, 3.2, BRASS[4], a=90, width=0.6)
+    c.disc(57.5, (a + b) / 2.0, 1.2, [STEEL[0], STEEL[2]], flat=True)
+    # the bulkhead and the saloon door
+    y0, y1 = span(m, 30, 31)
+    c.rect(0, y0, 95, y1, DMAROON[4])
+    c.rect(1, m(30), 94, m(30), DMAROON[1])
+    c.rect(41, y0, 54, y1, STEEL[4])
+    c.rect(42, m(30), 53, m(30), STEEL[2])
+
+
+def loco_tram(c, with_roof=False):
+    """A town tram, 96 x 128: a driving platform at each end and a saloon
+    with a slatted floor between them. Its sides are the car's window edges."""
+    c.rect(11, 3, 84, 124, DARK)
+    c.rect(0, 30, 95, 97, DARK)
+    tram_end(c, lambda y: y)
+    tram_end(c, lambda y: 127 - y)
+    c.rect(0, 32, 95, 95, DMAROON[4])
+    c.rect(4, 32, 91, 95, PLANK_SEAM)
+    planks(c, 4, 32, 91, 95, seed=183)
+    # brass treads inside the two doors and a worn strip down the aisle
+    for y in (32, 95):
+        c.rect(41, y, 54, y, BRASS[1])
+    c.rect(43, 33, 52, 94, PLANK[0], 46)
+
+
+TRAM_ROOF = [(70, 66, 60), (150, 146, 134), (206, 202, 188), (226, 222, 208), (204, 200, 186),
+             (170, 166, 154), (130, 126, 116), (92, 88, 82), (58, 54, 50)]
+
+
+def roof_loco_tram(c, m=lambda y: y):
+    """The canopy over a driving platform, with the destination board."""
+    y0, y1 = span(m, 2, 31)
+    c.bands(8, y0, 87, y1, across(TRAM_ROOF, 80), along=True)
+    c.frame(8, y0, 87, y1, DMAROON[4])
+    for x, y in ((8, 2), (9, 2), (8, 3), (87, 2), (86, 2), (87, 3)):
+        c.clear(x, m(y), x, m(y))
+    for x, y in ((9, 3), (86, 3)):
+        c.put(x, m(y), DMAROON[4])
+    c.rect(9, m(31), 86, m(31), DMAROON[3])
+    a, b = span(m, 5, 9)
+    c.bevel(33, a, 62, b, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+    for x in range(37, 60, 3):
+        c.put(x, (a + b) // 2, DARK)
+
+
+def roof_loco_tram_rear(c):
+    roof_loco_tram(c, lambda y: 31 - y)
+
+
+def roof_loco_tram_mid(c):
+    """The saloon roof, one section: a walkway down the middle and a bow
+    collector across it."""
+    c.bands(0, 0, 95, 31, across(TRAM_ROOF), along=True)
+    for x in (0, 95):
+        c.rect(x, 0, x, 31, DMAROON[4])
+    for x in (1, 94):
+        c.rect(x, 0, x, 31, DMAROON[2])
+    c.shade(0, 31, 95, 31, 50)
+    walkway(c, 42, 53, 0, 31)
+    c.shade(29, 12, 69, 21, 50)
+    for x in (38, 57):
+        c.disc(x + 0.5, 18.5, 2.0, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    c.line(39, 18, 47, 11, STEEL[1])
+    c.line(57, 18, 48, 11, STEEL[1])
+    c.bevel(27, 8, 68, 11, COPPER[0], COPPER[1], COPPER[3], outline=DARK)
+    for x in (25, 69):
+        c.rect(x, 9, x + 1, 10, STEEL[2])
+
+
+def catenary_arm_run(c, y0, y1):
+    c.rect(14, y0, 17, y1, STEEL_O)
+    c.rect(15, y0, 16, y1, STEEL[1])
+    c.rect(15, y0, 15, y1, STEEL[0])
+
+
+def catenary_mast(c):
+    """An overhead line mast seen from above, its arm reaching north."""
+    c.shade(11, 13, 23, 25, 70)
+    c.bevel(9, 11, 22, 24, (176, 174, 166), (140, 138, 132), (98, 96, 92), outline=(52, 50, 48))
+    catenary_arm_run(c, 0, 14)
+    c.bevel(11, 13, 20, 22, STEEL[0], STEEL[1], STEEL[3], outline=STEEL_O)
+    c.line(12, 14, 19, 21, STEEL[3])
+    c.line(19, 14, 12, 21, STEEL[3])
+    c.put(15, 17, STEEL[0])
+    c.put(16, 18, STEEL[4])
+
+
+def catenary_arm(c):
+    catenary_arm_run(c, 0, 31)
+    c.line(13, 31, 15, 20, STEEL[3])
+    c.rect(13, 12, 18, 13, STEEL[3])
+
+
+def catenary_hanger(c):
+    """The end of the arm over the rails: two insulators and the wire clamp."""
+    catenary_arm_run(c, 20, 31)
+    c.disc(15.5, 24.5, 2.2, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    c.disc(15.5, 19.5, 2.2, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    c.rect(14, 14, 17, 17, STEEL_O)
+    c.rect(15, 15, 16, 16, BRASS[1])
+
+
+def catenary_wire(c):
+    """One tile of contact wire, running east-west for an arm that reaches
+    north, with a dropper clamp from the carrying wire above it."""
+    c.rect(0, 15, 31, 15, COPPER[1])
+    c.rect(0, 16, 31, 16, COPPER[3])
+    for x in (7, 23):
+        c.rect(x, 14, x + 1, 17, STEEL_O)
+        c.put(x, 15, STEEL[1])
 
 
 def loco_armored(c, with_roof=False):
@@ -3092,7 +3308,7 @@ def row_offset(c, seg, rows=4):
 LOCOS = {'steam': (loco_steam, roof_loco_steam), 'diesel': (loco_diesel, roof_loco_diesel),
          'armored': (loco_armored, roof_loco_armored)}
 # name -> (sections, the section under the cab roof); the others are 4 long
-LOCO_ROWS = {'mainline': (6, 5), 'diesel': (4, 0), 'dieselmain': (6, 0)}
+LOCO_ROWS = {'mainline': (6, 5), 'diesel': (4, 0), 'dieselmain': (6, 0), 'electric': (4, 0), 'tram': (4, 0)}
 
 
 def loco_rows(name):
@@ -3103,7 +3319,9 @@ def loco_states():
     out = {}
     for name, (body, roof) in list(LOCOS.items()) + [('tender', (loco_tender, None)),
                                                      ('mainline', (loco_mainline, roof_loco_steam)),
-                                                     ('dieselmain', (loco_dieselmain, roof_loco_dieselmain))]:
+                                                     ('dieselmain', (loco_dieselmain, roof_loco_dieselmain)),
+                                                     ('electric', (loco_electric, roof_loco_electric)),
+                                                     ('tram', (loco_tram, roof_loco_tram))]:
         rows = loco_rows(name)[0]
         imgs = directions(body, w=96, h=rows * 32, order=HEADING)
         for seg in range(rows):
@@ -3118,6 +3336,12 @@ def loco_states():
     rimgs = directions(roof_loco_dieselmain_rear, w=96, h=32, order=HEADING)
     for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
         out['roof_loco_dieselmain_b%s' % cn] = slice_car(rimgs, 1, 0, col)
+    # electric traction: the rear cabs, and the tram's saloon sections
+    for state, draw in (('roof_loco_electric_b', roof_loco_electric_rear), ('roof_loco_tram_b', roof_loco_tram_rear),
+                        ('roof_loco_tram_m', roof_loco_tram_mid)):
+        rimgs = directions(draw, w=96, h=32, order=HEADING)
+        for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
+            out[state + cn] = slice_car(rimgs, 1, 0, col)
     return out
 
 
@@ -3358,6 +3582,9 @@ def platform_states():
     states['livestock_ramp'] = directions(livestock_ramp, order=HEADING)
     states['handcar'] = directions(handcar, order=HEADING)
     states['chaldron'] = directions(chaldron, order=HEADING)
+    for name, draw in (('catenary_mast', catenary_mast), ('catenary_arm', catenary_arm),
+                       ('catenary_hanger', catenary_hanger), ('catenary_wire', catenary_wire)):
+        states[name] = directions(draw, order=HEADING)
     states['track_worn'] = track_wear(False)
     states['track_bad'] = track_wear(True)
     states['hand_lamp'] = hand_lamp(None)
@@ -3502,8 +3729,9 @@ def render_loco(states, name, heading, roof=True):
             im.alpha_composite(states['loco_%s_%d%s' % (name, seg + 1, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
             if roof and seg == cab:
                 im.alpha_composite(states['roof_loco_%s_%s' % (name, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
-            if roof and name == 'dieselmain' and seg == rows - 1:
-                im.alpha_composite(states['roof_loco_dieselmain_b%s' % cn][DIR_INDEX[heading]], (x * 32, y * 32))
+            row = 'b' if seg == rows - 1 else 'm'
+            if roof and seg != cab and 'roof_loco_%s_%s%s' % (name, row, cn) in states:
+                im.alpha_composite(states['roof_loco_%s_%s%s' % (name, row, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
     return im
 
 
@@ -3806,6 +4034,41 @@ def write_previews(out, states, gun):
         im.alpha_composite(states['chaldron'][DIR_INDEX['E']], ((1 + i) * 32, 3 * 32))
     im.alpha_composite(states['chaldron'][DIR_INDEX['N']], (6 * 32, 3 * 32))
     big(im, 4).save(out / 'early-rails.png')
+
+    # electric traction: a tram and an electric locomotive heading east under
+    # the wire of two masts, then both heading north with their roofs off and
+    # on (the tram's sides are the window edges of its saloon)
+    def tram(heading, roof):
+        car = render_loco(states, 'tram', heading, roof=roof)
+        if not roof:
+            left, right = LEFT_OF[heading], OPPOSITE[LEFT_OF[heading]]
+            for seg in (1, 2):
+                for col in (L, R):
+                    x, y = tile_pos(heading, seg, col, 4)
+                    car.alpha_composite(states['edge_window'][DIR_INDEX[left if col == L else right]], (x * 32, y * 32))
+        return car
+    im = ground(18 * 32, 11 * 32, seed=31)
+    lay_track(im, y_tile=3)
+    im.alpha_composite(tram('E', True), (1 * 32, 2 * 32))
+    im.alpha_composite(render_loco(states, 'electric', 'E'), (10 * 32, 2 * 32))
+    for mx in (4, 13):
+        for k in range(-4, 5):
+            im.alpha_composite(states['catenary_wire'][DIR_INDEX['S']], ((mx + k) * 32, 3 * 32))
+    for mx in (4, 13):
+        im.alpha_composite(states['catenary_mast'][DIR_INDEX['S']], (mx * 32, 1 * 32))
+        im.alpha_composite(states['catenary_arm'][DIR_INDEX['S']], (mx * 32, 2 * 32))
+        im.alpha_composite(states['catenary_hanger'][DIR_INDEX['S']], (mx * 32, 3 * 32))
+    for i, car in enumerate((render_loco(states, 'electric', 'N', roof=False), render_loco(states, 'electric', 'N'),
+                             tram('N', False), tram('N', True))):
+        im.alpha_composite(car, (16 + i * 112, 6 * 32 + 16))
+    # the mast from the other side, its arm reaching north over a second track
+    for k in range(15, 18):
+        im.alpha_composite(read_dmi(RAILS)['rails'][DIR_INDEX['E']], (k * 32, 7 * 32))
+        im.alpha_composite(states['catenary_wire'][DIR_INDEX['N']], (k * 32, 7 * 32))
+    im.alpha_composite(states['catenary_mast'][DIR_INDEX['N']], (16 * 32, 9 * 32))
+    im.alpha_composite(states['catenary_arm'][DIR_INDEX['N']], (16 * 32, 8 * 32))
+    im.alpha_composite(states['catenary_hanger'][DIR_INDEX['N']], (16 * 32, 7 * 32))
+    big(im, 3).save(out / 'electric.png')
 
     # the snowplough: on the front of an engine heading east and north, and
     # the plough standing on the ground

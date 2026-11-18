@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 344
+	maxx = 356
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -19,6 +19,12 @@
 /mob/living/human/platform_rider/New()
 	return
 /mob/living/human/platform_rider/update_icons()
+	return
+// A rider made without a species cannot take burns; the fixture counts them.
+/mob/living/human/platform_rider/var/probe_burn = 0
+/mob/living/human/platform_rider/adjustBurnLoss(var/amount)
+	probe_burn += amount
+/mob/living/human/platform_rider/Weaken(amount)
 	return
 
 var/global/list/platform_probe_checks = list()
@@ -3091,6 +3097,147 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/item/stack/rail_lengths/lifted = back ? back.pry() : null
 	platform_check("early/wooden_rails_come_up_as_wood", loose && istype(lifted, /obj/item/stack/rail_lengths/wooden) && lifted.color == WOODEN_RAIL_COLOR && back && !back.railed && !back.wooden)
 
+/obj/structure/engine/train_probe_engine
+	maxpower = 200
+	on = TRUE
+	anchored = TRUE
+/obj/structure/engine/train_probe_engine/New()
+	return
+
+/proc/platform_electric_run()
+	for (var/ty in 2 to 25)
+		platform_track(350, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	// A small grid: an engine on a cable, and a transformer on that cable.
+	release_cable_autolink()
+	var/obj/structure/cable/C = new(platform_turf(354, 8))
+	var/obj/structure/engine/train_probe_engine/G = new(platform_turf(354, 8))
+	C.connections |= G
+	G.connections |= C
+	var/obj/structure/power_point/transformer/T = new(platform_turf(354, 8))
+	T.anchored = TRUE
+	T.attach_cable()
+
+	// Masts stand two tiles from the rails and turn their arm to the track.
+	var/obj/structure/train_catenary/M1 = new(platform_turf(352, 6))
+	var/obj/structure/train_catenary/M2 = new(platform_turf(352, 15))
+	var/obj/structure/train_catenary/stray = new(platform_turf(353, 22))
+	var/refused = !stray.put_up() && !stray.anchored && !(stray in train_catenary)
+	var/up = M1.put_up() && M2.put_up() && M1.dir == WEST && M1.wire_turf() == platform_turf(350, 6)
+	var/hung = M1.covers(platform_turf(350, 2)) && M1.covers(platform_turf(350, 10)) && !M1.covers(platform_turf(350, 11)) && M1.covers(platform_turf(351, 6)) && !M1.covers(platform_turf(352, 6))
+	var/along = train_catenary_over(platform_turf(350, 19)) == M2 && !train_catenary_over(platform_turf(350, 20))
+	var/art = ("catenary_mast" in states) && ("catenary_arm" in states) && ("catenary_hanger" in states) && ("catenary_wire" in states)
+	platform_check("electric/masts_hang_the_wire", refused && up && hung && along && art && M1.wire_images && M1.wire_images.len == 11 && !stray.wire_images)
+
+	// Masts whose wires meet are one line, live when one is fed from the grid.
+	var/datum/catenary_net/N = M1.network()
+	var/one_line = N && M2.network() == N && N.masts.len == 2
+	var/list/fed = N.feeders()
+	var/live = N.energise() && M1.line_live()
+	var/idle_draw = C.currentflow
+	// A mast restored from a save joins its line again.
+	train_catenary -= M1
+	M1.net = null
+	M1.after_load()
+	platform_check("electric/line_is_fed_from_the_grid", one_line && M1.power_point == T && !M2.power_point && fed.len == 1 && fed[1] == M1 && live && idle_draw == 1 && (M1 in train_catenary) && M1.network() == M2.network() && findtext(M1.line_text(M1.network()), "The wire is live"))
+	N = M1.network()
+
+	// The electric locomotive: a cab at each end, a hood between, no fuel.
+	var/obj/structure/trains/locomotive/electric/E = platform_car("loco_electric", 350, 9, NORTH)
+	if (!istype(E))
+		platform_check("electric/locomotive_builds", FALSE)
+		return
+	var/list/body = platform_segments(E.connected)
+	var/obj/structure/trains/platform/hood = body[1]
+	var/obj/structure/trains/platform/rear = E.rear_cab()
+	var/loco_art = ("loco_electric_1c" in states) && ("loco_electric_4r" in states) && ("roof_loco_electric_l" in states) && ("roof_loco_electric_bc" in states)
+	platform_check("electric/locomotive_builds", body.len == 3 && !E.density && hood.density && rear && rear.seg_index == 4 && !rear.density && loco_art && E.roof_images && E.roof_images.len == 3 && rear.roof_images && rear.roof_images.len == 3 && !hood.roof_images && E.car_load_weight() + 3 * hood.car_load_weight() == 5 && !E.max_fuel && E.works_in_multiple() && E.has_deadman())
+
+	// Pantograph up: it draws from the grid through the line, by its throttle.
+	var/mob/living/human/platform_rider/driver = new(platform_turf(350, 9))
+	var/ready = isnull(E.start_problem())
+	E.on = TRUE
+	E.started(driver)
+	var/standing = E.line_live && C.currentflow == 6
+	E.throttle = 3
+	var/pulling = E.steam_factor() == 1 && C.currentflow == 156 && N.demand() == 155
+	E.refresh_consist()
+	platform_check("electric/draws_from_the_grid_by_its_throttle", ready && standing && pulling && E.cruise_speed() > 0 && findtext(E.state_text(), "taking"))
+
+	// It burns nothing as it runs, and passes from one mast's wire to the next.
+	var/ran = platform_step(E, 3)
+	platform_check("electric/runs_without_fuel", ran == 3 && E.y == 12 && E.fuel == 1 && E.on && E.line_check(TRUE) && train_catenary_over(E.loc) == M2 && E.fuel_per_tile(3, 10) == 0)
+
+	// Off the end of the wire it has no power and lets go of the grid.
+	ran = platform_step(E, 8)
+	var/lost = !E.line_check(TRUE) && E.steam_factor() == 0 && E.cruise_speed() == 0 && E.on
+	platform_check("electric/coasts_off_the_wire", ran == 8 && E.y == 20 && lost && C.currentflow == 1 && findtext(E.start_problem(), "no overhead line") && findtext(E.no_power_text(), "overhead line"))
+	E.on = FALSE
+	E.throttle = 0
+	E.stopped(driver)
+
+	// The tram: a platform at each end, a saloon with seats between, a roof
+	// over every section.
+	var/obj/structure/trains/locomotive/electric/tram/TR = platform_car("loco_tram", 350, 9, NORTH)
+	if (!istype(TR))
+		platform_check("electric/tram_builds", FALSE)
+		return
+	body = platform_segments(TR.connected)
+	var/roofs = TR.roof_images ? 1 : 0
+	var/seats = 0
+	var/windows = 0
+	var/walk_in = !TR.density
+	for (var/obj/structure/trains/platform/P in body)
+		if (P.roof_images && P.roof_images.len == 3)
+			roofs++
+		if (P.density)
+			walk_in = FALSE
+		for (var/turf/S in train_platform_tiles(P.loc, P.dir))
+			for (var/obj/structure/bed/chair/chair in S)
+				seats++
+		for (var/obj/structure/train_part/edge/W in P.deck_parts)
+			if (W.style == "window")
+				windows++
+	var/tram_art = ("loco_tram_2c" in states) && ("roof_loco_tram_ml" in states) && ("roof_loco_tram_bc" in states) && ("roof_loco_tram_c" in states)
+	rear = TR.rear_cab()
+	platform_check("electric/tram_builds", body.len == 3 && walk_in && roofs == 4 && seats == 4 && windows == 4 && tram_art && rear && rear.seg_index == 4 && TR.haul == 10 && TR.max_train_speed == 2 && TR.line_draw == 40)
+
+	// A grid that cannot carry the engine at full throttle refuses it, keeps
+	// the line live and takes it at a lower notch.
+	G.maxpower = 30
+	driver.loc = platform_turf(350, 9)
+	TR.on = TRUE
+	TR.started(driver)
+	var/idling = TR.line_live
+	TR.throttle = 3
+	var/too_much = TR.steam_factor() == 0 && N.live && C.currentflow == 1
+	TR.throttle = 1
+	platform_check("electric/overloaded_grid_refuses_the_engine", idling && too_much && TR.steam_factor() == 1 && C.currentflow > 15 && C.currentflow < 18)
+
+	// With the generator stopped the wire is dead.
+	G.on = FALSE
+	var/dead = !M1.line_live() && !TR.line_check(TRUE) && findtext(TR.start_problem(), "dead") && findtext(M1.line_text(N), "The wire is dead")
+	var/mob/living/human/platform_rider/rider = new(platform_turf(350, 8))
+	var/safe = !train_catenary_strike(rider, SOUTH)
+	platform_check("electric/dead_line", dead && safe)
+
+	// Somebody on a car roof under a live wire is struck; off the wire not.
+	G.on = TRUE
+	G.maxpower = 200
+	var/struck = train_catenary_strike(rider, SOUTH)
+	rider.loc = platform_turf(350, 22)
+	platform_check("electric/live_wire_strikes_a_roof_rider", struck && rider.probe_burn == 40 && !train_catenary_strike(rider, SOUTH) && rider.probe_burn == 40)
+
+	// A mast taken down takes its wire with it and lets go of the grid.
+	TR.on = FALSE
+	TR.throttle = 0
+	TR.stopped(driver)
+	M2.take_down()
+	var/datum/catenary_net/alone = M1.network()
+	var/down = !M2.anchored && !M2.wire_images && !train_catenary_over(platform_turf(350, 15)) && alone.masts.len == 1
+	qdel(M1)
+	platform_check("electric/mast_comes_down", down && !(M1 in train_catenary) && !(M1 in T.served) && !(M1 in C.connections) && !train_catenary_over(platform_turf(350, 6)))
+
 /proc/platform_stations_run()
 	for (var/ty in 2 to 25)
 		platform_track(290, ty, NORTH)
@@ -3352,6 +3499,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_trackwear_run()
 		platform_goods_run()
 		platform_early_run()
+		platform_electric_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
