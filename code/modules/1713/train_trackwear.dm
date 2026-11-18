@@ -138,7 +138,7 @@
 /obj/structure/trains/locomotive/proc/meet_track()
 	var/list/end = leading_end()
 	var/obj/structure/trains/lead = end[1]
-	var/obj/structure/rails/R = isturf(lead.loc) ? (locate(/obj/structure/rails) in lead.loc) : null
+	var/obj/structure/rails/R = isturf(lead.loc) ? rail_routing_at(lead.loc) : null
 	if (!R)
 		return FALSE
 	R.take_traffic(consist_weight, rail_speed)

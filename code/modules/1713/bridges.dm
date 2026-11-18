@@ -76,10 +76,9 @@
 	for (var/obj/covers/C in T)
 		if (!istype(C, /obj/covers/bridge))
 			return "Take \the [C] off the deck first."
-	if (locate(/obj/structure/rails) in T)
+	if (rail_at(T))
 		return "Take the railway track off the deck first."
-	var/bed_type = text2path("/obj/structure/rail_bed")
-	if (bed_type && (locate(bed_type) in T))
+	if (locate(/obj/structure/rail_bed) in T)
 		return "Take the railway sleepers off the deck first."
 	if (locate(/obj/structure/vehicleparts) in T)
 		return "Move the vehicle off the deck first."
@@ -92,9 +91,8 @@
 	var/turf/T = get_turf(src)
 	. = ..()
 	if (istype(T, /turf/floor/beach/water) && !bridge_deck_at_except(T, src))
-		var/bed_type = text2path("/obj/structure/rail_bed")
 		for (var/obj/structure/O in T)
-			if (istype(O, /obj/structure/rails) || (bed_type && istype(O, bed_type)))
+			if (istype(O, /obj/structure/rails) || istype(O, /obj/structure/rail_bed))
 				O.visible_message(SPAN_DANGER("\The [O] falls into the water!"))
 				qdel(O)
 

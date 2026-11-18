@@ -32,8 +32,16 @@ var/datum/map_stub/map = new
 	var/switched
 	var/sw_direction
 	var/turn_dir
+/obj/structure/rails/proc/exits()
+	return list(dir, turn(dir, 180))
 /obj/structure/rails/split/switcher
+/obj/structure/rails/split/switcher/proc/branch_turf()
+	return get_step(src, turn(dir, sw_direction == "right" ? -90 : 90))
 /obj/structure/rails/turn
+/obj/structure/rails/turn/exits()
+	return turn_dir ? list(turn(dir, 180), turn_dir) : list()
+/proc/rail_at(turf/T)
+	return T && (locate(/obj/structure/rails) in T)
 /obj/structure/trains/transport
 /obj/structure/trains/locomotive
 	var/fuel = 100

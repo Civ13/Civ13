@@ -14,52 +14,50 @@
 	var/switched = "forward"
 	var/turn_dir = null
 	var/sw_direction = "forward"
-	New()
-		..()
-		spawn(5)
+
+// Every rail laid or removed bumps rail_network_serial (rail_network.dm). The
+// icon waits a moment so a map's neighbouring switchers exist first.
+/obj/structure/rails/New()
+	..()
+	rail_network_serial++
+	spawn(5)
+		if (!QDELETED(src))
 			update_icon()
+
+/obj/structure/rails/Destroy()
+	rail_network_serial++
+	return ..()
+
+// The directions this piece of track leads to from its tile. Laying track
+// (track_laying.dm) and wear (train_trackwear.dm) read the shape from here.
+/obj/structure/rails/proc/exits()
+	return list(dir, OPPOSITE_DIR(dir))
+
+// Whether a train may enter this tile heading that way: a leg points back.
+/obj/structure/rails/proc/accepts(heading)
+	return (OPPOSITE_DIR(heading) in exits())
+
+// A plain tile beside a switcher draws the branch leaving it. Only the
+// switcher's hand and facing matter, not how it is set, so this is worked out
+// when the tile or a switcher beside it is laid, turned or taken up.
 /obj/structure/rails/regular/update_icon()
 	..()
-	if (dir == NORTH || dir == SOUTH)
-		for (var/obj/structure/rails/R in get_step(src, WEST))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == SOUTH)
-					icon_state = "rails_split1"
-					dir = R.dir
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == NORTH)
-					icon_state = "rails_split1"
-					dir = R.dir
-		for (var/obj/structure/rails/R in get_step(src, EAST))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == NORTH)
-					icon_state = "rails_split2"
-					dir = R.dir
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == SOUTH)
-					icon_state = "rails_split2"
-					dir = R.dir
-	else if (dir == EAST || dir == WEST)
-		for (var/obj/structure/rails/R in get_step(src, SOUTH))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == EAST)
-					icon_state = "rails_split2"
-					dir = OPPOSITE_DIR(R.dir)
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == WEST)
-					icon_state = "rails_split2"
-					dir = OPPOSITE_DIR(R.dir)
-		for (var/obj/structure/rails/R in get_step(src, NORTH))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == WEST)
-					icon_state = "rails_split1"
-					dir = OPPOSITE_DIR(R.dir)
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == EAST)
-					icon_state = "rails_split1"
-					dir = OPPOSITE_DIR(R.dir)
-	spawn(10)
-		update_icon()
+	icon_state = initial(icon_state)
+	var/vertical = (dir == NORTH || dir == SOUTH)
+	if (!vertical && dir != EAST && dir != WEST)
+		return
+	// side: the neighbour's tile; then which switcher facing on that side,
+	// for a left and a right hand, gives which half of the branch.
+	for (var/side in (vertical ? list(WEST, EAST) : list(SOUTH, NORTH)))
+		for (var/obj/structure/rails/split/switcher/S in get_step(src, side))
+			if (QDELETED(S))
+				continue
+			var/half = (side == WEST || side == NORTH) ? 1 : 2
+			var/left_facing = vertical ? (side == WEST ? SOUTH : NORTH) : (side == SOUTH ? EAST : WEST)
+			var/want = (S.sw_direction == "right") ? OPPOSITE_DIR(left_facing) : left_facing
+			if (S.dir == want)
+				icon_state = "rails_split[half]"
+				set_dir(vertical ? S.dir : OPPOSITE_DIR(S.dir))
 
 /obj/structure/rails/regular/horizontal/New()
 	..()
@@ -94,6 +92,10 @@
 		return
 	turn_dir = turn(dir, sw_direction == "right" ? -90 : 90)
 
+// A turn faces dir and leads back the way it faces and off to turn_dir.
+/obj/structure/rails/turn/exits()
+	return turn_dir ? list(OPPOSITE_DIR(dir), turn_dir) : list()
+
 /obj/structure/rails/split/switcher
 	icon_state = "rails_split_f_left"
 	name = "rail switcher"
@@ -114,58 +116,72 @@
 	else
 		icon_state = "rails_split_s_[sw_direction]"
 
+// The tile beside the switcher that its split route shifts a car onto.
+/obj/structure/rails/split/switcher/proc/branch_turf()
+	return get_step(src, turn(dir, sw_direction == "right" ? -90 : 90))
+
+// Plain track beside a switcher draws its branch (regular/update_icon), so it
+// is redrawn whenever a switcher comes, turns or goes.
+/obj/structure/rails/split/switcher/proc/redraw_neighbours()
+	for (var/d in cardinal)
+		for (var/obj/structure/rails/regular/R in get_step(src, d))
+			R.update_icon()
+
+/obj/structure/rails/split/switcher/New()
+	..()
+	spawn(5)
+		if (!QDELETED(src))
+			redraw_neighbours()
+
+/obj/structure/rails/split/switcher/set_dir(new_dir)
+	. = ..()
+	if (isturf(loc))
+		redraw_neighbours()
+
+/obj/structure/rails/split/switcher/Destroy()
+	var/turf/T = loc
+	. = ..()
+	if (isturf(T))
+		for (var/d in cardinal)
+			for (var/obj/structure/rails/regular/R in get_step(T, d))
+				R.update_icon()
+
 /obj/structure/rails/rotate
 	name = "rotating rail"
 	desc = "A rotating platform that allows wagons to switch direction."
 	icon_state = "rails_rotate"
+
+// A rotator takes a wagon from any side.
+/obj/structure/rails/rotate/exits()
+	return cardinal.Copy()
+
+// Turns the platform and the wagons on it by angle (90 is a quarter to the left).
+/obj/structure/rails/rotate/proc/rotate_platform(mob/user, angle)
+	if (!istype(user, /mob/living/human))
+		return FALSE
+	set_dir(turn(dir, angle))
+	for (var/obj/structure/trains/TR in loc)
+		TR.dir = dir
+	playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+	to_chat(user, "You rotate the platform to the [dir2text(dir)].")
+	return TRUE
 
 /obj/structure/rails/rotate/verb/rotate_left()
 	set name = "Rotate Left"
 	set category = null
 	set desc = "Rotate the platform"
 	set src in oview(1)
-
-	if (!istype(usr, /mob/living/human))
-		return
-
-	set_dir(turn(dir, -90))
-	for (var/obj/structure/trains/TR in loc)
-		TR.dir = dir
-	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	to_chat(usr, "You rotate the platform to the left.")
-	return
+	rotate_platform(usr, 90)
 
 /obj/structure/rails/rotate/verb/rotate_right()
 	set name = "Rotate Right"
 	set category = null
 	set desc = "Rotate the platform"
 	set src in oview(1)
-
-	if (!istype(usr, /mob/living/human))
-		return
-
-	set_dir(turn(dir, 90))
-	for (var/obj/structure/trains/TR in loc)
-		TR.dir = dir
-	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	to_chat(usr, "You rotate the platform to the right.")
-	return
+	rotate_platform(usr, -90)
 
 /obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
-	switch(dir)
-		if (1)
-			dir = 8
-		if (2)
-			dir = 4
-		if (4)
-			dir = 1
-		if (8)
-			dir = 2
-	for (var/obj/structure/trains/TR in loc)
-		TR.dir = dir
-	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	to_chat(user, "You rotate the platform to the [dir2text(dir)].")
-	return
+	rotate_platform(user, 90)
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
 	name = "rail switch lever"
@@ -473,6 +489,19 @@
 // car's Move() does not drag its follower as well.
 var/global/train_solo_move = FALSE
 
+// The rail that routes a car standing on T: a switcher or a curve outranks
+// the plain rail some maps lay under it.
+/proc/rail_routing_at(turf/T)
+	if (!T)
+		return null
+	var/obj/structure/rails/found = null
+	for (var/obj/structure/rails/R in T)
+		if (istype(R, /obj/structure/rails/split/switcher))
+			return R
+		if (!found || istype(R, /obj/structure/rails/turn))
+			found = R
+	return found
+
 // Where a car standing here goes next when it rolls towards mdir:
 // list(target turf, facing after the step), or null at the end of the track.
 /obj/structure/trains/proc/rail_target(mdir)
@@ -480,29 +509,22 @@ var/global/train_solo_move = FALSE
 	if (!get_turf(src) || !tgtt)
 		return null
 	var/fdir = mdir
-	var/obj/structure/rails/RT = null
-	for (var/obj/structure/rails/RTT in loc)
-		RT = RTT
-	if (RT && istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split" && RT.dir == mdir && rail_canmove(mdir))
-		if (RT.sw_direction == "left")
-			tgtt = get_step(RT, turn(RT.dir, 90))
-		else if (RT.sw_direction == "right")
-			tgtt = get_step(RT, turn(RT.dir, -90))
-	else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
-		if (RT.turn_dir == mdir)
-			fdir = RT.dir
-		else if (RT.turn_dir == OPPOSITE_DIR(mdir))
-			fdir = OPPOSITE_DIR(RT.dir)
-		else if (RT.dir == mdir)
-			fdir = RT.turn_dir
-		else if (RT.dir == OPPOSITE_DIR(mdir))
-			fdir = OPPOSITE_DIR(RT.turn_dir)
+	var/obj/structure/rails/RT = rail_routing_at(get_turf(src))
+	if (istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split" && RT.dir == mdir)
+		// The split route shifts the car onto the parallel track beside;
+		// with no rail there it runs straight on.
+		var/obj/structure/rails/split/switcher/SW = RT
+		var/turf/branch = SW.branch_turf()
+		if (rail_at(branch))
+			return list(branch, fdir)
+	else if (istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
+		var/list/legs = RT.exits()
+		// A car that came in along one leg leaves by the other; one that
+		// stopped on the curve while its train backed already heads out along
+		// a leg, and runs straight on.
+		if (!(mdir in legs) && (OPPOSITE_DIR(mdir) in legs))
+			fdir = (legs[1] == OPPOSITE_DIR(mdir)) ? legs[2] : legs[1]
 		tgtt = get_step(RT, fdir)
-		// A car that stopped on the curve while its train backed already heads
-		// out along one of the curve's legs: it runs straight on.
-		if (fdir != mdir && !rail_canmove(fdir) && rail_canmove(mdir))
-			fdir = mdir
-			tgtt = get_step(RT, mdir)
 	if (!rail_canmove(fdir))
 		return null
 	return list(tgtt, fdir)
@@ -1619,23 +1641,9 @@ var/global/train_solo_move = FALSE
 /obj/structure/rails/wide
 	name = "rails"
 	desc = "Rails used by trains."
-	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "middle" //Thanks жендос#0897 for the icons!
-	anchored = TRUE
-	density = FALSE
-	opacity = FALSE
-	not_movable = TRUE
-	not_disassemblable = FALSE
-	layer = 2.5
 
 /obj/structure/rails/corner
 	name = "rails"
 	desc = "Rails used by trains."
-	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "corner" //Thanks жендос#0897 for the icons!
-	anchored = TRUE
-	density = FALSE
-	opacity = FALSE
-	not_movable = TRUE
-	not_disassemblable = FALSE
-	layer = 2.5
