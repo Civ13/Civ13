@@ -43,8 +43,11 @@ printer are not ported.
 - `core/variables.dm` - circuit variables and their getter and setter nodes.
 - `components/` - math, list, string, entity and delay components. Each has a
   `desc`, which is what the editor's info button shows.
-- `shell/compact_remote.dm` - `/obj/item/compact_remote`, a handheld remote with
-  a built-in circuit.
+- `shell/circuit_shell.dm` - `/obj/item/circuit_shell`, the base item that holds
+  one integrated circuit. An integrated circuit goes in by hand and a screwdriver
+  takes it out.
+- `shell/compact_remote.dm` - `/obj/item/circuit_shell/compact_remote`, a handheld
+  remote that adds its signal source to the integrated circuit inserted into it.
 - Constants are in `code/__defines/wiremod.dm`.
 
 ## How it is put together
@@ -111,11 +114,14 @@ read and written through getter and setter nodes. Lists come from String Split
 and pass between the list components. Pressing a signal input in the editor
 fires it by hand.
 
-The compact remote has a built-in signal source: use it in hand to fire its
-circuit, Alt-click it to edit the circuit. Its User output is the presser as an
-entity; wired into a text input it gives their visible name. The Direction
-component gives the compass direction and distance to an entity within
-`CIRCUIT_DIRECTION_RANGE` tiles of the circuit.
+A compact remote is empty when crafted. Use an integrated circuit on it to
+insert one; the remote attaches its own signal source to that circuit. Use the
+remote in hand to fire the circuit and Alt-click it to edit the circuit. Use a
+screwdriver on the remote to take the circuit out again; the signal source stays
+with the remote and is attached when another circuit goes in. Its User output is
+the presser as an entity; wired into a text input it gives their visible name.
+The Direction component gives the compass direction and distance to an entity
+within `CIRCUIT_DIRECTION_RANGE` tiles of the circuit.
 
 Not ported from tgstation's general components, and why: Speech, Sound and
 Light act on the world for everyone nearby and need a decision on spam and
@@ -142,10 +148,12 @@ than the remote; To String is covered by wiring any value into a text input.
 
 ## Availability
 
-`/obj/item/integrated_circuit` and `/obj/item/compact_remote` are crafted from
-electronics (`config/crafting/material_recipes_global.txt`). Components are
-made only in a circuit's editor; `code/game/mob/crafting_atlas_admin.dm` keeps
-`/obj/item/circuit_component` out of the public Crafting Atlas.
+`/obj/item/integrated_circuit` and `/obj/item/circuit_shell/compact_remote` are
+crafted from electronics (`config/crafting/material_recipes_global.txt`). A
+crafted remote ships empty and needs an integrated circuit inserted before it
+can send signals. Components are made only in a circuit's editor;
+`code/game/mob/crafting_atlas_admin.dm` keeps `/obj/item/circuit_component` out
+of the public Crafting Atlas.
 
 ## Tests
 

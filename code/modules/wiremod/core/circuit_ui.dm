@@ -118,14 +118,14 @@
 		qdel(prototype)
 	return catalog
 
-// A living, conscious, unrestrained user holding the circuit (or the remote it
-// is built into), or standing next to it while it lies on the ground.
+// A living, conscious, unrestrained user holding the circuit (or the shell it
+// is installed in), or standing next to it while it lies on the ground.
 /datum/topic_state/wiremod_circuit/can_use_topic(var/src_object, var/mob/user)
 	if(!istype(user, /mob/living) || user.stat || user.restrained() || !istype(src_object, /obj/item/integrated_circuit))
 		return STATUS_CLOSE
 	var/obj/item/integrated_circuit/circuit = src_object
 	var/obj/item/holder = circuit
-	if(istype(circuit.loc, /obj/item/compact_remote))
+	if(istype(circuit.loc, /obj/item/circuit_shell))
 		holder = circuit.loc
 	if(holder.loc == user || (isturf(holder.loc) && holder.Adjacent(user)))
 		return STATUS_INTERACTIVE
@@ -329,12 +329,12 @@
 		set_manual_input(input_port, params["input"], user)
 
 // What a player marks when pressing an entity input: the item in a hand other
-// than the circuit (or the remote it is built into), or the player with nothing
+// than the circuit (or the shell it is installed in), or the player with nothing
 // else in hand. tgstation marks a thing with a multitool first; this is the
 // Civ13 equivalent. A request never names the thing, so a player can only mark
 // what they hold or themselves.
 /obj/item/integrated_circuit/proc/marked_entity(mob/user)
-	var/obj/item/own = istype(loc, /obj/item/compact_remote) ? loc : src
+	var/obj/item/own = istype(loc, /obj/item/circuit_shell) ? loc : src
 	for(var/obj/item/held in list(user.get_active_hand(), user.get_inactive_hand()))
 		if(held != own && held != src)
 			return held

@@ -13,6 +13,8 @@
 #define ITEM_SIZE_TINY 1
 #define ITEM_SIZE_SMALL 2
 #define TIMER_STOPPABLE 8
+#define TOOL_SCREWDRIVER (1<<4)
+#define I_HARM "harm"
 #define to_chat(target, message) probe_chat(target, message)
 #define CONSCIOUS 0
 #define DEAD 2
@@ -211,15 +213,27 @@ var/datum/probe_globals/GLOB = new
 
 /obj/item
 	var/w_class = 3
+	var/tool_flags = 0
 
 /obj/item/proc/attack_self(mob/user)
 	return
+
+// As code/_helpers/tools.dm: is_tool() reads the tool quality flags.
+/obj/item/screwdriver
+	tool_flags = TOOL_SCREWDRIVER
+
+/proc/is_tool(atom/A, quality)
+	if(!istype(A, /obj/item))
+		return FALSE
+	var/obj/item/tool = A
+	return (tool.tool_flags & quality) == quality
 
 /mob
 	var/stat = CONSCIOUS
 	var/is_restrained = FALSE
 	var/obj/item/held
 	var/drops = 0
+	var/a_intent = "help"
 
 /mob/proc/restrained()
 	return is_restrained
@@ -247,6 +261,13 @@ var/datum/probe_globals/GLOB = new
 	return other_hand
 
 /mob/living
+
+// As code/game/mob/inventory.dm: move the held item without MOVED_DROP staging.
+/mob/living/proc/transfer_held_item_to(obj/item/I, atom/target)
+	if(!I || I.loc != src || !target)
+		return FALSE
+	return I.forceMove(target)
+
 /mob/observer
 
 /turf/probe_floor
@@ -661,7 +682,7 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, math, 2, 4)
 	var/atoms_before = length(world.contents)
 	// Only listed component types can be created.
-	for(var/bad_type in list("/mob/living", "/obj/item/compact_remote", "/obj/item/circuit_component", "/obj/item/circuit_component/variable/getter", "/obj/item/circuit_component/operator", "/obj/item/circuit_component/arithmetic", "/obj/item/circuit_component/compact_remote", "/datum", "", 5, "/obj/item/circuit_component/operator/arithmetic/"))
+	for(var/bad_type in list("/mob/living", "/obj/item/circuit_shell/compact_remote", "/obj/item/circuit_component", "/obj/item/circuit_component/variable/getter", "/obj/item/circuit_component/operator", "/obj/item/circuit_component/arithmetic", "/obj/item/circuit_component/compact_remote", "/datum", "", 5, "/obj/item/circuit_component/operator/arithmetic/"))
 		act(circuit, user, "print_component", list("component_to_print" = bad_type, "rel_x" = 0, "rel_y" = 0))
 	check(length(circuit.attached_components) == 2 && length(world.contents) == atoms_before, "print_component only creates listed component types")
 	// Component and port numbers.
@@ -778,13 +799,38 @@ var/datum/probe_globals/GLOB = new
 	qdel(loose)
 	qdel(circuit)
 
+// A shell takes one circuit by hand, keeps its own parts when a screwdriver
+// takes the circuit out, and deletes the circuit with it.
+/proc/test_shell_circuit(mob/living/user)
+	var/obj/item/circuit_shell/compact_remote/remote = new(user)
+	check(isnull(remote.circuit) && remote.remote_input && isnull(remote.remote_input.parent), "a new remote is empty and keeps its unconnected button")
+	var/obj/item/integrated_circuit/first = new(user)
+	remote.attackby(first, user)
+	check(remote.circuit == first && first.loc == remote && length(first.attached_components) == 1 && first.attached_components[1] == remote.remote_input, "a circuit inserted into the remote receives its button")
+	var/obj/item/integrated_circuit/second = new(user)
+	remote.attackby(second, user)
+	check(remote.circuit == first && second.loc != remote, "a shell holds one circuit at a time")
+	var/obj/item/screwdriver/driver = new(user)
+	remote.attackby(driver, user)
+	check(isnull(remote.circuit) && first.loc != remote && !first.gc_destroyed, "a screwdriver takes the circuit out")
+	check(remote.remote_input && isnull(remote.remote_input.parent) && !remote.remote_input.gc_destroyed, "the remote's button stays with the shell")
+	remote.attackby(first, user)
+	check(remote.circuit == first && length(first.attached_components) == 1 && first.attached_components[1] == remote.remote_input, "the same button is attached when the circuit goes back in")
+	var/obj/item/circuit_component/compact_remote/source = remote.remote_input
+	qdel(remote)
+	check(first.gc_destroyed && source.gc_destroyed, "deleting the remote deletes the inserted circuit and its button")
+	qdel(second)
+	qdel(driver)
+
 // Builds, uses and deletes a remote, and returns the refs of everything it
 // owned. The objects are only reachable from this proc's frame afterwards, so
 // once it returns nothing but a leak can keep them.
 /proc/remote_lifecycle(mob/living/user)
-	var/obj/item/compact_remote/remote = new(user)
-	var/obj/item/integrated_circuit/circuit = remote.circuit
-	check(circuit && circuit.loc == remote && length(circuit.attached_components) == 1, "a compact remote holds a circuit with its signal source")
+	var/obj/item/circuit_shell/compact_remote/remote = new(user)
+	check(isnull(remote.circuit), "a compact remote starts without an integrated circuit")
+	var/obj/item/integrated_circuit/circuit = new(user)
+	remote.attackby(circuit, user)
+	check(circuit.loc == remote && remote.circuit == circuit && length(circuit.attached_components) == 1, "inserting an integrated circuit gives the remote its signal source")
 	var/obj/item/circuit_component/compact_remote/source = remote.remote_input
 	act(circuit, user, "detach_component", list("component_id" = 1))
 	check(length(circuit.attached_components) == 1 && !source.gc_destroyed, "the remote's signal source cannot be removed")
@@ -1387,7 +1433,7 @@ var/datum/probe_globals/GLOB = new
 	world.OpenPort("none")
 	spawn(0)
 		var/mob/living/user = new(locate(1, 1, 1))
-		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components))
+		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_shell_circuit, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components))
 			try
 				call(test)(user)
 			catch(var/exception/failure)

@@ -333,7 +333,7 @@ class WiremodSource(unittest.TestCase):
         # The topic state is asked in that one place; every way in goes through it.
         self.assertEqual('\n'.join(self.sources.values()).count('wiremod_circuit_state.can_use_topic('), 1)
         self.assertIn('if(!can_be_edited_by(user))', proc_body(self.ui, '/obj/item/integrated_circuit/ui_interact('))
-        self.assertIn('circuit?.can_be_edited_by(user)', read(MODULE / 'shell/compact_remote.dm'))
+        self.assertIn('circuit?.can_be_edited_by(user)', read(MODULE / 'shell/circuit_shell.dm'))
         self.assertIn('istext(action) ? ui_action_table()[action] : null', handler)
         # Components are named by a checked number, ports by a checked position,
         # variables by text only; no handler indexes a list with a raw field.
@@ -545,7 +545,8 @@ class WiremodSource(unittest.TestCase):
     def test_circuits_stay_out_of_persistent_saves(self):
         for path, owner in ((MODULE / 'core/integrated_circuit.dm', '/obj/item/integrated_circuit\n'),
                             (MODULE / 'core/component.dm', '/obj/item/circuit_component\n'),
-                            (MODULE / 'shell/compact_remote.dm', '/obj/item/compact_remote\n'),
+                            (MODULE / 'shell/circuit_shell.dm', '/obj/item/circuit_shell\n'),
+                            (MODULE / 'shell/compact_remote.dm', '/obj/item/circuit_shell/compact_remote\n'),
                             (MODULE / 'core/port.dm', '/datum/port\n'),
                             (MODULE / 'core/variables.dm', '/datum/circuit_variable\n')):
             self.assertIn('should_save = FALSE', proc_body(read(path), owner), owner)
@@ -604,10 +605,28 @@ class WiremodSource(unittest.TestCase):
         self.assertIn('AGPL-3.0', third_party)
 
 
+    def test_shells_start_empty_and_take_one_circuit(self):
+        shell = read(MODULE / 'shell/circuit_shell.dm')
+        remote = read(MODULE / 'shell/compact_remote.dm')
+        # A shell starts empty and takes one integrated circuit by hand.
+        self.assertIn('var/obj/item/integrated_circuit/circuit', shell)
+        self.assertIn('istype(item, /obj/item/integrated_circuit)', shell)
+        self.assertIn('if(circuit)', shell)
+        self.assertIn('insert_circuit(item, user)', shell)
+        # A screwdriver takes the circuit out; the shell keeps its own parts.
+        self.assertIn('is_tool(item, TOOL_SCREWDRIVER)', shell)
+        self.assertIn('remove_circuit(user)', shell)
+        self.assertIn('circuit_uninstalled(removed, user)', shell)
+        # The remote never makes a circuit of its own and starts empty.
+        self.assertNotIn('new /obj/item/integrated_circuit', remote)
+        self.assertIn('remote_input = new /obj/item/circuit_component/compact_remote(src)', remote)
+        self.assertIn('installed.add_component(remote_input, user)', remote)
+        self.assertIn('removed.remove_component(remote_input, src)', remote)
+
     def test_players_craft_the_circuit_and_remote(self):
         recipes = read(ROOT / 'config/crafting/material_recipes_global.txt')
         admin_only = read(ROOT / 'code/game/mob/crafting_atlas_admin.dm')
-        for path in ('/obj/item/integrated_circuit', '/obj/item/compact_remote'):
+        for path in ('/obj/item/integrated_circuit', '/obj/item/circuit_shell/compact_remote'):
             line = re.search(r'^RECIPE: /material/electronics/,[^,]+,' + re.escape(path) + r',.*$', recipes, re.M)
             self.assertIsNotNone(line, path)
             self.assertNotIn('//', line.group(0))
