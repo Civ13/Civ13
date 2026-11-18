@@ -562,6 +562,8 @@ var/global/train_step_plain = FALSE
 	overlays.Cut()
 	if (wrecked)
 		overlays += image(icon, "wreck", layer = layer + 0.01)
+	else if (derailed)
+		overlays += image(icon, "derailed", layer = layer + 0.01)
 	if (!isturf(loc))
 		return
 	// A bulk load shows as a heap on every section (train_freight.dm).
@@ -704,6 +706,8 @@ var/global/train_step_plain = FALSE
 	to_chat(user, "This is section [seg_index] of [car_length()]. A crowbar takes an empty, uncoupled car apart into a kit.")
 	if (wrecked)
 		to_chat(user, SPAN_WARNING("It is off the rails. Weld it back together before the train can move."))
+	else if (derailed && !unit_engine())
+		to_chat(user, SPAN_WARNING("It is off the rails. Lift it back on with a rerailing jack before the train can move."))
 	else if (health < initial(health))
 		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
 	if (braced)
@@ -995,7 +999,7 @@ var/global/train_step_plain = FALSE
 	if (!has_platform)
 		return null
 	for (var/obj/structure/trains/platform/P in cars)
-		if (P.wrecked || P.braced)
+		if (P.wrecked || P.braced || P.derailed)
 			return P
 	var/turf/next_loc = target
 	var/next_dir = heading

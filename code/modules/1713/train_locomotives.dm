@@ -449,6 +449,8 @@
 		to_chat(user, SPAN_WARNING("It is wrecked. A welding tool will get it running again."))
 	else if (health < initial(health))
 		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
+	if (derailed)
+		to_chat(user, SPAN_WARNING("It is off the rails. It takes the crane of a crane car and a rerailing jack to put it back."))
 	if (has_stations())
 		to_chat(user, "It is worked from its cab: the driver's stand on the right, the firebox door in the middle, the fireman's side on the left.")
 	else if (rear_cab())

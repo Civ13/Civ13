@@ -1134,7 +1134,7 @@ var/global/train_solo_move = FALSE
 	return throttle / LOCO_NOTCHES
 
 /obj/structure/trains/locomotive/proc/engine_disabled()
-	return broken_down
+	return broken_down || derailed
 
 // 0 when the engine pulls its rated load or more; below 1 it is overloaded.
 /obj/structure/trains/locomotive/proc/pull_ratio()
@@ -1200,11 +1200,21 @@ var/global/train_solo_move = FALSE
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
+			var/obj/structure/trains/lead = (train_way() > 0) ? drive_head : drive_tail
+			if (!lead || QDELETED(lead))
+				lead = src
+			var/lead_dir = lead.dir
+			var/turf/lead_from = lead.loc
 			var/moved = (train_way() > 0) ? process_rail_forward() : process_rail_reverse()
 			if (QDELETED(src))
 				return
 			if (!moved)
+				// Off the end of the rails at speed (train_derail.dm).
+				overrun_check()
 				throttle = 0
+				break
+			// Too fast round a curve or through a switch (train_derail.dm).
+			if (curve_check(lead, lead_dir, lead_from))
 				break
 			steps++
 			since++
