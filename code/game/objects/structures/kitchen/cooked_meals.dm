@@ -51,9 +51,10 @@
 			return 0
 	if (!starch || !vegetables.len || nutrition < 4 || volume > reagents.maximum_volume)
 		return 0
-	// Seawater cooking leaves brine-strength salt: salty, not seasoned.
+	// Seasoning is salt added to fresh water. Any salt water in the pot makes
+	// the dish salty instead, and adding more salt can't fix that.
 	var/salt = reagents.get_reagent_amount("sodiumchloride")
-	if (protein && vegetables.len >= 2 && salt >= 0.5 && !reagents_are_brine(reagents, fullness))
+	if (protein && vegetables.len >= 2 && salt >= 0.5 && !salt_water && !reagents_are_brine(reagents, fullness))
 		return 3
 	return protein ? 2 : 1
 
@@ -124,6 +125,7 @@
 	if (!meal_portions)
 		state = STATE_EMPTY
 		food_toxin_origin = null
+		salt_water = FALSE
 		meal_quality = 0
 		meal_has_meat = FALSE
 		stew_ticks = 0

@@ -20,6 +20,7 @@
 	var/stew_nutriment = 0
 	var/stew_protein = 0
 	var/water = 0
+	var/salt_water = FALSE // Salt came in with the water: the dish is salty, never seasoned.
 	var/stew_ticks = 0
 	var/list/stew_nutriment_desc = list()
 	not_movable = FALSE
@@ -65,6 +66,8 @@
 			continue
 		reagents.add_reagent(D.id, amount, D.data)
 		I.reagents.remove_reagent(D.id, amount)
+		if (D.id == "sodiumchloride")
+			salt_water = TRUE
 
 /obj/structure/pot/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
@@ -174,6 +177,7 @@
 			state = STATE_EMPTY
 			food_toxin_origin = null
 			reagents.clear_reagents()
+			salt_water = FALSE
 			stew_desc = ""
 			stew_nutriment_desc.Cut()
 			stew_nutriment = 0
@@ -268,7 +272,7 @@
 
 /obj/structure/pot/examine(mob/user)
 	..(user)
-	to_chat(user, "Prepare meal: full water, potato or corn, and carrot, cabbage or tomato. Add meat or beans for hearty stew; two different vegetables and half a unit of salt make it seasoned. Boiling kills germs in the water, but seawater leaves its salt in the pot: the meal comes out too salty to count as seasoned and makes you thirsty. Keep a lit fire within one tile during preparation. Three bowls share the actual ingredients.")
+	to_chat(user, "Prepare meal: full water, potato or corn, and carrot, cabbage or tomato. Add meat or beans for hearty stew; two different vegetables and half a unit of salt make it seasoned. Boiling kills germs in the water, but salt water leaves its salt in the pot: the meal comes out salty, never seasoned, even with salt added, and makes you thirsty. Keep a lit fire within one tile during preparation. Three bowls share the actual ingredients.")
 	if (meal_portions)
 		to_chat(user, "Prepared meal quality [meal_quality]/3: [meal_portions] portions remain.")
 	if (state == STATE_STEWING && stew_desc)
@@ -306,6 +310,7 @@
 		food_toxin_origin = null
 		// Tipping the pot out pours away its water and anything dissolved in it.
 		reagents.clear_reagents()
+		salt_water = FALSE
 		fullness = 0
 		if (meal_portions)
 			meal_portions = 0
