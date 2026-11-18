@@ -114,6 +114,18 @@ class MapCopyContract(unittest.TestCase):
         js = proc(self.notes, "/obj/item/weapon/cartography_map/proc/map_marks_js")
         self.assertNotIn('N["t"]', js)
 
+    def test_ships_and_vehicles_are_not_drawn(self):
+        # Ships, built hulls and moving hulls are drawn as the sea or ground
+        # under them, before any cover or turf of theirs is read.
+        terrain = proc(self.map, "/proc/cartography_terrain")
+        self.assertLess(terrain.index("cartography_craft_ground(T)"), terrain.index("for (var/obj/covers/C in T)"))
+        ground = proc(self.map, "/proc/cartography_craft_ground")
+        self.assertIn("vessel_at(T)", ground)
+        self.assertIn('L.originals["[T.x],[T.y]"]', ground)
+        self.assertIn("/datum/craft_body/built", ground)
+        self.assertIn("TB.open_turf", ground)
+        self.assertIn("return T.type", ground)
+
     def test_included(self):
         dme = read("civ13.dme")
         self.assertLess(dme.index("items\\cartography.dm"), dme.index("items\\cartography_notes.dm"))
