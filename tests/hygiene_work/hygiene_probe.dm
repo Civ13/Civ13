@@ -218,6 +218,15 @@ var/hw_runtime_error = FALSE
 	H.wash_body_part("l_leg")
 	H.wash_body_part("chest")
 	hw_check(H.hygiene < HYGIENE_LEVEL_NORMAL && findtext(H.hygiene_feeling(), "fairly clean"), "washing every part with water no longer feels a bit dirty ([H.hygiene], [H.hygiene_feeling()])")
+	hw_check(H.hygiene == SPONGE_BATH_MAX, "washing every part counts as a sponge bath ([H.hygiene])")
+	H.washed_parts = null
+	H.hygiene = 40
+	H.wash_body_part("l_hand")
+	H.wash_body_part("l_leg")
+	hw_check(H.hygiene < HYGIENE_LEVEL_DIRTY, "a filthy body stays filthy part way through ([H.hygiene])")
+	H.wash_body_part("chest")
+	hw_check(H.hygiene == SPONGE_BATH_MAX && findtext(H.hygiene_feeling(), "fairly clean"), "a filthy body washed head to foot is no longer filthy ([H.hygiene])")
+	H.hygiene = SPONGE_BATH_MAX
 	H.washed_parts = null
 	var/obj/item/clothing/under/shirt = new(H)
 	shirt.body_parts_covered = UPPER_TORSO
