@@ -288,7 +288,8 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'sword_sheaths': {'files': ('tests/sword_sheaths/test_unlock.py',),
         # material_recipes_global.txt and research_node.dm already select every suite.
-        'paths': ('tests/sword_sheaths/',
+        'paths': ('tests/sword_sheaths/', 'code/modules/research_tree/book_research.dm',
+                  'code/modules/research_tree/research_bench.dm',
                   'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm')},
     'katana_sheath': {'files': ('tests/katana_sheath/test_sheath.py',),
         'paths': ('tests/katana_sheath/', 'code/game/objects/items/clothing/under/accessories/sheaths.dm',
