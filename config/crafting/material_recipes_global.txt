@@ -2404,6 +2404,7 @@ RECIPE: /material/wood/soft/,mining cart,/obj/structure/trains/storage/miningcar
 RECIPE: /material/wood/,raft,/obj/structure/vehicle/raft,10,180,1,1,vehicle parts,22,0,0,8,null
 RECIPE: /material/wood/,dugout log,/obj/structure/dugout_log,12,200,1,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/wood/,paddle,/obj/item/weapon/paddle,2,40,0,1,vehicle parts,0,0,0,8,null
+RECIPE: /material/wood/,log rollers,/obj/item/boat_rollers,3,40,0,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/wood/,hand pump fire engine,/obj/structure/fire_pump,20,200,1,1,logistics,20,0,0,8,null
 
 RECIPE: /material/wood/soft/,carriage,/obj/structure/vehicle/carriage,50,180,1,1,vehicle parts,22,0,0,8,null
@@ -2655,6 +2656,7 @@ RECIPE: /material/wood/soft/,nucleus box,/obj/item/nucleus_box,3,90,0,1,tools,0,
 RECIPE: /material/wood/soft/,weir stakes,/obj/item/weapon/trap_kit/weir,6,120,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,dugout log,/obj/structure/dugout_log,12,200,1,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/wood/soft/,paddle,/obj/item/weapon/paddle,2,40,0,1,vehicle parts,0,0,0,8,null
+RECIPE: /material/wood/soft/,log rollers,/obj/item/boat_rollers,3,40,0,1,vehicle parts,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,wearable sign,/obj/item/clothing/accessory/wearable_sign,2.5,55,0,1,tools,0,0,0,8,null
 
