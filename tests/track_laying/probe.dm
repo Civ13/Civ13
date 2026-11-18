@@ -134,6 +134,13 @@ var/global/track_probe_runtime_error = FALSE
 	R = B.spike()
 	track_probe_check("respike/curve", istype(R, /obj/structure/rails/turn) && track_probe_dirs(9, 3) == "south+west")
 
+	// Worn track keeps its wear through pulling the spikes and spiking again.
+	var/obj/structure/rails/WR = track_probe_finish(28, 9, NORTH)
+	WR.wear = 85
+	var/obj/structure/rail_bed/WB = WR.pry_apart()
+	var/obj/structure/rails/WS = WB.spike()
+	track_probe_check("wear/kept_through_respike", WS && WS.wear == 85 && WS.wear_state() == 3)
+
 	// Nothing comes apart under a wagon.
 	R = track_probe_finish(31, 2, NORTH)
 	new /obj/structure/trains(track_probe_turf(31, 2))

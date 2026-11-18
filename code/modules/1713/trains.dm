@@ -24,9 +24,10 @@
 		if (!QDELETED(src))
 			update_icon()
 
+// Bumped once the rail has left its tile, so nothing caches it still there.
 /obj/structure/rails/Destroy()
+	. = ..()
 	rail_network_serial++
-	return ..()
 
 // The directions this piece of track leads to from its tile. Laying track
 // (track_laying.dm) and train routing (rail_target) read the shape from here.

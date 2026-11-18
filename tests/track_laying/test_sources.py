@@ -28,8 +28,9 @@ class TrackLayingSourceTests(unittest.TestCase):
 
     def test_parts_need_the_rail_research(self):
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
-        for path in ('/obj/item/stack/rail_lengths', '/obj/item/stack/rail_sleepers'):
-            self.assertIn('"%s" = "rail_steam"' % path, nodes)
+        self.assertIn('"/obj/item/stack/rail_lengths" = "rail_steam"', nodes)
+        # Sleepers come earlier, with the wooden wagonway (train_early.dm).
+        self.assertIn('"/obj/item/stack/rail_sleepers" = "wagons_ships"', nodes)
         self.assertNotIn('"/obj/structure/rails/regular" = "rail_steam"', nodes)
 
     def test_unfinished_track_is_not_rail(self):
