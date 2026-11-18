@@ -705,11 +705,17 @@ of `bridges.dm`.
 - **Crossing boards** (`/obj/structure/train_crossing_boards`, 2 wood): laid
   on a rail tile where a road crosses. They change nothing for trains.
 - **Crossing gate** (`/obj/structure/train_lineside/gate`, 4 wood): stands on
-  the road tile beside the line; its `dir` points at the rails and a wrench
-  turns it. Gates within `TRAIN_GATE_REACH` (4) tiles are one crossing and
+  the road two tiles from the rails, like a signal, so the side of a wide
+  car passes inside it; its `dir` points at the rails and a wrench turns it.
+  A shut gate on the tile next to the rails is a solid object in the path
+  of a three-wide car. Gates within `TRAIN_GATE_REACH` (4) tiles are one crossing and
   swing together (`set_shut()`): shut across the road they are dense, open
   they are not. They do not shut on anyone or anything solid standing in
   them (`shut_problem()`). By hand they take 2 seconds.
+- Track fixtures stay put under a passing deck (`train_track_fixture()`):
+  ash pits, drop pits, crossing boards, lineside posts and gates, buffer
+  stops, levers, frames, token instruments, coal stages, sand bins and
+  water cranes are never carried along as cargo.
 - A gate is a lineside post: one gate of each crossing tells a cab coming
   up to it how the gates stand, and counts a train that runs over the
   crossing with them open to the road.
