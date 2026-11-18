@@ -126,6 +126,27 @@ var/global/weather_storm_count = 0
 			return list(-1, 0)
 	return list(1, 0)
 
+// Distance backwards along a nonzero wind vector until the whole bounding
+// oval is outside one map edge. Choosing the nearer exit avoids overshooting
+// the first boundary for diagonal winds; cardinal inputs keep their old starts.
+// The vector need not be normalized. Callers supply an aim inside the map.
+/proc/weather_upwind_distance(wind_x, wind_y, aim_x, aim_y, radius_x, radius_y, width, height)
+	var/back_x = null
+	var/back_y = null
+	if (wind_x > 0)
+		back_x = (aim_x + radius_x) / wind_x
+	else if (wind_x < 0)
+		back_x = (width - aim_x + radius_x) / -wind_x
+	if (wind_y > 0)
+		back_y = (aim_y + radius_y) / wind_y
+	else if (wind_y < 0)
+		back_y = (height - aim_y + radius_y) / -wind_y
+	if (isnull(back_x))
+		return isnull(back_y) ? 0 : back_y
+	if (isnull(back_y))
+		return back_x
+	return min(back_x, back_y)
+
 // Tiles a decisecond: a tile every 8 seconds in a calm, every 2.5 in a gale.
 /proc/weather_wind_speed()
 	return 0.0125 + 0.007 * (map ? map.windspeedvar : 1)
@@ -189,14 +210,8 @@ var/global/weather_storm_count = 0
 	var/back = 0
 	if (!isnull(arrive_in))
 		back = max(S.radius_x, S.radius_y) + arrive_in * speed
-	else if (wind[1] > 0)
-		back = aim_x + S.radius_x
-	else if (wind[1] < 0)
-		back = world.maxx - aim_x + S.radius_x
-	else if (wind[2] > 0)
-		back = aim_y + S.radius_y
 	else
-		back = world.maxy - aim_y + S.radius_y
+		back = weather_upwind_distance(wind[1], wind[2], aim_x, aim_y, S.radius_x, S.radius_y, world.maxx, world.maxy)
 	S.origin_x = aim_x - wind[1] * back
 	S.origin_y = aim_y - wind[2] * back
 	S.origin_time = world.time

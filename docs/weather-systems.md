@@ -178,6 +178,15 @@ areas and checks the per-tile answers, rolls, called-down events, pinned zone
 weather, wind veering and retirement. It has no client, so it does not check
 what is drawn.
 
+## Ingress geometry foundation
+
+`weather_upwind_distance()` computes the backward offset to the nearest map
+edge beyond the storm's bounding oval. It preserves current cardinal spawn
+coordinates and accepts diagonal vectors for future use. Gameplay still selects
+only cardinal winds; scheduled arrival timing, wind veering, sailing and vane
+art are unchanged. The weather probe includes cardinal parity and diagonal
+near-corner boundary checks.
+
 ## Not yet done
 
 Moisture gained over water and lost over high ground, wind in eight
