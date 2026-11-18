@@ -55,6 +55,7 @@ REVIEWED = {
     'strain_time': 'var/tmp strain clock of a hand holding a car door (vehicle_door_hold.dm), never saved',
     'last_hair_growth_time': 'var/tmp last hair-growth tick on humans (human_life.dm), never saved',
     'human_pull_tile_at': 'var/tmp walk-pace stamp of free-movement pulling on humans (subtile_movement.dm), never saved',
+    'harm_time': 'var/tmp stamp of the last starvation or predator harm on animals (wild_feeding.dm), never saved',
     'human_pull_tile_pace': 'var/tmp tile duration (a world.time difference) of free-movement pulling on humans, never saved',
 }
 

@@ -1130,6 +1130,7 @@
 #include "code\modules\ecology\mouser_cats.dm"
 #include "code\modules\ecology\pollution.dm"
 #include "code\modules\ecology\protected_cultivation.dm"
+#include "code\modules\ecology\wild_feeding.dm"
 #include "code\modules\ecology\wild_herbs.dm"
 #include "code\modules\ecology\willow_trees.dm"
 #include "code\modules\nomad_raids\nomad_raid.dm"

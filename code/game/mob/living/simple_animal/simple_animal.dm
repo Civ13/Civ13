@@ -191,6 +191,7 @@
 
 		if (simplehunger <= 0)
 			visible_message("\The [src] is starving!")
+			note_harm("starvation")
 			adjustBruteLoss(round(max(1,maxHealth/10)))
 			simplehunger = 60
 			updatehealth()
@@ -756,6 +757,7 @@
 	walk(src,0) // stops movement
 	unregisterSpawner()
 	delayed_decay(src,3000)
+	wildlife_deaths.record(src)
 
 	if (istype(src, /mob/living/simple_animal/hostile) && lastattacker && ishuman(lastattacker))
 		var/mob/living/human/H = lastattacker

@@ -540,6 +540,7 @@ var/global/list/ecology_species_table = null
 		last_report = "paused for a world save"
 		return 0
 	sample_activity()
+	wildlife_deaths.tick()
 	if (world.time - started_at < ECOLOGY_WARMUP)
 		last_report = "warming up activity history"
 		return 0
@@ -780,6 +781,7 @@ var/global/ecology_world_unwatched = FALSE
 	to_chat(src, SPAN_NOTICE("Ecology spawning is on. Spawned so far: [ecology_spawner.spawned_total]. Last cycle: [ecology_spawner.last_report]."))
 	if (flora_regrowth && flora_regrowth.enabled)
 		to_chat(src, SPAN_NOTICE("Flora regrowth: [flora_regrowth.last_report]."))
+	to_chat(src, SPAN_NOTICE("Wildlife deaths: [wildlife_deaths.summary()] this hour so far. Last hourly report: [wildlife_deaths.last_report]."))
 
 #undef ECOLOGY_CELL_SIZE
 #undef ECOLOGY_CYCLE

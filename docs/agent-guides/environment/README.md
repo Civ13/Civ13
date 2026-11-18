@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-18: wild animal feeding and death tally -->
+Grazing no longer turns grass to dirt: turf/floor grazed_until (tmp) holds it
+for 20 minutes (docs/wild-animal-feeding.md). Seed eaters forage pasture and
+grazers/seed eaters browse wild plants (wild_browse_plant). simple_animal
+death() feeds wildlife_deaths; note_harm() marks starvation/predator causes.
+Hourly "Wildlife:" game-log line. Test: tests/animal_combat/feeding.dm.
+
 <!-- 2026-11-12: moving weather systems -->
 Random weather is moving systems (docs/weather-systems.md), not one global value.
 Ask weather_at / weather_look_at / weather_intensity_at / weather_heat_at for a

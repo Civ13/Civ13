@@ -141,15 +141,13 @@
 /mob/living/simple_animal/proc/check_food()
 	// Phase 1: Try to eat food already in close range
 	if (herbivore)
+		// Grazed grass grows back (wild_feeding.dm) instead of turning to dirt.
 		if (prob(33))
-			for (var/turf/floor/grass/GT in range(1, src))
+			for (var/turf/floor/GT in range(1, src))
+				if (!GT.pasture_ready())
+					continue
 				npc_subtile_stop_continuous_walk()
-				GT.grassamt -= 1
-				if (GT.grassamt <= 0)
-					if (istype(GT, /turf/floor/grass/jungle))
-						GT.ChangeTurf(/turf/floor/dirt/jungledirt)
-					else
-						GT.ChangeTurf(/turf/floor/dirt)
+				GT.graze_down()
 				visible_message("\The [src] eats some grass.")
 				finish_eating(550)
 				return
@@ -261,9 +259,15 @@
 					qdel(FD)
 				return
 
+	// Wild seed eaters and grazers forage pasture, shrubs and desert plants.
+	if (forage_wild())
+		return
+
 	// Phase 2: No food in close range, walk toward distant food
 	if (herbivore)
-		for (var/turf/floor/grass/GT in range(6, src))
+		for (var/turf/floor/GT in range(6, src))
+			if (!GT.pasture_ready())
+				continue
 			smart_step_towards(GT)
 			return
 
@@ -273,6 +277,9 @@
 				continue
 			smart_step_towards(PL)
 			return
+
+	if (seek_wild_forage())
+		return
 
 	if (carnivore)
 		for (var/mob/living/ML in range(9, src))
