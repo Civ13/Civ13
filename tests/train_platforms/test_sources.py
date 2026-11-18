@@ -663,6 +663,33 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('derailed', states)
         self.assertIn('rerail_jack', states)
 
+    def test_stations_whistles_and_lamps(self):
+        stations = (ROOT / 'code/modules/1713/train_stations.dm').read_text(encoding='utf-8')
+        signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_stations.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the night rule is counted with the train, not every step
+        self.assertEqual(TRAINS.count('night_factor()'), 1)
+        self.assertIn('\tlead_factor = leading_factor(cars) * night_factor()\n', TRAINS)
+        self.assertEqual(TRAINS.count('set_light(lamp_range)'), 2)
+        self.assertNotIn('set_light(2)', TRAINS)
+        self.assertIn('if ("Sound the whistle", "Sound the horn")', TRAINS)
+        # a name board speaks both ways
+        self.assertIn('if (!S.speaks_to(heading) || !isturf(S.loc))', signals)
+        conductor = (ROOT / 'code/modules/1713/train_conductor.dm').read_text(encoding='utf-8')
+        self.assertIn('heading += train_tail_lamp_text(cars)', conductor)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, stations)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for path, recipe, state in (
+                ('/obj/item/train_lamp', '/material/iron/,hand lamp,/obj/item/train_lamp,2,', 'hand_lamp'),
+                ('/obj/structure/train_lineside/station', '/material/wood/,station name board,/obj/structure/train_lineside/station,4,', 'station_board')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+            self.assertIn('icon_state = "%s"' % state, stations)
+            self.assertIn(state, states)
+        for shade in ('white', 'red', 'green'):
+            self.assertIn('hand_lamp_' + shade, states)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])

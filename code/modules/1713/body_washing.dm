@@ -19,6 +19,9 @@
 // washed since. A part washed stays marked clean until cleanliness falls 25
 // below what it was after that wash. Skin under clothes shows as covered,
 // since washing there cleans the clothes; undress to wash it.
+// Once no part is left needing a wash, the whole body counts as washed: plain
+// water lifts cleanliness to a sponge bath's 175 at least, so a full wash is
+// never still filthy (too filthy to sleep, or the filthy mood).
 // Wounds: water halves the germs in the part's open wounds and in the part
 // itself while it is not yet infected. Soap in the washer's other hand
 // disinfects the wounds and clears those germs. An infection already set in
@@ -97,6 +100,7 @@
 		else if (hygiene < SPONGE_BATH_MAX)
 			raise_hygiene(min(hygiene + WASH_PART_HYGIENE, SPONGE_BATH_MAX))
 		LAZYSET(washed_parts, E.limb_name, hygiene)
+		check_whole_body_washed()
 	update_icons()
 	return TRUE
 
@@ -106,6 +110,20 @@
 	var/obj/item/organ/external/E = get_organ(zone)
 	if (E && !E.is_stump())
 		LAZYSET(washed_parts, E.limb_name, hygiene)
+		check_whole_body_washed()
+
+// With every part washed, cleanliness reaches a sponge bath's level at least,
+// and every part is marked washed at that level.
+/mob/living/human/proc/check_whole_body_washed()
+	if (hygiene >= SPONGE_BATH_MAX || !length(organs))
+		return
+	for (var/obj/item/organ/external/E in organs)
+		if (part_dirt_status(E) != "")
+			return
+	raise_hygiene(SPONGE_BATH_MAX)
+	for (var/obj/item/organ/external/E in organs)
+		if (!E.is_stump())
+			LAZYSET(washed_parts, E.limb_name, hygiene)
 
 // A whole-body wash (Bathe, a sponge bath) cleans every bare part, even when
 // it leaves cleanliness short of clean.

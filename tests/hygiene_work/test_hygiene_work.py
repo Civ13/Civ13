@@ -104,6 +104,9 @@ class BodyWashingTest(unittest.TestCase):
         self.assertIn("fairly clean", feeling)
         self.assertIn("under your clothes", feeling)
         self.assertIn("if (H.next_dirty_zone())", needs)
+        wash = read("code/modules/1713/body_washing.dm")
+        self.assertIn("raise_hygiene(SPONGE_BATH_MAX)", wash.split("proc/check_whole_body_washed()", 1)[1])
+        self.assertIn("if (hygiene < HYGIENE_LEVEL_DIRTY)", read("code/game/mob/living/carbon/human/human_helpers.dm"))
 
     def test_scripted_drinkers_target_the_mouth(self):
         self.assertIn('{"do": "click", "target": me, "zone": "mouth"}', read("tools/agent-control/autopilot.py"))

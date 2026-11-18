@@ -586,6 +586,32 @@ tokens tell the crew what to do, and mark who did not.
   whether `carries_token()` holds: the token is in a pocket, in a hand or on
   the floor of an engine of the train. Passing without it is seen and counted.
 
+## Stations and warnings
+
+Code: `code/modules/1713/train_stations.dm`. Tests: the `stations/` checks of
+`tests/train_platforms`.
+
+- **Station name board** (`/obj/structure/train_lineside/station`, 4 wood),
+  named with a pen (`set_station()`). It is a lineside post that
+  `speaks_to()` both directions: `sighting()` tells `train_riders()`,
+  everybody aboard, where the train is coming into.
+- **Whistle and bell.** The driver's stand has "Sound the whistle" (the horn
+  on a diesel, `whistle_name()`), "Ring the bell" and the headlamp.
+  `sound_whistle()` needs the engine running with steam, and tells conscious
+  players up to forty tiles away who cannot see the engine which way it is.
+- **Headlamp and the dark.** `refresh_consist()` multiplies `lead_factor` by
+  `night_factor()`: at Night with no lit `headlamp` on the engine that leads,
+  and no hand lamp showing white on the leading car, the train runs blind at
+  half speed. The leading car's `lamp_range` (5 with the headlamp, else 2) is
+  the light it shows while it moves.
+- **Hand lamp** (`/obj/item/train_lamp`, 2 iron) turns through white, red and
+  green (`set_shade()`), kept in `train_lamps`. `train_lamp_on()` finds one on
+  a car's tiles, held or set down. Red on the last car is the tail lamp the
+  guard's journal reports (`train_tail_lamp_text()`).
+
+Raised platforms were not built: decks are walked onto from the ground, so a
+platform is any floor laid beside the track.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:

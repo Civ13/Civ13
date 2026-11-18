@@ -1131,6 +1131,45 @@ def signal_wire():
     return [c.image()]
 
 
+def station_board():
+    """A station name board: a long white board on two posts."""
+    c = Canvas(32, 32)
+    c.shade(3, 29, 29, 30, 60)
+    for x in (5, 25):
+        c.rect(x - 1, 14, x + 2, 29, WALNUT[3])
+        c.rect(x, 14, x + 1, 28, WALNUT[1])
+        c.rect(x, 14, x, 28, WALNUT[0])
+    c.bevel(1, 5, 30, 15, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+    c.frame(3, 7, 28, 13, BLACK[3])
+    # a row of painted letters, too small to read
+    for i, w in enumerate((2, 1, 2, 2, 1, 2, 1)):
+        x = 6 + i * 3
+        c.rect(x, 9, x + w - 1, 11, BLACK[4])
+        if i % 2:
+            c.put(x, 10, CREAM[0])
+    return [c.image()]
+
+
+def hand_lamp(shade):
+    """A railway hand lamp: a tin body, a bull's-eye lens and a wire handle."""
+    c = Canvas(32, 32)
+    c.shade(9, 26, 23, 28, 60)
+    c.ring(15.5, 8.0, 4.4, STEEL[3], width=1.0)
+    c.clear(10, 9, 21, 14)
+    c.bevel(12, 9, 19, 11, BLACK[0], BLACK[1], BLACK[3], outline=BLACK[4])
+    c.bevel(10, 12, 21, 25, BLACK[0], BLACK[2], BLACK[3], outline=BLACK[4])
+    c.rect(11, 25, 20, 26, BLACK[4])
+    c.rect(14, 7, 17, 8, BLACK[2])
+    lens = {'white': (WHITE, (255, 244, 190), (236, 200, 110), (150, 110, 40)),
+            'red': ((255, 190, 170), RED[0], RED[1], RED[2]),
+            'green': ((200, 255, 200), (112, 214, 96), (52, 160, 60), (26, 96, 36))}.get(shade, (GLASS[1], GLASS[2], GLASS[3], GLASS[3]))
+    c.disc(15.5, 18.0, 4.2, list(lens), outline=DARK)
+    if shade:
+        c.ring(15.5, 18.0, 6.2, lens[1], width=0.8)
+        c.put(14, 16, WHITE)
+    return [c.image()]
+
+
 def guard_journal():
     """The guard's journal: a black cloth-bound book with a pencil in its loop."""
     c = Canvas(32, 32)
@@ -2985,6 +3024,11 @@ def platform_states():
     states['train_token'] = train_token()
     states['section_board'] = section_board()
     states['signal_wire'] = signal_wire()
+    states['station_board'] = station_board()
+    states['hand_lamp'] = hand_lamp(None)
+    states['hand_lamp_white'] = hand_lamp('white')
+    states['hand_lamp_red'] = hand_lamp('red')
+    states['hand_lamp_green'] = hand_lamp('green')
     states['plough_item'] = plough_item()
     states['tank_valve'] = tank_valve()
     states['ice_bunker'] = cold_chest('bunker', False)
@@ -3282,6 +3326,13 @@ def write_previews(out, states, gun):
     for i, name in enumerate(names):
         im.alpha_composite(states[name][0], (8 + i * 40, 8))
     big(im, 6).save(out / 'signals.png')
+
+    # stations and lamps
+    names = ('station_board', 'hand_lamp', 'hand_lamp_white', 'hand_lamp_red', 'hand_lamp_green')
+    im = ground(8 + len(names) * 40, 48, seed=23)
+    for i, name in enumerate(names):
+        im.alpha_composite(states[name][0], (8 + i * 40, 8))
+    big(im, 6).save(out / 'stations.png')
 
     # off the rails: a derailed boxcar, the same car rerailed, and the jack
     im = ground(2 * 104 + 8 + 56, 8 * 32 + 16, seed=19)
