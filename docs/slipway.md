@@ -76,10 +76,12 @@ bunkers, and the berth is free for the next keel.
   her crew register and everything on her deck. A vessel whose cells were not
   over open water (a flooded trench) is left as she is.
 - **Motor freighter** (`/datum/vessel/freighter`): a steel deck with a
-  wheelhouse at the stern and a ladder down to the hold. Below the waterline
-  are the cargo hold and, behind a bulkhead with a blast door, the engine room
-  with the bunker filling point (400 units of diesel or petroleum). Two flooded
-  compartments sink her.
-
-The freighter uses the vessel helm, chart, anchor, hops and saved state like
-the carrier: her hold below the waterline is not something a built hull has.
+  wheelhouse at the stern and a ladder down to the hold; below the waterline
+  the cargo hold and, behind a bulkhead with a blast door, the engine room.
+  The launch converts her the same way: steel floors
+  (`/obj/covers/steelplating`) and the wheelhouse as built metal walls on
+  deck, and her hold as a built hull's hold (`naval/hull_hold.dm`, 82 tiles
+  hollowed out of the rock, the bulkhead the rock left between hold and engine
+  room). The bunker filling point becomes a 5000cc diesel engine with a fuel
+  barrel (250 units of diesel), which makes full ahead. An old freighter's
+  bunker fuel goes into the barrel when she is converted after a load.

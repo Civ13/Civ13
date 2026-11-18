@@ -128,7 +128,8 @@
 	var/datum/craft_body/built/B = craft.body
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/upper = B.upper_tile_count()
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? " and [upper] of upper deck" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""]"
+	var/hold = B.lower_tile_count()
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? "[hold ? "," : " and"] [upper] of upper deck" : ""][hold ? " and [hold] of hold" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()

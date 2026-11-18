@@ -12,7 +12,8 @@
 // when it moves. A roof built over her deck has its walkable upper face on the
 // building level above (building_levels.dm); that upper deck sails with her,
 // found again at every move by position over her own tiles, so nothing about
-// it is saved and no field links one deck to the other.
+// it is saved and no field links one deck to the other. Her hold below the
+// waterline sails the same way (naval/hull_hold.dm).
 // ============================================================
 
 #define BUILT_HULL_MAX_TILES 200
@@ -96,10 +97,10 @@
 	for (var/turf/U in upper_cells())
 		.++
 
-// Everyone and everything aboard, on her deck and the deck above.
+// Everyone and everything aboard, on her deck, the deck above and her hold.
 /datum/craft_body/built/aboard()
 	. = ..()
-	for (var/turf/U in upper_cells())
+	for (var/turf/U in upper_cells() + lower_cells())
 		for (var/atom/movable/M in U)
 			if (M.loc != U || QDELETED(M))
 				continue
@@ -237,13 +238,38 @@
 				last_refusal = why
 				return null
 		upper_dest += UD
+	// Her hold must find rock or deep water below the tiles she moves to.
+	var/list/lower = lower_cells(mine)
+	var/list/lower_dest = list()
+	var/lz = lower_z()
+	var/list/lower_set = null
+	for (var/i = 1, i <= lower.len, i++)
+		var/turf/L = lower[i]
+		if (!L)
+			lower_dest += null
+			continue
+		if (!lower_set)
+			lower_set = list()
+			for (var/turf/O in lower)
+				lower_set[O] = TRUE
+		var/turf/D = dest[i]
+		var/turf/LD = locate(D.x, D.y, lz)
+		if (!LD || !lower_set[LD])
+			var/why = lower_tile_refusal(LD)
+			if (why)
+				last_refusal = why
+				return null
+		lower_dest += LD
 	var/upper_count = 0
 	for (var/turf/U in upper)
 		upper_count++
-	if (upper_count + offsets.len > BUILT_HULL_MAX_DECK_TILES)
-		last_refusal = "her decks are too large to sail: [offsets.len] tiles of hull and [upper_count] of upper deck, more than [BUILT_HULL_MAX_DECK_TILES] in all. Take down some of the roofs over her deck"
+	var/lower_count = 0
+	for (var/turf/L in lower)
+		lower_count++
+	if (upper_count + lower_count + offsets.len > BUILT_HULL_MAX_DECK_TILES)
+		last_refusal = "her decks are too large to sail: [offsets.len] tiles of hull, [upper_count] of upper deck and [lower_count] of hold, more than [BUILT_HULL_MAX_DECK_TILES] in all. Take down some of the roofs over her deck"
 		return null
-	return list(nx, ny, turned, dest, upper, upper_dest)
+	return list(nx, ny, turned, dest, upper, upper_dest, lower, lower_dest)
 
 /datum/craft_body/built/move_cells(x, y, heading)
 	var/list/P = plan(x, y, heading)
@@ -324,6 +350,21 @@
 						continue
 					riders += M
 			upper_cargo += list(riders)
+		// What stands in her hold, tile by tile.
+		var/list/lower_old = P[7]
+		var/list/lower_new = P[8]
+		var/list/lower_cargo = list()
+		for (var/i = 1, i <= lower_old.len, i++)
+			var/list/riders = list()
+			var/turf/L = lower_old[i]
+			if (L)
+				for (var/atom/movable/M in L)
+					if (M.loc != L || QDELETED(M))
+						continue
+					if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
+						continue
+					riders += M
+			lower_cargo += list(riders)
 		// A roof aboard makes the tiles under it indoors (roof_stuff.dm): the
 		// areas of her tiles sail with her, and the sea's come back behind.
 		var/list/old_area = null
@@ -349,8 +390,10 @@
 		var/list/everything = list()
 		for (var/list/riders in cargo)
 			everything += riders
-		for (var/list/riders in upper_cargo)
+		for (var/list/riders in upper_cargo + lower_cargo)
 			everything += riders
+		// The rock ahead of her hold is hollowed before anyone steps into it.
+		var/list/hold_origin = before_hold_move(lower_old, lower_new)
 		carry = craft_rigid_begin(everything)
 		for (var/i = 1, i <= old.len, i++)
 			var/turf/S = old[i]
@@ -381,6 +424,20 @@
 					if ((pass == 1) != (istype(M, /obj/covers) || istype(M, /obj/structure/multiz)))
 						continue
 					craft_step_move(M, D, D.x - S.x, D.y - S.y, gliding)
+		// The hold the same way, then the rock closes where it was.
+		for (var/pass = 1, pass <= 2, pass++)
+			for (var/i = 1, i <= lower_cargo.len, i++)
+				var/turf/S = lower_old[i]
+				var/turf/D = lower_new[i]
+				if (!S || !D || S == D)
+					continue
+				for (var/atom/movable/M in lower_cargo[i])
+					if (QDELETED(M) || M.loc != S)
+						continue
+					if ((pass == 1) != (istype(M, /obj/covers) || istype(M, /obj/structure/multiz)))
+						continue
+					craft_step_move(M, D, D.x - S.x, D.y - S.y, gliding)
+		after_hold_move(lower_old, lower_new, hold_origin)
 		if (old_area)
 			var/list/changed = list()
 			for (var/i = 1, i <= dest.len, i++)
@@ -414,7 +471,7 @@
 		dir = heading
 		set_offsets(P[3])
 		if (angle)
-			for (var/list/riders in cargo + upper_cargo)
+			for (var/list/riders in cargo + upper_cargo + lower_cargo)
 				for (var/atom/movable/M in riders)
 					if (!QDELETED(M))
 						M.craft_turned(craft, angle)
@@ -438,6 +495,14 @@
 				if (!S || !D || S == D)
 					continue
 				for (var/atom/movable/M in upper_cargo[i])
+					if (!QDELETED(M) && M.loc == D)
+						glide_swing(glide_was, M, D.x - S.x, D.y - S.y, shown)
+			for (var/i = 1, i <= lower_cargo.len, i++)
+				var/turf/S = lower_old[i]
+				var/turf/D = lower_new[i]
+				if (!S || !D || S == D)
+					continue
+				for (var/atom/movable/M in lower_cargo[i])
 					if (!QDELETED(M) && M.loc == D)
 						glide_swing(glide_was, M, D.x - S.x, D.y - S.y, shown)
 			glide_rest(shown)
