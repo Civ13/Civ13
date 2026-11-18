@@ -78,21 +78,6 @@
 	pending_transfer_client = null
 	open()
 
-// The window draws its own title bar (title, close button, dragging and
-// resizing) instead of BYOND's, unless the player turned that off in
-// Character Setup > Settings. A plain page always keeps BYOND's bar.
-/datum/nanoui/tgui/proc/own_title_bar()
-	return !plain_page && user && user.client && user.client.is_preference_enabled(/datum/client_preference/tgui_title_bar)
-
-/datum/nanoui/tgui/proc/opens_with_own_title_bar()
-	return own_title_bar() && user.client.modern_ui_acknowledged && !user.client.modern_ui_failed
-
-// Gives the window BYOND's title bar back, so a page that cannot draw its own
-// can still be moved and closed.
-/datum/nanoui/tgui/proc/restore_title_bar()
-	if (user && user.client)
-		winset(user, window_id, "titlebar=true;can-resize=true")
-
 // Whether this window keeps a complete plain page of its own (a book page with
 // old markup, a read-only document). Most windows do not.
 /datum/nanoui/tgui/proc/has_plain_page()
@@ -111,6 +96,21 @@
 	plain_page = TRUE
 	set_initial_data(latest_data)
 	open()
+
+// The window draws its own title bar (title, close button, dragging and
+// resizing) instead of BYOND's, unless the player turned that off in
+// Character Setup > Settings. A plain page always keeps BYOND's bar.
+/datum/nanoui/tgui/proc/own_title_bar()
+	return !plain_page && user && user.client && user.client.is_preference_enabled(/datum/client_preference/tgui_title_bar)
+
+/datum/nanoui/tgui/proc/opens_with_own_title_bar()
+	return own_title_bar() && user.client.modern_ui_acknowledged && !user.client.modern_ui_failed
+
+// Gives the window BYOND's title bar back, so a page that cannot draw its own
+// can still be moved and closed.
+/datum/nanoui/tgui/proc/restore_title_bar()
+	if (user && user.client)
+		winset(user, window_id, "titlebar=true;can-resize=true")
 
 /datum/nanoui/tgui/get_config_data()
 	var/list/config = ..()
