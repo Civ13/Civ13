@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 306
+	maxx = 322
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -2660,6 +2660,115 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("trackworks/buffer_stop_smashed", struck && QDELETED(stop) && scrap == 1 && (locate(/obj/structure/rails) in platform_turf(304, 21)) && A.loc == platform_turf(304, 20))
 	A.rail_speed = 0
 
+// Step 15: the turntable. A bridge of rails over a pit turns an engine to
+// face the other way, or onto a road that leaves the pit at a right angle.
+/proc/platform_turntable_run()
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("turntable/art", ("turntable_deck" in states) && ("turntable_girders" in states) && ("turntable_pivot" in states) && ("pit" in icon_states('icons/obj/vehicles/train_turntable.dmi')) && ("pit" in icon_states('icons/obj/vehicles/train_turntable_large.dmi')))
+	for (var/ty in 2 to 7)
+		platform_track(312, ty, NORTH)
+	for (var/tx in 315 to 320)
+		platform_track(tx, 10, EAST)
+	var/obj/structure/train_turntable/T = new(platform_turf(312, 10))
+
+	// The pit holds no track of its own: the lines stop at its edge.
+	var/obj/structure/rails/stray = platform_track(313, 9, NORTH)
+	var/in_pit = T.lay_problem()
+	qdel(stray)
+	var/unlaid = !T.laid && findtext(T.turn_problem(), "not laid")
+	var/laid = T.lay()
+	var/obj/structure/rails/turntable/end = locate(/obj/structure/rails/turntable) in platform_turf(312, 8)
+	platform_check("turntable/bridge_laid", findtext(in_pit, "Take up the track") && unlaid && laid && T.laid && T.bridge_rails().len == 5 && T.bridge_whole() && end && (end.dir == NORTH) && !(locate(/obj/structure/rails) in platform_turf(310, 10)) && T.overlays.len == 1)
+	platform_check("turntable/bridge_is_fixed_track", end && !track_plain_rail(end) && !track_piece_bendable(end) && !end.pry_apart() && !QDELETED(end) && end.table() == T && train_track_fixture(T) && !train_platform_carries(T))
+
+	// An engine runs on from the south and stands whole on the bridge.
+	var/obj/structure/trains/locomotive/E = platform_car("loco_steam", 312, 7, NORTH)
+	if (!istype(E))
+		platform_check("turntable/engine_on", FALSE)
+		return
+	E.fuel = 100
+	E.on = TRUE
+	E.refresh_consist()
+	var/stepped = platform_step(E, 5)
+	E.automovement = FALSE
+	var/list/body = platform_segments(E.connected)
+	var/obj/structure/trains/platform/last = body[body.len]
+	var/mob/living/human/platform_rider/driver = new(platform_turf(311, 10))
+	var/obj/item/weapon/wrench/spanner = new(platform_turf(313, 10))
+	platform_check("turntable/engine_on", stepped == 5 && E.loc == platform_turf(312, 12) && last.loc == platform_turf(312, 9) && T.units().len == 4 && !T.turn_problem() && T.turn_time() > 40)
+
+	// Nobody stands in the pit, and a train turns whole or not at all.
+	var/mob/living/human/platform_rider/idler = new(platform_turf(310, 8))
+	var/stood = T.turn_problem()
+	idler.loc = platform_turf(309, 11)
+	var/obj/structure/trains/locomotive/coal/wagon = new(platform_turf(312, 7))
+	wagon.dir = NORTH
+	last.connected = wagon
+	var/coupled = T.turn_problem()
+	last.connected = null
+	qdel(wagon)
+	E.automovement = TRUE
+	var/moving = T.turn_problem()
+	E.automovement = FALSE
+	platform_check("turntable/pit_clear_and_train_whole", findtext(stood, "standing in the pit") && findtext(coupled, "not on the table") && findtext(moving, "Stop") && !T.swing(45) && !T.turn_problem())
+
+	// A quarter to the right: the engine faces east, its load with it.
+	var/quarter = T.swing(-90)
+	end = locate(/obj/structure/rails/turntable) in platform_turf(314, 10)
+	platform_check("turntable/quarter_turn", quarter && E.loc == platform_turf(314, 10) && E.dir == EAST && last.loc == platform_turf(311, 10) && last.dir == EAST && !T.upright() && T.bridge_rails().len == 5 && end && end.dir == EAST && !(locate(/obj/structure/rails) in platform_turf(312, 8)))
+	platform_check("turntable/load_turns_with_it", heavy_parts_placed(E) && platform_parts_placed(body) && driver.loc == platform_turf(312, 11) && spanner.loc == platform_turf(312, 9))
+
+	// It runs off onto the road that leaves the pit to the east.
+	var/off = platform_step(E, 4)
+	E.automovement = FALSE
+	platform_check("turntable/runs_off_onto_the_road", off == 4 && E.loc == platform_turf(318, 10) && last.loc == platform_turf(315, 10) && !T.units().len && driver.loc == platform_turf(316, 11))
+
+	// Empty, it comes round by hand: slower alone than with a second pusher.
+	var/alone = T.hands().len
+	var/mob/living/human/platform_rider/mate = new(platform_turf(309, 9))
+	var/light = T.turn_time()
+	var/list/pair = T.hands()
+	var/far = T.work(driver, 90)
+	var/pushed = T.work(idler, 90)
+	platform_check("turntable/pushed_by_hand", alone == 1 && pair.len == 2 && (mate in pair) && light == 20 && !far && pushed && T.upright() && !T.busy && (locate(/obj/structure/rails/turntable) in platform_turf(312, 12)) && !(locate(/obj/structure/rails) in platform_turf(314, 10)))
+	var/list/gap = last.rail_target(WEST)
+	platform_check("turntable/road_ends_at_the_pit", !gap)
+
+	// Brought back, the engine backs on and is turned right round, then a
+	// quarter more to leave by the road it came in on, facing the other way.
+	T.swing(-90)
+	E.reverser = -1
+	var/backed = 0
+	for (var/i in 1 to 4)
+		E.automovement = TRUE
+		if (E.process_rail_reverse())
+			backed++
+	E.automovement = FALSE
+	E.reverser = 1
+	var/on_again = backed == 4 && E.loc == platform_turf(314, 10) && !T.turn_problem()
+	var/round = T.swing(180)
+	platform_check("turntable/turned_right_round", on_again && round && E.loc == platform_turf(310, 10) && E.dir == WEST && last.loc == platform_turf(313, 10) && !T.upright() && heavy_parts_placed(E) && platform_parts_placed(body) && driver.loc == platform_turf(312, 9))
+	var/south = T.swing(90)
+	var/away = platform_step(E, 3)
+	E.automovement = FALSE
+	platform_check("turntable/leaves_facing_back", south && E.dir == SOUTH && away == 3 && E.loc == platform_turf(312, 5) && last.loc == platform_turf(312, 8) && heavy_parts_placed(E) && !E.derailed && E.health == initial(E.health))
+
+	// The large table: eleven tiles of bridge. It is taken up with nothing
+	// on it, and goes with its pivot.
+	var/obj/structure/train_turntable/large/edge = new(platform_turf(320, 19))
+	var/near_edge = edge.lay_problem()
+	qdel(edge)
+	var/obj/structure/train_turntable/large/big = new(platform_turf(316, 19))
+	big.set_dir(EAST)
+	var/big_laid = big.lay() && big.bridge_rails().len == 11 && !big.upright() && (locate(/obj/structure/rails/turntable) in platform_turf(321, 19)) && !big.turn_problem()
+	var/big_turned = big.swing(90) && big.upright() && (locate(/obj/structure/rails/turntable) in platform_turf(316, 24))
+	platform_check("turntable/large_table", findtext(near_edge, "too near the edge") && big_laid && big_turned)
+	var/busy_table = T.take_up_problem()
+	var/taken = big.take_up() && !big.laid && !big.bridge_rails().len && !big.overlays.len
+	big.lay()
+	qdel(big)
+	platform_check("turntable/taken_up", findtext(busy_table, "off the table") && taken && !(locate(/obj/structure/rails/turntable) in platform_turf(316, 24)) && !(locate(/obj/structure/rails/turntable) in platform_turf(316, 19)))
+
 /proc/platform_stations_run()
 	for (var/ty in 2 to 25)
 		platform_track(290, ty, NORTH)
@@ -2917,6 +3026,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_stations_run()
 		platform_big_warehouse_run()
 		platform_trackworks_run()
+		platform_turntable_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

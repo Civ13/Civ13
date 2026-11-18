@@ -36,6 +36,8 @@ GUN = ROOT / 'icons/obj/vehicles/railway_gun.dmi'
 WATER = ROOT / 'icons/obj/vehicles/rail_water.dmi'
 PLOUGH = ROOT / 'icons/obj/vehicles/train_plough.dmi'
 LOADS = ROOT / 'icons/obj/vehicles/train_loads.dmi'
+PIT = ROOT / 'icons/obj/vehicles/train_turntable.dmi'
+PIT_LARGE = ROOT / 'icons/obj/vehicles/train_turntable_large.dmi'
 RAILS = ROOT / 'icons/obj/vehicles/trains.dmi'
 
 # ramps: lit, face, shade, outline
@@ -1188,6 +1190,80 @@ def crossing_gate(c, shut):
     # the hinge post
     c.bevel(0, 0, 5, 6, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
     c.put(2, 3, BRASS[0])
+
+
+def turntable_deck(c):
+    """The plank deck of a turntable bridge under rails that run north."""
+    c.rect(0, 0, 31, 31, OLD_SEAM)
+    for y in range(32):
+        tone = OLD_PLANK[(y // 4 * 3 + 1) % len(OLD_PLANK)]
+        for x in range(0, 32):
+            c.put(x, y, OLD_SEAM if y % 4 == 3 else (mix(tone, DARK, 0.2) if noise(x // 3, y, 91) > 0.84 else tone))
+
+
+def turntable_girders(c):
+    """The riveted plate girders along each side of the bridge, drawn over
+    the rails that run north."""
+    for x0 in (0, 30):
+        c.rect(x0, 0, x0 + 1, 31, STEEL[3])
+        c.rect(x0 + (1 if x0 else 0), 0, x0 + (1 if x0 else 0), 31, STEEL_O)
+        c.rect(x0 + (0 if x0 else 1), 0, x0 + (0 if x0 else 1), 31, STEEL[1])
+        for y in (3, 11, 19, 27):
+            c.put(x0 + (0 if x0 else 1), y, STEEL[0])
+
+
+def turntable_pivot():
+    """The pivot of a turntable, seen between the rails: a cast bearing ring
+    bolted down, with a brass cap."""
+    c = Canvas(32, 32)
+    c.disc(16.5, 16.5, 6.4, [STEEL[2], STEEL[3], STEEL[4]], outline=STEEL_O)
+    c.ring(16.5, 16.5, 4.2, STEEL[1], width=1.0)
+    for x, y in ((13, 13), (20, 13), (13, 20), (20, 20)):
+        c.put(x, y, STEEL[0])
+    c.disc(16.5, 16.5, 2.2, [BRASS[0], BRASS[1], BRASS[3]], outline=DARK)
+    return [c.image()]
+
+
+def turntable_pit(size):
+    """The pit of a turntable from above: a brick wall round a gravel floor
+    that falls into shadow under the upper-left wall, with the ring rail the
+    ends of the bridge run on."""
+    im = Image.new('RGBA', (size, size))
+    px = im.load()
+    mid = (size - 1) / 2.0
+    R = size / 2.0 - 1.0
+    for y in range(size):
+        for x in range(size):
+            dx, dy = x - mid, y - mid
+            d = math.hypot(dx, dy)
+            if d > R:
+                continue
+            ang = math.atan2(dy, dx)
+            if d > R - 1.0:
+                col = DARK
+            elif d > R - 5.0:
+                # the coping: bricks laid round the rim
+                course = int((ang + math.pi) * R / 6.0)
+                tone = BRICK[(course * 5 + int(d)) % 2]
+                edge = ((ang + math.pi) * R / 6.0) % 1.0 < 0.16
+                col = BRICK[3] if edge else (BRICK[0] if d > R - 2.2 else tone)
+            elif d > R - 6.0:
+                col = DARK
+            else:
+                # the floor, darker where the wall shades it
+                lit = (dx + dy) / (R * 1.42)
+                depth = max(0.0, (d - (R - 20.0)) / 14.0) * max(0.0, -lit)
+                tone = ROCK[2] if noise(x // 2, y // 2, 113) > 0.5 else ROCK[1]
+                if noise(x, y, 127) > 0.9:
+                    tone = ROCK[0]
+                col = mix(mix(tone, ROCK[3], 0.35), DARK, min(0.6, 0.15 + depth * 0.5))
+                ring = R - 11.0
+                if abs(d - ring) < 1.3:
+                    col = STEEL[1] if abs(d - ring) < 0.6 else STEEL[4]
+                elif abs(d - ring) < 2.4 and int((ang + math.pi) * ring / 5.0) % 2 == 0:
+                    col = WALNUT[3]
+            px[x, y] = col + (255,)
+    return [im]
 
 
 def station_board():
@@ -3088,6 +3164,9 @@ def platform_states():
     states['crossing_boards'] = directions(crossing_boards, order=HEADING)
     states['crossing_gate_shut'] = directions(lambda c: crossing_gate(c, True), order=HEADING)
     states['crossing_gate_open'] = directions(lambda c: crossing_gate(c, False), order=HEADING)
+    states['turntable_deck'] = directions(turntable_deck, order=HEADING)
+    states['turntable_girders'] = directions(turntable_girders, order=HEADING)
+    states['turntable_pivot'] = turntable_pivot()
     states['hand_lamp'] = hand_lamp(None)
     states['hand_lamp_white'] = hand_lamp('white')
     states['hand_lamp_red'] = hand_lamp('red')
@@ -3414,6 +3493,23 @@ def write_previews(out, states, gun):
         im.alpha_composite(states[name][DIR_INDEX['N']], (x0 + 32, 8 + 4 * 32))
     big(im, 5).save(out / 'trackworks.png')
 
+    # a small turntable: the bridge lying north and south with a road
+    # leading off, then turned a quarter away from it
+    pit = turntable_pit(160)[0]
+    im = ground(2 * 7 * 32 + 24, 7 * 32 + 16, seed=37)
+    for k, heading in enumerate(('N', 'E')):
+        x0 = 8 + k * (7 * 32 + 8)
+        im.alpha_composite(pit, (x0 + 32, 8))
+        for y in range(2):
+            im.alpha_composite(rail[DIR_INDEX['N']], (x0 + 3 * 32, 8 + (5 + y) * 32))
+        for i in range(5):
+            at = (x0 + 3 * 32, 8 + i * 32) if heading == 'N' else (x0 + (1 + i) * 32, 8 + 2 * 32)
+            im.alpha_composite(states['turntable_deck'][DIR_INDEX[heading]], at)
+            im.alpha_composite(rail[DIR_INDEX[heading]], at)
+            im.alpha_composite(states['turntable_girders'][DIR_INDEX[heading]], at)
+        im.alpha_composite(states['turntable_pivot'][0], (x0 + 3 * 32, 8 + 2 * 32))
+    big(im, 4).save(out / 'turntable.png')
+
     # off the rails: a derailed boxcar, the same car rerailed, and the jack
     im = ground(2 * 104 + 8 + 56, 8 * 32 + 16, seed=19)
     for i, off in enumerate((True, False)):
@@ -3664,20 +3760,25 @@ def main(argv):
     water = water_states()
     plough = plough_states()
     loads = load_states()
+    pit = {'pit': turntable_pit(160)}
+    pit_large = {'pit': turntable_pit(352)}
     if '--check' in argv:
         bad = [str(p.relative_to(ROOT)) for p, s, size, cols in ((PLATFORMS, states, (32, 32), 16), (GUN, gun, (96, 96), 2),
-                                                                 (WATER, water, (64, 64), 4), (PLOUGH, plough, (96, 96), 4), (LOADS, loads, (96, 96), 4))
+                                                                 (WATER, water, (64, 64), 4), (PLOUGH, plough, (96, 96), 4), (LOADS, loads, (96, 96), 4),
+                                                                 (PIT, pit, (160, 160), 1), (PIT_LARGE, pit_large, (352, 352), 1))
                if not same(p, s, size, cols)]
         if bad:
             print('out of date: ' + ', '.join(bad))
             return 1
-        print('train sheets match (%d + %d + %d + %d + %d states)' % (len(states), len(gun), len(water), len(plough), len(loads)))
+        print('train sheets match (%d + %d + %d + %d + %d + 2 states)' % (len(states), len(gun), len(water), len(plough), len(loads)))
         return 0
     write_dmi(PLATFORMS, states, cols=16)
     write_dmi(GUN, gun, size=(96, 96), cols=2)
     write_dmi(WATER, water, size=(64, 64), cols=4)
     write_dmi(PLOUGH, plough, size=(96, 96), cols=4)
     write_dmi(LOADS, loads, size=(96, 96), cols=4)
+    write_dmi(PIT, pit, size=(160, 160), cols=1)
+    write_dmi(PIT_LARGE, pit_large, size=(352, 352), cols=1)
     print('wrote %d platform states and the railway gun' % len(states))
     if '--preview' in argv:
         write_previews(Path(argv[argv.index('--preview') + 1]), states, gun)

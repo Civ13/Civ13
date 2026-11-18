@@ -443,7 +443,7 @@ var/global/train_step_plain = FALSE
 		return TRUE
 	if (istype(AM, /obj/structure/train_lineside) || istype(AM, /obj/structure/train_buffer_stop) || istype(AM, /obj/structure/train_lever))
 		return TRUE
-	if (istype(AM, /obj/structure/train_lever_frame) || istype(AM, /obj/structure/train_token_instrument))
+	if (istype(AM, /obj/structure/train_lever_frame) || istype(AM, /obj/structure/train_token_instrument) || istype(AM, /obj/structure/train_turntable))
 		return TRUE
 	if (istype(AM, /obj/structure/rail_depot) || istype(AM, /obj/structure/rail_water))
 		return TRUE

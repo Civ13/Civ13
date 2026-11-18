@@ -726,6 +726,48 @@ of `bridges.dm`.
   does not clear while the gates are open to the road, and the gates do not
   open while it is clear.
 
+
+## Turntables
+
+`train_turntable.dm`. A pivot (`/obj/structure/train_turntable`, 20 iron;
+`/large`, 40 iron; both `rail_steam`) with a bridge of rails across a square
+pit. The small table has `radius` 2: five tiles of bridge in a pit five tiles
+square, enough for a heavy locomotive or a four-tile car. The large one has
+`radius` 5: eleven tiles, for a main-line engine with its tender.
+
+- **Setting out.** A wrench on the unlaid pivot sets which way the bridge
+  will lie; an empty hand lays it (`lay()`, 10 seconds). `lay_problem()`
+  wants the whole pit on firm, dry, open floor with no track, sleepers,
+  trains or solid objects in it. Lines are then brought up to the edge of
+  the pit in line with the pivot, on any of its four sides.
+- **The bridge** is `/obj/structure/rails/turntable`: rails to a train
+  (`rail_canmove()` and `rail_target()` treat it as straight track), but not
+  plain track, so it is never bent, joined to or prised up. A car kit is not
+  assembled on it. A crowbar on the pivot takes the bridge up when nothing
+  stands in the pit (`take_up()`), and deleting the pivot takes its bridge.
+- **Turning.** An empty hand on the pivot or any bridge rail offers a
+  quarter left, a quarter right or right round. `work()` wants the user on
+  or next to the bridge and takes `turn_time()` for each quarter: 2 seconds
+  empty and 0.6 seconds more for each unit of weight on it, at most 15; two
+  or more people at the ends of the bridge (`hands()`) halve it.
+- `turn_problem()` refuses while a train on the bridge moves, is derailed,
+  braced or wrecked, or is coupled to anything not on the bridge; while
+  anyone stands in the pit off the bridge; and while anything solid is in
+  the pit.
+- `swing(angle)` moves the bridge rails, every train section on them and
+  what the decks and the bridge carry (`moving_tiles()`, the same rule as a
+  moving deck) round the pivot, turns their `dir`, and puts deck parts,
+  engine bodies and couplings back in place. People on the bridge or in a
+  cab go round with it.
+- A line that meets the pit where the bridge is not lined up ends there: an
+  engine driven on runs off the end of the rails.
+- Art: `turntable_deck`, `turntable_girders` and `turntable_pivot` in
+  `train_platforms.dmi`; the pit is one image under the pivot from
+  `train_turntable.dmi` (160 x 160) or `train_turntable_large.dmi`
+  (352 x 352), all from `tests/sprites/create_trains.py`.
+- Not verified in a real client: the pit image at the edge of the screen,
+  timed turning, and save and load of a laid table.
+
 ## Wheel slip and sand
 
 An engine pulls only as hard as its wheels grip. Below 1.5 tiles a second,
