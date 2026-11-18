@@ -2,6 +2,7 @@
 	name = "list remove component"
 	display_name = "List Remove"
 	category = "List"
+	desc = "Gives a copy of List with the first entry equal to Value taken out. If Value is not in the list, the list comes out unchanged."
 
 	var/datum/port/input/list_input
 	var/datum/port/input/value_input

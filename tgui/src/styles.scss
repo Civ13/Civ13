@@ -6,6 +6,7 @@
 @use 'tgui-core/styles/components/Button';
 @use 'tgui-core/styles/components/Dropdown';
 @use 'tgui-core/styles/components/Flex';
+@use 'tgui-core/styles/components/Floating';
 @use 'tgui-core/styles/components/Input';
 @use 'tgui-core/styles/components/NumberInput';
 @use 'tgui-core/styles/components/ProgressBar';
@@ -19,6 +20,11 @@
 // Civ13 palette. Use these names; add a colour here before using it a third time.
 :root { --civ-line: #66513b; --civ-dim: #bfae96; --civ-bg: #211c16; --civ-text: #eee5d3; --civ-faint: #a99b87; --civ-panel: #30271e; --civ-accent: #b48c4d; --civ-highlight: #ffd985; --civ-line-soft: #54432f; --civ-link: #9ed2ff; --civ-chip: #443623; --civ-good: #c4e8c0; --civ-raised: #3a3020; --civ-warn: #f3c79a; --civ-good-line: #6caa68; --civ-good-bg: #253b25; --civ-missing: #f0b062; --civ-muted: #c9b9a0; --civ-warn-line: #c77a39; --civ-accent-line: #a98b4d; --civ-info-line: #6fb3e0; --civ-inset: #262019; --civ-info-bg: #1f3342; --civ-bad: #ef8a80; --civ-bad-text: #ffd9d4; }
 * { box-sizing: border-box; }
+// tgui-core draws every popup (Dropdown menu, Tooltip) in a portal at the end of
+// <body>, outside #root, at z-index 5. It has to sit above every layer a window
+// stacks: the modal backdrop (10), the dragged storage item and the full-window
+// circuit editor (20). Below them the popup opens but is hidden and unclickable.
+.Floating { z-index: 100; }
 body { margin: 0; background: var(--civ-bg); color: var(--civ-text); font: 14px Verdana, sans-serif; }
 .civ13-app { padding: 12px; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--civ-line); }

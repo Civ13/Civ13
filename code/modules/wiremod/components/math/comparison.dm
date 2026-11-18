@@ -2,6 +2,7 @@
 	name = "comparison component"
 	display_name = "Comparison"
 	category = "Math"
+	desc = "Compares A with B and gives true or false. Equal and Not Equal work on any two values. The other comparisons need two numbers or two texts (texts compare alphabetically) and leave Result empty otherwise. A list never equals anything."
 	result_type = PORT_TYPE_BOOLEAN
 	operations = list("Equal", "Not Equal", "Greater Than", "Less Than", "Greater Than or Equal", "Less Than or Equal")
 

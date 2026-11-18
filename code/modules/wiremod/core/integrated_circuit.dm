@@ -9,6 +9,7 @@
 		/obj/item/circuit_component/operator/arithmetic,
 		/obj/item/circuit_component/operator/comparison,
 		/obj/item/circuit_component/operator/logic,
+		/obj/item/circuit_component/not,
 		/obj/item/circuit_component/length,
 		/obj/item/circuit_component/random,
 		/obj/item/circuit_component/list_index,
@@ -22,6 +23,7 @@
 		/obj/item/circuit_component/string_split,
 		/obj/item/circuit_component/string_to_number,
 		/obj/item/circuit_component/delay,
+		/obj/item/circuit_component/direction,
 	)
 
 // Every other component type, with the reason it is not in the menu. The tests

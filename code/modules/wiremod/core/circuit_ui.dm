@@ -7,7 +7,10 @@
 	if(islist(value))
 		return "List ([length(value)] entries)"
 	if(!isnum(value) && !istext(value))
-		return "(unset)"
+		// An entity is shown by its name. The caller escapes it like any other text.
+		value = wiremod_entity_name(value)
+		if(isnull(value))
+			return "(unset)"
 	return copytext("[value]", 1, 101)
 
 // Letters, digits, spaces and plain punctuation only: the result is shown in
@@ -59,19 +62,19 @@
 		var/list/connected_to = list()
 		if(input_port.connected_output)
 			connected_to += wiremod_ui_port_ref(input_port.connected_output)
-		var/current_data
-		if(isnum(input_port.value) || istext(input_port.value))
-			current_data = input_port.value
+		// Everything about how a port looks comes from its datatype.
+		var/datum/circuit_datatype/handler = input_port.datatype_handler
 		var/list/port_view = list(
 			"name" = input_port.name,
-			"type" = input_port.options ? PORT_TYPE_OPTION : input_port.datatype,
-			"color" = input_port.datatype_handler.color,
+			"type" = input_port.datatype,
+			"color" = handler.color,
 			"ref" = wiremod_ui_port_ref(input_port),
 			"connected_to" = connected_to,
-			"current_data" = current_data
+			"current_data" = handler.ui_value(input_port.value)
 		)
-		if(input_port.options)
-			port_view["datatype_data"] = input_port.options
+		var/datatype_data = handler.ui_data(input_port)
+		if(!isnull(datatype_data))
+			port_view["datatype_data"] = datatype_data
 		input_data += list(port_view)
 	var/list/output_data = list()
 	for(var/datum/port/output/output_port as anything in component.output_ports)
@@ -93,6 +96,16 @@
 		"input_ports" = input_data,
 		"output_ports" = output_data
 	)
+
+// The buttons under a component's description in the editor's info panel: one
+// for each port, in the port's colour, naming its datatype.
+/proc/wiremod_ui_component_notices(obj/item/circuit_component/component)
+	var/list/notices = list()
+	for(var/datum/port/input/input_port as anything in component.input_ports)
+		notices += list(list("content" = "In: [input_port.name] ([input_port.datatype])", "color" = input_port.datatype_handler.color))
+	for(var/datum/port/output/output_port as anything in component.output_ports)
+		notices += list(list("content" = "Out: [output_port.name] ([output_port.datatype])", "color" = output_port.datatype_handler.color))
+	return notices
 
 /proc/wiremod_ui_component_catalog()
 	var/static/list/catalog
@@ -149,13 +162,13 @@
 		"screen_x" = screen_x,
 		"screen_y" = screen_y,
 		"components" = component_data,
-		"global_basic_types" = CIRCUIT_USER_TYPES,
+		"global_basic_types" = CIRCUIT_VARIABLE_TYPES,
 		"variables" = variable_data,
 		"is_admin" = FALSE,
 		"component_catalog" = wiremod_ui_component_catalog(),
 		"examined_name" = examined_component?.display_name,
 		"examined_desc" = examined_component?.desc,
-		"examined_notices" = list(),
+		"examined_notices" = examined_component ? wiremod_ui_component_notices(examined_component) : list(),
 		"examined_rel_x" = examined_rel_x,
 		"examined_rel_y" = examined_rel_y
 	)
@@ -302,22 +315,53 @@
 	var/datum/port/input/input_port = ui_port(params["component_id"], params["port_id"])
 	if(!input_port)
 		return
-	if(wiremod_ui_flag(params["marked_atom"]))
-		to_chat(user, "<span class='warning'>Entity inputs are not available in core circuits.</span>")
-	else if(input_port.datatype == PORT_TYPE_SIGNAL)
+	if(input_port.datatype == PORT_TYPE_SIGNAL)
 		// Pressing a signal input fires it by hand.
 		input_port.set_input(COMPONENT_SIGNAL)
 	else if(input_port.connected_output)
 		to_chat(user, "<span class='warning'>That input is wired to an output.</span>")
+	else if(wiremod_ui_flag(params["marked_atom"]))
+		mark_input(input_port, user)
 	else if(wiremod_ui_flag(params["set_null"]))
 		if(!input_port.options)
 			input_port.set_input(null)
-	else if((input_port.datatype in CIRCUIT_USER_TYPES) && ("input" in params))
+	else if(("input" in params) && (input_port.options || (input_port.datatype in CIRCUIT_USER_TYPES)))
 		set_manual_input(input_port, params["input"], user)
+
+// What a player marks when pressing an entity input: the item in a hand other
+// than the circuit (or the remote it is built into), or the player with nothing
+// else in hand. tgstation marks a thing with a multitool first; this is the
+// Civ13 equivalent. A request never names the thing, so a player can only mark
+// what they hold or themselves.
+/obj/item/integrated_circuit/proc/marked_entity(mob/user)
+	var/obj/item/own = istype(loc, /obj/item/compact_remote) ? loc : src
+	for(var/obj/item/held in list(user.get_active_hand(), user.get_inactive_hand()))
+		if(held != own && held != src)
+			return held
+	return user
+
+// Sets an unwired input whose datatype takes one to what the player marks.
+// Marking the thing an input already holds clears the input.
+/obj/item/integrated_circuit/proc/mark_input(datum/port/input/input_port, mob/user)
+	if(!input_port.datatype_handler.takes_marked_entity)
+		to_chat(user, "<span class='warning'>That input does not take an entity.</span>")
+		return
+	var/atom/movable/marked = marked_entity(user)
+	var/datum/weakref/handle = WEAKREF(marked)
+	if(!handle)
+		return
+	if(input_port.value == handle)
+		input_port.set_input(null)
+		to_chat(user, "<span class='notice'>You clear [html_encode(input_port.name)].</span>")
+		return
+	input_port.set_input(handle)
+	to_chat(user, "<span class='notice'>You mark [html_encode(marked.name)] as [html_encode(input_port.name)]. Hold something else in your other hand to mark that instead; mark the same thing again to clear the input.</span>")
 
 // Sets an unwired input from what a player typed. The port's datatype reads the
 // text; a value it cannot read is refused with that datatype's message.
 /obj/item/integrated_circuit/proc/set_manual_input(datum/port/input/input_port, manual_value, mob/user)
+	if(!isnum(manual_value) && !istext(manual_value))
+		return FALSE
 	if(istext(manual_value) && length(manual_value) > PORT_MAX_STRING_LENGTH)
 		to_chat(user, "<span class='warning'>Input is too long.</span>")
 		return FALSE
@@ -359,7 +403,7 @@
 	var/variable_datatype = params["variable_datatype"]
 	if(!length(variable_name) || (variable_name in circuit_variables))
 		to_chat(user, "<span class='warning'>Enter a new variable name using letters and digits.</span>")
-	else if(!istext(variable_datatype) || !(variable_datatype in CIRCUIT_USER_TYPES))
+	else if(!istext(variable_datatype) || !(variable_datatype in CIRCUIT_VARIABLE_TYPES))
 		to_chat(user, "<span class='warning'>That variable type is unavailable.</span>")
 	else if(length(circuit_variables) >= CIRCUIT_MAX_VARIABLES)
 		to_chat(user, "<span class='warning'>The circuit is at its variable limit.</span>")

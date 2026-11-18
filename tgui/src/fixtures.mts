@@ -187,29 +187,33 @@ add('spawn-menu', 'spawn_menu.tmpl', { query: 'rifle', kind: 'obj', matches: 212
   { path: '/obj/item/weapon/gun/projectile/semiautomatic/svt', name: 'SVT-40', kind: 'obj' },
   { path: '/obj/structure/closet/crate/rifles', name: 'rifle crate', kind: 'obj' },
 ] }, 'Spawn');
-// A compact remote's circuit: each press rolls a die, adds a bonus and reports who pressed it.
-const port = (name: string, type: string, color: string, ref: string, extra: Data = {}) => ({ name, type, color, ref, ...extra });
-const circuitPart = (index: number, type: string, name: string, category: string, x: number, y: number, input_ports: Data[], output_ports: Data[], extra: Data = {}) =>
-  ({ index, type: `/obj/item/circuit_component/${type}`, name, description: 'A programmable integrated circuit component.', category, x, y, removable: 1, input_ports, output_ports, ...extra });
+// A compact remote's circuit: each press rolls a die, multiplies or adds a bonus, reports who
+// pressed it and finds a marked key. The texts and colours are the ones the game sends.
+const port = (name: string, type: string, ref: string, extra: Data = {}) =>
+  ({ name, type, color: ({ any: 'blue', number: 'green', string: 'orange', signal: 'teal', boolean: 'bad', list: 'white', option: 'violet', entity: 'purple' } as Record<string, string>)[type], ref, ...extra });
+const circuitPart = (id: number, type: string, name: string, category: string, x: number, y: number, description: string, input_ports: Data[], output_ports: Data[], extra: Data = {}) =>
+  ({ id, type: `/obj/item/circuit_component/${type}`, name, description, category, x, y, removable: 1, input_ports, output_ports, ...extra });
 const operations = ['Add', 'Subtract', 'Multiply', 'Divide', 'Modulo', 'Power', 'Minimum', 'Maximum'];
 const circuitParts = [
-  circuitPart(1, 'compact_remote', 'Compact Remote', 'General', 20, 40, [], [port('User', 'string', 'orange', 'output-1-1'), port('Signal', 'signal', 'purple', 'output-1-2')],
-    { description: 'Sends a signal to the circuit whenever the compact remote is pressed.', removable: 0 }),
-  circuitPart(2, 'random', 'Random', 'Math', 230, 40, [
-    port('Minimum', 'number', 'green', 'input-2-1', { connected_to: [], current_data: 1 }), port('Maximum', 'number', 'green', 'input-2-2', { connected_to: [], current_data: 6 }),
-    port('Trigger', 'signal', 'purple', 'input-2-3', { connected_to: ['output-1-2'], current_data: null })], [port('Result', 'number', 'green', 'output-2-1')]),
-  circuitPart(3, 'arithmetic', 'Arithmetic', 'Math', 40, 290, [
-    port('A', 'number', 'green', 'input-3-1', { connected_to: ['output-2-1'], current_data: 4 }), port('B', 'number', 'green', 'input-3-2', { connected_to: [], current_data: 2 }),
-    port('Operation', 'option', 'orange', 'input-3-3', { connected_to: [], current_data: 'Add', datatype_data: operations })], [port('Result', 'number', 'green', 'output-3-1')]),
-  circuitPart(4, 'string_concat', 'String Concat', 'String', 490, 40, [
-    port('A', 'string', 'orange', 'input-4-1', { connected_to: ['output-1-1'], current_data: 'Mara Voss' }), port('B', 'string', 'orange', 'input-4-2', { connected_to: [], current_data: ' rolled ' })],
-    [port('Result', 'string', 'orange', 'output-4-1')]),
-  circuitPart(5, 'variable/setter', 'Setter: last roll', 'Utility', 440, 290, [port('Input', 'number', 'green', 'input-5-1', { connected_to: ['output-3-1'], current_data: 6 })], []),
+  circuitPart(1, 'compact_remote', 'Compact Remote', 'General', 20, 40, "The remote's button. Each press sends a signal on Signal, and User becomes the person who pressed it. Wire User into a text input to get their name.",
+    [], [port('User', 'entity', 'output-1-1'), port('Signal', 'signal', 'output-1-2')], { removable: 0 }),
+  circuitPart(2, 'random', 'Random', 'Math', 230, 40, 'Each signal on Trigger picks a whole number from Minimum to Maximum, both included. Nothing happens if Minimum is above Maximum or either is not set. The bounds are limited to 1,000,000 either side of zero.', [
+    port('Minimum', 'number', 'input-2-1', { connected_to: [], current_data: 1 }), port('Maximum', 'number', 'input-2-2', { connected_to: [], current_data: 6 }),
+    port('Trigger', 'signal', 'input-2-3', { connected_to: ['output-1-2'], current_data: null })], [port('Result', 'number', 'output-2-1')]),
+  circuitPart(3, 'operator/arithmetic', 'Arithmetic', 'Math', 40, 290, 'Works out a number from A and B with the chosen Operation: add, subtract, multiply, divide, modulo (the remainder), power, minimum or maximum. It waits until both A and B are set. Dividing by zero, or a power with no real answer, leaves Result empty.', [
+    port('A', 'number', 'input-3-1', { connected_to: ['output-2-1'], current_data: 4 }), port('B', 'number', 'input-3-2', { connected_to: [], current_data: 2 }),
+    port('Operation', 'option', 'input-3-3', { connected_to: [], current_data: 'Add', datatype_data: operations })], [port('Result', 'number', 'output-3-1')]),
+  circuitPart(4, 'operator/string_concat', 'String Concat', 'String', 490, 40, 'Joins text A and text B end to end. An input that is not set counts as empty text, and a number is joined as its digits. The result is cut at 5,000 characters.', [
+    port('A', 'string', 'input-4-1', { connected_to: ['output-1-1'], current_data: 'Mara Voss' }), port('B', 'string', 'input-4-2', { connected_to: [], current_data: ' rolled ' })],
+    [port('Result', 'string', 'output-4-1')]),
+  circuitPart(5, 'variable/setter', 'Setter: last roll', 'Utility', 440, 250, 'Stores its Input in its variable whenever Input changes. Every getter of that variable then gives the new value.', [port('Input', 'number', 'input-5-1', { connected_to: ['output-3-1'], current_data: 6 })], []),
+  circuitPart(6, 'direction', 'Direction', 'Entity', 400, 400, 'Finds Target from where the circuit is: the compass direction to it and the distance in tiles. It looks when Target changes and at every signal on Trigger. A target more than 7 tiles away, on another level or gone leaves both outputs empty. On the same tile Distance is 0 and Direction is empty.', [
+    port('Target', 'entity', 'input-6-1', { connected_to: [], current_data: null }), port('Trigger', 'signal', 'input-6-2', { connected_to: [], current_data: null })],
+    [port('Direction', 'string', 'output-6-1'), port('Distance', 'number', 'output-6-2')]),
 ];
 add('circuit-editor', 'wiremod_circuit.tmpl', {
   on: 1, display_name: 'Dice roller', grid_mode: 1, screen_x: 0, screen_y: 0, is_admin: 0, components: circuitParts,
-  stored_designs: { '/obj/item/circuit_component/operator/arithmetic': 1, '/obj/item/circuit_component/random': 1, '/obj/item/circuit_component/operator/string_concat': 1 },
-  component_catalog: [circuitParts[2], circuitParts[1], circuitParts[3]].map(part => ({ type: part.type, name: part.name, description: part.description, category: part.category, input_ports: part.input_ports.map(p => ({ ...p, ref: '', connected_to: [] })), output_ports: part.output_ports.map(p => ({ ...p, ref: '' })) })),
-  global_basic_types: ['number', 'boolean', 'string', 'any'], variables: [{ name: 'last roll', datatype: 'number', color: 'green', is_list: 0 }],
+  component_catalog: [circuitParts[2], circuitParts[1], circuitParts[3], circuitParts[5]].map(part => ({ id: 0, type: part.type, name: part.name, description: part.description, category: part.category, x: 0, y: 0, removable: 1, input_ports: part.input_ports.map(p => ({ ...p, ref: '', connected_to: [] })), output_ports: part.output_ports.map(p => ({ ...p, ref: '' })) })),
+  global_basic_types: ['number', 'boolean', 'string', 'any', 'entity'], variables: [{ name: 'last roll', datatype: 'number', color: 'green', is_list: 0 }],
   examined_name: null, examined_desc: null, examined_notices: [], examined_rel_x: 0, examined_rel_y: 0,
 }, 'integrated circuit');

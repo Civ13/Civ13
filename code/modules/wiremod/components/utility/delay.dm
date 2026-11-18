@@ -2,6 +2,7 @@
 	name = "delay component"
 	display_name = "Delay"
 	category = "Utility"
+	desc = "Passes a signal on after a wait. A signal on Trigger starts a wait of Delay seconds, from 1 to 600 (1 if not set), and Output fires when it ends. Another signal on Trigger before then starts the wait again."
 
 	var/datum/port/input/delay_amount
 	var/datum/port/input/trigger

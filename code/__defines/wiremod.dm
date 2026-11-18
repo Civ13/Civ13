@@ -7,12 +7,15 @@
 #define PORT_TYPE_SIGNAL "signal"
 #define PORT_TYPE_BOOLEAN "boolean"
 #define PORT_TYPE_LIST "list"
-// Editor-only name for a string port restricted to a fixed set of choices.
+// A text port restricted to a fixed set of choices; the editor shows a dropdown.
 #define PORT_TYPE_OPTION "option"
+// A thing in the world (a person or an object), held as a weak reference.
+#define PORT_TYPE_ENTITY "entity"
 
-// The datatypes a player may type a value for and may give a variable, in the
-// order the editor lists them.
+// The datatypes a player may type a value for, in the order the editor lists them.
 #define CIRCUIT_USER_TYPES list(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY)
+// The datatypes a player may give a circuit variable.
+#define CIRCUIT_VARIABLE_TYPES list(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY, PORT_TYPE_ENTITY)
 
 // Longest text a port holds, in bytes.
 #define PORT_MAX_STRING_LENGTH 5000
@@ -34,6 +37,8 @@
 #define CIRCUIT_DELAY_MAX 600
 // Largest magnitude the Random component accepts for a bound.
 #define CIRCUIT_RANDOM_LIMIT 1000000
+// Furthest, in tiles, the Direction component finds its target.
+#define CIRCUIT_DIRECTION_RANGE 7
 
 #define COMPONENT_DEFAULT_NAME "component"
 #define COMPONENT_DEFAULT_CATEGORY "General"

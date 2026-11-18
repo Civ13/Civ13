@@ -199,7 +199,7 @@ describe('tgstation Wiremod circuit editor', () => {
             {
               name: 'Operation',
               type: 'option',
-              color: 'orange',
+              color: 'violet',
               ref: 'input-1-1',
               connected_to: [],
               current_data: 'Add',
@@ -213,6 +213,52 @@ describe('tgstation Wiremod circuit editor', () => {
     const view = render(<WiremodCircuit {...props} />);
     expect(view.container.querySelector('.Dropdown')).toBeTruthy();
     expect(view.container.textContent).toContain('Add');
+  });
+
+  it('marks an entity with a flag and shows what the input holds', () => {
+    const target = (current_data: string | null) => ({
+      id: 3,
+      type: '/obj/item/circuit_component/direction',
+      name: 'Direction',
+      description: 'Finds a target.',
+      category: 'Entity',
+      removable: 1,
+      x: 30,
+      y: 30,
+      input_ports: [
+        {
+          name: 'Target',
+          type: 'entity',
+          color: 'purple',
+          ref: 'input-3-1',
+          connected_to: [],
+          current_data,
+        },
+      ],
+      output_ports: [],
+    });
+    const props = ui({ components: [target(null)] });
+    const view = render(<WiremodCircuit {...props} />);
+    const mark = view.container.querySelector(
+      '.ObjectComponent__Content .Button',
+    );
+    expect(mark?.textContent).toBe('Target');
+    fireEvent.click(mark!);
+    // The request says "mark", never what: the server takes what the player holds.
+    expect(props.act).toHaveBeenLastCalledWith('set_component_input', {
+      component_id: 3,
+      port_id: 1,
+      marked_atom: 1,
+    });
+    cleanup();
+    const marked = render(
+      <WiremodCircuit {...ui({ components: [target('<b>iron key</b>')] })} />,
+    );
+    const button = marked.container.querySelector(
+      '.ObjectComponent__Content .Button',
+    );
+    expect(button?.textContent).toBe('Target: <b>iron key</b>');
+    expect(marked.container.querySelector('.ObjectComponent__Content b')).toBeNull();
   });
 
   it('loads the Civ13 core catalog into the original component menu', async () => {

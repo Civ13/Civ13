@@ -2,6 +2,7 @@
 	name = "string replace component"
 	display_name = "String Replace"
 	category = "String"
+	desc = "Replaces every Search found in String with Replacement. A Replacement that is not set removes the matches, and an empty Search changes nothing. Capital and small letters count as the same. The result is cut at 5,000 characters."
 
 	var/datum/port/input/value_input
 	var/datum/port/input/search

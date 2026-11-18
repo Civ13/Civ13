@@ -2,6 +2,7 @@
 	name = "list index component"
 	display_name = "List Index"
 	category = "List"
+	desc = "Gives the entry of List at position Index. Positions count from 1. An Index outside the list leaves Value empty."
 
 	var/datum/port/input/list_input
 	var/datum/port/input/index_input

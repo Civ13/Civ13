@@ -2,6 +2,7 @@
 	name = "string split component"
 	display_name = "String Split"
 	category = "String"
+	desc = "Cuts String into a list of parts at every Separator, which is a comma unless changed. An empty Separator gives a list holding the whole text."
 
 	var/datum/port/input/value_input
 	var/datum/port/input/separator
