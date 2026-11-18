@@ -44,5 +44,5 @@ Start or Stop Engine verb toggles `motor_on`. Under power a tile takes `max(3, r
 and burns `cc / 1000` units; a dry tank stops the engine. A wrench takes engine and tank off. A canoe
 carries a mast or an outboard, not both.
 
-Not built yet: hauling weights and log rollers on land, and wear from use (lashings, soaking, torn
-sails; the `mast_torn` and `log_rollers` sprites are drawn for them).
+Hauling over land is in [boat-hauling.md](boat-hauling.md). Not built yet: wear from use (lashings, soaking, torn
+sails; the `mast_torn` sprite is drawn for it).

@@ -47,6 +47,7 @@ var/canoe_runtime_error = FALSE
 		canoe_log_checks()
 		canoe_water_checks()
 		canoe_outrigger_checks()
+		canoe_hauling_checks()
 	catch(var/exception/e)
 		canoe_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = canoe_failures, "runtime_error" = canoe_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -222,3 +223,48 @@ var/canoe_runtime_error = FALSE
 	C.drop_outboard(locate(13, 10, 1))
 	C.update_icon()
 	canoe_check(!C.engine && !C.fueltank && E.loc == locate(13, 10, 1) && T.loc == locate(13, 10, 1) && C.icon_state == "outrigger", "the wrench leaves engine and tank beside her")
+
+// Hauling over land (code/modules/naval/boat_hauling.dm).
+/proc/canoe_hauling_checks()
+	var/mob/living/human/canoe_probe/P = new(locate(21, 20, 1))
+	var/obj/structure/vehicle/raft/R = new(locate(20, 20, 1))
+	var/obj/structure/vehicle/raft/dugout/D = new(locate(20, 23, 1))
+	var/obj/structure/vehicle/raft/dugout/outrigger/C = new(locate(20, 26, 1))
+	var/obj/structure/vehicle/motorcycle/M = new(locate(25, 26, 1))
+	canoe_check(M.drag_delay(P) == BOAT_DRAG_EASY && !M.haul_refusal(), "a motorcycle drags as it always did")
+	canoe_check(R.drag_delay(P) == BOAT_DRAG_LIGHT && D.drag_delay(P) == BOAT_DRAG_LIGHT, "a raft and a dugout are light")
+	canoe_check(C.drag_delay(P) == BOAT_DRAG_HEAVY, "an outrigger is heavy for one")
+	var/mob/living/human/canoe_probe/H1 = new(locate(19, 26, 1))
+	canoe_check(C.drag_delay(P) == BOAT_DRAG_LIGHT, "one helper beside her makes her light")
+	var/mob/living/human/canoe_probe/H2 = new(locate(19, 27, 1))
+	canoe_check(C.drag_delay(P) == BOAT_DRAG_EASY, "two make her easy")
+	C.engine = new /obj/structure/engine/internal/gasoline(C)
+	canoe_check(C.drag_delay(P) == BOAT_DRAG_LIGHT, "an engine costs one helper")
+	qdel(C.engine)
+	C.engine = null
+	H1.forceMove(locate(1, 1, 1))
+	H2.forceMove(locate(1, 1, 1))
+	C.on_rollers = TRUE
+	C.dress_rollers()
+	canoe_check(C.drag_delay(P) == BOAT_DRAG_EASY && C.underlays.len == 1, "on rollers one person drags her easily")
+	// Loaded, she will not budge; empty, she moves.
+	P.forceMove(locate(21, 26, 1))
+	C.pulledby = P
+	P.pulling = C
+	C.ontop_o += new /obj/structure/closet/crate(C.loc)
+	canoe_check(!C.Move(locate(21, 26, 1), EAST) && C.x == 20 && !P.pulling, "a loaded boat on land will not budge, and the pull is dropped")
+	C.ontop_o.Cut()
+	for (var/obj/structure/closet/crate/K in locate(20, 26, 1))
+		qdel(K)
+	C.pulledby = P
+	P.forceMove(locate(22, 26, 1))
+	C.Move(locate(21, 26, 1), EAST)
+	canoe_check(C.x == 21 && C.on_rollers, "empty, she rolls a tile")
+	// Into the water: the rollers stay on the beach.
+	C.forceMove(locate(9, 15, 1))
+	C.Move(locate(10, 15, 1), EAST)
+	canoe_check(C.x == 10 && !C.on_rollers && !C.underlays.len && (locate(/obj/item/boat_rollers) in locate(9, 15, 1)), "she floats off her rollers, which stay ashore")
+	canoe_check(C.drag_delay(P) == BOAT_DRAG_EASY && !C.haul_text(), "afloat she tows easily")
+	C.ontop_o += new /obj/structure/closet/crate(C.loc)
+	canoe_check(!C.haul_refusal(), "afloat, cargo does not stop a tow")
+	canoe_check(findtext(D.haul_text(), "light enough") && findtext(R.small_craft_text(), "light enough"), "a look says how she drags")

@@ -102,3 +102,11 @@
 #define OUTRIGGER_MIN_ENGINE 100
 #define OUTRIGGER_MAX_ENGINE 400
 #define OUTRIGGER_MAX_TANK 150
+
+// Hauling small boats over land (naval/boat_hauling.dm): what a boat adds to
+// each step of whoever drags her.
+#define BOAT_HAUL_LIGHT 1
+#define BOAT_HAUL_HEAVY 2
+#define BOAT_DRAG_EASY 0.75   // Afloat, on rollers, or with hands enough.
+#define BOAT_DRAG_LIGHT 2
+#define BOAT_DRAG_HEAVY 6
