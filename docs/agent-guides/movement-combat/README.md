@@ -143,6 +143,13 @@ Pulling and open menus (any using_object except a stationary gun) keep the
 adapter eligible: a restricting state mid-step refuses all input until alignment.
 Headless fixtures have no client, so living/Move stops pulling there; pull-follow
 during smooth steps needs connected-client confirmation.
+<!-- 2026-11-18: diagonal pulls keep their hold -->
+Free-movement pulls wait for the body to wholly leave its last tile, but a thing
+sitting diagonally or off the grid can fall a tile behind first. Once the gap
+reaches PULL_TRAIL_HOLD (30px), human_subtile_pull_trail_chase drags it in pixels
+toward that tile, so only a real snag ends the hold. client/Move's touching
+check also counts the pulled thing's own offset. Probe check
+`pull_diagonal_offset_keeps_hold` (69 human checks).
 <!-- 2026-10-29: crafting view cleanup on top of #3370 -->
 Do not re-add `!pulling` or narrow using_object to an allowlist in
 human_subtile_unlinked(); #3370's rule above is accepted. Before smooth input, a
