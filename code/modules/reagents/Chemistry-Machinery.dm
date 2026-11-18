@@ -1058,10 +1058,10 @@
 
 /obj/structure/distillery
 	name = "alcohol distiller"
-	desc = "A alcohol distiller. Turns any alcoholic drink into pure ethanol."
+	desc = "A copper pot still over a firebox, with a worm tub to cool the vapour. Turns any alcoholic drink into pure ethanol."
 	density = FALSE
 	anchored = FALSE
-	icon = 'icons/obj/structures.dmi'
+	icon = 'icons/obj/distillery.dmi'
 	icon_state = "distillery"
 	not_movable = FALSE
 	not_disassemblable = TRUE
