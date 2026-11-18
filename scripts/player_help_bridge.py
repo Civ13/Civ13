@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '01640630b7607f025813de0bf4f3dabd8eff6c15'
+WIKI_REVIEWED_REVISION = '343c3a1856d2eca0144e2dbfd6d679c6ecaa8cc3'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('517b343000115473ef20f620eaddff20bd77414bd469a96fa8db57179074fffc', 'character skills traits languages'),
@@ -78,7 +78,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('475ff55f74e75f793f96017ef22bd1d55ad7c97c65b9004dff9248c884393ba3', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('15c4e063bd9826fa9c4410f0000c747706f2d702401a53c994a211edde991293', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('ba33f58bb26dee02bb94dc91ade0bae6fee3effa9f775536be396ef5567eafcf', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('24b870c09bbebbf103a2d14ba1a5c149d11b55ae5603d48838ea357896f8f16b', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('78978bc3f36321ef3ec2faac33df4f26aca6a519962b88fa5d8a474db8b01f19', 'exercise training strength weights running fatigue'),
