@@ -174,6 +174,8 @@
 		heading += " It has no working engine."
 	if (braked)
 		heading += " [braked] handbrake\s on."
+	// The tail lamp (train_stations.dm).
+	heading += train_tail_lamp_text(cars)
 	lines.Insert(1, heading)
 	return lines
 

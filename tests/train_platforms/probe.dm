@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 284
+	maxx = 294
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -1259,7 +1259,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/stand = E.station_controls("driver")
 	var/list/door = E.station_controls("fire")
 	var/list/side = E.station_controls("fireman")
-	platform_check("cab/each_station_has_its_controls", stand.len == 5 && ("Throttle up" in stand) && ("Brake" in stand) && ("Sand the rails" in stand) && !("Light the fire" in stand) && door.len == 1 && door[1] == "Light the fire" && side.len == 1 && side[1] == "Injector off")
+	platform_check("cab/each_station_has_its_controls", stand.len == 8 && ("Sound the whistle" in stand) && ("Ring the bell" in stand) && ("Light the headlamp" in stand) && ("Throttle up" in stand) && ("Brake" in stand) && ("Sand the rails" in stand) && !("Light the fire" in stand) && door.len == 1 && door[1] == "Light the fire" && side.len == 1 && side[1] == "Injector off")
 	E.work_control("Light the fire", driver)
 	var/not_lit = !E.on
 	E.work_control("Light the fire", stoker)
@@ -1302,7 +1302,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/diesel = train_car_layout("loco_diesel")
 	var/list/steam = train_car_layout("loco_steam")
 	var/list/armored = train_car_layout("loco_armored")
-	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 7 && !diesel["stations"] && steam["stations"] && armored["stations"])
+	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 10 && ("Sound the whistle" in all) && !diesel["stations"] && steam["stations"] && armored["stations"])
 
 // Crashes (train_crashes.dm): a running train that hits something at speed
 // derails its leading cars, breaks couplings, throws riders and spills cargo.
@@ -2492,6 +2492,84 @@ var/global/platform_probe_runtime_error = FALSE
 		ahead.loc = ahead_tile
 	platform_check("derail/off_the_end", rails_ahead && crawl && buffered && ran_off && A.engine_disabled())
 
+// Stations and warnings (train_stations.dm), on column 290.
+/proc/platform_stations_run()
+	for (var/ty in 2 to 25)
+		platform_track(290, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/A = platform_car("loco_diesel", 290, 12, NORTH)
+	if (!istype(A))
+		platform_check("stations/name_board", FALSE)
+		return
+	var/list/body = platform_segments(A.connected)
+	var/obj/structure/trains/platform/rear = body[body.len]
+	var/mob/living/human/platform_rider/driver = new(A.loc)
+	var/mob/living/human/platform_rider/rider = new(rear.loc)
+
+	// A name board speaks to trains both ways, and to everybody aboard.
+	var/obj/structure/train_lineside/station/board = new(platform_turf(292, 18))
+	board.set_dir(SOUTH)
+	var/blank = !board.station && isnull(board.sighting(A))
+	var/named = board.set_station("Port Town") && board.station == "Port Town" && findtext(board.name, "Port Town") && !board.set_station("Port Town")
+	A.reverser = 1
+	A.refresh_consist()
+	A.lineside_seen = null
+	A.lineside_watch()
+	var/list/read = A.lineside_seen
+	var/list/riders = A.train_riders()
+	platform_check("stations/name_board", blank && named && board.speaks_to(NORTH) && board.speaks_to(SOUTH) && read && (board in read) && riders.len == 2 && (driver in riders) && (rider in riders) && ("station_board" in states))
+
+	// The driver has the whistle, the bell and the headlamp.
+	var/list/stand = A.station_controls(A.cab_station(driver))
+	var/has = ("Sound the horn" in stand) && ("Ring the bell" in stand) && ("Light the headlamp" in stand) && A.whistle_name() == "horn"
+	A.on = FALSE
+	var/silent = isnull(A.sound_whistle(driver))
+	A.on = TRUE
+	var/blown = A.sound_whistle(driver) == 0 && A.sound_bell(driver)
+	A.work_control("Light the headlamp", driver)
+	stand = A.station_controls(A.cab_station(driver))
+	var/lit = A.headlamp && ("Put out the headlamp" in stand) && findtext(A.control_summary(), "Headlamp lit")
+	A.work_control("Put out the headlamp", driver)
+	platform_check("stations/whistle_bell_and_headlamp", has && silent && blown && lit && !A.headlamp)
+
+	// In the dark a train with no light ahead runs blind, at half speed.
+	var/was = time_of_day
+	A.refresh_consist()
+	var/by_day = A.lead_factor == 1 && !A.running_blind && !train_is_dark()
+	time_of_day = "Night"
+	A.refresh_consist()
+	var/blind = train_is_dark() && A.lead_factor == 0.5 && A.running_blind && findtext(A.control_summary(), "Running blind")
+	A.set_headlamp(TRUE)
+	A.refresh_consist()
+	var/lamp_lit = A.lead_factor == 1 && !A.running_blind && A.lamp_range == 5
+	var/stepped = platform_step(A, 1) == 1 && A.light_range == 5
+	A.set_headlamp(FALSE)
+	var/obj/item/train_lamp/lamp = new(A.loc)
+	lamp.set_shade("red")
+	A.refresh_consist()
+	var/red_is_no_light = A.lead_factor == 0.5 && A.lamp_range == 2
+	lamp.set_shade("white")
+	A.refresh_consist()
+	var/white_lights_the_way = A.lead_factor == 1 && !A.running_blind
+	time_of_day = was
+	A.refresh_consist()
+	platform_check("stations/running_blind_at_night", by_day && blind && lamp_lit && stepped && red_is_no_light && white_lights_the_way && A.lead_factor == 1)
+
+	// The hand lamp turns through its colours; red on the last car is the tail lamp.
+	lamp.set_shade(null)
+	var/list/shown = list()
+	for (var/i in 1 to 4)
+		lamp.attack_self(driver)
+		shown += lamp.shade ? lamp.shade : "out"
+	var/turns = jointext(shown, ",") == "white,red,green,out" && lamp.icon_state == "hand_lamp" && (lamp in train_lamps)
+	var/list/cars = train_consist_list(A.train_head())
+	var/none = findtext(train_tail_lamp_text(cars), "No tail lamp")
+	lamp.set_shade("red")
+	var/wrong_end = lamp.icon_state == "hand_lamp_red" && findtext(train_tail_lamp_text(cars), "No tail lamp") && train_lamp_on(A, "red") == lamp
+	lamp.loc = get_step(rear, EAST)
+	var/list/lines = train_list_lines(A)
+	platform_check("stations/hand_lamp_and_tail_lamp", turns && none && wrong_end && findtext(train_tail_lamp_text(cars), "Tail lamp showing") && isnull(train_lamp_on(A, "red")) && lines.len && findtext(lines[1], "Tail lamp showing") && ("hand_lamp" in states) && ("hand_lamp_white" in states) && ("hand_lamp_red" in states) && ("hand_lamp_green" in states))
+
 // How many of a type stand on a car's deck.
 /proc/platform_fitted(list/segs, kind)
 	. = 0
@@ -2669,6 +2747,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_conductor_run()
 		platform_signals_run()
 		platform_derail_run()
+		platform_stations_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
