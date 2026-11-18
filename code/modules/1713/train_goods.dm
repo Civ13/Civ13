@@ -197,7 +197,7 @@
 				deck = T
 				deck_dist = d
 				deck_name = P.name
-		else if (!(locate(/obj/structure/rails) in T) && (!ground || d < ground_dist))
+		else if (!rail_at(T) && (!ground || d < ground_dist))
 			ground = T
 			ground_dist = d
 	if (deck)
@@ -288,7 +288,7 @@
 				continue
 			// Nothing on the track side of the ramp.
 			var/ahead = (T.x - here.x) * (front.x - here.x) + (T.y - here.y) * (front.y - here.y)
-			if (ahead > 0 || train_deck_at(T) || (locate(/obj/structure/rails) in T))
+			if (ahead > 0 || train_deck_at(T) || rail_at(T))
 				continue
 			tiles += T
 	return tiles

@@ -161,6 +161,16 @@ var/global/track_probe_runtime_error = FALSE
 	qdel(SN)
 	track_probe_check("switch/neighbour_icon_reverts", PR.icon_state == "rails")
 
+	// A level restores a switcher's facing without set_dir(); the plain rail
+	// beside it draws the branch again after the load.
+	var/obj/structure/rails/LR = track_make_rail(track_probe_turf(15, 8), NORTH, FALSE)
+	var/obj/structure/rails/split/switcher/LS = new(track_probe_turf(14, 8))
+	LS.set_dir(NORTH)
+	var/plain_before = (LR.icon_state == "rails")
+	LS.vars["dir"] = SOUTH
+	LR.after_load()
+	track_probe_check("switch/neighbour_icon_after_load", plain_before && LR.icon_state == "rails_split1")
+
 	// A switcher set to split only shifts a car onto a rail beside it.
 	track_make_rail(track_probe_turf(21, 8), EAST, FALSE)
 	var/obj/structure/rails/split/switcher/SS = new(track_probe_turf(20, 8))

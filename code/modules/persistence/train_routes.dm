@@ -84,8 +84,28 @@
 		result += list(list("id" = id, "party" = entry["party"], "revision" = entry["revision"], "name" = istext(entry["name"]) ? copytext(entry["name"], 1, 65) : "Railway station"))
 	return result
 
+// Networks found since the track last changed, by start tile and range. A
+// network depends only on which tiles have rails, so rail_network_serial
+// (bumped by every rail laid or removed) keeps this honest. Callers only read
+// the lists they get back.
+var/global/list/train_route_network_cache = list()
+var/global/train_route_network_cache_serial = -1
+
 // Reachable rails, bounded; an overflow never returns a partial network.
 /proc/train_route_network(obj/structure/region_gate/S)
+	var/turf/here = get_turf(S)
+	if(!here) return null
+	if(train_route_network_cache_serial != rail_network_serial)
+		train_route_network_cache = list()
+		train_route_network_cache_serial = rail_network_serial
+	var/key = "[here.x],[here.y],[here.z]:[S.train_endpoint_range()]"
+	if(key in train_route_network_cache)
+		return train_route_network_cache[key]
+	var/list/found = train_route_network_walk(S)
+	train_route_network_cache[key] = found
+	return found
+
+/proc/train_route_network_walk(obj/structure/region_gate/S)
 	var/list/pending = list()
 	var/list/seen = list()
 	// seen marks a turf when it is queued, so the queue never rescans itself.
@@ -123,6 +143,21 @@
 		found++
 	return found == 1
 
+// Whether a train section may stand on T heading that way: straight station
+// track in the network, and its three-wide deck clear of people, other trains
+// and anything solid. Arrivals reserve with this and recheck with it again
+// (train_arrival_clear), so both always agree.
+/proc/train_route_segment_clear(turf/T, heading, list/network)
+	if(!T || !network[T] || !train_route_straight_rail(T, heading)) return FALSE
+	var/turf/left = get_step(T, turn(heading, 90))
+	var/turf/right = get_step(T, turn(heading, -90))
+	if(!left || !right) return FALSE
+	for(var/turf/D in list(T, left, right))
+		if(D.density) return FALSE
+		for(var/atom/movable/A in D)
+			if(isliving(A) || istype(A, /obj/structure/trains) || istype(A, /obj/structure/train_part) || (A.density && !istype(A, /obj/structure/rails))) return FALSE
+	return TRUE
+
 // Head-to-tail centres wholly inside the map. Caller must reserve this exact
 // footprint atomically and recheck it immediately before materialization.
 /proc/train_route_arrival_centres(station_id, party, count, expected_revision = null)
@@ -138,22 +173,9 @@
 		var/turf/T = edge
 		var/clear = TRUE
 		for(var/i = 1, i <= count, i++)
-			if(!T || !network[T] || !train_route_straight_rail(T, heading))
+			if(!train_route_segment_clear(T, heading, network))
 				clear = FALSE
 				break
-			var/turf/left = get_step(T, turn(heading, 90))
-			var/turf/right = get_step(T, turn(heading, -90))
-			if(!left || !right)
-				clear = FALSE
-				break
-			var/list/deck = list(T, left, right)
-			for(var/turf/D in deck)
-				if(D.density)
-					clear = FALSE
-				for(var/atom/movable/A in D)
-					if(isliving(A) || istype(A, /obj/structure/trains) || istype(A, /obj/structure/train_part) || (A.density && !istype(A, /obj/structure/rails)))
-						clear = FALSE
-			if(deck.len != 3 || !clear) break
 			centres.Insert(1, T)
 			T = get_step(T, heading)
 		if(clear && centres.len == count)
