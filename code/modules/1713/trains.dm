@@ -123,6 +123,10 @@
 	else
 		icon_state = "rails_split_s_[sw_direction]"
 
+// A switcher also takes a car coming off the branch beside it.
+/obj/structure/rails/split/switcher/accepts(heading)
+	return ..() || get_step(src, OPPOSITE_DIR(heading)) == branch_turf()
+
 // The tile beside the switcher that its split route shifts a car onto.
 /obj/structure/rails/split/switcher/proc/branch_turf()
 	return get_step(src, turn(dir, sw_direction == "right" ? -90 : 90))
@@ -676,21 +680,14 @@ var/global/train_solo_move = FALSE
 		w += 0.1
 	return w
 
+// Whether this car may roll onto the next tile towards mdir: a rail there
+// must lead back the way the car comes (accepts()).
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
 	var/turf/tgtt = get_step(src,mdir)
 	if (!tgtt)
 		return FALSE
 	for (var/obj/structure/rails/R in tgtt)
-		if (mdir == 1 || mdir == 2)
-			if (R.dir == 1 || R.dir == 2)
-				return TRUE
-			if (R.turn_dir == 1 || R.turn_dir == 2)
-				return TRUE
-		else if (mdir == 4 || mdir == 8)
-			if (R.dir == 4 || R.dir == 4)
-				return TRUE
-			if (R.turn_dir == 4 || R.turn_dir == 8)
-				return TRUE
+		if (R.accepts(mdir))
 			return TRUE
 	return FALSE
 //////////////////////////////////////////////////////////////////////////

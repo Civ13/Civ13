@@ -133,22 +133,14 @@ var/global/train_route_network_cache_serial = -1
 	if(T.y == world.maxy && T.x > 1 && T.x < world.maxx) return SOUTH
 	return 0
 
-// Initial arrivals support straight ordinary rail only, not a switch/turn whose
-// routing would disagree with the staged consist's inward heading.
-/proc/train_route_straight_rail(turf/T, heading)
-	var/found = 0
-	for(var/obj/structure/rails/R in T)
-		if(!istype(R, /obj/structure/rails/regular)) return FALSE
-		if(R.dir != heading && R.dir != turn(heading, 180)) return FALSE
-		found++
-	return found == 1
-
 // Whether a train section may stand on T heading that way: straight station
 // track in the network, and its three-wide deck clear of people, other trains
 // and anything solid. Arrivals reserve with this and recheck with it again
 // (train_arrival_clear), so both always agree.
 /proc/train_route_segment_clear(turf/T, heading, list/network)
-	if(!T || !network[T] || !train_route_straight_rail(T, heading)) return FALSE
+	// Straight plain rail only (rail_network.dm), never a switch or curve whose
+	// routing would disagree with the staged consist's inward heading.
+	if(!T || !network[T] || !rail_straight_along(T, heading)) return FALSE
 	var/turf/left = get_step(T, turn(heading, 90))
 	var/turf/right = get_step(T, turn(heading, -90))
 	if(!left || !right) return FALSE

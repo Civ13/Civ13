@@ -34,6 +34,8 @@ var/datum/map_stub/map = new
 	var/turn_dir
 /obj/structure/rails/proc/exits()
 	return list(dir, turn(dir, 180))
+/obj/structure/rails/proc/accepts(heading)
+	return (turn(heading, 180) in exits())
 /obj/structure/rails/split/switcher
 /obj/structure/rails/split/switcher/proc/branch_turf()
 	return get_step(src, turn(dir, sw_direction == "right" ? -90 : 90))

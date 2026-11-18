@@ -1144,12 +1144,7 @@ var/global/train_step_plain = FALSE
 	if (!turfs)
 		return "There is no room for the car here."
 	for (var/turf/T in turfs)
-		var/straight = FALSE
-		for (var/obj/structure/rails/R in T)
-			if (R.type == /obj/structure/rails/regular || R.type == /obj/structure/rails/regular/horizontal || R.type == /obj/structure/rails)
-				if (R.dir == heading || R.dir == OPPOSITE_DIR(heading))
-					straight = TRUE
-		if (!straight)
+		if (!rail_straight_along(T, heading))
 			return "The car needs [car_length()] tiles of straight track running the way you face, starting under the kit."
 		for (var/obj/structure/trains/TR in T)
 			return "\The [TR] is in the way."

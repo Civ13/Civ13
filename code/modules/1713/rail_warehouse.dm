@@ -265,11 +265,7 @@
 	for (var/turf/T in turfs)
 		if (!(T in bay))
 			return "There is no room in the bay for [U.unit_name]: move the train further in."
-		var/straight = FALSE
-		for (var/obj/structure/rails/R in T)
-			if (R.dir == heading || R.dir == OPPOSITE_DIR(heading))
-				straight = TRUE
-		if (!straight)
+		if (!rail_straight_along(T, heading))
 			return "The bay track must run straight."
 		var/list/check = platform ? train_platform_tiles(T, heading) : list(T)
 		for (var/turf/S in check)
