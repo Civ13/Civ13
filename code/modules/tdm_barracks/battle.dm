@@ -14,6 +14,8 @@ var/global/datum/tdm_battle/tdm_battle = new
 	var/results_sent = FALSE
 	var/last_phase = null
 	var/rotation_map = null
+	// The round ended without a map vote: the update is built for the map it has.
+	var/updating = FALSE
 
 /datum/tdm_battle/proc/start()
 	if(running)
@@ -167,13 +169,34 @@ var/global/datum/tdm_battle/tdm_battle = new
 	for(var/client/C in clients)
 		to_chat(C, SPAN_NOTICE("<big>The battle is over. Back to the barracks!</big>"))
 		shard_group.send_player_soon(C, tdm_link.barracks_id)
+	// Val (2026-11-18): the battle takes the latest update between rounds. A voted map is
+	// built at the latest revision anyway; a round that ended without a vote builds it alone.
+	if(!rotation_map && ticker && ticker.finished)
+		update_between_rounds()
 	var/deadline = world.time + TDM_ROTATION_WAIT
-	while(rotation_map && world.time < deadline)
+	while((rotation_map || updating) && world.time < deadline)
 		var/list/state = rotation_state()
 		if(!state || state["state"] != "building")
 			break
 		sleep(50)
 		tdm_link.report("status", status())
+
+/datum/tdm_battle/proc/update_between_rounds()
+	if(!shell())
+		return FALSE
+	var/list/state = rotation_state()
+	var/list/building = list("state" = "building", "time" = world.realtime)
+	// Keep the voted map the world runs, so the update builds it again.
+	if(state && (state["state"] == "ready" || state["state"] == "building") && istext(state["map"]))
+		building["map"] = state["map"]
+	fdel("data/shard-host/rotation.json")
+	text2file(json_encode(building), "data/shard-host/rotation.json")
+	updating = TRUE
+	if(world.system_type == UNIX)
+		shell("python3 scripts/shard-group/battle_mapswap.py --update > data/shard-host/rotation.log 2>&1 &")
+	else
+		shell("start \"\" /b python scripts\\shard-group\\battle_mapswap.py --update > data\\shard-host\\rotation.log 2>&1")
+	return TRUE
 
 /datum/tdm_battle/proc/rotation_state()
 	if(!fexists("data/shard-host/rotation.json"))
@@ -194,8 +217,8 @@ var/global/datum/tdm_battle/tdm_battle = new
 		var/c = text2ascii(winner, i)
 		if(!((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95))
 			return FALSE
-	if(!shell())
-		return FALSE
+	if(!shell() || updating)
+		return FALSE // a late vote would build beside the update already running
 	fdel("data/shard-host/rotation.json")
 	text2file(json_encode(list("state" = "building", "map" = winner, "time" = world.realtime)), "data/shard-host/rotation.json")
 	rotation_map = winner

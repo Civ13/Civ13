@@ -1206,7 +1206,8 @@ internal sealed partial class LauncherWindow : Form {
                 "build loads it beside the old world, and only a load that succeeds takes over. A save the new code cannot read leaves the " +
                 "old world running. Nobody is kicked: if a player joins while it builds, it waits until the region is empty again, and a " +
                 "failed build leaves the world running. Asleep regions keep their build until they are next awake and empty. " +
-                "It never wipes a world." +
+                "It never wipes a world. A TDM group, which does not save, updates between rounds: the battle takes the update with " +
+                "its next map, and an empty barracks restarts onto it." +
                 (follows ? "" : " This group does not fetch yet, so turning it on also sets it to follow origin/master.") });
         var enabled = new CheckBox { Text = "Update regions when they are empty", AutoSize = true, Checked = current };
         layout.Controls.Add(enabled);

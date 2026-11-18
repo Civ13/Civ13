@@ -1202,6 +1202,12 @@ class Host:
             wait = self.update_while_empty()
             if wait is not None:
                 return (now if idle_since is None else idle_since), wait
+        elif self.update_when_empty() and not world_saves(world):
+            # A round that never saves (a TDM barracks) has nothing to load: an empty world
+            # restarts onto the update (RegionHost.update_unsaved_while_empty).
+            wait = self.update_unsaved_while_empty()
+            if wait is not None:
+                return (now if idle_since is None else idle_since), wait
         if idle_since is None:
             return now, 30
         if now - idle_since < self.config['freeze_idle_minutes'] * 60:
@@ -1508,6 +1514,9 @@ class Host:
         return False
 
     def update_while_empty(self):
+        return None
+
+    def update_unsaved_while_empty(self):
         return None
 
     def keep_sleeper_current(self):

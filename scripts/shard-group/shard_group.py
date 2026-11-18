@@ -745,6 +745,7 @@ class RegionHost(Host):
         # update-offline: install the build into the stopped region as soon as its stage is ready.
         self.install_marker = self.state_dir / 'install-after-stage'
         self.next_install_attempt = 0.0  # update_while_empty: when to try a refused handover again
+        self.unsaved_install = None  # update_unsaved_while_empty: the staged build last restarted onto
 
     def shutdown_warning(self):
         """The group config's current shutdown_warning_seconds (the launcher's Players' warning),
@@ -1065,6 +1066,57 @@ class RegionHost(Host):
         if self.stage_lock.exists():
             return 30  # an update is building: restart onto it once it is ready, rather than sleep
         return 30 if self.stage_if_behind() else None
+
+    # Val (2026-11-18): civ13.com's TDM servers update between rounds whenever they can. The
+    # battle world takes the update with its next map at the end of each round
+    # (battle_mapswap.py); a world that never saves and is empty (the barracks while everyone
+    # is in the battle) has no save to load, so it restarts onto an update built beside it.
+    def update_unsaved_while_empty(self):
+        """An awake, empty region of a group that does not save (TDM): restart onto a ready
+        update, or build the latest revision beside it. The next wait, or None."""
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError):
+            return None
+        region = next((r for r in group['regions'] if r['id'] == self.config['region']), None)
+        if group['persistent'] or not region or region['kind'] == 'BATTLE':
+            return None  # saving groups hand over instead; a battle updates when its round ends
+        if self.update_pending():
+            now = self.platform.now()
+            if now < self.next_install_attempt or self.battle_ending(group):
+                return None
+            staged = self.staged_revision()
+            last = self.read_state()
+            if (self.unsaved_install == staged and last.get('action') == 'restart'
+                    and last.get('phase') == 'failed'):
+                return None  # this build already failed to start; a person looks
+            try:
+                self.log(dict(self.request('restart'), reason='installing the update while the world is empty'))
+            except Refused as refusal:
+                self.next_install_attempt = now + self.update_settings()[1] * 60
+                self.log({'empty_restart_refused': str(refusal)})
+                return None
+            self.unsaved_install = staged
+            return 30
+        if self.stage_lock.exists():
+            return 30
+        return 30 if self.stage_if_behind() else None
+
+    @staticmethod
+    def battle_ending(group):
+        """Whether a battle world of the group is between rounds (its next map is building),
+        when its players are on their way back here: a restart now would drop them."""
+        for region in group['regions']:
+            if region['kind'] != 'BATTLE':
+                continue
+            try:
+                state = json.loads((region_dir(group, region['id']) / 'data' / 'shard-host' / 'rotation.json')
+                                   .read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                continue
+            if isinstance(state, dict) and state.get('state') == 'building':
+                return True
+        return False
 
     def keep_sleeper_current(self):
         """An asleep or cold region: build the latest revision, so it is ready for a handover
@@ -1655,9 +1707,12 @@ def compile_reported(out):
     return bool(re.search(r'\d+ errors?\b', out or ''))
 
 
-def prepare_tree(group, region, path, revision, platform, git):
+def prepare_tree(group, region, path, revision, platform, git, live=False):
     """Check a region's worktree (or its staging worktree) out at revision and write
-    everything its compile needs: overlays, the persistent config, rust_g and region.dme."""
+    everything its compile needs: overlays, the persistent config, rust_g and region.dme.
+
+    live: the world is still running from this worktree (a TDM battle taking an update
+    between rounds), so rust_g, which it has loaded, is replaced only when it changed."""
     # --force: the region's config/config.txt override below is rewritten every update.
     code, out = platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path, timeout=600)
     if code != 0:
@@ -1666,7 +1721,13 @@ def prepare_tree(group, region, path, revision, platform, git):
     (path / 'config').mkdir(exist_ok=True)
     region_mode_config(group, region, path / 'config' / 'config.txt')
     if group.get('rust_g'):
-        shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
+        target = path / Path(group['rust_g']).name
+        if not live:
+            shutil.copyfile(group['rust_g'], target)
+        elif not target.is_file() or target.read_bytes() != Path(group['rust_g']).read_bytes():
+            # A new file under the name: the running world keeps the one it mapped.
+            shutil.copyfile(group['rust_g'], target.with_name(target.name + '.new'))
+            os.replace(target.with_name(target.name + '.new'), target)
     include = place_map(group, region, path)
     dme = (path / 'civ13.dme').read_text(encoding='utf-8')
     (path / 'region.dme').write_text(selected_map_dme(dme, include), encoding='utf-8', newline='')

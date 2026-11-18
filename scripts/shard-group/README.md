@@ -464,8 +464,8 @@ new code cannot read (an unknown durable timer, say) fails that load and the old
 world plays on; that build is not tried again unattended, and a refused handover
 (low memory) waits for the next check rather than restarting. A player joining meanwhile holds the
 restart until the region is empty again, a failed build leaves the world
-running (and is not retried until the revision changes or a Build update runs),
-and a world that does not save (TDM) is never touched. Asleep and cold regions
+running (and is not retried until the revision changes or a Build update runs).
+Asleep and cold regions
 are staged the same way; an asleep region keeps its old build (the host service
 does not install into it) until it is next awake, empty and saved, when it hands
 over like any other, and a cold region takes the build at its next start. It
@@ -474,6 +474,19 @@ check, so the launcher's **Update when empty** toggle applies without a setup;
 turning it on also sets `fetch: origin` and `revision: origin/master` for a
 group that does not fetch, since otherwise new commits only appear once the
 source checkout is pulled.
+
+The same key updates a group that does not save (`persistent: false`, the TDM
+pair) between rounds. The battle world takes the update with its next map: when
+its round ends, `battle_mapswap.py` fetches and, if the group revision has moved
+past the world's, builds the voted map (or, after a round with no vote, its
+current map: `battle_mapswap.py --update`) at that revision, moves the region's
+worktree onto it and puts the build in the live slot, so the reboot that ends
+the round starts the new code. A fetch or build that fails falls back to the map
+alone at the old revision, and that revision is not tried again
+(`data/shard-host/round-update.json`). The barracks (or any other region of such
+a group) has no save to load, so once it is empty it stages the update beside
+itself and restarts onto it, except while the battle is between rounds (its
+`rotation.json` reads `building`), when its players are on their way back.
 
 ### Updating the regions that are not running
 
