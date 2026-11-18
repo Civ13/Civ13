@@ -519,6 +519,37 @@ class TrainPlatformSourceTests(unittest.TestCase):
                       'cold_locker', 'cold_locker_open'):
             self.assertIn('state = "%s"' % state, states)
 
+    def test_crane_car_lifts_only_when_braced(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\train_crane.dm"'), 1)
+        crane = (ROOT / 'code/modules/1713/train_crane.dm').read_text(encoding='utf-8')
+        lifting = (ROOT / 'code/modules/1713/lifting_machines.dm').read_text(encoding='utf-8')
+        rail = '/obj/structure/workshop_machine/shear_legs/crane/steam/rail'
+        self.assertIn(rail + '\n', crane)
+        self.assertIn('layouts["crane_car"] = list(', PLATFORMS)
+        self.assertIn('"fit" = list(null, %s, null)' % rail, PLATFORMS)
+        self.assertIn('"fit" = list(/obj/structure/railway_gun_brace, null, null)', PLATFORMS)
+        # Every way into a haul asks for the outriggers first.
+        for proc in ('MouseDrop_T(', 'attack_hand('):
+            body = crane[crane.index(rail + '/' + proc):]
+            body = body[:body.index('\n\n')]
+            self.assertLess(body.index('rail_problem()'), body.index('return ..()'))
+        self.assertIn(rail + '/hauler_ready(mob/living/human/H)\n\treturn ..() && !rail_problem()', crane)
+        self.assertIn('if (!P.braced)', crane)
+        # The hoists share one reach hook; only the rail crane slings at a distance.
+        self.assertIn('/obj/structure/workshop_machine/shear_legs/proc/sling_reach()\n\treturn 1', lifting)
+        self.assertEqual(lifting.count('get_dist(src, dropping) > sling_reach()'), 2)
+        self.assertIn(rail + '/sling_reach()\n\treturn reach', crane)
+        self.assertIn('if (P.car_id == mine.car_id || P.density)', crane)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', crane))
+        self.assertIn('RECIPE: /material/iron/,crane car kit,/obj/structure/train_car_kit/crane_car,40,', RECIPES)
+        self.assertIn('RECIPE: /material/iron/,rail crane,%s,20,' % rail, RECIPES)
+        self.assertIn('"/obj/structure/train_car_kit/crane_car" = "rail_steam"', NODES)
+        self.assertIn('"%s" = "rail_steam"' % rail, NODES)
+        loads = dmi_description(ROOT / 'icons/obj/vehicles/train_loads.dmi')
+        for state in ('rail_crane', 'rail_crane_haul'):
+            self.assertIn('state = "%s"' % state, loads)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])

@@ -48,6 +48,9 @@ heading, the rail tile and the tile right of it.
   `edge_cold_door(_open)`, the `roof_reefer_*` set, `ice_bunker(_open)` and
   `cold_locker(_open)`: the ice car and its fittings
   ([trains.md](trains.md#special-stock)).
+- `train_loads.dmi` also holds `rail_crane` and `rail_crane_haul`: the rail
+  crane, 96 x 96 and centred on its tile, at rest and hauling
+  ([trains.md](trains.md#crane-car)).
 - `tank_valve`: the valve and hose on a tank car's end platform.
   `train_loads.dmi` also holds `tank_f`, `tank_d`, `tank_m` and `tank_b`:
   the tank across one section of the car, front end, dome ring, plain ring
@@ -123,6 +126,7 @@ down when a furnished kit is assembled and the edges (side, which edge, style).
 | mail_van | baggage and mail van | rail_steam | 8 tiles: a vestibule, two sorting tables and cabinets, side doors, a baggage room of crates and cabinets |
 | bogie_sleeper | bogie sleeper car | assembly_line | 8 tiles: a vestibule each end, twelve compartments with a bed each |
 | bogie_dining | bogie dining car | assembly_line | 8 tiles: a vestibule each end, a galley, five tables and six booths |
+| crane_car | crane car | rail_steam | a ballasted steel flat with the rail crane on its second section and an outrigger lever; weighs 4 ([trains.md](trains.md#crane-car)) |
 | boxcar | boxcar | rail_steam | 8 tiles: boarded sides and roof, sliding doors in the middle of each side, closed ends |
 | bogie_coach | bogie coach | assembly_line | 8 tiles: a vestibule each end, twelve seats, windows |
 | brake_van | brake van | rail_steam | a veranda, then a cabin with a brake wheel and a seat; weighs 4 ([trains.md](trains.md#brakes)) |

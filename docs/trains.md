@@ -471,6 +471,26 @@ Region travel does not carry a tank's liquid yet.
 - `bogie_sleeper` and `bogie_dining`: the eight-tile sleeper (twelve
   compartments) and dining car (galley, five tables, six booths).
 
+## Crane car
+
+`train_crane.dm`. The crane car is a four-tile ballasted flat (`"weight" = 1`
+a section) built with an outrigger lever (`/obj/structure/railway_gun_brace`,
+the railway gun car's) and a
+`/obj/structure/workshop_machine/shear_legs/crane/steam/rail`.
+
+- The rail crane is a steam crane (`power_cranes.dm`): solid fuel counted in
+  hauls, one haul burnt a haul, raise and lower one level. Reach 5.
+- `rail_problem()`: it lifts only on a rail car (`train_deck_at()`) whose
+  `braced` flag is set. `MouseDrop_T`, `attack_hand` and `hauler_ready()`
+  all ask it, so a haul stops if the outriggers come up, and a braced car
+  cannot move.
+- `sling_reach()` (new on the shear legs, 1 for every other hoist) is its
+  `reach`: a load is slung from anywhere under the jib, not only beside it.
+- `haul_choices()` adds two same-level moves to the steam crane's: the clear
+  deck tile of another car nearest the load ("Swing it onto ..."), and the
+  clear ground tile off the track nearest the load ("Set it down beside the
+  track"). Its own car's deck and dense sections are never offered.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:

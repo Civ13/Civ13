@@ -2172,6 +2172,62 @@ var/global/platform_probe_runtime_error = FALSE
 	var/dined = tables.len == 8 && platform_fitted(tables, /obj/structure/oven/stove) == 1 && platform_fitted(tables, /obj/structure/sink) == 1 && platform_fitted(tables, /obj/structure/closet/fridge) == 1 && platform_fitted(tables, /obj/structure/table/modern/table) == 5 && platform_fitted(tables, /obj/structure/bed/chair/comfy/diner_booth) == 6
 	platform_check("long/sleeper_and_dining_cars", slept && dined)
 
+// The crane car (train_crane.dm). It shares column 247 with the mail van.
+/proc/platform_crane_run()
+	var/obj/structure/trains/platform/car = platform_car("crane_car", 247, 16, NORTH)
+	var/list/segs = platform_segments(car)
+	var/list/front = train_platform_tiles(car.loc, car.dir)
+	var/obj/structure/railway_gun_brace/lever = locate() in front[1]
+	var/obj/structure/workshop_machine/shear_legs/crane/steam/rail/crane = locate() in platform_turf(247, 15)
+	var/obj/structure/workshop_machine/shear_legs/legs = new(platform_turf(250, 3))
+	var/list/L = train_car_layout("crane_car")
+	var/list/sheet = icon_states('icons/obj/vehicles/train_loads.dmi')
+	platform_check("crane/built_on_a_ballasted_car", segs.len == 4 && L["weight"] == 1 && lever && crane && crane.dir == NORTH && crane.anchored && crane.sling_reach() == 5 && legs.sling_reach() == 1 && train_deck_at(crane.loc) && !train_deck_at(legs.loc) && ("rail_crane" in sheet) && ("rail_crane_haul" in sheet))
+	qdel(legs)
+
+	// It lifts only with the outriggers down.
+	var/mob/living/human/platform_rider/hand = new(platform_turf(246, 15))
+	var/unbraced = findtext(crane.rail_problem(), "outriggers") && !crane.hauler_ready(hand)
+	for (var/obj/structure/trains/platform/P in segs)
+		P.last_moved = -1000
+	var/braced = lever && !lever.set_braced(TRUE) && car.braced && isnull(crane.rail_problem()) && crane.hauler_ready(hand)
+	var/obj/structure/workshop_machine/shear_legs/crane/steam/rail/loose = new(platform_turf(250, 3))
+	platform_check("crane/lifts_only_when_braced", unbraced && braced && findtext(loose.rail_problem(), "rail car") && crane.out_of_fuel(hand))
+	qdel(loose)
+
+	// A load within reach swings onto another car or down beside the track.
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 247, 11, NORTH)
+	var/obj/structure/closet/crate/load = new(platform_turf(244, 15))
+	var/list/choices = crane.haul_choices(load)
+	var/turf/aboard = null
+	var/turf/beside = null
+	for (var/label in choices)
+		if (findtext(label, "Swing it onto"))
+			aboard = choices[label]
+		if (findtext(label, "beside the track"))
+			beside = choices[label]
+	var/obj/structure/trains/platform/landed = train_deck_at(aboard)
+	var/on_car = aboard && landed && flat && landed.car_id == flat.car_id && get_dist(aboard, crane) <= 5 && get_dist(load, crane) == 3 && isnull(crane.sling_problem(load))
+	var/on_ground = beside && !train_deck_at(beside) && !(locate(/obj/structure/rails) in beside) && beside != load.loc
+	platform_check("crane/swings_a_load_onto_a_car", on_car && on_ground)
+	if (aboard)
+		load.forceMove(aboard)
+	choices = crane.haul_choices(load)
+	var/turf/off = null
+	var/turf/again = null
+	for (var/label in choices)
+		if (findtext(label, "beside the track"))
+			off = choices[label]
+		if (findtext(label, "Swing it onto"))
+			again = choices[label]
+	var/obj/structure/trains/platform/other = train_deck_at(again)
+	platform_check("crane/sets_a_load_down_beside_the_track", aboard && off && !train_deck_at(off) && get_dist(off, crane) <= 5 && (!again || (other && other.car_id != car.car_id && again != load.loc)))
+	// Outriggers up: nothing can be hauled, and the far side of reach is refused.
+	lever.set_braced(FALSE)
+	var/obj/structure/closet/crate/far_load = new(platform_turf(240, 15))
+	platform_check("crane/reach_and_brace_limit_it", !car.braced && !crane.hauler_ready(hand) && get_dist(far_load, crane) > crane.sling_reach())
+	qdel(far_load)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -2205,6 +2261,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_freight_run()
 		platform_tank_run()
 		platform_stock_run()
+		platform_crane_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

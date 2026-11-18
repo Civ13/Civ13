@@ -101,7 +101,7 @@
 // Lowers or raises the outriggers of the car it stands on.
 /obj/structure/railway_gun_brace
 	name = "outrigger lever"
-	desc = "Lowers the railway gun car's outriggers so the gun can fire, and raises them so the train can move."
+	desc = "Lowers the outriggers of a railway gun car or a crane car, so the gun can fire or the crane can lift, and raises them so the train can move."
 	icon = 'icons/obj/vehicles/train_platforms.dmi'
 	icon_state = "brace_up"
 	anchored = TRUE
@@ -141,7 +141,7 @@
 		to_chat(user, SPAN_WARNING(problem))
 		return FALSE
 	playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
-	user.visible_message("[user] [state ? "lowers" : "raises"] the outriggers.", "You [state ? "lower" : "raise"] the outriggers. [state ? "The gun can fire; the train cannot move." : "The train can move again."]")
+	user.visible_message("[user] [state ? "lowers" : "raises"] the outriggers.", "You [state ? "lower" : "raise"] the outriggers. [state ? "The car is braced; the train cannot move." : "The train can move again."]")
 	return TRUE
 
 /////////////////////////////////////////////////////////////////////////////

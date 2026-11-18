@@ -348,6 +348,16 @@ var/global/train_step_plain = FALSE
 				list("edges" = windows, "fit" = booths),
 				list("edges" = windows, "fit" = dining_tables),
 				list("edges" = back_vestibule, "fit" = booths)))
+		// The crane car (train_crane.dm): a short, ballasted steel flat with
+		// the rail crane on its second section and outriggers to brace it.
+		layouts["crane_car"] = list(
+			"name" = "crane car", "desc" = "A short, heavy steel flatcar carrying a steam rail crane. Lower its outriggers with the lever before lifting: the crane swings heavy loads on and off the cars beside it and hoists them between levels.",
+			"center" = "steel", "side" = "steel", "weight" = 1,
+			"segments" = list(
+				list("edges" = rails, "fit" = list(/obj/structure/railway_gun_brace, null, null)),
+				list("edges" = list(), "fit" = list(null, /obj/structure/workshop_machine/shear_legs/crane/steam/rail, null)),
+				list("edges" = list()),
+				list("edges" = rails)))
 		// The tank car (train_tank.dm): an end platform with the valve, then
 		// the tank itself between two running boards with handrails.
 		var/list/tank_rails = list(list(TRAIN_LEFT, "out", "rail"), list(TRAIN_RIGHT, "out", "rail"))
@@ -596,8 +606,8 @@ var/global/train_step_plain = FALSE
 		if (!fit_type || !tiles[i])
 			continue
 		var/atom/movable/F = new fit_type(tiles[i])
-		if (istype(F, /obj/structure/bed/chair))
-			F.set_dir(dir)
+		if (istype(F, /obj/structure/bed/chair) || istype(F, /obj/structure/workshop_machine))
+			F.set_dir(dir) // seats and the rail crane face the way the car does
 		else
 			F.dir = (i == 1) ? turn(dir, -90) : turn(dir, 90)
 
