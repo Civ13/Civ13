@@ -1345,6 +1345,13 @@ SUITES = {
             'code/modules/1713/mountain_seams.dm', 'code/_helpers/resource_stock.dm',
             'code/game/objects/map_metadata/nomads/nomads_americas.dm',
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm')},
+    # Provinces that follow the land: committed files, generator, DM reader.
+    'provinces': {'files': ('tests/provinces/test_source.py',),
+        'paths': ('tests/provinces/', 'maps/provinces/'), 'shared_paths': (
+            'scripts/provinces.py', 'scripts/terrain_heights.py', 'code/modules/provinces/provinces.dm',
+            'maps/nomads/nomads_gaia.dmm', 'maps/nomads/nomads_americas_north.dmm',
+            'maps/nomads/nomads_americas_south.dmm', 'maps/nomads/nomads_europe.dmm',
+            'maps/nomads/nomads_asia.dmm', 'maps/nomads/nomads_desert.dmm', 'maps/nomads/nomads_jungle.dmm')},
     # Snares, deadfalls, fish weirs and pit traps: source contracts only.
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (

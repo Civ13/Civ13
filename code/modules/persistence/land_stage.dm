@@ -237,7 +237,7 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 	land_stages_refresh()
 	var/datum/browser/popup = new(M, "land_status", "Land Status", 820, 380)
 	popup.add_head_content("<style>table.regions{border-collapse:collapse;width:100%}table.regions th,table.regions td{padding:3px 6px;text-align:left;border-bottom:1px solid #444}p.note,td.note{color:#c96}</style>")
-	popup.set_content(land_stage_admin_html())
+	popup.set_content(land_stage_admin_html() + province_admin_html(M))
 	popup.open(FALSE)
 	var/list/choices = land_stage_choices()
 	if(!length(choices))
