@@ -288,6 +288,8 @@ RECIPE: /material/clay/,medium sized yellow clay planter,/obj/structure/plant_po
 //**************************************************************
 
 RECIPE: /material/leather/,custom flag maker,/obj/item/flagmaker,2,100,0,1,none,0,0,0,8,null
+RECIPE: /material/leather/,ticket book,/obj/item/train_ticket_book,1,60,0,0,trains,101,0,0,8,null
+RECIPE: /material/leather/,guard's journal,/obj/item/train_list,1,60,0,0,trains,101,0,0,8,null
 
 //*****************| LEATHER WEAPONS & TOOLS |***************************
 
@@ -770,6 +772,7 @@ RECIPE: /material/cloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bed
 //*****************| CLOTH BANNERS & FLAGS |***************************
 
 RECIPE: /material/cloth/,custom flag maker,/obj/item/flagmaker,4,100,0,1,banners & flags,0,0,21,8,null
+RECIPE: /material/cloth/,pair of signal flags,/obj/item/train_flags,2,60,0,0,trains,101,0,0,8,null
 RECIPE: /material/cloth/,faction banner (square),/obj/structure/banner/faction/banner_a,3,65,1,1,banners & flags,0,0,21,8,null
 RECIPE: /material/cloth/,faction banner (gonfalon),/obj/structure/banner/faction/banner_b,3,65,1,1,banners & flags,0,0,21,8,null
 RECIPE: /material/cloth/,religious banner,/obj/structure/banner/religious,3,65,1,1,banners & flags,0,0,21,8,null
@@ -2946,6 +2949,8 @@ RECIPE: /material/iron/,brake wheel,/obj/structure/train_brake_wheel,6,150,1,1,t
 RECIPE: /material/iron/,fire rake,/obj/item/train_fire_rake,2,80,0,0,trains,101,0,0,8,null
 RECIPE: /material/iron/,ash pit,/obj/structure/rail_ash_pit,6,200,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,set of brake shoes,/obj/item/train_brake_shoes,3,80,0,0,trains,101,0,0,8,null
+RECIPE: /material/iron/,carriage key,/obj/item/train_key,1,40,0,0,trains,101,0,0,8,null
+RECIPE: /material/iron/,ticket punch,/obj/item/train_ticket_punch,1,40,0,0,trains,101,0,0,8,null
 RECIPE: /material/wood/,coaling stage,/obj/structure/rail_depot/coal_stage,20,300,1,1,trains,101,0,0,8,null
 RECIPE: /material/wood/,sand bin,/obj/structure/rail_depot/sand_bin,8,200,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,snowplough,/obj/item/train_snowplough,10,200,0,0,trains,101,0,0,8,null

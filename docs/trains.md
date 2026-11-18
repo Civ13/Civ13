@@ -522,6 +522,32 @@ What a diesel gives over steam is a small crew: no fire, no water, one driver.
   to it (`deadman_held()`) for two looks running, the throttle closes and the
   brake goes on.
 
+## The conductor
+
+Code: `code/modules/1713/train_conductor.dm`. Tests: the `conductor/` checks
+of `tests/train_platforms`.
+
+Four items put somebody in charge of the train behind the engine. All are
+`rail_steam`; none of them sells or buys anything.
+
+- **Guard's journal** (`/obj/item/train_list`, 1 leather). Used aboard or
+  beside a train (`train_beside()`), it prints `train_list_lines()`: a heading
+  with the vehicles, length, weight and what the engines pull, then a line a
+  vehicle from the front with its weight, engine state, handbrake, axle boxes,
+  wreck and locked doors.
+- **Carriage key** (`/obj/item/train_key`, 1 iron). On a closed car door it
+  toggles the lock: a bit per edge in the segment's `locked_doors`, like
+  `open_doors`. A locked door stays shut to a hand from outside
+  (`locked_against()`), opens and unlocks from its own tile, and is forced
+  with a crowbar (`open_by_force()`). Region travel does not carry the locks.
+- **Ticket book** (`/obj/item/train_ticket_book`, 1 leather, 40 tickets) and
+  **ticket punch** (`/obj/item/train_ticket_punch`, 1 iron). `issue()` writes
+  a `/obj/item/train_ticket` with its destination, fare and issuer; `punch()`
+  cancels it once.
+- **Signal flags** (`/obj/item/train_flags`, 2 cloth). `show_signal()` shows
+  one of `train_hand_signals()` to everyone in sight and tells the people in
+  every cab of the train the signaller is aboard or beside.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:

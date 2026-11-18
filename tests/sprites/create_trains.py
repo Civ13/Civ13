@@ -915,6 +915,117 @@ def brake_shoes():
     return [c.image()]
 
 
+def carriage_key():
+    """A square-socket carriage key: a T handle on a short shank."""
+    c = Canvas(32, 32)
+    c.shade(10, 23, 24, 25, 60)
+    c.rect(9, 8, 22, 12, STEEL_O)
+    c.rect(10, 9, 21, 11, STEEL[2])
+    c.rect(10, 9, 21, 9, STEEL[0])
+    for x in (10, 21):
+        c.put(x, 10, STEEL[4])
+    c.rect(14, 12, 17, 23, STEEL_O)
+    c.rect(15, 12, 16, 22, STEEL[2])
+    c.rect(15, 12, 15, 22, STEEL[0])
+    c.rect(13, 20, 18, 24, STEEL_O)
+    c.rect(14, 21, 17, 23, STEEL[3])
+    c.rect(15, 22, 16, 23, DARK)
+    return [c.image()]
+
+
+def ticket_punch():
+    """A conductor's punch: two plier handles and the jaw with its die."""
+    c = Canvas(32, 32)
+    c.shade(8, 24, 25, 26, 60)
+    c.line(9, 25, 14, 13, STEEL_O)
+    c.line(10, 25, 15, 13, STEEL[1])
+    c.line(22, 25, 17, 13, STEEL_O)
+    c.line(21, 25, 16, 13, STEEL[3])
+    for x in (9, 10, 21, 22):
+        c.put(x, 25, WALNUT[1])
+        c.put(x, 24, WALNUT[0])
+    c.disc(15.5, 13.0, 2.2, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
+    c.put(15, 13, BRASS[0])
+    c.rect(12, 6, 19, 10, STEEL_O)
+    c.rect(13, 7, 18, 9, STEEL[2])
+    c.rect(13, 7, 18, 7, STEEL[0])
+    c.rect(15, 8, 16, 9, DARK)
+    return [c.image()]
+
+
+def ticket_book():
+    """A book of tickets: card covers, the stubs showing at the foot."""
+    c = Canvas(32, 32)
+    c.shade(8, 24, 26, 26, 60)
+    c.bevel(7, 9, 24, 23, MAROON[0], MAROON[1], MAROON[2], outline=MAROON[3])
+    c.rect(7, 9, 9, 23, MAROON[3])
+    c.rect(8, 10, 8, 22, MAROON[2])
+    c.rect(11, 12, 22, 15, CREAM[1])
+    c.rect(12, 13, 21, 13, MAROON[2])
+    c.rect(12, 14, 18, 14, MAROON[2], 150)
+    c.rect(10, 21, 24, 22, CREAM[0])
+    for x in range(11, 24, 3):
+        c.put(x, 22, CREAM[3])
+    return [c.image()]
+
+
+def ticket(punched):
+    """A card ticket; cancelled, it has a notch punched out of one edge."""
+    c = Canvas(32, 32)
+    c.shade(8, 21, 25, 22, 50)
+    c.rect(7, 11, 24, 20, CREAM[3])
+    c.rect(8, 12, 23, 19, CREAM[0])
+    c.rect(8, 12, 12, 19, (190, 214, 170))
+    c.rect(14, 13, 22, 13, MAROON[2])
+    c.rect(14, 15, 20, 15, CREAM[3])
+    c.rect(14, 17, 21, 17, CREAM[3])
+    c.put(10, 15, MAROON[1])
+    c.put(10, 16, MAROON[1])
+    if punched:
+        c.clear(18, 18, 20, 20)
+        c.put(17, 19, CREAM[3])
+        c.put(21, 19, CREAM[3])
+        c.rect(18, 17, 20, 17, CREAM[3])
+    return [c.image()]
+
+
+def signal_flags():
+    """A red and a green flag, their staffs crossed."""
+    c = Canvas(32, 32)
+    c.shade(9, 25, 24, 26, 60)
+    c.line(11, 26, 20, 5, WALNUT[3])
+    c.line(12, 26, 21, 5, WALNUT[1])
+    c.line(21, 26, 12, 5, WALNUT[3])
+    c.line(20, 26, 11, 5, WALNUT[1])
+    for y in range(6, 15):
+        x0 = 21 - (y - 5) // 2
+        c.rect(x0, y, x0 + 8, y, GREEN[2] if y in (6, 14) else GREEN[1])
+        c.put(x0 + 8, y, GREEN[3])
+        c.put(x0 + 1 + (y % 3), y, GREEN[0])
+    for y in range(6, 15):
+        x1 = 11 + (y - 5) // 2
+        c.rect(x1 - 8, y, x1, y, RED[2] if y in (6, 14) else RED[1])
+        c.put(x1 - 8, y, RED[3])
+        c.put(x1 - 2 - (y % 3), y, RED[0])
+    return [c.image()]
+
+
+def guard_journal():
+    """The guard's journal: a black cloth-bound book with a pencil in its loop."""
+    c = Canvas(32, 32)
+    c.shade(8, 25, 25, 27, 60)
+    c.bevel(8, 7, 23, 24, BLACK[1], BLACK[2], BLACK[3], outline=BLACK[4])
+    c.rect(8, 7, 10, 24, BLACK[4])
+    c.rect(21, 8, 22, 23, CREAM[1])
+    c.rect(12, 10, 19, 13, BRASS[2])
+    c.rect(13, 11, 18, 12, CREAM[0])
+    c.rect(24, 9, 25, 21, YELLOW[1])
+    c.put(24, 8, DARK)
+    c.put(25, 8, DARK)
+    c.rect(24, 21, 25, 22, RED[1])
+    return [c.image()]
+
+
 def coal_heap(c, cx, cy, r, seed):
     for y in range(int(cy - r - 1), int(cy + r + 2)):
         for x in range(int(cx - r - 1), int(cx + r + 2)):
@@ -2688,6 +2799,13 @@ def platform_states():
     states['ash_pit_full'] = ash_pit(2)
     states['fire_rake'] = fire_rake()
     states['brake_shoes'] = brake_shoes()
+    states['carriage_key'] = carriage_key()
+    states['ticket_punch'] = ticket_punch()
+    states['ticket_book'] = ticket_book()
+    states['ticket'] = ticket(False)
+    states['ticket_punched'] = ticket(True)
+    states['signal_flags'] = signal_flags()
+    states['guard_journal'] = guard_journal()
     states['plough_item'] = plough_item()
     states['tank_valve'] = tank_valve()
     states['ice_bunker'] = cold_chest('bunker', False)
@@ -2971,6 +3089,13 @@ def write_previews(out, states, gun):
     cab = render_loco(states, 'dieselmain', 'N', roof=False).crop((0, 0, 96, 32))
     im.alpha_composite(cab.resize((288, 96), Image.NEAREST), (16 + 4 * 112 + 16, pair.height + 56))
     big(im, 3).save(out / 'mainline-diesel.png')
+
+    # the conductor's things
+    names = ('guard_journal', 'carriage_key', 'ticket_book', 'ticket', 'ticket_punched', 'ticket_punch', 'signal_flags')
+    im = Image.new('RGBA', (8 + len(names) * 40, 48), (96, 120, 84, 255))
+    for i, name in enumerate(names):
+        im.alpha_composite(states[name][0], (8 + i * 40, 8))
+    big(im, 6).save(out / 'conductor.png')
 
     # couplings: made, free, broken and taken off, on a train heading east
     def with_couplers(kind, front, rear, part='coupler'):

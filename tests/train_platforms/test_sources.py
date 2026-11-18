@@ -582,6 +582,32 @@ class TrainPlatformSourceTests(unittest.TestCase):
             self.assertIn('roof_loco_dieselmain_%s' % col, states)
             self.assertIn('roof_loco_dieselmain_b%s' % col, states)
 
+    def test_conductor_tools_lock_list_ticket_and_signal(self):
+        conductor = (ROOT / 'code/modules/1713/train_conductor.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_conductor.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # locks are a saved bit per door, and never shut anyone in
+        self.assertIn('\tvar/locked_doors = 0 // bit per edge index, like open_doors\n', conductor)
+        self.assertIn('\treturn is_locked() && !(user && user.loc == loc)\n', conductor)
+        hand = PLATFORMS[PLATFORMS.index('/obj/structure/train_part/edge/attack_hand(mob/user)'):]
+        self.assertLess(hand.index('if (locked_against(user))'), hand.index('set_open(!open)'))
+        self.assertIn('is_tool(W, TOOL_CROWBAR) && is_locked()', conductor)
+        # nothing here sells, buys or ticks
+        for word in ('spawn(', 'sleep(', 'while (', 'process(', 'money', 'coin'):
+            self.assertNotIn(word, conductor)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for path, recipe, state in (
+                ('/obj/item/train_key', '/material/iron/,carriage key,/obj/item/train_key,1,', 'carriage_key'),
+                ('/obj/item/train_ticket_punch', '/material/iron/,ticket punch,/obj/item/train_ticket_punch,1,', 'ticket_punch'),
+                ('/obj/item/train_ticket_book', '/material/leather/,ticket book,/obj/item/train_ticket_book,1,', 'ticket_book'),
+                ('/obj/item/train_list', "/material/leather/,guard's journal,/obj/item/train_list,1,", 'guard_journal'),
+                ('/obj/item/train_flags', '/material/cloth/,pair of signal flags,/obj/item/train_flags,2,', 'signal_flags')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+            self.assertIn('icon_state = "%s"' % state, conductor)
+            self.assertIn(state, states)
+        self.assertIn('ticket', states)
+        self.assertIn('ticket_punched', states)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])
