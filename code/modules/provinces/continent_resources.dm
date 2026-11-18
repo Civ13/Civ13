@@ -34,6 +34,7 @@
 		MAP_NOMADS_AMERICAS_SOUTH = list("gold", "silver", "bauxite"),
 		MAP_NOMADS_EARTH_EUROPE = list("coal", "zinc"),
 		MAP_NOMADS_EARTH_AFRICA = list("sulphur", "tin"), // Africa replaces the Desert and the Jungle
+		MAP_NOMADS_EARTH_ASIA = list("saltpeter", "silver", "gems", "diamond"),
 	)
 	return homes
 
