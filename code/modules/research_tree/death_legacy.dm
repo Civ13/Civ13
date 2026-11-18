@@ -236,8 +236,10 @@ var/global/death_legacy_test_hours = 0
 	H.started_with_faction = FALSE
 	if (!death_legacy_reachable(account, get_turf(H), by_station))
 		return FALSE
-	// A bed only partly protects: it costs as much as one more return (Val, 2026-11-18).
-	var/charged = record["returns"] + (by_station ? 0 : DEATH_LEGACY_BED_EXTRA)
+	// A bed only partly protects: it costs as much as one more return (Val, 2026-11-18),
+	// less inside a Town or City of the account's own side (province_ranks.dm).
+	var/bed_extra = by_station ? 0 : DEATH_LEGACY_BED_EXTRA * province_rank_bed_extra(account, get_turf(H))
+	var/charged = record["returns"] + bed_extra
 	var/list/loss = death_legacy_loss(record["cause"], charged)
 	var/list/nodes = clean_recipe_node_ids(record["nodes"])
 	if (loss[4] > 0)
@@ -264,7 +266,7 @@ var/global/death_legacy_test_hours = 0
 			H.stats[stat] = kept
 	H.refresh_recipe_knowledge_menus()
 	to_chat(H, "<big><font color='#3d9e3d'><b>You remember what [record["name"]] knew.</b></font></big>")
-	to_chat(H, SPAN_NOTICE("Lost with that death: [death_legacy_loss_text(record["cause"], charged)][by_station ? "" : ", double for starting at a bed instead of your faction's station"]. Another return within a day costs double."))
+	to_chat(H, SPAN_NOTICE("Lost with that death: [death_legacy_loss_text(record["cause"], charged)][by_station ? "" : ", [round(2 ** bed_extra, 0.01)] times for starting at a bed instead of your faction's station"]. Another return within a day costs double."))
 	death_legacies[account] = list("at" = record["at"], "weak" = 0, "kept" = 0, "returns" = record["returns"] + 1, "used" = death_legacy_now())
 	return TRUE
 

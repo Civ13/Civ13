@@ -21,7 +21,8 @@ double what the table below says, as if it were one more return. A start
 beside a working recruitment station of the character's faction costs the
 table's amount. On a continent, stations work only in provinces the
 faction's side holds (docs/provinces.md), so holding land is the full
-protection.
+protection. A resident's bed start inside a Town's settlement costs 1.5 times instead
+of double, inside a City's 1.25 times (docs/provinces.md, "Ranks").
 
 ## What a return costs
 
