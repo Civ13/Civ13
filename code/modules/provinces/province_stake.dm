@@ -80,6 +80,7 @@ var/global/province_stake_cached_at = 0
 		for (var/d in days.Copy())
 			if (!isnum(text2num(d)) || text2num(d) <= today - STAKE_DAYS)
 				days -= d
+	province_holding_update() // province_holding.dm
 
 // list(total minutes, minutes in the last 7 days, days played of the last 7).
 /proc/province_activity_of(account)
@@ -256,7 +257,7 @@ var/global/province_stake_cached_at = 0
 		return "<p>This land has no provinces.</p>"
 	var/list/stakes = province_stakes()
 	var/viewer_group = viewer_faction ? province_group_of(viewer_faction) : null
-	var/list/lines = list("<table class='regions'><tr><th>Province</th><th>Leading</th><th>Stake there</th>[viewer_group ? "<th>Yours</th>" : ""]</tr>")
+	var/list/lines = list("<table class='regions'><tr><th>Province</th><th>Held</th><th>Leading</th><th>Stake there</th>[viewer_group ? "<th>Yours</th>" : ""]</tr>")
 	for (var/c in P.names)
 		var/list/S = stakes[c]
 		var/list/groups = S["groups"]
@@ -269,7 +270,7 @@ var/global/province_stake_cached_at = 0
 		if (viewer_group)
 			var/list/G = groups[viewer_group]
 			mine = "<td>[G ? "[province_stake_text(G[1])] ([G[2]] residents)" : "none"]</td>"
-		lines += "<tr><td>[html_encode(P.names[c])]</td><td>[lead]</td><td>[parts.len ? jointext(parts, "; ") : "none"]</td>[mine]</tr>"
+		lines += "<tr><td>[html_encode(P.names[c])]</td><td>[province_holding_text(c)]</td><td>[lead]</td><td>[parts.len ? jointext(parts, "; ") : "none"]</td>[mine]</tr>"
 	lines += "</table>"
 	return jointext(lines, "")
 
@@ -292,6 +293,7 @@ var/global/province_stake_cached_at = 0
 	else
 		lines += "<p>You count as a resident of the [html_encode(province_name_at(get_turf(B)))] for [html_encode(faction)].</p>"
 	lines += "<p>Stake: each resident member is 1 point, and a hall adds 2 points a tier, never more than the faction's residents there. Nations pool their members' stake. A side leads a province with at least [STAKE_LEAD_POINTS] points from [STAKE_LEAD_ACCOUNTS] people, [STAKE_LEAD_SHARE * 100]% of the stake there and [STAKE_LEAD_MARGIN] times the next side. Updated every 10 minutes.</p>"
+	lines += "<p>[province_rules_text()]</p>"
 	lines += province_standings_html(faction)
 	var/datum/browser/popup = new(src, "province_holdings", "Province Holdings", 760, 520)
 	popup.add_head_content("<style>table.regions{border-collapse:collapse;width:100%}table.regions th,table.regions td{padding:3px 6px;text-align:left;border-bottom:1px solid #444}</style>")

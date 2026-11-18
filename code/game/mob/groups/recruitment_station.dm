@@ -49,12 +49,14 @@
 		to_chat(user, "It has not been designated for a faction yet.")
 	else if (!map || !map.recruitment_supported(faction))
 		to_chat(user, "It is marked for [faction], which is not recruiting here.")
+	else if (province_station_problem(src))
+		to_chat(user, "It is marked for [faction], but stands idle: [province_station_problem(src)].")
 	else
 		to_chat(user, "It recruits for [faction]: [recruitment_policy_summary(map.recruitment_policy(faction))].")
 
 // Valid for recruiting: designated for a faction that can recruit here.
 /obj/structure/recruitment_station/proc/valid_for_recruitment()
-	return faction && map && map.recruitment_supported(faction) && isturf(loc)
+	return faction && map && map.recruitment_supported(faction) && isturf(loc) && !province_station_problem(src)
 
 /obj/structure/recruitment_station/attack_hand(mob/living/human/user)
 	if (!ishuman(user))
@@ -259,6 +261,8 @@
 		var/own = H.civilization
 		if (!own || own == "none" || !map.is_faction_leader(H, own) || !map.recruitment_supported(own))
 			message = "Only a faction's leader can designate a station for it."
+		else if (province_station_problem(station, own))
+			message = "This station cannot recruit for [own] here: [province_station_problem(station, own)]. See Faction > Province Holdings."
 		else
 			station.faction = own
 			map.recruitment_ensure_policy(own)

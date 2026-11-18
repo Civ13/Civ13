@@ -18,6 +18,7 @@ from terrain_heights import read_dmm  # noqa: E402
 
 SOURCE = ROOT / 'code/modules/provinces/provinces.dm'
 STAKE = ROOT / 'code/modules/provinces/province_stake.dm'
+HOLDING = ROOT / 'code/modules/provinces/province_holding.dm'
 DME = ROOT / 'civ13.dme'
 # Map -> surface z, as scripts/provinces.py was run (docs/provinces.md).
 CONTINENTS = {
@@ -155,6 +156,37 @@ class Stake(unittest.TestCase):
         bed = (ROOT / 'code/game/objects/structures/stool_bed_chair_nest/bed.dm').read_text(encoding='utf-8')
         self.assertIn('all_beds += src', bed)
         self.assertIn('all_beds -= src', bed)
+
+
+class Holding(unittest.TestCase):
+    def text(self):
+        return HOLDING.read_text(encoding='utf-8')
+
+    def test_numbers_match_the_plan(self):
+        import re
+        expected = {'PROVINCE_GAIN_HOURS': 72, 'PROVINCE_LOSE_HOURS': 48, 'PROVINCE_CAP_PER_LAND': 3,
+                    'PROVINCE_STATION_RESIDENTS': 3, 'PROVINCE_PREVIEW_DAYS': 21}
+        for name, value in expected.items():
+            match = re.search(r'#define %s (\d+)' % name, self.text())
+            self.assertIsNotNone(match, name)
+            self.assertEqual(int(match.group(1)), value, name)
+            self.assertIn(f'#undef {name}', self.text())
+
+    def test_rival_needs_the_margin_over_the_holder(self):
+        self.assertIn('G[1] < 0.35 * S["total"] || G[1] < 1.25 * holder_stake', self.text())
+
+    def test_stations_follow_holdings(self):
+        station = (ROOT / 'code/game/mob/groups/recruitment_station.dm').read_text(encoding='utf-8')
+        self.assertIn('isturf(loc) && !province_station_problem(src)', station)
+        self.assertIn('province_station_problem(station, own)', station)
+        start = (ROOT / 'code/game/mob/groups/faction_start.dm').read_text(encoding='utf-8')
+        self.assertIn('!province_station_problem(S)', start)
+        self.assertIn('province_holding_update() // province_holding.dm', STAKE.read_text(encoding='utf-8'))
+
+    def test_lands_without_provinces_keep_stations(self):
+        self.assertIn('return map && map.province_map() && world.realtime >= map.province_rules_from()', self.text())
+        self.assertNotIn('sleep(', self.text())
+        self.assertNotIn('spawn(', self.text())
 
 
 if __name__ == '__main__':
