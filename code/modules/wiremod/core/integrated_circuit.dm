@@ -35,7 +35,7 @@
 		/obj/item/circuit_component/variable = "Base of the variable nodes; it does nothing itself.",
 		/obj/item/circuit_component/variable/getter = "Made from the variable menu, tied to one variable.",
 		/obj/item/circuit_component/variable/setter = "Made from the variable menu, tied to one variable.",
-		/obj/item/circuit_component/compact_remote = "Built into a compact remote; every remote has exactly one.",
+		/obj/item/circuit_component/compact_remote = "Built into a compact remote; it is attached when an integrated circuit is inserted.",
 	)
 
 /obj/item/integrated_circuit

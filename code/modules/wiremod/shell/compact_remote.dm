@@ -1,40 +1,49 @@
-/obj/item/compact_remote
+/obj/item/circuit_shell/compact_remote
 	name = "compact remote"
-	desc = "A handheld remote that sends a signal to its built-in circuit when pressed. Alt-click it to edit the circuit."
+	desc = "A handheld remote that sends a signal to the circuit inside it when pressed. Insert an integrated circuit to use it, Alt-click to edit the circuit, or use a screwdriver to remove it."
 	icon = 'icons/obj/science/circuits.dmi'
 	icon_state = "setup_small_simple"
 	w_class = ITEM_SIZE_TINY
-	// The circuit inside is live graph state and is not written to saves.
+	// The circuit it holds is live graph state and is not written to saves.
 	should_save = FALSE
-
-	var/obj/item/integrated_circuit/circuit
 	var/obj/item/circuit_component/compact_remote/remote_input
 
-/obj/item/compact_remote/New()
+// The remote brings its own signal source. It stays with the shell while no
+// circuit is fitted and is attached to whichever circuit is inserted.
+/obj/item/circuit_shell/compact_remote/New()
 	. = ..()
-	circuit = new /obj/item/integrated_circuit(src)
-	remote_input = new /obj/item/circuit_component/compact_remote
-	if(!circuit.add_component(remote_input))
-		qdel(remote_input)
-		remote_input = null
-		stack_trace("Failed to initialize the compact remote circuit.")
+	remote_input = new /obj/item/circuit_component/compact_remote(src)
 
-/obj/item/compact_remote/Destroy()
-	remote_input = null
-	QDEL_NULL(circuit)
+/obj/item/circuit_shell/compact_remote/Destroy()
+	QDEL_NULL(remote_input)
 	return ..()
 
-/obj/item/compact_remote/attack_self(mob/user)
-	if(!user || !remote_input || !circuit)
+/obj/item/circuit_shell/compact_remote/circuit_installed(obj/item/integrated_circuit/installed, mob/user)
+	if(remote_input?.parent == installed)
+		return TRUE
+	if(remote_input?.parent)
+		remote_input.parent.remove_component(remote_input, src)
+	for(var/obj/item/circuit_component/compact_remote/existing in installed.attached_components)
+		if(existing != remote_input)
+			to_chat(user, "<span class='warning'>[installed] already has a compact remote button.</span>")
+			return FALSE
+	return installed.add_component(remote_input, user)
+
+/obj/item/circuit_shell/compact_remote/circuit_uninstalled(obj/item/integrated_circuit/removed, mob/user)
+	if(remote_input?.parent == removed)
+		removed.remove_component(remote_input, src)
+
+/obj/item/circuit_shell/compact_remote/attack_self(mob/user)
+	if(!user)
 		return FALSE
+	if(!circuit)
+		to_chat(user, "<span class='warning'>There is no integrated circuit in [src].</span>")
+		return TRUE
+	if(!remote_input || remote_input.parent != circuit)
+		to_chat(user, "<span class='warning'>[src]'s button is not attached to its circuit.</span>")
+		return TRUE
 	remote_input.send_trigger(user)
 	return TRUE
-
-/obj/item/compact_remote/AltClick(mob/user)
-	if(circuit?.can_be_edited_by(user))
-		circuit.ui_interact(user)
-		return
-	return ..()
 
 /obj/item/circuit_component/compact_remote
 	display_name = "Compact Remote"
