@@ -2020,6 +2020,7 @@
 #include "code\modules\1713\marble_bricks.dm"
 #include "code\modules\1713\stone_age_arms.dm"
 #include "code\modules\1713\obsidian.dm"
+#include "code\modules\1713\open_cave_roof.dm"
 #include "code\modules\1713\stone_age_traps.dm"
 #include "code\modules\1713\stone_age_storage.dm"
 #include "code\modules\1713\dugout_canoe.dm"
