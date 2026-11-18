@@ -845,6 +845,68 @@ still run on them after it.
   the feel of pumping, the tint on curves and switches, and save and load
   of wooden track.
 
+## Electric traction
+
+Code: `code/modules/1713/train_electric.dm`. Tests: the `electric/` checks
+of `tests/train_platforms`.
+
+An electric engine carries no fuel. It takes its power from a wire over the
+track, and the wire takes it from the cable grid (`machinery/cables.dm`,
+`machinery/power_points.dm`), so a railway's trains are a load on a town's
+generators like any machine.
+
+- **Overhead line mast** (`/obj/structure/train_catenary`, 4 steel,
+  Electricity). It stands two tiles from the rails, clear of the cars, and
+  a wrench secures it (`put_up()`): it turns its arm to the track
+  (`track_way()`) and hangs a wire over the tile under the arm's end
+  (`wire_turf()`) and four tiles either way along the line (`covers()`), so
+  a mast every nine tiles makes an unbroken wire. The arm and wire are
+  overlays above the car roofs (`draw_wire()`). A wrench takes it down
+  again (`take_down()`).
+- **The line.** Masts whose wires meet (wire tiles within nine of each
+  other) are one line, a `/datum/catenary_net` found by `network()` and
+  rebuilt only when a mast goes up or comes down
+  (`train_catenary_serial`). A secured mast needs 1 kW, so a distribution
+  transformer, wall outlet or utility pole in reach adopts it like any
+  machine and it becomes a feeder (`feeders()`). `energise()` puts the
+  line's whole demand on the first feeder whose grid can carry it
+  (`draw_cable_power()`); the line is live when one accepts. Nothing runs
+  on a timer: the line is asked when an engine asks.
+- **Drawing power.** An engine with its collector up asks the line for
+  `line_idle + line_draw x throttle` kW (`line_demand()`), at most once a
+  second while nothing changes (`line_check()`, from `steam_factor()`).
+  `request()` refuses an engine the grid cannot carry and keeps what the
+  others draw, so an overloaded line drops the newest load, not every
+  train. A refused engine, one under a dead wire or one past the end of
+  the wire has `steam_factor()` 0: the train coasts and can be braked, and
+  picks the power up again under the next live wire. An engine lets go of
+  its share when the collector comes down, when it is wrecked and when it
+  stops (`drive_ended()`), and a share not asked for again in 30 seconds
+  lapses.
+- **Electric locomotive** (`loco_electric`, kit 55 steel, Electricity):
+  four sections, a cab at each end and an equipment hood with walkways
+  between. Pull 40, as fast as a diesel, up to 155 kW. It works in
+  multiple and has a dead-man's handle like the diesels
+  ([Diesel working](#diesel-working)). `max_fuel` is 0 and `fuel` 1, so
+  the fuel checks of the drive loop never stall it, and `fuel_per_tile()`
+  is 0.
+- **Tram** (`loco_tram`, kit 30 steel, Electricity): four sections people
+  ride in, a driving platform at each end (open at the sides, which is the
+  way in) and a saloon with four seats between, under a roof on every
+  section (`roofed()`, the `m` roof row). Pull 10, so itself and one
+  trailer car; top speed that of a steam locomotive; up to 42 kW.
+- **The live wire.** Somebody riding on a car roof that moves under a live
+  wire is burned, knocked down and thrown off (`train_catenary_strike()`,
+  from `train_deck_clearance()`).
+- Art: `loco_electric_<1-4><l|c|r>`, `loco_tram_<1-4><l|c|r>`, roofs
+  `roof_loco_<kind>_<l|c|r>`, `_b<l|c|r>` for the rear cab and
+  `roof_loco_tram_m<l|c|r>` for the saloon; `catenary_mast`,
+  `catenary_arm`, `catenary_hanger`, `catenary_wire`.
+- Not verified in a real client: the wire and arm drawn over passing
+  trains and at the edge of the screen, the feel of coasting through a
+  gap, and save and load of a line (masts are saved; the line is found
+  again from them).
+
 ## Freight handling
 
 `train_goods.dm`. The goods yard: every load is put on and taken off by

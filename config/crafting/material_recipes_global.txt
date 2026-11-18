@@ -2991,6 +2991,9 @@ RECIPE: /material/steel/,heavy steam locomotive kit,/obj/structure/train_car_kit
 RECIPE: /material/steel/,main-line steam locomotive kit,/obj/structure/train_car_kit/loco_mainline,90,600,1,1,trains,101,0,0,8,null
 RECIPE: /material/steel/,heavy diesel locomotive kit,/obj/structure/train_car_kit/loco_diesel,50,500,1,1,trains,115,0,0,8,null
 RECIPE: /material/steel/,main-line diesel locomotive kit,/obj/structure/train_car_kit/loco_dieselmain,100,600,1,1,trains,115,0,0,8,null
+RECIPE: /material/steel/,electric locomotive kit,/obj/structure/train_car_kit/loco_electric,55,500,1,1,trains,105,0,0,8,null
+RECIPE: /material/steel/,tram kit,/obj/structure/train_car_kit/loco_tram,30,400,1,1,trains,105,0,0,8,null
+RECIPE: /material/steel/,overhead line mast,/obj/structure/train_catenary,4,120,1,1,trains,105,0,0,8,null
 RECIPE: /material/steel/,heavy armored locomotive kit,/obj/structure/train_car_kit/loco_armored,80,600,1,1,trains,101,109,0,8,null
 
 //*********************| IRON PRODUCTION & ECONOMY |**************************

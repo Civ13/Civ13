@@ -870,6 +870,58 @@ class TrainPlatformSourceTests(unittest.TestCase):
         for shade in ('white', 'red', 'green'):
             self.assertIn('hand_lamp_' + shade, states)
 
+    def test_electric_traction_draws_from_the_grid(self):
+        electric = (ROOT / 'code/modules/1713/train_electric.dm').read_text(encoding='utf-8')
+        platforms = (ROOT / 'code/modules/1713/train_platforms.dm').read_text(encoding='utf-8')
+        decks = (ROOT / 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_electric.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the layouts join the others through one call, not a second layout proc
+        self.assertIn('\t\ttrain_locomotive_layouts(layouts)\n\t\ttrain_electric_layouts(layouts)\n', platforms)
+        for kind, cab2 in (('electric', 4), ('tram', 4)):
+            self.assertIn('"body" = "%s", "cab" = 1, "cab2" = %d, "roof" = "loco_%s"' % (kind, cab2, kind), electric)
+        # no fuel: the engine never burns, never stalls dry, and asks the line instead
+        self.assertIn('\tmax_fuel = 0\n\tfuel = 1\n', electric)
+        self.assertIn('/obj/structure/trains/locomotive/electric/fuel_per_tile(notch, weight)\n\treturn 0\n', electric)
+        self.assertIn('/obj/structure/trains/locomotive/electric/steam_factor()\n\treturn line_check() ? 1 : 0\n', electric)
+        # the base engine asks through hooks; nothing of it is overridden from this file
+        self.assertIn("<span class = 'warning'>[no_power_text()]</span>", TRAINS)
+        self.assertIn('\t\tset_light(0)\n\t\tdrive_ended()\n', TRAINS)
+        for proc in ('/obj/structure/trains/locomotive/work_control', '/obj/structure/trains/locomotive/drive(',
+                     '/obj/structure/trains/locomotive/refresh_consist', '/obj/structure/trains/platform/'):
+            self.assertNotIn(proc, electric)
+        # the line is a consumer of the cable grid: no loop, no timer of its own
+        self.assertIn('if (M.draw_cable_power())', electric)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep|while) ?\(', electric.replace('while (pending.len)', '')))
+        self.assertIn('power_point_moved()', electric)
+        # a line that cannot carry one more engine refuses that engine only
+        self.assertIn('\tdrawing -= L\n\tdrawn_at -= L\n\tenergise()\n\treturn FALSE\n', electric)
+        # every section of the tram that people ride in has a roof of its own
+        self.assertIn('seg_index != L["cab2"] && segment_layout()["solid"])', decks)
+        self.assertIn('(seg_index == L["cab"] ? "" : "m")', decks)
+        self.assertIn('train_catenary_strike(H, back_dir)', decks)
+        # file-local defines are undefined again
+        for name in re.findall(r'(?m)^#define (\w+)', electric):
+            self.assertIn('#undef ' + name, electric)
+        for path, recipe in (
+                ('/obj/structure/train_catenary', '/material/steel/,overhead line mast,/obj/structure/train_catenary,4,'),
+                ('/obj/structure/train_car_kit/loco_electric', '/material/steel/,electric locomotive kit,/obj/structure/train_car_kit/loco_electric,55,'),
+                ('/obj/structure/train_car_kit/loco_tram', '/material/steel/,tram kit,/obj/structure/train_car_kit/loco_tram,30,')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "electricity"' % path, NODES)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for kind in ('electric', 'tram'):
+            for seg in '1234':
+                for col in 'lcr':
+                    self.assertIn('loco_%s_%s%s' % (kind, seg, col), states)
+            for col in 'lcr':
+                self.assertIn('roof_loco_%s_%s' % (kind, col), states)
+                self.assertIn('roof_loco_%s_b%s' % (kind, col), states)
+        for col in 'lcr':
+            self.assertIn('roof_loco_tram_m' + col, states)
+        for state in ('catenary_mast', 'catenary_arm', 'catenary_hanger', 'catenary_wire'):
+            self.assertIn(state, states)
+            self.assertIn('"%s"' % state, electric)
+
     def test_native_fixture_preparation(self):
         generated = run.sources()
         self.assertIn('#include "tests/train_platforms/probe.dm"', generated[run.PREFIX + '.dme'])
