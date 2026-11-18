@@ -492,8 +492,12 @@ the round starts the new code. A fetch or build that fails falls back to the map
 alone at the old revision, and that revision is not tried again
 (`data/shard-host/round-update.json`). The barracks (or any other region of such
 a group) has no save to load, so once it is empty it stages the update beside
-itself and restarts onto it, except while the battle is between rounds (its
-`rotation.json` reads `building`), when its players are on their way back.
+itself and restarts onto it. It does so only after the battle has taken an
+update at the end of a round (the battle's worktree is ahead of its build), so it
+restarts at most once a round rather than on every merge, and never while the
+battle is between rounds (its `rotation.json` reads `building`), when its players
+are on their way back. Such a group is never handed over: a world in pregame
+reports no round yet, which otherwise reads as saving.
 
 ### Updating the regions that are not running
 

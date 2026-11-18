@@ -2153,7 +2153,47 @@ class StagedBuildTests(unittest.TestCase):
         self.machine.up = {1720}
         self.machine.query = lambda *args, **kwargs: {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32,
                                                       'persistence_mode': 0}
+        run = self.machine.run
+
+        def newer_is_not_older(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1:3] == ['merge-base', '--is-ancestor'] and argv[3:5] == [NEWER, REVISION]:
+                return 1, ''
+            return run(argv, cwd, timeout, low_priority)
+        self.machine.run = newer_is_not_older
         return group, host
+
+    def test_a_tdm_barracks_waits_for_the_battle_to_take_the_update(self):
+        # Val (2026-11-18): a restart per merge pinged Discord every few minutes; the barracks
+        # updates once per round, after the battle has moved on.
+        group, host = self.tdm_built()
+        battle_head = [REVISION]
+        run = self.machine.run
+
+        def heads(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1:] == ['rev-parse', 'HEAD'] and cwd == self.base / 'regions' / 'deep':
+                return 0, battle_head[0] + '\n'
+            return run(argv, cwd, timeout, low_priority)
+        self.machine.run = heads
+        host.watch_step(None)
+        self.machine.clock += 15 * 60
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('stage', 'restart')],
+                         'master moved, but the battle still runs the barracks build')
+        battle_head[0] = NEWER  # the battle's round ended and it took the update
+        host.watch_step(None)
+        self.assertEqual('stage', self.machine.detached[-1][-2])
+
+    def test_a_tdm_battle_in_pregame_is_never_handed_over(self):
+        # Before its round is set up a world reports no persistence_mode, which reads as saving.
+        group, host = self.tdm_built(kind='BATTLE')
+        self.machine.query = lambda *args, **kwargs: {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32,
+                                                      'persistence_mode': None}
+        host.work('stage', host.request_stage()['operation'])
+        self.machine.detached.clear()
+        for _ in range(3):
+            self.machine.clock += 15 * 60
+            host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('stage', 'restart', 'handover')])
 
     def test_an_empty_tdm_barracks_restarts_onto_the_update(self):
         group, host = self.tdm_built()
