@@ -1163,8 +1163,65 @@ def cold_chest(kind, opened):
     return [c.image()]
 
 
+def rail_crane(hauling):
+    """The rail crane, 96 x 96 and centred on its tile (car heading north):
+    a green engine house on a turntable with its counterweight ahead and a
+    lattice jib reaching back over the next section of the car. Hauling, the
+    chimney steams and a sling hangs taut from the hook."""
+    def draw(c):
+        # the turntable and its roller path
+        c.shade(34, 36, 64, 64, 60)
+        c.disc(47.5, 47.5, 15, [STEEL[2], STEEL[3], STEEL[4]], outline=STEEL_O, flat=True)
+        c.ring(47.5, 47.5, 12, STEEL[1], 150)
+        # the counterweight ahead of the house
+        c.bevel(37, 27, 58, 34, BLACK[0], BLACK[2], BLACK[4], outline=DARK)
+        for x in (41, 47, 53):
+            c.put(x, 30, BLACK[0])
+        # the jib: two lattice booms, cross braces and the hoist rope
+        c.shade(45, 60, 54, 94, 50)
+        for y in range(56, 93):
+            c.put(43, y, STEEL_O)
+            c.put(44, y, YELLOW[0] if y % 8 < 4 else YELLOW[1])
+            c.put(50, y, YELLOW[1] if y % 8 < 4 else YELLOW[2])
+            c.put(51, y, STEEL_O)
+            k = (y - 56) % 12
+            x = 45 + (k if k < 6 else 11 - k)
+            c.put(min(x, 49), y, YELLOW[2])
+        c.rect(47, 52, 47, 91, DARK)
+        # the jib head, its sheave and the hook block
+        c.bevel(42, 89, 52, 94, YELLOW[0], YELLOW[1], YELLOW[3], outline=STEEL_O)
+        c.disc(47.5, 91.5, 2.2, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
+        if hauling:
+            c.rect(46, 84, 48, 88, RED[1])
+            c.put(47, 86, RED[0])
+            c.line(44, 80, 47, 84, DARK)
+            c.line(50, 80, 47, 84, DARK)
+        # the engine house: boiler end with the chimney, cab window, roof seam
+        c.bevel(36, 35, 59, 57, GREEN[0], GREEN[1], GREEN[3], outline=GREEN[4])
+        c.rect(38, 46, 57, 46, GREEN[2])
+        c.rect(38, 47, 57, 47, GREEN[0])
+        for x in (39, 56):
+            c.rivet(x, 37, GREEN[0], GREEN[4])
+            c.rivet(x, 55, GREEN[0], GREEN[4])
+        c.rect(40, 51, 47, 54, GLASS[3])
+        c.rect(41, 52, 46, 53, GLASS[1])
+        c.put(41, 52, WHITE)
+        c.disc(52.5, 40.5, 3.4, [BLACK[0], BLACK[2], BLACK[4]], outline=DARK)
+        c.disc(52.5, 40.5, 1.4, [DARK, DARK], flat=True)
+        c.disc(42.5, 40.5, 2.2, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+        if hauling:
+            for cx, cy, r, a in ((55, 37, 3.2, 170), (59, 33, 4.0, 130), (64, 28, 4.6, 90)):
+                for yy in range(int(cy - r), int(cy + r) + 1):
+                    for xx in range(int(cx - r), int(cx + r) + 1):
+                        if math.hypot(xx - cx, yy - cy) <= r:
+                            c.put(xx, yy, WHITE, a)
+    return directions(draw, w=96, h=96, order=HEADING)
+
+
 def load_states():
     out = {}
+    out['rail_crane'] = rail_crane(False)
+    out['rail_crane_haul'] = rail_crane(True)
     for part in 'fmdb':
         out['tank_' + part] = tank_shell(part)
     for tone in ('coal', 'ore', 'sand'):
@@ -2554,6 +2611,7 @@ CARS = {
     'bogie_sleeper': ('carpet', 'floor', [_vest] + [_win + _comp] * 6
                       + [_side_d + _back + [(L, 'front', 'partition'), (R, 'front', 'partition')]], 'coach'),
     'bogie_dining': ('floor', 'floor', [_vest] + [_win] * 6 + [_side_d + _back], 'coach'),
+    'crane_car': ('steel', 'steel', [_rails, [], [], _rails], None),
     'tank_car': ('steel', 'boards', [[], _rails, _rails, _rails, _rails, []], None),
     'brake_van': ('boards', 'boards', [_rails, _win + [(L, 'front', 'plank'), (0, 'front', 'door'), (R, 'front', 'plank')],
                                        _van, _win + [(L, 'back', 'plank'), (0, 'back', 'door'), (R, 'back', 'plank')]],
@@ -2910,6 +2968,24 @@ def write_previews(out, states, gun):
     for i, name in enumerate(('ice_bunker', 'ice_bunker_open', 'cold_locker', 'cold_locker_open')):
         im.alpha_composite(states[name][0].resize((64, 64), Image.NEAREST), (len(kinds) * 208 + 8 + i * 72, 24))
     big(im, 3).save(out / 'special-stock.png')
+
+    # the crane car heading east and north, at rest and hauling with its
+    # outriggers down
+    def crane_car(heading, hauling):
+        car = render_car(states, 'crane_car', heading, braced=hauling)
+        im = Image.new('RGBA', (car.width + 64, car.height + 64), (0, 0, 0, 0))
+        im.alpha_composite(car, (32, 32))
+        x, y = tile_pos(heading, 1, 0, 4)
+        im.alpha_composite(loads['rail_crane_haul' if hauling else 'rail_crane'][DIR_INDEX[heading]], (x * 32, y * 32))
+        x, y = tile_pos(heading, 0, L, 4)
+        im.alpha_composite(states['brace_down' if hauling else 'brace_up'][0], (32 + x * 32, 32 + y * 32))
+        return im
+    parts = [crane_car('E', False), crane_car('E', True), crane_car('N', True)]
+    im = ground(parts[0].width + parts[2].width + 16, parts[0].height * 2 + 8, seed=43)
+    im.alpha_composite(parts[0], (0, 0))
+    im.alpha_composite(parts[1], (0, parts[0].height))
+    im.alpha_composite(parts[2], (parts[0].width + 8, 8))
+    big(im, 3).save(out / 'crane-car.png')
 
     im = ground(4 * 104 + 8, 264 + 16, seed=41)
     for i, (kind, roof) in enumerate((('bogie_sleeper', False), ('bogie_sleeper', True), ('bogie_dining', False), ('bogie_dining', True))):

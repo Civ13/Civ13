@@ -72,6 +72,11 @@ var/global/list/hoist_exempt_types = list(
 		return "Someone is inside \the [A]."
 	return null
 
+// How far from the hoist a load on its own level can be slung. A rail crane
+// picks up anywhere under its jib (train_crane.dm).
+/obj/structure/workshop_machine/shear_legs/proc/sling_reach()
+	return 1
+
 /obj/structure/workshop_machine/shear_legs/proc/hauler_ready(mob/living/human/H)
 	return !QDELETED(src) && anchored && istype(H) && get_dist(src, H) <= 1 && H.z == z && !H.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
 
@@ -132,8 +137,8 @@ var/global/list/hoist_exempt_types = list(
 	if (!anchored)
 		to_chat(user, SPAN_WARNING("Fasten \the [src] down first."))
 		return
-	if (get_dist(src, dropping) > 1 || dropping.z != z)
-		to_chat(user, SPAN_WARNING("Bring \the [dropping] right beside \the [src] first."))
+	if (get_dist(src, dropping) > sling_reach() || dropping.z != z)
+		to_chat(user, SPAN_WARNING(sling_reach() > 1 ? "\The [dropping] is out of \the [src]'s reach. Bring it within [sling_reach()] tiles." : "Bring \the [dropping] right beside \the [src] first."))
 		return
 	var/problem = sling_problem(dropping)
 	if (problem)
@@ -144,7 +149,7 @@ var/global/list/hoist_exempt_types = list(
 		to_chat(user, SPAN_WARNING("There is nowhere to hoist \the [dropping] to. Raising needs open air above the load and a clear floor within [reach] tiles of \the [src] on the level above; lowering needs open air beside \the [src] with clear ground under it."))
 		return
 	var/choice = length(choices) == 1 ? choices[1] : player_input(user, "Where should \the [dropping] go?", "Shear legs", null, "anything", choices, TRUE)
-	if (!choice || busy || !hauler_ready(user) || sling_problem(dropping) || get_dist(src, dropping) > 1 || dropping.z != z)
+	if (!choice || busy || !hauler_ready(user) || sling_problem(dropping) || get_dist(src, dropping) > sling_reach() || dropping.z != z)
 		return
 	haul(user, dropping, choices[choice])
 

@@ -2940,6 +2940,8 @@ RECIPE: /material/iron/,tank valve,/obj/structure/train_tank_valve,4,150,1,1,tra
 RECIPE: /material/iron/,stock car kit,/obj/structure/train_car_kit/stock_car,30,500,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,ice car kit,/obj/structure/train_car_kit/ice_car,34,500,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,baggage and mail van kit,/obj/structure/train_car_kit/mail_van,30,500,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,crane car kit,/obj/structure/train_car_kit/crane_car,40,500,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,rail crane,/obj/structure/workshop_machine/shear_legs/crane/steam/rail,20,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,brake wheel,/obj/structure/train_brake_wheel,6,150,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,fire rake,/obj/item/train_fire_rake,2,80,0,0,trains,101,0,0,8,null
 RECIPE: /material/iron/,ash pit,/obj/structure/rail_ash_pit,6,200,1,1,trains,101,0,0,8,null
