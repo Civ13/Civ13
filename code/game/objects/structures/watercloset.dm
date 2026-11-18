@@ -923,7 +923,7 @@
 					break
 		if (!plumbed)
 			return TRUE
-	return (sewers && sewer_fouls_near(src)) || well_river_seepage() || latrine_fouls_near(src)
+	return (sewers && sewer_fouls_near(src)) || well_river_seepage() || latrine_fouls_near(src) || fracking_fouls_near(src)
 
 /obj/structure/sink/AltClick(var/mob/living/user)
 	var/H = user.get_active_hand()

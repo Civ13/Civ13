@@ -1,7 +1,7 @@
 // A finite terrain-consuming batch. Inputs live in native contents for saves.
 /obj/structure/drill/fracking
 	name = "hydraulic fracturing rig"
-	desc = "A Modern rig. Anchor beside mineable underground rock, connect 300 cable power, and load a freshwater barrel, an empty petroleum barrel and raw sand. A two-minute batch consumes one rock tile, 20 water and 5 sand for 50 petroleum. Each batch stops the rig."
+	desc = "A Modern rig. Anchor beside mineable underground rock, connect 300 cable power, and load a freshwater barrel, an empty petroleum barrel and raw sand. A two-minute batch consumes one rock tile, 20 water and 5 sand for 50 petroleum. Each batch stops the rig. On the continents it works only in the Americas, in a province its side holds, and each batch soils the ground around it and fouls nearby wells for a day."
 	powerneeded = 300
 	var/tmp/turf/fracture_target
 	var/tmp/datum/fracture_identity
@@ -31,6 +31,10 @@
 			break
 	if (!fracture_target)
 		to_chat(H, SPAN_WARNING("Anchor beside undepleted underground rock."))
+		return
+	var/refusal = fracking_refusal(H, get_turf(src)) // province_fracking.dm
+	if (refusal)
+		to_chat(H, SPAN_WARNING(refusal))
 		return
 	if (!fracture_target.sifting_identity)
 		fracture_target.sifting_identity = new /datum
@@ -71,6 +75,7 @@
 		sand.use(5)
 		fracture_target.change_the_turf()
 		output.reagents.add_reagent("petroleum", 50)
+		fracking_batch_cost(src)
 	return TRUE
 
 /obj/structure/drill/fracking/process_machine()
