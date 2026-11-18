@@ -41,13 +41,74 @@ var/global/list/hoist_exempt_types = list(
 			return TRUE
 	return FALSE
 
+// Wheeled loads roll on the flat and cannot be bumped up steps.
+var/global/list/wheeled_load_types = list(
+	/obj/structure/shopping_cart,
+	/obj/structure/bed/chair/wheelchair,
+)
+
+/proc/is_wheeled_load(atom/movable/A)
+	for (var/wheeled in wheeled_load_types)
+		if (istype(A, wheeled))
+			return TRUE
+	return FALSE
+
+// Why a pulled thing cannot come along between levels, or null when it can.
+// Stairs take what a body can drag up steps: people, animals, crates and
+// loose items, but not the hoist-only heavy things or wheeled carts. A ladder needs both
+// hands on the rungs, so only a person, a small animal or a loose item can be
+// hauled up or down one; crates, furniture and big animals cannot.
+/proc/level_change_load_problem(atom/movable/A, ladder = FALSE)
+	if (!A)
+		return null
+	if (isliving(A))
+		var/mob/living/L = A
+		if (ladder && L.mob_size > MOB_MEDIUM)
+			return "\The [A] is too big to haul up or down a ladder. Lead it round by the stairs."
+		return null
+	if (!isobj(A))
+		return null
+	if (needs_hoist(A))
+		return "\The [A] is far too heavy to haul [ladder ? "on a ladder" : "up or down stairs"]. Set up shear legs beside the drop and hoist it."
+	if (is_wheeled_load(A))
+		return "\The [A] runs on wheels and can't be dragged up or down [ladder ? "a ladder" : "steps"]."
+	if (ladder && !isitem(A))
+		return "You need both hands for the rungs, so you can't drag \the [A] up or down a ladder. Take it by the stairs, or hoist it with shear legs or a lift."
+	return null
+
 // TRUE, with the reason told to the climber, when what they pull cannot go
-// on a ladder. Every ladder climb in multiz/structures.dm asks this first.
+// on a ladder. Every ladder climb in multiz/structures.dm asks this before
+// and after the wait.
 /proc/ladder_refuses_load(mob/M)
-	if (!M || !M.pulling || !needs_hoist(M.pulling))
+	if (!M || !M.pulling)
 		return FALSE
-	to_chat(M, SPAN_WARNING("\The [M.pulling] is far too heavy to haul on a ladder. Let go of it, or set up shear legs beside the drop and hoist it."))
+	var/problem = level_change_load_problem(M.pulling, TRUE)
+	if (!problem)
+		return FALSE
+	to_chat(M, SPAN_WARNING("[problem] Let go of it to climb."))
 	return TRUE
+
+// Stairs, before the climber moves: let go of what cannot come along, with
+// the reason, and keep hold of what can.
+/proc/stairs_check_load(mob/living/M, turf/destination)
+	if (!M || !M.pulling)
+		return
+	var/atom/movable/load = M.pulling
+	var/problem = isturf(load.loc) ? level_change_load_problem(load, FALSE) : "You lose your hold on \the [load]."
+	if (!problem && !persistence_movement_allowed(load, destination))
+		problem = "\The [load] can't come with you there."
+	if (!problem)
+		return
+	to_chat(M, SPAN_WARNING("[problem] You let go of it."))
+	M.stop_pulling()
+
+// Stairs, after the climber has moved: what they still pull lands on their
+// tile, so the pull holds and the next step drags it on.
+/proc/stairs_bring_load(mob/living/M)
+	if (!M || !M.pulling || !isturf(M.loc) || QDELETED(M.pulling))
+		return
+	if (!M.pulling.forceMove(M.loc))
+		M.stop_pulling()
 
 //////////////////////////////////////////////////////////////////////////////
 // Shear legs
