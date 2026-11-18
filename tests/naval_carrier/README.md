@@ -422,3 +422,11 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Landfall:** with no answer, while the land is being opened, or while its world does not answer, she waits off the coast; she turns back after waiting too long or at once when the course is refused.
 - **Sea routes between the continents (`sea_lanes.dm`):** distances and compass bearings from the shared layout; unknown lands have no route and a land with no coast is not offered, nor a stopped one; an up one is, with its name, bearing, region and sailing time; landfall tries the coasts facing where she came from first; she sets out with no chart owner, the lookout sights nothing on a route, she waits off a coast whose world is down and turns back after waiting too long.
 - **A land across the sea:** voyages sail on from the land's own chart tile; a settled land is on every chart and the land she lies off is not offered; settling needs a mooring post and 3 beds slept in by different people within 40 tiles of it; a settled land, or the mainland, is never undecided.
+
+## Sea lighting behind a ship (`sea_lighting_probe.dm`)
+
+```bash
+python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/sea_lighting_probe.dm 300
+```
+
+A slipway schooner hops three tiles north over lit deep sea. Every tile of sea she leaves still has its lighting overlay once deep water's six-second sinking delay has passed, and a dropped item still sinks. Before the fix deep water sank the overlays carried onto the restored turfs, and the water behind her drew black.
