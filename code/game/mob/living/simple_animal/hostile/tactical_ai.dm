@@ -677,6 +677,9 @@
 			start_feeding(H)
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob
+		if (istype(L, /mob/living/simple_animal))
+			var/mob/living/simple_animal/prey = L
+			prey.note_harm("predators")
 		L.adjustBruteLoss(damage)
 		do_attack_animation(L)
 		if (L.stat == DEAD)

@@ -60,3 +60,8 @@ nip first, a three second bite cooldown, bites that build (6, 8, ... capped at
 14), no limb loss within five bites or beside a bank, a reset after a minute out
 of reach, no bites mid-jump, and limb loss only after sustained exposure in
 open water. Seeding places swarms only in open water.
+
+`feeding.dm` covers wild feeding: grazed grass stays grass and grows back,
+winter grass is pasture, seed eaters forage in grass and bushes, camels browse
+cacti, berry bushes and dead plants are left alone, and the death tally counts
+starvation, predator, person and other deaths and writes its hourly report.

@@ -271,14 +271,15 @@ class CorpseTests(unittest.TestCase):
         env = dict(parent=parent, DEAD=self.DEAD, HOSTILE=object(), WIZARD_MAP=object(), map=None,
                    istype=lambda value, kind: False, ishuman=lambda value: False,
                    walk=lambda target, direction: trace.append(('walk', direction)),
-                   delayed_decay=lambda target, timer: trace.append(('decay', timer)))
+                   delayed_decay=lambda target, timer: trace.append(('decay', timer)),
+                   wildlife_deaths=N(record=lambda target: trace.append('tally')))
         return animal, project('/death()\n' + body + '\n', '/death', 'src', env)
 
     def test_first_death_schedules_one_decay(self):
         trace = []
         animal, invoke = self.animal_death(0, trace)
         self.assertTrue(invoke(animal))
-        self.assertEqual(trace, [('walk', 0), 'unregister', ('decay', 3000), 'parent'])
+        self.assertEqual(trace, [('walk', 0), 'unregister', ('decay', 3000), 'tally', 'parent'])
         self.assertEqual((animal.stat, animal.icon_state, animal.density), (self.DEAD, 'dead', False))
         self.assertIsNone(animal.npc_subtile_pending_intent)
 
@@ -296,6 +297,7 @@ class CorpseTests(unittest.TestCase):
         for _ in range(3):
             invoke(animal)
         self.assertEqual(trace.count(('decay', 3000)), 1)
+        self.assertEqual(trace.count('tally'), 1)
         self.assertEqual(trace.count('parent'), 1)
 
     def test_control_unguarded_death_decays_on_every_call(self):
