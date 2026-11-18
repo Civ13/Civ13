@@ -1,7 +1,8 @@
 """Forbidden source patterns stay at or below their recorded baseline; no BYOND runtime.
 
 The repository check is the CI contract: a file may only lower its count of
-spawn(), "in world" loops, untyped WWinput results and merge markers. The unit
+spawn(), "in world" loops, untyped WWinput results, hard del() calls,
+global lists that gain src and are never pruned, and merge markers. The unit
 cases pin the matcher behaviour the baseline relies on.
 """
 import importlib.util
@@ -65,6 +66,37 @@ class MatcherTests(unittest.TestCase):
                 '\t\t"Prompt", "Default", "num")\n')
         found = self.module.wwinput_matches(text)
         self.assertEqual([number for number, _ in found], [1, 5])
+
+    def test_hard_del_is_not_qdel(self):
+        text = ('\tdel(A)\n'
+                '\tqdel(A)\n'
+                '\tQDEL_NULL(A)\n'
+                '\tS.del(1)\n'
+                '\tdel (src)\n'
+                '\tmodel(1)\n'
+                '\t// del(A)\n')
+        found = self.module.regex_matches(text, self.module.PATTERNS['hard_del'][2], 'dm')
+        self.assertEqual([number for number, _ in found], [1, 5])
+
+    def test_unpruned_global_list_needs_any_removal(self):
+        add = 'var/global/list/things = list()\n/obj/thing/New()\n\t..()\n\tthings += src\n'
+        self.assertEqual(self.module.unpruned_global_lists([add]), {'things'})
+        self.assertEqual(self.module.unpruned_matches(add, {'things'}), [(4, 'things += src')])
+        for removal in ('things -= src', 'things.Remove(src)', 'things.Cut(i, i + 1)',
+                        'things = list()', 'GLOB.things -= src', 'global.things = null'):
+            with self.subTest(removal=removal):
+                other = f'/obj/thing/Destroy()\n\t{removal}\n\treturn ..()\n'
+                self.assertEqual(self.module.unpruned_global_lists([add, other]), set())
+
+    def test_unpruned_global_list_ignores_declarations_comments_and_locals(self):
+        text = ('var/list/things = list()\n'
+                '/obj/thing/New()\n'
+                '\tGLOB.things |= src\n'
+                '\t// things -= src\n'
+                '\tto_chat(world, "things -= src")\n'
+                '\tvar/list/mine = list()\n'
+                '\tmine += src\n')
+        self.assertEqual(self.module.unpruned_global_lists([text]), {'things'})
 
     def test_merge_markers(self):
         text = '<<<<<<< HEAD\n"aa" = (/turf)\n>>>>>>> branch\n=======\n'

@@ -115,6 +115,7 @@
 	unregister_corpse_decay()
 	human_mob_list -= src
 	human_clients_mob_list -= src
+	faction_hud_users -= src
 	for (var/organ in organs)
 		qdel(organ)
 	return ..()

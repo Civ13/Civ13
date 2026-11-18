@@ -118,6 +118,85 @@ CI selection and the offline baseline are described in
 (`SpacemanDMM.toml`). Contributor and agent rules live in
 [AGENTS.md](AGENTS.md) and [CODEX.md](CODEX.md).
 
+## Coding pitfalls
+
+Most persistent-world bugs come from a few habits that look harmless in code
+review. Each rule below names the check that guards it; run those checks with
+`python3 scripts/agent_preflight.py all --write` before pushing.
+
+### Persistence: what the saver really saves
+
+- **`var/tmp` does not keep a field out of a save.** The saver walks every
+  changed var on mobs, items and structures, tmp vars included. Exclude
+  process-local state in `persistence_runtime_var()` (see
+  `code/modules/persistence/functions.dm`), or, for a `world.time` stamp, in
+  `code/modules/persistence/world_time_stamps.dm`.
+  Guard: `tests/persistence_pointers/test_world_time_stamps.py`.
+- **Never save a `world.time` stamp.** `world.time` starts at zero after every
+  reboot, so a restored cooldown sits hours in the future: a door stayed shut,
+  an animal could not bite, a ship stayed "at sea" with no timer to bring her
+  in. Register the stamp in `world_time_stamps.dm`, or store `world.realtime`.
+  Same guard as above.
+- **Do not keep references to things on another z-level, or to throwaway
+  objects, in a saved field.** Each level saves on its own, so a cross-level
+  reference fails the whole save closed (one stale `lastattacker` once blocked
+  every save). AI targets, grabs, HUD actions, attack logs and client links are
+  runtime state: exclude them. Only fields declared with
+  `persistence_level_link_var()` may cross levels. Never clear a live pointer
+  just to make a save pass. Guard: the save itself, plus
+  `tests/persistence_pointers` and [the pointer audit](docs/persistence-pointer-audit.md).
+- **Do not store `\ref[]`/`REF()` strings, timer ids or client/ckey-bound
+  objects as durable data.** Refs are recycled after a reboot and timers are
+  not saved (`active_timers` is excluded), so a timer-driven loop stops after a
+  load. Restart it in `after_load()`.
+- **Keep first-spawn work out of `New()`.** A load builds each saved atom with
+  `new type(loc)` before its fields arrive, and the saver omits fields still
+  at their default. Random looks, starting inventory, serial numbers and
+  random stats go in `on_runtime_spawn()`; anything derived from a saved field
+  is rebuilt in `after_load()`, never by a timer. A constructor that throws
+  aborts the whole import. See `code/modules/persistence/restore_contract.dm`.
+  Guard: `tests/load_construction/run.py` (native, run by hand).
+- **Do not save icons, images or sounds you can rebuild.** A savefile embeds a
+  full copy of every resource held in a field, per entry; derived art once made
+  up about 80% of a Gaia level file. Rebuild them from type defaults
+  (`code/modules/persistence/derived_assets.dm`).
+
+### Memory: stale references and leaks
+
+- **Delete with `qdel()`, never `del()`.** `del()` scans every reference in the
+  world: 18 ms per datum and 67 ms per mob on Gaia. `del()` stays only for
+  savefiles, clients, the world and the collector itself.
+  Guard: `hard_del` in `scripts/check_forbidden_patterns.py`.
+- **Whatever adds `src` to a list takes it out in `Destroy()`.** A global or
+  owner list that still holds a deleted object keeps it alive: `qdel` cannot
+  collect it, the collector falls back to a slow forced delete 30 seconds later
+  and the list grows forever. Humans used to stay in `faction_hud_users` this
+  way. Guard: `unpruned_global_list` in `scripts/check_forbidden_patterns.py`
+  fails on a global list that gains `src` and is never removed from.
+- **`Destroy()` must call `..()` and should null out the references it owns.**
+  The base proc cancels the datum's timers and drops its weak reference;
+  `SHOULD_CALL_PARENT` makes dreamchecker flag a missing call.
+- **Hold another object you do not own through a weak reference.** Use
+  `WEAKREF(thing)` and `resolve()` it when needed, or clear the field when the
+  target is destroyed. Check `QDELETED(thing)` before using a reference that may
+  have outlived its target, especially after any `sleep`, `spawn`, `do_after` or
+  timer. Guard: `tests/weakref_ownership` (native).
+- **Prefer `addtimer(CALLBACK(...))` or a `/process` to `spawn()`, and typed
+  global lists to `in world` loops.** A sleeping `spawn()` cannot be cancelled
+  and keeps its frame (and every reference in it) alive; `in world` walks every
+  atom. Guard: `spawn` and `in_world` in `scripts/check_forbidden_patterns.py`
+  (existing uses are capped per file; preflight fails on a new one and CI
+  flags it).
+- **Yield in long loops.** A loop over a whole map needs `TICK_CHECK` (or
+  `PROCESS_TICK_CHECK` in a process) on every path, `continue` paths included,
+  or the server stalls. Never walk a large savefile directory with `for(x in
+  S.dir)`: it is quadratic.
+
+Deeper notes live in the scoped guides:
+[persistence](docs/agent-guides/persistence/README.md),
+[runtime and memory](docs/agent-guides/runtime-memory/README.md) and
+[GC triage](docs/gc-triage.md).
+
 ## Agent control and MCP
 
 - [Agent control](docs/agent-control.md) lets scripts and LLM agents observe and

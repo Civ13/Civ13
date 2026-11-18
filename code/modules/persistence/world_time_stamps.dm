@@ -130,7 +130,26 @@ var/global/list/persistence_world_time_stamps = list(
 	"smoked_until" = list(/obj/structure/wild_bee_nest, /obj/structure/kept_hive, /obj/structure/beehive),
 	"overloaded_until" = list(/obj/item/integrated_circuit),
 	"next_editor_refresh" = list(/obj/item/integrated_circuit),
-	"editor_refresh_timer" = list(/obj/item/integrated_circuit)
+	"editor_refresh_timer" = list(/obj/item/integrated_circuit),
+	// Declared var/tmp, which the saver does not skip: these were restored too.
+	"next_melee_attack" = list(/mob/living/simple_animal),
+	"next_hoof_dust" = list(/mob/living/simple_animal),
+	"harm_time" = list(/mob/living/simple_animal),
+	"npc_subtile_watch_checked" = list(/mob/living/simple_animal),
+	"human_subtile_smooth_start" = list(/mob/living/human),
+	"antibiotic_dose_shared_at" = list(/mob/living/human),
+	"life_heat_scan_until" = list(/mob/living/human),
+	"bite_fracture_guard" = list(/mob/living/human),
+	"last_hair_growth_time" = list(/mob/living/human),
+	"human_pull_tile_at" = list(/mob/living/human),
+	"human_pull_tile_pace" = list(/mob/living/human),
+	"next_call" = list(/obj/item/weapon/whistle/broadside),
+	"voyage" = list(/obj/structure/hull_tiller),
+	"landfall_at" = list(/obj/structure/hull_tiller),
+	"air_crossing_hold" = list(/obj/structure/vehicleparts/axis/aircraft),
+	"hold_started" = list(/obj/item/car_door_hold),
+	"strain_time" = list(/obj/item/car_door_hold),
+	"ashore_since" = list(/obj/structure/vehicle/raft)
 )
 
 /proc/persistence_world_time_stamp(datum/D, key)
