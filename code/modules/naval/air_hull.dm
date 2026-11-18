@@ -233,10 +233,10 @@ var/global/list/air_hull_crafts = list()
 /obj/item/airship_gas_cell/attackby(obj/item/W, mob/user)
 	if (type != /obj/item/airship_gas_cell)
 		return ..()
-	if (istype(W, /obj/item/stack/material/plastic))
+	if (istype(W, /obj/item/stack/material/plastic) || istype(W, /obj/item/stack/material/rubber))
 		var/obj/item/stack/S = W
 		if (S.amount < AIR_HULL_RUBBER_SHEETS)
-			to_chat(user, SPAN_WARNING("You need [AIR_HULL_RUBBER_SHEETS] plastic sheets to coat the whole cell."))
+			to_chat(user, SPAN_WARNING("You need [AIR_HULL_RUBBER_SHEETS] sheets of plastic or rubber to coat the whole cell."))
 			return
 		to_chat(user, SPAN_NOTICE("You start coating \the [src] with rubber..."))
 		if (!do_after(user, AIR_HULL_CELL_TIME, src) || QDELETED(src) || !S.use(AIR_HULL_RUBBER_SHEETS))

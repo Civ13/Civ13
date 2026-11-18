@@ -366,6 +366,17 @@ var/list/material/name_to_material
 	integrity = 30
 	resilience = 0.3
 
+/material/rubber
+	name = "rubber"
+	icon_colour = "#3a312b"
+	hardness = 20
+	weight = 8
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
+	stack_type = /obj/item/stack/material/rubber
+	integrity = 25
+	resilience = 0.3
+
 /material/tin
 	name = "tin"
 	icon_colour = "#d3d4d5"

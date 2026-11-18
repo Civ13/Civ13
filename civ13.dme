@@ -1016,6 +1016,7 @@
 #include "code\modules\1713\resource_sifting.dm"
 #include "code\modules\1713\hydraulic_fracturing.dm"
 #include "code\modules\1713\automated_sifting.dm"
+#include "code\modules\1713\rubber_tapping.dm"
 #include "code\modules\1713\stone_crushing.dm"
 #include "code\modules\1713\pepelsibirsk_traders.dm"
 #include "code\modules\1713\plating.dm"

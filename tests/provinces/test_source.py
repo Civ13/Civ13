@@ -300,6 +300,30 @@ class Fracking(unittest.TestCase):
         self.assertIn('#include "code\\modules\\provinces\\province_fracking.dm"', DME.read_text(encoding='utf-8'))
 
 
+class RubberTrees(unittest.TestCase):
+    """Val (2026-11-18): rubber trees grow only in jungle (Africa, Asia's south, the Jungle)."""
+
+    def test_rules_and_wiring(self):
+        text = (ROOT / 'code/modules/1713/rubber_tapping.dm').read_text(encoding='utf-8')
+        for line in ('lands = list(MAP_NOMADS_JUNGLE, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ASIA)',
+                     'return type == /obj/structure/wild/jungle && health > 0 && rubber_trees_here()',
+                     '#define RUBBER_TAP_LATEX 10', '#define RUBBER_CURE_LATEX 10'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+        wild = (ROOT / 'code/game/objects/structures/wild.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)\n\tif (rubber_tap_attackby(src, W, user))', wild)
+        ores = (ROOT / 'code/modules/1713/ores.dm').read_text(encoding='utf-8')
+        self.assertIn('if (rubber_cure_attackby(src, W, H)) // rubber_tapping.dm', ores)
+        self.assertIn('istype(W, /obj/item/stack/material/plastic) || istype(W, /obj/item/stack/material/rubber)',
+                      (ROOT / 'code/modules/naval/air_hull.dm').read_text(encoding='utf-8'))
+        self.assertIn('RECIPE: /material/rubber/,rubber boots,', (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8'))
+        self.assertIn('text += " [rubber_text()]"', RESOURCES.read_text(encoding='utf-8'))
+
+
 class Ranks(unittest.TestCase):
     """Val (2026-11-18): a clear objective for city building and defence."""
 

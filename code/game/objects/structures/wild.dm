@@ -1295,6 +1295,8 @@ var/list/seed_list_jungle
 		qdel(src)
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
+	if (rubber_tap_attackby(src, W, user)) // rubber_tapping.dm
+		return
 	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10

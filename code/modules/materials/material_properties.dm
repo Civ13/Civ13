@@ -385,6 +385,16 @@
 	spring = 30
 	shaping = SHAPE_MOULDED
 
+/material/rubber
+	density = 10
+	firmness = 5
+	toughness = 25
+	wear = 35
+	heat_limit = 120
+	corrosion = 0
+	spring = 30
+	shaping = SHAPE_MOULDED
+
 /material/kevlar
 	density = 18
 	firmness = 10

@@ -16669,6 +16669,50 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Tap a rubber tree for latex",
+      "file": "code/modules/1713/rubber_tapping.dm",
+      "line": 81,
+      "source_commit": "f6f557cc047e15b8a308e6a6e2ee84f41aaf5323",
+      "inputs": [],
+      "outputs": [
+        "latex"
+      ],
+      "tools": [
+        "/obj/structure/wild/jungle",
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Hold a knife in one hand and use an open container on a living jungle tree.",
+        "The container catches 10 units of latex. The tree bleeds again after 20 minutes."
+      ],
+      "conditions": "Only in the jungles of the Jungle, Africa and Asia on the continents; lands that are not continents keep their rubber trees.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cure latex into rubber",
+      "file": "code/modules/1713/rubber_tapping.dm",
+      "line": 109,
+      "source_commit": "f6f557cc047e15b8a308e6a6e2ee84f41aaf5323",
+      "inputs": [
+        "latex",
+        "/obj/item/stack/ore/sulphur"
+      ],
+      "outputs": [
+        "/material/rubber"
+      ],
+      "tools": [],
+      "steps": [
+        "Use a container holding at least 10 units of latex on a sulphur rock.",
+        "The latex and one sulphur rock cure into one rubber sheet."
+      ],
+      "conditions": "Needs 10 latex and one sulphur rock per sheet.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Dry tobacco leaves",
       "file": "code/modules/materials/material_sheets.dm",
       "line": 547,

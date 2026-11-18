@@ -3388,6 +3388,7 @@ RECIPE: /material/electronics/,standard power cell,/obj/item/weapon/cell/standar
 RECIPE: /material/plastic/,autoinjector,/obj/item/weapon/reagent_containers/syringe/autoinjector,1,45,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,body bag,/obj/item/bodybag,3,60,0,1,medical,0,0,0,8,null
 RECIPE: /material/plastic/,rubber boots,/obj/item/clothing/shoes/weather/rubber_boots,3,60,0,1,foot wear,0,0,0,8,null
+RECIPE: /material/rubber/,rubber boots,/obj/item/clothing/shoes/weather/rubber_boots,3,60,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/plastic/,retention lanyard,/obj/item/clothing/accessory/storage/lanyard/retention,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/steel/,foldable mortar,/obj/item/weapon/foldable/generic,20,400,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,mortar shell,/obj/item/cannon_ball/mortar_shell,6,120,0,1,ammunition,0,0,0,8,null
