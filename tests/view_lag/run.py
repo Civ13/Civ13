@@ -74,6 +74,7 @@ class Window:
         self.box = None
         self.closing = {}
         self.want_focus = False
+        self.active = False
         self.screen = self.memory = self.bitmap = None
 
     def find(self):
@@ -126,10 +127,14 @@ class Window:
             return True
 
         self.user32.EnumWindows(visit, None)
+        main = (ctypes.c_long * 4)()
+        self.user32.GetWindowRect(ctypes.c_void_p(self.hwnd), main)
+        main_area = (main[2] - main[0]) * (main[3] - main[1])
         for hwnd in found:
             rect = (ctypes.c_long * 4)()
             self.user32.GetWindowRect(ctypes.c_void_p(hwnd), rect)
-            if rect[2] - rect[0] <= 50 or rect[3] - rect[1] <= 50:
+            width, height = rect[2] - rect[0], rect[3] - rect[1]
+            if width <= 50 or height <= 50 or width * height > main_area / 4:
                 continue
             title = ctypes.create_unicode_buffer(256)
             self.user32.GetWindowTextW(ctypes.c_void_p(hwnd), title, 256)
@@ -142,15 +147,17 @@ class Window:
                 self.closing[hwnd] = tries + 1
             else:
                 self.user32.ShowWindow(ctypes.c_void_p(hwnd), 0)  # SW_HIDE
-            log(f'closed client dialog {title.value!r}')
+            log(f'closed client dialog {title.value!r} {width}x{height}')
 
     def keep(self, log, stop):
         """Background: keeps popups away and the window in front."""
         while not stop.is_set():
             try:
-                if self.hwnd or self.find():
+                # Only once the game is running: the connecting window is the
+                # client's largest window before that, and must not be touched.
+                if self.active and self.find():
                     self.dismiss_dialogs(log)
-                    if self.want_focus:
+                    if self.want_focus and self.active:
                         self.focus()
             except OSError:
                 pass
@@ -358,6 +365,8 @@ def main():
                     client_data[stage.name] = stage.finish()
                     stage = None
                 print(f'[{round(time.monotonic() - started)} s] {phase} {info.get("action")}', flush=True)
+                if phase.startswith('switch_') and window:
+                    window.active = True
                 if phase.startswith('measure_') and window:
                     stage = Stage(window, phase[len('measure_'):], info.get('action'), info.get('map'), output / 'shots')
                 last_phase = phase

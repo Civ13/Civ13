@@ -315,6 +315,9 @@ var/global/list/view_lag_off = list()
 	var/glide_max = 0
 	var/moves = 0
 	var/list/step_gaps = list()
+	// Why a held key does or does not carry the body on (movementMachine.dm).
+	var/list/held = list("ticks_held" = 0, "ready" = 0, "moving" = 0, "busy" = 0, "not_listed" = 0, "delay" = 0, "cannot_move" = 0, "fine_wait" = 0)
+	var/list/trace = list()
 	var/last_move = 0
 	var/turf/last_turf = get_turf(M)
 	var/images_max = 0
@@ -341,6 +344,31 @@ var/global/list/view_lag_off = list()
 		if(C)
 			images_max = max(images_max, length(C.images))
 			screen_max = max(screen_max, length(C.screen))
+		if(C && C.mob == M && (M.movement_eastwest || M.movement_northsouth))
+			held["ticks_held"]++
+			var/blocked = FALSE
+			if(C.moving)
+				held["moving"]++
+				blocked = TRUE
+			if(C.movement_busy)
+				held["busy"]++
+				blocked = TRUE
+			if(!(C in movementMachine_clients))
+				held["not_listed"]++
+				blocked = TRUE
+			if(world.time < C.move_delay)
+				held["delay"]++
+				blocked = TRUE
+			if(!C.canmove)
+				held["cannot_move"]++
+				blocked = TRUE
+			if(M.movement_fine && world.time < C.fine_offset_glide_at)
+				held["fine_wait"]++
+				blocked = TRUE
+			if(!blocked)
+				held["ready"]++
+		if(C && trace.len < 120 && runner_action == "walk")
+			trace += list(list(world.time, M.movement_eastwest, C.moving, C.movement_busy, (C in movementMachine_clients) ? 1 : 0, round(C.move_delay - world.time, 0.1), C.canmove, M.movement_fine, M.x, M:step_x))
 		samples++
 		sleep(world.tick_lag)
 	var/profile = world.Profile(PROFILE_REFRESH, null, "json")
@@ -360,6 +388,7 @@ var/global/list/view_lag_off = list()
 		"see_invisible" = M.see_invisible, "see_in_dark" = M.see_in_dark,
 		"los_presenter" = !!(C && C.los_presenter && !C.los_presenter.retired),
 		"compositor" = !!(C && C.root_tree_presenter && !C.root_tree_presenter.retired),
+		"held" = held, "trace" = trace, "trace_columns" = "time,eastwest,moving,busy,listed,delay,canmove,fine,x,step_x",
 		"tick_lag" = world.tick_lag, "top_procs" = profile ? top_procs(profile) : list())
 	stages[name] = row
 	mark("done_[name]", "none")

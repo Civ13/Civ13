@@ -114,7 +114,7 @@ def stage_rows(result, network, client):
     for name, row in (result.get('stages') or {}).items():
         out = {k: row.get(k) for k in ('role', 'kind', 'seconds', 'tick_usage_avg', 'tick_usage_p95', 'tick_usage_max', 'cpu_avg',
                                        'map_cpu_avg', 'map_cpu_max', 'glide_avg', 'moves', 'images_max', 'images_end', 'screen_max',
-                                       'see_invisible', 'los_presenter', 'compositor', 'tick_lag')}
+                                       'see_invisible', 'los_presenter', 'compositor', 'tick_lag', 'held')}
         out.update(step_stats(row.get('step_gaps_ds') or [], row.get('tick_lag')))
         out['glide_vs_step'] = glide_match(out)
         if out.get('kind') in ('walk', 'crowd'):
@@ -205,6 +205,10 @@ def markdown(summary):
     lines.append('| --- | ' + ' | '.join('---' for _ in cols) + ' |')
     for name, row in rows.items():
         lines.append(f'| {name} | ' + ' | '.join('-' if row.get(c) is None else str(row.get(c)) for c in cols) + ' |')
+    lines += ['', '## Held keys while walking', '', 'Probe ticks with a movement key held, and what kept the body from its next step.', '']
+    for name, row in rows.items():
+        if name.endswith('_walk') and row.get('held'):
+            lines.append(f"- **{name}**: " + ', '.join(f'{k} {v}' for k, v in row['held'].items()))
     lines += ['', '## Heaviest procs walking (self time, first five per role)', '']
     for name, row in rows.items():
         if not name.endswith('_walk'):
