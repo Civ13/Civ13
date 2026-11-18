@@ -543,6 +543,18 @@ var/global/train_solo_move = FALSE
 		// Deck and body tiles are the clearance check's business (train_consist_obstacle):
 		// on a curve the leading car's own side tile lies on the track ahead.
 		if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/train_part))
+			// A buffer stop takes a train up to a hard blow and stands
+			// (train_trackworks.dm); a harder one wrecks both.
+			if (istype(O, /obj/structure/train_buffer_stop))
+				var/obj/structure/train_buffer_stop/stop = O
+				automovement = FALSE
+				if (stop.hold(impact))
+					visible_message("<span class = 'warning'>\The [src] [impact < 0.5 ? "comes to rest against" : "runs hard into"] \the [stop], which holds.</span>")
+					return TRUE
+				if (!train_crash(stop, impact, fdir))
+					visible_message("<span class = 'warning'>\The [src] hits \the [stop]!</span>")
+				stop.smash()
+				return TRUE
 			// A wall, door or pillar on the line takes the train's weight
 			// (structure_impact.dm); one that gives way does not stop it.
 			if (impact >= 0.5 && is_structure_impact_part(O))

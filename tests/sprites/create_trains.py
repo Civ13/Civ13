@@ -1131,6 +1131,65 @@ def signal_wire():
     return [c.image()]
 
 
+def buffer_stop(c):
+    """A buffer stop at the end of a line that runs north: two raking rails
+    bolted to the track, a red beam across them and a buffer over each rail."""
+    c.shade(5, 9, 30, 13, 70)
+    for x in (6, 26):
+        c.rect(x - 1, 11, x + 3, 30, STEEL_O)
+        c.bands(x, 12, x + 2, 29, [STEEL[1], STEEL[2], STEEL[4]], along=True)
+        for y in (16, 22, 28):
+            c.rivet(x + 1, y, STEEL[0], STEEL_O)
+    # the cross brace between the raking rails
+    c.rect(9, 19, 25, 22, WALNUT[3])
+    c.rect(9, 20, 25, 21, WALNUT[1])
+    c.rect(9, 20, 25, 20, WALNUT[0])
+    # the beam, red with a white band
+    c.bevel(2, 3, 31, 9, RED[0], RED[1], RED[2], outline=RED[3])
+    c.rect(13, 4, 20, 8, CREAM[0])
+    c.rect(13, 8, 20, 8, CREAM[2])
+    # the buffers face the train
+    for x in (7.5, 27.5):
+        c.rect(int(x), 10, int(x) + 1, 12, STEEL[4])
+        c.disc(x, 13.5, 2.6, [STEEL[0], STEEL[1], STEEL[3]], outline=STEEL_O)
+
+
+def crossing_boards(c):
+    """Boards between and beside the rails of a line that runs north."""
+    for x0, x1, seed in ((0, 4, 71), (10, 24, 72), (30, 31, 73)):
+        c.rect(x0, 0, x1, 31, OLD_SEAM)
+        for x in range(x0, x1 + 1):
+            tone = OLD_PLANK[(x * 7 + seed) % len(OLD_PLANK)]
+            for y in range(32):
+                c.put(x, y, OLD_SEAM if (x - x0) % 5 == 4 and x != x1 else (mix(tone, DARK, 0.18) if noise(x, y // 3, seed) > 0.82 else tone))
+    for y in (3, 15, 28):
+        for x in (2, 12, 17, 22):
+            c.put(x, y, STEEL[4])
+
+
+def crossing_gate(c, shut):
+    """A crossing gate beside rails that lie to the north: shut, it lies
+    across the road along the top of its tile; open, it is swung back along
+    the left edge of the road."""
+    c.shade(2, 4, 6, 8, 70)
+    if shut:
+        c.shade(4, 7, 31, 8, 60)
+        c.bevel(3, 2, 31, 6, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+        for x in (10, 18, 26):
+            c.rect(x, 3, x, 5, CREAM[3])
+        c.disc(17.0, 4.0, 3.4, [(255, 190, 170), RED[0], RED[1], RED[2]], outline=DARK)
+        c.bevel(28, 1, 31, 7, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+    else:
+        c.shade(5, 4, 6, 31, 60)
+        c.bevel(1, 3, 5, 31, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+        for y in (10, 18, 26):
+            c.rect(2, y, 4, y, CREAM[3])
+        c.disc(3.0, 17.0, 3.4, [(255, 190, 170), RED[0], RED[1], RED[2]], outline=DARK)
+    # the hinge post
+    c.bevel(0, 0, 5, 6, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+    c.put(2, 3, BRASS[0])
+
+
 def station_board():
     """A station name board: a long white board on two posts."""
     c = Canvas(32, 32)
@@ -3025,6 +3084,10 @@ def platform_states():
     states['section_board'] = section_board()
     states['signal_wire'] = signal_wire()
     states['station_board'] = station_board()
+    states['buffer_stop'] = directions(buffer_stop, order=HEADING)
+    states['crossing_boards'] = directions(crossing_boards, order=HEADING)
+    states['crossing_gate_shut'] = directions(lambda c: crossing_gate(c, True), order=HEADING)
+    states['crossing_gate_open'] = directions(lambda c: crossing_gate(c, False), order=HEADING)
     states['hand_lamp'] = hand_lamp(None)
     states['hand_lamp_white'] = hand_lamp('white')
     states['hand_lamp_red'] = hand_lamp('red')
@@ -3333,6 +3396,22 @@ def write_previews(out, states, gun):
     for i, name in enumerate(names):
         im.alpha_composite(states[name][0], (8 + i * 40, 8))
     big(im, 6).save(out / 'stations.png')
+
+    # track works: a line ending at a buffer stop, and a level crossing with
+    # its gates open to the road, then shut across it
+    rail = read_dmi(RAILS)['rails']
+    im = ground(3 * 112 + 16, 5 * 32 + 16, seed=29)
+    for y in range(1, 5):
+        im.alpha_composite(rail[DIR_INDEX['N']], (40, 8 + y * 32))
+    im.alpha_composite(states['buffer_stop'][DIR_INDEX['N']], (40, 8 + 32))
+    for k, name in enumerate(('crossing_gate_open', 'crossing_gate_shut')):
+        x0 = 112 + k * 112 + 8
+        for x in range(3):
+            im.alpha_composite(rail[DIR_INDEX['E']], (x0 + x * 32, 8 + 2 * 32))
+        im.alpha_composite(states['crossing_boards'][DIR_INDEX['E']], (x0 + 32, 8 + 2 * 32))
+        im.alpha_composite(states[name][DIR_INDEX['S']], (x0 + 32, 8 + 32))
+        im.alpha_composite(states[name][DIR_INDEX['N']], (x0 + 32, 8 + 3 * 32))
+    big(im, 5).save(out / 'trackworks.png')
 
     # off the rails: a derailed boxcar, the same car rerailed, and the jack
     im = ground(2 * 104 + 8 + 56, 8 * 32 + 16, seed=19)

@@ -2961,6 +2961,9 @@ RECIPE: /material/wood/,coaling stage,/obj/structure/rail_depot/coal_stage,20,30
 RECIPE: /material/wood/,sand bin,/obj/structure/rail_depot/sand_bin,8,200,1,1,trains,101,0,0,8,null
 RECIPE: /material/wood/,section board,/obj/structure/train_lineside/board,3,100,1,1,trains,101,0,0,8,null
 RECIPE: /material/wood/,station name board,/obj/structure/train_lineside/station,4,120,1,1,trains,101,0,0,8,null
+RECIPE: /material/wood/,crossing boards,/obj/structure/train_crossing_boards,2,80,1,1,trains,101,0,0,8,null
+RECIPE: /material/wood/,crossing gate,/obj/structure/train_lineside/gate,4,150,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,buffer stop,/obj/structure/train_buffer_stop,4,150,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,snowplough,/obj/item/train_snowplough,10,200,0,0,trains,101,0,0,8,null
 RECIPE: /material/steel/,automatic coupler,/obj/item/train_coupling/automatic,6,120,0,0,trains,140,0,0,8,null
 RECIPE: /material/steel/,bogie coach kit,/obj/structure/train_car_kit/bogie_coach,26,500,1,1,trains,140,0,0,8,null

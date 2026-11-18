@@ -187,7 +187,7 @@ var/global/list/train_instruments = list()
 		frame_id = "[rand(1, 9999999)]"
 	return frame_id
 
-// The signals and switch levers wired to this frame: signals first.
+// The signals, crossing gates and switch levers wired to this frame: signals first.
 /obj/structure/train_lever_frame/proc/worked()
 	if (levers)
 		for (var/atom/A in levers)
@@ -200,6 +200,9 @@ var/global/list/train_instruments = list()
 			for (var/obj/structure/train_lineside/signal/S in train_lineside)
 				if (S.worked_by == frame_id && S.z == z && get_dist(S, src) <= FRAME_REACH)
 					levers += S
+			for (var/obj/structure/train_lineside/gate/G in train_lineside)
+				if (G.worked_by == frame_id && G.z == z && get_dist(G, src) <= FRAME_REACH)
+					levers += G
 			for (var/obj/structure/train_lever/V in range(FRAME_REACH, src))
 				if (V.worked_by == frame_id)
 					levers += V
@@ -208,6 +211,8 @@ var/global/list/train_instruments = list()
 // Wires a signal or a switch lever to the frame, or takes it off again.
 // Returns a line for whoever did it.
 /obj/structure/train_lever_frame/proc/wire(atom/A)
+	if (istype(A, /obj/structure/train_lineside/gate))
+		return wire_gate(A)
 	if (!istype(A, /obj/structure/train_lineside/signal) && !istype(A, /obj/structure/train_lever))
 		return null
 	var/obj/structure/train_lineside/signal/S = istype(A, /obj/structure/train_lineside/signal) ? A : null
@@ -232,9 +237,44 @@ var/global/list/train_instruments = list()
 	levers = null
 	return "You wire \the [A] to \the [src]. It is worked from the frame now."
 
+// Wires the gates of a level crossing to the frame, or takes them off: one
+// lever swings them all.
+/obj/structure/train_lever_frame/proc/wire_gate(obj/structure/train_lineside/gate/G)
+	var/list/gates = G.crossing_gates()
+	for (var/obj/structure/train_lineside/gate/other in gates)
+		if (other.worked_by == id())
+			other.worked_by = null
+			levers = null
+			return "You take the crossing gates off \the [src]. They are worked by hand again."
+	if (G.crossing_frame())
+		return "Those crossing gates are worked from another lever frame."
+	if (G.z != z || get_dist(G, src) > FRAME_REACH)
+		return "\The [G] is too far from \the [src]: the rodding reaches [FRAME_REACH] tiles."
+	var/list/now = worked()
+	if (now.len >= FRAME_LEVERS)
+		return "\The [src] has no lever to spare: it works [FRAME_LEVERS]."
+	G.worked_by = frame_id
+	levers = null
+	return "You join the crossing gates to \the [src]. One lever swings them all now."
+
+// A signal that reads over a level crossing: the gates stand within twice
+// the locking distance ahead of it.
+/proc/train_signal_over_gate(obj/structure/train_lineside/signal/S, obj/structure/train_lineside/gate/G)
+	if (!S || !G || S.z != G.z || !G.speaks_to(S.dir))
+		return FALSE
+	// Both stand beside the line, on either side of it.
+	var/along = (S.dir & (NORTH|SOUTH)) ? (G.y - S.y) : (G.x - S.x)
+	var/aside = (S.dir & (NORTH|SOUTH)) ? (G.x - S.x) : (G.y - S.y)
+	if (S.dir & (SOUTH|WEST))
+		along = -along
+	return abs(aside) <= 5 && along >= 0 && along <= POINT_LOCK * 2
+
 // What a lever is called at the frame.
 /obj/structure/train_lever_frame/proc/lever_label(atom/A)
 	var/where = (A.loc == loc) ? "here" : "[get_dist(A, src)] tile\s [dir2text(get_dir(src, A))]"
+	if (istype(A, /obj/structure/train_lineside/gate))
+		var/obj/structure/train_lineside/gate/G = A
+		return "crossing gates [where]: [G.shut ? "shut across the road" : "open to the road"]"
 	if (istype(A, /obj/structure/train_lineside/signal))
 		var/obj/structure/train_lineside/signal/S = A
 		return "signal [where], for trains running [dir2text(S.dir)]: [S.clear ? "clear" : "danger"]"
@@ -259,6 +299,17 @@ var/global/list/train_instruments = list()
 		for (var/obj/structure/train_lineside/signal/other in now)
 			if (other.clear && train_signals_oppose(S, other))
 				return "the signal for trains running [dir2text(other.dir)] on the same line is clear"
+		for (var/obj/structure/train_lineside/gate/G in now)
+			if (!G.shut && train_signal_over_gate(S, G))
+				return "the crossing gates [get_dist(G, src)] tile\s [dir2text(get_dir(src, G))] stand open to the road"
+		return null
+	if (istype(A, /obj/structure/train_lineside/gate))
+		var/obj/structure/train_lineside/gate/G = A
+		if (!G.shut)
+			return G.shut_problem() // gates always shut across the road when nothing stands in them
+		for (var/obj/structure/train_lineside/signal/S in now)
+			if (S.clear && train_signal_over_gate(S, G))
+				return "the signal [get_dist(S, src)] tile\s [dir2text(get_dir(src, S))] is clear over the crossing"
 		return null
 	for (var/obj/structure/train_lineside/signal/S in now)
 		if (S.clear && get_dist(S, A) <= POINT_LOCK)
@@ -277,6 +328,9 @@ var/global/list/train_instruments = list()
 	if (istype(A, /obj/structure/train_lineside/signal))
 		var/obj/structure/train_lineside/signal/S = A
 		S.set_clear(!S.clear)
+	else if (istype(A, /obj/structure/train_lineside/gate))
+		var/obj/structure/train_lineside/gate/G = A
+		G.set_shut(!G.shut)
 	else
 		var/obj/structure/train_lever/V = A
 		V.throw_switch(V.switched == "forward" ? "split" : "forward")
@@ -362,7 +416,7 @@ var/global/list/train_instruments = list()
 		B.section = I.section
 		B.update_board()
 		return "You mark \the [B] for [train_section_name(I.section)]."
-	if (istype(O, /obj/structure/train_lineside/signal) || istype(O, /obj/structure/train_lever))
+	if (istype(O, /obj/structure/train_lineside/signal) || istype(O, /obj/structure/train_lineside/gate) || istype(O, /obj/structure/train_lever))
 		var/obj/structure/train_lever_frame/F = run_from
 		if (!istype(F))
 			return "Run the wire from a lever frame first."

@@ -689,6 +689,37 @@ does until they are put back.
 Not built: damaged rails (rails have no wear) and trailing a switch set the
 wrong way (the track model has no trailing switches).
 
+## Track works
+
+Code: `code/modules/1713/train_trackworks.dm`. Tests: the `trackworks/` checks
+of `tests/train_platforms`. Bridges for track are the steel and concrete decks
+of `bridges.dm`.
+
+- **Buffer stop** (`/obj/structure/train_buffer_stop`, 4 iron, `rail_steam`):
+  a solid stop set on the last tile of rails; a wrench turns it. `rail_hit()`
+  asks `hold(impact)` before the ordinary crash on a solid object. Up to
+  `TRAIN_BUFFER_HOLD` (1.25, about five tiles a second for a light engine) the
+  train stops against it unharmed, and a blow of 0.5 or more is counted on the
+  beam. Above that the train is wrecked as against any obstacle
+  (`train_crash()`) and the stop is broken up (`smash()`): the rails stay.
+- **Crossing boards** (`/obj/structure/train_crossing_boards`, 2 wood): laid
+  on a rail tile where a road crosses. They change nothing for trains.
+- **Crossing gate** (`/obj/structure/train_lineside/gate`, 4 wood): stands on
+  the road tile beside the line; its `dir` points at the rails and a wrench
+  turns it. Gates within `TRAIN_GATE_REACH` (4) tiles are one crossing and
+  swing together (`set_shut()`): shut across the road they are dense, open
+  they are not. They do not shut on anyone or anything solid standing in
+  them (`shut_problem()`). By hand they take 2 seconds.
+- A gate is a lineside post: one gate of each crossing tells a cab coming
+  up to it how the gates stand, and counts a train that runs over the
+  crossing with them open to the road.
+- **From a lever frame**: signal wire from the frame to one gate joins the
+  whole crossing to one lever (`wire_gate()`); the gates then no longer move
+  by hand. A signal of the same frame that reads over the crossing
+  (`train_signal_over_gate()`: the gates stand up to 20 tiles ahead of it)
+  does not clear while the gates are open to the road, and the gates do not
+  open while it is clear.
+
 ## Wheel slip and sand
 
 An engine pulls only as hard as its wheels grip. Below 1.5 tiles a second,
