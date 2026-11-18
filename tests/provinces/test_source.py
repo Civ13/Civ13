@@ -26,6 +26,7 @@ DME = ROOT / 'civ13.dme'
 CONTINENTS = {
     'nomads_gaia': 2, 'nomads_americas_north': 1, 'nomads_americas_south': 1,
     'nomads_europe': 1, 'nomads_asia': 1, 'nomads_desert': 2, 'nomads_jungle': 2,
+    'nomads_earth_europe': 1, 'nomads_earth_africa': 1,
 }
 
 
@@ -205,7 +206,8 @@ class ContinentResources(unittest.TestCase):
         homes = dict(re.findall(r'(MAP_NOMADS_\w+) = list\(([^)]*)\)', self.text()))
         expected = {'MAP_NOMADS_GAIA': 'copper', 'MAP_NOMADS_JUNGLE': 'tin', 'MAP_NOMADS_AMERICAS_NORTH': 'iron',
                     'MAP_NOMADS_EUROPE': 'coal', 'MAP_NOMADS_ASIA': 'saltpeter', 'MAP_NOMADS_DESERT': 'sulphur',
-                    'MAP_NOMADS_AMERICAS_SOUTH': 'bauxite'}
+                    'MAP_NOMADS_AMERICAS_SOUTH': 'bauxite', 'MAP_NOMADS_EARTH_EUROPE': 'coal',
+                    'MAP_NOMADS_EARTH_AFRICA': 'sulphur'}
         for name, resource in expected.items():
             self.assertIn(f'"{resource}"', homes.get(name, ''), name)
         self.assertEqual(len(homes), len(CONTINENTS))

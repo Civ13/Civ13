@@ -42,7 +42,7 @@ python3 scripts/provinces.py --map maps/nomads/nomads_gaia.dmm --z 2 \
 | Map | Surface z |
 | --- | --- |
 | nomads_gaia, nomads_desert, nomads_jungle | 2 |
-| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia | 1 |
+| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_africa | 1 |
 
 How the tool works:
 
@@ -164,6 +164,8 @@ every age:
 | Asia | saltpeter, silver, gems and diamonds |
 | Desert | sulphur |
 | South America | gold, silver, bauxite |
+| Earth Europe | coal, zinc |
+| Earth Africa (replaces Desert and Jungle) | sulphur, tin |
 
 - Away from their home, bulk ores (copper, tin, coal, zinc) and precious finds
   (silver, gold, diamonds, gems) come at half the rate, strategic ores
