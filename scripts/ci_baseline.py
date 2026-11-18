@@ -979,9 +979,18 @@ SUITES = {
     # Draft lands of the rest of the Earth (maps/earth_drafts): DMM parse, sizes,
     # file digests and that no build or region list names them; no BYOND runtime.
     'earth_maps': {'files': ('tests/earth_maps/test_earth_maps.py',), 'timeout': 120,
-        'paths': ('tests/earth_maps/', 'maps/earth_drafts/', 'tests/americas_maps/build.py'), 'shared_paths': (
+        'paths': ('tests/earth_maps/', 'maps/earth_drafts/', 'tests/americas_maps/build.py',
+                  'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
+                  'maps/heights/nomads_earth_europe.txt', 'maps/heights/nomads_earth_europe.flow.txt',
+                  'maps/heights/nomads_earth_europe.flood.txt', 'maps/heights/nomads_earth_africa.txt',
+                  'maps/heights/nomads_earth_africa.flow.txt', 'maps/heights/nomads_earth_africa.flood.txt',
+                  'code/game/objects/map_metadata/nomads/nomads_earth.dm',
+                  'scripts/shard-group/earth_continents.example.json', 'docs/earth-continents.md'), 'shared_paths': (
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
-            'scripts/shard-group/americas.example.json', 'code/processes/mapswap.dm', 'civ13.dme')},
+            'scripts/shard-group/americas.example.json', 'code/processes/mapswap.dm', 'civ13.dme',
+            'code/game/objects/map_metadata/nomads/nomads_asia.dm', 'code/modules/naval/sea_lanes.dm',
+            'code/__defines/maps.dm', 'code/modules/persistence/durable_nomads.dm',
+            'code/modules/1713/jobs/nomads.dm')},
     # Generated inactive Extraction party safehouse template: DMM parse, airlock
     # topology, room routes, account markers and descriptor; no BYOND runtime.
     'safehouse_map': {'files': ('tests/safehouse_map/test_layout.py',),

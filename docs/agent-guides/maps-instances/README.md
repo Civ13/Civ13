@@ -268,11 +268,15 @@ with their height, current and flood files. The
 `americas_maps` offline suite checks the maps, and a map may not grow past the
 measured cell count without a new memory benchmark.
 
-## Earth draft lands
+## Earth continents and drafts
 
-[The Earth drafts](../../earth-drafts.md) are six generated lands for the rest
-of the world (`maps/earth_drafts/`: Europe, Africa, Asia, Oceania, Antarctica,
-Greenland). They are not regions: no metadata, no region id, no height files,
-in no `.dme` or group. `tests/earth_maps/generate.py` feeds their designs to
-the Americas builder; the `earth_maps` offline suite checks the maps and fails
-if any build or region list names one.
+[The Earth continents](../../earth-continents.md): Europe and Africa are
+generated regions (`maps/nomads/nomads_earth_{europe,africa}.dmm`, types
+`/obj/map_metadata/nomads/earth_europe` and `earth_africa`). Europe keeps the
+region id `europe`; Africa (`africa`) takes the place of the Desert and Jungle
+regions, and Asia's west edge leads into it. A design that names `metadata`
+and `heights` in `tests/earth_maps/` is playable: `generate.py` writes its
+height, current and flood files and their digests into `drafts.json`.
+[The remaining drafts](../../earth-drafts.md) (`maps/earth_drafts/`: Asia,
+Oceania, Antarctica, Greenland) are not regions; the `earth_maps` offline suite
+checks every land and fails if any build or region list names a draft.

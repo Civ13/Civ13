@@ -25,8 +25,14 @@ var/global/list/continent_layout = list(
 	"gaia" = list(6, 7, list("W", "E"), TRUE),
 	"europe" = list(11, 9, list("S", "W"), TRUE),
 	"desert" = list(12, 4, list("N"), TRUE),
+	"africa" = list(12, 3, list("W", "S", "E"), TRUE),
 	"jungle" = list(13, 1, list("W"), TRUE),
 	"asia" = list(18, 8, list("E", "S", "W"), TRUE))
+
+// This map's own open-sea edges, when they are not the layout's: a region's
+// world can move to a new map (the Earth-shaped Europe) before the layout
+// entry for its id changes.
+/obj/map_metadata/var/list/sea_coasts = null
 
 /proc/continent_place(id)
 	if (!istext(id))
@@ -94,7 +100,7 @@ var/global/list/continent_layout = list(
 	if (!here || !continent_place(from))
 		return
 	var/list/coasts = list()
-	for (var/side in here[3])
+	for (var/side in ((map && length(map.sea_coasts)) ? map.sea_coasts : here[3]))
 		coasts += text2dir_side(side)
 	for (var/d in continent_sides_toward(shard_group.region, from))
 		if (d in coasts)

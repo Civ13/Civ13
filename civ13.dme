@@ -740,6 +740,7 @@
 #include "code\game\objects\map_metadata\nomads\nomads_asia.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_continental.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_desert.dm"
+#include "code\game\objects\map_metadata\nomads\nomads_earth.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_divide.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_europe.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_extended.dm"

@@ -662,7 +662,7 @@ def accumulate(parent, order, rain):
     return np.array(acc, dtype=np.float32).reshape(rain.shape)
 
 
-def write_sidecars(name, turf, elev):
+def write_sidecars(name, turf, elev, base=None):
     """Hill levels, river currents and flood reaches for one map, by the rules
     generated lands use (tools/procedural_maps/terrain_files.py): water is
     level 0, the ground climbs out of it and follows the relief."""
@@ -677,7 +677,7 @@ def write_sidecars(name, turf, elev):
              for y in range(h - 1, -1, -1)]
     doc = {'width': w, 'height': h, 'active_layer': 0, 'layers': [{'cells': cells}]}
     levels = [[v / 2 for v in row] for row in reversed(terrain_files.land_levels(doc))]
-    base = ROOT / 'maps' / 'heights' / ('nomads_americas_%s' % name)
+    base = ROOT / (base or 'maps/heights/nomads_americas_%s' % name)
     terrain_heights.write_heights(str(base) + '.txt', w, h, {1: levels})
     flow = river_flow.build(rows, heights=levels)
     Path(str(base) + '.flow.txt').write_text('%s\nsize %d %d\nz 1\n%s\n' % (river_flow.HEADER, w, h, '\n'.join(flow)),

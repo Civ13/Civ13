@@ -15,8 +15,8 @@
 	building_levels = 10
 	building_level_standing = TRUE
 	// Walk on over the west edge (region_edge.dm): its northern half runs on
-	// into Europe, its southern half over the Sinai into the Desert.
-	edge_crossings = list("west" = list("desert" = list(0, 0.5), "europe" = list(0.5, 1)))
+	// into Europe, its southern half over the Sinai into Africa.
+	edge_crossings = list("west" = list("africa" = list(0, 0.5), "europe" = list(0.5, 1)))
 	// Mined-out mountain floor keeps giving stone and regrowing ore seams
 	// (mountain_seams.dm), and a tunnel dug down opens a cave level
 	// (dug_underground.dm).

@@ -15,10 +15,11 @@ META = ROOT / 'code/game/objects/map_metadata/nomads'
 REGIONS = {
     'northamerica': ('nomads_americas.dm', 'americas_north', 'maps/nomads/nomads_americas_north.dmm'),
     'southamerica': ('nomads_americas.dm', 'americas_south', 'maps/nomads/nomads_americas_south.dmm'),
-    'europe': ('nomads_europe.dm', None, 'maps/nomads/nomads_europe.dmm'),
+    # The Earth-shaped Europe and Africa (docs/earth-continents.md); Africa
+    # takes the place of the older Desert and Jungle regions.
+    'europe': ('nomads_earth.dm', 'earth_europe', 'maps/nomads/nomads_earth_europe.dmm'),
+    'africa': ('nomads_earth.dm', 'earth_africa', 'maps/nomads/nomads_earth_africa.dmm'),
     'asia': ('nomads_asia.dm', None, 'maps/nomads/nomads_asia.dmm'),
-    'desert': ('nomads_desert.dm', None, 'maps/nomads/nomads_desert.dmm'),
-    'jungle': ('nomads_jungle.dm', None, 'maps/nomads/nomads_jungle.dmm'),
     'gaia': ('nomads_gaia.dm', None, 'maps/nomads/nomads_gaia.dmm'),
 }
 OPPOSITE = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east'}
@@ -26,8 +27,7 @@ OPPOSITE = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east'}
 EXPECTED = {
     ('northamerica', 'south', 'southamerica'), ('southamerica', 'north', 'northamerica'),
     ('europe', 'east', 'asia'), ('asia', 'west', 'europe'),
-    ('asia', 'west', 'desert'), ('desert', 'east', 'asia'),
-    ('desert', 'south', 'jungle'), ('jungle', 'north', 'desert'),
+    ('asia', 'west', 'africa'), ('africa', 'east', 'asia'),
 }
 
 
