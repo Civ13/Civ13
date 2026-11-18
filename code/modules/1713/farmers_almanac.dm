@@ -1,67 +1,68 @@
 // Farmer's almanac: a farming-skill book that reads the local climate.
 // Crop advice is derived at runtime from the seed types' biome and season
 // lists, using the same climate rule as crop growth in farming.dm. The
-// seasonal weather table mirrors apply_area_weather() and get_temp() in
-// code/modules/1713/weather.dm; tests/farmers_almanac checks it stays aligned.
+// seasonal weather table mirrors climate_weather_state() in
+// code/modules/1713/weather.dm, and its temperatures are the climate normals
+// (climate_normals.dm); tests/farmers_almanac checks it stays aligned.
 
-// climate = list(season = list(base temperature, wet-weather icon, storm icon))
+// climate = list(season = list(wet-weather icon, storm icon))
 var/global/list/farmers_almanac_climates = list(
 	"tundra" = list(
-		"WINTER" = list(-60, "snow2", "snow_storm"),
-		"SPRING" = list(-35, "snow2", "snow_storm"),
-		"SUMMER" = list(-25, "snow2", "snow1"),
-		"FALL" = list(-50, "snow2", "snow_storm"),
-		"Wet Season" = list(30, "snow2", "snow_storm"),
-		"Dry Season" = list(45, "snow2", "snow1")),
+		"WINTER" = list("snow2", "snow_storm"),
+		"SPRING" = list("snow2", "snow_storm"),
+		"SUMMER" = list("snow2", "snow1"),
+		"FALL" = list("snow2", "snow_storm"),
+		"Wet Season" = list("snow2", "snow_storm"),
+		"Dry Season" = list("snow2", "snow1")),
 	"taiga" = list(
-		"WINTER" = list(-53, "snow2", "snow_storm"),
-		"SPRING" = list(-15, "", "snow1"),
-		"SUMMER" = list(-10, "", "snow1"),
-		"FALL" = list(-35, "snow2", "snow_storm"),
-		"Wet Season" = list(30, "snow2", "snow_storm"),
-		"Dry Season" = list(45, "", "snow1")),
+		"WINTER" = list("snow2", "snow_storm"),
+		"SPRING" = list("", "snow1"),
+		"SUMMER" = list("", "snow1"),
+		"FALL" = list("snow2", "snow_storm"),
+		"Wet Season" = list("snow2", "snow_storm"),
+		"Dry Season" = list("", "snow1")),
 	"temperate" = list(
-		"WINTER" = list(-29, "snow2", "snow_storm"),
-		"SPRING" = list(10, "rain2", "rain2"),
-		"SUMMER" = list(30, "", ""),
-		"FALL" = list(7, "rain2", "rain2"),
-		"Wet Season" = list(30, "snow2", "snow_storm"),
-		"Dry Season" = list(45, "rain2", "rain2")),
+		"WINTER" = list("snow2", "snow_storm"),
+		"SPRING" = list("rain2", "rain2"),
+		"SUMMER" = list("", ""),
+		"FALL" = list("rain2", "rain2"),
+		"Wet Season" = list("snow2", "snow_storm"),
+		"Dry Season" = list("rain2", "rain2")),
 	"sea" = list(
-		"WINTER" = list(-11, "rain1", "monsoon"),
-		"SPRING" = list(14, "rain2", "rain2"),
-		"SUMMER" = list(23, "rain2", "rain2"),
-		"FALL" = list(11, "rain1", "monsoon"),
-		"Wet Season" = list(30, "rain1", "monsoon"),
-		"Dry Season" = list(45, "rain2", "rain2")),
+		"WINTER" = list("rain1", "monsoon"),
+		"SPRING" = list("rain2", "rain2"),
+		"SUMMER" = list("rain2", "rain2"),
+		"FALL" = list("rain1", "monsoon"),
+		"Wet Season" = list("rain1", "monsoon"),
+		"Dry Season" = list("rain2", "rain2")),
 	"semiarid" = list(
-		"WINTER" = list(0, "rain1", "rain3"),
-		"SPRING" = list(28, "rain1", ""),
-		"SUMMER" = list(35, "rain1", ""),
-		"FALL" = list(12, "rain1", "rain3"),
-		"Wet Season" = list(30, "rain1", "rain3"),
-		"Dry Season" = list(45, "rain1", "")),
+		"WINTER" = list("rain1", "rain3"),
+		"SPRING" = list("rain1", ""),
+		"SUMMER" = list("rain1", ""),
+		"FALL" = list("rain1", "rain3"),
+		"Wet Season" = list("rain1", "rain3"),
+		"Dry Season" = list("rain1", "")),
 	"desert" = list(
-		"WINTER" = list(32, "rain1", ""),
-		"SPRING" = list(40, "rain1", ""),
-		"SUMMER" = list(50, "", "sandstorm"),
-		"FALL" = list(34, "", "sandstorm"),
-		"Wet Season" = list(30, "rain1", ""),
-		"Dry Season" = list(45, "", "sandstorm")),
+		"WINTER" = list("rain1", ""),
+		"SPRING" = list("rain1", ""),
+		"SUMMER" = list("", "sandstorm"),
+		"FALL" = list("", "sandstorm"),
+		"Wet Season" = list("rain1", ""),
+		"Dry Season" = list("", "sandstorm")),
 	"savanna" = list(
-		"WINTER" = list(27, "rain2", "rain3"),
-		"SPRING" = list(29, "rain2", "rain3"),
-		"SUMMER" = list(35, "", ""),
-		"FALL" = list(29, "", ""),
-		"Wet Season" = list(30, "rain2", "rain3"),
-		"Dry Season" = list(45, "", "")),
+		"WINTER" = list("rain2", "rain3"),
+		"SPRING" = list("rain2", "rain3"),
+		"SUMMER" = list("", ""),
+		"FALL" = list("", ""),
+		"Wet Season" = list("rain2", "rain3"),
+		"Dry Season" = list("", "")),
 	"jungle" = list(
-		"WINTER" = list(30, "rain3", "monsoon"),
-		"SPRING" = list(34, "rain3", "monsoon"),
-		"SUMMER" = list(40, "", ""),
-		"FALL" = list(32, "", ""),
-		"Wet Season" = list(30, "rain3", "monsoon"),
-		"Dry Season" = list(45, "", "")))
+		"WINTER" = list("rain3", "monsoon"),
+		"SPRING" = list("rain3", "monsoon"),
+		"SUMMER" = list("", ""),
+		"FALL" = list("", ""),
+		"Wet Season" = list("rain3", "monsoon"),
+		"Dry Season" = list("", "")))
 
 // Seed prototypes as list(name, biomes, seasons, plant path); built once.
 var/global/list/farmers_almanac_seed_cache = null
@@ -176,7 +177,7 @@ var/global/list/farmers_almanac_seed_cache = null
 		for (var/season_name in shown_seasons)
 			var/list/row = table[season_name]
 			var/current = (season_name == season)
-			dat += "<tr><td>[current ? "<b>" : ""][farmers_almanac_season_name(season_name)][current ? " (now)</b>" : ""]</td><td>[row[1]]&deg;C</td><td>[farmers_almanac_weather_phrase(row[2])]</td><td>[farmers_almanac_weather_phrase(row[3])]</td></tr>"
+			dat += "<tr><td>[current ? "<b>" : ""][farmers_almanac_season_name(season_name)][current ? " (now)</b>" : ""]</td><td>[climate_season_mean(climate, season_name)]&deg;C</td><td>[farmers_almanac_weather_phrase(row[1])]</td><td>[farmers_almanac_weather_phrase(row[2])]</td></tr>"
 		dat += "</table>"
 		dat += "<p><i>Rain and monsoons water open fields. Blizzards kill crops that are not winter-hardy, and sandstorms destroy crops. Under a roof, crops are sheltered from storms but must be watered by hand. Under a glass roof, crops suited to this land keep growing out of season, at half speed.</i></p>"
 
