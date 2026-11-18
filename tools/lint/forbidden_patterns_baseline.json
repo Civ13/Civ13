@@ -467,6 +467,27 @@
       "code/_helpers/WWinput.dm": 1,
       "code/modules/admin/admin.dm": 3
     },
+    "hard_del": {
+      "code/_helpers/datum_pool.dm": 2,
+      "code/datums/vote.dm": 1,
+      "code/modules/admin/admin_verbs.dm": 3,
+      "code/modules/admin/player_notes.dm": 2,
+      "code/modules/client/client_procs.dm": 5,
+      "code/modules/error_handler/error_viewer.dm": 1,
+      "code/modules/multiz/underground_migration.dm": 1,
+      "code/modules/persistence/restart_transaction.dm": 2,
+      "code/modules/persistence/save_validator.dm": 1,
+      "code/modules/persistence/stream/save_stream.dm": 3,
+      "code/movementMachine.dm": 1,
+      "code/processes/__processScheduler.dm": 1,
+      "code/processes/_process.dm": 1,
+      "code/processes/garbage.dm": 6,
+      "code/processes/gc_outcome_triage.dm": 1
+    },
+    "unpruned_global_list": {
+      "code/datums/observation/observation.dm": 1,
+      "code/modules/submarine/submarine_datum.dm": 1
+    },
     "merge_marker": {}
   }
 }

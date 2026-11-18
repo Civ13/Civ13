@@ -38,26 +38,8 @@ REVIEWED = {
     'time': 'assigned on a callproc helper, not on compasses or syringes',
     'flee_ticket': 'a flee_ticket parameter list, not a saved mob var',
     'data': 'reagent message throttles share the generic data field with blood and dose data',
-    'npc_subtile_watch_checked': 'var/tmp cache of the near-player check, never saved',
-    'lob_launch_time': 'var/tmp on projectiles in flight, which are never saved',
-    'human_subtile_smooth_start': 'var/tmp draw-smoothing stamp on humans, never saved',
-    'antibiotic_dose_shared_at': 'var/tmp stamp of the per-tick antibiotic dose cache on humans, never saved',
-    'life_heat_scan_until': 'var/tmp expiry of the nearby-heat scan cache on humans, never saved',
-    'next_melee_attack': 'var/tmp bite cooldown on animals, never saved',
-    'next_hoof_dust': 'var/tmp dust-puff throttle on ridden horses, never saved',
-    'next_call': 'var/tmp cooldown of the boatswain\'s call, never saved',
-    'held_since': 'var/tmp capture clock on a Broadside TDM tiller, never saved',
-    'voyage': 'var/tmp voyage of a built hull tiller (ship_voyage.dm), never saved',
-    'landfall_at': 'var/tmp landfall rest stamp of a built hull tiller (ship_voyage.dm), never saved',
-    'air_crossing_hold': 'var/tmp hold of a plane arriving from another land (aircraft_crossing.dm), never saved',
-    'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
-    'hold_started': 'var/tmp brace stamp of a hand holding a car door (vehicle_door_hold.dm), never saved',
-    'strain_time': 'var/tmp strain clock of a hand holding a car door (vehicle_door_hold.dm), never saved',
-    'last_hair_growth_time': 'var/tmp last hair-growth tick on humans (human_life.dm), never saved',
-    'human_pull_tile_at': 'var/tmp walk-pace stamp of free-movement pulling on humans (subtile_movement.dm), never saved',
-    'harm_time': 'var/tmp stamp of the last starvation or predator harm on animals (wild_feeding.dm), never saved',
-    'ashore_since': 'var/tmp drying clock of a beached small boat (small_boat_upkeep.dm), never saved',
-    'human_pull_tile_pace': 'var/tmp tile duration (a world.time difference) of free-movement pulling on humans, never saved',
+    'lob_launch_time': 'projectiles are never saved (should_save = 0 in projectile.dm)',
+    'held_since': 'capture clock of a Broadside TDM tiller; the Broadside map is not persistent',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
@@ -193,6 +175,28 @@ class WorldTimeStampRegistry(unittest.TestCase):
             if any(saved_owner(candidate) for candidate in owners):
                 missing.add(f'{name} on {owners}')
         self.assertEqual(sorted(missing), [], 'add these world.time stamps to world_time_stamps.dm or review them')
+
+    def test_tmp_vars_are_saved(self):
+        # The custom saver walks D.vars, which lists tmp vars too, and nothing
+        # on the export path asks issaved(). So var/tmp does not keep a stamp
+        # out of a save; only this registry or a persistence_runtime_var hook does.
+        functions = (CODE / 'modules/persistence/functions.dm').read_text()
+        get_saved = functions[functions.index('/datum/proc/get_saved_vars()'):]
+        get_saved = get_saved[:get_saved.index('\n/', 1)]
+        self.assertIn('for (var/key in src.vars)', get_saved)
+        self.assertNotIn('issaved', get_saved)
+        saving = (CODE / 'modules/persistence/saving.dm').read_text()
+        self.assertNotIn('issaved', saving)
+
+    def test_reviewed_reasons_do_not_rely_on_tmp(self):
+        # 18 stamps were once waved through as "var/tmp, never saved" and were
+        # in fact restored after every reboot (an animal could not bite, a ship
+        # stayed at sea with no timer). A reviewed reason must name a real cause.
+        for name, reason in REVIEWED.items():
+            with self.subTest(name=name):
+                self.assertNotIn('var/tmp', reason)
+                self.assertNotRegex(reason, r'\btmp\b')
+
 
 if __name__ == '__main__':
     unittest.main()
