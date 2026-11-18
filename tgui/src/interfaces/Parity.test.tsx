@@ -133,6 +133,7 @@ describe('standard screen parity', () => {
       'vending_machine_gulag.tmpl',
       'vending_machine_taotd.tmpl',
       'warehouse_book.tmpl',
+      'wiremod_circuit.tmpl',
     ]);
   });
   it('keeps chemistry command payloads, vessel state, and amount controls', () => {

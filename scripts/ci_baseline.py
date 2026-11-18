@@ -2640,6 +2640,12 @@ SUITES = {
             'code/modules/paperwork/written_languages.dm', 'code/_helpers/global_lists.dm',
             'code/game/mob/language/earth.dm',
             'code/modules/persistence/world_time_stamps.dm')},
+    # Integrated circuits: bounded execution, plain port values, checked editor input.
+    'wiremod': {'files': ('tests/wiremod/test_wiremod_core.py',),
+        'paths': ('tests/wiremod/', 'code/modules/wiremod/', 'code/__defines/wiremod.dm',
+                  'tgui/src/interfaces/IntegratedCircuit/', 'tgui/src/interfaces/WiremodCircuit.tsx'),
+        'shared_paths': ('civ13.dme', 'tgui/src/interfaces/index.tsx', 'tgui/src/types.ts',
+            'tgui/THIRD_PARTY.md', 'UI/tgui/civ13-tgui.css')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

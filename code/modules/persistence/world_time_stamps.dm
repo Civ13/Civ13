@@ -126,7 +126,8 @@ var/global/list/persistence_world_time_stamps = list(
 	"created" = list(/datum/wound),
 	"last_recharge" = list(/obj/structure/survey_console),
 	"record_start" = list(/obj/item/tape_recorder),
-	"smoked_until" = list(/obj/structure/wild_bee_nest, /obj/structure/kept_hive, /obj/structure/beehive)
+	"smoked_until" = list(/obj/structure/wild_bee_nest, /obj/structure/kept_hive, /obj/structure/beehive),
+	"overloaded_until" = list(/obj/item/integrated_circuit)
 )
 
 /proc/persistence_world_time_stamp(datum/D, key)
