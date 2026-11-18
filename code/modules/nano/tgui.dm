@@ -38,7 +38,14 @@
 	if (!plain_page)
 		var/datum/asset/assets = get_asset_datum(/datum/asset/simple/civ13_tgui)
 		assets.send(user)
+	// A browser already known to run the modern screen opens without BYOND's
+	// title bar, so the window's own bar shows from the start. Otherwise the
+	// screen hides BYOND's bar itself once it has drawn.
+	var/saved_options = window_options
+	if (opens_with_own_title_bar())
+		window_options = replacetext(replacetext(window_options, "titlebar=1", "titlebar=0"), "can_resize=1", "can_resize=0")
 	. = ..()
+	window_options = saved_options
 
 /datum/nanoui/tgui/close()
 	frontend_ready = FALSE
@@ -71,6 +78,21 @@
 	pending_transfer_client = null
 	open()
 
+// The window draws its own title bar (title, close button, dragging and
+// resizing) instead of BYOND's, unless the player turned that off in
+// Character Setup > Settings. A plain page always keeps BYOND's bar.
+/datum/nanoui/tgui/proc/own_title_bar()
+	return !plain_page && user && user.client && user.client.is_preference_enabled(/datum/client_preference/tgui_title_bar)
+
+/datum/nanoui/tgui/proc/opens_with_own_title_bar()
+	return own_title_bar() && user.client.modern_ui_acknowledged && !user.client.modern_ui_failed
+
+// Gives the window BYOND's title bar back, so a page that cannot draw its own
+// can still be moved and closed.
+/datum/nanoui/tgui/proc/restore_title_bar()
+	if (user && user.client)
+		winset(user, window_id, "titlebar=true;can-resize=true")
+
 // Whether this window keeps a complete plain page of its own (a book page with
 // old markup, a read-only document). Most windows do not.
 /datum/nanoui/tgui/proc/has_plain_page()
@@ -85,6 +107,7 @@
 	update_status(FALSE)
 	if (!state || status == STATUS_CLOSE)
 		return
+	restore_title_bar()
 	plain_page = TRUE
 	set_initial_data(latest_data)
 	open()
@@ -95,6 +118,7 @@
 	config["ref"] = "\ref[src]"
 	config["window"] = window_id
 	config["generation"] = render_generation
+	config["title_bar"] = own_title_bar() ? 1 : 0
 	return config
 
 // The first snapshot as JSON that is safe inside a script element, so the
@@ -138,6 +162,17 @@
 	last_sent = digest
 	reply_owed = FALSE
 	user << output(list2params(list(json)), "[window_id].browser:receiveUpdateData")
+
+/datum/client_preference/tgui_title_bar
+	description = "Interface window title bars"
+	key = "TGUI_TITLE_BAR"
+	enabled_description = "Built-in"
+	disabled_description = "Windows"
+
+// Open windows redraw with the new bar on their next refresh.
+/datum/client_preference/tgui_title_bar/toggled(mob/preference_mob, enabled)
+	if (preference_mob)
+		GLOB.nanomanager.update_user_uis(preference_mob)
 
 // Opens this owner's window for a user, or refreshes the one already open.
 // state may be a topic state or the type of one to create for a new window;
@@ -193,7 +228,12 @@
 	if (!state || status == STATUS_CLOSE)
 		return
 	var/message_type = href_list["type"]
+	// The close button on the window's own title bar.
+	if (message_type == "close")
+		close()
+		return
 	if (message_type == "fallback")
+		restore_title_bar()
 		show_plain_page()
 		return
 	if (message_type == "ready")

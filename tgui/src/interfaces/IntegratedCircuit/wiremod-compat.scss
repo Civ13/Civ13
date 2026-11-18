@@ -25,6 +25,11 @@
   z-index: 2;
 }
 
+.wiremod-titlebuttons {
+  align-items: center;
+  display: flex;
+}
+
 .wiremod-window__content {
   bottom: 0;
   left: 0;
@@ -39,7 +44,7 @@
 // The glyphs stay as CSS escapes: a literal non-ASCII character makes Sass put
 // a byte-order mark at the top of its output, which lands after the bundle's
 // licence banner and silently voids the first rule (tgui-core's :root values).
-.wiremod-window .Icon {
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon {
   display: inline-block;
   font-family: 'Segoe UI Symbol', 'DejaVu Sans', sans-serif;
   font-style: normal;
@@ -48,21 +53,21 @@
   text-align: center;
 }
 
-.wiremod-window .Icon.fa-cog::before { content: #{'"\\2699"'}; }
-.wiremod-window .Icon.fa-plus::before { content: '+'; }
-.wiremod-window .Icon.fa-minus::before { content: #{'"\\2212"'}; }
-.wiremod-window .Icon.fa-th-large::before { content: #{'"\\25A6"'}; }
-.wiremod-window .Icon.fa-times::before { content: #{'"\\00D7"'}; }
-.wiremod-window .Icon.fa-info::before { content: 'i'; }
-.wiremod-window .Icon.fa-upload::before { content: #{'"\\2191"'}; }
-.wiremod-window .Icon.fa-pen::before { content: #{'"\\270E"'}; }
-.wiremod-window .Icon.fa-save::before { content: #{'"\\2913"'}; }
-.wiremod-window .Icon.fa-book-open::before { content: #{'"\\2261"'}; }
-.wiremod-window .Icon.fa-list-ol::before { content: #{'"\\2261"'}; }
-.wiremod-window .Icon.fa-table-list::before { content: #{'"\\2637"'}; }
-.wiremod-window .Icon.fa-chevron-down::before { content: #{'"\\25BE"'}; }
-.wiremod-window .Icon.fa-chevron-left::before { content: #{'"\\25C2"'}; }
-.wiremod-window .Icon.fa-chevron-right::before { content: #{'"\\25B8"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-cog::before { content: #{'"\\2699"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-plus::before { content: '+'; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-minus::before { content: #{'"\\2212"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-th-large::before { content: #{'"\\25A6"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-times::before { content: #{'"\\00D7"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-info::before { content: 'i'; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-upload::before { content: #{'"\\2191"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-pen::before { content: #{'"\\270E"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-save::before { content: #{'"\\2913"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-book-open::before { content: #{'"\\2261"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-list-ol::before { content: #{'"\\2261"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-table-list::before { content: #{'"\\2637"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-chevron-down::before { content: #{'"\\25BE"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-chevron-left::before { content: #{'"\\25C2"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-chevron-right::before { content: #{'"\\25B8"'}; }
 
 // A wire ends where this marker sits. Upstream leaves it on the port's top left
 // corner; here it is the port's centre.
