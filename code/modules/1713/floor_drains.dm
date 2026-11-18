@@ -219,18 +219,7 @@
 	if (on)
 		bath_water_running()
 
-/obj/structure/shower/bathtub/big/process()
-	. = ..()
-	if (on)
-		bath_water_running()
-
 /obj/structure/shower/attack_hand(mob/M)
-	var/was_on = on
-	. = ..()
-	if (was_on && !on)
-		bath_water_turned_off()
-
-/obj/structure/shower/bathtub/big/attack_hand(mob/living/M)
 	var/was_on = on
 	. = ..()
 	if (was_on && !on)
