@@ -101,13 +101,12 @@ are retired; do not use them.
    cloud session run `bash scripts/cloud_byond_setup.sh`.
 2. Compile: `compile.bat` or `dm.exe civ13.dme` on Windows,
    `DreamMaker -max_errors 0 civ13.dme` on Linux.
-   `civ13.dme` lists its includes in a deliberate order, because some files
-   use defines from files that come later alphabetically. The Dream Maker IDE
-   re-sorts that list alphabetically when it saves the environment (for example
-   after you tick or untick a file), which breaks the build with errors such as
-   `unexpected token: CIV13_ROOT_TREE_PRESENTATION`. Don't tick files in the IDE;
-   add new `#include` lines to `civ13.dme` by hand. If it was re-sorted, restore
-   it with `git checkout civ13.dme`.
+   The Dream Maker IDE re-sorts `civ13.dme` alphabetically when it saves (for
+   example after you tick or untick a file). The game still compiles that way,
+   but some procs are extended across files in the listed order, so restore it
+   with `git checkout civ13.dme` before you commit, and add new `#include`
+   lines by hand. Put a define that other files use in `code/__defines/`;
+   `tests/dme_order` checks this for both orders.
 3. Run the focused tests for the area you changed (under `tests/`, each with its
    own README or runner).
 4. Before pushing, run `python3 scripts/agent_preflight.py all --write`. It finds

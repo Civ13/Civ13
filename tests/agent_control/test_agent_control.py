@@ -2799,7 +2799,8 @@ class ScreenTests(unittest.TestCase):
 
     def test_open_is_hooked_for_both_renderers(self):
         screens = dm_source("agent_screens.dm")
-        self.assertIn("/datum/nanoui/open()\n\tif (agent_screen_viewer(user))", screens)
+        nanoui = (ROOT / "code/modules/nano/_nanoui.dm").read_text(encoding="utf-8")
+        self.assertIn("/datum/nanoui/proc/open()\n\t// Agent-driven characters have no browser (agent_control/agent_screens.dm).\n\tif (agent_screen_viewer(user))\n\t\treturn agent_open()", nanoui)
         self.assertIn("/datum/nanoui/tgui/open()\n\tif (agent_screen_viewer(user))", screens)
         self.assertIn("GLOB.nanomanager.ui_opened(src)", screens)
         self.assertIn("return allowed_actions()", screens)

@@ -34,7 +34,10 @@ def new_checks(source):
     checks = []
     for path in (ITEM, STRUCTURE):
         checks.append(project(source, path + '/proc/check_freq', 'src, original', method=True,
-                              env={'radio_transmitter_frequency_matches': helper}))
+                              env={'radio_transmitter_frequency_matches': helper,
+                                   # No crystal unit (gem_science.dm) in the baseline: the second
+                                   # operand of || only runs after a miss and repeats that miss.
+                                   'radio_crystal_matches': helper}))
     return checks
 
 

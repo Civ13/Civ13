@@ -42,9 +42,7 @@
 // Airships share the built body but never touch water: they get no ledger.
 // ============================================================
 
-#define HULL_CLASS_SMALL 1
-#define HULL_CLASS_BOAT 2
-#define HULL_CLASS_SHIP 3
+// Hull classes, seam wear, fouling and bilge depth: code/__defines/naval.dm
 #define HULL_SMALL_MAX_TILES 12
 #define HULL_BOAT_MAX_TILES 40
 
@@ -64,9 +62,6 @@
 // Seam wear runs from 0, freshly caulked, to 1, open. A hull starts sound, at
 // a third, where she seeps at the rate above; tight she seeps half that and
 // open twice. HULL_SEAM_LIFE seconds under way wear her from tight to open.
-#define HULL_SEAMS_FAIR (1 / 3)
-#define HULL_SEAMS_WORKING 0.6
-#define HULL_SEAMS_OPEN 0.9
 #define HULL_SEAM_LIFE 14400
 // Deciseconds between steps of the ledgers, and to bail one bucketful.
 #define HULL_LEDGER_STEP 300
@@ -81,19 +76,7 @@
 #define HULL_PATCH_TIME 60
 // Half minutes between foundering on deep water and going down.
 #define HULL_SINK_WARNINGS 4
-// How foul her bottom is where its name changes (hull_fouling.dm).
-#define HULL_FOUL_SLIMED 0.1
-#define HULL_FOUL_WEEDY 0.4
-#define HULL_FOUL_FOUL 0.75
 
-// How deep the bilge is, for messages: the share of her capacity each begins at.
-#define HULL_DEPTH_DRY 0
-#define HULL_DEPTH_DAMP 1
-#define HULL_DEPTH_ANKLE 2
-#define HULL_DEPTH_KNEE 3
-#define HULL_DEPTH_AWASH 4
-#define HULL_DEPTH_LISTING 5
-#define HULL_DEPTH_FULL 6
 
 var/global/list/hull_ledgers = list()
 var/global/hull_ledger_timer = 0

@@ -13,9 +13,8 @@
 #define CINNABAR_RICH_CHANCE 2
 // Mercury units from one cinnabar.
 #define MERCURY_ROAST_UNITS 2
-#define MERCURY_RETORT_UNITS 6
+// Mercury retort: code/__defines/ore_processing.dm
 // Retort load, seal wear per firing and the seal below which it leaks.
-#define RETORT_CAPACITY 10
 #define RETORT_SEAL_WEAR 10
 #define RETORT_SEAL_LEAKS 30
 // Burden stages.

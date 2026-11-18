@@ -18,10 +18,7 @@
 // to the open sea straight above, where the suit keeps them afloat while the
 // bottle lasts.
 
-#define SEA_ZONE_SHELF 1
-#define SEA_ZONE_OPEN 2
-#define SEA_ZONE_DEEP 3
-#define SEA_ZONE_ABYSS 4
+// Sea zones: code/__defines/_submarine_definitions.dm
 // The farthest distance from rock, in tiles, of each zone shallower than the abyss.
 #define SEA_ZONE_SHELF_MAX 6
 #define SEA_ZONE_OPEN_MAX 16

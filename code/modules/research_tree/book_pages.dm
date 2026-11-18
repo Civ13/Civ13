@@ -11,8 +11,7 @@
 // own. Putting a page back takes time.
 // ============================================================
 
-#define BOOK_WRITE_TIME(tier) (1200 + 600 * max(0, tier))
-#define BOOK_WRITE_STAMINA(tier) (15 + 5 * max(0, tier))
+// Book writing: code/__defines/research.dm
 #define BOOK_RIP_TIME 20
 #define BOOK_REINSERT_TIME 300
 #define BOOK_WRITE_SKILL_GAIN 0.5

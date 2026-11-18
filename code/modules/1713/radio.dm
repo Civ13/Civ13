@@ -34,10 +34,12 @@ var/global/FREQP = rand(81,100)
 var/global/FREQM = rand(101,120)
 
 /obj/item/weapon/radio/proc/check_freq(var/obj/original)
-	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist)
+	// A crystal unit (gem_science.dm) also holds a receiver to its second frequency.
+	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist) || radio_crystal_matches(original, freq, multifreq, multifreqlist)
 
 /obj/structure/radio/proc/check_freq(var/obj/original)
-	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist)
+	// A crystal unit (gem_science.dm) also holds a receiver to its second frequency.
+	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist) || radio_crystal_matches(original, freq, multifreq, multifreqlist)
 
 // Local transmitters match their own channels against the receiver's frequency.
 /proc/radio_transmitter_frequency_matches(var/obj/original, source_freq, source_multifreq, list/source_multifreqlist)

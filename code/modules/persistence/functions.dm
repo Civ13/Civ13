@@ -1588,7 +1588,9 @@ var/global/world_save_notice_started = null
 // Dug cave levels (multiz/dug_underground.dm) rebuild their lighting after a
 // load; isolated fixtures keep this inert stub.
 /map_storage/proc/restore_dug_levels()
-	return
+	// Called by name so this works whatever order civ13.dme lists the files in.
+	if (hascall(src, "restore_dug_underground"))
+		call(src, "restore_dug_underground")()
 
 // Effect ids one save may list (transfer_bridge.dm keeps new effects to half,
 // leaving room for a load's replay).

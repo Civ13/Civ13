@@ -1,5 +1,8 @@
 // Compile-time integration marker. Runtime collection/export remains default-off.
+// Also defined in code/__defines/persistence.dm so files sorted before this one see it.
+#ifndef CIV13_VARIABLE_OBSERVABILITY
 #define CIV13_VARIABLE_OBSERVABILITY
+#endif
 #define VARIABLE_OBSERVABILITY_LIMIT 32768
 
 var/global/variable_observability_sequence = 0

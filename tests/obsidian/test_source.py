@@ -38,7 +38,6 @@ OVERRIDES = [
     '/turf/floor/dirt/dry_lava/after_load()', '/turf/floor/dirt/dry_lava/attack_hand(mob/user)',
     '/turf/floor/dirt/dry_lava/persistence_runtime_var(key)',
     '/obj/item/stack/ore/obsidian/attackby(obj/item/W, mob/user)',
-    '/obj/item/ammo_casing/attach_arrowhead(obj/item/W, mob/user, shaft_path)',
     '/obj/item/ammo_casing/atlatl_dart/attackby(obj/item/W, mob/user)',
     '/obj/item/weapon/branch/attackby(obj/item/weapon/W as obj, mob/user as mob)',
     '/mob/living/simple_animal/harvest_wait(mob/user, delay)',
@@ -125,7 +124,9 @@ class ObsidianSource(unittest.TestCase):
         self.assertIn('display_name = "obsidian"', glass)
 
     def test_no_bolts(self):
-        body = proc_body(self.text, '/obj/item/ammo_casing/attach_arrowhead(obj/item/W, mob/user, shaft_path)')
+        body = proc_body(self.text, '/obj/item/ammo_casing/proc/attach_obsidian_arrowhead(obj/item/W, mob/user, shaft_path)')
+        casing = (ROOT / 'code/modules/projectiles/_ammo_casing.dm').read_text(encoding='utf-8')
+        self.assertIn('if (istype(W, /obj/item/stack/arrowhead/obsidian))\n\t\treturn attach_obsidian_arrowhead(W, user, shaft_path)', casing)
         self.assertIn('"/obj/item/ammo_casing/arrow"', body)
         self.assertIn('"/obj/item/ammo_casing/atlatl_dart"', body)
         self.assertNotIn('bolt', body)

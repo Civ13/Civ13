@@ -1133,6 +1133,8 @@
 
 // Validate the whole batch before changing stacks. No retained output queue.
 /obj/structure/drill/proc/produce_minerals(var/ore_type, var/quantity)
+	if (diamond_bit) // a diamond bit (gem_science.dm) brings up one more
+		quantity++
 	var/turf/T = get_turf(src)
 	return T && T.deposit_small_resource(ore_type, quantity, output_stack_limit)
 

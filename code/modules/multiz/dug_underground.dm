@@ -56,7 +56,7 @@
 	var/first = target_z == building_base_maxz() + 1 && !pending && dug_underground_fits()
 	if (!map.building_levels)
 		return target_z == building_base_maxz() + 1 && (first || cells * (target_z + pending) <= NEW_Z_MEASURED_CELLS)
-	if (target_z != world.maxz + 1 || target_z > building_base_maxz() + 1 + min(map.building_levels, NEW_Z_ROOF_CEILING) || !dug_underground_fits())
+	if (target_z != world.maxz + 1 || target_z > building_base_maxz() + 1 + min(map.building_levels, initial(roof_limit)) || !dug_underground_fits())
 		return FALSE
 	return first || cells * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS
 
@@ -468,7 +468,7 @@ var/global/dug_underground_forming = FALSE
 // Restored worlds: the load regenerates unformed cells in the world's default
 // area, so the cave area is put back on them, and formed cells get the
 // lighting that startup did not build (it ran before the level existed).
-/map_storage/restore_dug_levels()
+/map_storage/proc/restore_dug_underground()
 	// Open cells under lakes and rivers pour again (they are not saved).
 	tunnel_breaches.Cut()
 	underground_breach_scan(underground_level_z())

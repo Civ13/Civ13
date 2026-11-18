@@ -7,9 +7,7 @@
 // each other from config/shard_region.json and share config/tdm-token.txt,
 // which scripts/shard-group/shard_group.py setup writes. See docs/tdm-barracks.md.
 
-#define TDM_REPORT_INTERVAL 100
-// A battle status older than this means the battle world stopped reporting.
-#define TDM_STATUS_STALE 600
+// TDM link timing: code/__defines/tdm.dm
 
 var/global/datum/tdm_link/tdm_link = new
 

@@ -73,3 +73,23 @@
 #define CRAFT_OAR_THRUST 4
 #define OAR_STAMINA_PER_STEP 20
 #define OAR_MIN_STAMINA 10
+
+// Hull classes, seam wear, fouling and bilge depth (hull_ledger.dm)
+#define HULL_CLASS_SMALL 1
+#define HULL_CLASS_BOAT 2
+#define HULL_CLASS_SHIP 3
+#define HULL_SEAMS_FAIR (1 / 3)
+#define HULL_SEAMS_WORKING 0.6
+#define HULL_SEAMS_OPEN 0.9
+// How foul her bottom is where its name changes (hull_fouling.dm).
+#define HULL_FOUL_SLIMED 0.1
+#define HULL_FOUL_WEEDY 0.4
+#define HULL_FOUL_FOUL 0.75
+// How deep the bilge is, for messages: the share of her capacity each begins at.
+#define HULL_DEPTH_DRY 0
+#define HULL_DEPTH_DAMP 1
+#define HULL_DEPTH_ANKLE 2
+#define HULL_DEPTH_KNEE 3
+#define HULL_DEPTH_AWASH 4
+#define HULL_DEPTH_LISTING 5
+#define HULL_DEPTH_FULL 6

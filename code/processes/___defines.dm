@@ -13,15 +13,8 @@
 #define PROCESS_DEFAULT_SCHEDULE_INTERVAL 	50  // 50 ticks
 #define PROCESS_DEFAULT_SLEEP_INTERVAL		8	// 2 ticks
 
-// Process priorities
-#define PROCESS_PRIORITY_VERY_HIGH 1
-#define PROCESS_PRIORITY_HIGH 2
-#define PROCESS_PRIORITY_MEDIUM 3
-#define PROCESS_PRIORITY_LOW 4
-#define PROCESS_PRIORITY_VERY_LOW 5
+// Process priorities: code/__defines/subsystem.dm
 
-// PROCESS_PRIORITY_IRRELEVANT: we don't process or don't use loops, meaning PROCESS_TICK_CHECK never happens
-#define PROCESS_PRIORITY_IRRELEVANT 6
 
 // Used to indicate that the process was going for too long and had to return early
 #define PROCESS_TICK_CHECK_RETURNED_EARLY 1234
