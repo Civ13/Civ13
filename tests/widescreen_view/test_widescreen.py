@@ -206,3 +206,14 @@ class VehicleRoofImageFilter(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class NoFixedScreenCoverTests(unittest.TestCase):
+    # NewStyle once drew a 20x15 black frame at "-2,1" to blank the side
+    # columns of the old 15x15 view. HUD tiles now sit inside the view, so on
+    # the 21x15 view that frame painted a black band through the map.
+    def test_hud_styles_have_no_fixed_screen_cover(self):
+        for path in sorted((ROOT / "code").rglob("*.dm")):
+            text = path.read_text(encoding="utf-8", errors="replace")
+            self.assertNotIn('"screen_cover"', text.replace(
+                'list("screen_cover", "damageoverlay"', ""), str(path))

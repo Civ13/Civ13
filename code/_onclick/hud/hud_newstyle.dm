@@ -10,7 +10,6 @@
 	)
 
 	HUDoverlays = list(
-		"screen_cover" = list("type" = /obj/screen/cover, "loc" = ui_screen_cover, "icon" = 'icons/mob/screenlimit.dmi',"icon_state" = "cover"),
 		"damageoverlay" = list("type" = /obj/screen/damageoverlay, "loc" = ui_damageoverlay, "icon" = ui_hud_overlay),
 		"flash" =  list("type" = /obj/screen/full_1_tile_overlay, "loc" = ui_flash, "icon" = ui_hud_effects, "icon_state" = ui_blank),
 		"pain" = list("type" = /obj/screen/full_1_tile_overlay, "loc" = ui_pain, "icon" = ui_hud_effects, "icon_state" = ui_blank),
