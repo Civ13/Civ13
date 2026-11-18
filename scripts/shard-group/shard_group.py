@@ -1126,6 +1126,13 @@ class RegionHost(Host):
         the region's port. A save the new code cannot read (such as a timer it no longer
         knows) fails that load and the old world plays on, so no unattended update can leave
         a region down on a broken load."""
+        try:
+            if not load_group(self.config['group_config'])['persistent']:
+                # A TDM world in pregame reports no round yet, which reads as saving; it has
+                # no save to hand over (update_unsaved_while_empty covers these groups).
+                return None
+        except (OSError, ValueError, KeyError):
+            return None
         if self.update_pending():
             now = self.platform.now()
             if now < self.next_install_attempt:
@@ -1161,6 +1168,10 @@ class RegionHost(Host):
         region = next((r for r in group['regions'] if r['id'] == self.config['region']), None)
         if group['persistent'] or not region or region['kind'] == 'BATTLE':
             return None  # saving groups hand over instead; a battle updates when its round ends
+        if not self.battle_moved_on(group):
+            # Val (2026-11-18): a restart per merge pinged Discord every few minutes. The
+            # barracks follows the battle instead: once per round, after the battle took an update.
+            return None
         if self.update_pending():
             now = self.platform.now()
             if now < self.next_install_attempt or self.battle_ending(group):
@@ -1181,6 +1192,25 @@ class RegionHost(Host):
         if self.stage_lock.exists():
             return 30
         return 30 if self.stage_if_behind() else None
+
+    def battle_moved_on(self, group):
+        """Whether the group's battle world runs a revision this region's build lacks (it took
+        an update at the end of its last round). True for a group without a battle world."""
+        battles = [r for r in group['regions'] if r['kind'] == 'BATTLE']
+        if not battles:
+            return True
+        built = self.built_revision()
+        try:
+            battle = self.git_text(['rev-parse', 'HEAD'], region_dir(group, battles[0]['id']))
+        except (RuntimeError, OSError):
+            return False
+        if not HEX40.match(battle or '') or battle == built:
+            return False
+        if not built:
+            return True
+        code, _ = self.platform.run([self.config['git'], 'merge-base', '--is-ancestor', battle, built],
+                                    cwd=self.repo, timeout=60)
+        return code != 0
 
     @staticmethod
     def battle_ending(group):
