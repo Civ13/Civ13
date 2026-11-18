@@ -207,6 +207,8 @@
 	if (!takes_water() || !W || !ishuman(user))
 		return FALSE
 	var/mob/living/human/H = user
+	if (take_rollers(W, user)) // naval/boat_hauling.dm
+		return TRUE
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/bucket))
 		var/obj/item/weapon/reagent_containers/glass/bucket/B = W
 		if (bilge > 0 && !(B.reagents && B.reagents.total_volume > 0))
@@ -253,6 +255,9 @@
 		. += " She is swamped: bail her with an empty bucket."
 	else if (bilge >= 1)
 		. += " There is water in her: [round(bilge)] bucketful\s of the [SMALL_CRAFT_SWAMPED] that would swamp her."
+	var/haul = haul_text() // naval/boat_hauling.dm
+	if (haul)
+		. += " [haul]"
 	return trim(.)
 
 /obj/structure/vehicle/raft/examine(mob/user, distance)

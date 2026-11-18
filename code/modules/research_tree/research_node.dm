@@ -1143,6 +1143,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
 		"/obj/structure/dugout_log" = "basic_tools",
 		"/obj/item/weapon/paddle" = "basic_tools",
+		"/obj/item/boat_rollers" = "basic_tools",
 		"/obj/item/weapon/leash" = "basic_tools",
 		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
