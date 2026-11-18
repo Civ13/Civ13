@@ -1010,6 +1010,127 @@ def signal_flags():
     return [c.image()]
 
 
+def semaphore(clear):
+    """A semaphore signal from the side: a white post, a red arm and its lamp."""
+    c = Canvas(32, 32)
+    c.shade(11, 29, 24, 30, 60)
+    c.bevel(13, 27, 20, 29, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.rect(15, 5, 18, 27, STEEL_O)
+    c.rect(16, 6, 17, 20, CREAM[0])
+    c.rect(17, 6, 17, 20, CREAM[2])
+    c.rect(16, 21, 17, 26, BLACK[2])
+    c.rect(17, 21, 17, 26, BLACK[4])
+    c.rect(16, 3, 17, 4, RED[1])
+    c.put(16, 2, RED[0])
+    lamp = GREEN if clear else RED
+    c.disc(21.0, 9.5, 2.6, [WHITE, lamp[0], lamp[1], lamp[2]], outline=DARK)
+    c.rect(18, 9, 19, 10, STEEL[3])
+    if clear:
+        # the arm dropped: line clear
+        for i in range(12):
+            x, y = 15 - i, 8 + i
+            c.rect(x - 1, y - 2, x + 1, y + 2, RED[3])
+        for i in range(12):
+            x, y = 15 - i, 8 + i
+            tone = CREAM[0] if i in (7, 8) else RED[1]
+            c.rect(x, y - 1, x, y + 1, tone)
+            c.put(x, y - 1, CREAM[1] if i in (7, 8) else RED[0])
+    else:
+        # the arm level: danger
+        c.rect(2, 6, 15, 11, RED[3])
+        c.rect(3, 7, 15, 10, RED[1])
+        c.rect(3, 7, 15, 7, RED[0])
+        c.rect(3, 10, 15, 10, RED[2])
+        c.rect(6, 7, 7, 10, CREAM[0])
+    c.rect(15, 7, 18, 10, STEEL_O)
+    c.put(16, 8, STEEL[0])
+    c.put(17, 9, STEEL[2])
+    return [c.image()]
+
+
+def lever_frame():
+    """A signal box lever frame: five long levers in an iron frame."""
+    c = Canvas(32, 32)
+    c.shade(3, 28, 29, 30, 60)
+    c.bevel(1, 21, 30, 28, STEEL[1], STEEL[3], STEEL[4], outline=STEEL_O)
+    c.rect(2, 23, 29, 23, STEEL[4])
+    grips = (RED, RED, BLUE, BLACK, YELLOW)
+    for i, ramp in enumerate(grips):
+        x = 4 + i * 6
+        pulled = i in (1, 3)
+        lean = 1 if pulled else 0
+        top = 11 if pulled else 6
+        for off, col in ((0, STEEL[1]), (1, STEEL[4])):
+            c.line(x + off, 21, x + off + lean, top, col)
+        c.rect(x + lean - 1, top - 3, x + lean + 2, top + 1, mix(ramp[2], DARK, 0.5))
+        c.rect(x + lean, top - 2, x + lean + 1, top, ramp[1])
+        c.put(x + lean, top - 2, ramp[0])
+        c.rect(x - 1, 20, x + 2, 22, STEEL_O)
+        c.put(x, 21, STEEL[0])
+        c.rect(x, 25, x + 1, 26, BRASS[1])
+    return [c.image()]
+
+
+def token_instrument():
+    """A token instrument: a cast iron cabinet with a needle, a bell and a slot."""
+    c = Canvas(32, 32)
+    c.shade(8, 28, 25, 30, 60)
+    c.bevel(8, 7, 23, 28, MAROON[0], MAROON[1], MAROON[2], outline=MAROON[3])
+    c.rect(9, 18, 22, 18, MAROON[3])
+    c.disc(15.5, 4.5, 2.8, [WHITE, BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.rect(15, 7, 16, 7, BRASS[3])
+    c.disc(15.5, 12.5, 4.2, [CREAM[0], CREAM[0], CREAM[1], CREAM[2]], outline=DARK)
+    c.line(15, 13, 13, 10, RED[2])
+    c.put(15, 13, DARK)
+    c.rect(11, 21, 20, 23, BRASS[4])
+    c.rect(12, 22, 19, 22, DARK)
+    c.rect(11, 20, 20, 20, BRASS[1])
+    c.disc(15.5, 25.5, 1.4, [BRASS[0], BRASS[2]], outline=BRASS[4])
+    return [c.image()]
+
+
+def train_token():
+    """A single-line tablet: a brass disc with a hole and a notch."""
+    c = Canvas(32, 32)
+    c.shade(10, 22, 23, 24, 60)
+    c.disc(15.5, 15.5, 6.6, [BRASS[0], BRASS[1], BRASS[2], BRASS[3]], outline=BRASS[4])
+    c.ring(15.5, 15.5, 4.6, BRASS[3], width=0.8)
+    c.disc(15.5, 15.5, 1.6, [DARK], outline=BRASS[4])
+    c.rect(15, 9, 16, 10, BRASS[4])
+    c.put(12, 12, WHITE)
+    c.put(13, 11, WHITE)
+    return [c.image()]
+
+
+def section_board():
+    """A lineside board on a post: a black tablet ring on white."""
+    c = Canvas(32, 32)
+    c.shade(11, 29, 22, 30, 60)
+    c.rect(14, 16, 17, 29, WALNUT[3])
+    c.rect(15, 16, 16, 28, WALNUT[1])
+    c.rect(15, 16, 15, 28, WALNUT[0])
+    c.bevel(6, 4, 25, 16, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+    c.ring(15.5, 10.0, 3.6, DARK, width=1.2)
+    c.rect(8, 6, 9, 14, BLACK[3])
+    c.rect(22, 6, 23, 14, BLACK[3])
+    return [c.image()]
+
+
+def signal_wire():
+    """A coil of iron signal wire with a loose end."""
+    c = Canvas(32, 32)
+    c.shade(8, 23, 25, 25, 60)
+    for r, col in ((8.2, STEEL_O), (7.4, STEEL[1]), (6.4, STEEL[3]), (5.4, STEEL[2]), (4.4, STEEL[4])):
+        c.ring(15.5, 15.5, r, col, width=1.0)
+    c.line(22, 19, 27, 24, STEEL[2])
+    c.line(22, 20, 26, 24, STEEL[4])
+    c.put(10, 10, STEEL[0])
+    c.put(11, 9, STEEL[0])
+    c.rect(14, 22, 17, 24, WALNUT[3])
+    c.rect(15, 22, 16, 23, WALNUT[1])
+    return [c.image()]
+
+
 def guard_journal():
     """The guard's journal: a black cloth-bound book with a pencil in its loop."""
     c = Canvas(32, 32)
@@ -2806,6 +2927,13 @@ def platform_states():
     states['ticket_punched'] = ticket(True)
     states['signal_flags'] = signal_flags()
     states['guard_journal'] = guard_journal()
+    states['signal_danger'] = semaphore(False)
+    states['signal_clear'] = semaphore(True)
+    states['lever_frame'] = lever_frame()
+    states['token_instrument'] = token_instrument()
+    states['train_token'] = train_token()
+    states['section_board'] = section_board()
+    states['signal_wire'] = signal_wire()
     states['plough_item'] = plough_item()
     states['tank_valve'] = tank_valve()
     states['ice_bunker'] = cold_chest('bunker', False)
@@ -3096,6 +3224,13 @@ def write_previews(out, states, gun):
     for i, name in enumerate(names):
         im.alpha_composite(states[name][0], (8 + i * 40, 8))
     big(im, 6).save(out / 'conductor.png')
+
+    # signals and single-line working
+    names = ('signal_danger', 'signal_clear', 'lever_frame', 'token_instrument', 'train_token', 'section_board', 'signal_wire')
+    im = ground(8 + len(names) * 40, 48, seed=17)
+    for i, name in enumerate(names):
+        im.alpha_composite(states[name][0], (8 + i * 40, 8))
+    big(im, 6).save(out / 'signals.png')
 
     # couplings: made, free, broken and taken off, on a train heading east
     def with_couplers(kind, front, rear, part='coupler'):

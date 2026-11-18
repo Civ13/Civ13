@@ -185,26 +185,37 @@
 	else
 		icon_state = "lever_pulled"
 
+// Sets the switches this lever works. TRUE when it moved.
+/obj/structure/train_lever/proc/throw_switch(state)
+	if (switched == state)
+		return FALSE
+	switched = state
+	for (var/obj/structure/rails/split/switcher/S in range(2,src))
+		S.switched = state
+		S.update_icon()
+	update_icon()
+	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+	return TRUE
+
 /obj/structure/train_lever/attack_hand(mob/living/user as mob)
 	if (istype(user, /mob/living))
+		// Worked by rodding from a signal box (train_signals.dm).
+		if (worked_by && train_frame_by_id(worked_by, src))
+			to_chat(user, "\The [src] is worked by rodding from a signal box; it does not move by hand.")
+			return
 		if (switched == "forward")
-			switched = "split"
-			for (var/obj/structure/rails/split/switcher/S in range(2,src))
-				S.switched = "split"
-				S.update_icon()
+			throw_switch("split")
 			visible_message("<span class = 'notice'>[user] moves the lever into the splitting position!</span>", "<span class = 'notice'>You move the lever into the splitting position!</span>")
-			update_icon()
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			return
 		else
-			switched = "forward"
-			for (var/obj/structure/rails/split/switcher/S in range(2,src))
-				S.switched = "forward"
-				S.update_icon()
+			throw_switch("forward")
 			visible_message("<span class = 'notice'>[user] moves the lever into the forward position!</span>", "<span class = 'notice'>You move the lever into the forward position!</span>")
-			update_icon()
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			return
+
+/obj/structure/train_lever/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/train_signal_wire))
+		var/obj/item/train_signal_wire/wire = W
+		wire.use_on(src, user)
+		return
+	return ..()
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -1147,6 +1158,9 @@ var/global/train_solo_move = FALSE
 	automovement = TRUE
 	deadman_missed = 0
 	refresh_consist()
+	// Signals and section boards right ahead (train_signals.dm).
+	lineside_seen = null
+	lineside_watch()
 	playsound(loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 	spawn(0)
 		var/steps = 0
@@ -1157,6 +1171,8 @@ var/global/train_solo_move = FALSE
 				since = 0
 				// Nobody in the cab (train_diesel.dm).
 				deadman_watch()
+				// Signals and section boards (train_signals.dm).
+				lineside_watch()
 			boiler_tick()
 			var/target = cruise_speed()
 			var/heft = max(1, consist_weight / 6)

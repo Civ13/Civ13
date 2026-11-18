@@ -548,6 +548,44 @@ Four items put somebody in charge of the train behind the engine. All are
   one of `train_hand_signals()` to everyone in sight and tells the people in
   every cab of the train the signaller is aboard or beside.
 
+## Signals
+
+Code: `code/modules/1713/train_signals.dm`. Tests: the `signals/` checks of
+`tests/train_platforms`.
+
+Everything here is `rail_steam`. Nothing stops a train by itself: signals and
+tokens tell the crew what to do, and mark who did not.
+
+- **Lineside posts** (`/obj/structure/train_lineside`) stand up to two tiles
+  to the side of the centre of the track and speak to trains running their
+  `dir`; a wrench turns one. They are kept in `train_lineside`. The driving
+  engine calls `lineside_watch()` when it starts and each time the train is
+  counted (every six tiles): a post up to ten tiles ahead of the leading car
+  is read out to `cab_crew()` once (`sighting()`), and one that was read and
+  is no longer ahead is passed (`passed_by()`).
+- **Semaphore signal** (`/obj/structure/train_lineside/signal`, 4 iron).
+  Danger until put to clear (`set_clear()`), by hand at the post. A train that
+  passes it at danger is seen to, `passed` counts it and its frame rings.
+- **Lever frame** (`/obj/structure/train_lever_frame`, 10 iron) works up to
+  eight signals and switch levers within forty tiles. A **coil of signal wire**
+  (`/obj/item/train_signal_wire`, 2 iron) used on the frame and then on a
+  signal or `/obj/structure/train_lever` writes the frame's `frame_id` to
+  their `worked_by`; used again it takes them off. What is wired does not
+  move by hand. `pull()` works one lever and `locked_by()` is the
+  interlocking: a signal does not clear while a wired signal that faces it
+  along the same line is clear (`train_signals_oppose()`), a switch does not
+  move while a wired signal within ten tiles of it is clear, and a signal
+  always goes back to danger.
+- **Token instruments** (`/obj/structure/train_token_instrument`, 8 iron)
+  are wired as a pair with the same wire, up to 150 tiles apart, and share a
+  `section`. `draw_token()` gives the one `/obj/item/train_token` of the
+  section, and no second while it exists; `restore_token()` takes it back at
+  either end.
+- **Section board** (`/obj/structure/train_lineside/board`, 3 wood), marked
+  for a section with the wire from a paired instrument. The cab is told
+  whether `carries_token()` holds: the token is in a pocket, in a hand or on
+  the floor of an engine of the train. Passing without it is seen and counted.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:
