@@ -764,6 +764,55 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertLessEqual({'goods_crane', 'goods_crane_haul', 'livestock_ramp'}, yard)
         self.assertLessEqual({'loading_stage_empty', 'loading_stage_coal', 'loading_stage_ore', 'loading_stage_sand'}, depot)
 
+    def test_early_rails_hand_car_animals_and_wooden_track(self):
+        early = (ROOT / 'code/modules/1713/train_early.dm').read_text(encoding='utf-8')
+        laying = (ROOT / 'code/modules/1713/track_laying.dm').read_text(encoding='utf-8')
+        wear = (ROOT / 'code/modules/1713/train_trackwear.dm').read_text(encoding='utf-8')
+        hitch = (ROOT / 'code/game/objects/structures/cart_hitch.dm').read_text(encoding='utf-8')
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_early.dm"', dme)
+        # the tint is shared by two files, so it is a define of its own
+        self.assertIn('#include "code\\__defines\\trains.dm"', dme)
+        self.assertIn('#define WOODEN_RAIL_COLOR', (ROOT / 'code/__defines/trains.dm').read_text(encoding='utf-8'))
+        self.assertNotIn('#define WOODEN_RAIL_COLOR', early)
+        # the hand car rolls free like any car: no loop of its own
+        self.assertIn('return start_rolling(min(limit, max(speed, 0.3) + push), way)', early)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', early))
+        # a harness follows the animal through the moved event and is not saved
+        self.assertIn('GLOB.moved_event.register(A, src, /obj/structure/trains/proc/draft_moved)', early)
+        self.assertIn('GLOB.moved_event.unregister(A, src, /obj/structure/trains/proc/draft_moved)', early)
+        self.assertIn('var/tmp/mob/living/simple_animal/draft_animal', early)
+        self.assertIn('var/tmp/obj/structure/trains/hitched_train', early)
+        self.assertIn('key == "hitched_train"', hitch)
+        self.assertIn('return hitched_train.draft_drag(src)', hitch)
+        self.assertIn('car.player_harness(user, src)', hitch)
+        # the train's own Destroy and examine ask; nothing is overridden twice
+        self.assertIn('\tclear_couplers()\n\tunharness()\n', couplings)
+        self.assertIn('var/draft = draft_line()', couplings)
+        for proc in ('/obj/structure/trains/Destroy', '/obj/structure/trains/examine', '/obj/structure/rails/after_load',
+                     '/obj/structure/rails/examine', '/mob/living/simple_animal/MouseDrop_T'):
+            self.assertNotIn(proc + '(', early)
+        # wooden rails go down, come up and wear through the existing track code
+        self.assertIn('wooden = wood\n\tplace_rails()', laying)
+        self.assertIn('R.set_wooden(w)', laying)
+        self.assertIn('bent.set_wooden(was_wooden)', laying)
+        self.assertIn('B.wooden = wooden', laying)
+        self.assertIn('if (wooden)\n\t\tamount *= TRACK_WOODEN_WEAR', wear)
+        self.assertIn('set_wooden(wooden)\n\tshow_wear()', wear)
+        for name in ('HANDCAR_PUMP_TIME', 'HANDCAR_CREW_TIME', 'HANDCAR_PUSH', 'HANDCAR_SPEED', 'HANDCAR_CREW_SPEED',
+                     'HANDCAR_LOAD', 'TRAIN_DRAFT_LOAD', 'TRAIN_DRAFT_SLACK', 'TRAIN_HARNESS_TIME'):
+            self.assertIn('#define ' + name, early)
+            self.assertIn('#undef ' + name, early)
+        for path, node in (('/obj/structure/trains/transport/handcar', 'rail_steam'),
+                           ('/obj/structure/trains/storage/chaldron', 'wagons_ships'),
+                           ('/obj/item/stack/rail_lengths/wooden', 'wagons_ships'),
+                           ('/obj/item/stack/rail_sleepers', 'wagons_ships')):
+            self.assertIn(',%s,' % path, RECIPES)
+            self.assertIn('"%s" = "%s"' % (path, node), NODES)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        self.assertLessEqual({'handcar', 'chaldron'}, states)
+
     def test_track_works_buffer_stops_and_crossings(self):
         works = (ROOT / 'code/modules/1713/train_trackworks.dm').read_text(encoding='utf-8')
         signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')

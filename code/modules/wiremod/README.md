@@ -30,12 +30,51 @@ printer are not ported.
   text up to `PORT_MAX_STRING_LENGTH` bytes or a list of up to
   `CIRCUIT_MAX_LIST_LENGTH` such values. It never holds a game object.
 - `core/component.dm` - `/obj/item/circuit_component`, the base component.
+- `core/operator.dm` - `/obj/item/circuit_component/operator`, the base of the
+  components that work a Result out of inputs A and B.
 - `core/integrated_circuit.dm` - `/obj/item/integrated_circuit`: the component
-  list, the execution queue, variables and the editor window's data and actions.
+  list, the execution queue and the two lists of component types.
+- `core/circuit_ui.dm` - the editor window: who may use it, the data it shows,
+  its actions and its refreshes.
+- `core/variables.dm` - circuit variables and their getter and setter nodes.
 - `components/` - math, list, string and delay components.
 - `shell/compact_remote.dm` - `/obj/item/compact_remote`, a handheld remote with
   a built-in circuit.
 - Constants are in `code/__defines/wiremod.dm`.
+
+## How it is put together
+
+- **Datatypes.** Each `/datum/circuit_datatype` subtype in `core/port.dm` is one
+  datatype and holds everything about it: what a wire may deliver to it
+  (`convert`), how a typed value is read (`parse_manual`) and the message for
+  one that cannot be, which outputs it accepts and its colour in the editor.
+  Defining a subtype registers it. `CIRCUIT_USER_TYPES` is the one list of the
+  types a player may type a value for or give a variable.
+- **Lists on ports are never changed in place.** `set_output()` stores a copy of
+  what a component hands it, and a component that wants a different list builds
+  a new one. A wire can therefore pass the same list to a list or untyped input
+  without checking and copying it again (`/datum/port/input/proc/receive_from`).
+  Every other value is converted on every hop.
+- **Components are named by `circuit_id`.** A circuit numbers each component as
+  it goes in and never gives a number out twice, so a request that arrives
+  after its component was removed reaches nothing. Port names sent to the
+  editor (`input-<id>-<position>`) are built from the same number. The upstream
+  editor sends list positions; `WiremodCircuit.tsx` turns each into the id of
+  the component shown at that position.
+- **Editor actions are one table.** `ui_action_table()` in `core/circuit_ui.dm`
+  maps each action to its handler proc (`act_<action>`) and the fields it may
+  carry. The lists the window transport asks for and the dispatch in `ui_act()`
+  are all read from it. To add an action, add one row and one proc.
+- **Component types are in one of two lists** in `core/integrated_circuit.dm`:
+  `wiremod_available_components()`, kept by hand, is what the editor offers
+  and all `print_component` will make; `wiremod_unlisted_components()` names
+  every other type with the reason. The tests fail for a type in neither.
+- **Two-input components** derive from `/obj/item/circuit_component/operator`:
+  set `operand_type`, `result_type` and, for a choice of operations,
+  `operations`, then write `operate(left, right, chosen)`.
+- **Editor refreshes are spaced out.** A circuit that runs sends its open
+  editors the new state at once, then at most once every
+  `CIRCUIT_UI_REFRESH_INTERVAL` deciseconds; the last state is always sent.
 
 ## How it plays
 
@@ -64,16 +103,16 @@ visible name.
 - A component made in the editor is deleted when it is removed, so the editor
   cannot be used to produce items. A component inserted by hand goes back to the
   hand.
+- A circuit takes `CIRCUIT_MAX_COMPONENT_ID` insertions over its whole life.
 - Circuits, components and remotes have `should_save = FALSE`: the port graph is
   live state and is not written to persistent saves.
 
 ## Availability
 
-There is no crafting recipe, research node or map placement for
-`/obj/item/integrated_circuit`, `/obj/item/circuit_component/*` or
-`/obj/item/compact_remote` yet. They exist only when an admin spawns them, and
-`code/game/mob/crafting_atlas_admin.dm` keeps them out of the public Crafting
-Atlas until that changes.
+`/obj/item/integrated_circuit` and `/obj/item/compact_remote` are crafted from
+electronics (`config/crafting/material_recipes_global.txt`). Components are
+made only in a circuit's editor; `code/game/mob/crafting_atlas_admin.dm` keeps
+`/obj/item/circuit_component` out of the public Crafting Atlas.
 
 ## Tests
 

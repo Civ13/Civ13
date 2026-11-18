@@ -127,7 +127,9 @@ var/global/list/persistence_world_time_stamps = list(
 	"last_recharge" = list(/obj/structure/survey_console),
 	"record_start" = list(/obj/item/tape_recorder),
 	"smoked_until" = list(/obj/structure/wild_bee_nest, /obj/structure/kept_hive, /obj/structure/beehive),
-	"overloaded_until" = list(/obj/item/integrated_circuit)
+	"overloaded_until" = list(/obj/item/integrated_circuit),
+	"next_editor_refresh" = list(/obj/item/integrated_circuit),
+	"editor_refresh_timer" = list(/obj/item/integrated_circuit)
 )
 
 /proc/persistence_world_time_stamp(datum/D, key)

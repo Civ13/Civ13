@@ -28,7 +28,7 @@
 	var/tmp/atom/movable/hitched_to = null
 
 /mob/living/simple_animal/persistence_runtime_var(key)
-	return key == "hitched_cart" || ..()
+	return key == "hitched_cart" || key == "hitched_train" || ..()
 
 /obj/structure/closet/crate/cart/persistence_runtime_var(key)
 	return key == "hitched_to" || ..()
@@ -63,6 +63,8 @@
 			return "\The [A] is already in harness."
 		if (A.hitched_cart && A.hitched_cart != src)
 			return "\The [A] already pulls a cart."
+		if (A.hitched_train)
+			return "\The [A] is harnessed to a rail wagon."
 		if (!isturf(A.loc) || A.z != z || get_dist(src, A) > 1)
 			return "\The [src] has to stand next to \the [A]."
 		return null
@@ -200,6 +202,9 @@
 
 // How much a hitched cart slows the animal pulling it, in move delay.
 /mob/living/simple_animal/proc/hitch_drag()
+	// Drawing a train on rails (train_early.dm).
+	if (hitched_train && hitched_train.draft_animal == src)
+		return hitched_train.draft_drag(src)
 	var/obj/structure/closet/crate/cart/cart = hitched_cart
 	if (!cart || QDELETED(cart) || cart.hitched_to != src)
 		return 0
@@ -327,6 +332,11 @@
 		var/obj/structure/closet/crate/cart/cart = M
 		if (Adjacent(user) || cart.Adjacent(user))
 			cart.player_hitch(user, src)
+		return
+	// A rail wagon dragged onto the animal: harnessed to draw it (train_early.dm).
+	if (istype(M, /obj/structure/trains) && istype(user))
+		var/obj/structure/trains/car = M
+		car.player_harness(user, src)
 		return
 	return ..()
 

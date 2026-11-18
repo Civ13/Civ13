@@ -62,7 +62,7 @@ var/wiremod_runtime_error = FALSE
 	wiremod_check(rows.len == 1 && rows[1]["status"] == "interactive" && rows[1]["template"] == "wiremod_circuit.tmpl", "Alt-click opens the editor for the holder")
 	wiremod_check(rows.len && ("print_component" in rows[1]["actions"]) && findtext(rows[1]["data"], "Compact Remote") && findtext(rows[1]["data"], "\"datatype_data\":\[\"Add\""), "the editor lists its actions, the remote's source and the operation choices")
 	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/random", "rel_x" = 200, "rel_y" = 40))
-	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/arithmetic", "rel_x" = 40, "rel_y" = 290))
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/operator/arithmetic", "rel_x" = 40, "rel_y" = 290))
 	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/delay", "rel_x" = 400, "rel_y" = 290))
 	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/mob/living/human", "rel_x" = 0, "rel_y" = 0))
 	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/compact_remote", "rel_x" = 0, "rel_y" = 0))
@@ -70,7 +70,7 @@ var/wiremod_runtime_error = FALSE
 	if (circuit.attached_components.len != 4)
 		return null
 	var/obj/item/circuit_component/random/dice = circuit.attached_components[2]
-	var/obj/item/circuit_component/arithmetic/math = circuit.attached_components[3]
+	var/obj/item/circuit_component/operator/arithmetic/math = circuit.attached_components[3]
 	var/obj/item/circuit_component/delay/timer = circuit.attached_components[4]
 	wiremod_check(dice.rel_x == 200 && dice.rel_y == 40 && dice.printed, "a printed component lands where it was dropped")
 	// Signal -> Random trigger, Random result -> Arithmetic A, B = 10.
@@ -85,8 +85,16 @@ var/wiremod_runtime_error = FALSE
 	wiremod_check(isnull(math.input_b.connected_output), "an incompatible connection is refused")
 	remote.attack_self(H)
 	wiremod_check(isnum(dice.result.value) && dice.result.value >= 1 && dice.result.value <= 6 && math.result.value == dice.result.value + 10, "pressing the remote rolls the die and adds ten ([math.result.value])")
+	// The typed values above refreshed the open editor in this same tick, so
+	// the run this press sets off is held for a timed refresh instead of
+	// sending the whole editor again at once.
 	rows = agent_screen_rows(H)
-	wiremod_check(rows.len && findtext(rows[1]["data"], "\"current_data\":[dice.result.value]"), "the editor data refreshes after a press")
+	wiremod_check(rows.len && findtext(rows[1]["data"], "\"connected_to\":\[\"output-2-1\"\]") && !isnull(circuit.editor_refresh_timer) && circuit.next_editor_refresh > world.time, "a run right after a refresh is held for a timed refresh")
+	// This fixture runs no timer subsystem, so the probe does what the timer does.
+	deltimer(circuit.editor_refresh_timer)
+	circuit.refresh_editor_now()
+	rows = agent_screen_rows(H)
+	wiremod_check(isnull(circuit.editor_refresh_timer) && rows.len && findtext(rows[1]["data"], "\"current_data\":[dice.result.value]"), "the held refresh shows the editor the final state")
 	// Out-of-range and malformed requests change nothing and raise nothing.
 	for (var/bad in list("0", "-1", "99", "1.5", "abc", "1e9"))
 		wiremod_press(C, list("act" = "detach_component", "component_id" = bad))
@@ -110,6 +118,16 @@ var/wiremod_runtime_error = FALSE
 	wiremod_press(C, list("act" = "add_variable", "variable_name" = "last roll", "variable_datatype" = "number", "is_list" = 0, "is_assoc_list" = 0))
 	wiremod_press(C, list("act" = "add_setter_or_getter", "variable" = "last roll", "is_setter" = 1, "rel_x" = 10, "rel_y" = 10))
 	wiremod_check(circuit.circuit_variables.len == 1 && circuit.attached_components.len == 5, "a variable and its setter are added")
+	// Components are named by a number that outlives removals: the setter is 5.
+	wiremod_press(C, list("act" = "print_component", "component_to_print" = "/obj/item/circuit_component/operator/logic", "rel_x" = 0, "rel_y" = 0))
+	var/obj/item/circuit_component/operator/logic/gate = circuit.attached_components[circuit.attached_components.len]
+	wiremod_press(C, list("act" = "detach_component", "component_id" = 5))
+	wiremod_check(circuit.attached_components.len == 5 && gate.circuit_id == 6 && circuit.attached_components[5] == gate, "removing the fifth component leaves the sixth in fifth place under its own number")
+	wiremod_press(C, list("act" = "set_component_coordinates", "component_id" = 5, "rel_x" = 900, "rel_y" = 900))
+	wiremod_check(gate.rel_x == 0 && gate.rel_y == 0, "a request for the removed component's number does not reach the one that took its place")
+	wiremod_press(C, list("act" = "set_component_coordinates", "component_id" = 6, "rel_x" = 300, "rel_y" = 200))
+	rows = agent_screen_rows(H)
+	wiremod_check(gate.rel_x == 300 && gate.rel_y == 200 && rows.len && findtext(rows[1]["data"], "\"id\":6") && findtext(rows[1]["data"], "\"ref\":\"input-6-1\"") && !findtext(rows[1]["data"], "\"id\":5"), "the window names components and ports by those numbers")
 	// Delay: started by the remote's signal, cancelled by deleting the remote.
 	wiremod_press(C, list("act" = "add_connection", "input_component_id" = 4, "input_port_id" = 2, "output_component_id" = 1, "output_port_id" = 2))
 	circuit.overloaded_until = 0
@@ -163,6 +181,6 @@ var/wiremod_runtime_error = FALSE
 	H.forceMove(locate(1, 1, 1))
 	wiremod_check(wiremod_circuit_state.can_use_topic(loose, H) == STATUS_CLOSE, "a distant player cannot use the editor")
 	var/before = loose.attached_components.len
-	loose.ui_act("print_component", list("component_to_print" = "/obj/item/circuit_component/logic"), H, null)
+	loose.ui_act("print_component", list("component_to_print" = "/obj/item/circuit_component/operator/logic"), H, null)
 	wiremod_check(loose.attached_components.len == before, "a distant player's request is ignored")
 	qdel(loose)

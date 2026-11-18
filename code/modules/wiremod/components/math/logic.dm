@@ -1,26 +1,17 @@
-/obj/item/circuit_component/logic
+/obj/item/circuit_component/operator/logic
 	name = "logic component"
 	display_name = "Logic"
 	category = "Math"
+	operand_type = PORT_TYPE_BOOLEAN
+	result_type = PORT_TYPE_BOOLEAN
+	operations = list("AND", "OR", "XOR")
 
-	var/datum/port/input/input_a
-	var/datum/port/input/input_b
-	var/datum/port/input/operation
-	var/datum/port/output/result
-
-/obj/item/circuit_component/logic/populate_ports()
-	input_a = add_input_port("A", PORT_TYPE_BOOLEAN, trigger = PROC_REF(evaluate))
-	input_b = add_input_port("B", PORT_TYPE_BOOLEAN, trigger = PROC_REF(evaluate))
-	operation = add_input_port("Operation", PORT_TYPE_STRING, trigger = PROC_REF(evaluate), default = "AND", options = list("AND", "OR", "XOR"))
-	result = add_output_port("Result", PORT_TYPE_BOOLEAN)
-
-/obj/item/circuit_component/logic/proc/evaluate(datum/port/input/input)
-	var/result_value
-	switch(operation.value)
+/obj/item/circuit_component/operator/logic/operate(left, right, chosen)
+	switch(chosen)
 		if("AND")
-			result_value = input_a.value && input_b.value
+			return left && right
 		if("OR")
-			result_value = input_a.value || input_b.value
+			return left || right
 		if("XOR")
-			result_value = !!input_a.value != !!input_b.value
-	result.set_output(result_value)
+			return !!left != !!right
+	return null

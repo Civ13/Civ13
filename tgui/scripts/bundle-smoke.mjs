@@ -56,9 +56,9 @@ try {
   }
   await update('wiremod_circuit.tmpl', {
     on: 1, display_name: 'Integrated circuit', grid_mode: 1, screen_x: 0, screen_y: 0,
-    stored_designs: { '/obj/item/circuit_component/arithmetic': true },
+    stored_designs: { '/obj/item/circuit_component/operator/arithmetic': true },
     component_catalog: [{
-      type: '/obj/item/circuit_component/arithmetic',
+      type: '/obj/item/circuit_component/operator/arithmetic',
       name: 'Arithmetic',
       description: 'Performs arithmetic.',
       category: 'Math',
