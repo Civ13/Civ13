@@ -3,7 +3,11 @@ lands.py places it (90 + latitude) degrees from the centre of the map, with
 Greenwich at the top, so the frame below is in those degrees."""
 
 ANTARCTICA = {
-    'path': 'maps/earth_drafts/earth_antarctica.dmm',
+    'path': 'maps/nomads/nomads_earth_antarctica.dmm',
+    # A playable region (docs/earth-continents.md): the map carries this
+    # metadata and has height, current and flood files beside the other maps.
+    'metadata': '/obj/map_metadata/nomads/earth_antarctica',
+    'heights': 'maps/heights/nomads_earth_antarctica',
     'seed': 1911,
     'size': (1024, 1024),
     'design_width': 800,

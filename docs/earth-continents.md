@@ -1,9 +1,10 @@
 # Earth continents
 
-Europe, Asia and Africa are generated regions drawn after the real continents, the
+All six Earth lands are generated regions drawn after the real continents, the
 same way as the two [Americas regions](americas-regions.md): hand-placed
 outlines, mountain chains, rivers, lakes and climate centres in
-`tests/earth_maps/europe.py`, `asia.py` and `africa.py`, turned into terrain by
+`tests/earth_maps/europe.py`, `asia.py`, `africa.py`, `oceania.py`,
+`greenland.py` and `antarctica.py`, turned into terrain by
 `tests/americas_maps/build.py`. They started as [Earth drafts](earth-drafts.md).
 
 | Region id | Map | Type | Tiles | Frame (longitude east, latitude) |
@@ -11,12 +12,17 @@ outlines, mountain chains, rivers, lakes and climate centres in
 | `europe` | `maps/nomads/nomads_earth_europe.dmm` | `/obj/map_metadata/nomads/earth_europe` | 1160 x 903 | -25 to 60, 72 to 31 |
 | `africa` | `maps/nomads/nomads_earth_africa.dmm` | `/obj/map_metadata/nomads/earth_africa` | 976 x 1070 | -19 to 52, 38 to -36 |
 | `asia` | `maps/nomads/nomads_earth_asia.dmm` | `/obj/map_metadata/nomads/earth_asia` | 1226 x 854 | 30 to 190, 78 to 0 |
+| `oceania` | `maps/nomads/nomads_earth_oceania.dmm` | `/obj/map_metadata/nomads/earth_oceania` | 1212 x 864 | 94 to 180, 9 to -48 |
+| `greenland` | `maps/nomads/nomads_earth_greenland.dmm` | `/obj/map_metadata/nomads/earth_greenland` | 760 x 816 | -76 to -10, 84 to 58.5 |
+| `antarctica` | `maps/nomads/nomads_earth_antarctica.dmm` | `/obj/map_metadata/nomads/earth_antarctica` | 1024 x 1024 | polar view, 36 degrees from the pole |
 
 Europe and Asia keep their region ids `europe` and `asia` and replace the older
 Nomads (Europe) and Nomads (Asia) maps.
 Africa takes the place of the Desert and Jungle regions: it already holds the
 Sahara and the Congo, so keeping both would put the same land in the world
-twice. The older maps stay in the repository until the host has switched.
+twice. Oceania, Greenland and Antarctica are new lands with the sea all round:
+no walk leads to them, only ships and planes. The older maps stay in the
+repository until the host has switched.
 
 ## What each map has
 
@@ -36,6 +42,14 @@ twice. The older maps stay in the repository until the host has switched.
 - `sun_latitude` 50 for Europe, 40 for Asia and 5 for Africa; wildlife and
   wild plant caps 1000/550 (Europe, Asia) and 1100/600 (Africa). Asia keeps the
   older Asia map's cinnabar belt, iron sand and clothing and languages by climate.
+- The ice lands are hard country. Greenland's farmable ground is mostly snow
+  on the tundra coasts, cleared with a spade. Antarctica grows nothing near
+  fresh water, because all of it is frozen; only its fringe seeds forage, so food
+  comes by sea and from the hunt. Oceania's land is the flattest of the six
+  (its highest level is 11.5).
+- `sun_latitude` -25 for Oceania, 72 for Greenland and -78 for Antarctica:
+  polar day and night. New characters on Greenland are Inuit; Oceania and
+  Antarctica have no origin table yet.
 - Continent riches and provinces (`continent_resources.dm`, `maps/provinces/`,
   [provinces.md](provinces.md)) are keyed by these map types.
 
@@ -49,7 +63,8 @@ twice. The older maps stay in the repository until the host has switched.
   it went in. Cross by ship or plane.
 - Ships and planes (`continent_layout` in `code/modules/naval/sea_lanes.dm`):
   `africa` sits at (12, 3) with coasts W, S, E and a flight level. Earth Asia
-  faces open sea E, S and N. A map may
+  faces open sea E, S and N. `oceania` (21, 1), `greenland` (6, 11) and
+  `antarctica` (10, -5) are laid out with their sea edges and flight levels. A map may
   name its own open-sea edges with `sea_coasts`, which win over the layout's for
   landfall here: Europe's Earth map faces open sea W and N, where the older map
   faced S and W, and the layout entry for `europe` still describes the older map
@@ -65,7 +80,10 @@ has the entries:
    fresh world, with its old saves archived.
 2. Africa: remove the `desert` and `jungle` regions and add `africa` with the
    Africa map on a free port (the Jungle's port is free once it is removed).
-3. Rebuild the other regions so their Regions panel and sea lanes list Africa.
+3. Optionally add `oceania`, `greenland` and `antarctica` on free ports, each on
+   its own map. They are new lands, so nothing needs to be archived.
+4. Rebuild the other regions so their Regions panel and sea lanes list the
+   new lands.
 
 Start the regions one at a time.
 
@@ -94,13 +112,19 @@ is `PERSISTENCE_MEMORY_LIMIT_MB` (3072).
 | Europe 1160 x 903 | 1,047,480 | 1493 MiB | 1810 MiB | 125 s | 231 s |
 | Africa 976 x 1070 | 1,044,320 | 1557 MiB | 1885 MiB | 159 s | 254 s |
 | Asia 1226 x 854 | 1,047,004 | 1409 MiB | 1736 MiB | 115 s | 221 s (run alone) |
+| Oceania 1212 x 864 | 1,047,168 | 1346 MiB | 1617 MiB | 99 s | 199 s |
+| Greenland 760 x 816 | 620,160 | 835 MiB | 967 MiB | 56 s | 104 s |
+| Antarctica 1024 x 1024 | 1,048,576 | 1228 MiB | 1473 MiB | 81 s | 204 s |
 
 The Europe run shared the machine with a first Africa run, so its times are
 slower than alone. That first Africa save failed its own check while both
 saved at once (the shared BYOND cache; start regions one at a time) and the
 table shows Africa run again alone. No runtime
-errors. The engine's long-loop warning fired once each in boot steps that
+errors. Greenland's first run hung at boot: berry bushes were placed by picking
+grass tiles until a count set by the map's size was reached, and the ice island
+has far less grass than that. The count now follows the grass and the picks are
+bounded (`_map_metadata.dm`). The engine's long-loop warning fired once each in boot steps that
 already do so on the Americas maps (floor icon refresh, map seeding, seam
-marking, the save itself). All three reload peaks are under two thirds of the
+marking, the save itself). Every reload peak is under two thirds of the
 limit, with the unformed cave and the standing open-air level counted; each
 further open-air plane that players build adds about 130 MiB.
