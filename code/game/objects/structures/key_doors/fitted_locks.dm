@@ -292,6 +292,8 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 		var/obj/structure/simple_door/D = host
 		if (D.haslock || D.smart_lock_fitted || istype(D, /obj/structure/simple_door/party_train) || istype(D, /obj/structure/simple_door/blast))
 			return TRUE
+		if (istype(D, /obj/structure/simple_door/key_door/custom/jail) && !D.custom_code)
+			return FALSE
 		if (istype(D, /obj/structure/simple_door/key_door) && !istype(D, /obj/structure/simple_door/key_door/anyone))
 			return TRUE
 		return FALSE
@@ -497,9 +499,13 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 			return "screwdriver"
 	return "tool"
 
+// A jail door keyed when it was built still has room for a padlock on a hasp.
+/proc/host_takes_hasp_lock(atom/host, kind)
+	return istype(host, /obj/structure/simple_door/key_door/custom/jail) && (kind == LOCK_PADLOCK || kind == LOCK_COMBO_PADLOCK)
+
 /proc/fit_lock(atom/host, obj/item/fitted_lock/F, mob/living/human/user)
-	if (host_has_other_lock(host))
-		to_chat(user, SPAN_WARNING("\The [host] already has a lock of its own."))
+	if (host_has_other_lock(host) && !host_takes_hasp_lock(host, F.lock_kind))
+		to_chat(user, SPAN_WARNING("\The [host] already has a lock of its own[istype(host, /obj/structure/simple_door/key_door/custom/jail) ? "; only a padlock fits beside it" : ""]."))
 		return FALSE
 	if (!host_is_shut(host))
 		to_chat(user, SPAN_WARNING("Shut \the [host] first."))
