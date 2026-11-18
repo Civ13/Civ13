@@ -251,6 +251,20 @@ var/late_wait_result = TRUE
 		var/datum/research_node/N = get_research_node(node_id)
 		late_check(N && N.mode == RESEARCH_MODE_PROTOTYPE && node_needs_demonstration(node_id) && findtext(prototype_need_label(N), "demonstration"), "[node_id] is a capstone that needs a demonstration")
 	late_check(!node_needs_demonstration("mechanized_war") && findtext(prototype_need_label(get_research_node("mechanized_war")), "used on the bench"), "other capstones keep their prototype")
+	// No demonstration may need something its own subject (or a later one)
+	// unlocks, unless an experimental build covers it (Val, 2026-11-18).
+	// Proven failing first: dropping the kit list fails steam_power and electricity.
+	for (var/node_id in capstone_demonstrations)
+		var/list/D = capstone_demonstrations[node_id]
+		var/list/needs = D.len >= 4 ? D[4] : null
+		late_check(islist(needs) && needs.len, "[node_id] lists what its demonstration needs built")
+		var/list/earlier = late_research_ancestors(node_id)
+		for (var/needed in needs)
+			var/req = get_recipe_node_req("[needed]")
+			// An experimental build is allowed whatever subject normally gates it.
+			var/ok = !req || (req in earlier) || (needed in D[3])
+			late_check(ok, "[node_id]'s demonstration can get [needed] (needs [req ? req : "nothing"]) before [node_id] is learned")
+	late_check(findtext(prototype_need_label(get_research_node("steam_power")), "experimental steam engine"), "the steam power demonstration says how to build the engine")
 	map.book_research = FALSE
 	late_check(!node_needs_demonstration("steam_power"), "only book-research worlds need demonstrations")
 	map.book_research = TRUE
@@ -1185,3 +1199,18 @@ var/late_wait_result = TRUE
 	var/list/params = islist(world.params) ? world.params : params2list(world.params)
 	text2file(json_encode(list("failures" = late_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()
+
+// Every subject node_id builds on, directly or through its groundwork.
+/proc/late_research_ancestors(node_id)
+	var/list/found = list()
+	var/list/queue = list(node_id)
+	while (queue.len)
+		var/datum/research_node/N = get_research_node(queue[1])
+		queue.Cut(1, 2)
+		if (!N)
+			continue
+		for (var/req in N.prereqs)
+			if (!(req in found))
+				found += req
+				queue += req
+	return found
