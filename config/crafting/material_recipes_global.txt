@@ -2629,6 +2629,7 @@ RECIPE: /material/wood/soft/,bolt shaft (x3),/obj/item/ammo_casing/bolt,1,40,0,1
 
 RECIPE: /material/wood/,hammer,/obj/item/weapon/hammer,5,75,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,wooden spade,/obj/item/weapon/material/shovel/spade/wood,3,60,0,1,tools,0,0,0,8,wood
+RECIPE: /material/wood/,wheelbarrow,/obj/structure/wheelbarrow,8,120,1,1,logistics,0,0,0,8,null
 RECIPE: /material/wood/,fire drill,/obj/item/weapon/flame/fire_drill,1,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/,digging stick,/obj/item/weapon/plough/digging_stick,2,40,0,1,tools,0,0,0,1,null
 RECIPE: /material/wood/,hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,null
@@ -3445,4 +3446,8 @@ RECIPE: /material/copper/,copper hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,
 RECIPE: /material/bronze/,bronze hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/iron/,iron hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,iron
 RECIPE: /material/steel/,steel hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,steel
+RECIPE: /material/copper/,copper mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,copper
+RECIPE: /material/bronze/,bronze mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,bronze
+RECIPE: /material/iron/,iron mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,iron
+RECIPE: /material/steel/,steel mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,steel
 //**| END GENERATED TOOL MATERIAL VARIANTS |**
