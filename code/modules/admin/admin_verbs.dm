@@ -4,6 +4,10 @@ var/list/admin_verbs_default = list(
 	/client/proc/player_panel,
 	/client/proc/deadmin_self,			//destroys our own admin datum so we can play as a regular player,
 	/client/proc/cmd_admin_say,			//talk in the admin chat with every online admin,
+	/client/proc/admin_memo_write,
+	/client/proc/admin_memo_show,
+	/client/proc/admin_memo_delete,
+	/client/proc/watchlist_show,
 	/client/proc/hide_verbs,			//hides all our adminverbs,
 	/client/proc/hide_most_verbs,		//hides all our hideable adminverbs,
 	/client/proc/debug_variables,		//allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify,
@@ -14,6 +18,8 @@ var/list/admin_verbs_default = list(
 	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/player_memo_write,
+	/client/proc/player_memo_delete,
 	/client/proc/bug_reports_panel,
 	/client/proc/crossroads_reroll_loot_pads,
 	/client/proc/crossroads_loot_report,
@@ -45,6 +51,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_set_language_score,	//set a language score from 0 to 100,
 	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
 	/client/proc/cmd_admin_create_divine_book,	//write a god's one original book and entrust it to a player,
+	/client/proc/cmd_admin_karma,	//a player's hidden karma: standing, who rated them, void and bar (code/modules/karma)
 	/client/proc/cmd_admin_divine_patron,	//speak as a god: initiate followers, teach invocations, answer prayers,
 	/client/proc/cmd_admin_magic_whitelist,	//who may follow a god and learn magic on persistent worlds (shared list),
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
@@ -103,6 +110,7 @@ var/list/admin_verbs_admin = list(
 var/list/admin_verbs_trialadmin = list(
 	/client/proc/toggle_disruptive_votes,
 	/client/proc/quickBan_person,
+	/client/proc/quickBan_unban,
 	/client/proc/cmd_admin_get,
 	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
@@ -334,6 +342,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/see_battle_report,
 	/client/proc/show_battle_report,
 	/client/proc/quickBan_person,
+	/client/proc/quickBan_unban,
 	/client/proc/toggle_right_click,
 )
 

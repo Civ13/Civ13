@@ -1505,7 +1505,7 @@
 					secondary_refund(H)
 					return
 
-	else if (ispath(recipe.result_type, /obj/structure/drill))
+	else if (needs_drill_steel(recipe))
 		if (!drill_construction_steel(H))
 			to_chat(user, SPAN_WARNING("You need at least 20 steel in your other hand to build an industrial drill."))
 			secondary_refund(H)
@@ -1800,7 +1800,7 @@
 			return
 
 	// Recheck after do_after, before consuming either drill construction input.
-	if (ispath(recipe.result_type, /obj/structure/drill))
+	if (needs_drill_steel(recipe))
 		var/obj/item/stack/material/steel/drill_steel = drill_construction_steel(H)
 		if (!can_use(required) || !drill_steel)
 			to_chat(user, SPAN_WARNING("Keep the electronics and 20 steel in your hands until construction completes."))
@@ -2346,6 +2346,12 @@
 	return null
 
 // The recipe stack pays electronics; the other held stack pays steel.
+// Powered drills built from electronics also take 20 steel from the other
+// hand. Drill subtypes built from wood, iron or steel (water stamp mill,
+// trommel, amalgamator drum, shaking table, regolith rig) do not.
+/obj/item/stack/proc/needs_drill_steel(datum/stack_recipe/recipe)
+	return istype(src, /obj/item/stack/material/electronics) && ispath(recipe?.result_type, /obj/structure/drill)
+
 /obj/item/stack/proc/drill_construction_steel(mob/living/human/H)
 	if (!istype(src, /obj/item/stack/material/electronics) || !H)
 		return null

@@ -82,6 +82,11 @@
 	return next_move <= world.time
 /mob/proc/getStatCoeff(statname)
 	return 1
+#define WORK_MINE "mine"
+// Labour speed lives in work_speed.dm; an average miner here, as a raw
+// time-per-speed wait against the iron pickaxe's speed of 2.
+/proc/work_delay(mob/user, base, kind, obj/item/tool)
+	return base * 2 / (user.getStatCoeff("strength") * tool.usespeed)
 /mob/proc/survival_action_started()
 	actions++
 	starts++

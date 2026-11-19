@@ -321,3 +321,57 @@ state is held, never re-bootstrapped. Normal starts with the database omit the
 flag. If a group is quarantined, stop and restore the original coordinator
 database; do not clear agent state to force bootstrap. A database written before
 recovery tracking adopts its enrolled directory even if it never decided a home.
+
+## Shared player records
+
+`records.py` keeps staff records about an account (admin notes, warnings,
+bans, watch flags, memos, and later karma and lifetime points) the same on
+every region. A world makes each record with its own 32-hex id and queues it
+in its agent (`/record`); the coordinator collects `/records/outbox`, stores
+the records in its `player_record` table, acknowledges them (`/records/ack`)
+and writes read-only files beside the regions:
+
+- `shared-records/index.json`: per-ckey counts, watch flag, active bans and
+  playtime hours, the Discord account map (`d:<id>` to ckey), and when each
+  region's queue was last emptied (`pulled`).
+- `shared-records/bans.json`: every active ban. A temporary ban drops out once
+  its `until` time passes; no unban record is needed.
+- `shared-records/players/<k>/<ckey>.json`: every record about one ckey,
+  revoked ones marked `revoked`.
+
+Only the coordinator writes the table and the files, each file through a
+temporary name and a rename. Records are never edited: a `revoke` record names
+the target id. A record sent twice, or copied on two regions with the same id,
+is stored once. Other features may keep their own folders inside
+`shared-records/` (the karma ledger uses `karma/`).
+
+Playtime comes from the host's player activity database
+(`player-activity.sqlite` beside the coordinator database, written by
+`tools/player_activity/aggregate.py`): heartbeats where the player was
+connected and the character alive and awake (`st` = `alive`). The daily
+roll-up keeps a year, so hours cover the last 365 days.
+
+The game side is `code/modules/admin/shared_player_records.dm`: it keeps its
+own journal (`data/player_records.json`) so a record applies here at once,
+sends it when the agent answers, and drops it once the coordinator's pull time
+for this region is later than the send. Outside a shard group the journal is
+the only store.
+
+Read-only look: `python3 tools/transfer_storage/records.py --db coordinator.sqlite --ckey <ckey>`.
+
+### Karma
+
+`karma.py` reads three record kinds from the same table: `karma_rating`
+(about the rated ckey; the giver's latest rating of a ckey counts, and
+revoking it leaves the pair with none), `karma_standing` (staff's -2..+2
+standing, latest counts) and `karma_bar` (no giving while live). Each rating's
+weight is the giver's standing factor x playtime factor (share of 100 hours,
+at least 0.05) x age factor (0.5 after 90 days); a giver under an active game
+ban counts for nothing until the ban ends. After each pass the coordinator
+writes `shared-records/karma/<ckey>.json` for every ckey with karma (received,
+given, standing or bar), only when its content changed: the game reads the
+`given` list and the Discord bot's staff-only `karma` command reads the rest.
+`code/modules/karma/karma_ledger.dm` computes the same weights live for the
+staff dossier. Karma is never shown to players.
+
+Read-only look: `python3 tools/transfer_storage/karma.py --db coordinator.sqlite --ckey <ckey>`.

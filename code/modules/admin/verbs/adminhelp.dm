@@ -44,12 +44,17 @@
 	msg = "<span class = 'notice'><b><font color=red>Request for Help: </span>[get_options_bar(mob, 2, TRUE, TRUE)]:</b> [msg]</span>"
 	var/mentormsg = "<span class = 'notice'><b><font color=red>Request for Help:</b> [msg]</span>"
 
+	// Admins also see the player's hidden karma; mods and mentors do not.
+	var/karma_msg = msg
+	var/karma_ckey = karma_mob_ckey(mob)
+	if (karma_ckey)
+		karma_msg = replacetext(msg, ":</b>", "[karma_staff_badge(karma_ckey)]:</b>")
 	for (var/client/X in admins)
 		if ((R_ADMIN|R_MOD) & X.holder.rights)
 
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 				X << 'sound/effects/adminhelp.ogg'
-			to_chat(X, CHAT_TYPED(CHAT_ADMIN, msg))
+			to_chat(X, CHAT_TYPED(CHAT_ADMIN, (R_ADMIN & X.holder.rights) ? karma_msg : msg))
 		else if (R_MENTOR & X.holder.rights)
 			if (X.is_preference_enabled(/datum/client_preference/holder/play_adminhelp_ping))
 				X << 'sound/effects/adminhelp.ogg'

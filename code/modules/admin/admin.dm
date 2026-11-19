@@ -63,11 +63,13 @@ proc/admin_notice(var/message, var/rights)
 		<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a> -
 		<a href='?src=\ref[src];subtlemessage=\ref[M]'>SM</a> -
 		[admin_jump_link(M, src)]\] <br>
-		<b>Mob type</b> = [M.type]<br><br>
+		<b>Mob type</b> = [M.type]<br>
+		[player_records_summary_html(M.ckey, src)]<br>
 		[M.name_history_admin_html()]
 		<A href='?src=\ref[src];boot2=\ref[M]'>Kick</A> |
 		<A href='?_src_=holder;warn=[M.ckey]'>Warn</A> |
 		<A href='?src=\ref[src];notes=show;mob=\ref[M]'>Notes</A> |
+		<A href='?src=\ref[karma_admin_window];karma_ckey=[karma_mob_ckey(M)];karma_act=refresh'>Karma</A> ([karma_mob_ckey(M) ? karma_brief(karma_mob_ckey(M)) : "no player"]) |
 		<A href='?_src_=holder;CentCom=[M.ckey]'>CentCom Ban DB</A>
 	"}
 
@@ -167,15 +169,12 @@ proc/admin_notice(var/message, var/rights)
 	PlayerNotesPage(1)
 
 /datum/admins/proc/PlayerNotesPage(page)
-	var/dat = "<b>Player notes</b><HR>"
-	var/savefile/S=new("data/player_notes.sav")
-	var/list/note_keys
-	S >> note_keys
-	if (!note_keys)
+	var/dat = "<b>Player notes</b> (every region)<HR>"
+	var/list/note_keys = shared_records.ckeys_with(list("note", "warning"))
+	if (!note_keys.len)
 		dat += "No notes found."
 	else
 		dat += "<table>"
-		note_keys = sortList(note_keys)
 
 		// Display the notes on the current page
 		var/number_pages = note_keys.len / PLAYER_NOTES_ENTRIES_PER_PAGE
@@ -208,12 +207,10 @@ proc/admin_notice(var/message, var/rights)
 /proc/get_player_notes_file_dir()
 	return "data/player_saves/"
 
+// Notes and warnings come from every region (shared_player_records.dm).
 /datum/admins/proc/player_has_info(var/key as text)
-	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")
-	var/list/infos
-	info >> infos
-	if (!infos || !infos.len) return FALSE
-	else return TRUE
+	var/list/summary = shared_records.summary(key)
+	return (summary["notes"] + summary["warnings"]) > 0
 
 /datum/admins/proc/show_player_info(var/key as text)
 	set category = "Admin"
@@ -223,6 +220,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!istype(src,/datum/admins))
 		to_chat(usr, "Error: you are not an admin!")
 		return
+	key = ckey(key)
 	var/dat = "<html>[common_browser_style]<head><title>Info on [key]</title></head>"
 	dat += "<body>"
 
@@ -232,28 +230,33 @@ proc/admin_notice(var/message, var/rights)
 			p_age = C.player_age
 			break
 	dat +="<span style='color:#000000; font-weight: bold'>Player age: [p_age]</span><br>"
+	dat +="<span style='color:#000000; font-weight: bold'>Playtime (alive and awake, every region): [shared_records.playtime_hours(key)] hours</span><br><br>"
 
-	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")
-	var/list/infos
-	info >> infos
-	if (!infos)
+	var/list/watches = watchlist_for(key)
+	if (watches.len)
+		for (var/list/W in watches)
+			var/list/watch_body = W["body"]
+			dat += "<b>Watchlist:</b> <font color=#aa0000>[islist(watch_body) ? watch_body["text"] : ""]</font> <i>by [length(W["author"]) ? W["author"] : "Adminbot"] on [shared_records.time_text(W["at"])] ([W["region"]])</i><br>"
+		dat += "<A href='?src=\ref[src];watchlist_remove=[key]'>Remove from watchlist</A><br><br>"
+	else
+		dat += "<A href='?src=\ref[src];watchlist_add=[key]'>Add to watchlist</A><br><br>"
+
+	var/list/infos = notes_for(key)
+	if (!infos.len)
 		dat += "No information found on the given key.<br>"
 	else
-		var/update_file = FALSE
-		var/i = FALSE
-		for (var/datum/player_info/I in infos)
-			i += 1
-			if (!I.timestamp)
-				I.timestamp = "Pre-4/3/2012"
-				update_file = TRUE
-			if (!I.rank)
-				I.rank = "N/A"
-				update_file = TRUE
-			dat += "<font color=#008800>[I.content]</font> <i>by [I.author] ([I.rank])</i> on <i><font color=blue>[I.timestamp]</i></font> "
-			if (I.author == usr.key || I.author == "Adminbot" || ishost(usr))
-				dat += "<A href='?src=\ref[src];remove_player_info=[key];remove_index=[i]'>Remove</A>"
+		for (var/list/I in infos)
+			var/list/body = I["body"]
+			// Stored sanitized (topic.dm, warn.dm), like the old notes.
+			var/text = islist(body) ? body["text"] : ""
+			var/when = (islist(body) && istext(body["legacy_date"])) ? body["legacy_date"] : shared_records.time_text(I["at"])
+			var/label = I["kind"] == "warning" ? "<b>Warning:</b> " : ""
+			var/author = length(I["author"]) ? I["author"] : "Adminbot"
+			var/rank = length(I["rank"]) ? I["rank"] : "N/A"
+			dat += "[label]<font color=#008800>[text]</font> <i>by [author] ([html_encode(rank)])</i> on <i><font color=blue>[html_encode(when)]</font></i> <i>([I["region"]])</i> "
+			if (notes_can_remove(I, usr))
+				dat += "<A href='?src=\ref[src];remove_player_info=[key];remove_id=[I["id"]]'>Remove</A>"
 			dat += "<br><br>"
-		if (update_file) info << infos
 
 	dat += "<br>"
 	dat += "<A href='?src=\ref[src];add_player_info=[key]'>Add Comment</A><br>"
@@ -1013,6 +1016,7 @@ proc/admin_notice(var/message, var/rights)
 
 	message_admins("[key_name(usr)] manually reloaded bans.", key_name(usr))
 	load_bans()
+	shared_records.refresh(TRUE)
 
 /client/proc/start_forcelife()
 	set name = "Start Forcelife"
@@ -1189,28 +1193,11 @@ proc/admin_notice(var/message, var/rights)
 				O.do_spawn()
 			return
 
+// Bans live in the shared player records (quickBan.dm), which drop expired
+// bans when read. This copies the old SQL/bans.txt in once.
 /proc/load_bans()
-	var/removed = 0
-	var/kept = 0
-	var/checkingfile = "SQL/bans.txt"
-	if (fexists(checkingfile))
-		var/details = file2text(checkingfile)
-		var/list/details_lines = splittext(details, "|||\n")
-		if (details_lines.len)
-			for(var/i=details_lines.len,i>=1,i--)
-				if (findtext(details_lines[i], ";"))
-					var/list/details2 = splittext(details_lines[i], ";")
-					if (text2num(details2[7])<=world.realtime)
-						details_lines -= details_lines[i]
-						removed++
-		fdel(checkingfile)
-		if (details_lines.len)
-			for(var/L in details_lines)
-				if (L && L != "")
-					text2file("[L]|||", checkingfile)
-					kept++
-
-	world.log << "Finished cleaning ban list. [removed] bans removed, [kept] bans kept."
+	var/copied = quickBan_migrate_legacy()
+	world.log << "Bans: [copied] old bans and connections copied to the shared player records."
 	return TRUE
 
 //Radiation/Pollution stuff

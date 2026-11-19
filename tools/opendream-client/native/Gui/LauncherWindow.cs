@@ -313,6 +313,13 @@ internal sealed partial class LauncherWindow : Form {
                     dialog.ShowDialog(this);
                     return Task.CompletedTask;
                 }, null),
+                ("Player records…", () => {
+                    // Read-only shared notes, warnings, bans, watchlist and memos (PlayerRecords, shard_group.py records): no host gate.
+                    if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
+                    using var dialog = new PlayerRecordsDialog(control);
+                    dialog.ShowDialog(this);
+                    return Task.CompletedTask;
+                }, null),
                 ("-", null, null),
                 ("Update and restart without saving…", () => GroupAction("update-unsaved", "Update and restart without saving"), HostGate.All),
                 ("Force stop", () => GroupAction("kill", "Force stop"), HostGate.All),

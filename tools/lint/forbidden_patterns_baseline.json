@@ -471,7 +471,6 @@
       "code/_helpers/datum_pool.dm": 2,
       "code/datums/vote.dm": 1,
       "code/modules/admin/admin_verbs.dm": 3,
-      "code/modules/admin/player_notes.dm": 2,
       "code/modules/client/client_procs.dm": 5,
       "code/modules/error_handler/error_viewer.dm": 1,
       "code/modules/multiz/underground_migration.dm": 1,

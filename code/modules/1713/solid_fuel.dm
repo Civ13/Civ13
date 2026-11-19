@@ -12,6 +12,7 @@ var/global/list/solid_fuel_kinds = list(
 	/obj/item/stack/dung = "dung",
 	/obj/item/stack/ore/charcoal = "charcoal",
 	/obj/item/stack/ore/coal = "coal",
+	/obj/item/stack/ore/coke = "coke",
 )
 
 // Rates are fuel per unit of the item's amount, or list(per unit, flat bonus).
@@ -23,10 +24,14 @@ var/global/list/hearth_fuel_rates = list(
 // Bloomeries and blast furnaces also burn planks.
 var/global/list/furnace_fuel_rates = list(
 	"wood" = 1, "bamboo" = 1, "plank" = 1, "branch" = list(1, 0.5), "leaf" = list(1, 0.5),
-	"dung" = list(1, 1), "charcoal" = 2.5, "coal" = 3)
+	"dung" = list(1, 1), "charcoal" = 2.5, "coal" = 3, "coke" = 3)
+// Bloomeries and blast furnaces count in charcoal halves (steel_grades.dm):
+// a charcoal is 2, a log 1. Raw coal, leaves and dung can't smelt iron.
+var/global/list/bloomery_fuel_rates = list(
+	"charcoal" = 2, "coke" = 3, "wood" = 1, "bamboo" = 1, "plank" = 1, "branch" = 0.5)
 // Factory furnaces take only stackable logs, planks and coal from automation.
 var/global/list/factory_fuel_rates = list(
-	"wood" = 1, "bamboo" = 1, "plank" = 1, "charcoal" = 2.5, "coal" = 3)
+	"wood" = 1, "bamboo" = 1, "plank" = 1, "charcoal" = 2.5, "coal" = 3, "coke" = 3)
 // Braziers count in burn ticks.
 var/global/list/brazier_fuel_rates = list(
 	"coal" = 220, "charcoal" = 180, "wood" = 80, "plank" = 80, "bamboo" = 80,
