@@ -441,11 +441,13 @@ var/datum/probe_globals/GLOB = new
 	display_name = "Probe Acceptor"
 	var/obj/item/circuit_component/list_loop/filter_list/target
 	var/datum/port/input/accept_input
+	var/calls = 0
 
 /obj/item/circuit_component/probe_acceptor/populate_ports()
 	accept_input = add_input_port("Accept", PORT_TYPE_SIGNAL, trigger = PROC_REF(accept))
 
 /obj/item/circuit_component/probe_acceptor/proc/accept(datum/port/input/input)
+	calls++
 	if(target)
 		target.accept_current(input)
 
@@ -1727,6 +1729,14 @@ var/datum/probe_globals/GLOB = new
 	wire(circuit, user, literal, 1, formatter, 1)
 	enter(circuit, user, formatter, 2, "First %1, then %2, then %9")
 	check(output_value(formatter) == "First red, then blue, then %9", "format list replaces numbered placeholders")
+	var/obj/item/circuit_component/probe_acceptor/literal_sink = new(circuit)
+	circuit.add_component(literal_sink)
+	literal_sink.accept_input.connect(literal.triggered)
+	check(literal.ui_perform_action("add_entry", user) && literal.ui_perform_action("remove_entry", user), "list literal can add and remove a slot")
+	check(literal.ui_perform_action("remove_entry", user), "list literal can remove a filled slot")
+	check(literal_sink.calls == 0 && jointext(output_value(literal), ",") == "red,blue", "slot edits keep the previous output and emit no signal")
+	literal.trigger.set_input(COMPONENT_SIGNAL)
+	check(literal_sink.calls == 1 && jointext(output_value(literal), ",") == "red", "explicit trigger publishes the edited list once")
 	var/obj/item/circuit_component/format_assoc_list/assoc_formatter = print(circuit, user, /obj/item/circuit_component/format_assoc_list)
 	wire(circuit, user, maker, 1, assoc_formatter, 1)
 	enter(circuit, user, assoc_formatter, 2, "Hello %Name, %Missing")

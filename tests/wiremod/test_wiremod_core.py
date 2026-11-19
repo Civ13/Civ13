@@ -60,6 +60,25 @@ class WiremodSource(unittest.TestCase):
             table[match.group(1)] = (match.group(2), re.findall(r'"(\w+)"', match.group(3)))
         return table
 
+    def test_literal_arity_buttons_do_not_publish_or_trigger(self):
+        # Adding/removing editor slots must not execute the circuit. Both
+        # literal components publish only when their Trigger input fires.
+        for name in ('list_literal', 'assoc_literal'):
+            filename = 'literal' if name == 'list_literal' else 'assoc_literal'
+            source = read(MODULE / f'components/list/{filename}.dm')
+            prefix = f'/obj/item/circuit_component/{name}'
+            with self.subTest(component=name):
+                edit = code(proc_body(source, prefix + '/ui_perform_action('))
+                self.assertIn('append_input_port(', edit)
+                self.assertIn('remove_last_input_port()', edit)
+                self.assertNotIn('build_list(', edit)
+                self.assertNotIn('.set_output(', edit)
+                populate = proc_body(source, prefix + '/populate_ports(')
+                self.assertIn('trigger = PROC_REF(build_list)', populate)
+                build = code(proc_body(source, prefix + '/proc/build_list('))
+                self.assertIn('list_output.set_output(built)', build)
+                self.assertIn('triggered.set_output(COMPONENT_SIGNAL)', build)
+
     def test_every_module_file_is_included_once(self):
         dme = read(ROOT / 'civ13.dme')
         self.assertGreaterEqual(len(self.files), 34)
