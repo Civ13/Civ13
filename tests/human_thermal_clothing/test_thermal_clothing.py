@@ -3,6 +3,7 @@ import importlib.util
 from itertools import product
 from pathlib import Path
 import unittest
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).parent
@@ -96,6 +97,74 @@ class ThermalClothingChecks(unittest.TestCase):
                 self.assertEqual(run(current[index], slots, temp, disabled, wetness), expected)
                 differences[index] += run(mutants[index], slots, temp, disabled, wetness) != expected
         self.assertTrue(all(differences), differences)
+
+
+
+class DiscomfortCoverageChecks(unittest.TestCase):
+    """Project the production loops; fake only clothing and list boundaries."""
+
+    def test_exposed_parts_and_cold_coverage_calls(self):
+        source = (ROOT / 'code/game/mob/living/carbon/human/species/species.dm').read_text(encoding='utf-8')
+        section = source[source.index('/datum/species/proc/get_environment_discomfort('):]
+        masks = dict(zip(('HEAD', 'UPPER_TORSO', 'LOWER_TORSO', 'LEGS', 'FEET', 'ARMS', 'HANDS'),
+                         (1, 2, 4, 8, 16, 32, 64)))
+        regions = {'HEAD': ('head',), 'UPPER_TORSO': ('chest',), 'LOWER_TORSO': ('groin',),
+                   'LEGS': ('l_leg', 'r_leg'), 'FEET': ('l_foot', 'r_foot'),
+                   'ARMS': ('l_arm', 'r_arm'), 'HANDS': ('l_hand', 'r_hand')}
+
+        class DMList(list):
+            def __isub__(self, item):
+                self[:] = [value for value in self if value != item]
+                return self
+
+        class Garment:
+            def __init__(self, name, heat, cold, cape=0):
+                self.name, self.heat_protection, self.cold_protection, self.cape = name, heat, cold, cape
+            def get_cold_coverage(self):
+                events.append(self.name)
+                return self.cold_protection | self.cape
+
+        def typed_iter(values, kind):
+            assert kind == '/obj/item/clothing'
+            return (value for value in values if isinstance(value, Garment))
+
+        chunks = []
+        cursor = 0
+        for _ in range(2):
+            start = section.index('\n\t\tvar/sum = 0', cursor) + 1
+            end = section.index('\n\n\t\tfor (var/i in exposed_bp)', start)
+            chunks.append(section[start:end])
+            cursor = end
+
+        for is_cold, chunk in enumerate(chunks):
+            # Adapt only this contiguous production block; keep every loop and test.
+            body = '\n'.join(line[1:] for line in chunk.splitlines())
+            program = '/check()\n' + body + '\n\treturn exposed_bp\n'
+            env = {**masks}
+            proc = ADAPTER.project(program, '/check', 'H, typed_iter, list', env)
+            mutant = ADAPTER.project(program.replace('if (sum & HEAD)', 'if (0)'),
+                                     '/check', 'H, typed_iter, list', {**masks})
+            mutant_detected = False
+            for combined in range(128):
+                # Repeated bits, empty slots, and cape-added cold coverage.
+                first = Garment('first', combined & 0x55, combined & 0x55)
+                second = Garment('second', combined & 0x2a, combined & 0x2a, combined & 1)
+                slots = (first, None, second, object(), None, None)
+                h = SimpleNamespace(**dict(zip(('head', 'wear_suit', 'w_uniform', 'shoes', 'gloves', 'wear_mask'), slots)))
+                events = []
+                result = proc(h, typed_iter, lambda *values: DMList(values))
+                recorded = events[:]
+                initial = (['l_foot','r_foot'] if is_cold else []) + ['l_leg','r_leg','chest','groin','l_arm','r_arm'] + (['l_hand','r_hand'] if is_cold else []) + ['head']
+                covered = set()
+                for name, bit in masks.items():
+                    if combined & bit:
+                        covered.update(regions[name])
+                self.assertEqual(result, [part for part in initial if part not in covered])
+                expected_calls = [item.name for item in (first, second) if item.cold_protection] if is_cold else []
+                self.assertEqual(recorded, expected_calls)
+                events = []
+                mutant_detected |= mutant(h, typed_iter, lambda *values: DMList(values)) != result
+            self.assertTrue(mutant_detected, 'missing head coverage must be detected')
 
 
 if __name__ == '__main__':
