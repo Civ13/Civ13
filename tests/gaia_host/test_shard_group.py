@@ -185,6 +185,57 @@ class GroupLandsTests(unittest.TestCase):
             self.assertEqual(0, lands['europe']['readiness']['homes'])
 
 
+class GroupRecordsTests(unittest.TestCase):
+    """shard_group.py records: the launcher's read-only Player records window."""
+
+    def test_records_summary_lookup_search_and_export(self):
+        sys.path.insert(0, str(ROOT))
+        from tools.transfer_storage import records
+        import sqlite3
+        with tempfile.TemporaryDirectory() as root:
+            group = {'root': root, 'regions': [{'id': 'gaia'}, {'id': 'europe'}]}
+            self.assertIn('No coordinator database yet', shard_group.group_records(group)['text'])
+            gaia = Path(root) / 'gaia'
+            (gaia / 'data').mkdir(parents=True)
+            (gaia / 'data' / 'player_notes.migrated').write_text('1 notes copied')
+            (gaia / 'data' / 'player_records.json').write_text(json.dumps([{'id': 'a' * 32, 'sent': 0}, {'id': 'b' * 32, 'sent': -1}]))
+            db = sqlite3.connect(os.path.join(root, 'coordinator.sqlite'))
+            records.init_group(db)
+            now = 1_800_000_000
+            rows = [{'id': '%032x' % 1, 'ckey': 'bob', 'kind': 'note', 'author': 'val', 'rank': 'Host', 'at': now - 50,
+                     'body': {'text': 'griefed the well'}},
+                    {'id': '%032x' % 2, 'ckey': 'bob', 'kind': 'ban', 'author': 'val', 'rank': 'Host', 'at': now - 40,
+                     'body': {'scope': 'game', 'type': 'Server', 'until': 0, 'reason': 'grief', 'ip': '10.0.0.1'}},
+                    {'id': '%032x' % 3, 'ckey': 'amy', 'kind': 'warning', 'author': 'val', 'rank': 'Host', 'at': now - 30,
+                     'body': {'text': 'spam'}},
+                    {'id': '%032x' % 4, 'ckey': 'amy', 'kind': 'revoke', 'author': 'val', 'rank': 'Host', 'at': now - 20,
+                     'body': {'target': '%032x' % 3, 'target_kind': 'warning'}}]
+            records.store_records(db, 'gaia', rows, now)
+            db.commit()
+            db.close()
+            summary = shard_group.group_records(group, now=now)
+            self.assertEqual((1, 1), (summary['players'], summary['active_bans']))  # amy's only record was removed
+            self.assertEqual({'active': 0, 'removed': 1}, summary['kinds']['warning'])
+            self.assertEqual({'notes': True, 'bans': False, 'memos': False}, summary['regions']['gaia']['migrated'])
+            self.assertEqual((1, 1), (summary['regions']['gaia']['waiting'], summary['regions']['gaia']['refused']))
+            self.assertIn('gaia: old notes copied; 1 records waiting for the coordinator, 1 refused', summary['text'])
+            bob = shard_group.group_records(group, ckey='Bob', now=now)
+            self.assertEqual(2, len(bob['records']))
+            self.assertIn('griefed the well', bob['text'])
+            found = shard_group.group_records(group, search='WELL', now=now)
+            self.assertEqual(['%032x' % 1], [r['id'] for r in found['matches']])
+            amy = shard_group.group_records(group, ckey='amy', now=now)
+            self.assertIn('[removed]', amy['text'])
+            out = os.path.join(root, 'export.json')
+            self.assertEqual(4, shard_group.group_records(group, export=out, now=now)['exported'])
+            exported = json.loads(Path(out).read_text(encoding='utf-8'))['records']
+            self.assertEqual('%032x' % 4, [r for r in exported if r['id'] == '%032x' % 3][0]['revoked'])
+            with self.assertRaises(shard_group.Refused):
+                shard_group.group_records(group, ckey='!!')
+            with self.assertRaises(shard_group.Refused):
+                shard_group.group_records(group, search='  ')
+
+
 class ShardGroupTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()

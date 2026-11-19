@@ -402,6 +402,125 @@ class Snapshots:
         return written
 
 
+# -- host tools (shard_group.py records, the launcher's Player records window) --
+
+# What each region writes once it has copied its old files in (player_notes.dm,
+# quickBan.dm, shared_memos.dm), and its journal of records not yet collected.
+MIGRATION_MARKERS = {'notes': ('data', 'player_notes.migrated'), 'bans': ('SQL', 'bans.migrated'),
+                     'memos': ('data', 'memos.migrated')}
+JOURNAL = ('data', 'player_records.json')
+
+
+def canonical_ckey(text):
+    """A BYOND key as ckey() makes it: lower case letters, digits and @."""
+    return re.sub(r'[^a-z0-9@]', '', str(text or '').lower())[:32]
+
+
+def _when(at):
+    at = unix_int(at) or 0
+    return time.strftime('%Y-%m-%d %H:%M', time.localtime(at)) if at > 0 else 'unknown'
+
+
+def _describe(row):
+    """One record as a short line of text (no IPs: those stay in the ckey view and the export)."""
+    body = row['body']
+    if row['kind'] == 'ban':
+        until = unix_int(body.get('until', 0)) or 0
+        what = '%s ban (%s)%s: %s, %s' % (body.get('type') or body.get('scope'), body.get('scope'),
+                                         ' ' + body['info'] if body.get('info') not in (None, '', 'nil') else '',
+                                         body.get('reason', ''), 'never ends' if not until else 'ends ' + _when(until))
+    elif row['kind'] == 'connection':
+        what = 'connected from %s (computer id %s)' % (body.get('ip', ''), body.get('cid', ''))
+    elif row['kind'] == 'revoke':
+        what = 'removed %s %s%s' % (body.get('target_kind', ''), body.get('target', ''),
+                                    ': ' + body['reason'] if body.get('reason') else '')
+    else:
+        what = str(body.get('text') or body.get('html') or json.dumps(body, sort_keys=True))
+    return '%s  %-10s %s  (by %s on %s)' % (_when(row['at']), row['kind'], what[:300], row['author'] or 'server',
+                                            row['region'])
+
+
+def region_status(region_dirs):
+    """Per region: which old files it has copied in, and its journal (records not yet
+    collected by the coordinator, and records the agent refused)."""
+    status = {}
+    for region, folder in region_dirs.items():
+        entry = {'migrated': {name: os.path.exists(os.path.join(folder, *path)) for name, path in MIGRATION_MARKERS.items()},
+                 'waiting': 0, 'refused': 0}
+        try:
+            with open(os.path.join(folder, *JOURNAL), encoding='utf-8') as f:
+                journal = json.load(f)
+        except (OSError, ValueError):
+            journal = []
+        for record in journal if isinstance(journal, list) else []:
+            if isinstance(record, dict):
+                if record.get('sent') in (-1, '-1'):
+                    entry['refused'] += 1
+                else:
+                    entry['waiting'] += 1
+        status[region] = entry
+    return status
+
+
+def report(db, now, ckey=None, search=None, limit=200):
+    """The Player records window: a summary of the whole store, every record about one
+    ckey, or the records whose ckey or text holds search. Answers data and text."""
+    now = int(now)
+    revoked = revocations(db)
+    lines = []
+    if ckey:
+        records = player_file(db, ckey, revoked)['records']
+        lines.append('%s: %d records' % (ckey, len(records)))
+        for row in records:
+            lines.append(('[removed] ' if row.get('revoked') else '') + _describe(row))
+        return {'ckey': ckey, 'records': records[-limit:], 'text': '\n'.join(lines)}
+    if search:
+        needle = search.lower()
+        found = []
+        for row in reversed(_rows(db)):
+            if needle in row['ckey'] or needle in json.dumps(row['body']).lower():
+                found.append(row)
+                if len(found) >= limit:
+                    break
+        lines.append('%d records match "%s"%s' % (len(found), search, ' (the newest %d)' % limit if len(found) >= limit else ''))
+        for row in found:
+            lines.append('%-20s %s%s' % (row['ckey'], '[removed] ' if row['id'] in revoked else '', _describe(row)))
+        return {'search': search, 'matches': [published(r) for r in found], 'text': '\n'.join(lines)}
+    kinds = {}
+    ckeys = set()
+    bans = 0
+    for row in _rows(db, 'WHERE kind != ?', ('revoke',)):
+        counts = kinds.setdefault(row['kind'], {'active': 0, 'removed': 0})
+        if row['id'] in revoked:
+            counts['removed'] += 1
+            continue
+        counts['active'] += 1
+        ckeys.add(row['ckey'])
+        if row['kind'] == 'ban' and ban_active(row, now):
+            bans += 1
+    pulls = {r: unix_text(t) for r, t in db.execute('SELECT region, at FROM record_pull')}
+    lines.append('%d players have records; %d bans are active.' % (len(ckeys), bans))
+    for kind in sorted(kinds):
+        lines.append('  %-14s %6d active, %d removed' % (kind, kinds[kind]['active'], kinds[kind]['removed']))
+    for region in sorted(pulls):
+        lines.append('Last collected from %s: %s' % (region, _when(pulls[region])))
+    return {'players': len(ckeys), 'active_bans': bans, 'kinds': kinds, 'pulled': pulls, 'text': '\n'.join(lines)}
+
+
+def export(db, path, now):
+    """Every record (removed ones marked) to one JSON file, for a backup or an audit."""
+    revoked = revocations(db)
+    records = []
+    for row in _rows(db):
+        entry = published(row)
+        if row['id'] in revoked:
+            entry['revoked'] = revoked[row['id']]['id']
+        records.append(entry)
+    if not write_json(path, {'version': INDEX_VERSION, 'exported': unix_text(now), 'records': records}):
+        raise OSError('could not write %s' % path)
+    return len(records)
+
+
 def main(argv=None):
     """Read-only look at a coordinator's player records (host tools, launcher)."""
     import argparse
