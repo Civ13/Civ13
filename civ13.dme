@@ -300,6 +300,7 @@
 #include "code\game\mob\living\carbon\human\examine.dm"
 #include "code\game\mob\living\carbon\human\human.dm"
 #include "code\game\mob\living\carbon\human\human_attackhand.dm"
+#include "code\game\mob\living\carbon\human\punch_injury.dm"
 #include "code\game\mob\living\carbon\human\human_damage.dm"
 #include "code\game\mob\living\carbon\human\human_defense.dm"
 #include "code\game\mob\living\carbon\human\human_defines.dm"
