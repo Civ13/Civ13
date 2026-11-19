@@ -600,7 +600,7 @@ SUITES = {
     'sledgehammer': {'files': ('tests/sledgehammer/test_two_hands.py',),
         'paths': ('tests/sledgehammer/',), 'shared_paths': (
             'code/game/objects/items/weapons/sledgehammer.dm', 'tests/save_movement/source_adapter.py')},
-    'serving_tray': {'files': ('tests/serving_tray/test_targeting.py',),
+    'serving_tray': {'files': ('tests/serving_tray/test_targeting.py', 'tests/serving_tray/test_feedback.py'),
         'paths': ('tests/serving_tray/',), 'shared_paths': (
             'code/game/objects/items/weapons/trays.dm', 'tests/save_movement/source_adapter.py')},
     'mop_cleaning': {'files': ('tests/mop_cleaning/test_completion.py',),
