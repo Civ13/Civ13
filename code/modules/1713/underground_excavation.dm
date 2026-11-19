@@ -56,8 +56,7 @@
 		return FALSE
 	var/debris = istype(T, /turf/floor/dirt/underground/empty)
 	var/delay = debris ? EXCAVATION_DEBRIS_TIME : EXCAVATION_TIME
-	delay /= max(0.1, H.getStatCoeff("strength"))
-	delay /= max(0.1, S.usespeed)
+	delay = work_delay_per_speed(H, delay, WORK_DIG, S)
 	T.mining_in_progress = TRUE
 	H.shoveling = TRUE
 	if (debris)
@@ -172,10 +171,7 @@
 	if (problem)
 		to_chat(H, SPAN_WARNING(problem))
 		return TRUE
-	var/delay = BACKFILL_TIME / max(0.1, H.getStatCoeff("strength"))
-	var/obj/item/weapon/material/shovel/S = tool
-	if (istype(S))
-		delay /= max(0.1, S.usespeed)
+	var/delay = work_delay_per_speed(H, BACKFILL_TIME, WORK_DIG, tool)
 	H.shoveling = TRUE
 	H.visible_message(SPAN_NOTICE("[H] starts packing earth into the tunnel."), SPAN_NOTICE("You start packing earth into the tunnel."), "You hear digging.")
 	playsound(T, 'sound/effects/shovelling.ogg', 100, TRUE)

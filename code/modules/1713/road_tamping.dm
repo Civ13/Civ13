@@ -88,10 +88,8 @@
 	if (problem)
 		to_chat(user, SPAN_WARNING(problem))
 		return FALSE
-	var/delay = TAMPING_TIME
+	var/delay = work_delay(user, TAMPING_TIME, WORK_DIG, src)
 	var/mob/living/human/H = user
-	if (istype(H))
-		delay /= max(0.5, H.getStatCoeff("strength"))
 	user.visible_message(SPAN_NOTICE("[user] starts pounding the dirt flat."), SPAN_NOTICE("You start pounding the dirt flat."), "You hear dull thudding.")
 	playsound(T, 'sound/effects/shovelling.ogg', 60, TRUE)
 	if (!do_after(user, delay, T))
@@ -204,10 +202,8 @@
 	if (problem)
 		to_chat(user, SPAN_WARNING(problem))
 		return FALSE
-	var/delay = GRADING_TIME
+	var/delay = work_delay(user, GRADING_TIME, WORK_DIG, tool)
 	var/mob/living/human/H = user
-	if (istype(H))
-		delay /= max(0.5, H.getStatCoeff("strength"))
 	if (direction > 0)
 		user.visible_message(SPAN_NOTICE("[user] starts ramming dirt into the ground to build it up."), SPAN_NOTICE("You start ramming the dirt pile into the ground to build it up."), "You hear dull thudding.")
 	else if (istype(tool, /obj/item/weapon/stone_rammer))
