@@ -170,7 +170,8 @@ class SeaEdgeTests(unittest.TestCase):
         ok = crossing.split('/proc/sea_crossing_record_ok(')[1].split('\n/proc/')[0]
         self.assertNotIn('v > 1000', ok)
         self.assertIn('v > 4096', ok)
-        cross = crossing.split('/obj/structure/hull_tiller/proc/cross(')[1].split('\n/')[0]
+        # The packing half of a crossing (after any wake) is cross_away().
+        cross = crossing.split('/obj/structure/hull_tiller/proc/cross_away(')[1].split('\n/')[0]
         self.assertLess(cross.index('if (!sea_crossing_record_ok(record))'), cross.index('sea_crossing_strip(src, TRUE, gate)'))
         self.assertIn('stays behind from the', cross)
 
