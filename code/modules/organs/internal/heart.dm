@@ -29,13 +29,18 @@
 	if (owner.life_tick % 5 == 0)//update pulse every 5 life ticks (~1 tick/sec, depending on server load)
 		pulse = PULSE_NORM
 
-		if (round(owner.vessel.get_reagent_amount("blood")) <= BLOOD_VOLUME_BAD)	//how much blood do we have
-			pulse  = PULSE_THREADY	//not enough :(
+		// Blood is compared as a percentage of a full body's worth (#6229).
+		if (owner.get_blood_volume() <= BLOOD_VOLUME_BAD)
+			pulse = PULSE_THREADY	//not enough :(
 
 		if (owner.status_flags & FAKEDEATH || owner.chem_effects[CE_NOPULSE])
 			pulse = PULSE_NONE		//pretend that we're dead. unlike actual death, can be influenced by meds
 
-		pulse = Clamp(pulse + owner.chem_effects[CE_PULSE], PULSE_SLOW, PULSE_2FAST)
+		// Only a pulse-adjusting drug moves the pulse, so a stopped heart stays
+		// stopped and severe blood loss stays thready without one (#6228, #6229).
+		var/chem_pulse = owner.chem_effects[CE_PULSE]
+		if (chem_pulse)
+			pulse = Clamp(pulse + chem_pulse, PULSE_SLOW, PULSE_2FAST)
 
 /obj/item/organ/heart/proc/handle_heartbeat()
 	if (pulse >= PULSE_2FAST || owner.shock_stage >= 10)
