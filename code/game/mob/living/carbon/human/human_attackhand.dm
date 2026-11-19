@@ -201,7 +201,7 @@
 						accurate = TRUE
 					if (I_HARM, I_GRAB)
 						// We're in a fighting stance, there's a chance we block
-						if (canmove && src!=H && prob(20))
+						if (canmove && src!=H && prob(physical_contest_chance(20, physical_contest_ratio(src, H, 0.3, 0.7))))
 							block = TRUE
 
 				if (M.grabbed_by.len)
@@ -242,7 +242,7 @@
 					*/
 					if (prob(80))
 						hit_zone = ran_zone(hit_zone)
-					if (prob(15) && hit_zone != "chest") // Missed!
+					if (prob(physical_contest_chance(15, physical_contest_ratio(src, H, 0, 1))) && hit_zone != "chest") // Missed! A nimbler target dodges more.
 						if (!lying)
 							attack_message = "[H] attempted to strike [src], but missed!"
 							adaptStat("dexterity", 1)
@@ -344,8 +344,12 @@
 							visible_message("<span class='danger'>[src]'s [W] goes off during the struggle!</span>")
 							return W.afterattack(target,src)
 
+				// 25% push and 35% disarm between equals; strength drives the push,
+				// dexterity the disarm (physical_contest.dm).
+				var/push_chance = physical_contest_chance(25, physical_contest_ratio(M, src, 0.7, 0.3))
+				var/disarm_chance = physical_contest_chance(35, physical_contest_ratio(M, src, 0.3, 0.7))
 				var/randn = rand(1, 100)
-				if (!(species.flags & NO_SLIP) && randn <= 25)
+				if (!(species.flags & NO_SLIP) && randn <= push_chance)
 					var/armor_check = run_armor_check(affecting, "melee")
 					apply_effect(3, WEAKEN, armor_check)
 					playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
@@ -355,7 +359,7 @@
 						M.visible_message("<span class='warning'>[M] attempted to push [src]!</span>", "<span class = 'danger'>You attempt to push [src]!</span>")
 					return
 
-				if (randn <= 60)
+				if (randn <= push_chance + disarm_chance)
 					//See about breaking grips or pulls
 					if (break_all_grabs(M))
 						playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)

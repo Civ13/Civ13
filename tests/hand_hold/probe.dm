@@ -183,6 +183,25 @@ var/hand_hold_runtime = null
 	G = hand_hold_grab(A, B, "l_foot")
 	hand_hold_assert(!A.r_hand && !B.grabbed_by.len, "missing_part_not_grabbed")
 
+	// Strength and dexterity tilt contests; equals keep the old odds.
+	A.mood_modifier = 1
+	B.mood_modifier = 1
+	A.stats["strength"] = list(100, 100)
+	B.stats["strength"] = list(100, 100)
+	A.stats["dexterity"] = list(100, 100)
+	B.stats["dexterity"] = list(100, 100)
+	hand_hold_assert(physical_contest_ratio(A, B, 0.6, 0.4) == 1 && physical_contest_chance(19, 1) == 19, "equals_keep_old_odds")
+	G = hand_hold_grab(A, B, "l_arm")
+	hand_hold_assert(G.grab_upgrade_cooldown() == 40, "equal_upgrade_cooldown")
+	A.stats["strength"] = list(300, 300)
+	A.stats["dexterity"] = list(300, 300)
+	hand_hold_assert(physical_contest_ratio(A, B, 0.6, 0.4) == 2 && physical_contest_ratio(B, A, 0.6, 0.4) == 0.5, "ratio_bounded")
+	hand_hold_assert(G.grab_upgrade_cooldown() == 20 && physical_contest_chance(19, 2) == 38 && physical_contest_chance(60, 2) == 95 && physical_contest_chance(1, 0.5) == 1, "strong_grabber_and_bounds")
+	A.stats["strength"] = list(150, 150)
+	A.stats["dexterity"] = list(100, 100)
+	hand_hold_assert(physical_contest_ratio(A, B, 1, 0) == 1.5 && physical_contest_ratio(A, B, 0, 1) == 1, "stats_weighted")
+	hand_hold_clear(A, B)
+
 /world/New()
 	OpenPort("none")
 	var/error = null

@@ -2,7 +2,7 @@
 
 `python3 tests/hand_hold/run.py --byond-bin <BYOND bin>` compiles the committed
 game sources with normal startup disabled and, on a 12x12 world with real
-humans, checks `code/game/mob/grab_hand_hold.dm` and its hooks in
+humans, checks `code/game/mob/grab_hand_hold.dm`, `code/game/mob/physical_contest.dm` and its hooks in
 `code/game/mob/grab.dm`:
 
 - a grab records the targeted part, and messages name it (a full hand is
@@ -16,6 +16,9 @@ humans, checks `code/game/mob/grab_hand_hold.dm` and its hooks in
   eventually frees them; passing out lets go;
 - full hands, sleepers and other parts take an ordinary grab, which still
   reinforces to a neck grab; a missing part can't be grabbed;
+- strength and dexterity (`code/game/mob/physical_contest.dm`) keep the old odds
+  between equals, shift them within bounds otherwise, and shorten or lengthen
+  the wait between tightening a grab;
 - no runtime errors.
 
 Random outcomes are retried until they happen. It needs the pinned compiler

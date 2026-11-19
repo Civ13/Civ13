@@ -238,6 +238,7 @@
 #include "code\game\mob\mob_transformation_simple.dm"
 #include "code\game\mob\mob_view.dm"
 #include "code\game\mob\motd.dm"
+#include "code\game\mob\physical_contest.dm"
 #include "code\game\mob\pray.dm"
 #include "code\game\mob\say.dm"
 #include "code\game\mob\typing_indicator.dm"
