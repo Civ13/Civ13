@@ -1774,6 +1774,11 @@ SUITES = {
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
 
+    'hostile_patrol_waypoints': {'files': ('tests/hostile_patrol/test_waypoint_selection.py',),
+        'paths': ('tests/hostile_patrol/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/humans/human.dm',
+                         'tests/save_movement/source_adapter.py')},
+
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
     'wildlife_offline': {'files': (
