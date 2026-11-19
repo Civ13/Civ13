@@ -242,7 +242,7 @@
 		return
 	if (!assailant.canClick())
 		return
-	if (world.time < (last_action + UPGRADE_COOLDOWN))
+	if (world.time < (last_action + grab_upgrade_cooldown()))
 		return
 	if (!assailant.canmove || assailant.lying)
 		qdel(src)
@@ -296,6 +296,12 @@
 			var/mob/living/human/C = affecting
 			C.losebreath += 3.5 // This wasn't ACTUALLY strangling anything (value was 1), in fact if you use a doctor's book, the assailant/affecting will always have 1 unit of oxygen damage, this is because you recover 1 unit per tick, and it tries to deal 1 unit of oxygen loss per tick. I've quick-fixed it by changing it to 1 --> 3.5, but needs refactoring.
 	adjust_position()
+
+// How long a grabber waits between tightening steps: 4 seconds between
+// equals, quicker against a weaker victim and slower against a stronger one.
+/obj/item/weapon/grab/proc/grab_upgrade_cooldown()
+	var/ratio = physical_contest_ratio(assailant, affecting, 0.7, 0.3)
+	return round(UPGRADE_COOLDOWN / ratio)
 
 //This is used to make sure the victim hasn't managed to yackety sax away before using the grab.
 /obj/item/weapon/grab/proc/confirm()
