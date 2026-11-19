@@ -43,6 +43,7 @@ BURST_SECONDS = 3600
 BURST_COUNT = 3
 DERIVED_MARGIN = 3  # net received ratings that give a ckey with no admin standing a good or poor label
 NOTE_LIMIT = 1000
+BAN_SCOPES = ('game', 'play')  # a server ban or a playing ban; OOC and job bans do not count
 
 
 def standing_factor(value):
@@ -76,7 +77,7 @@ def ledger(db, now):
         if row['kind'] == 'note':
             notes[ckey] = notes.get(ckey, 0) + 1
         elif row['kind'] == 'ban':
-            if body.get('scope') == 'game' and records.ban_active(row, now):
+            if body.get('scope') in BAN_SCOPES and records.ban_active(row, now):
                 until = body.get('until', 0)
                 banned[ckey] = 0 if until == 0 or banned.get(ckey) == 0 else max(until, banned.get(ckey, 0))
         elif row['kind'] == 'karma_bar':
