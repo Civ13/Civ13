@@ -8,6 +8,7 @@
 // wheel works in a third of the time. tests/clay_lime_fire keeps them equal.
 var/global/list/potters_wheel_wares = list(
 	/obj/item/weapon/clay/verysmallclaypot = list(1, 20),
+	/obj/item/weapon/clay/crucible = list(1, 30),
 	/obj/item/weapon/clay/smallclaypot = list(1, 30),
 	/obj/item/weapon/clay/claypot = list(2, 50),
 	/obj/item/weapon/clay/bigclaypot = list(3, 60),

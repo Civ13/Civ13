@@ -29,6 +29,7 @@ QUENCH = read('code/modules/1713/quench_tub.dm')
 TATARA = read('code/modules/1713/tatara.dm')
 DME = read('civ13.dme')
 CARBURIZING = read('code/modules/1713/carburizing.dm')
+CRUCIBLE = read('code/modules/1713/crucible_steel.dm')
 NODES = read('code/modules/research_tree/research_node.dm')
 RECIPES = read('config/crafting/material_recipes_global.txt')
 
@@ -127,6 +128,29 @@ class Carburizing(unittest.TestCase):
         fold = proc(CARBURIZING, '/obj/structure/anvil/proc/fold_blister_steel(')
         self.assertIn('spawn_stack(/obj/item/stack/material/steel, loc, batches)', fold)
         self.assertIn('#define BLISTER_PER_FOLD 2', CARBURIZING)
+
+
+class CrucibleSteel(unittest.TestCase):
+    def test_node_recipe_and_anvil_face(self):
+        self.assertIn('#include "code\\modules\\1713\\crucible_steel.dm"', DME)
+        self.assertIn('register_research_node(new /datum/research_node("crucible_steel", "Crucible Steel", "Industrial", 165, 1, '
+                      'RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))', NODES)
+        self.assertIn('"/obj/item/weapon/clay/crucible" = "crucible_steel"', NODES)
+        self.assertIn('RECIPE: /material/clay/,unfired crucible,/obj/item/weapon/clay/crucible,1,', RECIPES)
+        self.assertIn('anvil_steel_face_nodes = list("steelmaking", "tatara_smelting", "crucible_steel")', ANVIL)
+
+    def test_kiln_hooks(self):
+        self.assertIn('if (accept_crucible(I, H))', proc(REFINING, '/obj/structure/furnace/kiln/attackby('))
+        self.assertIn('fire_crucibles()', proc(REFINING, '/obj/structure/furnace/kiln/process()'))
+        self.assertIn('return 2 + crucible_fuel()', proc(GRADES, '/obj/structure/furnace/kiln/firing_fuel_cost()'))
+
+    def test_only_blown_firings_melt_and_crucibles_can_crack(self):
+        fired = proc(CRUCIBLE, '/obj/item/weapon/steel_crucible/proc/kiln_fired(')
+        self.assertLess(fired.index('if (!blown)'), fired.index('heat++'))
+        self.assertIn('prob(crack_chance())', fired)
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel/fine, T, 1)', fired)
+        self.assertIn('#define CRUCIBLE_FIRINGS 3', CRUCIBLE)
+        self.assertIn('blown_firing', proc(CRUCIBLE, '/obj/structure/furnace/kiln/proc/fire_crucibles()'))
 
 
 if __name__ == '__main__':

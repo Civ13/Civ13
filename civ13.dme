@@ -1160,6 +1160,7 @@
 #include "code\modules\1713\wash_places.dm"
 #include "code\modules\1713\flood_cellars.dm"
 #include "code\modules\1713\flood_pumps.dm"
+#include "code\modules\1713\crucible_steel.dm"
 #include "code\modules\1713\dug_wells.dm"
 #include "code\modules\1713\barriers\snow_walls.dm"
 #include "code\modules\1713\complex_animal\__complex_animal.dm"

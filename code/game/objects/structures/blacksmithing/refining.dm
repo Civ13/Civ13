@@ -242,6 +242,9 @@
 				to_chat(H, "<span class = 'warning'>\The [name] is full.</span>")
 				return
 
+		if (accept_crucible(I, H))
+			return
+
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
@@ -258,6 +261,7 @@
 				return
 
 /obj/structure/furnace/kiln/process()
+	fire_crucibles()
 	for (var/obj/item/weapon/clay/mold/MCC in contents)
 		if (MCC.fired && MCC.capacity == 0 && MCC.max_capacity > 0 && MCC.contents_materials.len)
 			if (("copper" in MCC.contents_materials) && ("tin" in MCC.contents_materials))
