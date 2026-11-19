@@ -3,6 +3,7 @@
 #define SECONDS *10
 #define MINUTE SECONDS*60
 #define MINUTES SECONDS*60
+#define UNCONSCIOUS 1
 #define DEAD 2
 #define QDELETED(X) (!X)
 #define isobserver(A) istype(A, /mob/observer)
@@ -82,6 +83,7 @@ var/season = "WINTER"
 /mob/observer
 /mob/living
 	var/stat = 0
+	var/sleeping = 0
 	var/brute = 0
 	var/burn = 0
 	var/oxy = 0
@@ -280,6 +282,18 @@ var/season = "WINTER"
 	check("off writes nothing", length(file2text(path)) == before && !length(A.lines))
 
 	fdel("data/player_activity/")
+	// Playtime counts only alive and awake characters (shared player records).
+	var/mob/living/awake = new
+	var/mob/living/dozing = new
+	dozing.sleeping = 5
+	var/mob/living/knocked = new
+	knocked.stat = UNCONSCIOUS
+	var/mob/living/fallen = new
+	fallen.stat = DEAD
+	check("awake is alive", player_activity_mob_state(awake) == "alive")
+	check("sleeping is asleep", player_activity_mob_state(dozing) == "asleep")
+	check("unconscious is asleep", player_activity_mob_state(knocked) == "asleep")
+	check("dead stays dead", player_activity_mob_state(fallen) == "dead")
 	fdel("result.json")
 	text2file(json_encode(list("checks" = length(checks), "failed_labels" = failed)), "result.json")
 	del(src)
