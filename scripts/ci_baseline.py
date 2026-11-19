@@ -2469,6 +2469,12 @@ SUITES = {
             'code/game/mob/living/carbon/human/severe_disease.dm',
             'code/game/mob/living/carbon/human/immunity.dm',
             'code/game/mob/living/carbon/human/human_life.dm')},
+    # Force-feeding rechecks reach and mouth coverage after its wait.
+    'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
+        'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
+        'shared_paths': ('code/game/mob/mob_helpers.dm',
+            'code/modules/reagents/reagent_containers/food/snacks.dm',
+            'code/game/objects/items/weapons/material/kitchen.dm')},
     # Offline source contracts for field treatment and artery repair.
     'medical_care': {'files': ('tests/medical_care/test_source.py',
         'tests/medical_care/test_splints.py'), 'paths': (
