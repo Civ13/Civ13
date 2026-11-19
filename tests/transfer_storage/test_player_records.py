@@ -135,6 +135,23 @@ class SharedRecords(unittest.TestCase):
         self.assertEqual({rid(2), rid(3)}, {b['id'] for b in read(os.path.join(self.shared, 'bans.json'))['bans']})
         self.assertEqual([], self.index()['players']['bob']['bans'])
 
+    def test_play_bans_and_ckeyless_bans_are_published(self):
+        self.assertTrue(self.send('alpha', record(1, ckey='@nockey', kind='ban',
+                                                  body={'scope': 'play', 'until': 0, 'ip': '10.0.0.1', 'cid': 'nil'}))['ok'])
+        self.coordinator.records_once(NOW)
+        ban = read(os.path.join(self.shared, 'bans.json'))['bans'][0]
+        self.assertEqual(('@nockey', 'play', '10.0.0.1'), (ban['ckey'], ban['scope'], ban['ip']))
+
+    def test_connections_are_published_for_alt_lookups(self):
+        self.send('alpha', record(1, kind='connection', body={'ip': '10.0.0.1', 'cid': '123'}))
+        self.send('beta', record(2, ckey='amy', kind='connection', body={'ip': '10.0.0.1', 'cid': '456'}))
+        self.coordinator.records_once(NOW)
+        seen = read(os.path.join(self.shared, 'connections.json'))['connections']
+        self.assertEqual({('bob', '10.0.0.1', '123'), ('amy', '10.0.0.1', '456')}, {(c['ckey'], c['ip'], c['cid']) for c in seen})
+        self.assertEqual({str(NOW - 100)}, {c['at'] for c in seen})
+        # Connections are not notes: they leave the per-player counts alone.
+        self.assertEqual(0, self.index()['players']['bob']['notes'])
+
     def test_a_down_agent_keeps_its_records_for_later(self):
         self.send('beta', record(9, ckey='amy'))
         self.servers['beta'].shutdown()
@@ -237,6 +254,20 @@ class SharedRecordsSource(unittest.TestCase):
         admin = open(os.path.join(ROOT, 'code/modules/admin/admin.dm'), encoding='utf-8').read()
         self.assertIn('shared_records.ckeys_with(list("note", "warning"))', admin)
         self.assertIn('var/list/infos = notes_for(key)', admin)
+
+    def test_bans_use_the_shared_records(self):
+        ban = open(os.path.join(ROOT, 'code/modules/admin/verbs/quickBan.dm'), encoding='utf-8').read()
+        self.assertIn('shared_records.add(record_ckey, "ban"', ban)
+        self.assertNotIn('text2file', ban.split('/proc/quickBan_migrate_legacy()')[0])  # bans.txt is only read, once
+        for path, call_text in (('code/modules/client/client_procs.dm', 'quickBan_remove_uid(UID'),
+                                ('code/modules/client/client_procs.dm', 'shared_records.note_connection(ckey, sql_ip, computer_id)'),
+                                ('code/_helpers/_logging.dm', 'quickBan_lift_ckey(banned, banner)'),
+                                ('code/modules/persistence/region_ooc.dm', 'quickBan_find_ban(ckey, null, null, ban_type)'),
+                                ('code/modules/admin/admin.dm', 'quickBan_migrate_legacy()'),
+                                ('code/modules/admin/admin_verbs.dm', '/client/proc/quickBan_unban')):
+            source = open(os.path.join(ROOT, path), encoding='utf-8').read()
+            self.assertIn(call_text, source, path)
+            self.assertNotIn('fdel(bans_file)', source, path)
 
     def test_heartbeat_reports_asleep(self):
         activity = open(os.path.join(ROOT, 'code/modules/player_activity/player_activity.dm'), encoding='utf-8').read()

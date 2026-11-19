@@ -1522,6 +1522,8 @@
 #include "code\modules\error_handler\~defines.dm"
 #include "code\modules\flufftext\Dreaming.dm"
 #include "code\modules\flufftext\TextFilters.dm"
+#include "code\modules\karma\karma_admin.dm"
+#include "code\modules\karma\karma_give.dm"
 #include "code\modules\karma\karma_ledger.dm"
 #include "code\modules\lighting\_lighting_defines.dm"
 #include "code\modules\lighting\lighting_area.dm"

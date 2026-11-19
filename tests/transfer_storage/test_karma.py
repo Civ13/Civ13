@@ -135,8 +135,82 @@ class Karma(unittest.TestCase):
         with open(DM, encoding='utf-8') as f:
             dm = f.read()
         self.assertIn('shared_records.add(target, "karma_rating"', dm)
-        self.assertIn('shared_records.active_bans(giver, "game")', dm)
+        self.assertIn('shared_records.active_bans(giver, "game") + shared_records.active_bans(giver, "play")', dm)
         self.assertIn('karma/[ckey].json', dm)
+
+
+class KarmaGiving(unittest.TestCase):
+    """code/modules/karma/karma_give.dm source contracts."""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(ROOT, 'code', 'modules', 'karma', 'karma_give.dm'), encoding='utf-8') as f:
+            cls.dm = f.read()
+
+    def proc(self, name):
+        return re.search(r'\n/[\w/]*%s\(.*?(?=\n/|\Z)' % name, self.dm, re.S).group(0)
+
+    def test_only_verified_unbarred_signed_in_accounts_give(self):
+        refusal = self.proc('karma_giver_refusal')
+        self.assertIn('IsGuestKey(C.key)', refusal)
+        self.assertIn('if (!verified_discord_id(C.ckey))', refusal)
+        self.assertIn('karma_barred(C.ckey)', refusal)
+
+    def test_no_cap_and_no_minimum_time(self):
+        for word in ('playtime_hours', 'world.time <', 'per day', 'daily', 'cooldown'):
+            self.assertNotIn(word, self.dm)
+
+    def test_targets_are_other_living_players(self):
+        refusal = self.proc('karma_target_refusal')
+        self.assertIn('is_agent_account(target)', refusal)
+        self.assertIn('target == C.ckey', refusal)
+        self.assertIn('H.stat == DEAD', refusal)
+        self.assertIn('H.persistence_owner_ckey', self.proc('karma_character_ckey'))
+
+    def test_the_rated_player_is_never_told(self):
+        remember = self.proc('karma_remember')
+        self.assertIn('set src in view()', remember)
+        self.assertNotIn('to_chat(src', remember)
+        self.assertNotIn('to_chat(client', remember)
+        # Rechecked after the prompts, which can stay open.
+        self.assertEqual(remember.count('karma_giver_refusal(C)'), 2)
+
+    def test_givers_can_change_and_forget_their_own_ratings_only(self):
+        topic = self.proc('Topic')
+        self.assertIn('received[C.ckey]', topic)
+        self.assertIn('shared_records.revoke(record, C.ckey', topic)
+        self.assertIn('/client/verb/karma_notes()', self.dm)
+
+
+class KarmaAdmin(unittest.TestCase):
+    """code/modules/karma/karma_admin.dm source contracts."""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(ROOT, 'code', 'modules', 'karma', 'karma_admin.dm'), encoding='utf-8') as f:
+            cls.dm = f.read()
+
+    def test_staff_only_and_registered(self):
+        self.assertIn('if (!check_rights(R_ADMIN))', self.dm)
+        self.assertIn('if (!C || !C.holder || !(C.holder.rights & R_ADMIN))', self.dm)
+        self.assertIn('if (!C || !check_rights(R_ADMIN))', self.dm)
+        with open(os.path.join(ROOT, 'code', 'modules', 'admin', 'admin_verbs.dm'), encoding='utf-8') as f:
+            self.assertIn('/client/proc/cmd_admin_karma,', f.read())
+        with open(os.path.join(ROOT, 'code', 'modules', 'admin', 'admin.dm'), encoding='utf-8') as f:
+            self.assertIn('karma_brief(karma_mob_ckey(M))', f.read())
+
+    def test_every_change_needs_a_reason_and_is_logged(self):
+        for action in ('karma_set_standing(', 'karma_set_bar(', 'shared_records.revoke(target'):
+            self.assertIn(action, self.dm)
+        self.assertEqual(self.dm.count('karma_staff_log(C,'), 3)
+        self.assertEqual(self.dm.count('if (!reason)'), 3)
+        self.assertIn('log_admin(', self.dm)
+
+    def test_the_dossier_shows_what_staff_asked_for(self):
+        for shown in ('giver_standing', 'giver_hours', 'giver_notes', 'Playtime', 'per10h', 'factors["standing"]',
+                      'factors["playtime"]', 'factors["age"]', 'row["note"]'):
+            self.assertIn(shown, self.dm)
+        self.assertIn('show_browse(C, html', self.dm)
 
 
 if __name__ == '__main__':

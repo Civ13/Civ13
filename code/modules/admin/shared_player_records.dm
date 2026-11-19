@@ -10,6 +10,7 @@
 //
 //   ../shared-records/index.json                 per-ckey summary (counts, watch, active bans, playtime)
 //   ../shared-records/bans.json                  every active ban
+//   ../shared-records/connections.json           every ckey, IP and computer id seen together
 //   ../shared-records/players/<k>/<ckey>.json    every record about one ckey
 //
 // Records are never edited in place: removing one appends a "revoke" record.
@@ -23,7 +24,9 @@
 //   shared_records.revoke(record, author, rank, reason)  -> the revoke record, or null
 //   shared_records.summary(ckey)        -> list("notes", "warnings", "watch", "bans", "hours", "kinds")
 //   shared_records.records_for(ckey)    -> every record about ckey, revoked ones marked "revoked"
-//   shared_records.active_bans(ckey, scope) -> active bans of one scope ("game", "ooc", "job"; "any": every scope)
+//   shared_records.active_bans(ckey, scope) -> active bans of one scope ("game", "play", "ooc", "job"; "any": every scope)
+//   shared_records.active_bans_matching(ckey, scope) -> the same over every ckey when ckey is null
+//   shared_records.find_connection(field, value, want) -> alt lookup by ckey, ip or cid
 //   shared_records.playtime_hours(ckey) -> hours connected with the character alive and awake
 //   shared_records.account_ckey(account) -> the ckey of a Discord account key (d:<id>), or null
 #define SHARED_RECORDS_JOURNAL "data/player_records.json"
@@ -40,6 +43,8 @@ var/global/datum/shared_records/shared_records = new
 	var/list/index = list()
 	var/bans_text = null
 	var/list/bans = list()
+	var/connections_text = null
+	var/list/connections = list() // list(ckey, ip, cid, at) lists from connections.json
 	var/next_read = 0
 	var/busy = FALSE
 	var/serial = 0
@@ -174,7 +179,7 @@ var/global/datum/shared_records/shared_records = new
 	if (length(body_text) > SHARED_RECORDS_MAX_BODY)
 		return null
 	if (kind == "ban")
-		if (!(body["scope"] in list("game", "ooc", "job")))
+		if (!(body["scope"] in list("game", "play", "ooc", "job")))
 			return null
 		body["until"] = unix_value(body["until"]) // "0": never ends
 	if (kind == "revoke" && !id_valid(body["target"]))
@@ -244,6 +249,16 @@ var/global/datum/shared_records/shared_records = new
 		if (islist(decoded) && islist(decoded["bans"]))
 			bans_text = text
 			bans = decoded["bans"]
+	text = read_json("[root()]connections.json")
+	if (istext(text) && text != connections_text)
+		var/list/decoded = null
+		try
+			decoded = json_decode(text)
+		catch
+			decoded = null
+		if (islist(decoded) && islist(decoded["connections"]))
+			connections_text = text
+			connections = decoded["connections"]
 	var/list/pulled = islist(index["pulled"]) ? index["pulled"] : list()
 	var/pull = pulled[region()]
 	if (!unix_valid(pull) || !length(load_journal()))
@@ -378,15 +393,23 @@ var/global/datum/shared_records/shared_records = new
 
 /datum/shared_records/proc/active_bans(ckey, scope = "game")
 	ckey = ckey(ckey)
+	if (!length(ckey))
+		return list()
+	return active_bans_matching(ckey, scope)
+
+// Every active ban of one scope ("any": every scope), from every region, or
+// only those about ckey when it is given. Each is the ban's body plus id,
+// ckey, author, region and at.
+/datum/shared_records/proc/active_bans_matching(ckey = null, scope = "any")
 	refresh()
 	. = list()
 	var/now = now_unix()
 	var/list/revoked = pending_revokes()
 	var/list/candidates = list()
 	for (var/list/ban in bans)
-		if (islist(ban) && ban["ckey"] == ckey)
+		if (islist(ban) && (!ckey || ban["ckey"] == ckey))
 			candidates += list(ban)
-	for (var/list/record in pending_for(ckey))
+	for (var/list/record in (ckey ? pending_for(ckey) : load_journal()))
 		var/list/ban_body = record["body"]
 		if (record["kind"] == "ban" && islist(ban_body))
 			var/list/ban = ban_body.Copy()
@@ -434,6 +457,44 @@ var/global/datum/shared_records/shared_records = new
 	if (seconds <= 0)
 		return "unknown"
 	return time2text(seconds * 10, format)
+
+// TRUE when the snapshot or this world's journal already has this ckey with
+// this IP and computer id.
+/datum/shared_records/proc/connection_known(ckey, ip, cid)
+	refresh()
+	for (var/list/seen in connections)
+		if (islist(seen) && seen["ckey"] == ckey && seen["ip"] == ip && seen["cid"] == cid)
+			return TRUE
+	for (var/list/record in pending_for(ckey))
+		var/list/body = record["body"]
+		if (record["kind"] == "connection" && islist(body) && body["ip"] == ip && body["cid"] == cid)
+			return TRUE
+	return FALSE
+
+// Records one ckey, IP and computer id seen together (once per combination).
+/datum/shared_records/proc/note_connection(ckey, ip, cid)
+	ckey = ckey(ckey)
+	ip = istext(ip) ? ip : ""
+	cid = istext(cid) ? cid : ""
+	if (!length(ckey) || connection_known(ckey, ip, cid))
+		return null
+	return add(ckey, "connection", list("ip" = ip, "cid" = cid), "", "", md5("civ13-connection|[ckey]|[ip]|[cid]"))
+
+// Alt lookup: the first known value of want ("ckey", "ip" or "cid") seen with
+// field = value, on any region. Null when none.
+/datum/shared_records/proc/find_connection(field, value, want)
+	if (!istext(value) || !length(value) || value == "nil")
+		return null
+	refresh()
+	var/list/candidates = connections.Copy()
+	for (var/list/record in load_journal())
+		var/list/body = record["body"]
+		if (record["kind"] == "connection" && islist(body))
+			candidates += list(list("ckey" = record["ckey"], "ip" = body["ip"], "cid" = body["cid"]))
+	for (var/list/seen in candidates)
+		if (islist(seen) && seen[field] == value && istext(seen[want]) && length(seen[want]))
+			return seen[want]
+	return null
 
 /datum/shared_records/proc/watched(ckey)
 	return summary(ckey)["watch"]

@@ -151,6 +151,20 @@ var/fake_now = "1800000000"
 	check("author removes", notes_del("oldtimer", copy_ids[1], admin) && length(notes_for("oldtimer")) == 1)
 	check("warning recorded", notes_warn("Rude Guy", "insults", admin) && S.summary("rudeguy")["warnings"] == 1)
 
+	// Connections (alt lookups) and bans without a ckey.
+	check("connection noted once", S.note_connection("Alt One", "10.0.0.1", "123") && !S.note_connection("altone", "10.0.0.1", "123"))
+	check("alt lookup by ip", S.find_connection("ip", "10.0.0.1", "ckey") == "altone" && S.find_connection("cid", "123", "ip") == "10.0.0.1")
+	check("unknown alt", isnull(S.find_connection("ip", "10.9.9.9", "ckey")) && isnull(S.find_connection("ip", "nil", "ckey")))
+	check("ckeyless ban key kept", ckey("@nockey") == "@nockey")
+	var/list/ip_ban = S.add("@nockey", "ban", list("scope" = "play", "type" = "Playing", "ip" = "10.0.0.1", "until" = "0"), "val", "Host")
+	var/list/ip_found = null
+	for (var/list/ban in S.active_bans_matching(null, "play"))
+		if (ban["ip"] == "10.0.0.1")
+			ip_found = ban
+	check("ip ban found in scope", ip_found && ip_found["ckey"] == "@nockey" && !length(S.active_bans_matching(null, "job")))
+	S.revoke(ip_ban, "val", "Host", "lifted")
+	check("ip ban lifted", !length(S.active_bans_matching(null, "play")))
+
 	// The journal survives a restart.
 	var/datum/shared_records/again = new
 	check("journal reloads", length(again.load_journal()) == length(S.journal))
@@ -161,6 +175,7 @@ var/fake_now = "1800000000"
 	transfer_bridge.on = TRUE
 	check("group root", S.root() == "../shared-records/" && S.region() == "gaia")
 	S.tick()
+	S.tick() // ten records per tick
 	check("records sent", length(transfer_bridge.received) == length(S.journal) && !("sent" in transfer_bridge.received[1]))
 	var/sent_at = S.journal[1]["sent"]
 	check("send time rounded up", sent_at == "1800000062")
