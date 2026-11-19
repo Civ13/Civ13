@@ -1778,6 +1778,9 @@ SUITES = {
         'paths': ('tests/hostile_patrol/',),
         'shared_paths': ('code/game/mob/living/simple_animal/hostile/humans/human.dm',
                          'tests/save_movement/source_adapter.py')},
+    'satellite_station_selection': {'files': ('tests/satellite_station/test_station_selection.py',),
+        'paths': ('tests/satellite_station/',), 'shared_paths': (
+            'code/modules/space/satellites.dm', 'tests/save_movement/source_adapter.py')},
 
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
@@ -2581,9 +2584,10 @@ SUITES = {
                   'code/game/mob/living/living.dm', 'code/_onclick/click.dm',
                   'code/game/objects/items/weapons/legcuffs.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
-    # Trap disarm recheck and punji animal capture/release (#4248, #4249).
+    # Trap disarm recheck, punji animal capture/release and release unanchoring (#4248, #4249, #6223).
     'traps': {'files': ('tests/traps/test_source.py',),
-        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
+        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Gavel block forwards non-hammer items, so storage bags collect it (#4515).
     'gavel_block': {'files': ('tests/gavel_block/test_source.py',),
         'paths': ('tests/gavel_block/', 'code/game/objects/items/courtitems.dm')},
