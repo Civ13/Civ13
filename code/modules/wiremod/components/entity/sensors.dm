@@ -91,7 +91,7 @@
 	var/atom/target = wiremod_entity(entity_input.value)
 	var/turf/here = wiremod_anchor_turf(parent)
 	var/turf/there = target ? get_turf(target) : null
-	if(!here || !there || here.z != there.z || get_dist(here, there) > CIRCUIT_DIRECTION_RANGE)
+	if(!here || !there || here.z != there.z || get_dist(here, there) > CIRCUIT_DIRECTION_RANGE || !(there in view(CIRCUIT_DIRECTION_RANGE, here)))
 		x_output.set_output(null)
 		y_output.set_output(null)
 		z_output.set_output(null)

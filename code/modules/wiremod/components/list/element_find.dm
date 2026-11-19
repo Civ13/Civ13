@@ -19,9 +19,9 @@
 	var/found = FALSE
 	var/list/source = list_input.value
 	var/value = value_input.value
-	if(islist(source) && !islist(value))
+	if(islist(source) && (isnum(value) || istext(value)))
 		for(var/entry in source)
-			if(!islist(entry) && entry == value)
+			if((isnum(entry) || istext(entry)) && entry == value)
 				found = TRUE
 				break
 	found_output.set_output(found)

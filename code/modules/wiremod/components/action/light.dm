@@ -8,6 +8,9 @@
 
 	var/datum/port/input/on_input
 	var/light_on = FALSE
+	// The shell this component lit, so it can be put out after the circuit has
+	// already left it.
+	var/obj/item/circuit_shell/lit_shell
 
 /obj/item/circuit_component/light/populate_ports()
 	on_input = add_input_port("On", PORT_TYPE_NUMBER, trigger = PROC_REF(apply_light))
@@ -16,8 +19,13 @@
 	var/want_on = isnum(on_input.value) && on_input.value > 0
 	if(want_on == light_on)
 		return
-	light_on = want_on
-	wiremod_anchor_light(parent, want_on)
+	if(!want_on)
+		turn_off()
+		return
+	if(!wiremod_anchor_light(parent, TRUE))
+		return
+	light_on = TRUE
+	lit_shell = wiremod_shell(parent)
 
 /obj/item/circuit_component/light/removed_from_circuit(obj/item/integrated_circuit/circuit)
 	turn_off()
@@ -33,4 +41,6 @@
 	if(!light_on)
 		return
 	light_on = FALSE
-	wiremod_anchor_light(parent, FALSE)
+	if(lit_shell && !QDELETED(lit_shell))
+		lit_shell.set_light(0, 0)
+	lit_shell = null

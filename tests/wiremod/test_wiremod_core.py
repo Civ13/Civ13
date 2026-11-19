@@ -491,14 +491,16 @@ class WiremodSource(unittest.TestCase):
     def test_a_wire_hands_on_a_list_only_from_a_port(self):
         # The shortcut that skips re-validating a list takes an output port, so
         # it cannot be reached with a value no handler has checked, and only the
-        # two datatypes whose convert() would merely copy the list allow it.
+        # two datatypes whose convert() would merely copy the list allow it. An
+        # associative input converts every list, so a plain list never reaches it.
         receive = proc_body(self.port, '/datum/port/input/proc/receive_from(datum/port/output/output)')
         self.assertIn('if(islist(output.value) && !options && datatype_handler.keeps_port_lists)', receive)
         self.assertIn('set_value(output.value)', receive)
         self.assertEqual(self.port.count('hold(output.value)'), 1)
-        self.assertEqual(self.types.count('keeps_port_lists = TRUE'), 3)
-        for handler in ('any', 'list', 'assoc_list'):
+        self.assertEqual(self.types.count('keeps_port_lists = TRUE'), 2)
+        for handler in ('any', 'list'):
             self.assertIn('keeps_port_lists = TRUE', proc_body(self.types, '/datum/circuit_datatype/%s\n' % handler))
+        self.assertIn('keeps_port_lists = FALSE', proc_body(self.types, '/datum/circuit_datatype/assoc_list\n'))
         self.assertIn('var/keeps_port_lists = FALSE', self.types)
         self.assertEqual(self.port.count('receive_from('), 3)
         self.assertIn('set_value(new_value)', proc_body(self.port, '/datum/port/output/proc/set_output('))

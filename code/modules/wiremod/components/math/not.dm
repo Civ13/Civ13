@@ -2,7 +2,7 @@
 	name = "not component"
 	display_name = "Not"
 	category = "Math"
-	desc = "Outputs 1 when its input is exactly zero and 0 for anything else, including an input that is not set."
+	desc = "Outputs 1 when its input is exactly zero or not set, and 0 for anything else."
 
 	var/datum/port/input/value_input
 	var/datum/port/output/result

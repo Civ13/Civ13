@@ -74,7 +74,8 @@
 	var/atom/anchor = wiremod_shell(circuit)
 	if(!anchor || !istext(message))
 		return FALSE
-	anchor.visible_message("<span class='game say'><b>[html_encode(anchor.name)]</b> says, \"[html_encode(message)]\"</span>")
+	var/spoken = "<span class='game say'><b>[html_encode(anchor.name)]</b> says, \"[html_encode(message)]\"</span>"
+	anchor.audible_message(spoken, "<span class='game say'>You see [html_encode(anchor.name)] speak, but cannot hear it.</span>")
 	return TRUE
 
 // Turns a light on the anchor on or off. Off restores it to no light.

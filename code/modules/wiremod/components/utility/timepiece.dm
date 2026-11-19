@@ -23,7 +23,7 @@
 	format_output.set_output(wiremod_safe_text(time2text(ticks, "hh:mm:ss")))
 	switch(unit_input.value)
 		if("Hours")
-			unit_output.set_output(wiremod_safe_number(round(ticks / 36000)))
+			unit_output.set_output(wiremod_safe_number(round(ticks / 36000) % 24))
 		if("Minutes")
 			unit_output.set_output(wiremod_safe_number(round((ticks / 600) % 60)))
 		else

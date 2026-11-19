@@ -3,13 +3,18 @@
 // nor grow a value without bound. Values are a finite number, bounded text or
 // a thing's weak reference, like the entries of a plain list.
 //
-// A list is read as associative when it has at least one key that is not a
-// position (1, 2, 3 ...). A plain list built by appending from 1 never is.
+// A list is read as associative when at least one text entry has a value
+// associated with it. A plain list of text, such as list("red", "blue"), has
+// no associations and stays a plain list.
 
 /proc/wiremod_is_assoc_list(value)
 	if(!islist(value) || !length(value))
 		return FALSE
-	return !isnum(value[1])
+	var/list/source = value
+	for(var/key in source)
+		if(istext(key) && !isnull(source[key]))
+			return TRUE
+	return FALSE
 
 // A bounded copy of an associative list, or null for anything else. An empty
 // list is accepted so a literal with no entries still gives an associative list.
@@ -61,7 +66,9 @@
 	datatype = PORT_TYPE_ASSOC_LIST
 	can_receive_from = list(PORT_TYPE_ANY)
 	color = "label"
-	keeps_port_lists = TRUE
+	// Not kept as is: a plain list from a list output has to be converted, so a
+	// list with no associations never reaches an associative input.
+	keeps_port_lists = FALSE
 	manual_error = "An associative list is made with the Associative List Literal component."
 
 /datum/circuit_datatype/assoc_list/convert(value)

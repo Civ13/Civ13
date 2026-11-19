@@ -38,8 +38,14 @@ var/global/list/obj/item/circuit_component/radio/wiremod_radios = list()
 		if(is_transmitter)
 			if(!candidate:transmitter || !candidate:transmitter_on)
 				continue
-		else if(!candidate:receiver_on)
-			continue
+		else
+			if(!candidate:receiver_on)
+				continue
+			// A structure radio receives only with power, as ordinary reception does.
+			if(istype(candidate, /obj/structure/radio))
+				var/obj/structure/radio/set_radio = candidate
+				if(set_radio.powerneeded > 0 && !set_radio.check_power())
+					continue
 		if(!isnull(frequency) && !wiremod_radio_tuned(candidate, frequency))
 			continue
 		return candidate

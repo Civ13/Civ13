@@ -102,6 +102,13 @@
 	filtered = list()
 	on_failed.set_output(COMPONENT_SIGNAL)
 
+// The circuit dropped this loop's next step (overload or a runtime), so the
+// walk cannot continue. Let the next trigger start a fresh one.
+/obj/item/circuit_component/list_loop/proc/abandon_run()
+	running = FALSE
+	source = list()
+	filtered = list()
+
 /obj/item/circuit_component/list_loop/removed_from_circuit(obj/item/integrated_circuit/circuit)
 	running = FALSE
 	source = list()
