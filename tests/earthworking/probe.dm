@@ -18,7 +18,7 @@
 		return ..()
 	return FALSE
 /obj/map_metadata/earthworking_probe
-	terrain_height_file = "tests/terrain_height/fixture.txt"
+	terrain_height_file = "earthworking_fixture.txt"
 /obj/map_metadata/earthworking_probe/New()
 	map = src
 
@@ -39,6 +39,9 @@ var/earthworking_runtime_error = FALSE
 		GLOB.dir_set_event = new
 		GLOB.destroyed_event = new
 		movementMachine = new
+		// The runner copies only config/; carry the heights in the resource file.
+		fdel("earthworking_fixture.txt")
+		text2file(file2text('tests/terrain_height/fixture.txt'), "earthworking_fixture.txt")
 		new /obj/map_metadata/earthworking_probe
 		earthworking_probe_run()
 	catch(var/exception/e)
@@ -66,8 +69,6 @@ var/earthworking_runtime_error = FALSE
 	earthworking_check(terrain_height_at(locate(7, 10, 1)) == before - 1 && terrain_height_at(locate(7, 11, 1)) == before - 1 && terrain_height_at(locate(7, 9, 1)) == before - 1, "each swath tile drops one level")
 	earthworking_check(terrain_height_at(locate(8, 10, 1)) == 7, "tiles ahead are untouched")
 	S.forceMove(locate(6, 10, 1))
-	for (var/turf/T in S.swath(EAST))
-		world.log << "DEBUG [T.x],[T.y] [T.type] problem=[S.grade_problem(T, -1)] h=[terrain_height_at(T)]"
 	earthworking_check(S.scrape(EAST) == 3 && S.loads == 6, "the next step cuts the next swath")
 	S.forceMove(locate(5, 10, 1))
 	earthworking_check(S.scrape(EAST) == 3 && S.loads == 9, "three steps grade a 3x3 patch")
@@ -96,8 +97,6 @@ var/earthworking_runtime_error = FALSE
 	var/turf/shovel_spot = locate(7, 10, 1)
 	var/obj/structure/workshop_machine/steam_site/steam_shovel/shovel = new(shovel_spot)
 	var/list/cuts = shovel.cuttings()
-	for (var/turf/T in range(2, shovel_spot))
-		world.log << "DEBUG2 [T.x],[T.y] [T.type] problem=[terrain_grade_problem(T, -1)]"
 	earthworking_check(length(cuts) == 12 && !(shovel_spot in cuts), "a steam shovel cuts up to twelve tiles within reach, never its own")
 	var/turf/far = cuts[1]
 	var/far_before = terrain_height_at(far)
