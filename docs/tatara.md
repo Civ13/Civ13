@@ -83,7 +83,8 @@ not steel, when the node is missing (the usual research warning), or when
 the tub is missing, loose or dry (`clay_tub_problem()`); a smith who knows
 the node and has a tub but no clay is told to hold some.
 
-The anvil's `forge_stack_recipe()` hands each new piece to the
+The anvil's `forge_stack_recipe()` and `forge_mold_recipe()` hand each new
+piece (forged from sheets or cast from a mold) to the
 `finish_forged_piece()` hook, which quench_tub.dm extends: `clay_harden()`
 first, then the plain quench, whatever the `.dme` include order. The native probe
 `tests/tatara/clay_hardening_probe.dm` forges real katanas through it
