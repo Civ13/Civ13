@@ -733,6 +733,8 @@ class Coordinator(TrainCustody):
                 raise
             stored += len(ids)
             self.records.dirty |= changed
+            if any(isinstance(r, dict) and r.get('kind') == 'connection' for r in result.get('records') or []):
+                self.records.connections_dirty = True
             if ids:
                 try:
                     call(url, token, '/records/ack', {'ids': ids}, timeout=2)

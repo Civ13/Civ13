@@ -1005,6 +1005,7 @@ proc/admin_notice(var/message, var/rights)
 
 	message_admins("[key_name(usr)] manually reloaded bans.", key_name(usr))
 	load_bans()
+	shared_records.refresh(TRUE)
 
 /client/proc/start_forcelife()
 	set name = "Start Forcelife"
@@ -1181,28 +1182,11 @@ proc/admin_notice(var/message, var/rights)
 				O.do_spawn()
 			return
 
+// Bans live in the shared player records (quickBan.dm), which drop expired
+// bans when read. This copies the old SQL/bans.txt in once.
 /proc/load_bans()
-	var/removed = 0
-	var/kept = 0
-	var/checkingfile = "SQL/bans.txt"
-	if (fexists(checkingfile))
-		var/details = file2text(checkingfile)
-		var/list/details_lines = splittext(details, "|||\n")
-		if (details_lines.len)
-			for(var/i=details_lines.len,i>=1,i--)
-				if (findtext(details_lines[i], ";"))
-					var/list/details2 = splittext(details_lines[i], ";")
-					if (text2num(details2[7])<=world.realtime)
-						details_lines -= details_lines[i]
-						removed++
-		fdel(checkingfile)
-		if (details_lines.len)
-			for(var/L in details_lines)
-				if (L && L != "")
-					text2file("[L]|||", checkingfile)
-					kept++
-
-	world.log << "Finished cleaning ban list. [removed] bans removed, [kept] bans kept."
+	var/copied = quickBan_migrate_legacy()
+	world.log << "Bans: [copied] old bans and connections copied to the shared player records."
 	return TRUE
 
 //Radiation/Pollution stuff

@@ -9,7 +9,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 PRODUCTION = ROOT / "code/modules/admin/shared_player_records.dm"
-EXPECTED_CHECKS = 34
+EXPECTED_CHECKS = 40
 
 
 def main():

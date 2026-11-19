@@ -17,6 +17,7 @@ world reads, like the shared admins file:
 
     <group root>/shared-records/index.json            per-ckey summary, account map, pull times
     <group root>/shared-records/bans.json             every active ban
+    <group root>/shared-records/connections.json      every ckey, IP and computer id seen together (alt lookups)
     <group root>/shared-records/players/<k>/<ckey>.json   every record about one ckey
 
 Each file is written to a temporary name in the same folder and renamed, so a
@@ -38,7 +39,7 @@ CKEY = re.compile(r'^[a-z0-9@]{1,32}$')
 REGION = re.compile(r'^[a-z0-9_-]{1,64}$')
 MAX_BODY = 16 * 1024
 MAX_RANK = 64
-BAN_SCOPES = ('game', 'ooc', 'job')
+BAN_SCOPES = ('game', 'play', 'ooc', 'job')  # game: a server ban; play: may watch, not play
 OUTBOX_BATCH = 200
 SNAPSHOT_SECONDS = 60  # the index is rewritten at least this often (playtime, expired bans)
 RECORDS_DIR = 'shared-records'
@@ -111,7 +112,7 @@ def normalise(record, region=None):
             raise RecordError('a revoke names another record id')
     if kind == 'ban':
         if body.get('scope') not in BAN_SCOPES:
-            raise RecordError('a ban has scope game, ooc or job')
+            raise RecordError('a ban has scope game, play, ooc or job')
         until = unix_int(body.get('until', 0))
         if until is None or until < 0:
             raise RecordError('a ban ends at a unix time, or 0 for never')
@@ -316,6 +317,20 @@ def build_index(db, now, hours=None, accounts=None):
     return index, {'version': INDEX_VERSION, 'generated': unix_text(now), 'bans': bans}
 
 
+def build_connections(db):
+    """Every ckey seen with an IP and computer id ("connection" records), for
+    alt lookups and bans by IP or computer id on every region."""
+    revoked = revocations(db)
+    seen = []
+    for row in _rows(db, 'WHERE kind = ?', ('connection',)):
+        if row['id'] in revoked:
+            continue
+        body = row['body']
+        seen.append({'ckey': row['ckey'], 'ip': str(body.get('ip') or ''), 'cid': str(body.get('cid') or ''),
+                     'at': unix_text(row['at'])})
+    return {'version': INDEX_VERSION, 'connections': seen}
+
+
 def write_json(path, value, attempts=5):
     """Write a file whole: temp name in the same folder, then rename. On Windows
     the rename fails while a world has the file open; retry briefly, then give
@@ -350,6 +365,7 @@ class Snapshots:
         self.unwritten = set()
         self.next_index = 0.0
         self.hours = {}
+        self.connections_dirty = True  # rewritten on the first pass and when one is stored
 
     def player_path(self, ckey):
         return os.path.join(self.root, 'players', ckey[0], ckey + '.json')
@@ -378,6 +394,10 @@ class Snapshots:
         index, bans = build_index(self.db, now, self.hours, accounts)
         written += write_json(os.path.join(self.root, 'index.json'), index)
         written += write_json(os.path.join(self.root, 'bans.json'), bans)
+        if self.connections_dirty:
+            if write_json(os.path.join(self.root, 'connections.json'), build_connections(self.db)):
+                written += 1
+                self.connections_dirty = False
         self.next_index = now + SNAPSHOT_SECONDS
         return written
 
