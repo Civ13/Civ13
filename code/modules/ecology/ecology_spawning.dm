@@ -711,8 +711,10 @@ var/global/ecology_world_unwatched = FALSE
 			var/list/z_cells = ecology_observer_cells[z]
 			if (!z_cells)
 				continue
-			for (var/x = max(0, cx - 1), x <= min(columns - 1, cx + 1), x++)
-				for (var/y = max(0, cy - 1), y <= min(rows - 1, cy + 1), y++)
+			var/max_x = min(columns - 1, cx + 1)
+			var/max_y = min(rows - 1, cy + 1)
+			for (var/x = max(0, cx - 1), x <= max_x, x++)
+				for (var/y = max(0, cy - 1), y <= max_y, y++)
 					var/list/cell = z_cells[x * rows + y + 1]
 					if (!cell)
 						continue
