@@ -60,7 +60,7 @@
 		)
 
 	if (do_after(src, breakouttime, incapacitation_flags = INCAPACITATION_DEFAULT & ~INCAPACITATION_RESTRAINED))
-		if (!handcuffed || buckled)
+		if (!HC || handcuffed != HC || buckled)
 			return
 		visible_message(
 			"<span class='danger'>\The [src] manages to remove \the [handcuffed]!</span>",
@@ -108,13 +108,14 @@
 		return H.getStatCoeff("strength") >= 2.3
 
 /mob/living/human/proc/break_handcuffs()
+	var/obj/item/HC = handcuffed
 	visible_message(
 		"<span class='danger'>[src] is trying to break \the [handcuffed]!</span>",
 		"<span class='warning'>You attempt to break your [handcuffed.name]. (This will take around 5 seconds and you need to stand still)</span>"
 		)
 
 	if (do_after(src, 5 SECONDS, incapacitation_flags = INCAPACITATION_DEFAULT & ~INCAPACITATION_RESTRAINED))
-		if (!handcuffed || buckled)
+		if (!HC || handcuffed != HC || buckled)
 			return
 
 		visible_message(
@@ -131,11 +132,12 @@
 		update_inv_handcuffed()
 
 /mob/living/human/proc/break_legcuffs()
+	var/obj/item/LC = legcuffed
 	to_chat(src, "<span class='warning'>You attempt to break your legcuffs. (This will take around 5 seconds and you need to stand still)</span>")
 	visible_message("<span class='danger'>[src] is trying to break the legcuffs!</span>")
 
 	if (do_after(src, 5 SECONDS, incapacitation_flags = INCAPACITATION_DEFAULT & ~INCAPACITATION_RESTRAINED))
-		if (!legcuffed || buckled)
+		if (!LC || legcuffed != LC || buckled)
 			return
 
 		visible_message(
