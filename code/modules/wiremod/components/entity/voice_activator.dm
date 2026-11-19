@@ -31,6 +31,9 @@
 		return
 	if(get_dist(here, theirs) > message_range)
 		return
+	// The shell hears only what an ordinary listener there would hear.
+	if(!(here in hear(message_range, theirs)))
+		return
 	speak_up(message, speaker)
 
 /obj/item/circuit_component/voice_activator/proc/hear_radio(frequency, message, datum/source)

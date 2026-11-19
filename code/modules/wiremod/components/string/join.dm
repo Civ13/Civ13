@@ -24,6 +24,8 @@
 	var/text = ""
 	var/glue = isnull(separator.value) ? "," : separator.value
 	for(var/index = 1, index <= length(entries); index++)
+		if(length(text) >= PORT_MAX_STRING_LENGTH)
+			break
 		if(index > 1)
 			text += glue
 		text += wiremod_text_of(entries[index])

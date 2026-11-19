@@ -35,7 +35,11 @@
 		return FALSE
 	// The list handler returns a bounded copy, so the variable never shares a
 	// list with the port that set it.
-	value = handler.convert(new_value)
+	var/converted = handler.convert(new_value)
+	// The associative list handler gives null for a list it rejects.
+	if(port_datatype == PORT_TYPE_ASSOC_LIST && isnull(converted))
+		return FALSE
+	value = converted
 	for(var/obj/item/circuit_component/variable/getter/listener as anything in listeners.Copy())
 		if(listener.parent)
 			listener.value_output.set_output(value)

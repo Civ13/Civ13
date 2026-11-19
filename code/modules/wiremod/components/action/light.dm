@@ -32,6 +32,8 @@
 
 /obj/item/circuit_component/light/anchor_changed()
 	turn_off()
+	// A circuit put into a new shell with On still set lights that shell.
+	apply_light(null)
 
 /obj/item/circuit_component/light/Destroy()
 	turn_off()

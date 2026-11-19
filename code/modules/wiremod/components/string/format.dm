@@ -55,6 +55,9 @@
 			result += copytext(format, position)
 			break
 		result += copytext(format, position, marker)
+		// Anything past the port limit would be cut off, so stop building.
+		if(length(result) >= PORT_MAX_STRING_LENGTH)
+			break
 		var/next = marker + 1
 		var/key = ""
 		while(next <= total)
@@ -79,6 +82,6 @@
 		if(isnull(replacement))
 			result += copytext(format, marker, next)
 		else
-			result += wiremod_text_of(replacement)
+			result += copytext(wiremod_text_of(replacement), 1, PORT_MAX_STRING_LENGTH - length(result) + 1)
 		position = next
 	return wiremod_safe_text(result)

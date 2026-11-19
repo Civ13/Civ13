@@ -127,6 +127,10 @@ var/datum/probe_globals/GLOB = new
 /proc/probe_time2text(ticks, format)
 	return ticks == 36000 ? "01:00:00" : "00:00:00"
 
+// Civ13's hear() returns what can be heard from a turf: here, what it can see.
+/proc/hear(range, atom/center)
+	return view(range, center)
+
 /proc/get_turf(atom/target)
 	while(target && !isturf(target))
 		target = target.loc
@@ -702,6 +706,9 @@ var/datum/probe_globals/GLOB = new
 	check(islist(bag.value) && length(bag.value) == 1 && bag.value[1] == "black", "list add appends to the variable")
 	var/obj/item/circuit_component/list_remove/drop = print(circuit, user, /obj/item/circuit_component/list_remove)
 	enter(circuit, user, drop, 1, "bag")
+	set_port(drop, 2, list("black"))
+	act(circuit, user, "set_component_input", list("component_id" = drop.circuit_id, "port_id" = 3))
+	check(length(bag.value) == 1, "list remove removes nothing for a list value")
 	enter(circuit, user, drop, 2, "black")
 	act(circuit, user, "set_component_input", list("component_id" = drop.circuit_id, "port_id" = 3))
 	check(length(bag.value) == 0, "list remove takes from the variable")

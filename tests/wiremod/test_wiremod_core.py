@@ -494,7 +494,7 @@ class WiremodSource(unittest.TestCase):
         # two datatypes whose convert() would merely copy the list allow it. An
         # associative input converts every list, so a plain list never reaches it.
         receive = proc_body(self.port, '/datum/port/input/proc/receive_from(datum/port/output/output)')
-        self.assertIn('if(islist(output.value) && !options && datatype_handler.keeps_port_lists)', receive)
+        self.assertIn('if(islist(output.value) && !options && datatype_handler.keeps_port_lists && !(datatype == PORT_TYPE_LIST && wiremod_is_assoc_list(output.value)))', receive)
         self.assertIn('set_value(output.value)', receive)
         self.assertEqual(self.port.count('hold(output.value)'), 1)
         self.assertEqual(self.types.count('keeps_port_lists = TRUE'), 2)
