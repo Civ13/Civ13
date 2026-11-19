@@ -68,6 +68,7 @@ var/vr_runtime_error = FALSE
 	var/obj/structure/building_brace/B3 = new /obj/structure/building_brace(locate(25, 4, 1))
 	B3.set_dir(NORTH)
 	vr_check(!B3.building_brace_wall() && WW.building_support_tier() == 2, "a buttress does nothing for a plank wall")
+	vr_check(B3.brace_dismantle_check(null), "a buttress bracing nothing can come down")
 
 	// A flying buttress two tiles out: one storey more and a wider span.
 	var/obj/covers/stone_wall/FW = new /obj/covers/stone_wall(locate(15, 5, 1))
