@@ -271,6 +271,18 @@ static class LocalHostingTests {
             && PlayerActivity.Describe(activity).StartsWith("Recording: gaia. Off: europe."), "player activity parse");
         Require(PlayerActivity.Describe(PlayerActivity.Parse(0, "{\"ok\": true, \"recording\": [], \"off\": [\"gaia\"], \"text\": \"\"}")).Contains("PLAYER_ACTIVITY 1"), "player activity off hint");
         Require(!PlayerActivity.Parse(1, "{\"ok\": false, \"refused\": \"player activity covers the whole group\"}").Ok && !PlayerActivity.Parse(1, "").Ok, "player activity refusal");
+        // Player records window (PlayerRecords, shard_group.py records): summary, one player, search, export.
+        Require(PlayerRecords.Step(host.Control!).ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "records" }), "records argv");
+        Require(PlayerRecords.Step(host.Control!, ckey: " Bob Smith ").ArgumentList.TakeLast(2).SequenceEqual(new[] { "--ckey", "Bob Smith" }), "records ckey argv");
+        Require(PlayerRecords.Step(host.Control!, search: "10.0.0.1").ArgumentList.TakeLast(2).SequenceEqual(new[] { "--search", "10.0.0.1" }), "records search argv");
+        try { PlayerRecords.Step(host.Control!, ckey: "a", search: "b"); throw new Exception("two record requests accepted"); } catch (ArgumentException) { assertions++; }
+        try { PlayerRecords.Step(host.Control!, ckey: "--export"); throw new Exception("a flag accepted as a key"); } catch (ArgumentException) { assertions++; }
+        try { PlayerRecords.Step(host.Control!, export: "records.json"); throw new Exception("a relative export path accepted"); } catch (ArgumentException) { assertions++; }
+        var records = PlayerRecords.Parse(0, "noise\n{\"ok\": true, \"db\": \"D:/x/coordinator.sqlite\", \"text\": \"2 players have records\\ngaia: old notes copied\\u0007\"}");
+        Require(records.Ok && records.Text == "2 players have records" + Environment.NewLine + "gaia: old notes copied" && records.File == null, "records parse");
+        var exported = PlayerRecords.Parse(0, "{\"ok\": true, \"exported\": 12, \"file\": \"D:/x/records.json\", \"text\": \"Exported 12 records\"}");
+        Require(exported.Ok && exported.Exported == 12 && exported.File == "D:/x/records.json", "records export parse");
+        Require(!PlayerRecords.Parse(1, "{\"ok\": false, \"refused\": \"give a player key\"}").Ok && !PlayerRecords.Parse(1, "").Ok, "records refusal");
         // AI characters window (AgentRuns, shard_group.py agents): status, stop one run, restart one watcher.
         Require(AgentRuns.Step(host.Control!).ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "agents" }), "agents argv");
         Require(AgentRuns.Step(host.Control!, stopRun: 156612).ArgumentList.TakeLast(2).SequenceEqual(new[] { "--stop-run", "156612" }), "agents stop argv");

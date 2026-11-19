@@ -109,7 +109,7 @@
 					var/list/known = list()
 					for (var/spell in H.divine_known)
 						known += divine_invocation_names[spell]
-					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""][H.magic_allowed() ? "" : ", SUSPENDED (not on the magic whitelist)"]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""]"
+					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""][H.magic_allowed() ? "" : ", SUSPENDED (not on the magic whitelist)"]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""][karma_mob_ckey(H) ? karma_staff_badge(karma_mob_ckey(H)) : ""]"
 			to_chat(usr, "<b>Followers of [claim_label] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
 		if ("Pending prayers")
 			var/found = FALSE
@@ -153,6 +153,8 @@
 	if (!istype(H) || QDELETED(H) || divine_book_key(H.divine_patron) != divine_book_key(entry["name"]))
 		to_chat(src, SPAN_WARNING("[M ? M.real_name : "They"] do not follow [label]. Use SM for a subtle message instead."))
 		return
+	if (karma_mob_ckey(H))
+		to_chat(src, SPAN_NOTICE("[H.real_name]'s hidden karma:[karma_staff_badge(karma_mob_ckey(H))]"))
 	var/words = sanitize(input(src, "What does [label] say to [H.real_name]? Only they hear it.", "Answer a prayer") as message|null)
 	if (!words || QDELETED(H) || !check_rights(R_ADMIN) || divine_book_key(H.divine_patron) != divine_book_key(entry["name"]))
 		return

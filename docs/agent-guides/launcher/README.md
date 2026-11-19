@@ -11,6 +11,14 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-19: Player records window -->
+Val asked (2026-11-19) that admin notes and similar systems be visible on every region. All regions > More >
+**Player records…** (Gui/PlayerRecordsDialog.cs, PlayerRecords.cs, launcher 1.5.31) runs `shard_group.py records`
+[`--ckey K` | `--search T` | `--export F.json`], a read-only look at the shared player records in
+`<group root>/coordinator.sqlite` (tools/transfer_storage/records.py report/export): a summary, one player's records,
+a search (key, text or IP), each region's copy of its old notes/bans/memos files and its uncollected journal.
+Staff add and remove records in game only. Admin tooling: no changelog line or wiki page.
+
 <!-- 2026-11-17: Civilizationbot log level -->
 Val asked (2026-11-17) for the bot's logger level in the launcher, info by default instead of debug. The
 Civilizationbot tab's **Log level** list (Gui/BotPage.cs, launcher 1.5.30) and `Civ13.exe --bot log-level [LEVEL]`

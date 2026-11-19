@@ -4,7 +4,9 @@ coordinator writes, and DM source contracts. Never launches BYOND."""
 import json
 import os
 import re
+import shutil
 import sqlite3
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -211,6 +213,112 @@ class KarmaAdmin(unittest.TestCase):
                       'factors["playtime"]', 'factors["age"]', 'row["note"]'):
             self.assertIn(shown, self.dm)
         self.assertIn('show_browse(C, html', self.dm)
+
+    def test_staff_see_the_badge_where_they_meet_players(self):
+        self.assertIn('/proc/karma_staff_badge(ckey)', self.dm)
+        self.assertIn('karma/[ckey].json', self.dm)
+        self.assertIn('karma_dossier(ckey)', self.dm)  # no coordinator: computed from the journal
+        def src(*parts):
+            with open(os.path.join(ROOT, *parts), encoding='utf-8') as f:
+                return f.read()
+        for parts in (('code', 'game', 'mob', 'pray.dm'), ('code', 'modules', 'divine', 'covenant.dm'),
+                      ('code', 'modules', 'admin', 'verbs', 'divine_patron.dm'), ('code', 'modules', 'admin', 'topic.dm')):
+            self.assertIn('karma_staff_badge(karma', src(*parts), parts)
+        self.assertIn('check_rights(R_ADMIN, FALSE) && karma_mob_ckey(M)', src('code', 'modules', 'admin', 'topic.dm'))
+        # Adminhelps: admins get the badge, mods and mentors the plain line.
+        ahelp = src('code', 'modules', 'admin', 'verbs', 'adminhelp.dm')
+        self.assertIn('(R_ADMIN & X.holder.rights) ? karma_msg : msg', ahelp)
+        self.assertNotIn('karma_msg', ahelp.split('else if (R_MENTOR & X.holder.rights)')[1])
+
+
+JS_STUB = '''
+var nodes = {};
+function node(tag) { return {tag: tag, children: [], style: {}, value: '', checked: false, textContent: '',
+  attrs: {}, setAttribute: function (k, v) { this.attrs[k] = v; }, getAttribute: function (k) { return this.attrs[k]; },
+  appendChild: function (c) { this.children.push(c); return c; },
+  set innerHTML(v) { this.children = []; }, get innerHTML() { return ''; }}; }
+var document = {createElement: node, querySelectorAll: function () { return []; },
+  getElementById: function (id) { if (!nodes[id]) nodes[id] = node(id); return nodes[id]; }};
+'''
+
+JS_IDS = ['k_group', 'k_kind', 'k_standing', 'k_from', 'k_to', 'k_minhours', 'k_notes', 'k_flagged', 'k_disagree',
+          'k_target', 'k_giver', 'k_faction', 'k_region', 'k_min', 'k_showrows', 'k_f_standing', 'k_f_playtime',
+          'k_f_age', 'k_f_banned', 'k_preset', 'k_table', 'k_rows', 'k_count', 'k_csv']
+
+ROWS = [
+    {'target': 'bob', 'target_hours': 20, 'target_standing': -1, 'giver': 'amy', 'kind': 'kindly',
+     'factors': {'standing': 1.2, 'playtime': 0.5, 'age': 1}, 'giver_standing': 'good', 'giver_hours': 50,
+     'giver_notes': False, 'flags': [], 'faction': 'reds', 'region': 'gaia', 'at': '2026-11-18', 'note': 'kind, "really"'},
+    {'target': 'bob', 'target_hours': 20, 'target_standing': -1, 'giver': 'eve', 'kind': 'poorly',
+     'factors': {'standing': 1, 'playtime': 1, 'age': 1}, 'giver_standing': 'neutral', 'giver_hours': 300,
+     'giver_notes': True, 'flags': ['giver_banned'], 'faction': 'blues', 'region': 'europe', 'at': '2026-11-10', 'note': ''},
+    {'target': 'cat', 'target_hours': 5, 'target_standing': None, 'giver': 'amy', 'kind': 'poorly',
+     'factors': {'standing': 1.2, 'playtime': 0.5, 'age': 1}, 'giver_standing': 'good', 'giver_hours': 50,
+     'giver_notes': False, 'flags': ['burst'], 'faction': 'reds', 'region': 'gaia', 'at': '2026-11-19', 'note': ''},
+]
+
+
+@unittest.skipUnless(shutil.which('node'), 'node not installed')
+class KarmaAnalysisView(unittest.TestCase):
+    """code/js/karma_analysis.js: grouping, filters, factor toggles and CSV, under node with a tiny DOM."""
+
+    def run_js(self, setup, probe):
+        with open(os.path.join(ROOT, 'code', 'js', 'karma_analysis.js'), encoding='utf-8') as f:
+            script = f.read()
+        prelude = ''.join('document.getElementById(%s);' % json.dumps(i) for i in JS_IDS)
+        prelude += ''.join('nodes.%s.checked = true;' % i for i in ('k_f_standing', 'k_f_playtime', 'k_f_age', 'k_f_banned'))
+        prelude += 'nodes.k_group.value = "target";'
+        code = JS_STUB + script + prelude + setup + 'karmaInit(%s, "");' % json.dumps(ROWS) + \
+            'console.log(JSON.stringify(%s));' % probe
+        out = subprocess.run(['node', '-e', code], capture_output=True, text=True, timeout=30)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        return json.loads(out.stdout)
+
+    TABLE = 'nodes.k_table.children.slice(1).map(function (r) { return r.children.map(function (c) { return c.textContent; }); })'
+
+    def test_groups_by_rated_player_and_drops_banned_givers_by_default(self):
+        bob = [r for r in self.run_js('', self.TABLE) if r[0] == 'bob'][0]
+        self.assertEqual(bob[1:7], ['2', '1', '1', '0.6', '0', '0.6'])  # eve is banned: weight 0
+        self.assertEqual(bob[7], '0.3')  # 0.6 net over 20 hours, per 10 hours
+
+    def test_factor_toggles_change_the_weights(self):
+        rows = self.run_js('nodes.k_f_banned.checked = false; nodes.k_f_playtime.checked = false;', self.TABLE)
+        bob = [r for r in rows if r[0] == 'bob'][0]
+        self.assertEqual(bob[4:7], ['1.2', '1', '0.2'])
+
+    def test_filters(self):
+        rows = self.run_js('nodes.k_group.value = "giver"; nodes.k_flagged.checked = true;', self.TABLE)
+        self.assertEqual(sorted(r[0] for r in rows), ['amy', 'eve'])
+        rows = self.run_js('nodes.k_disagree.checked = true; nodes.k_group.value = "giver";', self.TABLE)
+        self.assertEqual([r[0] for r in rows], ['amy'])  # kindly to a player staff rate poor
+        self.assertEqual(self.run_js('nodes.k_from.value = "2026-11-15";', 'nodes.k_count.textContent'),
+                         '2 ratings in 2 groups')
+        weeks = self.run_js('nodes.k_group.value = "week";', self.TABLE)
+        self.assertEqual(sorted(r[0] for r in weeks), ['week of 2026-11-09', 'week of 2026-11-16'])
+
+    def test_csv_quotes_fields(self):
+        csv = self.run_js('', 'nodes.k_csv.value')
+        lines = csv.split('\n')
+        self.assertTrue(lines[0].startswith('target,target_hours,target_standing,giver,kind,weight'))
+        self.assertIn('"kind, ""really"""', csv)
+        self.assertEqual(len(lines), 4)
+
+
+class KarmaCsvReport(unittest.TestCase):
+    def test_host_csv_lists_every_live_rating(self):
+        import io
+        db = sqlite3.connect(':memory:', isolation_level=None)
+        records.init_group(db)
+        records.store_records(db, 'gaia', [{'id': '%032x' % 1, 'ckey': 'bob', 'kind': 'karma_rating', 'author': 'amy',
+                                            'rank': 'Player', 'at': NOW, 'body': {'giver': 'amy', 'rating': 'kindly',
+                                                                                  'note': 'a, b'}}], NOW)
+        out = io.StringIO()
+        karma.write_csv(karma.snapshots(db, NOW, {'amy': 50}), out)
+        lines = out.getvalue().splitlines()
+        self.assertEqual(lines[0].split(','), list(karma.CSV_COLUMNS))
+        self.assertTrue(lines[1].startswith('bob,0,,amy,kindly,0.5,1.0,0.5,1.0,unknown,50,0,,,gaia,'))
+        self.assertTrue(lines[1].endswith('"a, b"'))
+        db.close()
 
 
 if __name__ == '__main__':

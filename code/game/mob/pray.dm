@@ -36,6 +36,10 @@
 	if (istype(follower) && follower.divine_patron)
 		answer_link = " (<A HREF='?_src_=holder;divine_reply=\ref[src]'>Answer</A>)"
 	var/text = "<span class = 'notice'>\icon[getFlatIcon(cross)] <b><font color=purple>PRAY[deity_label ? " to [deity_label]" : ""]: </font>[key_name(src, TRUE)] (<A HREF='?_src_=holder;adminmoreinfo=\ref[src]'>?</A>) (<A HREF='?_src_=holder;adminplayeropts=\ref[src]'>PP</A>) (<A HREF='?_src_=vars;Vars=\ref[src]'>VV</A>) (<A HREF='?_src_=holder;subtlemessage=\ref[src]'>SM</A>) ([admin_jump_link(src, src)]) (<A HREF='?_src_=holder;secretsadmin=check_antagonist'>CA</A>) (<A HREF='?_src_=holder;adminspawncookie=\ref[src]'>SC</a>)[answer_link]:</b> [msg]</span>"
+	// Staff see the praying player's hidden karma beside the links.
+	var/karma_ckey = karma_mob_ckey(src)
+	if (karma_ckey)
+		text = replacetext(text, "[answer_link]:</b>", "[answer_link][karma_staff_badge(karma_ckey)]:</b>")
 	var/list/hearers = prayer_hearers()
 	for (var/client/C in hearers)
 		to_chat(C, CHAT_TYPED(CHAT_PRAYER, text))

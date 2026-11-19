@@ -26,6 +26,7 @@ shared-records/ is touched here. Karma is never shown to players.
 """
 import json
 import os
+import sys
 import time
 
 from tools.transfer_storage import records
@@ -95,7 +96,8 @@ def ledger(db, now):
             ratings.setdefault(ckey, {})[giver] = {
                 'giver': giver, 'kind': body['rating'], 'at_unix': row['at'], 'at': _date(row['at']),
                 'note': str(body.get('note', ''))[:NOTE_LIMIT], 'faction': str(body.get('faction', ''))[:64],
-                'shared_cid': body.get('shared_cid') in (True, 1), 'id': row['id'], 'revoked': row['id'] in revoked}
+                'shared_cid': body.get('shared_cid') in (True, 1), 'id': row['id'], 'revoked': row['id'] in revoked,
+                'region': row['region']}
     # A revoked latest rating leaves the pair with none: an older one never comes back.
     for target in list(ratings):
         ratings[target] = {g: r for g, r in ratings[target].items() if not r['revoked']}
@@ -151,7 +153,8 @@ def snapshots(db, now, hours=None):
             rows.append({'giver': giver, 'kind': r['kind'], 'weight': round(weight, 3), 'factors': factors,
                          'giver_standing': label(giver, standing, ratings), 'giver_hours': hours.get(giver, 0),
                          'giver_notes': notes.get(giver, 0) > 0, 'giver_banned_until': banned.get(giver),
-                         'flags': flags, 'faction': r['faction'], 'at': r['at'], 'note': r['note'], 'id': r['id']})
+                         'flags': flags, 'faction': r['faction'], 'region': r['region'], 'at': r['at'],
+                         'at_unix': r['at_unix'], 'note': r['note'], 'id': r['id']})
         counted = [r for r in rows if 'giver_banned' not in r['flags']]
         kindly = [r for r in counted if r['kind'] == 'kindly']
         poorly = [r for r in counted if r['kind'] == 'poorly']
@@ -202,13 +205,45 @@ def main(argv=None):
     import sqlite3
     parser = argparse.ArgumentParser(description=main.__doc__)
     parser.add_argument('--db', required=True, help='the coordinator database')
-    parser.add_argument('--ckey', required=True)
+    parser.add_argument('--ckey', help='one ckey\'s karma file as JSON')
+    parser.add_argument('--csv', action='store_true', help='every live rating as CSV, for offline analysis')
+    parser.add_argument('--hours', help='a shared-records index.json to take playtime hours from')
     args = parser.parse_args(argv)
+    hours = {}
+    if args.hours:
+        with open(args.hours, encoding='utf-8') as f:
+            hours = {c: p.get('hours', 0) for c, p in json.load(f).get('players', {}).items()}
     db = sqlite3.connect('file:%s?mode=ro' % args.db, uri=True)
     try:
-        print(json.dumps(snapshots(db, time.time()).get(args.ckey), indent=1, sort_keys=True))
+        files = snapshots(db, time.time(), hours)
     finally:
         db.close()
+    if args.csv:
+        write_csv(files, sys.stdout)
+    elif args.ckey:
+        print(json.dumps(files.get(args.ckey), indent=1, sort_keys=True))
+    else:
+        parser.error('give --ckey or --csv')
+
+
+CSV_COLUMNS = ('target', 'target_hours', 'target_standing', 'giver', 'kind', 'weight', 'standing_factor',
+               'playtime_factor', 'age_factor', 'giver_standing', 'giver_hours', 'giver_notes', 'flags', 'faction',
+               'region', 'at', 'note')
+
+
+def write_csv(files, out):
+    """Every live rating, one row each, heaviest first within a target."""
+    import csv
+    writer = csv.writer(out)
+    writer.writerow(CSV_COLUMNS)
+    for target in sorted(files):
+        f = files[target]
+        standing = f['standing']['value'] if f['standing'] else ''
+        for r in sorted(f['ratings'], key=lambda r: -r['weight']):
+            writer.writerow((target, f['hours'], standing, r['giver'], r['kind'], r['weight'],
+                             r['factors']['standing'], r['factors']['playtime'], r['factors']['age'],
+                             r['giver_standing'], r['giver_hours'], int(r['giver_notes']), ' '.join(r['flags']),
+                             r['faction'], r['region'], r['at'], r['note']))
 
 
 if __name__ == '__main__':
