@@ -29,6 +29,10 @@ def normalise(text):
         # The rusty bolt hook (rusty_bolt.dm) was added after the freeze.
         if line.strip() == 'rusty_bolt_from_radio(R, msg, speaker)':
             continue
+        # Civ13 circuits listen to the same radio traffic. This additive hook
+        # leaves the frozen broadcast body unchanged.
+        if line.strip() == 'wiremod_radio_heard(R:freq, msg, speaker, source)':
+            continue
         line = re.sub(r'\bR[:.]', '', line)
         line = re.sub(r'\bsrc\b', 'R', line)
         lines.append(line)

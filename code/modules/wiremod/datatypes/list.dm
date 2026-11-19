@@ -1,4 +1,6 @@
-// A bounded list of numbers and texts. Nested lists, entities and objects are dropped.
+// A bounded list of numbers, texts and things in the world. A thing in the world
+// is kept as its weak reference, never the thing itself: a stale reference
+// simply stops resolving. Nested lists and real objects are dropped.
 /proc/wiremod_safe_list(value)
 	if(!islist(value))
 		return null
@@ -8,8 +10,10 @@
 		var/entry = source[index]
 		if(isnum(entry))
 			entry = wiremod_safe_number(entry)
-		else
+		else if(istext(entry))
 			entry = wiremod_safe_text(entry)
+		else
+			entry = wiremod_safe_entity(entry)
 		if(!isnull(entry))
 			result += entry
 	return result

@@ -9,10 +9,29 @@
 		/obj/item/circuit_component/operator/arithmetic,
 		/obj/item/circuit_component/operator/comparison,
 		/obj/item/circuit_component/operator/logic,
+		/obj/item/circuit_component/binary_conversion,
+		/obj/item/circuit_component/decimal_conversion,
+		/obj/item/circuit_component/clock,
+		/obj/item/circuit_component/multiplexer,
+		/obj/item/circuit_component/router,
+		/obj/item/circuit_component/trigonometry,
+		/obj/item/circuit_component/typecast,
+		/obj/item/circuit_component/typecheck,
 		/obj/item/circuit_component/not,
 		/obj/item/circuit_component/length,
 		/obj/item/circuit_component/random,
 		/obj/item/circuit_component/list_index,
+		/obj/item/circuit_component/index_assoc,
+		/obj/item/circuit_component/element_find,
+		/obj/item/circuit_component/list_literal,
+		/obj/item/circuit_component/assoc_literal,
+		/obj/item/circuit_component/list_clear,
+		/obj/item/circuit_component/list_loop/filter_list,
+		/obj/item/circuit_component/list_loop/for_each,
+		/obj/item/circuit_component/concatenate_list,
+		/obj/item/circuit_component/format_list,
+		/obj/item/circuit_component/format_assoc_list,
+		/obj/item/circuit_component/tostring,
 		/obj/item/circuit_component/operator/list_concat,
 		/obj/item/circuit_component/list_add,
 		/obj/item/circuit_component/list_remove,
@@ -23,7 +42,26 @@
 		/obj/item/circuit_component/string_split,
 		/obj/item/circuit_component/string_to_number,
 		/obj/item/circuit_component/delay,
+		/obj/item/circuit_component/timepiece,
+		/obj/item/circuit_component/set_variable_trigger,
 		/obj/item/circuit_component/direction,
+		/obj/item/circuit_component/gps,
+		/obj/item/circuit_component/health,
+		/obj/item/circuit_component/species,
+		/obj/item/circuit_component/pinpointer,
+		/obj/item/circuit_component/self,
+		/obj/item/circuit_component/view_sensor,
+		/obj/item/circuit_component/pressure_sensor,
+		/obj/item/circuit_component/temperature_sensor,
+		/obj/item/circuit_component/voice_activator,
+		/obj/item/circuit_component/material_scanner,
+		/obj/item/circuit_component/reagents_scanner,
+		/obj/item/circuit_component/light,
+		/obj/item/circuit_component/printer,
+		/obj/item/circuit_component/sound_emitter,
+		/obj/item/circuit_component/speech,
+		/obj/item/circuit_component/radio,
+		/obj/item/circuit_component/pathfinder,
 	)
 
 // Every other component type, with the reason it is not in the menu. The tests
@@ -33,8 +71,10 @@
 	return list(
 		/obj/item/circuit_component/operator = "Base of the two-input components; it does nothing itself.",
 		/obj/item/circuit_component/variable = "Base of the variable nodes; it does nothing itself.",
+		/obj/item/circuit_component/list_loop = "Base of the list loops; it walks a list without a list output of its own.",
 		/obj/item/circuit_component/variable/getter = "Made from the variable menu, tied to one variable.",
 		/obj/item/circuit_component/variable/setter = "Made from the variable menu, tied to one variable.",
+		/obj/item/circuit_component/variable/triggered_setter = "Made from the variable menu, tied to one variable.",
 		/obj/item/circuit_component/compact_remote = "Built into a compact remote; it is attached when an integrated circuit is inserted.",
 	)
 
@@ -52,6 +92,10 @@
 	var/last_component_id = 0
 	var/list/datum/circuit_variable/circuit_variables = list()
 	var/list/execution_queue = list()
+	// Callbacks a component queued to run once the calls ahead of them finish.
+	// Filter List and For Each use these to let a downstream chain settle before
+	// they move to the next entry.
+	var/list/execution_continuations = list()
 	var/on = TRUE
 	var/grid_mode = TRUE
 	var/screen_x = 0
@@ -71,11 +115,23 @@
 	var/next_editor_refresh = 0
 	var/editor_refresh_timer
 
+// Called when the circuit's place in the world may have changed, such as when
+// it is put into or taken out of a shell.
+/obj/item/integrated_circuit/proc/anchor_changed()
+	for(var/obj/item/circuit_component/component as anything in attached_components)
+		component.anchor_changed()
+	refresh_editor()
+
+/obj/item/integrated_circuit/proc/refresh_variable_options()
+	for(var/obj/item/circuit_component/component as anything in attached_components)
+		component.refresh_variable_options()
+
 /obj/item/integrated_circuit/Destroy()
 	if(editor_refresh_timer)
 		deltimer(editor_refresh_timer)
 		editor_refresh_timer = null
 	execution_queue.Cut()
+	execution_continuations.Cut()
 	examined_component = null
 	for(var/obj/item/circuit_component/component in attached_components.Copy())
 		qdel(component)
@@ -107,6 +163,7 @@
 	attached_components += component
 	component.rel_x = 48 + ((length(attached_components) - 1) * 24)
 	component.rel_y = 64 + ((length(attached_components) - 1) * 24)
+	component.added_to_circuit(src)
 	return TRUE
 
 // The attached component with this circuit_id, or null.
@@ -159,18 +216,31 @@
 		return
 	is_executing = TRUE
 	var/position = 0
+	var/calls = 0
 	var/exception/failure
 	try
-		while(position < length(execution_queue))
-			position++
-			var/datum/port/input/next_input = execution_queue[position]
-			if(next_input?.connected_component?.parent == src)
-				next_input.connected_component.trigger_component(next_input)
+		while(position < length(execution_queue) || length(execution_continuations))
+			calls++
+			if(calls > CIRCUIT_MAX_EXECUTIONS)
+				queue_overflowed = TRUE
+				break
+			if(position < length(execution_queue))
+				position++
+				var/datum/port/input/next_input = execution_queue[position]
+				if(next_input?.connected_component?.parent == src)
+					next_input.connected_component.trigger_component(next_input)
+				continue
+			// Every call ahead has finished, so the next queued step may run.
+			var/datum/callback/next_step = execution_continuations[1]
+			execution_continuations.Cut(1, 2)
+			if(istype(next_step))
+				next_step.Invoke()
 	catch(var/exception/caught)
 		failure = caught
 	// Always reset, so a runtime in one component cannot leave the circuit
 	// queueing forever behind a stuck flag.
 	execution_queue.Cut()
+	execution_continuations.Cut()
 	is_executing = FALSE
 	if(queue_overflowed)
 		queue_overflowed = FALSE
@@ -178,6 +248,18 @@
 	refresh_editor()
 	if(failure)
 		throw failure
+
+// Queues a step to run once every call ahead of it has finished. A component
+// that must let its downstream chain settle before it moves on (a list loop)
+// queues its next step this way.
+/obj/item/integrated_circuit/proc/queue_continuation(datum/callback/callback)
+	if(!on || world.time < overloaded_until || !istype(callback))
+		return FALSE
+	if(length(execution_continuations) >= CIRCUIT_MAX_EXECUTIONS)
+		queue_overflowed = TRUE
+		return FALSE
+	execution_continuations += callback
+	return TRUE
 
 /obj/item/integrated_circuit/proc/overload()
 	overloaded_until = world.time + CIRCUIT_OVERLOAD_COOLDOWN

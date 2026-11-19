@@ -58,6 +58,7 @@
 		else
 			new_circuit.forceMove(get_turf(src))
 		return FALSE
+	new_circuit.anchor_changed()
 	circuit.refresh_editor()
 	to_chat(user, "<span class='notice'>You insert [new_circuit] into [src].</span>")
 	return TRUE
@@ -72,6 +73,7 @@
 		user.put_in_hands(removed)
 	else
 		removed.forceMove(get_turf(src))
+	removed.anchor_changed()
 	removed.refresh_editor()
 	to_chat(user, "<span class='notice'>You unscrew and remove [removed] from [src].</span>")
 	return TRUE

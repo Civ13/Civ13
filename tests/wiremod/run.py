@@ -55,10 +55,19 @@ def main():
             constants = '__defines' in path.parts or path.name == '_compat.dm'
             (defines if constants else module).append('#include "%s"' % name)
         includes = defines + ['#include "probe.dm"'] + module
-        # The module's icons are not part of the behaviour under test.
+        # The module's icons are not part of the behaviour under test. Its sounds
+        # are: DM needs the files at compile time, so copy just the referenced
+        # ones from the checkout into the temporary fixture.
         for path in temp.glob('production_*.dm'):
             text = path.read_text(encoding='utf-8')
             path.write_text(re.sub(r"^\s*icon = '[^']*'\s*$", '', text, flags=re.M), encoding='utf-8')
+            for asset in re.findall(r"'((?:sound|icons)/[^']+)'", path.read_text(encoding='utf-8')):
+                asset_path = args.source_root.resolve() / asset
+                if not asset_path.is_file():
+                    continue
+                destination = temp / asset
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(asset_path, destination)
         (temp / 'probe.dme').write_text('\n'.join(includes) + '\n', encoding='utf-8')
         compiled = subprocess.run([str(compiler), 'probe.dme'], cwd=temp, capture_output=True,
                                   text=True, timeout=120, env=environment)

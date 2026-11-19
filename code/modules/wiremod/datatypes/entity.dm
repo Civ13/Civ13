@@ -2,7 +2,8 @@
 // itself. It holds the thing's weak reference (code/datums/weakref.dm), which
 // does not keep it alive and stops resolving the moment it is deleted; the port
 // holding it is also told of the deletion and empties itself (core/port.dm).
-// An entity is never written to a save and never put in a list.
+// An entity is never written to a save. A flat list may hold weak references,
+// though a plain entity port still takes nothing but a weak reference.
 
 // The weak reference a port may hold for this value, or null. Only a weak
 // reference is accepted here: a caller with the thing itself says so by passing

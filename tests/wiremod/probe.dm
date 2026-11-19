@@ -16,8 +16,11 @@
 #define TOOL_SCREWDRIVER (1<<4)
 #define I_HARM "harm"
 #define to_chat(target, message) probe_chat(target, message)
+#define time2text(ticks, format) probe_time2text(ticks, format)
 #define CONSCIOUS 0
 #define DEAD 2
+// Ten o'clock on the station clock, in ticks, for the Timepiece.
+#define station_time_in_ticks 36000
 
 var/failures = 0
 var/checks = 0
@@ -25,7 +28,17 @@ var/list/chat_log = list()
 var/list/active_timers = list()
 var/next_timer_id = 0
 var/crash_calls = 0
+var/probe_mark = ""
+// What the world-facing components have done, for the behaviour tests.
+var/global/list/player_list = list()
+var/global/list/probe_sounds = list()
+var/global/list/probe_visible_messages = list()
+var/global/datum/gas_mixture/probe_air = new
 var/datum/probe_globals/GLOB = new
+
+
+
+
 
 /datum/probe_globals
 	var/datum/probe_nanomanager/nanomanager = new
@@ -109,6 +122,11 @@ var/datum/probe_globals/GLOB = new
 	var/static/regex/edges = regex(@"^\s+|\s+$", "g")
 	return edges.Replace(text, "")
 
+// Civ13's station clock is ten o'clock in this fixture. time2text's real
+// argument is wall-clock time, so the probe reads the ticks instead.
+/proc/probe_time2text(ticks, format)
+	return ticks == 36000 ? "10:00:00" : "00:00:00"
+
 /proc/get_turf(atom/target)
 	while(target && !isturf(target))
 		target = target.loc
@@ -121,6 +139,109 @@ var/datum/probe_globals/GLOB = new
 	var/gc_destroyed = 0
 	var/should_save = TRUE
 	var/datum/weakref/weak_reference
+
+// The rest of the game's world, as far as the Wiremod module can see it.
+/datum/gas_mixture
+	var/total_moles = 100
+	var/temperature = 300
+
+/datum/gas_mixture/proc/return_pressure()
+	return 101
+
+/datum/probe_species
+	var/name = "Human"
+
+/datum/reagent
+	var/id = ""
+	var/volume = 0
+
+/datum/probe_reagents
+	var/list/reagent_list = list()
+
+/material
+	var/name = "iron"
+
+/atom
+	var/datum/probe_reagents/reagents = null
+	var/light_range = 0
+	var/light_power = 0
+	var/light_color = null
+
+/atom/proc/visible_message(message)
+	probe_visible_messages += "[message]"
+
+/atom/proc/set_light(range, power, color)
+	light_range = range
+	light_power = power
+	light_color = color
+
+/proc/playsound(atom/source, soundin, vol, vary, extrarange, falloff, is_global, list/excluded)
+	probe_sounds += list(list("kind" = "global", "file" = "[soundin]", "volume" = vol))
+	return TRUE
+
+/mob/proc/playsound_local(turf/turf_source, soundin, vol, vary, frequency, falloff, is_global)
+	probe_sounds += list(list("kind" = "local", "listener" = src, "source" = turf_source,
+		"file" = "[soundin]", "volume" = vol, "varied" = vary, "frequency" = frequency))
+	return TRUE
+
+/turf/proc/return_air()
+	return probe_air
+
+// A bounded stand-in for Civ13's AStar: the path includes the start and ends at
+// the goal, and gives up after maxtraverse steps like the real one.
+/proc/cirrAstar(turf/start, turf/goal, min_dist = 0, maxtraverse = 500)
+	if(!start || !goal || start.z != goal.z)
+		return list()
+	var/list/path = list(start)
+	var/turf/current = start
+	var/steps = 0
+	while(abs(current.x - goal.x) + abs(current.y - goal.y) > min_dist && steps < maxtraverse)
+		var/turf/best
+		var/best_distance = abs(current.x - goal.x) + abs(current.y - goal.y)
+		for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+			var/turf/next = get_step(current, direction)
+			if(!next || next.z != goal.z)
+				continue
+			var/distance = abs(next.x - goal.x) + abs(next.y - goal.y)
+			if(distance < best_distance)
+				best_distance = distance
+				best = next
+		if(!best)
+			return list()
+		path += best
+		current = best
+		steps++
+	return (abs(current.x - goal.x) + abs(current.y - goal.y) <= min_dist) ? path : list()
+
+// Civ13's radio network, reduced to the part a circuit uses: a transmission
+// reaches the registered components before the human listeners would see it.
+/obj/item/weapon/radio
+	var/freq = 150
+	var/receiver = TRUE
+	var/transmitter = TRUE
+	var/receiver_on = TRUE
+	var/transmitter_on = TRUE
+	var/multifreq = FALSE
+	var/list/multifreqlist = list(150)
+
+/obj/structure/radio
+	var/freq = 150
+	var/receiver = TRUE
+	var/transmitter = TRUE
+	var/receiver_on = TRUE
+	var/transmitter_on = TRUE
+	var/multifreq = FALSE
+	var/list/multifreqlist = list(150)
+
+/proc/radio_broadcast(obj/R, msg, mob/living/human/speaker, verbage = "says", datum/source = null)
+	if(copytext(msg, 1, 2) == "*" || !R:transmitter || !R:transmitter_on)
+		return
+	wiremod_radio_heard(R:freq, msg, speaker, source)
+
+/obj/item/weapon/paper
+	var/info
+	proc/update_icon()
+		return
 
 // As the real one: the listeners hear of the deletion while the object is
 // already marked deleted, and its weak reference is dropped.
@@ -214,9 +335,13 @@ var/datum/probe_globals/GLOB = new
 /obj/item
 	var/w_class = 3
 	var/tool_flags = 0
+	var/list/basematerials = list()
 
 /obj/item/proc/attack_self(mob/user)
 	return
+
+/obj/item/proc/get_material()
+	return null
 
 // As code/_helpers/tools.dm: is_tool() reads the tool quality flags.
 /obj/item/screwdriver
@@ -261,6 +386,13 @@ var/datum/probe_globals/GLOB = new
 	return other_hand
 
 /mob/living
+	var/health = 100
+	var/maxHealth = 100
+
+// The probe's speaker. Civ13's radio_broadcast only speaks as a human.
+/mob/living/human
+	var/datum/probe_species/species = new
+	var/default_language = null
 
 // As code/game/mob/inventory.dm: move the held item without MOVED_DROP staging.
 /mob/living/proc/transfer_held_item_to(obj/item/I, atom/target)
@@ -295,11 +427,35 @@ var/datum/probe_globals/GLOB = new
 	crash_calls++
 	CRASH("probe component failure")
 
+// Stands in for the comparison a player wires between Next Index and Accept
+// Entry: it accepts unconditionally so the loop's continuation can be checked.
+/obj/item/circuit_component/probe_acceptor
+	display_name = "Probe Acceptor"
+	var/obj/item/circuit_component/list_loop/filter_list/target
+	var/datum/port/input/accept_input
+
+/obj/item/circuit_component/probe_acceptor/populate_ports()
+	accept_input = add_input_port("Accept", PORT_TYPE_SIGNAL, trigger = PROC_REF(accept))
+
+/obj/item/circuit_component/probe_acceptor/proc/accept(datum/port/input/input)
+	if(target)
+		target.accept_current(input)
+
 /proc/check(condition, message)
 	checks++
+	probe_mark = message
 	if(!condition)
 		failures++
 		world.log << "FAIL [message]"
+
+// Records what the emitter chose instead of looking for a connected listener.
+/obj/item/circuit_component/sound_emitter/probe_emitter
+	display_name = "Probe Sound Emitter"
+
+/obj/item/circuit_component/sound_emitter/probe_emitter/emit_sound(sound_file, volume, frequency)
+	probe_sounds += list(list("kind" = "local", "file" = "[sound_file]", "volume" = volume,
+		"varied" = TRUE, "frequency" = frequency))
+	return TRUE
 
 /proc/act(obj/item/integrated_circuit/circuit, mob/user, action, list/params)
 	try
@@ -336,6 +492,12 @@ var/datum/probe_globals/GLOB = new
 /proc/output_value(obj/item/circuit_component/component, port_index = 1)
 	var/datum/port/output/output_port = component.output_ports[port_index]
 	return output_port.value
+
+// The editor only takes numbers and text. A probe can hand a component a real
+// list directly, which is what a wire would deliver.
+/proc/set_port(obj/item/circuit_component/component, port_index, value)
+	var/datum/port/input/input_port = component.input_ports[port_index]
+	input_port.set_input(value)
 
 /proc/long_text(count)
 	var/list/pieces = list()
@@ -403,12 +565,12 @@ var/datum/probe_globals/GLOB = new
 	check(!(second.input_a in first.result.connected_inputs), "rewiring removes the input from the old output")
 	check(!wire(circuit, user, text, 1, second, 2), "text output cannot feed a number input")
 	check(wire(circuit, user, first, 1, text, 1), "number output can feed a text input")
-	check(text.input_a.value == "23", "number arrives as text")
+	check(text.string_inputs[1].value == "23", "number arrives as text")
 	check(!second.input_b.connect(foreign.result), "ports of different circuits cannot be connected")
 	act(circuit, user, "remove_connection", list("component_id" = index_of(circuit, second), "is_input" = 1, "port_id" = 1))
 	check(isnull(second.input_a.connected_output) && !(second.input_a in third.result.connected_inputs), "remove_connection clears both ends of an input link")
 	act(circuit, user, "remove_connection", list("component_id" = index_of(circuit, first), "is_input" = 0, "port_id" = 1))
-	check(isnull(text.input_a.connected_output) && !length(first.result.connected_inputs), "remove_connection clears every link of an output")
+	check(isnull(text.string_inputs[1].connected_output) && !length(first.result.connected_inputs), "remove_connection clears every link of an output")
 	// Removing a component cleans up its connections.
 	wire(circuit, user, first, 1, second, 1)
 	wire(circuit, user, first, 1, text, 1)
@@ -417,7 +579,7 @@ var/datum/probe_globals/GLOB = new
 	var/count = length(circuit.attached_components)
 	act(circuit, user, "detach_component", list("component_id" = index_of(circuit, first)))
 	check(length(circuit.attached_components) == count - 1 && !(first in circuit.attached_components), "detach removes the component")
-	check(isnull(second.input_a.connected_output) && isnull(text.input_a.connected_output), "detach clears links into other components")
+	check(isnull(second.input_a.connected_output) && isnull(text.string_inputs[1].connected_output), "detach clears links into other components")
 	check(!length(third.result.connected_inputs), "detach clears links out of other components")
 	check(first.gc_destroyed && isnull(first.loc) && user.held != first, "a component printed in the editor is deleted on removal, not handed out")
 	first = null
@@ -514,19 +676,25 @@ var/datum/probe_globals/GLOB = new
 	check(isnull(output_value(pick_entry)), "list index past the end gives no value")
 	enter(circuit, user, pick_entry, 2, 0.5)
 	check(isnull(output_value(pick_entry)), "list index below one gives no value")
+	// List Add and Remove act on a named list variable, not on a wire.
+	act(circuit, user, "add_variable", list("variable_name" = "bag", "variable_datatype" = PORT_TYPE_ANY, "is_list" = 1))
 	var/obj/item/circuit_component/list_add/append = print(circuit, user, /obj/item/circuit_component/list_add)
-	wire(circuit, user, split, 1, append, 1)
+	check(append && ("bag" in append.variable_input.options), "list add offers the circuit's list variables")
+	enter(circuit, user, append, 1, "bag")
 	enter(circuit, user, append, 2, "black")
-	var/list/appended = output_value(append)
-	check(length(appended) == 4 && appended[4] == "black" && length(output_value(split)) == 3, "list add appends to a copy")
+	var/datum/circuit_variable/bag = circuit.circuit_variables["bag"]
+	check(length(bag.value) == 0, "list add waits for its trigger")
+	act(circuit, user, "set_component_input", list("component_id" = append.circuit_id, "port_id" = 3))
+	check(islist(bag.value) && length(bag.value) == 1 && bag.value[1] == "black", "list add appends to the variable")
 	var/obj/item/circuit_component/list_remove/drop = print(circuit, user, /obj/item/circuit_component/list_remove)
-	wire(circuit, user, append, 1, drop, 1)
-	enter(circuit, user, drop, 2, "red")
-	var/list/dropped = output_value(drop)
-	check(length(dropped) == 3 && !("red" in dropped) && length(output_value(append)) == 4, "list remove takes from a copy")
+	enter(circuit, user, drop, 1, "bag")
+	enter(circuit, user, drop, 2, "black")
+	act(circuit, user, "set_component_input", list("component_id" = drop.circuit_id, "port_id" = 3))
+	check(length(bag.value) == 0, "list remove takes from the variable")
+	act(circuit, user, "remove_variable", list("variable_name" = "bag"))
 	var/obj/item/circuit_component/operator/list_concat/merge = print(circuit, user, /obj/item/circuit_component/operator/list_concat)
 	wire(circuit, user, split, 1, merge, 1)
-	wire(circuit, user, drop, 1, merge, 2)
+	wire(circuit, user, split, 1, merge, 2)
 	check(length(output_value(merge)) == 6, "list concat")
 
 	var/obj/item/circuit_component/random/dice = print(circuit, user, /obj/item/circuit_component/random)
@@ -561,6 +729,20 @@ var/datum/probe_globals/GLOB = new
 		act(circuit, user, "remove_variable", list("variable_name" = "score"))
 		check(!length(circuit.circuit_variables) && length(circuit.attached_components) == before, "remove_variable deletes the variable and its nodes")
 		check(setter.gc_destroyed && getter.gc_destroyed && variable.gc_destroyed && !length(variable.listeners), "variable nodes are deleted with their variable")
+	act(circuit, user, "add_variable", list("variable_name" = "pending", "variable_datatype" = PORT_TYPE_NUMBER, "is_list" = 0, "is_assoc_list" = 0))
+	before = length(circuit.attached_components)
+	act(circuit, user, "add_setter_or_getter", list("variable" = "pending", "node_kind" = "getter", "rel_x" = 0, "rel_y" = 0))
+	act(circuit, user, "add_setter_or_getter", list("variable" = "pending", "node_kind" = "triggered_setter", "rel_x" = 0, "rel_y" = 0))
+	check(length(circuit.attached_components) == before + 2, "node_kind adds a getter and a triggered setter")
+	if(length(circuit.attached_components) == before + 2)
+		var/obj/item/circuit_component/variable/getter/pending_getter = circuit.attached_components[before + 1]
+		var/obj/item/circuit_component/variable/triggered_setter/pending_setter = circuit.attached_components[before + 2]
+		set_port(pending_setter, 1, 42)
+		check(isnull(output_value(pending_getter)), "a triggered setter waits for its signal")
+		set_port(pending_setter, 2, COMPONENT_SIGNAL)
+		check(output_value(pending_getter) == 42 && output_value(pending_setter) == COMPONENT_SIGNAL, "a triggered setter writes on its signal and passes it on")
+	act(circuit, user, "remove_variable", list("variable_name" = "pending"))
+	check(!("pending" in circuit.circuit_variables) && length(circuit.attached_components) == before, "removing a triggered setter's variable removes its nodes")
 	// The editor data must always be valid JSON for the window.
 	var/encoded = json_encode(circuit.circuit_editor_data())
 	var/decoded
@@ -977,7 +1159,7 @@ var/datum/probe_globals/GLOB = new
 /proc/test_component_lists()
 	var/list/available = wiremod_available_components()
 	var/list/unlisted = wiremod_unlisted_components()
-	var/list/unaccounted = typesof(/obj/item/circuit_component) - /obj/item/circuit_component - /obj/item/circuit_component/probe_crash
+	var/list/unaccounted = typesof(/obj/item/circuit_component) - /obj/item/circuit_component - /obj/item/circuit_component/probe_crash - /obj/item/circuit_component/probe_acceptor - /obj/item/circuit_component/sound_emitter/probe_emitter
 	var/both = 0
 	var/bad = 0
 	var/list/seen = list()
@@ -1000,8 +1182,10 @@ var/datum/probe_globals/GLOB = new
 	var/obj/item/circuit_component/base_component = /obj/item/circuit_component
 	var/usable = length(catalog) == length(available)
 	for(var/list/entry in catalog)
-		if(!length(entry["name"]) || !length(entry["input_ports"]) || !length(entry["output_ports"]) || entry["id"] != 0)
+		// An action may only take inputs and a sensor may only give outputs.
+		if(!length(entry["name"]) || (!length(entry["input_ports"]) && !length(entry["output_ports"])) || entry["id"] != 0)
 			usable = FALSE
+			world.log << "no ports: [entry["name"]]"
 		// The info button shows this text: every component says what it does.
 		if(!istext(entry["description"]) || length(entry["description"]) < 40 || entry["description"] == initial(base_component.desc) || findtext(entry["description"], "<"))
 			usable = FALSE
@@ -1009,13 +1193,13 @@ var/datum/probe_globals/GLOB = new
 		for(var/list/port in entry["input_ports"] + entry["output_ports"])
 			if(port["ref"] != "")
 				usable = FALSE
-	check(usable, "every offered component has a name, a description and ports, and menu entries carry no port names")
+	check(usable, "every offered component has a name, a description and at least one port, and menu entries carry no port names")
 
 // One reading per datatype for what a player types.
 /proc/test_manual_values(mob/living/user)
 	// Each datatype is one handler that knows its own name and colour.
 	// The colours are tgstation's, so its players recognise the types.
-	var/list/colours = list(PORT_TYPE_ANY = "blue", PORT_TYPE_NUMBER = "green", PORT_TYPE_BOOLEAN = "bad", PORT_TYPE_STRING = "orange", PORT_TYPE_SIGNAL = "teal", PORT_TYPE_LIST = "white", PORT_TYPE_OPTION = "violet", PORT_TYPE_ENTITY = "purple")
+	var/list/colours = list(PORT_TYPE_ANY = "blue", PORT_TYPE_NUMBER = "green", PORT_TYPE_BOOLEAN = "bad", PORT_TYPE_STRING = "orange", PORT_TYPE_SIGNAL = "teal", PORT_TYPE_LIST = "white", PORT_TYPE_ASSOC_LIST = "label", PORT_TYPE_OPTION = "violet", PORT_TYPE_ENTITY = "purple")
 	var/registered = TRUE
 	for(var/handler_type in typesof(/datum/circuit_datatype) - /datum/circuit_datatype)
 		var/datum/circuit_datatype/fresh = new handler_type
@@ -1023,7 +1207,7 @@ var/datum/probe_globals/GLOB = new
 		if(!known || known.type != handler_type || known != circuit_datatype_for(fresh.datatype) || known.color != colours[fresh.datatype])
 			registered = FALSE
 		colours -= fresh.datatype
-	check(registered && !length(colours) && length(wiremod_datatypes()) == 8, "every datatype has one handler with its own name and colour")
+	check(registered && !length(colours) && length(wiremod_datatypes()) == 9, "every datatype has one handler with its own name and colour")
 	check(wiremod_parse_boolean("On") == TRUE && wiremod_parse_boolean("off") == FALSE && wiremod_parse_boolean(2) == TRUE && wiremod_parse_boolean(0) == FALSE, "truth values are read from words and numbers")
 	check(isnull(wiremod_parse_boolean("maybe")) && isnull(wiremod_parse_boolean(null)) && isnull(wiremod_parse_boolean(list(1))) && isnull(wiremod_parse_boolean(1e30 * 1e30)), "anything else is not a truth value")
 	check(wiremod_ui_flag(1) == TRUE && wiremod_ui_flag("true") == TRUE && wiremod_ui_flag("maybe") == FALSE && wiremod_ui_flag(null) == FALSE, "a request flag that cannot be read is off")
@@ -1060,7 +1244,7 @@ var/datum/probe_globals/GLOB = new
 	check(compare.input_a.value == 7, "an untyped input keeps a number")
 	var/obj/item/circuit_component/operator/string_concat/join = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
 	enter(circuit, user, join, 1, 5)
-	check(join.input_a.value == "5", "a text input turns a typed number into text")
+	check(join.string_inputs[1].value == "5", "a text input turns a typed number into text")
 	var/list/sent_types = circuit.circuit_editor_data()["global_basic_types"]
 	var/settable = length(sent_types) == 5
 	for(var/type_key in list(PORT_TYPE_NUMBER, PORT_TYPE_BOOLEAN, PORT_TYPE_STRING, PORT_TYPE_ANY, PORT_TYPE_ENTITY))
@@ -1085,15 +1269,11 @@ var/datum/probe_globals/GLOB = new
 /proc/test_list_handoff(mob/living/user)
 	var/obj/item/integrated_circuit/circuit = new(user)
 	var/obj/item/circuit_component/string_split/split = print(circuit, user, /obj/item/circuit_component/string_split)
-	var/obj/item/circuit_component/list_add/append = print(circuit, user, /obj/item/circuit_component/list_add)
-	var/obj/item/circuit_component/list_remove/drop = print(circuit, user, /obj/item/circuit_component/list_remove)
 	var/obj/item/circuit_component/operator/list_concat/merge = print(circuit, user, /obj/item/circuit_component/operator/list_concat)
 	var/obj/item/circuit_component/list_index/pick_entry = print(circuit, user, /obj/item/circuit_component/list_index)
 	var/obj/item/circuit_component/length/size = print(circuit, user, /obj/item/circuit_component/length)
 	var/obj/item/circuit_component/operator/comparison/compare = print(circuit, user, /obj/item/circuit_component/operator/comparison)
 	var/obj/item/circuit_component/operator/string_concat/text = print(circuit, user, /obj/item/circuit_component/operator/string_concat)
-	wire(circuit, user, split, 1, append, 1)
-	wire(circuit, user, split, 1, drop, 1)
 	wire(circuit, user, split, 1, merge, 1)
 	wire(circuit, user, split, 1, merge, 2)
 	wire(circuit, user, split, 1, pick_entry, 1)
@@ -1101,16 +1281,14 @@ var/datum/probe_globals/GLOB = new
 	wire(circuit, user, split, 1, compare, 1)
 	wire(circuit, user, split, 1, compare, 2)
 	check(!wire(circuit, user, split, 1, text, 1), "a list output still cannot feed a text input")
-	enter(circuit, user, append, 2, "d")
-	enter(circuit, user, drop, 2, "a")
 	enter(circuit, user, pick_entry, 2, 2)
 	enter(circuit, user, split, 1, "a,b,c")
 	var/list/source = split.result.value
 	check(islist(source) && length(source) == 3, "the split made a list")
-	check(append.list_input.value == source && merge.input_a.value == source && size.value_input.value == source, "list and untyped inputs take the output's list as it is")
+	check(merge.input_a.value == source && size.value_input.value == source, "list and untyped inputs take the output's list as it is")
 	check(jointext(source, ",") == "a,b,c", "no component changed the list it was handed")
-	check(jointext(output_value(append), ",") == "a,b,c,d" && jointext(output_value(drop), ",") == "b,c" && length(output_value(merge)) == 6 && output_value(pick_entry) == "b" && output_value(size) == 3, "the list components still give their results")
-	check(output_value(append) != source && output_value(drop) != source && output_value(merge) != source, "a result is a new list, never the input list")
+	check(length(output_value(merge)) == 6 && output_value(pick_entry) == "b" && output_value(size) == 3, "the list components still give their results")
+	check(output_value(merge) != source, "a result is a new list, never the input list")
 	enter(circuit, user, compare, 3, "Equal")
 	check(output_value(compare) == FALSE, "a list is not equal to a list, even the same one")
 	enter(circuit, user, compare, 3, "Not Equal")
@@ -1119,7 +1297,7 @@ var/datum/probe_globals/GLOB = new
 	var/list/mine = list("x", "y")
 	split.result.set_output(mine)
 	mine += "z"
-	check(length(split.result.value) == 2 && split.result.value != mine && append.list_input.value == split.result.value, "an output keeps its own copy of the list it is given")
+	check(length(split.result.value) == 2 && split.result.value != mine && merge.input_a.value == split.result.value, "an output keeps its own copy of the list it is given")
 	// A variable keeps its own copy too.
 	act(circuit, user, "add_variable", list("variable_name" = "kept", "variable_datatype" = PORT_TYPE_ANY, "is_list" = 1))
 	act(circuit, user, "add_setter_or_getter", list("variable" = "kept", "is_setter" = 1))
@@ -1168,7 +1346,7 @@ var/datum/probe_globals/GLOB = new
 	enter(circuit, user, math, 2, 4)
 	wire(circuit, user, math, 1, gate, 1)
 	wire(circuit, user, math, 1, text, 1)
-	check(gate.input_a.value == TRUE && text.input_a.value == "7", "numbers are still converted for boolean and text inputs")
+	check(gate.input_a.value == TRUE && text.string_inputs[1].value == "7", "numbers are still converted for boolean and text inputs")
 	qdel(circuit)
 
 // A running circuit refreshes an open editor a few times a second at most, and
@@ -1256,7 +1434,7 @@ var/datum/probe_globals/GLOB = new
 	data = circuit.circuit_editor_data()
 	var/list/notices = data["examined_notices"]
 	check(data["examined_name"] == "Arithmetic" && data["examined_desc"] == math.desc && findtext(data["examined_desc"], "Dividing by zero") && data["examined_rel_x"] == 120 && data["examined_rel_y"] == 80, "the info button shows the component's description where it was pressed")
-	check(length(notices) == 4 && notices[1]["content"] == "In: A (number)" && notices[1]["color"] == "green" && notices[3]["content"] == "In: Operation (option)" && notices[3]["color"] == "violet" && notices[4]["content"] == "Out: Result (number)", "the info panel lists every port with its type and colour")
+	check(length(notices) == 5 && notices[1]["content"] == "In: A (number)" && notices[1]["color"] == "green" && notices[3]["content"] == "In: Operation (option)" && notices[3]["color"] == "violet" && notices[4]["content"] == "Out: Result (number)" && notices[5]["content"] == "Out: Triggered (signal)" && notices[5]["color"] == "teal", "the info panel lists every port with its type and colour")
 	act(circuit, user, "remove_examined_component")
 	check(isnull(circuit.circuit_editor_data()["examined_name"]), "clicking away closes the info panel")
 	// The variable nodes and the remote's source are not in the menu; they have descriptions too.
@@ -1268,6 +1446,9 @@ var/datum/probe_globals/GLOB = new
 
 /obj/item/probe_trinket
 	name = "<b>trinket</b>"
+
+/obj/item/probe_sample
+	name = "sample"
 
 // Builds a circuit whose ports hold a trinket, deletes the trinket and returns
 // its ref: only a leak can keep it findable afterwards.
@@ -1284,7 +1465,7 @@ var/datum/probe_globals/GLOB = new
 	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
 	check(finder.target_input.value == WEAKREF(trinket) && !istype(finder.target_input.value, /atom), "marking an entity input stores the weak reference of the item in the other hand")
 	check(length(chat_log) == 1 && findtext(chat_log[1], "&lt;b&gt;trinket&lt;/b&gt;") && !findtext(chat_log[1], "<b>"), "the marked thing's name reaches chat escaped ([length(chat_log) ? chat_log[1] : ""])")
-	check(output_value(finder, 2) == 0 && isnull(output_value(finder, 1)), "a held target is on the circuit's own tile: distance 0, no direction")
+	check(isnull(output_value(finder, 2)) && isnull(output_value(finder, 1)), "a loose circuit has no shell to look from, even with a held target")
 	// An untyped input can be marked too, and holds the same handle.
 	act(circuit, user, "set_component_input", list("component_id" = compare.circuit_id, "port_id" = 1, "marked_atom" = 1))
 	user.other_hand = null
@@ -1303,7 +1484,7 @@ var/datum/probe_globals/GLOB = new
 	act(circuit, user, "set_component_input", list("component_id" = writer.circuit_id, "port_id" = 1, "marked_atom" = 1))
 	var/datum/circuit_variable/variable = circuit.circuit_variables["thing"]
 	check(variable.value == WEAKREF(trinket) && output_value(reader) == WEAKREF(trinket) && reader.value_output.datatype == PORT_TYPE_ENTITY, "an entity variable keeps the weak reference and its getter gives it")
-	check(wire(circuit, user, reader, 1, label, 1) && label.input_a.value == "<b>trinket</b>", "an entity wired into a text input arrives as its name")
+	check(wire(circuit, user, reader, 1, label, 1) && label.string_inputs[1].value == "<b>trinket</b>", "an entity wired into a text input arrives as its name")
 	check(!wire(circuit, user, reader, 1, finder, 2) && isnull(compare.input_a.connected_output), "an entity output does not connect to a signal input")
 	var/obj/item/circuit_component/operator/arithmetic/math = print(circuit, user, /obj/item/circuit_component/operator/arithmetic)
 	check(!wire(circuit, user, reader, 1, math, 1), "an entity output does not connect to a number input")
@@ -1320,7 +1501,7 @@ var/datum/probe_globals/GLOB = new
 	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "input" = trinket))
 	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "input" = user, "marked_atom" = user))
 	act(circuit, user, "set_component_input", list("component_id" = label.circuit_id, "port_id" = 2, "marked_atom" = 1))
-	check(finder.target_input.value == WEAKREF(trinket) && isnull(label.input_b.value), "an entity cannot be typed, named by a request or marked on a text input")
+	check(finder.target_input.value == WEAKREF(trinket) && isnull(label.string_inputs[2].value), "an entity cannot be typed, named by a request or marked on a text input")
 	var/list/everything = list()
 	for(var/obj/item/circuit_component/component in circuit.attached_components)
 		for(var/datum/port/port in component.input_ports + component.output_ports)
@@ -1377,7 +1558,8 @@ var/datum/probe_globals/GLOB = new
 	var/datum/weakref/handle = WEAKREF(user)
 	user.name = "Probe Presser"
 	check(entity.convert(handle) == handle && any.convert(handle) == handle && string.convert(handle) == "Probe Presser", "an entity is held as its weak reference and read as its name by a text port")
-	check(isnull(number.convert(handle)) && boolean.convert(handle) == FALSE && !length(list_type.convert(list(handle, 1))) == FALSE && length(list_type.convert(list(handle, 1))) == 1, "numbers, truth values and lists take no entity")
+	var/list/with_handle = list_type.convert(list(handle, 1))
+	check(isnull(number.convert(handle)) && boolean.convert(handle) == FALSE && length(with_handle) == 2 && with_handle[1] == handle && with_handle[2] == 1, "numbers and truth values take no entity; a flat list keeps its weak reference")
 	check(isnull(entity.convert(user)) && isnull(entity.convert("Probe Presser")) && isnull(entity.convert(5)) && isnull(entity.convert(list(handle))), "an entity port takes nothing but a weak reference")
 	var/datum/callback/plain = new(user, "restrained")
 	check(isnull(entity.convert(WEAKREF(plain))) && isnull(any.convert(WEAKREF(plain))) && isnull(entity.convert(WEAKREF(locate(1, 1, 1)))), "only a movable thing is an entity: no plain datum, no turf")
@@ -1394,15 +1576,20 @@ var/datum/probe_globals/GLOB = new
 	survivor = null
 
 /proc/test_new_components(mob/living/user)
+	var/obj/item/circuit_shell/compact_remote/shell = new(user)
 	var/obj/item/integrated_circuit/circuit = new(user)
+	shell.attackby(circuit, user)
+	check(wiremod_anchor(circuit) == shell, "a circuit in a shell is anchored to it")
 	var/obj/item/circuit_component/not/inverter = print(circuit, user, /obj/item/circuit_component/not)
-	enter(circuit, user, inverter, 1, "true")
-	check(output_value(inverter) == FALSE, "not: true becomes false")
+	enter(circuit, user, inverter, 1, 5)
+	check(output_value(inverter) == FALSE, "not: a nonzero input becomes 0")
 	enter(circuit, user, inverter, 1, "false")
-	check(output_value(inverter) == TRUE, "not: false becomes true")
+	check(output_value(inverter) == FALSE, "not: text, even 'false', is not the number zero")
+	enter(circuit, user, inverter, 1, 0)
+	check(output_value(inverter) == TRUE, "not: zero becomes 1")
 	act(circuit, user, "set_component_input", list("component_id" = inverter.circuit_id, "port_id" = 1, "set_null" = 1))
-	check(output_value(inverter) == TRUE, "not: an unset input counts as false")
-	// Direction: from the circuit (held by the user at 1,1) to a marked mob.
+	check(output_value(inverter) == TRUE, "not: an unset input counts as zero")
+	// Direction: from the shell (at 1,1) to a marked mob.
 	var/obj/item/circuit_component/direction/finder = print(circuit, user, /obj/item/circuit_component/direction)
 	var/mob/living/target = new(locate(4, 1, 1))
 	finder.target_input.set_input(WEAKREF(target))
@@ -1426,19 +1613,279 @@ var/datum/probe_globals/GLOB = new
 	qdel(target)
 	finder.trigger.set_input(COMPONENT_SIGNAL)
 	check(isnull(finder.target_input.value) && isnull(output_value(finder, 1)) && isnull(output_value(finder, 2)), "direction: a deleted target gives nothing")
-	qdel(circuit)
+	qdel(shell)
 	check(!GLOB.destroyed_event.port_listeners(), "the direction circuit leaves no listener behind")
+
+// Behaviour of the parity components that the earlier tests do not exercise.
+/proc/test_parity_components(mob/living/user)
+	var/obj/item/circuit_shell/compact_remote/shell = new(user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	shell.attackby(circuit, user)
+
+	// Binary and decimal conversion, with the list of bits lowest bit first.
+	var/obj/item/circuit_component/binary_conversion/binary = print(circuit, user, /obj/item/circuit_component/binary_conversion)
+	enter(circuit, user, binary, 1, 2)
+	var/list/bits = output_value(binary)
+	check(length(bits) == CIRCUIT_BINARY_BITS && bits[1] == 0 && bits[2] == 1 && bits[3] == 0 && bits[4] == 0, "binary conversion: 2 is 0,1,0,0,0,0,0,0")
+	enter(circuit, user, binary, 1, 256)
+	check(!length(output_value(binary)), "binary conversion: a number above 255 gives no bits")
+	enter(circuit, user, binary, 1, 1.5)
+	check(!length(output_value(binary)), "binary conversion: a fraction gives no bits")
+	var/obj/item/circuit_component/decimal_conversion/decimal = print(circuit, user, /obj/item/circuit_component/decimal_conversion)
+	set_port(decimal, 1, bits)
+	check(output_value(decimal) == 2, "decimal conversion reads the bits back")
+	set_port(decimal, 1, list(2))
+	check(isnull(output_value(decimal)), "decimal conversion rejects a bit that is not 0 or 1")
+
+	// Clock: a 0.9 second pulse for as long as On is above zero.
+	var/obj/item/circuit_component/clock/ticker = print(circuit, user, /obj/item/circuit_component/clock)
+	var/timers_before = length(active_timers)
+	enter(circuit, user, ticker, 1, 1)
+	check(length(active_timers) == timers_before + 1, "clock starts a timer when On is above zero")
+	sleep(10)
+	check(isnum(output_value(ticker)) && length(active_timers) == timers_before + 1, "clock fires after 0.9 seconds and reschedules")
+	enter(circuit, user, ticker, 1, 0)
+	check(length(active_timers) == timers_before, "clock stops when On reaches zero")
+
+	// Selectors choose one input and one output by whole number.
+	var/obj/item/circuit_component/multiplexer/mux = print(circuit, user, /obj/item/circuit_component/multiplexer)
+	enter(circuit, user, mux, 1, "first")
+	enter(circuit, user, mux, 2, "second")
+	enter(circuit, user, mux, 5, 2)
+	check(output_value(mux) == "second", "multiplexer chooses the selected input")
+	enter(circuit, user, mux, 5, 0)
+	check(isnull(output_value(mux)), "multiplexer gives nothing for a selector outside 1 to 4")
+	var/obj/item/circuit_component/router/route = print(circuit, user, /obj/item/circuit_component/router)
+	enter(circuit, user, route, 1, "alpha")
+	enter(circuit, user, route, 5, 1)
+	enter(circuit, user, route, 6, 3)
+	check(route.outputs[3].value == "alpha", "router copies the input to the selected output")
+
+	// Trigonometry works in degrees and has no answer outside the arcs' range.
+	var/obj/item/circuit_component/trigonometry/trig = print(circuit, user, /obj/item/circuit_component/trigonometry)
+	enter(circuit, user, trig, 1, 90)
+	check(abs(output_value(trig) - 1) < 0.001, "trigonometry: sine of 90 degrees is 1")
+	enter(circuit, user, trig, 2, "Cosine")
+	check(abs(output_value(trig)) < 0.001, "trigonometry: cosine of 90 degrees is 0")
+	enter(circuit, user, trig, 2, "Arcsine")
+	enter(circuit, user, trig, 1, 2)
+	check(isnull(output_value(trig)), "trigonometry: arcsine outside -1 to 1 gives nothing")
+
+	// Typecasting and typechecking read a value the same way.
+	var/obj/item/circuit_component/typecast/cast = print(circuit, user, /obj/item/circuit_component/typecast)
+	enter(circuit, user, cast, 1, 5)
+	check(output_value(cast) == 5, "typecast keeps a value of the chosen type")
+	enter(circuit, user, cast, 2, "String")
+	check(isnull(output_value(cast)), "typecast drops a value of another type")
+	var/obj/item/circuit_component/typecheck/kind = print(circuit, user, /obj/item/circuit_component/typecheck)
+	set_port(kind, 1, list("a"))
+	check(output_value(kind) == "list", "typecheck names a flat list")
+	enter(circuit, user, cast, 2, "Associative List")
+	set_port(cast, 1, list("a"))
+	check(isnull(output_value(cast)), "an associative list is not a flat list")
+
+	// List lookups and literals, including the assoc datatype.
+	var/obj/item/circuit_component/element_find/find_entry = print(circuit, user, /obj/item/circuit_component/element_find)
+	enter(circuit, user, find_entry, 1, "b")
+	set_port(find_entry, 2, list("a", "b"))
+	check(output_value(find_entry) == TRUE, "element find finds a value")
+	enter(circuit, user, find_entry, 1, "z")
+	check(output_value(find_entry) == FALSE, "element find reports a missing value")
+	var/obj/item/circuit_component/assoc_literal/maker = print(circuit, user, /obj/item/circuit_component/assoc_literal)
+	enter(circuit, user, maker, 2, "Name")
+	enter(circuit, user, maker, 3, "Bob")
+	act(circuit, user, "set_component_input", list("component_id" = maker.circuit_id, "port_id" = 1))
+	var/list/assoc = output_value(maker)
+	check(wiremod_is_assoc_list(assoc) && assoc["Name"] == "Bob", "associative list literal builds a list of pairs")
+	var/obj/item/circuit_component/index_assoc/assoc_index = print(circuit, user, /obj/item/circuit_component/index_assoc)
+	wire(circuit, user, maker, 1, assoc_index, 1)
+	enter(circuit, user, assoc_index, 2, "Name")
+	check(output_value(assoc_index) == "Bob", "index associative list reads a key")
+	enter(circuit, user, assoc_index, 2, "Missing")
+	check(isnull(output_value(assoc_index)), "index associative list gives nothing for a missing key")
+	var/obj/item/circuit_component/list_literal/literal = print(circuit, user, /obj/item/circuit_component/list_literal)
+	enter(circuit, user, literal, 2, "red")
+	enter(circuit, user, literal, 3, "blue")
+	act(circuit, user, "set_component_input", list("component_id" = literal.circuit_id, "port_id" = 1))
+	check(jointext(output_value(literal), ",") == "red,blue", "list literal joins its values when triggered")
+	var/obj/item/circuit_component/format_list/formatter = print(circuit, user, /obj/item/circuit_component/format_list)
+	wire(circuit, user, literal, 1, formatter, 1)
+	enter(circuit, user, formatter, 2, "First %1, then %2, then %9")
+	check(output_value(formatter) == "First red, then blue, then %9", "format list replaces numbered placeholders")
+	var/obj/item/circuit_component/format_assoc_list/assoc_formatter = print(circuit, user, /obj/item/circuit_component/format_assoc_list)
+	wire(circuit, user, maker, 1, assoc_formatter, 1)
+	enter(circuit, user, assoc_formatter, 2, "Hello %Name, %Missing")
+	check(output_value(assoc_formatter) == "Hello Bob, %Missing", "format associative list replaces named placeholders")
+	var/obj/item/circuit_component/tostring/as_text = print(circuit, user, /obj/item/circuit_component/tostring)
+	enter(circuit, user, as_text, 1, 42)
+	check(output_value(as_text) == "42", "to string writes a number as text")
+	set_port(as_text, 1, list("a"))
+	check(output_value(as_text) == "/list", "to string writes a list as /list")
+
+	// The loop components let a wired chain decide each entry before moving on.
+	var/obj/item/circuit_component/list_loop/filter_list/loop = print(circuit, user, /obj/item/circuit_component/list_loop/filter_list)
+	var/obj/item/circuit_component/probe_acceptor/acceptor = new(circuit)
+	circuit.add_component(acceptor)
+	acceptor.target = loop
+	wire(circuit, user, loop, 3, acceptor, 1)
+	set_port(loop, 1, list("a", "b"))
+	act(circuit, user, "set_component_input", list("component_id" = loop.circuit_id, "port_id" = 2))
+	check(jointext(output_value(loop, 6), ",") == "a,b" && output_value(loop, 4) == COMPONENT_SIGNAL, "filter list keeps accepted entries and finishes")
+	check(isnull(output_value(loop, 5)), "filter list does not fail on a valid list")
+	act(circuit, user, "set_component_input", list("component_id" = loop.circuit_id, "port_id" = 2, "set_null" = 1))
+	var/obj/item/circuit_component/list_loop/for_each/each = print(circuit, user, /obj/item/circuit_component/list_loop/for_each)
+	set_port(each, 1, "not a list")
+	act(circuit, user, "set_component_input", list("component_id" = each.circuit_id, "port_id" = 2))
+	check(output_value(each, 5) == COMPONENT_SIGNAL, "for each fails when it is not given a list")
+
+	// Variables can be written on demand by the trigger setter node.
+	act(circuit, user, "add_variable", list("variable_name" = "count", "variable_datatype" = PORT_TYPE_NUMBER, "is_list" = 0))
+	var/obj/item/circuit_component/set_variable_trigger/writer = print(circuit, user, /obj/item/circuit_component/set_variable_trigger)
+	check("count" in writer.variable_input.options, "the variable trigger setter offers the circuit's variables")
+	enter(circuit, user, writer, 1, "count")
+	enter(circuit, user, writer, 2, 42)
+	check(isnull(circuit.circuit_variables["count"].value), "the variable trigger setter waits for its trigger")
+	act(circuit, user, "set_component_input", list("component_id" = writer.circuit_id, "port_id" = 3))
+	check(circuit.circuit_variables["count"].value == 42 && output_value(writer) == COMPONENT_SIGNAL, "the variable trigger setter writes and passes on the signal")
+
+	// The timepiece reads the station clock in both of its formats.
+	var/obj/item/circuit_component/timepiece/clockface = print(circuit, user, /obj/item/circuit_component/timepiece)
+	check(output_value(clockface, 1) == "10:00:00" && output_value(clockface, 2) == 0, "timepiece formats the station time and reads seconds")
+	enter(circuit, user, clockface, 1, "Minutes")
+	check(output_value(clockface, 2) == 0, "timepiece reads minutes")
+	enter(circuit, user, clockface, 1, "Hours")
+	check(output_value(clockface, 2) == 1, "timepiece reads hours")
+
+	// The shell is the point of view for every sensor.
+	var/obj/item/circuit_component/gps/gps = print(circuit, user, /obj/item/circuit_component/gps)
+	act(circuit, user, "set_component_input", list("component_id" = gps.circuit_id, "port_id" = 1))
+	check(output_value(gps, 1) == 1 && output_value(gps, 2) == 1 && output_value(gps, 3) == 1, "gps reads the shell's coordinates")
+	var/obj/item/circuit_component/self/itself = print(circuit, user, /obj/item/circuit_component/self)
+	check(output_value(itself) == WEAKREF(shell), "self names the shell as an entity")
+	var/obj/item/circuit_component/pressure_sensor/pressure = print(circuit, user, /obj/item/circuit_component/pressure_sensor)
+	act(circuit, user, "set_component_input", list("component_id" = pressure.circuit_id, "port_id" = 1))
+	check(output_value(pressure) == 101, "pressure sensor reads the shell's tile")
+	var/obj/item/circuit_component/temperature_sensor/thermometer = print(circuit, user, /obj/item/circuit_component/temperature_sensor)
+	act(circuit, user, "set_component_input", list("component_id" = thermometer.circuit_id, "port_id" = 1))
+	check(output_value(thermometer) == 300, "temperature sensor reads the shell's tile")
+	var/obj/item/circuit_component/view_sensor/viewer = print(circuit, user, /obj/item/circuit_component/view_sensor)
+	act(circuit, user, "set_component_input", list("component_id" = viewer.circuit_id, "port_id" = 1))
+	var/list/seen = output_value(viewer)
+	check(islist(seen) && length(seen) >= 1 && istype(seen[1], /datum/weakref), "view sensor lists weak references to what the shell sees")
+
+	// Health, species, pinpointer and the scanners read a marked entity.
+	user.held = null
+	var/mob/living/human/patient = new(locate(4, 1, 1))
+	patient.health = 60
+	user.other_hand = patient
+	var/obj/item/circuit_component/health/vitals = print(circuit, user, /obj/item/circuit_component/health)
+	act(circuit, user, "set_component_input", list("component_id" = vitals.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	act(circuit, user, "set_component_input", list("component_id" = vitals.circuit_id, "port_id" = 2))
+	check(output_value(vitals, 1) == 60 && output_value(vitals, 2) == 40, "health reads health and damage")
+	var/obj/item/circuit_component/species/being = print(circuit, user, /obj/item/circuit_component/species)
+	act(circuit, user, "set_component_input", list("component_id" = being.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	act(circuit, user, "set_component_input", list("component_id" = being.circuit_id, "port_id" = 2))
+	check(output_value(being) == "Human", "get species names the entity's species")
+	act(circuit, user, "set_component_input", list("component_id" = vitals.circuit_id, "port_id" = 1))
+	var/obj/item/circuit_component/pinpointer/finder = print(circuit, user, /obj/item/circuit_component/pinpointer)
+	act(circuit, user, "set_component_input", list("component_id" = finder.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	check(output_value(finder, 1) == 4 && output_value(finder, 2) == 1 && output_value(finder, 3) == 1, "proximity pinpointer reads a nearby entity's coordinates")
+	var/obj/item/probe_sample/sample = new(user)
+	sample.basematerials = list("Metal", 3)
+	user.other_hand = sample
+	var/obj/item/circuit_component/material_scanner/materials = print(circuit, user, /obj/item/circuit_component/material_scanner)
+	act(circuit, user, "set_component_input", list("component_id" = materials.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	var/list/found_materials = output_value(materials)
+	check(wiremod_is_assoc_list(found_materials) && found_materials["iron"] == 3, "material scanner names Metal as iron")
+	var/atom/movable/beaker = new(get_turf(shell))
+	var/datum/reagent/water = new
+	water.id = "water"
+	water.volume = 25
+	beaker.reagents = new
+	beaker.reagents.reagent_list += water
+	user.other_hand = beaker
+	var/obj/item/circuit_component/reagents_scanner/reagents = print(circuit, user, /obj/item/circuit_component/reagents_scanner)
+	act(circuit, user, "set_component_input", list("component_id" = reagents.circuit_id, "port_id" = 1, "marked_atom" = 1))
+	var/list/found_reagents = output_value(reagents)
+	check(wiremod_is_assoc_list(found_reagents) && found_reagents["water"] == 25, "reagents scanner reads a container's contents")
+
+	// World outputs: light, printer, sound and speech all work through the shell.
+	var/obj/item/circuit_component/light/lamp = print(circuit, user, /obj/item/circuit_component/light)
+	enter(circuit, user, lamp, 1, 1)
+	check(shell.light_range == CIRCUIT_LIGHT_RANGE, "light turns the shell on")
+	enter(circuit, user, lamp, 1, 0)
+	check(shell.light_range == 0, "light turns the shell off")
+	var/obj/item/circuit_component/printer/printer = print(circuit, user, /obj/item/circuit_component/printer)
+	set_port(printer, 1, "<b>hello</b>")
+	act(circuit, user, "set_component_input", list("component_id" = printer.circuit_id, "port_id" = 2))
+	// The shell sits in a hand, so the sheet is handed to the holder.
+	var/obj/item/weapon/paper/sheet = user.held
+	check(istype(sheet) && findtext(sheet.info, "&lt;b&gt;hello&lt;/b&gt;"), "printer ejects a sheet with escaped text")
+	var/obj/item/circuit_component/sound_emitter/probe_emitter/noise = new(circuit)
+	circuit.add_component(noise)
+	enter(circuit, user, noise, 3, 75)
+	enter(circuit, user, noise, 2, 1.5)
+	var/sounds_before = length(probe_sounds)
+	act(circuit, user, "set_component_input", list("component_id" = noise.circuit_id, "port_id" = 4))
+	check(length(probe_sounds) == sounds_before + 1 && probe_sounds[sounds_before + 1]["varied"] && probe_sounds[sounds_before + 1]["frequency"] == 1.5, "sound emitter plays at the chosen pitch and volume")
+	act(circuit, user, "set_component_input", list("component_id" = noise.circuit_id, "port_id" = 4))
+	check(length(probe_sounds) == sounds_before + 1, "sound emitter has a cooldown")
+	var/obj/item/circuit_component/speech/mouth = print(circuit, user, /obj/item/circuit_component/speech)
+	set_port(mouth, 1, "hello there")
+	var/messages_before = length(probe_visible_messages)
+	act(circuit, user, "set_component_input", list("component_id" = mouth.circuit_id, "port_id" = 2))
+	check(length(probe_visible_messages) == messages_before + 1 && findtext(probe_visible_messages[messages_before + 1], "hello there"), "speech says the text from the shell")
+	act(circuit, user, "set_component_input", list("component_id" = mouth.circuit_id, "port_id" = 2))
+	check(length(probe_visible_messages) == messages_before + 1, "speech has a cooldown")
+
+	// Radio and Voice Activator share the Civ13 voice network.
+	var/obj/item/weapon/radio/transmitter = new(get_turf(shell))
+	var/obj/item/circuit_shell/compact_remote/other_shell = new(locate(2, 1, 1))
+	var/obj/item/integrated_circuit/other_circuit = new(user)
+	other_shell.attackby(other_circuit, user)
+	var/obj/item/circuit_component/radio/sender = print(circuit, user, /obj/item/circuit_component/radio)
+	var/obj/item/circuit_component/radio/receiver = print(other_circuit, user, /obj/item/circuit_component/radio)
+	enter(circuit, user, sender, 1, 150)
+	enter(other_circuit, user, receiver, 1, 150)
+	enter(circuit, user, sender, 2, "over radio")
+	act(circuit, user, "set_component_input", list("component_id" = sender.circuit_id, "port_id" = 3))
+	check(receiver.message_output.value == "over radio" && receiver.received.value == COMPONENT_SIGNAL, "radio sends to another radio component on the same frequency")
+	check(isnull(sender.message_output.value), "a radio does not hear its own transmission")
+	var/obj/item/circuit_component/voice_activator/ears = print(circuit, user, /obj/item/circuit_component/voice_activator)
+	wiremod_speech_heard(patient, "spoken nearby", 7)
+	check(ears.message_output.value == "spoken nearby" && ears.speaker_output.value == WEAKREF(patient), "voice activator hears speech and its speaker")
+	wiremod_radio_heard(150, "heard over radio", patient, null)
+	check(ears.message_output.value == "heard over radio" && isnull(ears.speaker_output.value), "voice activator does not name a radio's original speaker")
+
+	// Pathfinder gives one step per trigger and stops when the shell arrives.
+	var/obj/item/circuit_component/pathfinder/walker = print(circuit, user, /obj/item/circuit_component/pathfinder)
+	enter(circuit, user, walker, 1, 4)
+	enter(circuit, user, walker, 2, 1)
+	act(circuit, user, "set_component_input", list("component_id" = walker.circuit_id, "port_id" = 3))
+	check(output_value(walker, 1) == "east", "pathfinder gives the next step toward the target")
+	shell.forceMove(locate(4, 1, 1))
+	// The shell is now out of edit range, so press the port directly.
+	set_port(walker, 3, COMPONENT_SIGNAL)
+	check(output_value(walker, 3) == COMPONENT_SIGNAL && isnull(output_value(walker, 4)), "pathfinder reports arrival at the target")
+
+	qdel(other_shell)
+	qdel(shell)
+	qdel(transmitter)
+	qdel(patient)
+	qdel(sample)
+	qdel(beaker)
+	user.other_hand = null
 
 /world/New()
 	world.OpenPort("none")
 	spawn(0)
 		var/mob/living/user = new(locate(1, 1, 1))
-		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_shell_circuit, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components))
+		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_shell_circuit, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components, /proc/test_parity_components))
 			try
 				call(test)(user)
 			catch(var/exception/failure)
 				failures++
-				world.log << "FAIL [test] raised: [failure] ([failure.file]:[failure.line])"
+				world.log << "FAIL [test] raised: [failure] ([failure.file]:[failure.line]) after [probe_mark]"
 		if(!failures)
 			world.log << "PASS wiremod ([checks] checks)"
 		else

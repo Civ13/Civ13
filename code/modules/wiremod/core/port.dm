@@ -82,6 +82,14 @@
 			return
 	..()
 
+// Replaces the choices a restricted port offers. The current choice is kept
+// when it is still one of them, and otherwise falls back to the first choice, so
+// a port never keeps a choice the editor can no longer show.
+/datum/port/input/proc/set_input_options(list/new_options)
+	options = islist(new_options) ? new_options.Copy() : null
+	if(options && !(value in options))
+		hold(length(options) ? datatype_handler.convert(options[1]) : null)
+
 // Both ports must sit on components of the same circuit.
 /datum/port/input/proc/connect(datum/port/output/output)
 	if(!istype(output) || output == connected_output || !datatype_handler || !datatype_handler.can_receive_from_datatype(output.datatype))

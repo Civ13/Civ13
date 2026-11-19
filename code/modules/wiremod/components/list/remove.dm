@@ -2,20 +2,33 @@
 	name = "list remove component"
 	display_name = "List Remove"
 	category = "List"
-	desc = "Gives a copy of List with the first entry equal to Value taken out. If Value is not in the list, the list comes out unchanged."
+	desc = "Removes the first entry equal to Value from the chosen list variable when a signal reaches Trigger. A Value the list does not hold leaves it unchanged."
 
-	var/datum/port/input/list_input
+	var/datum/port/input/variable_input
 	var/datum/port/input/value_input
-	var/datum/port/output/result
+	var/datum/port/input/trigger
+	var/datum/port/output/triggered
 
 /obj/item/circuit_component/list_remove/populate_ports()
-	list_input = add_input_port("List", PORT_TYPE_LIST, trigger = PROC_REF(remove_value))
-	value_input = add_input_port("Value", PORT_TYPE_ANY, trigger = PROC_REF(remove_value))
-	result = add_output_port("Result", PORT_TYPE_LIST)
+	variable_input = add_input_port("Variable", PORT_TYPE_OPTION, options = list())
+	value_input = add_input_port("Value", PORT_TYPE_ANY)
+	trigger = add_input_port("Trigger", PORT_TYPE_SIGNAL, trigger = PROC_REF(remove_value))
+	triggered = add_output_port("Triggered", PORT_TYPE_SIGNAL)
+
+/obj/item/circuit_component/list_remove/added_to_circuit(obj/item/integrated_circuit/circuit)
+	refresh_variable_options()
+
+/obj/item/circuit_component/list_remove/refresh_variable_options()
+	if(variable_input)
+		variable_input.set_input_options(wiremod_list_variable_names(parent))
 
 /obj/item/circuit_component/list_remove/proc/remove_value(datum/port/input/input)
-	var/list/source_list = list_input.value
-	var/list/result_list = islist(source_list) ? source_list.Copy() : list()
-	if(!isnull(value_input.value))
-		result_list -= value_input.value
-	result.set_output(result_list)
+	var/datum/circuit_variable/variable = wiremod_list_variable(parent, variable_input.value)
+	if(variable)
+		var/list/stored = variable.value
+		var/list/entries = islist(stored) ? stored.Copy() : list()
+		var/value = wiremod_safe_value(value_input.value)
+		if(!isnull(value))
+			entries -= value
+			variable.set_value(entries)
+	triggered.set_output(COMPONENT_SIGNAL)

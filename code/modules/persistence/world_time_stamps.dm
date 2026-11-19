@@ -132,6 +132,12 @@ var/global/list/persistence_world_time_stamps = list(
 	"overloaded_until" = list(/obj/item/integrated_circuit),
 	"next_editor_refresh" = list(/obj/item/integrated_circuit),
 	"editor_refresh_timer" = list(/obj/item/integrated_circuit),
+	// Circuit component cooldowns and scan clocks must restart with the round.
+	"last_played" = list(/obj/item/circuit_component/sound_emitter),
+	"last_print" = list(/obj/item/circuit_component/printer),
+	"last_sent" = list(/obj/item/circuit_component/radio),
+	"last_spoken" = list(/obj/item/circuit_component/speech),
+	"next_scan" = list(/obj/item/circuit_component/view_sensor),
 	// Declared var/tmp, which the saver does not skip: these were restored too.
 	"next_melee_attack" = list(/mob/living/simple_animal),
 	"next_hoof_dust" = list(/mob/living/simple_animal),
