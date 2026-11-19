@@ -2581,9 +2581,10 @@ SUITES = {
                   'code/game/mob/living/living.dm', 'code/_onclick/click.dm',
                   'code/game/objects/items/weapons/legcuffs.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
-    # Trap disarm recheck and punji animal capture/release (#4248, #4249).
+    # Trap disarm recheck, punji animal capture/release and release unanchoring (#4248, #4249, #6223).
     'traps': {'files': ('tests/traps/test_source.py',),
-        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
+        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Gavel block forwards non-hammer items, so storage bags collect it (#4515).
     'gavel_block': {'files': ('tests/gavel_block/test_source.py',),
         'paths': ('tests/gavel_block/', 'code/game/objects/items/courtitems.dm')},

@@ -64,6 +64,14 @@
 			update_icon()
 		..()
 
+// Any release (a helper, the victim resisting free, or anything else that
+// unbuckles them) leaves the sprung trap loose so it can be picked up and reset.
+/obj/item/weapon/trap_lifecycle/unbuckle_mob()
+	var/mob/living/released = ..()
+	if (released && !deployed)
+		anchored = FALSE
+	return released
+
 /obj/item/weapon/trap_lifecycle/proc/finish_trigger()
 	if (!buckled_mob)
 		anchored = FALSE
