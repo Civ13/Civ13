@@ -384,6 +384,15 @@ proc/is_blind(A)
 /mob/proc/can_force_feed()
 	return TRUE
 
+// Rechecks a force-feed after its wait: the patient must still be in reach and
+// still able to be fed (a mask may have gone on during the wait).
+/mob/proc/can_finish_force_feed(mob/feeder, food)
+	if (QDELETED(src) || QDELETED(feeder))
+		return FALSE
+	if (feeder != src && !feeder.Adjacent(src))
+		return FALSE
+	return can_force_feed(feeder, food)
+
 #define SAFE_PERP -50
 /mob/living/proc/assess_perp(var/obj/access_obj, var/check_access, var/auth_weapons, var/check_records, var/check_arrest)
 	if (stat == DEAD)

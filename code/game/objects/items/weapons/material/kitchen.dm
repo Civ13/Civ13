@@ -50,6 +50,8 @@
 			user.visible_message("<span class='warning'>\The [user] begins to feed \the [M]!</span>")
 			if (!(M.can_force_feed(user, loaded) && do_mob(user, M, 5 SECONDS)))
 				return
+			if (!reagents.total_volume || !M.can_finish_force_feed(user, loaded))
+				return
 			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
 			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
 			// Past capacity it still goes down, but it comes back up.
