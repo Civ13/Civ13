@@ -182,5 +182,36 @@ class KarmaGiving(unittest.TestCase):
         self.assertIn('/client/verb/karma_notes()', self.dm)
 
 
+class KarmaAdmin(unittest.TestCase):
+    """code/modules/karma/karma_admin.dm source contracts."""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(ROOT, 'code', 'modules', 'karma', 'karma_admin.dm'), encoding='utf-8') as f:
+            cls.dm = f.read()
+
+    def test_staff_only_and_registered(self):
+        self.assertIn('if (!check_rights(R_ADMIN))', self.dm)
+        self.assertIn('if (!C || !C.holder || !(C.holder.rights & R_ADMIN))', self.dm)
+        self.assertIn('if (!C || !check_rights(R_ADMIN))', self.dm)
+        with open(os.path.join(ROOT, 'code', 'modules', 'admin', 'admin_verbs.dm'), encoding='utf-8') as f:
+            self.assertIn('/client/proc/cmd_admin_karma,', f.read())
+        with open(os.path.join(ROOT, 'code', 'modules', 'admin', 'admin.dm'), encoding='utf-8') as f:
+            self.assertIn('karma_brief(karma_mob_ckey(M))', f.read())
+
+    def test_every_change_needs_a_reason_and_is_logged(self):
+        for action in ('karma_set_standing(', 'karma_set_bar(', 'shared_records.revoke(target'):
+            self.assertIn(action, self.dm)
+        self.assertEqual(self.dm.count('karma_staff_log(C,'), 3)
+        self.assertEqual(self.dm.count('if (!reason)'), 3)
+        self.assertIn('log_admin(', self.dm)
+
+    def test_the_dossier_shows_what_staff_asked_for(self):
+        for shown in ('giver_standing', 'giver_hours', 'giver_notes', 'Playtime', 'per10h', 'factors["standing"]',
+                      'factors["playtime"]', 'factors["age"]', 'row["note"]'):
+            self.assertIn(shown, self.dm)
+        self.assertIn('show_browse(C, html', self.dm)
+
+
 if __name__ == '__main__':
     unittest.main()
