@@ -99,7 +99,9 @@ class WornGearTests(unittest.TestCase):
             self.assertIn(line, record)
         for field in ('"loc"', '"contents"', '"type"', '"vars"', '"key"', '"ckey"', '"screen_loc"'):
             self.assertIn(field, GENERIC.split('var/global/list/region_travel_generic_skip')[1].split(')')[0])
-        self.assertIn('/obj/item/weapon/grab, /obj/item/organ', proc(GENERIC, '/proc/region_travel_generic_type_ok'))
+        denied = proc(GENERIC, '/proc/region_travel_generic_type_ok').split('for(var/denied in list(', 1)[1].split('))', 1)[0]
+        for path in ('/obj/item/weapon/grab', '/obj/item/hand_hold', '/obj/item/organ'):
+            self.assertIn(path, denied)
         self.assertIn('if(root && region_travel_generic_cargo_type_ok(path)) return TRUE', proc(GENERIC, '/proc/region_travel_generic_type_ok'))
         self.assertIn('/obj/structure/vehicleparts, /obj/structure/vehicle, /obj/structure/hull_tiller, /obj/structure/region_gate', proc(GENERIC, '/proc/region_travel_generic_cargo_type_ok'))
         # A creature inside never travels, and links to other things stay behind.

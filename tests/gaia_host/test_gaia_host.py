@@ -1372,12 +1372,30 @@ class HostControlsContractTests(unittest.TestCase):
         self.assertLessEqual(read - region_only, written)
 
 
-@unittest.skipUnless(os.name == 'nt', 'the pager check only runs on Windows')
 class PagerCheckTests(unittest.TestCase):
+    # Runs on every host: CI (Linux) fails on any skip, so stand in for the
+    # Windows session lookup rather than skipping off Windows.
+    def windows(self):
+        import ctypes
+        from types import SimpleNamespace
+        from unittest import mock
+        kernel32 = SimpleNamespace(ProcessIdToSessionId=lambda pid, session: 1)
+        fake_ctypes = SimpleNamespace(c_ulong=ctypes.c_ulong, byref=lambda value: value,
+                                      windll=SimpleNamespace(kernel32=kernel32))
+        fake_os = SimpleNamespace(name='nt', getpid=os.getpid)
+        return mock.patch.multiple(gaia_host, os=fake_os, ctypes=fake_ctypes)
+
     def test_hung_tasklist_is_unknown_not_a_crash(self):
         platform = gaia_host.Platform()
 
         def hang(argv, **kwargs):
             raise gaia_host.subprocess.TimeoutExpired(argv, kwargs.get('timeout'))
         platform.run = hang
-        self.assertIsNone(platform.byond_pager_running())
+        with self.windows():
+            self.assertIsNone(platform.byond_pager_running())
+
+    def test_a_listed_pager_is_running(self):
+        platform = gaia_host.Platform()
+        platform.run = lambda argv, **kwargs: (0, '"byond.exe","1234","Console","1","10,000 K"\n')
+        with self.windows():
+            self.assertTrue(platform.byond_pager_running())
