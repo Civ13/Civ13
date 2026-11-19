@@ -34,7 +34,7 @@ Parts of code courtesy of Super3222
 	name = "generic adjustable scope"
 	var/min_zoom = 3
 	var/max_zoom = 3
-	var/looking = FALSE
+	var/tmp/looking = FALSE // adjustment in progress; never saved (#6219)
 
 /obj/item/weapon/attachment/scope/adjustable/New()
 	..()
@@ -325,10 +325,11 @@ Parts of code courtesy of Super3222
 		user.look_into_distance(user, 0)
 
 	looking = TRUE
+	var/adjusted = do_after(user, 7, src)
+	// Release the lock whether or not the wait finished (#6219).
+	looking = FALSE
 
-	if (do_after(user, 7, src))
-
-		looking = FALSE
+	if (adjusted)
 
 		var/input = player_input(user, "Set the zoom amount.", "Zoom", "", "num", null, FALSE)
 		if (input == zoom_amt)
