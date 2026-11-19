@@ -148,3 +148,15 @@ var/ch_runtime_error = FALSE
 	Q.water_store = 10
 	K = ch_forge_katana(A, H)
 	ch_check(K && K.hamon && Q.water_store == 0, "clay hardening comes before the plain quench")
+
+	// A katana cast from a steel mold is clay-hardened too.
+	Q.water_store = 60
+	var/before_clay = C.amount
+	var/obj/item/weapon/material/sword/katana/MK = new(get_turf(A), "steel")
+	MK.forge_probe_seen = TRUE
+	A.finish_forged_piece(MK, H, H, "steel")
+	ch_check(MK.hamon && C.amount == before_clay - 1, "a katana cast from a steel mold gets a hamon")
+	var/obj/item/weapon/material/sword/katana/BK = new(get_turf(A), "bronze")
+	BK.forge_probe_seen = TRUE
+	A.finish_forged_piece(BK, H, H, "bronze")
+	ch_check(!BK.hamon, "a bronze mold blade takes no hamon")

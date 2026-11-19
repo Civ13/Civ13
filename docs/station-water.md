@@ -69,8 +69,8 @@ A quench tub (8 soft wood, Iron Smithing) anchored within a tile of an anvil
 quenches each iron or steel piece forged there (`finish_forged_piece()`): it
 takes 10 water and raises the piece's `crafting_quality` to 1.2 (Excellent,
 and `update_force()` gives it the matching force). A dry tub, or one below 10,
-is passed over and forging works as before. Other metals, molds and
-blackpowder parts are not quenched. Steel Japanese blades are clay-hardened
+is passed over and forging works as before. Pieces cast from a mold are
+quenched the same way. Other metals and blackpowder parts are not quenched. Steel Japanese blades are clay-hardened
 first when the smith can (docs/tatara.md); the same hook runs both.
 
 ## Wash basins and washstands

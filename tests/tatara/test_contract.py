@@ -252,6 +252,8 @@ class JapaneseBlades(unittest.TestCase):
             self.assertNotIn('/obj/structure/anvil/forge_stack_recipe(', text)
         hook = proc_body(quench, '/obj/structure/anvil/finish_forged_piece(')
         self.assertLess(hook.index('clay_harden(W, H)'), hook.index('Q.quench(W, user)'))
+        # Mold-cast pieces go through the same hook.
+        self.assertIn('finish_forged_piece(new rtype (loc,material), user, H, material)', anvil)
         self.assertIn('. = I', proc_body((ROOT / 'code/modules/1713/steel_grades.dm').read_text(encoding='utf-8'), '/obj/structure/anvil/proc/apply_stock_grade('))
         probe = (ROOT / 'tests/tatara/clay_hardening_probe.dm').read_text(encoding='utf-8')
         for label in ('an unfired clay lump in the other hand counts', 'a loose tub does not clay-harden',
