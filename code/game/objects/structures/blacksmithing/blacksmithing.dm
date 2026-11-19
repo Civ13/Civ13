@@ -50,7 +50,7 @@
 					to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 					var/rtype = anvil_recipes[parsed_choice2[1]][9]
 					if (!trial_craft_ruined(user, "[rtype]"))
-						new rtype (loc,material_name)
+						apply_stock_grade(new rtype (loc,material_name), P)
 						note_craft_practice(user, "[rtype]")
 				in_use = FALSE
 			else
@@ -147,6 +147,8 @@
 			else
 				in_use = FALSE
 			update_icon()
+		else if (istype(P, /obj/item/stack/ore/iron_sponge/steely))
+			sort_steely_bloom(P, user)
 		else if (istype(P, /obj/item/stack/ore/iron_sponge))
 			to_chat(user, "You begin smithing the sponge iron...")
 			icon_state = "[base_icon]_anvil_use"

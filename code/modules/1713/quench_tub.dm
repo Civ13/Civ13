@@ -60,9 +60,13 @@
 
 // Quenches a freshly forged piece. TRUE when it was hardened.
 /obj/structure/quench_tub/proc/quench(obj/item/weapon/material/W, mob/user)
-	if (!istype(W) || W.crafting_quality >= QUENCHED_QUALITY || !station_take_water(null))
+	if (!istype(W))
 		return FALSE
-	W.crafting_quality = QUENCHED_QUALITY
+	// The steel's grade carries through: blister steel hardens less, fine steel more.
+	var/hardened = QUENCHED_QUALITY * W.forged_grade
+	if (W.crafting_quality >= hardened || !station_take_water(null))
+		return FALSE
+	W.crafting_quality = hardened
 	W.update_force()
 	playsound(src, 'sound/effects/watersplash.ogg', 30, TRUE)
 	flick("quench_tub_steam", src)

@@ -153,7 +153,7 @@ class Tatara(unittest.TestCase):
         self.assertIn('return ..()', anvil.split('\n')[1] + anvil.split('\n')[2])
         self.assertIn('crafting_node_allowed_or_warn(H, "tatara_smelting")', anvil)
         self.assertIn('S.amount != initial_amount', anvil)
-        self.assertIn('spawn_stack(/obj/item/stack/material/steel, loc, batches * FOLD_STEEL)', anvil)
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel/fine, loc, batches * FOLD_STEEL)', anvil)
 
     def test_atlas_routes(self):
         routes = {r['name'] for r in ATLAS['mechanisms']}
