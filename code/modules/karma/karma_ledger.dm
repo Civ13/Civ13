@@ -205,7 +205,8 @@
 			"age" = karma_age_factor(record["at"], now))
 		var/weight = factors["standing"] * factors["playtime"] * factors["age"]
 		var/list/flags = list()
-		var/list/bans = shared_records.active_bans(giver, "game")
+		// A server ban or a playing ban; OOC and job bans do not count.
+		var/list/bans = shared_records.active_bans(giver, "game") + shared_records.active_bans(giver, "play")
 		if (length(bans))
 			flags += "giver_banned"
 			weight = 0
