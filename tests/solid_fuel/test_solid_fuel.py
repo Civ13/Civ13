@@ -17,8 +17,8 @@ FROZEN = {
     'hearth_fuel_rates': {'wood': (1, 0), 'bamboo': (1, 0), 'branch': (1, 0.5), 'leaf': (1, 0.5),
                           'dung': (1, 1), 'charcoal': (2.5, 0), 'coal': (3, 0)},
     'furnace_fuel_rates': {'wood': (1, 0), 'bamboo': (1, 0), 'plank': (1, 0), 'branch': (1, 0.5),
-                           'leaf': (1, 0.5), 'dung': (1, 1), 'charcoal': (2.5, 0), 'coal': (3, 0)},
-    'factory_fuel_rates': {'wood': (1, 0), 'bamboo': (1, 0), 'plank': (1, 0), 'charcoal': (2.5, 0), 'coal': (3, 0)},
+                           'leaf': (1, 0.5), 'dung': (1, 1), 'charcoal': (2.5, 0), 'coal': (3, 0), 'coke': (3, 0)},
+    'factory_fuel_rates': {'wood': (1, 0), 'bamboo': (1, 0), 'plank': (1, 0), 'charcoal': (2.5, 0), 'coal': (3, 0), 'coke': (3, 0)},
     # Planks were meant to burn in braziers but a joined istype() skipped them (#5198).
     'brazier_fuel_rates': {'coal': (220, 0), 'charcoal': (180, 0), 'wood': (80, 0), 'plank': (80, 0),
                            'bamboo': (80, 0), 'dung': (90, 0), 'branch': (60, 0), 'leaf': (60, 0)},
@@ -28,7 +28,7 @@ FROZEN = {
 KINDS = {'/obj/item/stack/material/wood': 'wood', '/obj/item/stack/material/woodplank': 'plank',
          '/obj/item/stack/material/bamboo': 'bamboo', '/obj/item/weapon/branch': 'branch',
          '/obj/item/stack/material/leaf': 'leaf', '/obj/item/stack/dung': 'dung',
-         '/obj/item/stack/ore/charcoal': 'charcoal', '/obj/item/stack/ore/coal': 'coal'}
+         '/obj/item/stack/ore/charcoal': 'charcoal', '/obj/item/stack/ore/coal': 'coal', '/obj/item/stack/ore/coke': 'coke'}
 
 
 def table(name):

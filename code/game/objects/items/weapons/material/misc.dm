@@ -373,7 +373,7 @@
 	maxhealth = 20
 
 /obj/item/weapon/material/hatchet/steel
-	chopping_speed = 1.55
+	chopping_speed = 1.4
 	health = 40
 	maxhealth = 40
 	material = "steel"
@@ -381,7 +381,7 @@
 	applies_material_colour = FALSE
 
 /obj/item/weapon/material/hatchet/bronze
-	chopping_speed = 1.65
+	chopping_speed = 1.9
 	health = 12
 	maxhealth = 12
 	material = "bronze"

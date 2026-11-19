@@ -50,8 +50,8 @@ FROZEN = {
     ('shovel', 'copper'): 0.92,
     ('shovel', 'bronze'): 1.28,
     ('shovel', 'stone'): 0.64,
-    ('hatchet', 'copper'): 2.6,
-    ('hatchet', 'brass'): 1.97,
+    ('hatchet', 'copper'): 2.7,
+    ('hatchet', 'brass'): 2.18,
     ('hatchet', 'gold'): 3.5,
 }
 

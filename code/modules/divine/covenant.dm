@@ -340,9 +340,9 @@ var/global/list/divine_invocation_names = list(
 	var/mob/living/human/caster = R.covenant.caster
 	var/mob/target = R.target
 	var/spell_name = divine_invocation_names[R.spell_id]
-	var/text = "<b>[caster.divine_patron]: [caster.real_name] ([caster.ckey]) beseeches you for [spell_name]</b>"
+	var/text = "<b>[caster.divine_patron]: [caster.real_name] ([caster.ckey]) beseeches you for [spell_name]</b>[karma_staff_badge(karma_mob_ckey(caster))]"
 	if (target != caster)
-		text += " on [target.real_name] ([target.ckey ? target.ckey : "no player"])"
+		text += " on [target.real_name] ([target.ckey ? target.ckey : "no player"])[karma_mob_ckey(target) ? karma_staff_badge(karma_mob_ckey(target)) : ""]"
 	if (istype(R, /datum/divine_use_request/ritual))
 		var/datum/divine_use_request/ritual/V = R
 		var/list/names = list()

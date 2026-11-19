@@ -325,8 +325,8 @@
 		to_chat(H, SPAN_NOTICE("You sort out [tama] chunk\s of tamahagane and [wrought] bar\s of soft iron; the rest is slag."))
 	else
 		S.use(batches * FOLD_TAMAHAGANE)
-		spawn_stack(/obj/item/stack/material/steel, loc, batches * FOLD_STEEL)
-		to_chat(H, SPAN_NOTICE("You heat, fold and weld the tamahagane over and over into [batches * FOLD_STEEL] sheet\s of steel."))
+		spawn_stack(/obj/item/stack/material/steel/fine, loc, batches * FOLD_STEEL)
+		to_chat(H, SPAN_NOTICE("You heat, fold and weld the tamahagane over and over into [batches * FOLD_STEEL] sheet\s of fine steel."))
 
 #undef TATARA_LIMIT
 #undef TATARA_MIN_SAND

@@ -79,13 +79,14 @@ def restore_crafting_projection(path, source):
         # gem pocket roll (tests/gemstones), the obsidian roll (tests/obsidian),
         # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm),
         # the bauxite roll (tests/aluminium), the cinnabar roll (tests/mercury)
-        # the lode ore roll (tests/lode), one rubble batch for every ore find
+        # the lode ore roll (tests/lode), the nickel and cobalt roll
+        # (tests/steelmaking), one rubble batch for every ore find
         # (tests/mining_yields), each continent's ore rates (tests/provinces) and
         # an ore vein counted as Natural Science field work (tests/late_research).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != 'd89ad9ba2f6ede5feb527657b789eaef77029d0e74988f6a65cd1f5b64568551':
+        if hashlib.sha256(mining.encode()).hexdigest() != 'c3b7e79300529ce4df45f1659124ee9ae3cd79da99e7f303e7dc91011a8cd509':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
@@ -93,6 +94,24 @@ def restore_crafting_projection(path, source):
         # image around the same wait, with release cleanup and unchanged reward.
         wait = 'do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)'
         edits = (
+            # Labour speed (code/modules/materials/work_speed.dm, tests/work_speed):
+            # digging, tilling and mining waits come from work_delay.
+            ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat',
+             '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat'),
+            ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf',
+             '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf'),
+            ('\t\t\t\t\tif (!do_after(user, work_delay(H, 40, WORK_DIG, SH)))',
+             '\t\t\t\t\tif (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 40, WORK_DIG, SH)))',
+             '\t\t\t\t\t\tif (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 27, WORK_DIG, SH)))',
+             '\t\t\t\t\t\tif (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\tif (do_after(user, work_delay(H, 100, WORK_DIG, SH)))',
+             '\t\t\t\tif (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\tif (do_after(user, work_delay(H, 70, WORK_TILL, PL), user.loc))',
+             '\t\t\t\tif (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))'),
+            ('\t\t\tvar/timera = work_delay(H, 320, WORK_MINE, C)',
+             '\t\t\tvar/timera = 320/(H.getStatCoeff("strength"))'),
             # Agent support checks: collapse_check shares the read-only mine_supported proc.
             ("// Read-only: whether an opened tile here stays up (a mine support within 2, a wall\n// or open sky next to it, or rock on three sides). collapse_check and agent\n// characters' observations share it. Defined on every floor because a mined\n// tile has already become an ordinary floor when collapse_check asks.\n/turf/floor/proc/mine_supported()\n\tfor (var/obj/structure/mine_support/RS in range(2, src))\n\t\treturn TRUE\n\tfor (var/turf/wall/W in range(1, src))\n\t\treturn TRUE\n\tfor (var/turf/TT in range(1, src))\n\t\tvar/area/AA = get_area(TT)\n\t\tif (AA.location == AREA_OUTSIDE)\n\t\t\treturn TRUE\n\tvar/supportcount = 0\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))\n\t\tsupportcount++\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))\n\t\tsupportcount++\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))\n\t\tsupportcount++\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))\n\t\tsupportcount++\n\treturn supportcount >= 3\n\n/turf/floor/dirt/underground/collapse_check()\n\tspawn(50)\n\t\t// ChangeTurf keeps the turf object, so by now the mined rock is an open\n\t\t// floor (e.g. /turf/floor/dirt/mine). Only a tile that is solid again\n\t\t// (filled back in, or mining did not finish) skips the cave-in roll.\n\t\tif (!istype(src, /turf/floor) || density)\n\t\t\treturn\n\t\tvar/area/A = get_area(src)\n\t\tif (A && A.location == AREA_INSIDE)\n\t\t\tvar/supportfound = mine_supported()",
              '/turf/floor/dirt/underground/collapse_check()\n\tspawn(50)\n\t\tvar/area/A = get_area(src)\n\t\tif (A.location == AREA_INSIDE)\n\t\t\t//check for supports\n\t\t\tvar/supportfound = FALSE\n\t\t\tvar/supportcount = 0\n\n\t\t\tfor (var/obj/structure/mine_support/RS in range(2))\n\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/wall/W in range(1))\n\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/TT in range(1))\n\t\t\t\tvar/area/AA = get_area(TT)\n\t\t\t\tif (AA.location == AREA_OUTSIDE)\n\t\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))\n\t\t\t\tsupportcount++\n\t\t\tif (supportcount >= 3 && !supportfound)\n\t\t\t\tsupportfound = TRUE'),
@@ -114,8 +133,9 @@ def restore_crafting_projection(path, source):
             ('\tif (!user || !user.may_do_after)\n\t\treturn\n\tif (has_snow_cover() || busy', '\tif (has_snow_cover() || busy'),
             ('\tvar/datum/progressbar/progressbar\n\tvar/datum/resource_work_animation/work_animation\n', '\tvar/datum/progressbar/progressbar\n'),
             ('/datum/pickaxe_mining_action/proc/release()\n\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '/datum/pickaxe_mining_action/proc/release()\n'),
-            ('\t\t\twork_animation = actor.prepare_resource_work_animation(tool, wall, 240 / actor.getStatCoeff("strength") / tool:usespeed)\n'
-             + '\t\t\tvar/completed = ' + wait + '\n'
+            # Labour speed (work_speed.dm): the rock wall wait comes from work_delay.
+            ('\t\t\twork_animation = actor.prepare_resource_work_animation(tool, wall, work_delay(actor, 120, WORK_MINE, tool))\n'
+             + '\t\t\tvar/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)\n'
              + '\t\t\tif (work_animation)\n\t\t\t\twork_animation.stop()\n\t\t\t\twork_animation = null\n'
              + '\t\t\tif (completed && valid(actor, wall))', '\t\t\tif (' + wait + ' && valid(actor, wall))'),
             # #888: shared-turf stock and tunnel-entrance rechecks after the wait.
@@ -348,7 +368,7 @@ class CraftingMovementContracts(unittest.TestCase):
             ('\tvar/datum/resource_work_animation/work_animation\n', ''),
             ('\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '\tif (work_animation)\n\t\twork_animation = null\n'),
             ('prepare_resource_work_animation(tool, wall,', 'prepare_resource_work_animation(null, wall,'),
-            ('var/completed = do_after(actor, 240 /', 'var/completed = do_after(actor, 120 /'),
+            ('var/completed = do_after(actor, work_delay(actor, 120,', 'var/completed = do_after(actor, work_delay(actor, 60,'),
             ('wall.mining_proc(actor)', 'wall.mining_proc(null)'),
             ('var/iron_chance = map.ordinal_age >= 1 ? 32 : 0', 'var/iron_chance = 32'),
             ('var/geology_allowed = prob(100 * legacy_remaining / no_ore_chance)', 'var/geology_allowed = TRUE'),

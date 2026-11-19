@@ -42,7 +42,7 @@
     {
       "ancestors": [
         "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)",
-        "if (ispath(recipe.result_type, /obj/structure/drill))"
+        "if (needs_drill_steel(recipe))"
       ],
       "statement": "if (!can_use(required) || !drill_steel)"
     },

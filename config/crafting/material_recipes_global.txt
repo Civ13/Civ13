@@ -255,6 +255,9 @@ RECIPE: /material/concrete/,septic tank,/obj/structure/sewer_piece/cesspit/septi
 RECIPE: /material/concrete/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
 
 RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
+RECIPE: /material/clay/,carburizing pot,/obj/structure/carburizing_pot,8,120,1,1,none,0,0,0,8,null
+RECIPE: /material/clay/,unfired crucible,/obj/item/weapon/clay/crucible,1,30,1,1,none,0,0,0,8,null
+RECIPE: /material/clay/,coke bank,/obj/structure/steel_works/coke_bank,15,150,1,1,none,0,0,0,8,null
 RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/clay/,clay tatara furnace,/obj/structure/tatara,20,200,1,1,none,26,0,0,8,null
 
@@ -1502,6 +1505,9 @@ RECIPE: /material/chitin/,crushed shell,/obj/item/stack/crushed_shell,1,30,0,1,n
 
 RECIPE: /material/stone/,stone brazier,/obj/structure/brazier/stone,3,100,1,1,none,0,0,0,8,null
 RECIPE: /material/stone/,chimney,/obj/structure/chimney,6,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,cementation furnace,/obj/structure/steel_works/cementation,30,300,1,1,production,0,0,0,8,null
+RECIPE: /material/stone/,puddling furnace,/obj/structure/steel_works/puddling,30,300,1,1,production,0,0,0,8,null
+RECIPE: /material/stone/,open hearth furnace,/obj/structure/steel_works/open_hearth,50,400,1,1,production,0,0,0,8,null
 RECIPE: /material/stone/,pendant hone,/obj/item/clothing/accessory/pendant_hone,1,40,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone fat lamp,/obj/item/flashlight/lantern/fat_lamp,1,60,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,stone drain,/obj/structure/sewer_piece/drain/stone,2,80,1,1,construction,0,0,0,8,null
@@ -1916,6 +1922,7 @@ RECIPE: /material/steel/,shopping cart,/obj/structure/shopping_cart,30,190,1,1,l
 
 //MID BRONZE AGE//
 RECIPE: /material/steel/,coin smelter,/obj/structure/machinery/factory/coinsmelter,50,190,1,1,none,25,0,0,9,null
+RECIPE: /material/steel/,electric arc furnace,/obj/structure/steel_works/arc_furnace,40,300,1,1,production,0,0,0,8,null
 RECIPE: /material/copper/,resource forge,/obj/structure/research_forge,40,240,1,1,economy & production,0,0,0,8,null
 //MID BRONZE AGE//
 
@@ -2125,6 +2132,7 @@ RECIPE: /material/steel/,expensive cane,/obj/item/weapon/material/fancycane,7,90
 RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools,90,0,0,8,null
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
+RECIPE: /material/steel/,navvy shovel,/obj/item/weapon/material/shovel/navvy,3,80,0,1,tools,0,0,0,8,null
 RECIPE: /material/steel/,chainsaw,/obj/item/weapon/material/hatchet/chainsaw,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,fire extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,fire hose reel,/obj/structure/fire_pump/reel,10,150,1,1,tools,99,0,0,8,null
@@ -3006,6 +3014,8 @@ RECIPE: /material/iron/,armor repair bench,/obj/structure/repair/workbench,16,18
 RECIPE: /material/iron/,engine maker,/obj/item/weapon/enginemaker,5,80,0,1,tools,115,0,0,8,null
 
 RECIPE: /material/iron/,iron blast furnace,/obj/structure/furnace/blast_furnace,25,220,1,1,production,0,45,0,8,null
+RECIPE: /material/iron/,finery forge,/obj/structure/steel_works/finery,15,200,1,1,production,0,0,0,8,null
+RECIPE: /material/iron/,Bessemer converter,/obj/structure/steel_works/bessemer,40,300,1,1,production,0,0,0,8,null
 RECIPE: /material/iron/,iron furnace,/obj/structure/heatsource,15,140,1,1,production,0,87,0,8,null
 RECIPE: /material/iron/,mercury retort,/obj/structure/workshop_machine/mercury_retort,10,150,1,1,production,25,0,0,8,null
 RECIPE: /material/iron/,mercury flask,/obj/item/weapon/reagent_containers/glass/mercury_flask,2,60,0,1,production,25,0,0,8,null

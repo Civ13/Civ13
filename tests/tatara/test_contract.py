@@ -97,7 +97,7 @@ class Tatara(unittest.TestCase):
         self.assertIn('"/obj/structure/tatara" = "tatara_smelting"', NODES)
         rows = [l for l in RECIPES.splitlines() if l.startswith('RECIPE: ') and ',/obj/structure/tatara,' in l]
         self.assertEqual(rows, ['RECIPE: /material/clay/,clay tatara furnace,/obj/structure/tatara,20,200,1,1,none,26,0,0,8,null'])
-        self.assertIn('anvil_steel_face_nodes = list("steelmaking", "tatara_smelting")', ANVIL)
+        self.assertIn('anvil_steel_face_nodes = list("steelmaking", "tatara_smelting", "crucible_steel")', ANVIL)
 
     def test_steel_face_warning_names_both_chapters(self):
         # The warning used to name only Steelmaking; it must offer Tatara Smelting too.
@@ -153,7 +153,7 @@ class Tatara(unittest.TestCase):
         self.assertIn('return ..()', anvil.split('\n')[1] + anvil.split('\n')[2])
         self.assertIn('crafting_node_allowed_or_warn(H, "tatara_smelting")', anvil)
         self.assertIn('S.amount != initial_amount', anvil)
-        self.assertIn('spawn_stack(/obj/item/stack/material/steel, loc, batches * FOLD_STEEL)', anvil)
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel/fine, loc, batches * FOLD_STEEL)', anvil)
 
     def test_atlas_routes(self):
         routes = {r['name'] for r in ATLAS['mechanisms']}

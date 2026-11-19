@@ -243,8 +243,7 @@ var/global/list/province_rich_busy = list()
 	province_rich_busy[tile_key] = TRUE
 	province_rich_busy[worker_key] = TRUE
 	. = FALSE
-	var/speed = ("usespeed" in P.vars) ? P.vars["usespeed"] : 1
-	var/time = RICH_SEAM_WORK / H.getStatCoeff("strength") / max(0.1, speed)
+	var/time = work_delay_per_speed(H, RICH_SEAM_WORK, WORK_MINE, P)
 	H.visible_message(SPAN_NOTICE("[H] starts to work the rich seam with \the [P]."), SPAN_NOTICE("You start to work the rich seam with \the [P]. [province_rich_text_at(T)]"))
 	playsound(T, 'sound/effects/pickaxe.ogg', 100, TRUE)
 	var/datum/resource_work_animation/work_animation = H.prepare_resource_work_animation(P, T, time)

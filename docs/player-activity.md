@@ -26,7 +26,7 @@ region, map and `world.timezone`.
 | `boot` | `v`, `boot`, `region`, `tz`, `map` |
 | `join` | `a` account or `anon` id, `ck` (ckey when the account is a Discord key), `via` (byond, discord, guest), `staff` |
 | `leave` | `a`/`anon`, `min` minutes connected, `why` (quit, travel, restart), `to` |
-| `hb` | every 5 minutes per player: `a`/`anon`, `act` (1 active, 0 idle over 5 minutes), `st` (lobby, alive, dead, observer) |
+| `hb` | every 5 minutes per player: `a`/`anon`, `act` (1 active, 0 idle over 5 minutes), `st` (lobby, alive, asleep, dead, observer; asleep is a sleeping or unconscious character) |
 | `health` | every 5 minutes: `p` players, `living` owned living characters, `dil` time dilation %, `cpu`, `era` |
 | `save` | `ok`, `sec` seconds |
 | `death` | `a`, `cause` (player, npc, starved, thirst, cold, heat, disease, burned, drowned, suffocated, poison, wounded, unknown), `by` killer account for player kills, `tod`, `season`, `fac`, `smin` session minutes, `gib`, `agent` |

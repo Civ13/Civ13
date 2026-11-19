@@ -75,7 +75,7 @@ class ClayLimeFire(unittest.TestCase):
     def test_wheel_wares_match_the_hand_recipes(self):
         rows = recipe_rows()
         wares = table('potters_wheel_wares')
-        self.assertEqual(len(wares), 17)  # + storage jar, zeer pot, wash basin
+        self.assertEqual(len(wares), 18)  # + storage jar, zeer pot, wash basin, steel crucible
         for path, (clay, time) in wares.items():
             row = rows[path][0]
             self.assertEqual(row[0], '/material/clay/', path)

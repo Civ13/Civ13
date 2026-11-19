@@ -159,3 +159,20 @@ var/vr_runtime_error = FALSE
 	vr_check(!lone.pillar_dismantle_check(walker), "it will not be taken down while it holds a roof")
 	new /obj/structure/roof_support(locate(17, 15, 1))
 	vr_check(pillar_roofs_held(lone) == 0 && lone.pillar_dismantle_check(walker), "with a second support it can come down")
+
+	// Walls come down the same way while nothing rests on them
+	// (building_dismantle.dm); a load-bearing wall says so and stays.
+	var/obj/covers/wood_wall/WW = new /obj/covers/wood_wall(locate(22, 18, 1))
+	var/obj/roof/wood/WR = new /obj/roof/wood(locate(23, 18, 1))
+	vr_check(WW.wall_dismantle_tool(HM, walker), "a hammer takes down a wall")
+	walker.a_intent = I_HARM
+	vr_check(!WW.wall_dismantle_tool(HM, walker), "on harm intent a hammer strikes the wall instead")
+	walker.a_intent = I_HELP
+	vr_check(WR.is_supported() && building_load_held(WW) == 1 && !WW.wall_dismantle_check(walker), "a wall holding up a roof will not come down")
+	vr_check(WW.loc == locate(22, 18, 1), "checking puts the wall back where it stood")
+	new /obj/covers/wood_wall(locate(24, 18, 1))
+	vr_check(building_load_held(WW) == 0 && WW.wall_dismantle_check(walker), "with another wall under the roof it can come down")
+	var/obj/covers/stone_wall/free = new /obj/covers/stone_wall(locate(28, 10, 1))
+	vr_check(building_load_held(free) == 0 && free.wall_dismantle_tool(HM, walker) && free.wall_dismantle_check(walker), "a free-standing wall can come down")
+	vr_check(!(new /obj/covers/metal(locate(28, 12, 1))).wall_dismantle_tool(HM, walker), "unbreakable map hull plating cannot be taken down")
+	vr_check(!(new /obj/covers/wood(locate(28, 14, 1))).wall_dismantle_tool(HM, walker), "a floor is not a wall")

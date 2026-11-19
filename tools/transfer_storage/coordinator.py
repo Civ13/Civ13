@@ -47,6 +47,8 @@ from tools.transfer_storage.train_custody import TrainCustody
 from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony_valid, faction_id_valid, land_id_valid
 from tools.transfer_storage.world_chart import WorldChart, land_home, owner_valid, tile_valid
 from tools.transfer_storage.nations import Nations
+from tools.transfer_storage import records as player_records
+from tools.transfer_storage import karma as player_karma
 
 
 # Land readiness (docs/land-stages.md). Placeholder thresholds for Val to tune:
@@ -150,7 +152,8 @@ def read_lands(path, mainland, now=None):
 
 
 class Coordinator(TrainCustody):
-    def __init__(self, path, group, mainland=None, bootstrap_new_group=False, slots=(), expeditions=None, start_region=None):
+    def __init__(self, path, group, mainland=None, bootstrap_new_group=False, slots=(), expeditions=None, start_region=None,
+                 records_dir=None, activity_db=None):
         self.group = group
         self.mainland = mainland
         # Where new characters (and fallen ones with no bed keeping their home)
@@ -215,6 +218,15 @@ class Coordinator(TrainCustody):
         self.nations = Nations(self.db)
         self.db.execute('''CREATE TABLE IF NOT EXISTS nation_result(
             store TEXT NOT NULL, id INTEGER NOT NULL, text TEXT, PRIMARY KEY(store, id))''')
+        # Shared player records (records.py): staff records about accounts,
+        # written here only, published as files beside the regions.
+        player_records.init_group(self.db)
+        root = os.path.dirname(os.path.abspath(path))
+        self.records = player_records.Snapshots(
+            self.db, records_dir or os.path.join(root, player_records.RECORDS_DIR),
+            activity_db if activity_db is not None else os.path.join(root, 'player-activity.sqlite'))
+        # Hidden karma (karma.py): per-ckey files in shared-records/karma/.
+        self.karma = player_karma.KarmaFiles(self.db, self.records.root)
 
     def close(self):
         self.db.close()
@@ -695,6 +707,43 @@ class Coordinator(TrainCustody):
                 delivered += result.get('announce', 0)
         return delivered
 
+    def records_once(self, now=None):
+        """Collect queued player records from every agent, store them, then
+        acknowledge them and rewrite the shared-records files. Records do not
+        depend on the home ledger's recovery state: they hold no custody.
+        Returns the number of records stored."""
+        stored = 0
+        for name, (url, token) in self.regions().items():
+            # A world drops a record it sent once its region's pull time is
+            # later than the send, so the pull time is taken before the read.
+            pulled = int(time.time() if now is None else now)
+            try:
+                answer = call(url, token, '/records/outbox', timeout=2)
+            except (OSError, ValueError):
+                continue  # down: its records wait in its own store
+            result = answer.get('result') if answer.get('ok') else None
+            if type(result) is not dict:
+                continue  # an agent too old for /records/outbox
+            self.db.execute('BEGIN IMMEDIATE')
+            try:
+                ids, changed = player_records.store_records(self.db, name, result.get('records'), pulled)
+                self.db.execute('COMMIT')
+            except Exception:
+                self.db.execute('ROLLBACK')
+                raise
+            stored += len(ids)
+            self.records.dirty |= changed
+            if any(isinstance(r, dict) and r.get('kind') == 'connection' for r in result.get('records') or []):
+                self.records.connections_dirty = True
+            if ids:
+                try:
+                    call(url, token, '/records/ack', {'ids': ids}, timeout=2)
+                except (OSError, ValueError):
+                    pass  # sent again next pass; storing it twice changes nothing
+        self.records.write(now)
+        self.karma.write(now, self.records.hours)
+        return stored
+
     def relay_once(self):
         """Deliver every outbox envelope once. Returns the number delivered.
         An agent that is down (restarting, say) only holds up its own envelopes
@@ -784,6 +833,8 @@ def main(argv=None):
     parser.add_argument('--radio-interval', type=float, default=1.0, help='seconds between radio passes')
     parser.add_argument('--bootstrap-new-group', action='store_true',
                         help='explicitly assert a new group with no previous peers, epochs or custody; never use for recovery')
+    parser.add_argument('--records-dir', help='where the shared player record files go (default: shared-records beside --db)')
+    parser.add_argument('--activity-db', help='the host player activity database (default: player-activity.sqlite beside --db)')
     parser.add_argument('--once', action='store_true', help='relay one pass and exit')
     parser.add_argument('--lands', action='store_true', help='print every land\'s stage as JSON and exit')
     parser.add_argument('--set-land', metavar='REGION=STAGE[,paused]',
@@ -806,7 +857,8 @@ def main(argv=None):
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
     coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group,
-                              [s for s in args.slots.split(',') if s], args.expeditions, args.start_region)
+                              [s for s in args.slots.split(',') if s], args.expeditions, args.start_region,
+                              args.records_dir, args.activity_db)
     if args.chart is not None or args.chart_reveal or args.chart_reroll or args.chart_pin:
         try:
             chart_cli(parser, coordinator.chart, args)
@@ -852,6 +904,10 @@ def main(argv=None):
                               file=sys.stderr)
                 except (OSError, ValueError) as e:
                     print('home pass failed: %s' % e, file=sys.stderr)
+                try:
+                    coordinator.records_once()
+                except (OSError, ValueError, sqlite3.Error) as e:
+                    print('player records pass failed: %s' % e, file=sys.stderr)
             coordinator.relay_radio_once()
             if args.once:
                 return

@@ -252,6 +252,7 @@ SUITES = {
     'open_air_view': {'files': ('tests/open_air_view/test_sources.py',), 'paths': ('tests/open_air_view/', 'code/modules/multiz/open_air_view.dm', 'code/modules/multiz/look_up.dm', 'code/processes/open_air_view.dm'), 'shared_paths': ('code/game/objects/building_levels.dm', 'code/modules/multiz/building_lighting.dm', 'code/game/mob/mob_movement.dm', 'code/_onclick/hud/updown_buttons.dm')},
     'burial': {'files': ('tests/burial/test_burial.py',), 'paths': ('tests/burial/', 'code/modules/1713/burial.dm', 'code/game/objects/structures/religious.dm'), 'shared_paths': ('code/game/mob/living/carbon/human/human_life.dm', 'code/game/mob/living/carbon/resist.dm')},
     'underground_excavation': {'files': ('tests/underground_excavation/test_underground_excavation.py',), 'paths': ('tests/underground_excavation/', 'code/modules/1713/underground_excavation.dm'), 'shared_paths': ('code/modules/multiz/structures.dm', 'code/modules/multiz/hole_ladder.dm', 'code/modules/1713/flood_cellars.dm')},
+    'work_speed': {'files': ('tests/work_speed/test_work_speed.py',), 'paths': ('tests/work_speed/', 'code/modules/materials/work_speed.dm', 'code/__defines/tools.dm'), 'shared_paths': ('code/game/turfs/floor_attackby.dm', 'code/modules/1713/trench.dm', 'code/modules/1713/tools.dm', 'code/modules/1713/sewers.dm', 'code/modules/1713/underground_excavation.dm', 'code/modules/1713/dug_wells.dm', 'code/modules/1713/road_tamping.dm', 'code/modules/1713/stone_age_storage.dm', 'code/modules/1713/placer.dm', 'code/modules/1713/open_cave_roof.dm', 'code/modules/1713/mountain_seams.dm', 'code/modules/provinces/province_rich.dm', 'code/game/objects/structures/wild.dm', 'code/game/objects/covers_types/cover_roads.dm', 'code/modules/multiz/dug_underground.dm')},
     'open_cave_roof': {'files': ('tests/open_cave_roof/test_open_cave_roof.py',), 'paths': ('tests/open_cave_roof/', 'code/modules/1713/open_cave_roof.dm', 'docs/open-cave-roof.md'), 'shared_paths': ('code/game/turfs/floor_attackby.dm',)},
     'pit_climbing': {'files': ('tests/pit_climbing/test_pit_climbing.py',), 'paths': ('tests/pit_climbing/', 'code/modules/multiz/pit_climbing.dm', 'code/modules/multiz/hole_ladder.dm'), 'shared_paths': ('code/modules/multiz/dug_underground.dm', 'code/modules/1713/tools.dm', 'code/game/turfs/floor_attackby.dm')},
     'physical_interaction': {'files': ('tests/physical_interaction/test_touch.py',),
@@ -2319,6 +2320,9 @@ SUITES = {
     'charcoal_clamp': {'files': ('tests/charcoal_clamp/test_contract.py',), 'paths': (
         'tests/charcoal_clamp/', 'code/modules/1713/charcoal_clamp.dm',
         'icons/obj/charcoal_clamp.dmi', 'tests/sprites/create_charcoal_clamp.py')},
+    'steelmaking': {'files': ('tests/steelmaking/test_contract.py',), 'paths': (
+        'tests/steelmaking/', 'code/modules/1713/steel_grades.dm', 'code/modules/1713/carburizing.dm',
+        'code/modules/1713/crucible_steel.dm', 'code/modules/1713/steel_works.dm', 'docs/steelmaking.md')},
     'tatara': {'files': ('tests/tatara/test_contract.py',), 'paths': (
         'tests/tatara/', 'code/modules/1713/tatara.dm', 'docs/tatara.md',
         'icons/obj/tatara.dmi', 'tests/sprites/create_tatara.py', 'tests/sprites/create_tachi.py')},

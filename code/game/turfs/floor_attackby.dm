@@ -256,7 +256,7 @@
 					H.shoveling = TRUE
 					user.visible_message(SPAN_NOTICE("[user] starts to shovel snow into a pile."), SPAN_NOTICE("You start to shovel snow into a pile."))
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
-					if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+					if (!do_after(user, work_delay(H, 40, WORK_DIG, SH)))
 						H.shoveling = FALSE
 						return
 					if (!T || T.snow_units(generated_source) <= 0)
@@ -279,7 +279,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+						if (do_after(user, work_delay(H, 40, WORK_DIG, SH)))
 							if (!T || T.available_dirt <= 0)
 								H.shoveling = FALSE
 								return
@@ -297,7 +297,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))
+						if (do_after(user, work_delay(H, 27, WORK_DIG, SH)))
 							if (!T || T.available_sand <= 0)
 								H.shoveling = FALSE
 								return
@@ -315,7 +315,7 @@
 			if (radiation > 0 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
 				user.visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
+				if (do_after(user, work_delay(H, 100, WORK_DIG, SH)))
 					user.visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
 					H.adaptStat("strength", 1)
 					radiation *= 0.1
@@ -561,7 +561,7 @@
 					to_chat(user, SPAN_WARNING("You can't make a dirt road here."))
 					return
 				to_chat(user, SPAN_NOTICE("You start making a dirt road..."))
-				if (do_after(user, 50/PL.usespeed, user.loc))
+				if (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))
 					if (!T || T.weather_snow > 0)
 						return
 					to_chat(user, SPAN_NOTICE("You finish the dirt road."))
@@ -586,14 +586,14 @@
 				to_chat(user, SPAN_DANGER("Jungle terrain is too poor to be farmed. Find a flood plain."))
 				return
 			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
-				if (do_after(user, 50/PL.usespeed, user.loc))
+				if (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))
 					if (!T || T.weather_snow > 0)
 						return
 					ChangeTurf(/turf/floor/dirt)
 					return
 			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 				var/mob/living/human/H = user
-				if (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))
+				if (do_after(user, work_delay(H, 70, WORK_TILL, PL), user.loc))
 					if (!T || T.weather_snow > 0)
 						return
 					if (istype(T, /turf/floor/dirt/flooded))
@@ -697,7 +697,7 @@
 			src.mining_in_progress = TRUE
 			user.visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			var/timera = 320/(H.getStatCoeff("strength"))
+			var/timera = work_delay(H, 320, WORK_MINE, C)
 			if (do_after(user, timera))
 				mining_proc(H)
 				src.mining_in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
@@ -830,8 +830,8 @@
 		if (valid(actor, wall))
 			actor.visible_message("<span class = 'notice'>[actor] starts to break the rock with \the [tool.name].</span>", "<span class = 'notice'>You start to break the rock with \the [tool.name].</span>")
 			playsound(wall, 'sound/effects/pickaxe.ogg', 100, 1)
-			work_animation = actor.prepare_resource_work_animation(tool, wall, 240 / actor.getStatCoeff("strength") / tool:usespeed)
-			var/completed = do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)
+			work_animation = actor.prepare_resource_work_animation(tool, wall, work_delay(actor, 120, WORK_MINE, tool))
+			var/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)
 			if (work_animation)
 				work_animation.stop()
 				work_animation = null
@@ -927,6 +927,8 @@
 	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
 	mining_cinnabar(H) // Independent of the ore rolls; see mercury.dm.
 	mining_lode(H) // Independent of the ore rolls; see lode.dm.
+	if (mining_alloy_ores(H)) // Nickel and cobalt, independent of the ore rolls; see alloy_steels.dm.
+		found_ore = TRUE
 	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
 	if (prob(copper_chance))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)

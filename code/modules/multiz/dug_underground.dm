@@ -516,8 +516,13 @@ var/global/dug_underground_boot_done = FALSE
 	while (!dug_underground_boot_try())
 		sleep(5 SECONDS)
 
+// Shoring a tunnel is craftsmanship (crafting, squared); the digging itself
+// is labour (work_speed.dm) with the shovel in hand.
 /proc/dug_underground_dig_time(mob/living/human/user, base)
-	return base / (user.getStatCoeff("strength") * user.getStatCoeff("crafting") * user.getStatCoeff("crafting"))
+	if (!istype(user))
+		return base
+	var/craft = user.getStatCoeff("crafting")
+	return work_delay(user, base / max(0.25, craft * craft), WORK_DIG, user.get_active_hand())
 
 /proc/dug_underground_finish(mob/living/human/user)
 	user.adaptStat("crafting", 1)
