@@ -1,0 +1,3302 @@
+[
+	{
+		"name": "newer schema",
+		"expect": "unsupported registry schema 2",
+		"registry": {
+			"schema": 2,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "no schema",
+		"expect": "registry has no schema version",
+		"registry": {
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "array registry",
+		"expect": "registry has no schema version",
+		"registry": [
+			1
+		]
+	},
+	{
+		"name": "other world",
+		"expect": "registry belongs to another world",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-other",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "malformed lineage",
+		"expect": "registry lineage is malformed",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia probe!",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "unknown top field",
+		"expect": "registry has an unknown field",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			],
+			"shafts": []
+		}
+	},
+	{
+		"name": "missing placements",
+		"expect": "registry is missing a field",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			]
+		}
+	},
+	{
+		"name": "negative generation",
+		"expect": "registry generation is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": -1,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "limit above hard cap",
+		"expect": "limits exceed the hard caps",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 9,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "unknown limit",
+		"expect": "limits has an unknown field",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2,
+				"gutter": 1
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "duplicate mine",
+		"expect": "duplicate mine 1",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				},
+				{
+					"id": 1,
+					"deepest": 0,
+					"created": 2
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "unissued mine id",
+		"expect": "mine id is invalid or not yet issued",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				},
+				{
+					"id": 4,
+					"deepest": 0,
+					"created": 7
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "mine created after save",
+		"expect": "mine 2 creation receipt is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 8
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "duplicate floor",
+		"expect": "duplicate floor 1/1",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "missing committed floor",
+		"expect": "floor 1/2 is missing",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				}
+			]
+		}
+	},
+	{
+		"name": "floor below deepest",
+		"expect": "floor 3/2 is below its mine's deepest floor",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 2,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "floor of no mine",
+		"expect": "floor 2/1 belongs to no mine",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				}
+			],
+			"floors": [
+				{
+					"mine": 2,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "fractional width",
+		"expect": "floor 3/1 size is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20.5,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "text width",
+		"expect": "floor 3/1 size is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": "20",
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "width above limit",
+		"expect": "floor 3/1 size is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 65,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "negative seed",
+		"expect": "floor 3/1 generator is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": -1,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "seed beyond exact range",
+		"expect": "floor 3/1 generator is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 16777216,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "floor created after save",
+		"expect": "floor 3/1 creation receipt is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 8
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "floor created before mine",
+		"expect": "floor 3/1 creation receipt is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 5
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "too many floors",
+		"expect": "too many floors",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 2,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "too many mines",
+		"expect": "too many mines",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 2,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "placement count mismatch",
+		"expect": "placement count does not match floor count",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				}
+			]
+		}
+	},
+	{
+		"name": "orphan placement",
+		"expect": "placement 2/1 has no floor",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 2,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "duplicate placement",
+		"expect": "duplicate placement 1/1",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "border above limit",
+		"expect": "placement 3/1 border or generation is invalid",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 3,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "outside the planes",
+		"expect": "placement 1/2 is outside the planes",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 66,
+					"y1": 65,
+					"x2": 101,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "no such plane",
+		"expect": "placement 1/2 is outside the planes",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 5,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "size mismatch",
+		"expect": "placement 3/1 does not match its floor size",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 57,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "overlap",
+		"expect": "placements 1/1 and 3/1 overlap",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 36,
+					"y1": 1,
+					"x2": 57,
+					"y2": 12,
+					"border": 1,
+					"generation": 3
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	},
+	{
+		"name": "unknown placement field",
+		"expect": "placement has an unknown field",
+		"registry": {
+			"schema": 1,
+			"lineage": "gaia-probe_1",
+			"generation": 7,
+			"next_mine_id": 4,
+			"limits": {
+				"mines": 8,
+				"depth": 4,
+				"floors": 8,
+				"side": 64,
+				"border": 2
+			},
+			"mines": [
+				{
+					"id": 3,
+					"deepest": 1,
+					"created": 6
+				},
+				{
+					"id": 1,
+					"deepest": 2,
+					"created": 2
+				},
+				{
+					"id": 2,
+					"deepest": 0,
+					"created": 5
+				}
+			],
+			"floors": [
+				{
+					"mine": 3,
+					"depth": 1,
+					"width": 20,
+					"height": 10,
+					"generator": 1,
+					"seed": 99,
+					"created": 6
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 16777215,
+					"created": 4
+				},
+				{
+					"mine": 1,
+					"depth": 1,
+					"width": 32,
+					"height": 32,
+					"generator": 1,
+					"seed": 0,
+					"created": 2
+				}
+			],
+			"placements": [
+				{
+					"mine": 1,
+					"depth": 1,
+					"z": 3,
+					"x1": 1,
+					"y1": 1,
+					"x2": 36,
+					"y2": 36,
+					"border": 2,
+					"generation": 1
+				},
+				{
+					"mine": 3,
+					"depth": 1,
+					"z": 3,
+					"x1": 37,
+					"y1": 1,
+					"x2": 58,
+					"y2": 12,
+					"border": 1,
+					"generation": 3,
+					"occupants": []
+				},
+				{
+					"mine": 1,
+					"depth": 2,
+					"z": 4,
+					"x1": 65,
+					"y1": 65,
+					"x2": 100,
+					"y2": 100,
+					"border": 2,
+					"generation": 1
+				}
+			]
+		}
+	}
+]
