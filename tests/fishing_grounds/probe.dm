@@ -78,7 +78,11 @@ var/fg_runtime_error = FALSE
 	fg_check(G && G.capacity == 6 && G.stock == 6 && fishing_grounds.len == 1, "the first cast makes a full shallow-river ground of 6")
 	fg_check(fishing_ground_at(locate(15, 15, 1), FALSE) == null && fishing_ground_at(fg_water(15, 15, /turf/floor/beach/water)) == G, "a tile 10 away in the same 16x16 stretch shares the ground")
 	fg_check(fishing_ground_at(fg_water(16, 5, /turf/floor/beach/water)) != G, "the next stretch along is its own ground")
-	fg_check(fishing_ground_at(pool) == G && G.capacity == 10 && G.stock == 10, "fishing its deep pool raises the ground to 10")
+	G.stock = 4
+	G.since = world.time
+	fg_check(fishing_ground_cell(pool, "fresh", 10, FALSE) == G && G.capacity == 6 && G.stock == 4, "a cell lookup does not raise existing capacity")
+	fg_check(fishing_ground_at(pool, FALSE) == G && G.capacity == 10 && G.stock == 8, "a non-creating water lookup raises capacity and preserves depletion")
+	G.stock = 10
 	var/datum/fishing_ground/S = fishing_ground_at(fg_water(7, 5, /turf/floor/beach/water/shallowsaltwater))
 	fg_check(S != G && S.kind == "salt", "salt water in the same stretch is a separate ground")
 
