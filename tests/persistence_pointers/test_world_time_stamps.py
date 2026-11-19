@@ -40,6 +40,8 @@ REVIEWED = {
     'flee_ticket': 'a flee_ticket parameter list, not a saved mob var',
     'data': 'reagent message throttles share the generic data field with blood and dose data',
     'lob_launch_time': 'projectiles are never saved (should_save = 0 in projectile.dm)',
+    'combat_reason_time': 'declared var/tmp on mobs (combat_stance.dm), so never saved',
+    'last_struck_time': 'declared var/tmp on mobs (combat_stance.dm), so never saved',
     'held_since': 'capture clock of a Broadside TDM tiller; the Broadside map is not persistent',
 }
 

@@ -347,7 +347,7 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 	var/list/options = list()
 	for (var/stance in list(COMBAT_STANCE_MANUAL) + combat_stance_order)
 		options[combat_stance_names[stance]] = stance
-	var/choice = input(src, "How should your attacks choose where to strike?", "Combat Stance", combat_stance_names[combat_stance]) as null|anything in options
+	var/choice = player_input(src, "How should your attacks choose where to strike?", "Combat Stance", combat_stance_names[combat_stance], "anything", options, TRUE)
 	if (!choice || QDELETED(src))
 		return
 	if (targeted_organ == "random")
