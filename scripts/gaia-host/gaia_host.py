@@ -313,8 +313,13 @@ class Platform:
                 return None
         except (OSError, AttributeError):
             return None
-        code, out = self.run(['tasklist', '/FI', 'IMAGENAME eq byond.exe', '/FI', 'SESSION eq %d' % session.value,
-                              '/FO', 'CSV', '/NH'], timeout=30)
+        try:
+            code, out = self.run(['tasklist', '/FI', 'IMAGENAME eq byond.exe', '/FI', 'SESSION eq %d' % session.value,
+                                  '/FO', 'CSV', '/NH'], timeout=30)
+        except (subprocess.SubprocessError, OSError):
+            # A broken WMI provider makes tasklist hang ("Provider load failure"); the
+            # timeout crashed every Gaia start until a reboot (2026-11-19). Unknown, not absent.
+            return None
         if code != 0:
             return None
         return '"byond.exe"' in out.lower()

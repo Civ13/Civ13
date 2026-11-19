@@ -1370,3 +1370,14 @@ class HostControlsContractTests(unittest.TestCase):
             written = set(host.host_status())
         region_only = {'staged', 'stage', 'group'}  # RegionHost.host_status adds these
         self.assertLessEqual(read - region_only, written)
+
+
+@unittest.skipUnless(os.name == 'nt', 'the pager check only runs on Windows')
+class PagerCheckTests(unittest.TestCase):
+    def test_hung_tasklist_is_unknown_not_a_crash(self):
+        platform = gaia_host.Platform()
+
+        def hang(argv, **kwargs):
+            raise gaia_host.subprocess.TimeoutExpired(argv, kwargs.get('timeout'))
+        platform.run = hang
+        self.assertIsNone(platform.byond_pager_running())
