@@ -121,6 +121,7 @@
 			continue
 		if (T.lighting_overlay || T.omit_reserved_lighting_overlay())
 			active = TRUE
+			break
 
 // God that was a mess, now to do the rest of the corner code! Hooray!
 /datum/lighting_corner/proc/update_lumcount(var/delta_r, var/delta_g, var/delta_b)
