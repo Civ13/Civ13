@@ -48,24 +48,12 @@
 			if ((LL && LL.is_stump() && LL.prosthesis == FALSE || !LL))
 				visible_message("[user] starts to attach \the [src] to [C]'s left leg stump...","You start attaching \the [src] to [C]'s left leg stump...")
 				if (do_after(user, 150*user.getStatCoeff("medical"), C))
-					if (!LL)
-						return
-					visible_message("[user] finishes attaching \the [src] to [C]'s left leg stump.","You finish attaching \the [src] to [C]'s left leg stump.")
-					LL.prosthesis = TRUE
-					LL.prosthesis_type = icon_state
-					C.update_mutations(1)
-					user.adaptStat("medical", 4*mod)
-					qdel(src)
+					finish_attachment(C, user, LL, "left leg", 4*mod)
 				return
 			else if ((RL && RL.is_stump() && RL.prosthesis == FALSE || !RL))
 				visible_message("[user] starts to attach \the [src] to [C]'s right leg stump...","You start attaching \the [src] to [C]'s right leg stump...")
 				if (do_after(user, 150*user.getStatCoeff("medical"), C))
-					visible_message("[user] finishes attaching \the [src] to [C]'s right leg stump.","You finish attaching \the [src] to [C]'s right leg stump.")
-					RL.prosthesis = TRUE
-					RL.prosthesis_type = icon_state
-					C.update_mutations(1)
-					user.adaptStat("medical", 4*mod)
-					qdel(src)
+					finish_attachment(C, user, RL, "right leg", 4*mod)
 				return
 		if ("foot")
 			var/obj/item/organ/external/LL = C.get_organ("l_leg")
@@ -80,20 +68,20 @@
 			if (LF && LF.is_stump() && LF.prosthesis == FALSE && !LL.is_stump())
 				visible_message("[user] starts to attach \the [src] to [C]'s left foot stump...","You start attaching \the [src] to [C]'s left foot stump...")
 				if (do_after(user, 130*user.getStatCoeff("medical"), C))
-					visible_message("[user] finishes attaching \the [src] to [C]'s left foot stump.","You finish attaching \the [src] to [C]'s left foot stump.")
-					LF.prosthesis = TRUE
-					LF.prosthesis_type = icon_state
-					C.update_mutations(1)
-					user.adaptStat("medical", 3*mod)
-					qdel(src)
+					finish_attachment(C, user, LF, "left foot", 3*mod)
 				return
 			else if (RF && RF.is_stump() && RF.prosthesis == FALSE && !RL.is_stump())
 				visible_message("[user] starts to attach \the [src] to [C]'s right foot stump...","You start attaching \the [src] to [C]'s right foot stump...")
 				if (do_after(user, 130*user.getStatCoeff("medical"), C))
-					visible_message("[user] finishes attaching \the [src] to [C]'s right foot stump.","You finish attaching \the [src] to [C]'s right foot stump.")
-					RF.prosthesis = TRUE
-					RF.prosthesis_type = icon_state
-					C.update_mutations(1)
-					user.adaptStat("medical", 3*mod)
-					qdel(src)
+					finish_attachment(C, user, RF, "right foot", 3*mod)
 				return
+
+/obj/item/weapon/prosthesis/proc/finish_attachment(mob/living/human/patient, mob/living/human/user, obj/item/organ/external/limb, limb_description, medical_experience)
+	if (!limb)
+		return
+	visible_message("[user] finishes attaching \the [src] to [patient]'s [limb_description] stump.","You finish attaching \the [src] to [patient]'s [limb_description] stump.")
+	limb.prosthesis = TRUE
+	limb.prosthesis_type = icon_state
+	patient.update_mutations(1)
+	user.adaptStat("medical", medical_experience)
+	qdel(src)
