@@ -599,7 +599,8 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/weapon/flame/lighter/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!istype(M, /mob))
 		return
-	M.IgniteMob()
+	if (lit) // only a burning lighter can set a fuel-soaked person alight (#6265)
+		M.IgniteMob()
 
 	if (istype(M.wear_mask, /obj/item/clothing/mask/smokable/cigarette) && user.targeted_organ == "mouth" && lit)
 		var/obj/item/clothing/mask/smokable/cigarette/cig = M.wear_mask
