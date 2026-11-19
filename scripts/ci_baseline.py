@@ -1908,6 +1908,9 @@ SUITES = {
             'code/modules/multiz/structures.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib + reviewed source projection with inert recipients and event queue.
     # No native fixture, process, network or live message transport is imported.
+    'wired_pole_traversal': {'files': ('tests/telephone/test_pole_traversal.py',),
+        'paths': ('tests/telephone/test_pole_traversal.py',), 'shared_paths': (
+            'code/modules/1713/telegraph.dm', 'tests/save_movement/source_adapter.py')},
     'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
         'paths': ('tests/telephone/',), 'shared_paths': (
             'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},

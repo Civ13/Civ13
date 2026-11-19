@@ -42,3 +42,12 @@ traces are compared under two declared test boundaries: retained mock references
 and omission at the next iterator yield. These establish refactor parity under
 those adapters, not BYOND's actual deletion, reference-nulling, iterator or
 associative-key removal semantics; native deletion behavior remains unproven.
+
+## Wired pole traversal
+
+`test_pole_traversal.py` runs the production `transmit` and `ring_phone` pole
+bodies from `code/modules/1713/telegraph.dm` on an inert grid. Each pole sets
+`lastproc` before forwarding, so a two-pole span or a closed loop of poles ends
+after one forwarding visit per pole while every reachable telegraph or phone
+still receives the message. Run it with
+`python3 -B -m unittest tests.telephone.test_pole_traversal -v`.
