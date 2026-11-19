@@ -81,6 +81,24 @@ class WaypointSelection(unittest.TestCase):
         self.assertIsNone(select(self.source, origin, None, points)[0])
         self.assertIsNone(select(self.source, origin, origin, points, has_targets=False)[0])
 
+    def test_patrol_skips_only_the_unused_destination_distance(self):
+        origin, waypoint, destination = Turf(0, 0), Turf(7, 0), Turf(20, 0)
+        points = [(waypoint, "all", None)]
+        selected, calls = select(self.source, origin, origin, points)
+        self.assertIs(selected, waypoint)
+        self.assertEqual(len(calls), 3)
+        selected, calls = select(self.source, origin, destination, points)
+        self.assertIs(selected, waypoint)
+        self.assertEqual(len(calls), 3)
+
+        optimized = "var/dist_to_dest\n\t\t\tif(!self_targeting)\n\t\t\t\tdist_to_dest = get_dist(T, dest_turf)"
+        original = "var/dist_to_dest = get_dist(T, dest_turf)"
+        self.assertEqual(self.source.count(optimized), 1)
+        mutant = self.source.replace(optimized, original, 1)
+        selected, calls = select(mutant, origin, origin, points)
+        self.assertIs(selected, waypoint)
+        self.assertEqual(len(calls), 4)
+
     def test_normal_destination_and_container_location(self):
         origin, destination = Turf(0, 0), Turf(20, 0)
         a, b = Turf(9, 0), Turf(9, 1)
