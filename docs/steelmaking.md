@@ -72,3 +72,37 @@ fuel per crucible each firing (`crucible_fuel`). After each kiln firing
 a bellows blast; after 3 blown firings it either cracks (25% for Crafting
 1.0, 5% to 40% by skill) and the melt is lost, or breaks open on 1 fine
 steel. Crucibles come out of the kiln after every firing.
+
+## Industrial works
+
+Code: `code/modules/1713/steel_works.dm`. Every works is a
+`/obj/structure/steel_works`: load its charge metal and fuel, then light it
+by hand or with a flame (automation starts it once the charge is full). The
+firing runs on an `addtimer` loop with `burn_left` saved. Empty gives back
+exactly what went in (`loaded`). Fuel units: charcoal 2, coke 3, coal 3
+where allowed.
+
+| Works | Node | Charge | Fuel | Time | Out |
+| --- | --- | --- | --- | --- | --- |
+| Coke bank (15 clay) | Blast Furnaces & Coke | 5-20 coal | its own coal | 5 min | 0.6 coke per coal |
+| Finery forge (15 iron) | Blast Furnaces & Coke | pig iron | charcoal, coke; 2 + 1 per pig | 90 s | 1 wrought iron per 2 pig |
+| Cementation furnace (30 stone) | Blast Furnaces & Coke | 5-30 wrought iron | charcoal; 6 + 2 per bar | 15 min | blister steel, 15% uneven bars stay iron (less with skill) |
+| Puddling furnace (30 stone) | Blast Furnaces & Coke | 2-10 pig iron | coal, coke, charcoal | 3 min | 0.8 wrought iron per pig if stirred, half if not |
+| Bessemer converter (40 iron) | Steelmaking | 5-15 pig iron | coke; 3 + 0.5 per pig | 2 min blow | tipped in the window after the flame drops: 0.9 steel; early: 0.9 pig iron; late or never: 0.8 wrought iron |
+| Open hearth (50 stone) | Open Hearth Steel | 5-40 pig iron or steel | coal, coke, charcoal; 6 + 1 per unit | 10 min | fine steel: 0.9 per pig, scrap steel back whole |
+| Electric arc furnace (40 steel) | Alloys | 5-40 steel, pig iron or wrought iron | none; 200 power | 4 min powered | 0.95 fine steel per unit; pauses without power |
+
+Puddling: an empty hand during the firing stirs for 5 s; success is 60%
+plus 80% per Crafting point above 1 (30% to 95%). Bessemer: the flame drops
+between 75 and 105 s into the blow; the tipping window is 10 s times the
+firer's Crafting coefficient (0.5 to 2).
+
+Research: **Blast Furnaces & Coke** (`blast_furnaces`, Industrial era 3,
+needs Iron Smithing and Watermills) now teaches the blast furnace, which
+needs a water wheel or windmill within reach (`mechanical_drive_factor < 1`,
+`firing_refusal()`). Steelmaking needs Blast Furnaces & Coke. **Open Hearth
+Steel** (`open_hearth`, era 5) needs Steelmaking and Factories.
+
+Pig iron no longer hammers into steel on an anvil; the mapped industrial
+furnace (`/obj/structure/machinery/factory`) melts iron ore into pig iron.
+Coke burns in kilns, factory furnaces and bloomeries as well.

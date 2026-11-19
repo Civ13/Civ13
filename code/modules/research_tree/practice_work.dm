@@ -127,15 +127,19 @@ var/global/list/subject_deeds = list(
 		list("supports", list("/obj/structure/mine_support"), 2, 0.15, "Set up 2 mine supports"),
 		list("sills", list("/obj/covers/wood_wall/log_build"), 3, 0.15, "Lay 3 log wall sills")),
 	"steel_blades" = list(
-		list("furnace", list("/obj/structure/furnace/blast_furnace"), 1, 0.2, "Build a blast furnace"),
+		list("furnace", list("/obj/structure/furnace"), 1, 0.2, "Build a bloomery"),
 		list("tub", list("/obj/structure/quench_tub"), 1, 0.15, "Build a quench tub"),
 		list("sword", list("/obj/item/weapon/material/sword/gladius", "/obj/item/weapon/material/sword/khopesh"), 1, 0.15, "Make a gladius or a khopesh")),
 	"tailoring" = list(
 		list("pouches", list("/obj/item/clothing/accessory/storage/belt_pouch/cloth"), 2, 0.2, "Sew 2 cloth drawstring pouches"),
 		list("bedroll", list("/obj/item/weapon/bedroll"), 1, 0.15, "Make a bedroll"),
 		list("curtain", list("/obj/structure/curtain"), 1, 0.15, "Hang a curtain")),
+	"blast_furnaces" = list(
+		list("furnace", list("/obj/structure/furnace"), 1, 0.2, "Build a bloomery"),
+		list("pot", list("/obj/structure/carburizing_pot"), 1, 0.15, "Build a carburizing pot"),
+		list("wheel", list("/obj/structure/workshop_machine/mover/mill_wheel"), 1, 0.15, "Build a mill wheel")),
 	"tatara_smelting" = list(
-		list("furnace", list("/obj/structure/furnace/blast_furnace"), 1, 0.2, "Build a blast furnace"),
+		list("furnace", list("/obj/structure/furnace"), 1, 0.2, "Build a bloomery"),
 		list("horseshoes", list("/obj/item/horseshoes"), 1, 0.15, "Forge a set of horseshoes"),
 		list("wedge", list("/obj/item/door_wedge/iron"), 1, 0.15, "Forge an iron wedge")),
 	"workshops" = list(
