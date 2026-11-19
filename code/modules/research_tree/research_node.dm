@@ -1902,6 +1902,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/quench_tub" = "iron_smithing",
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
+		"/obj/structure/carburizing_pot" = "iron_smithing",
 		"/obj/structure/tatara" = "tatara_smelting",
 		"/obj/structure/workshop_machine/mercury_retort" = "amalgamation",
 		"/obj/item/weapon/reagent_containers/glass/mercury_flask" = "ore_dressing",

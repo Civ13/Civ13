@@ -74,7 +74,7 @@ var/global/list/factory_active_mills = list()
 	var/obj/item/stack/S = I
 	if (istype(S, /obj/item/stack/ore/iron))
 		return max(0, min(S.amount, FACTORY_FURNACE_LIMIT - iron))
-	var/value = factory_fuel_value(S)
+	var/value = solid_fuel_unit_value(S, fuel_rates())
 	if (value <= 0)
 		return 0
 	return max(0, min(S.amount, round((FACTORY_FURNACE_LIMIT - fuel) / value)))
@@ -87,7 +87,7 @@ var/global/list/factory_active_mills = list()
 	if (istype(S, /obj/item/stack/ore/iron))
 		iron += factory_consume_units(S, amount)
 	else
-		var/value = factory_fuel_value(S)
+		var/value = solid_fuel_unit_value(S, fuel_rates())
 		record_wood_fuel(S, amount * value)
 		fuel += factory_consume_units(S, amount) * value
 	factory_try_start()
@@ -95,7 +95,7 @@ var/global/list/factory_active_mills = list()
 
 // Automation starts a smelt as soon as ore and enough fuel are loaded.
 /obj/structure/furnace/proc/factory_try_start()
-	if (!on && iron > 0 && fuel > 1)
+	if (!on && iron > 0 && has_firing_fuel())
 		start_smelt()
 
 /obj/structure/furnace/factory_offer(to_dir = 0, filter_type = null)
