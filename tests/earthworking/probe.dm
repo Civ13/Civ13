@@ -93,12 +93,13 @@ var/earthworking_runtime_error = FALSE
 		T.terrain_grade_apply()
 	var/obj/structure/workshop_machine/steam_site/steam_shovel/shovel = new(locate(7, 10, 1))
 	var/list/cuts = shovel.cuttings()
-	earthworking_check(length(cuts) == 12 && !(locate(7, 10, 1) in cuts), "a steam shovel cuts up to twelve tiles within reach, never its own")
+	var/turf/shovel_spot = locate(7, 10, 1)
+	earthworking_check(length(cuts) == 12 && !(shovel_spot in cuts), "a steam shovel cuts up to twelve tiles within reach, never its own")
 	var/turf/far = cuts[1]
 	var/far_before = terrain_height_at(far)
 	earthworking_check(shovel.cut_down(null) == 12, "the cut job cuts every tile it found")
 	var/piles = 0
-	for (var/obj/item/weapon/barrier/B in locate(7, 10, 1))
+	for (var/obj/item/weapon/barrier/B in shovel_spot)
 		piles++
 	earthworking_check(piles == 12 && terrain_height_at(far) == far_before - 1, "spoil heaps at the shovel's foot and the ground drops a level")
 
