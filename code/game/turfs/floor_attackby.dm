@@ -927,6 +927,8 @@
 	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
 	mining_cinnabar(H) // Independent of the ore rolls; see mercury.dm.
 	mining_lode(H) // Independent of the ore rolls; see lode.dm.
+	if (mining_alloy_ores(H)) // Nickel and cobalt, independent of the ore rolls; see alloy_steels.dm.
+		found_ore = TRUE
 	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
 	if (prob(copper_chance))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)

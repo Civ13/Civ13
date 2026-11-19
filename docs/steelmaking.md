@@ -106,3 +106,23 @@ Steel** (`open_hearth`, era 5) needs Steelmaking and Factories.
 Pig iron no longer hammers into steel on an anvil; the mapped industrial
 furnace (`/obj/structure/machinery/factory`) melts iron ore into pig iron.
 Coke burns in kilns, factory furnaces and bloomeries as well.
+
+## Alloy steels
+
+Code: `code/modules/1713/alloy_steels.dm`.
+
+From the Early Modern age (ordinal 5), every mined wall also rolls for
+**nickel ore** (3%, 8-16 lumps) and **cobalt ore** (1.5%, 4-8), independent
+of the other ores (`mining_alloy_ores()`, scaled by `continent_ore_factor`).
+
+Works take alloy ore as an addition beside their charge (`addition_key()`),
+up to 20 lumps; Empty and automation handle additions too. Leftover
+additions stay for the next firing.
+
+| Alloy | Made in | Addition | Forged quality | Armour (blows / bullets and arrows) |
+| --- | --- | --- | --- | --- |
+| Nickel steel | open hearth | 1 nickel ore per 4 steel tapped | x1.15 | x1.1 / x1.25 |
+
+Armour forged on an anvil from graded stock goes through
+`grade_forged_armor()`: melee armour by `armor_blunt_grade`, arrow and gun
+armour by `armor_pierce_grade`, never lowered and never lifted past 90.
