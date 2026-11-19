@@ -30,6 +30,8 @@ TATARA = read('code/modules/1713/tatara.dm')
 DME = read('civ13.dme')
 CARBURIZING = read('code/modules/1713/carburizing.dm')
 CRUCIBLE = read('code/modules/1713/crucible_steel.dm')
+WORKS = read('code/modules/1713/steel_works.dm')
+FACTORY_FURNACE = read('code/game/objects/structures/factory/factory.dm')
 NODES = read('code/modules/research_tree/research_node.dm')
 RECIPES = read('config/crafting/material_recipes_global.txt')
 
@@ -151,6 +153,55 @@ class CrucibleSteel(unittest.TestCase):
         self.assertIn('spawn_stack(/obj/item/stack/material/steel/fine, T, 1)', fired)
         self.assertIn('#define CRUCIBLE_FIRINGS 3', CRUCIBLE)
         self.assertIn('blown_firing', proc(CRUCIBLE, '/obj/structure/furnace/kiln/proc/fire_crucibles()'))
+
+
+class SteelWorks(unittest.TestCase):
+    def test_compiled_and_gated(self):
+        self.assertIn('#include "code\\modules\\1713\\steel_works.dm"', DME)
+        for path, node in (('furnace/blast_furnace', 'blast_furnaces'), ('steel_works/coke_bank', 'blast_furnaces'),
+                           ('steel_works/finery', 'blast_furnaces'), ('steel_works/cementation', 'blast_furnaces'),
+                           ('steel_works/puddling', 'blast_furnaces'), ('steel_works/bessemer', 'steelmaking'),
+                           ('steel_works/open_hearth', 'open_hearth'), ('steel_works/arc_furnace', 'alloys')):
+            with self.subTest(path=path):
+                self.assertIn(f'"/obj/structure/{path}" = "{node}"', NODES)
+                self.assertRegex(RECIPES, r'RECIPE: /material/\w+/,[^,]+,/obj/structure/' + re.escape(path) + ',')
+        self.assertIn('list("iron_smithing","watermills"), 3))', NODES)
+        self.assertIn('"steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("blast_furnaces"), 4))', NODES)
+        self.assertIn('list("steelmaking","factories"), 5))', NODES)
+
+    def test_pig_iron_no_longer_hammers_into_steel(self):
+        self.assertNotIn('You smite the pig into steel', ANVIL)
+        self.assertIn('Pig iron is too brittle to hammer', ANVIL)
+        self.assertIn('spawn_stack(/obj/item/stack/ore/iron_pig, src.loc, iron)', FACTORY_FURNACE)
+        self.assertNotIn('new/obj/item/stack/material/steel(src.loc)\n\t\tnewsteel.amount = iron', FACTORY_FURNACE)
+
+    def test_blast_furnace_needs_driven_bellows_and_coke_burns(self):
+        refusal = proc(GRADES, '/obj/structure/furnace/blast_furnace/firing_refusal()')
+        self.assertIn('mechanical_drive_factor(src) >= 1', refusal)
+        self.assertIn('!firing_refusal()', proc(GRADES, '/obj/structure/furnace/proc/has_firing_fuel()'))
+        self.assertIn('/obj/item/stack/ore/coke = "coke"', FUEL)
+        self.assertIn('"coke" = 3', re.search(r'bloomery_fuel_rates = list\((.*?)\)\n', FUEL, re.S)[1])
+
+    def test_firings_resume_after_load_without_spawn(self):
+        self.assertNotIn('spawn(', WORKS)
+        self.assertIn('start_burn_loop()', proc(WORKS, '/obj/structure/steel_works/after_load()'))
+        self.assertIn('key == "burn_epoch"', WORKS)
+
+    def test_bessemer_timing(self):
+        tip = proc(WORKS, '/obj/structure/steel_works/bessemer/work_firing(')
+        self.assertLess(tip.index('if (when < drop_at)'), tip.index('else if (when <= drop_at + tip_window())'))
+        self.assertIn('spawn_stack(/obj/item/stack/ore/iron_pig, T, made)', tip)
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel, T, made)', tip)
+        self.assertIn('return overblown(T)', proc(WORKS, '/obj/structure/steel_works/bessemer/produce('))
+
+    def test_emptying_returns_what_went_in(self):
+        ret = proc(WORKS, '/obj/structure/steel_works/proc/return_charge(')
+        self.assertIn('for (var/key in loaded)', ret)
+        self.assertNotIn('/obj/structure/steel_works/arc_furnace/return_charge', WORKS)
+
+    def test_arc_furnace_draws_power(self):
+        self.assertIn('powerneeded = 200', WORKS)
+        self.assertIn('draw_cable_power()', proc(WORKS, '/obj/structure/steel_works/arc_furnace/can_advance()'))
 
 
 if __name__ == '__main__':

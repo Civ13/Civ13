@@ -523,7 +523,7 @@ class SubjectDeeds(unittest.TestCase):
     def test_subject_count(self):
         import re
         block = self.src[self.src.index("var/global/list/subject_deeds = list("):self.src.index("var/global/list/deed_paths")]
-        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 56)
+        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 57)
 
 class SkillMastery(unittest.TestCase):
     def setUp(self):

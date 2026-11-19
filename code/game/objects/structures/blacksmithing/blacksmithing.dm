@@ -128,25 +128,8 @@
 				to_chat(user, "<span class='warning'>You can't use this material on this anvil.</span>")
 				return
 		if (istype(P, /obj/item/stack/ore/iron_pig))
-			if (!("iron" in accepted_materials))
-				to_chat(user, "<span class='warning'>You can't use this material on this anvil.</span>")
-				return
-			to_chat(user, "You begin smithing the pig iron...")
-			icon_state = "[base_icon]_anvil_use"
-			in_use = TRUE
-			update_icon()
-			playsound(loc, 'sound/effects/clang.ogg', 100, TRUE)
-			var/initial_amount = P.amount //no more speedhack
-			if (do_after(user,15*initial_amount,src) && P.amount == initial_amount)
-				to_chat(user, "<span class='notice'>You smite the pig into steel.</span>")
-				if (P && P.amount == initial_amount)
-					var/amt = P.amount
-					qdel(P)
-					spawn_stack(/obj/item/stack/material/steel, loc, amt*0.8)
-				in_use = FALSE
-			else
-				in_use = FALSE
-			update_icon()
+			// Cast iron is too brittle to forge (steel_works.dm refines it).
+			to_chat(user, SPAN_WARNING("Pig iron is too brittle to hammer: it shatters. Refine it into wrought iron in a finery forge or puddling furnace, or blow it into steel in a Bessemer converter."))
 		else if (istype(P, /obj/item/stack/ore/iron_sponge/steely))
 			sort_steely_bloom(P, user)
 		else if (istype(P, /obj/item/stack/ore/iron_sponge))

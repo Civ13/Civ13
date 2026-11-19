@@ -73,7 +73,7 @@ class TreeShape(unittest.TestCase):
         # Arms, artillery and armour lean only on the trunk (tools, metals,
         # power) and on what they are physically built from.
         allowed = {
-            "basic_tools", "bronze_working", "iron_smithing", "tatara_smelting", "steelmaking", "alloys",
+            "basic_tools", "bronze_working", "iron_smithing", "tatara_smelting", "blast_furnaces", "steelmaking", "alloys",
             "resource_processing", "watermills", "steam_power", "combustion",
             "early_cells", "galvanic_cells", "electricity",
             "primitive_construction", "stone_masonry", "carts", "wagons_ships",
