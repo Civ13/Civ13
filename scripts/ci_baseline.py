@@ -1914,7 +1914,8 @@ SUITES = {
 
     # Stdlib + reviewed source projection only; frozen DM is offline data.
     # No native runner, engine process, socket or network boundary is imported.
-    'defibrillator_charge': {'files': ('tests/defibrillator/test_charge_revalidation.py',),
+    'defibrillator_charge': {'files': ('tests/defibrillator/test_charge_revalidation.py',
+                                     'tests/defibrillator/test_revival_outcome.py'),
         'paths': ('tests/defibrillator/',), 'shared_paths': (
             'code/game/objects/items/weapons/defib.dm', 'tests/save_movement/source_adapter.py')},
     'vehicle_hud': {'files': ('tests/vehicle_hud/test_driver_axis.py',),
