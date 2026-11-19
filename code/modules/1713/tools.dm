@@ -148,6 +148,17 @@
 	health = 50
 	maxhealth = 50
 
+// A navvy's shovel (Val, 2026-11-19): the broad, long-handled steel shovel
+// railway and canal gangs dug with. The fastest hand shovel, from Machined Tools.
+/obj/item/weapon/material/shovel/navvy
+	name = "navvy shovel"
+	desc = "A broad steel shovel on a long handle, made for shifting a lot of earth fast."
+	material = "steel"
+	default_material = "steel"
+	usespeed = 2.5
+	health = 50
+	maxhealth = 50
+
 /obj/item/weapon/material/shovel/bone
 	icon_state = "shovel_bone"
 	desc = "A shovel made out of some bone."
