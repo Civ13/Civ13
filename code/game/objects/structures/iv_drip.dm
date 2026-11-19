@@ -126,6 +126,8 @@
 				beaker.on_reagent_change()
 				beaker.reagents.handle_reactions()
 				update_icon()
+			else if (prob(5))
+				visible_message("\The [src] pings. \The [beaker] holds someone else's blood.")
 
 /obj/structure/iv_drip/attack_hand(mob/user as mob)
 	if (beaker)
