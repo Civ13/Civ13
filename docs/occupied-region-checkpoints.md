@@ -16,8 +16,23 @@ Keep the existing empty-region catch-up, save votes, manual saves, idle host req
 - Plan an initial 20-to-30-minute lead with a stable per-region offset inside that window; size it using isolated save-duration measurements. A region already overdue should attempt at its next safe opportunity. Staggering reduces coincident starts but does not serialize independently hosted worlds.
 - Back off after a refusal or unsuccessful completion, including exceptions; do not retry on every scheduler tick. Backoff does not move the four-hour deadline. Clear overdue state only when a completed generation advances. Warn players before a scheduled checkpoint and report overdue/blocked state to admins without chat or log spam. Do not expose save internals to player chat.
 
+## Conditional update and restart
+
+Each four-hour cycle is a **save, not a scheduled reboot**. Ask the host's
+[staged-build workflow](../scripts/gaia-host/gaia_host.py) whether a different,
+validated build is ready for this region, or whether a separately authorized
+maintenance restart is due. A changed upstream SHA alone, a staging failure,
+and an unavailable host check are not reasons to restart.
+
+- Current build, unknown status, or no restart required: save in place.
+- Eligible staged build: check the existing region rollout policy, restart/transfer holds, and configured warning or deferral rules. Use the existing supervised save and handover or graceful restart path. Announce the interruption and recheck eligibility after the warning. Where a save-and-restart transaction can satisfy the checkpoint, do not perform two consecutive saves.
+- If maintenance or rollout must wait because the region is occupied or a guard has not cleared, complete the checkpoint as a save-only cycle. Leave the staged build pending. This feature does not override an empty-only rollout policy, the existing empty-only maintenance reboot, or any veto/hold.
+- Require a newly committed, validated save generation before replacing the running world; never restart on a failed or ambiguous save. Preserve the last known-good build and generation. Verify readiness and the running revision through the existing supervised transaction. On refusal or failure, follow its recovery path and report the reason; do not force-stop the region or retry in a loop.
+- Keep update selection and lifecycle control with the host. Do not add a public update action or run Git/build commands in DM. Ship the scheduler and the updater integration as separate tested slices if host support is not ready.
+
 ## Acceptance before rollout
 
 - With an injected clock, prove due/not-due boundaries, restored and unsaved world startup, independently staggered regions, host-only occupancy, reconnects, and that only a successful generation moves the deadline.
 - Exercise overlap with manual/vote/idle saves, last player leaving just before dispatch, disabled saving, non-Persistence worlds, startup/maintenance/transfer holds, and repeated failure. Confirm the existing [idle host request](../code/modules/persistence/nomads_lifecycle.dm#L260-L274) still refuses while players are online and the empty-only reboot policy is unchanged.
+- For the combined cycle, test current/running revision, a verified eligible staged revision, no ready build, failed host check, rollout held by policy or player deferral, failed save, staged revision changing during countdown, and failed restart/rollback. Assert zero restart requests for every save-only outcome and only one authorized lifecycle transaction for the eligible update.
 - In an isolated cloud or GitHub-runner fixture, save a populated region with movement and ongoing region activity, restore its completed generation, and check character/world state and transfer consistency. Include interruption and failed-validation controls that preserve the last good generation. Measure wall time, tick impact, and memory headroom before tuning the lead window or enabling rollout. No live server changes are part of this PR.
