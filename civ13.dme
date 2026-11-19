@@ -444,6 +444,7 @@
 #include "code\game\objects\building_collapse.dm"
 #include "code\game\objects\building_buttresses.dm"
 #include "code\game\objects\building_defences.dm"
+#include "code\game\objects\building_dismantle.dm"
 #include "code\game\objects\building_services.dm"
 #include "code\game\objects\building_insulation.dm"
 #include "code\game\objects\storey_chimney.dm"

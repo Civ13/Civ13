@@ -251,6 +251,10 @@
 				to_chat(user, "You removed \the [src] from the floor.")
 				qdel(src)
 				return
+		// A wall that holds nothing up comes down (building_dismantle.dm).
+		else if (wall_dismantle_tool(W, user))
+			wall_dismantle(W, user)
+			return
 	if (wall)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (istype(W, /obj/item/weapon/poster/religious))

@@ -137,8 +137,8 @@
 //
 // Any roof support, mine support or stone pillar comes down with a hammer (not
 // on harm intent, which strikes it instead) and gives back what it cost, but
-// not while a roof near it stands on it alone: put up another support or a
-// wall first. Concrete pillars give nothing back.
+// not while a roof near it, or a storey above it, stands on it alone: put up
+// another support or a wall first. Concrete pillars give nothing back.
 
 #define PILLAR_DISMANTLE_WOOD 40
 #define PILLAR_DISMANTLE_STONE 80
@@ -170,27 +170,10 @@
 	// The plain ionic and solomonic columns are marble.
 	return list(/obj/item/stack/material/marble, 2)
 
-// How many roofs near S stand only because of S.
+// How many roofs, near S or on the storeys above it, stand only because of S
+// (building_dismantle.dm).
 /proc/pillar_roofs_held(obj/structure/S)
-	. = 0
-	var/turf/T = get_turf(S)
-	if (!T)
-		return
-	var/list/standing = list()
-	for (var/obj/roof/R in range(3, T))
-		if (!QDELETED(R) && R.is_supported())
-			standing += R
-	if (!standing.len)
-		return
-	S.loc = null
-	try
-		for (var/obj/roof/R in standing)
-			if (!R.is_supported())
-				.++
-	catch (var/exception/E)
-		S.loc = T
-		throw E
-	S.loc = T
+	return building_load_held(S)
 
 /obj/structure/proc/pillar_dismantle(mob/user)
 	if (!pillar_dismantle_check(user))
@@ -214,7 +197,7 @@
 	var/held = pillar_roofs_held(src)
 	if (!held)
 		return TRUE
-	to_chat(user, SPAN_WARNING("\The [src] is holding up the roof: [held == 1 ? "a stretch of roof" : "[held] stretches of roof"] would fall without it. Put up another support or a wall nearby first."))
+	to_chat(user, SPAN_WARNING(building_load_refusal(src, held)))
 	return FALSE
 
 #undef PILLAR_DISMANTLE_WOOD
