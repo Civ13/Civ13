@@ -161,7 +161,7 @@
 			return FALSE // keep it tight; bandage the wounds underneath instead
 		user.visible_message(SPAN_NOTICE("\The [user] starts loosening the tourniquet on [H]'s [affecting.name]."), \
 							SPAN_NOTICE("You start loosening the tourniquet on [whose] [affecting.name]."))
-		if (!do_mob(user, H, 20) || !affecting.tourniquet)
+		if (!do_mob(user, H, 20) || !tourniquet_patient_in_reach(H, user) || !affecting.tourniquet)
 			return TRUE
 		affecting.remove_tourniquet()
 		user.visible_message(SPAN_NOTICE("\The [user] removes the tourniquet from [H]'s [affecting.name]."), \
@@ -171,13 +171,20 @@
 		return FALSE
 	return tie_stack_tourniquet(H, affecting, user, binding, tie_time, lasts, strip_name, FALSE)
 
+// TRUE while the helper can still reach the patient: themself, or someone beside them.
+/proc/tourniquet_patient_in_reach(mob/living/human/H, mob/user)
+	if (QDELETED(H) || QDELETED(user))
+		return FALSE
+	return H == user || user.Adjacent(H)
+
 /proc/tie_stack_tourniquet(mob/living/human/H, obj/item/organ/external/affecting, mob/user, obj/item/stack/binding, tie_time, lasts, strip_name, replacing)
 	var/whose = H == user ? "your" : "[H]'s"
 	var/strip = strip_name ? strip_name : (binding.singular_name ? binding.singular_name : binding.name)
 	var/action = replacing ? "replacing the makeshift tourniquet on" : "tying \a [strip] tight above the wound on"
 	user.visible_message(SPAN_NOTICE("\The [user] starts [action] [H]'s [affecting.name]."), \
 						SPAN_NOTICE("You start [action] [whose] [affecting.name]."))
-	if (!do_mob(user, H, tie_time) || affecting.tourniquet_grade() == TOURNIQUET_FULL || !binding.use(1))
+	// The patient must still be in reach when the knot is tied (#6214).
+	if (!do_mob(user, H, tie_time) || !tourniquet_patient_in_reach(H, user) || affecting.tourniquet_grade() == TOURNIQUET_FULL || !binding.use(1))
 		return TRUE
 	affecting.apply_tourniquet(lasts)
 	if (lasts)
