@@ -831,9 +831,7 @@
 
 	if (href_list["remove_player_info"])
 		var/key = href_list["remove_player_info"]
-		var/index = text2num(href_list["remove_index"])
-
-		notes_del(key, index)
+		notes_del(key, href_list["remove_id"], usr)
 		show_player_info(key)
 
 	if (href_list["notes"])

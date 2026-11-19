@@ -23,7 +23,7 @@
 //   shared_records.revoke(record, author, rank, reason)  -> the revoke record, or null
 //   shared_records.summary(ckey)        -> list("notes", "warnings", "watch", "bans", "hours", "kinds")
 //   shared_records.records_for(ckey)    -> every record about ckey, revoked ones marked "revoked"
-//   shared_records.active_bans(ckey, scope) -> active bans of one scope (null: every scope)
+//   shared_records.active_bans(ckey, scope) -> active bans of one scope ("game", "ooc", "job"; "any": every scope)
 //   shared_records.playtime_hours(ckey) -> hours connected with the character alive and awake
 //   shared_records.account_ckey(account) -> the ckey of a Discord account key (d:<id>), or null
 #define SHARED_RECORDS_JOURNAL "data/player_records.json"
@@ -43,6 +43,8 @@ var/global/datum/shared_records/shared_records = new
 	var/next_read = 0
 	var/busy = FALSE
 	var/serial = 0
+	var/hold_save = FALSE // TRUE while many records are added at once; the caller saves
+	var/migrated = FALSE
 
 // The folder the coordinator writes, beside the region folders.
 /datum/shared_records/proc/root()
@@ -60,11 +62,62 @@ var/global/datum/shared_records/shared_records = new
 /datum/shared_records/proc/linked()
 	return shard_group && shard_group.enabled && transfer_bridge && transfer_bridge.enabled()
 
+// Unix times are digit strings here: a DM number is a 32-bit float, which
+// near 1.8e9 only holds every 128th second, and json_encode would write it
+// with six significant digits. The snapshot files use digit strings too.
 /datum/shared_records/proc/now_unix()
-	var/stamp = text2num(rustg_unix_timestamp())
-	if (isnum(stamp) && stamp > SHARED_RECORDS_UNIX_2000)
-		return round(stamp)
-	return round(world.realtime / 10) + SHARED_RECORDS_UNIX_2000
+	var/stamp = rustg_unix_timestamp()
+	if (istext(stamp))
+		var/dot = findtext(stamp, ".")
+		if (dot)
+			stamp = copytext(stamp, 1, dot)
+		if (unix_valid(stamp))
+			return stamp
+	// Without rust_g: about two minutes coarse, which only delays dropping sent records.
+	return num2text(round(world.realtime / 10) + SHARED_RECORDS_UNIX_2000, 12)
+
+/datum/shared_records/proc/unix_valid(value)
+	var/regex/shape = regex("^\[0-9]{1,12}$")
+	return istext(value) && shape.Find(value)
+
+// A time as a digit string: text stays, a number (an old or hand-written
+// file) is converted, anything else is "0".
+/datum/shared_records/proc/unix_value(value)
+	if (unix_valid(value))
+		return value
+	if (isnum(value) && value >= 0)
+		return num2text(round(value), 12)
+	return "0"
+
+// TRUE when time a is later than time b.
+/datum/shared_records/proc/unix_after(a, b)
+	a = unix_value(a)
+	b = unix_value(b)
+	while (length(a) > 1 && copytext(a, 1, 2) == "0")
+		a = copytext(a, 2)
+	while (length(b) > 1 && copytext(b, 1, 2) == "0")
+		b = copytext(b, 2)
+	if (length(a) != length(b))
+		return length(a) > length(b)
+	return sorttext(a, b) < 0
+
+// Time a plus seconds (whole, 0 or more), exactly.
+/datum/shared_records/proc/unix_add(a, seconds)
+	a = unix_value(a)
+	seconds = max(0, round(seconds))
+	while (length(a) < 6)
+		a = "0[a]"
+	var/high = text2num(copytext(a, 1, length(a) - 4)) + round(seconds / 100000)
+	var/low = text2num(copytext(a, length(a) - 4)) + seconds % 100000
+	if (low >= 100000)
+		high += round(low / 100000)
+		low = low % 100000
+	var/low_text = num2text(low, 6)
+	while (length(low_text) < 5)
+		low_text = "0[low_text]"
+	if (!high)
+		return num2text(low, 6)
+	return "[num2text(high, 12)][low_text]"
 
 /datum/shared_records/proc/new_id(ckey, kind)
 	return md5("[region()]-[ckey]-[kind]-[world.realtime]-[world.timeofday]-[rand(1, 1000000000)]-[++serial]")
@@ -120,8 +173,10 @@ var/global/datum/shared_records/shared_records = new
 	var/body_text = json_encode(body)
 	if (length(body_text) > SHARED_RECORDS_MAX_BODY)
 		return null
-	if (kind == "ban" && !(body["scope"] in list("game", "ooc", "job")))
-		return null
+	if (kind == "ban")
+		if (!(body["scope"] in list("game", "ooc", "job")))
+			return null
+		body["until"] = unix_value(body["until"]) // "0": never ends
 	if (kind == "revoke" && !id_valid(body["target"]))
 		return null
 	if (isnull(id))
@@ -136,7 +191,8 @@ var/global/datum/shared_records/shared_records = new
 	var/list/record = list("id" = id, "ckey" = ckey, "kind" = kind, "author" = author, "rank" = rank,
 		"region" = region(), "at" = now_unix(), "body" = body, "sent" = 0)
 	journal += list(record)
-	save_journal()
+	if (!hold_save)
+		save_journal()
 	return record
 
 // Revokes a record (from records_for() or add()). Returns the revoke record.
@@ -165,6 +221,9 @@ var/global/datum/shared_records/shared_records = new
 	if (!force && world.time < next_read)
 		return
 	next_read = world.time + SHARED_RECORDS_READ_INTERVAL
+	if (!migrated)
+		migrated = TRUE
+		legacy_notes_migrate()
 	var/text = read_json("[root()]index.json")
 	if (istext(text) && text != index_text)
 		var/list/decoded = null
@@ -187,11 +246,11 @@ var/global/datum/shared_records/shared_records = new
 			bans = decoded["bans"]
 	var/list/pulled = islist(index["pulled"]) ? index["pulled"] : list()
 	var/pull = pulled[region()]
-	if (!isnum(pull) || !length(load_journal()))
+	if (!unix_valid(pull) || !length(load_journal()))
 		return
 	var/changed = FALSE
 	for (var/list/record in journal.Copy())
-		if (record["sent"] > 0 && pull > record["sent"])
+		if (unix_valid(record["sent"]) && unix_after(pull, record["sent"]))
 			journal -= list(record)
 			changed = TRUE
 	if (changed)
@@ -228,7 +287,7 @@ var/global/datum/shared_records/shared_records = new
 			continue
 		// Stamped after the agent has it, rounded up, so a coordinator pull
 		// later than this second has certainly collected it.
-		record["sent"] = now_unix() + 1
+		record["sent"] = unix_add(now_unix(), 1)
 		changed = TRUE
 	if (changed)
 		save_journal()
@@ -340,12 +399,41 @@ var/global/datum/shared_records/shared_records = new
 	for (var/list/ban in candidates)
 		if (ban["id"] in revoked)
 			continue
-		if (scope && ban["scope"] != scope)
+		if (scope != "any" && ban["scope"] != scope)
 			continue
-		var/until = isnum(ban["until"]) ? ban["until"] : 0
-		if (until && until <= now)
+		var/until = unix_value(ban["until"])
+		if (until != "0" && !unix_after(until, now))
 			continue // a temporary ban ends on its own
 		. += list(ban)
+
+// Every ckey with at least one active record of the given kinds, sorted.
+/datum/shared_records/proc/ckeys_with(list/kinds)
+	refresh()
+	var/list/found = list()
+	var/list/players = islist(index["players"]) ? index["players"] : list()
+	for (var/ckey in players)
+		var/list/known = players[ckey]
+		var/list/counts = islist(known) ? known["kinds"] : null
+		if (!islist(counts))
+			continue
+		for (var/kind in kinds)
+			if (counts[kind] > 0)
+				found[ckey] = TRUE
+				break
+	for (var/list/record in load_journal())
+		if (record["kind"] in kinds)
+			found[record["ckey"]] = TRUE
+	. = list()
+	for (var/ckey in found)
+		. += ckey
+	return sortList(.)
+
+// A record's time as text, in the host's time zone.
+/datum/shared_records/proc/time_text(at, format = "YYYY-MM-DD hh:mm")
+	var/seconds = text2num(unix_value(at)) - SHARED_RECORDS_UNIX_2000
+	if (seconds <= 0)
+		return "unknown"
+	return time2text(seconds * 10, format)
 
 /datum/shared_records/proc/watched(ckey)
 	return summary(ckey)["watch"]

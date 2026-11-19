@@ -67,7 +67,12 @@
 	return max(KARMA_PLAYTIME_FLOOR, min(1, hours / KARMA_FULL_WEIGHT_HOURS))
 
 /proc/karma_age_factor(at, now)
-	return (now - at) <= KARMA_AGE_SECONDS ? 1 : KARMA_AGE_FACTOR
+	// Times are digit strings (shared_player_records.dm): DM numbers are too coarse.
+	return shared_records.unix_after(now, shared_records.unix_add(at, KARMA_AGE_SECONDS)) ? KARMA_AGE_FACTOR : 1
+
+// TRUE when unix times a and b (digit strings) are at most seconds apart.
+/proc/karma_within(a, b, seconds)
+	return !shared_records.unix_after(a, shared_records.unix_add(b, seconds)) && !shared_records.unix_after(b, shared_records.unix_add(a, seconds))
 
 /proc/karma_live_records(ckey, kind)
 	. = list()
@@ -128,7 +133,7 @@
 		var/list/body = record["body"]
 		if (!isnum(body["value"]))
 			continue
-		if (!latest || record["at"] >= latest["at"])
+		if (!latest || !shared_records.unix_after(latest["at"], record["at"]))
 			latest = record
 	if (!latest)
 		return null
@@ -151,7 +156,7 @@
 		if (!istext(giver) || giver == ckey || !(body["rating"] in list("kindly", "poorly")))
 			continue
 		var/list/known = by_giver[giver]
-		if (!known || record["at"] >= known["at"])
+		if (!known || !shared_records.unix_after(known["at"], record["at"]))
 			by_giver[giver] = record
 	. = list()
 	for (var/giver in by_giver)
@@ -181,7 +186,7 @@
 		var/list/body = record["body"]
 		if (record["kind"] != "karma_rating" || !islist(body) || body["giver"] != ckey || (record["id"] in revoked))
 			continue
-		given[record["ckey"]] = list("kind" = body["rating"], "at" = time2text((record["at"] - 946684800) * 10, "YYYY-MM-DD"), "note" = body["note"])
+		given[record["ckey"]] = list("kind" = body["rating"], "at" = shared_records.time_text(record["at"], "YYYY-MM-DD"), "note" = body["note"])
 
 // One ckey's karma for staff, weighted like karma.py.
 /proc/karma_dossier(ckey)
@@ -211,7 +216,7 @@
 			for (var/other in received)
 				var/list/other_record = received[other]
 				var/list/other_body = other_record["body"]
-				if (other_body["rating"] == "poorly" && other_body["faction"] == body["faction"] && abs(other_record["at"] - record["at"]) <= KARMA_BURST_SECONDS)
+				if (other_body["rating"] == "poorly" && other_body["faction"] == body["faction"] && karma_within(other_record["at"], record["at"], KARMA_BURST_SECONDS))
 					peers++
 			if (peers >= KARMA_BURST_COUNT)
 				flags += "burst"

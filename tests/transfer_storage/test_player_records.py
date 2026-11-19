@@ -74,7 +74,8 @@ class SharedRecords(unittest.TestCase):
         self.assertEqual(1, self.coordinator.records_once(NOW))
         index = self.index()
         self.assertEqual(1, index['players']['bob']['notes'])
-        self.assertEqual(NOW, index['pulled']['alpha'])
+        self.assertEqual(str(NOW), index['pulled']['alpha'])
+        self.assertEqual(str(NOW - 100), read(os.path.join(self.shared, 'players', 'b', 'bob.json'))['records'][0]['at'])
         player = read(os.path.join(self.shared, 'players', 'b', 'bob.json'))
         self.assertEqual('alpha', player['records'][0]['region'])  # the agent's region, not the record's claim
         self.assertEqual({'text': 'note 1'}, player['records'][0]['body'])
@@ -89,6 +90,14 @@ class SharedRecords(unittest.TestCase):
         self.coordinator.records_once(NOW)
         self.assertEqual(1, self.coordinator.db.execute('SELECT COUNT(*) FROM player_record').fetchone()[0])
         self.assertEqual(1, self.index()['players']['bob']['notes'])
+
+    def test_dm_sends_times_as_digit_strings(self):
+        self.assertTrue(self.send('alpha', dict(record(1, kind='ban', body={'scope': 'game', 'until': str(NOW + 60)}),
+                                                at=str(NOW - 5)))['ok'])
+        self.coordinator.records_once(NOW)
+        ban = read(os.path.join(self.shared, 'bans.json'))['bans'][0]
+        self.assertEqual((str(NOW - 5), str(NOW + 60)), (ban['at'], ban['until']))
+        self.assertEqual(NOW - 5, self.coordinator.db.execute('SELECT at FROM player_record').fetchone()[0])
 
     def test_bad_records_are_refused_by_the_agent(self):
         for bad in (dict(record(1), id='xyz'), dict(record(1), ckey='Bob Smith'), dict(record(1), kind='Note!'),
@@ -119,7 +128,8 @@ class SharedRecords(unittest.TestCase):
         self.coordinator.records_once(NOW)
         bans = read(os.path.join(self.shared, 'bans.json'))['bans']
         self.assertEqual({rid(1), rid(2), rid(3)}, {b['id'] for b in bans})
-        self.assertEqual([{'id': rid(1), 'scope': 'game', 'until': NOW + 60}], self.index()['players']['bob']['bans'])
+        self.assertEqual([{'id': rid(1), 'scope': 'game', 'until': str(NOW + 60)}], self.index()['players']['bob']['bans'])
+        self.assertIn('0', {b['until'] for b in bans})
         # An hour later the temporary ban is gone with no unban record.
         self.coordinator.records_once(NOW + 3600)
         self.assertEqual({rid(2), rid(3)}, {b['id'] for b in read(os.path.join(self.shared, 'bans.json'))['bans']})
@@ -209,11 +219,24 @@ class SharedRecordsSource(unittest.TestCase):
 
     def test_a_refused_record_is_never_dropped_as_synced(self):
         self.assertIn('record["sent"] = -1', DM)
-        self.assertIn('record["sent"] > 0 && pull > record["sent"]', DM)
+        self.assertIn('unix_valid(record["sent"]) && unix_after(pull, record["sent"])', DM)
 
     def test_file_local_defines_are_undefined(self):
         for name in re.findall(r'^#define (\w+)', DM, re.M):
             self.assertIn('#undef ' + name, DM)
+
+    def test_notes_and_warnings_use_the_shared_records(self):
+        notes = open(os.path.join(ROOT, 'code/modules/admin/player_notes.dm'), encoding='utf-8').read()
+        self.assertNotIn('info << infos', notes)  # old notes are only read, for the one-time copy
+        self.assertIn('shared_records.add(key, "note"', notes)
+        self.assertIn('shared_records.revoke(record', notes)
+        topic = open(os.path.join(ROOT, 'code/modules/admin/topic.dm'), encoding='utf-8').read()
+        self.assertIn('notes_del(key, href_list["remove_id"], usr)', topic)
+        warn = open(os.path.join(ROOT, 'code/modules/admin/verbs/warn.dm'), encoding='utf-8').read()
+        self.assertLess(warn.index('notes_warn(warned_ckey, reason, usr)'), warn.index('for (var/client/C in clients)'))
+        admin = open(os.path.join(ROOT, 'code/modules/admin/admin.dm'), encoding='utf-8').read()
+        self.assertIn('shared_records.ckeys_with(list("note", "warning"))', admin)
+        self.assertIn('var/list/infos = notes_for(key)', admin)
 
     def test_heartbeat_reports_asleep(self):
         activity = open(os.path.join(ROOT, 'code/modules/player_activity/player_activity.dm'), encoding='utf-8').read()
