@@ -2909,7 +2909,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/workshop_machine/mover/windmill" = "watermills",
 		"/obj/structure/sawmill/large" = "watermills",
 		"/obj/structure/sawmill/powered" = "watermills",
-		// --- weaving (90) ---
+		// --- weaving (92) ---
 		"/obj/item/clothing/accessory/storage/lanyard" = "weaving",
 		"/obj/item/clothing/accessory/storage/belt_pouch/cloth" = "weaving",
 		"/obj/structure/component_workbench/armor" = "weaving",
@@ -2924,6 +2924,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/accessory/wearable_sign" = "weaving",
 		"/obj/item/clothing/glasses/eyepatch" = "weaving",
 		"/obj/item/clothing/glasses/sunglasses/blindfold" = "weaving",
+		"/obj/item/clothing/gloves/hand_wraps" = "weaving",
+		"/obj/item/clothing/gloves/hand_wraps/leather" = "weaving",
 		"/obj/item/clothing/gloves/thick/leather" = "weaving",
 		"/obj/item/clothing/gloves/thick/leather/black" = "weaving",
 		"/obj/item/clothing/gloves/thick/leather/brown" = "weaving",

@@ -390,6 +390,7 @@ RECIPE: /material/leather/,punk boots,/obj/item/clothing/shoes/punk,2,110,0,1,fo
 RECIPE: /material/leather/,mukluks,/obj/item/clothing/shoes/weather/mukluks,2,80,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/leather/,hobnailed boots,/obj/item/clothing/shoes/weather/hobnail_boots,2,90,0,1,foot wear,0,0,0,8,null
 RECIPE: /material/leather/,leather gloves,/obj/item/clothing/gloves/thick/leather,1,80,0,1,gloves,0,0,0,8,null
+RECIPE: /material/leather/,leather hand wraps,/obj/item/clothing/gloves/hand_wraps/leather,1,40,0,1,gloves,0,0,0,8,null
 
 //*****************| LEATHER ARMOR |***************************
 
@@ -750,6 +751,7 @@ RECIPE: /material/cloth/,cloth drawstring pouch,/obj/item/clothing/accessory/sto
 RECIPE: /material/cloth/,cloth drive belt,/obj/item/machine_part/belt,3,60,0,1,machine parts,0,0,0,8,cloth
 
 RECIPE: /material/cloth/,courier sneakers,/obj/item/clothing/shoes/sneakers/courier,3,80,0,1,foot wear,0,0,180,8,null
+RECIPE: /material/cloth/,cloth hand wraps,/obj/item/clothing/gloves/hand_wraps,1,40,0,1,gloves,0,0,0,8,null
 RECIPE: /material/cloth/,oven mittens,/obj/item/clothing/gloves/oven,3,80,0,1,gloves,45,0,8,8,null
 RECIPE: /material/cloth/,motorist gloves,/obj/item/clothing/gloves/motorist,3,80,0,1,gloves,0,0,180,8,null
 

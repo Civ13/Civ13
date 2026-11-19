@@ -526,6 +526,11 @@ SUITES = {
             'code/game/objects/structures/tree_climbing.dm',
             'code/modules/projectiles/projectile.dm',
             'code/game/mob/living/carbon/human/human.dm')},
+    # Bare-knuckle hand injuries: punch and animal hooks, wrap recipes and research.
+    'punch_injury': {'files': ('tests/punch_injury/test_sources.py',),
+        'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/simple_animal/simple_animal.dm')},
     # Training gear and the obstacle course: recipes, gates, hooks, saved fields and art.
     'active_training': {'files': ('tests/active_training/test_sources.py',),
         'paths': ('tests/active_training/', 'code/modules/1713/active_training.dm',

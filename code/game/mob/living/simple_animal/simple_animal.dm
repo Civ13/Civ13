@@ -426,6 +426,8 @@
 			M.visible_message("<span class = 'red'>[M] [response_harm] \the [src].</span>")
 			M.do_attack_animation(src)
 			playsound(get_turf(M), "punch", 50, TRUE, -1)
+			if (istype(M))
+				M.punch_hurts_hand(src, "chest", 3)
 
 	if (M.a_intent == I_HARM || M.a_intent == I_DISARM || M.a_intent == I_GRAB)
 		try_defensive_retaliation(M)
