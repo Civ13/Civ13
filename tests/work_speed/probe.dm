@@ -91,14 +91,17 @@ var/work_speed_runtime_error = FALSE
 	var/mob/living/human/farmer = work_speed_human(farming = 200)
 	work_speed_check(work_delay(farmer, 70, WORK_TILL, null) == 44, "farming weighs 0.6 of tilling speed")
 
-	var/kind_before = trade_focus_time["miner"]
-	trade_focus_time["miner"] = 0.75
 	average.traits = list("Miner")
 	average.traits_dirty = TRUE
-	trade_traits["Miner"] = "miner"
-	work_speed_check(work_delay(average, 120, WORK_MINE, iron_pick) == 90, "a matching trade shortens its own work")
-	trade_traits -= "Miner"
-	if (isnull(kind_before))
-		trade_focus_time -= "miner"
-	else
-		trade_focus_time["miner"] = kind_before
+	work_speed_check(average.trade() == "miner", "Miner is a trade")
+	work_speed_check(work_delay(average, 120, WORK_MINE, iron_pick) == 90, "a Miner mines 25% faster")
+	work_speed_check(work_delay(average, 100, WORK_DIG, iron_shovel) == 110, "a Miner digs 10% slower, like any other trade's work")
+	average.traits = list("Navvy")
+	average.traits_dirty = TRUE
+	work_speed_check(work_delay(average, 100, WORK_DIG, iron_shovel) == 80, "a Navvy digs 20% faster")
+	average.traits = list("Woodcutter")
+	average.traits_dirty = TRUE
+	work_speed_check(work_delay(average, CHOP_TREE_TIME, WORK_CHOP, iron_hatchet) == 41, "a Woodcutter fells 20% faster")
+	average.traits = list("Carpenter")
+	average.traits_dirty = TRUE
+	work_speed_check(work_delay(average, 100, WORK_DIG, iron_shovel) == 110, "an unrelated trade digs 10% slower")
