@@ -4,6 +4,10 @@ var/list/admin_verbs_default = list(
 	/client/proc/player_panel,
 	/client/proc/deadmin_self,			//destroys our own admin datum so we can play as a regular player,
 	/client/proc/cmd_admin_say,			//talk in the admin chat with every online admin,
+	/client/proc/admin_memo_write,
+	/client/proc/admin_memo_show,
+	/client/proc/admin_memo_delete,
+	/client/proc/watchlist_show,
 	/client/proc/hide_verbs,			//hides all our adminverbs,
 	/client/proc/hide_most_verbs,		//hides all our hideable adminverbs,
 	/client/proc/debug_variables,		//allows us to -see- the variables of any instance in the game. +VAREDIT needed to modify,
@@ -14,6 +18,8 @@ var/list/admin_verbs_default = list(
 	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/player_memo_write,
+	/client/proc/player_memo_delete,
 	/client/proc/bug_reports_panel,
 	/client/proc/crossroads_reroll_loot_pads,
 	/client/proc/crossroads_loot_report,

@@ -829,6 +829,19 @@
 		notes_add(key,add,usr)
 		show_player_info(key)
 
+	if (href_list["watchlist_add"])
+		var/key = ckey(href_list["watchlist_add"])
+		var/reason = sanitize(input("Why watch [key]? Staff on every region see this when they log in.") as null|text)
+		if (!key || !reason) return
+		watchlist_add(key, reason, usr)
+		show_player_info(key)
+
+	if (href_list["watchlist_remove"])
+		var/key = ckey(href_list["watchlist_remove"])
+		if (alert(usr, "Remove [key] from the watchlist on every region?", "Watchlist", "Yes", "No") != "Yes") return
+		watchlist_remove(key, usr)
+		show_player_info(key)
+
 	if (href_list["remove_player_info"])
 		var/key = href_list["remove_player_info"]
 		notes_del(key, href_list["remove_id"], usr)
