@@ -5,6 +5,7 @@
 //       rim beside you with a floor on top (Climb Up).
 // Down: off a vehicle top or out of a tree, a ladder down on or beside you,
 //       then an open edge beside you with ground one storey below (Climb Down).
+// In the open sea they Dive and Surface instead (free_diving.dm).
 //
 // The offer looks at the ground only, so a full hand or a pulled crate does
 // not grey a button out: pressing it then says what to change.
@@ -35,6 +36,9 @@
 /mob/living/human/updown_offer(mob/living/human/user, direction)
 	if (user != src || !isturf(loc))
 		return null
+	var/sea = sea_updown_offer(direction)
+	if (sea)
+		return sea
 	if (direction == UP)
 		var/obj/structure/multiz/ladder/L = updown_ladder(UP)
 		if (L)
@@ -61,6 +65,11 @@
 		return FALSE
 	if (stat || paralysis || stunned || weakened)
 		return FALSE
+	switch (sea_updown_offer(direction))
+		if ("Surface")
+			return surface_from_seabed()
+		if ("Dive")
+			return free_dive()
 	if (direction == UP)
 		if (vehicle_deck || climbed_tree)
 			to_chat(src, SPAN_WARNING("There is no way further up from here."))
