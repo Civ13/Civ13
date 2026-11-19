@@ -526,7 +526,7 @@ SUITES = {
             'code/game/objects/structures/tree_climbing.dm',
             'code/modules/projectiles/projectile.dm',
             'code/game/mob/living/carbon/human/human.dm')},
-    # Bare-knuckle hand injuries: punch and animal hooks, wrap recipes and research.
+    # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.
     'punch_injury': {'files': ('tests/punch_injury/test_sources.py',),
         'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',

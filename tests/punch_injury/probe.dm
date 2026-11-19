@@ -38,6 +38,9 @@ var/list/punch_probe_rolls = list()
 	punch_probe_rolls.Cut(1, 2)
 	return result
 
+/obj/item/stack/material/hand_wrap_wait(mob/living/human/H)
+	return TRUE
+
 /proc/punch_probe_assert(ok, label)
 	punch_probe_checks++
 	if (!ok)
@@ -113,6 +116,41 @@ var/list/punch_probe_rolls = list()
 	// --- the punch path: a pulled punch never injures -----------------------
 	var/datum/unarmed_attack/light_strike/LS = new
 	punch_probe_assert(!istype(LS, /datum/unarmed_attack/punch) && LS.deal_halloss, "sparring_strike_is_not_a_punch")
+
+	// --- wrapping: grab intent on your own hand -----------------------------
+	punch_probe_wear(H, null)
+	H.hand = 0
+	var/obj/item/stack/material/cloth/C = new(H.loc, 3)
+	H.put_in_active_hand(C)
+	H.a_intent = I_GRAB
+	punch_probe_assert(!C.attack(H, H, "chest") && !H.gloves, "wrap_needs_hand_target")
+	H.a_intent = I_HELP
+	C.attack(H, H, "r_hand")
+	punch_probe_assert(!H.gloves && C.amount == 3, "wrap_needs_grab_intent")
+	H.a_intent = I_GRAB
+	punch_probe_assert(C.attack(H, H, "r_hand") && istype(H.gloves, /obj/item/clothing/gloves/hand_wraps) && C.amount == 2, "cloth_wraps_hands")
+	var/obj/item/clothing/gloves/hand_wraps/W = H.gloves
+	punch_probe_assert(W.name == "cloth hand wraps" && W.unwraps_to == /obj/item/stack/material/cloth && H.punch_protection() == 60, "cloth_wrap_identity")
+	punch_probe_assert(!W.settle_wrap() && H.gloves == W, "worn_wrap_stays")
+	punch_probe_assert(C.attack(H, H, "l_hand") && H.gloves == W && C.amount == 2, "one_wrap_at_a_time")
+	// Dropped on the floor: the same cloth again.
+	H.drop_from_inventory(C)
+	qdel(C)
+	H.drop_from_inventory(W)
+	var/obj/item/stack/material/cloth/back = W.settle_wrap()
+	punch_probe_assert(istype(back) && back.amount == 1 && back.loc == H.loc && QDELETED(W), "dropped_wrap_is_cloth")
+	qdel(back)
+	// Leather, taken off into the hand: leather in that hand.
+	var/obj/item/stack/material/leather/LE = new(H.loc, 1)
+	H.put_in_active_hand(LE)
+	punch_probe_assert(LE.attack(H, H, "l_hand") && istype(H.gloves, /obj/item/clothing/gloves/hand_wraps/leather) && QDELETED(LE), "last_leather_wraps_hands")
+	W = H.gloves
+	punch_probe_assert(W.name == "leather hand wraps" && H.punch_protection() == 75, "leather_wrap_identity")
+	H.drop_from_inventory(W)
+	H.put_in_active_hand(W)
+	var/obj/item/stack/material/leather/LB = W.settle_wrap()
+	punch_probe_assert(istype(LB) && LB.amount == 1 && H.get_active_hand() == LB && QDELETED(W), "taken_off_wrap_is_leather_in_hand")
+	H.a_intent = I_HELP
 
 	// --- art stand-ins exist -------------------------------------------------
 	for (var/state in list("ncr_handwraps", "legion_handwraps"))

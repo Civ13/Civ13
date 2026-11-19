@@ -2,7 +2,7 @@
 
 The native probe (probe.dm, run.py) checks protection values and the injury
 itself in a real build. These checks keep the wiring it cannot reach: the
-punch and animal hooks, the wrap recipes and research, and the include.
+punch and animal hooks, wrap materials, and the include.
 """
 from pathlib import Path
 import unittest
@@ -41,18 +41,12 @@ class PunchInjurySources(unittest.TestCase):
     def test_punching_animals_risks_the_hand(self):
         self.assertIn('M.punch_hurts_hand(src, "chest", 3)', ANIMAL)
 
-    def test_wraps_have_recipes_and_research(self):
-        rows = {}
-        for line in RECIPES.splitlines():
-            if line.startswith('RECIPE: '):
-                cells = line[len('RECIPE: '):].split(',')
-                rows[cells[2]] = cells
-        for path, material in WRAPS.items():
-            self.assertIn(path, rows, path)
-            row = rows[path]
-            self.assertEqual(len(row), 13, path)
-            self.assertEqual((row[0], int(row[3]), row[7], int(row[8])), (material, 1, 'gloves', 0), path)
-            self.assertIn('"%s" = "weaving",' % path, NODES)
+    def test_wraps_are_material_not_recipes(self):
+        # Cloth and leather wrap the hands directly and unwind back; no recipe.
+        self.assertNotIn('hand_wraps', RECIPES)
+        self.assertNotIn('hand_wraps', NODES)
+        for stack, wrap in (('cloth', 'hand_wraps'), ('woolcloth', 'hand_wraps'), ('leather', 'hand_wraps/leather')):
+            self.assertIn('/obj/item/stack/material/%s\n\thand_wrap_type = /obj/item/clothing/gloves/%s' % (stack, wrap), SOURCE)
 
     def test_slot_jewellery_gives_no_protection(self):
         for path in ('/obj/item/clothing/gloves/rings', '/obj/item/clothing/gloves/watch'):

@@ -39,23 +39,100 @@
 /obj/item/clothing/gloves/fingerless/legionaire
 	punch_protection = 75
 
-// The simplest protection: a strip of cloth or leather wound round the
-// knuckles and wrist. The fingers stay free.
+// The simplest protection: cloth or leather wound round the knuckles and
+// wrist. On grab intent, use a cloth or leather stack on your own hand to wrap
+// both hands with one sheet. The wrap is still that sheet: taken off, dropped
+// or stripped, it unwinds into the same material again.
+/obj/item/stack/material
+	var/hand_wrap_type = null
+
+/obj/item/stack/material/cloth
+	hand_wrap_type = /obj/item/clothing/gloves/hand_wraps
+
+/obj/item/stack/material/woolcloth
+	hand_wrap_type = /obj/item/clothing/gloves/hand_wraps
+
+/obj/item/stack/material/leather
+	hand_wrap_type = /obj/item/clothing/gloves/hand_wraps/leather
+
+/obj/item/stack/material/attack(mob/living/M, mob/living/user, target_zone)
+	if (hand_wrap_type && M == user && user.a_intent == I_GRAB && (target_zone in list("l_hand", "r_hand")) && ishuman(user))
+		wrap_hands(user)
+		return TRUE
+	return ..()
+
+/obj/item/stack/material/proc/wrap_hands(mob/living/human/H)
+	if (H.gloves)
+		to_chat(H, SPAN_WARNING("Take off \the [H.gloves] first."))
+		return FALSE
+	H.visible_message(SPAN_NOTICE("[H] starts winding \the [src] around \his hands."), SPAN_NOTICE("You start winding \the [src] around your hands."))
+	if (!hand_wrap_wait(H) || H.gloves || QDELETED(src) || loc != H || amount < 1)
+		return FALSE
+	var/obj/item/clothing/gloves/hand_wraps/W = new hand_wrap_type(H)
+	W.unwraps_to = type
+	W.name = "[initial(name)] hand wraps"
+	use(1)
+	if (!H.equip_to_slot_if_possible(W, slot_gloves))
+		W.forceMove(get_turf(H))
+		W.unwind()
+		return FALSE
+	to_chat(H, SPAN_NOTICE("You bind your knuckles and wrists with \the [W]."))
+	return TRUE
+
+// Overridden by the probe, which has no do_after timing.
+/obj/item/stack/material/proc/hand_wrap_wait(mob/living/human/H)
+	return do_after(H, 20, H)
+
 /obj/item/clothing/gloves/hand_wraps
 	name = "cloth hand wraps"
-	desc = "Strips of cloth wound tight around the knuckles and wrist. They keep a punch from splitting your hand open."
+	desc = "A strip of cloth wound tight around the knuckles and wrists. It keeps a punch from splitting your hand open, and unwinds back into cloth when taken off."
 	icon_state = "ncr_handwraps"
 	item_state = "ncr_handwraps"
 	fingerprint_chance = 100
 	flammable = TRUE
 	punch_protection = 60
+	var/unwraps_to = /obj/item/stack/material/cloth
 
 /obj/item/clothing/gloves/hand_wraps/leather
 	name = "leather hand wraps"
-	desc = "Leather strips bound around the knuckles and wrist. They take the sting out of a hard punch."
+	desc = "Leather bound around the knuckles and wrists. It takes the sting out of a hard punch, and unwinds back into leather when taken off."
 	icon_state = "legion_handwraps"
 	item_state = "legion_handwraps"
 	punch_protection = 75
+	unwraps_to = /obj/item/stack/material/leather
+
+// Anywhere but on the hands, the wrap is a sheet again. Settled a tick later,
+// so a wrap taken off into the hand finishes moving before it unwinds.
+/obj/item/clothing/gloves/hand_wraps/equipped(mob/user, slot)
+	..()
+	if (slot != slot_gloves)
+		spawn(1)
+			settle_wrap()
+
+/obj/item/clothing/gloves/hand_wraps/dropped(mob/user)
+	..()
+	spawn(1)
+		settle_wrap()
+
+/obj/item/clothing/gloves/hand_wraps/proc/settle_wrap()
+	if (QDELETED(src))
+		return FALSE
+	var/mob/living/human/H = loc
+	if (istype(H) && H.gloves == src)
+		return FALSE
+	return unwind()
+
+/obj/item/clothing/gloves/hand_wraps/proc/unwind()
+	var/atom/where = loc
+	var/mob/M = ismob(where) ? where : null
+	if (M)
+		M.drop_from_inventory(src)
+		where = M.loc
+	var/obj/item/stack/material/S = new unwraps_to(M ? M : where, 1, !M)
+	if (M && !M.put_in_hands(S))
+		S.forceMove(where)
+	qdel(src)
+	return S
 
 /mob/living/human/proc/punch_protection()
 	var/obj/item/clothing/gloves/G = gloves
