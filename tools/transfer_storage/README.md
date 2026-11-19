@@ -358,3 +358,20 @@ for this region is later than the send. Outside a shard group the journal is
 the only store.
 
 Read-only look: `python3 tools/transfer_storage/records.py --db coordinator.sqlite --ckey <ckey>`.
+
+### Karma
+
+`karma.py` reads three record kinds from the same table: `karma_rating`
+(about the rated ckey; the giver's latest rating of a ckey counts, and
+revoking it leaves the pair with none), `karma_standing` (staff's -2..+2
+standing, latest counts) and `karma_bar` (no giving while live). Each rating's
+weight is the giver's standing factor x playtime factor (share of 100 hours,
+at least 0.05) x age factor (0.5 after 90 days); a giver under an active game
+ban counts for nothing until the ban ends. After each pass the coordinator
+writes `shared-records/karma/<ckey>.json` for every ckey with karma (received,
+given, standing or bar), only when its content changed: the game reads the
+`given` list and the Discord bot's staff-only `karma` command reads the rest.
+`code/modules/karma/karma_ledger.dm` computes the same weights live for the
+staff dossier. Karma is never shown to players.
+
+Read-only look: `python3 tools/transfer_storage/karma.py --db coordinator.sqlite --ckey <ckey>`.

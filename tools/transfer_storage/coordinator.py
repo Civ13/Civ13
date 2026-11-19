@@ -48,6 +48,7 @@ from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony
 from tools.transfer_storage.world_chart import WorldChart, land_home, owner_valid, tile_valid
 from tools.transfer_storage.nations import Nations
 from tools.transfer_storage import records as player_records
+from tools.transfer_storage import karma as player_karma
 
 
 # Land readiness (docs/land-stages.md). Placeholder thresholds for Val to tune:
@@ -224,6 +225,8 @@ class Coordinator(TrainCustody):
         self.records = player_records.Snapshots(
             self.db, records_dir or os.path.join(root, player_records.RECORDS_DIR),
             activity_db if activity_db is not None else os.path.join(root, 'player-activity.sqlite'))
+        # Hidden karma (karma.py): per-ckey files in shared-records/karma/.
+        self.karma = player_karma.KarmaFiles(self.db, self.records.root)
 
     def close(self):
         self.db.close()
@@ -736,6 +739,7 @@ class Coordinator(TrainCustody):
                 except (OSError, ValueError):
                     pass  # sent again next pass; storing it twice changes nothing
         self.records.write(now)
+        self.karma.write(now, self.records.hours)
         return stored
 
     def relay_once(self):
