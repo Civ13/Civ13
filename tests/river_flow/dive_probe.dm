@@ -83,8 +83,14 @@ var/dive_runtime_error = FALSE
 	H.loc = shelf_top
 	dive_check(free_dive_target(shelf_top) == shelf, "the seabed straight below the open sea is the dive target")
 	dive_check(isnull(free_dive_target(locate(4, 10, 2))), "nobody dives from the shallows")
+	var/turf/shallows = locate(4, 10, 2)
+	H.loc = shallows
+	dive_check(H.updown_offer(H, DOWN) != "Dive", "the shallows offer no Dive")
+	H.loc = shelf_top
 	dive_check(!shelf.CanPass(H, shelf), "a surface swimmer cannot step onto the seabed")
 	H.swim_tiredness = 90
+	dive_check(H.updown_offer(H, DOWN) == "Dive" && isnull(H.updown_offer(H, UP)), "over the seabed the down button offers Dive")
+	dive_check(!H.updown_press(H, DOWN) && H.loc == shelf_top, "a tired swimmer pressing down does not dive")
 	dive_check(!H.free_dive() && H.loc == shelf_top, "a tired swimmer cannot dive")
 	H.swim_tiredness = 0
 	H.swim_breath = 2
@@ -97,6 +103,7 @@ var/dive_runtime_error = FALSE
 	H.free_diving = TRUE
 	H.swim_breath = H.swim_breath_max()
 	H.loc = shelf
+	dive_check(H.updown_offer(H, UP) == "Surface" && isnull(H.updown_offer(H, DOWN)), "on the seabed the up button offers Surface")
 	dive_check(H.can_walk_seabed() && locate(9, 10, 1).CanPass(H, locate(9, 10, 1)), "a free diver swims the shelf")
 	dive_check(!open.CanPass(H, open), "an ordinary diver cannot swim out to open water")
 	dive_check(H.water_step_delay(shelf) == 20, "an unskilled free diver swims the seabed at the surface speed, not the 3 ds walk")

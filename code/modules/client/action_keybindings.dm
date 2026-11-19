@@ -21,8 +21,8 @@
 		"storage_clothing" = list("Open harness / webbing / pockets", "open-clothing-storage", list("CTRL+SHIFT+I"), list("SHIFT+I", "CTRL+SHIFT+I")),
 		"resist" = list("Resist (escape grab, cuffs, buckle, fire)", "Resist", list("CTRL+B"), list("CTRL+B")),
 		"craft" = list("Craft with nearby materials", "craft-within-reach", list("CTRL+SHIFT+C"), list("SHIFT+C", "CTRL+SHIFT+C")),
-		"floor_up" = list("Go up a level (ladder, stairs, ledge)", "go-up", list(), list()),
-		"floor_down" = list("Go down a level (ladder, edge, tree)", "go-down", list(), list()))
+		"floor_up" = list("Go up a level (ladder, stairs, ledge, surface)", "go-up", list(), list()),
+		"floor_down" = list("Go down a level (ladder, edge, tree, dive)", "go-down", list(), list()))
 	return catalog
 
 // Actions added after players had already saved bindings. Their defaults give
