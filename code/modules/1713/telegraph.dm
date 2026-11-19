@@ -144,6 +144,8 @@
 	if (world.time <= lastproc)
 		return
 	else
+		// Mark this pole before forwarding so loops in the pole network end here.
+		lastproc = world.time+3
 		//left
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x-3,y,z)))
 			if (PL != origin && PL != src)
@@ -172,13 +174,14 @@
 		for (var/obj/structure/telegraph/TLG in range(2,src))
 			if (TLG != TL)
 				TLG.receive(msg,stripmsg)
-	lastproc = world.time+3
 /obj/structure/phoneline/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone)
 	if (!origin || !target)
 		return
 	if (world.time <= lastproc)
 		return
 	else
+		// Mark this pole before forwarding so loops in the pole network end here.
+		lastproc = world.time+3
 		//left
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x-3,y,z)))
 			if (PL != origin && PL != src)
@@ -208,7 +211,6 @@
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
 				if (!TLG.ringing)
 					TLG.ringproc(origin, originphone)
-	lastproc = world.time+3
 /obj/structure/phonecable
 	name = "communications cable"
 	desc = "A thin copper cable used for communications"
