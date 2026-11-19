@@ -8,7 +8,7 @@ save immediately in the existing account preferences, across reconnects/restarts
 Cancel leaves the assignment unchanged. To swap keys, unbind one action first.
 Restoring one action refuses conflicts; restoring all always succeeds.
 
-The catalog covers prone, aiming mode, sights/drone/tank gun, running, movement
+The catalog covers prone, aiming mode, sights/drone/tank gun, running, sprinting, movement
 mode, defense and secondary intents, tactics, facing, buckling, quick equip,
 holstering, directional attacks and opening worn storage (cycle all, back, belt,
 and clothing attachments such as a leather harness, webbing or pockets) and resisting.
@@ -20,7 +20,7 @@ The finite key list supports plain keys, Ctrl, Shift and Ctrl+Shift. Typing mode
 only permits Ctrl and Ctrl+Shift combinations plus its pre-existing F and Space shortcuts.
 Movement, held activation, chat, spell, targeting, menu and help shortcuts remain
 reserved. Movement and held activation retain their original release handlers;
-discrete actions add no held state. Applying bindings changes only the 76 named
+discrete actions add no held state. Applying bindings changes only the 88 named
 action slots and 8 held slots and does not set focus, replace macro sets or reset movement.
 
 Held actions (`held_keybinding_catalog()`) have one key per mode and two skin

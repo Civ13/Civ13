@@ -6,6 +6,7 @@
 		"aim" = list("Toggle aiming mode", "toggle-gun-mode", list(), list("J", "CTRL+J")),
 		"sights" = list("Use sights / drone / tank gun", "on-press-spacebar", list("Space"), list("Space")),
 		"run" = list("Toggle running", "m-intent-run", list(), list("M")),
+		"sprint" = list("Toggle sprinting", "m-intent-sprint", list(), list("SHIFT+M")),
 		"movement" = list("Cycle movement mode", "m-intent-change", list(), list(".")),
 		"defense" = list("Cycle defense intent", "defense-intent-change", list(), list("V")),
 		"secondary" = list("Cycle secondary intent", "secondary-intent-change", list(), list("U")),
@@ -29,7 +30,7 @@
 // way to any key a player saved for another action, so an older saved layout
 // (for example prone on K) is kept instead of failing validation and resetting.
 /proc/action_keybinding_yielding()
-	return list("storage", "storage_back", "storage_belt", "storage_clothing", "resist", "craft")
+	return list("storage", "storage_back", "storage_belt", "storage_clothing", "resist", "craft", "sprint")
 
 // Held actions: one key per mode, with a press macro and a matching KEY+UP
 // release macro (skin IDs held_<action>_1 and held_<action>_1_up). They use

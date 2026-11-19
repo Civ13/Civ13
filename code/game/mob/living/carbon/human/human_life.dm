@@ -292,6 +292,9 @@
 		if (stamina_values[2] < 80)
 			stamina_values[2] = 80
 
+		// A sprint flag left over from a run that ended some other way.
+		if (sprinting && m_intent != "run")
+			sprinting = FALSE
 		if (getStat("stamina") == getMaxStat("stamina")-1 && m_intent == "walk")
 			to_chat(src, "<span class = 'good'>You feel like you can run for a while.</span>")
 

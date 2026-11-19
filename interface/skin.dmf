@@ -217,6 +217,14 @@ macro "macro"
 		name = ""
 		command = "m-intent-run"
 		is-disabled = true
+	elem "action_sprint_1"
+		name = ""
+		command = "m-intent-sprint"
+		is-disabled = true
+	elem "action_sprint_2"
+		name = ""
+		command = "m-intent-sprint"
+		is-disabled = true
 	elem "action_movement_1"
 		name = ""
 		command = "m-intent-change"
@@ -676,6 +684,13 @@ macro "hotkeymode"
 	elem "action_run_2"
 		name = ""
 		command = "m-intent-run"
+		is-disabled = true
+	elem "action_sprint_1"
+		name = "SHIFT+M"
+		command = "m-intent-sprint"
+	elem "action_sprint_2"
+		name = ""
+		command = "m-intent-sprint"
 		is-disabled = true
 	elem "action_movement_1"
 		name = "."
