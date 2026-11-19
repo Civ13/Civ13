@@ -65,7 +65,9 @@
 // Grade of the stock a piece was forged from; quench_tub.dm hardens to it.
 /obj/item/weapon/material/var/tmp/forged_grade = 1
 
+// Returns the piece, so the anvil can pass it on to finish_forged_piece().
 /obj/structure/anvil/proc/apply_stock_grade(obj/item/I, obj/item/stack/material/stock)
+	. = I
 	if (!istype(stock))
 		return
 	if (istype(I, /obj/item/clothing))
