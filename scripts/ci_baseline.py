@@ -1913,6 +1913,9 @@ SUITES = {
             'code/modules/multiz/structures.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib + reviewed source projection with inert recipients and event queue.
     # No native fixture, process, network or live message transport is imported.
+    'flamethrower_fire_guard': {'files': ('tests/flamethrower_fire/test_incapacitated.py',),
+        'paths': ('tests/flamethrower_fire/',), 'shared_paths': (
+            'code/modules/1713/weapons/flamethrower.dm', 'tests/save_movement/source_adapter.py')},
     'skullisland_grace_transfer': {'files': ('tests/skullisland_grace/test_grace_transfer.py',),
         'paths': ('tests/skullisland_grace/',), 'shared_paths': (
             'code/game/objects/map_metadata/skullisland.dm', 'tests/save_movement/source_adapter.py')},

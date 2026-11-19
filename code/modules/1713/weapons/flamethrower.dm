@@ -43,6 +43,9 @@
 /obj/item/weapon/flamethrower/proc/fire(var/mob/living/human/H,var/cdir=null,atom/target)
 	if (!active || !H)
 		return
+	// World clicks reach here before click.dm rejects an incapacitated user.
+	if (H.stat || H.paralysis || H.stunned || H.weakened)
+		return
 	if (world.time<=lastfire)
 		return
 	if (!H.has_empty_hand(both = FALSE))
