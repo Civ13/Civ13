@@ -2083,6 +2083,7 @@
 #include "code\modules\1713\mechanical_power.dm"
 #include "code\modules\1713\machine_shop.dm"
 #include "code\modules\1713\power_cranes.dm"
+#include "code\modules\1713\earthworking_heavy.dm"
 #include "code\modules\1713\earthworking_tools.dm"
 #include "code\modules\1713\earthworks.dm"
 #include "code\modules\1713\wire_bench.dm"
