@@ -326,10 +326,12 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Offline fixture composition only; this suite does not launch BYOND.
     'fixture_source_projection': {'files': ('tests/fixture_source_projection/test_projection.py',),
-        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py') +
+        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py',
+                  'tests/processing_list_removal/', 'scripts/processing_list_projection.py') +
             tuple(f'tests/{name}/run.py' for name in (
                 'faction_membership', 'faction_recruitment', 'research_persistence')),
         'shared_paths': (
+            'code/__defines/subsystem.dm',
             'tests/faction_membership/probe.dm', 'tests/faction_recruitment/probe.dm',
             'tests/research_persistence/probe.dm', 'code/game/mob/groups/faction_membership.dm',
             'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/faction_rename.dm',
