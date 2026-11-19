@@ -551,6 +551,8 @@
 		to_chat(owner, "Name = <b>[M.name]</b>; Real_name = [M.real_name]; Mind_name = [M.mind?"[M.mind.name]":""]; Key = <b>[M.key]</b>;")
 		to_chat(owner, "Location = [location_description];")
 		to_chat(owner, "[special_role_description]")
+		if (check_rights(R_ADMIN, FALSE) && karma_mob_ckey(M))
+			to_chat(owner, "Karma (hidden):[karma_staff_badge(karma_mob_ckey(M))]")
 		to_chat(owner, "(<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a>) (<A HREF='?src=\ref[src];adminplayeropts=\ref[M]'>PP</A>) (<A HREF='?_src_=vars;Vars=\ref[M]'>VV</A>) (<A HREF='?src=\ref[src];subtlemessage=\ref[M]'>SM</A>) ([admin_jump_link(M, src)]) (<A HREF='?src=\ref[src];secretsadmin=check_antagonist'>CA</A>)")
 
 	else if (href_list["adminspawncookie"]) // Why the fuck do we even need it?

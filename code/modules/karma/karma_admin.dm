@@ -31,6 +31,38 @@ var/global/datum/karma_admin_window/karma_admin_window = new
 		return karma_character_ckey(M)
 	return ismob(M) && M.ckey ? M.ckey : null
 
+// A short karma badge for staff lines (prayers, beseeching, adminhelps, the
+// "?" link): standing and weighted counts, coloured by the net, with a link to
+// the full window. Reads the coordinator's file when there is one (one small
+// read); a server outside a shard group computes it from its journal.
+// Staff only: callers show it to R_ADMIN holders.
+/proc/karma_staff_badge(ckey)
+	ckey = ckey(ckey)
+	if (!length(ckey))
+		return ""
+	var/list/summary = null
+	var/standing_label = null
+	var/text = shared_records.read_json("[shared_records.root()]karma/[ckey].json")
+	if (istext(text))
+		var/list/file = null
+		try
+			file = json_decode(text)
+		catch
+			file = null
+		if (islist(file) && islist(file["summary"]))
+			summary = file["summary"]
+			var/list/standing = file["standing"]
+			standing_label = islist(standing) ? karma_standing_name(standing["value"]) : null
+	if (!summary)
+		var/list/dossier = karma_dossier(ckey)
+		summary = dossier["summary"]
+		var/list/standing = dossier["standing"]
+		standing_label = islist(standing) ? karma_standing_name(standing["value"]) : null
+	var/net = summary["kindly_weighted"] - summary["poorly_weighted"]
+	var/colour = net > 0 ? "#2a8a2a" : net < 0 ? "#c03030" : "#808080"
+	var/label = "K: [standing_label ? standing_label : "-"] +[summary["kindly"]]/-[summary["poorly"]]"
+	return " (<a href='?src=\ref[karma_admin_window];karma_ckey=[ckey];karma_act=refresh' title='Hidden karma: weighted [summary["kindly_weighted"]] kindly, [summary["poorly_weighted"]] poorly'><font color='[colour]'>[label]</font></a>)"
+
 // One line for the Player Panel and prayer lines: standing and weighted counts.
 /proc/karma_brief(ckey)
 	var/list/dossier = karma_dossier(ckey)

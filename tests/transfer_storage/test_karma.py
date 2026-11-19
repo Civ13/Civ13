@@ -214,6 +214,22 @@ class KarmaAdmin(unittest.TestCase):
             self.assertIn(shown, self.dm)
         self.assertIn('show_browse(C, html', self.dm)
 
+    def test_staff_see_the_badge_where_they_meet_players(self):
+        self.assertIn('/proc/karma_staff_badge(ckey)', self.dm)
+        self.assertIn('karma/[ckey].json', self.dm)
+        self.assertIn('karma_dossier(ckey)', self.dm)  # no coordinator: computed from the journal
+        def src(*parts):
+            with open(os.path.join(ROOT, *parts), encoding='utf-8') as f:
+                return f.read()
+        for parts in (('code', 'game', 'mob', 'pray.dm'), ('code', 'modules', 'divine', 'covenant.dm'),
+                      ('code', 'modules', 'admin', 'verbs', 'divine_patron.dm'), ('code', 'modules', 'admin', 'topic.dm')):
+            self.assertIn('karma_staff_badge(karma', src(*parts), parts)
+        self.assertIn('check_rights(R_ADMIN, FALSE) && karma_mob_ckey(M)', src('code', 'modules', 'admin', 'topic.dm'))
+        # Adminhelps: admins get the badge, mods and mentors the plain line.
+        ahelp = src('code', 'modules', 'admin', 'verbs', 'adminhelp.dm')
+        self.assertIn('(R_ADMIN & X.holder.rights) ? karma_msg : msg', ahelp)
+        self.assertNotIn('karma_msg', ahelp.split('else if (R_MENTOR & X.holder.rights)')[1])
+
 
 JS_STUB = '''
 var nodes = {};
