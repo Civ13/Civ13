@@ -246,6 +246,8 @@
 
 		if (accept_crucible(I, H))
 			return
+		if (accept_aging_steel(I, H)) // alloy_steels.dm
+			return
 
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
@@ -264,6 +266,7 @@
 
 /obj/structure/furnace/kiln/process()
 	fire_crucibles()
+	age_steel() // alloy_steels.dm
 	for (var/obj/item/weapon/clay/mold/MCC in contents)
 		if (MCC.fired && MCC.capacity == 0 && MCC.max_capacity > 0 && MCC.contents_materials.len)
 			if (("copper" in MCC.contents_materials) && ("tin" in MCC.contents_materials))

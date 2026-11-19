@@ -36,6 +36,7 @@ NODES = read('code/modules/research_tree/research_node.dm')
 RECIPES = read('config/crafting/material_recipes_global.txt')
 ALLOYS = read('code/modules/1713/alloy_steels.dm')
 MINING = read('code/game/turfs/floor_attackby.dm')
+TRAINS = read('code/modules/1713/train_servicing.dm')
 
 
 class SteelGrades(unittest.TestCase):
@@ -237,6 +238,35 @@ class AlloySteels(unittest.TestCase):
         armor = proc(GRADES, '/proc/grade_forged_armor(')
         self.assertIn('max(value, min(GRADED_ARMOR_CAP, round(value * factor)))', armor)
         self.assertIn('key == "melee" ? stock.armor_blunt_grade : stock.armor_pierce_grade', armor)
+
+
+class LateAlloys(unittest.TestCase):
+    def test_chromite_from_the_world_war_age(self):
+        mine = proc(ALLOYS, '/turf/proc/mining_alloy_ores(')
+        self.assertIn('map.ordinal_age >= CHROMITE_ORE_AGE', mine)
+        self.assertIn('#define CHROMITE_ORE_AGE 6', ALLOYS)
+
+    def test_arc_furnace_makes_maraging_then_inconel(self):
+        out = proc(ALLOYS, '/obj/structure/steel_works/arc_furnace/alloy_output(')
+        self.assertLess(out.index('maraging_soft'), out.index('/obj/item/stack/inconel'))
+        self.assertIn('map.ordinal_age >= MARAGING_AGE', out)
+        self.assertIn('#define MARAGING_AGE 7', ALLOYS)
+        self.assertIn('var/alloyed = alloy_output(T, made)', proc(WORKS, '/obj/structure/steel_works/proc/produce('))
+        self.assertIn('alloy_output_types()', proc(WORKS, '/obj/structure/steel_works/factory_offer('))
+
+    def test_maraging_ages_in_a_kiln(self):
+        self.assertIn('if (accept_aging_steel(I, H))', REFINING)
+        self.assertIn('age_steel()', proc(REFINING, '/obj/structure/furnace/kiln/process()'))
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel/maraging, T, aged)', proc(ALLOYS, '/obj/structure/furnace/kiln/proc/age_steel()'))
+        block = proc(ALLOYS, '/obj/item/stack/material/steel/maraging\n')
+        self.assertIn('stock_grade = 1.25', block)
+        self.assertIn('armor_pierce_grade = 1.35', block)
+        self.assertNotIn('stock_grade', proc(ALLOYS, '/obj/item/stack/material/steel/maraging_soft\n'))
+
+    def test_inconel_overhaul_halves_engine_wear(self):
+        self.assertIn('mileage += inconel_parts ? tiles / 2 : tiles', TRAINS)
+        self.assertIn('return M.amount >= TRAIN_INCONEL_PARTS', proc(TRAINS, '/proc/train_overhaul_parts('))
+        self.assertIn('overhaul(inconel)', proc(TRAINS, '/obj/structure/trains/locomotive/proc/overhaul_by('))
 
 
 if __name__ == '__main__':

@@ -225,9 +225,10 @@
 // Puts out what one firing made. Default: output_ratio per unit of charge.
 /obj/structure/steel_works/proc/produce(turf/T)
 	var/made = round(charge * output_ratio)
-	if (made > 0)
-		spawn_stack(output_type, T, made)
-	visible_message(SPAN_NOTICE("\The [src] finishes its work: [made] [made == 1 ? "piece" : "pieces"] out."))
+	var/alloyed = alloy_output(T, made) // alloy_steels.dm
+	if (made - alloyed > 0)
+		spawn_stack(output_type, T, made - alloyed)
+	visible_message(SPAN_NOTICE("\The [src] finishes its work: [made] [made == 1 ? "piece" : "pieces"] out[alloyed ? ", [alloyed] of it alloy" : ""]."))
 	return made
 
 /obj/structure/steel_works/after_load()
@@ -292,7 +293,7 @@
 /obj/structure/steel_works/factory_offer(to_dir = 0, filter_type = null)
 	if (!anchored)
 		return null
-	return factory_offer_tile_output(src, list(output_type), filter_type)
+	return factory_offer_tile_output(src, list(output_type) + alloy_output_types(), filter_type)
 
 /obj/structure/steel_works/factory_take(obj/item/I, atom/destination)
 	return factory_take_tile_output(src, I, destination)
