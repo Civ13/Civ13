@@ -183,6 +183,9 @@
 /client/verb/drop_item()
 	set hidden = TRUE
 	if (mob.stat == CONSCIOUS && isturf(mob.loc))
+		var/obj/item/held = mob.get_active_hand()
+		if (held && held.player_drop_refused(mob))
+			return
 		return mob.drop_item()
 	return
 
@@ -630,6 +633,14 @@
 		if (mob.pinned.len)
 			if (world.time >= mob.next_cannotmove_message)
 				to_chat(src, SPAN_NOTICE("You're pinned to a wall by [mob.pinned[1]]!"))
+				mob.next_cannotmove_message = world.time + 10
+			return FALSE
+
+		// A firm grip on your hand keeps you beside whoever holds it (grab_hand_hold.dm).
+		var/mob/firm_holder = mob.hand_hold_leash_blocks(n)
+		if (firm_holder)
+			if (world.time >= mob.next_cannotmove_message)
+				to_chat(src, SPAN_WARNING("[firm_holder] has a firm grip on your hand! Resist to pull free."))
 				mob.next_cannotmove_message = world.time + 10
 			return FALSE
 

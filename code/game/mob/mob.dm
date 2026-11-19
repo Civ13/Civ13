@@ -912,7 +912,7 @@
 		density = initial(density)
 
 	for (var/obj/item/weapon/grab/G in grabbed_by)
-		if (G.state >= GRAB_AGGRESSIVE)
+		if (G.state >= GRAB_AGGRESSIVE && !G.hand_partner)
 			canmove = FALSE
 			break
 

@@ -133,21 +133,35 @@
 					if (G.assailant == M)
 						to_chat(M, SPAN_NOTICE("You already grabbed [src]."))
 						return
+				// The grab takes hold of the targeted part (grab_hand_hold.dm).
+				var/grab_zone = grab_target_zone(tgt, H.targeted_organ == "random")
+				if (!grab_zone)
+					to_chat(M, SPAN_WARNING("[src] is missing that limb!"))
+					return FALSE
 				if (w_uniform)
 					w_uniform.add_fingerprint(M)
 
 				var/obj/item/weapon/grab/G = new /obj/item/weapon/grab(M, src)
 				if (buckled)
 					to_chat(M, SPAN_NOTICE("You cannot grab [src], \he is buckled in!"))
-				if (!G)	//the grab will delete itself in New if affecting is anchored
+				if (!G || QDELETED(G))	//the grab will delete itself in New if affecting is anchored
 					return
 				M.put_in_active_hand(G)
 				G.synch()
+				G.grabbed_zone = grab_zone
 				LAssailant = M
 
 				H.do_attack_animation(src)
 				playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
-				M.visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>", "<span class='notice'>You have grabbed [src] passively.</span>")
+				if (G.try_hand_hold())
+					M.visible_message("<span class='notice'>[M] takes [src]'s [parse_zone(grab_zone)].</span>", "<span class='notice'>You take [src]'s [parse_zone(grab_zone)].</span>")
+					to_chat(src, SPAN_NOTICE("[M] is holding your hand. Drop it to let go."))
+					return TRUE
+				var/grab_part = grab_zone_description(grab_zone, src)
+				if (grab_part)
+					M.visible_message("<span class='warning'>[M] has grabbed [src] by the [grab_part]!</span>", "<span class='notice'>You have grabbed [src] by the [grab_part].</span>")
+				else
+					M.visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>", "<span class='notice'>You have grabbed [src] passively.</span>")
 				return TRUE
 			if (I_HARM)
 				var/tgtm = M.targeted_organ
