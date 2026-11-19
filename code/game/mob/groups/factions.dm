@@ -373,6 +373,7 @@
 			name = "[faction]'s banner"
 			desc = "This is a [faction] banner."
 			icon_state = bstyle
+			var/list/civ = faction_banner_civ_data(faction)
 			var/image/overc = image("icon" = icon, "icon_state" = "[bstyle]_1")
 			overc.color = color1
 			overlays += overc
@@ -388,12 +389,30 @@
 			var/image/overs
 			if (custom_symbol)
 				overs = image("icon" = custom_symbol)
-			else
-				overs = image("icon" = icon, "icon_state" = "b_[map.custom_civs[faction][6]]")
+			else if (civ)
+				overs = image("icon" = icon, "icon_state" = "b_[civ[6]]")
 				overs.color = color1
-			overlays += overs
+			if (overs)
+				overlays += overs
 		update_icon()
 		invisibility = 0
+
+// The faction's custom_civs row once it can be read, or null when the faction
+// is gone. A restored banner runs this while its level loads, before the world
+// load has restored map metadata (custom_civs and the drawn symbols), so wait
+// for the whole load to finish instead of reading from a null list: that was a
+// "cannot read from list" runtime for every faction banner on each restart,
+// and the banner lost its symbol.
+/proc/faction_banner_civ_data(faction)
+	if (!faction || faction == "none")
+		return null
+	var/until = world.time + 18000
+	while (persistence_active_operation && world.time < until)
+		sleep(50)
+	if (!map || !islist(map.custom_civs))
+		return null
+	var/list/row = map.custom_civs[faction]
+	return (islist(row) && row.len >= 6) ? row : null
 
 
 /obj/structure/banner/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)

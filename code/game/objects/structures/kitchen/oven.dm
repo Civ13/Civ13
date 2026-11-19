@@ -101,6 +101,7 @@
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
+		note_firing(H, src)
 		fire_loop()
 	else
 		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
@@ -323,6 +324,7 @@
 	else if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
+		note_firing(H, src)
 		var/epoch = ++fire_epoch
 		keep_fire_on(epoch)
 		keep_sound_on(epoch)
@@ -505,6 +507,7 @@
 	if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
+		note_firing(H, src)
 		keep_fire_on()
 		keep_sound_on()
 	//no manual turning off

@@ -876,6 +876,7 @@ var/global/list/naval_vessels = list()
 	V.flooding.rebind_turfs(V.deck_turfs(), list())
 	if (V.speed > 0 && !V.anchored)
 		V.start_sailing()
+	V.restored()
 	return V
 
 // ---- Turf state carried across a hop ----

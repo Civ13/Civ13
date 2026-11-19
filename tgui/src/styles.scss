@@ -28,6 +28,19 @@
 body { margin: 0; background: var(--civ-bg); color: var(--civ-text); font: 14px Verdana, sans-serif; }
 .civ13-app { padding: 12px; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--civ-line); }
+// The window's own title bar and resize edges (titlebar.tsx). It stacks above
+// the full-window circuit editor (20), whose buttons it carries.
+.civ13-titlebar { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 0 0 10px; background: #17130f; border-bottom: 1px solid var(--civ-line); cursor: default; user-select: none; touch-action: none; }
+.civ13-titlebar__status { font-size: 15px; line-height: 1; }
+.civ13-titlebar__status--good { color: #6fcf6a; } .civ13-titlebar__status--warn { color: #e8a13c; } .civ13-titlebar__status--bad { color: #d9534f; }
+.civ13-titlebar__title { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; font-weight: normal; color: var(--civ-text); }
+.civ13-titlebar__slot { display: flex; align-items: center; flex: 0 1 auto; min-width: 0; }
+.civ13-titlebar__close { width: 40px; height: 32px; padding: 0; border: 0; background: none; color: var(--civ-dim); font-size: 22px; line-height: 1; cursor: pointer; }
+.civ13-titlebar__close:hover { background: #a3322b; color: #fff; }
+.civ13-resize { position: fixed; z-index: 45; touch-action: none; }
+.civ13-resize--e { top: 32px; right: 0; bottom: 12px; width: 5px; cursor: e-resize; }
+.civ13-resize--s { left: 0; right: 12px; bottom: 0; height: 5px; cursor: s-resize; }
+.civ13-resize--se { right: 0; bottom: 0; width: 14px; height: 14px; cursor: se-resize; }
 h1 { font-size: 17px; margin: 0; } h2 { font-size: 18px; } h3 { font-size: 15px; }
 p { margin: 8px 0; line-height: 1.5; }
 button, input { font: inherit; }

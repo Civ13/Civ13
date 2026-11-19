@@ -137,6 +137,23 @@ and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
 A hull with an upper deck cannot cross the sea or set out on a voyage yet, since
 only her own deck packs for the crossing.
 
+### Holds
+
+A built hull can also carry a hold on the level below her deck
+(`naval/hull_hold.dm`): `/obj/covers/steelplating/hold` floors (any cover with
+`hold_origin` set) on `/turf/floor/plating/ship_hold` tiles under her own hull
+tiles. `lower_cells()` finds it again by position, like the upper deck. A hold
+is hollowed out of rock or deep water only (`hull_hold_ground()`); the rock
+left around it is her hull below the waterline. At each move
+`before_hold_move()` turns the tiles the hold arrives on into `ship_hold`,
+the hold's floors, ladders and cargo are carried, and `after_hold_move()` gives
+the tiles it left their ground back. Each hold floor keeps the turf type it
+hollowed (`hold_origin`, text, saved with it). `plan()` refuses a move when
+the ground ahead of the hold is anything else or holds something solid, and
+counts the hold in `BUILT_HULL_MAX_DECK_TILES`. `carries()` answers for all
+her decks, so an engine in the hold drives her. An airship has no hold, and a
+hull with a hold cannot cross the sea yet.
+
 ### Airships
 
 `naval/air_hull.dm`: `/datum/craft_body/built/air` is a built hull laid as

@@ -52,6 +52,7 @@ class FieldWork(unittest.TestCase):
         self.nodes = read("code/modules/research_tree/research_node.dm")
         self.research = read("code/modules/research_tree/book_research.dm")
         self.interface = read("code/modules/research_tree/book_interface.dm")
+        self.scholarship = read("code/modules/research_tree/scholarship.dm")
     def experiments(self):
         return re.findall(r'^\t"(\w+)" = list\("(\w+)", "(\w+)", (\d+), ([\d.]+), "([^"]+)"\)', self.field, re.M)
     def test_included_after_the_define_it_uses(self):
@@ -66,9 +67,15 @@ class FieldWork(unittest.TestCase):
             tier = re.search(r'research_node\("%s", "[^"]+", "\w+", \d+, \d+, \w+, (null|list\([^)]*\)), (\d+)' % node, self.nodes)
             self.assertTrue(tier, node)
             # Early rows are only for first nodes; the rest is practice (practice_work.dm).
+            # Natural Science subjects also take mining, smelting, firing and
+            # syntheses (natural_science_work.dm), at most 0.2 each.
             if int(tier[2]) < 5:
-                self.assertEqual(tier[1], "null", node)
-                self.assertIn(activity, ("forage", "butchering"), node)
+                if activity in ("mining", "smelting", "firing", "reactions"):
+                    self.assertIn('"%s" = "natural_science"' % node, self.scholarship)
+                    self.assertLessEqual(float(share), 0.2, node)
+                else:
+                    self.assertEqual(tier[1], "null", node)
+                    self.assertIn(activity, ("forage", "butchering"), node)
             self.assertIn(activity, activities)
             self.assertGreater(int(needed), 0)
             shares[node] = shares.get(node, 0) + float(share)
@@ -486,6 +493,21 @@ class NaturalistFinds(unittest.TestCase):
         self.assertIn('gain_active_scholarship(node_id, ., "find:[kind]")', proc(self.src, "/proc/commit_find"))
     def test_bench_takes_notes(self):
         self.assertIn("take_find_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
+
+class NaturalScienceWork(unittest.TestCase):
+    def test_included(self):
+        self.assertIn('research_tree\\natural_science_work.dm"', read("civ13.dme"))
+    def test_hooks_count_when_the_fire_is_lit(self):
+        self.assertIn("note_smelting(H, src)\n\t\tstart_smelt()", read("code/game/objects/structures/blacksmithing/refining.dm"))
+        self.assertIn("note_smelting(H, src)", read("code/game/objects/structures/kitchen/stone_kiln_upgrade.dm"))
+        self.assertIn('note_field_work(H, "smelting", iron_sand)', read("code/modules/1713/tatara.dm"))
+        self.assertEqual(read("code/game/objects/structures/kitchen/oven.dm").count("note_firing(H, src)"), 3)
+        self.assertIn('note_field_work(H, "mining")', read("code/game/turfs/floor_attackby.dm"))
+    def test_place_finds_are_rechecked(self):
+        finds = read("code/modules/research_tree/naturalist_finds.dm")
+        record = finds[finds.index("/mob/living/human/proc/record_a_find("):]
+        self.assertLess(record.index("find_place_still_here(src, kind)"), record.index("commit_find(src, carrier"))
+        self.assertIn('"weather:[what]:[lowertext("[season]")]"', finds)
 
 class SubjectDeeds(unittest.TestCase):
     def setUp(self):

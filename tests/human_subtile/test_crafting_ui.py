@@ -80,11 +80,12 @@ def restore_crafting_projection(path, source):
         # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm),
         # the bauxite roll (tests/aluminium), the cinnabar roll (tests/mercury)
         # the lode ore roll (tests/lode), one rubble batch for every ore find
-        # (tests/mining_yields) and each continent's ore rates (tests/provinces).
+        # (tests/mining_yields), each continent's ore rates (tests/provinces) and
+        # an ore vein counted as Natural Science field work (tests/late_research).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '379d8fd99464af8a1582feef04eda0c696189b23c8493443a474ba5dfd11d6b0':
+        if hashlib.sha256(mining.encode()).hexdigest() != 'd89ad9ba2f6ede5feb527657b789eaef77029d0e74988f6a65cd1f5b64568551':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]

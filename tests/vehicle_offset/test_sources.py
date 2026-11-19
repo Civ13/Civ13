@@ -102,8 +102,8 @@ class VehicleOffsetSources(unittest.TestCase):
         loop = proc(FRAME, '/obj/structure/vehicleparts/axis/movementloop(')
         self.assertIn('return ..()', loop)
         self.assertIn('if (!vehicle_offset_drives())', loop)
-        # Aircraft, frame ships and boats, and the axes of one-object vehicles stay on whole tiles.
-        for kind in ('aircraft', 'ship', 'boat', 'bike', 'carriage'):
+        # Aircraft and the axes of one-object vehicles stay on whole tiles; frame ships sail by pixels.
+        for kind in ('aircraft', 'boat', 'bike', 'carriage'):
             self.assertIn('/obj/structure/vehicleparts/axis/%s\n\toffset_drive = FALSE' % kind, FRAME)
         drives = proc(FRAME, '/obj/structure/vehicleparts/axis/proc/vehicle_offset_drives(')
         for guard in ('persistence_save_in_progress', 'tow_out', 'tow_in', 'vehicle_offset_has_trailer()'):
@@ -118,6 +118,33 @@ class VehicleOffsetSources(unittest.TestCase):
         self.assertIn('F.axis.offset_coast > 0', proc(RIDE, '/mob/living/human/proc/carried_by_vehicle('))
         for label in ('frame_car_rolls_by_pixels', 'frame_car_coasts_square', 'frame_car_turn_squares_first', 'frame_car_stops_flush_before_a_wall', 'frame_car_unwatched_tile_steps'):
             self.assertIn(label, PROBE)
+
+    def test_frame_ships_sail_by_pixels(self):
+        ship = (ROOT / 'code/modules/craft/vehicle_offset_ship.dm').read_text(encoding='utf-8')
+        loop = (ROOT / 'code/modules/1713/machinery/modular_vehicles/ships/axis.dm').read_text(encoding='utf-8')
+        self.assertLess(DME.index('vehicle_offset_frame.dm'), DME.index('vehicle_offset_ship.dm'))
+        self.assertIn('/obj/structure/vehicleparts/axis/ship\n\toffset_drive = TRUE', ship)
+        self.assertIn('if (ship_offset_movementloop())', proc(loop, '/obj/structure/vehicleparts/axis/ship/movementloop('))
+        self.assertIn('return vehicle_offset_filter_transporting()', proc(loop, '/obj/structure/vehicleparts/axis/ship/add_transporting('))
+        # The tile loop's checks run once per tile, before do_vehicle_check().
+        cover = proc(FRAME, '/datum/vehicle_offset/axis/can_cover(')
+        self.assertLess(cover.index('A.vehicle_offset_tile_ahead()'), cover.index('A.do_vehicle_check()'))
+        self.assertIn('check_sails()', proc(ship, '/obj/structure/vehicleparts/axis/ship/vehicle_offset_tile_ahead('))
+        self.assertIn('MC.check_naval_mines()', proc(ship, '/obj/structure/vehicleparts/axis/ship/vehicle_offset_stepped('))
+        self.assertIn('offset_turn = tdir', proc(ship, '/obj/structure/vehicleparts/axis/ship/do_matrix('))
+        self.assertIn('key == "offset_turn"', ship)
+        self.assertNotIn('spawn(', ship)
+        for label in ('ship_sails_her_pace', 'ship_turn_held', 'ship_comes_about_at_the_square', 'ship_stops_flush_at_the_shore'):
+            self.assertIn(label, PROBE)
+
+    def test_turns_swing_without_a_jump(self):
+        glide = (ROOT / 'code/modules/craft/glide.dm').read_text(encoding='utf-8')
+        axis = (ROOT / 'code/modules/1713/machinery/modular_vehicles/axis.dm').read_text(encoding='utf-8')
+        matrix = proc(axis, '/obj/structure/vehicleparts/axis/proc/do_matrix(')
+        # Glide is set before the moves (the engine draws a move at the glide it has then).
+        self.assertLess(matrix.index('glide_turn_hold(was_at)'), matrix.index('transforming_vehicle = TRUE'))
+        self.assertIn('craft_glide_holder = glide_was', matrix)
+        self.assertIn('glide_slide(M, dx, dy, time, SINE_EASING)', proc(glide, '/obj/structure/vehicleparts/axis/proc/glide_turn('))
 
 
 if __name__ == '__main__':

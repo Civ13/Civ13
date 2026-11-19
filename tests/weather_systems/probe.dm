@@ -51,6 +51,7 @@ var/ws_runtime_error = FALSE
 	weather_sample_time = -1
 
 /proc/ws_checks()
+	ws_ingress_checks()
 	season = "SPRING"
 	time_of_day = "Midday"
 	map.valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -121,7 +122,7 @@ var/ws_runtime_error = FALSE
 	S.severe = TRUE
 	weather_sample_time = -1
 	ws_check(weather_at(ice) == WEATHER_EXTREME && weather_look_at(ice) == "snow_storm", "a severe core over tundra is a blizzard")
-	ws_check(get_temp(ice) == -82, "blizzard temperature under the core")
+	ws_check(get_temp(ice) == round(climate_air_temperature(ice, get_area(ice)) - 10), "a blizzard is 10 C colder than the season ([get_temp(ice)])")
 	ws_check(local_precipitation(ice) == "snow", "ground snow sees the storm's snow")
 	var/list/chunk = weather_chunk_state(round(119 / 4), round(59 / 4), 1)
 	ws_check(islist(chunk) && chunk[1] == "snow_storm" && chunk[2] == 255, "drawn chunk under the core is a full blizzard")
@@ -270,3 +271,27 @@ var/ws_runtime_error = FALSE
 	ws_check(!weather_vanes.len, "removed vanes are forgotten")
 	weather_systems_clear()
 	ws_check(length(weather_system_report()) == 0, "report is empty with a clear sky")
+
+// Pure ingress geometry: no diagonal wind is selected by gameplay yet.
+/proc/ws_ingress_checks()
+	var/list/winds = list(list(1, 0), list(-1, 0), list(0, 1), list(0, -1))
+	var/list/expected = list(90, 170, 80, 80)
+	for (var/i = 1, i <= winds.len, i++)
+		var/list/W = winds[i]
+		ws_check(weather_upwind_distance(W[1], W[2], 60, 60, 30, 20, 200, 120) == expected[i], "cardinal ingress [i] unchanged")
+	var/diagonal = 1 / sqrt(2)
+	for (var/sx in list(-1, 1))
+		for (var/sy in list(-1, 1))
+			for (var/aim_x in list(1, 60, 199))
+				for (var/aim_y in list(1, 60, 119))
+					var/wx = sx * diagonal
+					var/wy = sy * diagonal
+					var/back = weather_upwind_distance(wx, wy, aim_x, aim_y, 30, 20, 200, 120)
+					var/x = aim_x - wx * back
+					var/y = aim_y - wy * back
+					ws_check(x + 30 <= 0.001 || x - 30 >= 199.999 || y + 20 <= 0.001 || y - 20 >= 119.999, "diagonal ingress outside a boundary")
+					// A shorter offset must leave the bounding box overlapping the map.
+					x = aim_x - wx * (back - 0.1)
+					y = aim_y - wy * (back - 0.1)
+					ws_check(x + 30 > 0 && x - 30 < 200 && y + 20 > 0 && y - 20 < 120, "diagonal ingress does not overshoot the nearest exit")
+	ws_check(weather_upwind_distance(0, 0, 60, 60, 30, 20, 200, 120) == 0, "zero vector has no ingress offset")

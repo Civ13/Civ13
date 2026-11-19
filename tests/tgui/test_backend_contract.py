@@ -112,6 +112,14 @@ class BackendContract(unittest.TestCase):
         self.assertIn('if (!state || status == STATUS_CLOSE)', show)
         self.assertIn('plain_page = TRUE\n\tset_initial_data(latest_data)\n\topen()', DM)
         self.assertIn('if (href_list["type"])\n\t\t\treturn', DM)
+        # The window's own title bar: BYOND's bar comes back before any plain page
+        # or fallback, and the close button closes through the checked Topic.
+        self.assertLess(show.index('restore_title_bar()'), show.index('plain_page = TRUE'))
+        topic = DM.split('/datum/nanoui/tgui/Topic(href, href_list)', 1)[1]
+        self.assertLess(topic.index('href_list["generation"]'), topic.index('message_type == "close"'))
+        self.assertIn('if (message_type == "fallback")\n\t\trestore_title_bar()\n\t\tshow_plain_page()', topic)
+        self.assertIn('config["title_bar"] = own_title_bar() ? 1 : 0', DM)
+        self.assertIn('return !plain_page && user && user.client && user.client.is_preference_enabled(/datum/client_preference/tgui_title_bar)', DM)
         # Only these windows keep a page of their own, or end in the game's own dialog or list.
         pages, endings = set(), set()
         for path in (ROOT / 'code').rglob('*.dm'):

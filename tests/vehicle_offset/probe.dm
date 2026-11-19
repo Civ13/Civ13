@@ -99,6 +99,19 @@ var/list/vehicle_offset_probe_receipt = list()
 	vehicle_offset_probe_assert(isnull(why), "car_assembled ([why])")
 	return A
 
+// A 2 by 3 ship of frames facing north with a wheel and one rigged mast, its south-west corner at x,y.
+/proc/vehicle_offset_probe_ship(x, y)
+	for (var/dx = 0, dx < 2, dx++)
+		for (var/dy = 0, dy < 3, dy++)
+			new /obj/structure/vehicleparts/frame/ship(locate(x + dx, y + dy, 1))
+	var/obj/structure/vehicleparts/shipwheel/W = new(locate(x + 1, y, 1))
+	W.anchored = TRUE
+	new /obj/structure/vehicleparts/movement/sail/premade(locate(x, y + 1, 1))
+	var/obj/structure/vehicleparts/axis/ship/A = new(locate(x, y, 1))
+	var/why = A.assemble(NORTH)
+	vehicle_offset_probe_assert(isnull(why), "ship_assembled ([why])")
+	return A
+
 // Pulses O n times and checks that every pulse moves the body by exactly the speed.
 /proc/vehicle_offset_probe_drive(datum/vehicle_offset/O, atom/movable/body, n, label)
 	for (var/i = 1 to n)
@@ -586,6 +599,91 @@ var/list/vehicle_offset_probe_receipt = list()
 			break
 	vehicle_offset_probe_assert(!A2.moving && !A2.currentspeed && !A2.offset_coast && !front2.step_y && front2.y == car2_wall - 1, "frame_car_stops_flush_before_a_wall ([front2.y],[front2.step_y],[car2_wall])")
 	vehicle_offset_probe_assert(!A2.offset_mover.carried.len && !rider2.step_y, "frame_car_crash_lets_go")
+
+	// Frame ships (vehicle_offset_ship.dm): a workshop ship under sail sails by
+	// pixels through her own movement loop, a turn ordered between squares waits
+	// for the next square (no jump back), and the shore stops her flush and square.
+	for (var/x = 4 to 18)
+		for (var/y = 12 to 26)
+			var/turf/WT = locate(x, y, 1)
+			for (var/atom/movable/AM in WT)
+				qdel(AM)
+			WT.ChangeTurf(/turf/floor/beach/water/deep)
+	map.windspeedvar = 3
+	var/obj/structure/vehicleparts/axis/ship/S = vehicle_offset_probe_ship(6, 13)
+	var/mob/living/human/vehicle_offset_probe_rider/sailor = new(locate(7, 14, 1))
+	var/list/ship_frames = list()
+	for (var/obj/structure/vehicleparts/frame/F in S.components)
+		ship_frames += F
+	var/obj/structure/vehicleparts/frame/bow = ship_frames[1]
+	for (var/obj/structure/vehicleparts/frame/F in ship_frames)
+		if (F.y > bow.y)
+			bow = F
+	vehicle_offset_probe_assert(S.offset_drive && S.masts.len == 1, "ship_sails_by_pixels ([S.masts.len] masts)")
+	S.anchor = FALSE
+	for (var/obj/structure/vehicleparts/movement/sail/M in S.masts)
+		M.sails_on = TRUE
+	S.moving = TRUE
+	S.currentspeed = 0
+	var/ship_from = vehicle_offset_probe_px(bow)[2]
+	var/sailor_from = vehicle_offset_probe_px(sailor)[2]
+	var/ship_expected = 0
+	for (var/i = 1 to 60)
+		S.movement_processes = 0
+		vehicle_offset_probe_assert(S.movementloop() && S.movement_processes == 1, "ship_loop_[i]_by_pixels")
+		ship_expected += vehicle_offset_speed(S.vehicle_m_delay + 1)
+		var/same = TRUE
+		for (var/obj/structure/vehicleparts/frame/F in ship_frames)
+			if (F.step_y != bow.step_y || F.step_x)
+				same = FALSE
+		vehicle_offset_probe_assert(same && S.moving && S.currentspeed == 1 && sailor.step_y == bow.step_y && (sailor in S.offset_mover.carried), "ship_loop_[i]_together")
+	var/ship_sailed = vehicle_offset_probe_px(bow)[2] - ship_from
+	vehicle_offset_probe_assert(ship_sailed > 32 && abs(ship_sailed - ship_expected) <= 1.5 && vehicle_offset_probe_px(sailor)[2] - sailor_from == ship_sailed, "ship_sails_her_pace ([ship_sailed] of [ship_expected], delay [S.vehicle_m_delay])")
+	vehicle_offset_probe_assert(S.offset_mover.crossings >= 1, "ship_tile_steps_under_the_offset ([S.offset_mover.crossings])")
+	vehicle_offset_probe_receipt["ship_px_in_60_ticks"] = ship_sailed
+	// A turn ordered mid-tile is held: she sails on to the square, never back.
+	for (var/i = 1 to 200)
+		if (bow.step_y > 2)
+			break
+		S.movement_processes = 0
+		S.movementloop()
+	vehicle_offset_probe_assert(bow.step_y > 2, "ship_mid_tile ([bow.step_y])")
+	S.check_corners()
+	S.check_matrix()
+	vehicle_offset_probe_assert(S.do_matrix(S.dir, TURN_RIGHT(S.dir), "right") && S.dir == NORTH && S.offset_turn == "right", "ship_turn_held")
+	var/last_py = vehicle_offset_probe_px(bow)[2]
+	var/turned_after = 0
+	for (var/i = 1 to 200)
+		S.movement_processes = 0
+		S.movementloop()
+		if (S.dir != NORTH)
+			turned_after = i
+			break
+		var/py = vehicle_offset_probe_px(bow)[2]
+		vehicle_offset_probe_assert(py >= last_py, "ship_held_turn_[i]_never_backs")
+		last_py = py
+	var/turned_square = TRUE
+	for (var/obj/structure/vehicleparts/frame/F in ship_frames)
+		if (F.step_x || F.step_y)
+			turned_square = FALSE
+	vehicle_offset_probe_assert(turned_after && S.dir == EAST && !S.offset_turn && S.moving, "ship_comes_about_at_the_square ([turned_after] ticks)")
+	vehicle_offset_probe_assert(turned_square || S.offset_mover.ox > 0, "ship_turn_had_no_jump")
+	// Sand ahead: she stops flush and square, the crew let go.
+	var/obj/structure/vehicleparts/frame/east_bow = ship_frames[1]
+	for (var/obj/structure/vehicleparts/frame/F in ship_frames)
+		if (F.x > east_bow.x)
+			east_bow = F
+	var/shore = east_bow.x + 3
+	for (var/y = 12 to 26)
+		var/turf/ST = locate(shore, y, 1)
+		ST.ChangeTurf(/turf/floor/beach/sand)
+	for (var/i = 1 to 600)
+		S.movement_processes = 0
+		S.movementloop()
+		if (!S.moving && !S.offset_coast && (!S.offset_mover || !S.offset_mover.carried.len))
+			break
+	vehicle_offset_probe_assert(!S.moving && !east_bow.step_x && east_bow.x == shore - 1 && !sailor.step_x, "ship_stops_flush_at_the_shore ([east_bow.x],[east_bow.step_x],[shore])")
+	S.movement_processes = 0
 
 	// A hull-sized load: 1000 things on one offset, for the ship and train budget.
 	var/datum/vehicle_offset/H = new(null)

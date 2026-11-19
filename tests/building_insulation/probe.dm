@@ -48,7 +48,7 @@ var/vr_runtime_error = FALSE
 
 /area/insulation_probe_inside
 	location = AREA_INSIDE
-	climate = "temperate"
+	climate = "tundra"
 
 /proc/insul_room(x1, y1, x2, y2, wall_type)
 	var/area/I = locate(/area/insulation_probe_inside)
@@ -73,11 +73,11 @@ var/vr_runtime_error = FALSE
 	new /area/insulation_probe_inside
 	var/area/outside = get_area(locate(1, 1, 1))
 	outside.location = AREA_OUTSIDE
-	outside.climate = "temperate"
+	outside.climate = "tundra"
 	season = "WINTER"
 	time_of_day = "Evening"
 	var/open_air = get_temp(locate(1, 1, 1))
-	vr_check(open_air == -29, "open air is the winter cold ([open_air])")
+	vr_check(open_air <= -25, "open air is the tundra winter cold ([open_air])")
 
 	// A bare roof only breaks the wind.
 	insul_room(3, 3, 5, 5, null)

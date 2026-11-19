@@ -55,7 +55,7 @@
 	return ..()
 
 /datum/craft_drive/fitted/ready()
-	return enabled && source && !QDELETED(source) && craft && craft.body && craft.body.contains(get_turf(source)) && isturf(source.loc)
+	return enabled && source && !QDELETED(source) && craft && craft.body && craft.body.carries(get_turf(source)) && isturf(source.loc)
 
 // The drive this thing gives a craft it stands on, or null.
 /atom/movable/proc/craft_drive()

@@ -179,6 +179,11 @@ var/global/list/crafts = list()
 /datum/craft_body/proc/contains(turf/T)
 	return T in cells()
 
+// TRUE when T is one of her tiles on any deck she has (built hulls carry
+// decks above and below their own level).
+/datum/craft_body/proc/carries(turf/T)
+	return contains(T)
+
 // The south-west corner of the body's box on its main level, or null.
 /datum/craft_body/proc/origin()
 	return null

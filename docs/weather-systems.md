@@ -47,7 +47,8 @@ extreme. `climate_weather_state(climate, class, intensity)` then says what
 that is in the tile's climate and the current season, so one storm rains on
 temperate ground, snows on tundra and raises sand over dry desert. That table
 is the one zone weather has always used; the Farmer's Almanac test reads it.
-Roofed areas are always `WEATHER_NONE`.
+Roofed areas are always `WEATHER_NONE`. What the weather does to the air
+temperature is in [climate-normals.md](climate-normals.md).
 
 ## Rolls and events
 
@@ -177,6 +178,15 @@ The native probe walks storms over temperate, tundra, desert and roofed
 areas and checks the per-tile answers, rolls, called-down events, pinned zone
 weather, wind veering and retirement. It has no client, so it does not check
 what is drawn.
+
+## Ingress geometry foundation
+
+`weather_upwind_distance()` computes the backward offset to the nearest map
+edge beyond the storm's bounding oval. It preserves current cardinal spawn
+coordinates and accepts diagonal vectors for future use. Gameplay still selects
+only cardinal winds; scheduled arrival timing, wind veering, sailing and vane
+art are unchanged. The weather probe includes cardinal parity and diagonal
+near-corner boundary checks.
 
 ## Not yet done
 
