@@ -19,6 +19,7 @@ import sqlite3
 import time
 from tools.transfer_storage.train import validate as validate_train
 from tools.transfer_storage.train_lease import TrainLeaseQueue
+from tools.transfer_storage import records as player_records
 
 SCHEMA_VERSION = 1
 
@@ -283,6 +284,8 @@ class RegionStore(TrainLeaseQueue):
         db.execute('''CREATE TABLE IF NOT EXISTS train_admission(
             transfer_id TEXT PRIMARY KEY, manifest_hash TEXT NOT NULL,
             reservation TEXT NOT NULL)''')
+        # Shared player records waiting for the coordinator (records.py).
+        player_records.init_region(db)
 
     def _meta(self, key):
         return self.db.execute('SELECT value FROM meta WHERE key = ?', (key,)).fetchone()[0]
@@ -1114,6 +1117,19 @@ class RegionStore(TrainLeaseQueue):
                     'SELECT op, x, y, owner, admin FROM chart_request ORDER BY id')]}
 
     # -- inspection ---------------------------------------------------------
+
+    # -- shared player records (records.py) ------------------------------------
+
+    def add_records(self, records):
+        with self._tx():
+            return {'ids': player_records.region_add(self.db, self.region, records)}
+
+    def record_outbox(self):
+        return player_records.region_outbox(self.db)
+
+    def ack_records(self, ids):
+        with self._tx():
+            return {'acked': player_records.region_ack(self.db, ids)}
 
     def status(self):
         return {
