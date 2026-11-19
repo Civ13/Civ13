@@ -34,6 +34,8 @@ WORKS = read('code/modules/1713/steel_works.dm')
 FACTORY_FURNACE = read('code/game/objects/structures/factory/factory.dm')
 NODES = read('code/modules/research_tree/research_node.dm')
 RECIPES = read('config/crafting/material_recipes_global.txt')
+ALLOYS = read('code/modules/1713/alloy_steels.dm')
+MINING = read('code/game/turfs/floor_attackby.dm')
 
 
 class SteelGrades(unittest.TestCase):
@@ -202,6 +204,39 @@ class SteelWorks(unittest.TestCase):
     def test_arc_furnace_draws_power(self):
         self.assertIn('powerneeded = 200', WORKS)
         self.assertIn('draw_cable_power()', proc(WORKS, '/obj/structure/steel_works/arc_furnace/can_advance()'))
+
+
+class AlloySteels(unittest.TestCase):
+    def test_compiled_and_mined(self):
+        self.assertIn('#include "code\\modules\\1713\\alloy_steels.dm"', DME)
+        self.assertIn('if (mining_alloy_ores(H))', MINING)
+        mine = proc(ALLOYS, '/turf/proc/mining_alloy_ores(')
+        self.assertIn('map.ordinal_age < ALLOY_ORE_AGE', mine)
+        for ore in ('nickel', 'cobalt'):
+            self.assertIn(f'spawn_stack(/obj/item/stack/ore/{ore}, src, amount)', mine)
+
+    def test_nickel_steel_grade(self):
+        block = proc(ALLOYS, '/obj/item/stack/material/steel/nickel\n')
+        self.assertIn('stock_grade = 1.15', block)
+        self.assertIn('armor_pierce_grade = 1.25', block)
+        self.assertIn('stacktype = type', proc(ALLOYS, '/obj/item/stack/material/steel/nickel/New()'))
+
+    def test_open_hearth_alloys_nickel(self):
+        self.assertIn('if (addition_key(I))\n\t\tload_addition(I, H)', WORKS)
+        self.assertLess(WORKS.index('if (accepts_charge(I))\n\t\tload_charge'), WORKS.index('if (addition_key(I))\n\t\tload_addition'))
+        produce = proc(WORKS, '/obj/structure/steel_works/open_hearth/produce(')
+        self.assertIn('var/alloyed = alloy_output(T, made)', produce)
+        self.assertIn('made - alloyed', produce)
+        alloy = proc(ALLOYS, '/obj/structure/steel_works/open_hearth/alloy_output(')
+        self.assertIn('min(made, nickel * NICKEL_STEEL_PER_ORE)', alloy)
+        self.assertIn('return_additions(get_turf(src))', proc(WORKS, '/obj/structure/steel_works/verb/empty_works()'))
+        self.assertIn('note_addition(addition_key(S)', proc(WORKS, '/obj/structure/steel_works/factory_insert('))
+
+    def test_armour_grade_only_raises_and_caps(self):
+        self.assertIn('grade_forged_armor(I, stock)', proc(GRADES, '/obj/structure/anvil/proc/apply_stock_grade('))
+        armor = proc(GRADES, '/proc/grade_forged_armor(')
+        self.assertIn('max(value, min(GRADED_ARMOR_CAP, round(value * factor)))', armor)
+        self.assertIn('key == "melee" ? stock.armor_blunt_grade : stock.armor_pierce_grade', armor)
 
 
 if __name__ == '__main__':

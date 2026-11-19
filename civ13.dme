@@ -947,6 +947,7 @@
 #include "code\modules\1713\factory_meter.dm"
 #include "code\modules\1713\electroplating.dm"
 #include "code\modules\1713\gilding_dish.dm"
+#include "code\modules\1713\alloy_steels.dm"
 #include "code\modules\1713\aluminium.dm"
 #include "code\modules\1713\factory_ports.dm"
 #include "code\modules\1713\factory_routing.dm"

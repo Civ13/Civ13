@@ -13,6 +13,9 @@
 
 // Forged-quality factor of a stack of metal. 1 for anything ungraded.
 /obj/item/stack/material/var/stock_grade = 1
+// Armour forged from it: factor on melee armour, and on bullet and arrow armour.
+/obj/item/stack/material/var/armor_blunt_grade = 1
+/obj/item/stack/material/var/armor_pierce_grade = 1
 
 /obj/item/stack/material/steel/blister
 	name = "blister steel"
@@ -46,20 +49,54 @@
 	if (!grade)
 		return
 	name = "[grade] [name]"
-	if (grade == "blister")
-		desc = "[desc] Carburized iron, steel only skin-deep in places: what is forged from it comes out a little worse."
-	else
-		desc = "[desc] Even, clean steel: what is forged from it comes out a little better."
+	var/more = grade_desc()
+	if (more)
+		desc = "[desc] [more]"
+
+/obj/item/stack/material/steel/proc/grade_desc()
+	return null
+
+/obj/item/stack/material/steel/blister/grade_desc()
+	return "Carburized iron, steel only skin-deep in places: what is forged from it comes out a little worse."
+
+/obj/item/stack/material/steel/fine/grade_desc()
+	return "Even, clean steel: what is forged from it comes out a little better."
 
 // Grade of the stock a piece was forged from; quench_tub.dm hardens to it.
 /obj/item/weapon/material/var/tmp/forged_grade = 1
 
-/obj/structure/anvil/proc/apply_stock_grade(obj/item/weapon/material/W, obj/item/stack/material/stock)
-	if (!istype(W) || !istype(stock) || stock.stock_grade == 1)
+/obj/structure/anvil/proc/apply_stock_grade(obj/item/I, obj/item/stack/material/stock)
+	if (!istype(stock))
+		return
+	if (istype(I, /obj/item/clothing))
+		grade_forged_armor(I, stock)
+		return
+	var/obj/item/weapon/material/W = I
+	if (!istype(W) || stock.stock_grade == 1)
 		return
 	W.forged_grade = stock.stock_grade
 	W.crafting_quality *= stock.stock_grade
 	W.update_force()
+
+#define GRADED_ARMOR_CAP 90 // a grade never lifts an armour value past this
+
+// Armour forged from graded stock: blows by one factor, bullets and arrows by
+// another. A grade never lowers armour and never lifts it past the cap.
+/proc/grade_forged_armor(obj/item/clothing/C, obj/item/stack/material/stock)
+	if (!istype(C) || !istype(stock) || !C.armor)
+		return FALSE
+	if (stock.armor_blunt_grade == 1 && stock.armor_pierce_grade == 1)
+		return FALSE
+	for (var/key in list("melee", "arrow", "gun"))
+		var/value = C.armor[key]
+		if (!isnum(value) || value <= 0)
+			continue
+		var/factor = key == "melee" ? stock.armor_blunt_grade : stock.armor_pierce_grade
+		C.armor[key] = max(value, min(GRADED_ARMOR_CAP, round(value * factor)))
+	C.desc = "[C.desc] It is forged from [stock.name]."
+	return TRUE
+
+#undef GRADED_ARMOR_CAP
 
 //////////////////////////////////////////////////////////////////////////////
 // Steely bloom
