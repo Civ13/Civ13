@@ -103,6 +103,7 @@ var/list/admin_verbs_admin = list(
 var/list/admin_verbs_trialadmin = list(
 	/client/proc/toggle_disruptive_votes,
 	/client/proc/quickBan_person,
+	/client/proc/quickBan_unban,
 	/client/proc/cmd_admin_get,
 	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
@@ -334,6 +335,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/see_battle_report,
 	/client/proc/show_battle_report,
 	/client/proc/quickBan_person,
+	/client/proc/quickBan_unban,
 	/client/proc/toggle_right_click,
 )
 

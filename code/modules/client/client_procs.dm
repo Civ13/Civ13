@@ -71,30 +71,9 @@
 			var/confirm = input("Are you sure you want to remove the ban with the UID '[UID]' ?") in list("Yes", "No")
 			if (confirm == "Yes")
 				var/client/callers = locate(href_list["caller"])
-				var/ckey = href_list["quickBan_removeBan_ckey"]
-				var/cID = href_list["quickBan_removeBan_cID"]
-				var/ip = href_list["quickBan_removeBan_ip"]
+				if (!quickBan_remove_uid(UID, key_name(callers), usr))
+					to_chat(usr, "<span class = 'warning'>No active ban has the UID '[UID]'.</span>")
 
-				var/bans_file = null
-
-				if (fexists("SQL/bans.txt"))
-					bans_file = "SQL/bans.txt"
-				if (bans_file)
-					var/details = file2text(bans_file)
-					var/list/details_lines = splittext(details, "|||\n")
-					if (details_lines.len)
-						for(var/i=1,i<=details_lines.len,i++)
-							var/list/details2 = splittext(details_lines[i], ";")
-							if (details2.len>=11 && details2[3] == UID)
-								details_lines -= details_lines[i]
-								fdel(bans_file)
-								for(var/L in details_lines)
-									text2file("[L]|||", bans_file)
-					log_admin("[key_name(callers)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
-					message_admins("[key_name(callers)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.", key_name(callers))
-					for (var/client/C in clients)
-						if (C.ckey == ckey)
-							to_chat(C, "<span class = 'good'>href_list["Your ban has been lifted."]</span>")
 	//Logs all hrefs
 	if (config && config.log_hrefs && href_logfile)
 		href_logfile << "<small>[time2text(world.timeofday,"hh:mm")] [src] (usr:[usr])</small> || [hsrc ? "[hsrc] " : ""][href]<br>"
@@ -386,6 +365,8 @@
 	var/sql_ip = sql_sanitize_text(public_address())
 	if (sql_ip == null)
 		sql_ip = "HOST"
+	// Shared across regions for alt lookups and IP/computer id bans.
+	shared_records.note_connection(ckey, sql_ip, computer_id)
 	var/F = file("SQL/playerlogs.txt")
 	var/full_logs = file2text(F)
 	var/list/full_logs_split = splittext(full_logs, "|\n")
