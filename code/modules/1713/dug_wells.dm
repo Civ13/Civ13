@@ -229,13 +229,7 @@
 // ---- digging -------------------------------------------------------------------
 
 /obj/structure/sink/proc/dug_dig_time(mob/user, obj/item/weapon/material/shovel/S, depth)
-	. = WELL_DIG_TIME + (depth - 1) * WELL_DIG_TIME_PER_SPIT
-	if (istype(S))
-		. /= max(0.1, S.usespeed)
-	if (ishuman(user))
-		var/mob/living/human/H = user
-		. /= max(0.1, H.getStatCoeff("strength"))
-	. = round(.)
+	return work_delay_per_speed(user, WELL_DIG_TIME + (depth - 1) * WELL_DIG_TIME_PER_SPIT, WORK_DIG, S)
 
 // Why it cannot be dug a spit deeper, or null.
 /obj/structure/sink/proc/dug_deepen_problem()
@@ -301,11 +295,7 @@
 		return
 	user.visible_message(SPAN_NOTICE("[user] starts digging a waterhole."), SPAN_NOTICE("You start digging a waterhole."), SPAN_NOTICE("You hear the ground being dug nearby."))
 	playsound(src, 'sound/effects/shovelling.ogg', 100, TRUE)
-	var/time = WELL_DIG_TIME / max(0.1, usespeed)
-	if (ishuman(user))
-		var/mob/living/human/H = user
-		time /= max(0.1, H.getStatCoeff("strength"))
-	if (!do_after(user, round(time), src) || well_site_problem(TB))
+	if (!do_after(user, work_delay_per_speed(user, WELL_DIG_TIME, WORK_DIG, src), src) || well_site_problem(TB))
 		return
 	var/obj/structure/sink/puddle/waterhole/W = new /obj/structure/sink/puddle/waterhole(TB)
 	excavation_spoil(TB, 1)

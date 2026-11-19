@@ -844,7 +844,7 @@ var/global/list/sewer_pump_fuel_rates = list(
 	var/what = cesspit ? "a cesspit" : "a drain ditch"
 	user.visible_message(SPAN_NOTICE("[user] starts digging [what]."), SPAN_NOTICE("You start digging [what]."), SPAN_NOTICE("You hear the ground being dug nearby."))
 	playsound(src, 'sound/effects/shovelling.ogg', 100, TRUE)
-	if (!do_after(user, cesspit ? 150 : 40, src) || sewer_piece_at(TB))
+	if (!do_after(user, work_delay(user, cesspit ? 150 : 40, WORK_DIG, src), src) || sewer_piece_at(TB))
 		return
 	if (cesspit)
 		new /obj/structure/sewer_piece/cesspit(TB)

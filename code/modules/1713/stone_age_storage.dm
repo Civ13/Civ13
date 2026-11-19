@@ -422,6 +422,8 @@
 		return TRUE
 	var/obj/item/tool = user.get_inactive_hand()
 	var/delay = storage_pit_dig_time(tool)
+	if (delay)
+		delay = work_delay(user, STORAGE_PIT_DIG_TIME_SHOVEL, WORK_DIG, tool)
 	if (!delay)
 		to_chat(user, SPAN_WARNING("Hold a shovel or a digging stick in your other hand to dig the pit."))
 		return TRUE

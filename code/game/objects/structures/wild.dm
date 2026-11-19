@@ -229,10 +229,10 @@ var/list/seed_list_jungle
 		timed_chop = TRUE
 		user.visible_message(SPAN_DANGER("[user] begins to chop down \the [src]!"), SPAN_DANGER("You begin to chop down \the [src]!"))
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
-		var/datum/resource_work_animation/work_animation = user.prepare_resource_work_animation(HT, src, 30*HT.chopping_speed)
+		var/datum/resource_work_animation/work_animation = user.prepare_resource_work_animation(HT, src, work_delay(user, CHOP_TREE_TIME, WORK_CHOP, HT))
 		var/completed
 		try
-			completed = do_after(user, 30*HT.chopping_speed, user.loc)
+			completed = do_after(user, work_delay(user, CHOP_TREE_TIME, WORK_CHOP, HT), user.loc)
 		catch (var/exception/chopping_error)
 			if (work_animation)
 				work_animation.stop()
@@ -893,7 +893,7 @@ var/list/seed_list_jungle
 	if (is_tool(W, TOOL_SHOVEL))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.visible_message(SPAN_NOTICE("[user] starts digging out \the [src]."), SPAN_NOTICE("You start digging out \the [src]."))
-		if (do_after(user, 50, src))
+		if (do_after(user, work_delay(user, 50, WORK_DIG, W), src))
 			if (QDELETED(src))
 				return TRUE
 			user.visible_message(SPAN_NOTICE("[user] digs out \the [src] and pulls up some wood from its roots."), SPAN_NOTICE("You dig out \the [src] and pull up some wood from its roots."))

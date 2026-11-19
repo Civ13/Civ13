@@ -51,7 +51,7 @@ class Sources(unittest.TestCase):
         self.assertNotIn('swap_hand(', generated)
         self.assertEqual(generated.count('wall.mining_proc(actor)'), 1)
         self.assertLess(generated.index('committed = TRUE'), generated.index('wall.mining_proc(actor)'))
-        self.assertIn('240 / actor.getStatCoeff("strength") / tool:usespeed', generated)
+        self.assertIn('work_delay(actor, 120, WORK_MINE, tool)', generated)
         production = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text()
         self.assertIn('start_pickaxe_mining(H, C)', production)
         self.assertIn('spawn(0)\n\t\t\tM.perform()', production)

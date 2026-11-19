@@ -92,7 +92,7 @@ var/global/list/pay_dirt_stock = list()
 		return
 	digging_pay_dirt = TRUE
 	visible_message(SPAN_NOTICE("[src] starts shovelling gravel from the bank."))
-	var/done = do_after(src, PAY_DIRT_DIG_TIME / max(0.5, getStatCoeff("strength")), T)
+	var/done = do_after(src, work_delay(src, PAY_DIRT_DIG_TIME, WORK_DIG, get_active_hand()), T)
 	digging_pay_dirt = FALSE
 	if (!done || get_active_hand() != S || loc != T || !stock.take(1))
 		return

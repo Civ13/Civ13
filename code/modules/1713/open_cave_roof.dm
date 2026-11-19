@@ -68,8 +68,7 @@
 	open_cave_roof_busy = TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts to break away the rock overhead with \the [P]."), SPAN_NOTICE("You start to break away the rock overhead with \the [P]. Once it is open to the sky, the rock cover will not grow back."))
 	playsound(src, 'sound/effects/pickaxe.ogg', 100, 1)
-	var/speed = max(P.usespeed, 0.1)
-	var/done = do_after(user, OPEN_CAVE_ROOF_TIME / user.getStatCoeff("strength") / speed, src)
+	var/done = do_after(user, work_delay_per_speed(user, OPEN_CAVE_ROOF_TIME, WORK_MINE, P), src)
 	open_cave_roof_busy = FALSE
 	if (!done)
 		return TRUE

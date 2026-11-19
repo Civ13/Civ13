@@ -1557,6 +1557,7 @@
 #include "code\modules\materials\rolling_stock.dm"
 #include "code\modules\materials\tool_materials.dm"
 #include "code\modules\materials\tool_speeds.dm"
+#include "code\modules\materials\work_speed.dm"
 #include "code\modules\materials\tool_wear.dm"
 #include "code\modules\materials\vessel_materials.dm"
 #include "code\modules\materials\wire_materials.dm"
