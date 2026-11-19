@@ -89,7 +89,8 @@ var/global/list/weather_chunk_images = list() // image key = image
 	var/severe = weather_storm_severe
 	// The climate of the open ground in the chunk: its middle, else a corner.
 	var/area/place
-	for (var/list/at in list(list(2, 2), list(0, 0), list(3, 3), list(0, 3), list(3, 0)))
+	var/static/list/sample_offsets = list(list(2, 2), list(0, 0), list(3, 3), list(0, 3), list(3, 0))
+	for (var/list/at in sample_offsets)
 		var/turf/T = locate(min(x + at[1], world.maxx), min(y + at[2], world.maxy), z)
 		var/area/here = T ? T.loc : null
 		if (istype(here, /area/caribbean) && here.location == AREA_OUTSIDE)
