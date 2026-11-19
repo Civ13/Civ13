@@ -221,6 +221,56 @@
 	world.log << "ROUTE [input_type] remaining=[remaining_fraction] paid=[paid_nutrition] output=[output_nutrition] age_fraction=[product.decaytimer / default_decay]"
 	rack.before_save()
 	qdel(product)
+// Fresh tobacco is a stack: each hung leaf keeps its own slot, progress and sprite (#6269).
+/proc/tobacco_slot_owner(obj/structure/dehydrator/rack, obj/item/leaf)
+	for (var/row = 1, row <= 4, row++)
+		for (var/column = 1, column <= 3, column++)
+			if (rack.slots[row][column] == leaf)
+				return TRUE
+	return FALSE
+/proc/check_tobacco_drying(obj/structure/dehydrator/rack)
+	var/turf/T = get_turf(rack)
+	var/obj/item/stack/material/tobacco_green/bundle = new(T, 3)
+	food_check(rack.hang_on(bundle) && bundle.amount == 2, "rack hangs one leaf from a fresh tobacco bundle")
+	food_check(rack.hang_on(bundle) && bundle.amount == 1, "rack hangs a second separate fresh leaf")
+	var/list/fresh = list()
+	for (var/obj/item/stack/material/tobacco_green/leaf in rack.storage.contents)
+		fresh += leaf
+	food_check(fresh.len == 2, "fresh tobacco leaves stay separate on the rack")
+	for (var/obj/item/stack/material/tobacco_green/leaf in fresh)
+		food_check(leaf.amount == 1 && findtext(leaf.name, "TIMER_") && tobacco_slot_owner(rack, leaf), "each fresh leaf owns its slot and drying progress")
+	food_check(rack.overlays.len == 2, "rack draws one sprite per hung leaf")
+	var/obj/item/stack/material/tobacco_green/first = fresh[1]
+	var/obj/item/stack/material/tobacco_green/second = fresh[2]
+	rack.set_dry_timer(first, TIME_TO_DRY - 150)
+	rack.set_dry_timer(second, 300)
+	rack.current_process_id = "tobacco-first"
+	rack.dry_process("tobacco-first")
+	sleep(4)
+	rack.current_process_id = ""
+	var/list/dried = list()
+	for (var/obj/item/stack/material/tobacco/leaf in rack.storage.contents)
+		dried += leaf
+	food_check(dried.len == 1 && QDELETED(first), "first leaf dries into one dried leaf")
+	food_check(second.loc == rack.storage && rack.get_dry_timer(second) >= 450 && rack.get_dry_timer(second) < TIME_TO_DRY, "fresh leaf beside dried output keeps its progress")
+	rack.set_dry_timer(second, TIME_TO_DRY - 150)
+	rack.current_process_id = "tobacco-second"
+	rack.dry_process("tobacco-second")
+	sleep(4)
+	rack.current_process_id = ""
+	dried = list()
+	for (var/obj/item/stack/material/tobacco/leaf in rack.storage.contents)
+		dried += leaf
+	food_check(dried.len == 2 && QDELETED(second), "second leaf dries into its own dried leaf")
+	for (var/obj/item/stack/material/tobacco/leaf in dried)
+		food_check(leaf.amount == 1 && tobacco_slot_owner(rack, leaf), "each dried leaf stays in its own slot")
+	food_check(rack.overlays.len == 2, "rack draws one sprite per dried leaf")
+	var/list/states = icon_states('icons/obj/food/dryer.dmi')
+	food_check(("tobacco" in states) && ("tobacco_green" in states), "rack sprites exist for tobacco")
+	rack.before_save()
+	for (var/obj/item/stack/material/tobacco/leaf in T)
+		qdel(leaf)
+	qdel(bundle)
 /world/New()
 	OpenPort("none")
 	food_check(!world.port, "preservation fixture closes listener")
@@ -238,6 +288,7 @@
 	var/mob/living/human/food_fixture/user = new(T)
 	check_salted_meat(rack, user)
 	check_drying_spoilage(rack)
+	check_tobacco_drying(rack)
 	var/obj/item/weapon/reagent_containers/food/snacks/octopus/input = new(T)
 	input.reagents.remove_reagent("nutriment", 3)
 	input.reagents.remove_reagent("protein", 0.5)

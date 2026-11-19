@@ -610,6 +610,7 @@
 		if (!storage)
 			storage = new/obj/item/weapon/storage/internal(src)
 	storage.master_item = src
+	storage.merges_stacks = FALSE // each slot owns its own bundle and progress
 	storage.storage_slots = 12
 	storage.max_storage_space = 120000
 	// before_save drops the paid inputs to their turf; this empty wrapper is runtime state.
@@ -625,7 +626,25 @@
 		for (var/P=1,P<4,P++)
 			if (isobj(slots[R][P]))
 				var/obj/item/I_slot = slots[R][P]
-				overlays += image(I, src, "[I_slot.icon_state][!!findtext(I_slot.name,"_ROTATED_") ? "R" : ""]", OBJ_LAYER+0.1, NORTH, 4+5*P, 1-6*R)
+				if (QDELETED(I_slot) || !storage || I_slot.loc != storage)
+					continue // only draw what the rack actually holds
+				var/state = dehydrator_overlay_state(I_slot)
+				if (state)
+					overlays += image(I, src, state, OBJ_LAYER+0.1, NORTH, 4+5*P, 1-6*R)
+
+// The rack sprite for a hung item, or null when dryer.dmi has none. A missing
+// state would draw the DMI's default frame, which is the whole rack again.
+/proc/dehydrator_overlay_state(obj/item/I)
+	var/static/list/rack_states
+	if (!rack_states)
+		rack_states = icon_states('icons/obj/food/dryer.dmi')
+	var/suffix = findtext(I.name, "_ROTATED_") ? "R" : ""
+	for (var/base in list(I.icon_state, initial(I.icon_state)))
+		if ("[base][suffix]" in rack_states)
+			return "[base][suffix]"
+		if (suffix && (base in rack_states))
+			return base
+	return null
 
 /obj/structure/dehydrator/proc/split_size(from_int, is_rotated = FALSE)
 	var/rows = from_int % 4
@@ -637,6 +656,9 @@
 	return list(rows, columns)
 
 /obj/structure/dehydrator/proc/put_in_place(var/obj/item/W, var/list/pos = list(1, 1), var/list/sizeHV = list(1, 1), is_rotated = FALSE, init = FALSE)
+	// Take custody before publishing a slot, so a slot never names an item the rack lacks.
+	if (!storage.handle_item_insertion(W, TRUE) || QDELETED(W) || W.loc != storage)
+		return FALSE
 	if (!init)
 		if (istype(W, /obj/item/weapon/reagent_containers/food))
 			var/obj/item/weapon/reagent_containers/food/D = W
@@ -646,7 +668,6 @@
 			W.name = "[W.name]ON_DEHYDRATOR[is_rotated ? "_ROTATED_" : "_STRAIGHT_"]DECAY_[num2text(0, 8, 10)]POS_[num2text(pos[1]+(pos[2]-1)*4, 1, 16)]TIMER_00000000"
 	W.mouse_opacity = initial(W.mouse_opacity) // a save drop hid the encoded name from hover
 	slots[pos[1]][pos[2]] = W
-	storage.handle_item_insertion(W, TRUE) //put to storage for preparing to destroy, or for map save when it happens
 	for (var/P=0, P<sizeHV[1], P++)
 		for (var/R=0, R<sizeHV[2], R++)
 			if (P==0)
@@ -654,6 +675,7 @@
 					continue
 			slots[pos[1]+R][pos[2]+P] = "busy"+num2text(pos[1],1)+num2text(pos[2],1)
 	update_icon()
+	return TRUE
 
 /obj/structure/dehydrator/proc/clean_by(slot_row, slot_pos)
 	for (var/R=1, R<5, R++)
@@ -699,12 +721,19 @@
 							break
 				if (place_found)
 					if (!istype(D, /obj/item/stack) || D.amount == 1)
-						put_in_place(D, list(R, P), sizeHV, is_rotated)
-					else
-						var/obj/item/stack/S0 = D
-						var/obj/item/stack/S1 =	S0.split(1)
-						put_in_place(S1, list(R, P), sizeHV, is_rotated)
-					break
+						return put_in_place(D, list(R, P), sizeHV, is_rotated)
+					var/obj/item/stack/S0 = D
+					var/obj/item/stack/S1 =	S0.split(1)
+					if (!S1)
+						return FALSE
+					S0.update_icon()
+					if (put_in_place(S1, list(R, P), sizeHV, is_rotated))
+						return TRUE
+					// Refused: the split leaf goes back onto the bundle it came from.
+					if (!QDELETED(S1))
+						S1.transfer_to(S0)
+						S0.update_icon()
+					return FALSE
 	if (place_found)
 		return TRUE
 	else
@@ -873,7 +902,10 @@
 						var/obj/item/I_s = slots[pos[1]][pos[2]]
 						is_rotated = !!findtext(I_s.name, "_ROTATED_")
 						sizeHV = split_size(I_s.dry_size, is_rotated)
-						put_in_place(P, pos, sizeHV, is_rotated)
+						if (!put_in_place(P, pos, sizeHV, is_rotated))
+							// Keep the input and its progress when the product cannot be hung.
+							qdel(P)
+							continue
 						if (!P.dried_type)
 							set_dry_timer(P, TIME_TO_DRY+1)
 						qdel(I)
@@ -958,7 +990,9 @@
 				E.clear_dehydrator_marker()
 				displaced += E
 				continue
-			put_in_place(E, pos, sizeHV, is_rotated, TRUE)
+			if (!put_in_place(E, pos, sizeHV, is_rotated, TRUE))
+				E.clear_dehydrator_marker()
+				displaced += E
 	for (S in src.loc) //On second pass we try to hang food/snacks items in location (from mapping)
 		if (!(S in displaced))
 			attackby(S, null)
