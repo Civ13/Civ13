@@ -269,6 +269,19 @@ class SharedRecordsSource(unittest.TestCase):
             self.assertIn(call_text, source, path)
             self.assertNotIn('fdel(bans_file)', source, path)
 
+    def test_watchlist_and_memos_use_the_shared_records(self):
+        client = open(os.path.join(ROOT, 'code/modules/client/client_procs.dm'), encoding='utf-8').read()
+        self.assertIn('watchlist_login(src)', client)
+        watch = open(os.path.join(ROOT, 'code/modules/admin/player_watchlist.dm'), encoding='utf-8').read()
+        self.assertIn('region_asay_outbound("Watchlist"', watch)
+        for path in ('code/modules/admin/admin_memo.dm', 'code/modules/admin/admin_2_player_memo.dm'):
+            self.assertNotIn('savefile', open(os.path.join(ROOT, path), encoding='utf-8').read(), path)
+        verbs = open(os.path.join(ROOT, 'code/modules/admin/admin_verbs.dm'), encoding='utf-8').read()
+        for verb in ('admin_memo_write', 'admin_memo_delete', 'player_memo_write', 'player_memo_delete', 'watchlist_show'):
+            self.assertIn('/client/proc/' + verb + ',', verbs)
+        admin = open(os.path.join(ROOT, 'code/modules/admin/admin.dm'), encoding='utf-8').read()
+        self.assertIn('player_records_summary_html(M.ckey, src)', admin)
+
     def test_heartbeat_reports_asleep(self):
         activity = open(os.path.join(ROOT, 'code/modules/player_activity/player_activity.dm'), encoding='utf-8').read()
         self.assertIn('if(L.stat == UNCONSCIOUS || L.sleeping) return "asleep"', activity)

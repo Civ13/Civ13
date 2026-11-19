@@ -63,7 +63,8 @@ proc/admin_notice(var/message, var/rights)
 		<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a> -
 		<a href='?src=\ref[src];subtlemessage=\ref[M]'>SM</a> -
 		[admin_jump_link(M, src)]\] <br>
-		<b>Mob type</b> = [M.type]<br><br>
+		<b>Mob type</b> = [M.type]<br>
+		[player_records_summary_html(M.ckey, src)]<br>
 		[M.name_history_admin_html()]
 		<A href='?src=\ref[src];boot2=\ref[M]'>Kick</A> |
 		<A href='?_src_=holder;warn=[M.ckey]'>Warn</A> |
@@ -229,6 +230,15 @@ proc/admin_notice(var/message, var/rights)
 			break
 	dat +="<span style='color:#000000; font-weight: bold'>Player age: [p_age]</span><br>"
 	dat +="<span style='color:#000000; font-weight: bold'>Playtime (alive and awake, every region): [shared_records.playtime_hours(key)] hours</span><br><br>"
+
+	var/list/watches = watchlist_for(key)
+	if (watches.len)
+		for (var/list/W in watches)
+			var/list/watch_body = W["body"]
+			dat += "<b>Watchlist:</b> <font color=#aa0000>[islist(watch_body) ? watch_body["text"] : ""]</font> <i>by [length(W["author"]) ? W["author"] : "Adminbot"] on [shared_records.time_text(W["at"])] ([W["region"]])</i><br>"
+		dat += "<A href='?src=\ref[src];watchlist_remove=[key]'>Remove from watchlist</A><br><br>"
+	else
+		dat += "<A href='?src=\ref[src];watchlist_add=[key]'>Add to watchlist</A><br><br>"
 
 	var/list/infos = notes_for(key)
 	if (!infos.len)

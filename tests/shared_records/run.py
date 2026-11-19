@@ -9,7 +9,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 PRODUCTION = ROOT / "code/modules/admin/shared_player_records.dm"
-EXPECTED_CHECKS = 40
+EXPECTED_CHECKS = 48
 
 
 def main():
@@ -22,8 +22,11 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(PRODUCTION, output / "production.dm")
     shutil.copyfile(ROOT / "code/modules/admin/player_notes.dm", output / "notes.dm")
+    shutil.copyfile(ROOT / "code/modules/admin/player_watchlist.dm", output / "watchlist.dm")
+    shutil.copyfile(ROOT / "code/modules/admin/shared_memos.dm", output / "memos.dm")
     shutil.copyfile(ROOT / "tests/shared_records/probe.dm", output / "probe.dm")
-    (output / "probe.dme").write_text('#define TRUE 1\n#define FALSE 0\n#include "probe.dm"\n#include "production.dm"\n#include "notes.dm"\n')
+    (output / "probe.dme").write_text('#define TRUE 1\n#define FALSE 0\n#include "probe.dm"\n#include "production.dm"\n'
+                                      '#include "notes.dm"\n#include "watchlist.dm"\n#include "memos.dm"\n')
     flags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
     compiler = args.byond_bin / ("dm.exe" if os.name == "nt" else "DreamMaker")
     daemon = args.byond_bin / ("dd.exe" if os.name == "nt" else "DreamDaemon")

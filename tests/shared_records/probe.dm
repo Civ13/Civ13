@@ -76,6 +76,20 @@ var/fake_now = "1800000000"
 /proc/log_admin(text)
 	return
 
+// What player_watchlist.dm and shared_memos.dm call.
+#define MAX_MESSAGE_LEN 1024
+#define R_SERVER 16
+var/common_browser_style = ""
+var/list/asay_lines = list()
+/proc/admin_say_show(name, msg)
+	asay_lines += "[name]: [msg]"
+/proc/region_asay_outbound(name, speaker_ckey, msg)
+	asay_lines += "region [name]: [msg]"
+/proc/to_chat(target, text)
+	return
+/proc/check_rights(rights, show_msg = 1, user = null)
+	return FALSE
+
 /proc/sortList(list/L)
 	. = L.Copy()
 	for (var/i = 1, i <= length(.), i++)
@@ -164,6 +178,30 @@ var/fake_now = "1800000000"
 	check("ip ban found in scope", ip_found && ip_found["ckey"] == "@nockey" && !length(S.active_bans_matching(null, "job")))
 	S.revoke(ip_ban, "val", "Host", "lifted")
 	check("ip ban lifted", !length(S.active_bans_matching(null, "play")))
+
+	// Watchlist.
+	check("watch added once", watchlist_add("Shady One", "alt of a banned player", admin) && !watchlist_add("shadyone", "again", admin))
+	check("watched", S.watched("shadyone") && length(watchlist_for("shadyone")) == 1)
+	check("summary line", findtext(player_records_summary_html("shadyone", null), "on the watchlist"))
+	check("unwatched", watchlist_remove("shadyone", admin) == 1 && !S.watched("shadyone") && !length(watchlist_for("shadyone")))
+
+	// Memos: old memo files are copied once, each author keeps one memo.
+	var/savefile/old_memos = new("data/memo.sav")
+	old_memos["oldboss"] << "Admin Memo from <b>OldBoss</b> on (Mon) 01 Jan 10:00<br><i>be nice</i>"
+	del(old_memos) // a savefile is written when it is deleted
+	var/list/memos = memos_active("admin_memo")
+	check("old memo copied", length(memos) == 1 && findtext(memo_html(memos[1]), "be nice") && fexists("data/memos.migrated"))
+	S.add("val", "admin_memo", list("text" = "first", "name" = "Val"), "val", "Host")
+	fake_now = "1800000070"
+	S.add("val", "admin_memo", list("text" = "second", "name" = "Val"), "val", "Host")
+	memos = memos_active("admin_memo")
+	var/list/newest_text = list()
+	for (var/list/memo in memos)
+		newest_text += memo_html(memo)
+	check("newest memo per author", length(memos) == 2 && findtext(jointext(newest_text, "|"), "second") && !findtext(jointext(newest_text, "|"), "first"))
+	check("server memos apart", !length(memos_active("server_memo")))
+	check("memo removed", memo_remove("admin_memo", "val", null) == 2 && length(memos_active("admin_memo")) == 1)
+	fake_now = "1800000061"
 
 	// The journal survives a restart.
 	var/datum/shared_records/again = new
