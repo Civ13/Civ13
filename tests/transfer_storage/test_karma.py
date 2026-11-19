@@ -135,8 +135,51 @@ class Karma(unittest.TestCase):
         with open(DM, encoding='utf-8') as f:
             dm = f.read()
         self.assertIn('shared_records.add(target, "karma_rating"', dm)
-        self.assertIn('shared_records.active_bans(giver, "game")', dm)
+        self.assertIn('shared_records.active_bans(giver, "game") + shared_records.active_bans(giver, "play")', dm)
         self.assertIn('karma/[ckey].json', dm)
+
+
+class KarmaGiving(unittest.TestCase):
+    """code/modules/karma/karma_give.dm source contracts."""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(ROOT, 'code', 'modules', 'karma', 'karma_give.dm'), encoding='utf-8') as f:
+            cls.dm = f.read()
+
+    def proc(self, name):
+        return re.search(r'\n/[\w/]*%s\(.*?(?=\n/|\Z)' % name, self.dm, re.S).group(0)
+
+    def test_only_verified_unbarred_signed_in_accounts_give(self):
+        refusal = self.proc('karma_giver_refusal')
+        self.assertIn('IsGuestKey(C.key)', refusal)
+        self.assertIn('if (!verified_discord_id(C.ckey))', refusal)
+        self.assertIn('karma_barred(C.ckey)', refusal)
+
+    def test_no_cap_and_no_minimum_time(self):
+        for word in ('playtime_hours', 'world.time <', 'per day', 'daily', 'cooldown'):
+            self.assertNotIn(word, self.dm)
+
+    def test_targets_are_other_living_players(self):
+        refusal = self.proc('karma_target_refusal')
+        self.assertIn('is_agent_account(target)', refusal)
+        self.assertIn('target == C.ckey', refusal)
+        self.assertIn('H.stat == DEAD', refusal)
+        self.assertIn('H.persistence_owner_ckey', self.proc('karma_character_ckey'))
+
+    def test_the_rated_player_is_never_told(self):
+        remember = self.proc('karma_remember')
+        self.assertIn('set src in view()', remember)
+        self.assertNotIn('to_chat(src', remember)
+        self.assertNotIn('to_chat(client', remember)
+        # Rechecked after the prompts, which can stay open.
+        self.assertEqual(remember.count('karma_giver_refusal(C)'), 2)
+
+    def test_givers_can_change_and_forget_their_own_ratings_only(self):
+        topic = self.proc('Topic')
+        self.assertIn('received[C.ckey]', topic)
+        self.assertIn('shared_records.revoke(record, C.ckey', topic)
+        self.assertIn('/client/verb/karma_notes()', self.dm)
 
 
 if __name__ == '__main__':
