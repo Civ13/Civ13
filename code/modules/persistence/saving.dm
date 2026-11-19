@@ -392,8 +392,14 @@
 			throw EXCEPTION("Cross-level object reference cannot be represented in per-level save files: [A.type] saved_z=[saving_z] native_z=[movable.z] turf_z=[location ? location.z : 0] source_type=[source_type] source_field=[source_field]")
 	if(!moving_save_chunk && istype(A, /atom/movable) && moving_save_roots["\ref[A]"])
 		var/list/root = moving_save_roots["\ref[A]"]
-		if(root["atom"] != A) throw EXCEPTION("Moving save root identity changed")
-		if(!saving_references[A])
+		if(root["atom"] != A)
+			// The admitted animal was hard-deleted during the save and Dream
+			// Daemon reused its \ref for A, a different object. Throwing here
+			// failed the whole Gaia save (2026-11-19 08:12 UTC). An uncaptured
+			// record has nothing reserved, so it leaves the roster; a captured
+			// one stays for the roster drain. A saves on the ordinary path.
+			if(!root["ref"]) moving_save_roots -= root["identity"]
+		else if(!saving_references[A])
 			var/moving_ref = capture_moving_save_root(savefile, root)
 			if(moving_ref) return moving_ref
 			// Declined before any allocation: the root left the roster and
@@ -1418,7 +1424,10 @@
 		if(ishuman(A)) continue // The human roster drain owns every human edge.
 #endif
 		var/identity = save_entry_identity(A)
-		if(moving_save_roots[identity]) continue
+		// A record whose animal was hard-deleted can share A's reused \ref;
+		// only A's own roster record hands it to the roster drain.
+		var/list/roster_record = moving_save_roots[identity]
+		if(roster_record && roster_record["atom"] == A) continue
 		var/ref = saving_references[identity]
 		if(ref && saving_reference_pins[ref] == A && saving_content_owners["[ref]"]) continue
 		var/turf/origin = A.loc
