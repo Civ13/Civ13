@@ -11,10 +11,13 @@ var/global/datum/karma_admin_window/karma_admin_window = new
 	set desc = "A player's hidden karma: who remembers them kindly or poorly, and how those givers stand."
 	if (!check_rights(R_ADMIN))
 		return
-	var/list/choices = list()
+	var/list/choices = list("(analysis view: every player)" = "")
 	for (var/client/C in clients)
 		choices["[C.ckey]"] = C.ckey
-	var/pick = player_input(src.mob, "Whose karma? Pick an online player, or Cancel to type a ckey.", "Karma", null, "anything", sortList(choices), TRUE)
+	var/pick = player_input(src.mob, "Whose karma? Pick an online player or the analysis view, or Cancel to type a ckey.", "Karma", null, "anything", sortList(choices), TRUE)
+	if (pick == "(analysis view: every player)")
+		karma_admin_window.show_analysis(src)
+		return
 	if (!pick)
 		pick = player_input(src.mob, "Type a ckey.", "Karma", null, "text", null, TRUE)
 	pick = ckey(pick)
@@ -51,7 +54,7 @@ var/global/datum/karma_admin_window/karma_admin_window = new
 		html += "<p><b>Admin standing:</b> not set</p>"
 	html += "<p><a href='[link];karma_act=standing'>Set standing</a> | "
 	html += dossier["barred"] ? "<b>Barred from giving</b> (<a href='[link];karma_act=unbar'>lift</a>)" : "<a href='[link];karma_act=bar'>Bar from giving</a>"
-	html += " | <a href='[link];karma_act=refresh'>Refresh</a></p>"
+	html += " | <a href='[link];karma_act=analysis'>Analyse their ratings</a> | <a href='[link];karma_act=refresh'>Refresh</a></p>"
 	html += "<p><b>Playtime</b> (alive, awake, connected): [dossier["hours"]] h. "
 	html += "<b>Kindly</b> [summary["kindly"]] (weighted [summary["kindly_weighted"]]), <b>poorly</b> [summary["poorly"]] (weighted [summary["poorly_weighted"]]), net per 10 h played: [summary["per10h"]].</p>"
 	for (var/kind in list("kindly", "poorly"))
@@ -90,6 +93,9 @@ var/global/datum/karma_admin_window/karma_admin_window = new
 		return
 	var/rank = C.holder.rank
 	switch (href_list["karma_act"])
+		if ("analysis")
+			show_analysis(C, ckey)
+			return
 		if ("standing")
 			var/choice = player_input(C.mob, "Hidden admin standing for [ckey]:", "Karma", null, "anything", list("Trusted (+2)", "Good (+1)", "Neutral (0)", "Poor (-1)", "Bad (-2)"), TRUE)
 			if (!choice)
