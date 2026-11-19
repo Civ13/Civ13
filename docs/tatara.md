@@ -71,9 +71,20 @@ row, ages 2-3, steel or iron) and clay hardening.
 
 Clay hardening runs after the anvil forges a steel katana, wakizashi,
 tachi, tanto or naginata (`is_japanese_blade()`), when the smith knows the
-node, a watered quench tub stands beside the anvil and clay is in the other
-hand or on the anvil's tile. It takes 1 clay and the tub's water, sets
+node, a watered quench tub is fastened beside the anvil and clay is to hand:
+a clay lump stack or a plain unfired lump, in either hand or on the anvil's
+tile (`is_hardening_clay()`). It takes 1 clay and the tub's water, sets
 quality 1.35 (`CLAY_HARDENED_QUALITY`, above the tub's plain 1.2) and
-`hamon = TRUE`, which examine shows. The override in tatara.dm is defined
-before quench_tub.dm's, so the tub's own quench sees the higher quality and
-leaves the blade alone. Iron blades and other weapons are only quenched.
+`hamon = TRUE`, which examine shows. Iron blades and other weapons are only
+quenched.
+
+Nothing fails silently. A smith with clay to hand is told when the blade is
+not steel, when the node is missing (the usual research warning), or when
+the tub is missing, loose or dry (`clay_tub_problem()`); a smith who knows
+the node and has a tub but no clay is told to hold some.
+
+The anvil's `forge_stack_recipe()` hands each new piece to the
+`finish_forged_piece()` hook, which quench_tub.dm extends: `clay_harden()`
+first, then the plain quench, whatever the `.dme` include order. The native probe
+`tests/tatara/clay_hardening_probe.dm` forges real katanas through it
+(`python3 tests/ecology_spawning/run_linux.py . tests/tatara/clay_hardening_probe.dm 600`).
