@@ -1,4 +1,5 @@
-"""Wired pole traversal visits each pole once (issue #6234).
+"""Wired pole traversal visits each pole once (issue #6234) and delivers each
+telegram to each telegraph once (issue #6235).
 
 The production transmit/ring_phone bodies run through the shared source adapter
 on an inert grid. Only locate/get_turf/range/world.time are test boundaries.
@@ -64,13 +65,21 @@ class Phone(Thing):
         self.rings.append(origin)
 
 
+class DMList(list):
+    """DM list semantics for the projection: += adds one entry."""
+    def __iadd__(self, item):
+        self.append(item)
+        return self
+
+
 class Grid:
     def __init__(self):
         self.things, self.calls = [], 0
         env = {'world': World, 'locate': lambda x, y, z: (x, y, z),
                'get_turf': lambda turf: turf, 'range': self.range,
-               'typed_iter': self.typed_iter}
-        self.transmit = self.load('transmit', 'src,msg,stripmsg,TL,origin', env)
+               'typed_iter': self.typed_iter, 'list': DMList,
+               'isnull': lambda value: value is None}
+        self.transmit = self.load('transmit', 'src,msg,stripmsg,TL,origin,reached=None', env)
         self.ring = self.load('ring_phone', 'src,target,origin,originphone', env)
 
     @staticmethod
@@ -114,6 +123,25 @@ class PoleTraversalTests(unittest.TestCase):
         self.assertEqual(far.received, ['hello'])
         self.assertEqual(sender.received, [])
         self.assertEqual([p.visits for p in poles], [1, 1, 1, 1])
+
+    def test_telegraph_near_two_poles_prints_once(self):
+        # #6235: the receiver is in reach of both poles on an acyclic line.
+        grid = Grid()
+        first, second = Pole(grid, 10, 10), Pole(grid, 13, 10)
+        sender = Telegraph(grid, 8, 10)
+        shared = Telegraph(grid, 11, 10)
+        far = Telegraph(grid, 15, 10)
+        first.transmit('hello', 'hello', sender, None)
+        self.assertEqual(shared.received, ['hello'])
+        self.assertEqual(far.received, ['hello'])
+        self.assertEqual(sender.received, [])
+
+    def test_sender_starts_one_delivery_list(self):
+        sender = extract(SOURCE, '/obj/structure/telegraph/proc/transmit')
+        self.assertIn('PL.transmit(msg,stripmsg,src,PL,list())', sender)
+        body = extract(SOURCE, BASE + 'transmit')
+        self.assertEqual(body.count('PL.transmit(msg,stripmsg,TL,src,reached)'), 5)
+        self.assertLess(body.index('reached += TLG'), body.index('TLG.receive(msg,stripmsg)'))
 
     def test_pole_stays_quiet_until_marker_expires(self):
         grid = Grid()
