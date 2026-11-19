@@ -49,6 +49,24 @@ class RecordError(ValueError):
     """A record the store refuses. Nothing was changed."""
 
 
+def unix_int(value):
+    """A unix time as DM sends it: a digit string (DM numbers are 32-bit
+    floats, too coarse for seconds), or an int. None when it is neither."""
+    if isinstance(value, str) and value.isdigit() and len(value) <= 12:
+        return int(value)
+    if isinstance(value, float) and value.is_integer():
+        value = int(value)
+    if isinstance(value, int) and not isinstance(value, bool):
+        return value
+    return None
+
+
+def unix_text(value):
+    """Times in the snapshot files are digit strings, so DM can compare them
+    exactly (json_decode would turn a number into a 32-bit float)."""
+    return str(int(value or 0))
+
+
 def ckey_valid(ckey):
     return isinstance(ckey, str) and bool(CKEY.match(ckey))
 
@@ -73,10 +91,8 @@ def normalise(record, region=None):
     rank = record.get('rank') or ''
     if not isinstance(rank, str) or len(rank) > MAX_RANK:
         raise RecordError('bad record rank')
-    at = record.get('at')
-    if isinstance(at, float) and at.is_integer():
-        at = int(at)
-    if not isinstance(at, int) or isinstance(at, bool) or at <= 0:
+    at = unix_int(record.get('at'))
+    if at is None or at <= 0:
         raise RecordError('bad record time')
     body = record.get('body')
     if body is None or body == []:
@@ -96,10 +112,8 @@ def normalise(record, region=None):
     if kind == 'ban':
         if body.get('scope') not in BAN_SCOPES:
             raise RecordError('a ban has scope game, ooc or job')
-        until = body.get('until', 0)
-        if isinstance(until, float) and until.is_integer():
-            until = int(until)
-        if not isinstance(until, int) or isinstance(until, bool) or until < 0:
+        until = unix_int(body.get('until', 0))
+        if until is None or until < 0:
             raise RecordError('a ban ends at a unix time, or 0 for never')
         body = dict(body, until=until)
         text = json.dumps(body, sort_keys=True, separators=(',', ':'))
@@ -204,6 +218,14 @@ def revocations(db):
     return found
 
 
+def published(row):
+    """A record as the snapshot files show it: times as digit strings."""
+    entry = dict(row, at=unix_text(row['at']), received=unix_text(row['received']))
+    if 'until' in row['body']:
+        entry['body'] = dict(row['body'], until=unix_text(row['body']['until']))
+    return entry
+
+
 def ban_active(row, now):
     until = row['body'].get('until', 0)
     return until == 0 or until > now
@@ -213,11 +235,11 @@ def player_file(db, ckey, revoked=None, hours=None):
     revoked = revocations(db) if revoked is None else revoked
     records = []
     for row in _rows(db, 'WHERE ckey = ?', (ckey,)):
-        entry = dict(row)
+        entry = published(row)
         gone = revoked.get(row['id'])
         if gone:
-            entry['revoked'] = {'id': gone['id'], 'by': gone['author'], 'at': gone['at'], 'region': gone['region'],
-                                'reason': gone['body'].get('reason', '')}
+            entry['revoked'] = {'id': gone['id'], 'by': gone['author'], 'at': unix_text(gone['at']),
+                                'region': gone['region'], 'reason': gone['body'].get('reason', '')}
         records.append(entry)
     return {'version': INDEX_VERSION, 'ckey': ckey, 'hours': hours or 0, 'records': records}
 
@@ -255,7 +277,8 @@ def playtime(activity_path):
 
 
 def build_index(db, now, hours=None, accounts=None):
-    """The per-ckey summary every world reads, and the active bans."""
+    """The per-ckey summary every world reads, and the active bans. Times are
+    digit strings of unix seconds ("0" for a ban that never ends)."""
     now = int(now)
     revoked = revocations(db)
     players = {}
@@ -279,18 +302,18 @@ def build_index(db, now, hours=None, accounts=None):
             e['watch'] = False
         elif row['kind'] == 'ban' and ban_active(row, now):
             body = row['body']
-            e['bans'].append({'id': row['id'], 'scope': body['scope'], 'until': body.get('until', 0)})
-            ban = {'id': row['id'], 'ckey': row['ckey'], 'author': row['author'], 'region': row['region'],
-                   'at': row['at']}
-            ban.update(body)
+            until = unix_text(body.get('until', 0))
+            e['bans'].append({'id': row['id'], 'scope': body['scope'], 'until': until})
+            ban = dict(body, id=row['id'], ckey=row['ckey'], author=row['author'], region=row['region'],
+                       at=unix_text(row['at']), until=until)
             bans.append(ban)
     for ckey, value in (hours or {}).items():
         entry(ckey)['hours'] = value
-    pulls = dict(db.execute('SELECT region, at FROM record_pull'))
+    pulls = {r: unix_text(t) for r, t in db.execute('SELECT region, at FROM record_pull')}
     seq = db.execute('SELECT COALESCE(MAX(seq), 0) FROM player_record').fetchone()[0]
-    index = {'version': INDEX_VERSION, 'generated': now, 'seq': seq, 'pulled': pulls,
+    index = {'version': INDEX_VERSION, 'generated': unix_text(now), 'seq': seq, 'pulled': pulls,
              'accounts': accounts or {}, 'players': players}
-    return index, {'version': INDEX_VERSION, 'generated': now, 'bans': bans}
+    return index, {'version': INDEX_VERSION, 'generated': unix_text(now), 'bans': bans}
 
 
 def write_json(path, value, attempts=5):

@@ -2474,6 +2474,13 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 -B -m unittest discover -s tests/player_activity -p 'test_*.py' -v
           python3 tests/player_activity/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/player-activity"
+      - name: Verify shared player records and notes
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/shared_records')
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/shared_records/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/shared-records"
       - name: Retain admin item cleaning evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/admin_clean'))
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
