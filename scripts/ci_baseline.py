@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'getline2_contract': {'files': ('tests/getline2/test_getline2.py',),
+        'paths': ('tests/getline2/',),
+        'shared_paths': ('code/_helpers/unsorted.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib-only: civ13.dme compiles in its own order and Dream Maker's sorted one.
     'dme_order': {'files': ('tests/dme_order/test_define_order.py',), 'paths': ('tests/dme_order/',),
         'shared_paths': ('civ13.dme',)},
