@@ -1380,6 +1380,7 @@
 #include "code\modules\admin\create_turf.dm"
 #include "code\modules\admin\event_transfer.dm"
 #include "code\modules\admin\send_player_to_region.dm"
+#include "code\modules\admin\shared_player_records.dm"
 #include "code\modules\admin\spawn_menu.dm"
 #include "code\modules\admin\map_area_export.dm"
 #include "code\modules\admin\magic_verbs.dm"

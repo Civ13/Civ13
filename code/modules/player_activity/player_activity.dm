@@ -172,7 +172,10 @@ var/global/datum/player_activity/player_activity = new
 	if(isobserver(M)) return "observer"
 	if(isliving(M))
 		var/mob/living/L = M
-		return L.stat == DEAD ? "dead" : "alive"
+		if(L.stat == DEAD) return "dead"
+		// Playtime counts only while alive and awake (shared player records).
+		if(L.stat == UNCONSCIOUS || L.sleeping) return "asleep"
+		return "alive"
 	return "other"
 
 /datum/player_activity/proc/heartbeat()

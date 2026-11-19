@@ -451,6 +451,8 @@ var/global/list/civ_relay_outbound_queue = list()
 	region_asay_tick()
 	// Admin announcements to every region's players (region_announce.dm).
 	region_announce_tick()
+	// Shared player records (shared_player_records.dm).
+	shared_records.tick()
 	// Orbital strikes aimed at this world (orbit_artillery.dm).
 	orbit_artillery_tick()
 	var/list/on_air = civ_relay_on_air_list()

@@ -66,6 +66,11 @@ def _routes(store, radio):
         # Orbital strikes: a station fires at one named region (orbit_artillery.dm).
         '/strike/send': lambda body: {'id': radio.strike_send(body.get('envelope'))},
         '/strike/inbox': lambda body: {'envelopes': radio.strike_inbox()},
+        # Shared player records (records.py): DM queues /record; the coordinator
+        # collects /records/outbox and acknowledges what it stored.
+        '/record': lambda body: store.add_records(body.get('records')),
+        '/records/outbox': lambda body: store.record_outbox(),
+        '/records/ack': lambda body: store.ack_records(body.get('ids')),
         '/train/reserve': lambda body: store.reserve_train(body),
         '/train/lease': lambda body: store.train_lease_status(body['journey']),
         '/train/cancel': lambda body: store.cancel_train_lease(body['journey']),
