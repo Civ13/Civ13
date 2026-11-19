@@ -31,7 +31,7 @@
 
 /obj/map_metadata/skullisland/tick()
 	..()
-	if (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods)
+	if (do_once_activations && (processes.ticker.playtime_elapsed >= 3000 || admin_ended_all_grace_periods))
 		for (var/obj/effect/area_teleporter/AT)
 			AT.Activated()
 		do_once_activations = FALSE
