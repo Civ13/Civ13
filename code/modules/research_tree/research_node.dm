@@ -280,7 +280,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("bronze_working", "Bronze Working", "Industrial", 142, 0, RESEARCH_MODE_PROTOTYPE, list("basic_tools"), 1, /obj/item/weapon/clay/mold/axehead))
 	// Prototype: a bronze ingot mold (gated on bronze_working, its own direct prereq).
 	register_research_node(new /datum/research_node("iron_smithing", "Iron Smithing", "Industrial", 195, 1, RESEARCH_MODE_PROTOTYPE, list("bronze_working"), 2, /obj/item/weapon/clay/mold))
-	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
+	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("blast_furnaces"), 4))
 	// Japanese iron-sand steel (tatara.dm): iron sand smelted in a clay
 	// furnace, so steel without rock ore. A trunk metal: Iron Smithing's clay
 	// mould already teaches the clay work.
@@ -288,10 +288,15 @@ var/global/list/node_grid_col_cache = null
 	// Crucible steel (crucible_steel.dm): wootz cakes from iron and charcoal
 	// sealed in clay crucibles and fired in a kiln under a bellows blast.
 	register_research_node(new /datum/research_node("crucible_steel", "Crucible Steel", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))
+	// Blast furnaces driven by water power, coke, and refining pig iron into
+	// wrought iron and blister steel in bulk (steel_works.dm). A trunk metal.
+	register_research_node(new /datum/research_node("blast_furnaces", "Blast Furnaces & Coke", "Industrial", 200, 2, RESEARCH_MODE_ANALYSIS, list("iron_smithing","watermills"), 3))
 	// Ore processing and quicksilver (mercury.dm, docs/mercury.md): washing and
 	// stamping ore, then mercury amalgamation, then powered milling.
 	register_research_node(new /datum/research_node("ore_dressing", "Ore Dressing", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("resource_processing"), 2))
 	register_research_node(new /datum/research_node("amalgamation", "Amalgamation", "Industrial", 200, 2, RESEARCH_MODE_ANALYSIS, list("ore_dressing","apothecary"), 3))
+	// Open hearth steel (steel_works.dm): pig iron and scrap melted slowly into fine steel.
+	register_research_node(new /datum/research_node("open_hearth", "Open Hearth Steel", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("steelmaking","factories"), 5))
 	register_research_node(new /datum/research_node("alloys", "Alloys", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("steelmaking"), 6))
 	// Hall-Heroult (1886) and Bayer (1888): aluminium from bauxite (aluminium.dm).
 	register_research_node(new /datum/research_node("aluminium_refining", "Aluminium Refining", "Industrial", 305, 5, RESEARCH_MODE_ANALYSIS, list("electricity","alloys"), 6))
@@ -1904,7 +1909,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/anvil" = "iron_smithing",
 		"/obj/structure/quench_tub" = "iron_smithing",
 		"/obj/structure/furnace" = "iron_smithing",
-		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
+		"/obj/structure/furnace/blast_furnace" = "blast_furnaces",
+		"/obj/structure/steel_works/coke_bank" = "blast_furnaces",
+		"/obj/structure/steel_works/finery" = "blast_furnaces",
+		"/obj/structure/steel_works/cementation" = "blast_furnaces",
+		"/obj/structure/steel_works/puddling" = "blast_furnaces",
+		"/obj/structure/steel_works/bessemer" = "steelmaking",
+		"/obj/structure/steel_works/open_hearth" = "open_hearth",
+		"/obj/structure/steel_works/arc_furnace" = "alloys",
 		"/obj/structure/carburizing_pot" = "iron_smithing",
 		"/obj/item/weapon/clay/crucible" = "crucible_steel",
 		"/obj/structure/tatara" = "tatara_smelting",

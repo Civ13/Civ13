@@ -106,7 +106,18 @@
 	return BLOOMERY_FIRING_BASE + max(0, iron) * BLOOMERY_FUEL_PER_ORE + max(0, iron_sand) * BLOOMERY_FUEL_PER_ORE / 2
 
 /obj/structure/furnace/proc/has_firing_fuel()
-	return fuel > 1 && fuel >= firing_fuel_cost()
+	return fuel > 1 && fuel >= firing_fuel_cost() && !firing_refusal()
+
+// Why this furnace can't fire now (besides fuel), or null.
+/obj/structure/furnace/proc/firing_refusal()
+	return null
+
+// A blast furnace needs a steady blast no hand bellows can give: a water
+// wheel or windmill must drive its bellows (mechanical_power.dm).
+/obj/structure/furnace/blast_furnace/firing_refusal()
+	if (mechanical_drive_factor(src) >= 1)
+		return "A blast furnace needs a water wheel or windmill nearby to drive its bellows."
+	return null
 
 // Kilns melt metal in vessels and burn what they always did.
 /obj/structure/furnace/kiln/firing_fuel_cost()
@@ -127,7 +138,7 @@
 
 /obj/structure/furnace/proc/fuel_refusal(obj/item/I)
 	if (istype(I, /obj/item/stack/ore/coal))
-		return "Raw coal's sulphur would ruin the iron. Burn charcoal or wood."
+		return "Raw coal's sulphur would ruin the iron. Burn charcoal, wood or coke."
 	return null
 
 /obj/structure/furnace/examine(mob/user, distance)

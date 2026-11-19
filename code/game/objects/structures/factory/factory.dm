@@ -141,8 +141,8 @@
 
 /obj/structure/machinery/factory/process()
 	if (iron > 0)
-		var/obj/item/stack/material/steel/newsteel = new/obj/item/stack/material/steel(src.loc)
-		newsteel.amount = iron
+		// A furnace melts iron into pig iron; steel needs a converter (steel_works.dm).
+		spawn_stack(/obj/item/stack/ore/iron_pig, src.loc, iron)
 		iron = 0
 	if (tin > 0 && copper > 0)
 		var/obj/item/stack/material/bronze/newbronze = new/obj/item/stack/material/bronze(src.loc)
