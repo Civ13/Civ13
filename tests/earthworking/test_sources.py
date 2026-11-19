@@ -17,7 +17,7 @@ def read(path):
 class Wiring(unittest.TestCase):
     def test_included(self):
         dme = read('civ13.dme')
-        self.assertIn('#include "code\\\\modules\\\\1713\\\\earthworking_heavy.dm"', dme)
+        self.assertIn('#include "code\\modules\\1713\\earthworking_heavy.dm"', dme)
 
     def test_recipes_and_research(self):
         recipes = read('config/crafting/material_recipes_global.txt')

@@ -271,7 +271,7 @@ var/global/list/road_roller_types = list(
 	var/list/cuts = cuttings()
 	var/job = "dig"
 	if (length(cuts) && length(found))
-		job = input(H, "What should \the [src] do?", "Steam shovel") as null|anything in list("Dig loose earth", "Cut the ground down a level")
+		job = player_input(H, "What should \the [src] do?", "Steam shovel", null, "anything", list("Dig loose earth", "Cut the ground down a level"), TRUE)
 		if (!job || busy || !operator_ready(H))
 			return
 		job = job == "Dig loose earth" ? "dig" : "cut"
