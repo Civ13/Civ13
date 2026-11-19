@@ -211,7 +211,7 @@
 
 	if (istype(source_turf))
 		FOR_DVIEW(var/turf/T, light_range, source_turf, INVISIBILITY_LIGHTING)
-			for (var/A in T.get_corners(get_dir(source_turf, T)))
+			for (var/A in T.get_corners())
 				if (!A)
 					continue
 
@@ -274,7 +274,7 @@
 /datum/light_source/proc/smart_vis_update()
 	var/list/datum/lighting_corner/corners = list()
 	FOR_DVIEW(var/turf/T, light_range, source_turf, FALSE)
-		corners |= T.get_corners(get_dir(source_turf, T))
+		corners |= T.get_corners()
 	END_FOR_DVIEW
 
 	for (var/A in corners - effect_str) // New corners
