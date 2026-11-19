@@ -2133,6 +2133,10 @@ RECIPE: /material/steel/,wirecutters,/obj/item/weapon/wirecutters,4,70,0,1,tools
 RECIPE: /material/steel/,welding tool,/obj/item/weapon/weldingtool,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,jackhammer,/obj/item/weapon/material/pickaxe/jackhammer,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,navvy shovel,/obj/item/weapon/material/shovel/navvy,3,80,0,1,tools,0,0,0,8,null
+RECIPE: /material/copper/,copper mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,copper
+RECIPE: /material/bronze/,bronze mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,bronze
+RECIPE: /material/iron/,iron mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,iron
+RECIPE: /material/steel/,steel mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,steel
 RECIPE: /material/steel/,chainsaw,/obj/item/weapon/material/hatchet/chainsaw,24,160,0,1,tools,178,0,0,8,null
 RECIPE: /material/steel/,fire extinguisher,/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty,7,90,0,1,tools,99,0,0,8,null
 RECIPE: /material/steel/,fire hose reel,/obj/structure/fire_pump/reel,10,150,1,1,tools,99,0,0,8,null
@@ -3446,8 +3450,4 @@ RECIPE: /material/copper/,copper hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,
 RECIPE: /material/bronze/,bronze hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,bronze
 RECIPE: /material/iron/,iron hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,iron
 RECIPE: /material/steel/,steel hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,steel
-RECIPE: /material/copper/,copper mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,copper
-RECIPE: /material/bronze/,bronze mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,bronze
-RECIPE: /material/iron/,iron mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,iron
-RECIPE: /material/steel/,steel mattock,/obj/item/weapon/material/shovel/mattock,3,70,0,1,tools,0,0,0,8,steel
 //**| END GENERATED TOOL MATERIAL VARIANTS |**
