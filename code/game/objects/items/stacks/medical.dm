@@ -290,6 +290,9 @@
 	max_amount = 5
 	flags = CONDUCT
 
+// Every limb a splint can go on. Remove splints in the strip window covers the same list.
+var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_arm", "l_leg", "r_leg", "l_hand", "r_hand", "l_foot", "r_foot")
+
 /obj/item/stack/medical/splint/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
@@ -299,7 +302,7 @@
 		if (!affecting)
 			return
 		var/limb = affecting.name
-		if (!(affecting.limb_name in list("chest", "head", "groin", "l_arm","r_arm","l_leg","r_leg", "l_hand", "r_hand", "l_foot", "r_foot")))
+		if (!(affecting.limb_name in splintable_organs))
 			to_chat(user, SPAN_WARNING("You can't apply a splint there!"))
 			return
 		else if (affecting.status & ORGAN_SPLINTED)
@@ -316,6 +319,8 @@
 				return
 			user.visible_message(SPAN_NOTICE("[user] starts to apply \the [src] to their [limb]."), SPAN_DANGER("You start to apply \the [src] to your [limb]."), SPAN_DANGER("You hear something being wrapped."))
 		if (do_mob(user, M, 50))
+			if (!splint_still_needed(H, affecting, user))
+				return
 			if (M != user)
 				user.visible_message(SPAN_NOTICE("[user] finishes applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You finish applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You hear something being wrapped."))
 			else
@@ -327,6 +332,21 @@
 			affecting.status |= ORGAN_SPLINTED
 			use(1)
 		return
+
+// After the wait: the patient is still in reach, the limb is still attached
+// and still needs a splint, and nobody else splinted it meanwhile.
+/obj/item/stack/medical/splint/proc/splint_still_needed(mob/living/human/H, obj/item/organ/external/affecting, mob/user)
+	if (QDELETED(H) || QDELETED(affecting) || H.get_organ(affecting.limb_name) != affecting)
+		return FALSE
+	if (H != user && !user.Adjacent(H))
+		to_chat(user, SPAN_WARNING("[H] is too far away to splint."))
+		return FALSE
+	if (affecting.status & ORGAN_SPLINTED)
+		to_chat(user, SPAN_WARNING("[H]'s [affecting.name] is already splinted!"))
+		return FALSE
+	if (!(affecting.status & ORGAN_BROKEN) && !affecting.is_dislocated())
+		return FALSE
+	return TRUE
 
 /obj/item/stack/medical/splint/small
 	amount = 1
