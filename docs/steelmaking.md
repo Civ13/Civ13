@@ -57,3 +57,18 @@ five; a hammer unpacks a cold pot, or breaks up an empty one.
 On an anvil that works steel, blister steel offers a fold: every 2 bars
 weld and draw out into 1 plain steel (shear steel), or it can be forged as
 it is.
+
+## Crucible steel
+
+Research **Crucible Steel** (`crucible_steel`, Industrial, era 2, needs Iron
+Smithing; it also opens the steel-faced anvil). Code:
+`code/modules/1713/crucible_steel.dm`.
+
+An unfired crucible (1 clay) fires into `/obj/item/weapon/steel_crucible`.
+Pack it with 2 wrought iron and 1 charcoal and seal it in hand (3 s). A
+kiln takes up to 4 sealed crucibles (`accept_crucible`) and burns 2 more
+fuel per crucible each firing (`crucible_fuel`). After each kiln firing
+(`fire_crucibles`) a crucible only gains heat if the firing started under
+a bellows blast; after 3 blown firings it either cracks (25% for Crafting
+1.0, 5% to 40% by skill) and the melt is lost, or breaks open on 1 fine
+steel. Crucibles come out of the kiln after every firing.

@@ -285,6 +285,9 @@ var/global/list/node_grid_col_cache = null
 	// furnace, so steel without rock ore. A trunk metal: Iron Smithing's clay
 	// mould already teaches the clay work.
 	register_research_node(new /datum/research_node("tatara_smelting", "Tatara Smelting", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))
+	// Crucible steel (crucible_steel.dm): wootz cakes from iron and charcoal
+	// sealed in clay crucibles and fired in a kiln under a bellows blast.
+	register_research_node(new /datum/research_node("crucible_steel", "Crucible Steel", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))
 	// Ore processing and quicksilver (mercury.dm, docs/mercury.md): washing and
 	// stamping ore, then mercury amalgamation, then powered milling.
 	register_research_node(new /datum/research_node("ore_dressing", "Ore Dressing", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("resource_processing"), 2))
@@ -1903,6 +1906,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/furnace" = "iron_smithing",
 		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
 		"/obj/structure/carburizing_pot" = "iron_smithing",
+		"/obj/item/weapon/clay/crucible" = "crucible_steel",
 		"/obj/structure/tatara" = "tatara_smelting",
 		"/obj/structure/workshop_machine/mercury_retort" = "amalgamation",
 		"/obj/item/weapon/reagent_containers/glass/mercury_flask" = "ore_dressing",

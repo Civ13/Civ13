@@ -110,10 +110,10 @@
 
 // Kilns melt metal in vessels and burn what they always did.
 /obj/structure/furnace/kiln/firing_fuel_cost()
-	return 2
+	return 2 + crucible_fuel()
 
 /obj/structure/furnace/kiln/has_firing_fuel()
-	return fuel > 1
+	return fuel > 1 && fuel >= firing_fuel_cost()
 
 /obj/structure/furnace/lime_kiln/has_firing_fuel()
 	return fuel > 1
