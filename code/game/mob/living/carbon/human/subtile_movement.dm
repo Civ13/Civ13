@@ -350,9 +350,10 @@
 	return human_subtile_enabled && human_subtile_ready(direction)
 
 /mob/living/human/proc/human_subtile_ready(direction)
+	var/static/list/valid_directions = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
 	if (persistence_save_in_progress && pulling && subtile_pull_ownership.owners[pulling])
 		return FALSE
-	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_ride_unlinked() && (!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())
+	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in valid_directions) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_ride_unlinked() && (!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())
 
 // Climbing into or out of a trench (or onto a bridge or frame over one) waits
 // inside turf Enter/Exit. A sleeping Enter/Exit fails the native pixel Move at
@@ -622,7 +623,8 @@
 // Crawling has its own legacy wait and admission. Let that paid path recover
 // an owned offset without making unconscious/restrained/linked bodies eligible.
 /mob/living/human/proc/human_subtile_posture_ready(direction)
-	return !subtile_pull_ownership.owners[src] && human_subtile_offset_owned && (step_x || step_y) && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked()
+	var/static/list/valid_directions = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
+	return !subtile_pull_ownership.owners[src] && human_subtile_offset_owned && (step_x || step_y) && human_subtile_shape() && (direction in valid_directions) && (prone || lying) && !stat && !transforming && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked()
 
 /mob/living/human/proc/human_subtile_posture_authority(client/owner)
 	return client == owner && (!owner || (owner.mob == src && owner.canmove))
@@ -644,7 +646,8 @@
 	return owner && client == owner && owner.mob == src && owner.canmove
 
 /mob/living/human/proc/human_subtile_crawl_ready(direction)
-	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned) && !human_subtile_trench_crossing(direction)
+	var/static/list/valid_directions = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
+	return human_subtile_shape() && (direction in valid_directions) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned) && !human_subtile_trench_crossing(direction)
 
 /mob/living/human/proc/human_subtile_crawl_move(turf/n, duration, posture)
 	// From the anchor tile: a body between tiles overlaps n, so get_dir(src, n) is 0.
