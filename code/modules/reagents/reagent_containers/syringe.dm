@@ -143,8 +143,8 @@
 					return
 
 				var/mob/living/human/H = target
+				var/tgt = user.targeted_organ
 				if (istype(H))
-					var/tgt = user.targeted_organ
 					if (user.targeted_organ == "random")
 						tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
 					var/obj/item/organ/external/affected = H.get_organ(tgt)
@@ -157,9 +157,9 @@
 					var/injtime = time //Injecting through a hardsuit takes longer due to needing to find a port.
 
 					if (istype(H))
-						if (H.wear_suit)
-							if (!H.can_inject(user, TRUE))
-								return
+						// Headgear protects the head with or without a suit (#6201).
+						if (!H.can_inject(user, TRUE, tgt))
+							return
 
 					else if (isliving(target))
 
