@@ -41,7 +41,7 @@
 	if (!msg)
 		return
 	for (var/obj/structure/phoneline/PL in range(2,src))
-		PL.transmit(msg,stripmsg,src,PL)
+		PL.transmit(msg,stripmsg,src,PL,list())
 		return
 
 /obj/structure/telegraph/proc/receive(var/msg, var/stripmsg)
@@ -138,7 +138,9 @@
 		..()
 		update_lines()
 
-/obj/structure/phoneline/proc/transmit(var/msg, var/stripmsg, var/obj/structure/telegraph/TL, var/obj/structure/phoneline/origin)
+// reached holds the telegraphs this transmission has already delivered to, so
+// a telegraph within reach of two poles prints the message once (#6235).
+/obj/structure/phoneline/proc/transmit(var/msg, var/stripmsg, var/obj/structure/telegraph/TL, var/obj/structure/phoneline/origin, var/list/reached = null)
 	if (!msg || !TL)
 		return
 	if (world.time <= lastproc)
@@ -146,33 +148,36 @@
 	else
 		// Mark this pole before forwarding so loops in the pole network end here.
 		lastproc = world.time+3
+		if (isnull(reached))
+			reached = list()
 		//left
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x-3,y,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//right
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x+3,y,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//up
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x,y+3,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//down
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x,y-3,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//right next to it
 		for (var/obj/structure/phoneline/PL in range(1,src))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		for (var/obj/structure/telegraph/TLG in range(2,src))
-			if (TLG != TL)
+			if (TLG != TL && !(TLG in reached))
+				reached += TLG
 				TLG.receive(msg,stripmsg)
 /obj/structure/phoneline/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone)
 	if (!origin || !target)
