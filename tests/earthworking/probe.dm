@@ -83,7 +83,8 @@ var/earthworking_runtime_error = FALSE
 	earthworking_check(S.tip_load() == 3 && S.loads == 1, "tipping builds up the three swath tiles, one load each")
 	earthworking_check(terrain_height_at(locate(7, 10, 1)) == low + 1 && istype(locate(7, 10, 1), /turf/floor/tamped_earth), "built-up ground is tamped earth one level higher")
 	S.forceMove(locate(2, 2, 1)) // rocky ground that can't be graded
-	earthworking_check(S.tip_load() == 0 && S.loads == 0 && locate(/obj/item/weapon/barrier) in locate(2, 2, 1), "earth with nowhere to go is tipped out in piles")
+	var/turf/rocky = locate(2, 2, 1)
+	earthworking_check(S.tip_load() == 0 && S.loads == 0 && (locate(/obj/item/weapon/barrier) in rocky), "earth with nowhere to go is tipped out in piles")
 
 	// Steam shovel: cut the ground within reach down a level.
 	earthworking_dirt(5, 8, 9, 12)
@@ -108,9 +109,15 @@ var/earthworking_runtime_error = FALSE
 	rock1.ChangeTurf(/turf/floor/dirt/underground)
 	rock2.ChangeTurf(/turf/floor/dirt/underground)
 	rock3.ChangeTurf(/turf/floor/dirt/underground)
-	earthworking_check(locate(2, 5, 1):density, "fixture rock is solid")
+	rock1 = locate(2, 5, 1)
+	rock2 = locate(3, 5, 1)
+	rock3 = locate(5, 5, 1)
+	earthworking_check(rock1.density, "fixture rock is solid")
 	earthworking_check(blasting_charge_break_rock(locate(2, 4, 1)) == 2, "a charge breaks the rock beside it")
-	earthworking_check(!locate(2, 5, 1):density && !locate(3, 5, 1):density && locate(5, 5, 1):density, "rock out of reach stays")
+	rock1 = locate(2, 5, 1)
+	rock2 = locate(3, 5, 1)
+	rock3 = locate(5, 5, 1)
+	earthworking_check(!rock1.density && !rock2.density && rock3.density, "rock out of reach stays")
 	var/obj/item/weapon/grenade/blasting_charge/C = new(locate(1, 1, 1))
 	earthworking_check(C.state == 0 && !C.active, "a new charge is empty")
 	var/obj/item/weapon/grenade/blasting_charge/ready/R = new(locate(1, 1, 1))
