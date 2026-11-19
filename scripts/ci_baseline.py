@@ -2581,6 +2581,10 @@ SUITES = {
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+    # Signal-smoke choices must not overwrite a grenade activated by another dialog.
+    'signal_smoke_selection': {'files': ('tests/signal_smoke_selection/test_source.py',),
+        'paths': ('tests/signal_smoke_selection/',),
+        'shared_paths': ('code/game/objects/items/weapons/grenades/smokebomb.dm',)},
     # Spray bottle acceptance, feedback and reagent logging (#4269, #4270).
     'spray': {'files': ('tests/spray/test_source.py',),
         'paths': ('tests/spray/', 'code/modules/reagents/reagent_containers/spray.dm')},
