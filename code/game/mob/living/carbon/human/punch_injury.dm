@@ -106,13 +106,15 @@
 /obj/item/clothing/gloves/hand_wraps/equipped(mob/user, slot)
 	..()
 	if (slot != slot_gloves)
-		spawn(1)
-			settle_wrap()
+		queue_settle()
 
 /obj/item/clothing/gloves/hand_wraps/dropped(mob/user)
 	..()
-	spawn(1)
-		settle_wrap()
+	queue_settle()
+
+// Overridden by the probe, which runs no timers.
+/obj/item/clothing/gloves/hand_wraps/proc/queue_settle()
+	addtimer(CALLBACK(src, PROC_REF(settle_wrap)), 1)
 
 /obj/item/clothing/gloves/hand_wraps/proc/settle_wrap()
 	if (QDELETED(src))

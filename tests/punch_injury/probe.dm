@@ -41,6 +41,9 @@ var/list/punch_probe_rolls = list()
 /obj/item/stack/material/hand_wrap_wait(mob/living/human/H)
 	return TRUE
 
+/obj/item/clothing/gloves/hand_wraps/queue_settle()
+	return
+
 /proc/punch_probe_assert(ok, label)
 	punch_probe_checks++
 	if (!ok)
