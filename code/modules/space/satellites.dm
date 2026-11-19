@@ -62,11 +62,16 @@ var/global/list/satellite_kinds = list(
 	if (!T)
 		return null
 	var/obj/structure/satellite_station/best = null
+	var/best_distance = null
 	for (var/obj/structure/satellite_station/S in satellite_stations)
-		if (QDELETED(S) || !isturf(S.loc) || S.z != T.z || get_dist(S, T) > range)
+		if (QDELETED(S) || !isturf(S.loc) || S.z != T.z)
 			continue
-		if (!best || get_dist(S, T) < get_dist(best, T))
+		var/distance = get_dist(S, T)
+		if (distance > range)
+			continue
+		if (!best || distance < best_distance)
 			best = S
+			best_distance = distance
 	return best
 
 // ---------------------------------------------------------------- satellites

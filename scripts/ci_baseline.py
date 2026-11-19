@@ -1771,6 +1771,10 @@ SUITES = {
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
 
+    'satellite_station_selection': {'files': ('tests/satellite_station/test_station_selection.py',),
+        'paths': ('tests/satellite_station/',), 'shared_paths': (
+            'code/modules/space/satellites.dm', 'tests/save_movement/source_adapter.py')},
+
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
     'wildlife_offline': {'files': (
