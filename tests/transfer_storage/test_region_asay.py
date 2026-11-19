@@ -184,5 +184,6 @@ class StaffHelpRequests(unittest.TestCase):
         self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, mentormsg))', mhelp)
         self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, adminmsg))', mhelp)
         ahelp = self.staff_loop(self.AHELP)
-        self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, msg))', ahelp)
+        # Admins get the karma-annotated copy, moderators the plain one (#6182).
+        self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, (R_ADMIN & X.holder.rights) ? karma_msg : msg))', ahelp)
         self.assertIn('to_chat(X, CHAT_TYPED(CHAT_ADMIN, mentormsg))', ahelp)
