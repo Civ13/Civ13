@@ -1769,6 +1769,7 @@ SUITES = {
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
     'wildlife_offline': {'files': (
+        'tests/animal_combat/test_predator_feeding.py',
         'tests/ecology_spawning/test_mob_guard.py',
         'tests/human_subtile/test_insect_cadence_candidate.py',
         'tests/human_subtile/test_insect_idle_slot.py',
