@@ -1778,6 +1778,9 @@ SUITES = {
         'paths': ('tests/hostile_patrol/',),
         'shared_paths': ('code/game/mob/living/simple_animal/hostile/humans/human.dm',
                          'tests/save_movement/source_adapter.py')},
+    'satellite_station_selection': {'files': ('tests/satellite_station/test_station_selection.py',),
+        'paths': ('tests/satellite_station/',), 'shared_paths': (
+            'code/modules/space/satellites.dm', 'tests/save_movement/source_adapter.py')},
 
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
