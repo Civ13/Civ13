@@ -617,7 +617,11 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (mob.stat == DEAD || mob.stat == UNCONSCIOUS)
 			return
 		else
+			var/mob/living/human/cycler = mob
+			if (mob.m_intent == "run" && !cycler.sprinting && cycler.start_sprint(FALSE))
+				return
 			if (mob.m_intent == "run")
+				cycler.sprinting = FALSE
 				mob.m_intent = "proning"
 			else if (mob.m_intent == "proning")
 				if (mob.facing_dir)
@@ -626,6 +630,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			else if (mob.m_intent == "stealth")
 				mob.m_intent = "walk"
 			else if (mob.m_intent == "walk")
+				cycler.sprinting = FALSE
 				mob.m_intent = "run"
 			else
 				mob.m_intent = "walk"
@@ -699,14 +704,17 @@ This saves us from having to call add_fingerprint() any time something is put in
 	var/mob/living/human/H = mob
 
 	if (H.m_intent == "walk")
+		H.sprinting = FALSE
 		mob.m_intent = "run"
 
 	else if (H.m_intent == "run")
+		H.sprinting = FALSE
 		mob.m_intent = "walk"
 
 	else if (mob.m_intent == "proning")
 		if (mob.facing_dir)
 			mob.set_face_dir()
+		H.sprinting = FALSE
 		mob.m_intent = "run"
 		mob.prone = FALSE
 		H.update_posture_transform()
@@ -734,6 +742,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (H.m_intent == "walk")
 		mob.m_intent = "proning"
 	else if (H.m_intent == "run")
+		H.sprinting = FALSE
 		mob.m_intent = "proning"
 	else if (mob.m_intent == "stealth")
 		mob.m_intent = "proning"

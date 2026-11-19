@@ -23,6 +23,7 @@ EXTRA_SAVED_TYPES = {'/datum/wound'}
 # Reviewed: not a world.time stamp on that type, or deliberately left alone.
 REVIEWED = {
     'civilization': 'regex hit on a comparison, not an assignment',
+    'next_sprint_collision': 'declared var/tmp on humans (sprint.dm), so never saved',
     'faction_text': 'regex hit on a comparison, not an assignment',
     'original_job_title': 'regex hit on a comparison, not an assignment',
     'move_delay': 'assigned on client, not on the saved gun',
