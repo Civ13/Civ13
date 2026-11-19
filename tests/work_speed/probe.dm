@@ -75,6 +75,8 @@ var/work_speed_runtime_error = FALSE
 	work_speed_check(work_delay(average, 100, WORK_DIG, steel_shovel) == 75, "a steel shovel digs a third faster than iron")
 	work_speed_check(work_delay(average, 100, WORK_DIG, bone_shovel) == 250, "a bone shovel digs at 0.6 / 1.5 of iron")
 	work_speed_check(work_delay(average, 120, WORK_MINE, steel_pick) == 80, "a steel pickaxe mines half again as fast as iron")
+	var/obj/item/weapon/material/shovel/navvy/navvy = new(T)
+	work_speed_check(navvy.usespeed == 2.5 && work_delay(average, 100, WORK_DIG, navvy) == 60, "a navvy shovel digs two thirds faster than iron")
 	work_speed_check(work_delay(average, CHOP_TREE_TIME, WORK_CHOP, stone_hatchet) > CHOP_TREE_TIME, "a stone hatchet chops slower than iron")
 	work_speed_check(work_delay(average, 100, WORK_DIG, null) == 100, "no tool counts as the reference tool")
 

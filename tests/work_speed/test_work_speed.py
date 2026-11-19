@@ -76,5 +76,20 @@ class Wiring(unittest.TestCase):
             self.assertIn(line, module)
 
 
+class ToolTiers(unittest.TestCase):
+    def test_hatchets_get_faster_with_each_metal(self):
+        speeds = read('code/modules/materials/tool_speeds.dm')
+        self.assertIn('"stone" = 3.3, "bronze" = 1.9, "iron" = 1.7, "steel" = 1.4', speeds)
+
+    def test_navvy_shovel_is_the_fastest_hand_shovel(self):
+        tools = read('code/modules/1713/tools.dm')
+        block = tools[tools.index('/obj/item/weapon/material/shovel/navvy\n'):]
+        block = block[:block.index('\n\n')]
+        self.assertIn('usespeed = 2.5', block)
+        self.assertIn('default_material = "steel"', block)
+        self.assertIn('"/obj/item/weapon/material/shovel/navvy" = "machined_tools"', read('code/modules/research_tree/research_node.dm'))
+        self.assertIn('RECIPE: /material/steel/,navvy shovel,/obj/item/weapon/material/shovel/navvy,', read('config/crafting/material_recipes_global.txt'))
+
+
 if __name__ == '__main__':
     unittest.main()
