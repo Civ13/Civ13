@@ -212,6 +212,11 @@ var/extraction_runtime_error = FALSE
 	extraction_check(electronics.amount == 20 && steel.amount == 20 && (locate(/obj/structure/drill) in T), "construction pays 20 electronics and 20 steel")
 	electronics.produce_recipe(R,1,H)
 	extraction_check(electronics.amount == 20 && steel.amount == 20, "occupied tile consumes neither input")
+	// Drill subtypes built from other materials never ask for electronics' steel.
+	var/obj/item/stack/material/wood/wood = new(H,20,FALSE)
+	var/datum/stack_recipe/W = new("water stamp mill", /obj/structure/drill/stamp_mill/water, 12, _time = 0, _one_per_turf = TRUE, _on_floor = TRUE)
+	extraction_check(!wood.needs_drill_steel(W) && electronics.needs_drill_steel(R), "only electronics drills need steel")
+	qdel(wood)
 
 /proc/extraction_electricity_bootstrap(mob/living/human/extraction_probe/H)
 	map.ordinal_age = 4
