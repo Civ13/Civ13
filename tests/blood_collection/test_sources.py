@@ -26,7 +26,9 @@ class BloodCollection(unittest.TestCase):
         self.assertIn('if (.)\n\t\tvessel.remove_reagent("blood",amount)', take)
 
     def test_iv_drip_handles_refusal(self):
-        self.assertIn("holds someone else's blood", IV)
+        refused = IV.split("else if (prob(5))", 1)[1]
+        self.assertLess(refused.index('if (held && (!held.data || held.data["donor"] != T))'),
+                        refused.index("holds someone else's blood"))
 
 
 if __name__ == '__main__':

@@ -127,7 +127,12 @@
 				beaker.reagents.handle_reactions()
 				update_icon()
 			else if (prob(5))
-				visible_message("\The [src] pings. \The [beaker] holds someone else's blood.")
+				// Name a donor conflict only when there is one; low blood also refuses (#6239).
+				var/datum/reagent/blood/held = T.get_blood(beaker.reagents)
+				if (held && (!held.data || held.data["donor"] != T))
+					visible_message("\The [src] pings. \The [beaker] holds someone else's blood.")
+				else
+					visible_message("\The [src] pings.")
 
 /obj/structure/iv_drip/attack_hand(mob/user as mob)
 	if (beaker)
