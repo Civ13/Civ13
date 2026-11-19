@@ -74,6 +74,8 @@ class AnvilStackRecipe(unittest.TestCase):
                    update_icon=lambda: None,
                    note_craft_practice=lambda user, path: None,
                    trial_craft_ruined=lambda user, path: False,
+                   # The steel grade (steel_grades.dm) only touches the made piece.
+                   apply_stock_grade=lambda made, stock: made,
                    spawn_output=lambda *args: self.outputs.append(args))
         self.action = adapter.project(source, '/obj/structure/anvil/proc/forge_stack_recipe',
                                       'P, user, H, choice, material_index, material_name, src, loc, picked=None', env)

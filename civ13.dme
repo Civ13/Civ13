@@ -1035,6 +1035,7 @@
 #include "code\modules\1713\researchcost.dm"
 #include "code\modules\1713\road_tamping.dm"
 #include "code\modules\1713\movement_check.dm"
+#include "code\modules\1713\carburizing.dm"
 #include "code\modules\1713\charcoal_clamp.dm"
 #include "code\modules\1713\tatara.dm"
 #include "code\modules\1713\mercury.dm"

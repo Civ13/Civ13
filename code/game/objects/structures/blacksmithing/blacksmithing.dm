@@ -166,6 +166,8 @@
 			else
 				in_use = FALSE
 			update_icon()
+		else if (istype(P, /obj/item/stack/material/steel/blister) && fold_blister_steel(P, H))
+			return
 /////////SHEET METALS//////////
 		// The Crafting window lists everything this metal makes here; the pop-up menus below stay as its fallback.
 		else if (anvil_window_shown(P, H))

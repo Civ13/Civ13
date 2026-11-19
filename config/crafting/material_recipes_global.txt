@@ -255,6 +255,7 @@ RECIPE: /material/concrete/,septic tank,/obj/structure/sewer_piece/cesspit/septi
 RECIPE: /material/concrete/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
 
 RECIPE: /material/clay/,clay brick bloomery,/obj/structure/furnace,10,150,1,1,none,26,0,0,8,null
+RECIPE: /material/clay/,carburizing pot,/obj/structure/carburizing_pot,8,120,1,1,none,0,0,0,8,null
 RECIPE: /material/clay/,clay kiln,/obj/structure/furnace/kiln,10,150,1,1,none,26,0,0,8,null
 RECIPE: /material/clay/,clay tatara furnace,/obj/structure/tatara,20,200,1,1,none,26,0,0,8,null
 

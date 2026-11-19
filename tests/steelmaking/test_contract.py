@@ -28,6 +28,9 @@ FACTORY = read('code/modules/1713/factory_machines.dm')
 QUENCH = read('code/modules/1713/quench_tub.dm')
 TATARA = read('code/modules/1713/tatara.dm')
 DME = read('civ13.dme')
+CARBURIZING = read('code/modules/1713/carburizing.dm')
+NODES = read('code/modules/research_tree/research_node.dm')
+RECIPES = read('config/crafting/material_recipes_global.txt')
 
 
 class SteelGrades(unittest.TestCase):
@@ -97,6 +100,33 @@ class SteelyBloom(unittest.TestCase):
         sort = proc(GRADES, '/obj/structure/anvil/proc/sort_steely_bloom(')
         self.assertIn('spawn_stack(/obj/item/stack/material/steel/blister, loc, initial_amount)', sort)
         self.assertIn('stacktype = type', proc(GRADES, '/obj/item/stack/ore/iron_sponge/steely/New()'))
+
+
+class Carburizing(unittest.TestCase):
+    def test_built_from_clay_with_iron_smithing(self):
+        self.assertIn('#include "code\\modules\\1713\\carburizing.dm"', DME)
+        self.assertIn('RECIPE: /material/clay/,carburizing pot,/obj/structure/carburizing_pot,8,', RECIPES)
+        self.assertIn('"/obj/structure/carburizing_pot" = "iron_smithing"', NODES)
+
+    def test_firing_makes_blister_steel_and_case_hardens(self):
+        finish = proc(CARBURIZING, '/obj/structure/carburizing_pot/proc/finish_burn()')
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel/blister, T, bars - uneven)', finish)
+        self.assertIn('spawn_stack(/obj/item/stack/material/iron, T, uneven)', finish)
+        self.assertIn('case_harden(W)', finish)
+        harden = proc(CARBURIZING, '/proc/case_harden(')
+        self.assertIn('W.get_material_name() != "iron"', harden)
+        self.assertIn('min(CASE_HARDEN_MAX, W.crafting_quality * CASE_HARDEN_FACTOR)', harden)
+
+    def test_burn_resumes_after_load_without_spawn(self):
+        self.assertNotIn('spawn(', CARBURIZING)
+        self.assertIn('start_burn_loop()', proc(CARBURIZING, '/obj/structure/carburizing_pot/after_load()'))
+        self.assertIn('key == "burn_epoch"', CARBURIZING)
+
+    def test_anvil_folds_blister_steel(self):
+        self.assertIn('istype(P, /obj/item/stack/material/steel/blister) && fold_blister_steel(P, H)', ANVIL)
+        fold = proc(CARBURIZING, '/obj/structure/anvil/proc/fold_blister_steel(')
+        self.assertIn('spawn_stack(/obj/item/stack/material/steel, loc, batches)', fold)
+        self.assertIn('#define BLISTER_PER_FOLD 2', CARBURIZING)
 
 
 if __name__ == '__main__':

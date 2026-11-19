@@ -41,3 +41,19 @@ A bloomery firing started under a bellows blast (`blown_firing`) leaves each
 unit of its sponge iron steely with a 10% chance
 (`/obj/item/stack/ore/iron_sponge/steely`). On any anvil that works iron it
 sorts 1:1 into blister steel.
+
+## Carburizing pot
+
+`/obj/structure/carburizing_pot` (`code/modules/1713/carburizing.dm`), 8
+clay, Iron Smithing. Pack up to 10 wrought iron bars and up to 3 iron tools
+(`/obj/item/weapon/material` of iron) with charcoal: one per bar and per tool
+plus 4 to hold the heat. An empty hand seals it (5 s) and fires it for ten
+minutes on an `addtimer` loop with `burn_left` saved. Each bar has an
+uneven chance (20% for Crafting 1.0, down to 5% for skilled smiths) of
+staying iron; the rest come out as blister steel. Packed tools are
+case-hardened: quality x1.15, capped at 1.25. The pot cracks one firing in
+five; a hammer unpacks a cold pot, or breaks up an empty one.
+
+On an anvil that works steel, blister steel offers a fold: every 2 bars
+weld and draw out into 1 plain steel (shear steel), or it can be forged as
+it is.
