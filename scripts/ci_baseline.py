@@ -54,6 +54,9 @@ SUITES = {
     'bag_valve_mask': {'files': ('tests/bag_valve_mask/test_bag_valve_mask.py',), 'paths': (
         'tests/bag_valve_mask/',), 'shared_paths': (
         'code/game/objects/items/stacks/medical.dm',)},
+    # Stdlib-only source projection: directional flooding order and callback traces.
+    'flooding_directions': {'files': ('tests/flooding_directions/test_directions.py',),
+        'paths': ('tests/flooding_directions/', 'code/modules/submarine/flooding_controller.dm')},
     'gas_skin_burns': {'files': ('tests/gas_skin_burns/test_gas_skin_burns.py',), 'paths': (
         'tests/gas_skin_burns/',), 'shared_paths': (
         'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Gases.dm',)},
