@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Civ13 · Threshold Chime prototype</title>
+<style>
+:root{color-scheme:dark;--field:#1b2220;--canvas:#101615;--panel:#19201e;--line:#35413a;--muted:#b1bdb3;--text:#f2eee2;--warm:#e7bd77;--green:#9fcca8;--red:#ffb8a7;font-family:system-ui,Segoe UI,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 0,#26342d,var(--canvas) 66%);color:var(--text);font-size:15px;line-height:1.5}button{font:inherit}header{border-bottom:1px solid var(--line);padding:18px max(24px,calc((100vw - 1040px)/2));display:flex;gap:15px;align-items:center;white-space:nowrap;color:var(--muted)}header strong{font-family:Georgia,serif;letter-spacing:.08em;color:var(--text);font-size:20px}.tag{text-transform:uppercase;letter-spacing:.15em;font-size:11px;font-weight:750}.badge{border:1px solid #6f6647;color:var(--warm);border-radius:4px;padding:4px 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-left:auto}
+main{max-width:1040px;margin:auto;padding:30px 0 44px}h1,h2,h3,p{margin:0}h1{font:46px/1.12 Georgia,serif;margin:3px 0 9px}h2{font:27px Georgia,serif;margin:0 0 9px}h3{font-size:14px}.lede,.muted{color:var(--muted)}.copper{color:var(--warm)}.cols{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:22px;align-items:start}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}.left{min-height:478px}.scene{padding:0;overflow:hidden}.scene svg{display:block;width:100%;background:#111a16}.scene footer{padding:16px}.fixture{margin-top:14px}.choice{display:block;text-align:left;width:100%;padding:10px 12px;margin:7px 0;border-radius:7px;border:1px solid var(--line);background:#222c27;color:var(--text);cursor:pointer}.choice:hover:not(:disabled),.choice[aria-pressed=true]{border-color:var(--warm);background:#343327}.choice:disabled{opacity:.48;cursor:not-allowed}.choice small{display:block;color:var(--muted);font-size:12px}.group{margin:14px 0 10px}.button{padding:8px 14px;border-radius:6px;border:1px solid #596257;background:#25302a;color:var(--text);font-weight:650;cursor:pointer}.button.primary{background:var(--warm);border-color:var(--warm);color:#241d12}.button:disabled{opacity:.45;cursor:not-allowed}.button:focus-visible,.choice:focus-visible{outline:2px solid var(--warm);outline-offset:3px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.stepper{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}.step{border:1px solid var(--line);border-radius:4px;padding:3px 7px;color:var(--muted);font-size:11px;font-weight:650}.step.on{border-color:#8e7950;color:var(--warm)}.wrap{display:grid;gap:9px;margin-top:14px}.fact{border:1px solid var(--line);border-radius:7px;padding:10px 12px;background:#222c27}.fact span{display:block;color:var(--warm);font-size:11px;text-transform:uppercase;letter-spacing:.13em;margin-bottom:2px}.status{border-left:3px solid var(--green);background:#26342b;padding:9px 11px;border-radius:3px;margin-top:13px}.status.error{border-color:var(--red);background:#392a27;color:#ffddd5}.status.pending{border-color:var(--warm);background:#393124}.counter{font-variant-numeric:tabular-nums}.tiny{font-size:12px}.scene-notes{font-size:13px}.fixture h3{margin-bottom:5px}
+@media(max-width:1080px){main{padding-left:22px;padding-right:22px}}@media(max-width:700px){header{padding:12px;gap:8px}header strong{font-size:15px}main{padding:18px 12px}h1{font-size:36px}.cols{grid-template-columns:1fr;margin-top:16px}.left{min-height:0}.card{padding:16px}.scene{padding:0}.badge{font-size:9px}}
+</style><header><strong>CIVILIZATION 13</strong><span class=tag>Divine covenant</span><span class=badge>Standalone prototype</span></header>
+<main><div class="tag copper">Beseech · Threshold Chime</div><h1>Bind a threshold.</h1><p class=lede>Ask your patron to link one door to one nearby bell.</p>
+<div class=cols><section class="card left" aria-labelledby=flow-heading><div class=stepper aria-label="Request progress" id=steps></div><div id=flow></div></section>
+<aside><section class="card scene"><svg aria-label="Illustration of linked door and bell" viewBox="0 0 384 185" role=img>
+<defs><pattern id=grid width=24 height=24 patternUnits=userSpaceOnUse><path d="M24 0H0V24" fill="none" stroke="#29382f"/></pattern></defs><rect width=384 height=185 fill="url(#grid)"/>
+<path d="M122 92H258" stroke="#ac8a54" stroke-width="2" stroke-dasharray="5 6"/><circle cx=191 cy=92 r=15 fill="#283329" stroke="#b2915c"/><path d="M182 92h5l3-5 4 10 3-5h3" fill=none stroke="#ebc47b" stroke-width=1.5/>
+<path d="M69 125V68a25 25 0 0 1 50 0v57z" fill="#5a4432" stroke="#ccab73" stroke-width=3/><path d="M77 124V69a17 17 0 0 1 34 0v55M88 49v75m12-75v75" fill=none stroke="#9d7650"/><circle cx=106 cy=96 r=3 fill="#f2cc89"/>
+<path d="M264 119V52h50v67m-56 0h62" fill=none stroke="#8c7956" stroke-width=4/><path d="M289 61v9m-12 30h24l-3-12V82a9 9 0 0 0-18 0v6z" fill="#b28a55" stroke="#e4bc7a" stroke-width=2/><circle cx=289 cy=104 r=3 fill="#e7bd77"/>
+<text x=94 y=153 text-anchor=middle font-size=12 fill="#f2eee2">Workshop door</text><text x=289 y=153 text-anchor=middle font-size=12 fill="#f2eee2">Courtyard bell</text>
+</svg><footer><div class="tag copper">One local signal</div><p class="muted scene-notes">The door opens normally. The chime changes no locks and does not identify who opened it.</p></footer></section>
+<section class="card fixture"><h3>Prototype controls</h3><p class="muted tiny">Synthetic scene only. No game connection or real approvals.</p><div class=actions id=fixture></div></section></aside></div></main>
+<script>
+'use strict';
+const initial=()=>({step:'choose',door:false,bell:false,revision:0,requested:-1,moved:false,linked:false,opened:false,ringCount:0,cooling:false,spent:false,message:'',error:false});
+let state=initial();
+const labels=[['choose','1. Endpoints'],['review','2. Review'],['pending','3. Patron'],['active','4. Active']];
+const flow=document.querySelector('#flow'), steps=document.querySelector('#steps'), fixture=document.querySelector('#fixture');
+const B=(id,title,opts='')=>'<button class="button '+(opts.includes('primary')?'primary':'')+'" data-act="'+id+'" '+(opts.includes('disabled')?'disabled':'')+'>'+title+'</button>';
+const facts=()=>'<div class="wrap"><div class=fact><span>When · signal</span>Workshop door finishes opening</div><div class=fact><span>Then · receiver</span>Ring the courtyard bell nearby</div><div class=fact><span>On grant</span>One invocation slot and one pouch item. Link ends with this world session.</div></div>';
+const status=(title,text,style='')=>'<div role=status class="status '+style+'"><strong>'+title+'</strong><p>'+text+'</p></div>';
+function render(){
+const stage=['declined','patron'].includes(state.step)?'pending':state.step;
+steps.innerHTML=labels.map(([k,v])=>'<span class="step '+(stage===k?'on':'')+'" '+(stage===k?'aria-current="step"':'')+'>'+v+'</span>').join('');
+let content='';
+if(state.step==='choose')content='<h2 id=flow-heading>Choose the door and bell</h2><p class=muted>Only nearby, eligible fixtures appear as options.</p><h3 class=group>Door</h3><button class=choice data-act=door aria-pressed='+state.door+'>Workshop door <small>Closed · 1 tile away</small></button><h3 class=group>Receiver</h3><button class=choice data-act=bell aria-pressed='+state.bell+'>Courtyard bell <small>Local bell stand · 3 tiles from the door</small></button><button class=choice disabled>Church bell <small>Not eligible · broadcasts beyond the local area</small></button><div class=actions>'+B('review','Review binding',state.door&&state.bell?'primary':'primary disabled')+'</div>';
+if(state.step==='review')content='<h2 id=flow-heading>Review your prayer</h2><p class=muted>Check both endpoints before asking your patron.</p>'+facts()+'<div class=actions>'+B('edit','Edit endpoints')+B('request','Beseech patron',state.spent?'primary disabled':'primary')+'</div>';
+if(state.step==='pending')content='<h2 id=flow-heading>Waiting for your patron</h2><p class=muted>You have not spent your invocation slot or pouch item.</p>'+facts()+status('Request pending','Hold still. A separate authorized patron must answer.','pending')+'<div class=actions>'+B('edit','Cancel and edit')+B('inspect','Open patron review')+'</div>';
+if(state.step==='patron')content='<h2 id=flow-heading>Patron review</h2><p class=muted>The patron is a separate, authorized operator in this fixture.</p>'+facts()+'<div class=actions>'+B('deny','Refuse')+B('approve','Grant binding','primary')+'</div>';
+if(state.step==='active')content='<h2 id=flow-heading>Binding active</h2><p class=muted>Open the door normally. The bell rings only after the door opens.</p>'+facts()+status('Local link active','Invocation slot and pouch item spent. Normal lock checks still apply.')+'<div class=actions>'+B('open','Open door normally','primary')+B('close','Close door')+B('locked','Try locked door')+'</div><p class="tiny muted counter" style="margin-top:10px">Local rings: <strong data-count>'+state.ringCount+'</strong> · '+(state.cooling?'Bell cooldown in progress':'Bell ready')+'</p>';
+if(state.step==='declined')content='<h2 id=flow-heading>Binding not applied</h2>'+status(state.spent?'Session binding ended':'No resources spent',state.spent?'The invocation slot and pouch item were spent at approval.':'No door or bell was changed.','error')+'<div class=actions>'+B('reset','Start over','primary')+'</div>';
+if(state.message)content+=status(state.error?'No pulse delivered':'Fixture event',state.message,state.error?'error':'');
+flow.innerHTML=content;
+fixture.innerHTML=state.step==='pending'||state.step==='patron'?B('stale','Move the bell')+B('unauthorized','Try requester approval')+B('expire','Expire request'):state.step==='active'?B('stale','Move the bell')+B('settle','End bell cooldown')+B('reload','Simulate restart'):B('reset','Reset scene');
+}
+function act(action){
+if(action==='reset'){state=initial();return;}
+state.message='';state.error=false;
+switch(action){
+case 'door': if(state.step==='choose')state.door=!state.door;break;
+case 'bell': if(state.step==='choose')state.bell=!state.bell;break;
+case 'review': if(state.step==='choose'&&state.door&&state.bell)state.step='review';break;
+case 'edit': state.revision++;state.requested=-1;state.step='choose';break;
+case 'request': if(state.step==='review'&&state.door&&state.bell&&!state.spent){state.requested=++state.revision;state.step='pending';}break;
+case 'inspect':if(state.step==='pending')state.step='patron';break;
+case 'unauthorized':state.message='Only a different authorized patron may grant this request.';state.error=true;break;
+case 'deny': if(state.step==='patron'){state.step='declined';state.message='The patron refused this prayer.';state.error=true;}break;
+case 'expire':if(['pending','patron'].includes(state.step)){state.revision++;state.step='declined';state.message='The request expired without an answer.';state.error=true;}break;
+case 'stale':state.moved=true;state.revision++;state.linked=false;state.error=true;state.message='The bell moved. The binding no longer names two valid endpoints.';if(state.step==='active')state.step='declined';break;
+case 'approve':if(state.step==='patron'&&state.requested===state.revision&&!state.moved){state.linked=true;state.spent=true;state.step='active';}else if(state.step==='patron'){state.step='declined';state.error=true;state.message='The selected bell changed before approval.';}break;
+case 'open':if(state.step==='active'&&state.linked){if(state.opened||state.cooling){state.error=true;state.message=state.opened?'The door is already open.':'The door opened, but the bell is cooling down.';state.opened=true;break;}state.opened=true;state.ringCount++;state.cooling=true;state.message='Door opened; one local bell rang.';}break;
+case 'close':if(state.step==='active'){state.opened=false;state.message='Door closed. No pulse.';}break;
+case 'locked':state.error=true;state.message='The lock held. No pulse was emitted.';break;
+case 'settle':state.cooling=false;state.message='The ordinary bell’s cooldown ended.';break;
+case 'reload':if(state.step==='active'){const rings=state.ringCount;const spent=state.spent;state=initial();state.ringCount=rings;state.spent=spent;state.message='The session ended. The link was not restored or replayed.';}break;
+}
+}
+document.addEventListener('click',e=>{const t=e.target.closest('button[data-act]');if(!t||t.disabled)return;act(t.dataset.act);render();});render();
+</script></html>
