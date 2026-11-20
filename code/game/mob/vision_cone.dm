@@ -13,7 +13,8 @@ client/
 	var/list/hidden_mobs = list()
 
 atom/proc/InCone(atom/center = usr, dir = NORTH)
-	if (get_dist(center, src) == FALSE || src == center) return FALSE
+	var/distance = get_dist(center, src)
+	if (distance == FALSE || src == center) return FALSE
 	var/d = get_dir(center, src)
 	if (global_hud.fov.icon_state == "combat") //300 degrees
 		if (!d || d == dir) return TRUE
@@ -54,28 +55,28 @@ atom/proc/InCone(atom/center = usr, dir = NORTH)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center, src) >= dx)
+				if (distance >= dx)
 					return FALSE
 			if (EAST)
 				if (x < center.x)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center, src) >= dx)
+				if (distance >= dx)
 					return FALSE
 			if (NORTH)
 				if (y < center.y)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center, src) >= dy)
+				if (distance >= dy)
 					return FALSE
 			if (SOUTH)
 				if (y > center.y)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center,src) >= dy)
+				if (distance >= dy)
 					return FALSE
 
 		return TRUE
