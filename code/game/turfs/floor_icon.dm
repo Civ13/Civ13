@@ -120,7 +120,7 @@ var/list/flooring_cache = list()
 				for (var/decl/flooring/TF in unique_TFs)
 					has_border = FALSE
 					var/use_reverse = (TF != flooring && !findtext(TF.icon_base, "grass"))
-					var/list/ns_flip = list(
+					var/static/list/ns_flip = list(
 						"[NORTH]" = SOUTH,
 						"[SOUTH]" = NORTH,
 						"[EAST]" = EAST,
