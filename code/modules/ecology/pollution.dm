@@ -154,11 +154,13 @@ var/global/pollution_cleaned_total = 0
 	. = 0
 	var/turf/low = locate(max(1, center.x - radius), max(1, center.y - radius), center.z)
 	var/turf/high = locate(min(world.maxx, center.x + radius), min(world.maxy, center.y + radius), center.z)
+	var/radius_limit = radius + 0.5
+	var/radius_divisor = radius + 1
 	for (var/turf/T in block(low, high))
 		var/distance = sqrt((T.x - center.x) ** 2 + (T.y - center.y) ** 2)
-		if (distance > radius + 0.5)
+		if (distance > radius_limit)
 			continue
-		. += pollution_add(T, amount * (1 - distance / (radius + 1)))
+		. += pollution_add(T, amount * (1 - distance / radius_divisor))
 
 // Sources call this: cheap, it only queues the amount on the source's turf.
 /proc/pollution_emit(atom/source, amount, radius = 2)
