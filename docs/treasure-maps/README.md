@@ -2,7 +2,8 @@
 
 **Draft contract, not playable.** This proposal covers the on-foot route only.
 The dungeon is a separately leased Expedition region, never a new Gaia
-z-level. See the [four seeded layouts with furnished rooms](FURNISHED.md). Diving, underwater sites, and live activation are out of scope.
+z-level. See the [four seeded layouts with furnished rooms](FURNISHED.md)
+and [themed floor patterns](FLOOR_PATTERNS.md). Diving, underwater sites, and live activation are out of scope.
 
 ## Find and follow the map
 

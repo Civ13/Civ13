@@ -1,5 +1,7 @@
 # Furnished Buried Ruins
 
+See the [later themed floor pass](FLOOR_PATTERNS.md) for the current palette.
+
 ![Four populated dungeon layouts, with labeled typed objects and room purposes](furnished/furnished-layout-contact-sheet.png)
 
 These are furnished versions of the four [geometry-only seeds](PREVIEWS.md).
