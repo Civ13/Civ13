@@ -297,7 +297,7 @@ if assembly:
     # Preserve stateful prerequisites as separate graph nodes. Loading flint does
     # not change the mechanism sprite in production, but does change eligibility.
     if 'has_flint = TRUE' in assembly and 'if (!F.sharpened)' in assembly:
-        add('Load sharpened flint into mechanism','Flintlock assembly',[(mechanism,1),('/obj/item/weapon/flint/sharpened',1)],[(loaded,1)],assembly_path,assembly[:assembly.index('/obj/item/blackpowder_part/mechanism/assemble')].count('\n')+1,'Sharpened flint required; gunsmithing research; era 3-4; 20 ticks; held active input, nearby/held target, action rechecks.', 'has_flint = TRUE after consuming sharpened flint')
+        add('Load sharpened flint into mechanism','Flintlock assembly',[(mechanism,1),('/obj/item/weapon/flint/sharpened',1)],[(loaded,1)],assembly_path,assembly[:assembly.index('/obj/item/blackpowder_part/mechanism/assemble')].count('\n')+1,'Sharpened flint required; gunsmithing research; era 3-4 (later eras too on persistent worlds); 20 ticks; held active input, nearby/held target, action rechecks.', 'has_flint = TRUE after consuming sharpened flint')
     else:
         issues.append(dict(file=assembly_path,line=1,reason='Flint-loading source contract changed; inspect assembly callback',raw='mechanism assembly'))
     for match in re.finditer(r'^(/obj/item/blackpowder_part/stock/[^\s(]+)\s*\n((?:\t[^\n]*\n|\n)*)',assembly,re.M):
@@ -309,7 +309,7 @@ if assembly:
         partial=stock+'#barrel_attached'
         sprite_variants[partial]=dict(type=stock,state=state[1],name=label(stock)+' stock with barrel')
         line=assembly[:match.start()].count('\n')+1
-        gate='Gunsmithing research; era 3-4; held active input and nearby/held target; matching barrel and loaded mechanism required; production action rechecks; pistol 20 ticks, musket 30 ticks per attachment.'
+        gate='Gunsmithing research; era 3-4 (later eras too on persistent worlds); held active input and nearby/held target; matching barrel and loaded mechanism required; production action rechecks; pistol 20 ticks, musket 30 ticks per attachment.'
         add('Attach '+label(stock)+' barrel','Flintlock assembly',[(stock,1),(barrel[1],1)],[(partial,1)],assembly_path,line,gate,body)
         add('Finish Flintlock '+label(stock)+' assembly','Flintlock assembly',[(partial,1),(loaded,1)],[(gun[1],1)],assembly_path,line,gate+' Optional component route; legacy direct anvil route remains separate.',body)
     rock_path='code/game/objects/structures/rocks.dm'

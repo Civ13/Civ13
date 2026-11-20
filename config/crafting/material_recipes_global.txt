@@ -1186,14 +1186,6 @@ RECIPE: /material/kevlar/,civilian kevlar armor,/obj/item/clothing/accessory/arm
 RECIPE: /material/kevlar/,USSR 6B3 body armor,/obj/item/clothing/suit/b3,12,260,0,1,none,175,0,175,7,null
 
 //**************************************************************
-//*********************| CHITIN |*******************************
-//**************************************************************
-
-RECIPE: /material/chitin/,chitin mask,/obj/item/clothing/mask/chitinmask,4,65,0,1,none,0,0,0,0,null
-RECIPE: /material/chitin/,chitin helmet,/obj/item/clothing/head/helmet/chitin,7,115,0,1,none,0,0,0,0,null
-RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,180,0,1,none,0,0,0,0,null
-
-//**************************************************************
 //*********************| BEARPELT |*****************************
 //**************************************************************
 //*****************| BROWN BEARPELT CLOTHES|***************************

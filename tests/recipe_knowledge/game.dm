@@ -638,10 +638,46 @@ var/knowledge_failures = 0
 	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "legacy menu still requires faction or era research")
 	map.book_research = TRUE
 	map.ordinal_age = 3
-	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "learned recipe still expires after its last permitted age")
+	knowledge_check(knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "an era advance on a persistent world keeps a learned recipe")
+	map.persistence = FALSE
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), path), "other worlds still retire a recipe after its last permitted age")
+	map.persistence = TRUE
+	check_fortress_walls(reader)
 	map.ordinal_age = old_age
 	map.civilizations = old_civilizations
 	craftlist_lists["global"] = old_rows
+
+// Era advances keep unlocked technology on persistent worlds (#6279). The
+// fortress walls last until the Imperial Age (ordinal 3) everywhere else.
+/proc/check_fortress_walls(mob/living/human/knowledge_fixture/reader)
+	var/mob/living/human/knowledge_fixture/stranger = new(locate(4,7,1))
+	stranger.civilization = "none"
+	var/material/stone/stone = new
+	var/material/sandstone/sandstone = new
+	var/stone_wall = /obj/covers/stone_wall/fortress
+	var/sand_wall = /obj/covers/sandstone_wall/fortress
+	knowledge_check(reader.learn_recipe_node("field_defenses") && reader.learn_recipe_node("fortifications"), "the reader learns Fortifications")
+	knowledge_check(get_recipe_node_req("[stone_wall]") == "stone_masonry" && get_recipe_node_req("[sand_wall]") == "fortifications", "fortress walls keep their research requirements")
+	for (var/age in list(2, 3, 4, 7))
+		map.ordinal_age = age
+		knowledge_check(knowledge_has_material_recipe(stone.get_recipes_civs(reader), stone_wall) && knowledge_has_material_recipe(sandstone.get_recipes_civs(reader), sand_wall), "persistent world, age [age]: both fortress walls stay craftable")
+		knowledge_check(!crafting_recipe_allowed(stranger, "[stone_wall]") && !crafting_recipe_allowed(stranger, "[sand_wall]"), "persistent world, age [age]: unknown research stays locked")
+		knowledge_check(crafting_recipe_allowed(reader, "[stone_wall]") && crafting_recipe_allowed(reader, "[sand_wall]"), "persistent world, age [age]: the learned walls can still be built")
+		knowledge_check(!knowledge_has_material_recipe(sandstone.get_recipes_civs(reader), stone_wall) && !knowledge_has_material_recipe(stone.get_recipes_civs(reader), sand_wall), "persistent world, age [age]: each wall still needs its own material")
+	map.persistence = FALSE
+	map.ordinal_age = 3
+	knowledge_check(knowledge_has_material_recipe(stone.get_recipes_civs(reader), stone_wall) && knowledge_has_material_recipe(sandstone.get_recipes_civs(reader), sand_wall), "other worlds: fortress walls are craftable at their last age")
+	map.ordinal_age = 4
+	knowledge_check(!knowledge_has_material_recipe(stone.get_recipes_civs(reader), stone_wall) && !knowledge_has_material_recipe(sandstone.get_recipes_civs(reader), sand_wall), "other worlds: fortress walls retire after it")
+	knowledge_check(!recipe_age_allowed(3) && recipe_age_allowed(RECIPE_OPEN_ENDED_AGE) && !recipe_age_allowed("3"), "other worlds: the shared age check retires capped rows")
+	map.persistence = TRUE
+	knowledge_check(recipe_age_allowed(3) && !recipe_age_allowed("3") && !recipe_age_allowed(null), "persistent world: the shared age check keeps capped rows and still rejects malformed ages")
+	var/datum/crafting_atlas_presenter/tgui/atlas = crafting_atlas_tgui_presenter
+	knowledge_check(!atlas.retired(list("maximum_era" = 3)), "persistent world: the Crafting Atlas does not mark fortress walls retired")
+	map.persistence = FALSE
+	knowledge_check(atlas.retired(list("maximum_era" = 3)), "other worlds: the Crafting Atlas marks them retired")
+	map.persistence = TRUE
+	qdel(stranger)
 
 // Books from memory (Val, 2026-11-10): pages, chapters written from memory,
 // ripping pages out and putting them back, parchment and writing supplies.
