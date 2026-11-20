@@ -8,8 +8,11 @@ skill gates) were checked again after the build wait, and the recipe menu hid
 recipes refused by the three skill gates. Deep-water footing now also gets
 a finish check so a missing deck cannot complete construction.
 """
+from collections import defaultdict
 from pathlib import Path
+import importlib.util
 import re
+from types import SimpleNamespace as NS
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -140,6 +143,95 @@ class CraftGuardTest(unittest.TestCase):
         self.assertEqual(16 + (-18 - 13 + 16) // 32, 15)
         self.assertNotEqual(16 + (-10 + 16) // 32, 16 + (-10 - 13 + 16) // 32)
         self.assertNotEqual((16 - 15) * 32 - 17 - 13, (16 - 15) * 32 - 18 - 13)
+
+    def test_empty_ship_context_is_inert_before_any_list_access(self):
+        source = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
+        constructor = source.split('/datum/ship_construction/New(', 1)[1].split('/proc/mover()', 1)[0]
+        guard = 'if (!istype(H) || QDELETED(H) || !islist(deck) || deck.len < 2)\n\t\treturn'
+        self.assertLess(constructor.index(guard), constructor.index('deck[1]'))
+        self.assertLess(constructor.index('QDELETED(owner)'), constructor.index('deck_owner = owner'))
+        bind = source.split('/proc/bind_fixture(', 1)[1].split('/proc/fixture_stationary(', 1)[0]
+        self.assertIn('if (QDELETED(support) || QDELETED(fixture)', bind)
+
+    def test_structure_fixture_wait_is_explicit_and_precedes_mutation(self):
+        guards = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
+        self.assertIn('deck[2] != deck_owner || deck[1] == fixture', guards)
+        self.assertIn('vehicle_offset_turf_under(fixture, M.ox, M.oy) != fixture.loc', guards)
+        self.assertIn('do_after(user, delay, fixture, ship_craft = action) && action.target(H) && action.fixture_stationary(fixture, TRUE)', guards)
+        self.assertIn('return do_after(user, delay, fixture)', guards)
+        wait = (ROOT / 'code/_helpers/mobs.dm').read_text()
+        self.assertIn('if (!ship_craft.fixture_stationary(target))', wait)
+        self.assertIn('else if (target_loc && (!target || target_loc != target.loc))', wait)
+        source = (ROOT / 'code/game/objects/structures.dm').read_text()
+        self.assertLess(source.index('do_ship_fixture_after(user, 15, src)'), source.index('toggle_anchor(user)'))
+        hammer = source[source.index('do_ship_fixture_after(user, 25, src)'):]
+        self.assertIn('&& !QDELETED(src)', hammer.splitlines()[0])
+        for mutation in ('B.remove_padding()', 'new refund(get_turf(src))',
+                         'machine_drop_fitted_parts(src)', 'qdel(src)'):
+            self.assertGreater(hammer.index(mutation), 0)
+
+    def test_component_assembly_uses_the_live_fixture_wait_and_does_not_pay_early(self):
+        source = (ROOT / 'code/game/objects/structures/blacksmithing/component_workbench.dm').read_text()
+        assemble = source.split('/proc/assemble(', 1)[1].split('/attack_hand(', 1)[0]
+        self.assertLess(assemble.index('assembler = H'), assemble.index('do_ship_fixture_after(H,'))
+        self.assertLess(assemble.index('do_ship_fixture_after(H,'), assemble.index('M = finish_assembly(H, P, B, choice)'))
+        self.assertIn('busy = FALSE\n\tassembler = null', assemble)
+        finish = source.split('/proc/finish_assembly(', 1)[1].split('/proc/assemble(', 1)[0]
+        for guard in ('!busy || cancelled || assembler != H || !can_use(H)',
+                      'P.loc != src || B.loc != src', '!crafting_recipe_allowed(H, "[P.result]")'):
+            self.assertLess(finish.index(guard), finish.index('new P.result(get_turf(src)'))
+        self.assertLess(finish.index('qdel(B)'), finish.index('M.forceMove(src)'))
+
+    def test_fixture_keeps_the_original_deck_relative_position(self):
+        spec = importlib.util.spec_from_file_location(
+            'ship_fixture_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+
+        class Piece:
+            deleted = False
+            step_x = 0
+            step_y = 0
+
+        fixture, support = Piece(), Piece()
+        first_tile, second_tile, owner, other_owner = (object() for _ in range(4))
+        support.loc = fixture.loc = first_tile
+        mover = NS(ox=0, oy=0)
+        deck = {first_tile: [None, support, owner], second_tile: [None, support, owner]}
+        riders = defaultdict(lambda: None)
+        valid = adapter.project(
+            adapter.read('code/game/objects/items/stacks/craft_guards.dm'),
+            '/datum/ship_construction/proc/fixture_stationary', 'fixture, confirm_deck=False',
+            dict(workpiece=fixture, workpiece_support=support, deck_owner=owner, workpiece_x=0,
+                 workpiece_y=0, QDELETED=lambda obj:obj is None or obj.deleted,
+                 isturf=lambda tile:tile in deck, vessel_building_deck_on=deck.get,
+                 mover=lambda:mover, vehicle_offset_riders=riders))
+        self.assertTrue(valid(fixture, True))
+        for x, y, tile in ((14, 0, first_tile), (-16, 0, second_tile), (0, 12, second_tile)):
+            mover.ox = fixture.step_x = x
+            mover.oy = fixture.step_y = y
+            support.loc = fixture.loc = tile
+            riders[fixture] = mover
+            self.assertTrue(valid(fixture, True))
+        fixture.step_x += 1
+        self.assertFalse(valid(fixture))
+        fixture.step_x -= 1
+        fixture.loc = first_tile
+        self.assertFalse(valid(fixture))
+        fixture.loc = second_tile
+        self.assertFalse(valid(Piece()))
+        riders[fixture] = object()
+        self.assertFalse(valid(fixture))
+        riders[fixture] = mover
+        deck[second_tile][2] = other_owner
+        self.assertFalse(valid(fixture, True))
+        deck[second_tile][2] = owner
+        deck[second_tile][1] = Piece()
+        self.assertFalse(valid(fixture, True))
+        deck[second_tile][1] = support
+        self.assertTrue(valid(fixture, True))
+        support.deleted = True
+        self.assertFalse(valid(fixture))
 
     def test_religious_rules_match_the_old_chain(self):
         text = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()

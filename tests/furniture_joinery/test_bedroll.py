@@ -102,7 +102,8 @@ class Bedding:
         self.objects=[]
         self.env=dict(construct=self.new,qdel=lambda obj:setattr(obj,'deleted',True),
                       to_chat=lambda *a:None,playsound=lambda *a:None,SPAN_NOTICE=lambda text:text,
-                      do_after=lambda *a:True,get_turf=lambda obj:'floor',istype=lambda obj,kind:obj.type==kind)
+                      do_after=lambda *a:True,do_ship_fixture_after=lambda *a:True,
+                      QDELETED=lambda obj:obj.deleted,get_turf=lambda obj:'floor',istype=lambda obj,kind:obj.type==kind)
 
     def new(self,kind,loc='floor'):
         if kind.startswith(ITEM):values=defaults(ITEM)

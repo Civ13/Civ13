@@ -519,6 +519,14 @@ var/naval_runtime_error = FALSE
 	qdel(boarder)
 	qdel(swimmer)
 	naval_check(fitting.target(deckhand) == deckhand.loc && deck_pump.step_x == HO.ox, "carried motion does not cancel stationary work")
+	var/datum/ship_construction/empty_fit = new
+	naval_check(!empty_fit.stationary(deckhand) && !empty_fit.target(deckhand) && !empty_fit.bind_fixture(deck_pump), "zero-argument load-sweep context remains inert")
+	qdel(empty_fit)
+	naval_check(fitting.bind_fixture(deck_pump) && fitting.fixture_stationary(deck_pump, TRUE), "dismantling binds the actual offset fixture to her deck")
+	deck_pump.step_x += 1
+	naval_check(!fitting.fixture_stationary(deck_pump), "a moved fixture interrupts the wait")
+	deck_pump.step_x -= 1
+	naval_check(fitting.fixture_stationary(deck_pump, TRUE), "the original piece is still on her deck")
 	// The deckhand walks three pixels aft as she sails.
 	deckhand.step_x -= 3
 	naval_check(!fitting.target(deckhand), "actually walking on deck still interrupts the work")

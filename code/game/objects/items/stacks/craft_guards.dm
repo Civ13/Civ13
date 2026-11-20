@@ -97,12 +97,16 @@ var/global/list/craft_guards = null
 		return null
 	var/datum/vehicle_offset/rider = vehicle_offset_riders[H]
 	var/turf/T = (istype(rider, /datum/vehicle_offset/hull) || istype(rider, /datum/vehicle_offset/axis)) ? vehicle_offset_turf_under(H, rider.ox, rider.oy) : H.loc
+	return vessel_building_deck_on(T, H)
+
+// A non-rider query finds a fixture's filed supporting tile.
+/proc/vessel_building_deck_on(turf/T, mob/living/human/H = null)
 	if (!T)
 		return null
 	var/datum/hull_ledger/L = hull_ledger_at(T)
 	if (!QDELETED(L) && !L.sinking)
 		var/datum/vehicle_offset/hull/mover = L.craft.offset_mover
-		if (!mover || vehicle_offset_turf_under(H, mover.ox, mover.oy) == T)
+		if (!H || !mover || vehicle_offset_turf_under(H, mover.ox, mover.oy) == T)
 			for (var/obj/covers/C in T)
 				if (hull_floor_plank(C, T))
 					return list(C, L)
@@ -113,7 +117,7 @@ var/global/list/craft_guards = null
 		var/turf/helm = get_turf(A)
 		if (istype(A) && !QDELETED(A) && helm && helm.z == T.z && get_dist(helm, T) <= 7 && (F in A.components))
 			var/datum/vehicle_offset/axis/mover = A.offset_mover
-			if (!mover || vehicle_offset_turf_under(H, mover.ox, mover.oy) == T)
+			if (!H || !mover || vehicle_offset_turf_under(H, mover.ox, mover.oy) == T)
 				return list(F, A)
 	return null
 
@@ -125,19 +129,33 @@ var/global/list/craft_guards = null
 		return FALSE
 	return !ispath(path, /obj/structure/sign) || ispath(path, /obj/structure/sign/signpost)
 
-// Only the regular same-tile structure/cover placement uses this context.
-// An action may ride its original deck, but must not walk across it or switch decks.
+// An opt-in construction action may ride its original deck, but must not walk
+// across it or switch decks. A fixture action also binds its exact workpiece.
 /datum/ship_construction
 	var/atom/movable/support
 	var/datum/deck_owner
 	var/relative_x
 	var/relative_y
 	var/heading
+	var/atom/movable/workpiece
+	var/atom/movable/workpiece_support
+	var/workpiece_x
+	var/workpiece_y
 
 /datum/ship_construction/New(mob/living/human/H, list/deck)
 	..()
-	support = deck[1]
-	deck_owner = deck[2]
+	// The load-construction sweep creates each datum with no arguments.
+	// Such a context must remain inert until explicitly built with a live deck.
+	if (!istype(H) || QDELETED(H) || !islist(deck) || deck.len < 2)
+		return
+	var/atom/movable/plank = deck[1]
+	var/datum/owner = deck[2]
+	if (!istype(plank) || QDELETED(plank) || !isturf(plank.loc))
+		return
+	if ((!istype(owner, /datum/hull_ledger) && !istype(owner, /obj/structure/vehicleparts/axis/ship)) || QDELETED(owner))
+		return
+	support = plank
+	deck_owner = owner
 	var/datum/vehicle_offset/M = mover()
 	relative_x = (H.x - support.x) * world.icon_size + H.step_x - (M ? M.ox : 0)
 	relative_y = (H.y - support.y) * world.icon_size + H.step_y - (M ? M.oy : 0)
@@ -178,6 +196,52 @@ var/global/list/craft_guards = null
 	if (!deck || deck[1] != support || deck[2] != deck_owner)
 		return null
 	return support.loc
+
+// Match a structure's original live supporting plank/frame on the same ship.
+// This supports both the actor's tile and an adjacent fixture clicked normally.
+/datum/ship_construction/proc/bind_fixture(obj/structure/fixture)
+	if (QDELETED(support) || QDELETED(fixture) || !isturf(fixture.loc) || fixture.craft_left_behind() || istype(fixture, /obj/structure/wild))
+		return FALSE
+	var/list/deck = vessel_building_deck_on(fixture.loc)
+	if (!deck || deck[2] != deck_owner || deck[1] == fixture)
+		return FALSE
+	var/datum/vehicle_offset/M = mover()
+	if (M && vehicle_offset_turf_under(fixture, M.ox, M.oy) != fixture.loc)
+		return FALSE
+	workpiece = fixture
+	workpiece_support = deck[1]
+	workpiece_x = fixture.step_x - (M ? M.ox : 0)
+	workpiece_y = fixture.step_y - (M ? M.oy : 0)
+	return fixture_stationary(fixture)
+
+/datum/ship_construction/proc/fixture_stationary(atom/fixture, confirm_deck = FALSE)
+	if (fixture != workpiece || QDELETED(workpiece) || QDELETED(workpiece_support) || !isturf(workpiece_support.loc) || workpiece.loc != workpiece_support.loc)
+		return FALSE
+	if (confirm_deck)
+		var/list/deck = vessel_building_deck_on(workpiece_support.loc)
+		if (!deck || deck[1] != workpiece_support || deck[2] != deck_owner)
+			return FALSE
+	var/datum/vehicle_offset/M = mover()
+	var/datum/vehicle_offset/rider = vehicle_offset_riders[workpiece]
+	if (rider && rider != M)
+		return FALSE
+	var/current_x = workpiece.step_x
+	var/current_y = workpiece.step_y
+	if (M)
+		current_x -= M.ox
+		current_y -= M.oy
+	return current_x == workpiece_x && current_y == workpiece_y
+
+// Only callers that commit to the live fixture can opt in. Any other
+// target or actor keeps the original world-space wait and cancellation.
+/proc/do_ship_fixture_after(mob/user, delay, obj/structure/fixture)
+	var/mob/living/human/H = user
+	var/list/deck = istype(H) ? vessel_building_deck_at(H) : null
+	if (deck)
+		var/datum/ship_construction/action = new(H, deck)
+		if (action.bind_fixture(fixture))
+			return do_after(user, delay, fixture, ship_craft = action) && action.target(H) && action.fixture_stationary(fixture, TRUE)
+	return do_after(user, delay, fixture)
 
 /datum/ship_construction/proc/align(atom/movable/fixture)
 	if (QDELETED(fixture) || fixture.loc != support.loc || fixture.craft_left_behind())

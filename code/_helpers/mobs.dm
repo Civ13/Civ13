@@ -251,7 +251,11 @@ Proc for attack log creation, because really why not
 			. = FALSE
 			break
 
-		if (target_loc && (!target || target_loc != target.loc))
+		if (ship_craft && ship_craft.workpiece)
+			if (!ship_craft.fixture_stationary(target))
+				. = FALSE
+				break
+		else if (target_loc && (!target || target_loc != target.loc))
 			. = FALSE
 			break
 

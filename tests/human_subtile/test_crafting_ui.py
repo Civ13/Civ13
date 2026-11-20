@@ -37,6 +37,10 @@ def restore_crafting_projection(path, source):
             raise AssertionError('ship construction context must be optional in every wait signature')
         source = source.replace(signature_tail, ')')
         edits = (
+            ('\t\tif (ship_craft && ship_craft.workpiece)\n'
+             '\t\t\tif (!ship_craft.fixture_stationary(target))\n'
+             '\t\t\t\t. = FALSE\n\t\t\t\tbreak\n'
+             '\t\telse if (target_loc', '\t\tif (target_loc'),
             ('\t\t\tif (ship_craft)\n\t\t\t\tif (!ship_craft.stationary(user))\n\t\t\t\t\t. = FALSE\n\t\t\t\t\tbreak\n\t\t\telse if (user.loc', '\t\t\tif (user.loc'),
             ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
