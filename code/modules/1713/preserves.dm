@@ -262,8 +262,13 @@
 	var/turf/T = get_turf(B)
 	var/held = (B.loc == user)
 	reagents.remove_reagent("jam", JAM_PER_TOAST)
-	qdel(B)
 	var/obj/item/weapon/reagent_containers/food/snacks/jelliedtoast/J = new(T)
+	// The toast keeps whatever was in the slice (bread left after bites, anything
+	// added with a dropper) on top of its own jam layer (#6283).
+	if (B.reagents && B.reagents.total_volume > 0)
+		J.reagents.maximum_volume = max(J.reagents.maximum_volume, J.reagents.total_volume + B.reagents.total_volume)
+		B.reagents.trans_to_holder(J.reagents, B.reagents.total_volume)
+	qdel(B)
 	if (held)
 		user.put_in_hands(J)
 	to_chat(user, SPAN_NOTICE("You spread jam on the bread."))
