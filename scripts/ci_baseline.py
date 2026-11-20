@@ -511,6 +511,9 @@ SUITES = {
     'projectile_location': {'files': ('tests/projectile_location/test_location.py',),
         'paths': ('tests/projectile_location/',), 'shared_paths': (
             'code/modules/projectiles/projectile.dm', 'code/_helpers/vector.dm')},
+    'projectile_repeat_body': {'files': ('tests/projectile_repeat_body/test_repeat_body.py',),
+        'paths': ('tests/projectile_repeat_body/',), 'shared_paths': (
+            'code/modules/projectiles/projectile.dm',)},
     'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
         'paths': ('tests/centre_tile/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/subtile_movement.dm',
