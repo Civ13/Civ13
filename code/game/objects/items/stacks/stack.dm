@@ -1814,6 +1814,8 @@
 			barbwire_amount++
 		if (barbwire_amount >= 2)
 			to_chat(H, SPAN_WARNING("You cannot build more barbwire here."))
+			if (ship_craft)
+				secondary_refund(H)
 			return
 
 	// Recheck after do_after, before consuming either drill construction input.
@@ -1851,6 +1853,8 @@
 		var/building_error = building_floor_error(get_turf(build_loc))
 		if (building_error)
 			to_chat(user, SPAN_WARNING(building_error))
+			if (ship_craft)
+				secondary_refund(H)
 			return
 	// Check square contents: an offset fixture based on the adjacent tile
 	// cannot invalidate this tile's one-per-turf recipe.
@@ -1864,6 +1868,8 @@
 	tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
+		if (ship_craft)
+			secondary_refund(H)
 		return
 
 	if (needs_crafting_handle)
@@ -1878,21 +1884,29 @@
 	needs_refusal = craft_needs_refusal(H, recipe, quantity, src)
 	if (needs_refusal)
 		to_chat(user, needs_refusal)
+		if (ship_craft)
+			secondary_refund(H)
 		return
 	if (press_construction && !press_construction.valid())
+		if (ship_craft)
+			secondary_refund(H)
 		return
 	if (joinery && !joinery.valid())
 		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
+		if (ship_craft)
+			secondary_refund(H)
 		return
 	if (carving && !carving.valid())
 		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
 		return
 	if (cloth_payment && !cloth_payment.valid())
 		to_chat(user, SPAN_WARNING("Keep the selected cloth and other materials in place until construction completes."))
+		if (ship_craft)
+			secondary_refund(H)
 		return
-	if (ship_craft)
-		secondary_forget(H)
 	if (use(required, (joinery || carving) ? null : H))
+		if (ship_craft)
+			secondary_forget(H)
 		if (joinery)
 			joinery.consume_component()
 		if ((joinery || carving) && H && recipe.time)
@@ -2280,6 +2294,8 @@
 			build_override_supply.name = customname
 			build_override_supply.desc = "A [customvar2], property of [customvar]."
 			if (!build_override_supply.persistence_set_loc(get_turf(O))) return FALSE
+			if (ship_craft)
+				ship_craft.align(build_override_supply)
 			build_override_supply.add_fingerprint(user)
 			qdel(O)
 			return
@@ -2323,6 +2339,8 @@
 		if (istype(O, /obj/item/weapon/storage)) //BubbleWrap - so newly formed boxes are empty
 			for (var/obj/item/I in O)
 				qdel(I)
+	else if (ship_craft)
+		secondary_refund(H)
 
 /obj/item/stack/Topic(href, href_list)
 	..()

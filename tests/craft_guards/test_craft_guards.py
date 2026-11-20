@@ -129,6 +129,24 @@ class CraftGuardTest(unittest.TestCase):
         self.assertIn('else if (user.loc != original_loc', wait)
         self.assertIn('if (user.get_active_hand() != holding)', wait)
 
+    def test_late_tile_refusal_refunds_ship_inputs_before_returning(self):
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+        late_tile = stack.split('// The tile may have gained a floor or wall during the wait.', 1)[1]
+        self.assertIn('if (tile_refusal)\n\t\tto_chat(user, SPAN_WARNING(tile_refusal))\n'
+                      '\t\tif (ship_craft)\n\t\t\tsecondary_refund(H)\n\t\treturn', late_tile)
+        self.assertIn('if (use(required, (joinery || carving) ? null : H))\n'
+                      '\t\tif (ship_craft)\n\t\t\tsecondary_forget(H)', late_tile)
+        self.assertTrue(late_tile.split('/obj/item/stack/Topic(', 1)[0].rstrip().endswith(
+            '\telse if (ship_craft)\n\t\tsecondary_refund(H)'))
+
+    def test_replacement_supplier_aligns_after_placement_and_before_retiring_placeholder(self):
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+        supplier = stack.split('else if (istype(O, /obj/structure/supplier))', 1)[1]
+        supplier = supplier.split('else if (istype(O, /obj/structure/vending/sales))', 1)[0]
+        self.assertIn('if (!build_override_supply.persistence_set_loc(get_turf(O))) return FALSE\n'
+                      '\t\t\tif (ship_craft)\n\t\t\t\tship_craft.align(build_override_supply)', supplier)
+        self.assertLess(supplier.index('ship_craft.align(build_override_supply)'), supplier.index('qdel(O)'))
+
     def test_projection_wraps_both_signs_and_rejects_a_walk(self):
         offsets = (ROOT / 'code/modules/craft/vehicle_offset.dm').read_text()
         self.assertIn('A.x + round((A.step_x - ox + VEHICLE_OFFSET_HALF) / VEHICLE_OFFSET_TILE)', offsets)
