@@ -1,7 +1,7 @@
 """Restricted production translations; RNG/callbacks/iteration are offline adapters."""
 import re
 import unittest
-from test_lifecycle import ANIMAL, HUMAN, TYPE, Mob, Registry, baseline, proc, read
+from test_lifecycle import ANIMAL, HUMAN, TYPE, FIXTURES, Mob, Registry, proc, read
 
 
 def body(path, text):
@@ -14,6 +14,27 @@ def body(path, text):
     lines = match[1].splitlines()
     depth = len(lines[0]) - len(lines[0].lstrip('\t')) - 1
     return '\n'.join(line[depth:] for line in lines) + '\n'
+
+
+def legacy_body(path):
+    name = {ANIMAL: 'legacy-animal.dm.txt', HUMAN: 'legacy-human.dm.txt'}[path]
+    return (FIXTURES / name).read_text(encoding='utf-8')
+
+
+def normalize(source):
+    return '\n'.join(line.split('//', 1)[0].rstrip() for line in source.splitlines()
+                     if line.split('//', 1)[0].strip()) + '\n'
+
+
+def validate_loop(path, candidate):
+    converted = body(path, candidate).replace('in living_complex_animal_list)', 'in living_mob_list)')
+    if path == ANIMAL:
+        if converted.count('else if (base_type == C.base_type)') != 1:
+            raise AssertionError('Direct declared-field comparison missing or ambiguous')
+        converted = converted.replace('else if (base_type == C.base_type)',
+                    'else if (vars.Find("base_type") && src:base_type == C.base_type)')
+    if normalize(converted) != normalize(legacy_body(path)):
+        raise AssertionError(f'Ordered callback/RNG source differs: {path}')
 
 
 def translate(source):
@@ -92,7 +113,7 @@ class Context:
 class MovementTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.loops = {p: (translate(body(p, baseline(p))), translate(body(p, read(p))))
+        cls.loops = {p: (translate(legacy_body(p)), translate(body(p, read(p))))
                      for p in (HUMAN, ANIMAL)}
 
     def compare(self, path, registry, mover, seed=0, callback_rng=False):
@@ -104,17 +125,20 @@ class MovementTests(unittest.TestCase):
         self.assertEqual(old.draws, new.draws)
         return old, new
 
-    def test_full_movement_files_differ_only_in_loop_collection(self):
+    def test_exact_observer_loops_preserve_frozen_order_and_geometry(self):
         for path in (HUMAN, ANIMAL):
-            candidate = read(path).replace('in living_complex_animal_list)', 'in living_mob_list)')
-            if path == ANIMAL:
-                self.assertEqual(candidate.count('else if (base_type == C.base_type)'), 1)
-                candidate = candidate.replace('else if (base_type == C.base_type)',
-                    'else if (vars.Find("base_type") && src:base_type == C.base_type)')
-            if path == HUMAN:
-                candidate = candidate.replace('in living_mob_list)\n',
-                    'in living_mob_list) // living_mob_list fails here\n', 1)
-            self.assertEqual(candidate.rstrip(), baseline(path).rstrip())
+            with self.subTest(path=path):
+                validate_loop(path, read(path))
+        human = read(HUMAN)
+        self.assertRegex(human, r'(?m)^\t{3}if \(mob_is_human\)\n\t{4}for \(var/mob/living/simple_animal/complex_animal/C in living_complex_animal_list\)')
+
+    def test_frozen_loop_rejects_valid_vocabulary_but_changed_geometry(self):
+        source = read(ANIMAL)
+        mutation = source.replace('abs(x - C.y)', 'abs(y - C.y)')
+        self.assertNotEqual(source, mutation)
+        translate(body(ANIMAL, mutation))  # The parser itself accepts both coordinates.
+        with self.assertRaises(AssertionError):
+            validate_loop(ANIMAL, mutation)
 
     def test_human_order_boundaries_cross_z_and_callback_rng(self):
         r, mover = Registry(), Mob('human')

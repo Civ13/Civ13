@@ -6,8 +6,8 @@ from pathlib import Path
 import re
 import subprocess
 
-from test_lifecycle import BASE, ROOT, TYPE, WRITES, baseline, read
-from test_movement import body
+from test_lifecycle import ANIMAL, HUMAN, FIXTURES, ROOT, TYPE, WRITES, load_audit, read, validate_guard, validate_production_inventory
+from test_movement import body, legacy_body, validate_loop
 
 HERE = Path(__file__).resolve().parent
 CONTROLS = ('fixed', 'missing-add', 'missing-remove', 'deduplicate',
@@ -31,6 +31,12 @@ def between(path, start, stop):
 
 
 def production():
+    audit = load_audit()
+    validate_production_inventory(audit['references'])
+    for guard in audit['guards']:
+        validate_guard(guard['path'], read(guard['path']), guard)
+    for path in (HUMAN, ANIMAL):
+        validate_loop(path, read(path))
     helpers = read('code/_helpers/mobs.dm')
     helpers = helpers[helpers.index('/proc/register_living_mob('):]
     # This is the complete final block in the current file, with all eight
@@ -59,12 +65,16 @@ def production():
     admin = admin_text[start:end]
     admin = '\n'.join(line[3:] if line.startswith('\t\t\t') else line for line in admin.splitlines())
     pieces.append('/proc/probe_admin_fragment(var/datum/O, var/var_new)\n\tvar/variable = "stat"\n' + admin + '\n')
-    for suffix, anchor in (('one', '\t\tif (isDeleted(M))'), ('two', '\t\t\tif (!M)')):
-        text = read('code/processes/mob.dm')
-        start = text.index(anchor)
-        snippet = text[start:text.index('\n\t\t\tcontinue', start)] if suffix == 'one' else text[start:text.index('\n\t\t\t\tcontinue', start)]
-        assert snippet.count('unregister_living_mob(M)') == 1
-        pieces.append(f'/proc/probe_cleanup_{suffix}(var/mob/M)\n\tunregister_living_mob(M)\n')
+    # The scheduler now rejects null/nonliving entries before its single
+    # deleted-entry cleanup. Adapt only the source's real membership write,
+    # not the scheduler guards or side effects. Null clearing is exercised
+    # against the helper directly by the fixture, not a nonexistent call site.
+    cleanup = next(g for g in audit['guards'] if g['label'] == 'deleted-cleanup-after-null-filter')
+    lines = [line.strip() for line in cleanup['body'].splitlines()
+             if line.strip() == 'unregister_living_mob(M)']
+    if len(lines) != 1:
+        raise ValueError('Expected one registered deleted-entry cleanup')
+    pieces.append('/proc/probe_deleted_cleanup_membership(var/mob/M)\n\t' + lines[0] + '\n')
     restored = between('code/processes/human_corpse_decay.dm',
         '\t// Restore durable age; bind fresh runtime epochs after native graph loading.\n', '\n\t\tupdate_canmove()')
     assert restored.startswith('\tunregister_corpse_decay()\n')
@@ -72,7 +82,7 @@ def production():
     for mode in ('legacy', 'candidate'):
         for path, kind in (('code/game/mob/mob_movement.dm', 'human'),
                            ('code/modules/1713/complex_animal/_backend.dm', 'animal')):
-            fragment = body(path, baseline(path) if mode == 'legacy' else read(path))
+            fragment = legacy_body(path) if mode == 'legacy' else body(path, read(path))
             if kind == 'human':
                 signature = f'/mob/proc/probe_{mode}_human()\n\tvar/mob/mob = src\n'
             else:
@@ -110,28 +120,41 @@ def controlled(source, control):
     return source
 
 
+def checkout_metadata():
+    # These are provenance for packets, not semantic test inputs. No historical
+    # Git objects or uninterrupted checkout history are required.
+    return (
+        subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT),
+    )
+
+
 def stage(output, control='fixed'):
     if control not in CONTROLS:
         raise ValueError(control)
     output = Path(output)
     # Refuse reuse/overwrite; staging never invokes an engine or shell helper.
     source = controlled(production(), control)
+    head_sha, dirty_patch = checkout_metadata()
+    audit = load_audit()
     output.mkdir(parents=True, exist_ok=False)
     (output / 'production.dm').write_text(source, encoding='utf-8')
     (output / 'probe.dm').write_bytes((HERE / 'native_probe.dm').read_bytes())
     (output / 'expectations.json').write_bytes((HERE / 'native_expectations.json').read_bytes())
     (output / 'probe.dme').write_text('#define TRUE 1\n#define FALSE 0\n#define CONSCIOUS 0\n#define UNCONSCIOUS 1\n#define DEAD 2\n#define prob(P) probe_prob(C, P)\n#include "probe.dm"\n#include "production.dm"\n', encoding='utf-8')
-    (output / 'dirty.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
+    (output / 'dirty.patch').write_bytes(dirty_patch)
     sha = lambda data: hashlib.sha256(data).hexdigest()
     manifest = {
-        'head_sha': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
-        'oracle_commit': BASE, 'control': control, 'prepared_only': True,
+        'head_sha': head_sha,
+        'oracle_provenance': 'bc7209b23d4ee39651a736a7a9ddb1d1081166ac (frozen movement excerpts only)',
+        'audit_source_sha': audit['source_review_sha'],
+        'contract_fixture_sha256': {p.name: sha(p.read_bytes()) for p in sorted(FIXTURES.iterdir())},
+        'control': control, 'prepared_only': True,
         'preparer_sha256': sha(Path(__file__).read_bytes()),
         'compiled': False, 'executed': False, 'world': [16, 16, 2],
         'write_inventory': WRITES,
-        'source_sha256': {path: sha((ROOT / path).read_bytes()) for path in sorted(set(WRITES) | {
-            'code/game/mob/mob_movement.dm', 'code/modules/1713/complex_animal/_backend.dm'})},
-        'oracle_source_sha256': {path: sha(baseline(path).encode()) for path in (
+        'source_sha256': {path: sha((ROOT / path).read_bytes()) for path in sorted({row[0] for row in audit['references']})},
+        'oracle_source_sha256': {path: sha(legacy_body(path).encode()) for path in (
             'code/game/mob/mob_movement.dm', 'code/modules/1713/complex_animal/_backend.dm')},
         'files': {p.name: sha(p.read_bytes()) for p in output.iterdir() if p.is_file()},
         'limits': 'Source only; lifecycle fragments and external effects adapted; no native/full-game acceptance.',
