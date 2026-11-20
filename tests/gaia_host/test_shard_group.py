@@ -2583,6 +2583,7 @@ class HandoverTests(unittest.TestCase):
         self.empty_live_world()
         host.work('auto-handover', host.request('auto-handover')['operation'])
         self.assertEqual(host.read_state()['phase'], 'failed')
+        self.assertEqual(host.read_json(host.failed_handover_file)['revision'], NEWER)
         self.assertIn(self.LIVE, self.machine.up)
         self.assertFalse(any(action == 'handover_release' for _, action, _ in self.actions))
         self.recover_current_build(host)
@@ -2629,7 +2630,7 @@ class HandoverTests(unittest.TestCase):
         self.assertTrue(host.failed_staged_handover())
 
         accepted = host.request('update-handover')
-        self.assertFalse(host.failed_handover_file.exists())
+        self.assertTrue(host.failed_handover_file.exists())
         with mock.patch.object(host, 'do_handover') as handover:
             host.work('update-handover', accepted['operation'])
         handover.assert_called_once_with(accepted['operation'])
@@ -2642,11 +2643,72 @@ class HandoverTests(unittest.TestCase):
         host.work('auto-handover', host.request('auto-handover')['operation'])
         self.recover_current_build(host)
         accepted = host.request('update-handover')
-        self.assertFalse(host.failed_handover_file.exists())
+        self.assertTrue(host.failed_handover_file.exists())
         host.work('update-handover', accepted['operation'])
         self.assertEqual(host.read_state()['phase'], 'failed', host.read_state())
         self.assertTrue(host.failed_staged_handover())
         self.recover_current_build(host)
+        self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_early_manual_retry_failure_keeps_the_prior_rejection(self):
+        group, host = self.staged()
+        host.record(action='auto-handover', phase='failed', revision=NEWER, error='invalid save')
+        self.recover_current_build(host)
+        for action, step in (('handover', 'do_handover'), ('update-handover', 'wait_for_build')):
+            with self.subTest(action=action):
+                accepted = host.request(action)
+                with mock.patch.object(host, step, side_effect=RuntimeError('early failure')):
+                    host.work(action, accepted['operation'])
+                self.assertEqual(host.read_state()['phase'], 'failed')
+                self.assertNotIn('revision', host.read_state())
+                self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+                self.recover_current_build(host)
+                self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_concurrent_requests_serialize_rejection_preservation(self):
+        import threading
+        group, host = self.staged()
+        host.record(action='auto-handover', phase='failed', revision=NEWER, error='invalid save')
+        self.machine.up.clear()
+        writing, release, second_finished = threading.Event(), threading.Event(), threading.Event()
+        writes, outcomes = [], []
+        real_write = host.write_json
+
+        def blocked_write(path, value):
+            if path == host.failed_handover_file:
+                writes.append(value)
+                writing.set()
+                if not release.wait(5):
+                    raise RuntimeError('test did not release the writer')
+            return real_write(path, value)
+
+        def request(finished=None):
+            try:
+                outcomes.append(host.request('start-current'))
+            except Exception as error:
+                outcomes.append(error)
+            finally:
+                if finished:
+                    finished.set()
+
+        with mock.patch.object(host, 'write_json', side_effect=blocked_write):
+            first = threading.Thread(target=request)
+            first.start()
+            try:
+                self.assertTrue(writing.wait(5), 'first request did not reach preservation')
+                second = threading.Thread(target=request, args=(second_finished,))
+                second.start()
+                self.assertTrue(second_finished.wait(5), 'the competing request waited on the marker write')
+            finally:
+                release.set()
+                first.join(5)
+                if 'second' in locals():
+                    second.join(5)
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(sum(isinstance(result, shard_group.Refused) for result in outcomes), 1)
+        accepted = next(result for result in outcomes if isinstance(result, dict))
+        with mock.patch.object(host, 'do_start'):
+            host.work('start-current', accepted['operation'])
         self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
 
     def test_automatic_handover_defers_if_player_arrives_during_standby_boot(self):

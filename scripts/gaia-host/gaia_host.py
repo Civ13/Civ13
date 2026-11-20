@@ -750,6 +750,7 @@ class Host:
         self.killed_file.unlink(missing_ok=True)  # left by a worker that never finished
         try:
             self.precheck(action)
+            self.before_action_accepted(action)
         except BaseException:
             self.lock.unlink()
             raise
@@ -758,6 +759,15 @@ class Host:
         self.platform.detach([sys.executable, '-I', '-B', str(self.script), '--config', self.config['_path'],
                               '--worker', action, operation])
         return {'accepted': True, 'action': action, 'operation': operation}
+
+    def before_action_accepted(self, action):
+        """Hook called with the action lock held, before replacing the previous state."""
+
+    def action_succeeded(self, action):
+        """Hook called with the action lock held after a worker succeeds."""
+
+    def action_failed(self, action):
+        """Hook called with the action lock held after a worker fails."""
 
     def precheck(self, action):
         listening = self.platform.listening(self.config['port'])
@@ -1608,6 +1618,7 @@ class Host:
                 self.end_after_forced_stop()
                 raise RuntimeError('the world it started was stopped again')
             self.record(phase='done', error=None)
+            self.action_succeeded(action)
         except Exception as error:  # the state file is the only place a detached worker can report
             reason = self.killed_during(operation)
             if reason:
@@ -1617,6 +1628,7 @@ class Host:
                             error='%s during %s: %s' % (reason, action, str(error)[:300]))
             else:
                 self.record(phase='failed', error=str(error)[:500])
+                self.action_failed(action)
         finally:
             self.killed_file.unlink(missing_ok=True)
             self.lock.unlink(missing_ok=True)

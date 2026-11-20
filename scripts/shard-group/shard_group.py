@@ -1342,18 +1342,26 @@ class RegionHost(Host):
             return self.update_asleep()
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
-        # The next operation replaces state.json, including a failed handover's revision.
-        # Preserve that rejection across recovery starts and host process restarts.
+        return super().request(action)
+
+    def remember_failed_handover(self):
+        # Called under the action lock, before replacing or after writing operation state.
         last = self.read_state()
         if (last.get('action') in ('handover', 'auto-handover', 'update-handover') and last.get('phase') == 'failed'
                 and not last.get('retryable') and last.get('revision') == self.staged_revision()
                 and last.get('revision')):
             self.write_json(self.failed_handover_file, {'revision': last['revision']})
-        result = super().request(action)
+
+    def before_action_accepted(self, action):
+        self.remember_failed_handover()
+
+    def action_failed(self, action):
+        self.remember_failed_handover()
+
+    def action_succeeded(self, action):
         if action in ('handover', 'update-handover'):
-            # A person explicitly chose to retry, so let its outcome govern later attempts.
+            # Keep the rejection through an early failure; only a completed retry clears it.
             self.failed_handover_file.unlink(missing_ok=True)
-        return result
 
     def watch_step(self, idle_since):
         if fresh_world.pending(self).exists() or (self.lock.exists() and self.read_state().get('action') == 'fresh-world'):
