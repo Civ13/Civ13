@@ -69,14 +69,35 @@ var/global/list/craft_guards = null
 		return null
 	return phase == CRAFT_GUARD_START ? message : ""
 
-// Nothing is built on deep water without a bridge deck, except on the sea maps.
+// Standing over deep water is not enough: the builder needs a real deck.
 /datum/craft_guard/deep_water
 	order = 80
+	after_wait = TRUE
 
 /datum/craft_guard/deep_water/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
-	if (istype(get_turf(H), /turf/floor/beach/water/deep) && !bridge_deck_at(get_turf(H)) && map.ID != MAP_VOYAGE && map.ID != MAP_BATTLE_SHIPS)
-		return "<span class = 'danger'>You can't build here!</span>"
-	return null
+	var/turf/T = get_turf(H)
+	if (!istype(T, /turf/floor/beach/water/deep) || map.ID == MAP_VOYAGE || map.ID == MAP_BATTLE_SHIPS)
+		return null
+	if (bridge_deck_at(T) || vessel_building_deck_at(T))
+		return null
+	return "<span class = 'danger'>You can't build here!</span>"
+
+// Not iscovered(): rafts, ladders and unattached ship parts keep swimmers up
+// but cannot carry construction. A built hull's footprint also includes holes.
+/proc/vessel_building_deck_at(turf/T)
+	var/datum/hull_ledger/L = hull_ledger_at(T)
+	if (!QDELETED(L) && !L.sinking)
+		for (var/obj/covers/C in T)
+			if (hull_floor_plank(C, T))
+				return TRUE
+	for (var/obj/structure/vehicleparts/frame/ship/F in T)
+		if (F.loc != T || F.broken || QDELETED(F))
+			continue
+		var/obj/structure/vehicleparts/axis/ship/A = F.axis
+		var/turf/helm = get_turf(A)
+		if (istype(A) && !QDELETED(A) && helm && helm.z == T.z && get_dist(helm, T) <= 7 && (F in A.components))
+			return TRUE
+	return FALSE
 
 // Religious works: the first entry whose title words match decides. Builders
 // without a religion, or whose religion type is listed, cannot make the work.

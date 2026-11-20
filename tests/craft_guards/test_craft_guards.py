@@ -5,7 +5,8 @@ generation, exercise and telecom skill gates, trail marker, car workshop,
 waterwheel and offshore rig refusals, then deep water, religious works and
 tribe knowledge. The car workshop, waterwheel and rig (and, silently, the three
 skill gates) were checked again after the build wait, and the recipe menu hid
-recipes refused by the three skill gates. New guards get their own entry here.
+recipes refused by the three skill gates. Deep-water footing now also gets
+a finish check so a missing deck cannot complete construction.
 """
 from pathlib import Path
 import re
@@ -24,7 +25,7 @@ EXPECTED = {
     'offshore_rig': (70, True, False),
     'land_permit': (70, True, False),
     'well_fitting': (75, True, False),
-    'deep_water': (80, False, False),
+    'deep_water': (80, True, False),
     'religious_work': (90, False, False),
     'handle': (94, False, True),
     'needs': (95, False, True),
@@ -65,6 +66,43 @@ class CraftGuardTest(unittest.TestCase):
             self.assertNotIn(old, body)
         menu = (ROOT / 'code/game/objects/items/stacks/stack_makeable.dm').read_text()
         self.assertIn('craft_guard_refusal(H, R, CRAFT_GUARD_MENU)', menu)
+
+    def test_deep_water_accepts_real_decks_and_preserves_map_exceptions(self):
+        text = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
+        start = text.index('/datum/craft_guard/deep_water/refusal(')
+        refusal, deck = text[start:].split('/proc/vessel_building_deck_at(turf/T)', 1)
+        deck = deck.split('// Religious works:', 1)[0]
+        self.assertIn('!istype(T, /turf/floor/beach/water/deep) || map.ID == MAP_VOYAGE || map.ID == MAP_BATTLE_SHIPS', refusal)
+        self.assertIn('if (bridge_deck_at(T) || vessel_building_deck_at(T))', refusal)
+        self.assertTrue(refusal.split("\n\n", 1)[0].strip().endswith("You can't build here!</span>\""))
+        # The footprint alone still includes holes. Use the actual live,
+        # non-wall plank filed on the tile, not any cover or nearby overlap.
+        self.assertIn('!QDELETED(L) && !L.sinking', deck)
+        self.assertIn('if (hull_floor_plank(C, T))', deck)
+        ledger = (ROOT / 'code/modules/naval/hull_ledger.dm').read_text()
+        self.assertIn('return C.loc == T && !C.wall && !QDELETED(C)', ledger)
+        # A loose frame, rudder on its own, ladder or raft is not a deck.
+        self.assertIn('var/obj/structure/vehicleparts/frame/ship/F in T', deck)
+        self.assertIn('F.loc != T || F.broken || QDELETED(F)', deck)
+        self.assertIn('var/obj/structure/vehicleparts/axis/ship/A = F.axis', deck)
+        self.assertIn('istype(A) && !QDELETED(A)', deck)
+        self.assertIn('helm.z == T.z', deck)
+        self.assertIn('get_dist(helm, T) <= 7', deck)
+        self.assertIn('(F in A.components)', deck)
+        self.assertNotIn('iscovered()', deck)
+        self.assertTrue(deck.strip().endswith('return FALSE'))
+
+    def test_timed_build_rechecks_footing_before_consumption_or_placement(self):
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+        body = stack.split('/obj/item/stack/proc/produce_recipe(', 1)[1]
+        finish = body.index('var/late_refusal = craft_guard_refusal(H, recipe, CRAFT_GUARD_FINISH)')
+        self.assertLess(body.index('if (!do_after(user, buildtime)'), finish)
+        self.assertIn('secondary_refund(H)\n\t\t\treturn', body[finish:body.index('if (press_construction && !press_construction.valid())', finish)])
+        self.assertLess(finish, body.index('if (use(required, (joinery || carving) ? null : H))'))
+        self.assertLess(finish, body.index('O = new recipe.result_type(build_loc)'))
+        # Cover the reported consumer, not just a synthetic instant recipe.
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
+        self.assertRegex(recipes, r'(?m)^RECIPE: /material/iron/,lever pump,/obj/structure/cellar_pump/lever,6,[1-9]\d*,')
 
     def test_religious_rules_match_the_old_chain(self):
         text = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
