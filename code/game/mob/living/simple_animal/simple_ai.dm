@@ -207,7 +207,7 @@
 		for (var/mob/living/ML in range(2, src))
 			if (ishuman(ML) && !predator_will_hunt(ML))
 				continue
-			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type) && istype(src, /mob/living/simple_animal/hostile))
+			if ((ML.mob_size <= mob_size || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type) && istype(src, /mob/living/simple_animal/hostile))
 				npc_subtile_stop_continuous_walk()
 				var/mob/living/simple_animal/hostile/HS = src
 				HS.npc_set_combat_target(ML)
@@ -291,7 +291,7 @@
 		for (var/mob/living/ML in range(9, src))
 			if (ishuman(ML) && !predator_will_hunt(ML))
 				continue
-			if (((ML.mob_size <= mob_size && istype(ML, /mob/living/simple_animal/hostile)) || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
+			if ((ML.mob_size <= mob_size || !istype(ML, /mob/living/simple_animal/hostile)) && !istype(ML, type) && !istype(src, ML.type))
 				smart_step_towards(ML)
 				return
 
