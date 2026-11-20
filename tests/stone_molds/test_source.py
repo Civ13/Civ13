@@ -180,7 +180,7 @@ class StoneMoldTests(unittest.TestCase):
     def test_oven_guard_and_reference_instructions(self):
         oven=read('code/game/objects/structures/kitchen/oven.dm')
         branch=oven.split('var/obj/item/weapon/clay/CL = I',1)[1]
-        self.assertLess(branch.index('if (stone_mold_type(CL.type))'),branch.index('contents += CL.fired_result(src)'))
+        self.assertLess(branch.index('if (stone_mold_type(CL.type))'),branch.index('var/fired = CL.fired_result(src)'))
         self.assertIn('continue // Carved stone',branch)
         self.assertIn('Chisel and hammer/mallet equipped or at your feet.',read(STACK))
         for file in ('scripts/build-crafting-atlas.py','scripts/player_help_bridge.py'):

@@ -3,6 +3,7 @@
 	w_class = 10
 
 	var/climbable = FALSE
+	var/dismantle_wood_fallback = TRUE // FALSE: not wood, so no recipe means no wood back (crafted_refund_stack)
 	var/breakable = FALSE
 	var/crushable = TRUE // If the structure can be crushed by vehicles.
 	var/parts
