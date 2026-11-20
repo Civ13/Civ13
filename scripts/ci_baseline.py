@@ -1498,7 +1498,8 @@ SUITES = {
     'siege_engines': {'files': ('tests/siege_engines/test_source.py',),
         'paths': ('tests/siege_engines/',), 'shared_paths': (
             'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
-            'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
+            'code/modules/1713/siege/portcullis_runs.dm', 'code/game/objects/controls.dm',
+            'icons/obj/doors/material_doors.dmi', 'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
             'tests/sprites/create_siege_engines.py')},
     # Horse breaking, breeding and shoeing: source contracts (native probe tests/horse_breeding/probe.dm).
     'horse_breeding': {'files': ('tests/horse_breeding/test_source.py',),

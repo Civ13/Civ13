@@ -440,18 +440,30 @@
 					. += S
 		else
 			. += G
+	for (var/obj/structure/gate/I in range(2, src))
+		if (QDELETED(I) || !I.is_iron_grid_gate() || I in .)
+			continue
+		. |= I.iron_grid_run()
 
 /obj/structure/castle_winch/attack_hand(mob/living/user)
 	if (!ishuman(user) || !Adjacent(user))
 		return ..()
 	var/list/G = gates()
 	if (!G.len)
-		to_chat(user, SPAN_WARNING("There is no portcullis or drawbridge within two tiles of \the [src]."))
+		to_chat(user, SPAN_WARNING("There is no portcullis, drawbridge, or arched iron gate within two tiles of \the [src]."))
 		return
 	if (busy)
 		return
+	var/raise = FALSE
 	var/obj/structure/castle_gate/first = G[1]
-	var/raise = !first.open
+	if (istype(first))
+		raise = !first.open
+	else
+		// Synchronize a mixed iron run by opening all sections first.
+		for (var/obj/structure/gate/I in G)
+			if (!I.open)
+				raise = TRUE
+				break
 	busy = TRUE
 	user.visible_message(SPAN_NOTICE("[user] [raise ? "winds" : "lets out"] \the [src]."), SPAN_NOTICE("You [raise ? "wind" : "let out"] \the [src][raise && G.len > 1 ? ", taking the weight of [G.len] sections" : ""]."))
 	var/ok = do_after(user, wind_time(G, raise, user), src)
@@ -462,8 +474,11 @@
 
 // Raise (open) or drop (shut) every gate on this winch.
 /obj/structure/castle_winch/proc/work(raise)
-	for (var/obj/structure/castle_gate/G in gates())
+	var/list/targets = gates()
+	for (var/obj/structure/castle_gate/G in targets)
 		G.set_open(raise)
+	for (var/obj/structure/gate/I in targets)
+		I.set_iron_grid_open(raise)
 
 // A murder hole: an opening in a floor. What is poured or dropped through it
 // lands on the tile below (castle_pour.dm), and the level below shows through it.
