@@ -134,14 +134,15 @@
 		var/turf/T = master_turf(i)
 		if (!T)
 			continue
-		if (T.lighting_overlay)
+		var/atom/movable/lighting_overlay/overlay = T.lighting_overlay
+		if (overlay)
 			#ifdef LIGHTING_INSTANT_UPDATES
-			T.lighting_overlay.update_overlay()
+			overlay.update_overlay()
 			#else
-			if (!T.lighting_overlay.needs_update)
+			if (!overlay.needs_update)
 				#if CIV13_ROOT_TREE_PRESENTATION
 				root_tree_light_changed(T)
 				#endif
-				T.lighting_overlay.needs_update = TRUE
-				lighting_update_overlays += T.lighting_overlay
+				overlay.needs_update = TRUE
+				lighting_update_overlays += overlay
 			#endif
