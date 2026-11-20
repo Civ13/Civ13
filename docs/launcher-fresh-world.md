@@ -12,7 +12,8 @@ not a full account wipe, update, force-stop, or connected-group reset.
    no all-regions button, unattended HTTP action, or default confirmation.
 3. The host acquires its normal exclusive action lock, rechecks the conditions
    in the worker, and records an atomic reset journal before moving anything.
-4. It renames `map_saves`, `map_backups`, and `map_rollback` into a unique
+4. It renames `map_saves`, `map_backups`, `map_rollback`, and any
+   `data/persistence-bed-notices` into a unique
    `data/shard-host/fresh-world-archives/<operation>` directory. No retention
    pruning or permanent deletion occurs. All three generations move together
    so an old backup cannot silently resurrect the old world.
@@ -65,9 +66,9 @@ python scripts/shard-group/shard_group.py --config GROUP.json group-fresh-world 
    `map_saves`, `map_backups`, `map_rollback` and `transfers.sqlite` (with its
    `-wal`/`-shm` files) under the region id, each region's separate
    extraction, vehicle-key and safehouse stores (`data/extraction_*`,
-   `data/vehicle_key_service`, `data/safehouse_spool`) under
-   `<region>/data/`, and the group's `coordinator.sqlite`. Nothing is deleted. Each region gets an empty
-   `map_saves`.
+   `data/vehicle_key_service`, `data/safehouse_spool`), and region-local pending
+   bed notices under `<region>/data/`, plus the group's `coordinator.sqlite`.
+   Nothing is deleted. Each region gets an empty `map_saves`.
 5. Only after every move succeeds are the pending files and the group journal
    removed. Every region is then asked to start. The supervisor starts new
    agents and a new coordinator, which create empty stores and enrol every
