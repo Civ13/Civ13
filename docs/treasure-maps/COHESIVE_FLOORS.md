@@ -1,5 +1,8 @@
 # Matching floor families
 
+The [threshold and crafting follow-up](THRESHOLDS_AND_CRAFTING.md) keeps
+these room interiors unchanged and refines their entrances.
+
 Use three existing Civ13 floors that look like they belong in the same room:
 a broad main surface, a perimeter or circulation strip, and a restrained
 accent. This replaces the more visually mixed

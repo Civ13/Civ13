@@ -5,6 +5,8 @@ The dungeon is a separately leased Expedition region, never a new Gaia
 z-level. See the [four seeded layouts with furnished rooms](FURNISHED.md)
 and the [latest matching floor families](COHESIVE_FLOORS.md). The earlier
 [five-style pattern study](FLOOR_PATTERNS.md) remains available for comparison.
+The [threshold follow-up](THRESHOLDS_AND_CRAFTING.md) applies the approved
+palette to arrivals and reviews which finishes players can actually build.
 Diving, underwater sites, and live activation are out of scope.
 
 ## Find and follow the map
