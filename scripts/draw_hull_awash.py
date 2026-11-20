@@ -5,8 +5,9 @@ The film is cut from the game's own deep sea (icons/turf/beach.dmi, state
 "seadeep"), so the water on a deck is the water around it: the same net of
 light, the same shades and the same twelve-frame swell. The body of the sea
 is one flat see-through blue, so the planks show under it and the deck still
-reads as water; the net of light is kept strong. Three flat levels of
-see-through, no blending between them.
+reads as water. The blue body leaves the plank grain and silhouette dominant;
+only the brightest moving highlights cover more than half of the plank. Three
+flat levels of see-through, no blending between them.
 
 Run from the repository root:
 
@@ -23,9 +24,9 @@ T = 32
 SEA_ICON = "icons/turf/beach.dmi"
 SEA_STATE = "seadeep"
 # How much of the deck each part of the sea hides, of 255.
-BODY = 150    # the blue body of the water
-SHADE = 172   # the soft edge of the light
-LIGHT = 205   # the net of light itself
+BODY = 72    # the blue body of the water
+SHADE = 110   # the soft edge of the light
+LIGHT = 155   # the net of light itself
 # The body is one flat blue, a little deeper than the sea, so that wood seen
 # through it stays blue water and does not go grey.
 BODY_BLUE = (40, 122, 190)
