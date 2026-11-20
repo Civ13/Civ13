@@ -29,6 +29,11 @@ the sides may cross (`siege_can_fight`).
   every portcullis and drawbridge within two tiles. A shut portcullis stops men
   but not arrows; a raised drawbridge blocks sight as well. Both have 900
   health and take ram, explosive and weapon damage.
+- **Arched iron gates** also work with a gate winch: build it within two tiles
+  of any section of a continuous straight run. The winch moves the entire run,
+  keeping the existing arched art, animation and separate gate control. If the
+  winch only serves arched iron gates, it opens any mixed run first so one more
+  pull can close every section. These gates do not gain portcullis crush damage.
 - **Murder hole** (3 stone): pour a container through it, or drop anything
   else, onto the level below (or, on a single level, the tile it faces). The
   level below shows through the hole. See "Pouring and dropping" below.
