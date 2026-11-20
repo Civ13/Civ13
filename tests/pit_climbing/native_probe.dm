@@ -94,6 +94,13 @@ var/list/pit_probe_log = list()
 	var/obj/structure/multiz/ladder/up/hole_ladder/L = P.lower_ladder()
 	pit_probe_check(L && L.hole_above() == P, "linked_pair_matches_opening")
 	H.a_intent = I_GRAB
+	H.loc = locate(5, 4, 1)
+	new /turf/floor/dirt(H.loc)
+	var/obj/structure/pit_probe_block/block_at_foot = new(lower)
+	P.remove_ladder(H, L)
+	pit_probe_check(!QDELETED(L) && P.has_ladder && !H.get_active_hand(), "blocked_ladder_foot_refuses_removal")
+	qdel(block_at_foot)
+	H.loc = lower
 	L.attack_hand(H)
 	var/obj/item/weapon/hole_ladder/returned = H.get_active_hand()
 	pit_probe_check(QDELETED(L) && !P.has_ladder && istype(returned) && H.loc == lower, "grab_from_below_refunds_once_without_climbing")

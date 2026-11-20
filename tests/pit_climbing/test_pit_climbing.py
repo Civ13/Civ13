@@ -149,7 +149,11 @@ class HoleLadder(unittest.TestCase):
         self.assertLess(hand.index('trapdoor_from_below'), hand.index('P.remove_ladder(user, src)'))
         self.assertLess(hand.index('P.remove_ladder(user, src)'), hand.index('trench_climb_place(user, T)'))
         remove = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/remove_ladder(mob/user, obj/structure/multiz/ladder/up/hole_ladder/from_below = null)')
-        after = remove.split('do_after', 1)[1]
+        before, after = remove.split('do_after', 1)
+        for side in (before, after):
+            self.assertIn('!below_ladder_worksite(user, lower) || landing() != lower || lower_ladder() != from_below', side)
+        types = (ROOT / 'code/modules/multiz/structures.dm').read_text()
+        self.assertIn('density = FALSE', types.split('/obj/structure/multiz\n', 1)[1].split('\n/', 1)[0])
         self.assertLess(after.index('lower_ladder() != from_below'), after.index('has_ladder = FALSE'))
         self.assertLess(after.index('has_ladder = FALSE'), after.index('item = new'))
         self.assertEqual(after.count('item = new'), 1)

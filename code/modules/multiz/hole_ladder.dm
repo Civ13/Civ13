@@ -165,13 +165,13 @@
 	if (!has_ladder || user.stat || user.restrained() || persistence_save_in_progress)
 		return
 	var/turf/lower = from_below ? get_turf(from_below) : null
-	if (from_below ? (!below_ladder_worksite(user, lower) || lower_ladder() != from_below || user.get_active_hand()) : !Adjacent(user))
+	if (from_below ? (!below_ladder_worksite(user, lower) || landing() != lower || lower_ladder() != from_below || user.get_active_hand()) : !Adjacent(user))
 		return
 	to_chat(user, SPAN_NOTICE("You start pulling the ladder out of the hole."))
 	var/atom/worksite = from_below ? from_below : src
 	if (!do_after(user, 30, worksite) || QDELETED(src) || !has_ladder || user.stat || user.restrained() || persistence_save_in_progress)
 		return
-	if (worksite != src ? (QDELETED(from_below) || !below_ladder_worksite(user, lower) || lower_ladder() != from_below || user.get_active_hand()) : !Adjacent(user))
+	if (worksite != src ? (QDELETED(from_below) || !below_ladder_worksite(user, lower) || landing() != lower || lower_ladder() != from_below || user.get_active_hand()) : !Adjacent(user))
 		return
 	var/obj/structure/multiz/ladder/up/hole_ladder/L = lower_ladder()
 	has_ladder = FALSE
