@@ -1,0 +1,79 @@
+{
+  "base_commit": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "maps": [
+    {
+      "approaches": 1,
+      "back": 91,
+      "blocked_spawn_footprint_control": "rejected",
+      "dimensions": [
+        53,
+        27
+      ],
+      "edition": "unchanged topology, populated static DMM",
+      "out": 91,
+      "parseback": "pass",
+      "rooms": 8,
+      "seed": "ruins-06",
+      "typed_fixtures": 88
+    },
+    {
+      "approaches": 2,
+      "back": 65,
+      "blocked_spawn_footprint_control": "rejected",
+      "dimensions": [
+        40,
+        40
+      ],
+      "edition": "unchanged topology, populated static DMM",
+      "out": 65,
+      "parseback": "pass",
+      "rooms": 9,
+      "seed": "ruins-02",
+      "typed_fixtures": 105
+    },
+    {
+      "approaches": 2,
+      "back": 52,
+      "blocked_spawn_footprint_control": "rejected",
+      "dimensions": [
+        39,
+        40
+      ],
+      "edition": "unchanged topology, populated static DMM",
+      "out": 52,
+      "parseback": "pass",
+      "rooms": 7,
+      "seed": "ruins-18",
+      "typed_fixtures": 81
+    },
+    {
+      "approaches": 2,
+      "back": 52,
+      "blocked_spawn_footprint_control": "rejected",
+      "dimensions": [
+        53,
+        40
+      ],
+      "edition": "unchanged topology, populated static DMM",
+      "out": 52,
+      "parseback": "pass",
+      "rooms": 9,
+      "seed": "ruins-12",
+      "typed_fixtures": 102
+    }
+  ],
+  "native_gameplay": false,
+  "schema": "civ13-furnished-preview-validation/1",
+  "sha256": {
+    "furnished-layout-contact-sheet.png": "f6827739ff3c98dbeab3c3e94ef9f300dd19ab2d489845ca4d444e7b00dd944a",
+    "furnished-room-sprite-preview.png": "16b76102cf7ed8a8d56d37c3cf5a4f22cb1cfe35b434ec803313a1e27d32fcc8",
+    "ruins-02.dmm": "572db8b75e1518e2b6f7100eec8773c91e92e428fea70a2ab44936087398f4c4",
+    "ruins-02.json": "47dc43284df32516d3f05c22151e8b20536ffbf8c81a77d29b182d6f3d2d2ada",
+    "ruins-06.dmm": "0f7186996c9b521f735582f611f6f4e6ece2d65db0fbd7dc2aeab788dbad288e",
+    "ruins-06.json": "badda4458a7aa3763c29f97876475968a467a79724667976c2e4ef636bb9866e",
+    "ruins-12.dmm": "28bce4c050a723bf95b12ca65f4b4f23f941c86aef5af4cd1ad6ffdf8c390678",
+    "ruins-12.json": "86d601e9d7147bf49e42e70ffdc8de8671cb0b18eca01cccd86d288fbc75eed7",
+    "ruins-18.dmm": "3bb1ed03f819ea0c57be4297edfca0e0093f64a0f32499014c53a0330e05325c",
+    "ruins-18.json": "796eb80b7220e4d6ea493a7b11d85bc17d4306e4343ef1db9f782e8bf6d1fa74"
+  }
+}

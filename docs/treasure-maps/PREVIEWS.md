@@ -1,5 +1,8 @@
 # Buried Ruins: four seeded layout previews
 
+These first-pass geometry maps are the baseline. See the [furnished room
+review](FURNISHED.md) for the current populated specimens.
+
 ![Contact sheet showing four distinct seeded ruins layouts with entry, treasure, encounter markers, optional caches, and traced shortest routes](preview/dungeon-layout-review.png)
 
 These are four intentionally different seeds chosen from a 30-seed offline
