@@ -156,6 +156,25 @@ character lives, with a join link.
 - A world's agent unreachable means no character can start there (the player
   is asked to retry). Guests are not tracked; they cannot travel.
 
+### Private lobby lookup foundation
+
+`Coordinator.lobby_home(ckey)` is an internal read-only decision for a future
+redirect-only lobby. It returns `HOME` (an existing region) or `NO_HOME`
+(the configured start region) only when the coordinator is ready, its
+roster is complete, and each enrolled transfer agent confirms the exact
+home epoch/revision and no outstanding custody barrier. Otherwise it
+returns `PENDING`, `TRAVELLING`, or `UNAVAILABLE` with no destination.
+A reply is a routing hint, not admission or a lease on custody; the
+destination still checks admission after any handoff.
+
+This uses `POST /lobby/account-status` on the already loopback-only,
+token-authenticated region agent. It reports only the requested account's
+local pending/travel barrier and the store's snapshot identity. The
+coordinator does not call `/account op=claim`, modify homes, drain a queue,
+wake a world, or return network addresses. No coordinator listener or
+game-facing caller is installed by this foundation. See the
+[Hub lobby design and migration plan](../../docs/persistence-hub-lobby.md).
+
 ## Player-built trails
 
 Admins can still place `/obj/structure/region_gate` with a destination. Players
