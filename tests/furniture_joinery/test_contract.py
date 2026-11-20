@@ -229,7 +229,7 @@ class Contracts(unittest.TestCase):
             if change=='save':f.env['persistence_save_in_progress']=True
             env=dict(joinery=NS(valid=f.valid,consume_component=lambda:debits.append('pegs')),carving=None,cloth_payment=None,
                      H=NS(adaptStat=lambda *args:xp.append(args)),recipe=NS(time=4,req_amount=4,result_type='/obj/structure/table'),
-                     required=4,payer=None,user=None,to_chat=lambda *args:None,SPAN_WARNING=lambda x:x,
+                     required=4,payer=None,user=None,ship_craft=None,to_chat=lambda *args:None,SPAN_WARNING=lambda x:x,
                      use=lambda *args:debits.append('logs') is None and change!='debit failed')
             exec(compile(text,'<production joinery commit>','exec'),env);env['commit']()
             self.assertEqual(len(xp),1 if change=='paid' else 0,change)

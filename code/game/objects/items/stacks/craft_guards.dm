@@ -78,26 +78,120 @@ var/global/list/craft_guards = null
 	var/turf/T = get_turf(H)
 	if (!istype(T, /turf/floor/beach/water/deep) || map.ID == MAP_VOYAGE || map.ID == MAP_BATTLE_SHIPS)
 		return null
-	if (bridge_deck_at(T) || vessel_building_deck_at(T))
+	if (bridge_deck_at(T))
+		return null
+	var/list/deck = vessel_building_deck_at(H)
+	if (deck)
+		// Frames carry structures and items, not floor or wall covers.
+		if (istype(deck[1], /obj/structure/vehicleparts/frame/ship) && ispath(R.result_type, /obj/covers))
+			return SPAN_WARNING("This ship frame cannot carry that floor or wall.")
+		if (ispath(R.result_type, /obj/structure) && !ship_same_tile_fixture(R.result_type))
+			return SPAN_WARNING("This fixture needs its own placement site off the ship.")
 		return null
 	return "<span class = 'danger'>You can't build here!</span>"
 
-// Not iscovered(): rafts, ladders and unattached ship parts keep swimmers up
-// but cannot carry construction. A built hull's footprint also includes holes.
-/proc/vessel_building_deck_at(turf/T)
+// Find the filed deck tile beneath H's drawn centre. A known rider uses
+// the same inverse offset as walking; a scenery cover never grants footing.
+/proc/vessel_building_deck_at(mob/living/human/H)
+	if (!isturf(H?.loc))
+		return null
+	var/datum/vehicle_offset/rider = vehicle_offset_riders[H]
+	var/turf/T = (istype(rider, /datum/vehicle_offset/hull) || istype(rider, /datum/vehicle_offset/axis)) ? vehicle_offset_turf_under(H, rider.ox, rider.oy) : H.loc
+	if (!T)
+		return null
 	var/datum/hull_ledger/L = hull_ledger_at(T)
 	if (!QDELETED(L) && !L.sinking)
-		for (var/obj/covers/C in T)
-			if (hull_floor_plank(C, T))
-				return TRUE
+		var/datum/vehicle_offset/hull/mover = L.craft.offset_mover
+		if (!mover || vehicle_offset_turf_under(H, mover.ox, mover.oy) == T)
+			for (var/obj/covers/C in T)
+				if (hull_floor_plank(C, T))
+					return list(C, L)
 	for (var/obj/structure/vehicleparts/frame/ship/F in T)
 		if (F.loc != T || F.broken || QDELETED(F))
 			continue
 		var/obj/structure/vehicleparts/axis/ship/A = F.axis
 		var/turf/helm = get_turf(A)
 		if (istype(A) && !QDELETED(A) && helm && helm.z == T.z && get_dist(helm, T) <= 7 && (F in A.components))
-			return TRUE
-	return FALSE
+			var/datum/vehicle_offset/axis/mover = A.offset_mover
+			if (!mover || vehicle_offset_turf_under(H, mover.ox, mover.oy) == T)
+				return list(F, A)
+	return null
+
+// Fixtures with their own final target must not use the builder's deck.
+/proc/ship_same_tile_fixture(path)
+	if (ispath(path, /obj/structure/civ_generator/waterwheel) || ispath(path, /obj/structure/noticeboard) || ispath(path, /obj/structure/mirror) || ispath(path, /obj/structure/cannon/modern/tank))
+		return FALSE
+	if (ispath(path, /obj/structure/closet/crate/wall_mailbox) && !ispath(path, /obj/structure/closet/crate/wall_mailbox/wood_mailbox))
+		return FALSE
+	return !ispath(path, /obj/structure/sign) || ispath(path, /obj/structure/sign/signpost)
+
+// Only the regular same-tile structure/cover placement uses this context.
+// An action may ride its original deck, but must not walk across it or switch decks.
+/datum/ship_construction
+	var/atom/movable/support
+	var/datum/deck_owner
+	var/relative_x
+	var/relative_y
+	var/heading
+
+/datum/ship_construction/New(mob/living/human/H, list/deck)
+	..()
+	support = deck[1]
+	deck_owner = deck[2]
+	var/datum/vehicle_offset/M = mover()
+	relative_x = (H.x - support.x) * world.icon_size + H.step_x - (M ? M.ox : 0)
+	relative_y = (H.y - support.y) * world.icon_size + H.step_y - (M ? M.oy : 0)
+	heading = deck_heading()
+
+/datum/ship_construction/proc/mover()
+	var/datum/hull_ledger/L = deck_owner
+	if (istype(L) && !QDELETED(L))
+		return L.craft?.offset_mover
+	var/obj/structure/vehicleparts/axis/ship/A = deck_owner
+	if (istype(A) && !QDELETED(A))
+		return A.offset_mover
+	return null
+
+/datum/ship_construction/proc/deck_heading()
+	var/datum/hull_ledger/L = deck_owner
+	if (istype(L) && !QDELETED(L))
+		return L.craft?.body?.heading()
+	var/obj/structure/vehicleparts/axis/ship/A = deck_owner
+	if (istype(A) && !QDELETED(A))
+		return A.dir
+	return null
+
+/datum/ship_construction/proc/stationary(mob/living/human/H)
+	// Compare positions in the original plank's coordinate space. A whole
+	// tile crossing changes both world coordinates and wraps the offset.
+	if (QDELETED(support) || !isturf(support.loc) || !isturf(H?.loc) || H.z != support.z || !heading || deck_heading() != heading)
+		return FALSE
+	var/datum/vehicle_offset/M = mover()
+	if ((H.x - support.x) * world.icon_size + H.step_x - (M ? M.ox : 0) != relative_x)
+		return FALSE
+	return (H.y - support.y) * world.icon_size + H.step_y - (M ? M.oy : 0) == relative_y
+
+/datum/ship_construction/proc/target(mob/living/human/H)
+	if (!stationary(H))
+		return null
+	var/list/deck = vessel_building_deck_at(H)
+	if (!deck || deck[1] != support || deck[2] != deck_owner)
+		return null
+	return support.loc
+
+/datum/ship_construction/proc/align(atom/movable/fixture)
+	if (QDELETED(fixture) || fixture.loc != support.loc || fixture.craft_left_behind())
+		return
+	var/datum/vehicle_offset/M = mover()
+	if (!M || !(M.ox || M.oy || M.carried.len))
+		return
+	var/is_cover = istype(fixture, /obj/covers)
+	if (is_cover && !istype(M, /datum/vehicle_offset/hull))
+		return
+	// The result was placed square on the deck, not dropped into a world
+	// pixel. Enroll it now so both next-pulse settlement and stops agree.
+	M.carry_at(fixture, 0, 0, is_cover)
+	M.draw_one(fixture)
 
 // Religious works: the first entry whose title words match decides. Builders
 // without a religion, or whose religion type is listed, cannot make the work.

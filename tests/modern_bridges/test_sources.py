@@ -41,7 +41,7 @@ class ModernBridgeSourceTests(unittest.TestCase):
         stack = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text(encoding='utf-8')
         guard = stack.split('/datum/craft_guard/deep_water/refusal(', 1)[1].split('\n\n', 1)[0]
         self.assertIn('!istype(T, /turf/floor/beach/water/deep)', guard)
-        self.assertRegex(guard, r'(?m)^\tif \(bridge_deck_at\(T\) \|\| [^\n]+\)\n\t\treturn null$')
+        self.assertRegex(guard, r'(?m)^\tif \(bridge_deck_at\(T\)\)\n\t\treturn null$')
 
     def test_track_can_be_laid_on_a_deck(self):
         laying = (ROOT / 'code/modules/1713/track_laying.dm').read_text(encoding='utf-8')

@@ -47,7 +47,7 @@ def commit_contract(stack):
     # Select through the next absolute declaration, preserving the full body.
     body = re.split(r'\n/(?=\w)', stack.split('/obj/item/stack/proc/produce_recipe(',1)[1],maxsplit=1)[0]
     assert body.count('!carving.valid()') == 2, 'admission and completion guards'
-    assert body.index('!do_after(user, buildtime)') < body.rindex('!carving.valid()') < body.index('if (use(required,'), 'post-wait before payment'
+    assert body.index('!do_after(user, buildtime, ship_craft = ship_craft)') < body.rindex('!carving.valid()') < body.index('if (use(required,'), 'post-wait before payment'
     assert body.index('if (use(required,') < body.index('if ((joinery || carving) && H && recipe.time)') < body.index('O = new recipe.result_type'), 'paid XP and output'
     assert 'quantity != 1 || !carving.valid()' in body, 'single mold batch'
     assert '(joinery || carving) ? null : H' in body, 'exact paid material'

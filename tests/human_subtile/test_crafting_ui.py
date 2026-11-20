@@ -30,7 +30,14 @@ def restore_crafting_projection(path, source):
     # The original crafting reference stays fixed. Later independently reviewed
     # changes are recognized exactly, not erased by broad pattern substitution.
     if path == WAIT:
+        # A raw source file has both conditional signatures, while a projected
+        # one has only the selected signature. Preserve both historic contracts.
+        signature_tail = ', datum/ship_construction/ship_craft = null)'
+        if source.count(signature_tail) != source.count('/proc/do_after(mob/user, delay,'):
+            raise AssertionError('ship construction context must be optional in every wait signature')
+        source = source.replace(signature_tail, ')')
         edits = (
+            ('\t\t\tif (ship_craft)\n\t\t\t\tif (!ship_craft.stationary(user))\n\t\t\t\t\t. = FALSE\n\t\t\t\t\tbreak\n\t\t\telse if (user.loc', '\t\t\tif (user.loc'),
             ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
@@ -288,7 +295,7 @@ def verify_stack_contract(source):
     if required_flow(produce) != CONTRACTS['required_flow']:
         raise AssertionError('required value/reference ownership changed')
     admission = section(produce, '\tif (!can_use(required))\n',
-                        '\n\tif (recipe.one_per_turf')
+                        '\n\tif (!ship_craft && recipe.one_per_turf')
     if admission != CONTRACTS['stack_admission']:
         raise AssertionError('insufficient-material admission/refusal changed')
     once(produce, CONTRACTS['stack_debit_entry'])
@@ -495,7 +502,7 @@ class CraftingMovementContracts(unittest.TestCase):
     def test_source_derived_stationary_wait_cancels_both_offset_axes(self):
         source = read(WAIT)
         line = next(line.strip() for line in source.splitlines() if 'if (user.loc != original_loc ||' in line)
-        code = expression(line[4:-1])
+        code = expression(line.removeprefix('else ')[4:-1])
         anchor = object()
         original = dict(original_loc=anchor, original_step_x=6, original_step_y=8)
         for loc, sx, sy, cancels in ((anchor, 6, 8, False), (anchor, 8, 8, True),
@@ -503,7 +510,8 @@ class CraftingMovementContracts(unittest.TestCase):
                                      (anchor, 0, 8, True)):
             values = dict(original, user=SimpleNamespace(loc=loc, step_x=sx, step_y=sy))
             self.assertEqual(bool(eval(code, {'__builtins__': {}}, values)), cancels)
-        self.assertRegex(source, r'if \(!can_move\)\n\t\t\t//[^\n]*\n\t\t\t//[^\n]*\n\t\t\tif \(user.loc')
+        self.assertRegex(source, r'if \(!can_move\)\n\t\t\t//[^\n]*\n\t\t\t//[^\n]*\n\t\t\tif \(ship_craft\)')
+        self.assertIn('else if (user.loc != original_loc', source)
 
 
     def test_wait_signature_timing_context_claims_and_cleanup_unchanged(self):
@@ -518,7 +526,7 @@ class CraftingMovementContracts(unittest.TestCase):
             ('var/required = quantity*recipe.req_amount', 'var/required = recipe.req_amount'),
             ('buildtime = reference_build_time(H, "[recipe.result_type]", round(buildtime))', 'buildtime = 1'),
             ('buildtime /= H.getStatCoeff("strength")', 'buildtime *= H.getStatCoeff("strength")'),
-            ('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', 'if (do_after(user, buildtime))'),
+            ('if (!do_after(user, buildtime, ship_craft = ship_craft) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', 'if (do_after(user, buildtime, ship_craft = ship_craft))'),
             ('"[recipe.result_type]"))\n\t\t\tsecondary_refund(H)\n', '"[recipe.result_type]"))\n'),
             ('build \\the [recipe.title]!</span>")\n\t\tsecondary_refund(H)\n', 'build \\the [recipe.title]!</span>")\n'),
             ('if (required > 0)', 'if (required > 1)'),
@@ -546,7 +554,7 @@ class CraftingMovementContracts(unittest.TestCase):
         source = read(STACK)
         debit = '\tif (use(required, (joinery || carving) ? null : H))'
         admission = section(source, '\tif (!can_use(required))\n',
-                            '\n\tif (recipe.one_per_turf')
+                            '\n\tif (!ship_craft && recipe.one_per_turf')
         self.assertEqual(admission.count('\n\t\treturn'), 1)
         mutants = (
             ('zero required before debit', source.replace(debit, '\trequired = 0\n' + debit, 1)),

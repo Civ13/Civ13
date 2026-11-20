@@ -188,9 +188,9 @@ Proc for attack log creation, because really why not
 #define CIV13_GAMEPLAY_WAIT_GUARDS
 #endif
 #ifdef CIV13_GAMEPLAY_BRIDGE
-/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/gameplay_action_lease/gameplay_context = null)
+/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/gameplay_action_lease/gameplay_context = null, datum/ship_construction/ship_craft = null)
 #else
-/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null)
+/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/ship_construction/ship_craft = null)
 #endif
 	if (!user || !user.may_do_after)
 		return FALSE
@@ -258,7 +258,11 @@ Proc for attack log creation, because really why not
 		if (!can_move)
 			// A stationary action also stops on physical movement within its tile.
 			// Explicit can_move actions retain their existing contract.
-			if (user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y)
+			if (ship_craft)
+				if (!ship_craft.stationary(user))
+					. = FALSE
+					break
+			else if (user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y)
 				. = FALSE
 				break
 

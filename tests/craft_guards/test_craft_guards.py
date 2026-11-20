@@ -59,7 +59,7 @@ class CraftGuardTest(unittest.TestCase):
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):stack.index('/obj/item/stack/proc/crafting_stack_accessible(')]
         start = body.index('craft_guard_refusal(H, recipe, CRAFT_GUARD_START)')
         self.assertLess(start, body.index('if (!can_use(required))'))
-        self.assertLess(body.index('if (!do_after(user, buildtime)'), body.index('craft_guard_refusal(H, recipe, CRAFT_GUARD_FINISH)'))
+        self.assertLess(body.index('if (!do_after(user, buildtime, ship_craft = ship_craft)'), body.index('craft_guard_refusal(H, recipe, CRAFT_GUARD_FINISH)'))
         for old in ('civ_generation_can_build', 'exercise_can_build', 'civ_telecom_can_build',
                     'region_trail_build_refusal', 'car_workshop_build_refusal', 'waterwheel_build_refusal',
                     'offshore_rig_build_refusal', 'religion type doesn', 'Gorilla tribesman', 'beach/water/deep'):
@@ -70,10 +70,14 @@ class CraftGuardTest(unittest.TestCase):
     def test_deep_water_accepts_real_decks_and_preserves_map_exceptions(self):
         text = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
         start = text.index('/datum/craft_guard/deep_water/refusal(')
-        refusal, deck = text[start:].split('/proc/vessel_building_deck_at(turf/T)', 1)
-        deck = deck.split('// Religious works:', 1)[0]
+        refusal, deck = text[start:].split('/proc/vessel_building_deck_at(mob/living/human/H)', 1)
+        deck = deck.split('// Fixtures with their own final target', 1)[0]
         self.assertIn('!istype(T, /turf/floor/beach/water/deep) || map.ID == MAP_VOYAGE || map.ID == MAP_BATTLE_SHIPS', refusal)
-        self.assertIn('if (bridge_deck_at(T) || vessel_building_deck_at(T))', refusal)
+        self.assertIn('if (bridge_deck_at(T))\n\t\treturn null', refusal)
+        self.assertIn('var/list/deck = vessel_building_deck_at(H)', refusal)
+        self.assertIn('vehicle_offset_turf_under(H, rider.ox, rider.oy)', deck)
+        self.assertIn('vehicle_offset_turf_under(H, mover.ox, mover.oy) == T', deck)
+        self.assertIn('ispath(R.result_type, /obj/covers)', refusal)
         self.assertTrue(refusal.split("\n\n", 1)[0].strip().endswith("You can't build here!</span>\""))
         # The footprint alone still includes holes. Use the actual live,
         # non-wall plank filed on the tile, not any cover or nearby overlap.
@@ -90,19 +94,52 @@ class CraftGuardTest(unittest.TestCase):
         self.assertIn('get_dist(helm, T) <= 7', deck)
         self.assertIn('(F in A.components)', deck)
         self.assertNotIn('iscovered()', deck)
-        self.assertTrue(deck.strip().endswith('return FALSE'))
+        self.assertTrue(deck.strip().endswith('return null'))
 
     def test_timed_build_rechecks_footing_before_consumption_or_placement(self):
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
         body = stack.split('/obj/item/stack/proc/produce_recipe(', 1)[1]
         finish = body.index('var/late_refusal = craft_guard_refusal(H, recipe, CRAFT_GUARD_FINISH)')
-        self.assertLess(body.index('if (!do_after(user, buildtime)'), finish)
+        self.assertLess(body.index('if (!do_after(user, buildtime, ship_craft = ship_craft)'), finish)
         self.assertIn('secondary_refund(H)\n\t\t\treturn', body[finish:body.index('if (press_construction && !press_construction.valid())', finish)])
         self.assertLess(finish, body.index('if (use(required, (joinery || carving) ? null : H))'))
         self.assertLess(finish, body.index('O = new recipe.result_type(build_loc)'))
         # Cover the reported consumer, not just a synthetic instant recipe.
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
         self.assertRegex(recipes, r'(?m)^RECIPE: /material/iron/,lever pump,/obj/structure/cellar_pump/lever,6,[1-9]\d*,')
+
+    def test_ship_fixture_uses_retained_plank_and_draws_only_the_new_result(self):
+        guards = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
+        self.assertIn('deck[1] != support || deck[2] != deck_owner', guards)
+        self.assertIn('deck_heading() != heading', guards)
+        self.assertIn('QDELETED(support) || !isturf(support.loc)', guards)
+        self.assertIn('M.carry_at(fixture, 0, 0, is_cover)\n\tM.draw_one(fixture)', guards)
+        self.assertNotIn('M.carry(fixture)', guards)
+        self.assertIn('fixture.loc != support.loc || fixture.craft_left_behind()', guards)
+        stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+        debit = stack.index('if (use(required, (joinery || carving) ? null : H))')
+        self.assertLess(stack.index('build_loc = ship_craft.target(H)'), debit)
+        self.assertLess(debit, stack.index('ship_craft.align(O)'))
+        self.assertIn('floor.afloat = subfloor.afloat', stack)
+        wait = (ROOT / 'code/_helpers/mobs.dm').read_text()
+        self.assertIn('if (!ship_craft.stationary(user))', wait)
+        self.assertIn('else if (user.loc != original_loc', wait)
+        self.assertIn('if (user.get_active_hand() != holding)', wait)
+
+    def test_projection_wraps_both_signs_and_rejects_a_walk(self):
+        offsets = (ROOT / 'code/modules/craft/vehicle_offset.dm').read_text()
+        self.assertIn('A.x + round((A.step_x - ox + VEHICLE_OFFSET_HALF) / VEHICLE_OFFSET_TILE)', offsets)
+        self.assertIn('A.y + round((A.step_y - oy + VEHICLE_OFFSET_HALF) / VEHICLE_OFFSET_TILE)', offsets)
+        self.assertIn('var/turf/T = vehicle_offset_turf_under(A, ox, oy)', offsets)
+        # Project the exact centre formula using the engine's round-as-floor.
+        for tile, step, shared in ((15, 0, 0), (15, 15, 15), (16, -16, -16),
+                                   (15, -16, -16), (14, 15, 15)):
+            self.assertEqual(tile + (step - shared + 16) // 32, tile)
+        # Actor can be filed one tile ahead; its drawn centre is still on this
+        # specific offset deck tile, not the world tile it overlaps.
+        self.assertEqual(16 + (-18 - 13 + 16) // 32, 15)
+        self.assertNotEqual(16 + (-10 + 16) // 32, 16 + (-10 - 13 + 16) // 32)
+        self.assertNotEqual((16 - 15) * 32 - 17 - 13, (16 - 15) * 32 - 18 - 13)
 
     def test_religious_rules_match_the_old_chain(self):
         text = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
