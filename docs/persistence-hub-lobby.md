@@ -16,7 +16,7 @@ move the existing standby, doorman or relay ports. Current public links to
 A reachable game port and visible DM world do not prove Hub listing. A static
 lobby removes Gaia's standby rebind from the Hub registration path, but does
 not establish that the rebind caused the missing listing. Verify listing
-independently before moving public entry links.
+independently before the listener cutover.
 
 ## What already exists, and what does not
 
@@ -38,8 +38,10 @@ independently before moving public entry links.
   requests mean.
 - The [region relay](../code/modules/persistence/region_relay.dm) and
   [transfer storage](../tools/transfer_storage/README.md) already handle
-  gameplay admission and authoritative character homes. The lobby must not
-  write to that ledger or claim that a character is new on lookup failure.
+  gameplay admission and authoritative character homes. The playable gate's
+  login calls `/account` with `op=claim`; [the account agent](../tools/transfer_storage/region.py)
+  can enqueue a claim to establish a home. This is an admission operation,
+  not a read-only lookup, and must not be called by the lobby.
 
 ## Proposed implementation
 
@@ -50,17 +52,26 @@ independently before moving public entry links.
    restart backoff and logs (no credentials or raw player identity in public
    diagnostics). A game update or failure must not stop the lobby.
 2. **Read-only routing decision.** From the authenticated BYOND session,
-   look up the character's home in the existing authority. Use the
-   configured start region only when the lookup explicitly says no home.
-   Wake the chosen region through the existing coordinator/host interface
-   and wait for readiness, not just an open socket. Use the configured
+   ask the existing authority through a genuinely read-only operation.
+   Distinguish a verified home from authoritative no-home and from
+   pending, travelling, or unavailable state. Use the configured start
+   region only for authoritative no-home; a missing, stale, or failed
+   answer is not permission to redirect a player as new. No lobby lookup
+   may enqueue a claim, establish custody, change a home or admit a
+   character. Wake the chosen region through the existing coordinator/host
+   interface and wait for readiness, not just an open socket. Use the configured
    relay or other existing verified handoff for that region; never accept a
    host, port, or character key as client-supplied routing authority. The
    destination still makes the admission decision. On timeout, dormancy
    without enough memory, or missing authority, keep the player in the
    lobby with a specific retry message; never redirect back to the lobby
    or create a replacement character. Rate-limit retries and coalesce
-   wakes for the same destination.
+   wakes for the same destination. A sent BYOND link is not proof of
+   arrival. The [relay](../scripts/gaia-host/relay.py) expires an unused route
+   after 60 seconds; if a handoff is declined, delayed, or fails, keep a
+   visible way back to the lobby and let an explicit retry recheck ownership,
+   readiness, and route expiry. Never guess a different destination or
+   assume that a previous relay route is still valid.
 3. **Separate entry from status.** Keep the website redirect, launcher
    Play destination and Discord Play link on 1714. Add a distinct
    launcher entry target type or field so a lobby reply proves only that
@@ -68,7 +79,17 @@ independently before moving public entry links.
    resolve a real gameplay region through the approved discovery/host
    configuration, not be pointed at the lobby. Do not advertise a backend
    address to the public launcher if the region is behind the relay.
-4. **Preserve doorman and launcher behavior.** Keep the doorman on 1713
+4. **Remove direct-gate assumptions before cutover.** Moving Gaia's port
+   does not change `send_player()`: today it links directly to the
+   configured gameplay gate even with the relay enabled. If Gaia's
+   backend becomes private, ensure external arrivals for Gaia use the
+   relay just like other private regions. Use a separate public lobby
+   address for the [reboot rejoin notice](../code/world.dm), the relay's
+   fallback reconnect text, and [tutorial return](../code/modules/1713/tutorial_region.dm).
+   Regions panel links, admin sends that reuse the travel helper, and
+   other callers must not hand a private gameplay address to an external
+   player. Keep intentional local operator access distinct.
+5. **Preserve doorman and launcher behavior.** Keep the doorman on 1713
    with its current query framing, schemas and rate/wake policy. Teach
    the updated launcher to separate the stable lobby entry from its
    gameplay status/wake target; keep fresh DNS and endpoint validation.
@@ -83,6 +104,46 @@ independently before moving public entry links.
    preserved with correct status, require the launcher upgrade before
    cutover. Do not send privileged requests through the public lobby.
 
+## Reserved services and internal gameplay ports
+
+The host configuration owns a single port inventory. Public service
+reservations are **1713** (launcher doorman), **1714** (Hub lobby and player
+entry), and the existing configured public relay transport port (only if
+enabled and verified; no new number is assumed). Keep the coordinator,
+relay control, transfer agents, standby/maintenance listeners and other
+shared-service ports in a separate private reservation set. Preserve
+existing access policy: a reservation allocates ownership, not a public
+bind, firewall exception, or router forward. Gameplay listeners are
+reachable only through approved internal interfaces and the public relay.
+Do not redirect a public client to a private daemon address.
+
+The [existing group allocator](../scripts/shard-group/shard_group.py)
+fills omitted ports once in the group config; it does not issue runtime
+leases. Keep that behavior for existing static deployments. In opt-in
+lobby mode, route by stable region ID, not an endpoint supplied by a
+client or inferred from a port number. The host supervisor should lease a
+port from a configured private pool when a dynamic world wakes, excluding
+public and private reservations, explicit static allocations, other
+leases and actual listeners. Verify the daemon actually owns the expected
+listener before marking the generation ready. If a bind races another
+process, fail closed and retry allocation within a bounded budget, not by
+stealing the listener. Do not auto-renumber running or statically
+configured worlds; add dynamic regions incrementally.
+
+Publish a generation-bound endpoint only after game status and admission
+readiness are checked. The pool lease belongs to the region/process
+generation and stays held during warm idle or handover; preserve existing
+authorized maintenance semantics and never pool the same port against
+two saves or writers. Relay registration must follow endpoint ownership:
+a generation change revokes old routes/registers the ready replacement
+before reuse, even when the new owner gets the same number. An old
+in-flight or sticky route must never land at a different owner after port
+reuse. Free the port only after the old listener and its relay references
+are gone, or keep it quarantined until then. A registry error, stale lease,
+or unknown port owner produces retry/refusal, not a public direct link
+or a guessed port. Preserve explicit static leases and the old registry
+and relay settings as part of rollback.
+
 ## Staging and cutover
 
 1. **Inventory, read-only.** Identify the actual listeners, service owners
@@ -92,19 +153,27 @@ independently before moving public entry links.
    group's plan without applying it. Record existing join/status baselines
    and snapshot the relevant group, generated region and bot configuration.
    Refuse a port collision, a busy handover, unhealthy saves, an unsafe
-   network assumption, or an unknown listener owner.
+   network assumption, a missing relay for a private backend, or an unknown
+   listener owner.
 2. **Validate on a spare, isolated port.** Use fake/sandbox home, wake and
-   relay services. Demonstrate returning character, new character, missing
-   home authority, sleeping region, readiness timeout, low memory,
-   failed relay, and restart-during-handoff. Confirm neither reroute nor
-   gameplay restart changes character ownership. Verify concurrent users
+   relay services. Demonstrate returning character, confirmed no-home,
+   pending and travelling accounts, missing home authority, a sleeping
+   region, readiness timeout, low memory, failed relay, and restart
+   during handoff. Verify a declined or expired handoff never has
+   side effects on character ownership, and an explicit retry gets a
+   fresh route without guessing a destination. Check external joins to
+   private-backend Gaia, the Regions panel, manual reboot rejoin links,
+   automatic relay reconnect, and tutorial return. Verify concurrent users
    from one public IP do not silently complete the wrong transfer; the
    existing per-address relay's limitations are documented above. Exercise
    launcher browse, Wake & Join and handoff with the supported release(s),
    including status provenance, approved endpoints, low-memory refusal
    and deadlines; if an alias exists also test its framing, strict scope,
-   rate limits and refusal paths. Confirm no privileged request reaches
-   the private service.
+   rate limits and refusal paths. Verify allocator exclusion of reserved,
+   static and occupied ports, concurrent starts, bind races, standby lease
+   retention, stale route rejection after port reuse, and pool exhaustion.
+   Confirm neither public clients nor public status responses can reach or
+   advertise a private gameplay/control endpoint directly.
 3. **Verify real Hub registration separately.** An authorized staging host
    and an approved non-production Hub entry are prerequisites; do not list
    a staging world under Space Station 13. Confirm the lobby appears and
@@ -117,7 +186,7 @@ independently before moving public entry links.
    compatibility pass, announce the maintenance window, drain transfers,
    save Gaia, verify that save completed, take the standard backup, and
    stop the old listener. Update the shard group's Gaia port and its
-   generated host/region, relay and bot/status routing through the
+   generated host/region, relay registry and bot/status routing through the
    supported workflow; do not change the region ID, save directory or
    character-home records. Verify the old gameplay process is stopped
    before opening the same save on the new backend port. Start Gaia on
@@ -138,7 +207,8 @@ If listing, handoff, launcher compatibility or operational health regresses,
 pause new handoffs and stop only the lobby first to free 1714. If Gaia's
 backend world has begun accepting players, quiesce it, drain transfers and
 verify a fresh save before stopping it. Restore the exact prior Gaia game
-port, generated routing and bot/status configuration, and start the same
+port, generated routing, lobby/allocator and bot/status configuration.
+Invalidate the withdrawn backend generation's routes and start the same
 authoritative Gaia save on 1714. Never run two gameplay writers against
 one save or restore an old copy over successful new play. If the current
 save cannot be verified or the listener owner is unknown, stop the cutover
