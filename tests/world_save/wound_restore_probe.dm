@@ -35,7 +35,8 @@
 	W.germ_level = 19
 	W.created = 717
 	W.amount = 2
-	W.damage = expected_damage * 0.4
+	// Exercise the first, intermediate and final stages across encodings.
+	W.damage = expected_damage * (encoding == "roundtrip" ? 3 : (encoding == "typed" ? 2 : 0.4))
 	W.init_stage(W.damage)
 	W.bleed_timer = 29
 	var/snapshot = wound_restore_snapshot(W)
@@ -79,7 +80,7 @@
 	map_storage.clear_bookkeeping()
 	F = new(path)
 	var/datum/wound/lost_limb/R = map_storage.Load_Entry(F, ref)
-	durable_world_check(R && R != W && wound_restore_snapshot(R) == snapshot, "saved wound state changed")
+	durable_world_check(R && R != W && W.current_stage == (encoding == "roundtrip" ? 1 : (encoding == "typed" ? 2 : W.stages.len)) && wound_restore_snapshot(R) == snapshot, "saved wound state changed")
 	if(encoding == "roundtrip")
 		durable_world_check(caches_omitted, "wound helper caches were exported")
 	durable_world_check(R.persistence_runtime_var("desc_list") && R.persistence_runtime_var("damage_list"), "wound helper caches are not runtime fields")
