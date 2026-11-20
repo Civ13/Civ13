@@ -27,12 +27,35 @@
 	target = null
 	return null
 
-/obj/structure/multiz/ladder/up/hole_ladder/proc/hole_above()
-	var/level = multiz_level_above(z)
-	var/turf/T = level ? locate(x, y, level) : null
-	if (!T)
+// A dug opening is an object over an otherwise solid-looking upper turf.
+// Resolve the reciprocal column, not a client-selected upper atom.
+/proc/dug_pit_above_ladder_site(turf/lower)
+	if (!lower)
 		return null
-	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = locate() in T
+	var/level = multiz_level_above(lower.z)
+	var/turf/upper = level ? locate(lower.x, lower.y, level) : null
+	if (!upper || multiz_level_below(upper.z) != lower.z)
+		return null
+	return locate(/obj/structure/multiz/ladder/ww2/tunneltop/pit) in upper
+
+/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/dug_open_to_below(turf/lower)
+	var/turf/upper = loc
+	if (QDELETED(src) || !isturf(upper) || dug_pit_above_ladder_site(lower) != src || leaf_covered || upper.density || trapdoor_shut_at(upper))
+		return FALSE
+	if (locate(/obj/roof) in lower)
+		return FALSE
+	for (var/atom/movable/A in upper)
+		if (A != src && !QDELETED(A) && !isliving(A) && (A.density || istype(A, /obj/covers)))
+			return FALSE
+	return TRUE
+
+/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/below_ladder_worksite(mob/user, turf/lower)
+	if (!user || !lower || !isturf(user.loc) || user.z != lower.z || !lower.Adjacent(user) || persistence_active_operation || persistence_load_recovery_required || !dug_open_to_below(lower))
+		return FALSE
+	return !istype(get_area(src), /area/caribbean/no_mans_land) && !istype(get_area(lower), /area/caribbean/no_mans_land)
+
+/obj/structure/multiz/ladder/up/hole_ladder/proc/hole_above()
+	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = dug_pit_above_ladder_site(get_turf(src))
 	return P && P.has_ladder ? P : null
 
 /obj/structure/multiz/ladder/up/hole_ladder/attack_hand(mob/user)
@@ -43,6 +66,9 @@
 	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = hole_above()
 	if (!P)
 		to_chat(user, SPAN_WARNING("The ladder no longer leads anywhere."))
+		return
+	if (user.a_intent == I_GRAB && !user.get_active_hand())
+		P.remove_ladder(user, src)
 		return
 	to_chat(user, SPAN_NOTICE("You start climbing up \the [src]."))
 	if (!do_after(user, 10, src) || QDELETED(src) || QDELETED(P) || !P.has_ladder || !Adjacent(user) || user.stat || user.restrained() || user.buckled)
@@ -57,6 +83,10 @@
 	if (trench_climb_place(user, T))
 		playsound(T, 'sound/effects/ladder.ogg', 50, TRUE, -1)
 		to_chat(user, SPAN_NOTICE("You climb out of the hole."))
+
+/obj/structure/multiz/ladder/up/hole_ladder/examine(mob/user, distance = -1)
+	..()
+	to_chat(user, SPAN_NOTICE("Click to climb up, or use Grab with an empty hand to take down the ladder."))
 
 /obj/structure/multiz/ladder/up/hole_ladder/attackby(obj/item/I, mob/user)
 	if (trapdoor_from_below(get_turf(src), user, I))
@@ -103,23 +133,27 @@
 	else
 		to_chat(user, SPAN_NOTICE("A wooden ladder would let people climb in and out safely."))
 
-/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user)
+/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user, turf/from_below = null)
 	if (has_ladder || leaf_covered)
 		to_chat(user, SPAN_WARNING(has_ladder ? "There already is a ladder in this hole." : "Brush the leaves aside first."))
 		return
-	if (!Adjacent(user) || user.stat || user.restrained() || user.get_active_hand() != ladder || persistence_save_in_progress)
+	if (from_below && !below_ladder_worksite(user, from_below))
+		to_chat(user, SPAN_WARNING("You can't reach the open shaft from here."))
+		return
+	if ((!from_below && !Adjacent(user)) || user.stat || user.restrained() || user.get_active_hand() != ladder || persistence_save_in_progress)
 		return
 	var/turf/T = landing()
-	if (!T || (locate(/obj/structure/multiz) in T))
+	if (!T || (from_below && T != from_below) || (locate(/obj/structure/multiz) in T))
 		to_chat(user, SPAN_WARNING("There is no clear floor at the bottom of this hole to stand the ladder on."))
 		return
-	to_chat(user, SPAN_NOTICE("You start lowering \the [ladder] into the hole."))
-	if (!do_after(user, 30, src))
+	to_chat(user, SPAN_NOTICE("[from_below ? "You start standing" : "You start lowering"] \the [ladder] into the hole."))
+	var/atom/worksite = from_below ? from_below : src
+	if (!do_after(user, 30, worksite))
 		return
-	if (QDELETED(src) || QDELETED(ladder) || has_ladder || leaf_covered || !Adjacent(user) || user.stat || user.restrained() || user.get_active_hand() != ladder || persistence_save_in_progress)
+	if (QDELETED(src) || QDELETED(ladder) || has_ladder || leaf_covered || (from_below ? !below_ladder_worksite(user, from_below) : !Adjacent(user)) || user.stat || user.restrained() || user.get_active_hand() != ladder || persistence_save_in_progress)
 		return
 	T = landing()
-	if (!T || (locate(/obj/structure/multiz) in T))
+	if (!T || (from_below && T != from_below) || (locate(/obj/structure/multiz) in T))
 		return
 	qdel(ladder)
 	new /obj/structure/multiz/ladder/up/hole_ladder(T)
@@ -127,16 +161,22 @@
 	update_icon()
 	to_chat(user, SPAN_NOTICE("You fit the ladder. People can now climb in and out without falling."))
 
-/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/remove_ladder(mob/user)
-	if (!has_ladder || !Adjacent(user) || user.stat || user.restrained() || persistence_save_in_progress)
+/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/remove_ladder(mob/user, obj/structure/multiz/ladder/up/hole_ladder/from_below = null)
+	if (!has_ladder || user.stat || user.restrained() || persistence_save_in_progress)
+		return
+	var/turf/lower = from_below ? get_turf(from_below) : null
+	if (from_below ? (!below_ladder_worksite(user, lower) || lower_ladder() != from_below || user.get_active_hand()) : !Adjacent(user))
 		return
 	to_chat(user, SPAN_NOTICE("You start pulling the ladder out of the hole."))
-	if (!do_after(user, 30, src) || QDELETED(src) || !has_ladder || !Adjacent(user) || user.stat || user.restrained() || persistence_save_in_progress)
+	var/atom/worksite = from_below ? from_below : src
+	if (!do_after(user, 30, worksite) || QDELETED(src) || !has_ladder || user.stat || user.restrained() || persistence_save_in_progress)
+		return
+	if (worksite != src ? (QDELETED(from_below) || !below_ladder_worksite(user, lower) || lower_ladder() != from_below || user.get_active_hand()) : !Adjacent(user))
 		return
 	var/obj/structure/multiz/ladder/up/hole_ladder/L = lower_ladder()
+	has_ladder = FALSE
 	if (L)
 		qdel(L)
-	has_ladder = FALSE
 	update_icon()
 	var/obj/item/weapon/hole_ladder/item = new(get_turf(user))
 	user.put_in_hands(item)

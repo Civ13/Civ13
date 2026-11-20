@@ -45,7 +45,7 @@ var/list/pit_probe_log = list()
 		for (var/ty in 1 to 10)
 			new /turf/floor/grass(locate(tx, ty, 2))
 	new /turf/floor/dirt(locate(5, 5, 1))
-	new /obj/structure/multiz/ladder/ww2/tunneltop/pit(locate(5, 5, 2))
+	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = new(locate(5, 5, 2))
 	var/mob/living/human/pit_climbing_native/H = new(locate(5, 5, 1))
 	H.canmove = TRUE
 	H.stat = CONSCIOUS
@@ -69,6 +69,37 @@ var/list/pit_probe_log = list()
 	pit_probe_check(!ledge_under_shaft(H) && !ledge_climb_destination(H, WEST, why) && findtext(why[1], "solid ceiling"), "solid_ceiling_reason")
 	H.loc = locate(5, 5, 1)
 	pit_probe_check(ledge_under_shaft(H), "under_shaft")
+	// The upper turf is grass, not an open-air turf; the actual pit is the aperture.
+	var/turf/lower = locate(5, 5, 1)
+	var/turf/upper = locate(5, 5, 2)
+	pit_probe_check(!building_open_turf(upper) && H.look_up_target() == upper, "look_through_actual_pit")
+	pit_probe_check(!dug_pit_above_ladder_site(locate(5, 4, 1)), "no_neighboring_pit_proxy")
+	var/obj/item/weapon/hole_ladder/item = new(H)
+	H.hand = 0
+	H.r_hand = item
+	P.leaf_covered = TRUE
+	pit_probe_check(!H.look_up_target() && item.try_stand_ladder(lower, H) && !QDELETED(item) && !P.has_ladder, "leaves_block_below_work")
+	P.leaf_covered = FALSE
+	var/obj/structure/pit_probe_block/cap = new(upper)
+	pit_probe_check(!H.look_up_target() && item.try_stand_ladder(lower, H) && !QDELETED(item) && !P.has_ladder, "obstruction_blocks_below_work")
+	qdel(cap)
+	var/obj/structure/simple_door/key_door/anyone/trapdoor/TD = new(upper)
+	pit_probe_check(!TD.state && !H.look_up_target() && item.try_stand_ladder(lower, H) && !QDELETED(item) && !P.has_ladder, "closed_trapdoor_blocks_below_work")
+	qdel(TD)
+	persistence_save_in_progress = TRUE
+	pit_probe_check(item.try_stand_ladder(lower, H) && !QDELETED(item) && !P.has_ladder, "save_blocks_below_fit")
+	persistence_save_in_progress = FALSE
+	pit_probe_check(item.try_stand_ladder(lower, H) && QDELETED(item) && P.has_ladder, "fit_from_lower_turf")
+	H.r_hand = null
+	var/obj/structure/multiz/ladder/up/hole_ladder/L = P.lower_ladder()
+	pit_probe_check(L && L.hole_above() == P, "linked_pair_matches_opening")
+	H.a_intent = I_GRAB
+	L.attack_hand(H)
+	var/obj/item/weapon/hole_ladder/returned = H.get_active_hand()
+	pit_probe_check(QDELETED(L) && !P.has_ladder && istype(returned) && H.loc == lower, "grab_from_below_refunds_once_without_climbing")
+	H.r_hand = null
+	qdel(returned)
+	H.a_intent = I_HELP
 	// Hands: one free hand is enough, none refuses with a reason.
 	H.r_hand = new /obj/item/stack/rods(H)
 	pit_probe_check(ledge_climb_destination(H, NORTH), "one_free_hand")
