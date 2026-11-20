@@ -472,10 +472,11 @@ SUITES = {
         'paths': ('tests/lava_animal_remains/',), 'shared_paths': (
             'code/modules/1713/natural_disasters.dm',)},
     # Weather system icons are the existing sheet tiled by tools/weather/make_chunks.py.
-    'weather_systems': {'files': ('tests/weather_systems/test_icons.py',),
+    'weather_systems': {'files': ('tests/weather_systems/test_icons.py', 'tests/weather_systems/test_strength_offsets.py'),
         'paths': ('tests/weather_systems/', 'tools/weather/'),
         'shared_paths': ('icons/effects/weather.dmi', 'icons/effects/weather_chunks.dmi',
-                         'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
+                         'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm',
+                         'code/modules/1713/weather_systems.dm', 'tests/save_movement/source_adapter.py')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py', 'scripts/map_coast.py', 'maps/nomads/', 'maps/heights/'),
         'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm', 'code/modules/1713/flood_hollows.dm',
