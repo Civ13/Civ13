@@ -111,10 +111,12 @@ Coke burns in kilns, factory furnaces and bloomeries as well.
 
 Code: `code/modules/1713/alloy_steels.dm`.
 
-From the Early Modern age (ordinal 5), every mined wall also rolls for
-**nickel ore** (3%, 8-16 lumps) and **cobalt ore** (1.5%, 4-8), and from the
-World War age (6) **chromite** (3%, 8-16), independent of the other ores
-(`mining_alloy_ores()`, scaled by `continent_ore_factor`).
+From 1873 (ordinal 4), when Open Hearth Steel can first be researched,
+every mined wall also rolls for **nickel ore** (3%, 8-16 lumps). That is a
+world-era rule; the miner does not need Open Hearth Steel knowledge.
+**Cobalt ore** (1.5%, 4-8) still starts in 1903 (5), and **chromite**
+(3%, 8-16) in 1943 (6). The rolls are independent of other ores and scaled
+by `continent_ore_factor` (`mining_alloy_ores()`).
 
 Works take alloy ore as an addition beside their charge (`addition_key()`),
 up to 20 lumps; Empty and automation handle additions too. Leftover
