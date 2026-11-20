@@ -2,7 +2,9 @@
 
 Source-flow evidence only: no BYOND, disk save, client or world is launched.
 """
+import html
 import importlib.util
+import json
 from pathlib import Path
 import re
 from types import MethodType, SimpleNamespace as NS
@@ -860,7 +862,7 @@ class BedDestructionNoticeTests(unittest.TestCase):
         self.assertIn('if (do_after(user, 25, src) && !QDELETED(src))', hammer)
         self.assertLess(hammer.index('!B.remove_padding()'), hammer.index('B.persistence_bed_notice_recipient(user)'))
         self.assertIn('\t\t\tqdel(src)\n\t\t\tif (bed_notice_owner && QDELETED(src))\n'
-                      '\t\t\t\tpersistence_queue_bed_notice(bed_notice_owner)', hammer)
+                      '\t\t\t\tpersistence_queue_bed_notice(bed_notice_owner, user.real_name)', hammer)
         bed = adapter.read('code/game/objects/structures/stool_bed_chair_nest/bed.dm')
         self.assertNotIn('persistence_queue_bed_notice', bed)
 
@@ -879,31 +881,56 @@ class BedDestructionNoticeTests(unittest.TestCase):
         self.assertIn('data/persistence-bed-notices/bed-[owner].pending', path)
 
     def test_unread_notice_coalesces_and_is_consumed_only_by_owner(self):
-        files, messages = set(), []
-        def store(_data, path):
-            files.add(path)
+        files, messages = {}, []
+        clock = NS(realtime=1)
+        def store(data, path):
+            files[path] = data
             return True
         def remove(path):
-            files.remove(path)
+            del files[path]
             return True
+        def time2text(realtime, fmt, offset):
+            self.assertEqual((fmt, offset), ('YYYY-MM-DD hh:00', 0))
+            return {1: '2026-11-20 19:00', 2: '2026-11-20 21:00'}[realtime]
+        class DmList(dict):
+            def __getitem__(self, key):
+                return self.get(key)
+
+        def decode(text):
+            value = json.loads(text)
+            if isinstance(value, dict):
+                return DmList(value)
+            return DmList(enumerate(value, start=1)) if isinstance(value, list) else value
+
         env = dict(persistence_bed_return_enabled=lambda: True, IsGuestKey=lambda key: key.lower().startswith('guest'),
                    persistence_bed_notice_path=lambda owner: 'bed-' + owner, fexists=files.__contains__,
-                   text2file=store, fdel=remove, SPAN_WARNING=lambda message: message,
+                   text2file=store, fdel=remove, file2text=files.get, SPAN_WARNING=lambda message: message,
                    to_chat=lambda recipient, message: messages.append((recipient.ckey, message)),
-                   log_world=self.fail)
-        queue = adapter.project(SOURCE, '/proc/persistence_queue_bed_notice', 'owner', env)
+                   log_world=self.fail, world=clock, time2text=time2text, list=DmList,
+                   json_encode=json.dumps, json_decode=decode, islist=lambda value: isinstance(value, DmList),
+                   length=len, istext=lambda value: isinstance(value, str), html_encode=html.escape)
+        queue = adapter.project(SOURCE, '/proc/persistence_queue_bed_notice', 'owner, actor_name', env)
+        env['persistence_bed_notice_message'] = adapter.project(
+            SOURCE, '/proc/persistence_bed_notice_message', 'record', env)
         notice_source = SOURCE.split('\n#define PERSISTENCE_RETURN_SEARCH_RANGE', 1)[0]
         deliver = adapter.project(notice_source, '/proc/persistence_deliver_bed_notice', 'recipient', env)
-        queue('owner')
-        queue('owner')
+        queue('owner', '<First Character>')
+        clock.realtime = 2
+        queue('owner', 'Different Character')
         deliver(NS(key='Another', ckey='another', account_key='owner'))
         deliver(NS(key='Guest-1', ckey='owner'))
-        self.assertEqual(files, {'bed-owner'})
+        self.assertEqual(json.loads(files['bed-owner']), {'hour_utc': '2026-11-20 19:00', 'actor_name': '<First Character>'})
         self.assertEqual(messages, [])
         deliver(NS(key='Owner', ckey='owner'))
         deliver(NS(key='Owner', ckey='owner'))
-        self.assertEqual(files, set())
-        self.assertEqual(messages, [('owner', 'Another player destroyed your assigned bed in this region.')])
+        self.assertEqual(files, {})
+        self.assertEqual(messages, [('owner', '&lt;First Character&gt; destroyed your assigned bed in '
+                                     'this region during the hour starting 2026-11-20 19:00 UTC.')])
+        for contents in ('1', '[', '["Unrelated Time", "Unrelated Name"]', '{"unknown": true, "another": false}'):
+            files['bed-owner'] = contents
+            deliver(NS(key='Owner', ckey='owner'))
+            self.assertNotIn('bed-owner', files)
+            self.assertEqual(messages[-1], ('owner', 'Another player destroyed your assigned bed in this region.'))
 
     def test_chat_ready_is_common_to_lobby_and_reclaimed_connections(self):
         chat = adapter.read('code/modules/chat/chat.dm').split('\n#define MAX_CHAT_QUEUE', 1)[0]

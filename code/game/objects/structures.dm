@@ -70,7 +70,7 @@
 				b.loc = (get_turf(src))
 			qdel(src)
 			if (bed_notice_owner && QDELETED(src))
-				persistence_queue_bed_notice(bed_notice_owner)
+				persistence_queue_bed_notice(bed_notice_owner, user.real_name)
 			return
 
 // Called after a wrench fastens or unfastens the structure.

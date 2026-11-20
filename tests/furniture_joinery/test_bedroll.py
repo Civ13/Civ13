@@ -175,15 +175,15 @@ class BedrollContracts(unittest.TestCase):
         for commits in (True, False):
             f=Bedding()
             notices=[]
-            f.env['persistence_queue_bed_notice']=notices.append
+            f.env['persistence_queue_bed_notice']=lambda *notice:notices.append(notice)
             if not commits:
                 f.env['qdel']=lambda obj:None
             bed=NS(type='/obj/structure/bed',loc='floor',contents=[],deleted=False,
                    padding_material=None,not_disassemblable=False,
                    persistence_bed_notice_recipient=lambda user:'owner')
             hammer=NS(type='/obj/item/weapon/hammer')
-            procedure('',f.env,hammer=True)(bed,None,hammer)
-            self.assertEqual(notices,['owner'] if commits else [])
+            procedure('',f.env,hammer=True)(bed,NS(real_name='Character Name'),hammer)
+            self.assertEqual(notices,[('owner','Character Name')] if commits else [])
 
     def test_atlas_and_help_name_the_paid_cloth_alternative(self):
         data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
