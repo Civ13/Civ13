@@ -874,6 +874,10 @@ SUITES = {
         'paths': ('tests/human_bed_healing/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
+    # Wildlife plant classification against a frozen pre-change predicate.
+    'wild_browse': {'files': ('tests/wild_browse/test_browse.py',),
+        'paths': ('tests/wild_browse/',), 'shared_paths': (
+            'code/modules/ecology/wild_feeding.dm', 'tests/save_movement/source_adapter.py')},
     # Narrow-cone direction equivalence against fake engine geometry.
     'vision_cone_direction': {'files': ('tests/vision_cone_direction/test_direction.py',),
         'paths': ('tests/vision_cone_direction/',), 'shared_paths': (
