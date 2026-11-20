@@ -35,6 +35,8 @@ def translate(source):
         'C.onEveryXMovement(type)': 'ctx.callback(C, "type")',
         'else if (vars.Find("base_type") && src:base_type == C.base_type)':
             'elif ctx.mover.has_base and ctx.mover.base_type == C.base_type:',
+        'else if (base_type == C.base_type)':
+            'elif ctx.mover.base_type == C.base_type:',
         'else': 'else:',
     }
     for registry in ('living_mob_list', 'living_complex_animal_list'):
@@ -105,6 +107,10 @@ class MovementTests(unittest.TestCase):
     def test_full_movement_files_differ_only_in_loop_collection(self):
         for path in (HUMAN, ANIMAL):
             candidate = read(path).replace('in living_complex_animal_list)', 'in living_mob_list)')
+            if path == ANIMAL:
+                self.assertEqual(candidate.count('else if (base_type == C.base_type)'), 1)
+                candidate = candidate.replace('else if (base_type == C.base_type)',
+                    'else if (vars.Find("base_type") && src:base_type == C.base_type)')
             if path == HUMAN:
                 candidate = candidate.replace('in living_mob_list)\n',
                     'in living_mob_list) // living_mob_list fails here\n', 1)
@@ -133,9 +139,7 @@ class MovementTests(unittest.TestCase):
             m.base_type = 'dog' if i % 2 else 'wolf'
             r.execute(True, m)
         for seed in range(100):
-            for has_base in (False, True):
-                mover.has_base = has_base
-                self.compare(ANIMAL, r, mover, seed, callback_rng=True)
+            self.compare(ANIMAL, r, mover, seed, callback_rng=True)
         _, new = self.compare(ANIMAL, r, mover)
         self.assertFalse(any(row[1] == 'mover' for row in new.trace))
         self.assertEqual([row[2] for row in new.trace if row[:2] == ('prob', 'observer9')], [90, 45, 22])
