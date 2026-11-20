@@ -1,72 +1,100 @@
 # Threshold Chime: player-flow prototype
 
-**Design draft only.** The [local HTML prototype](threshold-chime.html) uses
-synthetic fixtures. Save the file and open it directly in a browser. It needs
-no server, account, external assets, network requests, or game connection. The
-patron controls simulate a separate authorized person rather than grant real
-authority. This is not an in-game screenshot or a BYOND test.
+**Design draft only.** Save the [standalone HTML](threshold-chime.html) and open
+it in a browser. All characters, locations, object identities and simulated
+authorities are fictional. The repository shown is an example, not a proposed
+item, construction recipe, or claim about an existing BYOND type. The prototype
+does not contact a game server, create items, or grant real authority.
 
 ## Player flow
 
-1. Open Beseech after the follower has learned the prayer. Choose one eligible
-   door and one ordinary bell, then inspect: **When: the door finishes opening.**
-   **Then: ring the nearby bell.** Church bells are not selectable.
-2. Submit one request. The follower holds position; cancelling or editing
-   retires the pending request. Nothing is spent while the request is pending.
-3. A separate eligible patron sees the exact endpoints and effect, and can
-   grant or refuse. Timeout, refusal, caller/session change, withdrawal, or
-   endpoint change invalidates the request. Only a successful grant spends the
-   normal invocation slot and one pouch item.
-4. The active local binding survives normal open/close cycles for this world
-   session only. A door that actually finishes opening emits one pulse. A
-   locked/rattling door, the close transition, and a restored open door emit
-   none. If the bell is cooling down, drop the pulse rather than retrying it.
-   The bell makes its ordinary local sound and identifies no opener.
+1. Open Beseech after learning the prayer. First select a player-visible
+   **existing in-world repository available to your province**. The spell will
+   not provide or create a repository. Then select one eligible existing door
+   and one ordinary local bell. Every candidate must be within the caster's
+   permitted scope. A missing or ineligible repository blocks the request.
+2. Review the exact trio: **Through:** the repository. **When:** the selected
+   door finishes opening. **Then:** ring the selected bell. Church bells are
+   excluded. Submit one immutable request; cancelling or editing retires it.
+3. A separate authorized patron sees and approves or refuses that exact trio.
+   They cannot substitute targets. Refusal, cancellation, expiry, lost access
+   or a changed target costs nothing. A valid grant spends one available
+   invocation slot and consumes one item **already in the caster's pouch**.
+   It creates no inventory, endpoints, item copies or other physical objects.
+   Magic modifies only objects already in the world.
+4. The ordinary door still needs its normal access to open. One committed
+   opening sends one local pulse. Denied openings, closing, and loading an open
+   door send none. The ordinary bell shares its manual cooldown and identifies
+   no opener; a pulse during cooldown is dropped, not queued for later.
+5. The applied binding survives routine saves and restarts. A missing,
+   moved, replaced or revoked repository, door or bell suspends the link. It
+   cannot ring while invalid, and nothing automatically binds a substitute.
+   It ends only when the original casting mage, another eligible mage who
+   discovered **this exact link in-game**, or its patron God removes it, or
+   when the world is genuinely reset. Removal ends only the enchantment; the
+   world objects remain.
 
-The browser demo controls simulate caller-side approval rejection, endpoint
-movement before and after grant, expiry, locking, cooldown, and restart. No
-public announcement, player discovery, crafting unlock, map placement, runtime
-game code, Night Vigil, or production activation is proposed in this draft.
+The simulated counterparts, pending/active states and debug controls are not
+visible to ordinary players in the proposed game. An ordinary viewer neither
+learns that a binding exists nor learns its endpoints or owner from this UI.
+The prototype buttons for patron approval, discovery eligibility, removal,
+restart, and world reset exercise fictional fixture authority. Viewing an
+ordinary object, hearing the bell, knowing a tile, or opening this UI does not
+grant discovery. Do not publish a public changelog or add player-facing
+documentation or discovery surfaces as part of this design draft.
 
 ## Runtime follow-on (not implemented)
 
-- Use the existing [covenant](../../../code/modules/divine/covenant.dm) and
-  [one-use approval](../../../code/modules/divine/approval.dm) flow. On grant,
-  revalidate the active body/client, patron claim and whitelist, spent slot,
-  focus, component, one pending request, and exact endpoint identities before
-  synchronous consume/charge/apply. Enforce separation of follower/operator
-  for this invocation without changing other prayers. Never trust client-supplied
-  refs, inventory flags, or the preview's simulated authority.
+- Build on the existing [covenant](../../../code/modules/divine/covenant.dm)
+  and [one-use approval](../../../code/modules/divine/approval.dm). Resolve
+  actual server-owned identities for repository, door and ordinary bell at
+  request time. Recheck existence, stable identity, location, anchoring and
+  applicable scope, access/ownership, and province eligibility at **request,
+  grant and signal delivery**. At grant also recheck body/client, active
+  patron claim and whitelist, original request, focus, slot and existing
+  pouch item. Reject unauthorized/self approval and stale or modified scopes
+  before consuming anything; only valid consume/charge/apply is synchronous.
+  There is no change to other prayers.
+- Add an explicit record for the **applied** binding, not a saved magical
+  item or general circuit graph. Store separately from transient prayer state:
+  stable binding ID, world lineage, province/authority scope, exact stable
+  repository/door/bell identities and approved positions, original caster
+  identity, patron identity, and binding-specific discovery proof with its
+  subject. Use existing persistence conventions and commit it with the same
+  world-save generation. Do not serialize live object refs, pending approvals,
+  or queued/in-flight pulses. Resolve the complete record after normal objects
+  load; restore the same binding ID and valid discovery silently, never charge
+  or ring on restore. Missing or ambiguous identity and revoked scope fail
+  closed. Keep the record suspended rather than cancelling it on somebody
+  else's behalf. Never match a new object merely by coordinates, display name,
+  or type. A world reset changes lineage and rejects all old binding records.
+- Removal needs a fresh server check: exact original caster identity with the
+  applicable mage authorization, or another currently eligible mage holding
+  verified discovery of this binding ID in this world lineage, or the
+  authorized operator acting as the same patron God. No generic admin,
+  electronics, ownership-of-one-object, or nearby-player shortcut. Support
+  authorized removal of a suspended record. Recheck before commit so a stale
+  dialog cannot revoke a different binding.
 - The [door completion hook](../../../code/game/objects/structures/door_fittings.dm)
   runs after [Open commits state](../../../code/game/objects/structures/door.dm).
-  Gate the eligible door families explicitly; the base hook also runs for
-  casements and trapdoors. Add no permission to open, close, unlock, identify
-  or track a player. Never emit from initialization or load.
-- Share the [Wiremod pulse vocabulary](../../../code/modules/wiremod/README.md):
-  a momentary typed signal, not a boolean level or an entity handle. Its numeric
-  value is a world-local time and cannot establish identity, uniqueness,
-  permission or replay. One output invokes one receiver through a bounded
-  server-owned adapter. Do not create a hidden integrated-circuit item or call
-  its item/editor-bound execution queue. Electronics do not gain a route to
-  magical listeners; no dependency on the component-parity PR.
-- Only a supported anchored door and an exact ordinary anchored bell stand,
-  same world and z-level. For implementation review, start with the caster
-  adjacent to the door, both endpoints visible, and at most three tiles
-  between endpoints. Require authorization at each endpoint; do not treat
-  mere visibility, proximity, a display name, or possession of a ref as
-  permission. Permit at most one binding per endpoint; no fanout, chains,
-  cross-region traffic or arbitrary target/command selection. Consume no
-  resources when admission fails.
-- Reuse the existing [ordinary bell operation](../../../code/game/objects/structures/bells.dm)
-  behind a shared cooldown; preserve the manual ring path and exclude the
-  world-wide church bell. Recheck selected endpoints just before activation
-  and delivery. Movement, deletion, replacement, anchor loss or revocation
-  retires the binding, including leave and return. No persistent pointer, ref
-  string, live approval or timer in a save. A restart clears bindings without
-  restoring effects or repaying consumed resources.
-- Native acceptance must demonstrate one ring on committed open; no effect on
-  unlock alone, refused opening, close, church bell, stale/replayed approval,
-  endpoint replacement/movement/anchor change, depleted resources, active
-  cooldown, shutdown, or load. Check real BYOND UI, actor/session transfers,
-  ordinary doors and manual ringing. Browser-fixture checks do not establish
-  game behavior.
+  Gate exact supported door families; casements and trapdoors also reach the
+  base hook. Keep a single eligible same-region/z-level repository and one
+  anchored endpoint of each kind. Start with caster adjacent to the door,
+  both endpoints visible, and up to three tiles between the door and bell.
+  Add no permission to unlock, identify or track players. No fanout or chains.
+- Share the [Wiremod pulse vocabulary](../../../code/modules/wiremod/README.md).
+  The timestamp payload is not a unique ID or proof of authority; use a small
+  server-owned adapter, not a hidden circuit item or editor queue. Reuse the
+  [ordinary bell operation](../../../code/game/objects/structures/bells.dm)
+  behind its existing local cooldown. Electronics gain no magic permission,
+  and the component-parity PR is not a dependency.
+- Native acceptance must cover missing repository; moved, revoked, destroyed
+  and same-tile replacement during pending and active use; refusal with no
+  charge and no item creation; successful authorized removal versus a mage
+  who discovered a different link; ordinary viewers; successful open,
+  locked/closed/cooldown controls; and an actual save/restart versus a world
+  reset, with no pulse, pending approval or extra cost on restore. This HTML
+  fixture does not establish those results in BYOND.
+
+No production source, game activation, wiki, live server change, or Night Vigil
+work is included in this draft.
