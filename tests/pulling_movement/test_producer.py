@@ -60,7 +60,7 @@ class PullProducerContracts(unittest.TestCase):
         self.assertIn('return type in list(/obj/item/stack/material/wood, /obj/item/stack/material/steel, /obj/item/stack/material/iron)',text)
         self.assertNotIn('set name =',text)
         human=read('code/game/mob/living/carbon/human/subtile_movement.dm')
-        self.assertIn('if (key == "human_subtile_pull_enabled")\n\t\treturn TRUE',human)
+        self.assertRegex(human, r'if \((?:key == "[^"]+" \|\| )*key == "human_subtile_pull_enabled"(?: \|\| key == "[^"]+")*\)\n\t\treturn TRUE')
 
     def test_real_input_routes_after_original_once_only_cost_calculation(self):
         move=read('code/game/mob/mob_movement.dm')
