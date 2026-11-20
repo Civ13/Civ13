@@ -852,5 +852,67 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertNotIn('in_protected_sleep_zone', adapter.read('code/game/mob/living/carbon/human/human_life.dm'))
 
 
+class BedDestructionNoticeTests(unittest.TestCase):
+    def test_hammer_notifies_only_after_accepted_removal(self):
+        attack = adapter.read('code/game/objects/structures.dm').split(
+            '/obj/structure/attackby(', 1)[1].split('// Called after a wrench', 1)[0]
+        hammer = attack.split('else if (istype(O, /obj/item/weapon/hammer)', 1)[1]
+        self.assertIn('if (do_after(user, 25, src) && !QDELETED(src))', hammer)
+        self.assertLess(hammer.index('!B.remove_padding()'), hammer.index('B.persistence_bed_notice_recipient(user)'))
+        self.assertIn('\t\t\tqdel(src)\n\t\t\tif (bed_notice_owner && QDELETED(src))\n'
+                      '\t\t\t\tpersistence_queue_bed_notice(bed_notice_owner)', hammer)
+        bed = adapter.read('code/game/objects/structures/stool_bed_chair_nest/bed.dm')
+        self.assertNotIn('persistence_queue_bed_notice', bed)
+
+    def test_recipient_is_registered_owner_not_actor_or_account_alias(self):
+        recipient = adapter.extract(SOURCE, '/obj/structure/bed/proc/persistence_bed_notice_recipient')
+        self.assertIn('var/owner = persistence_bed_owner_ckey', recipient)
+        self.assertIn('actor.mob != user', recipient)
+        self.assertIn('IsGuestKey(actor.key)', recipient)
+        self.assertIn('actor.ckey == owner', recipient)
+        self.assertIn('return persistence_bed_notice_path(owner) ? owner : null', recipient)
+        self.assertNotIn('account_key', recipient)
+        path = adapter.extract(SOURCE, '/proc/persistence_bed_notice_path')
+        self.assertIn('ckey(owner) != owner', path)
+        self.assertIn('IsGuestKey(owner)', path)
+        self.assertIn('length(owner) > 64', path)
+        self.assertIn('data/persistence-bed-notices/bed-[owner].pending', path)
+
+    def test_unread_notice_coalesces_and_is_consumed_only_by_owner(self):
+        files, messages = set(), []
+        def store(_data, path):
+            files.add(path)
+            return True
+        def remove(path):
+            files.remove(path)
+            return True
+        env = dict(persistence_bed_return_enabled=lambda: True, IsGuestKey=lambda key: key.lower().startswith('guest'),
+                   persistence_bed_notice_path=lambda owner: 'bed-' + owner, fexists=files.__contains__,
+                   text2file=store, fdel=remove, SPAN_WARNING=lambda message: message,
+                   to_chat=lambda recipient, message: messages.append((recipient.ckey, message)),
+                   log_world=self.fail)
+        queue = adapter.project(SOURCE, '/proc/persistence_queue_bed_notice', 'owner', env)
+        notice_source = SOURCE.split('\n#define PERSISTENCE_RETURN_SEARCH_RANGE', 1)[0]
+        deliver = adapter.project(notice_source, '/proc/persistence_deliver_bed_notice', 'recipient', env)
+        queue('owner')
+        queue('owner')
+        deliver(NS(key='Another', ckey='another', account_key='owner'))
+        deliver(NS(key='Guest-1', ckey='owner'))
+        self.assertEqual(files, {'bed-owner'})
+        self.assertEqual(messages, [])
+        deliver(NS(key='Owner', ckey='owner'))
+        deliver(NS(key='Owner', ckey='owner'))
+        self.assertEqual(files, set())
+        self.assertEqual(messages, [('owner', 'Another player destroyed your assigned bed in this region.')])
+
+    def test_chat_ready_is_common_to_lobby_and_reclaimed_connections(self):
+        chat = adapter.read('code/modules/chat/chat.dm').split('\n#define MAX_CHAT_QUEUE', 1)[0]
+        chat_ready = adapter.extract(chat, '/datum/chat/proc/on_ready')
+        self.assertLess(chat_ready.index('is_ready = TRUE'), chat_ready.index('persistence_deliver_bed_notice(client)'))
+        login = adapter.extract(adapter.read('code/modules/client/client_procs.dm'), '/client/New')
+        self.assertLess(login.index('quickBan_rejected("Server")'), login.index('chat = new(src)'))
+        self.assertLess(login.index('chat.load()'), login.index('if (!istype(mob, /mob/new_player))'))
+
+
 if __name__ == '__main__':
     unittest.main()

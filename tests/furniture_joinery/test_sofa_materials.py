@@ -215,6 +215,8 @@ class SofaMaterials(unittest.TestCase):
                                     ('padding_material', 'remove_padding', 'dismantle', 'loc'))
             action(furniture, hammer, None)
         else:
+            # This fixture has no Persistence registration or player client.
+            furniture.persistence_bed_notice_recipient = lambda user: None
             spec = importlib.util.spec_from_file_location('padding_hammer_adapter', Path(__file__).with_name('test_bedroll.py'))
             helper = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(helper)

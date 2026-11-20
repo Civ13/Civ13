@@ -5,6 +5,35 @@
 // Scalar ownership avoids a spatial reference from a character to another level.
 /obj/structure/bed/var/persistence_bed_owner_ckey
 
+// One unread notice per owner per region; this is not part of the character
+// save or custody ledger. The marker survives ordinary world restarts.
+/proc/persistence_bed_notice_path(owner)
+	if (!istext(owner) || !length(owner) || length(owner) > 64 || ckey(owner) != owner || IsGuestKey(owner))
+		return null
+	return "data/persistence-bed-notices/bed-[owner].pending"
+
+/obj/structure/bed/proc/persistence_bed_notice_recipient(mob/user)
+	var/client/actor = user?.client
+	var/owner = persistence_bed_owner_ckey
+	if (!persistence_bed_return_enabled() || !actor || actor.mob != user || !actor.ckey || IsGuestKey(actor.key) || actor.ckey == owner)
+		return null
+	return persistence_bed_notice_path(owner) ? owner : null
+
+/proc/persistence_queue_bed_notice(owner)
+	var/path = persistence_bed_notice_path(owner)
+	if (path && !fexists(path) && !text2file("1", path))
+		log_world("Could not queue a registered bed destruction notice.")
+
+/proc/persistence_deliver_bed_notice(client/recipient)
+	if (!persistence_bed_return_enabled() || !recipient || !recipient.key || IsGuestKey(recipient.key))
+		return
+	var/path = persistence_bed_notice_path(recipient.ckey)
+	if (!path || !fexists(path))
+		return
+	to_chat(recipient, SPAN_WARNING("Another player destroyed your assigned bed in this region."))
+	if (!fdel(path))
+		log_world("Could not clear a registered bed destruction notice.")
+
 // Tiles around a restored body searched for a safe return when its own is unsafe.
 #define PERSISTENCE_RETURN_SEARCH_RANGE 7
 

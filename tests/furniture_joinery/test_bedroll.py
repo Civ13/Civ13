@@ -53,7 +53,10 @@ def procedure(signature,env,hammer=False):
         if not line.strip():continue
         depth=len(line)-len(line.lstrip('\t'));line=line.strip()
         if line.startswith('var/'):
-            left,right=line.split(' = ',1);line=left.rsplit('/',1)[-1]+' = '+right
+            left,sep,right=line.partition(' = ')
+            if not re.fullmatch(r'var/(?:[\w/]+/)?\w+', left):
+                raise AssertionError('Unreviewed variable declaration: '+line)
+            line=left.rsplit('/',1)[-1]+' = '+(right if sep else 'null')
         m=re.fullmatch(r'(?:(\w+) = )?new\s+([\w/]+)\((.*)\)',line)
         if m:line=(m[1]+' = ' if m[1] else '')+'construct('+expr(m[2],FIELDS)+','+expr(m[3],FIELDS)+')'
         elif line.startswith('if ('):line='if '+expr(line[4:-1],FIELDS)+':'
@@ -68,6 +71,7 @@ def procedure(signature,env,hammer=False):
     # crafted_refund_stack (dismantle_refund.dm) reads the loaded recipe lists;
     # these fixtures load none, so it returns its no-recipe fallback.
     namespace=dict(env);namespace.setdefault('machine_drop_fitted_parts',lambda obj:None)
+    namespace.setdefault('QDELETED',lambda obj:obj.deleted)
     namespace.setdefault('crafted_refund_stack',lambda path,fallback=None:fallback);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
     return namespace['action']
 
@@ -166,6 +170,20 @@ class BedrollContracts(unittest.TestCase):
             bed.not_disassemblable=False
             procedure('',f.env,hammer=True)(bed,None,NS(type='/obj/item/weapon/hammer'))
             self.assertTrue(bed.deleted);self.assertEqual(f.objects[-1].type,'/obj/item/stack/material/wood')
+
+    def test_generic_hammer_notifies_only_if_bed_deletion_commits(self):
+        for commits in (True, False):
+            f=Bedding()
+            notices=[]
+            f.env['persistence_queue_bed_notice']=notices.append
+            if not commits:
+                f.env['qdel']=lambda obj:None
+            bed=NS(type='/obj/structure/bed',loc='floor',contents=[],deleted=False,
+                   padding_material=None,not_disassemblable=False,
+                   persistence_bed_notice_recipient=lambda user:'owner')
+            hammer=NS(type='/obj/item/weapon/hammer')
+            procedure('',f.env,hammer=True)(bed,None,hammer)
+            self.assertEqual(notices,['owner'] if commits else [])
 
     def test_atlas_and_help_name_the_paid_cloth_alternative(self):
         data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
