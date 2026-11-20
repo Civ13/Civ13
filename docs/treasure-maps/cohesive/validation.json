@@ -1,0 +1,148 @@
+{
+  "byond_native": false,
+  "maps": [
+    {
+      "clear_3x3_route_and_loot_approach": true,
+      "dmm_parseback": true,
+      "original_footprint_unchanged": true,
+      "rejected_double_cover": true,
+      "rejected_flattened_room": true,
+      "retained_fixtures": 88,
+      "room_style_counts": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "rooms": 8,
+      "seed": "ruins-06",
+      "styles_used": [
+        "carved_slab",
+        "cobble",
+        "dark_cobble",
+        "marble_grid",
+        "marble_rosette",
+        "old_stone",
+        "running_cobble",
+        "sand_brick",
+        "sand_inlay",
+        "sand_slab",
+        "slate",
+        "stone_brick",
+        "white_marble"
+      ]
+    },
+    {
+      "clear_3x3_route_and_loot_approach": true,
+      "dmm_parseback": true,
+      "original_footprint_unchanged": true,
+      "rejected_double_cover": true,
+      "rejected_flattened_room": true,
+      "retained_fixtures": 105,
+      "room_style_counts": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "rooms": 9,
+      "seed": "ruins-02",
+      "styles_used": [
+        "carved_slab",
+        "cobble",
+        "dark_cobble",
+        "marble_grid",
+        "marble_rosette",
+        "old_stone",
+        "roman_setts",
+        "running_cobble",
+        "slate",
+        "stone_brick",
+        "white_marble"
+      ]
+    },
+    {
+      "clear_3x3_route_and_loot_approach": true,
+      "dmm_parseback": true,
+      "original_footprint_unchanged": true,
+      "rejected_double_cover": true,
+      "rejected_flattened_room": true,
+      "retained_fixtures": 81,
+      "room_style_counts": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "rooms": 7,
+      "seed": "ruins-18",
+      "styles_used": [
+        "carved_slab",
+        "cobble",
+        "dark_cobble",
+        "marble_grid",
+        "marble_rosette",
+        "old_stone",
+        "roman_setts",
+        "running_cobble",
+        "sand_brick",
+        "sand_inlay",
+        "sand_slab",
+        "slate",
+        "stone_brick",
+        "white_marble"
+      ]
+    },
+    {
+      "clear_3x3_route_and_loot_approach": true,
+      "dmm_parseback": true,
+      "original_footprint_unchanged": true,
+      "rejected_double_cover": true,
+      "rejected_flattened_room": true,
+      "retained_fixtures": 102,
+      "room_style_counts": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "rooms": 9,
+      "seed": "ruins-12",
+      "styles_used": [
+        "carved_slab",
+        "cobble",
+        "dark_cobble",
+        "marble_grid",
+        "marble_rosette",
+        "old_stone",
+        "roman_setts",
+        "running_cobble",
+        "sand_brick",
+        "sand_inlay",
+        "sand_slab",
+        "slate",
+        "stone_brick",
+        "white_marble"
+      ]
+    }
+  ],
+  "source_commit": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "used_materials": 14
+}

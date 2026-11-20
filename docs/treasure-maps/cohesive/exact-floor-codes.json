@@ -1,0 +1,1055 @@
+{
+  "schema": "civ13-room-review-cohesive-floor-codes/1",
+  "pinned_source": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "code_legend": {
+    "A": "carved_slab",
+    "B": "cobble",
+    "C": "dark_cobble",
+    "D": "marble_grid",
+    "E": "marble_rosette",
+    "F": "old_stone",
+    "G": "roman_setts",
+    "H": "running_cobble",
+    "I": "sand_brick",
+    "J": "sand_inlay",
+    "K": "sand_slab",
+    "L": "slate",
+    "M": "stone_brick",
+    "N": "white_marble",
+    ".": "non-floor (see original geometry)"
+  },
+  "maps": [
+    {
+      "seed": "ruins-06",
+      "dimensions": [
+        53,
+        27
+      ],
+      "rooms": [
+        {
+          "id": [
+            0,
+            0
+          ],
+          "role": "Processional hall",
+          "counts": {
+            "sand_slab": 29,
+            "sand_brick": 24,
+            "sand_inlay": 6
+          },
+          "exposed_counts": {
+            "sand_slab": 29,
+            "sand_brick": 13,
+            "sand_inlay": 6
+          },
+          "family": "gold sandstone",
+          "zones": {
+            "east column band": "sand_slab",
+            "rim": "sand_brick",
+            "inlaid dais": "sand_inlay",
+            "west column band": "sand_slab",
+            "processional spine": "sand_slab"
+          }
+        },
+        {
+          "id": [
+            0,
+            1
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "dark_cobble": 53,
+            "running_cobble": 6,
+            "old_stone": 22
+          },
+          "exposed_counts": {
+            "dark_cobble": 45,
+            "old_stone": 21,
+            "running_cobble": 5
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "clear crossing": "dark_cobble",
+            "rim": "dark_cobble",
+            "repaired corner": "running_cobble",
+            "weathered wing": "old_stone",
+            "patchwork wing": "old_stone"
+          }
+        },
+        {
+          "id": [
+            1,
+            0
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "old_stone": 22,
+            "dark_cobble": 49,
+            "running_cobble": 6
+          },
+          "exposed_counts": {
+            "old_stone": 21,
+            "dark_cobble": 41,
+            "running_cobble": 5
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "weathered wing": "old_stone",
+            "rim": "dark_cobble",
+            "repaired corner": "running_cobble",
+            "patchwork wing": "old_stone",
+            "clear crossing": "dark_cobble"
+          }
+        },
+        {
+          "id": [
+            1,
+            1
+          ],
+          "role": "Processional hall",
+          "counts": {
+            "sand_slab": 29,
+            "sand_brick": 28,
+            "sand_inlay": 6
+          },
+          "exposed_counts": {
+            "sand_slab": 29,
+            "sand_brick": 17,
+            "sand_inlay": 5
+          },
+          "family": "gold sandstone",
+          "zones": {
+            "east column band": "sand_slab",
+            "rim": "sand_brick",
+            "processional spine": "sand_slab",
+            "inlaid dais": "sand_inlay",
+            "west column band": "sand_slab"
+          }
+        },
+        {
+          "id": [
+            2,
+            0
+          ],
+          "role": "Scribe workshop",
+          "counts": {
+            "slate": 43,
+            "carved_slab": 6,
+            "stone_brick": 28
+          },
+          "exposed_counts": {
+            "slate": 40,
+            "carved_slab": 6,
+            "stone_brick": 21
+          },
+          "family": "cut gray stone",
+          "zones": {
+            "shelf strip": "slate",
+            "inscribed entry": "carved_slab",
+            "rim": "stone_brick",
+            "workbench strip": "slate",
+            "service aisle": "slate"
+          }
+        },
+        {
+          "id": [
+            2,
+            1
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "dark_cobble": 53,
+            "old_stone": 22,
+            "running_cobble": 6
+          },
+          "exposed_counts": {
+            "dark_cobble": 45,
+            "old_stone": 21,
+            "running_cobble": 5
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "clear crossing": "dark_cobble",
+            "rim": "dark_cobble",
+            "weathered wing": "old_stone",
+            "repaired corner": "running_cobble",
+            "patchwork wing": "old_stone"
+          }
+        },
+        {
+          "id": [
+            3,
+            0
+          ],
+          "role": "Reliquary vault",
+          "counts": {
+            "white_marble": 40,
+            "marble_rosette": 9,
+            "marble_grid": 32
+          },
+          "exposed_counts": {
+            "white_marble": 36,
+            "marble_rosette": 9,
+            "marble_grid": 22
+          },
+          "family": "pale marble",
+          "zones": {
+            "left ambulatory": "white_marble",
+            "central medallion": "marble_rosette",
+            "rim": "marble_grid",
+            "inner paving": "white_marble",
+            "right ambulatory": "white_marble"
+          }
+        },
+        {
+          "id": [
+            3,
+            1
+          ],
+          "role": "Arrival guardroom",
+          "counts": {
+            "dark_cobble": 24,
+            "cobble": 15,
+            "running_cobble": 10
+          },
+          "exposed_counts": {
+            "cobble": 14,
+            "dark_cobble": 14,
+            "running_cobble": 10
+          },
+          "family": "gray cobblestone",
+          "zones": {
+            "rim": "dark_cobble",
+            "threshold": "cobble",
+            "gear-up aisle": "cobble",
+            "assembly wing": "running_cobble",
+            "guard bay": "running_cobble"
+          }
+        }
+      ],
+      "changed_non_room_floor": 0,
+      "return_steps": 91,
+      "dmm_sha256": "e8d62de4de683fac465ed9bdee83232e47a447bf341a53e01e6b0f117c3eb224",
+      "manifest_sha256": "dfaa4041f79901e601aa2092dfe8a9066c9be0b439789aa4df9713e9a5b906cb",
+      "rows_south_first": [
+        ".....................................................",
+        ".....................................................",
+        ".....................................................",
+        ".................CCCCCCC......MMMMMMM.....DDDDDDDDD..",
+        "....IIIIIII.....CFFFFFFFC....MLLLLLLLM....DNNNNNNND..",
+        "...IKKKKKKKI....CFFFFFFFC....MLLLLLLLM....DNNNNNNND..",
+        "...IJJKKKKKIBBBBCCCCCCCCCBBBBMLLLLLAAMBBBBDNNEEENND..",
+        "...IJJKKKKKIBBBBCCCCCCCCCBBBBMLLLLLAAMBBBBDNNEEENND..",
+        "...IJJKKKKKIBBBBCCCCCCCCCBBBBMLLLLLAAMBBBBDNNEEENND..",
+        "...IKKKKKKKI....CHHHFFFFC....MLLLLLLLM....DNNNNNNND..",
+        "....IIIIIII.....CHHHFFFFC....MLLLLLLLM....DNNNNNNND..",
+        "......BBB........CCCCCCC......MMMMMMM.....DDDDDDDDD..",
+        "......BBB............................................",
+        "......BBB............................................",
+        "......BBB............................................",
+        "......BBB............................................",
+        "...CCCCCCCCC.....IIIIIII.....CCCCCCCCC...............",
+        "...CHHCCCFFC.....IKJJJKI.....CFFFFFFFC.....CCCCCCC...",
+        "...CHHCCCFFC.....IKJJJKI.....CFFFFFFFC.....CHHHHHC...",
+        "...CHHCCCFFCBBBBBIKKKKKIBBBBBCCCCCCCCCBBBBBCBBBBBC...",
+        "...CFFCCCFFCBBBBBIKKKKKIBBBBBCCCCCCCCCBBBBBCBBBBBC...",
+        "...CFFCCCFFCBBBBBIKKKKKIBBBBBCCCCCCCCCBBBBBCBBBBBC...",
+        "...CFFCCCFFC.....IKKKKKI.....CHHHFFFFC.....CHHHHHC...",
+        "...CFFCCCFFC.....IKKKKKI.....CHHHFFFFC.....CCCCCCC...",
+        "...CCCCCCCCC.....IIIIIII.....CCCCCCCCC...............",
+        ".....................................................",
+        "....................................................."
+      ]
+    },
+    {
+      "seed": "ruins-02",
+      "dimensions": [
+        40,
+        40
+      ],
+      "rooms": [
+        {
+          "id": [
+            1,
+            0
+          ],
+          "role": "Supply storeroom",
+          "counts": {
+            "dark_cobble": 28,
+            "roman_setts": 20,
+            "cobble": 15
+          },
+          "exposed_counts": {
+            "dark_cobble": 16,
+            "roman_setts": 18,
+            "cobble": 15
+          },
+          "family": "rough gray masonry",
+          "zones": {
+            "rim": "dark_cobble",
+            "paved supply bay": "roman_setts",
+            "cart aisle": "cobble",
+            "red crate bay": "roman_setts",
+            "loading apron": "cobble"
+          }
+        },
+        {
+          "id": [
+            1,
+            1
+          ],
+          "role": "Scribe workshop",
+          "counts": {
+            "slate": 19,
+            "stone_brick": 20,
+            "carved_slab": 6
+          },
+          "exposed_counts": {
+            "slate": 17,
+            "stone_brick": 13,
+            "carved_slab": 5
+          },
+          "family": "cut gray stone",
+          "zones": {
+            "shelf strip": "slate",
+            "rim": "stone_brick",
+            "inscribed entry": "carved_slab",
+            "service aisle": "slate",
+            "workbench strip": "slate"
+          }
+        },
+        {
+          "id": [
+            1,
+            2
+          ],
+          "role": "Supply storeroom",
+          "counts": {
+            "dark_cobble": 24,
+            "roman_setts": 10,
+            "cobble": 15
+          },
+          "exposed_counts": {
+            "dark_cobble": 13,
+            "roman_setts": 9,
+            "cobble": 14
+          },
+          "family": "rough gray masonry",
+          "zones": {
+            "rim": "dark_cobble",
+            "paved supply bay": "roman_setts",
+            "loading apron": "cobble",
+            "cart aisle": "cobble",
+            "red crate bay": "roman_setts"
+          }
+        },
+        {
+          "id": [
+            2,
+            0
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "dark_cobble": 33,
+            "old_stone": 8,
+            "running_cobble": 4
+          },
+          "exposed_counts": {
+            "dark_cobble": 23,
+            "old_stone": 8,
+            "running_cobble": 4
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "clear crossing": "dark_cobble",
+            "weathered wing": "old_stone",
+            "rim": "dark_cobble",
+            "repaired corner": "running_cobble",
+            "patchwork wing": "old_stone"
+          }
+        },
+        {
+          "id": [
+            2,
+            1
+          ],
+          "role": "Scribe workshop",
+          "counts": {
+            "stone_brick": 24,
+            "slate": 29,
+            "carved_slab": 6
+          },
+          "exposed_counts": {
+            "stone_brick": 17,
+            "slate": 27,
+            "carved_slab": 5
+          },
+          "family": "cut gray stone",
+          "zones": {
+            "rim": "stone_brick",
+            "service aisle": "slate",
+            "inscribed entry": "carved_slab",
+            "shelf strip": "slate",
+            "workbench strip": "slate"
+          }
+        },
+        {
+          "id": [
+            2,
+            2
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "dark_cobble": 49,
+            "old_stone": 22,
+            "running_cobble": 6
+          },
+          "exposed_counts": {
+            "dark_cobble": 41,
+            "old_stone": 21,
+            "running_cobble": 5
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "rim": "dark_cobble",
+            "patchwork wing": "old_stone",
+            "weathered wing": "old_stone",
+            "repaired corner": "running_cobble",
+            "clear crossing": "dark_cobble"
+          }
+        },
+        {
+          "id": [
+            3,
+            0
+          ],
+          "role": "Arrival guardroom",
+          "counts": {
+            "running_cobble": 28,
+            "cobble": 21,
+            "dark_cobble": 32
+          },
+          "exposed_counts": {
+            "running_cobble": 28,
+            "dark_cobble": 22,
+            "cobble": 20
+          },
+          "family": "gray cobblestone",
+          "zones": {
+            "assembly wing": "running_cobble",
+            "threshold": "cobble",
+            "rim": "dark_cobble",
+            "guard bay": "running_cobble",
+            "gear-up aisle": "cobble"
+          }
+        },
+        {
+          "id": [
+            3,
+            1
+          ],
+          "role": "Reliquary vault",
+          "counts": {
+            "marble_rosette": 9,
+            "marble_grid": 32,
+            "white_marble": 40
+          },
+          "exposed_counts": {
+            "marble_rosette": 9,
+            "marble_grid": 23,
+            "white_marble": 35
+          },
+          "family": "pale marble",
+          "zones": {
+            "central medallion": "marble_rosette",
+            "rim": "marble_grid",
+            "right ambulatory": "white_marble",
+            "left ambulatory": "white_marble",
+            "inner paving": "white_marble"
+          }
+        },
+        {
+          "id": [
+            3,
+            2
+          ],
+          "role": "Supply storeroom",
+          "counts": {
+            "dark_cobble": 32,
+            "roman_setts": 28,
+            "cobble": 21
+          },
+          "exposed_counts": {
+            "roman_setts": 26,
+            "dark_cobble": 21,
+            "cobble": 21
+          },
+          "family": "rough gray masonry",
+          "zones": {
+            "rim": "dark_cobble",
+            "paved supply bay": "roman_setts",
+            "cart aisle": "cobble",
+            "red crate bay": "roman_setts",
+            "loading apron": "cobble"
+          }
+        }
+      ],
+      "changed_non_room_floor": 0,
+      "return_steps": 65,
+      "dmm_sha256": "503dbd9a4cd769d9d25b1500763161472bc84039e62a45710bf5d80f995c7b54",
+      "manifest_sha256": "8e4b105d3149fc8227014fc5a37a0ac3854b8c810345204d7be0f7ea1fdb480e",
+      "rows_south_first": [
+        "........................................",
+        "........................................",
+        "........................................",
+        "....CCCCCCC..................CCCCCCCCC..",
+        "....CGGGGGC.......CCCCC......CHHHHHHHC..",
+        "....CGGGGGC......CHHCCFC.....CHHHHHHHC..",
+        "....CBBBBBC......CHHCCFCBBBBBCBBBBBBBC..",
+        "....CBBBBBC......CFCCCFCBBBBBCBBBBBBBC..",
+        "....CBBBBBC......CFCCCFCBBBBBCBBBBBBBC..",
+        "....CGGGGGC......CFCCCFC.....CHHHHHHHC..",
+        "....CGGGGGC.......CCCCC......CHHHHHHHC..",
+        "....CCCCCCC........BBB.......CCCCCCCCC..",
+        "......BBB..........BBB..................",
+        "......BBB..........BBB..................",
+        "......BBB..........BBB..................",
+        "......BBB..........BBB..................",
+        "......BBB..........BBB.......DDDDDDDDD..",
+        ".....MMMMM.......MMMMMMM.....DNNNNNNND..",
+        "....MLLLLLM.....MLLLLLLLM....DNNNNNNND..",
+        "....MAALLLMBBBBBMLLLLLAAM....DNNEEENND..",
+        "....MAALLLMBBBBBMLLLLLAAM....DNNEEENND..",
+        "....MAALLLMBBBBBMLLLLLAAM....DNNEEENND..",
+        "....MLLLLLM.....MLLLLLLLM....DNNNNNNND..",
+        ".....MMMMM.......MMMMMMM.....DNNNNNNND..",
+        "......BBB..........BBB.......DDDDDDDDD..",
+        "......BBB..........BBB..........BBB.....",
+        "......BBB..........BBB..........BBB.....",
+        "......BBB..........BBB..........BBB.....",
+        "......BBB..........BBB..........BBB.....",
+        "......BBB........CCCCCCC.....CCCCCCCCC..",
+        "....CCCCCCC.....CHHCCCFFC....CGGGGGGGC..",
+        "....CGGGGGC.....CHHCCCFFC....CGGGGGGGC..",
+        "....CBBBBBC.....CHHCCCFFCBBBBCBBBBBBBC..",
+        "....CBBBBBC.....CFFCCCFFCBBBBCBBBBBBBC..",
+        "....CBBBBBC.....CFFCCCFFCBBBBCBBBBBBBC..",
+        "....CGGGGGC.....CFFCCCFFC....CGGGGGGGC..",
+        "....CCCCCCC.....CFFCCCFFC....CGGGGGGGC..",
+        ".................CCCCCCC.....CCCCCCCCC..",
+        "........................................",
+        "........................................"
+      ]
+    },
+    {
+      "seed": "ruins-18",
+      "dimensions": [
+        39,
+        40
+      ],
+      "rooms": [
+        {
+          "id": [
+            0,
+            0
+          ],
+          "role": "Reliquary vault",
+          "counts": {
+            "marble_grid": 28,
+            "white_marble": 26,
+            "marble_rosette": 9
+          },
+          "exposed_counts": {
+            "marble_grid": 18,
+            "white_marble": 22,
+            "marble_rosette": 9
+          },
+          "family": "pale marble",
+          "zones": {
+            "rim": "marble_grid",
+            "left ambulatory": "white_marble",
+            "right ambulatory": "white_marble",
+            "inner paving": "white_marble",
+            "central medallion": "marble_rosette"
+          }
+        },
+        {
+          "id": [
+            0,
+            1
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "old_stone": 11,
+            "dark_cobble": 46,
+            "running_cobble": 6
+          },
+          "exposed_counts": {
+            "old_stone": 10,
+            "dark_cobble": 38,
+            "running_cobble": 5
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "patchwork wing": "old_stone",
+            "rim": "dark_cobble",
+            "clear crossing": "dark_cobble",
+            "repaired corner": "running_cobble",
+            "weathered wing": "old_stone"
+          }
+        },
+        {
+          "id": [
+            0,
+            2
+          ],
+          "role": "Arrival guardroom",
+          "counts": {
+            "running_cobble": 28,
+            "cobble": 21,
+            "dark_cobble": 32
+          },
+          "exposed_counts": {
+            "dark_cobble": 22,
+            "running_cobble": 28,
+            "cobble": 20
+          },
+          "family": "gray cobblestone",
+          "zones": {
+            "guard bay": "running_cobble",
+            "threshold": "cobble",
+            "rim": "dark_cobble",
+            "assembly wing": "running_cobble",
+            "gear-up aisle": "cobble"
+          }
+        },
+        {
+          "id": [
+            1,
+            0
+          ],
+          "role": "Processional hall",
+          "counts": {
+            "sand_slab": 43,
+            "sand_brick": 32,
+            "sand_inlay": 6
+          },
+          "exposed_counts": {
+            "sand_slab": 42,
+            "sand_brick": 21,
+            "sand_inlay": 6
+          },
+          "family": "gold sandstone",
+          "zones": {
+            "west column band": "sand_slab",
+            "rim": "sand_brick",
+            "east column band": "sand_slab",
+            "inlaid dais": "sand_inlay",
+            "processional spine": "sand_slab"
+          }
+        },
+        {
+          "id": [
+            1,
+            1
+          ],
+          "role": "Scribe workshop",
+          "counts": {
+            "stone_brick": 28,
+            "slate": 43,
+            "carved_slab": 6
+          },
+          "exposed_counts": {
+            "stone_brick": 21,
+            "slate": 40,
+            "carved_slab": 6
+          },
+          "family": "cut gray stone",
+          "zones": {
+            "rim": "stone_brick",
+            "shelf strip": "slate",
+            "service aisle": "slate",
+            "inscribed entry": "carved_slab",
+            "workbench strip": "slate"
+          }
+        },
+        {
+          "id": [
+            1,
+            2
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "dark_cobble": 43,
+            "old_stone": 16,
+            "running_cobble": 4
+          },
+          "exposed_counts": {
+            "dark_cobble": 33,
+            "old_stone": 16,
+            "running_cobble": 4
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "rim": "dark_cobble",
+            "patchwork wing": "old_stone",
+            "clear crossing": "dark_cobble",
+            "repaired corner": "running_cobble",
+            "weathered wing": "old_stone"
+          }
+        },
+        {
+          "id": [
+            2,
+            2
+          ],
+          "role": "Supply storeroom",
+          "counts": {
+            "roman_setts": 20,
+            "dark_cobble": 28,
+            "cobble": 15
+          },
+          "exposed_counts": {
+            "roman_setts": 17,
+            "cobble": 15,
+            "dark_cobble": 17
+          },
+          "family": "rough gray masonry",
+          "zones": {
+            "red crate bay": "roman_setts",
+            "rim": "dark_cobble",
+            "paved supply bay": "roman_setts",
+            "loading apron": "cobble",
+            "cart aisle": "cobble"
+          }
+        }
+      ],
+      "changed_non_room_floor": 0,
+      "return_steps": 52,
+      "dmm_sha256": "9b10c1526ea35d2e0123355bf32b4cda23939ba14e81e01f85b86b7d5465a54d",
+      "manifest_sha256": "ad43c6b44c472434bc7db4b73d498009972f500b1e4d5760a333565d30b7d850",
+      "rows_south_first": [
+        ".......................................",
+        ".......................................",
+        ".......................................",
+        "....DDDDDDD.....IIIIIIIII..............",
+        "....DNNNNND.....IKKKKKKKI..............",
+        "....DNNNNND.....IKKKKKKKI..............",
+        "....DNEEENDBBBBBIJJKKKKKI..............",
+        "....DNEEENDBBBBBIJJKKKKKI..............",
+        "....DNEEENDBBBBBIJJKKKKKI..............",
+        "....DNNNNND.....IKKKKKKKI..............",
+        "....DNNNNND.....IKKKKKKKI..............",
+        "....DDDDDDD.....IIIIIIIII..............",
+        "......BBB..........BBB.................",
+        "......BBB..........BBB.................",
+        "......BBB..........BBB.................",
+        "......BBB..........BBB.................",
+        "......BBB........MMMMMMM...............",
+        "...CCCCCCCCC....MLLLLLLLM..............",
+        "...CFFFFHHHC....MLLLLLLLM..............",
+        "...CCCCCHHHCBBBBMAALLLLLM..............",
+        "...CCCCCCCCCBBBBMAALLLLLM..............",
+        "...CCCCCCCCCBBBBMAALLLLLM..............",
+        "...CFFFFFFFC....MLLLLLLLM..............",
+        "...CCCCCCCCC....MLLLLLLLM..............",
+        ".................MMMMMMM...............",
+        "...................BBB.................",
+        "...................BBB.................",
+        "...................BBB.................",
+        "...................BBB.................",
+        "...CCCCCCCCC.......BBB........CCCCCCC..",
+        "...CHHBBBHHC....CCCCCCCCC.....CGGGGGC..",
+        "...CHHBBBHHC....CHHCCCFFC.....CGGGGGC..",
+        "...CHHBBBHHCBBBBCHHCCCFFCBBBBBCBBBBBC..",
+        "...CHHBBBHHCBBBBCFFCCCFFCBBBBBCBBBBBC..",
+        "...CHHBBBHHCBBBBCFFCCCFFCBBBBBCBBBBBC..",
+        "...CHHBBBHHC....CFFCCCFFC.....CGGGGGC..",
+        "...CHHBBBHHC....CCCCCCCCC.....CGGGGGC..",
+        "...CCCCCCCCC..................CCCCCCC..",
+        ".......................................",
+        "......................................."
+      ]
+    },
+    {
+      "seed": "ruins-12",
+      "dimensions": [
+        53,
+        40
+      ],
+      "rooms": [
+        {
+          "id": [
+            0,
+            1
+          ],
+          "role": "Arrival guardroom",
+          "counts": {
+            "cobble": 21,
+            "dark_cobble": 32,
+            "running_cobble": 28
+          },
+          "exposed_counts": {
+            "cobble": 20,
+            "dark_cobble": 22,
+            "running_cobble": 28
+          },
+          "family": "gray cobblestone",
+          "zones": {
+            "gear-up aisle": "cobble",
+            "rim": "dark_cobble",
+            "assembly wing": "running_cobble",
+            "guard bay": "running_cobble",
+            "threshold": "cobble"
+          }
+        },
+        {
+          "id": [
+            1,
+            0
+          ],
+          "role": "Scribe workshop",
+          "counts": {
+            "slate": 19,
+            "stone_brick": 20,
+            "carved_slab": 6
+          },
+          "exposed_counts": {
+            "slate": 16,
+            "stone_brick": 13,
+            "carved_slab": 6
+          },
+          "family": "cut gray stone",
+          "zones": {
+            "service aisle": "slate",
+            "workbench strip": "slate",
+            "rim": "stone_brick",
+            "inscribed entry": "carved_slab",
+            "shelf strip": "slate"
+          }
+        },
+        {
+          "id": [
+            1,
+            1
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "dark_cobble": 33,
+            "old_stone": 8,
+            "running_cobble": 4
+          },
+          "exposed_counts": {
+            "old_stone": 8,
+            "dark_cobble": 24,
+            "running_cobble": 4
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "rim": "dark_cobble",
+            "weathered wing": "old_stone",
+            "clear crossing": "dark_cobble",
+            "patchwork wing": "old_stone",
+            "repaired corner": "running_cobble"
+          }
+        },
+        {
+          "id": [
+            1,
+            2
+          ],
+          "role": "Processional hall",
+          "counts": {
+            "sand_brick": 32,
+            "sand_slab": 43,
+            "sand_inlay": 6
+          },
+          "exposed_counts": {
+            "sand_brick": 21,
+            "sand_slab": 42,
+            "sand_inlay": 6
+          },
+          "family": "gold sandstone",
+          "zones": {
+            "rim": "sand_brick",
+            "east column band": "sand_slab",
+            "processional spine": "sand_slab",
+            "west column band": "sand_slab",
+            "inlaid dais": "sand_inlay"
+          }
+        },
+        {
+          "id": [
+            2,
+            1
+          ],
+          "role": "Supply storeroom",
+          "counts": {
+            "cobble": 21,
+            "dark_cobble": 28,
+            "roman_setts": 28
+          },
+          "exposed_counts": {
+            "cobble": 21,
+            "dark_cobble": 17,
+            "roman_setts": 26
+          },
+          "family": "rough gray masonry",
+          "zones": {
+            "cart aisle": "cobble",
+            "rim": "dark_cobble",
+            "paved supply bay": "roman_setts",
+            "red crate bay": "roman_setts",
+            "loading apron": "cobble"
+          }
+        },
+        {
+          "id": [
+            2,
+            2
+          ],
+          "role": "Collapsed watchpost",
+          "counts": {
+            "dark_cobble": 49,
+            "old_stone": 22,
+            "running_cobble": 6
+          },
+          "exposed_counts": {
+            "old_stone": 21,
+            "dark_cobble": 41,
+            "running_cobble": 5
+          },
+          "family": "weathered gray stone",
+          "zones": {
+            "rim": "dark_cobble",
+            "clear crossing": "dark_cobble",
+            "weathered wing": "old_stone",
+            "repaired corner": "running_cobble",
+            "patchwork wing": "old_stone"
+          }
+        },
+        {
+          "id": [
+            3,
+            0
+          ],
+          "role": "Processional hall",
+          "counts": {
+            "sand_slab": 43,
+            "sand_brick": 32,
+            "sand_inlay": 6
+          },
+          "exposed_counts": {
+            "sand_slab": 42,
+            "sand_brick": 21,
+            "sand_inlay": 6
+          },
+          "family": "gold sandstone",
+          "zones": {
+            "west column band": "sand_slab",
+            "processional spine": "sand_slab",
+            "rim": "sand_brick",
+            "inlaid dais": "sand_inlay",
+            "east column band": "sand_slab"
+          }
+        },
+        {
+          "id": [
+            3,
+            1
+          ],
+          "role": "Scribe workshop",
+          "counts": {
+            "stone_brick": 28,
+            "carved_slab": 6,
+            "slate": 29
+          },
+          "exposed_counts": {
+            "stone_brick": 21,
+            "carved_slab": 5,
+            "slate": 27
+          },
+          "family": "cut gray stone",
+          "zones": {
+            "rim": "stone_brick",
+            "inscribed entry": "carved_slab",
+            "service aisle": "slate",
+            "shelf strip": "slate",
+            "workbench strip": "slate"
+          }
+        },
+        {
+          "id": [
+            3,
+            2
+          ],
+          "role": "Reliquary vault",
+          "counts": {
+            "marble_grid": 32,
+            "white_marble": 40,
+            "marble_rosette": 9
+          },
+          "exposed_counts": {
+            "white_marble": 36,
+            "marble_grid": 21,
+            "marble_rosette": 9
+          },
+          "family": "pale marble",
+          "zones": {
+            "rim": "marble_grid",
+            "right ambulatory": "white_marble",
+            "left ambulatory": "white_marble",
+            "inner paving": "white_marble",
+            "central medallion": "marble_rosette"
+          }
+        }
+      ],
+      "changed_non_room_floor": 0,
+      "return_steps": 52,
+      "dmm_sha256": "baedbc36bb43d0e2080c5cdcfd94df8ea15b156b82e84d1d4275f66704e39339",
+      "manifest_sha256": "33dc398904da417d6016cc26db7dd57170e1e1e7cf9e06fa24e2f7b47004de1a",
+      "rows_south_first": [
+        ".....................................................",
+        ".....................................................",
+        ".....................................................",
+        "..........................................IIIIIIIII..",
+        "..................MMMMM...................IKKKKKKKI..",
+        ".................MLLLLLM..................IKKKKKKKI..",
+        ".................MLLLLLM..................IKKKKKJJI..",
+        ".................MLLLLLM..................IKKKKKJJI..",
+        ".................MLAAALM..................IKKKKKJJI..",
+        ".................MLAAALM..................IKKKKKKKI..",
+        "..................MMMMM...................IKKKKKKKI..",
+        "...................BBB....................IIIIIIIII..",
+        "...................BBB.......................BBB.....",
+        "...................BBB.......................BBB.....",
+        "...................BBB.......................BBB.....",
+        "...................BBB.......................BBB.....",
+        "...CCCCCCCCC.......BBB........CCCCCCC........BBB.....",
+        "...CHHBBBHHC......CCCCC......CGGGGGGGC....MMMMMMMMM..",
+        "...CHHBBBHHC.....CFCCCFC.....CGGGGGGGC....MLLLLLLLM..",
+        "...CHHBBBHHCBBBBBCFCCCFCBBBBBCBBBBBBBCBBBBMLLLLLAAM..",
+        "...CHHBBBHHCBBBBBCFCCCFCBBBBBCBBBBBBBCBBBBMLLLLLAAM..",
+        "...CHHBBBHHCBBBBBCFCCHHCBBBBBCBBBBBBBCBBBBMLLLLLAAM..",
+        "...CHHBBBHHC.....CFCCHHC.....CGGGGGGGC....MLLLLLLLM..",
+        "...CHHBBBHHC......CCCCC......CGGGGGGGC....MMMMMMMMM..",
+        "...CCCCCCCCC.......BBB........CCCCCCC........BBB.....",
+        "...................BBB..........BBB..........BBB.....",
+        "...................BBB..........BBB..........BBB.....",
+        "...................BBB..........BBB..........BBB.....",
+        "...................BBB..........BBB..........BBB.....",
+        "................IIIIIIIII.....CCCCCCC.....DDDDDDDDD..",
+        "................IKKKKKKKI....CHHCCCFFC....DNNNNNNND..",
+        "................IKKKKKKKI....CHHCCCFFC....DNNNNNNND..",
+        "................IJJKKKKKIBBBBCHHCCCFFCBBBBDNNEEENND..",
+        "................IJJKKKKKIBBBBCFFCCCFFCBBBBDNNEEENND..",
+        "................IJJKKKKKIBBBBCFFCCCFFCBBBBDNNEEENND..",
+        "................IKKKKKKKI....CFFCCCFFC....DNNNNNNND..",
+        "................IKKKKKKKI....CFFCCCFFC....DNNNNNNND..",
+        "................IIIIIIIII.....CCCCCCC.....DDDDDDDDD..",
+        ".....................................................",
+        "....................................................."
+      ]
+    }
+  ]
+}

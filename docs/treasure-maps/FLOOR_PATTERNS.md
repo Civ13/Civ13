@@ -1,5 +1,8 @@
 # Themed floor patterns
 
+This five-style version is a comparison baseline. The current review uses
+[three matching floor materials per room](COHESIVE_FLOORS.md).
+
 The furnished stage established what rooms are for, where supports and objects
 fit, and which areas should stay clear. This pass addresses a different issue:
 the floors themselves should help a player recognize each room. It uses stock
