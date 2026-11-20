@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'e681ab1cb74bf289dc2c7e0b891896461ca8abd0'
+WIKI_REVIEWED_REVISION = '4401f4b1a4f8782836b769c8167cf96fd12128b0'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('68f043ddc232b3d7c6043122a858695c3478f66e35c4ea0e2c5d74f032de44cf', 'character skills traits languages'),
@@ -102,7 +102,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Gunsmithing.md': ('f58521c86d5e74c0598718226516020edb66682ac24ad008e0fc3a1b634d71d3', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket'),
+    'guides/Guide_to_Gunsmithing.md': ('b05247d6fdd526757f19572e3eb039cf1dc79948aacd9c0adf14173f5c7095c9', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket'),
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('fc23f954b4a8120e96ff5ca78be457261658aadf18490fe6401780851dd174fa', 'new player beginner start first round basics'),
     'Hotkeys.md': ('d7184103137b1ff83ffe7cd7ebc94878df8ed5a5c0a4b6a66447c9e25d4292fb', 'hotkeys hotkey keys keyboard controls key press'),
