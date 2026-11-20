@@ -114,17 +114,31 @@ var/global/weather_storm_count = 0
 
 // ---- wind ---------------------------------------------------
 
-// The way the wind carries things, as a unit step. winddirection names where
-// the wind blows from (a ship sailing north into a "North" wind is slowest).
+// The compass heading the wind blows from, shared by storms and sailing.
+// Saved winds and current selection use the cardinal headings. The parser
+// also accepts diagonal headings without changing which winds are selected.
+/proc/weather_wind_from_dir(direction)
+	if (istext(direction))
+		var/heading = text2dir(direction)
+		if (heading)
+			return heading
+	return WEST
+
+// The opposite heading, as a grid step, not a normalized speed vector.
+// For example, a "North" wind carries a storm south.
 /proc/weather_wind_vector()
-	switch (map ? map.winddirection : "West")
-		if ("North")
-			return list(0, -1)
-		if ("South")
-			return list(0, 1)
-		if ("East")
-			return list(-1, 0)
-	return list(1, 0)
+	var/from_dir = weather_wind_from_dir(map?.winddirection)
+	var/wind_x = 0
+	var/wind_y = 0
+	if (from_dir & WEST)
+		wind_x = 1
+	else if (from_dir & EAST)
+		wind_x = -1
+	if (from_dir & SOUTH)
+		wind_y = 1
+	else if (from_dir & NORTH)
+		wind_y = -1
+	return list(wind_x, wind_y)
 
 // Distance backwards along a nonzero wind vector until the whole bounding
 // oval is outside one map edge. Choosing the nearer exit avoids overshooting

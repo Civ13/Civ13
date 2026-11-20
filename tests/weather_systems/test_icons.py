@@ -122,5 +122,71 @@ class StormArtTests(unittest.TestCase):
             self.assertNotIn(word, source)
 
 
+class WindDirectionTests(unittest.TestCase):
+    """Execute both wind consumers with a projected source lookup; no BYOND."""
+    COMPASS = dict(NORTH=1, SOUTH=2, EAST=4, WEST=8, NORTHEAST=5,
+                   NORTHWEST=9, SOUTHEAST=6, SOUTHWEST=10)
+    EXPECTED = {
+        "North": (1, [0, -1]), "East": (4, [-1, 0]),
+        "South": (2, [0, 1]), "West": (8, [1, 0]),
+        "Northeast": (5, [-1, -1]), "Northwest": (9, [1, -1]),
+        "Southeast": (6, [-1, 1]), "Southwest": (10, [1, 1]),
+        "northwest": (9, [1, -1]),
+        None: (8, [1, 0]), "": (8, [1, 0]), "not a heading": (8, [1, 0]),
+        1: (8, [1, 0]),
+    }
+
+    @classmethod
+    def setUpClass(cls):
+        spec = importlib.util.spec_from_file_location(
+            "weather_source_adapter", ROOT / "tests/save_movement/source_adapter.py")
+        cls.adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.adapter)
+        cls.weather = cls.adapter.read("code/modules/1713/weather_systems.dm")
+        cls.sailing = cls.adapter.read("code/modules/naval/points_of_sail.dm")
+        source = cls.adapter.read("code/_helpers/type2type.dm")
+        switch = cls.adapter.extract(source, "/proc/text2dir").strip()
+        header, *clauses = switch.splitlines()
+        if header != "switch(uppertext(direction))" or len(clauses) % 2:
+            raise AssertionError("Unsupported text2dir syntax")
+        cls.text_directions = {}
+        for case, result in zip(clauses[::2], clauses[1::2]):
+            name = re.fullmatch(r'\s*if\("([A-Z]+)"\)', case)
+            heading = re.fullmatch(r"\s*return ([A-Z]+)", result)
+            if not name or not heading:
+                raise AssertionError("Unsupported text2dir case")
+            cls.text_directions[name[1]] = cls.COMPASS[heading[1]]
+
+    def project(self, weather, sailing):
+        env = dict(self.COMPASS, istext=lambda value: isinstance(value, str),
+                   text2dir=lambda value: self.text_directions.get(value.upper()),
+                   list=lambda *items: list(items))
+        parser = self.adapter.project(weather, "/proc/weather_wind_from_dir", "direction", env)
+        env["weather_wind_from_dir"] = parser
+        sea = self.adapter.project(sailing, "/proc/wind_from_dir", "", env)
+        storm = self.adapter.project(weather, "/proc/weather_wind_vector", "", env)
+        return env, sea, storm
+
+    def assert_vectors(self, weather, sailing):
+        from types import SimpleNamespace
+
+        env, sea, storm = self.project(weather, sailing)
+        for direction, expected in self.EXPECTED.items():
+            with self.subTest(direction=direction):
+                env["map"] = SimpleNamespace(winddirection=direction)
+                self.assertEqual((sea(), storm()), expected)
+        env["map"] = None
+        self.assertEqual((sea(), storm()), self.EXPECTED[None])
+
+    def test_cardinal_diagonal_and_absent_winds(self):
+        self.assert_vectors(self.weather, self.sailing)
+
+    def test_wind_selection_remains_cardinal(self):
+        veer = self.adapter.extract(self.weather, "/proc/weather_veer")
+        self.assertIn('list("North", "East", "South", "West")', veer)
+        admin = self.adapter.read("code/modules/admin/verbs/time_of_day.dm")
+        self.assertIn('map.winddirection = pick("North", "South", "East", "West")', admin)
+
+
 if __name__ == "__main__":
     unittest.main()
