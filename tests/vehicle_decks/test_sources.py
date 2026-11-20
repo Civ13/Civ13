@@ -71,6 +71,42 @@ class VehicleDeckSources(unittest.TestCase):
         self.assertIn('if (fired_from_deck_axis && fired_from_deck_axis == F.axis)', PROJECTILE)
 
 
+    def test_projectile_deck_order_matches_original_for_all_small_cases(self):
+        # This is an offline model of the pure predicate and the unchanged
+        # riders-first ordering, not native BYOND projectile execution.
+        order = proc(PROJECTILE, '/obj/item/projectile/proc/projectile_tile_order(')
+        self.assertIn('if ((L == original || fired_from_deck_axis) && los_on_vehicle_deck(L))', order)
+        self.assertIn('return T.contents', order)
+        self.assertIn('return riders + (T.contents - riders)', order)
+        deck = proc(TERRAIN, '/proc/los_on_vehicle_deck(')
+        self.assertIn('return ismob(M) && M.vehicle_deck && M.vehicle_deck.loc == M.loc && isturf(M.loc)', deck)
+
+        def result(target, shot_from_deck, deck_flags, condition):
+            living = ('a', 'b', 'c')
+            contents = ('wall', 'a', 'b', 'c', 'other')
+            calls = []
+            def on_deck(mob):
+                calls.append(mob)
+                return deck_flags[living.index(mob)]
+            riders = [mob for mob in living if condition(mob, target, shot_from_deck, on_deck)]
+            return tuple(riders + [item for item in contents if item not in riders]), calls
+
+        old = lambda mob, target, fired, deck: deck(mob) and (mob == target or fired)
+        new = lambda mob, target, fired, deck: (mob == target or fired) and deck(mob)
+        wrong = lambda mob, target, fired, deck: (mob == target and deck(mob)) or fired
+        from itertools import product
+        for target, fired, flags in product((None, 'a', 'b', 'c', 'other'), (False, True), product((False, True), repeat=3)):
+            old_order, old_calls = result(target, fired, flags, old)
+            new_order, new_calls = result(target, fired, flags, new)
+            self.assertEqual(old_order, new_order, (target, fired, flags))
+            self.assertLessEqual(len(new_calls), len(old_calls))
+        # A stray, ground-fired shot skips every predicate call; a deck-fired
+        # shot still checks every body, including non-riders.
+        self.assertEqual(result(None, False, (True, False, True), new)[1], [])
+        self.assertEqual(result(None, True, (True, False, True), new)[1], ['a', 'b', 'c'])
+        self.assertNotEqual(result(None, True, (True, False, True), new)[0],
+                            result(None, True, (True, False, True), wrong)[0])
+
     def test_double_decker_bus(self):
         self.assertIn('carparts\\bus.dm', DME)
         self.assertIn('upper_deck = TRUE', BUS)
