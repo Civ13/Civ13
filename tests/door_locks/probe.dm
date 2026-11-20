@@ -147,6 +147,40 @@ var/door_locks_runtime = null
 	D.attackby(copy, west)
 	door_locks_assert(!D.door_lock.locked, "copy_unlocks")
 
+	// A pen label is display only: the key keeps its name underneath, still fits,
+	// copies carry it, and an empty label restores the original name.
+	var/key_name = key.name
+	var/key_code = key.code
+	key.set_key_label("Workshop")
+	door_locks_assert(key.name == "[key_name] (Workshop)" && key.key_label == "Workshop", "label_shown")
+	key.set_key_label("Storeroom")
+	door_locks_assert(key.name == "[key_name] (Storeroom)", "label_replaced_not_stacked")
+	door_locks_assert(key.code == key_code && key.key_family == "warded", "label_keeps_cut")
+	door_locks_hands(west, key, null)
+	D.attackby(key, west)
+	door_locks_assert(D.door_lock.locked, "labelled_key_locks")
+	D.attackby(key, west)
+	door_locks_assert(!D.door_lock.locked, "labelled_key_unlocks")
+	var/obj/item/weapon/key/blank/blank2 = new
+	door_locks_hands(west, blank2, key)
+	blank2.attackby(key, west)
+	var/obj/item/weapon/key/warded/copy2 = west.r_hand
+	door_locks_assert(istype(copy2) && copy2.code == key_code && copy2.name == key.name && copy2.key_label == "Storeroom", "copy_keeps_label")
+	copy2.set_key_label("")
+	door_locks_assert(copy2.name == key_name && !copy2.key_label && key.key_label == "Storeroom", "empty_label_clears_one_key")
+	var/obj/item/weapon/pen/pen = new
+	door_locks_hands(west, pen, null)
+	key.loc = west.loc
+	door_locks_assert(key.key_label_reachable(pen, west), "label_reachable_beside_writer")
+	var/obj/structure/closet/crate/box = new(locate(3, 5, 1))
+	key.loc = box
+	door_locks_assert(!key.key_label_reachable(pen, west), "label_not_reachable_in_container")
+	key.loc = west.loc
+	door_locks_hands(west, null, pen)
+	door_locks_assert(!key.key_label_reachable(pen, west), "label_needs_pen_in_hand")
+	qdel(pen)
+	qdel(box)
+
 	// A latch locks itself when the door shuts.
 	var/obj/structure/simple_door/L = door_locks_door(8, 5)
 	var/mob/living/human/latcher = door_locks_actor(7, 5, "Latcher")

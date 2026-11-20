@@ -899,6 +899,56 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 	var/key_family = "warded"
 	var/skeleton = FALSE
 	var/blank = FALSE
+	var/key_label = null // a player's pen nickname, display only
+	var/key_base_name = null // the name before any nickname was written on
+
+#define KEY_LABEL_MAX 24
+
+// The name a nickname is added to: the key's own name, kept from before labelling.
+/obj/item/weapon/key/proc/key_unlabelled_name()
+	return key_base_name || name
+
+// Display only: the code, family and lock fit are never touched.
+/obj/item/weapon/key/proc/set_key_label(label)
+	var/base = key_unlabelled_name()
+	label = sanitizeSafe(label, KEY_LABEL_MAX)
+	if (label)
+		key_base_name = base
+		key_label = label
+		name = "[base] ([label])"
+	else
+		name = base
+		key_label = null
+		key_base_name = null
+
+// Write on the key with a pen. Cancel leaves it alone; an empty label clears it.
+/obj/item/weapon/key/proc/label_with_pen(obj/item/weapon/pen/P, mob/user)
+	if (!key_label_reachable(P, user))
+		return TRUE
+	var/label = player_input(user, "Write a short label on the key (leave it empty to clear the label).", "Label key", key_label || "", "text", null, TRUE)
+	if (isnull(label))
+		return TRUE // cancelled
+	if (!key_label_reachable(P, user))
+		return TRUE // the pen, the key or the writer moved on while the prompt was open
+	set_key_label(label)
+	to_chat(user, key_label ? SPAN_NOTICE("You write \"[key_label]\" on \the [key_unlabelled_name()].") : SPAN_NOTICE("You rub the label off \the [src]."))
+	return TRUE
+
+// The pen is still in hand and the key is on the writer or on the floor beside them,
+// never inside someone else's container.
+/obj/item/weapon/key/proc/key_label_reachable(obj/item/weapon/pen/P, mob/user)
+	if (QDELETED(src) || QDELETED(P) || !user || user.incapacitated())
+		return FALSE
+	if (user.get_active_hand() != P)
+		return FALSE
+	if (loc == user)
+		return TRUE
+	return isturf(loc) && user.Adjacent(src)
+
+/obj/item/weapon/key/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/pen))
+		return label_with_pen(W, user)
+	return ..()
 
 /obj/item/weapon/key/warded
 	name = "iron key"
@@ -964,7 +1014,9 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 	var/turf/T = get_turf(src)
 	var/obj/item/weapon/key/copy = new cut_type(T)
 	copy.code = K.code
-	copy.name = K.name
+	copy.name = K.name // a copy keeps the original's name and any label on it
+	copy.key_base_name = K.key_base_name
+	copy.key_label = K.key_label
 	user.drop_from_inventory(src)
 	qdel(src)
 	user.put_in_hands(copy)
@@ -996,6 +1048,7 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 #undef LOCK_CRACK_TIME
 #undef LOCK_COPY_TIME
 #undef LOCK_FORCE_TIME
+#undef KEY_LABEL_MAX
 
 // ---- locks placed by mappers and event admins -----------------------------------
 
