@@ -45,13 +45,13 @@
 				if (T != src && T.anchored)
 					to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
 					return
-		if (do_after(user, 15, src))
+		if (do_ship_fixture_after(user, 15, src) && !QDELETED(src))
 			toggle_anchor(user)
 			return
 	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
-		if (do_after(user, 25, src))
+		if (do_ship_fixture_after(user, 25, src) && !QDELETED(src))
 			// Recover bed upholstery only after the wait, before frame output/deletion.
 			if (istype(src, /obj/structure/bed))
 				var/obj/structure/bed/B = src
