@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c02ce400da4e910a497e9491b5ef643e8ef25dc5'
+WIKI_REVIEWED_REVISION = 'b4985faeb1d501b95881af1ef435fd341091a55b'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('68f043ddc232b3d7c6043122a858695c3478f66e35c4ea0e2c5d74f032de44cf', 'character skills traits languages'),
@@ -95,13 +95,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Beekeeping.md': ('b977db7511ce86997466d4f929d03099d7f7f8e03c7336356534f5d6c5e7c8f6', 'bees bee beekeeping hive hives honey honeycomb beeswax wax candle swarm sting stings smoker extractor pollination mead sealing veil'),
     'guides/Guide_to_Mice.md': ('f458302a6b440e2d63417b553f75446470dcf256920a0f216f03ad5263fd3584', 'mice mouse nest nests rats pests vermin mousetrap poison bait fleas plague cats wildcat'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
-    'guides/Guide_to_Research.md': ('631a1bacd95a4e930bc38c2c033cab6c3fe8aa581d2d81d39b8dcec771e4b044', 'research unlock study technology research bench'),
+    'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('3fed9e0a89200bdf645d669b2a53078d4bc20dd90de43155d2e0d6761135aca2', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('9a9624b8100b78c30e2dba394b9276a1b7c72eab5f875b03c80ca3294c0b9d2c', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
-    'guides/Guide_to_Trenches.md': ('e66a1030eab5bc320164c330140dbd6a94acbcd6fd121ab6979e9f468edcb5ad', 'trench trenches fortification sandbag dig shovel'),
+    'guides/Guide_to_Trenches.md': ('ac2a6dab9b5aac3051a30f35809e9ddf770387219996f75df90aa90d438847a6', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Gunsmithing.md': ('b05247d6fdd526757f19572e3eb039cf1dc79948aacd9c0adf14173f5c7095c9', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket'),
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('fc23f954b4a8120e96ff5ca78be457261658aadf18490fe6401780851dd174fa', 'new player beginner start first round basics'),
@@ -120,7 +120,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('cf96d4338fb29ef4972cacf958629f845b68453a5bde35b3a6b5902a174c51f4', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('bf5c3f6440dd5bb22de5bc4e1aaf3a53a94b31af0f2235d7eea7a94078375350', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
+    'guides/Guide_to_Aircraft.md': ('56a33c3e86b252b58df3c72ee3a7c44ca1dc49567b9408e226394b55c68041d9', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
