@@ -1,4 +1,4 @@
-"""Meat grinder: one batch, one crank (issue #4878)."""
+"""Meat grinder: one batch, one crank (issues #4878, #6275)."""
 from pathlib import Path
 import unittest
 
@@ -26,16 +26,22 @@ class MeatGrinderCrankTest(unittest.TestCase):
         guard = self.crank.index('if (cranking)')
         self.assertEqual(self.crank[guard:].splitlines()[2].strip(), 'return')
         claim = self.crank.index('cranking = TRUE')
-        wait = self.crank.index('do_after(user, 35)')
+        wait = self.crank.index('do_after(user, 35, src)')
         self.assertTrue(guard < claim < wait)
 
     def test_claim_is_released_after_any_wait_and_output_needs_a_batch(self):
-        wait = self.crank.index('do_after(user, 35)')
+        wait = self.crank.index('do_after(user, 35, src)')
         release = self.crank.index('cranking = FALSE')
         output = self.crank.index('new /obj/item/weapon/reagent_containers/food/snacks/mince')
         self.assertTrue(wait < release < output)
-        self.assertIn('if (cranked && input != null)', self.crank)
+        self.assertIn('if (cranked && !QDELETED(src) && user.Adjacent(src) && input != null)', self.crank)
         self.assertLess(self.crank.index('input = null'), len(self.crank))
+
+    def test_moving_the_grinder_interrupts_the_crank(self):
+        # do_after tracks the grinder's location, and reach is rechecked before output (#6275).
+        self.assertIn('do_after(user, 35, src)', self.crank)
+        output = self.crank.index('new /obj/item/weapon/reagent_containers/food/snacks/mince')
+        self.assertLess(self.crank.index('user.Adjacent(src)'), output)
 
     def test_loaded_batch_is_not_a_deleted_item_reference(self):
         self.assertNotIn('input = W\n', self.load + '\n')
