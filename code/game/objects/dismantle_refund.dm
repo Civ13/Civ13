@@ -21,6 +21,10 @@ var/global/list/crafted_refund_units_cache = list()
 	return crafted_refund_units_cache[key] || 0
 
 /proc/crafted_refund_stack(path, fallback = null)
+	if (fallback == /obj/item/stack/material/wood && ispath(path, /obj/structure))
+		var/obj/structure/S = path
+		if (!initial(S.dismantle_wood_fallback))
+			fallback = null // fired pottery and the like are not wood
 	var/key = "[path]"
 	if (key in crafted_refund_stack_cache)
 		var/cached = crafted_refund_stack_cache[key]
