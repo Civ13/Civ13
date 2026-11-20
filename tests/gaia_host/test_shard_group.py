@@ -2559,6 +2559,17 @@ class HandoverTests(unittest.TestCase):
             return dict(answer, clients=0) if port == self.LIVE and action == 'status' else answer
         self.machine.query = empty
 
+    def recover_current_build(self, host):
+        self.machine.up.clear()
+        before = host.read_state()
+        accepted = host.request('start-current')
+        if before.get('revision') == host.staged_revision() and not before.get('retryable'):
+            self.assertEqual((host.read_json(host.failed_handover_file) or {}).get('revision'), before.get('revision'), before)
+        with mock.patch.object(host, 'do_start'):
+            host.work('start-current', accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done')
+        self.machine.up.add(self.LIVE)
+
     def test_automatic_handover_loads_the_standby_before_releasing_mainland(self):
         group, host = self.staged()
         self.empty_live_world()
@@ -2574,6 +2585,19 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(host.read_state()['phase'], 'failed')
         self.assertIn(self.LIVE, self.machine.up)
         self.assertFalse(any(action == 'handover_release' for _, action, _ in self.actions))
+        self.recover_current_build(host)
+        host = self.host(group, 'gaia')  # a new host process must see the same rejection
+        self.assertTrue(host.failed_staged_handover())
+        self.assertIsNone(host.idle_update_action())
+        self.machine.detached.clear()
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] == 'auto-handover'])
+
+        self.machine.revision = 'f' * 40
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.staged_revision(), 'f' * 40)
+        self.assertFalse(host.failed_staged_handover())
+        self.assertEqual(host.idle_update_action(), 'auto-handover')
 
     def test_automatic_handover_defers_if_player_arrives_before_lock(self):
         group, host = self.staged()
@@ -2583,6 +2607,47 @@ class HandoverTests(unittest.TestCase):
         self.assertIn('not confirmed empty', host.read_state()['error'])
         self.assertFalse(any(action == 'handover_save' for _, action, _ in self.actions))
         self.assertIn(self.LIVE, self.machine.up)
+        self.recover_current_build(host)
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_automatic_handover_failed_save_remains_rejected_after_recovery(self):
+        group, host = self.staged(save_error='World save failed; server remains running')
+        self.empty_live_world()
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.assertIn('World save failed', host.read_state()['error'])
+        self.recover_current_build(host)
+        self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_manual_update_handover_failure_and_retry_survive_recovery(self):
+        group, host = self.staged(load_error='invalid save')
+        host.work('update-handover', host.request('update-handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed', host.read_state())
+        self.assertIn('invalid save', host.read_state()['error'])
+        self.assertTrue(host.failed_staged_handover())
+        self.recover_current_build(host)
+        host = self.host(group, 'gaia')
+        self.assertTrue(host.failed_staged_handover())
+
+        accepted = host.request('update-handover')
+        self.assertFalse(host.failed_handover_file.exists())
+        with mock.patch.object(host, 'do_handover') as handover:
+            host.work('update-handover', accepted['operation'])
+        handover.assert_called_once_with(accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done')
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_failed_manual_update_handover_retry_rejects_revision_again(self):
+        group, host = self.staged(load_error='invalid save')
+        self.empty_live_world()
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.recover_current_build(host)
+        accepted = host.request('update-handover')
+        self.assertFalse(host.failed_handover_file.exists())
+        host.work('update-handover', accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed', host.read_state())
+        self.assertTrue(host.failed_staged_handover())
+        self.recover_current_build(host)
+        self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
 
     def test_automatic_handover_defers_if_player_arrives_during_standby_boot(self):
         group, host = self.staged()
@@ -2599,6 +2664,8 @@ class HandoverTests(unittest.TestCase):
         self.assertIn(self.LIVE, self.machine.up)
         self.assertNotIn(self.STANDBY, self.machine.up)
         self.assertFalse(any(action == 'handover_save' for _, action, _ in self.actions))
+        self.recover_current_build(host)
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
 
     def test_automatic_handover_never_uses_legacy_stop_and_start(self):
         group, host = self.staged()
@@ -2615,6 +2682,14 @@ class HandoverTests(unittest.TestCase):
         self.assertIn('automatic update deferred', host.read_state()['error'])
         stop.assert_not_called()
         update.assert_not_called()
+        self.recover_current_build(host)
+        host = self.host(group, 'gaia')
+        self.assertTrue(host.failed_staged_handover())
+        accepted = host.request('handover')  # an explicit manual retry is allowed
+        with mock.patch.object(host, 'do_handover'):
+            host.work('handover', accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done')
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
 
     def test_mainland_cold_wake_uses_recorded_build_without_refresh(self):
         group, host = self.staged()

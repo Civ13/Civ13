@@ -1227,12 +1227,12 @@ class Host:
             # Empty and saved: the moment to swap in a staged build without kicking anyone.
             try:
                 action = self.idle_update_action()
-                if not action:
-                    return idle_since, 30
-                self.log(dict(self.request(action), reason='installing the staged build while the world is empty'))
+                if action:
+                    self.log(dict(self.request(action), reason='installing the staged build while the world is empty'))
+                    return None, 30
             except Refused as refusal:
                 self.log({'staged_install_refused': str(refusal)})
-            return None, 30
+                return None, 30
         try:
             self.log(self.freeze())
             # Only a world with a save can start again from it; one never played stays frozen.

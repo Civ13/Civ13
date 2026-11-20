@@ -747,6 +747,7 @@ class RegionHost(Host):
         self.stage_lock = self.state_dir / 'stage.lock'
         self.stage_file = self.state_dir / 'stage.json'
         self.staged_file = self.state_dir / 'staged.json'
+        self.failed_handover_file = self.state_dir / 'failed-handover.json'
         # update-offline: install the build into the stopped region as soon as its stage is ready.
         self.install_marker = self.state_dir / 'install-after-stage'
         self.next_install_attempt = 0.0  # update_while_empty: when to try a refused handover again
@@ -1123,8 +1124,11 @@ class RegionHost(Host):
 
     def failed_staged_handover(self):
         last = self.read_state()
-        return (last.get('action') in ('handover', 'auto-handover') and last.get('phase') == 'failed'
-                and not last.get('retryable') and last.get('revision') == self.staged_revision())
+        staged = self.staged_revision()
+        rejected = self.read_json(self.failed_handover_file) or {}
+        return bool(staged and (rejected.get('revision') == staged or
+                    (last.get('action') in ('handover', 'auto-handover', 'update-handover') and last.get('phase') == 'failed'
+                     and not last.get('retryable') and last.get('revision') == staged)))
 
     def stage_if_behind(self):
         """Stage the latest revision when the region's build is behind it; at most once per
@@ -1338,7 +1342,18 @@ class RegionHost(Host):
             return self.update_asleep()
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
-        return super().request(action)
+        # The next operation replaces state.json, including a failed handover's revision.
+        # Preserve that rejection across recovery starts and host process restarts.
+        last = self.read_state()
+        if (last.get('action') in ('handover', 'auto-handover', 'update-handover') and last.get('phase') == 'failed'
+                and not last.get('retryable') and last.get('revision') == self.staged_revision()
+                and last.get('revision')):
+            self.write_json(self.failed_handover_file, {'revision': last['revision']})
+        result = super().request(action)
+        if action in ('handover', 'update-handover'):
+            # A person explicitly chose to retry, so let its outcome govern later attempts.
+            self.failed_handover_file.unlink(missing_ok=True)
+        return result
 
     def watch_step(self, idle_since):
         if fresh_world.pending(self).exists() or (self.lock.exists() and self.read_state().get('action') == 'fresh-world'):

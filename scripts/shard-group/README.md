@@ -479,6 +479,9 @@ wake or watchdog recovery; it takes an update only after an awake, empty and
 saved standby handover. An older mainland build without handover support defers
 automatic updates until an operator updates it manually. A nonpersistent
 mainland likewise defers, because it has no save for the standby to validate.
+If the recorded mainland build is missing or changed, automatic recovery is
+refused for manual investigation. A rejected handover revision stays rejected
+across recovery; an explicit handover retry or a different revision can proceed.
 Non-mainland cold regions can take the build at their next start. It
 never wipes a world. The key is read at each
 check, so the launcher's **Update when empty** toggle applies without a setup;
