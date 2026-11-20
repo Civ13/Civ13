@@ -16,6 +16,10 @@
 		var/mob/living/human/H = parent
 		metabolism_type = H.species.reagent_tag
 
+	if (islist(reagent_list) && !reagent_list.len)
+		total_volume = 0
+		return
+
 	for (var/datum/reagent/current in reagent_list)
 		current.on_mob_life(parent, metabolism_type, metabolism_class)
 	update_total()
