@@ -721,8 +721,8 @@ var/global/list/sewer_pump_fuel_rates = list(
 		to_chat(user, SPAN_NOTICE("It is [working() ? "running" : "stopped"]. Its valve shuts the drain against a rising river either way."))
 
 /obj/structure/sewer_pump/steam
-	name = "steam pumping engine"
-	desc = "A coal-fired beam engine that lifts a drain's water and waste out over a river, flood or not. Its valve shuts the drain against the river while it stands idle. Feed it coal, charcoal or wood."
+	name = "steam sewer pump"
+	desc = "A steam pump for a sewer outfall, not a cellar, mine or ship's bilge. It lifts the drain's water and waste into a river even in a flood. Feed it coal, charcoal or wood."
 	icon_state = "pump_steam"
 	state_prefix = "pump_steam"
 	pump_rate = 6
@@ -762,7 +762,7 @@ var/global/list/sewer_pump_fuel_rates = list(
 /obj/structure/sewer_pump/steam/examine(mob/user, distance = -1)
 	. = ..()
 	if (. && get_dist(src, user) <= 2)
-		to_chat(user, SPAN_NOTICE("It has fuel for [fuel] minute\s of pumping."))
+		to_chat(user, SPAN_NOTICE("Use it on a sewer outfall. It does not pump a cellar, mine or ship's bilge. It has fuel for [fuel] minute\s of pumping."))
 
 /obj/structure/sewer_pump/electric
 	name = "electric sewage pump"
