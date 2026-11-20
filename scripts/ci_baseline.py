@@ -471,6 +471,9 @@ SUITES = {
     'lava_animal_remains': {'files': ('tests/lava_animal_remains/test_callback.py',),
         'paths': ('tests/lava_animal_remains/',), 'shared_paths': (
             'code/modules/1713/natural_disasters.dm',)},
+    'fallout_area_lookup': {'files': ('tests/fallout_area_lookup/test_fallout_scan.py',),
+        'paths': ('tests/fallout_area_lookup/',), 'shared_paths': (
+            'code/modules/1713/radiation.dm', 'tests/save_movement/source_adapter.py')},
     # Weather system icons are the existing sheet tiled by tools/weather/make_chunks.py.
     'weather_systems': {'files': ('tests/weather_systems/test_icons.py',),
         'paths': ('tests/weather_systems/', 'tools/weather/'),
