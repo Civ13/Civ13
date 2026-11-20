@@ -2597,7 +2597,7 @@ RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,4,50,0,1,weap
 RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,6,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,8,90,0,1,weapons,0,22,0,2,wood
-RECIPE: /material/wood/soft/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,2,wood
+RECIPE: /material/wood/soft/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,3,wood
 RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl/unedged,5,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,tepoztopilli,/obj/item/weapon/macuahuitl/tepoztopilli/unedged,4,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0,1,weapons,0,95,0,8,null
