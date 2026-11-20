@@ -632,7 +632,7 @@ SUITES = {
     'newspaper_reading': {'files': ('tests/newspaper_reading/test_reading.py',),
         'paths': ('tests/newspaper_reading/',), 'shared_paths': (
             'code/modules/1713/newspaper.dm', 'tests/save_movement/source_adapter.py')},
-    'football_tackle': {'files': ('tests/football_tackle/test_target.py',),
+    'football_tackle': {'files': ('tests/football_tackle/test_target.py', 'tests/football_tackle/test_catch.py'),
         'paths': ('tests/football_tackle/',), 'shared_paths': (
             'code/modules/1713/football.dm', 'tests/save_movement/source_adapter.py')},
     # Every piano, violin, shamisen and trumpet note resolves to a real .ogg
