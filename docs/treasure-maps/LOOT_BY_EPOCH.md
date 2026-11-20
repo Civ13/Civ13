@@ -1,5 +1,9 @@
 # Buried Ruins loot by epoch
 
+The amounts below define the middle Expedition reference.
+[Difficulty-tier profiles](EXPEDITION_TIERS.md) change budget and vault
+selection, not the items allowed by an origin epoch.
+
 Each era should reward the kind of expedition it depicts, without making ruins
 the only source of technology or the best way to gather ordinary materials.
 This proposal covers the ten source-defined Persistence epochs, using the

@@ -10,6 +10,8 @@ palette to arrivals and reviews which finishes players can actually build.
 The latest [corridor pass](CORRIDORS_AND_DOORS.md) adds continuous paving,
 open landings, and optional stock doors. The [epoch loot proposal](LOOT_BY_EPOCH.md)
 uses one capped, immutable profile per expedition without granting research.
+The [three difficulty tiers](EXPEDITION_TIERS.md) scale route choices, time and reward
+independently of the epoch.
 Diving, underwater sites, and live activation are out of scope.
 
 ## Find and follow the map
