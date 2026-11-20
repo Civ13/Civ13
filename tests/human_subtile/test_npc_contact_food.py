@@ -1,6 +1,8 @@
 """Offline source projections for settled contact and selective food stops."""
 from pathlib import Path
 from types import SimpleNamespace
+import ast
+import itertools
 import sys
 import unittest
 
@@ -86,6 +88,51 @@ class ContactAndFood(unittest.TestCase):
         self.assertIn('if (prob(33))', food)
         self.assertIn('npc_set_combat_target(ML)', food)
 
+
+class PredatorPreySelection(unittest.TestCase):
+    def test_predator_guards_and_negative_controls(self):
+        food = AI.read_text(encoding='utf-8').split('/mob/living/simple_animal/proc/check_food()', 1)[1]
+        guards = [line.strip()[4:-1] for line in food.splitlines()
+                  if line.strip().startswith('if (') and 'ML.mob_size <= mob_size' in line]
+        self.assertEqual(len(guards), 2)
+        self.assertEqual(food.count('if (ishuman(ML) && !predator_will_hunt(ML))'), 2)
+
+        def select(guard, small, hostile, same, ancestor, actor_hostile):
+            replacements = (
+                ('ML.mob_size <= mob_size', 'small'),
+                ('istype(ML, /mob/living/simple_animal/hostile)', 'hostile'),
+                ('istype(ML, type)', 'same'),
+                ('istype(src, ML.type)', 'ancestor'),
+                ('istype(src, /mob/living/simple_animal/hostile)', 'actor_hostile'),
+                ('&&', ' and '), ('||', ' or '), ('!', ' not '),
+            )
+            for old, new in replacements:
+                guard = guard.replace(old, new)
+            tree = ast.parse(guard.strip(), mode='eval')
+            allowed = (ast.Expression, ast.BoolOp, ast.And, ast.Or, ast.UnaryOp,
+                       ast.Not, ast.Name, ast.Load)
+            self.assertTrue(all(isinstance(node, allowed) for node in ast.walk(tree)))
+            return bool(eval(compile(tree, '<prey guard>', 'eval'), {'__builtins__': {}},
+                             dict(small=small, hostile=hostile, same=same,
+                                  ancestor=ancestor, actor_hostile=actor_hostile)))
+
+        # Larger hostile prey are excluded; smaller/equal and passive prey pass.
+        prey_allowed = {(False, False): True, (False, True): False,
+                        (True, False): True, (True, True): True}
+        for phase, guard in enumerate(guards):
+            for small, hostile, same, ancestor, actor_hostile in itertools.product((False, True), repeat=5):
+                expected = prey_allowed[small, hostile] and not same and not ancestor
+                if phase == 0:
+                    expected = expected and actor_hostile
+                with self.subTest(phase=phase, small=small, hostile=hostile,
+                                  same=same, ancestor=ancestor, actor_hostile=actor_hostile):
+                    self.assertEqual(select(guard, small, hostile, same, ancestor, actor_hostile), expected)
+            # Controls must detect rejecting large passive or small hostile prey.
+            term = ' || !istype(ML, /mob/living/simple_animal/hostile)'
+            self.assertIn(term, guard)
+            self.assertFalse(select(guard.replace(term, ''), False, False, False, False, True))
+            self.assertFalse(select(guard.replace(term, term.replace(' || ', ' && ')),
+                                    True, True, False, False, True))
 
 if __name__ == '__main__':
     unittest.main()
