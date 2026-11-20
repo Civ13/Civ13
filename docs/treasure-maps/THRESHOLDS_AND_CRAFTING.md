@@ -1,5 +1,8 @@
 # Room thresholds and constructible floors
 
+The [corridor follow-up](CORRIDORS_AND_DOORS.md) develops these initial
+thresholds into continuous passages with and without doors.
+
 Keep the approved three-finish [room palettes](COHESIVE_FLOORS.md). This
 iteration makes the passage into a room readable: stock edge material spans
 the whole three-tile lane. Where there is room to widen a guardroom or vault

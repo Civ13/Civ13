@@ -7,6 +7,8 @@ and the [latest matching floor families](COHESIVE_FLOORS.md). The earlier
 [five-style pattern study](FLOOR_PATTERNS.md) remains available for comparison.
 The [threshold follow-up](THRESHOLDS_AND_CRAFTING.md) applies the approved
 palette to arrivals and reviews which finishes players can actually build.
+The latest [corridor pass](CORRIDORS_AND_DOORS.md) adds continuous paving,
+open landings, and optional stock doors.
 Diving, underwater sites, and live activation are out of scope.
 
 ## Find and follow the map
