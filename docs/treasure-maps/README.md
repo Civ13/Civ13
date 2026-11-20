@@ -8,7 +8,8 @@ and the [latest matching floor families](COHESIVE_FLOORS.md). The earlier
 The [threshold follow-up](THRESHOLDS_AND_CRAFTING.md) applies the approved
 palette to arrivals and reviews which finishes players can actually build.
 The latest [corridor pass](CORRIDORS_AND_DOORS.md) adds continuous paving,
-open landings, and optional stock doors.
+open landings, and optional stock doors. The [epoch loot proposal](LOOT_BY_EPOCH.md)
+uses one capped, immutable profile per expedition without granting research.
 Diving, underwater sites, and live activation are out of scope.
 
 ## Find and follow the map
