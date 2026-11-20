@@ -310,9 +310,11 @@ var/list/flooring_cache = list()
 	terrain_shade_icon()
 
 /turf/floor/proc/get_flooring_overlay(var/cache_key, var/icon_base, var/icon_dir = FALSE, var/edge_icon)
-	if (!flooring_cache[cache_key])
-		var/icon/use_icon = edge_icon ? edge_icon : flooring.icon
-		var/image/I = image(icon = use_icon, icon_state = icon_base, dir = icon_dir)
-		I.layer = layer
-		flooring_cache[cache_key] = I
+	var/cached_overlay = flooring_cache[cache_key]
+	if (cached_overlay)
+		return cached_overlay
+	var/icon/use_icon = edge_icon ? edge_icon : flooring.icon
+	var/image/I = image(icon = use_icon, icon_state = icon_base, dir = icon_dir)
+	I.layer = layer
+	flooring_cache[cache_key] = I
 	return flooring_cache[cache_key]

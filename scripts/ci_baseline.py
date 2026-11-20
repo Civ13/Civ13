@@ -950,7 +950,7 @@ SUITES = {
             'icons/obj/guns/', 'icons/mob/items/lefthand_guns.dmi',
             'icons/mob/items/righthand_guns.dmi', 'icons/mob/back.dmi', 'civ13.dme')},
     # Ploughed field sprite selection and load restore projected from production DM.
-    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py',),
+    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py', 'tests/ploughed_field_icon/test_floor_overlay_cache.py'),
         'paths': ('tests/ploughed_field_icon/',), 'shared_paths': (
             'code/game/turfs/flooring/flooring_premade.dm',
             'code/game/turfs/flooring/flooring.dm',
