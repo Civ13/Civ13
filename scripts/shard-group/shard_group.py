@@ -767,7 +767,7 @@ class RegionHost(Host):
         if stage and not self.stage_failure_superseded(stage):
             report['stage'] = dict(stage, pending=self.update_pending())
         report['build'] = self.live_dmb_name()
-        if self.lock.exists() and (self.read_state() or {}).get('action') == 'handover':
+        if self.lock.exists() and (self.read_state() or {}).get('action') in ('handover', 'auto-handover'):
             port = self.standby_port()
             report['standby'] = {'port': port, 'listening': self.platform.listening(port)}
         return report
@@ -1098,6 +1098,34 @@ class RegionHost(Host):
     def update_when_empty(self):
         return self.update_settings()[0]
 
+    def protects_mainland_uptime(self):
+        try:
+            return load_group(self.config['group_config'])['mainland'] == self.config['region']
+        except (OSError, ValueError, KeyError):
+            return True  # a missing policy must not turn an automatic update into a restart
+
+    def automatic_start_action(self):
+        return 'start-current' if self.protects_mainland_uptime() else super().automatic_start_action()
+
+    def idle_update_action(self):
+        if not self.protects_mainland_uptime():
+            return super().idle_update_action()
+        try:
+            return ('auto-handover' if load_group(self.config['group_config'])['persistent']
+                    and not self.failed_staged_handover() else None)
+        except (OSError, ValueError, KeyError):
+            return None
+
+    def install_staged_while_down(self):
+        if self.protects_mainland_uptime():
+            return False
+        return super().install_staged_while_down()
+
+    def failed_staged_handover(self):
+        last = self.read_state()
+        return (last.get('action') in ('handover', 'auto-handover') and last.get('phase') == 'failed'
+                and not last.get('retryable') and last.get('revision') == self.staged_revision())
+
     def stage_if_behind(self):
         """Stage the latest revision when the region's build is behind it; at most once per
         update_check_minutes (each check fetches). True when a stage was started."""
@@ -1142,12 +1170,10 @@ class RegionHost(Host):
             now = self.platform.now()
             if now < self.next_install_attempt:
                 return None
-            last = self.read_state()
-            if (last.get('action') == 'handover' and last.get('phase') == 'failed'
-                    and last.get('revision') == self.staged_revision()):
+            if self.failed_staged_handover():
                 return None  # this build already failed to take over (its load or save failed); a person looks
             try:
-                self.log(dict(self.request('handover'), reason='installing the update while the world is empty'))
+                self.log(dict(self.request('auto-handover'), reason='installing the update while the world is empty'))
             except Refused as refusal:
                 # Low memory, a busy world, ...: try again after the next check interval, never
                 # by a plain restart, which would load the save on the new build unchecked.
@@ -1171,7 +1197,7 @@ class RegionHost(Host):
         except (OSError, ValueError):
             return None
         region = next((r for r in group['regions'] if r['id'] == self.config['region']), None)
-        if group['persistent'] or not region or region['kind'] == 'BATTLE':
+        if group['persistent'] or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
             return None  # saving groups hand over instead; a battle updates when its round ends
         if not self.battle_moved_on(group):
             # Val (2026-11-18): a restart per merge pinged Discord every few minutes. The
@@ -1305,7 +1331,7 @@ class RegionHost(Host):
         if fresh_world.pending(self).exists():
             raise Refused('interrupted fresh-world archive: manual recovery required before any host action')
         # Checked before the lock: taking it would create the folder setup needs empty.
-        if action in ('start', 'restart', 'update', 'handover', 'update-unsaved', 'update-handover') and not (self.repo / '.git').exists():
+        if action in ('start', 'start-current', 'restart', 'update', 'handover', 'auto-handover', 'update-unsaved', 'update-handover') and not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.frozen():
             # Host.request would wake it first, only to refuse it as running.
@@ -1332,8 +1358,10 @@ class RegionHost(Host):
     def precheck(self, action):
         # start compiles a missing or stale build itself (Host.do_refresh), so a
         # region with no build yet is not refused.
-        if action == 'handover':
+        if action in ('handover', 'auto-handover'):
             return self.precheck_handover()
+        if action == 'start-current' and not self.built_revision():
+            raise Refused('the current region build is missing or changed; manual recovery is required')
         if action == 'update-handover':
             # The build is made by the action itself; the handover checks run once it is ready.
             if self.frozen():
@@ -1492,7 +1520,20 @@ class RegionHost(Host):
             raise Refused('only %d MB free on the disk; %s, so it needs %d MB (min_free_disk_mb)'
                           % (free, why, need))
 
-    def do_handover(self, operation):
+    def do_start_current(self, operation):
+        if not self.built_revision():
+            raise RuntimeError('the current region build is missing or changed')
+        self.do_start(operation)
+
+    def startup_revision(self):
+        if self.read_state().get('action') == 'start-current':
+            return self.built_revision() or ''
+        return super().startup_revision()
+
+    def do_auto_handover(self, operation):
+        self.do_handover(operation, automatic=True)
+
+    def do_handover(self, operation, automatic=False):
         group = load_group(self.config['group_config'])
         region = next(r for r in group['regions'] if r['id'] == self.config['region'])
         revision = self.staged_revision()
@@ -1507,6 +1548,9 @@ class RegionHost(Host):
             raise RuntimeError('the world gave no valid session')
         if self.platform.listening(spare_port):
             raise RuntimeError('port %d (the standby port) is in use' % spare_port)
+        if automatic and 'handover' not in before:
+            self.record(revision=revision)
+            raise RuntimeError('the running build cannot hand over; automatic update deferred')
         if 'handover' not in before:
             # The running build predates handovers (its status has no handover field), so it
             # cannot freeze and save for a standby: the first update onto a build that can is
@@ -1519,9 +1563,18 @@ class RegionHost(Host):
             self.record(phase='restarted onto the staged build', revision=revision, staged=True, legacy=True)
             return
         with self.handover_slot():
-            self.handover_work(operation, group, region, revision, port, spare_port, token, before, session)
+            if automatic:
+                before = self.world()
+                if not before or before.get('busy') or not before.get('ready') or before.get('clients') != 0:
+                    raise RuntimeError('the world is not confirmed empty and ready; automatic update deferred')
+                if not self.saved_since_last_client():
+                    raise RuntimeError('the world has not saved since the last player; automatic update deferred')
+                session = before.get('session', '')
+                if not gaia_host.HEX32.match(session or '') or 'handover' not in before:
+                    raise RuntimeError('the world no longer supports a safe handover')
+            self.handover_work(operation, group, region, revision, port, spare_port, token, before, session, automatic)
 
-    def handover_work(self, operation, group, region, revision, port, spare_port, token, before, session):
+    def handover_work(self, operation, group, region, revision, port, spare_port, token, before, session, automatic=False):
         if self.platform.listening(spare_port):
             raise RuntimeError('port %d (the standby port) is in use' % spare_port)
         spare = self.spare_dmb_name()
@@ -1552,6 +1605,12 @@ class RegionHost(Host):
         generation = None
         backup = None
         try:
+            if automatic:
+                before = self.world()
+                if (not before or before.get('busy') or not before.get('ready') or before.get('clients') != 0
+                        or before.get('session') != session or not self.saved_since_last_client()):
+                    self.record(retryable=True)
+                    raise RuntimeError('the world is no longer confirmed empty and ready; automatic update deferred')
             warning = self.shutdown_warning()
             if before.get('clients') and warning and before.get('shutdown_warning'):
                 self.record(phase='warning players (%d s), then saving' % warning, clients=before.get('clients'))
@@ -1731,7 +1790,7 @@ class RegionHost(Host):
     def kill(self, reason='forced stop', keep_running=False):
         """A forced stop during a handover also ends its standby, so the update cannot bring
         back a region a person stopped; the handover sees killed.json and gives up."""
-        handing_over = self.lock.exists() and self.read_state().get('action') in ('handover', 'update-handover')
+        handing_over = self.lock.exists() and self.read_state().get('action') in ('handover', 'auto-handover', 'update-handover')
         if handing_over:
             self.note_kill_during_action(reason)
             standby = self.stop_standby(self.standby_port())

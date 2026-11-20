@@ -450,8 +450,8 @@ The host service (`gaia_host.py serve`) installs a ready build by itself:
 - an awake region that is empty and has saved since its last player (the moment
   it would otherwise go to sleep) is restarted, and its `update` copies
   `region.dmb` and `region.rsc` from the staging worktree instead of compiling;
-- an asleep region is stopped (it saved before it froze) and a cold one is
-  updated the same way, so its next wake starts on the new build.
+- an asleep or cold non-mainland region can take the staged build before its
+  next wake. The mainland retains its existing build until a standby handover.
 
 A staged build is never installed over a newer build, and an `update` of any
 other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
@@ -469,13 +469,17 @@ never a plain restart: the handover backs up the save, the new build loads it
 beside the running world, and only a successful load takes the port. A save the
 new code cannot read (an unknown durable timer, say) fails that load and the old
 world plays on; that build is not tried again unattended, and a refused handover
-(low memory) waits for the next check rather than restarting. A player joining meanwhile holds the
-restart until the region is empty again, a failed build leaves the world
+(low memory) waits for the next check rather than restarting. The host checks
+for players again after the standby boots and defers if anyone has joined; this
+status check is not atomic with the subsequent save request. A failed build leaves the world
 running (and is not retried until the revision changes or a Build update runs).
-Asleep and cold regions
-are staged the same way; an asleep region keeps its old build (the host service
-does not install into it) until it is next awake, empty and saved, when it hands
-over like any other, and a cold region takes the build at its next start. It
+Asleep and cold regions are staged the same way. The mainland keeps its old
+build while asleep or cold and automatically starts that recorded build on a
+wake or watchdog recovery; it takes an update only after an awake, empty and
+saved standby handover. An older mainland build without handover support defers
+automatic updates until an operator updates it manually. A nonpersistent
+mainland likewise defers, because it has no save for the standby to validate.
+Non-mainland cold regions can take the build at their next start. It
 never wipes a world. The key is read at each
 check, so the launcher's **Update when empty** toggle applies without a setup;
 turning it on also sets `fetch: origin` and `revision: origin/master` for a
