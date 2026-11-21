@@ -970,6 +970,7 @@
 #include "code\modules\1713\factory_pipes.dm"
 #include "code\modules\1713\factory_plumbing.dm"
 #include "code\modules\1713\fat_lights.dm"
+#include "code\modules\1713\feels_like.dm"
 #include "code\modules\1713\offshore_rig.dm"
 #include "code\modules\1713\piece_projects.dm"
 #include "code\modules\1713\piped_barrel.dm"

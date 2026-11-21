@@ -54,6 +54,7 @@ REVIEWED = {
     'familiar_last_use': 'declared var/tmp/list on humans (familiarity.dm), so never saved',
     'next_familiar_click': 'declared var/tmp on humans (familiarity.dm), so never saved',
     'frost_nipped_at': 'declared var/tmp on crops (crop_frost.dm), so never saved',
+    'next_feels_like_message': 'declared var/tmp on humans (feels_like.dm), so never saved',
     'spirit_hud_ends': 'declared var/tmp on ghosts (spirit_hud.dm), so never saved',
 }
 
