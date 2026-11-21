@@ -27,6 +27,11 @@ class FalseBottomSource(unittest.TestCase):
         self.assertIn('invisibility = 101', decl)
         self.assertIn('mouse_opacity = 0', decl)
 
+    def test_knowers_survive_a_save(self):
+        # A plain /obj saves only map_storage_saved_vars, so known_by must be listed.
+        decl = body(TEXT, '\n/obj/false_bottom\n')
+        self.assertIn('map_storage_saved_vars = "name;known_by"', decl)
+
     def test_storage_grid_and_counts_skip_it(self):
         self.assertIn('var/adjusted_contents = shown_contents_count()', STORAGE)
         self.assertIn('shown_contents_count() >= storage_slots', STORAGE)

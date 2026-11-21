@@ -61,6 +61,7 @@ var/global/weather_lightning_count = 0 // strikes so far, for tests and reports
 /proc/weather_lightning(x, y)
 	. = 0
 	weather_lightning_count++
+	arcane_note_strike(x, y)
 	var/look = "bolt[rand(1, 4)]"
 	var/list/bolts = list() // "z" = image
 	for (var/client/C in clients)

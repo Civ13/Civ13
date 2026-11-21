@@ -37,6 +37,7 @@
 	invisibility = 101
 	mouse_opacity = 0
 	anchored = TRUE
+	map_storage_saved_vars = "name;known_by" // a plain obj saves only these
 	var/list/known_by = list() // ckeys of whoever fitted or found it
 
 // Anything that border searches should not look inside. Nothing ordinary is.
