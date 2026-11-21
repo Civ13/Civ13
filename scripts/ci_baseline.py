@@ -781,7 +781,7 @@ SUITES = {
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
         'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
-    'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py',),
+    'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py', 'tests/cattle_plough/test_detach_race.py'),
         'paths': ('tests/cattle_plough/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
     # Cotton is only food for ruminants: production predicate and call sites.
