@@ -132,6 +132,7 @@ var/global/list/divine_invocation_names = list(
 // Called when a sleeper finishes waking up: a night's rest restores the slot.
 /mob/living/human/proc/divine_rested()
 	divine_slot_spent = FALSE
+	arcane_rested()
 
 /mob/living/human/proc/divine_focus()
 	var/obj/item/I = get_active_hand()

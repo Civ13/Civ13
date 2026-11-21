@@ -1530,6 +1530,7 @@
 #include "code\modules\divine\divine_book.dm"
 #include "code\modules\divine\identity.dm"
 #include "code\modules\divine\approval.dm"
+#include "code\modules\divine\arcane_materials.dm"
 #include "code\modules\divine\ritual.dm"
 #include "code\modules\divine\covenant.dm"
 #include "code\modules\dmm_suite\_preprocessor_and_utilities.dm"

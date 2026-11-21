@@ -160,6 +160,9 @@
 					user.visible_message(SPAN_NOTICE("[user] fills \the [RG] with water."), SPAN_NOTICE("You fill \the [RG] with water."))
 					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 					user.setClickCooldown(5)
+					if (ishuman(user) && watertype == "water")
+						var/mob/living/human/drawer = user
+						drawer.arcane_drew_water(RG)
 				return
 		if (istype(C, /obj/item/clothing) && !busy)
 			var/obj/item/clothing/CL = C
