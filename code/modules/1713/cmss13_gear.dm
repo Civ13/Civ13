@@ -341,6 +341,7 @@
 	playsound(get_turf(src), 'sound/effects/clang.ogg', 100, TRUE, 10)
 	visible_message(SPAN_DANGER("The tin cans on \the [src] rattle loudly!"))
 	balloon_alert_to_viewers("*rattle*")
+	mechanism_pull_links(src, links, null) // cords tied to it (mechanisms.dm)
 	return TRUE
 
 /obj/structure/tripwire_alarm/Crossed(atom/movable/AM)

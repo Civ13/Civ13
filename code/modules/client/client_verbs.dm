@@ -349,7 +349,7 @@
 				else
 					display_name = "<span class = 'ping'>[holder.OOC_rank()]</span> [display_name]"
 
-			to_chat(target, "<span class='ooc'><span class='[ooc_style]'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>")
+			to_chat(target, "<span class='ooc'><span class='[ooc_style]'>" + create_text_tag("ooc", "OOC:", target) + " <EM>[display_name]:</EM> <span class='message chat-tr'>[msg]</span></span></span>")
 
 	region_ooc_outbound(src, region_msg, ooc_style)
 
@@ -453,7 +453,7 @@
 			admin_stuff += "/([key])"
 			if (t != src)
 				admin_stuff += "([admin_jump_link(mob, t.holder)])"
-		to_chat(t, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", t) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>")
+		to_chat(t, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", t) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message chat-tr'>[msg]</span></span></span>")
 		if (t.mob)
 			t.mob.show_chat_overlay(mob, "[key] (LOOC): [msg]", "#A8D8FF")
 
@@ -462,7 +462,7 @@
 			var/admin_stuff = "/([key])([admin_jump_link(mob, adm.holder)])"
 			var/prefix = "(R)"
 
-			to_chat(adm, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", adm) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message'>[msg]</span></span></span>")
+			to_chat(adm, "<span class='ooc'><span class='looc'>" + create_text_tag("looc", "LOOC:", adm) + " <span class='prefix'>[prefix]</span><EM>[display_name][admin_stuff]:</EM> <span class='message chat-tr'>[msg]</span></span></span>")
 			if (adm.mob)
 				adm.mob.show_chat_overlay(mob, "[key] (LOOC): [msg]", "#A8D8FF")
 

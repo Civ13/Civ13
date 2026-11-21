@@ -413,7 +413,7 @@
 	var/list/protection
 	if (istype(M, /mob/living/human))
 		var/mob/living/human/H = M
-		protection = list(H.head, H.wear_mask)
+		protection = list(H.head, H.wear_mask, H.eyes) // eye-slot goggles cover EYES too (#6335)
 		if (H.species && (H.species.flags & NO_PAIN))
 			no_pain = TRUE //TODO: living-level can_feel_pain() proc
 	else
@@ -496,7 +496,7 @@
 	if (adj_temp > 0 && M.bodytemperature < 310) // 310 is the normal bodytemp. 310.055
 		M.bodytemperature = min(310, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
 	if (adj_temp < 0 && M.bodytemperature > 310)
-		M.bodytemperature = min(310, M.bodytemperature - (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
+		M.bodytemperature = max(310, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT)) // cool by adj_temp, stop at normal (#6310)
 
 	if (M.water < 0)
 		M.water += rand(40,50)

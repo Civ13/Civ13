@@ -294,15 +294,21 @@
 	wheeled = FALSE
 	vehicle_m_delay = 12
 	health = 50
+
+/obj/structure/vehicle/raft/proc/can_travel_open_sea()
+	return FALSE
+
 /obj/structure/vehicle/raft/do_vehicle_check()
+	if (!driver || swamped_refusal())
+		return FALSE
 	var/turf/DT = get_turf(get_step(src,driver.dir))
 	if (!DT)
 		return FALSE
 	if (canal_step_blocked(get_turf(src), DT))
 		to_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))
 		return FALSE
-	if (driver && istype(DT, /turf/floor/beach/water) || istype(DT, /turf/floor/trench/flooded))
-		if (istype(DT, /turf/floor/beach/water/deep/saltwater) && istype(DT.loc, /area/caribbean/sea))
+	if (istype(DT, /turf/floor/beach/water) || istype(DT, /turf/floor/trench/flooded))
+		if (istype(DT, /turf/floor/beach/water/deep/saltwater) && istype(DT.loc, /area/caribbean/sea) && !can_travel_open_sea())
 			to_chat(driver, "<span class='danger'>You can't go further into the sea with a raft!</span>")
 			return FALSE
 		if (driver in get_turf(src))

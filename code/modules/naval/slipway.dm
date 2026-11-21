@@ -229,8 +229,6 @@ var/global/list/slipway_designs = null
 	if (!D)
 		return "The berth is empty."
 	if (!next_piece())
-		if (draught_code)
-			return "The [D.name] is finished on the berth ([D.total_pieces()] pieces)."
 		return "The [D.name] is finished ([D.total_pieces()] pieces) and ready to launch."
 	return D.progress_text(pieces_done, paid)
 
@@ -320,7 +318,7 @@ var/global/list/slipway_designs = null
 			var/datum/slipway_design/S = slipway_design_list()[name]
 			options["Lay the keel of a [S.name]"] = S
 	else
-		if (finished() && !draught_code)
+		if (finished())
 			options["Launch the [D.name]"] = "launch"
 		options["Abandon the [D.name]"] = "abandon"
 	var/text = status_text()
@@ -380,8 +378,6 @@ var/global/list/slipway_designs = null
 	var/datum/slipway_design/D = get_design()
 	if (!D)
 		return "No ship is being built here."
-	if (draught_code)
-		return "A ship built from a draught cannot be launched yet."
 	if (!finished())
 		return "The [D.name] is not finished: [status_text()]"
 	var/datum/vessel/V = prototype(D)
@@ -417,6 +413,8 @@ var/global/list/slipway_designs = null
 
 // Launches the finished ship. Returns the vessel, or the reason she stayed.
 /obj/structure/slipway/proc/launch()
+	if (draught_code)
+		return launch_draught()
 	var/list/place = list()
 	var/problem = launch_problem(place)
 	if (problem)
