@@ -151,14 +151,16 @@
 		. += "<b>Mainland:</b> [hub_status_text(title)]<br>"
 	. += "<b>Players:</b> [region_gateway_players()] across the lands<br>"
 
+// The peers' player counts change without anyone logging in here.
+/proc/region_gateway_status_loop()
+	set waitfor = FALSE
+	while(region_gateway_here())
+		sleep(GATEWAY_STATUS_INTERVAL)
+		world.update_status()
+
 /hook/startup/proc/region_gateway_startup()
-	if(!region_gateway_here())
-		return TRUE
-	spawn(0)
-		// The peers' player counts change without anyone logging in here.
-		while(region_gateway_here())
-			sleep(GATEWAY_STATUS_INTERVAL)
-			world.update_status()
+	if(region_gateway_here())
+		region_gateway_status_loop()
 	return TRUE
 
 #undef GATEWAY_FORWARD_WAIT

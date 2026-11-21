@@ -48,6 +48,7 @@ class GatewayTests(unittest.TestCase):
         shard_group.setup(group, self.machine)
         self.assertFalse(self.host(group, 'door').may_sleep())
         self.assertTrue(self.host(group, 'gaia').may_sleep())
+        self.assertEqual('start-current', self.host(group, 'door').automatic_start_action(), 'a crashed gateway comes back at once')
 
     def test_update_restarts_on_its_own_port_without_a_standby(self):
         group = self.gateway_group()

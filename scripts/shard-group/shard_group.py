@@ -1136,7 +1136,11 @@ class RegionHost(Host):
             return True  # a missing policy must not turn an automatic update into a restart
 
     def automatic_start_action(self):
-        return 'start-current' if self.protects_mainland_uptime() else super().automatic_start_action()
+        # The gateway is every player's way in: a watchdog start brings it back on the build it
+        # has instead of compiling first; updates reach it by its empty-world restart.
+        if self.protects_mainland_uptime() or self.is_gateway():
+            return 'start-current'
+        return super().automatic_start_action()
 
     def idle_update_action(self):
         if not self.protects_mainland_uptime():
