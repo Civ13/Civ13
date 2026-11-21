@@ -566,6 +566,70 @@ class StaffTests(ElectiveTests.__base__):
         self.assertIn('not part', self.ask('beta', 'staff', D, actor='mod', act='freeze', reason='x'))
 
 
+class OfficeTests(ElectiveTests.__base__):
+    """Offices of state (tools/transfer_storage/nation_offices.py)."""
+
+    setUp = ElectiveTests.setUp
+    ask = ElectiveTests.ask
+    become = ElectiveTests.become
+    snap = ElectiveTests.snap
+
+    def appoint(self, office, person, faction=B, actor='val', **kw):
+        return self.ask('alpha', 'appoint', A, now=kw.pop('now', self.now), actor=actor, role='citizen',
+                        office=office, person=person, pname=person.title(), pfaction=faction, **kw)
+
+    def test_ruler_appoints_and_officers_act(self):
+        self.become('monarchy')
+        self.assertIn('Only the Monarch', self.appoint('treasurer', 'bob', actor='ann'))
+        self.assertIn('yourself', self.appoint('treasurer', 'val', faction=A))
+        self.assertIn('appointed Treasurer', self.appoint('treasurer', 'bob'))
+        self.assertIn('already holds', self.appoint('chancellor', 'bob'))
+        self.assertIn('appointed Chancellor', self.appoint('chancellor', 'cat', faction=C))
+        self.assertEqual(set(self.snap()['offices']), {'treasurer', 'chancellor'})
+        # The treasurer picks the money in the monarch's place.
+        self.assertIn('new common money', self.ask('alpha', 'currency', B, now=self.now, actor='bob', role='citizen',
+                                                   issuer=B))
+        self.assertEqual(self.n.currency(self.nid), B)
+        # The chancellor admits in the monarch's place; nobody else may.
+        self.ask('beta', 'apply', D, nation=self.nid, now=self.now)
+        self.assertIn('Only a member', self.ask('alpha', 'vote', C, now=self.now, actor='dan', role='citizen',
+                                                applicant=D, yes=True))
+        self.assertIn('joins', self.ask('alpha', 'vote', C, now=self.now, actor='cat', role='citizen',
+                                        applicant=D, yes=True))
+        self.assertEqual(self.n.nation_of(D), self.nid)
+
+    def test_dismiss_resign_and_lapse(self):
+        self.become('monarchy')
+        self.appoint('marshal', 'bob')
+        self.appoint('treasurer', 'cat', faction=C)
+        self.assertIn('Only the head', self.ask('alpha', 'dismiss', B, now=self.now, actor='ann', office='marshal'))
+        self.assertIn('resign', self.ask('alpha', 'dismiss', B, now=self.now, actor='bob', office='marshal'))
+        self.assertIn('dismissed', self.ask('alpha', 'dismiss', A, now=self.now, actor='val', office='treasurer'))
+        self.assertEqual(self.snap()['offices'], {})
+        self.appoint('marshal', 'bob')
+        self.ask('alpha', 'secede', B, now=self.now)
+        self.now += 2 * 86400 + 1
+        self.ask('alpha', 'present', A, now=self.now, actor='val', role='citizen')
+        self.assertEqual(self.snap()['offices'], {})  # the faction left
+
+    def test_elective_body_confirms_and_new_government_clears(self):
+        self.become('republic')
+        self.assertIn('senate must confirm', self.appoint('chancellor', 'cat', faction=C))
+        [m] = [m for m in self.snap()['motions'] if m['kind'] == 'office']
+        self.assertEqual(self.snap()['offices'], {})
+        self.ask('alpha', 'ballot', A, now=self.now, motion=m['id'], choice='yes')  # 6 of 10 senators
+        self.assertEqual(self.snap()['offices']['chancellor']['account'], 'cat')
+        self.ask('alpha', 'rename', C, to='civ:alpha:Cork', now=self.now)
+        self.assertEqual(self.snap()['offices']['chancellor']['faction'], 'civ:alpha:Cork')
+        self.n.staff(self.nid, {'act': 'set', 'actor': 'mod', 'reason': 'x', 'type': 'monarchy', 'person': 'val',
+                                'pname': 'Val', 'pfaction': A}, '["monarchy", "val", "Val", "%s", ""]' % A, self.now)
+        self.assertEqual(self.snap()['offices'], {})
+
+    def test_confederation_has_no_officers(self):
+        self.assertIn('no head', self.ask('alpha', 'appoint', A, office='marshal', person='bob', pname='Bob',
+                                          pfaction=B))
+
+
 class AgentRoundTripTests(unittest.TestCase):
     TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40}
 
