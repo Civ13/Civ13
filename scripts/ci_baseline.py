@@ -2579,6 +2579,11 @@ SUITES = {
             'code/game/mob/living/carbon/human/severe_disease.dm',
             'code/game/mob/living/carbon/human/immunity.dm',
             'code/game/mob/living/carbon/human/human_life.dm')},
+    # Two-handed weapons need an attached, empty offhand to wield.
+    'twohanded_wield': {'files': ('tests/twohanded_wield/test_offhand.py',), 'paths': (
+        'tests/twohanded_wield/', 'code/game/objects/items/weapons/material/twohanded.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/inventory.dm',
+            'code/modules/organs/organ_external.dm')},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
