@@ -71,7 +71,7 @@
 
 // A cord tied to the port was pulled.
 /obj/item/circuit_shell/mechanism_port/proc/cord_pulled(state)
-	if (!isturf(loc) || !port_component || port_component.parent != circuit)
+	if (!isturf(loc) || !circuit || !port_component || port_component.parent != circuit)
 		return FALSE
 	port_component.send_pulled(state)
 	return TRUE
