@@ -115,9 +115,29 @@ Code: `code/modules/naval/hull_bow.dm`.
   `/datum/design_check/ship/bowsprits` warns of a bowsprit with deck ahead of
   it on the sheet.
 
+## Grapnels thrown by hand
+
+Code: `code/modules/naval/hull_grapnel.dm`, joining `craft_grapple.dm`.
+
+- A grapnel (3 iron, vehicle parts, Iron Smithing) is thrown by clicking
+  another ship's deck or rail within 5 tiles while standing on her deck. After
+  a 1.5 s swing it catches 60 times in 100; a miss is hauled back.
+- A catch throws her lines as from the helm (`order_grapple(other, TRUE)`,
+  which skips the helm's coiling cooldown), or holds on the lines already
+  joining the two ships, from either side.
+- Several hooks hold harder: `craft_grapple.cut_time()` is 5 s plus 3 s for
+  every hook, for cutting at the helm or at a line. The thrower still casts
+  off at once.
+- The hooks ride in `craft_grapple.hooks` and drop on `home` (her deck tile the
+  lines run from) when the lines part. Like the lines, nothing is saved.
+
 ## Tests
 
 `tests/naval_carrier/draught_probe.dm` ("Her sides"): draught gunwale sides
 and costs, the slipway gunwale stages and markers, a launched boat with no open
 side, the crossing entry, the refit refusal, `hull_rail_sides_free`, and the
 gangway: plank plan, stopped-only, the hold, taking it in and a broken plank.
+
+`tests/naval_carrier/chart_probe.dm` ("Grapnels thrown by hand"): refusals,
+hooks adding to the lines from both ships, the cut time, hooks coming back
+when the lines part, and a hook throwing lines during the helm's cooldown.
