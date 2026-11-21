@@ -187,11 +187,14 @@ var/global/province_stake_cached_at = 0
 	// Residents per province, per faction.
 	var/list/residents = list() // char -> faction -> count
 	var/list/beds = province_claimed_beds()
+	var/list/people = list() // each player counts once, whichever of their characters (kin) lives here
 	for (var/account in beds)
 		var/faction = province_faction_of(account)
 		var/obj/structure/bed/B = beds[account]
-		if (province_resident_problem(account, faction, B))
+		var/person = owner_key_account(account)
+		if (!person || people[person] || province_resident_problem(account, faction, B))
 			continue
+		people[person] = TRUE
 		var/c = P.char_at(B.x, B.y)
 		if (!residents[c])
 			residents[c] = list()
@@ -297,7 +300,7 @@ var/global/province_stake_cached_at = 0
 		lines += "<p>You do not count as a resident: [html_encode(problem)].</p>"
 	else
 		lines += "<p>You count as a resident of the [html_encode(province_name_at(get_turf(B)))] for [html_encode(faction)].</p>"
-	lines += "<p>Stake: each resident member is 1 point, and a hall adds 2 points a tier, never more than the faction's residents there. Nations pool their members' stake. A side leads a province with at least [STAKE_LEAD_POINTS] points from [STAKE_LEAD_ACCOUNTS] people, [STAKE_LEAD_SHARE * 100]% of the stake there and [STAKE_LEAD_MARGIN] times the next side. Updated every 10 minutes.</p>"
+	lines += "<p>Stake: each resident member is 1 point (a player counts once, however many of their characters live here), and a hall adds 2 points a tier, never more than the faction's residents there. Nations pool their members' stake. A side leads a province with at least [STAKE_LEAD_POINTS] points from [STAKE_LEAD_ACCOUNTS] people, [STAKE_LEAD_SHARE * 100]% of the stake there and [STAKE_LEAD_MARGIN] times the next side. Updated every 10 minutes.</p>"
 	lines += "<p>[province_rules_text()]</p>"
 	var/ruin = province_ruin_text(faction) // province_upkeep.dm
 	if (ruin)
