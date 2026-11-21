@@ -15,7 +15,7 @@
 	return STATUS_INTERACTIVE
 
 /datum/preferences/ui_actions(ui_key)
-	return list("name", "random_name", "always_random_name", "gender", "age", "blood", "skin_tone", "hair_style", "hair_color", "facial_style", "facial_color", "eye_color", "randomize", "always_random_body", "trait_add", "trait_swap", "trait_remove", "trait_random", "trait_clear", "ui_style", "cursor", "client_fps", "reset_tutorial", "toggle_on", "toggle_off", "tap_step", "hover_text", "hover_text_scale", "hud_scale", "edit_hud_layout", "reset_hud_layout", "keybindings")
+	return list("name", "random_name", "always_random_name", "gender", "age", "blood", "skin_tone", "hair_style", "hair_color", "facial_style", "facial_color", "eye_color", "randomize", "always_random_body", "trait_add", "trait_swap", "trait_remove", "trait_random", "trait_clear", "ui_style", "cursor", "client_fps", "reset_tutorial", "toggle_on", "toggle_off", "tap_step", "hover_text", "hover_text_scale", "hud_scale", "edit_hud_layout", "reset_hud_layout", "keybindings", "birth_chart", "verify_discord")
 
 /datum/preferences/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
 	if (!user || !user.client || user.client.prefs != src)
@@ -116,6 +116,7 @@
 	data["character"] = character
 
 	data["traits"] = trait_setup_data()
+	data["chart"] = birth_chart_setup_data(user)
 
 	var/list/settings = list()
 	settings["ui_style"] = UI_style
@@ -341,6 +342,8 @@
 			setup_remove_trait(value)
 		if ("trait_clear")
 			setup_clear_traits()
+		if ("birth_chart")
+			setup_birth_chart(value, user)
 		if ("trait_random")
 			var/list/candidate = random_zero_point_traits()
 			if (!islist(candidate) || !candidate.len || get_trait_selection_error(candidate) || check_trait_points(candidate) != 0)
@@ -413,6 +416,10 @@
 			return TRUE
 		if ("keybindings")
 			user.client.configure_action_keybindings()
+			return TRUE
+		// Verifying is open to a living character; the prompt comes from the verb.
+		if ("verify_discord")
+			user.client.verify_discord()
 			return TRUE
 		if ("toggle_on", "toggle_off")
 			var/datum/client_preference/client_pref = istext(value) ? get_client_preference_by_key(value) : null

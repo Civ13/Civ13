@@ -271,7 +271,8 @@ SUITES = {
     'open_air_view': {'files': ('tests/open_air_view/test_sources.py',), 'paths': ('tests/open_air_view/', 'code/modules/multiz/open_air_view.dm', 'code/modules/multiz/look_up.dm', 'code/processes/open_air_view.dm'), 'shared_paths': ('code/game/objects/building_levels.dm', 'code/modules/multiz/building_lighting.dm', 'code/game/mob/mob_movement.dm', 'code/_onclick/hud/updown_buttons.dm')},
     'burial': {'files': ('tests/burial/test_burial.py',), 'paths': ('tests/burial/', 'code/modules/1713/burial.dm', 'code/game/objects/structures/religious.dm'), 'shared_paths': ('code/game/mob/living/carbon/human/human_life.dm', 'code/game/mob/living/carbon/resist.dm')},
     'underground_excavation': {'files': ('tests/underground_excavation/test_underground_excavation.py',), 'paths': ('tests/underground_excavation/', 'code/modules/1713/underground_excavation.dm'), 'shared_paths': ('code/modules/multiz/structures.dm', 'code/modules/multiz/hole_ladder.dm', 'code/modules/1713/flood_cellars.dm')},
-    'work_speed': {'files': ('tests/work_speed/test_work_speed.py',), 'paths': ('tests/work_speed/', 'code/modules/materials/work_speed.dm', 'code/__defines/tools.dm'), 'shared_paths': ('code/game/turfs/floor_attackby.dm', 'code/modules/1713/trench.dm', 'code/modules/1713/tools.dm', 'code/modules/1713/sewers.dm', 'code/modules/1713/underground_excavation.dm', 'code/modules/1713/dug_wells.dm', 'code/modules/1713/road_tamping.dm', 'code/modules/1713/stone_age_storage.dm', 'code/modules/1713/placer.dm', 'code/modules/1713/open_cave_roof.dm', 'code/modules/1713/mountain_seams.dm', 'code/modules/provinces/province_rich.dm', 'code/game/objects/structures/wild.dm', 'code/game/objects/covers_types/cover_roads.dm', 'code/modules/multiz/dug_underground.dm')},
+    'work_speed': {'files': ('tests/work_speed/test_work_speed.py',), 'paths': ('tests/work_speed/', 'code/modules/materials/work_speed.dm', 'code/__defines/tools.dm', 'code/modules/1713/earthworking_tools.dm'), 'shared_paths': ('code/game/turfs/floor_attackby.dm', 'code/modules/1713/trench.dm', 'code/modules/1713/tools.dm', 'code/modules/1713/sewers.dm', 'code/modules/1713/underground_excavation.dm', 'code/modules/1713/dug_wells.dm', 'code/modules/1713/road_tamping.dm', 'code/modules/1713/stone_age_storage.dm', 'code/modules/1713/placer.dm', 'code/modules/1713/open_cave_roof.dm', 'code/modules/1713/mountain_seams.dm', 'code/modules/provinces/province_rich.dm', 'code/game/objects/structures/wild.dm', 'code/game/objects/covers_types/cover_roads.dm', 'code/modules/multiz/dug_underground.dm')},
+    'earthworking': {'files': ('tests/earthworking/test_sources.py',), 'paths': ('tests/earthworking/', 'code/modules/1713/earthworking_heavy.dm', 'tests/sprites/create_earthworking_tools.py', 'icons/obj/earthworking_tools.dmi', 'icons/mob/items/lefthand_earthworking.dmi', 'icons/mob/items/righthand_earthworking.dmi'), 'shared_paths': ('code/modules/1713/earthworks.dm', 'code/modules/1713/road_tamping.dm', 'config/crafting/material_recipes_global.txt')},
     'open_cave_roof': {'files': ('tests/open_cave_roof/test_open_cave_roof.py',), 'paths': ('tests/open_cave_roof/', 'code/modules/1713/open_cave_roof.dm', 'docs/open-cave-roof.md'), 'shared_paths': ('code/game/turfs/floor_attackby.dm',)},
     'mine_floor_registry': {'files': ('tests/mine_floor_registry/test_mine_floor_registry.py',), 'paths': ('tests/mine_floor_registry/', 'code/modules/multiz/mine_floor_registry.dm', 'code/__defines/mine_registry.dm')},
     'pit_climbing': {'files': ('tests/pit_climbing/test_pit_climbing.py',), 'paths': ('tests/pit_climbing/', 'code/modules/multiz/pit_climbing.dm', 'code/modules/multiz/hole_ladder.dm'), 'shared_paths': ('code/modules/multiz/dug_underground.dm', 'code/modules/1713/tools.dm', 'code/game/turfs/floor_attackby.dm')},
@@ -1192,6 +1193,10 @@ SUITES = {
                   'code/game/objects/covers_types/cover_floortypes.dm',
                   'icons/turf/floors.dmi', 'icons/turf/flooring/wood.dmi',
                   'icons/turf/flooring/decals.dmi'), 'shared_paths': ()},
+    'terracotta_floors': {'files': ('tests/terracotta_floors/test_terracotta_floors.py',),
+        'paths': ('tests/terracotta_floors/', 'code/modules/1713/terracotta_floors.dm',
+                  'icons/turf/flooring/terracotta.dmi'),
+        'shared_paths': ('code/game/objects/covers_types/cover_floortypes.dm',)},
     'recipe_skill_needs': {'files': ('tests/recipe_skill_needs/test_recipe_skill_needs.py',),
         'paths': ('tests/recipe_skill_needs/', 'code/game/objects/items/stacks/stack_makeable.dm'),
         'shared_paths': ('code/game/objects/items/stacks/recipe_skill_needs.dm',)},
@@ -1348,6 +1353,12 @@ SUITES = {
         'paths': ('tests/admin_player_map/',), 'shared_paths': (
             'code/modules/admin/verbs/player_map.dm', 'code/modules/1713/tactical_map.dm',
             'code/modules/admin/admin_verbs.dm')},
+    # Admin player list and per-player panel: wiring, rank guards, escaping and
+    # the list script run in Node (skipped without it); native_probe.py is
+    # developer evidence only.
+    'admin_player_panel': {'files': ('tests/admin_player_panel/test_admin_player_panel.py',),
+        'paths': ('tests/admin_player_panel/', 'code/modules/admin/player_panel_pages.dm'), 'shared_paths': (
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/topic.dm', 'code/modules/admin/admin.dm')},
     # Admin Hide Ghost / View As Player wiring and guards; offline only.
     'admin_spectate': {'files': ('tests/admin_spectate/test_admin_spectate.py',),
         'paths': ('tests/admin_spectate/',), 'shared_paths': (
@@ -1491,7 +1502,7 @@ SUITES = {
     'name_change': {'files': ('tests/name_change/test_source.py',),
         'paths': ('tests/name_change/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/name_change.dm', 'code/game/mob/groups/faction_papers.dm',
-            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/admin.dm',
+            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/player_panel_pages.dm',
             'code/game/objects/structures/key_doors/fitted_locks.dm', 'code/modules/1713/stone_age_traps.dm',
             'code/modules/craft/craft_register.dm', 'code/modules/persistence/region_travel.dm')},
     # Census, citizenship papers, passes and border doors (the native probe is tests/faction_papers/probe.dm).
@@ -1841,6 +1852,10 @@ SUITES = {
         'shared_paths': ('code/modules/accounts/discord_accounts.dm', 'code/modules/client/discord_verify.dm', 'code/modules/client/client_procs.dm',
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
+
+    'ecology_visibility': {'files': ('tests/ecology_spawning/test_visibility.py',),
+        'paths': ('tests/ecology_spawning/test_visibility.py',),
+        'shared_paths': ('code/modules/ecology/ecology_spawning.dm', 'tests/save_movement/source_adapter.py')},
 
     'hostile_patrol_waypoints': {'files': ('tests/hostile_patrol/test_waypoint_selection.py',),
         'paths': ('tests/hostile_patrol/',),
@@ -2521,8 +2536,8 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py'), 'paths': (
-        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm')},
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py'), 'paths': (
+        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
@@ -2753,6 +2768,12 @@ SUITES = {
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm',
             'code/modules/client/preferencesSQLite/preference_setup/global/setting_datums.dm',
             'code/modules/client/preferencesSQLite/preferences.dm')},
+    # False bottoms: hidden compartments the storage grid, window and searches skip.
+    'false_bottom': {'files': ('tests/false_bottom/test_source.py',),
+        'paths': ('tests/false_bottom/', 'code/modules/storage_window/false_bottom.dm'),
+        'shared_paths': ('code/game/objects/items/weapons/storage/storage.dm',
+            'code/modules/storage_window/storage_window.dm',
+            'code/modules/persistence/region_travel_gear.dm')},
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
@@ -2793,6 +2814,9 @@ SUITES = {
                   'tgui/src/interfaces/IntegratedCircuit/', 'tgui/src/interfaces/WiremodCircuit.tsx'),
         'shared_paths': ('civ13.dme', 'tgui/src/interfaces/index.tsx', 'tgui/src/types.ts',
             'tgui/THIRD_PARTY.md', 'UI/tgui/civ13-tgui.css')},
+    'chat_translation': {'files': ('tests/chat_translation/test_markers.py',),
+        'paths': ('tests/chat_translation/', 'code/game/mob/hear_say.dm', 'interface/chat/chat.html',
+                  'code/modules/persistence/region_ooc.dm', 'docs/chat-translation.md')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

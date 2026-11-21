@@ -186,9 +186,12 @@
 /obj/item/weapon/clay/advclaybricks/fired/attack_self(mob/user)
 	// Bricks also lay a low railing along the edge of a floor (railing_built.dm).
 	if (tile_has_floor(get_turf(user)))
-		var/choice = WWinput(user, "Build a brick wall here, or a brick railing along the edge you face?", "Bricks", "Brick Wall", list("Brick Wall", "Brick Railing"))
+		var/choice = WWinput(user, "Build a brick wall here, or a brick railing or gate along the edge you face?", "Bricks", "Brick Wall", list("Brick Wall", "Brick Railing", "Brick Railing Gate"))
 		if (choice == "Brick Railing")
 			build_brick_railing(user)
+			return
+		if (choice == "Brick Railing Gate")
+			build_brick_railing(user, /obj/structure/railing/built/brick/gate)
 			return
 	if (!wall_foundation_tile_free(user, /obj/covers/brick_wall/incomplete))
 		return

@@ -101,6 +101,7 @@
 /obj/item/Destroy()
 	if (extraction_surface_source?.service) extraction_surface_source.service.observe_disposal(src)
 	unregister_abandoned_item()
+	arcane_enchant_forget() // arcane_enchant.dm
 	actions = list()
 	if (ismob(loc))
 		var/mob/m = loc
@@ -159,7 +160,8 @@
 		if (5.0)
 			size = "huge"
 	var/decay_notice = abandonment_notice()
-	return ..(user, distance, "", "It is a [size] item.[decay_notice]")
+	. = ..(user, distance, "", "It is a [size] item.[decay_notice]")
+	arcane_examine(user)
 
 /obj/item/attack_hand(mob/user as mob)
 	if (extraction_surface_source)

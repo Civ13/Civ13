@@ -246,6 +246,8 @@
 	var/cy = ty
 	boxes.screen_loc = "[tx],[ty] to [mx],[my]"
 	for (var/obj/O in contents)
+		if (istype(O, /obj/false_bottom))
+			continue
 		O.screen_loc = "[cx],[cy]"
 		O.layer = 20
 		O.plane = HUD_PLANE
@@ -277,6 +279,8 @@
 				cy--
 	else
 		for (var/obj/O in contents)
+			if (istype(O, /obj/false_bottom))
+				continue
 			O.screen_loc = "[cx]:16,[cy]:16"
 			O.maptext = ""
 			O.layer = 20
@@ -350,7 +354,7 @@
 //This proc determines the size of the inventory to be displayed. Please touch it only if you know what you're doing.
 /obj/item/weapon/storage/proc/orient2hud(mob/user as mob)
 
-	var/adjusted_contents = contents.len
+	var/adjusted_contents = shown_contents_count()
 
 	var/Xcor = 4
 	var/Ycor = 2
@@ -421,7 +425,7 @@
 	if (storage_stack_fits(src, W, usr))
 		return TRUE
 
-	if (storage_slots != null && contents.len >= storage_slots)
+	if (storage_slots != null && shown_contents_count() >= storage_slots)
 		if (!stop_messages)
 			to_chat(usr, "<span class='notice'>[src] is full, make some space.</span>")
 		return FALSE //Storage item is full

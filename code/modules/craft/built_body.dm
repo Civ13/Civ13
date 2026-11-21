@@ -104,7 +104,7 @@
 		for (var/atom/movable/M in U)
 			if (M.loc != U || QDELETED(M))
 				continue
-			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
+			if (!M.craft_cargo())
 				continue
 			. += M
 
@@ -322,7 +322,7 @@
 			for (var/atom/movable/M in S)
 				if (M.loc != S || QDELETED(M))
 					continue
-				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect/vessel_path) || M.craft_left_behind())
+				if (!M.craft_cargo())
 					continue
 				// Floors first, so nobody reaches a tile before the floor
 				// under them does (an airship's deck hangs over open air).
@@ -346,7 +346,7 @@
 				for (var/atom/movable/M in U)
 					if (M.loc != U || QDELETED(M))
 						continue
-					if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
+					if (!M.craft_cargo())
 						continue
 					riders += M
 			upper_cargo += list(riders)
@@ -361,7 +361,7 @@
 				for (var/atom/movable/M in L)
 					if (M.loc != L || QDELETED(M))
 						continue
-					if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
+					if (!M.craft_cargo())
 						continue
 					riders += M
 			lower_cargo += list(riders)

@@ -475,6 +475,9 @@
 		var/mob/M = locate(href_list["adminplayeropts"])
 		show_player_panel(M)
 
+	else if (href_list["player_list"])
+		player_panel_new()
+
 	else if (href_list["adminplayerobservejump"])
 		if (!check_rights(R_MENTOR|R_MOD|R_ADMIN))	return
 

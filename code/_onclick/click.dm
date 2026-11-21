@@ -205,6 +205,7 @@
 		RestrainedClickOn(A)
 		return
 	blackout_click_trace("dispatch")
+	magic_touch_hook(src, A) // repository.dm: a readied tie catches this touch; the click goes on as usual
 	if (in_throw_mode)
 		if (isturf(A) || isturf(A.loc))
 			throw_item(A)

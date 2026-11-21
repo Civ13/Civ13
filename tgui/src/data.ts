@@ -62,6 +62,11 @@ export type CharacterSetupData = {
     spent?: number; earned?: number; chosen?: string[]; invalid?: string[]; error?: string | null;
     categories?: { id?: string; title?: string; note?: string; pick_one?: Flag; traits?: SetupTrait[] }[];
   };
+  // chart: the birth sign. choice is "random" or a sign id; current is the living character's own sign.
+  chart?: {
+    choice?: string; verified?: Flag; current?: string;
+    signs?: { id?: string; name?: string; season?: string; calling?: string; strengths?: string; weaknesses?: string; image?: string }[];
+  };
   settings?: {
     ui_style?: string; ui_styles?: string[]; cursor?: string; cursors?: string[]; client_fps?: number; fps_choices?: number[]; tutorial?: string;
     tap_step?: Flag; hover_text?: number; hover_text_scale?: string; hud_scale?: string; scales?: string[]; hud_editing?: Flag;

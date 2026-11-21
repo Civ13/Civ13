@@ -94,7 +94,7 @@ var/global/list/slipway_designs = null
 	var/tmp/list/frames = list()
 
 /obj/structure/slipway/persistence_runtime_var(key)
-	return (key in list("busy", "frames")) || ..(key)
+	return (key in list("busy", "frames", "draught_cache", "working")) || ..(key)
 
 /obj/structure/slipway/after_load()
 	..()
@@ -106,6 +106,8 @@ var/global/list/slipway_designs = null
 	return ..()
 
 /obj/structure/slipway/proc/get_design()
+	if (draught_code)
+		return draught_plan()
 	return design ? slipway_design_list()[design] : null
 
 // A fresh unplaced vessel of the design, for geometry and fit checks.
@@ -244,13 +246,18 @@ var/global/list/slipway_designs = null
 	if (result[2])
 		pieces_done++
 		paid = list()
-		update_frames()
+		if (draught_code)
+			draught_place(D, pieces_done)
+		else
+			update_frames()
 	return result[1]
 
 // A player brings materials to the berth (the post or any part of the hull).
 /obj/structure/slipway/proc/add_piece(mob/living/human/H, obj/item/I, atom/target)
 	if (busy || !istype(H) || !istype(I, /obj/item/stack))
 		return FALSE
+	if (draught_code)
+		return add_draught_piece(H, I, target)
 	var/datum/slipway_design/D = get_design()
 	if (!D)
 		to_chat(H, SPAN_WARNING("No keel has been laid here. Use the slipway post to lay one."))
@@ -296,6 +303,9 @@ var/global/list/slipway_designs = null
 	if (istype(W, /obj/item/stack) && design)
 		add_piece(user, W)
 		return
+	if (istype(W, /obj/item/ship_draught) && !design)
+		offer_draught(user, W)
+		return
 	return ..()
 
 /obj/structure/slipway/attack_hand(mob/living/human/H)
@@ -313,7 +323,7 @@ var/global/list/slipway_designs = null
 		options["Abandon the [D.name]"] = "abandon"
 	var/text = status_text()
 	if (!D)
-		var/list/lines = list(text, "The berth runs [dir2text(dir)] from the post; turn it with a wrench before a keel is laid.")
+		var/list/lines = list(text, "The berth runs [dir2text(dir)] from the post; turn it with a wrench before a keel is laid. Use a ship's draught on the post to build a ship of your own design.")
 		for (var/name in slipway_design_list())
 			var/datum/slipway_design/S = slipway_design_list()[name]
 			lines += "A [S.name] is [S.blurb]. She takes [S.total_pieces()] pieces: [piece_cost_text(S.total_cost())] in all."
@@ -340,19 +350,21 @@ var/global/list/slipway_designs = null
 		else
 			to_chat(H, SPAN_WARNING(result))
 	else if (action == "abandon")
-		if (WWinput(H, "Break up the [D.name]? Everything fitted so far is lost.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
+		if (WWinput(H, draught_code ? "Give up building the [D.name]? Her draught comes off the post; what is built stays where it stands." : "Break up the [D.name]? Everything fitted so far is lost.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
 			return
 		log_game("[key_name(H)] abandoned a [D.name] ([pieces_done] pieces) at [x],[y],[z].")
 		abandon()
 		to_chat(H, SPAN_NOTICE("The berth is cleared."))
 
 /obj/structure/slipway/proc/lay_keel(datum/slipway_design/D)
+	draught_code = ""
 	design = D.name
 	pieces_done = 0
 	paid = list()
 	update_frames()
 
 /obj/structure/slipway/proc/abandon()
+	draught_code = ""
 	design = null
 	pieces_done = 0
 	paid = list()
@@ -401,6 +413,8 @@ var/global/list/slipway_designs = null
 
 // Launches the finished ship. Returns the vessel, or the reason she stayed.
 /obj/structure/slipway/proc/launch()
+	if (draught_code)
+		return launch_draught()
 	var/list/place = list()
 	var/problem = launch_problem(place)
 	if (problem)
@@ -498,6 +512,9 @@ var/global/list/slipway_designs = null
 // cells from stern to bow, a share per piece fitted.
 /obj/structure/slipway/proc/update_frames()
 	clear_frames()
+	if (draught_code)
+		draught_frames()
+		return
 	var/datum/slipway_design/D = get_design()
 	if (!D || !isturf(loc))
 		return

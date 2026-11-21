@@ -38,4 +38,21 @@ Clothing reads its values through `armor_value(type)`, which gives family
 armor its family values (`docs/armor-families.md`) and everything else
 `armor_rating` of its own list.
 
+## Weapon roles
+
+- Blunt: a blow that armor fully stops still bruises the body under it for a
+  quarter of its force (`armor_bruise`), and every blow the armor takes wears
+  it three times as much as a cut or thrust (`armor_hit_wear`). Maces and
+  clubs beat armor down.
+- Pierce: a thrust gets 10 extra armor penetration against mail and lamellar
+  on the struck part (`armor_gap_penetration`), finding the gaps between rings
+  and lames, including mail worn on the armor slot. Plate over the part closes
+  the gaps; armor without a family has none.
+- Cut: edged weapons keep their full effect on unarmored and lightly armored
+  targets; mail and plate turn them best.
+
+Values are `ARMOR_BRUISE_SHARE`, `ARMOR_BLUNT_WEAR` and
+`ARMOR_GAP_PENETRATION` in `code/__defines/damage.dm`; the procs are in
+`code/game/objects/armor_families.dm`.
+
 Tested by `tests/melee_hit_kinds` (see its README).
