@@ -97,5 +97,52 @@ class Boundaries(unittest.TestCase):
         self.assertIn('#include "code\\game\\mob\\language\\drift.dm"\n#include "code\\game\\mob\\language\\earth.dm"', dme)
 
 
+DAUGHTER = read('code/game/mob/language/daughter.dm')
+
+
+class Daughters(unittest.TestCase):
+    def test_daughter_type_is_never_made_at_boot(self):
+        self.assertIn('typesof(/datum/language)-/datum/language-/datum/language/daughter', read('code/_helpers/global_lists.dm'))
+
+    def test_identity_checks_tell_daughters_apart_by_name(self):
+        lang = read('code/game/mob/language/language.dm')
+        self.assertIn('if (language_same(known, L))', lang)
+        self.assertIn('if (is_daughter_language(L))', lang)
+        self.assertNotIn('L.type in m_int', lang)
+        self.assertNotIn('R.type in m_int', lang)
+        hear = read('code/game/mob/hear_say.dm')
+        self.assertNotIn('mutual_intelligibility.Find(reference.type)', hear)
+        self.assertIn('language_kinship(L, reference)', hear)
+
+    def test_both_era_advances_run_the_check(self):
+        self.assertIn('language_era_advanced()', read('code/modules/research_tree/book_research.dm'))
+        self.assertIn('language_era_advanced()', read('code/modules/research_tree/research_faction.dm'))
+
+    def test_naming_is_verified_and_leader_only(self):
+        body = DAUGHTER[DAUGHTER.index('/mob/living/human/proc/name_our_language()'):]
+        body = body[:body.index('\n/proc/')]
+        self.assertIn('account_verified(nation_account())', body)
+        self.assertGreaterEqual(body.count('map.is_faction_leader(src, civilization)'), 2)
+
+    def test_cap_and_kinship_numbers(self):
+        self.assertTrue(1 <= D['LANGUAGE_DAUGHTERS_PER_ROOT'] <= 3)
+        self.assertTrue(D['LANGUAGE_DAUGHTER_KIN_MIN'] < D['LANGUAGE_DAUGHTER_KIN'] < 100)
+        self.assertIn('!record["imported"]', DAUGHTER)
+
+    def test_daughters_write_in_their_roots_script(self):
+        self.assertIn('language_same(language_root(known), L)', read('code/modules/paperwork/written_languages.dm'))
+
+    def test_travel_carries_daughter_records(self):
+        tongues = read('code/modules/persistence/region_travel_tongues.dm')
+        self.assertIn('"native", "daughters"', tongues)
+        self.assertIn('region_travel_import_daughters(T["daughters"])', tongues)
+
+    def test_native_probe_is_kept(self):
+        probe = read('tests/language_drift/probe.dm')
+        for label in ('naming makes the daughter', 'a root has at most its share of daughters',
+                      'a saved daughter restores with its key, sounds and kinship', 'and where it is not'):
+            self.assertIn(label, probe)
+
+
 if __name__ == '__main__':
     unittest.main()

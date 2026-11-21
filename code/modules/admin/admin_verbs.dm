@@ -47,6 +47,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_show_research,	//read-only research knowledge of one character,
 	/client/proc/cmd_admin_check_languages,	//read-only people, birthplace and language scores of one character,
 	/client/proc/cmd_admin_check_language_drift,	//read-only drift of each nation's speech community (language/drift.dm),
+	/client/proc/cmd_admin_force_language_split,	//make a nation's speech community ready to split and optionally name it (language/daughter.dm),
 	/client/proc/cmd_admin_set_origin,	//move a character to another people,
 	/client/proc/cmd_admin_set_language_score,	//set a language score from 0 to 100,
 	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,

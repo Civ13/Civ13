@@ -272,6 +272,7 @@
 #include "code\game\mob\groups\nation_government.dm"
 #include "code\game\mob\groups\recruitment_station.dm"
 #include "code\game\mob\groups\religions.dm"
+#include "code\game\mob\language\daughter.dm"
 #include "code\game\mob\language\drift.dm"
 #include "code\game\mob\language\earth.dm"
 #include "code\game\mob\language\language.dm"
