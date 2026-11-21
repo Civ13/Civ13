@@ -276,3 +276,76 @@
 	for (var/client/C in hearers)
 		to_chat(C, CHAT_TYPED(CHAT_PRAYER, note))
 	log_admin("[key_name(src)] as [entry["name"]] answered [key_name(H)]: [words]")
+
+// A god invites someone who prays without following any god (the Invite link
+// on their prayer). The player chooses to follow or decline; nothing changes
+// until they accept.
+/client/proc/divine_invite_follower(mob/M)
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/entry = divine_identity_of(ckey)
+	if (!entry)
+		to_chat(src, SPAN_WARNING("Set your divine name first (Divine Patron > Set my divine name)."))
+		return
+	var/deity = entry["name"]
+	var/claim = divine_book_key(deity)
+	var/label = divine_identity_label(entry)
+	var/mob/living/human/H = M
+	if (!claim || !istype(H) || QDELETED(H) || H.stat == DEAD)
+		to_chat(src, SPAN_WARNING("[M ? M.real_name : "They"] can't be invited now."))
+		return
+	if (H.divine_patron)
+		to_chat(src, SPAN_WARNING("[H.real_name] already follows [H.divine_patron]."))
+		return
+	if (H.divine_invite_from)
+		to_chat(src, SPAN_WARNING("[H.real_name] is already weighing an invitation from [H.divine_invite_from]."))
+		return
+	if (!H.arcane_apostate_may_join(claim)) // arcane_apostate.dm
+		to_chat(src, SPAN_WARNING("[H.real_name] renounced another god too recently. Only that god can take them in yet."))
+		return
+	if (!magic_whitelist_admit(H))
+		return
+	var/raw = input(src, "What does [H.real_name] hear or see as [label] calls them? Leave empty to invite without words; Cancel to stop.", "Invite a follower") as message|null
+	if (isnull(raw))
+		return
+	var/words = sanitize(raw)
+	if (QDELETED(H) || H.divine_patron || H.divine_invite_from || !check_rights(R_ADMIN))
+		return
+	to_chat(src, SPAN_NOTICE("You invite [H.real_name] to follow [label]. They are asked to accept or decline."))
+	log_admin("[key_name(src)] as [deity] invited [key_name(H)] to follow them.")
+	H.divine_invite_from = label
+	spawn(0)
+		H.divine_answer_invitation(deity, label, words, key)
+
+// The invited player's answer. Their acceptance makes them a follower exactly
+// as Divine Patron > Initiate would; a decline is passed back to the god.
+/mob/living/human/proc/divine_answer_invitation(deity, label, words, god_key)
+	var/claim = divine_book_key(deity)
+	if (words)
+		to_chat(src, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'><b>[label]</b> calls to you: <i>[words]</i></span>"))
+	var/answer = player_alert(src, "[label] invites you to become a follower. Will you follow [label]?", "A god calls to you", list("Follow", "Decline"))
+	divine_invite_from = null
+	if (QDELETED(src))
+		return
+	var/outcome
+	if (answer != "Follow")
+		outcome = "declined"
+		to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You turn away from [label]'s call.")))
+	else if (divine_patron || stat == DEAD || !magic_allowed() || !arcane_apostate_may_join(claim))
+		outcome = "could not accept"
+		to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_WARNING("The call of [label] fades before you can answer.")))
+	else
+		outcome = "accepted"
+		divine_patron = deity
+		if (!islist(divine_known))
+			divine_known = list()
+		arcane_apostate_return(claim) // arcane_apostate.dm
+		divine_refresh_verbs()
+		to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You now follow [label].")))
+	var/list/told = list() + divine_staff_for(deity)
+	var/client/inviter = directory[god_key]
+	if (inviter)
+		told |= inviter
+	for (var/client/C in told)
+		to_chat(C, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("[key_name(src, TRUE)] [outcome] the invitation to follow [label].[outcome == "accepted" ? " Teach them an invocation next." : ""]")))
+	log_admin("[key_name(src)] [outcome] the invitation to follow [deity].")
