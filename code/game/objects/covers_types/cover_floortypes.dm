@@ -938,25 +938,24 @@
 	name = "reverse cobble border stop"
 	icon_state = "trim_stop_reverse"
 
-/obj/covers/terracotta
-	parent_type = /obj/covers/stone/slab/decorative
+/obj/covers/stone/slab/decorative/terracotta
 	name = "terracotta floor"
 	desc = "A floor made from kiln-fired clay tiles."
 	icon = 'icons/turf/flooring/terracotta.dmi'
 	icon_state = "terracotta"
 
-/obj/covers/terracotta/edge
+/obj/covers/stone/slab/decorative/terracotta/edge
 	name = "terracotta border"
 	icon_state = "terracotta_edge"
 
-/obj/covers/terracotta/inside
+/obj/covers/stone/slab/decorative/terracotta/inside
 	name = "inside terracotta corner"
 	icon_state = "terracotta_inner"
 
-/obj/covers/terracotta/outside
+/obj/covers/stone/slab/decorative/terracotta/outside
 	name = "outside terracotta corner"
 	icon_state = "terracotta_outer"
 
-/obj/covers/terracotta/inset
+/obj/covers/stone/slab/decorative/terracotta/inset
 	name = "patterned terracotta inset"
 	icon_state = "terracotta_inset"

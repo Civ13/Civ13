@@ -23,7 +23,7 @@ Directions are single-frame BYOND S, N, E, W.
 
 ## Terracotta
 
-The `/obj/covers/terracotta` family comprises the field,
+The `/obj/covers/stone/slab/decorative/terracotta` family comprises the field,
 `edge`, `inside`, `outside`, and `inset`. Use the patterned inset at a
 landing, under a point of interest, or as a deliberate repeating accent.
 Do not alternate it randomly with unrelated stone. The edge and both corners
