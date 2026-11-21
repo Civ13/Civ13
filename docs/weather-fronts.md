@@ -48,7 +48,7 @@ weather.
 
 ## Admin tools
 
-The Weather Map draws each low as a red **L** and each high as a blue **H**,
+The Admin Map draws each low as a red **L** and each high as a blue **H**,
 with a dashed ring at its radius and its current depth in hPa.
 
 ## Tests
