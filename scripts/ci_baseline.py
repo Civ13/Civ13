@@ -1854,6 +1854,18 @@ SUITES = {
             'code/game/mob/groups/faction_creation.dm', 'code/modules/provinces/province_siege.dm',
             'code/modules/nomad_raids/nomad_visit.dm')},
 
+    # Character slot owner keys (docs/character-slots.md); source checks only.
+    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py',),
+        'paths': ('tests/character_slots/',), 'shared_paths': (
+            'docs/character-slots.md', 'code/modules/persistence/player_reclaim.dm',
+            'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_home.dm',
+            'code/modules/persistence/region_travel.dm', 'code/modules/persistence/region_event.dm',
+            'code/modules/persistence/party_train.dm', 'code/modules/research_tree/death_legacy.dm',
+            'code/game/objects/map_metadata/nomads/nomads_start.dm', 'code/modules/accolades/accolades.dm',
+            'code/modules/karma/karma_give.dm', 'code/modules/divine/magic_whitelist.dm',
+            'code/modules/player_activity/player_activity.dm', 'code/modules/admin/verbs/research_knowledge.dm',
+            'code/game/mob/groups/nation.dm', 'tools/transfer_storage/region.py')},
+
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (

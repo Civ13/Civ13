@@ -85,6 +85,8 @@
 // The ckey an account earns under: a BYOND ckey, or the ckey verified for a
 // Discord account key. Guests and host agents never earn.
 /proc/accolade_account_ckey(account)
+	if(owner_key_slot(account) > 1) // another character slot of the same person
+		account = owner_key_account(account)
 	if(!istext(account) || !length(account) || is_agent_account(account))
 		return null
 	if(is_account_key(account))

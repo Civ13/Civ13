@@ -243,7 +243,7 @@ var/global/list/event_stash_registry = list()
 // it on a tile). Only once the world could hand it over at all.
 /map_storage/reclaim_saved_player(mob/new_player/lobby)
 	if(lobby && lobby.client && !character_recovery_unready() && !player_restoration_blocked())
-		var/obj/structure/event_stash/S = event_stash_of(lobby.client.ckey)
+		var/obj/structure/event_stash/S = event_stash_of(lobby.client.owner_key())
 		if(S && S.release())
 			to_chat(lobby, SPAN_NOTICE("Welcome back from the event. Your character is as you left it."))
 	return ..()
@@ -272,13 +272,13 @@ var/global/list/event_stash_registry = list()
 	var/list/refused = list()
 	for(var/client/C in picked)
 		var/mob/living/human/H = C.mob
-		if(istype(H) && H.persistence_owner_ckey == C.ckey && H.stat != DEAD)
-			var/why = event_stash_refusal(H, C.ckey)
+		if(istype(H) && H.persistence_owner_ckey == C.owner_key() && H.stat != DEAD)
+			var/why = event_stash_refusal(H, C.owner_key())
 			if(why)
 				refused += "[C.key] [why]"
 				to_chat(H, SPAN_WARNING("You could not be sent to the event: you [why]. Ask an admin to try again."))
 				continue
-			if(!event_stash_character(H, C.ckey, event_id, mode))
+			if(!event_stash_character(H, C.owner_key(), event_id, mode))
 				refused += "[C.key] could not be kept safe"
 				continue
 		sending += C

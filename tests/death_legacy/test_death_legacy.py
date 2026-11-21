@@ -28,7 +28,7 @@ class DeathLegacyTests(unittest.TestCase):
     def test_a_bed_remembers_when_it_was_claimed(self):
         bed = read('code/modules/persistence/bed_return.dm')
         self.assertLess(bed.index('bed.persistence_bed_assigned_at = death_legacy_now()'),
-                        bed.index('bed.persistence_bed_owner_ckey = client.ckey'))
+                        bed.index('bed.persistence_bed_owner_ckey = owner'))
 
     def test_a_bed_start_costs_double(self):
         legacy = read('code/modules/research_tree/death_legacy.dm')
