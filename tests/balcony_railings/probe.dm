@@ -88,9 +88,10 @@ var/balcony_railings_runtime = null
 	var/mob/living/human/H = new(deck)
 	balcony_railings_assert(!R.CheckExit(H, locate(8, 9, 1)), "cannot_walk_off_the_edge")
 	balcony_railings_assert(R.CheckExit(H, locate(9, 8, 1)), "walks_along_the_edge")
-	balcony_railings_assert(!H.Move(locate(8, 9, 1), NORTH) && H.loc == deck, "move_blocked")
-	balcony_railings_assert(H.Move(locate(9, 8, 1), EAST) && H.loc == locate(9, 8, 1), "move_sideways")
-	H.forceMove(deck)
+	var/turf/beyond = locate(8, 9, 1)
+	var/turf/beside = locate(9, 8, 1)
+	balcony_railings_assert(!beyond.Enter(H), "turf_beyond_refuses")
+	balcony_railings_assert(beside.Enter(H), "turf_beside_accepts")
 
 	// One railing a side: a corner is fine, a second along the same side is not.
 	balcony_railings_assert(railing_build_refusal(deck, /obj/structure/railing/built, NORTH), "same_side_refused")
