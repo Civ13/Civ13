@@ -14,6 +14,19 @@ WOOD = {
     for i, suffix in enumerate(('', '/two', '/three', '/four', '/five',
                                '/six', '/seven', '/eight', '/nine', '/ten', '/eleven'), 1)
 }
+WOOD_NAMES = (
+    'narrow plank floor',
+    'basketweave wood floor',
+    'dark herringbone wood floor',
+    'herringbone wood floor',
+    'double herringbone wood floor',
+    'diamond parquet floor',
+    'checkered parquet floor',
+    'pinwheel parquet floor',
+    'woven strip wood floor',
+    'redwood plank floor',
+    'nailed board floor',
+)
 STONE = {
     '/obj/covers/cobblestone/vertical': 'cobble_vertical',
     '/obj/covers/cobblestone/horizontal': 'cobble_horizontal',
@@ -88,7 +101,7 @@ class ReusedFloorStyles(unittest.TestCase):
             with self.subTest(legacy=legacy):
                 constructed = legacy + '/constructed'
                 self.assertIn(f'icon_state = "{state}"', source_body(legacy))
-                self.assertIn(f'name = "wood floor pattern {index}"', source_body(constructed))
+                self.assertIn(f'name = "{WOOD_NAMES[index - 1]}"', source_body(constructed))
                 self.assertNotRegex(source_body(constructed), r'\b(?:icon|icon_state|amount|parent_type)\s*=')
                 self.assertNotIn(legacy, outputs)
                 self.assertEqual(outputs.count(constructed), 1)
