@@ -1732,6 +1732,7 @@
 #include "code\modules\multiz\look_up.dm"
 #include "code\modules\multiz\standing_building_level.dm"
 #include "code\modules\multiz\mine_floor_registry.dm"
+#include "code\modules\naval\berth.dm"
 #include "code\modules\naval\boathouse.dm"
 #include "code\modules\naval\built_hull.dm"
 #include "code\modules\naval\air_hull.dm"

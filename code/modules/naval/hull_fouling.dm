@@ -125,8 +125,8 @@
 		return "a hull this small is hauled out and kept clean"
 	if (L.under_way())
 		return "she must lie still"
-	if (L.over_deep())
-		return "her bottom is out of reach in deep water: lay her in the shallows"
+	if (!L.bottom_reachable())
+		return "her bottom is out of reach in deep water: lay her in the shallows or bring her to a berth"
 	return null
 
 // One go with the scraper. Returns how much cleaner she is.
@@ -163,6 +163,12 @@
 		L.bottom_hands -= H
 		if (.)
 			to_chat(H, SPAN_NOTICE("You scrape her down. Her bottom is [L.fouling_name()][L.fouling > 0.001 ? ", with more to come off" : ""]."))
+
+// Goes with the scraper it takes to clean her bottom.
+/datum/hull_ledger/proc/scrape_wanted()
+	if (!fouls() || fouling <= 0.001)
+		return 0
+	return CEILING(fouling * tiles / SCRAPE_TILES, 1)
 
 // One sheet nailed on. Returns how much more of her is sheathed.
 /datum/hull_ledger/proc/copper_sheet()
