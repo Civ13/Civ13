@@ -26,14 +26,18 @@ BREAKABLE = {
 
 
 class Item:
-    def __init__(self, health=10, maxhealth=10, factor=1):
+    def __init__(self, health=10, maxhealth=10, factor=1, finish=1):
         self.health = health
         self.maxhealth = maxhealth
         self.factor = factor
+        self.finish = finish
         self.checked = []
 
     def plating_wear(self, amount):
         return amount * self.factor
+
+    def finish_wear(self, amount):
+        return amount * self.finish
 
     def check_health(self, consumed):
         self.checked.append((self.health, consumed))
@@ -43,7 +47,7 @@ class Item:
 def project(name, args):
     source = HELPER.read_text(encoding='utf-8')
     source = re.sub(r'(?<![.\w])(health|maxhealth)\b(?!\()', r'src.\1', source)
-    for call in ('plating_wear', 'check_health'):
+    for call in ('plating_wear', 'finish_wear', 'check_health'):
         source = re.sub(r'(?<![.\w/])' + call + r'\(', 'src.' + call + '(', source)
     env = {'WEAR_BLOW': 'blow', 'WEAR_WORK': 'work', 'WEAR_HIT': 'hit', 'isnull': lambda v: v is None}
     return adapter.project(source, '/obj/item/proc/' + name, args, env)
@@ -58,6 +62,15 @@ class ItemWearTest(unittest.TestCase):
                 self.assertFalse(apply_wear(item, 1, cause, False))
                 self.assertEqual(item.health, expected)
                 self.assertEqual(item.checked, [(expected, False)])
+
+    def test_every_cause_goes_through_a_finish(self):
+        # A lacquer or varnish finish (lacquer.dm) softens all wear, after plating.
+        apply_wear = project('apply_wear', 'src, amount, cause, consumed')
+        for cause, expected in (('blow', 9.75), ('work', 9.5), ('hit', 9.5)):
+            with self.subTest(cause=cause):
+                item = Item(factor=0.5, finish=0.5)
+                self.assertFalse(apply_wear(item, 1, cause, False))
+                self.assertEqual(item.health, expected)
 
     def test_wear_reports_a_break(self):
         apply_wear = project('apply_wear', 'src, amount, cause, consumed')

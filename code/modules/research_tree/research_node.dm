@@ -2980,6 +2980,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/sail" = "oared_ships",
 		"/obj/item/sail/wool" = "oared_ships",
 		"/obj/item/sail/tarred" = "oared_ships",
+		"/obj/item/weapon/reagent_containers/glass/finishing_pot" = "fine_furniture",
 		"/obj/item/weapon/covers/ship" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0/north" = "wagons_ships",

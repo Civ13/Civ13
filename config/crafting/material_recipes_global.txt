@@ -2480,6 +2480,7 @@ RECIPE: /material/wood/soft/,small mill,/obj/structure/mill,4,90,1,1,economy & p
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,4,0,0,8,null
 RECIPE: /material/wood/soft/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,silkworm tray,/obj/structure/silkworm_tray,4,80,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,finishing pot,/obj/item/weapon/reagent_containers/glass/finishing_pot,2,60,0,1,tools,0,0,0,8,null
 RECIPE: /material/wood/soft/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,flax comb,/obj/structure/flax_comb,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,hemp dressing bench,/obj/structure/hemp_dressing_bench,8,150,1,1,economy & production,19,0,0,8,null
