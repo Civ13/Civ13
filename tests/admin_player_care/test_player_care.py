@@ -32,24 +32,31 @@ def assert_authority_and_target(test, source):
 
 
 def assert_hygiene_overlay_allocation(test, body):
-    # A fresh composite is still published every awake tick. Individual
-    # overlays should only be allocated on the branches that display them.
-    composite = 'var/image/img_nasties = image(\'icons/effects/effects.dmi\', "nothing")'
-    smell = 'var/image/smell = image(\'icons/effects/effects.dmi\', "smell")'
-    fleas = 'var/image/fleas = image(\'icons/effects/effects.dmi\', "lice_overlay")'
-    for declaration in (composite, smell, fleas):
-        test.assertEqual(body.count(declaration), 1)
+    # Capture smell at the original switch, before flea and disease callbacks.
+    test.assertIn('\tvar/show_smell = FALSE\n\tswitch(hygiene)\n'
+                  '\t\tif(HYGIENE_LEVEL_NORMAL to INFINITY)\n'
+                  '//\t\t\timg_nasties.overlays += null\n'
+                  '\t\tif(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)\n'
+                  '//\t\t\toverlays_standing[27] = null\n'
+                  '\t\tif(0 to HYGIENE_LEVEL_DIRTY)\n\t\t\tshow_smell = TRUE\n', body)
     test.assertIn('\tif (sleeping)\n\t\treturn\n', body)
-    test.assertLess(body.index(composite), body.index('\tswitch(hygiene)'))
-    test.assertIn('\t\tif(0 to HYGIENE_LEVEL_DIRTY)\n\t\t\t' + smell +
-                  '\n\t\t\timg_nasties.overlays += smell\n', body)
-    test.assertIn('\tif (fleas_found)\n\t\t' + fleas +
-                  '\n\t\timg_nasties.overlays += fleas\n', body)
-    test.assertIn('overlays_standing[27] = img_nasties', body)
-    test.assertLess(body.index('img_nasties.overlays += smell'),
-                    body.index('img_nasties.overlays += fleas'))
-    test.assertLess(body.index('img_nasties.overlays += fleas'),
-                    body.index('overlays_standing[27] = img_nasties'))
+    test.assertLess(body.index('show_smell = TRUE'), body.index('if (hygiene <= HYGIENE_LEVEL_DIRTY)'))
+    guard = ('\tif (nasties_state != hygiene_overlay_state || !overlays_standing[27])\n'
+             '\t\thygiene_overlay_state = nasties_state\n'
+             '\t\tvar/image/img_nasties = image(\'icons/effects/effects.dmi\', "nothing")\n'
+             '\t\tif (show_smell)\n'
+             '\t\t\tvar/image/smell = image(\'icons/effects/effects.dmi\', "smell")\n'
+             '\t\t\timg_nasties.overlays += smell\n'
+             '\t\tif (fleas_found)\n'
+             '\t\t\tvar/image/fleas = image(\'icons/effects/effects.dmi\', "lice_overlay")\n'
+             '\t\t\timg_nasties.overlays += fleas\n'
+             '\t\toverlays_standing[27] = img_nasties\n'
+             '\t\tqueue_overlay_redraw()')
+    test.assertIn(guard, body)
+    for token in ('var/image/img_nasties = image(', 'var/image/smell = image(',
+                  'var/image/fleas = image(', 'overlays_standing[27] = img_nasties'):
+        test.assertEqual(body.count(token), 1)
+    test.assertLess(body.index('has_fleas = fleas_found'), body.index(guard))
 
 
 class PlayerCareSourceContracts(unittest.TestCase):
@@ -110,7 +117,9 @@ class PlayerCareSourceContracts(unittest.TestCase):
         assert_hygiene_overlay_allocation(self, hygiene)
         for mutation in (
             hygiene.replace('if(0 to HYGIENE_LEVEL_DIRTY)', 'if(HYGIENE_LEVEL_NORMAL to INFINITY)'),
-            hygiene.replace('if (fleas_found)', 'if (!fleas_found)'),
+            hygiene.replace('if (show_smell)', 'if (!show_smell)'),
+            hygiene.replace('\t\tif (fleas_found)', '\t\tif (!fleas_found)'),
+            hygiene.replace('|| !overlays_standing[27]', '&& !overlays_standing[27]'),
             hygiene.replace('overlays_standing[27] = img_nasties', 'overlays_standing[27] = null'),
         ):
             with self.assertRaises(AssertionError):
