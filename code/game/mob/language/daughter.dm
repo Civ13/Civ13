@@ -1,8 +1,8 @@
 // Daughter languages (docs/language-drift.md, part 2).
 //
-// When the world enters a new era, every speech community whose drift has
-// reached LANGUAGE_SPLIT_DRIFT and that has LANGUAGE_SPLIT_MIN_NATIVES living
-// native speakers becomes ready to split. The nation's leader, with a
+// A speech community whose drift has stayed at LANGUAGE_SPLIT_DRIFT for
+// LANGUAGE_SPLIT_HOLD real minutes, and that has LANGUAGE_SPLIT_MIN_NATIVES
+// living native speakers, becomes ready to split (language_split_check). The nation's leader, with a
 // Discord-verified account, names the new language (Name Our Language); an
 // admin can name it too. Naming is the split: the nation's living natives get
 // the daughter at their score in the parent, it becomes their mother tongue
@@ -18,11 +18,13 @@
 //   "daughters" = list(name = list("parent", "root", "nation", "era", "kin", "key", "syllables"[, "imported"]))
 // An imported daughter arrived with a traveller from another land
 // (region_travel_tongues.dm) and does not count towards this world's cap.
-//   "pending"   = list("Nation|Language" = era it became ready)
+//   "pending"   = list("Nation|Language" = real minute it became ready)
+//   "held"      = list("Nation|Language" = real minute its drift reached the split level)
+// Real minutes (language_real_minute) stay exact in a float; world.realtime does not.
 // "kin" is how much of the parent a daughter speaker follows, and the parent
 // speaker the daughter: LANGUAGE_DAUGHTER_KIN at the split, then lower by
-// LANGUAGE_DAUGHTER_KIN_STEP at each era change the daughter has drifted far
-// again, to LANGUAGE_DAUGHTER_KIN_MIN. A root language has at most
+// LANGUAGE_DAUGHTER_KIN_STEP each time the daughter has held a far drift
+// again for LANGUAGE_SPLIT_HOLD, to LANGUAGE_DAUGHTER_KIN_MIN. A root language has at most
 // LANGUAGE_DAUGHTERS_PER_ROOT daughters on a world.
 
 /datum/language/daughter
@@ -203,7 +205,7 @@ var/global/list/language_sound_changes = list(
 				progress = TRUE
 
 // ------------------------------------------------------------
-// The era check and the split
+// The split check and the split
 // ------------------------------------------------------------
 
 /proc/language_daughter_count(datum/language/root)
@@ -214,19 +216,34 @@ var/global/list/language_sound_changes = list(
 		if (islist(record) && record["root"] == root.name && !record["imported"])
 			.++
 
-// Called when the world enters a new era. Returns how many communities became
-// ready to split.
-/proc/language_era_advanced()
+// Real minutes since 2000: exact in a float, unlike world.realtime.
+/proc/language_real_minute()
+	return round(world.realtime / 600)
+
+// Called after every drift update (language_drift_tick). A community whose
+// drift has stayed at LANGUAGE_SPLIT_DRIFT or more for LANGUAGE_SPLIT_HOLD of
+// real time, and that has LANGUAGE_SPLIT_MIN_NATIVES living natives, becomes
+// ready to split. Research and eras play no part (Val, 2026-11-21). Returns
+// how many communities became ready.
+/proc/language_split_check()
 	if (!map)
 		return 0
 	ensure_daughter_languages()
 	var/list/drift = language_drift_table()
+	var/list/held = language_lineage_part("held")
 	var/list/pending = language_lineage_part("pending")
 	var/list/records = language_lineage_part("daughters")
 	. = 0
+	for (var/key in held.Copy())
+		if (!isnum(drift[key]) || drift[key] < LANGUAGE_SPLIT_DRIFT)
+			held -= key
 	for (var/key in drift.Copy())
 		var/list/parts = language_community_parts(key)
 		if (!parts || drift[key] < LANGUAGE_SPLIT_DRIFT)
+			continue
+		if (!isnum(held[key]))
+			held[key] = language_real_minute()
+		if (language_real_minute() - held[key] < LANGUAGE_SPLIT_HOLD)
 			continue
 		var/datum/language/L = all_languages[parts[2]]
 		if (!L)
@@ -239,13 +256,15 @@ var/global/list/language_sound_changes = list(
 			record["kin"] = kin
 			set_language_kinship(D, all_languages[D.parent_name], kin)
 			set_language_drift(key, drift[key] / 2)
+			held -= key
 			continue
 		if ((key in pending) || language_community_natives(parts[1], L) < LANGUAGE_SPLIT_MIN_NATIVES)
 			continue
 		var/datum/language/root = language_root(L)
 		if (!root || language_daughter_count(root) >= LANGUAGE_DAUGHTERS_PER_ROOT)
 			continue
-		pending[key] = map.ordinal_age
+		pending[key] = language_real_minute()
+		held -= key
 		.++
 		language_split_ready_notice(parts[1], L)
 

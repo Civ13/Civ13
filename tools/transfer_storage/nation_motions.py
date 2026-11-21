@@ -263,12 +263,14 @@ class NationMotions:
 
     def carry(self, nation, motion, kind, subject, now):
         self.close_motion(motion)
+        self.legitimacy_shift(nation, 1)
         if kind == 'admit':
             if self.db.execute('SELECT 1 FROM nation_application WHERE faction = ? AND nation = ?',
                                (subject, nation)).fetchone():
                 self._drop_application(subject)
                 if len(self.members(nation)) < self.capacity(nation):
                     self.db.execute('INSERT INTO nation_member VALUES (?, ?, ?)', (subject, nation, now))
+                    self.legitimacy_shift(nation, 2)
         elif kind == 'currency':
             if subject and self.nation_of(subject) == nation:
                 self.db.execute('INSERT OR REPLACE INTO nation_currency VALUES (?, ?)', (nation, subject))
@@ -285,6 +287,7 @@ class NationMotions:
 
     def fail(self, nation, motion, kind, subject):
         self.close_motion(motion)
+        self.legitimacy_shift(nation, -1)
         if kind == 'admit':
             self._drop_application(subject)
 

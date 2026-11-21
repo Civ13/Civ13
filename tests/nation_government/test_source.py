@@ -132,8 +132,8 @@ class NationGovernmentSource(unittest.TestCase):
         self.assertIn('if (!nation_eligible())', menu)
         self.assertIn('"op" = "sign"', menu)
         self.assertIn('"op" = "revolt"', menu)
-        shares = {float(v) for v in re.findall(r'if \((0\.\d+)\)', proc_text(self.text, '/proc/nation_revolt_share('))}
-        self.assertEqual(shares | {0.5}, {g['revolt'] for g in GOVERNMENTS.values()})
+        self.assertIn('round(G["revolt"] * 100)', proc_text(self.text, '/proc/nation_revolt_share('))
+        self.assertIn('Legitimacy [N["legitimacy"]]/100', proc_text(self.text, '/proc/nation_government_line('))
         self.assertIn('choices += "Revolt"', read('code/game/mob/groups/nation.dm'))
         self.assertIn("'sname'", read('tools/transfer_storage/region.py'))
 

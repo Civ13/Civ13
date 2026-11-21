@@ -362,8 +362,9 @@ var/global/datum/shard_group/shard_group = new
 /proc/region_round_autostart(datum/controller/gameticker/T)
 	if(!T || !shard_group.autostarts_round())
 		return FALSE
+	// Checked every tick: the round (and a gateway's first forward) starts as soon as setup ends.
 	while(!world_setup_finished)
-		sleep(10)
+		sleep(1)
 	if(!shard_group.autostarts_round())
 		return FALSE
 	T.admin_started = TRUE

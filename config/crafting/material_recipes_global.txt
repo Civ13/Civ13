@@ -743,6 +743,10 @@ RECIPE: /material/rubberised_cloth/,customizable poncho,/obj/item/clothing/suit/
 RECIPE: /material/rubberised_cloth/,rubberised gas cell,/obj/item/airship_gas_cell/rubber,20,200,0,1,vehicle parts,126,0,0,8,null
 RECIPE: /material/rubberised_cloth/,german gas mask,/obj/item/clothing/mask/gas/german,6,70,0,1,gas masks,0,0,102,8,null
 RECIPE: /material/rubberised_cloth/,british gas mask,/obj/item/clothing/mask/gas/british,6,70,0,1,gas masks,0,0,102,8,null
+RECIPE: /material/nylon/,foldable canopy,/obj/item/weapon/tent,3,75,0,1,furniture,0,0,19,8,null
+RECIPE: /material/nylon/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/nylon/,folding umbrella,/obj/item/weapon/umbrella/nylon,2,60,0,1,none,0,0,0,8,null
+RECIPE: /material/nylon/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
 
 //**************************************************************
 //*********************| CLOTH |********************************
@@ -1460,13 +1464,11 @@ RECIPE: /material/whitefoxpelt/,hide sling bag,/obj/item/weapon/storage/backpack
 
 RECIPE: /material/tobacco/,cigar,/obj/item/clothing/mask/smokable/cigarette/cigar,3,75,0,1,none,0,0,23,8,null
 RECIPE: /material/tobacco/,cuban cigar,/obj/item/clothing/mask/smokable/cigarette/cigar/havana,5,100,0,1,none,0,0,57,8,null
-RECIPE: /material/tobacco/,cigarette,/obj/item/clothing/mask/smokable/cigarette,2,60,0,1,none,0,0,80,8,null
 
 //**************************************************************
 //*********************| COCAINE |******************************
 //**************************************************************
 
-RECIPE: /material/coca/,cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,10,55,0,1,none,0,0,93,8,null
 
 //**************************************************************
 //*********************| POPPY |********************************
@@ -1562,6 +1564,7 @@ RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,
 RECIPE: /material/glass/,casement window,/obj/structure/simple_door/key_door/anyone/casement,4,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pound lock,/obj/structure/canal_lock,12,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,dock gate,/obj/structure/canal_lock/dock_gate,24,300,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,keel blocks,/obj/structure/keel_blocks,6,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,yard office,/obj/structure/yard_office,30,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,clay tablet,/obj/item/weapon/paper/clay_tablet,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,reed stylus,/obj/item/weapon/pen/stylus,1,30,0,1,construction,0,0,0,8,null
@@ -2275,6 +2278,7 @@ RECIPE: /material/steel/,steel anvil,/obj/structure/anvil/steel,25,150,1,1,produ
 RECIPE: /material/steel/,wood stove,/obj/structure/oven/woodstove,8,250,1,1,production,86,0,0,8,null
 
 RECIPE: /material/steel/,bakelizer,/obj/structure/bakelizer,18,300,1,1,production,120,0,0,8,null
+RECIPE: /material/steel/,hot press,/obj/structure/hot_press,12,240,1,1,production,120,0,0,8,null
 RECIPE: /material/steel/,industrial acidic bath,/obj/structure/converter/acid_bath,12,200,1,1,production,175,0,180,8,null
 
 RECIPE: /material/steel/,petroleum refinery,/obj/structure/refinery,22,230,1,1,production,110,0,0,8,null
@@ -2522,6 +2526,7 @@ RECIPE: /material/wood/,gear box,/obj/structure/workshop_machine/transmission/ge
 RECIPE: /material/wood/,sash saw,/obj/structure/workshop_machine/hopper/sash_saw,10,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,fulling stocks,/obj/structure/workshop_machine/hopper/fulling_stocks,10,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,bark stamps,/obj/structure/workshop_machine/hopper/bark_stamps,8,200,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/iron/,power loom,/obj/structure/workshop_machine/hopper/power_loom,12,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,counterweight drum,/obj/structure/workshop_machine/mover/counterweight,10,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/iron/,iron line shaft,/obj/structure/workshop_machine/transmission/line_shaft/iron,3,80,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,rope drive wheel,/obj/structure/workshop_machine/transmission/rope_drive,4,150,1,1,economy & production,0,0,0,8,null

@@ -140,7 +140,6 @@
 	else
 		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
 	knowledge_era_advanced()
-	language_era_advanced()
 
 // ------------------------------------------------------------
 // Personal knowledge rules in book mode

@@ -279,11 +279,12 @@ class MechanicalPower(unittest.TestCase):
             H + 'sash_saw': ('/material/wood/', 10, {GEAR: 1, SHAFT: 1, '/obj/item/stack/material/iron': 2}),
             H + 'fulling_stocks': ('/material/wood/', 10, {SHAFT: 1}),
             H + 'bark_stamps': ('/material/wood/', 8, {SHAFT: 1, '/obj/item/stack/material/iron': 2}),
+            H + 'power_loom': ('/material/iron/', 12, {GEAR: 1, SHAFT: 1, BEARING: 1}),
         }
         for path, (material, count, parts) in want.items():
             self.assertEqual(len(rows.get(path, [])), 1, path)
             self.assertEqual((rows[path][0][0], float(rows[path][0][3])), (material, count), path)
-            self.assertIn('"%s" = "watermills"' % path, NODES)
+            self.assertIn('"%s" = "%s"' % (path, 'textile_mills' if path.endswith('power_loom') else 'watermills'), NODES)
             self.assertEqual(NEEDS[path], {'tools': [], 'inputs': parts}, path)
         hopper = (ROOT / 'code/modules/1713/hopper_machines.dm').read_text(encoding='utf-8')
         self.assertIn('#define HOPPER_OUTPUT_CAP 20', hopper)
@@ -314,6 +315,15 @@ class MechanicalPower(unittest.TestCase):
         smart = (ROOT / 'code/modules/1713/smart_home.dm').read_text(encoding='utf-8')
         self.assertIn('if (mechanism_relay_open_on(loc))', smart)
         self.assertIn('/proc/mechanism_relay_open_on(', (ROOT / 'tests/power/fixture.dm').read_text(encoding='utf-8'))
+
+    def test_driven_bellows_and_screw(self):
+        fire = (ROOT / 'code/modules/1713/clay_lime_fire.dm').read_text(encoding='utf-8')
+        self.assertIn('if (B.driven())', proc_body(fire, '/obj/structure/furnace/proc/bellows_blowing('))
+        self.assertIn('\ticon_state = "bellows"\n\tdrive_draw = 1\n', fire)
+        flood = (ROOT / 'code/modules/1713/flood_defences.dm').read_text(encoding='utf-8')
+        body = proc_body(flood, '/obj/structure/water_lift/archimedes_screw/proc/driven_lift(')
+        # the cheap hollow lookup comes before the drive search
+        self.assertLess(body.index('lift_hollow()'), body.index('mechanical_drive_factor(src)'))
 
     def test_movers_have_a_strength(self):
         for name, cap in (('treadwheel', 1), ('horse_gin', 2), ('mill_wheel', 3)):

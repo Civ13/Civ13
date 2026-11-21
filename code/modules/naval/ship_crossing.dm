@@ -121,15 +121,28 @@
 			return FALSE
 	return TRUE
 
-// TRUE when every offset round (x, y, z) is free deep water inside the map.
+// TRUE when every offset round (x, y, z) is free deep water inside the map,
+// with no floor beside her.
 // hold: offsets of her hold, which must also find rock or deep water free on
 // the level below (sea_crossing_hold_ground). upper: offsets of her upper
 // deck, which must find open air free on the building level above.
 /proc/sea_crossing_fits(list/offsets, x, y, z, list/hold = null, list/upper = null)
+	var/list/mine = list()
+	for (var/list/O in offsets)
+		mine["[O[1]],[O[2]]"] = TRUE
 	for (var/list/O in offsets)
 		var/turf/T = locate(x + O[1], y + O[2], z)
 		if (!T || !sea_crossing_water(T))
 			return FALSE
+		// A floor beside her would join her to another hull or the shore,
+		// and she could not be commissioned (built_hull_survey()).
+		for (var/d in cardinal)
+			var/list/step = list(O[1] + (d == EAST ? 1 : d == WEST ? -1 : 0), O[2] + (d == NORTH ? 1 : d == SOUTH ? -1 : 0))
+			if (mine["[step[1]],[step[2]]"])
+				continue
+			var/turf/N = locate(x + step[1], y + step[2], z)
+			if (N && hull_floor_in(N))
+				return FALSE
 	if (length(hold))
 		var/lz = multiz_level_below(z)
 		if (!lz)
@@ -251,6 +264,16 @@
 	var/list/deck = B.cells()
 	var/list/lower = B.lower_cells(deck)
 	var/list/above = B.upper_cells(deck)
+	// Cars, trucks and light planes parked on her deck go whole (ship_crossing_cargo.dm).
+	var/list/vehicles = sea_crossing_pack_vehicles(deck + lower + above, deck, get_turf(tiller))
+	if (istext(vehicles))
+		return "She cannot cross yet: [vehicles]."
+	var/list/claimed = list()
+	for (var/atom/movable/M in vehicles["claimed"])
+		claimed[M] = TRUE
+	S["claimed"] = claimed
+	var/list/carried_vehicles = vehicles["vehicles"]
+	S["cargo"] = carried_vehicles.len
 	for (var/i = 1, i <= B.offsets.len, i++)
 		var/list/O = B.offsets[i]
 		var/turf/T = deck[i]
@@ -277,6 +300,8 @@
 		record["hold"] = hold
 	if (upper.len)
 		record["upper"] = upper
+	if (carried_vehicles.len)
+		record["vehicles"] = carried_vehicles
 	// Her bilge, seams, patches and bottom cross with her (hull_ledger.dm).
 	if (C.ledger)
 		record["ledger"] = C.ledger.to_list()
@@ -293,8 +318,12 @@
 	var/list/crew = S["crew"]
 	var/list/refused = S["refused"]
 	var/list/blocking = S["blocking"]
+	var/list/claimed = S["claimed"]
 	for (var/atom/movable/M in T)
 		if (M.loc != T || QDELETED(M) || M == tiller)
+			continue
+		// A vehicle's parts and boot cargo are in its own record.
+		if (claimed && claimed[M])
 			continue
 		// Flick animations and speech bubbles (both named "overlay") can be left lying on a tile; they are not cargo.
 		// Ghosts and admin observers float over the deck; they are not aboard (craft_cargo.dm).
@@ -487,6 +516,8 @@ var/global/list/sea_crossing_marked = list()
 		for (var/key in up)
 			if (!seen[key])
 				return FALSE
+	if (!sea_crossing_vehicles_ok(R))
+		return FALSE
 	var/has_pivot = counts[3]
 	var/items = counts[1]
 	var/cargo = counts[2]
@@ -644,6 +675,8 @@ var/global/list/sea_crossing_marked = list()
 					face.building_take_upper_face(RF)
 	if (stowed_upper)
 		log_game("Sea crossing: no open air above the [R["name"]] at [pivot.x],[pivot.y],[pivot.z]; her upper deck cargo is stowed on deck.")
+	// Her vehicles are parked again once her deck is down.
+	made += sea_crossing_build_vehicles(R, pivot)
 	sea_crossing_couple_tanks(R, made + hold_made + upper_made, pivot)
 	// Each ladder finds its other end; one with none (its hold could not be
 	// hollowed or its upper deck built here) is taken down.
@@ -777,6 +810,7 @@ var/global/list/sea_crossing_marked = list()
 		return
 	var/list/hold = islist(R["hold"]) ? R["hold"] : list()
 	var/list/upper = islist(R["upper"]) ? R["upper"] : list()
+	sea_crossing_wreck_vehicles(R, T)
 	for (var/list/tile in R["tiles"] + hold + upper)
 		for (var/list/E in tile[3])
 			if (E[1] == "k")
@@ -815,6 +849,7 @@ var/global/list/sea_crossing_marked = list()
 		origin[L] = HC ? HC.hold_origin : "[/turf/wall/rockwall]"
 		turfs += L
 	tiller.decommission()
+	sea_crossing_strip_vehicles(turfs)
 	for (var/turf/T in turfs)
 		// What stands on a tile first, then its floors and roofs.
 		for (var/pass = 1, pass <= 2, pass++)

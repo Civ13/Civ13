@@ -19,7 +19,7 @@ class PulledPunchTests(unittest.TestCase):
     def test_teeth_only_after_landed_full_strike(self):
         body = proc_body(ATTACKHAND.read_text(), "/mob/living/human/attack_hand(")
         teeth = body.index("knock_out_teeth(")
-        miss_return = body.index("if (miss_type)\n\t\t\t\t\treturn FALSE")
+        miss_return = body.index("if (miss_type)\n\t\t\t\treturn FALSE")
         attack_pick = body.index("H.get_unarmed_attack(src, hit_zone)")
         self.assertLess(attack_pick, teeth)
         self.assertLess(miss_return, teeth)
