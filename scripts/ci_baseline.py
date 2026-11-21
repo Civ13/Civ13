@@ -339,6 +339,10 @@ SUITES = {
     'handloading': {'files': ('tests/handloading/test_coverage.py',),
         'paths': ('tests/handloading/', 'docs/firearm-coverage.json', 'code/modules/projectiles/handloading.dm',
                   'code/modules/projectiles/_ammo_casing.dm')},
+    # Self-loading guns and cased shells drop brass; the native probe is tests/casing_ejection/run.py.
+    'casing_ejection': {'files': ('tests/casing_ejection/test_sources.py',),
+        'paths': ('tests/casing_ejection/', 'code/modules/projectiles/guns/projectile.dm',
+                  'code/modules/1713/siege/piece.dm', 'code/__defines/gun.dm')},
     'septim_appearance': {'files': ('tests/septim_appearance/test_appearance.py',),
         'paths': ('tests/septim_appearance/', 'code/game/objects/items/stacks/money.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},

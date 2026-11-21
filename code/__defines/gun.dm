@@ -10,3 +10,7 @@
 #define PROJECTILE_HEIGHT_CLEAR 0
 #define PROJECTILE_HEIGHT_GROUND 1
 #define PROJECTILE_HEIGHT_OVER 2
+
+// Spent casings a fired gun leaves on one tile before later ones are thrown
+// away, so machine-gun nests do not bury a tile in brass (projectile.dm).
+#define CASINGS_PER_TILE 12
