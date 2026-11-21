@@ -105,7 +105,11 @@ class NationGovernmentSource(unittest.TestCase):
     def test_throne_claim_is_held_and_contested(self):
         offer = proc_text(self.text, '/mob/living/human/proc/throne_claim_offer(')
         self.assertIn('account_verified(nation_account())', offer)
-        self.assertIn('G["type"] != "monarchy" || istext(G["head_account"])', offer)
+        self.assertIn('!nation_hereditary(G) || istext(G["head_account"])', offer)
+        # The DM list of hereditary types mirrors HEREDITARY in nation_succession.py.
+        from tools.transfer_storage.nation_succession import HEREDITARY
+        here = proc_text(self.text, '/proc/nation_hereditary(')
+        self.assertEqual(set(re.findall(r'"(\w+)"', here.split('in list(')[1])), set(HEREDITARY))
         self.assertIn('nation_hold_start(nid, "claim", A)', offer)
         tick = proc_text(self.text, '/proc/nation_hold_tick(')
         self.assertIn('get_dist(holder, A) > ASSEMBLY_HOLD_RANGE', tick)
