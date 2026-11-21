@@ -161,6 +161,7 @@
 	if(bed.persistence_bed_owner_ckey != client.ckey) bed.persistence_bed_assigned_at = death_legacy_now()
 	bed.persistence_bed_owner_ckey = client.ckey
 	record_persistence_owner()
+	accolade_meet_mob(src, "settled")
 	lastx = x
 	lasty = y
 	lastz = z

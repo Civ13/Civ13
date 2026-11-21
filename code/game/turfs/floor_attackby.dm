@@ -1200,6 +1200,7 @@
 						H.adaptStat("strength", 1)
 						T.available_sand -= 1
 						new /obj/item/stack/ore/glass(T)
+						H.arcane_dug_sand(T) // arcane_materials.dm: storm glass
 					else
 						H.shoveling = FALSE
 			else
