@@ -172,6 +172,7 @@
 		/obj/item/stack/farming/seeds/tobacco = list("temperate", "semiarid", "savanna", "jungle"),
 		/obj/item/stack/farming/seeds/poppy = list("temperate", "semiarid", "desert"),
 		/obj/item/stack/farming/seeds/coca = list("jungle"),
+		/obj/item/stack/farming/seeds/khat = list("semiarid", "savanna"),
 	)
 
 // Mushrooms grow where the mushroom crop does, outside the cold and dry seasons.

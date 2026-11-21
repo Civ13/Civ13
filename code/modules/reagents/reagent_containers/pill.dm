@@ -145,9 +145,9 @@
 
 /obj/item/weapon/reagent_containers/pill/opium
 	name = "opium ball"
-	desc = "A ball of dried opium. A strong painkiller."
-	icon = 'icons/obj/materials.dmi'
-	icon_state = "opium_extracted"
+	desc = "A sticky ball of raw poppy latex, scraped from lanced pods. A strong painkiller and a strong habit."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "opium_latex"
 	value = 17
 	is_contraband = TRUE
 	New()
