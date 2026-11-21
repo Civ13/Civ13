@@ -226,7 +226,7 @@ var/global/list/datum/arcane_communion/arcane_communions = list()
 	var/datum/arcane_communion/C = arcane_communion
 	if (!C || !C.current())
 		return
-	var/raw = input(src, "What do you say? Only [C.living.real_name] hears it.", "Whisper") as text|null
+	var/raw = player_input(src, "What do you say? Only [C.living.real_name] hears it.", "Whisper", null, "text", null, TRUE)
 	var/words = raw ? sanitize(raw, MAX_MESSAGE_LEN) : null
 	if (!words || arcane_communion != C || !C.current())
 		return
@@ -260,7 +260,7 @@ var/global/list/datum/arcane_communion/arcane_communions = list()
 	if (!options.len)
 		to_chat(src, SPAN_WARNING("There is nothing near enough."))
 		return
-	var/pick = options[input(src, "What sign?", "Sign") as null|anything in options]
+	var/pick = options[player_input(src, "What sign?", "Sign", null, "anything", options, TRUE)]
 	if (!pick || arcane_communion != C || !C.current() || arcane_signs < 1)
 		return
 	if (pick == "knock")
@@ -273,7 +273,7 @@ var/global/list/datum/arcane_communion/arcane_communions = list()
 		T.visible_message("<span class='notice'>Something knocks on \the [A].</span>")
 		log_admin("Spirit sign: [key_name(src)] knocked at [T.x], [T.y], [T.z] for [key_name(C.living)].")
 	else
-		var/who = input(src, "Who feels it?", "Sign") as null|anything in people
+		var/who = player_input(src, "Who feels it?", "Sign", null, "anything", people, TRUE)
 		var/mob/living/human/H = people[who]
 		if (!H || QDELETED(H) || arcane_communion != C || arcane_signs < 1 || !arcane_in_anchor_range(H))
 			return
