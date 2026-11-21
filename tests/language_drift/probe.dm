@@ -167,6 +167,22 @@ var/drift_runtime_error = FALSE
 		language_era_advanced()
 		drift_check(language_kinship(D, latin) == LANGUAGE_DAUGHTER_KIN - LANGUAGE_DAUGHTER_KIN_STEP && language_drift(vulgar_key) == 35 && !(vulgar_key in language_lineage_part("pending")), "a drifted daughter loses kinship instead of splitting")
 
+		// The family view in Check Known Languages.
+		var/list/families = A.language_family_rows()
+		var/list/family = families.len == 1 ? families[1] : null
+		var/list/member_names = list()
+		if (family)
+			for (var/list/member in family["members"])
+				member_names += member["name"]
+		drift_check(family && family["root"] == "Latin" && ("Vulgar" in member_names) && ("Highland" in member_names), "the family view lists the root and its daughters")
+		var/mother_marked = FALSE
+		if (family)
+			for (var/list/member in family["members"])
+				if (member["name"] == "Vulgar" && member["mother"])
+					mother_marked = TRUE
+		drift_check(mother_marked, "the family view marks the mother tongue")
+		drift_check(!length(learner.language_family_rows()), "someone outside the family sees none")
+
 		// Saved records restore the same language.
 		var/old_key = D.key
 		var/old_sounds = jointext(D.syllables, "|")

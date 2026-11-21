@@ -2,8 +2,8 @@
 
 Approved by Val on 2026-11-21 after a player asked whether languages evolve as
 eras pass, the way Latin became French and Spanish. Part 1 tracks drift;
-part 2 splits drifted communities into daughter languages at an era change.
-The language family tree comes in part 3.
+part 2 splits drifted communities into daughter languages at an era change;
+part 3 shows language families in Check Known Languages.
 
 ## Speech communities
 
@@ -81,3 +81,14 @@ towards that land's cap.
 
 `tests/language_drift/probe.dm` drives this natively:
 `python3 tests/ecology_spawning/run_linux.py . tests/language_drift/probe.dm`.
+
+## Language families (part 3)
+
+Check Known Languages adds a **Language families** section when one of the
+player's languages has relatives on this world: one card per root language,
+its daughters indented under their parents with the nation and era they grew
+among, the player's own languages marked (mother tongue, speaks it, learning),
+and how much each pair follows of the other in plain words. Data comes from
+`language_family_rows()` (daughter.dm) as the `families` key; kinship is the
+lower of the two directions rounded to 5, and drift is never sent. Layout by
+Fable.
