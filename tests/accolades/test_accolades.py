@@ -20,7 +20,7 @@ class AccoladeSourceTest(unittest.TestCase):
         block = SOURCE[SOURCE.index("/proc/accolade_catalog()"):SOURCE.index("return catalog")]
         ids = self.catalog_ids()
         self.assertEqual(len(ids), len(set(ids)))
-        self.assertGreaterEqual(len(ids), 12)
+        self.assertGreaterEqual(len(ids), 25)
         for entry in re.findall(r'= list\("[^"]+", (\d+), "', block):
             self.assertGreater(int(entry), 0)
 
@@ -32,7 +32,10 @@ class AccoladeSourceTest(unittest.TestCase):
     def test_every_accolade_has_a_trigger(self):
         trigger_files = [SOURCE] + [read(p) for p in (
             "code/modules/client/player_tutorial.dm", "code/modules/naval/ship_voyage.dm",
-            "code/modules/persistence/bed_return.dm")]
+            "code/modules/persistence/bed_return.dm", "code/game/objects/items/cartography_notes.dm",
+            "code/game/objects/structures/blacksmithing/refining.dm", "code/modules/research_tree/field_work.dm",
+            "code/modules/1713/domestication.dm", "code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm",
+            "code/modules/nomad_raids/nomad_visit.dm")]
         text = "\n".join(trigger_files)
         for accolade in self.catalog_ids():
             self.assertTrue(re.search(r'accolade_meet(_mob)?\(.*"%s"' % accolade, text), accolade)
@@ -52,6 +55,30 @@ class AccoladeSourceTest(unittest.TestCase):
         self.assertIn('code\\modules\\accolades\\accolades.dm', dme)
         self.assertIn('code\\modules\\admin\\accolades_admin.dm', dme)
         self.assertIn('code\\processes\\accolades.dm', dme)
+
+    def test_second_list_hooks_are_wired(self):
+        self.assertIn('accolade_meet_mob(H, "copyist")', read("code/modules/research_tree/book_research.dm"))
+        self.assertIn('accolade_meet_mob(user, "copyist")', read("code/modules/1713/book.dm"))
+        self.assertIn("H.accolade_crafted(recipe.result_type)", read("code/game/objects/items/stacks/stack.dm"))
+        self.assertIn('accolade_meet_mob(H, "smelter")', read("code/modules/1713/tatara.dm"))
+        self.assertIn('accolade_meet_mob(H, "herder")', read("code/modules/1713/complex_animal/_backend.dm"))
+        self.assertIn("accolade_animal_killed(src)", read("code/game/mob/living/simple_animal/simple_animal.dm"))
+        self.assertIn('accolade_meet_mob(driver, "aviator")', read("code/modules/1713/machinery/modular_vehicles/aircraft/helicopter.dm"))
+        self.assertIn("owner.accolade_founded(newname)", read("code/game/mob/groups/faction_creation.dm"))
+        self.assertIn("accolade_siege_held(province_seat(c, holder), holder)", read("code/modules/provinces/province_siege.dm"))
+        research = read("code/modules/research_tree/book_research.dm")
+        self.assertIn("record_chapter_author(node_id, writer)", research)
+        self.assertIn("accolade_learned_from(H, source, node_id)", research)
+
+    def test_group_accolades_need_other_real_players(self):
+        other = SOURCE[SOURCE.index("/proc/accolade_other_counts("):SOURCE.index("// A crafted recipe result")]
+        self.assertIn("other != ckey", other)
+        self.assertIn("shared_records.playtime_hours(other) >= ACCOLADE_OTHERS_MIN_HOURS", other)
+        self.assertIn("accolade_other_counts(account, ckey)", SOURCE)
+        self.assertIn("accolade_other_counts(reader_ckey, author)", SOURCE)
+        hunter = SOURCE[SOURCE.index("/proc/accolade_animal_killed("):SOURCE.index("// Founder:")]
+        self.assertIn("if(A.domesticable && !A.wild)", hunter)
+        self.assertIn("if(C.tamed || C.owner)", hunter)
 
     def test_claims_are_once_per_account(self):
         claim = SOURCE[SOURCE.index("/proc/accolade_claim("):SOURCE.index("// Records a land")]

@@ -219,5 +219,6 @@
 	owner.grant_faction_symbol_editor()
 	to_chat(owner, "<big>You are now the leader of the <b>[newname]</b> faction.</big>")
 	player_activity.faction_event(owner, "faction_found", newname)
+	owner.accolade_founded(newname)
 	GLOB.nanomanager.close_user_uis(owner, src)
 	return TRUE

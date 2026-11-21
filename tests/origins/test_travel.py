@@ -43,7 +43,7 @@ class TravelCarriesLanguages(unittest.TestCase):
         valid = proc(TONGUES, '/proc/region_travel_tongues_valid')
         for needle in ('!language_learnable(all_languages[lname])', 'score <= 0 || score > 100',
                        '!(chosen in known) || known[chosen] < LANGUAGE_BROKEN', '!origin_by_id(value["origin"])',
-                       'if(!(key in list("known", "default", "origin", "land", "day", "today"))) return FALSE',
+                       'if(!(key in list("known", "default", "origin", "land", "day", "today", "native", "daughters"))) return FALSE',
                        '!region_travel_gain_bucket_valid(bucket, known)'):
             self.assertIn(needle, valid)
 
