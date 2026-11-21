@@ -622,6 +622,13 @@
 		if (ismob(M))
 			usr.client.divine_answer_prayer(M)
 
+	else if (href_list["divine_invite"])
+		if (!check_rights(R_ADMIN))
+			return
+		var/mob/M = locate(href_list["divine_invite"])
+		if (ismob(M))
+			usr.client.divine_invite_follower(M)
+
 	else if (href_list["create_object"])
 		if (!check_rights(R_SPAWN))	return
 		return create_object(usr)

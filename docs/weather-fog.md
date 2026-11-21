@@ -57,7 +57,7 @@ when it thickens and a fifth when it clears.
 `weather_dew_at()` and `weather_frost_at()` need the open ground cooling under
 a clear, calm sky: Night to Morning, no rain, under 50% cloud and a wind
 below 4 m/s. Then the ground has frost when the air (less hill cooling) is at
-1 C or below, and dew when it is warmer but within 3 C of its dew point.
+1 C or below, and dew when it is warmer but within 3 C of its dew point. Frost nips back tender crops unless they are covered ([crop-frost.md](crop-frost.md)).
 
 ## Readers
 

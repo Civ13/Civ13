@@ -24,6 +24,9 @@
 	M.update_canmove()
 	buckled_mob = M
 	post_buckle_mob(M)
+	if (ishuman(M) && !M.lying)
+		var/mob/living/human/H = M
+		H.body_motion_settle()
 	if (istype(src, /obj/structure/bed/bedroll) && istype(M, /mob/living/human))
 		var/obj/structure/bed/bedroll/BR = src
 		BR.used = TRUE

@@ -32,7 +32,7 @@ second-deck tile stands over a deck-above tile (`ship_draught_support()`).
 `set_deck(level, x, y, state)` lays or takes up a tile; taking one up takes up
 the decks above it there, and `clear()` takes up every deck on a hull tile.
 `set_deck_piece()` stands only pieces marked `decks` (walls, doors, windows,
-crates, beds, pumps, ladders); masts, helms, benches, anchors, gangways, guns
+crates, beds, pumps, deck pillars, ladders); masts, helms, benches, anchors, gangways, guns
 and engines stand only on her main deck.
 
 The ladder (`X`) is the foot of a stood-up wooden ladder: it goes on the lower
@@ -43,6 +43,11 @@ and note a part of a deck above that no ladder reaches (stairs or a ladder can
 be stood up afloat) and a second deck above (a ship afloat carries one deck
 above hers, so it is drawn for later). Findings name the deck they are on.
 `piece_count()` counts every deck, so a pump in the hold is her pump.
+
+A deck above is a roof over her hull, so like any roof it must be carried: a
+deck pillar (`S`, a roof support) holds deck within 3 tiles of it and a plank
+wall the tiles beside it (`carries`, `unsupported_deck_tiles()`); the deck check
+refuses a tile of deck above that nothing carries.
 
 ## Checks, cost and speed
 
@@ -173,9 +178,16 @@ The post keeps the draught as `draught_code` beside the usual `design`
 piece plan: one piece per floor tile from stern to bow (plank floors, then
 steel), then one per fitting, a stage per kind in `ship_draught_pieces` order, then
 one per gunwale (wooden gunwales, then steel bulwarks) on a boat or ship.
-Each piece costs its hand recipe; the deck above and ladders are not built on
-the slipway and are laid by hand once she is afloat, and this berth does not dig
-her hold. Iron and planks pay for pieces as well
+Each piece costs its hand recipe. Her other decks come last
+(`draught_place_deck()`): hold floors dug into the level below the berth
+(`hull_hold_lay()`), the deck above as a wooden roof over each hull tile with
+its floor on the level above, linked as a building pair, then what stands on
+those decks kind by kind, then ladders (foot and head, joined). A second deck
+above is drawn for later and not built. `draught_decks_refusal()` refuses a
+berth with no rock or deep water under her hold or no open air over her deck
+above. At the launch the whole hull slides with her hold and deck above, which
+`move_to()` carries like any built hull's (the rock under the berth closes
+behind her hold). Iron and planks pay for pieces as well
 as the usual materials (`piece_material()`).
 
 When a piece is paid for, the real floor or fitting appears on its tile with

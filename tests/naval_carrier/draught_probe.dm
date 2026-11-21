@@ -71,8 +71,8 @@ var/naval_runtime_error = FALSE
 
 	// ---- What each piece weighs is what it weighs afloat ----
 	var/turf/yard = locate(5, 5, 2)
-	for (var/key in ship_draught_pieces)
-		var/list/P = ship_draught_pieces[key]
+	for (var/key in ship_draught_pieces())
+		var/list/P = ship_draught_pieces()[key]
 		var/path = P["path"]
 		var/atom/movable/M = new path(yard)
 		naval_check(M.hull_load() == P["load"], "a [P["name"]] weighs [P["load"]] on a deck, as hull_load() says ([M.hull_load()])")
@@ -89,6 +89,9 @@ var/naval_runtime_error = FALSE
 	D.set_floor(1, 0, "s")
 	cost = D.costs()
 	naval_check(cost["wood"] == 70 && cost["steel"] == 3, "a steel floor costs steel with a steel bulwark on its open side, and a deck above costs a floor ([D.costs_text()])")
+	naval_check(findtext(jointext(D.problems(), " "), "nothing to carry it"), "a deck above with nothing under it to carry it is refused ([jointext(D.problems(), " ")])")
+	D.set_piece(2, 4, "S")
+	naval_check(!findtext(jointext(D.problems(), " "), "carry"), "a deck pillar three tiles off carries it")
 	D.set_piece(0, 0, "W")
 	naval_check(length(D.gunwale_sides()) == 14, "a plank wall closes both open sides of its corner tile")
 	D.set_piece(0, 0, "Y", WEST)
@@ -171,6 +174,7 @@ var/naval_runtime_error = FALSE
 	decked.set_piece(1, 1, null)
 	for (var/x = 0, x < 4, x++)
 		decked.set_deck(1, x, 5, TRUE)
+	decked.set_piece(1, 4, "S")
 	decked.set_deck(2, 0, 5, TRUE)
 	naval_check(decked.upper_tiles() == 4 && decked.cell(0, 5)[4] && decked.deck_tiles(2) == 1, "the deck above keeps the hull's upper flags, and a second deck stands on it")
 	var/datum/design_report/deck_report = decked.check_design()
@@ -193,8 +197,8 @@ var/naval_runtime_error = FALSE
 	var/list/decked_cost = decked.costs()
 	var/datum/ship_draught/flat = draught_box(4, 6)
 	var/list/flat_cost = flat.costs()
-	// 8 hold floors and a crate on them, 5 tiles of deck above and two ladders.
-	naval_check(decked_cost["steel"] == 8 && decked_cost["wood"] == flat_cost["wood"] + 5 + 5 * 2 + 3 * 4, "her other decks cost their floors and fittings ([decked.costs_text()])")
+	// 8 hold floors and a crate on them, 5 tiles of deck above, three ladders and a pillar.
+	naval_check(decked_cost["steel"] == 8 && decked_cost["wood"] == flat_cost["wood"] + 5 + 5 * 2 + 3 * 4 + 2, "her other decks cost their floors and fittings ([decked.costs_text()])")
 	naval_check(decked.load() > flat.load(), "what stands on her other decks weighs on her")
 	qdel(flat)
 	var/decked_code = decked.to_code()
@@ -251,7 +255,7 @@ var/naval_runtime_error = FALSE
 	naval_check(findtext(html, "C13SHIP") && findtext(html, "rowing galley"), "the window carries the drawing tools and the ready-made ships")
 	naval_check(!findtext(html, "@@DATA@@") && findtext(html, "\"PIECES\":") && findtext(html, "Steering and drive") && findtext(html, "\"FLOORS\":") && findtext(html, "\"DECKS\":") && findtext(html, "\"START_DECKS\":"), "the window's palette is built from the draught's own tables")
 	var/every_piece_grouped = TRUE
-	for (var/piece in ship_draught_pieces)
+	for (var/piece in ship_draught_pieces())
 		if (ship_designer_group(piece) == "Other")
 			every_piece_grouped = FALSE
 			world.log << "no palette group for [piece]"
@@ -341,9 +345,9 @@ var/naval_runtime_error = FALSE
 	var/list/stage_names = list()
 	for (var/list/stage in plan.stages)
 		stage_names += stage["name"]
-	naval_check(plan.total_pieces() == 16 && jointext(stage_names, "|") == "Plank floors|Steel floors|Tillers|Rowing benches|Killicks|Plank walls", "a draught builds floor by floor, then her fittings kind by kind ([jointext(stage_names, "|")])")
+	naval_check(plan.total_pieces() == 17 && jointext(stage_names, "|") == "Plank floors|Steel floors|Tillers|Rowing benches|Killicks|Plank walls|Deck above", "a draught builds floor by floor, then her fittings kind by kind ([jointext(stage_names, "|")])")
 	var/list/plan_cost = plan.total_cost()
-	naval_check(plan_cost["wood"] == 48 && plan_cost["steel"] == 1 && plan_cost["planks"] == 4 && plan_cost.len == 3, "she costs her hand-built floors and fittings, without the deck above ([piece_cost_text(plan_cost)])")
+	naval_check(plan_cost["wood"] == 50 && plan_cost["steel"] == 1 && plan_cost["planks"] == 4 && plan_cost.len == 3, "she costs her hand-built floors and fittings, and her deck above last ([piece_cost_text(plan_cost)])")
 	naval_check(plan.order[1][1] == "0,0" && plan.order[12][1] == "2,3", "her floors go down from stern to bow")
 	// The plan keeps its draught; the probe draws a fresh one for the post.
 	plan.draught = null
@@ -427,8 +431,71 @@ var/naval_runtime_error = FALSE
 	var/obj/structure/hull_tiller/afloat = launched
 	naval_check(istype(afloat) && afloat == built_tiller && afloat.loc == locate(21, 30, 2) && afloat.craft && afloat.craft.name == "Tern", "she slides 15 tiles to the first water that floats all of her and is commissioned as the Tern ([istext(launched) ? launched : "launched"])")
 	naval_check(afloat && afloat.craft && afloat.craft.body.tile_count() == 12, "all 12 of her tiles sail")
+	var/datum/craft_body/built/tern_body = afloat ? afloat.craft.body : null
+	naval_check(tern_body && tern_body.upper_tile_count() == 1, "the deck above the slipway roofed over her sails with her ([tern_body ? tern_body.upper_tile_count() : 0])")
 	naval_check(crew.loc == locate(22, 30, 2) && built_bench.loc == locate(22, 31, 2) && built_bench.dir == SOUTH && (locate(/obj/covers/steelplating) in locate(24, 29, 2)), "her crew and fittings go with her")
 	naval_check(!hull_floor_in(locate(6, 30, 2)) && !ways.design && !ways.draught_code && !slipway_frame_count(ways), "the berth is left empty and the post clear")
+
+	// ---- A ship on three levels from the slipway ----
+	var/datum/ship_draught/gannet = draught_box(3, 5, "Gannet")
+	gannet.set_deck(-1, 1, 1, TRUE)
+	gannet.set_deck(-1, 1, 2, TRUE)
+	gannet.set_deck_piece(-1, 1, 1, "X")
+	gannet.set_deck_piece(-1, 1, 2, "C")
+	for (var/x = 0, x < 3, x++)
+		gannet.set_deck(1, x, 4, TRUE)
+	gannet.set_piece(2, 3, "S")
+	gannet.set_piece(1, 4, "X")
+	gannet.set_deck_piece(1, 0, 4, "B")
+	naval_check(gannet.buildable(), "the Gannet with a hold and a deck above can be built ([jointext(gannet.problems(), " ")])")
+	var/datum/slipway_design/draught/gannet_plan = slipway_draught_plan(gannet)
+	var/list/gannet_stages = list()
+	for (var/list/stage in gannet_plan.stages)
+		gannet_stages += stage["name"]
+	naval_check(findtext(jointext(gannet_stages, "|"), "Hold floors|Deck above|Wood crates below and above|Beds below and above|Ladders"), "her other decks are built last: hold, deck above, what stands on them, then ladders ([jointext(gannet_stages, "|")])")
+	gannet_plan.draught = null
+	qdel(gannet_plan)
+	var/obj/structure/slipway/high_ways = new(locate(5, 48, 2))
+	high_ways.dir = EAST
+	var/turf/no_rock = locate(7, 48, 1)
+	var/no_rock_type = no_rock.type
+	no_rock.ChangeTurf(/turf/floor/dirt)
+	refusal = high_ways.draught_refusal(gannet)
+	naval_check(refusal && findtext(refusal, "hold cannot be dug"), "a berth with no rock under it refuses her hold ([refusal])")
+	no_rock.ChangeTurf(no_rock_type)
+	var/obj/covers/repairedfloor/overhead = new(locate(10, 48, 3))
+	refusal = high_ways.draught_refusal(gannet)
+	naval_check(refusal && findtext(refusal, "open air over the berth"), "a floor over the berth refuses her deck above ([refusal])")
+	qdel(overhead)
+	naval_check(!high_ways.draught_refusal(gannet), "the berth takes her ([high_ways.draught_refusal(gannet)])")
+	high_ways.lay_draught(gannet)
+	guard = 0
+	while (high_ways.next_piece() && guard++ < 80)
+		var/list/needed = high_ways.still_needed()
+		for (var/key in needed)
+			var/path = pay_paths[key]
+			var/obj/item/stack/stack = new path(high_ways.loc)
+			stack.amount = needed[key]
+			high_ways.pay(stack)
+	var/obj/structure/multiz/ladder/up/placed/hold_foot = locate() in locate(7, 48, 1)
+	var/obj/structure/multiz/ladder/placed/hold_head = locate() in locate(7, 48, 2)
+	naval_check(high_ways.finished() && hull_hold_cover(locate(7, 48, 1)) && hull_hold_cover(locate(8, 48, 1)) && (locate(/obj/structure/closet/crate) in locate(8, 48, 1)), "her hold is dug and floored under the berth, with its crate ([high_ways.finished()])")
+	naval_check(hold_foot && hold_head && hold_foot.target == hold_head, "the hold ladder joins her hold to her deck")
+	var/obj/roof/deck_roof = locate() in locate(10, 47, 2)
+	naval_check(deck_roof && deck_roof.building_floor() && (locate(/obj/structure/bed) in locate(10, 49, 3)), "her deck above is a roof over her bow with its floor above, and the bed stands on it")
+	var/obj/structure/hull_tiller/gannet_tiller = locate() in locate(8, 48, 2)
+	var/gannet_launched = high_ways.launch()
+	var/datum/craft_body/built/GB = istype(gannet_launched, /obj/structure/hull_tiller) && gannet_tiller.craft ? gannet_tiller.craft.body : null
+	var/gannet_hold = 0
+	if (GB)
+		for (var/turf/L in GB.lower_cells())
+			gannet_hold++
+	naval_check(GB && GB.tile_count() == 15 && GB.upper_tile_count() == 3 && gannet_hold == 2, "she launches with all three decks ([istext(gannet_launched) ? gannet_launched : "launched"]; [GB ? "[GB.upper_tile_count()] above, [gannet_hold] hold" : "no body"])")
+	naval_check(!hull_hold_cover(locate(7, 48, 1)) && istype(locate(7, 48, 1), /turf/wall/rockwall), "the rock under the berth closes behind her hold")
+	if (gannet_tiller && gannet_tiller.craft)
+		gannet_tiller.decommission()
+	qdel(high_ways)
+	qdel(gannet)
 
 	// Facing along the shore there is no water to launch into.
 	ways.dir = NORTH
@@ -688,7 +755,7 @@ var/naval_runtime_error = FALSE
 	// Every part the designers offer is described.
 	var/list/ship_help = design_part_help_for("ship")
 	var/list/undescribed = list()
-	for (var/key in ship_draught_pieces + ship_draught_floors + list("u", "x"))
+	for (var/key in ship_draught_pieces() + ship_draught_floors() + list("u", "x"))
 		var/list/H = ship_help[key]
 		if (!H || !length(H["what"]) || !length(H["use"]) || !length(H["how"]))
 			undescribed += key
