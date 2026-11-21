@@ -261,5 +261,15 @@ class GatewayTests(unittest.TestCase):
                          {k: {'port': v['port']} for k, v in plan['changes'].items()})
 
 
+
+class StatusHubTests(unittest.TestCase):
+    def test_status_reports_the_real_hub_visibility(self):
+        # The status topic read a global nothing ever set, so every world (the
+        # gateway too) reported hub=0 while listed (2026-11-21).
+        root = Path(__file__).resolve().parents[2]
+        topic = (root / 'code' / 'datums' / 'world_topic.dm').read_text(encoding='utf-8')
+        self.assertIn('.["hub"] = world.visibility ? 1 : 0', topic)
+        self.assertNotIn('hub_visibility', topic)
+
 if __name__ == '__main__':
     unittest.main()
