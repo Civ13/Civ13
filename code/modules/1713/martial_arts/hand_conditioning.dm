@@ -53,8 +53,8 @@
 /obj/structure/striking_post
 	name = "makiwara post"
 	desc = "A springy wooden post bound with straw rope at fist height. Strike it bare-handed on harm intent to toughen your knuckles."
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "target_stake"
+	icon = 'icons/obj/martial_training.dmi'
+	icon_state = "makiwara"
 	anchored = TRUE
 	density = TRUE
 	not_movable = FALSE
@@ -72,8 +72,7 @@
 /obj/structure/striking_post/gravel_pail
 	name = "gravel pail"
 	desc = "A stout wooden pail packed with gravel. Drive your fingers and knuckles into it on harm intent to harden them. It bites back."
-	icon = 'icons/obj/janitor.dmi'
-	icon_state = "bucket"
+	icon_state = "gravel_pail"
 	density = FALSE
 	strike_noun = "the gravel"
 	conditioning_gain = 3
