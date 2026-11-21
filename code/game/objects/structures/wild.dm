@@ -304,6 +304,8 @@ var/list/seed_list_jungle
 	fit_trunk_bounds()
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
+	if (resin_tap_attackby(src, W, user)) // resin.dm
+		return
 	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
