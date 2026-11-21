@@ -14,4 +14,12 @@ hook in `cmss13_gear.dm`:
   and waits between pulls; a rock drop hurts once and is hung up by hand;
 - a pressure plate set from the hand ignores its setter's people and items,
   and pulls for a stranger; a tripwire alarm pulls its cords;
-- every new icon state is in `icons/obj/mechanisms.dmi`.
+- a pulley block carries cords one level up, and they go slack without it;
+  a water clock and a tower clock pull their cords at their alarm;
+- transmission (`transmission.dm`): a line shaft carries a treadwheel's
+  drive, machines on it share its strength, a ninth wooden length binds the
+  run, a clutch thrown out stops what lies past it and a cord throws it in, a
+  gear box carries drive down a level, a rope drive carries it once roped,
+  and a still treadwheel drives nothing;
+- every new icon state is in `icons/obj/mechanisms.dmi` and
+  `icons/obj/transmission.dmi`.
