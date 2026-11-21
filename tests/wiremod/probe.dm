@@ -1908,11 +1908,94 @@ var/datum/probe_globals/GLOB = new
 	qdel(beaker)
 	user.other_hand = null
 
+/proc/test_clocked_cpu(mob/living/user)
+	var/obj/item/circuit_shell/shell = new(locate(1, 1, 1))
+	var/obj/item/integrated_circuit/board = new(shell)
+	var/obj/item/circuit_component/cpu/first = new(board)
+	var/obj/item/circuit_component/cpu/second = new(board)
+	check(board.add_component(first) && board.add_component(second), "two CPUs attach to the same board")
+	var/datum/wiremod_cpu/vm = first.machine
+	var/datum/wiremod_cpu/peer = second.machine
+	var/ram_start = wiremod_cpu_ram
+	var/last = CIRCUIT_CPU_RAM_BYTES - 1
+	set_port(first, 1, "ADDR 524287; IN; PUT; SET 0; GET; OUT; HALT")
+	set_port(first, 2, 42)
+	set_port(first, 3, COMPONENT_SIGNAL)
+	check(!length(vm.program), "a board merely contained by a shell is not powered")
+	shell.circuit = board
+	board.anchor_changed()
+	check(!length(vm.program), "passive inputs never load or run assembly")
+	set_port(first, 3, COMPONENT_SIGNAL)
+	check(length(vm.program) == 7 && first.status_output.value == "ready", "strict valid assembly loads through the signal port")
+	set_port(first, 5, COMPONENT_SIGNAL)
+	check(vm.pc == 1 && first.status_output.value == "budget", "load consumes one full board work window")
+	sleep(1)
+	set_port(first, 5, COMPONENT_SIGNAL)
+	check(vm.pc == 7 && first.value_output.value == 42 && first.status_output.value == "output" && first.emit.value == COMPONENT_SIGNAL, "RUN updates numeric value and emits once, then yields")
+	check(vm.read_byte(last) == 42 && peer.read_byte(last) == 0 && board.cpu_ram == CIRCUIT_CPU_PAGE_BYTES, "RAM is CPU-local and charged to the shared board")
+	set_port(first, 4, COMPONENT_SIGNAL)
+	check(vm.halted && first.status_output.value == "halted", "STEP runs one HALT instruction")
+
+	sleep(1)
+	var/old_pc = vm.pc
+	set_port(first, 1, "JMP 0; HALT")
+	set_port(first, 3, COMPONENT_SIGNAL)
+	check(first.status_output.value == "invalid program" && length(vm.program) == 7 && vm.pc == old_pc && vm.read_byte(last) == 42, "invalid assembly cannot replace program, PC or RAM")
+	check(!vm.load_program("SET 16777216") && !vm.load_program("ADDR 524288") && !vm.load_program("JZ 3; HALT") && !vm.load_program("OUT 1") && !vm.load_program("call world"), "assembler rejects out-of-range and unsupported instructions")
+
+	check(isnull(vm.read_byte(-1)) && isnull(vm.read_byte(CIRCUIT_CPU_RAM_BYTES)) && !vm.write_byte(0.5, 1) && !vm.write_byte(0, 256), "RAM rejects out-of-range and fractional inputs")
+	check(vm.write_byte(0, 0) && length(vm.pages) == 1, "writing zero to an absent page does not allocate")
+	check(vm.write_byte(0, 17) && vm.write_byte(1, 73) && vm.write_byte(2, 255) && vm.write_byte(1, 0), "writing and replacing packed lanes succeeds")
+	check(vm.read_byte(0) == 17 && vm.read_byte(1) == 0 && vm.read_byte(2) == 255 && vm.read_byte(last) == 42, "packed byte lanes and separate pages do not overwrite each other")
+	check(peer.write_byte(1, 88) && vm.read_byte(1) == 0 && board.cpu_ram == 3 * CIRCUIT_CPU_PAGE_BYTES && wiremod_cpu_ram == ram_start + board.cpu_ram, "two CPUs have isolated RAM and shared page accounting")
+
+	// Prove the limit branch deterministically without allocating the entire budget.
+	var/accounted = board.cpu_ram
+	board.cpu_ram = CIRCUIT_CPU_RAM_BYTES
+	var/refused = !peer.write_byte(CIRCUIT_CPU_PAGE_BYTES, 1)
+	board.cpu_ram = accounted
+	check(refused && peer.read_byte(CIRCUIT_CPU_PAGE_BYTES) == 0 && wiremod_cpu_ram == ram_start + accounted, "full shell rejects new pages without partial allocation")
+	var/global_accounted = wiremod_cpu_ram
+	wiremod_cpu_ram = CIRCUIT_CPU_WORLD_RAM_BYTES
+	refused = !peer.write_byte(CIRCUIT_CPU_PAGE_BYTES, 1)
+	wiremod_cpu_ram = global_accounted
+	check(refused && peer.read_byte(CIRCUIT_CPU_PAGE_BYTES) == 0, "world RAM cap rejects allocation independently of shell cap")
+	board.remove_component(second)
+	check(isnull(second.machine) && board.cpu_ram == 2 * CIRCUIT_CPU_PAGE_BYTES, "component removal releases just its own pages")
+	qdel(second)
+	shell.circuit = null
+	board.anchor_changed()
+	check(board.cpu_ram == 0 && wiremod_cpu_ram == ram_start && length(vm.program) == 7 && vm.pc == 1, "unmount clears volatile state and releases RAM while keeping program")
+	shell.circuit = board
+
+	sleep(1)
+	check(vm.load_program("SET 16777215; ADD 2; OUT; HALT") && vm.execute(16, null) == "output" && vm.accumulator == 1, "24-bit addition wraps without losing integer precision")
+	check(vm.load_program("ADDR 524287; NEXT 1; SET 0; JZ 6; NOP; OUT") && vm.execute(16, null) == "output" && vm.address == 0, "address wrap and zero branch stay in bounds")
+	check(vm.load_program("JMP 1"), "a legal backward branch loads")
+	sleep(1)
+	for(var/i in 1 to 4)
+		set_port(first, 5, COMPONENT_SIGNAL)
+	check(board.cpu_ops == CIRCUIT_CPU_BOARD_OPS && vm.pc == 1 && first.status_output.value == "ready", "four clocked slices yield after exactly 64 instructions")
+	set_port(first, 5, COMPONENT_SIGNAL)
+	check(first.status_output.value == "budget" && board.cpu_ops == CIRCUIT_CPU_BOARD_OPS, "fifth slice cannot exhaust the world budget from one board")
+	sleep(1)
+	var/prior_world_ops = wiremod_cpu_ops
+	wiremod_cpu_budget_time = world.time
+	wiremod_cpu_ops = CIRCUIT_CPU_WORLD_OPS
+	set_port(first, 4, COMPONENT_SIGNAL)
+	check(first.status_output.value == "budget" && board.cpu_ops == 0, "global instruction budget applies before executing")
+	wiremod_cpu_ops = prior_world_ops
+	sleep(1)
+	check(vm.write_byte(last, 55), "running shell allocates RAM again after remount")
+	qdel(shell)
+	check(wiremod_cpu_ram == ram_start, "shell destruction releases all remaining pages")
+
+
 /world/New()
 	world.OpenPort("none")
 	spawn(0)
 		var/mob/living/user = new(locate(1, 1, 1))
-		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_shell_circuit, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components, /proc/test_parity_components))
+		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_shell_circuit, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components, /proc/test_parity_components, /proc/test_clocked_cpu))
 			try
 				call(test)(user)
 			catch(var/exception/failure)

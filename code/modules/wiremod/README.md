@@ -215,3 +215,58 @@ tgui-core draws Dropdown menus and Tooltips in a portal at the end of `<body>`.
 `tgui/src/styles.scss` loads its `Floating` stylesheet and puts `.Floating`
 above every layer a window stacks; without that the operation menu opened
 underneath the full-window editor and nothing could be picked.
+
+## Clocked Processor (draft v1)
+
+Install an integrated circuit in its shell and add a **Clocked Processor**.
+Enter assembly into **Program** (separate instructions with semicolons or
+newlines), then pulse **Load**. Example:
+
+```text
+ADDR 524287; IN; PUT; SET 0; GET; OUT; HALT
+```
+
+Set **Input** to 42 and pulse **Run**: the program writes 42 to the last
+addressable byte, reads it back, updates **Value**, and pulses **Emit**. A
+further pulse halts it. Connect the numeric output to a consumer's data port
+and **Emit** to the consumer's signal port. Input/Program updates never execute
+anything. Pulse **Step** for one instruction, **Run** for up to 16, or **Reset**
+to clear registers and RAM while retaining the loaded program. **Status**
+reports ready, output, halted, no program, invalid program, budget, or RAM limit.
+No work is scheduled automatically; a later signal can resume a yielded slice.
+
+The program has at most 256 instructions, with unsigned decimal operands,
+case-insensitive mnemonics and one-based jump targets. A successful Load
+replaces the program and resets it; an invalid Load preserves the previous
+program, registers and RAM. The accumulator is unsigned 24-bit and the
+address register is unsigned 19-bit. Supported instructions:
+
+| Instruction | Meaning |
+| --- | --- |
+| `SET n` / `ADD n` | Set the accumulator or add modulo 2²⁴. |
+| `ADDR n` / `NEXT n` | Set the address register or advance it modulo 524,288. |
+| `GET` / `PUT` | Read a byte into the accumulator or write its low byte. |
+| `IN` | Sample the numeric port, truncating to 0–16,777,215 (zero if unset). |
+| `OUT` | Publish the accumulator and yield after one Emit pulse. |
+| `JMP n` / `JZ n` | Jump unconditionally or when the accumulator is zero. |
+| `NOP` / `HALT` | Spend one instruction or halt. End-of-program also halts. |
+
+Each CPU has private integrated RAM, not a separately wireable memory chip
+or address bus. Its 512 KiB address space is backed by lazy 256-byte pages
+(three guest bytes per numeric slot; writes of zero to unallocated pages do
+not allocate). The one board in a shell shares a 512 KiB **allocation** budget
+across its CPUs; allocations are also capped at 8 MiB across all CPUs in the
+world. This is guest capacity, **not** DM heap consumption. Reset, loading a
+valid replacement, unmounting the board, or removing/destroying a CPU releases
+its pages; unmount additionally resets the CPU, and removing the component
+also forgets the program. Nothing is saved across world restarts.
+
+Each distinct `world.time` window allows up to 64 guest instructions or
+one Load/Reset per board, and 512 instruction units world-wide (Load/Reset
+cost 64 each). A refused Run/Step does not requeue itself; Load/Reset pulses
+that exceed the limit are ignored. Bounds apply even to a Wiremod feedback
+loop, but first-come dispatch is not guaranteed fairness under contention.
+There are no arbitrary engine calls, network, files, or entity access from
+assembly; use ordinary Wiremod components for physical input and output.
+Autonomous or fair scheduling, a 1 MHz rate, measured heap cost, and
+real client operation are not part of this draft.

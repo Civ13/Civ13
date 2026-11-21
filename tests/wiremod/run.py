@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--source-root', type=Path, default=REPO)
     parser.add_argument('--evidence-dir', type=Path)
+    parser.add_argument('--compile-only', action='store_true', help='compile the fixture without starting DreamDaemon')
     parser.add_argument('--allow-failures', action='store_true',
                         help='report failed checks without a failing exit status')
     args = parser.parse_args()
@@ -76,7 +77,7 @@ def main():
                  and '0 errors, 0 warnings' in compiled.stdout)
         log = ''
         returncode = None
-        if clean:
+        if clean and not args.compile_only:
             process = subprocess.run([str(daemon), 'probe.dmb', '-invisible', '-trusted', '-log', 'runtime.log'],
                                      cwd=temp, capture_output=True, timeout=120, env=environment)
             returncode = process.returncode
@@ -85,9 +86,13 @@ def main():
         if args.evidence_dir:
             args.evidence_dir.mkdir(parents=True, exist_ok=True)
             (args.evidence_dir / 'compile.log').write_text(compiled.stdout + compiled.stderr, encoding='utf-8')
-            (args.evidence_dir / 'runtime.log').write_text(log, encoding='utf-8')
+            if not args.compile_only:
+                (args.evidence_dir / 'runtime.log').write_text(log, encoding='utf-8')
         if not clean:
             raise SystemExit('Fixture compilation failed' + ('' if not compiled.stderr else ': ' + compiled.stderr))
+        if args.compile_only:
+            print('Fixture compiled; native execution not requested.')
+            return
         failed = re.findall(r'^FAIL (.+)$', log, re.M)
         engine_error = bool(re.search(r'runtime error|bad ref|bad loc', log, re.I))
         passed = not returncode and not failed and not engine_error and re.search(r'^PASS wiremod', log, re.M)

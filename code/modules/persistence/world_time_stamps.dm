@@ -13,6 +13,7 @@
 // type appears without an entry here or a reviewed exception there.
 var/global/list/persistence_world_time_stamps = list(
 	"last_bumped" = list(/atom),
+	"cpu_budget_time" = list(/obj/item/integrated_circuit),
 	"next_attack_hand" = list(/obj/structure/simple_door),
 	"next_fill" = list(/obj/structure/sea_office),
 	"ram_tick" = list(/obj/structure/vehicleparts/axis),

@@ -67,3 +67,15 @@
 #define COMPONENT_DEFAULT_NAME "component"
 #define COMPONENT_DEFAULT_CATEGORY "General"
 #define COMPONENT_SIGNAL (world.time / 10)
+
+// Clocked VM. Guest capacity is not a measurement of the DM heap.
+#define CIRCUIT_CPU_RAM_BYTES 524288
+#define CIRCUIT_CPU_PAGE_BYTES 256
+#define CIRCUIT_CPU_PAGE_WORDS 86
+#define CIRCUIT_CPU_WORD_MAX 16777215
+#define CIRCUIT_CPU_PROGRAM_MAX 256
+#define CIRCUIT_CPU_SLICE 16
+#define CIRCUIT_CPU_BOARD_OPS 64
+#define CIRCUIT_CPU_WORLD_OPS 512
+// Do not let arbitrarily many shells each fill a private 512 KiB allocation.
+#define CIRCUIT_CPU_WORLD_RAM_BYTES 8388608

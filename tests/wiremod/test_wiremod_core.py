@@ -79,6 +79,34 @@ class WiremodSource(unittest.TestCase):
                 self.assertIn('list_output.set_output(built)', build)
                 self.assertIn('triggered.set_output(COMPONENT_SIGNAL)', build)
 
+    def test_cpu_only_runs_from_signal_ports_in_an_installed_shell(self):
+        cpu = read(MODULE / 'components/utility/cpu.dm')
+        inputs = proc_body(cpu, '/obj/item/circuit_component/cpu/populate_ports()')
+        for port_name in ('Program', 'Input'):
+            self.assertRegex(inputs, rf'add_input_port\("{port_name}", PORT_TYPE_\w+, trigger = null\)')
+        available = proc_body(cpu, '/obj/item/circuit_component/cpu/proc/available()')
+        self.assertIn('wiremod_shell(parent)', available)
+        self.assertIn('shell.circuit == parent', available)
+        execute = proc_body(cpu, '/obj/item/circuit_component/cpu/proc/execute_slice(count)')
+        self.assertLess(execute.index('if(!available())'), execute.index('machine.execute('))
+        self.assertLess(execute.index('value_output.set_output('), execute.index('emit.set_output('))
+
+    def test_cpu_uses_only_capped_execution_and_packed_byte_pages(self):
+        vm = read(MODULE / 'core/cpu_vm.dm')
+        safe_src = code(vm)
+        self.assertNotRegex(safe_src, r'\b(?:call|call_ext|locate|file|spawn|sleep|addtimer)\s*\(')
+        execute = proc_body(vm, '/datum/wiremod_cpu/proc/execute(requested, input_value)')
+        self.assertIn('min(requested, CIRCUIT_CPU_SLICE)', execute)
+        self.assertLess(execute.index('consume_cpu_ops(1)'), execute.index('pc++'))
+        allocate = proc_body(vm, '/datum/wiremod_cpu/proc/write_byte(at, byte)')
+        self.assertLess(allocate.index('CIRCUIT_CPU_WORLD_RAM_BYTES'), allocate.index('new /list('))
+        defines = read(DEFINES)
+        values = {name: int(value) for name, value in re.findall(r'^#define CIRCUIT_CPU_(\w+) (\d+)$', defines, re.M)}
+        self.assertEqual(values['RAM_BYTES'], 512 * 1024)
+        self.assertEqual(values['RAM_BYTES'] % values['PAGE_BYTES'], 0)
+        self.assertEqual(values['PAGE_WORDS'], (values['PAGE_BYTES'] + 2) // 3)
+        self.assertEqual(values['WORD_MAX'], (1 << 24) - 1)
+
     def test_every_module_file_is_included_once(self):
         dme = read(ROOT / 'civ13.dme')
         self.assertGreaterEqual(len(self.files), 34)

@@ -43,6 +43,7 @@
 		/obj/item/circuit_component/string_to_number,
 		/obj/item/circuit_component/delay,
 		/obj/item/circuit_component/timepiece,
+		/obj/item/circuit_component/cpu,
 		/obj/item/circuit_component/set_variable_trigger,
 		/obj/item/circuit_component/direction,
 		/obj/item/circuit_component/gps,
