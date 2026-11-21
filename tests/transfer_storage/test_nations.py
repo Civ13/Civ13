@@ -513,6 +513,59 @@ class RevoltTests(ElectiveTests.__base__):
         self.assertFalse(nation_request_valid(dict(base, op='revolt', sname='Ann', type='monarchy')))
 
 
+class StaffTests(ElectiveTests.__base__):
+    """Staff tools (tools/transfer_storage/nation_staff.py)."""
+
+    setUp = ElectiveTests.setUp
+    ask = ElectiveTests.ask
+    become = ElectiveTests.become
+    snap = ElectiveTests.snap
+
+    def staff(self, act, land='beta', now=None, **kw):
+        return self.ask(land, 'staff', A, now=self.now if now is None else now, actor='mod', act=act,
+                        reason='test', **kw)
+
+    def test_freeze_blocks_changes_and_absence(self):
+        self.become('monarchy')
+        self.assertIn('frozen', self.staff('freeze'))  # from another land
+        self.assertIn('already', self.staff('freeze'))
+        self.assertIn('paused', self.ask('alpha', 'revolt', B, now=self.now, actor='ann', role='citizen', sname='Ann',
+                                         type='confederation'))
+        self.now += 30 * 86400
+        self.assertEqual(self.snap()['government']['head_account'], 'val')  # absence did not count
+        self.assertTrue(self.snap()['frozen'])
+        self.assertIn('thawed', self.staff('thaw'))
+        self.now += 86400
+        self.assertEqual(self.snap()['government']['head_account'], 'val')
+        log = self.snap()['staff_log']
+        self.assertEqual([e['act'] for e in log], ['thaw', 'freeze'])
+        self.assertEqual(log[0]['actor'], 'mod')
+
+    def test_void_motion_revolt_and_set(self):
+        self.become('republic')
+        self.ask('alpha', 'currency', B, now=self.now, issuer=B)
+        [m] = self.snap()['motions']
+        self.assertIn('no such', self.staff('void_motion', motion=m['id'] + 99))
+        self.assertIn('void', self.staff('void_motion', motion=m['id']))
+        self.assertEqual(self.snap()['motions'], [])
+        self.ask('alpha', 'revolt', B, now=self.now, actor='ann', role='citizen', sname='Ann', type='confederation')
+        self.assertIn('void', self.staff('void_revolt'))
+        self.assertEqual(self.snap()['revolt'], {'cooldown': None})
+        self.assertIn('must be a citizen', self.staff('set', type='monarchy', person='zed', pname='Zed', pfaction=D))
+        self.assertIn('set', self.staff('set', type='monarchy', person='bob', pname='Bob', pfaction=B))
+        g = self.snap()['government']
+        self.assertEqual((g['type'], g['head_account']), ('monarchy', 'bob'))
+        self.assertIn('Bob', self.snap()['staff_log'][0]['detail'])
+
+    def test_staff_request_needs_reason_and_crosses_lands(self):
+        from tools.transfer_storage.nations import nation_request_valid
+        base = {'op': 'staff', 'actor': 'mod', 'faction': A, 'act': 'freeze'}
+        self.assertFalse(nation_request_valid(base))
+        self.assertTrue(nation_request_valid(dict(base, reason='spam')))
+        self.assertFalse(nation_request_valid(dict(base, reason='x', act='void_motion')))
+        self.assertIn('not part', self.ask('beta', 'staff', D, actor='mod', act='freeze', reason='x'))
+
+
 class AgentRoundTripTests(unittest.TestCase):
     TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40}
 

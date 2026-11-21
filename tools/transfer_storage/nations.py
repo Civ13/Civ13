@@ -38,10 +38,11 @@ import time
 from tools.transfer_storage.nation_motions import CITIZENS_MAX, WEALTH_MAX, NationMotions
 from tools.transfer_storage.nation_succession import NationSuccession
 from tools.transfer_storage.nation_revolt import NationRevolt
+from tools.transfer_storage.nation_staff import FROZEN_OPS, STAFF_ACTS, STAFF_REASON_MAX, NationStaff
 from tools.transfer_storage.region import account_key_valid, faction_id_valid
 
 NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency', 'govern', 'stay', 'era', 'ballot',
-              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow')
+              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow', 'staff')
 NATION_NAME_MAX = 40
 # Member factions allowed by assembly tier: none, meeting ground, assembly
 # hall, parliament.
@@ -119,6 +120,10 @@ def nation_request_valid(r):
         return type(r.get('tier')) is int and 0 <= r['tier'] < len(NATION_CAPACITY)
     if op == 'era':
         return type(r.get('age')) is int and 0 <= r['age'] <= AGE_MAX
+    if op == 'staff':
+        act = r.get('act')
+        return act in STAFF_ACTS and text_valid(r.get('reason'), STAFF_REASON_MAX) and (
+            act != 'void_motion' or type(r.get('motion')) is int) and (act != 'set' or government_proposal_valid(r))
     if r.get('role', 'leader') not in ('leader', 'citizen'):
         return False
     if op == 'govern':
@@ -176,7 +181,7 @@ def faction_land(faction):
     return faction[4:].partition(':')[0]
 
 
-class Nations(NationMotions, NationSuccession, NationRevolt):
+class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
     def __init__(self, db):
         self.db = db
         db.execute('''CREATE TABLE IF NOT EXISTS nation(
@@ -210,6 +215,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt):
         self._motion_tables()
         self._succession_tables()
         self._revolt_tables()
+        self._staff_tables()
         db.execute("CREATE TABLE IF NOT EXISTS nation_seq(id INTEGER PRIMARY KEY CHECK (id = 1), next INTEGER NOT NULL)")
         db.execute('INSERT OR IGNORE INTO nation_seq VALUES (1, 1)')
 
@@ -291,7 +297,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt):
                 'government_votes': {v: json.loads(c) for v, c in votes.get('government', {}).items()},
                 'leaving': dict(self.db.execute('SELECT faction, at FROM nation_leaving WHERE nation = ?', (nid,))),
                 'motions': self.motions_snapshot(nid), 'term_ends': self.term_ends(nid),
-                'revolt': self.revolt_snapshot(nid),
+                'revolt': self.revolt_snapshot(nid), 'frozen': self.frozen(nid), 'staff_log': self.staff_log(nid),
                 'census': {f: list(self.census(f)) for f in self.members(nid)},
                 'eras': dict(self.db.execute('''SELECT e.faction, e.age FROM nation_era e
                     JOIN nation_member m ON m.faction = e.faction WHERE m.nation = ?''', (nid,)))}
@@ -325,7 +331,8 @@ class Nations(NationMotions, NationSuccession, NationRevolt):
             self.db.execute('DELETE FROM nation_leaving WHERE faction = ?', (faction,))
         for (nation,) in self.db.execute('SELECT nation FROM nation_government WHERE pending_at <= ?',
                                          (int(now),)).fetchall():
-            self._establish(nation, int(now))
+            if not self.frozen(nation):
+                self._establish(nation, int(now))
         self.succession_due(int(now))
         self.motions_due(int(now))
         self.revolts_due(int(now))
@@ -339,6 +346,13 @@ class Nations(NationMotions, NationSuccession, NationRevolt):
         if not nation_request_valid(r):
             return 'That nation request was not understood.'
         faction = r['faction']
+        if r['op'] == 'staff':
+            # Staff act on any nation, naming one of its member factions.
+            self.expire(now)
+            nation = self.nation_of(faction)
+            if not nation:
+                return 'That faction is not part of a nation.'
+            return self.staff(nation, r, government_choice(r) if r['act'] == 'set' else None, now)
         # A world speaks only for factions founded in it.
         if faction_land(faction) != source:
             return 'Only a faction in its own land can act for it.'
@@ -368,6 +382,8 @@ class Nations(NationMotions, NationSuccession, NationRevolt):
         if not nation:
             return 'Your faction is not part of a nation.'
         citizen = r.get('role') == 'citizen'
+        if op in FROZEN_OPS and self.frozen(nation):
+            return 'Staff have paused the government of your nation for now.'
         if op == 'present':
             return self.present(nation, r, now)
         if op in ('heir', 'deputy'):
@@ -579,6 +595,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt):
             self.db.execute('DELETE FROM nation_successor WHERE nation = ?', (nation,))
             self.db.execute('DELETE FROM nation_seen WHERE nation = ?', (nation,))
             self.drop_revolt(nation)
+            self.staff_dissolved(nation)
             self.db.execute('DELETE FROM nation_revolt_cooldown WHERE nation = ?', (nation,))
             for (mid,) in self.db.execute('SELECT id FROM nation_motion WHERE nation = ?', (nation,)).fetchall():
                 self.close_motion(mid)
