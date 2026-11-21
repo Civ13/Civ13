@@ -441,6 +441,60 @@ var/global/list/millstone_grains = list(
 		. += C.amount
 	. = round(. / 2)
 
+//////////////////////////////////////////////////////////////////////////////
+// Power loom: cotton and retted fibre to cloth, silk thread to silk.
+
+var/global/list/power_loom_yarns = list(
+	"cotton" = list(/obj/item/stack/material/cotton, /obj/item/stack/material/cloth),
+	"retted fibre" = list(/obj/item/stack/material/rettedfabric, /obj/item/stack/material/cloth),
+	"silk" = list(/obj/item/stack/silk_thread, /obj/item/stack/material/silk),
+)
+
+/obj/structure/workshop_machine/hopper/power_loom
+	name = "power loom"
+	desc = "An iron loom whose batten and shuttle a belt from a line shaft works. Fill it with cotton, retted fibre or silk thread, and while a steam engine, mill wheel or other drive turns it, it weaves four a step into cloth or silk on its own."
+	icon_state = "power_loom"
+	base_state = "power_loom"
+	capacity = 40
+	batch = 4
+
+/obj/structure/workshop_machine/hopper/power_loom/feed_words()
+	return "yarn"
+
+/obj/structure/workshop_machine/hopper/power_loom/feed_kind(obj/item/I)
+	for (var/kind in power_loom_yarns)
+		var/list/pair = power_loom_yarns[kind]
+		if (I.type == pair[1])
+			return kind
+	return null
+
+/obj/structure/workshop_machine/hopper/power_loom/product_types()
+	return list(/obj/item/stack/material/cloth, /obj/item/stack/material/silk)
+
+/obj/structure/workshop_machine/hopper/power_loom/make_product(kind, turf/T)
+	var/list/pair = power_loom_yarns[kind]
+	if (!pair)
+		return
+	var/path = pair[2]
+	var/obj/item/stack/C = new path(T, 1, FALSE)
+	for (var/obj/item/stack/existing in T)
+		if (existing != C && existing.type == C.type && existing.amount < existing.max_amount && !existing.color)
+			C.merge(existing)
+			break
+
+/obj/structure/workshop_machine/hopper/power_loom/return_feed(kind, count, turf/T)
+	var/list/pair = power_loom_yarns[kind]
+	if (pair && count > 0)
+		var/path = pair[1]
+		new path(T, count)
+
+/obj/structure/workshop_machine/hopper/power_loom/output_count(turf/T)
+	. = 0
+	for (var/obj/item/stack/S in T)
+		if (S.type == /obj/item/stack/material/cloth || S.type == /obj/item/stack/material/silk)
+			. += S.amount
+	. = round(. / 2)
+
 #undef HOPPER_STEP_TIME
 #undef HOPPER_IDLE_RECHECK
 #undef HOPPER_OUTPUT_CAP

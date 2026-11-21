@@ -3011,6 +3011,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
 		"/obj/structure/workshop_machine/hopper/fulling_stocks" = "watermills",
 		"/obj/structure/workshop_machine/hopper/bark_stamps" = "watermills",
+		"/obj/structure/workshop_machine/hopper/power_loom" = "textile_mills",
 		"/obj/structure/water_lift/windmill" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",
