@@ -64,6 +64,8 @@ sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
 from byond_topic import frame_query  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
+import process_safety  # noqa: E402
+from process_safety import Unverified  # noqa: E402
 sys.path.insert(0, str(HERE))
 import expedition_slots  # noqa: E402
 import fresh_world  # noqa: E402
@@ -737,7 +739,10 @@ class RegionPlatform(Platform):
             if not refresh or (record.get('code') == code and self.listener_pids(port) in ([], [record.get('pid')])):
                 return False
             for pid in self.listener_pids(port):
-                self.terminate(pid)
+                try:
+                    self.terminate(pid, expect=process_safety.python_expect())
+                except Unverified:
+                    return False  # not an agent: never end it; the port stays taken until a person frees it
             if self.listening(port):
                 return False  # the next pass tries again
         path = Path(self.config['repository'])
@@ -1763,7 +1768,7 @@ class RegionHost(Host):
             if self.platform.now() > deadline:
                 pid = self.platform.server_pid(port)
                 if pid and not killed:
-                    self.platform.kill_tree(pid)
+                    self.platform.kill_tree(pid, expect=self.world_expect())
                     killed = True
                     deadline = self.platform.now() + 30
                     continue
@@ -1914,9 +1919,9 @@ class RegionHost(Host):
         pid = self.platform.server_pid(port) or pid
         if pid:
             try:
-                self.platform.kill_tree(pid)
-            except OSError:  # already gone
-                pass
+                self.platform.kill_tree(pid, expect=self.world_expect())
+            except (OSError, Unverified) as error:  # already gone, or not a world: left running
+                self.log({'standby_not_ended': str(error)[:300], 'port': port})
         return pid
 
     def latest_revision(self):
@@ -2868,7 +2873,15 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
                            and record.get('mainland', group['mainland']) == group['mainland']
                            and record.get('start_region', group['mainland']) == group['start_region']):
             return False
-        (terminate or Platform().terminate)(pid)
+        try:
+            # coordinator.pid can outlive its coordinator (a reboot) and name a reused pid.
+            born = (root / 'coordinator.pid').stat().st_mtime
+        except OSError:
+            born = None
+        try:
+            (terminate or Platform().terminate)(pid, expect=process_safety.python_expect(born_before=born))
+        except Unverified:
+            pass  # not the coordinator: the pid file was stale, so leave that process alone and start one
     database = root / 'coordinator.sqlite'
     argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
             '--mainland', group['mainland'], '--start-region', group['start_region']]
@@ -3099,12 +3112,33 @@ def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.mon
         sleep(1)
         running = {r: pid for r, pid in running.items() if process_alive(pid)}
     kill = kill or Platform().kill_tree
+    refused = {}
     for one, pid in running.items():
-        kill(pid)
+        # A pid file can outlive its bridge (a reboot, a crash) and name a reused pid: end only
+        # a Python process that is older than the file that names it.
+        try:
+            kill(pid, expect=process_safety.python_expect(born_before=help_pid_written(group, one, pid)))
+        except Unverified as error:
+            refused[one] = str(error)
         clear_help_lock(group, one)
     for one in ids:
         (help_dir(group) / ('%s.pid' % one)).unlink(missing_ok=True)
-    return {'stopped': stopped, 'forced': sorted(running)}
+    result = {'stopped': stopped, 'forced': sorted(r for r in running if r not in refused)}
+    if refused:
+        result['not_ended'] = refused
+    return result
+
+
+def help_pid_written(group, region_id, pid):
+    """When the newest pid file naming pid for this region's bridge was written, or None."""
+    times = []
+    for path in (help_spool(group, region_id) / 'worker.lock' / 'pid', help_dir(group) / ('%s.pid' % region_id)):
+        try:
+            if int(path.read_text(encoding='utf-8').strip()) == pid:
+                times.append(path.stat().st_mtime)
+        except (OSError, ValueError):
+            pass
+    return max(times) if times else None
 
 
 # -- outside save validator ---------------------------------------------------------
