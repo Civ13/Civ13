@@ -196,10 +196,11 @@ class EarthRegions(unittest.TestCase):
             self.assertIn('new_player_start_z = 1', self.block(name))
 
     def test_crossing_edges_have_dry_ground_and_lead_to_asia(self):
-        self.assertIn('edge_crossings = list("east" = "asia")', self.block('europe'))
-        self.assertIn('edge_crossings = list("east" = list("asia" = list(0.68, 1)))', self.block('africa'))
-        self.assertIn('edge_crossings = list("west" = list("africa" = list(0, 0.45), "europe" = list(0.45, 1)))',
-                      self.block('asia'))
+        # The links live in the world links table (tools/world_links/world_links.json).
+        links = (ROOT / 'code/modules/persistence/world_links.dm').read_text(encoding='utf-8')
+        self.assertIn('"europe" = list("east" = list("asia" = list(0, 1)))', links)
+        self.assertIn('"africa" = list("east" = list("asia" = list(0.68, 1)))', links)
+        self.assertIn('"asia" = list("west" = list("africa" = list(0, 0.45), "europe" = list(0.45, 1)))', links)
         for name, side, (lo, hi) in (('europe', 'east', (0, 1)), ('africa', 'east', (0.68, 1)),
                                      ('asia', 'west', (0, 0.45)), ('asia', 'west', (0.45, 1))):
             keys, rows = self.maps[name]
@@ -215,18 +216,15 @@ class EarthRegions(unittest.TestCase):
             self.assertGreater(len(inner), 0.8 * len(dry), (name, side, lo))
 
     def test_sea_lanes_know_africa_and_the_new_coasts(self):
-        lanes = (ROOT / 'code/modules/naval/sea_lanes.dm').read_text(encoding='utf-8')
-        self.assertIn('"africa" = list(12, 3, list("W", "S", "E"), TRUE),', lanes)
-        self.assertIn('map.sea_coasts : here[3]', lanes)
-        self.assertIn('sea_coasts = list("W", "N")', self.block('europe'))
-        self.assertIn('sea_coasts = list("W", "S", "E")', self.block('africa'))
-        self.assertIn('sea_coasts = list("E", "S", "N")', self.block('asia'))
-        self.assertIn('sea_coasts = list("N", "S", "W", "E")', self.block('oceania'))
-        self.assertIn('sea_coasts = list("E", "S", "N")', self.block('greenland'))
-        self.assertIn('sea_coasts = list("N", "E", "S", "W")', self.block('antarctica'))
-        for land in ('oceania', 'greenland', 'antarctica'):
+        lanes = (ROOT / 'code/modules/persistence/world_links.dm').read_text(encoding='utf-8')
+        self.assertIn('map.sea_coasts : here[3]', (ROOT / 'code/modules/naval/sea_lanes.dm').read_text(encoding='utf-8'))
+        for land, coasts in (('europe', '"W", "N"'), ('africa', '"W", "S", "E"'), ('asia', '"E", "S", "N"'),
+                             ('oceania', '"N", "S", "W", "E"'), ('greenland', '"E", "S", "N"'),
+                             ('antarctica', '"N", "E", "S", "W"')):
             self.assertIn('"%s" = list(' % land, lanes)
+            self.assertIn(', list(%s), TRUE)' % coasts, lanes.split('"%s" = list(' % land)[-1].split('\n')[0])
             self.assertNotIn('edge_crossings', self.block(land))
+            self.assertNotIn('sea_coasts', self.block(land))
         for name, sides in (('europe', 'WN'), ('africa', 'WSE'), ('asia', 'ESN'), ('oceania', 'NSWE'),
                             ('greenland', 'ESN'), ('antarctica', 'NESW')):
             keys, rows = self.maps[name]
