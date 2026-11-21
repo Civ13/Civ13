@@ -153,6 +153,12 @@ do not have yet.
 
 The probe is `tests/naval_carrier/strait_boom_probe.dm`.
 
+## By plane
+
+Planes fly off linked edges and are carried over the oceans, which have no air
+level; see "Over the map edges" in docs/aircraft-crossing.md
+(`aircraft_edge.dm`). The probe checks are in `tests/aircraft/crossing.dm`.
+
 ## Not yet
 
 These maps are not in any live group until the host step that adds the seas.

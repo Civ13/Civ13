@@ -1565,6 +1565,7 @@ RECIPE: /material/iron/,honey extractor,/obj/structure/honey_extractor,8,240,1,1
 RECIPE: /material/iron/,iron bollard,/obj/structure/bollard/iron,3,60,1,1,fortifications,0,0,0,8,null
 RECIPE: /material/wood/,clock face,/obj/structure/clock_face,3,100,0,1,construction,0,0,0,8,null
 RECIPE: /material/bronze/,bell,/obj/structure/bell,8,200,1,1,construction,0,0,0,8,null
+RECIPE: /material/bronze/,rain gauge,/obj/structure/weather_instrument/rain_gauge,3,60,1,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,lighthouse beacon,/obj/structure/lighthouse_beacon,4,150,1,1,construction,0,0,0,8,null
 RECIPE: /material/bronze/,reflector lighthouse lamp,/obj/structure/lighthouse_beacon/reflector,6,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,4,120,1,1,construction,0,0,0,8,null
@@ -2624,6 +2625,8 @@ RECIPE: /material/wood/soft/,custom golden sign,/obj/structure/sign/custom/golde
 
 RECIPE: /material/wood/soft/,signpost,/obj/structure/sign/signpost,4,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/soft/,weather vane,/obj/structure/weather_vane,6,60,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/soft/,hygrometer,/obj/item/weapon/hygrometer,2,80,0,1,tools,46,0,0,8,null
+RECIPE: /material/wood/soft/,weather station,/obj/structure/weather_instrument/station,15,200,1,1,tools,105,0,0,8,null
 
 RECIPE: /material/wood/soft/,wood jail bars,/obj/covers/jail/woodjail,8,30,1,1,construction,55,0,0,8,null
 RECIPE: /material/wood/soft/,locked wood jail door,/obj/structure/simple_door/key_door/custom/jail/woodjail,12,30,1,1,construction,55,0,0,8,null
@@ -3132,6 +3135,7 @@ RECIPE: /material/iron/,extraction kit,/obj/item/weapon/reagent_containers/glass
 RECIPE: /material/iron/,telescope,/obj/item/weapon/attachment/scope/adjustable/binoculars,5,140,0,1,tools,0,46,0,8,null
 RECIPE: /material/iron/,compass,/obj/item/weapon/compass,8,140,0,1,tools,46,0,0,8,null
 RECIPE: /material/iron/,barometer,/obj/item/weapon/barometer/empty,8,140,0,1,tools,46,0,0,8,null
+RECIPE: /material/iron/,anemometer,/obj/structure/weather_instrument/anemometer,6,120,1,1,tools,0,0,0,8,null
 RECIPE: /material/glass/,thermometer,/obj/item/weapon/thermometer/empty,1,80,0,1,tools,46,0,0,8,null
 RECIPE: /material/iron/,firearm cleaning kit,/obj/item/weapon/gun_cleaning_kit,5,80,0,1,tools,0,90,0,8,null
 RECIPE: /material/iron/,clawhammer,/obj/item/weapon/hammer/modern,3,40,0,1,tools,110,0,0,8,null

@@ -118,6 +118,10 @@ var/global/list/air_crossing_planes = list()
 	return null
 
 /obj/structure/vehicleparts/axis/aircraft/proc/air_crossing_menu(mob/living/human/pilot)
+	// Where planes fly over the map edges, the heading picks the land (aircraft_edge.dm).
+	if (air_edge_travel_on())
+		to_chat(pilot, SPAN_NOTICE("Fly on over the edge of the land: where you come out depends on your heading. Oceans are crossed in one flight if the fuel holds."))
+		return
 	var/reason = air_crossing_refusal(pilot)
 	if (reason)
 		to_chat(pilot, SPAN_WARNING(reason))
@@ -271,6 +275,9 @@ var/global/list/air_crossing_planes = list()
 	var/list/record = packed["record"]
 	var/datum/extraction_vehicle_transfer/transfer = packed["transfer"]
 	var/list/plane = list("v" = 1, "record" = record, "name" = name, "dir" = dir, "gear" = gear, "state" = state, "from" = list(pivot.x, pivot.y, pivot.z))
+	// Flown off an edge (aircraft_edge.dm): she comes in where her line reaches.
+	if (isnum(air_edge_along))
+		plane["along"] = air_edge_along
 	burn_crossing_fuel(fuel, need)
 	log_game("Air crossing: [key_name(pilot)] flies [name] ([crew.len] aboard) from [pivot.x],[pivot.y],[pivot.z] to [id] (flight [flight], [need] fuel).")
 	// She leaves the sky before anyone goes, so nothing aboard can be taken twice.
@@ -346,6 +353,8 @@ var/global/list/air_crossing_planes = list()
 		return FALSE
 	if (!(plane["state"] in list(AIRCRAFT_LOW, AIRCRAFT_CRUISE)))
 		return FALSE
+	if (!isnull(plane["along"]) && (!isnum(plane["along"]) || plane["along"] < 0 || plane["along"] > 1))
+		return FALSE
 	var/list/from = plane["from"]
 	if (!islist(from) || from.len != 3)
 		return FALSE
@@ -409,6 +418,8 @@ var/global/list/air_crossing_planes = list()
 	var/side = turn(plane["dir"], 180)
 	var/along_max = (side == NORTH || side == SOUTH) ? world.maxx : world.maxy
 	var/along = (side == NORTH || side == SOUTH) ? from[1] : from[2]
+	if (isnum(plane["along"]))
+		along = 1 + round(plane["along"] * (along_max - 1))
 	along = clamp(along, AIR_CROSSING_EDGE, along_max - AIR_CROSSING_EDGE)
 	var/depth = AIR_CROSSING_EDGE
 	for (var/offset = 0, offset <= along_max, offset += 3)
