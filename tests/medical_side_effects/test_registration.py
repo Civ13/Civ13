@@ -42,6 +42,27 @@ class SideEffectRegistrationTest(unittest.TestCase):
         for name in self.names:
             self.assertTrue(registers(self.source, name, self.names), name)
 
+    def test_scan_type_list_is_private_and_read_only(self):
+        start = self.source.index('/mob/living/human/proc/handle_medical_side_effects()')
+        end = self.source.index('\n// HEADACHE', start)
+        body = self.source[start:end]
+        expected = ("\tvar/static/list/L\n\tif (!L)\n"
+                    "\t\tL = typesof(/datum/medical_effect)-/datum/medical_effect\n"
+                    "\tfor (var/T in L)\n\t\tvar/datum/medical_effect/M = new T\n"
+                    "\t\tif (M.manifest(src))\n\t\t\tadd_side_effect(M.name)")
+        self.assertIn(expected, body)
+        # Reject an escaping or mutated cached list, not just a declaration change.
+        self.assertEqual(re.findall(r'\bL\b[^\n]*', body), [
+            'L', 'L)', 'L = typesof(/datum/medical_effect)-/datum/medical_effect', 'L)'
+        ])
+        self.assertIn('if (life_tick % 15 != FALSE)\n\t\treturn FALSE', body)
+        self.assertLess(body.index('M.manifest(src)'), body.index('for (var/datum/medical_effect/M in side_effects)'))
+        # The previous temporary list and a list mutation must fail the contract.
+        old = body.replace('var/static/list/L', 'var/list/L')
+        mutated = body.replace('for (var/T in L)', 'L.Cut()\n\tfor (var/T in L)')
+        self.assertNotIn(expected, old)
+        self.assertNotIn(expected, mutated)
+
     def test_unknown_name_does_not_register(self):
         self.assertFalse(registers(self.source, 'Nonexistent', self.names))
 
