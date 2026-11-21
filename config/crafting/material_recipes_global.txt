@@ -1799,7 +1799,7 @@ RECIPE: /material/rags/,beggar clothing,/obj/item/clothing/under/medieval/beggar
 //*************************************************************
 
 RECIPE: /material/hemp/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
-RECIPE: /material/hemp/,joint,/obj/item/clothing/mask/smokable/cigarette/joint,2,10,0,1,none,0,0,0,8,null
+RECIPE: /material/cannabis/,joint,/obj/item/clothing/mask/smokable/cigarette/joint,2,10,0,1,none,0,0,0,8,null
 
 //*************************************************************
 //*********************| FLAX |********************************
