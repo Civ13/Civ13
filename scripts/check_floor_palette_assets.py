@@ -20,7 +20,7 @@ PALETTES = {
     },
     "terracotta.dmi": {
         "terracotta": 1, "terracotta_edge": 4, "terracotta_inner": 4,
-        "terracotta_outer": 4, "terracotta_inset": 1,
+        "terracotta_outer": 4, "terracotta_inset": 1, "brick_paving": 1,
     },
 }
 
@@ -70,7 +70,7 @@ def main():
     for name, expected in PALETTES.items():
         assert dmi_states(DMI_DIR / name) == expected, name
         assert found[name] == expected.keys(), name
-    print("21 mapper floor covers match the three 32px DMI sheets; frame and direction counts passed.")
+    print("22 floor covers match the three 32px DMI sheets; frame and direction counts passed.")
 
 
 if __name__ == "__main__":

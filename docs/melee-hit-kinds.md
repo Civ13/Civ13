@@ -46,7 +46,8 @@ armor its family values (`docs/armor-families.md`) and everything else
   clubs beat armor down.
 - Pierce: a thrust gets 10 extra armor penetration against mail and lamellar
   on the struck part (`armor_gap_penetration`), finding the gaps between rings
-  and lames. Plate and armor without a family have no gaps.
+  and lames, including mail worn on the armor slot. Plate over the part closes
+  the gaps; armor without a family has none.
 - Cut: edged weapons keep their full effect on unarmored and lightly armored
   targets; mail and plate turn them best.
 

@@ -182,7 +182,7 @@ var/list/asay_lines = list()
 	// Watchlist.
 	check("watch added once", watchlist_add("Shady One", "alt of a banned player", admin) && !watchlist_add("shadyone", "again", admin))
 	check("watched", S.watched("shadyone") && length(watchlist_for("shadyone")) == 1)
-	check("summary line", findtext(player_records_summary_html("shadyone", null), "on the watchlist"))
+	check("summary tiles", findtext(player_records_tiles_html("shadyone", null), "on the watchlist"))
 	check("unwatched", watchlist_remove("shadyone", admin) == 1 && !S.watched("shadyone") && !length(watchlist_for("shadyone")))
 
 	// Memos: old memo files are copied once, each author keeps one memo.

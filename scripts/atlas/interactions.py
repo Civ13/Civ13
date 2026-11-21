@@ -30,6 +30,7 @@ FARMING = 'code/game/objects/farming.dm'
 SHELL = 'code/modules/1713/herb_garden.dm'
 FISH = 'code/modules/reagents/reagent_containers/food/snacks/meat.dm'
 HANDLOAD = 'code/modules/projectiles/handloading.dm'
+TILES = 'code/modules/1713/terracotta_floors.dm'
 CASINGS = 'code/modules/projectiles/_ammo_casing.dm'
 NODES = 'code/modules/research_tree/research_node.dm'
 VARS = {'name', 'dried_type', 'dry_size', 'steep_reagent', 'steep_amount', 'sprig_type', 'plant', 'stack',
@@ -147,6 +148,18 @@ def add_interactions(files, add, records, covered):
               ('Put the item on a dehydrator and leave it for about two minutes.',),
               'Dehydrator required. Rotten food cannot be dried.', ('/obj/structure/dehydrator',),
               '/obj/structure/dehydrator')
+
+    # Kiln: unfired terracotta tiles fire into the tile stack the floors are laid from.
+    tiles = files.get(TILES)
+    if tiles is not None:
+        require(tiles, TILES, 'result = /obj/item/stack/material/terracotta',
+                '/obj/item/weapon/clay/floortiles/fired_result(atom/where)')
+        route('Fire terracotta tiles', 'Kiln firing', [('/obj/item/weapon/clay/floortiles', 1)],
+              [('/obj/item/stack/material/terracotta', 1)],
+              TILES, line_of(tiles, '/obj/item/weapon/clay/floortiles/fired_result'),
+              ('Put the unfired tiles in an oven or kiln, add fuel and light it.',
+               'Each unfired tile comes out as one terracotta tile.'),
+              'A fuelled oven or kiln is required.', ('/obj/structure/oven',), '/obj/structure/oven')
 
     # Steeping: hold an herb with steep_reagent and use it on an open container of water.
     steep = files[STEEP]

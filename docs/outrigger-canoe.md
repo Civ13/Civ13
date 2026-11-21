@@ -24,8 +24,9 @@ A hammer takes a dugout (6 wood) or an outrigger (8 wood, 3 rope, her sail, engi
 
 - Two people and one crate, seats 8 px fore and aft of the middle tile.
 - Step delay 13, or 7 with a paddle in the steerer's hand.
-- May cross deep salt water (`open_sea`), and refuses salt water only in wind 4 (`rough_wind`).
-  A raft's own bar on the Caribbean sea area still applies.
+- May cross deep salt water, including the open ocean that rafts and plain dugouts cannot enter.
+  An outrigger still refuses salt water in wind 4 (`rough_wind`) and cannot cross a canal step
+  without a lock.
 - The sheet is 96x96 with the hull on the middle tile, drawn with `pixel_w`/`pixel_z` of -32, so
   she stands on one tile and `pixel_x`/`pixel_y` stay free for the pixel movement code.
 

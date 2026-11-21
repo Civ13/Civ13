@@ -315,7 +315,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/britmug
 	name = "coffee mug"
 	desc = "A ceramic mug with a bright ensign emblazoned on it."
-	icon_state = "britcup"
+	icon_state = "brit_mug"
 	volume = 30
 	center_of_mass = list("x"=15, "y"=13)
 

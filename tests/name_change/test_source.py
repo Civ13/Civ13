@@ -50,7 +50,7 @@ class NameChangeSource(unittest.TestCase):
         self.assertIn('former_names += old_name', record)
         self.assertIn('faction_roster_account(src)', record)
         self.assertIn('log_admin(', record)
-        self.assertIn('[M.name_history_admin_html()]', read('code/modules/admin/admin.dm'))
+        self.assertIn('M.name_history_admin_html()', read('code/modules/admin/player_panel_pages.dm'))
         self.assertIn('record_name_change(old_name, new_name, "adoption")',
                       read('code/game/mob/living/carbon/human/nomads_adoption.dm'))
 

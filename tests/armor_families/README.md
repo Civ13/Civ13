@@ -13,6 +13,8 @@ production game with normal startup disabled and checks, on a 6x4x1 world:
   so on) has the same values and weight.
 - A worn family piece protects its wearer by kind; armor without a family
   keeps reading its own armor list.
+- A padded jack gives blunt and half arrow only; worn under mail it adds to
+  the mail, and plate over mail closes the gaps a thrust finds.
 - Forging sets the tier from the metal (iron plate cut 72, steel plate 85),
   and a stock grade lifts values up to 90 without lowering any.
 - Armor never goes out of date: plated and samurai lord armor stay on offer

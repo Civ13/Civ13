@@ -17,8 +17,8 @@
 // There is no timer: water comes aboard only on a move, so a craft left
 // alone stays as she was. The water is not saved; she loads dry.
 //
-// The hooks chain on procs that code/game/objects/structures/transports.dm
-// and code/modules/1713/dugout_canoe.dm define, so those files stay as they are.
+// The raft's move check in transports.dm calls swamped_refusal() directly so
+// the swamping and water admission rules share one guard.
 // ============================================================
 
 // Bucketfuls that swamp her, and that one go with a bucket takes out.
@@ -99,11 +99,6 @@
 		swamp_told = driver
 		to_chat(driver, SPAN_WARNING("\The [src] is swamped. Bail her with an empty bucket."))
 	return TRUE
-
-/obj/structure/vehicle/raft/do_vehicle_check()
-	if (swamped_refusal())
-		return FALSE
-	return ..()
 
 /obj/structure/vehicle/boat/do_vehicle_check()
 	if (swamped_refusal())

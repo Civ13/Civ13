@@ -17,7 +17,9 @@ import dmi  # noqa: E402
 SIZE = 32
 OUTPUT = ROOT / "icons/turf/flooring/terracotta.dmi"
 STATES = ("terracotta", "terracotta_edge", "terracotta_outer",
-          "terracotta_inner", "terracotta_inset")
+          "terracotta_inner", "terracotta_inset", "brick_paving")
+BRICK = ((148, 72, 55), (160, 81, 59), (139, 66, 53), (154, 86, 65))
+BRICK_JOINT, BRICK_LIGHT, BRICK_SHADE = (84, 66, 58), (178, 100, 74), (116, 54, 45)
 # Keep native DMI order, not compass notation or numeric direction order.
 ANGLES = {"SOUTH": 0, "NORTH": 180, "EAST": 90, "WEST": 270}
 CLAY = ((146, 93, 70), (158, 102, 75), (151, 96, 73), (141, 88, 67))
@@ -101,6 +103,30 @@ def inset():
     return out
 
 
+def brick_paving():
+    """Herringbone pavers, two cells by one; the bond repeats every 32 pixels."""
+    out = Image.new("RGB", (SIZE, SIZE), BRICK_JOINT)
+    px = out.load()
+    cell = 8
+    for j in range(SIZE // cell):
+        for i in range(SIZE // cell):
+            bond = (i - j) % 4
+            if bond not in (0, 3):
+                continue  # second half of a paver that starts elsewhere
+            wide, tall = (2 * cell, cell) if bond == 0 else (cell, 2 * cell)
+            body = BRICK[(i * 3 + j * 5) % 4]
+            for dy in range(tall - 1):
+                for dx in range(wide - 1):
+                    if dy == 0 and dx < wide - 2:
+                        color = BRICK_LIGHT
+                    elif dy == tall - 2 or dx == wide - 2:
+                        color = BRICK_SHADE
+                    else:
+                        color = body
+                    px[(i * cell + dx) % SIZE, (j * cell + dy) % SIZE] = color
+    return out.convert("RGBA")
+
+
 def build_atlas():
     art = dmi.Dmi(SIZE, SIZE)
     art.state(STATES[0]).frame(field())
@@ -113,6 +139,7 @@ def build_atlas():
             cell.alpha_composite(overlay.rotate(rotation))
             state.frame(cell)
     art.state(STATES[4]).frame(inset())
+    art.state(STATES[5]).frame(brick_paving())
     return art
 
 
