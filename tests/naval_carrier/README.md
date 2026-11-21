@@ -299,6 +299,16 @@ client connects, so the depot's menus are not exercised.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
 
+## Sites at sea in the oceans (`ocean_sites_probe.dm`)
+
+An ocean world (`code/modules/naval/ocean_sites.dm`) on a 600 x 300 fixture:
+the same sites rolled on every start, clear of the edges; an islet raised
+when a ship comes near and gone after she leaves, rising the same again; a
+bunk kept as home, a mooring post and a world save each keeping it; a reef of
+shallows richer in fish than open sea; a wreck with salvage; a named sea mark.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ocean_sites_probe.dm 300
+
 ## The open sea (`open_sea_probe.dm`)
 
 An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
