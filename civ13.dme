@@ -1135,6 +1135,7 @@
 #include "code\modules\1713\weather_chunks.dm"
 #include "code\modules\1713\weather_footwear.dm"
 #include "code\modules\1713\weather_forecast.dm"
+#include "code\modules\1713\weather_fronts.dm"
 #include "code\modules\1713\mercury_crafts.dm"
 #include "code\modules\1713\late_mining.dm"
 #include "code\modules\1713\weather_lightning.dm"
