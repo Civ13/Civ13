@@ -123,7 +123,6 @@ var/global/faction1_airstrikes_remaining = list(10, 4, 1)
 var/global/faction2_airstrikes_remaining = list(10, 4, 1)
 
 // for mass deletion
-var/global/list/bullet_casings = list()
 var/global/list/blood = list()
 
 // magic

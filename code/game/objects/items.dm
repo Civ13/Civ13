@@ -163,6 +163,7 @@
 	. = ..(user, distance, "", "It is a [size] item.[decay_notice]")
 	arcane_examine(user)
 	substance_examine(user) // faction_substances.dm
+	heap_examine(user) // item_heaps.dm
 
 /obj/item/attack_hand(mob/user as mob)
 	if (extraction_surface_source)
@@ -301,6 +302,7 @@
 
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
+	heap_split_one() // item_heaps.dm: take one item, leave the rest
 	clear_throw_launch()
 	throw_flight_token = null
 	reset_abandonment()
