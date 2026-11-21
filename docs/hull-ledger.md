@@ -74,7 +74,8 @@ four hours take her from tight to open. Her crew is told when they work loose
   hammer in the other hand, while she lies still and is not awash. One twist
   takes four seconds and tightens three tiles of hull.
 - On deep water caulking stops at sound (one third). Lying mostly over shallow
-  water she is caulked down to tight.
+  water, or lying wholly in a berth such as a boathouse slip (docs/berths.md),
+  she is caulked down to tight. Scraping and copper need the same.
 - Small craft and plated hulls have no seams: nothing wears and nothing can be
   caulked. `seams` is saved with the rest of the ledger.
 

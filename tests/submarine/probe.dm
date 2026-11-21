@@ -392,6 +392,7 @@ var/submarine_runtime_error = FALSE
 
 	submarine_sheet_checks()
 	submarine_assembly_checks()
+	submarine_sheet_assembly_checks()
 
 /proc/submarine_run()
 	try

@@ -34,6 +34,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/disable_campaign_whitelist,
 	/datum/admins/proc/event_transfer,	//send players to an event region and back, characters kept safe
 	/datum/admins/proc/place_region_trail,	//place an open trail to another land where you stand, ghosts too
+	/datum/admins/proc/nation_staff_panel,	//see nation governments; freeze, void a motion or revolt, or set a government by hand
 	/datum/admins/proc/send_player_to_region,	//send players or their ship to another region with everything they carry, dry run first
 	/datum/admins/proc/land_status,
 	/datum/admins/proc/player_art,	//see every finished player painting, who painted it, and remove offensive ones	//see and set each land's settlement stage (frontier, colonised, settled)

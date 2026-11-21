@@ -93,6 +93,8 @@
 #define HULL_DEPTH_AWASH 4
 #define HULL_DEPTH_LISTING 5
 #define HULL_DEPTH_FULL 6
+// Wood a patch over a hole takes (hull_ledger.dm, berth.dm).
+#define HULL_PATCH_PLANKS 2
 
 // Outrigger canoes (naval/outrigger_canoe.dm). The sheet is 96x96 with the
 // hull on the middle tile (tests/sprites/create_small_boats.py).

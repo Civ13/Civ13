@@ -3171,6 +3171,10 @@ RECIPE: /material/sandstone/,sandstone balustrade gate,/obj/structure/railing/bu
 RECIPE: /material/iron/,wrought iron gate,/obj/structure/railing/built/wrought_iron/gate,3,70,0,1,railings,50,0,0,8,null
 RECIPE: /material/steel/,steel pipe railing gate,/obj/structure/railing/built/steel_pipe/gate,3,70,0,1,railings,105,0,0,8,null
 RECIPE: /material/glass/,glass balustrade gate,/obj/structure/railing/built/glass/gate,4,70,0,1,railings,145,0,0,8,null
+RECIPE: /material/wood/soft/,wooden gunwale,/obj/structure/railing/built/gunwale,2,40,0,1,railings,10,0,0,8,null
+RECIPE: /material/steel/,steel bulwark,/obj/structure/railing/built/gunwale/bulwark,2,60,0,1,railings,105,0,0,8,null
+RECIPE: /material/wood/soft/,wooden gangway,/obj/structure/railing/built/gunwale/gangway,4,60,0,1,railings,10,0,0,8,null
+RECIPE: /material/steel/,steel gangway,/obj/structure/railing/built/gunwale/bulwark/gangway,4,80,0,1,railings,105,0,0,8,null
 RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,construction,120,0,0,8,null
 
 //*********************| IRON PROJECTILES & BULLETS |**************************

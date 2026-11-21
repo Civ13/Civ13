@@ -48,6 +48,11 @@
 /obj/structure/vehicleparts/axis/ship/submarine/persistence_runtime_var(key)
 	return (key in list("hull_air", "last_air_step", "air_warned")) || ..(key)
 
+// Like the battery: the flasks in her hull hold half a bank and each air bank
+// adds a bank.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/air_capacity()
+	return SUB_AIR_BANK_MAX * (1 + fitting_count(/obj/structure/vehicleparts/sub_fitting/air)) / 2
+
 /obj/structure/vehicleparts/axis/ship/submarine/proc/hull_volume()
 	return max(1, frames().len * SUB_AIR_TILES_PER_FRAME)
 
@@ -100,7 +105,7 @@
 	systems_step(seconds)
 	if (!submerged)
 		sub_air_freshen(L)
-		air_bank = min(SUB_AIR_BANK_MAX, air_bank + SUB_AIR_BANK_RECHARGE_PER_SECOND * seconds)
+		air_bank = min(air_capacity(), air_bank + SUB_AIR_BANK_RECHARGE_PER_SECOND * seconds)
 		air_warned = FALSE
 		return
 	var/breathers = air_breathers()
@@ -134,7 +139,7 @@
 	air_update()
 	var/datum/habitat_ledger/L = hull_air
 	var/state = L.breathable() ? "breathable" : "NOT BREATHABLE"
-	return "Hull air: [state]. Oxygen [round(L.oxygen_kpa(), 0.1)] kPa, CO2 [round(L.co2_kpa(), 0.1)] kPa, pressure [round(L.pressure_kpa())] kPa. Air bank [round(100 * air_bank / SUB_AIR_BANK_MAX)]%[submerged ? "" : ", recharging"]."
+	return "Hull air: [state]. Oxygen [round(L.oxygen_kpa(), 0.1)] kPa, CO2 [round(L.co2_kpa(), 0.1)] kPa, pressure [round(L.pressure_kpa())] kPa. Air bank [round(100 * air_bank / air_capacity())]%[submerged ? "" : ", recharging"]."
 
 // The submarine whose hull covers T, if any.
 /proc/submarine_at(turf/T)
