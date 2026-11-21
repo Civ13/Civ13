@@ -5,8 +5,16 @@ The ship designer window (code/modules/naval/ship_designer.dm) shows every
 floor and fitting of a ship's draught as the sprite the built thing has in
 the game. A browser window cannot read a DMI, so this script copies the
 needed states into plain PNGs under icons/ship_designer/, which the window
-is sent with browse_rsc. Nothing is drawn here: each picture is the first
-frame of an existing state, tinted or layered the way the game does it.
+is sent with browse_rsc. Most pictures are the first frame of an existing
+state, tinted or layered the way the game does it. A fitting that stands on
+a floor also gets a one-pixel ink outline, so it reads on planks and on steel
+plate alike at any zoom.
+
+Two fittings are drawn for the sheet instead, pixel by pixel in this file,
+because their game sprites say nothing at one tile seen from above: the ship
+mast (in the game a thin yard spilling over three tiles) and the steering
+oar (which borrows the tiller's wheel). They are plan views in the game's
+own wood colours: see draw_mast() and draw_steering_oar().
 
 Run it after changing ship_draught_pieces or ship_draught_floors
 (code/modules/naval/ship_draught.dm) or the sprites they use:
@@ -32,31 +40,106 @@ TILE = 32
 DMI_DIRS = [2, 1, 4, 8]
 WOOD = (0x82, 0x4b, 0x28)  # material/wood icon_colour (materials.dm)
 
+INK = (26, 16, 8, 255)  # the outline round a fitting
+
+# Hand-placed colours for the pictures drawn here.
+SPAR = (138, 90, 43, 255)
+SPAR_LIGHT = (176, 122, 66, 255)
+SPAR_DARK = (92, 56, 24, 255)
+MAST = (168, 115, 58, 255)
+MAST_RIM = (120, 78, 36, 255)
+MAST_LIGHT = (206, 150, 88, 255)
+MAST_HEART = (104, 66, 30, 255)
+CANVAS = (232, 220, 192, 255)
+CANVAS_SHADE = (196, 180, 140, 255)
+CANVAS_TIE = (150, 134, 100, 255)
+IRON = (70, 72, 78, 255)
+
+
+def draw_mast():
+    """A mast from above: the round spar, its yard across the ship and the
+    sail furled along the yard under its gaskets."""
+    img = Image.new('RGBA', (TILE, TILE), (0, 0, 0, 0))
+    px = img.load()
+    for x in range(2, 30):  # the yard, lit from above
+        px[x, 17] = SPAR_LIGHT
+        px[x, 18] = SPAR
+        px[x, 19] = SPAR_DARK
+    for x in range(3, 29):  # the furled sail lashed along it
+        tie = x % 4 == 0
+        px[x, 14] = CANVAS_TIE if tie else CANVAS
+        px[x, 15] = CANVAS_TIE if tie else CANVAS
+        px[x, 16] = CANVAS_TIE if tie else CANVAS_SHADE
+        if x % 4 == 2:
+            px[x, 13] = CANVAS  # the canvas bulges between gaskets
+    px[2, 15] = CANVAS_SHADE
+    px[29, 15] = CANVAS_SHADE
+    # The mast itself: a disc nine pixels across, rim, body and a highlight.
+    disc = [
+        '...rrr...',
+        '.rrbbbrr.',
+        '.rbllbbr.',
+        'rblllbbbr',
+        'rbllhhbbr',
+        'rbbbhhbbr',
+        '.rbbbbbr.',
+        '.rrbbbrr.',
+        '...rrr...',
+    ]
+    shade = {'r': MAST_RIM, 'b': MAST, 'l': MAST_LIGHT, 'h': MAST_HEART}
+    for dy, line in enumerate(disc):
+        for dx, c in enumerate(line):
+            if c != '.':
+                px[11 + dx, 14 + dy] = shade[c]
+    return img
+
+
+def draw_steering_oar():
+    """A steering oar from above: the loom inboard at the top with its grip,
+    an iron crutch it turns in, and the blade trailing astern."""
+    img = Image.new('RGBA', (TILE, TILE), (0, 0, 0, 0))
+    px = img.load()
+    for i in range(17):  # the loom, from (13,3) down to (18,19)
+        x = 13 + round(i * 5 / 16)
+        px[x, 3 + i] = SPAR_LIGHT
+        px[x + 1, 3 + i] = SPAR
+    for x, y in ((11, 2), (12, 2), (13, 2), (14, 2), (15, 2), (11, 3), (12, 3)):
+        px[x, y] = SPAR_DARK  # the grip
+    for x, y in ((13, 10), (14, 10), (17, 10), (18, 10), (13, 11), (18, 11), (13, 12), (14, 12), (17, 12), (18, 12)):
+        px[x, y] = IRON  # the crutch
+    blade = ((20, 17, 20), (21, 17, 21), (22, 17, 22), (23, 17, 22), (24, 17, 22), (25, 17, 22), (26, 18, 22), (27, 18, 22), (28, 19, 21), (29, 19, 20))
+    for y, x0, x1 in blade:
+        for x in range(x0, x1 + 1):
+            px[x, y] = SPAR_LIGHT if x == x0 else (SPAR_DARK if x == x1 else SPAR)
+    return img
+
+
 # name -> what the built thing looks like. "layers" are drawn bottom first:
 # (dmi, state, tint or None). "turns" makes one picture per facing. "crop"
-# takes one tile's box out of a bigger sprite.
+# takes one tile's box out of a bigger sprite. "draw" is a picture made in
+# this file instead. "outline" inks round a fitting that stands on a floor
+# (not one that fills its tile: walls, doors and windows).
 # Names are the draught's keys, spelt out so no two differ only by case.
 SPRITES = {
     # /obj/covers/repairedfloor
     'floor_w': {'layers': [('icons/turf/floors.dmi', 'wood_ship_repaired', None)]},
     # /obj/covers/steelplating
     'floor_s': {'layers': [('icons/turf/floors.dmi', 'floor', None)]},
-    # /obj/structure/hull_tiller/steering_oar (no sprite of its own: the tiller's)
-    'piece_O': {'layers': [('icons/obj/vehicles/vehicleparts_boats.dmi', 'ship_wheel', None)]},
+    # /obj/structure/hull_tiller/steering_oar (no sprite of its own in the game)
+    'piece_O': {'draw': draw_steering_oar, 'outline': True},
     # /obj/structure/hull_tiller
-    'piece_T': {'layers': [('icons/obj/vehicles/vehicleparts_boats.dmi', 'ship_wheel', None)]},
+    'piece_T': {'layers': [('icons/obj/vehicles/vehicleparts_boats.dmi', 'ship_wheel', None)], 'outline': True},
     # /obj/structure/vehicleparts/movement/sail
-    # The bare mast is a 64x64 sprite: its yard overhangs the tiles beside it.
-    # The window shows the tile around the mast itself, yard cut at the edges.
-    'piece_M': {'layers': [('icons/obj/vehicles/vehicleparts64x64.dmi', 'sail0', None)], 'crop': (16, 18, 48, 50)},
+    # The bare mast is a 64x64 sprite of a thin yard: drawn here from above.
+    'piece_M': {'draw': draw_mast, 'outline': True},
     # /obj/structure/bed/chair/wood/rowing_bench
-    'piece_R': {'layers': [('icons/obj/bed_chair.dmi', 'bleacher', None)], 'turns': True},
+    'piece_R': {'layers': [('icons/obj/bed_chair.dmi', 'bleacher', None)], 'turns': True, 'outline': True},
     # /obj/structure/hull_anchor/stone
-    'piece_K': {'layers': [('icons/obj/hull_gear.dmi', 'killick', None)]},
+    'piece_K': {'layers': [('icons/obj/hull_gear.dmi', 'killick', None)], 'outline': True},
     # /obj/structure/hull_anchor
-    'piece_A': {'layers': [('icons/obj/vehicles/vehicleparts.dmi', 'anchor', None)]},
+    'piece_A': {'layers': [('icons/obj/vehicles/vehicleparts.dmi', 'anchor', None)], 'outline': True},
     # /obj/structure/cellar_pump/lever
-    'piece_P': {'layers': [('icons/obj/flood_defences.dmi', 'lever_pump', None)]},
+    'piece_P': {'layers': [('icons/obj/flood_defences.dmi', 'lever_pump', None)], 'outline': True},
     # /obj/covers/wood_wall/adjustable
     'piece_W': {'layers': [('icons/turf/walls.dmi', 'woodwall0', None)]},
     # /obj/structure/simple_door/key_door/anyone/wood (wood tint on the door)
@@ -64,9 +147,9 @@ SPRITES = {
     # /obj/structure/window_frame
     'piece_G': {'layers': [('icons/obj/windows.dmi', 'windownew_frame', None)]},
     # /obj/structure/closet/crate/empty
-    'piece_C': {'layers': [('icons/obj/storage.dmi', 'wood_crate', None)]},
+    'piece_C': {'layers': [('icons/obj/storage.dmi', 'wood_crate', None)], 'outline': True},
     # /obj/structure/bed/wood (wood tint on the bed overlay)
-    'piece_B': {'layers': [('icons/obj/bed_chair.dmi', 'bed', WOOD)]},
+    'piece_B': {'layers': [('icons/obj/bed_chair.dmi', 'bed', WOOD)], 'outline': True},
 }
 
 _sheets = {}
@@ -145,7 +228,27 @@ def tint(img, rgb):
     return out
 
 
+def outline(img):
+    """Inks every clear pixel that touches a solid one along an edge."""
+    out = img.copy()
+    src, dst = img.load(), out.load()
+    w, h = img.size
+    for y in range(h):
+        for x in range(w):
+            if src[x, y][3] >= 40:
+                continue
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < w and 0 <= ny < h and src[nx, ny][3] >= 128:
+                    dst[x, y] = INK
+                    break
+    return out
+
+
 def build(spec, facing=2):
+    if 'draw' in spec:
+        out = spec['draw']()
+        return outline(out) if spec.get('outline') else out
     out = None
     for path, state, colour in spec['layers']:
         img, turns = frame(path, state, facing)
@@ -160,7 +263,7 @@ def build(spec, facing=2):
         out = out.crop(spec['crop'])
     if out.size != (TILE, TILE):
         raise SystemExit('a picture must be one %dx%d tile: give a bigger sprite a "crop"' % (TILE, TILE))
-    return out
+    return outline(out) if spec.get('outline') else out
 
 
 def png_bytes(img):
