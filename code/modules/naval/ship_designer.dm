@@ -47,6 +47,10 @@ var/global/list/ship_designer_sprites = list(
 	"shipd_piece_G.png" = 'icons/ship_designer/piece_G.png',
 	"shipd_piece_C.png" = 'icons/ship_designer/piece_C.png',
 	"shipd_piece_B.png" = 'icons/ship_designer/piece_B.png',
+	"shipd_piece_Y_1.png" = 'icons/ship_designer/piece_Y_1.png',
+	"shipd_piece_Y_2.png" = 'icons/ship_designer/piece_Y_2.png',
+	"shipd_piece_Y_4.png" = 'icons/ship_designer/piece_Y_4.png',
+	"shipd_piece_Y_8.png" = 'icons/ship_designer/piece_Y_8.png',
 )
 
 // The names the window asks for: one picture for a floor or a fixed piece,
@@ -172,6 +176,7 @@ var/global/list/ship_designer_groups = list(
 	"Steering and drive" = list("O", "T", "M", "R"),
 	"Gear" = list("K", "A", "P", "C", "B"),
 	"Cabin" = list("W", "D", "G"),
+	"Sides" = list("Y"),
 )
 
 /proc/ship_designer_group(key)
@@ -200,6 +205,7 @@ var/global/list/ship_designer_groups = list(
 		qdel(E)
 	var/list/data = list(
 		"N" = SHIP_DRAUGHT_SIDE,
+		"SMALL" = HULL_SMALL_MAX_TILES,
 		"MID" = round(SHIP_DRAUGHT_SIDE / 2),
 		"REF" = "\ref[S]",
 		"PART" = SHIP_DESIGNER_PART,
@@ -274,7 +280,7 @@ table{border-collapse:collapse;width:100%}td{padding:4px 0;border-bottom:1px sol
 <div class='sec'><h2>Her figures</h2><div class='in' id='fig'><span class='dim'>Reckoning...</span></div></div>
 </div></div>
 <script>var DATA=@@DATA@@;
-var N=DATA.N,MID=DATA.MID,REF=DATA.REF,PART=DATA.PART,PIECES=DATA.PIECES,FLOORS=DATA.FLOORS,EXAMPLES=DATA.EXAMPLES;
+var N=DATA.N,SMALL=DATA.SMALL,MID=DATA.MID,REF=DATA.REF,PART=DATA.PART,PIECES=DATA.PIECES,FLOORS=DATA.FLOORS,EXAMPLES=DATA.EXAMPLES;
 function $(i){return document.getElementById(i);}
 var cv=$('c'),g=cv.getContext('2d'),frame=$('frame');
 var cells={},t=FLOORS[0][0],fd=1,box=false,mirror=false,undos=[],redos=[],down=null,pan=null,hov=null,before=null;
@@ -336,6 +342,12 @@ for(k in cells){p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
 if(!cells[key(x+1,y)]){g.moveTo(px+Z,py);g.lineTo(px+Z,py+Z);}if(!cells[key(x-1,y)]){g.moveTo(px,py);g.lineTo(px,py+Z);}
 if(!cells[key(x,y+1)]){g.moveTo(px,py);g.lineTo(px+Z,py);}if(!cells[key(x,y-1)]){g.moveTo(px,py+Z);g.lineTo(px+Z,py+Z);}}
 g.stroke();
+var nc=0;for(k in cells)nc++;
+if(nc>SMALL){g.strokeStyle='#e0b25c';g.lineWidth=Math.max(2,Math.round(Z/6));var r=g.lineWidth/2+1;g.beginPath();
+for(k in cells){c=cells[k];if(c[1]=='W'||c[1]=='D'||c[1]=='G')continue;p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
+if(!cells[key(x+1,y)]&&!(c[1]=='Y'&&c[2]==4)){g.moveTo(px+Z-r,py);g.lineTo(px+Z-r,py+Z);}if(!cells[key(x-1,y)]&&!(c[1]=='Y'&&c[2]==8)){g.moveTo(px+r,py);g.lineTo(px+r,py+Z);}
+if(!cells[key(x,y+1)]&&!(c[1]=='Y'&&c[2]==1)){g.moveTo(px,py+r);g.lineTo(px+Z,py+r);}if(!cells[key(x,y-1)]&&!(c[1]=='Y'&&c[2]==2)){g.moveTo(px,py+Z-r);g.lineTo(px+Z,py+Z-r);}}
+g.stroke();}
 g.setLineDash([6,5]);g.strokeStyle='rgba(120,60,30,0.75)';g.lineWidth=1;g.beginPath();g.moveTo(ox+(MID+0.5)*Z,oy);g.lineTo(ox+(MID+0.5)*Z,oy+S);g.stroke();g.setLineDash([]);
 if(pan||!hov)return;
 if(down&&box){boxOutline(down[0],down[1],hov[0],hov[1]);if(mirror)boxOutline(mirrorX(down[0]),down[1],mirrorX(hov[0]),hov[1]);return;}
@@ -418,7 +430,8 @@ h+=row('Decks',F.upper?F.upper+' tile'+(F.upper==1?'':'s')+' of deck above &midd
 if(F.tiles){var c='';for(i=0;i<F.costs.length;i++)c+='<span class=\'chip\'>'+esc(F.costs[i])+'</span>';h+=row('Cost',c||'nothing');
 var d=[];for(i=0;i<F.drives.length;i++)d.push(esc(F.drives[i][0])+' <b>'+esc(F.drives[i][1])+'</b>');
 h+=row('Speed',d.length?d.join(' &middot; '):'<b>Slow ahead</b>, poled along: she has no masts or rowing benches');
-if(F.ballast)h+=row('Ballast','Wants about '+F.ballast+' more tiles of weight low in her, or she sails crank');}
+if(F.ballast)h+=row('Ballast','Wants about '+F.ballast+' more tiles of weight low in her, or she sails crank');
+h+=row('Sides',F.gunwales?F.gunwales+' gunwale'+(F.gunwales==1?'':'s')+' along her open edges, in her cost':(F.tiles>SMALL?'Closed all round':'Open: small craft need no gunwales'));}
 h+='</table>';
 if(!F.tiles)h+='<div class=\'note\'>'+esc(F.problems[0]||'Nothing is drawn yet.')+'</div>';
 else if(F.problems.length){h+='<div class=\'note bad\'><b>Not ready to build</b>';for(i=0;i<F.problems.length;i++)h+='<div>'+esc(F.problems[i])+'</div>';h+='</div>';}

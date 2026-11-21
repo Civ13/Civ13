@@ -54,6 +54,8 @@ var/global/list/ship_draught_pieces = list(
 	"G" = list("name" = "window", "path" = /obj/structure/window_frame, "cost" = list("wood" = 5), "load" = 0.1),
 	"C" = list("name" = "wood crate", "path" = /obj/structure/closet/crate/empty, "cost" = list("wood" = 5), "load" = 0.5),
 	"B" = list("name" = "bed", "path" = /obj/structure/bed/wood, "cost" = list("wood" = 4), "load" = 0.1),
+	// A gate in her gunwale on an edge tile, facing out (hull_gangway.dm).
+	"Y" = list("name" = "gangway", "path" = /obj/structure/railing/built/gunwale/gangway, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE),
 )
 
 // A tile of deck on the level above costs a floor, like any floor laid there.
@@ -180,6 +182,19 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		. += "She has no helm: put a tiller or a steering oar on one of her tiles."
 	else if (H.len > 1)
 		. += "She has [H.len] helms: only one tiller or steering oar can steer her."
+	var/inboard = 0
+	for (var/key in cells)
+		var/list/C = cells[key]
+		if (C[2] != "Y")
+			continue
+		var/list/xy = splittext(key, ",")
+		var/x = text2num(xy[1])
+		var/y = text2num(xy[2])
+		var/d = C[3]
+		if (cell(x + (d == EAST ? 1 : d == WEST ? -1 : 0), y + (d == NORTH ? 1 : d == SOUTH ? -1 : 0)))
+			inboard++
+	if (inboard)
+		. += "[inboard] gangway\s face[inboard == 1 ? "s" : ""] her own deck: a gangway stands on her edge, facing out over the side."
 
 /datum/ship_draught/proc/buildable()
 	var/list/P = problems()
@@ -216,6 +231,8 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		var/x = text2num(xy[1])
 		var/y = text2num(xy[2])
 		for (var/d in cardinal)
+			if (C[2] == "Y" && C[3] == d)
+				continue // her gangway closes that side
 			if (!cell(x + (d == EAST ? 1 : d == WEST ? -1 : 0), y + (d == NORTH ? 1 : d == SOUTH ? -1 : 0)))
 				. += list(list(key, d))
 
@@ -350,6 +367,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		"costs" = cost_parts,
 		"drives" = drives,
 		"masts" = masts,
+		"gunwales" = length(gunwale_sides()),
 		"ballast" = cells.len ? wants_ballast() : 0,
 		"problems" = problems(),
 	)
@@ -444,6 +462,8 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			return list("G", M.dir)
 		if (istype(M, /obj/structure/closet/crate))
 			return list("C", M.dir)
+		if (istype(M, /obj/structure/railing/built/gunwale/bulwark/gangway))
+			return list("Y", M.dir)
 	return null
 
 // Her lines with her bow to the top of the sheet, or the reason she cannot
