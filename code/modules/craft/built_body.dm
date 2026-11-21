@@ -19,8 +19,9 @@
 #define BUILT_HULL_MAX_TILES 200
 // Every tile of every deck is carried at each step, so her decks together have
 // a cap of their own. Measured in tests/naval_carrier/upper_deck_probe.dm: a
-// step of 200 tiles of hull and 100 of upper deck with ten sailors and ten
-// buckets aboard takes about 16 ms, against about 10 ms for a bare 200-tile hull.
+// sailing step (plan and move) of 200 tiles of hull and 100 of upper deck with
+// ten sailors and ten buckets aboard takes about 12 ms, and a bare 200-tile
+// hull about 7.5 ms.
 #define BUILT_HULL_MAX_DECK_TILES 300
 
 /datum/craft_body/built
@@ -31,6 +32,11 @@
 	var/dir = NORTH               // Where the bow points.
 	var/list/offsets = list()     // list(dx, dy) from the pivot, one per tile.
 	var/tmp/list/offset_index = list() // "dx,dy" -> TRUE, for contains().
+	var/tmp/list/offset_box = null     // box(offsets), kept by set_offsets().
+	// The plan can_move_to() just made, so the move_to() that follows it in
+	// the same tick does not plan the same step twice.
+	var/tmp/list/plan_memo = null
+	var/tmp/plan_memo_key = null
 	var/tmp/moving = FALSE
 	glides = TRUE
 
@@ -41,10 +47,16 @@
 	return z > 0 && offsets.len > 0
 
 /datum/craft_body/built/proc/set_offsets(list/new_offsets)
+	plan_memo = null
+	// A step without a turn keeps the same offsets: nothing to rebuild.
+	if (new_offsets == offsets && offset_box && offset_index.len == offsets.len)
+		return
 	offsets = new_offsets
 	offset_index = list()
 	for (var/list/O in offsets)
 		offset_index["[O[1]],[O[2]]"] = TRUE
+	offset_box = null
+	offset_box = box(offsets)
 
 /datum/craft_body/built/cells()
 	. = list()
@@ -170,6 +182,8 @@
 
 // The box around a set of offsets: list(min dx, min dy, max dx, max dy).
 /datum/craft_body/built/proc/box(list/of)
+	if (of == offsets && offset_box)
+		return offset_box.Copy()
 	. = list(0, 0, 0, 0)
 	var/first = TRUE
 	for (var/list/O in of)
@@ -206,6 +220,10 @@
 
 /datum/craft_body/built/proc/turned_offsets(heading)
 	var/angle = craft_turn_angle(dir, heading)
+	// Bow where she points already: the offsets themselves (never changed in
+	// place; set_offsets() swaps in a new list).
+	if (!angle)
+		return offsets
 	. = list()
 	for (var/list/O in offsets)
 		switch (angle)
@@ -365,7 +383,16 @@
 	return P ? P[4] : null
 
 /datum/craft_body/built/can_move_to(x, y, heading)
-	return !isnull(plan(x, y, heading))
+	var/list/P = plan(x, y, heading)
+	plan_memo = P
+	plan_memo_key = P ? plan_key(x, y, heading) : null
+	return !isnull(P)
+
+// What a plan depends on: where she is, where she goes and when. A plan is
+// reused only within the tick it was made: the sailing loop asks and moves in
+// one call (next_hop() then move_to()), with nothing between.
+/datum/craft_body/built/proc/plan_key(x, y, heading)
+	return "[x],[y],[heading],[px],[py],[z],[dir],[offsets.len],[world.time]"
 
 // The water level a tile has under whatever floors stand on it.
 /datum/craft_body/built/proc/true_water_level(turf/T)
@@ -382,7 +409,12 @@
 		last_refusal = "the world is being saved"
 		return FALSE
 	var/started = world.timeofday
-	var/list/P = plan(x, y, heading)
+	var/list/P = null
+	if (plan_memo && plan_memo_key == plan_key(x, y, heading))
+		P = plan_memo
+	plan_memo = null
+	if (!P)
+		P = plan(x, y, heading)
 	if (!P)
 		return FALSE
 	var/list/old = list()

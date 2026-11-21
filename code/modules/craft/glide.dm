@@ -149,6 +149,13 @@ var/global/list/craft_glide_holder = null
 		glide_was = list()
 	if (time > 0 && craft_glides_natively(M))
 		glide_hold(glide_was, M, craft_glide_size(time))
+	// Her own floors and roofs only change tiles with her: nothing listens for
+	// them arriving or leaving, so they skip the Entered, Exited and Crossed
+	// callbacks that make up most of a step's cost (craft_quiet_carry()).
+	if (craft_quiet_move(M, D))
+		if (time > 0 && M.loc == D)
+			craft_glide(M, dx, dy, time)
+		return
 	var/list/was_holder = craft_glide_holder
 	craft_glide_holder = glide_was
 	try
@@ -159,6 +166,41 @@ var/global/list/craft_glide_holder = null
 	craft_glide_holder = was_holder
 	if (time > 0 && M.loc == D)
 		craft_glide(M, dx, dy, time)
+
+// TRUE when a craft may carry this thing by setting its place alone. Only
+// structure that never blocks sight or passage and has no Entered, Exited or
+// Crossed meaning of its own: a plain floor or a roof.
+/atom/movable/proc/craft_quiet_carry()
+	return FALSE
+
+/obj/covers/craft_quiet_carry()
+	return !opacity && !density && !wall
+
+/obj/roof/craft_quiet_carry()
+	return !opacity && !density
+
+// Carries M to the turf D the cheap way, or returns FALSE for the full
+// forceMove(). The save gate, sight caches and level views are kept; only the
+// turf and neighbour callbacks are skipped. Never across levels or areas.
+/proc/craft_quiet_move(atom/movable/M, turf/D)
+	var/turf/S = M.loc
+	if (!istype(S) || !istype(D) || S.z != D.z || S.loc != D.loc || !M.craft_quiet_carry())
+		return FALSE
+	if (GLOB.moved_event.has_listeners(M))
+		return FALSE
+	if (!persistence_movement_allowed(M, D))
+		return FALSE
+	#if CIV13_ROOT_TREE_PRESENTATION
+	var/list/los_move_contexts = root_tree_invalidate(M)
+	#endif
+	M.loc = D
+	#if CIV13_ROOT_TREE_PRESENTATION
+	los_invalidate(M)
+	los_refresh_moved_viewer(M, TRUE, los_move_contexts)
+	#endif
+	if (open_air_view_any)
+		open_air_view_moved(M, S)
+	return TRUE
 
 /datum/craft_body/proc/craft_glide(atom/movable/M, dx, dy, time)
 	if (!glide_was)

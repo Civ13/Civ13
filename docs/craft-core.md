@@ -135,8 +135,19 @@ when a floor, a bridge or anything solid is there.
 then whoever stands up there, so nobody reaches open air without a floor. A
 roof makes the tile under it indoors, so the areas of her tiles sail with her
 and the sea's areas close in behind. Measured in
-`tests/naval_carrier/upper_deck_probe.dm`, a step at the cap with ten sailors
-and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
+`tests/naval_carrier/upper_deck_probe.dm`, a sailing step at the cap (asking
+`can_move_to()` and then moving, as the sailing loop does) with ten sailors and
+ten buckets aboard takes about 12 ms, and a bare 200-tile hull about 7.5 ms.
+
+Three things keep a step cheap. Her own floors and roofs (`craft_quiet_carry()`:
+a cover that is not a wall, not dense and not opaque, or a roof) are carried by
+`craft_quiet_move()` in `glide.dm`, which sets their place and keeps the save
+gate, the sight caches and the level views, but skips the Entered, Exited and
+Crossed callbacks that nothing listens to for them; anything else aboard still
+goes by `forceMove()`. `can_move_to()` keeps its plan for the `move_to()` that
+follows in the same tick (`plan_memo`, keyed on her place, the target and
+`world.time`), so a step is planned once. And a step without a turn keeps her
+offsets list and its box (`offset_box`) instead of rebuilding them.
 A hull with an upper deck crosses the sea and sets out on voyages with it
 ([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
 

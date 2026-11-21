@@ -219,8 +219,9 @@ var/naval_runtime_error = FALSE
 	for (var/i = 1, i <= 4, i++)
 		sleep(1)
 		BO = BB.origin()
+		// As the sailing loop does it: ask, then move.
 		var/t = world.tick_usage
-		var/ok = BB.move_to(BO.x, BO.y + 1, NORTH)
+		var/ok = BB.can_move_to(BO.x, BO.y + 1, NORTH) && BB.move_to(BO.x, BO.y + 1, NORTH)
 		var/ms = deck_ms(t)
 		naval_check(ok, "step [i] at the cap of 300 deck tiles ([BB.last_refusal])")
 		worst = max(worst, ms)
@@ -228,6 +229,22 @@ var/naval_runtime_error = FALSE
 	world.log << "TIMING: a step of 200 tiles of hull with 100 of upper deck: worst [worst] ms, mean [total / 4] ms"
 	naval_check(worst < 100, "a step at the cap stays well inside a tick ([worst] ms)")
 	naval_check(deck_paired(BB) == 100 && BB.upper_tile_count() == 100, "after four steps every roof still has its floor")
+	// The same hull bare: everyone off the upper deck, every roof down, so
+	// 200 tiles of hull alone.
+	for (var/atom/movable/up in BB.aboard())
+		if (up.z == 3 && !istype(up, /obj/covers))
+			qdel(up)
+	for (var/obj/roof/R in world)
+		if (BB.contains(get_turf(R)))
+			qdel(R)
+	var/bare = 0
+	for (var/i = 1, i <= 2, i++)
+		sleep(1)
+		BO = BB.origin()
+		var/t = world.tick_usage
+		naval_check(BB.can_move_to(BO.x, BO.y + 1, NORTH) && BB.move_to(BO.x, BO.y + 1, NORTH), "bare step [i] ([BB.last_refusal])")
+		bare = max(bare, deck_ms(t))
+	world.log << "TIMING: a step of the same hull bare (200 tiles): worst [bare] ms"
 
 /proc/naval_run()
 	try
