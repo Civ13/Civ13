@@ -93,7 +93,7 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('if (H.swim_skill_applies(F) && !H.buckled)\n\t\t\t\t\t\tH.body_motion_swim_stroke()',
                       read('code/game/mob/mob_movement.dm'))
         self.assertIn('swim_under = TRUE\n\t\tbody_motion_sink()', read('code/modules/1713/swimming.dm'))
-        self.assertEqual(read('code/game/mob/living/carbon/human/human_helpers.dm').count('adjustOxyLoss(10)\n\t\t\tbody_motion_struggle()'), 2)
+        self.assertEqual(read('code/game/mob/living/carbon/human/human_helpers.dm').count('</font>"))\n\t\t\tbody_motion_struggle()\n\t\t\tlife_water_refresh()'), 2)
         # Every climb wait starts the pulls and stops them once the wait ends.
         for path, count in (('code/game/objects/structures/tree_climbing.dm', 2),
                             ('code/modules/multiz/edge_climbing.dm', 1),
