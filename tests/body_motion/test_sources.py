@@ -48,7 +48,7 @@ class BodyMotionSources(unittest.TestCase):
         self.assertNotRegex(code, r'\bstep_[xy]\s*=')
         for call in re.findall(r'animate\(([^\n]*)\)', code):
             if call.startswith('src'):
-                self.assertIn('flags = ANIMATION_PARALLEL', call)
+                self.assertIn('flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG', call)
             self.assertIn('transform = ', call)
 
     def test_motion_state_is_never_saved(self):
@@ -58,6 +58,7 @@ class BodyMotionSources(unittest.TestCase):
 
     def test_posture_handshake(self):
         body = proc_body(ICONS, '/mob/living/human/proc/update_posture_transform()')
+        self.assertIn('flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG', body)
         self.assertIn('body_motion_posture_change(rest, turned)', body)
         self.assertIn('world.time < body_motion_until', body)
         # The only direct write comes after the running-motion branch.
@@ -66,7 +67,7 @@ class BodyMotionSources(unittest.TestCase):
 
     def test_recoil_hooks(self):
         weapon = proc_body(DEFENSE, '/mob/living/human/hit_with_weapon(')
-        self.assertIn('if (effective_force && blocked < 2)\n\t\tbody_motion_recoil(user)', weapon)
+        self.assertIn('if (effective_force && blocked < 2)\n\t\tbody_motion_recoil(user, (body_motion_blunt(I)', weapon)
         self.assertIn('toxic=H.lizard)\n\t\t\t\tbody_motion_recoil(H)', ATTACKHAND)
 
     def test_work_seat_and_emote_hooks(self):
@@ -76,9 +77,20 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('\t\tH.body_motion_settle()', proc_body(BUCKLING, '/obj/proc/buckle_mob('))
         self.assertIn('custom_emote(m_type,message)\n\t\t\tbody_motion_emote(act)', EMOTE)
 
+    def test_combat_hooks(self):
+        self.assertIn('/mob/living/human/do_attack_animation(atom/A)\n\t..()\n\tbody_motion_swing(A, get_active_hand())', MOTION)
+        for path in ('code/game/objects/items/weapons/material/swords.dm',
+                     'code/game/objects/items/weapons/material/material_weapons.dm',
+                     'code/game/objects/items/weapons/material/twohanded.dm'):
+            self.assertIn('body_motion_parry(attacker)', read(path), path)
+        reactions = read('code/game/mob/combat_reactions.dm')
+        for call in ('body_motion_parry(attacker)', 'body_motion_slip(attacker)', 'body_motion_sprawl(attacker)'):
+            self.assertIn(call, reactions)
+        self.assertIn('H.body_motion_stance_set()', read('code/game/mob/combat_stance.dm'))
+
     def test_gestures_are_full_level_only(self):
         for header in ('/mob/living/human/proc/body_motion_work(', '/mob/living/human/proc/body_motion_settle(',
-                       '/mob/living/human/proc/body_motion_emote('):
+                       '/mob/living/human/proc/body_motion_emote(', '/mob/living/human/proc/body_motion_stance_set('):
             self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL', proc_body(MOTION, header))
 
     def test_config_line(self):
@@ -96,7 +108,7 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('BODY_MOTION_PRIORITY_POSTURE, 6, rest', fall)
         self.assertIn('SINE_EASING | EASE_OUT', fall)
         recoil = proc_body(MOTION, '/mob/living/human/proc/body_motion_recoil(')
-        self.assertIn('BODY_MOTION_PRIORITY_COMBAT, 3, rest', recoil)
+        self.assertIn('BODY_MOTION_PRIORITY_COMBAT, 3 + delay, rest', recoil)
         self.assertIn('dx * 3, dy * 3, dx * 8', recoil)
 
 

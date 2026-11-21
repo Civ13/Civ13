@@ -168,6 +168,38 @@ var/body_motion_probe_checks = 0
 	H.update_posture_transform()
 	body_motion_probe_idle(H)
 
+	// --- swings, parries and reflexes -------------------------------------------
+	var/obj/item/weapon/material/sword/arabsword/blade = new(H.loc)
+	var/obj/item/weapon/material/hatchet/club_like = new(H.loc)
+	club_like.edge = FALSE
+	club_like.sharp = FALSE
+	club_like.force = 10
+	var/obj/item/weapon/material/hatchet/pointy = new(H.loc)
+	pointy.edge = FALSE
+	pointy.sharp = TRUE
+	body_motion_probe_assert(H.body_motion_swing(east_turf, blade) && H.body_motion_until == world.time + 4 && H.body_motion_priority == BODY_MOTION_PRIORITY_COMBAT, "edged_swing_rolls_4ds")
+	body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "swing_ends_at_rest")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_swing(east_turf, club_like) && H.body_motion_until == world.time + 4, "blunt_swing_4ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(body_motion_blunt(club_like) && !body_motion_blunt(blade) && !body_motion_blunt(pointy), "blunt_classes")
+	body_motion_probe_assert(H.body_motion_recoil(A, 1) && H.body_motion_until == world.time + 4 && body_motion_matrix_same(H.transform, rest), "blunt_recoil_waits_1ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_swing(east_turf, pointy), "thrust_keeps_plain_lunge")
+	body_motion_probe_assert(!H.body_motion_swing(locate(5, 6, 1), blade), "north_swing_no_roll")
+	body_motion_probe_assert(!H.body_motion_swing(east_turf, null), "unarmed_keeps_plain_lunge")
+	body_motion_probe_assert(H.body_motion_parry(A) && H.body_motion_until == world.time + 3, "parry_3ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_slip(A) && H.body_motion_until == world.time + 3, "slip_3ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_sprawl(A) && H.body_motion_until == world.time + 4, "sprawl_4ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_stance_set() && H.body_motion_until == world.time + 3, "stance_set_3ds")
+	body_motion_probe_idle(H)
+	qdel(blade)
+	qdel(club_like)
+	qdel(pointy)
+
 	// --- unwatched bodies snap -------------------------------------------------
 	H.probe_watched = FALSE
 	body_motion_probe_assert(!H.body_motion_recoil(A), "unwatched_no_recoil")
@@ -183,6 +215,9 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(H.body_motion_recoil(A), "reduced_keeps_recoil")
 	body_motion_probe_idle(H)
 	body_motion_probe_assert(!H.body_motion_work(locate(6, 5, 1)) && !H.body_motion_emote("nod") && !H.body_motion_settle(), "reduced_drops_work_emotes_seats")
+	body_motion_probe_assert(!H.body_motion_stance_set(), "reduced_drops_stance_set")
+	body_motion_probe_assert(H.body_motion_parry(A), "reduced_keeps_parry")
+	body_motion_probe_idle(H)
 	config.body_motion = BODY_MOTION_OFF
 	body_motion_probe_assert(!H.body_motion_recoil(A), "off_no_recoil")
 	H.lying = TRUE

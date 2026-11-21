@@ -45,6 +45,10 @@ def main():
     parser.add_argument('--keep', action='store_true')
     parser.add_argument('--render-dir', type=Path, help='also export a dressed body and motion keys for render.py')
     args = parser.parse_args()
+    # The runner works in a temporary stage; keep a relative --byond-bin pointing where the caller meant.
+    args.byond_bin = args.byond_bin.resolve()
+    if args.render_dir:
+        args.render_dir = args.render_dir.resolve()
     work = Path(tempfile.mkdtemp(prefix='civ13-body-motion-'))
     try:
         archive = subprocess.Popen(['git', '-C', str(ROOT), 'archive', '--format=tar', 'HEAD', '--', *WANTED],

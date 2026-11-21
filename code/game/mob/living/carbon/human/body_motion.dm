@@ -102,24 +102,24 @@
 		var/matrix/upright = matrix(transform)
 		var/lean = rest.b >= 0 ? 45 : -45
 		body_motion_claim(BODY_MOTION_PRIORITY_POSTURE, 6, rest)
-		animate(src, transform = body_motion_matrix(upright, 0, 0, lean), time = 3, easing = SINE_EASING, flags = ANIMATION_PARALLEL)
+		animate(src, transform = body_motion_matrix(upright, 0, 0, lean), time = 3, easing = SINE_EASING, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 		animate(transform = rest, time = 3, easing = SINE_EASING | EASE_OUT)
 	else if (turned)
 		var/matrix/upright = matrix(transform)
 		var/lean = rest.b >= 0 ? 45 : -45 // the side the lying turn goes
 		body_motion_claim(BODY_MOTION_PRIORITY_POSTURE, 4, rest)
-		animate(src, transform = body_motion_matrix(upright, 0, 0, lean), time = 2, easing = QUAD_EASING | EASE_IN, flags = ANIMATION_PARALLEL)
+		animate(src, transform = body_motion_matrix(upright, 0, 0, lean), time = 2, easing = QUAD_EASING | EASE_IN, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 		animate(transform = body_motion_matrix(rest, 0, -1), time = 1)
 		animate(transform = rest, time = 1)
 	else
 		var/lean = transform.b >= 0 ? 45 : -45
 		body_motion_claim(BODY_MOTION_PRIORITY_POSTURE, 6, rest)
-		animate(src, transform = body_motion_matrix(rest, 0, 0, lean), time = 3, flags = ANIMATION_PARALLEL)
+		animate(src, transform = body_motion_matrix(rest, 0, 0, lean), time = 3, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 		animate(transform = rest, time = 3, easing = SINE_EASING | EASE_OUT)
 
 // Hit recoil: 3px away from the attacker with an 8 degree roll away, back over
 // 3 ds. A body lying down only shifts.
-/mob/living/human/proc/body_motion_recoil(atom/attacker)
+/mob/living/human/proc/body_motion_recoil(atom/attacker, delay = 0)
 	if (!attacker || attacker == src || stat == DEAD)
 		return FALSE
 	if (!body_motion_can_play(BODY_MOTION_PRIORITY_COMBAT))
@@ -136,8 +136,13 @@
 	else
 		// Positive turns are clockwise: pushed east, the head leans east.
 		away = body_motion_matrix(rest, dx * 3, dy * 3, dx * 8)
-	body_motion_claim(BODY_MOTION_PRIORITY_COMBAT, 3, rest)
-	animate(src, transform = away, time = 1, easing = LINEAR_EASING, flags = ANIMATION_PARALLEL)
+	body_motion_claim(BODY_MOTION_PRIORITY_COMBAT, 3 + delay, rest)
+	if (delay)
+		// A blunt swing lands on its drop, after the wind-up.
+		animate(src, transform = rest, time = delay, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
+		animate(transform = away, time = 1, easing = LINEAR_EASING)
+	else
+		animate(src, transform = away, time = 1, easing = LINEAR_EASING, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 	animate(transform = rest, time = 2, easing = SINE_EASING | EASE_IN)
 	return TRUE
 
@@ -158,7 +163,7 @@
 	for (var/list/key in keys)
 		var/matrix/M = body_motion_matrix(rest, key[1], key[2], key[3], key[4])
 		if (first)
-			animate(src, transform = M, time = key[5], easing = key[6], flags = ANIMATION_PARALLEL)
+			animate(src, transform = M, time = key[5], easing = key[6], flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 			first = FALSE
 		else
 			animate(transform = M, time = key[5], easing = key[6])
@@ -220,3 +225,70 @@
 	if (!keys)
 		return FALSE
 	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, keys)
+
+/proc/body_motion_blunt(obj/item/I)
+	return istype(I) && !I.edge && !I.sharp && I.force >= 5
+
+// Swing body: the existing 8px pixel lunge (do_attack_animation) carries the
+// thrust; an edged weapon adds an 8 degree roll into the slash, a blunt one a
+// short wind-up and an 8 degree drop (the victim's recoil waits 1 ds for it). East and west only: north and south
+// already read through the lunge. 4 ds, matching the lunge.
+/mob/living/human/do_attack_animation(atom/A)
+	..()
+	body_motion_swing(A, get_active_hand())
+
+/mob/living/human/proc/body_motion_swing(atom/target, obj/item/I)
+	if (!target || target == src || !istype(I))
+		return FALSE
+	var/list/f = body_motion_forward(get_dir(src, target))
+	if (!f[3])
+		return FALSE
+	var/list/keys
+	if (I.edge)
+		// Peaks at 1 ds, with the victim's recoil.
+		keys = list(list(0, 0, 8 * f[3], 1, 1, QUAD_EASING | EASE_OUT),
+			list(0, 0, 0, 1, 3, SINE_EASING | EASE_IN))
+	else if (body_motion_blunt(I))
+		keys = list(list(0, 0, -4 * f[3], 1, 1, LINEAR_EASING),
+			list(0, 0, 8 * f[3], 1, 1, QUAD_EASING | EASE_IN),
+			list(0, 0, 0, 1, 2, SINE_EASING | EASE_OUT))
+	if (!keys)
+		return FALSE // thrusts and jabs keep the plain lunge
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_FULL, keys)
+
+// Parry and block: 2px back from the attacker and return. 3 ds. Kept at the
+// REDUCED level because it shows the attack was stopped.
+/mob/living/human/proc/body_motion_parry(atom/attacker)
+	if (!attacker || attacker == src)
+		return FALSE
+	var/list/f = body_motion_forward(get_dir(attacker, src))
+	if (!f[1] && !f[2])
+		return FALSE
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(2 * f[1], 2 * f[2], 0, 1, 1, LINEAR_EASING),
+		list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
+
+// Slip: a 4px sidestep across the line of the attack and back. 3 ds.
+/mob/living/human/proc/body_motion_slip(atom/attacker)
+	if (!attacker || attacker == src)
+		return FALSE
+	var/list/f = body_motion_forward(get_dir(attacker, src))
+	var/side = pick(-1, 1)
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(4 * f[2] * side, 4 * f[1] * side, 0, 1, 1, QUAD_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
+
+// Sprawl: drop low and back from a grab, squashed at the feet. 4 ds.
+/mob/living/human/proc/body_motion_sprawl(atom/attacker)
+	if (!attacker || attacker == src)
+		return FALSE
+	var/list/f = body_motion_forward(get_dir(attacker, src))
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(2 * f[1], 2 * f[2] - 2, 0, 0.9, 1, QUAD_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 3, SINE_EASING | EASE_OUT)))
+
+// Taking a stance: a one-shot 1px "set" dip. 3 ds.
+/mob/living/human/proc/body_motion_stance_set()
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, list(
+		list(0, -1, 0, 1, 1, QUAD_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 2, SINE_EASING)))

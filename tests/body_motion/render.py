@@ -349,5 +349,27 @@ def main():
          out / 'emotes.gif')
 
 
+    # 7. Combat: edged slash and blunt overhead on top of the existing lunge,
+    # a parry and a slip. Each exchange repeats every 10 ds.
+    def every(fn, length):
+        return repeat(fn, 10, length, start=2)
+    lunge_every = every(lambda t: lunge(t), 4)
+    def shift_every(t):
+        return lunge_every(t)
+    slash = keys_track([(0, 0, 8, 1, 1, 'quad_out'), (0, 0, 0, 1, 3, 'sine_in')])
+    blunt = keys_track([(0, 0, -4, 1, 1, 'linear'), (0, 0, 8, 1, 1, 'quad_in'), (0, 0, 0, 1, 2, 'sine_out')])
+    parry = keys_track([(2, 0, 0, 1, 1, 'linear'), (0, 0, 0, 1, 2, 'sine_in')])
+    slip = keys_track([(0, 4, 0, 1, 1, 'quad_out'), (0, 0, 0, 1, 2, 'sine_in')])
+    hit = every(recoil, 3)
+    late_recoil = track(stand, [(stand, 1, 'linear'), (matrix(3, 0, 8), 1, 'linear'), (stand, 2, 'sine_in')])
+    blunt_hit = every(late_recoil, 4)
+    save(panels([
+        ('Edged slash: 8 deg roll + lunge', [(east, 0, 1, every(slash, 4), shift_every), (west, 1, 1, hit, None)], []),
+        ('Blunt: wind-up, 8 deg drop', [(east, 0, 1, every(blunt, 4), shift_every), (west, 1, 1, blunt_hit, None)], []),
+        ('Parry: 2px back, no recoil', [(east, 0, 1, every(slash, 4), shift_every), (west, 1, 1, every(parry, 3), None)], []),
+        ('Slip: 4px sidestep', [(east, 0, 1, hold(stand), shift_every), (west, 1, 1, every(slip, 3), None)], []),
+    ], 22, (2, 3)), out / 'combat.gif')
+
+
 if __name__ == '__main__':
     main()

@@ -16,3 +16,6 @@
 #define BODY_MOTION_MIN_GAP 2
 // A body is animated only when a player is this close on its level.
 #define BODY_MOTION_WATCH_RANGE 12
+// Every body motion runs as this named parallel sequence, so a new motion
+// replaces the running one while lunges and glides keep their own sequences.
+#define BODY_MOTION_TAG "body_motion"

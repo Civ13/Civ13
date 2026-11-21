@@ -237,7 +237,7 @@ Please contact me on #coderbus IRC. ~Carn x
 		if (body_motion_matrix_same(body_motion_rest, rest))
 			return
 		body_motion_claim(body_motion_priority, 1, rest)
-		animate(src, transform = rest, time = 1, flags = ANIMATION_PARALLEL)
+		animate(src, transform = rest, time = 1, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 		return
 	transform = rest
 

@@ -124,6 +124,7 @@
 	if(default_parry_check(user, attacker, damage_source) && prob(isdefend*(min(block_chance * modif*(0.66*H_user.getStatCoeff("strength")+0.34*H_user.getStatCoeff("dexterity")),87))) && (user.get_active_hand() == src))//You gotta be holding onto that sheesh bro.
 		user.visible_message("<font color='#E55300'><big>\The [user] parries [attack_text] with \the [src]!</big></font>")
 		var/mob/living/human/H = user
+		H.body_motion_parry(attacker)
 		if (prob(50))
 			H.adaptStat("dexterity", 1)
 		else
