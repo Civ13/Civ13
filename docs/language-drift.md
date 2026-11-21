@@ -92,3 +92,14 @@ and how much each pair follows of the other in plain words. Data comes from
 `language_family_rows()` (daughter.dm) as the `families` key; kinship is the
 lower of the two directions rounded to 5, and drift is never sent. Layout by
 Fable.
+
+## Undoing and renaming (part 4, `daughter_admin.dm`)
+
+Admins can **Merge Language Back**: everyone in the world who has the daughter
+keeps the better of their two scores in its parent, gets the parent back as
+mother tongue and default where the daughter was, and the daughter's record,
+say key, kinship, drift and any wait to split are forgotten. A daughter with
+daughters of its own is merged only after them. **Rename Language** moves
+scores, mother tongues, today's learning, notes, kinship, drift and child
+records to the new name. Travellers already in another land keep the old
+name there.
