@@ -135,6 +135,24 @@ The nation's head can neither open nor sign a petition against themself.
 Signing is never a crime in itself, the petition shows only how many have
 signed, and a failed revolt removes no one from play.
 
+## Staff tools
+
+**Admin > Nations** (`code/modules/admin/nation_staff.dm`, coordinator
+`tools/transfer_storage/nation_staff.py`) shows any nation's government, head
+account, motions, revolt petition with its signers, and the last 10 staff
+log entries. Staff can, with a reason that goes in the log (`staff` op):
+
+- **Freeze** or **Thaw**: a frozen nation cannot change government, vote,
+  name successors, claim a throne or revolt, and its head's absence does not
+  count. Thawing restarts the absence clock. Citizens see that staff have
+  paused changes.
+- **Void a motion** or **Void the revolt petition**: closes it without a
+  result or a cooldown.
+- **Set the government**: installs a type and a head (a verified citizen
+  playing in the staff member's land) at once, past the era and notice.
+
+Staff act on any nation from any land; the world checks admin rights first.
+
 ## Secession
 
 Under every type but a confederation, **Secede** gives notice: the faction
@@ -157,8 +175,11 @@ stays a member for the notice period and may **Stay** to withdraw it.
 - `nation_successor`: the monarch's heir or the consul's deputy.
 - `nation_revolt`, `nation_signature`: the open petition (proposal JSON, who
   opened it, when, when it filled) and its signers.
+- `nation_frozen`: nations staff froze, and since when.
+- `nation_staff_log`: nation, when, staff account, act and reason (the last
+  100 kept).
 - `nation_revolt_cooldown`: nation and account (`''` for the whole nation)
   -> when another petition may open.
 
 The registry snapshot every world reads adds `government`, `government_votes`,
-`leaving`, `eras`, `motions`, `term_ends`, `census` and `revolt` to each nation.
+`leaving`, `eras`, `motions`, `term_ends`, `census`, `revolt`, `frozen` and `staff_log` to each nation.

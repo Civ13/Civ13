@@ -1398,6 +1398,7 @@
 #include "code\modules\admin\create_object.dm"
 #include "code\modules\admin\create_turf.dm"
 #include "code\modules\admin\event_transfer.dm"
+#include "code\modules\admin\nation_staff.dm"
 #include "code\modules\admin\send_player_to_region.dm"
 #include "code\modules\admin\shared_memos.dm"
 #include "code\modules\admin\shared_player_records.dm"
