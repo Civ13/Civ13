@@ -6,6 +6,8 @@ import { Card, Pill } from './kit';
 
 type Family = NonNullable<KnownLanguagesData['families']>[number];
 type Member = NonNullable<Family['members']>[number];
+type People = NonNullable<KnownLanguagesData['people']>;
+type PeopleRow = NonNullable<People['lineage']>[number];
 
 // How much of each other's speech two related languages follow, in plain words.
 function followWords(percent: number) {
@@ -42,6 +44,38 @@ function FamilyCard({ family }: { family: Family }) {
   </Card>;
 }
 
+// "A", "A and B", "A, B and C".
+function names(values: unknown[]) {
+  const all = values.map(str).filter(Boolean);
+  return all.length > 1 ? `${all.slice(0, -1).join(', ')} and ${all[all.length - 1]}` : all.join('');
+}
+// When and where a people formed. An old people was here from the start.
+function formedWords(row: PeopleRow) {
+  if (!row.formed) return 'an old people';
+  const year = Number(row.year) || 0, blend = list(row.parents).length > 1 ? names(list(row.parents)) : '';
+  return `formed${year ? ` in year ${year}` : ''}${row.nation ? ` among the ${str(row.nation)}` : row.homeland ? ` in ${str(row.homeland)}` : ''}${blend ? `, a blend of ${blend}` : ''}`;
+}
+// The viewer's own people: where it came from, the peoples related to it, and who else counts them as their own.
+function PeopleCard({ people }: { people: People }) {
+  const lineage = list(people.lineage), kin = list(people.kin), raised = names(list(people.raised_among)), welcomed = names(list(people.welcomed_by));
+  return <Card>
+    <strong>{str(people.name)}</strong>
+    <span className="lang-origin">{`${people.language ? ` - mother tongue ${str(people.language)}` : ''}${people.land ? ` - born in ${str(people.land)}` : ''}`}</span>
+    {lineage.length > 1 && <ul className="lang-tree" aria-label={`Where the ${str(people.name)} came from`}>{lineage.map((row, index) => {
+      const depth = Math.min(index, 4), own = index === lineage.length - 1;
+      return <li key={index} className={own ? 'lang-own' : undefined} style={{ paddingLeft: `${depth * 20}px` }}>
+        {depth > 0 && <span className="lang-branch" aria-hidden="true">{'└ '}</span>}
+        <strong>{str(row.name)}</strong>{own && <>{' '}<Pill tone="good">Your people</Pill></>}
+        <span className="lang-origin">{` - ${formedWords(row)}`}</span>
+      </li>;
+    })}</ul>}
+    {kin.length > 0 && <ul className="lang-links" aria-label="Related peoples">{kin.map((row, index) =>
+      <li key={index}><strong>{str(row.name)}</strong> - {str(row.relation)}{row.formed ? `, ${formedWords(row)}` : ''}.</li>)}</ul>}
+    {raised && <p className="kit-hint">Raised among: {raised}</p>}
+    {welcomed && <p className="kit-hint">Welcomed by: {welcomed}</p>}
+  </Card>;
+}
+
 export function KnownLanguages({ data }: ScreenProps<KnownLanguagesData>) {
   const languages = list(data.languages);
   const families = list(data.families).filter(family => list(family.members).length > 1);
@@ -56,6 +90,10 @@ export function KnownLanguages({ data }: ScreenProps<KnownLanguagesData>) {
     {families.length > 0 && <Section title="Language families">
       <p className="kit-hint">Languages that grew apart on this world. Speakers of related languages still follow part of each other's speech.</p>
       {families.map((family, index) => <FamilyCard key={index} family={family} />)}
+    </Section>}
+    {data.people && <Section title="Your people">
+      <p className="kit-hint">Your people and the peoples it grew from. Peoples form, split and blend over time.</p>
+      <PeopleCard people={data.people} />
     </Section>}
   </>;
 }

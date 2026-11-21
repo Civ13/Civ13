@@ -170,8 +170,11 @@ var/global/list/region_edge_spans = list()
 // The side whose crossing T lies on, or null.
 /proc/region_edge_side(turf/T)
 	var/list/links = region_edge_links()
-	if (!links || !istype(T) || T.z != map.edge_crossing_z)
+	if (!links || !istype(T))
 		return null
+	// A tunnel out to the edge underground leads on too (region_edge_deep.dm).
+	if (T.z != map.edge_crossing_z)
+		return region_edge_deep_side(T)
 	var/side = null
 	if (T.y == 1) side = "south"
 	else if (T.y == world.maxy) side = "north"
@@ -303,7 +306,7 @@ var/global/list/region_edge_spans = list()
 	if (region_edge_asking || !region_edge_links())
 		return
 	var/turf/T = loc
-	if (!isturf(T) || (T.y != 1 && T.x != 1 && T.y != world.maxy && T.x != world.maxx))
+	if (!isturf(T) || ((T.y != 1 && T.x != 1 && T.y != world.maxy && T.x != world.maxx) && !region_edge_deep_on_rim(T)))
 		return
 	var/side = region_edge_side(T)
 	if (!side)
@@ -324,13 +327,17 @@ var/global/list/region_edge_spans = list()
 // Asks and waits on its own; the step that led here is not held up.
 /mob/living/human/proc/region_edge_cross(side, turf/T)
 	set waitfor = FALSE
-	var/id = region_edge_destination(side, region_edge_along(side, T))
+	var/depth = region_edge_deep_depth(T)
+	var/id = depth ? region_edge_deep_destination(side, region_edge_along(side, T)) : region_edge_destination(side, region_edge_along(side, T))
 	if (!id)
 		region_edge_asking = FALSE
 		return
 	var/obj/structure/region_gate/land_edge/gate = new(T)
 	gate.destination = id
 	gate.crossing = list(side, region_edge_fraction(side, id, T), id)
+	// Underground the crossing carries its depth (region_edge_deep.dm).
+	if (depth)
+		gate.crossing = list(side, region_edge_deep_fraction(side, id, region_edge_along(side, T)), id, depth)
 	// The mount is recorded now and leaves only if its rider did.
 	var/mob/living/simple_animal/steed = riding_mob
 	gate.mount = region_edge_mount_record(src)
@@ -528,7 +535,7 @@ var/global/list/region_edge_spans = list()
 		return FALSE
 	if (!isnull(P["led"]) && !region_edge_mount_valid(P["led"], TRUE))
 		return FALSE
-	return islist(E) && E.len == 3 && !!region_edge_dir(E[1]) && isnum(E[2]) && E[2] >= 0 && E[2] <= 1 && istext(E[3])
+	return islist(E) && (E.len == 3 || (E.len == 4 && isnum(E[4]) && E[4] >= 1 && E[4] <= 8 && E[4] == round(E[4]))) && !!region_edge_dir(E[1]) && isnum(E[2]) && E[2] >= 0 && E[2] <= 1 && istext(E[3])
 
 // Where a walker who crossed an edge comes out: the matching place on the
 // facing edge here, a few steps in. Null when this land has no such edge.
@@ -541,6 +548,11 @@ var/global/list/region_edge_spans = list()
 	var/id = incoming ? P["from"] : E[3]
 	if (!side || !istext(id))
 		return null
+	// Walked over underground: out into the tunnel at that depth, else on the surface.
+	if (E.len == 4)
+		var/turf/deep = region_edge_deep_arrival(side, id, E[2], E[4])
+		if (deep)
+			return deep
 	var/list/dry = region_edge_dry(side, id)
 	if (!dry)
 		return null

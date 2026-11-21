@@ -1004,7 +1004,8 @@
 		entries += list(list("name" = html_encode(L.name), "prefix" = html_encode("[get_language_prefix()][L.key]"), "description" = "[language_standing(L)][html_encode(L.desc)]", "is_default" = (L == current_default)))
 	entries += languages_being_learned()
 	// Families of related languages on this world (daughter.dm), read-only like the rest.
-	return list("languages" = entries, "current_default" = current_default ? html_encode(current_default.name) : "", "families" = language_family_rows())
+	// The viewer's own people and where it came from (peoples.dm), read-only too.
+	return list("languages" = entries, "current_default" = current_default ? html_encode(current_default.name) : "", "families" = language_family_rows(), "people" = people_family_rows())
 
 // "Broken, 31%. " ahead of a language's description; nothing for other mobs.
 /mob/proc/language_standing(datum/language/L)
