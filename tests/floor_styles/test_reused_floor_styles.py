@@ -67,7 +67,7 @@ class ReusedFloorStyles(unittest.TestCase):
         counts = Counter(row[2] for row in catalog)
         by_output = {row[2]: row for row in catalog}
         for table, material, cost, time, gate in (
-            (WOOD, 'wood/soft', '1', '25', 'primitive_construction'),
+            ([typ + '/constructed' for typ in WOOD], 'wood/soft', '1', '25', 'primitive_construction'),
             (STONE, 'stone', '1', '25', 'stone_masonry'),
             (TRIM, 'bamboo', '1', '20', 'primitive_construction'),
         ):
@@ -80,6 +80,23 @@ class ReusedFloorStyles(unittest.TestCase):
                     self.assertIn(f'"{typ}" = "{gate}",', RESEARCH)
         self.assertEqual(counts['/obj/covers/cobblestone'], 1)
         self.assertFalse(any(path.startswith('/obj/effect/floor_decal') for path in counts))
+
+    def test_crafted_patterns_share_art_but_not_legacy_salvage_identity(self):
+        outputs = [row.split(',')[2] for row in RECIPES.splitlines()
+                   if row.startswith('RECIPE: ')]
+        for index, (legacy, state) in enumerate(WOOD.items(), 1):
+            with self.subTest(legacy=legacy):
+                constructed = legacy + '/constructed'
+                self.assertIn(f'icon_state = "{state}"', source_body(legacy))
+                self.assertIn(f'name = "wood floor pattern {index}"', source_body(constructed))
+                self.assertNotRegex(source_body(constructed), r'\b(?:icon|icon_state|amount|parent_type)\s*=')
+                self.assertNotIn(legacy, outputs)
+                self.assertEqual(outputs.count(constructed), 1)
+        self.assertIn('amount = 1', source_body('/obj/covers/wood'))
+        refund = (ROOT / 'code/game/objects/dismantle_refund.dm').read_text()
+        covers = (ROOT / 'code/game/objects/covers.dm').read_text()
+        self.assertIn('row[3] != key', refund)
+        self.assertIn('min(amount, crafted_refund_units(type))', covers)
 
     def test_floor_paths_reference_existing_states_with_expected_directions(self):
         for table, filename in ((WOOD, 'flooring/wood.dmi'),

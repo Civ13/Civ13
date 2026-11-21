@@ -53,4 +53,5 @@ placement, the same materials as their comparable recipes, and existing
 Primitive Construction or Stone Masonry gates. The framed tatami is one mat,
 not a second cover. Lay it from bamboo and use **Rotate Tatami Trim** from
 beside the installed mat to align a directional border. The fully framed mat
-does not need rotation.
+does not need rotation. Wood recipes use distinct construction types with
+the same sprites, so old mapped floors do not acquire new salvage.

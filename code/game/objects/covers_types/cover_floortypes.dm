@@ -155,6 +155,41 @@
 /obj/covers/wood/alt/eleven
 	icon_state = "woodalt11"
 
+// Recipe outputs retain the mapped patterns without giving old mapped or saved
+// covers the salvage of a player-built floor. Refunds key on the exact type.
+/obj/covers/wood/alt/constructed
+	name = "wood floor pattern 1"
+
+/obj/covers/wood/alt/two/constructed
+	name = "wood floor pattern 2"
+
+/obj/covers/wood/alt/three/constructed
+	name = "wood floor pattern 3"
+
+/obj/covers/wood/alt/four/constructed
+	name = "wood floor pattern 4"
+
+/obj/covers/wood/alt/five/constructed
+	name = "wood floor pattern 5"
+
+/obj/covers/wood/alt/six/constructed
+	name = "wood floor pattern 6"
+
+/obj/covers/wood/alt/seven/constructed
+	name = "wood floor pattern 7"
+
+/obj/covers/wood/alt/eight/constructed
+	name = "wood floor pattern 8"
+
+/obj/covers/wood/alt/nine/constructed
+	name = "wood floor pattern 9"
+
+/obj/covers/wood/alt/ten/constructed
+	name = "wood floor pattern 10"
+
+/obj/covers/wood/alt/eleven/constructed
+	name = "wood floor pattern 11"
+
 /obj/covers/wood/stairs
 	name = "wood stairs"
 	icon = 'icons/obj/stairs.dmi'

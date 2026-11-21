@@ -3418,17 +3418,17 @@ RECIPE: /material/stone/,light running cobblestone floor,/obj/covers/cobblestone
 RECIPE: /material/stone/,light crosswise cobblestone floor,/obj/covers/cobblestone/horizontal,1,25,1,1,floors,0,0,0,8,null
 RECIPE: /material/stone/,dark crosswise cobblestone floor,/obj/covers/cobblestone/horizontal/dark,1,25,1,1,floors,0,0,0,8,null
 RECIPE: /material/stone/,mossy old stone floor,/obj/covers/stone/slab/decorative/mossy,1,25,1,1,floors,0,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 1,/obj/covers/wood/alt,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 2,/obj/covers/wood/alt/two,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 3,/obj/covers/wood/alt/three,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 4,/obj/covers/wood/alt/four,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 5,/obj/covers/wood/alt/five,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 6,/obj/covers/wood/alt/six,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 7,/obj/covers/wood/alt/seven,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 8,/obj/covers/wood/alt/eight,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 9,/obj/covers/wood/alt/nine,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 10,/obj/covers/wood/alt/ten,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 11,/obj/covers/wood/alt/eleven,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 1,/obj/covers/wood/alt/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 2,/obj/covers/wood/alt/two/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 3,/obj/covers/wood/alt/three/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 4,/obj/covers/wood/alt/four/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 5,/obj/covers/wood/alt/five/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 6,/obj/covers/wood/alt/six/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 7,/obj/covers/wood/alt/seven/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 8,/obj/covers/wood/alt/eight/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 9,/obj/covers/wood/alt/nine/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 10,/obj/covers/wood/alt/ten/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 11,/obj/covers/wood/alt/eleven/constructed,1,25,1,1,construction,18,0,0,8,null
 RECIPE: /material/bamboo/,edged tatami floor,/obj/covers/tatami/trim,1,20,1,1,construction,0,0,0,8,null
 RECIPE: /material/bamboo/,inside-corner tatami floor,/obj/covers/tatami/trim/angle,1,20,1,1,construction,0,0,0,8,null
 RECIPE: /material/bamboo/,outside-corner tatami floor,/obj/covers/tatami/trim/corner,1,20,1,1,construction,0,0,0,8,null
