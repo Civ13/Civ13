@@ -147,6 +147,20 @@ class Sources(unittest.TestCase):
         for canal in (canal_raft,canal_boat):
             self.assertEqual(s.count(canal),1)
             s=s.replace(canal,'')
+        # Undo only the reviewed raft-ocean change before the legacy checksum.
+        ocean_gate = (
+            '\n/obj/structure/vehicle/raft/proc/can_travel_open_sea()\n\treturn FALSE\n\n'
+            '/obj/structure/vehicle/raft/do_vehicle_check()\n'
+            '\tif (!driver || swamped_refusal())\n\t\treturn FALSE\n'
+        )
+        self.assertEqual(s.count(ocean_gate), 1)
+        s = s.replace(ocean_gate, '/obj/structure/vehicle/raft/do_vehicle_check()\n')
+        live_driver_shape = 'if (istype(DT, /turf/floor/beach/water) || istype(DT, /turf/floor/trench/flooded))'
+        sea_exception = ' && !can_travel_open_sea()'
+        self.assertEqual(s.count(live_driver_shape), 1)
+        self.assertEqual(s.count(sea_exception), 1)
+        s = s.replace(live_driver_shape, live_driver_shape.replace('if (', 'if (driver && ', 1))
+        s = s.replace(sea_exception, '')
         stale='\trelease_stale_ride_glides()\n'
         self.assertEqual(s.count(stale),1)
         s=s.replace(stale,'')

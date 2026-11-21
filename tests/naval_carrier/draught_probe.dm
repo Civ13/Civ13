@@ -158,6 +158,13 @@ var/naval_runtime_error = FALSE
 	var/obj/item/ship_draught/pad = new(yard)
 	var/html = ship_designer_html(pad, null)
 	naval_check(findtext(html, "C13SHIP") && findtext(html, "rowing galley"), "the window carries the drawing tools and the ready-made ships")
+	var/list/pictures = ship_designer_sprite_names()
+	var/pictures_sent = TRUE
+	for (var/picture in pictures)
+		if (!isfile(ship_designer_sprites[picture]))
+			pictures_sent = FALSE
+			world.log << "no picture [picture]"
+	naval_check(pictures.len == ship_designer_sprites.len && pictures_sent, "the window is sent a picture of every floor and fitting, one per facing for those that turn ([pictures.len])")
 	var/mob/living/human/naval_probe/drawer = new(yard)
 	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,1,w,M,1,0", "Little/Auk", TRUE) == "Saved on the sheet." && pad.draughts_name() == "Little Auk", "saving keeps the drawing and its cleaned name on the sheet")
 	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,0,w,T,1,0", "Bad", TRUE) != "Saved on the sheet." && pad.draughts_name() == "Little Auk", "a damaged drawing is refused and the sheet keeps what it had")
@@ -288,9 +295,33 @@ var/naval_runtime_error = FALSE
 	var/obj/structure/bed/chair/wood/rowing_bench/built_bench = locate() in locate(7, 31, 2)
 	naval_check(ways.finished() && !slipway_frame_count(ways), "every piece paid, she is finished and no marker is left")
 	naval_check(built_tiller && built_tiller.type == /obj/structure/hull_tiller && built_bench && built_bench.dir == SOUTH && (locate(/obj/covers/wood_wall/adjustable) in locate(8, 29, 2)) && (locate(/obj/structure/hull_anchor/stone) in locate(9, 30, 2)), "her fittings stand where drawn, the bench turned to face starboard as her bow faces east")
-	naval_check(findtext(ways.status_text(), "finished on the berth") && istext(ways.launch()), "a finished draught waits on the berth ([ways.status_text()])")
+	naval_check(findtext(ways.status_text(), "ready to launch"), "a finished draught is ready to launch ([ways.status_text()])")
+
+	// The launch: she slides east until all of her floats, crew aboard.
+	var/obj/structure/vessel_mast/chock = new(locate(15, 30, 2))
+	var/launched = ways.launch()
+	naval_check(istext(launched) && findtext(launched, "in the way down the ways") && ways.design, "something solid on the ways holds her ([launched])")
+	qdel(chock)
+	built_tiller.loc = null
+	launched = ways.launch()
+	naval_check(istext(launched) && findtext(launched, "helm is gone"), "she will not launch without her tiller ([launched])")
+	built_tiller.loc = locate(6, 30, 2)
+	var/mob/living/human/naval_probe/crew = new(locate(7, 30, 2))
+	launched = ways.launch()
+	var/obj/structure/hull_tiller/afloat = launched
+	naval_check(istype(afloat) && afloat == built_tiller && afloat.loc == locate(21, 30, 2) && afloat.craft && afloat.craft.name == "Tern", "she slides 15 tiles to the first water that floats all of her and is commissioned as the Tern ([istext(launched) ? launched : "launched"])")
+	naval_check(afloat && afloat.craft && afloat.craft.body.tile_count() == 12, "all 12 of her tiles sail")
+	naval_check(crew.loc == locate(22, 30, 2) && built_bench.loc == locate(22, 31, 2) && built_bench.dir == SOUTH && (locate(/obj/covers/steelplating) in locate(24, 29, 2)), "her crew and fittings go with her")
+	naval_check(!hull_floor_in(locate(6, 30, 2)) && !ways.design && !ways.draught_code && !slipway_frame_count(ways), "the berth is left empty and the post clear")
+
+	// Facing along the shore there is no water to launch into.
+	ways.dir = NORTH
+	refusal = ways.draught_refusal(skiff)
+	naval_check(refusal && findtext(refusal, "no open water"), "a berth with no water ahead refuses the draught ([refusal])")
+	ways.dir = EAST
+	ways.lay_draught(skiff)
 	ways.abandon()
-	naval_check(!ways.design && !ways.draught_code && (locate(/obj/structure/hull_tiller) in locate(6, 30, 2)), "giving her up clears the post and leaves what was built")
+	naval_check(!ways.design && !ways.draught_code && !slipway_frame_count(ways), "giving her up clears the post")
 	qdel(skiff)
 
 /proc/slipway_frames_named(obj/structure/slipway/S, text)

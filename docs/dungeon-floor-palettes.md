@@ -38,10 +38,16 @@ landing, under a point of interest, or as a deliberate repeating accent.
 Do not alternate it randomly with unrelated stone. The edge and both corners
 are directional; the field and inset are fixed.
 
-Both new palettes are available to map authors. They do not change map generation,
-physics, doors, or loot, and do not change the existing crafting and firing
-process for clay. A player route for the new terracotta set is separate from art
-and mapper integration.
+Both palettes are available to map authors and do not change map generation,
+physics, doors, or loot.
+
+Players build the terracotta set too. Clay is shaped into unfired terracotta
+tiles (Pottery & Cookware), fired in a kiln into a stack of terracotta tiles,
+and the tiles lay the field, border, corners and inset through normal floor
+placement. Border and corner pieces go down facing south; **Rotate Terracotta
+Border** from beside one turns it. The same tiles lay herringbone brick paving
+(`/obj/covers/brick_paving`, Brickmaking), which is tougher than the tile floor.
+Terracotta is fireproof but takes less damage than cut stone before it breaks.
 
 ## Verification
 

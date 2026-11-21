@@ -74,6 +74,8 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	. = ..()
 	if (magic_repo_id)
 		magic_repo_index[magic_repo_id] = src
+	if (magic_tie_id)
+		magic_tie_index[magic_tie_id] = src // repository_ties.dm
 
 /proc/magic_repo_find(id)
 	if (!istext(id))
@@ -337,7 +339,17 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 		return
 	if (!magic_allowed() || !istext(divine_patron))
 		return
-	var/list/options = list(magic_tie_ready ? "Stop readying a tie" : "Tie myself to the next thing I touch")
+	var/list/options = list()
+	if (magic_tie_ready)
+		options += "Stop readying a tie"
+	else
+		options += "Tie myself to the next thing I touch"
+		if (magic_registered_repositories().len)
+			options += "Tie the next thing I touch to..."
+	var/obj/here = magic_repo_at_hand()
+	if (here)
+		options += "Look over the threads here"
+		options += "Move a thread I made from here"
 	var/list/held = list()
 	for (var/id in magic_registered_repos)
 		var/obj/O = magic_repo_find(id)
@@ -348,10 +360,31 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	switch (pick)
 		if ("Tie myself to the next thing I touch")
 			magic_tie_ready = TRUE
+			magic_tie_mode = "self"
 			to_chat(src, SPAN_NOTICE("You ready yourself. The next thing you touch, you will hold onto."))
+		if ("Tie the next thing I touch to...")
+			var/list/repos = list()
+			for (var/obj/O in magic_registered_repositories())
+				if (O.magic_repo_deity == divine_book_key(divine_patron))
+					repos["[O.name] ([O.magic_repo_id])"] = O.magic_repo_id
+			var/id = repos[player_input(src, "Tie it to which?", "Ties", null, "anything", repos, TRUE)]
+			if (!id)
+				return
+			magic_tie_ready = TRUE
+			magic_tie_mode = "target"
+			magic_tie_repo = id
+			to_chat(src, SPAN_NOTICE("You ready a thread. The next thing you touch, you will bind."))
 		if ("Stop readying a tie")
 			magic_tie_ready = FALSE
+			magic_tie_mode = null
+			magic_tie_repo = null
 			to_chat(src, SPAN_NOTICE("You let the thought go."))
+		if ("Look over the threads here")
+			if (here && !QDELETED(here))
+				magic_tie_review(here) // repository_ties.dm
+		if ("Move a thread I made from here")
+			if (here && !QDELETED(here))
+				magic_tie_move(here) // repository_ties.dm
 		if ("Loosen a tie")
 			var/which = player_input(src, "Loosen which tie?", "Ties", null, "anything", held, TRUE)
 			var/id = held[which]
@@ -363,18 +396,31 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 				O.magic_repo_registrants -= magic_key()
 			to_chat(src, SPAN_NOTICE("You let that tie go."))
 
+// A repository of this character's god in hand or beside them that they are tied to.
+/mob/living/human/proc/magic_repo_at_hand()
+	for (var/obj/O in magic_registered_repositories())
+		if ((O in GetAllContents(4)) || O.Adjacent(src))
+			return O
+	return null
+
 // click.dm: a readied tie catches the next touch, whatever its intent, and the
 // touch still does what it would have done.
 /proc/magic_touch_hook(mob/user, atom/A)
 	var/mob/living/human/H = user
-	if (!istype(H) || !H.magic_tie_ready || !istype(A, /obj))
+	if (!istype(H) || !H.magic_tie_ready || !A)
+		return
+	if (!A.Adjacent(H) && !(A in H.GetAllContents(4)))
+		return
+	if (H.magic_tie_mode == "target")
+		H.magic_tie_ready = FALSE
+		H.magic_tie_mode = null
+		H.magic_tie_target(A) // repository_ties.dm
 		return
 	var/obj/O = A
-	if (!O.magic_repo_id)
-		return
-	if (!O.Adjacent(H) && !(O in H.GetAllContents(4)))
+	if (!istype(O) || !O.magic_repo_id)
 		return
 	H.magic_tie_ready = FALSE
+	H.magic_tie_mode = null
 	H.magic_tie_to(O)
 
 /mob/living/human/proc/magic_tie_to(obj/O)
@@ -427,6 +473,8 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	else
 		verbs -= /mob/living/human/proc/magic_ready_tie
 		magic_tie_ready = FALSE
+		magic_tie_mode = null
+		magic_tie_repo = null
 	if (magic_has_grant())
 		verbs |= /mob/living/human/proc/magic_channel
 	else

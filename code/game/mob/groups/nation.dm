@@ -56,6 +56,7 @@ var/global/list/nation_assembly_tiers = list(
 		return FALSE
 	var/list/result = answer["result"]
 	var/list/clean = list()
+	var/list/old_registry = nation_registry
 	var/list/nations = result["nations"]
 	if (islist(nations))
 		for (var/id in nations)
@@ -77,8 +78,11 @@ var/global/list/nation_assembly_tiers = list(
 			told += R["id"]
 	if (told.len)
 		transfer_bridge.request("/nation/seen", list("ids" = told))
+	nation_government_announce(old_registry)
 	nation_renames_send()
 	nation_assemblies_report()
+	nation_eras_report()
+	nation_census_report()
 	return TRUE
 
 /proc/nations_refresh_due()
@@ -156,6 +160,11 @@ var/global/list/nation_assembly_tiers = list(
 
 /mob/living/human/proc/nation_ask(list/body, faction)
 	body["actor"] = faction_roster_account(src) || ckey
+	// A leader (or a nation's ruler) speaks for the faction; anyone else asks
+	// as a citizen, which only elective governments hear (nation_motions.py).
+	var/nid = nation_of_id(nation_faction_id(faction))
+	if (isnull(body["role"]))
+		body["role"] = map.is_faction_leader(src, faction) || (nid && nation_rules(nid)) ? "leader" : "citizen"
 	if (!nation_send(body))
 		to_chat(src, SPAN_WARNING("The other lands cannot be reached right now. Try again later."))
 		return FALSE
@@ -206,13 +215,26 @@ var/global/list/nation_assembly_tiers = list(
 		id = nation_faction_id(faction)
 		nid = nation_of_id(id)
 		text = nid ? "[faction] is part of [nation_registry[nid]["name"]]." : "[faction] is not part of a nation."
+		if (nid)
+			text += " [nation_government_line(nid)]"
+		var/list/G = nid ? nation_government_of(nid) : null
 		if (map.is_faction_leader(src, faction))
 			if (!nation_home_faction(faction))
 				text += " Its leaders in its own land speak for it among the nations."
 			else if (nid)
-				choices += list("Vote on an application", "Vote for a head", "Vote on a common money", "Secede")
+				choices += list("Government", "Vote on an application")
+				if (G["type"] == "confederation")
+					choices += "Vote for a head"
+				choices += "Vote on a common money"
+				var/list/leaving = nation_registry[nid]["leaving"]
+				choices += islist(leaving) && isnum(leaving[id]) ? "Stay" : "Secede"
 			else
 				choices += list("Found a nation", "Apply to a nation")
+		else if (nid && nation_rules(nid))
+			text += " You rule it as its [G["ruler"]]."
+			choices += list("Government", "Vote on an application", "Vote on a common money")
+		if (nid && G["body"] && nation_home_faction(faction))
+			choices.Insert(2, "Motions and elections")
 	choices += "Cancel"
 	var/pick = WWinput(src, text, "Nation", "Cancel", choices)
 	if (pick == "View nations")
@@ -221,7 +243,11 @@ var/global/list/nation_assembly_tiers = list(
 	if (pick == "Cancel" || !pick)
 		return
 	// The dialog blocks; the faction and leadership must still hold.
-	if (stat || civilization != faction || !map.is_faction_leader(src, faction) || !nation_home_faction(faction) || nation_of_id(id) != nid)
+	if (pick == "Motions and elections")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_motions_menu(faction, id, nid)
+		return
+	if (stat || civilization != faction || !(map.is_faction_leader(src, faction) || nation_rules(nid)) || !nation_home_faction(faction) || nation_of_id(id) != nid)
 		return
 	switch (pick)
 		if ("Found a nation")
@@ -236,6 +262,10 @@ var/global/list/nation_assembly_tiers = list(
 			nation_currency_vote(faction, id, nid)
 		if ("Secede")
 			nation_secede(faction, id, nid)
+		if ("Stay")
+			nation_stay(faction, id, nid)
+		if ("Government")
+			nation_government_menu(faction, id, nid)
 
 /mob/living/human/proc/nation_view()
 	if (!nation_registry.len)
@@ -249,6 +279,7 @@ var/global/list/nation_assembly_tiers = list(
 			members += html_encode(nation_faction_label(f))
 		var/assembly = isnum(N["assembly"]) && N["assembly"] >= 1 && N["assembly"] <= nation_assembly_tiers.len ? ", a [nation_assembly_tiers[N["assembly"]][1]]" : ""
 		lines += "<b>[html_encode(N["name"])]</b>: [jointext(members, ", ")]. Head: [istext(N["head"]) ? html_encode(nation_faction_label(N["head"])) : "none"]. Holds [length(N["members"])]/[N["capacity"]] factions[assembly]."
+		lines += "&nbsp;&nbsp;[nation_government_line(nid)]"
 		if (istext(N["currency"]) && length(N["currency"]))
 			lines += "&nbsp;&nbsp;Common money: that struck by [html_encode(nation_faction_label(N["currency"]))]."
 		if (islist(N["applications"]) && length(N["applications"]))
@@ -296,7 +327,7 @@ var/global/list/nation_assembly_tiers = list(
 	if (!options.len)
 		to_chat(src, SPAN_WARNING("No nations have been founded yet."))
 		return
-	var/pick = WWinput(src, "Apply to join which nation? Its member factions will vote.", "Apply to a Nation", "Cancel", options + "Cancel")
+	var/pick = WWinput(src, "Apply to join which nation? Its member factions vote, or its ruler decides.", "Apply to a Nation", "Cancel", options + "Cancel")
 	var/nid = options[pick]
 	if (!nid || civilization != faction || nation_of_id(id))
 		return
@@ -333,7 +364,9 @@ var/global/list/nation_assembly_tiers = list(
 
 /mob/living/human/proc/nation_secede(faction, id, nid)
 	var/list/N = nation_registry[nid]
-	var/answer = WWinput(src, "Lead [faction] out of [N["name"]]? It cannot apply to rejoin for three days, and a nation left with one faction dissolves.", "Secede", "Cancel", list("Secede", "Cancel"))
+	var/list/G = nation_government_of(nid)
+	var/notice = isnum(G["notice"]) && G["notice"] > 0 ? " As a [lowertext(nation_government_name(nid))], the nation holds you for [round(G["notice"] / 3600)] hours after you give notice." : ""
+	var/answer = WWinput(src, "Lead [faction] out of [N["name"]]?[notice] It cannot apply to rejoin for three days, and a nation left with one faction dissolves.", "Secede", "Cancel", list("Secede", "Cancel"))
 	if (answer != "Secede" || civilization != faction || nation_of_id(id) != nid)
 		return
 	nation_ask(list("op" = "secede", "faction" = id), faction)

@@ -685,6 +685,20 @@
 	slowdown = 0.6
 	health = 50
 
+// A quilted jacket worn under armor, on the uniform's armor slot. It only
+// cushions: blows and some of an arrow's force (docs/armor-families.md).
+/obj/item/clothing/accessory/armor/padded_jack
+	name = "padded jack"
+	desc = "A quilted cloth jacket worn under armor. It softens blows and arrows, but does little against a blade or a point on its own."
+	icon_state = "heavycloth_armor"
+	item_state = "heavycloth_armor"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	armor = list(melee = 13, arrow = 15, gun = FALSE, energy = 10, bomb = 20, bio = 10, rad = FALSE)
+	flags = FALSE
+	value = 20
+	slowdown = 0.1
+	health = 28
+
 /* Medieval Crowns*/
 
 /obj/item/clothing/head/helmet/gold_crown

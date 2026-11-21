@@ -246,11 +246,5 @@
     "inputs": {
       "/obj/item/stack/hay": 4
     }
-  },
-  "/obj/structure/training_course/post": {
-    "tools": [],
-    "inputs": {
-      "/obj/item/stack/material/cloth": 1
-    }
   }
 }

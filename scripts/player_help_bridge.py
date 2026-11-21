@@ -70,10 +70,10 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3997aa497cc19f508e128fc4cfd4488fca4c2a48'
+WIKI_REVIEWED_REVISION = 'f0265b366686949f59499941d992f1b5ba8726f4'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('68f043ddc232b3d7c6043122a858695c3478f66e35c4ea0e2c5d74f032de44cf', 'character skills traits languages'),
+    'guides/Guide_to_Character.md': ('bf0420a8d62a4d72031dee075dac3b69c45040e84322c7005c648389b1cd4e24', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('1e10b1f26c4e2f6d2659b32f0e6b045bb04b2129516382a37479574b9f107bcc', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('de84bad88a540fa643d5cdbd2bf83fddff72206d534158a000aed6e68b4ec937', 'combat fight fighting intent aim shoot melee grenade cover'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('a1dceecdde4f7f2f1c0607e292ab5f91f32651324faa743d38b24f3fb18c2c7f', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('9a9624b8100b78c30e2dba394b9276a1b7c72eab5f875b03c80ca3294c0b9d2c', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Survival.md': ('50341c5c6a632a6cede79031fcec567c320e63e9b5e381a7e79cd1fcd9e4ddd8', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
@@ -119,7 +119,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('eb5fa6ded23f5446aca18e3c82fd1589a670374583d2b95967fede0e75e9e537', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('89b3261f914b10a4e8dfca77527e66dece8b69614ab466bbb62ac642ada1c89c', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('56a33c3e86b252b58df3c72ee3a7c44ca1dc49567b9408e226394b55c68041d9', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -135,7 +135,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('9f24388939799c86a0c28017d695994257a70175480e0b6836907e6e4e68b963', 'guides overview list of guides index'),
+    'guides_overview.md': ('125589450f37d5dd1b0acbaa1a58de5c86863f04fb4a7329e8603b37ea513bfb', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
@@ -769,7 +769,7 @@ TOXIN_SOURCE_SECTIONS = (
      '6617bf5ecc8f8d3a5530534b2b3042724af964338892879bfcab05c174215291'),
     ('code/modules/reagents/Chemistry-Reagents.dm',
      '/datum/reagent/proc/remove_self(', '/datum/reagent/proc/initialize_data(',
-     'e4d3922f5e5644a9ff438a80f730e0b815ed2c557b710aea8a642a12e0cd8884'),
+     '9c0c4936fd7edf28389e77c2fe174077798e806bfbfe3a599cad1062d55084a1'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
      '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),

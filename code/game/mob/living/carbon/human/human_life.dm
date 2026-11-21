@@ -780,6 +780,7 @@
 			silent = FALSE
 			return TRUE
 
+		arcane_critical_check(health <= config.health_threshold_crit) // arcane_enchant.dm
 		//UNCONSCIOUS. NO-ONE IS HOME
 		if ((getOxyLoss() > (species.total_health/2)) || (health <= config.health_threshold_crit))
 			Paralyse(3)

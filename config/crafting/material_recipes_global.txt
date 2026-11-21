@@ -249,6 +249,15 @@ RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largecl
 RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5,50,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
+RECIPE: /material/clay/,unfired terracotta tiles,/obj/item/weapon/clay/floortiles,0.5,50,0,1,none,0,0,0,8,null
+
+// Kiln-fired terracotta tiles (fire the unfired tiles above).
+RECIPE: /material/terracotta/,terracotta floor,/obj/covers/stone/slab/decorative/terracotta,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,terracotta border,/obj/covers/stone/slab/decorative/terracotta/edge,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,inside terracotta corner,/obj/covers/stone/slab/decorative/terracotta/inside,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,outside terracotta corner,/obj/covers/stone/slab/decorative/terracotta/outside,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,patterned terracotta inset,/obj/covers/stone/slab/decorative/terracotta/inset,2,40,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,brick paving,/obj/covers/brick_paving,1,30,1,1,floors,0,0,0,8,null
 
 RECIPE: /material/concrete/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
 RECIPE: /material/concrete/,concrete ramp,/obj/covers/concretefloor/ramp,1,20,1,1,none,103,0,0,8,null
@@ -862,6 +871,7 @@ RECIPE: /material/cloth/,pimp coat,/obj/item/clothing/suit/pimpsuit,6,109,0,1,ja
 //*****************| CLOTH ARMOR |***************************
 
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,8,null
+RECIPE: /material/cloth/,padded jack,/obj/item/clothing/accessory/armor/padded_jack,5,80,0,1,armor,0,20,23,8,null
 
 RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,armor,0,0,38,8,null
 RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,armor,0,0,38,8,null
@@ -3320,11 +3330,9 @@ RECIPE: /material/stone/,heavy lifting stone,/obj/item/weapon/lifting_weight/hea
 RECIPE: /material/stone/,great lifting stone,/obj/item/weapon/lifting_weight/great,10,90,0,1,sports,30,0,0,8,null
 RECIPE: /material/bronze/,bronze hand weights,/obj/item/weapon/lifting_weight/hand_weights,3,80,0,1,sports,30,0,0,8,null
 RECIPE: /material/iron/,iron barbell,/obj/item/weapon/lifting_weight/barbell,12,120,0,1,sports,105,0,0,8,null
-RECIPE: /material/wood/,course start post,/obj/structure/training_course/post,4,80,1,1,sports,30,0,0,8,null
-RECIPE: /material/wood/,course finish post,/obj/structure/training_course/post/finish,3,70,1,1,sports,30,0,0,8,null
-RECIPE: /material/wood/,log hurdle,/obj/structure/training_course/hurdle,3,60,1,1,sports,30,0,0,8,null
-RECIPE: /material/wood/,balance log,/obj/structure/training_course/balance_log,4,60,1,1,sports,30,0,0,8,null
-RECIPE: /material/steel/,steel hurdle,/obj/structure/training_course/hurdle/steel,3,100,1,1,sports,105,0,0,8,null
+RECIPE: /material/rope/,skipping rope,/obj/item/weapon/skipping_rope,2,40,0,1,sports,0,0,0,8,null
+RECIPE: /material/wood/,tread wheel,/obj/structure/treadwheel,8,120,1,1,sports,30,0,0,8,null
+RECIPE: /material/steel/,treadmill,/obj/structure/treadwheel/treadmill,6,150,1,1,sports,105,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null
 RECIPE: /material/electronics/,powered radio program desk,/obj/structure/telecom/station,6,150,1,1,none,105,0,0,8,null

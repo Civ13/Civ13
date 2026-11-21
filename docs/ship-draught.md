@@ -69,6 +69,15 @@ every piece in `ship_draught_pieces` with a facing, a rectangle mode, a
 port/starboard mirror about the middle column, undo, clear, and the ready-made
 draughts in `ship_draught_examples()` (rowing galley, sloop, steel cutter).
 
+Floors and pieces are drawn as their own sprites in the game, on the grid and
+on the tool buttons; a small arrow marks the facing of a piece that turns.
+The pictures are PNGs under `icons/ship_designer/`, cut from the game's DMIs
+by `python3 scripts/build_ship_designer_icons.py` (`--check` reports stale
+ones) and sent to the window with `browse_rsc` as `shipd_*.png`
+(`ship_designer_sprites`). Rerun the script and add the new names to that
+list when a floor or piece is added. A picture that fails to load falls back
+to the flat floor colour or the piece's letter.
+
 The window never reckons anything itself. About half a second after each
 change it sends the drawing as a `C13SHIP` code in parts of 900 characters
 (`ship=begin/part/end`, each part acknowledged like the painting editor); the
@@ -102,3 +111,16 @@ what is already built saves as ordinary objects. Several shipwrights can work
 at once, each fitting the next piece in turn, and a worker keeps going while
 the stack in hand pays (`add_draught_piece()`). Giving her up takes the
 draught off the post and leaves what is built.
+
+## Launching her
+
+`launch_draught()`. Laying a draught out already needs water ahead:
+`draught_landing()` finds the first slide, at most her length plus 12 tiles
+along the post's facing, that puts every berth tile on water with no floor,
+ship or solid thing there and no other floor alongside (she must float free).
+When she is finished, the post offers the launch. The tiles she slides over
+must be clear, a dry dock must be flooded, and her helm must still stand where
+the draught puts it. Her floored tiles are adopted by a temporary built body
+and moved in one slide (`move_to` with `slide_time`), carrying everyone and
+everything aboard; her tiller then commissions her under the draught's name
+with her bow along the ways. The post is cleared.

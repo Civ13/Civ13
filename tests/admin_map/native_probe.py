@@ -1,12 +1,12 @@
-"""Headless admin player map probe (developer evidence, not CI).
+"""Headless admin map probe (developer evidence, not CI).
 
 Builds a temporary copy of civ13.dme (its selected map unchanged) with
-tests/admin_player_map/native_probe.dm appended, compiles it with the pinned
+tests/admin_map/native_probe.dm appended, compiles it with the pinned
 compiler, runs it once in DreamDaemon from a fresh evidence directory and
 checks result.json. No client, no live server files, no ports opened to
 anything but the local daemon. Generated sources are removed afterwards.
 
-    python3 tests/admin_player_map/native_probe.py --byond-bin ~/byond-516.1688/byond/bin --output /fresh/dir
+    python3 tests/admin_map/native_probe.py --byond-bin ~/byond-516.1688/byond/bin --output /fresh/dir
 """
 import argparse
 import json
@@ -19,12 +19,12 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNTIME = re.compile(r"runtime error: (.*)\nproc name: (.*)\n\s*source file: ([^,\n]+),(\d+)")
-REQUIRED_CHECKS = ("permissions", "levels", "blips", "page", "refresh")
+REQUIRED_CHECKS = ("permissions", "levels", "blips", "weather", "page", "refresh")
 
 
 def generate(prefix):
     dme = (ROOT / "civ13.dme").read_text(encoding="utf-8-sig")
-    dme += '\n#include "tests\\admin_player_map\\native_probe.dm"\n'
+    dme += '\n#include "tests\\admin_map\\native_probe.dm"\n'
     path = ROOT / (prefix + ".dme")
     path.write_text(dme, encoding="utf-8")
     return path
@@ -52,7 +52,7 @@ def main():
     if output.exists() and any(output.iterdir()):
         raise SystemExit(f"Evidence directory is not empty: {output}")
     output.mkdir(parents=True, exist_ok=True)
-    prefix = "admin_player_map_probe_" + uuid.uuid4().hex[:8]
+    prefix = "admin_map_probe_" + uuid.uuid4().hex[:8]
     source = generate(prefix)
     created = [source, source.with_suffix(".dmb"), source.with_suffix(".rsc"), source.with_suffix(".int"), source.with_suffix(".lk")]
     try:
@@ -89,7 +89,7 @@ def main():
         result = json.loads((output / "result.json").read_text())
         passed = [row["check"] for row in result.get("checks", []) if row.get("passed")]
         missing = [name for name in REQUIRED_CHECKS if name not in passed]
-        mode_errors = {key: count for key, count in errors.items() if "player_map" in key}
+        mode_errors = {key: count for key, count in errors.items() if "admin_map" in key}
         summary = {"passed": bool(result.get("passed")) and not missing and not mode_errors,
                    "failure": result.get("failure"), "failed_phase": result.get("failed_phase"),
                    "missing_checks": missing, "mode_runtime_errors": mode_errors,
