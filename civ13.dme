@@ -1658,6 +1658,7 @@
 #include "code\modules\persistence\last_save_status.dm"
 #include "code\modules\persistence\restore_contract.dm"
 #include "code\modules\persistence\world_chart.dm"
+#include "code\modules\persistence\world_links.dm"
 #include "code\modules\persistence\world_time_stamps.dm"
 #include "code\modules\persistence\debug_lossy.dm"
 #include "code\modules\persistence\expedition_land.dm"
@@ -1762,6 +1763,7 @@
 #include "code\modules\naval\magnetic_signature.dm"
 #include "code\modules\naval\minesweeping.dm"
 #include "code\modules\naval\naval_mines.dm"
+#include "code\modules\naval\ocean_regions.dm"
 #include "code\modules\naval\open_sea.dm"
 #include "code\modules\naval\open_sea_chart.dm"
 #include "code\modules\naval\open_sea_sites.dm"
@@ -2234,5 +2236,6 @@
 #include "code\modules\divine\repository.dm"
 #include "code\modules\divine\repository_ties.dm"
 #include "code\modules\divine\repository_tiers.dm"
+#include "code\modules\divine\repository_wards.dm"
 // Must stay last: global_init needs every other global initialized first.
 #include "code\global_init_last.dm"

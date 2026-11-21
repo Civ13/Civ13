@@ -158,6 +158,23 @@ var/naval_runtime_error = FALSE
 	var/obj/item/ship_draught/pad = new(yard)
 	var/html = ship_designer_html(pad, null)
 	naval_check(findtext(html, "C13SHIP") && findtext(html, "rowing galley"), "the window carries the drawing tools and the ready-made ships")
+	naval_check(!findtext(html, "@@DATA@@") && findtext(html, "\"PIECES\":") && findtext(html, "Steering and drive") && findtext(html, "\"FLOORS\":"), "the window's palette is built from the draught's own tables")
+	var/every_piece_grouped = TRUE
+	for (var/piece in ship_draught_pieces)
+		if (ship_designer_group(piece) == "Other")
+			every_piece_grouped = FALSE
+			world.log << "no palette group for [piece]"
+	naval_check(every_piece_grouped && ship_designer_group("?") == "Other", "every fitting has a heading in the palette, and an unknown one still shows")
+	var/list/figures = galley_example.summary_data()
+	var/list/galley_drives = figures["drives"]
+	var/list/galley_problems = figures["problems"]
+	naval_check(figures["tiles"] == 27 && figures["max_tiles"] == SHIP_DRAUGHT_MAX_TILES && figures["class"] == "boat" && galley_drives.len == 1 && galley_drives[1][2] == "full ahead" && !galley_problems.len, "the window's figures for the galley are the summary's own")
+	var/datum/ship_draught/bare = new
+	var/list/bare_figures = bare.summary_data()
+	var/list/bare_problems = bare_figures["problems"]
+	var/list/bare_costs = bare_figures["costs"]
+	naval_check(bare_figures["tiles"] == 0 && bare_problems.len == 1 && !bare_costs.len && istext(json_encode(bare_figures)), "a blank sheet still has figures to show")
+	qdel(bare)
 	var/list/pictures = ship_designer_sprite_names()
 	var/pictures_sent = TRUE
 	for (var/picture in pictures)

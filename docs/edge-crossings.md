@@ -10,25 +10,28 @@ hand cart, a bicycle and a carriage go with them (see
 ## The links
 
 Only land links are walked; seas are crossed by ship or plane
-(`continent_layout` in `code/modules/naval/sea_lanes.dm`).
+(`continent_layout`, [world-links.md](world-links.md)).
 
 | From | Edge | To | Edge |
 | --- | --- | --- | --- |
 | northamerica | south (isthmus) | southamerica | north |
-| europe | east | asia | west, northern half |
-| desert | east (Sinai) | asia | west, southern half |
-| desert | south | jungle | north |
+| europe | east | asia | west, northern 55% |
+| africa | east, northern 32% (Sinai) | asia | west, southern 45% |
 
 Gaia is an island and has no walking link. The Bering Strait is sea, and the
 North America map has no land on its west edge, so Asia and North America are
 linked by sea and air only.
 
-## Map metadata
+## Where the links live
+
+The links are in the world links table, `tools/world_links/world_links.json`
+([world-links.md](world-links.md)), keyed by region id. The surface level walked
+is still the map's `edge_crossing_z` (default 1). A fixture outside the earth
+group can set the same shape on its map metadata:
 
 ```dm
 edge_crossings = list("east" = "asia")                      // the whole edge
-edge_crossings = list("west" = list("desert" = list(0, 0.5), "europe" = list(0.5, 1)))
-edge_crossing_z = 2                                         // the surface level, default 1
+edge_crossings = list("west" = list("africa" = list(0, 0.45), "europe" = list(0.45, 1)))
 ```
 
 A side names one region for the whole edge, or a list of region id =
@@ -44,5 +47,5 @@ Every link must be answered on the facing edge of the other map.
 have dry ground, and that the walked level is the map's surface.
 
 Both regions must be in the same shard group (the earth group's ids:
-`europe`, `asia`, `desert`, `jungle`, `northamerica`, `southamerica`). The
+`europe`, `asia`, `africa`, `northamerica`, `southamerica`). The
 far region must be up or asleep, as for any region travel.

@@ -5,6 +5,7 @@
 // hold crosses the sea: the hold, its ladder and its cargo are packed, the
 // rock closes behind her, and she is built again with the hold hollowed out
 // under her, or with its cargo stowed on deck where no ground takes a hold.
+// An engine crosses whole and is coupled to its fuel tank again.
 /world
 	hub = ""
 	hub_password = ""
@@ -197,6 +198,52 @@ var/naval_runtime_error = FALSE
 		naval_check(locate(/obj/item/stack/material/wood) in bow, "the hold's planks are stowed on the deck above it")
 		naval_check(locate(/obj/item/weapon/reagent_containers/glass/barrel) in locate(bow.x, bow.y + 1, 2), "so is the cask")
 		naval_check(!(locate(/obj/structure/multiz) in bow) && istype(locate(bow.x, bow.y, 1), /turf/floor/dirt), "no ladder down to nothing, and the dirt is left alone")
+
+	// ---- An engine crosses with its fuel tank ----
+	for (var/x = 25, x <= 27, x++)
+		for (var/y = 45, y <= 47, y++)
+			hull_lay(x, y)
+	var/obj/structure/engine/internal/diesel/motor = new(locate(25, 46, 2))
+	motor.enginesize = 5000
+	motor.maxpower = initial(motor.maxpower) * 5
+	motor.name = "5000cc [initial(motor.name)]"
+	var/obj/item/weapon/reagent_containers/glass/barrel/tank = new(locate(25, 45, 2))
+	tank.anchored = TRUE
+	tank.reagents.add_reagent("diesel", 200)
+	motor.fueltank = tank
+	motor.on = TRUE
+	var/obj/structure/hull_tiller/tug_tiller = new(locate(26, 46, 2))
+	naval_check(isnull(tug_tiller.commission("Tug", EAST)), "the Tug is commissioned")
+	var/list/tug_packed = sea_crossing_pack(tug_tiller)
+	naval_check(islist(tug_packed), "an engine no longer keeps her in port ([istext(tug_packed) ? tug_packed : "ok"])")
+	var/list/TR = islist(tug_packed) ? tug_packed["record"] : list()
+	naval_check(findtext(json_encode(TR), "\"e\",") && sea_crossing_record_ok(TR), "the engine is an engine entry and the record is valid")
+	var/list/bad_engine = json_decode(json_encode(TR))
+	for (var/list/tile in bad_engine["tiles"])
+		for (var/list/E in tile[3])
+			if (E[1] == "e")
+				E[3] = 5
+	naval_check(!sea_crossing_record_ok(bad_engine), "a fuel tank more than a tile from its engine is refused")
+	sea_crossing_strip(tug_tiller)
+	qdel(tug_tiller)
+	naval_check(QDELETED(motor) && QDELETED(tank), "stripped, her engine and its tank leave the water")
+	var/list/tug_offsets = list()
+	for (var/list/tile in TR["tiles"])
+		tug_offsets += list(list(tile[1], tile[2]))
+	var/turf/tug_at = sea_crossing_anchorage(tug_offsets, list(NORTH))
+	var/obj/structure/hull_tiller/tug = tug_at ? sea_crossing_build(TR, tug_at, "v-3") : null
+	naval_check(tug && tug.craft, "the Tug is built off the north edge")
+	if (tug)
+		var/obj/structure/engine/internal/diesel/new_motor = locate() in locate(tug_at.x - 1, tug_at.y, 2)
+		naval_check(new_motor && new_motor.enginesize == 5000 && new_motor.maxpower == initial(new_motor.maxpower) * 5 && new_motor.name == motor.name, "her engine is the same 5000cc diesel ([new_motor ? "[new_motor.name] [new_motor.maxpower]" : "none"])")
+		naval_check(new_motor && !new_motor.on, "it arrives stopped")
+		var/obj/item/weapon/reagent_containers/glass/barrel/new_tank = new_motor ? new_motor.fueltank : null
+		naval_check(new_tank && new_tank.loc == locate(tug_at.x - 1, tug_at.y - 1, 2) && new_tank.anchored && new_tank.reagents.get_reagent_amount("diesel") == 200, "its tank is coupled again, where it stood, with its diesel")
+		var/found = FALSE
+		for (var/datum/craft_drive/fitted/engine/D in tug.craft.drives)
+			if (D.source == new_motor)
+				found = TRUE
+		naval_check(found, "the engine is one of her drives again")
 
 	// ---- Carts, boats and machines go whole ----
 	var/list/kinds = list(/obj/structure/vehicle/raft, /obj/structure/vehicle/raft/dugout, /obj/structure/vehicle/raft/dugout/outrigger,
