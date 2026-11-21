@@ -185,6 +185,10 @@ SUITES = {
         'paths': ('tests/appearance_genders/', 'code/modules/nano/modules/appearance_changer.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/species/species.dm',
                          'tgui/src/interfaces/Standard.tsx')},
+    'reagent_metabolism_empty': {'files': ('tests/reagent_metabolism/test_empty.py',),
+        'paths': ('tests/reagent_metabolism/',), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Metabolism.dm',
+            'code/modules/reagents/Chemistry-Holder.dm', 'tests/save_movement/source_adapter.py')},
     'chem_dispenser_refill': {'files': ('tests/chem_dispenser_refill/test_refill.py',),
         'paths': ('tests/chem_dispenser_refill/',),
         'shared_paths': ('code/modules/reagents/Chemistry-Machinery.dm',)},
