@@ -14,6 +14,8 @@ HELP = (NAVAL / 'draught_part_help.dm').read_text(encoding='utf-8')
 CRAFT = ROOT / 'code/modules/craft'
 CAR = (CRAFT / 'vehicle_draught.dm').read_text(encoding='utf-8')
 CAR_HELP = (CRAFT / 'vehicle_draught_checks.dm').read_text(encoding='utf-8')
+AIR = (NAVAL / 'air_draught.dm').read_text(encoding='utf-8')
+AIR_HELP = (NAVAL / 'air_draught_checks.dm').read_text(encoding='utf-8')
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='replace')
 
 
@@ -57,9 +59,21 @@ class PartDescriptions(unittest.TestCase):
             with self.subTest(part=key):
                 self.assertIn(key, rows)
 
+    def test_every_airship_sheet_part_is_described(self):
+        rows = book('air_sheet', AIR_HELP)
+        wanted = ['x'] + table_keys(CAR, 'vehicle_draught_engines')
+        for table in ('air_draught_decks', 'air_draught_cells', 'air_draught_parts'):
+            block = AIR.split('/proc/%s()' % table, 1)[1].split('\treturn table', 1)[0]
+            wanted += re.findall(r'^\t\t"(\w+)" = list\(', block, re.M)
+        self.assertGreaterEqual(len(wanted), 23)
+        for key in wanted:
+            with self.subTest(part=key):
+                self.assertIn(key, rows)
+
     def test_descriptions_are_sentences_without_em_dashes(self):
-        for kind in ('ship', 'sub', 'vehicle_sheet'):
-            for key, texts in book(kind, CAR_HELP if kind == 'vehicle_sheet' else None).items():
+        sources = {'vehicle_sheet': CAR_HELP, 'air_sheet': AIR_HELP}
+        for kind in ('ship', 'sub', 'vehicle_sheet', 'air_sheet'):
+            for key, texts in book(kind, sources.get(kind)).items():
                 for text in texts:
                     with self.subTest(kind=kind, part=key):
                         self.assertNotIn('—', text)

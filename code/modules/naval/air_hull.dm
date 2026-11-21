@@ -19,7 +19,7 @@
 // (pedal_airship_combat.dm, airborne_launch_turf).
 // ============================================================
 
-#define AIR_HULL_MAX_TILES 60
+#define AIR_HULL_MAX_TILES AIR_DRAUGHT_MAX_DECK
 // Tiles of deck, or people aboard, one gas cell holds up.
 #define AIR_HULL_CELL_LIFT 12
 // Ground shown around her in full, and a fainter ring beyond.
@@ -35,7 +35,7 @@
 #define AIR_HULL_CREW_HIT_CHANCE 25
 #define AIR_HULL_PATCH_TIME 40
 // Units of gas that fill one cell (naval/gas_works.dm).
-#define AIR_HULL_CELL_GAS 60
+#define AIR_HULL_CELL_GAS AIR_DRAUGHT_CELL_GAS
 // Plastic sheets to rubberise a cloth cell, and skin layers to line one.
 #define AIR_HULL_RUBBER_SHEETS 5
 #define AIR_HULL_SKIN_LAYERS 6
@@ -1270,7 +1270,7 @@ var/global/list/air_hull_crafts = list()
 	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Cast off" : "Hold position")
 	var/datum/craft_body/built/air/AB = craft.body
 	options += AB.landed() ? "Lift off" : "Land"
-	options += list("Refit the deck", "Strike the airship", "Cancel")
+	options += list("Refit the deck", "Draw her lines", "Strike the airship", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
@@ -1303,6 +1303,10 @@ var/global/list/air_hull_crafts = list()
 			if (!craft.order_turn(heading))
 				to_chat(H, SPAN_WARNING("She cannot come about here: [craft.last_refusal]."))
 				return
+			return
+		// A blank sheet of paper in hand becomes her airship sheet (air_draught.dm).
+		if ("Draw her lines")
+			draw_air_lines(H)
 			return
 		if ("Refit the deck")
 			if (!craft.anchored)
