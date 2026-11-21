@@ -273,6 +273,8 @@
 		to_chat(user, "<span class='notice'>[target] is full.</span>")
 		return TRUE
 	var/trans = reagents.trans_to(target, amount_per_transfer_from_this)
+	if (trans)
+		arcane_cleansing_pour(target) // arcane_enchant.dm
 	if(!ishuman(target)) //Bugfix: Humans appearing as containers when using condiments
 		playsound(src,'sound/effects/Liquid_transfer_mono.ogg',50,1)
 		user.visible_message("<span class='notice'>[user] pours the contents of [src] into the [target].</span>",
