@@ -73,12 +73,17 @@ var/probe_bridge_delay = 0
 		sleep(probe_bridge_delay)
 	return probe_bridge_reply
 
-// A departure: the crew member is taken off, carrying what the gate holds.
+// A departure: the crew leave as one party, each carrying what the gate holds for them.
 var/list/probe_departed = list()
-/obj/structure/region_gate/sea_crossing/depart(mob/living/human/H)
-	probe_departed += list(list("who" = H.real_name, "to" = destination, "voyage" = pending ? pending["voyage"] : null, "ship" = pending && pending["ship"] ? TRUE : FALSE))
-	qdel(H)
-	return "departed"
+/obj/structure/region_gate/sea_crossing/depart_party(list/members)
+	var/list/gone = list()
+	for (var/mob/living/human/H in members)
+		var/list/extra = pending ? pending[H] : null
+		probe_departed += list(list("who" = H.real_name, "to" = destination, "voyage" = extra ? extra["voyage"] : null, "ship" = extra && extra["ship"] ? TRUE : FALSE))
+		gone += H
+	for (var/mob/living/human/H in gone)
+		qdel(H)
+	return list("departed" = gone, "stayed" = list())
 
 // ---------------------------------------------------------------- fixture
 

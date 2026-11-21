@@ -46,7 +46,7 @@
 /turf/proc/mining_cinnabar(mob/living/human/H)
 	if (!map || map.ordinal_age < 1)
 		return 0
-	if (!prob(map.cinnabar_rich ? CINNABAR_RICH_CHANCE : CINNABAR_CHANCE))
+	if (!prob((map.cinnabar_rich ? CINNABAR_RICH_CHANCE : CINNABAR_CHANCE) * underground_ore_factor("cinnabar", src))) // underground_ores.dm
 		return 0
 	var/obj/item/stack/ore/mercury/C = new /obj/item/stack/ore/mercury(src)
 	C.amount = 4
