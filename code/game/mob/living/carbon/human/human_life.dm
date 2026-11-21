@@ -245,8 +245,9 @@
 		else if (find_trait("Dwarfism"))
 			food_m *= 0.8
 		food_m *= trait_food_mult()
-		food_m *= home_rest_hunger_mult()
-		water_m *= home_rest_hunger_mult()
+		var/rest_hunger_mult = home_rest_hunger_mult()
+		food_m *= rest_hunger_mult
+		water_m *= rest_hunger_mult
 		if (orc)
 			food_m *= 1.5
 		if (goblin)
