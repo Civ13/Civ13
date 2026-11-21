@@ -540,6 +540,11 @@ SUITES = {
             'code/modules/1713/barriers/snow_walls.dm',
             'code/game/objects/covers.dm',
             'code/modules/multiz/open_space.dm')},
+    'vehicle_offset': {'files': ('tests/vehicle_offset/test_sources.py',),
+        'paths': ('tests/vehicle_offset/',), 'shared_paths': (
+            'civ13.dme', 'code/modules/craft/vehicle_offset.dm',
+            'code/modules/craft/vehicle_offset_ride.dm', 'code/modules/craft/vehicle_offset_frame.dm',
+            'code/modules/craft/vehicle_offset_ship.dm', 'tests/save_movement/source_adapter.py')},
     'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
         'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
