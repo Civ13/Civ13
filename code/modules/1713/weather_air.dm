@@ -158,13 +158,13 @@ var/global/datum/weather_air_grid/weather_air = null
 			var/daily = climate_daily_offset(climate, time_of_day, (snap ? cloud_target : cloud[i]) >= 0.4)
 			if (water[i])
 				daily /= 2
-			var/temp_target = climate_mean_at(climate, season, fraction) + daily - 2 * storm + 6 * heat
+			var/temp_target = climate_mean_at(climate, season, fraction) + daily - 2 * storm + 6 * heat + weather_centres_temperature_at(x, y)
 			// Air over water and under rain is moister; heat dries it.
 			var/rh_target = weather_air_humidity_normal(climate)
 			if (water[i])
 				rh_target += 10
 			rh_target = rh_target + (97 - rh_target) * storm - 20 * heat
-			var/pressure_target = WEATHER_AIR_SEA_LEVEL_HPA - (sky[3] ? 30 : 18) * storm + 10 * heat
+			var/pressure_target = WEATHER_AIR_SEA_LEVEL_HPA - (sky[3] ? 30 : 18) * storm + 10 * heat + weather_centres_pressure_at(x, y)
 			if (snap)
 				temp[i] = temp_target
 				dew[i] = weather_dew_point(temp_target, rh_target)
@@ -180,6 +180,7 @@ var/global/datum/weather_air_grid/weather_air = null
 
 // One weather tick (processes/weather.dm, through weather_systems_step()).
 /proc/weather_air_step()
+	weather_centres_step()
 	if (!weather_air)
 		weather_air = new
 		return

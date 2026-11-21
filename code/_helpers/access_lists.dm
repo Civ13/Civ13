@@ -71,6 +71,12 @@ var/global/list/approved_discord_ids = list()
 		return whitelist_list_ready && (candidate_key in whitelist_list)
 	return FALSE
 
+// The verified soft whitelist (Val, 2026-11-19): TRUE when the account has
+// linked a Discord account (the approved list the Verify Discord verb fills).
+// Fails closed while the list has not been read.
+/proc/account_verified(account)
+	return istext(account) && verified_access_member("approved", ckey(account))
+
 // The Discord IDs of a file that parse_verified_access_text() already accepted
 // as staged_keys. A file that changed in between (different keys) yields none.
 /proc/verified_access_discord_ids(access_text, list/staged_keys)

@@ -10,7 +10,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 sys.path.insert(0, ROOT)
 from tools.transfer_storage.agent import make_server  # noqa: E402
 from tools.transfer_storage.coordinator import Coordinator, call  # noqa: E402
-from tools.transfer_storage.nations import NATION_CAPACITY, SECEDE_COOLDOWN, APPLICATION_SECONDS, Nations  # noqa: E402
+from tools.transfer_storage.nations import (NATION_CAPACITY, SECEDE_COOLDOWN, APPLICATION_SECONDS, GOVERNMENTS,  # noqa: E402
+                                           GOVERNMENT_COOLDOWN, GOVERNMENT_NOTICE, Nations)
 from tools.transfer_storage.region import RegionStore, TransferError  # noqa: E402
 
 A, B, C, D, E = ('civ:alpha:Ash', 'civ:alpha:Birch', 'civ:alpha:Cedar', 'civ:beta:Dune', 'civ:beta:Elm')
@@ -136,6 +137,123 @@ class RegistryTests(unittest.TestCase):
         self.assertIn('not understood', self.ask('alpha', 'rename', B, to='civ:beta:Birch'))
 
 
+class GovernmentTests(unittest.TestCase):
+    """Nation government types (Val GO 2026-11-21, docs/nation-government.md)."""
+
+    def setUp(self):
+        self.db = sqlite3.connect(':memory:', isolation_level=None)
+        self.n = Nations(self.db)
+        self.assertIn('founded', self.ask('alpha', 'found', A, name='Union', **{'with': [B]}))
+        self.nid = self.n.nation_of(A)
+        self.ask('alpha', 'apply', C, nation=self.nid)
+        self.ask('alpha', 'vote', A, applicant=C, yes=True)
+        self.ask('alpha', 'vote', B, applicant=C, yes=True)
+
+    def ask(self, land, op, faction, now=T, actor='leader', **kw):
+        return self.n.decide(land, dict(kw, op=op, actor=actor, faction=faction), now)
+
+    def monarchy(self, faction, now=T):
+        return self.ask('alpha', 'govern', faction, now=now, type='monarchy', person='val', pname='Queen Val', pfaction=A)
+
+    def crown(self):
+        for f in (A, B, C):
+            self.ask('alpha', 'era', f, age=1)
+        self.monarchy(A)
+        self.assertIn('becomes a monarchy', self.monarchy(B))
+        self.n.snapshot(T + GOVERNMENT_NOTICE)
+
+    def gov(self, now=T):
+        return self.n.snapshot(now)[self.nid]['government']
+
+    def test_default_is_confederation_like_today(self):
+        g = self.gov()
+        self.assertEqual((g['type'], g['ruler'], g['pending']), ('confederation', None, None))
+        self.assertEqual(self.n.capacity(self.nid), NATION_CAPACITY[0])
+
+    def test_change_needs_two_thirds_era_and_notice(self):
+        self.assertIn('age it belongs to', self.monarchy(A))
+        for f in (A, B):
+            self.ask('alpha', 'era', f, age=1)
+        self.assertIn('counted', self.monarchy(A))
+        self.assertEqual(self.n.snapshot(T)[self.nid]['government_votes'][A][0], 'monarchy')
+        self.assertIn('becomes a monarchy', self.monarchy(B))
+        self.assertEqual(self.gov()['pending']['type'], 'monarchy')
+        self.assertEqual(self.gov(T + GOVERNMENT_NOTICE - 1)['type'], 'confederation')
+        g = self.gov(T + GOVERNMENT_NOTICE)
+        self.assertEqual((g['type'], g['head_account'], g['head_name']), ('monarchy', 'val', 'Queen Val'))
+        self.assertEqual(self.n.snapshot(T + GOVERNMENT_NOTICE)[self.nid]['head'], A)
+        self.assertEqual(self.n.capacity(self.nid), NATION_CAPACITY[0] + GOVERNMENTS['monarchy']['bonus'])
+
+    def test_ruler_decides_alone_and_cooldown_holds(self):
+        self.crown()
+        later = T + GOVERNMENT_NOTICE + 10
+        self.assertIn('recently', self.ask('alpha', 'govern', A, now=later, actor='val', type='confederation'))
+        later += GOVERNMENT_COOLDOWN
+        self.assertIn('Only the Monarch', self.ask('alpha', 'govern', B, now=later, type='confederation'))
+        self.assertIn('decree', self.ask('alpha', 'govern', A, now=later, actor='val', type='confederation'))
+        self.assertEqual(self.gov(later + GOVERNMENT_NOTICE)['type'], 'confederation')
+
+    def test_ruler_admits_and_sets_money(self):
+        self.crown()
+        now = T + GOVERNMENT_NOTICE
+        self.ask('beta', 'apply', D, nation=self.nid, now=now)
+        self.assertIn('Only the Monarch admits', self.ask('alpha', 'vote', B, now=now, applicant=D, yes=True))
+        self.assertIn('joins', self.ask('alpha', 'vote', A, now=now, actor='val', applicant=D, yes=True))
+        self.assertEqual(self.n.nation_of(D), self.nid)
+        self.assertIn('Only the Monarch chooses', self.ask('alpha', 'currency', B, now=now, issuer=B))
+        self.ask('alpha', 'currency', A, now=now, actor='val', issuer=B)
+        self.assertEqual(self.n.currency(self.nid), B)
+        self.assertIn('set by its government', self.ask('alpha', 'head', B, now=now, candidate=B))
+
+    def test_secession_notice_and_stay(self):
+        self.crown()
+        now = T + GOVERNMENT_NOTICE
+        self.assertIn('48 hours', self.ask('alpha', 'secede', C, now=now))
+        self.assertIn('already leaving', self.ask('alpha', 'secede', C, now=now + 3600))
+        self.assertIn('stays', self.ask('alpha', 'stay', C, now=now + 3600))
+        self.ask('alpha', 'secede', C, now=now + 3600)
+        self.assertIn(C, self.n.snapshot(now + 3600 + GOVERNMENTS['monarchy']['notice'] - 1)[self.nid]['members'])
+        self.assertNotIn(C, self.n.snapshot(now + 3600 + GOVERNMENTS['monarchy']['notice'])[self.nid]['members'])
+
+    def test_ruler_faction_leaving_collapses_the_government(self):
+        self.crown()
+        now = T + GOVERNMENT_NOTICE
+        self.ask('alpha', 'secede', A, now=now)
+        g = self.gov(now + GOVERNMENTS['monarchy']['notice'])
+        self.assertEqual((g['type'], g['head_account']), ('confederation', None))
+        self.assertEqual(self.n.snapshot(now + GOVERNMENTS['monarchy']['notice'])[self.nid]['head'], B)
+
+    def test_proposals_are_validated(self):
+        self.assertIn('not understood', self.ask('alpha', 'govern', A, type='empire'))
+        self.assertIn('not understood', self.ask('alpha', 'govern', A, type='monarchy'))
+        self.assertIn('not understood', self.ask('alpha', 'govern', A, type='theocracy', person='val', pname='Val',
+                                                 pfaction=A))
+        self.assertIn('not understood', self.ask('alpha', 'govern', A, type='monarchy', person='val', pname='<b>',
+                                                 pfaction=A))
+        self.assertIn('citizen of a member', self.ask('alpha', 'govern', A, type='theocracy', person='val', pname='Val',
+                                                      pfaction=D, religion='Sun'))
+
+    def test_rename_follows_the_proposal(self):
+        self.ask('alpha', 'govern', B, type='theocracy', person='val', pname='Val', pfaction=A, religion='Sun')
+        self.ask('alpha', 'rename', A, to='civ:alpha:Oak')
+        self.assertEqual(self.n.snapshot(T)[self.nid]['government_votes'][B][3], 'civ:alpha:Oak')
+        self.ask('alpha', 'govern', 'civ:alpha:Oak', type='theocracy', person='val', pname='Val', pfaction='civ:alpha:Oak',
+                 religion='Sun')
+        g = self.gov(T + GOVERNMENT_NOTICE)
+        self.assertEqual((g['type'], g['religion']), ('theocracy', 'Sun'))
+        self.assertEqual(self.n.snapshot(T + GOVERNMENT_NOTICE)[self.nid]['head'], 'civ:alpha:Oak')
+
+    def test_dictatorship_capacity_is_capped(self):
+        for tier in (3,):
+            self.ask('alpha', 'assembly', A, tier=tier)
+        for f in (A, B, C):
+            self.ask('alpha', 'era', f, age=1)
+        for f in (A, B):
+            self.ask('alpha', 'govern', f, type='dictatorship', person='val', pname='Val', pfaction=A)
+        self.n.snapshot(T + GOVERNMENT_NOTICE)
+        self.assertEqual(self.n.capacity(self.nid), 9)
+
+
 class AgentRoundTripTests(unittest.TestCase):
     TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40}
 
@@ -188,6 +306,14 @@ class AgentRoundTripTests(unittest.TestCase):
             self.stores['beta'].request_nation({'op': 'secede', 'actor': 'val', 'faction': A})
         with self.assertRaises(TransferError):
             self.stores['alpha'].request_nation({'op': 'found', 'actor': 'val', 'faction': A, 'name': '<b>', 'with': [B]})
+
+    def test_currency_and_government_requests_pass_the_agent(self):
+        self.stores['alpha'].request_nation({'op': 'currency', 'actor': 'val', 'faction': A, 'issuer': ''})
+        self.stores['alpha'].request_nation({'op': 'govern', 'actor': 'val', 'faction': A, 'type': 'monarchy',
+                                             'person': 'val', 'pname': 'Val', 'pfaction': A})
+        self.stores['alpha'].request_nation({'op': 'era', 'actor': 'world', 'faction': A, 'age': 2})
+        kinds = [(r['op'], r.get('issuer'), r.get('pname'), r.get('age')) for r in self.stores['alpha'].nations()['pending']]
+        self.assertEqual(kinds, [('currency', '', None, None), ('govern', None, 'Val', None), ('era', None, None, 2)])
 
     def test_lost_answer_is_not_decided_twice(self):
         self.stores['beta'].request_nation({'op': 'found', 'actor': 'val', 'faction': D, 'name': 'Shore', 'with': [E]})

@@ -1831,6 +1831,10 @@ SUITES = {
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
 
+    'ecology_visibility': {'files': ('tests/ecology_spawning/test_visibility.py',),
+        'paths': ('tests/ecology_spawning/test_visibility.py',),
+        'shared_paths': ('code/modules/ecology/ecology_spawning.dm', 'tests/save_movement/source_adapter.py')},
+
     'hostile_patrol_waypoints': {'files': ('tests/hostile_patrol/test_waypoint_selection.py',),
         'paths': ('tests/hostile_patrol/',),
         'shared_paths': ('code/game/mob/living/simple_animal/hostile/humans/human.dm',
@@ -2788,6 +2792,9 @@ SUITES = {
                   'tgui/src/interfaces/IntegratedCircuit/', 'tgui/src/interfaces/WiremodCircuit.tsx'),
         'shared_paths': ('civ13.dme', 'tgui/src/interfaces/index.tsx', 'tgui/src/types.ts',
             'tgui/THIRD_PARTY.md', 'UI/tgui/civ13-tgui.css')},
+    'chat_translation': {'files': ('tests/chat_translation/test_markers.py',),
+        'paths': ('tests/chat_translation/', 'code/game/mob/hear_say.dm', 'interface/chat/chat.html',
+                  'code/modules/persistence/region_ooc.dm', 'docs/chat-translation.md')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

@@ -184,6 +184,12 @@ Leaders use the **Nation** verb (Faction tab):
   days, and a nation left with one faction dissolves. A seceding head passes
   the title to the longest-standing member until a vote.
 
+These are the rules of a **Confederation**, every nation's default
+government. A nation may choose another system of government, which changes
+who heads it, admits members and sets the common money, how much notice a
+seceding faction gives and how many factions it holds: see
+[nation-government.md](nation-government.md).
+
 A request waits with the world's agent (`/nation/request`) until the
 coordinator's next pass; its outcome comes back with `/homes` and the world
 tells the leader on its next read of `/nations` (kept 7 days). Examining a
