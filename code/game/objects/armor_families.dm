@@ -300,3 +300,44 @@ var/global/list/armor_family_multipliers = list(
 /obj/item/clothing/shoes/medieval/knight
 	armor_family = ARMOR_FAMILY_PLATE
 	armor_tier = ARMOR_TIER_IRON
+
+// Weapon roles: how hard a hit wears the armor that takes it. Hatchets
+// bite deep; other edged and pointed hits wear a little; a blow wears
+// ARMOR_BLUNT_WEAR times as much, so maces and clubs beat armor down.
+/proc/armor_hit_wear(obj/item/source, kind)
+	if (!source)
+		return 0
+	var/wear = 0.8
+	if (is_tool(source, TOOL_HATCHET))
+		wear = 8
+	else if (istype(source, /obj/item/weapon/melee) && kind != HIT_BLUNT)
+		wear = 0
+	if (kind == HIT_BLUNT)
+		wear *= ARMOR_BLUNT_WEAR
+	return wear
+
+// A thrust slips between rings and lames: mail and lamellar on the struck
+// part give a pierce hit ARMOR_GAP_PENETRATION extra penetration.
+/mob/living/human/armor_gap_penetration(def_zone, attack_flag)
+	if (attack_flag != HIT_PIERCE || !def_zone)
+		return 0
+	var/obj/item/organ/external/affecting = isorgan(def_zone) ? def_zone : get_organ(def_zone)
+	if (!affecting)
+		return 0
+	for (var/obj/item/clothing/C in list(head, wear_mask, wear_suit, w_uniform, gloves, shoes))
+		if (!(C.body_parts_covered & affecting.body_part))
+			continue
+		if (C.armor_family == ARMOR_FAMILY_MAIL || C.armor_family == ARMOR_FAMILY_LAMELLAR)
+			return ARMOR_GAP_PENETRATION
+	return 0
+
+// A blow that armor fully stops still bruises the body under it.
+/mob/living/human/proc/armor_bruise(obj/item/I, effective_force, blocked, hit_zone)
+	if (blocked < 2 || !I || !(effective_force > 0) || I.damtype != BRUTE || I.get_hit_kind() != HIT_BLUNT)
+		return FALSE
+	var/obj/item/organ/external/affecting = get_organ(hit_zone)
+	if (!affecting)
+		return FALSE
+	apply_damage(effective_force * ARMOR_BRUISE_SHARE, BRUTE, hit_zone, 0, used_weapon = I)
+	to_chat(src, "<span class='warning'>The blow bruises your [affecting.name] through your armor.</span>")
+	return TRUE
