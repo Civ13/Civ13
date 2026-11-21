@@ -84,6 +84,7 @@ var/global/list/nation_government_info = list(
 		if (!islist(was))
 			continue
 		nation_revolt_announce(nid, was)
+		nation_offices_announce(nid, was)
 		var/list/G = nation_government_of(nid)
 		var/list/OG = islist(was["government"]) ? was["government"] : list("type" = "confederation")
 		var/text = null
@@ -272,6 +273,10 @@ var/global/list/nation_government_info = list(
 			var/list/P = subject
 			if (islist(P) && P.len == 5 && islist(nation_government_info[P[1]]))
 				return "Become a [lowertext(nation_government_info[P[1]][1])][length(P[3]) ? " under [P[3]]" : ""]"
+		if ("office")
+			var/list/O = subject
+			if (islist(O) && O.len == 4)
+				return "Confirm [O[3]] as [nation_office_title(O[1])]"
 		if ("election")
 			return "Elect the head of the nation"
 	return "A motion"
@@ -496,7 +501,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 
 // Whether this citizen at the assembly pauses the hold.
 /proc/nation_hold_opposes(nid, kind, mob/living/human/H)
-	return kind == "claim" || !nation_revolt_signed(nid, H.nation_account())
+	return kind == "claim" || !nation_revolt_signed(nid, H.nation_account()) || nation_office_of(nid, H.nation_account()) == "marshal"
 
 /proc/nation_hold_tick(nid)
 	var/list/C = nation_assembly_holds[nid]
@@ -669,5 +674,105 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	if (civilization != faction || nation_of_id(id) != nid)
 		return
 	nation_ask(list("op" = "stay", "faction" = id), faction)
+
+// --- Offices of state (nation_offices.py) -------------------------------------------
+
+#define NATION_OFFICES list("treasurer", "chancellor", "marshal")
+
+/proc/nation_office_title(office)
+	switch (office)
+		if ("treasurer")
+			return "Treasurer"
+		if ("chancellor")
+			return "Chancellor"
+		if ("marshal")
+			return "Marshal"
+	return "officer"
+
+/proc/nation_office_power(office)
+	switch (office)
+		if ("treasurer")
+			return "chooses the common money in the ruler's place, or brings one to a vote"
+		if ("chancellor")
+			return "admits or refuses applications in the ruler's place"
+		if ("marshal")
+			return "guards the nation's assemblies: standing at one pauses any claim or revolt held there"
+	return ""
+
+/proc/nation_offices_of(nid)
+	var/list/N = nation_registry[nid]
+	return islist(N) && islist(N["offices"]) ? N["offices"] : list()
+
+// The office this account holds in the nation, or null.
+/proc/nation_office_of(nid, account)
+	if (!istext(account))
+		return null
+	var/list/O = nation_offices_of(nid)
+	for (var/office in O)
+		var/list/H = O[office]
+		if (islist(H) && H["account"] == account)
+			return office
+	return null
+
+/proc/nation_offices_line(nid)
+	var/list/O = nation_offices_of(nid)
+	var/list/parts = list()
+	for (var/office in NATION_OFFICES)
+		var/list/H = O[office]
+		if (islist(H) && istext(H["name"]))
+			parts += "[nation_office_title(office)] [html_encode(H["name"])]"
+	return parts.len ? "Offices: [jointext(parts, ", ")]." : null
+
+/proc/nation_offices_announce(nid, list/was)
+	var/list/old = islist(was) && islist(was["offices"]) ? was["offices"] : list()
+	var/list/O = nation_offices_of(nid)
+	for (var/office in NATION_OFFICES)
+		var/list/H = O[office]
+		var/list/OH = old[office]
+		if (islist(H) && (!islist(OH) || OH["account"] != H["account"]))
+			nation_tell_citizens(nid, "[H["name"]] is now [nation_office_title(office)] of [nation_registry[nid]["name"]].")
+
+// The Offices of state prompt: see the officers; the head appoints and
+// dismisses, a holder resigns. Sleeps (prompts).
+/mob/living/human/proc/nation_offices_menu(faction, id, nid)
+	var/list/G = nation_government_of(nid)
+	var/list/O = nation_offices_of(nid)
+	var/list/lines = list("<b>Offices of state of [html_encode(nation_registry[nid]["name"])]</b>")
+	for (var/office in NATION_OFFICES)
+		var/list/H = O[office]
+		lines += "<b>[nation_office_title(office)]</b>: [islist(H) ? html_encode(H["name"]) : "empty"]. The [lowertext(nation_office_title(office))] [nation_office_power(office)]."
+	lines += G["body"] ? "The [G["ruler"]] appoints officers and the [G["body"] == "referendum" ? "citizens confirm" : "[G["body"]] confirms"] them by a majority. The [G["ruler"]] may dismiss an officer at any time." : "The [G["ruler"]] appoints and dismisses officers alone."
+	to_chat(src, jointext(lines, "<br>"))
+	var/account = nation_account()
+	var/mine = nation_office_of(nid, account)
+	var/list/choices = list()
+	if (nation_heads(nid))
+		choices += list("Appoint an officer", "Dismiss an officer")
+	if (mine)
+		choices += "Resign as [nation_office_title(mine)]"
+	if (!choices.len)
+		return
+	var/pick = WWinput(src, "Offices of state", "Offices of state", "Cancel", choices + "Cancel")
+	if (!pick || pick == "Cancel" || civilization != faction || nation_of_id(id) != nid)
+		return
+	if (pick == "Resign as [nation_office_title(mine)]")
+		nation_ask(list("op" = "dismiss", "faction" = id, "role" = "citizen", "office" = mine), faction)
+		return
+	var/list/offices = list()
+	for (var/office in NATION_OFFICES)
+		offices[nation_office_title(office)] = office
+	var/office = offices[WWinput(src, "Which office?", "Offices of state", "Cancel", offices + "Cancel")]
+	if (!office || !nation_heads(nid))
+		return
+	if (pick == "Dismiss an officer")
+		nation_ask(list("op" = "dismiss", "faction" = id, "role" = "citizen", "office" = office), faction)
+		return
+	var/mob/living/human/H = nation_government_pick_head(nid, "monarchy", nation_office_title(office))
+	if (!H || H == src || civilization != faction || !nation_heads(nid))
+		return
+	nation_ask(list("op" = "appoint", "faction" = id, "role" = "citizen", "office" = office, "person" = H.nation_account(), \
+		"pname" = copytext(H.real_name, 1, 65), "pfaction" = nation_faction_id(H.civilization)), faction)
+
+#undef NATION_OFFICES
 
 #undef GOVERNMENT_TYPES

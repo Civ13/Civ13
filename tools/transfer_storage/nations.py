@@ -38,11 +38,12 @@ import time
 from tools.transfer_storage.nation_motions import CITIZENS_MAX, WEALTH_MAX, NationMotions
 from tools.transfer_storage.nation_succession import NationSuccession
 from tools.transfer_storage.nation_revolt import NationRevolt
+from tools.transfer_storage.nation_offices import OFFICES, NationOffices
 from tools.transfer_storage.nation_staff import FROZEN_OPS, STAFF_ACTS, STAFF_REASON_MAX, NationStaff
 from tools.transfer_storage.region import account_key_valid, faction_id_valid
 
 NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency', 'govern', 'stay', 'era', 'ballot',
-              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow', 'staff')
+              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow', 'staff', 'appoint', 'dismiss')
 NATION_NAME_MAX = 40
 # Member factions allowed by assembly tier: none, meeting ground, assembly
 # hall, parliament.
@@ -128,6 +129,11 @@ def nation_request_valid(r):
         return False
     if op == 'govern':
         return government_proposal_valid(r)
+    if op == 'appoint':
+        return r.get('office') in OFFICES and account_key_valid(r.get('person')) and \
+            text_valid(r.get('pname'), PERSON_NAME_MAX) and faction_id_valid(r.get('pfaction'))
+    if op == 'dismiss':
+        return r.get('office') in OFFICES
     if op == 'revolt':
         return government_proposal_valid(r) and text_valid(r.get('sname'), PERSON_NAME_MAX)
     if op == 'sign':
@@ -181,7 +187,7 @@ def faction_land(faction):
     return faction[4:].partition(':')[0]
 
 
-class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
+class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, NationOffices):
     def __init__(self, db):
         self.db = db
         db.execute('''CREATE TABLE IF NOT EXISTS nation(
@@ -216,6 +222,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
         self._succession_tables()
         self._revolt_tables()
         self._staff_tables()
+        self._office_tables()
         db.execute("CREATE TABLE IF NOT EXISTS nation_seq(id INTEGER PRIMARY KEY CHECK (id = 1), next INTEGER NOT NULL)")
         db.execute('INSERT OR IGNORE INTO nation_seq VALUES (1, 1)')
 
@@ -298,6 +305,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
                 'leaving': dict(self.db.execute('SELECT faction, at FROM nation_leaving WHERE nation = ?', (nid,))),
                 'motions': self.motions_snapshot(nid), 'term_ends': self.term_ends(nid),
                 'revolt': self.revolt_snapshot(nid), 'frozen': self.frozen(nid), 'staff_log': self.staff_log(nid),
+                'offices': self.offices(nid),
                 'census': {f: list(self.census(f)) for f in self.members(nid)},
                 'eras': dict(self.db.execute('''SELECT e.faction, e.age FROM nation_era e
                     JOIN nation_member m ON m.faction = e.faction WHERE m.nation = ?''', (nid,)))}
@@ -336,6 +344,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
         self.succession_due(int(now))
         self.motions_due(int(now))
         self.revolts_due(int(now))
+        self.offices_due()
 
     # -- deciding --------------------------------------------------------------
 
@@ -392,6 +401,13 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
             return self.faith(nation, r, now)
         if op == 'claim':
             return self.claim(nation, r, now)
+        if op == 'appoint':
+            return self.appoint(nation, r, now)
+        if op == 'dismiss':
+            return self.dismiss(nation, r, now)
+        done = self.office_acts(nation, r, now)
+        if done:
+            return done
         if op == 'revolt':
             return self.open_revolt(nation, r, government_choice(r), now)
         if op == 'sign':
@@ -560,6 +576,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
                 c[3] = new
                 self.db.execute('UPDATE nation_government SET pending = ? WHERE nation = ?', (json.dumps(c), nation))
         self.revolt_rename(old, new)
+        self.offices_rename(old, new)
         return None
 
     def _secede(self, faction, nation, now):
@@ -596,6 +613,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
             self.db.execute('DELETE FROM nation_seen WHERE nation = ?', (nation,))
             self.drop_revolt(nation)
             self.staff_dissolved(nation)
+            self.clear_offices(nation)
             self.db.execute('DELETE FROM nation_revolt_cooldown WHERE nation = ?', (nation,))
             for (mid,) in self.db.execute('SELECT id FROM nation_motion WHERE nation = ?', (nation,)).fetchall():
                 self.close_motion(mid)
@@ -691,6 +709,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
             self.db.execute('INSERT INTO nation_term VALUES (?, ?)', (nation, now + GOVERNMENTS[kind]['term'] * DAY))
         self.db.execute('DELETE FROM nation_successor WHERE nation = ?', (nation,))
         self.db.execute('DELETE FROM nation_seen WHERE nation = ?', (nation,))
+        self.clear_offices(nation)  # a new government appoints its own
         if person:
             self.db.execute('INSERT INTO nation_seen VALUES (?, ?, ?)', (nation, person, now))
 
@@ -705,6 +724,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff):
         self.db.execute('DELETE FROM nation_term WHERE nation = ?', (nation,))
         self.db.execute('DELETE FROM nation_successor WHERE nation = ?', (nation,))
         self.db.execute('DELETE FROM nation_seen WHERE nation = ?', (nation,))
+        self.clear_offices(nation)
 
     def _ruler_admits(self, actor, ruler, nation, applicant, yes, now):
         title = GOVERNMENTS[self.government(nation)['type']]['ruler']

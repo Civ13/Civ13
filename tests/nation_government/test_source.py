@@ -61,7 +61,7 @@ class NationGovernmentSource(unittest.TestCase):
         menu = proc_text(read('code/game/mob/groups/nation.dm'), '/mob/living/human/proc/nation_menu(')
         self.assertIn('"Government"', menu)
         self.assertIn('if (G["type"] == "confederation")\n\t\t\t\t\tchoices += "Vote for a head"', menu)
-        self.assertIn('!(map.is_faction_leader(src, faction) || nation_rules(nid))', menu)
+        self.assertIn('!(map.is_faction_leader(src, faction) || nation_rules(nid) || nation_office_of(nid, nation_account()))', menu)
         self.assertIn('nation_government_menu(faction, id, nid)', menu)
         self.assertIn('"Stay"', menu)
 
@@ -146,6 +146,18 @@ class NationGovernmentSource(unittest.TestCase):
         self.assertIn('/datum/admins/proc/nation_staff_panel,', read('code/modules/admin/admin_verbs.dm'))
         self.assertIn('#include "code\\modules\\admin\\nation_staff.dm"', read('civ13.dme'))
         self.assertIn("request['op'] != 'staff'", read('tools/transfer_storage/region.py'))
+
+    def test_offices_menu_marshal_and_powers(self):
+        menu = proc_text(self.text, '/mob/living/human/proc/nation_offices_menu(')
+        self.assertIn('if (nation_heads(nid))', menu)
+        self.assertIn('"op" = "appoint"', menu)
+        self.assertIn('"op" = "dismiss"', menu)
+        self.assertIn('nation_office_of(nid, H.nation_account()) == "marshal"',
+                      proc_text(self.text, '/proc/nation_hold_opposes('))
+        nation = read('code/game/mob/groups/nation.dm')
+        self.assertIn('choices += "Offices of state"', nation)
+        self.assertIn('nation_rules(nid) || nation_office_of(nid, nation_account())', nation)
+        self.assertIn("'office') if k in body}", read('tools/transfer_storage/region.py'))
 
     def test_head_presence_and_faith_are_reported(self):
         report = proc_text(self.text, '/proc/nation_succession_report(')

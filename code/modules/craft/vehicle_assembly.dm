@@ -229,6 +229,10 @@
 	if (loose_movers)
 		lines += "[loose_movers] wheel\s or track\s not on a corner frame will be left out."
 	lines += turret_lines()
+	// What would make it stall, starve or go dark (vehicle_checks.dm).
+	var/datum/design_report/R = check_design()
+	lines += R.chat_lines()
+	qdel(R)
 	return jointext(lines, "<br>")
 
 // What each turret would still need once the things on its tile are fitted.

@@ -75,6 +75,7 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 		magic_repo_index[magic_repo_id] = src
 	if (magic_tie_id)
 		magic_tie_index[magic_tie_id] = src // repository_ties.dm
+	arcane_ward_loaded() // arcane_ward.dm
 
 /proc/magic_repo_find(id)
 	if (!istext(id))

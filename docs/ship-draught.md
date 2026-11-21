@@ -14,8 +14,11 @@ Code: `code/modules/naval/ship_draught.dm`. Limits: `code/__defines/naval.dm`.
 
 - floor: `ship_draught_floors` (`w` plank floor, `s` steel floor);
 - piece: `ship_draught_pieces` (tiller, steering oar, mast, rowing bench,
-  killick, iron anchor, hand bilge pump, plank wall, door, window, crate, bed)
-  or null;
+  killick, iron anchor, hand bilge pump, plank wall, door, window, crate, bed,
+  steam bilge pump, sump pump, steam engine, wooden cannon, cannon, torpedo
+  tube, steel window, steel door) or null. Every piece is something a built
+  hull takes aboard and works afloat; a row's `fires` flag marks a gun and
+  `drive = "engine"` an engine;
 - upper deck: TRUE when the tile carries deck on the level above.
 
 ## Checks, cost and speed
@@ -23,7 +26,11 @@ Code: `code/modules/naval/ship_draught.dm`. Limits: `code/__defines/naval.dm`.
 `problems()` makes the same checks a tiller makes when she is commissioned:
 floors joined edge to edge, one helm, at most `SHIP_DRAUGHT_MAX_TILES` tiles of
 hull and `SHIP_DRAUGHT_MAX_DECK` tiles of deck in all. `buildable()` is TRUE
-when there are none.
+when there are none. These are the errors of her design checks
+(`check_design()`, [design-checks.md](design-checks.md)), which also warn of
+what she can be built with but will not work well: no drive, no pump, no or
+too small an anchor, ballast, guns pointing across her deck, fittings crew
+cannot reach.
 
 `costs()` adds up the hand recipe of every floor and piece; a tile of upper
 deck costs a floor, and each side in `gunwale_sides()` costs a gunwale (2 wood,
@@ -34,8 +41,9 @@ or 2 steel for a bulwark on steel floor; boats and ships only, see
 `load()`, `mass()`, `sail_step()`, `oar_step()`, `best_step()` and
 `wants_ballast()` use the figures afloat: each piece weighs its `hull_load()`
 (the probe checks every piece), burden and ballast are hull_load.dm's, and
-pushes are `CRAFT_SAIL_THRUST` (a mast on a reach) and `CRAFT_OAR_THRUST` (a
-manned bench). The estimate is for an empty ship; cargo, crew and bilge water
+pushes are `CRAFT_SAIL_THRUST` (a mast on a reach), `CRAFT_OAR_THRUST` (a
+manned bench) and an engine's `maxpower` with every fire lit (`engine_push()`,
+`engine_step()`). The estimate is for an empty ship; cargo, crew and bilge water
 make her slower.
 
 ## Codes and the sheet
