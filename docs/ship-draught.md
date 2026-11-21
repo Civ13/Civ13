@@ -63,28 +63,55 @@ Probe: `tests/naval_carrier/draught_probe.dm`
 recipe (1 wood, paper & printing, Papermaking, beside the blank map). Hold it
 with a pen, pencil or pigment in either hand and choose **Draw on the sheet**.
 
-The window draws the sheet as a 40x40 grid, bow up, with a line down the
-middle column. Tools: plank and steel floors, erase, deck above on and off,
-every piece in `ship_draught_pieces` with a facing, a rectangle mode, a
-port/starboard mirror about the middle column, undo, clear, and the ready-made
-draughts in `ship_draught_examples()` (rowing galley, sloop, steel cutter).
+The window (1060x780, the brown and gold of Character Setup) is one page,
+`ship_designer_page()`, and one block of JSON, so its palette is built from
+`ship_draught_floors` and `ship_draught_pieces`:
 
-Floors and pieces are drawn as their own sprites in the game, on the grid and
-on the tool buttons; a small arrow marks the facing of a piece that turns.
-The pictures are PNGs under `icons/ship_designer/`, cut from the game's DMIs
-by `python3 scripts/build_ship_designer_icons.py` (`--check` reports stale
-ones) and sent to the window with `browse_rsc` as `shipd_*.png`
-(`ship_designer_sprites`). Rerun the script and add the new names to that
-list when a floor or piece is added. A picture that fails to load falls back
-to the flat floor colour or the piece's letter.
+- `PIECES`: `[key, name, turns, palette group, helm]`. The group is the
+  heading a piece is drawn under (`ship_designer_groups`; a piece in none goes
+  under "Other"). A helm cannot be drag-painted.
+- `FLOORS`: `[key, name]`.
+
+The sheet is a parchment view onto the 40x40 grid, bow up, with BOW, STERN,
+PORT and STARBOARD on its edges and a dashed line down the middle column.
+**Fit ship** shows her at up to full sprite size (32 px a tile), **Whole
+sheet** all forty tiles; the wheel and the + and - buttons zoom, the middle
+button drags the sheet. A click is turned into a tile from the canvas's own
+rectangle and the view, never from a fixed tile size, so the drawing lands
+under the pointer however the window is sized.
+
+Tools: every floor, deck above (right-click takes it off), erase, every piece
+with a facing (the arrows or R), freehand or box, a port/starboard mirror
+about the middle column, undo and redo (Ctrl+Z, Ctrl+Y), clear, and the
+ready-made draughts in `ship_draught_examples()` (rowing galley, sloop, steel
+cutter). The tile under the pointer shows a ghost of what a click will lay,
+mirrored when the mirror is on, and a line under the sheet names what is on
+it. The hull is edged in ink and a deck above is hatched in gold.
+
+Floors and pieces are drawn as pictures on the grid and on the palette; a
+gold arrow marks the facing of a piece that turns. The pictures are PNGs
+under `icons/ship_designer/`, made by
+`python3 scripts/build_ship_designer_icons.py` (`--check` reports stale ones)
+and sent to the window with `browse_rsc` as `shipd_*.png`
+(`ship_designer_sprites`). Most are cut from the game's DMIs; a fitting that
+stands on a floor gets a one-pixel ink outline so it reads on planks and
+steel alike. The ship mast and the steering oar are plan views placed pixel
+by pixel in that script, because their game sprites say nothing at one tile.
+Rerun the script and add the new names to the list when a floor or piece is
+added. A picture that fails to load falls back to the flat floor colour or
+the piece's letter.
 
 The window never reckons anything itself. About half a second after each
 change it sends the drawing as a `C13SHIP` code in parts of 900 characters
 (`ship=begin/part/end`, each part acknowledged like the painting editor); the
 server parses it with `ship_draught_from_code()` and answers with
-`summary_text()` (`shipStats`). Summaries are limited to one per 0.3 s per
-sheet. **Save to the sheet** stores the drawing (finished or not) on the item.
-The server re-checks the drawer is holding the sheet and a pen on every part.
+`summary_data()` as JSON (`shipStats`): the same figures as `summary_text()`,
+which the **Her figures** panel lays out as size against the tile cap, decks,
+cost, speed, ballast and a green or orange note on whether she can be built.
+Summaries are limited to one per 0.3 s per sheet. **Save to the sheet**
+stores the drawing (finished or not) on the item and answers `shipSaved`,
+which clears the window's "Unsaved changes" mark. The server re-checks the
+drawer is holding the sheet and a pen on every part.
 
 ## Building on the slipway
 

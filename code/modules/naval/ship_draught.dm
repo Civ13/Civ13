@@ -301,6 +301,38 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		lines += "As drawn she can be built and commissioned."
 	return jointext(lines, "<br>")
 
+// The same summary as fields, for the designer window to lay out:
+// what summary_text() says, nothing reckoned twice.
+/datum/ship_draught/proc/summary_data()
+	var/upper = upper_tiles()
+	var/masts = piece_count("M")
+	var/benches = piece_count("R")
+	var/list/cost_parts = list()
+	var/list/drives = list()
+	if (cells.len)
+		var/list/C = costs()
+		for (var/material in C)
+			cost_parts += "[C[material]] [material]"
+		if (masts)
+			drives += list(list("Sail", ship_draught_step_name(sail_step())))
+		if (benches)
+			drives += list(list("Oars", ship_draught_step_name(oar_step())))
+		if (masts && benches)
+			drives += list(list("Both", ship_draught_step_name(best_step())))
+	return list(
+		"name" = name,
+		"tiles" = cells.len,
+		"max_tiles" = SHIP_DRAUGHT_MAX_TILES,
+		"upper" = upper,
+		"max_deck" = SHIP_DRAUGHT_MAX_DECK,
+		"class" = size_class_name(),
+		"costs" = cost_parts,
+		"drives" = drives,
+		"masts" = masts,
+		"ballast" = cells.len ? wants_ballast() : 0,
+		"problems" = problems(),
+	)
+
 // ---- Design codes ----
 
 /datum/ship_draught/proc/to_code()
