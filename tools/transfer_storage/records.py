@@ -462,6 +462,65 @@ def region_status(region_dirs):
     return status
 
 
+SLOT_COSTS = {2: 100, 3: 200, 4: 300}  # character_slots.dm character_slot_cost
+
+
+def account_summary(db, ckey, revoked=None):
+    """Lifetime points and character slots of one account, read the way the game
+    reads them (accolades.dm accolade_state, character_slots.dm character_slot_state):
+    a claim and a staff grant of one accolade pay once, spent points stay spent, the
+    latest switch is the slot played, and each slot's latest name is its character."""
+    revoked = revocations(db) if revoked is None else revoked
+    claimed, removed, ready = {}, set(), set()
+    unlocked, locked, names = {}, set(), {}
+    spent, active, active_at = 0, 1, -1
+    for row in _rows(db, 'WHERE ckey = ?', (ckey,)):
+        body, gone = row['body'], row['id'] in revoked
+        if not isinstance(body, dict):
+            continue
+        kind, at = row['kind'], unix_int(row['at']) or 0
+        if kind == 'accolade_met' and not gone and isinstance(body.get('accolade'), str):
+            ready.add(body['accolade'])
+        elif kind == 'accolade' and isinstance(body.get('accolade'), str):
+            if gone:
+                removed.add(body['accolade'])
+            elif body['accolade'] not in claimed:
+                points = body.get('points')
+                claimed[body['accolade']] = max(0, int(points)) if isinstance(points, (int, float)) and not isinstance(points, bool) else 0
+        slot = body.get('slot')
+        if not isinstance(slot, int) or isinstance(slot, bool) or not 1 <= slot <= 4:
+            continue
+        if kind == 'character_slot' and slot >= 2:
+            points = body.get('points')
+            spent += max(0, int(points)) if isinstance(points, (int, float)) and not isinstance(points, bool) else 0
+            if gone:
+                locked.add(slot)
+            else:
+                unlocked[slot] = row
+        elif kind == 'character_switch' and not gone and at >= active_at:
+            active, active_at = slot, at
+        elif kind == 'character_named' and not gone and isinstance(body.get('name'), str):
+            if at >= names.get(slot, ('', -1))[1]:
+                names[slot] = (body['name'][:45], at)
+    earned = sum(claimed.values())
+    slots = []
+    for slot in range(1, 5):
+        if slot in locked:
+            state = 'locked by staff'
+        elif slot == 1 or slot in unlocked:
+            state = 'open'
+        else:
+            state = 'not bought (%d points)' % SLOT_COSTS[slot]
+        slots.append({'slot': slot, 'state': state, 'played': slot == active, 'name': names.get(slot, (None,))[0]})
+    lines = ['Lifetime points: %d earned, %d spent, %d to spend. Accolades claimed: %d%s.' % (
+        earned, spent, max(0, earned - spent), len(claimed),
+        ', %d ready to claim' % len(ready - set(claimed) - removed) if ready - set(claimed) - removed else '')]
+    lines.append('Characters: ' + '; '.join('%d %s%s%s' % (s['slot'], s['state'], ' (played)' if s['played'] else '',
+                                                         ' - ' + s['name'] if s['name'] else '') for s in slots))
+    return {'points': earned, 'spent': spent, 'balance': max(0, earned - spent), 'claimed': sorted(claimed),
+            'slots': slots, 'text': '\n'.join(lines)}
+
+
 def report(db, now, ckey=None, search=None, limit=200):
     """The Player records window: a summary of the whole store, every record about one
     ckey, or the records whose ckey or text holds search. Answers data and text."""
@@ -470,10 +529,12 @@ def report(db, now, ckey=None, search=None, limit=200):
     lines = []
     if ckey:
         records = player_file(db, ckey, revoked)['records']
+        account = account_summary(db, ckey, revoked)
         lines.append('%s: %d records' % (ckey, len(records)))
+        lines.append(account['text'])
         for row in records:
             lines.append(('[removed] ' if row.get('revoked') else '') + _describe(row))
-        return {'ckey': ckey, 'records': records[-limit:], 'text': '\n'.join(lines)}
+        return {'ckey': ckey, 'records': records[-limit:], 'account': account, 'text': '\n'.join(lines)}
     if search:
         needle = search.lower()
         found = []

@@ -85,13 +85,20 @@ class ServerTranslation(unittest.TestCase):
         self.assertIn('#include "code\\modules\\chat\\chat_translate.dm"', dme)
         self.assertIn('chat_translator.handle_topic(src, href_list)', CLIENT_PROCS)
         self.assertIn('chat_translator.announce(client)', CHAT_DM)
-        for key in ('"chat_translate_url"', '"chat_translate_model"'):
-            self.assertIn(key, CONFIG)
+        self.assertIn('"chat_translate_url"', CONFIG)
+        self.assertNotIn('chat_translate_model', CONFIG)
 
     def test_off_unless_configured(self):
         enabled = section(SERVER, '/datum/chat_translator/proc/enabled()', '\n\n')
         self.assertIn('config.chat_translate_url', enabled)
-        self.assertIn('config.chat_translate_model', enabled)
+
+    def test_edge_service_not_ollama(self):
+        # Val, 2026-11-21: translate through Edge's on-device translator, not Ollama.
+        self.assertNotIn('/api/chat', SERVER)
+        self.assertIn('"[url]/translate"', SERVER)
+        service = (ROOT / 'tools/edge-translator/edge_translator.js').read_text(encoding='utf-8')
+        self.assertIn("ignoreDefaultArgs: ['--disable-component-update']", service)
+        self.assertIn("listen(opts.port, '127.0.0.1'", service)
 
     def test_text_is_never_logged_or_saved(self):
         for line in SERVER.splitlines():
