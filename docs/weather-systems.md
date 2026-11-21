@@ -35,7 +35,7 @@ Everything that asks about the weather asks for a tile:
 | `weather_look_at(atom)` | what is falling: `""`, `rain1` to `rain3`, `monsoon`, `snow1`, `snow2`, `snow_storm`, `sandstorm` |
 | `weather_intensity_at(atom)` | 0 in clear weather, 1 to 3 otherwise |
 | `weather_heat_at(atom)` | TRUE under a heat system |
-| `weather_wind_at(atom)` | wind strength 0 to 4, raised under a storm |
+| `weather_wind_at(atom)` | wind strength 0 to 4 from the local wind ([weather-wind.md](weather-wind.md)), raised under a storm |
 | `weather_anywhere()` | cheap gate: any storm or pinned zone weather at all |
 
 Do not read `area.weather` or `area.icon_state` for gameplay: an area is a
@@ -190,12 +190,12 @@ coordinates and accepts diagonal vectors for future use. Storms and sailing use
 the same wind-from heading parser, which accepts all eight compass headings and
 falls back to West. Storms use the opposite direction as a grid step (both axes
 step on a diagonal), not a normalized speed vector. Gameplay and the admin wind
-selector still choose only cardinal winds. Scheduled arrival timing, veering,
-cardinal sailing and vane art are unchanged. The weather probe includes cardinal
-parity and diagonal near-corner boundary checks.
+selector now choose all eight headings ([weather-wind.md](weather-wind.md)), and
+storms and centres drift along a unit vector so a diagonal wind is no faster.
+The weather probe includes cardinal parity and diagonal near-corner boundary
+checks.
 
 ## Not yet done
 
-Moisture gained over water and lost over high ground, naturally selecting all
-eight wind directions, lightning that starts fires (and poles that draw it
+Moisture gained over water and lost over high ground, lightning that starts fires (and poles that draw it
 away), and rip tides.

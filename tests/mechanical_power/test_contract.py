@@ -124,7 +124,7 @@ class MechanicalPower(unittest.TestCase):
         wind = proc_body(SOURCE, BASE + '/windmill/idle_reason()')
         self.assertIn('A.location != AREA_OUTSIDE', wind)
         self.assertIn('if (!wind_speed())', wind)
-        self.assertIn('map.windspeedvar', SOURCE)
+        self.assertIn('weather_wind_at(src)', proc_body(SOURCE, BASE + '/windmill/proc/wind_speed()'))
 
     def test_machines_and_hoists_take_their_time_from_the_drive(self):
         uses = {

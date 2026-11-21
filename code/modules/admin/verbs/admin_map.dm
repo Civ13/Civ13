@@ -159,8 +159,8 @@ var/global/datum/admin_map_controller/admin_maps = new
 		if (!key)
 			viewers -= key
 
-// b = markers, c = players per level, s = weather systems, w = wind, a = the
-// air grid, pc = pressure centres (weather_fronts.dm), who = the viewer sees names, edit = the viewer may change the weather.
+// b = markers, c = players per level, s = weather systems, w = the map's wind,
+// a = the air grid with each cell's wind (weather_wind.dm), pc = pressure centres (weather_fronts.dm), who = the viewer sees names, edit = the viewer may change the weather.
 /datum/admin_map_controller/proc/update_json(client/C, z)
 	var/named = C ? admin_map_sees_players(C) : TRUE
 	var/list/wind = weather_wind_vector()
@@ -324,6 +324,7 @@ var/global/datum/admin_map_controller/admin_maps = new
 	html += "<label><input type='checkbox' id='on' onclick='draw()'>NPCs</label>"
 	html += "<label><input type='checkbox' id='lw' checked onclick='draw()'>Weather</label>"
 	html += "<label><input type='checkbox' id='lg' checked onclick='draw()'>Grid</label>"
+	html += "<label><input type='checkbox' id='lwf' onclick='draw()'>Wind</label>"
 	html += "</span><span>Air <select id='lay' onchange='LAY=this.value;draw()'><option value=''>off</option><option value='t'>temperature</option><option value='h'>humidity</option><option value='p'>pressure</option><option value='c'>cloud</option></select></span>"
 	html += "<span class='dim'>North is up. Refreshes every [AMAP_REFRESH / 10] seconds.</span></div>"
 	html += "<div id='wrap'><div><canvas id='m' width='[base[2] * scale]' height='[base[3] * scale]'></canvas>"
@@ -395,7 +396,11 @@ return 'rgba(235,235,235,'+(0.05+0.55*v/100)+')';}
 function air(){if(!LAY||!D.a)return;var A=D.a,cols=A[0],rows=A[1],cs=A[2],f={t:3,h:4,p:5,c:6}[LAY],vals=A[f];
 for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var v=vals[r*cols+c];g.fillStyle=airfill(v);var x0=px(c*cs+1),x1=px(c*cs+cs+1),y0=py(r*cs+cs+1),y1=py(r*cs+1);g.fillRect(x0,y0,x1-x0,y1-y0);}}
 function airtip(tx,ty){if(!D.a)return null;var A=D.a,c=Math.max(0,Math.min(A[0]-1,Math.floor((tx-1)/A[2]))),r=Math.max(0,Math.min(A[1]-1,Math.floor((ty-1)/A[2]))),i=r*A[0]+c;
-return 'Air here: '+A[3][i]+' C, '+A[4][i]+'% humidity, '+A[5][i]+' hPa, '+A[6][i]+'% cloud';}
+var t='Air here: '+A[3][i]+' C, '+A[4][i]+'% humidity, '+A[5][i]+' hPa, '+A[6][i]+'% cloud';
+if(A[7])t+=', wind '+Math.round(Math.sqrt(A[7][i]*A[7][i]+A[8][i]*A[8][i]))+' m/s';return t;}
+function winds(){if(!D.a||!D.a[7])return;var A=D.a,cols=A[0],rows=A[1],cs=A[2];
+for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var i=r*cols+c,e=A[7][i],n=A[8][i],s=Math.sqrt(e*e+n*n);if(s<0.5)continue;
+arrow(px(c*cs+cs/2+1),py(r*cs+cs/2+1),e,n,Math.min(cs*K*0.45,6+s*1.5),s>=14?'#ff7060':(s>=8?'#ffd060':'#e8f4ff'));}}
 function tip(p,x,y){var t=airtip(x,y);if(t)line(p,t);}
 function mark(b){var x=px(b[0]),y=py(b[1]),r=Math.max(3,Math.round(K*0.9)),c=sideCol(b[3]),st=b[2];
 if(st=='p'){g.fillStyle='#000';g.fillRect(x-3,y-3,6,6);g.fillStyle='#f0d81c';g.fillRect(x-2,y-2,4,4);return;}
@@ -406,7 +411,7 @@ if(st=='n')r=Math.max(2,r-1);if(st=='y')r+=1;
 g.fillStyle='#000';g.fillRect(x-r-1,y-r-1,r*2+2,r*2+2);g.fillStyle=st=='d'?'#8a8a8a':(st=='y'?'#ffffff':c);g.fillRect(x-r,y-r,r*2,r*2);
 if(st=='s'){g.fillStyle='#000';g.fillRect(x-r/2,y-r/2,r,r);}
 if(st=='n'){g.fillStyle='rgba(0,0,0,0.45)';g.fillRect(x-r,y-r,r*2,r*2);}}
-function draw(){g.drawImage(bg,0,0);air();if(on('lg'))grid();if(on('lw'))weather();
+function draw(){g.drawImage(bg,0,0);air();if(on('lg'))grid();if(on('lw'))weather();if(on('lwf'))winds();
 var v=vis(),i,sel=null;for(i=0;i<v.length;i++){mark(v[i]);if(SEL&&v[i][6]==SEL)sel=v[i];}
 if(sel){var r=Math.max(9,K*2.5);g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc(px(sel[0]),py(sel[1]),r,0,7);g.stroke();}
 if(AT){g.strokeStyle='#fff';g.lineWidth=1;g.beginPath();g.moveTo(px(AT[0])-8,py(AT[1]));g.lineTo(px(AT[0])+8,py(AT[1]));g.moveTo(px(AT[0]),py(AT[1])-8);g.lineTo(px(AT[0]),py(AT[1])+8);g.stroke();}
