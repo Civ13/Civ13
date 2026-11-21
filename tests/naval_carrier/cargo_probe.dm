@@ -8,7 +8,8 @@
 // An engine crosses whole and is coupled to its fuel tank again. A ship with
 // an upper deck crosses: her roofs, their upper faces and what stands up there
 // are packed and built again, or stowed on deck where no open air takes them.
-// A canoe or motorboat crosses with the outboard clamped inside her.
+// A canoe or motorboat crosses with the outboard clamped inside her, and a
+// car parked on deck crosses whole as a garage keeps it.
 /world
 	hub = ""
 	hub_password = ""
@@ -380,6 +381,98 @@ var/naval_runtime_error = FALSE
 	var/obj/structure/closet/crate/engine_crate = new(slip)
 	new /obj/structure/engine/internal/diesel(engine_crate)
 	naval_check(istext(sea_crossing_cargo_entry(engine_crate)), "an engine shut in a crate is not a part of her, and stays")
+
+	// ---- A car parked on deck crosses whole ----
+	if (!research_nodes.len)
+		build_research_tree()
+	var/obj/structure/car_workshop/shop = new(locate(5, 30, 2))
+	shop.stock = list("steel" = 60, "glass" = 10, "cloth" = 10, "cable" = 10, "wheels" = 4)
+	var/obj/structure/vehicleparts/axis/land_car = shop.complete_assembly("SMC Falcon")
+	qdel(shop)
+	naval_check(istype(land_car) && land_car.keyed_vehicle_id, "the workshop builds a keyed car ashore")
+	if (istype(land_car))
+		var/obj/structure/engine/internal/land_engine = land_car.engine
+		var/car_fuel = land_engine.fuels[1]
+		land_engine.fueltank.reagents.add_reagent(car_fuel, 30, safety = TRUE)
+		var/car_reg = land_car.reg_number
+		var/car_id = land_car.keyed_vehicle_id
+		var/car_parts = land_car.components.len
+		// A 7 x 7 hull, her tiller in a corner, the car driven aboard in the middle.
+		for (var/x = 28, x <= 34, x++)
+			for (var/y = 20, y <= 26, y++)
+				hull_lay(x, y)
+		var/datum/extraction_vehicle_codec/drive = new
+		drive.ignore_ground = TRUE
+		var/list/drive_record = drive.encode(land_car)
+		var/obj/structure/vehicleparts/axis/car = drive_record ? sea_crossing_vehicle_decode(drive_record, locate(31, 23, 2)) : null
+		if (car)
+			for (var/obj/PO in vehicle_storage_objects(land_car.components | list(land_car)))
+				qdel(PO)
+		naval_check(istype(car) && car.keyed_vehicle_id == car_id, "the car is parked on her deck")
+		var/obj/structure/hull_tiller/c_tiller = new(locate(28, 20, 2))
+		naval_check(isnull(c_tiller.commission("Ferry", EAST)), "the Ferry is commissioned with the car aboard")
+		if (istype(car))
+			var/obj/item/weapon/crowbar/under = new(get_turf(car.components[1]))
+			var/under_refusal = sea_crossing_pack(c_tiller)
+			naval_check(istext(under_refusal) && findtext(under_refusal, "cannot be carried"), "something loose on the car keeps her in port ([under_refusal])")
+			qdel(under)
+			car.engine.on = TRUE
+			var/running = sea_crossing_pack(c_tiller)
+			naval_check(istext(running) && findtext(running, "engine off"), "so does a running engine ([running])")
+			car.engine.on = FALSE
+			var/list/c_packed = sea_crossing_pack(c_tiller)
+			naval_check(islist(c_packed), "with the car stopped she packs ([istext(c_packed) ? c_packed : "ok"])")
+			var/list/CR = islist(c_packed) ? c_packed["record"] : list()
+			naval_check(length(CR["vehicles"]) == 1 && sea_crossing_record_ok(CR), "the record holds the car and is valid")
+			naval_check(!findtext(json_encode(CR["tiles"]), "vehicleparts"), "no part of the car is packed twice as deck cargo")
+			var/saved_parts = TRUE
+			for (var/obj/PO in vehicle_storage_objects(car.components))
+				if (!PO.should_save)
+					saved_parts = FALSE
+			naval_check(saved_parts, "packing leaves every part of the car saveable")
+			var/list/c_bad = json_decode(json_encode(CR))
+			var/list/bad_car = c_bad["vehicles"][1]
+			bad_car[1] = 99
+			naval_check(!sea_crossing_record_ok(c_bad), "a car parked far off her deck is refused")
+			sea_crossing_strip(c_tiller)
+			qdel(c_tiller)
+			var/car_left = 0
+			for (var/x = 28, x <= 34, x++)
+				for (var/y = 20, y <= 26, y++)
+					car_left += count_in(locate(x, y, 2), /obj/structure) + count_in(locate(x, y, 2), /obj/item)
+			naval_check(!car_left && QDELETED(car), "stripped, nothing of the car is left on the water ([car_left])")
+			var/list/c_offsets = list()
+			for (var/list/tile in CR["tiles"])
+				c_offsets += list(list(tile[1], tile[2]))
+			var/turf/c_at = sea_crossing_anchorage(c_offsets, list(SOUTH, WEST))
+			var/obj/structure/hull_tiller/ferry = c_at ? sea_crossing_build(CR, c_at, "v-6") : null
+			naval_check(ferry && ferry.craft, "the Ferry is built again")
+			if (ferry)
+				var/obj/structure/vehicleparts/axis/new_car = null
+				for (var/obj/structure/vehicleparts/axis/A in vehicle_storage_objects(ferry.craft.body.aboard()))
+					new_car = A
+				if (!new_car)
+					for (var/turf/T in ferry.craft.body.cells())
+						for (var/obj/structure/vehicleparts/frame/F in T)
+							if (F.axis)
+								new_car = F.axis
+				naval_check(new_car && new_car.reg_number == car_reg && new_car.keyed_vehicle_id == car_id && new_car.components.len == car_parts, "the car is on her deck with its plate, key and every part ([new_car ? new_car.components.len : 0] of [car_parts])")
+				naval_check(new_car && new_car.engine && !new_car.engine.on && new_car.engine.fueltank && new_car.engine.fueltank.reagents.get_reagent_amount(car_fuel) == 30, "its engine is stopped and its tank still holds the fuel")
+				naval_check(new_car && get_turf(new_car) == locate(c_at.x + 3, c_at.y + 3, 2), "it is parked where it stood")
+				var/c_saved = !!new_car
+				for (var/obj/PO in vehicle_storage_objects(new_car ? new_car.components : list()))
+					if (!PO.should_save)
+						c_saved = FALSE
+				naval_check(c_saved && new_car && new_car.should_save, "and saves with the world")
+				var/datum/craft_body/built/FB = ferry.body()
+				var/turf/FO = FB.origin()
+				var/moved = FB.move_to(FO.x, FO.y + 1, EAST)
+				var/turf/car_turf = new_car ? get_turf(new_car) : null
+				naval_check(moved && car_turf && car_turf.y == c_at.y + 4, "she sails on with the car aboard ([FB.last_refusal])")
+
+	// ---- No anchorage beside another hull ----
+	hull_lay(36, 56)
+	naval_check(!sea_crossing_fits(list(list(0, 0)), 37, 56, 2) && sea_crossing_fits(list(list(0, 0)), 38, 56, 2), "a ship is never built against another ship's floor, which would join the two")
 
 	// ---- Carts, boats and machines go whole ----
 	var/list/kinds = list(/obj/structure/vehicle/raft, /obj/structure/vehicle/raft/dugout, /obj/structure/vehicle/raft/dugout/outrigger,
