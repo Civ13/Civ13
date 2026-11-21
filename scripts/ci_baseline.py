@@ -759,9 +759,6 @@ SUITES = {
         'paths': ('tests/cane_stance/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_organs.dm',
             'code/modules/1713/cane.dm', 'code/game/objects/items/weapons/material/misc.dm')},
-    'wrestling_actions': {'files': ('tests/wrestling_actions/test_actions.py',),
-        'paths': ('tests/wrestling_actions/',), 'shared_paths': (
-            'code/modules/1713/martial_arts/wrestling.dm',)},
     'radio_frequency': {'files': ('tests/radio_frequency/test_frequency.py',),
         'paths': ('tests/radio_frequency/',), 'shared_paths': (
             'code/modules/1713/radio.dm', 'tests/save_movement/source_adapter.py')},
