@@ -2963,6 +2963,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/vehicleparts/frame/ship" = "wagons_ships",
 		"/obj/structure/vehicleparts/frame/ship/steel" = "wagons_ships",
 		"/obj/structure/vehicleparts/movement/sail" = "wagons_ships",
+		"/obj/structure/vehicleparts/movement/sail/crows_nest" = "wagons_ships",
 		"/obj/structure/vehicleparts/shipwheel" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/blue/bport0/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
