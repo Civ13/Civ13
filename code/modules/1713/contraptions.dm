@@ -117,9 +117,10 @@
 
 // Burns the fuel used since it was last asked.
 /obj/structure/workshop_machine/mover/steam_engine/proc/burn()
-	if (last_burn && fuel > 0)
-		fuel = max(0, fuel - (world.time - last_burn) / 600)
+	var/minutes = last_burn ? (world.time - last_burn) / 600 : 0
 	last_burn = world.time
+	if (minutes > 0 && fuel > 0)
+		fuel = max(0, fuel - minutes)
 
 /obj/structure/workshop_machine/mover/steam_engine/idle_reason()
 	burn()
