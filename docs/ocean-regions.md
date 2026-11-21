@@ -50,8 +50,37 @@ edge. Each has an inset in the Atlantic: a box of breakers whose four sides lead
 to that land's four edges. Ship crossings into and out of insets come with the
 ship edge crossing work.
 
+## Sailing over an edge
+
+`code/modules/naval/ship_edge_crossing.dm`. A commissioned ship within four
+tiles of a map edge that leads somewhere (a sail or `both` link in the world
+links table) gets "Sail over the horizon" at her tiller. She must have a mast
+or a running engine and two crew awake aboard, and pass every check a crossing
+already makes (load, landfall rest, no upper deck). She then crosses
+(`cross()` in `ship_crossing.dm`) with the arrival side and the fraction along
+the stretch in the first crew member's payload (`sea_edge`). The far side
+builds her on the facing edge at the matching place in its stretch, searching
+outward along it and inward from it for free deep water
+(`sea_edge_anchorage()`).
+
+Island lands: a ship off any edge of Gaia or Greenland comes out beside that
+side of the island's box in the Atlantic, and a ship in the Atlantic lying
+against a box comes out on the island's edge on that side.
+
+The whole crew leave as one party: `depart_party()` in `region_travel.dm`
+sends every crew member's payload in one escrow. The transfer agent keeps one
+transfer in flight per land, so crew sent one after another waited on each
+other and could be left behind. A party is capped at `REGION_TRAVEL_PARTY_MAX`
+(1,000,000 bytes as sent, under the agent's 1 MiB request limit); whoever
+would go past it stays and is told so.
+
+All of this waits for the group option `edge_travel_oceans` (group JSON,
+written into each region's `shard_region.json` by `shard_group.py`); it is off
+by default.
+
 ## Not yet
 
 These maps are not in any live group until the host step that adds the seas.
-Ships crossing edges, sites near ships (islets, reefs, wrecks) and straits
-come in later PRs of the ocean regions plan.
+The east-west wrap of the Arctic and Southern oceans, sites near ships
+(islets, reefs, wrecks) and straits come in later PRs of the ocean regions
+plan.

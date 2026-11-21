@@ -835,6 +835,11 @@ var/global/list/ship_draught_decks = list(
 
 /obj/item/ship_draught/examine(mob/user, distance)
 	..()
+	var/datum/vehicle_draught/car = vehicle_draught()
+	if (car)
+		to_chat(user, car.summary_text())
+		qdel(car)
+		return
 	var/datum/sub_draught/sub = sub_draught()
 	if (sub)
 		to_chat(user, sub.summary_text())
@@ -853,17 +858,25 @@ var/global/list/ship_draught_decks = list(
 		sub_sheet_menu(H, sub)
 		qdel(sub)
 		return
+	var/datum/vehicle_draught/car = vehicle_draught()
+	if (car)
+		vehicle_sheet_menu(H, car)
+		qdel(car)
+		return
 	var/datum/ship_draught/D = draught()
 	var/list/options = list("Draw on the sheet", "Paste a design code", "Cancel")
 	if (D)
 		options.Insert(2, "Copy her design code")
 	else
 		options.Insert(2, "Draw a submarine on the sheet")
+		options.Insert(3, "Draw a vehicle on the sheet")
 	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank. Hold a pen or pencil to draw a ship on it.", name, "Cancel", options)
 	if (choice == "Draw on the sheet")
 		open_designer(H)
 	else if (choice == "Draw a submarine on the sheet" && !draught_code)
 		open_sub_designer(H)
+	else if (choice == "Draw a vehicle on the sheet" && !draught_code)
+		open_vehicle_designer(H)
 	else if (choice == "Copy her design code" && D)
 		design_code_show(H, "Ship's draught: [D.name]", draught_code, "Paste it into any ship's draught to draw the same ship.")
 	else if (choice == "Paste a design code")

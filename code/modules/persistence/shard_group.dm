@@ -68,6 +68,9 @@ var/global/datum/shard_group/shard_group = new
 	var/travel_save_seconds = 60
 	// A resetting raid world (region_raid_reset.dm): minutes between resets, 0 = never.
 	var/reset_minutes = 0
+	// Ships sail over linked map edges (naval/ship_edge_crossing.dm). Off until
+	// the host turns it on for the group, with the oceans running.
+	var/edge_travel_oceans = FALSE
 	var/saving_loop = FALSE
 	// host:port of the host's doorman (scripts/gaia-host/doorman.py), which knows
 	// which regions are asleep. Null when the host runs none. A sleeping peer is
@@ -136,6 +139,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("only a RAID region can reset")
 		reset_minutes = round(settings["reset_minutes"])
 	doorman = null
+	edge_travel_oceans = settings["edge_travel_oceans"] == TRUE || settings["edge_travel_oceans"] == 1
 	if(!isnull(settings["doorman"]))
 		if(!shard_address_valid(settings["doorman"]))
 			return refuse("doorman must be a host:port address")

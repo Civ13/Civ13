@@ -150,7 +150,7 @@ var/list/home_comfort_categories = list(
 
 // Whether a floor tile is covered by something laid down on purpose.
 /proc/home_floor_covered(turf/T)
-	if (istype(T, /turf/floor/carpet) || istype(T, /turf/floor/wood) || woven_rug_covers(T))
+	if (istype(T, /turf/floor/carpet) || istype(T, /turf/floor/wood) || woven_rug_covers(T) || pelt_rug_covers(T))
 		return TRUE
 	for (var/obj/covers/C in T)
 		if (!C.wall)

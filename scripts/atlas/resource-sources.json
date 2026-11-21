@@ -16756,6 +16756,143 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Tap a pine for resin",
+      "file": "code/modules/1713/resin.dm",
+      "line": 119,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [],
+      "outputs": [
+        "resin"
+      ],
+      "tools": [
+        "/obj/structure/wild/tree/live_tree/pine",
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Hold a knife in one hand and use an open container on a living pine.",
+        "The container catches 10 units of resin. The pine weeps again after 20 minutes."
+      ],
+      "conditions": "Any living pine on any land.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cook resin into lumps",
+      "file": "code/modules/1713/resin.dm",
+      "line": 151,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "resin"
+      ],
+      "outputs": [
+        "/material/resin",
+        "turpentine"
+      ],
+      "tools": [
+        "/obj/structure/brazier"
+      ],
+      "steps": [
+        "In help intent, use a container holding at least 10 units of resin on a lit brazier, hearth or stove.",
+        "The resin sets into one resin lump and leaves 2 units of turpentine in the container."
+      ],
+      "conditions": "Needs a lit fire and 10 resin per lump.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Pick mulberry leaves",
+      "file": "code/modules/1713/silk.dm",
+      "line": 55,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [],
+      "outputs": [
+        "/obj/item/stack/material/leaf/mulberry",
+        "/obj/item/silkworm_eggs"
+      ],
+      "tools": [
+        "/obj/structure/wild/tree/live_tree"
+      ],
+      "steps": [
+        "In grab intent, use an empty hand on a living broadleaf tree where mulberries grow.",
+        "You pick 2 mulberry leaves; about one picking in four also finds a clutch of silkworm eggs."
+      ],
+      "conditions": "Mulberries grow in Asia on the continents; lands that are not continents keep theirs.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Raise silkworms",
+      "file": "code/modules/1713/silk.dm",
+      "line": 257,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "/obj/item/silkworm_eggs",
+        "/obj/item/stack/material/leaf/mulberry"
+      ],
+      "outputs": [
+        "/obj/item/stack/silk_cocoons"
+      ],
+      "tools": [
+        "/obj/structure/silkworm_tray"
+      ],
+      "steps": [
+        "Put a clutch of silkworm eggs and 6 mulberry leaves in a silkworm tray.",
+        "After 10 minutes the tray gives 6 silk cocoons and keeps the eggs for the next batch."
+      ],
+      "conditions": "Needs a silkworm tray, eggs and 6 mulberry leaves per batch.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Reel silk cocoons",
+      "file": "code/modules/1713/silk.dm",
+      "line": 51,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "/obj/item/stack/silk_cocoons",
+        "water"
+      ],
+      "outputs": [
+        "/obj/item/stack/silk_thread"
+      ],
+      "tools": [],
+      "steps": [
+        "Heat an open container holding at least 10 units of water over a fire in grab intent.",
+        "Use the hot container on silk cocoons to reel up to 5 of them into silk thread."
+      ],
+      "conditions": "Needs hot water.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Weave silk cloth",
+      "file": "code/modules/1713/production.dm",
+      "line": 335,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "/obj/item/stack/silk_thread"
+      ],
+      "outputs": [
+        "/material/silk"
+      ],
+      "tools": [
+        "/obj/structure/loom"
+      ],
+      "steps": [
+        "Use silk thread on an anchored loom.",
+        "Each silk thread weaves into one silk cloth."
+      ],
+      "conditions": "Needs an anchored loom.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Dry tobacco leaves",
       "file": "code/modules/materials/material_sheets.dm",
       "line": 547,
