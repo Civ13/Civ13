@@ -72,7 +72,6 @@
 // The share of her capacity at which she lists.
 #define HULL_LISTING 0.75
 // Wood and deciseconds a patch takes.
-#define HULL_PATCH_PLANKS 2
 #define HULL_PATCH_TIME 60
 // Half minutes between foundering on deep water and going down.
 #define HULL_SINK_WARNINGS 4
@@ -739,7 +738,6 @@ var/global/hull_ledger_timer_off = FALSE
 
 #undef HULL_HOLE_PER_MINUTE
 #undef HULL_PATCH_PER_MINUTE
-#undef HULL_PATCH_PLANKS
 #undef HULL_PATCH_TIME
 #undef HULL_SLACK_WATER
 #undef HULL_SEEP_PER_TILE_MINUTE
