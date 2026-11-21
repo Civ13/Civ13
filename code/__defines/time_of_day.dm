@@ -32,6 +32,8 @@ var/list/time_of_day2ticks = list(
 	#ifdef ALWAYS_DAY
 	return "Midday"
 	#else
+	if (world_calendar_daynight())
+		return world_calendar_phase()
 	// chance of midday: ~52%. Chance of afternoon: ~27%. Chance of any other: ~21%
 	if (map && map.is_zombie)
 		return "Morning"
@@ -46,6 +48,13 @@ var/list/time_of_day2ticks = list(
 	#endif
 
 /proc/progress_time_of_day(var/caller_ref = null, var/force = FALSE)
+	// The world calendar picks the phase; an admin step holds until its next one.
+	if (world_calendar_daynight())
+		if (force)
+			world_calendar_tod_hold = world.time + world_calendar_phase_left()
+		else
+			update_lighting(world_calendar_phase(), admincaller = caller_ref)
+			return
 	if(config.daynight_on || force)
 		var/TOD_position_in_list = 1
 		for (var/v in 1 to times_of_day.len)
