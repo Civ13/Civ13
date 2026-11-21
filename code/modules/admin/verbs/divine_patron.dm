@@ -184,10 +184,24 @@
 /client/proc/divine_heteromorph_menu()
 	if (!check_rights(R_ADMIN))
 		return
-	var/action = input(usr, "Heteromorph forms are played only by staff. Other staff see every grant and use.", "Divine Patron") as null|anything in list("Give a form", "Take back a form", "List forms")
+	var/action = input(usr, "Heteromorph forms are played only by staff. Other staff see every grant and use.", "Divine Patron") as null|anything in list("Give a form", "Take back a form", "Bring back to human form", "List forms")
 	if (!action || !check_rights(R_ADMIN))
 		return
 	switch (action)
+		if ("Bring back to human form")
+			var/list/forms = list()
+			for (var/mob/living/simple_animal/heteromorph_form/F in heteromorph_forms_live)
+				if (!QDELETED(F) && F.heteromorph_body)
+					forms["[F.heteromorph_body.real_name] ([F.ckey ? F.ckey : "no player"]) at [F.x],[F.y],[F.z]"] = F
+			if (!forms.len)
+				to_chat(usr, SPAN_NOTICE("No one is in a true form right now."))
+				return
+			var/pick = input(usr, "Bring whom back to human form? They are not hurt.", "Divine Patron") as null|anything in sortList(forms)
+			var/mob/living/simple_animal/heteromorph_form/F = pick ? forms[pick] : null
+			if (!F || QDELETED(F) || !check_rights(R_ADMIN))
+				return
+			heteromorph_log("[key_name(usr)] brought [key_name(F)] back to human form.")
+			F.heteromorph_return(FALSE, "You are drawn back into your human shape.")
 		if ("List forms")
 			var/list/lines = heteromorph_staff_lines()
 			to_chat(usr, lines.len ? SPAN_NOTICE(jointext(lines, "<br>")) : SPAN_NOTICE("No one carries a heteromorph form here."))

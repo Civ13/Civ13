@@ -184,5 +184,19 @@ class Breath(unittest.TestCase):
             self.assertNotIn(harm, wilt)
 
 
+class EventTools(unittest.TestCase):
+    def test_planet_gate_reads_the_map(self):
+        origin = body(TEXT, '/proc/heteromorph_world_origin()')
+        self.assertIn('map.heteromorph_origin', origin)
+        self.assertIn('var/heteromorph_origin = null', TEXT)
+
+    def test_staff_can_bring_a_form_back(self):
+        menu = body(VERB, '/client/proc/divine_heteromorph_menu()')
+        self.assertIn('"Bring back to human form"', menu)
+        back = menu.split('if ("Bring back to human form")', 1)[1].split('if ("List forms")', 1)[0]
+        self.assertLess(back.index('check_rights(R_ADMIN)'), back.index('F.heteromorph_return(FALSE'))
+        self.assertLess(back.index('heteromorph_log('), back.index('F.heteromorph_return(FALSE'))
+
+
 if __name__ == '__main__':
     unittest.main()
