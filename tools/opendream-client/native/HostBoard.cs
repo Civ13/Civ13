@@ -15,14 +15,51 @@ public enum RegionBuild { Unknown, Current, Behind, Built, Building, Failed }
 // Problem is null unless something needs the operator.
 public sealed record RegionCard(string Id, string Name, bool Mainland, RegionRun Run, string RunText, int? Players,
     RegionBuild Build, string BuildText, string? Activity, string Notes, string? Problem) {
+    // The region's local time on the shared world calendar, or null when it does not report one.
+    public RegionClock? Clock { get; init; }
+
     // Everything on one line, for a tooltip, the log and screen readers.
     public string Describe() {
         var text = Name + ": " + RunText.ToLowerInvariant();
         if (Activity != null) text += " (" + Activity + ")";
         if (Players is { } players) text += ", " + (players == 1 ? "1 player" : players + " players");
+        if (Clock != null) text += ", " + Clock.Describe();
         text += ", build " + BuildText.ToLowerInvariant();
         if (Notes.Length > 0) text += ", " + Notes;
         return Problem == null ? text + "." : text + ". " + Problem;
+    }
+}
+
+// A region's local time on the shared world calendar (code/modules/1713/world_calendar.dm): the game
+// clock ("06:40 AM"), its phase of the day, the local season, the time zone in whole hours from UTC and
+// the real minutes left in the season when known.
+public sealed record RegionClock(string Time, string Phase, string Season, int Zone, int? SeasonLeft) {
+    public bool Daylight => Phase is "Early Morning" or "Morning" or "Midday" or "Afternoon";
+    public string SeasonText => Season switch {
+        "SPRING" => "Spring", "SUMMER" => "Summer", "FALL" => "Fall", "WINTER" => "Winter", _ => Season,
+    };
+    public string ZoneText => Zone == 0 ? "UTC" : "UTC" + (Zone > 0 ? "+" : "\u2212") + Math.Abs(Zone);
+    public string Describe() => $"{Time} {Phase.ToLowerInvariant()}, {SeasonText.ToLowerInvariant()}"
+        + (SeasonLeft is { } left ? $" ({left} min left)" : "") + ", " + ZoneText.Replace('\u2212', '-');
+
+    private static readonly string[] Phases = ["Early Morning", "Morning", "Midday", "Afternoon", "Evening", "Night"];
+    private static readonly string[] Seasons = ["SPRING", "SUMMER", "FALL", "WINTER", "Wet Season", "Dry Season"];
+
+    // From a status region_view's "calendar"; null when it is missing or does not check out.
+    public static RegionClock? From(JsonElement view) {
+        if (!view.TryGetProperty("calendar", out var calendar) || calendar.ValueKind != JsonValueKind.Object) return null;
+        string? Text(string name) => calendar.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+        var time = Text("clock");
+        var phase = Text("phase");
+        var season = Text("season");
+        if (time is not { Length: 8 } || !char.IsAsciiDigit(time[0]) || !char.IsAsciiDigit(time[1]) || time[2] != ':'
+                || !char.IsAsciiDigit(time[3]) || !char.IsAsciiDigit(time[4]) || time[5] != ' ' || (time[6..] is not ("AM" or "PM"))) return null;
+        if (phase == null || !Phases.Contains(phase) || season == null || !Seasons.Contains(season)) return null;
+        if (!calendar.TryGetProperty("zone", out var zoneValue) || zoneValue.ValueKind != JsonValueKind.Number
+                || !zoneValue.TryGetInt32(out var zone) || zone is < -12 or > 14) return null;
+        int? left = calendar.TryGetProperty("season_left", out var leftValue) && leftValue.ValueKind == JsonValueKind.Number
+            && leftValue.TryGetInt32(out var minutes) && minutes is >= 0 and <= 1440 ? minutes : null;
+        return new RegionClock(time, phase, season, zone, left);
     }
 }
 
@@ -139,12 +176,14 @@ public static class HostBoard {
             if (listening) problems.Add("Travel agent not running");
             else notes.Add("travel agent not running");
         }
+        RegionClock? clock = null;
         if (entry.TryGetProperty("region_view", out var view) && view.ValueKind == JsonValueKind.Object) {
             if (Str(view, "error") != null) problems.Add("Not answering as this region");
             else {
                 if (view.TryGetProperty("epoch", out var epoch) && epoch.ValueKind == JsonValueKind.Object && epoch.TryGetProperty("ordinal", out var ordinal)
                         && ordinal.ValueKind == JsonValueKind.Number && ordinal.TryGetInt32(out var index) && index >= 0 && index < LocalHosting.EpochNames.Length)
                     notes.Insert(0, "epoch " + LocalHosting.EpochNames[index]);
+                clock = RegionClock.From(view);
                 if (Str(view, "battle_phase") is { Length: > 0 } battle) notes.Insert(0, "battle " + LocalHosting.BattlePhase(battle));
                 if (LocalHosting.EventAway(view) is > 0 and var away) notes.Add(LocalHosting.AwayText(away));
                 // The land's transfer agent refuses every arrival until an operator clears its hold.
@@ -167,7 +206,7 @@ public static class HostBoard {
         };
         if (state == "cold") notes.Insert(0, "saved and shut down; a wake or travel starts it");
         return new RegionCard(id, name, mainland, run, runText, players, build, buildText, working, string.Join(", ", notes),
-            problems.Count == 0 ? null : string.Join(". ", problems) + ".");
+            problems.Count == 0 ? null : string.Join(". ", problems) + ".") { Clock = clock };
     }
 
     // The staged build wins over the commit count: it is what the operator acts on next.

@@ -11,6 +11,12 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-21: region clocks on the host board -->
+Launcher 1.5.34: the region board shows a LOCAL TIME column (sun/moon glyph, clock, season, UTC zone) for regions on
+the shared world calendar (docs/world-calendar.md). Data path: `world_calendar_status()` in DM -> shard_group
+describe `calendar` -> `shard_group.py` `calendar_view` (validated) -> `region_view.calendar` -> `RegionClock.From`.
+Off-calendar rows leave the slot blank; at narrow widths DETAILS shrinks first, then the zone and season drop.
+
 <!-- 2026-11-21: process safety and the experimental WMI check -->
 After WMI broke on 2026-11-19 (tasklist hung, Gaia stayed down), Val approved the criticality plan (2026-11-21).
 Launcher 1.5.33: `LocalHosting.RunCaptured` reads both streams asynchronously and enforces a per-step limit
