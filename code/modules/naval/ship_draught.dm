@@ -63,6 +63,8 @@ var/global/list/ship_draught_pieces = list(
 	"L" = list("name" = "torpedo tube", "path" = /obj/structure/torpedo_tube, "cost" = list("steel" = 25), "load" = 0.5, "turns" = TRUE, "fires" = TRUE),
 	"V" = list("name" = "steel window", "path" = /obj/structure/window_frame/metal, "cost" = list("steel" = 5), "load" = 0.1),
 	"I" = list("name" = "steel door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel, "cost" = list("steel" = 15), "load" = 0.5, "turns" = TRUE),
+	// A gate in her gunwale on an edge tile, facing out (hull_gangway.dm).
+	"Y" = list("name" = "gangway", "path" = /obj/structure/railing/built/gunwale/gangway, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE),
 )
 
 // A tile of deck on the level above costs a floor, like any floor laid there.
@@ -216,6 +218,8 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		var/x = text2num(xy[1])
 		var/y = text2num(xy[2])
 		for (var/d in cardinal)
+			if (C[2] == "Y" && C[3] == d)
+				continue // her gangway closes that side
 			if (!cell(x + (d == EAST ? 1 : d == WEST ? -1 : 0), y + (d == NORTH ? 1 : d == SOUTH ? -1 : 0)))
 				. += list(list(key, d))
 
@@ -380,6 +384,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		"costs" = cost_parts,
 		"drives" = drives,
 		"masts" = masts,
+		"gunwales" = length(gunwale_sides()),
 		"ballast" = cells.len ? wants_ballast() : 0,
 		"problems" = problems(),
 		"checks" = checks,
@@ -475,6 +480,8 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			return list("G", M.dir)
 		if (istype(M, /obj/structure/closet/crate))
 			return list("C", M.dir)
+		if (istype(M, /obj/structure/railing/built/gunwale/bulwark/gangway))
+			return list("Y", M.dir)
 	return null
 
 // Her lines with her bow to the top of the sheet, or the reason she cannot

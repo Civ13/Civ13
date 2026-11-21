@@ -42,6 +42,8 @@
 		"D" = list("what" = "A wooden door anyone can open.", "use" = "The way in and out of a walled cabin.", "how" = "Put it in a line of walls (turn it with R). It lets crew through where a wall would not."),
 		"G" = list("what" = "A wooden window frame.", "use" = "Lets light into a cabin while closing it like a wall.", "how" = "Put it in a line of walls. Crew cannot walk through it."),
 		"V" = list("what" = "A steel window frame.", "use" = "A window in a steel cabin: light in, crew and weather out.", "how" = "Put it in a line of walls. Crew cannot walk through it."),
+		// Sides
+		"Y" = list("what" = "A gangway: a gate in her gunwale.", "use" = "Where crew and cargo come aboard over her side, and where a gangplank is run out to a quay or another ship.", "how" = "Put it on a tile at her edge and turn it (R) to face out over the side. Her other edge tiles get gunwales by themselves."),
 		"I" = list("what" = "A steel fire door.", "use" = "A heavy door for a steel cabin or engine room.", "how" = "Put it in a line of walls (turn it with R). It lets crew through where a wall would not."),
 	)
 

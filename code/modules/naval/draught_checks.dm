@@ -152,6 +152,19 @@
 	else if (H.len > 1)
 		R.error("She has [H.len] helms: only one tiller or steering oar can steer her.", H, "T")
 
+// A gangway stands on her edge, facing out over the side (hull_gangway.dm).
+/datum/design_check/ship/gangways
+	order = 45
+
+/datum/design_check/ship/gangways/ship_check(datum/ship_draught/D, datum/design_report/R)
+	var/list/inboard = list()
+	for (var/key in D.piece_cells("Y"))
+		var/list/C = D.cells[key]
+		if (D.cells[ship_draught_step_key(key, C[3])])
+			inboard += key
+	if (inboard.len)
+		R.error("[inboard.len] gangway\s face[inboard.len == 1 ? "s" : ""] her own deck: a gangway stands on her edge, facing out over the side.", inboard, "Y")
+
 /datum/design_check/ship/drives
 	order = 50
 
