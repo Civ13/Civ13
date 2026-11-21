@@ -48,10 +48,26 @@
 	if (!cells.len)
 		return null
 	var/turf/T = cells[1]
-	for (var/obj/structure/boathouse/B in range(BERTH_REACH, T))
-		if (B.berth_holds(C, cells))
-			return B
+	if (istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
+		for (var/obj/structure/boathouse/B in range(BERTH_REACH, T))
+			if (B.berth_holds(C, cells))
+				return B
+		return null
+	// On dry ground: a slipway next to one of her tiles (slipway_haul.dm).
+	var/list/seen = list()
+	for (var/turf/O in cells)
+		for (var/obj/structure/slipway/S in range(1, O))
+			if (seen[S])
+				continue
+			seen[S] = TRUE
+			if (S.berth_holds(C, cells))
+				return S
 	return null
+
+// TRUE when she lies at a berth out of the water.
+/datum/hull_ledger/proc/lies_dry()
+	var/obj/structure/S = craft_berth(craft)
+	return S && S.berth_dry(craft)
 
 // The boathouse holds a hull lying wholly in its slip.
 /obj/structure/boathouse/berth_holds(datum/craft/C, list/cells)
