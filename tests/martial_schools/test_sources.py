@@ -90,14 +90,14 @@ class Moves(unittest.TestCase):
 
     def test_old_ss13_arts_are_retired(self):
         for name in ('_martial', 'boxing', 'kravmaga', 'sleepingcarp', 'wrestling'):
-            self.assertFalse((ROOT / 'code/modules/1713/martial_arts/%s.dm' % name).exists(), name)
+            self.assertFalse((ROOT / ('code/modules/1713/martial_arts/%s.dm' % name)).exists(), name)
             self.assertNotIn('martial_arts\\%s.dm' % name, DME)
         self.assertNotIn('martial_art', MIND)
         self.assertNotIn('mind.martial_art', ATTACK)
 
     def test_no_new_global_initialisers(self):
         # The world's global initialiser is at the compiler's size limit.
-        self.assertNotRegex(MOVES, r'^var/global/', )
+        self.assertNotRegex(MOVES, r'(?m)^var/global/')
 
 
 class Wiring(unittest.TestCase):
