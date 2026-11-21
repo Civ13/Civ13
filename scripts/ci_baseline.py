@@ -1072,7 +1072,8 @@ SUITES = {
         'timeout': 180},
     # The ocean regions: generated maps current, sizes, insets, metadata registered
     # and open water at both ends of every sea link, parsed from the DMMs; no BYOND runtime.
-    'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py',), 'timeout': 180,
+    'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py', 'tests/ocean_maps/test_reef_fixture.py'),
+        'timeout': 180,
         'paths': ('tests/ocean_maps/', 'tools/ocean_maps/', 'tools/world_links/',
                   'code/modules/naval/ocean_regions.dm', 'code/modules/persistence/world_links.dm',
                   'code/modules/naval/ship_edge_crossing.dm', 'code/modules/naval/ship_crossing.dm',
