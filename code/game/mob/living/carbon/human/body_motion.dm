@@ -18,12 +18,16 @@
 	var/tmp/body_motion_until = 0
 	var/tmp/body_motion_priority = 0
 	var/tmp/body_motion_started = -100
+	// Counts motion claims, so a caller can tell whether its motion still runs.
+	var/tmp/body_motion_serial = 0
 	// The posture transform the running motion returns to.
 	var/tmp/matrix/body_motion_rest = null
 	// Whether the last drawn posture was turned (lying or prone); null = never drawn.
 	var/tmp/body_motion_drawn_turned = null
 	var/tmp/body_motion_watch_checked = -100
 	var/tmp/body_motion_watch_cached = FALSE
+	// No swim stroke before this world.time (one per 12 ds at most).
+	var/tmp/body_motion_stroke_next = 0
 
 /proc/body_motion_level()
 	return config ? config.body_motion : BODY_MOTION_FULL
@@ -65,6 +69,7 @@
 /mob/living/human/proc/body_motion_claim(priority, duration, matrix/rest)
 	body_motion_priority = priority
 	body_motion_started = world.time
+	body_motion_serial++
 	body_motion_until = world.time + duration
 	body_motion_rest = rest
 
@@ -292,3 +297,54 @@
 	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, list(
 		list(0, -1, 0, 1, 1, QUAD_EASING | EASE_OUT),
 		list(0, 0, 0, 1, 2, SINE_EASING)))
+
+// Swimming stroke on a deep-water step: a 1px dip, no squash (the water mask
+// already hides the lower half). At most one per 12 ds, so fast swimmers
+// stroke every second step and it never reads as a walking bob. 5 ds.
+/mob/living/human/proc/body_motion_swim_stroke()
+	if (world.time < body_motion_stroke_next)
+		return FALSE
+	if (!body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, list(
+		list(0, -1, 0, 1, 2, SINE_EASING),
+		list(0, 0, 0, 1, 3, SINE_EASING))))
+		return FALSE
+	body_motion_stroke_next = world.time + 12
+	return TRUE
+
+// Spent and slipping under: sink 3px, hold, then come back. The hold keeps it
+// from reading as a hit recoil. Kept at REDUCED: it shows the swimmer is spent. 10 ds.
+/mob/living/human/proc/body_motion_sink()
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(0, -3, 0, 1, 3, QUAD_EASING | EASE_IN),
+		list(0, -3, 0, 1, 3, LINEAR_EASING),
+		list(0, 0, 0, 1, 4, SINE_EASING | EASE_OUT)))
+
+// Drowning: a 2px side struggle once a life tick. Low priority, so it never
+// cuts the sink above. Kept at REDUCED: it shows the swimmer is drowning. 6 ds.
+/mob/living/human/proc/body_motion_struggle()
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_REDUCED, list(
+		list(-2, 0, 0, 1, 2, LINEAR_EASING),
+		list(2, 0, 0, 1, 2, LINEAR_EASING),
+		list(0, 0, 0, 1, 2, LINEAR_EASING)))
+
+// Climbing: one 1px pull every 10 ds for the length of the wait, up or down,
+// with a still beat between pulls. Returns the motion's serial, for
+// body_motion_stop() once the wait ends or is interrupted; 0 when none played.
+/mob/living/human/proc/body_motion_climb(up, duration)
+	var/dy = up ? 1 : -1
+	var/list/keys = list()
+	for (var/i in 1 to max(1, round(duration / 10)))
+		keys += list(list(0, dy, 0, 1, 2, QUAD_EASING | (up ? EASE_OUT : EASE_IN)))
+		keys += list(list(0, 0, 0, 1, 4, SINE_EASING))
+		keys += list(list(0, 0, 0, 1, 4, LINEAR_EASING))
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, keys) ? body_motion_serial : 0
+
+// Ends motion number `serial` if it is still the running one, back to the
+// posture transform over 1 ds.
+/mob/living/human/proc/body_motion_stop(serial)
+	if (!serial || serial != body_motion_serial || world.time >= body_motion_until)
+		return FALSE
+	var/matrix/rest = posture_transform()
+	body_motion_claim(body_motion_priority, 1, rest)
+	animate(src, transform = rest, time = 1, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
+	return TRUE

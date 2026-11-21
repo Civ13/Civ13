@@ -780,6 +780,8 @@
 			if (!H.crab)
 				if (istype(F, /turf/floor/beach/water))
 					move_delay += H.water_step_delay(F)
+					if (H.swim_skill_applies(F) && !H.buckled)
+						H.body_motion_swim_stroke()
 				else
 					move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))

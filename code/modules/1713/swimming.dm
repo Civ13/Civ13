@@ -244,6 +244,7 @@
 		swim_breath = swim_breath_max()
 	if (!swim_under)
 		swim_under = TRUE
+		body_motion_sink()
 		to_chat(src, SPAN_DANGER("You are spent and slip under the water. Hold your breath and reach the shallows or something that floats!"))
 	swim_breath = max(0, swim_breath - 1)
 	return swim_breath > 0

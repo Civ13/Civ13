@@ -53,7 +53,8 @@ class BodyMotionSources(unittest.TestCase):
 
     def test_motion_state_is_never_saved(self):
         for name in ('body_motion_until', 'body_motion_priority', 'body_motion_started', 'body_motion_rest',
-                     'body_motion_drawn_turned', 'body_motion_watch_checked', 'body_motion_watch_cached'):
+                     'body_motion_drawn_turned', 'body_motion_watch_checked', 'body_motion_watch_cached',
+                     'body_motion_stroke_next', 'body_motion_serial'):
             self.assertRegex(MOTION, rf'var/tmp/(matrix/)?{name}\b')
 
     def test_posture_handshake(self):
@@ -88,9 +89,25 @@ class BodyMotionSources(unittest.TestCase):
             self.assertIn(call, reactions)
         self.assertIn('H.body_motion_stance_set()', read('code/game/mob/combat_stance.dm'))
 
+    def test_swim_and_climb_hooks(self):
+        self.assertIn('if (H.swim_skill_applies(F) && !H.buckled)\n\t\t\t\t\t\tH.body_motion_swim_stroke()',
+                      read('code/game/mob/mob_movement.dm'))
+        self.assertIn('swim_under = TRUE\n\t\tbody_motion_sink()', read('code/modules/1713/swimming.dm'))
+        self.assertEqual(read('code/game/mob/living/carbon/human/human_helpers.dm').count('adjustOxyLoss(10)\n\t\t\tbody_motion_struggle()'), 2)
+        # Every climb wait starts the pulls and stops them once the wait ends.
+        for path, count in (('code/game/objects/structures/tree_climbing.dm', 2),
+                            ('code/modules/multiz/edge_climbing.dm', 1),
+                            ('code/modules/multiz/pit_climbing.dm', 1),
+                            ('code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm', 2),
+                            ('code/modules/naval/hull_masts.dm', 1)):
+            text = read(path)
+            self.assertEqual(text.count('var/climb_motion = body_motion_climb('), count, path)
+            self.assertEqual(text.count('body_motion_stop(climb_motion)'), count, path)
+
     def test_gestures_are_full_level_only(self):
         for header in ('/mob/living/human/proc/body_motion_work(', '/mob/living/human/proc/body_motion_settle(',
-                       '/mob/living/human/proc/body_motion_emote(', '/mob/living/human/proc/body_motion_stance_set('):
+                       '/mob/living/human/proc/body_motion_emote(', '/mob/living/human/proc/body_motion_stance_set(',
+                       '/mob/living/human/proc/body_motion_swim_stroke(', '/mob/living/human/proc/body_motion_climb('):
             self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL', proc_body(MOTION, header))
 
     def test_config_line(self):
@@ -110,6 +127,14 @@ class BodyMotionSources(unittest.TestCase):
         recoil = proc_body(MOTION, '/mob/living/human/proc/body_motion_recoil(')
         self.assertIn('BODY_MOTION_PRIORITY_COMBAT, 3 + delay, rest', recoil)
         self.assertIn('dx * 3, dy * 3, dx * 8', recoil)
+        # Swim stroke 1px, sink 3px with a hold, climb pulls 1px every 10 ds.
+        self.assertIn('list(0, -1, 0, 1, 2, SINE_EASING)', proc_body(MOTION, '/mob/living/human/proc/body_motion_swim_stroke('))
+        self.assertIn('body_motion_stroke_next = world.time + 12', MOTION)
+        sink = proc_body(MOTION, '/mob/living/human/proc/body_motion_sink(')
+        self.assertIn('BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED', sink)
+        self.assertIn('list(0, -3, 0, 1, 3, LINEAR_EASING)', sink)
+        self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_REDUCED', proc_body(MOTION, '/mob/living/human/proc/body_motion_struggle('))
+        self.assertIn('round(duration / 10)', proc_body(MOTION, '/mob/living/human/proc/body_motion_climb('))
 
 
 if __name__ == '__main__':

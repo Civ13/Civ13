@@ -545,6 +545,7 @@
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning in the floodwater!</font>"))
 			life_water_refresh()
 			adjustOxyLoss(10)
+			body_motion_struggle()
 			return
 		drowning = FALSE
 		swim_rest()
@@ -600,4 +601,5 @@
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning!</font>"))
 			life_water_refresh()
 			adjustOxyLoss(10)
+			body_motion_struggle()
 			return

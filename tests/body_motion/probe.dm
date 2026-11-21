@@ -200,6 +200,33 @@ var/body_motion_probe_checks = 0
 	qdel(club_like)
 	qdel(pointy)
 
+	// --- swimming ---------------------------------------------------------------
+	body_motion_probe_assert(H.body_motion_swim_stroke() && H.body_motion_until == world.time + 5 && H.body_motion_priority == BODY_MOTION_PRIORITY_LOW, "swim_stroke_5ds")
+	body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "swim_stroke_ends_at_rest")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_swim_stroke(), "swim_stroke_at_most_every_12ds")
+	H.body_motion_stroke_next = 0
+	body_motion_probe_assert(H.body_motion_sink() && H.body_motion_until == world.time + 10 && H.body_motion_priority == BODY_MOTION_PRIORITY_COMBAT, "sink_holds_10ds")
+	H.body_motion_started = -100
+	body_motion_probe_assert(!H.body_motion_struggle(), "struggle_waits_for_sink")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_struggle() && H.body_motion_until == world.time + 6, "struggle_6ds")
+	body_motion_probe_idle(H)
+
+	// --- climbing ---------------------------------------------------------------
+	var/climb_start = H.body_motion_climb(TRUE, 30)
+	body_motion_probe_assert(climb_start && climb_start == H.body_motion_serial && H.body_motion_until == world.time + 30, "climb_pulls_cover_the_wait")
+	body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "climb_ends_at_rest")
+	body_motion_probe_assert(H.body_motion_stop(climb_start) && H.body_motion_until == world.time + 1 && body_motion_matrix_same(H.transform, rest), "climb_stops_in_1ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_climb(FALSE, 7) && H.body_motion_until == world.time + 10, "short_climb_one_pull")
+	// A hit during the climb owns the body: stopping the climb leaves it alone.
+	var/old_climb = H.body_motion_serial
+	H.body_motion_started = -100
+	body_motion_probe_assert(H.body_motion_recoil(A), "recoil_over_climb")
+	body_motion_probe_assert(!H.body_motion_stop(old_climb) && H.body_motion_priority == BODY_MOTION_PRIORITY_COMBAT, "stop_leaves_other_motion")
+	body_motion_probe_idle(H)
+
 	// --- unwatched bodies snap -------------------------------------------------
 	H.probe_watched = FALSE
 	body_motion_probe_assert(!H.body_motion_recoil(A), "unwatched_no_recoil")
@@ -217,6 +244,11 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(!H.body_motion_work(locate(6, 5, 1)) && !H.body_motion_emote("nod") && !H.body_motion_settle(), "reduced_drops_work_emotes_seats")
 	body_motion_probe_assert(!H.body_motion_stance_set(), "reduced_drops_stance_set")
 	body_motion_probe_assert(H.body_motion_parry(A), "reduced_keeps_parry")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_climb(TRUE, 30) && !H.body_motion_swim_stroke(), "reduced_drops_climb_and_stroke")
+	body_motion_probe_assert(H.body_motion_sink(), "reduced_keeps_sink")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_struggle(), "reduced_keeps_struggle")
 	body_motion_probe_idle(H)
 	config.body_motion = BODY_MOTION_OFF
 	body_motion_probe_assert(!H.body_motion_recoil(A), "off_no_recoil")
@@ -278,7 +310,10 @@ var/body_motion_probe_checks = 0
 		"fall_lean" = body_motion_probe_keys(body_motion_matrix(stand, 0, 0, 45)),
 		"stand_lean" = body_motion_probe_keys(body_motion_matrix(stand, 0, 0, 45)),
 		"recoil_east" = body_motion_probe_keys(body_motion_matrix(stand, 3, 0, 8)),
-		"recoil_south" = body_motion_probe_keys(body_motion_matrix(stand, 0, -3)))
+		"recoil_south" = body_motion_probe_keys(body_motion_matrix(stand, 0, -3)),
+		"swim_dip" = body_motion_probe_keys(body_motion_matrix(stand, 0, -1)),
+		"sink" = body_motion_probe_keys(body_motion_matrix(stand, 0, -3)),
+		"climb_up" = body_motion_probe_keys(body_motion_matrix(stand, 0, 1)))
 	text2file(json_encode(keys), "keys.json")
 
 /world/New()
