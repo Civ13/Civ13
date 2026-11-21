@@ -195,7 +195,11 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 	project_paid = list()
 	update_project_frames()
 
+// Gives up the project: what was fitted is taken apart and its materials
+// stacked by the workshop. Returns what was given back (material -> amount).
 /obj/structure/car_workshop/proc/abandon_project()
+	var/datum/piece_plan/P = get_project_plan()
+	. = P ? piece_refund(P.spent(project_done, project_paid), get_turf(src)) : list()
 	project = null
 	project_hull = null
 	project_done = 0
@@ -341,11 +345,11 @@ var/global/list/vehicle_project_layouts = list() // "type|model" -> layout
 		return
 	if (action == "abandon")
 		var/datum/piece_plan/P = get_project_plan()
-		if (!P || WWinput(H, "Break up the [P.name]? Everything fitted so far is lost.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
+		if (!P || WWinput(H, "Break up the [P.name]? Everything fitted so far is taken apart and its materials stacked by the [name].", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
 			return
 		log_game("[key_name(H)] abandoned a [P.name] project ([project_done] pieces) at [x],[y],[z].")
-		abandon_project()
-		to_chat(H, SPAN_NOTICE("The bay is cleared."))
+		var/list/back = abandon_project()
+		to_chat(H, SPAN_NOTICE("The bay is cleared.[back.len ? " [capitalize(piece_cost_text(back))] [back.len == 1 && back[back[1]] == 1 ? "is" : "are"] stacked by the [name]." : ""]"))
 		return
 	var/refusal = project_refusal(action, H)
 	if (refusal)

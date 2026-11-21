@@ -100,4 +100,8 @@ the jig, draws 20 power like an ordinary assembly, credits the plan's
 materials to the stock and runs `complete_assembly()`, so the car gets its
 keys and the plane its empty tank exactly as in one go. If the assembly
 fails the materials are taken back off the stock and the jig returns.
-Abandoning loses everything fitted so far, as at the slipway.
+Abandoning takes the project apart and stacks every material spent on it,
+fitted pieces and what was paid towards the next one, by the holder
+(`spent()`, `piece_refund()`), as at the slipway. A slipway building a ship's
+draught gives back only what was paid towards the next piece, since her built
+floors and fittings stay standing on the berth.
