@@ -442,6 +442,7 @@
 				msg += "<br><i>[T.He] [T.is] a citizen of [html_encode(nation)].</i>"
 	if (find_trait("Menacing") && user != src && stat != DEAD)
 		msg += "<br><span class='warning'>[T.He] [T.has] a dangerous look about [T.him].</span>"
+	msg += arcane_apostate_examine(user) // arcane_apostate.dm
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"
 
