@@ -1,0 +1,967 @@
+{
+  "epoch_tables": [
+    {
+      "label": "5000 B.C.",
+      "lots": {
+        "cache": [
+          {
+            "item": "rope",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "log",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "stone",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "log",
+            "quantity": 2,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "fat_lamp",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "cloth_pouch",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 0,
+      "theme": "Early camp"
+    },
+    {
+      "label": "313 B.C.",
+      "lots": {
+        "cache": [
+          {
+            "item": "rope",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "log",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "sandstone",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "stone",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "copper_pot",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "cloth_pouch",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 1,
+      "theme": "Masonry store"
+    },
+    {
+      "label": "1013",
+      "lots": {
+        "cache": [
+          {
+            "item": "paper",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "rope",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "plank",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "brick",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "lantern",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "folder",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 2,
+      "theme": "Scribe workshop"
+    },
+    {
+      "label": "1713",
+      "lots": {
+        "cache": [
+          {
+            "item": "paper",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "rope",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "glass",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "plank",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "compass",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "thermometer",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 3,
+      "theme": "Surveyor\u2019s station"
+    },
+    {
+      "label": "1873",
+      "lots": {
+        "cache": [
+          {
+            "item": "cloth",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "rope",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "plank",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "brick",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "train_lamp",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "work_boots",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 4,
+      "theme": "Rail stores"
+    },
+    {
+      "label": "1903",
+      "lots": {
+        "cache": [
+          {
+            "item": "blue_coil",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "paper",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "glass",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "plank",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "connector",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "duffel",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 5,
+      "theme": "Utility workshop"
+    },
+    {
+      "label": "1943",
+      "lots": {
+        "cache": [
+          {
+            "item": "cloth",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "rope",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "brick",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "plank",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "climbing_boots",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "train_lamp",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 6,
+      "theme": "Field engineering"
+    },
+    {
+      "label": "1969",
+      "lots": {
+        "cache": [
+          {
+            "item": "glowstick",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "rope",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "cloth",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "plank",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "umbrella",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "lanyard",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 7,
+      "theme": "Civilian field kit"
+    },
+    {
+      "label": "2013",
+      "lots": {
+        "cache": [
+          {
+            "item": "blue_coil",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "paper",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "glass",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "cloth",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "analyser",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "cell",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 8,
+      "theme": "Diagnostics workshop"
+    },
+    {
+      "label": "2026",
+      "lots": {
+        "cache": [
+          {
+            "item": "paper",
+            "quantity": 2,
+            "weight": 65
+          },
+          {
+            "item": "glowstick",
+            "quantity": 2,
+            "weight": 35
+          }
+        ],
+        "supply": [
+          {
+            "item": "plank",
+            "quantity": 3,
+            "weight": 70
+          },
+          {
+            "item": "glass",
+            "quantity": 3,
+            "weight": 30
+          }
+        ],
+        "vault": [
+          {
+            "item": "smartphone",
+            "quantity": 1,
+            "weight": 60
+          },
+          {
+            "item": "gps",
+            "quantity": 1,
+            "weight": 40
+          }
+        ]
+      },
+      "ordinal": 9,
+      "theme": "Terrain survey"
+    }
+  ],
+  "fallback_ordinary_lot_by_slot": {
+    "cache": {
+      "item": "log",
+      "quantity": 1
+    },
+    "supply": {
+      "item": "stone",
+      "quantity": 2
+    },
+    "vault": {
+      "item": "cloth_pouch",
+      "quantity": 1
+    }
+  },
+  "items": {
+    "analyser": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5303",
+        "line": 462,
+        "research_nodes": [
+          "digital_computing"
+        ],
+        "unlock_eras": [
+          8
+        ]
+      },
+      "label": "handheld reagent analyser",
+      "line": 1136,
+      "minimum_epoch_ordinal_proposed": 8,
+      "ordinary_research_node": "digital_computing",
+      "source": "code/modules/reagents/reagent_containers/glass.dm",
+      "type": "/obj/item/weapon/analyser"
+    },
+    "blue_coil": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6405",
+        "line": 2079,
+        "research_nodes": [
+          "electricity"
+        ],
+        "unlock_eras": [
+          5
+        ]
+      },
+      "label": "m blue cable",
+      "line": 280,
+      "minimum_epoch_ordinal_proposed": 5,
+      "ordinary_research_node": "electricity",
+      "source": "code/modules/1713/machinery/cables_types.dm",
+      "type": "/obj/item/stack/cable_coil/blue",
+      "unit": "meters, never full prefilled coils"
+    },
+    "brick": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6200",
+        "line": 1654,
+        "research_nodes": [
+          "brickmaking"
+        ],
+        "unlock_eras": [
+          2
+        ]
+      },
+      "label": "stone bricks",
+      "line": 262,
+      "minimum_epoch_ordinal_proposed": 2,
+      "ordinary_research_node": "brickmaking",
+      "source": "code/modules/materials/material_sheets.dm",
+      "type": "/obj/item/stack/material/stonebrick"
+    },
+    "cell": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r7402",
+        "line": 3390,
+        "research_nodes": [
+          "emergency_medicine"
+        ],
+        "unlock_eras": [
+          8
+        ]
+      },
+      "condition": "Use only the normal conserved charge accounted by the allowlist and transfer codec; no extra energy.",
+      "label": "standard power cell",
+      "line": 88,
+      "minimum_epoch_ordinal_proposed": 8,
+      "ordinary_research_node": "emergency_medicine",
+      "source": "code/modules/1713/machinery/cell.dm",
+      "type": "/obj/item/weapon/cell/standard"
+    },
+    "climbing_boots": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6500",
+        "line": 2198,
+        "research_nodes": [
+          "alloys"
+        ],
+        "unlock_eras": [
+          6
+        ]
+      },
+      "label": "pair of mountaineering boots",
+      "line": 333,
+      "minimum_epoch_ordinal_proposed": 6,
+      "ordinary_research_node": "alloys",
+      "source": "code/modules/1713/weather_footwear.dm",
+      "type": "/obj/item/clothing/shoes/weather/climbing_boots"
+    },
+    "cloth": {
+      "label": "cloth",
+      "line": 49,
+      "minimum_epoch_ordinal_proposed": 0,
+      "ordinary_research_node": "weaving",
+      "qualification": "Ordinary material supply must be confirmed locally; node is a proposed conservative floor, not an acquisition route.",
+      "source": "code/game/mob/living/carbon/human/punch_injury.dm",
+      "type": "/obj/item/stack/material/cloth"
+    },
+    "cloth_pouch": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5548",
+        "line": 749,
+        "research_nodes": [
+          "weaving"
+        ],
+        "unlock_eras": [
+          0
+        ]
+      },
+      "label": "empty cloth drawstring pouch",
+      "line": 27,
+      "minimum_epoch_ordinal_proposed": 0,
+      "ordinary_research_node": "weaving",
+      "source": "code/modules/1713/belt_pouches.dm",
+      "type": "/obj/item/clothing/accessory/storage/belt_pouch/cloth"
+    },
+    "compass": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r7148",
+        "line": 3054,
+        "research_nodes": [
+          "optics_instruments"
+        ],
+        "unlock_eras": [
+          3
+        ]
+      },
+      "label": "compass",
+      "line": 683,
+      "minimum_epoch_ordinal_proposed": 3,
+      "ordinary_research_node": "optics_instruments",
+      "source": "code/game/objects/items/weapons/tools.dm",
+      "type": "/obj/item/weapon/compass"
+    },
+    "connector": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6411",
+        "line": 2085,
+        "research_nodes": [
+          "electricity"
+        ],
+        "unlock_eras": [
+          5
+        ]
+      },
+      "label": "cable connector",
+      "line": 37,
+      "minimum_epoch_ordinal_proposed": 5,
+      "ordinary_research_node": "electricity",
+      "source": "code/modules/1713/machinery/cables_types.dm",
+      "type": "/obj/item/connector"
+    },
+    "copper_pot": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6388",
+        "line": 2049,
+        "research_nodes": [
+          "pottery_storage"
+        ],
+        "unlock_eras": [
+          0
+        ]
+      },
+      "label": "empty small copper pot",
+      "line": 597,
+      "minimum_epoch_ordinal_proposed": 1,
+      "ordinary_research_node": "pottery_storage",
+      "source": "code/modules/reagents/reagent_containers/glass.dm",
+      "type": "/obj/item/weapon/reagent_containers/glass/small_pot/copper_small"
+    },
+    "duffel": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5225",
+        "line": 347,
+        "research_nodes": [
+          "textile_mills"
+        ],
+        "unlock_eras": [
+          4
+        ]
+      },
+      "label": "empty duffel",
+      "line": 442,
+      "minimum_epoch_ordinal_proposed": 4,
+      "ordinary_research_node": "textile_mills",
+      "source": "code/game/objects/items/weapons/storage/backpack.dm",
+      "type": "/obj/item/weapon/storage/backpack/duffel"
+    },
+    "fat_lamp": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6085",
+        "line": 1504,
+        "research_nodes": [
+          "primitive_construction"
+        ],
+        "unlock_eras": [
+          0
+        ]
+      },
+      "condition": "Starts inactive, no extra fuel or charge; no user data or network privileges.",
+      "label": "stone fat lamp",
+      "line": 37,
+      "minimum_epoch_ordinal_proposed": 0,
+      "ordinary_research_node": "primitive_construction",
+      "source": "code/modules/1713/fat_lights.dm",
+      "type": "/obj/item/flashlight/lantern/fat_lamp"
+    },
+    "folder": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6934",
+        "line": 2777,
+        "research_nodes": [
+          "papermaking"
+        ],
+        "unlock_eras": [
+          2
+        ]
+      },
+      "label": "empty red folder",
+      "line": 13,
+      "minimum_epoch_ordinal_proposed": 2,
+      "ordinary_research_node": "papermaking",
+      "source": "code/game/objects/items/paper/folder.dm",
+      "type": "/obj/item/weapon/folder/red"
+    },
+    "glass": {
+      "label": "glass sheets",
+      "line": 1043,
+      "minimum_epoch_ordinal_proposed": 2,
+      "ordinary_research_node": "glassworking",
+      "qualification": "Ordinary material supply must be confirmed locally; node is a proposed conservative floor, not an acquisition route.",
+      "source": "code/modules/materials/material_sheets.dm",
+      "type": "/obj/item/stack/material/glass"
+    },
+    "glowstick": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5396",
+        "line": 558,
+        "research_nodes": [
+          "synthetics"
+        ],
+        "unlock_eras": [
+          7
+        ]
+      },
+      "label": "blue glowsticks",
+      "line": 86,
+      "minimum_epoch_ordinal_proposed": 7,
+      "ordinary_research_node": "synthetics",
+      "source": "code/modules/1713/cmss13_gear.dm",
+      "type": "/obj/item/flashlight/flare/glowstick/blue"
+    },
+    "gps": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5363",
+        "line": 525,
+        "research_nodes": [
+          "orbital_flight"
+        ],
+        "unlock_eras": [
+          9
+        ]
+      },
+      "condition": "No saved waypoints, satellite access, or launch access granted.",
+      "label": "GPS receiver without waypoints",
+      "line": 523,
+      "minimum_epoch_ordinal_proposed": 9,
+      "ordinary_research_node": "orbital_flight",
+      "source": "code/modules/space/satellites.dm",
+      "type": "/obj/item/gps_receiver"
+    },
+    "lantern": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r7021",
+        "line": 2910,
+        "research_nodes": [
+          "iron_tools"
+        ],
+        "unlock_eras": [
+          2
+        ]
+      },
+      "condition": "Starts inactive, no extra fuel or charge; no user data or network privileges.",
+      "label": "lantern",
+      "line": 1,
+      "minimum_epoch_ordinal_proposed": 2,
+      "ordinary_research_node": "iron_tools",
+      "source": "code/modules/1713/lantern.dm",
+      "type": "/obj/item/flashlight/lantern"
+    },
+    "lanyard": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r7407",
+        "line": 3395,
+        "research_nodes": [
+          "synthetics"
+        ],
+        "unlock_eras": [
+          7
+        ]
+      },
+      "label": "empty retention lanyard",
+      "line": 123,
+      "minimum_epoch_ordinal_proposed": 7,
+      "ordinary_research_node": "synthetics",
+      "source": "code/modules/1713/lanyards.dm",
+      "type": "/obj/item/clothing/accessory/storage/lanyard/retention"
+    },
+    "log": {
+      "label": "logs",
+      "line": 575,
+      "minimum_epoch_ordinal_proposed": 0,
+      "ordinary_research_node": null,
+      "qualification": "Ordinary local acquisition must be confirmed; this is not automatically allowed.",
+      "source": "code/modules/materials/material_sheets.dm",
+      "type": "/obj/item/stack/material/wood"
+    },
+    "paper": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r7009",
+        "line": 2887,
+        "research_nodes": [
+          "papermaking"
+        ],
+        "unlock_eras": [
+          2
+        ]
+      },
+      "label": "blank paper",
+      "line": 9,
+      "minimum_epoch_ordinal_proposed": 2,
+      "ordinary_research_node": "papermaking",
+      "source": "code/game/objects/items/paper/paper.dm",
+      "type": "/obj/item/weapon/paper"
+    },
+    "plank": {
+      "label": "finished planks",
+      "line": 662,
+      "minimum_epoch_ordinal_proposed": 0,
+      "ordinary_research_node": null,
+      "qualification": "Ordinary local acquisition must be confirmed; this is not automatically allowed.",
+      "source": "code/modules/materials/material_sheets.dm",
+      "type": "/obj/item/stack/material/woodplank"
+    },
+    "rope": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r6271",
+        "line": 1784,
+        "research_nodes": [
+          "basic_tools"
+        ],
+        "unlock_eras": [
+          0
+        ]
+      },
+      "label": "rope",
+      "line": 349,
+      "minimum_epoch_ordinal_proposed": 0,
+      "ordinary_research_node": "basic_tools",
+      "source": "code/modules/materials/material_sheets.dm",
+      "type": "/obj/item/stack/material/rope"
+    },
+    "sandstone": {
+      "label": "sandstone",
+      "line": 243,
+      "minimum_epoch_ordinal_proposed": 1,
+      "ordinary_research_node": "stone_masonry",
+      "qualification": "Ordinary material supply must be confirmed locally; node is a proposed conservative floor, not an acquisition route.",
+      "source": "code/modules/materials/material_sheets.dm",
+      "type": "/obj/item/stack/material/sandstone"
+    },
+    "smartphone": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5327",
+        "line": 489,
+        "research_nodes": [
+          "consumer_electronics"
+        ],
+        "unlock_eras": [
+          9
+        ]
+      },
+      "condition": "Starts inactive, no extra fuel or charge; no user data or network privileges.",
+      "label": "unconfigured smartphone",
+      "line": 321,
+      "minimum_epoch_ordinal_proposed": 9,
+      "ordinary_research_node": "consumer_electronics",
+      "source": "code/modules/1713/telephone.dm",
+      "type": "/obj/item/weapon/telephone/mobile/smartphone"
+    },
+    "stone": {
+      "label": "stone",
+      "line": 256,
+      "minimum_epoch_ordinal_proposed": 0,
+      "ordinary_research_node": null,
+      "qualification": "Ordinary local acquisition must be confirmed; this is not automatically allowed.",
+      "source": "code/modules/materials/material_sheets.dm",
+      "type": "/obj/item/stack/material/stone"
+    },
+    "thermometer": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r7150",
+        "line": 3056,
+        "research_nodes": [
+          "optics_instruments"
+        ],
+        "unlock_eras": [
+          3
+        ]
+      },
+      "label": "empty thermometer body",
+      "line": 197,
+      "minimum_epoch_ordinal_proposed": 3,
+      "ordinary_research_node": "optics_instruments",
+      "source": "code/modules/1713/mercury_crafts.dm",
+      "type": "/obj/item/weapon/thermometer/empty"
+    },
+    "train_lamp": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r7068",
+        "line": 2963,
+        "research_nodes": [
+          "rail_steam"
+        ],
+        "unlock_eras": [
+          4
+        ]
+      },
+      "condition": "Starts inactive, no extra fuel or charge; no user data or network privileges.",
+      "label": "railway hand lamp",
+      "line": 179,
+      "minimum_epoch_ordinal_proposed": 4,
+      "ordinary_research_node": "rail_steam",
+      "source": "code/modules/1713/train_stations.dm",
+      "type": "/obj/item/train_lamp"
+    },
+    "umbrella": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5847",
+        "line": 1106,
+        "research_nodes": [
+          "synthetics"
+        ],
+        "unlock_eras": [
+          7
+        ]
+      },
+      "label": "folding umbrella",
+      "line": 324,
+      "minimum_epoch_ordinal_proposed": 7,
+      "ordinary_research_node": "synthetics",
+      "source": "code/modules/1713/rain_gear.dm",
+      "type": "/obj/item/weapon/umbrella/nylon"
+    },
+    "work_boots": {
+      "atlas_route": {
+        "file": "config/crafting/material_recipes_global.txt",
+        "id": "r5251",
+        "line": 386,
+        "research_nodes": [
+          "textile_mills"
+        ],
+        "unlock_eras": [
+          4
+        ]
+      },
+      "label": "pair of work boots",
+      "line": 21,
+      "minimum_epoch_ordinal_proposed": 4,
+      "ordinary_research_node": "textile_mills",
+      "source": "code/game/objects/items/clothing/shoes/jobs.dm",
+      "type": "/obj/item/clothing/shoes/workboots"
+    }
+  },
+  "live_enabled": false,
+  "max_total_award_units": 6,
+  "profile": "buried-ruins-civilian-v1-draft",
+  "schema": "civ13-treasure-loot-review/1",
+  "slot_caps_per_party_run": {
+    "cache": {
+      "draws": 1,
+      "units": 2
+    },
+    "supply": {
+      "draws": 1,
+      "units": 3
+    },
+    "vault": {
+      "draws": 1,
+      "units": 1
+    }
+  },
+  "source_pin": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521"
+}

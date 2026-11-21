@@ -1,0 +1,62 @@
+{
+  "schema": "civ13-tier-dmm-receipt-review/1",
+  "specimens": [
+    {
+      "id": "survey",
+      "seed": "tier-small-003",
+      "width": 40,
+      "height": 40,
+      "grid_cells": 1600,
+      "rooms": 6,
+      "loops": 0,
+      "optional_rooms": 1,
+      "pressure_sites": 2,
+      "closed_door_outbound_steps": 52,
+      "closed_door_return_steps": 52,
+      "open_door_1x1_rooms": 6,
+      "open_door_1x1_treasure_cache_approaches": 2,
+      "minimum_tiles_per_exposed_finish": 5,
+      "terrain_hash": "8b092f5317c03a970105f4141168d8a3cfc6dc3a6b5a4a14098699f45f199c22",
+      "manifest_hash": "374065898d3290e0a7904146af8d6617a51ed778905a094239100377c07657fd",
+      "blocked_centre_control": "rejected"
+    },
+    {
+      "id": "expedition",
+      "seed": "tier-medium-002",
+      "width": 52,
+      "height": 52,
+      "grid_cells": 2704,
+      "rooms": 10,
+      "loops": 1,
+      "optional_rooms": 3,
+      "pressure_sites": 3,
+      "closed_door_outbound_steps": 78,
+      "closed_door_return_steps": 78,
+      "open_door_1x1_rooms": 10,
+      "open_door_1x1_treasure_cache_approaches": 2,
+      "minimum_tiles_per_exposed_finish": 4,
+      "terrain_hash": "ef9e4f3f5754dd6e3467769d573f2ef5a047a5e555f5954e3fca5f9e94afc8cf",
+      "manifest_hash": "3ba5f0238c1b2268a753f3076e920190df8f2edfdad6793478d23bc7e4fa884c",
+      "blocked_centre_control": "rejected"
+    },
+    {
+      "id": "deep-reliquary",
+      "seed": "tier-large-012",
+      "width": 66,
+      "height": 65,
+      "grid_cells": 4290,
+      "rooms": 15,
+      "loops": 3,
+      "optional_rooms": 5,
+      "pressure_sites": 4,
+      "closed_door_outbound_steps": 117,
+      "closed_door_return_steps": 117,
+      "open_door_1x1_rooms": 15,
+      "open_door_1x1_treasure_cache_approaches": 2,
+      "minimum_tiles_per_exposed_finish": 5,
+      "terrain_hash": "d142c4ddf5e49ddcd97b088d414054501c82d2bea22d5e9fd63f0bf1847aa3c4",
+      "manifest_hash": "b91479d059014e7bbeb9340e42bdd33f6a4c0a3dc1c32983229c9fcf2400a2f8",
+      "blocked_centre_control": "rejected"
+    }
+  ]
+}

@@ -1,0 +1,1871 @@
+{
+  "maps": [
+    {
+      "blocked_center_rejected": true,
+      "dmm_sha256": "a7bae36e84755a88c29cfcaf9c001185dc920d04b8084b24ff0822dea6f15cbd",
+      "extra_carving_rejected": true,
+      "manifest_sha256": "e94eb99f8cd978128e00ea9dcec0561e2ae94960e4a0d016b32a493ee638c8c6",
+      "round_trip_one_way_steps": 91,
+      "seed": "ruins-06",
+      "shoulder_pairs": 2,
+      "threshold_bands": 14,
+      "transitions": [
+        {
+          "center": [
+            7,
+            11
+          ],
+          "crossing": [
+            [
+              8,
+              11
+            ],
+            [
+              7,
+              11
+            ],
+            [
+              6,
+              11
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            0,
+            0
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            7,
+            15
+          ],
+          "crossing": [
+            [
+              6,
+              15
+            ],
+            [
+              7,
+              15
+            ],
+            [
+              8,
+              15
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            0,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            12,
+            7
+          ],
+          "crossing": [
+            [
+              12,
+              6
+            ],
+            [
+              12,
+              7
+            ],
+            [
+              12,
+              8
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            0,
+            0
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            15,
+            7
+          ],
+          "crossing": [
+            [
+              15,
+              8
+            ],
+            [
+              15,
+              7
+            ],
+            [
+              15,
+              6
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            0
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            12,
+            20
+          ],
+          "crossing": [
+            [
+              12,
+              19
+            ],
+            [
+              12,
+              20
+            ],
+            [
+              12,
+              21
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            0,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            16,
+            20
+          ],
+          "crossing": [
+            [
+              16,
+              21
+            ],
+            [
+              16,
+              20
+            ],
+            [
+              16,
+              19
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            1,
+            1
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            25,
+            7
+          ],
+          "crossing": [
+            [
+              25,
+              6
+            ],
+            [
+              25,
+              7
+            ],
+            [
+              25,
+              8
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            0
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            28,
+            7
+          ],
+          "crossing": [
+            [
+              28,
+              8
+            ],
+            [
+              28,
+              7
+            ],
+            [
+              28,
+              6
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            2,
+            0
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            24,
+            20
+          ],
+          "crossing": [
+            [
+              24,
+              19
+            ],
+            [
+              24,
+              20
+            ],
+            [
+              24,
+              21
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            1,
+            1
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            28,
+            20
+          ],
+          "crossing": [
+            [
+              28,
+              21
+            ],
+            [
+              28,
+              20
+            ],
+            [
+              28,
+              19
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            38,
+            7
+          ],
+          "crossing": [
+            [
+              38,
+              6
+            ],
+            [
+              38,
+              7
+            ],
+            [
+              38,
+              8
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            2,
+            0
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            41,
+            7
+          ],
+          "crossing": [
+            [
+              41,
+              8
+            ],
+            [
+              41,
+              7
+            ],
+            [
+              41,
+              6
+            ]
+          ],
+          "landing": [
+            [
+              41,
+              9
+            ],
+            [
+              41,
+              5
+            ]
+          ],
+          "program": "Reliquary vault",
+          "room": [
+            3,
+            0
+          ],
+          "style": "marble_grid"
+        },
+        {
+          "center": [
+            38,
+            20
+          ],
+          "crossing": [
+            [
+              38,
+              19
+            ],
+            [
+              38,
+              20
+            ],
+            [
+              38,
+              21
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            42,
+            20
+          ],
+          "crossing": [
+            [
+              42,
+              21
+            ],
+            [
+              42,
+              20
+            ],
+            [
+              42,
+              19
+            ]
+          ],
+          "landing": [
+            [
+              42,
+              22
+            ],
+            [
+              42,
+              18
+            ]
+          ],
+          "program": "Arrival guardroom",
+          "room": [
+            3,
+            1
+          ],
+          "style": "dark_cobble"
+        }
+      ]
+    },
+    {
+      "blocked_center_rejected": true,
+      "dmm_sha256": "2c22b5a23c294df723ba38e5c60a1633dcfbab83a851e697714f1a962d60e478",
+      "extra_carving_rejected": true,
+      "manifest_sha256": "372b1d9ab465b66d41e34eb76a344d5b2931c6ab5ab0c59d3b6f13c8fcf84177",
+      "round_trip_one_way_steps": 65,
+      "seed": "ruins-02",
+      "shoulder_pairs": 2,
+      "threshold_bands": 16,
+      "transitions": [
+        {
+          "center": [
+            7,
+            12
+          ],
+          "crossing": [
+            [
+              8,
+              12
+            ],
+            [
+              7,
+              12
+            ],
+            [
+              6,
+              12
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            1,
+            0
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            7,
+            16
+          ],
+          "crossing": [
+            [
+              6,
+              16
+            ],
+            [
+              7,
+              16
+            ],
+            [
+              8,
+              16
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            1,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            7,
+            24
+          ],
+          "crossing": [
+            [
+              8,
+              24
+            ],
+            [
+              7,
+              24
+            ],
+            [
+              6,
+              24
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            1,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            7,
+            29
+          ],
+          "crossing": [
+            [
+              6,
+              29
+            ],
+            [
+              7,
+              29
+            ],
+            [
+              8,
+              29
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            1,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            11,
+            20
+          ],
+          "crossing": [
+            [
+              11,
+              19
+            ],
+            [
+              11,
+              20
+            ],
+            [
+              11,
+              21
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            1,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            15,
+            20
+          ],
+          "crossing": [
+            [
+              15,
+              21
+            ],
+            [
+              15,
+              20
+            ],
+            [
+              15,
+              19
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            2,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            20,
+            11
+          ],
+          "crossing": [
+            [
+              21,
+              11
+            ],
+            [
+              20,
+              11
+            ],
+            [
+              19,
+              11
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            0
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            20,
+            16
+          ],
+          "crossing": [
+            [
+              19,
+              16
+            ],
+            [
+              20,
+              16
+            ],
+            [
+              21,
+              16
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            2,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            24,
+            7
+          ],
+          "crossing": [
+            [
+              24,
+              6
+            ],
+            [
+              24,
+              7
+            ],
+            [
+              24,
+              8
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            0
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            28,
+            7
+          ],
+          "crossing": [
+            [
+              28,
+              8
+            ],
+            [
+              28,
+              7
+            ],
+            [
+              28,
+              6
+            ]
+          ],
+          "landing": [
+            [
+              28,
+              9
+            ],
+            [
+              28,
+              5
+            ]
+          ],
+          "program": "Arrival guardroom",
+          "room": [
+            3,
+            0
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            20,
+            24
+          ],
+          "crossing": [
+            [
+              21,
+              24
+            ],
+            [
+              20,
+              24
+            ],
+            [
+              19,
+              24
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            2,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            20,
+            28
+          ],
+          "crossing": [
+            [
+              19,
+              28
+            ],
+            [
+              20,
+              28
+            ],
+            [
+              21,
+              28
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            25,
+            33
+          ],
+          "crossing": [
+            [
+              25,
+              32
+            ],
+            [
+              25,
+              33
+            ],
+            [
+              25,
+              34
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            28,
+            33
+          ],
+          "crossing": [
+            [
+              28,
+              34
+            ],
+            [
+              28,
+              33
+            ],
+            [
+              28,
+              32
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            3,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            33,
+            25
+          ],
+          "crossing": [
+            [
+              34,
+              25
+            ],
+            [
+              33,
+              25
+            ],
+            [
+              32,
+              25
+            ]
+          ],
+          "landing": [
+            [
+              35,
+              25
+            ],
+            [
+              31,
+              25
+            ]
+          ],
+          "program": "Reliquary vault",
+          "room": [
+            3,
+            1
+          ],
+          "style": "marble_grid"
+        },
+        {
+          "center": [
+            33,
+            28
+          ],
+          "crossing": [
+            [
+              32,
+              28
+            ],
+            [
+              33,
+              28
+            ],
+            [
+              34,
+              28
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            3,
+            2
+          ],
+          "style": "dark_cobble"
+        }
+      ]
+    },
+    {
+      "blocked_center_rejected": true,
+      "dmm_sha256": "87d97417f6f2fd57c05e91cfb3de416fbec3952a6291ac921754f7fb05deeb91",
+      "extra_carving_rejected": true,
+      "manifest_sha256": "3463463458196b10211d38cb39aa2112a6c72f2eb9de86828bc240348af830db",
+      "round_trip_one_way_steps": 52,
+      "seed": "ruins-18",
+      "shoulder_pairs": 3,
+      "threshold_bands": 14,
+      "transitions": [
+        {
+          "center": [
+            7,
+            12
+          ],
+          "crossing": [
+            [
+              8,
+              12
+            ],
+            [
+              7,
+              12
+            ],
+            [
+              6,
+              12
+            ]
+          ],
+          "landing": [
+            [
+              9,
+              12
+            ],
+            [
+              5,
+              12
+            ]
+          ],
+          "program": "Reliquary vault",
+          "room": [
+            0,
+            0
+          ],
+          "style": "marble_grid"
+        },
+        {
+          "center": [
+            7,
+            16
+          ],
+          "crossing": [
+            [
+              6,
+              16
+            ],
+            [
+              7,
+              16
+            ],
+            [
+              8,
+              16
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            0,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            11,
+            7
+          ],
+          "crossing": [
+            [
+              11,
+              6
+            ],
+            [
+              11,
+              7
+            ],
+            [
+              11,
+              8
+            ]
+          ],
+          "landing": [
+            [
+              11,
+              5
+            ],
+            [
+              11,
+              9
+            ]
+          ],
+          "program": "Reliquary vault",
+          "room": [
+            0,
+            0
+          ],
+          "style": "marble_grid"
+        },
+        {
+          "center": [
+            15,
+            7
+          ],
+          "crossing": [
+            [
+              15,
+              8
+            ],
+            [
+              15,
+              7
+            ],
+            [
+              15,
+              6
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            1,
+            0
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            12,
+            20
+          ],
+          "crossing": [
+            [
+              12,
+              19
+            ],
+            [
+              12,
+              20
+            ],
+            [
+              12,
+              21
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            0,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            15,
+            20
+          ],
+          "crossing": [
+            [
+              15,
+              21
+            ],
+            [
+              15,
+              20
+            ],
+            [
+              15,
+              19
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            1,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            12,
+            33
+          ],
+          "crossing": [
+            [
+              12,
+              32
+            ],
+            [
+              12,
+              33
+            ],
+            [
+              12,
+              34
+            ]
+          ],
+          "landing": [
+            [
+              12,
+              31
+            ],
+            [
+              12,
+              35
+            ]
+          ],
+          "program": "Arrival guardroom",
+          "room": [
+            0,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            15,
+            33
+          ],
+          "crossing": [
+            [
+              15,
+              34
+            ],
+            [
+              15,
+              33
+            ],
+            [
+              15,
+              32
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            20,
+            12
+          ],
+          "crossing": [
+            [
+              21,
+              12
+            ],
+            [
+              20,
+              12
+            ],
+            [
+              19,
+              12
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            1,
+            0
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            20,
+            15
+          ],
+          "crossing": [
+            [
+              19,
+              15
+            ],
+            [
+              20,
+              15
+            ],
+            [
+              21,
+              15
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            1,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            20,
+            25
+          ],
+          "crossing": [
+            [
+              21,
+              25
+            ],
+            [
+              20,
+              25
+            ],
+            [
+              19,
+              25
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            1,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            20,
+            29
+          ],
+          "crossing": [
+            [
+              19,
+              29
+            ],
+            [
+              20,
+              29
+            ],
+            [
+              21,
+              29
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            25,
+            33
+          ],
+          "crossing": [
+            [
+              25,
+              32
+            ],
+            [
+              25,
+              33
+            ],
+            [
+              25,
+              34
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            29,
+            33
+          ],
+          "crossing": [
+            [
+              29,
+              34
+            ],
+            [
+              29,
+              33
+            ],
+            [
+              29,
+              32
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            2,
+            2
+          ],
+          "style": "dark_cobble"
+        }
+      ]
+    },
+    {
+      "blocked_center_rejected": true,
+      "dmm_sha256": "d9fdefcd0fb380dd2c05335b5c3bbe683e05dc14c0a685d4186622e41aa3cc37",
+      "extra_carving_rejected": true,
+      "manifest_sha256": "6786330b8fb6c83eca28a136009ebf5e439627329b7ba9bbfeccad52b1ef1369",
+      "round_trip_one_way_steps": 52,
+      "seed": "ruins-12",
+      "shoulder_pairs": 3,
+      "threshold_bands": 20,
+      "transitions": [
+        {
+          "center": [
+            12,
+            20
+          ],
+          "crossing": [
+            [
+              12,
+              19
+            ],
+            [
+              12,
+              20
+            ],
+            [
+              12,
+              21
+            ]
+          ],
+          "landing": [
+            [
+              12,
+              18
+            ],
+            [
+              12,
+              22
+            ]
+          ],
+          "program": "Arrival guardroom",
+          "room": [
+            0,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            16,
+            20
+          ],
+          "crossing": [
+            [
+              16,
+              21
+            ],
+            [
+              16,
+              20
+            ],
+            [
+              16,
+              19
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            20,
+            11
+          ],
+          "crossing": [
+            [
+              21,
+              11
+            ],
+            [
+              20,
+              11
+            ],
+            [
+              19,
+              11
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            1,
+            0
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            20,
+            16
+          ],
+          "crossing": [
+            [
+              19,
+              16
+            ],
+            [
+              20,
+              16
+            ],
+            [
+              21,
+              16
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            20,
+            24
+          ],
+          "crossing": [
+            [
+              21,
+              24
+            ],
+            [
+              20,
+              24
+            ],
+            [
+              19,
+              24
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            20,
+            28
+          ],
+          "crossing": [
+            [
+              19,
+              28
+            ],
+            [
+              20,
+              28
+            ],
+            [
+              21,
+              28
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            1,
+            2
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            24,
+            20
+          ],
+          "crossing": [
+            [
+              24,
+              19
+            ],
+            [
+              24,
+              20
+            ],
+            [
+              24,
+              21
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            1,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            28,
+            20
+          ],
+          "crossing": [
+            [
+              28,
+              21
+            ],
+            [
+              28,
+              20
+            ],
+            [
+              28,
+              19
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            2,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            25,
+            33
+          ],
+          "crossing": [
+            [
+              25,
+              32
+            ],
+            [
+              25,
+              33
+            ],
+            [
+              25,
+              34
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            1,
+            2
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            28,
+            33
+          ],
+          "crossing": [
+            [
+              28,
+              34
+            ],
+            [
+              28,
+              33
+            ],
+            [
+              28,
+              32
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            33,
+            25
+          ],
+          "crossing": [
+            [
+              34,
+              25
+            ],
+            [
+              33,
+              25
+            ],
+            [
+              32,
+              25
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            2,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            33,
+            28
+          ],
+          "crossing": [
+            [
+              32,
+              28
+            ],
+            [
+              33,
+              28
+            ],
+            [
+              34,
+              28
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            38,
+            20
+          ],
+          "crossing": [
+            [
+              38,
+              19
+            ],
+            [
+              38,
+              20
+            ],
+            [
+              38,
+              21
+            ]
+          ],
+          "landing": [],
+          "program": "Supply storeroom",
+          "room": [
+            2,
+            1
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            41,
+            20
+          ],
+          "crossing": [
+            [
+              41,
+              21
+            ],
+            [
+              41,
+              20
+            ],
+            [
+              41,
+              19
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            3,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            38,
+            33
+          ],
+          "crossing": [
+            [
+              38,
+              32
+            ],
+            [
+              38,
+              33
+            ],
+            [
+              38,
+              34
+            ]
+          ],
+          "landing": [],
+          "program": "Collapsed watchpost",
+          "room": [
+            2,
+            2
+          ],
+          "style": "dark_cobble"
+        },
+        {
+          "center": [
+            41,
+            33
+          ],
+          "crossing": [
+            [
+              41,
+              34
+            ],
+            [
+              41,
+              33
+            ],
+            [
+              41,
+              32
+            ]
+          ],
+          "landing": [
+            [
+              41,
+              35
+            ],
+            [
+              41,
+              31
+            ]
+          ],
+          "program": "Reliquary vault",
+          "room": [
+            3,
+            2
+          ],
+          "style": "marble_grid"
+        },
+        {
+          "center": [
+            46,
+            12
+          ],
+          "crossing": [
+            [
+              47,
+              12
+            ],
+            [
+              46,
+              12
+            ],
+            [
+              45,
+              12
+            ]
+          ],
+          "landing": [],
+          "program": "Processional hall",
+          "room": [
+            3,
+            0
+          ],
+          "style": "sand_brick"
+        },
+        {
+          "center": [
+            46,
+            16
+          ],
+          "crossing": [
+            [
+              45,
+              16
+            ],
+            [
+              46,
+              16
+            ],
+            [
+              47,
+              16
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            3,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            46,
+            24
+          ],
+          "crossing": [
+            [
+              47,
+              24
+            ],
+            [
+              46,
+              24
+            ],
+            [
+              45,
+              24
+            ]
+          ],
+          "landing": [],
+          "program": "Scribe workshop",
+          "room": [
+            3,
+            1
+          ],
+          "style": "stone_brick"
+        },
+        {
+          "center": [
+            46,
+            28
+          ],
+          "crossing": [
+            [
+              45,
+              28
+            ],
+            [
+              46,
+              28
+            ],
+            [
+              47,
+              28
+            ]
+          ],
+          "landing": [
+            [
+              44,
+              28
+            ],
+            [
+              48,
+              28
+            ]
+          ],
+          "program": "Reliquary vault",
+          "room": [
+            3,
+            2
+          ],
+          "style": "marble_grid"
+        }
+      ]
+    }
+  ],
+  "schema": "civ13-treasure-arrival-review/1"
+}

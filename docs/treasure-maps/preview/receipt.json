@@ -1,0 +1,21 @@
+{
+  "base": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "byond_gameplay": false,
+  "dmm_text_parseback": true,
+  "files": {
+    "dungeon-layout-review.png": "1fc593cad4a4a776404ee882e42ac81fc2585c90ce2acced2980107682fd76fa",
+    "ruins-02.dmm": "e8b4f8da314d4f4ec0b3d3967dd0cc670425b3bc2c72a2dd260ec0ab95a094fd",
+    "ruins-02.json": "6cffb32769e81ac2d305cb42d3c768c719e4e5129cda592be03386d9005f177d",
+    "ruins-02.png": "b768b142fd971d7ab0dd2a4508fec796023efcedce1b62aa108e3f6913ed7c3c",
+    "ruins-06.dmm": "9e923a65ad774229a329aeabc10a937860211da3144b9bbc08de6bbb65c90410",
+    "ruins-06.json": "4984dd9a4a688f53d7d820fe917d9c7886d29044a6a11debf1a7a756596d567d",
+    "ruins-06.png": "5fd3cdce8f5c38febb8c0e9d5fb6fb367e07dd2bae8b1b09eb598fba4a6d1376",
+    "ruins-12.dmm": "061b5ad7efb36e0c6af5f3bc464862a42c121234a8b719d57e593f2e2e5f2cb2",
+    "ruins-12.json": "914a92e93852cd156cebf7a54f6d8b645577b6a21100ff846ffeb1bcd69106ba",
+    "ruins-12.png": "ba2f12daa06eba32ef6d7694a584c4be6f52d226740e8fa74d44ec3bbf5e6205",
+    "ruins-18.dmm": "536a746b8f0fc26e2b4dd6852254d6836b2f44acf1fa0eff63dcd9cf0ba955db",
+    "ruins-18.json": "4e2e355d2dc924ab050a36bb19b3c6e6639a7f5cd4eaf7ede032b7ad4d3496d5",
+    "ruins-18.png": "79d34886701896f10a013630c3b2225d3dab08a559ec2a856adf4cdd8e5a879e"
+  },
+  "schema": "dungeon-preview-receipt/1"
+}

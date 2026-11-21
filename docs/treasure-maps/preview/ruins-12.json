@@ -1,0 +1,721 @@
+{
+  "entry": [
+    7,
+    20
+  ],
+  "footprint": 3,
+  "height": 40,
+  "layout_sha256": "6cba78e4985098eb2a406a7d099fe5266ff909d941dab680d17fd020e19d9961",
+  "links": [
+    [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    [
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    [
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    [
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        1
+      ]
+    ],
+    [
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        2
+      ]
+    ],
+    [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        1
+      ]
+    ],
+    [
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        2
+      ]
+    ]
+  ],
+  "loops": 2,
+  "optional_rooms": 4,
+  "outbound": [
+    [
+      7,
+      20
+    ],
+    [
+      8,
+      20
+    ],
+    [
+      9,
+      20
+    ],
+    [
+      10,
+      20
+    ],
+    [
+      11,
+      20
+    ],
+    [
+      12,
+      20
+    ],
+    [
+      13,
+      20
+    ],
+    [
+      14,
+      20
+    ],
+    [
+      15,
+      20
+    ],
+    [
+      16,
+      20
+    ],
+    [
+      17,
+      20
+    ],
+    [
+      18,
+      20
+    ],
+    [
+      18,
+      21
+    ],
+    [
+      19,
+      21
+    ],
+    [
+      19,
+      22
+    ],
+    [
+      20,
+      22
+    ],
+    [
+      20,
+      23
+    ],
+    [
+      20,
+      24
+    ],
+    [
+      20,
+      25
+    ],
+    [
+      20,
+      26
+    ],
+    [
+      20,
+      27
+    ],
+    [
+      20,
+      28
+    ],
+    [
+      20,
+      29
+    ],
+    [
+      20,
+      30
+    ],
+    [
+      20,
+      31
+    ],
+    [
+      20,
+      32
+    ],
+    [
+      20,
+      33
+    ],
+    [
+      21,
+      33
+    ],
+    [
+      22,
+      33
+    ],
+    [
+      23,
+      33
+    ],
+    [
+      24,
+      33
+    ],
+    [
+      25,
+      33
+    ],
+    [
+      26,
+      33
+    ],
+    [
+      27,
+      33
+    ],
+    [
+      28,
+      33
+    ],
+    [
+      29,
+      33
+    ],
+    [
+      30,
+      33
+    ],
+    [
+      31,
+      33
+    ],
+    [
+      32,
+      33
+    ],
+    [
+      33,
+      33
+    ],
+    [
+      34,
+      33
+    ],
+    [
+      35,
+      33
+    ],
+    [
+      36,
+      33
+    ],
+    [
+      37,
+      33
+    ],
+    [
+      38,
+      33
+    ],
+    [
+      39,
+      33
+    ],
+    [
+      40,
+      33
+    ],
+    [
+      41,
+      33
+    ],
+    [
+      42,
+      33
+    ],
+    [
+      43,
+      33
+    ],
+    [
+      44,
+      33
+    ],
+    [
+      45,
+      33
+    ],
+    [
+      46,
+      33
+    ]
+  ],
+  "profile": "seeded-buried-ruins/1",
+  "return_route": [
+    [
+      46,
+      33
+    ],
+    [
+      45,
+      33
+    ],
+    [
+      44,
+      33
+    ],
+    [
+      43,
+      33
+    ],
+    [
+      42,
+      33
+    ],
+    [
+      41,
+      33
+    ],
+    [
+      40,
+      33
+    ],
+    [
+      39,
+      33
+    ],
+    [
+      38,
+      33
+    ],
+    [
+      37,
+      33
+    ],
+    [
+      36,
+      33
+    ],
+    [
+      35,
+      33
+    ],
+    [
+      34,
+      33
+    ],
+    [
+      33,
+      33
+    ],
+    [
+      32,
+      33
+    ],
+    [
+      31,
+      33
+    ],
+    [
+      30,
+      33
+    ],
+    [
+      29,
+      33
+    ],
+    [
+      28,
+      33
+    ],
+    [
+      27,
+      33
+    ],
+    [
+      26,
+      33
+    ],
+    [
+      25,
+      33
+    ],
+    [
+      24,
+      33
+    ],
+    [
+      23,
+      33
+    ],
+    [
+      22,
+      33
+    ],
+    [
+      21,
+      33
+    ],
+    [
+      20,
+      33
+    ],
+    [
+      20,
+      32
+    ],
+    [
+      20,
+      31
+    ],
+    [
+      20,
+      30
+    ],
+    [
+      20,
+      29
+    ],
+    [
+      20,
+      28
+    ],
+    [
+      20,
+      27
+    ],
+    [
+      20,
+      26
+    ],
+    [
+      20,
+      25
+    ],
+    [
+      20,
+      24
+    ],
+    [
+      20,
+      23
+    ],
+    [
+      20,
+      22
+    ],
+    [
+      19,
+      22
+    ],
+    [
+      19,
+      21
+    ],
+    [
+      18,
+      21
+    ],
+    [
+      18,
+      20
+    ],
+    [
+      17,
+      20
+    ],
+    [
+      16,
+      20
+    ],
+    [
+      15,
+      20
+    ],
+    [
+      14,
+      20
+    ],
+    [
+      13,
+      20
+    ],
+    [
+      12,
+      20
+    ],
+    [
+      11,
+      20
+    ],
+    [
+      10,
+      20
+    ],
+    [
+      9,
+      20
+    ],
+    [
+      8,
+      20
+    ],
+    [
+      7,
+      20
+    ]
+  ],
+  "rooms": [
+    {
+      "bevel": false,
+      "center": [
+        7,
+        20
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        0,
+        1
+      ],
+      "role": "entry"
+    },
+    {
+      "bevel": true,
+      "center": [
+        20,
+        7
+      ],
+      "half_height": 3,
+      "half_width": 3,
+      "id": [
+        1,
+        0
+      ],
+      "role": "room"
+    },
+    {
+      "bevel": true,
+      "center": [
+        20,
+        20
+      ],
+      "half_height": 3,
+      "half_width": 3,
+      "id": [
+        1,
+        1
+      ],
+      "role": "encounter"
+    },
+    {
+      "bevel": false,
+      "center": [
+        20,
+        33
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        1,
+        2
+      ],
+      "role": "room"
+    },
+    {
+      "bevel": true,
+      "center": [
+        33,
+        20
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        2,
+        1
+      ],
+      "role": "cache"
+    },
+    {
+      "bevel": true,
+      "center": [
+        33,
+        33
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        2,
+        2
+      ],
+      "role": "encounter"
+    },
+    {
+      "bevel": false,
+      "center": [
+        46,
+        7
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        3,
+        0
+      ],
+      "role": "room"
+    },
+    {
+      "bevel": false,
+      "center": [
+        46,
+        20
+      ],
+      "half_height": 3,
+      "half_width": 4,
+      "id": [
+        3,
+        1
+      ],
+      "role": "room"
+    },
+    {
+      "bevel": false,
+      "center": [
+        46,
+        33
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        3,
+        2
+      ],
+      "role": "treasure"
+    }
+  ],
+  "rows_south_first": [
+    "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV###########V",
+    "VVVVVVVVVVVVVVVVV#######VVVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVV##.....##VVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVV#.......#VVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVV#.......#VVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVV#.......#VVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVV#.......#VVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVV#.......#VVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVV##.....##VVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVVV##...##VVVVVVVVVVVVVVVVV#.........#V",
+    "VVVVVVVVVVVVVVVVVV#...#VVVVVVVVVVVVVVVVVV####...####V",
+    "VVVVVVVVVVVVVVVVVV#...#VVVVVVVVVVVVVVVVVVVVV#...#VVVV",
+    "VVVVVVVVVVVVVVVVVV#...#VVVVVVVVVVVVVVVVVVVVV#...#VVVV",
+    "VV###########VVVVV#...#VVVVVV#########VVVVVV#...#VVVV",
+    "VV#.........#VVVV##...##VVVV##.......##VV####...####V",
+    "VV#.........#VVV##.....##VVV#.........#VV#.........#V",
+    "VV#.........#####.......#####.........####.........#V",
+    "VV#................................................#V",
+    "VV#................................................#V",
+    "VV#................................................#V",
+    "VV#.........#####.......#####.........####.........#V",
+    "VV#.........#VVV##.....##VVV#.........#VV#.........#V",
+    "VV#.........#VVVV##...##VVVV##.......##VV####...####V",
+    "VV###########VVVVV#...#VVVVVV###...###VVVVVV#...#VVVV",
+    "VVVVVVVVVVVVVVVVVV#...#VVVVVVVV#...#VVVVVVVV#...#VVVV",
+    "VVVVVVVVVVVVVVVVVV#...#VVVVVVVV#...#VVVVVVVV#...#VVVV",
+    "VVVVVVVVVVVVVVV####...####VVV###...###VVV####...####V",
+    "VVVVVVVVVVVVVVV#.........#VV##.......##VV#.........#V",
+    "VVVVVVVVVVVVVVV#.........#VV#.........#VV#.........#V",
+    "VVVVVVVVVVVVVVV#.........####.........####.........#V",
+    "VVVVVVVVVVVVVVV#...................................#V",
+    "VVVVVVVVVVVVVVV#...................................#V",
+    "VVVVVVVVVVVVVVV#...................................#V",
+    "VVVVVVVVVVVVVVV#.........####.........####.........#V",
+    "VVVVVVVVVVVVVVV#.........#VV#.........#VV#.........#V",
+    "VVVVVVVVVVVVVVV#.........#VV##.......##VV#.........#V",
+    "VVVVVVVVVVVVVVV###########VVV#########VVV###########V",
+    "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+  ],
+  "schema": "civ13-dungeon-preview/1",
+  "seed": "ruins-12",
+  "source_commit": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "treasure": [
+    46,
+    33
+  ],
+  "walkable_tiles": 772,
+  "width": 53
+}
