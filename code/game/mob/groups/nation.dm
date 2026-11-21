@@ -23,7 +23,9 @@ var/global/list/nation_assemblies = list() // every nation assembly, designated 
 // Tier -> list(name, factions held, earliest ordinal age, indoors,
 // list(material kind = list(stack type, amount, label))), as faction_hall_tiers.
 // Without an assembly a nation holds 3 factions.
-var/global/list/nation_assembly_tiers = list(
+var/global/list/nation_assembly_tiers = nation_assembly_tiers_table()
+/proc/nation_assembly_tiers_table()
+	return list(
 	list("meeting ground", 4, 1, FALSE, list(
 		"wood" = list(/obj/item/stack/material/wood, 120, "wood"),
 		"stone" = list(/obj/item/stack/material/stone, 120, "stone"))),
@@ -237,8 +239,8 @@ var/global/list/nation_assembly_tiers = list(
 			choices += list("Government", "Vote on an application", "Vote on a common money")
 		if (nid && G["body"] && nation_home_faction(faction))
 			choices.Insert(2, "Motions and elections")
-		if (nid && (G["type"] == "monarchy" || G["type"] == "republic") && nation_heads(nid))
-			choices.Insert(2, G["type"] == "monarchy" ? "Name an heir" : "Name a deputy")
+		if (nid && (nation_hereditary(G) || G["type"] == "republic") && nation_heads(nid))
+			choices.Insert(2, nation_hereditary(G) ? "Name an heir" : "Name a deputy")
 		if (nid && nation_home_faction(faction))
 			var/office = nation_office_of(nid, nation_account())
 			if (office == "treasurer" && !("Vote on a common money" in choices))

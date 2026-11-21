@@ -197,6 +197,7 @@ var/global/datum/weather_air_grid/weather_air = null
 	settle_wind(snap) // weather_wind.dm
 	settle_precip() // weather_precip.dm
 	settle_fog(snap) // weather_fog.dm
+	settle_instruments() // weather_instruments.dm
 	steps++
 
 // One weather tick (processes/weather.dm, through weather_systems_step()).

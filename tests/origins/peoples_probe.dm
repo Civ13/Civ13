@@ -206,6 +206,64 @@ var/peoples_runtime_error = FALSE
 		peoples_check(moved == 5 && pact_fjord.origin_id == "fjordfolk" && neighbour.origin_id == "fjordfolk", "only the nation's members of that people join it")
 		peoples_check(!(pact_key in pending) && !(pact_key in isolation), "the split clears the wait and the years")
 
+		// Blending.
+		for (var/mob/living/human/H in human_mob_list.Copy())
+			human_mob_list -= H
+			living_mob_list -= H
+		var/list/league = list()
+		for (var/i in 1 to 3)
+			var/mob/living/human/H = peoples_person("fjordfolk")
+			H.civilization = "Sea League"
+			H.loc = locate(1, 1, 1)
+			league += H
+		for (var/i in 1 to 2)
+			var/mob/living/human/H = peoples_person("isleborn")
+			H.civilization = "Sea League"
+			H.loc = locate(2, 1, 1)
+			league += H
+		var/blend_key = people_blend_key("Sea League", "isleborn", "fjordfolk")
+		peoples_check(blend_key == people_blend_key("Sea League", "fjordfolk", "isleborn") && people_blend_pair(people_community_parts(blend_key)[2]).len == 2, "a blend key does not depend on order")
+		var/list/blend_table = language_lineage_part("people_blend")
+		var/list/b_active = list(people_community_key("Sea League", "fjordfolk") = TRUE)
+		for (var/i in 1 to PEOPLE_BLEND_YEARS - 1)
+			people_blend_year(b_active, 2000 + i)
+		peoples_check(blend_table[blend_key] == PEOPLE_BLEND_YEARS - 1 && !(blend_key in pending), "a mixed nation counts years together")
+		people_blend_year(b_active, 2100)
+		peoples_check((blend_key in pending) && people_pending_label(blend_key) == "Fjordfolk and Isleborn", "after enough years the blend waits for a name")
+		var/list/pending_league = people_pending_for("Sea League")
+		peoples_check(pending_league.len == 1, "the leader sees one waiting people")
+		var/datum/origin/tide = blend_people(blend_key, "Tidewater Folk")
+		peoples_check(istype(tide) && tide.parents.len == 2 && tide.parents[1] == "fjordfolk" && tide.language == "Old Norse" && tide.nation == "Sea League", "the blend has both parents and the larger group's tongue")
+		var/still = 0
+		for (var/mob/living/human/H in league)
+			if (H.origin_id == "fjordfolk" || H.origin_id == "isleborn")
+				still++
+		peoples_check(still == 5, "nobody's own people changes")
+		people_blend_year(b_active, 2101)
+		peoples_check(!(blend_key in pending), "a nation does not blend the same two peoples twice")
+		var/mob/living/human/baby = peoples_person(null, null)
+		baby.loc = locate(1, 2, 1)
+		peoples_check(community_blend_people(get_turf(baby), baby) == tide, "the blend belongs to the nation living there")
+		peoples_check(baby.choose_origin("temperate") && baby.origin_id == tide.id, "a newcomer among them is born into the blend")
+		var/mob/living/human/solo = league[5]
+		solo.civilization = "Lone Isle"
+		var/list/lone = list(people_community_key("Lone Isle", "isleborn") = TRUE)
+		people_blend_year(lone, 2102)
+		peoples_check(!length(people_pending_for("Lone Isle")), "a nation too small never blends")
+
+		// Belonging.
+		var/mob/living/human/guest = peoples_person("hearthlanders")
+		guest.loc = locate(1, 1, 1)
+		for (var/i in 1 to PEOPLE_RAISED_YEARS)
+			guest.people_played_year = TRUE
+			people_belong_year()
+		peoples_check(guest.raised_among("fjordfolk") && !guest.raised_among("isleborn") && guest.origin_id == "hearthlanders", "living among a people for years raises a character among them, birth people kept")
+		var/mob/living/human/idle = peoples_person("hearthlanders")
+		idle.loc = locate(1, 1, 1)
+		for (var/i in 1 to PEOPLE_RAISED_YEARS)
+			people_belong_year()
+		peoples_check(!idle.raised_among("fjordfolk"), "years not played do not count")
+
 		// The year.
 		var/now_year = world_calendar_year()
 		peoples_check(isnum(now_year) && now_year > 0 && now_year == round(now_year), "the calendar year is a whole number")

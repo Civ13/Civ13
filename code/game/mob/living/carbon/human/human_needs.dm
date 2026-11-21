@@ -208,15 +208,14 @@
 		hygiene = HYGIENE_LEVEL_CLEAN
 	if (hygiene < 0)
 		hygiene = 0
-	var/image/img_nasties = image('icons/effects/effects.dmi', "nothing")
+	var/show_smell = FALSE
 	switch(hygiene)
 		if(HYGIENE_LEVEL_NORMAL to INFINITY)
 //			img_nasties.overlays += null
 		if(HYGIENE_LEVEL_DIRTY to HYGIENE_LEVEL_NORMAL)
 //			overlays_standing[27] = null
 		if(0 to HYGIENE_LEVEL_DIRTY)
-			var/image/smell = image('icons/effects/effects.dmi', "smell")
-			img_nasties.overlays += smell
+			show_smell = TRUE
 	if (hygiene <= HYGIENE_LEVEL_DIRTY)
 		if (prob(12))
 			for(var/mob/living/human/HM in range(3,src))
@@ -237,8 +236,6 @@
 				if (C.flea_typhus)
 					typhus_fleas = TRUE
 	if (fleas_found)
-		var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
-		img_nasties.overlays += fleas
 		if (!has_fleas)
 			to_chat(src, SPAN_WARNING("You feel something biting you. Your filthy clothes are crawling with fleas! Wash them, or you may catch typhus."))
 		else if (prob(1))
@@ -255,6 +252,13 @@
 	var/nasties_state = "[hygiene < HYGIENE_LEVEL_DIRTY ? 1 : 0][fleas_found ? 1 : 0]"
 	if (nasties_state != hygiene_overlay_state || !overlays_standing[27])
 		hygiene_overlay_state = nasties_state
+		var/image/img_nasties = image('icons/effects/effects.dmi', "nothing")
+		if (show_smell)
+			var/image/smell = image('icons/effects/effects.dmi', "smell")
+			img_nasties.overlays += smell
+		if (fleas_found)
+			var/image/fleas = image('icons/effects/effects.dmi', "lice_overlay")
+			img_nasties.overlays += fleas
 		overlays_standing[27] = img_nasties
 		queue_overlay_redraw()
 /mob/living/human/var/tmp/hygiene_overlay_state = null

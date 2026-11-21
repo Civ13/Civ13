@@ -42,7 +42,9 @@
 
 // Fields never recorded nor set: identity, place, drawing state while held,
 // forensic marks, and process-local links.
-var/global/list/region_travel_generic_skip = list(
+var/global/list/region_travel_generic_skip = region_travel_generic_skip_table()
+/proc/region_travel_generic_skip_table()
+	return list(
 	"type", "parent_type", "vars", "contents", "loc", "x", "y", "z", "tag", "key", "ckey",
 	"verbs", "locs", "overlays", "underlays", "vis_contents", "vis_locs", "appearance",
 	"screen_loc", "layer", "plane", "mouse_opacity", "group", "reagents", "client",

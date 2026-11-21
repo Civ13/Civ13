@@ -10,7 +10,9 @@
 // saved on the character and travels between regions with them.
 
 // Sign id -> name, season, calling and stat offsets. Season order.
-var/list/birth_chart_signs = list(
+var/list/birth_chart_signs = birth_chart_signs_table()
+/proc/birth_chart_signs_table()
+	return list(
 	"ox" = list("name" = "the Ox", "season" = "early spring", "calling" = "ploughman, hauler and builder",
 		"stats" = list("strength" = 10, "farming" = 5, "stamina" = 5, "dexterity" = -10, "philosophy" = -5, "swimming" = -5)),
 	"hearth" = list("name" = "the Hearth", "season" = "mid spring", "calling" = "keeper of a settled village",

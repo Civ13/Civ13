@@ -390,6 +390,14 @@ var/global/list/origins_by_id = null
 	var/list/peoples = community.len ? community_people_choices(community) : land_peoples(map.ID)
 	if (community.len && peoples.len)
 		O = peoples[peoples[1]]
+		// A nation here grew a people of its peoples (peoples_blend.dm): newcomers are born into it.
+		var/datum/origin/blend = community_blend_people(get_turf(src), src)
+		if (blend)
+			var/list/with_blend = list("[blend.name]" = blend)
+			for (var/people in peoples)
+				with_blend[people] = peoples[people]
+			peoples = with_blend
+			O = blend
 	// Returning where the last character died: the same people, if it lives here.
 	if (legacy_people)
 		var/datum/origin/kept = origin_by_id(legacy_people)

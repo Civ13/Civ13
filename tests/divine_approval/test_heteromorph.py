@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TEXT = (ROOT / 'code/modules/divine/heteromorph.dm').read_text()
 VERB = (ROOT / 'code/modules/admin/verbs/divine_patron.dm').read_text()
 FORM = (ROOT / 'code/modules/divine/heteromorph_form.dm').read_text()
+FLIGHT = (ROOT / 'code/modules/divine/heteromorph_flight.dm').read_text()
 
 
 def body(text, path):
@@ -109,6 +110,43 @@ class TrueForm(unittest.TestCase):
         for key in ('health', 'transform_seconds', 'max_minutes', 'cooldown_minutes', 'revert_fraction'):
             self.assertIsInstance(row[key], (int, float))
             self.assertIn('"%s"' % key, FORM)
+
+
+class Flight(unittest.TestCase):
+    def test_built_and_offered_only_to_winged_forms(self):
+        dme = (ROOT / 'civ13.dme').read_text()
+        self.assertIn('#include "code\\modules\\divine\\heteromorph_flight.dm"', dme)
+        self.assertIn('heteromorph_can_fly = TRUE', body(FLIGHT, '/mob/living/simple_animal/heteromorph_form/dragon\n'))
+        new = body(FORM, '/mob/living/simple_animal/heteromorph_form/New(')
+        self.assertIn('if (heteromorph_can_fly)', new)
+        # One New() per type: extend through the base proc, not a second override.
+        self.assertNotIn('/mob/living/simple_animal/heteromorph_form/New(', FLIGHT)
+        for forbidden in ('input(', 'alert(', 'spawn('):
+            self.assertNotIn(forbidden, FLIGHT)
+
+    def test_gaia_only_on_persistent_worlds(self):
+        allowed = body(FLIGHT, '/proc/heteromorph_flight_allowed()')
+        self.assertIn('map.persistence && map.ID != MAP_NOMADS_GAIA', allowed)
+        verb = body(FLIGHT, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_takeoff_verb()')
+        self.assertLess(verb.index('heteromorph_flight_allowed()'), verb.index('do_after('))
+        self.assertLess(verb.index('do_after('), verb.index('heteromorph_set_flying(TRUE)'))
+        self.assertLess(verb.index('heteromorph_footprint_clear(loc, src)'), verb.index('heteromorph_set_flying(FALSE)'))
+        self.assertIn('heteromorph_log(', verb)
+
+    def test_flying_moves_over_obstacles_but_stays_on_the_map(self):
+        move = body(FORM, '/mob/living/simple_animal/heteromorph_form/Move(')
+        self.assertLess(move.index('heteromorph_flying'), move.index('. = ..()'))
+        step = body(FLIGHT, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_fly_step(')
+        self.assertIn('world.maxx', step)
+        self.assertIn('NewLoc.z != z', step)
+        self.assertIn('forceMove(NewLoc)', step)
+
+    def test_falling_body_never_lands_in_a_wall(self):
+        ret = body(FORM, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_return(')
+        self.assertLess(ret.index('heteromorph_landing_turf(T)'), ret.index('H.forceMove(T)'))
+        self.assertIn('fall_brute', ret)
+        for var in ('heteromorph_flying', 'heteromorph_busy', 'heteromorph_shadow'):
+            self.assertIn('var/tmp/', FLIGHT.split(var, 1)[0].rsplit('\n', 1)[1])
 
 
 if __name__ == '__main__':

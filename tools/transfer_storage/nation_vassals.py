@@ -16,7 +16,8 @@ government through the 'treaty' op, like any treaty:
   alone; the two nations are then at war.
 
 No chains: a vassal takes no vassals and a nation with vassals cannot become
-one. An overlord keeps at most VASSALS_PER_NATION. An overlord and its vassal
+one. An overlord keeps at most VASSALS_PER_NATION (FEUDAL_VASSALS under a
+feudal crown, whose vassals wait FEUDAL_LOCK_DAYS for independence). An overlord and its vassal
 cannot declare war on each other, and never contest each other's provinces.
 Tribute is taken in the worlds (code/modules/provinces/province_treaties.dm).
 """
@@ -27,6 +28,9 @@ VASSAL_LOCK_DAYS = 14
 VASSAL_IMPOSE_WINS = 2
 VASSAL_WIN_DAYS = 14
 VASSALS_PER_NATION = 4
+# A feudal crown keeps more vassals and holds them longer.
+FEUDAL_VASSALS = 8
+FEUDAL_LOCK_DAYS = 28
 
 
 class NationVassals:
@@ -37,6 +41,9 @@ class NationVassals:
             vassal TEXT PRIMARY KEY, overlord TEXT NOT NULL, since INTEGER NOT NULL, imposed INTEGER NOT NULL)''')
         self.db.execute('''CREATE TABLE IF NOT EXISTS nation_siege_win(
             winner TEXT NOT NULL, loser TEXT NOT NULL, at INTEGER NOT NULL)''')
+
+    def feudal(self, nation):
+        return self.government(nation)['type'] == 'feudal'
 
     def overlord_of(self, nation):
         row = self.db.execute('SELECT overlord FROM nation_vassal WHERE vassal = ?', (nation,)).fetchone()
@@ -78,8 +85,9 @@ class NationVassals:
                                   (nation, other)).fetchone()
             if not row:
                 return 'Your nation is not a vassal of that nation.'
-            if now < row[0] + VASSAL_LOCK_DAYS * DAY:
-                return 'A vassal can declare independence only %d days after it became one.' % VASSAL_LOCK_DAYS
+            lock = FEUDAL_LOCK_DAYS if self.feudal(other) else VASSAL_LOCK_DAYS
+            if now < row[0] + lock * DAY:
+                return 'A vassal can declare independence only %d days after it became one.' % lock
             return None
         lord, vassal = (other, nation) if kind == 'vassal' else (nation, other)
         if self.overlord_of(vassal) == lord:
@@ -90,8 +98,9 @@ class NationVassals:
             return 'A vassal cannot take vassals of its own.'
         if self.vassals_of(vassal):
             return 'A nation with vassals cannot become a vassal; it must release them first.'
-        if len(self.vassals_of(lord)) >= VASSALS_PER_NATION:
-            return 'An overlord keeps at most %d vassals.' % VASSALS_PER_NATION
+        cap = FEUDAL_VASSALS if self.feudal(lord) else VASSALS_PER_NATION
+        if len(self.vassals_of(lord)) >= cap:
+            return 'This overlord keeps at most %d vassals.' % cap
         if kind == 'impose':
             if not self.treaty(lord, vassal, 'war'):
                 return 'Vassalage can only be imposed on a nation at war with yours.'

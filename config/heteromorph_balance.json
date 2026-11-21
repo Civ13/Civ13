@@ -11,6 +11,10 @@
     "revert_brute": 25,
     "revert_weaken": 8,
     "nutrition_per_life": 0.5,
-    "water_per_life": 0.25
+    "water_per_life": 0.25,
+    "takeoff_seconds": 3,
+    "fly_speed": -1,
+    "fly_nutrition_multiplier": 2,
+    "fall_brute": 30
   }
 }

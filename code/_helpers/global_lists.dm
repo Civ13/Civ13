@@ -58,19 +58,21 @@ var/global/list/lighting_overlay_list = list() // List of lighting overlays queu
 
 var/global/list/processing_objects = list()
 
-var/global/list/zoom_scopes_list = list()
 
 var/global/list/zoom_processing_mobs = list()
 
 var/global/list/faction_hud_users = list()
 
-var/global/list/hud_icon_reference = list()
 
 // names
 var/global/list/names_used[1000] // map
 
-var/global/list/alphabet_lowercase = list("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z")
-var/global/list/alphabet_uppercase = list("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
+var/global/list/alphabet_lowercase = alphabet_lowercase_table()
+/proc/alphabet_lowercase_table()
+	return list("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z")
+var/global/list/alphabet_uppercase = alphabet_uppercase_table()
+/proc/alphabet_uppercase_table()
+	return list("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
 
 #define all_genders_define_list list(MALE,FEMALE,PLURAL,NEUTER)
 
@@ -99,7 +101,6 @@ var/global/list/hair_styles_female_list = list()
 var/global/list/datum/sprite_accessory/facial_hair/facial_hair_styles_list = list()	//stores /datum/sprite_accessory/facial_hair indexed by name
 var/global/list/facial_hair_styles_male_list = list()
 var/global/list/facial_hair_styles_female_list = list()
-var/global/list/skin_styles_female_list = list()		//unused
 
 var/global/list/exclude_jobs = list()
 
@@ -129,34 +130,8 @@ var/global/list/blood = list()
 var/global/list/all_spells = list()
 
 // Strings which corraspond to bodypart covering flags, useful for outputting what something covers.
-var/global/list/string_part_flags = list(
-	"head" = HEAD,
-	"face" = FACE,
-	"eyes" = EYES,
-	"upper body" = UPPER_TORSO,
-	"lower body" = LOWER_TORSO,
-	"legs" = LEGS,
-	"feet" = FEET,
-	"arms" = ARMS,
-	"hands" = HANDS
-)
 
 // Strings which corraspond to slot flags, useful for outputting what slot something is.
-var/global/list/string_slot_flags = list(
-	"back" = SLOT_BACK,
-	"face" = SLOT_MASK,
-	"waist" = SLOT_BELT,
-	"pouch" = SLOT_ID,
-	"ears" = SLOT_EARS,
-	"shoulder" = SLOT_SHOULDER,
-	"hands" = SLOT_GLOVES,
-	"head" = SLOT_HEAD,
-	"feet" = SLOT_FEET,
-	"suit" = SLOT_OCLOTHING,
-	"body" = SLOT_ICLOTHING,
-	"shoulder" = SLOT_SHOULDER,
-	"holster" = SLOT_HOLSTER
-)
 
 // new hair colors
 var/list/hair_colors = list(
@@ -185,7 +160,6 @@ var/list/eye_colors = list(
 var/global/list/global_mutations  = list() // List of hidden mutation things.
 // Noises made when hit while typing.
 var/list/hit_appends = list("-OOF", "-ACK", "-UGH", "-HRNK", "-HURGH", "-GLORF")
-var/list/jobMax		= list()
 var/list/admin_log	 = list()
 var/list/reg_dna	   = list()
 var/list/newplayer_start = list()
@@ -197,7 +171,9 @@ var/list/alldirs = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAS
 var/list/cardinal = list(NORTH, SOUTH, EAST, WEST)
 var/list/ordinal = list(NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
 
-var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
+var/list/reverse_dir = reverse_dir_table()
+/proc/reverse_dir_table()
+	return list( // reverse_dir[dir] = reverse of dir
 	 2,  1,  3,  8, 10,  9, 11,  4,  6,  5,  7, 12, 14, 13, 15, 32, 34, 33, 35, 40, 42,
 	41, 43, 36, 38, 37, 39, 44, 46, 45, 47, 16, 18, 17, 19, 24, 26, 25, 27, 20, 22, 21,
 	23, 28, 30, 29, 31, 48, 50, 49, 51, 56, 58, 57, 59, 52, 54, 53, 55, 60, 62, 61, 63

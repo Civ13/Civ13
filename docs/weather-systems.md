@@ -153,9 +153,12 @@ Players read it three ways:
 - A **weather vane** (wood, Primitive Construction) points into the wind when
   it stands out of doors. Examined, it gives the wind and whether the sky
   upwind is dark, but not how soon.
-- A **barometer** (iron, Optics & Instruments), used in the hand, says
-  whether the needle is steady, falling, falling steadily or dropping fast,
-  and in how many minutes the weather breaks or passes.
+- A **barometer** (iron, Optics & Instruments), used in the hand, reads the
+  pressure in hPa and whether it is steady, rising or falling, and about how
+  many minutes (to five) until the weather breaks or passes. The rain gauge,
+  hygrometer, anemometer and weather station are in
+  [weather-instruments.md](weather-instruments.md); the station forecasts
+  half an hour ahead.
 - The **Farmer's Almanac** has an Outlook line with the same forecast, and
   its Sky line now reads the weather over the reader's own tile.
 

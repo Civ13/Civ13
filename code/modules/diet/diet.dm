@@ -50,7 +50,9 @@ var/global/list/diet_group_sources = list(
 	"vitamins" = "vegetables, fruit, berries, turnips or mushrooms")
 
 // Flavour descriptors carried in nutriment data (ingredient lineage) to nutrient shares.
-var/global/list/diet_descriptor_profiles = list(
+var/global/list/diet_descriptor_profiles = diet_descriptor_profiles_table()
+/proc/diet_descriptor_profiles_table()
+	return list(
 	"bread" = list("carbohydrate" = 1), "toasted bread" = list("carbohydrate" = 1),
 	"bun" = list("carbohydrate" = 1), "dough" = list("carbohydrate" = 1),
 	"wheat" = list("carbohydrate" = 1), "oats" = list("carbohydrate" = 1),
