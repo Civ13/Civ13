@@ -159,3 +159,13 @@ the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 `tests/naval_carrier/berth_probe.dm` (114 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
+
+## Sprites
+
+`icons/obj/berths.dmi` is drawn by `tests/naval_carrier/berth_sprites.py`
+(original pixel art by Fable 5.2; `--check` fails when the DMI is stale,
+`--preview out.png` renders a sheet): `dock_gate_shut`, `dock_gate_open`,
+`refit_add`, `refit_remove`, `refit_change`, `refit_turn` (light greys, tinted
+by the mark's `color`), `yard_office` and `keel_blocks`. Keel blocks
+(`/obj/structure/keel_blocks`, 6 wood, construction, Wagons & Ships) are
+dressing for a dock floor or slipway berth and hold nothing up.

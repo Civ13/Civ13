@@ -61,6 +61,7 @@
 /mob/observer/ghost/proc/spirit_update_sight()
 	if (!client)
 		return
+	spirit_hud_refresh() // spirit_hud.dm
 	if (!is_spirit())
 		if (spirit_sight)
 			client.screen -= spirit_sight

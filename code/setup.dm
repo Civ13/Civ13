@@ -73,6 +73,9 @@
 	sleep(-1)
 
 	var/all_craft_lists = flist("config/crafting/")
+	// The gateway hosts no play, so nobody crafts there: it skips the recipes to start sooner.
+	if (region_gateway_here())
+		all_craft_lists = list()
 
 	for (var/i in all_craft_lists)
 		// This directory also contains non-recipe configuration such as joinery.

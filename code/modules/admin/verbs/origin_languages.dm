@@ -206,7 +206,7 @@
 		return
 	var/key = language_community_key(nation, L)
 	var/list/pending = language_lineage_part("pending")
-	pending[key] = map.ordinal_age
+	pending[key] = language_real_minute()
 	var/wanted = input(usr, "Name it now? Leave empty to let the nation's leader name it.", "Force Language Split") as text|null
 	if (wanted && length(trim(wanted)))
 		var/problem = language_name_problem(wanted)

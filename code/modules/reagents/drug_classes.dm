@@ -49,7 +49,10 @@
 		return "alcohol"
 	if (istype(R, /datum/reagent/drink/coffee))
 		return "caffeine"
-	var/list/table = drug_class_reagents()
+	// This table stays private to classification; the public helper still returns fresh lists.
+	var/static/list/table
+	if (!table)
+		table = drug_class_reagents()
 	for (var/class in table)
 		if (R.id in table[class])
 			return class

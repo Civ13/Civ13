@@ -31,8 +31,8 @@ var/global/list/yard_offices
 /obj/structure/yard_office
 	name = "yard office"
 	desc = "A shipwright's office with a drawing shelf and a stock shed. The slipways, boathouses and docks around it work faster, draw on its stock and keep their draughts on its shelf."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "workbench"
+	icon = 'icons/obj/berths.dmi'
+	icon_state = "yard_office"
 	anchored = TRUE
 	density = TRUE
 	flammable = TRUE
