@@ -273,6 +273,9 @@ var/global/weather_storm_count = 0
 			storms++
 	if (storms >= weather_system_capacity())
 		return
+	// Regions that share their storms draw them from the shared seed instead (weather_shared.dm).
+	if (weather_shared_storms_on())
+		return
 	// The storm forms on a low's front (weather_fronts.dm).
 	weather_front_storm(result == WEATHER_EXTREME)
 
@@ -280,10 +283,13 @@ var/global/weather_storm_count = 0
 
 var/global/weather_storm_severe = FALSE
 
-// The strongest storm over a place, 0 to 1. Sets weather_storm_severe.
+// The strongest storm over a place, 0 to 1, with more on windward hills and
+// less in their rain shadow (weather_precip.dm). Sets weather_storm_severe
+// and weather_storm_convective.
 /proc/weather_storm_strength(x, y)
 	. = 0
 	weather_storm_severe = FALSE
+	weather_storm_convective = FALSE
 	for (var/datum/weather_system/S in weather_systems)
 		if (S.kind != WEATHER_SYSTEM_STORM)
 			continue
@@ -291,8 +297,11 @@ var/global/weather_storm_severe = FALSE
 		if (strength > .)
 			. = strength
 			weather_storm_severe = S.severe
+			weather_storm_convective = S.convective
 		else if (strength && strength == . && S.severe)
 			weather_storm_severe = TRUE
+	if (.)
+		. = min(1, . * weather_orographic_at(x, y))
 
 // TRUE under a mass of hot dry air: more thirst, thirstier crops, no dew.
 /proc/weather_heat_at(atom/A)
@@ -339,6 +348,7 @@ var/global/weather_sample_time = -1
 var/global/weather_sample_class = WEATHER_NONE
 var/global/weather_sample_look = ""
 var/global/weather_sample_intensity = 0
+var/global/weather_sample_kind = null // weather_precip.dm: what falls, when a storm settles it
 var/global/weather_sample_zone_class = null
 var/global/weather_sample_zone_look = null
 
@@ -353,6 +363,7 @@ var/global/weather_sample_zone_look = null
 	weather_sample_class = WEATHER_NONE
 	weather_sample_look = ""
 	weather_sample_intensity = 0
+	weather_sample_kind = null
 	if (!istype(place))
 		return
 	weather_sample_zone_class = place.weather
@@ -368,7 +379,7 @@ var/global/weather_sample_zone_look = null
 	if (!weather_storm_count || place.location != AREA_OUTSIDE || !istype(place, /area/caribbean))
 		return
 	var/strength = weather_storm_strength(T.x, T.y)
-	var/list/state = weather_storm_state(place.climate, strength, weather_storm_severe)
+	var/list/state = weather_precip_adjust(weather_storm_state(place.climate, strength, weather_storm_severe), T, strength)
 	if (!state)
 		return
 	// The worse of the two wins.
@@ -379,6 +390,8 @@ var/global/weather_sample_zone_look = null
 	weather_sample_look = state[1]
 	weather_sample_class = state[2]
 	weather_sample_intensity = state[3]
+	if (state.len >= 4)
+		weather_sample_kind = state[4]
 
 // WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME or WEATHER_SMOG on this tile.
 // Roofed areas are always WEATHER_NONE, as they were as zones.
@@ -411,6 +424,9 @@ var/global/weather_sample_zone_look = null
 	for (var/datum/weather_system/S in weather_systems.Copy())
 		if (S.spent())
 			weather_system_end(S)
+			continue
+		// A shared storm keeps the course every region gives it (weather_shared.dm).
+		if (S.shared_key)
 			continue
 		// Come round to the wind a little at a time.
 		var/new_x = S.vel_x * 0.85 + wind[1] * speed * 0.15

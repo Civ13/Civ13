@@ -83,6 +83,12 @@ var/global/list/region_travel_generic_defaults = list()
 		if(ispath(path, denied)) return FALSE
 	return TRUE
 
+// TRUE when deck cargo of type parent_path may hold a part of type
+// part_path that is itself deck cargo, not an item: the outboard engine of a
+// canoe or a motorboat, clamped inside her.
+/proc/region_travel_generic_part_root(parent_path, part_path)
+	return ispath(parent_path, /obj/structure/vehicle) && ispath(part_path, /obj/structure/engine)
+
 /proc/region_travel_generic_field_ok(key)
 	return istext(key) && length(key) <= 64 && !(key in region_travel_generic_skip)
 
@@ -184,7 +190,7 @@ var/global/list/region_travel_generic_defaults = list()
 // root: I may be deck cargo (a structure or an animal) rather than an item.
 /proc/region_travel_generic_capture(atom/movable/I, depth = 0, atom/movable/parent = null, list/count = null, root = FALSE)
 	if(!count) count = list(0)
-	if(!istype(I) || QDELETED(I) || depth > REGION_TRAVEL_GENERIC_DEPTH || !region_travel_generic_type_ok(I.type, root && !depth)) return null
+	if(!istype(I) || QDELETED(I) || depth > REGION_TRAVEL_GENERIC_DEPTH || !region_travel_generic_type_ok(I.type, root)) return null
 	count[1] = count[1] + 1
 	if(count[1] > REGION_TRAVEL_GENERIC_NODES) return null
 	// Saving first lets an item write down what it keeps in runtime fields
@@ -200,7 +206,7 @@ var/global/list/region_travel_generic_defaults = list()
 	for(var/atom/movable/A in I.contents)
 		if(region_travel_ignorable(A)) continue
 		if(ismob(A)) return null
-		var/list/child = region_travel_generic_capture(A, depth + 1, I, count)
+		var/list/child = region_travel_generic_capture(A, depth + 1, I, count, root && region_travel_generic_part_root(I.type, A.type))
 		if(!child) return null
 		children += list(child)
 		index[A] = children.len
@@ -296,7 +302,7 @@ var/global/list/region_travel_generic_defaults = list()
 	for(var/key in R)
 		if(!(key in list("t", "v", "n", "y", "m", "r", "c", "l", "p"))) return FALSE
 	var/path = istext(R["t"]) ? text2path(R["t"]) : null
-	if(!region_travel_generic_type_ok(path, root && !depth)) return FALSE
+	if(!region_travel_generic_type_ok(path, root)) return FALSE
 	if(!isnull(R["v"]))
 		var/list/fields = R["v"]
 		if(!islist(fields) || fields.len > REGION_TRAVEL_GENERIC_FIELDS) return FALSE
@@ -336,7 +342,9 @@ var/global/list/region_travel_generic_defaults = list()
 		var/list/C = R["c"]
 		if(!islist(C) || C.len > REGION_TRAVEL_GENERIC_CHILDREN) return FALSE
 		for(var/child in C)
-			if(!region_travel_generic_record_valid(child, depth + 1, count)) return FALSE
+			var/list/part = child
+			var/part_path = (islist(part) && istext(part["t"])) ? text2path(part["t"]) : null
+			if(!region_travel_generic_record_valid(child, depth + 1, count, root && region_travel_generic_part_root(path, part_path))) return FALSE
 		children = C.len
 	if(!isnull(R["l"]))
 		var/list/links = R["l"]

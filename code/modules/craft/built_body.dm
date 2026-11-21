@@ -111,6 +111,11 @@
 // Why a tile of the building level cannot take a tile of her upper deck, or
 // null. Only open air with nothing built or standing in it will do.
 /datum/craft_body/built/proc/upper_tile_refusal(turf/D)
+	return built_hull_upper_refusal(D)
+
+// The same for any tile, so a ship built from a crossing record can ask it
+// before she exists (naval/ship_crossing.dm).
+/proc/built_hull_upper_refusal(turf/D)
 	if (!D)
 		return "the edge of the world"
 	if (!building_open_turf(D))

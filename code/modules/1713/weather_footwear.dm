@@ -116,7 +116,9 @@
 	if (istype(T, /turf/floor/beach/water/ice))
 		return TRUE
 	var/turf/floor/F = T
-	return istype(F) && F.wet == 3
+	if (istype(F) && F.wet == 3)
+		return TRUE
+	return weather_glazed_at(T) // freezing rain (weather_precip.dm)
 
 // Standing in water or mud (not ice) wets the feet.
 /proc/footwear_wet_ground(turf/T)

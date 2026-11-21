@@ -461,6 +461,8 @@ var/global/list/wild_bee_nests = list()
 	flammable = TRUE
 
 /obj/item/weapon/beeswax/attackby(obj/item/W, mob/user)
+	if (treatable_cloth(W) && ishuman(user) && user.a_intent != I_HARM)
+		return cloth_wax(W, src, user)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass) && W.reagents && W.reagents.get_reagent_amount("pitch") > 0)
 		return make_sealing_wax(W, user)
 	if (istype(W, /obj/item/stack/material/rope))

@@ -6,6 +6,10 @@
 // takes a minute at half hand time, sooner on a faster drive and later on a
 // slower or overloaded one. It stops when the hopper is empty, when 20 products
 // lie on its tile, or when the drive stops; it asks the drive only once a step.
+//
+// Every hopper has a gate that a lever's cord can shut and open (mechanisms.dm).
+// Factory belts and arms can fill the hopper and take its products, and a
+// belt that leads away from the machine carries each product off.
 
 #define HOPPER_STEP_TIME 600 // deciseconds a step takes at a drive share of 0.5
 #define HOPPER_IDLE_RECHECK 600 // deciseconds before an undriven machine looks again
@@ -19,6 +23,7 @@
 	var/capacity = 20 // feed the hopper holds
 	var/batch = 1 // feed worked each step
 	var/list/hopper = list() // feed kind -> count
+	var/gate_shut = FALSE // a cord's gate holds the feed back
 	var/tmp/next_step = 0
 	var/tmp/working = FALSE
 
@@ -90,6 +95,69 @@
 /obj/structure/workshop_machine/hopper/proc/feed_words()
 	return "feed"
 
+// Item types the machine makes, for factory arms that unload it.
+/obj/structure/workshop_machine/hopper/proc/product_types()
+	return list()
+
+// Shuts or opens the hopper gate; TRUE when it moved.
+/obj/structure/workshop_machine/hopper/proc/set_gate(shut)
+	if (shut == gate_shut)
+		return FALSE
+	gate_shut = shut
+	playsound(src, 'sound/items/Ratchet.ogg', 30, TRUE)
+	if (!gate_shut && hopper_count())
+		next_step = world.time + HOPPER_IDLE_RECHECK / 6
+		processing_objects |= src
+	return TRUE
+
+// A fastened belt beside the machine that carries away from it, if any.
+/obj/structure/workshop_machine/hopper/proc/outgoing_belt()
+	for (var/d in cardinal)
+		var/turf/T = get_step(src, d)
+		var/obj/structure/factory_belt/B = T ? locate(/obj/structure/factory_belt) in T : null
+		if (B && B.anchored && B.dir == d)
+			return B
+	return null
+
+// Products just made on T go onto an outgoing belt when there is one.
+/obj/structure/workshop_machine/hopper/proc/send_products(turf/T, list/before)
+	var/obj/structure/factory_belt/B = outgoing_belt()
+	if (!B)
+		return
+	var/list/types = product_types()
+	for (var/obj/item/I in T)
+		if ((I in before) || !(I.type in types))
+			continue
+		factory_place_on_turf(I, get_turf(B))
+	B.belt_wake()
+
+/obj/structure/workshop_machine/hopper/factory_accepts(obj/item/I, from_dir = 0)
+	if (!anchored || !factory_movable_item(I) || !feed_kind(I))
+		return 0
+	return min(capacity - hopper_count(), feed_amount(I))
+
+/obj/structure/workshop_machine/hopper/factory_insert(obj/item/I, from_dir = 0)
+	var/amount = factory_accepts(I, from_dir)
+	if (amount <= 0)
+		return 0
+	var/kind = feed_kind(I)
+	var/n = take_feed(I, amount)
+	hopper[kind] = (hopper[kind] || 0) + n
+	start_working()
+	return n
+
+/obj/structure/workshop_machine/hopper/factory_offer(to_dir = 0, filter_type = null)
+	if (!anchored || !isturf(loc))
+		return null
+	var/list/types = product_types()
+	for (var/obj/item/I in loc)
+		if ((I.type in types) && (!filter_type || istype(I, filter_type)) && factory_movable_item(I))
+			return I
+	return null
+
+/obj/structure/workshop_machine/hopper/factory_take(obj/item/I, atom/destination)
+	return factory_take_tile_output(src, I, destination)
+
 /obj/structure/workshop_machine/hopper/proc/load_item(obj/item/I, mob/living/human/H)
 	var/kind = feed_kind(I)
 	if (!kind)
@@ -135,6 +203,8 @@
 /obj/structure/workshop_machine/hopper/examine(mob/user, distance)
 	..(user, distance)
 	to_chat(user, SPAN_NOTICE("Its hopper holds [hopper_count()] of [capacity] [feed_words()]."))
+	if (gate_shut)
+		to_chat(user, SPAN_NOTICE("Its hopper gate is shut: it works nothing until a lever's cord opens it."))
 	if (!anchored)
 		to_chat(user, SPAN_WARNING("It is not fastened down."))
 	else if (output_count(get_turf(src)) >= HOPPER_OUTPUT_CAP)
@@ -156,13 +226,14 @@
 		next_step = world.time + HOPPER_IDLE_RECHECK
 		return TRUE
 	var/turf/T = loc
-	var/factor = mechanical_drive_factor(src)
+	var/factor = gate_shut ? 1 : mechanical_drive_factor(src)
 	if (factor >= 1 || output_count(T) >= HOPPER_OUTPUT_CAP)
 		next_step = world.time + HOPPER_IDLE_RECHECK
 		if (working)
 			working = FALSE
 			update_icon()
 		return TRUE
+	var/list/before = T.contents.Copy()
 	for (var/i = 1 to batch)
 		var/kind = null
 		for (var/k in hopper)
@@ -175,6 +246,7 @@
 		if (hopper[kind] <= 0)
 			hopper -= kind
 		make_product(kind, T)
+	send_products(T, before)
 	working = TRUE
 	update_icon()
 	next_step = world.time + round(HOPPER_STEP_TIME * factor * 2)
@@ -218,6 +290,12 @@ var/global/list/millstone_grains = list(
 			return kind
 	return null
 
+/obj/structure/workshop_machine/hopper/millstones/product_types()
+	. = list()
+	for (var/kind in millstone_grains)
+		var/list/pair = millstone_grains[kind]
+		. += pair[2]
+
 /obj/structure/workshop_machine/hopper/millstones/make_product(kind, turf/T)
 	var/list/pair = millstone_grains[kind]
 	if (pair)
@@ -260,6 +338,9 @@ var/global/list/millstone_grains = list(
 		return null
 	return "wood"
 
+/obj/structure/workshop_machine/hopper/sash_saw/product_types()
+	return list(/obj/item/stack/material/woodplank, /obj/item/stack/bark)
+
 /obj/structure/workshop_machine/hopper/sash_saw/make_product(kind, turf/T)
 	var/obj/item/stack/material/woodplank/P = new(T, 2, FALSE)
 	for (var/obj/item/stack/material/woodplank/existing in T)
@@ -277,6 +358,87 @@ var/global/list/millstone_grains = list(
 	. = 0
 	for (var/obj/item/stack/material/woodplank/P in T)
 		. += P.amount
+	. = round(. / 2)
+
+//////////////////////////////////////////////////////////////////////////////
+// Fulling stocks: wool to wool cloth.
+
+/obj/structure/workshop_machine/hopper/fulling_stocks
+	name = "fulling stocks"
+	desc = "Two heavy wooden hammers that a cam shaft lifts and drops into a trough of wet wool. Fill it with wool, and while a mill wheel, windmill, horse gin or treadwheel drives it, it beats two a step into felted wool cloth on its own."
+	icon_state = "fulling_stocks"
+	base_state = "fulling_stocks"
+	batch = 2
+
+/obj/structure/workshop_machine/hopper/fulling_stocks/feed_words()
+	return "wool"
+
+/obj/structure/workshop_machine/hopper/fulling_stocks/feed_kind(obj/item/I)
+	return I.type == /obj/item/stack/material/wool ? "wool" : null
+
+/obj/structure/workshop_machine/hopper/fulling_stocks/product_types()
+	return list(/obj/item/stack/material/woolcloth)
+
+/obj/structure/workshop_machine/hopper/fulling_stocks/make_product(kind, turf/T)
+	var/obj/item/stack/material/woolcloth/C = new(T, 1, FALSE)
+	for (var/obj/item/stack/material/woolcloth/existing in T)
+		if (existing != C && existing.type == C.type && existing.amount < existing.max_amount && !existing.color && !existing.customname)
+			C.merge(existing)
+			break
+	playsound(T, 'sound/effects/woodfile.ogg', 40, TRUE)
+
+/obj/structure/workshop_machine/hopper/fulling_stocks/return_feed(kind, count, turf/T)
+	if (count > 0)
+		new /obj/item/stack/material/wool(T, count)
+
+/obj/structure/workshop_machine/hopper/fulling_stocks/output_count(turf/T)
+	. = 0
+	for (var/obj/item/stack/material/woolcloth/C in T)
+		. += C.amount
+
+//////////////////////////////////////////////////////////////////////////////
+// Bark stamps: bark to crushed tanbark, which gives twice the tannin.
+
+// Each handful soaks out as much tannin as a whole piece of bark
+// (/obj/item/stack/bark in leather.dm), and tanning drums take it as bark.
+/obj/item/stack/bark/crushed
+	name = "tanbark"
+	desc = "Tree bark crushed under the stamps of a bark mill. Use an open liquid container with 10 water to extract 10 tannin from one handful. For a nearby stationary vessel, hold the tanbark and click the vessel."
+	icon_state = "bark_crushed"
+	singular_name = "handful of tanbark"
+
+/obj/structure/workshop_machine/hopper/bark_stamps
+	name = "bark stamps"
+	desc = "A row of iron-shod wooden stamps that a cam shaft lifts and drops on a trough of bark. Fill it with bark, and while a mill wheel, windmill, horse gin or treadwheel drives it, it crushes two pieces a step into tanbark, which yields twice the tannin."
+	icon_state = "bark_stamps"
+	base_state = "bark_stamps"
+	batch = 2
+
+/obj/structure/workshop_machine/hopper/bark_stamps/feed_words()
+	return "bark"
+
+/obj/structure/workshop_machine/hopper/bark_stamps/feed_kind(obj/item/I)
+	return I.type == /obj/item/stack/bark ? "bark" : null
+
+/obj/structure/workshop_machine/hopper/bark_stamps/product_types()
+	return list(/obj/item/stack/bark/crushed)
+
+/obj/structure/workshop_machine/hopper/bark_stamps/make_product(kind, turf/T)
+	var/obj/item/stack/bark/crushed/C = new(T, 2, FALSE)
+	for (var/obj/item/stack/bark/crushed/existing in T)
+		if (existing != C && existing.amount < existing.max_amount)
+			C.merge(existing)
+			break
+	playsound(T, 'sound/effects/woodfile.ogg', 40, TRUE)
+
+/obj/structure/workshop_machine/hopper/bark_stamps/return_feed(kind, count, turf/T)
+	if (count > 0)
+		new /obj/item/stack/bark(T, count)
+
+/obj/structure/workshop_machine/hopper/bark_stamps/output_count(turf/T)
+	. = 0
+	for (var/obj/item/stack/bark/crushed/C in T)
+		. += C.amount
 	. = round(. / 2)
 
 #undef HOPPER_STEP_TIME

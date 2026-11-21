@@ -43,7 +43,7 @@ public static class LocalHelp {
             if (!LocalBot.Bool(json, "configured")) return new HelpStatus(true, false, false, [], null);
             var regions = new List<HelpRegion>();
             if (json.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Object) {
-                foreach (var entry in list.EnumerateObject().Take(16)) {
+                foreach (var entry in list.EnumerateObject().Take(LocalHosting.MaxRegions)) {
                     var region = entry.Value;
                     if (region.ValueKind != JsonValueKind.Object) continue;
                     regions.Add(new HelpRegion(entry.Name, LocalBot.Bool(region, "running"), Int(region, "pid"), LocalBot.Bool(region, "enabled"),

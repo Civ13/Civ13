@@ -8,7 +8,7 @@
 #define SHARD_REFRESH_FLOOR 150
 // The doorman refreshes every 30 s; an older entry means it lost the world.
 #define SHARD_DOORMAN_FRESH_SECONDS 90
-#define SHARD_MAX_REGIONS 16
+#define SHARD_MAX_REGIONS 32
 
 var/global/datum/shard_group/shard_group = new
 
@@ -280,6 +280,10 @@ var/global/datum/shard_group/shard_group = new
 	// players are at an event (region_event.dm).
 	if(kind != "EVENT")
 		.["event_away"] = length(event_stashes())
+	// The launcher's region board shows each region's local time (world_calendar.dm).
+	var/list/calendar = world_calendar_status()
+	if(calendar)
+		.["calendar"] = calendar
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.

@@ -277,6 +277,8 @@ class MechanicalPower(unittest.TestCase):
         want = {
             H + 'millstones': ('/material/stone/', 12, {GEAR: 1, SHAFT: 1}),
             H + 'sash_saw': ('/material/wood/', 10, {GEAR: 1, SHAFT: 1, '/obj/item/stack/material/iron': 2}),
+            H + 'fulling_stocks': ('/material/wood/', 10, {SHAFT: 1}),
+            H + 'bark_stamps': ('/material/wood/', 8, {SHAFT: 1, '/obj/item/stack/material/iron': 2}),
         }
         for path, (material, count, parts) in want.items():
             self.assertEqual(len(rows.get(path, [])), 1, path)
@@ -301,6 +303,17 @@ class MechanicalPower(unittest.TestCase):
             self.assertEqual((rows[path][0][0], float(rows[path][0][3])), (material, count), path)
             self.assertIn('"%s" = "%s"' % (path, node), NODES)
             self.assertEqual(NEEDS[path], {'tools': [], 'inputs': parts}, path)
+
+    def test_bridges_recipes_and_nodes(self):
+        rows = recipe_rows()
+        for path, material, count, node in (('/obj/structure/mechanism_relay', '/material/copper/', 3, 'electricity'),
+                                            ('/obj/item/circuit_shell/mechanism_port', '/material/electronics/', 5, 'digital_computing')):
+            self.assertEqual(len(rows.get(path, [])), 1, path)
+            self.assertEqual((rows[path][0][0], float(rows[path][0][3])), (material, count), path)
+            self.assertIn('"%s" = "%s"' % (path, node), NODES)
+        smart = (ROOT / 'code/modules/1713/smart_home.dm').read_text(encoding='utf-8')
+        self.assertIn('if (mechanism_relay_open_on(loc))', smart)
+        self.assertIn('/proc/mechanism_relay_open_on(', (ROOT / 'tests/power/fixture.dm').read_text(encoding='utf-8'))
 
     def test_movers_have_a_strength(self):
         for name, cap in (('treadwheel', 1), ('horse_gin', 2), ('mill_wheel', 3)):

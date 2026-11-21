@@ -277,7 +277,7 @@ class ShardGroupTests(unittest.TestCase):
         self.refuse_config('needs a map', region_map='cave.sav')
         self.refuse_config('outside the repository', root=str(self.base / 'repo' / 'regions'))
         self.refuse_config('public_host', public_host='http://x')
-        self.refuse_config('1 to 16 regions', regions=[])
+        self.refuse_config('1 to 32 regions', regions=[])
         self.refuse_config('group id', group='Europe!')
         self.refuse_config('mainland', mainland='atlantis')
         self.refuse_config('mainland cannot be a RAID', mainland='deep', region_kind='RAID')
@@ -405,6 +405,25 @@ class ShardGroupTests(unittest.TestCase):
             answers[1721]['event_away'] = bad
             status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
             self.assertNotIn('event_away', status['regions']['deep']['region_view'], bad)
+
+    def test_status_shows_the_world_calendar(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.machine.up.add(1721)
+        calendar = {'clock': '06:40 AM', 'phase': 'Early Morning', 'season': 'WINTER', 'zone': -2, 'season_left': 37}
+        answers = {1721: {'group': group['group'], 'region': 'deep', 'players': 0, 'map': 'Caves', 'calendar': dict(calendar)}}
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertEqual(calendar, status['regions']['deep']['region_view']['calendar'])
+        for key, bad in (('clock', '6:40'), ('phase', 'Dusk'), ('season', 'monsoon'), ('zone', 2.5), ('zone', 20), ('zone', True)):
+            answers[1721]['calendar'] = dict(calendar, **{key: bad})
+            status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+            self.assertNotIn('calendar', status['regions']['deep']['region_view'], (key, bad))
+        answers[1721]['calendar'] = dict(calendar, season_left=-5)
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertNotIn('season_left', status['regions']['deep']['region_view']['calendar'])
+        answers[1721].pop('calendar')
+        status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
+        self.assertNotIn('calendar', status['regions']['deep']['region_view'])
 
     def test_a_battle_rebuild_keeps_the_voted_map(self):
         # A start after master moved (or a watchdog restart) rebuilds the battle region;
