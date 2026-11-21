@@ -204,6 +204,25 @@ Code: `code/modules/provinces/province_siege.dm`.
   seconds only while a siege is declared and restarts after a reboot from
   the activity count. A faction rename carries all province state over.
 
+## Treaties
+
+Code: `code/modules/provinces/province_treaties.dm`. Nation treaties
+(`docs/nation-government.md`, "Treaties") change contests between nations only;
+a faction outside a nation keeps the rules above, and defence windows are
+unchanged.
+
+- **No contest between friends.** A nation allied to the holder, or bound to
+  it by a non-aggression pact, is never its rival: its stake cannot take the
+  province, however large.
+- **Sieges need war.** A nation can declare a siege on another nation's
+  province only while the two are at war. If peace, a pact or an alliance is
+  made while a siege is declared, the siege is called off with no cooldown and
+  the deposit kept. A nation can still besiege a plain faction, and a plain
+  faction a nation, as before.
+- **Allies at the seat.** Members of a nation allied to the holder count as
+  defenders at the seat; allies of the attacker count as attackers unless they
+  are also allied to the holder, when they defend.
+
 ## Continent resources
 
 Code: `code/modules/provinces/continent_resources.dm`. Each continent is rich

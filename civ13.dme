@@ -1885,6 +1885,7 @@
 #include "code\modules\provinces\province_rich.dm"
 #include "code\modules\provinces\province_siege.dm"
 #include "code\modules\provinces\province_stake.dm"
+#include "code\modules\provinces\province_treaties.dm"
 #include "code\modules\provinces\province_upkeep.dm"
 #include "code\modules\provinces\provinces.dm"
 #include "code\modules\reagents\Chemistry-Colours.dm"
