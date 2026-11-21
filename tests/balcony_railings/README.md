@@ -13,6 +13,10 @@ checks `code/game/objects/structures/railing_built.dm`:
   and covers someone lying behind it from about 30% of shots coming in;
 - a hammer gives back the recipe cost (2 planks, 3 stone), a brick railing its
   bricks; a heavy impact or enough damage breaks a railing;
+- climbing down over a railed edge takes longer than over an open one;
+- a gate starts shut, opens and shuts by hand, lets people out only while
+  open, stays open after a load, and a brick gate gives back its bricks; a
+  plain railing is not a gate;
 - no runtime errors.
 
 The probe runs on `git archive HEAD`, so commit first. It needs the pinned

@@ -283,6 +283,16 @@
       ]
     },
     {
+      "path": "code/game/objects/structures/railing_built.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/railing/built/CheckExit(atom/movable/O, target, exit_direction = null)",
+          "sha256_body": "d80e389296e75c0f67947bf8ecf6be89eecde4c0f0a3797dc89e7ad24c1fd4a5"
+        }
+      ]
+    },
+    {
       "path": "code/game/objects/structures/stool_bed_chair_nest/bed.dm",
       "declarations": [
         {

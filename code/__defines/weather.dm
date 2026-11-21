@@ -19,6 +19,9 @@
 #define WEATHER_SYSTEM_MAX 6
 #define WEATHER_SYSTEM_STORM "storm"
 #define WEATHER_SYSTEM_HEAT "heat"
+// Pressure centres (code/modules/1713/weather_fronts.dm).
+#define WEATHER_CENTRE_LOW "low"
+#define WEATHER_CENTRE_HIGH "high"
 // Strength under which a system is only cloud, and where its bands begin.
 #define WEATHER_BAND_LIGHT 0.12
 #define WEATHER_BAND_STEADY 0.4

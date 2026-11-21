@@ -81,7 +81,7 @@ var/global/datum/admin_weather_map_controller/admin_weather_maps = new
 			zone = "extreme, strength [weather_intensity]"
 		if (WEATHER_SMOG)
 			zone = "smog"
-	return json_encode(list("s" = systems, "p" = players, "w" = list(wind[1], wind[2], map ? map.windspeedvar : 1, map ? map.winddesc : ""), "zone" = zone, "season" = season ? "[season]" : "none", "cap" = weather_system_capacity(), "a" = weather_air_map_data(), "edit" = admin_weather_map_can_change(C) ? 1 : 0))
+	return json_encode(list("s" = systems, "p" = players, "w" = list(wind[1], wind[2], map ? map.windspeedvar : 1, map ? map.winddesc : ""), "zone" = zone, "season" = season ? "[season]" : "none", "cap" = weather_system_capacity(), "a" = weather_air_map_data(), "c" = weather_centres_map_data(), "edit" = admin_weather_map_can_change(C) ? 1 : 0))
 
 /datum/admin_weather_map_controller/Topic(href, href_list)
 	var/client/C = usr ? usr.client : null
@@ -184,6 +184,9 @@ arrow(x,y,s[8],s[9],Math.max(18,rx*0.6),'#fff');
 g.fillStyle='#fff';g.font='bold 12px Verdana';g.fillText('#'+s[0],x+4,y-4);}
 for(i=0;i<D.p.length;i++){g.fillStyle='#000';g.fillRect(px(D.p[i][0])-3,py(D.p[i][1])-3,6,6);g.fillStyle='#f0d81c';g.fillRect(px(D.p[i][0])-2,py(D.p[i][1])-2,4,4);}
 if(AT){g.strokeStyle='#fff';g.lineWidth=1;g.beginPath();g.moveTo(px(AT[0])-8,py(AT[1]));g.lineTo(px(AT[0])+8,py(AT[1]));g.moveTo(px(AT[0]),py(AT[1])-8);g.lineTo(px(AT[0]),py(AT[1])+8);g.stroke();}
+if(D.c){for(i=0;i<D.c.length;i++){var c=D.c[i],cx=px(c[2]),cy=py(c[3]),lo=c[1]=='low';
+oval(cx,cy,c[4]/CELL*K,c[4]/CELL*K);g.strokeStyle=lo?'rgba(220,60,60,0.8)':'rgba(60,120,240,0.8)';g.lineWidth=1;g.setLineDash([6,4]);g.stroke();g.setLineDash([]);
+g.font='bold 22px Verdana';g.fillStyle=lo?'#e04040':'#4080f0';g.fillText(lo?'L':'H',cx-8,cy+8);g.font='11px Verdana';g.fillStyle='#fff';g.fillText((lo?'-':'+')+c[5]+' hPa',cx-18,cy+22);}}
 arrow(30,cv.height-16,D.w[0],D.w[1],22,'#ffe680');
 sky();panel();list();}
 function sky(){var k=document.getElementById('sky');clear(k);
@@ -192,6 +195,7 @@ k.appendChild(document.createTextNode('Season: '+D.season));k.appendChild(el('br
 k.appendChild(document.createTextNode('Wind: '+(D.w[3]||'none')+' (yellow arrow)'));k.appendChild(el('br'));
 k.appendChild(document.createTextNode('Systems: '+D.s.length+' (storms roll up to '+D.cap+' at once)'));k.appendChild(el('br'));
 k.appendChild(document.createTextNode('Pinned zone weather: '+D.zone));k.appendChild(el('br'));
+k.appendChild(document.createTextNode('Pressure centres: '+(D.c?D.c.length:0)+' (red L low, blue H high)'));k.appendChild(el('br'));
 k.appendChild(document.createTextNode('Yellow squares are players. Blue storm, purple severe storm, orange heat wave.'));
 if(D.edit){k.appendChild(el('br'));k.appendChild(btn('Clear the sky',function(){go('wm=clear');}));}}
 function panel(){var p=document.getElementById('sel');clear(p);var s=null;for(var i=0;i<D.s.length;i++)if(D.s[i][0]==SEL)s=D.s[i];

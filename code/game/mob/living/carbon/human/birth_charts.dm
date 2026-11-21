@@ -41,6 +41,8 @@ var/list/birth_chart_stats = list("strength", "dexterity", "stamina", "crafting"
 
 // Saved with the character, like origin_id.
 /mob/living/human/var/birth_chart = null
+// Not saved: the sign a verified player chose in Character Setup, used once at spawn.
+/mob/living/human/var/tmp/birth_chart_wish = null
 
 /proc/birth_chart_valid(sign_id)
 	return istext(sign_id) && islist(birth_chart_signs[sign_id])
@@ -75,8 +77,12 @@ var/list/birth_chart_stats = list("strength", "dexterity", "stamina", "crafting"
 	return "Born under [S["name"]], in [S["season"]]: a [S["calling"]]. Strengths: [birth_chart_side_text(sign_id, TRUE)]. Weaknesses: [birth_chart_side_text(sign_id, FALSE)]."
 
 // Gives a new character their sign and sets their starting stats from it.
-// sign_id null (or unknown) rolls one. Sex and age still apply through setStat.
+// sign_id null takes the sign chosen in Character Setup; none (or unknown)
+// rolls one. Sex and age still apply through setStat.
 /mob/living/human/proc/apply_birth_chart(sign_id = null)
+	if (!sign_id)
+		sign_id = birth_chart_wish
+	birth_chart_wish = null
 	if (!birth_chart_valid(sign_id))
 		sign_id = birth_chart_roll()
 	birth_chart = sign_id
@@ -108,6 +114,38 @@ var/list/birth_chart_stats = list("strength", "dexterity", "stamina", "crafting"
 	if (islist(listed) && (summary in listed))
 		return
 	add_note("Birth chart", summary)
+
+// Choosing a sign is for Discord-verified accounts (the soft whitelist).
+// Fails closed: an unverified key, or a verified list not yet loaded, rolls.
+/proc/birth_chart_choice_allowed(client/C, sign_id)
+	return C && birth_chart_valid(sign_id) && !!verified_discord_id(C.ckey)
+
+// Character Setup: "random" or a sign id. Only a verified account may save a sign.
+/datum/preferences/proc/setup_birth_chart(value, mob/user)
+	if (value == "random")
+		birth_chart = "random"
+		return
+	if (!birth_chart_valid(value))
+		return
+	if (!user || !birth_chart_choice_allowed(user.client, value))
+		setup_notice = "Verify your Discord account to choose your sign. Until then it is drawn when you are born."
+		return
+	birth_chart = value
+
+/datum/preferences/proc/birth_chart_setup_data(mob/user)
+	var/list/data = list()
+	data["choice"] = birth_chart_valid(birth_chart) ? birth_chart : "random"
+	data["verified"] = (user && user.client && verified_discord_id(user.client.ckey)) ? 1 : 0
+	var/mob/living/human/H = user
+	if (istype(H) && H.stat != DEAD && birth_chart_valid(H.birth_chart))
+		data["current"] = H.birth_chart
+	var/list/signs = list()
+	for (var/sign_id in birth_chart_signs)
+		var/list/S = birth_chart_signs[sign_id]
+		signs += list(list("id" = sign_id, "name" = capitalize(S["name"]), "season" = capitalize(S["season"]), "calling" = capitalize(S["calling"]),
+			"strengths" = birth_chart_side_text(sign_id, TRUE), "weaknesses" = birth_chart_side_text(sign_id, FALSE)))
+	data["signs"] = signs
+	return data
 
 /mob/living/human/after_load()
 	..()

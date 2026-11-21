@@ -1135,6 +1135,7 @@
 #include "code\modules\1713\weather_chunks.dm"
 #include "code\modules\1713\weather_footwear.dm"
 #include "code\modules\1713\weather_forecast.dm"
+#include "code\modules\1713\weather_fronts.dm"
 #include "code\modules\1713\mercury_crafts.dm"
 #include "code\modules\1713\late_mining.dm"
 #include "code\modules\1713\weather_lightning.dm"
@@ -1530,6 +1531,7 @@
 #include "code\modules\divine\divine_book.dm"
 #include "code\modules\divine\identity.dm"
 #include "code\modules\divine\approval.dm"
+#include "code\modules\divine\arcane_materials.dm"
 #include "code\modules\divine\ritual.dm"
 #include "code\modules\divine\covenant.dm"
 #include "code\modules\dmm_suite\_preprocessor_and_utilities.dm"
@@ -1774,6 +1776,7 @@
 #include "code\modules\naval\voyage_sea.dm"
 #include "code\modules\naval\shipyard.dm"
 #include "code\modules\naval\slipway.dm"
+#include "code\modules\naval\slipway_draught.dm"
 #include "code\modules\naval\slipway_hull.dm"
 #include "code\modules\naval\torpedoes.dm"
 #include "code\modules\naval\vessel.dm"
@@ -2220,5 +2223,6 @@
 // Sealed journal presentation; does not activate spell casting.
 #include "code\modules\divine\journal.dm"
 #include "code\modules\divine\magic_whitelist.dm"
+#include "code\modules\divine\repository.dm"
 // Must stay last: global_init needs every other global initialized first.
 #include "code\global_init_last.dm"

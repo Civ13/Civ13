@@ -1486,19 +1486,25 @@ class ProcessSafetyTests(unittest.TestCase):
         self.assertIsNotNone(expect.problem(None), 'unknown is not a match')
 
 class ProcessToolGuardTests(unittest.TestCase):
-    """Host scripts never shell out to tasklist, taskkill, wmic or WMI/CIM cmdlets: they hang
+    """Host scripts and the launcher never shell out to tasklist, taskkill, wmic or WMI/CIM cmdlets: they hang
     when a WMI provider breaks (2026-11-19). Use scripts/gaia-host/process_safety.py."""
     FORBIDDEN = __import__('re').compile(
         r"""['"](tasklist|taskkill)(\.exe)?['"]|taskkill\.exe|tasklist\.exe|\bwmic\b|Get-CimInstance|Invoke-CimMethod|Get-WmiObject""",
         __import__('re').I)
-    # Observation only, with a timeout and an empty answer on failure (agent_runs.windows_processes).
-    ALLOWED = {'scripts/shard-group/agent_runs.py'}
+    # Observation only, with a timeout and an empty answer on failure (agent_runs.windows_processes); the
+    # launcher's experimental WMI check, whose job is to ask WMI (WmiHealth.cs); the bot's detached start,
+    # which falls back to a direct start when WMI does not answer (BotCommand.cs).
+    ALLOWED = {'scripts/shard-group/agent_runs.py', 'tools/opendream-client/native/WmiHealth.cs',
+               'tools/opendream-client/native/BotCommand.cs'}
 
     def test_no_process_tool_calls(self):
         found = []
-        for folder in ('scripts/gaia-host', 'scripts/shard-group', 'scripts/windows/host', 'scripts/nomads-lifecycle'):
+        for folder in ('scripts/gaia-host', 'scripts/shard-group', 'scripts/windows/host', 'scripts/nomads-lifecycle',
+                       'tools/opendream-client/native'):
             for path in sorted((ROOT / folder).rglob('*')):
-                if path.suffix.lower() not in ('.py', '.bat', '.cmd', '.ps1') or path.relative_to(ROOT).as_posix() in self.ALLOWED:
+                relative = path.relative_to(ROOT).as_posix()
+                if path.suffix.lower() not in ('.py', '.bat', '.cmd', '.ps1', '.cs') or relative in self.ALLOWED \
+                        or any(part in ('tests', 'obj', 'bin') for part in path.relative_to(ROOT / folder).parts):
                     continue
                 for number, line in enumerate(path.read_text(encoding='utf-8', errors='replace').splitlines(), 1):
                     if self.FORBIDDEN.search(line):

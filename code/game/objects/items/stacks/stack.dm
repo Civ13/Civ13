@@ -135,6 +135,7 @@
 	if (_amount)
 		var/obj/item/stack/S = new type(src.loc, _amount, FALSE)
 		S.color = color
+		arcane_copy_virtue(src, S)
 		if (prob(_amount/amount * 100))
 			transfer_fingerprints_to(S)
 			if (blood_DNA)
