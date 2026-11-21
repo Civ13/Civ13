@@ -53,7 +53,7 @@ class HandConditioningSources(unittest.TestCase):
 
     def test_punches_use_the_skill_and_conditioning(self):
         self.assertIn('real_damage *= H.unarmed_damage_mult()', ATTACK)
-        self.assertIn('H.practice_unarmed(0.5)', ATTACK)
+        self.assertIn('H.practice_unarmed(0.5, src)', ATTACK)
         self.assertIn('chance *= hand_conditioning_factor()', PUNCH)
 
     def test_unarmed_is_a_full_skill(self):
