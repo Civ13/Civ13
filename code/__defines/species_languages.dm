@@ -41,5 +41,8 @@
 #define PEOPLE_SPLIT_YEARS 180			// calendar years a nation's people must stay out of touch to split: about a month of real time
 #define PEOPLE_SPLIT_MIN 5				// living members a split needs, and at least half of the nation
 #define PEOPLE_CONTACT_RANGE 10			// tiles to someone of another faction that count as contact
+#define PEOPLE_BLEND_MIN 4				// living members a nation needs before its peoples can blend
+#define PEOPLE_BLEND_YEARS 30			// played years two peoples must each be a quarter of a nation to blend: about 5 real days
+#define PEOPLE_RAISED_YEARS 20			// played years among another people before "Raised among": about 3 real days
 #define PEOPLE_CONTACT_LINES 3			// lines heard from another faction in a year that count as contact
 #define LANGUAGE_DAUGHTER_KIN_MIN 40		// parent and daughter never follow less of each other than this

@@ -10,6 +10,7 @@ PEOPLES = (ROOT / 'code/game/mob/living/carbon/human/peoples.dm').read_text()
 ORIGINS = (ROOT / 'code/game/mob/living/carbon/human/origins.dm').read_text()
 ADMIN = (ROOT / 'code/modules/admin/verbs/peoples_admin.dm').read_text()
 SPLIT = (ROOT / 'code/game/mob/living/carbon/human/peoples_split.dm').read_text()
+BLEND = (ROOT / 'code/game/mob/living/carbon/human/peoples_blend.dm').read_text()
 BLOCKED = (ROOT / 'config/people_names_blocked.txt').read_text()
 
 
@@ -53,7 +54,7 @@ class Records(unittest.TestCase):
 
     def test_no_initialised_globals_in_peoples(self):
         # The world's global init proc sits near the compiler's size limit.
-        for text in (PEOPLES, ADMIN, SPLIT):
+        for text in (PEOPLES, ADMIN, SPLIT, BLEND):
             self.assertIsNone(re.search(r'^\s*var/(static|global)/[^\n=]*= *list\(', text, re.M))
 
     def test_a_formed_people_dresses_like_its_root(self):
@@ -96,6 +97,30 @@ class Splits(unittest.TestCase):
         self.assertIn('people_name_problem(wanted)', verb)
         login = (ROOT / 'code/modules/research_tree/knowledge_spread.dm').read_text()
         self.assertIn('settle_people_record()\n\toffer_pending_people_naming()', login)
+
+
+class BlendAndBelong(unittest.TestCase):
+    def test_both_run_on_the_yearly_check(self):
+        check = proc(SPLIT, '/proc/people_year_check')
+        self.assertLess(check.index('people_blend_year(active, year)'), check.index('active.Cut()'))
+        self.assertLess(check.index('people_belong_year()'), check.index('active.Cut()'))
+        self.assertIn('H.people_played_year = TRUE', proc(SPLIT, '/proc/people_isolation_tick'))
+        self.assertNotIn('ordinal_age', BLEND)
+
+    def test_nobody_is_moved_by_a_blend_or_by_belonging(self):
+        self.assertNotIn('origin_id =', re.sub(r'//.*', '', BLEND))
+
+    def test_newcomers_are_born_into_a_blend(self):
+        choose = proc(ORIGINS, '/mob/living/human/proc/choose_origin')
+        self.assertIn('var/datum/origin/blend = community_blend_people(get_turf(src), src)', choose)
+        self.assertLess(choose.index('community_blend_people('), choose.index('if (legacy_people)'))
+
+    def test_welcome_is_a_leaders_note(self):
+        verb = proc(BLEND, '/mob/living/human/proc/welcome_among_us()\n')
+        self.assertLess(verb.index('map.is_faction_leader(src, civilization)'), verb.index('H.people_welcomed |= O.id'))
+        self.assertIn('H.raised_among(O.id)', verb)
+        login = (ROOT / 'code/modules/research_tree/knowledge_spread.dm').read_text()
+        self.assertIn('offer_pending_people_naming()\n\toffer_people_welcome()', login)
 
 
 class Names(unittest.TestCase):
