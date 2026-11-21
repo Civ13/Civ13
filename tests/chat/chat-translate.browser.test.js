@@ -159,6 +159,35 @@ const settle = page => page.waitForTimeout(150);
     const last = (await translations()).pop();
     check(last.tr === 'Translated from English:[de] the storm is coming', 'English reader text translated into German when German is chosen: ' + last.tr);
 
+    // Server translation: when the server offers it, the page sends only the
+    // marked body with the reader's language and shows the server's answer.
+    // An empty answer moves straight on to the next line.
+    await page.evaluate(() => {
+      window.__sent = [];
+      window.chatSendTranslate = (id, lang, text) => {
+        window.__sent.push({ id, lang, text });
+        setTimeout(() => window.receiveTranslation(id, lang === 'en' && /hola/.test(text) ? 'es' : lang, lang === 'en' && /hola/.test(text) ? 'hi friend (server)' : ''), 20);
+      };
+      window.setTranslateServer('1');
+      const sel = document.getElementById('chat-translate-lang'); sel.value = 'en'; sel.dispatchEvent(new Event('change'));
+    });
+    check((await page.evaluate(() => document.getElementById('chat-translate-status').textContent)).indexOf('game server translates') !== -1, 'status says the server translates');
+    const detectedBefore = await page.evaluate(() => window.__tr.detected.length);
+    await page.evaluate(msgs => msgs.forEach(m => window.receiveMessage(m)), [
+      say("<span class='ooc'>OOC: <EM>Cy:</EM> <span class='message chat-tr'>the rain is coming</span></span>"),
+      say("<span class='ooc'>OOC: <EM>Lucia:</EM> <span class='message chat-tr'>hola mundo</span></span>"),
+      say("<span class='say'><span class='name'>Bo</span> says, \"<span class='chat-notr'>hola hierro</span>\"</span>"),
+    ]);
+    await settle(page);
+    await settle(page);
+    const sentToServer = await page.evaluate(() => window.__sent);
+    check(sentToServer.length === 2 && sentToServer[0].text === 'the rain is coming' && sentToServer[1].text === 'hola mundo' && sentToServer[1].lang === 'en', 'server gets marked bodies with the language: ' + JSON.stringify(sentToServer));
+    check((await page.evaluate(() => window.__tr.detected.length)) === detectedBefore, 'on-device detector unused in server mode');
+    lines = await translations();
+    check(lines[lines.length - 2].tr === 'Translated from Spanish:hi friend (server)', 'server translation shown: ' + lines[lines.length - 2].tr);
+    check(lines[lines.length - 3].tr === null && lines[lines.length - 1].tr === null, 'empty answers and garbled speech show nothing');
+    await page.evaluate(() => window.setTranslateServer('0'));
+
     // Bursts are bounded.
     await page.evaluate(() => { for (let i = 0; i < 200; i++) window.receiveMessage(encodeURIComponent("<span class='ooc'>OOC: <EM>X:</EM> <span class='message chat-tr'>hola amigo " + i + '</span></span>')); });
     await page.waitForTimeout(600);

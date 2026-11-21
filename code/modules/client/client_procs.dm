@@ -39,6 +39,10 @@
 		if (chat)
 			chat.on_ready()
 		return
+	// A chat line the page wants translated (code/modules/chat/chat_translate.dm).
+	if (href_list["chat_translate"])
+		chat_translator.handle_topic(src, href_list)
+		return
 
 	if (!usr || usr != mob)	//stops us calling Topic for somebody else's client. Also helps prevent usr=null
 		return
