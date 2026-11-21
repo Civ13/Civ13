@@ -8,7 +8,8 @@
 // wounds. A body is laid down dead again on arrival; nobody plays it.
 //
 // Carts, small boats and machines go the same way, empty, and engines with
-// their fuel tanks coupled again. Refused still: an animal a player or agent
+// their fuel tanks coupled again; a canoe or motorboat takes her outboard
+// and its tank inside her. Refused still: an animal a player or agent
 // controls, anything ridden or strapped in, a loaded cart, a frame vehicle,
 // and a body that holds a creature.
 // ============================================================
@@ -52,7 +53,31 @@
 
 // Builds a "g" entry at T. Returns what was made, or null.
 /proc/sea_crossing_cargo_build(list/E, turf/T)
-	return region_travel_make_generic(E[2], T, TRUE)
+	var/atom/movable/made = region_travel_make_generic(E[2], T, TRUE)
+	if (istype(made, /obj/structure/vehicle))
+		var/obj/structure/vehicle/V = made
+		V.crossing_rebuilt()
+	return made
+
+// A cart or boat built again from a crossing record. An outboard clamped in
+// her crossed inside her; it arrives stopped and coupled to her tank again,
+// which the record cannot keep (the two are parts of her, not of each other).
+/obj/structure/vehicle/proc/crossing_rebuilt()
+	if (!engine || engine.loc != src)
+		return
+	engine.on = FALSE
+	engine.fueltank = (fueltank && fueltank.loc == src) ? fueltank : null
+	if (axis)
+		engine.connections |= axis
+	engine.update_icon()
+
+// A canoe works her outboard from her own tank, never through the engine's.
+/obj/structure/vehicle/raft/dugout/outrigger/crossing_rebuilt()
+	motor_on = FALSE
+	if (engine && engine.loc == src)
+		engine.on = FALSE
+		engine.fueltank = null
+	update_icon()
 
 // ---------------------------------------------------------------- engines
 
@@ -101,7 +126,8 @@
 		if (M.fueltank)
 			coupled[M.fueltank] = TRUE
 	var/list/hold = islist(R["hold"]) ? R["hold"] : list()
-	for (var/list/tile in R["tiles"] + hold)
+	var/list/upper = islist(R["upper"]) ? R["upper"] : list()
+	for (var/list/tile in R["tiles"] + hold + upper)
 		for (var/list/E in tile[3])
 			if (E[1] != "e" || E.len != 4)
 				continue

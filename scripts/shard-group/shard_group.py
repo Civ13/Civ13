@@ -3762,6 +3762,25 @@ def supervise(group, start=detach):
     return started
 
 
+CALENDAR_PHASES = ('Early Morning', 'Morning', 'Midday', 'Afternoon', 'Evening', 'Night')
+CALENDAR_SEASONS = ('SPRING', 'SUMMER', 'FALL', 'WINTER', 'Wet Season', 'Dry Season')
+
+
+def calendar_view(calendar):
+    """A region's world calendar answer (world_calendar.dm), checked, or None."""
+    if not isinstance(calendar, dict):
+        return None
+    clock, phase, season, zone = (calendar.get(key) for key in ('clock', 'phase', 'season', 'zone'))
+    if not (isinstance(clock, str) and re.fullmatch(r'\d\d:\d\d [AP]M', clock) and phase in CALENDAR_PHASES
+            and season in CALENDAR_SEASONS and type(zone) is int and -12 <= zone <= 14):
+        return None
+    view = {'clock': clock, 'phase': phase, 'season': season, 'zone': zone}
+    left = calendar.get('season_left')
+    if type(left) is int and 0 <= left <= 1440:
+        view['season_left'] = left
+    return view
+
+
 def group_status(group, only=None, view=region_view, platform=None):
     report = {}
     for region, host in hosts(group, only, platform):
@@ -3784,6 +3803,10 @@ def group_status(group, only=None, view=region_view, platform=None):
                 # Characters kept here while their players are at an event region.
                 if type(seen.get('event_away')) is int and seen['event_away'] >= 0:
                     entry['region_view']['event_away'] = seen['event_away']
+                # The world calendar: local clock, phase, season and time zone.
+                calendar = calendar_view(seen.get('calendar'))
+                if calendar:
+                    entry['region_view']['calendar'] = calendar
                 age = seen.get('ordinal_age')
                 if type(age) is int and 0 <= age < len(EPOCH_NAMES):
                     entry['region_view']['epoch'] = {'ordinal': age, 'name': EPOCH_NAMES[age]}

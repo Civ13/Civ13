@@ -15,6 +15,13 @@
 /obj/structure/vehicleparts/movement/sail/bowsprit
 	name = "bowsprit"
 	desc = "A stout spar run out over a ship's bow, to carry a jib forward of her masts. Rig a sail on it to set the jib."
+	icon = 'icons/obj/vehicles/ship_bowsprit.dmi' // the mast's sail0, sail1 and sail2, as a spar and its jib
+	// A 96x96 cell with her own tile in the middle, so the spar stands out
+	// over the next tile whichever way it points. The offset centres the
+	// cell and is the same for every facing: a turning hull turns her dir
+	// (craft_turned) and leaves a structure's pixel offsets alone.
+	pixel_x = -32
+	pixel_y = -32
 	ntype = "bowsprit"
 
 // Masts are climbed and carry crow's nests; a bowsprit does neither
@@ -52,20 +59,20 @@
 
 // The figures a figurehead may be carved as: name = list(icon, state).
 var/global/list/figurehead_carvings = list(
-	"bear" = list('icons/obj/cross.dmi', "bear"),
-	"wolf" = list('icons/obj/cross.dmi', "wolf"),
-	"goose" = list('icons/obj/cross.dmi', "goose"),
-	"monkey" = list('icons/obj/cross.dmi', "monkey"),
-	"serpent" = list('icons/obj/cross.dmi', "sandstone_snake"),
-	"ram" = list('icons/obj/cross.dmi', "sandstone_ram"),
-	"carved face" = list('icons/obj/statue.dmi', "tikistatue2"),
+	"bear" = list('icons/obj/ship_edges.dmi', "figurehead_bear"),
+	"wolf" = list('icons/obj/ship_edges.dmi', "figurehead_wolf"),
+	"goose" = list('icons/obj/ship_edges.dmi', "figurehead_goose"),
+	"monkey" = list('icons/obj/ship_edges.dmi', "figurehead_monkey"),
+	"serpent" = list('icons/obj/ship_edges.dmi', "figurehead_serpent"),
+	"ram" = list('icons/obj/ship_edges.dmi', "figurehead_ram"),
+	"carved face" = list('icons/obj/ship_edges.dmi', "figurehead_face"),
 )
 
 /obj/structure/figurehead
 	name = "figurehead"
 	desc = "A block of timber fixed to a ship's bow, waiting to be carved."
-	icon = 'icons/obj/statue.dmi'
-	icon_state = "tikistatue2"
+	icon = 'icons/obj/ship_edges.dmi'
+	icon_state = "figurehead"
 	anchored = TRUE
 	density = FALSE
 	layer = 3.2
@@ -76,6 +83,15 @@ var/global/list/figurehead_carvings = list(
 	..()
 	if (carving)
 		carve(carving)
+
+// A figurehead saved with an older picture takes the current one.
+/obj/structure/figurehead/after_load()
+	..()
+	if (carving)
+		carve(carving)
+	else
+		icon = initial(icon)
+		icon_state = initial(icon_state)
 
 /obj/structure/figurehead/hull_load()
 	return 0.1

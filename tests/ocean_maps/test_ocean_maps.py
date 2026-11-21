@@ -216,8 +216,8 @@ class ShipEdgeCrossingTests(unittest.TestCase):
         self.assertIn('E.len == 2', ok)
         self.assertIn('islist(P["ship"])', ok)
         arrival = dm_body(read('code/modules/naval/ship_crossing.dm'), '/proc/sea_crossing_arrival_turf(list/P, incoming)')
-        self.assertIn('sea_edge_anchorage(offsets, P["sea_edge"], P["from"], hold)', arrival)
-        self.assertLess(arrival.index('sea_edge_anchorage'), arrival.index('sea_crossing_anchorage(offsets, sides, hold)'))
+        self.assertIn('sea_edge_anchorage(offsets, P["sea_edge"], P["from"], hold, upper)', arrival)
+        self.assertLess(arrival.index('sea_edge_anchorage'), arrival.index('sea_crossing_anchorage(offsets, sides, hold, upper)'))
 
     def test_only_a_seaworthy_crewed_ship_sails_on_and_only_when_switched_on(self):
         edge = read('code/modules/naval/ship_edge_crossing.dm')
@@ -242,7 +242,7 @@ class ShipEdgeCrossingTests(unittest.TestCase):
         link = dm_body(edge, '/proc/sea_edge_link_at(here, list/B)')
         self.assertIn('var/list/boxes = world_insets[here]', link)
         self.assertIn('var/ocean = sea_edge_inset_ocean(here)', link)
-        anchor = dm_body(edge, '/proc/sea_edge_anchorage(list/offsets, list/E, from, list/hold = null)')
+        anchor = dm_body(edge, '/proc/sea_edge_anchorage(list/offsets, list/E, from, list/hold = null, list/upper = null)')
         self.assertIn('boxes[from]', anchor)
         self.assertIn('map.edge_crossing_z', anchor)
         self.assertIn('#include "code\\modules\\naval\\ship_edge_crossing.dm"', read('civ13.dme'))

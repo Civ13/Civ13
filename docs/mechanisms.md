@@ -23,6 +23,11 @@ tile is looked up at each pull. Nothing ticks.
 | Castle drop trapdoor | Drops or shuts |
 | Gate winch | Raises or drops its gates at once |
 | Shaft clutch (`transmission.dm`) | Thrown: in. Thrown back: out. One pull: toggles |
+| Counterweight drum (`contraptions.dm`) | Thrown: releases. Thrown back: brakes. One pull: toggles |
+| Relay (`contraptions.dm`) | Thrown: closes. Thrown back: opens. One pull: toggles |
+| Hopper machine gate (`hopper_machines.dm`) | Thrown: opens. Thrown back: shuts. One pull: toggles |
+| Sluice gate (`flood_defences.dm`) | Thrown: draws up. Thrown back: lowers. One pull: toggles |
+| Mechanism port | Sends Pulled into its circuit |
 | Bell | Rings an alarm (not on a lever thrown back) |
 | Rock drop (6 stone, Field Defenses) | Stones fall on its tile: 15 brute, armour applies, knockdown. Hung up again by hand (4 s) |
 

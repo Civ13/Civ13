@@ -85,7 +85,7 @@
 
 /obj/structure/sluice_gate
 	name = "sluice gate"
-	desc = "Timber boards in a frame, set in a gap in a levee. Shut, it holds the river back like the bank around it; drawn up, it lets floodwater through onto the fields behind, to leave its silt there."
+	desc = "Timber boards in a frame, set in a gap in a levee. Shut, it holds the river back like the bank around it; drawn up, it lets floodwater through onto the fields behind, to leave its silt there. A lever's cord can draw it up and lower it."
 	icon = 'icons/obj/flood_defences.dmi'
 	icon_state = "sluice_gate"
 	anchored = TRUE
@@ -122,9 +122,10 @@
 
 /obj/structure/sluice_gate/proc/set_open(state)
 	if (open == state)
-		return
+		return FALSE
 	open = state
 	sluice_update()
+	return TRUE
 
 /obj/structure/sluice_gate/attack_hand(mob/living/user)
 	if (!istype(user))

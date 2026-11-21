@@ -317,5 +317,18 @@
       "/obj/item/machine_part/shaft": 1,
       "/obj/item/machine_part/bearing": 2
     }
+  },
+  "/obj/structure/workshop_machine/hopper/fulling_stocks": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/hopper/bark_stamps": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/stack/material/iron": 2
+    }
   }
 }
