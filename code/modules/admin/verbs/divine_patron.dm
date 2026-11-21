@@ -70,6 +70,8 @@
 				return
 			var/list/options = list()
 			for (var/spell in divine_invocation_names)
+				if (magic_repo_rite_spell(spell)) // repository_tiers.dm: they come with the grant
+					continue
 				if (teaching != (spell in H.divine_known))
 					options[divine_invocation_names[spell]] = spell
 			if (!options.len)

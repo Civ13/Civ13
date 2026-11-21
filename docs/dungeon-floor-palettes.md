@@ -82,3 +82,12 @@ patterns 1, 7 and 8 onto the warm brown hues of the other wood floors. The pink
 slabs share their edge crossings, so the random pick per tile never shows a
 break. The eleven wood patterns carry descriptive names (narrow plank,
 basketweave, herringbone, parquet and so on) in place of numbers.
+
+## Iron floors
+
+`/obj/covers/iron_plate` and `/obj/covers/iron_grating` are laid from iron
+(Iron Smithing), one bar each. Both are fireproof and count as an iron floor
+for foundations and wall weathering. The plate is the hardest floor before
+steel. The grating lets blood and spills fall through when someone walks on
+it; gibs, writing, cobwebs and molten metal stay. The art is drawn by
+`scripts/draw_iron_floors.py` (`--check` compares it with the sheet).

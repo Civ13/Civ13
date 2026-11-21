@@ -188,6 +188,7 @@ class GovernmentTests(unittest.TestCase):
         self.crown()
         later = T + GOVERNMENT_NOTICE + 10
         self.assertIn('recently', self.ask('alpha', 'govern', A, now=later, actor='val', type='confederation'))
+        self.ask('alpha', 'present', A, now=later + 3 * 86400, actor='val')
         later += GOVERNMENT_COOLDOWN
         self.assertIn('Only the Monarch', self.ask('alpha', 'govern', B, now=later, type='confederation'))
         self.assertIn('decree', self.ask('alpha', 'govern', A, now=later, actor='val', type='confederation'))
@@ -251,6 +252,49 @@ class GovernmentTests(unittest.TestCase):
         snap = self.n.snapshot(T + GOVERNMENT_NOTICE)[self.nid]
         self.assertEqual(snap['eras']['civ:alpha:Cork'], 1)
         self.assertIn('civ:alpha:Cork', snap['leaving'])
+
+    def test_absent_monarch_passes_to_heir_or_leaves_throne_empty(self):
+        self.crown()
+        now = T + GOVERNMENT_NOTICE
+        self.assertIn('Only the Monarch names', self.ask('alpha', 'heir', B, now=now, person='bob', pname='Bob',
+                                                         pfaction=B))
+        self.assertIn('named heir', self.ask('alpha', 'heir', A, now=now, actor='val', person='bob', pname='Bob',
+                                             pfaction=B))
+        self.assertEqual(self.gov(now)['successor']['account'], 'bob')
+        self.ask('alpha', 'present', A, now=now + 5 * 86400, actor='val')
+        self.assertEqual(self.gov(now + 11 * 86400)['head_account'], 'val')
+        g = self.gov(now + 12 * 86400 + 1)
+        self.assertEqual((g['head_account'], g['successor']), ('bob', None))
+        self.assertEqual(self.n.snapshot(now + 12 * 86400 + 1)[self.nid]['head'], B)
+        # Bob vanishes too: with no heir the throne stands empty.
+        g = self.gov(now + 20 * 86400)
+        self.assertEqual((g['type'], g['head_account']), ('monarchy', None))
+        # The member factions decide while it is empty, and anyone may claim it.
+        self.ask('beta', 'apply', D, nation=self.nid, now=now + 20 * 86400)
+        self.assertIn('counted', self.ask('alpha', 'vote', A, now=now + 20 * 86400, applicant=D, yes=True))
+        self.assertIn('take the empty throne', self.ask('alpha', 'claim', C, now=now + 20 * 86400, actor='cat',
+                                                       role='citizen', pname='Cat'))
+        self.assertIn('not empty', self.ask('alpha', 'claim', B, now=now + 20 * 86400, actor='bob', role='citizen',
+                                            pname='Bob'))
+        self.assertEqual(self.gov(now + 20 * 86400)['head_account'], 'cat')
+
+    def test_absent_dictator_collapses_and_faith_leads_theocracy(self):
+        for f in (A, B, C):
+            self.ask('alpha', 'era', f, age=1)
+        for f in (A, B):
+            self.ask('alpha', 'govern', f, type='dictatorship', person='val', pname='Val', pfaction=A)
+        now = T + GOVERNMENT_NOTICE
+        self.assertEqual(self.gov(now)['type'], 'dictatorship')
+        self.assertEqual(self.gov(now + 3 * 86400 + 1)['type'], 'confederation')
+        now += 3 * 86400 + 1 + GOVERNMENT_COOLDOWN
+        for f in (A, B):
+            self.ask('alpha', 'govern', f, now=now, type='theocracy', person='val', pname='Val', pfaction=A,
+                     religion='Sun')
+        now += GOVERNMENT_NOTICE
+        self.ask('alpha', 'faith', B, now=now, actor='bob', role='citizen', pname='Bob', religion='Moon')
+        self.assertEqual(self.gov(now)['head_account'], 'val')
+        self.ask('alpha', 'faith', B, now=now, actor='bob', role='citizen', pname='Bob', religion='Sun')
+        self.assertEqual(self.gov(now)['head_account'], 'bob')
 
     def test_dictatorship_capacity_is_capped(self):
         for tier in (3,):
@@ -369,6 +413,14 @@ class ElectiveTests(unittest.TestCase):
         self.assertEqual(self.n.weights(self.nid), {A: 0.4 * 1020, B: 10, C: 10})
         self.ask('alpha', 'currency', A, now=self.now, issuer=A)
         self.assertEqual(self.n.currency(self.nid), A)  # 408 of 428 at once
+
+    def test_absent_consul_hands_to_deputy_and_election_opens(self):
+        self.become('republic')
+        self.ask('alpha', 'deputy', A, now=self.now, actor='val', person='bob', pname='Bob', pfaction=B)
+        self.now += 3 * 86400 + 1
+        snap = self.snap()
+        self.assertEqual(snap['government']['head_account'], 'bob')
+        self.assertEqual([m['kind'] for m in snap['motions']], ['election'])
 
     def test_rename_and_dissolve_follow_motions(self):
         self.become('republic')

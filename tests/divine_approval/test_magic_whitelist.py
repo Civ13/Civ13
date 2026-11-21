@@ -47,7 +47,7 @@ class MagicWhitelist(unittest.TestCase):
     def test_every_way_in_checks_the_list(self):
         self.assertIn('magic_allowed()', body(COVENANT, '/mob/living/human/proc/divine_refresh_verbs()'))
         problem = body(COVENANT, '/mob/living/human/proc/divine_problem(')
-        self.assertLess(problem.index('magic_allowed()'), problem.index('divine_known'))
+        self.assertLess(problem.index('magic_allowed()'), problem.index('divine_spells_allowed()'))
         self.assertIn('magic_allowed()', body(JOURNAL, '/mob/living/human/proc/can_read_divine_journal()'))
         self.assertIn('statname == "magic" && !magic_allowed()', body(STATS, '/mob/living/human/proc/setStat('))
         self.assertIn('statname == "magic" && multiplier > 0 && !magic_allowed()', body(STATS, '/mob/living/human/proc/adaptStat('))

@@ -1181,6 +1181,9 @@ SUITES = {
                   'code/game/objects/covers_types/cover_floortypes.dm',
                   'icons/turf/floors.dmi', 'icons/turf/flooring/wood.dmi',
                   'icons/turf/flooring/decals.dmi'), 'shared_paths': ()},
+    'iron_floors': {'files': ('tests/iron_floors/test_iron_floors.py',),
+        'paths': ('tests/iron_floors/', 'code/modules/1713/iron_floors.dm',
+                  'icons/turf/flooring/iron.dmi'), 'shared_paths': ()},
     'terracotta_floors': {'files': ('tests/terracotta_floors/test_terracotta_floors.py',),
         'paths': ('tests/terracotta_floors/', 'code/modules/1713/terracotta_floors.dm',
                   'icons/turf/flooring/terracotta.dmi'),
@@ -1447,6 +1450,7 @@ SUITES = {
     'ship_draught': {'files': ('tests/ship_draught/test_draught_sources.py',),
         'paths': ('tests/ship_draught/',), 'shared_paths': (
             'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
+            'code/modules/naval/ship_designer.dm', 'scripts/build_ship_designer_icons.py',
             'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
@@ -2397,6 +2401,9 @@ SUITES = {
         'tests/power_cranes/', 'code/modules/1713/power_cranes.dm', 'code/modules/1713/lifting_machines.dm',
         'config/craft_needs.json', 'icons/obj/power_cranes.dmi', 'tests/sprites/create_power_cranes.py')},
     # Source contracts only; this suite does not run DM.
+    'road_garden': {'files': ('tests/road_garden/test_contract.py',), 'paths': ('tests/road_garden/',),
+        'shared_paths': ('code/game/objects/covers_types/cover_roads.dm',
+                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm')},
     'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
         'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
         'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
@@ -2526,7 +2533,7 @@ SUITES = {
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
     'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py'), 'paths': (
-        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
+        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),

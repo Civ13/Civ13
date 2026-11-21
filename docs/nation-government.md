@@ -81,6 +81,27 @@ the factions is closed under every type but a confederation.
 If the ruler's faction leaves the nation, the government falls back to a
 confederation and the longest-standing member becomes head.
 
+## Succession
+
+Each world reports when the nation's head is playing a member faction's
+character in its land (`present` op, at most hourly). When the head has been
+away longer than their government allows, the seat passes on
+(`tools/transfer_storage/nation_succession.py`):
+
+| Type | Away for | Then |
+| --- | --- | --- |
+| Theocracy | 7 days | The seat goes empty. Whenever a citizen with a verified account leads the state religion in any land, they become High Priest (`faith` op). |
+| Monarchy | 7 days | The heir the monarch named (**Nation > Name an heir**) takes the throne; with none, the throne stands empty. |
+| Dictatorship | 3 days | The nation falls back to a confederation. |
+| Republic | 3 days | The deputy the consul named (**Name a deputy**) acts, and an election opens at once. |
+| Democracy, merchant league | 3 days | An election opens at once. |
+
+While a ruler's seat is empty, the member factions decide as in a
+confederation. An empty throne can be claimed at any member faction's nation
+assembly: a citizen with a verified account holds it for 30 minutes, and the
+count pauses while another citizen of the nation stands within 3 tiles. The
+first to finish takes the throne (`claim` op).
+
 ## Secession
 
 Under every type but a confederation, **Secede** gives notice: the faction
@@ -99,6 +120,8 @@ stays a member for the notice period and may **Stay** to withdraw it.
   candidates.
 - `nation_census`: faction -> eligible citizens and strongbox worth.
 - `nation_term`: when the elected head's term ends.
+- `nation_seen`: when the head was last reported playing.
+- `nation_successor`: the monarch's heir or the consul's deputy.
 
 The registry snapshot every world reads adds `government`, `government_votes`,
 `leaving`, `eras`, `motions`, `term_ends` and `census` to each nation.
