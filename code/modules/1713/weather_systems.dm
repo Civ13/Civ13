@@ -261,7 +261,8 @@ var/global/weather_storm_count = 0
 			storms++
 	if (storms >= weather_system_capacity())
 		return
-	weather_system_spawn(WEATHER_SYSTEM_STORM, result == WEATHER_EXTREME)
+	// The storm forms on a low's front (weather_fronts.dm).
+	weather_front_storm(result == WEATHER_EXTREME)
 
 // ---- the weather on a tile ---------------------------------
 

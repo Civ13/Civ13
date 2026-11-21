@@ -11,6 +11,20 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-21: process safety and the experimental WMI check -->
+After WMI broke on 2026-11-19 (tasklist hung, Gaia stayed down), Val approved the criticality plan (2026-11-21).
+Launcher 1.5.33: `LocalHosting.RunCaptured` reads both streams asynchronously and enforces a per-step limit
+(`WithLimit`; status 30 s, stop/kill/unlock/freeze/thaw/help 2 min, start/restart 10 min for the pager wait,
+everything else 30 min), ending the step's tree and throwing `StepTimedOut` (an IOException), so a hung host
+script no longer freezes the board. ProcessSafety.cs lists, inspects and ends processes through the kernel
+(never tasklist, taskkill or WMI) and only ends a verified target; the bot's Force stop uses it, and
+`--bot start` falls back to a direct `CreateProcess` when WMI's `Win32_Process.Create` fails or takes over 20 s.
+All regions > More > **Windows process check (experimental)…** (WmiHealth.cs, Gui/WmiHealthDialog.cs) checks
+WMI read-only and offers the five repairs, each elevated only on a click; its checkbox (`experimental.json`
+`wmi_health_check`, off by default) turns on a 10-minute watch that warns on the board. `Civ13.exe --wmi check`
+prints the same check. `tests/gaia_host/test_gaia_host.py` ProcessToolGuardTests fails on new process-tool
+calls in host scripts and the launcher (WmiHealth.cs and BotCommand.cs are allowed).
+
 <!-- 2026-11-19: Player records window -->
 Val asked (2026-11-19) that admin notes and similar systems be visible on every region. All regions > More >
 **Player records…** (Gui/PlayerRecordsDialog.cs, PlayerRecords.cs, launcher 1.5.31) runs `shard_group.py records`

@@ -25,6 +25,12 @@ CONTROLS = {
                     '\tif (FALSE)\n', 'FAIL:'),
     'no-override': ('code/game/objects/hit_kinds.dm',
                     '\tif (hit_kind)\n\t\treturn hit_kind\n', '', 'FAIL:'),
+    'no-bruise': ('code/game/objects/armor_families.dm',
+                  'effective_force * ARMOR_BRUISE_SHARE, BRUTE', '0, BRUTE', 'FAIL:'),
+    'no-gap': ('code/game/objects/armor_families.dm',
+               'return ARMOR_GAP_PENETRATION', 'return 0', 'FAIL:'),
+    'no-blunt-wear': ('code/game/objects/armor_families.dm',
+                      '\t\twear *= ARMOR_BLUNT_WEAR\n', '\t\twear *= 1\n', 'FAIL:'),
 }
 
 

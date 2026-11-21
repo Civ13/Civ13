@@ -22,9 +22,9 @@ cell moves part of the way toward its target:
 
 | Value | Target | Share closed per tick |
 | --- | --- | --- |
-| Temperature | climate mean for the season's progress plus the daily offset (halved over water, a third under thick cloud), 2 C colder under a storm, 6 C warmer under a heat system | 10% |
+| Temperature | climate mean for the season's progress plus the daily offset (halved over water, a third under thick cloud), 2 C colder under a storm, 6 C warmer under a heat system, plus the warm and cold sides of a low | 10% |
 | Dew point | from the climate's normal humidity (`climate_humidity`), 10 points wetter over water, toward 97% under a storm, 20 points drier under heat | 8% |
-| Pressure | 1013 hPa, down to 995 under a storm (983 severe), up to 1023 under a heat system | 15% |
+| Pressure | 1013 hPa, down to 995 under a storm (983 severe), up to 1023 under a heat system, plus the lows and highs of [weather-fronts.md](weather-fronts.md) | 15% |
 | Cloud | the storm's strength, or a grey sky when humidity passes 90% | 20% |
 
 The dew point never rises above the temperature.

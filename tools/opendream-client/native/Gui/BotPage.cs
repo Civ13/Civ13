@@ -337,9 +337,15 @@ internal sealed partial class LauncherWindow {
             (restart ? ", then started again." : ". Discord relays and commands pause until it is started again.");
         if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK) return;
         BotLine("Force-stopping Civilizationbot...");
-        var (_, listing) = await Task.Run(() => LocalHosting.RunCaptured(LocalBot.ListPhpProcesses()));
-        var pids = LocalBot.ParseBotProcesses(bot, listing);
-        foreach (var pid in pids) await Task.Run(() => LocalHosting.RunCaptured(LocalBot.KillTree(pid)));
+        var images = LocalBot.BotImages.Append(Path.GetFileName(bot.Php)).ToArray();
+        var (pids, refused) = await Task.Run(() => {
+            var found = LocalBot.FindBotProcesses(bot);
+            var notes = new List<string>();
+            foreach (var pid in found)
+                if (ProcessSafety.End(pid, images) is { Refused: { } why }) notes.Add(why);
+            return (found, notes);
+        });
+        foreach (var note in refused) BotLine("Not ended: " + note + ".");
         if (ownedBot.Running) await ownedBot.WaitForExit(TimeSpan.FromSeconds(10));
         await Task.Delay(1000);
         await RefreshBot();

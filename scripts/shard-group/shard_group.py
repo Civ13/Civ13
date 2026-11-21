@@ -23,6 +23,7 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json ports                         # every port, who holds it, clashes
     python shard_group.py --config group.json set-gate --region ID [--apply]  # make ID the front door (group_ports.py)
     python shard_group.py --config group.json set-port --region ID --port N [--apply]
+    python shard_group.py --config group.json add-gateway [--region ID] [--apply]  # an always-up world for the front door
 
 Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
@@ -63,6 +64,8 @@ sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
 from byond_topic import frame_query  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
+import process_safety  # noqa: E402
+from process_safety import Unverified  # noqa: E402
 sys.path.insert(0, str(HERE))
 import expedition_slots  # noqa: E402
 import fresh_world  # noqa: E402
@@ -75,7 +78,7 @@ from shard_map_selection import select_map_block  # noqa: E402
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
-                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open',
+                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
                  'migrate-underground', 'records')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
@@ -87,8 +90,8 @@ COORDS = re.compile(r'^\d{1,5},\d{1,5},\d{1,5}$')
 # source region's SQL folder, read by every region like admins.txt. Keep the header in step.
 MAGIC_WHITELIST_HEADER = '# Magic whitelist: one player key per line. Shared by every region of the group.\n'
 # Kinds nobody can start in: worlds that reset, transit/orbit, battles, events,
-# expedition slots and practice rooms (the mainland's own rules).
-START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL')
+# expedition slots, practice rooms and the gateway (the mainland's own rules).
+START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL', 'GATEWAY')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
@@ -136,8 +139,14 @@ GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/l
 # saves, and sends players back when they leave (code/modules/1713/tutorial_region.dm).
 # EXPEDITION is a slot that holds one generated land at a time, reached only by
 # ship (expedition_slots.py, docs/expedition-slots.md).
+# GATEWAY is the always-up world on the front door's port: it hosts no play, never
+# saves or sleeps, restarts on its own port to update (never a standby handover) and
+# sends every player on to their land through the relay (code/modules/persistence/region_gateway.dm).
 KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE', 'EVENT', 'TUTORIAL',
-         'EXPEDITION')
+         'EXPEDITION', 'GATEWAY')
+# Kinds whose world never saves: an ordinary round with SKIP_PERSISTENCE_SAVING (region_mode_config).
+UNSAVED_KINDS = ('EVENT', 'TUTORIAL', 'GATEWAY')
+GATEWAY_MAP = 'maps/special/gateway.dmm'
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -315,6 +324,13 @@ def check_group(group, path):
         raise ValueError('a group has at most one TUTORIAL region')
     if any(r['id'] == mainland for r in tutorials):
         raise ValueError('the mainland cannot be a TUTORIAL region')
+    gateways = [r for r in regions if r['kind'] == 'GATEWAY']
+    if len(gateways) > 1:
+        raise ValueError('a group has at most one GATEWAY region')
+    if any(r['id'] == mainland for r in gateways):
+        raise ValueError('the mainland cannot be a GATEWAY region')
+    if gateways and not group.get('relay_port'):
+        raise ValueError('a GATEWAY region sends players on through the routing relay; set relay_port')
     # Where new characters start (and fallen ones whose bed does not keep their
     # home): the mainland unless the host names another region. The mainland
     # stays the era source, bot link and land-stage reference either way.
@@ -723,7 +739,10 @@ class RegionPlatform(Platform):
             if not refresh or (record.get('code') == code and self.listener_pids(port) in ([], [record.get('pid')])):
                 return False
             for pid in self.listener_pids(port):
-                self.terminate(pid)
+                try:
+                    self.terminate(pid, expect=process_safety.python_expect())
+                except Unverified:
+                    return False  # not an agent: never end it; the port stays taken until a person frees it
             if self.listening(port):
                 return False  # the next pass tries again
         path = Path(self.config['repository'])
@@ -1099,6 +1118,22 @@ class RegionHost(Host):
     def update_when_empty(self):
         return self.update_settings()[0]
 
+    def region_kind(self):
+        """This region's kind from the group config (read at each check), or None."""
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError, KeyError):
+            return None
+        return next((r['kind'] for r in group['regions'] if r['id'] == self.config['region']), None)
+
+    def is_gateway(self):
+        return self.region_kind() == 'GATEWAY'
+
+    def may_sleep(self):
+        # The gateway is every player's way in and the group's hub entry: a frozen world
+        # stops answering the hub and holds each join until it thaws, so it stays awake.
+        return not self.is_gateway()
+
     def protects_mainland_uptime(self):
         try:
             return load_group(self.config['group_config'])['mainland'] == self.config['region']
@@ -1106,7 +1141,11 @@ class RegionHost(Host):
             return True  # a missing policy must not turn an automatic update into a restart
 
     def automatic_start_action(self):
-        return 'start-current' if self.protects_mainland_uptime() else super().automatic_start_action()
+        # The gateway is every player's way in: a watchdog start brings it back on the build it
+        # has instead of compiling first; updates reach it by its empty-world restart.
+        if self.protects_mainland_uptime() or self.is_gateway():
+            return 'start-current'
+        return super().automatic_start_action()
 
     def idle_update_action(self):
         if not self.protects_mainland_uptime():
@@ -1201,7 +1240,8 @@ class RegionHost(Host):
         except (OSError, ValueError):
             return None
         region = next((r for r in group['regions'] if r['id'] == self.config['region']), None)
-        if group['persistent'] or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
+        gateway = bool(region) and region['kind'] == 'GATEWAY'
+        if (group['persistent'] and not gateway) or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
             return None  # saving groups hand over instead; a battle updates when its round ends
         if not self.battle_moved_on(group):
             # Val (2026-11-18): a restart per merge pinged Discord every few minutes. The
@@ -1526,6 +1566,8 @@ class RegionHost(Host):
             raise Refused('the world does not answer lifecycle status')
         if world.get('busy') or not world.get('ready'):
             raise Refused('the world is busy or not ready, so it cannot save now')
+        if self.is_gateway():
+            return  # it restarts on its own port (do_handover): no standby, no second world in memory
         if self.platform.listening(self.standby_port()):
             raise Refused('port %d (the standby port) is in use' % self.standby_port())
         free = self.platform.free_memory_mb()
@@ -1562,6 +1604,19 @@ class RegionHost(Host):
         revision = self.staged_revision()
         if not revision or not self.update_pending():
             raise RuntimeError('no staged build newer than the running one')
+        if region['kind'] == 'GATEWAY':
+            # The hub lists a world by the port its DreamDaemon was started on; a standby
+            # that takes the port over with world.OpenPort is not listed again. The gateway
+            # keeps nothing, so it restarts on its own port onto the staged build instead.
+            if automatic and (self.world() or {}).get('clients'):
+                raise RuntimeError('players are passing through the gateway; automatic update deferred')
+            self.record(phase='restarting the gateway on its own port', revision=revision)
+            with self.handover_slot():
+                self.do_stop(operation)
+                self.do_update(operation)
+                self.do_start(operation)
+            self.record(phase='restarted onto the staged build', revision=revision, staged=True)
+            return
         port, spare_port, token = self.config['port'], self.standby_port(), self.token()
         before = self.world()
         if not token or not before:
@@ -1713,7 +1768,7 @@ class RegionHost(Host):
             if self.platform.now() > deadline:
                 pid = self.platform.server_pid(port)
                 if pid and not killed:
-                    self.platform.kill_tree(pid)
+                    self.platform.kill_tree(pid, expect=self.world_expect())
                     killed = True
                     deadline = self.platform.now() + 30
                     continue
@@ -1864,9 +1919,9 @@ class RegionHost(Host):
         pid = self.platform.server_pid(port) or pid
         if pid:
             try:
-                self.platform.kill_tree(pid)
-            except OSError:  # already gone
-                pass
+                self.platform.kill_tree(pid, expect=self.world_expect())
+            except (OSError, Unverified) as error:  # already gone, or not a world: left running
+                self.log({'standby_not_ended': str(error)[:300], 'port': port})
         return pid
 
     def latest_revision(self):
@@ -2269,9 +2324,9 @@ def fetch_remote(group, platform=None):
 
 
 def region_mode_config(group, region, path):
-    """Set a region's round mode after its overlays: a tutorial region never saves,
-    even in a persistent group; the others follow the group."""
-    if region['kind'] == 'TUTORIAL':
+    """Set a region's round mode after its overlays: a tutorial or gateway region never
+    saves, even in a persistent group; the others follow the group."""
+    if region['kind'] in ('TUTORIAL', 'GATEWAY'):
         tutorial_config(path)
     elif group['persistent']:
         persistent_config(path, saving=not region.get('reset_minutes'))
@@ -2418,7 +2473,7 @@ def write_region_files(group, region, path):
     config.mkdir(exist_ok=True)
     settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
                 'start_region': group['start_region'],
-                'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in ('EVENT', 'TUTORIAL') else 0,
+                'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in UNSAVED_KINDS else 0,
                 'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
                 # The host service's doorman on this machine; regions ask it which peers
                 # sleep (a direct poll would wake them) and to wake one for a traveller.
@@ -2598,6 +2653,62 @@ def write_operator_agent(group, path):
     return True
 
 
+def add_gateway(group, region_id=None, apply=False, platform=None):
+    """The first half of putting a gateway world on the front door's port.
+
+    Adds a GATEWAY region (maps/special/gateway.dmm, ports chosen like any omitted
+    port) to the group file, sets it up and starts it on that port while the current
+    front door keeps playing. The second half is `set-gate --region <id> --apply`, which
+    swaps the two worlds' ports: the gateway takes the public port (1714 on the live
+    host) and stays on it, and the old front door moves behind the relay on the
+    gateway's port. Without apply, only the plan. A group that already has a gateway
+    gets only the next step."""
+    platform = platform or Platform()
+    if not group.get('relay_port'):
+        raise Refused('a gateway sends players on through the routing relay, and this group has none (relay_port)')
+    gate = group.get('gate')
+    existing = next((r for r in group['regions'] if r['kind'] == 'GATEWAY'), None)
+    if existing:
+        done = gate == existing['id']
+        steps = ['%s is already the gateway%s.' % (existing['name'], ' and the front door' if done else
+                 '; make it the front door (set-gate --region %s --apply)' % existing['id'])]
+        return {'plan': {'region': existing['id'], 'already': True, 'gate': gate, 'steps': steps, 'problems': [], 'warnings': []},
+                'accepted': False, 'next': None if done else 'set-gate --region %s --apply' % existing['id']}
+    region_id = region_id or 'gateway'
+    if not ID.match(region_id) or any(r['id'] == region_id for r in group['regions']):
+        raise Refused('%s is not a free region id' % region_id)
+    path = Path(group['_path'])
+    raw = json.loads(path.read_text(encoding='utf-8-sig'))
+    raw['regions'].append({'id': region_id, 'name': 'Gateway', 'kind': 'GATEWAY', 'map': GATEWAY_MAP, 'public': True})
+    planned = json.loads(json.dumps(raw))
+    fill_ports(planned, platform.listening)
+    try:
+        check_group(json.loads(json.dumps(planned)), path)
+    except ValueError as error:
+        raise Refused(str(error))
+    entry = planned['regions'][-1]
+    front = next((r for r in group['regions'] if r['id'] == gate), None)
+    steps = ['Add the region %s (Gateway) on port %d%s; it never saves, never sleeps and hosts no play.'
+             % (region_id, entry['port'], ', travel agent %d' % entry['transfer_port'] if entry.get('transfer_port') else ''),
+             'Set it up and start it there (the first start compiles it); %s keeps playing on port %d meanwhile.'
+             % (front['name'], front['port']) if front else 'Set it up and start it there.',
+             'Then run set-gate --region %s --apply: the gateway takes port %s for good and %s moves to port %d behind '
+             'the relay (it is saved and started again once).' % (region_id, front['port'] if front else '?',
+                                                                  front['name'] if front else 'the front door', entry['port'])]
+    plan = {'region': region_id, 'port': entry['port'], 'transfer_port': entry.get('transfer_port'), 'gate': gate,
+            'already': False, 'steps': steps, 'problems': [], 'warnings': []}
+    if not apply:
+        return {'plan': plan, 'accepted': False}
+    shutil.copy2(path, unused_backup_path(path))
+    write_json_atomic(path, planned)
+    group = load_group(str(path))
+    result = {'plan': plan, 'accepted': True, 'setup': setup(group, platform, region_id)}
+    (region, host), = hosts(group, region_id, platform)
+    result['start'] = host.request('start')
+    result['next'] = 'set-gate --region %s --apply' % region_id
+    return result
+
+
 def relay_settings(group):
     """The shard_region.json keys a region needs to send players through the relay."""
     return {'relay': '%s:%d' % (group['public_host'], group['relay_port']),
@@ -2762,7 +2873,15 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
                            and record.get('mainland', group['mainland']) == group['mainland']
                            and record.get('start_region', group['mainland']) == group['start_region']):
             return False
-        (terminate or Platform().terminate)(pid)
+        try:
+            # coordinator.pid can outlive its coordinator (a reboot) and name a reused pid.
+            born = (root / 'coordinator.pid').stat().st_mtime
+        except OSError:
+            born = None
+        try:
+            (terminate or Platform().terminate)(pid, expect=process_safety.python_expect(born_before=born))
+        except Unverified:
+            pass  # not the coordinator: the pid file was stale, so leave that process alone and start one
     database = root / 'coordinator.sqlite'
     argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
             '--mainland', group['mainland'], '--start-region', group['start_region']]
@@ -2993,12 +3112,33 @@ def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.mon
         sleep(1)
         running = {r: pid for r, pid in running.items() if process_alive(pid)}
     kill = kill or Platform().kill_tree
+    refused = {}
     for one, pid in running.items():
-        kill(pid)
+        # A pid file can outlive its bridge (a reboot, a crash) and name a reused pid: end only
+        # a Python process that is older than the file that names it.
+        try:
+            kill(pid, expect=process_safety.python_expect(born_before=help_pid_written(group, one, pid)))
+        except Unverified as error:
+            refused[one] = str(error)
         clear_help_lock(group, one)
     for one in ids:
         (help_dir(group) / ('%s.pid' % one)).unlink(missing_ok=True)
-    return {'stopped': stopped, 'forced': sorted(running)}
+    result = {'stopped': stopped, 'forced': sorted(r for r in running if r not in refused)}
+    if refused:
+        result['not_ended'] = refused
+    return result
+
+
+def help_pid_written(group, region_id, pid):
+    """When the newest pid file naming pid for this region's bridge was written, or None."""
+    times = []
+    for path in (help_spool(group, region_id) / 'worker.lock' / 'pid', help_dir(group) / ('%s.pid' % region_id)):
+        try:
+            if int(path.read_text(encoding='utf-8').strip()) == pid:
+                times.append(path.stat().st_mtime)
+        except (OSError, ValueError):
+            pass
+    return max(times) if times else None
 
 
 # -- outside save validator ---------------------------------------------------------
@@ -3622,7 +3762,7 @@ def main(argv=None):
     parser.add_argument('--port', type=int, help='set-port: the game port')
     parser.add_argument('--transfer-port', type=int, help='set-port: the transfer agent port')
     parser.add_argument('--standby-port', type=int, help='set-port: the handover standby port')
-    parser.add_argument('--apply', action='store_true', help='set-gate, set-port: carry the plan out (without it, only the plan)')
+    parser.add_argument('--apply', action='store_true', help='set-gate, set-port, add-gateway: carry the plan out (without it, only the plan)')
     parser.add_argument('--bot-profile', help='set-gate: the bot profile.json to repoint (default: the group\'s bot_profile)')
     parser.add_argument('--ckey', help='records: every record about one player key')
     parser.add_argument('--search', help='records: records whose key or text holds this')
@@ -3736,6 +3876,8 @@ def main(argv=None):
                 plan = group_ports.plan_port(this, group, args.region, args.port, args.transfer_port, args.standby_port,
                                              bot_profile=args.bot_profile)
             result = group_ports.apply(this, group, plan) if args.apply else {'plan': plan, 'applied': False}
+        elif args.action == 'add-gateway':
+            result = add_gateway(group, args.region, args.apply)
         elif args.action == 'config-migrate':
             result = migrate_config(group)
         elif args.action == 'expedition-land':

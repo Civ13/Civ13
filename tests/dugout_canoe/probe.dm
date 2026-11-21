@@ -214,6 +214,7 @@ var/canoe_runtime_error = FALSE
 	T.reagents.add_reagent("gasoline", 10)
 	C.motor_on = TRUE
 	canoe_check(C.step_delay(NORTH) == 3 && C.under_power, "with fuel the engine sets the pace")
+	canoe_check(C.vehicle_offset_paddle_delay() == 3, "rolling by pixels she keeps the engine's pace ([C.vehicle_offset_paddle_delay()])")
 	H.dir = NORTH
 	C.dir = NORTH
 	GLOB.global_listen_count = list()

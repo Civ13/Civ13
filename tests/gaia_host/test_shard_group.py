@@ -157,7 +157,7 @@ class FakeMachine:
     def server_pid(self, port):
         return self.pids_by_port.get(port) if port in self.up else None
 
-    def kill_tree(self, pid):
+    def kill_tree(self, pid, expect=None):
         self.calls.append((['kill_tree', pid], None))
         for port, owner in list(self.pids_by_port.items()):
             if owner == pid:
@@ -695,16 +695,16 @@ class ShardGroupTests(unittest.TestCase):
         # A new start region (launcher Start region) restarts a running coordinator at the next check.
         ended = []
         with mock.patch.object(shard_group, 'coordinator_pid', lambda g: 4242):
-            self.assertFalse(shard_group.ensure_coordinator(group, start, refresh=True, terminate=ended.append))
+            self.assertFalse(shard_group.ensure_coordinator(group, start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
             moved = dict(group, start_region='deep')
-            self.assertTrue(shard_group.ensure_coordinator(moved, start, refresh=True, terminate=ended.append))
+            self.assertTrue(shard_group.ensure_coordinator(moved, start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
         self.assertEqual([4242], ended)
         self.assertEqual('deep', started[1][started[1].index('--start-region') + 1])
         started.pop()
         # So does a new mainland.
         with mock.patch.object(shard_group, 'coordinator_pid', lambda g: 4242):
-            self.assertTrue(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=ended.append))
-            self.assertFalse(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=ended.append))
+            self.assertTrue(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
+            self.assertFalse(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
         self.assertEqual('deep', started[1][started[1].index('--mainland') + 1])
         started.pop()
         self.assertEqual('4242', (self.base / 'regions' / 'coordinator.pid').read_text().strip())
@@ -1348,7 +1348,7 @@ class ShardGroupTests(unittest.TestCase):
                 listeners[port].append(pid)
                 listening.add(port)
             return pid
-        def terminate(platform, pid):
+        def terminate(platform, pid, expect=None):
             ended.append(pid)
             alive.discard(pid)
             for port, owners in listeners.items():
@@ -1754,7 +1754,7 @@ class PlayerHelpTests(unittest.TestCase):
             clock[0] += seconds
             self.alive.discard(11)  # gaia sees the stop file; deep (an older bridge without it) does not
         killed = []
-        def kill(pid):
+        def kill(pid, expect=None):
             killed.append(pid)
             self.alive.discard(pid)
         result = shard_group.help_stop(group, timeout=5, sleep=sleep, clock=lambda: clock[0], kill=kill)
@@ -1802,7 +1802,7 @@ class PlayerHelpTests(unittest.TestCase):
         self.alive.add(102)
         self.lock('deep', 102)
         # Stopping one region leaves the other running and is not undone by the host service.
-        def kill(pid):
+        def kill(pid, expect=None):
             self.alive.discard(pid)
         result = shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=kill, region_id='gaia')
         self.assertEqual({'stopped': ['gaia'], 'forced': ['gaia']}, result)
@@ -1818,6 +1818,20 @@ class PlayerHelpTests(unittest.TestCase):
         self.assertEqual((False, True), tuple(shard_group.help_status(group)['regions'][r]['wanted'] for r in ('gaia', 'deep')))
         with self.assertRaises(shard_group.Refused):
             shard_group.help_start(group, start, region_id='moon')
+        # A pid file naming some other process (a reused pid after a reboot) is never ended.
+        self.alive.add(103)
+        self.lock('deep', 103)
+        seen = []
+
+        def refuse(pid, expect=None):
+            seen.append(expect)
+            raise shard_group.Unverified('process %d is not Python (it is C:\\x.exe); it was left running' % pid)
+        result = shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=refuse, region_id='deep')
+        self.assertEqual([], result['forced'])
+        self.assertIn('not Python', result['not_ended']['deep'])
+        self.assertIn(103, self.alive)
+        self.assertEqual('Python', seen[0].what)
+        self.assertIsNotNone(seen[0].born_before, 'the pid file time bounds the process age')
 
     def test_actions_without_player_help(self):
         del self.group['player_help']
@@ -2394,7 +2408,7 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('asleep', result['accepted']['gaia']['state'])
         self.assertTrue(gaia.frozen(), 'still asleep while it builds')
         self.assertTrue(gaia.install_marker.exists(), 'installed as soon as it is built, host service or not')
-        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        self.machine.terminate = lambda pid, expect=None: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
         gaia.work('stage', self.machine.detached[-1][-1])
         stage = gaia.read_json(gaia.stage_file)
         self.assertEqual(('ready', 'installing'), (stage['phase'], stage.get('install')), stage)
@@ -2408,7 +2422,7 @@ class StagedBuildTests(unittest.TestCase):
         # Val (2026-11-13): asleep regions must be able to take the new update.
         group, host = StagedBuildTests.built(self)
         self.machine.pids = {77}
-        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        self.machine.terminate = lambda pid, expect=None: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
         host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
         self.machine.up = {1720}
         answer = host.request('update')
@@ -2423,7 +2437,7 @@ class StagedBuildTests(unittest.TestCase):
         group, host = StagedBuildTests.built(self)
         host.work('stage', host.request_stage()['operation'])
         self.machine.pids = {77}
-        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        self.machine.terminate = lambda pid, expect=None: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
         host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
         answer = host.request('update')
         self.assertEqual(('update', 'asleep'), (answer['action'], answer['state']), answer)
@@ -3369,7 +3383,7 @@ class SaveValidatorTests(unittest.TestCase):
         with mock.patch.object(shard_group, 'region_config', lambda group, region: {'state_dir': str(self.base / 'regions' / region['id'] / 'data' / 'shard-host')}):
             return shard_group.ensure_save_validation(self.config(), start, free_mb=lambda: free,
                                                       now=lambda: self.clock[0], alive=lambda pid: pid in self.alive,
-                                                      terminate=lambda pid: self.alive.discard(pid))
+                                                      terminate=lambda pid, expect=None: self.alive.discard(pid))
 
     def finish_validator(self, ok=True, files=None):
         """What the validate-only world leaves behind."""

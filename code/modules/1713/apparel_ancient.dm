@@ -227,7 +227,7 @@
 	body_parts_covered = UPPER_TORSO
 	armor = list(melee = 65, arrow = 45, gun = 10, energy = 15, bomb = 45, bio = 20, rad = 45)
 	value = 40
-	slowdown = 0.8
+	slowdown = 0.5
 	health = 47
 
 /obj/item/clothing/suit/armor/ancient/chainmail
@@ -261,7 +261,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE) //identical to bronze armor
 	value = 25
-	slowdown = 0.7
+	slowdown = 0.5
 	health = 48
 
 /obj/item/clothing/suit/armor/ancient/bronze_lamellar/chinese
@@ -272,7 +272,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 25
-	slowdown = 0.7
+	slowdown = 0.5
 	health = 48
 
 
@@ -284,7 +284,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 25
-	slowdown = 0.7
+	slowdown = 0.5
 	health = 48
 
 
@@ -307,7 +307,7 @@
 	body_parts_covered = UPPER_TORSO
 	armor = list(melee = 45, arrow = 25, gun = 5, energy = 10, bomb = 20, bio = 20, rad = 10)
 	value = 40
-	slowdown = 0.2
+	slowdown = 0.5
 	health = 18
 
 /*Ancient Capes*/

@@ -175,7 +175,7 @@ var/global/region_ooc_next_poll = 0
 			display_name = target.holder ? "[fakekey]/([name])" : fakekey
 		else if (length(rank))
 			display_name = "<span class = 'ping'>[rank]</span> [name]"
-		to_chat(target, "<span class='ooc'><span class='[style]'>" + create_text_tag("ooc", "OOC:", target) + " <small>\[[region_name]\]</small> <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>")
+		to_chat(target, "<span class='ooc'><span class='[style]'>" + create_text_tag("ooc", "OOC:", target) + " <small>\[[region_name]\]</small> <EM>[display_name]:</EM> <span class='message chat-tr'>[msg]</span></span></span>")
 	return TRUE
 
 // The mainland posts a line from a region without its own webhook, in the

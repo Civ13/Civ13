@@ -82,9 +82,9 @@
 	kind_check(armor_rating(list(melee = 40), "arrow") == 0, "other keys never fall back to melee")
 	kind_check(armor_rating(null, HIT_CUT) == 0, "no armor list protects nothing")
 
-	// Existing worn armor protects exactly as before against every kind.
-	var/list/worn = list(/obj/item/clothing/suit/armor/medieval, /obj/item/clothing/suit/armor/medieval/chainmail,
-		/obj/item/clothing/suit/armor/samurai, /obj/item/clothing/suit/armor/ancient/linen)
+	// Worn armor without a family protects as its melee value against every kind.
+	var/list/worn = list(/obj/item/clothing/suit/armor/ork_grunt, /obj/item/clothing/suit/armor/darkplate,
+		/obj/item/clothing/suit/armor/scrap, /obj/item/clothing/suit/armor/creed)
 	var/mob/living/human/wearer = new(locate(2,2,1))
 	for(var/path in worn)
 		var/obj/item/clothing/suit = new path(locate(2,2,1))
@@ -119,9 +119,43 @@
 				var/blocked = target.hit_with_weapon(W, attacker, 10, "chest")
 				if(stopped)
 					kind_check(blocked == 2, "[blocked_kind] armor stops [path] (blocked [blocked])")
-					kind_check(target.getBruteLoss() == before, "[path] does no damage through [blocked_kind] armor")
+					if(attacks[path] == HIT_BLUNT)
+						// A stopped blow still bruises for a quarter of its force.
+						var/bruise = target.getBruteLoss() - before
+						kind_check(bruise > 0 && bruise <= 10 * ARMOR_BRUISE_SHARE + 0.01, "[path] bruises through [blocked_kind] armor ([bruise])")
+					else
+						kind_check(target.getBruteLoss() == before, "[path] does no damage through [blocked_kind] armor")
 				else
 					kind_check(blocked == 0, "[blocked_kind] armor does not stop [path] (blocked [blocked])")
+
+	// Weapon roles: blows wear armor three times as fast as cuts and thrusts.
+	kind_check(armor_hit_wear(weapons[/obj/item/weapon/melee/mace], HIT_BLUNT) == 0.8 * ARMOR_BLUNT_WEAR, "a mace wears armor [armor_hit_wear(weapons[/obj/item/weapon/melee/mace], HIT_BLUNT)]")
+	kind_check(armor_hit_wear(weapons[/obj/item/weapon/material/sword], HIT_CUT) == 0.8, "a sword wears armor 0.8")
+	kind_check(armor_hit_wear(null, HIT_BLUNT) == 0, "no weapon wears no armor")
+	cuirass.armor = list(melee = 0, cut = 100, pierce = 100, blunt = 100, arrow = 0, gun = 0, energy = 0, bomb = 0, bio = 0, rad = 0)
+	cuirass.health = 100
+	target.run_armor_check("chest", HIT_CUT, 0, damage_source = weapons[/obj/item/weapon/material/sword])
+	var/cut_wear = 100 - cuirass.health
+	cuirass.health = 100
+	target.run_armor_check("chest", HIT_BLUNT, 0, damage_source = weapons[/obj/item/weapon/melee/mace])
+	var/blunt_wear = 100 - cuirass.health
+	kind_check(cut_wear > 0 && blunt_wear > cut_wear * 2.9, "a stopped blow wears the cuirass [blunt_wear], a stopped cut [cut_wear]")
+
+	// Thrusts find the gaps in mail and lamellar, not in plate or unfamilied armor.
+	kind_check(target.armor_gap_penetration("chest", HIT_PIERCE) == 0, "the fixture cuirass has no gaps")
+	target.drop_from_inventory(cuirass)
+	for(var/path in list(/obj/item/clothing/suit/armor/medieval/chainmail, /obj/item/clothing/suit/armor/samurai))
+		var/obj/item/clothing/gapped = new path(locate(4,2,1))
+		target.equip_to_slot_or_del(gapped, slot_wear_suit)
+		kind_check(target.wear_suit == gapped, "target wears [path]")
+		kind_check(target.armor_gap_penetration("chest", HIT_PIERCE) == ARMOR_GAP_PENETRATION, "a thrust finds the gaps in [path]")
+		kind_check(target.armor_gap_penetration("chest", HIT_CUT) == 0, "a cut finds no gaps in [path]")
+		kind_check(target.armor_gap_penetration("head", HIT_PIERCE) == 0, "[path] leaves no gaps on the bare head")
+		target.drop_from_inventory(gapped)
+		qdel(gapped)
+	var/obj/item/clothing/plate = new /obj/item/clothing/suit/armor/medieval(locate(4,2,1))
+	target.equip_to_slot_or_del(plate, slot_wear_suit)
+	kind_check(target.armor_gap_penetration("chest", HIT_PIERCE) == 0, "plate has no gaps for a thrust")
 
 	text2file("PASS: hits have a kind, armor resists each kind and falls back to its melee value", "hit_kind_result.txt")
 	del(world)
