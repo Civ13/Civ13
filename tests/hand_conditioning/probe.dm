@@ -32,8 +32,8 @@
 var/conditioning_probe_checks = 0
 var/conditioning_probe_wait = TRUE
 var/conditioning_probe_now = 1000000
-var/list/conditioning_probe_rolls = list()
-var/list/conditioning_probe_chances = list()
+var/list/conditioning_probe_rolls
+var/list/conditioning_probe_chances
 
 /mob/living/human/conditioning_probe/hand_conditioning_clock()
 	return conditioning_probe_now
@@ -72,6 +72,9 @@ var/list/conditioning_probe_chances = list()
 	H.water = 400
 
 /proc/conditioning_probe_run()
+	// Set here, not in the global initialiser, which is at the compiler size limit.
+	conditioning_probe_rolls = list()
+	conditioning_probe_chances = list()
 	config = new
 	config.webhook_can_fire = FALSE
 	makeDatumRefLists()
