@@ -430,6 +430,7 @@ var/global/province_siege_timer = null
 			H[3] = now
 	province_siege_end(c, row, "[siege["faction"]] has taken the seat of the [name]. Its rank's benefits are suspended for [SIEGE_SUSPEND_DAYS] days[warning ? ", and your hold is slipping: recover it or lose the province" : ""].", "Your side has taken the seat of the [name]. Its holder's rank is suspended for [SIEGE_SUSPEND_DAYS] days[warning ? " and its hold is slipping" : ""].")
 	log_game("Provinces: [siege["faction"]] won a siege on province [c].")
+	province_siege_report(siege["faction"], holder) // province_treaties.dm: counts toward imposing vassalage
 
 /proc/province_siege_text(c)
 	var/list/row = province_siege_row(c)
