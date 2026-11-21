@@ -160,6 +160,9 @@
 					user.visible_message(SPAN_NOTICE("[user] fills \the [RG] with water."), SPAN_NOTICE("You fill \the [RG] with water."))
 					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 					user.setClickCooldown(5)
+					if (ishuman(user) && watertype == "water")
+						var/mob/living/human/drawer = user
+						drawer.arcane_drew_water(RG)
 				return
 		if (istype(C, /obj/item/clothing) && !busy)
 			var/obj/item/clothing/CL = C
@@ -256,7 +259,7 @@
 					H.shoveling = TRUE
 					user.visible_message(SPAN_NOTICE("[user] starts to shovel snow into a pile."), SPAN_NOTICE("You start to shovel snow into a pile."))
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
-					if (!do_after(user, work_delay(H, 40, WORK_DIG, SH)))
+					if (!do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))
 						H.shoveling = FALSE
 						return
 					if (!T || T.snow_units(generated_source) <= 0)
@@ -279,7 +282,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, work_delay(H, 40, WORK_DIG, SH)))
+						if (do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))
 							if (!T || T.available_dirt <= 0)
 								H.shoveling = FALSE
 								return
@@ -287,7 +290,7 @@
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_dirt -= 1
-							new /obj/item/weapon/barrier(T)
+							earth_pile_out(T, user, "dirt") // a wheelbarrow beside you takes it (earthworking_tools.dm)
 						else
 							H.shoveling = FALSE
 					else
@@ -297,7 +300,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, work_delay(H, 27, WORK_DIG, SH)))
+						if (do_after(user, work_delay(H, 27, WORK_SHIFT, SH)))
 							if (!T || T.available_sand <= 0)
 								H.shoveling = FALSE
 								return
@@ -305,7 +308,7 @@
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_sand -= 1
-							new /obj/item/stack/ore/glass(T)
+							earth_pile_out(T, user, "sand")
 						else
 							H.shoveling = FALSE
 				else

@@ -104,6 +104,12 @@ var/global/list/region_home_summoned = list()
 /mob/new_player/var/tmp/transfer_hold_warned = FALSE
 
 /proc/region_home_admit(mob/new_player/lobby, wait = TRUE)
+	// Nobody plays in the gateway, not even a guest: it sends them on instead.
+	if(region_gateway_here())
+		if(lobby && lobby.client)
+			if(wait) to_chat(lobby, SPAN_NOTICE("Nobody plays here: this is the way in. You are being sent on to your land."))
+			region_gateway_forward(lobby)
+		return FALSE
 	if(!region_home_enabled()) return TRUE
 	if(!lobby || !lobby.client) return FALSE
 	var/client/C = lobby.client

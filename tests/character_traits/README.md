@@ -137,3 +137,16 @@ The fog overlay itself needs a connected client and is not exercised here.
 ```
 python3 tests/ecology_spawning/run_linux.py . tests/character_traits/sight_probe.dm
 ```
+
+## Birth charts
+
+`birth_chart_probe.dm` is a native probe for the birth charts in
+`code/game/mob/living/carbon/human/birth_charts.dm`: twelve zero-sum signs of
++10/+5/+5 and -10/-5/-5, no stat favoured across signs by more than 10 points,
+named and rolled signs, the 60-150 starting clamp, untouched non-chart stats,
+a flavor-only sign for characters made before charts, a chosen sign used once at
+spawn, and the Character Setup choice failing closed without a verified account.
+
+```
+python3 tests/ecology_spawning/run_linux.py . tests/character_traits/birth_chart_probe.dm
+```

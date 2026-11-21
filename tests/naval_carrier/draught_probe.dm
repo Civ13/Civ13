@@ -140,6 +140,30 @@ var/naval_runtime_error = FALSE
 	naval_check(barge.sail_step() == VESSEL_SPEED_SLOW && barge.wants_ballast() > 0, "one mast is too little for sixty tiles, and she wants ballast ([barge.wants_ballast()])")
 	naval_check(findtext(barge.summary_text(), "ballast"), "the summary tells her builder about ballast")
 
+	// ---- The designer window ----
+	var/list/examples = ship_draught_examples()
+	naval_check(examples.len == 3, "three ready-made draughts to start from")
+	for (var/datum/ship_draught/E in examples)
+		naval_check(E.buildable(), "the ready-made [E.name] can be built as drawn ([jointext(E.problems(), " ")])")
+		var/list/cells = ship_designer_cells(E)
+		var/inside = TRUE
+		for (var/list/C in cells)
+			if (!ship_draught_on_sheet(C[1], C[2]))
+				inside = FALSE
+		naval_check(cells.len == E.hull_tiles() && inside, "the [E.name] is laid out on the sheet for the window")
+	var/datum/ship_draught/galley_example = examples[1]
+	naval_check(galley_example.oar_step() == VESSEL_SPEED_FULL, "the ready-made galley rows at full ahead")
+	var/datum/ship_draught/sloop_example = examples[2]
+	naval_check(sloop_example.sail_step() == VESSEL_SPEED_HALF, "the ready-made sloop sails at half ahead")
+	var/obj/item/ship_draught/pad = new(yard)
+	var/html = ship_designer_html(pad, null)
+	naval_check(findtext(html, "C13SHIP") && findtext(html, "rowing galley"), "the window carries the drawing tools and the ready-made ships")
+	var/mob/living/human/naval_probe/drawer = new(yard)
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,1,w,M,1,0", "Little/Auk", TRUE) == "Saved on the sheet." && pad.draughts_name() == "Little Auk", "saving keeps the drawing and its cleaned name on the sheet")
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,0,w,T,1,0", "Bad", TRUE) != "Saved on the sheet." && pad.draughts_name() == "Little Auk", "a damaged drawing is refused and the sheet keeps what it had")
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/", "Empty", FALSE) == null, "an empty sheet still gets a summary")
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/", "Empty", FALSE) == "", "a summary asked for again at once is put off")
+
 	// ---- Drawing a ship afloat ----
 	for (var/x = 22, x <= 60, x++)
 		for (var/y = 4, y <= 50, y++)
@@ -170,6 +194,116 @@ var/naval_runtime_error = FALSE
 	qdel(spare)
 	tiller.decommission()
 	naval_check(istext(ship_draught_survey(tiller)), "a struck hull has no lines to draw")
+
+	// ---- Building a draught on the slipway (naval/slipway_draught.dm) ----
+	var/list/turn_ok = list()
+	for (var/heading in cardinal)
+		var/list/W = slipway_draught_turn(1, 2, heading)
+		var/list/undone = ship_draught_bow_up(W[1], W[2], heading)
+		if (undone[1] == 1 && undone[2] == 2)
+			turn_ok += heading
+	naval_check(turn_ok.len == 4, "laying a sheet on the berth is the inverse of drawing her lines, every heading")
+	naval_check(piece_material(new /obj/item/stack/material/iron) == "iron" && piece_material(new /obj/item/stack/material/woodplank) == "planks", "iron and planks pay for slipway pieces")
+	var/datum/ship_draught/skiff = new
+	skiff.name = "Tern"
+	for (var/x = 0, x < 3, x++)
+		for (var/y = 0, y < 4, y++)
+			skiff.set_floor(x, y, (x == 2 && y == 3) ? "s" : "w")
+	skiff.set_piece(1, 0, "T")
+	skiff.set_piece(0, 1, "R", EAST)
+	skiff.set_piece(2, 2, "W")
+	skiff.set_piece(1, 3, "K")
+	skiff.set_upper(1, 1, TRUE)
+	var/datum/slipway_design/draught/plan = slipway_draught_plan(skiff)
+	var/list/stage_names = list()
+	for (var/list/stage in plan.stages)
+		stage_names += stage["name"]
+	naval_check(plan.total_pieces() == 16 && jointext(stage_names, "|") == "Plank floors|Steel floors|Tillers|Rowing benches|Killicks|Plank walls", "a draught builds floor by floor, then her fittings kind by kind ([jointext(stage_names, "|")])")
+	var/list/plan_cost = plan.total_cost()
+	naval_check(plan_cost["wood"] == 48 && plan_cost["steel"] == 1 && plan_cost["planks"] == 4 && plan_cost.len == 3, "she costs her hand-built floors and fittings, without the deck above ([piece_cost_text(plan_cost)])")
+	naval_check(plan.order[1][1] == "0,0" && plan.order[12][1] == "2,3", "her floors go down from stern to bow")
+	// The plan keeps its draught; the probe draws a fresh one for the post.
+	plan.draught = null
+	qdel(plan)
+
+	var/obj/structure/slipway/ways = new(locate(5, 30, 2))
+	ways.dir = EAST
+	var/obj/structure/vessel_mast/block = new(locate(8, 29, 2))
+	var/refusal = ways.draught_refusal(skiff)
+	naval_check(refusal && findtext(refusal, "in the way"), "something solid on her berth refuses the draught ([refusal])")
+	qdel(block)
+	var/obj/covers/repairedfloor/old_floor = new(locate(9, 30, 2))
+	refusal = ways.draught_refusal(skiff)
+	naval_check(refusal && findtext(refusal, "already floors"), "a floor already on her berth refuses the draught ([refusal])")
+	qdel(old_floor)
+	var/datum/ship_draught/helmless = ship_draught_from_code(skiff.to_code())
+	helmless.set_piece(1, 0, null)
+	refusal = ways.draught_refusal(helmless)
+	naval_check(refusal && findtext(refusal, "no helm"), "a draught that could not be commissioned is refused ([refusal])")
+	qdel(helmless)
+	var/obj/structure/slipway/edge = new(locate(2, 10, 2))
+	edge.dir = WEST
+	refusal = edge.draught_refusal(skiff)
+	naval_check(refusal && findtext(refusal, "edge of the world"), "a berth off the map is refused ([refusal])")
+	qdel(edge)
+	naval_check(!ways.draught_refusal(skiff), "the berth east of the post takes her")
+
+	ways.lay_draught(skiff)
+	naval_check(ways.design == "Tern" && ways.draught_code == skiff.to_code() && slipway_frame_count(ways) == 12 && slipway_frames_named(ways, "cradle") == 12, "laying her out marks her 12 tiles with the cradle")
+	var/obj/structure/slipway_frame/stern_frame = locate() in locate(6, 30, 2)
+	var/obj/structure/slipway_frame/bow_frame = locate() in locate(9, 30, 2)
+	naval_check(stern_frame && bow_frame && !(locate(/obj/structure/slipway_frame) in locate(10, 30, 2)) && !(locate(/obj/structure/slipway_frame) in locate(5, 30, 2)), "her stern is before the post and her bow runs east")
+	naval_check(findtext(ways.status_text(), "plank floor") && findtext(ways.status_text(), "2 wood"), "the post asks for the first plank floor ([ways.status_text()])")
+	var/obj/item/stack/material/steel/wrong_stack = new(ways.loc)
+	wrong_stack.amount = 10
+	naval_check(!ways.pay(wrong_stack), "steel does not pay for a plank floor")
+	var/obj/item/stack/material/wood/one_floor = new(ways.loc)
+	one_floor.amount = 2
+	ways.pay(one_floor)
+	naval_check(ways.pieces_done == 1 && (locate(/obj/covers/repairedfloor) in locate(6, 31, 2)) && !(locate(/obj/structure/slipway_frame) in locate(6, 31, 2)) && slipway_frame_count(ways) == 11, "a paid floor is laid at once, stern to starboard first, and its marker goes")
+	var/list/pay_paths = list("wood" = /obj/item/stack/material/wood, "steel" = /obj/item/stack/material/steel, "iron" = /obj/item/stack/material/iron, "planks" = /obj/item/stack/material/woodplank)
+	var/guard = 0
+	while (ways.pieces_done < 12 && guard++ < 50)
+		var/list/needed = ways.still_needed()
+		for (var/key in needed)
+			var/path = pay_paths[key]
+			var/obj/item/stack/stack = new path(ways.loc)
+			stack.amount = needed[key]
+			ways.pay(stack)
+	var/obj/structure/slipway_frame/tiller_mark = locate() in locate(6, 30, 2)
+	naval_check(ways.pieces_done == 12 && (locate(/obj/covers/steelplating) in locate(9, 29, 2)) && tiller_mark && findtext(tiller_mark.name, "tiller") && slipway_frame_count(ways) == 4, "with her floors down only her four fittings stay marked ([slipway_frame_count(ways)])")
+	// A reload rebuilds the plan and the markers from the saved code.
+	ways.draught_cache = null
+	ways.update_frames()
+	naval_check(slipway_frame_count(ways) == 4 && ways.get_design() && ways.next_piece() ~= list(3, 1), "after a load the same four markers come back")
+	guard = 0
+	while (ways.next_piece() && guard++ < 50)
+		var/list/needed = ways.still_needed()
+		for (var/key in needed)
+			var/path = pay_paths[key]
+			var/obj/item/stack/stack = new path(ways.loc)
+			stack.amount = needed[key]
+			ways.pay(stack)
+	var/obj/structure/hull_tiller/built_tiller = locate() in locate(6, 30, 2)
+	var/obj/structure/bed/chair/wood/rowing_bench/built_bench = locate() in locate(7, 31, 2)
+	naval_check(ways.finished() && !slipway_frame_count(ways), "every piece paid, she is finished and no marker is left")
+	naval_check(built_tiller && built_tiller.type == /obj/structure/hull_tiller && built_bench && built_bench.dir == SOUTH && (locate(/obj/covers/wood_wall/adjustable) in locate(8, 29, 2)) && (locate(/obj/structure/hull_anchor/stone) in locate(9, 30, 2)), "her fittings stand where drawn, the bench turned to face starboard as her bow faces east")
+	naval_check(findtext(ways.status_text(), "finished on the berth") && istext(ways.launch()), "a finished draught waits on the berth ([ways.status_text()])")
+	ways.abandon()
+	naval_check(!ways.design && !ways.draught_code && (locate(/obj/structure/hull_tiller) in locate(6, 30, 2)), "giving her up clears the post and leaves what was built")
+	qdel(skiff)
+
+/proc/slipway_frames_named(obj/structure/slipway/S, text)
+	. = 0
+	for (var/obj/structure/slipway_frame/F in S.frames)
+		if (!QDELETED(F) && findtext(F.name, text))
+			.++
+
+/proc/slipway_frame_count(obj/structure/slipway/S)
+	. = 0
+	for (var/obj/structure/slipway_frame/F in S.frames)
+		if (!QDELETED(F))
+			.++
 
 /proc/naval_run()
 	try

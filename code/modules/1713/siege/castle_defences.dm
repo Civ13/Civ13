@@ -49,6 +49,8 @@
 		in_block = SLIT_IN_BLOCK
 	else if (istype(A, /obj/structure/window/barrier/rock/parapet) || istype(A, /obj/structure/window/barrier/sandstone/parapet))
 		return parapet_verdict(A, P)
+	else if (istype(A, /obj/structure/railing/built))
+		return railing_cover_verdict(A, P)
 	else if (istype(A, /obj/structure/barricade))
 		var/obj/structure/barricade/B = A
 		if (!B.outward_dir || !B.density)

@@ -111,11 +111,16 @@ def restore_crafting_projection(path, source):
              '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat'),
             ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf',
              '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf'),
-            ('\t\t\t\t\tif (!do_after(user, work_delay(H, 40, WORK_DIG, SH)))',
+            # Dug earth goes into a wheelbarrow beside the digger (earthworking_tools.dm).
+            ('\t\t\t\t\t\t\tearth_pile_out(T, user, "dirt") // a wheelbarrow beside you takes it (earthworking_tools.dm)',
+             '\t\t\t\t\t\t\tnew /obj/item/weapon/barrier(T)'),
+            ('\t\t\t\t\t\t\tearth_pile_out(T, user, "sand")',
+             '\t\t\t\t\t\t\tnew /obj/item/stack/ore/glass(T)'),
+            ('\t\t\t\t\tif (!do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))',
              '\t\t\t\t\tif (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
-            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 40, WORK_DIG, SH)))',
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))',
              '\t\t\t\t\t\tif (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
-            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 27, WORK_DIG, SH)))',
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 27, WORK_SHIFT, SH)))',
              '\t\t\t\t\t\tif (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))'),
             ('\t\t\t\tif (do_after(user, work_delay(H, 100, WORK_DIG, SH)))',
              '\t\t\t\tif (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))'),
@@ -184,6 +189,8 @@ def restore_crafting_projection(path, source):
             ('\t\t\tif (H.shoveling)\n\t\t\t\treturn ..()\n', '\t\t\tif (H.shoveling)\n\t\t\t\t..()\n'),
             # Opening dug-out rock to the sky (tests/open_cave_roof).
             ('\t\tif (open_cave_roof_attempt(H, C)) // open_cave_roof.dm\n\t\t\treturn\n', ''),
+            # Hidden material virtue on water drawn at dawn (tests/divine_approval/test_arcane_materials.py).
+            ('\t\t\t\t\tif (ishuman(user) && watertype == "water")\n\t\t\t\t\t\tvar/mob/living/human/drawer = user\n\t\t\t\t\t\tdrawer.arcane_drew_water(RG)\n', ''),
         )
     else:
         edits = ()

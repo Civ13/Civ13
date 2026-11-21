@@ -203,9 +203,38 @@ var/global/list/road_roller_types = list(
 
 /obj/structure/workshop_machine/steam_site/steam_shovel
 	name = "steam shovel"
-	desc = "A steam excavator with a dipper on a boom. Fasten it down, load fuel and click it with an empty hand: it digs the loose dirt and sand out of the ground within two tiles and heaps it at its foot, up to twelve piles in a job."
+	desc = "A steam excavator with a dipper on a boom. Fasten it down, load fuel and click it with an empty hand: it digs the loose dirt and sand out of the ground within two tiles and heaps it at its foot, up to twelve piles in a job, or cuts the ground within reach down a level."
 	icon_state = "steam_shovel"
 	var/reach = 2
+
+// Tiles within reach it can cut down a level, up to a load (not its own tile).
+/obj/structure/workshop_machine/steam_site/steam_shovel/proc/cuttings()
+	. = list()
+	var/turf/here = get_turf(src)
+	for (var/turf/floor/T in range(reach, here))
+		if (length(.) >= SHOVEL_MAX_LOAD)
+			break
+		if (T == here || terrain_grade_problem(T, -1))
+			continue
+		. += T
+
+// Cuts what it still can and heaps the spoil at the shovel's foot. Returns the tiles cut.
+/obj/structure/workshop_machine/steam_site/steam_shovel/proc/cut_down(mob/living/human/H)
+	var/turf/heap = get_turf(src)
+	var/cut = 0
+	for (var/turf/T in cuttings())
+		var/grade = T.terrain_grade - 1
+		if (!istype(T, /turf/floor/dirt) || istype(T, /turf/floor/dirt/winter))
+			T = T.ChangeTurf(/turf/floor/dirt)
+		T.terrain_grade = grade
+		T.terrain_grade_apply()
+		new /obj/item/weapon/barrier(heap)
+		cut++
+	if (cut)
+		visible_message(SPAN_NOTICE("\The [src] cuts [cut] tile\s of ground down a level and heaps the spoil at its foot."))
+	else if (H)
+		to_chat(H, SPAN_WARNING("\The [src] finds no ground left to cut."))
+	return cut
 
 // list(turf = units to take) of loose dirt and sand within reach, up to a load.
 /obj/structure/workshop_machine/steam_site/steam_shovel/proc/diggings()
@@ -239,8 +268,20 @@ var/global/list/road_roller_types = list(
 	if (out_of_fuel(H))
 		return
 	var/list/found = diggings()
-	if (!length(found))
-		to_chat(H, SPAN_NOTICE("There is no loose dirt or sand left within [reach] tiles of \the [src]."))
+	var/list/cuts = cuttings()
+	var/job = "dig"
+	if (length(cuts) && length(found))
+		job = player_input(H, "What should \the [src] do?", "Steam shovel", null, "anything", list("Dig loose earth", "Cut the ground down a level"), TRUE)
+		if (!job || busy || !operator_ready(H))
+			return
+		job = job == "Dig loose earth" ? "dig" : "cut"
+	else if (length(cuts))
+		job = "cut"
+	else if (!length(found))
+		to_chat(H, SPAN_NOTICE("There is no loose dirt or sand left within [reach] tiles of \the [src], and no ground it can cut."))
+		return
+	if (job == "cut")
+		steam_cut_job(H, length(cuts))
 		return
 	var/units = 0
 	for (var/turf/T in found)
@@ -259,6 +300,22 @@ var/global/list/road_roller_types = list(
 		to_chat(H, SPAN_WARNING("\The [src] stops; nothing is dug."))
 		return
 	dig(H)
+
+/obj/structure/workshop_machine/steam_site/steam_shovel/proc/steam_cut_job(mob/living/human/H, tiles)
+	busy = TRUE
+	fuel = max(0, fuel - 1)
+	icon_state = "steam_shovel_on"
+	visible_message(SPAN_NOTICE("[H] sets \the [src] cutting the ground down."))
+	playsound(src, 'sound/effects/shovelling.ogg', 100, TRUE)
+	var/done = do_after(H, max(10, SHOVEL_UNIT_TIME * 2 * tiles), src)
+	busy = FALSE
+	if (QDELETED(src))
+		return
+	icon_state = initial(icon_state)
+	if (!done || !anchored || !operator_ready(H))
+		to_chat(H, SPAN_WARNING("\The [src] stops; nothing is cut."))
+		return
+	cut_down(H)
 
 // Take what is still there and heap it at the shovel's foot. Returns the piles made.
 /obj/structure/workshop_machine/steam_site/steam_shovel/proc/dig(mob/living/human/H)
