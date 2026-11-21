@@ -97,6 +97,10 @@ var/naval_runtime_error = FALSE
 	D.set_piece(0, 0, "Y", EAST)
 	naval_check(findtext(jointext(D.problems(), " "), "gangway faces her own deck"), "a gangway facing inboard is refused ([jointext(D.problems(), " ")])")
 	D.set_piece(0, 0, null)
+	var/datum/ship_draught/nest_ship = draught_box(3, 5, "Lookout")
+	nest_ship.set_piece(1, 3, "N")
+	naval_check(nest_ship.mast_count() == 1 && nest_ship.sail_step() == VESSEL_SPEED_HALF && nest_ship.costs()["wood"] == 95, "a mast with a crow's nest drives her like a mast and costs 8 wood more ([nest_ship.costs_text()])")
+	qdel(nest_ship)
 	var/datum/ship_draught/raft = draught_box(3, 4, "Raft")
 	naval_check(!length(raft.gunwale_sides()), "small craft of 12 tiles are left open")
 	qdel(raft)
@@ -453,6 +457,26 @@ var/naval_runtime_error = FALSE
 		qdel(broken_plank)
 		naval_check(!way.planks.len && !(locate(/obj/covers/repairedfloor/rope/boarding/gangplank) in gap2) && !petrel_tiller.craft.gangplank_refusal(), "a broken plank brings the rest in")
 		qdel(pier)
+
+		// ---- Going aloft (naval/hull_masts.dm) ----
+		var/turf/mast_turf
+		for (var/turf/T in petrel_deck)
+			if (!mast_turf && !(locate(/obj/structure/railing) in T) && !(locate(/obj/structure/hull_tiller) in T))
+				mast_turf = T
+		var/obj/structure/vehicleparts/movement/sail/aloft_mast = new(mast_turf)
+		var/mob/living/human/naval_probe/topman = new(get_step(mast_turf, NORTH))
+		var/datum/craft/petrel_craft = petrel_tiller.craft
+		var/below = petrel_craft.lookout_range()
+		naval_check(!petrel_craft.aloft_reach() && isnull(topman.mast_climb_refusal(aloft_mast)), "nobody is aloft yet, and a sailor beside the mast may climb it")
+		naval_check(topman.go_aloft(aloft_mast) && topman.climbed_tree == aloft_mast && topman.loc == mast_turf && los_up_tree(topman), "up the mast, the sailor stands at its masthead and sees over walls")
+		naval_check(petrel_craft.aloft_reach() == 4 && petrel_craft.lookout_range() == below + 4, "a sailor at the masthead lets her lookout see 4 tiles further")
+		aloft_mast.crows_nest = TRUE
+		naval_check(petrel_craft.aloft_reach() == 8 && mast_look_amount(aloft_mast) > 8, "from a crow's nest her lookout sees 8 tiles further, and Look into Distance reaches further")
+		naval_check(ship_draught_piece_on(mast_turf, petrel_tiller) ~= list("N", aloft_mast.dir), "drawing her lines draws a mast with a crow's nest as one")
+		topman.climb_down_tree()
+		naval_check(!topman.climbed_tree && !aloft_mast.mast_aloft() && !petrel_craft.aloft_reach(), "climbed down, nobody is aloft")
+		qdel(aloft_mast)
+		qdel(topman)
 	qdel(petrel)
 
 /proc/slipway_frames_named(obj/structure/slipway/S, text)

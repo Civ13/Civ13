@@ -279,7 +279,8 @@ var/global/list/tree_canopy_tops = list()
 		step_x = tree_climb_from_x
 		step_y = tree_climb_from_y
 	if (fall)
-		visible_message(SPAN_DANGER("[src] falls out of the tree!"), SPAN_DANGER("You fall out of the tree!"))
+		var/from_what = istype(W, /obj/structure/wild) || !W ? "out of the tree" : "from \the [W]"
+		visible_message(SPAN_DANGER("[src] falls [from_what]!"), SPAN_DANGER("You fall [from_what]!"))
 		adjustBruteLoss(rand(3, 8))
 		Weaken(2)
 	else

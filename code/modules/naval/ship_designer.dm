@@ -47,6 +47,7 @@ var/global/list/ship_designer_sprites = list(
 	"shipd_piece_G.png" = 'icons/ship_designer/piece_G.png',
 	"shipd_piece_C.png" = 'icons/ship_designer/piece_C.png',
 	"shipd_piece_B.png" = 'icons/ship_designer/piece_B.png',
+	"shipd_piece_N.png" = 'icons/ship_designer/piece_N.png',
 	"shipd_piece_Y_1.png" = 'icons/ship_designer/piece_Y_1.png',
 	"shipd_piece_Y_2.png" = 'icons/ship_designer/piece_Y_2.png',
 	"shipd_piece_Y_4.png" = 'icons/ship_designer/piece_Y_4.png',
@@ -173,7 +174,7 @@ var/global/list/ship_designer_sprites = list(
 // Which heading of the window's palette each piece is drawn under. A piece
 // in none of them goes under "Other", so a new piece still shows.
 var/global/list/ship_designer_groups = list(
-	"Steering and drive" = list("O", "T", "M", "R"),
+	"Steering and drive" = list("O", "T", "M", "N", "R"),
 	"Gear" = list("K", "A", "P", "C", "B"),
 	"Cabin" = list("W", "D", "G"),
 	"Sides" = list("Y"),
