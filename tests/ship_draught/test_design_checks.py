@@ -1,0 +1,72 @@
+"""Design checks and part descriptions (code/modules/craft/design_checks.dm,
+code/modules/naval/draught_checks.dm, draught_part_help.dm): every part a
+vehicle editor offers is described, and every check names a kind. Stdlib only.
+"""
+import re
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+NAVAL = ROOT / 'code/modules/naval'
+SHIP = (NAVAL / 'ship_draught.dm').read_text(encoding='utf-8')
+SUB = (NAVAL / 'sub_draught.dm').read_text(encoding='utf-8')
+HELP = (NAVAL / 'draught_part_help.dm').read_text(encoding='utf-8')
+DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='replace')
+
+
+def table_keys(source, name):
+    block = source.split('var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
+    return re.findall(r'^\t"(\w+)" = ', block, re.M)
+
+
+def book(kind):
+    block = HELP.split('/datum/design_part_book/%s/entries()' % kind, 1)[1]
+    block = block.split('\n\t)\n', 1)[0]
+    rows = {}
+    for key, what, use, how in re.findall(r'^\t\t"(\w+)" = list\("what" = "([^"]+)", "use" = "([^"]+)", "how" = "([^"]+)"\)', block, re.M):
+        rows[key] = (what, use, how)
+    return rows
+
+
+class PartDescriptions(unittest.TestCase):
+    def test_every_ship_part_is_described(self):
+        rows = book('ship')
+        wanted = table_keys(SHIP, 'ship_draught_floors') + table_keys(SHIP, 'ship_draught_pieces') + ['u', 'x']
+        self.assertGreaterEqual(len(wanted), 24)
+        for key in wanted:
+            with self.subTest(part=key):
+                self.assertIn(key, rows)
+
+    def test_every_submarine_part_is_described(self):
+        rows = book('sub')
+        wanted = table_keys(SUB, 'sub_draught_frames') + table_keys(SUB, 'sub_draught_fittings') + ['wb', 'wd', 'wn']
+        for key in wanted:
+            with self.subTest(part=key):
+                self.assertIn(key, rows)
+
+    def test_descriptions_are_sentences_without_em_dashes(self):
+        for kind in ('ship', 'sub'):
+            for key, texts in book(kind).items():
+                for text in texts:
+                    with self.subTest(kind=kind, part=key):
+                        self.assertNotIn('—', text)
+                        self.assertTrue(text.endswith('.'), text)
+
+
+class Checks(unittest.TestCase):
+    def test_check_parents_name_a_kind_and_skip_themselves(self):
+        for path, kind in (('code/modules/naval/draught_checks.dm', 'ship'), ('code/modules/naval/draught_checks.dm', 'sub'), ('code/modules/craft/vehicle_checks.dm', 'vehicle')):
+            source = (ROOT / path).read_text(encoding='utf-8')
+            with self.subTest(kind=kind):
+                self.assertRegex(source, r'/datum/design_check/%s\n\tkind = "%s"\n\tabstract_type = /datum/design_check/%s\n' % (kind, kind, kind))
+
+    def test_levels_are_shared_defines_and_files_are_built(self):
+        defines = (ROOT / 'code/__defines/design_checks.dm').read_text(encoding='utf-8')
+        for name in ('DESIGN_NOTE', 'DESIGN_WARNING', 'DESIGN_ERROR'):
+            self.assertIn('#define %s ' % name, defines)
+        for path in ('code\\__defines\\design_checks.dm', 'code\\modules\\craft\\design_checks.dm', 'code\\modules\\craft\\vehicle_checks.dm', 'code\\modules\\naval\\draught_checks.dm', 'code\\modules\\naval\\draught_part_help.dm'):
+            self.assertIn('#include "%s"' % path, DME)
+
+
+if __name__ == '__main__':
+    unittest.main()

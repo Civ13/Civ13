@@ -27,7 +27,9 @@ class PracticeRoomSourceTests(unittest.TestCase):
         self.assertIn('if (practice_room_z && purpose != "practice")', budget)
         self.assertIn('purpose == "practice" && practice_admitted(target_z)', budget)
         multiz = read('code/modules/multiz/dug_underground.dm')
-        self.assertIn('z == practice_room_z || z + 1 == practice_room_z', multiz)
+        # The practice level is left out of the level column, so nothing climbs to or from it.
+        self.assertIn('if (z != practice_room_z && !(z in caves))', multiz)
+        self.assertIn('if (practice_room_z && z == practice_room_z)\n\t\treturn 0', multiz)
 
     def test_body_is_never_a_character(self):
         rooms = read('code/modules/1713/practice_rooms.dm')

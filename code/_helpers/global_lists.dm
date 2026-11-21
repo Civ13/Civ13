@@ -265,7 +265,8 @@ var/list/reverse_dir = list( // reverse_dir[dir] = reverse of dir
 		all_spells[S.name] = S
 
 	//Languages and species.
-	paths = typesof(/datum/language)-/datum/language
+	// Daughter languages are made at runtime (daughter.dm), never at boot.
+	paths = typesof(/datum/language)-/datum/language-/datum/language/daughter
 	for (var/T in paths)
 		var/datum/language/L = new T
 		all_languages[L.name] = L

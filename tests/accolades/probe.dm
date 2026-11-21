@@ -145,4 +145,35 @@ var/acc_runtime_error = FALSE
 	// The window's sections build for an account with ready and claimed accolades.
 	var/datum/accolade_window/W = new
 	acc_check(istype(W), "the window datum builds")
-	acc_check(length(accolade_catalog()) == 12, "twelve accolades in the first list")
+	acc_check(length(accolade_catalog()) == 25, "twenty-five accolades")
+
+	// Maker: different things made, not the same thing twice.
+	var/mob/living/human/M = new /mob/living/human(locate(6, 6, 1))
+	M.persistence_owner_ckey = "gina"
+	for (var/i = 1 to 30)
+		M.accolade_crafted(/obj/item/weapon)
+	acc_check(accolade_status(accolade_state("gina"), "maker") == "open", "the same thing made again does not count")
+	var/list/made = typesof(/obj/item/weapon)
+	for (var/i = 1 to 25)
+		M.accolade_crafted(made[i])
+	accolade_forget("gina")
+	acc_check(accolade_status(accolade_state("gina"), "maker") == "ready", "25 different things meet Maker")
+	var/list/kept = accolade_progress_clean(M.accolade_progress)
+	acc_check(length(kept["crafted"]) == 25, "crafted things are kept with the character")
+
+	// Founder: progress remembers the faction founded.
+	M.accolade_founded("Rome")
+	acc_check(accolade_progress_clean(M.accolade_progress)["founded"] == "Rome", "the founded faction is remembered")
+
+	// Teacher: a reader without hours of their own play never counts.
+	var/obj/item/weapon/book/B = new /obj/item/weapon/book(locate(6, 6, 1))
+	B.record_chapter_author("fire", M)
+	acc_check(B.chapter_authors["fire"] == "gina", "a chapter remembers its writer")
+	var/mob/living/human/R = new /mob/living/human(locate(7, 6, 1))
+	R.persistence_owner_ckey = "hank"
+	accolade_learned_from(R, B, "fire")
+	var/taught = 0
+	for (var/list/record in shared_records.records_for("gina"))
+		if (record["kind"] == "accolade_taught")
+			taught++
+	acc_check(!taught, "a reader with no play time of their own does not count for Teacher")

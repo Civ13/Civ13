@@ -651,7 +651,7 @@
 // fluent = FALSE is for a language being learned (proficiency.dm): it joins the
 // list at the score already earned instead of being known outright.
 /mob/proc/add_language(var/language, var/allow_name_changing = FALSE, var/fluent = TRUE)
-	if (language == uppertext(language))
+	if (istext(language) && language == uppertext(language))
 		language = capitalize(lowertext(language))
 
 	var/datum/language/new_language = null
@@ -899,11 +899,11 @@
 			H.partial_languages[new_language.name] = new_language.difficulty
 		else
 			own_share = H.language_score(new_language) / 100
-		var/list/m_int = new_language.mutual_intelligibility
 		for (var/lname in all_languages)
 			var/datum/language/L = all_languages[lname]
-			if (L.type in m_int)
-				H.partial_languages[lname] = max((H.partial_languages[lname]), m_int[L.type]*L.difficulty/100*own_share)
+			var/kin = language_kinship(new_language, L)
+			if (kin)
+				H.partial_languages[lname] = max((H.partial_languages[lname]), kin*L.difficulty/100*own_share)
 	languages.Add(new_language)
 	return TRUE
 
@@ -920,11 +920,11 @@
 		var/mob/living/human/H = src
 		// Remove partial_language values
 		H.partial_languages[rem_language] = 0
-		var/list/m_int = L.mutual_intelligibility
 		for (var/lname in all_languages)
 			var/datum/language/R = all_languages[lname]
-			if (R.type in m_int)
-				H.partial_languages[lname] = max((H.partial_languages[lname]-m_int[R.type]*R.difficulty/100), 0)
+			var/kin = language_kinship(L, R)
+			if (kin)
+				H.partial_languages[lname] = max((H.partial_languages[lname]-kin*R.difficulty/100), 0)
 	return ..()
 
 // Saved mobs decode their language datums as fresh copies, which never match
@@ -934,6 +934,12 @@
 	if (!istype(L))
 		return null
 	var/datum/language/shared = all_languages[L.name]
+	// Daughter languages (daughter.dm) share one type: only the name tells them apart.
+	if (is_daughter_language(L))
+		if (!shared)
+			ensure_daughter_languages()
+			shared = all_languages[L.name]
+		return is_daughter_language(shared) ? shared : L
 	if (istype(shared, L.type))
 		return shared
 	for (var/lname in all_languages)
@@ -947,7 +953,7 @@
 	if (!L)
 		return FALSE
 	for (var/datum/language/known in languages)
-		if (known == L || known.type == L.type)
+		if (language_same(known, L))
 			return TRUE
 	return FALSE
 
@@ -997,7 +1003,8 @@
 		// The same escaped values are safe in classic templates and React text.
 		entries += list(list("name" = html_encode(L.name), "prefix" = html_encode("[get_language_prefix()][L.key]"), "description" = "[language_standing(L)][html_encode(L.desc)]", "is_default" = (L == current_default)))
 	entries += languages_being_learned()
-	return list("languages" = entries, "current_default" = current_default ? html_encode(current_default.name) : "")
+	// Families of related languages on this world (daughter.dm), read-only like the rest.
+	return list("languages" = entries, "current_default" = current_default ? html_encode(current_default.name) : "", "families" = language_family_rows())
 
 // "Broken, 31%. " ahead of a language's description; nothing for other mobs.
 /mob/proc/language_standing(datum/language/L)

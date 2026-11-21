@@ -1,6 +1,6 @@
 # Earth continents
 
-All six Earth lands are generated regions drawn after the real continents, the
+All seven Earth lands are generated regions drawn after the real continents, the
 same way as the two [Americas regions](americas-regions.md): hand-placed
 outlines, mountain chains, rivers, lakes and climate centres in
 `tests/earth_maps/europe.py`, `asia.py`, `africa.py`, `oceania.py`,
@@ -9,12 +9,19 @@ outlines, mountain chains, rivers, lakes and climate centres in
 
 | Region id | Map | Type | Tiles | Frame (longitude east, latitude) |
 | --- | --- | --- | --- | --- |
-| `europe` | `maps/nomads/nomads_earth_europe.dmm` | `/obj/map_metadata/nomads/earth_europe` | 1160 x 903 | -25 to 60, 72 to 31 |
-| `africa` | `maps/nomads/nomads_earth_africa.dmm` | `/obj/map_metadata/nomads/earth_africa` | 976 x 1070 | -19 to 52, 38 to -36 |
-| `asia` | `maps/nomads/nomads_earth_asia.dmm` | `/obj/map_metadata/nomads/earth_asia` | 1226 x 854 | 30 to 190, 78 to 0 |
-| `oceania` | `maps/nomads/nomads_earth_oceania.dmm` | `/obj/map_metadata/nomads/earth_oceania` | 1212 x 864 | 94 to 180, 9 to -48 |
+| `europe` | `maps/nomads/nomads_earth_europe.dmm` | `/obj/map_metadata/nomads/earth_europe` | 846 x 572 | -10 to 52, 72 to 46 |
+| `mediterranean` | `maps/nomads/nomads_earth_mediterranean.dmm` | `/obj/map_metadata/nomads/earth_mediterranean` | 1280 x 396 | -10 to 52, 46 to 31 |
+| `africa` | `maps/nomads/nomads_earth_africa.dmm` | `/obj/map_metadata/nomads/earth_africa` | 976 x 969 | -19 to 52, 31 to -36 |
+| `asia` | `maps/nomads/nomads_earth_asia.dmm` | `/obj/map_metadata/nomads/earth_asia` | 1057 x 854 | 52 to 190, 78 to 0 |
+| `oceania` | `maps/nomads/nomads_earth_oceania.dmm` | `/obj/map_metadata/nomads/earth_oceania` | 1212 x 728 | 94 to 180, 0 to -48 |
 | `greenland` | `maps/nomads/nomads_earth_greenland.dmm` | `/obj/map_metadata/nomads/earth_greenland` | 760 x 816 | -76 to -10, 84 to 58.5 |
 | `antarctica` | `maps/nomads/nomads_earth_antarctica.dmm` | `/obj/map_metadata/nomads/earth_antarctica` | 1024 x 1024 | polar view, 36 degrees from the pole |
+
+No two frames overlap: each piece of the Earth is on one map only
+(`tests/earth_maps` checks it). The Mediterranean (`mediterranean.py`) is drawn
+from the Europe design with its own frame: the inner sea with Gibraltar, the
+Bosporus and the Suez isthmus inside it, from Iberia to the Caspian. Iceland is
+on the Greenland map.
 
 Europe and Asia keep their region ids `europe` and `asia` and replace the older
 Nomads (Europe) and Nomads (Asia) maps.
@@ -39,8 +46,9 @@ repository until the host has switched.
 - Crops follow climate and season (`farming.dm`, `farmers_almanac.dm`,
   `wild.dm`), and new characters take their origin from the climate they start
   in (`origins.dm`: the Europe and Africa tables).
-- `sun_latitude` 50 for Europe, 40 for Asia and 5 for Africa; wildlife and
-  wild plant caps 1000/550 (Europe, Asia) and 1100/600 (Africa). Asia keeps the
+- `sun_latitude` 50 for Europe, 38 for the Mediterranean, 40 for Asia and 5
+  for Africa; wildlife and wild plant caps 570/315 (Europe), 600/350
+  (Mediterranean), 860/475 (Asia), 1000/545 (Africa) and 420/250 (Oceania). Asia keeps the
   older Asia map's cinnabar belt, iron sand and clothing and languages by climate.
 - The ice lands are hard country. Greenland's farmable ground is mostly snow
   on the tundra coasts, cleared with a spade. Antarctica grows nothing near
@@ -55,12 +63,12 @@ repository until the host has switched.
 
 ## Crossings and sea lanes
 
-- Walking (`edge_crossings`, [edge-crossings.md](edge-crossings.md)): Europe's
-  east edge, the steppe and the Urals, runs on into Asia. Africa's east edge from
-  0.68 to the top (the desert peninsula and the lands north of it) runs on into
-  Asia. Asia's west edge leads into Africa below 0.45 and into Europe above it. Europe and Africa are not joined on foot: their frames
-  overlap across the inner sea, so a walk off one edge would not come out where
-  it went in. Cross by ship or plane.
+- Land links ([world-links.md](world-links.md), kind `both`: walked where dry,
+  sailed where water): Europe's south edge runs into the Mediterranean, whose
+  south edge runs into Africa. Asia's west edge leads into Africa (to 0.3974),
+  the Mediterranean (to 0.5897) and Europe (to 0.9231). Asia's south edge from
+  0.3043 to 0.9275 (the Malay lands and the great islands) runs into Oceania.
+  The Mediterranean's west edge sails to the Atlantic past Gibraltar.
 - Ships and planes (`continent_layout` in `code/modules/naval/sea_lanes.dm`):
   `africa` sits at (12, 3) with coasts W, S, E and a flight level. Earth Asia
   faces open sea E, S and N. `oceania` (21, 1), `greenland` (6, 11) and
@@ -84,6 +92,10 @@ has the entries:
    its own map. They are new lands, so nothing needs to be archived.
 4. Rebuild the other regions so their Regions panel and sea lanes list the
    new lands.
+5. After the Mediterranean recut (2026-11-21): Europe, Africa, Asia and Oceania
+   changed frames, so each starts again as a fresh world with its old saves
+   archived, and `mediterranean` is added on a free port. Gaia, Greenland,
+   Antarctica and the Americas are unchanged.
 
 Start the regions one at a time.
 
@@ -115,6 +127,7 @@ is `PERSISTENCE_MEMORY_LIMIT_MB` (3072).
 | Oceania 1212 x 864 | 1,047,168 | 1346 MiB | 1617 MiB | 99 s | 199 s |
 | Greenland 760 x 816 | 620,160 | 835 MiB | 967 MiB | 56 s | 104 s |
 | Antarctica 1024 x 1024 | 1,048,576 | 1228 MiB | 1473 MiB | 81 s | 204 s |
+| Mediterranean 1280 x 396 (2026-11-21) | 506,880 | 871 MiB | 1025 MiB | 65 s | 311 s |
 
 The Europe run shared the machine with a first Africa run, so its times are
 slower than alone. That first Africa save failed its own check while both
@@ -128,3 +141,8 @@ already do so on the Americas maps (floor icon refresh, map seeding, seam
 marking, the save itself). Every reload peak is under two thirds of the
 limit, with the unformed cave and the standing open-air level counted; each
 further open-air plane that players build adds about 130 MiB.
+
+The 2026-11-21 recut shrank Europe (484,000 cells), Africa (945,700), Asia
+(902,700) and Oceania (882,300); each is smaller than the map measured above,
+so their peaks can only fall. The Mediterranean was measured alone on the same
+setup: write run 313 s, reload run 413 s, reject run 175 s, no runtime errors.

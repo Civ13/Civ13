@@ -37,6 +37,7 @@ NOMADS_MAPS = {
     'NOMADS_EARTH_ANTARCTICA': 'nomads_earth_antarctica.dmm',
     'NOMADS_EARTH_ASIA': 'nomads_earth_asia.dmm',
     'NOMADS_EARTH_GREENLAND': 'nomads_earth_greenland.dmm',
+    'NOMADS_EARTH_MEDITERRANEAN': 'nomads_earth_mediterranean.dmm',
     'NOMADS_EARTH_OCEANIA': 'nomads_earth_oceania.dmm',
     'NOMADS_EARTH_EUROPE': 'nomads_earth_europe.dmm',
     'NOMADS_ICE_AGE': 'nomads_ice_age.dmm',

@@ -22,6 +22,7 @@ MAPS = {
     # The Earth-shaped lands (docs/earth-continents.md); Africa takes the place
     # of the older Desert and Jungle regions.
     'europe': 'maps/nomads/nomads_earth_europe.dmm',
+    'mediterranean': 'maps/nomads/nomads_earth_mediterranean.dmm',
     'africa': 'maps/nomads/nomads_earth_africa.dmm',
     'asia': 'maps/nomads/nomads_earth_asia.dmm',
     'oceania': 'maps/nomads/nomads_earth_oceania.dmm',
@@ -29,11 +30,16 @@ MAPS = {
     'antarctica': 'maps/nomads/nomads_earth_antarctica.dmm',
     'gaia': 'maps/nomads/nomads_gaia.dmm',
 }
-# The land links walked over (only where the land carries on).
+# The land links walked over (only where the land carries on). No two land
+# maps cover the same ground, so these follow the frames in tests/earth_maps.
 EXPECTED = {
     ('northamerica', 'south', 'southamerica'), ('southamerica', 'north', 'northamerica'),
     ('europe', 'east', 'asia'), ('asia', 'west', 'europe'),
     ('asia', 'west', 'africa'), ('africa', 'east', 'asia'),
+    ('europe', 'south', 'mediterranean'), ('mediterranean', 'north', 'europe'),
+    ('mediterranean', 'south', 'africa'), ('africa', 'north', 'mediterranean'),
+    ('mediterranean', 'east', 'asia'), ('asia', 'west', 'mediterranean'),
+    ('asia', 'south', 'oceania'), ('oceania', 'north', 'asia'),
 }
 SURFACE_Z = {'gaia': 2}
 
@@ -96,13 +102,13 @@ class EdgeCrossingTests(unittest.TestCase):
         for region, sides in self.links.items():
             for side, stretches in sides.items():
                 for s in stretches:
-                    if s[3] == 'walk':
+                    if s[3] in ('walk', 'both'):
                         found.add((region, side, s[0]))
         self.assertEqual(found, EXPECTED)
 
     def test_every_walk_link_has_dry_ground_both_ends(self):
         for link in self.table['links']:
-            if link['kind'] != 'walk':
+            if link['kind'] == 'sail':
                 continue
             for region, side, lo, hi in (link['a'], link['b']):
                 with self.subTest(region=region, side=side):

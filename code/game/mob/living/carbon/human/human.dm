@@ -1276,7 +1276,7 @@ var/list/coefflist = list()
 			look_amount = max(AL)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
 	// Up a tree the eye looks out over the canopy (tree_climbing.dm).
 	if (climbed_tree)
-		look_amount = max(look_amount, 8)
+		look_amount = max(look_amount, istype(climbed_tree, /obj/structure/vehicleparts/movement/sail) ? mast_look_amount(climbed_tree) : 8)
 	// On top of a vehicle the eye looks out over walls (vehicle_decks.dm).
 	if (vehicle_deck)
 		look_amount = max(look_amount, 6)
