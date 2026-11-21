@@ -19,6 +19,9 @@
 #define REGION_TRAVEL_PAYLOAD_MAX 131072
 // A crossing ship's record rides with one crew member (naval/ship_crossing.dm).
 #define REGION_TRAVEL_SHIP_PAYLOAD_MAX 393216
+// One party's payloads together, as sent: under the transfer agent's 1 MiB
+// request limit (tools/transfer_storage/agent.py), with room for the rest.
+#define REGION_TRAVEL_PARTY_MAX 1000000
 #define REGION_TRAVEL_ITEMS_MAX 40
 
 var/global/list/region_gates = list()
@@ -273,7 +276,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))
 			P[key] = extra[key]
 		// Where an admin chose to land them (region_admin_send.dm).
 		else if(key == "admin_send")
@@ -349,6 +352,7 @@ var/global/list/region_travel_carry_types = list(
 	if(!isnull(P["faction_leader"]) && P["faction_leader"] != 1) return null
 	if(!space_flight_payload_ok(P)) return null
 	if(!sea_crossing_payload_ok(P)) return null
+	if(!sea_edge_payload_ok(P)) return null
 	if(!air_crossing_payload_ok(P)) return null
 	if(!region_edge_payload_ok(P)) return null
 	if(!region_admin_send_payload_ok(P)) return null
@@ -868,35 +872,90 @@ var/global/list/region_stopped_alerted = list()
 // Players reach this through travel(); a host agent can call it for a test
 // character that has persistence_owner_ckey set.
 /obj/structure/region_gate/proc/depart(mob/living/human/H)
+	var/list/out = depart_party(list(H))
+	var/list/stayed = out["stayed"]
+	return length(out["departed"]) ? "departed" : (stayed[H] || "The trail is busy. Try again in a moment.")
+
+// Sends several characters as one transfer: one escrow carries them all, so
+// a ship's crew (naval/ship_crossing.dm) leave together and arrive together.
+// The transfer agent keeps one transfer in flight per land, so travellers sent
+// one after another would wait on each other ("The trail is busy").
+// Returns list("departed" = list(H), "stayed" = list(H = reason)).
+/obj/structure/region_gate/proc/depart_party(list/members)
+	var/list/departed = list()
+	var/list/stayed = list()
+	. = list("departed" = departed, "stayed" = stayed)
 	var/reason = closed_reason()
-	if(reason) return reason
-	if(!istype(H) || QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H)) return "You are too far from the trail."
-	if(!H.persistence_owner_ckey) return "Only players with a BYOND account can travel."
-	// The traveller is sent to the destination at once, so it must be awake (travel() wakes it).
+	var/list/ready = list()
+	for(var/mob/living/human/H in members)
+		if(reason)
+			stayed[H] = reason
+		else if(QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H))
+			stayed[H] = "You are too far from the trail."
+		else if(!H.persistence_owner_ckey)
+			stayed[H] = "Only players with a BYOND account can travel."
+		else
+			ready += H
+	if(!ready.len) return
+	// The travellers are sent to the destination at once, so it must be awake (travel() wakes it).
 	var/expected = destination
 	if(shard_group.peers[destination]["state"] != "UP" && !shard_group.poll_peer(destination))
-		return "[destination_name()] is asleep. Use the trail to wake it."
+		for(var/mob/living/human/H in ready)
+			stayed[H] = "[destination_name()] is asleep. Use the trail to wake it."
+		return
 	// The poll can wait; an admin may have repointed or closed the trail meanwhile.
 	if(QDELETED(src) || destination != expected || closed_reason())
-		return "The trail changed. Try again."
-	var/list/items = H.region_travel_items()
-	if(istext(items)) return items
-	var/client/C = H.client
-	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
-	if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX)) return "You carry too much to travel."
-	// The destination decodes with the same rules; never escrow what it would drop.
-	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."
-	// Hold the body and its items while the agent records the escrow, so
-	// neither can change.
+		for(var/mob/living/human/H in ready)
+			stayed[H] = "The trail changed. Try again."
+		return
+	var/list/payloads = list()
+	var/list/packed = list()
+	var/total = 0
+	for(var/mob/living/human/H in ready)
+		var/list/items = H.region_travel_items()
+		if(istext(items))
+			stayed[H] = items
+			continue
+		var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
+		if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX))
+			stayed[H] = "You carry too much to travel."
+			continue
+		// The destination decodes with the same rules; never escrow what it would drop.
+		if(!region_travel_decode(payload))
+			stayed[H] = "Something about you cannot make the journey. Ask an admin."
+			continue
+		// One request carries the whole party, each payload escaped as a JSON
+		// string: whoever would take it past the agent's limit stays.
+		var/size = length(json_encode(payload))
+		if(total + size > REGION_TRAVEL_PARTY_MAX)
+			stayed[H] = "Too much is already going with this party. Travel again in a moment."
+			continue
+		total += size
+		payloads += payload
+		packed[H] = list(payload, items, H.client)
+	if(!payloads.len) return
+	// Hold the bodies and their items while the agent records the escrow, so
+	// nothing can change.
 	busy = TRUE
 	var/turf/start = get_turf(src)
-	H.forceMove(src)
-	var/list/result = transfer_bridge.begin_escrow(destination, list(payload), TRUE)
+	for(var/mob/living/human/H in packed)
+		H.forceMove(src)
+	var/list/result = transfer_bridge.begin_escrow(destination, payloads, TRUE)
 	busy = FALSE
 	if(!result)
-		H.forceMove(start)
-		return "The trail is busy. Try again in a moment."
-	// Recorded: remove the traveller now, without sleeping.
+		for(var/mob/living/human/H in packed)
+			H.forceMove(start)
+			stayed[H] = "The trail is busy. Try again in a moment."
+		return
+	// Recorded: remove the travellers now, without sleeping.
+	for(var/mob/living/human/H in packed)
+		var/list/P = packed[H]
+		depart_finish(H, P[1], P[2], P[3])
+		departed += H
+	shard_group.request_save_soon()
+
+// Removes a traveller whose escrow is recorded. Never sleeps.
+/obj/structure/region_gate/proc/depart_finish(mob/living/human/H, payload, list/items, client/C)
 	log_game("Region travel: [H.persistence_owner_ckey]'s character [H.real_name] left for [destination].")
 	player_activity.depart(H, destination, payload)
 	// Delete everything the traveller holds now, not only what was listed: the
@@ -918,10 +977,8 @@ var/global/list/region_stopped_alerted = list()
 	if(!C)
 		agent_note_departure(H, destination, destination_name())
 	qdel(H)
-	shard_group.request_save_soon()
 	spawn(0)
 		region_home_note(account, "depart", destination)
-	return "departed"
 
 // An admin ghost can follow a trail: their client goes to that land's server,
 // nothing travels with them. Others' ghosts do nothing here.
@@ -941,6 +998,7 @@ var/global/list/region_stopped_alerted = list()
 
 #undef REGION_TRAVEL_PAYLOAD_MAX
 #undef REGION_TRAVEL_SHIP_PAYLOAD_MAX
+#undef REGION_TRAVEL_PARTY_MAX
 #undef REGION_TRAVEL_ITEMS_MAX
 
 // ---------------------------------------------------------------- wounds

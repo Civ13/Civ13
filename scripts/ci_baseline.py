@@ -1066,6 +1066,10 @@ SUITES = {
     'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py',), 'timeout': 180,
         'paths': ('tests/ocean_maps/', 'tools/ocean_maps/', 'tools/world_links/',
                   'code/modules/naval/ocean_regions.dm', 'code/modules/persistence/world_links.dm',
+                  'code/modules/naval/ship_edge_crossing.dm', 'code/modules/naval/ship_crossing.dm',
+                  'code/modules/naval/built_hull.dm', 'code/modules/persistence/region_travel.dm',
+                  'code/modules/persistence/shard_group.dm', 'scripts/shard-group/shard_group.py',
+                  'tools/transfer_storage/agent.py',
                   'maps/nomads/nomads_ocean_atlantic.dmm', 'maps/nomads/nomads_ocean_pacific.dmm',
                   'maps/nomads/nomads_ocean_indian.dmm', 'maps/nomads/nomads_ocean_arctic.dmm',
                   'maps/nomads/nomads_ocean_southern.dmm'), 'shared_paths': (
