@@ -62,6 +62,11 @@ var/global/list/nation_government_info = list(
 		line += ", [html_encode(G["ruler"])] [html_encode(G["head_name"])]"
 	if (istext(G["religion"]))
 		line += " of the [html_encode(G["religion"])]"
+	if (G["personal"] && !istext(G["head_account"]))
+		line += ", the seat empty"
+	var/list/S = G["successor"]
+	if (islist(S) && istext(S["name"]))
+		line += " ([G["type"] == "monarchy" ? "heir" : "deputy"]: [html_encode(S["name"])])"
 	var/list/P = G["pending"]
 	if (islist(P) && istext(P["name"]))
 		line += ". Becoming a [html_encode(lowertext(P["name"]))][istext(P["pname"]) && length(P["pname"]) ? " under [html_encode(P["pname"])]" : ""] within a day"
@@ -337,6 +342,130 @@ var/global/list/nation_government_info = list(
 
 #undef CITIZEN_MEMBER_DAYS
 #undef CITIZEN_SEEN_DAYS
+
+// --- Succession (nation_succession.py) ----------------------------------------
+
+#define NATION_PRESENT_EVERY 36000 // a head's presence goes out at most hourly
+#define NATION_FAITH_EVERY 6000
+#define THRONE_CLAIM_TIME 18000 // 30 minutes holding the assembly
+#define THRONE_CLAIM_RANGE 3
+#define THRONE_CLAIM_STEP 100
+
+var/global/list/nation_present_sent = list() // nid -> world.time last sent
+var/global/list/nation_faith_sent = list()
+var/global/list/nation_throne_claims = list() // nid -> list(claimant, assembly, held deciseconds)
+
+// TRUE when this character is the nation's head (any government with a
+// person at its head) acting from a member faction's own land.
+/mob/living/human/proc/nation_heads(nid)
+	if (!nid || stat || !civilization || civilization == "none" || !nation_home_faction(civilization))
+		return FALSE
+	var/head = nation_head_account(nid)
+	return head && head == nation_account() && nation_of_id(nation_faction_id(civilization)) == nid
+
+// Tells the coordinator the head is playing here (so the seat does not pass
+// on as if they were away), and in a theocracy who leads the state religion
+// here. Sleeps.
+/proc/nation_succession_report()
+	for (var/nid in nation_registry)
+		var/list/G = nation_government_of(nid)
+		for (var/mob/living/human/H in player_list)
+			if (!H.client || H.stat == DEAD || !H.civilization || !nation_home_faction(H.civilization))
+				continue
+			if (nation_of_id(nation_faction_id(H.civilization)) != nid)
+				continue
+			var/id = nation_faction_id(H.civilization)
+			if (H.nation_heads(nid) && world.time - (nation_present_sent[nid] || -NATION_PRESENT_EVERY) >= NATION_PRESENT_EVERY)
+				nation_present_sent[nid] = world.time
+				nation_send(list("op" = "present", "actor" = H.nation_account(), "role" = "citizen", "faction" = id))
+			if (G["type"] == "theocracy" && istext(G["religion"]) && H.religious_leader && H.religion == G["religion"] \
+					&& H.nation_account() != G["head_account"] && account_verified(H.nation_account()) \
+					&& world.time - (nation_faith_sent[nid] || -NATION_FAITH_EVERY) >= NATION_FAITH_EVERY)
+				nation_faith_sent[nid] = world.time
+				nation_send(list("op" = "faith", "actor" = H.nation_account(), "role" = "citizen", "faction" = id, \
+					"pname" = copytext(H.real_name, 1, 65), "religion" = G["religion"]))
+
+// The monarch names an heir; the consul names a deputy. Sleeps (prompts).
+/mob/living/human/proc/nation_name_successor(faction, id, nid)
+	var/list/G = nation_government_of(nid)
+	var/what = G["type"] == "monarchy" ? "heir" : "deputy"
+	var/list/S = G["successor"]
+	var/current = islist(S) && istext(S["name"]) ? " Now: [S["name"]]." : ""
+	to_chat(src, SPAN_NOTICE("[what == "heir" ? "Your heir takes the throne if you are away for [G["away"]] days." : "Your deputy acts for you if you are away for [G["away"]] days, while the citizens elect a new consul."][current]"))
+	var/mob/living/human/H = nation_government_pick_head(nid, "monarchy", what)
+	if (!H || H == src || civilization != faction || !nation_heads(nid))
+		return
+	nation_ask(list("op" = what, "faction" = id, "person" = H.nation_account(), "pname" = copytext(H.real_name, 1, 65), \
+		"pfaction" = nation_faction_id(H.civilization)), faction)
+
+// --- Claiming an empty throne ------------------------------------------------------
+
+/obj/structure/faction_hall/nation_assembly/attack_hand(mob/living/human/user)
+	if (ishuman(user) && faction && user.throne_claim_offer(src))
+		return
+	return ..()
+
+// Offers to claim an empty throne at this assembly. TRUE when it handled the click.
+/mob/living/human/proc/throne_claim_offer(obj/structure/faction_hall/nation_assembly/A)
+	var/nid = nation_of_id(nation_faction_id(A.faction))
+	if (!nid || nation_of_id(nation_faction_id(civilization)) != nid || !nation_home_faction(civilization))
+		return FALSE
+	var/list/G = nation_government_of(nid)
+	if (G["type"] != "monarchy" || istext(G["head_account"]))
+		return FALSE
+	if (islist(nation_throne_claims[nid]))
+		var/list/C = nation_throne_claims[nid]
+		to_chat(src, SPAN_WARNING("[C[1]] is already claiming the throne here."))
+		return TRUE
+	if (!account_verified(nation_account()))
+		to_chat(src, SPAN_WARNING("The throne of [nation_registry[nid]["name"]] is empty, but only a citizen with a verified account may claim it."))
+		return TRUE
+	if (WWinput(src, "The throne of [nation_registry[nid]["name"]] is empty. Claim it? You must hold this assembly for 30 minutes; the count pauses while another citizen stands within [THRONE_CLAIM_RANGE] tiles.", "Claim the Throne", "Cancel", list("Claim it", "Cancel")) != "Claim it")
+		return TRUE
+	if (stat || get_dist(src, A) > 1 || islist(nation_throne_claims[nid]) || istext(nation_government_of(nid)["head_account"]))
+		return TRUE
+	nation_throne_claims[nid] = list(src, A, 0)
+	visible_message(SPAN_DANGER("[src] claims the throne of [nation_registry[nid]["name"]]!"))
+	for (var/mob/living/human/H in player_list)
+		if (H != src && H.client && nation_of_id(nation_faction_id(H.civilization)) == nid)
+			to_chat(H, "<big><b>Nation:</b> [html_encode(real_name)] is claiming the empty throne at the assembly of [html_encode(A.faction)].</big>")
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(throne_claim_tick), nid), THRONE_CLAIM_STEP)
+	return TRUE
+
+/proc/throne_claim_tick(nid)
+	var/list/C = nation_throne_claims[nid]
+	if (!islist(C))
+		return
+	var/mob/living/human/claimant = C[1]
+	var/obj/structure/faction_hall/nation_assembly/A = C[2]
+	var/list/G = nation_government_of(nid)
+	if (QDELETED(claimant) || QDELETED(A) || claimant.stat || !claimant.client || get_dist(claimant, A) > THRONE_CLAIM_RANGE \
+			|| G["type"] != "monarchy" || istext(G["head_account"]) || nation_of_id(nation_faction_id(claimant.civilization)) != nid)
+		nation_throne_claims -= nid
+		if (!QDELETED(claimant))
+			to_chat(claimant, SPAN_WARNING("Your claim to the throne fails."))
+		return
+	var/contested = FALSE
+	for (var/mob/living/human/H in range(THRONE_CLAIM_RANGE, A))
+		if (H != claimant && H.client && !H.stat && nation_of_id(nation_faction_id(H.civilization)) == nid)
+			contested = TRUE
+			break
+	if (!contested)
+		C[3] += THRONE_CLAIM_STEP
+	if (C[3] >= THRONE_CLAIM_TIME)
+		nation_throne_claims -= nid
+		claimant.nation_ask(list("op" = "claim", "faction" = nation_faction_id(claimant.civilization), \
+			"pname" = copytext(claimant.real_name, 1, 65), "role" = "citizen"), claimant.civilization)
+		return
+	if (contested && C[3] % 600 == 0)
+		to_chat(claimant, SPAN_WARNING("Another citizen stands at the assembly; your claim waits."))
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(throne_claim_tick), nid), THRONE_CLAIM_STEP)
+
+#undef NATION_PRESENT_EVERY
+#undef NATION_FAITH_EVERY
+#undef THRONE_CLAIM_TIME
+#undef THRONE_CLAIM_RANGE
+#undef THRONE_CLAIM_STEP
 
 /mob/living/human/proc/nation_stay(faction, id, nid)
 	if (WWinput(src, "Withdraw [faction]'s notice and stay in [nation_registry[nid]["name"]]?", "Stay", "Cancel", list("Stay", "Cancel")) != "Stay")
