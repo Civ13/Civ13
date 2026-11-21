@@ -88,6 +88,22 @@ lets a berth ask more: on a slipway her bow must point the way the post faces
 and her stern lie on the tile in front of it, so she is a hauled hull and the
 post launches her. A boathouse slip is open water, so it needs nothing new.
 
+## Refitting to a draught
+
+`code/modules/naval/berth_refit.dm`. Holding a ship's draught at the tiller of
+a hull at a berth, "Mark out a refit" keeps the draught's code on the tiller
+(`refit_code`, tmp) and lays it over her: its first tiller or steering oar on
+her tiller, its bow her way (`refit_target()`). `refit_diff()` compares her
+main deck tile by tile with `ship_draught_piece_on()`: add (green), lift
+(red), change a floor or fitting (amber) and turn a fitting (faint amber).
+Each is a `/obj/structure/berth_refit_mark` (not saved).
+
+The work is done by hand at hand costs. A floor lifted at a berth is a hole in
+the ledger, but `commission()` refits a hull at a berth despite holes, so
+"Refit the hull" takes the lifted tiles out of her. It then marks her again;
+"Check the refit" does the same, and when nothing differs the marks and the
+draught go. Decks above and below are not compared.
+
 ## What a berth allows
 
 `/datum/hull_ledger/proc/bottom_reachable()` is TRUE in the shallows or at a
@@ -119,6 +135,6 @@ the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 
 ## Tests
 
-`tests/naval_carrier/berth_probe.dm` (91 checks):
+`tests/naval_carrier/berth_probe.dm` (101 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300

@@ -401,7 +401,9 @@ dry behind them, holds the hull dry with all her floors, floods again and lets
 her out; a basin touching the sea past its gates is refused. A hull laid down from
 nothing on a slipway berth is commissioned bow to the water, refitted there and
 launched; one laid on the dry dock floor floats when the dock floods; floors on
-plain ground or joined off the berth are refused.
+plain ground or joined off the berth are refused. On the slipway berth a draught
+with one tile moved and a mast added marks three tiles (lift, add, change);
+done by hand and refitted, she matches it and the marks are gone.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
 
