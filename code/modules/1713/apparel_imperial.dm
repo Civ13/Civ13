@@ -40,7 +40,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 50, gun = 12, energy = 15, bomb = 40, bio = 20, rad = 0)
 	value = 20
-	slowdown = 0.4
+	slowdown = 0.75
 	health = 50
 
 

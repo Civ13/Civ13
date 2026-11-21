@@ -586,7 +586,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 25
-	slowdown = 0.7
+	slowdown = 0.75
 	health = 48
 
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
@@ -597,7 +597,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 60, arrow = 40, gun = 8, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 32
-	slowdown = 0.8
+	slowdown = 0.75
 	health = 52
 
 /obj/item/clothing/suit/armor/medieval/iron_chestplate/red
@@ -632,7 +632,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 60, arrow = 55, gun = 10, energy = 20, bomb = 40, bio = 30, rad = FALSE)
 	value = 40
-	slowdown = 0.75
+	slowdown = 0.6
 	health = 60
 
 /obj/item/clothing/suit/armor/medieval/emirate
@@ -643,7 +643,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 55, arrow = 50, gun = 10, energy = 20, bomb = 40, bio = 30, rad = FALSE)
 	value = 35
-	slowdown = 0.60
+	slowdown = 0.6
 	health = 50
 
 /obj/item/clothing/suit/armor/medieval/chainmail
@@ -1466,7 +1466,7 @@
 	item_state = "varangian_lamellar"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 60, arrow = 55, gun = 10, energy = 20, bomb = 40, bio = 30, rad = FALSE)
-	slowdown = 0.75
+	slowdown = 0.5
 	health = 60
 
 /* Medieval Chinese Armor*/
@@ -1490,7 +1490,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
 	armor = list(melee = 55, arrow = 50, gun = 10, energy = 20, bomb = 40, bio = 30, rad = FALSE)
 	value = 35
-	slowdown = 0.50
+	slowdown = 0.5
 	health = 50
 
 
@@ -1614,7 +1614,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 50, arrow = 35, gun = 7, energy = 15, bomb = 40, bio = 20, rad = FALSE)
 	value = 15
-	slowdown = 0.45
+	slowdown = 0.5
 	health = 35
 
 /obj/item/clothing/suit/armor/samurai/red
@@ -1640,7 +1640,7 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
 	armor = list(melee = 65, arrow = 75, gun = 5, energy = 15, bomb = 55, bio = 20, rad = FALSE)
 	value = 45
-	slowdown = 0.9
+	slowdown = 0.5
 
 /obj/item/clothing/suit/armor/samurai/warrior/red
 	name = "red samurai armor"
