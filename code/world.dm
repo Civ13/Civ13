@@ -550,10 +550,14 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(current_player_status != last_player_status)
 			world.update_status()
 			last_player_status = current_player_status
-		var/F = file("serverdata.txt")
-		if (fexists("serverdata.txt"))
-			fdel(F)
-		F << get_packaged_server_status_data()
+		// A standby loads in the region's own folder while the region still runs there:
+		// its empty roster must not replace the live world's heartbeat, or the bot's
+		// player counts flicker between the two until the handover opens the port.
+		if (!persistence_restart || !persistence_restart.standby)
+			var/F = file("serverdata.txt")
+			if (fexists("serverdata.txt"))
+				fdel(F)
+			F << get_packaged_server_status_data()
 		sleep (100)
 
 var/global/nextsave = 0
