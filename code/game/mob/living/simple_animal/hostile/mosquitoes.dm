@@ -78,23 +78,19 @@
 		return
 
 /mob/living/simple_animal/mosquito/attackby(var/obj/item/O, var/mob/user)
+	var/swat_chance
 	if (istype(O, /obj/item/weapon/swatter/modern))
-		if (prob(75))
-			visible_message("[user] swats \the [src] with \the [O]!")
-			qdel(src)
-			return
-		else
-			visible_message("[user] misses \the [src]!")
-			return
+		swat_chance = 75
 	else if (istype(O, /obj/item/weapon/swatter))
-		if (prob(30))
-			visible_message("[user] swats \the [src] with \the [O]!")
-			qdel(src)
-			return
-		else
-			visible_message("[user] misses \the [src]!")
-			return
+		swat_chance = 30
 	else
+		return
+	if (prob(swat_chance))
+		visible_message("[user] swats \the [src] with \the [O]!")
+		qdel(src)
+		return
+	else
+		visible_message("[user] misses \the [src]!")
 		return
 
 /obj/structure/curtain/Crossed(var/mob/living/simple_animal/mosquito/M)
