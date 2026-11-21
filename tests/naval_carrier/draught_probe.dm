@@ -97,6 +97,10 @@ var/naval_runtime_error = FALSE
 	D.set_piece(0, 0, "Y", EAST)
 	naval_check(findtext(jointext(D.problems(), " "), "gangway faces her own deck"), "a gangway facing inboard is refused ([jointext(D.problems(), " ")])")
 	D.set_piece(0, 0, null)
+	var/datum/ship_draught/nest_ship = draught_box(3, 5, "Lookout")
+	nest_ship.set_piece(1, 3, "N")
+	naval_check(nest_ship.mast_count() == 1 && nest_ship.sail_step() == VESSEL_SPEED_HALF && nest_ship.costs()["wood"] == 95, "a mast with a crow's nest drives her like a mast and costs 8 wood more ([nest_ship.costs_text()])")
+	qdel(nest_ship)
 	var/datum/ship_draught/raft = draught_box(3, 4, "Raft")
 	naval_check(!length(raft.gunwale_sides()), "small craft of 12 tiles are left open")
 	qdel(raft)
@@ -109,7 +113,7 @@ var/naval_runtime_error = FALSE
 	naval_check(!ship_draught_from_code("C13FLAG/1/x/y"), "a flag code is not a ship")
 	naval_check(!ship_draught_from_code("C13SHIP/1/X/0,0,q,-,1,0"), "an unknown floor is refused")
 	naval_check(!ship_draught_from_code("C13SHIP/1/X/0,0,w,-,1,0;0,0,w,-,1,0"), "a tile drawn twice is refused")
-	naval_check(!ship_draught_from_code("C13SHIP/1/X/0,0,w,Z,1,0"), "an unknown piece is refused")
+	naval_check(!ship_draught_from_code("C13SHIP/1/X/0,0,w,%,1,0"), "an unknown piece is refused")
 	naval_check(!ship_draught_from_code("C13SHIP/1/X/0,[SHIP_DRAUGHT_SIDE],w,-,1,0"), "a tile off the sheet is refused")
 	naval_check(!ship_draught_from_code("C13SHIP/1/X/0,0,w,R,3,0"), "a piece facing no direction is refused")
 	var/datum/ship_draught/named = ship_draught_from_code("C13SHIP/1/Sea_Wolf/0,0,w,T,1,0")
@@ -453,7 +457,140 @@ var/naval_runtime_error = FALSE
 		qdel(broken_plank)
 		naval_check(!way.planks.len && !(locate(/obj/covers/repairedfloor/rope/boarding/gangplank) in gap2) && !petrel_tiller.craft.gangplank_refusal(), "a broken plank brings the rest in")
 		qdel(pier)
+
+		// ---- Going aloft (naval/hull_masts.dm) ----
+		var/turf/mast_turf
+		for (var/turf/T in petrel_deck)
+			if (!mast_turf && !(locate(/obj/structure/railing) in T) && !(locate(/obj/structure/hull_tiller) in T))
+				mast_turf = T
+		var/obj/structure/vehicleparts/movement/sail/aloft_mast = new(mast_turf)
+		var/mob/living/human/naval_probe/topman = new(get_step(mast_turf, NORTH))
+		var/datum/craft/petrel_craft = petrel_tiller.craft
+		var/below = petrel_craft.lookout_range()
+		naval_check(!petrel_craft.aloft_reach() && isnull(topman.mast_climb_refusal(aloft_mast)), "nobody is aloft yet, and a sailor beside the mast may climb it")
+		naval_check(topman.go_aloft(aloft_mast) && topman.climbed_tree == aloft_mast && topman.loc == mast_turf && los_up_tree(topman), "up the mast, the sailor stands at its masthead and sees over walls")
+		naval_check(petrel_craft.aloft_reach() == 4 && petrel_craft.lookout_range() == below + 4, "a sailor at the masthead lets her lookout see 4 tiles further")
+		aloft_mast.crows_nest = TRUE
+		naval_check(petrel_craft.aloft_reach() == 8 && mast_look_amount(aloft_mast) > 8, "from a crow's nest her lookout sees 8 tiles further, and Look into Distance reaches further")
+		naval_check(ship_draught_piece_on(mast_turf, petrel_tiller) ~= list("N", aloft_mast.dir), "drawing her lines draws a mast with a crow's nest as one")
+		topman.climb_down_tree()
+		naval_check(!topman.climbed_tree && !aloft_mast.mast_aloft() && !petrel_craft.aloft_reach(), "climbed down, nobody is aloft")
+		qdel(aloft_mast)
+		qdel(topman)
 	qdel(petrel)
+	draught_design_checks()
+
+// ---- Design checks (craft/design_checks.dm, naval/draught_checks.dm) ----
+/proc/draught_report_has(datum/design_report/R, level, text)
+	for (var/datum/design_finding/F in R.findings)
+		if (F.level == level && findtext(F.text, text))
+			return F
+	return null
+
+/proc/draught_design_checks()
+	// The checks are found by kind, in order, with nothing listing them.
+	var/list/ship_checks = design_checks_for("ship")
+	var/list/sub_checks = design_checks_for("sub")
+	var/list/vehicle_checks = design_checks_for("vehicle")
+	var/ordered = TRUE
+	for (var/i = 2, i <= ship_checks.len, i++)
+		var/datum/design_check/A = ship_checks[i - 1]
+		var/datum/design_check/B = ship_checks[i]
+		if (A.order > B.order)
+			ordered = FALSE
+	naval_check(ship_checks.len >= 10 && sub_checks.len >= 4 && vehicle_checks.len >= 3 && ordered && !design_checks_for("rocket").len, "design checks are gathered by kind and run in order ([ship_checks.len] ship, [sub_checks.len] submarine, [vehicle_checks.len] vehicle)")
+
+	// Errors are problems(); the ready-made ships have no warnings either.
+	for (var/datum/ship_draught/E in ship_draught_examples())
+		var/datum/design_report/R = E.check_design()
+		naval_check(!R.blocked() && !R.count(DESIGN_WARNING), "the ready-made [E.name] has no errors or warnings ([jointext(R.texts(DESIGN_WARNING), " ")])")
+		qdel(R)
+		qdel(E)
+	var/datum/ship_draught/blank = new
+	var/datum/design_report/BR = blank.check_design()
+	naval_check(BR.findings.len == 1 && BR.blocked() && findtext(BR.texts(DESIGN_ERROR)[1], "Nothing is drawn"), "a blank sheet has one error and nothing else")
+	qdel(BR)
+
+	// A 6x10 hull with only a tiller: no drive, pump or anchor.
+	var/datum/ship_draught/D = draught_box(6, 10, "Hulk")
+	var/datum/design_report/R = D.check_design()
+	naval_check(!R.blocked() && draught_report_has(R, DESIGN_WARNING, "no masts, rowing benches or engine") && draught_report_has(R, DESIGN_WARNING, "no bilge pump") && draught_report_has(R, DESIGN_WARNING, "no anchor"), "a bare hull builds but warns of no drive, no pump and no anchor")
+	qdel(R)
+	// A killick holds 40 of her 60 tiles.
+	D.set_piece(0, 0, "K")
+	D.set_piece(1, 0, "P")
+	D.set_piece(2, 2, "M")
+	R = D.check_design()
+	var/datum/design_finding/drag = draught_report_has(R, DESIGN_WARNING, "hold 40 tiles")
+	naval_check(drag && drag.cells && ("0,0" in drag.cells) && !draught_report_has(R, DESIGN_WARNING, "no anchor") && !draught_report_has(R, DESIGN_WARNING, "no bilge pump"), "an anchor too small for her says so and lights the anchor")
+	qdel(R)
+	// A cannon facing across her deck, with a wall behind it.
+	D.set_piece(0, 5, "Z", EAST)
+	D.set_piece(5, 5, "H", EAST)
+	R = D.check_design()
+	var/datum/design_finding/aim = draught_report_has(R, DESIGN_WARNING, "across her own deck")
+	naval_check(aim && ("0,5" in aim.cells) && !("5,5" in aim.cells) && aim.part == "Z", "a gun pointing across her deck is warned of, a gun facing out over the side is not")
+	qdel(R)
+	// A pump walled in on every side.
+	D.set_piece(3, 7, "P")
+	D.set_piece(2, 7, "W")
+	D.set_piece(4, 7, "W")
+	D.set_piece(3, 6, "W")
+	D.set_piece(3, 8, "W")
+	R = D.check_design()
+	var/datum/design_finding/shut = draught_report_has(R, DESIGN_WARNING, "Crew cannot reach")
+	naval_check(shut && shut.cells.len == 1 && shut.cells[1] == "3,7" && findtext(shut.text, "hand bilge pump"), "a pump walled in on every side cannot be reached ([shut ? shut.text : "no warning"])")
+	D.set_piece(3, 8, "D")
+	R = D.check_design()
+	naval_check(!draught_report_has(R, DESIGN_WARNING, "Crew cannot reach"), "a door in the wall lets crew reach it")
+	qdel(R)
+	// Two pieces of hull light up the piece away from her helm.
+	D.set_floor(12, 12, "w")
+	R = D.check_design()
+	var/datum/design_finding/apart = draught_report_has(R, DESIGN_ERROR, "more than one piece")
+	naval_check(apart && apart.cells.len == 1 && apart.cells[1] == "12,12", "a stray tile is the one lit up as apart from her")
+	var/list/data = R.data()
+	naval_check(data.len == R.findings.len && data[1]["level"] == "error", "the window gets every finding, worst first")
+	qdel(R)
+	// The engine counts as a drive.
+	var/datum/ship_draught/steamer = draught_box(4, 8, "Steamer")
+	steamer.set_piece(1, 1, "E")
+	naval_check(steamer.engine_push() > 0 && steamer.engine_step() >= VESSEL_SPEED_HALF && findtext(steamer.summary_text(), "under steam"), "a steam engine drives her and the summary says how fast ([steamer.engine_step()])")
+	qdel(steamer)
+	qdel(D)
+
+	// Every part the designers offer is described.
+	var/list/ship_help = design_part_help_for("ship")
+	var/list/undescribed = list()
+	for (var/key in ship_draught_pieces + ship_draught_floors + list("u", "x"))
+		var/list/H = ship_help[key]
+		if (!H || !length(H["what"]) || !length(H["use"]) || !length(H["how"]))
+			undescribed += key
+	var/list/sub_help = design_part_help_for("sub")
+	for (var/key in sub_draught_fittings + sub_draught_frames + list("wb", "wd", "wn"))
+		var/list/H = sub_help[key]
+		if (!H || !length(H["what"]) || !length(H["use"]) || !length(H["how"]))
+			undescribed += "sub [key]"
+	naval_check(!undescribed.len && design_part_help_text("ship", "M"), "every floor, piece, section, fitting and tool is described ([jointext(undescribed, ", ")])")
+	var/obj/item/ship_draught/pad = new(locate(5, 5, 2))
+	var/html = ship_designer_html(pad, null)
+	naval_check(findtext(html, "\"HELP\":") && findtext(html, "Holds 40 tiles"), "the ship window carries the part descriptions")
+	qdel(pad)
+
+	// Submarines: no banks warn, a second wheel is an error on its cells.
+	var/datum/sub_draught/S = new(5)
+	S.set_fitting(2, 1, "W")
+	S.set_fitting(1, 2, "S")
+	S.set_frame(3, 3, "x")
+	var/datum/design_report/SR = S.check_design()
+	naval_check(!SR.blocked() && draught_report_has(SR, DESIGN_WARNING, "no battery bank") && draught_report_has(SR, DESIGN_WARNING, "no air bank") && draught_report_has(SR, DESIGN_NOTE, "no berth"), "a submarine without banks builds but warns")
+	qdel(SR)
+	S.set_fitting(3, 2, "W")
+	SR = S.check_design()
+	var/datum/design_finding/wheels = draught_report_has(SR, DESIGN_ERROR, "2 of the ship's wheel")
+	naval_check(wheels && ("3,2" in wheels.cells) && ("2,1" in wheels.cells) && S.problems().len == 1, "two wheels are an error lit on both")
+	qdel(SR)
+	qdel(S)
 
 /proc/slipway_frames_named(obj/structure/slipway/S, text)
 	. = 0

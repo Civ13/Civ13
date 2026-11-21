@@ -42,7 +42,7 @@ python3 scripts/provinces.py --map maps/nomads/nomads_gaia.dmm --z 2 \
 | Map | Surface z |
 | --- | --- |
 | nomads_gaia, nomads_desert, nomads_jungle | 2 |
-| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_africa, nomads_earth_asia, nomads_earth_oceania, nomads_earth_greenland, nomads_earth_antarctica | 1 |
+| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_mediterranean, nomads_earth_africa, nomads_earth_asia, nomads_earth_oceania, nomads_earth_greenland, nomads_earth_antarctica | 1 |
 
 How the tool works:
 
@@ -298,10 +298,11 @@ Code: `code/modules/provinces/province_rich.dm`.
 | nomads_asia | North-west Jungle (saltpeter); Central Sands (silver) |
 | nomads_desert | North-east Sands (sulphur); South-west Sands (sulphur) |
 | nomads_americas_south | West Jungle (gold); East Jungle (silver); North-east Jungle (bauxite) |
-| nomads_earth_europe | North Lowlands (coal); North-east Lowlands (zinc); South-east Riverlands (coal) |
-| nomads_earth_africa | North Sands (sulphur); East Jungle (tin); East Riverlands (sulphur) |
-| nomads_earth_asia | West Lowlands (saltpeter); North-west Riverlands (silver); South Jungle (saltpeter) |
-| nomads_earth_oceania | South Sands (bauxite); Central Riverlands (uranium); North-west Coast (bauxite) |
+| nomads_earth_europe | North Lowlands (coal); East Riverlands (zinc); South-east Plains (coal) |
+| nomads_earth_mediterranean | East Riverlands (copper); North-west Riverlands (silver); South-west Sands (lead) |
+| nomads_earth_africa | North-east Sands (sulphur); East Jungle (tin); Central Jungle (sulphur) |
+| nomads_earth_asia | Central Riverlands (saltpeter); North-west Lowlands (silver); South Riverlands (saltpeter) |
+| nomads_earth_oceania | Central Plains (bauxite); Central Lowlands (uranium); North-west Jungle (bauxite) |
 | nomads_earth_greenland | South Lowlands (zinc); North-west Coast (lead); North-east Lowlands (gold) |
 | nomads_earth_antarctica | Central Coast (coal); South-east Plains (coal); North Lowlands (coal) |
 

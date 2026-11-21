@@ -12,7 +12,7 @@
 	unlimited = FALSE
 	uses_batteries = FALSE
 	// Rendered oil burns twice as long as the same measure of raw lard.
-	refuel_reagents = list("petroleum" = 240, "olive_oil" = 240, "fat_oil" = 240, "cornoil" = 240, "sunflower_oil" = 240, "linseed_oil" = 240, "lard" = 120)
+	refuel_reagents = list("petroleum" = 240, "olive_oil" = 240, "fat_oil" = 240, "cornoil" = 240, "sunflower_oil" = 240, "linseed_oil" = 240, "turpentine" = 240, "lard" = 120)
 	empty_message = "is out of oil"
 	open_flame = TRUE
 
@@ -147,7 +147,7 @@
 	fuel = 600 // 10 mins: one piece of animal fat
 	max_fuel = 1200
 	uses_batteries = FALSE
-	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "lard" = 60)
+	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "resin" = 180, "turpentine" = 120, "lard" = 60)
 	empty_message = "has burnt down"
 	open_flame = TRUE
 	// The handle the torch was wrapped around; it is left when the torch burns out.
@@ -185,7 +185,7 @@
 	anchored = FALSE
 	flammable = TRUE
 	uses_batteries = FALSE
-	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "lard" = 60)
+	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "resin" = 180, "turpentine" = 120, "lard" = 60)
 	empty_message = "is out of oil"
 	open_flame = TRUE
 	// What the pole was built from; dismantling returns a handle and some of it.

@@ -63,7 +63,8 @@
 // How far her lookout sees where she lies.
 /datum/craft/proc/lookout_range()
 	var/base = token ? token.sensor_range : CHART_SENSOR_RANGE
-	return max(min(base, SEA_LOOKOUT_FLOOR), base - sea_murk_at(centre()))
+	// Someone aloft sees further through murk (hull_masts.dm).
+	return max(min(base, SEA_LOOKOUT_FLOOR), base - sea_murk_at(centre())) + aloft_reach()
 
 // TRUE when her lookout can make out the other ship.
 /datum/craft/proc/sights(datum/craft/other)
@@ -75,4 +76,4 @@
 	var/reach = max(min(base, SEA_LOOKOUT_FLOOR), base - max(sea_murk_at(here), sea_murk_at(there)))
 	if (other.running_dark && sea_night())
 		reach = min(reach, SEA_DARK_NIGHT_RANGE)
-	return get_dist(here, there) <= reach
+	return get_dist(here, there) <= reach + aloft_reach()

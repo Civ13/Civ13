@@ -42,7 +42,7 @@
 	var/tmp/handling = FALSE
 
 /obj/structure/vehicleparts/movement/sail/persistence_runtime_var(key)
-	return key == "handling" || ..()
+	return key == "handling" || key == "tree_climber" || ..()
 
 // TRUE for a mast standing free on a deck with a sail rigged.
 /obj/structure/vehicleparts/movement/sail/proc/handled_here()
@@ -64,6 +64,7 @@
 
 /obj/structure/vehicleparts/movement/sail/examine(mob/user, distance = -1)
 	. = ..()
+	aloft_examine(user) // hull_masts.dm
 	if (handled_here())
 		to_chat(user, SPAN_NOTICE("Her sail is [canvas_name()][torn ? " and <b>torn</b>: [SAIL_MEND_CLOTH] pieces of cloth used on the mast mend it" : ""]. Click the mast to set, reef or furl it."))
 
@@ -127,6 +128,8 @@
 		C.sail_trim()
 
 /obj/structure/vehicleparts/movement/sail/attack_hand(mob/living/human/H)
+	if (mast_grab_climb(H)) // grab intent climbs her (hull_masts.dm)
+		return
 	if (!istype(H) || !handled_here() || !hull_ledger_at(get_turf(src)))
 		return ..()
 	var/list/choices = list()
@@ -149,6 +152,8 @@
 
 // Cloth on a torn sail mends it.
 /obj/structure/vehicleparts/movement/sail/attackby(obj/item/I, mob/living/human/H)
+	if (fit_crows_nest(I, H)) // wood builds a crow's nest (hull_masts.dm)
+		return TRUE
 	if (torn && handled_here() && istype(I, /obj/item/stack/material/cloth) && istype(H))
 		var/obj/item/stack/material/cloth/S = I
 		if (S.amount < SAIL_MEND_CLOTH)
