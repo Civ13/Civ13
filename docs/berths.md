@@ -70,9 +70,23 @@ tiles. Several gates side by side across a wide mouth work as one.
   gate tile is, and the gate can be opened to sail out.
 - The gate saves `shut` and `drained`; the trench tiles save themselves.
 
-A hull can't be re-surveyed ("Refit the hull") on dry ground yet, because
-`built_hull_survey()` wants floors over water. The berth refit in the next part
-will deal with that.
+## Building and refitting at a berth
+
+`code/modules/naval/berth_build.dm`. `built_hull_survey()` takes floors over
+open water, or, when the tiller does not stand on water, floors on the ground
+of the berth it stands on (`berth_ground_at()`, `berth_ground()`):
+
+| Berth | Ground |
+| --- | --- |
+| Drydock | every tile of the basin, flooded or dry |
+| Slipway (no keel laid) | dry open ground in front of the post, 1 to 40 tiles along the ways and up to 20 to either side |
+
+A floor joining hers off that ground still joins her to the shore. A hull can
+be laid down from nothing there, or have floors added and lifted and be
+surveyed again with "Refit the hull", as afloat. `berth_commission_refusal()`
+lets a berth ask more: on a slipway her bow must point the way the post faces
+and her stern lie on the tile in front of it, so she is a hauled hull and the
+post launches her. A boathouse slip is open water, so it needs nothing new.
 
 ## What a berth allows
 
@@ -105,6 +119,6 @@ the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 
 ## Tests
 
-`tests/naval_carrier/berth_probe.dm` (77 checks):
+`tests/naval_carrier/berth_probe.dm` (91 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300

@@ -518,6 +518,7 @@ SUITES = {
     'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
         'paths': ('tests/cleaning_rag/',), 'shared_paths': (
             'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
     'lipstick_application': {'files': ('tests/lipstick_application/test_completion.py',),
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
@@ -580,7 +581,8 @@ SUITES = {
                          'code/game/mob/living/carbon/human/human_defines.dm')},
     # Martial schools: era coverage, research nodes, rank defines, travel hooks.
     'martial_schools': {'files': ('tests/martial_schools/test_sources.py',),
-        'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm', 'code/__defines/martial.dm'),
+        'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm',
+                  'code/modules/1713/martial_arts/martial_training.dm', 'code/__defines/martial.dm'),
         'shared_paths': ('code/modules/research_tree/research_node.dm',
                          'code/modules/persistence/region_travel.dm')},
     # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.
@@ -808,6 +810,10 @@ SUITES = {
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
         'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
+    # Execution devices recheck occupancy after the placement wait (issue #6499).
+    'punishment_race': {'files': ('tests/punishment_race/test_occupancy.py',),
+        'paths': ('tests/punishment_race/',), 'shared_paths': (
+            'code/modules/1713/punishment.dm',)},
     'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py', 'tests/cattle_plough/test_detach_race.py'),
         'paths': ('tests/cattle_plough/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
@@ -1066,6 +1072,10 @@ SUITES = {
     'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py',), 'timeout': 180,
         'paths': ('tests/ocean_maps/', 'tools/ocean_maps/', 'tools/world_links/',
                   'code/modules/naval/ocean_regions.dm', 'code/modules/persistence/world_links.dm',
+                  'code/modules/naval/ship_edge_crossing.dm', 'code/modules/naval/ship_crossing.dm',
+                  'code/modules/naval/built_hull.dm', 'code/modules/persistence/region_travel.dm',
+                  'code/modules/persistence/shard_group.dm', 'scripts/shard-group/shard_group.py',
+                  'tools/transfer_storage/agent.py',
                   'maps/nomads/nomads_ocean_atlantic.dmm', 'maps/nomads/nomads_ocean_pacific.dmm',
                   'maps/nomads/nomads_ocean_indian.dmm', 'maps/nomads/nomads_ocean_arctic.dmm',
                   'maps/nomads/nomads_ocean_southern.dmm'), 'shared_paths': (
@@ -1239,6 +1249,9 @@ SUITES = {
     'iron_floors': {'files': ('tests/iron_floors/test_iron_floors.py',),
         'paths': ('tests/iron_floors/', 'code/modules/1713/iron_floors.dm',
                   'icons/turf/flooring/iron.dmi'), 'shared_paths': ()},
+    'extra_floors': {'files': ('tests/extra_floors/test_extra_floors.py',),
+        'paths': ('tests/extra_floors/', 'code/modules/1713/extra_floors.dm',
+                  'icons/turf/flooring/extra_floors.dmi', 'icons/obj/pelt_rugs.dmi'), 'shared_paths': ()},
     'terracotta_floors': {'files': ('tests/terracotta_floors/test_terracotta_floors.py',),
         'paths': ('tests/terracotta_floors/', 'code/modules/1713/terracotta_floors.dm',
                   'icons/turf/flooring/terracotta.dmi'),
@@ -1882,7 +1895,7 @@ SUITES = {
             'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Character slot owner keys (docs/character-slots.md); source checks only.
-    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py',),
+    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py'),
         'paths': ('tests/character_slots/',), 'shared_paths': (
             'docs/character-slots.md', 'code/modules/persistence/player_reclaim.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_home.dm',
@@ -1891,7 +1904,9 @@ SUITES = {
             'code/game/objects/map_metadata/nomads/nomads_start.dm', 'code/modules/accolades/accolades.dm',
             'code/modules/karma/karma_give.dm', 'code/modules/divine/magic_whitelist.dm',
             'code/modules/player_activity/player_activity.dm', 'code/modules/admin/verbs/research_knowledge.dm',
-            'code/game/mob/groups/nation.dm', 'tools/transfer_storage/region.py')},
+            'code/game/mob/groups/nation.dm', 'tools/transfer_storage/region.py',
+            'code/modules/accolades/character_slots.dm', 'code/game/mob/new_player/login.dm',
+            'code/modules/admin/accolades_admin.dm')},
 
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),

@@ -1,18 +1,23 @@
 """Hand-placed 32px art for the martial training gear: the makiwara, a
 tapered wooden striking post set in a timber footing on packed earth with a
-pad of bound straw rope at fist height, and the gravel pail, a stout wooden
+pad of bound straw rope at fist height; the gravel pail, a stout wooden
 stave pail with two iron hoops and rope grips, packed to the brim with grey
-gravel that has a dent where fingers have been driven in.
+gravel that has a dent where fingers have been driven in; the heavy bag, a
+long stitched leather punching bag hung by a short chain from the crossbeam
+of a braced timber gallows on two footed posts; and the wooden dummy, a
+thick upright log trunk slung on two slats between frame posts, with two
+upper arms angled forward, one lower middle arm and a bent leg to the floor.
 Every pixel is placed by this script from fixed palettes (Pillow only); no
 external or generated artwork. Light falls from the upper left.
 
 Run with Pillow to reproduce
-  icons/obj/martial_training.dmi              `makiwara` and `gravel_pail`,
+  icons/obj/martial_training.dmi              `makiwara`, `gravel_pail`,
+                                              `heavy_bag` and `wooden_dummy`,
                                               one direction each
 
 `--check` verifies the committed sheet byte for byte, `--preview <png>`
-writes a 4x review sheet of both states on grass, dirt and a wooden floor,
-each with a 1x copy beneath. Released under Civ13 AGPL-3.0.
+writes a 4x review sheet of all four states on grass, dirt and a wooden
+floor, each with a 1x copy beneath. Released under Civ13 AGPL-3.0.
 """
 import io
 import math
@@ -35,6 +40,8 @@ ROPE = [(226, 204, 150), (184, 158, 104)]
 IRON = [(214, 218, 224), (168, 174, 182), (124, 130, 140), (88, 92, 102), (56, 60, 68)]
 # the rope pair with a sunlit straw above it and a shaded turn below
 STRAW = [(246, 232, 186), ROPE[0], ROPE[1], (142, 116, 72)]
+# oiled bag leather, light to dark
+LEATHER = [(206, 128, 84), (174, 98, 62), (142, 74, 48), (108, 54, 40), (78, 38, 32)]
 
 
 class Frame:
@@ -220,9 +227,168 @@ def gravel_pail():
     return f.outline().under(ground_shadow(17.0, 28.2, 9.0, 2.2))
 
 
+# --- heavy bag ---------------------------------------------------------------
+
+def timber_post(f, x0, y0, y1, pal, tones=(1, 2, 4), seed=3):
+    """An upright three pixels wide, lit on its left face."""
+    for y in range(y0, y1 + 1):
+        for i, tone in enumerate(tones):
+            if i == 1 and noise(x0, y // 3, seed) > 0.7:
+                tone += 1                                         # grain
+            f.put(x0 + i, y, pal[tone])
+
+
+def heavy_bag():
+    """A timber gallows: two footed posts, a heavy crossbeam with corner
+    braces, and the leather bag hanging from its middle on a short chain."""
+    f = Frame()
+    for x0 in (3, 26):
+        timber_post(f, x0, 6, 27, WOOD)
+        # the sill each post is tenoned into, running toward the viewer
+        for y in range(26, 30):
+            for x in range(x0 - 1, x0 + 4):
+                f.put(x, y, WOOD[1] if y == 26 else WOOD[5] if y == 29 else WOOD[4] if x == x0 + 3 else WOOD[3])
+        f.put(x0 - 1, 27, WOOD[1])
+        f.put(x0 - 1, 28, WOOD[2])
+    # corner braces from post to beam
+    for i in range(5):
+        f.pts(WOOD[2], (6 + i, 11 - i), (25 - i, 11 - i))
+        f.pts(WOOD[4], (6 + i, 12 - i), (25 - i, 12 - i))
+    # the crossbeam, oversailing both posts
+    for x in range(1, 31):
+        f.put(x, 2, WOOD[0])
+        f.put(x, 3, WOOD[1] if noise(x // 4, 3, 9) < 0.7 else WOOD[2])
+        f.put(x, 4, WOOD[2])
+        f.put(x, 5, WOOD[3])
+        f.put(x, 6, WOOD[5])
+    for y in range(2, 7):                                         # sawn ends
+        f.put(1, y, WOOD[0] if y < 6 else WOOD[2])
+        f.put(30, y, WOOD[4] if y < 6 else WOOD[5])
+    f.pts(IRON[3], (4, 4), (27, 4))                               # pegs through the joints
+    # iron staple in the beam and a short chain
+    f.pts(IRON[2], (14, 5), (17, 5), (14, 6), (17, 6))
+    f.pts(IRON[1], (15, 7), (16, 7), (15, 9))
+    f.pts(IRON[3], (15, 8), (16, 8), (16, 9))
+    f.pts(IRON[4], (15, 6), (16, 6))
+    # leather straps gathering the bag to the chain
+    f.pts(LEATHER[1], (14, 10), (13, 11))
+    f.pts(LEATHER[3], (17, 10), (18, 11))
+    f.pts(IRON[1], (15, 10))
+    f.pts(IRON[3], (16, 10))
+    # the bag: a long cylinder, a little fuller below the middle
+    for y in range(12, 27):
+        hw = 3.0 if y in (12, 26) else 5.0 if 17 <= y <= 24 else 4.0
+        for x in range(32):
+            dx = x + 0.5 - 16
+            if abs(dx) > hw:
+                continue
+            t = dx / hw
+            tone = 1 if t < -0.75 else 0 if t < -0.3 else 1 if t < 0.15 else 2 if t < 0.55 else 3 if t < 0.85 else 4
+            if y >= 25:
+                tone = min(4, tone + 1)                           # the belly turns under
+            if y == 12:
+                tone = max(0, tone - 1) if t < 0.3 else tone      # top cap in the light
+            f.put(x, y, LEATHER[tone])
+    # stitched seams: a band below the cap, one above the base, one down the front
+    for band in (15, 23):
+        x0, x1 = (12, 19) if band == 15 else (11, 20)
+        for x in range(x0, x1 + 1):
+            f.put(x, band, LEATHER[4] if x > 17 else LEATHER[3])
+            if x % 2 == 1 and x0 < x < x1:
+                f.put(x, band, ROPE[0] if x < 17 else ROPE[1])
+    for y in range(16, 23):
+        f.put(18, y, LEATHER[4])
+        if y % 2 == 0:
+            f.put(18, y, ROPE[1])
+    f.pts(LEATHER[0], (13, 18), (13, 19), (13, 20), (12, 21))     # sheen on the bulge
+    f.pts(LEATHER[3], (14, 20), (15, 20), (14, 21))               # a dent beaten into the front
+    return f.outline().under(ground_shadow(16.5, 29.0, 14.0, 2.4))
+
+
+# --- wooden dummy ------------------------------------------------------------
+
+def limb(f, points, shade=True):
+    """A two-pixel peg of pale wood along `points`, lit above, with a dark
+    line beneath so it stands off whatever is behind it."""
+    body = set()
+    for x, y in points:
+        body.add((x, y))
+        body.add((x, y + 1))
+    for x, y in sorted(body):
+        f.put(x, y, WOOD[0] if (x, y - 1) not in body else WOOD[2])
+    if shade:
+        for x, y in body:
+            for n in ((x, y + 1), (x + 1, y)):
+                if n not in body:
+                    f.put(n[0], n[1], WOOD[5])
+
+
+def wooden_dummy():
+    """The trunk hangs on two slats let through it, carried by a pair of
+    frame posts; arms and leg are pegs socketed into its front."""
+    f = Frame()
+    # frame posts behind, on short sills
+    for x0 in (2, 27):
+        timber_post(f, x0, 3, 27, BARK, tones=(0, 1, 3), seed=6)
+        for y in range(27, 30):
+            for x in range(x0 - 1, x0 + 4):
+                f.put(x, y, BARK[0] if y == 27 else BARK[3] if y == 29 or x == x0 + 3 else BARK[2])
+        f.pts(BARK[0], (x0, 3), (x0 + 1, 3))
+    # the two slats the trunk rides on
+    for y0 in (6, 23):
+        for x in range(1, 31):
+            f.put(x, y0, BARK[0] if x < 22 else BARK[1])
+            f.put(x, y0 + 1, BARK[2])
+            f.put(x, y0 + 2, BARK[3])
+        f.pts(IRON[3], (3, y0 + 1), (28, y0 + 1))                 # pegged to the posts
+    # the trunk: a thick round log
+    for y in range(2, 27):
+        for x in range(12, 20):
+            if y in (2, 26) and x in (12, 19):
+                continue
+            tone = (1, 0, 0, 1, 2, 3, 4, 5)[x - 12]
+            if tone in (1, 2, 3) and noise(x, y // 5, 13) > 0.72:
+                tone += 1                                         # grain
+            if y == 26:
+                tone = min(5, tone + 1)
+            f.put(x, y, WOOD[tone])
+    for x in range(13, 19):                                       # sawn top
+        f.put(x, 2, WOOD[0])
+        f.put(x, 3, WOOD[0] if x < 17 else WOOD[1])
+    f.pts(WOOD[1], (12, 3), (19, 3))
+    f.pts(WOOD[3], (15, 3), (16, 3))                              # heart of the log
+    f.pts(WOOD[4], (13, 4), (14, 4), (15, 4), (16, 4), (17, 4), (18, 4))
+    # shade where the slats pass behind
+    for y0 in (6, 23):
+        f.pts(WOOD[5], (20, y0 + 1), (20, y0 + 2))
+    # two upper arms, splayed and angled forward
+    limb(f, [(12, 11), (11, 11), (10, 12), (9, 13), (8, 14)])
+    limb(f, [(19, 11), (20, 11), (21, 12), (22, 13), (23, 14)])
+    f.pts(WOOD[4], (13, 11), (13, 12), (18, 11), (18, 12))        # sockets
+    # the lower middle arm, pointing straight out at the viewer
+    for y in range(16, 20):
+        f.put(15, y, WOOD[0])
+        f.put(16, y, WOOD[1] if y < 19 else WOOD[2])
+        f.put(17, y, WOOD[5])
+        f.put(14, y, WOOD[3])
+    f.pts(WOOD[4], (15, 15), (16, 15))
+    f.pts(WOOD[5], (14, 20), (15, 20), (16, 20), (17, 20))
+    # the bent leg: out and down from the trunk, then knee to floor
+    limb(f, [(14, 21), (13, 22), (12, 23), (11, 24), (10, 25), (9, 26)])
+    for y in range(26, 30):
+        f.put(8, y, WOOD[0])
+        f.put(9, y, WOOD[2])
+        f.put(10, y, WOOD[5])
+    f.put(8, 26, WOOD[1])
+    f.pts(WOOD[4], (8, 29), (9, 29))
+    return f.outline().under(ground_shadow(16.5, 29.2, 14.0, 2.3))
+
+
 OBJ = {
     'makiwara': (1, 1, None, [makiwara()]),
     'gravel_pail': (1, 1, None, [gravel_pail()]),
+    'heavy_bag': (1, 1, None, [heavy_bag()]),
+    'wooden_dummy': (1, 1, None, [wooden_dummy()]),
 }
 
 
@@ -262,6 +428,10 @@ def check_drawing():
     pail = [p for p, c in OBJ['gravel_pail'][3][0].px.items() if c[3] == 255]
     if min(y for _, y in pail) <= min(y for _, y in post):
         problems.append('gravel_pail: should stand lower than the makiwara')
+    for name in ('heavy_bag', 'wooden_dummy'):                    # frames span the tile
+        xs = [x for (x, _), c in OBJ[name][3][0].px.items() if c[3] == 255]
+        if max(xs) - min(xs) < 24:
+            problems.append('%s: frame should span most of the tile' % name)
     return problems
 
 

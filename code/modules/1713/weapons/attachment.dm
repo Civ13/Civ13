@@ -369,7 +369,7 @@ Current Defines (_defines/attachment.dm)
 	icon_state = "srm_silencer"
 	desc = "A 9x39 SRM suppressor."
 	reduction = 50
-	fits = list("rifle")
+	fits = list("rifle", "machinegun") // the SR-3 trains machinegun; caliber still limits it to 9x39 (#6363)
 	ergonomics = 2
 	caliber = "a9x39"
 
