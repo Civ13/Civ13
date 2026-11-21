@@ -821,6 +821,7 @@
 #include "code\game\objects\structures\piano.dm"
 #include "code\game\objects\structures\plant_pots.dm"
 #include "code\game\objects\structures\railing.dm"
+#include "code\game\objects\structures\railing_built.dm"
 #include "code\game\objects\structures\religious.dm"
 #include "code\game\objects\structures\repairing.dm"
 #include "code\game\objects\structures\rocks.dm"
