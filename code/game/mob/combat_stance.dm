@@ -326,6 +326,9 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 		leave_random_zone()
 	if (!silent)
 		to_chat(src, SPAN_WARNING("[combat_stance_names[stance]] stance. [combat_stance_blurbs[stance]]"))
+		if (ishuman(src))
+			var/mob/living/human/H = src
+			H.body_motion_stance_set()
 	update_combat_stance_button()
 	return TRUE
 
