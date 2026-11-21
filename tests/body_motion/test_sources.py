@@ -112,17 +112,21 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('priority <= body_motion_priority && world.time < body_motion_started + BODY_MOTION_MIN_GAP', MOTION)
         stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
         for key in ('list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT)', 'list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT)',
-                    'list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT)'):
+                    'list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT)', 'list(0, -1, 0, 1, 3, SINE_EASING | EASE_IN)',
+                    'list(0, -1, 0, 1, 2, QUAD_EASING | EASE_IN)', 'list(0, -1, 0, 1, 1.5, QUAD_EASING | EASE_IN)'):
             self.assertIn(key, stride)
         self.assertIn('swim_skill_applies(loc)', stride)
+        self.assertIn('istype(loc, /turf/floor/beach/water/ice)', stride)
+        drags = proc_body(MOTION, '/mob/living/human/proc/body_motion_terrain_drags(')
+        for check in ('/turf/floor/trench/flooded', 'flood_band_at(F)', 'has_snow_cover()', 'F.muddy'):
+            self.assertIn(check, drags)
 
     def test_gestures_are_full_level_only(self):
         for header in ('/mob/living/human/proc/body_motion_work(', '/mob/living/human/proc/body_motion_settle(',
                        '/mob/living/human/proc/body_motion_emote(', '/mob/living/human/proc/body_motion_stance_set(',
                        '/mob/living/human/proc/body_motion_swim_stroke(', '/mob/living/human/proc/body_motion_climb('):
             self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL', proc_body(MOTION, header))
-        stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
-        self.assertEqual(stride.count('BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL'), 3)
+        self.assertIn('BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL', proc_body(MOTION, '/mob/living/human/proc/body_motion_stride('))
 
     def test_config_line(self):
         self.assertIn('var/body_motion = BODY_MOTION_FULL', CONFIG)

@@ -231,6 +231,21 @@ var/body_motion_probe_checks = 0
 	H.sprinting = FALSE
 	H.m_intent = "stealth"
 	body_motion_probe_assert(!H.body_motion_stride(), "no_bounce_sneaking")
+	// Wading drags the body down on a slower beat; ice glides flat.
+	H.m_intent = "walk"
+	var/turf/home = H.loc
+	var/turf/shallows = new /turf/floor/beach/water(locate(7, 7, 1))
+	H.loc = shallows
+	body_motion_probe_assert(H.body_motion_terrain_drags() && H.body_motion_stride() && H.body_motion_until == world.time + 6, "wading_walk_sinks_6ds")
+	body_motion_probe_idle(H)
+	H.m_intent = "run"
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 4, "wading_run_sinks_4ds")
+	body_motion_probe_idle(H)
+	var/turf/ice = new /turf/floor/beach/water/ice(locate(7, 8, 1))
+	H.loc = ice
+	body_motion_probe_assert(!H.body_motion_stride(), "ice_glides_flat")
+	H.loc = home
+	body_motion_probe_assert(!H.body_motion_terrain_drags(), "dry_ground_hops")
 	H.m_intent = "walk"
 	H.prone = TRUE
 	body_motion_probe_assert(!H.body_motion_stride(), "no_bounce_prone")

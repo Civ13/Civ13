@@ -355,22 +355,48 @@
 // cadence. Walk 1px over 4 ds, run 2px over 3 ds, sprint a flatter, faster
 // 1px over 2 ds. Upright bodies moving under their own power only. FULL only:
 // it loops and carries no gameplay information.
+//
+// Terrain: shallow water, floodwater, flooded trenches, mud and snow drag the
+// body down instead (a 1px sink on a slower beat) unless the footwear is made
+// for it; ice glides flat; deep water has its own stroke.
 /mob/living/human/proc/body_motion_stride()
 	if (world.time < body_motion_until || lying || prone || buckled || riding || pulledby)
 		return FALSE
-	// Deep water has its own stroke (body_motion_swim_stroke()).
 	if (free_diving || swim_skill_applies(loc))
 		return FALSE
+	if (istype(loc, /turf/floor/beach/water/ice))
+		return FALSE
+	var/drag = body_motion_terrain_drags()
+	var/list/keys
 	if (m_intent == "run")
 		if (is_sprinting())
-			return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, list(
-				list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT),
-				list(0, 0, 0, 1, 1, QUAD_EASING | EASE_IN)))
-		return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, list(
-			list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT),
-			list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_IN)))
-	if (m_intent == "walk")
-		return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, list(
-			list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT),
-			list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
+			keys = drag ? list(list(0, -1, 0, 1, 1.5, QUAD_EASING | EASE_IN), list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_OUT)) \
+				: list(list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT), list(0, 0, 0, 1, 1, QUAD_EASING | EASE_IN))
+		else
+			keys = drag ? list(list(0, -1, 0, 1, 2, QUAD_EASING | EASE_IN), list(0, 0, 0, 1, 2, QUAD_EASING | EASE_OUT)) \
+				: list(list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT), list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_IN))
+	else if (m_intent == "walk")
+		keys = drag ? list(list(0, -1, 0, 1, 3, SINE_EASING | EASE_IN), list(0, 0, 0, 1, 3, SINE_EASING | EASE_OUT)) \
+			: list(list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT), list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN))
+	else
+		return FALSE
+	return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, keys)
+
+// Whether the ground here drags at the feet: shallow or flood water, a flooded
+// trench, mud or snow, unless the footwear is made for it (the same footwear
+// that keeps its wearer on top of the snow, or wades and stays out of the mud).
+/mob/living/human/proc/body_motion_terrain_drags()
+	var/turf/floor/F = loc
+	if (!istype(F))
+		return FALSE
+	if (istype(F, /turf/floor/beach/water) || istype(F, /turf/floor/trench/flooded))
+		return footwear_terrain_mult(src, "wade") > 0.6
+	if (!F.iscovered())
+		var/band = flood_band_at(F)
+		if (band >= FLOOD_BAND_ANKLE && band <= FLOOD_BAND_WAIST)
+			return footwear_terrain_mult(src, "wade") > 0.6
+	if (F.has_snow_cover())
+		return footwear_terrain_mult(src, "snow") > 0.4
+	if (F.muddy)
+		return footwear_terrain_mult(src, "mud") > 0.6
 	return FALSE
