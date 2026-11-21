@@ -62,7 +62,7 @@
 	if (!isnull(req["combat"]))
 		var/combat = lowertext("[req["combat"]]")
 		if (!valid_combat_stance(combat))
-			agent_fail("bad_args", "combat must be manual, measured, aggressive, disarming, low or guarded")
+			agent_fail("bad_args", "combat must be manual, measured, aggressive, disarming, low, guarded or restrain")
 		M.set_combat_stance(combat, TRUE)
 		done += "combat [combat]"
 	if (!isnull(req["secondary"]))

@@ -6,6 +6,7 @@
 #define COMBAT_STANCE_DISARMING "disarming"
 #define COMBAT_STANCE_LOW "low"
 #define COMBAT_STANCE_GUARDED "guarded"
+#define COMBAT_STANCE_RESTRAIN "restrain"
 
 // What kind of attack is choosing a zone.
 #define COMBAT_ATTACK_WEAPON 1
@@ -32,3 +33,5 @@
 #define MARTIAL_REFLEX_IDLE 20
 #define MARTIAL_REFLEX_COOLDOWN 20
 #define MARTIAL_REFLEX_STAMINA 4
+// Restrain stance (code/game/mob/combat_restrain.dm): time to bind legs.
+#define COMBAT_RESTRAIN_LEGS_TIME 20

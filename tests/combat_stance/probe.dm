@@ -297,12 +297,64 @@ var/combat_stance_probe_rank = 0
 	combat_stance_assert(A.resolve_attack_zone(D, W) == "l_foot", "forced_zone")
 	A.forced_attack_zone = null
 
+// Steps a Restrain-stance grab click; clears the grab's wait between clicks.
+/proc/combat_stance_restrain_click(mob/living/human/A, mob/living/human/T, obj/item/weapon/grab/G)
+	G.last_action = world.time - 1000
+	A.may_do_after = TRUE
+	A.a_intent = I_GRAB
+	G.attack(T, A)
+
+/proc/combat_stance_probe_restrain()
+	var/mob/living/human/A = combat_stance_actor(3, 3, "Arrester")
+	var/mob/living/human/T = combat_stance_actor(4, 3, "Suspect")
+	A.dir = EAST
+	T.dir = WEST
+	var/obj/item/weapon/TW = new /obj/item/weapon/wrench(null)
+	T.put_in_active_hand(TW)
+	A.set_combat_stance(COMBAT_STANCE_RESTRAIN, TRUE)
+	combat_stance_assert(A.combat_stance == COMBAT_STANCE_RESTRAIN, "restrain_is_a_stance")
+	combat_stance_assert(A.resolve_attack_zone(T, null, COMBAT_ATTACK_GRAB) == "r_hand", "restrain_grabs_weapon_wrist")
+	var/obj/item/weapon/grab/G = new /obj/item/weapon/grab(A, T)
+	A.put_in_active_hand(G)
+	G.synch()
+	G.grabbed_zone = "r_hand"
+	// Untrained: the click is the ordinary grab-intent jointlock, which needs a firm hold.
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(G.state < GRAB_AGGRESSIVE && !G.restrain_locked, "untrained_no_restrain_flow")
+	A.stats["dexterity"] = list(200, 200)
+	combat_stance_assert(A.restrain_lock_zone(G) == "r_arm", "lock_bends_grabbed_arm")
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(G.state == GRAB_AGGRESSIVE, "restrain_firm_hold")
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(G.restrain_locked && !T.lying, "restrain_jointlock")
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(T.lying && G.force_down, "restrain_pin_down")
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(!T.handcuffed, "restrain_needs_restraints")
+	var/obj/item/weapon/handcuffs/rope/R = new(null)
+	A.equip_to_slot(R, slot_l_store)
+	combat_stance_assert(A.restrain_find_item(/obj/item/weapon/handcuffs) == R, "restrain_finds_pocket_rope")
+	var/obj/item/weapon/wrench/busy = new(null)
+	A.put_in_inactive_hand(busy)
+	combat_stance_assert(!A.restrain_take_in_hand(R) && A.l_store == R, "restrain_needs_free_hand")
+	A.drop_from_inventory(busy)
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(T.handcuffed == R && !A.l_store, "restrain_binds_hands")
+	var/obj/item/weapon/legcuffs/L = new(null)
+	A.put_in_inactive_hand(L)
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(T.legcuffed == L, "restrain_binds_legs")
+	combat_stance_restrain_click(A, T, G)
+	combat_stance_assert(!QDELETED(G) && G.state == GRAB_AGGRESSIVE, "restrain_never_past_firm_hold")
+	combat_stance_assert(findtext(A.combat_stance_examine_line(new /datum/gender/neuter), "grapple"), "restrain_examine_line")
+
 /world/New()
 	OpenPort("none")
 	var/error = null
 	try
 		combat_stance_probe_run()
 		combat_stance_probe_reactions()
+		combat_stance_probe_restrain()
 	catch (var/exception/probe_error)
 		error = "[probe_error.name] ([probe_error.file]:[probe_error.line])"
 	if (!error && combat_stance_runtime)

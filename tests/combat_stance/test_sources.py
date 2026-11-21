@@ -20,6 +20,8 @@ def read(path):
 
 SOURCE = read('code/game/mob/combat_stance.dm')
 REACTIONS = read('code/game/mob/combat_reactions.dm')
+RESTRAIN = read('code/game/mob/combat_restrain.dm')
+GRAB = read('code/game/mob/grab.dm')
 DEFINES = read('code/__defines/combat_stance.dm')
 DME = read('civ13.dme')
 ITEM_ATTACK = read('code/_onclick/item_attack.dm')
@@ -47,13 +49,32 @@ def dmi_description(path):
     return ''
 
 
-STANCES = ['manual', 'measured', 'aggressive', 'disarming', 'low', 'guarded']
+STANCES = ['manual', 'measured', 'aggressive', 'disarming', 'low', 'guarded', 'restrain']
 
 
 class CombatStanceSources(unittest.TestCase):
     def test_sources_are_compiled(self):
         self.assertIn('#include "code\\__defines\\combat_stance.dm"', DME)
         self.assertIn('#include "code\\game\\mob\\combat_stance.dm"', DME)
+
+    def test_restrain_flow_hooks_the_grab(self):
+        self.assertIn('#include "code\\game\\mob\\combat_restrain.dm"', DME)
+        # grab intent on the held person runs the flow before the ordinary moves
+        hook = GRAB.index('A.restrain_step(src, previous_action)')
+        self.assertLess(hook, GRAB.index('jointlock(affecting, assailant, hit_zone)'))
+        self.assertLess(GRAB.index('if (world.time < (last_action + 20))'), hook)
+        # s_click and the flow share one firm-hold step
+        self.assertEqual(GRAB.count('take_firm_hold()'), 2)
+        self.assertIn('G.take_firm_hold()', RESTRAIN)
+
+    def test_restrain_flow_is_never_lethal(self):
+        # it never tightens past a firm hold: no neck or kill upgrade
+        for forbidden in ('s_click(', 'GRAB_NECK', 'GRAB_KILL', 'GRAB_UPGRADING'):
+            self.assertNotIn(forbidden, RESTRAIN)
+        # cuffing uses the ordinary checked proc; every step is logged
+        self.assertIn('cuffs.place_handcuffs(T, src)', RESTRAIN)
+        for step in ('took a firm hold', 'jointlocked', 'pinned', 'bound hands', 'bound legs'):
+            self.assertIn('restrain_log(T, "%s' % step, RESTRAIN)
 
     def test_stance_ids(self):
         found = re.findall(r'#define COMBAT_STANCE_\w+ "(\w+)"', DEFINES)

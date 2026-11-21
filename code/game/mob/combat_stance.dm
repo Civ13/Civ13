@@ -17,7 +17,7 @@
 	var/tmp/last_struck_time = -1000
 
 var/global/list/combat_stance_order = list(COMBAT_STANCE_MEASURED, COMBAT_STANCE_AGGRESSIVE,
-	COMBAT_STANCE_DISARMING, COMBAT_STANCE_LOW, COMBAT_STANCE_GUARDED)
+	COMBAT_STANCE_DISARMING, COMBAT_STANCE_LOW, COMBAT_STANCE_GUARDED, COMBAT_STANCE_RESTRAIN)
 
 var/global/list/combat_stance_names = list(
 	COMBAT_STANCE_MANUAL = "Manual",
@@ -25,7 +25,8 @@ var/global/list/combat_stance_names = list(
 	COMBAT_STANCE_AGGRESSIVE = "Aggressive",
 	COMBAT_STANCE_DISARMING = "Disarming",
 	COMBAT_STANCE_LOW = "Low line",
-	COMBAT_STANCE_GUARDED = "Guarded")
+	COMBAT_STANCE_GUARDED = "Guarded",
+	COMBAT_STANCE_RESTRAIN = "Restrain")
 
 var/global/list/combat_stance_blurbs = list(
 	COMBAT_STANCE_MANUAL = "You will aim where you choose on the body doll.",
@@ -33,7 +34,8 @@ var/global/list/combat_stance_blurbs = list(
 	COMBAT_STANCE_AGGRESSIVE = "You will go for the head.",
 	COMBAT_STANCE_DISARMING = "You will go for their weapon hand.",
 	COMBAT_STANCE_LOW = "You will go for the legs.",
-	COMBAT_STANCE_GUARDED = "You will keep your guard and answer the limb that strikes you.")
+	COMBAT_STANCE_GUARDED = "You will keep your guard and answer the limb that strikes you.",
+	COMBAT_STANCE_RESTRAIN = "You will go for the weapon arm; with grab intent each click on them takes the next step of an arrest.")
 
 // Zones an automatic pick may choose; eyes stay a deliberate aim.
 var/global/list/combat_auto_zones = list("head", "mouth", "chest", "groin",
@@ -221,7 +223,7 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 			if (zone == "groin")
 				return 0.6
 			return 0.4
-		if (COMBAT_STANCE_DISARMING)
+		if (COMBAT_STANCE_DISARMING, COMBAT_STANCE_RESTRAIN)
 			var/weapon_hand = combat_weapon_hand(target)
 			if (!weapon_hand)
 				return 1
@@ -372,4 +374,6 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 			return "[T.He] [T.is] in a low stance, watching the legs."
 		if (COMBAT_STANCE_GUARDED)
 			return "[T.He] [T.is] holding a tight guard."
+		if (COMBAT_STANCE_RESTRAIN)
+			return "[T.He] [T.is] crouched to grapple, hands open."
 	return null

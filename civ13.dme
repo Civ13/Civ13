@@ -220,6 +220,7 @@
 #include "code\game\mob\animations.dm"
 #include "code\game\mob\bloody_hands.dm"
 #include "code\game\mob\combat_reactions.dm"
+#include "code\game\mob\combat_restrain.dm"
 #include "code\game\mob\combat_stance.dm"
 #include "code\game\mob\death.dm"
 #include "code\game\mob\emote.dm"
