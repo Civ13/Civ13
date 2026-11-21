@@ -3326,6 +3326,8 @@ RECIPE: /material/wood/,course finish post,/obj/structure/training_course/post/f
 RECIPE: /material/wood/,log hurdle,/obj/structure/training_course/hurdle,3,60,1,1,sports,30,0,0,8,null
 RECIPE: /material/wood/,balance log,/obj/structure/training_course/balance_log,4,60,1,1,sports,30,0,0,8,null
 RECIPE: /material/steel/,steel hurdle,/obj/structure/training_course/hurdle/steel,3,100,1,1,sports,105,0,0,8,null
+RECIPE: /material/wood/,makiwara post,/obj/structure/striking_post,4,80,1,1,sports,0,0,0,8,null
+RECIPE: /material/wood/,gravel pail,/obj/structure/striking_post/gravel_pail,3,60,1,1,sports,0,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null
 RECIPE: /material/electronics/,powered radio program desk,/obj/structure/telecom/station,6,150,1,1,none,105,0,0,8,null

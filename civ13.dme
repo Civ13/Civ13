@@ -1332,6 +1332,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\ships\wheels.dm"
 #include "code\modules\1713\martial_arts\_martial.dm"
 #include "code\modules\1713\martial_arts\boxing.dm"
+#include "code\modules\1713\martial_arts\hand_conditioning.dm"
 #include "code\modules\1713\martial_arts\kravmaga.dm"
 #include "code\modules\1713\martial_arts\sleepingcarp.dm"
 #include "code\modules\1713\martial_arts\wrestling.dm"
