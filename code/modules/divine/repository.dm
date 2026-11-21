@@ -100,7 +100,9 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 
 // A dormant repository has no effects and takes no charge.
 /obj/proc/magic_repo_dormant()
-	if (!magic_repo_finished() || magic_repo_withdrawn || magic_repo_captured)
+	if (!magic_repo_finished() || magic_repo_withdrawn || magic_repo_captured || magic_repo_astray)
+		return TRUE
+	if (magic_repo_short_dormant()) // repository_upkeep.dm
 		return TRUE
 	if (!magic_whitelist_applies())
 		return FALSE
@@ -477,7 +479,7 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 		to_chat(user, SPAN_NOTICE("It feels cold and still, as if it has lost its place."))
 		return
 	if (magic_repo_dormant())
-		to_chat(user, SPAN_NOTICE("It feels cold and still."))
+		to_chat(user, SPAN_NOTICE(magic_repo_still_text())) // repository_upkeep.dm
 		return
 	to_chat(user, SPAN_NOTICE("You sense it holds about [round(magic_repo_charge)] of [magic_repo_capacity]. [length(magic_repo_registrants)] [length(magic_repo_registrants) == 1 ? "thread runs" : "threads run"] to it."))
 	magic_repo_tier_examine(user) // repository_tiers.dm
