@@ -31,6 +31,9 @@ class FreshWorldTests(unittest.TestCase):
         host = self.host()
         accounts = host.repo / 'data/player_saves'
         accounts.mkdir(); (accounts / 'val.sav').write_bytes(b'account')
+        notice = host.repo / 'data/persistence-bed-notices/bed-owner.pending'
+        notice.parent.mkdir()
+        notice.write_text('old notice')
         result = fresh.request(host, 'gaia')
         with mock.patch.object(host, 'do_start') as start:
             host.work('fresh-world', result['operation'])
@@ -43,6 +46,10 @@ class FreshWorldTests(unittest.TestCase):
                 self.assertFalse((host.repo / name).exists())
             self.assertEqual((archive / name / 'fixture').read_text(), name)
         self.assertEqual((accounts / 'val.sav').read_bytes(), b'account')
+        self.assertFalse(notice.exists())
+        relative = 'data/persistence-bed-notices'
+        self.assertEqual((archive / relative / notice.name).read_text(), 'old notice')
+        self.assertIn(relative, json.loads((archive / 'manifest.json').read_text())['moved'])
         self.assertFalse(fresh.pending(host).exists())
         self.assertFalse(host.lock.exists())
         self.assertEqual(host.read_state()['phase'], 'done')
@@ -106,6 +113,19 @@ class FreshWorldTests(unittest.TestCase):
         host = self.host()
         (host.repo / 'map_saves/link').symlink_to(host.repo / 'config', target_is_directory=True)
         with self.assertRaisesRegex(shard_group.Refused, 'linked'): fresh.request(host, 'gaia')
+
+    def test_fresh_linked_data_parent_refused(self):
+        host = self.host()
+        target = host.repo / 'config'
+        notice = target / 'persistence-bed-notices/bed-owner.pending'
+        notice.parent.mkdir()
+        notice.write_text('must stay')
+        (host.repo / 'data').rename(host.repo / 'data-fixture')
+        (host.repo / 'data').symlink_to(target, target_is_directory=True)
+        with self.assertRaisesRegex(shard_group.Refused, 'linked.*paths'):
+            fresh.request(host, 'gaia')
+        self.assertEqual(notice.read_text(), 'must stay')
+        self.assertTrue((host.repo / 'map_saves/fixture').exists())
 
     def test_fresh_partial_move_blocks_start_and_watchdog(self):
         host = self.host(); result = fresh.request(host, 'gaia')
@@ -213,6 +233,10 @@ class GroupFreshWorldTests(unittest.TestCase):
     def test_group_reset_archives_worlds_and_transfer_state_then_starts_every_region(self):
         accounts = self.pairs[0][1].repo / 'data/player_saves'
         accounts.mkdir(parents=True); (accounts / 'val.sav').write_bytes(b'account')
+        for region, host in self.pairs:
+            notice = host.repo / 'data/persistence-bed-notices/bed-owner.pending'
+            notice.parent.mkdir(parents=True)
+            notice.write_text(region['id'])
         result, start = self.run_reset()
         archive = Path(result['archive'])
         self.assertEqual(sorted(result['accepted']), ['deep', 'gaia'])
@@ -223,6 +247,9 @@ class GroupFreshWorldTests(unittest.TestCase):
             for name in fresh.WORLD_PATHS:
                 self.assertEqual((archive / region['id'] / name / 'fixture').read_text(), region['id'] + name)
             self.assertEqual(list((host.repo / 'map_saves').iterdir()), [])
+            notice_path = 'data/persistence-bed-notices/bed-owner.pending'
+            self.assertEqual((archive / region['id'] / notice_path).read_text(), region['id'])
+            self.assertFalse((host.repo / notice_path).exists())
             self.assertEqual((archive / region['id'] / 'transfers.sqlite').read_bytes(), b'transits')
             self.assertTrue((archive / region['id'] / 'transfers.sqlite-wal').exists())
             self.assertFalse((host.state_dir / 'transfers.sqlite').exists())
@@ -277,6 +304,17 @@ class GroupFreshWorldTests(unittest.TestCase):
         host.write_json(host.running_file, {'since': 1})
         with self.assertRaisesRegex(shard_group.Refused, 'not explicitly stopped'):
             self.run_reset()
+
+    def test_group_reset_refuses_a_linked_data_parent_before_moving_anything(self):
+        host = self.pairs[0][1]
+        data = host.repo / 'data'
+        if data.exists():
+            data.rename(host.repo / 'data-fixture')
+        data.symlink_to(host.repo / 'config', target_is_directory=True)
+        with self.assertRaisesRegex(shard_group.Refused, 'linked.*paths'):
+            self.run_reset()
+        for _region, candidate in self.pairs:
+            self.assertTrue((candidate.repo / 'map_saves/fixture').exists())
 
     def test_group_reset_refuses_a_linked_separate_store_and_changes_nothing(self):
         host = self.pairs[0][1]

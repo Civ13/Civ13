@@ -440,6 +440,7 @@
 #include "code\game\objects\covers.dm"
 #include "code\game\objects\explosion.dm"
 #include "code\game\objects\farming.dm"
+#include "code\game\objects\hit_kinds.dm"
 #include "code\game\objects\items.dm"
 #include "code\game\objects\items\item_piles.dm"
 #include "code\game\objects\objs.dm"

@@ -110,14 +110,19 @@ class ExpeditionSlotTests(unittest.TestCase):
     def test_archive_moves_the_save_aside_and_frees_the_slot(self):
         self.give()
         (self.slot / 'map_saves' / 'map.txt').write_text('saved')
+        notice = 'data/persistence-bed-notices/bed-owner.pending'
+        (self.slot / notice).parent.mkdir(parents=True)
+        (self.slot / notice).write_text('archived notice')
         self.machine.up.add(1721)
         with self.assertRaisesRegex(shard_group.Refused, 'running'):
             slots.archive(self.group, self.host, 'far1')
         self.machine.up.discard(1721)
         answer = slots.archive(self.group, self.host, 'far1')
-        self.assertEqual(['map_saves'], answer['archived'])
+        self.assertEqual(['map_saves', 'data/persistence-bed-notices'], answer['archived'])
         archived = Path(answer['archive'])
         self.assertEqual('saved', (archived / 'map_saves' / 'map.txt').read_text())
+        self.assertEqual('archived notice', (archived / notice).read_text())
+        self.assertFalse((self.slot / notice).exists())
         self.assertEqual('3,4', json.loads((archived / 'slot.json').read_text())['key'])
         self.assertFalse((self.slot / 'map_saves').exists())
         record = slots.read_slot(self.group, 'far1')
@@ -131,6 +136,25 @@ class ExpeditionSlotTests(unittest.TestCase):
         for name, place in slots.TERRAIN_FILES:
             self.assertFalse((self.slot / place).exists(), 'a free slot keeps no land\'s hills')
         self.give('5,6')  # the next land
+
+    def test_archive_refuses_linked_notice_parent_without_moving_world(self):
+        self.give()
+        saved = self.slot / 'map_saves/map.txt'
+        saved.write_text('saved')
+        other = self.slot / 'config'
+        other.mkdir(exist_ok=True)
+        notice = other / 'persistence-bed-notices/bed-owner.pending'
+        notice.parent.mkdir()
+        notice.write_text('do not move')
+        data = self.slot / 'data'
+        if data.exists():
+            data.rename(self.slot / 'data-fixture')
+        data.symlink_to(other, target_is_directory=True)
+        with self.assertRaisesRegex(shard_group.Refused, 'linked paths: .*data'):
+            slots.archive(self.group, self.host, 'far1')
+        self.assertTrue(saved.exists())
+        self.assertEqual(notice.read_text(), 'do not move')
+        self.assertEqual('LAND', slots.read_slot(self.group, 'far1')['state'])
 
     def test_an_archived_land_is_deleted_after_7_days(self):
         self.give()
@@ -268,6 +292,9 @@ class ExpeditionSlotTests(unittest.TestCase):
     def test_a_land_is_parked_and_restored_with_its_save(self):
         self.give('3,4')
         self.saved('rome was here')
+        notice = 'data/persistence-bed-notices/bed-owner.pending'
+        (self.slot / notice).parent.mkdir(parents=True)
+        (self.slot / notice).write_text('parked notice')
         world = json.loads(json.dumps(slots.read_slot(self.group, 'far1')['world']))
         self.assertTrue(world['placed'].startswith('far1@'))
         self.machine.up.add(1721)
@@ -276,7 +303,10 @@ class ExpeditionSlotTests(unittest.TestCase):
         self.machine.up.discard(1721)
         answer = slots.park(self.group, self.host, 'far1', now=5000)
         folder = self.base / 'regions' / 'expeditions' / 'parked' / '3-4'
-        self.assertEqual((['map_saves'], str(folder)), (answer['moved'], answer['folder']))
+        expected = ['map_saves', 'data/persistence-bed-notices']
+        self.assertEqual((expected, str(folder)), (answer['moved'], answer['folder']))
+        self.assertEqual('parked notice', (folder / notice).read_text())
+        self.assertFalse((self.slot / notice).exists())
         self.assertEqual('rome was here', (folder / 'map_saves' / 'level.sav').read_text())
         self.assertEqual('FREE', slots.read_slot(self.group, 'far1')['state'])
         self.assertEqual({'3,4': {'parked_at': slots.stamp(5000), 'from': 'far1'}}, slots.parked(self.group))
@@ -291,7 +321,8 @@ class ExpeditionSlotTests(unittest.TestCase):
         with self.assertRaisesRegex(shard_group.Refused, 'no parked land 9,9'):
             slots.restore(self.group, self.host, 'far1', '9,9')
         answer = slots.restore(self.group, self.host, 'far1', '3,4', now=9000)
-        self.assertEqual(['map_saves'], answer['restored'])
+        self.assertEqual(expected, answer['restored'])
+        self.assertEqual('parked notice', (self.slot / notice).read_text())
         self.assertEqual('rome was here', (self.slot / 'map_saves' / 'level.sav').read_text())
         record = slots.read_slot(self.group, 'far1')
         self.assertEqual(('LAND', '3,4', True), (record['state'], record['key'], record['restored']))

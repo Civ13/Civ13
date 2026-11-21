@@ -183,13 +183,16 @@ what is drawn.
 
 `weather_upwind_distance()` computes the backward offset to the nearest map
 edge beyond the storm's bounding oval. It preserves current cardinal spawn
-coordinates and accepts diagonal vectors for future use. Gameplay still selects
-only cardinal winds; scheduled arrival timing, wind veering, sailing and vane
-art are unchanged. The weather probe includes cardinal parity and diagonal
-near-corner boundary checks.
+coordinates and accepts diagonal vectors for future use. Storms and sailing use
+the same wind-from heading parser, which accepts all eight compass headings and
+falls back to West. Storms use the opposite direction as a grid step (both axes
+step on a diagonal), not a normalized speed vector. Gameplay and the admin wind
+selector still choose only cardinal winds. Scheduled arrival timing, veering,
+cardinal sailing and vane art are unchanged. The weather probe includes cardinal
+parity and diagonal near-corner boundary checks.
 
 ## Not yet done
 
-Moisture gained over water and lost over high ground, wind in eight
-directions, lightning that starts fires (and poles that draw it away), and
-rip tides.
+Moisture gained over water and lost over high ground, naturally selecting all
+eight wind directions, lightning that starts fires (and poles that draw it
+away), and rip tides.

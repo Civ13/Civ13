@@ -30,6 +30,7 @@
 
 /obj/structure/vehicle/boat
 	offset_drive = TRUE
+	offset_mover_type = /datum/vehicle_offset/single/small_boat
 
 /obj/structure/vehicle/persistence_runtime_var(key)
 	return key == "offset_mover" || key == "offset_coast" || key == "offset_last_tick" || ..()
@@ -247,6 +248,7 @@
 
 /obj/structure/vehicle/raft
 	offset_drive = TRUE
+	offset_mover_type = /datum/vehicle_offset/single/small_boat
 	var/tmp/offset_paddling = FALSE
 
 /obj/structure/vehicle/raft/persistence_runtime_var(key)
