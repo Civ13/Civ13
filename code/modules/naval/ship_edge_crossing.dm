@@ -96,6 +96,11 @@
 		if (!near)
 			continue
 		var/f = sea_edge_along(side, cx, cy)
+		// An ocean whose west and east edges join (the Arctic, the Southern
+		// Ocean): she sails on round the world into its other side.
+		var/list/O = world_oceans[here]
+		if ((side == "west" || side == "east") && islist(O) && O.len >= 6 && islist(O[6]) && (("west" in O[6]) || ("east" in O[6])))
+			return list(here, region_edge_opposite(side), f)
 		// An island land: every edge leads into its ocean, beside that side of its box.
 		var/ocean = sea_edge_inset_ocean(here)
 		if (ocean)
@@ -126,21 +131,46 @@
 		return "Nothing lies beyond this edge of the chart."
 	if (voyage)
 		return "She is on a voyage. Her crew sail on with it."
+	if (route[1] == shard_group.region)
+		return sea_edge_seaworthy_refusal()
 	var/reason = crossing_refusal(H)
 	if (reason)
 		return reason
 	if (!shard_group.peers[route[1]])
 		return "[sea_edge_place(route[1])] is not open to ships yet."
-	// Open water is no place for a raft: a mast or a running engine, and hands to work her.
+	reason = sea_edge_seaworthy_refusal()
+	if (reason)
+		return reason
+	var/load = sea_crossing_load(src)
+	if (istext(load))
+		return load
+	return landfall_rest_refusal() || crossing_hold_refusal(route[1])
+
+// Open water is no place for a raft: a mast or a running engine, and hands to
+// work her. Why she cannot put out into it, or null.
+/obj/structure/hull_tiller/proc/sea_edge_seaworthy_refusal()
 	craft.fit_drives()
 	if (craft.max_speed() < VESSEL_SPEED_SLOW)
 		return "She cannot sail the open sea without a way to sail: rig a mast or fit a running engine."
 	if (length(voyage_crew()) < SEA_EDGE_MIN_CREW)
 		return "The open sea needs at least [SEA_EDGE_MIN_CREW] of her crew aboard and awake."
-	var/load = sea_crossing_load(src)
-	if (istext(load))
-		return load
-	return landfall_rest_refusal() || crossing_hold_refusal(route[1])
+	return null
+
+// Round the world in an ocean whose west and east edges join: she comes out
+// on the other side of this same sea at the matching place. Why she could
+// not, or null.
+/obj/structure/hull_tiller/proc/sea_edge_wrap(list/route)
+	var/datum/craft_body/built/B = craft ? craft.body : null
+	if (!istype(B))
+		return "She is not afloat."
+	var/turf/P = sea_edge_anchorage(B.offsets, list(route[2], route[3]), route[1])
+	if (!P)
+		return "There is no open water to sail into on the far side."
+	if (!B.move_to(P.x, P.y, B.dir))
+		return B.last_refusal || "She cannot sail on."
+	log_game("Sea edge: the [craft.name] sails round the world into the [route[2]] of [route[1]] at [P.x],[P.y].")
+	craft.crew_message(SPAN_NOTICE("The [craft.name] sails on round the world, and the [route[2]] of the [sea_edge_place(route[1])] opens ahead."))
+	return null
 
 /obj/structure/hull_tiller/proc/sea_edge_menu(mob/living/human/H)
 	var/datum/craft_body/built/B = craft ? craft.body : null
@@ -150,7 +180,11 @@
 		to_chat(H, SPAN_WARNING(reason))
 		return
 	var/place = sea_edge_place(route[1])
-	if (WWinput(H, "Sail on over the horizon to [place]? Everyone and everything aboard goes with her; whoever stays ashore is left behind.", craft.name, "Stay", list("Sail on", "Stay")) != "Sail on" || get_dist(H, src) > 1 || !craft)
+	var/wraps = route[1] == shard_group.region
+	if (wraps)
+		if (WWinput(H, "Sail on round the world into the [route[2]] of the [place]?", craft.name, "Stay", list("Sail on", "Stay")) != "Sail on" || get_dist(H, src) > 1 || !craft)
+			return
+	else if (WWinput(H, "Sail on over the horizon to [place]? Everyone and everything aboard goes with her; whoever stays ashore is left behind.", craft.name, "Stay", list("Sail on", "Stay")) != "Sail on" || get_dist(H, src) > 1 || !craft)
 		return
 	// The prompt slept: she may have drifted, or been sent elsewhere.
 	B = craft.body
@@ -163,7 +197,7 @@
 		to_chat(H, SPAN_WARNING(reason))
 		return
 	log_game("Sea edge: [key_name(H)] sails the [craft.name] on to [now[1]] ([now[2]], [round(now[3], 0.01)]).")
-	var/result = cross(now[1], H, null, list(now[2], now[3]))
+	var/result = wraps ? sea_edge_wrap(now) : cross(now[1], H, null, list(now[2], now[3]))
 	if (result)
 		to_chat(H, SPAN_WARNING(result))
 
