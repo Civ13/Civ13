@@ -164,7 +164,8 @@ var/naval_runtime_error = FALSE
 	naval_check(foot.target == head && head.x == foot.x && head.y == foot.y, "the ladder swung whole")
 
 	// ---- Crossing the sea ----
-	naval_check(findtext(tiller.crossing_refusal(null), "upper deck"), "she may not cross the sea with an upper deck yet")
+	var/sea_refusal = tiller.crossing_refusal(null)
+	naval_check(!sea_refusal || !findtext(sea_refusal, "upper deck"), "her upper deck no longer keeps her from crossing the sea (cargo_probe.dm)")
 
 	tiller.decommission()
 	qdel(tiller)
