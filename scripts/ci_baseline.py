@@ -1028,6 +1028,21 @@ SUITES = {
         # Rebuilding both maps' currents and flood reaches from 1M-cell maps takes
         # about 50 s locally and longer on hosted runners.
         'timeout': 180},
+    # The ocean regions: generated maps current, sizes, insets, metadata registered
+    # and open water at both ends of every sea link, parsed from the DMMs; no BYOND runtime.
+    'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py',), 'timeout': 180,
+        'paths': ('tests/ocean_maps/', 'tools/ocean_maps/', 'tools/world_links/',
+                  'code/modules/naval/ocean_regions.dm', 'code/modules/persistence/world_links.dm',
+                  'maps/nomads/nomads_ocean_atlantic.dmm', 'maps/nomads/nomads_ocean_pacific.dmm',
+                  'maps/nomads/nomads_ocean_indian.dmm', 'maps/nomads/nomads_ocean_arctic.dmm',
+                  'maps/nomads/nomads_ocean_southern.dmm'), 'shared_paths': (
+            'code/__defines/maps.dm', 'code/modules/persistence/durable_nomads.dm',
+            'code/modules/1713/jobs/nomads.dm', 'scripts/nomads-lifecycle/supervisor.py',
+            'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
+            'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
+            'maps/nomads/nomads_earth_asia.dmm', 'maps/nomads/nomads_earth_oceania.dmm',
+            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
+            'maps/nomads/nomads_gaia.dmm')},
     # Walking between lands over shared map edges: links answered on the facing
     # edge with dry ground on both stretches, parsed from the DMMs; no BYOND runtime.
     'edge_crossings': {'files': ('tests/edge_crossings/test_edge_crossings.py',), 'timeout': 120,
