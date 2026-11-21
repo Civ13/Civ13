@@ -1831,6 +1831,10 @@ SUITES = {
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
 
+    'ecology_visibility': {'files': ('tests/ecology_spawning/test_visibility.py',),
+        'paths': ('tests/ecology_spawning/test_visibility.py',),
+        'shared_paths': ('code/modules/ecology/ecology_spawning.dm', 'tests/save_movement/source_adapter.py')},
+
     'hostile_patrol_waypoints': {'files': ('tests/hostile_patrol/test_waypoint_selection.py',),
         'paths': ('tests/hostile_patrol/',),
         'shared_paths': ('code/game/mob/living/simple_animal/hostile/humans/human.dm',
