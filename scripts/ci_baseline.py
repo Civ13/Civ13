@@ -1833,6 +1833,15 @@ SUITES = {
         'paths': ('tests/bone_armor/',), 'shared_paths': (
             'config/crafting/', 'code/modules/1713/apparel_stoneage.dm', 'code/__defines/maps.dm')},
 
+    # Lifetime accolades: catalog, hooks, once-per-account claims, window guard; source checks only.
+    'accolades': {'files': ('tests/accolades/test_accolades.py',),
+        'paths': ('tests/accolades/',), 'shared_paths': (
+            'code/modules/accolades/', 'code/processes/accolades.dm', 'docs/accolades.md',
+            'code/modules/client/player_tutorial.dm', 'code/modules/naval/ship_voyage.dm',
+            'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_travel.dm',
+            'code/modules/research_tree/character_knowledge.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm')},
+
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
@@ -2562,7 +2571,7 @@ SUITES = {
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
     'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py'), 'paths': (
-        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
+        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/divine_repositories.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
@@ -2584,6 +2593,10 @@ SUITES = {
         'tests/twohanded_wield/', 'code/game/objects/items/weapons/material/twohanded.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/inventory.dm',
             'code/modules/organs/organ_external.dm')},
+    # A finished CPR round is credited before the post-wait recheck.
+    'cpr_cycle_credit': {'files': ('tests/cpr_cycle_credit/test_credit_order.py',), 'paths': (
+        'tests/cpr_cycle_credit/',),
+        'shared_paths': ('code/game/mob/living/carbon/human/resuscitation.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
@@ -2793,6 +2806,11 @@ SUITES = {
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
     # Ghost animal noises preference: animals heard only nearby by choice.
+    'spirit_wait': {'files': ('tests/spirit_wait/test_spirit_wait.py',),
+        'paths': ('tests/spirit_wait/', 'code/game/mob/observer/ghost/spirit_wait.dm'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/mob.dm',
+            'code/game/mob/living/carbon/human/death.dm', 'code/modules/divine/arcane_spirits.dm',
+            'code/modules/admin/verbs/random_verbs.dm')},
     'ghost_animal_noises': {'files': ('tests/ghost_animal_noises/test_ghost_animal_noises.py',),
         'paths': ('tests/ghost_animal_noises/', 'code/game/mob/emote.dm'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm',

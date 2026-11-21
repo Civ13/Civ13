@@ -1925,6 +1925,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/railing/built/steel_pipe" = "steelmaking",
 		"/obj/structure/railing/built/steel_pipe/gate" = "steelmaking",
 		"/obj/structure/railing/built/gunwale/bulwark" = "steelmaking",
+		"/obj/structure/railing/built/gunwale/bulwark/gangway" = "steelmaking",
 		"/obj/structure/steel_works/open_hearth" = "open_hearth",
 		"/obj/structure/steel_works/arc_furnace" = "alloys",
 		"/obj/structure/carburizing_pot" = "iron_smithing",
@@ -2314,6 +2315,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/railing/built" = "primitive_construction",
 		"/obj/structure/railing/built/gate" = "primitive_construction",
 		"/obj/structure/railing/built/gunwale" = "primitive_construction",
+		"/obj/structure/railing/built/gunwale/gangway" = "primitive_construction",
 		"/obj/structure/mine_support" = "primitive_construction",
 		"/obj/structure/roof_support" = "primitive_construction",
 		"/obj/structure/chimney" = "primitive_construction",
@@ -2966,7 +2968,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (9) ---
+		// --- watermills (11) ---
+		"/obj/structure/workshop_machine/hopper/millstones" = "watermills",
+		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
 		"/obj/structure/water_lift/windmill" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",

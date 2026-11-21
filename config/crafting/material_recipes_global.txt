@@ -1563,6 +1563,7 @@ RECIPE: /material/wood/,windlass and pail,/obj/structure/well_fitting/windlass,4
 RECIPE: /material/stone/,deadfall trap,/obj/item/weapon/trap_kit/deadfall,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/stone/,pressure plate,/obj/item/mechanism_kit/pressure_plate,3,60,0,1,mechanisms,0,0,0,8,null
 RECIPE: /material/stone/,rock drop,/obj/structure/rock_drop,6,80,1,1,mechanisms,0,0,0,8,null
+RECIPE: /material/stone/,millstones,/obj/structure/workshop_machine/hopper/millstones,12,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
 RECIPE: /material/stone/,ashtray,/obj/item/weapon/material/ashtray/stone,3,30,0,1,none,14,0,0,8,null
@@ -2492,6 +2493,7 @@ RECIPE: /material/wood/,windmill,/obj/structure/workshop_machine/mover/windmill,
 RECIPE: /material/wood/,wooden line shaft,/obj/structure/workshop_machine/transmission/line_shaft,4,80,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,shaft clutch,/obj/structure/workshop_machine/transmission/line_shaft/clutch,5,100,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,gear box,/obj/structure/workshop_machine/transmission/gear_box,8,150,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/wood/,sash saw,/obj/structure/workshop_machine/hopper/sash_saw,10,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/iron/,iron line shaft,/obj/structure/workshop_machine/transmission/line_shaft/iron,3,80,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,rope drive wheel,/obj/structure/workshop_machine/transmission/rope_drive,4,150,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,treadwheel crane,/obj/structure/workshop_machine/shear_legs/crane,16,200,1,1,economy & production,70,0,0,8,null
@@ -3171,6 +3173,8 @@ RECIPE: /material/steel/,steel pipe railing gate,/obj/structure/railing/built/st
 RECIPE: /material/glass/,glass balustrade gate,/obj/structure/railing/built/glass/gate,4,70,0,1,railings,145,0,0,8,null
 RECIPE: /material/wood/soft/,wooden gunwale,/obj/structure/railing/built/gunwale,2,40,0,1,railings,10,0,0,8,null
 RECIPE: /material/steel/,steel bulwark,/obj/structure/railing/built/gunwale/bulwark,2,60,0,1,railings,105,0,0,8,null
+RECIPE: /material/wood/soft/,wooden gangway,/obj/structure/railing/built/gunwale/gangway,4,60,0,1,railings,10,0,0,8,null
+RECIPE: /material/steel/,steel gangway,/obj/structure/railing/built/gunwale/bulwark/gangway,4,80,0,1,railings,105,0,0,8,null
 RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,construction,120,0,0,8,null
 
 //*********************| IRON PROJECTILES & BULLETS |**************************

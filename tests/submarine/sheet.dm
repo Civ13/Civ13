@@ -148,7 +148,19 @@
 	for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/F in A.frames())
 		if (!("[F.hull_tile]_deck" in hull_states))
 			art = FALSE
-	submarine_check(art && submarine_hull_at(11, 15).hull_tile == "explorer_2_7" && submarine_hull_at(11, 13).hull_tile == "explorer_2_4", "every section has hull art, the stern row the Explorer's stern")
+	submarine_check(art && submarine_hull_at(11, 15).hull_tile == "cruiser_2_6" && submarine_hull_at(11, 13).hull_tile == "cruiser_2_4", "every section has hull art, row for row the Cruiser's")
+	// Every length has a hull drawn for it, and a hatch art for either side.
+	var/drawn_hulls = TRUE
+	for (var/list/hull_art in list(list("coaster", 4), list("scout", 5), list("cruiser", 6), list("explorer", 7)))
+		for (var/art_row = 1, art_row <= hull_art[2], art_row++)
+			for (var/art_col = 1, art_col <= 3, art_col++)
+				var/tile = submarine_art_tile(hull_art[2], art_col, art_row)
+				if (tile != "[hull_art[1]]_[art_col]_[art_row]" || !("[tile]_deck" in hull_states) || !("[tile]_roof" in hull_states))
+					drawn_hulls = FALSE
+	submarine_check(drawn_hulls, "the Coaster, Scout, Cruiser and Explorer hulls have a deck and a roof tile for every section of 4 to 7 rows")
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/port_hatch = submarine_hull_at(10, 12)
+	var/obj/structure/vehicleparts/frame/ship/steel/submarine/plain_side = submarine_hull_at(10, 13)
+	submarine_check(("sub_hatch_1_deck" in hull_states) && ("sub_hatch_1_roof" in hull_states) && ("sub_hatch_3_deck" in hull_states) && ("sub_hatch_3_roof" in hull_states) && findtext(port_hatch.hatch_art(), "sub_hatch_") == 1 && port_hatch.hatch_art() != submarine_hull_at(12, 12).hatch_art() && isnull(plain_side.hatch_art()), "a hatch is drawn over the side section the sheet put it in, port and starboard")
 	submarine_check(istype(submarine_hull_at(10, 12), /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch) && istype(submarine_hull_at(12, 12), /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch) && !istype(submarine_hull_at(10, 13), /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch), "her hatches are where the sheet put them")
 	submarine_check(submarine_hull_at(10, 13).w_front[1] == "sub_bulkhead" && submarine_hull_at(11, 13).door_walls().len == 1 && submarine_hull_at(10, 10).w_front[1] == "sub_glass", "her bulkhead, door and glass bow are where the sheet put them")
 	var/list/layout = A.hull_layout()
