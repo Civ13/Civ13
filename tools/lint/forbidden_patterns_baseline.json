@@ -491,8 +491,6 @@
       "code/datums/observation/observation.dm": 1,
       "code/modules/submarine/submarine_datum.dm": 1
     },
-    "merge_marker": {
-      "civ13.dme": 2
-    }
+    "merge_marker": {}
   }
 }

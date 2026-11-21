@@ -57,6 +57,7 @@ REVIEWED = {
     'next_feels_like_message': 'declared var/tmp on humans (feels_like.dm), so never saved',
     'spirit_hud_ends': 'declared var/tmp on ghosts (spirit_hud.dm), so never saved',
     'heteromorph_started': 'declared var/tmp on heteromorph forms (heteromorph_form.dm); saves return every form to human first',
+    'heteromorph_breath_ready': 'declared var/tmp on heteromorph forms (heteromorph_breath.dm); saves return every form to human first',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
