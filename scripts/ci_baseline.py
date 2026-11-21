@@ -606,6 +606,7 @@ SUITES = {
                          'code/modules/multiz/pit_climbing.dm',
                          'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm',
                          'code/modules/naval/hull_masts.dm',
+                         'code/modules/naval/hull_rigging.dm',
                          'code/game/objects/items/weapons/material/swords.dm',
                          'code/game/objects/items/weapons/material/material_weapons.dm',
                          'code/game/objects/items/weapons/material/twohanded.dm')},

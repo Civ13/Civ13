@@ -73,9 +73,7 @@
 		return FALSE
 	tree_climb_busy = TRUE
 	visible_message(SPAN_NOTICE("[src] starts climbing \the [M]."), SPAN_NOTICE("You start climbing \the [M]..."))
-	var/climb_motion = body_motion_climb(TRUE, MAST_CLIMB_TIME)
-	var/climbed = hull_wait(src, MAST_CLIMB_TIME, M)
-	body_motion_stop(climb_motion)
+	var/climbed = hull_wait(src, MAST_CLIMB_TIME, M, climb = 1)
 	tree_climb_busy = FALSE
 	if (!climbed)
 		return FALSE

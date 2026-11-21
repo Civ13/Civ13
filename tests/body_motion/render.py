@@ -31,6 +31,11 @@ def sprite_file(folder, name):
     return sheet.crop((0, 0, 32, 32))
 
 
+def pixels(img):
+    # Pillow 12.1 renamed getdata(); work on either.
+    return img.get_flattened_data() if hasattr(img, 'get_flattened_data') else img.getdata()
+
+
 def chair_sprite():
     """The plain chair from icons/obj/bed_chair.dmi, south-facing, in wood colour."""
     path = Path(__file__).resolve().parents[2] / 'icons/obj/bed_chair.dmi'
@@ -45,7 +50,7 @@ def chair_sprite():
     cols = sheet.width // 32
     img = sheet.crop(((index % cols) * 32, (index // cols) * 32, (index % cols) * 32 + 32, (index // cols) * 32 + 32))
     r, g, b = WOOD
-    img.putdata([(p[0] * r // 255, p[1] * g // 255, p[2] * b // 255, p[3]) for p in img.get_flattened_data()])
+    img.putdata([(p[0] * r // 255, p[1] * g // 255, p[2] * b // 255, p[3]) for p in pixels(img)])
     return img
 
 

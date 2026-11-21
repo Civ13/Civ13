@@ -71,10 +71,17 @@ def main():
         receipt = json.loads((work / 'receipt.json').read_text(encoding='utf-8')) if (work / 'receipt.json').exists() else {}
         print(result, json.dumps(receipt))
         if args.render_dir:
+            # Publish only a complete export from a passing run; otherwise
+            # leave any earlier export as it was.
+            expected = [work / f'render_{d}.png' for d in (1, 2, 4, 8)]
+            expected += [work / 'render_tool.png', work / 'render_rock.png', work / 'keys.json']
+            missing = [item.name for item in expected if not item.exists()]
+            if result != 'PASS' or missing:
+                print('Render export not written:', 'probe failed' if result != 'PASS' else 'missing ' + ', '.join(missing))
+                return 1
             args.render_dir.mkdir(parents=True, exist_ok=True)
-            for item in [*work.glob('render_*.png'), work / 'keys.json']:  # bodies, tool, rock, chair
-                if item.exists():
-                    shutil.copy(item, args.render_dir / item.name)
+            for item in expected:
+                shutil.copy(item, args.render_dir / item.name)
         return 0 if result == 'PASS' else 1
     finally:
         if args.keep:

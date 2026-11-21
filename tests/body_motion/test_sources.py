@@ -99,10 +99,12 @@ class BodyMotionSources(unittest.TestCase):
                             ('code/modules/multiz/edge_climbing.dm', 1),
                             ('code/modules/multiz/pit_climbing.dm', 1),
                             ('code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm', 2),
-                            ('code/modules/naval/hull_masts.dm', 1)):
+                            ('code/modules/naval/hull_rigging.dm', 1)):
             text = read(path)
-            self.assertEqual(text.count('var/climb_motion = body_motion_climb('), count, path)
+            self.assertEqual(text.count('climb_motion = ') - text.count('var/climb_motion = 0'), count, path)
             self.assertEqual(text.count('body_motion_stop(climb_motion)'), count, path)
+        self.assertIn('hull_wait(src, MAST_CLIMB_TIME, M, climb = 1)', read('code/modules/naval/hull_masts.dm'))
+        self.assertIn('if (!may_do_after)\n\t\treturn 0', proc_body(MOTION, '/mob/living/human/proc/body_motion_climb('))
 
     def test_stride_hook_and_gap(self):
         self.assertIn('mob.last_movement = world.time\n\t\tif (ishuman(mob))\n\t\t\tvar/mob/living/human/strider = mob\n\t\t\tstrider.body_motion_stride()',

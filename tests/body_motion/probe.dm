@@ -303,8 +303,39 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(!H.body_motion_recoil(A), "dead_no_recoil")
 	H.stat = CONSCIOUS
 
-	// --- channel ownership -----------------------------------------------------
+	// --- channel ownership: owners' offsets survive every motion ---------------
 	body_motion_probe_assert(!H.pixel_x && !H.pixel_y && !H.pixel_w && !H.pixel_z, "pixel_channels_untouched")
+	H.pixel_x = 3
+	H.pixel_y = -2
+	H.pixel_w = 5
+	H.pixel_z = -4
+	var/list/owned_motions = list("recoil", "work", "emote", "swing", "parry", "stride", "climb", "sink")
+	for (var/kind in owned_motions)
+		body_motion_probe_idle(H)
+		H.body_motion_stroke_next = 0
+		switch (kind)
+			if ("recoil")
+				H.body_motion_recoil(A)
+			if ("work")
+				H.body_motion_work(locate(6, 5, 1))
+			if ("emote")
+				H.body_motion_emote("bow")
+			if ("swing")
+				H.body_motion_swing(locate(6, 5, 1), null)
+			if ("parry")
+				H.body_motion_parry(A)
+			if ("stride")
+				H.body_motion_stride()
+			if ("climb")
+				H.body_motion_stop(H.body_motion_climb(TRUE, 20))
+			if ("sink")
+				H.body_motion_sink()
+		body_motion_probe_assert(H.pixel_x == 3 && H.pixel_y == -2 && H.pixel_w == 5 && H.pixel_z == -4, "pixel_offsets_kept_[kind]")
+	body_motion_probe_idle(H)
+	H.pixel_x = 0
+	H.pixel_y = 0
+	H.pixel_w = 0
+	H.pixel_z = 0
 
 // Exports a dressed body and the motion keys for tests/body_motion/render.py.
 /proc/body_motion_probe_flat(mob/living/human/H, direction)
@@ -318,6 +349,11 @@ var/body_motion_probe_checks = 0
 			if (sub.icon)
 				flat.Blend(icon(sub.icon, sub.icon_state, direction), ICON_OVERLAY)
 	return flat
+
+// A preview file the render needs; a failed write fails the probe.
+/proc/body_motion_probe_write(icon/I, name)
+	if (!fcopy(I, name) || !fexists(name))
+		throw EXCEPTION("render export failed: [name]")
 
 /proc/body_motion_probe_keys(matrix/M)
 	return list(M.a, M.b, M.c, M.d, M.e, M.f)
@@ -333,11 +369,11 @@ var/body_motion_probe_checks = 0
 	D.update_hair(0)
 	D.regenerate_icons()
 	for (var/direction in list(SOUTH, NORTH, EAST, WEST))
-		fcopy(body_motion_probe_flat(D, direction), "render_[direction].png")
+		body_motion_probe_write(body_motion_probe_flat(D, direction), "render_[direction].png")
 	var/obj/item/weapon/material/hatchet/axe = new(D.loc)
-	fcopy(icon(axe.icon, axe.icon_state, SOUTH), "render_tool.png")
+	body_motion_probe_write(icon(axe.icon, axe.icon_state, SOUTH), "render_tool.png")
 	var/obj/structure/wild/rock/stone = new(locate(9, 9, 1))
-	fcopy(icon(stone.icon, stone.icon_state, SOUTH), "render_rock.png")
+	body_motion_probe_write(icon(stone.icon, stone.icon_state, SOUTH), "render_rock.png")
 	var/matrix/stand = D.posture_transform()
 	D.lying = TRUE
 	var/matrix/lie = D.posture_transform()
@@ -353,7 +389,8 @@ var/body_motion_probe_checks = 0
 		"swim_dip" = body_motion_probe_keys(body_motion_matrix(stand, 0, -1)),
 		"sink" = body_motion_probe_keys(body_motion_matrix(stand, 0, -3)),
 		"climb_up" = body_motion_probe_keys(body_motion_matrix(stand, 0, 1)))
-	text2file(json_encode(keys), "keys.json")
+	if (!text2file(json_encode(keys), "keys.json"))
+		throw EXCEPTION("render export failed: keys.json")
 
 /world/New()
 	OpenPort("none")

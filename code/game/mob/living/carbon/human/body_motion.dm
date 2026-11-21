@@ -329,9 +329,14 @@
 		list(0, 0, 0, 1, 2, LINEAR_EASING)))
 
 // Climbing: one 1px pull every 10 ds for the length of the wait, up or down,
-// with a still beat between pulls. Returns the motion's serial, for
+// with a still beat between pulls. Nothing while another wait is running.
+// Returns the motion's serial, for
 // body_motion_stop() once the wait ends or is interrupted; 0 when none played.
 /mob/living/human/proc/body_motion_climb(up, duration)
+	// A second request while a wait already runs is refused by do_after; it
+	// must not replace the running climb's pulls first.
+	if (!may_do_after)
+		return 0
 	var/dy = up ? 1 : -1
 	var/list/keys = list()
 	for (var/i in 1 to max(1, round(duration / 10)))
