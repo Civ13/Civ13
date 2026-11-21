@@ -134,6 +134,16 @@
 	layered.equip_to_slot_or_del(plate_over, slot_wear_suit)
 	family_check(layered.armor_gap_penetration("chest", HIT_PIERCE) == 0, "plate over mail leaves no gap")
 
+	// Examine tells players what a piece is good and bad against.
+	var/obj/item/clothing/told_mail = new /obj/item/clothing/suit/armor/medieval/chainmail(locate(1,1,1))
+	var/mail_text = told_mail.armor_family_strengths()
+	family_check(findtext(mail_text, "Mail:") && findtext(mail_text, "blows go through") && findtext(mail_text, "made of iron"), "chainmail examine: [mail_text]")
+	var/plate_text = steel_plate.armor_family_strengths()
+	family_check(findtext(plate_text, "Plate armor:") && findtext(plate_text, "made of steel"), "steel plate examine: [plate_text]")
+	family_check(findtext(jack.armor_family_strengths(), "Worn under armor"), "padded jack examine: [jack.armor_family_strengths()]")
+	var/obj/item/clothing/told_ork = new /obj/item/clothing/suit/armor/ork_grunt(locate(1,1,1))
+	family_check(isnull(told_ork.armor_family_strengths()), "armor without a family says nothing extra")
+
 	// Armor never goes out of date: anvil armor stays on offer in later eras.
 	var/obj/structure/anvil/anvil = new(locate(3,3,1))
 	var/mob/living/human/smith = new(locate(3,2,1))

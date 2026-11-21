@@ -95,8 +95,11 @@ var/global/list/arcane_storm_marks = list()
 /mob/living/human/proc/arcane_magic_user()
 	return istext(divine_patron) && length(divine_patron) && client && client.mob == src && magic_allowed()
 
-// Filled in by the pact plan: a keeper of a repository may gather Ward materials.
+// A keeper of a finished repository may gather Ward materials.
 /mob/living/human/proc/arcane_ward_keeper()
+	for (var/obj/O in magic_repos_kept())
+		if (O.magic_repo_finished())
+			return TRUE
 	return FALSE
 
 // Whether this magic user can put this aspect into what they gather.

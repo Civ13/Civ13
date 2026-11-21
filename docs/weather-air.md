@@ -46,8 +46,8 @@ the Magnus formula.
 
 ## Admin tools
 
-The **Weather Map** has an *Air layer* menu that shades every cell by
-temperature, humidity, pressure or cloud. Clicking a spot also lists the air
+The **Admin Map** has an *Air* menu that shades every cell by temperature,
+humidity, pressure or cloud. Clicking a spot or a player also lists the air
 there.
 
 ## Tests

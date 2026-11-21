@@ -38,8 +38,7 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/land_status,
 	/datum/admins/proc/player_art,	//see every finished player painting, who painted it, and remove offensive ones	//see and set each land's settlement stage (frontier, colonised, settled)
 	/datum/admins/proc/world_chart_panel,	//see the world chart for boat expeditions and reroll charted lands
-	/client/proc/admin_player_map,	//live map of a level with every player on it,
-	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
+	/client/proc/admin_map,	//live map of a level: every player, the weather systems and the air,
 	/client/proc/admin_view_storage,	//see everything inside a container, who has searched it and which faction filled it
 	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/client/proc/cmd_admin_check_illnesses,	//read-only list of everyone who is ill,
@@ -111,8 +110,7 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_person,
 	/client/proc/quickBan_unban,
 	/client/proc/cmd_admin_get,
-	/client/proc/admin_player_map,	//live map of a level with every player on it,
-	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
+	/client/proc/admin_map,	//live map of a level: every player, the weather systems and the air,
 	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
@@ -324,8 +322,7 @@ var/list/admin_verbs_mod = list(
 	/client/proc/admin_view_player,		// share a player's camera
 	/client/proc/admin_stop_player_view,
 	/datum/admins/proc/show_player_info,
-	/client/proc/admin_player_map,	//live map of a level with every player on it,
-	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
+	/client/proc/admin_map,	//live map of a level: every player, the weather systems and the air,
 	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
 	/client/proc/dsay,
 	/datum/admins/proc/announce,		//priority announce something to all clients,
