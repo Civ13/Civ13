@@ -21,7 +21,8 @@ STAFF_REASON_MAX = 200
 STAFF_LOG_SHOWN = 10
 STAFF_LOG_KEPT = 100
 # Ops a frozen nation does not hear.
-FROZEN_OPS = ('govern', 'ballot', 'stand', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow')
+FROZEN_OPS = ('govern', 'ballot', 'stand', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow', 'appoint',
+              'dismiss')
 
 
 class NationStaff:

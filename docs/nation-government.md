@@ -102,6 +102,25 @@ assembly: a citizen with a verified account holds it for 30 minutes, and the
 count pauses while another citizen of the nation stands within 3 tiles. The
 first to finish takes the throne (`claim` op).
 
+## Offices of state
+
+A nation whose government has a head fills three offices
+(`tools/transfer_storage/nation_offices.py`, **Nation > Offices of state**):
+
+| Office | Power |
+| --- | --- |
+| Treasurer | Chooses the common money in the ruler's place under personal rule, or brings one to a vote of the senate, council or citizens. |
+| Chancellor | Admits or refuses applications in the ruler's place under personal rule. Nation laws and courts will go through this office. |
+| Marshal | Guards the nation's assemblies: a marshal standing within 3 tiles pauses any claim or revolt held there. |
+
+The head appoints a verified citizen of a member faction (`appoint` op).
+Under personal rule the appointment stands at once; under an elective
+government it is an `office` motion the body confirms by a majority. The head
+dismisses an officer, and an officer resigns, at once (`dismiss` op). A
+person holds one office at a time and never the head's own seat. Offices
+lapse when the government changes, and an officer whose faction leaves the
+nation loses the office. A confederation has no offices.
+
 ## Revolt
 
 Citizens can overthrow any government, in play rather than by a menu
@@ -175,6 +194,8 @@ stays a member for the notice period and may **Stay** to withdraw it.
 - `nation_successor`: the monarch's heir or the consul's deputy.
 - `nation_revolt`, `nation_signature`: the open petition (proposal JSON, who
   opened it, when, when it filled) and its signers.
+- `nation_office`: nation, office, holder's account, character name and
+  faction, since when.
 - `nation_frozen`: nations staff froze, and since when.
 - `nation_staff_log`: nation, when, staff account, act and reason (the last
   100 kept).
@@ -182,4 +203,4 @@ stays a member for the notice period and may **Stay** to withdraw it.
   -> when another petition may open.
 
 The registry snapshot every world reads adds `government`, `government_votes`,
-`leaving`, `eras`, `motions`, `term_ends`, `census`, `revolt`, `frozen` and `staff_log` to each nation.
+`leaving`, `eras`, `motions`, `term_ends`, `census`, `revolt`, `frozen`, `staff_log` and `offices` to each nation.
