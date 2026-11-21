@@ -127,7 +127,10 @@ each hull tile whose roof stands on that tile, or the top of a ladder whose foot
 does. Nothing about it is saved and no field links one deck to the other, so a
 loaded world finds the upper deck the same way. `plan()` refuses a move when the
 open air ahead of the upper deck holds a floor, a ladder or anything solid, and
-when her hull and upper deck together pass `BUILT_HULL_MAX_DECK_TILES` (300).
+when her hull and upper deck together pass `BUILT_HULL_MAX_DECK_TILES` (300). A mast
+(`/obj/structure/vehicleparts/movement/sail`) on a tile with no upper deck
+over it stands up through the level above too: `mast_tile_refusal()` stops her
+when a floor, a bridge or anything solid is there.
 `move_to()` carries the lower deck first, then the upper floors and ladder tops,
 then whoever stands up there, so nobody reaches open air without a floor. A
 roof makes the tile under it indoors, so the areas of her tiles sail with her
