@@ -34,9 +34,11 @@
 // made unmerged so the kiln can track each one it is handed.
 /obj/item/weapon/clay/floortiles/fired_result(atom/where)
 	var/left = max(1, amount)
-	var/obj/item/stack/material/terracotta/last
+	var/obj/item/stack/tile_type = result
+	var/stack_max = initial(tile_type.max_amount)
+	var/obj/item/stack/last
 	while (left > 0)
-		last = new result(where, min(left, initial(last.max_amount)), FALSE)
+		last = new result(where, min(left, stack_max), FALSE)
 		left -= last.amount
 	return last
 
