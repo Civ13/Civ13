@@ -310,6 +310,26 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(H.body_motion_throw(east_tile, BODY_MOTION_FULL), "cast_plays_the_throw")
 	body_motion_probe_idle(H)
 
+	// --- crawling and sneaking -------------------------------------------------
+	body_motion_probe_assert(!H.body_motion_crawl(12), "no_crawl_standing")
+	H.prone = TRUE
+	H.dir = EAST
+	var/matrix/prone_rest = H.posture_transform()
+	H.body_motion_drawn_turned = TRUE
+	body_motion_probe_assert(H.body_motion_crawl(12) && H.body_motion_until == world.time + 12, "crawl_two_pulls_over_12ds")
+	body_motion_probe_assert(body_motion_matrix_same(H.transform, prone_rest), "crawl_ends_prone")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_crawl(3) && H.body_motion_until == world.time + 6, "short_crawl_one_pull")
+	body_motion_probe_idle(H)
+	H.prone = FALSE
+	H.dir = SOUTH
+	H.transform = rest
+	H.body_motion_drawn_turned = FALSE
+	H.m_intent = "stealth"
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 7, "stealth_crouch_7ds")
+	body_motion_probe_idle(H)
+	H.m_intent = "walk"
+
 	// --- hauling a heavy load --------------------------------------------------
 	H.m_intent = "walk"
 	H.pulling = A
@@ -354,6 +374,12 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(H.body_motion_knockback(A), "reduced_keeps_shove")
 	body_motion_probe_idle(H)
 	body_motion_probe_assert(!H.body_motion_stoop(locate(6, 5, 1)), "reduced_drops_stoop")
+	H.prone = TRUE
+	body_motion_probe_assert(!H.body_motion_crawl(12), "reduced_drops_crawl")
+	H.prone = FALSE
+	H.m_intent = "stealth"
+	body_motion_probe_assert(!H.body_motion_stride(), "reduced_drops_stealth")
+	H.m_intent = "walk"
 	body_motion_probe_assert(H.body_motion_jump(), "reduced_keeps_jump")
 	body_motion_probe_idle(H)
 	body_motion_probe_assert(H.body_motion_jolt(), "reduced_keeps_jolt")
@@ -489,7 +515,9 @@ var/body_motion_probe_checks = 0
 		"haul_east" = body_motion_probe_keys(body_motion_matrix(stand, 0, 0, 8)),
 		"jump_crouch" = body_motion_probe_keys(body_motion_matrix(stand, 0, -1, 0, 0.86)),
 		"jump_peak" = body_motion_probe_keys(body_motion_matrix(stand, 0, 4)),
-		"sneeze_east" = body_motion_probe_keys(body_motion_matrix(stand, 2, 0, 8, 0.94)))
+		"sneeze_east" = body_motion_probe_keys(body_motion_matrix(stand, 2, 0, 8, 0.94)),
+		"stealth_low" = body_motion_probe_keys(body_motion_matrix(stand, 0, -1, 0, 0.92)),
+		"crawl_pull" = body_motion_probe_keys(body_motion_matrix(lie, 1, 1)))
 	if (!text2file(json_encode(keys), "keys.json"))
 		throw EXCEPTION("render export failed: keys.json")
 

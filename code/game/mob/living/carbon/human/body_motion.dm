@@ -155,8 +155,8 @@
 // Plays a list of keys, each list(dx, dy, degrees, squash_y, time, easing),
 // from the current posture and back to it. The last key should be the rest
 // (0, 0, 0, 1). Shifts are screen pixels, turns pivot at the feet.
-/mob/living/human/proc/body_motion_play(priority, min_level, list/keys)
-	if (!keys || !keys.len || body_motion_turned() || stat == DEAD)
+/mob/living/human/proc/body_motion_play(priority, min_level, list/keys, turned_ok = FALSE)
+	if (!keys || !keys.len || (body_motion_turned() && !turned_ok) || stat == DEAD)
 		return FALSE
 	if (!body_motion_can_play(priority, min_level))
 		return FALSE
@@ -397,6 +397,11 @@
 		else
 			keys = drag ? list(list(0, -1, 0, 1, 2, QUAD_EASING | EASE_IN), list(0, 0, 0, 1, 2, QUAD_EASING | EASE_OUT)) \
 				: list(list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT), list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_IN))
+	else if (m_intent == "stealth")
+		// Sneaking: held low, squashed at the feet, rising only briefly
+		// between slow steps. 7 ds.
+		keys = list(list(0, -1, 0, 0.92, 1.5, SINE_EASING | EASE_OUT), list(0, -1, 0, 0.92, 4, LINEAR_EASING),
+			list(0, 0, 0, 1, 1.5, SINE_EASING | EASE_IN))
 	else if (m_intent == "walk")
 		keys = drag ? list(list(0, -1, 0, 1, 3, SINE_EASING | EASE_IN), list(0, 0, 0, 1, 3, SINE_EASING | EASE_OUT)) \
 			: list(list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT), list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN))
@@ -519,3 +524,18 @@
 		list(-1, 1, 0, 1, 1, LINEAR_EASING),
 		list(1, 0, 0, 1, 1, LINEAR_EASING),
 		list(0, 0, 0, 1, 0.5, LINEAR_EASING)))
+
+// Crawling prone or scrambling along the ground: one elbow pull every 6 ds
+// for the length of the crawl, 1px forward along the body with the chest
+// lifted 1px, then a slow settle. Lying bodies only; FULL only. Returns TRUE
+// when it played.
+/mob/living/human/proc/body_motion_crawl(duration)
+	if (!lying && !prone)
+		return FALSE
+	var/forward = (dir == WEST) ? -1 : 1
+	var/list/keys = list()
+	for (var/i in 1 to max(1, round(duration / 6)))
+		keys += list(list(forward, 1, 0, 1, 2, QUAD_EASING | EASE_OUT))
+		keys += list(list(0, 0, 0, 1, 3, SINE_EASING | EASE_IN))
+		keys += list(list(0, 0, 0, 1, 1, LINEAR_EASING))
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, keys, TRUE)

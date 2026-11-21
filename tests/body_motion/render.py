@@ -483,6 +483,19 @@ def main():
         ('Mild shock: jitter, 4 ds', [(south, 1, 1, repeat(jolt, 8, 4, start=2), None)], []),
     ], 26, (3, 3)), out / 'everyday.gif')
 
+    # 12. Crawling prone and sneaking.
+    for mine, name in ((matrix(0, -1, 0, squash=0.92), 'stealth_low'), (matrix(1, 1, base=lying), 'crawl_pull')):
+        assert all(abs(x - y) < 1e-3 for x, y in zip(mine, keys[name])), name
+    def crawl_track(forward):
+        return track(lying, [(matrix(forward, 1, base=lying), 2, 'quad_out'), (lying, 3, 'sine_in'), (lying, 1, 'linear')])
+    sneak = gait([(0, -1, 0, 0.92, 1.5, 'sine_out'), (0, -1, 0, 0.92, 4, 'linear'), (0, 0, 0, 1, 1.5, 'sine_in')])
+    save(panels([
+        ('Today: prone crawl slides', [(east, 1, 1, hold(lying), glide(1.5))], []),
+        ('Crawl: elbow pull every 6 ds', [(east, 1, 1, repeat(crawl_track(1), 6, 6), glide(1.5))], []),
+        ('Walk, for comparison', [(east, 1, 1, walk, glide(7))], []),
+        ('Sneak: held low, 7 ds steps', [(east, 1, 1, sneak, glide(3))], []),
+    ], 36, (4, 3)), out / 'crawl-and-sneak.gif')
+
 
 if __name__ == '__main__':
     main()

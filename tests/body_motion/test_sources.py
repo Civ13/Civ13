@@ -212,6 +212,19 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED', proc_body(MOTION, '/mob/living/human/proc/body_motion_jump('))
         self.assertIn('BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED', proc_body(MOTION, '/mob/living/human/proc/body_motion_jolt('))
 
+    def test_crawl_and_stealth(self):
+        click = read('code/_onclick/click.dm')
+        prone = proc_body(click, '/mob/proc/proning(')
+        self.assertLess(prone.index('crawling_human.body_motion_crawl(prone_delay)'), prone.index('human_subtile_crawl_move(F, prone_delay'))
+        scramble = proc_body(click, '/mob/proc/scramble(')
+        self.assertLess(scramble.index('crawling_human.body_motion_crawl(9*slowness)'), scramble.index('human_subtile_crawl_move(F, 9*slowness'))
+        crawl = proc_body(MOTION, '/mob/living/human/proc/body_motion_crawl(')
+        self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, keys, TRUE)', crawl)
+        self.assertIn('round(duration / 6)', crawl)
+        stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
+        self.assertIn('m_intent == "stealth"', stride)
+        self.assertIn('list(0, -1, 0, 0.92, 4, LINEAR_EASING)', stride)
+
 
 if __name__ == '__main__':
     unittest.main()
