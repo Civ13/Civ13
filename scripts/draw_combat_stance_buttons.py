@@ -5,9 +5,9 @@ Hand-placed pixel art: every glyph and pictogram below is a pixel map typed
 out by hand, drawn in each HUD style's own palette on that style's existing
 button frame. Nothing is generated or resampled.
 
-Adds (or redraws) six states per sheet, beside the tactic button states:
+Adds (or redraws) seven states per sheet, beside the tactic button states:
     stance_manual, stance_measured, stance_aggressive,
-    stance_disarming, stance_low, stance_guarded
+    stance_disarming, stance_low, stance_guarded, stance_restrain
 
 Run from the repository root:
     python3 scripts/draw_combat_stance_buttons.py            # write the sheets
@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from dmi import Dmi  # noqa: E402
 
 SCREEN = ROOT / "icons" / "mob" / "screen"
-STANCES = ["manual", "measured", "aggressive", "disarming", "low", "guarded"]
+STANCES = ["manual", "measured", "aggressive", "disarming", "low", "guarded", "restrain"]
 # The caption has room for six narrow letters, like the tactic button's.
 LABELS = {
     "manual": "MANUAL",
@@ -33,6 +33,7 @@ LABELS = {
     "disarming": "DISARM",
     "low": "LOW",
     "guarded": "GUARD",
+    "restrain": "RESTRN",
 }
 
 # 3x7 caption letters, matching the tactic button lettering.
@@ -48,6 +49,7 @@ FONT = {
     "O": [".#.", "#.#", "#.#", "#.#", "#.#", "#.#", ".#."],
     "R": ["##.", "#.#", "#.#", "##.", "#.#", "#.#", "#.#"],
     "S": [".##", "#..", "#..", ".#.", "..#", "..#", "##."],
+    "T": ["###", ".#.", ".#.", ".#.", ".#.", ".#.", ".#."],
     "U": ["#.#", "#.#", "#.#", "#.#", "#.#", "#.#", "###"],
     "W": ["#.#", "#.#", "#.#", "#.#", "###", "###", "#.#"],
 }
@@ -65,6 +67,7 @@ SMALL = {
     "O": [".#.", "#.#", "#.#", "#.#", ".#."],
     "R": ["##.", "#.#", "##.", "#.#", "#.#"],
     "S": [".##", "#..", ".#.", "..#", "##."],
+    "T": ["###", ".#.", ".#.", ".#.", ".#."],
     "U": ["#.#", "#.#", "#.#", "#.#", "###"],
     "W": ["#...#", "#...#", "#.#.#", "##.##", "#...#"],
 }
@@ -131,6 +134,18 @@ SHIELD = [
 ]
 
 
+CUFFS = [  # two wrist rings on a short chain
+    "..####........####..",
+    ".#++++#......#++++#.",
+    "#+....+#....#+....+#",
+    "#+....+#++++#+....+#",
+    "#+....+#....#+....+#",
+    "#+....+#....#+....+#",
+    ".#++++#......#++++#.",
+    "..####........####..",
+]
+
+
 def blank(w=20, h=15):
     return [["."] * w for _ in range(h)]
 
@@ -146,6 +161,9 @@ def pictogram(stance):
     g = blank()
     if stance == "measured":
         stamp(g, SCALES, 0, 1)
+        return g
+    if stance == "restrain":
+        stamp(g, CUFFS, 0, 4)
         return g
     if stance == "guarded":
         stamp(g, DOLL, 0, 1)
