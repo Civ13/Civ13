@@ -144,7 +144,11 @@ committed sheets, `--preview <png>` writes a review sheet):
   the held `grapnel`.
 - `icons/obj/vehicles/ship_bowsprit.dmi`: the mast's `sail0`, `sail1` and
   `sail2` as a bare spar, a furled jib and a set jib. The dir is the way the
-  spar points.
+  spar points. The cell is 96x96 with her own tile in the middle, and the
+  type's `pixel_x` and `pixel_y` of -32 centre it, so the spar stands 28
+  pixels out over the next tile in every direction. A turning hull turns
+  her dir and does not touch a structure's pixel offsets (only loose items
+  are swung, in `/obj/item/craft_turned`).
 - `icons/obj/vehicles/ship_mast_nest.dmi`: the mast's three states with a
   crow's nest at the masthead. The mast's `update_icon()` picks this file
   while `crows_nest` is set.

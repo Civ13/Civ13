@@ -1,7 +1,8 @@
 """Hand-placed 32px hopper-fed machines for icons/obj/hopper_machines.dmi:
-the mill stones (`millstones`, `millstones_on`) and the water-powered sash
-saw (`sash_saw`, `sash_saw_on`). Each has one direction; the `_on` states
-are four-frame loops.
+the mill stones (`millstones`, `millstones_on`), the water-powered sash
+saw (`sash_saw`, `sash_saw_on`), the fulling stocks (`fulling_stocks`,
+`fulling_stocks_on`) and the bark stamps (`bark_stamps`, `bark_stamps_on`).
+Each has one direction; the `_on` states are four-frame loops.
 
 The mill stones sit on a heavy timber hurst frame in 3/4 view: the grey
 runner stone on the bed stone, a staved wooden tun round the back and left
@@ -13,6 +14,17 @@ The sash saw is an upright wooden sash holding one iron blade between two
 fixed fender posts, over a long low carriage bed with a squared log fed into
 the blade from the left and a rack of logs at the back. Running, the sash and
 blade go up and down and sawdust falls below the cut.
+
+The fulling stocks are two heavy wooden hammers with notched, iron-bound
+heads hung from the head beam of a timber frame, over a plank trough (the
+stock) of wet wool cloth, with the cam shaft and its tappets along the back.
+Running, the hammers rise and fall into the trough in turn and water
+splashes where one lands.
+
+The bark stamps are three upright timber stamps with iron shoes standing in
+front of two guide rails, over a stone trough of tan bark; the cam shaft
+behind lifts each stamp by its tappet. Running, the stamps lift and drop in
+turn and bits of crushed bark jump where one lands.
 
 Palette, outline and light (from the upper left) are those of
 create_transmission.py and the prime movers in create_mechanical_power.py:
@@ -45,6 +57,13 @@ FLOUR_DUST = (244, 238, 222, 150)
 # fresh-sawn wood and the dust that falls from it
 SAWN = [(232, 200, 140, 255), (206, 170, 110, 255)]
 SAWDUST = (240, 214, 156, 255)
+# wet wool cloth in the fulling trough: light, mid, fold
+WOOL = [(232, 220, 190, 255), (198, 184, 152, 255), (144, 132, 110, 255)]
+# the water it is fulled in, and the spray a falling hammer throws up
+WATER = (120, 164, 196, 255)
+SPRAY = (214, 232, 242, 255)
+# tan bark, the browns of icons/obj/bark.dmi: light, mid, dark, shade
+BARK = [(177, 156, 140, 255), (167, 133, 118, 255), (152, 103, 93, 255), (104, 66, 56, 255)]
 
 FRAMES_ON = 4
 DELAY_ON = 1
@@ -264,6 +283,176 @@ def sash_saw(step=None):
     return f
 
 
+def back_shaft(f, y, x0=1, x1=30):
+    """The squared cam shaft along the back of a frame, iron-banded ends.
+    It lies in the shade of the frame, a tone darker than what is in front."""
+    for x in range(x0, x1 + 1):
+        f.put(x, y, TIMBER[2])
+        f.put(x, y + 1, TIMBER[3])
+        f.put(x, y + 2, TIMBER[4] if grain(x // 4, 2, 7) == 0 else TIMBER[3])
+        f.put(x, y + 3, TIMBER[4])
+    for x in (x0, x1):
+        f.vline(x, y, y + 3, IRON[1])
+        f.put(x, y, IRON[0])
+
+
+def frame_posts(f, xs, top, bottom=27):
+    """Two upright posts with a sill foot each, lit on the left."""
+    for x0 in xs:
+        f.vline(x0, top, bottom, TIMBER[1])
+        f.vline(x0 + 1, top, bottom, TIMBER[2])
+        f.vline(x0 + 2, top, bottom, TIMBER[4])
+        f.rect(x0 - 1, 28, x0 + 3, 29, TIMBER[3])
+        f.hline(x0 - 1, x0 + 3, 28, TIMBER[2])
+        f.put(x0 + 3, 29, TIMBER[4])
+
+
+# ---------------------------------------------------------- fulling stocks
+
+# how far each hammer head is lifted in the four working frames
+FULL_LIFT = ((0, -3, -5, -2), (-5, -2, 0, -3))
+
+
+def fulling_stocks(step=None):
+    """`step` None is the stocks standing with both hammers down in the
+    trough; 0-3 are the working frames."""
+    f = Frame()
+    back_shaft(f, 8)
+    frame_posts(f, (3, 26), 3)
+    # head beam the hammers hang from
+    f.rect(2, 1, 29, 3, TIMBER[1])
+    f.hline(2, 29, 1, TIMBER[0])
+    f.hline(3, 29, 3, TIMBER[3])
+    f.pts(TIMBER[4], (4, 2), (27, 2))
+    # the stock: back rim, the dark inside, wet cloth heaped along it
+    f.hline(5, 26, 18, TIMBER[2])
+    f.rect(5, 19, 26, 22, PIT)
+    for x in range(5, 27):
+        top = 20 + (grain(x // 2, 4, 3) % 2)
+        for y in range(top, 23):
+            f.put(x, y, WOOL[0] if y == top else WOOL[1])
+        if grain(x, 6, 2) < 3:
+            f.put(x, 22, WOOL[2])                 # a fold in the cloth
+    f.pts(WATER, (5, 22), (15, 22), (16, 22), (26, 22))
+    for k, sx in enumerate((10, 20)):
+        lift = 0 if step is None else FULL_LIFT[k][step]
+        # the tappet for this hammer going round on the cam shaft
+        turn = (2 * k) if step is None else (step + 2 * k) % 4
+        if turn == 0:
+            f.pts(TIMBER[3], (sx + 3, 12), (sx + 4, 12))
+        elif turn == 1:
+            f.rect(sx + 3, 9, sx + 4, 10, TIMBER[0])
+            f.pts(TIMBER[3], (sx + 4, 10))
+        elif turn == 2:
+            f.pts(TIMBER[1], (sx + 3, 7), (sx + 4, 7))
+        # the hammer: its shaft from the head beam, and the heavy head
+        hb = 22 + lift
+        f.vline(sx, 4, hb - 5, TIMBER[0])
+        f.vline(sx + 1, 4, hb - 5, TIMBER[2])
+        f.rect(sx - 3, hb - 5, sx + 4, hb - 1, TIMBER[1])
+        f.hline(sx - 3, sx + 4, hb - 5, TIMBER[0])
+        f.vline(sx + 4, hb - 4, hb - 1, TIMBER[3])
+        f.hline(sx - 2, sx + 4, hb - 1, TIMBER[2])
+        f.hline(sx - 3, sx + 4, hb - 3, IRON[1])           # the iron band
+        f.put(sx - 3, hb - 3, IRON[0])
+        for x in range(sx - 3, sx + 5):                    # the notched face
+            if (x - sx) % 3 != 2:
+                f.put(x, hb, TIMBER[4])
+    # the front of the stock: rim, planks, two iron straps
+    f.rect(4, 23, 27, 27, TIMBER[2])
+    f.hline(4, 27, 23, TIMBER[0])
+    f.hline(4, 27, 25, TIMBER[3])
+    f.hline(4, 27, 27, TIMBER[4])
+    f.vline(4, 23, 26, TIMBER[1])
+    for x in range(5, 27):
+        if grain(x // 3, 5, 8) == 0:
+            f.put(x, 26, TIMBER[3])
+    for x in (9, 22):
+        f.vline(x, 23, 27, IRON[1])
+        f.put(x, 23, IRON[0])
+    f.rect(15, 23, 16, 24, WOOL[0])               # cloth hanging over the rim
+    f.pts(WOOL[2], (16, 24))
+    f.outline()
+    f.shadow(1, 31, 30, 31)
+    # water thrown up where a hammer has just come down
+    if step == 0:
+        f.pts(SPRAY, (6, 17), (15, 16), (5, 19))
+        f.pts(WATER, (15, 18), (6, 15))
+    elif step == 2:
+        f.pts(SPRAY, (16, 16), (25, 17), (26, 19))
+        f.pts(WATER, (16, 18), (25, 15))
+    return f
+
+
+# ------------------------------------------------------------ bark stamps
+
+# a stamp's lift through one turn of its cam: resting, lifting, up, dropped
+STAMP_LIFT = (0, -2, -3, 0)
+
+
+def bark_stamps(step=None):
+    """`step` None is the stamps standing, all three down; 0-3 are the
+    working frames."""
+    f = Frame()
+    back_shaft(f, 11)
+    frame_posts(f, (2, 27), 3)
+    # the two guide rails the stamps stand against
+    for y in (5, 16):
+        f.hline(2, 29, y, TIMBER[3])
+        f.hline(2, 29, y + 1, TIMBER[4])
+    # the stone trough: back rim, the dark inside, the bark lying in it
+    f.hline(5, 26, 19, STONE[1])
+    f.rect(5, 20, 26, 22, PIT)
+    for x in range(5, 27):
+        top = 20 + (grain(x // 2, 2, 9) % 2)
+        for y in range(top, 23):
+            f.put(x, y, BARK[grain(x, y, 4) % 3 + (y > top)])
+    landed = []
+    for k, x0 in enumerate((7, 14, 21)):
+        turn = 0 if step is None else (step - k) % 4
+        lift = STAMP_LIFT[turn]
+        if turn == 3:
+            landed.append(x0)
+        # the cam coming round under the tappet
+        if turn == 0:
+            f.rect(x0 + 4, 12, x0 + 5, 13, IRON[1])
+            f.put(x0 + 4, 12, IRON[0])
+        elif turn in (1, 2):
+            f.rect(x0 + 4, 11 + lift, x0 + 5, 12, IRON[1])
+            f.vline(x0 + 4, 11 + lift, 12, IRON[0])
+        # the stamp: a squared beam, its tappet, an iron shoe
+        f.vline(x0, 3 + lift, 19 + lift, TIMBER[0])
+        f.rect(x0 + 1, 3 + lift, x0 + 2, 19 + lift, TIMBER[1])
+        f.vline(x0 + 3, 3 + lift, 19 + lift, TIMBER[3])
+        for y in range(5 + lift, 19 + lift):
+            if grain(x0, y // 3, 6) == 0:
+                f.put(x0 + 1, y, TIMBER[2])
+        f.pts(TIMBER[1], (x0 + 4, 10 + lift), (x0 + 5, 10 + lift))
+        f.put(x0 + 5, 10 + lift, TIMBER[3])
+        f.rect(x0, 20 + lift, x0 + 3, 22 + lift, IRON[1])
+        f.vline(x0, 20 + lift, 21 + lift, IRON[0])
+        f.hline(x0, x0 + 3, 22 + lift, IRON[2])
+    # the front of the trough: rim, coursed stone
+    f.rect(4, 23, 27, 27, STONE[2])
+    f.hline(4, 27, 23, STONE[0])
+    f.hline(4, 27, 27, STONE[4])
+    f.vline(4, 24, 26, STONE[1])
+    for x in range(5, 27):
+        if (x + 2) % 6 == 0:
+            f.vline(x, 24, 26, STONE[4])
+        elif grain(x, 3, 2) < 2:
+            f.put(x, 25, STONE[3])
+        elif grain(x, 7, 5) < 2:
+            f.put(x, 24, STONE[1])
+    f.outline()
+    f.shadow(1, 31, 30, 31)
+    # crushed bark thrown out where a stamp has just dropped
+    for x0 in landed:
+        f.pts(BARK[0], (x0 - 1, 18), (x0 + 5, 20))
+        f.pts(BARK[2], (x0 + 4, 17), (x0 - 2, 20), (x0 + 6, 18))
+    return f
+
+
 def states():
     """[(state, frames)] in sheet order; every state has one direction."""
     on = range(FRAMES_ON)
@@ -272,6 +461,10 @@ def states():
         ('millstones_on', [millstones(i) for i in on]),
         ('sash_saw', [sash_saw()]),
         ('sash_saw_on', [sash_saw(i) for i in on]),
+        ('fulling_stocks', [fulling_stocks()]),
+        ('fulling_stocks_on', [fulling_stocks(i) for i in on]),
+        ('bark_stamps', [bark_stamps()]),
+        ('bark_stamps_on', [bark_stamps(i) for i in on]),
     ]
 
 

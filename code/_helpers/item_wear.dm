@@ -10,6 +10,7 @@
 // - WEAR_BLOW: a parry, a block or a strike. Electroplating reduces it.
 // - WEAR_WORK: tool work such as chopping, splitting or shaping wood.
 // - WEAR_HIT: damage passed straight on, such as armour taking a hit.
+// A lacquer or varnish finish (lacquer.dm) softens wear of every cause.
 //
 // Persistence already saves health and maxhealth, so this adds no saved state.
 // Pressure suits, firearm parts, orbit pods, radio relays and the reactor keep
@@ -23,6 +24,7 @@
 /obj/item/proc/apply_wear(amount, cause = WEAR_WORK, consumed = FALSE)
 	if (cause == WEAR_BLOW)
 		amount = plating_wear(amount)
+	amount = finish_wear(amount) // lacquer.dm
 	health -= amount
 	return check_health(consumed)
 

@@ -16,6 +16,12 @@
 	name = "bowsprit"
 	desc = "A stout spar run out over a ship's bow, to carry a jib forward of her masts. Rig a sail on it to set the jib."
 	icon = 'icons/obj/vehicles/ship_bowsprit.dmi' // the mast's sail0, sail1 and sail2, as a spar and its jib
+	// A 96x96 cell with her own tile in the middle, so the spar stands out
+	// over the next tile whichever way it points. The offset centres the
+	// cell and is the same for every facing: a turning hull turns her dir
+	// (craft_turned) and leaves a structure's pixel offsets alone.
+	pixel_x = -32
+	pixel_y = -32
 	ntype = "bowsprit"
 
 // Masts are climbed and carry crow's nests; a bowsprit does neither

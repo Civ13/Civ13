@@ -91,6 +91,18 @@ var/global/weather_storm_convective = FALSE // set with weather_storm_severe
 		return list(look == "snow2" ? "rain2" : "rain1", WEATHER_WET, intensity, kind)
 	return list(look, class, intensity, kind)
 
+// What the client draws for a precipitation state: sleet and hail have their
+// own art (tests/sprites/create_weather_precip.py); everything else draws its look.
+/proc/weather_precip_draw_look(list/state)
+	if (!state || state.len < 4)
+		return state ? state[1] : null
+	switch (state[4])
+		if ("sleet")
+			return state[3] >= 2 ? "sleet2" : "sleet1"
+		if ("hail")
+			return "hail"
+	return state[1]
+
 // The kind of precipitation on A: "" when nothing falls, else "rain",
 // "drizzle", "sleet", "freezing_rain", "snow" or "hail".
 /proc/weather_precip_at(atom/A)

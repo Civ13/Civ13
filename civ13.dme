@@ -1046,6 +1046,7 @@
 #include "code\modules\1713\hydraulic_fracturing.dm"
 #include "code\modules\1713\automated_sifting.dm"
 #include "code\modules\1713\rubber_tapping.dm"
+#include "code\modules\1713\lacquer.dm"
 #include "code\modules\1713\resin.dm"
 #include "code\modules\1713\silk.dm"
 #include "code\modules\1713\steel_grades.dm"

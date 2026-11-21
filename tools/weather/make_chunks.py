@@ -24,7 +24,8 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "icons/effects/weather.dmi"
 CHUNKS = ROOT / "icons/effects/weather_chunks.dmi"
 ROOF = ROOT / "icons/effects/weather_roof.dmi"
-STATES = ("rain1", "rain2", "rain3", "monsoon", "snow1", "snow2", "snow_storm", "sandstorm")
+STATES = ("rain1", "rain2", "rain3", "monsoon", "snow1", "snow2", "snow_storm", "sandstorm",
+          "sleet1", "sleet2", "hail")
 TILES = 4
 
 
