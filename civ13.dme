@@ -991,6 +991,7 @@
 #include "code\modules\1713\canopy_shelter.dm"
 #include "code\modules\1713\cave_wheat.dm"
 #include "code\modules\1713\climate_normals.dm"
+#include "code\modules\1713\crop_frost.dm"
 #include "code\modules\1713\closets.dm"
 #include "code\modules\1713\coffee.dm"
 #include "code\modules\1713\cmss13_afterlife.dm"
