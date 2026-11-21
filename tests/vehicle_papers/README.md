@@ -52,3 +52,20 @@ light axis's sheet, and the assembled car is drawn back onto a sheet tile for
 tile.
 
     python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/sheet_probe.dm 300
+
+## Sheets built in a workshop (`sheet_works_probe.dm`)
+
+A native probe for `code/modules/craft/vehicle_sheet_works.dm`: the
+automobile workshop takes light and heavy axis sheets and the hangar plane
+sheets, each sending the other kind to the right press; a sheet costs its
+parts with the corner wheels from the wheel stock and 10 cable; an empty
+press names what it lacks, a sheet that fails its checks and a loose item in
+the bay are refused; the field car is assembled front to the north from its
+front left corner with its engine, an empty tank, four wheels and a key, the
+stock is spent and the car draws back onto its sheet tile for tile; a tank
+sheet needs Mechanized Warfare and is built with its turret; the hangar
+builds the light plane sheet and the helicopter (Rocketry, 7x7, empty tank,
+key); a sheet press holds 1000 steel and the shipyard office the carrier's
+400.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/sheet_works_probe.dm 300

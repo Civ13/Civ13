@@ -1562,6 +1562,7 @@ RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,
 RECIPE: /material/glass/,casement window,/obj/structure/simple_door/key_door/anyone/casement,4,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pound lock,/obj/structure/canal_lock,12,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,dock gate,/obj/structure/canal_lock/dock_gate,24,300,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,yard office,/obj/structure/yard_office,30,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,clay tablet,/obj/item/weapon/paper/clay_tablet,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,reed stylus,/obj/item/weapon/pen/stylus,1,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,senet board,/obj/item/game_board/senet,3,100,0,1,construction,0,0,0,8,null

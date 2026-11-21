@@ -36,6 +36,7 @@ Everything that asks about the weather asks for a tile:
 | `weather_intensity_at(atom)` | 0 in clear weather, 1 to 3 otherwise |
 | `weather_heat_at(atom)` | TRUE under a heat system |
 | `weather_precip_at(atom)` | the kind: rain, drizzle, sleet, freezing rain, snow or hail ([weather-precip.md](weather-precip.md)) |
+| `weather_fog_level(atom)` | `""`, `"mist"` or `"fog"`; also `weather_fog_at`, `weather_dew_at`, `weather_frost_at` ([weather-fog.md](weather-fog.md)) |
 | `weather_wind_at(atom)` | wind strength 0 to 4 from the local wind ([weather-wind.md](weather-wind.md)), raised under a storm |
 | `weather_anywhere()` | cheap gate: any storm or pinned zone weather at all |
 

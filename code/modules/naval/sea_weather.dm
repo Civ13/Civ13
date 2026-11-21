@@ -13,6 +13,8 @@
 #define SEA_MURK_WET 10
 #define SEA_MURK_SMOG 20
 #define SEA_MURK_EXTREME 25
+#define SEA_MURK_MIST 15
+#define SEA_MURK_FOG 25
 #define SEA_LOOKOUT_FLOOR 5
 #define SEA_DARK_NIGHT_RANGE 10
 
@@ -30,6 +32,12 @@
 				. += SEA_MURK_SMOG
 			if (WEATHER_EXTREME)
 				. += SEA_MURK_EXTREME
+		// Fog and mist (weather_fog.dm) on top of whatever falls.
+		switch (weather_fog_level(T))
+			if ("fog")
+				. += SEA_MURK_FOG
+			if ("mist")
+				. += SEA_MURK_MIST
 	var/datum/chart/sea/S = sea_charts["[T.z]"]
 	if (S && S.hazards.len)
 		var/list/at = S.chart_position(T)
@@ -55,6 +63,9 @@
 				return "smog"
 			if (WEATHER_EXTREME)
 				return "a storm"
+		var/fog = weather_fog_level(T)
+		if (fog)
+			return fog
 	return null
 
 /proc/sea_night()

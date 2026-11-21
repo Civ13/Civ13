@@ -21,6 +21,9 @@
 	switch (model)
 		if ("Cabin plane", "Cargo plane", "Twin-engine plane", "Airliner")
 			return "aviation_rocketry"
+		// A turboshaft helicopter (helicopter.dm) is a 1950s machine.
+		if ("Helicopter")
+			return "rocketry"
 	return "powered_flight"
 
 /obj/structure/car_workshop/hangar/model_missing_research(mob/living/human/H, model)
@@ -57,12 +60,17 @@
 			return list("aluminium" = 64, "steel" = 26, "glass" = 8, "cloth" = 6, "cable" = 14, "wheels" = 4)
 		if ("Airliner")
 			return list("aluminium" = 90, "steel" = 26, "glass" = 14, "cloth" = 12, "cable" = 16, "wheels" = 4)
+		// The four "wheels" are its skids.
+		if ("Helicopter")
+			return list("aluminium" = 80, "steel" = 34, "glass" = 12, "cloth" = 8, "cable" = 20, "wheels" = 4)
 	return list("wood" = 40, "steel" = 10, "glass" = 6, "cloth" = 8, "cable" = 8, "wheels" = 4)
 
 /obj/structure/car_workshop/hangar/menu_text()
-	return "Stored: [stock["wood"] || 0] wood, [stock["aluminium"] || 0] aluminium, [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Costs are airframe/steel/glass/cloth/cable/wheels. Wooden airframes: the light plane (2 seats) costs 40 wood/10/6/8/8/4; the trainer (2 seats, 3x3) costs 28 wood/8/4/6/6/4 and lifts off soonest. Aluminium airframes: the cabin plane (4 seats) costs 48 aluminium/16/8/8/8/4 and needs a slightly longer roll; the cargo plane (pilot and three cargo bays) costs 44 aluminium/16/6/2/8/4; the twin-engine plane (4 seats, two engines) costs 64 aluminium/26/8/6/14/4 and needs the 5x5 square northeast of the press clear; the airliner (pilot and six cabin seats either side of an aisle, two engines) costs 90 aluminium/26/14/12/16/4 and needs a 6x6 square clear. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
+	return "Stored: [stock["wood"] || 0] wood, [stock["aluminium"] || 0] aluminium, [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Costs are airframe/steel/glass/cloth/cable/wheels. Wooden airframes: the light plane (2 seats) costs 40 wood/10/6/8/8/4; the trainer (2 seats, 3x3) costs 28 wood/8/4/6/6/4 and lifts off soonest. Aluminium airframes: the cabin plane (4 seats) costs 48 aluminium/16/8/8/8/4 and needs a slightly longer roll; the cargo plane (pilot and three cargo bays) costs 44 aluminium/16/6/2/8/4; the twin-engine plane (4 seats, two engines) costs 64 aluminium/26/8/6/14/4 and needs the 5x5 square northeast of the press clear; the airliner (pilot and six cabin seats either side of an aisle, two engines) costs 90 aluminium/26/14/12/16/4 and needs a 6x6 square clear; the helicopter (pilot, co-pilot and five cabin seats, a turboshaft engine burning diesel) costs 80 aluminium/34/12/8/20/4, needs Rocketry research and a 7x7 square clear. Use a plane vehicle sheet on the press to build its design; the bay it needs depends on the sheet. Keep the northeast 4x4 bay empty; the plane needs a long clear roll to take off, shorter on a runway. Taxi a landed plane into the bay to hangar it."
 
 /obj/structure/car_workshop/hangar/assembled_message(model)
+	if (model == "Helicopter")
+		return "Your helicopter is assembled. Fill its tank with diesel and start the engine. Climb spools the rotor up and lifts it straight up; it needs no runway, and Descend close to the ground at low speed sets it down on any dry, fairly level ground."
 	var/obj/structure/vehicleparts/axis/aircraft/kind = aircraft_models()[model]
 	return "Your [model] is assembled. Fill its tank with gasoline and taxi it like a car. To take off, roll at full throttle along [initial(kind.takeoff_roll)] tiles of runway, or press Climb first and roll [initial(kind.rough_takeoff_roll)] tiles of open ground."
 
