@@ -14,7 +14,7 @@
 //
 // Nothing here sleeps except the prompts, which recheck after.
 
-#define GOVERNMENT_TYPES list("confederation", "theocracy", "monarchy", "dictatorship", "republic", "democracy", "league")
+#define GOVERNMENT_TYPES list("confederation", "elders", "theocracy", "monarchy", "dictatorship", "republic", "democracy", "league", "feudal", "constitutional", "oneparty")
 
 // Type -> name, ruler title, earliest ordinal age, extra factions, notice
 // hours and what the type means for players. Mirrors GOVERNMENTS in
@@ -26,7 +26,16 @@ var/global/list/nation_government_info = list(
 	"dictatorship" = list("Dictatorship", "Dictator", 1, 2, 72, "A dictator rules alone and holds two more factions, but if the dictator's faction leaves, the nation falls back to a confederation. Members give three days' notice to leave."),
 	"republic" = list("Republic", "Consul", 1, 1, 24, "A consul leads; the member factions still vote on admissions, money and changes. Holds one more faction."),
 	"democracy" = list("Democracy", "Archon", 1, 0, 24, "An archon leads; the member factions still vote on admissions, money and changes."),
-	"league" = list("Merchant league", "Doge", 2, 1, 24, "A doge leads a league of trading factions. Holds one more faction."))
+	"league" = list("Merchant league", "Doge", 2, 1, 24, "A doge leads a league of trading factions. Holds one more faction."),
+	"elders" = list("Council of elders", "Eldest", 0, 0, 24, "The member factions' elders sit in council, weighted by their people, and choose an eldest to lead for two weeks. The eldest may be away a week before a new choice. Members give a day's notice to leave."),
+	"feudal" = list("Feudal crown", "King", 2, 1, 48, "A king rules for life, names an heir and holds one more faction. The crown keeps up to eight vassal nations, which must serve four weeks before they may declare independence, but it is a little easier to overthrow. Members give two days' notice to leave."),
+	"constitutional" = list("Constitutional monarchy", "Prime Minister", 4, 2, 24, "A parliament weighted by the people decides, and a prime minister leads for two weeks. Holds two more factions and is hard to overthrow, but the prime minister may be away only three days."),
+	"oneparty" = list("One-party state", "Chairman", 7, 3, 72, "A chairman rules alone and holds three more factions, but a revolt needs only a quarter of the citizens to sign. If the chairman is away three days the seat goes empty until the factions choose again. Members give three days' notice to leave."))
+
+// TRUE when the government's head names an heir and an empty seat can be claimed
+// (HEREDITARY in nation_succession.py).
+/proc/nation_hereditary(list/G)
+	return islist(G) && (G["type"] in list("monarchy", "feudal"))
 
 /proc/nation_government_of(nid)
 	var/list/N = nation_registry[nid]
@@ -66,7 +75,7 @@ var/global/list/nation_government_info = list(
 		line += ", the seat empty"
 	var/list/S = G["successor"]
 	if (islist(S) && istext(S["name"]))
-		line += " ([G["type"] == "monarchy" ? "heir" : "deputy"]: [html_encode(S["name"])])"
+		line += " ([nation_hereditary(G) ? "heir" : "deputy"]: [html_encode(S["name"])])"
 	var/list/P = G["pending"]
 	if (islist(P) && istext(P["name"]))
 		line += ". Becoming a [html_encode(lowertext(P["name"]))][istext(P["pname"]) && length(P["pname"]) ? " under [html_encode(P["pname"])]" : ""] within a day"
@@ -404,7 +413,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 // The monarch names an heir; the consul names a deputy. Sleeps (prompts).
 /mob/living/human/proc/nation_name_successor(faction, id, nid)
 	var/list/G = nation_government_of(nid)
-	var/what = G["type"] == "monarchy" ? "heir" : "deputy"
+	var/what = nation_hereditary(G) ? "heir" : "deputy"
 	var/list/S = G["successor"]
 	var/current = islist(S) && istext(S["name"]) ? " Now: [S["name"]]." : ""
 	to_chat(src, SPAN_NOTICE("[what == "heir" ? "Your heir takes the throne if you are away for [G["away"]] days." : "Your deputy acts for you if you are away for [G["away"]] days, while the citizens elect a new consul."][current]"))
@@ -446,7 +455,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	if (!nid)
 		return FALSE
 	var/list/G = nation_government_of(nid)
-	if (G["type"] != "monarchy" || istext(G["head_account"]))
+	if (!nation_hereditary(G) || istext(G["head_account"]))
 		return FALSE
 	if (nation_hold_busy(nid))
 		return TRUE
@@ -502,7 +511,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 /proc/nation_hold_valid(nid, kind, mob/living/human/holder)
 	var/list/G = nation_government_of(nid)
 	if (kind == "claim")
-		return G["type"] == "monarchy" && !istext(G["head_account"])
+		return nation_hereditary(G) && !istext(G["head_account"])
 	var/list/R = nation_revolt_of(nid)
 	return R && isnum(R["ripe"]) && nation_unix_now() <= R["ends"] && nation_revolt_signed(nid, holder.nation_account())
 
