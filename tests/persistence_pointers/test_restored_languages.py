@@ -37,7 +37,9 @@ class LanguageLearning(unittest.TestCase):
     def test_knows_language_matches_copies(self):
         body = section(LANG, '/mob/proc/knows_language(', '/mob/proc/canonicalize_languages()')
         self.assertIn('canonical_language(L)', body)
-        self.assertIn('known.type == L.type', body)
+        self.assertIn('language_same(known, L)', body)
+        same = section((ROOT / 'code/game/mob/language/daughter.dm').read_text(), '/proc/language_same(', '/proc/language_kinship(')
+        self.assertIn('return A.type == B.type', same)
 
     def test_add_language_rejects_known_copies(self):
         body = section(LANG, '/mob/proc/add_language(', '/mob/proc/remove_language(')

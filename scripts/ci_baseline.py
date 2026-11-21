@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'npc_cover_direction': {'files': ('tests/npc_cover/test_direction_projection.py',),
+        'paths': ('tests/npc_cover/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',)},
     'bottle_alcohol_power': {'files': ('tests/bottle_alcohol_power/test_alcohol_power.py',),
         'paths': ('tests/bottle_alcohol_power/', 'code/modules/reagents/reagent_containers/food/drinks/bottle.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -575,6 +578,11 @@ SUITES = {
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/punch_injury.dm',
                          'code/game/mob/living/carbon/human/human_defines.dm')},
+    # Martial schools: era coverage, research nodes, rank defines, travel hooks.
+    'martial_schools': {'files': ('tests/martial_schools/test_sources.py',),
+        'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm', 'code/__defines/martial.dm'),
+        'shared_paths': ('code/modules/research_tree/research_node.dm',
+                         'code/modules/persistence/region_travel.dm')},
     # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.
     'punch_injury': {'files': ('tests/punch_injury/test_sources.py',),
         'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),
@@ -1843,7 +1851,16 @@ SUITES = {
             'code/modules/client/player_tutorial.dm', 'code/modules/naval/ship_voyage.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_travel.dm',
             'code/modules/research_tree/character_knowledge.dm', 'code/modules/research_tree/research_faction.dm',
-            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm')},
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm',
+            'code/game/objects/items/cartography_notes.dm', 'code/modules/research_tree/book_research.dm',
+            'code/modules/1713/book.dm', 'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/structures/blacksmithing/refining.dm', 'code/modules/1713/tatara.dm',
+            'code/modules/research_tree/field_work.dm', 'code/modules/1713/domestication.dm',
+            'code/modules/1713/complex_animal/_backend.dm', 'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/helicopter.dm',
+            'code/game/mob/groups/faction_creation.dm', 'code/modules/provinces/province_siege.dm',
+            'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
@@ -2573,7 +2590,7 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py'), 'paths': (
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py', 'tests/divine_approval/test_arcane_devotion.py'), 'paths': (
         'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/divine_repositories.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (

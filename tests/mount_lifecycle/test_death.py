@@ -272,7 +272,8 @@ class CorpseTests(unittest.TestCase):
                    istype=lambda value, kind: False, ishuman=lambda value: False,
                    walk=lambda target, direction: trace.append(('walk', direction)),
                    delayed_decay=lambda target, timer: trace.append(('decay', timer)),
-                   wildlife_deaths=N(record=lambda target: trace.append('tally')))
+                   wildlife_deaths=N(record=lambda target: trace.append('tally')),
+                   accolade_animal_killed=lambda target: None)  # accolades.dm
         return animal, project('/death()\n' + body + '\n', '/death', 'src', env)
 
     def test_first_death_schedules_one_decay(self):

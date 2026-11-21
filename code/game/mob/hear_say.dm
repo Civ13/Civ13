@@ -404,14 +404,12 @@
 	. = 0
 	var/best_language = null
 	for (var/datum/language/L in languages)
-		if (L.mutual_intelligibility.Find(reference.type))
-			var/_new = L.mutual_intelligibility[reference.type]
-			if (_new > .)
-				. = _new
-				best_language = L
+		var/_new = language_kinship(L, reference)
+		if (_new > .)
+			. = _new
+			best_language = L
 	for (var/datum/language/L in languages)
 		if (L != best_language)
-			if (L.mutual_intelligibility.Find(reference.type))
-				. += L.mutual_intelligibility[reference.type]/5
+			. += language_kinship(L, reference)/5
 	. = round(.)
 	return .

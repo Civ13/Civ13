@@ -47,6 +47,7 @@ var/global/list/ship_designer_sprites = list(
 	"shipd_piece_G.png" = 'icons/ship_designer/piece_G.png',
 	"shipd_piece_C.png" = 'icons/ship_designer/piece_C.png',
 	"shipd_piece_B.png" = 'icons/ship_designer/piece_B.png',
+	"shipd_piece_N.png" = 'icons/ship_designer/piece_N.png',
 	"shipd_piece_Q.png" = 'icons/ship_designer/piece_Q.png',
 	"shipd_piece_U.png" = 'icons/ship_designer/piece_U.png',
 	"shipd_piece_E.png" = 'icons/ship_designer/piece_E.png',
@@ -251,7 +252,7 @@ var/global/list/ship_designer_sprites = list(
 // Which heading of the window's palette each piece is drawn under. A piece
 // in none of them goes under "Other", so a new piece still shows.
 var/global/list/ship_designer_groups = list(
-	"Steering and drive" = list("O", "T", "M", "R", "E"),
+	"Steering and drive" = list("O", "T", "M", "N", "R", "E"),
 	"Gear" = list("K", "A", "P", "Q", "U", "C", "B"),
 	"Arms" = list("H", "Z", "L"),
 	"Cabin" = list("W", "D", "G", "V", "I"),
@@ -503,7 +504,7 @@ floorAt(g,c[0],px,py,Z);if(c[1]){pieceAt(g,c[1],c[2],px,py,Z);if(turns(c[1]))arr
 outline(cells,INK);}
 var nc=0;for(k in cells)nc++;
 if(!lv&&nc>SMALL){g.strokeStyle='#e0b25c';g.lineWidth=Math.max(2,Math.round(Z/6));var r=g.lineWidth/2+1;g.beginPath();
-for(k in cells){c=cells[k];if(c[1]=='W'||c[1]=='D'||c[1]=='G')continue;p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
+for(k in cells){c=cells[k];if('WDGVI'.indexOf(c[1]||'-')>=0)continue;p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
 if(!cells[key(x+1,y)]&&!(c[1]=='Y'&&c[2]==4)){g.moveTo(px+Z-r,py);g.lineTo(px+Z-r,py+Z);}if(!cells[key(x-1,y)]&&!(c[1]=='Y'&&c[2]==8)){g.moveTo(px+r,py);g.lineTo(px+r,py+Z);}
 if(!cells[key(x,y+1)]&&!(c[1]=='Y'&&c[2]==1)){g.moveTo(px,py+r);g.lineTo(px+Z,py+r);}if(!cells[key(x,y-1)]&&!(c[1]=='Y'&&c[2]==2)){g.moveTo(px,py+Z-r);g.lineTo(px+Z,py+Z-r);}}
 g.stroke();}

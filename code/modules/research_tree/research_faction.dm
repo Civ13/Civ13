@@ -283,6 +283,7 @@
 		if (new_year)
 			age = new_year
 		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> by the [faction] sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+		language_era_advanced()
 	else
 		for (var/mob/living/human/M in human_mob_list)
 			if (M.client && M.civilization == faction)
