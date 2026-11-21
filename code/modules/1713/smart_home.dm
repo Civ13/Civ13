@@ -27,7 +27,7 @@ var/global/list/smart_hubs = list()
 	return FALSE
 
 /obj/structure/smart_power_cut()
-	return smart_off && smart_hub_id
+	return (smart_off && smart_hub_id) || mechanism_relay_open_on(loc)
 
 // What a hub can do with this structure: "light", "lock", "plug" or null.
 /obj/structure/proc/smart_kind()
