@@ -81,7 +81,7 @@
 	// Existing home-bed respawns are distinct from first starts, just as saved
 	// body reclaim is. Match the established region_home_bed_spawn contract.
 	if (region_home_enabled() && lobby.client && !IsGuestKey(lobby.client.key))
-		var/obj/structure/bed/B = region_home_bed(lobby.client.ckey)
+		var/obj/structure/bed/B = region_home_bed(lobby.client.owner_key())
 		if (B && B.valid_character_bed(null))
 			return get_turf(B)
 	// An account in its first two days starts near people (newcomer_start.dm).

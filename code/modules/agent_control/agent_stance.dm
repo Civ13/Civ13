@@ -1,14 +1,15 @@
 // HUD toggles for agent characters (docs/agent-control.md#stance).
 //
 // Players set these with HUD buttons an agent character has no screen for:
-// movement mode (run, walk, sneak, crawl), dodge or parry, combat tactic, the
-// middle-click attack (kick, jump, bite), fixed facing and gun aim mode. The
+// movement mode (run, walk, sneak, crawl), dodge or parry, combat tactic, combat
+// stance (combat_stance.dm), the middle-click attack (kick, jump, bite), fixed facing and gun aim mode. The
 // stance action sets them the way the matching button does, and
 // character_state reports them.
 
 /proc/agent_stance_row(mob/living/M)
 	var/list/out = list("move" = M.m_intent, "defense" = M.defense_intent, "secondary" = M.middle_click_intent, "face_lock" = M.facing_dir ? TRUE : FALSE)
 	out["tactic"] = M.tactic
+	out["combat"] = M.combat_stance
 	if (M.aiming)
 		out["aim"] = M.aiming.active ? TRUE : FALSE
 	return out
@@ -58,6 +59,12 @@
 			agent_fail("bad_args", "tactic must be charge, aim, rush or defend")
 		M.tactic = tactic
 		done += "tactic [tactic]"
+	if (!isnull(req["combat"]))
+		var/combat = lowertext("[req["combat"]]")
+		if (!valid_combat_stance(combat))
+			agent_fail("bad_args", "combat must be manual, measured, aggressive, disarming, low, guarded or restrain")
+		M.set_combat_stance(combat, TRUE)
+		done += "combat [combat]"
 	if (!isnull(req["secondary"]))
 		var/secondary = lowertext("[req["secondary"]]")
 		if (!(secondary in list("kick", "jump", "bite")))
@@ -76,7 +83,7 @@
 		M.aiming.toggle_active(aim)
 		done += "aim [aim ? "on" : "off"]"
 	if (!done.len)
-		agent_fail("bad_args", "stance takes move, defense, tactic, secondary, face_lock or aim")
+		agent_fail("bad_args", "stance takes move, defense, tactic, combat, secondary, face_lock or aim")
 	return jointext(done, ", ")
 
 // Equip the held item into a named slot, as dragging it onto that inventory slot does.

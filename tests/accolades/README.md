@@ -14,5 +14,6 @@ The ledger on the pinned engine, without a client (local records mode):
 - Lands are recorded once each; three meet Wanderer.
 - Guests, host agents and worlds that keep no characters (and the battle
   world) earn nothing, except First Steps from the tutorial.
+- Owner keys: a second character earns for the same person.
 - Character progress is cleaned, a year is four temperate or both tropical
   seasons, and progress travels with the character.

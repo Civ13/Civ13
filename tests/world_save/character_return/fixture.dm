@@ -48,6 +48,8 @@ var/turf/return_origin
 	var/transfers = 0
 /datum/character_return_client/proc/quickBan_isbanned(kind)
 	return FALSE
+/datum/character_return_client/proc/owner_key()
+	return ckey
 /proc/character_return_transfer(datum/character_return_client/C, mob/living/human/H)
 	if(character_return_refuse_handoff) return
 	C.transfers++

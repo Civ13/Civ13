@@ -97,7 +97,7 @@ var/global/list/nation_assembly_tiers = list(
 		return null
 	for (var/client/C in clients)
 		var/mob/living/human/H = C.mob
-		if (C.ckey == actor || (istype(H) && H.persistence_owner_ckey == actor))
+		if (C.ckey == actor || (istype(H) && owner_key_account(H.persistence_owner_ckey) == actor))
 			return C.mob
 	return null
 

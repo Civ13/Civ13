@@ -530,6 +530,10 @@
 		if ((player_input(user, "Are you sure you want to empty the [src]?", "[src]", null, "anything", list ("Yes", "No"), FALSE)) == "Yes")
 			cont = TRUE
 
+	// The prompt waits on the player: only empty a magazine they still hold.
+	if (cont && (QDELETED(src) || user.stat || (user.l_hand != src && user.r_hand != src)))
+		cont = FALSE
+
 	if (cont)
 		var/turf/T = get_turf(src)
 		// so people know who to lynch
