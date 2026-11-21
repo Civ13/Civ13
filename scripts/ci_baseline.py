@@ -2636,6 +2636,10 @@ SUITES = {
     'cpr_cycle_credit': {'files': ('tests/cpr_cycle_credit/test_credit_order.py',), 'paths': (
         'tests/cpr_cycle_credit/',),
         'shared_paths': ('code/game/mob/living/carbon/human/resuscitation.dm',)},
+    # Emptying a magazine rechecks the player still holds it after the prompt.
+    'magazine_empty': {'files': ('tests/magazine_empty/test_held_recheck.py',), 'paths': (
+        'tests/magazine_empty/',),
+        'shared_paths': ('code/modules/projectiles/ammunition.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
