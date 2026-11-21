@@ -1440,11 +1440,13 @@
             }
         }
 
-        // On-device chat translation (docs/chat-translation.md). Every new
-        // line in another language is translated into the reader's language
-        // (English unless they pick another) using only the browser's built-in
-        // Translator and LanguageDetector. Nothing is sent anywhere, the
-        // original stays on screen, and restored history is never translated.
+        // Chat translation (docs/chat-translation.md). Every new line in
+        // another language is translated into the reader's language (English
+        // unless they pick another). When the game server offers translation
+        // (setTranslateServer), the line's text goes back to that server, which
+        // already sent it; otherwise the browser's built-in Translator and
+        // LanguageDetector are used and nothing leaves this computer. The
+        // original stays on screen and restored history is never translated.
         const TRANSLATE_KEY = 'civ13-chat-translate-v1';
         const TRANSLATE_LANGS = [
             ['en', 'English'], ['es', 'Spanish'], ['pt', 'Portuguese'], ['fr', 'French'], ['de', 'German'],
@@ -1469,6 +1471,10 @@
         const pairStates = {};
         const pairPrompted = {};
         let unsupportedPair = '';
+        const SERVER_TRANSLATE_TIMEOUT_MS = 20000;
+        let serverTranslate = false;
+        let serverTranslateSeq = 0;
+        const serverTranslatePending = {};
 
         function loadTranslatePrefs() {
             const prefs = { enabled: true, lang: 'en' };
@@ -1525,7 +1531,7 @@
         }
 
         function queueTranslation(div, type) {
-            if (!translatePrefs.enabled || !translateApi) return;
+            if (!translatePrefs.enabled || !(translateApi || serverTranslate)) return;
             const text = translationSource(div, type);
             if (!text || text.length > TRANSLATE_MAX_CHARS || !/[A-Za-zÀ-￿]/.test(text)) return;
             // Under a burst, drop the oldest waiting line rather than fall behind.
@@ -1634,7 +1640,41 @@
             job.div.appendChild(box);
         }
 
+        // The server answers every request with receiveTranslation(id, source,
+        // text); text is empty when the line needs no translation or the
+        // server could not translate it, so the next line is not held up.
+        function chatSendTranslate(id, lang, text) {
+            window.location.href = 'byond://?chat_translate=' + id + '&lang=' + encodeURIComponent(lang) + '&text=' + encodeURIComponent(text);
+        }
+
+        function receiveTranslation(id, source, text) {
+            const pending = serverTranslatePending[id];
+            if (!pending) return;
+            delete serverTranslatePending[id];
+            pending({ source: String(source || ''), text: String(text || '').trim() });
+        }
+
+        function setTranslateServer(on) {
+            serverTranslate = String(on) === '1';
+            updateTranslateStatus();
+        }
+
+        async function serverTranslateJob(job) {
+            const target = translatePrefs.lang;
+            const id = ++serverTranslateSeq;
+            const answer = new Promise(function (resolve) { serverTranslatePending[id] = resolve; });
+            window.chatSendTranslate(id, target, job.text);
+            let out;
+            try {
+                out = await withTimeout(answer, SERVER_TRANSLATE_TIMEOUT_MS);
+            } finally {
+                delete serverTranslatePending[id];
+            }
+            if (stillWanted(job) && target === translatePrefs.lang && out.text && out.source !== target && out.text !== job.text) showTranslation(job.div, out.source, out.text);
+        }
+
         async function translateJob(job) {
+            if (serverTranslate) return serverTranslateJob(job);
             const target = translatePrefs.lang;
             const source = await detectLanguage(job.text);
             if (!source || source === target || !stillWanted(job)) return;
@@ -1676,10 +1716,12 @@
             const setup = document.getElementById('chat-translate-setup');
             if (!status) return;
             setup.hidden = true;
-            if (!translateApi || !detectApi) {
-                status.textContent = 'This game window cannot translate chat yet. Chat is shown as written.';
-            } else if (!translatePrefs.enabled) {
+            if (!translatePrefs.enabled) {
                 status.textContent = 'Off. Chat is shown as written.';
+            } else if (serverTranslate) {
+                status.textContent = 'Lines in other languages appear in ' + langName(translatePrefs.lang) + ' under the original. The game server translates them.';
+            } else if (!translateApi || !detectApi) {
+                status.textContent = 'This game window cannot translate chat yet. Chat is shown as written.';
             } else if (detectorState === 'downloadable' || detectorState === 'downloading') {
                 status.textContent = 'Language detection needs a one-time download before chat can be translated.';
                 setup.hidden = false;
@@ -1812,6 +1854,9 @@
         }
 
         window.chatSendPing = chatSendPing;
+        window.chatSendTranslate = chatSendTranslate;
+        window.receiveTranslation = receiveTranslation;
+        window.setTranslateServer = setTranslateServer;
         window.chatSendReady = chatSendReady;
         window.chatPong = heardFromServer;
         window.startChatHeartbeat = startHeartbeat;

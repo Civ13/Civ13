@@ -250,7 +250,7 @@ How to play:
 - Hold an item and {"do": "equip"} to wear it or put it on your belt or back; add "slot": back|belt|head|suit|uniform|shoes|
   gloves|mask|eyes|shoulder|l_store|r_store to put it in that slot.
 - Stance: {"do": "stance", "move": run|walk|sneak|crawl, "defense": dodge|parry, "tactic": charge|aim|rush|defend,
-  "secondary": kick|jump|bite, "face_lock": true|false, "aim": true|false} sets the HUD toggles (any of them at once).
+  "combat": manual|measured|aggressive|disarming|low|guarded|restrain, "secondary": kick|jump|bite, "face_lock": true|false, "aim": true|false} sets the HUD toggles (any of them at once).
   Run to travel, walk to save stamina, sneak or crawl to hide, parry with a weapon, dodge without one.
 - Vehicles: sit in a driver's seat (drag yourself onto it) to drive a car, tank or aircraft. {"do": "drive", "control":
   gear_up|gear_down|forward|reverse|turn_left|turn_right|climb|descend} presses the seat's button: gear_up starts the engine,
@@ -1097,7 +1097,8 @@ def parse_decision(text, refs):
         return args
     if action == "stance":
         allowed = {"move": ("run", "walk", "sneak", "crawl"), "defense": ("dodge", "parry"),
-                   "tactic": ("charge", "aim", "rush", "defend"), "secondary": ("kick", "jump", "bite")}
+                   "tactic": ("charge", "aim", "rush", "defend"), "secondary": ("kick", "jump", "bite"),
+                   "combat": ("manual", "measured", "aggressive", "disarming", "low", "guarded", "restrain")}
         for key, values in allowed.items():
             value = str(data.get(key, "")).strip().lower()
             if value:

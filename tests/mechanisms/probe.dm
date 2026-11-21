@@ -347,6 +347,50 @@ var/mechanisms_runtime = null
 	for (var/state in list("millstones", "millstones_on", "sash_saw", "sash_saw_on"))
 		mechanisms_assert(state in icon_states('icons/obj/hopper_machines.dmi'), "icon_[state]")
 
+	// Contraptions (contraptions.dm): a counterweight drum drives while its
+	// weight falls and a cord can brake it; a stationary steam engine runs on
+	// its fuel; a driven cam drum pulls its cords in turn.
+	var/obj/structure/workshop_machine/mover/counterweight/weight = new(locate(10, 3, 2))
+	var/obj/structure/workshop_machine/potters_wheel/weight_wheel = new(locate(11, 3, 2))
+	mechanisms_assert(mechanical_drive_factor(weight_wheel) == 1, "unwound_weight_drives_nothing")
+	weight.add_fall(3000)
+	mechanisms_assert(abs(mechanical_drive_factor(weight_wheel) - 0.6) < 0.001, "falling_weight_drives")
+	mechanisms_assert(mechanism_actuatable(weight) && mechanism_actuate(weight, FALSE) && !weight.released, "cord_brakes_weight")
+	mechanisms_assert(mechanical_drive_factor(weight_wheel) == 1 && weight.fall_left() == 3000, "brake_holds_the_fall")
+	mechanism_actuate(weight, TRUE)
+	var/obj/structure/mechanism/cam_drum/cam = new(locate(9, 3, 2))
+	var/obj/structure/bell/cam_bell1 = new(locate(9, 6, 2))
+	var/obj/structure/bell/cam_bell2 = new(locate(7, 3, 2))
+	cam.links = "0,3;-2,0"
+	cam_bell1.next_ring = 0
+	cam_bell2.next_ring = 0
+	mechanisms_assert(cam.cam_step() && cam_bell1.next_ring > world.time && cam_bell2.next_ring == 0, "cam_pulls_first_cord")
+	mechanisms_assert(cam.next_cam == world.time + 160, "cam_pace_follows_the_drive")
+	mechanisms_assert(cam.cam_step() && cam_bell2.next_ring > world.time, "cam_pulls_next_cord")
+	weight.released_at = world.time - 3001
+	cam_bell1.next_ring = 0
+	mechanisms_assert(!cam.cam_step() && cam_bell1.next_ring == 0 && mechanical_drive_factor(weight_wheel) == 1, "weight_down_stops_all")
+	var/obj/structure/workshop_machine/mover/steam_engine/engine = new(locate(13, 5, 2))
+	var/obj/structure/workshop_machine/potters_wheel/engine_wheel = new(locate(14, 5, 2))
+	mechanisms_assert(mechanical_drive_factor(engine_wheel) == 1, "cold_engine_drives_nothing")
+	var/mob/living/human/stoker = mechanisms_actor(13, 4, "Stoker")
+	stoker.forceMove(locate(13, 4, 2))
+	var/obj/item/stack/material/wood/fuel_logs = new(locate(13, 4, 2), 5)
+	mechanisms_hands(stoker, fuel_logs)
+	engine.attackby(fuel_logs, stoker)
+	mechanisms_assert(engine.fuel == 5 && abs(mechanical_drive_factor(engine_wheel) - 0.35) < 0.001, "stoked_engine_drives")
+	engine.last_burn = world.time - 1200
+	engine.burn()
+	mechanisms_assert(abs(engine.fuel - 3) < 0.01, "engine_burns_a_minute_a_minute")
+	// Stoking with wood must not runtime on a machine with no ash account.
+	var/obj/structure/workshop_machine/trip_hammer/steam/hammer = new(locate(15, 3, 2))
+	var/obj/item/stack/material/wood/hammer_logs = new(locate(13, 4, 2), 2)
+	mechanisms_hands(stoker, hammer_logs)
+	hammer.attackby(hammer_logs, stoker)
+	mechanisms_assert(hammer.fuel == 2 && !mechanisms_runtime, "steam_hammer_takes_wood")
+	for (var/state in list("counterweight", "counterweight_on", "cam_drum", "cam_drum_on", "steam_engine", "steam_engine_on"))
+		mechanisms_assert(state in icon_states('icons/obj/contraptions.dmi'), "icon_[state]")
+
 	// The new art is in the icon file.
 	var/list/states = icon_states('icons/obj/mechanisms.dmi')
 	for (var/state in list("lever", "lever_pulled", "pull_cord", "pull_cord_pulled", "pressure_plate", "pressure_plate_pressed", "rock_drop", "rock_drop_empty", "pulley"))

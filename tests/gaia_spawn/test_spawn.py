@@ -206,7 +206,7 @@ class GaiaSpawn(unittest.TestCase):
 
     def test_established_home_bed_and_guest_fallback(self):
         f=Fixture(); target=f.patch(); f.draws=[10,10]
-        lobby=NS(client=NS(ckey='owner',key='Owner'),faction_start_destination=lambda:None)
+        lobby=NS(client=NS(ckey='owner',key='Owner',owner_key=lambda:'owner'),faction_start_destination=lambda:None)
         bed_turf=tile(z=1)
         f.bed=NS(turf=bed_turf,valid_character_bed=lambda human:True)
         f.region=True
@@ -222,7 +222,7 @@ class GaiaSpawn(unittest.TestCase):
 
     def test_a_new_account_starts_near_people_after_station_and_bed(self):
         f=Fixture(); target=f.patch(); f.draws=[10,10]
-        lobby=NS(client=NS(ckey='newcomer',key='Newcomer'),faction_start_destination=lambda:None)
+        lobby=NS(client=NS(ckey='newcomer',key='Newcomer',owner_key=lambda:'newcomer'),faction_start_destination=lambda:None)
         near=tile(z=2)
         f.near_people=near
         self.assertIs(f.new_player_destination(lobby),near)

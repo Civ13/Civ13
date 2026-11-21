@@ -805,6 +805,7 @@
 			// The body part a click aims at (the zone selector): bandages and attacks use it.
 			if (req["zone"] in list("head", "eyes", "mouth", "chest", "groin", "l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot"))
 				M.targeted_organ = req["zone"]
+				M.combat_stance_doll_clicked() // an aimed zone takes manual control, as on the doll
 			C.next_action = world.time + 2
 			detail = "[target] ([agent_ref(target)]) [params]"
 			if (from_queue)

@@ -46,9 +46,8 @@ Code: `code/modules/naval/hull_sides.dm`.
   (gaps where a wall, door, window or gangway closes the side) and lists the
   gunwale count under "Sides" in her figures (`summary_data()["gunwales"]`).
   The palette shows the gangway under "Sides".
-- Letters reserved: `N` crow's nest, `J` bowsprit and jib, `F` figurehead
-  (ship edges); `L` ladder and `Z` stairs (multi-deck, which takes
-  `C13SHIP/2`).
+- Ship edges pieces: `Y` gangway, `N` crow's nest mast, `J` bowsprit,
+  `F` figurehead.
 
 ## How gunwales behave
 
@@ -98,6 +97,23 @@ Code: `code/modules/naval/hull_masts.dm`, hooked from the mast's
   above, where a world has one, is not built.
 - A nest fitted by hand to a plain mast is not kept across a sea crossing; a
   drawn `N` mast is.
+
+## Her bow: bowsprit, jib and figurehead
+
+Code: `code/modules/naval/hull_bow.dm`.
+
+- A bowsprit (10 wood, vehicle parts, Wagons & Ships) is a sail subtype: rig
+  a sail on it for a jib, set, reefed and furled like any sail. Its drive
+  (`/datum/craft_drive/fitted/sail/jib`) has half a mast's thrust and is ready
+  only while no deck of hers lies ahead of it along her heading. It is not
+  climbed and takes no crow's nest.
+- A figurehead (6 wood, vehicle parts) is cosmetic. The first click with an
+  empty hand carves it as one of `figurehead_carvings` (placeholder sprites
+  from existing statues until the Fable art pass).
+- Draught pieces `J` (bowsprit) and `F` (figurehead, turns).
+  `sail_push()` counts a jib as half a mast; the design check
+  `/datum/design_check/ship/bowsprits` warns of a bowsprit with deck ahead of
+  it on the sheet.
 
 ## Tests
 

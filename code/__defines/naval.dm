@@ -128,7 +128,7 @@
 #define SHIP_DRAUGHT_SIDE 40
 #define SHIP_DRAUGHT_MAX_TILES 200
 #define SHIP_DRAUGHT_MAX_DECK 300
-#define DESIGN_CODE_SHIP_MAX 4000
+#define DESIGN_CODE_SHIP_MAX 8000 // her main deck and every other deck
 
 // Submarine sheets (naval/sub_draught.dm): a submarine is three hull sections
 // across and this many long; the longest turns in the largest vehicle square
