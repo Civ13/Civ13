@@ -1,26 +1,27 @@
 // Language drift (docs/language-drift.md).
 //
-// A speech community is one nation's native speakers of one language. When
-// they mostly talk among themselves, their way of speaking drifts away from
-// everyone else's; when they talk with speakers of the same language from
-// outside the nation, the drift is pulled back.
+// A speech community is one nation's native speakers of one language. A
+// community only drifts while it is cut off: its members talk among themselves
+// for a long time and hear nobody from another nation. Any real contact with
+// another nation pulls the drift back and restarts the wait (Val, 2026-11-21:
+// drift is rare, and only for nations that stay isolated for too long).
 //
-// Only heard speech counts, and only for a listener who belongs to a nation
-// and whose mother tongue is the language heard. A line from a member of the
-// same nation is use; a line from a Conversational speaker of another nation,
-// or of none, is contact. Every LANGUAGE_DRIFT_TICK the lines heard since the
-// last tick move each community's drift, from 0 to 100:
-//   drift += LANGUAGE_DRIFT_GAIN * (1 - 2 * contact share)
-// so a community that hears outsiders in a quarter of its lines still drifts
-// at half speed, and one that hears them in more than half drifts back.
-// A community with fewer than LANGUAGE_DRIFT_MIN_LINES lines in a tick is left
-// as it is: a language does not change while nobody speaks it.
+// Only heard speech counts, and only for a listener who belongs to a nation.
+// A line in the listener's mother tongue from a member of the same nation is
+// use. A line in any language from anyone outside the nation is contact: a
+// nation that trades, fights or talks with outsiders is being observed by them.
+// Every LANGUAGE_DRIFT_TICK the lines heard since the last tick move each
+// community's drift, from 0 to 100:
+//   LANGUAGE_DRIFT_CONTACT_LINES or more contact lines: drift -= LANGUAGE_DRIFT_CONTACT_LOSS
+//   otherwise, LANGUAGE_DRIFT_MIN_LINES or more use lines: drift += LANGUAGE_DRIFT_GAIN
+//   otherwise nothing changes: a language does not change while nobody speaks it.
+// A contact tick also restarts the split hold (language_split_check, daughter.dm).
 //
 // Drift is saved with the durable world metadata in the map field
 // language_lineage_state (field version 6), as
 //   list("drift" = list("Nation|Language" = drift), "daughters" = list())
 // Heard lines are not saved. What a community does once its drift is high is
-// in the era check (language_era_advanced, daughter.dm).
+// in the split check (language_split_check, daughter.dm).
 
 /obj/map_metadata/var/list/language_lineage_state = list()
 
@@ -79,44 +80,48 @@ var/global/next_language_drift_tick = 0
 /mob/living/human/proc/language_drift_heard(datum/language/L, mob/speaker)
 	if (civilization == "none" || !ishuman(speaker) || speaker == src || world.time < next_language_drift_heard)
 		return
-	L = canonical_language(L)
-	if (!language_learnable(L) || mother_tongue() != L)
+	var/datum/language/native = mother_tongue()
+	if (!language_learnable(native))
 		return
-	var/key = language_community_key(civilization, L)
+	var/key = language_community_key(civilization, native)
 	if (!key)
 		return
 	var/mob/living/human/S = speaker
-	if (S.civilization == civilization)
-		language_drift_use[key] += 1
-	else if (S.language_score(L) >= LANGUAGE_CONVERSATIONAL)
+	if (S.civilization != civilization)
 		language_drift_contact[key] += 1
+	else if (canonical_language(L) == native)
+		language_drift_use[key] += 1
 	else
 		return
 	next_language_drift_heard = world.time + LANGUAGE_DRIFT_HEAR_COOLDOWN
 	if (world.time >= next_language_drift_tick)
 		language_drift_tick()
 
-// Moves every community that spoke enough since the last tick.
+// Moves every community that spoke or met outsiders since the last tick.
 /proc/language_drift_tick()
 	next_language_drift_tick = world.time + LANGUAGE_DRIFT_TICK
 	var/list/keys = language_drift_use | language_drift_contact
+	var/list/held = language_lineage_part("held")
 	for (var/key in keys)
 		var/use = language_drift_use[key]
 		var/contact = language_drift_contact[key]
-		var/total = use + contact
-		if (total < LANGUAGE_DRIFT_MIN_LINES)
-			continue
-		set_language_drift(key, language_drift(key) + language_drift_step(use, contact))
+		var/step = language_drift_step(use, contact)
+		if (step)
+			set_language_drift(key, language_drift(key) + step)
+		if (step < 0)
+			held -= key
 	language_drift_use = list()
 	language_drift_contact = list()
+	language_split_check()
 
 // How far one tick moves a community that heard `use` lines from its own
 // nation and `contact` lines from outside.
 /proc/language_drift_step(use, contact)
-	var/total = use + contact
-	if (total <= 0)
-		return 0
-	return LANGUAGE_DRIFT_GAIN * (1 - 2 * contact / total)
+	if (contact >= LANGUAGE_DRIFT_CONTACT_LINES)
+		return -LANGUAGE_DRIFT_CONTACT_LOSS
+	if (use >= LANGUAGE_DRIFT_MIN_LINES)
+		return LANGUAGE_DRIFT_GAIN
+	return 0
 
 // Living native speakers of L in a nation.
 /proc/language_community_natives(faction, datum/language/L)
@@ -137,7 +142,7 @@ var/global/next_language_drift_tick = 0
 		while (at <= sorted.len && drift[sorted[at]] >= drift[key])
 			at++
 		sorted.Insert(at, key)
-	var/list/lines = list("<b>Language drift</b> (a nation's native speakers drifting from other speakers of their language; [LANGUAGE_SPLIT_DRIFT]% and [LANGUAGE_SPLIT_MIN_NATIVES] living natives can split off at the next era)")
+	var/list/lines = list("<b>Language drift</b> (a nation's native speakers drifting while cut off from other nations; [LANGUAGE_SPLIT_DRIFT]% and [LANGUAGE_SPLIT_MIN_NATIVES] living natives held for [LANGUAGE_SPLIT_HOLD / 1440] days without contact can split off)")
 	if (!sorted.len)
 		lines += "No community has drifted yet."
 		return lines
