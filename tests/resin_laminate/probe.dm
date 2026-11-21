@@ -54,6 +54,18 @@ var/laminate_wait_ok = TRUE
 	K.setting = "no_such_setting"
 	K.bakelizer_make()
 	laminate_check(K.setting == "plastic" && K.plastic == 2, "an unknown setting falls back to plastic")
+	// Nylon.
+	K.setting = "nylon_thread"
+	K.bakelizer_make()
+	laminate_check(K.nylon_thread == 2, "the nylon setting spins two skeins per step")
+	laminate_check(K.bakelizer_eject_nylon(null) && K.nylon_thread == 0, "the Remove verb hands out the nylon thread")
+	var/n = 0
+	for (var/obj/item/stack/nylon_thread/NT in get_turf(K))
+		n += NT.amount
+	laminate_check(n == 2, "two skeins of nylon thread lie by the bakelizer")
+	laminate_check(bakelizer_setting_age("nylon_thread") == 6 && bakelizer_setting_age("phenolic_resin") == 0, "nylon waits for WW2")
+	var/material/NY = get_material_by_name("nylon")
+	laminate_check(NY && NY.stack_type == /obj/item/stack/material/nylon, "nylon is a material")
 	// Hot press.
 	var/obj/structure/hot_press/P = new(locate(6, 5, 1))
 	var/turf/PT = get_turf(P)
