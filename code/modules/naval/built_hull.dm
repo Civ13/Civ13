@@ -155,7 +155,7 @@
 	if (voyage || crossing_hold_current())
 		voyage_status_menu(H)
 		return
-	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")
+	var/list/options = list("Sea chart", "Ship's papers", "Draw her lines", "Hail a ship", "Make for a berth")
 	// Who stands at which station (hull_watch.dm).
 	if (craft.ledger)
 		options.Insert(4, "Muster the watch")
@@ -208,6 +208,9 @@
 		if (CRAFT_HELM_FORCE)
 			if (!craft.force_helm(H, src) || !craft)
 				return
+	if (choice == "Draw her lines")
+		draw_lines(H)
+		return
 	if (choice == "Leave these waters")
 		crossing_menu(H)
 		return

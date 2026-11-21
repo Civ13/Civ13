@@ -1,7 +1,7 @@
 // Alloy steels (docs/steelmaking.md, "Alloy steels").
 //
-// Nickel and cobalt ores turn up in mined rock from the Early Modern age,
-// chromite from the World War age.
+// Nickel turns up in mined rock when Open Hearth Steel can first be
+// researched (1873); cobalt and chromite still start in 1903 and 1943.
 // - Nickel steel (open hearth, 1890s): a little nickel in the melt. Armour
 //   forged from it stops blows a little better and bullets and arrows a good
 //   deal better; blades come out a little better than from fine steel.
@@ -12,9 +12,10 @@
 //   out of the melt soft and is aged in a kiln to full hardness. The best
 //   steel for armour and blades.
 
-#define NICKEL_ORE_CHANCE 3 // percent per mined wall, from the Early Modern age
+#define NICKEL_ORE_CHANCE 3 // percent per mined wall
+#define NICKEL_ORE_AGE 4 // Open Hearth Steel needs a tier-4 bench (1873).
 #define COBALT_ORE_CHANCE 1.5
-#define ALLOY_ORE_AGE 5
+#define COBALT_ORE_AGE 5
 #define NICKEL_STEEL_PER_ORE 4 // steel one nickel ore alloys in an open hearth
 #define ALLOY_ADDITION_LIMIT 20 // alloy ore one works holds
 #define CHROMITE_ORE_CHANCE 3
@@ -49,7 +50,7 @@
 // Nickel and cobalt found in one mined wall, independent of the other ore rolls.
 /turf/proc/mining_alloy_ores(mob/living/human/H)
 	. = 0
-	if (!map || map.ordinal_age < ALLOY_ORE_AGE)
+	if (!map || map.ordinal_age < NICKEL_ORE_AGE)
 		return
 	var/doubled = istype(get_area(src), /area/caribbean/void/caves/special)
 	if (prob(NICKEL_ORE_CHANCE * continent_ore_factor("nickel", src)))
@@ -58,7 +59,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#c9bd84><b>nickel</b></font> ore!"))
 		. += amount
-	if (prob(COBALT_ORE_CHANCE * continent_ore_factor("cobalt", src)))
+	if (map.ordinal_age >= COBALT_ORE_AGE && prob(COBALT_ORE_CHANCE * continent_ore_factor("cobalt", src)))
 		var/amount = rand(4, 8) * (doubled ? 2 : 1)
 		spawn_stack(/obj/item/stack/ore/cobalt, src, amount)
 		if (H)
@@ -314,8 +315,9 @@
 	return list(/obj/item/stack/material/steel/maraging_soft, /obj/item/stack/inconel)
 
 #undef NICKEL_ORE_CHANCE
+#undef NICKEL_ORE_AGE
 #undef COBALT_ORE_CHANCE
-#undef ALLOY_ORE_AGE
+#undef COBALT_ORE_AGE
 #undef NICKEL_STEEL_PER_ORE
 #undef ALLOY_ADDITION_LIMIT
 #undef CHROMITE_ORE_CHANCE

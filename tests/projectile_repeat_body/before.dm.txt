@@ -1,0 +1,5 @@
+if (L.loc != T && !body_in_line(L, T))
+    continue
+if (L in bodies_passed)
+    continue
+bodies_passed += L

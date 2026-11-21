@@ -264,6 +264,77 @@ class Coordinator(TrainCustody):
         row = self.db.execute('SELECT region FROM home WHERE ckey = ?', (ckey,)).fetchone()
         return row[0] if row else None
 
+    def _lobby_snapshot(self, ckey):
+        """One read transaction, without holding a DB lock across agent I/O."""
+        self.db.execute('BEGIN')
+        try:
+            recovery = self.recovery_status()
+            regions = self.regions()
+            if recovery['state'] != 'ready' or not regions or set(recovery['roster']) != regions.keys():
+                return None
+            return (regions, self._ledger('epoch'), int(self._ledger('rev')), self.home(ckey),
+                    bool(self.db.execute('SELECT 1 FROM train_account_lock WHERE ckey = ?', (ckey,)).fetchone()),
+                    bool(self.db.execute('SELECT 1 FROM travelling WHERE ckey = ?', (ckey,)).fetchone()))
+        finally:
+            self.db.execute('ROLLBACK')  # read-only, including early returns
+
+    def lobby_home(self, ckey):
+        """Resolve an account's route without claiming custody or starting a world.
+
+        Only the reconciled coordinator is authoritative. Its cached travel
+        rows do not rule out a new, uncollected request in a region, so every
+        enrolled agent must give a fresh, consistent answer before we route.
+        No endpoint is exposed for this coordinator method in this slice.
+        The destination still checks admission after handoff.
+        """
+        unavailable = {'state': 'UNAVAILABLE'}
+        if not account_key_valid(ckey):
+            return unavailable
+        try:
+            snapshot = self._lobby_snapshot(ckey)
+        except (sqlite3.Error, ValueError, TypeError, IndexError):
+            return unavailable
+        if snapshot is None:
+            return unavailable
+        regions, epoch, rev, home, train_locked, travelling = snapshot
+        if train_locked:
+            return {'state': 'PENDING'}
+        if travelling:
+            return {'state': 'TRAVELLING'}
+        barriers = set()
+        deadline = time.monotonic() + 2
+        for region, (url, token) in regions.items():
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return unavailable
+            try:
+                answer = call(url, token, '/lobby/account-status', {'ckey': ckey}, timeout=min(1, remaining))
+            except (OSError, ValueError):
+                return unavailable
+            if type(answer) is not dict or answer.get('ok') is not True:
+                return unavailable
+            status = answer.get('result')
+            if (type(status) is not dict or status.get('region') != region or status.get('group') != self.group
+                    or status.get('epoch') != epoch or type(status.get('rev')) is not int or status['rev'] != rev
+                    or status.get('state') not in ('CLEAR', 'PENDING', 'TRAVELLING')):
+                return unavailable
+            barriers.add(status['state'])
+        if time.monotonic() >= deadline:
+            return unavailable
+        try:
+            if self._lobby_snapshot(ckey) != snapshot:
+                return unavailable
+        except (sqlite3.Error, ValueError, TypeError, IndexError):
+            return unavailable
+        if 'PENDING' in barriers:
+            return {'state': 'PENDING'}
+        if 'TRAVELLING' in barriers:
+            return {'state': 'TRAVELLING'}
+        region = home if home is not None else self.start_region
+        if region not in regions:
+            return unavailable
+        return {'state': 'HOME' if home is not None else 'NO_HOME', 'region': region}
+
     def homes(self):
         return {c: r for c, r in self.db.execute('SELECT ckey, region FROM home WHERE region IS NOT NULL ORDER BY ckey')}
 

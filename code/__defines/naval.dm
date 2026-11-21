@@ -120,3 +120,10 @@
 #define BOAT_DRESSING_TILES 600  // Tiles a dressing of fat or tar lasts.
 #define BOAT_DRY_PER_MINUTE 10   // Soak a hull loses for each minute ashore.
 #define BOAT_RAFT_NEW_WEAR 40    // A new raft is bound with bark and vines, not rope.
+
+// Ship's draughts (naval/ship_draught.dm): the sheet is this many tiles each
+// way, and a draught keeps to the built hull's limits (craft/built_body.dm).
+#define SHIP_DRAUGHT_SIDE 40
+#define SHIP_DRAUGHT_MAX_TILES 200
+#define SHIP_DRAUGHT_MAX_DECK 300
+#define DESIGN_CODE_SHIP_MAX 4000

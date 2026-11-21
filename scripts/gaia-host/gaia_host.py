@@ -60,7 +60,7 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
-from supervisor import byond_text_md5, query  # noqa: E402
+from supervisor import LifecycleRefused, byond_text_md5, query  # noqa: E402
 import player_changelog  # noqa: E402
 
 # Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
@@ -72,7 +72,7 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
-           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover', 'update-unsaved', 'update-handover')
+           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover', 'auto-handover', 'start-current', 'update-unsaved', 'update-handover')
 # quick or long-running; no detached worker (stage starts its own, beside the action lock)
 DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
 BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
@@ -750,6 +750,7 @@ class Host:
         self.killed_file.unlink(missing_ok=True)  # left by a worker that never finished
         try:
             self.precheck(action)
+            self.before_action_accepted(action)
         except BaseException:
             self.lock.unlink()
             raise
@@ -759,9 +760,18 @@ class Host:
                               '--worker', action, operation])
         return {'accepted': True, 'action': action, 'operation': operation}
 
+    def before_action_accepted(self, action):
+        """Hook called with the action lock held, before replacing the previous state."""
+
+    def action_succeeded(self, action):
+        """Hook called with the action lock held after a worker succeeds."""
+
+    def action_failed(self, action):
+        """Hook called with the action lock held after a worker fails."""
+
     def precheck(self, action):
         listening = self.platform.listening(self.config['port'])
-        if action == 'start':
+        if action in ('start', 'start-current'):
             if listening:
                 raise Refused('the server is already running')
             self.recover_interrupted_save()
@@ -939,9 +949,13 @@ class Host:
                 self.log({'stale_lock_removed': self.read_state().get('action')})
         except OSError:
             pass
-        accepted = self.request('start')
+        accepted = self.request(self.automatic_start_action())
         self.cold_file.unlink(missing_ok=True)
         return dict(accepted, cold_start=True, reason=reason)
+
+    def automatic_start_action(self):
+        """Action used for automatic recovery; manual start remains separate."""
+        return 'start'
 
     def write_json(self, path, value):
         self.state_dir.mkdir(parents=True, exist_ok=True)
@@ -1222,10 +1236,13 @@ class Host:
         if self.update_pending() and not self.update_when_empty():
             # Empty and saved: the moment to swap in a staged build without kicking anyone.
             try:
-                self.log(dict(self.request('restart'), reason='installing the staged build while the world is empty'))
+                action = self.idle_update_action()
+                if action:
+                    self.log(dict(self.request(action), reason='installing the staged build while the world is empty'))
+                    return None, 30
             except Refused as refusal:
                 self.log({'staged_install_refused': str(refusal)})
-            return None, 30
+                return None, 30
         try:
             self.log(self.freeze())
             # Only a world with a save can start again from it; one never played stays frozen.
@@ -1327,7 +1344,7 @@ class Host:
             self.log({'watchdog': kind, 'detail': detail, 'cold': 'low memory: %d MB free' % free})
             return 30
         try:
-            accepted = self.request('start')
+            accepted = self.request(self.automatic_start_action())
         except SignedOut as refusal:
             # The pager is starting or signing in (after a reboot it often comes up after this
             # service): keep the world due and try again soon, without a new crash grace.
@@ -1559,6 +1576,9 @@ class Host:
             return False
         return True
 
+    def idle_update_action(self):
+        return 'restart'
+
     def watch(self):
         idle_since = None
         while True:
@@ -1583,8 +1603,10 @@ class Host:
             # A server only ever runs a build of the latest pull (Val, 2026-11-05):
             # start and restart pull and recompile first unless the last build is
             # already of the fetched revision.
-            steps = {'start': [self.do_refresh, self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
-                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}.get(action) \
+            steps = {'start': [self.do_refresh, self.do_start], 'start-current': [self.do_start_current],
+                     'stop': [self.do_stop], 'update': [self.do_update],
+                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover],
+                     'auto-handover': [self.do_auto_handover]}.get(action) \
                 or self.extra_steps(action)
             for step in steps:
                 if self.killed_during(operation):
@@ -1596,6 +1618,7 @@ class Host:
                 self.end_after_forced_stop()
                 raise RuntimeError('the world it started was stopped again')
             self.record(phase='done', error=None)
+            self.action_succeeded(action)
         except Exception as error:  # the state file is the only place a detached worker can report
             reason = self.killed_during(operation)
             if reason:
@@ -1605,16 +1628,26 @@ class Host:
                             error='%s during %s: %s' % (reason, action, str(error)[:300]))
             else:
                 self.record(phase='failed', error=str(error)[:500])
+                self.action_failed(action)
         finally:
             self.killed_file.unlink(missing_ok=True)
             self.lock.unlink(missing_ok=True)
+
+    def do_start_current(self, operation):
+        raise RuntimeError('starting an existing build requires a region host')
+
+    def do_auto_handover(self, operation):
+        raise RuntimeError('automatic handover requires a region host')
+
+    def startup_revision(self):
+        code, out = self.platform.run([self.config['git'], 'rev-parse', 'HEAD'], cwd=self.repo, timeout=60)
+        return out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
 
     def do_start(self, operation):
         self.record(phase='checking save')
         self.recover_interrupted_save()
         generation = check_save(self.repo / 'map_saves')
-        code, out = self.platform.run([self.config['git'], 'rev-parse', 'HEAD'], cwd=self.repo, timeout=60)
-        revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
+        revision = self.startup_revision()
         if not HEX40.match(revision):
             raise RuntimeError('could not read the git revision')
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')

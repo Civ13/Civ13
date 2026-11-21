@@ -212,9 +212,43 @@ class AlloySteels(unittest.TestCase):
         self.assertIn('#include "code\\modules\\1713\\alloy_steels.dm"', DME)
         self.assertIn('if (mining_alloy_ores(H))', MINING)
         mine = proc(ALLOYS, '/turf/proc/mining_alloy_ores(')
-        self.assertIn('map.ordinal_age < ALLOY_ORE_AGE', mine)
         for ore in ('nickel', 'cobalt'):
             self.assertIn(f'spawn_stack(/obj/item/stack/ore/{ore}, src, amount)', mine)
+
+    def test_nickel_begins_at_the_first_open_hearth_research_bench_tier(self):
+        hearth = re.search(
+            r'new /datum/research_node\("open_hearth", "Open Hearth Steel", "Industrial", '
+            r'\d+, (\d+), RESEARCH_MODE_ANALYSIS, list\("steelmaking","factories"\), (\d+)\)',
+            NODES,
+        )
+        self.assertIsNotNone(hearth)
+        self.assertEqual(('4', '5'), hearth.groups())  # minimum bench and baseline era differ
+        self.assertIn('"/obj/structure/steel_works/open_hearth" = "open_hearth"', NODES)
+        self.assertIn('open hearth furnace,/obj/structure/steel_works/open_hearth', RECIPES)
+        bench = read('code/modules/research_tree/research_bench.dm')
+        self.assertIn('map ? map.ordinal_age : 0', bench)
+        self.assertIn('return max(tier, era_max_tier())', bench)
+        ore_ages = {
+            name.lower(): int(age) for name, age in re.findall(
+                r'^#define (NICKEL|COBALT|CHROMITE)_ORE_AGE (\d+)', ALLOYS, re.M
+            )
+        }
+        self.assertEqual({'nickel': int(hearth[1]), 'cobalt': 5, 'chromite': 6}, ore_ages)
+        mine = proc(ALLOYS, '/turf/proc/mining_alloy_ores(')
+        self.assertIn('if (!map || map.ordinal_age < NICKEL_ORE_AGE)\n\t\treturn', mine)
+        for ore, chance, roll, guard in (
+            ('nickel', '3', '8, 16', ''),
+            ('cobalt', '1.5', '4, 8', 'map.ordinal_age >= COBALT_ORE_AGE && '),
+            ('chromite', '3', '8, 16', 'map.ordinal_age >= CHROMITE_ORE_AGE && '),
+        ):
+            with self.subTest(ore=ore):
+                prefix = ore.upper()
+                self.assertRegex(ALLOYS, rf'(?m)^#define {prefix}_ORE_CHANCE {re.escape(chance)}(?: |$)')
+                self.assertIn(
+                    f'if ({guard}prob({prefix}_ORE_CHANCE * continent_ore_factor("{ore}", src)))\n'
+                    f'\t\tvar/amount = rand({roll}) * (doubled ? 2 : 1)\n'
+                    f'\t\tspawn_stack(/obj/item/stack/ore/{ore}, src, amount)', mine
+                )
 
     def test_nickel_steel_grade(self):
         block = proc(ALLOYS, '/obj/item/stack/material/steel/nickel\n')

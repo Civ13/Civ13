@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Build Civ13 gray-cobble sill and floor covers from stock pixels."""
+"""Build Civ13 gray-cobble sill and floor covers from stock pixels.
+
+Run once per tone after scripts/draw_cobble_floors.py:
+    --tone light --output icons/turf/flooring/cobble_trim.dmi
+    --tone dark  --output icons/turf/flooring/cobble_trim_dark.dmi
+"""
 import argparse
 import hashlib
 import io
@@ -112,13 +117,25 @@ def trim_tile(cobble, state):
             else:
                 raise ValueError(state)
             if distance < 4:
-                px[x, y] = shade(grain[x, y], (-23, 4, 15, -17)[distance])
+                # A dressed kerb: joints every eight pixels along the run.
+                run = y if state == "trim_corner_outside" and west < south else x
+                joint = distance in (1, 2) and run % 8 == 7 and state != "trim_corner_inside"
+                px[x, y] = shade(grain[x, y], -17 if joint else (-23, 4, 15, -17)[distance])
     return out
 
 
-def sprites(root):
-    gray_sill = stock(root, FLOORS, "cobble_horizontal")
-    gray_trim = stock(root, FLOORS, "cobble_horizontal_dark")
+FIELDS = {"light": "cobble_horizontal", "dark": "cobble_horizontal_dark"}
+
+
+def dressed(field):
+    """A flat tile in the field's lightest stone grey, so the sill and kerb read
+    as cut stone in the same rock as the cobbles around them."""
+    colours = sorted({colour[:3] for _, colour in field.getcolors(TILE * TILE)}, key=sum)
+    return Image.new("RGBA", (TILE, TILE), colours[-2] + (255,))
+
+
+def sprites(root, tone="light"):
+    gray_sill = gray_trim = dressed(stock(root, FLOORS, FIELDS[tone]))
     art = {state: (sill_tile if state.startswith("sill_") else trim_tile)(
                 gray_sill if state.startswith("sill_") else gray_trim, state)
            for state in STATES if state != "trim_stop_reverse"}
@@ -135,16 +152,16 @@ def chunk(kind, content):
             struct.pack(">I", zlib.crc32(kind + content)))
 
 
-def opaque_frames(root, art):
-    field = stock(root, FLOORS, "cobble_horizontal")
+def opaque_frames(root, art, tone="light"):
+    field = stock(root, FLOORS, FIELDS[tone])
     assert field.getchannel("A").getextrema() == (255, 255)
     return {state: tuple(Image.alpha_composite(field, frame) for frame in rotations(tile))
             for state, tile in art.items()}
 
 
-def build_kit(root):
-    art = sprites(root)
-    complete = opaque_frames(root, art)
+def build_kit(root, tone="light"):
+    art = sprites(root, tone)
+    complete = opaque_frames(root, art, tone)
     sheet = Image.new("RGBA", (TILE * len(ORDER), TILE * len(STATES)))
     metadata = ["# BEGIN DMI", "version = 4.0", "\twidth = 32", "\theight = 32"]
     for row, (state, frames) in enumerate(complete.items()):
@@ -275,9 +292,11 @@ def main():
     parser.add_argument("--repo-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--preview", type=Path)
+    parser.add_argument("--tone", choices=sorted(FIELDS), default="light",
+                        help="light writes cobble_trim.dmi, dark writes cobble_trim_dark.dmi")
     parser.add_argument("--check", action="store_true", help="Refuse if existing DMI differs")
     args = parser.parse_args()
-    binary, art, complete = build_kit(args.repo_root)
+    binary, art, complete = build_kit(args.repo_root, args.tone)
     validate(binary, art, complete)
     if args.check:
         assert args.output.read_bytes() == binary, "committed DMI is stale"

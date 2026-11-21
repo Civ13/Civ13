@@ -5,6 +5,62 @@
 // Scalar ownership avoids a spatial reference from a character to another level.
 /obj/structure/bed/var/persistence_bed_owner_ckey
 
+// One unread notice per owner per region; this is not part of the character
+// save or custody ledger. The marker survives ordinary world restarts.
+/proc/persistence_bed_notice_path(owner)
+	if (!istext(owner) || !length(owner) || length(owner) > 64 || ckey(owner) != owner || IsGuestKey(owner))
+		return null
+	return "data/persistence-bed-notices/bed-[owner].pending"
+
+/obj/structure/bed/proc/persistence_bed_notice_recipient(mob/user)
+	var/client/actor = user?.client
+	var/owner = persistence_bed_owner_ckey
+	if (!persistence_bed_return_enabled() || !actor || actor.mob != user || !actor.ckey || IsGuestKey(actor.key) || actor.ckey == owner)
+		return null
+	return persistence_bed_notice_path(owner) ? owner : null
+
+/proc/persistence_queue_bed_notice(owner, actor_name)
+	var/path = persistence_bed_notice_path(owner)
+	if (!path || fexists(path))
+		return
+	// Store the hour at dismantle time, not at delivery. UTC avoids ambiguous
+	// clock changes, and using text preserves the hour across restarts.
+	var/hour_utc = time2text(world.realtime, "YYYY-MM-DD hh:00", 0)
+	var/list/details = list()
+	details["hour_utc"] = hour_utc
+	details["actor_name"] = actor_name
+	if (!text2file(json_encode(details), path))
+		log_world("Could not queue a registered bed destruction notice.")
+
+/proc/persistence_bed_notice_message(record)
+	var/who = "Another player"
+	var/when_text = ""
+	// A legacy "1" marker has neither detail. Invalid data still tells the
+	// owner that their bed was lost, without guessing who or when.
+	if (istext(record) && length(record))
+		try
+			var/list/details = json_decode(record)
+			if (islist(details))
+				var/hour_utc = details["hour_utc"]
+				var/actor_name = details["actor_name"]
+				if (istext(actor_name) && length(actor_name))
+					who = html_encode(actor_name)
+				if (istext(hour_utc) && length(hour_utc))
+					when_text = " during the hour starting " + html_encode(hour_utc) + " UTC"
+		catch
+			return "Another player destroyed your assigned bed in this region."
+	return who + " destroyed your assigned bed in this region" + when_text + "."
+
+/proc/persistence_deliver_bed_notice(client/recipient)
+	if (!persistence_bed_return_enabled() || !recipient || !recipient.key || IsGuestKey(recipient.key))
+		return
+	var/path = persistence_bed_notice_path(recipient.ckey)
+	if (!path || !fexists(path))
+		return
+	to_chat(recipient, SPAN_WARNING(persistence_bed_notice_message(file2text(path))))
+	if (!fdel(path))
+		log_world("Could not clear a registered bed destruction notice.")
+
 // Tiles around a restored body searched for a safe return when its own is unsafe.
 #define PERSISTENCE_RETURN_SEARCH_RANGE 7
 

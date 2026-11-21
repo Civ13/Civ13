@@ -15,7 +15,7 @@
 // The viewer's turf at its last full publication; a step since then skips
 // recording the audit scene.
 /client/var/tmp/turf/los_published_turf
-// The viewer's half-tile eye offset at its last full publication.
+// The viewer's eye quadrant offset at its last full publication.
 /client/var/tmp/los_published_bucket
 
 // Note a transparent mover for a clean viewer; a long queue falls back to one
@@ -262,7 +262,7 @@
 			if(!force_refresh && !H.opacity && !V.retired && V.body == H && V.owner == H.client && T && V.movement_turf == T)
 				// Recover an invalidated viewer without dirtying neighboring viewers.
 				// A transparent same-turf pulse changes no other viewer's geometry.
-				// Crossing a half-tile eye step refreshes this viewer only.
+				// Crossing an eye quadrant boundary refreshes this viewer only.
 				var/bucket = los_eye_bucket(H)
 				var/eye_moved = V.movement_bucket != bucket
 				V.movement_bucket = bucket

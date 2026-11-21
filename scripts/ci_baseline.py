@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'bottle_alcohol_power': {'files': ('tests/bottle_alcohol_power/test_alcohol_power.py',),
+        'paths': ('tests/bottle_alcohol_power/', 'code/modules/reagents/reagent_containers/food/drinks/bottle.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'flour_dough': {'files': ('tests/flour_dough/test_dough.py',),
         'paths': ('tests/flour_dough/', 'code/modules/reagents/reagent_containers/food/condiment.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -182,6 +185,10 @@ SUITES = {
         'paths': ('tests/appearance_genders/', 'code/modules/nano/modules/appearance_changer.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/species/species.dm',
                          'tgui/src/interfaces/Standard.tsx')},
+    'reagent_metabolism_empty': {'files': ('tests/reagent_metabolism/test_empty.py',),
+        'paths': ('tests/reagent_metabolism/',), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Metabolism.dm',
+            'code/modules/reagents/Chemistry-Holder.dm', 'tests/save_movement/source_adapter.py')},
     'chem_dispenser_refill': {'files': ('tests/chem_dispenser_refill/test_refill.py',),
         'paths': ('tests/chem_dispenser_refill/',),
         'shared_paths': ('code/modules/reagents/Chemistry-Machinery.dm',)},
@@ -482,11 +489,15 @@ SUITES = {
     'lava_animal_remains': {'files': ('tests/lava_animal_remains/test_callback.py',),
         'paths': ('tests/lava_animal_remains/',), 'shared_paths': (
             'code/modules/1713/natural_disasters.dm',)},
+    'fallout_area_lookup': {'files': ('tests/fallout_area_lookup/test_fallout_scan.py',),
+        'paths': ('tests/fallout_area_lookup/',), 'shared_paths': (
+            'code/modules/1713/radiation.dm', 'tests/save_movement/source_adapter.py')},
     # Weather system icons are the existing sheet tiled by tools/weather/make_chunks.py.
-    'weather_systems': {'files': ('tests/weather_systems/test_icons.py',),
+    'weather_systems': {'files': ('tests/weather_systems/test_icons.py', 'tests/weather_systems/test_strength_offsets.py'),
         'paths': ('tests/weather_systems/', 'tools/weather/'),
         'shared_paths': ('icons/effects/weather.dmi', 'icons/effects/weather_chunks.dmi',
-                         'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
+                         'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm',
+                         'code/modules/1713/weather_systems.dm', 'tests/save_movement/source_adapter.py')},
     'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py', 'scripts/map_coast.py', 'maps/nomads/', 'maps/heights/'),
         'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm', 'code/modules/1713/flood_hollows.dm',
@@ -511,6 +522,9 @@ SUITES = {
     'projectile_location': {'files': ('tests/projectile_location/test_location.py',),
         'paths': ('tests/projectile_location/',), 'shared_paths': (
             'code/modules/projectiles/projectile.dm', 'code/_helpers/vector.dm')},
+    'projectile_repeat_body': {'files': ('tests/projectile_repeat_body/test_repeat_body.py',),
+        'paths': ('tests/projectile_repeat_body/',), 'shared_paths': (
+            'code/modules/projectiles/projectile.dm',)},
     'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
         'paths': ('tests/centre_tile/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/subtile_movement.dm',
@@ -540,6 +554,11 @@ SUITES = {
             'code/modules/1713/barriers/snow_walls.dm',
             'code/game/objects/covers.dm',
             'code/modules/multiz/open_space.dm')},
+    'vehicle_offset': {'files': ('tests/vehicle_offset/test_sources.py',),
+        'paths': ('tests/vehicle_offset/',), 'shared_paths': (
+            'civ13.dme', 'code/modules/craft/vehicle_offset.dm',
+            'code/modules/craft/vehicle_offset_ride.dm', 'code/modules/craft/vehicle_offset_frame.dm',
+            'code/modules/craft/vehicle_offset_ship.dm', 'tests/save_movement/source_adapter.py')},
     'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
         'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
@@ -874,6 +893,10 @@ SUITES = {
         'paths': ('tests/human_bed_healing/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
+    # Wildlife plant classification against a frozen pre-change predicate.
+    'wild_browse': {'files': ('tests/wild_browse/test_browse.py',),
+        'paths': ('tests/wild_browse/',), 'shared_paths': (
+            'code/modules/ecology/wild_feeding.dm', 'tests/save_movement/source_adapter.py')},
     # Narrow-cone direction equivalence against fake engine geometry.
     'vision_cone_direction': {'files': ('tests/vision_cone_direction/test_direction.py',),
         'paths': ('tests/vision_cone_direction/',), 'shared_paths': (
@@ -1414,6 +1437,11 @@ SUITES = {
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (
             'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
+    # Stdlib-only: ship's draughts cost the hand recipes and weigh like the ledger.
+    'ship_draught': {'files': ('tests/ship_draught/test_draught_sources.py',),
+        'paths': ('tests/ship_draught/',), 'shared_paths': (
+            'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
+            'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (
@@ -2317,7 +2345,9 @@ SUITES = {
         'shared_paths': ('code/game/gameticker.dm', 'code/modules/persistence/functions.dm',
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/carbon/human/nomads_spawn.dm',
-            'code/game/mob/living/carbon/human/human_life.dm')},
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/objects/structures.dm', 'code/modules/chat/chat.dm',
+            'code/modules/client/client_procs.dm')},
     # Fishing grounds source contracts; the native probe beside them runs
     # through tests/ecology_spawning/run_linux.py.
     'fishing_grounds': {'files': ('tests/fishing_grounds/test_source.py',), 'paths': (
@@ -2370,6 +2400,9 @@ SUITES = {
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
+    'ramps': {'files': ('tests/ramps/test_contract.py',), 'paths': (
+        'tests/ramps/', 'code/modules/multiz/ramps.dm', 'code/__defines/ramps.dm',
+        'icons/obj/ramps.dmi', 'tests/sprites/create_ramps.py')},
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},

@@ -37,7 +37,7 @@ public static class HostSettings {
         File.Move(temporary, group.Config, true);
     }
     // Update when empty: a region whose last player left and which has saved since builds the latest
-    // revision beside itself and restarts onto it (the group config's update_when_empty, on unless
+    // revision beside itself and attempts a standby handover (the group config's update_when_empty, on unless
     // set false; shard_group.py RegionHost reads it at each check). New commits are only seen when the
     // group fetches its remote, so turning it on also points a group that does not at origin/master.
     public static bool UpdateWhenEmpty(HostGroup group) {
