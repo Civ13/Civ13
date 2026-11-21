@@ -133,8 +133,35 @@ var/balcony_railings_runtime = null
 	var/obj/structure/railing/built/glass/G = new(locate(3, 8, 1))
 	G.structure_impact(1000, IMPACT_CRUSH)
 	balcony_railings_assert(QDELETED(G), "impact_breaks")
+
+	// Climbing down over a railed edge takes longer; an open gate does not.
+	balcony_railings_assert(railing_climb_delay(deck, NORTH) > 0, "railed_edge_slower")
+	balcony_railings_assert(railing_climb_delay(deck, EAST) == 0, "open_edge_plain")
+
 	R.take_damage(500)
 	balcony_railings_assert(QDELETED(R), "damage_breaks")
+
+	// A gate opens by hand: open, people pass both ways; shut, they do not.
+	var/turf/landing = locate(6, 12, 1)
+	var/obj/structure/railing/built/wrought_iron/gate/GT = new(landing)
+	GT.set_dir(NORTH)
+	balcony_railings_assert(GT.icon_state == "wrought_iron_gate" && GT.density, "gate_starts_shut")
+	var/mob/living/human/walker = new(landing)
+	balcony_railings_assert(!GT.CheckExit(walker, locate(6, 13, 1)), "shut_gate_blocks")
+	balcony_railings_assert(GT.set_gate_open(TRUE) && !GT.density && GT.icon_state == "wrought_iron_gate_open", "gate_opens")
+	balcony_railings_assert(GT.CheckExit(walker, locate(6, 13, 1)), "open_gate_lets_out")
+	var/turf/outside = locate(6, 13, 1)
+	balcony_railings_assert(railing_climb_delay(landing, NORTH) == 0, "open_gate_no_climb")
+	GT.gate_open = TRUE
+	GT.density = TRUE
+	GT.after_load()
+	balcony_railings_assert(!GT.density, "loaded_open_gate_passable")
+	balcony_railings_assert(GT.set_gate_open(FALSE) && GT.density && GT.icon_state == "wrought_iron_gate", "gate_shuts")
+	balcony_railings_assert(!GT.CheckExit(walker, outside), "shut_again_blocks")
+	var/obj/structure/railing/built/brick/gate/BG = new(locate(5, 5, 1))
+	balcony_railings_assert(BG.gate && BG.icon_state == "brick_gate" && istype(BG.railing_dismantle_refund(), /obj/item/weapon/clay/advclaybricks/fired), "brick_gate")
+	var/obj/structure/railing/built/plain = new(locate(5, 6, 1))
+	balcony_railings_assert(!plain.set_gate_open(TRUE) && plain.density, "railing_is_not_a_gate")
 
 /world/New()
 	OpenPort("none")
