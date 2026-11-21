@@ -61,7 +61,7 @@ var/global/list/view_lag_off = list()
 /mob/living/human/choose_origin(climate)
 	if(!map || origin_id)
 		return FALSE
-	return apply_origin(land_origin_for(map.ID, climate), land_display_name(map), FALSE)
+	return apply_origin(land_origin_for(map.ID, climate), land_display_name(map), FALSE, climate)
 
 /mob/living/human/view_lag_actor/ssd_check()
 	return FALSE

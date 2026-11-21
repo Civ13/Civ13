@@ -30,8 +30,8 @@
 /obj/structure/berth_refit_mark
 	name = "refit mark"
 	desc = "Chalk on a hull being refitted at her berth."
-	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
-	icon_state = "grid"
+	icon = 'icons/obj/berths.dmi'
+	icon_state = "refit_add"
 	anchored = TRUE
 	density = FALSE
 	flammable = FALSE
@@ -40,11 +40,11 @@
 	mouse_opacity = FALSE
 	layer = TURF_LAYER + 0.2
 	should_save = FALSE
-	alpha = 120
 	var/kind = "add"
 
 /obj/structure/berth_refit_mark/proc/set_kind(new_kind, what)
 	kind = new_kind
+	icon_state = "refit_[kind]"
 	switch (kind)
 		if ("add")
 			color = "#40c040"
@@ -60,7 +60,7 @@
 			desc = "The refit changes [what] here."
 		else
 			color = "#e0a020"
-			alpha = 70
+			alpha = 200
 			name = "refit mark: turn"
 			desc = "The refit turns [what] here."
 

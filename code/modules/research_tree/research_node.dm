@@ -1310,6 +1310,7 @@ var/global/list/node_grid_col_cache = null
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
+		"/obj/structure/hot_press" = "combustion",
 		// --- cooperage (17) ---
 		"/obj/structure/closet/ice_house" = "cooperage",
 		"/obj/structure/well_fitting/windlass" = "cooperage",
@@ -2969,6 +2970,7 @@ var/global/list/node_grid_col_cache = null
 		// --- wagons_ships (29) ---
 		"/obj/structure/canal_lock" = "wagons_ships",
 		"/obj/structure/canal_lock/dock_gate" = "wagons_ships",
+		"/obj/structure/keel_blocks" = "wagons_ships",
 		"/obj/item/stack/rail_sleepers" = "wagons_ships",
 		"/obj/item/stack/rail_lengths/wooden" = "wagons_ships",
 		"/obj/structure/trains/storage/chaldron" = "wagons_ships",
@@ -3017,6 +3019,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
 		"/obj/structure/workshop_machine/hopper/fulling_stocks" = "watermills",
 		"/obj/structure/workshop_machine/hopper/bark_stamps" = "watermills",
+		"/obj/structure/workshop_machine/hopper/power_loom" = "textile_mills",
 		"/obj/structure/water_lift/windmill" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",

@@ -707,6 +707,40 @@ class TreatyTests(unittest.TestCase):
         self.assertEqual(self.n.snapshot(now)[self.u]['treaties']['offers']['made'][0]['kind'], 'pact')
 
 
+class LegitimacyTests(ElectiveTests.__base__):
+    """Legitimacy (tools/transfer_storage/nation_legitimacy.py)."""
+
+    setUp = ElectiveTests.setUp
+    ask = ElectiveTests.ask
+    become = ElectiveTests.become
+    snap = ElectiveTests.snap
+
+    def test_present_head_builds_and_absence_erodes(self):
+        self.become('monarchy')
+        self.assertEqual(self.snap()['legitimacy'], 50)
+        for day in range(1, 6):
+            self.ask('alpha', 'present', A, now=self.now + day * 86400 - 60, actor='val', role='citizen')
+        self.now += 5 * 86400
+        self.assertEqual(self.snap()['legitimacy'], 60)
+        # A higher score raises the revolt threshold: 0.5 * 1.1 of 10 citizens.
+        self.assertEqual(self.n.signatures_needed(self.nid), 6)
+        self.now += 2 * 86400
+        self.assertEqual(self.snap()['legitimacy'], 56)
+
+    def test_low_legitimacy_halves_the_threshold_and_events_move_it(self):
+        self.become('democracy')
+        self.db.execute('UPDATE nation_legitimacy SET score = 0')
+        self.assertEqual(self.n.signatures_needed(self.nid), 4)  # 0.75 * 0.5 of 10, rounded up
+        self.ask('alpha', 'currency', B, now=self.now, actor='ann', role='citizen', issuer=B)
+        self.now += 86400 + 1  # the referendum fails for want of a quorum
+        self.ask('alpha', 'present', A, now=self.now - 1, actor='val', role='citizen')
+        self.assertEqual(self.snap()['legitimacy'], 2)  # floor 0, then +2 for the head who played
+
+    def test_confederation_drifts_to_the_middle(self):
+        self.db.execute('UPDATE nation_legitimacy SET score = 40')
+        self.assertEqual(self.snap(T + 3 * 86400)['legitimacy'], 43)
+
+
 class AgentRoundTripTests(unittest.TestCase):
     TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40}
 

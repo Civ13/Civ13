@@ -100,6 +100,10 @@ var/global/list/datum/arcane_communion/arcane_communions = list()
 	var/turf/T = get_turf(where)
 	return T && arcane_anchor && T.z == arcane_anchor.z && get_dist(T, arcane_anchor) <= ARCANE_SPIRIT_RANGE
 
+// The length of the leash in tiles, for the spirit HUD (spirit_hud.dm).
+/proc/arcane_spirit_range()
+	return ARCANE_SPIRIT_RANGE
+
 /mob/observer/ghost/verb/arcane_linger()
 	set category = "Ghost"
 	set name = "Linger"
