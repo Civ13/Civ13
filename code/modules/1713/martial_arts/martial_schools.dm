@@ -17,6 +17,12 @@
 #define MARTIAL_SCHOOL_LOCK (7 * 24 * 36000)
 // A set of forms: about eight seconds of drills.
 #define MARTIAL_FORMS_TIME 80
+// School points a day from fighting anyone who is not a verified Master of
+// the school, so punching a willing friend (or a tied-up stranger) all day
+// can't stand in for training. Forms, gear and teachers are not counted.
+#define MARTIAL_FIGHT_DAILY 10
+// Military Science levels for first reaching Master in any school.
+#define MARTIAL_MASTERY_LEVELS 8
 
 // id = list(name, minimum era, research node, what it teaches)
 var/global/list/martial_schools = list(
@@ -81,6 +87,9 @@ var/global/list/martial_schools = list(
 	var/list/martial_progress = null
 	// world.realtime before which a new school can't be picked.
 	var/martial_school_lock = 0
+	// School points from fights on martial_fight_day (a real-time day number).
+	var/martial_fight_points = 0
+	var/martial_fight_day = 0
 
 // The rank in school_id: none unless it is the school this character follows.
 /mob/living/human/proc/martial_rank(school_id)
@@ -100,15 +109,56 @@ var/global/list/martial_schools = list(
 	if (!martial_school || !(martial_school in martial_schools) || amount <= 0)
 		return 0
 	amount *= martial_training_mult(sparring)
+	var/fight = sparring && sparring != src && !martial_teacher_ok(sparring)
+	if (fight)
+		amount = min(amount, martial_fight_room())
+		if (amount <= 0)
+			return 0
 	if (!islist(martial_progress))
 		martial_progress = list()
 	var/before = martial_rank(martial_school)
 	var/had = martial_points(martial_school)
 	martial_progress[martial_school] = min(MARTIAL_MASTER_POINTS * 4, had + amount)
+	var/added = martial_progress[martial_school] - had
+	if (fight)
+		martial_fight_points += added
 	var/after = martial_rank(martial_school)
 	if (after > before)
 		to_chat(src, SPAN_NOTICE("<b>You are now [after == MARTIAL_RANK_ADEPT ? "an" : "a"] [martial_rank_name(after)] of [martial_school_name(martial_school)].</b>"))
-	return martial_progress[martial_school] - had
+		if (after == MARTIAL_RANK_MASTER)
+			note_martial_mastery()
+	return added
+
+// Overridden by the probe to change the day.
+/mob/living/human/proc/martial_today()
+	return round(world.realtime / (24 * 36000))
+
+// School points still to be had from fights today.
+/mob/living/human/proc/martial_fight_room()
+	var/today = martial_today()
+	if (martial_fight_day != today)
+		martial_fight_day = today
+		martial_fight_points = 0
+	return max(0, MARTIAL_FIGHT_DAILY - martial_fight_points)
+
+// First Master in any school pays Military Science once, like the body-skill
+// milestones in learning_by_doing.dm. Returns the levels gained.
+/mob/living/human/proc/note_martial_mastery()
+	. = 0
+	if (!learning_by_doing_enabled() || stat == DEAD)
+		return
+	var/key = skill_mastery_key("military", "school")
+	if (!islist(skill_mastery))
+		skill_mastery = list()
+	if (key in skill_mastery)
+		return
+	skill_mastery += key
+	if (!islist(scholarship))
+		scholarship = list()
+	var/before = scholar_level("military")
+	scholarship["military"] = min(SCHOLAR_MAX_LEVEL, round(before + MARTIAL_MASTERY_LEVELS, 0.01))
+	. = scholarship["military"] - before
+	to_chat(src, SPAN_NOTICE("<b>You have mastered a fighting school.</b> What your body knows now, your mind keeps: you gain [round(., 0.1)] levels of [scholar_disciplines["military"]]."))
 
 // Schools this character may take up now: their research is known.
 /mob/living/human/proc/martial_school_choices()
@@ -234,8 +284,9 @@ var/global/list/martial_schools = list(
 	if (!progress.len && !martial_school && martial_school_lock <= world.realtime && hand <= 0)
 		return null
 	// Hardened hands (hand_conditioning.dm) travel with the school.
+	var/fought = martial_fight_day == martial_today() ? martial_fight_points : 0
 	return list("school" = martial_school, "progress" = progress, "lock" = martial_school_lock > world.realtime ? martial_school_lock : 0,
-		"hand" = hand, "hand_at" = hand > 0 ? hand_conditioning_at : 0)
+		"hand" = hand, "hand_at" = hand > 0 ? hand_conditioning_at : 0, "fight" = fought, "fight_day" = fought > 0 ? martial_fight_day : 0)
 
 /proc/martial_travel_valid(list/R)
 	if (!islist(R))
@@ -243,6 +294,8 @@ var/global/list/martial_schools = list(
 	if (!isnull(R["school"]) && !(R["school"] in martial_schools))
 		return FALSE
 	if (!isnum(R["hand"]) || R["hand"] < 0 || R["hand"] > 100 || !isnum(R["hand_at"]))
+		return FALSE
+	if (!isnum(R["fight"]) || R["fight"] < 0 || R["fight"] > MARTIAL_FIGHT_DAILY || !isnum(R["fight_day"]))
 		return FALSE
 	return martial_progress_valid(R["progress"]) && isnum(R["lock"])
 
@@ -255,6 +308,8 @@ var/global/list/martial_schools = list(
 	martial_school_lock = R["lock"]
 	hand_conditioning = R["hand"]
 	hand_conditioning_at = R["hand_at"]
+	martial_fight_points = R["fight"]
+	martial_fight_day = R["fight_day"]
 	return TRUE
 
 #undef MARTIAL_STUDENT_POINTS
@@ -262,3 +317,5 @@ var/global/list/martial_schools = list(
 #undef MARTIAL_MASTER_POINTS
 #undef MARTIAL_SCHOOL_LOCK
 #undef MARTIAL_FORMS_TIME
+#undef MARTIAL_FIGHT_DAILY
+#undef MARTIAL_MASTERY_LEVELS
