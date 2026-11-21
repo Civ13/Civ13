@@ -198,8 +198,8 @@ var/list/conditioning_probe_chances = list()
 	conditioning_probe_assert(H.current_hand_conditioning() == 47, "three_days_fade_three_points")
 	conditioning_probe_assert(H.current_hand_conditioning() == 47, "fade_is_not_counted_twice")
 
-	// --- art stand-ins exist -----------------------------------------------------------
-	conditioning_probe_assert(("target_stake" in icon_states('icons/obj/objects.dmi')) && ("bucket" in icon_states('icons/obj/janitor.dmi')), "stand_in_icon_states")
+	// --- drawn art exists -----------------------------------------------------------
+	conditioning_probe_assert(("makiwara" in icon_states(M.icon)) && ("gravel_pail" in icon_states(G.icon)), "drawn_icon_states")
 
 /world/New()
 	OpenPort("none")

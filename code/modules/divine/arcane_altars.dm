@@ -185,6 +185,7 @@ var/global/list/arcane_altar_thresholds = list(list(0, 0), list(5, 0), list(15, 
 	var/list/options = list()
 	if (O.arcane_altar_live() == god)
 		options += "Make an offering"
+		options += "Keep a devotion" // arcane_devotion.dm
 		if (O.arcane_altar_by == ckey)
 			options += "Let this altar go"
 	else
@@ -194,6 +195,8 @@ var/global/list/arcane_altar_thresholds = list(list(0, 0), list(5, 0), list(15, 
 		return
 	if (pick == "Make an offering")
 		arcane_offer_at(O)
+	else if (pick == "Keep a devotion")
+		arcane_devote_at(O) // arcane_devotion.dm
 	else if (pick == "Let this altar go")
 		if (O.arcane_altar_by == ckey)
 			arcane_altar_spots -= O.arcane_altar_spot

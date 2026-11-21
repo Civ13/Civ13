@@ -122,6 +122,7 @@ class Projection:
                             isnum=lambda value: isinstance(value, (int, float)),
                             isturf=lambda item: bool(item and getattr(item, 'turf', False)),
                             CONSCIOUS=0,
+                            resin_cook_attackby=lambda *_args: False,
                             wood_chip_logs_per_batch=lambda: self.run('/proc/wood_chip_logs_per_batch', Record()),
                             round=math.floor, min=min, prob=lambda _chance: False,
                             qdel=lambda obj: (setattr(obj, 'gcDestroyed', True), setattr(obj, 'loc', None)),
