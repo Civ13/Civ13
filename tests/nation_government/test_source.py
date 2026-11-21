@@ -106,11 +106,36 @@ class NationGovernmentSource(unittest.TestCase):
         offer = proc_text(self.text, '/mob/living/human/proc/throne_claim_offer(')
         self.assertIn('account_verified(nation_account())', offer)
         self.assertIn('G["type"] != "monarchy" || istext(G["head_account"])', offer)
-        tick = proc_text(self.text, '/proc/throne_claim_tick(')
-        self.assertIn('get_dist(claimant, A) > THRONE_CLAIM_RANGE', tick)
-        self.assertIn('if (!contested)\n\t\tC[3] += THRONE_CLAIM_STEP', tick)
-        self.assertIn('"op" = "claim"', tick)
-        self.assertIn('#define THRONE_CLAIM_TIME 18000', self.text)
+        self.assertIn('nation_hold_start(nid, "claim", A)', offer)
+        tick = proc_text(self.text, '/proc/nation_hold_tick(')
+        self.assertIn('get_dist(holder, A) > ASSEMBLY_HOLD_RANGE', tick)
+        self.assertIn('if (!contested)\n\t\tC[3] += ASSEMBLY_HOLD_STEP', tick)
+        self.assertIn('"op" = kind == "claim" ? "claim" : "overthrow"', tick)
+        self.assertIn('#define ASSEMBLY_HOLD_TIME 18000', self.text)
+
+    def test_revolt_hold_needs_signers_window_and_notice(self):
+        offer = proc_text(self.text, '/mob/living/human/proc/revolt_hold_offer(')
+        self.assertIn('nation_revolt_signed(nid, nation_account())', offer)
+        self.assertIn('now < R["hold_from"]', offer)
+        self.assertIn('nation_revolt_window(A)', offer)
+        self.assertIn('nation_hold_start(nid, "revolt", A)', offer)
+        # Only citizens who did not sign pause a revolt, and only in its window.
+        self.assertIn('kind == "claim" || !nation_revolt_signed(nid, H.nation_account())',
+                      proc_text(self.text, '/proc/nation_hold_opposes('))
+        self.assertIn('!c || province_in_window(c)', proc_text(self.text, '/proc/nation_revolt_window('))
+        self.assertIn('user.revolt_hold_offer(src)',
+                      proc_text(self.text, '/obj/structure/faction_hall/nation_assembly/attack_hand('))
+
+    def test_revolt_menu_gates_and_shares(self):
+        menu = proc_text(self.text, '/mob/living/human/proc/nation_revolt_menu(')
+        self.assertIn('if (is_head)\n\t\treturn', menu)
+        self.assertIn('if (!nation_eligible())', menu)
+        self.assertIn('"op" = "sign"', menu)
+        self.assertIn('"op" = "revolt"', menu)
+        shares = {float(v) for v in re.findall(r'if \((0\.\d+)\)', proc_text(self.text, '/proc/nation_revolt_share('))}
+        self.assertEqual(shares | {0.5}, {g['revolt'] for g in GOVERNMENTS.values()})
+        self.assertIn('choices += "Revolt"', read('code/game/mob/groups/nation.dm'))
+        self.assertIn("'sname'", read('tools/transfer_storage/region.py'))
 
     def test_head_presence_and_faith_are_reported(self):
         report = proc_text(self.text, '/proc/nation_succession_report(')

@@ -6,8 +6,9 @@ lead from one to another, are listed in one table:
 
 - the game: `code/modules/persistence/world_links.dm`, written from the JSON by
   `python3 tools/world_links/build.py` (`--check` exits 1 when it is stale).
-  It holds `world_links` (read by `region_edge_links()` in `region_edge.dm`
-  through this world's region id) and `continent_layout` (the chart place,
+  It holds `world_links` (walk links, read by `region_edge_links()` in
+  `region_edge.dm` through this world's region id), `world_sea_links` (sail
+  links), `world_oceans`, `world_insets` and `continent_layout` (the chart place,
   open-sea coasts and flight level used by `sea_lanes.dm` and
   `aircraft_crossing.dm`);
 - the host tools and the launcher, through `tools/world_links` (`load()`
@@ -27,6 +28,10 @@ coasts; a world outside the earth group (a test fixture) can still set
 - `chart`: the land's place on the world chart, x east and y north, in chart tiles.
 - `coasts`: the map edges with open sea along them, best first (ships make landfall there).
 - `flight`: the map has a standing open-air level aircraft fly on.
+- `oceans`: each ocean region ([ocean-regions.md](ocean-regions.md)) with its
+  `name`, `size`, `seed`, `chart` place, and optionally `cold`, `ice` (`[side,
+  depth]`), `wrap` (`west` joins its east edge to its west) and `insets` (an
+  island land's waters inside it, `{"land", "box": [x0, y0, x1, y1]}`).
 - A link joins a stretch of one region's edge (`[region, side, from, to]`, as
   fractions of the edge counted west to east or south to north) to the facing
   edge of another. Each link is written once; both directions are made from it.
@@ -41,7 +46,9 @@ coast faces open sea on its map.
 ## Changing a link
 
 1. Edit `tools/world_links/world_links.json`.
-2. `python3 tools/world_links/build.py`.
-3. `python3 -m unittest discover -s tests/edge_crossings`.
+2. `python3 tools/world_links/build.py`, and `python3 tools/ocean_maps/generate.py`
+   when an ocean changed.
+3. `python3 -m unittest discover -s tests/edge_crossings` and `-s tests/ocean_maps`
+   (open water at both ends of every sail link).
 
 Running worlds read the table at compile time, so a change needs a deploy.

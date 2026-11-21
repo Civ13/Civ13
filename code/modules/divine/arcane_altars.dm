@@ -157,9 +157,9 @@ var/global/list/arcane_altar_thresholds = list(list(0, 0), list(5, 0), list(15, 
 
 /mob/living/human/proc/arcane_refresh_verbs()
 	if (istext(divine_patron) && length(divine_patron) && magic_allowed())
-		verbs |= /mob/living/human/proc/arcane_tend_altar
+		verbs |= list(/mob/living/human/proc/arcane_tend_altar, /mob/living/human/proc/arcane_commune) // commune: arcane_spirits.dm
 	else
-		verbs -= /mob/living/human/proc/arcane_tend_altar
+		verbs -= list(/mob/living/human/proc/arcane_tend_altar, /mob/living/human/proc/arcane_commune)
 
 /mob/living/human/proc/arcane_tend_altar()
 	set name = "Tend an Altar"

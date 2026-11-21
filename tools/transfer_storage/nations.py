@@ -37,10 +37,11 @@ import time
 
 from tools.transfer_storage.nation_motions import CITIZENS_MAX, WEALTH_MAX, NationMotions
 from tools.transfer_storage.nation_succession import NationSuccession
+from tools.transfer_storage.nation_revolt import NationRevolt
 from tools.transfer_storage.region import account_key_valid, faction_id_valid
 
 NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency', 'govern', 'stay', 'era', 'ballot',
-              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim')
+              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow')
 NATION_NAME_MAX = 40
 # Member factions allowed by assembly tier: none, meeting ground, assembly
 # hall, parliament.
@@ -56,25 +57,26 @@ DAY = 24 * HOUR
 # whether the ruler alone decides (admissions, the common money, a change of
 # government); the body that votes and the head's term in days (elective,
 # nation_motions.py); and how many days the head may be away before the seat
-# passes on (nation_succession.py). Starting values from the approved plan, to
+# passes on (nation_succession.py); and the share of eligible citizens a
+# revolt petition needs (nation_revolt.py). Starting values from the approved plan, to
 # tune after play.
 GOVERNMENTS = {
     'confederation': {'name': 'Confederation', 'ruler': None, 'age': 0, 'bonus': 0, 'notice': 0, 'personal': False,
-                      'body': None, 'term': 0, 'away': 0},
+                      'body': None, 'term': 0, 'away': 0, 'revolt': 0.5},
     'theocracy': {'name': 'Theocracy', 'ruler': 'High Priest', 'age': 0, 'bonus': 0, 'notice': DAY, 'personal': True,
-                  'body': None, 'term': 0, 'away': 7},
+                  'body': None, 'term': 0, 'away': 7, 'revolt': 0.5},
     'monarchy': {'name': 'Monarchy', 'ruler': 'Monarch', 'age': 1, 'bonus': 1, 'notice': 2 * DAY, 'personal': True,
-                 'body': None, 'term': 0, 'away': 7},
+                 'body': None, 'term': 0, 'away': 7, 'revolt': 0.5},
     'dictatorship': {'name': 'Dictatorship', 'ruler': 'Dictator', 'age': 1, 'bonus': 2, 'notice': 3 * DAY,
-                     'personal': True, 'body': None, 'term': 0, 'away': 3},
+                     'personal': True, 'body': None, 'term': 0, 'away': 3, 'revolt': 0.33},
     # Elective governments decide by motion (nation_motions.py) and elect
     # their head for a term in days.
     'republic': {'name': 'Republic', 'ruler': 'Consul', 'age': 1, 'bonus': 1, 'notice': DAY, 'personal': False,
-                 'body': 'senate', 'term': 14, 'away': 3},
+                 'body': 'senate', 'term': 14, 'away': 3, 'revolt': 0.66},
     'democracy': {'name': 'Democracy', 'ruler': 'Archon', 'age': 1, 'bonus': 0, 'notice': DAY, 'personal': False,
-                  'body': 'referendum', 'term': 7, 'away': 3},
+                  'body': 'referendum', 'term': 7, 'away': 3, 'revolt': 0.75},
     'league': {'name': 'Merchant league', 'ruler': 'Doge', 'age': 2, 'bonus': 1, 'notice': DAY, 'personal': False,
-               'body': 'council', 'term': 14, 'away': 3},
+               'body': 'council', 'term': 14, 'away': 3, 'revolt': 0.4},
 }
 DEFAULT_GOVERNMENT = 'confederation'
 GOVERNMENT_NOTICE = DAY
@@ -121,6 +123,10 @@ def nation_request_valid(r):
         return False
     if op == 'govern':
         return government_proposal_valid(r)
+    if op == 'revolt':
+        return government_proposal_valid(r) and text_valid(r.get('sname'), PERSON_NAME_MAX)
+    if op == 'sign':
+        return text_valid(r.get('sname'), PERSON_NAME_MAX)
     if op == 'ballot':
         return type(r.get('motion')) is int and type(r.get('choice')) is str and 0 < len(r['choice']) <= 32
     if op == 'stand':
@@ -135,7 +141,7 @@ def nation_request_valid(r):
     if op == 'census':
         return type(r.get('citizens')) is int and 0 <= r['citizens'] <= CITIZENS_MAX and \
             type(r.get('wealth')) is int and 0 <= r['wealth'] <= WEALTH_MAX
-    return True  # secede, stay
+    return True  # secede, stay, overthrow
 
 
 def text_valid(value, limit):
@@ -170,7 +176,7 @@ def faction_land(faction):
     return faction[4:].partition(':')[0]
 
 
-class Nations(NationMotions, NationSuccession):
+class Nations(NationMotions, NationSuccession, NationRevolt):
     def __init__(self, db):
         self.db = db
         db.execute('''CREATE TABLE IF NOT EXISTS nation(
@@ -203,6 +209,7 @@ class Nations(NationMotions, NationSuccession):
             faction TEXT PRIMARY KEY, nation TEXT NOT NULL, at INTEGER NOT NULL)''')
         self._motion_tables()
         self._succession_tables()
+        self._revolt_tables()
         db.execute("CREATE TABLE IF NOT EXISTS nation_seq(id INTEGER PRIMARY KEY CHECK (id = 1), next INTEGER NOT NULL)")
         db.execute('INSERT OR IGNORE INTO nation_seq VALUES (1, 1)')
 
@@ -284,6 +291,7 @@ class Nations(NationMotions, NationSuccession):
                 'government_votes': {v: json.loads(c) for v, c in votes.get('government', {}).items()},
                 'leaving': dict(self.db.execute('SELECT faction, at FROM nation_leaving WHERE nation = ?', (nid,))),
                 'motions': self.motions_snapshot(nid), 'term_ends': self.term_ends(nid),
+                'revolt': self.revolt_snapshot(nid),
                 'census': {f: list(self.census(f)) for f in self.members(nid)},
                 'eras': dict(self.db.execute('''SELECT e.faction, e.age FROM nation_era e
                     JOIN nation_member m ON m.faction = e.faction WHERE m.nation = ?''', (nid,)))}
@@ -298,7 +306,7 @@ class Nations(NationMotions, NationSuccession):
             pending = {'type': kind, 'name': GOVERNMENTS[kind]['name'], 'at': g['pending_at'], 'person': person,
                        'pname': pname, 'pfaction': pfaction, 'religion': religion}
         return {'type': g['type'], 'name': info['name'], 'ruler': info['ruler'], 'personal': info['personal'],
-                'body': info['body'], 'term': info['term'], 'away': info['away'],
+                'body': info['body'], 'term': info['term'], 'away': info['away'], 'revolt': info['revolt'],
                 'head_seen': self.head_seen(nation), 'successor': self.successor(nation),
                 'notice': info['notice'], 'since': g['since'], 'changed': g['changed'],
                 'head_account': g['head_account'], 'head_name': g['head_name'], 'religion': g['religion'],
@@ -320,6 +328,7 @@ class Nations(NationMotions, NationSuccession):
             self._establish(nation, int(now))
         self.succession_due(int(now))
         self.motions_due(int(now))
+        self.revolts_due(int(now))
 
     # -- deciding --------------------------------------------------------------
 
@@ -367,6 +376,12 @@ class Nations(NationMotions, NationSuccession):
             return self.faith(nation, r, now)
         if op == 'claim':
             return self.claim(nation, r, now)
+        if op == 'revolt':
+            return self.open_revolt(nation, r, government_choice(r), now)
+        if op == 'sign':
+            return self.sign(nation, r, now)
+        if op == 'overthrow':
+            return self.overthrow(nation, r, now)
         if self.body(nation):
             if op == 'ballot':
                 return self.ballot(nation, r, now)
@@ -528,6 +543,7 @@ class Nations(NationMotions, NationSuccession):
             if c[3] == old:
                 c[3] = new
                 self.db.execute('UPDATE nation_government SET pending = ? WHERE nation = ?', (json.dumps(c), nation))
+        self.revolt_rename(old, new)
         return None
 
     def _secede(self, faction, nation, now):
@@ -562,6 +578,8 @@ class Nations(NationMotions, NationSuccession):
             self.db.execute('DELETE FROM nation_term WHERE nation = ?', (nation,))
             self.db.execute('DELETE FROM nation_successor WHERE nation = ?', (nation,))
             self.db.execute('DELETE FROM nation_seen WHERE nation = ?', (nation,))
+            self.drop_revolt(nation)
+            self.db.execute('DELETE FROM nation_revolt_cooldown WHERE nation = ?', (nation,))
             for (mid,) in self.db.execute('SELECT id FROM nation_motion WHERE nation = ?', (nation,)).fetchall():
                 self.close_motion(mid)
             for (f,) in self.db.execute('SELECT faction FROM nation_application WHERE nation = ?', (nation,)).fetchall():

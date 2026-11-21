@@ -22,6 +22,7 @@ tile is looked up at each pull. Nothing ticks.
 | Door, window, shutter, trapdoor (not keypad, key slot or faction doors) | Opens or shuts; a bar, a locked lock or `locked` holds it shut |
 | Castle drop trapdoor | Drops or shuts |
 | Gate winch | Raises or drops its gates at once |
+| Shaft clutch (`transmission.dm`) | Thrown: in. Thrown back: out. One pull: toggles |
 | Bell | Rings an alarm (not on a lever thrown back) |
 | Rock drop (6 stone, Field Defenses) | Stones fall on its tile: 15 brute, armour applies, knockdown. Hung up again by hand (4 s) |
 
