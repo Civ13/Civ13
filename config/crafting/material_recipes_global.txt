@@ -3412,6 +3412,29 @@ RECIPE: /material/steel/,magnetic torpedo,/obj/item/naval_torpedo/magnetic,16,28
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null
+
+// Decorative floor variants (existing construction materials and research).
+RECIPE: /material/stone/,light running cobblestone floor,/obj/covers/cobblestone/vertical,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,light crosswise cobblestone floor,/obj/covers/cobblestone/horizontal,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,dark crosswise cobblestone floor,/obj/covers/cobblestone/horizontal/dark,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,mossy old stone floor,/obj/covers/stone/slab/decorative/mossy,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 1,/obj/covers/wood/alt,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 2,/obj/covers/wood/alt/two,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 3,/obj/covers/wood/alt/three,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 4,/obj/covers/wood/alt/four,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 5,/obj/covers/wood/alt/five,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 6,/obj/covers/wood/alt/six,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 7,/obj/covers/wood/alt/seven,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 8,/obj/covers/wood/alt/eight,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 9,/obj/covers/wood/alt/nine,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 10,/obj/covers/wood/alt/ten,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 11,/obj/covers/wood/alt/eleven,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/bamboo/,edged tatami floor,/obj/covers/tatami/trim,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,inside-corner tatami floor,/obj/covers/tatami/trim/angle,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,outside-corner tatami floor,/obj/covers/tatami/trim/corner,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,three-sided tatami floor,/obj/covers/tatami/trim/cee,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,fully framed tatami floor,/obj/covers/tatami/trim/full,1,20,1,1,construction,0,0,0,8,null
+
 //**| GENERATED TOOL MATERIAL VARIANTS: edit config/recipe_variants.json, then run scripts/recipe_variants.py --write |**
 RECIPE: /material/copper/,copper hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,copper
 RECIPE: /material/bronze/,bronze hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,bronze
@@ -3438,25 +3461,3 @@ RECIPE: /material/bronze/,bronze hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,
 RECIPE: /material/iron/,iron hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,iron
 RECIPE: /material/steel/,steel hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,steel
 //**| END GENERATED TOOL MATERIAL VARIANTS |**
-
-// Decorative floor variants (existing construction materials and research).
-RECIPE: /material/stone/,light running cobblestone floor,/obj/covers/cobblestone/vertical,1,25,1,1,floors,0,0,0,8,null
-RECIPE: /material/stone/,light crosswise cobblestone floor,/obj/covers/cobblestone/horizontal,1,25,1,1,floors,0,0,0,8,null
-RECIPE: /material/stone/,dark crosswise cobblestone floor,/obj/covers/cobblestone/horizontal/dark,1,25,1,1,floors,0,0,0,8,null
-RECIPE: /material/stone/,mossy old stone floor,/obj/covers/stone/slab/decorative/mossy,1,25,1,1,floors,0,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 1,/obj/covers/wood/alt,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 2,/obj/covers/wood/alt/two,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 3,/obj/covers/wood/alt/three,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 4,/obj/covers/wood/alt/four,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 5,/obj/covers/wood/alt/five,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 6,/obj/covers/wood/alt/six,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 7,/obj/covers/wood/alt/seven,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 8,/obj/covers/wood/alt/eight,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 9,/obj/covers/wood/alt/nine,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 10,/obj/covers/wood/alt/ten,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/wood/soft/,wood floor pattern 11,/obj/covers/wood/alt/eleven,1,25,1,1,construction,18,0,0,8,null
-RECIPE: /material/bamboo/,edged tatami floor,/obj/covers/tatami/trim,1,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,inside-corner tatami floor,/obj/covers/tatami/trim/angle,1,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,outside-corner tatami floor,/obj/covers/tatami/trim/corner,1,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,three-sided tatami floor,/obj/covers/tatami/trim/cee,1,20,1,1,construction,0,0,0,8,null
-RECIPE: /material/bamboo/,fully framed tatami floor,/obj/covers/tatami/trim/full,1,20,1,1,construction,0,0,0,8,null
