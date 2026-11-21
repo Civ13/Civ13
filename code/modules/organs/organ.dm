@@ -1,4 +1,3 @@
-var/list/organ_cache = list()
 
 /obj/item/organ
 	name = "organ"

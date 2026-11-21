@@ -1,11 +1,4 @@
-var/list/exterior_turfs = list(/turf/floor/grass,
-							/turf/floor/dirt,
-							/turf/floor/beach/sand,
-							/turf/floor/plating/concrete,
-							)
 
-var/list/interior_areas = list(/area/caribbean/houses,
-							)
 
 /turf
 	// Temporary reservation while coupled vehicle parts are being transformed.

@@ -23,7 +23,9 @@ var/global/list/nation_assemblies = list() // every nation assembly, designated 
 // Tier -> list(name, factions held, earliest ordinal age, indoors,
 // list(material kind = list(stack type, amount, label))), as faction_hall_tiers.
 // Without an assembly a nation holds 3 factions.
-var/global/list/nation_assembly_tiers = list(
+var/global/list/nation_assembly_tiers = nation_assembly_tiers_table()
+/proc/nation_assembly_tiers_table()
+	return list(
 	list("meeting ground", 4, 1, FALSE, list(
 		"wood" = list(/obj/item/stack/material/wood, 120, "wood"),
 		"stone" = list(/obj/item/stack/material/stone, 120, "stone"))),

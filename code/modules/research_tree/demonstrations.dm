@@ -35,7 +35,9 @@
 // allows, every type the demonstration needs built). A needed type must come
 // from an earlier subject or be in the kit list: tests/late_research checks
 // no demonstration needs the subject it proves (Val, 2026-11-18).
-var/global/list/capstone_demonstrations = list(
+var/global/list/capstone_demonstrations = capstone_demonstrations_table()
+/proc/capstone_demonstrations_table()
+	return list(
 	"steam_power" = list("Keep a steam engine running for a minute", 60, list(/obj/structure/engine/external/steam), list(/obj/structure/engine/external/steam)),
 	"electricity" = list("Keep an electric lamp lit from an engine or generator for a minute", 60, list(/obj/structure/lamp/lamp_small, /obj/structure/lamp/lamppost_small), list(/obj/structure/lamp/lamp_small, /obj/structure/engine/external/steam)),
 	"nuclear_power" = list("Keep a reactor producing power, below overheating, for three minutes", 180, list(/obj/structure/civ_generator/nuclear, /obj/structure/reactor_fuel_processor), list(/obj/structure/civ_generator/nuclear, /obj/structure/reactor_fuel_processor)),

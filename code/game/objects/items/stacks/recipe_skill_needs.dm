@@ -7,7 +7,9 @@
 // the Voyage map skips it). A match is a part of the recipe's title, a list
 // of parts that must all be in it, or the result type. Where several entries
 // match, the highest applies.
-var/global/list/recipe_skill_table = list(
+var/global/list/recipe_skill_table = recipe_skill_needs_table()
+/proc/recipe_skill_needs_table()
+	return list(
 	list("crafting", 1.7, list("carriage")),
 	list("crafting", 1, list(list("faction", "door"))),
 	list("crafting", 1, list(list("locked", "door")), list("unlocked")),

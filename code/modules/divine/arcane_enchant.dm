@@ -30,7 +30,9 @@ var/global/list/arcane_enchant_names = list(
 )
 
 // Enchantment id -> materials and charges by strength 1 / 2 / 3.
-var/global/list/arcane_enchant_recipes = list(
+var/global/list/arcane_enchant_recipes = arcane_enchant_recipes_table()
+/proc/arcane_enchant_recipes_table()
+	return list(
 	"keepsake" = list("aspect" = "mercy", "count" = 2, "gem" = 1, "charges" = list(1, 2, 3)),
 	"cleansing" = list("aspect" = "mercy", "count" = 1, "gem" = 0, "charges" = list(3, 5, 8)),
 	"warding" = list("aspect" = "ward", "count" = 2, "gem" = 0, "charges" = list(10, 20, 30), "vigil" = TRUE),

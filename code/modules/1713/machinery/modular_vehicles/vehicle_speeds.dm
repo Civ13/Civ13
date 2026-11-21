@@ -14,7 +14,9 @@
 #define VEHICLE_STEP_OVERHEAD 1   // What the movement loops add to a delay.
 #define VEHICLE_MIN_DELAY 0.2     // Fastest delay a land vehicle may be given.
 
-var/global/list/vehicle_speed_ladder = list(
+var/global/list/vehicle_speed_ladder = vehicle_speed_ladder_table()
+/proc/vehicle_speed_ladder_table()
+	return list(
 	// Road vehicles.
 	"car" = list(9, 6, 4, 2.4, 1.6),
 	// Tracked vehicles, by real road speed.
