@@ -97,6 +97,8 @@
 	for (var/atom/movable/M in D)
 		if (M.loc != D || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || isobserver(M))
 			continue
+		if (istype(M, /obj/structure/strait_boom) && !M.density) // a lowered or broken boom (naval/strait_boom.dm)
+			continue
 		if (M.density || isliving(M) || istype(M, /obj/structure))
 			return "[M.name] in the way at [D.x],[D.y]"
 	return null

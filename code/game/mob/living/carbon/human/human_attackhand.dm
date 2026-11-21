@@ -637,6 +637,7 @@
 	// item drop or movement stun; the target can immediately retreat.
 	shove_recovery_until = world.time + 30
 	setClickCooldown(4)
+	body_motion_knockback(user)
 	user.append_attack_log("\[[time_stamp()]\] Shoved [name] ([ckey])")
 	append_attack_log("\[[time_stamp()]\] Shoved by [user.name] ([user.ckey])")
 	msg_admin_attack("[key_name(user)] shoved [key_name(src)]", key_name(user), key_name(src))

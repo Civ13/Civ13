@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PEOPLES = (ROOT / 'code/game/mob/living/carbon/human/peoples.dm').read_text()
 ORIGINS = (ROOT / 'code/game/mob/living/carbon/human/origins.dm').read_text()
 ADMIN = (ROOT / 'code/modules/admin/verbs/peoples_admin.dm').read_text()
+SPLIT = (ROOT / 'code/game/mob/living/carbon/human/peoples_split.dm').read_text()
 BLOCKED = (ROOT / 'config/people_names_blocked.txt').read_text()
 
 
@@ -52,7 +53,7 @@ class Records(unittest.TestCase):
 
     def test_no_initialised_globals_in_peoples(self):
         # The world's global init proc sits near the compiler's size limit.
-        for text in (PEOPLES, ADMIN):
+        for text in (PEOPLES, ADMIN, SPLIT):
             self.assertIsNone(re.search(r'^\s*var/(static|global)/[^\n=]*= *list\(', text, re.M))
 
     def test_a_formed_people_dresses_like_its_root(self):
@@ -64,6 +65,37 @@ class Records(unittest.TestCase):
         self.assertIn('T["peoples"] = peoples', tongues)
         self.assertIn('region_travel_import_peoples(T["peoples"])', tongues)
         self.assertIn('record["imported"] = TRUE', proc(tongues, '/proc/region_travel_import_peoples'))
+
+
+class Splits(unittest.TestCase):
+    def test_splits_run_on_the_calendar_never_on_research_eras(self):
+        # Eras move with player research (Val, 2026-11-21).
+        self.assertNotIn('ordinal_age', SPLIT)
+        self.assertNotIn('era', re.sub(r'//.*', '', SPLIT).replace('area', ''))
+        self.assertIn('people_year_check(world_calendar_year())', SPLIT)
+
+    def test_contact_is_watched_and_halves_the_years_apart(self):
+        hear = (ROOT / 'code/game/mob/hear_say.dm').read_text()
+        self.assertIn('H.language_drift_heard(language, speaker)\n\t\tH.people_heard(speaker)', hear)
+        drift = (ROOT / 'code/game/mob/language/drift.dm').read_text()
+        self.assertIn('people_isolation_tick()', proc(drift, '/proc/language_drift_tick'))
+        check = proc(SPLIT, '/proc/people_year_check')
+        self.assertIn('isolation[key] = round((isnum(isolation[key]) ? isolation[key] : 0) / 2)', check)
+        self.assertLess(check.index('for (var/key in active)'), check.index('active.Cut()'))
+
+    def test_splits_are_rare(self):
+        defines = (ROOT / 'code/__defines/species_languages.dm').read_text()
+        years = int(re.search(r'#define PEOPLE_SPLIT_YEARS (\d+)', defines).group(1))
+        self.assertGreaterEqual(years, 180)
+        self.assertGreaterEqual(int(re.search(r'#define PEOPLE_SPLIT_MIN (\d+)', defines).group(1)), 5)
+
+    def test_only_a_verified_leader_names_a_people(self):
+        verb = proc(SPLIT, '/mob/living/human/proc/name_our_people()\n')
+        self.assertLess(verb.index('map.is_faction_leader(src, civilization)'), verb.index('split_people('))
+        self.assertLess(verb.index('account_verified(nation_account())'), verb.index('split_people('))
+        self.assertIn('people_name_problem(wanted)', verb)
+        login = (ROOT / 'code/modules/research_tree/knowledge_spread.dm').read_text()
+        self.assertIn('settle_people_record()\n\toffer_pending_people_naming()', login)
 
 
 class Names(unittest.TestCase):
@@ -91,7 +123,7 @@ class AdminVerbs(unittest.TestCase):
         dme = (ROOT / 'civ13.dme').read_text()
         self.assertIn('code\\modules\\admin\\verbs\\peoples_admin.dm', dme)
         self.assertIn('code\\game\\mob\\living\\carbon\\human\\peoples.dm', dme)
-        for verb in ('cmd_admin_check_peoples', 'cmd_admin_found_people', 'cmd_admin_rename_people', 'cmd_admin_merge_people'):
+        for verb in ('cmd_admin_check_peoples', 'cmd_admin_found_people', 'cmd_admin_rename_people', 'cmd_admin_merge_people', 'cmd_admin_force_people_split'):
             self.assertIn('/client/proc/%s,' % verb, registry)
             body = proc(ADMIN, '/client/proc/%s(' % verb)
             self.assertIn('if (!check_rights(R_ADMIN))\n\t\treturn', body)

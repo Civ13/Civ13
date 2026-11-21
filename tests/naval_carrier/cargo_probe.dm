@@ -297,20 +297,28 @@ var/naval_runtime_error = FALSE
 	var/list/k_tile = k_bad["tiles"][1]
 	k_tile[3] += list(list("u", "/obj/structure/probe_nothing", 100))
 	naval_check(!sea_crossing_record_ok(k_bad), "a roof entry that is not a roof is refused")
-	// A storey over her upper deck would be left in the air: it keeps her in port.
+	// A roof on her upper deck carries her second deck above, which crosses too.
 	var/obj/roof/wood/high = new(locate(56, 42, 3))
 	var/obj/covers/repairedfloor/high_floor = new(locate(56, 42, 4))
 	naval_check(building_link(high, high_floor), "a roof on her upper deck carries a floor on the level above")
-	var/high_refusal = sea_crossing_pack(k_tiller)
-	naval_check(istext(high_refusal) && findtext(high_refusal, "floor above"), "a floor over her upper deck keeps her in port ([high_refusal])")
-	qdel(high)
-	naval_check(QDELETED(high_floor), "taken down, the roof takes its floor with it")
+	high_floor.building_take_upper_face(high)
+	var/list/high_packed = sea_crossing_pack(k_tiller)
+	var/list/HR = islist(high_packed) ? high_packed["record"] : null
+	naval_check(HR && length(HR["top"]) == 1 && length(HR["upper"]) == 9 && sea_crossing_record_ok(HR), "her second deck above packs with her ([istext(high_packed) ? high_packed : "ok"])")
+	if (HR)
+		KR = HR
+	var/list/h_bad = json_decode(json_encode(KR))
+	h_bad["top"] += list(list(9, 9, list(list("c", "/obj/covers/repairedfloor", 2, 100))))
+	naval_check(!sea_crossing_record_ok(h_bad), "a second deck tile over no upper deck tile is refused")
+	h_bad = json_decode(json_encode(KR))
+	h_bad -= "upper"
+	naval_check(!sea_crossing_record_ok(h_bad), "a second deck with no upper deck is refused")
 	sea_crossing_strip(k_tiller)
 	qdel(k_tiller)
 	var/k_left = 0
 	for (var/x = 55, x <= 57, x++)
 		for (var/y = 40, y <= 42, y++)
-			for (var/z = 2, z <= 3, z++)
+			for (var/z = 2, z <= 4, z++)
 				var/turf/T = locate(x, y, z)
 				k_left += count_in(T, /obj/covers) + count_in(T, /obj/roof) + count_in(T, /obj/structure) + count_in(T, /obj/item)
 	naval_check(!k_left && QDELETED(pail) && QDELETED(outboard), "stripped, nothing of her is left on either deck ([k_left])")
@@ -331,6 +339,7 @@ var/naval_runtime_error = FALSE
 				if (face && face.name == "upper floor")
 					paired++
 		naval_check(paired == 9, "every roof has its upper floor again ([paired])")
+		naval_check(NK.top_tile_count() == 1, "her second deck above is built again on the roof on her upper deck ([NK.top_tile_count()])")
 		var/turf/k_bow = locate(k_at.x + 1, k_at.y + 2, 3)
 		naval_check(locate(/obj/item/weapon/reagent_containers/glass/bucket) in k_bow, "the pail is on the upper deck where it stood")
 		var/obj/structure/closet/crate/new_crate = locate() in locate(k_at.x + 1, k_at.y, 3)

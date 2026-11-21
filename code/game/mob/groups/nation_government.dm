@@ -14,7 +14,7 @@
 //
 // Nothing here sleeps except the prompts, which recheck after.
 
-#define GOVERNMENT_TYPES list("confederation", "theocracy", "monarchy", "dictatorship", "republic", "democracy", "league")
+#define GOVERNMENT_TYPES list("confederation", "elders", "theocracy", "monarchy", "dictatorship", "republic", "democracy", "league", "feudal", "constitutional", "oneparty")
 
 // Type -> name, ruler title, earliest ordinal age, extra factions, notice
 // hours and what the type means for players. Mirrors GOVERNMENTS in
@@ -28,7 +28,16 @@ var/global/list/nation_government_info = nation_government_info_table()
 	"dictatorship" = list("Dictatorship", "Dictator", 1, 2, 72, "A dictator rules alone and holds two more factions, but if the dictator's faction leaves, the nation falls back to a confederation. Members give three days' notice to leave."),
 	"republic" = list("Republic", "Consul", 1, 1, 24, "A consul leads; the member factions still vote on admissions, money and changes. Holds one more faction."),
 	"democracy" = list("Democracy", "Archon", 1, 0, 24, "An archon leads; the member factions still vote on admissions, money and changes."),
-	"league" = list("Merchant league", "Doge", 2, 1, 24, "A doge leads a league of trading factions. Holds one more faction."))
+	"league" = list("Merchant league", "Doge", 2, 1, 24, "A doge leads a league of trading factions. Holds one more faction."),
+	"elders" = list("Council of elders", "Eldest", 0, 0, 24, "The member factions' elders sit in council, weighted by their people, and choose an eldest to lead for two weeks. The eldest may be away a week before a new choice. Members give a day's notice to leave."),
+	"feudal" = list("Feudal crown", "King", 2, 1, 48, "A king rules for life, names an heir and holds one more faction. The crown keeps up to eight vassal nations, which must serve four weeks before they may declare independence, but it is a little easier to overthrow. Members give two days' notice to leave."),
+	"constitutional" = list("Constitutional monarchy", "Prime Minister", 4, 2, 24, "A parliament weighted by the people decides, and a prime minister leads for two weeks. Holds two more factions and is hard to overthrow, but the prime minister may be away only three days."),
+	"oneparty" = list("One-party state", "Chairman", 7, 3, 72, "A chairman rules alone and holds three more factions, but a revolt needs only a quarter of the citizens to sign. If the chairman is away three days the seat goes empty until the factions choose again. Members give three days' notice to leave."))
+
+// TRUE when the government's head names an heir and an empty seat can be claimed
+// (HEREDITARY in nation_succession.py).
+/proc/nation_hereditary(list/G)
+	return islist(G) && (G["type"] in list("monarchy", "feudal"))
 
 /proc/nation_government_of(nid)
 	var/list/N = nation_registry[nid]
@@ -68,7 +77,7 @@ var/global/list/nation_government_info = nation_government_info_table()
 		line += ", the seat empty"
 	var/list/S = G["successor"]
 	if (islist(S) && istext(S["name"]))
-		line += " ([G["type"] == "monarchy" ? "heir" : "deputy"]: [html_encode(S["name"])])"
+		line += " ([nation_hereditary(G) ? "heir" : "deputy"]: [html_encode(S["name"])])"
 	var/list/P = G["pending"]
 	if (islist(P) && istext(P["name"]))
 		line += ". Becoming a [html_encode(lowertext(P["name"]))][istext(P["pname"]) && length(P["pname"]) ? " under [html_encode(P["pname"])]" : ""] within a day"
@@ -281,8 +290,7 @@ var/global/list/nation_government_info = nation_government_info_table()
 		if ("treaty")
 			var/list/T = subject
 			if (islist(T) && T.len == 3)
-				var/other = islist(nation_registry[T[2]]) ? nation_registry[T[2]]["name"] : "another nation"
-				return T[1] == "renounce" ? "Renounce [nation_treaty_name(T[3])] with [other]" : (T[3] == "war" ? "Declare war on [other]" : "Agree to [nation_treaty_name(T[3])] with [other]")
+				return nation_treaty_act_label(T)
 		if ("office")
 			var/list/O = subject
 			if (islist(O) && O.len == 4)
@@ -407,7 +415,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 // The monarch names an heir; the consul names a deputy. Sleeps (prompts).
 /mob/living/human/proc/nation_name_successor(faction, id, nid)
 	var/list/G = nation_government_of(nid)
-	var/what = G["type"] == "monarchy" ? "heir" : "deputy"
+	var/what = nation_hereditary(G) ? "heir" : "deputy"
 	var/list/S = G["successor"]
 	var/current = islist(S) && istext(S["name"]) ? " Now: [S["name"]]." : ""
 	to_chat(src, SPAN_NOTICE("[what == "heir" ? "Your heir takes the throne if you are away for [G["away"]] days." : "Your deputy acts for you if you are away for [G["away"]] days, while the citizens elect a new consul."][current]"))
@@ -449,7 +457,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	if (!nid)
 		return FALSE
 	var/list/G = nation_government_of(nid)
-	if (G["type"] != "monarchy" || istext(G["head_account"]))
+	if (!nation_hereditary(G) || istext(G["head_account"]))
 		return FALSE
 	if (nation_hold_busy(nid))
 		return TRUE
@@ -505,7 +513,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 /proc/nation_hold_valid(nid, kind, mob/living/human/holder)
 	var/list/G = nation_government_of(nid)
 	if (kind == "claim")
-		return G["type"] == "monarchy" && !istext(G["head_account"])
+		return nation_hereditary(G) && !istext(G["head_account"])
 	var/list/R = nation_revolt_of(nid)
 	return R && isnum(R["ripe"]) && nation_unix_now() <= R["ends"] && nation_revolt_signed(nid, holder.nation_account())
 
@@ -792,7 +800,43 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 			return "war"
 		if ("peace")
 			return "peace"
+		if ("overlord", "vassal")
+			return "vassalage"
+		if ("impose")
+			return "imposed vassalage"
+		if ("independence")
+			return "independence"
 	return "a treaty"
+
+// A treaty in force, as seen by the nation holding row R.
+/proc/nation_treaty_phrase(list/R)
+	var/other = html_encode(nation_name_of(R["other"]))
+	switch (R["kind"])
+		if ("war")
+			return "at war with [other]"
+		if ("vassal")
+			return "vassal of [other]"
+		if ("overlord")
+			return "overlord of [other]"
+	return "[nation_treaty_name(R["kind"])] with [other]"
+
+// What a treaty subject list(act, other, kind) does, for motions and prompts.
+/proc/nation_treaty_act_label(list/T)
+	var/other = nation_name_of(T[2])
+	if (T[1] == "renounce")
+		return T[3] == "overlord" ? "Release [other] from vassalage" : "Renounce [nation_treaty_name(T[3])] with [other]"
+	switch (T[3])
+		if ("war")
+			return "Declare war on [other]"
+		if ("overlord")
+			return "Take [other] as a vassal"
+		if ("vassal")
+			return "Become a vassal of [other]"
+		if ("impose")
+			return "Impose vassalage on [other]"
+		if ("independence")
+			return "Declare independence from [other]"
+	return "Agree to [nation_treaty_name(T[3])] with [other]"
 
 // Who decides a nation's treaties under its government, for prompts.
 /proc/nation_treaty_rule(nid)
@@ -820,7 +864,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	var/list/T = nation_treaties_of(nid)
 	var/list/parts = list()
 	for (var/list/R in T["in_force"])
-		parts += R["kind"] == "war" ? "at war with [html_encode(nation_name_of(R["other"]))]" : "[nation_treaty_name(R["kind"])] with [html_encode(nation_name_of(R["other"]))]"
+		parts += nation_treaty_phrase(R)
 	return parts.len ? "Treaties: [jointext(parts, "; ")]." : null
 
 /proc/nation_treaty_key(list/R)
@@ -835,7 +879,15 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	for (var/list/R in nation_treaties_of(nid)["in_force"])
 		now[nation_treaty_key(R)] = R
 		if (!old[nation_treaty_key(R)])
-			nation_tell_citizens(nid, R["kind"] == "war" ? "[nation_name_of(nid)] is at war with [nation_name_of(R["other"])]." : "[nation_name_of(nid)] and [nation_name_of(R["other"])] are bound by [nation_treaty_name(R["kind"])].")
+			switch (R["kind"])
+				if ("war")
+					nation_tell_citizens(nid, "[nation_name_of(nid)] is at war with [nation_name_of(R["other"])].")
+				if ("vassal")
+					nation_tell_citizens(nid, "[nation_name_of(nid)] is now a vassal of [nation_name_of(R["other"])], and pays it tribute each week.")
+				if ("overlord")
+					nation_tell_citizens(nid, "[nation_name_of(R["other"])] is now a vassal of [nation_name_of(nid)].")
+				else
+					nation_tell_citizens(nid, "[nation_name_of(nid)] and [nation_name_of(R["other"])] are bound by [nation_treaty_name(R["kind"])].")
 	for (var/key in old)
 		if (!now[key])
 			var/list/R = old[key]
@@ -848,10 +900,10 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	var/list/lines = list("<b>Foreign affairs of [html_encode(nation_name_of(nid))]</b>")
 	lines += nation_treaties_line(nid) || "No treaties are in force."
 	for (var/list/O in T["offers"]["received"])
-		lines += "[html_encode(nation_name_of(O["other"]))] offers [nation_treaty_name(O["kind"])]."
+		lines += O["kind"] == "overlord" ? "[html_encode(nation_name_of(O["other"]))] offers to take this nation as its vassal." : (O["kind"] == "vassal" ? "[html_encode(nation_name_of(O["other"]))] offers to become this nation's vassal." : "[html_encode(nation_name_of(O["other"]))] offers [nation_treaty_name(O["kind"])].")
 	for (var/list/O in T["offers"]["made"])
-		lines += "This nation offers [nation_treaty_name(O["kind"])] to [html_encode(nation_name_of(O["other"]))]."
-	lines += "A treaty needs both nations to agree under their own governments, and an offer stands for 7 days. War is declared by one nation alone and ends any alliance or pact; peace needs both. Either nation may renounce an alliance, pact or trade treaty alone. Allies and pact partners never contest each other's provinces, a siege on another nation needs war, and allies at a besieged seat fight on their ally's side. [nation_treaty_rule(nid)]"
+		lines += "This nation offers: [html_encode(nation_treaty_act_label(list("agree", O["other"], O["kind"])))]."
+	lines += "A treaty needs both nations to agree under their own governments, and an offer stands for 7 days. War is declared by one nation alone and ends any alliance or pact; peace needs both. Either nation may renounce an alliance, pact or trade treaty alone. Allies and pact partners never contest each other's provinces, a siege on another nation needs war, and allies at a besieged seat fight on their ally's side. A vassal pays its overlord a tenth of each member faction's strongbox (at most 100 silver) each week, and the two count as allies. Vassalage is agreed by both, or imposed by a nation at war that has won 2 sieges against the other in 14 days. The overlord may release a vassal; after 14 days a vassal may declare independence, which means war. [nation_treaty_rule(nid)]"
 	to_chat(src, jointext(lines, "<br>"))
 	if (!nation_may_propose(nid))
 		return
@@ -860,8 +912,8 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	if (pick == "Renounce a treaty")
 		var/list/options = list()
 		for (var/list/R in T["in_force"])
-			if (R["kind"] != "war")
-				options["[capitalize(nation_treaty_name(R["kind"]))] with [nation_name_of(R["other"])]"] = R
+			if (!(R["kind"] in list("war", "vassal")))
+				options[nation_treaty_act_label(list("renounce", R["other"], R["kind"]))] = R
 		if (!options.len)
 			to_chat(src, SPAN_NOTICE("There is no treaty to renounce."))
 			return
@@ -879,7 +931,8 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 		var/other = nations[WWinput(src, "With which nation?", "Foreign affairs", "Cancel", nations + "Cancel")]
 		if (!other)
 			return
-		var/list/kinds = list("Alliance" = "alliance", "Non-aggression pact" = "pact", "Trade treaty" = "trade", "Declare war" = "war", "Make peace" = "peace")
+		var/list/kinds = list("Alliance" = "alliance", "Non-aggression pact" = "pact", "Trade treaty" = "trade", "Declare war" = "war", "Make peace" = "peace",
+			"Take as a vassal" = "overlord", "Become their vassal" = "vassal", "Impose vassalage" = "impose", "Declare independence" = "independence")
 		var/kind = kinds[WWinput(src, "What should [nation_name_of(nid)] agree to with [nation_name_of(other)]?", "Foreign affairs", "Cancel", kinds + "Cancel")]
 		if (!kind)
 			return
