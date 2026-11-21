@@ -2870,6 +2870,8 @@ SUITES = {
                   'code/modules/1713/light_fuel.dm')},
     'preserves': {'files': ('tests/preserves/test_preserves.py',),
         'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi')},
+    'drug_classes': {'files': ('tests/drug_classes/test_drug_classes.py',),
+        'paths': ('tests/drug_classes/', 'code/modules/reagents/drug_classes.dm')},
     'drug_crops': {'files': ('tests/drug_crops/test_drug_crops.py',),
         'paths': ('tests/drug_crops/',)},
     'coffee': {'files': ('tests/coffee/test_coffee.py',),

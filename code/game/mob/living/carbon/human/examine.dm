@@ -272,6 +272,8 @@
 	if (O && O.get_teeth() < O.max_teeth)
 		msg += "<span class='warning'>[O.get_teeth() <= 0 ? "All" : "[O.max_teeth - O.get_teeth()]"] of [T.his] teeth are missing!</span>\n"
 
+	msg += drug_examine_text(T)
+
 	if (print_flavor_text()) msg += "[print_flavor_text()]\n"
 
 	msg += "*---------*</span>"

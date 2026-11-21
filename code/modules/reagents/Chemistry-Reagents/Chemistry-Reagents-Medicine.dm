@@ -160,8 +160,9 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague",
 	metabolism = 0.02
 
 /datum/reagent/tramadol/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 80)
-	M.adjust_mood(removed*6, "painkillers")
+	M.drug_painkiller("opioid", 80)
+	M.drug_dose("opioid", 0.03, 0.05)
+	M.drug_mood("opioid", removed*6, "painkillers")
 /datum/reagent/tramadol/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.hallucination = max(M.hallucination, 2)
@@ -476,13 +477,20 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague",
 	overdose = 14
 
 /datum/reagent/opium/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 100)
-	M.addictions["opium"] += 0.1
-	M.adjust_mood(removed*30, "opium")
+	M.drug_painkiller("opioid", 100)
+	M.drug_dose("opioid", 0.1, 0.25)
+	M.drug_mood("opioid", removed*30, "opium")
+	M.add_chemical_effect(CE_PULSE, -1)
+	if (prob(10))
+		M.drowsyness = max(M.drowsyness, 3)
+// Too much slows breathing until it stops.
 /datum/reagent/opium/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
 	M.druggy = max(M.druggy, 200)
+	M.adjustOxyLoss(2)
+	if (M.losebreath < 5 && prob(40))
+		M.losebreath++
 
 /datum/reagent/cocaine
 	name = "Cocaine"
@@ -495,15 +503,22 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague",
 	overdose = 60
 
 /datum/reagent/cocaine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 40)
-	M.addictions["cocaine"] += 0.12
+	M.drug_painkiller("stimulant", 40)
+	M.drug_dose("stimulant", 0.12, 0.25)
 	M.add_chemical_effect(CE_SPEEDBOOST, 2)
 	M.add_chemical_effect(CE_PULSE, 4)
-	M.adjust_mood(removed*30, "cocaine")
+	M.drug_stamina("stimulant", removed * 8)
+	M.drug_mood("stimulant", removed*30, "cocaine")
+	if (prob(3))
+		M.make_jittery(5)
 
+// Too much drives the heart until it fails; paranoia at high doses.
 /datum/reagent/cocaine/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.make_dizzy(6)
+	M.drug_heart_strain(1)
+	if (prob(10))
+		M.hallucination = max(M.hallucination, 3)
 
 /datum/reagent/crack
 	name = "Crack cocaine"
@@ -519,20 +534,22 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague",
 	if (prob(5))
 		M.emote(pick("twitch", "blink_r", "shiver", "scream"))
 		M.hallucination = max(M.hallucination, 1)
-	M.add_chemical_effect(CE_PAINKILLER, 50)
-	M.addictions["cocaine"] += 3
+	M.drug_painkiller("stimulant", 50)
+	M.drug_dose("stimulant", 3, 1)
 	M.add_chemical_effect(CE_SPEEDBOOST, 3)
 	M.add_chemical_effect(CE_PULSE, 2)
+	M.drug_stamina("stimulant", removed * 12)
 	M.make_jittery(5)
 	M.make_dizzy(10)
 	M.apply_effect(3, STUTTER, FALSE)
-	M.adjust_mood(removed*30, "cocaine")
+	M.drug_mood("stimulant", removed*30, "cocaine")
 
 /datum/reagent/crack/overdose(var/mob/living/human/M, var/alien, var/removed)
 	..()
 	M.make_dizzy(6)
 	M.adjustBrainLoss(6 * removed)
 	M.add_chemical_effect(CE_PULSE, 6)
+	M.drug_heart_strain(1.5)
 	M.hallucination = max(M.hallucination, 3)
 	M.apply_effect(3, STUTTER, FALSE)
 	M.adjust_mood(-(30), "a cocaine overdose")
@@ -552,7 +569,11 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague",
 		M.emote(pick("twitch", "blink_r", "shiver"))
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
 	M.add_chemical_effect(CE_PULSE, 2)
-	M.adjust_mood(removed*20, "methamphetamine")
+	M.drug_dose("stimulant", 0.15, 0.25)
+	M.drug_stamina("stimulant", removed * 10)
+	M.drug_mood("stimulant", removed*20, "methamphetamine")
+	// It wears away at the brain with every dose.
+	M.adjustBrainLoss(0.05 * removed)
 
 /datum/reagent/morphine
 	name = "Morphine"
@@ -565,8 +586,11 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague",
 	overdose = 9
 
 /datum/reagent/morphine/affect_blood(var/mob/living/human/M, var/alien, var/removed)
-	M.add_chemical_effect(CE_PAINKILLER, 200)
-	M.adjust_mood(removed*30, "painkillers")
+	M.drug_painkiller("opioid", 200)
+	M.drug_dose("opioid", 0.15, 0.3)
+	M.drug_mood("opioid", removed*30, "painkillers")
+	if (prob(15))
+		M.drowsyness = max(M.drowsyness, 5)
 /datum/reagent/morphine/overdose(var/mob/living/human/M, var/alien)
 	..()
 	M.sleeping = max(M.sleeping, 100)
@@ -683,7 +707,7 @@ var/global/list/charcoal_unabsorbed_toxins = list("cholera", "typhus", "plague",
 
 /datum/reagent/dragonpowder/affect_blood(var/mob/living/human/M, var/alien, var/removed)
 	M.add_chemical_effect(CE_PAINKILLER, 600)
-	M.addictions["cocaine"] += 0.50
+	M.drug_dose("stimulant", 0.5, 0.5)
 	M.add_chemical_effect(CE_SPEEDBOOST, 12)
 	M.add_chemical_effect(CE_PULSE, 9)
 	M.adjust_mood(removed*100, "a strange powder")
