@@ -70,13 +70,13 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'ef2ec8cc1198b099a345016f89b72c346417c1c4'
+WIKI_REVIEWED_REVISION = '3dc3d07bdbc019e6bb3310b67559dbcdc6847dbd'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('8ebe17801b94d3505109fe0107ce1d7acd91c8988cb4f87add9a260005c58dd6', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
-    'guides/Guide_to_Combat.md': ('4700e479474d468ac80a083f156a7ff2b27fdf1f98a72533a98bae0edec7b608', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
+    'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('d8eebb02435d4409fec74214d14ea239ab4f5a331b8ba6c7d506e5b2c99dc68f', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
@@ -113,7 +113,7 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('e7be93c7282c8f0a00e3293ee86f5bcb249a4d3526e5702d3ac6763dc74bec52', 'civilizations nomads gaia faction nation government monarchy republic democracy revolt'),
+    'gamemodes/Civilizations_and_Nomads.md': ('80a9d3d9e492da455da9ba88e520b5940d72880b11ba0601a660bc8b84903ec5', 'civilizations nomads gaia faction nation government monarchy republic democracy revolt'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
