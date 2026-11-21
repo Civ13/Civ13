@@ -1311,6 +1311,7 @@ var/global/list/node_grid_col_cache = null
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
 		"/obj/structure/hot_press" = "combustion",
+		"/obj/structure/layup_table" = "modern_construction",
 		// --- cooperage (17) ---
 		"/obj/structure/closet/ice_house" = "cooperage",
 		"/obj/structure/well_fitting/windlass" = "cooperage",

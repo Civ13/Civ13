@@ -76,13 +76,15 @@
 // Built per call: proc-static and global lists add to the world's global
 // initialiser, which is at the compiler's size limit.
 /proc/bakelizer_settings()
-	return list("plastic" = "plastic sheets", "phenolic_resin" = "phenolic resin", "nylon_thread" = "nylon thread")
+	return list("plastic" = "plastic sheets", "phenolic_resin" = "phenolic resin", "nylon_thread" = "nylon thread", "epoxy" = "epoxy")
 
 // The earliest ordinal age (research_faction.dm) a setting can be chosen in.
 /proc/bakelizer_setting_age(id)
 	switch (id)
 		if ("nylon_thread")
 			return 6 // WW2
+		if ("epoxy")
+			return 7 // Cold War (fiberglass.dm)
 	return 0
 
 // Settings that make solid goods, drawn out with the Remove verb, not poured.
