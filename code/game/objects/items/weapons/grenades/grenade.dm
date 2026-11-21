@@ -341,6 +341,8 @@
 /obj/item/weapon/grenade/dynamite/activate(mob/user as mob)
 	if (active)
 		return
+	if (state < 1) // an empty casing has no charge to set off (#6337)
+		return
 
 	if (user)
 		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
@@ -589,6 +591,7 @@
 	throw_range = 12
 	spread_range = 6
 	secondary_action = FALSE
+	var/detonated = FALSE
 
 /obj/item/weapon/grenade/modern/impact/attack_self(mob/user as mob)
 	if (!active)
@@ -612,10 +615,26 @@
 
 /obj/item/weapon/grenade/modern/impact/throw_impact(atom/hit_atom)
 	if (active)
-		prime()
+		impact_detonate()
 	else
 		..()
 	return
+
+// An impact fuse has no timer, so a severe blast sets the grenade off directly,
+// armed or not; impact_detonate() keeps repeated blasts and throws to one
+// detonation (#6298).
+/obj/item/weapon/grenade/modern/impact/ex_act(severity)
+	if (severity == 1.0)
+		impact_detonate()
+		return
+	return ..()
+
+/obj/item/weapon/grenade/modern/impact/proc/impact_detonate()
+	if (detonated)
+		return FALSE
+	detonated = TRUE
+	prime()
+	return TRUE
 
 /obj/item/weapon/grenade/modern/impact/oto35
 	name = "OTO Mod. 35"
@@ -626,7 +645,7 @@
 /obj/item/weapon/grenade/modern/impact/oto35/throw_impact(atom/hit_atom)
 	if (active)
 		if (prob(90))
-			prime()
+			impact_detonate()
 	else
 		..()
 	return
