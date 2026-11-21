@@ -11,6 +11,16 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-21: Translator tab (Edge chat translator) -->
+Val asked (2026-11-21) that the Edge chat translator (tools/edge-translator, docs/chat-translation.md) run as part of the
+launcher. Like Player Help it belongs to the host service: with `"chat_translator": {}` in the group config
+(optional `port` 55581, `node`, `npm`, `edge`, `profile`), `supervise` copies the service into
+`<root>/chat-translator/app`, runs `npm ci --ignore-scripts` when its lock changes, starts it and restarts it, and every
+region's merged config gets `CHAT_TRANSLATE_URL http://127.0.0.1:<port>` (a host line wins). Launcher 1.5.35 adds the
+**Translator** tab (Gui/TranslatorPage.cs, LocalTranslator.cs): status from `translator-status` (running, answering
+/health, counts), Start/Stop (`translator-start`/`translator-stop`, a stop marker the host service honours; stop ends only a
+verified Node process tree), and the service log.
+
 <!-- 2026-11-21: up to 24 regions and missing Earth regions -->
 Launcher 1.5.34: every list of regions reads up to `LocalHosting.MaxRegions` (32, the same as shard_group.py MAX_REGIONS
 and shard_group.dm SHARD_MAX_REGIONS) instead of 16, and Ports and front door gains "Add missing Earth regions"

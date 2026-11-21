@@ -13,6 +13,7 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json adopt --region ID --from PATH
     python shard_group.py --config group.json check-update [--region ID]
     python shard_group.py --config group.json help-status|help-start|help-stop
+    python shard_group.py --config group.json translator-status|translator-start|translator-stop  # Edge chat translator
     python shard_group.py --config group.json config-apply [--region ID]  # overlays + config.local.txt, no compile
     python shard_group.py --config group.json config-migrate  # whole overlay config.txt -> config.local.txt
     python shard_group.py --config group.json expedition-land --region ID --template T.json [--key X,Y]
@@ -29,7 +30,8 @@ Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
 `gaia_host.py [--config gaia.json] --group group.json serve`, which also keeps
 the group's transfer agents and coordinator running, and (when the group
-config has "player_help") one "Ask for help" bridge per region.
+config has "player_help") one "Ask for help" bridge per region, and (with
+"chat_translator") the Edge chat translator, whose address every region's config gets.
 
 Each region is driven by the same host logic as scripts/gaia-host/gaia_host.py
 (one detached worker per action, progress in operation.json, save-and-stop
@@ -58,6 +60,7 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.request
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'gaia-host'))
@@ -80,6 +83,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
+                 'translator-status', 'translator-start', 'translator-stop',
                  'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
@@ -94,6 +98,12 @@ MAGIC_WHITELIST_HEADER = '# Magic whitelist: one player key per line. Shared by 
 START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL', 'GATEWAY')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
+# Chat translator (tools/edge-translator): the host service runs one for the whole group.
+TRANSLATOR_PORT = 55581
+TRANSLATOR_SOURCE = 'tools/edge-translator'
+TRANSLATOR_FILES = ('edge_translator.js', 'detect.js', 'package.json', 'package-lock.json')
+TRANSLATOR_INSTALL_SECONDS = 600  # npm ci of the pinned playwright-core
+TRANSLATOR_STARTING_SECONDS = 120  # Edge may take this long to open before /health answers
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
 EPOCH_NAMES = ('5000 B.C.', '313 B.C.', '1013', '1713', '1873', '1903', '1943', '1969', '2013', '2026')
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
@@ -473,6 +483,20 @@ def check_group(group, path):
         chosen = settings.setdefault('regions', [r['id'] for r in regions])
         if type(chosen) is not list or not chosen or len(set(map(str, chosen))) != len(chosen) or any(c not in ids for c in chosen):
             raise ValueError('player_help regions must be distinct region ids of the group')
+    # Chat translator: the host service keeps tools/edge-translator running and every
+    # region's config gets CHAT_TRANSLATE_URL (code/modules/chat/chat_translate.dm).
+    settings = group.get('chat_translator')
+    if settings is not None:
+        if type(settings) is not dict:
+            raise ValueError('chat_translator must be an object')
+        port = settings.setdefault('port', TRANSLATOR_PORT)
+        if type(port) is not int or not 1024 <= port <= 65535:
+            raise ValueError('chat_translator port must be 1024-65535')
+        for key in ('node', 'npm', 'edge', 'profile'):
+            if key in settings and (type(settings[key]) is not str or not settings[key]):
+                raise ValueError('chat_translator %s must be a non-empty string' % key)
+        settings.setdefault('node', 'node')
+        settings.setdefault('npm', 'npm.cmd' if os.name == 'nt' else 'npm')
     resolve_standby_ports(group)
     group['_path'] = str(Path(path).resolve())
     return group
@@ -2108,9 +2132,13 @@ def apply_overlays(group, region, path):
     front = front_dir(group) / 'config.local.txt'
     if region['id'] == front_region(group) and front.is_file():
         local.append(front)
-    if local:
+    translator = translator_config_line(group)
+    if local or translator:
         config = path / 'config' / 'config.txt'
         text = config.read_text(encoding='utf-8') if config.exists() else ''
+        # The group's translator first, so a host's own CHAT_TRANSLATE_URL line (or #CHAT_TRANSLATE_URL) wins.
+        if translator:
+            text = merge_config(text, translator)
         for item in local:
             try:
                 text = merge_config(text, item.read_text(encoding='utf-8-sig'))
@@ -3239,6 +3267,159 @@ def help_pid_written(group, region_id, pid):
     return max(times) if times else None
 
 
+# -- chat translator ---------------------------------------------------------------
+# One Edge translator service (tools/edge-translator) per group, kept running by the host
+# service like the Player Help bridges. It runs from its own copy under <root>/chat-translator
+# (app/, with node_modules from npm ci), so region updates never pull files from under it,
+# and keeps Edge's language packs in <root>/chat-translator/edge-profile.
+
+def translator_dir(group):
+    return Path(group['root']) / 'chat-translator'
+
+
+def translator_stop_file(group):
+    """While this exists the host service leaves the translator stopped (translator-stop)."""
+    return translator_dir(group) / 'stopped'
+
+
+def translator_config_line(group):
+    """The CHAT_TRANSLATE_URL line every region's config gets, or None without chat_translator."""
+    settings = group.get('chat_translator')
+    if not settings:
+        return None
+    return 'CHAT_TRANSLATE_URL http://127.0.0.1:%d' % settings['port']
+
+
+def translator_pid(group, now=time.time):
+    try:
+        path = translator_dir(group) / 'service.pid'
+        pid = int(path.read_text(encoding='utf-8').strip())
+        if pid > 0 and process_alive(pid):
+            return pid
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def translator_health(group, timeout=2):
+    """The service's /health answer, or None when it does not answer."""
+    settings = group.get('chat_translator')
+    if not settings:
+        return None
+    try:
+        with urllib.request.urlopen('http://127.0.0.1:%d/health' % settings['port'], timeout=timeout) as reply:
+            answer = json.loads(reply.read(65536).decode('utf-8'))
+        return answer if type(answer) is dict and answer.get('ok') is True else None
+    except (OSError, ValueError):
+        return None
+
+
+def translator_source(group):
+    """Where the service's files come from: the group repository's checkout."""
+    return Path(group['repository']) / TRANSLATOR_SOURCE
+
+
+def install_translator(group, run=None):
+    """Copy the service's files into <root>/chat-translator/app and npm ci there when the
+    lock file changed or node_modules is missing. Returns the app folder."""
+    settings = group['chat_translator']
+    source, app = translator_source(group), translator_dir(group) / 'app'
+    app.mkdir(parents=True, exist_ok=True)
+    changed = False
+    for name in TRANSLATOR_FILES:
+        item = source / name
+        if not item.is_file():
+            raise OSError('%s is missing (update the group repository)' % item)
+        target = app / name
+        if not target.is_file() or not filecmp.cmp(item, target, shallow=False):
+            shutil.copyfile(item, target)
+            changed = changed or name in ('package.json', 'package-lock.json')
+    if changed or not (app / 'node_modules' / 'playwright-core' / 'package.json').is_file():
+        run = run or (lambda argv, cwd: subprocess.run(argv, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True,
+                                                       timeout=TRANSLATOR_INSTALL_SECONDS).returncode)
+        if run([settings['npm'], 'ci', '--ignore-scripts', '--no-audit', '--no-fund'], app) != 0:
+            raise OSError('npm ci failed in %s' % app)
+    return app
+
+
+def translator_argv(group, app):
+    settings = group['chat_translator']
+    argv = [settings['node'], str(app / 'edge_translator.js'), '--port', str(settings['port']),
+            '--profile', settings.get('profile') or str(translator_dir(group) / 'edge-profile')]
+    if settings.get('edge'):
+        argv += ['--edge', settings['edge']]
+    return argv
+
+
+def ensure_translator(group, start=detach, install=None, now=time.time):
+    """Start the translator when it is configured, not stopped on request and not running.
+    Returns True when it was started."""
+    if not group.get('chat_translator') or translator_stop_file(group).exists() or translator_pid(group, now):
+        return False
+    folder = translator_dir(group)
+    folder.mkdir(parents=True, exist_ok=True)
+    app = (install or install_translator)(group)
+    pid = start(translator_argv(group, app), app, folder / 'service.log')
+    (folder / 'service.pid').write_text('%d\n' % pid, encoding='utf-8')
+    return True
+
+
+def translator_status(group, now=time.time):
+    settings = group.get('chat_translator')
+    if not settings:
+        return {'configured': False}
+    pid = translator_pid(group, now)
+    health = translator_health(group) if pid else None
+    entry = {'configured': True, 'running': pid is not None, 'pid': pid, 'port': settings['port'],
+             'stopped': translator_stop_file(group).exists(), 'answering': health is not None,
+             'url': 'http://127.0.0.1:%d' % settings['port'], 'log': str(translator_dir(group) / 'service.log')}
+    started = translator_dir(group) / 'service.pid'
+    try:
+        entry['started_seconds_ago'] = max(0, int(now() - started.stat().st_mtime)) if pid else None
+    except OSError:
+        entry['started_seconds_ago'] = None
+    if health:
+        entry['stats'] = {key: health[key] for key in ('translated', 'skipped', 'failed', 'busy', 'waiting') if type(health.get(key)) is int}
+    return entry
+
+
+def translator_settings(group):
+    if not group.get('chat_translator'):
+        raise Refused('chat_translator is not configured for this group')
+    return group['chat_translator']
+
+
+def translator_start(group, start=detach, install=None):
+    translator_settings(group)
+    translator_dir(group).mkdir(parents=True, exist_ok=True)
+    translator_stop_file(group).unlink(missing_ok=True)
+    return {'started': ensure_translator(group, start, install)}
+
+
+def translator_stop(group, kill=None):
+    """Stop the service and keep it stopped until translator-start. Worlds answer chat
+    lines untranslated meanwhile (their calls fail and pause)."""
+    translator_settings(group)
+    folder = translator_dir(group)
+    folder.mkdir(parents=True, exist_ok=True)
+    translator_stop_file(group).write_text('stopped on request\n', encoding='utf-8')
+    pid = translator_pid(group)
+    result = {'stopped': pid is not None}
+    if pid:
+        pid_file = folder / 'service.pid'
+        try:
+            born = pid_file.stat().st_mtime
+        except OSError:
+            born = None
+        # Node and the Edge it started; only a Node process older than its pid file.
+        try:
+            (kill or Platform().kill_tree)(pid, expect=process_safety.node_expect(born_before=born))
+        except Unverified as error:
+            result['not_ended'] = str(error)
+        pid_file.unlink(missing_ok=True)
+    return result
+
+
 # -- outside save validator ---------------------------------------------------------
 # A region's start skips the per-entry walk of its save when map_saves/validated.json
 # vouches for the files on the running build. A handover or an ordinary save leaves
@@ -3531,6 +3712,12 @@ def supervise(group, start=detach):
         started['player_help'] = helped
     if help_errors:
         started['player_help_errors'] = help_errors
+    # The chat translator: a side job too, so one that cannot start keeps nothing else down.
+    try:
+        if ensure_translator(group, start):
+            started['chat_translator'] = True
+    except (OSError, subprocess.SubprocessError) as error:
+        started['chat_translator_error'] = str(error)[:300]
     # Lands that ships' courses asked for (expedition_slots.serve): a side job too.
     try:
         opened = serve_expeditions(group, start)
@@ -3946,6 +4133,11 @@ def main(argv=None):
             result = help_start(group, region_id=args.region)
         elif args.action == 'help-stop':
             result = help_stop(group, region_id=args.region)
+        elif args.action in ('translator-status', 'translator-start', 'translator-stop'):
+            if args.region:
+                raise Refused('the chat translator serves the whole group; leave out --region')
+            result = {'translator-status': translator_status, 'translator-start': translator_start,
+                      'translator-stop': translator_stop}[args.action](group)
         elif args.action == 'adopt':
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
