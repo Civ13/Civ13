@@ -21,6 +21,9 @@ ICONS = read('code/game/mob/living/carbon/human/update_icons.dm')
 DEFENSE = read('code/game/mob/living/carbon/human/human_defense.dm')
 ATTACKHAND = read('code/game/mob/living/carbon/human/human_attackhand.dm')
 CONFIG = read('code/datums/configuration.dm')
+EMOTE = read('code/game/mob/living/carbon/human/emotes/emote.dm')
+BUCKLING = read('code/game/objects/buckling.dm')
+WORK = read('code/game/mob/animations.dm')
 DME = read('civ13.dme')
 
 
@@ -49,7 +52,7 @@ class BodyMotionSources(unittest.TestCase):
             self.assertIn('transform = ', call)
 
     def test_motion_state_is_never_saved(self):
-        for name in ('body_motion_until', 'body_motion_priority', 'body_motion_rest',
+        for name in ('body_motion_until', 'body_motion_priority', 'body_motion_started', 'body_motion_rest',
                      'body_motion_drawn_turned', 'body_motion_watch_checked', 'body_motion_watch_cached'):
             self.assertRegex(MOTION, rf'var/tmp/(matrix/)?{name}\b')
 
@@ -66,6 +69,18 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('if (effective_force && blocked < 2)\n\t\tbody_motion_recoil(user)', weapon)
         self.assertIn('toxic=H.lizard)\n\t\t\t\tbody_motion_recoil(H)', ATTACKHAND)
 
+    def test_work_seat_and_emote_hooks(self):
+        strike = proc_body(WORK, '/datum/resource_work_animation/proc/show_strike()')
+        self.assertIn('if (H.body_motion_work(target))\n\t\t\treach = 8', strike)
+        self.assertNotRegex(strike, r'pixel_[xyz] = -?16')
+        self.assertIn('\t\tH.body_motion_settle()', proc_body(BUCKLING, '/obj/proc/buckle_mob('))
+        self.assertIn('custom_emote(m_type,message)\n\t\t\tbody_motion_emote(act)', EMOTE)
+
+    def test_gestures_are_full_level_only(self):
+        for header in ('/mob/living/human/proc/body_motion_work(', '/mob/living/human/proc/body_motion_settle(',
+                       '/mob/living/human/proc/body_motion_emote('):
+            self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL', proc_body(MOTION, header))
+
     def test_config_line(self):
         self.assertIn('var/body_motion = BODY_MOTION_FULL', CONFIG)
         self.assertIn('if ("body_motion")', CONFIG)
@@ -76,7 +91,8 @@ class BodyMotionSources(unittest.TestCase):
         fall = proc_body(MOTION, '/mob/living/human/proc/body_motion_posture_change(')
         self.assertIn('BODY_MOTION_PRIORITY_POSTURE, 4, rest', fall)
         self.assertIn('time = 2, easing = QUAD_EASING | EASE_IN', fall)
-        self.assertEqual(fall.count('? 45 : -45'), 2)
+        self.assertEqual(fall.count('? 45 : -45'), 3)  # topple, lie down, rise
+        self.assertIn('BODY_MOTION_PRIORITY_POSTURE, 6, rest)\n\t\tanimate(src, transform = body_motion_matrix(upright', fall)
         self.assertIn('BODY_MOTION_PRIORITY_POSTURE, 6, rest', fall)
         self.assertIn('SINE_EASING | EASE_OUT', fall)
         recoil = proc_body(MOTION, '/mob/living/human/proc/body_motion_recoil(')

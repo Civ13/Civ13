@@ -12,7 +12,7 @@
 #define BODY_MOTION_PRIORITY_COMBAT 2 // swings, recoil
 #define BODY_MOTION_PRIORITY_POSTURE 3 // falling and standing up
 
-// Fewest deciseconds between two motions of the same body, posture excepted.
+// Fewest deciseconds between two motion starts on one body, posture excepted.
 #define BODY_MOTION_MIN_GAP 2
 // A body is animated only when a player is this close on its level.
 #define BODY_MOTION_WATCH_RANGE 12

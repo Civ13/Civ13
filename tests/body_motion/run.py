@@ -68,7 +68,7 @@ def main():
         print(result, json.dumps(receipt))
         if args.render_dir:
             args.render_dir.mkdir(parents=True, exist_ok=True)
-            for item in [*work.glob('render_*.png'), work / 'keys.json']:
+            for item in [*work.glob('render_*.png'), work / 'keys.json']:  # bodies, tool, rock, chair
                 if item.exists():
                     shutil.copy(item, args.render_dir / item.name)
         return 0 if result == 'PASS' else 1

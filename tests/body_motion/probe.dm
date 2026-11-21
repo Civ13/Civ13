@@ -47,6 +47,7 @@ var/body_motion_probe_checks = 0
 // Clears the running motion as if its time had passed.
 /proc/body_motion_probe_idle(mob/living/human/H)
 	H.body_motion_until = -100
+	H.body_motion_started = -100
 	H.body_motion_priority = 0
 
 /proc/body_motion_probe_run()
@@ -118,9 +119,53 @@ var/body_motion_probe_checks = 0
 	H.body_motion_priority = BODY_MOTION_PRIORITY_POSTURE
 	body_motion_probe_assert(!H.body_motion_recoil(A), "recoil_waits_for_posture")
 	body_motion_probe_idle(H)
-	// The gap after a motion ends.
+	// The gap between two starts.
 	H.body_motion_until = world.time - 1
+	H.body_motion_started = world.time - 1
 	body_motion_probe_assert(!H.body_motion_recoil(A), "min_gap_between_motions")
+	body_motion_probe_idle(H)
+
+	// --- lying down on purpose lowers slowly ------------------------------------
+	H.resting = TRUE
+	H.lying = TRUE
+	H.update_posture_transform()
+	body_motion_probe_assert(H.body_motion_until == world.time + 6 && body_motion_matrix_same(H.transform, H.posture_transform()), "rest_lies_down_6ds")
+	body_motion_probe_idle(H)
+	H.resting = FALSE
+	H.lying = FALSE
+	H.update_posture_transform()
+	body_motion_probe_idle(H)
+
+	// --- work strikes on the tool tick ----------------------------------------------
+	var/turf/east_turf = locate(6, 5, 1)
+	body_motion_probe_assert(H.body_motion_work(east_turf) && H.body_motion_until == world.time + 5 && H.body_motion_priority == BODY_MOTION_PRIORITY_LOW, "work_strike_5ds")
+	body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "work_ends_at_rest")
+	// The next tick, 5 ds later, starts the next strike.
+	H.body_motion_started = world.time - 5
+	H.body_motion_until = world.time
+	body_motion_probe_assert(H.body_motion_work(east_turf), "work_repeats_each_tick")
+	// A hit cuts in over work; work never cuts in over a hit.
+	H.body_motion_started = -100
+	body_motion_probe_assert(H.body_motion_recoil(A), "recoil_over_work")
+	H.body_motion_started = -100
+	body_motion_probe_assert(!H.body_motion_work(east_turf), "work_waits_for_recoil")
+	body_motion_probe_idle(H)
+
+	// --- sitting and emotes -----------------------------------------------------
+	body_motion_probe_assert(H.body_motion_settle() && H.body_motion_until == world.time + 3, "seat_settle_3ds")
+	body_motion_probe_idle(H)
+	var/list/emote_times = list("nod" = 4, "shake" = 4, "bow" = 6, "shrug" = 4, "wave" = 5, "salute" = 6)
+	for (var/act in emote_times)
+		body_motion_probe_assert(H.body_motion_emote(act) && H.body_motion_until == world.time + emote_times[act], "emote_[act]")
+		body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "emote_[act]_ends_at_rest")
+		body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_emote("smile"), "text_emotes_stay_still")
+	H.lying = TRUE
+	H.update_posture_transform()
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_emote("nod") && !H.body_motion_work(east_turf), "no_gestures_lying")
+	H.lying = FALSE
+	H.update_posture_transform()
 	body_motion_probe_idle(H)
 
 	// --- unwatched bodies snap -------------------------------------------------
@@ -137,6 +182,7 @@ var/body_motion_probe_checks = 0
 	config.body_motion = BODY_MOTION_REDUCED
 	body_motion_probe_assert(H.body_motion_recoil(A), "reduced_keeps_recoil")
 	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_work(locate(6, 5, 1)) && !H.body_motion_emote("nod") && !H.body_motion_settle(), "reduced_drops_work_emotes_seats")
 	config.body_motion = BODY_MOTION_OFF
 	body_motion_probe_assert(!H.body_motion_recoil(A), "off_no_recoil")
 	H.lying = TRUE
@@ -182,6 +228,10 @@ var/body_motion_probe_checks = 0
 	D.regenerate_icons()
 	for (var/direction in list(SOUTH, NORTH, EAST, WEST))
 		fcopy(body_motion_probe_flat(D, direction), "render_[direction].png")
+	var/obj/item/weapon/material/hatchet/axe = new(D.loc)
+	fcopy(icon(axe.icon, axe.icon_state, SOUTH), "render_tool.png")
+	var/obj/structure/wild/rock/stone = new(locate(9, 9, 1))
+	fcopy(icon(stone.icon, stone.icon_state, SOUTH), "render_rock.png")
 	var/matrix/stand = D.posture_transform()
 	D.lying = TRUE
 	var/matrix/lie = D.posture_transform()

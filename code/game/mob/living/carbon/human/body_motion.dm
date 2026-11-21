@@ -17,6 +17,7 @@
 	// world.time the running motion ends; transform belongs to it until then.
 	var/tmp/body_motion_until = 0
 	var/tmp/body_motion_priority = 0
+	var/tmp/body_motion_started = -100
 	// The posture transform the running motion returns to.
 	var/tmp/matrix/body_motion_rest = null
 	// Whether the last drawn posture was turned (lying or prone); null = never drawn.
@@ -54,15 +55,16 @@
 		return FALSE
 	if (!body_motion_watched())
 		return FALSE
-	if (world.time < body_motion_until)
-		return priority >= body_motion_priority
-	// Gap since the last motion ended; posture changes always play.
-	if (priority < BODY_MOTION_PRIORITY_POSTURE && world.time < body_motion_until + BODY_MOTION_MIN_GAP)
+	if (world.time < body_motion_until && priority < body_motion_priority)
+		return FALSE
+	// At most one motion start per BODY_MOTION_MIN_GAP; posture changes always play.
+	if (priority < BODY_MOTION_PRIORITY_POSTURE && world.time < body_motion_started + BODY_MOTION_MIN_GAP)
 		return FALSE
 	return TRUE
 
 /mob/living/human/proc/body_motion_claim(priority, duration, matrix/rest)
 	body_motion_priority = priority
+	body_motion_started = world.time
 	body_motion_until = world.time + duration
 	body_motion_rest = rest
 
@@ -86,12 +88,23 @@
 		M.Translate(dx, dy)
 	return M
 
+/mob/living/human/proc/body_motion_lying_by_choice()
+	return resting || sleeping > 0 || buckled
+
 // Eased fall or stand-up in place of the old instant turn. Both pass through
 // a 45 degree lean pivoting at the feet, so the body topples over and rises
 // from its feet instead of spinning about its middle. Fall: 4 ds, ease-in,
 // 1px settle. Stand-up: 6 ds, ease-out.
 /mob/living/human/proc/body_motion_posture_change(matrix/rest, turned)
-	if (turned)
+	if (turned && body_motion_lying_by_choice())
+		// Lying down on purpose (resting, sleeping, a bed) lowers the body
+		// slowly through the same lean instead of toppling: 6 ds, no bump.
+		var/matrix/upright = matrix(transform)
+		var/lean = rest.b >= 0 ? 45 : -45
+		body_motion_claim(BODY_MOTION_PRIORITY_POSTURE, 6, rest)
+		animate(src, transform = body_motion_matrix(upright, 0, 0, lean), time = 3, easing = SINE_EASING, flags = ANIMATION_PARALLEL)
+		animate(transform = rest, time = 3, easing = SINE_EASING | EASE_OUT)
+	else if (turned)
 		var/matrix/upright = matrix(transform)
 		var/lean = rest.b >= 0 ? 45 : -45 // the side the lying turn goes
 		body_motion_claim(BODY_MOTION_PRIORITY_POSTURE, 4, rest)
@@ -127,3 +140,83 @@
 	animate(src, transform = away, time = 1, easing = LINEAR_EASING, flags = ANIMATION_PARALLEL)
 	animate(transform = rest, time = 2, easing = SINE_EASING | EASE_IN)
 	return TRUE
+
+// Plays a list of keys, each list(dx, dy, degrees, squash_y, time, easing),
+// from the current posture and back to it. The last key should be the rest
+// (0, 0, 0, 1). Shifts are screen pixels, turns pivot at the feet.
+/mob/living/human/proc/body_motion_play(priority, min_level, list/keys)
+	if (!keys || !keys.len || body_motion_turned() || stat == DEAD)
+		return FALSE
+	if (!body_motion_can_play(priority, min_level))
+		return FALSE
+	var/matrix/rest = posture_transform()
+	var/total = 0
+	for (var/list/key in keys)
+		total += key[5]
+	body_motion_claim(priority, total, rest)
+	var/first = TRUE
+	for (var/list/key in keys)
+		var/matrix/M = body_motion_matrix(rest, key[1], key[2], key[3], key[4])
+		if (first)
+			animate(src, transform = M, time = key[5], easing = key[6], flags = ANIMATION_PARALLEL)
+			first = FALSE
+		else
+			animate(transform = M, time = key[5], easing = key[6])
+	return TRUE
+
+// Forward along a direction: list(x, y, roll). East and west lean by turning;
+// north and south cannot show a lean, so they shift instead and never roll.
+/proc/body_motion_forward(direction)
+	var/x = (direction & EAST) ? 1 : ((direction & WEST) ? -1 : 0)
+	var/y = (direction & NORTH) ? 1 : ((direction & SOUTH) ? -1 : 0)
+	if (x)
+		return list(x, 0, x)
+	return list(0, y, 0)
+
+// A tool strike on the existing 5 ds work tick (mining and chopping): wind up
+// 1px back, strike 2px in with up to a 6 degree lean, slow recovery. 5 ds.
+/mob/living/human/proc/body_motion_work(atom/target)
+	var/direction = target ? get_dir(src, target) : 0
+	if (!direction)
+		direction = dir
+	var/list/f = body_motion_forward(direction)
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, list(
+		list(-f[1], -f[2], -4 * f[3], 1, 1, LINEAR_EASING),
+		list(2 * f[1], 2 * f[2], 6 * f[3], 1, 2, QUAD_EASING | EASE_IN),
+		list(0, 0, 0, 1, 2, SINE_EASING | EASE_OUT)))
+
+// Sitting down on a seat: a 2px drop with a brief squash at the feet. 3 ds.
+/mob/living/human/proc/body_motion_settle()
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, list(
+		list(0, -2, 0, 0.9, 1, QUAD_EASING | EASE_IN),
+		list(0, 0, 0, 1, 2, SINE_EASING | EASE_OUT)))
+
+// Emotes that read as a whole-body gesture. Others stay text only. Rolls are
+// kept for leaning actions (bow); head and arm gestures only shift or squash.
+/mob/living/human/proc/body_motion_emote(act)
+	var/list/f = body_motion_forward(dir)
+	var/list/keys
+	switch (act)
+		if ("nod")
+			keys = list(list(0, -1, 0, 1, 1, SINE_EASING), list(0, 0, 0, 1, 1, SINE_EASING),
+				list(0, -1, 0, 1, 1, SINE_EASING), list(0, 0, 0, 1, 1, SINE_EASING))
+		if ("shake")
+			keys = list(list(-1, 0, 0, 1, 1, SINE_EASING), list(1, 0, 0, 1, 2, SINE_EASING),
+				list(0, 0, 0, 1, 1, SINE_EASING))
+		if ("bow")
+			// North and south can't show the lean, so they squash at the feet.
+			var/squash = f[3] ? 1 : 0.9
+			keys = list(list(2 * f[1], 2 * f[2], 12 * f[3], squash, 2, SINE_EASING), list(2 * f[1], 2 * f[2], 12 * f[3], squash, 2, LINEAR_EASING),
+				list(0, 0, 0, 1, 2, SINE_EASING | EASE_OUT))
+		if ("shrug")
+			keys = list(list(0, 2, 0, 1, 1, QUAD_EASING | EASE_OUT), list(0, 2, 0, 1, 1, LINEAR_EASING),
+				list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN))
+		if ("wave")
+			keys = list(list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT), list(0, 1, 0, 1, 3, LINEAR_EASING),
+				list(0, 0, 0, 1, 1, SINE_EASING))
+		if ("salute")
+			keys = list(list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT), list(0, 1, 0, 1, 4, LINEAR_EASING),
+				list(0, 0, 0, 1, 1, SINE_EASING))
+	if (!keys)
+		return FALSE
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, keys)

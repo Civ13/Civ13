@@ -11,6 +11,7 @@ It is a preview, not a Dream Seeker capture.
 """
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -20,6 +21,30 @@ SCALE = 4
 FRAME_DS = 0.5  # 50 ms frames
 GRASS = (86, 112, 70, 255)
 GRASS_DARK = (78, 102, 63, 255)
+WOOD = (0x82, 0x4B, 0x28)  # wood icon_colour (materials.dm)
+
+
+def sprite_file(folder, name):
+    sheet = Image.open(folder / name).convert('RGBA')
+    return sheet.crop((0, 0, 32, 32))
+
+
+def chair_sprite():
+    """The plain chair from icons/obj/bed_chair.dmi, south-facing, in wood colour."""
+    path = Path(__file__).resolve().parents[2] / 'icons/obj/bed_chair.dmi'
+    sheet = Image.open(path)
+    desc = sheet.info['Description']
+    index = 0
+    for name, dirs, frames in re.findall(r'state = "([^"]*)"\n\tdirs = (\d+)\n\tframes = (\d+)', desc):
+        if name == 'chair':
+            break
+        index += int(dirs) * int(frames)
+    sheet = sheet.convert('RGBA')
+    cols = sheet.width // 32
+    img = sheet.crop(((index % cols) * 32, (index // cols) * 32, (index % cols) * 32 + 32, (index // cols) * 32 + 32))
+    r, g, b = WOOD
+    img.putdata([(p[0] * r // 255, p[1] * g // 255, p[2] * b // 255, p[3]) for p in img.get_flattened_data()])
+    return img
 
 
 def sprite(folder, direction):
@@ -27,7 +52,7 @@ def sprite(folder, direction):
     return sheet.crop((0, 0, 32, 32))
 
 
-def matrix(dx=0.0, dy=0.0, degrees=0.0, base=(1, 0, 0, 0, 1, 0)):
+def matrix(dx=0.0, dy=0.0, degrees=0.0, base=(1, 0, 0, 0, 1, 0), squash=1.0):
     """body_motion_matrix(): base, then a turn pivoting at the feet, then a shift."""
     a, b, c, d, e, f = base
     def then(m2, m1):
@@ -36,9 +61,11 @@ def matrix(dx=0.0, dy=0.0, degrees=0.0, base=(1, 0, 0, 0, 1, 0)):
         return (a2 * a1 + b2 * d1, a2 * b1 + b2 * e1, a2 * c1 + b2 * f1 + c2,
                 d2 * a1 + e2 * d1, d2 * b1 + e2 * e1, d2 * c1 + e2 * f1 + f2)
     m = (a, b, c, d, e, f)
-    if degrees:
+    if degrees or squash != 1:
         r = math.radians(degrees)
         m = then((1, 0, 0, 0, 1, 16), m)
+        if squash != 1:
+            m = then((1, 0, 0, 0, squash, 0), m)
         m = then((math.cos(r), math.sin(r), 0, -math.sin(r), math.cos(r), 0), m)
         m = then((1, 0, 0, 0, 1, -16), m)
     return then((1, 0, dx, 0, 1, dy), m)
@@ -62,7 +89,51 @@ EASE = {
     'quad_in': lambda t: t * t,
     'sine_in': lambda t: 1 - math.cos(t * math.pi / 2),
     'sine_out': lambda t: math.sin(t * math.pi / 2),
+    'sine': lambda t: (1 - math.cos(t * math.pi)) / 2,
+    'quad_out': lambda t: 1 - (1 - t) * (1 - t),
 }
+
+
+def keys_track(keys):
+    """body_motion_play() keys: (dx, dy, degrees, squash, ds, easing) from rest."""
+    return track((1, 0, 0, 0, 1, 0), [(matrix(dx, dy, deg, squash=sq), ds, ease) for dx, dy, deg, sq, ds, ease in keys])
+
+
+def repeat(fn, every, length, start=0):
+    def at(t):
+        if t < start:
+            return fn(0)
+        k = (t - start) % every
+        return fn(k) if k < length else fn(length)
+    return at
+
+
+def panels(columns, total_ds, tiles=(3, 3)):
+    """columns: list of (label, bodies, props). bodies: (img, tx, ty, matrix_fn, shift_fn).
+    props: (img, tx, ty, state_fn) with state_fn(t) -> (dx, dy, scale, alpha) or None."""
+    pw, ph = 32 * SCALE * tiles[0], 32 * SCALE * tiles[1]
+    frames = []
+    t = 0.0
+    while t <= total_ds + 1e-6:
+        sheet = Image.new('RGBA', ((pw + 8) * len(columns) - 8, ph + 28), (24, 24, 24, 255))
+        d = ImageDraw.Draw(sheet)
+        for i, (label, bodies, props) in enumerate(columns):
+            panel = ground(pw, ph)
+            def centre(tx, ty):
+                return ((tx + 0.5) * 32 * SCALE, ph - (ty + 0.5) * 32 * SCALE)
+            for img, tx, ty, state in props:
+                st = state(t) if callable(state) else state
+                if st:
+                    dx, dy, sc, al = st
+                    draw_body(panel, img, centre(tx, ty), (sc, 0, 0, 0, sc, 0), (dx, dy), al)
+            for img, tx, ty, fn, sh in bodies:
+                draw_body(panel, img, centre(tx, ty), fn(t), sh(t) if sh else (0, 0))
+            sheet.alpha_composite(panel, (i * (pw + 8), 28))
+            d.text((i * (pw + 8) + 8, 8), label, fill=(230, 230, 230, 255))
+        d.text((sheet.width - 60, 8), f'{t / 10:.2f} s', fill=(160, 160, 160, 255))
+        frames.append(sheet.convert('RGB'))
+        t += FRAME_DS
+    return frames
 
 
 def track(start, keys):
@@ -96,7 +167,7 @@ def offset_track(keys):
     return at
 
 
-def draw_body(canvas, img, centre, m, shift=(0, 0)):
+def draw_body(canvas, img, centre, m, shift=(0, 0), alpha=1.0):
     """Inverse-map each display pixel through the transform, nearest sampling."""
     a, b, c, d, e, f = m
     det = a * e - b * d
@@ -116,7 +187,7 @@ def draw_body(canvas, img, centre, m, shift=(0, 0)):
                 p = src[col, row]
                 if p[3]:
                     base = out[px, py]
-                    al = p[3] / 255
+                    al = p[3] / 255 * alpha
                     out[px, py] = tuple(int(p[i] * al + base[i] * (1 - al)) for i in range(3)) + (255,)
 
 
@@ -151,12 +222,18 @@ def scene(bodies, total_ds, label_left, label_right):
         d.text((8, 8), label_left, fill=(230, 230, 230, 255))
         d.text((pw + 16, 8), label_right, fill=(230, 230, 230, 255))
         d.text((pw * 2 - 60, 8), f'{t / 10:.2f} s', fill=(160, 160, 160, 255))
-        frames.append(sheet.convert('P', palette=Image.ADAPTIVE, colors=128))
+        frames.append(sheet.convert('RGB'))
         t += FRAME_DS
     return frames
 
 
 def save(frames, path):
+    # One shared palette, so every frame keeps the same colours.
+    strip = Image.new('RGB', (frames[0].width, frames[0].height * min(len(frames), 8)))
+    for i, frame in enumerate(frames[::max(1, len(frames) // 8)][:8]):
+        strip.paste(frame, (0, i * frames[0].height))
+    palette = strip.quantize(colors=128, method=Image.Quantize.MEDIANCUT)
+    frames = [frame.quantize(palette=palette, dither=Image.Dither.NONE) for frame in frames]
     frames[0].save(path, save_all=True, append_images=frames[1:], duration=50, loop=0, disposal=1)
 
 
@@ -224,6 +301,52 @@ def main():
     save(scene([(south, 1, 2, hold(stand), hold(stand), attacker_s, attacker_s),
                 (north, 1, 1, hold(stand), victim_s, None, None)], 20,
                'Today', 'Body motion: 3px push, no roll'), out / 'recoil-front.gif')
+
+
+    # 4. Chopping or mining on the 5 ds tool tick: today only the tool image
+    # flies 16px onto the rock; now the body winds up and leans in, and the
+    # image travels 8px.
+    tool = sprite_file(folder, 'render_tool.png')
+    rock = sprite_file(folder, 'render_rock.png')
+    work = keys_track([(-1, 0, -4, 1, 1, 'linear'), (2, 0, 6, 1, 2, 'quad_in'), (0, 0, 0, 1, 2, 'sine_out')])
+    def strike(reach):
+        def at(t):
+            k = t % 5
+            if k < 3:
+                return (-reach * (1 - k / 3), 0, 0.75, 175 / 255)
+            return (0, 0, 0.75, 175 / 255)
+        return at
+    save(panels([('Today: tool image only', [(east, 0, 1, hold(stand), None)], [(rock, 1, 1, (0, 0, 1, 1)), (tool, 1, 1, strike(16))]),
+                 ('Body motion: wind-up and 6 deg lean, 5 ds', [(east, 0, 1, repeat(work, 5, 5), None)], [(rock, 1, 1, (0, 0, 1, 1)), (tool, 1, 1, strike(8))])],
+                20, (2, 3)), out / 'work-strike.gif')
+
+    # 5. Sitting down and lying down on purpose.
+    chair = chair_sprite()
+    settle = keys_track([(0, -2, 0, 0.9, 1, 'quad_in'), (0, 0, 0, 1, 2, 'sine_out')])
+    def seat(t):
+        return settle(t - 4) if t >= 4 else stand
+    lie = track(stand, [(tuple(keys['fall_lean']), 3, 'sine'), (lying, 3, 'sine_out')])
+    def lie_down(t):
+        return lie(t - 4) if t >= 4 else stand
+    save(panels([('Sitting: 2px drop and squash, 3 ds', [(south, 1, 1, seat, None)], [(chair, 1, 1, (0, 0, 1, 1))]),
+                 ('Lying down to rest: slow 6 ds', [(east, 1, 1, lie_down, None)], []),
+                 ('Falling (for comparison): 4 ds', [(east, 1, 1, lambda t: fall(t - 4) if t >= 4 else stand, None)], [])],
+                16), out / 'sit-and-lie-down.gif')
+
+    # 6. Emotes.
+    def emote(keys):
+        return repeat(keys_track(keys), 12, sum(k[4] for k in keys), start=2)
+    emotes = [
+        ('nod', south, [(0, -1, 0, 1, 1, 'sine'), (0, 0, 0, 1, 1, 'sine'), (0, -1, 0, 1, 1, 'sine'), (0, 0, 0, 1, 1, 'sine')]),
+        ('shake', south, [(-1, 0, 0, 1, 1, 'sine'), (1, 0, 0, 1, 2, 'sine'), (0, 0, 0, 1, 1, 'sine')]),
+        ('bow (facing east)', east, [(2, 0, 12, 1, 2, 'sine'), (2, 0, 12, 1, 2, 'linear'), (0, 0, 0, 1, 2, 'sine_out')]),
+        ('bow (facing south)', south, [(0, -2, 0, 0.9, 2, 'sine'), (0, -2, 0, 0.9, 2, 'linear'), (0, 0, 0, 1, 2, 'sine_out')]),
+        ('shrug', south, [(0, 2, 0, 1, 1, 'quad_out'), (0, 2, 0, 1, 1, 'linear'), (0, 0, 0, 1, 2, 'sine_in')]),
+        ('wave', south, [(0, 1, 0, 1, 1, 'quad_out'), (0, 1, 0, 1, 3, 'linear'), (0, 0, 0, 1, 1, 'sine')]),
+        ('salute', south, [(0, 1, 0, 1, 1, 'quad_out'), (0, 1, 0, 1, 4, 'linear'), (0, 0, 0, 1, 1, 'sine')]),
+    ]
+    save(panels([(name, [(img, 0.5, 0, emote(keys), None)], []) for name, img, keys in emotes], 24, (2, 1)),
+         out / 'emotes.gif')
 
 
 if __name__ == '__main__':
