@@ -790,6 +790,10 @@ SUITES = {
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
         'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
+    # Execution devices recheck occupancy after the placement wait (issue #6499).
+    'punishment_race': {'files': ('tests/punishment_race/test_occupancy.py',),
+        'paths': ('tests/punishment_race/',), 'shared_paths': (
+            'code/modules/1713/punishment.dm',)},
     'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py', 'tests/cattle_plough/test_detach_race.py'),
         'paths': ('tests/cattle_plough/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
