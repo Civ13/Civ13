@@ -1195,7 +1195,7 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     // Update when empty (group config update_when_empty): once the last player leaves a region and it has saved,
-    // the host service builds the latest master beside it and restarts it onto that build. Applies at the next check.
+    // the host service builds the latest master beside it and attempts a standby handover. Applies at the next check.
     private void ShowUpdateWhenEmpty() {
         if (host?.Control?.Group is not { } group) return;
         bool current, follows;
@@ -1211,10 +1211,11 @@ internal sealed partial class LauncherWindow : Form {
             Text = "When the last player leaves a region and it has saved, the host service checks for new commits (every few minutes). " +
                 "If there are any, it builds them beside the running world, then hands the region over: the save is backed up, the new " +
                 "build loads it beside the old world, and only a load that succeeds takes over. A save the new code cannot read leaves the " +
-                "old world running. Nobody is kicked: if a player joins while it builds, it waits until the region is empty again, and a " +
-                "failed build leaves the world running. Asleep regions keep their build until they are next awake and empty. " +
+                "old world running. The host checks again for players after the standby starts and defers if the region is occupied. " +
+                "The mainland keeps its existing build while asleep or recovering and updates only through a standby handover. " +
+                "Mainlands without save or handover support defer automatic updates. " +
                 "It never wipes a world. A TDM group, which does not save, updates between rounds: the battle takes the update with " +
-                "its next map, and an empty barracks restarts onto it." +
+                "its next map, and an empty non-mainland barracks restarts onto it." +
                 (follows ? "" : " This group does not fetch yet, so turning it on also sets it to follow origin/master.") });
         var enabled = new CheckBox { Text = "Update regions when they are empty", AutoSize = true, Checked = current };
         layout.Controls.Add(enabled);
