@@ -166,30 +166,182 @@
 	return ..()
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom(mob/living/human/M, mob/living/human/user)
+	if (!grooming_valid(M, user))
+		return
+	var/client/C = user.client
+	if (C?.grooming_preview)
+		return
+	var/datum/grooming_preview/P
+	// Only preview your own bare head; a barber must not see through a disguise.
+	if (C && M == user)
+		P = new()
+		P.viewer = user
+		P.viewer_client = C
+		P.razor = src
+		P.subject = M
+		C.grooming_preview = P
+	groom_select(M, user, P)
+	if (P)
+		P.close()
+		qdel(P)
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/grooming_valid(mob/living/human/M, mob/living/human/user)
+	if (QDELETED(src) || QDELETED(M) || QDELETED(user) || user.get_active_hand() != src || user.incapacitated() || user.a_intent == I_HARM)
+		return FALSE
+	if (!M.species || !M.body_build || (M != user && !(M in range(user, 1))))
+		return FALSE
+	var/obj/item/organ/external/head/H = M.get_organ("head")
+	return H && !H.is_stump()
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom_select(mob/living/human/M, mob/living/human/user, datum/grooming_preview/P)
+	var/old_hstyle = M.h_style
+	var/old_fstyle = M.f_style
+	var/new_hstyle
+	var/new_fstyle
+	while (grooming_valid(M, user) && (!P || P.valid()))
+		var/list/hairlist = M.generate_valid_hairstyles(TRUE, TRUE)
+		if (!length(hairlist))
+			return
+		new_hstyle = WWinput(user, P ? "Choose a hairstyle to preview." : "Please select a hair style.", "Grooming", P && (old_hstyle in hairlist) ? old_hstyle : WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
+		if (!(new_hstyle in hairlist) || !grooming_valid(M, user) || (P && !P.valid()))
+			return
+		new_fstyle = old_fstyle
+		if (M.gender == MALE)
+			var/list/fhairlist = M.generate_valid_facial_hairstyles(TRUE)
+			if (length(fhairlist))
+				new_fstyle = WWinput(user, P ? "Choose a facial hairstyle to preview." : "Please select a facial hair style.", "Grooming", P && (old_fstyle in fhairlist) ? old_fstyle : WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
+				if (!(new_fstyle in fhairlist) || !grooming_valid(M, user) || (P && !P.valid()))
+					return
+		if (P)
+			var/choice = P.ask(new_hstyle, new_fstyle)
+			if (choice == "retry")
+				continue
+			if (choice != "apply")
+				return
+		break
+	if (!new_hstyle || !grooming_valid(M, user) || (P && !P.valid()) || M.h_style != old_hstyle || M.f_style != old_fstyle)
+		return
+	if (new_hstyle == old_hstyle && new_fstyle == old_fstyle)
+		return
 	if (M == user)
 		user.visible_message("[user] starts cutting their own hair...", "You start cutting your hair...")
 	else
 		user.visible_message("[user] starts cutting [M]'s hair...", "You start cutting [M]'s hair...")
-	if (!do_after(user, 80, M))
+	if (!do_after(user, 80, M) || !grooming_valid(M, user) || (P && !P.valid()) || M.h_style != old_hstyle || M.f_style != old_fstyle)
 		return
-	var/list/hairlist = M.generate_valid_hairstyles(1,1)
-	var/new_hstyle = WWinput(user, "Please select a hair style.", "Grooming", WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
-	if (new_hstyle && (new_hstyle in hairlist))
-		M.h_style = new_hstyle
+	if (!(new_hstyle in M.generate_valid_hairstyles(TRUE, TRUE)))
+		return
+	if (new_fstyle != old_fstyle && (M.gender != MALE || !(new_fstyle in M.generate_valid_facial_hairstyles(TRUE))))
+		return
+	if (new_hstyle != old_hstyle)
 		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
-		if (S)
-			M.h_growth = S.growth
-	if (M.gender == MALE)
-		var/list/fhairlist = M.generate_valid_facial_hairstyles(1)
-		var/new_fstyle = WWinput(user, "Please select a facial hair style.", "Grooming", WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
-		if (new_fstyle && (new_fstyle in fhairlist))
-			M.f_style = new_fstyle
-			var/datum/sprite_accessory/F = facial_hair_styles_list[new_fstyle]
-			if (F)
-				M.f_growth = F.growth
+		M.h_style = new_hstyle
+		M.h_growth = S.growth
+	if (new_fstyle != old_fstyle)
+		var/datum/sprite_accessory/F = facial_hair_styles_list[new_fstyle]
+		M.f_style = new_fstyle
+		M.f_growth = F.growth
 	M.update_hair()
 	M.update_body()
 	user.visible_message("[user] finishes cutting [M == user ? "their own" : "[M]'s"] hair.", "You finish cutting [M == user ? "your" : "[M]'s"] hair.")
+
+/client/var/tmp/datum/grooming_preview/grooming_preview
+
+// Private, transient review of a proposed cut. Only the initiating body can answer.
+/datum/grooming_preview
+	should_save = FALSE
+	var/mob/living/human/viewer
+	var/client/viewer_client
+	var/obj/item/weapon/material/kitchen/utensil/knife/razorblade/razor
+	var/mob/living/human/subject
+	var/round_id = 0
+	var/waiting = FALSE
+	var/answer
+
+/datum/grooming_preview/proc/valid()
+	return viewer_client && viewer_client.mob == viewer && viewer_client.grooming_preview == src && !QDELETED(razor) && razor.grooming_valid(subject, viewer)
+
+/datum/grooming_preview/proc/close()
+	if (viewer_client?.grooming_preview == src)
+		viewer_client.grooming_preview = null
+		show_browse(viewer_client, null, "window=grooming_preview")
+
+/datum/grooming_preview/proc/ask(hair, beard)
+	if (!valid())
+		return null
+	round_id++
+	answer = null
+	waiting = TRUE
+	var/token = "\ref[src]"
+	var/key = md5("[token]-[world.time]-[round_id]")
+	var/list/pictures = list()
+	for (var/side in list(SOUTH, EAST))
+		for (var/render_new in list(FALSE, TRUE))
+			var/icon/I = subject.grooming_portrait(render_new ? hair : subject.h_style, render_new ? beard : subject.f_style, side)
+			var/file = "groom_[key]_[side]_[render_new].png"
+			viewer_client << browse_rsc(I, file)
+			pictures += "<img src='[file]' width='96' height='96' style='image-rendering:pixelated;' alt='[side == SOUTH ? "Front" : "Side"]'>"
+	var/html = {"<html><body style='background:#222;color:#eee;font-family:sans-serif;text-align:center;'>
+		<h2>Preview haircut</h2><p>[html_encode(hair)][beard ? " / [html_encode(beard)]" : ""]</p>
+		<table align='center'><tr><th>Current</th><th>Proposed</th></tr>
+		<tr><td>[pictures[1]]</td><td>[pictures[2]]</td></tr>
+		<tr><td>[pictures[3]]</td><td>[pictures[4]]</td></tr></table>
+		<p>Headwear is not shown. Nothing changes until you apply and finish the cut.</p>
+		<p><a style='color:#9df;' href='?src=[token];groom=apply;round=[round_id]'>Apply cut</a>
+		&nbsp; <a style='color:#9df;' href='?src=[token];groom=retry;round=[round_id]'>Try another</a>
+		&nbsp; <a style='color:#9df;' href='?src=[token];groom=cancel;round=[round_id]'>Cancel</a></p></body></html>"}
+	show_browse(viewer_client, html, "window=grooming_preview;size=390x405;can_close=1;can_resize=1")
+	winset(viewer_client, "grooming_preview", "on-close=\".windowclose [token]\"")
+	var/deadline = world.time + 1200
+	while (waiting && world.time < deadline && valid())
+		sleep(2)
+	waiting = FALSE
+	if (viewer_client?.grooming_preview == src)
+		show_browse(viewer_client, null, "window=grooming_preview")
+	return answer
+
+/datum/grooming_preview/Topic(href, list/href_list)
+	if (!waiting || usr != viewer || !valid())
+		return
+	if (href_list["close"])
+		waiting = FALSE
+		return
+	if (text2num(href_list["round"]) != round_id)
+		return
+	var/action = href_list["groom"]
+	if (action != "apply" && action != "retry" && action != "cancel")
+		return
+	answer = action
+	waiting = FALSE
+
+// Same face sprites and additive colors as the in-world hair layer, without
+// touching live hair, equipment, or overlays to render the proposed cut.
+/mob/living/human/proc/grooming_portrait(hair, beard, side)
+	var/g = gender == FEMALE ? "_f" : "_m"
+	var/icon/portrait = icon(species.icobase, "head[g][body_build.index]", side)
+	if (species.appearance_flags & HAS_SKIN_COLOR)
+		portrait.Blend(rgb(r_skin, g_skin, b_skin), ICON_ADD)
+	if (species.appearance_flags & HAS_SKIN_TONE)
+		var/tone = abs(s_tone)
+		portrait.Blend(rgb(tone, tone, tone), s_tone >= 0 ? ICON_ADD : ICON_SUBTRACT)
+	var/icon/eyes = icon('icons/mob/human_face.dmi', "eyes[body_build.index]", side)
+	if (species.appearance_flags & HAS_EYE_COLOR)
+		eyes.Blend(rgb(r_eyes, g_eyes, b_eyes), ICON_ADD)
+	portrait.Blend(eyes, ICON_OVERLAY)
+	if (!body_build.nohair && !body_build.nofacialhair)
+		var/datum/sprite_accessory/F = facial_hair_styles_list[beard]
+		if (F && (species.get_bodytype() in F.species_allowed))
+			var/icon/facial = icon(F.icon, "[F.icon_state]_s", side)
+			if (F.do_colouration)
+				facial.Blend(rgb(r_facial, g_facial, b_facial), ICON_ADD)
+			portrait.Blend(facial, ICON_OVERLAY)
+		var/datum/sprite_accessory/H = hair_styles_list[hair]
+		if (H && (species.get_bodytype() in H.species_allowed))
+			var/icon/scalp = icon(H.icon, "[H.icon_state]_s", side)
+			if (H.do_colouration)
+				scalp.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
+			portrait.Blend(scalp, ICON_OVERLAY)
+	return portrait
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank
 	name = "shank"
