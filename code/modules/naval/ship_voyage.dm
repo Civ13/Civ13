@@ -276,6 +276,7 @@
 	voyage_sea_show() // Her crew see the sea go by (voyage_sea.dm).
 	addtimer(CALLBACK(src, PROC_REF(voyage_tick), voyage), VOYAGE_TICK)
 	player_activity.voyage(H, kind)
+	accolade_meet_mob(H, "sailor")
 	return TRUE
 
 /proc/voyage_course_body(x, y, owner, by, id)

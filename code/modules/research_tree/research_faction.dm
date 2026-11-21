@@ -278,6 +278,7 @@
 	// (world-wide shouts for every node x faction would be pure noise).
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.era_tier > ordinal_age)
 		ordinal_age = N.era_tier
+		accolade_era_research(faction)
 		var/new_year = ordinal_age_year(N.era_tier)
 		if (new_year)
 			age = new_year
