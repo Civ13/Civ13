@@ -1461,6 +1461,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/lift_drive/electric" = "electricity",
 		"/obj/structure/lift_call/button" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
+		"/obj/item/stack/data_lan_cable" = "electricity",
+		"/obj/item/stack/data_lan_cable/sealed" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
 		"/obj/item/stack/cable_coil/iron" = "electricity",
@@ -1541,6 +1543,7 @@ var/global/list/node_grid_col_cache = null
         "/obj/item/tv_camera/helmet" = "assembly_line",
         "/obj/structure/telecom/station/tv" = "assembly_line",
         "/obj/structure/telecom/terminal" = "assembly_line",
+        "/obj/structure/telecom/terminal/data_lan" = "assembly_line",
         "/obj/item/weapon/telephone/landline" = "utilities",
 		"/obj/structure/radio/transmitter" = "factories",
 		// --- field_artillery (7) ---

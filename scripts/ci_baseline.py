@@ -463,6 +463,9 @@ SUITES = {
         'code/game/mob/living/simple_animal/simple_animal.dm', 'code/game/mob/living/simple_animal/hostile/zombie.dm')},
     'glass_jar': {'files': ('tests/glass_jar/test_capture.py',), 'paths': (
         'tests/glass_jar/', 'code/game/objects/items/glassjar.dm', 'tests/save_movement/source_adapter.py')},
+    'physical_data_lan': {'files': ('tests/physical_data_lan/test_lan.py',), 'paths': (
+        'tests/physical_data_lan/', 'code/modules/1713/physical_data_lan.dm',
+        'code/modules/1713/modern_terminal.dm', 'tests/save_movement/source_adapter.py')},
     'bodybag_label': {'files': ('tests/bodybag/test_label.py',), 'paths': (
         'tests/bodybag/', 'code/game/objects/items/bodybag.dm', 'tests/save_movement/source_adapter.py')},
     'card_dealing': {'files': ('tests/card_dealing/test_prompt.py',),
@@ -1069,7 +1072,8 @@ SUITES = {
         'timeout': 180},
     # The ocean regions: generated maps current, sizes, insets, metadata registered
     # and open water at both ends of every sea link, parsed from the DMMs; no BYOND runtime.
-    'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py',), 'timeout': 180,
+    'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py', 'tests/ocean_maps/test_reef_fixture.py'),
+        'timeout': 180,
         'paths': ('tests/ocean_maps/', 'tools/ocean_maps/', 'tools/world_links/',
                   'code/modules/naval/ocean_regions.dm', 'code/modules/persistence/world_links.dm',
                   'code/modules/naval/ship_edge_crossing.dm', 'code/modules/naval/ship_crossing.dm',
