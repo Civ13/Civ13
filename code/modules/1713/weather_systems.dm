@@ -389,6 +389,7 @@ var/global/weather_sample_zone_look = null
 		if (abs(new_x - S.vel_x) > 0.0002 || abs(new_y - S.vel_y) > 0.0002)
 			S.set_course(new_x, new_y)
 	weather_systems_tell()
+	weather_air_step()
 
 /proc/weather_bearing(dx, dy)
 	if (abs(dx) > abs(dy) * 2)
