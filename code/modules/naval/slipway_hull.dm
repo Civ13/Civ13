@@ -131,6 +131,8 @@
 		E.fueltank = tank
 		if (fuel > 0)
 			tank.reagents.add_reagent("diesel", min(fuel, tank.volume))
+	// She comes off the ways with her sides closed (hull_sides.dm).
+	hull_rail_sides_free(deck)
 	var/obj/structure/hull_tiller/tiller = new(helm_at)
 	var/problem = tiller.commission(hull_name, heading)
 	if (problem)
