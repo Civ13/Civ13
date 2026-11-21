@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '2499fd0ca8864c5779adbfb2b9bca244dad0e7e0'
+WIKI_REVIEWED_REVISION = '6d2477e62341565927cf4d596b5fa5bb2b26598d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Mice.md': ('f458302a6b440e2d63417b553f75446470dcf256920a0f216f03ad5263fd3584', 'mice mouse nest nests rats pests vermin mousetrap poison bait fleas plague cats wildcat'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
-    'guides/Guide_to_Resource_Extraction.md': ('0fb849380462bb52591cf545d4a7c48243a1d66682a6e0acc8cc0e786c565225', 'resource extraction gathering oil petroleum well fracturing'),
+    'guides/Guide_to_Resource_Extraction.md': ('041b3303d0be5737e6ab566e041aa0e28675845cc4a2015964a7e91a33d01332', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('e0067091fe648cf478f320375128dcee2380d7848c714ce4f3b0aef8be48ed2f', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
@@ -120,8 +120,8 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('9b04468304b341551d3d397cc7738711bda3078bdd2273d7d86923776122784f', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('097b6e8645bde1a0b4e9877e82b3d37df543a1263aa5f9297cf8ea5c5d7cc9a7', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
+    'guides/Guide_to_Boats.md': ('5db91d965e5264f9ca4bb9482a54637ff810a8d3ef1d3f7c94e2eb94303787e6', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Aircraft.md': ('b578eaf2954fafd9d885ccde3785a4eeb956626ecdd17b55357951dcbf83f7e9', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
@@ -131,9 +131,10 @@ WIKI_REVIEWED_GUIDES = {
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('c25a6eeb304bb3f8a5a3dd7e479da15a15fb34ecbb8d2127d9179881aefd7efe', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9015932974df193a9f59fb59c359040e7a38e541ad13e104ae2cacf8f33e08fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
-    'maps/The_Americas.md': ('ecafa7d7bcdf1d65da76d9c587eb89dd7b926fd06275a71bdccdd2584828bed0', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
-    'maps/Gaia.md': ('a7e8f9402268eeac0012f5fbaf3647afbc4e07b0be5951b8f0d9c223e3997290', 'gaia map world underground'),
-    'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
+    'maps/The_Americas.md': ('8f926f8eb3d365684968b7e32d7c5de5322d30ad85e166fa7315d5a6db401e5a', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
+    'regions/Regions.md': ('bfd6704a336cad7458062de572ccabf9f7f3630e9fd82018b4d173913d56f343', 'regions region lands land worlds world europe africa asia oceania greenland antarctica continents travel climate peoples'),
+    'maps/Gaia.md': ('2e973629f07a33edbbad6695d26e01faa9a4e33120763bfd91701ea412349769', 'gaia map world underground'),
+    'maps/Nomads_Maps.md': ('679cef92412118192e9790a2020227e15e5c2dea317bcd13b5a6cfd06ed367e0', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
     'guides_overview.md': ('f24ea38d81d77773e7f5ca92aa9bffa0a0d88d8ede56fe90a0521d9599fa66a1', 'guides overview list of guides index'),
