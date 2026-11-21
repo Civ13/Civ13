@@ -448,6 +448,7 @@
 #include "code\game\mob\observer\ghost\login.dm"
 #include "code\game\mob\observer\ghost\logout.dm"
 #include "code\game\mob\observer\ghost\say.dm"
+#include "code\game\mob\observer\ghost\spirit_hud.dm"
 #include "code\game\mob\observer\ghost\spirit_observe.dm"
 #include "code\game\mob\observer\ghost\spirit_wait.dm"
 #include "code\game\objects\armor_families.dm"

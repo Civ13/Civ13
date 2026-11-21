@@ -2902,9 +2902,10 @@ SUITES = {
             'code/modules/divine/divine_sight_panel.dm', 'icons/mob/divine_presence.dmi'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/modules/admin/admin_verbs.dm')},
     # Observing as a spirit on persistent worlds: limited sight, local hearing, haunting.
-    'spirit_observe': {'files': ('tests/spirit_observe/test_spirit_observe.py',),
+    'spirit_observe': {'files': ('tests/spirit_observe/test_spirit_observe.py', 'tests/spirit_observe/test_spirit_hud.py'),
         'paths': ('tests/spirit_observe/', 'code/game/mob/observer/ghost/spirit_observe.dm',
-            'icons/effects/spirit_sight.dmi'),
+            'icons/effects/spirit_sight.dmi', 'code/game/mob/observer/ghost/spirit_hud.dm',
+            'icons/mob/screen/spirit_hud.dmi'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/observer/ghost/login.dm',
             'code/_onclick/ghost.dm', 'code/game/mob/hear_say.dm', 'code/game/mob/living/say.dm',
             'code/game/mob/emote.dm',
