@@ -20,10 +20,13 @@ It writes five sheets:
   icons/mob/items/lefthand_ship_edges.dmi, righthand_ship_edges.dmi (32x32)
       grapnel                                      4 dirs, held: the coil in
           the fist and the hook hanging under it
-  icons/obj/vehicles/ship_bowsprit.dmi (64x64)
+  icons/obj/vehicles/ship_bowsprit.dmi (96x96)
       sail0, sail1, sail2                          4 dirs: the bare spar, the
           jib furled along it, the jib set. The state names are the mast's,
           because a bowsprit is a sail subtype. The dir is the way it points.
+          Her own tile is the middle of the cell (the type has pixel_x and
+          pixel_y of -32): the spar is stepped at the middle of her tile and
+          stands 28 pixels out over the next tile in every direction.
   icons/obj/vehicles/ship_mast_nest.dmi (64x64)
       sail0, sail1, sail2                          4 dirs: the mast states of
           vehicleparts64x64.dmi with a crow's nest drawn at the masthead
@@ -31,9 +34,8 @@ It writes five sheets:
 The railing pieces follow icons/obj/railings_built.dmi (see
 create_built_railings.py): the dir is the tile edge the piece runs along,
 SOUTH and NORTH are elevations, EAST and WEST are strips seen from above with
-their south end drawn at full height. The 64x64 sheets keep the mast's own
-placement: the spar is stepped where the mast stands, at the middle of the
-cell. Everything is lit from the top left. The drawing is plain pixel work
+their south end drawn at full height. The crow's nest sheet keeps the mast's
+own 64x64 placement. Everything is lit from the top left. The drawing is plain pixel work
 with Pillow from fixed palettes; nothing is random, so a rerun writes the
 same bytes.
 
@@ -61,6 +63,7 @@ MASTS = ROOT / 'icons/obj/vehicles/vehicleparts64x64.dmi'
 
 SIZE = 32
 BIG = 64
+WIDE = 96  # the bowsprit's cell: its own tile in the middle and a tile all round
 EDGE = SIZE - 1
 DIRS = ('SOUTH', 'NORTH', 'EAST', 'WEST')  # DMI order for dirs = 4
 KINDS = ('', '_gate', '_gate_open')
@@ -586,22 +589,22 @@ HEAD_S = {
 
 WHOLE_F = {
     'goose': [
-        '.....oooooo.....',
-        '....o554443o....',
-        '....o5k44k3o....',
-        '....o4gggg3o....',
-        '.....oGggGo.....',
-        '......oGGo......',
-        '......o43o......',
-        '......o43o......',
-        '.....o4433o.....',
-        '....o454332o....',
-        '...o45543322o...',
-        '..o4554433221o..',
-        '..o4544433221o..',
-        '..o4o443322o1o..',
-        '..o4o443322o1o..',
-        '...oo433221oo...',
+        '...oooooo.......',
+        '..o555443o......',
+        '..o5k44k3o......',
+        '..ow4gg3wo......',
+        '...oogGooo......',
+        '....ogGo43o.....',
+        '.....oo443o.....',
+        '......o4432o....',
+        '.......o432o....',
+        '.......o432o....',
+        '......o4432o....',
+        '....oo44332oo...',
+        '...o455443322o..',
+        '..o4o5443322o1o.',
+        '..o4o4443322o1o.',
+        '...oo443322oo...',
         '....oggggggo....',
         '....o433221o....',
         '.....o3221o.....',
@@ -649,6 +652,33 @@ WHOLE_F = {
         '...o44333322o...',
         '...oooooooooo...',
         '....o433221o....',
+        '....o433221o....',
+        '.....o3221o.....',
+        '.....o3211o.....',
+        '......oooo......',
+    ],
+}
+
+# a back drawn by hand, where smoothing the front would leave its beak showing
+WHOLE_B = {
+    'goose': [
+        '.......oooooo...',
+        '......o444333o..',
+        '......o443332o..',
+        '......ow4332wo..',
+        '......o44332o...',
+        '.....o44332o....',
+        '.....o4432o.....',
+        '....o4432o......',
+        '....o432o.......',
+        '....o432o.......',
+        '....o4432o......',
+        '...oo44332oo....',
+        '..o445443322o...',
+        '.o4o4443322o1o..',
+        '.o4o443o322o1o..',
+        '...oo43o322oo...',
+        '....oggggggo....',
         '....o433221o....',
         '.....o3221o.....',
         '.....o3211o.....',
@@ -781,7 +811,8 @@ def paint_map(rows, shade=1.0):
 def figure(name):
     front, side = figure_maps(name)
     east = paint_map(side)
-    return [paint_map(front), paint_map(back_of(front), 0.9), east, east.transpose(Image.FLIP_LEFT_RIGHT)]
+    back = WHOLE_B.get(name) or back_of(front)
+    return [paint_map(front), paint_map(back, 0.9), east, east.transpose(Image.FLIP_LEFT_RIGHT)]
 
 
 # --- shaded line work: the grapnel ---------------------------------------------
@@ -907,40 +938,48 @@ AXES = {'NORTH': ((0, -1), (1, 0)), 'SOUTH': ((0, 1), (-1, 0)), 'EAST': ((1, 0),
         'WEST': ((-1, 0), (0, -1))}
 
 
+JIB_TACK = 42  # pixels ahead of the step where the jib is tacked down
+
+
+def jib_reach(fi):
+    """How far to starboard the set jib bellies, fi pixels ahead of the step."""
+    return int(round(15.0 * ((JIB_TACK - fi) / 40.0) ** 0.75))
+
+
 def bowsprit_cells(state):
-    """{(fi, ri): material}: fi counts pixels ahead of the step, ri to starboard."""
+    """{(fi, ri): material}: fi counts pixels ahead of the step at the middle
+    of her tile, ri to starboard. The tile ends 16 ahead, so the spar stands
+    28 pixels out over the next one whichever way it points."""
     cells = {}
-    for fi in range(-12, 28):
-        half = 2 if fi < 14 else 1
+    for fi in range(-14, 44):
+        half = 2 if fi < 20 else 1
         for ri in range(-half, half):
             cells[fi, ri] = 'spar'
-    for fi in range(-12, -9):  # the heel chock
+    for fi in range(-14, -11):  # the heel chock
         for ri in range(-3, 3):
             cells[fi, ri] = 'chock'
-    for fi in (-2, 0, 2):  # the gammoning lashing her to the stem
+    for fi in (11, 13, 15):  # the gammoning lashing her to the stem
         for ri in range(-2, 2):
             cells[fi, ri] = 'line'
     for ri in range(-2, 2):
-        cells[13, ri] = 'band'
-    for fi in (26, 27):
+        cells[19, ri] = 'band'
+    for fi in (42, 43):
         for ri in range(-1, 1):
             cells[fi, ri] = 'band'
     if state == 'sail1':  # the jib furled along the spar under its gaskets
-        for fi in range(4, 25):
-            wide = 2 if 5 <= fi <= 22 else 1
+        for fi in range(18, 41):
+            wide = 2 if 19 <= fi <= 38 else 1
             for ri in range(-wide, wide):
                 cells[fi, ri] = 'gasket' if fi % 5 == 1 else 'canvas'
-        for fi in (9, 14, 19):  # the canvas bulges between gaskets
+        for fi in (23, 28, 33):  # the canvas bulges between gaskets
             cells[fi, 2] = 'canvas'
     elif state == 'sail2':  # the jib set, bellying to starboard from tack to clew
-        for fi in range(-9, 26):
-            luff = 2 if fi < 14 else 1
-            reach = int(round(15.0 * ((26 - fi) / 35.0) ** 0.75))
-            for ri in range(luff, max(luff, reach) + 1):
+        for fi in range(2, JIB_TACK):
+            luff = 2 if fi < 20 else 1
+            for ri in range(luff, max(luff, jib_reach(fi)) + 1):
                 cells[fi, ri] = 'sail'
-        for ri in range(3, 15):  # the sheet, from her clew in to the heel
-            cells[-12 if ri < 9 else -11, ri] = 'sheet'
-        cells[-10, 15] = 'sheet'
+        for ri in range(3, 15):  # the sheet, from her clew in to the deck
+            cells[0 if ri < 9 else 1, ri] = 'sheet'
     return cells
 
 
@@ -948,10 +987,10 @@ def bowsprit(state, d):
     (fx, fy), (rx, ry) = AXES[d]
     grid = {}
     for (fi, ri), mat in bowsprit_cells(state).items():
-        x = int(31.5 + (ri + 0.5) * rx + (fi + 0.5) * fx)
-        y = int(31.5 + (ri + 0.5) * ry + (fi + 0.5) * fy)
+        x = int(47.5 + (ri + 0.5) * rx + (fi + 0.5) * fx)
+        y = int(47.5 + (ri + 0.5) * ry + (fi + 0.5) * fy)
         grid[x, y] = (mat, fi, ri)
-    im = Image.new('RGBA', (BIG, BIG))
+    im = Image.new('RGBA', (WIDE, WIDE))
     px = im.load()
 
     def group(p):
@@ -967,8 +1006,7 @@ def bowsprit(state, d):
         if mat == 'line' and (fi + ri) % 2:
             t = max(1, t - 1)
         if mat == 'sail':
-            reach = int(round(15.0 * ((26 - fi) / 35.0) ** 0.75))
-            if (reach - ri) % 5 == 4 and ri > 2:
+            if (jib_reach(fi) - ri) % 5 == 4 and ri > 2:
                 t = 1  # the seams of her cloths, parallel to the leech
             elif t == 1:
                 t = 0  # bolt rope along leech and foot
@@ -1070,7 +1108,7 @@ def build():
         (EDGES, SIZE, edge_states()),
         (LEFT, SIZE, left),
         (RIGHT, SIZE, right),
-        (BOWSPRIT, BIG, [four(name, [bowsprit(name, d) for d in DIRS]) for name in SAILS]),
+        (BOWSPRIT, WIDE, [four(name, [bowsprit(name, d) for d in DIRS]) for name in SAILS]),
         (NEST, BIG, nest_states()),
     ]
 
@@ -1112,9 +1150,12 @@ def check_drawing(sheets):
     for name, _, ims in by_path[BOWSPRIT]:
         for d, im in zip(DIRS, ims):
             x0, y0, x1, y1 = im.getbbox()
-            tip = {'SOUTH': BIG - y1, 'NORTH': y0, 'EAST': BIG - x1, 'WEST': x0}[d]
-            if tip > 6:
-                problems.append('bowsprit %s %s: does not point %s' % (name, d, d.lower()))
+            tip = {'SOUTH': WIDE - y1, 'NORTH': y0, 'EAST': WIDE - x1, 'WEST': x0}[d]
+            heel = {'SOUTH': y0, 'NORTH': WIDE - y1, 'EAST': x0, 'WEST': WIDE - x1}[d]
+            # her own tile is the middle 32 pixels: the spar is stepped inside
+            # it and stands most of a tile out over the next one
+            if tip > 6 or not SIZE <= heel < SIZE + 6:
+                problems.append('bowsprit %s %s: tip %d and heel %d px from the cell edges' % (name, d, tip, heel))
     bare = read_states(MASTS, BIG, SAILS)
     for name, _, ims in by_path[NEST]:
         for d, im, mast in zip(DIRS, ims, bare[name]):
@@ -1172,8 +1213,10 @@ def write_preview(path, sheets, scale=4):
     for size, name, ims in rows:
         x = 4
         for im in ims:
-            ground = (58, 92, 122) if size == BIG else (128, 96, 62)
+            ground = (58, 92, 122) if size != SIZE else (128, 96, 62)
             out.alpha_composite(backdrop(size, size, ground, 40), (x, y))
+            if size == WIDE:  # her own tile, in the middle of the cell
+                out.alpha_composite(backdrop(SIZE, SIZE, (128, 96, 62), 40), (x + SIZE, y + SIZE))
             out.alpha_composite(im, (x, y))
             x += size + 4
         y += size + 4
