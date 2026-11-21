@@ -92,9 +92,16 @@
 		var/want_open = isnull(state) ? !D.state : state
 		if (want_open == D.state)
 			return FALSE
-		// A bar, a locked lock or a brace holds the door against the cord.
+		// Someone holding or bracing it keeps it where it is.
+		if (D.door_braced_against(null))
+			return FALSE
+		// A bar or a locked lock holds the door against the cord.
 		if (want_open && (D.locked || D.door_barred() || (D.door_lock && D.door_lock.blocks())))
 			playsound(get_turf(D), 'sound/machines/door_locked.ogg', 50, TRUE)
+			return FALSE
+		// A trapdoor never opens under someone (trapdoors.dm); the castle drop
+		// trapdoor is the one made to.
+		if (want_open && D.is_trapdoor() && (locate(/mob/living) in D.loc))
 			return FALSE
 		if (want_open)
 			D.Open()

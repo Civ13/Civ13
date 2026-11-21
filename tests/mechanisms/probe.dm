@@ -207,6 +207,16 @@ var/mechanisms_runtime = null
 	wire.trip(stranger)
 	mechanisms_assert(bell.next_ring > world.time, "tripwire_pulls")
 
+	// A cord never opens a trapdoor under someone; it does once they step off.
+	var/obj/structure/simple_door/key_door/anyone/trapdoor/hatch = new(locate(14, 14, 1))
+	sleep(10)
+	var/mob/living/human/stander = mechanisms_actor(14, 14, "Stander")
+	mechanisms_assert(!mechanism_actuate(hatch, null) && !hatch.state, "trapdoor_not_under_someone")
+	qdel(stander)
+	mechanisms_assert(mechanism_actuate(hatch, null), "trapdoor_opens_when_clear")
+	sleep(12)
+	mechanisms_assert(hatch.state, "trapdoor_open")
+
 	// The new art is in the icon file.
 	var/list/states = icon_states('icons/obj/mechanisms.dmi')
 	for (var/state in list("lever", "lever_pulled", "pull_cord", "pull_cord_pulled", "pressure_plate", "pressure_plate_pressed", "rock_drop", "rock_drop_empty"))
