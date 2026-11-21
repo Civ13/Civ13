@@ -5,6 +5,9 @@ and the skill in a real build. These checks keep the wiring it cannot reach:
 recipes, the research node, the punch hooks, the skill lists and the include.
 """
 from pathlib import Path
+import re
+import subprocess
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -61,6 +64,17 @@ class HandConditioningSources(unittest.TestCase):
     def test_rock_needs_harm_intent(self):
         self.assertIn('/turf/wall/rockwall/attack_hand(mob/living/human/H)\n'
                       '\tif (istype(H) && H.a_intent == I_HARM && Adjacent(H))', SOURCE)
+
+
+
+class Art(unittest.TestCase):
+    def test_art_is_reproducible(self):
+        script = ROOT / 'tests/sprites/create_martial_training.py'
+        result = subprocess.run([sys.executable, str(script), '--check'], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("icons/obj/martial_training.dmi", SOURCE)
+        for state in re.findall(r'icon_state = "(\w+)"', SOURCE):
+            self.assertIn("'%s'" % state, script.read_text(encoding='utf-8'), state)
 
 
 if __name__ == '__main__':
