@@ -1848,7 +1848,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/head/ww2/sov_ushanka/nomads" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/greykerchief" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/redkerchief" = "haberdashery",
-		// --- herbalism (10) ---
+		// --- herbalism (11) ---
 		"/obj/item/stack/medical/bruise_pack/bint" = "herbalism",
 		"/obj/item/stack/medical/bruise_pack/bint/leather" = "herbalism",
 		"/obj/item/stack/medical/splint" = "herbalism",
@@ -1857,6 +1857,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/prosthesis/woodfoot" = "herbalism",
 		"/obj/item/weapon/reagent_containers/food/snacks/leaf_salad" = "herbalism",
 		"/obj/item/weapon/reagent_containers/glass/mortar" = "herbalism",
+		"/obj/item/weapon/reagent_containers/pill/hashish" = "herbalism",
 		"/obj/item/weapon/reagent_containers/pill/opium" = "herbalism",
 		"/obj/structure/drying_rack" = "herbalism",
 		// --- hygiene (14) ---
