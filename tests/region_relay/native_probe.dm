@@ -58,6 +58,14 @@ var/global/datum/region_relay_probe/region_relay_probe = new
 		require(reply && reply["port"] == 1721, "peer lookup: [json_encode(reply)]")
 		pass("route_and_lookup")
 
+		phase = "route_ip"
+		// A player the relay brought here (loopback) keeps the relay's own route;
+		// a LAN player is routed from the host's public address.
+		require(region_relay_route_ip("127.0.0.1", "203.0.113.9") == "127.0.0.1", "loopback rewritten: [region_relay_route_ip("127.0.0.1", "203.0.113.9")]")
+		require(region_relay_route_ip("192.168.0.20", "93.184.216.34") == "93.184.216.34", "LAN not rewritten")
+		require(region_relay_route_ip("85.220.24.225", "93.184.216.34") == "85.220.24.225", "public address rewritten")
+		pass("route_ip")
+
 		phase = "refusals"
 		reply = shard_group.ask_relay("route=1&ip=198.51.100.7&ckey=alice&port=1729")
 		require(reply && !reply["ok"], "route to a foreign port: [json_encode(reply)]")
