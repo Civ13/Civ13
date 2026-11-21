@@ -42,7 +42,7 @@
 	unbreakable = TRUE
 
 
-/obj/item/weapon/material/sword/magic/on_weapon_contact(mob/living/M, mob/living/user)
+/obj/item/weapon/material/sword/magic/on_weapon_contact(mob/living/M, mob/living/user, hit_zone = null)
 	if (!M)
 		return
 	if(prob(weakens))
@@ -71,7 +71,7 @@
 		M.updatehealth()
 		playsound(loc, 'sound/effects/refill.ogg', 75, TRUE)
 	if(prob(shocks))
-		M.electrocute_act(shockpower, src, 1.0)
+		M.electrocute_act(shockpower, src, 1.0, hit_zone) // the struck zone and its protection take the shock (#6305)
 		if(prob(25))
 			playsound(loc, 'sound/effects/sparks1.ogg', 75, TRUE)
 		else if(prob(25))

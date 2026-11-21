@@ -323,7 +323,11 @@
 	//actually attempt to shoot
 	var/turf/targloc = get_turf(target) //cache this in case target gets deleted during shooting, e.g. if it was a securitron that got destroyed.
 
+	// A held gun stops its burst once it leaves the shooter's hands (#6309).
+	var/held_at_start = (user && loc == user)
 	for (var/i in 1 to _burst)
+		if (held_at_start && loc != user)
+			break
 		var/obj/projectile = consume_next_projectile(user)
 
 		if (!projectile)

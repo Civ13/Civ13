@@ -114,6 +114,19 @@ def draw_mast():
     return img
 
 
+def draw_crows_nest():
+    """The mast from above with her crow's nest: a ring of planking round
+    the masthead, over the yard and furled sail."""
+    img = draw_mast()
+    px = img.load()
+    for dy in range(-7, 8):
+        for dx in range(-7, 8):
+            r2 = dx * dx + dy * dy
+            if 30 <= r2 <= 49:
+                px[15 + dx, 18 + dy] = SPAR_DARK if r2 >= 42 else SPAR_LIGHT
+    return img
+
+
 def draw_steering_oar():
     """A steering oar from above: the loom inboard at the top with its grip,
     an iron crutch it turns in, and the blade trailing astern."""
@@ -198,6 +211,7 @@ SPRITES = {
     # /obj/structure/vehicleparts/movement/sail
     # The bare mast is a 64x64 sprite of a thin yard: drawn here from above.
     'piece_M': {'draw': draw_mast, 'outline': True},
+    'piece_N': {'draw': draw_crows_nest, 'outline': True},
     # /obj/structure/bed/chair/wood/rowing_bench
     'piece_R': {'layers': [('icons/obj/bed_chair.dmi', 'bleacher', None)], 'turns': True, 'outline': True},
     # /obj/structure/hull_anchor/stone
@@ -216,6 +230,8 @@ SPRITES = {
     'piece_C': {'layers': [('icons/obj/storage.dmi', 'wood_crate', None)], 'outline': True},
     # The gangway gate in her gunwale, from the built railing sheet.
     'piece_Y': {'layers': [('icons/obj/railings_built.dmi', 'wood_gate', None)], 'turns': True},
+    # /obj/structure/multiz/ladder/up/placed (the foot of a stood-up ladder)
+    'piece_X': {'layers': [('icons/obj/stairs.dmi', 'ladderup_wood', None)], 'outline': True},
     # /obj/structure/bed/wood (wood tint on the bed overlay)
     'piece_B': {'layers': [('icons/obj/bed_chair.dmi', 'bed', WOOD)], 'outline': True},
     # /obj/structure/cellar_pump/steam

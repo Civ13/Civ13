@@ -24,9 +24,9 @@ STANDING_CONTROLS = {
 # Mutations of the dug cave source, run with --cave or --cave-first.
 CAVE = 'code/modules/multiz/dug_underground.dm'
 CAVE_CONTROLS = {
-    'cave-step-over': ('\t\treturn z - 1 == dug ? z - 2 : z - 1\n', '\t\treturn z - 1 == dug ? 1 : z - 1\n',
-                       'FAIL: the second storey stands on the first, over the cave'),
-    'cave-roof-count': ('\treturn base_z + (dug_underground_z() ? 1 : 0)\n', '\treturn base_z\n', 'FAIL: storey 4 is within the roof limit'),
+    'cave-step-over': ('\t\tif (z != practice_room_z && !(z in caves))\n', '\t\tif (z != practice_room_z)\n',
+                       'FAIL: the open air lies over the surface'),
+    'cave-roof-count': ('\treturn base_z + underground_added_count()\n', '\treturn base_z\n', 'FAIL: storey 10 is within the roof limit'),
 }
 CONTROLS = {
     'lighting-gravity': ('\t// Lighting renderers belong to their turf; they are not falling cargo.\n\tif (istype(A, /atom/movable/lighting_overlay) || istype(A, /atom/movable/lighting_fullbright))\n\t\treturn\n', '', 'FAIL: lighting renderer stays on upper level'),

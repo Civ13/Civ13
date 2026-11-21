@@ -181,6 +181,8 @@
 			grow()
 
 /obj/item/weapon/reagent_containers/food/snacks/egg/proc/grow()
+	if (QDELETED(src))
+		return
 	if (isturf(loc) && chicken_count.len < 80)
 		amount_grown += 1
 		if (amount_grown >= 400)
@@ -189,13 +191,12 @@
 			processing_objects -= src
 			qdel(src)
 			return
-		else
-			spawn(40)
-				grow()
-
 	else
+		// carried, stored or over the population cap: pause, keeping progress, and
+		// check again so it resumes once it is back on the ground (#6313)
 		processing_objects -= src
-		return
+	spawn(40)
+		grow()
 
 /mob/living/simple_animal/rooster
 	name = "\improper rooster"
@@ -570,6 +571,8 @@
 				E.pixel_y = rand(-6,6)
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/proc/grow()
+	if (QDELETED(src))
+		return
 	if (isturf(loc) && turkey_count.len < 80)
 		amount_grown += 1
 		if (amount_grown >= 400)
@@ -578,12 +581,13 @@
 			processing_objects -= src
 			qdel(src)
 			return
-		else
-			spawn(50)
-				grow()
 	else
+		// carried, stored or over the population cap: pause, keeping progress, and
+		// check again so it resumes once it is back on the ground (#6313)
 		processing_objects -= src
-		return
+	spawn(50)
+		grow()
+
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/New()
 	..()
 	var/malearound = FALSE

@@ -57,7 +57,6 @@ var/global/list/hydraulic_press_words = list("helmet", "armor", "shield", "headw
 	if (moved <= 0)
 		to_chat(H, SPAN_WARNING("\The [src]'s firebox is full."))
 		return
-	record_wood_fuel(S, moved * each)
 	fuel += moved * each
 	S.use(moved)
 	visible_message(SPAN_NOTICE("[H] stokes \the [src]."))

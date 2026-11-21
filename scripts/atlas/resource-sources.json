@@ -145,6 +145,21 @@
       "status": "static declared harvest; inherited overrides and map reachability not executed"
     },
     {
+      "source": "/obj/structure/farming/plant/cannabis",
+      "file": "code/game/objects/farming.dm",
+      "line": 487,
+      "properties": {
+        "name": "\"cannabis plant\"",
+        "plant": "\"cannabis\"",
+        "stack": "\"material/cannabis_fresh\"",
+        "biomes": "list(\"temperate\", \"sea\", \"semiarid\", \"savanna\")",
+        "seasons": "list(\"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\", \"Dry Season\")",
+        "max_water": "60"
+      },
+      "output": "/obj/item/stack/material/cannabis_fresh",
+      "status": "static declared harvest; inherited overrides and map reachability not executed"
+    },
+    {
       "source": "/obj/structure/farming/plant/hemp",
       "file": "code/game/objects/farming.dm",
       "line": 429,
@@ -12448,6 +12463,34 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Harvest cannabis",
+      "file": "code/game/objects/farming.dm",
+      "line": 487,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/farming/seeds/cannabis"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/cannabis_fresh",
+        "/obj/item/stack/farming/seeds/cannabis"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"sea\", \"semiarid\", \"savanna\"); seasons: list(\"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Harvest hemp",
       "file": "code/game/objects/farming.dm",
       "line": 429,
@@ -16728,6 +16771,29 @@
       ],
       "steps": [
         "Harvest fresh tobacco leaves from a tobacco plant.",
+        "Hang them on a drying rack and wait for them to dry."
+      ],
+      "conditions": "Drying takes time and the rack holds a limited number of items.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Dry cannabis tops",
+      "file": "code/modules/materials/material_sheets.dm",
+      "line": 481,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/material/cannabis_fresh"
+      ],
+      "outputs": [
+        "/material/cannabis"
+      ],
+      "tools": [
+        "drying rack"
+      ],
+      "steps": [
+        "Harvest fresh cannabis tops from a cannabis plant.",
         "Hang them on a drying rack and wait for them to dry."
       ],
       "conditions": "Drying takes time and the rack holds a limited number of items.",

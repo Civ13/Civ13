@@ -44,6 +44,7 @@
 	var/list/nearby_allies
 	var/list/nearby_officers
 	var/cover_count = 0
+	var/current_dir
 	
 	// Scan 7x7 area around self
 	for(var/turf/T in range(3, src))
@@ -68,7 +69,8 @@
 			score += 100
 			
 			// Flanking bonus: prefer positions that are at a different angle from current
-			var/current_dir = get_dir(src, enemy)
+			if(cover_count == 1)
+				current_dir = get_dir(src, enemy)
 			var/new_dir = get_dir(T, enemy)
 			if(new_dir != current_dir)
 				score += 40

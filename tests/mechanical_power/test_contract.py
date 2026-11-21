@@ -289,6 +289,19 @@ class MechanicalPower(unittest.TestCase):
         self.assertEqual(hopper.count('mechanical_drive_factor(src)'), 2)
         self.assertIn('if (world.time < next_step)', proc_body(hopper, '/obj/structure/workshop_machine/hopper/process_interval('))
 
+    def test_contraptions_recipes_parts_and_nodes(self):
+        rows = recipe_rows()
+        want = {
+            BASE + '/counterweight': ('/material/wood/', 10, 'watermills', {GEAR: 1, SHAFT: 1, '/obj/item/stack/material/rope': 2}),
+            '/obj/structure/mechanism/cam_drum': ('/material/wood/', 6, 'watermills', {GEAR: 1, SHAFT: 1}),
+            BASE + '/steam_engine': ('/material/iron/', 16, 'steam_power', {GEAR: 1, SHAFT: 1, BEARING: 2}),
+        }
+        for path, (material, count, node, parts) in want.items():
+            self.assertEqual(len(rows.get(path, [])), 1, path)
+            self.assertEqual((rows[path][0][0], float(rows[path][0][3])), (material, count), path)
+            self.assertIn('"%s" = "%s"' % (path, node), NODES)
+            self.assertEqual(NEEDS[path], {'tools': [], 'inputs': parts}, path)
+
     def test_movers_have_a_strength(self):
         for name, cap in (('treadwheel', 1), ('horse_gin', 2), ('mill_wheel', 3)):
             self.assertIn('drive_capacity = %d\n' % cap, type_block(BASE + '/' + name))

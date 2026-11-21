@@ -114,6 +114,9 @@
 					if (GUN_TYPE_BOW)
 						if(ranged)
 							H.adaptStat("bows", 1)
+					if (GUN_TYPE_MG)
+						if(ranged)
+							H.adaptStat("machinegun", 1) // emplaced machine guns train on targets too (#6331)
 		visible_message("<span class='notice'>[H] hits \the [src] with \the [proj]!</span>","<span class='notice'>You hit \the [src] with \the [proj]!</span>")
 		to_chat(H, "<font size=4><b>You hit the target!</b></font>")
 		//If the user shoots at a target, check if it's an arrow or a bolt and have a chance of dropping the arrow/bolt.
