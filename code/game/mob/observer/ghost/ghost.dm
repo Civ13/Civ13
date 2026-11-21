@@ -170,6 +170,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		ghost.can_reenter_corpse = can_reenter_corpse
 		ghost.timeofdeath = stat == DEAD ? timeofdeath : world.time
 		ghost.key = key
+		ghost.spirit_leash() // spirit_wait.dm
 		if (!(ghost.started_as_observer))
 			to_chat(ghost, "<span class = 'good'><font size = 4>Or click <a href='?src=\ref[ghost];respawn=1'>THIS</a> button to respawn!</font></span>")
 		if (ishuman(src))
