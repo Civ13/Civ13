@@ -37,7 +37,7 @@ class ArcaneUnbindSource(unittest.TestCase):
         self.assertIn('#define ARCANE_UNBIND_MIN 3', TEXT)
         self.assertIn('"affliction"', body(TEXT, '/mob/living/human/proc/arcane_unbind_materials('))
         self.assertIn('arcane_vigil_holds()', body(TEXT, '/mob/living/human/proc/arcane_unbind_problem('))
-        self.assertIn('kind == "warding" || kind == "unbinding"', ENCHANT)
+        self.assertIn('if (kind == "unbinding" || (needs && needs["vigil"]))', ENCHANT)
 
     def test_drains_fifty_per_strength_and_logs(self):
         self.assertIn('#define ARCANE_UNBIND_PER_STRENGTH 50', TEXT)
