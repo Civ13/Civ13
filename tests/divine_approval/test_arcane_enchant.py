@@ -36,7 +36,7 @@ class ArcaneEnchantSource(unittest.TestCase):
         dispatch = body(COVENANT, '/proc/divine_dispatch(')
         self.assertLess(dispatch.index('caster.divine_problem(spell)'), dispatch.index('R.consume('))
         self.assertLess(dispatch.index('R.consume('), dispatch.index('caster.arcane_imbue_apply(R.target)'))
-        self.assertIn('spell == "imbue" ? null : caster.divine_component()', dispatch)
+        self.assertIn('(spell == "imbue" || spell == "bless") ? null : caster.divine_component()', dispatch)
         apply = body(TEXT, '/mob/living/human/proc/arcane_imbue_apply(')
         self.assertIn('qdel(M)', apply)
         self.assertIn('log_admin(', apply)
