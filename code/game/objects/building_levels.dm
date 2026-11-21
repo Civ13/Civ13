@@ -1,7 +1,7 @@
 // Ceilings with an available upper plane have two faces of one slab. Coordinates
 // and an ID, rather than cross-level references, survive per-level saves.
 #define BUILDING_MAX_Z 32
-#define BUILDING_EXTRA_LEVELS 12
+#define BUILDING_EXTRA_LEVELS 15
 #define BUILDING_MAX_LEVEL_CELLS 2000000
 
 var/building_allocating_z = 0
@@ -160,10 +160,9 @@ var/building_compiled_maxz = 0
 /obj/roof/persistence_runtime_var(key)
 	return key == "roof_overlay" || key == "sagging" || ..()
 
-// Building levels stack over the surface; a dug cave level is never one.
+// Building levels stack over the surface; an added underground level is never one.
 /proc/building_upper_z(z)
-	var/dug = dug_underground_z()
-	return dug && z == dug ? 0 : multiz_level_above(z)
+	return underground_added(z) ? 0 : multiz_level_above(z)
 
 /obj/roof/proc/building_floor()
 	if (!building_pair_id || building_floor_z != building_upper_z(z))
@@ -426,7 +425,7 @@ var/global/building_assume_founded = FALSE
 
 // TRUE when the map lets its building levels grow above z.
 /proc/building_stack_room(z)
-	return map && map.building_levels && z >= building_base_maxz() && z != dug_underground_z() && building_levels_built() < map.building_levels
+	return map && map.building_levels && z >= building_base_maxz() && !underground_added(z) && building_levels_built() < map.building_levels
 
 // A roof adds the next level when it is on the top ground level, as before, or
 // on the highest building level of a map that permits more of them.
@@ -435,7 +434,7 @@ var/global/building_assume_founded = FALSE
 		return FALSE
 	// Nothing lies above z (the cave is never "above"), so z is the top ground
 	// level or the highest building level.
-	return z == multiz_top_z() || (z > building_base_maxz() && z != dug_underground_z() && building_stack_room(z))
+	return z == multiz_top_z() || (z > building_base_maxz() && !underground_added(z) && building_stack_room(z))
 
 // Why a roof on T would get no walkable floor above it, or null when it will.
 // Shown before and after building so players know where their building stops.

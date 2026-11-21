@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'npc_cover_direction': {'files': ('tests/npc_cover/test_direction_projection.py',),
+        'paths': ('tests/npc_cover/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',)},
     'bottle_alcohol_power': {'files': ('tests/bottle_alcohol_power/test_alcohol_power.py',),
         'paths': ('tests/bottle_alcohol_power/', 'code/modules/reagents/reagent_containers/food/drinks/bottle.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -575,6 +578,11 @@ SUITES = {
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/punch_injury.dm',
                          'code/game/mob/living/carbon/human/human_defines.dm')},
+    # Martial schools: era coverage, research nodes, rank defines, travel hooks.
+    'martial_schools': {'files': ('tests/martial_schools/test_sources.py',),
+        'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm', 'code/__defines/martial.dm'),
+        'shared_paths': ('code/modules/research_tree/research_node.dm',
+                         'code/modules/persistence/region_travel.dm')},
     # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.
     'punch_injury': {'files': ('tests/punch_injury/test_sources.py',),
         'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),
