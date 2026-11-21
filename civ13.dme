@@ -2220,5 +2220,6 @@
 // Sealed journal presentation; does not activate spell casting.
 #include "code\modules\divine\journal.dm"
 #include "code\modules\divine\magic_whitelist.dm"
+#include "code\modules\divine\repository.dm"
 // Must stay last: global_init needs every other global initialized first.
 #include "code\global_init_last.dm"
