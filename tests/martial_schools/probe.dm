@@ -57,6 +57,15 @@ var/list/martial_probe_verified
 /mob/living/human/martial_probe/conditioning_roll(chance)
 	return FALSE
 
+var/martial_probe_day = 100
+var/martial_probe_scholarly = FALSE
+
+/mob/living/human/martial_probe/martial_today()
+	return martial_probe_day
+
+/obj/map_metadata/martial_probe/book_research_enabled()
+	return martial_probe_scholarly
+
 /proc/martial_probe_assert(ok, label)
 	martial_probe_checks++
 	if (!ok)
@@ -219,6 +228,68 @@ var/list/martial_probe_verified
 	H.a_intent = I_HARM
 	martial_probe_assert(("heavy_bag" in icon_states(B.icon)) && ("wooden_dummy" in icon_states(D.icon)), "gear_icon_states")
 	martial_probe_rest(H)
+
+	// --- wrestling mat: full drill for grappling schools, half for the rest ------------
+	var/obj/structure/martial_gear/wrestling_mat/W = new(locate(4, 2, 1))
+	martial_probe_assert(!W.density && ("wrestling_mat" in icon_states(W.icon)), "wrestling_mat_lies_flat")
+	before = H.martial_points("grappling")
+	W.attack_hand(H)
+	martial_probe_assert(abs(H.martial_points("grappling") - before - 2) < 0.001, "wrestling_mat_pays_grapplers_2")
+	martial_probe_rest(H)
+	var/mob/living/human/martial_probe/S = new(locate(5, 2, 1))
+	S.stat = CONSCIOUS
+	S.canmove = TRUE
+	S.hand = 0
+	martial_probe_rest(S)
+	S.martial_school = "pugilism"
+	S.a_intent = I_HARM
+	W.attack_hand(S)
+	martial_probe_assert(abs(S.martial_points("pugilism") - 1.25) < 0.001, "wrestling_mat_pays_strikers_half")
+
+	// --- fights count toward a daily cap; a verified Master does not ------------------
+	var/mob/living/human/martial_probe/F = new(locate(6, 3, 1))
+	F.stat = CONSCIOUS
+	F.canmove = TRUE
+	F.hand = 0
+	martial_probe_rest(F)
+	F.martial_school = "grappling"
+	var/mob/living/human/martial_probe/Q = new(locate(6, 4, 1))
+	Q.stat = CONSCIOUS
+	for (var/i in 1 to 60)
+		F.practice_unarmed(0.5, Q)
+	martial_probe_assert(abs(F.martial_points("grappling") - 10) < 0.001, "fight_gains_capped_at_10_a_day")
+	F.practise_martial_forms()
+	martial_probe_assert(F.martial_points("grappling") > 10, "forms_are_not_capped")
+	before = F.martial_points("grappling")
+	Q.martial_school = "grappling"
+	Q.martial_progress = list("grappling" = 400)
+	martial_probe_present += Q
+	martial_probe_verified += Q
+	F.practice_unarmed(0.5, Q)
+	martial_probe_assert(abs(F.martial_points("grappling") - before - 0.625) < 0.001, "verified_master_sparring_is_not_capped")
+	martial_probe_present -= Q
+	martial_probe_verified -= Q
+	before = F.martial_points("grappling")
+	F.practice_unarmed(0.5, Q)
+	martial_probe_assert(F.martial_points("grappling") == before, "cap_holds_for_the_rest_of_the_day")
+	martial_probe_day++
+	F.practice_unarmed(0.5, Q)
+	martial_probe_assert(abs(F.martial_points("grappling") - before - 0.25) < 0.001, "cap_resets_next_day")
+	martial_probe_assert(F.martial_travel_record()["fight"] == 0.25, "fight_count_travels")
+
+	// --- first Master pays Military Science once --------------------------------------
+	martial_probe_scholarly = TRUE
+	var/mob/living/human/martial_probe/G = new(locate(7, 3, 1))
+	G.stat = CONSCIOUS
+	G.martial_school = "judo"
+	G.martial_practice(399)
+	martial_probe_assert(G.scholar_level("military") == 0, "adept_gets_no_scholarship")
+	G.martial_practice(5)
+	martial_probe_assert(G.scholar_level("military") == 8 && (skill_mastery_key("military", "school") in G.skill_mastery), "master_gains_8_military_levels")
+	G.martial_school = "bjj"
+	G.martial_practice(400)
+	martial_probe_assert(G.scholar_level("military") == 8, "second_master_pays_nothing")
+	martial_probe_scholarly = FALSE
 
 	// --- region travel ----------------------------------------------------------------
 	H.hand_conditioning = 20

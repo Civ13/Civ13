@@ -16,6 +16,7 @@ def read(path):
     return (ROOT / path).read_text(encoding='utf-8-sig')
 
 
+LEARNING = read('code/modules/research_tree/learning_by_doing.dm')
 SOURCE = read('code/modules/1713/martial_arts/martial_schools.dm')
 NODES = read('code/modules/research_tree/research_node.dm')
 DEFINES = read('code/__defines/martial.dm')
@@ -58,7 +59,8 @@ class Training(unittest.TestCase):
     def test_gear_recipes_and_research(self):
         for material, name, path, node in (
                 ('leather', 'heavy bag', '/obj/structure/martial_gear/heavy_bag', 'martial_disciplines'),
-                ('wood', 'wooden dummy', '/obj/structure/martial_gear/wooden_dummy', 'school_wing_chun')):
+                ('wood', 'wooden dummy', '/obj/structure/martial_gear/wooden_dummy', 'school_wing_chun'),
+                ('leather', 'wrestling mat', '/obj/structure/martial_gear/wrestling_mat', 'school_grappling')):
             self.assertRegex(RECIPES, r'RECIPE: /material/%s/,%s,%s,\d+,\d+,1,1,sports,' % (material, name, path))
             self.assertIn('"%s" = "%s",' % (path, node), NODES)
 
@@ -98,6 +100,13 @@ class Moves(unittest.TestCase):
     def test_no_new_global_initialisers(self):
         # The world's global initialiser is at the compiler's size limit.
         self.assertNotRegex(MOVES, r'(?m)^var/global/')
+        self.assertEqual(len(re.findall(r'(?m)^var/global/', SOURCE)), 1)
+
+    def test_fight_gains_are_capped_and_mastery_pays_once(self):
+        self.assertIn('var/fight = sparring && sparring != src && !martial_teacher_ok(sparring)', SOURCE)
+        self.assertIn('amount = min(amount, martial_fight_room())', SOURCE)
+        self.assertIn('note_martial_mastery(MARTIAL_MASTERY_LEVELS)', SOURCE)
+        self.assertIn('skill_mastery_key("military", "school")', LEARNING)
 
 
 class Wiring(unittest.TestCase):
