@@ -31,13 +31,6 @@ var/global/list/combat_stance_reactions = list(
 // Martial reflex chance by rank (martial arts plan); Novice has none yet.
 var/global/list/martial_reflex_chance = list(0, 0, 25, 45, 65)
 
-// The martial school and rank (0-4). The martial arts schools PR fills these
-// in; until then nobody has a school, so no martial reflex fires.
-/mob/living/human/var/martial_school = null
-
-/mob/living/human/proc/martial_rank(school_id)
-	return MARTIAL_RANK_NONE
-
 // Trained enough for advanced stance reactions: the weapon's own skill (or
 // dexterity for bare hands) well above average, or a martial rank of Student
 // or more bare-handed.

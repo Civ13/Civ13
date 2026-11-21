@@ -15,6 +15,21 @@ class KnownLanguagesContract(unittest.TestCase):
         self.assertIn('living_user.default_language', DATA)
         self.assertIn('"is_default" = (L == current_default)', DATA)
 
+    def test_language_families_are_a_new_escaped_read_only_key(self):
+        # Families ride along as their own key; the existing keys keep their shape.
+        self.assertIn('"languages" = entries, "current_default" = current_default ? html_encode(current_default.name) : "", "families" = language_family_rows()', DATA)
+        daughter = (ROOT / 'code/game/mob/language/daughter.dm').read_text()
+        rows = daughter.split('/mob/proc/language_family_rows()', 1)[1]
+        for field in ('html_encode(M.name)', 'html_encode(D.parent_name)', 'html_encode(D.nation)', 'html_encode(ordinal_age_name(D.born_era))', 'html_encode(A.name)', 'html_encode(B.name)', 'html_encode(root.name)'):
+            self.assertIn(field, rows)
+        # Hidden languages never reach the family list, and no string is sent raw.
+        self.assertLess(rows.index('if (L.flags & NONGLOBAL)'), rows.index('known |= '))
+        self.assertIn('root.flags & NONGLOBAL', rows)
+        self.assertNotRegex(rows, r'"(name|parent|nation|era|root|a|b)" = (?!html_encode\(|"")')
+        # Players see kinship, never drift numbers; the reader still has no input or action.
+        for banned in ('language_drift', 'input(', 'alert(', 'Topic(', 'ui_act'):
+            self.assertNotIn(banned, rows)
+
     def test_owner_only_read_only_state_preserves_observer_access(self):
         state = (ROOT / 'code/modules/nano/interaction/self.dm').read_text().split('/datum/topic_state/self_read_only/can_use_topic', 1)[1]
         self.assertIn('src_object != user || !user || !user.client', state)

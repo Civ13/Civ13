@@ -4,8 +4,9 @@ Compiles a temporary copy of civ13.dme with one production map selected and
 tests/underground_level/real_map_probe.dm appended (the zone runner's build and
 staging helpers), then runs two fresh DreamDaemon processes:
 
-  write   a fresh world: the cave level is added at boot as unformed rock, a
-          shaft and a 24-cell tunnel are dug, --storeys open-air levels are
+  write   a fresh world: the cave level is added at boot as unformed rock (or
+          is the map's compiled one), a shaft and a 24-cell tunnel are dug,
+          --deep levels are dug under it, --storeys open-air levels are
           grown, and the world is saved
   read    a copy of that save: the startup restore, the formed cells and
           lighting are checked, and the world is saved again
@@ -34,6 +35,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--deadline', type=int, default=3600)
     parser.add_argument('--storeys', type=int, default=0, help='grow this many open-air levels before saving')
+    parser.add_argument('--deep', type=int, default=0, help='dig shafts down to this underground depth before saving')
     args = parser.parse_args()
     byond = args.byond_bin.resolve(strict=True)
     output = args.output.resolve()
@@ -58,12 +60,13 @@ def main():
         return result
 
     write = zone.stage(output, 'write', None)
-    result = finish('write', zone.run(byond, write, {'real_mode': 'write', 'storeys': args.storeys}, args.deadline))
+    result = finish('write', zone.run(byond, write, {'real_mode': 'write', 'storeys': args.storeys, 'deep': args.deep}, args.deadline))
     saves = write / 'map_saves'
     if result.get('passed') and (saves / 'save_complete.txt').is_file():
         summary['save_files'] = {p.name: p.stat().st_size for p in sorted(saves.iterdir()) if p.is_file()}
         read = zone.stage(output, 'read', None, saves)
-        finish('read', zone.run(byond, read, {'real_mode': 'read', 'formed': result['dug']['formed'], 'maxz': result['maxz']}, args.deadline))
+        finish('read', zone.run(byond, read, {'real_mode': 'read', 'formed': result['dug']['formed'], 'maxz': result['maxz'],
+                                                      'deep': args.deep, 'deep_formed': '-'.join(f'{k}.{v}' for k, v in result.get('deep', {}).items())}, args.deadline))
     (output / 'summary.json').write_text(json.dumps(summary, indent=2), encoding='utf-8')
     print('FAILURES: ' + '; '.join(summary['failures']) if summary['failures'] else 'PASS: underground real-map write and read')
     return 1 if summary['failures'] else 0

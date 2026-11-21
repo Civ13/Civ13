@@ -121,12 +121,11 @@
 	if (T)
 		T.available_dirt = 0
 
-// TRUE when T lies on a level under the ground: the dug cave level, or a cave.
+// TRUE when T lies on a level under the ground: an added underground level, or a cave.
 /proc/tunnel_level_turf(turf/T)
 	if (!T)
 		return FALSE
-	var/dug = dug_underground_z()
-	if (dug && T.z == dug)
+	if (underground_added(T.z))
 		return TRUE
 	return istype(T.loc, /area/caribbean/void/caves)
 

@@ -205,7 +205,7 @@ var/combat_stance_runtime = null
 	var/datum/gender/T = new /datum/gender/neuter
 	combat_stance_assert(findtext(A.combat_stance_examine_line(T), "opening"), "examine_line")
 
-// Stand-in rank until the martial arts schools PR fills martial_rank in.
+// A fixed rank for the probe, in place of earned school points.
 var/combat_stance_probe_rank = 0
 /mob/living/human/martial_rank(school_id)
 	return school_id == martial_school ? combat_stance_probe_rank : 0
