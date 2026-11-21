@@ -526,7 +526,7 @@
 	var/list/loose = list()
 	for (var/turf/T in tiles)
 		for (var/atom/movable/M in T)
-			if (M.loc != T || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+			if (M.loc != T || QDELETED(M) || !M.craft_cargo())
 				continue
 			if (istype(M, /obj/structure/vehicleparts/frame))
 				var/obj/structure/vehicleparts/frame/F = M
