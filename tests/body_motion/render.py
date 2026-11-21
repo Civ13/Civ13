@@ -21,6 +21,8 @@ SCALE = 4
 FRAME_DS = 0.5  # 50 ms frames
 GRASS = (86, 112, 70, 255)
 GRASS_DARK = (78, 102, 63, 255)
+WATER = (52, 92, 140, 255)
+WATER_DARK = (46, 82, 126, 255)
 WOOD = (0x82, 0x4B, 0x28)  # wood icon_colour (materials.dm)
 
 
@@ -110,15 +112,18 @@ def repeat(fn, every, length, start=0):
 
 def panels(columns, total_ds, tiles=(3, 3)):
     """columns: list of (label, bodies, props). bodies: (img, tx, ty, matrix_fn, shift_fn).
-    props: (img, tx, ty, state_fn) with state_fn(t) -> (dx, dy, scale, alpha) or None."""
+    props: (img, tx, ty, state_fn) with state_fn(t) -> (dx, dy, scale, alpha) or None.
+    A fourth column item True draws deep water: water tiles, and the body's
+    lower half under the water overlay, which moves with the body."""
     pw, ph = 32 * SCALE * tiles[0], 32 * SCALE * tiles[1]
     frames = []
     t = 0.0
     while t <= total_ds + 1e-6:
         sheet = Image.new('RGBA', ((pw + 8) * len(columns) - 8, ph + 28), (24, 24, 24, 255))
         d = ImageDraw.Draw(sheet)
-        for i, (label, bodies, props) in enumerate(columns):
-            panel = ground(pw, ph)
+        for i, (label, bodies, props, *extra) in enumerate(columns):
+            water = bool(extra and extra[0])
+            panel = ground(pw, ph, water)
             def centre(tx, ty):
                 return ((tx + 0.5) * 32 * SCALE, ph - (ty + 0.5) * 32 * SCALE)
             for img, tx, ty, state in props:
@@ -127,7 +132,7 @@ def panels(columns, total_ds, tiles=(3, 3)):
                     dx, dy, sc, al = st
                     draw_body(panel, img, centre(tx, ty), (sc, 0, 0, 0, sc, 0), (dx, dy), al)
             for img, tx, ty, fn, sh in bodies:
-                draw_body(panel, img, centre(tx, ty), fn(t), sh(t) if sh else (0, 0))
+                draw_body(panel, img, centre(tx, ty), fn(t), sh(t) if sh else (0, 0), water=water)
             sheet.alpha_composite(panel, (i * (pw + 8), 28))
             d.text((i * (pw + 8) + 8, 8), label, fill=(230, 230, 230, 255))
         d.text((sheet.width - 60, 8), f'{t / 10:.2f} s', fill=(160, 160, 160, 255))
@@ -167,7 +172,7 @@ def offset_track(keys):
     return at
 
 
-def draw_body(canvas, img, centre, m, shift=(0, 0), alpha=1.0):
+def draw_body(canvas, img, centre, m, shift=(0, 0), alpha=1.0, water=False):
     """Inverse-map each display pixel through the transform, nearest sampling."""
     a, b, c, d, e, f = m
     det = a * e - b * d
@@ -185,20 +190,24 @@ def draw_body(canvas, img, centre, m, shift=(0, 0), alpha=1.0):
             col, row = math.floor(x + 16), math.floor(16 - y)
             if 0 <= col < 32 and 0 <= row < 32:
                 p = src[col, row]
+                if p[3] and water and row >= 19:
+                    # Sprite rows below the waterline, in body space like the game's mask.
+                    p = tuple(int(p[i] * 0.3 + WATER[i] * 0.7) for i in range(3)) + (p[3],)
                 if p[3]:
                     base = out[px, py]
                     al = p[3] / 255 * alpha
                     out[px, py] = tuple(int(p[i] * al + base[i] * (1 - al)) for i in range(3)) + (255,)
 
 
-def ground(w, h):
-    canvas = Image.new('RGBA', (w, h), GRASS)
+def ground(w, h, water=False):
+    light, dark = (WATER, WATER_DARK) if water else (GRASS, GRASS_DARK)
+    canvas = Image.new('RGBA', (w, h), light)
     draw = ImageDraw.Draw(canvas)
     tile = 32 * SCALE
     for i in range(0, w, tile):
         for j in range(0, h, tile):
             if (i // tile + j // tile) % 2:
-                draw.rectangle((i, j, i + tile - 1, j + tile - 1), fill=GRASS_DARK)
+                draw.rectangle((i, j, i + tile - 1, j + tile - 1), fill=dark)
     return canvas
 
 
@@ -369,6 +378,25 @@ def main():
         ('Parry: 2px back, no recoil', [(east, 0, 1, every(slash, 4), shift_every), (west, 1, 1, every(parry, 3), None)], []),
         ('Slip: 4px sidestep', [(east, 0, 1, hold(stand), shift_every), (west, 1, 1, every(slip, 3), None)], []),
     ], 22, (2, 3)), out / 'combat.gif')
+
+    # 8. Swimming and climbing.
+    for mine, name in ((matrix(0, -1), 'swim_dip'), (matrix(0, -3), 'sink'), (matrix(0, 1), 'climb_up')):
+        assert all(abs(x - y) < 1e-3 for x, y in zip(mine, keys[name])), name
+    stroke = keys_track([(0, -1, 0, 1, 2, 'sine'), (0, 0, 0, 1, 3, 'sine')])
+    def swim_glide(t):
+        # A skilled swimmer: one 8 ds step after another, a stroke every 12 ds at most.
+        return ((t * 4) % 96 - 32, 0)
+    sink = keys_track([(0, -3, 0, 1, 3, 'quad_in'), (0, -3, 0, 1, 3, 'linear'), (0, 0, 0, 1, 4, 'sine_out')])
+    struggle = keys_track([(-2, 0, 0, 1, 2, 'linear'), (2, 0, 0, 1, 2, 'linear'), (0, 0, 0, 1, 2, 'linear')])
+    pull_up = keys_track([(0, 1, 0, 1, 2, 'quad_out'), (0, 0, 0, 1, 4, 'sine'), (0, 0, 0, 1, 4, 'linear')])
+    pull_down = keys_track([(0, -1, 0, 1, 2, 'quad_in'), (0, 0, 0, 1, 4, 'sine'), (0, 0, 0, 1, 4, 'linear')])
+    save(panels([
+        ('Swim stroke: 1px dip, 12 ds apart', [(east, 1, 1, repeat(stroke, 12, 5), swim_glide)], [], True),
+        ('Spent: sink 3px and hold, 10 ds', [(south, 1, 1, repeat(sink, 16, 10, start=2), None)], [], True),
+        ('Drowning: 2px struggle each second', [(south, 1, 1, repeat(struggle, 10, 6, start=2), None)], [], True),
+        ('Climbing up: 1px pull every 10 ds', [(north, 1, 1, repeat(pull_up, 10, 10, start=2), None)], []),
+        ('Climbing down: 1px dip every 10 ds', [(south, 1, 1, repeat(pull_down, 10, 10, start=2), None)], []),
+    ], 24, (3, 3)), out / 'swim-and-climb.gif')
 
 
 if __name__ == '__main__':
