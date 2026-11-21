@@ -877,6 +877,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/component_workbench/weapon" = "stone_arms",
 		// trench_warfare armor (cartridge_ammo)
 		"/obj/item/clothing/accessory/armor/modern/british" = "trench_warfare",
+		"/obj/item/clothing/accessory/armor/modern/british/heavy" = "trench_warfare",
 		"/obj/item/clothing/accessory/armor/modern/plate" = "trench_warfare",
 		"/obj/item/clothing/head/helmet/modern/stahlhelm" = "trench_warfare",
 		"/obj/item/clothing/head/helmet/ww/adrian" = "trench_warfare",
