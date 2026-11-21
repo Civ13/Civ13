@@ -303,12 +303,56 @@ var/berth_runtime_error = FALSE
 	// A floor more, and the refit takes it in.
 	berth_floors(9, 15, 9, 15)
 	berth_check(isnull(tiller.commission()) && gull.ledger.tiles == 16 && post.hauled_hull() == gull, "a refit on the berth takes in a new floor ([gull.ledger.tiles])")
+	berth_refit_checks(tiller)
 	berth_check(isnull(post.relaunch(gull)) && istype(get_turf(tiller), /turf/floor/beach/water) && !gull.ledger.lies_dry(), "she is launched from the berth she was built on ([post.relaunch(gull)])")
 	// Floors on plain ground are no hull.
 	berth_floors(1, 14, 2, 15)
 	var/obj/structure/hull_tiller/shore_tiller = new(locate(1, 14, 1))
 	berth_check(findtext(shore_tiller.commission("Mud", NORTH), "at a berth"), "floors on plain ground are no hull ([shore_tiller.commission("Mud", NORTH)])")
 	qdel(shore_tiller)
+
+// The Gull, hauled out on the slipway, is refitted to a draught of her own
+// lines with one tile moved and a mast added.
+/proc/berth_refit_checks(obj/structure/hull_tiller/tiller)
+	var/datum/craft/gull = tiller.craft
+	var/datum/ship_draught/D = ship_draught_survey(tiller)
+	berth_check(istype(D), "her lines can be drawn on the berth ([D])")
+	// World x,y lies at sheet (16 - y, x - 4) with her bow to the east.
+	D.clear(1, 5)
+	D.set_floor(0, 5, "w")
+	D.set_piece(1, 2, "M")
+	tiller.refit_code = D.to_code()
+	qdel(D)
+	var/list/options = tiller.refit_options(new /mob/living/human/berth_probe(locate(5, 16, 1)))
+	berth_check(("Check the refit" in options) && ("Clear the refit marks" in options), "at a berth the tiller offers to check the refit")
+	var/list/diff = tiller.mark_refit()
+	berth_check(islist(diff) && diff.len == 3, "three tiles differ from the draught ([islist(diff) ? diff.len : diff])")
+	if (!islist(diff) || diff.len != 3)
+		return
+	var/list/E = diff[locate(9, 15, 1)]
+	berth_check(E && E[1] == "remove", "the tile she loses is marked to lift")
+	E = diff[locate(9, 16, 1)]
+	berth_check(E && E[1] == "add", "the tile she gains is marked to add")
+	E = diff[locate(6, 15, 1)]
+	berth_check(E && E[1] == "change" && findtext(E[2], "mast"), "the mast is marked to set")
+	var/marks = 0
+	for (var/obj/structure/berth_refit_mark/M in range(6, locate(6, 15, 1)))
+		marks++
+	berth_check(marks == 3 && tiller.refit_marks.len == 3, "three marks are chalked on her ([marks])")
+	berth_check(findtext(berth_refit_summary(diff), "1 tile to add"), "the summary counts the work ([berth_refit_summary(diff)])")
+	// The work by hand.
+	for (var/obj/covers/C in locate(9, 15, 1))
+		qdel(C)
+	berth_floors(9, 16, 9, 16)
+	new /obj/structure/vehicleparts/movement/sail(locate(6, 15, 1))
+	var/why = tiller.commission()
+	berth_check(isnull(why) && gull.ledger.tiles == 16 && gull.body.contains(locate(9, 16, 1)), "she is surveyed again with her new tile ([why])")
+	diff = tiller.mark_refit()
+	berth_check(islist(diff) && !diff.len && !tiller.refit_code && !tiller.refit_marks.len, "she matches her draught and the marks are gone ([islist(diff) ? diff.len : diff])")
+	for (var/obj/structure/vehicleparts/movement/sail/S in locate(6, 15, 1))
+		qdel(S)
+	tiller.refit_code = ""
+	tiller.clear_refit_marks()
 
 /proc/berth_dock_build_checks(obj/structure/canal_lock/dock_gate/gate)
 	for (var/obj/structure/canal_lock/dock_gate/G in gate.all_gates())

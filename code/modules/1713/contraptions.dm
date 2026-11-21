@@ -235,6 +235,55 @@
 	if (world.time >= next_cam)
 		cam_step()
 
+//////////////////////////////////////////////////////////////////////////////
+// Relay: a cord-worked switch for the electric device on its tile.
+
+// TRUE when an open relay on T cuts the cable power of the devices there.
+/proc/mechanism_relay_open_on(atom/T)
+	if (!isturf(T))
+		return FALSE
+	for (var/obj/structure/mechanism_relay/R in T)
+		if (!R.closed)
+			return TRUE
+	return FALSE
+
+/obj/structure/mechanism_relay
+	name = "relay"
+	desc = "A copper knife switch in a wooden case, with a cord pawl to throw it. Set it on the same tile as a lamp, outlet or other electric device: open, it cuts that device off from the cable; closed, the device draws power again. Throw it by hand or tie a lever's or plate's cord to it."
+	icon = 'icons/obj/contraptions.dmi'
+	icon_state = "relay_closed"
+	anchored = TRUE
+	density = FALSE
+	not_movable = FALSE
+	not_disassemblable = FALSE
+	layer = 2.9
+	var/closed = TRUE
+
+/obj/structure/mechanism_relay/after_load()
+	..()
+	update_icon()
+
+/obj/structure/mechanism_relay/update_icon()
+	icon_state = closed ? "relay_closed" : "relay_open"
+
+/obj/structure/mechanism_relay/examine(mob/user, distance)
+	..(user, distance)
+	to_chat(user, SPAN_NOTICE("It is [closed ? "closed: the device here can draw power" : "open: the device here has no power"]."))
+
+/obj/structure/mechanism_relay/proc/set_closed(want)
+	if (want == closed)
+		return FALSE
+	closed = want
+	update_icon()
+	playsound(src, 'sound/machines/click.ogg', 40, TRUE)
+	return TRUE
+
+/obj/structure/mechanism_relay/attack_hand(mob/living/human/user)
+	if (!istype(user))
+		return ..()
+	set_closed(!closed)
+	user.visible_message(SPAN_NOTICE("[user] [closed ? "closes" : "opens"] \the [src]."), SPAN_NOTICE("You [closed ? "close" : "open"] \the [src]."))
+
 #undef COUNTERWEIGHT_WIND_TIME
 #undef COUNTERWEIGHT_WIND_FALL
 #undef COUNTERWEIGHT_MAX_FALL
