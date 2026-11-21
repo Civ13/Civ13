@@ -75,7 +75,8 @@
 	if (dir != direction)
 		set_dir(direction)
 	visible_message(SPAN_NOTICE("[src] starts climbing down over the edge."), SPAN_NOTICE("You start lowering yourself over the edge..."))
-	if (!do_after(src, EDGE_CLIMB_DOWN_TIME, start))
+	// A railing along that edge has to be climbed over first (railing_built.dm).
+	if (!do_after(src, EDGE_CLIMB_DOWN_TIME + railing_climb_delay(start, direction), start))
 		return FALSE
 	// Re-resolve terrain and actor admission after the interruptible wait.
 	if (get_turf(src) != start || edge_descent_destination(src, direction) != destination)
