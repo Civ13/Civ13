@@ -49,3 +49,27 @@ have dry ground, and that the walked level is the map's surface.
 Both regions must be in the same shard group (the earth group's ids:
 `europe`, `asia`, `africa`, `northamerica`, `southamerica`). The
 far region must be up or asleep, as for any region travel.
+
+## Underground
+
+`code/modules/persistence/region_edge_deep.dm`. The land links hold below the
+surface too. Every underground level has a bedrock rim along the map border, so
+underground the edge is the row just inside the rim. A walker who digs a
+tunnel out to the rim on a linked stretch is asked and travels as on the
+surface, and the crossing record carries a fourth field, the depth.
+
+- The place along is counted over the whole stretch, since there is no dry
+  ground to count underground.
+- On arrival, that depth of the far land is added if nobody has dug down to it
+  yet and it is the next level down (`underground_create`). The tunnel is then
+  dug in from the rim to three tiles inside it, so the way back is open.
+- Hot rock, lava, water and anything solid are never dug into: the walker comes
+  out at the nearest place along the stretch that is clear of them, or on the
+  surface when no tunnel can be dug or the depth cannot be reached.
+- Carriages do not cross underground.
+- The open-air levels have no walk links, because nothing stands at the same
+  height on the far side. Planes cross there (`aircraft_edge.dm`).
+
+The probe is `tests/edge_crossings/deep_probe.dm`:
+
+    python3 tests/ecology_spawning/run_linux.py . tests/edge_crossings/deep_probe.dm 300
