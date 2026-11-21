@@ -35,6 +35,7 @@
 		MAP_NOMADS_DESERT = list("sulphur"),
 		MAP_NOMADS_AMERICAS_SOUTH = list("gold", "silver", "bauxite"),
 		MAP_NOMADS_EARTH_EUROPE = list("coal", "zinc"),
+		MAP_NOMADS_EARTH_MEDITERRANEAN = list("copper", "silver", "lead"), // the old mines of the inner sea
 		MAP_NOMADS_EARTH_AFRICA = list("sulphur", "tin"), // Africa replaces the Desert and the Jungle
 		MAP_NOMADS_EARTH_ASIA = list("saltpeter", "silver", "gems", "diamond"),
 		MAP_NOMADS_EARTH_OCEANIA = list("bauxite", "uranium", "gems"), // reached only by sea and air
