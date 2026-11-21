@@ -172,3 +172,52 @@
 	log_admin("[key_name(usr)] set [key_name(H)]'s [L.name] to [round(H.language_score(L))]%.")
 	message_admins("[key_name_admin(usr)] set [key_name_admin(H)]'s [L.name] to [round(H.language_score(L))]%.")
 	to_chat(usr, jointext(H.origin_language_report(), "<br>"))
+
+// ------------------------------------------------------------
+// Language splits (code/game/mob/language/daughter.dm)
+// ------------------------------------------------------------
+
+/client/proc/cmd_admin_force_language_split()
+	set category = "Admin"
+	set name = "Force Language Split"
+	set desc = "Make a nation's speech community ready to split now, whatever its drift, and optionally name the new language."
+	if (!check_rights(R_ADMIN))
+		return
+	ensure_daughter_languages()
+	var/list/nations = list()
+	for (var/mob/living/human/H in living_mob_list)
+		if (H.civilization != "none")
+			nations |= H.civilization
+	var/nation = input(usr, "Which nation?", "Force Language Split") as null|anything in sortList(nations)
+	if (!nation)
+		return
+	var/list/choices = list()
+	for (var/lname in all_languages)
+		var/datum/language/L = all_languages[lname]
+		if (language_learnable(L) && language_community_natives(nation, L))
+			choices["[L.name] ([language_community_natives(nation, L)] natives, [round(language_drift(language_community_key(nation, L)))]% drift)"] = L
+	var/picked = input(usr, "Which of their languages?", "Force Language Split") as null|anything in sortList(choices)
+	if (!picked)
+		return
+	var/datum/language/L = choices[picked]
+	var/datum/language/root = language_root(L)
+	if (!root || language_daughter_count(root) >= LANGUAGE_DAUGHTERS_PER_ROOT)
+		to_chat(usr, SPAN_WARNING("[root ? root.name : L.name] already has [LANGUAGE_DAUGHTERS_PER_ROOT] daughter languages on this world."))
+		return
+	var/key = language_community_key(nation, L)
+	var/list/pending = language_lineage_part("pending")
+	pending[key] = map.ordinal_age
+	var/wanted = input(usr, "Name it now? Leave empty to let the nation's leader name it.", "Force Language Split") as text|null
+	if (wanted && length(trim(wanted)))
+		var/problem = language_name_problem(wanted)
+		if (problem)
+			to_chat(usr, SPAN_WARNING("[problem] It is ready to split; the leader can name it."))
+		else
+			var/datum/language/D = split_language(key, language_clean_name(wanted))
+			if (D)
+				log_admin("[key_name(usr)] split [nation]'s [L.name] into [D.name].")
+				message_admins("[key_name_admin(usr)] split [nation]'s [L.name] into [D.name].")
+				return
+	log_admin("[key_name(usr)] made [nation]'s [L.name] ready to split.")
+	message_admins("[key_name_admin(usr)] made [nation]'s [L.name] ready to split.")
+	language_split_ready_notice(nation, L)

@@ -152,7 +152,7 @@ var/global/list/language_sound_changes = list(
 		return null
 	var/datum/language/daughter/D = new
 	D.name = name
-	D.desc = "Grew apart from [parent.name] among the [record["nation"]] in the [ordinal_age_name(record["era"])]."
+	D.desc = "A language that grew out of [parent.name] among the [record["nation"]] ([ordinal_age_name(record["era"])])."
 	D.parent_name = parent.name
 	D.root_name = root.name
 	D.nation = record["nation"]
@@ -262,7 +262,7 @@ var/global/list/language_sound_changes = list(
 /mob/living/human/proc/offer_language_naming()
 	if (!(/mob/living/human/proc/name_our_language in verbs))
 		verbs += /mob/living/human/proc/name_our_language
-	to_chat(src, SPAN_NOTICE("As leader of the [civilization], you can name your people's new language with <b>Name Our Language</b> in the IC tab. Naming it needs a Discord-verified account."))
+	to_chat(src, SPAN_NOTICE("As leader of the [civilization], you can name your people's new language with <b>Name Our Language</b> in the IC tab. Naming it needs a Discord-verified account (OOC > Verify Discord)."))
 
 /proc/language_pending_for(nation)
 	var/list/pending = language_lineage_part("pending")
@@ -283,24 +283,28 @@ var/global/list/language_sound_changes = list(
 	set name = "Name Our Language"
 	set desc = "Name the language your people's speech has become."
 	var/list/keys = language_pending_for(civilization)
-	if (!keys.len || !map.is_faction_leader(src, civilization))
+	if (!map.is_faction_leader(src, civilization))
+		verbs -= /mob/living/human/proc/name_our_language
+		to_chat(src, SPAN_WARNING("Only your nation's leader can name its language."))
+		return
+	if (!keys.len)
 		verbs -= /mob/living/human/proc/name_our_language
 		to_chat(src, SPAN_WARNING("Your nation has no new language to name."))
 		return
 	if (!account_verified(nation_account()))
-		to_chat(src, SPAN_WARNING("Naming a language needs a Discord-verified account. Use Verify Discord first."))
+		to_chat(src, SPAN_WARNING("Naming a language needs a Discord-verified account. Use OOC > Verify Discord first."))
 		return
 	var/key = keys[1]
 	if (keys.len > 1)
 		var/list/choices = list()
 		for (var/k in keys)
 			choices["[language_community_parts(k)[2]]"] = k
-		var/picked = input(src, "Which language has your people's speech grown out of?", "Name Our Language") as null|anything in choices
+		var/picked = player_input(src, "More than one of your people's languages has changed. Which one do you want to name the new form of?", "Name Our Language", null, "anything", choices, TRUE)
 		if (!picked)
 			return
 		key = choices[picked]
 	var/list/parts = language_community_parts(key)
-	var/wanted = input(src, "Your people's [parts[2]] has become a language of its own. What is it called? (3 to 24 letters)", "Name Our Language") as text|null
+	var/wanted = player_input(src, "Your people's [parts[2]] has become a language of its own. What is it called? (3 to 24 letters. The name cannot be changed later.)", "Name Our Language", null, "text", null, TRUE)
 	if (isnull(wanted))
 		return
 	var/problem = language_name_problem(wanted)
@@ -308,10 +312,11 @@ var/global/list/language_sound_changes = list(
 		to_chat(src, SPAN_WARNING(problem))
 		return
 	if (!(key in language_lineage_part("pending")) || !map.is_faction_leader(src, civilization))
+		to_chat(src, SPAN_WARNING("Your nation has no new language to name."))
 		return
 	var/datum/language/D = split_language(key, language_clean_name(wanted))
 	if (!D)
-		to_chat(src, SPAN_WARNING("The language could not be named. Ask an admin."))
+		to_chat(src, SPAN_WARNING("The language could not be named. Please adminhelp this."))
 		return
 	log_game("[key_name(src)] named [parts[1]]'s daughter of [parts[2]]: [D.name].")
 	if (!language_pending_for(civilization).len)
@@ -366,7 +371,7 @@ var/global/list/language_sound_changes = list(
 		if (H.civilization == parts[1] && H.mother_tongue() == parent)
 			H.take_daughter_language(D, parent)
 		else if (H.client && H.civilization == parts[1])
-			to_chat(H, SPAN_NOTICE("The [parts[1]] now speak <b>[D.name]</b>, grown out of [parent.name]. You can learn it from them."))
+			to_chat(H, SPAN_NOTICE("The native [parent.name] speakers among your people now speak <b>[D.name]</b>, a language grown out of [parent.name]. You can learn it from them."))
 	return D
 
 // A native speaker of the parent at the split.
@@ -378,53 +383,4 @@ var/global/list/language_sound_changes = list(
 		add_note("Known Languages", D.name)
 	if (language_same(canonical_language(default_language), parent) && knows_language(D))
 		default_language = D
-	to_chat(src, SPAN_NOTICE("Your people's speech has become <b>[D.name]</b>. It is your mother tongue now; you still understand [parent.name][D.key ? ", and you speak [D.name] with :[D.key]" : ""]."))
-
-// ------------------------------------------------------------
-// Admin tools
-// ------------------------------------------------------------
-
-/client/proc/cmd_admin_force_language_split()
-	set category = "Admin"
-	set name = "Force Language Split"
-	set desc = "Make a nation's speech community ready to split now, whatever its drift, and optionally name the new language."
-	if (!check_rights(R_ADMIN))
-		return
-	ensure_daughter_languages()
-	var/list/nations = list()
-	for (var/mob/living/human/H in living_mob_list)
-		if (H.civilization != "none")
-			nations |= H.civilization
-	var/nation = input(usr, "Which nation?", "Force Language Split") as null|anything in sortList(nations)
-	if (!nation)
-		return
-	var/list/choices = list()
-	for (var/lname in all_languages)
-		var/datum/language/L = all_languages[lname]
-		if (language_learnable(L) && language_community_natives(nation, L))
-			choices["[L.name] ([language_community_natives(nation, L)] natives, [round(language_drift(language_community_key(nation, L)))]% drift)"] = L
-	var/picked = input(usr, "Which of their languages?", "Force Language Split") as null|anything in sortList(choices)
-	if (!picked)
-		return
-	var/datum/language/L = choices[picked]
-	var/datum/language/root = language_root(L)
-	if (!root || language_daughter_count(root) >= LANGUAGE_DAUGHTERS_PER_ROOT)
-		to_chat(usr, SPAN_WARNING("[root ? root.name : L.name] already has [LANGUAGE_DAUGHTERS_PER_ROOT] daughter languages on this world."))
-		return
-	var/key = language_community_key(nation, L)
-	var/list/pending = language_lineage_part("pending")
-	pending[key] = map.ordinal_age
-	var/wanted = input(usr, "Name it now? Leave empty to let the nation's leader name it.", "Force Language Split") as text|null
-	if (wanted && length(trim(wanted)))
-		var/problem = language_name_problem(wanted)
-		if (problem)
-			to_chat(usr, SPAN_WARNING("[problem] It is ready to split; the leader can name it."))
-		else
-			var/datum/language/D = split_language(key, language_clean_name(wanted))
-			if (D)
-				log_admin("[key_name(usr)] split [nation]'s [L.name] into [D.name].")
-				message_admins("[key_name_admin(usr)] split [nation]'s [L.name] into [D.name].")
-				return
-	log_admin("[key_name(usr)] made [nation]'s [L.name] ready to split.")
-	message_admins("[key_name_admin(usr)] made [nation]'s [L.name] ready to split.")
-	language_split_ready_notice(nation, L)
+	to_chat(src, SPAN_NOTICE("Your people's speech is now called <b>[D.name]</b>. It is your mother tongue[default_language == D ? " and the language you speak by default" : ""]. You still know [parent.name][D.key ? ". To pick [D.name] yourself, start a line with [get_language_prefix()][D.key]" : ""]."))

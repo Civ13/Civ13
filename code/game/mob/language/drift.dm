@@ -155,6 +155,6 @@ var/global/next_language_drift_tick = 0
 			line += " - <b>ready to split</b>"
 		var/heard = language_drift_use[key] + language_drift_contact[key]
 		if (heard)
-			line += " (this half hour: [language_drift_use[key]] own, [language_drift_contact[key]] outside)"
+			line += " (this half hour: [language_drift_use[key] || 0] lines heard from their own, [language_drift_contact[key] || 0] from outsiders)"
 		lines += line
 	return lines
