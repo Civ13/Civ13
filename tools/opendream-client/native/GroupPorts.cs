@@ -26,14 +26,15 @@ public static class GroupPorts {
     // Kinds nobody lives in, so none can be the front door (group_ports.py GATE_REFUSED_KINDS).
     private static readonly string[] NoGateKinds = ["RAID", "EVENT", "TUTORIAL", "EXPEDITION"];
 
-    // action: "ports" (read only), "set-gate" (region), "set-port" (region and port) or "add-gateway" (nothing else).
+    // action: "ports" (read only), "set-gate" (region), "set-port" (region and port), "add-gateway" or "add-regions"
+    // (nothing else).
     // apply: carry the plan out; without it the script only answers with the plan. botProfile: the bot profile.json
     // to repoint with the gate.
     public static ProcessStartInfo Step(HostControl control, string action, string? region = null, int? port = null, bool apply = false, string? botProfile = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
-        if (action is not ("ports" or "set-gate" or "set-port" or "add-gateway")) throw new ArgumentException("Unsupported ports action.", nameof(action));
-        if ((action is "ports" or "add-gateway") != (region == null) || (region != null && !RegionId.IsMatch(region))) throw new ArgumentException("Not a region id.", nameof(region));
-        if (action == "add-gateway" && botProfile != null) throw new ArgumentException("add-gateway moves no bot.", nameof(botProfile));
+        if (action is not ("ports" or "set-gate" or "set-port" or "add-gateway" or "add-regions")) throw new ArgumentException("Unsupported ports action.", nameof(action));
+        if ((action is "ports" or "add-gateway" or "add-regions") != (region == null) || (region != null && !RegionId.IsMatch(region))) throw new ArgumentException("Not a region id.", nameof(region));
+        if (action is "add-gateway" or "add-regions" && botProfile != null) throw new ArgumentException(action + " moves no bot.", nameof(botProfile));
         if ((action == "set-port") != (port != null) || port is < 1024 or > 65535) throw new ArgumentException("A port is a whole number from 1024 to 65535.", nameof(port));
         if (action == "ports" && (apply || botProfile != null)) throw new ArgumentException("ports only lists.", nameof(apply));
         if (botProfile != null && (botProfile.Length == 0 || botProfile.StartsWith('-') || botProfile.Any(char.IsControl)))
@@ -55,7 +56,7 @@ public static class GroupPorts {
         if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("regions", out var list) || list.ValueKind != JsonValueKind.Array)
             throw new InvalidDataException("The group config lists no regions.");
         var choices = new List<Choice>();
-        foreach (var region in list.EnumerateArray().Take(16)) {
+        foreach (var region in list.EnumerateArray().Take(LocalHosting.MaxRegions)) {
             if (region.ValueKind != JsonValueKind.Object || Str(region, "id") is not { } id || !RegionId.IsMatch(id)) continue;
             if (NoGateKinds.Contains(Str(region, "kind") ?? "")) continue;
             choices.Add(new Choice(id, Clean(Str(region, "name") ?? id, 64), Int(region, "port") ?? 0));
@@ -114,6 +115,13 @@ public static class GroupPorts {
     // sets up and starts it beside the current front door; "Make this the front door" on it then swaps the ports.
     public static Plan RunAddGateway(HostControl control, bool apply, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
         var (exit, output) = (run ?? LocalHosting.RunCaptured)(Step(control, "add-gateway", null, null, apply));
+        return ParsePlan(exit, output);
+    }
+
+    // The Earth regions the group is missing (shard_group.py add-regions): the lands and seas a ship or walker can
+    // reach over a map edge. Applying adds each one to the group file and sets it up, stopped; the Host tab then lists it.
+    public static Plan RunAddRegions(HostControl control, bool apply, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
+        var (exit, output) = (run ?? LocalHosting.RunCaptured)(Step(control, "add-regions", null, null, apply));
         return ParsePlan(exit, output);
     }
 

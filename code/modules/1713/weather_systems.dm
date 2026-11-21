@@ -273,6 +273,9 @@ var/global/weather_storm_count = 0
 			storms++
 	if (storms >= weather_system_capacity())
 		return
+	// Regions that share their storms draw them from the shared seed instead (weather_shared.dm).
+	if (weather_shared_storms_on())
+		return
 	// The storm forms on a low's front (weather_fronts.dm).
 	weather_front_storm(result == WEATHER_EXTREME)
 
@@ -411,6 +414,9 @@ var/global/weather_sample_zone_look = null
 	for (var/datum/weather_system/S in weather_systems.Copy())
 		if (S.spent())
 			weather_system_end(S)
+			continue
+		// A shared storm keeps the course every region gives it (weather_shared.dm).
+		if (S.shared_key)
 			continue
 		// Come round to the wind a little at a time.
 		var/new_x = S.vel_x * 0.85 + wind[1] * speed * 0.15

@@ -261,6 +261,9 @@
 	set name = "Toggle Observer HUD"
 	set category = "Ghost"
 	set desc = "Show everyone's squad colours, fire teams and health badges."
+	if (is_spirit()) // spirit_observe.dm
+		spirit_refuse("see that")
+		return
 	if (field_hud && !QDELETED(field_hud))
 		qdel(field_hud)
 		field_hud = null

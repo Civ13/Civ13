@@ -165,11 +165,11 @@ var/wc_runtime_error = FALSE
 	wc_check(findtext(world_calendar_summary(), "UTC+0"), "the summary names the time zone ([world_calendar_summary()])")
 
 	// Every region world is on the calendar.
-	var/list/regions = list(/obj/map_metadata/nomads/gaia, /obj/map_metadata/nomads/earth_europe, /obj/map_metadata/nomads/earth_africa, /obj/map_metadata/nomads/earth_asia, /obj/map_metadata/nomads/earth_oceania, /obj/map_metadata/nomads/earth_greenland, /obj/map_metadata/nomads/earth_antarctica, /obj/map_metadata/nomads/americas_north, /obj/map_metadata/nomads/americas_south, /obj/map_metadata/nomads/ocean/atlantic, /obj/map_metadata/nomads/ocean/pacific, /obj/map_metadata/nomads/ocean/indian, /obj/map_metadata/nomads/ocean/arctic, /obj/map_metadata/nomads/ocean/southern)
+	var/list/regions = list(/obj/map_metadata/nomads/gaia, /obj/map_metadata/nomads/earth_europe, /obj/map_metadata/nomads/earth_mediterranean, /obj/map_metadata/nomads/earth_africa, /obj/map_metadata/nomads/earth_asia, /obj/map_metadata/nomads/earth_oceania, /obj/map_metadata/nomads/earth_greenland, /obj/map_metadata/nomads/earth_antarctica, /obj/map_metadata/nomads/americas_north, /obj/map_metadata/nomads/americas_south, /obj/map_metadata/nomads/ocean/atlantic, /obj/map_metadata/nomads/ocean/pacific, /obj/map_metadata/nomads/ocean/indian, /obj/map_metadata/nomads/ocean/arctic, /obj/map_metadata/nomads/ocean/southern)
 	var/missing = list()
 	for (var/T in regions)
 		var/obj/map_metadata/M = T
-		if (!isnum(initial(M.world_longitude)) || !isnum(initial(M.sun_latitude)))
+		if (!isnum(initial(M.world_longitude)) || !isnum(initial(M.sun_latitude)) || !istext(initial(M.world_region)) || !weather_region_frames[initial(M.world_region)])
 			missing += "[T]"
-	wc_check(!length(missing), "every region has a longitude and latitude ([jointext(missing, ", ")])")
+	wc_check(!length(missing), "every region has a longitude, latitude and region id ([jointext(missing, ", ")])")
 	map.world_longitude = null

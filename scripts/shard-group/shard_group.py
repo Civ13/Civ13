@@ -80,7 +80,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
-                 'migrate-underground', 'records')
+                 'migrate-underground', 'records', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
 SEND_LANDINGS = ('shore', 'coords', 'arrival')
@@ -160,7 +160,27 @@ TRANSFER_PORT_OFFSET = 10  # a transfer agent the group does not place sits this
 FRONT_FOLDER = 'front-door'
 FRONT_FILES = ('admins.txt', 'magic_whitelist.txt')
 FRONT_CONFIG_KEYS = ('WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS', 'WEBHOOK_KEY')
-MAX_REGIONS = 16
+MAX_REGIONS = 32
+# The Earth regions a group that hosts Earth may be missing (add-regions): the lands of
+# docs/earth-continents.md and the seas of docs/ocean-regions.md, with the ports the
+# live host keeps for them (another free port when one is taken).
+EARTH_REGIONS = (
+    ('europe', 'Europe', 'SURFACE', 'maps/nomads/nomads_earth_europe.dmm', 1740),
+    ('africa', 'Africa', 'SURFACE', 'maps/nomads/nomads_earth_africa.dmm', 1741),
+    ('oceania', 'Oceania', 'SURFACE', 'maps/nomads/nomads_earth_oceania.dmm', 1742),
+    ('asia', 'Asia', 'SURFACE', 'maps/nomads/nomads_earth_asia.dmm', 1743),
+    ('northamerica', 'North America', 'SURFACE', 'maps/nomads/nomads_americas_north.dmm', 1744),
+    ('southamerica', 'South America', 'SURFACE', 'maps/nomads/nomads_americas_south.dmm', 1746),
+    ('greenland', 'Greenland', 'SURFACE', 'maps/nomads/nomads_earth_greenland.dmm', 1747),
+    ('antarctica', 'Antarctica', 'SURFACE', 'maps/nomads/nomads_earth_antarctica.dmm', 1748),
+    ('mediterranean', 'Mediterranean', 'SURFACE', 'maps/nomads/nomads_earth_mediterranean.dmm', 1749),
+    ('atlantic', 'Atlantic Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_atlantic.dmm', 1750),
+    ('pacific', 'Pacific Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_pacific.dmm', 1751),
+    ('indian', 'Indian Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_indian.dmm', 1752),
+    ('arctic', 'Arctic Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_arctic.dmm', 1753),
+    ('southern', 'Southern Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_southern.dmm', 1754),
+)
+EARTH_MAINLAND_MAP = 'maps/nomads/nomads_gaia.dmm'
 
 
 def unused_backup_path(path):
@@ -2721,6 +2741,63 @@ def add_gateway(group, region_id=None, apply=False, platform=None):
     return result
 
 
+def add_regions(group, apply=False, platform=None):
+    """Add the Earth regions this group is missing (EARTH_REGIONS) to the group file.
+
+    Only a group that hosts Earth (Gaia, or one of the Earth lands) is offered them; a
+    region is missing when neither its id nor its map is in the group. Each is added
+    stopped and set up, so the launcher lists it and the host starts it when wanted.
+    Without apply, only the plan. Running regions keep playing; they learn the new
+    peers on their next start."""
+    platform = platform or Platform()
+    maps = {r['map'] for r in group['regions']}
+    ids = {r['id'] for r in group['regions']}
+    if EARTH_MAINLAND_MAP not in maps and not maps & {entry[3] for entry in EARTH_REGIONS}:
+        raise Refused('this group does not host Earth (no Gaia or Earth land in it)')
+    missing = [entry for entry in EARTH_REGIONS if entry[0] not in ids and entry[3] not in maps]
+    path = Path(group['_path'])
+    raw = json.loads(path.read_text(encoding='utf-8-sig'))
+    taken = {r.get(key) for r in raw['regions'] for key in ('port', 'transfer_port', 'standby_port')}
+    taken |= {raw.get(key) for key in ('relay_port', 'relay_control_port', 'doorman_port')}
+    for region_id, name, kind, map_path, port in missing:
+        entry = {'id': region_id, 'name': name, 'kind': kind, 'map': map_path}
+        if port not in taken and not platform.listening(port):
+            entry['port'] = port
+            taken.add(port)
+        raw['regions'].append(entry)
+    planned = json.loads(json.dumps(raw))
+    problems = []
+    if missing:
+        fill_ports(planned, platform.listening)
+        try:
+            check_group(json.loads(json.dumps(planned)), path)
+        except ValueError as error:
+            problems.append(str(error))
+    added = planned['regions'][len(planned['regions']) - len(missing):] if missing else []
+    steps = ['Add %s (%s) on port %d%s.' % (r['name'], r['id'], r['port'],
+             ', travel agent %d' % r['transfer_port'] if r.get('transfer_port') else '') for r in added]
+    if added:
+        steps.append('Set each one up without starting it; start it from its region row when wanted.')
+    plan = {'regions': [{'id': r['id'], 'name': r['name'], 'kind': r['kind'], 'port': r['port'],
+                         'transfer_port': r.get('transfer_port')} for r in added],
+            'already': not missing, 'steps': steps or ['Every Earth region is already in the group.'],
+            'problems': problems, 'warnings': []}
+    if not apply or not missing:
+        return {'plan': plan, 'accepted': False}
+    if problems:
+        raise Refused(problems[0])
+    shutil.copy2(path, unused_backup_path(path))
+    write_json_atomic(path, planned)
+    group = load_group(str(path))
+    done = {}
+    for r in added:
+        try:
+            done[r['id']] = setup(group, platform, r['id'])
+        except Refused as error:
+            done[r['id']] = {'refused': str(error)}
+    return {'plan': plan, 'accepted': True, 'setup': done}
+
+
 def relay_settings(group):
     """The shard_region.json keys a region needs to send players through the relay."""
     return {'relay': '%s:%d' % (group['public_host'], group['relay_port']),
@@ -3774,7 +3851,7 @@ def main(argv=None):
     parser.add_argument('--port', type=int, help='set-port: the game port')
     parser.add_argument('--transfer-port', type=int, help='set-port: the transfer agent port')
     parser.add_argument('--standby-port', type=int, help='set-port: the handover standby port')
-    parser.add_argument('--apply', action='store_true', help='set-gate, set-port, add-gateway: carry the plan out (without it, only the plan)')
+    parser.add_argument('--apply', action='store_true', help='set-gate, set-port, add-gateway, add-regions: carry the plan out (without it, only the plan)')
     parser.add_argument('--bot-profile', help='set-gate: the bot profile.json to repoint (default: the group\'s bot_profile)')
     parser.add_argument('--ckey', help='records: every record about one player key')
     parser.add_argument('--search', help='records: records whose key or text holds this')
@@ -3890,6 +3967,10 @@ def main(argv=None):
             result = group_ports.apply(this, group, plan) if args.apply else {'plan': plan, 'applied': False}
         elif args.action == 'add-gateway':
             result = add_gateway(group, args.region, args.apply)
+        elif args.action == 'add-regions':
+            if args.region:
+                raise Refused('add-regions adds every missing Earth region; leave out --region')
+            result = add_regions(group, args.apply)
         elif args.action == 'config-migrate':
             result = migrate_config(group)
         elif args.action == 'expedition-land':

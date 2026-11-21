@@ -39,6 +39,18 @@ var/list/martial_probe_known = list()
 /mob/living/human/martial_probe/martial_school_known(school_id)
 	return school_id in martial_probe_known
 
+var/list/martial_probe_present = list()
+var/list/martial_probe_verified = list()
+
+/mob/living/human/martial_probe/martial_company_present(mob/living/human/other)
+	return other in martial_probe_present
+
+/mob/living/human/martial_probe/martial_master_verified(mob/living/human/other)
+	return other in martial_probe_verified
+
+/mob/living/human/martial_probe/martial_drill_wait(atom/target)
+	return martial_probe_wait
+
 /mob/living/human/martial_probe/conditioning_set_wait(atom/target)
 	return TRUE
 
@@ -147,6 +159,61 @@ var/list/martial_probe_known = list()
 	var/obj/structure/striking_post/M = new(locate(4, 3, 1))
 	M.attack_hand(H)
 	martial_probe_assert(abs(H.martial_points("grappling") - before - 0.5) < 0.001, "hand_set_counts")
+	martial_probe_rest(H)
+
+	// --- training company -------------------------------------------------------------
+	var/mob/living/human/martial_probe/P = new(locate(4, 4, 1))
+	P.stat = CONSCIOUS
+	P.martial_school = "grappling"
+	martial_probe_assert(H.martial_training_mult() == 1, "absent_partner_does_not_count")
+	martial_probe_present += P
+	martial_probe_assert(H.martial_training_mult() == 1.5, "partner_of_same_school_x1_5")
+	P.martial_school = "wing_chun"
+	martial_probe_assert(H.martial_training_mult() == 1, "partner_of_other_school_does_not_count")
+	P.martial_school = "grappling"
+	P.martial_progress = list("grappling" = 400)
+	martial_probe_assert(H.martial_training_mult() == 1.5, "unverified_master_is_only_a_partner")
+	martial_probe_verified += P
+	martial_probe_assert(H.martial_training_mult() == 2, "verified_master_nearby_x2")
+	martial_probe_assert(H.martial_training_mult(P) == 2.5, "sparring_a_verified_master_x2_5")
+	before = H.martial_points("grappling")
+	H.practice_unarmed(0.5, P)
+	martial_probe_assert(abs(H.martial_points("grappling") - before - 0.625) < 0.001, "sparring_punch_counts_x2_5")
+	P.forceMove(locate(8, 8, 1))
+	martial_probe_assert(H.martial_training_mult() == 1, "company_must_be_within_2_tiles")
+	P.forceMove(locate(4, 4, 1))
+	P.stat = UNCONSCIOUS
+	martial_probe_assert(H.martial_training_mult() == 1, "sleeping_company_does_not_count")
+	P.stat = CONSCIOUS
+	martial_probe_present += H
+	martial_probe_assert(P.martial_training_mult() == 1.5, "master_training_beside_a_student_gets_partner_bonus")
+	martial_probe_present -= list(P, H)
+	martial_probe_verified -= P
+
+	// --- training gear ------------------------------------------------------------------
+	martial_probe_rest(H)
+	var/obj/structure/martial_gear/heavy_bag/B = new(locate(2, 3, 1))
+	var/obj/structure/martial_gear/wooden_dummy/D = new(locate(3, 2, 1))
+	before = H.martial_points("grappling")
+	var/hands_before = H.hand_conditioning
+	B.attack_hand(H)
+	martial_probe_assert(abs(H.martial_points("grappling") - before - 1.5) < 0.001 && H.exercise_fatigue == 2, "heavy_bag_drill_pays_1_5")
+	martial_probe_assert(H.hand_conditioning == hands_before, "gear_builds_no_conditioning")
+	martial_probe_rest(H)
+	before = H.martial_points("grappling")
+	D.attack_hand(H)
+	martial_probe_assert(abs(H.martial_points("grappling") - before - 2) < 0.001, "wooden_dummy_drill_pays_2")
+	martial_probe_rest(H)
+	martial_probe_wait = FALSE
+	before = H.martial_points("grappling")
+	D.attack_hand(H)
+	martial_probe_assert(H.martial_points("grappling") == before, "interrupted_drill_gives_nothing")
+	martial_probe_wait = TRUE
+	H.a_intent = I_HELP
+	B.attack_hand(H)
+	martial_probe_assert(H.martial_points("grappling") == before, "help_intent_does_not_drill")
+	H.a_intent = I_HARM
+	martial_probe_assert(("heavy_bag" in icon_states(B.icon)) && ("wooden_dummy" in icon_states(D.icon)), "gear_icon_states")
 	martial_probe_rest(H)
 
 	// --- region travel ----------------------------------------------------------------
