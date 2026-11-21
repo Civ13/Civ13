@@ -159,7 +159,7 @@
 	var/datum/craft/C = craft_at(get_turf(P))
 	H.visible_message(SPAN_NOTICE("[H] starts cutting out a patch in the [C.name]."), SPAN_NOTICE("You start cutting out the patch and laying sound hull in its place."))
 	playsound(get_turf(P), 'sound/items/Screwdriver.ogg', 50, TRUE)
-	if (!do_after(H, BERTH_PLANK_TIME, P) || QDELETED(W) || QDELETED(P) || H.get_active_hand() != W)
+	if (!do_after(H, yard_time(P, BERTH_PLANK_TIME), P) || QDELETED(W) || QDELETED(P) || H.get_active_hand() != W)
 		return null
 	if (berth_plank_refusal(H, W, P))
 		return null
