@@ -1532,6 +1532,7 @@
 #include "code\modules\divine\divine_book.dm"
 #include "code\modules\divine\identity.dm"
 #include "code\modules\divine\approval.dm"
+#include "code\modules\divine\arcane_enchant.dm"
 #include "code\modules\divine\arcane_materials.dm"
 #include "code\modules\divine\ritual.dm"
 #include "code\modules\divine\covenant.dm"
