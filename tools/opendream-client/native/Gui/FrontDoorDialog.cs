@@ -21,6 +21,7 @@ internal sealed class FrontDoorDialog : Form {
     private readonly NumericUpDown portNumber = new() { Minimum = 1024, Maximum = 65535, Width = 80 };
     private readonly Button movePort = new() { Text = "Change port", AutoSize = true, Enabled = false };
     private readonly Button addGateway = new() { Text = "Add a gateway world", AutoSize = true, Enabled = false };
+    private readonly Button addRegions = new() { Text = "Add missing Earth regions", AutoSize = true, Enabled = false };
     private readonly TextBox result = new() { Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical, Width = 620, Height = 150 };
     private readonly ListView ports = new() { View = View.Details, FullRowSelect = true, Width = 620, Height = 220, HeaderStyle = ColumnHeaderStyle.Nonclickable };
     private readonly Button refresh = new() { Text = "Refresh", AutoSize = true };
@@ -68,6 +69,12 @@ internal sealed class FrontDoorDialog : Form {
             Text = "A small world that keeps the front door's port for good and sends everyone on to their land, so the hub " +
                 "listing never drops when a land restarts. Add it, then make it the front door." });
         layout.Controls.Add(gateway);
+        var earth = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0, 6, 0, 0) };
+        earth.Controls.Add(addRegions);
+        earth.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(440, 0), Margin = new Padding(6, 0, 0, 0),
+            Text = "Adds the Earth lands and seas this group lacks, such as the Mediterranean and the oceans, each on its own " +
+                "port. They are added stopped; start each from its region row on the Host tab." });
+        layout.Controls.Add(earth);
         result.Margin = new Padding(0, 8, 0, 8);
         layout.Controls.Add(result);
         foreach (var (title, width) in new[] { ("Port", 60), ("Used for", 150), ("Region", 170), ("Forward on router", 130), ("In use now", 90) })
@@ -98,6 +105,7 @@ internal sealed class FrontDoorDialog : Form {
             }
         };
         addGateway.Click += async (_, _) => await AddGateway();
+        addRegions.Click += async (_, _) => await AddRegions();
         refresh.Click += async (_, _) => await Reload(true);
         poll.Tick += async (_, _) => await Reload(false);
         Shown += async (_, _) => await Reload(true);
@@ -114,6 +122,7 @@ internal sealed class FrontDoorDialog : Form {
         moveGate.Text = Picked(gatePicker)?.Id == gate ? "Check the front door" : "Make this the front door";
         movePort.Enabled = idle && Picked(portPicker) is { } choice && choice.Port != (int)portNumber.Value;
         addGateway.Enabled = idle && gate != null;
+        addRegions.Enabled = idle;
     }
 
     // Adds and starts a gateway world beside the front door (no ports move yet), then lists it as a front door choice.
@@ -133,6 +142,32 @@ internal sealed class FrontDoorDialog : Form {
                 ? "The gateway is added and starting (its first start compiles it). Once the Host tab shows it running, pick it above and make it the front door."
                 : GroupPorts.Describe(answer);
             if (answer.Ok && answer.Accepted) log("Gateway world added and starting.");
+        } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
+            result.Text = "Could not ask the host script: " + e.Message;
+        } finally {
+            busy = false;
+            UpdateButtons();
+        }
+        await Reload(true);
+    }
+
+    // Adds the Earth regions the group lacks to its file and sets them up, stopped (no running world is touched).
+    private async Task AddRegions() {
+        if (busy || following) return;
+        busy = true;
+        UpdateButtons();
+        try {
+            result.Text = "Checking...";
+            var plan = await Task.Run(() => GroupPorts.RunAddRegions(control, false));
+            result.Text = GroupPorts.Describe(plan);
+            if (!plan.Ok || plan.Already || plan.Problems.Count > 0) return;
+            if (MessageBox.Show(this, GroupPorts.Describe(plan) + Environment.NewLine + Environment.NewLine + "Continue?", "Add missing Earth regions",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+            var answer = await Task.Run(() => GroupPorts.RunAddRegions(control, true));
+            result.Text = answer.Ok && answer.Accepted
+                ? "The regions are added, stopped. The Host tab lists them now; start each from its region row. Their ports are in the list below."
+                : GroupPorts.Describe(answer);
+            if (answer.Ok && answer.Accepted) log("Missing Earth regions added.");
         } catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException) {
             result.Text = "Could not ask the host script: " + e.Message;
         } finally {

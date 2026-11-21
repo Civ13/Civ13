@@ -40,6 +40,7 @@
 #define ACCOLADE_WINTER_MINUTES 120
 #define ACCOLADE_FOUNDER_MEMBERS 5
 #define ACCOLADE_TEACHER_READERS 3
+#define ACCOLADE_MAGISTRATE_TRIALS 5
 #define ACCOLADE_OTHERS_MIN_HOURS 5 // hours of their own play before another account counts
 
 // id -> list(name, points, group, condition). Order is the window's order.
@@ -69,7 +70,8 @@
 		"founder" = list("Founder", 25, "Community", "Found a faction that grows to 5 members from other accounts."),
 		"elder" = list("Elder", 30, "Community", "Lead a faction when its research moves your land into a new era."),
 		"defender" = list("Defender", 20, "Community", "Help hold your faction's seat through a siege, or drive off a raid."),
-		"teacher" = list("Teacher", 20, "Community", "3 other players learn a subject from a chapter you wrote."))
+		"teacher" = list("Teacher", 20, "Community", "3 other players learn a subject from a chapter you wrote."),
+		"magistrate" = list("Magistrate", 20, "Community", "Judge 5 different players at your faction's court."))
 	return catalog
 
 /proc/accolade_name(id)
@@ -478,6 +480,25 @@ var/global/list/accolade_cache = list() // ckey -> list(world.time, state)
 	if(readers >= ACCOLADE_TEACHER_READERS)
 		accolade_meet(author, "teacher")
 
+// Magistrate: a trial at a gavel block (faction_justice.dm) of another player
+// with hours of their own play. Each accused counts once, kin never.
+/mob/living/human/proc/accolade_judged(mob/living/human/accused)
+	if(!accolades_earned_here())
+		return
+	var/judge = accolade_mob_ckey(src)
+	var/other = accolade_mob_ckey(accused)
+	if(!judge || !other || !accolade_other_counts(other, judge))
+		return
+	if(!shared_records.add(judge, "accolade_judged", list("accused" = other), id = accolade_record_id("accolade_judged", judge, other)))
+		return
+	accolade_forget(judge)
+	var/trials = 0
+	for(var/list/record in shared_records.records_for(judge))
+		if(record["kind"] == "accolade_judged" && !record["revoked"])
+			trials++
+	if(trials >= ACCOLADE_MAGISTRATE_TRIALS)
+		accolade_meet(judge, "magistrate")
+
 /proc/accolades_tick()
 	for(var/mob/living/human/H in human_mob_list)
 		if(H.client && !QDELETED(H))
@@ -601,4 +622,5 @@ var/global/list/accolade_cache = list() // ckey -> list(world.time, state)
 #undef ACCOLADE_WINTER_MINUTES
 #undef ACCOLADE_FOUNDER_MEMBERS
 #undef ACCOLADE_TEACHER_READERS
+#undef ACCOLADE_MAGISTRATE_TRIALS
 #undef ACCOLADE_OTHERS_MIN_HOURS

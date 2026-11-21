@@ -30,6 +30,7 @@ sees the same accolades:
 | `accolade` | `accolade`, `points` (`grant`, `reason` for staff grants) | md5 of kind, ckey and accolade; staff grants get fresh ids |
 | `accolade_land` | `land` | md5 of kind, ckey and land |
 | `accolade_taught` | `reader` | md5 of kind, writer ckey and reader ckey |
+| `accolade_judged` | `accused` | md5 of kind, judge ckey and accused ckey |
 
 Ids made from the ckey mean two regions writing the same claim store it once,
 and a claim staff revoked cannot be claimed again.
@@ -66,8 +67,9 @@ minutes in it) are saved with the body and carried on trips (`P["accolades"]`).
 | Elder | Lead the faction whose research moves the land into a new era | 30 |
 | Defender | Be beside your seat when a siege on it fails, or near when a nomad raid is driven off | 20 |
 | Teacher | 3 other accounts learn a subject from a chapter you wrote | 20 |
+| Magistrate | Judge 5 different other accounts at your faction's gavel block | 20 |
 
-Founder and Teacher count another account only when it has at least 5 hours
+Founder, Teacher and Magistrate count another account only when it has at least 5 hours
 of its own play (`shared_records.playtime_hours`) and is not a guest or host
 agent. Teacher keeps one `accolade_taught` record per reader (id from the
 writer and the reader), and each book chapter remembers its writer's ckey

@@ -169,7 +169,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 				listening_obj |= O
 
 		for (var/mob/M in player_list)
-			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_ears))
+			if (M.ghost_hears_everywhere()) // spirit_observe.dm
 				listening |= M
 				continue
 			if (M.loc && (M.locs[1] in hearturfs))

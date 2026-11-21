@@ -209,7 +209,7 @@ class WiremodSource(unittest.TestCase):
         base = re.search(r'desc = "([^"]+)"', proc_body(self.component, '/obj/item/circuit_component\n')).group(1)
         available = re.findall(r'(?m)^\t\t(/obj/item/circuit_component/[\w/]+),$', proc_body(self.circuit, '/proc/wiremod_available_components()'))
         described = available + ['/obj/item/circuit_component/variable/getter', '/obj/item/circuit_component/variable/setter',
-                                 '/obj/item/circuit_component/compact_remote']
+                                 '/obj/item/circuit_component/compact_remote', '/obj/item/circuit_component/mechanism_port']
         joined = '\n'.join(self.sources.values())
         for path in described:
             body = type_body(joined, path)
@@ -547,6 +547,7 @@ class WiremodSource(unittest.TestCase):
                             (MODULE / 'core/component.dm', '/obj/item/circuit_component\n'),
                             (MODULE / 'shell/circuit_shell.dm', '/obj/item/circuit_shell\n'),
                             (MODULE / 'shell/compact_remote.dm', '/obj/item/circuit_shell/compact_remote\n'),
+                            (MODULE / 'shell/mechanism_port.dm', '/obj/item/circuit_shell/mechanism_port\n'),
                             (MODULE / 'core/port.dm', '/datum/port\n'),
                             (MODULE / 'core/variables.dm', '/datum/circuit_variable\n')):
             self.assertIn('should_save = FALSE', proc_body(read(path), owner), owner)

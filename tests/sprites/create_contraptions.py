@@ -1,8 +1,9 @@
 """Hand-placed 32px contraptions for icons/obj/contraptions.dmi: the
 counterweight drum (`counterweight`, `counterweight_on`), the cam drum
 sequencer (`cam_drum`, `cam_drum_on`) and the stationary steam engine
-(`steam_engine`, `steam_engine_on`). Each has one direction; the `_on`
-states are four-frame loops.
+(`steam_engine`, `steam_engine_on`) and the knife-switch relay
+(`relay_closed`, `relay_open`). Each has one direction; the `_on` states are
+four-frame loops.
 
 The counterweight drum is a timber gallows frame seen from the front: a rope
 drum on an iron axle under the head beam, an iron ratchet wheel with its pawl
@@ -21,9 +22,16 @@ and the piston rod, crosshead and connecting rod turning a crank on a large
 spoked iron flywheel. Cold it is dark; running, the wheel and crank turn, the
 crosshead slides, the firebox glows orange and smoke puffs from the chimney.
 
+The relay is an early knife switch, small and low in the lower-left of the
+tile so it can share it with a lamp or an outlet: a dark-varnished base board
+with a copper hinge clip and a copper jaw clip, a copper blade with a black
+insulating handle, a stub of hemp cord tied to the blade for a lever to throw
+it by, and two thin cable tails leaving the board. Closed, the blade lies
+down in the jaw; open, it stands up at about sixty degrees, clear of it.
+
 Palette, outline and light (from the upper left) are those of
 create_transmission.py and the prime movers in create_mechanical_power.py:
-the same seasoned timber, wrought iron, field stone and hemp rope.
+the same seasoned timber, wrought iron, field stone and hemp rope. The relay's copper is the still's from create_distillery.py.
 
 The art is drawn procedurally by this script: every pixel is placed from a
 fixed palette (Pillow only); no external or generated artwork. Run it to
@@ -39,6 +47,8 @@ from PIL import Image, ImageChops, PngImagePlugin
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from create_transmission import Frame, TIMBER, STONE, IRON, GREASE, ROPE, PIT, grain  # noqa: E402
 
+from create_distillery import COPPER  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 SHEET = ROOT / 'icons/obj/contraptions.dmi'
 
@@ -51,6 +61,13 @@ GLOW_IRON = (150, 92, 62, 255)
 GLOW_STONE = (224, 160, 104, 255)
 # chimney smoke, thinning as it rises
 SMOKE = [(222, 222, 226, 240), (204, 204, 210, 190), (190, 190, 198, 120)]
+
+# the relay's base board under dark varnish: glint, light, mid, deep
+VARNISH = [(150, 90, 50, 255), (112, 62, 34, 255), (84, 44, 26, 255), (56, 30, 20, 255)]
+# its black insulating handle: glint, body
+INSULATOR = [(108, 106, 120, 255), (56, 54, 64, 255)]
+# the tarred cable tails
+CABLE = (34, 28, 26, 255)
 
 FRAMES_ON = 4
 DELAY_ON = 1
@@ -354,6 +371,62 @@ def steam_engine(step=None):
     return f
 
 
+# ------------------------------------------------------------------ relay
+
+RELAY_HINGE = (4, 24)       # the blade's pivot in the hinge clip
+RELAY_BLADE = 7             # blade length, pivot to handle
+
+
+def relay(closed):
+    """The knife switch seen from the front, blade down in the jaw (`closed`)
+    or swung up clear of it."""
+    f = Frame()
+    hx, hy = RELAY_HINGE
+    # the base board
+    f.rect(2, 27, 13, 29, VARNISH[2])
+    f.hline(2, 13, 27, VARNISH[1])
+    f.hline(2, 13, 29, VARNISH[3])
+    f.pts(VARNISH[0], (3, 27), (4, 27), (8, 27))              # the varnish catching light
+    f.pts(VARNISH[3], (6, 28), (11, 28))
+    # the hinge clip on the left, the jaw clip on the right
+    f.rect(hx - 1, 23, hx, 26, COPPER[2])
+    f.vline(hx - 1, 23, 26, COPPER[1])
+    f.put(hx, 26, COPPER[4])
+    f.rect(10, 23, 11, 26, COPPER[2])
+    f.vline(10, 23, 26, COPPER[1])
+    f.vline(11, 25, 26, COPPER[4])
+    f.pts(COPPER[3], (hx, 25), (10, 26))
+    # the blade, its handle, and the cord tied near its free end
+    if closed:
+        tip = (hx + RELAY_BLADE, hy)
+        f.hline(hx, tip[0], hy - 1, COPPER[0])
+        f.hline(hx, tip[0], hy, COPPER[2])
+        f.rect(tip[0] + 1, hy - 1, tip[0] + 2, hy, INSULATOR[1])
+        f.hline(tip[0] + 1, tip[0] + 2, hy - 1, INSULATOR[0])
+        knot = (hx + 4, hy - 2)
+    else:
+        a = math.radians(60)
+        tip = (round(hx + RELAY_BLADE * math.cos(a)), round(hy - RELAY_BLADE * math.sin(a)))
+        for x, y in f.line(hx, hy, tip[0], tip[1], COPPER[0]):
+            if y < hy - 1:
+                f.put(x + 1, y, COPPER[2])
+        f.rect(tip[0], tip[1] - 2, tip[0] + 1, tip[1] - 1, INSULATOR[1])
+        f.put(tip[0], tip[1] - 2, INSULATOR[0])
+        f.pts(PIT, (10, 23), (11, 23))                        # the empty jaw
+        f.put(10, 24, COPPER[0])
+        knot = (tip[0] - 3, tip[1] + 3)
+    f.put(hx, hy, GREASE)                                     # the pivot pin
+    f.put(knot[0], knot[1], ROPE[2])
+    f.outline()
+    # the cord stub rises from its knot; kept thin, so drawn after the outline
+    for i in range(1, 4):
+        f.put(knot[0], knot[1] - i, ROPE[1] if i % 2 == 0 else ROPE[0])
+    # two cable tails leaving the board
+    f.pts(CABLE, (1, 28), (0, 28), (0, 29), (14, 28), (15, 28), (15, 29), (16, 29))
+    f.shadow(2, 31, 14, 31)
+    return f
+
+
 def states():
     """[(state, frames)] in sheet order; every state has one direction."""
     on = range(FRAMES_ON)
@@ -364,6 +437,8 @@ def states():
         ('cam_drum_on', [cam_drum(i) for i in on]),
         ('steam_engine', [steam_engine()]),
         ('steam_engine_on', [steam_engine(i) for i in on]),
+        ('relay_closed', [relay(True)]),
+        ('relay_open', [relay(False)]),
     ]
 
 

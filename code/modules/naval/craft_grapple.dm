@@ -8,11 +8,16 @@
 // cuts them at her helm or at any of the lines, which takes a moment. A ship
 // whose lines were let go coils them for GRAPPLE_COOLDOWN before she can
 // throw them again. Nothing of it is saved.
+//
+// Grapnels thrown by hand (hull_grapnel.dm) can throw her lines too, or add
+// to lines already out: each hook on them adds GRAPPLE_HOOK_CUT_TIME to the
+// time it takes to cut them, and comes back to her deck when they part.
 // ============================================================
 
 #define GRAPPLE_REACH 3
 #define GRAPPLE_COOLDOWN 600
 #define GRAPPLE_CUT_TIME 50
+#define GRAPPLE_HOOK_CUT_TIME 30
 #define GRAPPLE_SEARCH_RANGE 60
 
 /datum/craft
@@ -23,8 +28,17 @@
 	var/datum/craft/thrower
 	var/datum/craft/caught
 	var/list/lines = list()
+	var/list/hooks = list() // grapnels thrown by hand, held on the lines
+	var/turf/home // the thrower's deck tile the lines run from
 
 /datum/craft_grapple/Destroy()
+	for (var/obj/item/I in hooks)
+		if (home && !QDELETED(I))
+			I.forceMove(home)
+		else
+			qdel(I)
+	hooks = list()
+	home = null
 	for (var/obj/covers/repairedfloor/rope/boarding/L in lines)
 		L.grapple = null
 		qdel(L)
@@ -37,6 +51,10 @@
 	thrower = null
 	caught = null
 	return ..()
+
+// How long cutting the lines takes: longer for every hook on them.
+/datum/craft_grapple/proc/cut_time()
+	return GRAPPLE_CUT_TIME + hooks.len * GRAPPLE_HOOK_CUT_TIME
 
 // The other ship on the lines.
 /datum/craft_grapple/proc/other(datum/craft/C)
@@ -82,7 +100,7 @@
 	if (!istype(H) || !grapple)
 		return ..()
 	to_chat(H, SPAN_NOTICE("You start cutting the boarding lines..."))
-	if (!do_after(H, GRAPPLE_CUT_TIME, src) || QDELETED(src) || !grapple)
+	if (!do_after(H, grapple.cut_time(), src) || QDELETED(src) || !grapple)
 		return
 	log_game("[key_name(H)] cut the grapple between the [grapple.thrower.name] and the [grapple.caught.name] at [x],[y],[z].")
 	grapple.release(craft_at(get_turf(H)), H)
@@ -150,7 +168,7 @@
 		.[label] = C
 
 // Throws her lines. TRUE when they hold; FALSE with last_refusal set.
-/datum/craft/proc/order_grapple(datum/craft/other)
+/datum/craft/proc/order_grapple(datum/craft/other, by_hand = FALSE)
 	if (!centre())
 		last_refusal = "she is not afloat"
 		return FALSE
@@ -160,7 +178,7 @@
 	if (turning_to || docking)
 		last_refusal = "she is coming about"
 		return FALSE
-	if (grapple_ready_at && world.time < grapple_ready_at)
+	if (!by_hand && grapple_ready_at && world.time < grapple_ready_at)
 		last_refusal = "her lines are still being coiled"
 		return FALSE
 	if (!other || QDELETED(other) || other == src || !other.centre())
@@ -186,6 +204,7 @@
 	grapple = G
 	other.grapple = G
 	var/turf/T = plan[3]
+	G.home = T
 	for (var/n = 1, n <= plan[1], n++)
 		T = get_step(T, plan[2])
 		var/obj/covers/repairedfloor/rope/boarding/L = new(T)
@@ -212,7 +231,7 @@
 		var/datum/craft_grapple/G = grapple
 		if (G.thrower != src)
 			to_chat(H, SPAN_NOTICE("You start cutting the grappling lines..."))
-			if (!do_after(H, GRAPPLE_CUT_TIME, at) || QDELETED(src) || grapple != G)
+			if (!do_after(H, G.cut_time(), at) || QDELETED(src) || grapple != G)
 				return
 		log_game("[key_name(H)] let go the grapple between the [G.thrower.name] and the [G.caught.name].")
 		G.release(src, H)

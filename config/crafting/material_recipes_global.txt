@@ -484,6 +484,7 @@ RECIPE: /material/electronics/,computerized fabricator,/obj/structure/factory_fa
 RECIPE: /material/electronics/,3D printer,/obj/structure/factory_fabricator/printer,12,300,1,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,integrated circuit,/obj/item/integrated_circuit,4,100,0,1,none,205,0,0,8,null
 RECIPE: /material/electronics/,compact remote,/obj/item/circuit_shell/compact_remote,5,100,0,1,none,205,0,0,8,null
+RECIPE: /material/electronics/,mechanism port,/obj/item/circuit_shell/mechanism_port,5,100,0,1,none,205,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 
@@ -2451,6 +2452,7 @@ RECIPE: /material/wood/soft/,ship mast,/obj/structure/vehicleparts/movement/sail
 RECIPE: /material/wood/soft/,ship mast with a crow's nest,/obj/structure/vehicleparts/movement/sail/crows_nest,23,200,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,bowsprit,/obj/structure/vehicleparts/movement/sail/bowsprit,10,120,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,figurehead,/obj/structure/figurehead,6,90,0,1,vehicle parts,10,0,0,8,null
+RECIPE: /material/iron/,grapnel,/obj/item/weapon/grapnel,3,60,0,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/wood/soft/,slipway,/obj/structure/slipway,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,boathouse,/obj/structure/boathouse,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,tiller,/obj/structure/hull_tiller,10,100,1,1,vehicle parts,41,0,0,8,null
@@ -2573,6 +2575,7 @@ RECIPE: /material/wood/,wooden trapdoor,/obj/item/trapdoor_kit,4,50,0,1,construc
 RECIPE: /material/wood/,lever,/obj/structure/mechanism/lever,3,40,1,1,mechanisms,0,0,0,8,null
 RECIPE: /material/wood/,pulley block,/obj/structure/mechanism_pulley,3,40,1,1,mechanisms,0,0,0,8,null
 RECIPE: /material/wood/,cam drum,/obj/structure/mechanism/cam_drum,6,100,1,1,mechanisms,0,0,0,8,null
+RECIPE: /material/copper/,relay,/obj/structure/mechanism_relay,3,60,1,1,mechanisms,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
