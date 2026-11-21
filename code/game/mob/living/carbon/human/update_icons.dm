@@ -5,7 +5,6 @@
 	icon_key is [species.race_key][g][husk][fat][hulk][skeleton][s_tone]
 */
 var/global/list/human_icon_cache = list()
-var/global/list/tail_icon_cache = list() //key is [species.race_key][r_skin][g_skin][b_skin]
 var/global/list/light_overlay_cache = list()
 
 	///////////////////////

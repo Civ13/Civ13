@@ -1,4 +1,3 @@
-var/list/gamemode_cache = list()
 
 /datum/configuration
 

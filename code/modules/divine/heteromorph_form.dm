@@ -67,6 +67,8 @@ var/global/list/heteromorph_forms_live = list()
 	..()
 	heteromorph_forms_live += src
 	verbs += /mob/living/simple_animal/heteromorph_form/proc/heteromorph_return_verb
+	if (heteromorph_can_fly)
+		verbs += /mob/living/simple_animal/heteromorph_form/proc/heteromorph_takeoff_verb // heteromorph_flight.dm
 
 /mob/living/simple_animal/heteromorph_form/proc/heteromorph_kind_id()
 	if (heteromorph_body)
@@ -95,8 +97,9 @@ var/global/list/heteromorph_forms_live = list()
 	..()
 	var/kind = heteromorph_kind_id()
 	// Holding the form wears on the body: hunger and thirst while it lasts.
-	heteromorph_body.nutrition = max(0, heteromorph_body.nutrition - heteromorph_balance_num(kind, "nutrition_per_life", 0.5))
-	heteromorph_body.water = max(0, heteromorph_body.water - heteromorph_balance_num(kind, "water_per_life", 0.25))
+	var/wear = heteromorph_flying ? heteromorph_balance_num(kind, "fly_nutrition_multiplier", 2) : 1
+	heteromorph_body.nutrition = max(0, heteromorph_body.nutrition - heteromorph_balance_num(kind, "nutrition_per_life", 0.5) * wear)
+	heteromorph_body.water = max(0, heteromorph_body.water - heteromorph_balance_num(kind, "water_per_life", 0.25) * wear)
 	if (world.time >= heteromorph_started + heteromorph_balance_num(kind, "max_minutes", 20) * 600)
 		heteromorph_return(FALSE, "You cannot hold your true form any longer.")
 	else if (heteromorph_body.nutrition <= 0 || heteromorph_body.water <= 0)
@@ -141,6 +144,9 @@ var/global/list/heteromorph_forms_live = list()
 	var/mob/living/human/H = heteromorph_body
 	var/turf/T = get_turf(src)
 	var/kind = heteromorph_kind_id()
+	var/was_flying = heteromorph_flying
+	if (was_flying)
+		T = heteromorph_landing_turf(T) // heteromorph_flight.dm: never set a body down inside a wall
 	if (T)
 		heteromorph_flash(T, TRUE)
 	if (H && !QDELETED(H))
@@ -151,7 +157,7 @@ var/global/list/heteromorph_forms_live = list()
 			H.key = key
 		H.heteromorph_cooldown_until = world.realtime + heteromorph_balance_num(kind, "cooldown_minutes", 30) * 600
 		if (forced)
-			H.adjustBruteLoss(heteromorph_balance_num(kind, "revert_brute", 25))
+			H.adjustBruteLoss(heteromorph_balance_num(kind, "revert_brute", 25) + (was_flying ? heteromorph_balance_num(kind, "fall_brute", 30) : 0))
 			H.Weaken(heteromorph_balance_num(kind, "revert_weaken", 8))
 		if (reason)
 			to_chat(H, forced ? SPAN_WARNING(reason) : SPAN_NOTICE(reason))
@@ -180,7 +186,9 @@ var/global/list/heteromorph_forms_live = list()
 	speak_emote = list("rumbles", "roars")
 	move_to_delay = 3
 
-/mob/living/simple_animal/heteromorph_form/Move()
+/mob/living/simple_animal/heteromorph_form/Move(NewLoc, Dir)
+	if (heteromorph_flying)
+		return heteromorph_fly_step(NewLoc, Dir) // heteromorph_flight.dm
 	. = ..()
 	if (. && icon_living && !heteromorph_leaving)
 		flick("[icon_living]_walk", src)

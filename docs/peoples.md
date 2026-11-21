@@ -119,9 +119,31 @@ daughter language. Nobody else changes.
 Admins: **Check Peoples** lists every community's years apart and any waiting
 split; **Force People Split** makes one ready and may name it at once.
 
+## Blending
+
+Code: `peoples_blend.dm`. A nation of at least 4 living members
+(`PEOPLE_BLEND_MIN`) where its two largest peoples each make up a quarter of
+them counts a year together for every played year (a year the mix fails
+halves it). After 30 such years (`PEOPLE_BLEND_YEARS`, about 5 real days), the
+nation's verified leader names a people of both with **Name Our People**. Its
+parents are both peoples and its mother tongue is the larger group's. Nobody's
+own people changes: the blend is the default for newcomers born among that
+nation (`community_blend_people()`), who may still pick a people living there.
+A nation blends the same two peoples once.
+
+## Belonging
+
+A character who plays a year in a community whose most common people is not
+their own counts one year raised among that people (`people_raised`). After
+20 such years (`PEOPLE_RAISED_YEARS`, about 3 real days) their notes read
+"Raised among the X". That people's leader may then welcome them with
+**Welcome Among Us** (IC tab, within 3 tiles), which adds "Welcomed among the X
+by ..." to their notes. Both are records only: a character keeps their birth
+people for life and no game rule reads either.
+
 ## Still to come
 
-Blending in mixed settlements, "Raised among", and a family view of peoples.
+A family view of peoples beside the language families view (Fable).
 
 ## Tests
 

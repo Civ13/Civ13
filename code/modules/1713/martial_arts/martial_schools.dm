@@ -25,7 +25,9 @@
 #define MARTIAL_MASTERY_LEVELS 8
 
 // id = list(name, minimum era, research node, what it teaches)
-var/global/list/martial_schools = list(
+var/global/list/martial_schools = martial_schools_table()
+/proc/martial_schools_table()
+	return list(
 	"grappling" = list("Grappling", 0, "school_grappling", "Holds, throws and sprawls, the oldest way to put a man on the ground."),
 	"pugilism" = list("Classical Pugilism", 1, "school_pugilism", "Boxing with bound hands: footwork, guard and slipping punches to the head."),
 	"pankration" = list("Pankration", 1, "school_pankration", "The all-in contest of strikes, kicks, locks and chokes."),

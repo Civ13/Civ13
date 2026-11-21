@@ -9,7 +9,9 @@
 #define POTTERY_BISQUE "#c97b52" // the band's unpainted colour, left bare
 
 // shape -> name, volume, size, band left/top/width/height from the icon's top left
-var/global/list/pottery_shapes = list(
+var/global/list/pottery_shapes = pottery_shapes_table()
+/proc/pottery_shapes_table()
+	return list(
 	"cup" = list("name" = "cup", "volume" = 30, "w_class" = ITEM_SIZE_TINY, "band" = list(12, 22, 8, 3)),
 	"bowl" = list("name" = "bowl", "volume" = 50, "w_class" = ITEM_SIZE_SMALL, "band" = list(10, 22, 12, 3)),
 	"jug" = list("name" = "jug", "volume" = 100, "w_class" = ITEM_SIZE_SMALL, "band" = list(11, 19, 10, 4)),

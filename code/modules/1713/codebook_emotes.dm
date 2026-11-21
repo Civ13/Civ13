@@ -7,7 +7,9 @@
 //////////////////////////////////////////////////////////////////////////////
 
 var/global/list/codebook_codes = list() // faction text -> list of list(call, response)
-var/global/list/codebook_words = list("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "Xray", "Yankee", "Zulu")
+var/global/list/codebook_words = codebook_words_table()
+/proc/codebook_words_table()
+	return list("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "Xray", "Yankee", "Zulu")
 
 /proc/codebook_pairs(faction)
 	if (!faction)

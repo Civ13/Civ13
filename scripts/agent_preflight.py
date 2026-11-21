@@ -240,7 +240,7 @@ def patterns(args):
 
 # Extra initialised globals the compile check adds: probes declare their own
 # globals, so a branch that only just fits breaks every probe build in CI.
-HEADROOM_ENTRIES = 300
+HEADROOM_ENTRIES = 1000
 
 
 def find_compiler():

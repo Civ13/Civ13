@@ -83,6 +83,15 @@ GOVERNMENTS = {
                   'body': 'referendum', 'term': 7, 'away': 3, 'revolt': 0.75},
     'league': {'name': 'Merchant league', 'ruler': 'Doge', 'age': 2, 'bonus': 1, 'notice': DAY, 'personal': False,
                'body': 'council', 'term': 14, 'away': 3, 'revolt': 0.4},
+    # Era governments: each belongs to its age (docs/nation-government.md).
+    'elders': {'name': 'Council of elders', 'ruler': 'Eldest', 'age': 0, 'bonus': 0, 'notice': DAY, 'personal': False,
+               'body': 'senate', 'term': 14, 'away': 7, 'revolt': 0.5},
+    'feudal': {'name': 'Feudal crown', 'ruler': 'King', 'age': 2, 'bonus': 1, 'notice': 2 * DAY, 'personal': True,
+               'body': None, 'term': 0, 'away': 7, 'revolt': 0.45},
+    'constitutional': {'name': 'Constitutional monarchy', 'ruler': 'Prime Minister', 'age': 4, 'bonus': 2,
+                       'notice': DAY, 'personal': False, 'body': 'senate', 'term': 14, 'away': 3, 'revolt': 0.75},
+    'oneparty': {'name': 'One-party state', 'ruler': 'Chairman', 'age': 7, 'bonus': 3, 'notice': 3 * DAY,
+                 'personal': True, 'body': None, 'term': 0, 'away': 3, 'revolt': 0.25},
 }
 DEFAULT_GOVERNMENT = 'confederation'
 GOVERNMENT_NOTICE = DAY

@@ -259,7 +259,9 @@ var/global/list/craft_guards = null
 
 // Religious works: the first entry whose title words match decides. Builders
 // without a religion, or whose religion type is listed, cannot make the work.
-var/global/list/religious_work_rules = list(
+var/global/list/religious_work_rules = religious_work_rules_table()
+/proc/religious_work_rules_table()
+	return list(
 	list(list("talisman"), list("Priests", "Monks", "Clerics")),
 	list(list("totem"), list("Priests", "Monks", "Clerics", "Cultists")),
 	list(list("monumental ominous statue of the deep-one", "monumental ominous statue of the evil-one", "monumental ominous statue of the outsider", "monumental ominous statue of the ruler"), list("Shamans", "Priests", "Monks", "Clerics")),

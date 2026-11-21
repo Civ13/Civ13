@@ -786,6 +786,47 @@ class VassalTests(TreatyTests.__base__):
         self.assertEqual(self.db.execute('SELECT COUNT(*) FROM nation_vassal').fetchone()[0], 0)
 
 
+class EraGovernmentTests(TreatyTests.__base__):
+    """Era governments (GOVERNMENTS in tools/transfer_storage/nations.py)."""
+
+    setUp = TreatyTests.setUp
+    ask = TreatyTests.ask
+    treaty = TreatyTests.treaty
+
+    def become(self, kind, age, now=T):
+        for f in (A, B):
+            self.ask('alpha', 'era', f, age=age, now=now)
+        out = None
+        for f in (A, B):
+            out = self.ask('alpha', 'govern', f, type=kind, person='val', pname='Val', pfaction=A, now=now)
+        return out
+
+    def test_each_type_waits_for_its_age(self):
+        for kind, age in (('feudal', 2), ('constitutional', 4), ('oneparty', 7)):
+            with self.subTest(kind=kind):
+                self.setUp()
+                self.assertIn('age it belongs to', self.become(kind, age - 1))
+                self.become(kind, age)
+                self.n.snapshot(T + 86400 * 3 + 1)
+                self.assertEqual(self.n.government(self.u)['type'], kind)
+
+    def test_elders_in_the_stone_age_elect_an_eldest(self):
+        self.become('elders', 0)
+        g = self.n.snapshot(T + 86400 + 1)[self.u]['government']
+        self.assertEqual((g['type'], g['ruler'], g['body']), ('elders', 'Eldest', 'senate'))
+
+    def test_feudal_crown_names_an_heir_and_holds_vassals_longer(self):
+        self.become('feudal', 2)
+        now = T + 3 * 86400
+        self.n.snapshot(now)
+        self.assertIn('named heir', self.ask('alpha', 'heir', B, actor='val', role='citizen', now=now,
+                                             person='kim', pname='Kim', pfaction=B))
+        for f in (D, E):
+            self.treaty('beta', f, self.u, 'vassal', now=now)
+        self.assertIn('vassalage is in force', self.treaty('alpha', A, self.l, 'overlord', now=now, actor='val', role='citizen'))
+        self.assertIn('28 days', self.treaty('beta', D, self.u, 'independence', now=now + 20 * 86400))
+
+
 class LegitimacyTests(ElectiveTests.__base__):
     """Legitimacy (tools/transfer_storage/nation_legitimacy.py)."""
 
