@@ -1549,6 +1549,7 @@
 #include "code\modules\craft\vehicle_designer.dm"
 #include "code\modules\craft\vehicle_draught.dm"
 #include "code\modules\craft\vehicle_draught_checks.dm"
+#include "code\modules\craft\vehicle_sheet_works.dm"
 #include "code\modules\craft\vehicle_offset.dm"
 #include "code\modules\craft\vehicle_offset_ride.dm"
 #include "code\modules\craft\vehicle_offset_hull.dm"
