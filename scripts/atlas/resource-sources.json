@@ -12463,6 +12463,58 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Harvest khat",
+      "file": "code/modules/1713/drug_preparations.dm",
+      "line": 164,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/farming/seeds/khat"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/khat",
+        "/obj/item/stack/farming/seeds/khat"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"semiarid\", \"savanna\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Lance poppies for opium",
+      "file": "code/modules/1713/drug_preparations.dm",
+      "line": 228,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/farming/plant/poppy"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/pill/opium"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Grow an opium poppy until it is ready to harvest.",
+        "On help intent, score the green pods with a knife.",
+        "Wait about five minutes for the latex to dry, then pick it off by hand as raw opium. Each poppy takes three lancings and can still be harvested afterwards."
+      ],
+      "conditions": "Ready poppy required; well-fed plants give two balls per lancing.",
+      "map_notes": "Availability follows the opium poppy crop.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Harvest cannabis",
       "file": "code/game/objects/farming.dm",
       "line": 487,
@@ -16937,6 +16989,29 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Rubberise cloth with latex",
+      "file": "code/modules/1713/treated_cloth.dm",
+      "line": 272,
+      "source_commit": "c714c60456ec18db9a99bcf04f1a3cda1e3dfa9f",
+      "inputs": [
+        "/material/cloth",
+        "latex",
+        "/obj/item/stack/ore/sulphur"
+      ],
+      "outputs": [
+        "/material/rubberised_cloth"
+      ],
+      "tools": [],
+      "steps": [
+        "Outside harm intent, hold sulphur in your other hand and use an open container holding latex on plain cloth.",
+        "Each sheet soaks up 5 units of latex, up to five sheets at a time, and the batch uses one sulphur."
+      ],
+      "conditions": "Needs 5 latex per sheet and one sulphur per batch.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Wax cloth with beeswax",
       "file": "code/modules/1713/treated_cloth.dm",
       "line": 199,
@@ -16954,6 +17029,53 @@
         "The cake waxes up to three sheets and is used up."
       ],
       "conditions": "Needs one cake of beeswax per three sheets.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cook phenolic resin in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 84,
+      "source_commit": "2f00b7dc33ff312a21fa4f011c9b6209496af83e",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "phenolic_resin"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "Set a powered bakelizer to phenolic resin with its Change Setting verb and fill it with petroleum.",
+        "Every 5 petroleum makes 10 units of phenolic resin; use an empty container on the bakelizer to draw it off."
+      ],
+      "conditions": "Needs a powered bakelizer.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press resin laminate",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 208,
+      "source_commit": "2f00b7dc33ff312a21fa4f011c9b6209496af83e",
+      "inputs": [
+        "/material/cloth",
+        "phenolic_resin"
+      ],
+      "outputs": [
+        "/material/resin_laminate"
+      ],
+      "tools": [
+        "/obj/structure/hot_press"
+      ],
+      "steps": [
+        "Pour 10 units of phenolic resin (or pine resin) into a hot press.",
+        "Use 4 sheets of cloth on it for 2 sheets of laminate, or 4 silk for 3; pine resin gives half."
+      ],
+      "conditions": "Needs a hot press, 10 resin and 4 cloth or silk.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"

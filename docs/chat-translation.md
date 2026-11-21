@@ -40,7 +40,9 @@ service that drives Microsoft Edge's own on-device Translator
 talks to it.
 
 - Off unless `CHAT_TRANSLATE_URL` (the service, e.g. `http://127.0.0.1:55581`)
-  is set in config.txt or the host's config.local.txt.
+  is set. On a region group the host service runs the service and sets it for
+  every region when the group config has `"chat_translator"`; the launcher's
+  Translator tab shows and controls it (Val, 2026-11-21).
 - When the chat page is ready the world calls `setTranslateServer("1")`. The
   page then sends each new eligible line (the same text the on-device path
   would use) as `byond://?chat_translate=<id>&lang=<reader's language>&text=`.

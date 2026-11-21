@@ -78,9 +78,64 @@ All of this waits for the group option `edge_travel_oceans` (group JSON,
 written into each region's `shard_region.json` by `shard_group.py`); it is off
 by default.
 
+## Sites at sea
+
+`code/modules/naval/ocean_sites.dm`. Each ocean has a fixed list of sites,
+rolled from its id so every start finds them in the same places: about one for
+every 30,000 tiles, at least 60 tiles from the map's edge, clear of the landing
+rock, pack ice and the insets' breakers. A site is one of:
+
+- an islet: a small island with grass, trees, rock and a fresh pond, built by
+  the open sea's island builder (`open_sea_sites.dm`);
+- a reef: shallows with coral heads awash. Shallow salt water is the richest
+  fishing at sea (`fishing_grounds.dm`);
+- a wreck: planks adrift with crates of salvage;
+- a sea mark: a named rock to steer by.
+
+Every 10 seconds the sites look for ships and people. A site rises when a
+ship or an awake player comes within 40 tiles of its square, and lingers
+`SEA_SITE_LINGER` (10 minutes) after the last of them is more than 60 tiles
+away, then the sea closes over it. Nothing is kept in a registry: a raised
+site is saved with the world like anything else, and is known to be up by
+what lies at its middle. A site stays up while someone is on it, a ship lies
+near it, a bunk on it is kept as home, or a mooring post that takes ships makes
+a harbour of it (up to `SEA_KEPT_CAP`, 4, per ocean). Nothing rises or goes
+under during a world save.
+
+Sea life keeps its own cap (`sea_life_cap` in the metadata), and someone who
+logs out at sea stays aboard and wakes there, as anywhere else.
+
+The probe is `tests/naval_carrier/ocean_sites_probe.dm`.
+
 ## Not yet
 
 These maps are not in any live group until the host step that adds the seas.
-The east-west wrap of the Arctic and Southern oceans, sites near ships
-(islets, reefs, wrecks) and straits come in later PRs of the ocean regions
-plan.
+The east-west wrap of the Arctic and Southern oceans, abandoned ships
+foundering, and straits come in later PRs of the ocean regions plan.
+
+## Indian Ocean reef shelf prototype
+
+`tests/ocean_maps/indian_reef_shelf.dmm` is a deliberately non-admitted 40 × 30
+map fixture, not a replacement for the Indian Ocean world. Its small arrival
+rock is at (6,15). A yellow buoy at (26,8) marks the south side of the reef;
+the reef itself is centered on (26,15), with bedrock ridges, two cuts and
+shelf water on z2. Its open surface stays on z1. It demonstrates an authored
+location with a navigable, bounded seabed directly below open, ordinary
+saltwater, not a route through breakers or a boat's hull.
+
+The metadata marks the compiled second plane as below the first. There is no
+runtime allocation, cave digging, sea conversion sweep or new dive verb.
+Existing `Dive`, `Surface` and the corresponding HUD actions resolve the
+same x/y via the existing multiz links. The authored cells use the standard
+sea-layer turf and its default shelf depth; breath and fatigue, scuba and
+sealed-suit handling, and obstruction checks remain where they already live.
+This fixture does not opt into the map-wide simulation that populates the
+submarine sea layer. It adds no extractable petroleum, no crossings and no
+new production charter or region settings.
+
+Regenerate just the fixture with `python3 -B tools/ocean_maps/reef_fixture.py`.
+A full-size 600 × 600 Indian map would still allocate 360,000 additional turf
+slots, even if only this reef were traversable. Before considering that
+change, measure pinned-toolchain startup and resident memory, and verify a
+saved character and item on the shelf reload and can surface. Offline fixture
+checks do not establish those properties or real-client presentation.

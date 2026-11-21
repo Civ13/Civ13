@@ -274,7 +274,7 @@ var/global/list/slipway_designs = null
 	var/list/stage = D.stages[next[1]]
 	busy = TRUE
 	to_chat(H, SPAN_NOTICE("You start work on the [stage["verb"]]..."))
-	if (!do_after(H, SLIPWAY_PIECE_TIME, target || src) || QDELETED(src) || QDELETED(I) || design != D.name || pieces_done != next_index_of(next))
+	if (!do_after(H, yard_time(src, SLIPWAY_PIECE_TIME), target || src) || QDELETED(src) || QDELETED(I) || design != D.name || pieces_done != next_index_of(next))
 		busy = FALSE
 		return TRUE
 	var/before = pieces_done
@@ -324,6 +324,8 @@ var/global/list/slipway_designs = null
 		if (finished())
 			options["Launch the [D.name]"] = "launch"
 		options["Abandon the [D.name]"] = "abandon"
+	// Pieces fitted from a yard office's stock (yard_office.dm).
+	yard_options(options)
 	// A hull hauled out on the berth, or one lying off it (slipway_haul.dm).
 	if (haul_options(options))
 		for (var/label in options.Copy())
@@ -340,7 +342,7 @@ var/global/list/slipway_designs = null
 	if (!(choice in options) || busy || !Adjacent(H))
 		return
 	var/action = options[choice]
-	if (haul_action(H, action))
+	if (haul_action(H, action) || yard_action(H, action))
 		return
 	if (istype(action, /datum/slipway_design))
 		var/datum/slipway_design/S = action

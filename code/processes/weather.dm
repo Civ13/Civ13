@@ -70,3 +70,4 @@
 
 /process/weather_chunks/fire()
 	weather_chunks_step()
+	weather_fog_view_step() // weather_fog.dm

@@ -420,6 +420,23 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			G.amount -= 1
 		else
 			qdel(G)
+	else if (istype(W, /obj/item/stack/material/cannabis))
+		var/obj/item/stack/material/cannabis/G = W
+		if (smoketime)
+			to_chat(user, "<span class='notice'>[src] is already packed.</span>")
+			return
+		smoketime = 800
+		reagents.add_reagent("thc", 15)
+		name = "cannabis-packed [initial(name)]"
+		G.use(1)
+	else if (istype(W, /obj/item/weapon/reagent_containers/pill/hashish))
+		if (smoketime)
+			to_chat(user, "<span class='notice'>[src] is already packed.</span>")
+			return
+		smoketime = 800
+		reagents.add_reagent("thc", 20)
+		name = "hashish-packed [initial(name)]"
+		qdel(W)
 	else if (istype(W, /obj/item/weapon/reagent_containers/pill/opium))
 		var/obj/item/weapon/reagent_containers/pill/opium/G = W
 		if (smoketime)

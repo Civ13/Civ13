@@ -35,7 +35,8 @@ var/global/list/dock_basin_turfs = list()
 /obj/structure/canal_lock/dock_gate
 	name = "dock gate"
 	desc = "A heavy pair of timber gates across the mouth of a dug basin, with a sluice and a pump. Shut it and pump the basin dry to lay a ship on the dock floor; open the sluices and the gate to float her out."
-	icon_state = "lock_low"
+	icon = 'icons/obj/berths.dmi'
+	icon_state = "dock_gate_open"
 	var/shut = FALSE
 	var/drained = FALSE
 	var/tmp/pumped = 0
@@ -59,7 +60,7 @@ var/global/list/dock_basin_turfs = list()
 	return ..()
 
 /obj/structure/canal_lock/dock_gate/update_icon()
-	icon_state = shut ? "lock_high" : "lock_low"
+	icon_state = shut ? "dock_gate_shut" : "dock_gate_open"
 
 // The level of the open water outside the gate.
 /obj/structure/canal_lock/dock_gate/proc/sea_level()
@@ -184,6 +185,20 @@ var/global/list/dock_basin_turfs = list()
 			. += C
 		else if (astray)
 			astray += C
+
+// ---- Keel blocks ----
+
+// Timber blocks a ship's keel rests on in a dry dock or on a slipway berth.
+// They hold nothing up in the game: a hull lies dry at a berth without them.
+/obj/structure/keel_blocks
+	name = "keel blocks"
+	desc = "Stacked timber blocks for a ship's keel to rest on in a dry dock or on a slipway berth."
+	icon = 'icons/obj/berths.dmi'
+	icon_state = "keel_blocks"
+	anchored = TRUE
+	density = FALSE
+	flammable = TRUE
+	layer = TURF_LAYER + 0.05
 
 // ---- The berth ----
 
@@ -341,7 +356,7 @@ var/global/list/dock_basin_turfs = list()
 			busy = TRUE
 			H.visible_message(SPAN_NOTICE("[H] starts pumping out the dock."), SPAN_NOTICE("You start working the dock pump. The basin holds [basin.len] tile\s of water."))
 			while (TRUE)
-				if (!do_after(H, DRYDOCK_PUMP_TIME, src) || QDELETED(src) || pump_refusal())
+				if (!do_after(H, yard_time(src, DRYDOCK_PUMP_TIME), src) || QDELETED(src) || pump_refusal())
 					break
 				pumped += pump_rate()
 				if (pumped >= basin.len)
@@ -354,7 +369,7 @@ var/global/list/dock_basin_turfs = list()
 		if ("flood")
 			busy = TRUE
 			H.visible_message(SPAN_NOTICE("[H] opens the sluices and the sea pours into the dock."))
-			var/ok = do_after(H, DRYDOCK_SLUICE_TIME, src)
+			var/ok = do_after(H, yard_time(src, DRYDOCK_SLUICE_TIME), src)
 			busy = FALSE
 			if (ok && !QDELETED(src))
 				flood()

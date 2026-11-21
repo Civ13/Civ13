@@ -357,6 +357,7 @@ var/global/list/aircraft_cargo_plane_layout = list(
 		"Cargo plane" = /obj/structure/vehicleparts/axis/aircraft/cargo_plane,
 		"Twin-engine plane" = /obj/structure/vehicleparts/axis/aircraft/twin_plane,
 		"Airliner" = /obj/structure/vehicleparts/axis/aircraft/airliner,
+		"Helicopter" = /obj/structure/vehicleparts/axis/aircraft/helicopter/huey,
 		)
 	return models
 
@@ -374,6 +375,8 @@ var/global/list/aircraft_cargo_plane_layout = list(
 			return aircraft_twin_plane_layout
 		if ("Airliner")
 			return aircraft_airliner_layout()
+		if ("Helicopter")
+			return aircraft_huey_layout
 	return null
 
 /proc/aircraft_model_size(model)
@@ -386,6 +389,8 @@ var/global/list/aircraft_cargo_plane_layout = list(
 			return 5
 		if ("Airliner")
 			return 6
+		if ("Helicopter")
+			return 7
 	return 4
 
 // How many sections wide a hangar model is: its wingspan.

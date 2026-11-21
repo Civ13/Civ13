@@ -201,4 +201,4 @@ var/ww_runtime_error = FALSE
 
 	// The Admin Map gets each cell's wind.
 	var/list/data = weather_air_map_data()
-	ww_check(data.len == 9 && length(data[8]) == G.cols * G.rows && length(data[9]) == G.cols * G.rows, "the map data carries each cell's wind")
+	ww_check(data.len >= 9 && length(data[8]) == G.cols * G.rows && length(data[9]) == G.cols * G.rows, "the map data carries each cell's wind")

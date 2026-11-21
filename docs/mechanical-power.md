@@ -165,3 +165,9 @@ Every hopper machine:
 - moves each new product onto a fastened belt beside it that points away from it (`outgoing_belt()`), so the output pile never forms.
 
 The flood-defence sluice gate (`flood_defences.dm`) is a cord actuator too: thrown over draws it up, thrown back lowers it.
+
+## Driven bellows, driven Archimedes screw and power loom
+
+- **Bellows** (`clay_lime_fire.dm`, draw 1): `bellows_blowing()` on a furnace is also TRUE while a fastened bellows within a tile is driven (`driven()`), so every bloomery, blast furnace or kiln firing started beside driven bellows takes the bellows blast with nobody pumping. Nothing ticks; the drive is asked when a firing starts.
+- **Archimedes screw** (`flood_defences.dm`, draw 1): on the object loop. With water in its hollow and a drive, it lifts one load every `work_time * share * 2`. Otherwise it looks again in 30 s, checking the hollow before the drive search.
+- **Power loom** (hopper machine, 12 iron, gear, shaft, bearing, Textile Mills): weaves 4 a step, with a hopper of 40. Cotton and retted fibre become cloth, and silk thread becomes silk.

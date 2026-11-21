@@ -275,7 +275,7 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_divine_approval_suite_is_bounded_and_not_silently_omitted(self):
         name = 'divine_approval'
         suite = ci.SUITES[name]
-        self.assertEqual(suite['files'], ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py', 'tests/divine_approval/test_arcane_devotion.py', 'tests/divine_approval/test_arcane_rites.py', 'tests/divine_approval/test_arcane_unbind.py'))
+        self.assertEqual(suite['files'], ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py', 'tests/divine_approval/test_arcane_devotion.py', 'tests/divine_approval/test_arcane_rites.py', 'tests/divine_approval/test_arcane_unbind.py', 'tests/divine_approval/test_arcane_veil.py'))
         for path in suite['files'] + suite['paths'] + suite['shared_paths']:
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
@@ -900,7 +900,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=20, failures=int(failing), errors=0, skipped=0))
+                        tests=21, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:

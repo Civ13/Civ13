@@ -71,6 +71,8 @@ var/global/list/nation_government_info = list(
 	if (islist(P) && istext(P["name"]))
 		line += ". Becoming a [html_encode(lowertext(P["name"]))][istext(P["pname"]) && length(P["pname"]) ? " under [html_encode(P["pname"])]" : ""] within a day"
 	var/list/N = nation_registry[nid]
+	if (islist(N) && isnum(N["legitimacy"]) && G["type"] != "confederation")
+		line += ". Legitimacy [N["legitimacy"]]/100"
 	if (islist(N) && N["frozen"])
 		line += ". Staff have paused changes to it for now"
 	return line + "."
@@ -85,6 +87,7 @@ var/global/list/nation_government_info = list(
 			continue
 		nation_revolt_announce(nid, was)
 		nation_offices_announce(nid, was)
+		nation_treaties_announce(nid, was)
 		var/list/G = nation_government_of(nid)
 		var/list/OG = islist(was["government"]) ? was["government"] : list("type" = "confederation")
 		var/text = null
@@ -273,6 +276,11 @@ var/global/list/nation_government_info = list(
 			var/list/P = subject
 			if (islist(P) && P.len == 5 && islist(nation_government_info[P[1]]))
 				return "Become a [lowertext(nation_government_info[P[1]][1])][length(P[3]) ? " under [P[3]]" : ""]"
+		if ("treaty")
+			var/list/T = subject
+			if (islist(T) && T.len == 3)
+				var/other = islist(nation_registry[T[2]]) ? nation_registry[T[2]]["name"] : "another nation"
+				return T[1] == "renounce" ? "Renounce [nation_treaty_name(T[3])] with [other]" : (T[3] == "war" ? "Declare war on [other]" : "Agree to [nation_treaty_name(T[3])] with [other]")
 		if ("office")
 			var/list/O = subject
 			if (islist(O) && O.len == 4)
@@ -585,7 +593,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 /mob/living/human/proc/nation_revolt_menu(faction, id, nid)
 	var/list/R = nation_revolt_of(nid)
 	var/list/lines = list("<b>Revolt in [html_encode(nation_registry[nid]["name"])]</b>", nation_government_line(nid))
-	lines += "Citizens can overthrow their government: a petition needs the signatures of [nation_revolt_share(nid)] of the eligible citizens within 2 days. Every citizen is then warned, and from a day later the signers have 3 days to hold a member faction's nation assembly for 30 minutes. Signing is not a crime in itself."
+	lines += "Citizens can overthrow their government: a petition needs the signatures of [nation_revolt_share(nid)] of the eligible citizens within 2 days (fewer the lower the government's legitimacy). Every citizen is then warned, and from a day later the signers have 3 days to hold a member faction's nation assembly for 30 minutes. Signing is not a crime in itself."
 	var/account = nation_account()
 	var/is_head = account == nation_head_account(nid)
 	if (R)
@@ -635,18 +643,11 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	nation_ask(body, faction)
 
 // "half", "a third" style share of eligible citizens, from the coordinator's count.
+// The share of eligible citizens a petition needs, as the coordinator sets it
+// from the government and its legitimacy.
 /proc/nation_revolt_share(nid)
 	var/list/G = nation_government_of(nid)
-	switch (G["revolt"])
-		if (0.33)
-			return "a third"
-		if (0.4)
-			return "two fifths"
-		if (0.66)
-			return "two thirds"
-		if (0.75)
-			return "three quarters"
-	return "half"
+	return isnum(G["revolt"]) ? "[round(G["revolt"] * 100)]%" : "half"
 
 // Tells this land's citizens when a revolt petition opens, fills or closes.
 /proc/nation_revolt_announce(nid, list/was)
@@ -774,5 +775,119 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 		"pname" = copytext(H.real_name, 1, 65), "pfaction" = nation_faction_id(H.civilization)), faction)
 
 #undef NATION_OFFICES
+
+// --- Treaties (nation_treaties.py) ------------------------------------------------
+
+/proc/nation_treaty_name(kind)
+	switch (kind)
+		if ("alliance")
+			return "an alliance"
+		if ("pact")
+			return "a non-aggression pact"
+		if ("trade")
+			return "a trade treaty"
+		if ("war")
+			return "war"
+		if ("peace")
+			return "peace"
+	return "a treaty"
+
+// Who decides a nation's treaties under its government, for prompts.
+/proc/nation_treaty_rule(nid)
+	var/list/G = nation_government_of(nid)
+	if (G["personal"])
+		return "The [G["ruler"]] decides alone."
+	switch (G["body"])
+		if ("senate")
+			return "The senate decides by a majority of its weighted votes."
+		if ("referendum")
+			return "The citizens decide by a majority in a referendum."
+		if ("council")
+			return "The league council decides by a majority of its weighted votes."
+	return "More than half of the member factions' leaders must agree."
+
+/proc/nation_name_of(nid)
+	var/list/N = nation_registry[nid]
+	return islist(N) && istext(N["name"]) ? N["name"] : "a nation now gone"
+
+/proc/nation_treaties_of(nid)
+	var/list/N = nation_registry[nid]
+	return islist(N) && islist(N["treaties"]) ? N["treaties"] : list("in_force" = list(), "offers" = list("made" = list(), "received" = list()))
+
+/proc/nation_treaties_line(nid)
+	var/list/T = nation_treaties_of(nid)
+	var/list/parts = list()
+	for (var/list/R in T["in_force"])
+		parts += R["kind"] == "war" ? "at war with [html_encode(nation_name_of(R["other"]))]" : "[nation_treaty_name(R["kind"])] with [html_encode(nation_name_of(R["other"]))]"
+	return parts.len ? "Treaties: [jointext(parts, "; ")]." : null
+
+/proc/nation_treaty_key(list/R)
+	return "[R["other"]]|[R["kind"]]"
+
+/proc/nation_treaties_announce(nid, list/was)
+	var/list/old = list()
+	if (islist(was) && islist(was["treaties"]) && islist(was["treaties"]["in_force"]))
+		for (var/list/R in was["treaties"]["in_force"])
+			old[nation_treaty_key(R)] = R
+	var/list/now = list()
+	for (var/list/R in nation_treaties_of(nid)["in_force"])
+		now[nation_treaty_key(R)] = R
+		if (!old[nation_treaty_key(R)])
+			nation_tell_citizens(nid, R["kind"] == "war" ? "[nation_name_of(nid)] is at war with [nation_name_of(R["other"])]." : "[nation_name_of(nid)] and [nation_name_of(R["other"])] are bound by [nation_treaty_name(R["kind"])].")
+	for (var/key in old)
+		if (!now[key])
+			var/list/R = old[key]
+			nation_tell_citizens(nid, R["kind"] == "war" ? "The war between [nation_name_of(nid)] and [nation_name_of(R["other"])] is over." : "[capitalize(nation_treaty_name(R["kind"]))] between [nation_name_of(nid)] and [nation_name_of(R["other"])] has ended.")
+
+// The Foreign affairs prompt: see treaties and offers; whoever may propose
+// under the nation's government agrees to or renounces one. Sleeps (prompts).
+/mob/living/human/proc/nation_foreign_menu(faction, id, nid)
+	var/list/T = nation_treaties_of(nid)
+	var/list/lines = list("<b>Foreign affairs of [html_encode(nation_name_of(nid))]</b>")
+	lines += nation_treaties_line(nid) || "No treaties are in force."
+	for (var/list/O in T["offers"]["received"])
+		lines += "[html_encode(nation_name_of(O["other"]))] offers [nation_treaty_name(O["kind"])]."
+	for (var/list/O in T["offers"]["made"])
+		lines += "This nation offers [nation_treaty_name(O["kind"])] to [html_encode(nation_name_of(O["other"]))]."
+	lines += "A treaty needs both nations to agree under their own governments, and an offer stands for 7 days. War is declared by one nation alone and ends any alliance or pact; peace needs both. Either nation may renounce an alliance, pact or trade treaty alone. [nation_treaty_rule(nid)]"
+	to_chat(src, jointext(lines, "<br>"))
+	if (!nation_may_propose(nid))
+		return
+	var/pick = WWinput(src, "Foreign affairs", "Foreign affairs", "Cancel", list("Agree to a treaty", "Renounce a treaty", "Cancel"))
+	var/list/body = list("op" = "treaty", "faction" = id)
+	if (pick == "Renounce a treaty")
+		var/list/options = list()
+		for (var/list/R in T["in_force"])
+			if (R["kind"] != "war")
+				options["[capitalize(nation_treaty_name(R["kind"]))] with [nation_name_of(R["other"])]"] = R
+		if (!options.len)
+			to_chat(src, SPAN_NOTICE("There is no treaty to renounce."))
+			return
+		var/list/R = options[WWinput(src, "Renounce which treaty?", "Foreign affairs", "Cancel", options + "Cancel")]
+		if (!islist(R))
+			return
+		body["act"] = "renounce"
+		body["other"] = R["other"]
+		body["treaty"] = R["kind"]
+	else if (pick == "Agree to a treaty")
+		var/list/nations = list()
+		for (var/other in nation_registry)
+			if (other != nid)
+				nations[nation_name_of(other)] = other
+		var/other = nations[WWinput(src, "With which nation?", "Foreign affairs", "Cancel", nations + "Cancel")]
+		if (!other)
+			return
+		var/list/kinds = list("Alliance" = "alliance", "Non-aggression pact" = "pact", "Trade treaty" = "trade", "Declare war" = "war", "Make peace" = "peace")
+		var/kind = kinds[WWinput(src, "What should [nation_name_of(nid)] agree to with [nation_name_of(other)]?", "Foreign affairs", "Cancel", kinds + "Cancel")]
+		if (!kind)
+			return
+		body["act"] = "agree"
+		body["other"] = other
+		body["treaty"] = kind
+	else
+		return
+	if (stat || civilization != faction || nation_of_id(id) != nid)
+		return
+	nation_ask(body, faction)
 
 #undef GOVERNMENT_TYPES

@@ -73,17 +73,21 @@ class CombatStanceSources(unittest.TestCase):
             self.assertNotIn(forbidden, RESTRAIN)
         # cuffing uses the ordinary checked proc; every step is logged
         self.assertIn('cuffs.place_handcuffs(T, src)', RESTRAIN)
-        for step in ('took a firm hold', 'jointlocked', 'pinned', 'bound hands', 'bound legs'):
+        for step in ('took a firm hold', 'jointlocked', 'pinned', 'bound hands'):
             self.assertIn('restrain_log(T, "%s' % step, RESTRAIN)
+        self.assertIn('restrain_log(T, "[logged] with [I]")', RESTRAIN)
+        for logged in ('"bound legs"', '"gagged"', '"blindfolded"'):
+            self.assertIn(logged, RESTRAIN)
 
     def test_agent_zone_click_takes_manual_control(self):
         clicks = read('code/modules/agent_control/agent_characters.dm')
         self.assertIn('M.targeted_organ = req["zone"]\n\t\t\t\tM.combat_stance_doll_clicked()', clicks)
 
-    def test_martial_punch_gets_the_reaction_and_zone(self):
-        branch = ATTACK_HAND[ATTACK_HAND.index('if(I_HARM)'):ATTACK_HAND.index('H.mind.martial_art.harm_act(H, src)')]
-        self.assertIn('combat_reaction_try(H, COMBAT_TRIGGER_INCOMING, tgt, null)', branch)
-        self.assertIn('H.targeted_organ = tgt', branch)
+    def test_old_martial_branch_is_gone(self):
+        # The SS13 martial arts are retired; school moves ride the normal
+        # punch path (martial_moves.dm), which keeps its reaction and zone.
+        self.assertNotIn('martial_art.harm_act', ATTACK_HAND)
+        self.assertIn('H.martial_punch_mult(hit_zone)', ATTACK_HAND)
 
     def test_stance_ids(self):
         found = re.findall(r'#define COMBAT_STANCE_\w+ "(\w+)"', DEFINES)
@@ -94,7 +98,7 @@ class CombatStanceSources(unittest.TestCase):
         self.assertIn('H.resolve_attack_zone(src, null, attack_kind)', ATTACK_HAND)
         self.assertIn('user.resolve_attack_zone(src, null, COMBAT_ATTACK_KICK)', DEFENSE)
         # the shove decision follows the resolved zone, so Disarming can aim a disarm
-        self.assertIn('if (tgt == "chest" || tgt == "random")\n\t\t\t\t\treturn try_deliberate_shove(M)', ATTACK_HAND)
+        self.assertIn('if (tgt == "chest" || tgt == "random")\n\t\t\t\treturn try_deliberate_shove(M)', ATTACK_HAND)
 
     def test_attacks_are_recorded_for_reading(self):
         self.assertIn('note_struck_by(user, tgt, user.attacking_arm())', ITEM_ATTACK)

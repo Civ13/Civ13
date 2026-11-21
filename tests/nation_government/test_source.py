@@ -132,8 +132,8 @@ class NationGovernmentSource(unittest.TestCase):
         self.assertIn('if (!nation_eligible())', menu)
         self.assertIn('"op" = "sign"', menu)
         self.assertIn('"op" = "revolt"', menu)
-        shares = {float(v) for v in re.findall(r'if \((0\.\d+)\)', proc_text(self.text, '/proc/nation_revolt_share('))}
-        self.assertEqual(shares | {0.5}, {g['revolt'] for g in GOVERNMENTS.values()})
+        self.assertIn('round(G["revolt"] * 100)', proc_text(self.text, '/proc/nation_revolt_share('))
+        self.assertIn('Legitimacy [N["legitimacy"]]/100', proc_text(self.text, '/proc/nation_government_line('))
         self.assertIn('choices += "Revolt"', read('code/game/mob/groups/nation.dm'))
         self.assertIn("'sname'", read('tools/transfer_storage/region.py'))
 
@@ -157,7 +157,16 @@ class NationGovernmentSource(unittest.TestCase):
         nation = read('code/game/mob/groups/nation.dm')
         self.assertIn('choices += "Offices of state"', nation)
         self.assertIn('nation_rules(nid) || nation_office_of(nid, nation_account())', nation)
-        self.assertIn("'office') if k in body}", read('tools/transfer_storage/region.py'))
+        self.assertIn("'office',", read('tools/transfer_storage/region.py'))
+
+    def test_foreign_affairs_menu_and_announcements(self):
+        menu = proc_text(self.text, '/mob/living/human/proc/nation_foreign_menu(')
+        self.assertIn('if (!nation_may_propose(nid))', menu)
+        self.assertIn('"op" = "treaty"', menu)
+        self.assertIn('body["act"] = "renounce"', menu)
+        self.assertIn('nation_treaties_announce(nid, was)', proc_text(self.text, '/proc/nation_government_announce('))
+        self.assertIn('choices += "Foreign affairs"', read('code/game/mob/groups/nation.dm'))
+        self.assertIn("'other', 'treaty') if k in body}", read('tools/transfer_storage/region.py'))
 
     def test_head_presence_and_faith_are_reported(self):
         report = proc_text(self.text, '/proc/nation_succession_report(')

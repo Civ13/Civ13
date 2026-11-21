@@ -3,8 +3,8 @@
 A berth is any place that holds a boat for her upkeep
 (`code/modules/naval/berth.dm`). The plan is in the project thread "Add
 drydocks and shipyards for ship work": every berth repairs, refits and builds.
-The boathouse slip, the slipway (after a haul-out) and the drydock are berths
-now; the shipyard office follows.
+The boathouse slip, the slipway (after a haul-out) and the drydock are berths,
+and a yard office makes the berths around it a shipyard.
 
 ## Which berth holds her
 
@@ -104,6 +104,27 @@ the ledger, but `commission()` refits a hull at a berth despite holes, so
 "Check the refit" does the same, and when nothing differs the marks and the
 draught go. Decks above and below are not compared.
 
+## The yard office
+
+`code/modules/naval/yard_office.dm`. A yard office (`/obj/structure/yard_office`,
+30 wood, construction, Workshops) makes the berths within 15 tiles a shipyard.
+It is not the carrier's shipyard office (`shipyard.dm`).
+
+- `yard_time(atom, time)` divides work time by 1.5 within an office's reach.
+  It is used for slipway pieces (template and draught), hauling up the ways,
+  planking over patches, and pumping and flooding a dock.
+- Stock: stacks that `piece_material()` knows (wood, steel, iron, planks,
+  aluminium, glass, rope, cable, cloth) are stored in the office. "Fit from
+  the yard stock" at a slipway post (`yard_options()`, `fit_from_stock()`)
+  pays piece after piece from it, 4 s a piece before the yard's speed-up.
+- Shelf: up to 20 ship's draughts are filed in the office and taken down from
+  its menu.
+- "Survey the yard" lists the slipways, boathouses and dock gates in reach and
+  the hulls they hold.
+
+The stock and shelf are the office's contents and save with it; offices are
+listed in `yard_offices`, never saved.
+
 ## What a berth allows
 
 `/datum/hull_ledger/proc/bottom_reachable()` is TRUE in the shallows or at a
@@ -135,6 +156,16 @@ the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 
 ## Tests
 
-`tests/naval_carrier/berth_probe.dm` (101 checks):
+`tests/naval_carrier/berth_probe.dm` (114 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
+
+## Sprites
+
+`icons/obj/berths.dmi` is drawn by `tests/naval_carrier/berth_sprites.py`
+(original pixel art by Fable 5.2; `--check` fails when the DMI is stale,
+`--preview out.png` renders a sheet): `dock_gate_shut`, `dock_gate_open`,
+`refit_add`, `refit_remove`, `refit_change`, `refit_turn` (light greys, tinted
+by the mark's `color`), `yard_office` and `keel_blocks`. Keel blocks
+(`/obj/structure/keel_blocks`, 6 wood, construction, Wagons & Ships) are
+dressing for a dock floor or slipway berth and hold nothing up.

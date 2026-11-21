@@ -299,6 +299,16 @@ client connects, so the depot's menus are not exercised.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
 
+## Sites at sea in the oceans (`ocean_sites_probe.dm`)
+
+An ocean world (`code/modules/naval/ocean_sites.dm`) on a 600 x 300 fixture:
+the same sites rolled on every start, clear of the edges; an islet raised
+when a ship comes near and gone after she leaves, rising the same again; a
+bunk kept as home, a mooring post and a world save each keeping it; a reef of
+shallows richer in fish than open sea; a wreck with salvage; a named sea mark.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ocean_sites_probe.dm 300
+
 ## The open sea (`open_sea_probe.dm`)
 
 An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
@@ -403,7 +413,9 @@ nothing on a slipway berth is commissioned bow to the water, refitted there and
 launched; one laid on the dry dock floor floats when the dock floods; floors on
 plain ground or joined off the berth are refused. On the slipway berth a draught
 with one tile moved and a mast added marks three tiles (lift, add, change);
-done by hand and refitted, she matches it and the marks are gone.
+done by hand and refitted, she matches it and the marks are gone. A yard office by the slipway cuts work
+to two thirds of the time within its reach, fits three schooner pieces from
+thirty wood in its stock, lists the slipway in its survey and files a draught.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
 
@@ -447,6 +459,7 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Engines:** a 5000cc diesel with its barrel of 200 diesel no longer keeps a hull in port; the record holds an engine entry, a tank offset past one tile is refused, and she is rebuilt with the same engine (size, power, name), stopped, coupled to its barrel with the diesel, and fitted as a drive. `slipway_probe.dm` also packs the freighter with her 82-tile hold and diesel.
 - **Whole cargo:** a raft, dugout, outrigger, shopping cart, carriage, microscope and washing machine each round-trip as a deck cargo record.
 - **Upper decks:** a 3 x 3 hull roofed over (nine upper floors, a ladder up, a pail and a crate on the upper deck, a motor canoe on deck) packs with nine upper deck tiles, roofs as roofs and faces as faces; an upper tile over no deck tile and a roof entry that is no roof are refused; a floor over a roof on her upper deck keeps her in port. Stripped, nothing is left on either deck. Built again under open air, every roof has its upper floor, the pail, crate and crowbar are up there, the ladder is paired, the canoe has her outboard stopped and her tank with its diesel, and she sails on. Under a stray floor in the air, that tile's roof stays a roof and its pail is stowed on deck.
+- **Cars:** a workshop SMC Falcon with 30 fuel, parked on a 7 x 7 hull: something loose on it or a running engine keeps her in port; stopped, she packs with one vehicle record, no part of the car among her deck cargo and every part still saveable; a car offset far off her deck is refused. Stripped, nothing of it is left; built again, it is parked where it stood with its plate, key, every part and its fuel, stopped and saveable, and she sails on with it. A ship is never anchored against another hull's floor.
 - **Outboards:** a frame-built motorboat with a 500cc engine and 100 gasoline round-trips with the engine inside her, stopped, coupled to her tank and driving her axis; an engine shut in a crate is still refused.
 
 ## Voyages on the world chart (`voyage_probe.dm`)

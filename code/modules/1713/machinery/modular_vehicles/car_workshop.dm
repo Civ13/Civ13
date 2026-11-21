@@ -85,7 +85,7 @@ var/global/list/car_workshop_prototypes = list()
 	return "[english_list(missing.len ? missing : required_nodes())] research [missing.len == 1 ? "is" : "are"] required."
 
 /obj/structure/car_workshop/proc/menu_text()
-	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty. Trucks, carriers and tanks are built piece by piece only."
+	return "Stored: [stock["steel"]] steel, [stock["glass"]] glass, [stock["cloth"]] cloth, [stock["cable"]] cable, [stock["wheels"]] wheels. Small cars cost 40/6/4/10/4; large cars cost 60/8/6/10/4. Keep the northeast 4x4 bay empty. Trucks, carriers and tanks are built piece by piece, or from a vehicle sheet used on the press. Use a car vehicle sheet on the press to build its design; the bay it needs depends on the sheet."
 
 /obj/structure/car_workshop/proc/assembled_message(model)
 	return "Your [model] is assembled. Add the correct fuel before driving."
@@ -141,26 +141,29 @@ var/global/list/car_workshop_prototypes = list()
 		return null
 	return "The [name] could not work here. Missing: [jointext(missing, "; ")]."
 
+// Loose objects and occupants must also be moved out of the assembly bay
+// (bay_clear(), craft/vehicle_sheet_works.dm). Every lit turf holds a lighting
+// overlay, and ghosts or landmarks may share the square; none of those are
+// physical, so they don't count.
 /obj/structure/car_workshop/proc/clear_footprint(model)
-	var/size = model_size(model)
-	if (!size || !isturf(loc))
-		return FALSE
-	for (var/dx = 1, dx <= size, dx++)
-		for (var/dy = 1, dy <= size, dy++)
-			var/turf/T = locate(x + dx, y + dy, z)
-			if (!bay_floor(T))
-				return FALSE
-			// Loose objects and occupants must also be moved out of the assembly bay.
-			// Every lit turf holds a lighting overlay, and ghosts or landmarks may
-			// share the square; none of those are physical, so they don't count.
-			for (var/atom/movable/M in T)
-				if (!M.simulated)
-					continue
-				return FALSE
-	return TRUE
+	return bay_clear(model_size(model))
+
+// The most of a material the press holds: 200, or enough for its dearest
+// model (a carrier's 400 steel), or for a vehicle sheet
+// (craft/vehicle_sheet_works.dm, sheet_stock_cap()).
+/obj/structure/car_workshop/proc/stock_cap(key)
+	. = max(200, sheet_stock_cap(key))
+	for (var/model in models())
+		var/list/C = costs(model)
+		if (C && C[key])
+			. = max(., C[key])
 
 /obj/structure/car_workshop/attackby(obj/item/I, mob/living/human/H)
 	if (busy || QDELETED(I) || !allowed(H) || !Adjacent(H))
+		return
+	// A vehicle sheet is built from the stock (craft/vehicle_sheet_works.dm).
+	if (sheet_offered(I))
+		build_from_sheet(H, I)
 		return
 	// A project in the bay takes the materials for its next piece.
 	if (project && istype(I, /obj/item/stack))
@@ -176,7 +179,7 @@ var/global/list/car_workshop_prototypes = list()
 	if (key)
 		var/obj/item/stack/S = I
 		var/wool_payment = key == "cloth" && istype(S, /obj/item/stack/material/woolcloth)
-		var/payment = min(S.amount, 200 - (stock[key] || 0))
+		var/payment = min(S.amount, stock_cap(key) - (stock[key] || 0))
 		if (payment > 0 && S.use(payment))
 			stock[key] = (stock[key] || 0) + payment
 			if (wool_payment) stock["woolcloth"] = (stock["woolcloth"] || 0) + payment

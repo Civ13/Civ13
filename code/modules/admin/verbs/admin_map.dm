@@ -8,7 +8,7 @@
 // picks it; clicking open ground picks a spot to send weather to. The side
 // panel says what weather a picked player stands under and who is under a
 // picked storm. An air layer shades the air grid (weather_air.dm) by
-// temperature, humidity, pressure or cloud, and a picked player or spot shows
+// temperature, humidity, pressure, cloud or fog, and a picked player or spot shows
 // the air there.
 //
 // It reuses the tactical map's terrain sampling and canvas drawing
@@ -325,7 +325,7 @@ var/global/datum/admin_map_controller/admin_maps = new
 	html += "<label><input type='checkbox' id='lw' checked onclick='draw()'>Weather</label>"
 	html += "<label><input type='checkbox' id='lg' checked onclick='draw()'>Grid</label>"
 	html += "<label><input type='checkbox' id='lwf' onclick='draw()'>Wind</label>"
-	html += "</span><span>Air <select id='lay' onchange='LAY=this.value;draw()'><option value=''>off</option><option value='t'>temperature</option><option value='h'>humidity</option><option value='p'>pressure</option><option value='c'>cloud</option></select></span>"
+	html += "</span><span>Air <select id='lay' onchange='LAY=this.value;draw()'><option value=''>off</option><option value='t'>temperature</option><option value='h'>humidity</option><option value='p'>pressure</option><option value='c'>cloud</option><option value='f'>fog</option></select></span>"
 	html += "<span class='dim'>North is up. Refreshes every [AMAP_REFRESH / 10] seconds.</span></div>"
 	html += "<div id='wrap'><div><canvas id='m' width='[base[2] * scale]' height='[base[3] * scale]'></canvas>"
 	html += "<div id='legend' style='margin:6px 0 2px'></div><div id='s' class='dim'></div></div>"
@@ -392,12 +392,13 @@ arrow(30,cv.height-16,D.w[0],D.w[1],22,'#ffe680');}
 function airfill(v){if(LAY=='t'){var f=Math.max(0,Math.min(1,(v+30)/75));return 'rgba('+Math.round(255*f)+','+Math.round(90+60*(1-Math.abs(f-0.5)*2))+','+Math.round(255*(1-f))+',0.45)';}
 if(LAY=='h'){return 'rgba(30,140,230,'+(0.08+0.5*v/100)+')';}
 if(LAY=='p'){var d=Math.max(-1,Math.min(1,(v-1013)/25));return d<0?'rgba(170,60,220,'+(0.1-0.45*d)+')':'rgba(240,170,40,'+(0.1+0.45*d)+')';}
+if(LAY=='f'){return 'rgba(150,200,215,'+(0.03+0.7*v/100)+')';}
 return 'rgba(235,235,235,'+(0.05+0.55*v/100)+')';}
-function air(){if(!LAY||!D.a)return;var A=D.a,cols=A[0],rows=A[1],cs=A[2],f={t:3,h:4,p:5,c:6}[LAY],vals=A[f];
+function air(){if(!LAY||!D.a)return;var A=D.a,cols=A[0],rows=A[1],cs=A[2],f={t:3,h:4,p:5,c:6,f:9}[LAY],vals=A[f];if(!vals)return;
 for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var v=vals[r*cols+c];g.fillStyle=airfill(v);var x0=px(c*cs+1),x1=px(c*cs+cs+1),y0=py(r*cs+cs+1),y1=py(r*cs+1);g.fillRect(x0,y0,x1-x0,y1-y0);}}
 function airtip(tx,ty){if(!D.a)return null;var A=D.a,c=Math.max(0,Math.min(A[0]-1,Math.floor((tx-1)/A[2]))),r=Math.max(0,Math.min(A[1]-1,Math.floor((ty-1)/A[2]))),i=r*A[0]+c;
 var t='Air here: '+A[3][i]+' C, '+A[4][i]+'% humidity, '+A[5][i]+' hPa, '+A[6][i]+'% cloud';
-if(A[7])t+=', wind '+Math.round(Math.sqrt(A[7][i]*A[7][i]+A[8][i]*A[8][i]))+' m/s';return t;}
+if(A[7])t+=', wind '+Math.round(Math.sqrt(A[7][i]*A[7][i]+A[8][i]*A[8][i]))+' m/s';if(A[9]&&A[9][i])t+=', '+A[9][i]+'% fog';return t;}
 function winds(){if(!D.a||!D.a[7])return;var A=D.a,cols=A[0],rows=A[1],cs=A[2];
 for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var i=r*cols+c,e=A[7][i],n=A[8][i],s=Math.sqrt(e*e+n*n);if(s<0.5)continue;
 arrow(px(c*cs+cs/2+1),py(r*cs+cs/2+1),e,n,Math.min(cs*K*0.45,6+s*1.5),s>=14?'#ff7060':(s>=8?'#ffd060':'#e8f4ff'));}}
@@ -424,7 +425,7 @@ for(var i=0;i<D.b.length;i++){var s=D.b[i][3];if(s&&D.b[i][2]!='n'){sideCol(s);c
 for(k in c)key(l,SIDES[k],k+' ('+c[k]+')');
 if(D.who){key(l,'#8a8a8a','down');l.appendChild(document.createTextNode('   X dead, dark centre disconnected, ring ghost, dim NPC'));}else key(l,'#f0d81c','player');
 l.appendChild(el('br'));key(l,'rgb(40,90,220)','storm');key(l,'rgb(150,60,200)','severe storm');key(l,'rgb(240,120,30)','heat wave');key(l,'#ffe680','wind (arrow, bottom left)');
-var AL={t:'Air: temperature, blue cold to red hot',h:'Air: humidity, bluer is wetter',p:'Air: pressure, purple low to amber high',c:'Air: cloud, whiter is thicker'};
+var AL={t:'Air: temperature, blue cold to red hot',h:'Air: humidity, bluer is wetter',p:'Air: pressure, purple low to amber high',c:'Air: cloud, whiter is thicker',f:'Air: fog, bluer-grey is thicker'};
 if(LAY&&D.a){l.appendChild(el('br'));l.appendChild(document.createTextNode(AL[LAY]));}}
 function sky(){var k=document.getElementById('sky');clear(k);k.appendChild(el('h2','Sky'));
 line(k,'Season: '+D.season);line(k,'Wind: '+(D.w[3]||'none'));
