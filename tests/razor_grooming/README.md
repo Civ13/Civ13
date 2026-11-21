@@ -4,11 +4,15 @@ Offline source checks, run by the `razor_grooming` suite in `scripts/ci_baseline
 
     python3 -m unittest discover -s tests/razor_grooming
 
+Run the browser-script test with a lightweight DOM harness (no BYOND server):
+
+    node tests/razor_grooming/test_preview_ui.js
+
 - The razor grooms on any intent except harm when aimed at the head, eyes or mouth.
   Harm still falls through to the normal knife attack.
 - Self-grooming previews privately draw the player's current and proposed appearance. Style and
   growth only change after Apply and an uninterrupted timed cut. Cancel, window
-  close, another choice, and stale or foreign browser replies cannot commit.
+  close, dropdown changes, and stale or foreign browser replies cannot commit.
   The self-flow can keep either current style without canceling the whole cut.
 - Other-target and clientless grooming keep the classic independent prompts.
 - Cut options still use the existing species, gender and hair-growth limits.
@@ -22,8 +26,8 @@ Offline source checks, run by the `razor_grooming` suite in `scripts/ci_baseline
 - Region travel carries `h_growth` and `f_growth` with the styles, so a shaved
   traveller does not snap back to the old body's beard length.
 
-Manual follow-up: on a connected client, choose a different style, compare
-front and side previews, try another, and close without applying. Reopen, apply,
+Manual follow-up: on a connected client, change the dropdowns, compare
+front and side previews, and close without applying. Reopen, apply,
 and check both completion and interruption by putting the razor away. For
 barbering, verify that no bare-head preview is shown and that walking out of range
 preserves the ordinary cut-wait behavior. The portrait intentionally omits

@@ -220,40 +220,12 @@
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom_select(mob/living/human/M, mob/living/human/user, datum/grooming_preview/P)
 	var/old_hstyle = M.h_style
 	var/old_fstyle = M.f_style
-	var/new_hstyle
-	var/new_fstyle
-	while (grooming_valid(M, user) && P.valid())
-		var/list/hairlist = M.generate_valid_hairstyles(TRUE, TRUE)
-		var/keep_hair = "Keep current hair"
-		var/list/hair_choices = list(keep_hair) + hairlist
-		var/hair_choice = WWinput(user, "Choose a hairstyle to preview.", "Grooming", keep_hair, WWinput_list_or_null(hair_choices))
-		if (!P.valid())
-			return
-		if (hair_choice == keep_hair)
-			new_hstyle = old_hstyle
-		else if (hair_choice in hairlist)
-			new_hstyle = hair_choice
-		else
-			return
-		new_fstyle = old_fstyle
-		if (M.gender == MALE)
-			var/list/fhairlist = M.generate_valid_facial_hairstyles(TRUE)
-			if (length(fhairlist))
-				var/keep_beard = "Keep current facial hair"
-				var/list/beard_choices = list(keep_beard) + fhairlist
-				var/beard_choice = WWinput(user, "Choose a facial hairstyle to preview.", "Grooming", keep_beard, WWinput_list_or_null(beard_choices))
-				if (!P.valid())
-					return
-				if (beard_choice in fhairlist)
-					new_fstyle = beard_choice
-				else if (beard_choice != keep_beard)
-					return
-		var/choice = P.ask(new_hstyle, new_fstyle)
-		if (choice == "retry")
-			continue
-		if (choice != "apply")
-			return
-		break
+	P.original_hair = old_hstyle
+	P.original_beard = old_fstyle
+	if (!P.ask())
+		return
+	var/new_hstyle = P.selected_hair
+	var/new_fstyle = P.selected_beard
 	if (!grooming_valid(M, user) || !P.valid() || M.h_style != old_hstyle || M.f_style != old_fstyle)
 		return
 	if (new_hstyle == old_hstyle && new_fstyle == old_fstyle)
@@ -289,9 +261,15 @@
 	var/client/viewer_client
 	var/obj/item/weapon/material/kitchen/utensil/knife/razorblade/razor
 	var/mob/living/human/subject
-	var/round_id = 0
+	var/nonce
 	var/waiting = FALSE
-	var/answer
+	var/accepted = FALSE
+	var/original_hair
+	var/original_beard
+	var/selected_hair
+	var/selected_beard
+	var/list/hair_choices
+	var/list/beard_choices
 
 /datum/grooming_preview/proc/valid()
 	return viewer_client && viewer_client.mob == viewer && viewer_client.grooming_preview == src && !QDELETED(razor) && razor.grooming_valid(subject, viewer)
@@ -301,31 +279,55 @@
 		viewer_client.grooming_preview = null
 		show_browse(viewer_client, null, "window=grooming_preview")
 
-/datum/grooming_preview/proc/ask(hair, beard)
+/datum/grooming_preview/proc/ask()
 	if (!valid())
-		return null
-	round_id++
-	answer = null
+		return FALSE
 	waiting = TRUE
 	var/token = "\ref[src]"
-	var/key = md5("[token]-[world.time]-[round_id]")
+	var/key = md5("[token]-[world.time]")
+	nonce = key
+	hair_choices = subject.generate_valid_hairstyles(TRUE, TRUE) - original_hair
+	beard_choices = subject.gender == MALE ? subject.generate_valid_facial_hairstyles(TRUE) - original_beard : list()
+	hair_choices.Insert(1, "Keep current hair")
+	beard_choices.Insert(1, "Keep current facial hair")
+	var/hair_options = style_options(hair_choices, key, FALSE)
+	var/beard_options = style_options(beard_choices, key, TRUE)
+	var/beard_visibility = beard_choices.len > 1 ? "" : "display:none"
 	var/list/pictures = list()
 	for (var/side in list(SOUTH, EAST))
-		for (var/render_new in list(FALSE, TRUE))
-			var/icon/I = subject.grooming_portrait(render_new ? hair : subject.h_style, render_new ? beard : subject.f_style, side)
-			var/file = "groom_[key]_[side]_[render_new].png"
-			viewer_client << browse_rsc(I, file)
-			pictures += "<img src='[file]' width='96' height='96' style='image-rendering:pixelated;' alt='[side == SOUTH ? "Front" : "Side"]'>"
-	var/html = {"<html><body style='background:#222;color:#eee;font-family:sans-serif;text-align:center;'>
-		<h2>Preview haircut</h2><p>[html_encode(hair)][beard ? " / [html_encode(beard)]" : ""]</p>
-		<table align='center'><tr><th>Current</th><th>Proposed</th></tr>
-		<tr><td>[pictures[1]]</td><td>[pictures[2]]</td></tr>
-		<tr><td>[pictures[3]]</td><td>[pictures[4]]</td></tr></table>
+		var/view = side == SOUTH ? "front" : "side"
+		var/icon/base = subject.grooming_head(side)
+		var/icon/current = icon(base)
+		var/icon/F = subject.grooming_layer(original_beard, side, TRUE)
+		var/icon/H = subject.grooming_layer(original_hair, side, FALSE)
+		if (F)
+			current.Blend(F, ICON_OVERLAY)
+		if (H)
+			current.Blend(H, ICON_OVERLAY)
+		var/current_file = "groom_[key]_current_[side].png"
+		var/base_file = "groom_[key]_base_[side].png"
+		viewer_client << browse_rsc(current, current_file)
+		viewer_client << browse_rsc(base, base_file)
+		pictures += "<tr><th scope='row'>[capitalize(view)]</th><td><div class='portrait'><img src='[current_file]' alt='Current [view]'></div></td><td><div class='portrait'><img src='[base_file]' alt='Proposed [view]'><img id='beard-[view]' style='display:none' alt=''><img id='scalp-[view]' style='display:none' alt=''></div></td></tr>"
+	viewer_client << browse_rsc('UI/js/grooming_preview.js', "civ13_grooming_preview.js")
+	var/apply_href = html_encode("byond://?src=[token];groom=apply;nonce=[nonce]")
+	var/html = {"<html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<style>
+		body{background:#222;color:#eee;font:14px sans-serif;text-align:center;}
+		label{display:block;margin:8px 0;} select{max-width:230px;}
+		th,td{padding:3px 7px;} .portrait{width:96px;height:83px;position:relative;overflow:hidden;}
+		.portrait img{width:160px;height:160px;position:absolute;left:-32px;top:-2px;image-rendering:pixelated;}
+		button,a{margin:0 6px;} a{color:#9df;}
+		</style><script src='civ13_grooming_preview.js'></script></head>
+		<body id='grooming-preview' data-apply='[apply_href]'>
+		<h2>Preview haircut</h2>
+		<label for='groom-hair'>Hairstyle <select id='groom-hair'>[hair_options]</select></label>
+		<label for='groom-beard' style='[beard_visibility]'>Facial hair <select id='groom-beard'>[beard_options]</select></label>
+		<table align='center'><tr><td></td><th>Current</th><th>Proposed</th></tr>[jointext(pictures, "")]</table>
 		<p>Headwear is not shown. Nothing changes until you apply and finish the cut.</p>
-		<p><a style='color:#9df;' href='?src=[token];groom=apply;round=[round_id]'>Apply cut</a>
-		&nbsp; <a style='color:#9df;' href='?src=[token];groom=retry;round=[round_id]'>Try another</a>
-		&nbsp; <a style='color:#9df;' href='?src=[token];groom=cancel;round=[round_id]'>Cancel</a></p></body></html>"}
-	show_browse(viewer_client, html, "window=grooming_preview;size=390x405;can_close=1;can_resize=1")
+		<p><button id='groom-apply' type='button' disabled>Apply cut</button>
+		<a href='?src=[token];groom=cancel;nonce=[nonce]'>Cancel</a></p></body></html>"}
+	show_browse(viewer_client, html, "window=grooming_preview;size=410x415;can_close=1;can_resize=1")
 	winset(viewer_client, "grooming_preview", "on-close=\".windowclose [token]\"")
 	var/deadline = world.time + 1200
 	while (waiting && world.time < deadline && valid())
@@ -333,7 +335,22 @@
 	waiting = FALSE
 	if (viewer_client?.grooming_preview == src)
 		show_browse(viewer_client, null, "window=grooming_preview")
-	return answer
+	return accepted
+
+/datum/grooming_preview/proc/style_options(list/choices, key, facial)
+	var/list/options = list()
+	for (var/i in 1 to choices.len)
+		var/style = i == 1 ? (facial ? original_beard : original_hair) : choices[i]
+		var/list/files = list()
+		for (var/side in list(SOUTH, EAST))
+			var/icon/I = subject.grooming_layer(style, side, facial)
+			var/file = ""
+			if (I)
+				file = "groom_[key]_[facial]_[i]_[side].png"
+				viewer_client << browse_rsc(I, file)
+			files += file
+		options += "<option value='[i]' data-front='[files[1]]' data-side='[files[2]]'>[html_encode(choices[i])]</option>"
+	return jointext(options, "")
 
 /datum/grooming_preview/Topic(href, list/href_list)
 	if (!waiting || usr != viewer || !valid())
@@ -341,17 +358,37 @@
 	if (href_list["close"])
 		waiting = FALSE
 		return
-	if (text2num(href_list["round"]) != round_id)
+	if (href_list["nonce"] != nonce)
 		return
 	var/action = href_list["groom"]
-	if (action != "apply" && action != "retry" && action != "cancel")
+	if (action == "cancel")
+		waiting = FALSE
 		return
-	answer = action
+	if (action != "apply")
+		return
+	var/h = text2num(href_list["hair"])
+	var/f = text2num(href_list["beard"])
+	if (!isnum(h) || h != round(h) || h < 1 || h > hair_choices.len || !isnum(f) || f != round(f) || f < 1 || f > beard_choices.len)
+		return
+	selected_hair = h == 1 ? original_hair : hair_choices[h]
+	selected_beard = f == 1 ? original_beard : beard_choices[f]
+	accepted = TRUE
 	waiting = FALSE
 
-// Same face sprites and additive colors as the in-world hair layer, without
-// touching live hair, equipment, or overlays to render the proposed cut.
-/mob/living/human/proc/grooming_portrait(hair, beard, side)
+// Reuse the actual style sprites and colors. Never change live hair or overlays.
+/mob/living/human/proc/grooming_layer(style, side, facial)
+	if (!style || body_build.nohair || body_build.nofacialhair)
+		return null
+	var/list/styles = facial ? facial_hair_styles_list : hair_styles_list
+	var/datum/sprite_accessory/S = styles[style]
+	if (!S || !(species.get_bodytype() in S.species_allowed))
+		return null
+	var/icon/I = icon(S.icon, "[S.icon_state]_s", side)
+	if (S.do_colouration)
+		I.Blend(facial ? rgb(r_facial, g_facial, b_facial) : rgb(r_hair, g_hair, b_hair), ICON_ADD)
+	return I
+
+/mob/living/human/proc/grooming_head(side)
 	var/g = gender == FEMALE ? "_f" : "_m"
 	var/icon/portrait = icon(species.icobase, "head[g][body_build.index]", side)
 	if (species.appearance_flags & HAS_SKIN_COLOR)
@@ -363,19 +400,6 @@
 	if (species.appearance_flags & HAS_EYE_COLOR)
 		eyes.Blend(rgb(r_eyes, g_eyes, b_eyes), ICON_ADD)
 	portrait.Blend(eyes, ICON_OVERLAY)
-	if (!body_build.nohair && !body_build.nofacialhair)
-		var/datum/sprite_accessory/F = facial_hair_styles_list[beard]
-		if (F && (species.get_bodytype() in F.species_allowed))
-			var/icon/facial = icon(F.icon, "[F.icon_state]_s", side)
-			if (F.do_colouration)
-				facial.Blend(rgb(r_facial, g_facial, b_facial), ICON_ADD)
-			portrait.Blend(facial, ICON_OVERLAY)
-		var/datum/sprite_accessory/H = hair_styles_list[hair]
-		if (H && (species.get_bodytype() in H.species_allowed))
-			var/icon/scalp = icon(H.icon, "[H.icon_state]_s", side)
-			if (H.do_colouration)
-				scalp.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
-			portrait.Blend(scalp, ICON_OVERLAY)
 	return portrait
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank
