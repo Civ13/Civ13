@@ -13,6 +13,8 @@
 
 /obj/item/organ/external
 	name = "external"
+	// Objects stuck in this organ by a hit, as opposed to surgical cavity implants (#6300).
+	var/tmp/list/embedded_items
 	min_broken_damage = 70
 	max_damage = 0
 	dir = SOUTH
@@ -1151,6 +1153,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		else
 			owner.visible_message("<span class='danger'>\The [W] sticks in the wound!</span>")
 	implants += W
+	LAZYDISTINCTADD(embedded_items, W)
 	owner.embedded_flag = TRUE
 	owner.verbs += /mob/proc/yank_out_object
 	W.add_blood(owner)
@@ -1158,6 +1161,15 @@ Note that amputating the affected organ does in fact remove the infection from t
 		var/mob/living/H = W.loc
 		H.drop_from_inventory(W)
 	W.loc = owner
+
+// Objects stuck in a human's organs can be seen and yanked out like mob-level ones;
+// surgical cavity implants stay hidden (#6300).
+/mob/living/human/get_visible_implants(var/class = FALSE)
+	. = ..()
+	for (var/obj/item/organ/external/organ in organs)
+		for (var/obj/item/O in organ.embedded_items)
+			if (O.loc == src && (O in organ.implants) && O.w_class > class)
+				. |= O
 
 /obj/item/organ/external/removed(var/mob/living/user, var/ignore_children = FALSE)
 
