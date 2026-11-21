@@ -2793,6 +2793,11 @@ SUITES = {
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
     # Ghost animal noises preference: animals heard only nearby by choice.
+    'spirit_wait': {'files': ('tests/spirit_wait/test_spirit_wait.py',),
+        'paths': ('tests/spirit_wait/', 'code/game/mob/observer/ghost/spirit_wait.dm'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/mob.dm',
+            'code/game/mob/living/carbon/human/death.dm', 'code/modules/divine/arcane_spirits.dm',
+            'code/modules/admin/verbs/random_verbs.dm')},
     'ghost_animal_noises': {'files': ('tests/ghost_animal_noises/test_ghost_animal_noises.py',),
         'paths': ('tests/ghost_animal_noises/', 'code/game/mob/emote.dm'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm',
