@@ -53,6 +53,29 @@ def projected_shift():
 
 
 class PullOwnershipContracts(unittest.TestCase):
+    def test_shift_guard_cardinal_membership_and_negative_control(self):
+        # This is an offline source projection, not native BYOND execution.
+        text = block('/proc/subtile_pull_shift', '/datum/subtile_pull_pair\n')
+        declaration = re.search(r'var/static/list/cardinal_directions = list\(([^)]*)\)', text)
+        self.assertIsNotNone(declaration)
+        names = [name.strip() for name in declaration.group(1).split(',')]
+        self.assertEqual(names, ['NORTH', 'SOUTH', 'EAST', 'WEST'])
+        self.assertIn(
+            'if (!human_subtile_same(before, before) || !(direction in cardinal_directions) '
+            '|| !isnum(amount) || amount <= 0 || amount > 2 || amount != round(amount))',
+            text,
+        )
+        self.assertEqual(text.count('cardinal_directions'), 2)
+        cardinal = [DIRS[name] for name in names]
+        for direction in (1, 2, 4, 8, 0, 3, 5, 10, 12, None, 'north'):
+            self.assertEqual(direction in cardinal, direction in (1, 2, 4, 8))
+        # Replacing WEST by a diagonal must make the admission oracle fail.
+        mutated = [1, 2, 4, 5]
+        def admitted(values):
+            return [direction in values for direction in (1, 2, 4, 8, 5)]
+        self.assertEqual(admitted(cardinal), [True, True, True, True, False])
+        self.assertNotEqual(admitted(mutated), admitted(cardinal))
+
     def test_arithmetic_matches_independent_world_coordinate_oracle(self):
         shift = projected_shift()
         for sx in range(32):

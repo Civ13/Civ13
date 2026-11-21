@@ -114,7 +114,7 @@
 	cancelled = FALSE
 	assembler = H
 	var/obj/item/weapon/material/M
-	if (do_after(H, reference_build_time(H, "[P.result]", assembly_time), src)) M = finish_assembly(H, P, B, choice)
+	if (do_ship_fixture_after(H, reference_build_time(H, "[P.result]", assembly_time), src)) M = finish_assembly(H, P, B, choice)
 	busy = FALSE
 	assembler = null
 	// A failed early attempt (subject_prototypes.dm) leaves nothing to retrieve.

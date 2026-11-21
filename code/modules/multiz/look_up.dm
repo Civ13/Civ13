@@ -24,11 +24,16 @@
 	var/turf/above = above_z ? locate(here.x, here.y, above_z) : null
 	if (!above)
 		return look_up_refuse(why, "There is only sky above you.")
-	if (los_turf_roofed(here) || (locate(/obj/roof) in here))
+	if (locate(/obj/roof) in here)
 		return look_up_refuse(why, "The roof over you blocks the view.")
 	if (trapdoor_shut_at(above))
 		return look_up_refuse(why, "A shut trapdoor above you blocks the view.")
-	if (!building_open_turf(above) || (locate(/obj/covers) in above))
+	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = dug_pit_above_ladder_site(here)
+	if (P && P.dug_open_to_below(here))
+		return above // A real dug aperture, even when the cave area is indoors.
+	if (los_turf_roofed(here))
+		return look_up_refuse(why, "The roof over you blocks the view.")
+	if (P || !building_open_turf(above) || (locate(/obj/covers) in above))
 		return look_up_refuse(why, "A floor above you blocks the view.")
 	return above
 

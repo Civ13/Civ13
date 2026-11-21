@@ -342,6 +342,8 @@ def admission_statements(text):
         raise ValueError('Expected one guarded pull-pair admission check')
     segment = segment.replace(guarded[0], guarded[0][len('#ifdef CIV13_SUBTILE_PULL_PAIRS\n'):-len('#endif\n')], 1)
     exact = {
+        'if(kind == "save" && tutorial_region_here()) return null': 'if kind == "save" and G.tutorial_region: return None',
+        'if(kind == "save" && !practice_rooms_close_for_save()) return null': 'if kind == "save" and not G.close_practice(): return None',
         'var/datum/persistence_world_operation/operation = new': 'operation = G.new_operation()',
         'operation.storage = storage': 'operation.storage = storage',
         'operation.kind = kind': 'operation.kind = kind',
@@ -369,11 +371,17 @@ def admission_statements(text):
 
 
 class AdmissionWorld:
-    def __init__(self, settled=True, ready=True):
+    def __init__(self, settled=True, ready=True, tutorial_region=False, practice_close=True):
         self.active = None
         self.saving = False
         self.settled, self.ready = settled, ready
+        self.tutorial_region, self.practice_close = tutorial_region, practice_close
+        self.practice_calls = 0
         self.observed, self.messages, self.nested = [], [], []
+
+    def close_practice(self):
+        self.practice_calls += 1
+        return self.practice_close
 
     def new_operation(self):
         world = self
@@ -407,6 +415,29 @@ class AdmissionWorld:
 class SaveAdmission(unittest.TestCase):
     def setUp(self):
         self.text = read('code/modules/persistence/functions.dm')
+
+    def test_tutorial_and_practice_guards_precede_reservation(self):
+        admit = admission_statements(self.text)
+        for kwargs, guard in (
+            ({'tutorial_region': True}, '\tif(kind == "save" && tutorial_region_here()) return null\n'),
+            ({'practice_close': False}, '\tif(kind == "save" && !practice_rooms_close_for_save()) return null\n'),
+        ):
+            with self.subTest(guard=guard):
+                world = AdmissionWorld(**kwargs)
+                self.assertIsNone(admit(world, 'storage', 'save'))
+                self.assertIsNone(world.active)
+                self.assertFalse(world.saving)
+                self.assertEqual(world.observed, [])
+                # Removing each production guard must expose the missing refusal.
+                mutated = self.text.replace(guard, '', 1)
+                self.assertNotEqual(mutated, self.text)
+                broken = admission_statements(mutated)
+                other = AdmissionWorld(**kwargs)
+                self.assertIsNotNone(broken(other, 'storage', 'save'))
+
+        tutorial = AdmissionWorld(tutorial_region=True, practice_close=False)
+        self.assertIsNotNone(admit(tutorial, 'storage', 'load'))
+        self.assertEqual(tutorial.practice_calls, 0)
 
     def test_quiet_pairs_settle_under_the_reserved_unstarted_operation(self):
         admit = admission_statements(self.text)

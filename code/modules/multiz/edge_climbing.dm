@@ -244,6 +244,10 @@
 		var/obj/covers/C = A
 		if (!istype(C) || C.wall)
 			return FALSE
+	var/obj/structure/multiz/ladder/ww2/tunneltop/pit/P = dug_pit_above_ladder_site(T)
+	if (P)
+		P.fit_ladder(src, user, T)
+		return TRUE
 	var/list/why = list()
 	var/list/spot = placed_ladder_spot(T, user, why)
 	if (!spot)

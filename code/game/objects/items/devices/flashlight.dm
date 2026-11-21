@@ -202,19 +202,22 @@
 	update_icon()
 	return TRUE
 
+/obj/item/flashlight/flare/proc/snuff_out(mob/living/user)
+	if(!do_after(user, 2 SECONDS, src))
+		return
+	if(!on)
+		return
+	user.visible_message(SPAN_WARNING("[user] snuffs out [src]."), SPAN_WARNING("You snuff out [src], burning your hand."))
+	user.adjustBurnLoss(7)
+	burn_out()
+	//TODO: add snuff out sound
+
 /obj/item/flashlight/flare/attack_self(mob/living/user as mob)
 	if(!fuel)
 		to_chat(user, SPAN_NOTICE("It's out of fuel."))
 		return FALSE
 	if(on)
-		if(!do_after(user, 2 SECONDS, src))
-			return
-		if(!on)
-			return
-		user.visible_message(SPAN_WARNING("[user] snuffs out [src]."), SPAN_WARNING("You snuff out [src], burning your hand."))
-		user.adjustBurnLoss(7)
-		burn_out()
-		//TODO: add snuff out sound
+		snuff_out(user)
 		return
 
 	// All good, turn it on.
@@ -274,14 +277,7 @@
 		to_chat(user, SPAN_NOTICE("It's out of fuel."))
 		return FALSE
 	if(on)
-		if(!do_after(user, 2 SECONDS, src))
-			return
-		if(!on)
-			return
-		user.visible_message(SPAN_WARNING("[user] snuffs out [src]."), SPAN_WARNING("You snuff out [src], burning your hand."))
-		user.adjustBurnLoss(7)
-		burn_out()
-		//TODO: add snuff out sound
+		snuff_out(user)
 		return
 
 	// All good, turn it on.

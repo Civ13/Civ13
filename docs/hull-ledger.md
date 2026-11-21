@@ -86,8 +86,8 @@ stand on (`hull_ledger_at()`, either deck). Ashore they are unchanged.
 
 | Pump | Aboard a hull |
 | --- | --- |
-| Lever pump | worked by hand: two bucketfuls a three-second stroke, until dry |
-| Steam mine pump | 80 bucketfuls a minute while on and fuelled |
+| Hand bilge and cellar pump | worked by hand: two bucketfuls a three-second stroke, until dry |
+| Steam bilge and mine pump | 80 bucketfuls a minute while on and fuelled |
 | Sump pump | 40 a minute on cable power or battery, only while there is water |
 
 `step_ledger()` calls `pump_bilge()` after the water comes in, so powered pumps

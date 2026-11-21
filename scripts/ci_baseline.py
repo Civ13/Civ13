@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'flour_dough': {'files': ('tests/flour_dough/test_dough.py',),
+        'paths': ('tests/flour_dough/', 'code/modules/reagents/reagent_containers/food/condiment.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'getline2_contract': {'files': ('tests/getline2/test_getline2.py',),
         'paths': ('tests/getline2/',),
         'shared_paths': ('code/_helpers/unsorted.dm', 'tests/save_movement/source_adapter.py')},
@@ -148,6 +151,9 @@ SUITES = {
                          'scripts/check-recipes.py')},
     'atgm_retrieve': {'files': ('tests/atgm_retrieve/test_retrieve.py',),
         'paths': ('tests/atgm_retrieve/', 'code/modules/1713/weapons/guns/mg/stationary/mg.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'flare_snuff': {'files': ('tests/flare_snuff/test_snuff.py',),
+        'paths': ('tests/flare_snuff/', 'code/game/objects/items/devices/flashlight.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'dumpster_rummage': {'files': ('tests/dumpster_rummage/test_rummage.py',),
         'paths': ('tests/dumpster_rummage/', 'code/game/objects/structures/crates_lockers/crates.dm'),
@@ -345,6 +351,11 @@ SUITES = {
     'fridge_wrench': {'files': ('tests/fridge_wrench/test_fridge_wrench.py',),
         'paths': ('tests/fridge_wrench/', 'code/game/objects/structures/crates_lockers/closets/fridge.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'earmuff_muffling': {'files': ('tests/earmuff_muffling/test_earmuff_muffling.py',),
+        'paths': ('tests/earmuff_muffling/',),
+        'shared_paths': ('code/game/mob/living/life.dm',
+                         'code/game/mob/living/carbon/human/human_life.dm',
+                         'tests/save_movement/source_adapter.py')},
     'flashbang_audio': {'files': ('tests/flashbang_audio/test_audio.py',),
         'paths': ('tests/flashbang_audio/', 'code/game/objects/items/weapons/grenades/flashbang.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -632,7 +643,7 @@ SUITES = {
     'newspaper_reading': {'files': ('tests/newspaper_reading/test_reading.py',),
         'paths': ('tests/newspaper_reading/',), 'shared_paths': (
             'code/modules/1713/newspaper.dm', 'tests/save_movement/source_adapter.py')},
-    'football_tackle': {'files': ('tests/football_tackle/test_target.py',),
+    'football_tackle': {'files': ('tests/football_tackle/test_target.py', 'tests/football_tackle/test_catch.py'),
         'paths': ('tests/football_tackle/',), 'shared_paths': (
             'code/modules/1713/football.dm', 'tests/save_movement/source_adapter.py')},
     # Every piano, violin, shamisen and trumpet note resolves to a real .ogg
@@ -950,7 +961,7 @@ SUITES = {
             'icons/obj/guns/', 'icons/mob/items/lefthand_guns.dmi',
             'icons/mob/items/righthand_guns.dmi', 'icons/mob/back.dmi', 'civ13.dme')},
     # Ploughed field sprite selection and load restore projected from production DM.
-    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py',),
+    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py', 'tests/ploughed_field_icon/test_floor_overlay_cache.py'),
         'paths': ('tests/ploughed_field_icon/',), 'shared_paths': (
             'code/game/turfs/flooring/flooring_premade.dm',
             'code/game/turfs/flooring/flooring.dm',
@@ -1498,7 +1509,8 @@ SUITES = {
     'siege_engines': {'files': ('tests/siege_engines/test_source.py',),
         'paths': ('tests/siege_engines/',), 'shared_paths': (
             'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
-            'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
+            'code/modules/1713/siege/portcullis_runs.dm', 'code/game/objects/controls.dm',
+            'icons/obj/doors/material_doors.dmi', 'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
             'tests/sprites/create_siege_engines.py')},
     # Horse breaking, breeding and shoeing: source contracts (native probe tests/horse_breeding/probe.dm).
     'horse_breeding': {'files': ('tests/horse_breeding/test_source.py',),

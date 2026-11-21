@@ -12,7 +12,8 @@ SRC = (ROOT / 'code/modules/1713/siege/siege_engines.dm').read_text(encoding='ut
 
 def dmi_states(path):
     from PIL import Image
-    meta = Image.open(ROOT / path).info['Description']
+    with Image.open(ROOT / path) as source:
+        meta = source.info['Description']
     return {line.split('"')[1] for line in meta.splitlines() if line.startswith('state = ')}
 
 
@@ -28,6 +29,32 @@ class SiegeSource(unittest.TestCase):
                 self.assertIn('portcullis_%s_%s' % (s, end), states)
         self.assertTrue({'trebuchet0', 'trebuchet1', 'trebuchet_fire'} <= dmi_states('icons/obj/trebuchet.dmi'))
         self.assertTrue({'siege_tower', 'siege_tower_bridge'} <= dmi_states('icons/obj/siege_tower.dmi'))
+
+    def test_iron_gate_winch_discovery_is_exact_and_follows_whole_runs(self):
+        controls = (ROOT / 'code/game/objects/controls.dm').read_text(encoding='utf-8')
+        runs = (ROOT / 'code/modules/1713/siege/portcullis_runs.dm').read_text(encoding='utf-8')
+        self.assertIn('return type == /obj/structure/gate || type == /obj/structure/gate/open', controls)
+        self.assertIn('if (!QDELETED(G) && G.is_iron_grid_gate())', runs)
+        self.assertIn('list(axis, turn(axis, 180))', runs.split('/proc/iron_grid_run()', 1)[1])
+        self.assertIn('while (G && !(G in .))', runs)
+        self.assertIn('G = G.iron_grid_neighbour(direction)', runs)
+        self.assertIn('if (QDELETED(I) || !I.is_iron_grid_gate() || I in .)', SRC)
+        self.assertIn('. |= I.iron_grid_run()', SRC)
+        self.assertIn('I.set_iron_grid_open(raise)', SRC)
+        self.assertIn('G.set_open(raise)', SRC)  # Castle gates still use their own rules.
+
+    def test_iron_gate_controls_share_one_guarded_animated_transition(self):
+        controls = (ROOT / 'code/game/objects/controls.dm').read_text(encoding='utf-8')
+        self.assertIn('G.set_iron_grid_open(!G.open)', controls)
+        transition = controls.split('/proc/set_iron_grid_open(raise)', 1)[1].split('/attackby(', 1)[0]
+        self.assertIn('iron_grid_moving || open == raise', transition)
+        self.assertIn('iron_grid_moving = TRUE', transition)
+        self.assertIn('PROC_REF(finish_iron_grid_motion), raise), 3 SECONDS', transition)
+        self.assertIn('iron_grid_moving = FALSE', transition)
+        self.assertIn('density = !raise', transition)
+        self.assertTrue({'gate_opening', 'gate_closing', 'gate1', 'gate0'} <=
+                        dmi_states('icons/obj/doors/material_doors.dmi'))
+        self.assertNotIn('crush_under', transition)
 
     def test_recipes_and_research(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')

@@ -30,7 +30,7 @@
 	if (!T)
 		return null
 	for (var/obj/covers/C in T)
-		if (C.is_floor_cover() && !QDELETED(C))
+		if (C.loc == T && C.is_floor_cover() && !QDELETED(C))
 			return C
 	return null
 
@@ -60,7 +60,7 @@
 	if (istype(T, /turf/wall))
 		return T
 	for (var/obj/O in T)
-		if (O.takes_wall_slot() && !QDELETED(O))
+		if (O.loc == T && O.takes_wall_slot() && !QDELETED(O))
 			return O
 	return null
 
