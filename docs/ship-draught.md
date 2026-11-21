@@ -16,10 +16,33 @@ Code: `code/modules/naval/ship_draught.dm`. Limits: `code/__defines/naval.dm`.
 - piece: `ship_draught_pieces` (tiller, steering oar, mast, rowing bench,
   killick, iron anchor, hand bilge pump, plank wall, door, window, crate, bed,
   steam bilge pump, sump pump, steam engine, wooden cannon, cannon, torpedo
-  tube, steel window, steel door) or null. Every piece is something a built
+  tube, steel window, steel door, ladder) or null. Every piece is something a built
   hull takes aboard and works afloat; a row's `fires` flag marks a gun and
   `drive = "engine"` an engine;
-- upper deck: TRUE when the tile carries deck on the level above.
+- upper deck: TRUE when the tile carries deck on the level above (the same
+  tiles as deck `1` below).
+
+### Decks off her main deck
+
+Her other decks are in `decks`: level text = `list("x,y" = list(piece, dir))`.
+`ship_draught_decks` is the table of them: `-1` her hold (steel hold floor, 1
+steel a tile), `1` the deck above and `2` a second deck above (plank floor, 2
+wood a tile). A hold tile and a deck-above tile stand over a hull tile; a
+second-deck tile stands over a deck-above tile (`ship_draught_support()`).
+`set_deck(level, x, y, state)` lays or takes up a tile; taking one up takes up
+the decks above it there, and `clear()` takes up every deck on a hull tile.
+`set_deck_piece()` stands only pieces marked `decks` (walls, doors, windows,
+crates, beds, pumps, ladders); masts, helms, benches, anchors, gangways, guns
+and engines stand only on her main deck.
+
+The ladder (`X`) is the foot of a stood-up wooden ladder: it goes on the lower
+deck under a clear tile of the deck above, where its head stands
+(`ladder_leads()`). The deck checks (`/datum/design_check/ship/decks`) refuse a
+ladder that leads nowhere and a part of her hold with no ladder up out of it,
+and note a part of a deck above that no ladder reaches (stairs or a ladder can
+be stood up afloat) and a second deck above (a ship afloat carries one deck
+above hers, so it is drawn for later). Findings name the deck they are on.
+`piece_count()` counts every deck, so a pump in the hold is her pump.
 
 ## Checks, cost and speed
 
@@ -32,8 +55,8 @@ what she can be built with but will not work well: no drive, no pump, no or
 too small an anchor, ballast, guns pointing across her deck, fittings crew
 cannot reach.
 
-`costs()` adds up the hand recipe of every floor and piece; a tile of upper
-deck costs a floor, and each side in `gunwale_sides()` costs a gunwale (2 wood,
+`costs()` adds up the hand recipe of every floor and piece; a tile of another
+deck costs its floor, what stands on it costs its recipe, and each side in `gunwale_sides()` costs a gunwale (2 wood,
 or 2 steel for a bulwark on steel floor; boats and ships only, see
 [ship-edges.md](ship-edges.md)). `tests/ship_draught` holds those costs to
 `config/crafting/material_recipes_global.txt`.
@@ -50,7 +73,11 @@ make her slower.
 
 `to_code()` and `ship_draught_from_code()` read and write
 `C13SHIP/1/<name>/<x,y,floor,piece,dir,upper>;...` through `design_codes.dm`.
-Coordinates start at 0; `-` is no piece.
+Coordinates start at 0; `-` is no piece. A draught with a hold, a second deck
+above or anything standing on a deck above writes `C13SHIP/2`: the same tiles,
+then `/` and `<level,x,y,piece,dir>;...` for every tile off her main deck,
+level by level in the order of her hull tiles. `design_code_fields()` takes the
+version to read.
 
 `/obj/item/ship_draught` keeps its draught as `draught_code` (one saved text
 var). Use it in hand to copy its code or paste one in; examine shows the
@@ -61,7 +88,8 @@ summary.
 At a commissioned tiller, "Draw her lines" turns a blank sheet of paper in
 hand into her draught (`ship_draught_survey()`): each hull tile with its floor
 (steel plating or planks), the first piece standing on it, its facing turned
-bow up, and whether it has deck above. Other tillers aboard are left off.
+bow up, her deck above and hold (`upper_deck_cell()`, `lower_deck_cell()`) with
+any piece that may stand there, ladders included. Other tillers aboard are left off.
 A tile whose only cover is a wall is drawn as a plank floor with a plank wall.
 
 Probe: `tests/naval_carrier/draught_probe.dm`
@@ -90,11 +118,19 @@ button drags the sheet. A click is turned into a tile from the canvas's own
 rectangle and the view, never from a fixed tile size, so the drawing lands
 under the pointer however the window is sized.
 
+The **Deck** buttons over the sheet switch between her hold, main deck, deck
+above and second deck above (`levels()`, `lv`). Off the main deck the palette
+holds the deck's own tile, erase and the pieces allowed there; the rest of her
+shows as a flat wash inside a dashed line (`wash()`), a deck above casts a
+shadow, and a gold ring marks the head of each ladder from the deck below. The
+key beside the buttons (`deckKey()`) names those marks. A check's tiles light up on their own deck, and pinning one
+switches to it.
+
 Tools: every floor, deck above (right-click takes it off), erase, every piece
 with a facing (the arrows or R), freehand or box, a port/starboard mirror
 about the middle column, undo and redo (Ctrl+Z, Ctrl+Y), clear, and the
 ready-made draughts in `ship_draught_examples()` (rowing galley, sloop, steel
-cutter). The tile under the pointer shows a ghost of what a click will lay,
+cutter, and a merchantman with a hold and a deck above). The tile under the pointer shows a ghost of what a click will lay,
 mirrored when the mirror is on, and a line under the sheet names what is on
 it. The hull is edged in ink and a deck above is hatched in gold.
 
@@ -137,8 +173,9 @@ The post keeps the draught as `draught_code` beside the usual `design`
 piece plan: one piece per floor tile from stern to bow (plank floors, then
 steel), then one per fitting, a stage per kind in `ship_draught_pieces` order, then
 one per gunwale (wooden gunwales, then steel bulwarks) on a boat or ship.
-Each piece costs its hand recipe; the deck above is not built on the slipway
-and is laid by hand once she is afloat. Iron and planks pay for pieces as well
+Each piece costs its hand recipe; the deck above and ladders are not built on
+the slipway and are laid by hand once she is afloat, and this berth does not dig
+her hold. Iron and planks pay for pieces as well
 as the usual materials (`piece_material()`).
 
 When a piece is paid for, the real floor or fitting appears on its tile with

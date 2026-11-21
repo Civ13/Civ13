@@ -61,14 +61,13 @@
 	spring = 5
 	shaping = SHAPE_MOULDED
 
-// Lumps of hardened resin. They reuse the clay lump sprite, tinted amber,
-// until they have their own art.
+// Lumps of hardened resin (sprites by Fable, icons/obj/materials.dmi).
 /obj/item/stack/material/resin
 	name = "resin"
 	desc = "Hard amber lumps of cooked pine resin. Warm one in a hot pot and it runs again."
-	icon_state = "claylump"
+	icon_state = "resin"
 	default_type = "resin"
-	apply_colour = TRUE
+	apply_colour = FALSE
 	value = 2
 
 /obj/item/stack/material/resin/New()
@@ -76,7 +75,7 @@
 	return ..()
 
 /obj/item/stack/material/resin/update_icon()
-	icon_state = "claylump[pile_suffix(amount, list(13, 26, 39))]"
+	icon_state = "resin[pile_suffix(amount, list(13, 26, 39))]"
 
 // A hot open container used on resin melts one lump into it.
 /obj/item/stack/material/resin/attackby(obj/item/W, mob/user)

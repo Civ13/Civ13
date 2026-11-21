@@ -113,9 +113,9 @@
 /datum/design_check/ship/caps/ship_check(datum/ship_draught/D, datum/design_report/R)
 	if (D.cells.len > SHIP_DRAUGHT_MAX_TILES)
 		R.error("She has [D.cells.len] tiles of hull: a hull may have at most [SHIP_DRAUGHT_MAX_TILES].")
-	var/upper = D.upper_tiles()
+	var/upper = D.other_deck_tiles()
 	if (D.cells.len + upper > SHIP_DRAUGHT_MAX_DECK)
-		R.error("Her decks are [D.cells.len + upper] tiles in all: at most [SHIP_DRAUGHT_MAX_DECK] can sail. Draw less deck above.")
+		R.error("Her decks are [D.cells.len + upper] tiles in all: at most [SHIP_DRAUGHT_MAX_DECK] can sail. Draw less deck off her main deck.")
 
 /datum/design_check/ship/joined
 	order = 30
@@ -165,11 +165,24 @@
 	if (inboard.len)
 		R.error("[inboard.len] gangway\s face[inboard.len == 1 ? "s" : ""] her own deck: a gangway stands on her edge, facing out over the side.", inboard, "Y")
 
+// A bowsprit carries her jib from her bow: nothing of hers ahead of it
+// (hull_bow.dm).
+/datum/design_check/ship/bowsprits
+	order = 46
+
+/datum/design_check/ship/bowsprits/ship_check(datum/ship_draught/D, datum/design_report/R)
+	var/list/aft = list()
+	for (var/key in D.piece_cells("J"))
+		if (D.cells[ship_draught_step_key(key, NORTH)])
+			aft += key
+	if (aft.len)
+		R.warning("[aft.len] bowsprit\s stand[aft.len == 1 ? "s" : ""] behind more of her deck: a jib draws only from a bowsprit at her bow, the top of the sheet.", aft, "J")
+
 /datum/design_check/ship/drives
 	order = 50
 
 /datum/design_check/ship/drives/ship_check(datum/ship_draught/D, datum/design_report/R)
-	var/masts = D.piece_count("M")
+	var/masts = D.mast_count() + D.piece_count("J")
 	var/benches = D.piece_count("R")
 	var/engines = D.engine_push()
 	if (!masts && !benches && !engines)
@@ -319,6 +332,41 @@
 	if (!D.upper_tiles())
 		return
 	R.note("Her deck above is laid by hand once she is afloat, with a ladder to climb to it. Building on the level above needs open air over her.", null, "u")
+
+// Her decks off the main deck (ship_draught_decks): every ladder needs a clear
+// tile of deck above it, and every part of her hold a ladder up out of it.
+// A deck above no ladder reaches can still be climbed to by stairs or a
+// ladder stood up afloat, so that is only a note.
+/datum/design_check/ship/decks
+	order = 97
+
+/datum/design_check/ship/decks/ship_check(datum/ship_draught/D, datum/design_report/R)
+	if (!D.decks.len && !D.piece_count("X"))
+		return
+	var/list/nowhere = D.nowhere_ladders()
+	var/list/by_deck = list()
+	for (var/list/L in nowhere)
+		var/level = "[L[1]]"
+		if (!by_deck[level])
+			by_deck[level] = list()
+		by_deck[level] += L[2]
+	for (var/level in by_deck)
+		var/list/keys = by_deck[level]
+		R.error("[keys.len] ladder\s on her [ship_draught_level_name(text2num(level))] lead[keys.len == 1 ? "s" : ""] nowhere: a ladder needs a clear tile of the deck above it.", keys, "X", text2num(level))
+	var/list/unreached = D.unreached_decks()
+	for (var/level in unreached)
+		var/list/parts = unreached[level]
+		var/list/keys = list()
+		for (var/list/part in parts)
+			keys += part
+		var/name = ship_draught_decks[level]["name"]
+		var/what = parts.len == 1 ? "a part" : "[parts.len] parts"
+		if (level == "-1")
+			R.error("Her [name] has [what] with no ladder up to her deck: stand a ladder in it under a clear tile of deck.", keys, "X", -1)
+		else
+			R.note("No ladder is drawn up to [what] of her [name]: climb to it by stairs or a ladder stood up once she is afloat.", keys, "X", text2num(level))
+	if (D.deck_tiles(2))
+		R.note("Her second deck above is drawn for later: a ship afloat carries one deck above hers.", null, "u", 2)
 
 // ---- Submarines ----
 

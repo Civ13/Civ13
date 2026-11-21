@@ -175,8 +175,8 @@
 // Why a tile the hull does not already cover cannot take it, or null.
 /datum/craft_body/built/proc/tile_refusal(turf/D)
 	// Hauled up a slipway (slipway_haul.dm), she may come to rest on the
-	// ground of its berth.
-	if (!istype(D, /turf/floor/beach/water) && !(ways_tiles && ways_tiles[D]))
+	// ground of its berth; she floats in a flooded dock basin (drydock.dm).
+	if (!istype(D, /turf/floor/beach/water) && !(ways_tiles && ways_tiles[D]) && !dock_floats(D))
 		return "[D.name] ahead at [D.x],[D.y]"
 	// A turf lists what overlaps it by pixels too (a hull sailing by pixels,
 	// vehicle_offset_hull.dm), so only a floor filed on D is in the way.
@@ -534,11 +534,15 @@
 // ---- Commissioning ----
 
 // The tiles of the hull built around start: every water tile with a built
-// floor on it that joins start edge to edge. Returns the list of turfs, or a
-// text saying why this is not a hull.
+// floor on it that joins start edge to edge. At a berth (berth_build.dm) her
+// floors may stand on the berth's ground as well. Returns the list of turfs,
+// or a text saying why this is not a hull.
 /proc/built_hull_survey(turf/start, datum/craft/refitting = null)
-	if (!istype(start, /turf/floor/beach/water) || !hull_floor_in(start))
+	if (!start || !hull_floor_in(start))
 		return "It must stand on a floor built over water."
+	var/obj/structure/berth = istype(start, /turf/floor/beach/water) ? null : berth_ground_at(start)
+	if (!berth && !istype(start, /turf/floor/beach/water))
+		return "It must stand on a floor built over water, or at a berth: a dock basin or the berth of an empty slipway."
 	var/list/found = list(start)
 	var/list/queue = list(start)
 	while (queue.len)
@@ -548,7 +552,7 @@
 			var/turf/N = get_step(T, d)
 			if (!N || (N in found) || !hull_floor_in(N))
 				continue
-			if (!istype(N, /turf/floor/beach/water))
+			if (berth ? !berth.berth_ground(N) : !istype(N, /turf/floor/beach/water))
 				return "The hull is still joined to the shore at [N.x],[N.y]. Cut her free first."
 			if (vessel_at(N))
 				return "The hull is joined to another ship at [N.x],[N.y]."

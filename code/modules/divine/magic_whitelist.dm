@@ -118,7 +118,7 @@ var/global/magic_whitelist_path = null
 	if (client)
 		return client.ckey
 	if (istext(persistence_owner_ckey) && length(persistence_owner_ckey))
-		return ckey(persistence_owner_ckey)
+		return ckey(owner_key_account(persistence_owner_ckey))
 	return ckey
 
 /mob/living/human/proc/magic_allowed()

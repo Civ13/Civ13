@@ -33,7 +33,7 @@ def proc(path, declaration):
 
 
 def contact(body, weapon, indent=1):
-    pattern = rf'^\t{{{indent}}}{weapon}\.on_weapon_contact\(src,\s*user\)\s*(?://[^\n]*)?$'
+    pattern = rf'^\t{{{indent}}}{weapon}\.on_weapon_contact\(src,\s*user(?:,\s*hit_zone)?\)\s*(?://[^\n]*)?$'
     matches = list(re.finditer(pattern, body, re.M))
     if len(matches) != 1:
         raise AssertionError(f'Expected one unconditional contact callback for {weapon}')
@@ -41,7 +41,7 @@ def contact(body, weapon, indent=1):
 
 
 def resistance_contact(body, weapon, branch_indent):
-    pattern = rf'^\t{{{branch_indent}}}{weapon}\.on_weapon_contact\(src,\s*user\)\s*(?://[^\n]*)?$'
+    pattern = rf'^\t{{{branch_indent}}}{weapon}\.on_weapon_contact\(src,\s*user(?:,\s*hit_zone)?\)\s*(?://[^\n]*)?$'
     matches = list(re.finditer(pattern, body, re.M))
     if len(matches) != 1:
         raise AssertionError(f'Expected one resistant-target contact callback for {weapon}')
@@ -102,7 +102,7 @@ class MagicWeaponContact(unittest.TestCase):
             self.assertLess(body.index(text), call)
         self.assertRegex(body[:call], r'if \(check_shields\([^\n]*\)\)\s*\n\s*return')
         self.assertLess(body.index('O.force <= resistance'), resistant_call)
-        self.assertRegex(body[resistant_call:call], r'^\t\tO\.on_weapon_contact\(src,\s*user\)\s*\n\t\treturn')
+        self.assertRegex(body[resistant_call:call], r'^\t\tO\.on_weapon_contact\(src,\s*user(?:,\s*hit_zone)?\)\s*\n\t\treturn')
 
     def test_zombie_late_misses_skip_contact_and_resistance_does_not(self):
         body = proc(ZOMBIE, '/mob/living/simple_animal/hostile/human/zombie/hit_with_weapon')
@@ -110,7 +110,7 @@ class MagicWeaponContact(unittest.TestCase):
         resistant_call = resistance_contact(body, 'O', 3)
         self.assertEqual(len(re.findall(r'missed![^\n]*\n\t\treturn', body[:resistant_call])), 3)
         self.assertLess(body.index('O.force <= resistance'), resistant_call)
-        self.assertRegex(body[resistant_call:call], r'^\t\t\tO\.on_weapon_contact\(src,\s*user\)\s*\n\t\t\treturn')
+        self.assertRegex(body[resistant_call:call], r'^\t\t\tO\.on_weapon_contact\(src,\s*user(?:,\s*hit_zone)?\)\s*\n\t\t\treturn')
         self.assertLess(body.index('limb_hit(hit_zone)'), call)
 
     def test_generic_living_contact_follows_normal_weapon_effects(self):

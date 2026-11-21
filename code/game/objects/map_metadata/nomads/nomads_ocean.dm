@@ -24,24 +24,28 @@
 	title = "The Atlantic Ocean"
 	ocean = "atlantic"
 	sun_latitude = 30
+	world_longitude = -30 // world calendar time zone (world_calendar.dm)
 
 /obj/map_metadata/nomads/ocean/pacific
 	ID = MAP_NOMADS_OCEAN_PACIFIC
 	title = "The Pacific Ocean"
 	ocean = "pacific"
 	sun_latitude = 15
+	world_longitude = -165 // world calendar time zone (world_calendar.dm)
 
 /obj/map_metadata/nomads/ocean/indian
 	ID = MAP_NOMADS_OCEAN_INDIAN
 	title = "The Indian Ocean"
 	ocean = "indian"
 	sun_latitude = -15
+	world_longitude = 75 // world calendar time zone (world_calendar.dm)
 
 /obj/map_metadata/nomads/ocean/arctic
 	ID = MAP_NOMADS_OCEAN_ARCTIC
 	title = "The Arctic Ocean"
 	ocean = "arctic"
 	sun_latitude = 78
+	world_longitude = 0 // world calendar time zone (world_calendar.dm)
 	sea_life_cap = 30
 
 /obj/map_metadata/nomads/ocean/southern
@@ -49,4 +53,5 @@
 	title = "The Southern Ocean"
 	ocean = "southern"
 	sun_latitude = -60
+	world_longitude = 0 // world calendar time zone (world_calendar.dm)
 	sea_life_cap = 40

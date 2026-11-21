@@ -228,6 +228,13 @@
 				new /obj/item/weapon/reagent_containers/food/snacks/sausage/salted(loc)
 		producttype = null // Reset the product type variable to allow the next cycle of salting.
 
+// The completion callback is not saved, so a batch restored mid-salting starts one
+// full interval again instead of trapping its food forever (#6446).
+/obj/structure/salting_container/after_load()
+	..()
+	if (salting)
+		salting()
+
 ///////////////////////////////LARGE/DEHYDRATOR///////////////////////////////
 /obj/structure/drying_rack
 	name = "drying rack"

@@ -395,7 +395,13 @@ find the shallows or a berth. The boathouse survey lists her work with costs.
 A dugout stored in the boathouse dries three times as fast. A slipway hauls a
 hull lying off its ways up onto dry ground with enough hands at the post,
 refuses her under way or with the ways blocked, holds her dry (no bilge, no
-wear, no fouling) and launches her again.
+wear, no fouling) and launches her again. A drydock of three gates across a
+trench basin lets a hull sail in, is pumped dry only with its gates shut, stays
+dry behind them, holds the hull dry with all her floors, floods again and lets
+her out; a basin touching the sea past its gates is refused. A hull laid down from
+nothing on a slipway berth is commissioned bow to the water, refitted there and
+launched; one laid on the dry dock floor floats when the dock floods; floors on
+plain ground or joined off the berth are refused.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
 

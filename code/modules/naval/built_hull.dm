@@ -52,6 +52,11 @@
 	if (istext(survey))
 		return survey
 	var/datum/craft_body/built/B = body()
+	// A berth may ask more of her (berth_build.dm).
+	var/obj/structure/berth = istype(T, /turf/floor/beach/water) ? null : berth_ground_at(T)
+	var/berth_why = berth ? berth.berth_commission_refusal(survey, heading || (B ? B.dir : NORTH)) : null
+	if (berth_why)
+		return berth_why
 	if (!B)
 		B = new /datum/craft_body/built
 		craft = new /datum/craft(B)
@@ -170,6 +175,9 @@
 	var/datum/craft_body/built/edge_body = craft.body
 	if (istype(edge_body) && edge_body.at_map_edge() && length(sea_crossing_destinations()))
 		options.Insert(2, "Leave these waters")
+	// Off a linked edge of the earth group she sails on over it (ship_edge_crossing.dm).
+	if (istype(edge_body) && edge_body.at_map_edge() && edge_body.sea_edge_link())
+		options.Insert(2, "Sail over the horizon")
 	// Off a mainland's edge she can set out across the world chart (ship_voyage.dm).
 	if (istype(edge_body) && edge_body.at_map_edge() && shard_group && shard_group.enabled)
 		options.Insert(2, "Set out on a voyage")
@@ -189,7 +197,7 @@
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
-	if (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west", "Leave these waters", "Set out on a voyage", "Refit the hull"))
+	if (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west", "Leave these waters", "Sail over the horizon", "Set out on a voyage", "Refit the hull"))
 		var/plank = craft.gangplank_refusal()
 		if (plank)
 			to_chat(H, SPAN_WARNING(plank))
@@ -229,6 +237,9 @@
 		return
 	if (choice == "Set out on a voyage")
 		voyage_menu(H)
+		return
+	if (choice == "Sail over the horizon")
+		sea_edge_menu(H)
 		return
 	if (choice == "Settle this land")
 		settle_menu(H)

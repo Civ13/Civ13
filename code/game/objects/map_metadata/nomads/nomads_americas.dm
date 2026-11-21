@@ -10,6 +10,7 @@
 	ID = MAP_NOMADS_AMERICAS_NORTH
 	// The sun's path (sun_shadows.dm): degrees north.
 	sun_latitude = 35
+	world_longitude = -100 // world calendar time zone (world_calendar.dm)
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	title = "Nomads (Northern Americas)"
@@ -33,6 +34,7 @@
 	ID = MAP_NOMADS_AMERICAS_SOUTH
 	// The sun's path (sun_shadows.dm): degrees south, so the noon sun stands in the north.
 	sun_latitude = -20
+	world_longitude = -60 // world calendar time zone (world_calendar.dm)
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	title = "Nomads (Southern Americas)"

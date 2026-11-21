@@ -56,6 +56,17 @@ Taking it apart gives the feed back.
 | Millstones | 12 stone, gear, shaft | Watermills | wheat, oats, barley, rice (single items or from a sack) | 2 grain to flour or rice |
 | Sash saw | 10 wood, gear, shaft, 2 iron | Watermills | plain log stacks | 1 log to 2 planks and a bark |
 
+## Counterweight drum, cam drum and steam engine
+
+`code/modules/1713/contraptions.dm`, sprites `icons/obj/contraptions.dmi`
+(drawn by `tests/sprites/create_contraptions.py`).
+
+| Part | Cost | Research | Share / strength | Notes |
+| --- | --- | --- | --- | --- |
+| Counterweight drum (mover) | 10 wood, gear, shaft, 2 rope | Watermills | 0.6 / 1 | crank (help intent, 10 s) stores 5 minutes of fall, up to 15; other intents or a cord brake and release it (`set_released`); the fall is worked out from `released_at` when asked |
+| Cam drum (`/obj/structure/mechanism`) | 6 wood, gear, shaft | Watermills | draw 1 | click to set running; on the object loop, pulls its next cord every `20 s * share` while driven, rechecks every 10 s otherwise |
+| Stationary steam engine (mover) | 16 iron, gear, shaft, 2 bearings | Steam Power | 0.35 / 6 | fuel in minutes (`steam_hammer_fuel_rates`, up to 60), burned lazily by `burn()` when asked |
+
 A run that is too long binds: only the movers right beside the machine still
 drive it, and the parts' examine says why.
 

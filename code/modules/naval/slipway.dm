@@ -360,11 +360,11 @@ var/global/list/slipway_designs = null
 		else
 			to_chat(H, SPAN_WARNING(result))
 	else if (action == "abandon")
-		if (WWinput(H, draught_code ? "Give up building the [D.name]? Her draught comes off the post; what is built stays where it stands." : "Break up the [D.name]? Everything fitted so far is lost.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
+		if (WWinput(H, draught_code ? "Give up building the [D.name]? Her draught comes off the post; what is built stays where it stands, and what was paid towards the next piece is put back by the post." : "Break up the [D.name]? Everything fitted so far is taken apart and its materials stacked by the post.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
 			return
 		log_game("[key_name(H)] abandoned a [D.name] ([pieces_done] pieces) at [x],[y],[z].")
-		abandon()
-		to_chat(H, SPAN_NOTICE("The berth is cleared."))
+		var/list/back = abandon()
+		to_chat(H, SPAN_NOTICE("The berth is cleared.[back.len ? " [capitalize(piece_cost_text(back))] [back.len == 1 && back[back[1]] == 1 ? "is" : "are"] stacked by the post." : ""]"))
 
 /obj/structure/slipway/proc/lay_keel(datum/slipway_design/D)
 	draught_code = ""
@@ -373,7 +373,15 @@ var/global/list/slipway_designs = null
 	paid = list()
 	update_frames()
 
+// Gives up the ship on the berth. The materials of a ship built to a plan
+// are stacked by the post again; a draught's floors and fittings stand where
+// they are, and only what was paid towards the next piece comes back.
+// Returns what was given back (material -> amount).
 /obj/structure/slipway/proc/abandon()
+	var/datum/slipway_design/D = get_design()
+	. = list()
+	if (D)
+		. = piece_refund(draught_code ? paid : D.spent(pieces_done, paid), get_turf(src))
 	draught_code = ""
 	design = null
 	pieces_done = 0

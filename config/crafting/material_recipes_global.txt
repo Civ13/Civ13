@@ -726,6 +726,14 @@ RECIPE: /material/woolcloth/,blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0
 RECIPE: /material/woolcloth/,yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
 RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
 
+//*********************| SILK |*********************************
+RECIPE: /material/silk/,white kimono,/obj/item/clothing/under/kimono,3,85,0,1,clothing,0,0,18,8,null
+RECIPE: /material/silk/,light hanfu,/obj/item/clothing/under/hanfu/light,2,100,0,1,clothing,0,0,38,8,null
+RECIPE: /material/silk/,dark hanfu,/obj/item/clothing/under/hanfu,2,100,0,1,clothing,0,0,38,8,null
+RECIPE: /material/silk/,green hanfu,/obj/item/clothing/under/hanfu/green,2,100,0,1,clothing,0,0,38,8,null
+RECIPE: /material/silk/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/silk/,customizable scarf,/obj/item/clothing/accessory/custom/scarf,1,30,0,1,accessories,0,0,70,8,null
+
 //**************************************************************
 //*********************| CLOTH |********************************
 //**************************************************************
@@ -1544,6 +1552,7 @@ RECIPE: /material/bronze/,reflector lighthouse lamp,/obj/structure/lighthouse_be
 RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/glass/,casement window,/obj/structure/simple_door/key_door/anyone/casement,4,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pound lock,/obj/structure/canal_lock,12,300,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,dock gate,/obj/structure/canal_lock/dock_gate,24,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,clay tablet,/obj/item/weapon/paper/clay_tablet,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,reed stylus,/obj/item/weapon/pen/stylus,1,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,senet board,/obj/item/game_board/senet,3,100,0,1,construction,0,0,0,8,null
@@ -1798,7 +1807,7 @@ RECIPE: /material/rags/,beggar clothing,/obj/item/clothing/under/medieval/beggar
 //*************************************************************
 
 RECIPE: /material/hemp/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
-RECIPE: /material/hemp/,joint,/obj/item/clothing/mask/smokable/cigarette/joint,2,10,0,1,none,0,0,0,8,null
+RECIPE: /material/cannabis/,joint,/obj/item/clothing/mask/smokable/cigarette/joint,2,10,0,1,none,0,0,0,8,null
 
 //*************************************************************
 //*********************| FLAX |********************************
@@ -2440,6 +2449,8 @@ RECIPE: /material/wood/soft/,light ship rudder axis (1200 weight),/obj/structure
 RECIPE: /material/wood/soft/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,ship mast,/obj/structure/vehicleparts/movement/sail,15,140,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,ship mast with a crow's nest,/obj/structure/vehicleparts/movement/sail/crows_nest,23,200,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,bowsprit,/obj/structure/vehicleparts/movement/sail/bowsprit,10,120,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,figurehead,/obj/structure/figurehead,6,90,0,1,vehicle parts,10,0,0,8,null
 RECIPE: /material/wood/soft/,slipway,/obj/structure/slipway,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,boathouse,/obj/structure/boathouse,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,tiller,/obj/structure/hull_tiller,10,100,1,1,vehicle parts,41,0,0,8,null
@@ -2461,6 +2472,7 @@ RECIPE: /material/wood/soft/,salting container,/obj/structure/salting_container,
 RECIPE: /material/wood/soft/,small mill,/obj/structure/mill,4,90,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,4,0,0,8,null
 RECIPE: /material/wood/soft/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,silkworm tray,/obj/structure/silkworm_tray,4,80,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,flax comb,/obj/structure/flax_comb,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,hemp dressing bench,/obj/structure/hemp_dressing_bench,8,150,1,1,economy & production,19,0,0,8,null
@@ -2495,6 +2507,7 @@ RECIPE: /material/wood/,wooden line shaft,/obj/structure/workshop_machine/transm
 RECIPE: /material/wood/,shaft clutch,/obj/structure/workshop_machine/transmission/line_shaft/clutch,5,100,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,gear box,/obj/structure/workshop_machine/transmission/gear_box,8,150,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,sash saw,/obj/structure/workshop_machine/hopper/sash_saw,10,200,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/wood/,counterweight drum,/obj/structure/workshop_machine/mover/counterweight,10,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/iron/,iron line shaft,/obj/structure/workshop_machine/transmission/line_shaft/iron,3,80,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,rope drive wheel,/obj/structure/workshop_machine/transmission/rope_drive,4,150,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,treadwheel crane,/obj/structure/workshop_machine/shear_legs/crane,16,200,1,1,economy & production,70,0,0,8,null
@@ -2513,6 +2526,7 @@ RECIPE: /material/wood/,wire drawing bench,/obj/structure/workshop_machine/wire_
 RECIPE: /material/iron/,rolling mill,/obj/structure/workshop_machine/rolling_mill,16,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,trip hammer,/obj/structure/workshop_machine/trip_hammer,10,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/iron/,steam hammer,/obj/structure/workshop_machine/trip_hammer/steam,16,250,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/iron/,stationary steam engine,/obj/structure/workshop_machine/mover/steam_engine,16,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,drill press,/obj/structure/workshop_machine/fitting/drill_press,10,200,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,hydraulic press,/obj/structure/workshop_machine/fitting/hydraulic_press,14,250,1,1,economy & production,0,0,0,8,null
 
@@ -2558,6 +2572,7 @@ RECIPE: /material/wood/,wooden shutters,/obj/structure/simple_door/key_door/anyo
 RECIPE: /material/wood/,wooden trapdoor,/obj/item/trapdoor_kit,4,50,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,lever,/obj/structure/mechanism/lever,3,40,1,1,mechanisms,0,0,0,8,null
 RECIPE: /material/wood/,pulley block,/obj/structure/mechanism_pulley,3,40,1,1,mechanisms,0,0,0,8,null
+RECIPE: /material/wood/,cam drum,/obj/structure/mechanism/cam_drum,6,100,1,1,mechanisms,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
@@ -3156,6 +3171,19 @@ RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 
 RECIPE: /material/iron/,iron plate floor,/obj/covers/iron_plate,1,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,iron grating,/obj/covers/iron_grating,1,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,flagstone floor,/obj/covers/flagstone,1,20,1,1,floors,0,0,0,8,null
+RECIPE: /material/copper/,copper plate floor,/obj/covers/copper_plate,1,35,1,1,construction,0,0,0,8,null
+RECIPE: /material/bronze/,bronze tile floor,/obj/covers/bronze_plate,1,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/lead/,lead sheet floor,/obj/covers/lead_sheet,1,30,1,1,construction,0,0,0,8,null
+RECIPE: /material/glass/,glass block floor,/obj/covers/glass_block,1,35,1,1,construction,0,0,0,8,null
+RECIPE: /material/leaf/,rush matting,/obj/covers/rush_matting,1,15,1,1,none,0,0,0,8,null
+RECIPE: /material/obsidian/,obsidian tile floor,/obj/covers/obsidian_tile,1,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,steel tread plate,/obj/covers/steel_tread,1,20,1,1,construction,96,0,0,8,null
+RECIPE: /material/bearpelt/brown/,bear pelt rug,/obj/structure/pelt_rug,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,black bear pelt rug,/obj/structure/pelt_rug/black,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,white bear pelt rug,/obj/structure/pelt_rug/white,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/wolfpelt/,wolf pelt rug,/obj/structure/pelt_rug/wolf,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,white wolf pelt rug,/obj/structure/pelt_rug/wolf/white,2,60,1,1,none,0,0,0,8,null
 RECIPE: /material/iron/,iron picket fence,/obj/structure/grille/fence/steel_picket,3,60,1,1,construction,50,0,0,8,null
 RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
 RECIPE: /material/iron/,chainlink fence,/obj/structure/grille/chainlinkfence,3,80,1,1,construction,120,0,0,8,null
@@ -3350,6 +3378,8 @@ RECIPE: /material/wood/,tread wheel,/obj/structure/treadwheel,8,120,1,1,sports,3
 RECIPE: /material/steel/,treadmill,/obj/structure/treadwheel/treadmill,6,150,1,1,sports,105,0,0,8,null
 RECIPE: /material/wood/,makiwara post,/obj/structure/striking_post,4,80,1,1,sports,0,0,0,8,null
 RECIPE: /material/wood/,gravel pail,/obj/structure/striking_post/gravel_pail,3,60,1,1,sports,0,0,0,8,null
+RECIPE: /material/leather/,heavy bag,/obj/structure/martial_gear/heavy_bag,4,80,1,1,sports,20,0,0,8,null
+RECIPE: /material/wood/,wooden dummy,/obj/structure/martial_gear/wooden_dummy,8,120,1,1,sports,40,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null
 RECIPE: /material/electronics/,powered radio program desk,/obj/structure/telecom/station,6,150,1,1,none,105,0,0,8,null
