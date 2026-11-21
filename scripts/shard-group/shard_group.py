@@ -80,7 +80,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
-                 'migrate-underground', 'records', 'add-regions')
+                 'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
 SEND_LANDINGS = ('shore', 'coords', 'arrival')
@@ -3605,6 +3605,29 @@ def group_status(group, only=None, view=region_view, platform=None):
     return result
 
 
+def group_account(group, ckey):
+    """One account's lifetime points and character slots (docs/character-slots.md),
+    read from the coordinator's shared player records. Read-only: staff grant,
+    remove and lock in game (Admin > Player Accolades)."""
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.transfer_storage import records
+    ckey = records.canonical_ckey(ckey or '')
+    if not ckey:
+        raise Refused('give a player key with --ckey')
+    path = Path(group['root']) / 'coordinator.sqlite'
+    if not path.exists():
+        return {'db': str(path), 'ckey': ckey, 'text': 'No coordinator database yet: accounts are kept once the group runs.'}
+    db = sqlite3.connect('file:%s?mode=ro' % path.as_posix(), uri=True)
+    try:
+        if not db.execute("SELECT name FROM sqlite_master WHERE name = 'player_record'").fetchone():
+            return {'db': str(path), 'ckey': ckey, 'text': 'The coordinator has no player records yet.'}
+        account = records.account_summary(db, ckey)
+    finally:
+        db.close()
+    return dict(account, db=str(path), ckey=ckey, text='%s\n%s' % (ckey, account['text']))
+
+
 def group_records(group, ckey=None, search=None, export=None, now=None):
     """The launcher's Player records window (records.py): read-only look at the shared
     player records (notes, warnings, bans, watchlist, memos) in the coordinator
@@ -3853,7 +3876,7 @@ def main(argv=None):
     parser.add_argument('--standby-port', type=int, help='set-port: the handover standby port')
     parser.add_argument('--apply', action='store_true', help='set-gate, set-port, add-gateway, add-regions: carry the plan out (without it, only the plan)')
     parser.add_argument('--bot-profile', help='set-gate: the bot profile.json to repoint (default: the group\'s bot_profile)')
-    parser.add_argument('--ckey', help='records: every record about one player key')
+    parser.add_argument('--ckey', help='records: every record about one player key; accounts: the player key to look up')
     parser.add_argument('--search', help='records: records whose key or text holds this')
     parser.add_argument('--export', help='records: write every record to this JSON file')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
@@ -3950,6 +3973,10 @@ def main(argv=None):
             if args.region:
                 raise Refused('player activity covers the whole group; leave out --region')
             result = player_activity_report(group)
+        elif args.action == 'accounts':
+            if args.region:
+                raise Refused('accounts are shared by the whole group; leave out --region')
+            result = group_account(group, args.ckey)
         elif args.action == 'records':
             if args.region:
                 raise Refused('player records are shared by the whole group; leave out --region')
