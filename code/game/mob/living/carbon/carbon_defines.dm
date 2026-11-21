@@ -17,7 +17,7 @@
 	var/coughedtime = FALSE
 	var/lastpuke = FALSE
 	var/cpr_time = TRUE
-	var/list/addictions = list("cocaine" = 0, "opium" = 0, "alcohol" = 0, "tobacco" = 0)
+	var/list/addictions = list("opioid" = 0, "stimulant" = 0, "nicotine" = 0, "cannabis" = 0, "caffeine" = 0, "alcohol" = 0)
 	var/nutrition = 600.0 // hunger in some units; workload and climate set the drain (human_life.dm)
 	var/max_nutrition = 600.0
 	var/water = 500.0 // thirst in some units

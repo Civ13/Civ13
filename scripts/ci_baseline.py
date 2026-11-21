@@ -1895,7 +1895,9 @@ SUITES = {
             'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Character slot owner keys (docs/character-slots.md); source checks only.
-    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py'),
+    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py',
+        'tests/character_slots/test_structuring.py',
+        'tests/character_slots/test_account_summary.py'),
         'paths': ('tests/character_slots/',), 'shared_paths': (
             'docs/character-slots.md', 'code/modules/persistence/player_reclaim.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_home.dm',
@@ -1906,7 +1908,11 @@ SUITES = {
             'code/modules/player_activity/player_activity.dm', 'code/modules/admin/verbs/research_knowledge.dm',
             'code/game/mob/groups/nation.dm', 'tools/transfer_storage/region.py',
             'code/modules/accolades/character_slots.dm', 'code/game/mob/new_player/login.dm',
-            'code/modules/admin/accolades_admin.dm')},
+            'code/modules/admin/accolades_admin.dm', 'code/game/mob/groups/faction_membership.dm',
+            'code/game/mob/groups/faction_creation.dm', 'code/game/mob/groups/faction_justice.dm',
+            'code/modules/provinces/province_holding.dm', 'code/modules/provinces/province_blocs.dm',
+            'code/modules/admin/province_blocs_admin.dm', 'tools/transfer_storage/records.py',
+            'scripts/shard-group/shard_group.py')},
 
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
@@ -2870,6 +2876,8 @@ SUITES = {
                   'code/modules/1713/light_fuel.dm')},
     'preserves': {'files': ('tests/preserves/test_preserves.py',),
         'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi')},
+    'drug_classes': {'files': ('tests/drug_classes/test_drug_classes.py',),
+        'paths': ('tests/drug_classes/', 'code/modules/reagents/drug_classes.dm')},
     'drug_crops': {'files': ('tests/drug_crops/test_drug_crops.py',),
         'paths': ('tests/drug_crops/',)},
     'coffee': {'files': ('tests/coffee/test_coffee.py',),
@@ -2883,6 +2891,16 @@ SUITES = {
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/mob.dm',
             'code/game/mob/living/carbon/human/death.dm', 'code/modules/divine/arcane_spirits.dm',
             'code/modules/admin/verbs/random_verbs.dm')},
+    # Observing as a spirit on persistent worlds: limited sight, local hearing, haunting.
+    'spirit_observe': {'files': ('tests/spirit_observe/test_spirit_observe.py',),
+        'paths': ('tests/spirit_observe/', 'code/game/mob/observer/ghost/spirit_observe.dm',
+            'icons/effects/spirit_sight.dmi'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/observer/ghost/login.dm',
+            'code/_onclick/ghost.dm', 'code/game/mob/hear_say.dm', 'code/game/mob/living/say.dm',
+            'code/game/mob/emote.dm',
+            'code/game/mob/mob.dm', 'code/game/mob/mob_movement.dm', 'code/modules/multiz/movement.dm',
+            'code/modules/1713/radio.dm', 'code/modules/1713/cmss13_afterlife.dm',
+            'code/game/mob/new_player/new_player.dm')},
     'ghost_animal_noises': {'files': ('tests/ghost_animal_noises/test_ghost_animal_noises.py',),
         'paths': ('tests/ghost_animal_noises/', 'code/game/mob/emote.dm'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm',
@@ -2934,9 +2952,10 @@ SUITES = {
                   'tgui/src/interfaces/IntegratedCircuit/', 'tgui/src/interfaces/WiremodCircuit.tsx'),
         'shared_paths': ('civ13.dme', 'tgui/src/interfaces/index.tsx', 'tgui/src/types.ts',
             'tgui/THIRD_PARTY.md', 'UI/tgui/civ13-tgui.css')},
-    'chat_translation': {'files': ('tests/chat_translation/test_markers.py',),
+    'chat_translation': {'files': ('tests/chat_translation/test_markers.py', 'tests/chat_translation/test_edge_service.py'),
         'paths': ('tests/chat_translation/', 'code/game/mob/hear_say.dm', 'interface/chat/chat.html',
-                  'code/modules/persistence/region_ooc.dm', 'docs/chat-translation.md')},
+                  'code/modules/persistence/region_ooc.dm', 'docs/chat-translation.md',
+                  'code/modules/chat/chat_translate.dm', 'tools/edge-translator/')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

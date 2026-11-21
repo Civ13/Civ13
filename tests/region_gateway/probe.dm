@@ -49,7 +49,8 @@ var/global/gateway_probe_runtime_error = FALSE
 		"regions" = list(
 			list("id" = "gateway", "name" = "Gateway", "kind" = "GATEWAY", "address" = "play.example:1714"),
 			list("id" = "gaia", "name" = "Gaia", "kind" = "SURFACE", "address" = "play.example:1771"),
-			list("id" = "northamerica", "name" = "North America", "kind" = "SURFACE", "address" = "play.example:1744"))))
+			list("id" = "northamerica", "name" = "North America", "kind" = "SURFACE", "address" = "play.example:1744"),
+			list("id" = "tutorial", "name" = "Tutorial", "kind" = "TUTORIAL", "address" = "play.example:1760"))))
 
 /proc/gateway_probe_answer(verdict, home)
 	return list("ok" = TRUE, "result" = list("verdict" = verdict, "home" = home))
@@ -100,6 +101,14 @@ var/global/gateway_probe_runtime_error = FALSE
 	var/mob/new_player/lobby = new
 	gateway_probe_check("join/refused", !region_home_admit(lobby))
 	qdel(lobby)
+
+	// While a land cannot be reached, the practice rooms are offered when the tutorial is up,
+	// and the gateway never opens in-world rooms of its own.
+	var/list/tutorial = shard_group.peers["tutorial"]
+	tutorial["state"] = "DOWN"
+	gateway_probe_check("practice/none_without_tutorial", region_gateway_practice_link() == "" && !practice_room_available())
+	tutorial["state"] = "UP"
+	gateway_probe_check("practice/offered", findtext(region_gateway_practice_link(), "gateway_practice=1") && tutorial_region_peer() == "tutorial" && practice_room_available())
 
 	// The hub entry describes the lands behind it.
 	shard_group.peers["gaia"]["map"] = "Gaia"
