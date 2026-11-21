@@ -230,7 +230,8 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_idle(H)
 	H.sprinting = FALSE
 	H.m_intent = "stealth"
-	body_motion_probe_assert(!H.body_motion_stride(), "no_bounce_sneaking")
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_priority == BODY_MOTION_PRIORITY_STRIDE, "sneaking_crouches")
+	body_motion_probe_idle(H)
 	// Wading drags the body down on a slower beat; ice glides flat.
 	H.m_intent = "walk"
 	var/turf/home = H.loc
