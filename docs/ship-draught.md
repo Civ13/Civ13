@@ -26,7 +26,9 @@ hull and `SHIP_DRAUGHT_MAX_DECK` tiles of deck in all. `buildable()` is TRUE
 when there are none.
 
 `costs()` adds up the hand recipe of every floor and piece; a tile of upper
-deck costs a floor. `tests/ship_draught` holds those costs to
+deck costs a floor, and each side in `gunwale_sides()` costs a gunwale (2 wood,
+or 2 steel for a bulwark on steel floor; boats and ships only, see
+[ship-edges.md](ship-edges.md)). `tests/ship_draught` holds those costs to
 `config/crafting/material_recipes_global.txt`.
 
 `load()`, `mass()`, `sail_step()`, `oar_step()`, `best_step()` and
@@ -125,7 +127,8 @@ faces (`slipway_draught_turn()`, the inverse of `ship_draught_bow_up()`).
 The post keeps the draught as `draught_code` beside the usual `design`
 (her name), `pieces_done` and `paid`. `slipway_draught_plan()` makes the
 piece plan: one piece per floor tile from stern to bow (plank floors, then
-steel), then one per fitting, a stage per kind in `ship_draught_pieces` order.
+steel), then one per fitting, a stage per kind in `ship_draught_pieces` order, then
+one per gunwale (wooden gunwales, then steel bulwarks) on a boat or ship.
 Each piece costs its hand recipe; the deck above is not built on the slipway
 and is laid by hand once she is afloat. Iron and planks pay for pieces as well
 as the usual materials (`piece_material()`).
