@@ -13,14 +13,15 @@
 /obj/item/weapon/clay/crucible
 	name = "unfired crucible"
 	desc = "A small, thick-walled clay cup. Fire it before use."
-	icon_state = "unfired_verysmallclaypot"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "steel_crucible_unfired"
 	result = /obj/item/weapon/steel_crucible
 
 /obj/item/weapon/steel_crucible
 	name = "crucible"
 	desc = "A small fired clay crucible for making steel. Pack it with 2 wrought iron bars and 1 charcoal, seal it with an empty hand, then fire it in a kiln under a bellows blast three times."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "verysmallclaypot"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "steel_crucible"
 	w_class = ITEM_SIZE_SMALL
 	var/iron = 0
 	var/charcoal = 0
@@ -76,6 +77,7 @@
 	if (!do_after(user, 30, src))
 		return
 	sealed = TRUE
+	icon_state = "steel_crucible_sealed"
 	packer_skill = user.getStatCoeff("crafting")
 	name = "sealed crucible"
 	to_chat(user, SPAN_NOTICE("You seal the lid of \the [src] with clay."))
