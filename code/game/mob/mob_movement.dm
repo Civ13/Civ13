@@ -1125,8 +1125,11 @@
 
 	switch(mob.incorporeal_move)
 		if (1)
-			mob.forceMove(get_step(mob, direct))
+			var/turf/step = get_step(mob, direct)
 			mob.dir = direct
+			if (!mob.incorporeal_step_allowed(step)) // spirit_observe.dm: walls stop spirits
+				return
+			mob.forceMove(step)
 		if (2)
 			if (prob(50))
 				var/locx

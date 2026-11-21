@@ -480,6 +480,10 @@
 	if (is_admin && stat == DEAD)
 		is_admin = FALSE
 
+	if (!is_admin && is_spirit_observer()) // spirit_observe.dm
+		to_chat(usr, SPAN_WARNING("A spirit can't watch from afar. Use Haunt or Jump to Mob instead."))
+		return
+
 	var/list/names = list()
 	var/list/namecounts = list()
 	var/list/creatures = list()
