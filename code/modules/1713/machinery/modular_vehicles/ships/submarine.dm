@@ -653,7 +653,9 @@ var/global/list/ship_axes = list()
 // runs on a diesel engine. The stern quarters are sealed tank spaces.
 #define SUB_HULL /obj/structure/vehicleparts/frame/ship/steel/submarine
 #define SUB_HATCH /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch
-var/global/list/submarine_layouts = list(
+var/global/list/submarine_layouts = submarine_layouts_table()
+/proc/submarine_layouts_table()
+	return list(
 	// Scout: helm under the glass bow, the lock-out chambers amidships and
 	// the engine room behind a watertight door.
 	"scout" = list(

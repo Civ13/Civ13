@@ -449,12 +449,6 @@ proc/get_mob_with_client_list()
 	return A*/
 
 //Quick type checks for some tools
-var/global/list/common_tools = list(
-/obj/item/weapon/wrench,
-/obj/item/weapon/hammer,
-/obj/item/weapon/wirecutters,
-///obj/item/multitool,
-/obj/item/weapon/crowbar)
 
 /proc/iswirecutter(O)
 	if (is_tool(O, TOOL_WIRECUTTER))

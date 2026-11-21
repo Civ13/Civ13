@@ -7,7 +7,9 @@
 // world has not reached; min_tier keeps the best items in the deeper, more
 // infested buildings. Salvage materials have no age.
 
-var/global/list/zombie_city_loot_tables = list(
+var/global/list/zombie_city_loot_tables = zombie_city_loot_tables_table()
+/proc/zombie_city_loot_tables_table()
+	return list(
 	"residential" = list(
 		list(/obj/item/weapon/reagent_containers/food/snacks/cracker, 20, 0, 1),
 		list(/obj/item/weapon/reagent_containers/food/snacks/pemmican, 10, 0, 1),

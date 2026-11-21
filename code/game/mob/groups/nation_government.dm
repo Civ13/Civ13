@@ -19,7 +19,9 @@
 // Type -> name, ruler title, earliest ordinal age, extra factions, notice
 // hours and what the type means for players. Mirrors GOVERNMENTS in
 // nations.py, which decides; this is only for the prompts.
-var/global/list/nation_government_info = list(
+var/global/list/nation_government_info = nation_government_info_table()
+/proc/nation_government_info_table()
+	return list(
 	"confederation" = list("Confederation", null, 0, 0, 0, "The member factions rule together: one vote each, a symbolic head, and any member may leave at once."),
 	"theocracy" = list("Theocracy", "High Priest", 0, 0, 24, "The leader of a faith rules the nation alone. Members give a day's notice to leave."),
 	"monarchy" = list("Monarchy", "Monarch", 1, 1, 48, "A monarch rules for life, admits new members and holds one more faction. Members give two days' notice to leave."),

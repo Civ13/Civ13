@@ -203,7 +203,9 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/host_controls,
 	/datum/admins/proc/resume_pending_recovery
 	)
-var/list/admin_verbs_debug = list(
+var/list/admin_verbs_debug = admin_verbs_debug_table()
+/proc/admin_verbs_debug_table()
+	return list(
 	/client/proc/toggle_ecology_spawning,
 	/client/proc/ecology_spawning_status,
 	/client/proc/pollution_status,
@@ -269,7 +271,9 @@ var/list/admin_verbs_rejuv = list(
 	)
 
 //verbs which can be hidden - needs work
-var/list/admin_verbs_hideable = list(
+var/list/admin_verbs_hideable = admin_verbs_hideable_table()
+/proc/admin_verbs_hideable_table()
+	return list(
 	/client/proc/deadmin_self,
 //	/client/proc/deadchat,
 	/datum/admins/proc/toggleenter,

@@ -26,7 +26,9 @@ var/global/list/ship_designers = list() // mob -> sheet being drawn
 // when ship_draught_floors() or ship_draught_pieces() change). A turning piece
 // has one picture per facing. The window falls back to the letter of a piece
 // whose picture is missing.
-var/global/list/ship_designer_sprites = list(
+var/global/list/ship_designer_sprites = ship_designer_sprites_table()
+/proc/ship_designer_sprites_table()
+	return list(
 	"shipd_floor_w.png" = 'icons/ship_designer/floor_w.png',
 	"shipd_floor_s.png" = 'icons/ship_designer/floor_s.png',
 	"shipd_piece_O.png" = 'icons/ship_designer/piece_O.png',
@@ -259,7 +261,9 @@ var/global/list/ship_designer_sprites = list(
 
 // Which heading of the window's palette each piece is drawn under. A piece
 // in none of them goes under "Other", so a new piece still shows.
-var/global/list/ship_designer_groups = list(
+var/global/list/ship_designer_groups = ship_designer_groups_table()
+/proc/ship_designer_groups_table()
+	return list(
 	"Steering and drive" = list("O", "T", "M", "N", "J", "R", "E"),
 	"Gear" = list("K", "A", "P", "Q", "U", "C", "B"),
 	"Arms" = list("H", "Z", "L"),

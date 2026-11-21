@@ -118,7 +118,9 @@ var/global/list/rotation_matrixes1 = list(
 	"left" = list(
 		"1,1" = list("1,1"),),)
 
-var/global/list/rotation_matrixes2 = list(
+var/global/list/rotation_matrixes2 = rotation_matrixes2_table()
+/proc/rotation_matrixes2_table()
+	return list(
 	"right" = list(
 		"1,1" = list("1,2"),
 		"1,2" = list("2,2"),
@@ -130,7 +132,9 @@ var/global/list/rotation_matrixes2 = list(
 		"2,1" = list("2,2"),
 		"2,2" = list("1,2"),),)
 
-var/global/list/rotation_matrixes3 = list(
+var/global/list/rotation_matrixes3 = rotation_matrixes3_table()
+/proc/rotation_matrixes3_table()
+	return list(
 	"right" = list(
 		"1,1" = list("1,3"),
 		"1,2" = list("2,3"),
@@ -152,7 +156,9 @@ var/global/list/rotation_matrixes3 = list(
 		"3,2" = list("2,3"),
 		"3,3" = list("1,3"),),)
 
-var/global/list/rotation_matrixes4 = list(
+var/global/list/rotation_matrixes4 = rotation_matrixes4_table()
+/proc/rotation_matrixes4_table()
+	return list(
 	"right" = list(
 		"1,1" = list("1,4"),
 		"1,2" = list("2,4"),
@@ -188,7 +194,9 @@ var/global/list/rotation_matrixes4 = list(
 		"4,3" = list("2,4"),
 		"4,4" = list("1,4"),),)
 
-var/global/list/rotation_matrixes5 = list(
+var/global/list/rotation_matrixes5 = rotation_matrixes5_table()
+/proc/rotation_matrixes5_table()
+	return list(
 	"right" = list(
 		"1,1" = list("1,5"),
 		"1,2" = list("2,5"),
