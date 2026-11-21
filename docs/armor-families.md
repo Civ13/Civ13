@@ -42,7 +42,8 @@ grade and arrows by its pierce grade, never past 90 and never lowering a value.
 - Mail: early and medieval chainmail, chainmail on the armor slot, hauberk, emirate armor, coif, mamluk coif.
 - Plate: plated armor and its colors, samurai lord armor and helmets (steel),
   bronze, iron and imperial chestplates, medieval, roman, gaelic and classical
-  bronze helmets, sallets, morion, cabasset, gauntlets, plated boots.
+  bronze helmets, sallets, morion, cabasset, gauntlets, plated boots, proof
+  cuirass and proof do (steel).
 
 ## Layering
 
@@ -58,6 +59,14 @@ gaps in mail and lamellar on the struck part unless plate also covers it
 
 Fantasy, sci-fi, modern and other armor has no family and keeps its own
 values; cut, pierce and blunt fall back to its melee value.
+
+## Armor against guns
+
+The proof cuirass and the japanese proof do (anvil, steel, Imperial age on)
+are steel plate on the torso with gun 30 and slowdown 1.0, the first armor
+that turns many musket balls. The resin body shield (armor assembly workbench,
+8 cloth and 4 resin, Trench Warfare, WW1 on) is a light vest with gun 25
+against shrapnel and pistol rounds. Both reuse existing sprites.
 
 ## Telling players
 

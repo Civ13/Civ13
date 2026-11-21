@@ -244,11 +244,13 @@ static class LocalHostingTests {
             new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway" }), "add-gateway plan argv never applies");
         Require(GroupPorts.Step(host.Control!, "add-gateway", null, null, true).ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway", "--apply" }), "add-gateway apply argv");
+        Require(GroupPorts.Step(host.Control!, "add-regions", null, null, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-regions", "--apply" }), "add-regions apply argv");
         var gatewayPlan = GroupPorts.ParsePlan(0, "{\"ok\": true, \"accepted\": false, \"plan\": {\"region\": \"gateway\", \"already\": false, "
             + "\"steps\": [\"Add the region gateway (Gateway) on port 1771.\"], \"problems\": [], \"warnings\": []}}");
         Require(gatewayPlan.Ok && !gatewayPlan.Accepted && !gatewayPlan.Already && gatewayPlan.Steps.Count == 1, "add-gateway plan parsed");
         foreach (var unsafeStep in new Action[] { () => GroupPorts.Step(host.Control!, "setup"), () => GroupPorts.Step(host.Control!, "set-gate"),
-                () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"),
+                () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"), () => GroupPorts.Step(host.Control!, "add-regions", "gaia"),
                 () => GroupPorts.Step(host.Control!, "ports", null, null, true), () => GroupPorts.Step(host.Control!, "set-port", "moon"),
                 () => GroupPorts.Step(host.Control!, "set-port", "moon", 80), () => GroupPorts.Step(host.Control!, "set-gate", "gaia", 1721),
                 () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config"), () => GroupPorts.Step(host.Control!, "add-gateway", "gaia"),

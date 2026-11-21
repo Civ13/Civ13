@@ -74,7 +74,7 @@ public static class HostBoard {
         using (document) {
             var json = document.RootElement;
             if (!Bool(json, "ok") || !json.TryGetProperty("regions", out var regions) || regions.ValueKind != JsonValueKind.Object) return behind;
-            foreach (var region in regions.EnumerateObject().Take(16))
+            foreach (var region in regions.EnumerateObject().Take(LocalHosting.MaxRegions))
                 if (region.Value.ValueKind == JsonValueKind.Object && region.Value.TryGetProperty("behind", out var count)
                         && count.ValueKind == JsonValueKind.Number && count.TryGetInt32(out var commits) && commits >= 0)
                     behind[region.Name] = commits;
@@ -90,7 +90,7 @@ public static class HostBoard {
         using (document) {
             var json = document.RootElement;
             if (!Bool(json, "ok") || !json.TryGetProperty("regions", out var regions) || regions.ValueKind != JsonValueKind.Object) return busy;
-            foreach (var region in regions.EnumerateObject().Take(16))
+            foreach (var region in regions.EnumerateObject().Take(LocalHosting.MaxRegions))
                 if (region.Value.ValueKind == JsonValueKind.Object && (Bool(region.Value, "busy")
                         || (region.Value.TryGetProperty("standby", out var standby) && standby.ValueKind == JsonValueKind.Object)))
                     busy.Add(region.Name);
@@ -106,7 +106,7 @@ public static class HostBoard {
         using (document) {
             var json = document.RootElement;
             if (!Bool(json, "ok") || !json.TryGetProperty("regions", out var regions) || regions.ValueKind != JsonValueKind.Object) return cards;
-            foreach (var region in regions.EnumerateObject().Take(16)) {
+            foreach (var region in regions.EnumerateObject().Take(LocalHosting.MaxRegions)) {
                 if (region.Value.ValueKind != JsonValueKind.Object) continue;
                 int? commits = behind != null && behind.TryGetValue(region.Name, out var count) ? count : null;
                 cards.Add(Card(region.Name, Clean(Str(region.Value, "name") ?? region.Name), region.Name == mainland, region.Value, commits));

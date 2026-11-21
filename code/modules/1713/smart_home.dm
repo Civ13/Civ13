@@ -27,6 +27,8 @@ var/global/list/smart_hubs = list()
 	return FALSE
 
 /obj/structure/smart_power_cut()
+	if (mechanism_relay_open_on(loc))
+		return TRUE // an open relay on the tile (contraptions.dm)
 	return smart_off && smart_hub_id
 
 // What a hub can do with this structure: "light", "lock", "plug" or null.

@@ -12,10 +12,16 @@ save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
 <!-- 2026-11-21: region clocks on the host board -->
-Launcher 1.5.34: the region board shows a LOCAL TIME column (sun/moon glyph, clock, season, UTC zone) for regions on
+Launcher 1.5.35: the region board shows a LOCAL TIME column (sun/moon glyph, clock, season, UTC zone) for regions on
 the shared world calendar (docs/world-calendar.md). Data path: `world_calendar_status()` in DM -> shard_group
 describe `calendar` -> `shard_group.py` `calendar_view` (validated) -> `region_view.calendar` -> `RegionClock.From`.
 Off-calendar rows leave the slot blank; at narrow widths DETAILS shrinks first, then the zone and season drop.
+
+<!-- 2026-11-21: up to 24 regions and missing Earth regions -->
+Launcher 1.5.34: every list of regions reads up to `LocalHosting.MaxRegions` (32, the same as shard_group.py MAX_REGIONS
+and shard_group.dm SHARD_MAX_REGIONS) instead of 16, and Ports and front door gains "Add missing Earth regions"
+(`shard_group.py add-regions`): it plans, confirms, then adds the Earth lands and seas the group lacks
+(EARTH_REGIONS: the Mediterranean and the five oceans on the live host) and sets them up stopped.
 
 <!-- 2026-11-21: process safety and the experimental WMI check -->
 After WMI broke on 2026-11-19 (tasklist hung, Gaia stayed down), Val approved the criticality plan (2026-11-21).
@@ -38,6 +44,9 @@ Val asked (2026-11-19) that admin notes and similar systems be visible on every 
 `<group root>/coordinator.sqlite` (tools/transfer_storage/records.py report/export): a summary, one player's records,
 a search (key, text or IP), each region's copy of its old notes/bans/memos files and its uncollected journal.
 Staff add and remove records in game only. Admin tooling: no changelog line or wiki page.
+A player lookup (`--ckey`) starts with that account's lifetime points and character slots
+(records.py account_summary, docs/character-slots.md); `shard_group.py accounts --ckey K` answers the
+summary alone as JSON (`points`, `spent`, `balance`, `claimed`, `slots`).
 
 <!-- 2026-11-17: Civilizationbot log level -->
 Val asked (2026-11-17) for the bot's logger level in the launcher, info by default instead of debug. The

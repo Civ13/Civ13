@@ -50,6 +50,53 @@ class GatewayTests(unittest.TestCase):
         self.assertTrue(self.host(group, 'gaia').may_sleep())
         self.assertEqual('start-current', self.host(group, 'door').automatic_start_action(), 'a crashed gateway comes back at once')
 
+    def tutorial_group(self):
+        self.group['regions'][1].update(id='door', name='Tutorial', kind='TUTORIAL', map='maps/small/tiny.dmm')
+        return self.write_group()
+
+    def test_tutorial_stays_up_and_restarts_onto_updates_when_empty(self):
+        # Val (2026-11-21): the tutorial stays current and available while the lands are down.
+        group = self.tutorial_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'door')
+        self.assertFalse(host.may_sleep())
+        self.assertEqual('start-current', host.automatic_start_action())
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1721}
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(group['persistent'])
+        self.assertEqual(30, host.update_unsaved_while_empty())
+        self.assertEqual('restart', host.read_state()['action'])
+
+    def test_tutorial_handover_restarts_without_a_standby_and_waits_for_players(self):
+        group = self.tutorial_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'door')
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1721}
+        self.machine.pids_by_port = {1721: 100}
+        host.work('stage', host.request_stage()['operation'])
+        clients = [2]
+        self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: {
+            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': clients[0], 'persistence_mode': 0}
+        with self.assertRaisesRegex(RuntimeError, 'players are in the tutorial'):
+            host.do_handover('x', automatic=True)
+        clients[0] = 0
+        start = self.machine.start_task
+
+        def start_task(name, dmb='region.dmb'):
+            self.machine.up.add(1721)
+            return start(name, dmb)
+        self.machine.start_task = start_task
+        host.precheck_handover()
+        host.work('handover', host.request('handover')['operation'])
+        self.assertEqual(('done', NEWER), (host.read_state()['phase'], host.built_revision()))
+        self.assertFalse([argv for argv, _ in self.machine.calls if argv[0] == 'standby'])
+
     def test_update_restarts_on_its_own_port_without_a_standby(self):
         group = self.gateway_group()
         shard_group.setup(group, self.machine)
@@ -134,6 +181,53 @@ class GatewayTests(unittest.TestCase):
         port = answer['plan']['port']
         self.assertEqual({'gateway': [port, 1714], 'gaia': [1714, port]}, {k: v['port'] for k, v in plan['changes'].items()})
         self.assertFalse(plan['regions']['gateway']['start'], 'the whole group is down: nothing is started')
+
+    def test_add_regions_adds_the_missing_earth_regions_stopped(self):
+        self.group['regions'][0]['map'] = shard_group.EARTH_MAINLAND_MAP
+        self.group['regions'][1].update(id='europe', name='Europe', kind='SURFACE', map='maps/nomads/nomads_earth_europe.dmm')
+        self.group['live'] = True
+        self.machine.up = {1749}  # someone else listens on the Mediterranean's usual port
+        group = self.write_group()
+        answer = shard_group.add_regions(group, platform=self.machine)
+        self.assertFalse(answer['accepted'])
+        ids = [r['id'] for r in answer['plan']['regions']]
+        self.assertNotIn('europe', ids, 'a region already in the group is never added again')
+        self.assertIn('mediterranean', ids)
+        self.assertIn('atlantic', ids)
+        ports = {r['id']: r['port'] for r in answer['plan']['regions']}
+        self.assertEqual(1750, ports['atlantic'], 'the usual port when it is free')
+        self.assertNotEqual(1749, ports['mediterranean'], 'another port when the usual one is taken')
+        self.assertEqual(len(ports), len(set(ports.values()) - {1720, 1721}))
+        self.assertFalse(answer['plan']['problems'], answer['plan']['problems'])
+        self.assertEqual(2, len(json.loads(self.path.read_text())['regions']), 'a plan changes nothing')
+        answer = shard_group.add_regions(group, apply=True, platform=self.machine)
+        self.assertTrue(answer['accepted'])
+        written = {r['id']: r for r in json.loads(self.path.read_text())['regions']}
+        self.assertEqual(('OCEANIC', 'maps/nomads/nomads_ocean_pacific.dmm'), (written['pacific']['kind'], written['pacific']['map']))
+        self.assertTrue((self.base / 'regions' / 'mediterranean' / '.git').exists())
+        self.assertFalse(self.machine.detached, 'nothing is started')
+        again = shard_group.add_regions(shard_group.load_group(self.path), platform=self.machine)
+        self.assertTrue(again['plan']['already'])
+        self.assertFalse(again['plan']['regions'])
+
+    def test_add_regions_only_for_earth(self):
+        with self.assertRaisesRegex(shard_group.Refused, 'does not host Earth'):
+            shard_group.add_regions(self.write_group(), platform=self.machine)
+
+    def test_a_group_holds_up_to_32_regions(self):
+        regions = [{'id': 'r%d' % n, 'name': 'R%d' % n, 'kind': 'SURFACE', 'port': 1800 + n, 'map': 'maps/a.dmm'} for n in range(33)]
+        self.group['regions'] = regions[:32]
+        self.group['mainland'] = 'r0'
+        self.write_group()
+        self.group['regions'] = regions
+        with self.assertRaisesRegex(ValueError, '1 to 32 regions'):
+            self.write_group()
+        # The worlds (shard_group.dm) and the launcher (LocalHosting.MaxRegions) take as many.
+        root = Path(__file__).resolve().parents[2]
+        self.assertIn('#define SHARD_MAX_REGIONS %d' % shard_group.MAX_REGIONS,
+                      (root / 'code/modules/persistence/shard_group.dm').read_text(encoding='utf-8'))
+        self.assertIn('public const int MaxRegions = %d;' % shard_group.MAX_REGIONS,
+                      (root / 'tools/opendream-client/native/LocalHosting.cs').read_text(encoding='utf-8'))
 
     def test_add_gateway_needs_the_relay(self):
         with self.assertRaisesRegex(shard_group.Refused, 'routing relay'):

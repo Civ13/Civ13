@@ -1,0 +1,13 @@
+{
+  "name": "civ13-edge-translator",
+  "private": true,
+  "description": "Local chat translation for Civ13 through Microsoft Edge's built-in Translator",
+  "main": "edge_translator.js",
+  "scripts": {
+    "start": "node edge_translator.js",
+    "test": "node test/test.js"
+  },
+  "dependencies": {
+    "playwright-core": "1.64.1"
+  }
+}

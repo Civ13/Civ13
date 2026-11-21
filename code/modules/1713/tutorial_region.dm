@@ -78,15 +78,16 @@
 	return peer ? peer["name"] : "the game"
 
 // Lobby Practice Room link: the tutorial region when there is one, else a room here.
+// The gateway hosts no play, so it only ever sends players to the tutorial region.
 /proc/practice_room_available()
-	return tutorial_region_peer() || (ticker && !practice_rooms.entry_error())
+	return tutorial_region_peer() || (!region_gateway_here() && ticker && !practice_rooms.entry_error())
 
 /proc/practice_room_open(mob/new_player/lobby)
 	if(!istype(lobby) || !lobby.client)
 		return FALSE
 	var/id = tutorial_region_peer()
 	if(!id)
-		return practice_rooms.enter(lobby)
+		return region_gateway_here() ? FALSE : practice_rooms.enter(lobby)
 	tutorial_region_send(lobby.client, id)
 	return TRUE
 
@@ -102,8 +103,10 @@
 	if(C && peer["state"] != "UP")
 		var/why = shard_group.wake_peer(id, null)
 		if(why)
-			// The practice rooms of this world still work.
-			if(C && istype(C.mob, /mob/new_player))
+			// The practice rooms of this world still work (not in the gateway, which hosts no play).
+			if(C && region_gateway_here())
+				to_chat(C, SPAN_WARNING("The practice rooms are not answering right now. Try again in a minute."))
+			else if(C && istype(C.mob, /mob/new_player))
 				to_chat(C, SPAN_WARNING("The practice rooms are not answering right now, so one opens here instead."))
 				practice_rooms.enter(C.mob)
 			return
