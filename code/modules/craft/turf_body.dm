@@ -171,9 +171,7 @@
 			facings += S.dir
 			var/list/riders = list()
 			for (var/atom/movable/M in S)
-				if (M.loc != S || QDELETED(M) || isobserver(M))
-					continue
-				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+				if (M.loc != S || QDELETED(M) || !M.craft_cargo())
 					continue
 				riders += M
 			cargo += list(riders)

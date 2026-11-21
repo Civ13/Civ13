@@ -280,9 +280,9 @@
 					continue
 			// Naval mines stay where they were laid (naval/naval_mines.dm);
 			// the craft sets them off after the move.
-			if (M.craft_left_behind())
+			if (!M.craft_cargo())
 				continue
-			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
+			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item) || istype(M, /obj/machinery)) && !(M in transporting))
 				if (istype(M, /obj/structure/vehicleparts/frame))
 					var/obj/structure/vehicleparts/frame/other = M
 					if (other.axis != src)

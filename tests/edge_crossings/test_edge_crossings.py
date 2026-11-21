@@ -140,8 +140,12 @@ class SeaEdgeTests(unittest.TestCase):
 
     def test_leftover_animation_is_not_cargo(self):
         crossing = (ROOT / 'code/modules/naval/ship_crossing.dm').read_text(encoding='utf-8')
+        # Packing reads each deck and hold tile through sea_crossing_pack_tile().
         pack = crossing.split('/proc/sea_crossing_pack(')[1].split('\n/proc/')[0]
-        self.assertIn('region_travel_ignorable(M)', pack)
+        self.assertIn('sea_crossing_pack_tile(', pack)
+        tile = crossing.split('/proc/sea_crossing_pack_tile(')[1].split('\n/proc/')[0]
+        self.assertIn('region_travel_ignorable(M)', tile)
+        self.assertIn('!M.craft_cargo()', tile)
         generic = (ROOT / 'code/modules/persistence/region_travel_generic.dm').read_text(encoding='utf-8')
         ignorable = generic.split('/proc/region_travel_ignorable(')[1].split('\n/proc/')[0]
         for kind in ('/atom/movable/overlay', '/obj/chat_text', '/obj/effect', '/mob/observer'):
@@ -154,13 +158,14 @@ class SeaEdgeTests(unittest.TestCase):
         living = (ROOT / 'code/game/mob/living/living.dm').read_text(encoding='utf-8')
         self.assertNotIn('CT.forceMove(', living)
         # Ghosts and admin observers are not cargo either.
-        self.assertLess(pack.index('region_travel_ignorable(M)'), pack.index('if (ismob(M))'))
+        self.assertLess(tile.index('region_travel_ignorable(M)'), tile.index('if (ismob(M))'))
 
     def test_refused_things_are_marked_on_deck(self):
         crossing = (ROOT / 'code/modules/naval/ship_crossing.dm').read_text(encoding='utf-8')
         pack = crossing.split('/proc/sea_crossing_pack(')[1].split('\n/proc/')[0]
-        self.assertEqual(pack.count('refused |= '), pack.count('blocking |= '))
-        self.assertLess(pack.index('sea_crossing_mark(blocking)'), pack.index('return "Put these ashore first'))
+        tile = crossing.split('/proc/sea_crossing_pack_tile(')[1].split('\n/proc/')[0]
+        self.assertEqual(tile.count('refused |= '), tile.count('blocking |= '))
+        self.assertLess(pack.index('sea_crossing_mark(S["blocking"])'), pack.index('return "Put these ashore first'))
         mark = crossing.split('/proc/sea_crossing_mark(')[1].split('\n/proc/')[0]
         self.assertIn('new(T)', mark)
         self.assertIn('QDEL_IN(P, 100)', mark)

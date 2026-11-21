@@ -476,7 +476,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			continue
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
-			if (M.loc != T || QDELETED(M) || M.craft_left_behind())
+			if (M.loc != T || QDELETED(M) || !M.craft_cargo())
 				continue
 			if (istype(M, /obj/item/weapon/grenade))
 				var/obj/item/weapon/grenade/G = M
@@ -499,7 +499,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if (BAT.anchored)
 					qdel(BAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
-			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !aboard[M])
+			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item) || istype(M, /obj/machinery)) && !aboard[M])
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_lever))
 					if (istype(M, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/other = M
