@@ -16959,6 +16959,49 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Tap lacquer trees",
+      "file": "code/modules/1713/lacquer.dm",
+      "line": 82,
+      "source_commit": "bb8b197492378589907523daf8babe8d9f3c4fbd",
+      "inputs": [],
+      "outputs": [
+        "lacquer"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Outside harm intent, use an open container on a living broadleaf tree in Earth Asia or on a land that is not a continent, with a knife in the other hand.",
+        "The container catches 5 units of lacquer; the tree bleeds again after about 20 minutes."
+      ],
+      "conditions": "Needs a knife and room for 5 units.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mix spirit varnish",
+      "file": "code/modules/1713/lacquer.dm",
+      "line": 57,
+      "source_commit": "bb8b197492378589907523daf8babe8d9f3c4fbd",
+      "inputs": [
+        "resin",
+        "ethanol"
+      ],
+      "outputs": [
+        "spirit_varnish"
+      ],
+      "tools": [],
+      "steps": [
+        "Mix resin with distilled ethanol in any container.",
+        "2 resin and 1 ethanol make 3 spirit varnish."
+      ],
+      "conditions": "Needs liquid resin and ethanol.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Dry tobacco leaves",
       "file": "code/modules/materials/material_sheets.dm",
       "line": 547,
