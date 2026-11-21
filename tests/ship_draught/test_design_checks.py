@@ -20,7 +20,7 @@ DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='replace')
 
 
 def table_keys(source, name):
-    block = source.split('var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
+    block = source.split('/proc/%s()\n\tvar/static/list/table\n\tif (!table)\n\t\ttable = list(' % name if '/proc/%s()\n' % name in source else 'var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
     return re.findall(r'^\t"(\w+)" = ', block, re.M)
 
 

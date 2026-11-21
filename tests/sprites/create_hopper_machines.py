@@ -1,7 +1,8 @@
 """Hand-placed 32px hopper-fed machines for icons/obj/hopper_machines.dmi:
 the mill stones (`millstones`, `millstones_on`), the water-powered sash
 saw (`sash_saw`, `sash_saw_on`), the fulling stocks (`fulling_stocks`,
-`fulling_stocks_on`) and the bark stamps (`bark_stamps`, `bark_stamps_on`).
+`fulling_stocks_on`), the bark stamps (`bark_stamps`, `bark_stamps_on`) and
+the shaft-driven power loom (`power_loom`, `power_loom_on`).
 Each has one direction; the `_on` states are four-frame loops.
 
 The mill stones sit on a heavy timber hurst frame in 3/4 view: the grey
@@ -26,9 +27,20 @@ front of two guide rails, over a stone trough of tan bark; the cam shaft
 behind lifts each stamp by its tappet. Running, the stamps lift and drop in
 turn and bits of crushed bark jump where one lands.
 
+The power loom is an early cast-iron loom of the 1800s, seen from the cloth
+end: two iron side frames tied by a breast rail, the warp beam wound with
+white cotton at the back, the warp running forward under the heald shaft and
+through the reed of the wooden batten (sley) to the fell, and the woven cream
+cloth rolling onto the cloth beam at the front. The belt pulley sits on the
+crank shaft at the right. Running, the batten swings back and beats up, the
+dark wooden shuttle flies along its race, the shed changes, the cloth beam
+creeps round and the pulley's spokes turn.
+
 Palette, outline and light (from the upper left) are those of
 create_transmission.py and the prime movers in create_mechanical_power.py:
-the same seasoned timber, wrought iron and field stone.
+the same seasoned timber, wrought iron and field stone. The loom's iron is
+that wrought-iron ramp, its cotton and cloth the flour white, stone highlight
+and wool creams already on the sheet.
 
 The art is drawn procedurally by this script: every pixel is placed from a
 fixed palette (Pillow only); no external or generated artwork. Run it to
@@ -453,6 +465,120 @@ def bark_stamps(step=None):
     return f
 
 
+# ------------------------------------------------------------- power loom
+
+# how far the batten stands from mid swing: back, mid, beating up, mid
+BATTEN_SWING = (-2, 0, 2, 0)
+# where the shuttle's left end is on the race; standing it rests in the left box
+SHUTTLE_X = (8, 14, 19, 4)
+# cotton warp: a thread in the light, and the one beside it
+COTTON = [FLOUR, STONE[0]]
+
+
+def power_loom(step=None):
+    """`step` None is the loom standing with the batten at mid swing and the
+    shuttle in its box; 0-3 are the working frames."""
+    f = Frame()
+    turn = step or 0
+    x0, x1 = 4, 21                        # the width of the warp and cloth
+    # the warp sheet from the beam forward to the fell, the shed changing
+    for x in range(x0, x1 + 1):
+        f.vline(x, 7, 18, COTTON[(x + turn) % 2])
+    # the warp beam at the back: a roll of white thread between iron flanges
+    for x in range(x0, x1 + 1):
+        f.vline(x, 2, 4, FLOUR)
+        f.put(x, 5, STONE[0])
+        f.put(x, 6, STONE[1])
+        if x % 3 == 1:
+            f.vline(x, 3, 5, STONE[0] if x % 2 else STONE[1])
+    f.hline(x0, x1, 2, STONE[0])
+    f.pts(FLOUR, *[(x, 2) for x in range(x0, x1 + 1, 2)])
+    # the heald shaft across the warp, its cords knotted along it
+    f.hline(x0, x1, 8, TIMBER[2])
+    f.hline(x0, x1, 9, TIMBER[4])
+    for x in range(x0 + 1, x1, 3):
+        f.put(x, 8, TIMBER[0])
+    # the woven cloth from the fell to the cloth beam
+    for x in range(x0, x1 + 1):
+        f.put(x, 19, WOOL[1] if x % 2 else WOOL[0])       # the fell
+        f.put(x, 20, WOOL[0])
+        f.put(x, 21, WOOL[1] if grain(x // 2, 3, 1) < 3 else WOOL[0])
+    # the cloth beam: the roll of cloth, creeping round as it takes up
+    for x in range(x0, x1 + 1):
+        f.put(x, 22, WOOL[0])
+        f.put(x, 23, WOOL[0])
+        f.put(x, 24, WOOL[1])
+        f.put(x, 25, WOOL[1])
+        f.put(x, 26, WOOL[2])
+    for k, x in enumerate(range(x0 + 2, x1, 5)):
+        y = 22 + (k + turn) % 4
+        f.put(x, y, WOOL[2] if y > 23 else WOOL[1])
+        f.put(x + 1, y, WOOL[2] if y > 23 else WOOL[1])
+    # the batten: reed cap, the iron reed, the race and the heavy sley
+    by = 12 + (0 if step is None else BATTEN_SWING[step])
+    f.hline(x0, x1, by, TIMBER[2])
+    for x in range(x0, x1 + 1):
+        f.put(x, by + 1, IRON[0] if x % 2 else IRON[2])
+    f.hline(x0, x1, by + 2, TIMBER[0])
+    f.hline(x0, x1, by + 3, TIMBER[1])
+    f.hline(x0, x1, by + 4, TIMBER[3])
+    for x in range(x0, x1 + 1):
+        if grain(x // 3, 6, 3) == 0:
+            f.put(x, by + 3, TIMBER[2])
+    # the shuttle boxes at the ends of the race
+    for bx in (x0, x1 - 2):
+        f.hline(bx, bx + 2, by, TIMBER[1])
+        f.put(bx if bx == x0 else bx + 2, by + 1, TIMBER[3])
+    # the shuttle, a dark block of boxwood on the race
+    sx = 4 if step is None else SHUTTLE_X[step]
+    f.hline(sx, sx + 2, by + 1, TIMBER[3])
+    f.hline(sx, sx + 2, by + 2, TIMBER[4])
+    if step in (0, 1):
+        f.put(sx - 1, by + 2, FLOUR)                      # the weft it trails
+    # the cast-iron side frames, their feet, and the flanges of both beams
+    for fx in (1, 22):
+        f.vline(fx, 4, 28, IRON[0])
+        f.vline(fx + 1, 3, 28, IRON[1])
+        f.vline(fx + 2, 4, 28, IRON[2])
+        f.put(fx + 1, 3, IRON[0])
+        f.vline(fx + 1, 9, 11, IRON[2])                   # the cast openings
+        f.vline(fx + 1, 17, 20, IRON[2])
+        f.hline(fx - 1, fx + 3, 29, IRON[1])
+        f.put(fx - 1, 29, IRON[0])
+        f.put(fx + 3, 29, IRON[2])
+    for fx in (3, 22):
+        f.vline(fx, 1, 7, IRON[1])                        # warp beam flange
+        f.put(fx, 1, IRON[0])
+        f.put(fx, 4, GREASE)                              # its gudgeon
+        f.vline(fx, 21, 27, IRON[1])                      # cloth beam flange
+        f.put(fx, 21, IRON[0])
+        f.put(fx, 24, GREASE)
+    # the breast rail tying the frames under the cloth beam
+    f.hline(2, 23, 27, IRON[0])
+    f.hline(2, 23, 28, IRON[2])
+    f.pts(IRON[1], (3, 27), (22, 27))
+    f.pts(GREASE, (6, 27), (19, 27))                      # bolt heads
+    # the belt pulley on the crank shaft at the right, seen nearly edge on
+    cx, cy = 28, 15
+    f.hline(25, 27, cy, IRON[1])
+    for y in range(cy - 7, cy + 8):
+        h = arc(cy, 7.4, 2.4, y)
+        for x in range(round(cx - h), round(cx + h) + 1):
+            f.put(x, y, IRON[2])
+        f.put(round(cx - h), y, IRON[0] if y < cy + 3 else IRON[1])     # lit rim
+        f.put(round(cx + h), y, IRON[1])
+    f.pts(IRON[0], (cx, cy - 7), (cx - 1, cy - 7))
+    f.pts(IRON[1], (cx, cy + 7), (cx + 1, cy + 7))
+    for k in range(4):
+        a = math.radians(turn * 22.5 + k * 90 + 10)
+        f.line(cx, cy, round(cx + 1.2 * math.cos(a)), round(cy + 5.6 * math.sin(a)),
+               GREASE if k == 0 else IRON[0])
+    f.put(cx, cy, GREASE)                                 # the hub
+    f.outline()
+    f.shadow(1, 31, 30, 31)
+    return f
+
+
 def states():
     """[(state, frames)] in sheet order; every state has one direction."""
     on = range(FRAMES_ON)
@@ -465,6 +591,8 @@ def states():
         ('fulling_stocks_on', [fulling_stocks(i) for i in on]),
         ('bark_stamps', [bark_stamps()]),
         ('bark_stamps_on', [bark_stamps(i) for i in on]),
+        ('power_loom', [power_loom()]),
+        ('power_loom_on', [power_loom(i) for i in on]),
     ]
 
 

@@ -472,7 +472,7 @@
 	var/message = "It smells contraband nearby"
 	if (!I)
 		return
-	if (I.is_contraband || (istype(I,/obj/item/weapon/reagent_containers) && (I.reagents.has_reagent("methamphetamine") || I.reagents.has_reagent("cocaine"))))
+	if (item_sniffable(I, get_turf(src))) // faction_substances.dm
 		if (prob(20) && world.time >= next_bork)
 			visible_message("<span class='warning'>\The [src] starts barking! [message]!</span>")
 			playsound(src.loc, 'sound/animals/dog/dogbark3.ogg', 95, TRUE, 3)

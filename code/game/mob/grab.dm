@@ -308,6 +308,8 @@
 // equals, quicker against a weaker victim and slower against a stronger one.
 /obj/item/weapon/grab/proc/grab_upgrade_cooldown()
 	var/ratio = physical_contest_ratio(assailant, affecting, 0.7, 0.3)
+	// Grappling schools tighten holds faster (martial_moves.dm).
+	ratio *= martial_grapple_edge(assailant, affecting)
 	return round(UPGRADE_COOLDOWN / ratio)
 
 //This is used to make sure the victim hasn't managed to yackety sax away before using the grab.

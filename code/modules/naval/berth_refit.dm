@@ -30,8 +30,8 @@
 /obj/structure/berth_refit_mark
 	name = "refit mark"
 	desc = "Chalk on a hull being refitted at her berth."
-	icon = 'icons/obj/vehicles/vehicleparts_boats.dmi'
-	icon_state = "grid"
+	icon = 'icons/obj/berths.dmi'
+	icon_state = "refit_add"
 	anchored = TRUE
 	density = FALSE
 	flammable = FALSE
@@ -40,11 +40,11 @@
 	mouse_opacity = FALSE
 	layer = TURF_LAYER + 0.2
 	should_save = FALSE
-	alpha = 120
 	var/kind = "add"
 
 /obj/structure/berth_refit_mark/proc/set_kind(new_kind, what)
 	kind = new_kind
+	icon_state = "refit_[kind]"
 	switch (kind)
 		if ("add")
 			color = "#40c040"
@@ -60,7 +60,7 @@
 			desc = "The refit changes [what] here."
 		else
 			color = "#e0a020"
-			alpha = 70
+			alpha = 200
 			name = "refit mark: turn"
 			desc = "The refit turns [what] here."
 
@@ -108,8 +108,8 @@
 		mine[T] = TRUE
 	for (var/turf/T in target)
 		var/list/want = target[T]
-		var/floor_name = ship_draught_floors[want[1]]["name"]
-		var/list/piece = want[2] ? ship_draught_pieces[want[2]] : null
+		var/floor_name = ship_draught_floors()[want[1]]["name"]
+		var/list/piece = want[2] ? ship_draught_pieces()[want[2]] : null
 		if (!mine[T])
 			.[T] = list("add", piece ? "a [floor_name] with a [piece["name"]]" : "a [floor_name]")
 			continue
@@ -117,7 +117,7 @@
 		if (have[1] != want[1])
 			.[T] = list("change", "the floor for a [floor_name]")
 		else if (have[2] != want[2])
-			var/list/old = have[2] ? ship_draught_pieces[have[2]] : null
+			var/list/old = have[2] ? ship_draught_pieces()[have[2]] : null
 			if (!piece)
 				.[T] = list("remove", "the [old["name"]]")
 			else
@@ -127,7 +127,7 @@
 	for (var/turf/T in mine)
 		if (!target[T])
 			var/list/have = refit_tile(T)
-			var/list/old = have[2] ? ship_draught_pieces[have[2]] : null
+			var/list/old = have[2] ? ship_draught_pieces()[have[2]] : null
 			.[T] = list("remove", old ? "the floor and the [old["name"]]" : "the floor")
 
 /obj/structure/hull_tiller/proc/clear_refit_marks()

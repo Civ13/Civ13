@@ -31,7 +31,7 @@
 /mob/living/human/martial_probe
 var/martial_probe_checks = 0
 var/martial_probe_wait = TRUE
-var/list/martial_probe_known = list()
+var/list/martial_probe_known
 
 /mob/living/human/martial_probe/martial_forms_wait()
 	return martial_probe_wait
@@ -39,8 +39,8 @@ var/list/martial_probe_known = list()
 /mob/living/human/martial_probe/martial_school_known(school_id)
 	return school_id in martial_probe_known
 
-var/list/martial_probe_present = list()
-var/list/martial_probe_verified = list()
+var/list/martial_probe_present
+var/list/martial_probe_verified
 
 /mob/living/human/martial_probe/martial_company_present(mob/living/human/other)
 	return other in martial_probe_present
@@ -68,6 +68,10 @@ var/list/martial_probe_verified = list()
 	H.water = 400
 
 /proc/martial_probe_run()
+	// Set here, not in the global initialiser, which is at the compiler size limit.
+	martial_probe_known = list()
+	martial_probe_present = list()
+	martial_probe_verified = list()
 	config = new
 	config.webhook_can_fire = FALSE
 	makeDatumRefLists()
@@ -231,6 +235,31 @@ var/list/martial_probe_verified = list()
 	martial_probe_assert(!martial_travel_valid(R), "travel_rejects_negative_points")
 	var/mob/living/human/martial_probe/fresh = new(locate(6, 6, 1))
 	martial_probe_assert(isnull(fresh.martial_travel_record()), "untrained_body_sends_nothing")
+
+	// --- school moves --------------------------------------------------------------------
+	var/mob/living/human/martial_probe/K = new(locate(7, 7, 1))
+	martial_probe_assert(K.martial_punch_mult("head") == 1 && K.martial_grapple_power() == 1, "no_school_no_moves")
+	K.set_martial_school("pugilism")
+	martial_probe_assert(K.martial_punch_mult("head") == 1, "novice_has_no_moves")
+	K.martial_progress["pugilism"] = 400
+	martial_probe_assert(abs(K.martial_punch_mult("chest") - 1.15) < 0.001, "master_pugilist_hits_harder")
+	martial_probe_assert(abs(K.martial_punch_mult("head") - 1.3) < 0.001, "pugilist_focus_on_the_head")
+	martial_probe_assert(K.martial_grapple_power() == 1, "pugilism_does_not_grapple")
+	K.set_martial_school("hard_hand")
+	K.martial_progress["hard_hand"] = 150
+	K.hand_conditioning = 50
+	K.hand_conditioning_at = world.realtime
+	martial_probe_assert(abs(K.martial_punch_mult("chest") - 1.2) < 0.001, "hard_hand_turns_conditioning_into_damage")
+	K.set_martial_school("judo")
+	K.martial_progress["judo"] = 400
+	martial_probe_assert(abs(K.martial_grapple_power() - 1.3) < 0.001, "master_judoka_grapples_better")
+	martial_probe_assert(abs(martial_grapple_edge(K, fresh) - 1.3) < 0.001 && abs(martial_grapple_edge(fresh, K) - 1 / 1.3) < 0.001, "grapple_edge_both_ways")
+	martial_probe_assert(martial_grapple_edge(fresh, null) == 1, "grapple_edge_without_human_is_even")
+	for (var/school_id in martial_schools)
+		martial_probe_assert(islist(martial_school_moves(school_id)), "moves_[school_id]")
+
+	// --- the old SS13 arts are gone -----------------------------------------------------------
+	martial_probe_assert(!text2path("/datum/martial_art"), "old_martial_art_datum_removed")
 
 /world/New()
 	OpenPort("none")
