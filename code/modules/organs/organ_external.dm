@@ -236,6 +236,8 @@
 				qdel(W)
 				break
 			parent.update_damages()
+	if (istype(owner))
+		owner.refresh_held_items()
 
 
 /****************************************************
@@ -853,6 +855,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 			if(disintegrate != DROPLIMB_BURN)
 				stump.sever_artery()
 			stump.update_damages()
+	if (istype(victim))
+		victim.refresh_held_items()
 	spawn(1)
 		victim.updatehealth()
 		victim.UpdateDamageIcon()
