@@ -37,11 +37,11 @@
 	if (!islist(stats["unarmed"]))
 		stats["unarmed"] = list(100, 100)
 
-/mob/living/human/proc/practice_unarmed(amount)
+/mob/living/human/proc/practice_unarmed(amount, mob/living/human/sparring = null)
 	ensure_unarmed_stat()
 	adaptStat("unarmed", amount)
 	// Punches and hand sets count toward the followed school (martial_schools.dm).
-	martial_practice(amount / 2)
+	martial_practice(amount / 2, sparring)
 
 // Punch damage from the unarmed skill: +25% at 200, -12.5% at 50.
 /mob/living/human/proc/unarmed_damage_mult()

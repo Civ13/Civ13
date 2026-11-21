@@ -16,8 +16,36 @@
 		lines += "[accolade_name(id)]: [accolade_status(state, id)]"
 	var/list/lands = state["lands"]
 	lines += "Lands lived in: [length(lands) ? jointext(lands, ", ") : "none"]"
+	// Character slots (character_slots.dm): bought slots, the one played, names.
+	var/list/slots = character_slot_state(target)
+	var/list/slot_names = slots["names"]
+	var/list/slot_lines = list()
+	for(var/slot = 1 to character_slots_max)
+		var/list/locked = slots["locked"]
+		var/status = locked["[slot]"] ? "locked by staff" : (character_slot_open(slots, slot) ? "open" : "not bought")
+		slot_lines += "[slot] [status][slot == slots["active"] ? " (played)" : ""][islist(slot_names["[slot]"]) ? " - [slot_names["[slot]"][1]]" : ""]"
+	lines += "Character slots: [jointext(slot_lines, "; ")]. Points spent: [slots["spent"]]."
 	to_chat(src, jointext(lines, "<br>"))
-	var/choice = input(src, "Grant or remove an accolade?", "Player Accolades") as null|anything in list("Grant", "Remove", "Nothing")
+	var/choice = input(src, "Grant or remove an accolade, or lock a character slot?", "Player Accolades") as null|anything in list("Grant", "Remove", "Lock slot", "Nothing")
+	if(choice == "Lock slot")
+		var/list/open = list()
+		var/list/unlocked = slots["unlocked"]
+		for(var/key in unlocked)
+			open["Slot [key]"] = unlocked[key]
+		if(!open.len)
+			to_chat(src, SPAN_WARNING("[target] has no extra character slot to lock."))
+			return
+		var/pick = input(src, "Which slot? Its character stays asleep and the points stay spent.", "Player Accolades") as null|anything in open
+		if(!pick)
+			return
+		var/why = sanitize(input(src, "Reason (kept in the player's records):", "Player Accolades") as text|null)
+		if(!length(why))
+			return
+		if(shared_records.revoke(open[pick], ckey, holder ? holder.rank : "", why))
+			character_slot_forget(target)
+			log_admin("[key_name(src)] locked [pick] of [target]: [why]")
+			message_admins("[key_name_admin(src)] locked character [pick] of [target].")
+		return
 	if(choice != "Grant" && choice != "Remove")
 		return
 	var/list/names = list()

@@ -4,6 +4,7 @@
 	// The sun's path (sun_shadows.dm): degrees north.
 	sun_latitude = 45
 	world_longitude = -30 // world calendar time zone (world_calendar.dm)
+	world_region = "gaia" // its id in world_links (weather_shared.dm)
 	// z 1 is unformed rock that forms as it is dug (dug_underground.dm).
 	underground_compiled_z = 1
 	title = "Nomads (Gaia)"

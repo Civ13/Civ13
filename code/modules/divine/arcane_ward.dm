@@ -110,7 +110,7 @@ var/global/list/arcane_warded = list()
 	if (!divine_focus())
 		return null
 	var/obj/O = arcane_imbue_structure
-	if (O && !QDELETED(O) && O.Adjacent(src) && arcane_wardable(O))
+	if (O && !QDELETED(O) && O.Adjacent(src) && (arcane_wardable(O) || arcane_unbind_fire(O))) // arcane_unbind.dm
 		return O
 	return null
 
