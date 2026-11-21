@@ -88,7 +88,7 @@ class RepositoryTiers(unittest.TestCase):
             self.assertIn('magic_repo_tick()', body(REPO, proc))
 
     def test_seat_capture_and_consecration(self):
-        self.assertIn('magic_repo_captured)', body(REPO, '/obj/proc/magic_repo_dormant()'))
+        self.assertIn('|| magic_repo_captured', body(REPO, '/obj/proc/magic_repo_dormant()'))
         seat = body(TIERS, '/obj/proc/magic_repo_check_seat()')
         self.assertIn('province_near_faction_seat(magic_repo_faction, T)', seat)
         self.assertIn('province_holder_of(c) != magic_repo_group', seat)

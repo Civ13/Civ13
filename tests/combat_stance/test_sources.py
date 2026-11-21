@@ -73,8 +73,11 @@ class CombatStanceSources(unittest.TestCase):
             self.assertNotIn(forbidden, RESTRAIN)
         # cuffing uses the ordinary checked proc; every step is logged
         self.assertIn('cuffs.place_handcuffs(T, src)', RESTRAIN)
-        for step in ('took a firm hold', 'jointlocked', 'pinned', 'bound hands', 'bound legs'):
+        for step in ('took a firm hold', 'jointlocked', 'pinned', 'bound hands'):
             self.assertIn('restrain_log(T, "%s' % step, RESTRAIN)
+        self.assertIn('restrain_log(T, "[logged] with [I]")', RESTRAIN)
+        for logged in ('"bound legs"', '"gagged"', '"blindfolded"'):
+            self.assertIn(logged, RESTRAIN)
 
     def test_agent_zone_click_takes_manual_control(self):
         clicks = read('code/modules/agent_control/agent_characters.dm')

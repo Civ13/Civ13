@@ -3699,3 +3699,145 @@ class AgentRunsTests(unittest.TestCase):
         self.assertEqual(killed, [200, 100])
         self.assertEqual(result['pid'], 555)
         self.assertEqual(launched[0][0], ['autopilot.py', '--watch'])
+
+
+class ChatTranslatorTests(unittest.TestCase):
+    """The host service keeps the Edge chat translator (tools/edge-translator) running and
+    gives every region its address; the launcher's Translator tab stops and starts it."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.base = Path(self.tmp.name)
+        source = self.base / 'repo' / 'tools' / 'edge-translator'
+        source.mkdir(parents=True)
+        for name in shard_group.TRANSLATOR_FILES:
+            (source / name).write_text('// ' + name + '\n')
+        self.group = {'group': 'europe', 'repository': str(self.base / 'repo'), 'root': str(self.base / 'regions'),
+                      'compiler': 'DreamMaker', 'daemon': 'DreamDaemon', 'git': 'git', 'public_host': '203.0.113.5',
+                      'python': 'python.exe', 'chat_translator': {},
+                      'regions': [{'id': 'gaia', 'name': 'Gaia', 'kind': 'SURFACE', 'port': 1720, 'map': 'maps/a.dmm'}]}
+        self.alive = set()
+        patcher = mock.patch.object(shard_group, 'process_alive', lambda pid: pid in self.alive)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.installs = []
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def load(self):
+        path = self.base / 'group.json'
+        path.write_text(json.dumps(self.group))
+        return shard_group.load_group(path)
+
+    def npm(self, argv, cwd):
+        self.installs.append((argv, Path(cwd)))
+        (Path(cwd) / 'node_modules' / 'playwright-core').mkdir(parents=True, exist_ok=True)
+        (Path(cwd) / 'node_modules' / 'playwright-core' / 'package.json').write_text('{}')
+        return 0
+
+    def test_config_validation_and_defaults(self):
+        settings = self.load()['chat_translator']
+        self.assertEqual(55581, settings['port'])
+        self.assertEqual('node', settings['node'])
+        for bad in ({'port': 80}, {'port': '55581'}, {'node': ''}, {'profile': 5}, 'yes'):
+            self.group['chat_translator'] = bad
+            with self.assertRaisesRegex(ValueError, 'chat_translator'):
+                self.load()
+
+    def test_install_copies_files_and_runs_npm_ci_only_when_needed(self):
+        group = self.load()
+        app = shard_group.install_translator(group, run=self.npm)
+        self.assertEqual(self.base / 'regions' / 'chat-translator' / 'app', app)
+        self.assertEqual(['ci', '--ignore-scripts', '--no-audit', '--no-fund'], self.installs[0][0][1:])
+        shard_group.install_translator(group, run=self.npm)
+        self.assertEqual(1, len(self.installs), 'nothing changed: no second npm ci')
+        (self.base / 'repo' / 'tools' / 'edge-translator' / 'edge_translator.js').write_text('// new\n')
+        shard_group.install_translator(group, run=self.npm)
+        self.assertEqual('// new\n', (app / 'edge_translator.js').read_text())
+        self.assertEqual(1, len(self.installs), 'a script change needs no npm ci')
+        (self.base / 'repo' / 'tools' / 'edge-translator' / 'package-lock.json').write_text('// bumped\n')
+        shard_group.install_translator(group, run=self.npm)
+        self.assertEqual(2, len(self.installs), 'a lock change does')
+        with self.assertRaisesRegex(OSError, 'npm ci failed'):
+            (self.base / 'repo' / 'tools' / 'edge-translator' / 'package-lock.json').write_text('// again\n')
+            shard_group.install_translator(group, run=lambda argv, cwd: 1)
+
+    def test_supervise_keeps_it_running_until_stopped(self):
+        group = self.load()
+        started = []
+        def start(argv, cwd, log):
+            started.append((argv, Path(cwd), Path(log)))
+            return 900 + len(started)
+        real = shard_group.install_translator
+        install = lambda g, run=None: real(g, run=self.npm)
+        with mock.patch.object(shard_group, 'install_translator', install):
+            self.assertTrue(shard_group.supervise(group, start)['chat_translator'])
+            argv, cwd, log = started[0]
+            folder = self.base / 'regions' / 'chat-translator'
+            self.assertEqual(['node', str(folder / 'app' / 'edge_translator.js'), '--port', '55581', '--profile', str(folder / 'edge-profile')], argv)
+            self.assertEqual(folder / 'service.log', log)
+            self.alive.add(901)
+            self.assertNotIn('chat_translator', shard_group.supervise(group, start))
+            self.alive.discard(901)  # it exited: started again
+            self.assertTrue(shard_group.supervise(group, start)['chat_translator'])
+            self.alive.add(902)
+            killed = []
+            def kill(pid, expect=None):
+                killed.append((pid, expect.images))
+                self.alive.discard(pid)
+            self.assertEqual({'stopped': True}, shard_group.translator_stop(group, kill=kill))
+            self.assertEqual([(902, ('node.exe', 'node'))], killed, 'only a Node process is ended')
+            self.assertNotIn('chat_translator', shard_group.supervise(group, start), 'stopped on request stays stopped')
+            self.assertEqual(3 - 1, len(started))
+            self.assertEqual({'started': True}, shard_group.translator_start(group, start))
+
+    def test_install_failure_keeps_the_other_helpers_going(self):
+        group = self.load()
+        with mock.patch.object(shard_group, 'install_translator', side_effect=OSError('npm ci failed in x')):
+            started = shard_group.supervise(group, lambda argv, cwd, log: 1)
+        self.assertIn('npm ci failed', started['chat_translator_error'])
+
+    def test_status(self):
+        group = self.load()
+        self.assertEqual({'configured': False}, shard_group.translator_status(dict(group, chat_translator=None)))
+        status = shard_group.translator_status(group)
+        self.assertEqual((True, False, False, 55581), (status['configured'], status['running'], status['answering'], status['port']))
+        folder = self.base / 'regions' / 'chat-translator'
+        folder.mkdir(parents=True)
+        (folder / 'service.pid').write_text('77\n')
+        self.alive.add(77)
+        with mock.patch.object(shard_group, 'translator_health', return_value={'ok': True, 'translated': 4, 'failed': 0, 'waiting': 1}):
+            status = shard_group.translator_status(group)
+        self.assertEqual((True, True, 77), (status['running'], status['answering'], status['pid']))
+        self.assertEqual({'translated': 4, 'failed': 0, 'waiting': 1}, status['stats'])
+
+    def test_every_region_gets_the_address_unless_its_host_lines_say_otherwise(self):
+        group = self.load()
+        region = group['regions'][0]
+        path = self.base / 'worktree'
+        (path / 'config').mkdir(parents=True)
+        (path / 'config' / 'config.txt').write_text('A 1\n#CHAT_TRANSLATE_URL http://127.0.0.1:55581\n')
+        shard_group.apply_overlays(group, region, path)
+        self.assertIn('CHAT_TRANSLATE_URL http://127.0.0.1:55581', (path / 'config' / 'config.txt').read_text().splitlines())
+        overlay = self.base / 'overlay'
+        (overlay / 'config').mkdir(parents=True)
+        (overlay / 'config' / 'config.local.txt').write_text('#CHAT_TRANSLATE_URL\n')
+        region['overlay'] = str(overlay)
+        (path / 'config' / 'config.txt').write_text('A 1\n#CHAT_TRANSLATE_URL http://127.0.0.1:55581\n')
+        shard_group.apply_overlays(group, region, path)
+        self.assertNotIn('CHAT_TRANSLATE_URL http://127.0.0.1:55581', (path / 'config' / 'config.txt').read_text().splitlines(), 'the host turned it off')
+        group['chat_translator'] = None
+        region.pop('overlay')
+        (path / 'config' / 'config.txt').write_text('A 1\n')
+        shard_group.apply_overlays(group, region, path)
+        self.assertEqual('A 1\n', (path / 'config' / 'config.txt').read_text(), 'no translator: config untouched')
+
+    def test_actions_need_the_translator_and_the_whole_group(self):
+        self.group.pop('chat_translator')
+        group = self.load()
+        with self.assertRaises(shard_group.Refused):
+            shard_group.translator_start(group)
+        with self.assertRaises(shard_group.Refused):
+            shard_group.translator_stop(group)
+        self.assertIn('translator-status', shard_group.GROUP_ACTIONS)

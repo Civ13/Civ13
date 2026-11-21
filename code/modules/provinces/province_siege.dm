@@ -219,9 +219,14 @@ var/global/province_siege_timer = null
 	if (province_faction_age_days(faction) < SIEGE_FACTION_DAYS)
 		return "[faction] must be [SIEGE_FACTION_DAYS] days old to declare a siege."
 	var/players = 0
+	var/list/people = list() // each player counts once, whichever of their characters (kin) is a member
 	for (var/account in map.faction_roster(faction))
+		var/person = owner_key_account(account)
+		if (!person || people[person])
+			continue
 		var/list/A = province_activity_of(account)
 		if (A[1] >= SIEGE_PLAY_MINUTES)
+			people[person] = TRUE
 			players++
 	if (players < SIEGE_ACCOUNTS)
 		return "[faction] needs [SIEGE_ACCOUNTS] members who have played [SIEGE_PLAY_MINUTES / 60] hours on this land (it has [players])."

@@ -28,6 +28,16 @@ class StructuringSourceTest(unittest.TestCase):
         blocs = read("code/modules/provinces/province_blocs.dm")
         self.assertIn("length(mine & theirs)", blocs)  # groups led by the same player
 
+    def test_kin_count_once_for_stake_and_sieges(self):
+        stake = read("code/modules/provinces/province_stake.dm")
+        loop = stake[stake.index("var/list/people = list()"):stake.index("// Halls: best tier")]
+        self.assertIn("var/person = owner_key_account(account)", loop)
+        self.assertLess(loop.index("people[person] ||"), loop.index("people[person] = TRUE"))
+        siege = read("code/modules/provinces/province_siege.dm")
+        block = siege[siege.index("/proc/province_siege_block"):]
+        self.assertIn("var/person = owner_key_account(account)", block)
+        self.assertLess(block.index("people[person] = TRUE"), block.index("if (players < SIEGE_ACCOUNTS)"))
+
     def test_court_marks_reach_kin(self):
         justice = read("code/game/mob/groups/faction_justice.dm")
         self.assertIn("for (var/account in justice_kin_accounts(own))", justice)
