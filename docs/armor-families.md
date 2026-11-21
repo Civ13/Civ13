@@ -66,7 +66,11 @@ The proof cuirass and the japanese proof do (anvil, steel, Imperial age on)
 are steel plate on the torso with gun 30 and slowdown 1.0, the first armor
 that turns many musket balls. The resin body shield (armor assembly workbench,
 8 cloth and 4 resin, Trench Warfare, WW1 on) is a light vest with gun 25
-against shrapnel and pistol rounds. Their sprites are drawn by Fable.
+against shrapnel and pistol rounds. The Dayfield body armor (workbench, 4 resin
+laminate and 6 steel, Trench Warfare) keeps gun 40 and slowdown 0.8; the heavy
+Dayfield (6 laminate and 14 steel) has gun 65 and slowdown 1.6 and stops rifle
+bullets. The Dayfield is no longer forged at the anvil. Their sprites are drawn
+by Fable.
 
 ## Telling players
 

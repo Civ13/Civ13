@@ -3,14 +3,16 @@ drawn by Fable: the proof cuirass (polished steel breastplate with a central
 ridge, proving dents and leather shoulder straps), the japanese proof do (dark
 lacquered okegawa-do of riveted lames with red cords and a bullet dent) and
 the First World War resin body shield (khaki quilted vest with amber resin
-stitching). Every pixel is placed by this script from fixed palettes (Pillow
-only); no external or generated artwork.
+stitching), and the heavy Dayfield body shield (thick quilted layers with
+steel plate edges between them, a high collar pad and a groin flap). Every
+pixel is placed by this script from fixed palettes (Pillow only); no external
+or generated artwork.
 
 It appends to shared sheets and leaves every other state untouched:
   icons/obj/clothing/suits.dmi   proof_cuirass, proof_do      item icons
-  icons/obj/clothing/ties.dmi    resin_shield                 item icon
-  icons/mob/suit.dmi             all three                    worn, four directions
-  icons/mob/ties.dmi             resin_shield                 worn, four directions
+  icons/obj/clothing/ties.dmi    resin_shield, modern_dayfield_heavy   item icons
+  icons/mob/suit.dmi             all four                     worn, four directions
+  icons/mob/ties.dmi             resin_shield, modern_dayfield_heavy   worn, four directions
 Running it again redraws the same cells. `--check` verifies the committed
 states, `--preview <png>` writes a review sheet (item, worn, worn on the base
 body). Released under Civ13 AGPL-3.0.
@@ -213,18 +215,83 @@ rs_e=grid(RS,13,10,[
 "...OAKO.",
 "...OAKO.",
 "...OOOO."])
-SETS={'proof_cuirass':(pc_item,[pc_s,pc_n,pc_e,mir(pc_e)]),
-      'proof_do':(pd_item,[pd_s,pd_n,pd_e,mir(pd_e)]),
-      'resin_shield':(rs_item,[rs_s,rs_n,rs_e,mir(rs_e)])}
+# ---- heavy Dayfield: thick quilted resin cloth with steel plate edges showing
+# between the layers, a high collar pad and a groin flap
+HD={'O':(62,48,28),'k':(107,84,49),'K':(140,112,66),'J':(169,134,80),'S':(84,64,38),
+    'g':(92,98,104),'G':(150,156,162),'W':(204,210,216)}
+hd_item=grid(HD,8,6,[
+".....OOOOOO.....",
+"....OJKKKKkO....",
+"..SSOJKKKKkOSS..",
+".OSSOkkkkkkOSSO.",
+"OJKKKOOOOOOKKKkO",
+"OJKKKKKKKKKKKKkO",
+"OgGGGWGGGGGGGGgO",
+"OJKKKKKKKKKKKKkO",
+"OJKkKKKkKKKkKKkO",
+"OkkkkkkkkkkkkkkO",
+"OgGGGWGGGGGGGGgO",
+"OJKKKKKKKKKKKKkO",
+"OJKkKKKkKKKkKKkO",
+"OkkkkkkkkkkkkkkO",
+"OgGGGWGGGGGGGGgO",
+".OOOOJKKKKkOOOO.",
+"....OJKKKKkO....",
+"....OgGWGGgO....",
+".....OOOOOO....."])
+hd_s=grid(HD,10,9,[
+"..OJKKKJO..",
+".SOkKKKkOS.",
+"OJKkkkkkKkO",
+"OJKKKKKKKkO",
+"OGGWGGGGGgO",
+"OJKkKKKkKkO",
+"OkkkkkkkkkO",
+"OGGWGGGGGgO",
+"OJKkKKKkKkO",
+"OkkkkkkkkkO",
+"OGGWGGGGGgO",
+".OOJKKKkOO.",
+"...OJKkO...",
+"....OOO...."])
+hd_n=grid(HD,10,9,[
+"..OJKKKJO..",
+".SOJKKKkOS.",
+"OJKKKKKKKkO",
+"OJKKKKKKKkO",
+"OGGGGGGGGgO",
+"OJKKKKKKKkO",
+"OSSSKSKSSSO",
+"OGGGGGGGGgO",
+"OJKKKKKKKkO",
+"OkkkkkkkkkO",
+"OGGGGGGGGgO",
+".OOOOOOOOO."])
+hd_e=grid(HD,13,9,[
+"J.......",
+"Kk......",
+"..OOOO..",
+"..OKKKJO",
+"..gGGGWO",
+"..kKKKJO",
+"..kkkkkO",
+"..gGGGWO",
+"..kKKKJO",
+"...OkkO.",
+"...OGWO.",
+"...OKJO.",
+"....OOO."])
+
 
 SETS = {'proof_cuirass': (pc_item, [pc_s, pc_n, pc_e, mir(pc_e)]),
         'proof_do': (pd_item, [pd_s, pd_n, pd_e, mir(pd_e)]),
-        'resin_shield': (rs_item, [rs_s, rs_n, rs_e, mir(rs_e)])}
+        'resin_shield': (rs_item, [rs_s, rs_n, rs_e, mir(rs_e)]),
+        'modern_dayfield_heavy': (hd_item, [hd_s, hd_n, hd_e, mir(hd_e)])}
 worn = lambda *names: [(n, SETS[n][1]) for n in names]
 SHEETS = {'icons/obj/clothing/suits.dmi': [('proof_cuirass', [pc_item]), ('proof_do', [pd_item])],
-          'icons/obj/clothing/ties.dmi': [('resin_shield', [rs_item])],
-          'icons/mob/suit.dmi': worn('proof_cuirass', 'proof_do', 'resin_shield'),
-          'icons/mob/ties.dmi': worn('resin_shield')}
+          'icons/obj/clothing/ties.dmi': [('resin_shield', [rs_item]), ('modern_dayfield_heavy', [hd_item])],
+          'icons/mob/suit.dmi': worn('proof_cuirass', 'proof_do', 'resin_shield', 'modern_dayfield_heavy'),
+          'icons/mob/ties.dmi': worn('resin_shield', 'modern_dayfield_heavy')}
 
 
 def chunk(kind, data):
@@ -262,8 +329,12 @@ def build(path, additions, check):
         if name not in states:
             if check:
                 raise SystemExit(f'FAIL: {path} has no state {name}')
-            if used + len(frames) > (sheet.width // 32) * (sheet.height // 32):
-                raise SystemExit(f'{path} is full; grow the sheet first')
+            cols = sheet.width // 32
+            if used + len(frames) > cols * (sheet.height // 32):
+                # full: add rows at the bottom, which moves no existing frame
+                taller = Image.new('RGBA', (sheet.width, -(-(used + len(frames)) // cols) * 32))
+                taller.paste(sheet, (0, 0))
+                sheet = taller
             states[name] = (used, len(frames))
             head += f'state = "{name}"\n\tdirs = {len(frames)}\n\tframes = 1\n'
             used += len(frames)

@@ -49,7 +49,10 @@ The `proof_cuirass` and `proof_do` states in `clothing/suits.dmi`, `resin_shield
 in `clothing/ties.dmi` and their worn states in `icons/mob/suit.dmi` and
 `icons/mob/ties.dmi` were drawn for Civ13 by Fable (2026-11-21), pixel by pixel from
 fixed palettes by `tests/sprites/create_gun_armor.py`. No borrowed or generated
-artwork. They are under the same terms as the rest of Civ13's art.
+artwork. They are under the same terms as the rest of Civ13's art. The
+`modern_dayfield_heavy` state in `clothing/ties.dmi` and its worn states in
+`icons/mob/suit.dmi` and `icons/mob/ties.dmi` were added the same way by the same
+script (2026-11-21).
 
 ## icons/mob/sea_life.dmi
 
