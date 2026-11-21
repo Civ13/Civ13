@@ -31,6 +31,12 @@ Check it with `curl -s http://127.0.0.1:55581/health`, or translate a line:
   host, so `detect.js` detects by script (Cyrillic, CJK, Arabic, Greek and so
   on) and, for Latin-script languages, by common words and letters.
 - One line at a time through Edge, up to 40 waiting (then 503), 500
-  characters per line, 15 s per line.
+  characters per line, 15 s per line. The first line of each pair after a
+  start waits up to 6 s for Edge to load the pack; a translator that throws is
+  made again for the next line.
+- `start.bat` starts the service again 10 s after it or Edge stops.
+- Tested on the host (Edge 158, hidden): es>en 0.9 s first and 30-100 ms
+  warm, fr>en and en>de about 0.5 s, ru>en and ja>en translated about a minute
+  after their first line (pack download).
 
 Tests (no Edge needed): `node test/test.js`.

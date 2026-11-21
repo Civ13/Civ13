@@ -32,9 +32,12 @@ const PAGE = `<!doctype html><meta charset="utf-8"><title>Civ13 translator</titl
     creating[key] = Translator.create({ sourceLanguage: p.s, targetLanguage: p.t })
       .then(tr => { translators[key] = tr; }).catch(() => {}).finally(() => { delete creating[key]; });
   });
+  // A translator that fails once is dropped and made again for the next line.
   window.translateWith = async (s, t, text) => {
-    const tr = translators[s + '>' + t];
-    return tr ? await tr.translate(text) : null;
+    const key = s + '>' + t;
+    const tr = translators[key];
+    if (!tr) return null;
+    try { return await tr.translate(text); } catch (e) { delete translators[key]; return null; }
   };
   window.hasTranslator = () => typeof Translator !== 'undefined';
 </script>`;
@@ -62,7 +65,7 @@ function findEdge() {
 
 // The Edge side: one hidden page that holds a translator per language pair.
 class EdgeBackend {
-  constructor(opts) { this.opts = opts; this.page = null; this.pending = {}; }
+  constructor(opts) { this.opts = opts; this.page = null; this.pending = {}; this.tried = {}; }
 
   async start() {
     const { chromium } = require('playwright-core');
@@ -76,6 +79,8 @@ class EdgeBackend {
       ignoreDefaultArgs: ['--disable-component-update'],
       args: ['--no-first-run', '--no-default-browser-check'],
     });
+    // Without Edge the service is useless: exit so start.bat starts it again.
+    this.context.on('close', () => { console.error('Edge closed; stopping.'); process.exit(1); });
     this.page = this.context.pages()[0] || await this.context.newPage();
     await this.page.goto('http://127.0.0.1:' + pageServer.address().port + '/');
     if (!await this.page.evaluate(() => window.hasTranslator())) throw new Error('This Edge has no Translator API');
@@ -96,11 +101,17 @@ class EdgeBackend {
   }
 
   async translate(source, target, text) {
-    let state = await this.state(source, target);
+    const state = await this.state(source, target);
     if (state === 'unavailable') return null;
     await this.prepare(source, target);
-    // A pair already on disk is ready within a second or two.
-    for (let i = 0; i < 20; i++) {
+    // Making a translator from a pack already on disk can take a few seconds,
+    // so the first line of each pair waits up to 6 s; while a pack is still
+    // downloading later lines wait only briefly. ("downloadable" is reported
+    // even for packs on disk.)
+    const key = source + '>' + target;
+    const tries = this.tried[key] ? 5 : 60;
+    this.tried[key] = true;
+    for (let i = 0; i < tries; i++) {
       const out = await this.page.evaluate(([s, t, x]) => window.translateWith(s, t, x), [source, target, text]);
       if (out !== null) return out;
       await new Promise(r => setTimeout(r, 100));
