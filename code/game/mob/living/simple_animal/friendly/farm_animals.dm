@@ -3,12 +3,18 @@
 		return FALSE
 	var/obj/item/weapon/reagent_containers/glass/G = O
 	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
+		// Only ask for what the container can hold, so a full one leaves the udder alone (#6320).
+		var/free = G.reagents.get_free_space()
+		if (free <= 0)
 			to_chat(user, SPAN_RED("The [O] is full."))
-		if (!transfered)
+			return TRUE
+		if (!udder.has_reagent("milk"))
 			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
+			return TRUE
+		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+		udder.trans_id_to(G, "milk", min(rand(5,10), free))
+		if (G.reagents.get_free_space() <= 0)
+			to_chat(user, SPAN_RED("The [O] is full."))
 		return TRUE
 	return FALSE
 

@@ -78,7 +78,8 @@
 
 	visible_message("<span class = 'danger'>[hangman] starts to hang [target == hangman ? "themselves" : target]...</span>")
 	if (do_after(hangman, 50, target))
-		if (src)
+		// Another hangman may have filled the noose during the wait.
+		if (!QDELETED(src) && !hanging)
 			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] hangs [target == hangman ? "themselves" : target]!</span>")
 			hanging = target
@@ -200,7 +201,8 @@
 	if (roped)
 		visible_message("<span class = 'danger'>[hangman] starts to hang [target == hangman ? "themselves" : target]...</span>")
 		if (do_after(hangman, 50, target))
-			if (src)
+			// Another hangman may have filled it during the wait.
+			if (!QDELETED(src) && !hanging)
 				if (!target.persistence_set_loc(get_turf(src))) return FALSE
 				visible_message("<span class = 'danger'>[hangman] hangs [target == hangman ? "themselves" : target]!</span>")
 				hanging = target
@@ -340,7 +342,8 @@
 		return
 	visible_message("<span class = 'danger'>[hangman] starts to nail [target == hangman ? "themselves" : target] to the cross...</span>")
 	if (do_after(hangman, 80, target))
-		if (src)
+		// Another hangman may have filled it during the wait.
+		if (!QDELETED(src) && !hanging)
 			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] nails [target == hangman ? "themselves" : target] to the cross!</span>")
 			hanging = target
@@ -437,7 +440,8 @@
 		return
 	visible_message("<span class = 'danger'>[hangman] starts to place [target == hangman ? "themselves" : target] in the pillory...</span>")
 	if (do_after(hangman, 60, target))
-		if (src)
+		// Another hangman may have filled it during the wait.
+		if (!QDELETED(src) && !hanging)
 			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] places [target == hangman ? "themselves" : target] in the pollory!</span>")
 			hanging = target
@@ -553,7 +557,8 @@
 		return
 	visible_message("<span class = 'danger'>[hangman] starts to tie [target == hangman ? "themselves" : target] to the post...</span>")
 	if (do_after(hangman, 60, target))
-		if (src)
+		// Another hangman may have filled it during the wait.
+		if (!QDELETED(src) && !hanging)
 			if (!target.persistence_set_loc(get_turf(src))) return FALSE
 			visible_message("<span class = 'danger'>[hangman] ties [target == hangman ? "themselves" : target] to the post!</span>")
 			hanging = target

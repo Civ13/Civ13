@@ -10,7 +10,7 @@
 	var/claim = divine_claim_of(src)
 	var/list/actions = list()
 	if (claim)
-		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "Set customs", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
+		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "Set customs", "Set rites", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
 	else
 		actions += "Speak as a god"
 	actions += "Set my divine name"
@@ -127,6 +127,8 @@
 			to_chat(usr, "<b>Followers of [claim_label] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
 		if ("Set customs")
 			arcane_edit_customs(claim) // arcane_devotion.dm
+		if ("Set rites")
+			arcane_edit_rites(claim) // arcane_rites.dm
 		if ("List apostates")
 			arcane_list_apostates(claim) // arcane_apostate.dm
 		if ("List enchantments", "Strip enchantment") // arcane_enchant.dm

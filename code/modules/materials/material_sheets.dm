@@ -359,7 +359,6 @@
 	default_type = "hemp"
 	value = 2
 	flammable = TRUE
-	is_contraband = TRUE
 
 /obj/item/stack/material/flax
 	name = "Flax"
@@ -479,9 +478,30 @@
 			icon_suffix = "_3"
 	icon_state = "tobacco[icon_suffix]"
 
+/obj/item/stack/material/cannabis_fresh
+	name = "fresh cannabis tops"
+	desc = "Sticky green flowering tops. Dry them on a rack before smoking."
+	icon_state = "hemp"
+	default_type = "cannabis_fresh"
+	value = 2
+	w_class = ITEM_SIZE_TINY
+	flammable = TRUE
+	dried_type = /obj/item/stack/material/cannabis
+	dry_size = 9
+
+/obj/item/stack/material/cannabis
+	name = "dried cannabis"
+	desc = "Dried cannabis flower, ready to roll or smoke in a pipe."
+	icon_state = "hemp"
+	default_type = "cannabis"
+	value = 4
+	w_class = ITEM_SIZE_TINY
+	flammable = TRUE
+	is_contraband = TRUE
+
 /obj/item/stack/material/coca
 	name = "coca leaves"
-	desc = "Can be made into cocaine."
+	desc = "Leaves of the coca shrub, chewed or brewed as a mild stimulant. Refined, they make cocaine."
 	icon_state = "coca"
 	default_type = "coca"
 	value = 2

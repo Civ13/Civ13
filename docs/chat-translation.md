@@ -25,9 +25,39 @@ computer only).
   per session; nothing downloads without a click. Up to 20 lines wait in the
   queue (oldest dropped), 500 characters each, one at a time, 8 s timeout.
 - With no `Translator` or `LanguageDetector` in the client, the setting says so
-  and chat is shown as written. Nothing is ever sent to a server or cloud.
+  and chat is shown as written.
 - Tests: `tests/chat/chat-translate.browser.test.js` (fake on-device APIs in
   headless Chromium) and `tests/chat_translation/test_markers.py`.
+
+### Server translation (Val, 2026-11-21)
+
+Dream Seeker's WebView2 (157) has `Translator` and `LanguageDetector`, but
+every language pair reports "unavailable" and there is no switch a server can
+flip for its players, so Val asked for a workaround. The world translates
+instead, through the host's own Ollama model
+(`code/modules/chat/chat_translate.dm`):
+
+- Off unless `CHAT_TRANSLATE_URL` (Ollama base address) and
+  `CHAT_TRANSLATE_MODEL` are set (config.txt or the host's config.local.txt).
+  Use a model the host already keeps loaded, such as the Player Help model, so
+  translation never forces a model swap.
+- When the chat page is ready the world calls `setTranslateServer("1")`. The
+  page then sends each new eligible line (the same text the on-device path
+  would use) as `byond://?chat_translate=<id>&lang=<reader's language>&text=`.
+  The text goes only back to the world that sent the line.
+- The world answers every request with `receiveTranslation(id, source, text)`,
+  `text` empty when no translation is needed or possible, so the page's
+  one-at-a-time queue never stalls (20 s timeout per line).
+- English lines for English readers (plain ASCII where at least a quarter of
+  the words are common English words) never reach the model. Otherwise one
+  `/api/chat` call (JSON schema reply, `think` off, temperature 0) serves every
+  reader of the same text and language, and the result is cached in memory
+  (1000 entries). Limits: 500 characters, 40 distinct texts waiting (oldest
+  dropped), 40 requests per window per minute, 30 s per call, five minutes off
+  after three failed calls in a row. Nothing is logged or written to disk.
+- Tests: `tests/chat_translation/probe.dm` (native, stand-in model and
+  windows: `python3 tests/ecology_spawning/run_linux.py . tests/chat_translation/probe.dm 300`),
+  the server-mode case in the browser test, and `test_markers.py`.
 
 The rest of this file is the original proposal, kept for its acceptance list.
 

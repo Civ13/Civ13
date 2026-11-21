@@ -84,6 +84,8 @@
 			P.stages += list(list("name" = slipway_draught_plural(F["name"]), "pieces" = n, "cost" = F["cost"], "part" = "floor", "verb" = F["name"]))
 	for (var/piece in ship_draught_pieces)
 		var/list/F = ship_draught_pieces[piece]
+		if (F["ladder"])
+			continue // stood up with the deck it climbs to
 		var/n = 0
 		for (var/key in keys)
 			var/list/C = D.cells[key]
@@ -230,7 +232,8 @@
 		return
 	var/datum/slipway_design/draught/P = slipway_draught_plan(D)
 	var/upper = D.upper_tiles()
-	var/text = "Lay out the [D.name] on the berth? Her stern goes before the post and her bow runs [dir2text(dir)]. She takes [P.total_pieces()] pieces: [piece_cost_text(P.total_cost())] in all.[upper ? " Her [upper] tiles of deck above are laid by hand once she is afloat." : ""]"
+	var/hold = D.deck_tiles(-1)
+	var/text = "Lay out the [D.name] on the berth? Her stern goes before the post and her bow runs [dir2text(dir)]. She takes [P.total_pieces()] pieces: [piece_cost_text(P.total_cost())] in all.[upper ? " Her [upper] tiles of deck above, and her ladders, are laid by hand once she is afloat." : ""][hold ? " This berth does not dig her hold of [hold] tiles." : ""]"
 	qdel(P) // also deletes D
 	if (WWinput(H, text, name, "No", list("Yes", "No")) != "Yes" || QDELETED(S) || S.loc != H || !Adjacent(H))
 		return

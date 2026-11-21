@@ -21,9 +21,13 @@
 		if (!temp || !temp.is_usable())
 			to_chat(H, SPAN_RED("You can't use your hand."))
 			return
-	var/tgt = H.targeted_organ
-	if (H.targeted_organ == "random")
-		tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+	// The zone doll, the random toggle or the combat stance (combat_stance.dm).
+	var/attack_kind = COMBAT_ATTACK_PUNCH
+	if (M.a_intent == I_GRAB)
+		attack_kind = COMBAT_ATTACK_GRAB
+	else if (M.a_intent == I_DISARM)
+		attack_kind = COMBAT_ATTACK_SHOVE
+	var/tgt = H.resolve_attack_zone(src, null, attack_kind)
 	// Should this all be in Touch()?
 	if (istype(H))
 		if (H != src && check_shields(0, null, H, tgt, H.name))
@@ -32,7 +36,16 @@
 	if (H.mind && H.mind.martial_art && H.mind.martial_art.id != H.mind.default_martial_art.id)
 		switch(H.a_intent)
 			if(I_HARM)
+				// The same incoming reaction as an ordinary punch (combat_reactions.dm).
+				if (H != src && combat_reaction_try(H, COMBAT_TRIGGER_INCOMING, tgt, null))
+					H.do_attack_animation(src)
+					return TRUE
+				// Martial arts read targeted_organ: aim them at the resolved zone.
+				var/aimed_zone = H.targeted_organ
+				H.targeted_organ = tgt
 				H.mind.martial_art.harm_act(H, src)
+				if (!QDELETED(H) && H.targeted_organ == tgt)
+					H.targeted_organ = aimed_zone
 			if(I_HELP)
 				H.mind.martial_art.help_act(H, src)
 			if(I_GRAB)
@@ -133,6 +146,10 @@
 					if (G.assailant == M)
 						to_chat(M, SPAN_NOTICE("You already grabbed [src]."))
 						return
+				// A sprawl or a strike on the reaching arm (combat_reactions.dm).
+				if (combat_reaction_try(H, COMBAT_TRIGGER_GRAB_REACH, tgt, null))
+					H.do_attack_animation(src)
+					return TRUE
 				// The grab takes hold of the targeted part (grab_hand_hold.dm).
 				var/grab_zone = grab_target_zone(tgt, H.targeted_organ == "random")
 				if (!grab_zone)
@@ -164,9 +181,7 @@
 					M.visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>", "<span class='notice'>You have grabbed [src] passively.</span>")
 				return TRUE
 			if (I_HARM)
-				var/tgtm = M.targeted_organ
-				if (M.targeted_organ == "random")
-					tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+				var/tgtm = tgt
 				if (tgtm == "mouth" && wear_mask && istype(wear_mask, /obj/item/weapon/grenade))
 					var/obj/item/weapon/grenade/G = wear_mask
 					if (!G.active)
@@ -181,6 +196,10 @@
 					attack_generic(H,rand(1,3),"punched")
 					return
 				if (src != M)
+					// Bong Sau, a slip, a block or a stop-hit (combat_reactions.dm).
+					if (combat_reaction_try(H, COMBAT_TRIGGER_INCOMING, tgt, null))
+						H.do_attack_animation(src)
+						return TRUE
 					if(attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
 						return 1
 
@@ -189,6 +208,8 @@
 				var/accurate = FALSE
 				var/hit_zone = tgt
 				var/obj/item/organ/external/affecting = get_organ(hit_zone)
+				if (H != src)
+					note_struck_by(H, hit_zone, H.attacking_arm())
 
 				if (!affecting || affecting.is_stump())
 					to_chat(M, SPAN_WARNING("They are missing that limb!"))
@@ -306,6 +327,8 @@
 				// Finally, apply damage to target
 				apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge, toxic=H.lizard)
 				hand_struck(hit_zone, real_damage)
+				if (H != src)
+					combat_reaction_try(H, COMBAT_TRIGGER_AFTER_HIT, hit_zone, null)
 				// A bare-knuckle punch can hurt the puncher's own hand (punch_injury.dm).
 				if (H != src && istype(attack, /datum/unarmed_attack/punch) && !attack.deal_halloss)
 					H.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, HIT_BLUNT))
@@ -324,7 +347,7 @@
 
 				// Chest and untargeted Disarm make space; aimed disarms retain their
 				// existing weapon/grip handling below. Do not randomize this choice.
-				if (M.targeted_organ == "chest" || M.targeted_organ == "random")
+				if (tgt == "chest" || tgt == "random")
 					return try_deliberate_shove(M)
 				M.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Disarmed [name] ([ckey])</font>"))
 				append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been disarmed by [M.name] ([M.ckey])</font>"))
@@ -334,9 +357,9 @@
 
 				if (w_uniform)
 					w_uniform.add_fingerprint(M)
-				var/tgtm = M.targeted_organ
-				if (M.targeted_organ == "random")
-					tgtm = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+				var/tgtm = tgt
+				if (tgtm == "random")
+					tgtm = pick(combat_random_zones)
 				var/obj/item/organ/external/affecting = get_organ(ran_zone(tgtm))
 
 				var/list/holding = list(get_active_hand() = 40, get_inactive_hand() = 20)

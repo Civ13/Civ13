@@ -107,6 +107,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "head"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -131,6 +132,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "l_arm"
 	else
 		H.targeted_organ = "l_arm"
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -149,6 +151,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	H.targeted_organ = "chest"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -174,6 +177,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "r_arm"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -199,6 +203,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "l_leg"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -217,6 +222,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	H.targeted_organ = "groin"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -242,6 +248,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "r_leg"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()

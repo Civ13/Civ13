@@ -33,7 +33,7 @@ var/global/list/party_train_requirements = list(
 		return H.party_train_party
 	if(H.civilization && H.civilization != "none")
 		return party_train_faction_party(H.civilization)
-	var/key = H.persistence_owner_ckey || (H.client && H.client.ckey)
+	var/key = H.persistence_owner_ckey || (H.client && H.client.owner_key())
 	return key ? "ckey:[key]" : null
 
 // A member coming home by train rejoins the faction that owns the train, if it
@@ -51,7 +51,7 @@ var/global/list/party_train_requirements = list(
 
 /proc/party_train_valid_party(party)
 	if(!istext(party) || length(party) > 100) return FALSE
-	if(findtext(party, "ckey:") == 1) return length(party) > 5 && ckey(copytext(party, 6)) == copytext(party, 6)
+	if(findtext(party, "ckey:") == 1) return length(party) > 5 && ckey(owner_key_account(copytext(party, 6))) == owner_key_account(copytext(party, 6))
 	return findtext(party, "civ:") == 1 && findtext(party, ":", 5) > 5 && findtext(party, ":", 5) < length(party)
 
 /proc/party_train_party_name(party)

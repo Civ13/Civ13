@@ -8,7 +8,7 @@
 /proc/karma_character_ckey(mob/living/human/H)
 	if (!istype(H))
 		return null
-	var/owner = H.persistence_owner_ckey
+	var/owner = owner_key_account(H.persistence_owner_ckey)
 	if (istext(owner) && length(owner))
 		return ckey(owner)
 	if (H.ckey)

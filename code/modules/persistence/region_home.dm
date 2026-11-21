@@ -78,7 +78,7 @@ var/global/list/region_home_summoned = list()
 /proc/region_home_tell(mob/new_player/lobby, home)
 	var/list/peer = home ? shard_group.peers[home] : null
 	if(region_home_parked_land(home))
-		if(lobby.client && region_home_summon(lobby.client.ckey, home))
+		if(lobby.client && region_home_summon(lobby.client.owner_key(), home))
 			to_chat(lobby, SPAN_NOTICE("Your character is on a land across the sea whose harbour was laid up while nobody was there. It is being made ready now, which takes a few minutes. Press Join again then and you are shown the way."))
 		else
 			to_chat(lobby, SPAN_WARNING("Your character is on a land across the sea that is laid up, and no word can be sent to make it ready right now. Try Join again in a minute."))
@@ -113,7 +113,7 @@ var/global/list/region_home_summoned = list()
 	if(!region_home_enabled()) return TRUE
 	if(!lobby || !lobby.client) return FALSE
 	var/client/C = lobby.client
-	if(train_escrow_account_held(C.ckey))
+	if(train_escrow_account_held(C.owner_key()))
 		to_chat(lobby, SPAN_WARNING("Your train is still on its way. Wait for it to arrive before joining."))
 		return FALSE
 	// Guests own no durable character and cannot travel.
@@ -121,7 +121,7 @@ var/global/list/region_home_summoned = list()
 	var/deadline = world.time + REGION_HOME_WAIT
 	var/told = FALSE
 	while(TRUE)
-		var/list/result = region_home_ask(C.ckey)
+		var/list/result = region_home_ask(C.owner_key())
 		if(!lobby || lobby.client != C) return FALSE
 		if(!result)
 			if(wait) to_chat(lobby, SPAN_WARNING("This land cannot reach its world directory right now, so no character can start here. Try again in a minute."))
@@ -133,8 +133,8 @@ var/global/list/region_home_summoned = list()
 				// A home here with nothing left to play (the world was reset, or the
 				// character was lost before any death was recorded) goes back to the
 				// start region, so the next character starts there like everyone else.
-				if(wait && !grant && region_home_stranded(C.ckey) && region_home_ask(C.ckey, "release"))
-					log_game("Region home: [C.ckey] has no character or bed in [shard_group.region]; their home goes back to [shard_group.start_region].")
+				if(wait && !grant && region_home_stranded(C.owner_key()) && region_home_ask(C.owner_key(), "release"))
+					log_game("Region home: [C.owner_key()] has no character or bed in [shard_group.region]; their home goes back to [shard_group.start_region].")
 					if(!told)
 						to_chat(lobby, SPAN_NOTICE("You have no character or bed here any more, so your next character starts in the start land..."))
 						told = TRUE
@@ -144,10 +144,10 @@ var/global/list/region_home_summoned = list()
 				// here waits in the land it left. Joining now would start a second
 				// character in its place, so the player is told first and Join must
 				// be pressed again to go ahead.
-				if(wait && transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.ckey))
+				if(wait && transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.owner_key()))
 					lobby.transfer_hold_warned = TRUE
 					to_chat(lobby, SPAN_DANGER("Travel into this land is paused. If your character was travelling here, it is safe in the land it left and will arrive once an admin reopens the way: do not start a new character, ask an admin instead. If you are new here, press Join again to start."))
-					message_admins("[C.ckey] has no character in [shard_group.name] while travel into it is paused ([transfer_bridge.hold_reason]). If they were travelling here, their character is waiting in the land it left.")
+					message_admins("[C.owner_key()] has no character in [shard_group.name] while travel into it is paused ([transfer_bridge.hold_reason]). If they were travelling here, their character is waiting in the land it left.")
 					return FALSE
 				lobby.colony_start_grant = grant
 				return TRUE
@@ -189,7 +189,7 @@ var/global/list/region_home_summoned = list()
 // allow_new_character reclaims.
 /proc/region_home_reclaim_ok(mob/new_player/lobby)
 	if(!region_home_enabled() || !lobby || !lobby.client) return TRUE
-	var/account = lobby.client.ckey
+	var/account = lobby.client.owner_key()
 	var/has_body = FALSE
 	for(var/mob/living/human/H in human_mob_list)
 		if(H.persistence_owner_ckey == account && !QDELETED(H))
@@ -211,7 +211,7 @@ var/global/list/region_home_summoned = list()
 // A new character of an account with a bed here starts at that bed.
 /proc/region_home_bed_spawn(mob/living/human/H)
 	if(!istype(H) || !H.client || IsGuestKey(H.client.key) || !region_home_enabled()) return FALSE
-	var/obj/structure/bed/B = region_home_bed(H.client.ckey)
+	var/obj/structure/bed/B = region_home_bed(H.client.owner_key())
 	if(!B || !B.valid_character_bed(H)) return FALSE
 	H.forceMove(get_turf(B))
 	to_chat(H, SPAN_NOTICE("You start out beside your bed."))

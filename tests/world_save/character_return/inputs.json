@@ -25,7 +25,7 @@
   },
   "procedure_sha256": {
     "code/modules/persistence/player_reclaim.dm": {
-      "/map_storage/proc/reclaim_saved_player": "d2343cf9da0066ad7a032faa1715b80c22c57736f7a03d905a3b1be23b0b4b69",
+      "/map_storage/proc/reclaim_saved_player": "564c7e79bd6fcf06819ab0a91681c1f1f378ba4b6b179f60c2d9286ab45adb1c",
       "/map_storage/proc/find_restored_player": "aae3ded618b308c82ad1ab66197a1b00d1bb275dc9ca810595d5c5edddc85106"
     },
     "code/modules/persistence/bed_return.dm": {
@@ -35,7 +35,7 @@
       "/map_storage/proc/finish_character_return": "293e59097017478fe8afd0a23d42b19d1245a3ba9a923ac5a25759b4afc034f9",
       "/map_storage/proc/character_return_turf": "50cbb1adb8c73f73ffb2297f4c26a603b2e9a903842541d3a356a032ad4494f4",
       "/map_storage/proc/character_recovery_unready": "ad3acc9efa31ae0d786fa2a3f7992168cd6abf33a96f954e5a0ec51ef80b3d10",
-      "/map_storage/proc/allow_new_character": "d34ec0373272304a4b0ceb65800c5698fd2b22a1839adf6f1cf0fbf5536ab757"
+      "/map_storage/proc/allow_new_character": "c7bc8e5b65d803c65ab42f7a359d1619fa0bbc9ef4c0d841b5b03821fd42eaa0"
     }
   }
 }
