@@ -125,7 +125,7 @@ public static class HostSettings {
         var found = new List<Location>();
         if (Overlay(json) is { } shared) found.Add(new Location("Every region (shared)", shared, null));
         if (json.TryGetProperty("regions", out var regions) && regions.ValueKind == JsonValueKind.Array)
-            foreach (var region in regions.EnumerateArray().Take(16)) {
+            foreach (var region in regions.EnumerateArray().Take(LocalHosting.MaxRegions)) {
                 if (region.ValueKind != JsonValueKind.Object || !region.TryGetProperty("id", out var idJson) || idJson.ValueKind != JsonValueKind.String) continue;
                 var id = idJson.GetString()!;
                 if (!RegionId.IsMatch(id) || Overlay(region) is not { } folder) continue;
