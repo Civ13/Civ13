@@ -36,6 +36,46 @@ class DrugClassSourceTests(unittest.TestCase):
         examine = (ROOT / 'code/game/mob/living/carbon/human/examine.dm').read_text(encoding='utf-8')
         self.assertIn('msg += drug_examine_text(T)', examine)
 
+    def test_classification_table_and_precedence(self):
+        # Source projection only: the native probe remains the gameplay check.
+        factory = self.source.split('/proc/drug_class_reagents()', 1)[1].split('\n/', 1)[0]
+        entries = re.findall(r'"([^"]+)" = list\(([^)]*)\)', factory)
+        table = {key: re.findall(r'"([^"]+)"', values) for key, values in entries}
+        expected = {
+            'opioid': ['opium', 'morphine', 'tramadol', 'laudanum', 'heroin', 'poppy_tea'],
+            'stimulant': ['cocaine', 'crack', 'methamphetamine', 'dragon_powder', 'coca_leaf', 'coca_tea', 'khat'],
+            'nicotine': ['nicotine'],
+            'cannabis': ['thc'],
+            'caffeine': ['coffee'],
+            'alcohol': [],
+        }
+        self.assertEqual(list(table.items()), list(expected.items()))
+        self.assertIn('return list(', factory)  # Public callers still get fresh lists.
+        self.assertNotIn('static', factory)
+
+        classifier = self.source.split('/proc/drug_reagent_class(datum/reagent/R)', 1)[1].split('\n/', 1)[0]
+        self.assertLess(classifier.index('if (!R)'), classifier.index('istype(R, /datum/reagent/ethanol)'))
+        self.assertLess(classifier.index('istype(R, /datum/reagent/ethanol)'), classifier.index('istype(R, /datum/reagent/drink/coffee)'))
+        self.assertLess(classifier.index('istype(R, /datum/reagent/drink/coffee)'), classifier.index('for (var/class in table)'))
+        self.assertIn('if (R.id in table[class])\n\t\t\treturn class', classifier)
+        self.assertIn('return null', classifier)
+        # The retained table is private and read-only within this proc.
+        code = '\n'.join(line for line in classifier.splitlines() if not line.lstrip().startswith('//'))
+        self.assertEqual(len(re.findall(r'\btable\b', code)), 5)
+        self.assertIn('var/static/list/table\n\tif (!table)\n\t\ttable = drug_class_reagents()', code)
+
+        def project(reagent_id):
+            return next((kind for kind, ids in table.items() if reagent_id in ids), None)
+
+        for kind, ids in expected.items():
+            for reagent_id in ids:
+                self.assertEqual(project(reagent_id), kind)
+        for missing in (None, '', 'not-a-drug', 'Opium'):
+            self.assertIsNone(project(missing))
+        # Mutation control: removal of a listed ID is caught by the projection.
+        table['opioid'].remove('opium')
+        self.assertIsNone(project('opium'))
+
     def test_every_drug_doses_its_class(self):
         expected = {
             'Medicine': ('opium', 'cocaine', 'crack', 'pervitin', 'morphine', 'tramadol', 'dragonpowder'),
