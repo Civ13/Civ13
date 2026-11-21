@@ -230,6 +230,9 @@ var/global/list/sub_draught_fixed_cost = list("steel" = 56)
 	banks += batteries ? "[batteries] battery bank\s" : "no battery bank"
 	banks += air ? "[air] air bank\s" : "no air bank"
 	lines += "She carries [english_list(banks)], [hatches()] lock-out hatch[hatches() == 1 ? "" : "es"] and [fitting_count("B")] berth\s."
+	// The same reckoning as battery_capacity() and air_capacity(): half a bank
+	// in her hull and one more for each bank fitted.
+	lines += "Her battery holds [round(50 * (1 + batteries))]% of a Scout's and her air bank [round(50 * (1 + air))]%."
 	var/list/P = problems()
 	if (P.len)
 		lines += "<span class='warning'>Not ready to assemble: [jointext(P, " ")]</span>"
@@ -357,6 +360,12 @@ var/global/list/sub_draught_fixed_cost = list("steel" = 56)
 /proc/sub_draught_survey(obj/structure/vehicleparts/axis/ship/submarine/B)
 	if (!B || !B.components.len)
 		return "Only an assembled submarine can have her lines drawn."
+	// A boat built from a sheet is drawn from it: her art tiles are the pen
+	// boat's nearest length, not her own rows.
+	var/datum/sub_draught/plan = B.sheet()
+	if (plan)
+		plan.name = sub_draught_clean_name(B.name)
+		return plan
 	var/list/layout = list()
 	for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/F in B.components)
 		var/list/parts = splittext(F.hull_tile, "_")

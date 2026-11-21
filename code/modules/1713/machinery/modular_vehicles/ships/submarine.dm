@@ -695,6 +695,12 @@ var/global/list/submarine_layouts = list(
 	speedlist = alist(1=18,2=14,3=11)
 
 /obj/structure/vehicleparts/axis/ship/submarine/proc/hull_layout()
+	if (sheet_code)
+		var/datum/sub_draught/D = sheet()
+		if (D)
+			. = D.layout()
+			qdel(D)
+			return
 	return submarine_layouts[hull_class] || submarine_layouts["scout"]
 
 // The side of the square of water the boat turns in: its length.
