@@ -2489,6 +2489,11 @@ RECIPE: /material/wood/,treadwheel,/obj/structure/workshop_machine/mover/treadwh
 RECIPE: /material/wood/,horse gin,/obj/structure/workshop_machine/mover/horse_gin,10,200,1,1,economy & production,60,0,0,8,null
 RECIPE: /material/wood/,mill wheel,/obj/structure/workshop_machine/mover/mill_wheel,14,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,windmill,/obj/structure/workshop_machine/mover/windmill,16,200,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/wood/,wooden line shaft,/obj/structure/workshop_machine/transmission/line_shaft,4,80,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/wood/,shaft clutch,/obj/structure/workshop_machine/transmission/line_shaft/clutch,5,100,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/wood/,gear box,/obj/structure/workshop_machine/transmission/gear_box,8,150,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/iron/,iron line shaft,/obj/structure/workshop_machine/transmission/line_shaft/iron,3,80,1,1,economy & production,0,0,0,8,null
+RECIPE: /material/iron/,rope drive wheel,/obj/structure/workshop_machine/transmission/rope_drive,4,150,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/wood/,treadwheel crane,/obj/structure/workshop_machine/shear_legs/crane,16,200,1,1,economy & production,70,0,0,8,null
 RECIPE: /material/iron/,steam crane,/obj/structure/workshop_machine/shear_legs/crane/steam,20,250,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/steel/,tower crane,/obj/structure/workshop_machine/shear_legs/crane/steam/tower,30,300,1,1,economy & production,0,0,0,8,null

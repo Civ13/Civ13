@@ -2012,8 +2012,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pillory" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/steeljail" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/woodjail" = "law_order",
-		// --- machined_tools (6) ---
+		// --- machined_tools (8) ---
 		"/obj/structure/workshop_machine/fitting/drill_press" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/line_shaft/iron" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/rope_drive" = "machined_tools",
 		"/obj/item/weapon/enginemaker" = "machined_tools",
 		"/obj/item/weapon/fishing/modern" = "machined_tools",
 		"/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty" = "machined_tools",
@@ -2962,8 +2964,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (6) ---
+		// --- watermills (9) ---
 		"/obj/structure/water_lift/windmill" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",
+		"/obj/structure/workshop_machine/transmission/gear_box" = "watermills",
 		"/obj/structure/workshop_machine/trip_hammer" = "watermills",
 		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
 		"/obj/structure/workshop_machine/mover/windmill" = "watermills",

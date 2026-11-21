@@ -781,7 +781,7 @@ SUITES = {
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
         'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
-    'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py',),
+    'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py', 'tests/cattle_plough/test_detach_race.py'),
         'paths': ('tests/cattle_plough/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
     # Cotton is only food for ruminants: production predicate and call sites.
@@ -1479,6 +1479,7 @@ SUITES = {
         'paths': ('tests/ship_draught/',), 'shared_paths': (
             'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
             'code/modules/naval/ship_designer.dm', 'scripts/build_ship_designer_icons.py',
+            'code/modules/naval/sub_draught.dm',
             'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),

@@ -16,6 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/modules/1713/mechanical_power.dm').read_text(encoding='utf-8')
+TRANSMISSION = (ROOT / 'code/modules/1713/transmission.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
 NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
 NEEDS = json.loads((ROOT / 'config/craft_needs.json').read_text(encoding='utf-8'))
@@ -90,12 +91,18 @@ class MechanicalPower(unittest.TestCase):
 
     def test_drive_is_asked_on_demand_and_is_short_range(self):
         self.assertIn('#define MECHANICAL_DRIVE_REACH 1', SOURCE)
-        body = proc_body(SOURCE, '/proc/mechanical_drive_factor(atom/A)')
+        self.assertIn('return mechanical_load_factor(mechanical_drive_load(A))', proc_body(SOURCE, '/proc/mechanical_drive_factor(atom/A)'))
+        body = proc_body(SOURCE, '/proc/mechanical_drive_load(atom/A)')
         self.assertIn('range(MECHANICAL_DRIVE_REACH, T)', body)
-        self.assertIn('if (factor < .)', body)
+        self.assertIn('best = min(best, factor)', body)
+        # the search through transmission parts is bounded
+        self.assertIn('queue.len < MECHANICAL_DRIVE_SEARCH_LIMIT', body)
+        load = proc_body(SOURCE, '/proc/mechanical_load_factor(list/load)')
+        self.assertIn('return 1 - (1 - best) * share', load)
         # no process, no timer, no registry of movers or machines
-        for banned in ('spawn', 'sleep(', 'process(', 'addtimer', 'var/global/list/mechanical', '/process/'):
-            self.assertNotIn(banned, SOURCE, banned)
+        for text in (SOURCE, TRANSMISSION):
+            for banned in ('spawn', 'sleep(', 'process(', 'addtimer', 'var/global/list/mechanical', '/process/'):
+                self.assertNotIn(banned, text, banned)
         self.assertNotIn('mechanical_power', (ROOT / 'code/modules/persistence/world_time_stamps.dm').read_text(encoding='utf-8'))
 
     def test_a_mover_only_drives_when_fastened_and_turning(self):
@@ -243,6 +250,32 @@ class MechanicalPower(unittest.TestCase):
         result = subprocess.run([sys.executable, str(ROOT / 'tests/sprites/create_mechanical_power.py'), '--check'],
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+
+    def test_transmission_recipes_parts_and_nodes(self):
+        rows = recipe_rows()
+        T = '/obj/structure/workshop_machine/transmission/'
+        want = {
+            T + 'line_shaft': ('/material/wood/', 4, 'watermills', {BEARING: 1}),
+            T + 'line_shaft/clutch': ('/material/wood/', 5, 'watermills', {GEAR: 1, BEARING: 1}),
+            T + 'gear_box': ('/material/wood/', 8, 'watermills', {GEAR: 2, SHAFT: 1}),
+            T + 'line_shaft/iron': ('/material/iron/', 3, 'machined_tools', {BEARING: 1}),
+            T + 'rope_drive': ('/material/iron/', 4, 'machined_tools', {BEARING: 1, '/obj/item/stack/material/rope': 2}),
+        }
+        for path, (material, count, node, parts) in want.items():
+            self.assertEqual(len(rows.get(path, [])), 1, path)
+            self.assertEqual((rows[path][0][0], float(rows[path][0][3])), (material, count), path)
+            self.assertIn('"%s" = "%s"' % (path, node), NODES)
+            self.assertEqual(NEEDS[path], {'tools': [], 'inputs': parts}, path)
+        self.assertIn('#define TRANSMISSION_WOOD_RUN 8', TRANSMISSION)
+        self.assertIn('#define TRANSMISSION_IRON_RUN 16', TRANSMISSION)
+        self.assertIn('code\\modules\\1713\\transmission.dm', DME)
+
+    def test_movers_have_a_strength(self):
+        for name, cap in (('treadwheel', 1), ('horse_gin', 2), ('mill_wheel', 3)):
+            self.assertIn('drive_capacity = %d\n' % cap, type_block(BASE + '/' + name))
+        self.assertIn('return min(3, wind_speed())', proc_body(SOURCE, BASE + '/windmill/current_capacity()'))
+        self.assertIn('drive_capacity + 1', proc_body(SOURCE, BASE + '/mill_wheel/current_capacity()'))
 
 
 if __name__ == '__main__':
