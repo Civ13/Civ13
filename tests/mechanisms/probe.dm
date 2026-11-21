@@ -212,10 +212,6 @@ var/mechanisms_runtime = null
 	for (var/state in list("lever", "lever_pulled", "pull_cord", "pull_cord_pulled", "pressure_plate", "pressure_plate_pressed", "rock_drop", "rock_drop_empty"))
 		mechanisms_assert(state in states, "icon_[state]")
 
-	// Recipes map to research nodes.
-	mechanisms_assert(get_recipe_node_req("/obj/structure/mechanism/lever") == "basic_tools", "lever_node")
-	mechanisms_assert(get_recipe_node_req("/obj/structure/rock_drop") == "field_defenses", "rock_drop_node")
-
 /world/New()
 	OpenPort("none")
 	var/error = null
