@@ -242,6 +242,7 @@ var/martial_probe_scholarly = FALSE
 	S.hand = 0
 	martial_probe_rest(S)
 	S.martial_school = "pugilism"
+	S.a_intent = I_HARM
 	W.attack_hand(S)
 	martial_probe_assert(abs(S.martial_points("pugilism") - 1.25) < 0.001, "wrestling_mat_pays_strikers_half")
 
