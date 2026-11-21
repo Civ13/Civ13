@@ -70,6 +70,7 @@ var/list/martial_probe_known = list()
 	map.ordinal_age = 0
 
 	// --- every era opens a school, each with its own Military node ------------------
+	build_research_tree()
 	var/list/eras = list()
 	for (var/school_id in martial_schools)
 		var/list/S = martial_schools[school_id]
