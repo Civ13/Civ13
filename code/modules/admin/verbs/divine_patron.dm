@@ -15,6 +15,7 @@
 		actions += "Speak as a god"
 	actions += "Set my divine name"
 	actions += "Tend repositories"
+	actions += "Heteromorph forms"
 	var/label = divine_identity_label(divine_identity_of(ckey))
 	var/action = input(usr, claim ? "You speak as [divine_label_for(claim)]." : "You are not speaking as any god.[label ? " Players see you as [label]." : " Set your divine name first."]", "Divine Patron") as null|anything in actions
 	if (!action || !check_rights(R_ADMIN))
@@ -26,6 +27,8 @@
 			divine_edit_identity()
 		if ("Tend repositories")
 			divine_tend_repositories() // repository_nations.dm
+		if ("Heteromorph forms")
+			divine_heteromorph_menu() // heteromorph.dm
 		if ("Speak as a god")
 			var/list/entry = divine_identity_of(ckey)
 			if (!entry)
@@ -175,6 +178,61 @@
 						to_chat(usr, SPAN_NOTICE("[R.covenant.caster.real_name]: [divine_invocation_names[R.spell_id]], already granted and under way."))
 			if (!found)
 				to_chat(usr, SPAN_NOTICE("No prayers are waiting for [claim_label]."))
+
+// Give, take back or list heteromorph forms (code/modules/divine/heteromorph.dm).
+// Only a god's own character or a staff-run event character may carry one.
+/client/proc/divine_heteromorph_menu()
+	if (!check_rights(R_ADMIN))
+		return
+	var/action = input(usr, "Heteromorph forms are played only by staff. Other staff see every grant and use.", "Divine Patron") as null|anything in list("Give a form", "Take back a form", "List forms")
+	if (!action || !check_rights(R_ADMIN))
+		return
+	switch (action)
+		if ("List forms")
+			var/list/lines = heteromorph_staff_lines()
+			to_chat(usr, lines.len ? SPAN_NOTICE(jointext(lines, "<br>")) : SPAN_NOTICE("No one carries a heteromorph form here."))
+		if ("Give a form")
+			var/list/kinds = list()
+			for (var/id in heteromorph_kinds())
+				var/datum/heteromorph/K = heteromorph_kinds[id]
+				kinds[K.name] = K
+			var/kind_name = input(usr, "Which form?", "Divine Patron") as null|anything in kinds
+			var/datum/heteromorph/K = kind_name ? kinds[kind_name] : null
+			if (!K)
+				return
+			var/mob/living/human/H = divine_pick_human("Give the [K.name] form to whom? Only staff-run characters can carry it.")
+			if (!H || !check_rights(R_ADMIN))
+				return
+			var/colour = K.default_colour()
+			if (length(K.colours) > 1)
+				var/list/by_label = list()
+				for (var/c in K.colours)
+					by_label[K.colours[c]] = c
+				var/label = input(usr, "Which colour?", "Divine Patron") as null|anything in by_label
+				if (!label)
+					return
+				colour = by_label[label]
+			var/problem = H.heteromorph_grant(K, colour, ckey)
+			if (problem)
+				to_chat(usr, SPAN_WARNING(problem))
+				return
+			to_chat(usr, SPAN_NOTICE("[H.real_name] is now a [K.name]."))
+			if (H != usr)
+				to_chat(H, SPAN_NOTICE("<i>You remember what you truly are.</i>"))
+		if ("Take back a form")
+			var/list/choices = list()
+			for (var/mob/living/human/H in human_mob_list)
+				if (!QDELETED(H) && H.heteromorph_id)
+					choices["[H.real_name] ([H.ckey ? H.ckey : "no player"])"] = H
+			if (!choices.len)
+				to_chat(usr, SPAN_NOTICE("No one carries a heteromorph form here."))
+				return
+			var/pick = input(usr, "Take the form back from whom?", "Divine Patron") as null|anything in sortList(choices)
+			var/mob/living/human/H = pick ? choices[pick] : null
+			if (!H || QDELETED(H) || !check_rights(R_ADMIN))
+				return
+			if (H.heteromorph_revoke(ckey))
+				to_chat(usr, SPAN_NOTICE("[H.real_name] is only human now."))
 
 /client/proc/divine_pick_human(question, follower_of = null)
 	var/list/choices = list()

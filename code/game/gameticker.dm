@@ -89,7 +89,9 @@ var/global/datum/lobby_music_player/lobby_music_player = null
 				to_chat(world, "The game will start in [pregame_timeleft] seconds.")
 
 			while (current_state == GAME_STATE_PREGAME)
-				for (var/i=0, i<10, i++)
+				// Without a countdown (the Barracks, the tutorial, the gateway) the last
+				// second is not waited out: the round starts on the next tick.
+				for (var/i=0, i<((skip_pregame_countdown && round_progressing) ? 1 : 10), i++)
 					sleep(1)
 					vote.process()
 				if(map_storage.round_restored) return

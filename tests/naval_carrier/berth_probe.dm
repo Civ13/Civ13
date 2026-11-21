@@ -410,6 +410,15 @@ var/berth_runtime_error = FALSE
 	qdel(office)
 	berth_check(yard_time(post, 30) == 30, "with the office gone work is slow again")
 
+/proc/berth_sprite_checks()
+	var/list/states = icon_states('icons/obj/berths.dmi')
+	for (var/state in list("dock_gate_shut", "dock_gate_open", "refit_add", "refit_remove", "refit_change", "refit_turn", "yard_office", "keel_blocks"))
+		berth_check(state in states, "berths.dmi draws [state]")
+	var/obj/structure/berth_refit_mark/M = new(locate(30, 2, 1))
+	M.set_kind("remove", "the floor")
+	berth_check(M.icon_state == "refit_remove", "a mark to lift shows the lift sprite")
+	qdel(M)
+
 /proc/berth_run()
 	try
 		berth_checks()
@@ -417,6 +426,7 @@ var/berth_runtime_error = FALSE
 		berth_dock_checks()
 		berth_build_checks()
 		berth_yard_checks()
+		berth_sprite_checks()
 	catch(var/exception/e)
 		berth_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = berth_failures, "runtime_error" = berth_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

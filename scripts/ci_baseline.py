@@ -2643,7 +2643,7 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py', 'tests/divine_approval/test_arcane_devotion.py', 'tests/divine_approval/test_arcane_rites.py', 'tests/divine_approval/test_arcane_unbind.py', 'tests/divine_approval/test_arcane_veil.py'), 'paths': (
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py', 'tests/divine_approval/test_arcane_devotion.py', 'tests/divine_approval/test_arcane_rites.py', 'tests/divine_approval/test_arcane_unbind.py', 'tests/divine_approval/test_arcane_veil.py', 'tests/divine_approval/test_heteromorph.py'), 'paths': (
         'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/divine_repositories.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
@@ -2879,6 +2879,8 @@ SUITES = {
         'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi')},
     'drug_preparations': {'files': ('tests/drug_preparations/test_drug_preparations.py',),
         'paths': ('tests/drug_preparations/', 'code/modules/1713/drug_preparations.dm', 'tests/sprites/create_drugs.py')},
+    'drug_refining': {'files': ('tests/drug_refining/test_drug_refining.py',),
+        'paths': ('tests/drug_refining/', 'code/modules/reagents/drug_refining.dm')},
     'drug_classes': {'files': ('tests/drug_classes/test_drug_classes.py',),
         'paths': ('tests/drug_classes/', 'code/modules/reagents/drug_classes.dm')},
     'drug_crops': {'files': ('tests/drug_crops/test_drug_crops.py',),
@@ -2900,9 +2902,10 @@ SUITES = {
             'code/modules/divine/divine_sight_panel.dm', 'icons/mob/divine_presence.dmi'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/modules/admin/admin_verbs.dm')},
     # Observing as a spirit on persistent worlds: limited sight, local hearing, haunting.
-    'spirit_observe': {'files': ('tests/spirit_observe/test_spirit_observe.py',),
+    'spirit_observe': {'files': ('tests/spirit_observe/test_spirit_observe.py', 'tests/spirit_observe/test_spirit_hud.py'),
         'paths': ('tests/spirit_observe/', 'code/game/mob/observer/ghost/spirit_observe.dm',
-            'icons/effects/spirit_sight.dmi'),
+            'icons/effects/spirit_sight.dmi', 'code/game/mob/observer/ghost/spirit_hud.dm',
+            'icons/mob/screen/spirit_hud.dmi'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/observer/ghost/login.dm',
             'code/_onclick/ghost.dm', 'code/game/mob/hear_say.dm', 'code/game/mob/living/say.dm',
             'code/game/mob/emote.dm',
