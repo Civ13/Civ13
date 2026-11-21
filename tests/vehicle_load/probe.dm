@@ -176,6 +176,23 @@ var/load_runtime_error = FALSE
 	for (var/i = 1, i <= 2, i++)
 		load_person(locate(16, 16, 1))
 	load_check(tank.get_load_factor(TRUE) == 1, "a full crew is within the allowance ([tank.load_factor])")
+	// ---- Composite panels on the tank (composite_armour.dm) ----
+	var/obj/structure/vehicleparts/frame/CF
+	for (var/obj/structure/vehicleparts/frame/candidate in tank.components)
+		if (candidate.w_front[1] == "c_armoredwall")
+			CF = candidate
+			break
+	var/before_armour = CF.w_front[4]
+	var/before_health = CF.w_front[5]
+	var/before_factor = tank.get_load_factor(TRUE)
+	var/list/before_w = tank.vehicle_load_weights()
+	load_check(("front" in CF.composite_free_sides()) && CF.fit_composite("front"), "a composite panel fits over an armoured wall")
+	load_check(CF.w_front[4] == before_armour + max(20, round(before_armour / 2)) && CF.w_front[5] > before_health, "it adds half the wall's armour and some health ([before_armour] to [CF.w_front[4]])")
+	load_check(!CF.fit_composite("front") && !("front" in CF.composite_free_sides()), "one panel per wall")
+	var/list/after_w = tank.vehicle_load_weights()
+	load_check(after_w[2] == before_w[2] && after_w[1] - before_w[1] == max(20, round(before_armour / 2)) * 0.5 * COMPOSITE_PANEL_WEIGHT, "it weighs half its armour in steel, and the steel reference is unchanged ([after_w[1] - before_w[1]])")
+	load_check(tank.get_load_factor(TRUE) >= before_factor, "so it never makes the tank lighter ([before_factor] to [tank.load_factor])")
+	load_check(findtext(CF.composite_examine_text(), "front"), "examine names the covered wall")
 	var/mob/living/human/load_probe/rider = load_person(locate(16, 16, 1))
 	var/standing = vehicle_rider_weight(rider)
 	rider.buckled = locate(/obj/structure/bed/chair) in locate(16, 15, 1)

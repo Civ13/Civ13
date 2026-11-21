@@ -51,6 +51,9 @@
 	..()
 	if (hull_material && (user in range(1, src)))
 		to_chat(user, "<span class='notice'>Its hull is [hull_material].</span>")
+	var/panels = composite_examine_text()
+	if (panels && (user in range(1, src)))
+		to_chat(user, "<span class='notice'>[panels]</span>")
 
 // ---- Works vehicles in aluminium ----
 

@@ -270,6 +270,8 @@ var/global/list/vehicle_walls = vehicle_walls_table()
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !H)
 		return
+	if (fit_composite_panel(I, H)) // composite_armour.dm
+		return
 	if (istype (I, /obj/item/stack/material/steel))
 		var/obj/item/stack/material/steel/S = I
 		var/list/optlist = list("Cancel")
