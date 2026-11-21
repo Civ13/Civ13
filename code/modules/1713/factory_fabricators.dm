@@ -123,7 +123,7 @@ var/global/list/factory_active_fabricators = list()
 	var/list/result = list()
 	for (var/name in ..(faction, user))
 		var/datum/factory_recipe/R = factory_recipes[name]
-		if (R.tier == FACTORY_PRINTER_TIER)
+		if (R.tier == FACTORY_PRINTER_TIER && factory_resin_print(R) == prints_resin()) // resin_printer.dm
 			result += name
 	return result
 
