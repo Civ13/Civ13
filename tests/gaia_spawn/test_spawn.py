@@ -277,7 +277,8 @@ class GaiaSpawn(unittest.TestCase):
         self.assertIn('choose_origin(mob_area ? mob_area.climate : null)',body)
         origins=(ROOT/'code/game/mob/living/carbon/human/origins.dm').read_text()
         gaia=origins[origins.index('var/list/gaia = list('):origins.index('var/list/europe')]
-        for people in ('northmen','latins','hellenes','egyptians','swahili','yamato'):
+        # Gaia is not Earth: its peoples carry names of the land (peoples.dm).
+        for people in ('fjordfolk','hearthlanders','isleborn','dunefolk','grasslanders','mistwood'):
             self.assertIn('= "'+people+'"',gaia)
 
     def test_authored_map_surface_biomes_are_covered(self):

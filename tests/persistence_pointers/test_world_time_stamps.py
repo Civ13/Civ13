@@ -24,6 +24,10 @@ EXTRA_SAVED_TYPES = {'/datum/wound'}
 REVIEWED = {
     'civilization': 'regex hit on a comparison, not an assignment',
     'next_sprint_collision': 'declared var/tmp on humans (sprint.dm), so never saved',
+    'body_motion_until': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_started': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_watch_checked': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_stroke_next': 'declared var/tmp on humans (body_motion.dm), so never saved',
     'faction_text': 'regex hit on a comparison, not an assignment',
     'original_job_title': 'regex hit on a comparison, not an assignment',
     'move_delay': 'assigned on client, not on the saved gun',

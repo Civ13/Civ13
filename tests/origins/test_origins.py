@@ -129,6 +129,8 @@ class PeoplesAreNeverATarget(unittest.TestCase):
     # that is not a game rule: no stat, price, law, door, job or spawn check.
     READERS = {
         'code/game/mob/living/carbon/human/origins.dm',
+        'code/game/mob/living/carbon/human/peoples.dm',
+        'code/modules/admin/verbs/peoples_admin.dm',
         'code/game/mob/language/proficiency.dm',
         'code/modules/1713/jobs/spawn_outfits.dm',
         'code/modules/admin/verbs/origin_languages.dm',
