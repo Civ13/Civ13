@@ -4,16 +4,17 @@
 // signal on its Pull input pulls them. It is also an actuator: a lever's or
 // plate's cord tied to it sends a signal out of its Pulled output.
 
-#define MECHANISM_PORT_PULL_GAP 20
-
 /obj/item/circuit_shell/mechanism_port
 	name = "mechanism port"
 	desc = "A small iron box with a cord pulley and a sensing pawl, for an integrated circuit. Set it on the floor and use rope on it to tie cords to doors, gates, bells and the like within seven tiles: a signal from the circuit pulls them. A lever's or plate's cord tied to the port sends a signal into the circuit. Insert an integrated circuit to use it, Alt-click to edit the circuit, or use a screwdriver to remove it."
 	icon = 'icons/obj/science/circuits.dmi'
 	icon_state = "setup_stationary"
 	w_class = ITEM_SIZE_SMALL
+	// The circuit it holds is live graph state and is not written to saves.
+	should_save = FALSE
 	var/links = "" // "dx,dy;...": tiles its cords are tied to (mechanisms.dm)
 	var/next_pull = 0
+	var/pull_gap = 20 // deciseconds between pulls
 	var/obj/item/circuit_component/mechanism_port/port_component
 
 /obj/item/circuit_shell/mechanism_port/New()
@@ -65,7 +66,7 @@
 /obj/item/circuit_shell/mechanism_port/proc/circuit_pull(state)
 	if (!isturf(loc) || world.time < next_pull)
 		return FALSE
-	next_pull = world.time + MECHANISM_PORT_PULL_GAP
+	next_pull = world.time + pull_gap
 	mechanism_pull_links(src, links, state)
 	return TRUE
 
@@ -78,7 +79,7 @@
 
 /obj/item/circuit_component/mechanism_port
 	display_name = "Mechanism Port"
-	desc = "The port's cords. A signal on Pull pulls every cord tied to the port, at most once every two seconds: Mode \"throw\" works them like a lever thrown over, \"throw back\" like a lever thrown back, and \"toggle\" like a pull cord. When a lever's or plate's cord tied to the port is pulled, Pulled sends a signal and Thrown is true, or false for a lever thrown back."
+	desc = "The port's cords. A signal on Pull pulls every cord tied to the port, at most once every two seconds: Mode throw works them like a lever thrown over, throw back like a lever thrown back, and toggle like a pull cord. When a lever's or plate's cord tied to the port is pulled, Pulled sends a signal and Thrown is true, or false for a lever thrown back."
 	removable = FALSE
 
 	var/datum/port/input/pull_input
@@ -111,5 +112,3 @@
 /obj/item/circuit_component/mechanism_port/proc/send_pulled(state)
 	thrown_output.set_output(state != FALSE)
 	pulled_output.set_output(COMPONENT_SIGNAL)
-
-#undef MECHANISM_PORT_PULL_GAP
