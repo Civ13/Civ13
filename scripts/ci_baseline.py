@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'npc_cover_direction': {'files': ('tests/npc_cover/test_direction_projection.py',),
+        'paths': ('tests/npc_cover/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',)},
     'bottle_alcohol_power': {'files': ('tests/bottle_alcohol_power/test_alcohol_power.py',),
         'paths': ('tests/bottle_alcohol_power/', 'code/modules/reagents/reagent_containers/food/drinks/bottle.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
