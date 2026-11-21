@@ -251,6 +251,7 @@ RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 
 RECIPE: /material/concrete/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
+RECIPE: /material/concrete/,concrete ramp,/obj/covers/concretefloor/ramp,1,20,1,1,none,103,0,0,8,null
 RECIPE: /material/concrete/,septic tank,/obj/structure/sewer_piece/cesspit/septic,6,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/concrete/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
 
@@ -1593,6 +1594,8 @@ RECIPE: /material/stone/,sidewalk,/obj/covers/sidewalk,1,25,1,1,floors,100,0,0,8
 //*************| STONE CONSTRUCTIONS & DECORATIONS |***************
 
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,earth ramp,/obj/covers/cobblestone/ramp_earth,2,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,stone ramp,/obj/covers/cobblestone/ramp_gentle,2,45,1,1,construction,0,0,0,8,null
 
 RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
 
@@ -2538,6 +2541,7 @@ RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction
 RECIPE: /material/wood/,split thatch floor,/obj/covers/thatch2,0.75,20,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood floor,/obj/covers/wood,1,25,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/soft/,wood stairs,/obj/covers/wood/stairs,2,35,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,timber ramp,/obj/covers/wood/ramp,2,35,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/soft/,fancy wood floor,/obj/covers/fancywood,1.5,25,1,1,construction,42,0,0,8,null
 
 RECIPE: /material/wood/soft/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null

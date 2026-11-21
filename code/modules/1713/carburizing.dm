@@ -17,8 +17,8 @@
 /obj/structure/carburizing_pot
 	name = "carburizing pot"
 	desc = "A lidded clay box for cementation. Pack it with wrought iron bars and charcoal, add charcoal to hold it at heat, then seal it with an empty hand. Ten minutes later the bars come out as blister steel. Iron tools packed in with them come out case-hardened."
-	icon = 'icons/obj/claystuff.dmi'
-	icon_state = "bigclaypot2"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "carburizing_pot"
 	density = TRUE
 	anchored = TRUE
 	not_movable = TRUE
@@ -47,6 +47,7 @@
 	return clamp(round(20 - (packer_skill - 1) * 30), 5, 30)
 
 /obj/structure/carburizing_pot/update_icon()
+	icon_state = burning ? "carburizing_pot_on" : "carburizing_pot"
 	set_light(burning ? 2 : 0)
 
 /obj/structure/carburizing_pot/examine(mob/user, distance)

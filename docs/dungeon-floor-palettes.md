@@ -21,6 +21,15 @@ config has a horizontal sill and a south-side border. Rotate all pieces in a
 span together, and preserve their left-to-right order relative to SOUTH.
 Directions are single-frame BYOND S, N, E, W.
 
+The sill and border come in two tones. The plain types sit on the light
+cobblestone floors; the `/dark` types (`sill/dark`, `sill/dark/cap_left`,
+`trim/dark`, `trim/dark/inside` and so on) sit on the default and dark crosswise
+cobblestone floors. Keep one tone per room.
+
+The four cobblestone floor states are drawn by `scripts/draw_cobble_floors.py`
+and the two kits by `scripts/draw_cobble_floor_trim.py --tone light|dark`. Run
+the floor script first: the kits take their field and stone colour from it.
+
 ## Terracotta
 
 The `/obj/covers/stone/slab/decorative/terracotta` family comprises the field,
@@ -38,6 +47,9 @@ and mapper integration.
 
 ```sh
 python3 scripts/check_floor_palette_assets.py
+python3 scripts/draw_cobble_floors.py --repo-root . --check
+python3 scripts/draw_cobble_floor_trim.py --repo-root . --tone light --output icons/turf/flooring/cobble_trim.dmi --check
+python3 scripts/draw_cobble_floor_trim.py --repo-root . --tone dark --output icons/turf/flooring/cobble_trim_dark.dmi --check
 ```
 
 The check compares the 32-pixel DMI state, frames and direction metadata against

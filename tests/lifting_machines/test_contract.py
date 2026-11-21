@@ -86,7 +86,7 @@ class LiftingMachines(unittest.TestCase):
         self.assertIn('if (needs_hoist(A))', body)
         self.assertLess(body.index('if (needs_hoist(A))'), body.index('if (ladder && !isitem(A))'))
         # wheeled carts are bumped up neither steps nor rungs
-        self.assertIn('if (is_wheeled_load(A))', body)
+        self.assertIn('if (is_wheeled_load(A) && carries < RAMP_WHEELS)', body)
         self.assertIn('/obj/structure/shopping_cart', type_list('wheeled_load_types'))
         # on a ladder only loose items, no crates or furniture
         self.assertIn('if (ladder && !isitem(A))', body)
@@ -96,11 +96,12 @@ class LiftingMachines(unittest.TestCase):
 
     def test_stairs_bring_what_they_can_and_let_go_of_the_rest(self):
         check = proc_body(SOURCE, '/proc/stairs_check_load(')
-        self.assertIn('level_change_load_problem(load, FALSE)', check)
+        self.assertIn('level_change_load_problem(load, FALSE, route ? route.ramp_carries : 0, M)', check)
         self.assertIn('persistence_movement_allowed(load, destination)', check)
         self.assertIn('M.stop_pulling()', check)
         bring = proc_body(SOURCE, '/proc/stairs_bring_load(')
-        self.assertIn('M.pulling.forceMove(M.loc)', bring)
+        self.assertIn('load.forceMove(M.loc)', bring)
+        self.assertIn('rider.forceMove(load.loc)', bring)
         edge = (ROOT / 'code/modules/multiz/edge_climbing.dm').read_text(encoding='utf-8')
         for name in ('/mob/living/human/proc/climb_stairs(', '/proc/stairs_soft_descent('):
             body = proc_body(edge, name)

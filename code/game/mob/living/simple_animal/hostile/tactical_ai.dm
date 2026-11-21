@@ -662,7 +662,7 @@
 			// only sometimes does. The guard expires by itself after this tick.
 			if (!prob(bite_fracture_chance))
 				H.bite_fracture_guard = world.time + 1
-			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, HIT_CUT), sharp=1, edge=1)
 			H.bite_fracture_guard = 0
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
