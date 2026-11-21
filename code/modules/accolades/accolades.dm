@@ -482,6 +482,7 @@ var/global/list/accolade_cache = list() // ckey -> list(world.time, state)
 	for(var/mob/living/human/H in human_mob_list)
 		if(H.client && !QDELETED(H))
 			H.accolade_minute()
+	character_slots_tick()
 
 // -- the window ------------------------------------------------------------------
 
