@@ -859,7 +859,7 @@ class BedDestructionNoticeTests(unittest.TestCase):
         attack = adapter.read('code/game/objects/structures.dm').split(
             '/obj/structure/attackby(', 1)[1].split('// Called after a wrench', 1)[0]
         hammer = attack.split('else if (istype(O, /obj/item/weapon/hammer)', 1)[1]
-        self.assertIn('if (do_after(user, 25, src) && !QDELETED(src))', hammer)
+        self.assertIn('if (do_ship_fixture_after(user, 25, src) && !QDELETED(src))', hammer)
         self.assertLess(hammer.index('!B.remove_padding()'), hammer.index('B.persistence_bed_notice_recipient(user)'))
         self.assertIn('\t\t\tqdel(src)\n\t\t\tif (bed_notice_owner && QDELETED(src))\n'
                       '\t\t\t\tpersistence_queue_bed_notice(bed_notice_owner, user.real_name)', hammer)

@@ -81,6 +81,29 @@
 					if (!QDELETED(P))
 						P.update_join()
 
+// The two kinds of iron barrier keep separate runs. The old arch sprites do
+// not form portcullis frames, but adjacent sections can still share a winch.
+/obj/structure/gate/proc/iron_grid_neighbour(direction)
+	var/turf/T = get_step(src, direction)
+	for (var/obj/structure/gate/G in T)
+		if (!QDELETED(G) && G.is_iron_grid_gate())
+			return G
+
+/obj/structure/gate/proc/iron_grid_run()
+	. = list(src)
+	var/axis = 0
+	if (iron_grid_neighbour(EAST) || iron_grid_neighbour(WEST))
+		axis = EAST
+	else if (iron_grid_neighbour(NORTH) || iron_grid_neighbour(SOUTH))
+		axis = NORTH
+	if (!axis)
+		return
+	for (var/direction in list(axis, turn(axis, 180)))
+		var/obj/structure/gate/G = iron_grid_neighbour(direction)
+		while (G && !(G in .))
+			. += G
+			G = G.iron_grid_neighbour(direction)
+
 // ---- the winch works whole runs ----------------------------------------------------
 
 // How long winding takes: longer for wider runs, halved by a helper at the winch.
@@ -90,6 +113,8 @@
 	var/sections = 0
 	for (var/obj/structure/castle_gate/portcullis/P in G)
 		sections++
+	for (var/obj/structure/gate/I in G)
+		sections++
 	. = PORTCULLIS_WIND_BASE + PORTCULLIS_WIND_EXTRA * max(0, sections - 1)
 	for (var/mob/living/human/H in range(1, src))
 		if (H != user && H.stat == CONSCIOUS && !H.restrained() && !H.get_active_hand())
@@ -97,6 +122,7 @@
 
 /obj/structure/castle_winch/examine(mob/user, distance = -1)
 	. = ..()
+	to_chat(user, SPAN_NOTICE("It also works arched iron gates. Build it within two tiles of any section in a straight run."))
 	var/sections = 0
 	for (var/obj/structure/castle_gate/portcullis/P in gates())
 		sections++

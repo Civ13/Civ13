@@ -931,7 +931,7 @@
 /obj/item/projectile/proc/projectile_tile_order(turf/T)
 	var/list/riders = null
 	for (var/mob/living/L in T)
-		if (los_on_vehicle_deck(L) && (L == original || fired_from_deck_axis))
+		if ((L == original || fired_from_deck_axis) && los_on_vehicle_deck(L))
 			if (!riders)
 				riders = list()
 			riders += L

@@ -44,7 +44,14 @@ class VisionOrganChecks(unittest.TestCase):
         before = (HERE / 'before.dm.txt').read_text(encoding='utf-8')
         old = '!vision || (vision && vision.is_broken())'
         self.assertEqual(before.count(old), 1)
-        self.assertEqual(production(), before.replace(old, '!vision || vision.is_broken()'))
+        # Hearing has an orthogonal post-parent hook; keep the exact vision
+        # comparison scoped to the vision statements.
+        only_vision = next(i for i, line in enumerate(before.splitlines()) if line.strip() == '//Vision')
+        self.assertTrue(production().startswith('/mob/living/human/handle_disabilities()\n\t..()\n'))
+        current = production().splitlines(keepends=True)
+        current_vision = next(i for i, line in enumerate(current) if line.strip() == '//Vision')
+        self.assertEqual(''.join(current[current_vision:]),
+                         ''.join(before.replace(old, '!vision || vision.is_broken()').splitlines(keepends=True)[only_vision:]))
 
     def test_short_circuit_results_and_call_order(self):
         before = (HERE / 'before.dm.txt').read_text(encoding='utf-8')

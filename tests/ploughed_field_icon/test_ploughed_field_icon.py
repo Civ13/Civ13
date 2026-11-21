@@ -108,5 +108,63 @@ class PloughedFieldIcon(unittest.TestCase):
         self.assertRegex(hook, r'icon_state = overrided_icon_state')
 
 
+SOURCE = Path(__file__).resolve().parents[2] / 'code/game/turfs/floor_icon.dm'
+EXPECTED_FLIP = {
+    'NORTH': 'SOUTH', 'SOUTH': 'NORTH', 'EAST': 'EAST', 'WEST': 'WEST',
+    'NORTHEAST': 'SOUTHEAST', 'SOUTHEAST': 'NORTHEAST',
+    'NORTHWEST': 'SOUTHWEST', 'SOUTHWEST': 'NORTHWEST',
+}
+EXPECTED_LOOKUPS = [
+    'step_dir', 'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST',
+    'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST',
+]
+
+
+def project_direction_selection(source):
+    """Extract the map and ensure every use is a read in its original branch."""
+    match = re.search(r'var/(?:static/)?list/ns_flip = list\((.*?)\n\s*\)', source, re.S)
+    if not match:
+        raise ValueError('missing direction map')
+    entries = re.findall(r'"\[([A-Z]+)\]"\s*=\s*([A-Z]+)', match.group(1))
+    if len(entries) != 8 or dict(entries) != EXPECTED_FLIP:
+        raise ValueError('direction map changed')
+
+    references = [line.strip() for line in source.splitlines() if 'ns_flip' in line]
+    if len(references) != 10 or 'list/ns_flip = list(' not in references[0]:
+        raise ValueError('direction map escaped or was modified')
+    pattern = re.compile(
+        r'^var/render_dir = use_reverse \? reverse_dir\[([A-Za-z_]+)\] : '
+        r'ns_flip\["\[([A-Za-z_]+)\]"\]$'
+    )
+    lookups = []
+    for line in references[1:]:
+        lookup = pattern.fullmatch(line)
+        if not lookup or lookup.group(1) != lookup.group(2):
+            raise ValueError('direction selection changed')
+        lookups.append(lookup.group(1))
+    if lookups != EXPECTED_LOOKUPS:
+        raise ValueError('direction selection sites changed')
+    return dict(entries), lookups
+
+
+class FloorEdgeDirectionSelection(unittest.TestCase):
+    def test_reused_table_preserves_the_prior_source_contract(self):
+        current = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('var/static/list/ns_flip = list(', current)
+        prior = current.replace('var/static/list/ns_flip = list(', 'var/list/ns_flip = list(', 1)
+        self.assertEqual(project_direction_selection(prior), project_direction_selection(current))
+
+    def test_negative_controls_reject_wrong_map_branch_and_mutation(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        variants = (
+            source.replace('"[NORTHEAST]" = SOUTHEAST', '"[NORTHEAST]" = NORTHWEST', 1),
+            source.replace('reverse_dir[NORTHEAST]', 'reverse_dir[NORTHWEST]', 1),
+            source.replace('for (var/step_dir in cardinal)', 'ns_flip["[NORTH]"] = NORTH\n\t\t\t\t\tfor (var/step_dir in cardinal)', 1),
+        )
+        for variant in variants:
+            with self.subTest(variant=variants.index(variant)), self.assertRaises(ValueError):
+                project_direction_selection(variant)
+
+
 if __name__ == '__main__':
     unittest.main()

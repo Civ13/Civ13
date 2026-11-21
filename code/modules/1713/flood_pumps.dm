@@ -77,8 +77,8 @@ var/global/list/windmill_pumps = list()
 
 // A hand lever pump: each stroke keeps the cellar dry a while longer.
 /obj/structure/cellar_pump/lever
-	name = "lever pump"
-	desc = "A cast-iron pump worked by a long lever, to draw the water out of a cellar or a mine. Work the handle and the floor around it stays dry for a while."
+	name = "hand bilge and cellar pump"
+	desc = "A cast-iron hand pump for a cellar or mine ashore, or a ship's bilge when mounted on deck. Work the lever by hand."
 	icon_state = "lever_pump"
 	state_prefix = "lever_pump"
 	on_suffix = "_use"
@@ -117,13 +117,18 @@ var/global/list/windmill_pumps = list()
 	if (strokes)
 		to_chat(user, SPAN_NOTICE("You stop pumping. The floor around it should stay dry for about [round((pumped_until - world.time) / 600, 1)] minute\s."))
 
+/obj/structure/cellar_pump/lever/examine(mob/user, distance = -1)
+	. = ..()
+	if (. && get_dist(src, user) <= 2)
+		to_chat(user, SPAN_NOTICE("Work the lever ashore to drain a cellar or mine, or on a ship's deck to pump its bilge."))
+
 /obj/structure/cellar_pump/lever/update_icon()
 	icon_state = busy ? "lever_pump_use" : "lever_pump"
 
 // A steam mine pump: fuel in, the whole working stays dry.
 /obj/structure/cellar_pump/steam
-	name = "steam mine pump"
-	desc = "A coal-fired beam engine over a shaft, that lifts water out of a mine or a deep cellar day and night while its fire burns. Feed it coal, charcoal or wood and start it by hand."
+	name = "steam bilge and mine pump"
+	desc = "A steam pump that drains a mine or cellar ashore, or a ship's bilge when mounted on deck. Feed it coal, charcoal or wood and start it by hand."
 	icon_state = "mine_pump"
 	state_prefix = "mine_pump"
 	cellar_reach = 7
@@ -173,7 +178,7 @@ var/global/list/windmill_pumps = list()
 /obj/structure/cellar_pump/steam/examine(mob/user, distance = -1)
 	. = ..()
 	if (. && get_dist(src, user) <= 2)
-		to_chat(user, SPAN_NOTICE("It has fuel for [fuel] minute\s of pumping."))
+		to_chat(user, SPAN_NOTICE("On land, it drains cellars and mines. On a ship's deck, it pumps the bilge. It has fuel for [fuel] minute\s of pumping."))
 
 // An electric sump pump: a float switch runs it only when water comes in,
 // and a battery keeps it going for an hour when the power fails.

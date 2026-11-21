@@ -255,8 +255,8 @@ class DefencesTest(unittest.TestCase):
                 ('Archimedes screw', '/obj/structure/water_lift/archimedes_screw', 'irrigation'),
                 ('river gauge', '/obj/structure/river_gauge', 'basic_agriculture'),
                 ('cistern', '/obj/structure/reagent_dispensers/cistern', 'paved_infrastructure'),
-                ('lever pump', '/obj/structure/cellar_pump/lever', 'workshops'),
-                ('steam mine pump', '/obj/structure/cellar_pump/steam', 'steam_power'),
+                ('hand bilge and cellar pump', '/obj/structure/cellar_pump/lever', 'workshops'),
+                ('steam bilge and mine pump', '/obj/structure/cellar_pump/steam', 'steam_power'),
                 ('sump pump', '/obj/structure/cellar_pump/sump', 'utilities'),
                 ('windmill pump', '/obj/structure/water_lift/windmill', 'watermills')):
             self.assertRegex(recipes, rf'RECIPE: /material/\w+/,{name},{path},')
@@ -292,6 +292,18 @@ class CellarTest(unittest.TestCase):
         pumps = (ROOT / 'code/modules/1713/flood_pumps.dm').read_text(encoding='utf-8')
         self.assertIsNone(re.search(r'(?<![_\w])spawn\(', pumps))
         self.assertNotIn('in world', pumps)
+
+    def test_hand_and_steam_pump_examine_names_bilge_and_land_uses(self):
+        pumps = (ROOT / 'code/modules/1713/flood_pumps.dm').read_text(encoding='utf-8')
+        for subtype, name in (('lever', 'hand bilge and cellar pump'), ('steam', 'steam bilge and mine pump')):
+            with self.subTest(subtype=subtype):
+                path = '/obj/structure/cellar_pump/' + subtype
+                definition = pumps.split(path + '\n', 1)[1].split('\n/', 1)[0]
+                self.assertIn(f'name = "{name}"', definition)
+                examine = pumps.split(path + '/examine(', 1)[1].split('\n/', 1)[0]
+                for use in ('cellar', 'mine', 'bilge'):
+                    self.assertIn(use, examine)
+
 
 
 class DugWellsTest(unittest.TestCase):
