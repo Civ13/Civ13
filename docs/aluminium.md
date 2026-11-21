@@ -57,6 +57,26 @@ stay steel (`works_hull_cost()`). The tracked carrier uses the M113 layout and
 is aluminium only: 112 aluminium and 40 steel. Tank guns cost more on bigger
 tanks: 40, 70, 100 and 130 steel from the light tank to the main battle tank.
 
+## Composite armour
+
+`code/modules/1713/composite_armour.dm`, unlocked by **Composite Armour**
+(Military, tier 7; needs Modern Armor and Mechanized Warfare). Its inputs need
+alumina (Aluminium Refining) and prepared Kevlar (Synthetic Fabrics):
+
+- **Ceramic tiles:** put alumina in a kiln; each firing turns every measure
+  into one ceramic armour tile (up to 40 at a time; `accept_alumina()` and
+  `fire_alumina()`, hooked from `refining.dm`).
+- **Panels:** use a stack of tiles on prepared Kevlar to bond two tiles to one
+  sheet into a composite armour panel.
+- **Fitting:** use a panel on any frame with an armoured wall: tanks,
+  armoured cars, carriers and hand-built frames. Choose the wall, then wait 8
+  seconds. One panel fits per wall. It adds half the wall's armour (at least
+  20) and a third of that in health.
+- **Weight:** a panel weighs half what the same armour would in steel
+  (`COMPOSITE_PANEL_WEIGHT`). It is load on top of the steel body, so a fully
+  plated heavy tank is much tougher and somewhat slower
+  (`wall_weight()`, docs/craft-core.md "Vehicle load").
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/aluminium/probe.dm 300

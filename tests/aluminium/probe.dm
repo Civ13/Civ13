@@ -142,6 +142,19 @@ var/alu_runtime_error = FALSE
 		qdel(O)
 	qdel(P)
 
+/proc/alu_ceramic_checks()
+	var/turf/T = locate(15, 5, 1)
+	var/obj/structure/furnace/kiln/K = new(T)
+	var/obj/item/stack/ore/alumina/A = new(T)
+	A.amount = 6
+	alu_check(K.accept_alumina(A, null) && !K.accept_alumina(new /obj/item/stack/ore/bauxite(T), null), "the kiln takes alumina, not bauxite")
+	alu_check(K.fire_alumina() == 6 && alu_count(T, /obj/item/stack/ceramic_tile) == 6, "a firing turns each alumina into a ceramic tile")
+	var/list/states = icon_states('icons/obj/aluminium.dmi')
+	alu_check(("ceramic_tile_4" in states) && ("composite_panel_4" in states), "tile and panel piles have sprites")
+	var/datum/research_node/N = get_research_node("composite_armour")
+	alu_check(N && ("modern_armor" in N.prereqs) && ("mechanized_war" in N.prereqs), "Composite Armour builds on Modern Armor and Mechanized Warfare")
+	qdel(K)
+
 /proc/alu_catalog_checks()
 	alu_check(get_recipe_node_req("/obj/structure/aluminium_works/digester") == "aluminium_refining" && get_recipe_node_req("/obj/structure/aluminium_works/reduction_pot") == "aluminium_refining", "both machines unlock with Aluminium Refining")
 	var/datum/research_node/N = get_research_node("aluminium_refining")
@@ -173,6 +186,7 @@ var/alu_runtime_error = FALSE
 		alu_material_checks()
 		alu_digester_checks()
 		alu_pot_checks()
+		alu_ceramic_checks()
 		alu_catalog_checks()
 	catch(var/exception/e)
 		alu_check(FALSE, "exception [e] [e.file]:[e.line]")

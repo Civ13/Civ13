@@ -300,6 +300,8 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("alloys", "Alloys", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("steelmaking"), 6))
 	// Hall-Heroult (1886) and Bayer (1888): aluminium from bauxite (aluminium.dm).
 	register_research_node(new /datum/research_node("aluminium_refining", "Aluminium Refining", "Industrial", 305, 5, RESEARCH_MODE_ANALYSIS, list("electricity","alloys"), 6))
+	// Chobham-type armour (1970s): ceramic tiles bonded to aramid (composite_armour.dm).
+	register_research_node(new /datum/research_node("composite_armour", "Composite Armour", "Military", 420, 7, RESEARCH_MODE_ANALYSIS, list("modern_armor","mechanized_war"), 8))
 	// Chemical cells precede electrical power distribution: Galvanic Cells are
 	// groundwork for Electricity.
 	register_research_node(new /datum/research_node("early_cells", "Early Chemical Cells", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 1))
