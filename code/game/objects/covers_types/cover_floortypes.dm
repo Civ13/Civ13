@@ -199,6 +199,54 @@
 	layer = 1.99
 	material = "Bamboo"
 
+// These fitted mats reuse the mappers' trim art without creating an invisible
+// decal marker or a second floor object. The stateless underlay is rebuilt on
+// construction/load; normal cover behavior owns the floor slot and recovery.
+/obj/covers/tatami/trim
+	name = "edged tatami floor"
+	desc = "A tatami mat with bamboo trim. Use Rotate Tatami Trim from beside it to line up the edge."
+	icon = 'icons/turf/flooring/decals.dmi'
+	icon_state = "tatami_frame"
+	var/directional_trim = TRUE
+
+/obj/covers/tatami/trim/New()
+	..()
+	underlays += image(icon = 'icons/turf/floors.dmi', icon_state = "tatami0")
+	if (!directional_trim)
+		verbs -= /obj/covers/tatami/trim/verb/rotate_trim
+
+/obj/covers/tatami/trim/verb/rotate_trim()
+	set name = "Rotate Tatami Trim"
+	set category = null
+	set src in oview(1)
+	if (!directional_trim || !isliving(usr) || usr.incapacitated() || !usr.Adjacent(src))
+		return
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		return
+	// Diagonal construction facings use their north/south component.
+	var/cardinal_dir = dir & (NORTH | SOUTH)
+	if (!cardinal_dir)
+		cardinal_dir = dir
+	set_dir(turn(cardinal_dir, 90))
+
+/obj/covers/tatami/trim/angle
+	name = "inside-corner tatami floor"
+	icon_state = "tatami_frame_angle"
+
+/obj/covers/tatami/trim/corner
+	name = "outside-corner tatami floor"
+	icon_state = "tatami_frame_corner"
+
+/obj/covers/tatami/trim/cee
+	name = "three-sided tatami floor"
+	icon_state = "tatami_frame_cee"
+
+/obj/covers/tatami/trim/full
+	name = "fully framed tatami floor"
+	desc = "A tatami mat with bamboo trim on all sides."
+	icon_state = "tatami_frame_full"
+	directional_trim = FALSE
+
 /* Stone Floors*/
 
 /obj/covers/slate
@@ -234,6 +282,22 @@
 	explosion_resistance = 2
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/cobblestone/vertical
+	name = "light running cobblestone floor"
+	icon_state = "cobble_vertical"
+
+/obj/covers/cobblestone/horizontal
+	name = "light crosswise cobblestone floor"
+	icon_state = "cobble_horizontal"
+
+/obj/covers/cobblestone/horizontal/dark
+	name = "dark crosswise cobblestone floor"
+	icon_state = "cobble_horizontal_dark"
+
+/obj/covers/cobblestone/old_stone
+	name = "mossy old stone floor"
+	icon_state = "stone_old"
 
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"

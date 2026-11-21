@@ -1584,6 +1584,10 @@ RECIPE: /material/stone/,stone-headed club,/obj/item/weapon/melee/classic_baton/
 //*************| STONE FLOORS |***************
 
 RECIPE: /material/stone/,cobblestone floor,/obj/covers/cobblestone,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,light running cobblestone floor,/obj/covers/cobblestone/vertical,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,light crosswise cobblestone floor,/obj/covers/cobblestone/horizontal,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,dark crosswise cobblestone floor,/obj/covers/cobblestone/horizontal/dark,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,mossy old stone floor,/obj/covers/cobblestone/old_stone,1,25,1,1,floors,0,0,0,8,null
 RECIPE: /material/stone/,roman road,/obj/covers/roads/roman,1,25,1,1,floors,20,0,0,8,null
 RECIPE: /material/stone/,slate floor,/obj/covers/slatefloor,1,25,1,1,floors,25,0,0,8,null
 RECIPE: /material/stone/,stone decorative slab floor,/obj/covers/stone/slab/decorative,1,25,1,1,floors,32,0,0,8,null
@@ -2534,6 +2538,17 @@ RECIPE: /material/wood/,split thatch floor,/obj/covers/thatch2,0.75,20,1,1,const
 RECIPE: /material/wood/soft/,wood floor,/obj/covers/wood,1,25,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/soft/,wood stairs,/obj/covers/wood/stairs,2,35,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/soft/,fancy wood floor,/obj/covers/fancywood,1.5,25,1,1,construction,42,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 1,/obj/covers/wood/alt,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 2,/obj/covers/wood/alt/two,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 3,/obj/covers/wood/alt/three,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 4,/obj/covers/wood/alt/four,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 5,/obj/covers/wood/alt/five,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 6,/obj/covers/wood/alt/six,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 7,/obj/covers/wood/alt/seven,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 8,/obj/covers/wood/alt/eight,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 9,/obj/covers/wood/alt/nine,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 10,/obj/covers/wood/alt/ten,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 11,/obj/covers/wood/alt/eleven,1,25,1,1,construction,18,0,0,8,null
 
 RECIPE: /material/wood/soft/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
 
@@ -2878,6 +2893,11 @@ RECIPE: /material/bamboo/,horizontal tatami floor,/obj/covers/tatami,0.75,20,1,1
 RECIPE: /material/bamboo/,vertical tatami floor,/obj/covers/tatami_vertical,0.75,20,1,1,construction,0,0,0,8,null
 RECIPE: /material/bamboo/,horizontal dark tatami floor,/obj/covers/tatami_dark,0.75,20,1,1,construction,0,0,0,8,null
 RECIPE: /material/bamboo/,vertical dark tatami floor,/obj/covers/tatami_dark_vertical,0.75,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,edged tatami floor,/obj/covers/tatami/trim,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,inside-corner tatami floor,/obj/covers/tatami/trim/angle,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,outside-corner tatami floor,/obj/covers/tatami/trim/corner,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,three-sided tatami floor,/obj/covers/tatami/trim/cee,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,fully framed tatami floor,/obj/covers/tatami/trim/full,1,20,1,1,construction,0,0,0,8,null
 
 //*********************| BAMBOO RESEARCH & PAPER |**************************
 
