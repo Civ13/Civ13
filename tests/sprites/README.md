@@ -206,6 +206,8 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_mechanical_power.py` owns `icons/obj/mechanical_power.dmi`: the treadwheel, horse gin, mill wheel and windmill, standing and turning, and the trip hammer. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
+`create_mechanisms.py` owns `icons/obj/mechanisms.dmi`: the lever (`lever`, `lever_pulled`), pull cord (`pull_cord`, `pull_cord_pulled`), pressure plate (`pressure_plate`, `pressure_plate_pressed`, low contrast on purpose) and rock drop (`rock_drop`, `rock_drop_empty`). `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
+
 `create_machine_shop.py` owns `icons/obj/machine_shop.dmi`: the steam hammer, drill press and hydraulic press, standing and working. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_power_cranes.py` owns `icons/obj/power_cranes.dmi`: the steam crane and the tower crane, standing and hauling. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
