@@ -8,8 +8,8 @@ production game with normal startup disabled and checks, on a 6x4x1 world:
   spears, pikes, rapiers, bayonets and mace-like items whose flags are wrong.
 - `armor_rating` reads a `cut`, `pierce` or `blunt` armor key when present and
   falls back to `melee` otherwise; other keys never fall back.
-- Existing armor (plated armor, chainmail, leather samurai armor, linothorax)
-  gives the same protection against every kind as its old melee value.
+- Armor without a family (`tests/armor_families` covers the families) gives
+  the same protection against every kind as its melee value.
 - A weapon hit on a human is resisted by the armor value for its own kind: a
   cuirass with only cut armor stops a sword but not a spear or a mace.
 

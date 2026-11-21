@@ -5,6 +5,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 KITCHEN = ROOT / 'code/game/objects/items/weapons/material/kitchen.dm'
+WINDOW = ROOT / 'code/game/objects/items/weapons/material/haircut_window.dm'
+ICONS = ROOT / 'code/game/mob/living/carbon/human/update_icons.dm'
 GLOBAL = ROOT / 'config/crafting/material_recipes_global.txt'
 RESEARCH = ROOT / 'code/modules/research_tree/research_node.dm'
 RAZOR = '/obj/item/weapon/material/kitchen/utensil/knife/razorblade'
@@ -34,72 +36,70 @@ class RazorGrooming(unittest.TestCase):
             self.assertIn(zone, guard)
         self.assertIn('groom(M, user)', attack)
 
-    def test_grooming_checks_eligibility_again_after_the_cut_wait(self):
-        select = proc_body(self.source, RAZOR + '/proc/groom_select(')
-        self.assertNotIn('WWinput(', select)
-        self.assertNotIn('usr', re.sub(r'"[^"]*"', '', select))
-        apply = select.index('if (!P.ask())')
-        wait = select.index('if (!do_after(user, 80, M)')
-        check = select.index('new_hstyle in M.generate_valid_hairstyles(TRUE, TRUE)')
-        commit = select.index('M.h_style = new_hstyle')
-        self.assertTrue(apply < wait < check < commit)
-        self.assertNotIn('M.h_style =', select[:wait])
-        self.assertNotIn('M.f_style =', select[:wait])
-        self.assertIn('M.h_style != old_hstyle || M.f_style != old_fstyle', select[wait:commit])
-        self.assertIn('new_fstyle in M.generate_valid_facial_hairstyles(TRUE)', select[wait:commit])
+    def test_cut_checks_eligibility_again_after_the_wait(self):
+        cut = proc_body(self.source, RAZOR + '/proc/groom_cut(')
+        self.assertNotIn('WWinput(', cut)
+        self.assertNotIn('usr', re.sub(r'"[^"]*"', '', cut))
+        wait = cut.index('if (!do_after(user, 80, M)')
+        check = cut.index('new_hstyle in grooming_hair_choices(M)')
+        commit = cut.index('M.h_style = new_hstyle')
+        self.assertTrue(wait < check < commit)
+        self.assertNotIn('M.h_style =', cut[:wait])
+        self.assertNotIn('M.f_style =', cut[:wait])
+        self.assertIn('!grooming_valid(M, user) || M.h_style != old_hstyle || M.f_style != old_fstyle', cut[wait:commit])
+        self.assertIn('new_fstyle in grooming_beard_choices(M)', cut[wait:commit])
+        self.assertIn('generate_valid_hairstyles(TRUE, TRUE)', proc_body(self.source, RAZOR + '/proc/grooming_hair_choices('))
+        self.assertIn('M.gender == MALE ? M.generate_valid_facial_hairstyles(TRUE)', proc_body(self.source, RAZOR + '/proc/grooming_beard_choices('))
 
-    def test_only_self_grooming_gets_a_bare_head_preview(self):
+    def test_connected_players_get_the_window_for_any_target(self):
         groom = proc_body(self.source, RAZOR + '/proc/groom(')
-        self.assertIn('if (M != user || !C)\n\t\treturn groom_classic(M, user)', groom)
-        self.assertLess(groom.index('return groom_classic'), groom.index('P = new()'))
+        self.assertIn('if (!C)\n\t\treturn groom_classic(M, user)', groom)
+        self.assertNotIn('M != user', groom)
+        self.assertLess(groom.index('grooming_valid(M, user)'), groom.index('P = new(user, M, src)'))
+        self.assertIn('if (P.cutting)\n\t\t\treturn', groom)
+        self.assertIn('P.ui_interact(user)', groom)
         classic = proc_body(self.source, RAZOR + '/proc/groom_classic(')
         hair = classic.index('if (new_hstyle && (new_hstyle in hairlist))')
         beard = classic.index('if (new_fstyle && (new_fstyle in fhairlist))')
         self.assertNotIn('return', classic[hair:beard])
-        self.assertLess(classic.index('M.h_style = new_hstyle'), beard)
-        self.assertNotIn('P.ask', classic)
-        ask = proc_body(self.source, '/datum/grooming_preview/proc/ask(')
-        self.assertIn('hair_choices.Insert(1, "Keep current hair")', ask)
-        self.assertIn('beard_choices.Insert(1, "Keep current facial hair")', ask)
-        self.assertIn('subject.generate_valid_hairstyles(TRUE, TRUE)', ask)
-        self.assertIn('subject.gender == MALE ? subject.generate_valid_facial_hairstyles(TRUE)', ask)
 
-    def test_preview_does_not_change_character_and_keeps_face_colors(self):
-        head = proc_body(self.source, '/mob/living/human/proc/grooming_head(')
-        layer = proc_body(self.source, '/mob/living/human/proc/grooming_layer(')
-        for component in ('species.icobase', 'body_build.index', 'r_skin, g_skin, b_skin',
-                          'r_eyes, g_eyes, b_eyes'):
-            self.assertIn(component, head)
-        for component in ('S.do_colouration', 'r_hair, g_hair, b_hair',
-                          'r_facial, g_facial, b_facial'):
-            self.assertIn(component, layer)
-        ask = proc_body(self.source, '/datum/grooming_preview/proc/ask(')
-        self.assertLess(ask.index('current.Blend(F'), ask.index('current.Blend(H'))
-        self.assertNotRegex(head + layer + ask, r'(?m)^\s*[hf]_(?:style|growth)\s*=')
-        self.assertNotIn('update_hair()', head + layer + ask)
+    def test_window_draws_without_touching_the_character(self):
+        window = WINDOW.read_text(encoding='utf-8-sig')
+        body = proc_body(ICONS.read_text(encoding='utf-8-sig'), '/mob/living/human/proc/grooming_body_sheet(')
+        self.assertIn('layer < HAIR_LAYER', body)
+        self.assertNotIn('HEAD_LAYER', body)
+        self.assertNotIn('FACEMASK_LAYER', body)
+        for source in (window, body):
+            self.assertNotRegex(source, r'(?m)^\s*(?:subject\.|M\.|src\.)?[hf]_(?:style|growth)\s*=[^=]')
+            self.assertNotIn('update_hair()', source)
+            self.assertNotIn('update_body()', source)
+        data = proc_body(window, '/datum/grooming_preview/proc/window_data(')
+        self.assertIn('razor.grooming_hair_choices(subject)', data)
+        self.assertIn('razor.grooming_beard_choices(subject)', data)
+        # One shared sheet and one figure per opening, not a file per style.
+        self.assertEqual(window.count('browse_rsc('), 2)
+        self.assertIn('if (grooming_sheet_icon)\n\t\treturn grooming_sheet_icon', proc_body(window, '/proc/grooming_sheet('))
+        self.assertNotIn('deadline', window)
+        self.assertNotIn('sleep(', window)
 
-    def test_only_current_owner_and_eligible_bounded_choices_can_apply(self):
-        topic = proc_body(self.source, '/datum/grooming_preview/Topic(')
-        accepted = topic.index('accepted = TRUE')
-        for gate in ('usr != viewer || !valid()', 'href_list["nonce"] != nonce',
-                     'action != "apply"', 'h != round(h)', 'h > hair_choices.len',
-                     'f != round(f)', 'f > beard_choices.len'):
-            self.assertLess(topic.index(gate), accepted)
-        self.assertIn('if (href_list["close"])\n\t\twaiting = FALSE\n\t\treturn', topic)
-        self.assertIn('if (action == "cancel")\n\t\twaiting = FALSE\n\t\treturn', topic)
-        self.assertIn('h == 1 ? original_hair : hair_choices[h]', topic)
-        self.assertIn('f == 1 ? original_beard : beard_choices[f]', topic)
-        ask = proc_body(self.source, '/datum/grooming_preview/proc/ask(')
-        self.assertIn('world.time < deadline && valid()', ask)
-        self.assertIn('for (var/side in list(SOUTH, EAST))', ask)
-        self.assertIn('Current</th><th>Proposed', ask)
-        self.assertIn("select id='groom-hair'", ask)
-        self.assertIn("select id='groom-beard'", ask)
-        self.assertNotIn('Try another', ask)
-        valid = proc_body(self.source, '/datum/grooming_preview/proc/valid(')
+    def test_only_the_holder_can_act_and_only_on_eligible_styles(self):
+        window = WINDOW.read_text(encoding='utf-8-sig')
+        act = proc_body(window, '/datum/grooming_preview/ui_act(')
+        start = act.index('cutting = TRUE')
+        for gate in ('user != viewer || cutting || !valid()', '!istext(new_hair) || !istext(new_beard)',
+                     'new_hair in razor.grooming_hair_choices(subject)', 'new_beard in razor.grooming_beard_choices(subject)',
+                     'new_hair == subject.h_style && new_beard == subject.f_style'):
+            self.assertLess(act.index(gate), start)
+        self.assertLess(start, act.index('razor.groom_cut(subject, viewer, new_hair, new_beard)'))
+        self.assertIn('return list("cut", "cancel")', window)
+        self.assertIn('return action == "cut" ? list("beard") : null', window)
+        valid = proc_body(window, '/datum/grooming_preview/proc/valid(')
         self.assertIn('viewer_client.mob == viewer', valid)
         self.assertIn('viewer_client.grooming_preview == src', valid)
         self.assertIn('razor.grooming_valid(subject, viewer)', valid)
+        state = proc_body(window, '/datum/topic_state/grooming/can_use_topic(')
+        self.assertIn('user != P.viewer || P.cutting || !P.valid()', state)
+        self.assertIn('/datum/topic_state/grooming)', proc_body(window, '/datum/grooming_preview/ui_interact('))
 
 
 class RazorCrafting(unittest.TestCase):

@@ -171,7 +171,7 @@
 	if (problem)
 		to_chat(H, SPAN_WARNING(problem))
 		return TRUE
-	var/delay = work_delay_per_speed(H, BACKFILL_TIME, WORK_DIG, tool)
+	var/delay = work_delay_per_speed(H, BACKFILL_TIME, WORK_SHIFT, tool)
 	H.shoveling = TRUE
 	H.visible_message(SPAN_NOTICE("[H] starts packing earth into the tunnel."), SPAN_NOTICE("You start packing earth into the tunnel."), "You hear digging.")
 	playsound(T, 'sound/effects/shovelling.ogg', 100, TRUE)

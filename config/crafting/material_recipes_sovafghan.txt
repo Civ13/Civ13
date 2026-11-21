@@ -380,9 +380,9 @@ RECIPE: /material/woolcloth/,colored turban,/obj/item/clothing/head/turban,2,55,
 RECIPE: /material/woolcloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,18,0,8,null
 RECIPE: /material/woolcloth/,custom wool hood,/obj/item/clothing/head/custom/customhood,2,40,0,1,hats,0,0,26,8,null
 RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,33,3,null
-RECIPE: /material/woolcloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/woolcloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
+RECIPE: /material/woolcloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/woolcloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,8,null
 RECIPE: /material/woolcloth/,custom beret,/obj/item/clothing/head/custom/customberet,2,55,0,1,hats,0,0,62,8,null
 RECIPE: /material/woolcloth/,brown flatcap,/obj/item/clothing/head/flatcap1,2,55,0,1,hats,0,0,109,8,null
 RECIPE: /material/woolcloth/,blue flatcap,/obj/item/clothing/head/flatcap2,2,55,0,1,hats,0,0,109,8,null
@@ -546,9 +546,9 @@ RECIPE: /material/cloth/,grey parka,/obj/item/clothing/suit/storage/coat/ww2/ger
 
 //*****************| CLOTH HATS |***************************
 
-RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/cloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/cloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
+RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/cloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/cloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,8,null
 RECIPE: /material/cloth/,hooded cape,/obj/item/clothing/head/hooded_cape,6,100,0,1,hats,0,0,35,3,null
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,38,8,null
 RECIPE: /material/cloth/,white turban,/obj/item/clothing/head/turban/imam,2,55,0,1,hats,0,0,38,8,null
@@ -828,7 +828,7 @@ RECIPE: /material/lizardpelt/,shirtless lizard scale pants,/obj/item/clothing/un
 //*********************| GATORPELT |****************************
 
 RECIPE: /material/gatorpelt/,alligator pelt headcover,/obj/item/clothing/head/gatorpelt,3,150,0,1,none,0,0,0,8,null
-RECIPE: /material/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,2,null
+RECIPE: /material/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,8,null
 RECIPE: /material/gatorpelt/,alligator scale belt,/obj/item/weapon/storage/belt/gator_belt,3,80,0,1,none,0,0,98,7,null
 RECIPE: /material/gatorpelt/,alligator scale biker jacket,/obj/item/clothing/suit/storage/coat/ww2/biker/gator_jacket,6,110,0,1,none,150,0,175,8,null
 RECIPE: /material/gatorpelt/,alligator scale wallet,/obj/item/clothing/accessory/storage/coinpouch/gator_wallet,2,60,0,1,storage,87,0,0,8,null

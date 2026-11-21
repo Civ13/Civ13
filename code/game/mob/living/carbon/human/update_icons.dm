@@ -1699,6 +1699,29 @@ var/global/list/human_face_icon_cache = list()
 	overlays_standing[BANDAGES_LAYER] = DD
 	if (update_icons)   update_icons()
 //Human Overlays Indexes/////////
+// The figure the Haircut window draws styles on, as one picture: the top row is
+// everything under the hair, the bottom row what sits over it, each facing
+// south, east, north and west. Hair, headwear, masks and held things are left
+// out. Reads the drawn overlays; changes nothing on the body.
+/mob/living/human/proc/grooming_body_sheet()
+	var/list/dirs = grooming_sheet_dirs()
+	var/icon/sheet = grooming_blank_sheet(32 * dirs.len, 64)
+	var/list/over_layers = list(EARS_LAYER, BANDAGES_LAYER, SHOULDER_LAYER)
+	for (var/d = 1 to dirs.len)
+		var/x = (d - 1) * 32 + 1
+		if (stand_icon)
+			sheet.Blend(icon(stand_icon, dir = dirs[d]), ICON_OVERLAY, x, 33)
+		for (var/layer = 1 to overlays_standing.len)
+			var/image/I = overlays_standing[layer]
+			if (!istype(I))
+				continue
+			if (layer < HAIR_LAYER)
+				sheet.Blend(getFlatIcon(I, dirs[d], always_use_defdir = TRUE), ICON_OVERLAY, x, 33)
+			else if (layer in over_layers)
+				sheet.Blend(getFlatIcon(I, dirs[d], always_use_defdir = TRUE), ICON_OVERLAY, x, 1)
+	return sheet
+
+
 #undef MUTATIONS_LAYER
 #undef DAMAGE_LAYER
 #undef SURGERY_LEVEL

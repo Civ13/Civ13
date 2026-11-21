@@ -623,7 +623,8 @@ var/global/building_assume_founded = FALSE
 	return WWinput(user, question, "Remove storey floor", "Stop", list("Remove", "Stop")) == "Remove"
 
 // Whatever was built on a floor that is gone falls: walls (and the floors'
-// other fixed covers) and the pillars and doors that held roofs up.
+// other fixed covers), the pillars and doors that held roofs up, and fittings
+// such as railings (falls_with_floor).
 /proc/building_floor_lost(turf/T)
 	for (var/obj/covers/C in T)
 		if (QDELETED(C) || !C.wall)
@@ -631,6 +632,6 @@ var/global/building_assume_founded = FALSE
 		C.amount = 0 // the fall's rubble is its salvage
 		C.building_fall(C.material, C.building_wall_salvage())
 	for (var/obj/structure/S in T)
-		if (QDELETED(S) || !S.building_support_tier())
+		if (QDELETED(S) || !(S.building_support_tier() || S.falls_with_floor()))
 			continue
 		S.building_fall(S.structure_impact_material(), null)
