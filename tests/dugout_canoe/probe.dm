@@ -42,10 +42,16 @@ var/canoe_runtime_error = FALSE
 			T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
 		for (var/turf/T in block(locate(10, 1, 1), locate(12, 30, 1)))
 			T.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
-		locate(13, 5, 1):ChangeTurf(/turf/floor/beach/water/deep/saltwater, FALSE, FALSE)
+		// Gaia's actual ocean uses both this turf type and this area.
+		var/area/caribbean/sea/sea/ocean = new
+		for (var/x in 13 to 14)
+			var/turf/T = locate(x, 5, 1)
+			T = T.ChangeTurf(/turf/floor/beach/water/deep/saltwater, FALSE, FALSE)
+			ocean.contents += T
 		locate(13, 8, 1):ChangeTurf(/turf/floor/beach/water/shallowsaltwater, FALSE, FALSE)
 		canoe_log_checks()
 		canoe_water_checks()
+		canoe_ocean_checks()
 		canoe_outrigger_checks()
 		canoe_hauling_checks()
 		canoe_upkeep_checks()
@@ -126,6 +132,46 @@ var/canoe_runtime_error = FALSE
 	C.ontop_o += K
 	C.vehicle_offset_seat()
 	canoe_check(K.step_x == C.step_x && K.step_y == C.step_y, "a crate loaded on an off-centre canoe rides at its offset")
+
+// Test the same destination on the tile and smooth movement paths.
+/proc/canoe_ocean_checks()
+	var/turf/near = locate(12, 5, 1)
+	var/turf/deep = locate(13, 5, 1)
+	canoe_check(istype(deep, /turf/floor/beach/water/deep/saltwater) && istype(deep.loc, /area/caribbean/sea/sea), "the destination matches Gaia open ocean")
+	map.windspeedvar = 1
+	for (var/path in list(/obj/structure/vehicle/raft, /obj/structure/vehicle/raft/dugout, /obj/structure/vehicle/raft/dugout/outrigger))
+		var/obj/structure/vehicle/raft/R = new path(near)
+		var/mob/living/human/canoe_probe/H = new(near)
+		H.dir = EAST
+		H.driver_vehicle = R
+		R.driver = H
+		R.ontop += H
+		var/deep_capable = istype(R, /obj/structure/vehicle/raft/dugout/outrigger)
+		R.vehicle_offset_sync()
+		var/datum/vehicle_offset/single/O = R.offset_mover
+		canoe_check(R.do_vehicle_check() == deep_capable, "[R.name] tile check matches her ocean capability")
+		canoe_check(O.can_cover(EAST) == deep_capable, "[R.name] pixel check matches her ocean capability")
+		if (deep_capable)
+			map.windspeedvar = 4
+			canoe_check(!R.do_vehicle_check() && !O.can_cover(EAST), "a gale stops the outrigger even on navigable deep water")
+			map.windspeedvar = 1
+			R.bilge = 10
+			canoe_check(!R.do_vehicle_check() && !O.can_cover(EAST), "swamping still stops the outrigger in both modes")
+			R.bilge = 0
+			R.offset_drive = FALSE
+			R.lastmove = world.time - 100
+			R.processmove(EAST)
+			canoe_check(R.loc == deep && H.loc == deep, "the tile path carries the outrigger and paddler onto the deep ocean")
+			R.forceMove(near)
+			H.forceMove(near)
+			R.offset_drive = TRUE
+			R.vehicle_offset_sync()
+			O.speed_x = 8
+			O.pulse()
+			O.pulse()
+			canoe_check(R.loc == deep && H.loc == deep && R.step_x == H.step_x && O.crossings == 1, "the pixel path carries hull and paddler onto the deep ocean")
+		qdel(R)
+		qdel(H)
 
 // The outrigger canoe (code/modules/naval/outrigger_canoe.dm).
 /proc/canoe_outrigger_checks()
