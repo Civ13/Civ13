@@ -172,6 +172,14 @@ var/global/world_calendar_season_requested = 0
 	world_calendar_set_clock()
 	TOD_may_automatically_change = FALSE
 
+// For the host tool and launcher (shard_group.dm describe): this region's
+// local clock, phase, season and time zone, or null off the calendar.
+/proc/world_calendar_status()
+	if (!world_calendar_synced())
+		return null
+	var/list/c = world_calendar_season()
+	return list("clock" = clock_time(), "phase" = time_of_day, "season" = season, "zone" = world_calendar_zone(map.world_longitude), "season_left" = round(c[3]))
+
 // "Local time is 3 hours behind Gaia" style line for status and admin tools.
 /proc/world_calendar_summary()
 	if (!world_calendar_synced())
