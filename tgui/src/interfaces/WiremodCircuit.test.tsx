@@ -293,6 +293,46 @@ describe('tgstation Wiremod circuit editor', () => {
     expect(screen.getByText('score')).toBeTruthy();
   });
 
+  it('lets list variables make setters and sends the triggered setter kind', async () => {
+    const props = ui({
+      components: [],
+      variables: [
+        {
+          name: 'stock',
+          datatype: 'number',
+          color: 'label',
+          is_list: 1,
+          is_assoc_list: 0,
+        },
+      ],
+      global_basic_types: ['number', 'boolean', 'string', 'any'],
+    });
+    const view = render(<WiremodCircuit {...props} />);
+    const buttons = view.container.querySelectorAll(
+      '.wiremod-window__buttons .Button',
+    );
+    fireEvent.click(buttons[0]);
+    await screen.findByText('Variable Options');
+
+    const setter = view.container
+      .querySelector('.fa-pen')
+      ?.closest('.Button');
+    expect(setter).toBeTruthy();
+    expect(setter!.classList.contains('Button--disabled')).toBe(false);
+
+    const triggered = view.container.querySelector('.fa-clock');
+    expect(triggered).toBeTruthy();
+    fireEvent.mouseDown(triggered!, { clientX: 100, clientY: 100 });
+    fireEvent.mouseUp(window, { clientX: 100, clientY: 100 });
+    expect(props.act).toHaveBeenLastCalledWith('add_setter_or_getter', {
+      variable: 'stock',
+      node_kind: 'triggered_setter',
+      is_setter: 1,
+      rel_x: expect.any(Number),
+      rel_y: expect.any(Number),
+    });
+  });
+
   it('adapts zoomed pointer coordinates when dragging a circuit component', () => {
     const props = ui();
     const view = render(<WiremodCircuit {...props} />);

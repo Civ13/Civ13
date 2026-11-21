@@ -101,16 +101,19 @@ class WiremodSource(unittest.TestCase):
         # Whatever is not a number, a text or a list is an entity or nothing.
         safe = proc_body(self.types, '/proc/wiremod_safe_value(value)')
         self.assertTrue(safe.rstrip().endswith('return wiremod_safe_entity(value)'))
-        # A list holds numbers and texts only: no entity, no object.
+        # A list entry is a number, a text or a thing's weak reference, never an
+        # object and never a nested list.
         listed = proc_body(self.types, '/proc/wiremod_safe_list(value)')
-        self.assertNotIn('entity', code(listed))
-        self.assertNotIn('weakref', listed)
+        self.assertIn('entry = wiremod_safe_entity(entry)', listed)
+        self.assertIn('entry = wiremod_safe_number(entry)', listed)
+        self.assertNotIn('entry = wiremod_safe_list', listed)
 
     def test_each_datatype_is_one_file_and_one_registered_subtype(self):
         # tgstation's model: a datatype is a subtype in its own file, the registry
         # is built from the subtypes, and each says how it looks in the editor.
         colours = {'any': 'blue', 'number': 'green', 'string': 'orange', 'signal': 'teal',
-                   'boolean': 'bad', 'list': 'white', 'option': 'violet', 'entity': 'purple'}
+                   'boolean': 'bad', 'list': 'white', 'assoc_list': 'label', 'option': 'violet',
+                   'entity': 'purple'}
         self.assertEqual(set(self.datatypes), set(colours) | {'_datatype'})
         defines = read(DEFINES)
         for name, colour in colours.items():
@@ -181,7 +184,8 @@ class WiremodSource(unittest.TestCase):
         # A player marks only what they hold or themselves: the request carries a
         # flag, never the thing, and the names that reach chat are escaped.
         marked = proc_body(self.ui, '/obj/item/integrated_circuit/proc/marked_entity(mob/user)')
-        self.assertIn('for(var/obj/item/held in list(user.get_active_hand(), user.get_inactive_hand()))', marked)
+        # A hand can hold an atom/movable in Civ13, not only an /obj/item.
+        self.assertIn('for(var/atom/movable/held in list(user.get_active_hand(), user.get_inactive_hand()))', marked)
         self.assertTrue(marked.rstrip().endswith('return user'))
         self.assertNotIn('params', marked)
         mark = proc_body(self.ui, '/obj/item/integrated_circuit/proc/mark_input(')
@@ -224,7 +228,7 @@ class WiremodSource(unittest.TestCase):
             self.assertTrue(text.isascii(), path)
         # The edge cases players asked about are written down.
         for path, words in (('operator/arithmetic', 'Dividing by zero'), ('list_index', 'count from 1'),
-                            ('delay', 'from 1 to 600'), ('direction', 'more than 7 tiles')):
+                            ('delay', 'from 0.1 to 600'), ('direction', 'more than 7 tiles')):
             self.assertIn(words, type_body(joined, '/obj/item/circuit_component/' + path), path)
         # The window is sent the description and one notice per port.
         self.assertIn('"description" = component.desc,', self.ui)
@@ -288,8 +292,8 @@ class WiremodSource(unittest.TestCase):
         sent = set()
         for path in EDITOR.glob('*.jsx'):
             sent.update(re.findall(r"\bact\(\s*'(\w+)'", read(path)))
-        # Buttons the Civ13 data never shows: per-component actions and the admin save.
-        self.assertEqual(sent - actions, {'perform_action', 'save_circuit'})
+        # Buttons the Civ13 data never shows: the admin save.
+        self.assertEqual(sent - actions, {'save_circuit'})
         self.assertEqual(actions - sent, set())
 
     def test_one_table_holds_every_action(self):
@@ -352,10 +356,20 @@ class WiremodSource(unittest.TestCase):
         self.assertIn('for(var/available_type in wiremod_available_components())', printing)
         self.assertIn('ui_new_component(typepath, params, user)', printing)
         nodes = proc_body(self.ui, '/obj/item/integrated_circuit/proc/act_add_setter_or_getter(')
-        self.assertIn('? /obj/item/circuit_component/variable/setter : /obj/item/circuit_component/variable/getter', nodes)
+        self.assertIn('node_kind = params["node_kind"]', nodes)
+        self.assertIn('node_type = /obj/item/circuit_component/variable/triggered_setter', nodes)
         for source in self.sources.values():
             self.assertNotIn('text2path', source)
-            self.assertNotIn('locate(', source)
+        # No component looks up an object by a request's text. The one coordinate
+        # lookup is a helper that rounds and bounds the numbers before locating a
+        # turf, so it cannot be used to name an arbitrary typepath.
+        for path, source in self.sources.items():
+            if path.name != 'world.dm':
+                self.assertNotIn('locate(', source)
+        lookup = proc_body(read(MODULE / 'core/world.dm'), '/proc/wiremod_turf_at(')
+        self.assertIn('return locate(x, y, z)', lookup)
+        self.assertIn('world.maxx', lookup)
+        self.assertIn('world.maxy', lookup)
         # Player text that reaches chat or examine goes through the label filter.
         self.assertIn('display_name = wiremod_clean_label(params["display_name"], 32)', self.ui)
         self.assertIn('wiremod_clean_label(params["variable_name"], 24)', self.ui)
@@ -482,8 +496,8 @@ class WiremodSource(unittest.TestCase):
         self.assertIn('if(islist(output.value) && !options && datatype_handler.keeps_port_lists)', receive)
         self.assertIn('set_value(output.value)', receive)
         self.assertEqual(self.port.count('hold(output.value)'), 1)
-        self.assertEqual(self.types.count('keeps_port_lists = TRUE'), 2)
-        for handler in ('any', 'list'):
+        self.assertEqual(self.types.count('keeps_port_lists = TRUE'), 3)
+        for handler in ('any', 'list', 'assoc_list'):
             self.assertIn('keeps_port_lists = TRUE', proc_body(self.types, '/datum/circuit_datatype/%s\n' % handler))
         self.assertIn('var/keeps_port_lists = FALSE', self.types)
         self.assertEqual(self.port.count('receive_from('), 3)
@@ -516,19 +530,29 @@ class WiremodSource(unittest.TestCase):
     def test_operator_components_share_one_base(self):
         base = read(MODULE / 'core/operator.dm')
         ports = proc_body(base, '/obj/item/circuit_component/operator/populate_ports()')
-        self.assertEqual(re.findall(r'add_(?:input|output)_port\("(\w+)"', ports), ['A', 'B', 'Operation', 'Result'])
+        self.assertEqual(re.findall(r'add_(?:input|output)_port\("(\w+)"', ports), ['A', 'B', 'Operation', 'Result', 'Triggered'])
         self.assertIn('add_input_port("Operation", PORT_TYPE_OPTION,', ports)
         self.assertIn('default = operations[1], options = operations', ports)
+        self.assertIn('add_output_port("Triggered", PORT_TYPE_SIGNAL)', ports)
+        self.assertIn('triggered.set_output(COMPONENT_SIGNAL)', proc_body(base, '/obj/item/circuit_component/operator/proc/run_operation('))
         operators = {}
         for path, source in self.sources.items():
             for name in re.findall(r'(?m)^/obj/item/circuit_component/operator/(\w+)$', source):
                 operators[name] = source
         self.assertEqual(set(operators), {'arithmetic', 'comparison', 'logic', 'string_concat', 'list_concat'})
-        for name, source in operators.items():
+        # A fixed operator only writes operate(); the two concatenators grow
+        # their input list, so they own their ports but still fire Triggered.
+        for name in ('arithmetic', 'comparison', 'logic', 'list_concat'):
+            source = operators[name]
             self.assertIn('/obj/item/circuit_component/operator/%s/operate(left, right, chosen)' % name, source)
             self.assertNotIn('add_input_port', source)
             self.assertNotIn('populate_ports', source)
             self.assertNotIn('set_output', source)
+        # The concatenator that grows its input list owns its ports; the result
+        # and Triggered outputs still come from the shared base.
+        source = operators['string_concat']
+        self.assertIn('triggered.set_output(COMPONENT_SIGNAL)', source)
+        self.assertIn('/obj/item/circuit_component/operator/string_concat/populate_ports()', source)
 
     def test_only_a_living_holder_or_neighbour_may_edit(self):
         state = proc_body(self.ui, '/datum/topic_state/wiremod_circuit/can_use_topic(')

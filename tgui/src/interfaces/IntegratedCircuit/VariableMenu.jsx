@@ -49,6 +49,7 @@ export class VariableMenu extends Component {
       onRemoveVariable,
       onClose,
       handleMouseDownSetter,
+      handleMouseDownTriggeredSetter,
       handleMouseDownGetter,
       types,
       ...rest
@@ -95,11 +96,24 @@ export class VariableMenu extends Component {
                             fluid
                             onMouseDown={(e) => handleMouseDownSetter(e, val)}
                             color={val.color}
-                            disabled={!!val.is_list}
                             tooltip={`
                             Drag me onto the circuit's grid
                             to make a setter for this variable`}
                             icon="pen"
+                          />
+                        </Stack.Item>
+                        <Stack.Item>
+                          <Button
+                            fluid
+                            onMouseDown={(e) =>
+                              handleMouseDownTriggeredSetter(e, val)
+                            }
+                            color={val.color}
+                            tooltip={`
+                            Drag me onto the circuit's grid
+                            to make a setter with Trigger and Output signals
+                            for this variable`}
+                            icon="clock"
                           />
                         </Stack.Item>
                         <Stack.Item>

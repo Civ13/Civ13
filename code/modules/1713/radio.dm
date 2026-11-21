@@ -206,12 +206,16 @@ var/global/FREQM = rand(101,120)
 		var/_name = player_input(user, "What name?", null, null, "text", null, FALSE)
 		R.name = sanitize(_name, 20)
 
-/proc/radio_broadcast(obj/R, msg, mob/living/human/speaker, verbage = "says")
+/proc/radio_broadcast(obj/R, msg, mob/living/human/speaker, verbage = "says", datum/source = null)
 	// ignore emotes.
 	if (dd_hasprefix(msg, "*"))
 		return
 	if (!R:transmitter || !R:transmitter_on)
 		return
+	// Integrated circuits listen to the same transmission as people do. The
+	// source is set when a circuit asked for the broadcast, so it cannot hear
+	// itself. This has to run before the human listeners: they may delete R.
+	wiremod_radio_heard(R:freq, msg, speaker, source)
 	var/list/tried_mobs = list()
 
 	for (var/mob/living/human/hearer in human_mob_list)

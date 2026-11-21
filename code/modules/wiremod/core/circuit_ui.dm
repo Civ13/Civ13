@@ -5,6 +5,8 @@
 	if(isnull(value))
 		return "(unset)"
 	if(islist(value))
+		if(wiremod_is_assoc_list(value))
+			return "Assoc list ([length(value)] entries)"
 		return "List ([length(value)] entries)"
 	if(!isnum(value) && !istext(value))
 		// An entity is shown by its name. The caller escapes it like any other text.
@@ -94,7 +96,9 @@
 		"y" = component.rel_y,
 		"removable" = component.removable,
 		"input_ports" = input_data,
-		"output_ports" = output_data
+		"output_ports" = output_data,
+		"ui_buttons" = component.ui_buttons(),
+		"ui_alerts" = component.ui_alerts()
 	)
 
 // The buttons under a component's description in the editor's info panel: one
@@ -153,7 +157,8 @@
 			"name" = variable.name,
 			"datatype" = variable.datatype,
 			"color" = variable.color,
-			"is_list" = variable.is_list
+			"is_list" = variable.is_list,
+			"is_assoc_list" = variable.is_assoc
 		))
 	return list(
 		"on" = on,
@@ -214,7 +219,8 @@
 		"remove_examined_component" = list(PROC_REF(act_remove_examined_component)),
 		"add_variable" = list(PROC_REF(act_add_variable), "variable_name", "variable_datatype", "is_list", "is_assoc_list"),
 		"remove_variable" = list(PROC_REF(act_remove_variable), "variable_name"),
-		"add_setter_or_getter" = list(PROC_REF(act_add_setter_or_getter), "variable", "is_setter", "rel_x", "rel_y"),
+		"add_setter_or_getter" = list(PROC_REF(act_add_setter_or_getter), "variable", "is_setter", "node_kind", "rel_x", "rel_y"),
+		"perform_action" = list(PROC_REF(act_perform_action), "component_id", "action_name"),
 	)
 	return table
 
@@ -328,14 +334,14 @@
 	else if(("input" in params) && (input_port.options || (input_port.datatype in CIRCUIT_USER_TYPES)))
 		set_manual_input(input_port, params["input"], user)
 
-// What a player marks when pressing an entity input: the item in a hand other
+// What a player marks when pressing an entity input: the thing in a hand other
 // than the circuit (or the shell it is installed in), or the player with nothing
 // else in hand. tgstation marks a thing with a multitool first; this is the
 // Civ13 equivalent. A request never names the thing, so a player can only mark
 // what they hold or themselves.
 /obj/item/integrated_circuit/proc/marked_entity(mob/user)
 	var/obj/item/own = istype(loc, /obj/item/circuit_shell) ? loc : src
-	for(var/obj/item/held in list(user.get_active_hand(), user.get_inactive_hand()))
+	for(var/atom/movable/held in list(user.get_active_hand(), user.get_inactive_hand()))
 		if(held != own && held != src)
 			return held
 	return user
@@ -408,7 +414,7 @@
 	else if(length(circuit_variables) >= CIRCUIT_MAX_VARIABLES)
 		to_chat(user, "<span class='warning'>The circuit is at its variable limit.</span>")
 	else
-		add_variable(variable_name, variable_datatype, wiremod_ui_flag(params["is_list"]) || wiremod_ui_flag(params["is_assoc_list"]))
+		add_variable(variable_name, variable_datatype, wiremod_ui_flag(params["is_list"]), wiremod_ui_flag(params["is_assoc_list"]))
 
 /obj/item/integrated_circuit/proc/act_remove_variable(list/params, mob/user)
 	var/datum/circuit_variable/variable = ui_variable(params["variable_name"])
@@ -422,6 +428,28 @@
 	if(!variable)
 		to_chat(user, "<span class='warning'>That circuit variable no longer exists.</span>")
 		return
-	var/node_type = wiremod_ui_flag(params["is_setter"]) ? /obj/item/circuit_component/variable/setter : /obj/item/circuit_component/variable/getter
+	var/node_kind = params["node_kind"]
+	if(!istext(node_kind) || !(node_kind in list("getter", "setter", "triggered_setter")))
+		node_kind = wiremod_ui_flag(params["is_setter"]) ? "setter" : "getter"
+	var/node_type = /obj/item/circuit_component/variable/getter
+	if(node_kind == "setter")
+		node_type = /obj/item/circuit_component/variable/setter
+	else if(node_kind == "triggered_setter")
+		node_type = /obj/item/circuit_component/variable/triggered_setter
 	var/obj/item/circuit_component/variable/node = ui_new_component(node_type, params, user)
 	node?.bind(variable)
+
+// A titlebar button was pressed. The component decides which actions it offers;
+// a name it does not offer is ignored, so the request cannot reach any other proc.
+/obj/item/integrated_circuit/proc/act_perform_action(list/params, mob/user)
+	var/obj/item/circuit_component/component = ui_component(params["component_id"])
+	if(!component)
+		return
+	var/action_name = params["action_name"]
+	var/list/buttons = component.ui_buttons()
+	if(!istext(action_name) || !islist(buttons))
+		return
+	for(var/button_icon in buttons)
+		if(buttons[button_icon] == action_name)
+			component.ui_perform_action(action_name, user)
+			return

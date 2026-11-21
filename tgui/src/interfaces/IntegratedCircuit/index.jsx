@@ -45,6 +45,8 @@ export class IntegratedCircuit extends Component {
     this.handleBackgroundMoved = this.handleBackgroundMoved.bind(this);
 
     this.onVarClickedSetter = this.onVarClickedSetter.bind(this);
+    this.onVarClickedTriggeredSetter =
+      this.onVarClickedTriggeredSetter.bind(this);
     this.onVarClickedGetter = this.onVarClickedGetter.bind(this);
     this.handleVarDropped = this.handleVarDropped.bind(this);
 
@@ -272,28 +274,56 @@ export class IntegratedCircuit extends Component {
   }
 
   onVarClickedSetter(event, variable) {
-    this.handleVarClicked(event, variable, true);
+    this.handleVarClicked(event, variable, 'setter');
+  }
+
+  onVarClickedTriggeredSetter(event, variable) {
+    this.handleVarClicked(event, variable, 'triggered_setter');
   }
 
   onVarClickedGetter(event, variable) {
-    this.handleVarClicked(event, variable, false);
+    this.handleVarClicked(event, variable, 'getter');
   }
 
-  handleVarClicked(event, variable, is_setter) {
+  handleVarClicked(event, variable, node_kind) {
     const component = {
-      name: is_setter ? 'Setter' : 'Getter',
+      name: {
+        getter: 'Getter',
+        setter: 'Setter',
+        triggered_setter: 'Triggered Setter',
+      }[node_kind],
       description: 'This is a component',
       color: 'blue',
       input_ports: [],
       output_ports: [],
     };
 
-    if (is_setter) {
+    if (node_kind === 'setter') {
       component.input_ports = [
         {
           name: 'Input',
           type: variable.datatype,
           color: variable.color,
+        },
+      ];
+    } else if (node_kind === 'triggered_setter') {
+      component.input_ports = [
+        {
+          name: 'Value',
+          type: variable.datatype,
+          color: variable.color,
+        },
+        {
+          name: 'Trigger',
+          type: 'signal',
+          color: 'teal',
+        },
+      ];
+      component.output_ports = [
+        {
+          name: 'Output',
+          type: 'signal',
+          color: 'teal',
         },
       ];
     } else {
@@ -309,7 +339,7 @@ export class IntegratedCircuit extends Component {
     this.setState({
       draggingComponent: component,
       draggingVariable: variable.name,
-      variableIsSetter: is_setter,
+      variableNodeKind: node_kind,
     });
 
     this.handleDragging(event);
@@ -322,7 +352,7 @@ export class IntegratedCircuit extends Component {
     const { data, act } = useBackend();
     const {
       draggingVariable,
-      variableIsSetter,
+      variableNodeKind,
       mouseX,
       mouseY,
       zoom,
@@ -331,7 +361,7 @@ export class IntegratedCircuit extends Component {
 
     this.setState({
       draggingVariable: null,
-      variableIsSetter: null,
+      variableNodeKind: null,
       draggingComponent: null,
     });
 
@@ -345,9 +375,12 @@ export class IntegratedCircuit extends Component {
     const xPos = mouseX - (mouseX - draggingComponentPos.x);
     const yPos = mouseY - (mouseY - draggingComponentPos.y);
 
+    const node_kind = variableNodeKind || 'getter';
     act('add_setter_or_getter', {
       variable: draggingVariable,
-      is_setter: variableIsSetter,
+      node_kind,
+      // Kept for older circuits; the server prefers node_kind when it arrives.
+      is_setter: node_kind !== 'getter',
       rel_x: xPos * zoom ** -1,
       rel_y: (yPos + ABSOLUTE_Y_OFFSET) * zoom ** -1,
     });
@@ -604,6 +637,9 @@ export class IntegratedCircuit extends Component {
                   })
                 }
                 handleMouseDownSetter={this.onVarClickedSetter}
+                handleMouseDownTriggeredSetter={
+                  this.onVarClickedTriggeredSetter
+                }
                 handleMouseDownGetter={this.onVarClickedGetter}
                 style={{
                   borderRadius: '0px 32px 0px 0px',

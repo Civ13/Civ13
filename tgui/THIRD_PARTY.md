@@ -5,9 +5,11 @@ The build uses the official tgui6 component architecture, pinned to
 Civ13 screens and transport are locally authored, with one exception: the
 integrated circuit editor. The `.jsx` and `.ts` files in
 `src/interfaces/IntegratedCircuit/` and `src/interfaces/common/Connections.tsx`
-are copied unchanged from
+come from
 `tgstation/tgstation@bacb22efd80de34f9b992ec3c731a1321147119e`
-(`tgui/packages/tgui/interfaces/`). `IntegratedCircuit.scss` is the
+(`tgui/packages/tgui/interfaces/`). `IntegratedCircuit/index.jsx` and
+`VariableMenu.jsx` carry small Civ13 adaptations for variable setter nodes;
+the other scripts are unchanged. `IntegratedCircuit.scss` is the
 `tgui/packages/tgui/styles/interfaces/IntegratedCircuit.scss` of that revision adapted
 to the tgui-core style modules, and `grid_background.png` is the same revision
 `icons/ui/tgui/grid_background.png`, unchanged. That source carries no

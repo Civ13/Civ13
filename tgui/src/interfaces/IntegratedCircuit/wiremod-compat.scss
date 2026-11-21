@@ -61,6 +61,7 @@
 :is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-info::before { content: 'i'; }
 :is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-upload::before { content: #{'"\\2191"'}; }
 :is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-pen::before { content: #{'"\\270E"'}; }
+:is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-clock::before { content: #{'"\\231A"'}; }
 :is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-save::before { content: #{'"\\2913"'}; }
 :is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-book-open::before { content: #{'"\\2261"'}; }
 :is(.wiremod-window, .wiremod-titlebuttons) .Icon.fa-list-ol::before { content: #{'"\\2261"'}; }

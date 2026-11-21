@@ -29,8 +29,25 @@
 	if(istext(value))
 		return wiremod_safe_text(value)
 	if(islist(value))
+		if(wiremod_is_assoc_list(value))
+			return wiremod_safe_assoc_list(value)
 		return wiremod_safe_list(value)
 	return wiremod_safe_entity(value)
+
+// What a port value reads as in text: an entity as its name, a list as the word
+// list, and nothing as empty. The caller escapes it before it reaches a person.
+/proc/wiremod_text_of(value)
+	if(isnull(value))
+		return ""
+	if(istext(value))
+		return value
+	if(isnum(value))
+		return "[value]"
+	if(islist(value))
+		return "/list"
+	var/entity_name = wiremod_entity_name(value)
+	return entity_name ? entity_name : ""
+
 
 /datum/circuit_datatype
 	should_save = FALSE

@@ -40,11 +40,61 @@
 	output_ports += new_port
 	return new_port
 
+// Grows the component by one input at the end. Only the last port is ever grown
+// or shrunk, so a port's position, and with it the name the editor knows it by,
+// never moves.
+/obj/item/circuit_component/proc/append_input_port(port_name, port_type = PORT_TYPE_ANY, trigger = PROC_REF(input_received), default = null, list/options = null)
+	var/datum/port/input/new_port = add_input_port(port_name, port_type, trigger, default, options)
+	parent?.refresh_editor()
+	return new_port
+
+// Drops the last input, if it is not the only one. Its wires are cut with it.
+/obj/item/circuit_component/proc/remove_last_input_port()
+	if(length(input_ports) <= 1)
+		return FALSE
+	var/datum/port/input/last_port = input_ports[length(input_ports)]
+	input_ports -= last_port
+	last_port.disconnect()
+	qdel(last_port)
+	parent?.refresh_editor()
+	return TRUE
+
+// The buttons the editor shows on this component's titlebar, as a map of icon
+// name to action name. The action name is checked again before it is run.
+/obj/item/circuit_component/proc/ui_buttons()
+	return null
+
+// The notices the editor shows beside those buttons, as a map of icon name to
+// the text shown when it is hovered over.
+/obj/item/circuit_component/proc/ui_alerts()
+	return null
+
+// Does what one of the titlebar buttons asks. The circuit has already checked
+// that the named action is one this component offers and that the user may
+// edit the circuit.
+/obj/item/circuit_component/proc/ui_perform_action(action_name, mob/user)
+	return FALSE
+
 /obj/item/circuit_component/proc/disconnect()
 	for(var/datum/port/input/input_port in input_ports)
 		input_port.disconnect()
 	for(var/datum/port/output/output_port in output_ports)
 		output_port.disconnect_all()
+
+// Called after the circuit has taken this component in, so a component that
+// reads from its circuit (a variable picker, the shell it sits in) can fill in.
+/obj/item/circuit_component/proc/added_to_circuit(obj/item/integrated_circuit/circuit)
+	return
+
+// Called when the circuit's place in the world may have changed, such as when
+// it is put into or taken out of a shell.
+/obj/item/circuit_component/proc/anchor_changed()
+	return
+
+// Called when the circuit's variables are added or removed, so a variable
+// picker can offer the new set.
+/obj/item/circuit_component/proc/refresh_variable_options()
+	return
 
 // Called by the circuit as it lets go of this component, before the links are cut.
 /obj/item/circuit_component/proc/removed_from_circuit(obj/item/integrated_circuit/circuit)

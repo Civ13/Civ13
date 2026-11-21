@@ -11,11 +11,12 @@ Terrariola (GitHub `Terra1`); audited and hardened afterwards (see
   timer and window code. tgstation's code is AGPL-3.0, the same licence as
   Civ13.
 - The editor in `tgui/src/interfaces/IntegratedCircuit/` and
-  `tgui/src/interfaces/common/Connections.tsx` is tgstation's, from
-  `tgstation/tgstation@bacb22efd80de34f9b992ec3c731a1321147119e`: the script
-  files are unchanged and the stylesheet is adapted (AGPL-3.0, see
-  `tgui/THIRD_PARTY.md`). `WiremodCircuit.tsx`, `backend.ts`,
-  `assets.ts` and `layouts/` are the Civ13 adapters around it.
+  `tgui/src/interfaces/common/Connections.tsx` is based on tgstation's, from
+  `tgstation/tgstation@bacb22efd80de34f9b992ec3c731a1321147119e` (AGPL-3.0,
+  see `tgui/THIRD_PARTY.md`). `index.jsx` and `VariableMenu.jsx` have small
+  Civ13 changes for variable setter nodes; the other scripts are unchanged.
+  `WiremodCircuit.tsx`, `backend.ts`, `assets.ts` and `layouts/` are the Civ13
+  adapters around it.
 - `icons/obj/devices/circuitry_n_data.dmi` and `icons/obj/science/circuits.dmi`
   are tgstation's files at the same revision, CC BY-SA 3.0; see the
   `.LICENSE.md` file beside each.
@@ -27,22 +28,29 @@ printer are not ported.
 ## What is here
 
 - `datatypes/` - one file per datatype (any, number, string, boolean, signal,
-  list, option, entity), each a `/datum/circuit_datatype` subtype, and
-  `_datatype.dm` with the base type and the registry built from the subtypes.
+  list, assoc list, option, entity), each a `/datum/circuit_datatype` subtype,
+  and `_datatype.dm` with the base type and the registry built from the subtypes.
 - `core/port.dm` - ports. A port holds only null, a finite number, text up to
-  `PORT_MAX_STRING_LENGTH` bytes, a list of up to `CIRCUIT_MAX_LIST_LENGTH`
-  numbers and texts, or the weak reference of a thing in the world. It never
-  holds a game object.
+  `PORT_MAX_STRING_LENGTH` bytes, a flat list of up to
+  `CIRCUIT_MAX_LIST_LENGTH` numbers and texts, an associative list of up to
+  `CIRCUIT_MAX_ASSOC_ENTRIES` text-keyed plain values, or the weak reference of
+  a thing in the world. It never holds a game object.
 - `core/component.dm` - `/obj/item/circuit_component`, the base component.
 - `core/operator.dm` - `/obj/item/circuit_component/operator`, the base of the
   components that work a Result out of inputs A and B.
 - `core/integrated_circuit.dm` - `/obj/item/integrated_circuit`: the component
-  list, the execution queue and the two lists of component types.
+  list, the execution queue, the continuation queue used by list loops, and
+  the two lists of component types.
 - `core/circuit_ui.dm` - the editor window: who may use it, the data it shows,
   its actions and its refreshes.
-- `core/variables.dm` - circuit variables and their getter and setter nodes.
-- `components/` - math, list, string, entity and delay components. Each has a
-  `desc`, which is what the editor's info button shows.
+- `core/variables.dm` - circuit variables and their getter, setter and
+  triggered setter nodes; list and associative variables have setters too.
+- `core/world.dm` - the shell-only anchor and the helpers that read a place's
+  contents or air, wrap effects in bounds, and keep a loose circuit inert.
+- `core/speech_hooks.dm` - the speech and radio registries, called from
+  `code/game/mob/living/say.dm` and `radio_broadcast()` in `code/modules/1713/`.
+- `components/` - math, list, string, entity, sensor, action and utility
+  components. Each has a `desc`, which is what the editor's info button shows.
 - `shell/circuit_shell.dm` - `/obj/item/circuit_shell`, the base item that holds
   one integrated circuit. An integrated circuit goes in by hand and a screwdriver
   takes it out.
@@ -60,9 +68,10 @@ printer are not ported.
   subtype with a `datatype` name registers it (`wiremod_datatypes()`); the
   editor code names no datatype's colour or rules. The colours are
   tgstation's: any blue, number green, string orange, signal teal, boolean
-  red ("bad"), list white, option violet, entity purple. Two lists stay
-  explicit on purpose: `CIRCUIT_USER_TYPES`, the types a player may type a
-  value for, and `CIRCUIT_VARIABLE_TYPES`, the types a variable may have.
+  red ("bad"), list white, assoc list label, option violet, entity purple.
+  An associative list is its own type, not a flat list with keys. Two lists
+  stay explicit on purpose: `CIRCUIT_USER_TYPES`, the types a player may type
+  a value for, and `CIRCUIT_VARIABLE_TYPES`, the types a variable may have.
 - **Entities.** An entity is a person or an object (`/atom/movable`). A port or
   variable holds its `/datum/weakref`, never the thing: the handle does not
   keep it alive and stops resolving once it is deleted. A port holding one also
@@ -81,7 +90,8 @@ printer are not ported.
   what a component hands it, and a component that wants a different list builds
   a new one. A wire can therefore pass the same list to a list or untyped input
   without checking and copying it again (`/datum/port/input/proc/receive_from`).
-  Every other value is converted on every hop.
+  A flat list and an associative list are not interchangeable. Every other
+  value is converted on every hop.
 - **Components are named by `circuit_id`.** A circuit numbers each component as
   it goes in and never gives a number out twice, so a request that arrives
   after its component was removed reaches nothing. Port names sent to the
@@ -99,6 +109,16 @@ printer are not ported.
 - **Two-input components** derive from `/obj/item/circuit_component/operator`:
   set `operand_type`, `result_type` and, for a choice of operations,
   `operations`, then write `operate(left, right, chosen)`.
+- **Triggering is explicit.** A component that has a Trigger input writes only
+  when that signal arrives. A pure calculation without one writes when any of
+  its inputs changes and also fires its `Triggered` output. Filter List and
+  For Each walk one entry per trigger, using the circuit's continuation queue
+  so the downstream chain can settle before the next entry.
+- **World-facing components use the shell.** A loose circuit has no anchor, so
+  sensors report nothing and actions do nothing; the helpers in `core/world.dm`
+  are the only path to the map. A Voice Activator also hears speech and radio
+  traffic near the shell, and a Radio component uses Civ13's radio network; a
+  radio message never tells the circuit who originally spoke.
 - **Editor refreshes are spaced out.** A circuit that runs sends its open
   editors the new state at once, then at most once every
   `CIRCUIT_UI_REFRESH_INTERVAL` deciseconds; the last state is always sent.
@@ -110,9 +130,17 @@ the component menu, type values into unconnected inputs, pick an operation from
 the dropdown on operation inputs, and drag from an output to an input to connect
 them. The (i) button on a component shows what it does and lists its ports.
 An input takes one connection. Variables are made in the variable menu and
-read and written through getter and setter nodes. Lists come from String Split
-and pass between the list components. Pressing a signal input in the editor
-fires it by hand.
+read and written through getter, setter or triggered setter nodes; setters work
+for flat and associative variables too. Lists come from String Split and the
+list literal components, and pass between the list components. Pressing a
+signal input in the editor fires it by hand.
+
+World-facing components work from the shell the circuit is installed in. A
+loose circuit cannot see, hear, speak, light, print or transmit: those
+components have no anchor. Install the circuit in a shell before wiring a
+sensor, a Voice Activator, a Radio or Pathfinder. A Voice Activator fires on
+nearby speech or on a radio message heard at the shell; a Radio sends through
+Civ13's radio network and reports only the message, not who spoke it.
 
 A compact remote is empty when crafted. Use an integrated circuit on it to
 insert one; the remote attaches its own signal source to that circuit. Use the
@@ -123,22 +151,33 @@ the presser as an entity; wired into a text input it gives their visible name.
 The Direction component gives the compass direction and distance to an entity
 within `CIRCUIT_DIRECTION_RANGE` tiles of the circuit.
 
-Not ported from tgstation's general components, and why: Speech, Sound and
-Light act on the world for everyone nearby and need a decision on spam and
-impersonation; Health, Species and the scanners read other players' state;
-GPS and Pathfind give positions with no range limit; Self needs shells other
-than the remote; To String is covered by wiring any value into a text input.
+Not ported, because Civ13 has no matching mechanic: ID Access Reader, ID
+Getter and ID Info Reader (no card access data on ports), Get Column, Index
+Table and Select Query (no USB database connection), MMI, NTNet Receiver and
+NTNet Transmitter (no NTnet), Access Checker (no ID card signal), Pull (only
+Drone shells) and MOD Action (no MOD suit interface). Module is deferred until
+the module shell exists.
 
 ## Limits
 
 - `CIRCUIT_MAX_COMPONENTS` components and `CIRCUIT_MAX_VARIABLES` variables per
-  circuit.
+  circuit. A port holds at most `PORT_MAX_STRING_LENGTH` bytes of text,
+  `CIRCUIT_MAX_LIST_LENGTH` flat list entries and `CIRCUIT_MAX_ASSOC_ENTRIES`
+  associative entries.
 - One propagation may queue `CIRCUIT_MAX_EXECUTIONS` component calls. Past that
   the rest is dropped and the circuit overloads: it tells its holder and ignores
   inputs for `CIRCUIT_OVERLOAD_COOLDOWN` deciseconds. This is what stops a
   feedback loop.
 - The Delay component waits between `CIRCUIT_DELAY_MIN` and `CIRCUIT_DELAY_MAX`
-  seconds and holds one timer; retriggering restarts it.
+  seconds and holds one timer; retriggering restarts it. Sound and Speech have
+  a `CIRCUIT_SOUND_COOLDOWN`/`CIRCUIT_SPEECH_COOLDOWN` of ten deciseconds.
+- Binary Conversion reads and writes `CIRCUIT_BINARY_BITS` bits, least
+  significant first. An out-of-range or non-whole number gives no bits.
+- Filter List and For Each take at most `CIRCUIT_MAX_LOOP_STEPS` entries in one
+  run. Direction and the near-field sensors look `CIRCUIT_DIRECTION_RANGE`
+  tiles from the shell; a View Sensor reports at most
+  `CIRCUIT_MAX_VIEW_ENTITIES` entities. Pathfinder searches at most
+  `CIRCUIT_MAX_PATH_STEPS` steps and `CIRCUIT_MAX_PATH_NODES` tiles.
 - A component made in the editor is deleted when it is removed, so the editor
   cannot be used to produce items. A component inserted by hand goes back to the
   hand.

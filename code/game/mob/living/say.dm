@@ -138,6 +138,10 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 			message_range = 30
 	message_range = speech_range_bonus(message_range)
 
+	// Integrated circuits with a Voice Activator hear the same words, at the
+	// same range, as everyone else. The message is final at this point.
+	wiremod_speech_heard(src, message, message_range)
+
 	var/list/listening = list()
 	var/list/listening_obj = list()
 	var/turf/T = get_turf(src)
