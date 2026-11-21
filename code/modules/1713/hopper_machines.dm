@@ -399,6 +399,14 @@ var/global/list/millstone_grains = list(
 //////////////////////////////////////////////////////////////////////////////
 // Bark stamps: bark to crushed tanbark, which gives twice the tannin.
 
+// Each handful soaks out as much tannin as a whole piece of bark
+// (/obj/item/stack/bark in leather.dm), and tanning drums take it as bark.
+/obj/item/stack/bark/crushed
+	name = "tanbark"
+	desc = "Tree bark crushed under the stamps of a bark mill. Use an open liquid container with 10 water to extract 10 tannin from one handful. For a nearby stationary vessel, hold the tanbark and click the vessel."
+	icon_state = "bark_crushed"
+	singular_name = "handful of tanbark"
+
 /obj/structure/workshop_machine/hopper/bark_stamps
 	name = "bark stamps"
 	desc = "A row of iron-shod wooden stamps that a cam shaft lifts and drops on a trough of bark. Fill it with bark, and while a mill wheel, windmill, horse gin or treadwheel drives it, it crushes two pieces a step into tanbark, which yields twice the tannin."
