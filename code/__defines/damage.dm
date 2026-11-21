@@ -34,4 +34,12 @@
 #define ARMOR_TIER_IRON 55
 #define ARMOR_TIER_STEEL 65
 
+// Weapon roles against armor (docs/melee-hit-kinds.md).
+// A thrust finds the gaps in mail and lamellar: extra armor penetration.
+#define ARMOR_GAP_PENETRATION 10
+// A blow wears armor this many times faster than a cut or thrust.
+#define ARMOR_BLUNT_WEAR 3
+// A blow fully stopped by armor still bruises for this share of its force.
+#define ARMOR_BRUISE_SHARE 0.25
+
 var/global_damage_modifier = 1
