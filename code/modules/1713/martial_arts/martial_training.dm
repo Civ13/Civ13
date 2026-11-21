@@ -76,6 +76,26 @@
 	drill_noun = "the wooden dummy"
 	drill_bonus = 1.5
 
+/obj/structure/martial_gear/wrestling_mat
+	name = "wrestling mat"
+	desc = "A quilted hide pad stuffed with straw, for drilling throws, falls and holds. It does most for schools that grapple. Strike it bare-handed on harm intent to drill."
+	icon_state = "wrestling_mat"
+	density = FALSE
+	layer = TURF_LAYER + 0.1
+	drill_noun = "the wrestling mat"
+	drill_bonus = 1.5
+
+// School points a set on G adds for this character.
+/obj/structure/martial_gear/proc/martial_drill_bonus(mob/living/human/H)
+	return drill_bonus
+
+// Throws and holds need a grappling school: others get half.
+/obj/structure/martial_gear/wrestling_mat/martial_drill_bonus(mob/living/human/H)
+	var/list/moves = martial_school_moves(H.martial_school)
+	if (islist(moves) && moves[2] >= 0.5)
+		return drill_bonus
+	return drill_bonus / 2
+
 /obj/structure/martial_gear/examine(mob/user, distance = -1)
 	. = ..()
 	to_chat(user, SPAN_NOTICE("Strike it with a bare or wrapped hand on harm intent for a drill set. It teaches your martial school faster than forms alone, and never hurts your hand."))
@@ -107,7 +127,7 @@
 	exercise_spend(2)
 	practice_unarmed(1)
 	if (martial_school)
-		martial_practice(G.drill_bonus * rate)
+		martial_practice(G.martial_drill_bonus(src) * rate)
 		to_chat(src, SPAN_NOTICE("You finish a drill set. [martial_status_text()]"))
 	else
 		to_chat(src, SPAN_NOTICE("You finish a drill set. Follow a martial school to get more from it."))

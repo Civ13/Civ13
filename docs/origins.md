@@ -18,7 +18,7 @@ All of it is data in `code/game/mob/living/carbon/human/origins.dm`:
 
 | Land | Peoples |
 | --- | --- |
-| Gaia (also Continental, Pangea) | Northmen, Latins, Hellenes, Egyptians, Swahili, Yamato |
+| Gaia (also Continental, Pangea) | Fjordfolk, Hearthlanders, Isleborn, Dunefolk, Grasslanders, Mistwood Folk (Gaia's own peoples, see docs/peoples.md) |
 | Europe | Northmen, Gaels, Hellenes, Latins |
 | Africa | Swahili, Zulu, Egyptians, Arabs |
 | Asia | Mongols, Koreans, Han, Persians, Yamato, Viet |
@@ -36,6 +36,9 @@ An agent may ask for a people of the land when it makes a character
 (`character_spawn` with `origin`: an id or a name); its character state then
 carries `origin` and `languages` (name, score, level, speech key, and which
 one is the mother tongue and the default).
+
+Peoples can also form in play; they are world records (docs/peoples.md) that
+every reader of `origin_id` treats like the roots here.
 
 ## Admin tools
 

@@ -189,6 +189,31 @@ var/naval_runtime_error = FALSE
 	ocean_sites_tick()
 	var/obj/structure/wild/rock/R = locate() in locate(mark.x, mark.y, 1)
 	naval_check(mark.raised() && R && R.name == "Gull Rock", "the sea mark stands, named Gull Rock")
+
+	// ---- upkeep: a ship nobody has been aboard for a week founders
+	var/start = 100000
+	ocean_ships_upkeep(start)
+	naval_check(tiller.unmanned_since == start, "with nobody aboard, the day she was left is noted")
+	var/obj/structure/hull_tiller/kept = sea_ship(300, 120, "Lark")
+	var/mob/living/human/naval_probe/sailor = new(locate(kept.x + 1, kept.y, 1))
+	ocean_ships_upkeep(start)
+	naval_check(kept.unmanned_since == 0, "a ship with someone aboard is looked after")
+	naval_check(ocean_ships_upkeep(start + 7 * 24 * 36000 - 10) == 0 && tiller.craft, "six days and more later the Wren is still afloat")
+	naval_check(ocean_ships_upkeep(start + 7 * 24 * 36000 + 10) == 1 && !tiller.craft && kept.craft, "after a week with nobody aboard she founders; the crewed Lark sails on")
+	qdel(sailor)
+
+	// ---- round the world in an ocean whose west and east edges join
+	var/list/arctic_route = sea_edge_link_at("arctic", list(2, 140, 6, 142))
+	naval_check(islist(arctic_route) && arctic_route[1] == "arctic" && arctic_route[2] == "east", "off the Arctic's west edge she sails on round the world into its east ([islist(arctic_route) ? jointext(arctic_route, ", ") : "nothing"])")
+	var/list/indian_route = sea_edge_link_at("indian", list(2, 140, 6, 142))
+	naval_check(!islist(indian_route) || indian_route[1] != "indian", "an ocean whose edges do not join leads nowhere round the world")
+	shard_group.region = "arctic"
+	var/datum/craft_body/built/LB = kept.craft.body
+	naval_check(LB.move_to(3, 140, EAST), "the Lark lies off the west edge ([LB.last_refusal])")
+	var/list/route = sea_edge_link_at("arctic", LB.sea_edge_bounds())
+	var/wrap_why = kept.sea_edge_wrap(route)
+	var/list/after = LB.sea_edge_bounds()
+	naval_check(isnull(wrap_why) && after[3] > world.maxx - 10 && abs(after[2] - 140) <= 2, "she comes out at the east edge at the same place along it ([wrap_why || "[after[1]],[after[2]]"])")
 	naval_check(!naval_runtime_error, "no runtime errors")
 
 /proc/naval_run()
