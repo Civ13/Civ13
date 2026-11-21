@@ -107,6 +107,8 @@
 		return FALSE
 	if (T.z == upper_z())
 		return !isnull(upper_deck_cell(locate(T.x, T.y, z), T.z))
+	if (T.z == top_z())
+		return !isnull(upper_deck_cell(upper_deck_cell(locate(T.x, T.y, z), upper_z()), T.z))
 	if (T.z == lower_z())
 		return !isnull(hull_hold_cover(T))
 	return FALSE

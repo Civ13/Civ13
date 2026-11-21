@@ -34,7 +34,12 @@ var/global/practice_experiments_built = FALSE
 // subject without an entry keeps its generated practice.
 // node id => list of deeds, each list(key, list(result paths), amount, share, what to do).
 // A result path also covers its subtypes.
-var/global/list/subject_deeds = list(
+var/global/list/subject_deeds = subject_deeds_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/subject_deeds_table()
+	return list(
 	"bronze_working" = list(
 		list("molds", list("/obj/item/weapon/clay/mold/shovel"), 2, 0.2, "Shape 2 unfired shovel molds from clay"),
 		list("hammer", list("/obj/item/weapon/hammer"), 1, 0.15, "Make a hammer"),
