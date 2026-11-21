@@ -33,7 +33,7 @@ class Machine(base.FakeMachine):
     def byond_pager_running(self):
         return self.pager
 
-    def terminate(self, pid):
+    def terminate(self, pid, expect=None):
         self.calls.append(['terminate', pid])
         self.up = False
         self.suspended = 0

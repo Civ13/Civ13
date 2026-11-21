@@ -104,12 +104,12 @@ class FakeMachine:
         self.calls.append(['resume', pid])
         self.suspended -= 1
 
-    def terminate(self, pid):
+    def terminate(self, pid, expect=None):
         self.calls.append(['terminate', pid])
         self.up = False
         self.suspended = 0
 
-    def kill_tree(self, pid):
+    def kill_tree(self, pid, expect=None):
         self.calls.append(['kill_tree', pid])
         self.up = False
         self.suspended = 0
@@ -748,30 +748,34 @@ class ListeningTests(unittest.TestCase):
             connect.assert_called_once()
 
 
+class FakePopen:
+    """Stands in for subprocess.Popen in Platform.run and records how it was started."""
+    seen = []
+
+    def __init__(self, argv, **kwargs):
+        FakePopen.seen.append(kwargs)
+        self.pid, self.returncode = 0, 0
+
+    def communicate(self, timeout=None):
+        return '', ''
+
+
 class NoConsoleWindowTests(unittest.TestCase):
+    def started(self, argv, **kwargs):
+        from unittest import mock
+        FakePopen.seen = []
+        with mock.patch.object(gaia_host.subprocess, 'Popen', FakePopen):
+            gaia_host.Platform().run(argv, **kwargs)
+        return FakePopen.seen
+
     def test_console_programs_run_without_a_window(self):
         # The windowless host service (pythonw) would flash a console for every
-        # git/dm.exe/schtasks/tasklist/netstat call without CREATE_NO_WINDOW.
-        import subprocess
-        from unittest import mock
-        seen = []
-        def fake_run(argv, **kwargs):
-            seen.append(kwargs.get('creationflags'))
-            return subprocess.CompletedProcess(argv, 0, '', '')
-        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
-            gaia_host.Platform().run(['git', 'status'])
-        self.assertEqual(seen, [gaia_host.NO_WINDOW])
+        # git/dm.exe/schtasks/netstat call without CREATE_NO_WINDOW.
+        self.assertEqual([kw.get('creationflags') for kw in self.started(['git', 'status'])], [gaia_host.NO_WINDOW])
         self.assertEqual(gaia_host.NO_WINDOW, 0x08000000 if gaia_host.os.name == 'nt' else 0)
 
     def test_staged_compiles_run_below_normal_priority(self):
-        import subprocess
-        from unittest import mock
-        seen = []
-        def fake_run(argv, **kwargs):
-            seen.append(kwargs)
-            return subprocess.CompletedProcess(argv, 0, '', '')
-        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
-            gaia_host.Platform().run(['dm', 'region.dme'], low_priority=True)
+        seen = self.started(['dm', 'region.dme'], low_priority=True)
         if gaia_host.os.name == 'nt':
             self.assertEqual(seen[0]['creationflags'], gaia_host.NO_WINDOW | gaia_host.BELOW_NORMAL_PRIORITY)
         else:
@@ -781,14 +785,7 @@ class NoConsoleWindowTests(unittest.TestCase):
         # Started by the launcher, this script inherits the launcher's console input; subprocess
         # duplicated that handle for git and check-update failed with WinError 50.
         import subprocess
-        from unittest import mock
-        seen = []
-        def fake_run(argv, **kwargs):
-            seen.append(kwargs.get('stdin', 'inherited'))
-            return subprocess.CompletedProcess(argv, 0, '', '')
-        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
-            gaia_host.Platform().run(['git', 'fetch'])
-        self.assertEqual(seen, [subprocess.DEVNULL])
+        self.assertEqual([kw.get('stdin', 'inherited') for kw in self.started(['git', 'fetch'])], [subprocess.DEVNULL])
 
     def test_detached_children_keep_a_hidden_console(self):
         # DETACHED_PROCESS left DreamDaemon without a console, so every shell() it ran
@@ -835,12 +832,30 @@ class ForcedStopTests(GaiaHostTests):
         self.assertEqual(['2.sav.lk'], result['released_locks'])
         gaia_host.check_save(saves)
 
+    def test_forced_stop_refuses_an_unverified_port_holder(self):
+        self.machine.up = True
+
+        def refuse(pid, expect=None):
+            raise gaia_host.Unverified('process %d is not DreamDaemon (it is C:\\x.exe); it was left running' % pid)
+        self.machine.kill_tree = refuse
+        with self.assertRaisesRegex(gaia_host.Refused, 'nothing was ended on port .*end it by hand'):
+            self.host.kill()
+        self.assertTrue(self.machine.up)
+        self.assertFalse(self.host.killed_file.exists(), 'no forced stop is reported to a running action')
+
+    def test_forced_stop_asks_for_the_world(self):
+        self.machine.up = True
+        seen = []
+        self.machine.kill_tree = lambda pid, expect=None: seen.append(expect)
+        self.host.kill()
+        self.assertEqual('DreamDaemon', seen[0].what)
+
     def test_kill_keeps_lock_files_while_the_server_lives(self):
         self.machine.up = True
         saves = self.repo / 'map_saves'
         write_save(saves)
         (saves / '1.sav.lk').write_bytes(b'')
-        self.machine.kill_tree = lambda pid: self.machine.calls.append(['kill_tree', pid])  # it survives
+        self.machine.kill_tree = lambda pid, expect=None: self.machine.calls.append(['kill_tree', pid])  # it survives
         self.assertEqual([], self.host.kill()['released_locks'])
         self.assertTrue((saves / '1.sav.lk').exists())
 
@@ -1383,29 +1398,109 @@ class HostControlsContractTests(unittest.TestCase):
 
 
 class PagerCheckTests(unittest.TestCase):
-    # Runs on every host: CI (Linux) fails on any skip, so stand in for the
-    # Windows session lookup rather than skipping off Windows.
-    def windows(self):
-        import ctypes
-        from types import SimpleNamespace
+    # A broken WMI provider made tasklist hang and every Gaia start crash (2026-11-19): the pager
+    # check asks the kernel directly and never runs a program.
+    def test_the_pager_check_runs_no_program(self):
         from unittest import mock
-        kernel32 = SimpleNamespace(ProcessIdToSessionId=lambda pid, session: 1)
-        fake_ctypes = SimpleNamespace(c_ulong=ctypes.c_ulong, byref=lambda value: value,
-                                      windll=SimpleNamespace(kernel32=kernel32))
-        fake_os = SimpleNamespace(name='nt', getpid=os.getpid)
-        return mock.patch.multiple(gaia_host, os=fake_os, ctypes=fake_ctypes)
-
-    def test_hung_tasklist_is_unknown_not_a_crash(self):
         platform = gaia_host.Platform()
 
         def hang(argv, **kwargs):
-            raise gaia_host.subprocess.TimeoutExpired(argv, kwargs.get('timeout'))
+            raise AssertionError('the pager check ran %s' % argv)
         platform.run = hang
-        with self.windows():
-            self.assertIsNone(platform.byond_pager_running())
-
-    def test_a_listed_pager_is_running(self):
-        platform = gaia_host.Platform()
-        platform.run = lambda argv, **kwargs: (0, '"byond.exe","1234","Console","1","10,000 K"\n')
-        with self.windows():
+        with mock.patch.object(gaia_host.os, 'name', 'nt'), \
+                mock.patch.object(gaia_host.process_safety, 'running_in_session', return_value=True) as ask:
             self.assertTrue(platform.byond_pager_running())
+        ask.assert_called_once_with('byond.exe')
+
+    def test_an_unanswered_check_is_unknown(self):
+        from unittest import mock
+        with mock.patch.object(gaia_host.os, 'name', 'nt'), \
+                mock.patch.object(gaia_host.process_safety, 'running_in_session', return_value=None):
+            self.assertIsNone(gaia_host.Platform().byond_pager_running())
+
+    def test_an_unknown_pager_does_not_block_a_start(self):
+        # Criticality: a boot gate fails open. Unknown counts as signed in.
+        host = gaia_host.Host.__new__(gaia_host.Host)
+        host.config = {'start_requires_byond_pager': True}
+        host.platform = type('P', (), {'byond_pager_running': lambda self: None})()
+        self.assertTrue(host.byond_signed_in())
+
+
+class ProcessSafetyTests(unittest.TestCase):
+    """Criticality rules (scripts/gaia-host/README.md, Process safety): a hung program never
+    crashes the host, and a kill only ends a process shown to be the one meant."""
+
+    def spawn(self, *argv):
+        import subprocess
+        child = subprocess.Popen(list(argv) or ['sleep', '30'], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+        self.addCleanup(lambda: (child.kill(), child.wait()))
+        return child
+
+    def test_a_hung_program_times_out_instead_of_raising(self):
+        import time
+        started = time.monotonic()
+        code, out = gaia_host.Platform().run(['sh', '-c', 'sleep 30 & echo $!; wait'], timeout=0.5)
+        self.assertEqual(gaia_host.TIMED_OUT, code)
+        self.assertIn('timed out after 0.5 s', out)
+        self.assertLess(time.monotonic() - started, 15)
+        grandchild = int(out.split()[0])
+        self.assertIsNone(gaia_host.process_safety.identity(grandchild) if not gaia_host.process_safety._zombie(grandchild) else None,
+                          'what the hung program started is ended too')
+
+    def test_a_finished_program_still_answers(self):
+        self.assertEqual((0, 'hi\n'), gaia_host.Platform().run(['sh', '-c', 'echo hi']))
+        self.assertEqual(3, gaia_host.Platform().run(['sh', '-c', 'exit 3'])[0])
+
+    def test_identity_names_the_executable(self):
+        child = self.spawn()
+        ident = gaia_host.process_safety.identity(child.pid)
+        self.assertEqual('sleep', Path(ident['exe']).name)
+        self.assertLessEqual(abs(ident['created'] - __import__('time').time()), 30)
+        self.assertIsNone(gaia_host.process_safety.identity(0))
+
+    def test_a_process_that_is_not_the_world_is_left_running(self):
+        child = self.spawn()
+        with self.assertRaisesRegex(gaia_host.Unverified, 'not DreamDaemon'):
+            gaia_host.Platform().kill_tree(child.pid, expect=gaia_host.process_safety.world_expect())
+        self.assertIsNone(child.poll(), 'never end an unverified process')
+
+    def test_a_reused_pid_is_left_running(self):
+        import time
+        child = self.spawn()
+        expect = gaia_host.process_safety.Expect(['sleep'], born_before=time.time() - 600, what='the recorded sleep')
+        with self.assertRaisesRegex(gaia_host.Unverified, 'reused'):
+            gaia_host.Platform().terminate(child.pid, expect=expect)
+        self.assertIsNone(child.poll())
+
+    def test_a_verified_process_is_ended(self):
+        import time
+        child = self.spawn()
+        gaia_host.Platform().terminate(child.pid, expect=gaia_host.process_safety.Expect(['sleep'], born_before=time.time()))
+        self.assertIsNotNone(child.wait(timeout=10))
+
+    def test_the_configured_daemon_counts_as_the_world(self):
+        expect = gaia_host.process_safety.world_expect({'daemon': 'C:/BYOND/bin/MyDaemon.exe'})
+        self.assertIsNone(expect.problem({'exe': 'C:\\BYOND\\bin\\MyDaemon.exe', 'created': 0}))
+        self.assertIsNone(expect.problem({'exe': 'D:\\BYOND\\bin\\dd.exe', 'created': 0}))
+        self.assertIsNotNone(expect.problem({'exe': 'C:\\Windows\\explorer.exe', 'created': 0}))
+        self.assertIsNotNone(expect.problem(None), 'unknown is not a match')
+
+class ProcessToolGuardTests(unittest.TestCase):
+    """Host scripts never shell out to tasklist, taskkill, wmic or WMI/CIM cmdlets: they hang
+    when a WMI provider breaks (2026-11-19). Use scripts/gaia-host/process_safety.py."""
+    FORBIDDEN = __import__('re').compile(
+        r"""['"](tasklist|taskkill)(\.exe)?['"]|taskkill\.exe|tasklist\.exe|\bwmic\b|Get-CimInstance|Invoke-CimMethod|Get-WmiObject""",
+        __import__('re').I)
+    # Observation only, with a timeout and an empty answer on failure (agent_runs.windows_processes).
+    ALLOWED = {'scripts/shard-group/agent_runs.py'}
+
+    def test_no_process_tool_calls(self):
+        found = []
+        for folder in ('scripts/gaia-host', 'scripts/shard-group', 'scripts/windows/host', 'scripts/nomads-lifecycle'):
+            for path in sorted((ROOT / folder).rglob('*')):
+                if path.suffix.lower() not in ('.py', '.bat', '.cmd', '.ps1') or path.relative_to(ROOT).as_posix() in self.ALLOWED:
+                    continue
+                for number, line in enumerate(path.read_text(encoding='utf-8', errors='replace').splitlines(), 1):
+                    if self.FORBIDDEN.search(line):
+                        found.append('%s:%d: %s' % (path.relative_to(ROOT).as_posix(), number, line.strip()))
+        self.assertEqual([], found)
