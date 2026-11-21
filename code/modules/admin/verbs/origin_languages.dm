@@ -221,3 +221,69 @@
 	log_admin("[key_name(usr)] made [nation]'s [L.name] ready to split.")
 	message_admins("[key_name_admin(usr)] made [nation]'s [L.name] ready to split.")
 	language_split_ready_notice(nation, L)
+
+/proc/admin_daughter_language_choices()
+	ensure_daughter_languages()
+	var/list/choices = list()
+	var/list/records = language_lineage_part("daughters")
+	for (var/name in records)
+		var/list/record = records[name]
+		if (is_daughter_language(all_languages[name]) && islist(record))
+			choices["[name] (from [record["parent"]], [record["nation"]][record["imported"] ? ", arrived with travellers" : ""])"] = name
+	return choices
+
+/client/proc/cmd_admin_merge_language()
+	set category = "Admin"
+	set name = "Merge Language Back"
+	set desc = "Undo a language split: everyone who has the daughter language gets it as its parent instead."
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/choices = admin_daughter_language_choices()
+	if (!choices.len)
+		to_chat(usr, SPAN_WARNING("This world has no daughter languages."))
+		return
+	var/picked = input(usr, "Which language should be merged back into its parent?", "Merge Language Back") as null|anything in sortList(choices)
+	if (!picked)
+		return
+	var/name = choices[picked]
+	var/list/children = daughter_language_children(name)
+	if (children.len)
+		to_chat(usr, SPAN_WARNING("[name] has daughter languages of its own ([jointext(children, ", ")]). Merge those first."))
+		return
+	if (alert(usr, "Merge [name] back into its parent? Everyone who has it keeps the better score in the parent. This cannot be undone.", "Merge Language Back", "Merge", "Cancel") != "Merge" || !check_rights(R_ADMIN))
+		return
+	var/count = merge_daughter_language(name)
+	if (isnull(count))
+		to_chat(usr, SPAN_WARNING("[name] could not be merged."))
+		return
+	log_admin("[key_name(usr)] merged the language [name] back into its parent ([count] character\s).")
+	message_admins("[key_name_admin(usr)] merged the language [name] back into its parent ([count] character\s).")
+
+/client/proc/cmd_admin_rename_language()
+	set category = "Admin"
+	set name = "Rename Language"
+	set desc = "Rename a daughter language for everyone in this world."
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/choices = admin_daughter_language_choices()
+	if (!choices.len)
+		to_chat(usr, SPAN_WARNING("This world has no daughter languages."))
+		return
+	var/picked = input(usr, "Which language should be renamed?", "Rename Language") as null|anything in sortList(choices)
+	if (!picked)
+		return
+	var/old = choices[picked]
+	var/wanted = input(usr, "New name for [old] (3 to 24 letters). Travellers already in other lands keep the old name there.", "Rename Language", old) as text|null
+	if (!wanted || !check_rights(R_ADMIN))
+		return
+	var/problem = language_name_problem(wanted)
+	if (problem)
+		to_chat(usr, SPAN_WARNING(problem))
+		return
+	var/new_name = language_clean_name(wanted)
+	var/count = rename_daughter_language(old, new_name)
+	if (isnull(count))
+		to_chat(usr, SPAN_WARNING("[old] could not be renamed."))
+		return
+	log_admin("[key_name(usr)] renamed the language [old] to [new_name] ([count] character\s).")
+	message_admins("[key_name_admin(usr)] renamed the language [old] to [new_name] ([count] character\s).")

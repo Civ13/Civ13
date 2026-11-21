@@ -121,6 +121,30 @@ person holds one office at a time and never the head's own seat. Offices
 lapse when the government changes, and an officer whose faction leaves the
 nation loses the office. A confederation has no offices.
 
+## Treaties
+
+Nations make treaties with each other from **Nation > Foreign affairs**
+(`tools/transfer_storage/nation_treaties.py`, `treaty` op):
+
+| Kind | Made by | Notes |
+| --- | --- | --- |
+| Alliance | both nations | Cannot be made at war. |
+| Non-aggression pact | both nations | Cannot be made at war. |
+| Trade treaty | both nations | Cannot be made at war. |
+| War | one nation alone | Ends any alliance or pact between the two. |
+| Peace | both nations | Ends a war. |
+
+Each nation agrees under its own government: the ruler alone under personal
+rule, a `treaty` motion of the senate, council or citizens (a majority)
+under an elective government, and more than half of the member factions'
+leaders in a confederation. One nation's agreement stands as an offer for 7
+days; once the other agrees too, the treaty is in force. Either nation may
+renounce an alliance, pact or trade treaty alone. A nation keeps at most 24
+treaties, and treaties end when either nation dissolves. Citizens are told
+when a treaty starts or ends, and Nation view lists each nation's treaties.
+Treaties do not yet change sieges or other play; they are the record later
+features read.
+
 ## Revolt
 
 Citizens can overthrow any government, in play rather than by a menu
@@ -196,6 +220,10 @@ stays a member for the notice period and may **Stay** to withdraw it.
   opened it, when, when it filled) and its signers.
 - `nation_office`: nation, office, holder's account, character name and
   faction, since when.
+- `nation_treaty`: the two nations (sorted), kind and since when;
+  `nation_treaty_offer`: a nation's standing agreement, to which nation, kind
+  and when. A confederation's treaty votes are `nation_vote` rows of kind
+  `treaty:<proposal>`.
 - `nation_frozen`: nations staff froze, and since when.
 - `nation_staff_log`: nation, when, staff account, act and reason (the last
   100 kept).
@@ -203,4 +231,4 @@ stays a member for the notice period and may **Stay** to withdraw it.
   -> when another petition may open.
 
 The registry snapshot every world reads adds `government`, `government_votes`,
-`leaving`, `eras`, `motions`, `term_ends`, `census`, `revolt`, `frozen`, `staff_log` and `offices` to each nation.
+`leaving`, `eras`, `motions`, `term_ends`, `census`, `revolt`, `frozen`, `staff_log`, `offices` and `treaties` to each nation.
