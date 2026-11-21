@@ -248,6 +248,20 @@ is past the 300-tile deck cap and refused; with half its roofs taken down
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/upper_deck_probe.dm 300
 
+## A second deck above (`second_deck_probe.dm`)
+
+Four levels: a hull roofed over, and nine tiles of that upper deck roofed again,
+with a ladder up to the second deck. The tiller reads out the second deck; a
+sailor and a pail up there are aboard and ride a step east, every roof keeping
+its floor; a floor or something solid two levels up stops her with the reason,
+while air over her upper deck's open tiles at that height does not; coming
+about swings the second deck whole; her lines draw it and pass the design
+checks; sinking brings the pail down to the water. A draught with a second deck
+above is built on the slipway (refused where a floor is in the way two levels
+up), with a ladder between the decks above, and launches with both.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/second_deck_probe.dm 300
+
 ## Sea chart and harbours (`chart_probe.dm`)
 
 The mirror sea chart and mooring posts (`code/modules/naval/craft_chart.dm`):

@@ -186,5 +186,21 @@
 	var/obj/item/stack/material/resin/lumps = new(locate(5,3,1), 4)
 	family_check(bench.input_valid(lumps, /obj/item/stack/material/resin, shield_inputs[/obj/item/stack/material/resin]), "resin lumps pay the body shield's resin")
 
+	// Dayfield shields: resin laminate and steel at the armor workbench, not the anvil.
+	family_check(isnull(anvil_recipes["Dayfield Body Armor"]), "the Dayfield is no longer forged at the anvil")
+	var/list/dayfield = bench.armor_recipes()["Dayfield body armor"]
+	var/list/heavy_dayfield = bench.armor_recipes()["Heavy Dayfield body armor"]
+	family_check(dayfield && dayfield["era"] == 5 && dayfield["result"] == /obj/item/clothing/accessory/armor/modern/british, "the Dayfield is a WW1 workbench recipe")
+	family_check(heavy_dayfield && heavy_dayfield["result"] == /obj/item/clothing/accessory/armor/modern/british/heavy, "the heavy Dayfield is a workbench recipe")
+	var/list/dayfield_inputs = dayfield["inputs"]
+	var/list/heavy_inputs = heavy_dayfield["inputs"]
+	family_check(dayfield_inputs[/obj/item/stack/material/resin_laminate][1] == 4 && dayfield_inputs[/obj/item/stack/material/steel][1] == 6, "the Dayfield takes 4 laminate and 6 steel")
+	family_check(heavy_inputs[/obj/item/stack/material/resin_laminate][1] == 6 && heavy_inputs[/obj/item/stack/material/steel][1] == 14, "the heavy Dayfield takes 6 laminate and 14 steel")
+	var/obj/item/stack/material/resin_laminate/boards = new(locate(5,3,1), 6)
+	family_check(bench.input_valid(boards, /obj/item/stack/material/resin_laminate, heavy_inputs[/obj/item/stack/material/resin_laminate]), "laminate boards pay the Dayfield's laminate")
+	var/obj/item/clothing/light_dayfield = new /obj/item/clothing/accessory/armor/modern/british(locate(1,1,1))
+	var/obj/item/clothing/rifle_dayfield = new /obj/item/clothing/accessory/armor/modern/british/heavy(locate(1,1,1))
+	family_check(light_dayfield.armor_value("gun") == 40 && rifle_dayfield.armor_value("gun") == 65 && rifle_dayfield.slowdown == 1.6, "the heavy Dayfield is rifle-rated (gun 65) and heavy (1.6)")
+
 	text2file("PASS: armor families protect by construction and material and never go out of date", "armor_family_result.txt")
 	del(world)

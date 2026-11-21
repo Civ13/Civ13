@@ -16,5 +16,6 @@ It checks the following:
 
 - **Bakelizer:** the plastic setting makes plastic sheets, the phenolic setting makes 10 units per step, an empty bucket draws the resin off, and an unknown setting falls back to plastic.
 - **Nylon:** the nylon setting spins two skeins of nylon thread per step, the Remove verb hands them out, the setting waits for WW2, and nylon is a material.
+- **Photopolymer:** the Digital Age photopolymer setting fills two bottles per step, handed out by the Remove verb.
 - **Hot press:** no resin and three sheets press nothing, an interrupted pressing uses nothing, phenolic resin presses four cloth into two sheets and four silk into three, plain pine resin gives half, and oilcloth is refused.
 - **Material:** resin laminate is a material.

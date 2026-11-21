@@ -40,8 +40,8 @@ deck under a clear tile of the deck above, where its head stands
 (`ladder_leads()`). The deck checks (`/datum/design_check/ship/decks`) refuse a
 ladder that leads nowhere and a part of her hold with no ladder up out of it,
 and note a part of a deck above that no ladder reaches (stairs or a ladder can
-be stood up afloat) and a second deck above (a ship afloat carries one deck
-above hers, so it is drawn for later). Findings name the deck they are on.
+be stood up afloat). A tile of either deck above that no deck pillar or plank
+wall on the deck below holds up is an error. Findings name the deck they are on.
 `piece_count()` counts every deck, so a pump in the hold is her pump.
 
 A deck above is a roof over her hull, so like any roof it must be carried: a
@@ -182,10 +182,11 @@ Each piece costs its hand recipe. Her other decks come last
 (`draught_place_deck()`): hold floors dug into the level below the berth
 (`hull_hold_lay()`), the deck above as a wooden roof over each hull tile with
 its floor on the level above, linked as a building pair, then what stands on
-those decks kind by kind, then ladders (foot and head, joined). A second deck
-above is drawn for later and not built. `draught_decks_refusal()` refuses a
-berth with no rock or deep water under her hold or no open air over her deck
-above. At the launch the whole hull slides with her hold and deck above, which
+those decks kind by kind, then ladders (foot and head, joined). Her second deck
+above is a roof on her deck above with its floor one level higher again
+(`draught_level_turf()` climbs building levels). `draught_decks_refusal()`
+refuses a berth with no rock or deep water under her hold or no open air over
+either deck above. At the launch the whole hull slides with all her decks, which
 `move_to()` carries like any built hull's (the rock under the berth closes
 behind her hold). Iron and planks pay for pieces as well
 as the usual materials (`piece_material()`).

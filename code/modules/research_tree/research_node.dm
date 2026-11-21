@@ -877,6 +877,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/component_workbench/weapon" = "stone_arms",
 		// trench_warfare armor (cartridge_ammo)
 		"/obj/item/clothing/accessory/armor/modern/british" = "trench_warfare",
+		"/obj/item/clothing/accessory/armor/modern/british/heavy" = "trench_warfare",
 		"/obj/item/clothing/accessory/armor/modern/plate" = "trench_warfare",
 		"/obj/item/clothing/head/helmet/modern/stahlhelm" = "trench_warfare",
 		"/obj/item/clothing/head/helmet/ww/adrian" = "trench_warfare",
@@ -1343,6 +1344,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/factory_fabricator/computerized" = "digital_computing",
 		// --- additive_manufacturing (9) ---
 		"/obj/structure/factory_fabricator/printer" = "additive_manufacturing",
+		"/obj/structure/factory_fabricator/printer/resin" = "additive_manufacturing",
 		// --- consumer_electronics (9) ---
 		"/obj/item/weapon/telephone/mobile/smartphone" = "consumer_electronics",
 		"/obj/structure/lamp/lamp_big/led" = "consumer_electronics",
@@ -1996,6 +1998,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/striking_post" = "martial_disciplines",
 		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
 		"/obj/structure/martial_gear/heavy_bag" = "martial_disciplines",
+		// --- school_grappling (1) ---
+		"/obj/structure/martial_gear/wrestling_mat" = "school_grappling",
 		// --- school_wing_chun (1) ---
 		"/obj/structure/martial_gear/wooden_dummy" = "school_wing_chun",
 		// --- law_order (15) ---

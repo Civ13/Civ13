@@ -522,7 +522,7 @@ class SubjectDeeds(unittest.TestCase):
         self.assertIn('findtext(result_path_string, "[path]/") != 1', proc(self.src, "/proc/note_deed_work"))
     def test_subject_count(self):
         import re
-        block = self.src[self.src.index("var/global/list/subject_deeds = list("):self.src.index("var/global/list/deed_paths")]
+        block = self.src[self.src.index("/proc/subject_deeds_table()"):self.src.index("var/global/list/deed_paths")]
         self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 57)
 
 class SkillMastery(unittest.TestCase):

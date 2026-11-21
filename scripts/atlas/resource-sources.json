@@ -17221,6 +17221,29 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Fill photopolymer bottles in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 101,
+      "source_commit": "96364203cee2bef286a9fbec6555f710f30beb91",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "/obj/item/stack/photopolymer"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "In the Digital Age, set a powered bakelizer to photopolymer resin and fill it with petroleum.",
+        "Every 5 petroleum fills 2 bottles; take them out with the Remove verb and load them into a resin 3D printer."
+      ],
+      "conditions": "Needs a powered bakelizer in the Digital Age.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Tap lacquer trees",
       "file": "code/modules/1713/lacquer.dm",
       "line": 82,

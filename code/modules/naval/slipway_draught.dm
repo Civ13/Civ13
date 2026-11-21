@@ -16,8 +16,8 @@
 //
 // Her other decks are built last (hull_hold.dm, built_body.dm): her hold is
 // dug and floored on the level below the berth, her deck above is roofed over
-// her hull with a floor on the level above, then what stands on those decks,
-// then her ladders. A second deck above is drawn for later and not built.
+// her hull with a floor on the level above, her second deck above is roofed
+// over that, then what stands on those decks, then her ladders.
 //
 // The post keeps the draught as its design code (draught_code) beside the
 // usual pieces_done and paid, so a half-built ship saves with the post. What
@@ -38,7 +38,7 @@
 // fitting, then one per gunwale, then her other decks. order[i] is
 // list(sheet key "x,y", "floor", the piece key or "gunwale"); a gunwale's
 // entry adds its sheet direction. Her other decks are list(key, "hold"),
-// list(key, "deck"), list(key, "decked", level, piece) and
+// list(key, "deck"), list(key, "top"), list(key, "decked", level, piece) and
 // list(key, "ladder", level) for a ladder standing on that level.
 /datum/slipway_design/draught
 	name = "ship"
@@ -118,23 +118,27 @@
 			var/list/cost = list()
 			cost[floor == "s" ? "steel" : "wood"] = 2
 			P.stages += list(list("name" = slipway_draught_plural(what), "pieces" = n, "cost" = cost, "part" = "gunwale", "verb" = what))
-	// Her hold, then her deck above, each tile from stern to bow.
-	for (var/level in list(-1, 1))
+	// Her hold, then her deck above and her second deck above, each tile
+	// from stern to bow.
+	var/list/deck_kind = list("-1" = "hold", "1" = "deck", "2" = "top")
+	var/list/deck_stage = list("-1" = "Hold floors", "1" = "Deck above", "2" = "Second deck above")
+	var/list/deck_verb = list("-1" = "hold floor", "1" = "tile of deck above", "2" = "tile of second deck above")
+	for (var/level in list(-1, 1, 2))
 		var/list/deck = ship_draught_decks["[level]"]
 		var/n = 0
 		for (var/key in keys)
 			if (D.decks["[level]"] && D.decks["[level]"][key])
-				P.order += list(list(key, level < 0 ? "hold" : "deck"))
+				P.order += list(list(key, deck_kind["[level]"]))
 				n++
 		if (n)
-			P.stages += list(list("name" = level < 0 ? "Hold floors" : "Deck above", "pieces" = n, "cost" = deck["cost"], "part" = "floor", "verb" = level < 0 ? "hold floor" : "tile of deck above"))
+			P.stages += list(list("name" = deck_stage["[level]"], "pieces" = n, "cost" = deck["cost"], "part" = "floor", "verb" = deck_verb["[level]"]))
 	// What stands on them, kind by kind; ladders last, once every deck they join is down.
 	for (var/piece in ship_draught_pieces())
 		var/list/F = ship_draught_pieces()[piece]
 		if (!F["decks"] || F["ladder"])
 			continue
 		var/n = 0
-		for (var/level in list(-1, 1))
+		for (var/level in list(-1, 1, 2))
 			var/list/L = D.decks["[level]"]
 			if (!L)
 				continue
@@ -145,9 +149,9 @@
 					n++
 		if (n)
 			P.stages += list(list("name" = "[slipway_draught_plural(F["name"])] below and above", "pieces" = n, "cost" = F["cost"], "part" = "fitting", "verb" = F["name"]))
-	// A ladder on her deck above climbs to her second deck, which is not built.
+	// A ladder climbs from the deck it stands on to the one above it.
 	var/ladders = 0
-	for (var/level in list(-1, 0))
+	for (var/level in list(-1, 0, 1))
 		for (var/key in keys)
 			var/list/xy = splittext(key, ",")
 			var/list/T = D.deck_cell(level, text2num(xy[1]), text2num(xy[2]))
@@ -278,7 +282,7 @@
 			qdel(D)
 		return
 	var/datum/slipway_design/draught/P = slipway_draught_plan(D)
-	var/text = "Lay out the [D.name] on the berth? Her stern goes before the post and her bow runs [dir2text(dir)]. She takes [P.total_pieces()] pieces: [piece_cost_text(P.total_cost())] in all.[D.deck_tiles(2) ? " Her second deck above is drawn for later and is not built." : ""]"
+	var/text = "Lay out the [D.name] on the berth? Her stern goes before the post and her bow runs [dir2text(dir)]. She takes [P.total_pieces()] pieces: [piece_cost_text(P.total_cost())] in all."
 	qdel(P) // also deletes D
 	if (WWinput(H, text, name, "No", list("Yes", "No")) != "Yes" || QDELETED(S) || S.loc != H || !Adjacent(H))
 		return
@@ -305,7 +309,7 @@
 	if (!T)
 		return null
 	var/path
-	if (entry[2] in list("hold", "deck", "decked", "ladder"))
+	if (entry[2] in list("hold", "deck", "top", "decked", "ladder"))
 		. = draught_place_deck(P, entry, T)
 		refresh_draught_tile(P, T, entry[1])
 		return
@@ -327,25 +331,36 @@
 	refresh_draught_tile(P, T, entry[1])
 	return M
 
-// The tile of level (-1 her hold, 0 the berth, 1 her deck above) over or
-// under berth tile T, or null where the map has no such level.
+// The tile of level (-1 her hold, 0 the berth, 1 her deck above, 2 her
+// second deck above) over or under berth tile T, or null where the map has no
+// such level.
 /proc/draught_level_turf(turf/T, level)
 	if (!T || !level)
 		return T
-	var/lz = level < 0 ? multiz_level_below(T.z) : building_upper_z(T.z)
-	return lz ? locate(T.x, T.y, lz) : null
+	if (level < 0)
+		var/lz = multiz_level_below(T.z)
+		return lz ? locate(T.x, T.y, lz) : null
+	var/uz = T.z
+	for (var/i = 1, i <= level, i++)
+		uz = building_upper_z(uz)
+		if (!uz)
+			return null
+	return locate(T.x, T.y, uz)
 
 // Builds one piece of her other decks over or under berth tile T.
 /obj/structure/slipway/proc/draught_place_deck(datum/slipway_design/draught/P, list/entry, turf/T)
 	switch (entry[2])
 		if ("hold")
 			return hull_hold_lay(draught_level_turf(T, -1))
-		if ("deck")
-			// A roof over her hull, its upper face her deck (building_levels.dm).
-			var/turf/U = draught_level_turf(T, 1)
-			if (!U)
+		if ("deck", "top")
+			// A roof over the deck below, its upper face this deck
+			// (building_levels.dm).
+			var/level = entry[2] == "top" ? 2 : 1
+			var/turf/below = draught_level_turf(T, level - 1)
+			var/turf/U = draught_level_turf(T, level)
+			if (!U || !below)
 				return null
-			var/obj/roof/R = new /obj/roof/wood(T)
+			var/obj/roof/R = new /obj/roof/wood(below)
 			var/obj/covers/repairedfloor/F = new(U)
 			F.building_take_upper_face(R)
 			building_link(R, F)
@@ -390,7 +405,13 @@
 			if (!U)
 				return "There is no level above the berth for the [D.name]'s deck above."
 			if (!building_open_turf(U) || (locate(/obj/covers) in U) || slipway_dense_in(U))
-				return "Her deck above needs open air over the berth: [U.name] at [U.x],[U.y] is in the way."
+				return "Her deck above needs open air over the berth: [(locate(/obj/covers) in U) ? "a floor" : U.name] at [U.x],[U.y] is in the way."
+		if (D.decks["2"] && D.decks["2"][key])
+			var/turf/U = draught_level_turf(T, 2)
+			if (!U)
+				return "There is no level high enough above the berth for the [D.name]'s second deck above."
+			if (!building_open_turf(U) || (locate(/obj/covers) in U) || slipway_dense_in(U))
+				return "Her second deck above needs open air over the berth: [(locate(/obj/covers) in U) ? "a floor" : U.name] at [U.x],[U.y] is in the way."
 	return null
 
 // A shipwright brings materials to the berth: they fit the next piece and

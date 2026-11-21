@@ -365,11 +365,10 @@
 			R.error("Her [name] has [what] with no ladder up to her deck: stand a ladder in it under a clear tile of deck.", keys, "X", -1)
 		else
 			R.note("No ladder is drawn up to [what] of her [name]: climb to it by stairs or a ladder stood up once she is afloat.", keys, "X", text2num(level))
-	var/list/loose = D.unsupported_deck_tiles(1)
-	if (loose.len)
-		R.error("[loose.len] tile\s of her deck above [loose.len == 1 ? "has" : "have"] nothing to carry [loose.len == 1 ? "it" : "them"]: stand a deck pillar within 3 tiles below, or a plank wall beside [loose.len == 1 ? "it" : "them"].", loose, "S", 1)
-	if (D.deck_tiles(2))
-		R.note("Her second deck above is drawn for later: a ship afloat carries one deck above hers.", null, "u", 2)
+	for (var/level in list(1, 2))
+		var/list/loose = D.unsupported_deck_tiles(level)
+		if (loose.len)
+			R.error("[loose.len] tile\s of her [ship_draught_level_name(level)] [loose.len == 1 ? "has" : "have"] nothing to carry [loose.len == 1 ? "it" : "them"]: stand a deck pillar within 3 tiles below, or a plank wall beside [loose.len == 1 ? "it" : "them"].", loose, "S", level)
 
 // ---- Submarines ----
 
