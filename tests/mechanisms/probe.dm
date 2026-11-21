@@ -388,7 +388,30 @@ var/mechanisms_runtime = null
 	mechanisms_hands(stoker, hammer_logs)
 	hammer.attackby(hammer_logs, stoker)
 	mechanisms_assert(hammer.fuel == 2 && !mechanisms_runtime, "steam_hammer_takes_wood")
-	for (var/state in list("counterweight", "counterweight_on", "cam_drum", "cam_drum_on", "steam_engine", "steam_engine_on"))
+	// Bridges: a relay cuts the electric device on its tile while open, and a
+	// mechanism port joins an integrated circuit to the cords.
+	var/obj/structure/mechanism_relay/relay = new(locate(3, 8, 2))
+	mechanisms_assert(!mechanism_relay_open_on(get_turf(relay)), "closed_relay_passes_power")
+	mechanisms_assert(mechanism_actuatable(relay) && mechanism_actuate(relay, FALSE) && !relay.closed && mechanism_relay_open_on(get_turf(relay)), "cord_opens_relay")
+	mechanisms_assert(mechanism_actuate(relay, null) && relay.closed, "pull_cord_toggles_relay")
+	var/obj/item/circuit_shell/mechanism_port/port = new(locate(6, 8, 2))
+	var/obj/structure/bell/port_bell = new(locate(6, 10, 2))
+	port.links = "0,2"
+	port_bell.next_ring = 0
+	mechanisms_assert(port.circuit_pull(TRUE) && port_bell.next_ring > world.time, "port_pulls_its_cords")
+	port_bell.next_ring = 0
+	mechanisms_assert(!port.circuit_pull(TRUE) && port_bell.next_ring == 0, "port_waits_between_pulls")
+	mechanisms_assert(mechanism_actuatable(port) && !mechanism_actuate(port, TRUE), "port_without_circuit_senses_nothing")
+	var/obj/item/integrated_circuit/port_circuit = new(port)
+	port.circuit = port_circuit
+	mechanisms_assert(port.circuit_installed(port_circuit, null) && port.port_component.parent == port_circuit, "port_component_joins_circuit")
+	mechanisms_assert(mechanism_actuate(port, FALSE) && port.port_component.thrown_output.value == FALSE, "cord_signals_into_circuit")
+	var/obj/item/circuit_shell/mechanism_port/carried_port = new(locate(6, 8, 2))
+	carried_port.links = "0,2"
+	carried_port.forceMove(stoker)
+	port_bell.next_ring = 0
+	mechanisms_assert(!carried_port.circuit_pull(TRUE) && port_bell.next_ring == 0, "carried_port_pulls_nothing")
+	for (var/state in list("counterweight", "counterweight_on", "cam_drum", "cam_drum_on", "steam_engine", "steam_engine_on", "relay_closed", "relay_open"))
 		mechanisms_assert(state in icon_states('icons/obj/contraptions.dmi'), "icon_[state]")
 
 	// The new art is in the icon file.

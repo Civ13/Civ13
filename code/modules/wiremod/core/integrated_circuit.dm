@@ -36,6 +36,7 @@
 		/obj/item/circuit_component/variable/getter = "Made from the variable menu, tied to one variable.",
 		/obj/item/circuit_component/variable/setter = "Made from the variable menu, tied to one variable.",
 		/obj/item/circuit_component/compact_remote = "Built into a compact remote; it is attached when an integrated circuit is inserted.",
+		/obj/item/circuit_component/mechanism_port = "Built into a mechanism port; it is attached when an integrated circuit is inserted.",
 	)
 
 /obj/item/integrated_circuit

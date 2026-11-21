@@ -1420,6 +1420,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/integrated_circuit" = "digital_computing",
 		"/obj/item/circuit_shell/compact_remote" = "digital_computing",
+		"/obj/item/circuit_shell/mechanism_port" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
@@ -1449,6 +1450,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/voting" = "early_economy",
 		// --- electricity (23) ---
 		"/obj/structure/workshop_machine/wire_bench" = "electricity",
+		"/obj/structure/mechanism_relay" = "electricity",
 		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",

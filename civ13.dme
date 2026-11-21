@@ -2076,6 +2076,7 @@
 #include "code\modules\wiremod\datatypes\string.dm"
 #include "code\modules\wiremod\shell\circuit_shell.dm"
 #include "code\modules\wiremod\shell\compact_remote.dm"
+#include "code\modules\wiremod\shell\mechanism_port.dm"
 #include "code\modules\xgm\xgm_gas_data.dm"
 #include "code\modules\xgm\xgm_gas_mixture.dm"
 #include "code\modules\zombie_city\generator.dm"
