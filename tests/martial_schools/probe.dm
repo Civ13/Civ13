@@ -31,7 +31,7 @@
 /mob/living/human/martial_probe
 var/martial_probe_checks = 0
 var/martial_probe_wait = TRUE
-var/list/martial_probe_known = list()
+var/list/martial_probe_known
 
 /mob/living/human/martial_probe/martial_forms_wait()
 	return martial_probe_wait
@@ -39,8 +39,8 @@ var/list/martial_probe_known = list()
 /mob/living/human/martial_probe/martial_school_known(school_id)
 	return school_id in martial_probe_known
 
-var/list/martial_probe_present = list()
-var/list/martial_probe_verified = list()
+var/list/martial_probe_present
+var/list/martial_probe_verified
 
 /mob/living/human/martial_probe/martial_company_present(mob/living/human/other)
 	return other in martial_probe_present
@@ -68,6 +68,10 @@ var/list/martial_probe_verified = list()
 	H.water = 400
 
 /proc/martial_probe_run()
+	// Set here, not in the global initialiser, which is at the compiler size limit.
+	martial_probe_known = list()
+	martial_probe_present = list()
+	martial_probe_verified = list()
 	config = new
 	config.webhook_can_fire = FALSE
 	makeDatumRefLists()
