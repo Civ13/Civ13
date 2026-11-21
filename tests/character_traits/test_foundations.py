@@ -256,5 +256,49 @@ class TraitFoundations(unittest.TestCase):
             self.assertIn(needle, sight)
         self.assertIn('update_sight_fog()', read(LIFE))
 
+class RestedHungerMultiplier(unittest.TestCase):
+    def test_food_and_water_match_original(self):
+        # Translate only these arithmetic statements; this does not execute BYOND.
+        life = read(LIFE)
+        start = life.index('\t\tfood_m *= trait_food_mult()')
+        end = life.index('\n\t\tif (orc)', start)
+        current = life[start:end]
+        original = ('\t\tfood_m *= trait_food_mult()\n'
+                    '\t\tfood_m *= home_rest_hunger_mult()\n'
+                    '\t\twater_m *= home_rest_hunger_mult()')
+        self.assertIn('if (has_hunger_and_thirst && (map.civilizations || map.nomads || map.has_hunger))', life[:start])
+
+        def project(fragment):
+            lines = fragment.splitlines()
+            pattern = (r'(?:var/)?(?:food_m|water_m|rest_hunger_mult)\s*(?:=|\*=)\s*'
+                       r'(?:trait_food_mult\(\)|home_rest_hunger_mult\(\)|rest_hunger_mult)')
+            for line in lines:
+                self.assertRegex(line.strip(), '^' + pattern + '$')
+            return compile('\n'.join(line.strip().removeprefix('var/') for line in lines), '<projection>', 'exec')
+
+        before, after = project(original), project(current)
+        mutant = project(current.replace('water_m *= rest_hunger_mult', 'food_m *= rest_hunger_mult'))
+        detected = False
+        for enabled in (False, True):
+            for trait in (0.8, 1, 1.4):
+                for rested in (0.85, 1):
+                    def run(program):
+                        calls = []
+                        def multiplier():
+                            calls.append(1)
+                            return rested
+                        env = {'food_m': 2, 'water_m': 3, 'trait_food_mult': lambda: trait,
+                               'home_rest_hunger_mult': multiplier}
+                        if enabled:
+                            exec(program, env)
+                        return (env['food_m'], env['water_m']), len(calls)
+                    old_values, old_calls = run(before)
+                    new_values, new_calls = run(after)
+                    self.assertEqual(new_values, old_values)
+                    self.assertEqual((old_calls, new_calls), (2, 1) if enabled else (0, 0))
+                    detected |= run(mutant)[0] != new_values
+        self.assertTrue(detected, 'changing the water multiplier must be detected')
+
+
 if __name__ == '__main__':
     unittest.main()

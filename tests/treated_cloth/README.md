@@ -17,5 +17,7 @@ It checks the following:
 - **Pitch:** too little pitch coats nothing, an interrupted coating or one during a world save uses nothing, and 30 units of pitch coat five sheets of cloth into tarred canvas. Harm intent coats nothing.
 - **Oil:** linseed oil makes oilcloth at one sheet per five units; water makes nothing.
 - **Wax:** a cake of beeswax waxes up to three sheets, from either side, and is used up.
+- **Latex:** latex without sulphur in the other hand cures nothing; with sulphur, one lump cures five sheets into rubberised cloth.
+- **Rain:** a poncho sewn from rubberised cloth sheds more rain; one of plain cloth is unchanged.
 - **Other cloth:** silk is not oiled.
-- **Material:** all three are materials, and oilcloth has its pile sprites.
+- **Material:** all four are materials, and oilcloth has its pile sprites.

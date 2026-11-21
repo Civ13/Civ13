@@ -280,6 +280,8 @@ class NationMotions:
                 self._propose(nation, json.dumps(subject), now)
         elif kind == 'office':
             self.fill_office(nation, subject, now)
+        elif kind == 'treaty':
+            self.treaty_apply(nation, subject, now)
 
     def fail(self, nation, motion, kind, subject):
         self.close_motion(motion)

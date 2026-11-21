@@ -39,11 +39,13 @@ from tools.transfer_storage.nation_motions import CITIZENS_MAX, WEALTH_MAX, Nati
 from tools.transfer_storage.nation_succession import NationSuccession
 from tools.transfer_storage.nation_revolt import NationRevolt
 from tools.transfer_storage.nation_offices import OFFICES, NationOffices
+from tools.transfer_storage.nation_treaties import TREATY_KINDS, NationTreaties
 from tools.transfer_storage.nation_staff import FROZEN_OPS, STAFF_ACTS, STAFF_REASON_MAX, NationStaff
 from tools.transfer_storage.region import account_key_valid, faction_id_valid
 
 NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency', 'govern', 'stay', 'era', 'ballot',
-              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow', 'staff', 'appoint', 'dismiss')
+              'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow', 'staff',
+              'appoint', 'dismiss', 'treaty')
 NATION_NAME_MAX = 40
 # Member factions allowed by assembly tier: none, meeting ground, assembly
 # hall, parliament.
@@ -134,6 +136,9 @@ def nation_request_valid(r):
             text_valid(r.get('pname'), PERSON_NAME_MAX) and faction_id_valid(r.get('pfaction'))
     if op == 'dismiss':
         return r.get('office') in OFFICES
+    if op == 'treaty':
+        return type(r.get('other')) is str and 0 < len(r['other']) <= 16 and r.get('treaty') in TREATY_KINDS \
+            and r.get('act') in ('agree', 'renounce')
     if op == 'revolt':
         return government_proposal_valid(r) and text_valid(r.get('sname'), PERSON_NAME_MAX)
     if op == 'sign':
@@ -187,7 +192,7 @@ def faction_land(faction):
     return faction[4:].partition(':')[0]
 
 
-class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, NationOffices):
+class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, NationOffices, NationTreaties):
     def __init__(self, db):
         self.db = db
         db.execute('''CREATE TABLE IF NOT EXISTS nation(
@@ -223,6 +228,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, Nation
         self._revolt_tables()
         self._staff_tables()
         self._office_tables()
+        self._treaty_tables()
         db.execute("CREATE TABLE IF NOT EXISTS nation_seq(id INTEGER PRIMARY KEY CHECK (id = 1), next INTEGER NOT NULL)")
         db.execute('INSERT OR IGNORE INTO nation_seq VALUES (1, 1)')
 
@@ -305,7 +311,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, Nation
                 'leaving': dict(self.db.execute('SELECT faction, at FROM nation_leaving WHERE nation = ?', (nid,))),
                 'motions': self.motions_snapshot(nid), 'term_ends': self.term_ends(nid),
                 'revolt': self.revolt_snapshot(nid), 'frozen': self.frozen(nid), 'staff_log': self.staff_log(nid),
-                'offices': self.offices(nid),
+                'offices': self.offices(nid), 'treaties': self.treaties_snapshot(nid),
                 'census': {f: list(self.census(f)) for f in self.members(nid)},
                 'eras': dict(self.db.execute('''SELECT e.faction, e.age FROM nation_era e
                     JOIN nation_member m ON m.faction = e.faction WHERE m.nation = ?''', (nid,)))}
@@ -345,6 +351,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, Nation
         self.motions_due(int(now))
         self.revolts_due(int(now))
         self.offices_due()
+        self.treaties_due(int(now))
 
     # -- deciding --------------------------------------------------------------
 
@@ -401,6 +408,8 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, Nation
             return self.faith(nation, r, now)
         if op == 'claim':
             return self.claim(nation, r, now)
+        if op == 'treaty':
+            return self.treaty_request(nation, r, now)
         if op == 'appoint':
             return self.appoint(nation, r, now)
         if op == 'dismiss':

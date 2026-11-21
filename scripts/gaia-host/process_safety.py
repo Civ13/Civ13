@@ -24,6 +24,7 @@ from pathlib import Path
 # DreamDaemon: dd.exe (Windows console daemon), dreamdaemon.exe (GUI), DreamDaemon (Linux).
 WORLD_IMAGES = ('dd.exe', 'dreamdaemon.exe', 'dreamdaemon')
 PYTHON_IMAGES = ('python*', 'pythonw*', 'py.exe')
+NODE_IMAGES = ('node.exe', 'node')
 # A process created up to this long after the moment it must predate still counts
 # (file timestamps and process times come from different clocks and resolutions).
 BORN_SLACK_SECONDS = 2.0
@@ -71,6 +72,11 @@ def world_expect(config=None, born_before=None):
 
 def python_expect(born_before=None):
     return Expect(PYTHON_IMAGES, born_before, 'Python')
+
+
+def node_expect(born_before=None):
+    """Node.js, for the chat translator service (tools/edge-translator)."""
+    return Expect(NODE_IMAGES, born_before, 'Node.js')
 
 
 # -- Windows ------------------------------------------------------------------
