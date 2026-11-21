@@ -38,6 +38,9 @@ Val asked (2026-11-19) that admin notes and similar systems be visible on every 
 `<group root>/coordinator.sqlite` (tools/transfer_storage/records.py report/export): a summary, one player's records,
 a search (key, text or IP), each region's copy of its old notes/bans/memos files and its uncollected journal.
 Staff add and remove records in game only. Admin tooling: no changelog line or wiki page.
+A player lookup (`--ckey`) starts with that account's lifetime points and character slots
+(records.py account_summary, docs/character-slots.md); `shard_group.py accounts --ckey K` answers the
+summary alone as JSON (`points`, `spent`, `balance`, `claimed`, `slots`).
 
 <!-- 2026-11-17: Civilizationbot log level -->
 Val asked (2026-11-17) for the bot's logger level in the launcher, info by default instead of debug. The
