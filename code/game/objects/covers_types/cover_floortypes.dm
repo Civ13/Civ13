@@ -994,3 +994,38 @@
 /obj/covers/stone/slab/decorative/terracotta/inset
 	name = "patterned terracotta inset"
 	icon_state = "terracotta_inset"
+
+// The same sill and border cut for the dark cobblestone floors.
+/obj/covers/cobblestone/sill/dark
+	name = "dark cobble sill"
+	icon = 'icons/turf/flooring/cobble_trim_dark.dmi'
+	icon_state = "sill_center"
+
+/obj/covers/cobblestone/sill/dark/cap_left
+	name = "left dark cobble sill cap"
+	icon_state = "sill_cap_left"
+
+/obj/covers/cobblestone/sill/dark/cap_right
+	name = "right dark cobble sill cap"
+	icon_state = "sill_cap_right"
+
+/obj/covers/cobblestone/trim/dark
+	name = "dark cobble border"
+	icon = 'icons/turf/flooring/cobble_trim_dark.dmi'
+	icon_state = "trim_straight"
+
+/obj/covers/cobblestone/trim/dark/inside
+	name = "inside dark cobble corner"
+	icon_state = "trim_corner_inside"
+
+/obj/covers/cobblestone/trim/dark/outside
+	name = "outside dark cobble corner"
+	icon_state = "trim_corner_outside"
+
+/obj/covers/cobblestone/trim/dark/stop
+	name = "dark cobble border stop"
+	icon_state = "trim_stop"
+
+/obj/covers/cobblestone/trim/dark/stop/reverse
+	name = "reverse dark cobble border stop"
+	icon_state = "trim_stop_reverse"

@@ -13,6 +13,11 @@ PALETTES = {
         "trim_straight": 4, "trim_corner_inside": 4,
         "trim_corner_outside": 4, "trim_stop": 4, "trim_stop_reverse": 4,
     },
+    "cobble_trim_dark.dmi": {
+        "sill_center": 4, "sill_cap_left": 4, "sill_cap_right": 4,
+        "trim_straight": 4, "trim_corner_inside": 4,
+        "trim_corner_outside": 4, "trim_stop": 4, "trim_stop_reverse": 4,
+    },
     "terracotta.dmi": {
         "terracotta": 1, "terracotta_edge": 4, "terracotta_inner": 4,
         "terracotta_outer": 4, "terracotta_inset": 1,
@@ -65,7 +70,7 @@ def main():
     for name, expected in PALETTES.items():
         assert dmi_states(DMI_DIR / name) == expected, name
         assert found[name] == expected.keys(), name
-    print("13 mapper floor covers match both 32px DMI sheets; frame and direction counts passed.")
+    print("21 mapper floor covers match the three 32px DMI sheets; frame and direction counts passed.")
 
 
 if __name__ == "__main__":
