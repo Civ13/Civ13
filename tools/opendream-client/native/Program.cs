@@ -24,6 +24,7 @@ public static class Program {
         output.WriteLine("      Join the verified local host; requires --root.");
         output.WriteLine("  --console                      Use the text menu instead of the launcher window.");
         output.WriteLine("  --bot status|check-update|start|stop|restart|update|repair [--root <absolute folder>]");
+        output.WriteLine("  --wmi check  (experimental: is Windows' WMI service answering? read-only, lists the repair steps)");
         output.WriteLine("  --bot log-level [debug|info|notice|warning|error] [--root <absolute folder>]  (show or set; info by default, used from the next start)");
         output.WriteLine("      Manage host.json's Civilizationbot without the window; start leaves it running.");
         output.WriteLine("  --render-tabs <launcher data folder> <output folder>");
@@ -79,6 +80,7 @@ public static class Program {
             if (!OperatingSystem.IsWindows() || !Environment.Is64BitOperatingSystem)
                 throw new PlatformNotSupportedException("Civ13 requires Windows x64.");
             if (args.Length > 0 && args[0] == "--apply-update") return ApplyUpdate(args);
+            if (args.Length > 0 && args[0] == WmiHealth.Option) return WmiHealth.Command(args, Console.Out);
             if (args.Length > 0 && args[0] == BotCommand.Option) {
                 if (args.Length > 1 && args[1] == BotCommand.LogLevelAction) {
                     var (level, levelRoot) = BotCommand.ParseLogLevel(args);
@@ -178,7 +180,7 @@ public static class Program {
             }
         } catch (Exception e) {
             Console.Error.WriteLine("Civ13: " + e.Message);
-            if (!(args.Length > 0 && args[0] is "--apply-update" or BotCommand.Option) && !Console.IsInputRedirected) { Console.WriteLine("Press Enter to close."); Console.ReadLine(); }
+            if (!(args.Length > 0 && args[0] is "--apply-update" or BotCommand.Option or WmiHealth.Option) && !Console.IsInputRedirected) { Console.WriteLine("Press Enter to close."); Console.ReadLine(); }
             return 1;
         }
     }
