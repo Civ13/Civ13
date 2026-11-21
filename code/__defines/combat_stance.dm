@@ -33,5 +33,6 @@
 #define MARTIAL_REFLEX_IDLE 20
 #define MARTIAL_REFLEX_COOLDOWN 20
 #define MARTIAL_REFLEX_STAMINA 4
-// Restrain stance (code/game/mob/combat_restrain.dm): time to bind legs.
-#define COMBAT_RESTRAIN_LEGS_TIME 20
+// Restrain stance (code/game/mob/combat_restrain.dm): time to bind the legs,
+// gag or blindfold.
+#define COMBAT_RESTRAIN_TIE_TIME 20
