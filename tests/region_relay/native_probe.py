@@ -26,7 +26,7 @@ import uuid
 ROOT = Path(__file__).resolve().parents[2]
 BEGIN, END = "// BEGIN_SELECTED_MAP", "// END_SELECTED_MAP"
 RUNTIME = re.compile(r"runtime error: (.*)\nproc name: (.*)\n\s*source file: ([^,\n]+),(\d+)")
-REQUIRED_CHECKS = ("relay_off_links_direct", "relay_settings", "route_and_lookup", "refusals")
+REQUIRED_CHECKS = ("relay_off_links_direct", "relay_settings", "route_and_lookup", "route_ip", "refusals")
 
 
 def generate(prefix):

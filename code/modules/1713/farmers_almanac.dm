@@ -6,7 +6,9 @@
 // (climate_normals.dm); tests/farmers_almanac checks it stays aligned.
 
 // climate = list(season = list(wet-weather icon, storm icon))
-var/global/list/farmers_almanac_climates = list(
+var/global/list/farmers_almanac_climates = farmers_almanac_climates_table()
+/proc/farmers_almanac_climates_table()
+	return list(
 	"tundra" = list(
 		"WINTER" = list("snow2", "snow_storm"),
 		"SPRING" = list("snow2", "snow_storm"),

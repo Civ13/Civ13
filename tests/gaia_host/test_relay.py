@@ -93,6 +93,41 @@ class RoutesTest(unittest.TestCase):
         self.assertEqual(self.routes.take('::ffff:203.0.113.5'), 1716)
 
 
+class RelayedRegionSendsOnTest(unittest.TestCase):
+    """A region behind the relay sees its players from loopback. Sending one on must
+    route the player's own address: routing the host's public address instead left
+    them unrouted (TDM Barracks to Battle behind the gateway, 2026-11-21)."""
+    SOURCE = Path(__file__).resolve().parents[2] / 'code' / 'modules' / 'persistence' / 'region_relay.dm'
+
+    def proc_body(self, name):
+        text = self.SOURCE.read_text(encoding='utf-8')
+        start = text.index(name)
+        end = text.find('\n/', start + 1)
+        return text[start:end]
+
+    def test_routing_the_hosts_public_address_strands_the_player(self):
+        routes = relay.Routes([1715, 1716], Clock())
+        routes.set('85.220.24.225', 'sveit', 1716)  # the gateway sent them to the Barracks
+        self.assertEqual(routes.take('85.220.24.225'), 1716)
+        routes.set('93.184.216.34', 'sveit', 1715)  # the old Barracks named the host's own address
+        self.assertIsNone(routes.take('85.220.24.225'))
+        routes.set('85.220.24.225', 'sveit', 1716)
+        routes.take('85.220.24.225')
+        routes.set('127.0.0.1', 'sveit', 1715)  # loopback, as the Barracks now sends it
+        self.assertEqual(routes.take('85.220.24.225'), 1715)
+
+    def test_send_player_keeps_loopback_and_prefers_the_relayed_address(self):
+        route_ip = self.proc_body('/proc/region_relay_route_ip(')
+        self.assertIn('!region_relay_ip_loopback(public)', route_ip)
+        send = self.proc_body('/datum/shard_group/proc/send_player(')
+        self.assertIn('region_relay_route_ip(public, world.internet_address)', send)
+        self.assertNotIn('public = world.internet_address', send)
+        address = self.proc_body('/client/proc/public_address(')
+        self.assertIn('region_relay_ip_loopback(address)', address)
+        login = self.proc_body('/client/New(TopicData)')
+        self.assertIn('region_relay_ip_loopback(address)', login)
+
+
 class ControlTest(unittest.TestCase):
     def setUp(self):
         self.logged = []

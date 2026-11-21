@@ -133,6 +133,7 @@ def tool_action(handler, kind, completed, anchored=True, source=SOURCE):
     furnace.parent = lambda: events.append('parent')
     furnace.accept_crucible = lambda item, actor: False  # crucible_steel.dm: not a crucible
     furnace.accept_aging_steel = lambda item, actor: False  # alloy_steels.dm: not unaged maraging steel
+    furnace.accept_alumina = lambda item, actor: False  # composite_armour.dm: not alumina
     furnace.handle_structure_tool = lambda item, actor: p.run(
         '/obj/structure/furnace/proc/handle_structure_tool', furnace, I=item, H=actor)
     actor = projection.Record(type='/mob/living/human', a_intent='help')

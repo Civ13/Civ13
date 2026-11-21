@@ -30,7 +30,9 @@ var/global/list/chat_translate_languages = list(
 
 // Common English chat words. A line in plain letters where a quarter of the
 // words are on this list is English and never reaches the translator.
-var/global/list/chat_translate_english_words = list(
+var/global/list/chat_translate_english_words = chat_translate_english_words_table()
+/proc/chat_translate_english_words_table()
+	return list(
 	"the", "a", "an", "and", "or", "but", "is", "are", "was", "were", "be", "been", "am",
 	"i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them",
 	"my", "your", "his", "its", "our", "their", "this", "that", "these", "those",

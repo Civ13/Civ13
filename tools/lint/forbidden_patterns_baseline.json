@@ -325,6 +325,7 @@
       "code/modules/craft/deck_berth.dm": 1,
       "code/modules/divine/arcane_spirits.dm": 2,
       "code/modules/divine/covenant.dm": 3,
+      "code/modules/divine/heteromorph_breath.dm": 1,
       "code/modules/divine/heteromorph_form.dm": 1,
       "code/modules/dmm_suite/reader.dm": 1,
       "code/modules/ecology/ecology_spawning.dm": 1,
@@ -490,6 +491,8 @@
       "code/datums/observation/observation.dm": 1,
       "code/modules/submarine/submarine_datum.dm": 1
     },
-    "merge_marker": {}
+    "merge_marker": {
+      "civ13.dme": 2
+    }
   }
 }

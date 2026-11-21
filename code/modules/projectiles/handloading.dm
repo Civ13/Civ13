@@ -311,9 +311,13 @@
 			break
 		if (C.spent_brass_class() != casing_class)
 			continue
-		qdel(C)
-		amount++
-		taken++
+		var/n = min(C.heap_count, max_amount - amount)
+		if (n >= C.heap_count)
+			qdel(C)
+		else
+			C.heap_add(-n)
+		amount += n
+		taken += n
 	if (taken)
 		update_icon()
 		update_strings()
@@ -354,9 +358,10 @@
 	if (!casing_class || loc != user)
 		return ..()
 	var/path = handload_casing_path(casing_class)
+	var/held = heap_count
 	user.drop_from_inventory(src)
 	qdel(src)
-	var/obj/item/stack/ammopart/casing/S = new path(get_turf(user), 1)
+	var/obj/item/stack/ammopart/casing/S = new path(get_turf(user), held)
 	user.put_in_hands(S)
 	to_chat(user, "You knock the spent primer out. The brass can be loaded again.")
 

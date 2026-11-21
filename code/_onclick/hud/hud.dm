@@ -3,18 +3,6 @@
 	Uses the same visual objects for all players.
 */
 var/datum/global_hud/global_hud = new()
-var/list/global_huds = list(
-		global_hud.druggy,
-		global_hud.blurry,
-		global_hud.vimpaired,
-		global_hud.darkMask,
-		global_hud.nvg,
-		global_hud.thermal,
-		global_hud.gasmask,
-		global_hud.fov,
-		global_hud.noise,
-		global_hud.fishbed,
-		)
 /*
 /datum/hud/var/obj/screen/grab_intent
 /datum/hud/var/obj/screen/hurt_intent

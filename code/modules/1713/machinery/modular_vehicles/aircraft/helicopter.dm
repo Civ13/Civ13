@@ -334,7 +334,9 @@
 // 7x7 square. Row 1 is the nose. The pilot sits front right with a co-pilot
 // beside them; five cabin seats, the two by the open doors for gunners; the
 // engine and tank sit under the rotor mast.
-var/global/list/aircraft_huey_layout = list(
+var/global/list/aircraft_huey_layout = aircraft_huey_layout_table()
+/proc/aircraft_huey_layout_table()
+	return list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/huey/nose/right),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/huey/nose/center),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/huey/nose/left),
