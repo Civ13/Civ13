@@ -477,9 +477,14 @@
 		M.emote(pick("twitch", "drool", "moan", "giggle"))
 	M.add_chemical_effect(CE_PULSE, -2)
 	M.add_chemical_effect(CE_STABLE)
-	M.add_chemical_effect(CE_PAINKILLER, 25)
+	M.drug_painkiller("cannabis", 25)
 	M.adjustBrainLoss(-0.1 * removed)
-	M.adjust_mood(removed*20, "cannabis")
+	M.drug_dose("cannabis", 0.03, 0.1)
+	M.drug_mood("cannabis", removed*20, "cannabis")
+	// A strong dose brings panic instead of calm.
+	if (dose > 20 && prob(4))
+		M.hallucination = max(M.hallucination, 2)
+		to_chat(M, "<span class='warning'>Your heart races and you feel sure something is wrong.</span>")
 
 /datum/reagent/serotrotium
 	name = "Serotrotium"
@@ -587,7 +592,8 @@
 	..()
 	M.add_chemical_effect(CE_PULSE, TRUE)
 	M.add_chemical_effect(CE_SPEEDBOOST, TRUE)
-	M.adjust_mood(removed*16, "nicotine")
+	M.drug_dose("nicotine", 0.06, 0.1)
+	M.drug_mood("nicotine", removed*16, "nicotine")
 
 
 /datum/reagent/toxin/bleach

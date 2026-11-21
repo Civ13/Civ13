@@ -1879,6 +1879,7 @@
 #include "code\modules\reagents\Chemistry-Readme.dm"
 #include "code\modules\reagents\food_toxin_log.dm"
 #include "code\modules\reagents\Chemistry-Reagents.dm"
+#include "code\modules\reagents\drug_classes.dm"
 #include "code\modules\reagents\reagent_pollution.dm"
 #include "code\modules\reagents\Chemistry-Recipes.dm"
 #include "code\modules\reagents\reagent_containers.dm"
