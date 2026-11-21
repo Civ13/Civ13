@@ -384,3 +384,89 @@ var/global/list/language_sound_changes = list(
 	if (language_same(canonical_language(default_language), parent) && knows_language(D))
 		default_language = D
 	to_chat(src, SPAN_NOTICE("Your people's speech is now called <b>[D.name]</b>. It is your mother tongue[default_language == D ? " and the language you speak by default" : ""]. You still know [parent.name][D.key ? ". To pick [D.name] yourself, start a line with [get_language_prefix()][D.key]" : ""]."))
+
+// ------------------------------------------------------------
+// Language families in Check Known Languages
+// ------------------------------------------------------------
+
+// A root language and its daughters on this world, each parent before its
+// own daughters. depths is filled by name: 0 for the root, 1 for its
+// daughters and so on.
+/proc/language_family_members(datum/language/root, list/depths)
+	var/list/members = list(root)
+	depths[root.name] = 0
+	language_family_branch(root, root, members, depths, 1)
+	return members
+
+/proc/language_family_branch(datum/language/root, datum/language/parent, list/members, list/depths, depth)
+	if (depth > 6)
+		return
+	var/list/records = language_lineage_part("daughters")
+	for (var/name in records)
+		var/list/record = records[name]
+		if (!islist(record) || record["root"] != root.name || record["parent"] != parent.name)
+			continue
+		var/datum/language/daughter/D = all_languages[name]
+		if (!is_daughter_language(D) || (D.flags & NONGLOBAL) || (D in members))
+			continue
+		members += D
+		depths[D.name] = depth
+		language_family_branch(root, D, members, depths, depth + 1)
+
+// One entry for each family the viewer has a language in: the root, the
+// daughters that grew out of it here, which of them are the viewer's own, and
+// how much the members follow of each other. Every string is escaped like the
+// rest of known_languages_ui_data(). Kinship is rounded to the nearest 5; drift
+// is never sent.
+/mob/proc/language_family_rows()
+	var/list/families = list()
+	if (!map || !length(language_lineage_part("daughters")))
+		return families
+	var/mob/living/human/H = ishuman(src) ? src : null
+	var/datum/language/mother = H ? H.mother_tongue() : null
+	var/list/known = list()
+	for (var/datum/language/L in languages)
+		if (L.flags & NONGLOBAL)
+			continue
+		known |= canonical_language(L)
+	var/list/learning = list()
+	if (H)
+		for (var/lname in H.partial_languages)
+			var/datum/language/L = all_languages[lname]
+			if (language_learnable(L) && !knows_language(L) && H.language_score(L) >= 1)
+				learning |= L
+	var/list/roots = list()
+	for (var/datum/language/L in known + learning)
+		var/datum/language/root = language_root(L)
+		if (!root || (root.flags & NONGLOBAL) || (root in roots))
+			continue
+		roots += root
+		var/list/depths = list()
+		var/list/members = language_family_members(root, depths)
+		if (members.len < 2)
+			continue
+		var/list/member_rows = list()
+		for (var/datum/language/M in members)
+			var/list/row = list("name" = html_encode(M.name), "depth" = depths[M.name], "parent" = "", "nation" = "", "era" = "")
+			if (is_daughter_language(M))
+				var/datum/language/daughter/D = M
+				row["parent"] = html_encode(D.parent_name)
+				row["nation"] = html_encode(D.nation)
+				row["era"] = html_encode(ordinal_age_name(D.born_era))
+			row["known"] = (M in known) ? 1 : 0
+			row["learning"] = (M in learning) ? 1 : 0
+			row["mother"] = (mother && language_same(M, mother)) ? 1 : 0
+			member_rows += list(row)
+		// In a large family only the pairs with one of the viewer's own languages.
+		var/list/links = list()
+		for (var/i in 1 to members.len - 1)
+			for (var/j in i + 1 to members.len)
+				var/datum/language/A = members[i]
+				var/datum/language/B = members[j]
+				if (members.len > 4 && !((A in known) || (A in learning) || (B in known) || (B in learning)))
+					continue
+				var/percent = round(min(language_kinship(A, B), language_kinship(B, A)), 5)
+				if (percent > 0)
+					links += list(list("a" = html_encode(A.name), "b" = html_encode(B.name), "percent" = min(100, percent)))
+		families += list(list("root" = html_encode(root.name), "members" = member_rows, "links" = links))
+	return families

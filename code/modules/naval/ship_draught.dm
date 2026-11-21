@@ -63,6 +63,8 @@ var/global/list/ship_draught_pieces = list(
 	"L" = list("name" = "torpedo tube", "path" = /obj/structure/torpedo_tube, "cost" = list("steel" = 25), "load" = 0.5, "turns" = TRUE, "fires" = TRUE),
 	"V" = list("name" = "steel window", "path" = /obj/structure/window_frame/metal, "cost" = list("steel" = 5), "load" = 0.1),
 	"I" = list("name" = "steel door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel, "cost" = list("steel" = 15), "load" = 0.5, "turns" = TRUE),
+	// A mast with a crow's nest at her masthead (hull_masts.dm).
+	"N" = list("name" = "mast with a crow's nest", "path" = /obj/structure/vehicleparts/movement/sail/crows_nest, "cost" = list("wood" = 23), "load" = 0.5, "drive" = "sail"),
 	// A gate in her gunwale on an edge tile, facing out (hull_gangway.dm).
 	"Y" = list("name" = "gangway", "path" = /obj/structure/railing/built/gunwale/gangway, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE),
 )
@@ -127,6 +129,10 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			.++
 
 // The tiles that carry a helm, as "x,y" keys.
+// Her masts, with or without a crow's nest.
+/datum/ship_draught/proc/mast_count()
+	return piece_count("M") + piece_count("N")
+
 /datum/ship_draught/proc/helms()
 	. = list()
 	for (var/key in cells)
@@ -212,8 +218,8 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		return
 	for (var/key in cells)
 		var/list/C = cells[key]
-		if (C[2] == "W" || C[2] == "D" || C[2] == "G")
-			continue
+		if (C[2] in list("W", "D", "G", "V", "I"))
+			continue // a wall, door or window fills the tile
 		var/list/xy = splittext(key, ",")
 		var/x = text2num(xy[1])
 		var/y = text2num(xy[2])
@@ -268,7 +274,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 // The best telegraph step her masts make on a reach, her benches manned, and
 // both together (VESSEL_SPEED_SLOW when nothing makes more: she can be poled).
 /datum/ship_draught/proc/sail_step()
-	var/push = piece_count("M") * CRAFT_SAIL_THRUST
+	var/push = mast_count() * CRAFT_SAIL_THRUST
 	return push / mass() >= CRAFT_THRUST_HALF ? VESSEL_SPEED_HALF : VESSEL_SPEED_SLOW
 
 /datum/ship_draught/proc/oar_step()
@@ -299,7 +305,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 
 /datum/ship_draught/proc/best_step()
 	var/oars = piece_count("R") * CRAFT_OAR_THRUST + engine_push()
-	var/all = oars + piece_count("M") * CRAFT_SAIL_THRUST
+	var/all = oars + mast_count() * CRAFT_SAIL_THRUST
 	if (oars / mass() >= CRAFT_THRUST_FULL)
 		return VESSEL_SPEED_FULL
 	return all / mass() >= CRAFT_THRUST_HALF ? VESSEL_SPEED_HALF : VESSEL_SPEED_SLOW
@@ -307,7 +313,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 // A ship with masts wants weight low in her (hull_load.dm): TRUE when her
 // fittings alone are not enough, so she sails crank until she is ballasted.
 /datum/ship_draught/proc/wants_ballast()
-	var/masts = piece_count("M")
+	var/masts = mast_count()
 	if (size_class() != HULL_CLASS_SHIP || !masts)
 		return 0
 	return max(0, round(cells.len * DRAUGHT_BALLAST_PER_MAST * masts - load(), 0.1))
@@ -327,7 +333,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 	if (!cells.len)
 		return jointext(lines, "<br>")
 	lines += "Building her takes [costs_text()]."
-	var/masts = piece_count("M")
+	var/masts = mast_count()
 	var/benches = piece_count("R")
 	var/engines = engine_push()
 	var/list/drives = list()
@@ -354,7 +360,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 // what summary_text() says, nothing reckoned twice.
 /datum/ship_draught/proc/summary_data()
 	var/upper = upper_tiles()
-	var/masts = piece_count("M")
+	var/masts = mast_count()
 	var/benches = piece_count("R")
 	var/list/cost_parts = list()
 	var/list/drives = list()
@@ -456,6 +462,10 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 // steers her: any other tiller on her deck is left off, as one sheet shows
 // one helm.
 /proc/ship_draught_piece_on(turf/T, obj/structure/hull_tiller/helm)
+	// A mast with a crow's nest fitted by hand draws as one.
+	for (var/obj/structure/vehicleparts/movement/sail/S in T)
+		if (S.crows_nest)
+			return list("N", S.dir)
 	for (var/key in ship_draught_pieces)
 		var/list/P = ship_draught_pieces[key]
 		var/path = P["path"]

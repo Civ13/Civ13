@@ -329,6 +329,9 @@ button.rs-row-main { cursor: pointer; }
 .kit-pill-progress { color: #f8d2a4; background: #43301a; border-color: #d98f3d; }
 .kit-pill-muted { color: var(--civ-muted); }
 .kit-card { padding: 8px 10px; margin-bottom: 8px; background: #2a231b; border: 1px solid var(--civ-line-soft); border-radius: 4px; }
+.lang-tree, .lang-links { list-style: none; margin: 6px 0 0; padding: 0; }
+.lang-tree li { padding: 2px 0; } .lang-branch, .lang-origin { color: var(--civ-dim); } .lang-origin { font-size: 13px; }
+.lang-links { padding-top: 6px; border-top: 1px solid var(--civ-line-soft); font-size: 13px; color: var(--civ-muted); } .lang-links li { padding: 1px 0; } .lang-links strong { color: var(--civ-text); font-weight: normal; }
 .kit-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
 .kit-card-actions { flex: none; }
 .kit-quote { margin: 6px 0; padding: 4px 9px; font-style: italic; background: var(--civ-inset); border-left: 3px solid var(--civ-line); }
