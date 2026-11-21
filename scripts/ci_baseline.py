@@ -2319,7 +2319,9 @@ SUITES = {
         'shared_paths': ('code/game/gameticker.dm', 'code/modules/persistence/functions.dm',
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/carbon/human/nomads_spawn.dm',
-            'code/game/mob/living/carbon/human/human_life.dm')},
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/objects/structures.dm', 'code/modules/chat/chat.dm',
+            'code/modules/client/client_procs.dm')},
     # Fishing grounds source contracts; the native probe beside them runs
     # through tests/ecology_spawning/run_linux.py.
     'fishing_grounds': {'files': ('tests/fishing_grounds/test_source.py',), 'paths': (
