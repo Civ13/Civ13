@@ -2509,6 +2509,8 @@ RECIPE: /material/wood/,wooden line shaft,/obj/structure/workshop_machine/transm
 RECIPE: /material/wood/,shaft clutch,/obj/structure/workshop_machine/transmission/line_shaft/clutch,5,100,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,gear box,/obj/structure/workshop_machine/transmission/gear_box,8,150,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,sash saw,/obj/structure/workshop_machine/hopper/sash_saw,10,200,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/wood/,fulling stocks,/obj/structure/workshop_machine/hopper/fulling_stocks,10,200,1,1,economy & production,90,0,0,8,null
+RECIPE: /material/wood/,bark stamps,/obj/structure/workshop_machine/hopper/bark_stamps,8,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/wood/,counterweight drum,/obj/structure/workshop_machine/mover/counterweight,10,200,1,1,economy & production,90,0,0,8,null
 RECIPE: /material/iron/,iron line shaft,/obj/structure/workshop_machine/transmission/line_shaft/iron,3,80,1,1,economy & production,0,0,0,8,null
 RECIPE: /material/iron/,rope drive wheel,/obj/structure/workshop_machine/transmission/rope_drive,4,150,1,1,economy & production,0,0,0,8,null

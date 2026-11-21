@@ -35,7 +35,7 @@
 	if (istype(A, /obj/structure/simple_door))
 		// Doors with keypads, key slots or faction locks keep their own rules.
 		return !istype(A, /obj/structure/simple_door/key_door) || istype(A, /obj/structure/simple_door/key_door/anyone)
-	return istype(A, /obj/structure/castle_trapdoor) || istype(A, /obj/structure/castle_winch) || istype(A, /obj/structure/bell) || istype(A, /obj/structure/rock_drop) || istype(A, /obj/structure/workshop_machine/transmission/line_shaft/clutch) || istype(A, /obj/structure/workshop_machine/mover/counterweight) || istype(A, /obj/structure/mechanism_relay) || istype(A, /obj/item/circuit_shell/mechanism_port)
+	return istype(A, /obj/structure/castle_trapdoor) || istype(A, /obj/structure/castle_winch) || istype(A, /obj/structure/bell) || istype(A, /obj/structure/rock_drop) || istype(A, /obj/structure/workshop_machine/transmission/line_shaft/clutch) || istype(A, /obj/structure/workshop_machine/mover/counterweight) || istype(A, /obj/structure/mechanism_relay) || istype(A, /obj/item/circuit_shell/mechanism_port) || istype(A, /obj/structure/workshop_machine/hopper) || istype(A, /obj/structure/sluice_gate)
 
 // The first thing on T a cord can work, or null.
 /proc/mechanism_actuator_on(turf/T)
@@ -192,6 +192,14 @@
 	if (istype(A, /obj/item/circuit_shell/mechanism_port))
 		var/obj/item/circuit_shell/mechanism_port/P = A
 		return P.cord_pulled(state)
+	if (istype(A, /obj/structure/workshop_machine/hopper))
+		// Thrown over, a lever opens the hopper gate; thrown back, it shuts it.
+		var/obj/structure/workshop_machine/hopper/H = A
+		return H.set_gate(isnull(state) ? !H.gate_shut : !state)
+	if (istype(A, /obj/structure/sluice_gate))
+		// Thrown over, a lever draws the boards up; thrown back, it lowers them.
+		var/obj/structure/sluice_gate/G = A
+		return G.set_open(isnull(state) ? !G.open : state)
 	if (state == FALSE)
 		return FALSE // a lever thrown back neither rings nor drops
 	if (istype(A, /obj/structure/bell))
@@ -227,7 +235,7 @@
 				continue
 			choices["Tie a cord to [A.name] ([mechanism_offset_words(trigger, T)])"] = T
 	if (!choices.len)
-		to_chat(user, SPAN_WARNING("There is nothing within [MECHANISM_LINK_RANGE] tiles of \the [trigger] that a cord could work: a door, trapdoor, gate winch, bell, rock drop, shaft clutch, counterweight drum, relay or mechanism port."))
+		to_chat(user, SPAN_WARNING("There is nothing within [MECHANISM_LINK_RANGE] tiles of \the [trigger] that a cord could work: a door, trapdoor, gate winch, bell, rock drop, shaft clutch, counterweight drum, relay, mechanism port, hopper gate or sluice gate."))
 		return TRUE
 	var/choice = player_input(user, "Tie or cut which cord on \the [trigger]?", "Cords", null, "anything", choices, TRUE)
 	var/turf/target = choice ? choices[choice] : null

@@ -278,6 +278,14 @@
 		return TRUE
 	return ..()
 
+// Bark stamps (hopper_machines.dm) crush one piece into two of these: each
+// soaks out as much tannin as a whole piece.
+/obj/item/stack/bark/crushed
+	name = "tanbark"
+	desc = "Tree bark crushed under the stamps of a bark mill. Use an open liquid container with 10 water to extract 10 tannin from one handful. For a nearby stationary vessel, hold the tanbark and click the vessel."
+	icon_state = "bark_crushed"
+	singular_name = "handful of tanbark"
+
 /obj/item/stack/bark/resolve_attackby(atom/A, mob/user, icon_x, icon_y)
 	if (isobj(A) && A.reagents)
 		return attackby(A, user)
