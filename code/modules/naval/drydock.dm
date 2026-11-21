@@ -341,7 +341,7 @@ var/global/list/dock_basin_turfs = list()
 			busy = TRUE
 			H.visible_message(SPAN_NOTICE("[H] starts pumping out the dock."), SPAN_NOTICE("You start working the dock pump. The basin holds [basin.len] tile\s of water."))
 			while (TRUE)
-				if (!do_after(H, DRYDOCK_PUMP_TIME, src) || QDELETED(src) || pump_refusal())
+				if (!do_after(H, yard_time(src, DRYDOCK_PUMP_TIME), src) || QDELETED(src) || pump_refusal())
 					break
 				pumped += pump_rate()
 				if (pumped >= basin.len)
@@ -354,7 +354,7 @@ var/global/list/dock_basin_turfs = list()
 		if ("flood")
 			busy = TRUE
 			H.visible_message(SPAN_NOTICE("[H] opens the sluices and the sea pours into the dock."))
-			var/ok = do_after(H, DRYDOCK_SLUICE_TIME, src)
+			var/ok = do_after(H, yard_time(src, DRYDOCK_SLUICE_TIME), src)
 			busy = FALSE
 			if (ok && !QDELETED(src))
 				flood()

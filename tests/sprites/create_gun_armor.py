@@ -36,6 +36,13 @@ def grid(pal, x0, y0, rows):
 mir = lambda im: im.transpose(Image.FLIP_LEFT_RIGHT)
 
 
+# Side views: facing east the base body's near arm hangs at x 11..14 (rows 11..17)
+# with its hand at x 12..15 (rows 18..21), and the far hand shows at x 20 (rows
+# 18..20). Torso-only armor stays on the torso in front of the arm (x 15..19, one
+# pixel of outline at x 20 above the far hand) so the arm and both hands stay
+# visible; only the shoulder strap sits on the shoulder top at x 13..14, row 10.
+# West is the mirror. `--check` asserts this against icons/mob/human_races/r_human.dmi.
+
 # ---- proof cuirass: polished steel, leather straps
 PC={'O':(38,42,46),'D':(80,86,92),'M':(128,135,142),'L':(168,175,182),'H':(216,222,228),
     'B':(88,58,32),'b':(126,86,50),'X':(50,54,58),'G':(182,146,62)}
@@ -80,19 +87,18 @@ pc_n=grid(PC,10,10,[
 ".ODMMMMDDO.",
 "..OMMMMDO..",
 "...OOOOO..."])
-pc_e=grid(PC,12,10,[
-"..Bb.....",
-".ODBOO...",
-"ODMMLLO..",
-"OMMDLLHO.",
-"OMMDLLLHO",
-"OMMBLLLHO",
-"OMMDLXLHO",
-".OMDLLLHO",
-".OMDMLLO.",
-".ODDMMDO.",
-"..OMLLO..",
-"...OOO..."])
+pc_e=grid(PC,13,10,[
+"Bb......",
+"..OOOO..",
+"..OMLLO.",
+"..OMLLHO",
+"..OMLXHO",
+"..BMLLHO",
+"..OMLLHO",
+"..OMMLHO",
+"...OMLO.",
+"...OLLO.",
+"...OOOO."])
 
 # ---- proof do: dark lacquered okegawa-do, riveted lames, red cords
 PD={'O':(14,14,16),'D':(28,29,32),'M':(42,44,48),'L':(68,71,76),'H':(112,116,122),
@@ -140,19 +146,18 @@ pd_n=grid(PD,10,10,[
 ".ORMMMMDRO.",
 ".OcDCDcDCO.",
 "..OOOOOOO.."])
-pd_e=grid(PD,12,10,[
-"..ML.....",
-"..cC.....",
-".OLLLLO..",
-"OMMMMMRO.",
-"OLLLLLLLO",
-"OMMCMMMRO",
-"OLLcLLLLO",
-"OMMMMXHRO",
-".OLLLLLO.",
-".OMMMMRO.",
-".OCDcDCO.",
-"..OOOOO.."])
+pd_e=grid(PD,13,10,[
+"Mc......",
+"..OOOO..",
+"..OLLLO.",
+"..OMMMRO",
+"..OLLLLO",
+"..CMMMRO",
+"..cLLLLO",
+"..OMXHRO",
+"...OLLO.",
+"...OCcO.",
+"...OOOO."])
 
 # ---- resin body shield: khaki quilted vest, amber resin stitching
 RS={'O':(74,58,36),'k':(116,96,60),'K':(152,130,86),'J':(180,157,108),
@@ -196,18 +201,18 @@ rs_n=grid(RS,10,10,[
 ".OJKKAKKkO.",
 ".OJKKAKKkO.",
 "..OOOOOOO.."])
-rs_e=grid(RS,12,10,[
-"..s.....",
-"..Ss....",
-".OKKKO..",
-"OkKAKJO.",
-"OkkakkkO",
-"OkKAKKJO",
-"OkKAKKJO",
-"OkkakkkO",
-"OkKAKKJO",
-".OKAKJO.",
-"..OOOO.."])
+rs_e=grid(RS,13,10,[
+"sS......",
+"..OOOO..",
+"..OKKJO.",
+"..kKAKJO",
+"..kkakkO",
+"..kKAKJO",
+"..kKAKJO",
+"..kkakkO",
+"...OAKO.",
+"...OAKO.",
+"...OOOO."])
 SETS={'proof_cuirass':(pc_item,[pc_s,pc_n,pc_e,mir(pc_e)]),
       'proof_do':(pd_item,[pd_s,pd_n,pd_e,mir(pd_e)]),
       'resin_shield':(rs_item,[rs_s,rs_n,rs_e,mir(rs_e)])}
@@ -302,8 +307,24 @@ def preview(target):
     out.save(target)
 
 
+def assert_arms_clear():
+    """No side frame may cover a pixel of the base body's arms or hands."""
+    _, states, _, human = read(ROOT / 'icons/mob/human_races/r_human.dmi')
+    for k in (2, 3):
+        limbs = Image.new('RGBA', (32, 32))
+        for sex in 'mf':
+            for part in ('r_arm', 'l_arm', 'r_hand', 'l_hand'):
+                limbs.alpha_composite(human.crop(cell(human, states[f'{part}_{sex}'][0] + k)))
+        for name, (_, dirs) in SETS.items():
+            for x in range(32):
+                for y in range(32):
+                    if dirs[k].getpixel((x, y))[3] and limbs.getpixel((x, y))[3]:
+                        raise SystemExit(f'FAIL: {name} side frame {k} covers the arm at {x},{y}')
+
+
 if __name__ == '__main__':
     check = '--check' in sys.argv
+    assert_arms_clear()
     for rel, additions in SHEETS.items():
         build(ROOT / rel, additions, check)
     if '--preview' in sys.argv:

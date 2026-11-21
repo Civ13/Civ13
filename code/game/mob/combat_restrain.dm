@@ -3,7 +3,8 @@
 // the next step that fits their state:
 //   firm hold (aggressive grab) -> jointlock -> pin to the ground -> bind the
 //   hands with handcuffs or rope from your hands, belt or pockets -> bind the
-//   legs if you carry legcuffs -> lead or carry them away.
+//   legs if you carry legcuffs -> gag them if you carry a muzzle or tape ->
+//   blindfold them if you carry a blindfold -> lead or carry them away.
 // It never tightens a grab past a firm hold, so it is never lethal. Each step
 // goes through the ordinary grab and cuffing procs, so a victim who resists out
 // of the grab drops the flow back to the start, and every step is logged.
@@ -90,10 +91,18 @@
 		if (cuffs.place_handcuffs(T, src))
 			restrain_log(T, "bound hands with [cuffs]")
 		return TRUE
-	if (!T.legcuffed)
+	if (!T.legcuffed && T.has_organ("l_leg") && T.has_organ("r_leg"))
 		var/obj/item/weapon/legcuffs/L = restrain_find_item(/obj/item/weapon/legcuffs)
 		if (L)
-			return restrain_bind_legs(G, L)
+			return restrain_put_on(G, L, slot_legcuffed, "legs", "bind", "bound legs")
+	if (!T.wear_mask && T.has_organ("head"))
+		var/obj/item/clothing/mask/muzzle/gag = restrain_find_item(/obj/item/clothing/mask/muzzle)
+		if (gag)
+			return restrain_put_on(G, gag, slot_wear_mask, "mouth", "gag", "gagged")
+	if (!T.eyes && T.has_organ("head"))
+		var/obj/item/clothing/glasses/sunglasses/blindfold/fold = restrain_find_item(/obj/item/clothing/glasses/sunglasses/blindfold)
+		if (fold)
+			return restrain_put_on(G, fold, slot_eyes, "eyes", "cover", "blindfolded")
 	to_chat(src, SPAN_NOTICE("[T] is restrained. Pull [p_them_text_of(T)] along, or click yourself to carry [p_them_text_of(T)]."))
 	return FALSE
 
@@ -132,27 +141,25 @@
 	put_in_hands(I)
 	return FALSE
 
-// Ties the legs of a pinned, cuffed victim with carried legcuffs.
-/mob/living/human/proc/restrain_bind_legs(obj/item/weapon/grab/G, obj/item/weapon/legcuffs/L)
+// Puts carried legcuffs, a gag or a blindfold from your free hand onto a
+// pinned or cuffed victim, after a short struggle.
+/mob/living/human/proc/restrain_put_on(obj/item/weapon/grab/G, obj/item/I, slot, part, action, logged)
 	var/mob/living/human/T = G.affecting
-	if (!T.has_organ("l_leg") || !T.has_organ("r_leg"))
-		to_chat(src, SPAN_WARNING("[T] needs two legs to bind."))
+	if (!restrain_take_in_hand(I))
+		to_chat(src, SPAN_WARNING("You need a free hand to [action] [T]'s [part]."))
 		return FALSE
-	if (!restrain_take_in_hand(L))
-		to_chat(src, SPAN_WARNING("You need a free hand to bind [T]'s legs."))
+	visible_message(SPAN_DANGER("[src] starts to [action] [T]'s [part] with \the [I]!"), SPAN_NOTICE("You start to [action] [T]'s [part]."))
+	if (!do_after(src, COMBAT_RESTRAIN_TIE_TIME, T))
 		return FALSE
-	visible_message(SPAN_DANGER("[src] starts binding [T]'s legs with \the [L]!"), SPAN_NOTICE("You start binding [T]'s legs."))
-	if (!do_after(src, COMBAT_RESTRAIN_LEGS_TIME, T))
+	if (QDELETED(G) || G.affecting != T || T.get_equipped_item(slot) || I.loc != src || !(T.lying || T.handcuffed))
 		return FALSE
-	if (QDELETED(G) || G.affecting != T || T.legcuffed || L.loc != src || !(T.lying || T.handcuffed))
+	drop_from_inventory(I)
+	T.equip_to_slot(I, slot)
+	if (T.get_equipped_item(slot) != I)
+		if (!QDELETED(I) && I.loc != T)
+			put_in_hands(I)
 		return FALSE
-	drop_from_inventory(L)
-	T.equip_to_slot(L, slot_legcuffed)
-	if (T.legcuffed != L)
-		if (!QDELETED(L) && L.loc != T)
-			put_in_hands(L)
-		return FALSE
-	visible_message(SPAN_DANGER("[src] has bound [T]'s legs with \the [L]!"), SPAN_NOTICE("You bind [T]'s legs."))
+	visible_message(SPAN_DANGER("[src] [action]s [T]'s [part] with \the [I]!"), SPAN_NOTICE("You [action] [T]'s [part]."))
 	setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	restrain_log(T, "bound legs with [L]")
+	restrain_log(T, "[logged] with [I]")
 	return TRUE

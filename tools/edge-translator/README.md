@@ -9,13 +9,15 @@ but Edge's language packs in its own profile folder. See
 
 ## Run it (Windows host)
 
-1. Needs Node.js and Microsoft Edge. `start.bat` installs the pinned
-   `playwright-core` on first run (`npm ci --ignore-scripts`).
-2. Run `start.bat` (or `node edge_translator.js --port 55581`). Options:
-   `--profile <dir>` (default `edge-profile` here), `--edge <msedge.exe>`,
-   `--headed` (a visible Edge window, if hidden mode cannot download packs).
-3. Point the worlds at it in each region's `config.local.txt`:
-   `CHAT_TRANSLATE_URL http://127.0.0.1:55581`, then update or restart them.
+The host service runs it: add `"chat_translator": {}` to the group config (see
+[scripts/shard-group/README.md](../../scripts/shard-group/README.md#chat-translator)).
+It installs the pinned `playwright-core`, starts the service, restarts it if it
+exits, and gives every region `CHAT_TRANSLATE_URL`. The launcher's **Translator**
+tab shows it and starts or stops it. Needs Node.js and Microsoft Edge.
+
+By hand (testing): `start.bat`, or `node edge_translator.js --port 55581`.
+Options: `--profile <dir>` (default `edge-profile` here), `--edge <msedge.exe>`,
+`--headed` (a visible Edge window, if hidden mode cannot download packs).
 
 Check it with `curl -s http://127.0.0.1:55581/health`, or translate a line:
 `curl -s -X POST http://127.0.0.1:55581/translate -H "Content-Type: application/json" -d "{\"text\":\"hola amigo\",\"target\":\"en\"}"`.

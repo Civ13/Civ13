@@ -17,6 +17,10 @@
 	return FALSE
 /obj/map_metadata/treated_cloth_probe/New()
 	return
+/mob/living/human/treated_cloth_probe
+	var/obj/item/other_hand = null
+/mob/living/human/treated_cloth_probe/get_inactive_hand()
+	return other_hand
 /mob/living/human/treated_cloth_probe/New()
 	return
 /mob/living/human/treated_cloth_probe/put_in_hands(obj/item/W)
@@ -88,8 +92,25 @@ var/cloth_wait_ok = TRUE
 	B.reagents.add_reagent("olive_oil", 25)
 	S.attackby(B, H)
 	cloth_check(S.amount == 5 && B.reagents.get_reagent_amount("olive_oil") == 25, "silk is not oiled")
+	// Latex and sulphur.
+	var/obj/item/stack/material/cloth/C3 = new(here, 8)
+	B.reagents.clear_reagents()
+	B.reagents.add_reagent("latex", 40)
+	C3.attackby(B, H)
+	cloth_check(C3.amount == 8 && B.reagents.get_reagent_amount("latex") == 40, "latex without sulphur in the other hand cures nothing")
+	var/obj/item/stack/ore/sulphur/SU = new(here, 2)
+	H.other_hand = SU
+	C3.attackby(B, H)
+	cloth_check(C3.amount == 3 && SU.amount == 1 && B.reagents.get_reagent_amount("latex") == 15 && cloth_count(here, /obj/item/stack/material/rubberised_cloth) == 5, "latex and one sulphur cure five sheets of rubberised cloth")
+	H.other_hand = null
+	// Rain.
+	var/obj/item/stack/material/rubberised_cloth/RC = locate() in here
+	var/obj/item/clothing/suit/storage/jacket/custom/poncho/PO = new(here)
+	cloth_check(coated_cloth_crafted(RC, PO) && PO.rain_resist == 90, "a poncho of rubberised cloth sheds more rain")
+	var/obj/item/clothing/suit/storage/jacket/custom/poncho/PO2 = new(here)
+	cloth_check(!coated_cloth_crafted(C3, PO2) && PO2.rain_resist == initial(PO2.rain_resist), "a poncho of plain cloth is unchanged")
 	// Materials and recipes.
-	for (var/name in list("tarred_canvas", "oilcloth", "waxed_cloth"))
+	for (var/name in list("tarred_canvas", "oilcloth", "waxed_cloth", "rubberised_cloth"))
 		var/material/M = get_material_by_name(name)
 		cloth_check(M && M.stack_type, "[name] is a material")
 	var/obj/item/stack/material/oilcloth/O = locate() in here
