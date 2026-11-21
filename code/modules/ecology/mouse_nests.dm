@@ -390,8 +390,8 @@ var/global/datum/ecology_species/mouse_burrow_habitat = null
 	for (var/obj/structure/mouse_nest/N in mouse_nest_list)
 		if (N.z == T.z && get_dist(N, T) <= MOUSE_NEST_CROWD_RANGE)
 			near++
-	if (near >= MOUSE_NEST_CROWD)
-		return "crowded"
+			if (near >= MOUSE_NEST_CROWD)
+				return "crowded"
 	if (ecology_visible_to_players(T, 7))
 		return "seen"
 	return null
