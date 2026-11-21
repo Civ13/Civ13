@@ -9760,6 +9760,7 @@
 "/obj/covers/repairedfloor/ship/patch":{"name":"hull patch","type":"/obj/covers/repairedfloor/ship/patch","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"Planks nailed over a hole in a hull. It keeps most of the sea out."},
 "/obj/covers/roads":{"name":"road","type":"/obj/covers/roads","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall"},
 "/obj/covers/roads/dirt":{"name":"dirt road","type":"/obj/covers/roads/dirt","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall"},
+"/obj/covers/roads/dirt/worked":{"name":"packed dirt road","type":"/obj/covers/roads/dirt/worked","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"A dirt road packed flat by a plough. Use a plough on Help intent to reclaim it as a garden, or a shovel to remove the road."},
 "/obj/covers/romanroad":{"name":"roman road","type":"/obj/covers/romanroad","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall"},
 "/obj/covers/saloon_door":{"name":"saloon door","type":"/obj/covers/saloon_door","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"A wood door."},
 "/obj/covers/sandstone_smooth_wall":{"name":"rough sandstone wall","type":"/obj/covers/sandstone_smooth_wall","label":"Initial sprite; runtime appearance may differ","entity":true,"kind":"Floor or wall","desc":"A rough sandstone wall."},

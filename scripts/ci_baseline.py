@@ -2398,6 +2398,9 @@ SUITES = {
         'tests/power_cranes/', 'code/modules/1713/power_cranes.dm', 'code/modules/1713/lifting_machines.dm',
         'config/craft_needs.json', 'icons/obj/power_cranes.dmi', 'tests/sprites/create_power_cranes.py')},
     # Source contracts only; this suite does not run DM.
+    'road_garden': {'files': ('tests/road_garden/test_contract.py',), 'paths': ('tests/road_garden/',),
+        'shared_paths': ('code/game/objects/covers_types/cover_roads.dm',
+                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm')},
     'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
         'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
         'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
