@@ -74,9 +74,10 @@ avoid code duplication. This includes items that may sometimes act as a standard
 			return TRUE
 		else 
 			return FALSE
-	var/tgt = user.targeted_organ
-	if (user.targeted_organ == "random")
-		tgt = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+	// The zone doll, the random toggle or the combat stance (combat_stance.dm).
+	var/tgt = user.resolve_attack_zone(src, I, COMBAT_ATTACK_WEAPON)
+	if (I.force && !(I.flags & NOBLUDGEON) && user != src)
+		note_struck_by(user, tgt, user.attacking_arm())
 	return I.attack(src, user, tgt)
 
 // Proximity_flag is TRUE if this afterattack was called on something adjacent, in your square, or on your person.
