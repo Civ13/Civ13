@@ -33,6 +33,8 @@ hook in `cmss13_gear.dm`:
   shuts and opens a hopper gate; a belt fills the hopper, an arm finds its
   products and an outgoing belt carries them off; a cord raises and lowers a
   sluice gate;
+- driven bellows make a furnace beside them blow; a power loom weaves
+  cotton and silk; a dry Archimedes screw waits;
 - bridges: a relay opened or closed by a cord cuts or restores the device on
   its tile; a mechanism port pulls its cords on a circuit signal, waits 2 s
   between pulls, pulls nothing while carried, and sends a cord's pull into its

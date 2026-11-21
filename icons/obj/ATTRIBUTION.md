@@ -92,3 +92,10 @@ All states (`weather_vane_north`, `weather_vane_east`, `weather_vane_south`,
 pixel from a fixed palette by `tests/sprites/create_weather_instruments.py`.
 No borrowed or generated artwork. They are under the same terms as the rest of
 Civ13's art.
+
+## icons/effects/weather_fog.dmi
+
+Both states (`fog_view`, `mist_view`) were drawn for Civ13 (2026-11-21) by
+`tests/sprites/create_weather_fog.py`, a seeded Pillow script that paints a
+soft grey haze with a clear centre. No borrowed or generated artwork. They are
+under the same terms as the rest of Civ13's art.

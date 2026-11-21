@@ -891,15 +891,17 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
                         '!is_open_container()', 'collection_seconds >= 60',
                         'reagents.add_reagent("water", min(rate, reagents.maximum_volume - reagents.total_volume))',
                         'findtext(falling, "rain") || falling == "monsoon"',
-                        'weather_at(T) == WEATHER_NONE', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
+                        'weather_at(T) != WEATHER_NONE', 'weather_dew_at(T)', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
             if any(marker not in excerpt for marker in expected):
                 raise ValueError('Reviewed rain barrel behavior changed')
             excerpt += ('\nReviewed guidance: There is no separate dew or rain collector; an ordinary '
                         'wood or steel barrel does the job. A new empty barrel starts with its lid off. '
                         'Examine it before using it in hand: using it in hand toggles the lid, so doing '
                         'that to an open barrel closes it. Set the open barrel down outdoors with no roof '
-                        'over its tile. Rain adds 10 units of water per minute; a clear, above-freezing '
-                        'night or early morning adds 2 units of dew per minute, until the barrel is full. '
+                        'over its tile. Rain adds 10 units of water per minute. On a clear, calm, '
+                        'above-freezing night or early morning, when dew settles, it adds 2 units of dew '
+                        'per minute, or 3 in thick fog, until the barrel is full. A windy or cloudy night '
+                        'brings no dew. '
                         'A closed, carried or roofed barrel collects nothing, and jerrycans and fuel tanks '
                         'never do. Rain mixes into whatever the open barrel already holds. Unavailable '
                         'weather does not guarantee water.')
