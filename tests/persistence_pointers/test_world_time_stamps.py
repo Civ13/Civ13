@@ -60,7 +60,7 @@ def dm_files():
 
 
 def registry():
-    body = REGISTRY[REGISTRY.index('persistence_world_time_stamps = list('):]
+    body = REGISTRY[REGISTRY.index('/proc/persistence_world_time_stamps_table()'):]
     body = body[:body.index('\n)\n')]
     entries = {}
     for name, owners in re.findall(r'^\t"(\w+)" = list\(([^)]*)\)', body, re.M):

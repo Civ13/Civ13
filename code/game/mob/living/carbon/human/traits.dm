@@ -16,7 +16,12 @@
 		traits_dirty = FALSE
 	if (tt in trait_cache)
 		return TRUE
-var/global/list/trait_list = list(
+var/global/list/trait_list = trait_list_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/trait_list_table()
+	return list(
 //	"Lactose Intolerance" = list(-1,list(),"You have the inability to digest dairy products and will get sick when you ingest them. (Get food poisoning from anytype of milk product)"),
 //	"Skilled Archer" = list(3,list("Skilled Fighter"),"You are better at fighting with ranged weapons and running away. (Start with better Dexterity, and bow skills)"),
 //	"Skilled Fighter" = list(3,list("Skilled Archer"),"You are better at fighting with your fists and melee weapons. (Start with better Strength, and sword skills)"),

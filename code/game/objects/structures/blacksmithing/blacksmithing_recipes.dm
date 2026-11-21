@@ -36,7 +36,12 @@ to be done about them, either removing or renaming them, or incorporating duplic
 (Material) or (Timeperiod) in the recipe name; by recommendation like i've applied if no more appropriate title can be orchestrated.
 
 */
-var/global/list/anvil_recipes = list(
+var/global/list/anvil_recipes = anvil_recipes_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/anvil_recipes_table()
+	return list(
 	"Pistol Barrel" = list("Pistol Barrel","flintlock parts",3,4,0,20,0,0,/obj/item/blackpowder_part/barrel/pistol),
 	"Musket Barrel" = list("Musket Barrel","flintlock parts",3,4,0,30,0,0,/obj/item/blackpowder_part/barrel/musket),
 	"Flintlock Mechanism" = list("Flintlock Mechanism","flintlock parts",3,4,2,0,0,0,/obj/item/blackpowder_part/mechanism),
