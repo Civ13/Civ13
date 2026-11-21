@@ -481,7 +481,8 @@
 /obj/item/stack/material/cannabis_fresh
 	name = "fresh cannabis tops"
 	desc = "Sticky green flowering tops. Dry them on a rack before smoking."
-	icon_state = "hemp"
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "cannabis_fresh"
 	default_type = "cannabis_fresh"
 	value = 2
 	w_class = ITEM_SIZE_TINY
@@ -492,7 +493,8 @@
 /obj/item/stack/material/cannabis
 	name = "dried cannabis"
 	desc = "Dried cannabis flower, ready to roll or smoke in a pipe."
-	icon_state = "hemp"
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "cannabis"
 	default_type = "cannabis"
 	value = 4
 	w_class = ITEM_SIZE_TINY

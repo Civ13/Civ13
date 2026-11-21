@@ -12463,6 +12463,58 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Harvest khat",
+      "file": "code/modules/1713/drug_preparations.dm",
+      "line": 164,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/farming/seeds/khat"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/khat",
+        "/obj/item/stack/farming/seeds/khat"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"semiarid\", \"savanna\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Lance poppies for opium",
+      "file": "code/modules/1713/drug_preparations.dm",
+      "line": 228,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/farming/plant/poppy"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/pill/opium"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Grow an opium poppy until it is ready to harvest.",
+        "On help intent, score the green pods with a knife.",
+        "Wait about five minutes for the latex to dry, then pick it off by hand as raw opium. Each poppy takes three lancings and can still be harvested afterwards."
+      ],
+      "conditions": "Ready poppy required; well-fed plants give two balls per lancing.",
+      "map_notes": "Availability follows the opium poppy crop.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Harvest cannabis",
       "file": "code/game/objects/farming.dm",
       "line": 487,
