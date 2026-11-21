@@ -5,13 +5,16 @@
 // hold crosses the sea: the hold, its ladder and its cargo are packed, the
 // rock closes behind her, and she is built again with the hold hollowed out
 // under her, or with its cargo stowed on deck where no ground takes a hold.
-// An engine crosses whole and is coupled to its fuel tank again.
+// An engine crosses whole and is coupled to its fuel tank again. A ship with
+// an upper deck crosses: her roofs, their upper faces and what stands up there
+// are packed and built again, or stowed on deck where no open air takes them.
+// A canoe or motorboat crosses with the outboard clamped inside her.
 /world
 	hub = ""
 	hub_password = ""
 	maxx = 70
 	maxy = 60
-	maxz = 3
+	maxz = 4
 	turf = /turf
 	area = /area
 	visibility = 0
@@ -43,8 +46,9 @@ var/naval_runtime_error = FALSE
 			R.ChangeTurf(/turf/wall/rockwall)
 			var/turf/W = locate(x, y, 2)
 			W.ChangeTurf(x <= 20 ? /turf/floor/beach/sand : /turf/floor/beach/water/deep/saltwater)
-			var/turf/S = locate(x, y, 3)
-			S.ChangeTurf(/turf/sky/building)
+			for (var/z = 3, z <= 4, z++)
+				var/turf/S = locate(x, y, z)
+				S.ChangeTurf(/turf/sky/building)
 
 /proc/hull_lay(x, y)
 	var/turf/T = locate(x, y, 2)
@@ -244,6 +248,138 @@ var/naval_runtime_error = FALSE
 			if (D.source == new_motor)
 				found = TRUE
 		naval_check(found, "the engine is one of her drives again")
+
+	// ---- An upper deck crosses: the Kestrel, 3 x 3, roofed over ----
+	for (var/x = 55, x <= 57, x++)
+		for (var/y = 40, y <= 42, y++)
+			hull_lay(x, y)
+	new /obj/structure/roof_support(locate(56, 41, 2))
+	var/roofs = 0
+	for (var/x = 55, x <= 57, x++)
+		for (var/y = 40, y <= 42, y++)
+			if (building_construct_roof(locate(x, y, 2), /obj/roof/wood, null))
+				roofs++
+	naval_check(roofs == 9 && building_upper_z(2) == 3, "nine roofs over her deck, each with a floor on the level above ([roofs])")
+	var/obj/structure/multiz/ladder/up/k_foot = new(locate(55, 42, 2))
+	var/obj/structure/multiz/ladder/k_head = new(locate(55, 42, 3))
+	k_foot.find_target()
+	k_head.find_target()
+	var/obj/item/weapon/reagent_containers/glass/bucket/pail = new(locate(57, 42, 3))
+	var/obj/structure/closet/crate/up_crate = new(locate(57, 40, 3))
+	for (var/atom/movable/A in up_crate)
+		qdel(A)
+	new /obj/item/weapon/crowbar(up_crate)
+	// A canoe on deck with her outboard clamped on and fuel in her tank.
+	var/obj/structure/vehicle/raft/dugout/outrigger/canoe = new(locate(55, 40, 2))
+	var/obj/structure/engine/internal/diesel/outboard = new(canoe)
+	canoe.engine = outboard
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/small/canoe_tank = new(canoe)
+	canoe_tank.reagents.add_reagent("diesel", 50)
+	canoe.fueltank = canoe_tank
+	var/obj/structure/hull_tiller/k_tiller = new(locate(56, 40, 2))
+	naval_check(isnull(k_tiller.commission("Kestrel", EAST)), "the Kestrel is commissioned")
+	var/datum/craft_body/built/KB = k_tiller.body()
+	naval_check(KB && KB.upper_tile_count() == 9, "her upper deck is nine tiles ([KB ? KB.upper_tile_count() : "none"])")
+	var/k_refusal = k_tiller.crossing_refusal()
+	naval_check(!k_refusal || !findtext(k_refusal, "upper deck"), "an upper deck no longer keeps her in port")
+	var/list/k_packed = sea_crossing_pack(k_tiller)
+	naval_check(islist(k_packed), "with an upper deck and a motor canoe she packs ([istext(k_packed) ? k_packed : "ok"])")
+	var/list/KR = islist(k_packed) ? k_packed["record"] : list()
+	var/k_text = json_encode(KR)
+	naval_check(length(KR["upper"]) == 9 && sea_crossing_record_ok(KR), "the record holds her nine upper deck tiles and is valid")
+	naval_check(findtext(k_text, "\"u\",\"/obj/roof/wood\"") && findtext(k_text, "\"f\",\"/obj/covers/repairedfloor\""), "her roofs go as roofs and their upper faces as faces")
+	naval_check(findtext(k_text, "/obj/structure/engine/internal/diesel") && findtext(k_text, "/obj/structure/vehicle/raft/dugout/outrigger"), "the canoe goes with her outboard inside her")
+	var/list/k_bad = json_decode(k_text)
+	k_bad["upper"] += list(list(9, 9, list(list("c", "/obj/covers/repairedfloor", 2, 100))))
+	naval_check(!sea_crossing_record_ok(k_bad), "an upper deck tile over no deck tile is refused")
+	k_bad = json_decode(k_text)
+	var/list/k_tile = k_bad["tiles"][1]
+	k_tile[3] += list(list("u", "/obj/structure/probe_nothing", 100))
+	naval_check(!sea_crossing_record_ok(k_bad), "a roof entry that is not a roof is refused")
+	// A storey over her upper deck would be left in the air: it keeps her in port.
+	var/obj/roof/wood/high = new(locate(56, 42, 3))
+	var/obj/covers/repairedfloor/high_floor = new(locate(56, 42, 4))
+	naval_check(building_link(high, high_floor), "a roof on her upper deck carries a floor on the level above")
+	var/high_refusal = sea_crossing_pack(k_tiller)
+	naval_check(istext(high_refusal) && findtext(high_refusal, "floor above"), "a floor over her upper deck keeps her in port ([high_refusal])")
+	qdel(high)
+	naval_check(QDELETED(high_floor), "taken down, the roof takes its floor with it")
+	sea_crossing_strip(k_tiller)
+	qdel(k_tiller)
+	var/k_left = 0
+	for (var/x = 55, x <= 57, x++)
+		for (var/y = 40, y <= 42, y++)
+			for (var/z = 2, z <= 3, z++)
+				var/turf/T = locate(x, y, z)
+				k_left += count_in(T, /obj/covers) + count_in(T, /obj/roof) + count_in(T, /obj/structure) + count_in(T, /obj/item)
+	naval_check(!k_left && QDELETED(pail) && QDELETED(outboard), "stripped, nothing of her is left on either deck ([k_left])")
+	var/list/k_offsets = list()
+	for (var/list/tile in KR["tiles"])
+		k_offsets += list(list(tile[1], tile[2]))
+	var/list/k_upper = sea_crossing_upper_offsets(KR)
+	var/turf/k_at = sea_crossing_anchorage(k_offsets, list(WEST, NORTH), list(), k_upper)
+	naval_check(k_at && k_at.z == 2, "an anchorage with open air above is found")
+	var/obj/structure/hull_tiller/kestrel = k_at ? sea_crossing_build(KR, k_at, "v-4") : null
+	var/datum/craft_body/built/NK = kestrel ? kestrel.body() : null
+	naval_check(NK && NK.upper_tile_count() == 9, "she is built with her upper deck ([NK ? NK.upper_tile_count() : "none"])")
+	if (NK)
+		var/paired = 0
+		for (var/turf/T in NK.cells())
+			for (var/obj/roof/RF in T)
+				var/obj/covers/face = RF.building_floor()
+				if (face && face.name == "upper floor")
+					paired++
+		naval_check(paired == 9, "every roof has its upper floor again ([paired])")
+		var/turf/k_bow = locate(k_at.x + 1, k_at.y + 2, 3)
+		naval_check(locate(/obj/item/weapon/reagent_containers/glass/bucket) in k_bow, "the pail is on the upper deck where it stood")
+		var/obj/structure/closet/crate/new_crate = locate() in locate(k_at.x + 1, k_at.y, 3)
+		naval_check(new_crate && (locate(/obj/item/weapon/crowbar) in new_crate), "so is the crate with its crowbar")
+		var/obj/structure/multiz/ladder/new_head = locate() in locate(k_at.x - 1, k_at.y + 2, 3)
+		var/obj/structure/multiz/ladder/up/new_foot = locate() in locate(k_at.x - 1, k_at.y + 2, 2)
+		naval_check(new_head && new_foot && new_head.target == new_foot && new_foot.target == new_head, "the ladder joins her decks again")
+		var/obj/structure/vehicle/raft/dugout/outrigger/new_canoe = locate() in locate(k_at.x - 1, k_at.y, 2)
+		var/obj/structure/engine/internal/diesel/new_outboard = new_canoe ? new_canoe.engine : null
+		naval_check(new_outboard && new_outboard.loc == new_canoe && !new_outboard.on && !new_outboard.fueltank, "the canoe has her outboard clamped on, stopped")
+		naval_check(new_canoe && new_canoe.fueltank && new_canoe.fueltank.loc == new_canoe && new_canoe.fueltank.reagents.get_reagent_amount("diesel") == 50, "and her tank with its diesel")
+		var/turf/KO = NK.origin()
+		naval_check(NK.move_to(KO.x + 1, KO.y, EAST) && NK.upper_tile_count() == 9, "the rebuilt upper deck sails with her ([NK.last_refusal])")
+	// ---- No open air above: the roofs stay roofs and what stood up there is on deck ----
+	var/turf/k_open = locate(45, 50, 2)
+	new /obj/covers/repairedfloor(locate(k_open.x + 1, k_open.y + 2, 3))
+	naval_check(sea_crossing_fits(k_offsets, k_open.x, k_open.y, 2) && !sea_crossing_fits(k_offsets, k_open.x, k_open.y, 2, null, k_upper), "a floor in the air takes her deck but not her upper deck")
+	var/obj/structure/hull_tiller/k_bare = sea_crossing_build(KR, k_open, "v-5")
+	var/datum/craft_body/built/KBB = k_bare ? k_bare.body() : null
+	naval_check(KBB && KBB.upper_tile_count() == 8, "she is built with the rest of her upper deck ([KBB ? KBB.upper_tile_count() : "none"])")
+	if (KBB)
+		naval_check(locate(/obj/item/weapon/reagent_containers/glass/bucket) in locate(k_open.x + 1, k_open.y + 2, 2), "the pail from the blocked tile is stowed on the deck below")
+		naval_check(locate(/obj/roof) in locate(k_open.x + 1, k_open.y + 2, 2), "and the roof there stays a roof")
+
+	// ---- A frame-built motorboat crosses with her engine ----
+	var/turf/slip = locate(62, 50, 2)
+	var/obj/structure/vehicle/boat/rhib/rib = new(slip)
+	var/obj/structure/engine/internal/gasoline/rib_engine = new(rib)
+	rib_engine.enginesize = 500
+	rib.engine = rib_engine
+	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank/smalltank/rib_tank = new(rib)
+	rib_tank.reagents.add_reagent("gasoline", 100)
+	rib.fueltank = rib_tank
+	rib_engine.fueltank = rib_tank
+	rib_engine.connections += rib.axis
+	var/list/rib_entry = sea_crossing_cargo_entry(rib)
+	var/obj/structure/vehicle/boat/rhib/rib_again = islist(rib_entry) ? sea_crossing_cargo_build(rib_entry, slip) : null
+	naval_check(istype(rib_again), "a motorboat with an engine in her crosses whole ([istext(rib_entry) ? rib_entry : "ok"])")
+	if (istype(rib_again))
+		var/obj/structure/engine/internal/gasoline/again_engine = rib_again.engine
+		naval_check(again_engine && again_engine.loc == rib_again && again_engine.enginesize == 500 && !again_engine.on, "her 500cc engine is in her, stopped")
+		naval_check(again_engine && again_engine.fueltank == rib_again.fueltank && rib_again.fueltank.reagents.get_reagent_amount("gasoline") == 100, "coupled to her tank with its gasoline")
+		naval_check(again_engine && (rib_again.axis in again_engine.connections), "and driving her")
+		qdel(rib_again)
+	qdel(rib)
+	var/list/loose_engine = sea_crossing_cargo_entry(new /obj/structure/closet/crate(slip))
+	naval_check(islist(loose_engine), "a crate still crosses")
+	var/obj/structure/closet/crate/engine_crate = new(slip)
+	new /obj/structure/engine/internal/diesel(engine_crate)
+	naval_check(istext(sea_crossing_cargo_entry(engine_crate)), "an engine shut in a crate is not a part of her, and stays")
 
 	// ---- Carts, boats and machines go whole ----
 	var/list/kinds = list(/obj/structure/vehicle/raft, /obj/structure/vehicle/raft/dugout, /obj/structure/vehicle/raft/dugout/outrigger,

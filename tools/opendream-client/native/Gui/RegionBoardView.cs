@@ -5,7 +5,7 @@ using System.Windows.Forms;
 namespace Civ13.Launcher.Gui;
 
 // The Host server tab's region board: a summary of counts, then one row per region with its state pill,
-// name, players, build pill and notes. A region with a problem gets a red edge and a second line saying
+// name, players, build pill, local time on the world calendar and notes. A region with a problem gets a red edge and a second line saying
 // what is wrong. Clicking a row (or Up/Down) chooses that region for the "Selected region" buttons.
 internal sealed class RegionBoardView : ScrollableControl {
     private IReadOnlyList<RegionCard> cards = [];
@@ -196,7 +196,7 @@ internal sealed class RegionBoardView : ScrollableControl {
         }
         if (cards.Count == 0) return;
 
-        // Columns: state, region, players, build, details. The name column fits the longest name.
+        // Columns: state, region, players, build, local time, details. The name column fits the longest name.
         var stateX = Px(14);
         var stateWidth = Px(96);
         var nameX = stateX + stateWidth + Px(12);
@@ -211,7 +211,31 @@ internal sealed class RegionBoardView : ScrollableControl {
         var playersWidth = Px(76);
         var buildX = playersX + playersWidth + Px(8);
         var buildWidth = Px(118);
-        var notesX = buildX + buildWidth + Px(12);
+
+        // Local time: sun or moon, the clock, then the season and the time zone, each in its own slot so
+        // a board of regions reads down like a timetable. It sits after BUILD so the columns an operator
+        // acts on stay where they were, and it is absent when no region is on the calendar. DETAILS gives
+        // way first; once it would fall under its floor the zone goes, then the season, and the clock
+        // itself always stays. The tooltip carries all of it either way.
+        var clockX = buildX + buildWidth + Px(12);
+        var sunSize = Px(11);
+        var timeX = clockX + sunSize + Px(6);
+        int timeWidth = 0, seasonWidth = 0, zoneWidth = 0;
+        foreach (var card in cards) {
+            if (card.Clock is not { } clock) continue;
+            timeWidth = Math.Max(timeWidth, TextRenderer.MeasureText(g, clock.Time, Bold, Size.Empty, TextFormatFlags.NoPadding).Width);
+            seasonWidth = Math.Max(seasonWidth, TextRenderer.MeasureText(g, clock.SeasonText, Font, Size.Empty, TextFormatFlags.NoPadding).Width);
+            zoneWidth = Math.Max(zoneWidth, TextRenderer.MeasureText(g, clock.ZoneText, Font, Size.Empty, TextFormatFlags.NoPadding).Width);
+        }
+        var clockWidth = timeWidth == 0 ? 0 : timeX - clockX + timeWidth;
+        var seasonX = clockX + clockWidth + Px(8);
+        var detailsFloor = Px(110);
+        var showSeason = clockWidth > 0 && width - (seasonX + seasonWidth + Px(12)) >= detailsFloor;
+        if (showSeason) clockWidth = seasonX + seasonWidth - clockX;
+        var zoneX = clockX + clockWidth + Px(8);
+        var showZone = showSeason && width - (zoneX + zoneWidth + Px(12)) >= detailsFloor;
+        if (showZone) clockWidth = zoneX + zoneWidth - clockX;
+        var notesX = clockWidth == 0 ? clockX : clockX + clockWidth + Px(12);
 
         void Head(string text, int left, int span) =>
             TextRenderer.DrawText(g, text, Small, new Rectangle(left, y, span, HeaderHeight), StatusPaint.Muted, OneLine);
@@ -219,6 +243,7 @@ internal sealed class RegionBoardView : ScrollableControl {
         Head("REGION", nameX, nameWidth);
         Head("PLAYERS", playersX, playersWidth);
         Head("BUILD", buildX, buildWidth);
+        if (clockWidth > 0) Head(showSeason ? "LOCAL TIME" : "LOCAL", clockX, clockWidth);
         Head("DETAILS", notesX, Math.Max(0, width - notesX));
         y += HeaderHeight;
         g.DrawLine(line, 0, y - 1, width, y - 1);
@@ -250,6 +275,15 @@ internal sealed class RegionBoardView : ScrollableControl {
                 var (buildTone, buildGlyph) = StatusPaint.For(card.Build);
                 var buildPill = Math.Min(buildWidth, StatusPaint.PillWidth(g, card.BuildText, PillFont, buildGlyph, Dpi));
                 StatusPaint.Pill(g, new Rectangle(buildX, y + (first - pillHeight) / 2, buildPill, pillHeight), buildTone, buildGlyph, card.BuildText, PillFont, Dpi);
+
+                // A region off the calendar leaves its slot empty: a dash would put a mark on every such row for no news.
+                if (clockWidth > 0 && card.Clock is { } clock) {
+                    StatusPaint.DrawGlyph(g, clock.Daylight ? Glyph.Sun : Glyph.Moon, new RectangleF(clockX, y + (first - sunSize) / 2f, sunSize, sunSize),
+                        clock.Daylight ? StatusPaint.Day : StatusPaint.Night, backColor, Dpi);
+                    TextRenderer.DrawText(g, clock.Time, Bold, new Rectangle(timeX, y, timeWidth, first), StatusPaint.Ink, OneLine);
+                    if (showSeason) TextRenderer.DrawText(g, clock.SeasonText, Font, new Rectangle(seasonX, y, seasonWidth, first), StatusPaint.Muted, OneLine);
+                    if (showZone) TextRenderer.DrawText(g, clock.ZoneText, Font, new Rectangle(zoneX, y, zoneWidth, first), StatusPaint.Muted, OneLine);
+                }
 
                 var notesLeft = notesX;
                 if (card.Activity is { } activity && width > notesLeft) {

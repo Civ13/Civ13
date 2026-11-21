@@ -123,8 +123,9 @@
 
 // TRUE when every offset round (x, y, z) is free deep water inside the map.
 // hold: offsets of her hold, which must also find rock or deep water free on
-// the level below (sea_crossing_hold_ground).
-/proc/sea_crossing_fits(list/offsets, x, y, z, list/hold = null)
+// the level below (sea_crossing_hold_ground). upper: offsets of her upper
+// deck, which must find open air free on the building level above.
+/proc/sea_crossing_fits(list/offsets, x, y, z, list/hold = null, list/upper = null)
 	for (var/list/O in offsets)
 		var/turf/T = locate(x + O[1], y + O[2], z)
 		if (!T || !sea_crossing_water(T))
@@ -136,6 +137,13 @@
 		for (var/list/O in hold)
 			if (!sea_crossing_hold_ground(locate(x + O[1], y + O[2], lz)))
 				return FALSE
+	if (length(upper))
+		var/uz = building_upper_z(z)
+		if (!uz)
+			return FALSE
+		for (var/list/O in upper)
+			if (built_hull_upper_refusal(locate(x + O[1], y + O[2], uz)))
+				return FALSE
 	return TRUE
 
 // The offsets of a record's hold tiles, or an empty list.
@@ -145,9 +153,16 @@
 		for (var/list/tile in R["hold"])
 			. += list(list(tile[1], tile[2]))
 
+// The offsets of a record's upper deck tiles, or an empty list.
+/proc/sea_crossing_upper_offsets(list/R)
+	. = list()
+	if (islist(R) && islist(R["upper"]))
+		for (var/list/tile in R["upper"])
+			. += list(list(tile[1], tile[2]))
+
 // Where a ship with these offsets is built: off the first side in sides that
 // has room, as near the edge as she fits. Returns a turf for her pivot, or null.
-/proc/sea_crossing_anchorage(list/offsets, list/sides, list/hold = null)
+/proc/sea_crossing_anchorage(list/offsets, list/sides, list/hold = null, list/upper = null)
 	var/list/B = list(0, 0, 0, 0)
 	for (var/list/O in offsets)
 		B[1] = min(B[1], O[1])
@@ -180,7 +195,7 @@
 					var/turf/P = locate(x, y, z)
 					if (!P || !sea_crossing_water(P))
 						continue
-					if (sea_crossing_fits(offsets, x, y, z, hold))
+					if (sea_crossing_fits(offsets, x, y, z, hold, upper))
 						return P
 	return null
 
@@ -196,6 +211,9 @@
 
 /proc/sea_crossing_cover_ok(path)
 	return ispath(path, /obj/covers) && !ispath(path, /obj/covers/repairedfloor/rope/boarding)
+
+/proc/sea_crossing_roof_ok(path)
+	return ispath(path, /obj/roof)
 
 /proc/sea_crossing_sail_ok(path)
 	return ispath(path, /obj/structure/vehicleparts/movement/sail)
@@ -217,7 +235,8 @@
 
 // Packs the hull of tiller T: list("record" = record, "crew" = humans aboard)
 // or a text reason. Writes nothing. Her hold (hull_hold.dm) packs as
-// record["hold"], tile by tile like her deck.
+// record["hold"], tile by tile like her deck, and her upper deck (the upper
+// faces of the roofs over her deck, built_body.dm) as record["upper"].
 /proc/sea_crossing_pack(obj/structure/hull_tiller/tiller)
 	var/datum/craft/C = tiller.craft
 	var/datum/craft_body/built/B = C ? C.body : null
@@ -228,8 +247,10 @@
 	var/list/S = list("crew" = list(), "refused" = list(), "blocking" = list(), "items" = 0, "cargo" = 0)
 	var/list/tiles = list()
 	var/list/hold = list()
+	var/list/upper = list()
 	var/list/deck = B.cells()
 	var/list/lower = B.lower_cells(deck)
+	var/list/above = B.upper_cells(deck)
 	for (var/i = 1, i <= B.offsets.len, i++)
 		var/list/O = B.offsets[i]
 		var/turf/T = deck[i]
@@ -239,6 +260,9 @@
 		var/turf/L = lower[i]
 		if (L)
 			hold += list(list(O[1], O[2], sea_crossing_pack_tile(L, tiller, S)))
+		var/turf/U = above[i]
+		if (U)
+			upper += list(list(O[1], O[2], sea_crossing_pack_tile(U, tiller, S, T)))
 	var/list/refused = S["refused"]
 	if (refused.len)
 		sea_crossing_mark(S["blocking"])
@@ -251,6 +275,8 @@
 		"papers" = (C.register && C.register.party) ? C.register.register_state() : "", "tiles" = tiles, "helm" = "[tiller.type]")
 	if (hold.len)
 		record["hold"] = hold
+	if (upper.len)
+		record["upper"] = upper
 	// Her bilge, seams, patches and bottom cross with her (hull_ledger.dm).
 	if (C.ledger)
 		record["ledger"] = C.ledger.to_list()
@@ -258,9 +284,11 @@
 		return "She is too big and too laden to cross. Put some of her cargo ashore."
 	return list("record" = record, "crew" = S["crew"])
 
-// The deck entries for what stands on tile T of her deck or hold. S holds
-// what the whole packing gathers (see sea_crossing_pack).
-/proc/sea_crossing_pack_tile(turf/T, obj/structure/hull_tiller/tiller, list/S)
+// The deck entries for what stands on tile T of her deck, hold or upper deck.
+// S holds what the whole packing gathers (see sea_crossing_pack). below: for
+// a tile of her upper deck, the deck tile under it, whose roof the floor here
+// is the upper face of.
+/proc/sea_crossing_pack_tile(turf/T, obj/structure/hull_tiller/tiller, list/S, turf/below = null)
 	var/list/entries = list()
 	var/list/crew = S["crew"]
 	var/list/refused = S["refused"]
@@ -297,7 +325,19 @@
 			continue
 		if (sea_crossing_cover_ok(M.type))
 			var/obj/covers/F = M
-			entries += list(list("c", "[F.type]", F.dir, clamp(round(F.health), 0, 1000000)))
+			// The upper face of the roof below is built again on that roof ("f").
+			var/obj/roof/face_of = below ? F.building_roof() : null
+			entries += list(list((face_of && face_of.loc == below) ? "f" : "c", "[F.type]", F.dir, clamp(round(F.health), 0, 1000000)))
+			continue
+		// A roof goes as a roof; the floor on top of a roof over her deck goes
+		// with her upper deck. A storey above that would be left in the air.
+		if (sea_crossing_roof_ok(M.type))
+			var/obj/roof/RF = M
+			if (below && RF.building_floor())
+				refused |= "the floor above \the [RF.name] on her upper deck"
+				blocking |= RF
+				continue
+			entries += list(list("u", "[RF.type]", clamp(round(RF.health), 0, 100000)))
 			continue
 		if (sea_crossing_sail_ok(M.type))
 			var/obj/structure/vehicleparts/movement/sail/SL = M
@@ -434,15 +474,30 @@ var/global/list/sea_crossing_marked = list()
 		for (var/key in below)
 			if (!seen[key])
 				return FALSE
+	// Her upper deck stands only over her own deck, and may be a ladder's top
+	// with no floor.
+	if (!isnull(R["upper"]))
+		var/list/upper = R["upper"]
+		var/list/hold_tiles = islist(R["hold"]) ? R["hold"] : list()
+		if (!islist(upper) || !upper.len || upper.len > tiles.len || tiles.len + hold_tiles.len + upper.len > BUILT_HULL_MAX_DECK_TILES)
+			return FALSE
+		var/list/up = sea_crossing_tiles_ok(upper, counts, FALSE)
+		if (!up)
+			return FALSE
+		for (var/key in up)
+			if (!seen[key])
+				return FALSE
 	var/has_pivot = counts[3]
 	var/items = counts[1]
 	var/cargo = counts[2]
 	return has_pivot && items <= SEA_CROSSING_ITEMS_MAX && cargo <= SEA_CROSSING_CARGO_MAX
 
-// The tile keys of a record's deck or hold tiles ("x,y" = TRUE), or null when
-// any tile is not well formed. counts gathers items, animals and structures,
-// and whether the pivot was seen: list(items, cargo, pivot).
-/proc/sea_crossing_tiles_ok(list/tiles, list/counts)
+// The tile keys of a record's deck, hold or upper deck tiles ("x,y" = TRUE),
+// or null when any tile is not well formed. counts gathers items, animals and
+// structures, and whether the pivot was seen: list(items, cargo, pivot).
+// floored: every tile has a floor; a tile of her upper deck may be only the
+// top of a ladder.
+/proc/sea_crossing_tiles_ok(list/tiles, list/counts, floored = TRUE)
 	var/list/seen = list()
 	var/has_pivot = FALSE
 	var/items = 0
@@ -464,10 +519,13 @@ var/global/list/sea_crossing_marked = list()
 			if (!islist(E) || !E.len)
 				return null
 			switch (E[1])
-				if ("c")
+				if ("c", "f")
 					if (E.len != 4 || !sea_crossing_cover_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !isnum(E[4]) || E[4] < 0 || E[4] > 1000000)
 						return null
 					floors++
+				if ("u")
+					if (E.len != 3 || !sea_crossing_roof_ok(text2path(E[2])) || !isnum(E[3]) || E[3] < 0 || E[3] > 100000)
+						return null
 				if ("s")
 					if ((E.len != 5 && E.len != 7) || !sea_crossing_sail_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !(E[4] in list(0, 1)) || !(E[5] in list(0, 1)))
 						return null
@@ -507,7 +565,7 @@ var/global/list/sea_crossing_marked = list()
 					cargo++
 				else
 					return null
-		if (!floors)
+		if (!floors && floored)
 			return null
 	counts[1] += items
 	counts[2] += cargo
@@ -556,15 +614,46 @@ var/global/list/sea_crossing_marked = list()
 				hold_made += thing
 	if (R["hold"] && !hollowed.len)
 		log_game("Sea crossing: no ground for the hold of the [R["name"]] at [pivot.x],[pivot.y],[pivot.z]; her hold cargo is stowed on deck.")
-	sea_crossing_couple_tanks(R, made + hold_made, pivot)
+	// Her upper deck goes on the roofs over her deck where the building level
+	// above has open air for it; where it has none, the roofs stay roofs and
+	// what stood up there is stowed on the deck below.
+	var/list/upper_made = list()
+	var/uz = building_upper_z(pivot.z)
+	var/stowed_upper = FALSE
+	for (var/list/tile in R["upper"])
+		var/turf/T = locate(pivot.x + tile[1], pivot.y + tile[2], pivot.z)
+		var/turf/U = uz ? locate(T.x, T.y, uz) : null
+		var/room = U && !built_hull_upper_refusal(U)
+		if (!room)
+			stowed_upper = TRUE
+		for (var/list/E in tile[3])
+			if (!room && (E[1] == "c" || E[1] == "f" || E[1] == "l"))
+				continue
+			var/atom/movable/thing = sea_crossing_build_entry(E, room ? U : T, skip_mobs)
+			if (!thing)
+				continue
+			upper_made += thing
+			// The roof under her upper face takes it again (building_levels.dm).
+			if (E[1] == "f")
+				var/obj/roof/RF = locate(/obj/roof) in T
+				if (!RF || RF.building_pair_id || !building_link(RF, thing))
+					upper_made -= thing
+					qdel(thing)
+				else if (istype(thing, /obj/covers/repairedfloor))
+					var/obj/covers/face = thing
+					face.building_take_upper_face(RF)
+	if (stowed_upper)
+		log_game("Sea crossing: no open air above the [R["name"]] at [pivot.x],[pivot.y],[pivot.z]; her upper deck cargo is stowed on deck.")
+	sea_crossing_couple_tanks(R, made + hold_made + upper_made, pivot)
 	// Each ladder finds its other end; one with none (its hold could not be
-	// hollowed here) is taken down.
-	for (var/obj/structure/multiz/ladder/LD in made + hold_made)
+	// hollowed or its upper deck built here) is taken down.
+	for (var/obj/structure/multiz/ladder/LD in made + hold_made + upper_made)
 		LD.find_target()
-	for (var/obj/structure/multiz/ladder/LD in made + hold_made)
+	for (var/obj/structure/multiz/ladder/LD in made + hold_made + upper_made)
 		if (!LD.target)
 			made -= LD
 			hold_made -= LD
+			upper_made -= LD
 			qdel(LD)
 	var/helm = istext(R["helm"]) ? text2path(R["helm"]) : null
 	if (!sea_crossing_helm_ok(helm))
@@ -574,7 +663,7 @@ var/global/list/sea_crossing_marked = list()
 	if (problem)
 		log_game("Sea crossing: the [R["name"]] could not be commissioned at [pivot.x],[pivot.y],[pivot.z]: [problem].")
 		qdel(tiller)
-		for (var/atom/movable/A in made + hold_made)
+		for (var/atom/movable/A in upper_made + made + hold_made)
 			if (QDELETED(A))
 				continue
 			if (istype(A, /obj/structure/closet) || istype(A, /mob))
@@ -611,7 +700,11 @@ var/global/list/sea_crossing_marked = list()
 /proc/sea_crossing_build_entry(list/E, turf/T, skip_mobs = FALSE, in_hold = FALSE)
 	var/path = E[1] == "i" ? null : text2path(E[2])
 	switch (E[1])
-		if ("c")
+		if ("u")
+			var/obj/roof/RF = new path(T)
+			RF.health = min(initial(RF.health), E[3])
+			return RF
+		if ("c", "f")
 			// A floor of her hold hollows its tile first (hull_hold.dm).
 			var/obj/covers/F = (in_hold && !istype(T, /turf/floor/plating/ship_hold)) ? hull_hold_lay(T, path) : new path(T)
 			if (!F)
@@ -683,7 +776,8 @@ var/global/list/sea_crossing_marked = list()
 	if (!islist(R) || !istype(T))
 		return
 	var/list/hold = islist(R["hold"]) ? R["hold"] : list()
-	for (var/list/tile in R["tiles"] + hold)
+	var/list/upper = islist(R["upper"]) ? R["upper"] : list()
+	for (var/list/tile in R["tiles"] + hold + upper)
 		for (var/list/E in tile[3])
 			if (E[1] == "k")
 				for (var/list/I in E[4])
@@ -707,29 +801,39 @@ var/global/list/sea_crossing_marked = list()
 	var/datum/craft_body/built/B = tiller.body()
 	if (!istype(B))
 		return parked
-	var/list/turfs = B.cells()
-	// Her hold goes too, and the ground it was hollowed from closes again (hull_hold.dm).
+	var/list/deck = B.cells()
+	// Her upper deck goes first, so nothing up there falls to a deck already
+	// cleared; her hold goes too, and the ground it was hollowed from closes
+	// again (hull_hold.dm).
+	var/list/turfs = list()
+	for (var/turf/U in B.upper_cells(deck))
+		turfs += U
+	turfs += deck
 	var/list/origin = list()
-	for (var/turf/L in B.lower_cells(turfs))
+	for (var/turf/L in B.lower_cells(deck))
 		var/obj/covers/HC = hull_hold_cover(L)
 		origin[L] = HC ? HC.hold_origin : "[/turf/wall/rockwall]"
 		turfs += L
 	tiller.decommission()
 	for (var/turf/T in turfs)
-		for (var/atom/movable/M in T)
-			if (cargo && M.loc == T && sea_crossing_packed_mob(M))
-				if (hold)
-					parked[M] = T
-					M.forceMove(hold)
-				else
-					sea_crossing_cargo_gone(M)
-				continue
-			if (M.loc != T || M == tiller || ismob(M) || istype(M, /obj/structure/region_gate) || !M.craft_cargo())
-				continue
-			if (istype(M, /obj/structure))
-				sea_crossing_empty(M, T)
-			if (istype(M, /obj/covers) || istype(M, /obj/item) || istype(M, /obj/structure) || istype(M, /obj/effect) || istype(M, /obj/machinery))
-				qdel(M)
+		// What stands on a tile first, then its floors and roofs.
+		for (var/pass = 1, pass <= 2, pass++)
+			for (var/atom/movable/M in T)
+				if ((pass == 2) != (istype(M, /obj/covers) || istype(M, /obj/roof)))
+					continue
+				if (cargo && M.loc == T && sea_crossing_packed_mob(M))
+					if (hold)
+						parked[M] = T
+						M.forceMove(hold)
+					else
+						sea_crossing_cargo_gone(M)
+					continue
+				if (M.loc != T || M == tiller || ismob(M) || istype(M, /obj/structure/region_gate) || !M.craft_cargo())
+					continue
+				if (istype(M, /obj/structure))
+					sea_crossing_empty(M, T)
+				if (istype(M, /obj/covers) || istype(M, /obj/roof) || istype(M, /obj/item) || istype(M, /obj/structure) || istype(M, /obj/effect) || istype(M, /obj/machinery))
+					qdel(M)
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
 	for (var/turf/L in origin)
@@ -796,9 +900,6 @@ var/global/list/sea_crossing_marked = list()
 	if (!craft)
 		return "She is not commissioned."
 	var/datum/craft_body/built/B = craft.body
-	// Only her own deck packs for the crossing; an upper deck would be lost.
-	if (istype(B) && B.upper_tile_count())
-		return "She cannot cross the sea with an upper deck yet. Take down the roofs over her deck first."
 	if (!istype(B))
 		return "She is not commissioned."
 	if (!admin_crossing && !B.at_map_edge())
@@ -1157,6 +1258,7 @@ var/global/list/sea_crossing_tillers = list()
 			offsets += list(list(tile[1], tile[2]))
 		var/turf/pivot = null
 		var/list/hold = sea_crossing_hold_offsets(R)
+		var/list/upper = sea_crossing_upper_offsets(R)
 		// A crossing refused at the far side comes back where she left, if the water is still free.
 		if (!incoming)
 			var/list/from = R["from"]
@@ -1164,15 +1266,16 @@ var/global/list/sea_crossing_tillers = list()
 				pivot = locate(from[1], from[2], from[3])
 		// Over a linked map edge (ship_edge_crossing.dm): the matching place on the facing edge.
 		if (!pivot && incoming && islist(P["sea_edge"]))
-			if (hold.len)
-				pivot = sea_edge_anchorage(offsets, P["sea_edge"], P["from"], hold)
+			if (hold.len || upper.len)
+				pivot = sea_edge_anchorage(offsets, P["sea_edge"], P["from"], hold, upper)
 			if (!pivot)
 				pivot = sea_edge_anchorage(offsets, P["sea_edge"], P["from"])
 		var/list/sides = incoming ? sea_crossing_sides(P["from"]) : cardinal
-		// Water with ground below for her hold first; failing that, any water
-		// (her hold cargo is then stowed on deck).
-		if (!pivot && hold.len)
-			pivot = sea_crossing_anchorage(offsets, sides, hold)
+		// Water with ground below for her hold and open air above for her
+		// upper deck first; failing that, any water (what her hold or upper
+		// deck carried is then stowed on deck).
+		if (!pivot && (hold.len || upper.len))
+			pivot = sea_crossing_anchorage(offsets, sides, hold, upper)
 		if (!pivot)
 			pivot = sea_crossing_anchorage(offsets, sides)
 		if (pivot)

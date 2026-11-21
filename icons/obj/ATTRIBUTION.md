@@ -45,6 +45,12 @@ umbrellas, lean-to) were drawn for Civ13 (2026-11-12), pixel by pixel from a fix
 palette by `tests/sprites/create_rain_gear.py`. No borrowed or generated artwork.
 They are under the same terms as the rest of Civ13's art.
 
+The `proof_cuirass` and `proof_do` states in `clothing/suits.dmi`, `resin_shield`
+in `clothing/ties.dmi` and their worn states in `icons/mob/suit.dmi` and
+`icons/mob/ties.dmi` were drawn for Civ13 by Fable (2026-11-21), pixel by pixel from
+fixed palettes by `tests/sprites/create_gun_armor.py`. No borrowed or generated
+artwork. They are under the same terms as the rest of Civ13's art.
+
 ## icons/mob/sea_life.dmi
 
 All states (`kelp_turtle`, `kelp_turtle_dead`, `reef_eel`, `reef_eel_hidden`,
