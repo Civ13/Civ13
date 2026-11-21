@@ -3127,6 +3127,12 @@ RECIPE: /material/iron/,iron picket fence,/obj/structure/grille/fence/steel_pick
 RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
 RECIPE: /material/iron/,chainlink fence,/obj/structure/grille/chainlinkfence,3,80,1,1,construction,120,0,0,8,null
 RECIPE: /material/iron/,metal sheet fence,/obj/structure/grille/metalsheetfence,3,80,1,1,construction,145,0,0,8,null
+RECIPE: /material/wood/soft/,wooden railing,/obj/structure/railing/built,2,40,0,1,railings,10,0,0,8,null
+RECIPE: /material/stone/,stone balustrade,/obj/structure/railing/built/stone,3,80,0,1,railings,20,0,0,8,null
+RECIPE: /material/sandstone/,sandstone balustrade,/obj/structure/railing/built/sandstone,3,80,0,1,railings,20,0,0,8,null
+RECIPE: /material/iron/,wrought iron railing,/obj/structure/railing/built/wrought_iron,2,60,0,1,railings,50,0,0,8,null
+RECIPE: /material/steel/,steel pipe railing,/obj/structure/railing/built/steel_pipe,2,60,0,1,railings,105,0,0,8,null
+RECIPE: /material/glass/,glass balustrade,/obj/structure/railing/built/glass,3,60,0,1,railings,145,0,0,8,null
 RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,construction,120,0,0,8,null
 
 //*********************| IRON PROJECTILES & BULLETS |**************************

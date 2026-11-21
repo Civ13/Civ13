@@ -1,0 +1,111 @@
+// Native probe: birth charts (code/game/mob/living/carbon/human/birth_charts.dm).
+// Run: python3 tests/ecology_spawning/run_linux.py . tests/character_traits/birth_chart_probe.dm
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 20
+	maxy = 20
+	maxz = 1
+	turf = /turf
+	area = /area
+	visibility = 0
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+/obj/map_metadata/bc_probe/New()
+	return
+/mob/living/human/bc_probe/New()
+	return
+/mob/living/human/bc_probe/update_icons()
+	return
+
+var/bc_failures = 0
+var/bc_runtime_error = FALSE
+/proc/bc_check(condition, label)
+	if (!condition)
+		bc_failures++
+	world.log << "[condition ? "PASS" : "FAIL"]: [label]"
+/world/Error(exception/e)
+	bc_runtime_error = TRUE
+	world.log << "runtime error [e] [e.file]:[e.line]"
+/world/New()
+	OpenPort("none")
+	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		movementMachine = new
+		map = new /obj/map_metadata/bc_probe
+		birth_chart_checks()
+	catch(var/exception/e)
+		bc_check(FALSE, "exception [e] [e.file]:[e.line]")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = bc_failures, "runtime_error" = bc_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
+	del(world)
+
+/proc/bc_human(gender = MALE, age = 22)
+	var/mob/living/human/bc_probe/H = new(locate(1, 1, 1))
+	H.stat = CONSCIOUS
+	H.gender = gender
+	H.age = age
+	return H
+
+/proc/birth_chart_checks()
+	// The catalog: twelve signs, each +10/+5/+5 and -10/-5/-5, zero sum.
+	bc_check(birth_chart_signs.len == 12, "twelve signs")
+	var/list/totals = list()
+	for (var/sign_id in birth_chart_signs)
+		var/list/offsets = birth_chart_signs[sign_id]["stats"]
+		var/sum = 0
+		var/list/sizes = list()
+		var/known = TRUE
+		for (var/statname in offsets)
+			sum += offsets[statname]
+			sizes += offsets[statname]
+			totals[statname] = (totals[statname] || 0) + offsets[statname]
+			if (!(statname in birth_chart_stats))
+				known = FALSE
+		bc_check(sum == 0, "[sign_id] nets to zero")
+		bc_check(offsets.len == 6 && (10 in sizes) && (-10 in sizes), "[sign_id] has three strengths and three weaknesses")
+		bc_check(known, "[sign_id] only uses chart stats")
+		bc_check(istext(birth_chart_summary(sign_id)), "[sign_id] has a summary")
+	var/worst = 0
+	for (var/statname in totals)
+		worst = max(worst, abs(totals[statname]))
+	bc_check(worst <= 10, "no stat favoured by more than 10 points across all signs")
+	bc_check(!("magic" in birth_chart_stats) && !("machinegun" in birth_chart_stats), "hidden and machinegun stats are never charted")
+
+	// Applying a named sign sets the lean, keeps the sign and leaves other stats alone.
+	var/mob/living/human/O = bc_human()
+	O.stats["machinegun"] = list(137, 137)
+	bc_check(O.apply_birth_chart("owl") == "owl" && O.birth_chart == "owl", "named sign is kept")
+	bc_check(O.stats["philosophy"][1] >= 105 && O.stats["philosophy"][1] <= 116, "owl: philosophy about 110")
+	bc_check(O.stats["strength"][1] >= 85 && O.stats["strength"][1] <= 96, "owl: strength about 90")
+	bc_check(O.stats["machinegun"][1] == 137, "unlisted stats untouched")
+	bc_check(O.stats["philosophy"][1] == O.stats["philosophy"][2], "current and max match")
+
+	// Unknown or missing signs roll a real one; all results stay in range.
+	var/in_range = TRUE
+	var/list/seen = list()
+	for (var/i in 1 to 300)
+		var/mob/living/human/R = bc_human(pick(MALE, FEMALE), rand(16, 70))
+		var/sign = R.apply_birth_chart(i % 2 ? null : "not a sign")
+		seen[sign] = TRUE
+		for (var/statname in birth_chart_stats)
+			var/value = R.stats[statname][1]
+			if (value < BIRTH_CHART_STAT_MIN || value > BIRTH_CHART_STAT_MAX)
+				in_range = FALSE
+		qdel(R)
+	bc_check(in_range, "starting stats stay within the clamp")
+	bc_check(seen.len == 12, "every sign can be rolled")
+
+	// A character from before charts gets a sign without any stat change.
+	var/mob/living/human/L = bc_human()
+	L.stats["crafting"] = list(173, 180)
+	L.ensure_birth_chart()
+	bc_check(birth_chart_valid(L.birth_chart), "legacy character gets a sign")
+	bc_check(L.stats["crafting"][1] == 173 && L.stats["crafting"][2] == 180, "legacy stats unchanged")
+	var/kept = L.birth_chart
+	L.ensure_birth_chart()
+	bc_check(L.birth_chart == kept, "a sign is never rerolled")
