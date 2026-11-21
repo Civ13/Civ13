@@ -162,6 +162,7 @@
 	var/decay_notice = abandonment_notice()
 	. = ..(user, distance, "", "It is a [size] item.[decay_notice]")
 	arcane_examine(user)
+	substance_examine(user) // faction_substances.dm
 
 /obj/item/attack_hand(mob/user as mob)
 	if (extraction_surface_source)

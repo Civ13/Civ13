@@ -260,6 +260,7 @@
 				lines += "[++i]. [law]"
 			if (!i)
 				lines += "[faction] has written no laws."
+			lines += map.substance_rule_lines(faction) // faction_substances.dm
 			to_chat(src, SPAN_NOTICE(jointext(lines, "<br>")))
 		if ("Read warrants, outlaws and fines")
 			var/list/lines = list("<b>Justice of [faction]</b>") + justice_list_text(faction, R, "warrants") + justice_list_text(faction, R, "outlaws") + justice_list_text(faction, R, "fines")
