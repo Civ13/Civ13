@@ -498,6 +498,7 @@ var/global/list/fishing_grounds_published = null
 		H.visible_message("[H] stands ready to spear a fish.")
 	else
 		H.visible_message(SPAN_NOTICE("[H] casts \the [W] into the water."), SPAN_NOTICE("You cast \the [W] into the water[baited ? " with bait on the line" : ""]."))
+		H.body_motion_throw(src, BODY_MOTION_FULL)
 	var/done = do_after(H, profile[1], src)
 	H.ocean_fishing = FALSE
 	if (!done || QDELETED(W) || W.loc != H || !Adjacent(H) || !H.fishing_footing())

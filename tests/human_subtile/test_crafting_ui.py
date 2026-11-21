@@ -200,6 +200,9 @@ def restore_crafting_projection(path, source):
             ('\t\t\t\t\tif (ishuman(user) && watertype == "water")\n\t\t\t\t\t\tvar/mob/living/human/drawer = user\n\t\t\t\t\t\tdrawer.arcane_drew_water(RG)\n', ''),
             # Hidden storm glass from sand dug near a lightning strike (tests/divine_approval/test_arcane_ward.py).
             ('\t\t\t\t\t\tH.arcane_dug_sand(T) // arcane_materials.dm: storm glass\n', ''),
+            # Body motion (tests/body_motion): kneeling while drinking from the ground.
+            ('\t\tvar/kneel = H.body_motion_kneel(src, 50, BODY_MOTION_FULL)\n\t\tvar/drank = do_after(H,50,src)\n\t\tif (kneel)\n\t\t\tH.body_motion_stop(kneel, 3)\n\t\tif (!drank)\n',
+             '\t\tif (!do_after(H,50,src))\n'),
         )
     else:
         edits = ()

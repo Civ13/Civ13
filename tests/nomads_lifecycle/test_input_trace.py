@@ -85,6 +85,7 @@ class InputTrace(unittest.TestCase):
         def crawl_block(delay, posture, message=''):
             return ('\tif (ishuman(src))\n'
                     '\t\tvar/mob/living/human/crawling_human = src\n'
+                    '\t\tcrawling_human.body_motion_crawl(' + delay + ')\n'  # body_motion.dm
                     '\t\ttry\n'
                     '\t\t\tif (crawling_human.human_subtile_crawl_move(F, ' + delay + ', "' + posture + '"))\n'
                     + message +

@@ -491,6 +491,7 @@
 	scrambling = TRUE
 	if (ishuman(src))
 		var/mob/living/human/crawling_human = src
+		crawling_human.body_motion_crawl(9*slowness)
 		try
 			if (crawling_human.human_subtile_crawl_move(F, 9*slowness, "scramble"))
 				visible_message("<span class = 'red'><b>[src]</b> crawls with difficulty!</span>")
@@ -538,6 +539,7 @@
 	var/prone_delay = get_prone_delay()
 	if (ishuman(src))
 		var/mob/living/human/crawling_human = src
+		crawling_human.body_motion_crawl(prone_delay)
 		try
 			if (crawling_human.human_subtile_crawl_move(F, prone_delay, "prone"))
 				scrambling = FALSE
