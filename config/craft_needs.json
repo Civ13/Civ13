@@ -331,6 +331,12 @@
       "/obj/item/stack/material/iron": 2
     }
   },
+  "/obj/item/stack/data_lan_cable/sealed": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/plastic": 1
+    }
+  },
   "/obj/structure/workshop_machine/hopper/power_loom": {
     "tools": [],
     "inputs": {
