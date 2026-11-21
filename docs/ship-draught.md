@@ -102,3 +102,16 @@ what is already built saves as ordinary objects. Several shipwrights can work
 at once, each fitting the next piece in turn, and a worker keeps going while
 the stack in hand pays (`add_draught_piece()`). Giving her up takes the
 draught off the post and leaves what is built.
+
+## Launching her
+
+`launch_draught()`. Laying a draught out already needs water ahead:
+`draught_landing()` finds the first slide, at most her length plus 12 tiles
+along the post's facing, that puts every berth tile on water with no floor,
+ship or solid thing there and no other floor alongside (she must float free).
+When she is finished, the post offers the launch. The tiles she slides over
+must be clear, a dry dock must be flooded, and her helm must still stand where
+the draught puts it. Her floored tiles are adopted by a temporary built body
+and moved in one slide (`move_to` with `slide_time`), carrying everyone and
+everything aboard; her tiller then commissions her under the draught's name
+with her bow along the ways. The post is cleared.
