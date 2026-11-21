@@ -825,6 +825,20 @@ class SourcePathTests(unittest.TestCase):
         equipment = extract(read('code/game/mob/living/carbon/human/inventory.dm'), '/mob/living/human/equip_to_slot')
         self.assertLess(equipment.index('if (W.loc != src) return FALSE'), equipment.index('switch(slot)'))
 
+    def test_planted_charge_keeps_live_target_or_original_turf(self):
+        source = read('code/game/objects/items/weapons/explosives.dm')
+        planting = extract(source, '/obj/item/weapon/plastique/afterattack')
+        snapshot = 'var/turf/planted_turf = get_turf(target)'
+        self.assertLess(planting.index('in_range(user, target)'), planting.index(snapshot))
+        self.assertLess(planting.index(snapshot), planting.index('if (!planted_turf) return FALSE'))
+        self.assertLess(planting.index('if (!planted_turf) return FALSE'), planting.index('commit_planting(user)'))
+        self.assertLess(planting.index('spawn(timer*10)'), planting.index('var/turf/current_turf'))
+        self.assertIn(
+            'var/turf/current_turf = get_turf(target)'
+            '\n\t\t\texplode(current_turf ? current_turf : planted_turf)',
+            planting,
+        )
+
     def test_delayed_attachments_admit_before_recording_relationships(self):
         source = read('code/modules/1713/punishment.dm')
         for family in ('noose', 'gallows', 'cross', 'pillory', 'post_execution'):
