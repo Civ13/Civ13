@@ -163,10 +163,15 @@
 
 // ---- building ----------------------------------------------------------------
 
-// Why a railing of new_type can't be built along side direction of T, or null.
-/proc/railing_build_refusal(turf/T, new_type, direction)
+// Why a railing of new_type can't be built along side `facing` of T, or null.
+// facing is a direction, or the builder, whose facing is the side.
+/proc/railing_build_refusal(turf/T, new_type, facing)
 	if (!T || !ispath(new_type, /obj/structure/railing))
 		return null
+	var/direction = facing
+	if (ismob(facing))
+		var/mob/M = facing
+		direction = M.dir
 	if (!(direction in cardinal))
 		return "Face the edge you want the railing along."
 	for (var/obj/structure/railing/R in T)
