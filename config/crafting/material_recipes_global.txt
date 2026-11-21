@@ -2539,6 +2539,7 @@ RECIPE: /material/wood/,pet door,/obj/item/door_feature/pet_door,2,40,0,1,constr
 RECIPE: /material/wood/,wooden shutters,/obj/structure/simple_door/key_door/anyone/window_shutters,4,50,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden trapdoor,/obj/item/trapdoor_kit,4,50,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,lever,/obj/structure/mechanism/lever,3,40,1,1,mechanisms,0,0,0,8,null
+RECIPE: /material/wood/,pulley block,/obj/structure/mechanism_pulley,3,40,1,1,mechanisms,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
