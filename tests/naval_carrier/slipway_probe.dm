@@ -296,9 +296,16 @@ var/naval_runtime_error = FALSE
 	// Abandoning a project clears the berth.
 	dock.lay_keel(freighter)
 	dock.pieces_done = 5
+	dock.paid = list("steel" = 4)
 	dock.update_frames()
-	dock.abandon()
+	var/list/back = dock.abandon()
 	naval_check(!dock.design && !dock.pieces_done && !slipway_frame_count(dock), "abandoning a project clears the berth")
+	var/steel_back = 0
+	for (var/obj/item/stack/material/steel/Back in get_turf(dock))
+		steel_back += Back.amount
+	naval_check(back["steel"] == 54 && steel_back == 54, "her two keel sections, three frames and the steel paid towards the next come back by the post ([steel_back])")
+	for (var/obj/item/stack/material/steel/Back in get_turf(dock))
+		qdel(Back)
 	naval_check(!naval_vessels.len, "no tile ship is left afloat, and no stray prototypes ([naval_vessels.len])")
 
 	// A schooner still afloat as a tile ship from before is turned into a built hull.
