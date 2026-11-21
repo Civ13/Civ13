@@ -112,6 +112,10 @@
 	else if (blood_DNA)
 		msg += "<span class='warning'>[T.He] [T.has] [(hand_blood_color != "#030303") ? "blood" : "oil"]-stained hands!</span>\n"
 
+	var/stance_line = combat_stance_examine_line(T)
+	if (stance_line)
+		msg += "[stance_line]\n"
+
 	//handcuffed?
 	if (handcuffed)
 		msg += "<span class='warning'>[T.He] [T.is] \icon[getFlatIcon(handcuffed)] handcuffed!</span>\n"

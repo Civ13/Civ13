@@ -574,6 +574,18 @@ SUITES = {
         'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/simple_animal/simple_animal.dm')},
+    # Combat stances: melee paths ask the stance, doll/hotkey/HUD wiring, agent tools.
+    'combat_stance': {'files': ('tests/combat_stance/test_sources.py',),
+        'paths': ('tests/combat_stance/', 'code/game/mob/combat_stance.dm', 'code/__defines/combat_stance.dm'),
+        'shared_paths': ('code/_onclick/item_attack.dm',
+                         'code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/game/mob/living/carbon/human/inventory.dm',
+                         'code/_onclick/hud/base_screen_objects.dm',
+                         'code/game/mob/living/carbon/human/examine.dm',
+                         'code/modules/agent_control/agent_stance.dm',
+                         'tools/agent-control/autopilot.py',
+                         'tools/agent-control/catalog.py')},
     # Training gear and the obstacle course: recipes, gates, hooks, saved fields and art.
     'active_training': {'files': ('tests/active_training/test_sources.py',),
         'paths': ('tests/active_training/', 'code/modules/1713/active_training.dm',

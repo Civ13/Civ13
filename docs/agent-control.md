@@ -362,7 +362,9 @@ walking. Riding a mount moves at the mount's pace.
 
 <a id="stance"></a>`stance` sets what players change with HUD buttons: `move` (`run`, `walk`,
 `sneak`, `crawl`), `defense` (`dodge`, `parry`), `tactic` (`charge`, `aim`,
-`rush`, `defend`), `secondary` (the middle-click attack: `kick`, `jump`,
+`rush`, `defend`), `combat` (the combat stance: `manual`, `measured`,
+`aggressive`, `disarming`, `low`, `guarded`; any but `manual` makes attacks
+pick their own body part), `secondary` (the middle-click attack: `kick`, `jump`,
 `bite`), `face_lock` and `aim` (gun aim mode), any of them in one step; the
 character's `stance` reports them. `equip` takes an optional `slot` (`back`,
 `belt`, `head`, `suit`, `uniform`, `shoes`, `gloves`, `mask`, `eyes`,

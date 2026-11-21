@@ -1075,9 +1075,8 @@ bullet_act
 	if(user == src)//Can't kick yourself dummy.
 		return
 
-	var/hit_zone = user.targeted_organ
-	if (user.targeted_organ == "random")
-		hit_zone = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+	var/hit_zone = user.resolve_attack_zone(src, null, COMBAT_ATTACK_KICK)
+	note_struck_by(user, hit_zone, "r_leg")
 	var/too_high_message = "You can't reach that high."
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if(!affecting || affecting.is_stump())
