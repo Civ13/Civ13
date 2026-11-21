@@ -268,6 +268,7 @@
 	config.seasons_on = E["seasons_on"]
 	processes.time_of_day.TOD_ticks = E["tod_ticks"]
 	TOD_may_automatically_change = E["tod_gate"]
+	world_calendar_restore()
 	map.research_clock_offset = E["research_clock"] - world.time
 	if(map.win_condition) map.win_condition.hash = E["win_hash"]
 	times_of_day = values[durable_state["times"]]
