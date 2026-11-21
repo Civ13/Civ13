@@ -277,6 +277,8 @@ class MechanicalPower(unittest.TestCase):
         want = {
             H + 'millstones': ('/material/stone/', 12, {GEAR: 1, SHAFT: 1}),
             H + 'sash_saw': ('/material/wood/', 10, {GEAR: 1, SHAFT: 1, '/obj/item/stack/material/iron': 2}),
+            H + 'fulling_stocks': ('/material/wood/', 10, {SHAFT: 1}),
+            H + 'bark_stamps': ('/material/wood/', 8, {SHAFT: 1, '/obj/item/stack/material/iron': 2}),
         }
         for path, (material, count, parts) in want.items():
             self.assertEqual(len(rows.get(path, [])), 1, path)
