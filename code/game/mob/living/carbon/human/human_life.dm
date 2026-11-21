@@ -526,11 +526,12 @@
 		eye_blurry = 1
 
 /mob/living/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
-	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
-		return
-	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
+	if (blocks_chemical_smoke())
 		return
 	..()
+
+/mob/living/human/proc/blocks_chemical_smoke()
+	return (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT)) || (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 
 /mob/living/human/handle_environment()
 
