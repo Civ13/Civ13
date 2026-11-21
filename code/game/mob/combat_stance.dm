@@ -35,14 +35,6 @@ var/global/list/combat_stance_blurbs = list(
 	COMBAT_STANCE_LOW = "You will go for the legs.",
 	COMBAT_STANCE_GUARDED = "You will keep your guard and answer the limb that strikes you.")
 
-// Short HUD label shown on the random/stance button.
-var/global/list/combat_stance_labels = list(
-	COMBAT_STANCE_MEASURED = "ME",
-	COMBAT_STANCE_AGGRESSIVE = "AG",
-	COMBAT_STANCE_DISARMING = "DS",
-	COMBAT_STANCE_LOW = "LO",
-	COMBAT_STANCE_GUARDED = "GU")
-
 // Zones an automatic pick may choose; eyes stay a deliberate aim.
 var/global/list/combat_auto_zones = list("head", "mouth", "chest", "groin",
 	"l_arm", "r_arm", "l_hand", "r_hand", "l_leg", "r_leg", "l_foot", "r_foot")

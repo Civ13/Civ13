@@ -418,17 +418,25 @@
 	..()
 	update_icon()
 
+// Names the current mode in text across the button's foot, like a stance
+// selector: Random or the combat stance; Manual shows the plain button.
 /obj/screen/zone_sel_random/update_icon()
 	maptext = null
 	name = "random damage zone"
+	var/label = null
 	if (parentmob.targeted_organ == "random")
 		icon_state = "random_on"
+		label = "Random"
 	else if (parentmob.combat_stance_active())
 		icon_state = "random_on"
-		name = "combat stance: [combat_stance_names[parentmob.combat_stance]]"
-		maptext = "<span style='font-family:Small Fonts;font-size:6px;color:#ffffff;-dm-text-outline:1px #000000'>[combat_stance_labels[parentmob.combat_stance]]</span>"
+		label = combat_stance_names[parentmob.combat_stance]
+		name = "combat stance: [label]"
 	else
 		icon_state = "random"
+	if (label)
+		maptext_width = 64
+		maptext_x = -16
+		maptext = "<span style='font-family:Small Fonts;font-size:6px;color:#ffffff;text-align:center;-dm-text-outline:1px #000000'>[label]</span>"
 //--------------------------------------------------RANDOM ZONE SELECT END---------------------------------------------------------
 /obj/screen/text
 	icon = null

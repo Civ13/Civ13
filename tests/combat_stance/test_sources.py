@@ -63,7 +63,8 @@ class CombatStanceSources(unittest.TestCase):
 
     def test_random_button_cycles_stances(self):
         self.assertIn('parentmob.set_combat_stance(combat_stance_order[1])', SCREENS)
-        self.assertIn('combat_stance_labels[parentmob.combat_stance]', SCREENS)
+        self.assertIn('label = combat_stance_names[parentmob.combat_stance]', SCREENS)
+        self.assertIn('label = "Random"', SCREENS)
 
     def test_examine_shows_stance(self):
         self.assertIn('combat_stance_examine_line(T)', EXAMINE)
