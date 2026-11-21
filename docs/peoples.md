@@ -76,11 +76,24 @@ A traveller carries the records of their people and every formed people it
 grew from (`tongues["peoples"]`). A land that has never heard of it records it
 as imported.
 
+## Born into a community
+
+A new character who starts among people is born into that community. The
+community is every living character with a people within 40 tiles of the
+start on the same level (`community_peoples()`, `PEOPLE_COMMUNITY_RANGE`); with
+fewer than 3 (`PEOPLE_COMMUNITY_MIN`) the start counts as the wild. Among
+people, the most common people there is the default and the player may pick
+any other people living there. In the wild, nothing changes: the root of the
+birthplace, or another root of the land.
+
+A character who returns close to where the account's last one died (the
+death legacy, docs/death-legacy.md) keeps that people, if it lives there or
+the start is in the wild. The death record carries `"people"` for this.
+
 ## Still to come
 
-Born into a community (new characters take the people of the settlement they
-start in), splits after long isolation with little contact between factions,
-blending in mixed settlements, "Raised among", and a family view of peoples.
+Splits after long isolation with little contact between factions, blending
+in mixed settlements, "Raised among", and a family view of peoples.
 
 ## Tests
 
