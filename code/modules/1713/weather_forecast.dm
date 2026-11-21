@@ -150,7 +150,9 @@ var/global/list/weather_vanes = list()
 /obj/structure/weather_vane/proc/turn_to_wind()
 	if (!map || sheltered())
 		return
-	var/look = "weather_vane_[lowertext(map.winddirection)]"
+	// Four arrow sprites: a diagonal wind shows its east or west half.
+	var/from = weather_wind_dir_at(src)
+	var/look = "weather_vane_[lowertext(dir2text(from & (EAST|WEST) ? from & (EAST|WEST) : from))]"
 	if (icon_state != look)
 		icon_state = look
 
@@ -161,7 +163,7 @@ var/global/list/weather_vanes = list()
 	if (sheltered())
 		to_chat(user, "It hangs still. A weather vane is no use under a roof.")
 		return
-	to_chat(user, "The wind is from the <b>[lowertext(map.winddirection)]</b>: [weather_wind_word(weather_wind_at(src))].")
+	to_chat(user, "The wind is from the <b>[weather_wind_heading(weather_wind_dir_at(src))]</b>: [weather_wind_word(weather_wind_at(src))].")
 	var/list/forecast = weather_forecast(src)
 	if (forecast["now"] >= WEATHER_BAND_LIGHT)
 		return

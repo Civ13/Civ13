@@ -104,7 +104,7 @@ var/global/weather_centre_serial = 0
 	C.radius = rand(round(max(world.maxx, world.maxy) * 0.25), round(max(world.maxx, world.maxy) * 0.5)) + 40
 	C.born = world.time
 	C.lifetime = rand(18000, 36000) // 30 to 60 minutes
-	var/list/wind = weather_wind_vector()
+	var/list/wind = weather_wind_unit()
 	// Centres drift slower than the storms they carry.
 	var/speed = weather_wind_speed() * 0.6
 	C.vel_x = wind[1] * speed
