@@ -64,7 +64,7 @@ var/global/list/region_travel_generic_defaults = list()
 /proc/region_travel_generic_type_ok(path, root = FALSE)
 	if(root && region_travel_generic_cargo_type_ok(path)) return TRUE
 	if(!ispath(path, /obj/item)) return FALSE
-	for(var/denied in list(/obj/item/weapon/grab, /obj/item/organ))
+	for(var/denied in list(/obj/item/weapon/grab, /obj/item/hand_hold, /obj/item/organ))
 		if(ispath(path, denied)) return FALSE
 	return TRUE
 

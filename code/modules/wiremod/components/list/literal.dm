@@ -38,7 +38,6 @@
 			if(length(value_inputs) >= CIRCUIT_MAX_LITERAL_ENTRIES)
 				return FALSE
 			value_inputs += append_input_port("Value [length(value_inputs) + 1]", PORT_TYPE_ANY)
-			build_list(null)
 			return TRUE
 		if("remove_entry")
 			if(length(value_inputs) <= 1)
@@ -46,6 +45,5 @@
 			var/datum/port/input/last_port = value_inputs[length(value_inputs)]
 			value_inputs -= last_port
 			remove_last_input_port()
-			build_list(null)
 			return TRUE
 	return FALSE

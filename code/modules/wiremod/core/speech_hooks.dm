@@ -40,14 +40,20 @@ var/global/list/obj/item/circuit_component/radio/wiremod_radios = list()
 				continue
 		else if(!candidate:receiver_on)
 			continue
+		// A structure radio sends and receives only with power.
+		if(istype(candidate, /obj/structure/radio))
+			var/obj/structure/radio/set_radio = candidate
+			if(set_radio.powerneeded > 0 && !set_radio.check_power())
+				continue
 		if(!isnull(frequency) && !wiremod_radio_tuned(candidate, frequency))
 			continue
 		return candidate
 	return null
 
-// TRUE when the radio's tuning covers a frequency.
+// TRUE when the radio's tuning covers a frequency. Frequencies are numbers or,
+// for faction radios such as "Red (private)", names.
 /proc/wiremod_radio_tuned(obj/radio, frequency)
-	if(!isnum(frequency) || !isnum(radio:freq))
+	if(!isnum(frequency) && !istext(frequency))
 		return FALSE
 	if(radio:multifreq)
 		return frequency in radio:multifreqlist

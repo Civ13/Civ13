@@ -122,10 +122,14 @@ var/datum/probe_globals/GLOB = new
 	var/static/regex/edges = regex(@"^\s+|\s+$", "g")
 	return edges.Replace(text, "")
 
-// Civ13's station clock is ten o'clock in this fixture. time2text's real
+// Civ13's station clock is one o'clock in this fixture. time2text's real
 // argument is wall-clock time, so the probe reads the ticks instead.
 /proc/probe_time2text(ticks, format)
-	return ticks == 36000 ? "10:00:00" : "00:00:00"
+	return ticks == 36000 ? "01:00:00" : "00:00:00"
+
+// Civ13's hear() returns what can be heard from a turf: here, what it can see.
+/proc/hear(range, atom/center)
+	return view(range, center)
 
 /proc/get_turf(atom/target)
 	while(target && !isturf(target))
@@ -168,6 +172,9 @@ var/datum/probe_globals/GLOB = new
 	var/light_color = null
 
 /atom/proc/visible_message(message)
+	probe_visible_messages += "[message]"
+
+/atom/proc/audible_message(message, deaf_message, hearing_distance)
 	probe_visible_messages += "[message]"
 
 /atom/proc/set_light(range, power, color)
@@ -232,6 +239,11 @@ var/datum/probe_globals/GLOB = new
 	var/transmitter_on = TRUE
 	var/multifreq = FALSE
 	var/list/multifreqlist = list(150)
+	var/powerneeded = 0
+	var/powered = TRUE
+
+/obj/structure/radio/proc/check_power()
+	return powered
 
 /proc/radio_broadcast(obj/R, msg, mob/living/human/speaker, verbage = "says", datum/source = null)
 	if(copytext(msg, 1, 2) == "*" || !R:transmitter || !R:transmitter_on)
@@ -433,11 +445,13 @@ var/datum/probe_globals/GLOB = new
 	display_name = "Probe Acceptor"
 	var/obj/item/circuit_component/list_loop/filter_list/target
 	var/datum/port/input/accept_input
+	var/calls = 0
 
 /obj/item/circuit_component/probe_acceptor/populate_ports()
 	accept_input = add_input_port("Accept", PORT_TYPE_SIGNAL, trigger = PROC_REF(accept))
 
 /obj/item/circuit_component/probe_acceptor/proc/accept(datum/port/input/input)
+	calls++
 	if(target)
 		target.accept_current(input)
 
@@ -660,6 +674,12 @@ var/datum/probe_globals/GLOB = new
 	check(output_value(to_number) == 42, "string to number")
 	enter(circuit, user, to_number, 1, "forty-two")
 	check(isnull(output_value(to_number)), "string to number rejects words")
+	enter(circuit, user, to_number, 1, "1e7")
+	check(output_value(to_number) == 10000000, "string to number reads an exponent")
+	enter(circuit, user, to_number, 1, "-.5")
+	check(output_value(to_number) == -0.5, "string to number reads a bare decimal point")
+	enter(circuit, user, to_number, 1, "1e")
+	check(isnull(output_value(to_number)), "string to number rejects an exponent with no digits")
 
 	var/obj/item/circuit_component/string_split/split = print(circuit, user, /obj/item/circuit_component/string_split)
 	wire(circuit, user, join, 1, split, 1)
@@ -688,6 +708,9 @@ var/datum/probe_globals/GLOB = new
 	check(islist(bag.value) && length(bag.value) == 1 && bag.value[1] == "black", "list add appends to the variable")
 	var/obj/item/circuit_component/list_remove/drop = print(circuit, user, /obj/item/circuit_component/list_remove)
 	enter(circuit, user, drop, 1, "bag")
+	set_port(drop, 2, list("black"))
+	act(circuit, user, "set_component_input", list("component_id" = drop.circuit_id, "port_id" = 3))
+	check(length(bag.value) == 1, "list remove removes nothing for a list value")
 	enter(circuit, user, drop, 2, "black")
 	act(circuit, user, "set_component_input", list("component_id" = drop.circuit_id, "port_id" = 3))
 	check(length(bag.value) == 0, "list remove takes from the variable")
@@ -1697,6 +1720,7 @@ var/datum/probe_globals/GLOB = new
 	act(circuit, user, "set_component_input", list("component_id" = maker.circuit_id, "port_id" = 1))
 	var/list/assoc = output_value(maker)
 	check(wiremod_is_assoc_list(assoc) && assoc["Name"] == "Bob", "associative list literal builds a list of pairs")
+	check(!wiremod_is_assoc_list(list("red", "blue")) && isnull(wiremod_safe_assoc_list(list("red", "blue"))), "a plain list of text is not an associative list")
 	var/obj/item/circuit_component/index_assoc/assoc_index = print(circuit, user, /obj/item/circuit_component/index_assoc)
 	wire(circuit, user, maker, 1, assoc_index, 1)
 	enter(circuit, user, assoc_index, 2, "Name")
@@ -1712,6 +1736,14 @@ var/datum/probe_globals/GLOB = new
 	wire(circuit, user, literal, 1, formatter, 1)
 	enter(circuit, user, formatter, 2, "First %1, then %2, then %9")
 	check(output_value(formatter) == "First red, then blue, then %9", "format list replaces numbered placeholders")
+	var/obj/item/circuit_component/probe_acceptor/literal_sink = new(circuit)
+	circuit.add_component(literal_sink)
+	literal_sink.accept_input.connect(literal.triggered)
+	check(literal.ui_perform_action("add_entry", user) && literal.ui_perform_action("remove_entry", user), "list literal can add and remove a slot")
+	check(literal.ui_perform_action("remove_entry", user), "list literal can remove a filled slot")
+	check(literal_sink.calls == 0 && jointext(output_value(literal), ",") == "red,blue", "slot edits keep the previous output and emit no signal")
+	literal.trigger.set_input(COMPONENT_SIGNAL)
+	check(literal_sink.calls == 1 && jointext(output_value(literal), ",") == "red", "explicit trigger publishes the edited list once")
 	var/obj/item/circuit_component/format_assoc_list/assoc_formatter = print(circuit, user, /obj/item/circuit_component/format_assoc_list)
 	wire(circuit, user, maker, 1, assoc_formatter, 1)
 	enter(circuit, user, assoc_formatter, 2, "Hello %Name, %Missing")
@@ -1750,7 +1782,7 @@ var/datum/probe_globals/GLOB = new
 
 	// The timepiece reads the station clock in both of its formats.
 	var/obj/item/circuit_component/timepiece/clockface = print(circuit, user, /obj/item/circuit_component/timepiece)
-	check(output_value(clockface, 1) == "10:00:00" && output_value(clockface, 2) == 0, "timepiece formats the station time and reads seconds")
+	check(output_value(clockface, 1) == "01:00:00" && output_value(clockface, 2) == 0, "timepiece formats the station time and reads seconds")
 	enter(circuit, user, clockface, 1, "Minutes")
 	check(output_value(clockface, 2) == 0, "timepiece reads minutes")
 	enter(circuit, user, clockface, 1, "Hours")

@@ -238,8 +238,13 @@
 	catch(var/exception/caught)
 		failure = caught
 	// Always reset, so a runtime in one component cannot leave the circuit
-	// queueing forever behind a stuck flag.
+	// queueing forever behind a stuck flag. A loop whose next step is dropped
+	// here would otherwise stay running and refuse every later trigger.
 	execution_queue.Cut()
+	for(var/datum/callback/dropped as anything in execution_continuations)
+		var/obj/item/circuit_component/list_loop/loop = dropped?.object
+		if(istype(loop))
+			loop.abandon_run()
 	execution_continuations.Cut()
 	is_executing = FALSE
 	if(queue_overflowed)
@@ -258,7 +263,9 @@
 	if(length(execution_continuations) >= CIRCUIT_MAX_EXECUTIONS)
 		queue_overflowed = TRUE
 		return FALSE
-	execution_continuations += callback
+	// Newest first: a loop nested inside another's step queues its own step
+	// after the outer one, and must finish before the outer loop moves on.
+	execution_continuations.Insert(1, callback)
 	return TRUE
 
 /obj/item/integrated_circuit/proc/overload()

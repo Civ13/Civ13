@@ -21,9 +21,11 @@
 	timer_id = null
 	if(QDELETED(src) || !parent)
 		return
-	output.set_output(COMPONENT_SIGNAL)
+	// Schedule the next tick before publishing, so a feedback chain from Output
+	// that restarts the clock replaces this timer instead of adding a second one.
 	if(isnum(on_input.value) && on_input.value > 0)
 		timer_id = addtimer(CALLBACK(src, PROC_REF(tick)), 9, TIMER_STOPPABLE)
+	output.set_output(COMPONENT_SIGNAL)
 
 /obj/item/circuit_component/clock/proc/stop_clock()
 	if(timer_id)

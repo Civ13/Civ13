@@ -2,12 +2,12 @@
 	name = "string to number component"
 	display_name = "String to Number"
 	category = "String"
-	desc = "Reads String as a number when the whole text is a number, such as 12 or -3.5. Text with anything else in it leaves Number empty."
+	desc = "Reads String as a number when the whole text is a number, such as 12, -3.5 or 1e7. Text with anything else in it leaves Number empty."
 
 	var/datum/port/input/value_input
 	var/datum/port/output/result
 	var/datum/port/output/triggered
-	var/static/regex/numeric = regex(@"^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$")
+	var/static/regex/numeric = regex(@"^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$")
 
 /obj/item/circuit_component/string_to_number/populate_ports()
 	value_input = add_input_port("String", PORT_TYPE_STRING, trigger = PROC_REF(convert_number))

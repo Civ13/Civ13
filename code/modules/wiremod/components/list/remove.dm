@@ -28,7 +28,8 @@
 		var/list/stored = variable.value
 		var/list/entries = islist(stored) ? stored.Copy() : list()
 		var/value = wiremod_safe_value(value_input.value)
-		if(!isnull(value))
+		// A list Value would remove each of its entries, so it removes nothing.
+		if(!isnull(value) && !islist(value))
 			entries -= value
 			variable.set_value(entries)
 	triggered.set_output(COMPONENT_SIGNAL)

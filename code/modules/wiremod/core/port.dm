@@ -123,7 +123,9 @@
 // whose handler would only copy it the same list is kept. Every other value is
 // converted as usual.
 /datum/port/input/proc/receive_from(datum/port/output/output)
-	if(islist(output.value) && !options && datatype_handler.keeps_port_lists)
+	// An associative list reaching a plain list input is converted, so it arrives
+	// flat whichever path delivered it.
+	if(islist(output.value) && !options && datatype_handler.keeps_port_lists && !(datatype == PORT_TYPE_LIST && wiremod_is_assoc_list(output.value)))
 		hold(output.value)
 	else
 		set_value(output.value)

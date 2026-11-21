@@ -46,7 +46,7 @@
 		return names
 	for(var/variable_name in circuit.circuit_variables)
 		var/datum/circuit_variable/variable = circuit.circuit_variables[variable_name]
-		if(variable.is_list)
+		if(variable.port_datatype == PORT_TYPE_LIST)
 			names += variable_name
 	return names
 
@@ -55,4 +55,4 @@
 	if(!istype(circuit) || !istext(variable_name) || !(variable_name in circuit.circuit_variables))
 		return null
 	var/datum/circuit_variable/variable = circuit.circuit_variables[variable_name]
-	return variable.is_list ? variable : null
+	return variable.port_datatype == PORT_TYPE_LIST ? variable : null

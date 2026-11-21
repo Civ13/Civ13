@@ -825,7 +825,10 @@ default behaviour is:
 				qdel(G)
 			if (GRAB_AGGRESSIVE)
 				if (prob(19)) //same chance of breaking the grab as disarm
-					visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s grip!</span>", "<span class='warning'>You have broken free of [G.assailant]'s grip!</span>")
+					if (G.hand_partner)
+						visible_message("<span class='warning'>[src] has pulled their hand free of [G.assailant]'s grip!</span>", "<span class='warning'>You have pulled your hand free of [G.assailant]'s grip!</span>")
+					else
+						visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s grip!</span>", "<span class='warning'>You have broken free of [G.assailant]'s grip!</span>")
 					qdel(G)
 			if (GRAB_NECK)
 				//If you move when grabbing someone then it's easier for them to break free. Same if the affected mob is immune to stun.

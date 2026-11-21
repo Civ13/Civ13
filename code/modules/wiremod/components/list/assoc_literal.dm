@@ -44,7 +44,6 @@
 			var/position = length(key_inputs) + 1
 			key_inputs += append_input_port("Key [position]", PORT_TYPE_STRING)
 			value_inputs += append_input_port("Value [position]", PORT_TYPE_ANY)
-			build_list(null)
 			return TRUE
 		if("remove_pair")
 			if(length(key_inputs) <= 1)
@@ -55,6 +54,5 @@
 			var/datum/port/input/last_key = key_inputs[length(key_inputs)]
 			key_inputs -= last_key
 			remove_last_input_port()
-			build_list(null)
 			return TRUE
 	return FALSE

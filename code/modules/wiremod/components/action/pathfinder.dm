@@ -40,16 +40,20 @@
 		next_turf = null
 		cached_destination = null
 		return finish()
+	var/fresh_route = FALSE
 	if(destination != cached_destination || !length(path))
 		if(!build_path(here, destination))
 			return fail()
-	// The shell has reached the step it was given, so the route moves on.
-	if(next_turf && here == next_turf)
-		path.Cut(1, 2)
-		next_turf = length(path) ? path[1] : null
-	// The shell wandered off the route, so the route is worked out again.
-	else if(next_turf && here != next_turf)
-		if(!build_path(here, destination))
+		fresh_route = TRUE
+	// A route just worked out already starts from the shell, so only a cached
+	// route is checked against where the shell now is.
+	if(!fresh_route && next_turf)
+		// The shell has reached the step it was given, so the route moves on.
+		if(here == next_turf)
+			path.Cut(1, 2)
+			next_turf = length(path) ? path[1] : null
+		// The shell wandered off the route, so the route is worked out again.
+		else if(!build_path(here, destination))
 			return fail()
 	if(!next_turf)
 		return finish()

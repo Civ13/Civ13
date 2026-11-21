@@ -58,7 +58,7 @@
 	wiremod_radio_heard(frequency, message, speaker, src)
 
 /obj/item/circuit_component/radio/proc/receive_transmission(frequency, message, mob/speaker)
-	if(frequency != current_frequency())
+	if(frequency != current_frequency() || !wiremod_shell(parent))
 		return
 	message_output.set_output(wiremod_safe_text(message))
 	speaker_output.set_output(speaker ? WEAKREF(speaker) : null)

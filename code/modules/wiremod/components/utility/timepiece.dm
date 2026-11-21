@@ -19,12 +19,14 @@
 	read_clock()
 
 /obj/item/circuit_component/timepiece/proc/read_clock(datum/port/input/input)
-	var/ticks = station_time_in_ticks
-	format_output.set_output(wiremod_safe_text(time2text(ticks, "hh:mm:ss")))
+	// Every output reads the same clock text, so the numbers always match what
+	// Time Format shows, whatever time zone the host keeps.
+	var/clock = time2text(station_time_in_ticks, "hh:mm:ss")
+	format_output.set_output(wiremod_safe_text(clock))
 	switch(unit_input.value)
 		if("Hours")
-			unit_output.set_output(wiremod_safe_number(round(ticks / 36000)))
+			unit_output.set_output(wiremod_safe_number(text2num(copytext(clock, 1, 3))))
 		if("Minutes")
-			unit_output.set_output(wiremod_safe_number(round((ticks / 600) % 60)))
+			unit_output.set_output(wiremod_safe_number(text2num(copytext(clock, 4, 6))))
 		else
-			unit_output.set_output(wiremod_safe_number(round((ticks / 10) % 60)))
+			unit_output.set_output(wiremod_safe_number(text2num(copytext(clock, 7, 9))))
