@@ -337,14 +337,7 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 				to_chat(user,  SPAN_WARNING("You can't apply a splint to the arm you're using!"))
 				return
 			user.visible_message(SPAN_NOTICE("[user] starts to apply \the [src] to their [limb]."), SPAN_DANGER("You start to apply \the [src] to your [limb]."), SPAN_DANGER("You hear something being wrapped."))
-		var/kneel = 0
-		var/mob/living/human/healer = user
-		if (istype(healer) && healer != M)
-			kneel = healer.body_motion_kneel(M, 50)
-		var/splinted = do_mob(user, M, 50)
-		if (kneel)
-			healer.body_motion_stop(kneel, 3)
-		if (splinted)
+		if (kneel_wait(user, M, 50))
 			if (!splint_still_needed(H, affecting, user))
 				return
 			if (M != user)
@@ -358,6 +351,16 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 			affecting.status |= ORGAN_SPLINTED
 			use(1)
 		return
+
+// do_mob() with the healer kneeling beside the patient for the wait.
+/obj/item/stack/medical/proc/kneel_wait(mob/user, mob/living/M, time)
+	var/kneel = 0
+	var/mob/living/human/healer = user
+	if (istype(healer) && healer != M)
+		kneel = healer.body_motion_kneel(M, time)
+	. = do_mob(user, M, time)
+	if (kneel)
+		healer.body_motion_stop(kneel, 3)
 
 // After the wait: the patient is still in reach, the limb is still attached
 // and still needs a splint, and nobody else splinted it meanwhile.

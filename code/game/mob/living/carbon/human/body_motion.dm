@@ -374,12 +374,12 @@
 	var/list/keys
 	var/haul = body_motion_haul_dir()
 	if (haul && (m_intent == "walk" || m_intent == "run"))
-		// Hauling something heavy: a 6 degree heave away from the load on the
+		// Hauling something heavy: an 8 degree heave away from the load on the
 		// step, held, then eased back. North and south shift 1px instead. 7 ds.
 		var/list/f = body_motion_forward(haul)
 		return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_REDUCED, list(
-			list(0, f[2], 6 * f[3], 1, 2, QUAD_EASING | EASE_OUT),
-			list(0, f[2], 6 * f[3], 1, 3, LINEAR_EASING),
+			list(0, f[2], 8 * f[3], 1, 2, QUAD_EASING | EASE_OUT),
+			list(0, f[2], 8 * f[3], 1, 3, LINEAR_EASING),
 			list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
 	var/drag = body_motion_terrain_drags()
 	if (m_intent == "run")
@@ -476,7 +476,7 @@
 		list(f[1], f[2], 0, 0.88, 2, SINE_EASING | EASE_OUT),
 		list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
 
-// Kneeling to treat someone: squash low and 1px toward the patient over 3 ds,
+// Kneeling to treat someone: squash lower than a stoop and 1px toward the patient over 3 ds,
 // hold for the treatment, then rise over 3 ds. Kept at REDUCED: it shows who
 // is treating. Returns the motion's serial for body_motion_stop(serial, 3),
 // or 0 when none played.
@@ -487,7 +487,7 @@
 	var/direction = (T && T != get_turf(src)) ? get_dir(src, T) : dir
 	var/list/f = body_motion_forward(direction)
 	var/played = body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_REDUCED, list(
-		list(f[1], f[2], 0, 0.85, 3, SINE_EASING | EASE_OUT),
-		list(f[1], f[2], 0, 0.85, max(1, duration), LINEAR_EASING),
+		list(f[1], f[2], 0, 0.8, 3, SINE_EASING | EASE_OUT),
+		list(f[1], f[2], 0, 0.8, max(1, duration), LINEAR_EASING),
 		list(0, 0, 0, 1, 3, SINE_EASING | EASE_IN)))
 	return played ? body_motion_serial : 0

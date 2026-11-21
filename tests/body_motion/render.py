@@ -426,7 +426,7 @@ def main():
     # 10. Firing, throwing, shoves, stooping, kneeling and hauling.
     for mine, name in ((matrix(-2, 0, -5), 'fire_east'), (matrix(3, 0, 6), 'throw_east'),
                        (matrix(4, 0, 10), 'shove_east'), (matrix(1, 0, 0, squash=0.88), 'stoop_east'),
-                       (matrix(1, 0, 0, squash=0.85), 'kneel_east'), (matrix(0, 0, 6), 'haul_east')):
+                       (matrix(1, 0, 0, squash=0.8), 'kneel_east'), (matrix(0, 0, 8), 'haul_east')):
         assert all(abs(x - y) < 1e-3 for x, y in zip(mine, keys[name])), name
     fire = keys_track([(-2, 0, -5, 1, 1, 'quad_out'), (0, 0, 0, 1, 2, 'quad_in')])
     fire_big = keys_track([(-3, 0, -5, 1, 1, 'quad_out'), (0, 0, 0, 1, 2, 'quad_in')])
@@ -434,8 +434,8 @@ def main():
     throw_s = keys_track([(0, 1, 0, 1, 1, 'linear'), (0, -3, 0, 0.96, 1, 'quad_out'), (0, 0, 0, 1, 2, 'quad_in')])
     shoved = keys_track([(4, 0, 10, 1, 2, 'quad_out'), (0, 0, 0, 1, 3, 'sine_in')])
     stoop = keys_track([(1, 0, 0, 0.88, 2, 'sine_out'), (0, 0, 0, 1, 2, 'sine_in')])
-    kneel = keys_track([(1, 0, 0, 0.85, 3, 'sine_out'), (1, 0, 0, 0.85, 14, 'linear'), (0, 0, 0, 1, 3, 'sine_in')])
-    heave = keys_track([(0, 0, 6, 1, 2, 'quad_out'), (0, 0, 6, 1, 3, 'linear'), (0, 0, 0, 1, 2, 'sine_in')])
+    kneel = keys_track([(1, 0, 0, 0.8, 3, 'sine_out'), (1, 0, 0, 0.8, 14, 'linear'), (0, 0, 0, 1, 3, 'sine_in')])
+    heave = keys_track([(0, 0, 8, 1, 2, 'quad_out'), (0, 0, 8, 1, 3, 'linear'), (0, 0, 0, 1, 2, 'sine_in')])
     shove_push = offset_track([((6, 0), 1), ((0, 0), 2)])
     def shover(t):
         k = (t - 2) % 12
@@ -454,7 +454,7 @@ def main():
         ('Shoved: 4px, 10 deg away, 5 ds', [(east, 0, 1, hold(stand), shover), (east, 1, 1, repeat(shoved, 12, 5, start=3), None)], []),
         ('Pick up: stoop, 4 ds', [(east, 0.5, 1, repeat(stoop, 10, 4, start=2), None)], [(tool, 1.5, 1, lambda t: None if (t - 2) % 10 >= 2 and t >= 4 else (0, 0, 0.75, 1.0))]),
         ('Kneel to treat, held', [(east, 0.5, 1, repeat(kneel, 24, 20, start=2), None), (south, 1.5, 1, hold(lying), None)], []),
-        ('Hauling a body: heave 6 deg', [(east, 1.5, 1, repeat(heave, 8, 7), drag), (east, 0.5, 1, hold(lying), drag)], []),
+        ('Hauling a body: heave 8 deg', [(east, 1.5, 1, repeat(heave, 8, 7), drag), (east, 0.5, 1, hold(lying), drag)], []),
     ], 26, (3, 3)), out / 'actions.gif')
 
 

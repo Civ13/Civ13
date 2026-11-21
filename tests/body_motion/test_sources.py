@@ -171,8 +171,10 @@ class BodyMotionSources(unittest.TestCase):
         self.assertLess(treat.index('healer.body_motion_kneel(H, treat_time)'), treat.index('do_mob(user, H'))
         self.assertIn('healer.body_motion_stop(kneel, 3)', treat)
         splint = proc_body(med, '/obj/item/stack/medical/splint/attack(')
-        self.assertLess(splint.index('body_motion_kneel(M, 50)'), splint.index('do_mob(user, M, 50)'))
-        self.assertIn('healer.body_motion_stop(kneel, 3)', splint)
+        self.assertIn('if (kneel_wait(user, M, 50))', splint)
+        wait = proc_body(med, '/obj/item/stack/medical/proc/kneel_wait(')
+        self.assertLess(wait.index('healer.body_motion_kneel(M, time)'), wait.index('do_mob(user, M, time)'))
+        self.assertIn('healer.body_motion_stop(kneel, 3)', wait)
 
     def test_action_motion_budgets(self):
         fire = proc_body(MOTION, '/mob/living/human/proc/body_motion_fire(')
@@ -187,7 +189,7 @@ class BodyMotionSources(unittest.TestCase):
         kneel = proc_body(MOTION, '/mob/living/human/proc/body_motion_kneel(')
         self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_REDUCED', kneel)
         self.assertIn('!may_do_after || !may_do_mob', kneel)
-        self.assertIn('0.85, max(1, duration), LINEAR_EASING', kneel)
+        self.assertIn('0.8, max(1, duration), LINEAR_EASING', kneel)
         haul = proc_body(MOTION, '/mob/living/human/proc/body_motion_haul_dir(')
         self.assertIn('added * pull_drag_mult() < 1', haul)
         stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')

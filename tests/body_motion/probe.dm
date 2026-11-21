@@ -459,8 +459,8 @@ var/body_motion_probe_checks = 0
 		"throw_east" = body_motion_probe_keys(body_motion_matrix(stand, 3, 0, 6)),
 		"shove_east" = body_motion_probe_keys(body_motion_matrix(stand, 4, 0, 10)),
 		"stoop_east" = body_motion_probe_keys(body_motion_matrix(stand, 1, 0, 0, 0.88)),
-		"kneel_east" = body_motion_probe_keys(body_motion_matrix(stand, 1, 0, 0, 0.85)),
-		"haul_east" = body_motion_probe_keys(body_motion_matrix(stand, 0, 0, 6)))
+		"kneel_east" = body_motion_probe_keys(body_motion_matrix(stand, 1, 0, 0, 0.8)),
+		"haul_east" = body_motion_probe_keys(body_motion_matrix(stand, 0, 0, 8)))
 	if (!text2file(json_encode(keys), "keys.json"))
 		throw EXCEPTION("render export failed: keys.json")
 
