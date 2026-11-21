@@ -203,6 +203,11 @@
 /proc/sea_crossing_bench_ok(path)
 	return ispath(path, /obj/structure/bed/chair/wood/rowing_bench)
 
+// Her gunwales, bulwarks and any other built railing cross as part of her
+// hull, not as cargo (hull_sides.dm).
+/proc/sea_crossing_rail_ok(path)
+	return ispath(path, /obj/structure/railing/built)
+
 /proc/sea_crossing_helm_ok(path)
 	return ispath(path, /obj/structure/hull_tiller)
 
@@ -305,6 +310,9 @@
 			continue
 		if (sea_crossing_bench_ok(M.type))
 			entries += list(list("o", "[M.type]", M.dir))
+			continue
+		if (sea_crossing_rail_ok(M.type))
+			entries += list(list("r", "[M.type]", M.dir))
 			continue
 		// A ladder between her deck and hold is built again in pairs.
 		if (sea_crossing_ladder_ok(M.type))
@@ -468,6 +476,9 @@ var/global/list/sea_crossing_marked = list()
 				if ("o")
 					if (E.len != 3 || !sea_crossing_bench_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)))
 						return null
+				if ("r")
+					if (E.len != 3 || !sea_crossing_rail_ok(text2path(E[2])) || !(E[3] in cardinal))
+						return null
 				if ("k")
 					if (E.len != 4 || !sea_crossing_closet_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !islist(E[4]) || length(E[4]) > SEA_CROSSING_CHEST_ITEMS_MAX)
 						return null
@@ -627,6 +638,10 @@ var/global/list/sea_crossing_marked = list()
 			var/obj/structure/bed/chair/wood/rowing_bench/O = new path(T)
 			O.set_dir(E[3])
 			return O
+		if ("r")
+			var/obj/structure/railing/R = new path(T)
+			R.set_dir(E[3])
+			return R
 		if ("k")
 			var/obj/structure/closet/K = new path(T)
 			K.dir = E[3]

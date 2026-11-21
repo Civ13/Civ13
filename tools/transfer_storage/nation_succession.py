@@ -99,7 +99,7 @@ class NationSuccession:
         for (nation,) in self.db.execute('SELECT nation FROM nation_government').fetchall():
             g = self.government(nation)
             info = self.government_info(nation)
-            if not g['head_account'] or not info['away']:
+            if not g['head_account'] or not info['away'] or self.frozen(nation):
                 continue
             seen = self.head_seen(nation) or g['since']
             if now - seen <= info['away'] * DAY:

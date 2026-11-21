@@ -683,6 +683,16 @@
       ]
     },
     {
+      "path": "code/modules/naval/ocean_regions.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/turf/floor/beach/water/deep/saltwater/breakers/CanPass(atom/movable/mover)",
+          "sha256_body": "9a221c654f5a9bff1487717bd8bf5229bc9dba81e25a7e5be9532d5fe4e810d4"
+        }
+      ]
+    },
+    {
       "path": "code/modules/naval/open_sea.dm",
       "declarations": [
         {

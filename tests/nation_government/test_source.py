@@ -137,6 +137,16 @@ class NationGovernmentSource(unittest.TestCase):
         self.assertIn('choices += "Revolt"', read('code/game/mob/groups/nation.dm'))
         self.assertIn("'sname'", read('tools/transfer_storage/region.py'))
 
+    def test_staff_panel_checks_rights_and_logs(self):
+        panel = read('code/modules/admin/nation_staff.dm')
+        self.assertGreaterEqual(panel.count('check_rights(R_ADMIN)'), 3)
+        self.assertIn('"op" = "staff"', panel)
+        self.assertIn('body["reason"] = reason', panel)
+        self.assertIn('log_admin(', panel)
+        self.assertIn('/datum/admins/proc/nation_staff_panel,', read('code/modules/admin/admin_verbs.dm'))
+        self.assertIn('#include "code\\modules\\admin\\nation_staff.dm"', read('civ13.dme'))
+        self.assertIn("request['op'] != 'staff'", read('tools/transfer_storage/region.py'))
+
     def test_head_presence_and_faith_are_reported(self):
         report = proc_text(self.text, '/proc/nation_succession_report(')
         self.assertIn('"op" = "present"', report)
