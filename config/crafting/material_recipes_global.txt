@@ -1560,6 +1560,8 @@ RECIPE: /material/wood/,river gauge,/obj/structure/river_gauge,2,60,1,1,construc
 RECIPE: /material/wood/,timber well lining,/obj/structure/sink/well/timber,4,150,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,windlass and pail,/obj/structure/well_fitting/windlass,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,deadfall trap,/obj/item/weapon/trap_kit/deadfall,2,60,0,1,none,0,0,0,8,null
+RECIPE: /material/stone/,pressure plate,/obj/item/mechanism_kit/pressure_plate,3,60,0,1,mechanisms,0,0,0,8,null
+RECIPE: /material/stone/,rock drop,/obj/structure/rock_drop,6,80,1,1,mechanisms,0,0,0,8,null
 RECIPE: /material/stone/,well,/obj/structure/sink/well,7,250,1,1,none,21,0,0,8,null
 RECIPE: /material/stone/,stone crusher,/obj/structure/stone_crusher,10,150,1,1,none,19,0,0,8,null
 RECIPE: /material/stone/,ashtray,/obj/item/weapon/material/ashtray/stone,3,30,0,1,none,14,0,0,8,null
@@ -1810,6 +1812,7 @@ RECIPE: /material/rope/,noose,/obj/structure/noose,1,20,1,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope handcuffs,/obj/item/weapon/handcuffs/rope,1,50,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,bola,/obj/item/weapon/legcuffs/bola,2,50,0,1,none,0,0,0,1,null
 RECIPE: /material/rope/,snare,/obj/item/weapon/trap_kit/snare,2,40,0,1,none,0,0,0,8,null
+RECIPE: /material/rope/,pull cord,/obj/structure/mechanism/pull_cord,1,30,1,1,mechanisms,0,0,0,8,null
 RECIPE: /material/rope/,fishing net,/obj/item/weapon/fishing/net,4,100,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,trawl net,/obj/item/weapon/fishing/trawl,12,200,0,1,none,0,0,0,8,null
 RECIPE: /material/rope/,rope hammock,/obj/structure/bed/hammock,6,180,1,1,furniture,0,0,0,8,rope
@@ -2544,6 +2547,7 @@ RECIPE: /material/wood/,bar brackets,/obj/item/door_brackets,2,40,0,1,constructi
 RECIPE: /material/wood/,pet door,/obj/item/door_feature/pet_door,2,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden shutters,/obj/structure/simple_door/key_door/anyone/window_shutters,4,50,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,wooden trapdoor,/obj/item/trapdoor_kit,4,50,0,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,lever,/obj/structure/mechanism/lever,3,40,1,1,mechanisms,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,floor cover,/obj/item/weapon/covers,2,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction,0,0,0,8,null
