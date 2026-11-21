@@ -16,14 +16,7 @@
 
 // The direction the wind blows from.
 /proc/wind_from_dir()
-	switch (map ? map.winddirection : "West")
-		if ("North")
-			return NORTH
-		if ("South")
-			return SOUTH
-		if ("East")
-			return EAST
-	return WEST
+	return weather_wind_from_dir(map?.winddirection)
 
 // The angle from the bow to where the wind blows from, to the nearest point
 // of sail: SAIL_POINT_BEATING (into the wind) to SAIL_POINT_RUNNING (dead
