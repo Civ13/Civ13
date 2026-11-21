@@ -26,12 +26,19 @@
 #define FINISH_TIME 40
 #define FINISH_WEAR_MULTIPLIER 0.75
 
-// finish id = list(name, wear it soaks up, examine text)
-var/global/list/item_finishes = list(
-	"lacquer" = list("lacquer", 150, "A deep, glossy coat of lacquer protects it from wear."),
-	"spirit_varnish" = list("spirit varnish", 80, "A glossy coat of varnish protects it from wear."))
+// finish id = list(name, wear it soaks up, examine text), or null. Built per
+// call, not held in a global: the world's global initializer is at the
+// compiler's size limit, so new globals with initial values break the build.
+#define ITEM_FINISH_IDS list("lacquer", "spirit_varnish")
+/proc/item_finish(id)
+	switch (id)
+		if ("lacquer")
+			return list("lacquer", 150, "A deep, glossy coat of lacquer protects it from wear.")
+		if ("spirit_varnish")
+			return list("spirit varnish", 80, "A glossy coat of varnish protects it from wear.")
+	return null
 
-/obj/item/var/finish = null // finish id (item_finishes), if any
+/obj/item/var/finish = null // finish id (item_finish()), if any
 /obj/item/var/finish_left = 0 // wear the coat can still soak up
 
 /datum/reagent/lacquer
@@ -132,7 +139,7 @@ var/global/list/item_finishes = list(
 	return "\The [I] is not wood or leather."
 
 /obj/item/proc/apply_finish(id)
-	var/list/data = item_finishes[id]
+	var/list/data = item_finish(id)
 	if (!data)
 		return FALSE
 	finish = id
@@ -152,8 +159,8 @@ var/global/list/item_finishes = list(
 
 /obj/item/examine(mob/user, var/distance = -1)
 	. = ..()
-	if (finish && item_finishes[finish])
-		to_chat(user, SPAN_NOTICE(item_finishes[finish][3]))
+	if (finish && item_finish(finish))
+		to_chat(user, SPAN_NOTICE(item_finish(finish)[3]))
 
 // The pot: a small brush pot for lacquer or varnish.
 /obj/item/weapon/reagent_containers/glass/finishing_pot
@@ -181,7 +188,7 @@ var/global/list/item_finishes = list(
 /obj/item/weapon/reagent_containers/glass/finishing_pot/proc/pot_finish()
 	if (!reagents)
 		return null
-	for (var/id in item_finishes)
+	for (var/id in ITEM_FINISH_IDS)
 		if (reagents.get_reagent_amount(id) >= FINISH_UNITS)
 			return id
 	return null
@@ -197,10 +204,10 @@ var/global/list/item_finishes = list(
 	if (!id)
 		to_chat(H, SPAN_WARNING("\The [src] needs [FINISH_UNITS] units of lacquer or spirit varnish."))
 		return FALSE
-	if (I.finish && I.finish_left >= item_finishes[I.finish][2] / 2)
-		to_chat(H, SPAN_NOTICE("\The [I] still has a good coat of [item_finishes[I.finish][1]]."))
+	if (I.finish && I.finish_left >= item_finish(I.finish)[2] / 2)
+		to_chat(H, SPAN_NOTICE("\The [I] still has a good coat of [item_finish(I.finish)[1]]."))
 		return FALSE
-	H.visible_message(SPAN_NOTICE("[H] brushes a coat of [item_finishes[id][1]] onto \the [I]."), SPAN_NOTICE("You brush a thin, even coat of [item_finishes[id][1]] onto \the [I]."))
+	H.visible_message(SPAN_NOTICE("[H] brushes a coat of [item_finish(id)[1]] onto \the [I]."), SPAN_NOTICE("You brush a thin, even coat of [item_finish(id)[1]] onto \the [I]."))
 	if (!finish_wait(H, I) || persistence_save_in_progress || QDELETED(I) || QDELETED(src) || loc != H || finish_refusal(I) || pot_finish() != id)
 		return FALSE
 	reagents.remove_reagent(id, FINISH_UNITS)
@@ -214,3 +221,4 @@ var/global/list/item_finishes = list(
 #undef FINISH_UNITS
 #undef FINISH_TIME
 #undef FINISH_WEAR_MULTIPLIER
+#undef ITEM_FINISH_IDS
