@@ -55,11 +55,11 @@ var/global/persistence_checkpoint_overdue_reported = FALSE
 		persistence_checkpoint_overdue_reported = TRUE
 		message_admins("The last completed world save is over four hours old; a checkpoint save is starting.")
 	persistence_checkpoint_running = TRUE
-	spawn(0)
-		persistence_run_checkpoint()
+	persistence_run_checkpoint()
 	return TRUE
 
 /proc/persistence_run_checkpoint()
+	set waitfor = FALSE // the loop carries on while the warning and save run
 	to_chat(world, "<font color='yellow' size=4><b>The world will be saved in about two minutes to keep everyone's progress safe. The game may pause briefly while it saves.</b></font>")
 	sleep(PERSISTENCE_CHECKPOINT_WARNING)
 	var/saved = FALSE
