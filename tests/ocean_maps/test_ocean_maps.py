@@ -122,12 +122,14 @@ class OceanMapTests(unittest.TestCase):
         self.assertEqual(lands, {'gaia', 'greenland'})
 
     def test_metadata_is_cheap_and_registered(self):
-        dm = (ROOT / 'code/modules/naval/ocean_regions.dm').read_text(encoding='utf-8')
+        dm = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_ocean.dm').read_text(encoding='utf-8')
         base = dm.split('/obj/map_metadata/nomads/ocean\n')[1].split('\n\n')[0]
         for line in ('dig_down_underground = FALSE', 'building_levels = 0', 'ecology_wildlife_cap = 0',
                      'wild_plant_cap = 0', 'new_player_start_z = 1'):
             self.assertIn(line, base)
-        self.assertIn('#include "code\\modules\\naval\\ocean_regions.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\naval\\ocean_regions.dm"', dme)
+        self.assertIn('#include "code\\game\\objects\\map_metadata\\nomads\\nomads_ocean.dm"', dme)
         defines = (ROOT / 'code/__defines/maps.dm').read_text(encoding='utf-8')
         durable = (ROOT / 'code/modules/persistence/durable_nomads.dm').read_text(encoding='utf-8')
         jobs = (ROOT / 'code/modules/1713/jobs/nomads.dm').read_text(encoding='utf-8')
