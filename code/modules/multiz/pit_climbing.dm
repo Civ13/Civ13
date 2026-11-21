@@ -211,7 +211,10 @@
 	if (dir != direction)
 		set_dir(direction)
 	visible_message(SPAN_NOTICE("[src] starts climbing toward the ledge above."))
-	if (!do_after(src, 30, start))
+	var/climb_motion = body_motion_climb(TRUE, 30)
+	var/climbed = do_after(src, 30, start)
+	body_motion_stop(climb_motion)
+	if (!climbed)
 		return FALSE
 	// Re-resolve terrain and actor admission after the interruptible wait.
 	if (get_turf(src) != start || dir != direction || ledge_climb_destination(src, direction) != destination)

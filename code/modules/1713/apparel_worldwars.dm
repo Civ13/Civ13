@@ -1792,9 +1792,13 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	value = 50
 	slowdown = 0.8
 
+// The Dayfield body shield (1917): steel plates sewn between layers of
+// resin-hardened cloth or silk (resin_laminate.dm). Made at the armor assembly
+// workbench. The light one stops shrapnel and pistol rounds; the heavy one is
+// rated against rifle fire but is a burden to wear.
 /obj/item/clothing/accessory/armor/modern/british
 	name = "Dayfield body-armor"
-	desc = "British-made wearable armor made of steel sheets."
+	desc = "A Dayfield body shield: steel plates sewn between layers of resin-hardened cloth. It stops shrapnel and pistol rounds."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_dayfield"
 	item_state = "modern_dayfield"
@@ -1802,6 +1806,15 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	armor = list(melee = 70, arrow = 90, gun = 40, energy = 12, bomb = 40, bio = 20, rad = 15)
 	value = 50
 	slowdown = 0.8
+
+/obj/item/clothing/accessory/armor/modern/british/heavy
+	name = "heavy Dayfield body-armor"
+	desc = "A heavy Dayfield body shield with thick steel plates between its resin-hardened layers. It can stop a rifle bullet, but it is very heavy."
+	icon_state = "modern_dayfield_heavy"
+	item_state = "modern_dayfield_heavy"
+	armor = list(melee = 75, arrow = 95, gun = 65, energy = 15, bomb = 50, bio = 20, rad = 15)
+	value = 80
+	slowdown = 1.6
 
 ///////////////other////////////////
 

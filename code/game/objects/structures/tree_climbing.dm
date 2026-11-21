@@ -215,7 +215,9 @@ var/global/list/tree_canopy_tops = list()
 		return FALSE
 	tree_climb_busy = TRUE
 	visible_message(SPAN_NOTICE("[src] starts climbing \the [W]."), SPAN_NOTICE("You start climbing \the [W]..."))
+	var/climb_motion = body_motion_climb(TRUE, TREE_CLIMB_TIME)
 	var/climbed = do_after(src, TREE_CLIMB_TIME, W)
+	body_motion_stop(climb_motion)
 	tree_climb_busy = FALSE
 	if (!climbed)
 		return FALSE
@@ -254,7 +256,9 @@ var/global/list/tree_canopy_tops = list()
 	var/obj/structure/wild/W = climbed_tree
 	tree_climb_busy = TRUE
 	to_chat(src, SPAN_NOTICE("You start climbing down \the [W]..."))
+	var/climb_motion = body_motion_climb(FALSE, TREE_CLIMB_DOWN_TIME)
 	var/done = do_after(src, TREE_CLIMB_DOWN_TIME, W)
+	body_motion_stop(climb_motion)
 	tree_climb_busy = FALSE
 	if (!done || climbed_tree != W)
 		return FALSE

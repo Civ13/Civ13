@@ -251,6 +251,25 @@ var/global/list/skill_mastery_milestones = list(
 		. += gained
 		to_chat(src, SPAN_NOTICE("<b>You have become \a [M[3]] at [statname].</b> What your hands know now, your mind keeps: you gain [round(gained, 0.1)] levels of [scholar_disciplines[discipline]]."))
 
+// First Master in any school pays Military Science once, like the body-skill
+// milestones above (martial_schools.dm names the levels). Returns the levels gained.
+/mob/living/human/proc/note_martial_mastery(levels)
+	. = 0
+	if (!learning_by_doing_enabled() || stat == DEAD)
+		return
+	var/key = skill_mastery_key("military", "school")
+	if (!islist(skill_mastery))
+		skill_mastery = list()
+	if (key in skill_mastery)
+		return
+	skill_mastery += key
+	if (!islist(scholarship))
+		scholarship = list()
+	var/before = scholar_level("military")
+	scholarship["military"] = min(SCHOLAR_MAX_LEVEL, round(before + levels, 0.01))
+	. = scholarship["military"] - before
+	to_chat(src, SPAN_NOTICE("<b>You have mastered a fighting school.</b> What your body knows now, your mind keeps: you gain [round(., 0.1)] levels of [scholar_disciplines["military"]]."))
+
 // ---------- Saved with the character ----------
 
 /mob/living/human/persistence_import_fields(list/saved_fields)

@@ -163,6 +163,8 @@ var/global/death_legacy_test_hours = 0
 	record["z"] = T.z
 	record["cause"] = cause[1]
 	record["name"] = "[H.real_name]"
+	if (istext(H.origin_id) && length(H.origin_id) <= 40)
+		record["people"] = H.origin_id // the next character returning here keeps it (peoples.dm)
 	record["nodes"] = clean_recipe_node_ids(H.known_recipe_nodes)
 	record["scholarship"] = clean_scholarship(H.scholarship)
 	record["reading"] = clean_study_progress(H.study_progress)
@@ -266,6 +268,8 @@ var/global/death_legacy_test_hours = 0
 				kept += value > STAT_NORMAL ? round(value - (value - STAT_NORMAL) * fraction, 0.01) : value
 			H.stats[stat] = kept
 	H.refresh_recipe_knowledge_menus()
+	if (istext(record["people"]))
+		H.legacy_people = record["people"] // read once by choose_origin (origins.dm)
 	to_chat(H, "<big><font color='#3d9e3d'><b>You remember what [record["name"]] knew.</b></font></big>")
 	to_chat(H, SPAN_NOTICE("Lost with that death: [death_legacy_loss_text(record["cause"], charged)][by_station ? "" : ", [round(2 ** bed_extra, 0.01)] times for starting at a bed instead of your faction's station"]. Another return within a day costs double."))
 	death_legacies[account] = list("at" = record["at"], "weak" = 0, "kept" = 0, "returns" = record["returns"] + 1, "used" = death_legacy_now())

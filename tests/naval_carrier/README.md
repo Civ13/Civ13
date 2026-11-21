@@ -319,7 +319,9 @@ An ocean world (`code/modules/naval/ocean_sites.dm`) on a 600 x 300 fixture:
 the same sites rolled on every start, clear of the edges; an islet raised
 when a ship comes near and gone after she leaves, rising the same again; a
 bunk kept as home, a mooring post and a world save each keeping it; a reef of
-shallows richer in fish than open sea; a wreck with salvage; a named sea mark.
+shallows richer in fish than open sea; a wreck with salvage; a named sea mark;
+a ship nobody has been aboard for a week foundering while a crewed one does not;
+and a ship off the Arctic's west edge coming out at its east edge.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ocean_sites_probe.dm 300
 

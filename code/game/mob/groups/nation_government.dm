@@ -849,7 +849,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 		lines += "[html_encode(nation_name_of(O["other"]))] offers [nation_treaty_name(O["kind"])]."
 	for (var/list/O in T["offers"]["made"])
 		lines += "This nation offers [nation_treaty_name(O["kind"])] to [html_encode(nation_name_of(O["other"]))]."
-	lines += "A treaty needs both nations to agree under their own governments, and an offer stands for 7 days. War is declared by one nation alone and ends any alliance or pact; peace needs both. Either nation may renounce an alliance, pact or trade treaty alone. [nation_treaty_rule(nid)]"
+	lines += "A treaty needs both nations to agree under their own governments, and an offer stands for 7 days. War is declared by one nation alone and ends any alliance or pact; peace needs both. Either nation may renounce an alliance, pact or trade treaty alone. Allies and pact partners never contest each other's provinces, a siege on another nation needs war, and allies at a besieged seat fight on their ally's side. [nation_treaty_rule(nid)]"
 	to_chat(src, jointext(lines, "<br>"))
 	if (!nation_may_propose(nid))
 		return
