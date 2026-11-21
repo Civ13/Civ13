@@ -104,17 +104,22 @@ var/global/list/heteromorph_kinds = null
 	heteromorph_granted_by = ckey(by_ckey)
 	heteromorph_cooldown_until = 0
 	heteromorph_log("[by_ckey] made [key_name(src)] a [K.name] ([colour]).")
+	heteromorph_refresh_verbs() // heteromorph_form.dm
 	return null
 
 /mob/living/human/proc/heteromorph_revoke(by_ckey)
 	var/datum/heteromorph/K = heteromorph_kind(heteromorph_id)
 	if (!heteromorph_id)
 		return FALSE
+	var/mob/living/simple_animal/heteromorph_form/F = loc
+	if (istype(F) && F.heteromorph_body == src)
+		F.heteromorph_return(FALSE, "Your true form is taken from you.") // heteromorph_form.dm
 	heteromorph_log("[by_ckey] took the [K ? K.name : heteromorph_id] form from [key_name(src)].")
 	heteromorph_id = null
 	heteromorph_colour = null
 	heteromorph_granted_by = null
 	heteromorph_cooldown_until = 0
+	heteromorph_refresh_verbs()
 	return TRUE
 
 // Every heteromorph event goes to the admin log and to staff online, so

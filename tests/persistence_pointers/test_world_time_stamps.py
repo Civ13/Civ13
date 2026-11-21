@@ -50,6 +50,7 @@ REVIEWED = {
     'familiar_last_use': 'declared var/tmp/list on humans (familiarity.dm), so never saved',
     'next_familiar_click': 'declared var/tmp on humans (familiarity.dm), so never saved',
     'spirit_hud_ends': 'declared var/tmp on ghosts (spirit_hud.dm), so never saved',
+    'heteromorph_started': 'declared var/tmp on heteromorph forms (heteromorph_form.dm); saves return every form to human first',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
