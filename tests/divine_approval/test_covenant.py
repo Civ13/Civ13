@@ -68,8 +68,12 @@ class Covenant(unittest.TestCase):
         dispatch = body(TEXT, '/proc/divine_dispatch(')
         for forbidden in ('revive', 'gib(', 'rejuvenate', 'death(', 'adjustOxyLoss', 'adjustToxLoss'):
             self.assertNotIn(forbidden, dispatch)
-        self.assertIn('target.heal_overall_damage(15, 15)', dispatch)
-        self.assertIn('target.adjustHalLoss(20)', dispatch)
+        # Base effects, raised at most x1.75 by a matching attuned component (strength 3).
+        self.assertIn('target.heal_overall_damage(round(15 * bonus), round(15 * bonus))', dispatch)
+        self.assertIn('target.adjustHalLoss(round(20 * bonus))', dispatch)
+        altars = (ROOT / 'code/modules/divine/arcane_altars.dm').read_text(encoding='utf-8')
+        self.assertIn('return 1 + 0.25 * component.arcane_strength', altars)
+        self.assertIn('clamp(round(strength), 1, 3)', (ROOT / 'code/modules/divine/arcane_materials.dm').read_text(encoding='utf-8'))
 
     def test_ordinary_gear_only(self):
         # Focus and components are ordinary items; nothing magical is created.
