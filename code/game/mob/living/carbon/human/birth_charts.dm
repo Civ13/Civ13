@@ -115,6 +115,19 @@ var/list/birth_chart_stats = list("strength", "dexterity", "stamina", "crafting"
 		return
 	add_note("Birth chart", summary)
 
+// The calling: the sign's +10 stat trains a little faster and its -10 stat a
+// little slower. trait_skill_gain_mult() uses it only when no trait already
+// changes that stat's training, so a sign never stacks with a trait.
+/mob/living/human/proc/birth_chart_gain_mult(statname)
+	if (!birth_chart_valid(birth_chart))
+		return 1
+	var/offset = birth_chart_signs[birth_chart]["stats"][statname]
+	if (offset >= 10)
+		return BIRTH_CHART_CALLING_FAST
+	if (offset <= -10)
+		return BIRTH_CHART_CALLING_SLOW
+	return 1
+
 // Choosing a sign is for Discord-verified accounts (the soft whitelist).
 // Fails closed: an unverified key, or a verified list not yet loaded, rolls.
 /proc/birth_chart_choice_allowed(client/C, sign_id)

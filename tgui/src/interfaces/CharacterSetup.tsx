@@ -227,7 +227,7 @@ function Chart({ ui }: { ui: UI }) {
   const living = !!ui.data.locked;
   return <>
     <Section title="Birth chart">
-      <p className="kit-hint">Every character is born under one of twelve signs. A sign leans your starting skills a little: three a bit stronger, three a bit weaker. Skills still grow with use as before.</p>
+      <p className="kit-hint">Every character is born under one of twelve signs. A sign leans your starting skills a little: three a bit stronger, three a bit weaker. Its first strength also trains a little faster and its first weakness a little slower, unless one of your traits already changes how fast that skill trains.</p>
       {living
         ? <NoticeBox>{current ? `This character was born under ${signs.find(sign => str(sign.id) === current)?.name ?? current}. A new character can be born under another sign.` : 'This character has no sign.'}</NoticeBox>
         : <div className="setup-chart-random">
