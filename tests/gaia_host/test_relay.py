@@ -231,6 +231,23 @@ class PipeTest(unittest.TestCase):
         self.assertEqual(self.world.received, [login])
         self.assertTrue(any(entry.get('capture') == login.hex() for entry in self.logged))
 
+    def test_piped_connections_send_small_frames_at_once(self):
+        # Nagle held BYOND's small frames back behind the relay (TDM Barracks, 2026-11-21).
+        seen = []
+        original = relay.no_delay
+
+        def record(sock):
+            original(sock)
+            seen.append(sock.getsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY))
+        relay.no_delay = record
+        try:
+            self.relay.routes.set('127.0.0.1', 'alice', self.world.port)
+            self.exchange(b'\x00\x01\x00\x04abcd')
+        finally:
+            relay.no_delay = original
+        self.assertEqual(2, len(seen), 'both the player and the world side')
+        self.assertTrue(all(seen))
+
     def test_unrouted_connection_is_closed(self):
         self.assertEqual(self.exchange(b'\x00\x01\x00\x04abcd'), b'')
         self.assertEqual(self.world.received, [])

@@ -82,6 +82,14 @@ def normal_ip(text):
     return str(address)
 
 
+def no_delay(sock):
+    """Turn Nagle's algorithm off on a piped connection; a socket that refuses it pipes as before."""
+    try:
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    except (OSError, AttributeError):
+        pass
+
+
 def loopback(text):
     address = normal_ip(text)
     return address is not None and ipaddress.ip_address(address).is_loopback
@@ -328,6 +336,11 @@ class Relay:
             if upstream is None:
                 self.log({'not_ready': port})
                 return
+            # BYOND sends small frames (each key press, each map update); Nagle held them
+            # back until the previous one was acknowledged, so play behind the relay felt
+            # laggy and choppy (TDM Barracks, 2026-11-21). Send each frame at once.
+            no_delay(connection)
+            no_delay(upstream)
             upstream.sendall(first)
             connection.settimeout(None)
             upstream.settimeout(None)
