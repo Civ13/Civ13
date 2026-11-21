@@ -358,8 +358,8 @@ RECIPE: /material/leather/,leather gloves,/obj/item/clothing/gloves/thick/leathe
 
 //*****************| LEATHER ARMOR |***************************
 
-RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,armor,0,16,21,8,null
 
 //RECIPE: /material/leather/,hatchigane headband,/obj/item/clothing/head/helmet/hatchigane,3,90,0,1,armor,0,16,21,3,null
 
@@ -375,7 +375,7 @@ RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather
 
 //RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,16,22,2,null
 
-RECIPE: /material/leather/,leather skullcap helmet,/obj/item/clothing/head/helmet/leather_skullcap,3,100,0,1,armor,0,27,27,3,null
+RECIPE: /material/leather/,leather skullcap helmet,/obj/item/clothing/head/helmet/leather_skullcap,3,100,0,1,armor,0,27,27,8,null
 
 //RECIPE: /material/leather/,steppe leather armor,/obj/item/clothing/suit/armor/medieval/steppe_leather,5,140,0,1,armor,0,33,28,3,null
 //RECIPE: /material/leather/,leather roundcap,/obj/item/clothing/head/roundcap,2,100,0,1,hats & masks,102,0,0,4,null
@@ -1128,7 +1128,7 @@ RECIPE: /material/lizardpelt/,shirtless lizard scale pants,/obj/item/clothing/un
 //*********************| GATORPELT |****************************
 
 RECIPE: /material/gatorpelt/,alligator pelt headcover,/obj/item/clothing/head/gatorpelt,3,150,0,1,none,0,0,0,8,null
-RECIPE: /material/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,3,null
+RECIPE: /material/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,8,null
 RECIPE: /material/gatorpelt/,alligator scale belt,/obj/item/weapon/storage/belt/gator_belt,3,80,0,1,none,0,0,102,7,null
 RECIPE: /material/gatorpelt/,alligator scale wallet,/obj/item/clothing/accessory/storage/coinpouch/gator_wallet,2,60,0,1,storage,102,0,0,8,null
 RECIPE: /material/gatorpelt/,alligator scale ankle boots,/obj/item/clothing/shoes/gator_ankleboots,3,60,0,1,foot wear,0,0,102,7,null
@@ -1929,8 +1929,8 @@ RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,
 
 //*********************| BRONZE ARMOR |*************************
 
-RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,1,bronze
-RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,2,bronze
+RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,8,bronze
+RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,8,bronze
 RECIPE: /material/bronze/,bronze dragoon helmet,/obj/item/clothing/head/helmet/napoleonic/dragoon,7,100,0,1,armor,0,88,92,3,null
 
 //*********************| BRONZE HEALTHCARE |*************************

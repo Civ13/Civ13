@@ -79,16 +79,22 @@ FROZEN_OBJECTS = ladder((0, 0, ['none', 'spear']), (1, 1, ['none', 'spear'] + SP
                         (7, 9, ['none', 'spear'] + ARMS + ['rifle', 'assault rifle']))
 JAPAN = ['japanese armor', 'japanese helmets', 'japanese headwear']
 IRON_MID = ['helmets', 'other helmets', 'armor', 'other armor', 'other weapons', 'sallet helmets'] + JAPAN
+# Armor never goes out of date (armor rework, 2026-11-21): iron keeps its
+# armor and helmet categories from era 4 on.
+IRON_LATE = ['helmets', 'other helmets', 'armor', 'other armor', 'sallet helmets'] + JAPAN
 FROZEN_IRON = ladder((0, 1, ['cancel', 'shields', 'helmets', 'armor']), (2, 2, ['cancel', 'shields'] + IRON_MID),
-                     (3, 3, ['cancel', 'guns'] + IRON_MID), (4, 5, ['cancel', 'helmets']), (8, 9, ['cancel', 'armor']),
+                     (3, 3, ['cancel', 'guns'] + IRON_MID), (4, 9, ['cancel'] + IRON_LATE),
                      default=['cancel'])
 # Emplaced machine guns joined the steel menu from the WW1 era on (2026-11-14).
-FROZEN_STEEL = ladder((2, 3, ['cancel'] + JAPAN + ['other weapons']), (4, 4, ['cancel', 'guns']),
-                      (5, 5, ['cancel', 'helmets', 'mk1 brodie', 'm15 adrian', 'machine guns']), (6, 6, ['cancel', 'helmets', 'machine guns']),
-                      (7, 7, ['cancel', 'helmets', 'ussr heavy visored helmets', 'guns', 'machine guns']),
-                      (8, 9, ['cancel', 'helmets', 'guns', 'machine guns']),
+# Steel forges armor (plated, samurai lord) in every era from 2 on.
+STEEL_ARMOR = ['armor'] + JAPAN
+FROZEN_STEEL = ladder((2, 3, ['cancel'] + STEEL_ARMOR + ['other weapons']), (4, 4, ['cancel', 'guns'] + STEEL_ARMOR),
+                      (5, 5, ['cancel', 'helmets', 'mk1 brodie', 'm15 adrian', 'machine guns'] + STEEL_ARMOR),
+                      (6, 6, ['cancel', 'helmets', 'machine guns'] + STEEL_ARMOR),
+                      (7, 7, ['cancel', 'helmets', 'ussr heavy visored helmets', 'guns', 'machine guns'] + STEEL_ARMOR),
+                      (8, 9, ['cancel', 'helmets', 'guns', 'machine guns'] + STEEL_ARMOR),
                       default=['cancel'])
-FROZEN_BRONZE = ladder((0, 2, ['cancel', 'shields', 'helmets', 'armor']), (3, 3, ['cancel', 'helmets']), default=['cancel'])
+FROZEN_BRONZE = ladder((0, 2, ['cancel', 'shields', 'helmets', 'armor']), (3, 9, ['cancel', 'helmets', 'armor']), default=['cancel'])
 
 
 class EraHelperTest(unittest.TestCase):

@@ -2,11 +2,11 @@
 // script and the unit tests read these, so a window's sample data lives in one
 // place. Names and text are invented for previews. Node runs this file as it is,
 // so it uses only type syntax that can be erased.
-import type { AppearanceData, CharacterSetupData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
+import type { AppearanceData, CharacterSetupData, HaircutData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
 import type { Data } from './types.ts';
 // Windows with a declared snapshot type; their fixtures are checked against it.
 type Typed = {
-  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
+  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'haircut.tmpl': HaircutData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
   'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'spawn_menu.tmpl': SpawnMenuData; 'storage_window.tmpl': StorageWindowData; 'warehouse_book.tmpl': WarehouseData;
   'vending_machine.tmpl': VendingData; 'vending_machine2.tmpl': VendingData; 'vending_machine_gulag.tmpl': VendingData; 'vending_machine_taotd.tmpl': VendingData;
 };
@@ -16,7 +16,7 @@ export const screens: Fixture[] = [];
 const sizes = {
   'appearance_changer.tmpl': [800, 450], 'book_reader.tmpl': [625, 650], 'character_flavor.tmpl': [500, 200], 'character_notes.tmpl': [625, 650], 'character_setup.tmpl': [860, 720],
   'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
-  'faction_creation.tmpl': [620, 900], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
+  'faction_creation.tmpl': [620, 900], 'haircut.tmpl': [800, 660], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
   'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
   'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'spawn_menu.tmpl': [640, 640], 'storage_window.tmpl': [760, 600], 'tech_tree.tmpl': [900, 680],
   'vending_machine.tmpl': [540, 600], 'vending_machine2.tmpl': [540, 600], 'vending_machine_gulag.tmpl': [540, 600], 'vending_machine_taotd.tmpl': [540, 600],
@@ -161,6 +161,15 @@ const setup: CharacterSetupData = {
 add('character-setup', 'character_setup.tmpl', setup, 'Character Setup');
 add('character-setup-traits', 'character_setup.tmpl', { ...setup, tab: 'traits' }, 'Character Setup');
 add('character-setup-settings', 'character_setup.tmpl', { ...setup, tab: 'settings' }, 'Character Setup');
+// Haircut: a long-haired, bearded character choosing among shorter styles.
+const cuts = (names: string[], lengths: number[], first: number) => names.map((name, i) => ({ name, length: lengths[i], row: first + i, tint: 1 }));
+const haircut: HaircutData = {
+  sheet: 'civ13_haircut_styles.png', body: 'haircut_sample.png', self: 1, name: 'Tomas Reed', hair: 'Shoulder-length Hair', beard: 'Full Beard', hair_color: '#603818', beard_color: '#603818', seconds: 8,
+  hair_styles: cuts(['Bald', 'Skinhead', 'Buzzcut', 'Short Hair', 'Cut Hair', 'Crewcut', 'Quiff', 'Bowl', 'Parted', 'Mohawk', 'Bedhead', 'Combover', 'Fade', 'Undercut', 'Half-banged Hair', 'Spiky', 'Dreadlocks', 'Shoulder-length Hair'], [0, 0, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 3, 3], 0),
+  beard_styles: cuts(['Shaved', '3 O\'clock Shadow', 'Goatee', 'Chinstrap', 'Mutton Chops', 'Medium Beard', 'Full Beard'], [0, 1, 1, 1, 2, 2, 3], 40),
+};
+add('haircut', 'haircut.tmpl', haircut, 'Haircut');
+add('haircut-barber', 'haircut.tmpl', { ...haircut, self: 0, beard_styles: [] }, 'Haircut');
 // Storage window: your things on the left, a basket, a chest and the floor on the right, one move running.
 const stor = (id: string, name: string, size_class: number, extra: Data = {}) => ({ id, name, size_class, size: ['', 'tiny', 'small', 'normal', 'large', 'bulky'][size_class], cost: [0, 1, 2, 4, 8, 16][size_class], image: '', ...extra });
 const storage: StorageWindowData = {
