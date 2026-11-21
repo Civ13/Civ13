@@ -365,6 +365,8 @@ var/global/list/anvil_recipes = list(
 
 			/*Imperial*/
 	"Imperial Chestplate" = list("Imperial Chestplate","armor",3,8,0,14,0,0,/obj/item/clothing/suit/armor/imperial/imperial_chestplate),
+	"Proof Cuirass" = list("Proof Cuirass","armor",3,8,16,0,0,0,/obj/item/clothing/suit/armor/proof_cuirass),
+	"Japanese Proof Do" = list("Japanese Proof Do","japanese armor",3,8,16,0,0,0,/obj/item/clothing/suit/armor/proof_cuirass/japanese),
 
 			/*Modern Iron Armor*/
 	"Scrap Armor" = list("Scrap Armor","armor",8,8,13,16,0,0,/obj/item/clothing/suit/armor/scrap),
