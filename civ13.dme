@@ -1564,6 +1564,8 @@
 #include "code\modules\collectibles\structures.dm"
 #include "code\modules\diet\diet.dm"
 #include "code\modules\divine\divine_book.dm"
+#include "code\modules\divine\divine_sight.dm"
+#include "code\modules\divine\divine_sight_panel.dm"
 #include "code\modules\divine\identity.dm"
 #include "code\modules\divine\approval.dm"
 #include "code\modules\divine\arcane_altars.dm"

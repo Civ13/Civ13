@@ -18,6 +18,7 @@ var/global/list/persistence_world_time_stamps = list(
 	"ram_tick" = list(/obj/structure/vehicleparts/axis),
 	"bellows_until" = list(/obj/structure/furnace),
 	"pumped_until" = list(/obj/structure/fluid_pump/hand),
+	"divine_manifest_until" = list(/mob/observer/ghost),
 	"next_job_fill" = list(/obj/structure/berth/quay/depot),
 	"last_moved" = list(/obj/structure/trains/platform),
 	"next_use" = list(/obj/structure/train_brake_wheel),
