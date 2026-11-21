@@ -1337,6 +1337,12 @@ SUITES = {
         'paths': ('tests/admin_player_map/',), 'shared_paths': (
             'code/modules/admin/verbs/player_map.dm', 'code/modules/1713/tactical_map.dm',
             'code/modules/admin/admin_verbs.dm')},
+    # Admin player list and per-player panel: wiring, rank guards, escaping and
+    # the list script run in Node (skipped without it); native_probe.py is
+    # developer evidence only.
+    'admin_player_panel': {'files': ('tests/admin_player_panel/test_admin_player_panel.py',),
+        'paths': ('tests/admin_player_panel/', 'code/modules/admin/player_panel_pages.dm'), 'shared_paths': (
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/topic.dm', 'code/modules/admin/admin.dm')},
     # Admin Hide Ghost / View As Player wiring and guards; offline only.
     'admin_spectate': {'files': ('tests/admin_spectate/test_admin_spectate.py',),
         'paths': ('tests/admin_spectate/',), 'shared_paths': (
@@ -1480,7 +1486,7 @@ SUITES = {
     'name_change': {'files': ('tests/name_change/test_source.py',),
         'paths': ('tests/name_change/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/name_change.dm', 'code/game/mob/groups/faction_papers.dm',
-            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/admin.dm',
+            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/player_panel_pages.dm',
             'code/game/objects/structures/key_doors/fitted_locks.dm', 'code/modules/1713/stone_age_traps.dm',
             'code/modules/craft/craft_register.dm', 'code/modules/persistence/region_travel.dm')},
     # Census, citizenship papers, passes and border doors (the native probe is tests/faction_papers/probe.dm).
