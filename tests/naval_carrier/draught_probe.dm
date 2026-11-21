@@ -589,6 +589,20 @@ var/naval_runtime_error = FALSE
 		naval_check(!figure.carving && figure.carve("wolf") && figure.name == "wolf figurehead" && !figure.carve("dragon"), "a figurehead is carved once, as one of its figures")
 		naval_check(ship_draught_piece_on(bow_turf, petrel_tiller) ~= list("F", figure.dir), "drawing her lines draws a figurehead")
 		qdel(figure)
+		// Her bowsprit's picture is centred on its tile by a fixed offset,
+		// which a turn must leave alone while its dir comes round with her.
+		var/obj/structure/vehicleparts/movement/sail/bowsprit/turned_sprit = new(bow_turf)
+		turned_sprit.set_dir(bow_dir)
+		var/sprit_turns = 0
+		var/sprit_square = (turned_sprit.pixel_x == -32 && turned_sprit.pixel_y == -32)
+		for (var/heading in list(turn(bow_dir, 90), turn(bow_dir, 180), turn(bow_dir, -90), bow_dir))
+			if (!petrel_craft.body.turn_to(heading))
+				continue
+			sprit_turns++
+			if (turned_sprit.dir != heading || turned_sprit.pixel_x != -32 || turned_sprit.pixel_y != -32)
+				sprit_square = FALSE
+		naval_check(sprit_turns == 4 && sprit_square, "turned to every heading, her bowsprit points ahead and keeps its picture centred on its tile ([sprit_turns] turns, [turned_sprit.pixel_x],[turned_sprit.pixel_y])")
+		qdel(turned_sprit)
 	qdel(petrel)
 	draught_design_checks()
 
