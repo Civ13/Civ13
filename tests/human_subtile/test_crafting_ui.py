@@ -195,6 +195,8 @@ def restore_crafting_projection(path, source):
             ('\t\t\tif (H.shoveling)\n\t\t\t\treturn ..()\n', '\t\t\tif (H.shoveling)\n\t\t\t\t..()\n'),
             # Opening dug-out rock to the sky (tests/open_cave_roof).
             ('\t\tif (open_cave_roof_attempt(H, C)) // open_cave_roof.dm\n\t\t\treturn\n', ''),
+            # Hidden material virtue on water drawn at dawn (tests/divine_approval/test_arcane_materials.py).
+            ('\t\t\t\t\tif (ishuman(user) && watertype == "water")\n\t\t\t\t\t\tvar/mob/living/human/drawer = user\n\t\t\t\t\t\tdrawer.arcane_drew_water(RG)\n', ''),
         )
     else:
         edits = ()

@@ -56,6 +56,7 @@ var/list/preferences_datums = list()
 	var/species = "Human"			   //Species datum to use.
 
 	var/list/traits = list()
+	var/birth_chart = "random" // a sign id, or "random" to be drawn at birth (birth_charts.dm)
 
 	//Mob preview
 	var/list/preview_icons = list()
@@ -165,6 +166,8 @@ var/list/preferences_datums = list()
 	// Copy choices so regional runtime changes cannot rewrite saved preferences.
 	character.traits = traits.Copy()
 	character.traits_dirty = TRUE
+	// A chosen birth sign counts only for a verified account, checked now (birth_charts.dm).
+	character.birth_chart_wish = birth_chart_choice_allowed(client, birth_chart) ? birth_chart : null
 	character.h_style = h_style
 	character.f_style = f_style
 	if (character.find_trait("Baldness"))

@@ -144,7 +144,10 @@ python3 tests/ecology_spawning/run_linux.py . tests/character_traits/sight_probe
 `code/game/mob/living/carbon/human/birth_charts.dm`: twelve zero-sum signs of
 +10/+5/+5 and -10/-5/-5, no stat favoured across signs by more than 10 points,
 named and rolled signs, the 60-150 starting clamp, untouched non-chart stats,
-and a flavor-only sign for characters made before charts.
+a flavor-only sign for characters made before charts, a chosen sign used once at
+spawn, the Character Setup choice failing closed without a verified account, and the
+calling (+10 stat x1.05, -10 stat x0.95) applying only where no trait already
+changes that stat's training.
 
 ```
 python3 tests/ecology_spawning/run_linux.py . tests/character_traits/birth_chart_probe.dm

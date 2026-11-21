@@ -109,3 +109,49 @@ var/bc_runtime_error = FALSE
 	var/kept = L.birth_chart
 	L.ensure_birth_chart()
 	bc_check(L.birth_chart == kept, "a sign is never rerolled")
+
+	// A sign chosen in Character Setup is used once at spawn; a roll otherwise.
+	var/mob/living/human/W = bc_human()
+	W.birth_chart_wish = "anvil"
+	bc_check(W.apply_birth_chart() == "anvil" && W.birth_chart_wish == null, "chosen sign is used and consumed")
+	var/mob/living/human/X = bc_human()
+	X.birth_chart_wish = "not a sign"
+	bc_check(birth_chart_valid(X.apply_birth_chart()), "a bad chosen sign rolls instead")
+
+	// Choosing fails closed without a verified client.
+	bc_check(!birth_chart_choice_allowed(null, "owl"), "no client: no choice")
+	var/datum/preferences/P = new
+	bc_check(P.birth_chart == "random", "preference defaults to the stars")
+	P.setup_birth_chart("owl", null)
+	bc_check(P.birth_chart == "random" && findtext(P.setup_notice, "Verify"), "unverified choice refused with a reason")
+	P.birth_chart = "owl"
+	P.setup_birth_chart("random", null)
+	bc_check(P.birth_chart == "random", "anyone may go back to the stars")
+	P.setup_birth_chart("not a sign", null)
+	bc_check(P.birth_chart == "random", "unknown signs ignored")
+	var/list/D = P.birth_chart_setup_data(null)
+	bc_check(D["choice"] == "random" && D["verified"] == 0 && length(D["signs"]) == 12, "setup data lists all twelve signs")
+
+	// The calling: +10 stat trains 5% faster, -10 stat 5% slower, never on top of a trait.
+	var/mob/living/human/C = bc_human()
+	C.traits = list()
+	C.traits_dirty = TRUE
+	C.birth_chart = "owl"
+	bc_check(C.trait_skill_gain_mult("philosophy") == BIRTH_CHART_CALLING_FAST, "owl: philosophy trains faster")
+	bc_check(C.trait_skill_gain_mult("strength") == BIRTH_CHART_CALLING_SLOW, "owl: strength trains slower")
+	bc_check(C.trait_skill_gain_mult("medical") == 1, "owl: +5 stats train as usual")
+	C.traits = list("Quick Learner")
+	C.traits_dirty = TRUE
+	bc_check(C.trait_skill_gain_mult("philosophy") == 1.15, "Quick Learner replaces the calling, never stacks")
+	var/mob/living/human/G = bc_human()
+	G.birth_chart = "hearth"
+	G.traits = list("Green Thumb")
+	G.traits_dirty = TRUE
+	bc_check(G.trait_skill_gain_mult("farming") == PLAYSTYLE_FAST_SKILL, "Green Thumb farming: trait only")
+	bc_check(G.trait_skill_gain_mult("hunting") == PLAYSTYLE_SLOW_SKILL, "Green Thumb hunting: trait only")
+	G.birth_chart = "owl"
+	bc_check(G.trait_skill_gain_mult("philosophy") == BIRTH_CHART_CALLING_FAST, "calling still applies where the trait is silent")
+	var/mob/living/human/N = bc_human()
+	N.traits = list()
+	N.traits_dirty = TRUE
+	bc_check(N.trait_skill_gain_mult("philosophy") == 1, "no sign: no calling")

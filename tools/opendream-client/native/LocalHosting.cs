@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net.Sockets;
@@ -129,17 +130,59 @@ public static class LocalHosting {
         ];
     }
 
+    // How long a captured step may run before it (and everything it started) is ended. Status reads are
+    // short so a hung host script never freezes the board; requests that hand their work to a detached
+    // worker answer in seconds; builds, deploys and git work keep the long limit (criticality plan,
+    // scripts/gaia-host/README.md, Process safety).
+    public static readonly TimeSpan StatusLimit = TimeSpan.FromSeconds(30);
+    public static readonly TimeSpan RequestLimit = TimeSpan.FromMinutes(2);
+    // A start after a reboot waits up to byond_pager_wait_seconds (5 min) for the BYOND pager to sign in.
+    public static readonly TimeSpan StartLimit = TimeSpan.FromMinutes(10);
+    public static readonly TimeSpan LongLimit = TimeSpan.FromMinutes(30);
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ProcessStartInfo, object> Limits = new();
+
+    // Gives a step its own limit; RunCaptured (and every hook that wraps it) honours it.
+    public static ProcessStartInfo WithLimit(this ProcessStartInfo step, TimeSpan limit) {
+        Limits.AddOrUpdate(step, limit);
+        return step;
+    }
+
+    public static TimeSpan LimitOf(ProcessStartInfo step) => Limits.TryGetValue(step, out var limit) ? (TimeSpan)limit : LongLimit;
+
+    // A captured step that ran past its limit and was ended with everything it started.
+    public sealed class StepTimedOut(string message) : IOException(message);
+
     // Runs a step to completion, returning its exit code and combined output.
     // Captured steps get an empty, closed stdin rather than the launcher's console input: Python's subprocess
     // duplicates an inherited console handle and fails with WinError 50 ("The request is not supported").
+    // Both streams are read asynchronously, so the limit holds even while a hung child keeps its pipes open
+    // (reading stdout to the end first made the old 15 minute timeout unreachable).
     public static (int Exit, string Output) RunCaptured(ProcessStartInfo step) {
+        var limit = LimitOf(step);
         using var process = Process.Start(step) ?? throw new IOException("Could not start " + Path.GetFileName(step.FileName) + ".");
         if (step.RedirectStandardInput) process.StandardInput.Close();
-        var error = process.StandardError.ReadToEndAsync();
-        var output = process.StandardOutput.ReadToEnd();
-        if (!process.WaitForExit(TimeSpan.FromMinutes(15))) { process.Kill(true); throw new IOException(Path.GetFileName(step.FileName) + " timed out."); }
-        return (process.ExitCode, output + error.Result);
+        var output = step.RedirectStandardOutput ? process.StandardOutput.ReadToEndAsync() : Task.FromResult("");
+        var error = step.RedirectStandardError ? process.StandardError.ReadToEndAsync() : Task.FromResult("");
+        if (!process.WaitForExit(limit)) {
+            try { process.Kill(true); } catch (Exception e) when (e is InvalidOperationException or Win32Exception or NotSupportedException) { }
+            process.WaitForExit(5000);
+            throw new StepTimedOut($"{Path.GetFileName(step.FileName)} did not answer within {Describe(limit)} and was ended.");
+        }
+        // The process has exited; a grandchild that inherited its pipes must not hold the answer back.
+        Task.WaitAll([output, error], TimeSpan.FromSeconds(10));
+        string Text(Task<string> read) => read.IsCompletedSuccessfully ? read.Result : "";
+        return (process.ExitCode, Text(output) + Text(error));
     }
+
+    private static string Describe(TimeSpan limit) => limit.TotalMinutes >= 1 ? $"{limit.TotalMinutes:0} min" : $"{limit.TotalSeconds:0} s";
+
+    // The limit for a host or group action: status reads, quick requests, or long work.
+    public static TimeSpan ActionLimit(string action) => action switch {
+        "status" or "help-status" or "ports" => StatusLimit,
+        "start" or "restart" or "force-restart" => StartLimit,
+        "stop" or "kill" or "unlock" or "force-unlock" or "freeze" or "thaw" or "help-start" or "help-stop" => RequestLimit,
+        _ => LongLimit,
+    };
 
     // kill is a forced stop without a save; force-restart kills if running, then starts from the last completed save.
     // unlock removes stale BYOND lock files from a stopped server's save; force-unlock even if it looks running.
@@ -152,7 +195,7 @@ public static class LocalHosting {
         var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(control.Script)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "-I", "-B", control.Script, "--config", control.Config, action }) step.ArgumentList.Add(argument);
-        return step;
+        return step.WithLimit(ActionLimit(action));
     }
 
     public static ControlAnswer RunControl(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
@@ -221,7 +264,7 @@ public static class LocalHosting {
         if (confirmRegion != null) { step.ArgumentList.Add("--confirm-region"); step.ArgumentList.Add(confirmRegion); }
         if (confirmGroup != null) { step.ArgumentList.Add("--confirm-group"); step.ArgumentList.Add(confirmGroup); }
         if (epoch is { } ordinal) { step.ArgumentList.Add("--epoch"); step.ArgumentList.Add(ordinal.ToString(CultureInfo.InvariantCulture)); }
-        return step;
+        return step.WithLimit(ActionLimit(action));
     }
 
     // deploy.bat (resume: "deploy.bat continue", which carries on from waiting for the save; regions: only

@@ -83,11 +83,16 @@
 				H.divine_known = list()
 			if (teaching)
 				H.divine_known |= spell
-				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch.")))
+				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch.[spell == "repository" ? " Hold something small of your own in your other hand when you ask." : ""]")))
+				if (spell == "repository")
+					H.magic_grant_received() // repository.dm
 			else
 				H.divine_known -= spell
 				if (H.divine_covenant)
 					H.divine_break_covenant()
+				if (spell == "repository")
+					H.magic_repo_withdraw_all() // repository.dm
+					H.divine_refresh_verbs()
 				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("The prayer of [picked] slips from your mind.")))
 			to_chat(usr, SPAN_NOTICE("[teaching ? "Taught" : "Took back"] [picked] [teaching ? "to" : "from"] [H.real_name]."))
 			log_admin("[key_name(usr)] as [claim] [teaching ? "taught" : "took back"] [spell] [teaching ? "to" : "from"] [key_name(H)].")
