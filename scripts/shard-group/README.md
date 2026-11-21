@@ -359,6 +359,8 @@ the hub after its updates. The gateway is started on its port and stays there:
 - It never saves (`save_minutes` 0, `SKIP_PERSISTENCE_SAVING`) and never sleeps.
   An update is a plain restart on its own port onto the staged build (also when
   `handover` or `deploy.bat` asks), done by the host service while it is empty.
+  A restart installs the staged build as it is, never compiling with the port
+  closed, even when the group has moved on since; the newer revision is staged next.
 - Its hub entry and `status` topic describe the lands behind it: the mainland's map
   and the players across every land (`group_players`; `players` stays its own count).
 - It is the world the bot watches (it is the gate), and it is always awake to post
