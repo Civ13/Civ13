@@ -19,6 +19,7 @@ var/global/list/skill_guide_rows = list(
 	"farming" = list("Ploughing speed, checking a plant's water, and seeds and crops per harvest.", "Planting, ploughing and harvesting."),
 	"hunting" = list("Meat and fat from butchering.", "Butchering dead animals."),
 	"swimming" = list("How well you cross deep and rough water.", "Swimming. New kinds of water teach more."),
+	"unarmed" = list("Damage with your fists.", "Landing punches in real fights, and conditioning your hands on a makiwara post, a gravel pail or bare rock."),
 	"philosophy" = list("Founding a religion and writing language books and holy books.", "Studying a chapter you had not studied before, tutoring someone through one, writing or copying a chapter and comparing notes."))
 
 // discipline => what raises it, beyond bench work on its own subjects.

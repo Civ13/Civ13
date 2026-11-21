@@ -127,6 +127,7 @@ var/global/list/arcane_storm_marks = list()
 // A night's rest lets a magic user gather again (called from divine_rested).
 /mob/living/human/proc/arcane_rested()
 	arcane_gathers_spent = 0
+	arcane_communed_at = 0 // arcane_spirits.dm
 
 // Puts a virtue into an item this character just gathered, if they can.
 // Says nothing when they can't: to everyone else it is simply the item.

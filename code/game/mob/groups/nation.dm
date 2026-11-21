@@ -238,6 +238,8 @@ var/global/list/nation_assembly_tiers = list(
 			choices.Insert(2, "Motions and elections")
 		if (nid && (G["type"] == "monarchy" || G["type"] == "republic") && nation_heads(nid))
 			choices.Insert(2, G["type"] == "monarchy" ? "Name an heir" : "Name a deputy")
+		if (nid && nation_home_faction(faction))
+			choices += "Revolt"
 	choices += "Cancel"
 	var/pick = WWinput(src, text, "Nation", "Cancel", choices)
 	if (pick == "View nations")
@@ -249,6 +251,10 @@ var/global/list/nation_assembly_tiers = list(
 	if (pick == "Name an heir" || pick == "Name a deputy")
 		if (civilization == faction && nation_of_id(id) == nid)
 			nation_name_successor(faction, id, nid)
+		return
+	if (pick == "Revolt")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_revolt_menu(faction, id, nid)
 		return
 	if (pick == "Motions and elections")
 		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
@@ -287,6 +293,9 @@ var/global/list/nation_assembly_tiers = list(
 		var/assembly = isnum(N["assembly"]) && N["assembly"] >= 1 && N["assembly"] <= nation_assembly_tiers.len ? ", a [nation_assembly_tiers[N["assembly"]][1]]" : ""
 		lines += "<b>[html_encode(N["name"])]</b>: [jointext(members, ", ")]. Head: [istext(N["head"]) ? html_encode(nation_faction_label(N["head"])) : "none"]. Holds [length(N["members"])]/[N["capacity"]] factions[assembly]."
 		lines += "&nbsp;&nbsp;[nation_government_line(nid)]"
+		var/revolt = nation_revolt_line(nid)
+		if (revolt)
+			lines += "&nbsp;&nbsp;[revolt]"
 		if (istext(N["currency"]) && length(N["currency"]))
 			lines += "&nbsp;&nbsp;Common money: that struck by [html_encode(nation_faction_label(N["currency"]))]."
 		if (islist(N["applications"]) && length(N["applications"]))

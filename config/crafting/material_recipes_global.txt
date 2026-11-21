@@ -3336,6 +3336,8 @@ RECIPE: /material/iron/,iron barbell,/obj/item/weapon/lifting_weight/barbell,12,
 RECIPE: /material/rope/,skipping rope,/obj/item/weapon/skipping_rope,2,40,0,1,sports,0,0,0,8,null
 RECIPE: /material/wood/,tread wheel,/obj/structure/treadwheel,8,120,1,1,sports,30,0,0,8,null
 RECIPE: /material/steel/,treadmill,/obj/structure/treadwheel/treadmill,6,150,1,1,sports,105,0,0,8,null
+RECIPE: /material/wood/,makiwara post,/obj/structure/striking_post,4,80,1,1,sports,0,0,0,8,null
+RECIPE: /material/wood/,gravel pail,/obj/structure/striking_post/gravel_pail,3,60,1,1,sports,0,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null
 RECIPE: /material/electronics/,powered radio program desk,/obj/structure/telecom/station,6,150,1,1,none,105,0,0,8,null

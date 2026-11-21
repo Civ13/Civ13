@@ -442,6 +442,8 @@ var/global/list/node_grid_col_cache = null
 	// --- Military: Archery ---
 	register_research_node(new /datum/research_node("archery", "Archery", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("crossbows", "Crossbows", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("archery"), 2))
+	// --- Military: Martial disciplines (hand_conditioning.dm) ---
+	register_research_node(new /datum/research_node("martial_disciplines", "Martial Disciplines", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	// --- Military: Order & Defense ---
 	// Law & Order era 1: organized justice (jails, cuffs, batons). The truly
 	// primitive pieces (noose, rope cuffs) live in stone_arms era0 instead.
@@ -1958,6 +1960,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",
 		"/obj/item/weapon/wirecutters" = "iron_tools",
+		// --- martial_disciplines (2) ---
+		"/obj/structure/striking_post" = "martial_disciplines",
+		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
 		// --- law_order (15) ---
 		"/obj/covers/jail/steeljail" = "law_order",
 		"/obj/covers/jail/woodjail" = "law_order",

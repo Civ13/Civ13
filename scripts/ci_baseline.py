@@ -569,6 +569,12 @@ SUITES = {
             'code/game/objects/structures/tree_climbing.dm',
             'code/modules/projectiles/projectile.dm',
             'code/game/mob/living/carbon/human/human.dm')},
+    # Hand conditioning and the unarmed skill: recipes, research, punch hooks, skill lists.
+    'hand_conditioning': {'files': ('tests/hand_conditioning/test_sources.py',),
+        'paths': ('tests/hand_conditioning/', 'code/modules/1713/martial_arts/hand_conditioning.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/carbon/human/punch_injury.dm',
+                         'code/game/mob/living/carbon/human/human_defines.dm')},
     # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.
     'punch_injury': {'files': ('tests/punch_injury/test_sources.py',),
         'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),
@@ -2554,7 +2560,7 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py'), 'paths': (
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py'), 'paths': (
         'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (

@@ -102,6 +102,39 @@ assembly: a citizen with a verified account holds it for 30 minutes, and the
 count pauses while another citizen of the nation stands within 3 tiles. The
 first to finish takes the throne (`claim` op).
 
+## Revolt
+
+Citizens can overthrow any government, in play rather than by a menu
+(`tools/transfer_storage/nation_revolt.py`):
+
+1. An eligible citizen (verified account, member for 3 days, played this
+   week) opens a petition from **Nation > Revolt**, naming the government they
+   want and, except for a confederation, its head (`revolt` op).
+2. Eligible citizens sign it (`sign` op) within 2 days. It needs this share
+   of the eligible citizens the worlds count:
+
+   | Government | Share |
+   | --- | --- |
+   | Confederation, theocracy, monarchy | half |
+   | Dictatorship | a third |
+   | Merchant league | two fifths |
+   | Republic | two thirds |
+   | Democracy | three quarters |
+
+3. Once it fills, every citizen is warned. From a day later the signers have
+   3 days to hold any member faction's nation assembly for 30 minutes. Where
+   the assembly stands in a province, the count runs only in that province's
+   defence window. It pauses while a citizen who did not sign stands within
+   3 tiles.
+4. Success (`overthrow` op) installs the petition's government at once, with
+   no notice. A filled petition that succeeds or fails bars the nation from
+   another for 7 days. A petition that never fills bars only the citizen who
+   opened it, so a loyalist cannot shield the government with a sham petition.
+
+The nation's head can neither open nor sign a petition against themself.
+Signing is never a crime in itself, the petition shows only how many have
+signed, and a failed revolt removes no one from play.
+
 ## Secession
 
 Under every type but a confederation, **Secede** gives notice: the faction
@@ -122,6 +155,10 @@ stays a member for the notice period and may **Stay** to withdraw it.
 - `nation_term`: when the elected head's term ends.
 - `nation_seen`: when the head was last reported playing.
 - `nation_successor`: the monarch's heir or the consul's deputy.
+- `nation_revolt`, `nation_signature`: the open petition (proposal JSON, who
+  opened it, when, when it filled) and its signers.
+- `nation_revolt_cooldown`: nation and account (`''` for the whole nation)
+  -> when another petition may open.
 
 The registry snapshot every world reads adds `government`, `government_votes`,
-`leaving`, `eras`, `motions`, `term_ends` and `census` to each nation.
+`leaving`, `eras`, `motions`, `term_ends`, `census` and `revolt` to each nation.
