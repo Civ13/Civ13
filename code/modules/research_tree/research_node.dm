@@ -1909,6 +1909,8 @@ var/global/list/node_grid_col_cache = null
 		// --- iron_smithing (9) ---
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",
+		"/obj/covers/iron_plate" = "iron_smithing",
+		"/obj/covers/iron_grating" = "iron_smithing",
 		"/obj/item/horseshoes" = "iron_smithing",
 		"/obj/item/weapon/reagent_containers/food/drinks/gunpowder" = "iron_smithing",
 		"/obj/structure/anvil" = "iron_smithing",
