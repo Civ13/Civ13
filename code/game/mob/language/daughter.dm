@@ -354,6 +354,8 @@ var/global/list/language_sound_changes = list(
 		return "A language name is 3 to 24 letters long."
 	if (!findtext(text, regex("^\[A-Za-z\]\[A-Za-z' -\]*$")))
 		return "Use only letters, spaces, hyphens and apostrophes."
+	if (name_blocked(text))
+		return "That name is taken from a real-world people, nation or slur. Choose a name of this world."
 	for (var/lname in all_languages)
 		if (lowertext(lname) == lowertext(text))
 			return "There is already a language called [lname]."

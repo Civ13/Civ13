@@ -40,17 +40,29 @@
 
 // What a tile's floor can be. Costs are the hand recipes in
 // config/crafting/material_recipes_global.txt (tests/ship_draught checks them).
-var/global/list/ship_draught_floors = list(
+// A proc, not an initialised global: world's global initialiser is at BYOND's
+// procedure size limit (#6580). The table is built on first use.
+/proc/ship_draught_floors()
+	var/static/list/table
+	if (!table)
+		table = list(
 	"w" = list("name" = "plank floor", "path" = /obj/covers/repairedfloor, "cost" = list("wood" = 2)),
 	"s" = list("name" = "steel floor", "path" = /obj/covers/steelplating, "cost" = list("steel" = 1)),
 )
+	return table
 
 // What can stand on a tile. "load" is what it weighs on a deck in tiles of
 // hull (hull_load()); "turns" when its facing matters; "helm" for what steers
 // her; "drive" for what pushes her; "decks" when it may stand on a deck off
-// her main deck too; "ladder" for what climbs to the deck above. The order is the order a survey looks for
+// her main deck too; "ladder" for what climbs to the deck above; "carries"
+// how many tiles away it holds up the deck above (building_support_reach()). The order is the order a survey looks for
 // them: a subtype before its parent.
-var/global/list/ship_draught_pieces = list(
+// A proc, not an initialised global: world's global initialiser is at BYOND's
+// procedure size limit (#6580). The table is built on first use.
+/proc/ship_draught_pieces()
+	var/static/list/table
+	if (!table)
+		table = list(
 	"O" = list("name" = "steering oar", "path" = /obj/structure/hull_tiller/steering_oar, "cost" = list("wood" = 6), "load" = 0.5, "helm" = TRUE),
 	"T" = list("name" = "tiller", "path" = /obj/structure/hull_tiller, "cost" = list("wood" = 10), "load" = 0.5, "helm" = TRUE),
 	"M" = list("name" = "ship mast", "path" = /obj/structure/vehicleparts/movement/sail, "cost" = list("wood" = 15), "load" = 0.5, "drive" = "sail"),
@@ -58,7 +70,7 @@ var/global/list/ship_draught_pieces = list(
 	"K" = list("name" = "killick", "path" = /obj/structure/hull_anchor/stone, "cost" = list("wood" = 8), "load" = 0.4),
 	"A" = list("name" = "iron anchor", "path" = /obj/structure/hull_anchor, "cost" = list("iron" = 8), "load" = 1),
 	"P" = list("name" = "hand bilge pump", "path" = /obj/structure/cellar_pump/lever, "cost" = list("iron" = 6), "load" = 0.5, "decks" = TRUE),
-	"W" = list("name" = "plank wall", "path" = /obj/covers/wood_wall/adjustable, "cost" = list("wood" = 2, "planks" = 4), "load" = 0.3, "decks" = TRUE),
+	"W" = list("name" = "plank wall", "path" = /obj/covers/wood_wall/adjustable, "cost" = list("wood" = 2, "planks" = 4), "load" = 0.3, "decks" = TRUE, "carries" = 1),
 	"D" = list("name" = "door", "path" = /obj/structure/simple_door/key_door/anyone/wood, "cost" = list("wood" = 5), "load" = 0.5, "turns" = TRUE, "decks" = TRUE),
 	"G" = list("name" = "window", "path" = /obj/structure/window_frame, "cost" = list("wood" = 5), "load" = 0.1, "decks" = TRUE),
 	"C" = list("name" = "wood crate", "path" = /obj/structure/closet/crate/empty, "cost" = list("wood" = 5), "load" = 0.5, "decks" = TRUE),
@@ -81,8 +93,12 @@ var/global/list/ship_draught_pieces = list(
 	"Y" = list("name" = "gangway", "path" = /obj/structure/railing/built/gunwale/gangway, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE),
 	// A wooden ladder stood up to the deck above (edge_climbing.dm): this is
 	// its foot; its head stands on the clear tile above.
+	// A wooden pillar that carries the deck above it (roof_stuff.dm): it
+	// holds deck up to 3 tiles away, a plank wall only beside it.
+	"S" = list("name" = "deck pillar", "path" = /obj/structure/roof_support, "cost" = list("wood" = 2), "load" = 0.5, "decks" = TRUE, "carries" = 3),
 	"X" = list("name" = "ladder", "path" = /obj/structure/multiz/ladder/up/placed, "cost" = list("wood" = 4), "load" = 0.1, "decks" = TRUE, "ladder" = TRUE),
 )
+	return table
 
 // Her decks off the main deck, by level (her main deck is level 0). A deck
 // above stands on the level below it, her hold under her hull. "floor" is
@@ -108,7 +124,7 @@ var/global/list/ship_draught_decks = list(
 // Lays (or changes) the floor of a tile. Returns FALSE for an unknown floor
 // or a tile off the sheet.
 /datum/ship_draught/proc/set_floor(x, y, floor)
-	if (!ship_draught_floors[floor] || !ship_draught_on_sheet(x, y))
+	if (!ship_draught_floors()[floor] || !ship_draught_on_sheet(x, y))
 		return FALSE
 	var/list/C = cell(x, y)
 	if (C)
@@ -120,7 +136,7 @@ var/global/list/ship_draught_decks = list(
 // Stands a piece on a floored tile (null clears it).
 /datum/ship_draught/proc/set_piece(x, y, piece, piece_dir = NORTH)
 	var/list/C = cell(x, y)
-	if (!C || (piece && !ship_draught_pieces[piece]) || !(piece_dir in cardinal))
+	if (!C || (piece && !ship_draught_pieces()[piece]) || !(piece_dir in cardinal))
 		return FALSE
 	C[2] = piece
 	C[3] = piece_dir
@@ -187,7 +203,7 @@ var/global/list/ship_draught_decks = list(
 	if (!level || !D || !(piece_dir in cardinal))
 		return FALSE
 	if (piece)
-		var/list/P = ship_draught_pieces[piece]
+		var/list/P = ship_draught_pieces()[piece]
 		if (!P || !P["decks"] || (P["ladder"] && level != -1 && !ship_draught_decks["[level + 1]"]))
 			return FALSE
 	D[1] = piece
@@ -245,7 +261,7 @@ var/global/list/ship_draught_decks = list(
 	for (var/key in cells)
 		var/list/C = cells[key]
 		if (C[2])
-			var/list/P = ship_draught_pieces[C[2]]
+			var/list/P = ship_draught_pieces()[C[2]]
 			if (P["helm"])
 				. += key
 
@@ -322,6 +338,36 @@ var/global/list/ship_draught_decks = list(
 	// A main-deck cell keeps its piece second, a deck tile first.
 	return above && !above[up ? 1 : 2]
 
+// The tiles of a deck above (level 1 or more) with no wall or pillar on the
+// level below near enough to carry them, as "x,y" keys. A hand-built roof
+// needs the same (building_roof_error()).
+/datum/ship_draught/proc/unsupported_deck_tiles(level)
+	. = list()
+	var/list/tiles = decks["[level]"]
+	if (!tiles || level < 1)
+		return
+	var/below = level - 1
+	var/list/base = below ? decks["[below]"] : cells
+	var/list/supports = list()
+	for (var/key in base)
+		var/list/C = base[key]
+		var/piece = below ? C[1] : C[2]
+		var/list/P = piece ? ship_draught_pieces()[piece] : null
+		if (P && P["carries"])
+			var/list/xy = splittext(key, ",")
+			supports += list(list(text2num(xy[1]), text2num(xy[2]), P["carries"]))
+	for (var/key in tiles)
+		var/list/xy = splittext(key, ",")
+		var/x = text2num(xy[1])
+		var/y = text2num(xy[2])
+		var/held = FALSE
+		for (var/list/S in supports)
+			if (max(abs(S[1] - x), abs(S[2] - y)) <= S[3])
+				held = TRUE
+				break
+		if (!held)
+			. += key
+
 // The parts of each deck off her main deck that no drawn ladder reaches:
 // level text = list of parts, each a list of "x,y" keys.
 /datum/ship_draught/proc/unreached_decks()
@@ -369,10 +415,10 @@ var/global/list/ship_draught_decks = list(
 	. = list()
 	for (var/key in cells)
 		var/list/C = cells[key]
-		var/list/F = ship_draught_floors[C[1]]
+		var/list/F = ship_draught_floors()[C[1]]
 		ship_draught_add_cost(., F["cost"])
 		if (C[2])
-			var/list/P = ship_draught_pieces[C[2]]
+			var/list/P = ship_draught_pieces()[C[2]]
 			ship_draught_add_cost(., P["cost"])
 	for (var/level in decks)
 		var/list/L = decks[level]
@@ -381,7 +427,7 @@ var/global/list/ship_draught_decks = list(
 			var/list/D = L[key]
 			ship_draught_add_cost(., deck["cost"])
 			if (D[1])
-				var/list/P = ship_draught_pieces[D[1]]
+				var/list/P = ship_draught_pieces()[D[1]]
 				ship_draught_add_cost(., P["cost"])
 	for (var/list/side in gunwale_sides())
 		var/list/C = cells[side[1]]
@@ -420,14 +466,14 @@ var/global/list/ship_draught_decks = list(
 	for (var/key in cells)
 		var/list/C = cells[key]
 		if (C[2])
-			var/list/P = ship_draught_pieces[C[2]]
+			var/list/P = ship_draught_pieces()[C[2]]
 			. += P["load"]
 	for (var/level in decks)
 		var/list/L = decks[level]
 		for (var/key in L)
 			var/list/D = L[key]
 			if (D[1])
-				var/list/P = ship_draught_pieces[D[1]]
+				var/list/P = ship_draught_pieces()[D[1]]
 				. += P["load"]
 
 /datum/ship_draught/proc/size_class()
@@ -476,7 +522,7 @@ var/global/list/ship_draught_decks = list(
 		var/list/C = cells[key]
 		if (!C[2])
 			continue
-		var/list/P = ship_draught_pieces[C[2]]
+		var/list/P = ship_draught_pieces()[C[2]]
 		if (P["drive"] != "engine")
 			continue
 		var/obj/structure/engine/E = P["path"]
@@ -712,8 +758,8 @@ var/global/list/ship_draught_decks = list(
 	for (var/obj/structure/vehicleparts/movement/sail/S in T)
 		if (S.crows_nest)
 			return list("N", S.dir)
-	for (var/key in ship_draught_pieces)
-		var/list/P = ship_draught_pieces[key]
+	for (var/key in ship_draught_pieces())
+		var/list/P = ship_draught_pieces()[key]
 		var/path = P["path"]
 		for (var/atom/movable/M in T)
 			if (M.type != path)

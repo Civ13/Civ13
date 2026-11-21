@@ -23,7 +23,7 @@ var/global/list/ship_designers = list() // mob -> sheet being drawn
 
 // The window's pictures: every floor and fitting as its own sprite in the
 // game, cut from the DMIs by scripts/build_ship_designer_icons.py (rerun it
-// when ship_draught_floors or ship_draught_pieces change). A turning piece
+// when ship_draught_floors() or ship_draught_pieces() change). A turning piece
 // has one picture per facing. The window falls back to the letter of a piece
 // whose picture is missing.
 var/global/list/ship_designer_sprites = list(
@@ -78,16 +78,17 @@ var/global/list/ship_designer_sprites = list(
 	"shipd_piece_Y_4.png" = 'icons/ship_designer/piece_Y_4.png',
 	"shipd_piece_Y_8.png" = 'icons/ship_designer/piece_Y_8.png',
 	"shipd_piece_X.png" = 'icons/ship_designer/piece_X.png',
+	"shipd_piece_S.png" = 'icons/ship_designer/piece_S.png',
 )
 
 // The names the window asks for: one picture for a floor or a fixed piece,
 // one per facing for a piece that turns.
 /proc/ship_designer_sprite_names()
 	. = list()
-	for (var/key in ship_draught_floors)
+	for (var/key in ship_draught_floors())
 		. += "shipd_floor_[key].png"
-	for (var/key in ship_draught_pieces)
-		var/list/P = ship_draught_pieces[key]
+	for (var/key in ship_draught_pieces())
+		var/list/P = ship_draught_pieces()[key]
 		if (P["turns"])
 			for (var/d in cardinal)
 				. += "shipd_piece_[key]_[d].png"
@@ -167,6 +168,7 @@ var/global/list/ship_designer_sprites = list(
 		for (var/y = 0, y < 2, y++)
 			cutter.set_upper(x, y, TRUE)
 	cutter.set_piece(1, 1, "X")
+	cutter.set_piece(3, 1, "S")
 	. += cutter
 	// A merchantman on three levels: a hold of crates amidships under her
 	// masts, and a cabin deck above her stern, each with its ladder.
@@ -180,6 +182,7 @@ var/global/list/ship_designer_sprites = list(
 	merchant.set_piece(2, 8, "M")
 	merchant.set_piece(2, 11, "A")
 	merchant.set_piece(1, 2, "X")
+	merchant.set_piece(3, 1, "S")
 	for (var/x = 0, x < 5, x++)
 		for (var/y = 0, y < 3, y++)
 			merchant.set_deck(1, x, y, TRUE)
@@ -262,7 +265,7 @@ var/global/list/ship_designer_groups = list(
 	"Arms" = list("H", "Z", "L"),
 	"Cabin" = list("W", "D", "G", "V", "I"),
 	"Sides" = list("Y", "F"),
-	"Between decks" = list("X"),
+	"Between decks" = list("S", "X"),
 )
 
 /proc/ship_designer_group(key)
@@ -280,12 +283,12 @@ var/global/list/ship_designer_groups = list(
 //   DECKS: list(level, name, floor key) for every deck but the main one
 /proc/ship_designer_html(obj/item/ship_draught/S, datum/ship_draught/D)
 	var/list/pieces = list()
-	for (var/key in ship_draught_pieces)
-		var/list/P = ship_draught_pieces[key]
+	for (var/key in ship_draught_pieces())
+		var/list/P = ship_draught_pieces()[key]
 		pieces += list(list(key, P["name"], P["turns"] ? 1 : 0, ship_designer_group(key), P["helm"] ? 1 : 0, P["decks"] ? 1 : 0, P["ladder"] ? 1 : 0))
 	var/list/floors = list()
-	for (var/key in ship_draught_floors)
-		var/list/F = ship_draught_floors[key]
+	for (var/key in ship_draught_floors())
+		var/list/F = ship_draught_floors()[key]
 		floors += list(list(key, F["name"]))
 	var/list/decks = list()
 	for (var/level in ship_draught_decks)

@@ -780,6 +780,8 @@
 			if (!H.crab)
 				if (istype(F, /turf/floor/beach/water))
 					move_delay += H.water_step_delay(F)
+					if (H.swim_skill_applies(F) && !H.buckled)
+						H.body_motion_swim_stroke()
 				else
 					move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))
@@ -1066,6 +1068,9 @@
 		if (!isnull(subtile_deadline) && (mob != input_actor || !input_actor || input_actor.client != src))
 			return FALSE
 		mob.last_movement = world.time
+		if (ishuman(mob))
+			var/mob/living/human/strider = mob
+			strider.body_motion_stride()
 		if (!isnull(subtile_deadline))
 			move_delay = subtile_deadline
 			return .
