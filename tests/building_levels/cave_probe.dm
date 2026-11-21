@@ -143,6 +143,12 @@
 		cave_assert(dug_underground_unformed(locate(6, 6, deep[4])) && dug_underground_unformed(locate(6, 6, deep[2])), "other depths stay unformed")
 		cave_assert(underground_breach_scan(deep[2]) == 0, "only the cave takes water from above")
 		cave_assert(level_report_name(deep[2]) == "underground 2 (added)", "the level report names the depth")
+		// Each depth has its own ore table (underground_ores.dm).
+		cave_assert(underground_ore_factor("gold", locate(3, 3, base)) == 1 && underground_ore_factor("gold", locate(3, 3, cave)) == 1, "the surface and the cave keep today's ores")
+		cave_assert(underground_ore_factor("coal", locate(3, 3, deep[2])) == 2 && underground_ore_factor("gold", locate(3, 3, deep[3])) == 2.5 && underground_ore_factor("diamond", locate(3, 3, deep[4])) == 4, "each depth has its own riches")
+		cave_assert(underground_ore_factor("flint", locate(3, 3, deep[3])) == 0 && underground_ore_factor("bauxite", locate(3, 3, deep[4])) == 0.25 && underground_ore_factor("unknown", locate(3, 3, deep[4])) == 1, "shallow ores thin out with depth")
+		cave_assert(continent_ore_factor("gold", locate(3, 3, deep[4])) == 3 * continent_ore_factor("gold", locate(3, 3, base)), "the depth multiplies the land's own rate")
+		cave_assert(underground_surface_over(locate(3, 3, deep[4])) == locate(3, 3, base) && !underground_surface_over(locate(3, 3, base)), "a deep cell finds the land above")
 		// A restore cannot see its underground yet: it counts every level the map may add.
 		cave_assert(rules.free_planes(world.maxz, "restore") == 4 && rules.free_planes(world.maxz, "roof") == 4 && rules.ground_planes() == rules.base_z + 4, "a restore counts the whole underground")
 		underground_levels_refresh()
