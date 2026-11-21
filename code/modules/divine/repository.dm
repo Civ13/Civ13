@@ -156,8 +156,10 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 /proc/ward_drain(obj/repo, amount, attacker = null)
 	if (!istype(repo) || QDELETED(repo) || !repo.magic_repo_finished() || repo.magic_repo_dormant())
 		return FALSE
+	var/before = repo.magic_repo_charge
 	if (isnum(amount) && amount > 0)
 		repo.magic_repo_charge = max(0, repo.magic_repo_charge - amount)
+		ward_low_warning(repo, before) // repository_wards.dm
 	repo.magic_repo_tick() // repository_tiers.dm
 	if (!repo.magic_repo_finished())
 		return FALSE
