@@ -1833,6 +1833,15 @@ SUITES = {
         'paths': ('tests/bone_armor/',), 'shared_paths': (
             'config/crafting/', 'code/modules/1713/apparel_stoneage.dm', 'code/__defines/maps.dm')},
 
+    # Lifetime accolades: catalog, hooks, once-per-account claims, window guard; source checks only.
+    'accolades': {'files': ('tests/accolades/test_accolades.py',),
+        'paths': ('tests/accolades/',), 'shared_paths': (
+            'code/modules/accolades/', 'code/processes/accolades.dm', 'docs/accolades.md',
+            'code/modules/client/player_tutorial.dm', 'code/modules/naval/ship_voyage.dm',
+            'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_travel.dm',
+            'code/modules/research_tree/character_knowledge.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm')},
+
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (

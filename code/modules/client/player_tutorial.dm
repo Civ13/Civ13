@@ -340,6 +340,7 @@
 /datum/player_tutorial/proc/finish()
 	if (owner && owner.prefs)
 		player_activity.tutorial_step(owner, "finished")
+		accolade_meet(accolade_client_ckey(owner), "first_steps")
 		owner.prefs.tutorial_state = TUTORIAL_FINISHED
 		owner.prefs.save_preferences()
 		to_chat(owner, "<span class='good'><b>Tutorial complete.</b> You can go through it again from the Game Menu (Esc), Tutorial.</span>")
