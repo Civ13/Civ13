@@ -160,6 +160,14 @@ class InputTrace(unittest.TestCase):
                                 '\t\treturn\n')
         self.assertEqual(prior.count(approved_click_route), 1, 'approved click route block')
         prior = prior.replace(approved_click_route, '')
+        # #6369 notes research familiarity from the item used on each click
+        # (familiarity.dm); #6387 lets a readied magic tie catch the touch
+        # (repository.dm). Both observe the click and never end it.
+        for label, approved_hook in (
+                ('familiarity', '\tnote_familiar_click(src, W, A) // research familiarity (familiarity.dm)\n'),
+                ('magic touch', '\tmagic_touch_hook(src, A) // repository.dm: a readied tie catches this touch; the click goes on as usual\n')):
+            self.assertEqual(prior.count(approved_hook), 1, 'approved ' + label + ' hook')
+            prior = prior.replace(approved_hook, '')
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')
