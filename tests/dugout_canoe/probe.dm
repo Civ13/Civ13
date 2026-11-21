@@ -36,6 +36,10 @@ var/canoe_runtime_error = FALSE
 		GLOB.moved_event = new
 		GLOB.dir_set_event = new
 		GLOB.destroyed_event = new
+		// The probe skips global init; the tile path registers glide-lease events.
+		GLOB.global_listen_count = list()
+		GLOB.event_sources_count = list()
+		GLOB.event_listen_count = list()
 		movementMachine = new
 		new /obj/map_metadata/canoe_probe
 		for (var/turf/T in block(locate(1, 1, 1), locate(30, 30, 1)))
