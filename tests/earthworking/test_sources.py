@@ -5,6 +5,8 @@ checks the scraper swath, tipping, the steam shovel's cut job and the
 blasting charge against real terrain heights.
 """
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -46,6 +48,14 @@ class Wiring(unittest.TestCase):
         self.assertIn('/obj/structure/workshop_machine/steam_site/steam_shovel/proc/cuttings()', works)
         self.assertIn('"Cut the ground down a level"', works)
         self.assertIn('terrain_grade_problem(T, -1)', works)
+
+
+
+class Sprites(unittest.TestCase):
+    def test_sprite_sheets_are_current(self):
+        done = subprocess.run([sys.executable, str(ROOT / 'tests/sprites/create_earthworking_tools.py'), '--check'],
+                              capture_output=True, text=True)
+        self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
 
 
 if __name__ == '__main__':
