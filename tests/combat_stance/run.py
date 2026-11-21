@@ -44,6 +44,7 @@ def main():
     parser.add_argument('--byond-bin', required=True, type=Path)
     parser.add_argument('--keep', action='store_true')
     args = parser.parse_args()
+    args.byond_bin = args.byond_bin.resolve()  # child processes run in the temp tree
     work = Path(tempfile.mkdtemp(prefix='civ13-combat-stance-'))
     try:
         archive = subprocess.Popen(['git', '-C', str(ROOT), 'archive', '--format=tar', 'HEAD', '--', *WANTED],

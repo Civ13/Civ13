@@ -161,6 +161,7 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 	var/piercing = striking && weapon.sharp && !weapon.edge
 	var/edged = striking && weapon.edge
 	var/pen = striking ? weapon.armor_penetration : 0
+	var/armour_kind = striking ? weapon.get_hit_kind() : "melee" // the kind of hit that lands
 	var/read = recently_struck_by(target)
 	for (var/zone in combat_auto_zones)
 		var/obj/item/organ/external/part = target.get_organ(check_zone(zone))
@@ -181,7 +182,7 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 			else if (kind == COMBAT_ATTACK_PUNCH && zone != "chest")
 				score *= 1 - physical_contest_chance(15, physical_contest_ratio(target, src, 0, 1)) / 100
 		// Damage that gets through: expected run_armor_check outcome is 1 - armour.
-		var/armour = clamp(target.getarmor_organ(part, "melee") - pen, 0, 95) / 100
+		var/armour = clamp(target.getarmor_organ(part, armour_kind) - pen, 0, 95) / 100
 		score *= piercing ? (1 - armour) ** 1.5 : (1 - armour)
 		// Weapon kinds.
 		if (blunt && combat_zone_is_high(zone))

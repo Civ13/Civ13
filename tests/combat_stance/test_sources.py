@@ -76,6 +76,15 @@ class CombatStanceSources(unittest.TestCase):
         for step in ('took a firm hold', 'jointlocked', 'pinned', 'bound hands', 'bound legs'):
             self.assertIn('restrain_log(T, "%s' % step, RESTRAIN)
 
+    def test_agent_zone_click_takes_manual_control(self):
+        clicks = read('code/modules/agent_control/agent_characters.dm')
+        self.assertIn('M.targeted_organ = req["zone"]\n\t\t\t\tM.combat_stance_doll_clicked()', clicks)
+
+    def test_martial_punch_gets_the_reaction_and_zone(self):
+        branch = ATTACK_HAND[ATTACK_HAND.index('if(I_HARM)'):ATTACK_HAND.index('H.mind.martial_art.harm_act(H, src)')]
+        self.assertIn('combat_reaction_try(H, COMBAT_TRIGGER_INCOMING, tgt, null)', branch)
+        self.assertIn('H.targeted_organ = tgt', branch)
+
     def test_stance_ids(self):
         found = re.findall(r'#define COMBAT_STANCE_\w+ "(\w+)"', DEFINES)
         self.assertEqual(found, STANCES)

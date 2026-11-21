@@ -30,15 +30,27 @@
 	admin_attack_log(src, target, "Restrain stance: [what]", "Restrain stance: [what] by the attacker", "restrain stance: [what]")
 
 // The arm a jointlock bends: the grabbed arm, the arm of a grabbed hand, else
-// their weapon arm.
+// their weapon arm; the other arm if that one cannot be locked; null if
+// neither can.
 /mob/living/human/proc/restrain_lock_zone(obj/item/weapon/grab/G)
+	var/mob/living/human/T = G.affecting
+	if (!istype(T))
+		return null
+	var/preferred = "r_arm"
 	switch (G.grabbed_zone)
 		if ("l_arm", "r_arm")
-			return G.grabbed_zone
+			preferred = G.grabbed_zone
 		if ("l_hand", "r_hand")
-			return combat_hand_arm(G.grabbed_zone)
-	var/hand_zone = combat_weapon_hand(G.affecting)
-	return hand_zone ? combat_hand_arm(hand_zone) : "r_arm"
+			preferred = combat_hand_arm(G.grabbed_zone)
+		else
+			var/hand_zone = combat_weapon_hand(T)
+			if (hand_zone)
+				preferred = combat_hand_arm(hand_zone)
+	for (var/zone in list(preferred, preferred == "r_arm" ? "l_arm" : "r_arm"))
+		var/obj/item/organ/external/arm = T.get_organ(zone)
+		if (arm && !arm.is_stump() && arm.dislocated != -1)
+			return zone
+	return null
 
 // One step of the arrest. `previous_action` is the grab's last action before
 // this click, for the ordinary upgrade wait. TRUE if a step was taken.
@@ -57,8 +69,9 @@
 		restrain_log(T, "took a firm hold")
 		return TRUE
 	if (!T.lying && !G.force_down)
-		if (!G.restrain_locked)
-			G.jointlock(T, src, restrain_lock_zone(G))
+		var/lock_zone = G.restrain_locked ? null : restrain_lock_zone(G)
+		if (lock_zone) // no arm to lock goes straight to the pin
+			G.jointlock(T, src, lock_zone)
 			G.restrain_locked = TRUE
 			restrain_log(T, "jointlocked")
 			return TRUE

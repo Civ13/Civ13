@@ -30,7 +30,7 @@
 		"damage zone" = list("type" = /obj/screen/zone_sel3,   "loc" = "16,8", "icon" = ui_hud_zone_sel_1713),
 		"fixeye"	 = list("type" = /obj/screen/fixeye,	 "loc" = "16,7"),
 		"tactic"	  = list("type" = /obj/screen/tactic,	 "loc" = "16,6"),
-		"combat stance" = list("type" = /obj/screen/combat_stance, "loc" = "16,9"),
+		"combat stance" = list("type" = /obj/screen/combat_stance, "loc" = "16,15"),
 		"mode"		= list("type" = /obj/screen/mode,	   "loc" = "16,5"),
 		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,	   "loc" = "16,4"),
 		"m_intent"	= list("type" = /obj/screen/mov_intent, "loc" = "16,3"),

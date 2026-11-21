@@ -577,7 +577,7 @@ SUITES = {
     # Combat stances: melee paths ask the stance, doll/hotkey/HUD wiring, agent tools.
     'combat_stance': {'files': ('tests/combat_stance/test_sources.py',),
         'paths': ('tests/combat_stance/', 'code/game/mob/combat_stance.dm', 'code/game/mob/combat_reactions.dm',
-                  'code/__defines/combat_stance.dm', 'code/__defines/martial.dm'),
+                  'code/game/mob/combat_restrain.dm', 'code/__defines/combat_stance.dm', 'code/__defines/martial.dm'),
         'shared_paths': ('code/_onclick/item_attack.dm',
                          'code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/human_defense.dm',
@@ -586,7 +586,12 @@ SUITES = {
                          'code/game/mob/living/carbon/human/examine.dm',
                          'code/modules/agent_control/agent_stance.dm',
                          'tools/agent-control/autopilot.py',
-                         'tools/agent-control/catalog.py')},
+                         'tools/agent-control/catalog.py',
+                         'code/game/mob/grab.dm',
+                         'icons/mob/screen/1713Style.dmi',
+                         'icons/mob/screen/ConsoleStyle.dmi',
+                         'icons/mob/screen/FoFStyle.dmi',
+                         'icons/mob/screen/litewebStyle.dmi')},
     # Training gear and the obstacle course: recipes, gates, hooks, saved fields and art.
     'active_training': {'files': ('tests/active_training/test_sources.py',),
         'paths': ('tests/active_training/', 'code/modules/1713/active_training.dm',

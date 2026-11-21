@@ -61,6 +61,7 @@ var/combat_stance_runtime = null
 
 /proc/combat_stance_armour(mob/living/human/H, path, slot, melee)
 	var/obj/item/clothing/C = new path(null)
+	C.armor_family = null // the flat list below, the same against every kind of hit
 	C.armor = list("melee" = melee, "arrow" = 0, "gun" = 0, "energy" = 0, "bomb" = 0, "bio" = 0, "rad" = 0)
 	H.equip_to_slot(C, slot)
 	return C
@@ -272,6 +273,16 @@ var/combat_stance_probe_rank = 0
 	combat_stance_assert(combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", W), "measured_stop_hit")
 	combat_stance_assert(D.next_move <= world.time, "stop_hit_keeps_click_cooldown")
 	combat_stance_assert(D.next_combat_reaction > world.time, "stance_cooldown_set")
+	// A winded fighter can't pay for the swing, so the incoming swing is not stopped.
+	D.next_combat_reaction = 0
+	D.stats["stamina"] = list(COMBAT_REACTION_STAMINA, 100)
+	A.loc = locate(D.x - 1, D.y, D.z)
+	combat_stance_assert(!D.combat_reaction_try(A, COMBAT_TRIGGER_INCOMING, "chest", W), "winded_no_stop_hit")
+	// A sword answers to sword skill: high dexterity alone does not unlock it.
+	var/obj/item/weapon/material/sword/S = new(null)
+	combat_stance_assert(D.combat_reactions_unlocked(null) && !D.combat_reactions_unlocked(S), "weapon_skill_not_dexterity")
+	D.stats["swords"] = list(200, 200)
+	combat_stance_assert(D.combat_reactions_unlocked(S), "weapon_skill_unlocks")
 	// Guarded ripostes after a parry and counters after a hit; it can't stop a swing.
 	D.set_combat_stance(COMBAT_STANCE_GUARDED, TRUE)
 	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", W), "guarded_no_stop_hit")
@@ -323,6 +334,10 @@ var/combat_stance_probe_rank = 0
 	combat_stance_assert(G.state < GRAB_AGGRESSIVE && !G.restrain_locked, "untrained_no_restrain_flow")
 	A.stats["dexterity"] = list(200, 200)
 	combat_stance_assert(A.restrain_lock_zone(G) == "r_arm", "lock_bends_grabbed_arm")
+	var/obj/item/organ/external/right_arm = T.get_organ("r_arm")
+	right_arm.dislocated = -1 // cannot be locked
+	combat_stance_assert(A.restrain_lock_zone(G) == "l_arm", "lock_falls_back_to_other_arm")
+	right_arm.dislocated = 0
 	combat_stance_restrain_click(A, T, G)
 	combat_stance_assert(G.state == GRAB_AGGRESSIVE, "restrain_firm_hold")
 	combat_stance_restrain_click(A, T, G)

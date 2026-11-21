@@ -38,15 +38,16 @@ var/global/list/martial_reflex_chance = list(0, 0, 25, 45, 65)
 /mob/living/human/proc/martial_rank(school_id)
 	return MARTIAL_RANK_NONE
 
-// Trained enough for advanced stance reactions: a weapon skill (or dexterity
-// for bare hands) well above average, or a martial rank of Student or more.
+// Trained enough for advanced stance reactions: the weapon's own skill (or
+// dexterity for bare hands) well above average, or a martial rank of Student
+// or more bare-handed.
 /mob/proc/combat_reactions_unlocked(obj/item/weapon)
 	return FALSE
 
 /mob/living/human/combat_reactions_unlocked(obj/item/weapon)
 	var/skill = getStatCoeff("dexterity")
 	if (weapon && ("stat" in weapon.vars) && istext(weapon.vars["stat"]))
-		skill = max(skill, getStatCoeff(weapon.vars["stat"]))
+		skill = getStatCoeff(weapon.vars["stat"])
 	if (skill >= COMBAT_REACTION_SKILL)
 		return TRUE
 	return !weapon && martial_school && martial_rank(martial_school) >= MARTIAL_RANK_STUDENT
@@ -145,6 +146,8 @@ var/global/list/martial_reflex_chance = list(0, 0, 25, 45, 65)
 	var/obj/item/weapon = combat_reaction_weapon()
 	if (!combat_reactions_unlocked(weapon))
 		return FALSE
+	if (weapon && stats["stamina"][1] < COMBAT_REACTION_STAMINA + combat_weapon_swing_stamina(weapon))
+		return FALSE // too winded for the swing the reaction throws
 	if (!prob(clamp(30 * combat_read_skill(attacker, weapon), 10, 60)))
 		return FALSE
 	next_combat_reaction = world.time + COMBAT_REACTION_COOLDOWN
@@ -155,8 +158,7 @@ var/global/list/martial_reflex_chance = list(0, 0, 25, 45, 65)
 		if (COMBAT_TRIGGER_INCOMING)
 			// Stop-hit: strike the arm swinging at you, and the swing is spoiled.
 			visible_message(SPAN_WARNING("[src] catches [attacker]'s arm mid-swing!"), SPAN_NOTICE("You strike [attacker]'s arm mid-swing."))
-			combat_react_strike(attacker, attacker.attacking_arm(), null, weapon)
-			. = TRUE
+			. = combat_react_strike(attacker, attacker.attacking_arm(), null, weapon) ? TRUE : FALSE
 		if (COMBAT_TRIGGER_GRAB_REACH)
 			. = combat_react_strike(attacker, attacker.attacking_arm(), "[src] strikes the arm reaching for [p_them_text()]!", weapon)
 		if (COMBAT_TRIGGER_AFTER_PARRY)
@@ -178,13 +180,20 @@ var/global/list/martial_reflex_chance = list(0, 0, 25, 45, 65)
 		visible_message(SPAN_WARNING(message))
 	var/old_next_move = next_move
 	forced_attack_zone = zone
+	. = FALSE
 	if (weapon)
-		weapon.attack(attacker, src, zone ? zone : resolve_attack_zone(attacker, weapon, COMBAT_ATTACK_WEAPON))
+		var/strike_zone = zone ? zone : resolve_attack_zone(attacker, weapon, COMBAT_ATTACK_WEAPON)
+		attacker.note_struck_by(src, strike_zone, attacking_arm())
+		. = weapon.attack(attacker, src, strike_zone) ? TRUE : FALSE
 	else if (ishuman(attacker))
 		var/old_intent = a_intent
 		a_intent = I_HARM
 		attacker.attack_hand(src)
 		a_intent = old_intent
+		. = TRUE
 	forced_attack_zone = null
 	next_move = old_next_move
-	return TRUE
+
+// The stamina an ordinary swing of `weapon` costs (item_attack.dm attack()).
+/mob/living/human/proc/combat_weapon_swing_stamina(obj/item/weapon)
+	return (weapon.cooldownw * 0.45) / getStatCoeff("strength")

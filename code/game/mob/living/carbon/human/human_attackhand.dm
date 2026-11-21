@@ -36,7 +36,16 @@
 	if (H.mind && H.mind.martial_art && H.mind.martial_art.id != H.mind.default_martial_art.id)
 		switch(H.a_intent)
 			if(I_HARM)
+				// The same incoming reaction as an ordinary punch (combat_reactions.dm).
+				if (H != src && combat_reaction_try(H, COMBAT_TRIGGER_INCOMING, tgt, null))
+					H.do_attack_animation(src)
+					return TRUE
+				// Martial arts read targeted_organ: aim them at the resolved zone.
+				var/aimed_zone = H.targeted_organ
+				H.targeted_organ = tgt
 				H.mind.martial_art.harm_act(H, src)
+				if (!QDELETED(H) && H.targeted_organ == tgt)
+					H.targeted_organ = aimed_zone
 			if(I_HELP)
 				H.mind.martial_art.help_act(H, src)
 			if(I_GRAB)
