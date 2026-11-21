@@ -73,6 +73,7 @@
 	var/obj/item/ammo_casing/a762x39/live = new(locate(2,1,1))
 	var/obj/item/ammo_casing/a762x39/spent = new(locate(3,1,1))
 	qdel(spent.expend())
+	spent.heap_add(4)
 	var/obj/item/ammo_casing/a762x39/ap = new(locate(4,1,1))
 	ap.btype = "AP"
 	ap.checktype()
@@ -117,6 +118,7 @@
 		ammo_check(ammo_live(C, /obj/item/projectile/bullet/rifle/a762x39) && ammo_bullets(C) == 1, "magazine round is still loaded")
 	ammo_check(ammo_live(live, /obj/item/projectile/bullet/rifle/a762x39) && ammo_bullets(live) == 1, "loose loaded round is still loaded")
 	ammo_check(!spent.BB && !ammo_bullets(spent), "spent casing stays spent")
+	ammo_check(spent.heap_count == 5 && spent.overlays.len == 4, "a heap of five spent casings is restored and drawn ([spent.heap_count], [spent.overlays.len])")
 	ammo_check(ammo_live(ap, /obj/item/projectile/bullet/rifle/a762x39) && ap.BB.btype == "AP" && ap.BB.damage == ap_damage, "AP round keeps its bullet ([ap.BB ? ap.BB.damage : null] vs [ap_damage])")
 	ammo_check(ammo_live(fire_arrow, /obj/item/projectile/arrow/arrow/fire), "fire arrow keeps its fire head")
 	ammo_check(ammo_live(legacy_live, /obj/item/projectile/bullet/rifle/a762x39) && ammo_bullets(legacy_live) == 1, "older-save loaded round is rebuilt")

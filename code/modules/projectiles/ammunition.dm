@@ -17,10 +17,6 @@
 	var/thrown_force_divisor = 0.1
 	var/btype = "normal" //normal, AP (armor piercing) and HP (hollow point)
 
-/obj/item/ammo_casing/New()
-	..()
-	bullet_casings += src
-
 // A restored casing keeps its saved offsets and rotation, and
 // persistence_import_fields rebuilds its bullet and abandonment entry.
 /obj/item/ammo_casing/on_runtime_spawn()
@@ -42,8 +38,10 @@
 	else if (btype == "HP")
 		name = "[name] (HP)"
 
+// Leaving the abandonment list now lets a deleted casing be freed at once,
+// not after the decay process next reaches it.
 /obj/item/ammo_casing/Destroy()
-	bullet_casings -= src
+	unregister_abandoned_item()
 	BB = null
 	..()
 
@@ -56,8 +54,9 @@
 // by an older build, so a spent round could not be told from a fired one.
 /obj/item/ammo_casing/var/bullet_state_saved = FALSE
 
+// A heap's overlays are rebuilt from heap_count on load.
 /obj/item/ammo_casing/persistence_runtime_var(key)
-	return key == "BB" || key == "bullet_state_unknown" || ..()
+	return key == "BB" || key == "bullet_state_unknown" || key == "overlays" || ..()
 
 /obj/item/ammo_casing/before_save()
 	. = ..()
@@ -89,6 +88,8 @@
 	// The holder may be imported after this round; it repairs it then.
 	if (bullet_state_unknown && (istype(loc, /obj/item/ammo_magazine) || istype(loc, /obj/item/weapon/gun)))
 		repair_unrecorded_bullet()
+	if (heap_count > 1)
+		heap_update_overlays()
 
 // One-time repair for saves without the record: a round kept in a magazine,
 // box, pouch or gun was loaded ammunition, not fired brass.
@@ -121,6 +122,18 @@
 			C.repair_unrecorded_bullet()
 	if (chambered && chambered.loc == src)
 		chambered.repair_unrecorded_bullet()
+
+// Spent casings of one cartridge and load heap together on a tile (item_heaps.dm).
+/obj/item/ammo_casing/heap_matches(obj/item/other)
+	var/obj/item/ammo_casing/C = other
+	return istype(C) && C.type == type && C.btype == btype && spent_icon && !BB && !C.BB && isturf(loc)
+
+/obj/item/ammo_casing/heap_copy(atom/where)
+	var/obj/item/ammo_casing/C = new type(where)
+	C.btype = btype
+	C.checktype()
+	qdel(C.expend())
+	return C
 
 /obj/item/ammo_casing/proc/randomrotation()
 	transform = matrixangle(rand(1,360))
