@@ -1848,7 +1848,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/head/ww2/sov_ushanka/nomads" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/greykerchief" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/redkerchief" = "haberdashery",
-		// --- herbalism (10) ---
+		// --- herbalism (11) ---
 		"/obj/item/stack/medical/bruise_pack/bint" = "herbalism",
 		"/obj/item/stack/medical/bruise_pack/bint/leather" = "herbalism",
 		"/obj/item/stack/medical/splint" = "herbalism",
@@ -1857,6 +1857,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/prosthesis/woodfoot" = "herbalism",
 		"/obj/item/weapon/reagent_containers/food/snacks/leaf_salad" = "herbalism",
 		"/obj/item/weapon/reagent_containers/glass/mortar" = "herbalism",
+		"/obj/item/weapon/reagent_containers/pill/hashish" = "herbalism",
 		"/obj/item/weapon/reagent_containers/pill/opium" = "herbalism",
 		"/obj/structure/drying_rack" = "herbalism",
 		// --- hygiene (14) ---
@@ -2980,6 +2981,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/sail" = "oared_ships",
 		"/obj/item/sail/wool" = "oared_ships",
 		"/obj/item/sail/tarred" = "oared_ships",
+		"/obj/item/weapon/reagent_containers/glass/finishing_pot" = "fine_furniture",
 		"/obj/item/weapon/covers/ship" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0/north" = "wagons_ships",
@@ -3008,6 +3010,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mechanism/cam_drum" = "watermills",
 		"/obj/structure/workshop_machine/hopper/millstones" = "watermills",
 		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
+		"/obj/structure/workshop_machine/hopper/fulling_stocks" = "watermills",
+		"/obj/structure/workshop_machine/hopper/bark_stamps" = "watermills",
 		"/obj/structure/water_lift/windmill" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",

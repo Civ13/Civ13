@@ -178,7 +178,7 @@
 
 // Where a ship with these offsets comes out from region from, arriving on
 // side at fraction along it (sea_edge_link()). A pivot turf, or null.
-/proc/sea_edge_anchorage(list/offsets, list/E, from, list/hold = null)
+/proc/sea_edge_anchorage(list/offsets, list/E, from, list/hold = null, list/upper = null)
 	var/side = E[1]
 	var/f = E[2]
 	var/list/O = list(0, 0, 0, 0)
@@ -242,7 +242,7 @@
 				if (x + O[1] < 1 || y + O[2] < 1 || x + O[3] > world.maxx || y + O[4] > world.maxy)
 					continue
 				var/turf/P = locate(x, y, z)
-				if (P && sea_crossing_water(P) && sea_crossing_fits(offsets, x, y, z, hold))
+				if (P && sea_crossing_water(P) && sea_crossing_fits(offsets, x, y, z, hold, upper))
 					return P
 	return null
 

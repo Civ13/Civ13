@@ -31,8 +31,10 @@ The ship must be at all stop, not grappled, with the world not saving. Then:
    cross too (`ship_crossing_cargo.dm`): an animal or structure whole, the way
    a world save keeps it (fields, contents, reagents), a body as who it was,
    how it looked, what it wore and its wounds, laid down dead again on
-   arrival. Carts, small boats (rafts, dugouts, outriggers), bicycles and
-   machines go whole the same way, once unloaded; living crew riding one get
+   arrival. Carts, small boats (rafts, dugouts, outriggers, motorboats),
+   bicycles and machines go whole the same way, once unloaded; a canoe or
+   motorboat takes the outboard clamped inside her and its tank, and arrives
+   with it stopped and coupled again (`crossing_rebuilt()`); living crew riding one get
    off as she leaves. An engine goes whole too ("e" entry), with where its fuel
    barrel stands beside it; it arrives stopped and coupled to that barrel
    again, so an engine ship such as the slipway freighter can cross. Built
@@ -40,7 +42,7 @@ The ship must be at all stop, not grappled, with the world not saving. Then:
    the record check. Ladders between her deck and her hold go as ladders and
    are paired again on arrival. Still refused, and named at the tiller with an
    arrow on deck: an animal a player or agent controls, a ridden animal, a
-   loaded cart, a frame vehicle or a small boat with an engine aboard, anything strapped into a seat that
+   loaded cart, a frame vehicle, anything strapped into a seat that
    is not crew, a body holding a creature, and what only an admin or the map
    places (spawners, traders, money printers, stairs and other level links,
    docks, helms). A barrel holds at most 10000
@@ -75,8 +77,20 @@ ground it was hollowed from. On arrival she is anchored, where she can, over
 rock or deep water that takes her hold; the hold is hollowed out under her
 deck and its cargo put back in it. Where no such water is free, she is built
 without a hold: what it carried is stowed on the deck tile above, its floor is
-lost, and a ladder that would lead to nothing is taken down. An upper deck
-still keeps her in port.
+lost, and a ladder that would lead to nothing is taken down.
+
+Her upper deck (the upper faces of the roofs over her deck, `built_body.dm`)
+packs as `record["upper"]`, one entry per tile over one of her deck tiles. A
+roof goes as a `"u"` entry on the tile it stands on, the floor on top of a
+roof over her deck as an `"f"` entry, and walls, ladder tops and cargo up there
+as on her deck; a tile may be only a ladder's top. A floor on a roof of the
+upper deck itself (a third storey) would be left in the air, so it keeps her
+in port. Taken off the water, her upper deck goes first, then her deck, and on
+each tile what stands there before its floors and roofs, so nothing falls to a
+tile already cleared. On arrival she is anchored, where she can, under open
+air on the building level above; each face is built on its roof again and
+linked to it (`building_link()`). Where a tile has no open air above it, its
+roof stays a plain roof and what stood up there is stowed on the deck below.
 
 ## Arriving
 
@@ -93,8 +107,8 @@ again.
 
 ## Tests
 
-`tests/naval_carrier/crossing_probe.dm` and `cargo_probe.dm` (holds, carts,
-boats and machines; run like the other naval probes):
+`tests/naval_carrier/crossing_probe.dm` and `cargo_probe.dm` (holds, upper
+decks, carts, boats with outboards and machines; run like the other naval probes):
 packing and refusals, bad records, payload sizes, stripping her, the anchorage
 search, building her again with mast, chest and cargo, and crew arrivals by
 voyage. Not covered: two live worlds with the transfer agent between them.

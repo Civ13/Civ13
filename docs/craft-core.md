@@ -134,8 +134,8 @@ roof makes the tile under it indoors, so the areas of her tiles sail with her
 and the sea's areas close in behind. Measured in
 `tests/naval_carrier/upper_deck_probe.dm`, a step at the cap with ten sailors
 and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
-A hull with an upper deck cannot cross the sea or set out on a voyage yet, since
-only her own deck packs for the crossing.
+A hull with an upper deck crosses the sea and sets out on voyages with it
+([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
 
 ### Holds
 
