@@ -34,8 +34,8 @@ otherwise. Other keys (`arrow`, `gun`, `bomb` and so on) never fall back.
 `getarmor_organ` uses it for worn clothing and accessories, and armor plates
 count toward the three kinds as they do toward `melee`.
 
-No armor defines the new keys yet, so every armor protects exactly as before.
-Per-family values (padded, leather, lamellar and scale, mail, plate) are the
-next phase of the armor rework.
+Clothing reads its values through `armor_value(type)`, which gives family
+armor its family values (`docs/armor-families.md`) and everything else
+`armor_rating` of its own list.
 
 Tested by `tests/melee_hit_kinds` (see its README).

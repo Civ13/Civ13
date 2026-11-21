@@ -484,7 +484,10 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	if (config.hub_banner_url)
 		s += "<img src=\"[config.hub_banner_url]\"><br>"
-	if (map)
+	// The gateway is the group's hub entry: it shows the lands, not its own empty map.
+	if (region_gateway_here())
+		s += region_gateway_hub_status()
+	else if (map)
 		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 	var/list/player_status = player_status_observation()
 	s += "<b>World:</b> [hub_status_text(player_world_activity(player_status))]<br>"
@@ -492,7 +495,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	// we can't execute code in config settings, so this is a workaround.
 	var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
-	if (map)
+	if (map && !region_gateway_here())
 		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
 	if (hub_body)
 		s += hub_body

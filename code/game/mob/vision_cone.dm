@@ -100,7 +100,6 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 	return
 
 /mob/living/human/update_vision_cone()
-	var/delay = 10
 	if (client && HUDtech["fov"] && !config.disable_fov)
 //delete these lines when activating "normal" update vision cone
 //		rest_cone_act()
@@ -108,11 +107,10 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 
 		var/obj/screen/fov/fov = HUDtech["fov"]
 		var/image/I = null
-		for (I in client.hidden_atoms)
-			I.override = FALSE
-			spawn(delay)
-				qdel(I)
-			delay += 10
+		// The last cone's images go at once: the new ones are added this same
+		// tick, so nothing flickers. Left among the client images (they used to be
+		// qdel'd one second apart each), they piled up on every step and turn.
+		client.images -= client.hidden_atoms
 		rest_cone_act()
 		client.hidden_atoms = list()
 		client.hidden_mobs = list()
