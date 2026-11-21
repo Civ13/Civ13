@@ -70,11 +70,11 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c6841c5c1a95382c479d979749ef95820a745da7'
+WIKI_REVIEWED_REVISION = 'd3dcf2ae26837e804fc4823fe320bb70ae6045cd'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
-    'guides/Guide_to_Peoples_and_Languages.md': ('ff51261f66871c428cf837dcb1b9fca59ecbfcc75fcc74c802069fc43b1ba411', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
+    'guides/Guide_to_Peoples_and_Languages.md': ('8ebe17801b94d3505109fe0107ce1d7acd91c8988cb4f87add9a260005c58dd6', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Combat.md': ('2ad471dd049e3953df3694c57d20bf9319aeaf264c35f46527210efa0ed6828d', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),

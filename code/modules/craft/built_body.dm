@@ -175,8 +175,8 @@
 // Why a tile the hull does not already cover cannot take it, or null.
 /datum/craft_body/built/proc/tile_refusal(turf/D)
 	// Hauled up a slipway (slipway_haul.dm), she may come to rest on the
-	// ground of its berth.
-	if (!istype(D, /turf/floor/beach/water) && !(ways_tiles && ways_tiles[D]))
+	// ground of its berth; she floats in a flooded dock basin (drydock.dm).
+	if (!istype(D, /turf/floor/beach/water) && !(ways_tiles && ways_tiles[D]) && !dock_floats(D))
 		return "[D.name] ahead at [D.x],[D.y]"
 	// A turf lists what overlaps it by pixels too (a hull sailing by pixels,
 	// vehicle_offset_hull.dm), so only a floor filed on D is in the way.
