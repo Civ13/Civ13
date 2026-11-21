@@ -1938,6 +1938,7 @@
 #include "code\modules\space\satellites.dm"
 #include "code\modules\space\water_scarcity.dm"
 #include "code\modules\storage_window\closet_storage.dm"
+#include "code\modules\storage_window\false_bottom.dm"
 #include "code\modules\storage_window\storage_admin.dm"
 #include "code\modules\storage_window\storage_fullness.dm"
 #include "code\modules\storage_window\storage_incentives.dm"

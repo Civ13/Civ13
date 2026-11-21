@@ -437,7 +437,7 @@
 				G["space"] = S.max_storage_space
 				G["slots"] = S.storage_slots
 				G["max_size"] = S.max_w_class
-			G["total"] = S.contents.len
+			G["total"] = S.shown_contents_count()
 			if (unseen.len)
 				G["unseen"] = unseen
 			if (search_holder == S && search_item)
