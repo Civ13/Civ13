@@ -152,6 +152,13 @@ const setup: CharacterSetupData = {
       { id: 'senses', title: 'Senses and speech', traits: [trait('Deaf', -3, 'You cannot hear at all.', { taken: 1 }), trait('Stutter', -1, 'You have a permanent stutter.')] },
     ],
   },
+  chart: {
+    choice: 'random', verified: 1,
+    signs: [
+      { id: 'ox', name: 'The Ox', season: 'Early spring', calling: 'Ploughman, hauler and builder', strengths: 'Strength +10, Farming +5, Stamina +5', weaknesses: 'Dexterity -10, Philosophy -5, Swimming -5' },
+      { id: 'owl', name: 'The Owl', season: 'Early winter', calling: 'Scholar, researcher and teacher', strengths: 'Philosophy +10, Medical +5, Crafting +5', weaknesses: 'Strength -10, Stamina -5, Swords -5' },
+    ],
+  },
   settings: {
     ui_style: 'ConsoleStyle', ui_styles: ['ConsoleStyle', '1713Style', 'NewStyle'], cursor: 'Default', cursors: ['Default', 'Red Crosshair', 'Green Crosshair', 'White Crosshair'],
     client_fps: 60, fps_choices: [30, 60, 100, 120, 144], tutorial: 'in progress (3 of 9 steps done)',
@@ -160,6 +167,7 @@ const setup: CharacterSetupData = {
 };
 add('character-setup', 'character_setup.tmpl', setup, 'Character Setup');
 add('character-setup-traits', 'character_setup.tmpl', { ...setup, tab: 'traits' }, 'Character Setup');
+add('character-setup-chart', 'character_setup.tmpl', { ...setup, tab: 'chart' }, 'Character Setup');
 add('character-setup-settings', 'character_setup.tmpl', { ...setup, tab: 'settings' }, 'Character Setup');
 // Haircut: a long-haired, bearded character choosing among shorter styles.
 const cuts = (names: string[], lengths: number[], first: number) => names.map((name, i) => ({ name, length: lengths[i], row: first + i, tint: 1 }));

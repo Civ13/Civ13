@@ -218,7 +218,7 @@ class GroupFreshWorldTests(unittest.TestCase):
                 (host.repo / name / 'fixture').write_text(region['id'] + name)
             self.machine.up.add(host.config['transfer_port'])  # agents run
 
-    def terminate(self, pid):
+    def terminate(self, pid, expect=None):
         if pid in self.coordinator:
             self.coordinator.remove(pid)
         self.machine.up.discard(pid - 10000)
