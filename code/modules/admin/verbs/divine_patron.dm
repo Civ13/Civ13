@@ -14,6 +14,7 @@
 	else
 		actions += "Speak as a god"
 	actions += "Set my divine name"
+	actions += "Tend repositories"
 	var/label = divine_identity_label(divine_identity_of(ckey))
 	var/action = input(usr, claim ? "You speak as [divine_label_for(claim)]." : "You are not speaking as any god.[label ? " Players see you as [label]." : " Set your divine name first."]", "Divine Patron") as null|anything in actions
 	if (!action || !check_rights(R_ADMIN))
@@ -23,6 +24,8 @@
 	switch (action)
 		if ("Set my divine name")
 			divine_edit_identity()
+		if ("Tend repositories")
+			divine_tend_repositories() // repository_nations.dm
 		if ("Speak as a god")
 			var/list/entry = divine_identity_of(ckey)
 			if (!entry)
