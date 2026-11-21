@@ -583,6 +583,13 @@ SUITES = {
         'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm', 'code/__defines/martial.dm'),
         'shared_paths': ('code/modules/research_tree/research_node.dm',
                          'code/modules/persistence/region_travel.dm')},
+    # Whole-body motion: transform-only channel, posture handshake, hit recoil hooks, config.
+    'body_motion': {'files': ('tests/body_motion/test_sources.py',),
+        'paths': ('tests/body_motion/', 'code/game/mob/living/carbon/human/body_motion.dm', 'code/__defines/body_motion.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/update_icons.dm',
+                         'code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/datums/configuration.dm')},
     # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.
     'punch_injury': {'files': ('tests/punch_injury/test_sources.py',),
         'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),

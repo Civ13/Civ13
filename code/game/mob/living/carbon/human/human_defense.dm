@@ -699,6 +699,8 @@ bullet_act
 	var/track_self_injury = user == src && client && client.mob == src && stat == CONSCIOUS && sleeping <= 0
 	var/previous_self_damage = track_self_injury ? getBruteLoss() + getBurnLoss() : 0
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
+	if (effective_force && blocked < 2)
+		body_motion_recoil(user)
 	armor_bruise(I, effective_force, blocked, hit_zone)
 	armor_gap_message(I, user, blocked, hit_zone)
 	if (track_self_injury && getBruteLoss() + getBurnLoss() > previous_self_damage && player_help_service)

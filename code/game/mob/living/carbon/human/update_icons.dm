@@ -221,8 +221,25 @@ Please contact me on #coderbus IRC. ~Carn x
 		M.Translate(0, 16*(size_multiplier-1))
 	return M
 
+// Whole-body motion (body_motion.dm) owns transform while a motion runs: a
+// direct write here would cut it off, so a running motion is left to end on
+// the same posture, or re-aimed at a changed one. A turn into or out of lying
+// plays the eased fall or stand-up where a player can see it.
 /mob/living/human/proc/update_posture_transform()
-	transform = posture_transform()
+	var/matrix/rest = posture_transform()
+	var/turned = body_motion_turned()
+	var/was_turned = body_motion_drawn_turned
+	body_motion_drawn_turned = turned
+	if (!isnull(was_turned) && turned != was_turned && body_motion_can_play(BODY_MOTION_PRIORITY_POSTURE))
+		body_motion_posture_change(rest, turned)
+		return
+	if (world.time < body_motion_until)
+		if (body_motion_matrix_same(body_motion_rest, rest))
+			return
+		body_motion_claim(body_motion_priority, 1, rest)
+		animate(src, transform = rest, time = 1, flags = ANIMATION_PARALLEL)
+		return
+	transform = rest
 
 // Facing changes (examine, point, tables) keep a prone body east/west and
 // redraw its turn at once instead of waiting for the next icon update.

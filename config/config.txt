@@ -325,3 +325,7 @@ LANGUAGE english
 ## (a 60 s sweep on Gaia). Indoor cells keep half daylight through the mask's
 ## alpha. Not pixel-identical to the server tint; on while it is being judged.
 #DAYNIGHT_CLIENT_TINT
+
+## Whole-body character motion: FULL, REDUCED (falls and hits only) or OFF.
+## Default FULL when the line is absent.
+# BODY_MOTION FULL
