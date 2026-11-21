@@ -1774,6 +1774,7 @@
 #include "code\modules\naval\voyage_sea.dm"
 #include "code\modules\naval\shipyard.dm"
 #include "code\modules\naval\slipway.dm"
+#include "code\modules\naval\slipway_draught.dm"
 #include "code\modules\naval\slipway_hull.dm"
 #include "code\modules\naval\torpedoes.dm"
 #include "code\modules\naval\vessel.dm"
