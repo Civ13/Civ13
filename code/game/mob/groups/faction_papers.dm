@@ -25,7 +25,7 @@
 
 var/global/list/faction_paper_items = list()
 // Kinds of papers and what they are called. Permits are in faction_permits.dm.
-var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers", "pass" = "travel pass", "build" = "building permit", "trade" = "trading licence")
+var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers", "pass" = "travel pass", "build" = "building permit", "trade" = "trading licence", "substance" = "substance licence")
 
 // --- Register ------------------------------------------------------------------
 
@@ -62,6 +62,7 @@ var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers",
 			if (!istext(serial) || !papers_row_valid(open[serial]))
 				open -= serial
 		permits_required(faction)
+		substance_rules(faction) // faction_substances.dm
 
 /obj/map_metadata/proc/papers_rename(old_name, new_name)
 	faction_rename_assoc_key(papers_state(), old_name, new_name)
@@ -309,10 +310,15 @@ var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers",
 	var/clerk = map.faction_power(src, faction, "papers")
 	var/list/choices = list("Read the census", "Read the papers in force")
 	if (clerk)
-		choices += list("Issue citizenship papers", "Issue a travel pass", "Issue a building permit", "Issue a trading licence", "Revoke papers", "Record a change of name", "Set the border doors beside me", "Require permits on our land")
+		choices += list("Issue citizenship papers", "Issue a travel pass", "Issue a building permit", "Issue a trading licence", "Issue a substance licence", "Revoke papers", "Record a change of name", "Set the border doors beside me", "Require permits on our land")
+	if (map.is_faction_leader(src, faction))
+		choices += "Set substance rules on our land" // faction_substances.dm
 	choices += "Cancel"
 	var/choice = WWinput(src, "Papers of [faction]", "Faction papers", "Read the census", choices)
 	if (!choice || choice == "Cancel" || !(choice in choices) || civilization != faction || stat != CONSCIOUS)
+		return
+	if (choice == "Set substance rules on our land")
+		substance_rules_menu(faction)
 		return
 	if (!(choice in list("Read the census", "Read the papers in force")) && !map.faction_power(src, faction, "papers"))
 		return
@@ -329,6 +335,8 @@ var/global/list/faction_paper_kinds = list("citizenship" = "citizenship papers",
 			papers_issue_to(faction, "build")
 		if ("Issue a trading licence")
 			papers_issue_to(faction, "trade")
+		if ("Issue a substance licence")
+			papers_issue_to(faction, "substance")
 		if ("Require permits on our land")
 			permits_require_menu(faction)
 		if ("Record a change of name")

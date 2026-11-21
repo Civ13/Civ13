@@ -314,6 +314,7 @@
       "code/modules/admin/topic.dm": 1,
       "code/modules/admin/verbs/adminpm.dm": 1,
       "code/modules/admin/verbs/debug.dm": 1,
+      "code/modules/admin/verbs/divine_patron.dm": 1,
       "code/modules/agent_control/agent_actions.dm": 1,
       "code/modules/agent_control/agent_autospawn.dm": 1,
       "code/modules/agent_control/agent_characters.dm": 6,

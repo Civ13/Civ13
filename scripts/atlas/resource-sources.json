@@ -17081,6 +17081,146 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Spin nylon thread in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 97,
+      "source_commit": "386ee2eb20fd130d8661adc5fab2862f853328fa",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "/obj/item/stack/nylon_thread"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "From WW2, set a powered bakelizer to nylon thread with its Change Setting verb and fill it with petroleum.",
+        "Every 5 petroleum spins 2 skeins; take them out with the Remove verb."
+      ],
+      "conditions": "Needs a powered bakelizer in WW2 or later.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Weave nylon cloth",
+      "file": "code/modules/1713/production.dm",
+      "line": 338,
+      "source_commit": "386ee2eb20fd130d8661adc5fab2862f853328fa",
+      "inputs": [
+        "/obj/item/stack/nylon_thread"
+      ],
+      "outputs": [
+        "/material/nylon"
+      ],
+      "tools": [
+        "/obj/structure/loom"
+      ],
+      "steps": [
+        "Use nylon thread on an anchored loom.",
+        "Each skein weaves into one nylon cloth."
+      ],
+      "conditions": "Needs an anchored loom.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cook epoxy in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 99,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "epoxy"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "From the Cold War, set a powered bakelizer to epoxy and fill it with petroleum.",
+        "Every 5 petroleum makes 10 units of epoxy; draw it off with an empty container."
+      ],
+      "conditions": "Needs a powered bakelizer in the Cold War or later.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Weave glass cloth",
+      "file": "code/modules/1713/production.dm",
+      "line": 341,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "/material/glass"
+      ],
+      "outputs": [
+        "/material/glass_cloth"
+      ],
+      "tools": [
+        "/obj/structure/loom"
+      ],
+      "steps": [
+        "Use glass sheets on an anchored loom.",
+        "Each glass sheet weaves into one glass cloth."
+      ],
+      "conditions": "Needs an anchored loom.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Lay up fiberglass",
+      "file": "code/modules/1713/fiberglass.dm",
+      "line": 188,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "/material/glass_cloth",
+        "epoxy"
+      ],
+      "outputs": [
+        "/material/fiberglass"
+      ],
+      "tools": [
+        "/obj/structure/layup_table"
+      ],
+      "steps": [
+        "Pour 10 units of epoxy into a layup table.",
+        "Use 3 glass cloth on it for 2 sheets of fiberglass."
+      ],
+      "conditions": "Needs a layup table and 10 epoxy.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Bond aramid laminate",
+      "file": "code/modules/1713/fiberglass.dm",
+      "line": 188,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "/material/kevlar",
+        "epoxy"
+      ],
+      "outputs": [
+        "/material/aramid_laminate"
+      ],
+      "tools": [
+        "/obj/structure/layup_table"
+      ],
+      "steps": [
+        "Pour 10 units of epoxy into a layup table.",
+        "Use 3 Kevlar sheets on it for 2 sheets of aramid laminate."
+      ],
+      "conditions": "Needs a layup table and 10 epoxy.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Tap lacquer trees",
       "file": "code/modules/1713/lacquer.dm",
       "line": 82,

@@ -24,6 +24,7 @@ RANKS = ROOT / 'code/modules/provinces/province_ranks.dm'
 UPKEEP = ROOT / 'code/modules/provinces/province_upkeep.dm'
 SIEGE = ROOT / 'code/modules/provinces/province_siege.dm'
 RICH = ROOT / 'code/modules/provinces/province_rich.dm'
+TREATIES = ROOT / 'code/modules/provinces/province_treaties.dm'
 DME = ROOT / 'civ13.dme'
 # Map -> surface z, as scripts/provinces.py was run (docs/provinces.md).
 CONTINENTS = {
@@ -443,6 +444,42 @@ class Sieges(unittest.TestCase):
         self.assertIn('/obj/structure/war_banner', recipes)
         self.assertIn('province_rename_faction(old_name, new_name)',
                       (ROOT / 'code/game/mob/groups/faction_recruitment.dm').read_text(encoding='utf-8'))
+
+
+class Treaties(unittest.TestCase):
+    """Nation treaties: allies and pact partners never contest, sieges need war."""
+
+    def test_rules(self):
+        text = TREATIES.read_text(encoding='utf-8')
+        kinds = text[text.index('/proc/province_treaty_kinds'):text.index('/proc/province_groups_at_war')]
+        # Only two nations have treaties; a plain faction keeps today's rules.
+        self.assertIn('findtext(group_a, "nation:") != 1 || findtext(group_b, "nation:") != 1', kinds)
+        self.assertIn('nation_treaties_of(copytext(group_a, 8))["in_force"]', kinds)
+        friendly = text[text.index('/proc/province_groups_friendly'):text.index('/proc/province_treaty_siege_block')]
+        self.assertIn('("alliance" in kinds) || ("pact" in kinds)', friendly)
+        block = text[text.index('/proc/province_treaty_siege_block'):text.index('/proc/province_siege_side')]
+        self.assertLess(block.index('return null'), block.index('province_groups_at_war'))
+        side = text[text.index('/proc/province_siege_side'):]
+        # An ally of both sides defends.
+        self.assertLess(side.index('province_groups_allied(group, holder)'), side.index('province_groups_allied(group, attacker)'))
+        self.assertNotIn('sleep(', text)
+        self.assertNotIn('spawn(', text)
+
+    def test_wiring(self):
+        holding = HOLDING.read_text(encoding='utf-8')
+        rival = holding[holding.index('/proc/province_rival'):holding.index('/proc/province_tell_leaders')]
+        self.assertIn('group == holder || province_groups_friendly(group, holder)', rival)
+        siege = SIEGE.read_text(encoding='utf-8')
+        block = siege[siege.index('/proc/province_siege_block'):siege.index('/obj/structure/war_banner')]
+        self.assertIn('province_treaty_siege_block(group, holder)', block)
+        step = siege[siege.index('/proc/province_siege_step'):siege.index('/proc/province_siege_won')]
+        off = step.index('province_treaty_siege_block(siege["group"], holder)')
+        # Called off before the deposit or cooldown code runs.
+        self.assertLess(off, step.index('province_upkeep_take'))
+        self.assertLess(off, step.index('cooldown[siege["group"]]'))
+        self.assertIn('province_siege_side(province_group_of(H.civilization), siege["group"], holder)', step)
+        self.assertIn('#include "code\\modules\\provinces\\province_treaties.dm"', DME.read_text(encoding='utf-8'))
+        self.assertIn('## Treaties', (ROOT / 'docs/provinces.md').read_text(encoding='utf-8'))
 
 
 class RichProvinces(unittest.TestCase):

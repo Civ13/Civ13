@@ -142,8 +142,9 @@ days; once the other agrees too, the treaty is in force. Either nation may
 renounce an alliance, pact or trade treaty alone. A nation keeps at most 24
 treaties, and treaties end when either nation dissolves. Citizens are told
 when a treaty starts or ends, and Nation view lists each nation's treaties.
-Treaties do not yet change sieges or other play; they are the record later
-features read.
+Treaties change provinces (`docs/provinces.md`, "Treaties"): allies and pact
+partners never contest each other's provinces, a nation besieges another only
+while at war with it, and allies at a besieged seat fight on their ally's side.
 
 ## Legitimacy
 

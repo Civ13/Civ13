@@ -821,3 +821,4 @@ var/list/vocal_emotes = list(
 				custom_emote(m_type,message,"userdanger_yellow")
 			else
 				custom_emote(m_type,message)
+			body_motion_emote(act)

@@ -1225,7 +1225,10 @@
 	S.name = loaded[1].name
 	S.starting = get_turf(src)
 
-	loaded -= loaded[1]
+	var/obj/item/cannon_ball/fired_shell = loaded[1]
+	loaded -= fired_shell
+	eject_shell_casing(fired_shell)
+	qdel(fired_shell)
 	if (S.atype == "grapeshot")
 		var/tot = pick(3,4)
 		for(var/i = 1, i<= tot,i++)
@@ -1241,6 +1244,20 @@
 		S.launch(TF, user, src, 0, 0)
 	playsound(loc, "artillery_out", 100, TRUE)
 	return TRUE
+
+// A fired cased shell leaves its empty brass beside the gun, ready to refill:
+// tank shells give a cannon casing of their calibre, field artillery shells an
+// artillery casing. Cannonballs, mortar bombs, rockets and naval shells have none.
+/obj/structure/cannon/proc/eject_shell_casing(obj/item/cannon_ball/shell)
+	var/turf/T = get_turf(src)
+	if (!T || !istype(shell, /obj/item/cannon_ball/shell) || istype(shell, /obj/item/cannon_ball/shell/naval))
+		return null
+	if (istype(shell, /obj/item/cannon_ball/shell/tank))
+		var/obj/item/stack/ammopart/casing/tank/C = new(T)
+		C.caliber = shell.caliber
+		C.name = "[C.caliber]mm cannon casing"
+		return C
+	return new /obj/item/stack/ammopart/casing/artillery(T)
 
 // Fires the loaded shot: smoke, sound, flight and impact. user is whoever pulled
 // the lanyard, or null when the gun is fired by an order (see naval_broadside.dm).
@@ -1301,6 +1318,7 @@
 				nuclear = TRUE
 
 			loaded -= fired_shell
+			eject_shell_casing(fired_shell)
 			qdel(fired_shell)
 
 			spawn (0)

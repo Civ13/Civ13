@@ -41,7 +41,7 @@
 		var/list/C = cells[key]
 		if (!C[2])
 			continue
-		var/list/P = ship_draught_pieces[C[2]]
+		var/list/P = ship_draught_pieces()[C[2]]
 		if (P && P[flag])
 			. += key
 
@@ -69,7 +69,7 @@
 		return FALSE
 	if (!C[2])
 		return TRUE
-	var/list/P = ship_draught_pieces[C[2]]
+	var/list/P = ship_draught_pieces()[C[2]]
 	if (!P)
 		return TRUE
 	// A door is shut on the sheet but crew open it.
@@ -237,7 +237,7 @@
 		var/list/C = D.cells[key]
 		if (!C[2])
 			continue
-		var/list/P = ship_draught_pieces[C[2]]
+		var/list/P = ship_draught_pieces()[C[2]]
 		if (!ispath(P["path"], /obj/structure/hull_anchor))
 			continue
 		var/obj/structure/hull_anchor/A = P["path"]
@@ -264,7 +264,7 @@
 		var/list/C = D.cells[key]
 		if (!C[2])
 			continue
-		var/list/P = ship_draught_pieces[C[2]]
+		var/list/P = ship_draught_pieces()[C[2]]
 		if (!P || ispath(P["path"], /obj/covers) || ispath(P["path"], /obj/structure/window_frame))
 			continue
 		var/reached = walk[key] ? TRUE : FALSE
@@ -331,7 +331,7 @@
 /datum/design_check/ship/upper/ship_check(datum/ship_draught/D, datum/design_report/R)
 	if (!D.upper_tiles())
 		return
-	R.note("Her deck above is laid by hand once she is afloat, with a ladder to climb to it. Building on the level above needs open air over her.", null, "u")
+	R.note("Her deck above is roofed over her hull on the slipway, with open air over the berth, and sails with her. Climb to it by a ladder.", null, "u")
 
 // Her decks off the main deck (ship_draught_decks): every ladder needs a clear
 // tile of deck above it, and every part of her hold a ladder up out of it.
@@ -365,6 +365,9 @@
 			R.error("Her [name] has [what] with no ladder up to her deck: stand a ladder in it under a clear tile of deck.", keys, "X", -1)
 		else
 			R.note("No ladder is drawn up to [what] of her [name]: climb to it by stairs or a ladder stood up once she is afloat.", keys, "X", text2num(level))
+	var/list/loose = D.unsupported_deck_tiles(1)
+	if (loose.len)
+		R.error("[loose.len] tile\s of her deck above [loose.len == 1 ? "has" : "have"] nothing to carry [loose.len == 1 ? "it" : "them"]: stand a deck pillar within 3 tiles below, or a plank wall beside [loose.len == 1 ? "it" : "them"].", loose, "S", 1)
 	if (D.deck_tiles(2))
 		R.note("Her second deck above is drawn for later: a ship afloat carries one deck above hers.", null, "u", 2)
 

@@ -67,7 +67,11 @@ class StanceTransformTest(unittest.TestCase):
         }
         for rel, count in expected.items():
             self.assertEqual(read(rel).count('update_posture_transform()'), count, rel)
-        self.assertIn('transform = posture_transform()', read(HELPER_FILE))
+        # update_posture_transform() applies the helper's matrix, directly or as
+        # the rest a body motion returns to (body_motion.dm).
+        apply = read(HELPER_FILE).split('/mob/living/human/proc/update_posture_transform()')[1].split('\n/')[0]
+        self.assertIn('var/matrix/rest = posture_transform()', apply)
+        self.assertIn('\ttransform = rest', apply)
 
     def test_prone_facing_redraws_at_once(self):
         text = read(HELPER_FILE)

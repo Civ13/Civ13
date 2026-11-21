@@ -284,6 +284,8 @@ SPRITES = {
     'piece_Y': {'layers': [('icons/obj/ship_edges.dmi', 'gunwale_gate', None)], 'turns': True},
     # /obj/structure/multiz/ladder/up/placed (the foot of a stood-up ladder)
     'piece_X': {'layers': [('icons/obj/stairs.dmi', 'ladderup_wood', None)], 'outline': True},
+    # /obj/structure/roof_support (a deck pillar)
+    'piece_S': {'layers': [('icons/obj/structures.dmi', 'support_h', None)], 'outline': True},
     # /obj/structure/bed/wood (wood tint on the bed overlay)
     'piece_B': {'layers': [('icons/obj/bed_chair.dmi', 'bed', WOOD)], 'outline': True},
     # /obj/structure/cellar_pump/steam

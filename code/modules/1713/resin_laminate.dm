@@ -18,6 +18,7 @@
 // here sleeps outside the do_after wait; the bakelizer keeps its own timer.
 
 #define BAKELIZER_LIQUID_UNITS 10
+#define BAKELIZER_NYLON_SKEINS 2
 #define LAMINATE_CLOTH 4
 #define LAMINATE_RESIN 10
 #define LAMINATE_PRESS_TIME 80
@@ -75,10 +76,24 @@
 // Built per call: proc-static and global lists add to the world's global
 // initialiser, which is at the compiler's size limit.
 /proc/bakelizer_settings()
-	return list("plastic" = "plastic sheets", "phenolic_resin" = "phenolic resin")
+	return list("plastic" = "plastic sheets", "phenolic_resin" = "phenolic resin", "nylon_thread" = "nylon thread", "epoxy" = "epoxy")
+
+// The earliest ordinal age (research_faction.dm) a setting can be chosen in.
+/proc/bakelizer_setting_age(id)
+	switch (id)
+		if ("nylon_thread")
+			return 6 // WW2
+		if ("epoxy")
+			return 7 // Cold War (fiberglass.dm)
+	return 0
+
+// Settings that make solid goods, drawn out with the Remove verb, not poured.
+/proc/bakelizer_solid_setting(id)
+	return id == "plastic" || id == "nylon_thread"
 
 /obj/structure/bakelizer/var/setting = "plastic"
 /obj/structure/bakelizer/var/list/stock = null // reagent id = units ready to draw off
+/obj/structure/bakelizer/var/nylon_thread = 0 // skeins of nylon thread made (nylon.dm)
 
 // One refining step's product (modern_items.dm calls this per 5 petroleum).
 /obj/structure/bakelizer/proc/bakelizer_make()
@@ -87,12 +102,17 @@
 	if (setting == "plastic")
 		plastic += 1
 		return
+	if (setting == "nylon_thread")
+		nylon_thread += BAKELIZER_NYLON_SKEINS
+		return
 	if (!stock)
 		stock = list()
 	stock[setting] = (stock[setting] || 0) + BAKELIZER_LIQUID_UNITS
 
 /obj/structure/bakelizer/proc/bakelizer_desc()
 	var/list/parts = list("[plastic] plastic sheets")
+	if (nylon_thread)
+		parts += "[nylon_thread] skeins of nylon thread"
 	for (var/id in stock)
 		parts += "[stock[id]] units of [bakelizer_settings()[id] || id]"
 	desc = "A machine used to transform petroleum into plastics and resins. It is set to make [bakelizer_settings()[setting]]. Has [volume] petroleum, [english_list(parts)] inside."
@@ -130,6 +150,8 @@
 	var/list/settings = bakelizer_settings()
 	var/list/choices = list()
 	for (var/id in settings)
+		if (map && map.ordinal_age < bakelizer_setting_age(id))
+			continue
 		choices[settings[id]] = id
 	var/choice = WWinput(usr, "What should \the [src] make?", "Bakelizer", settings[setting], choices)
 	if (!choice || !(choice in choices) || get_dist(usr, src) > 1)
@@ -137,6 +159,18 @@
 	setting = choices[choice]
 	bakelizer_desc()
 	to_chat(usr, SPAN_NOTICE("You set \the [src] to make [choice]."))
+
+// Hand out the nylon thread (the Remove verb, modern_items.dm). TRUE if any.
+/obj/structure/bakelizer/proc/bakelizer_eject_nylon(mob/user)
+	if (nylon_thread <= 0)
+		nylon_thread = 0
+		return FALSE
+	new /obj/item/stack/nylon_thread(get_turf(src), nylon_thread)
+	nylon_thread = 0
+	bakelizer_desc()
+	if (user)
+		to_chat(user, SPAN_NOTICE("You take the nylon thread out of \the [src]."))
+	return TRUE
 
 // The hot press.
 
@@ -236,6 +270,7 @@
 		to_chat(user, SPAN_NOTICE("It holds [phenolic] units of phenolic resin and [resin] units of pine resin."))
 
 #undef BAKELIZER_LIQUID_UNITS
+#undef BAKELIZER_NYLON_SKEINS
 #undef LAMINATE_CLOTH
 #undef LAMINATE_RESIN
 #undef LAMINATE_PRESS_TIME

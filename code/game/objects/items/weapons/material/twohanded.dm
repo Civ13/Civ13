@@ -75,6 +75,9 @@
 /obj/item/weapon/material/twohanded/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if(wielded && default_parry_check(user, attacker, damage_source) && prob(15))
 		user.visible_message("<font color='#E55300'>\The [user] parries [attack_text] with \the [src]!</font>")
+		if (ishuman(user))
+			var/mob/living/human/parrier = user
+			parrier.body_motion_parry(attacker)
 		playsound(user.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 		if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
 			apply_wear(5, WEAR_BLOW)
