@@ -3155,6 +3155,19 @@ RECIPE: /material/iron/,key,/obj/item/weapon/key,2,35,0,1,none,28,0,0,8,null
 
 RECIPE: /material/iron/,iron plate floor,/obj/covers/iron_plate,1,40,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,iron grating,/obj/covers/iron_grating,1,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,flagstone floor,/obj/covers/flagstone,1,20,1,1,floors,0,0,0,8,null
+RECIPE: /material/copper/,copper plate floor,/obj/covers/copper_plate,1,35,1,1,construction,0,0,0,8,null
+RECIPE: /material/bronze/,bronze tile floor,/obj/covers/bronze_plate,1,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/lead/,lead sheet floor,/obj/covers/lead_sheet,1,30,1,1,construction,0,0,0,8,null
+RECIPE: /material/glass/,glass block floor,/obj/covers/glass_block,1,35,1,1,construction,0,0,0,8,null
+RECIPE: /material/leaf/,rush matting,/obj/covers/rush_matting,1,15,1,1,none,0,0,0,8,null
+RECIPE: /material/obsidian/,obsidian tile floor,/obj/covers/obsidian_tile,1,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/steel/,steel tread plate,/obj/covers/steel_tread,1,20,1,1,construction,96,0,0,8,null
+RECIPE: /material/bearpelt/brown/,bear pelt rug,/obj/structure/pelt_rug,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/black/,black bear pelt rug,/obj/structure/pelt_rug/black,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/bearpelt/white/,white bear pelt rug,/obj/structure/pelt_rug/white,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/wolfpelt/,wolf pelt rug,/obj/structure/pelt_rug/wolf,2,60,1,1,none,0,0,0,8,null
+RECIPE: /material/whitewolfpelt/,white wolf pelt rug,/obj/structure/pelt_rug/wolf/white,2,60,1,1,none,0,0,0,8,null
 RECIPE: /material/iron/,iron picket fence,/obj/structure/grille/fence/steel_picket,3,60,1,1,construction,50,0,0,8,null
 RECIPE: /material/iron/,iron fence,/obj/structure/grille/ironfence,2,80,1,1,construction,50,0,0,8,null
 RECIPE: /material/iron/,chainlink fence,/obj/structure/grille/chainlinkfence,3,80,1,1,construction,120,0,0,8,null

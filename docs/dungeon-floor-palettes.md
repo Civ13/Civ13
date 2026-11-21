@@ -91,3 +91,25 @@ for foundations and wall weathering. The plate is the hardest floor before
 steel. The grating lets blood and spills fall through when someone walks on
 it; gibs, writing, cobwebs and molten metal stay. The art is drawn by
 `scripts/draw_iron_floors.py` (`--check` compares it with the sheet).
+
+## Flagstone, metal, glass, rush and obsidian floors, and pelt rugs
+
+`code/modules/1713/extra_floors.dm` adds eight floors, one unit of material
+each, laid through normal floor placement:
+
+| Floor | Material | Research | Health | Notes |
+| --- | --- | --- | --- | --- |
+| rush matting | leaves | Primitive Construction | 30 | the only one that burns |
+| glass block floor | glass | Glassworking | 45 | no blast resistance |
+| lead sheet floor | lead | Bronze Working | 70 | soft |
+| obsidian tile floor | obsidian | Imperial Architecture | 80 | hard but no blast resistance |
+| copper plate floor | copper | Bronze Working | 100 | |
+| flagstone floor | stone | Stone Masonry | 120 | cheap paving beside cobblestone |
+| bronze tile floor | bronze | Bronze Working | 140 | |
+| steel tread plate | steel | Reinforced Concrete | 220 | toughest floor |
+
+Pelt rugs (`/obj/structure/pelt_rug` and its black, white, wolf and white wolf
+subtypes, Weaving) take two pelts, lie on top of the floor already there, count as a
+covered floor for home comfort, burn, and return both pelts through the Take
+Up Rug verb. The art for all of it is drawn by `scripts/draw_extra_floors.py`
+(`--check` compares it with the sheets).
