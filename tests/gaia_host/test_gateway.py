@@ -167,14 +167,20 @@ class GatewayTests(unittest.TestCase):
         with self.assertRaisesRegex(shard_group.Refused, 'does not host Earth'):
             shard_group.add_regions(self.write_group(), platform=self.machine)
 
-    def test_a_group_holds_up_to_24_regions(self):
-        regions = [{'id': 'r%d' % n, 'name': 'R%d' % n, 'kind': 'SURFACE', 'port': 1800 + n, 'map': 'maps/a.dmm'} for n in range(25)]
-        self.group['regions'] = regions[:24]
+    def test_a_group_holds_up_to_32_regions(self):
+        regions = [{'id': 'r%d' % n, 'name': 'R%d' % n, 'kind': 'SURFACE', 'port': 1800 + n, 'map': 'maps/a.dmm'} for n in range(33)]
+        self.group['regions'] = regions[:32]
         self.group['mainland'] = 'r0'
         self.write_group()
         self.group['regions'] = regions
-        with self.assertRaisesRegex(ValueError, '1 to 24 regions'):
+        with self.assertRaisesRegex(ValueError, '1 to 32 regions'):
             self.write_group()
+        # The worlds (shard_group.dm) and the launcher (LocalHosting.MaxRegions) take as many.
+        root = Path(__file__).resolve().parents[2]
+        self.assertIn('#define SHARD_MAX_REGIONS %d' % shard_group.MAX_REGIONS,
+                      (root / 'code/modules/persistence/shard_group.dm').read_text(encoding='utf-8'))
+        self.assertIn('public const int MaxRegions = %d;' % shard_group.MAX_REGIONS,
+                      (root / 'tools/opendream-client/native/LocalHosting.cs').read_text(encoding='utf-8'))
 
     def test_add_gateway_needs_the_relay(self):
         with self.assertRaisesRegex(shard_group.Refused, 'routing relay'):

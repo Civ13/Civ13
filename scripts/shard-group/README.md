@@ -45,7 +45,7 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 
 See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
-`public_host` (the address players use to join) and 1 to 24 `regions`, each
+`public_host` (the address players use to join) and 1 to 32 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
 `ORBIT`, `BARRACKS`, `BATTLE`, `EVENT`, `TUTORIAL` or `OTHER`; a `RAID`, `BATTLE`, `EVENT` or `TUTORIAL` region cannot be the mainland;
 a `TUTORIAL` region only runs the practice rooms and never saves, see [docs/practice-rooms.md](../../docs/practice-rooms.md#tutorial-region)), `port` and `map`. Optional: `revision` (default `HEAD`), `public`

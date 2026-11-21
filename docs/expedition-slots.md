@@ -17,13 +17,13 @@ operator can also give a slot a land by hand.
 `map` is the placeholder a free slot compiles: open sea over bedrock, 32 x 32.
 A slot cannot be the mainland or the relay gate, and no region may be called
 `expeditions` (the slots keep their lands in that folder of the group root).
-The plan proposes four slots, `far1` to `far4`; the group limit is 24 regions.
+The plan proposes four slots, `far1` to `far4`; the group limit is 32 regions.
 
 ### Adding slots to a running group
 
 1. Add the slots to the group config (`far1` to `far4`: ports 1811-1814,
    transfer ports 1831-1834; each standby port defaults to its port + 10).
-   Check `status` first: the group takes at most 24 regions.
+   Check `status` first: the group takes at most 32 regions.
 2. `setup.bat far1` (and so on) for each: it checks out and compiles the
    placeholder and enrols the slot's agent while the other worlds keep running.
    Do not start the slots: a free slot stays stopped until a ship needs it.

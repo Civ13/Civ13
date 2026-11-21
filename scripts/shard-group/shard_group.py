@@ -160,7 +160,7 @@ TRANSFER_PORT_OFFSET = 10  # a transfer agent the group does not place sits this
 FRONT_FOLDER = 'front-door'
 FRONT_FILES = ('admins.txt', 'magic_whitelist.txt')
 FRONT_CONFIG_KEYS = ('WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS', 'WEBHOOK_KEY')
-MAX_REGIONS = 24
+MAX_REGIONS = 32
 # The Earth regions a group that hosts Earth may be missing (add-regions): the lands of
 # docs/earth-continents.md and the seas of docs/ocean-regions.md, with the ports the
 # live host keeps for them (another free port when one is taken).

@@ -277,7 +277,7 @@ class ShardGroupTests(unittest.TestCase):
         self.refuse_config('needs a map', region_map='cave.sav')
         self.refuse_config('outside the repository', root=str(self.base / 'repo' / 'regions'))
         self.refuse_config('public_host', public_host='http://x')
-        self.refuse_config('1 to 24 regions', regions=[])
+        self.refuse_config('1 to 32 regions', regions=[])
         self.refuse_config('group id', group='Europe!')
         self.refuse_config('mainland', mainland='atlantis')
         self.refuse_config('mainland cannot be a RAID', mainland='deep', region_kind='RAID')

@@ -12,8 +12,8 @@ save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
 <!-- 2026-11-21: up to 24 regions and missing Earth regions -->
-Launcher 1.5.34: every list of regions reads up to `LocalHosting.MaxRegions` (24, shard_group.py
-MAX_REGIONS) instead of 16, and Ports and front door gains "Add missing Earth regions"
+Launcher 1.5.34: every list of regions reads up to `LocalHosting.MaxRegions` (32, the same as shard_group.py MAX_REGIONS
+and shard_group.dm SHARD_MAX_REGIONS) instead of 16, and Ports and front door gains "Add missing Earth regions"
 (`shard_group.py add-regions`): it plans, confirms, then adds the Earth lands and seas the group lacks
 (EARTH_REGIONS: the Mediterranean and the five oceans on the live host) and sets them up stopped.
 
