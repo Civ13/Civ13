@@ -120,6 +120,7 @@
 		return FALSE
 	copy_map_into(blank)
 	to_chat(user, SPAN_NOTICE("You finish copying [src]."))
+	accolade_meet_mob(user, "copyist")
 	return TRUE
 
 /////////////////////////////// Printing ///////////////////////////////

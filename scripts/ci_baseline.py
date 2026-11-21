@@ -1840,7 +1840,16 @@ SUITES = {
             'code/modules/client/player_tutorial.dm', 'code/modules/naval/ship_voyage.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_travel.dm',
             'code/modules/research_tree/character_knowledge.dm', 'code/modules/research_tree/research_faction.dm',
-            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm')},
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm',
+            'code/game/objects/items/cartography_notes.dm', 'code/modules/research_tree/book_research.dm',
+            'code/modules/1713/book.dm', 'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/structures/blacksmithing/refining.dm', 'code/modules/1713/tatara.dm',
+            'code/modules/research_tree/field_work.dm', 'code/modules/1713/domestication.dm',
+            'code/modules/1713/complex_animal/_backend.dm', 'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/helicopter.dm',
+            'code/game/mob/groups/faction_creation.dm', 'code/modules/provinces/province_siege.dm',
+            'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),

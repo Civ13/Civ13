@@ -59,6 +59,7 @@
 	research_chapters = jointext(chapters, ";")
 	// The chapter is in its writer's language (book_language.dm).
 	record_chapter_language(node_id, writer, language)
+	record_chapter_author(node_id, writer) // accolades.dm: Teacher
 	clear_research_progress(node_id)
 	map?.book_research_node_finished(get_research_node(node_id), !discovered)
 	return TRUE
@@ -571,6 +572,7 @@
 		else
 			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
 		H.philosophy_from_study(node_id)
+		accolade_learned_from(H, source, node_id)
 		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. [source] can be used again."))
 		tutorial_event_for(H, "research")
 		return TRUE
@@ -744,6 +746,7 @@
 		to_chat(H, SPAN_WARNING("You couldn't finish the copy."))
 		return FALSE
 	to_chat(H, SPAN_NOTICE("You finish copying the chapter on <b>[N.name]</b> into [dest]."))
+	accolade_meet_mob(H, "copyist")
 	book_refresh_ui()
 	return TRUE
 
