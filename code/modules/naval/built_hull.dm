@@ -129,7 +129,9 @@
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/upper = B.upper_tile_count()
 	var/hold = B.lower_tile_count()
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? "[hold ? "," : " and"] [upper] of upper deck" : ""][hold ? " and [hold] of hold" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""]"
+	var/list/open = open_sides()
+	var/open_text = open.len ? " [open.len] side\s of her deck are open: rail them before she can be refitted." : ""
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? "[hold ? "," : " and"] [upper] of upper deck" : ""][hold ? " and [hold] of hold" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""][open_text]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()
@@ -156,6 +158,9 @@
 		voyage_status_menu(H)
 		return
 	var/list/options = list("Sea chart", "Ship's papers", "Draw her lines", "Hail a ship", "Make for a berth")
+	// Open sides on her deck (hull_sides.dm).
+	if (length(open_sides()))
+		options += "Rail her sides"
 	// Who stands at which station (hull_watch.dm).
 	if (craft.ledger)
 		options.Insert(4, "Muster the watch")
@@ -184,6 +189,11 @@
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
+	if (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west", "Leave these waters", "Set out on a voyage", "Refit the hull"))
+		var/plank = craft.gangplank_refusal()
+		if (plank)
+			to_chat(H, SPAN_WARNING(plank))
+			return
 	if (choice == "Sea chart")
 		to_chat(H, craft.sea_chart_text())
 		return
@@ -210,6 +220,9 @@
 				return
 	if (choice == "Draw her lines")
 		draw_lines(H)
+		return
+	if (choice == "Rail her sides")
+		rail_sides(H)
 		return
 	if (choice == "Leave these waters")
 		crossing_menu(H)
@@ -260,6 +273,11 @@
 			if (!craft.anchored)
 				to_chat(H, SPAN_WARNING("Drop anchor before refitting."))
 				return
+			var/list/refit_survey = built_hull_survey(get_turf(src), craft)
+			var/sides = istext(refit_survey) ? null : hull_sides_refusal(refit_survey)
+			if (sides)
+				to_chat(H, SPAN_WARNING(sides))
+				return
 			var/problem = commission()
 			if (problem)
 				to_chat(H, SPAN_WARNING(problem))
@@ -281,6 +299,11 @@
 		to_chat(H, SPAN_WARNING(survey))
 		return
 	var/list/found = survey
+	var/sides = hull_sides_refusal(found)
+	if (sides)
+		if (WWinput(H, sides, name, "Cancel", list("Rail her sides", "Cancel")) == "Rail her sides" && !craft && get_dist(H, src) <= 1)
+			rail_sides(H)
+		return
 	var/list/headings = list("Bow to the north" = NORTH, "Bow to the east" = EAST, "Bow to the south" = SOUTH, "Bow to the west" = WEST)
 	var/choice = WWinput(H, "The hull around this tiller is [found.len] tiles of floor. Commission her? Choose where her bow points.", name, "Cancel", headings + list("Cancel"))
 	if (isnull(headings[choice]) || craft || get_dist(H, src) > 1)

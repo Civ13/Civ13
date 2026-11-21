@@ -422,6 +422,9 @@
 		to_chat(src, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
+	if (spirit_wait_blocks()) // spirit_wait.dm
+		return
+
 	show_browse(src, null, "window=memory")
 
 	to_chat(src, "You can respawn now, enjoy your new life!")
@@ -598,6 +601,8 @@
 
 	else if (isobj(AM))
 		var/obj/I = AM
+		if (I.magic_repo_id && I.magic_repo_move_refused(src)) // repository_wards.dm
+			return
 		if(!istype(I, /obj/structure/cannon/modern/voyage))
 			if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
 				to_chat(src, "<span class='warning'>It won't budge!</span>")

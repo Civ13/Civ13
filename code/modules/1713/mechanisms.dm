@@ -10,10 +10,15 @@
 // or tripwire gives a single pull, which turns each door or gate the other way.
 // A bell rings and a rock drop lets go on any pull but a lever thrown back.
 //
-// Nothing ticks and nothing polls. A plate fires from Crossed(). A cord is
-// saved on its trigger as an offset to the tile it is tied to, and the thing
-// on that tile is found again each pull, so a cord tied to something that has
-// since gone simply does nothing.
+// A pulley block beside a trigger carries its cords one level up or down. A
+// water clock or tower clock is a trigger too: set its alarm and it pulls its
+// cords at that hour, or every hour.
+//
+// Nothing ticks and nothing polls. A plate fires from Crossed(), a clock from
+// its own minute. A cord is saved on its trigger as an offset to the tile it
+// is tied to ("dx,dy", or "dx,dy,dz" through a pulley), and the thing on that
+// tile is found again each pull, so a cord tied to something that has since
+// gone simply does nothing.
 
 #define MECHANISM_LINK_RANGE 7
 #define MECHANISM_MAX_LINKS 4
@@ -21,6 +26,7 @@
 #define MECHANISM_PULL_GAP 20 // ds before a plate or cord pulls again
 #define ROCK_DROP_DAMAGE 15
 #define ROCK_DROP_RESET_TIME 40
+#define MECHANISM_ALARM_HOURLY 24
 
 // ---- what a cord can be tied to ------------------------------------------------------
 
@@ -29,7 +35,7 @@
 	if (istype(A, /obj/structure/simple_door))
 		// Doors with keypads, key slots or faction locks keep their own rules.
 		return !istype(A, /obj/structure/simple_door/key_door) || istype(A, /obj/structure/simple_door/key_door/anyone)
-	return istype(A, /obj/structure/castle_trapdoor) || istype(A, /obj/structure/castle_winch) || istype(A, /obj/structure/bell) || istype(A, /obj/structure/rock_drop)
+	return istype(A, /obj/structure/castle_trapdoor) || istype(A, /obj/structure/castle_winch) || istype(A, /obj/structure/bell) || istype(A, /obj/structure/rock_drop) || istype(A, /obj/structure/workshop_machine/transmission/line_shaft/clutch)
 
 // The first thing on T a cord can work, or null.
 /proc/mechanism_actuator_on(turf/T)
@@ -49,7 +55,36 @@
 		parts += "[abs(dy)] [dy > 0 ? "north" : "south"]"
 	if (dx)
 		parts += "[abs(dx)] [dx > 0 ? "east" : "west"]"
+	if (T.z != origin.z)
+		parts += mechanism_level_dz(origin, T) > 0 ? "one level up" : "one level down"
 	return parts.len ? jointext(parts, ", ") : "here"
+
+// A pulley block within a tile of A carries its cords up and down a level.
+/proc/mechanism_pulley_near(atom/A)
+	var/turf/T = get_turf(A)
+	if (!T)
+		return FALSE
+	for (var/obj/structure/mechanism_pulley/P in range(1, T))
+		if (P.anchored)
+			return TRUE
+	return FALSE
+
+// 1 when T is on the level above origin, -1 below, 0 on its level.
+/proc/mechanism_level_dz(atom/origin, turf/T)
+	var/turf/here = get_turf(origin)
+	if (!here || !T || T.z == here.z)
+		return 0
+	if (T.z == multiz_level_above(here.z))
+		return 1
+	if (T.z == multiz_level_below(here.z))
+		return -1
+	return 0
+
+// The saved link entry for a cord from origin to T.
+/proc/mechanism_link_entry(atom/origin, turf/T)
+	var/turf/here = get_turf(origin)
+	var/dz = mechanism_level_dz(origin, T)
+	return dz ? "[T.x - here.x],[T.y - here.y],[dz]" : "[T.x - here.x],[T.y - here.y]"
 
 // The "dx,dy" offsets in a saved link text.
 /proc/mechanism_link_offsets(links)
@@ -66,11 +101,22 @@
 	var/turf/here = get_turf(origin)
 	if (!here)
 		return
+	var/pulley = null // looked up once, only if a cord needs it
 	for (var/entry in mechanism_link_offsets(links))
 		var/list/xy = splittext(entry, ",")
-		if (xy.len != 2)
+		if (xy.len != 2 && xy.len != 3)
 			continue
-		var/turf/T = locate(here.x + text2num(xy[1]), here.y + text2num(xy[2]), here.z)
+		var/z = here.z
+		if (xy.len == 3)
+			// A cord between levels runs over a pulley; without one it hangs slack.
+			if (isnull(pulley))
+				pulley = mechanism_pulley_near(origin)
+			if (!pulley)
+				continue
+			z = text2num(xy[3]) > 0 ? multiz_level_above(here.z) : multiz_level_below(here.z)
+			if (!z)
+				continue
+		var/turf/T = locate(here.x + text2num(xy[1]), here.y + text2num(xy[2]), z)
 		if (T)
 			. += T
 
@@ -129,6 +175,12 @@
 			raise = istype(first) ? !first.open : TRUE
 		W.work(raise)
 		return TRUE
+	if (istype(A, /obj/structure/workshop_machine/transmission/line_shaft/clutch))
+		// Thrown over, a lever throws the clutch in; thrown back, out.
+		var/obj/structure/workshop_machine/transmission/line_shaft/clutch/C = A
+		if (!C.anchored)
+			return FALSE
+		return C.set_engaged(isnull(state) ? !C.engaged : state)
 	if (state == FALSE)
 		return FALSE // a lever thrown back neither rings nor drops
 	if (istype(A, /obj/structure/bell))
@@ -158,21 +210,19 @@
 		choices[label] = T
 		cuts += label
 	if (tied.len < MECHANISM_MAX_LINKS)
-		for (var/atom/movable/A in range(MECHANISM_LINK_RANGE, trigger))
-			if (A == trigger || !mechanism_actuatable(A))
-				continue
+		for (var/atom/movable/A in mechanism_reachable_actuators(trigger))
 			var/turf/T = get_turf(A)
-			if (!T || (T in tied) || mechanism_actuator_on(T) != A)
+			if (!T || (T in tied))
 				continue
 			choices["Tie a cord to [A.name] ([mechanism_offset_words(trigger, T)])"] = T
 	if (!choices.len)
-		to_chat(user, SPAN_WARNING("There is nothing within [MECHANISM_LINK_RANGE] tiles of \the [trigger] that a cord could work: a door, trapdoor, gate winch, bell or rock drop."))
+		to_chat(user, SPAN_WARNING("There is nothing within [MECHANISM_LINK_RANGE] tiles of \the [trigger] that a cord could work: a door, trapdoor, gate winch, bell, rock drop or shaft clutch."))
 		return TRUE
 	var/choice = player_input(user, "Tie or cut which cord on \the [trigger]?", "Cords", null, "anything", choices, TRUE)
 	var/turf/target = choice ? choices[choice] : null
 	if (!target || QDELETED(trigger) || QDELETED(R) || user.get_active_hand() != R || get_dist(user, trigger) > 1)
 		return TRUE
-	var/entry = "[target.x - trigger.x],[target.y - trigger.y]"
+	var/entry = mechanism_link_entry(trigger, target)
 	var/list/offsets = mechanism_link_offsets(trigger.vars["links"])
 	if (choice in cuts)
 		offsets -= entry
@@ -194,6 +244,28 @@
 	to_chat(user, SPAN_NOTICE("You tie the cord from \the [trigger] to \the [A ? A.name : "spot"] ([mechanism_offset_words(trigger, target)])."))
 	return TRUE
 
+// Everything a new cord from trigger could be tied to: on its own level, and
+// one level up and down when a pulley block stands beside it.
+/proc/mechanism_reachable_actuators(atom/trigger)
+	. = list()
+	var/turf/here = get_turf(trigger)
+	if (!here)
+		return
+	var/list/levels = list(here.z)
+	if (mechanism_pulley_near(trigger))
+		for (var/z in list(multiz_level_above(here.z), multiz_level_below(here.z)))
+			if (z)
+				levels += z
+	for (var/z in levels)
+		var/turf/low = locate(max(1, here.x - MECHANISM_LINK_RANGE), max(1, here.y - MECHANISM_LINK_RANGE), z)
+		var/turf/high = locate(min(world.maxx, here.x + MECHANISM_LINK_RANGE), min(world.maxy, here.y + MECHANISM_LINK_RANGE), z)
+		if (!low || !high)
+			continue
+		for (var/turf/T in block(low, high))
+			var/atom/A = mechanism_actuator_on(T)
+			if (A && A != trigger)
+				. += A
+
 // What a trigger's cords are tied to, for examine.
 /proc/mechanism_links_examine(atom/trigger, mob/user)
 	var/list/names = list()
@@ -203,7 +275,7 @@
 	if (names.len)
 		to_chat(user, SPAN_NOTICE("Cords run from it to: [english_list(names)]."))
 	else
-		to_chat(user, SPAN_NOTICE("No cords are tied to it. Use rope on it to tie one to a door, trapdoor, gate winch, bell or rock drop within [MECHANISM_LINK_RANGE] tiles."))
+		to_chat(user, SPAN_NOTICE("No cords are tied to it. Use rope on it to tie one to a door, trapdoor, gate winch, bell, rock drop or shaft clutch within [MECHANISM_LINK_RANGE] tiles."))
 
 // ---- triggers -----------------------------------------------------------------------
 
@@ -370,6 +442,89 @@
 		return
 	return ..()
 
+// ---- pulley block ----------------------------------------------------------------------
+
+// Beside a trigger, it carries the trigger's cords one level up or down.
+/obj/structure/mechanism_pulley
+	name = "pulley block"
+	desc = "A wooden sheave in a block on a post. Set it beside a lever, pull cord, plate, tripwire or clock, and cords from that trigger can run one level up or down through it."
+	icon = 'icons/obj/mechanisms.dmi'
+	icon_state = "pulley"
+	anchored = TRUE
+	density = FALSE
+	not_movable = TRUE
+	not_disassemblable = FALSE
+	flammable = TRUE
+
+// ---- clock alarms ------------------------------------------------------------------------
+
+// The hour of the day, 0 to 23, from the game clock.
+/proc/mechanism_hour24()
+	var/exact = clock_time()
+	var/hr = text2num(copytext(exact, 1, 3)) % 12
+	return hr + (copytext(exact, 7) == "PM" ? 12 : 0)
+
+// "6 AM", "12 PM" for an hour 0 to 23.
+/proc/mechanism_hour_name(h24)
+	var/h12 = h24 % 12
+	return "[h12 ? h12 : 12] [h24 >= 12 ? "PM" : "AM"]"
+
+// alarm: -1 off, MECHANISM_ALARM_HOURLY every hour, or the hour 0 to 23.
+/proc/mechanism_alarm_name(alarm)
+	if (alarm == MECHANISM_ALARM_HOURLY)
+		return "every hour"
+	if (alarm < 0)
+		return "off"
+	return "at [mechanism_hour_name(alarm)]"
+
+// Pull the clock's cords when the hour that just struck is its alarm hour.
+/proc/mechanism_clock_alarm(atom/clock, alarm, links, h24)
+	if (alarm < 0 || !links)
+		return 0
+	if (alarm != MECHANISM_ALARM_HOURLY && alarm != h24)
+		return 0
+	if (alarm != MECHANISM_ALARM_HOURLY)
+		clock.visible_message(SPAN_NOTICE("A striker in \the [clock] trips and its cords jerk."))
+	return mechanism_pull_links(clock, links, null)
+
+// Ask for an alarm setting; returns the new setting or null when cancelled.
+/proc/mechanism_choose_alarm(mob/user, atom/clock, hourly_allowed)
+	var/list/choices = list("Off" = -1)
+	if (hourly_allowed)
+		choices["Every hour"] = MECHANISM_ALARM_HOURLY
+	for (var/h in 0 to 23)
+		choices[mechanism_hour_name(h)] = h
+	var/choice = player_input(user, "Pull the cords on \the [clock] when?", "Alarm", null, "anything", choices, TRUE)
+	if (!choice || !(choice in choices) || QDELETED(clock) || get_dist(user, clock) > 1)
+		return null
+	return choices[choice]
+
+/obj/structure/water_clock/verb/set_alarm()
+	set name = "Set Alarm"
+	set category = null
+	set src in view(1)
+	var/mob/living/human/H = usr
+	if (!istype(H) || H.stat || H.restrained())
+		return
+	var/picked = mechanism_choose_alarm(H, src, FALSE)
+	if (isnull(picked))
+		return
+	alarm_hour = picked
+	to_chat(H, SPAN_NOTICE("You set the float striker on \the [src]: its cords pull [mechanism_alarm_name(alarm_hour)]."))
+
+/obj/structure/tower_clock/verb/set_alarm()
+	set name = "Set Alarm"
+	set category = null
+	set src in view(1)
+	var/mob/living/human/H = usr
+	if (!istype(H) || H.stat || H.restrained())
+		return
+	var/picked = mechanism_choose_alarm(H, src, TRUE)
+	if (isnull(picked))
+		return
+	alarm_hour = picked
+	to_chat(H, SPAN_NOTICE("You set the striking train on \the [src]: its cords pull [mechanism_alarm_name(alarm_hour)]."))
+
 // ---- rock drop -------------------------------------------------------------------------
 
 // A net of stones hung over a tile. A cord pull lets it go on whoever stands
@@ -434,3 +589,4 @@
 #undef MECHANISM_PULL_GAP
 #undef ROCK_DROP_DAMAGE
 #undef ROCK_DROP_RESET_TIME
+#undef MECHANISM_ALARM_HOURLY

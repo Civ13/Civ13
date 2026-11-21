@@ -82,6 +82,8 @@ var/global/list/nation_assembly_tiers = list(
 	nation_renames_send()
 	nation_assemblies_report()
 	nation_eras_report()
+	nation_census_report()
+	nation_succession_report()
 	return TRUE
 
 /proc/nations_refresh_due()
@@ -159,6 +161,11 @@ var/global/list/nation_assembly_tiers = list(
 
 /mob/living/human/proc/nation_ask(list/body, faction)
 	body["actor"] = faction_roster_account(src) || ckey
+	// A leader (or a nation's ruler) speaks for the faction; anyone else asks
+	// as a citizen, which only elective governments hear (nation_motions.py).
+	var/nid = nation_of_id(nation_faction_id(faction))
+	if (isnull(body["role"]))
+		body["role"] = map.is_faction_leader(src, faction) || (nid && nation_rules(nid)) ? "leader" : "citizen"
 	if (!nation_send(body))
 		to_chat(src, SPAN_WARNING("The other lands cannot be reached right now. Try again later."))
 		return FALSE
@@ -227,6 +234,19 @@ var/global/list/nation_assembly_tiers = list(
 		else if (nid && nation_rules(nid))
 			text += " You rule it as its [G["ruler"]]."
 			choices += list("Government", "Vote on an application", "Vote on a common money")
+		if (nid && G["body"] && nation_home_faction(faction))
+			choices.Insert(2, "Motions and elections")
+		if (nid && (G["type"] == "monarchy" || G["type"] == "republic") && nation_heads(nid))
+			choices.Insert(2, G["type"] == "monarchy" ? "Name an heir" : "Name a deputy")
+		if (nid && nation_home_faction(faction))
+			var/office = nation_office_of(nid, nation_account())
+			if (office == "treasurer" && !("Vote on a common money" in choices))
+				choices += "Vote on a common money"
+			if (office == "chancellor" && G["personal"] && istext(G["head_account"]) && !("Vote on an application" in choices))
+				choices += "Vote on an application"
+			if (istext(G["ruler"]))
+				choices += "Offices of state"
+			choices += "Revolt"
 	choices += "Cancel"
 	var/pick = WWinput(src, text, "Nation", "Cancel", choices)
 	if (pick == "View nations")
@@ -235,7 +255,23 @@ var/global/list/nation_assembly_tiers = list(
 	if (pick == "Cancel" || !pick)
 		return
 	// The dialog blocks; the faction and leadership must still hold.
-	if (stat || civilization != faction || !(map.is_faction_leader(src, faction) || nation_rules(nid)) || !nation_home_faction(faction) || nation_of_id(id) != nid)
+	if (pick == "Name an heir" || pick == "Name a deputy")
+		if (civilization == faction && nation_of_id(id) == nid)
+			nation_name_successor(faction, id, nid)
+		return
+	if (pick == "Offices of state")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_offices_menu(faction, id, nid)
+		return
+	if (pick == "Revolt")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_revolt_menu(faction, id, nid)
+		return
+	if (pick == "Motions and elections")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_motions_menu(faction, id, nid)
+		return
+	if (stat || civilization != faction || !(map.is_faction_leader(src, faction) || nation_rules(nid) || nation_office_of(nid, nation_account())) || !nation_home_faction(faction) || nation_of_id(id) != nid)
 		return
 	switch (pick)
 		if ("Found a nation")
@@ -268,6 +304,12 @@ var/global/list/nation_assembly_tiers = list(
 		var/assembly = isnum(N["assembly"]) && N["assembly"] >= 1 && N["assembly"] <= nation_assembly_tiers.len ? ", a [nation_assembly_tiers[N["assembly"]][1]]" : ""
 		lines += "<b>[html_encode(N["name"])]</b>: [jointext(members, ", ")]. Head: [istext(N["head"]) ? html_encode(nation_faction_label(N["head"])) : "none"]. Holds [length(N["members"])]/[N["capacity"]] factions[assembly]."
 		lines += "&nbsp;&nbsp;[nation_government_line(nid)]"
+		var/offices = nation_offices_line(nid)
+		if (offices)
+			lines += "&nbsp;&nbsp;[offices]"
+		var/revolt = nation_revolt_line(nid)
+		if (revolt)
+			lines += "&nbsp;&nbsp;[revolt]"
 		if (istext(N["currency"]) && length(N["currency"]))
 			lines += "&nbsp;&nbsp;Common money: that struck by [html_encode(nation_faction_label(N["currency"]))]."
 		if (islist(N["applications"]) && length(N["applications"]))

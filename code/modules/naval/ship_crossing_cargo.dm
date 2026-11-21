@@ -7,9 +7,10 @@
 // as "b" entries: who they were, how they looked, what they wore and their
 // wounds. A body is laid down dead again on arrival; nobody plays it.
 //
-// Carts, small boats and machines go the same way, empty. Refused still: an
-// animal a player or agent controls, anything ridden or strapped in, a loaded
-// cart, a frame vehicle or engine, and a body that holds a creature.
+// Carts, small boats and machines go the same way, empty, and engines with
+// their fuel tanks coupled again. Refused still: an animal a player or agent
+// controls, anything ridden or strapped in, a loaded cart, a frame vehicle,
+// and a body that holds a creature.
 // ============================================================
 
 #define SEA_CROSSING_BODY_ITEMS_MAX 40
@@ -52,6 +53,75 @@
 // Builds a "g" entry at T. Returns what was made, or null.
 /proc/sea_crossing_cargo_build(list/E, turf/T)
 	return region_travel_make_generic(E[2], T, TRUE)
+
+// ---------------------------------------------------------------- engines
+
+// An engine entry for engine M on deck or in the hold, list("e", kind) or
+// list("e", kind, dx, dy) with where its fuel tank stands from it, or a
+// sentence saying why it stays. It goes whole like any structure; the tank
+// crosses as an item of its own, and the two are coupled again on arrival.
+/proc/sea_crossing_engine_entry(obj/structure/engine/M)
+	var/list/G = sea_crossing_cargo_entry(M)
+	if (istext(G))
+		return G
+	var/list/E = list("e", G[2])
+	var/obj/item/T = M.fueltank
+	if (T && isturf(T.loc) && T.z == M.z && abs(T.x - M.x) <= 1 && abs(T.y - M.y) <= 1)
+		E += list(T.x - M.x, T.y - M.y)
+	return E
+
+// TRUE when an "e" deck entry is well formed.
+/proc/sea_crossing_engine_valid(list/E)
+	if (!islist(E) || (E.len != 2 && E.len != 4) || !istext(E[2]))
+		return FALSE
+	var/list/R = region_travel_generic_record(E[2], TRUE)
+	if (!R || !ispath(text2path(R["t"]), /obj/structure/engine))
+		return FALSE
+	if (E.len == 4)
+		for (var/i = 3, i <= 4, i++)
+			if (!isnum(E[i]) || E[i] != round(E[i]) || abs(E[i]) > 1)
+				return FALSE
+	return TRUE
+
+// Builds an "e" entry at T, stopped: her crew start it again. Returns it.
+/proc/sea_crossing_engine_build(list/E, turf/T)
+	var/obj/structure/engine/M = region_travel_make_generic(E[2], T, TRUE)
+	if (!istype(M))
+		return null
+	M.on = FALSE
+	M.fueltank = null
+	M.update_icon()
+	return M
+
+// Couples each engine built from record R to the barrel standing where its
+// tank stood. made: everything the build put down.
+/proc/sea_crossing_couple_tanks(list/R, list/made, turf/pivot)
+	var/list/coupled = list()
+	for (var/obj/structure/engine/M in made)
+		if (M.fueltank)
+			coupled[M.fueltank] = TRUE
+	var/list/hold = islist(R["hold"]) ? R["hold"] : list()
+	for (var/list/tile in R["tiles"] + hold)
+		for (var/list/E in tile[3])
+			if (E[1] != "e" || E.len != 4)
+				continue
+			// The engine this entry made: the first uncoupled one of its type on its tile.
+			var/list/G = region_travel_generic_record(E[2], TRUE)
+			var/path = G ? text2path(G["t"]) : null
+			var/obj/structure/engine/engine = null
+			for (var/obj/structure/engine/M in made)
+				if (M.type == path && !M.fueltank && M.x == pivot.x + tile[1] && M.y == pivot.y + tile[2])
+					engine = M
+					break
+			if (!engine)
+				continue
+			var/turf/at = locate(engine.x + E[3], engine.y + E[4], engine.z)
+			for (var/obj/item/weapon/reagent_containers/glass/barrel/B in at)
+				if (!coupled[B])
+					engine.fueltank = B
+					B.anchored = TRUE
+					coupled[B] = TRUE
+					break
 
 // ---------------------------------------------------------------- the dead
 

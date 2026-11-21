@@ -10,7 +10,7 @@
 // saved: after a restart the grid is built straight at those values.
 //
 // The per-tile readers blend the four nearest cells, so values change
-// smoothly across the map. get_temp() does not read the grid yet; the player
+// smoothly across the map. Each cell also carries a wind (weather_wind.dm). get_temp() does not read the grid yet; the player
 // temperature still comes from climate_normals.dm.
 
 #define WEATHER_AIR_CELL 16
@@ -45,6 +45,7 @@ var/global/datum/weather_air_grid/weather_air = null
 	var/list/dew = list() // dew point, degrees C
 	var/list/pressure = list() // hPa
 	var/list/cloud = list() // 0 to 1
+	var/list/heights = list() // per cell: mean terrain height level, 0 on maps without heights
 	var/steps = 0
 
 /datum/weather_air_grid/New()
@@ -58,9 +59,11 @@ var/global/datum/weather_air_grid/weather_air = null
 	dew.len = count
 	pressure.len = count
 	cloud.len = count
+	heights.len = count
 	for (var/row = 0, row < rows, row++)
 		for (var/col = 0, col < cols, col++)
 			survey(col, row)
+	survey_wind() // weather_wind.dm
 	settle(TRUE)
 
 /datum/weather_air_grid/proc/index(col, row)
@@ -73,6 +76,8 @@ var/global/datum/weather_air_grid/weather_air = null
 	var/list/votes = list()
 	var/wet = 0
 	var/seen = 0
+	var/height = 0
+	var/use_heights = map && map.terrain_height_file
 	for (var/fx in list(0.15, 0.5, 0.85))
 		for (var/fy in list(0.15, 0.5, 0.85))
 			var/x = clamp(round(col * WEATHER_AIR_CELL + fx * WEATHER_AIR_CELL) + 1, 1, world.maxx)
@@ -86,12 +91,15 @@ var/global/datum/weather_air_grid/weather_air = null
 				votes[A.climate] = (votes[A.climate] || 0) + 1
 			if (istype(T, /turf/floor/beach/water))
 				wet++
+			if (use_heights)
+				height += terrain_height_at(T)
 	var/best = null
 	for (var/name in votes)
 		if (!best || votes[name] > votes[best])
 			best = name
 	climates[i] = best
 	water[i] = seen && wet * 2 > seen
+	heights[i] = seen ? height / seen : 0
 
 // The open-sky ground at x, y: the highest level whose area is outdoors, or
 // the first level when none is.
@@ -176,6 +184,7 @@ var/global/datum/weather_air_grid/weather_air = null
 			dew[i] = min(temp[i], dew[i] + (dew_target - dew[i]) * WEATHER_AIR_DEW_RATE)
 			pressure[i] += (pressure_target - pressure[i]) * WEATHER_AIR_PRESSURE_RATE
 			cloud[i] += (cloud_target - cloud[i]) * WEATHER_AIR_CLOUD_RATE
+	settle_wind(snap) // weather_wind.dm
 	steps++
 
 // One weather tick (processes/weather.dm, through weather_systems_step()).
@@ -248,20 +257,25 @@ var/global/datum/weather_air_grid/weather_air = null
 	var/datum/weather_air_grid/G = weather_air_grid()
 	return clamp(G.value_at(G.cloud, T.x, T.y), 0, 1)
 
-// The grid for the admin Weather Map: list(cols, rows, cell size, temperatures,
-// humidities, pressures, clouds), each rounded, one entry per cell by index.
+// The grid for the Admin Map (admin_map.dm): list(cols, rows, cell size, temperatures,
+// humidities, pressures, clouds, wind east and wind north in m/s), each rounded,
+// one entry per cell by index.
 /proc/weather_air_map_data()
 	var/datum/weather_air_grid/G = weather_air_grid()
 	var/list/t = list()
 	var/list/h = list()
 	var/list/p = list()
 	var/list/c = list()
+	var/list/we = list()
+	var/list/wn = list()
 	for (var/i = 1, i <= G.temp.len, i++)
 		t += round(G.temp[i], 0.1)
 		h += round(weather_relative_humidity(G.temp[i], G.dew[i]))
 		p += round(G.pressure[i], 0.1)
 		c += round(G.cloud[i] * 100)
-	return list(G.cols, G.rows, WEATHER_AIR_CELL, t, h, p, c)
+		we += round(G.wind_x[i], 0.1)
+		wn += round(G.wind_y[i], 0.1)
+	return list(G.cols, G.rows, WEATHER_AIR_CELL, t, h, p, c, we, wn)
 
 #undef WEATHER_AIR_CELL
 #undef WEATHER_AIR_SEA_LEVEL_HPA

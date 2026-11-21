@@ -2,21 +2,21 @@
  "africa": {
   "flood": {
    "path": "maps/heights/nomads_earth_africa.flood.txt",
-   "sha256": "c7b109cef98a566ec354df658e3f12080879dc29ba8db33e08a663e13db1ec30"
+   "sha256": "4f614e03744b7e8034956693ab2cee535b45957085d0d4947d4e483c54903b33"
   },
   "flow": {
    "path": "maps/heights/nomads_earth_africa.flow.txt",
-   "sha256": "0e6d28268e092e7c80c6ff6d3211096c6ef726d11a651e1921c51bb3fe913192"
+   "sha256": "0c2d4254906dd74c2735a17c0a4df488b06b0b4ebb3a2e737fbac854f34e0543"
   },
   "heights": {
    "path": "maps/heights/nomads_earth_africa.txt",
-   "sha256": "56c98f1f95f16bceaf4d47c4761a3bc0124872a16ae353742164ee9eaffd207e"
+   "sha256": "7ab9e286f0daae93fe975c3429921b0942a2c803dcc091f0e2ea53f051212340"
   },
   "path": "maps/nomads/nomads_earth_africa.dmm",
-  "sha256": "dfe6c4005f36c6e84d40dbe61998a85b1dab4ec648c00572d750c9f4cf31fc53",
+  "sha256": "c9dcd7289c8853066a3bb0f3549ed17dc20de3d45891980a5a655e9aa86d50f7",
   "size": [
    976,
-   1070
+   969
   ]
  },
  "antarctica": {
@@ -42,41 +42,41 @@
  "asia": {
   "flood": {
    "path": "maps/heights/nomads_earth_asia.flood.txt",
-   "sha256": "5ef218cc18377fc081f27975c1a233bc377ae338be88f14ace12e6f68879beea"
+   "sha256": "c58978d5063e48b3009f35c7d66cf89ff9a096d26a0ed111cf5874e98394d82c"
   },
   "flow": {
    "path": "maps/heights/nomads_earth_asia.flow.txt",
-   "sha256": "54f601b42f5f34609895aa5c7400e0a3aedbffd29d52975d88580ca6606b75d2"
+   "sha256": "1a289376900ee30fff280ac4acf65f9c9be342e261d2e5a3da2d37c905f2e2c2"
   },
   "heights": {
    "path": "maps/heights/nomads_earth_asia.txt",
-   "sha256": "c04b8bde4c9ba3b739a0ff76db54237b45fc9c325ce70ad5041076a3512a9711"
+   "sha256": "05d0790fcb585a270af8f9dfc56a74df6a19cb19c2e7f5406693aa35d464bbe7"
   },
   "path": "maps/nomads/nomads_earth_asia.dmm",
-  "sha256": "65f89e08a2f76f79ee12816ad2359355bdaf34b4083dc93019ed31d941e41e64",
+  "sha256": "67e1bf2bca17a7981da38cb75b220f08134894f6989757d734f5ea2b618362c6",
   "size": [
-   1226,
+   1057,
    854
   ]
  },
  "europe": {
   "flood": {
    "path": "maps/heights/nomads_earth_europe.flood.txt",
-   "sha256": "3a5557098fae548251119ca7f06e58146ee372756fc03faa92db9bf32c12ce0a"
+   "sha256": "dee87fff4a7a6a19268255138daa476cc731ac56586c27e54437641161476489"
   },
   "flow": {
    "path": "maps/heights/nomads_earth_europe.flow.txt",
-   "sha256": "0fae0f27d6d47804ba91af68e80a43c553dd87492578d197bd6bad8e7c450d7f"
+   "sha256": "10e01f5db0e219f4fbcba8e9b7b97f4e062ea76f0c320f582d45b82b3caae084"
   },
   "heights": {
    "path": "maps/heights/nomads_earth_europe.txt",
-   "sha256": "e47335c8be4db6428fc9693105cccc5c1bb551482a45f24a33d77bcd436557fb"
+   "sha256": "913e846c68b5dfc2a5caf8dc7a6832ffecd03c755fc58e09c62f808e7cbe2297"
   },
   "path": "maps/nomads/nomads_earth_europe.dmm",
-  "sha256": "18faebb52666cb25a7e7e480e00fbe772805a38a2fc90c7fc8f5cc2957436343",
+  "sha256": "a4aedb3d18b367f02abb6c064dfceedfb69e8834289c8133d2f750627c9b562a",
   "size": [
-   1160,
-   903
+   846,
+   572
   ]
  },
  "greenland": {
@@ -99,24 +99,44 @@
    816
   ]
  },
+ "mediterranean": {
+  "flood": {
+   "path": "maps/heights/nomads_earth_mediterranean.flood.txt",
+   "sha256": "17f4fee0c038112ea4c940cc0be8569820f04fa782acdaea3ccdac84f480bdb4"
+  },
+  "flow": {
+   "path": "maps/heights/nomads_earth_mediterranean.flow.txt",
+   "sha256": "a8792b14b0f1d621c4f95c82005115975a3a448cbd738e1effcae4c72612f5d3"
+  },
+  "heights": {
+   "path": "maps/heights/nomads_earth_mediterranean.txt",
+   "sha256": "7ef2ccc61ac1c3da4f3054bad2a3a216a14b3610a545d4c0d3406e5c1debd887"
+  },
+  "path": "maps/nomads/nomads_earth_mediterranean.dmm",
+  "sha256": "6db02b6b432434542c6bdbb436a35fe07b41ac5ba65ad8fab7794318540629a3",
+  "size": [
+   1280,
+   396
+  ]
+ },
  "oceania": {
   "flood": {
    "path": "maps/heights/nomads_earth_oceania.flood.txt",
-   "sha256": "dc911766d441c4f2c1c36ea2024452fde431b41756bb2b61560f82613da2cac6"
+   "sha256": "0a10d5b4f0d58802d93738befb8fd174cd6da2300c988a359792b4175011b694"
   },
   "flow": {
    "path": "maps/heights/nomads_earth_oceania.flow.txt",
-   "sha256": "cbbd173667e964887c95e8e6845f8daed211f9d029a7b3a2ab09047311dfb020"
+   "sha256": "f132aeaf461d43fd73f216158b4f97ca2818694b6cdc2df041ea8246d8eec2e8"
   },
   "heights": {
    "path": "maps/heights/nomads_earth_oceania.txt",
-   "sha256": "066ec7f32e58f0e70a1a3ab9fdccee7cbd80a6be0b6a374a2b4636b23df5addb"
+   "sha256": "07c17af02214be4acd19c78c2fa484d0dc7253c6475e77678ee02bda89933983"
   },
   "path": "maps/nomads/nomads_earth_oceania.dmm",
-  "sha256": "2eac1ffcc45582873207f30414dde476635e1a2dda1ef5c4afc003e775c7f12f",
+  "sha256": "b926185c34127fbc17f7424b693353a7c37ccabfc7816762395e86f61f98b16a",
   "size": [
    1212,
-   864
+   728
   ]
  }
 }

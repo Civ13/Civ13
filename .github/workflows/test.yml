@@ -2151,7 +2151,7 @@ jobs:
           pwsh -NoProfile -File tests/native_grid/run-game.ps1 -ByondBin "$PWD/BYOND/byond/bin"
 
       - name: Run isolated resource extraction regressions
-        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/weather_air') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/weather_fronts') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aircraft') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/vehicle_storage') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/party_freight') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/naval_carrier') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/foraging') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ore_extraction_kit') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/draft_carriage')
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/automated_sifting') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydraulic_fracturing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/mining_yields') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/petroleum_lifecycle') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resource_extraction') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/stone_crushing') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/hydroponics') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/elevation_climate') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/weather_air') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/weather_fronts') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/weather_wind') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/factory_automation') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ecology_spawning') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/liminal_mode') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/space_settlement') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/wildlife_spawner') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/aircraft') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/vehicle_storage') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/party_freight') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/naval_carrier') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/foraging') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/ore_extraction_kit') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/draft_carriage')
         shell: bash
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
@@ -2167,6 +2167,7 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/elevation_climate/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/weather_air/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/weather_fronts/probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/weather_wind/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/factory_automation/probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/factory_automation/belts_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/factory_automation/routing_probe.dm
@@ -2207,6 +2208,7 @@ jobs:
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/depot_jobs_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/open_sea_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/boathouse_probe.dm
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/berth_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/orbit_world/spacecraft_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/orbit_world/sites_probe.dm
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/naval_carrier/mines_probe.dm
@@ -2230,6 +2232,13 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/rubber_tapping/probe.dm
+
+      - name: Run isolated pine resin regressions
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/resin')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/resin/probe.dm
 
       - name: Run constructed vehicle movement regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/boat_movement')

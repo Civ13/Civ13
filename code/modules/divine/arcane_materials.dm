@@ -64,6 +64,8 @@ var/global/list/arcane_storm_marks = list()
 /proc/arcane_same_virtue(obj/item/A, obj/item/B)
 	if (!istype(A) || !istype(B))
 		return TRUE
+	if (A.arcane_enchant || B.arcane_enchant) // an enchanted gem never merges (arcane_ward.dm)
+		return FALSE
 	var/a = A.arcane_virtue()
 	var/b = B.arcane_virtue()
 	if (a != b)
@@ -84,6 +86,7 @@ var/global/list/arcane_storm_marks = list()
 	if (!istype(H) || !H.arcane_magic_user())
 		return
 	arcane_enchant_examine(H) // arcane_enchant.dm
+	arcane_bless_examine(H) // arcane_bless.dm
 	var/aspect = arcane_virtue()
 	if (!aspect)
 		return
@@ -95,8 +98,11 @@ var/global/list/arcane_storm_marks = list()
 /mob/living/human/proc/arcane_magic_user()
 	return istext(divine_patron) && length(divine_patron) && client && client.mob == src && magic_allowed()
 
-// Filled in by the pact plan: a keeper of a repository may gather Ward materials.
+// A keeper of a finished repository may gather Ward materials.
 /mob/living/human/proc/arcane_ward_keeper()
+	for (var/obj/O in magic_repos_kept())
+		if (O.magic_repo_finished())
+			return TRUE
 	return FALSE
 
 // Whether this magic user can put this aspect into what they gather.
@@ -123,6 +129,7 @@ var/global/list/arcane_storm_marks = list()
 // A night's rest lets a magic user gather again (called from divine_rested).
 /mob/living/human/proc/arcane_rested()
 	arcane_gathers_spent = 0
+	arcane_communed_at = 0 // arcane_spirits.dm
 
 // Puts a virtue into an item this character just gathered, if they can.
 // Says nothing when they can't: to everyone else it is simply the item.
@@ -184,11 +191,34 @@ var/global/list/arcane_storm_marks = list()
 	W.update_strings()
 	W.update_icon()
 
-// Dawn water: water drawn from a river, lake or sea in the early morning.
+// Dawn water: fresh water drawn from a river or lake in the early morning.
+// Sea water drawn by a keeper of a finished repository holds Ward instead.
 /mob/living/human/proc/arcane_drew_water(obj/item/weapon/reagent_containers/RG)
-	if (!istype(RG) || time_of_day != "Early Morning" || !RG.reagents || !RG.reagents.has_reagent("water"))
+	if (!istype(RG) || !RG.reagents || !RG.reagents.has_reagent("water"))
+		return FALSE
+	if (RG.reagents.has_reagent("sodiumchloride"))
+		return arcane_attune(RG, "ward", 1, "sea water")
+	if (time_of_day != "Early Morning")
 		return FALSE
 	return arcane_attune(RG, "mercy", 1, "dawn water")
+
+// Storm glass: sand dug near a fresh lightning strike holds Omen. Only one
+// load of the pile takes it, even when it fell onto an old pile.
+/mob/living/human/proc/arcane_dug_sand(turf/T)
+	if (!T || !arcane_storm_near(T) || !arcane_magic_user() || !arcane_knows("omen") || !arcane_gather_ready())
+		return FALSE
+	var/obj/item/stack/ore/glass/G = null
+	for (var/obj/item/stack/ore/glass/pile in T)
+		if (!pile.arcane_virtue())
+			G = pile
+			break
+	if (!G)
+		return FALSE
+	if (G.amount > 1)
+		G = G.split(1)
+		if (!istype(G))
+			return FALSE
+	return arcane_attune(G, "omen", 2, "storm glass")
 
 #undef ARCANE_FADE
 #undef ARCANE_GATHERS_PER_REST

@@ -152,7 +152,7 @@ var/global/list/hull_anchors = list()
 	if (current)
 		return current
 	if (weather_wind_at(at) >= HULL_DRIFT_WIND)
-		return turn(wind_from_dir(), 180)
+		return turn(weather_wind_dir_at(at), 180)
 	return 0
 
 // One step of drift. TRUE when she moved.

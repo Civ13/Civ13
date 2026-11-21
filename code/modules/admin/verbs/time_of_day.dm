@@ -30,7 +30,7 @@
 		to_chat(src, "<span class = 'danger'>You don't have the permissions.</span>")
 		return
 	var/oldwind = map.winddirection
-	map.winddirection = pick("North", "South", "East", "West")
+	map.winddirection = pick("North", "Northeast", "East", "Southeast", "South", "Southwest", "West", "Northwest")
 	switch (map.windspeedvar)
 		if (0)
 			map.windspeed = "calm"

@@ -88,11 +88,14 @@
 	anchored = TRUE
 	not_disassemblable = FALSE
 	var/water = 0 // minutes left
+	var/links = "" // cords to a lever-worked thing (mechanisms.dm)
+	var/alarm_hour = -1 // -1 off, or the hour 0 to 23 its float striker pulls the cords
 	var/tmp/drip_seconds = 0
 	var/tmp/last_tick = 0
+	var/tmp/last_hour = null
 
 /obj/structure/water_clock/persistence_runtime_var(key)
-	return key == "drip_seconds" || key == "last_tick" || ..()
+	return key == "drip_seconds" || key == "last_tick" || key == "last_hour" || ..()
 
 /obj/structure/water_clock/New()
 	..()
@@ -115,6 +118,9 @@
 	processing_objects |= src
 
 /obj/structure/water_clock/attackby(obj/item/O, mob/user)
+	if (istype(O, /obj/item/stack/material/rope) && ishuman(user))
+		mechanism_rope_on_trigger(src, O, user)
+		return
 	if (istype(O, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/RG = O
 		if (!RG.reagents || !RG.reagents.has_reagent("water", 1))
@@ -139,6 +145,11 @@
 		return PROCESS_KILL
 	drip_seconds += min(2, max(0, configured_seconds), max(0, (world.time - last_tick) / 10))
 	last_tick = world.time
+	if (alarm_hour >= 0)
+		var/h24 = mechanism_hour24()
+		if (!isnull(last_hour) && h24 != last_hour)
+			mechanism_clock_alarm(src, alarm_hour, links, h24)
+		last_hour = h24
 	if (drip_seconds < 60)
 		return
 	drip_seconds -= 60
@@ -156,6 +167,8 @@
 	..()
 	if (get_dist(user, src) <= 1)
 		to_chat(user, SPAN_NOTICE(reading()))
+		to_chat(user, SPAN_NOTICE("Its float striker pulls its cords [mechanism_alarm_name(alarm_hour)]."))
+		mechanism_links_examine(src, user)
 
 /obj/structure/water_clock/attack_hand(mob/user)
 	to_chat(user, SPAN_NOTICE(reading()))
@@ -204,6 +217,8 @@
 	anchored = TRUE
 	not_disassemblable = FALSE
 	var/wound = 0 // minutes left
+	var/links = "" // cords to a lever-worked thing (mechanisms.dm)
+	var/alarm_hour = -1 // -1 off, 24 every hour, or the hour 0 to 23 it pulls the cords
 	var/tmp/tick_seconds = 0
 	var/tmp/last_tick = 0
 	var/tmp/last_hour = null
@@ -240,6 +255,14 @@
 	..()
 	if (get_dist(user, src) <= 1)
 		to_chat(user, running() ? SPAN_NOTICE("It is running.") : SPAN_WARNING("It has run down. Wind it by hand."))
+		to_chat(user, SPAN_NOTICE("Its striking train pulls its cords [mechanism_alarm_name(alarm_hour)]."))
+		mechanism_links_examine(src, user)
+
+/obj/structure/tower_clock/attackby(obj/item/O, mob/user)
+	if (istype(O, /obj/item/stack/material/rope) && ishuman(user))
+		mechanism_rope_on_trigger(src, O, user)
+		return
+	return ..()
 
 // The hour on a twelve-hour dial.
 /proc/clock_hour()
@@ -262,6 +285,7 @@
 	if (hour != last_hour)
 		last_hour = hour
 		strike(hour)
+		mechanism_clock_alarm(src, alarm_hour, links, mechanism_hour24())
 
 /obj/structure/tower_clock/proc/strike(hour)
 	for (var/obj/structure/bell/B in range(2, src))

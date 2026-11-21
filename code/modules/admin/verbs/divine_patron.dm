@@ -10,10 +10,11 @@
 	var/claim = divine_claim_of(src)
 	var/list/actions = list()
 	if (claim)
-		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
+		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "Set customs", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
 	else
 		actions += "Speak as a god"
 	actions += "Set my divine name"
+	actions += "Tend repositories"
 	var/label = divine_identity_label(divine_identity_of(ckey))
 	var/action = input(usr, claim ? "You speak as [divine_label_for(claim)]." : "You are not speaking as any god.[label ? " Players see you as [label]." : " Set your divine name first."]", "Divine Patron") as null|anything in actions
 	if (!action || !check_rights(R_ADMIN))
@@ -23,6 +24,8 @@
 	switch (action)
 		if ("Set my divine name")
 			divine_edit_identity()
+		if ("Tend repositories")
+			divine_tend_repositories() // repository_nations.dm
 		if ("Speak as a god")
 			var/list/entry = divine_identity_of(ckey)
 			if (!entry)
@@ -47,6 +50,9 @@
 			var/mob/living/human/H = divine_pick_human("Initiate whom as a follower of [claim_label]?")
 			if (!H || divine_claim_of(src) != claim || !magic_whitelist_admit(H))
 				return
+			if (!H.arcane_apostate_may_join(claim)) // arcane_apostate.dm
+				to_chat(usr, SPAN_WARNING("[H.real_name] renounced another god too recently. Only that god can take them in yet."))
+				return
 			if (H.divine_patron && divine_book_key(H.divine_patron) != claim)
 				if (alert(usr, "[H.real_name] already follows [H.divine_patron]. Make them follow [claim_label] instead? They forget everything taught before.", "Divine Patron", "Yes", "No") != "Yes")
 					return
@@ -58,6 +64,7 @@
 			H.divine_patron = (own && divine_book_key(own["name"]) == claim) ? own["name"] : claim
 			if (!islist(H.divine_known))
 				H.divine_known = list()
+			H.arcane_apostate_return(claim) // arcane_apostate.dm
 			H.divine_refresh_verbs()
 			if (words)
 				to_chat(H, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'><i>[words]</i></span>"))
@@ -70,6 +77,8 @@
 				return
 			var/list/options = list()
 			for (var/spell in divine_invocation_names)
+				if (magic_repo_rite_spell(spell)) // repository_tiers.dm: they come with the grant
+					continue
 				if (teaching != (spell in H.divine_known))
 					options[divine_invocation_names[spell]] = spell
 			if (!options.len)
@@ -83,7 +92,7 @@
 				H.divine_known = list()
 			if (teaching)
 				H.divine_known |= spell
-				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch.[spell == "repository" ? " Hold something small of your own in your other hand when you ask." : ""][spell == "imbue" ? " Hold the thing in your other hand and keep what it needs in your pouch." : ""]")))
+				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch.[spell == "repository" ? " Hold something small of your own in your other hand when you ask." : ""][spell == "imbue" ? " Hold the thing in your other hand and keep what it needs in your pouch." : ""][spell == "bless" ? " Stand at an altar with the thing in your other hand and your sacrifice laid on the altar." : ""]")))
 				if (spell == "repository")
 					H.magic_grant_received() // repository.dm
 			else
@@ -116,6 +125,10 @@
 						known += divine_invocation_names[spell]
 					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""][H.magic_allowed() ? "" : ", SUSPENDED (not on the magic whitelist)"]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""][karma_mob_ckey(H) ? karma_staff_badge(karma_mob_ckey(H)) : ""]"
 			to_chat(usr, "<b>Followers of [claim_label] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
+		if ("Set customs")
+			arcane_edit_customs(claim) // arcane_devotion.dm
+		if ("List apostates")
+			arcane_list_apostates(claim) // arcane_apostate.dm
 		if ("List enchantments", "Strip enchantment") // arcane_enchant.dm
 			var/mob/living/human/H = divine_pick_human("Whose enchantments?", claim)
 			if (!H || !H.ckey)
@@ -123,6 +136,11 @@
 			var/list/found = list()
 			for (var/obj/item/I in arcane_enchantments_of(H.ckey))
 				found["[I.name] ([I.type]): [arcane_enchant_names[I.arcane_enchant]], [I.arcane_charges] left, at [arcane_enchant_place(I)]"] = I
+			for (var/obj/O in arcane_wards_of(H.ckey)) // arcane_ward.dm
+				var/list/owners = list()
+				for (var/key in O.arcane_ward_owners)
+					owners += "[O.arcane_ward_owners[key]] ([key])"
+				found["[O.name] ([O.type]): Warding for [english_list(owners)], [O.arcane_ward_charges] left, at [arcane_enchant_place(O)]"] = O
 			if (!found.len)
 				to_chat(usr, SPAN_NOTICE("[H.real_name] has no enchantments in this world."))
 				return
@@ -134,7 +152,12 @@
 				return
 			var/picked = input(usr, "Strip which enchantment?", "Divine Patron") as null|anything in found
 			var/obj/item/I = found[picked]
-			if (!I || QDELETED(I) || !I.arcane_enchant_live() || divine_claim_of(src) != claim)
+			if (I && !istype(I) && !QDELETED(I) && I.arcane_ward_live() && divine_claim_of(src) == claim)
+				log_admin("[key_name(usr)] as [claim] stripped the ward made by [I.arcane_ward_by] from [I] ([I.type]).")
+				I.arcane_ward_end()
+				to_chat(usr, SPAN_NOTICE("Stripped the ward from [I]."))
+				return
+			if (!istype(I) || QDELETED(I) || !I.arcane_enchant_live() || divine_claim_of(src) != claim)
 				return
 			log_admin("[key_name(usr)] as [claim] stripped [I.arcane_enchant] made by [I.arcane_enchanter] from [I] ([I.type]).")
 			I.arcane_enchant_end()

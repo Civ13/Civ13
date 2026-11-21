@@ -353,6 +353,15 @@ var/global/list/armor_family_multipliers = list(
 				gaps = TRUE
 	return gaps ? ARMOR_GAP_PENETRATION : 0
 
+// Tell both sides when a thrust got through the gaps in mail or lamellar.
+/mob/living/human/proc/armor_gap_message(obj/item/I, mob/living/user, blocked, hit_zone)
+	if (blocked >= 2 || !I || I.get_hit_kind() != HIT_PIERCE || !armor_gap_penetration(hit_zone, HIT_PIERCE))
+		return FALSE
+	to_chat(src, "<span class='warning'>The point finds a gap in your armor!</span>")
+	if (user && user != src)
+		to_chat(user, "<span class='notice'>Your thrust finds a gap in [src]'s armor.</span>")
+	return TRUE
+
 // A blow that armor fully stops still bruises the body under it.
 /mob/living/human/proc/armor_bruise(obj/item/I, effective_force, blocked, hit_zone)
 	if (blocked < 2 || !I || !(effective_force > 0) || I.damtype != BRUTE || I.get_hit_kind() != HIT_BLUNT)
@@ -363,3 +372,47 @@ var/global/list/armor_family_multipliers = list(
 	apply_damage(effective_force * ARMOR_BRUISE_SHARE, BRUTE, hit_zone, 0, used_weapon = I)
 	to_chat(src, "<span class='warning'>The blow bruises your [affecting.name] through your armor.</span>")
 	return TRUE
+
+// Examine says what a family piece is good and bad against, and what it is
+// made of, so players can choose armor without reading numbers.
+/obj/item/clothing/examine(mob/user)
+	..(user)
+	var/strengths = armor_family_strengths()
+	if (strengths)
+		to_chat(user, SPAN_NOTICE(strengths))
+
+/obj/item/clothing/proc/armor_family_strengths()
+	if (!armor_family || armor_tier <= 0)
+		return null
+	if (armor_underlayer)
+		return "Worn under armor, it softens blows and arrows. On its own it does little against blades or points."
+	var/material = armor_tier_name(armor_tier)
+	var/made = material ? " It is made of [material]." : ""
+	switch (armor_family)
+		if (ARMOR_FAMILY_PADDED)
+			return "Padded armor: it softens blows and arrows well, but blades and points get through more easily.[made]"
+		if (ARMOR_FAMILY_LEATHER)
+			return "Leather armor: light and good against cuts, but weak against thrusts and blows.[made]"
+		if (ARMOR_FAMILY_LAMELLAR)
+			return "Lamellar armor: very good against arrows and good against cuts, but a thrust can find the gaps.[made]"
+		if (ARMOR_FAMILY_MAIL)
+			return "Mail: very good against cuts, but blows go through it and a thrust can find the gaps. Wear padding underneath.[made]"
+		if (ARMOR_FAMILY_PLATE)
+			return "Plate armor: strong against cuts, thrusts and arrows, and fair against blows, but heavy.[made]"
+	return null
+
+/proc/armor_tier_name(tier)
+	switch (tier)
+		if (ARMOR_TIER_HIDE)
+			return "hide or cloth"
+		if (ARMOR_TIER_LACED)
+			return "laced leather"
+		if (ARMOR_TIER_CHITIN)
+			return "chitin"
+		if (ARMOR_TIER_BRONZE)
+			return "bronze"
+		if (ARMOR_TIER_IRON)
+			return "iron"
+		if (ARMOR_TIER_STEEL)
+			return "steel"
+	return null

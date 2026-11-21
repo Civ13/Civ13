@@ -316,6 +316,8 @@
 				// Apply stat effects
 				real_damage *= H.getStatCoeff("strength")
 				real_damage /= getStatCoeff("strength")
+				if (istype(attack, /datum/unarmed_attack/punch))
+					real_damage *= H.unarmed_damage_mult()
 				if (tactic == "charge")
 					real_damage *= 1.1
 				var/armor = run_armor_check(affecting, hit_kind_for(attack.sharp, attack.edge))
@@ -330,6 +332,9 @@
 				// A bare-knuckle punch can hurt the puncher's own hand (punch_injury.dm).
 				if (H != src && istype(attack, /datum/unarmed_attack/punch) && !attack.deal_halloss)
 					H.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, HIT_BLUNT))
+					// A real punch on a living person teaches the unarmed skill (hand_conditioning.dm).
+					if (stat != DEAD)
+						H.practice_unarmed(0.5)
 
 			if (I_DISARM)
 				if (M == src)

@@ -72,7 +72,6 @@
 // The share of her capacity at which she lists.
 #define HULL_LISTING 0.75
 // Wood and deciseconds a patch takes.
-#define HULL_PATCH_PLANKS 2
 #define HULL_PATCH_TIME 60
 // Half minutes between foundering on deep water and going down.
 #define HULL_SINK_WARNINGS 4
@@ -330,6 +329,10 @@ var/global/hull_ledger_timer_off = FALSE
 // One step of seconds.
 /datum/hull_ledger/proc/step_ledger(seconds)
 	if (!craft || !craft.body || !craft.body.placed() || sinking)
+		return
+	// Hauled out or in a drained dock she lies dry and nothing changes (berth.dm).
+	if (lies_dry())
+		water = 0
 		return
 	var/rate = seep_rate()
 	if (rate > 0)
@@ -739,7 +742,6 @@ var/global/hull_ledger_timer_off = FALSE
 
 #undef HULL_HOLE_PER_MINUTE
 #undef HULL_PATCH_PER_MINUTE
-#undef HULL_PATCH_PLANKS
 #undef HULL_PATCH_TIME
 #undef HULL_SLACK_WATER
 #undef HULL_SEEP_PER_TILE_MINUTE

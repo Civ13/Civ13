@@ -268,6 +268,13 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	return (O && !O.is_stump())
 
+// Held items that depend on which hands are attached (two-handed wielding) re-read them after a limb changes.
+/mob/living/human/proc/refresh_held_items()
+	if (l_hand)
+		l_hand.update_held_icon()
+	if (r_hand)
+		r_hand.update_held_icon()
+
 /mob/living/human/proc/has_organ_for_slot(slot)
 	switch(slot)
 		if (slot_back)

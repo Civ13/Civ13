@@ -268,6 +268,10 @@ var/naval_runtime_error = FALSE
 		if (!C || hull_hold_origin_path(C.hold_origin) != /turf/wall/rockwall)
 			origins_ok = FALSE
 	naval_check(origins_ok, "every hold floor remembers the rock it hollowed")
+	// She can cross the sea now, engine, hold and all (ship_crossing.dm, cargo_probe.dm).
+	var/list/freight_packed = sea_crossing_pack(FT)
+	var/list/FR = islist(freight_packed) ? freight_packed["record"] : null
+	naval_check(FR && length(FR["hold"]) == 82 && sea_crossing_record_ok(FR) && findtext(json_encode(FR), "/obj/structure/engine/internal/diesel"), "the freighter packs for a crossing with her hold and engine ([istext(freight_packed) ? freight_packed : "ok"])")
 
 	// A dry dock: a trench berth must be flooded before the launch.
 	var/obj/structure/slipway/dock = new(locate(5, 10, 2))

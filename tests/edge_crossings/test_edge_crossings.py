@@ -5,56 +5,43 @@ facing edge, and both stretches must have dry ground to walk onto.
 Run: python3 -m unittest discover -s tests/edge_crossings
 """
 import re
+import sys
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-META = ROOT / 'code/game/objects/map_metadata/nomads'
+sys.path.insert(0, str(ROOT / 'tools'))
 
-# Region id (earth.json, continent_layout) = (metadata file, map type, map file).
-REGIONS = {
-    'northamerica': ('nomads_americas.dm', 'americas_north', 'maps/nomads/nomads_americas_north.dmm'),
-    'southamerica': ('nomads_americas.dm', 'americas_south', 'maps/nomads/nomads_americas_south.dmm'),
-    # The Earth-shaped Europe, Asia and Africa (docs/earth-continents.md); Africa
-    # takes the place of the older Desert and Jungle regions.
-    'europe': ('nomads_earth.dm', 'earth_europe', 'maps/nomads/nomads_earth_europe.dmm'),
-    'africa': ('nomads_earth.dm', 'earth_africa', 'maps/nomads/nomads_earth_africa.dmm'),
-    'asia': ('nomads_earth.dm', 'earth_asia', 'maps/nomads/nomads_earth_asia.dmm'),
-    'gaia': ('nomads_gaia.dm', None, 'maps/nomads/nomads_gaia.dmm'),
+from world_links import OPPOSITE, crossings, load  # noqa: E402
+from world_links import build  # noqa: E402
+
+# Region id (earth.json) = the map that region runs.
+MAPS = {
+    'northamerica': 'maps/nomads/nomads_americas_north.dmm',
+    'southamerica': 'maps/nomads/nomads_americas_south.dmm',
+    # The Earth-shaped lands (docs/earth-continents.md); Africa takes the place
+    # of the older Desert and Jungle regions.
+    'europe': 'maps/nomads/nomads_earth_europe.dmm',
+    'mediterranean': 'maps/nomads/nomads_earth_mediterranean.dmm',
+    'africa': 'maps/nomads/nomads_earth_africa.dmm',
+    'asia': 'maps/nomads/nomads_earth_asia.dmm',
+    'oceania': 'maps/nomads/nomads_earth_oceania.dmm',
+    'greenland': 'maps/nomads/nomads_earth_greenland.dmm',
+    'antarctica': 'maps/nomads/nomads_earth_antarctica.dmm',
+    'gaia': 'maps/nomads/nomads_gaia.dmm',
 }
-OPPOSITE = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east'}
-# The land links walked over (only where the land carries on).
+# The land links walked over (only where the land carries on). No two land
+# maps cover the same ground, so these follow the frames in tests/earth_maps.
 EXPECTED = {
     ('northamerica', 'south', 'southamerica'), ('southamerica', 'north', 'northamerica'),
     ('europe', 'east', 'asia'), ('asia', 'west', 'europe'),
     ('asia', 'west', 'africa'), ('africa', 'east', 'asia'),
+    ('europe', 'south', 'mediterranean'), ('mediterranean', 'north', 'europe'),
+    ('mediterranean', 'south', 'africa'), ('africa', 'north', 'mediterranean'),
+    ('mediterranean', 'east', 'asia'), ('asia', 'west', 'mediterranean'),
+    ('asia', 'south', 'oceania'), ('oceania', 'north', 'asia'),
 }
-
-
-def metadata_block(region):
-    file, kind, _ = REGIONS[region]
-    text = (META / file).read_text(encoding='utf-8')
-    if kind:
-        text = text.split(f'/obj/map_metadata/nomads/{kind}\n', 1)[1].split('\n/obj/', 1)[0]
-    else:
-        text = text.split('\n/obj/map_metadata/nomads/', 2)[1] if text.count('\n/obj/map_metadata/nomads/') > 1 else text
-    return text
-
-
-def parse_crossings(region):
-    """{side: [(id, lo, hi)]} and the crossing level for a region."""
-    block = metadata_block(region)
-    m = re.search(r'^\tedge_crossings = list\((.*)\)$', block, re.M)
-    z = re.search(r'^\tedge_crossing_z = (\d+)$', block, re.M)
-    out = {}
-    if m:
-        body = m.group(1)
-        for side, rest in re.findall(r'"(north|south|east|west)" = ("[a-z]+"|list\((?:[^()]|\([^()]*\))*\))', body):
-            if rest.startswith('"'):
-                out[side] = [(rest.strip('"'), 0.0, 1.0)]
-            else:
-                out[side] = [(i, float(a), float(b)) for i, a, b in re.findall(r'"([a-z]+)" = list\(([\d.]+), ([\d.]+)\)', rest)]
-    return out, int(z.group(1)) if z else 1
+SURFACE_Z = {'gaia': 2}
 
 
 def load_level(path, z):
@@ -90,35 +77,68 @@ def stretch_dry(rows, side, lo, hi):
 
 
 class EdgeCrossingTests(unittest.TestCase):
-    def test_links_are_the_land_links(self):
+    @classmethod
+    def setUpClass(cls):
+        cls.table = load()
+        cls.links = crossings(cls.table)
+        cls.levels = {}
+
+    def level(self, region):
+        if region not in self.levels:
+            self.levels[region] = load_level(MAPS[region], SURFACE_Z.get(region, 1))
+        return self.levels[region]
+
+    def test_dm_table_is_written_from_the_json(self):
+        self.assertEqual(build.main(['--check']), 0)
+        dm = (ROOT / 'code/modules/persistence/world_links.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\persistence\\world_links.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        self.assertIn('var/global/list/world_links = list(', dm)
+        self.assertIn('var/global/list/continent_layout = list(', dm)
+        lanes = (ROOT / 'code/modules/naval/sea_lanes.dm').read_text(encoding='utf-8')
+        self.assertNotIn('var/global/list/continent_layout', lanes)
+
+    def test_walk_links_are_the_land_links(self):
         found = set()
-        for region in REGIONS:
-            crossings, _ = parse_crossings(region)
-            for side, stretches in crossings.items():
-                for dest, _, _ in stretches:
-                    found.add((region, side, dest))
+        for region, sides in self.links.items():
+            for side, stretches in sides.items():
+                for s in stretches:
+                    if s[3] in ('walk', 'both'):
+                        found.add((region, side, s[0]))
         self.assertEqual(found, EXPECTED)
 
-    def test_every_link_is_answered_and_walkable(self):
-        cache = {}
-        for region, side, dest in sorted(EXPECTED):
-            crossings, z = parse_crossings(region)
-            stretch = next(s for s in crossings[side] if s[0] == dest)
-            back, _ = parse_crossings(dest)
-            self.assertIn(region, [s[0] for s in back.get(OPPOSITE[side], [])], f'{dest} does not lead back to {region}')
-            key = (region, z)
-            if key not in cache:
-                cache[key] = load_level(REGIONS[region][2], z)
-            ground = stretch_dry(cache[key], side, stretch[1], stretch[2])
-            self.assertGreaterEqual(len(ground), 10, f'{region} {side} edge toward {dest} has little dry ground')
+    def test_every_walk_link_has_dry_ground_both_ends(self):
+        for link in self.table['links']:
+            if link['kind'] == 'sail':
+                continue
+            for region, side, lo, hi in (link['a'], link['b']):
+                with self.subTest(region=region, side=side):
+                    ground = stretch_dry(self.level(region), side, lo, hi)
+                    self.assertGreaterEqual(len(ground), 10, f'{region} {side} stretch has little dry ground')
 
-    def test_stretches_on_one_edge_do_not_overlap(self):
-        for region in REGIONS:
-            crossings, _ = parse_crossings(region)
-            for side, stretches in crossings.items():
-                spans = sorted((lo, hi) for _, lo, hi in stretches)
-                for (a_lo, a_hi), (b_lo, b_hi) in zip(spans, spans[1:]):
-                    self.assertLessEqual(a_hi, b_lo, f'{region} {side} stretches overlap')
+    def test_ends_face_each_other(self):
+        for link in self.table['links']:
+            self.assertEqual(link['b'][1], OPPOSITE[link['a'][1]])
+
+    def test_coasts_face_open_sea(self):
+        for region, land in self.table['lands'].items():
+            if region not in MAPS:
+                continue  # retired lands (desert, jungle) keep their chart place only
+            rows = self.level(region)
+            for coast in land['coasts']:
+                side = {'N': 'north', 'S': 'south', 'E': 'east', 'W': 'west'}[coast]
+                row = edge_row(rows, side)
+                sea = sum(('saltwater' in t or 'ice/salty' in t or 'beach/water' in t) for t in row) / len(row)
+                with self.subTest(region=region, coast=coast):
+                    self.assertGreater(sea, 0.5)
+
+    def test_metadata_no_longer_names_links(self):
+        for f in ('nomads_earth.dm', 'nomads_americas.dm'):
+            text = (ROOT / 'code/game/objects/map_metadata/nomads' / f).read_text(encoding='utf-8')
+            self.assertNotIn('edge_crossings =', text)
+            self.assertNotIn('sea_coasts =', text)
+        edge = (ROOT / 'code/modules/persistence/region_edge.dm').read_text(encoding='utf-8')
+        self.assertIn('var/list/links = world_links[shard_group.region]', edge)
+        self.assertNotIn('map.edge_crossings[', edge)
 
     def test_source_walks_the_surface_level(self):
         edge = (ROOT / 'code/modules/persistence/region_edge.dm').read_text(encoding='utf-8')

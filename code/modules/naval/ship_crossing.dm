@@ -203,6 +203,11 @@
 /proc/sea_crossing_bench_ok(path)
 	return ispath(path, /obj/structure/bed/chair/wood/rowing_bench)
 
+// Her gunwales, bulwarks and any other built railing cross as part of her
+// hull, not as cargo (hull_sides.dm).
+/proc/sea_crossing_rail_ok(path)
+	return ispath(path, /obj/structure/railing/built)
+
 /proc/sea_crossing_helm_ok(path)
 	return ispath(path, /obj/structure/hull_tiller)
 
@@ -292,7 +297,7 @@
 			continue
 		if (sea_crossing_cover_ok(M.type))
 			var/obj/covers/F = M
-			entries += list(list("c", "[F.type]", F.dir, round(F.health)))
+			entries += list(list("c", "[F.type]", F.dir, clamp(round(F.health), 0, 1000000)))
 			continue
 		if (sea_crossing_sail_ok(M.type))
 			var/obj/structure/vehicleparts/movement/sail/SL = M
@@ -305,6 +310,9 @@
 			continue
 		if (sea_crossing_bench_ok(M.type))
 			entries += list(list("o", "[M.type]", M.dir))
+			continue
+		if (sea_crossing_rail_ok(M.type))
+			entries += list(list("r", "[M.type]", M.dir))
 			continue
 		// A ladder between her deck and hold is built again in pairs.
 		if (sea_crossing_ladder_ok(M.type))
@@ -336,6 +344,17 @@
 				continue
 			S["items"] = S["items"] + 1
 			entries += list(list("i", entry[1], entry[2]))
+			continue
+		// An engine goes whole, with where its fuel tank stands beside it, so
+		// the two are coupled again on arrival (sea_crossing_couple_tanks).
+		if (istype(M, /obj/structure/engine))
+			var/list/engine = sea_crossing_engine_entry(M)
+			if (istext(engine))
+				refused |= engine
+				blocking |= M
+				continue
+			S["cargo"] = S["cargo"] + 1
+			entries += list(engine)
 			continue
 		// A barrel, a table, a cart, a canoe, a machine: anything else goes whole.
 		var/structure = sea_crossing_cargo_entry(M)
@@ -446,7 +465,7 @@ var/global/list/sea_crossing_marked = list()
 				return null
 			switch (E[1])
 				if ("c")
-					if (E.len != 4 || !sea_crossing_cover_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !isnum(E[4]) || E[4] < 0 || E[4] > 100000)
+					if (E.len != 4 || !sea_crossing_cover_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !isnum(E[4]) || E[4] < 0 || E[4] > 1000000)
 						return null
 					floors++
 				if ("s")
@@ -456,6 +475,9 @@ var/global/list/sea_crossing_marked = list()
 						return null
 				if ("o")
 					if (E.len != 3 || !sea_crossing_bench_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)))
+						return null
+				if ("r")
+					if (E.len != 3 || !sea_crossing_rail_ok(text2path(E[2])) || !(E[3] in cardinal))
 						return null
 				if ("k")
 					if (E.len != 4 || !sea_crossing_closet_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !islist(E[4]) || length(E[4]) > SEA_CROSSING_CHEST_ITEMS_MAX)
@@ -479,6 +501,10 @@ var/global/list/sea_crossing_marked = list()
 				if ("l")
 					if (E.len != 3 || !sea_crossing_ladder_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)))
 						return null
+				if ("e")
+					if (!sea_crossing_engine_valid(E))
+						return null
+					cargo++
 				else
 					return null
 		if (!floors)
@@ -530,6 +556,7 @@ var/global/list/sea_crossing_marked = list()
 				hold_made += thing
 	if (R["hold"] && !hollowed.len)
 		log_game("Sea crossing: no ground for the hold of the [R["name"]] at [pivot.x],[pivot.y],[pivot.z]; her hold cargo is stowed on deck.")
+	sea_crossing_couple_tanks(R, made + hold_made, pivot)
 	// Each ladder finds its other end; one with none (its hold could not be
 	// hollowed here) is taken down.
 	for (var/obj/structure/multiz/ladder/LD in made + hold_made)
@@ -611,6 +638,10 @@ var/global/list/sea_crossing_marked = list()
 			var/obj/structure/bed/chair/wood/rowing_bench/O = new path(T)
 			O.set_dir(E[3])
 			return O
+		if ("r")
+			var/obj/structure/railing/R = new path(T)
+			R.set_dir(E[3])
+			return R
 		if ("k")
 			var/obj/structure/closet/K = new path(T)
 			K.dir = E[3]
@@ -632,6 +663,8 @@ var/global/list/sea_crossing_marked = list()
 			var/atom/movable/thing = sea_crossing_cargo_build(E, T)
 			if (thing)
 				return thing
+		if ("e")
+			return sea_crossing_engine_build(E, T)
 		if ("l")
 			var/obj/structure/multiz/ladder/LD = new path(T)
 			LD.set_dir(E[3])
@@ -659,6 +692,8 @@ var/global/list/sea_crossing_marked = list()
 				region_travel_make_worn(E[2], E[3], T)
 			else if (E[1] == "g" && !(skip_mobs && sea_crossing_entry_mob(E)))
 				sea_crossing_cargo_build(E, T)
+			else if (E[1] == "e")
+				sea_crossing_engine_build(E, T)
 			else if (E[1] == "b" && !skip_mobs)
 				sea_crossing_body_build(E, T)
 

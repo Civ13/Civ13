@@ -2,17 +2,23 @@
 //
 // A treadwheel, horse gin, mill wheel or windmill turns the fastened workshop
 // machines within one tile of it, and a driven machine finishes each step of
-// its work sooner. There is no network and nothing ticks: a machine asks
-// mechanical_drive_factor() when it starts a step, and each mover answers
-// from what stands around it at that moment.
+// its work sooner. Line shafts, gear boxes, clutches and rope drives
+// (transmission.dm) carry a mover's drive further. There is no network object
+// and nothing ticks: a machine asks mechanical_drive_factor() when it starts a
+// step, and the answer is worked out from what stands around it at that
+// moment. Each mover has a strength and each driven machine a draw; when the
+// machines on a drive draw more than its movers' strength, they all slow.
 
 #define MECHANICAL_DRIVE_REACH 1
 #define MECHANICAL_MIN_TIME 5
+#define MECHANICAL_DRIVE_SEARCH_LIMIT 64
 
 /obj/structure/workshop_machine/mover
 	name = "prime mover"
 	icon = 'icons/obj/mechanical_power.dmi'
+	drive_draw = 0
 	var/drive_factor = 1 // a driven step takes this share of its hand time
+	var/drive_capacity = 1 // how many machines' draw it turns at full speed
 	var/base_state = ""
 
 // Why the mover is standing still, or null when it turns.
@@ -26,6 +32,10 @@
 /obj/structure/workshop_machine/mover/proc/current_factor()
 	return turning() ? drive_factor : 1
 
+// The draw it turns at full speed right now; 0 when standing still.
+/obj/structure/workshop_machine/mover/proc/current_capacity()
+	return turning() ? drive_capacity : 0
+
 /obj/structure/workshop_machine/mover/update_icon()
 	icon_state = turning() ? "[base_state]_on" : base_state
 
@@ -35,7 +45,10 @@
 	if (!anchored)
 		to_chat(user, SPAN_WARNING("It is not fastened down."))
 	else if (turning())
-		to_chat(user, SPAN_NOTICE("It is turning. Fastened workshop machines next to it work in [round(current_factor() * 100)]% of the usual time."))
+		var/list/load = mechanical_drive_load(src)
+		to_chat(user, SPAN_NOTICE("It is turning, with a strength of [load[2]] against a draw of [load[3]]. The fastened machines it drives work in [round(mechanical_load_factor(load) * 100)]% of the usual time."))
+		if (load[4])
+			to_chat(user, SPAN_WARNING("The line shaft joined to it is too long to turn."))
 	else
 		to_chat(user, SPAN_WARNING(idle_reason()))
 
@@ -51,20 +64,95 @@
 		return
 	return ..()
 
-// The best drive reaching A: the lowest time share among the turning movers
-// next to it, or 1 when nothing drives it.
-/proc/mechanical_drive_factor(atom/A)
-	. = 1
+// Adds W to the drive search when it is a fastened mover or a transmission
+// part that carries drive right now.
+/proc/mechanical_drive_join(obj/structure/workshop_machine/W, list/movers, list/parts, list/queue)
+	if (QDELETED(W) || !W.anchored || !isturf(W.loc))
+		return
+	if (istype(W, /obj/structure/workshop_machine/mover))
+		if (!(W in movers))
+			movers += W
+			queue += W
+		return
+	if (istype(W, /obj/structure/workshop_machine/transmission))
+		var/obj/structure/workshop_machine/transmission/P = W
+		if (!(P in parts) && P.carries())
+			parts += P
+			queue += P
+
+// What drives A right now: list(best share of hand time among the turning
+// movers, their total strength, the total draw on them, TRUE when a joined
+// line shaft is too long to turn). Movers within reach of A count, and so do
+// movers joined to A through transmission parts.
+/proc/mechanical_drive_load(atom/A)
+	. = list(1, 0, 0, FALSE)
 	var/turf/T = get_turf(A)
 	if (!T)
 		return
-	for (var/obj/structure/workshop_machine/mover/M in range(MECHANICAL_DRIVE_REACH, T))
-		if (M == A)
-			continue
+	var/list/movers = list()
+	var/list/parts = list()
+	var/list/queue = list()
+	if (istype(A, /obj/structure/workshop_machine))
+		mechanical_drive_join(A, movers, parts, queue)
+	for (var/obj/structure/workshop_machine/W in range(MECHANICAL_DRIVE_REACH, T))
+		if (W != A)
+			mechanical_drive_join(W, movers, parts, queue)
+	var/i = 1
+	while (i <= queue.len && queue.len < MECHANICAL_DRIVE_SEARCH_LIMIT)
+		var/obj/structure/workshop_machine/N = queue[i++]
+		for (var/obj/structure/workshop_machine/W in range(1, N))
+			mechanical_drive_join(W, movers, parts, queue)
+		if (istype(N, /obj/structure/workshop_machine/transmission))
+			var/obj/structure/workshop_machine/transmission/P = N
+			for (var/obj/structure/workshop_machine/W in P.linked_parts())
+				mechanical_drive_join(W, movers, parts, queue)
+	if (parts.len && transmission_run_too_long(parts, queue.len >= MECHANICAL_DRIVE_SEARCH_LIMIT))
+		.[4] = TRUE
+		// The shaft binds: only the movers right beside A still drive it.
+		parts = list()
+		var/list/near = list()
+		for (var/obj/structure/workshop_machine/mover/M in movers)
+			if (M == A || get_dist(M, T) <= MECHANICAL_DRIVE_REACH)
+				near += M
+		movers = near
+	var/best = 1
+	var/capacity = 0
+	for (var/obj/structure/workshop_machine/mover/M in movers)
 		var/factor = M.current_factor()
 		M.update_icon()
-		if (factor < .)
-			. = factor
+		if (factor < 1)
+			best = min(best, factor)
+			capacity += M.current_capacity()
+	var/draw = 0
+	var/list/counted = list()
+	for (var/obj/structure/workshop_machine/N in movers + parts)
+		for (var/obj/structure/S in range(MECHANICAL_DRIVE_REACH, N))
+			if (S.drive_draw > 0 && S.anchored && !(S in counted))
+				counted += S
+				draw += S.drive_draw
+	// Whatever asked is drawing on the drive too: a pump, a lift or a machine
+	// that is not a driven workshop machine.
+	if (!(A in counted) && !istype(A, /obj/structure/workshop_machine/mover) && !istype(A, /obj/structure/workshop_machine/transmission))
+		var/obj/structure/S = A
+		draw += (istype(S) && S.drive_draw > 0) ? S.drive_draw : 1
+	.[1] = best
+	.[2] = capacity
+	.[3] = draw
+
+// The share of hand time a step takes on a drive with this load: the best
+// mover's share while strength covers the draw, closing on hand time as the
+// draw outgrows it.
+/proc/mechanical_load_factor(list/load)
+	var/best = load[1]
+	if (best >= 1)
+		return 1
+	var/share = min(1, load[2] / max(1, load[3]))
+	return 1 - (1 - best) * share
+
+// The best drive reaching A: the share of hand time a step takes, or 1 when
+// nothing drives it.
+/proc/mechanical_drive_factor(atom/A)
+	return mechanical_load_factor(mechanical_drive_load(A))
 
 // How long a step of base_time takes at this machine right now.
 /obj/structure/workshop_machine/proc/driven_time(base_time)
@@ -80,6 +168,7 @@
 	base_state = "treadwheel"
 	density = FALSE
 	drive_factor = 0.65
+	drive_capacity = 1
 
 /obj/structure/workshop_machine/mover/treadwheel/idle_reason()
 	for (var/mob/living/human/H in loc)
@@ -101,6 +190,7 @@ var/global/list/horse_gin_animals = list(
 	icon_state = "horse_gin"
 	base_state = "horse_gin"
 	drive_factor = 0.5
+	drive_capacity = 2
 
 /obj/structure/workshop_machine/mover/horse_gin/idle_reason()
 	for (var/mob/living/simple_animal/A in range(1, src))
@@ -120,6 +210,7 @@ var/global/list/horse_gin_animals = list(
 	icon_state = "mill_wheel"
 	base_state = "mill_wheel"
 	drive_factor = 0.4
+	drive_capacity = 3
 
 /obj/structure/workshop_machine/mover/mill_wheel/idle_reason()
 	if (race_fed_until > world.time) // a mill race off an aqueduct (aqueducts.dm)
@@ -128,6 +219,12 @@ var/global/list/horse_gin_animals = list(
 		if (river_current_direction(T))
 			return null
 	return "There is no flowing water beside it. Still water and ice will not turn the wheel."
+
+// A mill race off an aqueduct gives a full head of water: one more machine.
+/obj/structure/workshop_machine/mover/mill_wheel/current_capacity()
+	if (!turning())
+		return 0
+	return race_fed_until > world.time ? drive_capacity + 1 : drive_capacity
 
 //////////////////////////////////////////////////////////////////////////////
 // Windmill: open sky and a wind.
@@ -140,7 +237,7 @@ var/global/list/horse_gin_animals = list(
 	drive_factor = 0.5
 
 /obj/structure/workshop_machine/mover/windmill/proc/wind_speed()
-	return map ? clamp(round(map.windspeedvar), 0, 4) : 0
+	return map ? clamp(round(weather_wind_at(src)), 0, 4) : 0
 
 /obj/structure/workshop_machine/mover/windmill/idle_reason()
 	var/area/A = get_area(src)
@@ -160,6 +257,12 @@ var/global/list/horse_gin_animals = list(
 		if (2)
 			return drive_factor
 	return 0.4
+
+// Light wind turns one machine, moderate two, strong or gale three.
+/obj/structure/workshop_machine/mover/windmill/current_capacity()
+	if (!turning())
+		return 0
+	return min(3, wind_speed())
 
 //////////////////////////////////////////////////////////////////////////////
 // Trip hammer: a driven hammer beside an anvil.

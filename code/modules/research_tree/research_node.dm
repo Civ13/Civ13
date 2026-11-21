@@ -442,6 +442,8 @@ var/global/list/node_grid_col_cache = null
 	// --- Military: Archery ---
 	register_research_node(new /datum/research_node("archery", "Archery", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("crossbows", "Crossbows", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("archery"), 2))
+	// --- Military: Martial disciplines (hand_conditioning.dm) ---
+	register_research_node(new /datum/research_node("martial_disciplines", "Martial Disciplines", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	// --- Military: Order & Defense ---
 	// Law & Order era 1: organized justice (jails, cuffs, batons). The truly
 	// primitive pieces (noose, rope cuffs) live in stone_arms era0 instead.
@@ -880,11 +882,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/lifting_weight/great" = "basic_tools",
 		"/obj/item/weapon/lifting_weight/hand_weights" = "bronze_working",
 		"/obj/item/weapon/lifting_weight/barbell" = "factories",
-		"/obj/structure/training_course/post" = "primitive_construction",
-		"/obj/structure/training_course/post/finish" = "primitive_construction",
-		"/obj/structure/training_course/hurdle" = "primitive_construction",
-		"/obj/structure/training_course/balance_log" = "primitive_construction",
-		"/obj/structure/training_course/hurdle/steel" = "factories",
+		"/obj/item/weapon/skipping_rope" = "basic_tools",
+		"/obj/structure/treadwheel" = "primitive_construction",
+		"/obj/structure/treadwheel/treadmill" = "factories",
 		// --- alloys (1) ---
 		"/obj/item/clothing/shoes/weather/climbing_boots" = "alloys",
 		// --- anesthetic_surgery (2) ---
@@ -1909,6 +1909,8 @@ var/global/list/node_grid_col_cache = null
 		// --- iron_smithing (9) ---
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",
+		"/obj/covers/iron_plate" = "iron_smithing",
+		"/obj/covers/iron_grating" = "iron_smithing",
 		"/obj/item/horseshoes" = "iron_smithing",
 		"/obj/item/weapon/reagent_containers/food/drinks/gunpowder" = "iron_smithing",
 		"/obj/structure/anvil" = "iron_smithing",
@@ -1922,6 +1924,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/steel_works/bessemer" = "steelmaking",
 		"/obj/structure/railing/built/steel_pipe" = "steelmaking",
 		"/obj/structure/railing/built/steel_pipe/gate" = "steelmaking",
+		"/obj/structure/railing/built/gunwale/bulwark" = "steelmaking",
+		"/obj/structure/railing/built/gunwale/bulwark/gangway" = "steelmaking",
 		"/obj/structure/steel_works/open_hearth" = "open_hearth",
 		"/obj/structure/steel_works/arc_furnace" = "alloys",
 		"/obj/structure/carburizing_pot" = "iron_smithing",
@@ -1958,6 +1962,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",
 		"/obj/item/weapon/wirecutters" = "iron_tools",
+		// --- martial_disciplines (2) ---
+		"/obj/structure/striking_post" = "martial_disciplines",
+		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
 		// --- law_order (15) ---
 		"/obj/covers/jail/steeljail" = "law_order",
 		"/obj/covers/jail/woodjail" = "law_order",
@@ -1974,6 +1981,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mechanism/pull_cord" = "basic_tools",
 		"/obj/item/mechanism_kit/pressure_plate" = "field_defenses",
 		"/obj/structure/rock_drop" = "field_defenses",
+		"/obj/structure/mechanism_pulley" = "resource_processing",
 		"/obj/item/flashlight/flare/glowstick" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/blue" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
@@ -2006,8 +2014,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pillory" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/steeljail" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/woodjail" = "law_order",
-		// --- machined_tools (6) ---
+		// --- machined_tools (8) ---
 		"/obj/structure/workshop_machine/fitting/drill_press" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/line_shaft/iron" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/rope_drive" = "machined_tools",
 		"/obj/item/weapon/enginemaker" = "machined_tools",
 		"/obj/item/weapon/fishing/modern" = "machined_tools",
 		"/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty" = "machined_tools",
@@ -2304,6 +2314,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/grille/fence/picket" = "primitive_construction",
 		"/obj/structure/railing/built" = "primitive_construction",
 		"/obj/structure/railing/built/gate" = "primitive_construction",
+		"/obj/structure/railing/built/gunwale" = "primitive_construction",
+		"/obj/structure/railing/built/gunwale/gangway" = "primitive_construction",
 		"/obj/structure/mine_support" = "primitive_construction",
 		"/obj/structure/roof_support" = "primitive_construction",
 		"/obj/structure/chimney" = "primitive_construction",
@@ -2956,8 +2968,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (6) ---
+		// --- watermills (11) ---
+		"/obj/structure/workshop_machine/hopper/millstones" = "watermills",
+		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
 		"/obj/structure/water_lift/windmill" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",
+		"/obj/structure/workshop_machine/transmission/gear_box" = "watermills",
 		"/obj/structure/workshop_machine/trip_hammer" = "watermills",
 		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
 		"/obj/structure/workshop_machine/mover/windmill" = "watermills",

@@ -93,6 +93,8 @@
 #define HULL_DEPTH_AWASH 4
 #define HULL_DEPTH_LISTING 5
 #define HULL_DEPTH_FULL 6
+// Wood a patch over a hole takes (hull_ledger.dm, berth.dm).
+#define HULL_PATCH_PLANKS 2
 
 // Outrigger canoes (naval/outrigger_canoe.dm). The sheet is 96x96 with the
 // hull on the middle tile (tests/sprites/create_small_boats.py).
@@ -127,3 +129,11 @@
 #define SHIP_DRAUGHT_MAX_TILES 200
 #define SHIP_DRAUGHT_MAX_DECK 300
 #define DESIGN_CODE_SHIP_MAX 4000
+
+// Submarine sheets (naval/sub_draught.dm): a submarine is three hull sections
+// across and this many long; the longest turns in the largest vehicle square
+// (VEHICLE_MAX_TURNING_SQUARE).
+#define SUB_DRAUGHT_BEAM 3
+#define SUB_DRAUGHT_MIN_LENGTH 4
+#define SUB_DRAUGHT_MAX_LENGTH 7
+#define DESIGN_CODE_SUB_MAX 800

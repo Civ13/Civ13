@@ -226,6 +226,8 @@
 	if (!user || !istype(user))
 		return FALSE
 	door_panic_release(user)
+	if (!state && arcane_ward_refuses(user)) // arcane_ward.dm
+		return FALSE
 	if (smart_lock_fitted && locked)
 		return !door_hand_locked(user)
 	if (door_barred() || door_braced_against(user))

@@ -178,6 +178,7 @@ class ReturnFixture:
         self.env['persistence_bed_return_enabled'] = self.proc('/proc/persistence_bed_return_enabled', '')
         self.env['persistence_sleep_transfer_blocked'] = lambda: self.blocked
         self.env['death_legacy_now'] = lambda: 235000  # real hours (death_legacy.dm)
+        self.env['accolade_meet_mob'] = lambda *args: False  # lifetime accolades (accolades.dm)
         self.env['persistence_character_floor_usable'] = self.proc('/proc/persistence_character_floor_usable', 'T')
         self.env['persistence_character_turf_safe'] = self.proc('/proc/persistence_character_turf_safe', 'T, H')
         self.wire_bed(self.bed)

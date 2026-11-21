@@ -278,10 +278,12 @@
 	// (world-wide shouts for every node x faction would be pure noise).
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.era_tier > ordinal_age)
 		ordinal_age = N.era_tier
+		accolade_era_research(faction)
 		var/new_year = ordinal_age_year(N.era_tier)
 		if (new_year)
 			age = new_year
 		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> by the [faction] sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+		language_era_advanced()
 	else
 		for (var/mob/living/human/M in human_mob_list)
 			if (M.client && M.civilization == faction)
