@@ -1562,6 +1562,7 @@
 #include "code\modules\divine\arcane_materials.dm"
 #include "code\modules\divine\arcane_rites.dm"
 #include "code\modules\divine\arcane_spirits.dm"
+#include "code\modules\divine\arcane_unbind.dm"
 #include "code\modules\divine\arcane_ward.dm"
 #include "code\modules\divine\ritual.dm"
 #include "code\modules\divine\covenant.dm"
