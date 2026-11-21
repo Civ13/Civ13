@@ -34,6 +34,7 @@ var/global/list/divine_invocation_names = list(
 	"vigil" = "Vigil of Recovery",
 	"repository" = "Keep a repository", // repository.dm
 	"imbue" = "Imbue", // arcane_enchant.dm
+	"bless" = "Bless", // arcane_bless.dm
 )
 
 /mob/living/human
@@ -179,11 +180,13 @@ var/global/list/divine_invocation_names = list(
 		return magic_repo_begin_problem() // repository.dm
 	if (spell == "imbue")
 		return arcane_imbue_problem(arcane_imbue_pick) // arcane_enchant.dm
+	if (spell == "bless")
+		return arcane_bless_problem(arcane_bless_pick) // arcane_bless.dm
 	return null
 
 // The legal target of an invocation at this moment, or null.
 /proc/divine_target_legal(mob/living/human/caster, spell, mob/living/human/target)
-	if (spell == "imbue") // the target is the held item (arcane_enchant.dm)
+	if (spell == "imbue" || spell == "bless") // the target is the held item (arcane_enchant.dm)
 		return istype(caster) && target && target == caster.arcane_imbue_item()
 	if (!istype(caster) || !istype(target) || QDELETED(target) || target.stat == DEAD)
 		return FALSE
@@ -248,6 +251,11 @@ var/global/list/divine_invocation_names = list(
 	var/scope = divine_scope(spell)
 	if (spell == "imbue")
 		scope = arcane_imbue_choose() // arcane_enchant.dm
+		target = arcane_imbue_item()
+		if (!scope || !target)
+			return
+	else if (spell == "bless")
+		scope = arcane_bless_choose() // arcane_bless.dm
 		target = arcane_imbue_item()
 		if (!scope || !target)
 			return
@@ -446,7 +454,7 @@ var/global/list/divine_invocation_names = list(
 		R.state = "cancelled"
 		divine_finish_request(R)
 		return FALSE
-	var/obj/item/component = spell == "imbue" ? null : caster.divine_component() // Imbue uses up its own materials
+	var/obj/item/component = (spell == "imbue" || spell == "bless") ? null : caster.divine_component() // Imbue and Bless use up their own materials
 	if (!R.consume(caster, spell, target, R.scope_key))
 		to_chat(caster, SPAN_WARNING("Your prayer slips away."))
 		divine_finish_request(R)
@@ -490,6 +498,8 @@ var/global/list/divine_invocation_names = list(
 			caster.magic_repo_begin() // repository.dm
 		if ("imbue")
 			caster.arcane_imbue_apply(R.target) // arcane_enchant.dm
+		if ("bless")
+			caster.arcane_bless_apply(R.target) // arcane_bless.dm
 	log_admin("Divine use applied: [spell] by [key_name(caster)] on [ismob(target) ? key_name(target) : "[R.target] ([R.target.type])"] for [R.approved_deity] (approved by [R.approver_ckey]).")
 	divine_finish_request(R)
 	return TRUE

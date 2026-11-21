@@ -147,7 +147,7 @@ var/global/list/arcane_enchanted = list()
 /mob/living/human/proc/arcane_imbue_materials(kind)
 	var/list/pouch = arcane_pouch_items()
 	var/list/picked = list()
-	if (kind == "unweave")
+	if (kind == "unweave" || kind == "unbless")
 		for (var/obj/item/I in pouch)
 			if (I.arcane_virtue())
 				picked += I
@@ -198,6 +198,9 @@ var/global/list/arcane_enchanted = list()
 	if (kind == "unweave")
 		if (!I.arcane_enchant_live())
 			return "There is nothing woven into [I]."
+	else if (kind == "unbless")
+		if (!I.arcane_bless_tier)
+			return "There is no favour on [I]."
 	else if (!arcane_enchant_fits(kind, I))
 		return "[I] can't hold that."
 	if (!arcane_imbue_materials(kind))
@@ -208,6 +211,8 @@ var/global/list/arcane_enchanted = list()
 	var/list/names = list()
 	for (var/obj/item/M in materials)
 		names += M.arcane_virtue() ? "[M.name] ([M.arcane_virtue()] [M.arcane_strength])" : "[M.name]"
+	if (kind == "unbless")
+		return "unbless-v1: end the tier [I.arcane_bless_tier] blessing of [I.arcane_bless_stat] (made by [I.arcane_blesser]) on [I.name]; uses up [english_list(names)]; costs the slot"
 	if (kind == "unweave")
 		return "unweave-v1: end the [I.arcane_enchant] enchantment ([I.arcane_charges] left, made by [I.arcane_enchanter]) on [I.name]; uses up [english_list(names)]; costs the slot"
 	return "imbue-[kind]-v1: [arcane_enchant_names[kind]] on [I.name] with [arcane_imbue_charges(kind, materials)] charges; uses up [english_list(names)]; costs the slot"
@@ -226,6 +231,8 @@ var/global/list/arcane_enchanted = list()
 			choices[arcane_enchant_names[kind]] = kind
 	if (I.arcane_enchant_live())
 		choices["Unweave what is in it"] = "unweave"
+	if (I.arcane_bless_tier)
+		choices["Unweave its blessing"] = "unbless" // arcane_bless.dm
 	if (!choices.len)
 		to_chat(src, SPAN_WARNING("Nothing you know can be woven into [I]."))
 		return null
@@ -233,7 +240,7 @@ var/global/list/arcane_enchanted = list()
 	var/kind = choices[picked]
 	if (!kind || QDELETED(I) || I != arcane_imbue_item())
 		return null
-	if (kind != "unweave")
+	if (arcane_enchant_names[kind])
 		var/list/own = arcane_enchantments_of(ckey)
 		own -= I // re-imbuing replaces, so it does not count twice
 		if (own.len >= ARCANE_ENCHANT_CAP)
@@ -261,7 +268,7 @@ var/global/list/arcane_enchanted = list()
 	var/list/materials = arcane_imbue_materials(kind)
 	if (!istype(I) || !materials)
 		return FALSE
-	var/charges = kind == "unweave" ? 0 : arcane_imbue_charges(kind, materials)
+	var/charges = arcane_enchant_names[kind] ? arcane_imbue_charges(kind, materials) : 0
 	for (var/obj/item/M in materials)
 		if (istype(M, /obj/item/stack))
 			var/obj/item/stack/S = M
@@ -272,6 +279,11 @@ var/global/list/arcane_enchanted = list()
 		if (istype(holder))
 			holder.remove_from_storage(M, get_turf(src))
 		qdel(M)
+	if (kind == "unbless")
+		log_admin("Blessing unwoven: [key_name(src)] unwove the tier [I.arcane_bless_tier] [I.arcane_bless_stat] blessing made by [I.arcane_blesser] from [I] ([I.type]).")
+		I.arcane_bless_end()
+		to_chat(src, SPAN_NOTICE("<i>The favour leaves [I].</i>"))
+		return TRUE
 	if (kind == "unweave")
 		log_admin("Enchantment unwoven: [key_name(src)] unwove [I.arcane_enchant] made by [I.arcane_enchanter] from [I] ([I.type]).")
 		I.arcane_enchant_end()

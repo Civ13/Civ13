@@ -1533,6 +1533,7 @@
 #include "code\modules\divine\identity.dm"
 #include "code\modules\divine\approval.dm"
 #include "code\modules\divine\arcane_altars.dm"
+#include "code\modules\divine\arcane_bless.dm"
 #include "code\modules\divine\arcane_enchant.dm"
 #include "code\modules\divine\arcane_materials.dm"
 #include "code\modules\divine\ritual.dm"

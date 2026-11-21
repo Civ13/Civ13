@@ -84,7 +84,7 @@ var/global/list/work_trade_kind = list(
 // The do_after wait for labour of this kind with this tool, from a base wait
 // for an average worker with the reference tool.
 /proc/work_delay(mob/user, base, kind, obj/item/tool)
-	var/mult = work_trade_factor(user, kind) / (work_tool_factor(tool, kind) * work_stat_factor(user, kind))
+	var/mult = work_trade_factor(user, kind) / (work_tool_factor(tool, kind) * work_stat_factor(user, kind) * arcane_bless_speed(tool))
 	mult = max(WORK_MIN_MULT, min(WORK_MAX_MULT, mult))
 	return max(1, round(base * mult, 1))
 
