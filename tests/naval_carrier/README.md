@@ -325,6 +325,18 @@ and a ship off the Arctic's west edge coming out at its east edge.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ocean_sites_probe.dm 300
 
+## Strait booms (`strait_boom_probe.dm`)
+
+A narrows on an open-water fixture (`code/modules/naval/strait_boom.dm`): a
+winch laying a nine-tile boom to the far shore and refusing one with no shore
+in reach; a raised boom stopping a hull; a lowered boom letting her over it
+and staying put and down under her; ramming refused at half ahead and, at full
+ahead, breaking the three segments across her bow and holing her; mending
+only the broken segments; a cut segment; the named straits; and a winch taking
+its boom with it.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/strait_boom_probe.dm 300
+
 ## The open sea (`open_sea_probe.dm`)
 
 An open-sea world (`code/modules/naval/open_sea.dm`, `open_sea_sites.dm`,
