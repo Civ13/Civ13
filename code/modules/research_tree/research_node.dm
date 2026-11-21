@@ -1974,6 +1974,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mechanism/pull_cord" = "basic_tools",
 		"/obj/item/mechanism_kit/pressure_plate" = "field_defenses",
 		"/obj/structure/rock_drop" = "field_defenses",
+		"/obj/structure/mechanism_pulley" = "resource_processing",
 		"/obj/item/flashlight/flare/glowstick" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/blue" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
