@@ -47,7 +47,7 @@ class GatewayTests(unittest.TestCase):
         group = self.gateway_group()
         shard_group.setup(group, self.machine)
         self.assertFalse(self.host(group, 'door').may_sleep())
-        self.assertTrue(self.host(group, 'gaia').may_sleep())
+        self.assertFalse(self.host(group, 'gaia').may_sleep(), 'the mainland never sleeps either')
         self.assertEqual('start-current', self.host(group, 'door').automatic_start_action(), 'a crashed gateway comes back at once')
 
     def tutorial_group(self):
@@ -96,6 +96,22 @@ class GatewayTests(unittest.TestCase):
         host.work('handover', host.request('handover')['operation'])
         self.assertEqual(('done', NEWER), (host.read_state()['phase'], host.built_revision()))
         self.assertFalse([argv for argv, _ in self.machine.calls if argv[0] == 'standby'])
+
+    def test_mainland_never_sleeps(self):
+        # Val (2026-11-21): Gaia is the mainland, so it never sleeps; other lands still do.
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        other = group['regions'][1]['id']
+        self.assertFalse(self.host(group, 'gaia').may_sleep())
+        self.assertTrue(self.host(group, other).may_sleep())
+        host = self.host(group, 'gaia')
+        host.log = lambda values: None
+        self.machine.up = {group['regions'][0]['port']}
+        idle, _ = host.watch_step(None)
+        for _ in range(4):
+            self.machine.clock += 15 * 60
+            idle, _ = host.watch_step(idle)
+        self.assertFalse(host.frozen(), 'an idle mainland is never frozen')
 
     def test_update_restarts_on_its_own_port_without_a_standby(self):
         group = self.gateway_group()
