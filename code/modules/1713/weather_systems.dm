@@ -52,15 +52,17 @@ var/global/weather_storm_count = 0
 
 // 0 outside the oval, rising to the system's power over its outer 40%.
 /datum/weather_system/proc/strength_at(x, y)
-	var/dx = (x - centre_x()) / radius_x
+	var/offset_x = x - centre_x()
+	var/dx = offset_x / radius_x
 	if (dx >= 1.1 || dx <= -1.1)
 		return 0
-	var/dy = (y - centre_y()) / radius_y
+	var/offset_y = y - centre_y()
+	var/dy = offset_y / radius_y
 	var/reach = dx * dx + dy * dy
 	if (reach >= 1.21)
 		return 0
 	// A ragged edge, fixed to the system so it travels with it.
-	var/d = sqrt(reach) + 0.08 * sin((x - centre_x()) * 9 + (y - centre_y()) * 5 + wobble)
+	var/d = sqrt(reach) + 0.08 * sin(offset_x * 9 + offset_y * 5 + wobble)
 	if (d >= 1)
 		return 0
 	return power() * min(1, (1 - d) * 2.5)
