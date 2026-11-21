@@ -18,7 +18,9 @@
 // People (origin id) -> dress style.
 /proc/origin_dress_styles()
 	var/static/list/styles = list(
-		"northmen" = "northern",
+		"northmen" = "northern", "fjordfolk" = "northern",
+		"hearthlanders" = "mediterranean", "isleborn" = "mediterranean",
+		"dunefolk" = "desert", "grasslanders" = "east_african", "mistwood" = "japanese",
 		"gaels" = "celtic",
 		"latins" = "mediterranean", "hellenes" = "mediterranean",
 		"egyptians" = "desert", "arabs" = "desert", "persians" = "desert",
@@ -144,7 +146,9 @@
 /proc/spawn_outfit_for(origin_id)
 	var/list/table = spawn_outfit_table()
 	var/list/styles = origin_dress_styles()
-	var/list/style = table[styles[origin_id]]
+	// A people that formed in play dresses like its root people (peoples.dm).
+	var/datum/origin/root = origin_root(origin_by_id(origin_id))
+	var/list/style = table[styles[root ? root.id : origin_id]]
 	var/list/outfit = style ? era_pick(style) : null
 	if (!outfit)
 		outfit = era_pick(table["common"], table["common"]["0"])

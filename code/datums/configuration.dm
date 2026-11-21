@@ -94,6 +94,7 @@ var/list/gamemode_cache = list()
 	var/defib_braindamage_timer = 2 // How long until someone will get brain damage when defibbed, in minutes. The closer to the end of the above timer, the more brain damage they get.
 
 	var/no_click_cooldown = FALSE
+	var/body_motion = BODY_MOTION_FULL // whole-body motion level (body_motion.dm)
 
 	var/use_recursive_explosions //Defines whether the server uses recursive or circular explosions.
 
@@ -329,6 +330,15 @@ var/list/gamemode_cache = list()
 
 				if ("no_click_cooldown")
 					config.no_click_cooldown = TRUE
+
+				if ("body_motion")
+					switch (lowertext(trim("[value]")))
+						if ("off", "0")
+							config.body_motion = BODY_MOTION_OFF
+						if ("reduced", "1")
+							config.body_motion = BODY_MOTION_REDUCED
+						else
+							config.body_motion = BODY_MOTION_FULL
 
 				if ("allow_vote_restart")
 					config.allow_vote_restart = TRUE

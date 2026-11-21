@@ -338,6 +338,9 @@
 	if (istype(W, /obj/item/stack/nylon_thread)) // nylon.dm
 		produce(W, H, /obj/item/stack/material/nylon)
 		return
+	if (istype(W, /obj/item/stack/material/glass) && W.type == /obj/item/stack/material/glass) // fiberglass.dm
+		produce(W, H, /obj/item/stack/material/glass_cloth)
+		return
 	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
