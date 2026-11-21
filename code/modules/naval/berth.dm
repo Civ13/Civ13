@@ -48,6 +48,10 @@
 	if (!cells.len)
 		return null
 	var/turf/T = cells[1]
+	// A dock basin, flooded or pumped dry (drydock.dm).
+	var/obj/structure/canal_lock/dock_gate/G = dock_basin_turfs[T]
+	if (G && !QDELETED(G) && G.berth_holds(C, cells))
+		return G
 	if (istype(T, /turf/floor/beach/water) || istype(T, /turf/floor/trench/flooded))
 		for (var/obj/structure/boathouse/B in range(BERTH_REACH, T))
 			if (B.berth_holds(C, cells))

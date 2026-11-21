@@ -170,8 +170,7 @@
 		return FALSE
 	if (istype(get_area(T), /area/caribbean/void/caves))
 		return TRUE
-	var/under_z = underground_level_z()
-	return under_z && T.z == under_z
+	return underground_depth_of(T.z) > 0
 
 // Where the snow and ice last four times as long: underground, or in the
 // insulated body of an ice car (train_stock.dm).

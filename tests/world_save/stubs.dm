@@ -32,7 +32,7 @@ var/global/datum/world_save_idle_pull_registry/subtile_pull_ownership = new
 
 #ifndef BUILDING_MAX_Z
 #define BUILDING_MAX_Z 32
-#define BUILDING_EXTRA_LEVELS 12
+#define BUILDING_EXTRA_LEVELS 15
 #define BUILDING_MAX_LEVEL_CELLS 2000000
 var/building_allocating_z = 0
 /proc/building_base_maxz()
