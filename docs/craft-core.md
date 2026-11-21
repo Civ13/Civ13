@@ -145,8 +145,8 @@ building level higher again. `top_cells()` finds it the same way from her upper
 deck tiles, `plan()` checks the air ahead of it like the upper deck's and counts
 it toward the deck cap, and `move_to()` carries it after the upper deck. A roof
 on the upper deck makes the tiles under it indoors, and those areas sail with
-her too (`built_hull_areas_before()`). She cannot yet cross the sea with a
-second deck: the crossing refuses the floor above a roof on her upper deck.
+her too (`built_hull_areas_before()`). It crosses the sea with her as
+`record["top"]` ([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
 Measured in `tests/naval_carrier/second_deck_probe.dm`.
 
 ### Holds

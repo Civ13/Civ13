@@ -130,6 +130,7 @@ class PeoplesAreNeverATarget(unittest.TestCase):
     READERS = {
         'code/game/mob/living/carbon/human/origins.dm',
         'code/game/mob/living/carbon/human/peoples.dm',
+        'code/game/mob/living/carbon/human/peoples_split.dm',
         'code/modules/admin/verbs/peoples_admin.dm',
         'code/game/mob/language/proficiency.dm',
         'code/modules/1713/jobs/spawn_outfits.dm',

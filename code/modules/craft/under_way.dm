@@ -189,9 +189,13 @@
 		body.glide_time = 0
 		if (moved)
 			sail_paid(sail_tiles())
+			strait_notice() // naval/strait_boom.dm
 			return TRUE
 	if (hop)
 		last_refusal = body.last_refusal
+	// At full speed she breaks through a raised boom (naval/strait_boom.dm).
+	if (boom_ram())
+		return FALSE
 	sail_refused()
 	return FALSE
 

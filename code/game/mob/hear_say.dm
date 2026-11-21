@@ -125,6 +125,7 @@
 		var/mob/living/human/H = src
 		H.language_exposure(language, speaker)
 		H.language_drift_heard(language, speaker)
+		H.people_heard(speaker)
 
 
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")

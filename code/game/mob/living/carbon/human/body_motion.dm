@@ -346,13 +346,13 @@
 	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, keys) ? body_motion_serial : 0
 
 // Ends motion number `serial` if it is still the running one, back to the
-// posture transform over 1 ds.
-/mob/living/human/proc/body_motion_stop(serial)
+// posture transform over `time` ds.
+/mob/living/human/proc/body_motion_stop(serial, time = 1)
 	if (!serial || serial != body_motion_serial || world.time >= body_motion_until)
 		return FALSE
 	var/matrix/rest = posture_transform()
-	body_motion_claim(body_motion_priority, 1, rest)
-	animate(src, transform = rest, time = 1, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
+	body_motion_claim(body_motion_priority, time, rest)
+	animate(src, transform = rest, time = time, easing = SINE_EASING | EASE_IN, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 	return TRUE
 
 // Walking, running and sprinting: a vertical hop with no lean or squash, one
@@ -371,8 +371,17 @@
 		return FALSE
 	if (istype(loc, /turf/floor/beach/water/ice))
 		return FALSE
-	var/drag = body_motion_terrain_drags()
 	var/list/keys
+	var/haul = body_motion_haul_dir()
+	if (haul && (m_intent == "walk" || m_intent == "run"))
+		// Hauling something heavy: an 8 degree heave away from the load on the
+		// step, held, then eased back. North and south shift 1px instead. 7 ds.
+		var/list/f = body_motion_forward(haul)
+		return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_REDUCED, list(
+			list(0, f[2], 8 * f[3], 1, 2, QUAD_EASING | EASE_OUT),
+			list(0, f[2], 8 * f[3], 1, 3, LINEAR_EASING),
+			list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
+	var/drag = body_motion_terrain_drags()
 	if (m_intent == "run")
 		if (is_sprinting())
 			keys = drag ? list(list(0, -1, 0, 1, 1.5, QUAD_EASING | EASE_IN), list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_OUT)) \
@@ -405,3 +414,80 @@
 	if (F.muddy)
 		return footwear_terrain_mult(src, "mud") > 0.6
 	return FALSE
+
+// The direction away from a heavy load being pulled, or 0. Heavy means the
+// load adds a tile delay of 1 ds or more: a body, a mounted gun, a loaded cart.
+/mob/living/human/proc/body_motion_haul_dir()
+	if (!pulling || !isturf(pulling.loc))
+		return 0
+	var/added = 0
+	if (ismob(pulling))
+		added = 1.25
+	else if (istype(pulling, /obj/item/weapon/gun/projectile/automatic/stationary))
+		added = 1
+	else if (istype(pulling, /obj/structure))
+		var/obj/structure/S = pulling
+		added = S.drag_delay(src)
+	if (added * pull_drag_mult() < 1)
+		return 0
+	return get_dir(pulling, src)
+
+// Firing a gun: kicked back 2px (3px for a large gun) with a 5 degree roll
+// back, home over 2 ds. North and south shift only. Kept at REDUCED: it shows
+// who fired. 3 ds.
+/mob/living/human/proc/body_motion_fire(atom/target, obj/item/weapon/gun/G)
+	var/direction = (target && get_turf(target) != get_turf(src)) ? get_dir(src, target) : dir
+	var/list/f = body_motion_forward(direction)
+	var/kick = (istype(G) && G.w_class >= ITEM_SIZE_LARGE) ? 3 : 2
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(-kick * f[1], -kick * f[2], -5 * f[3], 1, 1, QUAD_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 2, QUAD_EASING | EASE_IN)))
+
+// Throwing: 1px back, then a 3px drive with a 6 degree roll into the throw
+// (a squash at the feet north and south), home over 2 ds. Kept at REDUCED: it
+// shows who threw. 4 ds.
+/mob/living/human/proc/body_motion_throw(atom/target)
+	var/direction = (target && get_turf(target) != get_turf(src)) ? get_dir(src, target) : dir
+	var/list/f = body_motion_forward(direction)
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(-f[1], -f[2], 0, 1, 1, LINEAR_EASING),
+		list(3 * f[1], 3 * f[2], 6 * f[3], f[3] ? 1 : 0.96, 1, QUAD_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 2, QUAD_EASING | EASE_IN)))
+
+// Shoved: 4px and a 10 degree roll away from the shover (a squash north and
+// south), back over 3 ds. Kept at REDUCED: it shows the shove. 5 ds.
+/mob/living/human/proc/body_motion_knockback(atom/source)
+	if (!source || source == src)
+		return FALSE
+	var/list/f = body_motion_forward(get_dir(source, src))
+	if (!f[1] && !f[2])
+		return FALSE
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(4 * f[1], 4 * f[2], 10 * f[3], f[3] ? 1 : 0.94, 2, QUAD_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 3, SINE_EASING | EASE_IN)))
+
+// Picking something up off the ground: a stoop, squashed at the feet, 1px
+// toward it, and back. 4 ds.
+/mob/living/human/proc/body_motion_stoop(atom/target)
+	var/turf/T = get_turf(target)
+	var/direction = (T && T != get_turf(src)) ? get_dir(src, T) : dir
+	var/list/f = body_motion_forward(direction)
+	return body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL, list(
+		list(f[1], f[2], 0, 0.88, 2, SINE_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
+
+// Kneeling to treat someone: squash lower than a stoop and 1px toward the patient over 3 ds,
+// hold for the treatment, then rise over 3 ds. Kept at REDUCED: it shows who
+// is treating. Returns the motion's serial for body_motion_stop(serial, 3),
+// or 0 when none played.
+/mob/living/human/proc/body_motion_kneel(atom/patient, duration)
+	if (!may_do_after || !may_do_mob)
+		return 0
+	var/turf/T = get_turf(patient)
+	var/direction = (T && T != get_turf(src)) ? get_dir(src, T) : dir
+	var/list/f = body_motion_forward(direction)
+	var/played = body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_REDUCED, list(
+		list(f[1], f[2], 0, 0.8, 3, SINE_EASING | EASE_OUT),
+		list(f[1], f[2], 0, 0.8, max(1, duration), LINEAR_EASING),
+		list(0, 0, 0, 1, 3, SINE_EASING | EASE_IN)))
+	return played ? body_motion_serial : 0

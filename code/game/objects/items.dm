@@ -182,6 +182,7 @@
 		return
 	if (do_after(user,equiptimer, src, can_move = equiptimer))
 		if (src in range(1,user))
+			var/turf/stoop_from = isturf(loc) ? loc : null
 			if (hasorgans(user))
 				var/mob/living/human/H = user
 				var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
@@ -207,6 +208,9 @@
 					return
 			user.put_in_active_hand(src)
 			pickup(user)
+			if (stoop_from && loc == user && ishuman(user))
+				var/mob/living/human/stooper = user
+				stooper.body_motion_stoop(stoop_from)
 		else
 			if (!isturf(src.loc))
 				if (hasorgans(user))
