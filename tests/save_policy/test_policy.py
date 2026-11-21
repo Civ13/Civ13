@@ -1,4 +1,5 @@
-"""Save policy (Val, 2026-11-05): no automatic saves during active play.
+"""Save policy (Val, 2026-11-05): no automatic saves during active play,
+except the four-hour checkpoint (test_occupied_checkpoint.py, Val 2026-11-21).
 
 Automatic saves and the daily maintenance reboot wait until only the host is
 online; a catch-up save follows soon after the last player leaves. Players can

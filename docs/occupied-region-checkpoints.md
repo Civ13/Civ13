@@ -1,6 +1,16 @@
 # Persistence: four-hour occupied-region checkpoints
 
-Status: implementation design; this document does not change save behavior.
+Status: the save-only scheduler is implemented in
+[occupied_checkpoint.dm](../code/modules/persistence/occupied_checkpoint.dm)
+and approved by Val (2026-11-21): "We want to save at least once every 4 hours
+to prevent losing progress, even when players are on." The conditional update
+and restart below is a later slice and is not implemented.
+
+As built: the loop calls `persistence_occupied_checkpoint()` every 30 seconds
+while players are online. It starts 20 to 29 minutes before the four-hour
+target (a stable offset by port), warns players two minutes ahead, rechecks the
+holds and the save age, then runs the normal `ticker.savemap()`. A failure or
+refusal backs off 15 minutes and tells admins; it never restarts the world.
 
 ## Policy
 
