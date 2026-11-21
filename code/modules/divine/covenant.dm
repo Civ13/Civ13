@@ -79,7 +79,7 @@ var/global/list/divine_invocation_names = list(
 
 /mob/living/human/proc/divine_refresh_verbs()
 	// Off the magic whitelist (magic_whitelist.dm) the patron stays saved but Beseech goes away.
-	if (istext(divine_patron) && length(divine_patron) && magic_allowed())
+	if ((istext(divine_patron) && length(divine_patron) && magic_allowed()) || arcane_apostate_can_pray()) // apostates: arcane_apostate.dm
 		verbs |= /mob/living/human/proc/divine_beseech
 	else
 		verbs -= /mob/living/human/proc/divine_beseech
@@ -246,6 +246,9 @@ var/global/list/divine_invocation_names = list(
 
 	if (usr != src || !client || client.mob != src)
 		return
+	if (arcane_apostate_of)
+		arcane_apostate_beseech() // arcane_apostate.dm
+		return
 	if (divine_request)
 		to_chat(src, SPAN_WARNING("You are already waiting on an answer."))
 		return
@@ -257,12 +260,17 @@ var/global/list/divine_invocation_names = list(
 	for (var/spell in divine_spells_allowed())
 		if (divine_invocation_names[spell])
 			choices[divine_invocation_names[spell]] = spell
+	if (arcane_can_renounce()) // arcane_apostate.dm
+		choices["Renounce"] = "renounce"
 	if (!choices.len)
 		to_chat(src, SPAN_WARNING("You don't know any prayers yet."))
 		return
 	var/picked = player_input(src, "What do you ask for?", "Beseech", null, "anything", choices, TRUE)
 	var/spell = choices[picked]
 	if (!spell || usr != src || !client || divine_request)
+		return
+	if (spell == "renounce")
+		arcane_renounce()
 		return
 	var/mob/living/human/target = src
 	var/scope = divine_scope(spell)
