@@ -294,5 +294,28 @@
       "/obj/item/machine_part/shaft": 1,
       "/obj/item/stack/material/iron": 2
     }
+  },
+  "/obj/structure/workshop_machine/mover/counterweight": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/stack/material/rope": 2
+    }
+  },
+  "/obj/structure/mechanism/cam_drum": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/mover/steam_engine": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
   }
 }

@@ -2152,6 +2152,7 @@
 #include "code\modules\1713\mechanical_power.dm"
 #include "code\modules\1713\mechanisms.dm"
 #include "code\modules\1713\hopper_machines.dm"
+#include "code\modules\1713\contraptions.dm"
 #include "code\modules\1713\transmission.dm"
 #include "code\modules\1713\machine_shop.dm"
 #include "code\modules\1713\power_cranes.dm"
