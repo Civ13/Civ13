@@ -29,7 +29,7 @@
 	if (ckey)
 		return ckey
 	if (persistence_owner_ckey)
-		return persistence_owner_ckey
+		return owner_key_account(persistence_owner_ckey)
 	return null
 
 /mob/living/human/proc/research_knowledge_status()

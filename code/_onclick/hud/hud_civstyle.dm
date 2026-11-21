@@ -32,6 +32,7 @@
 		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,	   "loc" = ui_secondary_attack),
 		"mode"		= list("type" = /obj/screen/mode,	   "loc" = ui_mode),
 		"tactic"	  = list("type" = /obj/screen/tactic,	 "loc" = ui_tactic),
+		"combat stance" = list("type" = /obj/screen/combat_stance, "loc" = ui_combat_stance),
 		"equip"	   = list("type" = /obj/screen/equip,	  "loc" = ui_equip),
 		"intent"	  = list("type" = /obj/screen/intent,	 "loc" = ui_intent),
 		"help"		= list("type" = /obj/screen/fastintent/help,	 "loc" = ui_help),

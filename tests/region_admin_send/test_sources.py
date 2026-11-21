@@ -68,7 +68,7 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('shard_group.peer_transfers_held(id)', SHIP)
         # The lobby warns before a second character replaces one still on its way.
         home = read('code/modules/persistence/region_home.dm')
-        self.assertIn('transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.ckey)', home)
+        self.assertIn('transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.owner_key())', home)
         self.assertIn("seen.get('transfers_held')", HOST)
 
     def test_a_shore_landing_looks_on_the_surface_level(self):
@@ -107,7 +107,7 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('json_decode(json_encode(pair))', print_)
         self.assertIn('arrived ? H.colony_origin : colony_faction_id(H)', print_)
         # Ship crews are checked 1:1 too.
-        self.assertIn('gate.pending["admin_send"] = region_admin_send_crew_landing(H, id, admin_crossing_by)', SHIP)
+        self.assertIn('extra["admin_send"] = region_admin_send_crew_landing(H, id, admin_crossing_by)', SHIP)
         # A mismatch names the parts that differ (sent as one check per part).
         self.assertIn('region_admin_send_checks_diff(S["checks"], region_admin_send_checks(print))', arrived)
         self.assertIn('.["checks"] = region_admin_send_checks(print)', body(SEND, '/proc/region_admin_send_checked_landing(mob/living/human/H, id, list/landing)'))

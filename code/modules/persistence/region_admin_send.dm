@@ -274,7 +274,7 @@ var/global/region_admin_send_running = FALSE
 				var/list/items = H.region_travel_items()
 				if(islist(items))
 					var/recorded = H.persistence_owner_ckey
-					if(H.client && !recorded) H.persistence_owner_ckey = H.client.ckey
+					if(H.client && !recorded) H.persistence_owner_ckey = H.client.owner_key()
 					var/payload = H.region_travel_payload(items, null, FALSE, list("admin_send" = landing))
 					H.persistence_owner_ckey = recorded
 					if(length(payload) > (findtext(payload, "\"ship\":") ? 393216 : 131072) || !region_travel_decode(payload))

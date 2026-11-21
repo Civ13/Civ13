@@ -14,6 +14,10 @@
 
 // Returns list(started, due) in world.time, or null when no change is known.
 /obj/map_metadata/proc/season_change_window()
+	// The world calendar knows where this season began and ends (world_calendar.dm).
+	if (map == src && world_calendar_seasons_on())
+		var/list/c = world_calendar_season()
+		return list(world.time - round(c[2] * 600), world.time + max(1, round(c[3] * 600)))
 	var/started = season_change_started
 	var/due = season_change_due
 	// Durable maps keep the authoritative deadline in the timer queue, which

@@ -29,7 +29,7 @@
 	if (H.persistence_owner_ckey)
 		return H.persistence_owner_ckey
 	if (H.client && !IsGuestKey(H.client.key))
-		return H.client.ckey
+		return H.client.owner_key()
 	return null
 
 // faction -> list(account -> list(joined, seen)); created on first use.

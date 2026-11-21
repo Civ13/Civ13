@@ -195,6 +195,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
+	parentmob.combat_stance_doll_clicked()
 	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
@@ -205,6 +206,8 @@
 /obj/screen/zone_sel/update_icon()
 	overlays.Cut()
 	overlays += image('icons/mob/zone_sel.dmi', "[parentmob.targeted_organ]")
+	if (parentmob.combat_doll_flash)
+		overlays += combat_doll_flash_image('icons/mob/zone_sel.dmi', parentmob.combat_doll_flash)
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
 //--------------------------------------------------ZONE SELECT---------------------------------------------------------
 /obj/screen/zone_sel2
@@ -294,6 +297,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
+	parentmob.combat_stance_doll_clicked()
 	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
@@ -304,6 +308,8 @@
 /obj/screen/zone_sel2/update_icon()
 	overlays.Cut()
 	overlays += image('icons/mob/screen/zone_sel_lw.dmi', "[parentmob.targeted_organ]")
+	if (parentmob.combat_doll_flash)
+		overlays += combat_doll_flash_image('icons/mob/screen/zone_sel_lw.dmi', parentmob.combat_doll_flash)
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
 //--------------------------------------------------ZONE SELECT---------------------------------------------------------
 /obj/screen/zone_sel3
@@ -372,6 +378,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
+	parentmob.combat_stance_doll_clicked()
 	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
@@ -382,6 +389,8 @@
 /obj/screen/zone_sel3/update_icon()
 	overlays.Cut()
 	overlays += image('icons/mob/screen/zone_sel_fof.dmi', "[parentmob.targeted_organ]")
+	if (parentmob.combat_doll_flash)
+		overlays += combat_doll_flash_image('icons/mob/screen/zone_sel_fof.dmi', parentmob.combat_doll_flash)
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
 //--------------------------------------------------RANDOM ZONE SELECT---------------------------------------------------------
 /obj/screen/zone_sel_random
@@ -389,12 +398,15 @@
 	icon_state = "random"
 	var/previous_s = ""
 
+// Random leaves any combat stance; choosing a stance leaves random (combat_stance.dm).
 /obj/screen/zone_sel_random/Click(location, control,params)
 	if (parentmob.targeted_organ == "random" && previous_s != "")
 		parentmob.targeted_organ = previous_s
 	else
 		previous_s = parentmob.targeted_organ
 		parentmob.targeted_organ = "random"
+		if (parentmob.combat_stance_active())
+			parentmob.set_combat_stance(COMBAT_STANCE_MANUAL)
 	update_icon()
 	return TRUE
 
@@ -921,6 +933,27 @@
 
 	else if (parentmob.tactic == "defend")
 		icon_state = "defend"
+
+// Combat stance button beside the tactic button (combat_stance.dm). Click
+// cycles Manual and each stance; the art names the stance (Fable 5.2).
+/obj/screen/combat_stance
+	name = "combat stance"
+	icon_state = "stance_manual"
+
+/obj/screen/combat_stance/New()
+	..()
+	update_icon()
+
+/obj/screen/combat_stance/Click()
+	var/list/order = list(COMBAT_STANCE_MANUAL) + combat_stance_order
+	var/index = order.Find(parentmob.combat_stance)
+	parentmob.set_combat_stance(index && index < order.len ? order[index + 1] : COMBAT_STANCE_MANUAL)
+	return TRUE
+
+/obj/screen/combat_stance/update_icon()
+	var/stance = valid_combat_stance(parentmob.combat_stance) ? parentmob.combat_stance : COMBAT_STANCE_MANUAL
+	icon_state = "stance_[stance]"
+	name = "combat stance: [combat_stance_names[stance]]"
 
 /obj/screen/mood
 	name = "mood"

@@ -427,7 +427,7 @@ var/global/list/sub_draught_fixed_cost = list("steel" = 56)
 
 // Pasting any kind of sheet's code onto it (draught_kinds).
 /obj/item/ship_draught/proc/paste_any_code(mob/living/human/H)
-	var/typed = design_code_ask(H, name, "Paste a ship or submarine design code (C13SHIP/... or C13SUB/...). It replaces what is drawn on this sheet.", draught_code_max())
+	var/typed = design_code_ask(H, name, "Paste a ship, submarine or vehicle design code (C13SHIP/..., C13SUB/... or C13CAR/...). It replaces what is drawn on this sheet.", draught_code_max())
 	if (!typed || H.get_active_hand() != src)
 		return
 	var/kind = design_code_kind(typed)

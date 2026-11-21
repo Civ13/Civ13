@@ -127,6 +127,25 @@ def draw_crows_nest():
     return img
 
 
+def draw_bowsprit():
+    """A bowsprit from above: a spar running up the tile to her stem, with
+    the jib furled along it."""
+    img = Image.new('RGBA', (TILE, TILE), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(2, 30):
+        px[15, y] = SPAR_LIGHT
+        px[16, y] = SPAR
+        px[17, y] = SPAR_DARK
+    for y in range(8, 28):
+        tie = y % 4 == 0
+        px[13, y] = CANVAS_TIE if tie else CANVAS
+        px[14, y] = CANVAS_TIE if tie else CANVAS_SHADE
+    for x in range(14, 19):  # the iron cap at her stem
+        px[x, 28] = IRON
+        px[x, 29] = IRON
+    return img
+
+
 def draw_steering_oar():
     """A steering oar from above: the loom inboard at the top with its grip,
     an iron crutch it turns in, and the blade trailing astern."""
@@ -212,6 +231,9 @@ SPRITES = {
     # The bare mast is a 64x64 sprite of a thin yard: drawn here from above.
     'piece_M': {'draw': draw_mast, 'outline': True},
     'piece_N': {'draw': draw_crows_nest, 'outline': True},
+    'piece_J': {'draw': draw_bowsprit, 'outline': True},
+    # /obj/structure/figurehead, uncarved
+    'piece_F': {'layers': [('icons/obj/statue.dmi', 'tikistatue2', None)], 'turns': True, 'outline': True},
     # /obj/structure/bed/chair/wood/rowing_bench
     'piece_R': {'layers': [('icons/obj/bed_chair.dmi', 'bleacher', None)], 'turns': True, 'outline': True},
     # /obj/structure/hull_anchor/stone
@@ -230,6 +252,8 @@ SPRITES = {
     'piece_C': {'layers': [('icons/obj/storage.dmi', 'wood_crate', None)], 'outline': True},
     # The gangway gate in her gunwale, from the built railing sheet.
     'piece_Y': {'layers': [('icons/obj/railings_built.dmi', 'wood_gate', None)], 'turns': True},
+    # /obj/structure/multiz/ladder/up/placed (the foot of a stood-up ladder)
+    'piece_X': {'layers': [('icons/obj/stairs.dmi', 'ladderup_wood', None)], 'outline': True},
     # /obj/structure/bed/wood (wood tint on the bed overlay)
     'piece_B': {'layers': [('icons/obj/bed_chair.dmi', 'bed', WOOD)], 'outline': True},
     # /obj/structure/cellar_pump/steam
