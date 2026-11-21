@@ -398,19 +398,15 @@
 	icon_state = "random"
 	var/previous_s = ""
 
-// Cycles Manual, Random, then each combat stance (combat_stance.dm), back to Manual.
+// Random leaves any combat stance; choosing a stance leaves random (combat_stance.dm).
 /obj/screen/zone_sel_random/Click(location, control,params)
-	if (parentmob.targeted_organ == "random")
-		parentmob.targeted_organ = previous_s != "" ? previous_s : "chest"
-		parentmob.set_combat_stance(combat_stance_order[1])
-	else if (!parentmob.combat_stance_active())
+	if (parentmob.targeted_organ == "random" && previous_s != "")
+		parentmob.targeted_organ = previous_s
+	else
 		previous_s = parentmob.targeted_organ
 		parentmob.targeted_organ = "random"
-	else
-		var/index = combat_stance_order.Find(parentmob.combat_stance)
-		parentmob.set_combat_stance(index && index < combat_stance_order.len ? combat_stance_order[index + 1] : COMBAT_STANCE_MANUAL)
-	if (parentmob.HUDneed["damage zone"])
-		parentmob.HUDneed["damage zone"].update_icon()
+		if (parentmob.combat_stance_active())
+			parentmob.set_combat_stance(COMBAT_STANCE_MANUAL)
 	update_icon()
 	return TRUE
 
@@ -418,25 +414,11 @@
 	..()
 	update_icon()
 
-// Names the current mode in text across the button's foot, like a stance
-// selector: Random or the combat stance; Manual shows the plain button.
 /obj/screen/zone_sel_random/update_icon()
-	maptext = null
-	name = "random damage zone"
-	var/label = null
 	if (parentmob.targeted_organ == "random")
 		icon_state = "random_on"
-		label = "Random"
-	else if (parentmob.combat_stance_active())
-		icon_state = "random_on"
-		label = combat_stance_names[parentmob.combat_stance]
-		name = "combat stance: [label]"
 	else
 		icon_state = "random"
-	if (label)
-		maptext_width = 64
-		maptext_x = -16
-		maptext = "<span style='font-family:Small Fonts;font-size:6px;color:#ffffff;text-align:center;-dm-text-outline:1px #000000'>[label]</span>"
 //--------------------------------------------------RANDOM ZONE SELECT END---------------------------------------------------------
 /obj/screen/text
 	icon = null
@@ -951,6 +933,27 @@
 
 	else if (parentmob.tactic == "defend")
 		icon_state = "defend"
+
+// Combat stance button beside the tactic button (combat_stance.dm). Click
+// cycles Manual and each stance; the art names the stance (Fable 5.2).
+/obj/screen/combat_stance
+	name = "combat stance"
+	icon_state = "stance_manual"
+
+/obj/screen/combat_stance/New()
+	..()
+	update_icon()
+
+/obj/screen/combat_stance/Click()
+	var/list/order = list(COMBAT_STANCE_MANUAL) + combat_stance_order
+	var/index = order.Find(parentmob.combat_stance)
+	parentmob.set_combat_stance(index && index < order.len ? order[index + 1] : COMBAT_STANCE_MANUAL)
+	return TRUE
+
+/obj/screen/combat_stance/update_icon()
+	var/stance = valid_combat_stance(parentmob.combat_stance) ? parentmob.combat_stance : COMBAT_STANCE_MANUAL
+	icon_state = "stance_[stance]"
+	name = "combat stance: [combat_stance_names[stance]]"
 
 /obj/screen/mood
 	name = "mood"

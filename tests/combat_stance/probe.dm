@@ -95,6 +95,9 @@ var/combat_stance_runtime = null
 	combat_stance_assert(A.resolve_attack_zone(A, W) == "l_leg", "self_never_auto")
 	A.targeted_organ = "random"
 	combat_stance_assert((A.resolve_attack_zone(B, W) in combat_random_zones) && A.resolve_attack_zone(B, null, COMBAT_ATTACK_SHOVE) == "random", "random_toggle_kept")
+	A.set_combat_stance(COMBAT_STANCE_MEASURED, TRUE)
+	combat_stance_assert(A.targeted_organ != "random", "stance_leaves_random")
+	A.set_combat_stance(COMBAT_STANCE_AGGRESSIVE, TRUE)
 	A.targeted_organ = "chest"
 
 	// Aggressive goes for the head; a picked zone flashes nothing without a client.

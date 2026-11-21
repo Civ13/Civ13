@@ -317,6 +317,8 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 	if (!valid_combat_stance(stance))
 		return FALSE
 	combat_stance = stance
+	if (stance != COMBAT_STANCE_MANUAL && targeted_organ == "random")
+		leave_random_zone()
 	if (!silent)
 		to_chat(src, SPAN_WARNING("[combat_stance_names[stance]] stance. [combat_stance_blurbs[stance]]"))
 	update_combat_stance_button()
@@ -328,9 +330,20 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 		set_combat_stance(COMBAT_STANCE_MANUAL)
 
 /mob/proc/update_combat_stance_button()
-	if (HUDneed && HUDneed["random damage zone"])
-		var/obj/screen/B = HUDneed["random damage zone"]
-		B.update_icon()
+	if (!HUDneed)
+		return
+	for (var/key in list("combat stance", "random damage zone"))
+		var/obj/screen/B = HUDneed[key]
+		if (B)
+			B.update_icon()
+
+// A stance takes over from the random toggle: aim where the doll was before.
+/mob/proc/leave_random_zone()
+	var/obj/screen/zone_sel_random/B = HUDneed ? HUDneed["random damage zone"] : null
+	targeted_organ = istype(B) && B.previous_s ? B.previous_s : "chest"
+	if (HUDneed && HUDneed["damage zone"])
+		var/obj/screen/doll = HUDneed["damage zone"]
+		doll.update_icon()
 
 /mob/living/human/verb/choose_combat_stance()
 	set name = "Combat Stance"
@@ -342,12 +355,6 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 	var/choice = player_input(src, "How should your attacks choose where to strike?", "Combat Stance", combat_stance_names[combat_stance], "anything", options, TRUE)
 	if (!choice || QDELETED(src))
 		return
-	if (targeted_organ == "random")
-		var/obj/screen/zone_sel_random/B = HUDneed ? HUDneed["random damage zone"] : null
-		targeted_organ = istype(B) && B.previous_s ? B.previous_s : "chest"
-		if (HUDneed && HUDneed["damage zone"])
-			var/obj/screen/doll = HUDneed["damage zone"]
-			doll.update_icon()
 	set_combat_stance(options[choice])
 
 // One line for examine: a stance others can read and counter.

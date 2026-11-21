@@ -7,7 +7,9 @@ stances, and agent tools list the same stances as the game.
 """
 from pathlib import Path
 import re
+import struct
 import unittest
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -28,6 +30,21 @@ EXAMINE = read('code/game/mob/living/carbon/human/examine.dm')
 AGENT = read('code/modules/agent_control/agent_stance.dm')
 AUTOPILOT = read('tools/agent-control/autopilot.py')
 CATALOG = read('tools/agent-control/catalog.py')
+
+def dmi_description(path):
+    """The DMI metadata text, from its tEXt or zTXt "Description" chunk."""
+    data = path.read_bytes()
+    pos = 8
+    while pos < len(data):
+        length = struct.unpack('>I', data[pos:pos + 4])[0]
+        kind = data[pos + 4:pos + 8]
+        body = data[pos + 8:pos + 8 + length]
+        if kind in (b'tEXt', b'zTXt') and body.startswith(b'Description\0'):
+            rest = body[len(b'Description\0'):]
+            return (zlib.decompress(rest[1:]) if kind == b'zTXt' else rest).decode('utf-8')
+        pos += 12 + length
+    return ''
+
 
 STANCES = ['manual', 'measured', 'aggressive', 'disarming', 'low', 'guarded']
 
@@ -61,10 +78,23 @@ class CombatStanceSources(unittest.TestCase):
         self.assertEqual(HOTKEYS.count('H.combat_stance_doll_clicked()'), 7)
         self.assertEqual(SCREENS.count('overlays += combat_doll_flash_image('), 3)
 
-    def test_random_button_cycles_stances(self):
-        self.assertIn('parentmob.set_combat_stance(combat_stance_order[1])', SCREENS)
-        self.assertIn('label = combat_stance_names[parentmob.combat_stance]', SCREENS)
-        self.assertIn('label = "Random"', SCREENS)
+    def test_stance_button_beside_tactic(self):
+        self.assertIn('/obj/screen/combat_stance/Click()', SCREENS)
+        self.assertIn('icon_state = "stance_[stance]"', SCREENS)
+        # random leaves any stance, a stance leaves random
+        self.assertIn('if (parentmob.combat_stance_active())\n\t\t\tparentmob.set_combat_stance(COMBAT_STANCE_MANUAL)', SCREENS)
+        self.assertIn('leave_random_zone()', SOURCE)
+        huds = [read(p) for p in ('code/_onclick/hud/hud_civstyle.dm', 'code/_onclick/hud/hud_fofstyle.dm',
+                                  'code/_onclick/hud/hud_litewebstyle.dm', 'code/_onclick/hud/hud_newstyle.dm')]
+        for hud in huds:
+            self.assertIn('/obj/screen/combat_stance', hud)
+        self.assertEqual(read('code/datums/hud.dm').count('/obj/screen/combat_stance'), 5)
+
+    def test_every_hud_sheet_has_the_stance_art(self):
+        for sheet in ('1713Style', 'ConsoleStyle', 'FoFStyle', 'litewebStyle'):
+            text = dmi_description(ROOT / ('icons/mob/screen/%s.dmi' % sheet))
+            for stance in STANCES:
+                self.assertIn('state = "stance_%s"' % stance, text, sheet)
 
     def test_examine_shows_stance(self):
         self.assertIn('combat_stance_examine_line(T)', EXAMINE)
