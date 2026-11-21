@@ -71,3 +71,58 @@ it('shows no family block when no language of the player has relatives on this w
   render(<KnownLanguages {...props({ languages: [{ name: 'Common', prefix: ':c', description: 'A shared language.' }] })} />);
   expect(screen.queryByText('Language families')).toBeNull();
 });
+
+const saltmarsh = () => ({ name: 'Saltmarsh Kin', language: 'Latin', land: 'the Saltmarsh', lineage: [
+  { name: 'Hearthlanders', language: 'Latin', formed: 0, year: 0, nation: '', homeland: '', parents: [] },
+  { name: 'Saltmarsh Kin', language: 'Latin', formed: 1, year: 58800, nation: 'Iron Pact', homeland: 'the Saltmarsh', parents: ['Hearthlanders'] }],
+kin: [{ name: 'Tidewater Folk', language: 'Latin', formed: 1, year: 58790, nation: '', homeland: 'the Tidewater', parents: ['Hearthlanders'], relation: 'shares your roots' },
+  { name: 'Reed Children', language: 'Latin', formed: 1, year: 0, nation: '', homeland: '', parents: ['Saltmarsh Kin', 'Fjordfolk'], relation: 'grew from yours' }],
+raised_among: ['Fjordfolk'], welcomed_by: [] as string[] });
+
+it('shows the player\'s people with its lineage, related peoples and who raised them, without actions', () => {
+  const ui = props({ languages: [{ name: 'Latin', prefix: ':l', description: 'Mother tongue.' }], people: saltmarsh() });
+  const view = render(<KnownLanguages {...ui} />);
+  expect(screen.getByText('Your people', { selector: 'h2' })).toBeTruthy();
+  expect(view.container.textContent).toContain('Saltmarsh Kin - mother tongue Latin - born in the Saltmarsh');
+  const chain = Array.from(screen.getByRole('list', { name: 'Where the Saltmarsh Kin came from' }).querySelectorAll('li'));
+  expect(chain.map(row => row.textContent)).toEqual(['Hearthlanders - an old people', '└ Saltmarsh Kin Your people - formed in year 58800 among the Iron Pact']);
+  expect(chain.map(row => (row as HTMLElement).style.paddingLeft)).toEqual(['0px', '20px']);
+  expect(chain.map(row => row.className)).toEqual(['', 'lang-own']);
+  const kin = Array.from(screen.getByRole('list', { name: 'Related peoples' }).querySelectorAll('li')).map(row => row.textContent);
+  expect(kin).toEqual(['Tidewater Folk - shares your roots, formed in year 58790 in the Tidewater.', 'Reed Children - grew from yours, formed, a blend of Saltmarsh Kin and Fjordfolk.']);
+  expect(screen.getByText('Raised among: Fjordfolk')).toBeTruthy();
+  expect(screen.queryByText('Welcomed by:', { exact: false })).toBeNull();
+  expect(document.body.textContent).not.toMatch(/skin|members|\u2014/i);
+  expect(screen.queryAllByRole('button')).toHaveLength(0);
+  expect(ui.act).not.toHaveBeenCalled();
+});
+
+it('shows the welcomed line only when it has names and no chain for an old people on its own', () => {
+  render(<KnownLanguages {...props({ languages: [], people: { name: 'Hearthlanders', language: 'Latin', land: '', lineage: [{ name: 'Hearthlanders', language: 'Latin', formed: 0, year: 0, parents: [] }], kin: [], raised_among: [], welcomed_by: ['Fjordfolk', 'Iron Kin', 'Reed Children'] } })} />);
+  expect(screen.getByText('Welcomed by: Fjordfolk, Iron Kin and Reed Children')).toBeTruthy();
+  expect(screen.queryByText('Raised among:', { exact: false })).toBeNull();
+  expect(screen.queryByText('born in', { exact: false })).toBeNull();
+  expect(screen.queryAllByRole('list', { name: /came from|Related peoples/ })).toHaveLength(0);
+});
+
+it('shows no people block when the viewer has no people', () => {
+  render(<KnownLanguages {...props({ languages: [{ name: 'Common', prefix: ':c', description: 'A shared language.' }], people: null })} />);
+  expect(screen.queryByText('Your people')).toBeNull();
+  cleanup();
+  render(<KnownLanguages {...props({ languages: [{ name: 'Common', prefix: ':c', description: 'A shared language.' }] })} />);
+  expect(screen.queryByText('Your people')).toBeNull();
+});
+
+it('renders entity-encoded people names once, as inert text', () => {
+  const people = saltmarsh();
+  people.name = 'Salt &amp; Marsh &lt;b&gt;Kin&lt;/b&gt;'; people.land = 'Reed &amp;amp; Fen';
+  people.lineage[1].name = people.name; people.lineage[1].nation = 'Iron &amp; Pact';
+  people.kin[0].name = '&lt;img src=x onerror=alert(1)&gt;'; people.raised_among = ['Fjord &amp; folk'];
+  const view = render(<KnownLanguages {...props({ languages: [], people })} />);
+  const shown = view.container.textContent;
+  expect(shown).toContain('Salt & Marsh <b>Kin</b> - mother tongue Latin - born in Reed &amp; Fen');
+  expect(shown).toContain('among the Iron & Pact');
+  expect(shown).toContain('<img src=x onerror=alert(1)> - shares your roots');
+  expect(shown).toContain('Raised among: Fjord & folk');
+  expect(view.container.querySelector('img,b,script')).toBeNull();
+});

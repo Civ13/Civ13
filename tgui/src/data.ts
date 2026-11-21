@@ -47,7 +47,11 @@ export type SpawnMenuData = { query?: string; kind?: string; results?: SpawnMenu
 // A family is a root language and the daughters that grew out of it on this world; links say how much two members follow of each other.
 export type LanguageFamilyMember = { name?: string; parent?: string; nation?: string; era?: string; depth?: number; known?: Flag; learning?: Flag; mother?: Flag };
 export type LanguageFamily = { root?: string; members?: LanguageFamilyMember[]; links?: { a?: string; b?: string; percent?: number }[] };
-export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[]; families?: LanguageFamily[] };
+export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[]; families?: LanguageFamily[]; people?: PeopleFamily | null };
+// The viewer's own people: where it came from (lineage, root first, ending with their own people), the peoples related to it,
+// and the peoples they were raised among or welcomed by. formed is 0 for an old people; year is the calendar year or 0.
+export type PeopleRow = { name?: string; language?: string; formed?: Flag; year?: number; nation?: string; homeland?: string; parents?: string[]; relation?: string };
+export type PeopleFamily = { name?: string; language?: string; land?: string; lineage?: PeopleRow[]; kin?: PeopleRow[]; raised_among?: string[]; welcomed_by?: string[] };
 // Character setup: appearance, traits and personal settings.
 export type SetupTrait = { name?: string; cost?: number; desc?: string; note?: string; block?: string; taken?: Flag; conflicts?: string[] };
 export type SetupColor = { name?: string; hex?: string };
