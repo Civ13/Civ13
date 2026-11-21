@@ -2233,5 +2233,6 @@
 #include "code\modules\divine\repository.dm"
 #include "code\modules\divine\repository_ties.dm"
 #include "code\modules\divine\repository_tiers.dm"
+#include "code\modules\divine\repository_wards.dm"
 // Must stay last: global_init needs every other global initialized first.
 #include "code\global_init_last.dm"

@@ -10,6 +10,7 @@
   "full_fraction": 0.75,
   "neglect": {"low_fraction": 0.1, "low_days": 7, "empty_days": 30},
   "rite_range": 3,
+  "reach": {"personal_radius": 3, "shrine_radius": 7, "warning_fraction": 0.25},
   "seat_range": 40,
   "forms": [
     ["/obj/item/canvas/woven/tapestry", 2],
