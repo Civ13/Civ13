@@ -18,6 +18,8 @@
 	var/list/fuels = list() //accepted fuels (can be more than one)
 	var/fuelefficiency = 0 //fuel consumption on max power. Lower is better. The default value is per 1000 cc (liter)
 	var/enginesize = 1000 //in cubic centimeters (cc)
+	// Each start owns one fuel-consumption chain; callbacks from an earlier start stop (#6333).
+	var/tmp/run_generation = 0
 
 
 /obj/structure/engine/internal/bullet_act(var/obj/item/projectile/proj)
@@ -117,7 +119,10 @@
 					visible_message("[user] turns the [src] on.","You turn the [src] on.")
 					on = TRUE
 				playsound(loc, starting_snd, 35, FALSE, 3)
+				var/generation = ++run_generation
 				spawn(starting_snd_len)
+					if (generation != run_generation)
+						return // switched off and on again before this start finished
 					running_sound()
 					update_icon() //Having the update_icon here means that the icon for it being on doesn't start until after the spawn which is arguably a downside, maybe patchable
 					running()
@@ -155,9 +160,16 @@
 		else
 			currentpower = process_power_output()
 
+		var/generation = run_generation
 		spawn(10)
-			running()
+			if (on && generation == run_generation)
+				running()
 	return
+
+// Starts a fresh fuel-consumption chain, ending any earlier one.
+/obj/structure/engine/internal/proc/start_running()
+	run_generation++
+	running()
 
 // Driving a hull (naval/hull_drives.dm): pays for that many seconds at that
 // share of full power, on top of what idling takes. Returns 1 when paid; an

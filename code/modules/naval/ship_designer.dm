@@ -72,6 +72,7 @@ var/global/list/ship_designer_sprites = list(
 	"shipd_piece_Y_2.png" = 'icons/ship_designer/piece_Y_2.png',
 	"shipd_piece_Y_4.png" = 'icons/ship_designer/piece_Y_4.png',
 	"shipd_piece_Y_8.png" = 'icons/ship_designer/piece_Y_8.png',
+	"shipd_piece_X.png" = 'icons/ship_designer/piece_X.png',
 )
 
 // The names the window asks for: one picture for a floor or a fixed piece,
@@ -160,13 +161,43 @@ var/global/list/ship_designer_sprites = list(
 	for (var/x = 0, x < 5, x++)
 		for (var/y = 0, y < 2, y++)
 			cutter.set_upper(x, y, TRUE)
+	cutter.set_piece(1, 1, "X")
 	. += cutter
+	// A merchantman on three levels: a hold of crates amidships under her
+	// masts, and a cabin deck above her stern, each with its ladder.
+	var/datum/ship_draught/merchant = new
+	merchant.name = "merchantman"
+	for (var/x = 0, x < 5, x++)
+		for (var/y = 0, y < 12, y++)
+			merchant.set_floor(x, y, "w")
+	merchant.set_piece(2, 0, "T")
+	merchant.set_piece(2, 4, "M")
+	merchant.set_piece(2, 8, "M")
+	merchant.set_piece(2, 11, "A")
+	merchant.set_piece(1, 2, "X")
+	for (var/x = 0, x < 5, x++)
+		for (var/y = 0, y < 3, y++)
+			merchant.set_deck(1, x, y, TRUE)
+	merchant.set_deck_piece(1, 0, 0, "B")
+	merchant.set_deck_piece(1, 4, 0, "B")
+	merchant.set_deck_piece(1, 4, 2, "C")
+	for (var/x = 1, x < 4, x++)
+		for (var/y = 4, y < 10, y++)
+			merchant.set_deck(-1, x, y, TRUE)
+	merchant.set_deck_piece(-1, 1, 6, "X")
+	for (var/y = 4, y < 9, y++)
+		merchant.set_deck_piece(-1, 3, y, "C")
+	merchant.set_deck_piece(-1, 2, 9, "P")
+	. += merchant
 
-// The cells of a draught for the window, centred on the sheet's middle
-// column, which the mirror reflects about:
-// list(list(x, y, floor, piece, dir, upper), ...).
-/proc/ship_designer_cells(datum/ship_draught/D)
-	. = list()
+// A draught for the window, centred on the sheet's middle column, which the
+// mirror reflects about: list(cells, decks) where
+//   cells: list(list(x, y, floor, piece, dir, upper), ...) for her main deck
+//   decks: list(list(level, x, y, piece, dir), ...) for every other deck.
+/proc/ship_designer_layout(datum/ship_draught/D)
+	var/list/cells = list()
+	var/list/decks = list()
+	. = list(cells, decks)
 	var/list/B = D ? D.extent() : null
 	if (!B)
 		return
@@ -176,7 +207,13 @@ var/global/list/ship_designer_sprites = list(
 	for (var/key in D.cells)
 		var/list/C = D.cells[key]
 		var/list/xy = splittext(key, ",")
-		. += list(list(text2num(xy[1]) + ox, text2num(xy[2]) + oy, C[1], C[2] ? C[2] : "", C[3], C[4] ? 1 : 0))
+		cells += list(list(text2num(xy[1]) + ox, text2num(xy[2]) + oy, C[1], C[2] ? C[2] : "", C[3], C[4] ? 1 : 0))
+	for (var/level in D.decks)
+		var/list/L = D.decks[level]
+		for (var/key in L)
+			var/list/T = L[key]
+			var/list/xy = splittext(key, ",")
+			decks += list(list(text2num(level), text2num(xy[1]) + ox, text2num(xy[2]) + oy, T[1] ? T[1] : "", T[2]))
 
 /obj/item/ship_draught/proc/open_designer(mob/living/human/H)
 	if (!ship_designer_can_draw(H, src))
@@ -195,10 +232,18 @@ var/global/list/ship_designer_sprites = list(
 	// sheet), so the cells a check lights up are the window's own.
 	var/datum/ship_draught/shown = new
 	shown.name = D ? D.name : "ship"
-	for (var/list/C in ship_designer_cells(D))
+	var/list/layout = ship_designer_layout(D)
+	for (var/list/C in layout[1])
 		shown.set_floor(C[1], C[2], C[3])
 		shown.set_piece(C[1], C[2], length(C[4]) ? C[4] : null, C[5])
 		shown.set_upper(C[1], C[2], C[6])
+	// Lowest deck first, so each tile finds the one it rests on.
+	for (var/level in ship_draught_decks)
+		for (var/list/T in layout[2])
+			if (T[1] == text2num(level))
+				shown.set_deck(T[1], T[2], T[3], TRUE)
+	for (var/list/T in layout[2])
+		shown.set_deck_piece(T[1], T[2], T[3], length(T[4]) ? T[4] : null, T[5])
 	ship_designer_stats(H, shown)
 	qdel(shown)
 	if (D)
@@ -212,6 +257,7 @@ var/global/list/ship_designer_groups = list(
 	"Arms" = list("H", "Z", "L"),
 	"Cabin" = list("W", "D", "G", "V", "I"),
 	"Sides" = list("Y"),
+	"Between decks" = list("X"),
 )
 
 /proc/ship_designer_group(key)
@@ -223,21 +269,29 @@ var/global/list/ship_designer_groups = list(
 // The window is one page (ship_designer_page()) and one block of data: the
 // palette is built from PIECES and FLOORS, so the tables in ship_draught.dm
 // stay the only list of what a ship can be drawn with.
-//   PIECES: list(key, name, turns, palette group, helm)
+//   PIECES: list(key, name, turns, palette group, helm, may stand off the
+//           main deck, climbs to the deck above)
 //   FLOORS: list(key, name)
+//   DECKS: list(level, name, floor key) for every deck but the main one
 /proc/ship_designer_html(obj/item/ship_draught/S, datum/ship_draught/D)
 	var/list/pieces = list()
 	for (var/key in ship_draught_pieces)
 		var/list/P = ship_draught_pieces[key]
-		pieces += list(list(key, P["name"], P["turns"] ? 1 : 0, ship_designer_group(key), P["helm"] ? 1 : 0))
+		pieces += list(list(key, P["name"], P["turns"] ? 1 : 0, ship_designer_group(key), P["helm"] ? 1 : 0, P["decks"] ? 1 : 0, P["ladder"] ? 1 : 0))
 	var/list/floors = list()
 	for (var/key in ship_draught_floors)
 		var/list/F = ship_draught_floors[key]
 		floors += list(list(key, F["name"]))
+	var/list/decks = list()
+	for (var/level in ship_draught_decks)
+		var/list/L = ship_draught_decks[level]
+		decks += list(list(text2num(level), L["name"], L["floor"]))
 	var/list/examples = list()
 	for (var/datum/ship_draught/E in ship_draught_examples())
-		examples += list(list(E.name, ship_designer_cells(E)))
+		var/list/layout = ship_designer_layout(E)
+		examples += list(list(E.name, layout[1], layout[2]))
 		qdel(E)
+	var/list/start = ship_designer_layout(D)
 	var/list/data = list(
 		"N" = SHIP_DRAUGHT_SIDE,
 		"SMALL" = HULL_SMALL_MAX_TILES,
@@ -246,8 +300,10 @@ var/global/list/ship_designer_groups = list(
 		"PART" = SHIP_DESIGNER_PART,
 		"PIECES" = pieces,
 		"FLOORS" = floors,
+		"DECKS" = decks,
 		"EXAMPLES" = examples,
-		"START" = ship_designer_cells(D),
+		"START" = start[1],
+		"START_DECKS" = start[2],
 		"NAME" = D ? D.name : "ship",
 		"HELP" = design_part_help_for("ship"),
 	)
@@ -281,7 +337,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .sp{flex:1 1 auto}.dim{color:var(--dim)}
 #main{flex:1 1 auto;min-height:0;display:flex;gap:12px;padding:10px 12px}
 #sheetcol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
-#sheetbar{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+#deckbar,#sheetbar{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+#deckbar button,#sheetbar button{white-space:nowrap}
+#deckkey{flex:1 1 auto;min-width:0;text-align:right;font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k{display:inline-block;width:12px;height:12px;vertical-align:-2px;margin:0 4px 0 10px}
+.k.g{background:#c3b18c;border:1px dashed #7a6547}.k.r{background:#7d5a35;border:2px solid var(--hi);border-radius:50%}
+.k.h{background:repeating-linear-gradient(135deg,#8f633a 0,#8f633a 2px,var(--hi) 2px,var(--hi) 3px)}
 #frame{flex:1 1 auto;min-height:0;position:relative;border:2px solid var(--line);background:#1b1611;overflow:hidden}
 #c{position:absolute;left:0;top:0;cursor:crosshair}
 .edge{position:absolute;font:bold 10px Verdana,sans-serif;letter-spacing:2px;color:#f3e6c4;background:rgba(33,28,22,0.72);padding:2px 6px;border-radius:2px;pointer-events:none}
@@ -332,6 +393,7 @@ table{border-collapse:collapse;width:100%}td{padding:4px 0;border-bottom:1px sol
 </style></head><body>
 <div id='top'><h1>Ship's draught</h1><input id='nm' maxlength='40' style='width:210px' title='Her name'><span id='st'></span><span class='sp'></span><span class='dim'>Start from</span><select id='ex' title='Ready-made draughts to start from'><option value=''>a ready-made ship...</option></select><button class='primary' id='save'>Save to the sheet</button></div>
 <div id='main'><div id='sheetcol'>
+<div id='deckbar'><span class='dim'>Deck</span><span class='seg' id='levels'></span><span id='deckkey'></span></div>
 <div id='sheetbar'><span class='dim'>Zoom</span><span class='seg'><button id='z_sheet'>Whole sheet</button><button id='z_ship'>Fit ship</button><button id='z_in' title='Closer (mouse wheel)'>+</button><button id='z_out' title='Further (mouse wheel)'>-</button></span><span class='sp'></span><button id='b_undo' title='Undo'>Undo <kbd>Ctrl Z</kbd></button><button id='b_redo' title='Redo (Ctrl Y)'>Redo</button><button id='b_clear' title='Wipe the sheet (Undo brings it back)'>Clear</button></div>
 <div id='frame'><canvas id='c'></canvas><div class='edge' style='left:50%;top:5px;transform:translateX(-50%)'>BOW</div><div class='edge' style='left:50%;bottom:5px;transform:translateX(-50%)'>STERN</div><div class='edge' style='left:5px;top:50%;transform:translateY(-50%)'>PORT</div><div class='edge' style='right:5px;top:50%;transform:translateY(-50%)'>STARBOARD</div></div>
 <div id='hover'></div><div id='part'></div></div>
@@ -344,10 +406,10 @@ table{border-collapse:collapse;width:100%}td{padding:4px 0;border-bottom:1px sol
 <div class='sec'><h2>Her figures</h2><div class='in' id='fig'><span class='dim'>Reckoning...</span></div></div>
 </div></div>
 <script>var DATA=@@DATA@@;
-var N=DATA.N,SMALL=DATA.SMALL,MID=DATA.MID,REF=DATA.REF,PART=DATA.PART,PIECES=DATA.PIECES,FLOORS=DATA.FLOORS,EXAMPLES=DATA.EXAMPLES;
+var N=DATA.N,SMALL=DATA.SMALL,MID=DATA.MID,REF=DATA.REF,PART=DATA.PART,PIECES=DATA.PIECES,FLOORS=DATA.FLOORS,EXAMPLES=DATA.EXAMPLES,DECKS=DATA.DECKS;
 function $(i){return document.getElementById(i);}
 var cv=$('c'),g=cv.getContext('2d'),frame=$('frame');
-var cells={},t=FLOORS[0][0],fd=1,box=false,mirror=false,undos=[],redos=[],down=null,pan=null,hov=null,before=null;
+var cells={},decks={},lv=0,t=FLOORS[0][0],fd=1,box=false,mirror=false,undos=[],redos=[],down=null,pan=null,hov=null,before=null;
 var parts=null,busy=0,timer=null,IMG={},Z=16,vx=0,vy=0,fit='ship',rev=0,savedRev=0,sendRev=0,note='',noteBad=false;
 var ZOOMS=[8,12,16,24,32,48],INK='#2a1a0c',GOLD='#ffd985',PAPER='#d8c8a2';
 var NAMES={},FNAMES={},ICONS=[],HELP=DATA.HELP||{};
@@ -355,12 +417,23 @@ var CHK=[],lit=-1,pin=-1,peek=null;
 var LEVEL={error:['Fix','#ff6f3c'],warning:['Warning','#ffd23f'],note:['Note','#fff6dc']};
 for(var i=0;i<PIECES.length;i++)NAMES[PIECES[i][0]]=PIECES[i];
 for(var i=0;i<FLOORS.length;i++)FNAMES[FLOORS[i][0]]=FLOORS[i][1];
+var LV={0:['main deck','']},TOP=0;for(var i=0;i<DECKS.length;i++){LV[DECKS[i][0]]=[DECKS[i][1],DECKS[i][2]];TOP=Math.max(TOP,DECKS[i][0]);}
 var FACING={1:'the bow',2:'the stern',4:'starboard',8:'port'};
 var WASH={w:'rgba(150,100,56,0.5)',s:'rgba(150,156,164,0.45)'},FLAT={w:'#9a6a3a',s:'#8a9098'};
 function esc(s){return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function cap(s){return s.charAt(0).toUpperCase()+s.substring(1);}
 function key(x,y){return x+','+y;}
-function load(list){cells={};for(var i=0;i<list.length;i++){var c=list[i];cells[key(c[0],c[1])]=[c[2],c[3],c[4],c[5]];}}
+function load(list,dl){cells={};decks={};var i,c;for(i=0;i<list.length;i++){c=list[i];cells[key(c[0],c[1])]=[c[2],c[3],c[4],0];if(c[5])deckOf(1)[key(c[0],c[1])]=['',1];}
+dl=dl||[];for(i=0;i<dl.length;i++){c=dl[i];deckOf(c[0])[key(c[1],c[2])]=[c[3],c[4]];}}
+// ---- Her other decks: decks[level][key] = [piece, dir] ----
+function deckOf(l){if(!decks[l])decks[l]={};return decks[l];}
+function dk(l,k){return decks[l]?decks[l][k]:null;}
+function under(l){return l>1?l-1:0;}
+function tileAt(l,k){return l?dk(l,k):cells[k];}
+function pieceOf(l,c){return c?(l?c[0]:c[1]):'';}
+function dirOf(l,c){return l?c[1]:c[2];}
+function takeUp(l,k){if(decks[l])delete decks[l][k];if(l>0&&LV[l+1])takeUp(l+1,k);}
+function allowed(k,l){var P=NAMES[k];if(!P)return true;if(!l)return true;return P[5]&&!(P[6]&&!LV[l+1]);}
 function shown(i){return i&&i.complete&&i.naturalWidth>0;}
 function pic(n){if(!IMG[n]){var i=new Image();i.onload=function(){draw();icons();};i.src='shipd_'+n+'.png';IMG[n]=i;}return IMG[n];}
 function pieceName(k,d){return 'piece_'+k+(NAMES[k]&&NAMES[k][2]?'_'+d:'');}
@@ -392,24 +465,45 @@ function mirrorDir(d){return d==4?8:(d==8?4:d);}
 function mirrorX(x){return 2*MID-x;}
 function onSheet(x,y){return x>=0&&y>=0&&x<N&&y<N;}
 function ghost(x,y,d){if(!onSheet(x,y))return;var px=sx(x),py=sy(y),c=cells[key(x,y)],ok=true;g.globalAlpha=0.7;
-if(FNAMES[t])floorAt(g,t,px,py,Z);else if(t=='u'){if(c)hatch(g,px,py,Z);else ok=false;}else if(t!='x'){if(c)pieceAt(g,t,d,px,py,Z);else ok=false;}
+if(lv){c=dk(lv,key(x,y));if(t=='u'){if(tileAt(under(lv),key(x,y)))floorAt(g,LV[lv][1],px,py,Z);else ok=false;}else if(t!='x'){if(c)pieceAt(g,t,d,px,py,Z);else ok=false;}else if(!c)ok=false;}
+else if(FNAMES[t])floorAt(g,t,px,py,Z);else if(t=='u'){if(c)hatch(g,px,py,Z);else ok=false;}else if(t!='x'){if(c)pieceAt(g,t,d,px,py,Z);else ok=false;}
 g.globalAlpha=1;g.lineWidth=2;g.strokeStyle=ok&&t!='x'?GOLD:'#c0492b';g.strokeRect(px+1,py+1,Z-2,Z-2);
 if(t=='x'||!ok){g.beginPath();g.moveTo(px+4,py+4);g.lineTo(px+Z-4,py+Z-4);g.moveTo(px+Z-4,py+4);g.lineTo(px+4,py+Z-4);g.stroke();}}
+function outline(set,ink){var k,p,x,y,px,py;g.strokeStyle=ink;g.lineWidth=Z>=16?2:1;g.beginPath();
+for(k in set){p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
+if(!set[key(x+1,y)]){g.moveTo(px+Z,py);g.lineTo(px+Z,py+Z);}if(!set[key(x-1,y)]){g.moveTo(px,py);g.lineTo(px,py+Z);}
+if(!set[key(x,y+1)]){g.moveTo(px,py);g.lineTo(px+Z,py);}if(!set[key(x,y-1)]){g.moveTo(px,py+Z);g.lineTo(px+Z,py+Z);}}
+g.stroke();}
+// A deck off her main deck. The rest of her is only a flat wash with a
+// dashed line round it, so nothing but the deck in hand is drawn as planks
+// or plate. A deck above casts a shadow on what it rests on, her hold is
+// sunk under an inner shadow, and the head of every ladder climbing to the
+// deck is ringed.
+function wash(set,a){var k,p;g.fillStyle='rgba(74,52,28,'+a+')';for(k in set){p=k.split(',');g.fillRect(sx(+p[0]),sy(+p[1]),Z,Z);}}
+function drawDeck(){var k,c,p,x,y,px,py,base=under(lv),set=decks[lv]||{},below=lv>0?lv-1:0,f=LV[lv][1],o=Math.max(2,Math.round(Z/8)),dash=[Math.max(3,Z/4),Math.max(2,Z/6)];
+wash(cells,0.16);g.setLineDash(dash);outline(cells,'rgba(42,26,12,0.55)');
+if(base){wash(decks[base]||{},0.2);outline(decks[base]||{},'rgba(42,26,12,0.7)');}
+g.setLineDash([]);
+if(lv>0){g.fillStyle='rgba(26,16,8,0.4)';for(k in set){p=k.split(',');g.fillRect(sx(+p[0])+o,sy(+p[1])+o,Z,Z);}}
+for(k in set){c=set[k];p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);floorAt(g,f,px,py,Z);
+if(lv<0){g.fillStyle='rgba(16,10,5,0.38)';if(!set[key(x,y+1)])g.fillRect(px,py,Z,o);if(!set[key(x-1,y)])g.fillRect(px,py,o,Z);}
+if(c[0]){pieceAt(g,c[0],c[1],px,py,Z);if(turns(c[0]))arrowAt(g,c[1],px,py,Z);}
+if(lv>0&&pieceOf(below,tileAt(below,k))=='X')headAt(g,px,py,Z);}
+outline(set,INK);}
+// The head of a ladder from the deck below: a gold ring, dark under bright.
+function headAt(c,px,py,k){var w=Math.max(2,k/10),r=k/2-w-1;c.beginPath();c.arc(px+k/2,py+k/2,r,0,Math.PI*2);c.strokeStyle='rgba(20,12,6,0.85)';c.lineWidth=w+2;c.stroke();c.strokeStyle=GOLD;c.lineWidth=w;c.stroke();}
 function boxOutline(x0,y0,x1,y1){g.lineWidth=2;g.strokeStyle=GOLD;g.strokeRect(sx(Math.min(x0,x1))+1,sy(Math.max(y0,y1))+1,(Math.abs(x1-x0)+1)*Z-2,(Math.abs(y1-y0)+1)*Z-2);}
 function draw(){var W=cv.width,H=cv.height,S=N*Z,ox=-vx,oy=-vy;g.setLineDash([]);g.globalAlpha=1;
 g.fillStyle='#1b1611';g.fillRect(0,0,W,H);g.fillStyle=PAPER;g.fillRect(ox,oy,S,S);g.imageSmoothingEnabled=Z%32!=0;
 g.lineWidth=1;for(var i=0;i<=N;i++){g.strokeStyle=(i-MID)%5==0?'rgba(110,86,50,0.5)':'rgba(110,86,50,0.25)';
 g.beginPath();g.moveTo(ox+i*Z+0.5,oy);g.lineTo(ox+i*Z+0.5,oy+S);g.stroke();g.beginPath();g.moveTo(ox,oy+i*Z+0.5);g.lineTo(ox+S,oy+i*Z+0.5);g.stroke();}
 var k,c,p,x,y,px,py;
+if(lv){drawDeck();}else{
 for(k in cells){c=cells[k];p=k.split(',');px=sx(+p[0]);py=sy(+p[1]);if(px+Z<0||py+Z<0||px>W||py>H)continue;
-floorAt(g,c[0],px,py,Z);if(c[1]){pieceAt(g,c[1],c[2],px,py,Z);if(turns(c[1]))arrowAt(g,c[2],px,py,Z);}if(c[3])hatch(g,px,py,Z);}
-g.strokeStyle=INK;g.lineWidth=Z>=16?2:1;g.beginPath();
-for(k in cells){p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
-if(!cells[key(x+1,y)]){g.moveTo(px+Z,py);g.lineTo(px+Z,py+Z);}if(!cells[key(x-1,y)]){g.moveTo(px,py);g.lineTo(px,py+Z);}
-if(!cells[key(x,y+1)]){g.moveTo(px,py);g.lineTo(px+Z,py);}if(!cells[key(x,y-1)]){g.moveTo(px,py+Z);g.lineTo(px+Z,py+Z);}}
-g.stroke();
+floorAt(g,c[0],px,py,Z);if(c[1]){pieceAt(g,c[1],c[2],px,py,Z);if(turns(c[1]))arrowAt(g,c[2],px,py,Z);}if(dk(1,k))hatch(g,px,py,Z);if(pieceOf(-1,dk(-1,k))=='X')headAt(g,px,py,Z);}
+outline(cells,INK);}
 var nc=0;for(k in cells)nc++;
-if(nc>SMALL){g.strokeStyle='#e0b25c';g.lineWidth=Math.max(2,Math.round(Z/6));var r=g.lineWidth/2+1;g.beginPath();
+if(!lv&&nc>SMALL){g.strokeStyle='#e0b25c';g.lineWidth=Math.max(2,Math.round(Z/6));var r=g.lineWidth/2+1;g.beginPath();
 for(k in cells){c=cells[k];if('WDGVI'.indexOf(c[1]||'-')>=0)continue;p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
 if(!cells[key(x+1,y)]&&!(c[1]=='Y'&&c[2]==4)){g.moveTo(px+Z-r,py);g.lineTo(px+Z-r,py+Z);}if(!cells[key(x-1,y)]&&!(c[1]=='Y'&&c[2]==8)){g.moveTo(px+r,py);g.lineTo(px+r,py+Z);}
 if(!cells[key(x,y+1)]&&!(c[1]=='Y'&&c[2]==1)){g.moveTo(px,py+r);g.lineTo(px+Z,py+r);}if(!cells[key(x,y-1)]&&!(c[1]=='Y'&&c[2]==2)){g.moveTo(px,py+Z-r);g.lineTo(px+Z,py+Z-r);}}
@@ -422,7 +516,7 @@ ghost(hov[0],hov[1],fd);if(mirror&&mirrorX(hov[0])!=hov[0])ghost(mirrorX(hov[0])
 // The tiles of the finding pointed at (or kept): a wash of its colour and a
 // line round them, dark under bright so it shows on paper, plank and plate.
 function litCheck(){var i=lit>=0?lit:pin;return i>=0&&CHK[i]?CHK[i]:null;}
-function lightCells(){var f=litCheck();if(!f||!f.cells||!f.cells.length)return;
+function lightCells(){var f=litCheck();if(!f||!f.cells||!f.cells.length||(f.deck||0)!=lv)return;
 var S={},i,p,x,y,px,py,col=(LEVEL[f.level]||LEVEL.note)[1],w=Z>=24?3:2;for(i=0;i<f.cells.length;i++)S[f.cells[i]]=1;
 g.globalAlpha=0.3;g.fillStyle=col;for(i in S){p=i.split(',');g.fillRect(sx(+p[0]),sy(+p[1]),Z,Z);}g.globalAlpha=1;
 g.beginPath();for(i in S){p=i.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
@@ -433,26 +527,36 @@ g.lineCap='square';g.strokeStyle='rgba(20,12,6,0.9)';g.lineWidth=w+3;g.stroke();
 // ---- The palette ----
 function paintIcon(I){var c=I[0].getContext('2d'),k=I[1];c.imageSmoothingEnabled=false;c.clearRect(0,0,32,32);
 if(FNAMES[k]){floorAt(c,k,0,0,32);return;}
-if(k=='u'){floorAt(c,FLOORS[0][0],0,0,32);hatch(c,0,0,32);return;}
+if(k=='u'){floorAt(c,lv?LV[lv][1]:FLOORS[0][0],0,0,32);if(!lv)hatch(c,0,0,32);return;}
 if(k=='x'){c.fillStyle=PAPER;c.fillRect(0,0,32,32);c.strokeStyle='#c0492b';c.lineWidth=4;c.beginPath();c.moveTo(8,8);c.lineTo(24,24);c.moveTo(24,8);c.lineTo(8,24);c.stroke();return;}
 c.fillStyle='#1b1611';c.fillRect(0,0,32,32);pieceAt(c,k,turns(k)?fd:1,0,0,32);}
 function icons(){for(var i=0;i<ICONS.length;i++)paintIcon(ICONS[i]);var c=$('pp');if(c)paintIcon([c,c.k]);}
 function tile(into,k,name,tip){var b=document.createElement('button'),c=document.createElement('canvas');b.className='tile';b.id='t_'+k;b.title=tip;c.width=32;c.height=32;
 b.appendChild(c);b.setAttribute('aria-label',name);b.onclick=function(){tool(k);};b.onmouseenter=b.onfocus=function(){peek=k;part();};b.onmouseleave=b.onblur=function(){if(peek==k){peek=null;part();}};into.appendChild(b);ICONS.push([c,k]);}
 function group(name){var w=document.createElement('div'),h=document.createElement('div'),d=document.createElement('div');h.className='grp';h.appendChild(document.createTextNode(name));d.className='pal';w.appendChild(h);w.appendChild(d);$('pal').appendChild(w);return d;}
-function palette(){var hull=group('Hull'),G={},i;
-for(i=0;i<FLOORS.length;i++)tile(hull,FLOORS[i][0],cap(FLOORS[i][1]),'Lay '+FLOORS[i][1]);
-tile(hull,'u','Deck above','A deck on the level above this tile. Right-click takes it off.');tile(hull,'x','Erase','Take the whole tile off the sheet');
-for(i=0;i<PIECES.length;i++){var P=PIECES[i];if(!G[P[3]])G[P[3]]=group(P[3]);tile(G[P[3]],P[0],cap(P[1]),cap(P[1])+(P[2]?' (turn it with R)':''));}}
+function palette(){$('pal').innerHTML='';ICONS=[];var hull=group(lv?cap(LV[lv][0]):'Hull'),G={},i;
+if(lv){tile(hull,'u',partName('u'),'A tile of '+LV[lv][0]+', over a tile of the '+LV[under(lv)][0]+'. Right-click takes it up.');tile(hull,'x','Erase','Take this tile of '+LV[lv][0]+' up');}
+else{for(i=0;i<FLOORS.length;i++)tile(hull,FLOORS[i][0],cap(FLOORS[i][1]),'Lay '+FLOORS[i][1]);
+tile(hull,'u','Deck above','A deck on the level above this tile. Right-click takes it off.');tile(hull,'x','Erase','Take the whole tile off the sheet, with every deck on it');}
+for(i=0;i<PIECES.length;i++){var P=PIECES[i];if(!allowed(P[0],lv))continue;if(!G[P[3]])G[P[3]]=group(P[3]);tile(G[P[3]],P[0],cap(P[1]),cap(P[1])+(P[2]?' (turn it with R)':'')+(P[6]?': stands under a clear tile of the deck above':''));}
+icons();}
+function levels(){var s=$('levels'),order=[],i,l;s.innerHTML='';for(l in LV)order.push(+l);order.sort(function(a,b){return b-a;});
+for(i=0;i<order.length;i++){l=order[i];var b=document.createElement('button');b.id='l_'+l;b.title=l==0?'Her main deck: the hull she floats on':(l<0?'Her '+LV[l][0]+', under her main deck':'Her '+LV[l][0]+', resting on her '+LV[under(l)][0]);b.appendChild(document.createTextNode(cap(LV[l][0])));
+b.onclick=(function(n){return function(){level(n);};})(l);s.appendChild(b);}}
+// What the marks on the sheet mean on the deck in view, beside the switcher.
+function deckKey(){var h;if(!lv)h=(LV[1]?'<i class=\'k h\'></i>'+esc(LV[1][0])+' over it':'')+(LV[-1]?'<i class=\'k r\'></i>ladder up from the '+esc(LV[-1][0]):'');
+else h='<i class=\'k g\'></i>'+(lv<0?'her main deck, overhead':'the rest of her, beneath')+(lv>0?'<i class=\'k r\'></i>head of a ladder':'');$('deckkey').innerHTML=h;}
+function level(n){if(lv==n)return;lv=n;if(t!='x'&&t!='u'&&(FNAMES[t]?lv:!allowed(t,lv)))t=lv?'u':FLOORS[0][0];palette();deckKey();mark();if(typeof part=='function')part();tell();draw();}
 function mark(){var b=document.getElementsByTagName('button'),i,id;for(i=0;i<b.length;i++){id=b[i].id;
-if(id.indexOf('t_')==0)b[i].className=id=='t_'+t?'tile on':'tile';if(id.indexOf('f_')==0)b[i].className=id=='f_'+fd?'on':'';}
+if(id.indexOf('t_')==0)b[i].className=id=='t_'+t?'tile on':'tile';if(id.indexOf('f_')==0)b[i].className=id=='f_'+fd?'on':'';if(id.indexOf('l_')==0)b[i].className=id=='l_'+lv?'on':'';}
 $('m_box').className=box?'on':'';$('m_free').className=box?'':'on';$('m_on').className=mirror?'on':'';$('m_off').className=mirror?'':'on';
 $('z_sheet').className=fit=='sheet'?'on':'';$('z_ship').className=fit=='ship'?'on':'';$('facerow').className=turns(t)?'row':'row off';}
 function tool(x){t=x;mark();part();draw();}
 // The Part panel: the piece of a lit finding, else the palette picture the
 // pointer is on, else the picked tool.
-function partName(k){return FNAMES[k]?cap(FNAMES[k]):(k=='u'?'Deck above':(k=='x'?'Erase':(NAMES[k]?cap(NAMES[k][1]):k)));}
+function partName(k){return FNAMES[k]?cap(FNAMES[k]):(k=='u'?(lv?cap(LV[lv][0])+' tile':'Deck above'):(k=='x'?'Erase':(NAMES[k]?cap(NAMES[k][1]):k)));}
 function part(){var f=litCheck(),k=f&&f.part?f.part:(peek||t),H=HELP[k],L=[['what','What'],['use','Use'],['how','How']],i;
+if(lv&&k=='x')H={what:'The eraser.',use:'Takes up one tile of her '+LV[lv][0]+' and what stands on it'+(lv>0&&LV[lv+1]?', with any deck resting on that tile':'')+'. Her main deck stays as drawn.',how:'Click or drag over tiles. Undo brings them back.'};
 var h='<canvas id=\'pp\' width=\'32\' height=\'32\'></canvas><div class=\'pb\'><div class=\'pn\'>'+esc(partName(k))+'<span>'+(k==t?'picked to draw with'+(turns(k)?' &middot; R turns it':''):(f&&f.part?'named by the check':'click to pick it'))+'</span></div>';
 if(H)for(i=0;i<L.length;i++)if(H[L[i][0]])h+='<div class=\'pr\'><i>'+L[i][1]+'</i><span>'+esc(H[L[i][0]])+'</span></div>';
 $('part').innerHTML=h+'</div>';var c=$('pp');c.k=k;paintIcon([c,k]);}
@@ -460,25 +564,33 @@ function face(d){fd=d;icons();mark();draw();}
 function turn(){face({1:4,4:2,2:8,8:1}[fd]);}
 
 // ---- Changing the drawing ----
-function apply(x,y,alt,d){if(!onSheet(x,y))return;var k=key(x,y),c=cells[k];
-if(alt){if(c){if(t=='u')c[3]=0;else c[1]='';}return;}
+function apply(x,y,alt,d){if(!onSheet(x,y))return;var k=key(x,y),c=cells[k],l;
+if(lv){c=dk(lv,k);if(alt||t=='x'){if(c){if(t=='u'||t=='x')takeUp(lv,k);else c[0]='';}return;}
+if(t=='u'){if(!c&&tileAt(under(lv),k))deckOf(lv)[k]=['',1];return;}
+if(c&&allowed(t,lv)){c[0]=t;c[1]=d;}return;}
+if(alt){if(c){if(t=='u')takeUp(1,k);else c[1]='';}return;}
 if(FNAMES[t]){if(c)c[0]=t;else cells[k]=[t,'',1,0];return;}
-if(t=='x'){delete cells[k];return;}
+if(t=='x'){delete cells[k];for(l in decks)delete decks[l][k];return;}
 if(!c)return;
-if(t=='u'){c[3]=1;return;}
+if(t=='u'){if(!dk(1,k))deckOf(1)[k]=['',1];return;}
 c[1]=t;c[2]=d;}
 function at(x,y,alt){apply(x,y,alt,fd);var m=mirrorX(x);if(mirror&&m!=x)apply(m,y,alt,mirrorDir(fd));}
-function begin(){before=JSON.stringify(cells);}
-function commit(){if(before===null)return;var b=before;before=null;if(b==JSON.stringify(cells))return;undos.push(b);if(undos.length>80)undos.shift();redos=[];changed();}
-function undo(){if(!undos.length)return;redos.push(JSON.stringify(cells));cells=JSON.parse(undos.pop());draw();changed();}
-function redo(){if(!redos.length)return;undos.push(JSON.stringify(cells));cells=JSON.parse(redos.pop());draw();changed();}
-function clearAll(){begin();cells={};commit();draw();}
-function loadExample(){var v=$('ex').value;if(v==='')return;begin();var e=EXAMPLES[parseInt(v,10)];load(e[1]);$('nm').value=e[0];$('ex').value='';commit();setFit('ship');}
+function snap(){return JSON.stringify([cells,decks]);}
+function restore(s){var a=JSON.parse(s);cells=a[0];decks=a[1];}
+function begin(){before=snap();}
+function commit(){if(before===null)return;var b=before;before=null;if(b==snap())return;undos.push(b);if(undos.length>80)undos.shift();redos=[];changed();}
+function undo(){if(!undos.length)return;redos.push(snap());restore(undos.pop());draw();changed();}
+function redo(){if(!redos.length)return;undos.push(snap());restore(redos.pop());draw();changed();}
+function clearAll(){begin();cells={};decks={};commit();draw();}
+function loadExample(){var v=$('ex').value;if(v==='')return;begin();var e=EXAMPLES[parseInt(v,10)];load(e[1],e[2]);$('nm').value=e[0];$('ex').value='';commit();setFit('ship');}
 function pos(e){var r=cv.getBoundingClientRect(),px=(e.clientX-r.left)*cv.width/r.width,py=(e.clientY-r.top)*cv.height/r.height;return [Math.floor((px+vx)/Z),N-1-Math.floor((py+vy)/Z),px,py];}
 function tell(){var h=$('hover');if(!hov||!onSheet(hov[0],hov[1])){h.innerHTML='Click or drag to draw. Right-click takes a fitting off. The wheel zooms; drag with the middle button to move the sheet.';return;}
-var c=cells[key(hov[0],hov[1])];if(!c){h.innerHTML=NAMES[t]||t=='u'?'Bare sheet: lay a floor here first.':'Bare sheet.';return;}
+var hk=key(hov[0],hov[1]),c=cells[hk];
+if(lv){var d=dk(lv,hk);if(!d){h.innerHTML=tileAt(under(lv),hk)?'No '+esc(LV[lv][0])+' here: lay deck to draw on it.':'Nothing below to carry '+esc(LV[lv][0])+' here.';return;}
+h.innerHTML=(d[0]&&NAMES[d[0]]?'<b>'+esc(cap(NAMES[d[0]][1]))+'</b>'+(turns(d[0])?' facing '+FACING[d[1]]:'')+' on ':'')+'<b>'+esc(LV[lv][0])+'</b>';return;}
+if(!c){h.innerHTML=NAMES[t]||t=='u'?'Bare sheet: lay a floor here first.':'Bare sheet.';return;}
 var s='';if(c[1]&&NAMES[c[1]]){s='<b>'+esc(cap(NAMES[c[1]][1]))+'</b>'+(turns(c[1])?' facing '+FACING[c[2]]:'')+' on ';}
-s+='<b>'+esc(s?FNAMES[c[0]]:cap(FNAMES[c[0]]||'floor'))+'</b>';if(c[3])s+=' &middot; deck above';h.innerHTML=s;}
+s+='<b>'+esc(s?FNAMES[c[0]]:cap(FNAMES[c[0]]||'floor'))+'</b>';if(dk(1,hk))s+=' &middot; deck above';if(dk(-1,hk))s+=' &middot; hold below';h.innerHTML=s;}
 cv.oncontextmenu=function(){return false;};
 cv.onmousedown=function(e){var p=pos(e);if(e.button==1){pan=[e.clientX,e.clientY,vx,vy];e.preventDefault();return;}
 begin();down=[p[0],p[1],e.button==2,key(p[0],p[1])];hov=p;if(!box)at(p[0],p[1],down[2]);draw();};
@@ -498,7 +610,9 @@ else if(k=='r'&&!e.ctrlKey){turn();}};
 // ---- Talking to the server: it reckons every figure ----
 function status(){var s=$('st');if(note){s.className=noteBad?'bad':'';s.innerHTML=esc(note);}else if(rev!=savedRev){s.className='dirty';s.innerHTML='&#9679; Unsaved changes';}else{s.className='';s.innerHTML='';}}
 function say(s,bad){note=s;noteBad=!!bad;status();}
-function code(){var out=[];for(var k in cells){var c=cells[k];out.push(k+','+c[0]+','+(c[1]||'-')+','+c[2]+','+(c[3]?1:0));}return 'C13SHIP/1/ship/'+out.join(';');}
+function code(){var out=[],more=[],plain=true,k,l,c;for(k in cells){c=cells[k];out.push(k+','+c[0]+','+(c[1]||'-')+','+c[2]+','+(dk(1,k)?1:0));}
+for(l in decks)for(k in decks[l]){c=decks[l][k];more.push(l+','+k+','+(c[0]||'-')+','+c[1]);if(l!='1'||c[0])plain=false;}
+return plain?'C13SHIP/1/ship/'+out.join(';'):'C13SHIP/2/ship/'+out.join(';')+'/'+more.join(';');}
 function go(q){window.location='byond://?src='+REF+'&'+q;}
 function changed(){rev++;note='';status();preview();}
 function preview(){if(timer)clearTimeout(timer);timer=setTimeout(function(){timer=null;send('preview');},600);}
@@ -510,7 +624,8 @@ function txt(s){s=(s+'').replace(/\+/g,' ');try{return decodeURIComponent(s);}ca
 function row(a,b){return '<tr><td>'+a+'</td><td>'+b+'</td></tr>';}
 function figures(F){var h='<table>',i,over=F.tiles>F.max_tiles,decks=F.tiles+F.upper;
 h+=row('Size','<b>'+esc(cap(F['class']))+'</b> &middot; '+F.tiles+' of '+F.max_tiles+' hull tiles<div class=\'bar'+(over?' over':'')+'\'><i style=\'width:'+Math.min(100,F.tiles*100/F.max_tiles)+'%\'></i></div>');
-h+=row('Decks',F.upper?F.upper+' tile'+(F.upper==1?'':'s')+' of deck above &middot; '+decks+' of '+F.max_deck+' in all':'No deck above');
+var dl=[];for(i=0;i<F.decks.length;i++)dl.push(F.decks[i][1]+' of '+esc(F.decks[i][0]));
+h+=row('Decks',F.upper?dl.join(' &middot; ')+' &middot; '+decks+' of '+F.max_deck+' tiles in all':'Main deck only');
 if(F.tiles){var c='';for(i=0;i<F.costs.length;i++)c+='<span class=\'chip\'>'+esc(F.costs[i])+'</span>';h+=row('Cost',c||'nothing');
 var d=[];for(i=0;i<F.drives.length;i++)d.push(esc(F.drives[i][0])+' <b>'+esc(F.drives[i][1])+'</b>');
 h+=row('Speed',d.length?d.join(' &middot; '):'<b>Slow ahead</b>, poled along: she has no masts or rowing benches');
@@ -520,11 +635,11 @@ h+='</table>';
 $('fig').innerHTML=h;checks(F);}
 // ---- The checks: what stops her being built, what to look at, and advice ----
 function several(n,one){return n+' '+one+(n==1?'':'s');}
-function where(i){var f=CHK[i];return i==pin?'&#9679; lit on the sheet':'&#9675; '+several(f.cells.length,'tile')+' on the sheet';}
+function where(i){var f=CHK[i],on=f.deck?' of the '+LV[f.deck][0]:' on the sheet';return i==pin?'&#9679; lit'+on:'&#9675; '+several(f.cells.length,'tile')+on;}
 function markChecks(){var b=$('chk').getElementsByTagName('button'),j,f,w;for(j=0;j<b.length;j++){f=CHK[j];b[j].className='ck '+f.level+(f.cells.length||f.part?' has':'')+(j==pin?' pin':'')+(j==lit?' lit':'');w=b[j].getElementsByTagName('span')[2];if(w)w.innerHTML=where(j);}}
 function light(i){lit=i;markChecks();part();draw();}
 function seen(f){for(var i=0;i<f.cells.length;i++){var p=f.cells[i].split(','),px=sx(+p[0]),py=sy(+p[1]);if(px<0||py<0||px+Z>cv.width||py+Z>cv.height)return false;}return true;}
-function keep(i){pin=pin==i?-1:i;var f=CHK[pin];if(f&&f.cells.length&&!seen(f)){fit='ship';applyFit();if(!seen(f)){fit='sheet';applyFit();}mark();}markChecks();part();draw();}
+function keep(i){pin=pin==i?-1:i;var f=CHK[pin];if(f&&f.cells.length&&(f.deck||0)!=lv)level(f.deck||0);if(f&&f.cells.length&&!seen(f)){fit='ship';applyFit();if(!seen(f)){fit='sheet';applyFit();}mark();}markChecks();part();draw();}
 function showChecks(){var h='',i,f,n=[0,0,0];for(i=0;i<CHK.length;i++)n[CHK[i].level=='error'?0:(CHK[i].level=='warning'?1:2)]++;
 if(n[0])h+='<div class=\'note bad\' style=\'margin-top:0\'><b>Not ready to build.</b> '+several(n[0],'thing')+' to fix first.</div>';
 else h+='<div class=\'note ok\' style=\'margin-top:0\'><b>Ready to build.</b> As drawn she can be built and commissioned.'+(n[1]?'<div class=\'also\'>'+several(n[1],'warning')+' below will not stop the build, but read '+(n[1]==1?'it':'them')+' first.</div>':'')+'</div>';
@@ -534,7 +649,7 @@ var c=$('chk');c.innerHTML=h;var p=[];if(n[0])p.push(n[0]+' to fix');if(n[1])p.p
 var b=c.getElementsByTagName('button');for(i=0;i<b.length;i++)(function(i){b[i].onmouseenter=b[i].onfocus=function(){light(i);};b[i].onmouseleave=b[i].onblur=function(){if(lit==i)light(-1);};b[i].onclick=function(){keep(i);};})(i);}
 function checks(F){var was=CHK[pin]?CHK[pin].text:null,i,L=F.checks;
 if(!L){L=[];for(i=0;i<F.problems.length;i++)L.push({level:'error',text:F.problems[i]});}
-CHK=[];lit=-1;pin=-1;for(i=0;i<L.length;i++){CHK.push({level:LEVEL[L[i].level]?L[i].level:'note',text:L[i].text||'',cells:L[i].cells||[],part:L[i].part||''});if(was!==null&&CHK[i].text==was)pin=i;}
+CHK=[];lit=-1;pin=-1;for(i=0;i<L.length;i++){CHK.push({level:LEVEL[L[i].level]?L[i].level:'note',text:L[i].text||'',cells:L[i].cells||[],part:L[i].part||'',deck:L[i].deck||0});if(was!==null&&CHK[i].text==was)pin=i;}
 if(!F.tiles){CHK=[];pin=-1;$('chkn').innerHTML='';$('chk').innerHTML='<div class=\'note\' style=\'margin-top:0\'>'+esc(F.problems[0]||'Nothing is drawn yet.')+'</div>';}else showChecks();
 part();draw();}
 function shipStats(s){busy=0;s=txt(s);var F=null;try{F=JSON.parse(s);}catch(e){}if(F)figures(F);else $('fig').innerHTML=s;}
@@ -550,7 +665,7 @@ $('z_in').onclick=function(){zoom(1,cv.width/2,cv.height/2);};$('z_out').onclick
 $('b_undo').onclick=undo;$('b_redo').onclick=redo;$('b_clear').onclick=clearAll;$('save').onclick=function(){send('save');};
 $('ex').onchange=loadExample;$('nm').oninput=function(){changed();};
 (function(){var s=$('ex');for(var i=0;i<EXAMPLES.length;i++){var o=document.createElement('option');o.value=i;o.appendChild(document.createTextNode(cap(EXAMPLES[i][0])));s.appendChild(o);}})();
-$('nm').value=DATA.NAME;load(DATA.START);palette();icons();mark();part();tell();resize();window.onresize=resize;
+$('nm').value=DATA.NAME;load(DATA.START,DATA.START_DECKS);levels();deckKey();palette();mark();part();tell();resize();window.onresize=resize;
 </script></body></html>
 "}
 

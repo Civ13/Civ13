@@ -186,6 +186,10 @@
 
 /obj/item/weapon/gun/projectile/proc/has_next_projectile()
 
+	// a live round already in the chamber (a pumped or bolted shell) fires first (#6329)
+	if (chambered && chambered.BB)
+		return TRUE
+
 	// get the next casing
 	if (loaded.len)
 		return TRUE

@@ -110,7 +110,7 @@
 		E.on = want
 		E.update_icon()
 		if (want)
-			E.running()
+			E.start_running()
 
 // With engines running on the wings they share the load.
 /obj/structure/vehicleparts/axis/aircraft/check_engine()

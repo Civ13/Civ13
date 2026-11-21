@@ -1027,6 +1027,8 @@ mob/proc/yank_out_object()
 		return
 	if (!selection || !S || !U)
 		return
+	if (!(selection in get_visible_implants(0))) // pulled out while we were getting a grip
+		return
 
 	if (self)
 		visible_message(SPAN_WARNING("<b>[src] rips [selection] out of their body.</b></span>"))
@@ -1047,7 +1049,10 @@ mob/proc/yank_out_object()
 				if (O == selection)
 					affected = organ
 
+		if (!affected) // already pulled out by someone else
+			return
 		affected.implants -= selection
+		LAZYREMOVE(affected.embedded_items, selection)
 		H.shock_stage+=20
 		affected.take_damage((selection.w_class * 3), FALSE, FALSE, TRUE, "Embedded object extraction")
 

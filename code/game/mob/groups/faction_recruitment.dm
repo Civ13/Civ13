@@ -300,7 +300,7 @@ var/global/list/recruitment_combat_skills = list("rifle", "pistol", "swords", "b
 /mob/living/human/proc/recruitment_account()
 	if (!client || client.mob != src || IsGuestKey(client.key) || !client.ckey)
 		return null
-	if (persistence_owner_ckey && persistence_owner_ckey != client.ckey)
+	if (persistence_owner_ckey && persistence_owner_ckey != client.owner_key())
 		return null
 	return client.ckey
 

@@ -86,8 +86,10 @@ def colony_valid(c):
             and 0 <= c['age_hours'] <= 1_000_000 and type(c.get('members')) is int and 0 <= c['members'] <= 1000)
 
 def account_key_valid(ckey):
-    """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters."""
-    return isinstance(ckey, str) and 0 < len(ckey) <= 32 and all(c.isdigit() or ('a' <= c <= 'z') or c == '@' for c in ckey)
+    """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters. A character
+    slot key is "@<slot><ckey>" (docs/character-slots.md), so it may run two longer."""
+    limit = 34 if isinstance(ckey, str) and ckey.startswith('@') else 32
+    return isinstance(ckey, str) and 0 < len(ckey) <= limit and all(c.isdigit() or ('a' <= c <= 'z') or c == '@' for c in ckey)
 
 
 class TransferError(Exception):

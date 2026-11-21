@@ -44,7 +44,10 @@ export type PromptData = { message?: string; choices?: string[] };
 // Admin Spawn picker: the server searches its cached type list; results are the best matches.
 export type SpawnMenuEntry = { path?: string; name?: string; kind?: string };
 export type SpawnMenuData = { query?: string; kind?: string; results?: SpawnMenuEntry[]; matches?: number; limit?: number; types?: number; max_amount?: number; last?: string };
-export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[] };
+// A family is a root language and the daughters that grew out of it on this world; links say how much two members follow of each other.
+export type LanguageFamilyMember = { name?: string; parent?: string; nation?: string; era?: string; depth?: number; known?: Flag; learning?: Flag; mother?: Flag };
+export type LanguageFamily = { root?: string; members?: LanguageFamilyMember[]; links?: { a?: string; b?: string; percent?: number }[] };
+export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[]; families?: LanguageFamily[] };
 // Character setup: appearance, traits and personal settings.
 export type SetupTrait = { name?: string; cost?: number; desc?: string; note?: string; block?: string; taken?: Flag; conflicts?: string[] };
 export type SetupColor = { name?: string; hex?: string };

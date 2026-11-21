@@ -21,6 +21,7 @@
 		out["map"] = list("title" = map.title, "id" = map.ID, "age" = map.age, "gamemode" = map.gamemode, "nomads" = map.nomads ? TRUE : FALSE, "civilizations" = map.civilizations ? TRUE : FALSE)
 	out["season"] = season
 	out["time_of_day"] = time_of_day
+	out["calendar"] = world_calendar_summary()
 	out["persistence"] = list("save_in_progress" = persistence_save_in_progress ? TRUE : FALSE, "restart_busy" = persistence_restart.busy ? TRUE : FALSE)
 	out["agent_characters"] = agent_characters.len
 	return out

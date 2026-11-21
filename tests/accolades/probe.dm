@@ -177,3 +177,16 @@ var/acc_runtime_error = FALSE
 		if (record["kind"] == "accolade_taught")
 			taught++
 	acc_check(!taught, "a reader with no play time of their own does not count for Teacher")
+
+	// Character slots: slot 1 is the account itself; other slots are "@<slot><account>".
+	acc_check(owner_key_for("alice") == "alice" && owner_key_for("alice", 3) == "@3alice", "owner keys are the account, then @<slot><account>")
+	acc_check(owner_key_slot("alice") == 1 && owner_key_slot("@2alice") == 2 && !owner_key_slot("@9alice") && !owner_key_slot("@1alice"), "an owner key names its slot")
+	acc_check(owner_key_account("@4alice") == "alice" && owner_key_account("alice") == "alice", "an owner key names its account")
+	acc_check(isnull(owner_key_for("@2alice", 2)) && isnull(owner_key_for("alice", 5)), "slot keys never nest and stop at four")
+	acc_check(persistence_owner_valid("@2alice") == persistence_owner_valid("alice"), "a slot key owns a body like its account")
+	acc_check(!persistence_owner_valid("@2") && !persistence_owner_valid("@7alice"), "a broken slot key owns nothing")
+	acc_check(party_train_valid_party("ckey:@2alice") && !party_train_valid_party("ckey:@2Al ice"), "a solo party may be a slot key")
+	var/mob/living/human/S = new /mob/living/human(locate(8, 6, 1))
+	S.persistence_owner_ckey = "@2gina"
+	acc_check(accolade_mob_ckey(S) == "gina", "a second character earns for the same person")
+	acc_check(karma_character_ckey(S) == "gina", "karma follows the person, not the slot")

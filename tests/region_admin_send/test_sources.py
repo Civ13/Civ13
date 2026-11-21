@@ -68,7 +68,7 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('shard_group.peer_transfers_held(id)', SHIP)
         # The lobby warns before a second character replaces one still on its way.
         home = read('code/modules/persistence/region_home.dm')
-        self.assertIn('transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.ckey)', home)
+        self.assertIn('transfer_bridge.held() && !lobby.transfer_hold_warned && !region_home_living_body(C.owner_key())', home)
         self.assertIn("seen.get('transfers_held')", HOST)
 
     def test_a_shore_landing_looks_on_the_surface_level(self):

@@ -25,5 +25,10 @@ hook in `cmss13_gear.dm`:
   planks, wait for a drive, grind two a step at the drive's pace, stop when
   empty or at 20 products and give feed back when taken apart; a sash saw
   turns a log into two planks and bark;
+- contraptions (`contraptions.dm`): a counterweight drum drives only while
+  its weight falls and a cord brakes and releases it; a cam drum pulls its
+  cords in turn at the drive's pace; a stationary steam engine drives once
+  stoked and burns a minute of fuel a minute;
 - every new icon state is in `icons/obj/mechanisms.dmi`,
-  `icons/obj/transmission.dmi` and `icons/obj/hopper_machines.dmi`.
+  `icons/obj/transmission.dmi`, `icons/obj/hopper_machines.dmi` and
+  `icons/obj/contraptions.dmi`.
