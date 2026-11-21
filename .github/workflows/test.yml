@@ -895,6 +895,13 @@ jobs:
           /usr/bin/python3 -B -m unittest discover -s tests/practice_rooms -v
           /usr/bin/python3 tests/practice_rooms/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/practice-rooms"
 
+      - name: Verify the gateway region sends players on
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/region_gateway')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          /usr/bin/python3 tests/region_gateway/run.py --byond-bin "$PWD/BYOND/byond/bin" --evidence-dir "$RUNNER_TEMP/region-gateway"
+
       - name: Verify new-player tutorial steps
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/player_tutorial')
         shell: bash

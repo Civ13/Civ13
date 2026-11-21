@@ -1,0 +1,134 @@
+"""Offline tests for the GATEWAY region kind in scripts/shard-group (shard_group.py, group_ports.py):
+an always-up world on the front door's port that hosts no play and sends players on."""
+import json
+from pathlib import Path
+import sys
+import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import test_shard_group as base  # noqa: E402
+
+shard_group, NEWER = base.shard_group, base.NEWER
+
+
+class GatewayTests(unittest.TestCase):
+    setUp = base.ShardGroupTests.setUp
+    tearDown = base.ShardGroupTests.tearDown
+    write_group = base.ShardGroupTests.write_group
+    refuse_config = base.ShardGroupTests.refuse_config
+    host = base.ShardGroupTests.host
+
+    def gateway_group(self):
+        self.group['relay_port'] = 1740
+        self.group['regions'][1].update(id='door', name='Gateway', kind='GATEWAY', map='maps/small/tiny.dmm')
+        return self.write_group()
+
+    def test_config_rules(self):
+        self.refuse_config('GATEWAY region sends players on through the routing relay', region_kind='GATEWAY')
+        self.refuse_config('mainland cannot be a GATEWAY', relay_port=1740, mainland='deep', region_kind='GATEWAY')
+        self.refuse_config('start region cannot be a GATEWAY', relay_port=1740, start_region='deep', region_kind='GATEWAY')
+        self.group['regions'][0]['kind'] = 'GATEWAY'
+        self.refuse_config('at most one GATEWAY', relay_port=1740, mainland='deep', region_kind='GATEWAY')
+        self.group['regions'][0]['kind'] = 'SURFACE'
+        group = self.gateway_group()
+        self.assertEqual('gaia', group['gate'], 'a gateway becomes the front door only through set-gate')
+        shard_group.setup(group, self.machine)
+        settings = json.loads((self.base / 'regions' / 'door' / 'config' / 'shard_region.json').read_text())
+        self.assertEqual(0, settings['save_minutes'], 'a gateway never saves')
+        self.assertEqual(15, json.loads((self.base / 'regions' / 'gaia' / 'config' / 'shard_region.json').read_text())['save_minutes'])
+
+    def test_round_never_saves(self):
+        path = self.base / 'config.txt'
+        path.write_text('ALLOWED_GAMEMODES PERSISTENCE\n')
+        shard_group.region_mode_config({'persistent': True}, {'kind': 'GATEWAY'}, path)
+        self.assertEqual(['ALLOWED_GAMEMODES ALL', 'SKIP_PERSISTENCE_SAVING'], path.read_text().splitlines())
+
+    def test_gateway_never_sleeps(self):
+        group = self.gateway_group()
+        shard_group.setup(group, self.machine)
+        self.assertFalse(self.host(group, 'door').may_sleep())
+        self.assertTrue(self.host(group, 'gaia').may_sleep())
+
+    def test_update_restarts_on_its_own_port_without_a_standby(self):
+        group = self.gateway_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'door')
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1721}
+        self.machine.pids_by_port = {1721: 100}
+        start = self.machine.start_task
+
+        def start_task(name, dmb='region.dmb'):
+            self.machine.up.add(1721)
+            return start(name, dmb)
+        self.machine.start_task = start_task
+        # Its round never saves (persistence_mode 0), so stopping it ends it.
+        self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: {
+            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': 0, 'persistence_mode': 0}
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(host.update_pending(), host.read_json(host.stage_file))
+        host.precheck_handover()  # no standby port or second world's memory needed
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(('done', NEWER), (state['phase'], host.built_revision()), state)
+        commands = [argv for argv, _ in self.machine.calls]
+        self.assertFalse([argv for argv in commands if argv[0] == 'standby'], 'never a standby that rebinds the port')
+        self.assertEqual('start', commands[-1][0])
+        self.assertIn(1721, self.machine.up)
+
+    def test_an_empty_gateway_restarts_onto_an_update_in_a_saving_group(self):
+        group = self.gateway_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'door')
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1721}
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(group['persistent'])
+        self.assertEqual(30, host.update_unsaved_while_empty())
+        self.assertEqual('restart', host.read_state()['action'])
+        self.assertIsNone(self.host(group, 'gaia').update_unsaved_while_empty(), 'saving lands still hand over')
+
+    def test_add_gateway_plans_then_adds_sets_up_and_starts_it(self):
+        self.group['relay_port'] = 1740
+        self.group['regions'][0]['port'] = 1714
+        self.group['live'] = True
+        group = self.write_group()
+        answer = shard_group.add_gateway(group, platform=self.machine)
+        self.assertFalse(answer['accepted'])
+        plan = answer['plan']
+        self.assertEqual(('gateway', 'gaia'), (plan['region'], plan['gate']))
+        self.assertNotIn(plan['port'], (1714, 1721, 1740, 1741))
+        self.assertNotIn('gateway', [r['id'] for r in json.loads(self.path.read_text())['regions']], 'a plan changes nothing')
+        answer = shard_group.add_gateway(group, apply=True, platform=self.machine)
+        self.assertTrue(answer['accepted'])
+        written = json.loads(self.path.read_text())['regions'][-1]
+        self.assertEqual(('gateway', 'GATEWAY', 'maps/special/gateway.dmm', plan['port']),
+                         (written['id'], written['kind'], written['map'], written['port']))
+        self.assertTrue((self.base / 'regions' / 'gateway' / '.git').exists())
+        self.assertEqual(['--worker', 'start', answer['start']['operation']], self.machine.detached[-1][-3:])
+        self.assertEqual('set-gate --region gateway --apply', answer['next'])
+        again = shard_group.add_gateway(shard_group.load_group(self.path), platform=self.machine)
+        self.assertTrue(again['plan']['already'])
+        self.assertEqual('set-gate --region gateway --apply', again['next'])
+
+    def test_add_gateway_needs_the_relay(self):
+        with self.assertRaisesRegex(shard_group.Refused, 'routing relay'):
+            shard_group.add_gateway(self.write_group(), platform=self.machine)
+
+    def test_set_gate_waits_for_a_running_gateway(self):
+        group = self.gateway_group()
+        plan = shard_group.group_ports.plan_gate(shard_group, group, 'door', platform=self.machine)
+        self.assertTrue(any('not running' in problem for problem in plan['problems']), plan['problems'])
+        self.machine.up = {1721}
+        plan = shard_group.group_ports.plan_gate(shard_group, group, 'door', platform=self.machine)
+        self.assertFalse(any('not running' in problem for problem in plan['problems']), plan['problems'])
+        self.assertEqual({'door': {'port': [1721, 1720]}, 'gaia': {'port': [1720, 1721]}},
+                         {k: {'port': v['port']} for k, v in plan['changes'].items()})
+
+
+if __name__ == '__main__':
+    unittest.main()
