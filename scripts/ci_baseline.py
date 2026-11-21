@@ -2706,6 +2706,9 @@ SUITES = {
     'magazine_empty': {'files': ('tests/magazine_empty/test_held_recheck.py',), 'paths': (
         'tests/magazine_empty/',),
         'shared_paths': ('code/modules/projectiles/ammunition.dm',)},
+    # Flying drones break and are wrecked when damage empties their health.
+    'drone_destruction': {'files': ('tests/drone_destruction/test_flying_destroy.py',), 'paths': (
+        'tests/drone_destruction/', 'code/game/objects/items/devices/drone.dm')},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
