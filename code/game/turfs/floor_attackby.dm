@@ -565,10 +565,10 @@
 					return
 				to_chat(user, SPAN_NOTICE("You start making a dirt road..."))
 				if (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))
-					if (!T || T.weather_snow > 0)
+					if (!T || T.weather_snow > 0 || (locate(/obj/covers) in T))
 						return
 					to_chat(user, SPAN_NOTICE("You finish the dirt road."))
-					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
+					var/obj/covers/roads/dirt/DR = new /obj/covers/roads/dirt/worked(T)
 					if (user.dir == NORTH || user.dir == SOUTH)
 						DR.vertical = TRUE
 						DR.dir = 1
@@ -1200,6 +1200,7 @@
 						H.adaptStat("strength", 1)
 						T.available_sand -= 1
 						new /obj/item/stack/ore/glass(T)
+						H.arcane_dug_sand(T) // arcane_materials.dm: storm glass
 					else
 						H.shoveling = FALSE
 			else

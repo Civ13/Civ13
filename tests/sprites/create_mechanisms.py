@@ -1,6 +1,7 @@
 """Hand-placed 32px Stone Age mechanisms for icons/obj/mechanisms.dmi: a
 lever, a pull cord, a pressure plate and a rock drop, each in its rest and
-its worked state. Wood, rope and stone only - no metal.
+its worked state, and a single-state wooden pulley. Wood, rope and stone
+only - no metal.
 
 Palette and scale follow create_stone_age_traps.py (warm dark outline, grey
 field stone, pale split timber, light from the upper left). The pressure plate
@@ -352,6 +353,71 @@ def rock_drop(empty):
     return f
 
 
+# --------------------------------------------------------------- pulley
+
+# the sheave: a turned wooden wheel on a peg axle, the rope riding its top
+SHEAVE = [
+    '....RRRRq....',
+    '..RRyyyyyrq..',
+    '.RryWWWwwyrq.',
+    '.RyWWwwwwxyq.',
+    '.RyWwyyywxyq.',
+    '.RyWwyOywxyq.',
+    '.ryWwyyywxyq.',
+    '.R.ywwwxxy.q.',
+    '.R..yyyyy..q.',
+]
+
+ROPE_COIL = [
+    '..RRrq.',
+    '.RrqRrq',
+    'RrRrqrq',
+    '.rqqqq.',
+]
+
+
+def pulley():
+    """A timber post braced at the foot, forked at its head round a wooden
+    sheave. The rope rides over the sheave: the hauling end falls to a coil on
+    the ground, the working end hangs with a toggle, and the standing line
+    lashed to the post head runs up out of the tile to the floor above."""
+    f = Frame()
+    # post
+    for y in range(2, 29):
+        f.put(15, y, WOOD[1])
+        f.put(16, y, WOOD[1] if y % 5 else WOOD[2])
+        f.put(17, y, WOOD[2])
+    f.pts(WOOD[0], (15, 15), (15, 16), (15, 20), (15, 21), (15, 25))
+    f.pts(WOOD[3], (17, 26), (17, 27), (17, 28), (16, 28))
+    # foot braces
+    for i in range(5):
+        f.put(14 - i, 24 + i, WOOD[1])
+        f.put(14 - i, 25 + i, WOOD[2])
+        f.put(18 + i, 24 + i, WOOD[2])
+        f.put(18 + i, 25 + i, WOOD[3])
+    # the forked head, its lashing, and the line going up
+    f.rect(15, 2, 17, 3, ROPE[1])
+    f.pts(ROPE[0], (15, 2), (16, 3))
+    f.pts(ROPE[2], (17, 2), (17, 3))
+    f.pts(ROPE[0], (16, 0))
+    f.pts(ROPE[1], (16, 1))
+    f.rows(4, 10, SHEAVE, KEY)
+    # hauling end down to its coil
+    for y in range(13, 25):
+        f.put(11, y, ROPE[0] if y % 3 else ROPE[1])
+    f.rows(25, 5, ROPE_COIL, KEY)
+    # working end and its toggle
+    for y in range(13, 19):
+        f.put(21, y, ROPE[1] if y % 3 else ROPE[2])
+    for x in range(19, 25):
+        f.put(x, 19, WOOD[0] if 20 <= x <= 22 else WOOD[1])
+        f.put(x, 20, WOOD[2] if x < 24 else WOOD[3])
+    f.pts(ROPE[1], (21, 19), (21, 20))
+    f.outline()
+    f.shadow(6, 25, 30)
+    return f
+
+
 def states():
     return {
         'lever': [lever(False)],
@@ -362,6 +428,7 @@ def states():
         'pressure_plate_pressed': [pressure_plate(True)],
         'rock_drop': [rock_drop(False)],
         'rock_drop_empty': [rock_drop(True)],
+        'pulley': [pulley()],
     }
 
 

@@ -1,18 +1,18 @@
 // Training by doing: shared fatigue, rewards and crafting gates for the lifting
-// weights (training_gear.dm), the obstacle course (training_course.dm) and the
-// floor exercises (cmss13_field.dm). Nothing here trains a character who is
-// only waiting.
+// weights (training_gear.dm), the tread wheel, treadmill and skipping rope
+// (training_course.dm) and the floor exercises (cmss13_field.dm). Nothing here
+// trains a character who is only waiting.
 #define EXERCISE_SET_WINDOW 300
 
 /proc/exercise_time()
 	return world.time
 
-// Modern gear: the iron barbell and the steel hurdle.
+// Modern gear: the iron barbell and the treadmill.
 /proc/exercise_modern_gear(result_type)
-	return ispath(result_type, /obj/item/weapon/lifting_weight/barbell) || ispath(result_type, /obj/structure/training_course/hurdle/steel)
+	return ispath(result_type, /obj/item/weapon/lifting_weight/barbell) || ispath(result_type, /obj/structure/treadwheel/treadmill)
 
 /proc/exercise_gear(result_type)
-	return ispath(result_type, /obj/item/weapon/lifting_weight) || ispath(result_type, /obj/structure/training_course)
+	return ispath(result_type, /obj/item/weapon/lifting_weight) || ispath(result_type, /obj/structure/treadwheel) || ispath(result_type, /obj/item/weapon/skipping_rope)
 
 /proc/exercise_recipe_era(result_type)
 	return !exercise_modern_gear(result_type) || (map && map.ordinal_age >= 8)
@@ -21,7 +21,7 @@
 /proc/exercise_build_skill(result_type)
 	if (exercise_modern_gear(result_type))
 		return 105
-	if (result_type == /obj/item/weapon/lifting_weight)
+	if (result_type == /obj/item/weapon/lifting_weight || result_type == /obj/item/weapon/skipping_rope)
 		return 0
 	return 30
 
@@ -33,13 +33,12 @@
 /mob/living/human
 	var/exercise_fatigue = 0
 	var/tmp/exercise_rest_epoch = -1
-	// The weight mid-set or the course run under way; anything else is idle.
+	// The weight, rope or wheel mid-set; anything else is idle.
 	var/tmp/datum/exercise_equipment
 	var/tmp/exercise_token = 0
-	var/tmp/course_vault_at = 0
 
 /mob/living/human/persistence_runtime_var(key)
-	return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token", "course_vault_at")) || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()
@@ -58,9 +57,12 @@
 	if (istype(E, /obj/item/weapon/lifting_weight))
 		var/obj/item/weapon/lifting_weight/W = E
 		W.end_set()
-	else if (istype(E, /datum/course_run))
-		var/datum/course_run/R = E
-		R.end_run()
+	else if (istype(E, /obj/item/weapon/skipping_rope))
+		var/obj/item/weapon/skipping_rope/S = E
+		S.end_set()
+	else if (istype(E, /obj/structure/treadwheel))
+		var/obj/structure/treadwheel/T = E
+		T.end_set()
 
 // Hold a set or a run open for `window`, then let it lapse by itself.
 /mob/living/human/proc/hold_exercise(datum/E, window = EXERCISE_SET_WINDOW)
@@ -71,15 +73,14 @@
 /mob/living/human/proc/lapse_exercise(token)
 	if (token != exercise_token || !exercise_equipment)
 		return
-	var/was_run = istype(exercise_equipment, /datum/course_run)
 	cancel_exercise()
-	to_chat(src, "<span class='notice'>[was_run ? "Your course run has lapsed." : "You have rested too long; your set starts over."]</span>")
+	to_chat(src, "<span class='notice'>You have rested too long; your set starts over.</span>")
 
 /mob/living/human/verb/stop_exercise()
 	set name = "Stop Exercise"
 	set category = "IC"
 	if (!exercise_equipment)
-		to_chat(src, "You are not in the middle of a set or a course run.")
+		to_chat(src, "You are not in the middle of a set.")
 		return
 	cancel_exercise()
 	to_chat(src, "You stop your exercise.")
@@ -140,7 +141,7 @@
 
 /obj/structure/exercise/course
 	icon_state = "course_start"
-	replacement = /obj/structure/training_course/post
+	replacement = /obj/structure/treadwheel
 
 /obj/structure/exercise/modern
 	icon_state = "barbell"
@@ -148,7 +149,7 @@
 
 /obj/structure/exercise/modern/course
 	icon_state = "course_start"
-	replacement = /obj/structure/training_course/post
+	replacement = /obj/structure/treadwheel/treadmill
 
 /obj/structure/exercise/persistence_runtime_var(key)
 	return (key in list("actor", "origin", "repetition", "busy", "epoch", "expiry")) || ..()

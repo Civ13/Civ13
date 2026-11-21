@@ -59,6 +59,14 @@ gaps in mail and lamellar on the struck part unless plate also covers it
 Fantasy, sci-fi, modern and other armor has no family and keeps its own
 values; cut, pierce and blunt fall back to its melee value.
 
+## Telling players
+
+Examining a family piece adds one line saying what it is good and bad against
+and what it is made of (`armor_family_strengths`); an under-layer says it
+softens blows and arrows. A thrust that gets through mail or lamellar tells
+both sides it found a gap, and a blow stopped by armor tells the wearer it
+bruised them.
+
 ## Era windows
 
 Armor never goes out of date. Every armor and helmet anvil row and every

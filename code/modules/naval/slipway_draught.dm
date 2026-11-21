@@ -33,13 +33,15 @@
 #define SLIPWAY_DRAUGHT_RUN 12 // tiles she may slide past her own length to float
 
 // A ship's draught as a piece plan: one piece per floor tile, then one per
-// fitting. order[i] is list(sheet key "x,y", "floor" or the piece key).
+// fitting, then one per gunwale. order[i] is list(sheet key "x,y", "floor",
+// the piece key or "gunwale"); a gunwale's entry adds its sheet direction.
 /datum/slipway_design/draught
 	name = "ship"
 	var/datum/ship_draught/draught
 	var/list/order = list()
 	var/list/floor_index = list() // sheet key -> piece index of its floor
 	var/list/piece_index = list() // sheet key -> piece index of its fitting
+	var/list/gunwale_index = list() // sheet key -> piece index of its last gunwale
 
 /datum/slipway_design/draught/Destroy()
 	if (draught)
@@ -91,6 +93,24 @@
 				n++
 		if (n)
 			P.stages += list(list("name" = slipway_draught_plural(F["name"]), "pieces" = n, "cost" = F["cost"], "part" = "fitting", "verb" = F["name"]))
+	// Last her gunwales along every open side (docs/ship-edges.md), stern to bow.
+	var/list/sides = D.gunwale_sides()
+	for (var/floor in list("w", "s"))
+		var/n = 0
+		for (var/key in keys)
+			var/list/C = D.cells[key]
+			if (C[1] != floor)
+				continue
+			for (var/list/side in sides)
+				if (side[1] == key)
+					P.order += list(list(key, "gunwale", side[2]))
+					P.gunwale_index[key] = P.order.len
+					n++
+		if (n)
+			var/what = floor == "s" ? "steel bulwark" : "wooden gunwale"
+			var/list/cost = list()
+			cost[floor == "s" ? "steel" : "wood"] = 2
+			P.stages += list(list("name" = slipway_draught_plural(what), "pieces" = n, "cost" = cost, "part" = "gunwale", "verb" = what))
 	return P
 
 // "Rowing benches", "Killicks": a stage's name from what it builds.
@@ -198,6 +218,9 @@
 /obj/structure/slipway/proc/offer_draught(mob/living/human/H, obj/item/ship_draught/S)
 	if (!istype(H) || busy || !Adjacent(H))
 		return
+	if (S.sub_draught_kind())
+		to_chat(H, SPAN_WARNING("A submarine is not built on a slipway: float her hull sections on the water and assemble her there."))
+		return
 	var/datum/ship_draught/D = S.draught()
 	var/refusal = draught_refusal(D)
 	if (refusal)
@@ -234,6 +257,12 @@
 	if (!T)
 		return null
 	var/path
+	if (entry[2] == "gunwale")
+		path = C[1] == "s" ? /obj/structure/railing/built/gunwale/bulwark : /obj/structure/railing/built/gunwale
+		var/obj/structure/railing/R = new path(T)
+		R.set_dir(draught_dir(entry[3]))
+		refresh_draught_tile(P, T, entry[1])
+		return R
 	if (entry[2] == "floor")
 		var/list/F = ship_draught_floors[C[1]]
 		path = F["path"]
@@ -272,7 +301,7 @@
 		var/list/stage = P.stages[next[1]]
 		if (!fitted)
 			to_chat(H, SPAN_NOTICE("You start work on the [stage["verb"]]..."))
-		if (!do_after(H, stage["part"] == "floor" ? SLIPWAY_FLOOR_TIME : SLIPWAY_FIT_TIME, target || src) || QDELETED(src) || QDELETED(S) || draught_code != code || S.loc != H)
+		if (!do_after(H, stage["part"] == "fitting" ? SLIPWAY_FIT_TIME : SLIPWAY_FLOOR_TIME, target || src) || QDELETED(src) || QDELETED(S) || draught_code != code || S.loc != H)
 			break
 		var/before = pieces_done
 		var/took = pay(S)
@@ -422,7 +451,8 @@
 	var/list/C = P.draught.cells[key]
 	var/floor_done = pieces_done >= P.floor_index[key]
 	var/piece_done = !C[2] || pieces_done >= P.piece_index[key]
-	if (floor_done && piece_done)
+	var/sides_done = !P.gunwale_index[key] || pieces_done >= P.gunwale_index[key]
+	if (floor_done && piece_done && sides_done)
 		return
 	var/obj/structure/slipway_frame/F = new(T)
 	F.slipway = src
@@ -434,6 +464,14 @@
 		F.alpha = 110
 		F.name = "slipway cradle"
 		F.desc = "Part of the [P.name] marked out on a slipway: her [ship_draught_floors[C[1]]["name"]] goes here[piece ? ", with a [piece["name"]] on it" : ""]. Bring the materials here or to the slipway post."
+		return
+	if (piece_done)
+		var/obj/G = C[1] == "s" ? /obj/structure/railing/built/gunwale/bulwark : /obj/structure/railing/built/gunwale
+		F.icon = initial(G.icon)
+		F.icon_state = initial(G.icon_state)
+		F.alpha = 110
+		F.name = "marked place for a [initial(G.name)]"
+		F.desc = "The [P.name]'s draught closes this edge of her deck with a [initial(G.name)]. Bring the materials here or to the slipway post."
 		return
 	var/obj/O = piece["path"]
 	F.icon = initial(O.icon)

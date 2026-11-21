@@ -108,6 +108,13 @@ var/probe_runtime_error = FALSE
 	probe_check(findtext(jointext(B.death_time_lines(probe_medic()), "|"), "too late"), "medics are told it is too late")
 	B.revival_clock = 0
 	probe_check(findtext(B.resuscitation_blocker(), "dead too long"), "a body without a fresh death (loaded from a save) stays dead")
+	B.credit_cpr_cycle()
+	probe_check(!B.revival_clock, "CPR credit never starts a clock for a body without a fresh death")
+	// A round that began inside the window and ran past it is credited before the recheck.
+	B.revival_clock = world.time - B.revival_window() - 25 // half of a 5 second round
+	probe_check(findtext(B.resuscitation_blocker(), "dead too long"), "without credit the round's own time ran out the clock")
+	B.credit_cpr_cycle()
+	probe_check(!B.resuscitation_blocker(), "a credited CPR round keeps the body revivable: [B.resuscitation_blocker()]")
 
 	// Poison.
 	var/mob/living/human/C = probe_dead(6, "Cass")

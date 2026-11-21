@@ -122,6 +122,7 @@
 	moving = FALSE
 	currentspeed = 0
 	visible_message(SPAN_NOTICE("\The [src] settles gently onto its skids."))
+	accolade_meet_mob(driver, "aviator")
 	return TRUE
 
 // The flight watch: hover instead of stalling, autorotate when the engine dies.

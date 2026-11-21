@@ -262,6 +262,11 @@ var/global/list/origins_by_id = null
 			"sea" = "hellenes",
 			"semiarid" = "latins", "desert" = "latins",
 			"default" = "latins")
+		var/list/mediterranean = list(
+			"temperate" = "latins", "semiarid" = "latins",
+			"sea" = "hellenes",
+			"desert" = "egyptians",
+			"default" = "latins")
 		var/list/africa = list(
 			"jungle" = "swahili", "savanna" = "swahili",
 			"temperate" = "zulu",
@@ -303,6 +308,7 @@ var/global/list/origins_by_id = null
 			MAP_NOMADS_PANGEA = gaia,
 			MAP_NOMADS_EUROPE = europe,
 			MAP_NOMADS_EARTH_EUROPE = europe,
+			MAP_NOMADS_EARTH_MEDITERRANEAN = mediterranean,
 			MAP_NOMADS_EARTH_AFRICA = africa,
 			MAP_NOMADS_EARTH_ASIA = asia,
 			MAP_NOMADS_EARTH_GREENLAND = greenland,

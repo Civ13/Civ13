@@ -183,10 +183,6 @@
 	if(calf)
 		return
 	if ((istype(O,/obj/item/weapon/plough) && !plough) && user.a_intent == I_HELP)	//makes sure that you'll bash your cow
-		if (istype(O,/obj/item/weapon/plough/iron))									//if you do something wrong
-			plough_material = "iron"
-		else
-			plough_material = "wood"
 		if(istype(user.l_hand, /obj/item/stack/material/rope/) || istype(user.r_hand, /obj/item/stack/material/rope/))
 			if( user.a_intent == I_HELP )
 				if(plough)
@@ -204,6 +200,10 @@
 						to_chat(user, SPAN_WARNING("You need at least a stack of 2 ropes on one of your hands in order to do this."))
 						return
 				if (do_after(user,35,src))
+					if (plough || stat == DEAD || QDELETED(O) || O.loc != user || QDELETED(NR) || NR.amount < 2)
+						return
+					// Set only on success, so a refused second attach keeps the fitted plough's material.
+					plough_material = istype(O, /obj/item/weapon/plough/iron) ? "iron" : "wood"
 					NR.amount -= 2
 					if (NR.amount <= 0)
 						qdel(NR)			//When dealing with stack amount, it could stay as object with 0 amount
@@ -235,22 +235,7 @@
 			road_status = "Adjust to make Roads"
 		var/choice1 = WWinput(usr, "What would you like to do with the cow's plough?", "Cattle Pulled Plough", "Remove", list("Remove", road_status, plough_status, "Cancel"))
 		if (choice1 == "Remove")
-			to_chat(user, "You try to detach the plough from the cow.")
-			if (do_after(user,35,src))
-				if(cattle_gender == "female")
-					icon_state = "cow"
-				else if(cattle_gender == "male")
-					icon_state = "bull"
-				plough = FALSE
-				new/obj/item/stack/material/rope(user.loc)
-				new/obj/item/stack/material/rope(user.loc)
-				if(plough_material == "iron")
-					new/obj/item/weapon/plough/iron(user.loc)
-					plough_material = null						//I hate this much of redundancy that's needed
-				else if(plough_material == "wood")
-					new/obj/item/weapon/plough(user.loc)
-					plough_material = null
-				plough_material = null
+			detach_plough(user)
 		else if (choice1 == "Raise Plough")
 			plough_raised = TRUE
 		else if (choice1 == "Lower Plough")
@@ -261,6 +246,27 @@
 			plough_road = FALSE
 		else
 			return
+
+// Two handlers can wait at once, and death drops the harness, so recheck after the wait.
+/mob/living/simple_animal/cattle/proc/detach_plough(mob/user)
+	to_chat(user, "You try to detach the plough from the cow.")
+	if (!do_after(user, 35, src))
+		return FALSE
+	if (!plough || stat == DEAD)
+		return FALSE
+	plough = FALSE
+	if (cattle_gender == "female")
+		icon_state = "cow"
+	else if (cattle_gender == "male")
+		icon_state = "bull"
+	new /obj/item/stack/material/rope(user.loc)
+	new /obj/item/stack/material/rope(user.loc)
+	if (plough_material == "iron")
+		new /obj/item/weapon/plough/iron(user.loc)
+	else if (plough_material == "wood")
+		new /obj/item/weapon/plough(user.loc)
+	plough_material = null
+	return TRUE
 
 /mob/living/simple_animal/cattle/proc/do_plough(atom/movable/O)
 	if(plough && !plough_raised)

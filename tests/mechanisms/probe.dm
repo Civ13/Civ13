@@ -10,7 +10,7 @@
 	visibility = 0
 	maxx = 16
 	maxy = 16
-	maxz = 1
+	maxz = 2
 	fps = 20
 	turf = /turf/floor/plating/mechanisms_probe
 	area = /area
@@ -217,9 +217,139 @@ var/mechanisms_runtime = null
 	sleep(12)
 	mechanisms_assert(hatch.state, "trapdoor_open")
 
+	// A pulley block carries cords one level up; without it the cord hangs slack.
+	var/obj/structure/bell/upper_bell = new(locate(5, 6, 2))
+	var/obj/structure/mechanism/lever/upper_lever = new(locate(2, 2, 1))
+	var/mob/living/human/rigger = mechanisms_actor(2, 3, "Rigger")
+	mechanisms_assert(!(upper_bell in mechanism_reachable_actuators(upper_lever)), "no_pulley_no_upstairs")
+	var/obj/structure/mechanism_pulley/pulley = new(locate(3, 2, 1))
+	mechanisms_assert(upper_bell in mechanism_reachable_actuators(upper_lever), "pulley_reaches_upstairs")
+	mechanisms_assert(mechanism_offset_words(upper_lever, get_turf(upper_bell)) == "4 north, 3 east, one level up", "upstairs_words")
+	var/obj/item/stack/material/rope/rope2 = new(null, 5)
+	mechanisms_hands(rigger, rope2)
+	mechanisms_answer(rigger, "Tie a cord to [upper_bell.name] (4 north, 3 east, one level up)")
+	mechanism_rope_on_trigger(upper_lever, rope2, rigger)
+	mechanisms_assert(upper_lever.links == "3,4,1", "upstairs_entry")
+	upper_bell.next_ring = 0
+	upper_lever.attack_hand(rigger)
+	mechanisms_assert(upper_bell.next_ring > world.time, "rings_upstairs")
+	qdel(pulley)
+	upper_bell.next_ring = 0
+	upper_lever.thrown = FALSE
+	upper_lever.next_pull = 0
+	upper_lever.attack_hand(rigger)
+	mechanisms_assert(upper_bell.next_ring == 0, "slack_without_pulley")
+
+	// Clock alarms: a water clock pulls at its hour, a tower clock every hour.
+	var/obj/structure/water_clock/wclock = new(locate(3, 12, 1))
+	wclock.water = 60
+	wclock.links = "1,0"
+	var/obj/structure/bell/clock_bell = new(locate(4, 12, 1))
+	var/h = mechanism_hour24()
+	wclock.alarm_hour = (h + 5) % 24
+	wclock.last_hour = (h + 23) % 24
+	clock_bell.next_ring = 0
+	wclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring == 0 && wclock.last_hour == h, "water_clock_waits_for_its_hour")
+	wclock.alarm_hour = h
+	wclock.last_hour = (h + 23) % 24
+	wclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring > world.time, "water_clock_alarm_pulls")
+	clock_bell.next_ring = 0
+	wclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring == 0, "water_clock_once_an_hour")
+	mechanisms_assert(mechanism_alarm_name(-1) == "off" && mechanism_alarm_name(24) == "every hour" && mechanism_alarm_name(0) == "at 12 AM" && mechanism_alarm_name(13) == "at 1 PM", "alarm_names")
+	var/obj/structure/tower_clock/tclock = new(locate(3, 16, 1))
+	tclock.wound = 60
+	tclock.links = "1,-4"
+	tclock.alarm_hour = 24
+	tclock.last_hour = (clock_hour() % 12) + 1
+	clock_bell.next_ring = 0
+	tclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring > world.time, "tower_clock_hourly_pulls")
+
+	// Transmission (transmission.dm): line shafts carry a mover's drive,
+	// machines share its strength, a long wooden run binds, a clutch throws
+	// out, a gear box carries drive down a level and a rope drive across.
+	var/mob/living/human/treader = mechanisms_actor(2, 12, "Treader")
+	var/obj/structure/workshop_machine/mover/treadwheel/tread = new(locate(2, 12, 2))
+	treader.forceMove(locate(2, 12, 2))
+	var/obj/structure/workshop_machine/potters_wheel/wheel = new(locate(2, 13, 2))
+	mechanisms_assert(abs(mechanical_drive_factor(wheel) - 0.65) < 0.001, "mover_drives_beside_it")
+	var/list/shafts = list()
+	for (var/sx = 3, sx <= 10, sx++)
+		shafts += new /obj/structure/workshop_machine/transmission/line_shaft(locate(sx, 12, 2))
+	var/obj/structure/workshop_machine/masons_saw/saw = new(locate(10, 13, 2))
+	mechanisms_assert(abs(mechanical_drive_factor(saw) - 0.825) < 0.001, "shaft_carries_shared_drive")
+	mechanisms_assert(abs(mechanical_drive_factor(wheel) - 0.825) < 0.001, "draw_slows_every_machine")
+	var/obj/structure/workshop_machine/transmission/line_shaft/extra = new(locate(11, 12, 2))
+	var/list/load = mechanical_drive_load(saw)
+	mechanisms_assert(load[4] && mechanical_drive_factor(saw) == 1, "wooden_run_binds_past_eight")
+	mechanisms_assert(abs(mechanical_drive_factor(wheel) - 0.65) < 0.001, "bound_run_leaves_mover_beside")
+	qdel(extra)
+	var/obj/structure/workshop_machine/transmission/line_shaft/middle = shafts[4]
+	qdel(middle)
+	var/obj/structure/workshop_machine/transmission/line_shaft/clutch/clutch = new(locate(6, 12, 2))
+	clutch.set_engaged(FALSE)
+	mechanisms_assert(mechanical_drive_factor(saw) == 1 && abs(mechanical_drive_factor(wheel) - 0.65) < 0.001, "clutch_out_stops_the_rest")
+	mechanisms_assert(mechanism_actuatable(clutch) && mechanism_actuate(clutch, TRUE) && clutch.engaged, "cord_throws_clutch_in")
+	mechanisms_assert(abs(mechanical_drive_factor(saw) - 0.825) < 0.001, "clutch_in_carries")
+	new /obj/structure/workshop_machine/transmission/gear_box(locate(10, 11, 2))
+	new /obj/structure/workshop_machine/transmission/gear_box(locate(10, 11, 1))
+	var/obj/structure/workshop_machine/masons_saw/low_saw = new(locate(11, 11, 1))
+	mechanisms_assert(abs(mechanical_drive_factor(low_saw) - (1 - 0.35 / 3)) < 0.001, "gear_box_carries_down")
+	var/obj/structure/workshop_machine/transmission/rope_drive/near_wheel = new(locate(11, 13, 2))
+	var/obj/structure/workshop_machine/transmission/rope_drive/far_wheel = new(locate(15, 15, 2))
+	var/obj/structure/workshop_machine/masons_saw/far_saw = new(locate(15, 16, 2))
+	mechanisms_assert(mechanical_drive_factor(far_saw) == 1, "rope_drive_needs_its_rope")
+	near_wheel.tie_to(far_wheel)
+	mechanisms_assert(far_wheel.partner() == near_wheel && mechanical_drive_factor(far_saw) < 1, "rope_drive_carries")
+	treader.forceMove(locate(1, 16, 2))
+	mechanisms_assert(mechanical_drive_factor(far_saw) == 1 && tread.current_capacity() == 0, "still_mover_drives_nothing")
+	for (var/state in list("line_shaft", "line_shaft_iron", "gear_box", "clutch", "clutch_engaged", "rope_drive"))
+		mechanisms_assert(state in icon_states('icons/obj/transmission.dmi'), "icon_[state]")
+
+	// Hopper machines (hopper_machines.dm): they work their hopper on their
+	// own while driven, a batch a step, and stop at an empty hopper or a full
+	// output pile.
+	var/mob/living/human/miller = mechanisms_actor(2, 4, "Miller")
+	var/obj/structure/workshop_machine/mover/treadwheel/mill_tread = new(locate(2, 4, 2))
+	var/obj/structure/workshop_machine/hopper/millstones/stones = new(locate(3, 4, 2))
+	var/turf/stone_turf = get_turf(stones)
+	for (var/i = 1 to 3)
+		var/obj/item/grain = new /obj/item/weapon/reagent_containers/food/snacks/grown/wheat(locate(3, 3, 2))
+		stones.load_item(grain, miller)
+	mechanisms_assert(stones.hopper_count() == 3 && stones.hopper["wheat"] == 3, "millstones_take_grain")
+	mechanisms_assert(!stones.feed_kind(new /obj/item/stack/material/woodplank(locate(3, 3, 2), 1)), "millstones_refuse_planks")
+	mechanisms_assert(stones.work_step() && !(locate(/obj/item/weapon/reagent_containers/food/condiment/flour) in stone_turf), "millstones_wait_for_drive")
+	miller.forceMove(locate(2, 4, 2))
+	mechanisms_assert(stones.work_step() && stones.hopper_count() == 1 && stones.output_count(stone_turf) == 2, "millstones_grind_a_batch")
+	mechanisms_assert(stones.next_step == world.time + 990, "step_time_follows_the_drive")
+	mechanisms_assert(!stones.work_step() && stones.hopper_count() == 0 && stones.output_count(stone_turf) == 3, "millstones_stop_when_empty")
+	for (var/i = 1 to 17)
+		new /obj/item/weapon/reagent_containers/food/condiment/flour(stone_turf)
+	stones.load_item(new /obj/item/weapon/reagent_containers/food/snacks/grown/oat(locate(3, 3, 2)), miller)
+	mechanisms_assert(stones.work_step() && stones.hopper_count() == 1 && stones.output_count(stone_turf) == 20, "output_pile_stops_it")
+	stones.dismantled()
+	mechanisms_assert(locate(/obj/item/weapon/reagent_containers/food/snacks/grown/oat) in stone_turf, "dismantling_returns_feed")
+	qdel(stones)
+	var/obj/structure/workshop_machine/hopper/sash_saw/saw_mill = new(locate(3, 4, 2))
+	var/obj/item/stack/material/wood/logs = new(locate(3, 3, 2), 3)
+	saw_mill.load_item(logs, miller)
+	mechanisms_assert(saw_mill.hopper_count() == 3 && QDELETED(logs), "sash_saw_takes_logs")
+	var/turf/saw_turf = get_turf(saw_mill)
+	for (var/obj/item/stack/material/woodplank/old in saw_turf)
+		qdel(old)
+	saw_mill.work_step()
+	var/obj/item/stack/material/woodplank/planks = locate() in saw_turf
+	mechanisms_assert(planks && planks.amount == 2 && (locate(/obj/item/stack/bark) in saw_turf) && saw_mill.hopper_count() == 2, "sash_saw_cuts_two_planks")
+	mechanisms_assert(saw_mill.drive_draw == 2 && mill_tread.drive_capacity == 1, "hopper_draw")
+	for (var/state in list("millstones", "millstones_on", "sash_saw", "sash_saw_on"))
+		mechanisms_assert(state in icon_states('icons/obj/hopper_machines.dmi'), "icon_[state]")
+
 	// The new art is in the icon file.
 	var/list/states = icon_states('icons/obj/mechanisms.dmi')
-	for (var/state in list("lever", "lever_pulled", "pull_cord", "pull_cord_pulled", "pressure_plate", "pressure_plate_pressed", "rock_drop", "rock_drop_empty"))
+	for (var/state in list("lever", "lever_pulled", "pull_cord", "pull_cord_pulled", "pressure_plate", "pressure_plate_pressed", "rock_drop", "rock_drop_empty", "pulley"))
 		mechanisms_assert(state in states, "icon_[state]")
 
 /world/New()

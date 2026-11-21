@@ -106,6 +106,12 @@ def restore_crafting_projection(path, source):
         # image around the same wait, with release cleanup and unchanged reward.
         wait = 'do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)'
         edits = (
+            # Packed-road garden provenance: reverse only the reviewed post-wait
+            # cover check and the new output type; leave the frozen comparison intact.
+            ('if (!T || T.weather_snow > 0 || (locate(/obj/covers) in T))\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat',
+             'if (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat'),
+            ('var/obj/covers/roads/dirt/DR = new /obj/covers/roads/dirt/worked(T)',
+             'var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)'),
             # Labour speed (code/modules/materials/work_speed.dm, tests/work_speed):
             # digging, tilling and mining waits come from work_delay.
             ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat',
@@ -192,6 +198,8 @@ def restore_crafting_projection(path, source):
             ('\t\tif (open_cave_roof_attempt(H, C)) // open_cave_roof.dm\n\t\t\treturn\n', ''),
             # Hidden material virtue on water drawn at dawn (tests/divine_approval/test_arcane_materials.py).
             ('\t\t\t\t\tif (ishuman(user) && watertype == "water")\n\t\t\t\t\t\tvar/mob/living/human/drawer = user\n\t\t\t\t\t\tdrawer.arcane_drew_water(RG)\n', ''),
+            # Hidden storm glass from sand dug near a lightning strike (tests/divine_approval/test_arcane_ward.py).
+            ('\t\t\t\t\t\tH.arcane_dug_sand(T) // arcane_materials.dm: storm glass\n', ''),
         )
     else:
         edits = ()

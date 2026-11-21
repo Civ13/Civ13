@@ -760,6 +760,7 @@
 	unregisterSpawner()
 	delayed_decay(src,3000)
 	wildlife_deaths.record(src)
+	accolade_animal_killed(src)
 
 	if (istype(src, /mob/living/simple_animal/hostile) && lastattacker && ishuman(lastattacker))
 		var/mob/living/human/H = lastattacker

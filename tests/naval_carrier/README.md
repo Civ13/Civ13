@@ -385,6 +385,20 @@ A harbour sector keeps standing, passing and drifting hazards out by their whole
 Not covered: hazards met by a real ship on passage in a running world (the timer), and how any of it reads in a client.
 
 
+## Berths (`berth_probe.dm`)
+
+Berth upkeep (`code/modules/naval/berth.dm`, docs/berths.md): a wooden hull
+lying wholly in a boathouse slip over deep water is held by the boathouse, can
+be caulked right down to tight and scraped, and her patches planked over with
+one wood or plated with one steel sheet; the same hull out at sea is told to
+find the shallows or a berth. The boathouse survey lists her work with costs.
+A dugout stored in the boathouse dries three times as fast. A slipway hauls a
+hull lying off its ways up onto dry ground with enough hands at the post,
+refuses her under way or with the ways blocked, holds her dry (no bilge, no
+wear, no fouling) and launches her again.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
+
 ## The boathouse (`boathouse_probe.dm`)
 
 ```powershell
@@ -410,6 +424,20 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Records:** unknown types, a repeated tile and an overfull stack are refused; a crew payload with her decodes, one with a bad ship does not, and a long payload without a ship is refused.
 - **Leaving:** stripped, nothing of her is left and the water is open sea again; planks floating beside her stay.
 - **Arriving:** an anchorage is found off a chosen edge (past the sand to deep water); she is built named, at anchor, 12 tiles bow east, with the mast rigged, the crate holding exactly 20 planks and the crowbar where it lay; she is not built twice on the same water; a crew member of her voyage comes aboard, and another voyage's carrier builds her own ship.
+
+## Ships as cargo carriers (`cargo_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/cargo_probe.dm
+```
+
+- **One rule:** ghosts and flick overlays are never cargo (`craft_cargo()`), a laid mine stays where it was laid, and crates, machines and animals are cargo.
+- **Sailing:** a 12-tile hull with a two-tile hold and a ladder down steps one tile east carrying a crate, a raft, a shopping cart, a microscope, a goat and a crowbar on deck and a cask and planks in the hold; the ghost and the flick overlay on deck stay behind; the ladder stays paired.
+- **Packing:** with a hold she packs; the record holds both hold tiles, the raft, cart, microscope and both ladder ends; a hold tile under no deck tile and a ladder entry that is no ladder are refused; a loaded raft keeps her in port.
+- **Leaving:** stripped, nothing is left on the water or in the hold and the rock closes where the hold was.
+- **Arriving:** an anchorage with rock under her hold is found; she is built with her two hold tiles, the ladder paired, the planks and the cask (still holding its water) in the hold and the raft, cart, microscope and goat on deck; she sails on with her hold. Over dirt she is built without a hold, the hold's cargo is stowed on the deck above, and no ladder is left leading to nothing.
+- **Engines:** a 5000cc diesel with its barrel of 200 diesel no longer keeps a hull in port; the record holds an engine entry, a tank offset past one tile is refused, and she is rebuilt with the same engine (size, power, name), stopped, coupled to its barrel with the diesel, and fitted as a drive. `slipway_probe.dm` also packs the freighter with her 82-tile hold and diesel.
+- **Whole cargo:** a raft, dugout, outrigger, shopping cart, carriage, microscope and washing machine each round-trip as a deck cargo record.
 
 ## Voyages on the world chart (`voyage_probe.dm`)
 

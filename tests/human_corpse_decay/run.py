@@ -73,8 +73,8 @@ def main():
             source = source.replace('code\\modules\\organs\\organ_external.dm', stem + '_external.dm')
         elif a.negative_control == 'runtime-parent':
             training = (root / 'code/modules/1713/active_training.dm').read_text(encoding='utf-8')
-            fixed = 'return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token", "course_vault_at")) || ..()'
-            broken = 'return key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token", "course_vault_at") || ..()'
+            fixed = 'return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token")) || ..()'
+            broken = 'return key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token") || ..()'
             if training.count(fixed) != 1:
                 raise RuntimeError('Runtime-parent mutation target changed')
             training_copy.write_text(training.replace(fixed, broken, 1), encoding='utf-8')

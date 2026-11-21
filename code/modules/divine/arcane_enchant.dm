@@ -24,18 +24,24 @@
 var/global/list/arcane_enchant_names = list(
 	"keepsake" = "Keepsake",
 	"cleansing" = "Cleansing",
+	"warding" = "Warding", // arcane_ward.dm
+	"paired" = "Paired stones", // arcane_ward.dm
 )
 
 // Enchantment id -> materials and charges by strength 1 / 2 / 3.
 var/global/list/arcane_enchant_recipes = list(
 	"keepsake" = list("aspect" = "mercy", "count" = 2, "gem" = 1, "charges" = list(1, 2, 3)),
 	"cleansing" = list("aspect" = "mercy", "count" = 1, "gem" = 0, "charges" = list(3, 5, 8)),
+	"warding" = list("aspect" = "ward", "count" = 2, "gem" = 0, "charges" = list(10, 20, 30), "vigil" = TRUE),
+	"paired" = list("aspect" = "omen", "count" = 2, "gem" = 0, "charges" = list(5, 10, 15)),
 )
 
 // Enchantment id -> the one plain line a magic user sees on examine.
 var/global/list/arcane_enchant_lines = list(
 	"keepsake" = "Something about it feels watchful.",
 	"cleansing" = "It seems cleaner than it ought to.",
+	"warding" = "It feels guarded.",
+	"paired" = "It feels as if something is listening.",
 )
 
 // Enchanted items in this world. Runtime only: rebuilt as items load, and an
@@ -49,6 +55,7 @@ var/global/list/arcane_enchanted = list()
 	var/arcane_enchanted_at = 0     // saved: world.realtime when it was made
 
 /mob/living/human
+	var/tmp/list/arcane_imbue_owners = null // owner ckey -> name for a Warding (arcane_ward.dm)
 	var/tmp/arcane_imbue_pick = null  // enchantment id (or "unweave") of the Imbue being asked for
 	var/tmp/arcane_was_critical = FALSE
 
@@ -63,6 +70,7 @@ var/global/list/arcane_enchanted = list()
 	return arcane_enchant
 
 /obj/item/proc/arcane_enchant_end()
+	arcane_pair = null // arcane_ward.dm
 	arcane_enchant = null
 	arcane_charges = 0
 	arcane_enchanter = null
@@ -110,8 +118,15 @@ var/global/list/arcane_enchanted = list()
 		return TRUE
 	return istype(I, /obj/item/clothing/accessory) && !istype(I, /obj/item/clothing/accessory/storage)
 
-/proc/arcane_enchant_fits(kind, obj/item/I)
-	if (!istype(I) || QDELETED(I) || I.magic_repo_id || istype(I, /obj/item/stack))
+/proc/arcane_enchant_fits(kind, obj/target)
+	if (kind == "warding")
+		return arcane_wardable(target) // arcane_ward.dm
+	var/obj/item/I = target
+	if (!istype(I) || QDELETED(I) || I.magic_repo_id)
+		return FALSE
+	if (kind == "paired")
+		return arcane_single_gem(I) // arcane_ward.dm
+	if (istype(I, /obj/item/stack))
 		return FALSE
 	switch (kind)
 		if ("keepsake")
@@ -147,9 +162,9 @@ var/global/list/arcane_enchanted = list()
 /mob/living/human/proc/arcane_imbue_materials(kind)
 	var/list/pouch = arcane_pouch_items()
 	var/list/picked = list()
-	if (kind == "unweave")
+	if (kind == "unweave" || kind == "unbless")
 		for (var/obj/item/I in pouch)
-			if (I.arcane_virtue())
+			if (I.arcane_virtue() && !I.arcane_enchant)
 				picked += I
 				return picked
 		return null
@@ -158,14 +173,14 @@ var/global/list/arcane_enchanted = list()
 		return null
 	var/needed = recipe["count"]
 	for (var/obj/item/I in pouch)
-		if (needed && I.arcane_virtue() == recipe["aspect"])
+		if (needed && I.arcane_virtue() == recipe["aspect"] && !I.arcane_enchant)
 			picked += I
 			needed--
 	if (needed)
 		return null
 	var/gems = recipe["gem"]
 	for (var/obj/item/I in pouch)
-		if (gems && arcane_is_gem(I) && !(I in picked))
+		if (gems && arcane_is_gem(I) && !(I in picked) && !I.arcane_enchant)
 			picked += I
 			gems--
 	if (gems)
@@ -190,78 +205,155 @@ var/global/list/arcane_enchanted = list()
 
 // Why the Imbue being asked for can't go ahead, or null. Called by divine_problem().
 /mob/living/human/proc/arcane_imbue_problem(kind)
-	var/obj/item/I = arcane_imbue_item()
-	if (!I)
+	var/obj/target = arcane_imbue_target() // arcane_ward.dm
+	if (!target)
 		return "Hold the thing in your other hand."
 	if (!kind)
 		return null
+	var/obj/item/I = target
 	if (kind == "unweave")
-		if (!I.arcane_enchant_live())
-			return "There is nothing woven into [I]."
-	else if (!arcane_enchant_fits(kind, I))
-		return "[I] can't hold that."
-	if (!arcane_imbue_materials(kind))
+		if (istype(I) ? !I.arcane_enchant_live() : !target.arcane_ward_live())
+			return "There is nothing woven into [target]."
+	else if (kind == "unbless")
+		if (!istype(I) || !I.arcane_bless_tier)
+			return "There is no favour on [target]."
+	else if (!arcane_enchant_fits(kind, target))
+		return "[target] can't hold that."
+	var/list/materials = arcane_imbue_materials(kind)
+	if (!materials)
 		return "You don't have what that needs in your pouch."
+	if (kind == "paired" && !arcane_pair_partner(materials))
+		return "You need a second plain gem in your pouch."
+	var/list/recipe = arcane_enchant_recipes[kind]
+	if (recipe && recipe["vigil"] && !arcane_vigil_holds())
+		return "The vigil has broken."
 	return null
 
-/proc/arcane_imbue_scope(kind, obj/item/I, list/materials)
+/proc/arcane_imbue_scope(kind, obj/target, list/materials, list/owners = null, vigil = 0)
+	var/obj/item/I = target
 	var/list/names = list()
 	for (var/obj/item/M in materials)
 		names += M.arcane_virtue() ? "[M.name] ([M.arcane_virtue()] [M.arcane_strength])" : "[M.name]"
+	if (kind == "unbless")
+		return "unbless-v1: end the tier [I.arcane_bless_tier] blessing of [I.arcane_bless_stat] (made by [I.arcane_blesser]) on [I.name]; uses up [english_list(names)]; costs the slot"
+	if (kind == "unweave" && !istype(I))
+		return "unweave-v1: end the ward ([target.arcane_ward_charges] left, made by [target.arcane_ward_by]) on [target.name]; uses up [english_list(names)]; costs the slot"
+	if (kind == "warding")
+		var/list/who = list()
+		for (var/key in owners)
+			who += "[owners[key]] ([key])"
+		return "imbue-warding-v1: Warding on [target.name], opening only for [english_list(who)], with [arcane_imbue_charges(kind, materials)] charges; uses up [english_list(names)]; vigil of [vigil]; costs the slot"
 	if (kind == "unweave")
 		return "unweave-v1: end the [I.arcane_enchant] enchantment ([I.arcane_charges] left, made by [I.arcane_enchanter]) on [I.name]; uses up [english_list(names)]; costs the slot"
-	return "imbue-[kind]-v1: [arcane_enchant_names[kind]] on [I.name] with [arcane_imbue_charges(kind, materials)] charges; uses up [english_list(names)]; costs the slot"
+	return "imbue-[kind]-v1: [arcane_enchant_names[kind]] on [target.name] with [arcane_imbue_charges(kind, materials)] charges; uses up [english_list(names)]; costs the slot"
 
 // Asked in Beseech before the prayer goes up: which enchantment, and which
 // old one to let go when this would be a sixth. Returns the scope, or null.
 /mob/living/human/proc/arcane_imbue_choose()
 	arcane_imbue_pick = null
+	arcane_imbue_structure = null
+	arcane_imbue_vigil = null
+	arcane_imbue_owners = null
 	var/obj/item/I = arcane_imbue_item()
-	if (!I)
+	var/obj/target = I
+	if (!I && divine_focus() && !(get_active_hand() && get_inactive_hand())) // a free hand: ward something beside them (arcane_ward.dm)
+		var/list/beside = list()
+		for (var/obj/O in arcane_wardables_beside())
+			beside["[O.name] ([dir2text(get_dir(src, O))])"] = O
+		if (beside.len == 1)
+			target = beside[beside[1]]
+		else if (beside.len > 1)
+			target = beside[player_input(src, "Which one?", "Imbue", null, "anything", beside, TRUE)]
+		if (target)
+			arcane_imbue_structure = target
+	if (!target)
 		to_chat(src, SPAN_WARNING("Hold the thing in your other hand."))
 		return null
 	var/list/choices = list()
 	for (var/kind in arcane_enchant_names)
-		if (arcane_enchant_fits(kind, I))
+		if (arcane_enchant_fits(kind, target))
 			choices[arcane_enchant_names[kind]] = kind
-	if (I.arcane_enchant_live())
+	if (I ? I.arcane_enchant_live() : target.arcane_ward_live())
 		choices["Unweave what is in it"] = "unweave"
+	if (I && I.arcane_bless_tier)
+		choices["Unweave its blessing"] = "unbless" // arcane_bless.dm
 	if (!choices.len)
-		to_chat(src, SPAN_WARNING("Nothing you know can be woven into [I]."))
+		to_chat(src, SPAN_WARNING("Nothing you know can be woven into [target]."))
 		return null
-	var/picked = player_input(src, "What do you ask to weave into [I]?", "Imbue", null, "anything", choices, TRUE)
+	var/picked = player_input(src, "What do you ask to weave into [target]?", "Imbue", null, "anything", choices, TRUE)
 	var/kind = choices[picked]
-	if (!kind || QDELETED(I) || I != arcane_imbue_item())
+	if (!kind || QDELETED(target) || target != arcane_imbue_target())
 		return null
-	if (kind != "unweave")
-		var/list/own = arcane_enchantments_of(ckey)
-		own -= I // re-imbuing replaces, so it does not count twice
+	if (arcane_enchant_names[kind])
+		var/list/own = list()
+		var/list/pairs = list()
+		for (var/obj/item/O in arcane_enchantments_of(ckey))
+			if (O == I || (O.arcane_pair && (O.arcane_pair in pairs)))
+				continue // re-imbuing replaces, and a pair counts once
+			if (O.arcane_pair)
+				pairs += O.arcane_pair
+			own += O
+		for (var/obj/O in arcane_wards_of(ckey)) // arcane_ward.dm
+			if (O != target)
+				own += O
 		if (own.len >= ARCANE_ENCHANT_CAP)
 			var/list/release = list()
-			for (var/obj/item/O in own)
-				release["[O.name] ([arcane_enchant_names[O.arcane_enchant]], [arcane_enchant_place(O)])"] = O
+			for (var/obj/O in own)
+				var/obj/item/OI = O
+				release["[O.name] ([istype(OI) ? arcane_enchant_names[OI.arcane_enchant] : "Warding"], [arcane_enchant_place(O)])"] = O
 			var/gone = player_input(src, "You can't hold more than [ARCANE_ENCHANT_CAP] in the world. Which do you let go?", "Imbue", null, "anything", release, TRUE)
-			var/obj/item/O = release[gone]
-			if (!O || QDELETED(O) || O.arcane_enchanter != ckey)
+			var/obj/O = release[gone]
+			if (!O || QDELETED(O))
 				return null
-			log_admin("Enchantment let go: [key_name(src)] let go of [O.arcane_enchant] on [O] ([O.type]) to make room.")
-			O.arcane_enchant_end()
+			arcane_enchant_let_go(O, ckey)
+	if (kind == "warding")
+		arcane_imbue_owners = arcane_ward_pick_owners() // arcane_ward.dm
+		var/list/roster = divine_gather_vigil(target)
+		if (!roster || QDELETED(target) || target != arcane_imbue_target())
+			return null
+		arcane_imbue_vigil = roster
 	var/problem = arcane_imbue_problem(kind)
 	if (problem)
 		to_chat(src, SPAN_WARNING(problem))
 		return null
 	arcane_imbue_pick = kind
-	return arcane_imbue_scope(kind, I, arcane_imbue_materials(kind))
+	return arcane_imbue_scope(kind, target, arcane_imbue_materials(kind), arcane_imbue_owners, length(arcane_imbue_vigil))
+
+// Lets go of one of this magic user's enchantments, both stones of a pair.
+/proc/arcane_enchant_let_go(obj/O, ckey)
+	var/obj/item/I = O
+	if (istype(I))
+		if (I.arcane_enchanter != ckey)
+			return FALSE
+		log_admin("Enchantment let go: [ckey] let go of [I.arcane_enchant] on [I] ([I.type]) to make room.")
+		var/obj/item/other = I.arcane_pair_other()
+		I.arcane_enchant_end()
+		if (other)
+			other.arcane_enchant_end()
+		return TRUE
+	if (O.arcane_ward_by != ckey)
+		return FALSE
+	log_admin("Ward let go: [ckey] let go of the ward on [O] ([O.type]) to make room.")
+	O.arcane_ward_end()
+	return TRUE
 
 // On Grant, from divine_dispatch() after every recheck: use up the materials
 // and weave the enchantment in, with no yield.
-/mob/living/human/proc/arcane_imbue_apply(obj/item/I)
+/mob/living/human/proc/arcane_imbue_apply(obj/target)
 	var/kind = arcane_imbue_pick
+	var/list/owners = arcane_imbue_owners
 	arcane_imbue_pick = null
+	arcane_imbue_owners = null
+	arcane_imbue_vigil = null
+	arcane_imbue_structure = null
 	var/list/materials = arcane_imbue_materials(kind)
-	if (!istype(I) || !materials)
+	if (!istype(target) || !materials)
 		return FALSE
-	var/charges = kind == "unweave" ? 0 : arcane_imbue_charges(kind, materials)
+	var/obj/item/I = target
+	var/obj/item/partner = kind == "paired" ? arcane_pair_partner(materials) : null
+	if (kind == "paired" && !partner)
+		return FALSE
+	var/charges = arcane_enchant_names[kind] ? arcane_imbue_charges(kind, materials) : 0
 	for (var/obj/item/M in materials)
 		if (istype(M, /obj/item/stack))
 			var/obj/item/stack/S = M
@@ -272,10 +364,26 @@ var/global/list/arcane_enchanted = list()
 		if (istype(holder))
 			holder.remove_from_storage(M, get_turf(src))
 		qdel(M)
+	if (kind == "unbless")
+		log_admin("Blessing unwoven: [key_name(src)] unwove the tier [I.arcane_bless_tier] [I.arcane_bless_stat] blessing made by [I.arcane_blesser] from [I] ([I.type]).")
+		I.arcane_bless_end()
+		to_chat(src, SPAN_NOTICE("<i>The favour leaves [I].</i>"))
+		return TRUE
 	if (kind == "unweave")
-		log_admin("Enchantment unwoven: [key_name(src)] unwove [I.arcane_enchant] made by [I.arcane_enchanter] from [I] ([I.type]).")
-		I.arcane_enchant_end()
-		to_chat(src, SPAN_NOTICE("<i>Something leaves [I].</i>"))
+		if (!istype(I))
+			log_admin("Ward unwoven: [key_name(src)] unwove the ward made by [target.arcane_ward_by] from [target] ([target.type]).")
+			target.arcane_ward_end()
+		else
+			log_admin("Enchantment unwoven: [key_name(src)] unwove [I.arcane_enchant] made by [I.arcane_enchanter] from [I] ([I.type]).")
+			I.arcane_enchant_end()
+		to_chat(src, SPAN_NOTICE("<i>Something leaves [target].</i>"))
+		return TRUE
+	if (kind == "warding")
+		arcane_ward_apply(target, materials, islist(owners) ? owners : list("[ckey]" = real_name)) // arcane_ward.dm
+		return TRUE
+	if (kind == "paired")
+		arcane_pair_apply(I, partner, charges) // arcane_ward.dm
+		to_chat(src, SPAN_NOTICE("<i>[arcane_enchant_lines[kind]]</i>"))
 		return TRUE
 	I.arcane_enchant_end()
 	I.arcane_enchant = kind

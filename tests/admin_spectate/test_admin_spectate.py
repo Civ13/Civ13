@@ -91,11 +91,12 @@ class AdminSpectateTests(unittest.TestCase):
         life = proc_body(read('code/game/mob/observer/ghost/ghost.dm'), '/mob/observer/ghost/Life()')
         self.assertLess(life.index('client.admin_player_view'), life.index('client.images.Remove'))
 
-    def test_player_map_view_button(self):
-        text = read('code/modules/admin/verbs/player_map.dm')
-        self.assertIn("btn('View',function(){go('apm=view&m='", text)
-        topic = proc_body(text, '/datum/admin_player_map_controller/Topic(')
-        self.assertLess(topic.index('admin_player_map_allowed(C)'), topic.index('admin_start_player_view'))
+    def test_admin_map_view_button(self):
+        text = read('code/modules/admin/verbs/admin_map.dm')
+        self.assertIn("btn('View',function(){go('am=view&m='", text)
+        topic = proc_body(text, '/datum/admin_map_controller/Topic(')
+        self.assertLess(topic.index('admin_map_allowed(C)'), topic.index('admin_start_player_view'))
+        self.assertLess(topic.index('admin_map_sees_players(C)'), topic.index('admin_start_player_view'))
 
 
 if __name__ == '__main__':

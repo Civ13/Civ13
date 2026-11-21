@@ -113,4 +113,11 @@ describe('character setup', () => {
     expect(screen.getByText(/born under The Owl/)).toBeTruthy();
     expect(screen.queryByText('Leave it to the stars')).toBeNull();
   });
+  it('shows a sign glyph only from a plain resource name', () => {
+    const signs = [{ id: 'ox', name: 'The Ox', image: 'birth_sign_ox.png' }, { id: 'owl', name: 'The Owl', image: 'http://example.com/x.png' }];
+    const { container } = render(<CharacterSetup template="character_setup.tmpl" interactive act={vi.fn()} data={{ ...sample, tab: 'chart', chart: { ...sample.chart, signs } }} />);
+    const images = container.querySelectorAll('img.setup-chart-glyph');
+    expect(images.length).toBe(1);
+    expect(images[0].getAttribute('src')).toBe('birth_sign_ox.png');
+  });
 });

@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/modules/naval/ship_draught.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8', errors='replace')
+SUB = (ROOT / 'code/modules/naval/sub_draught.dm').read_text(encoding='utf-8')
 LOAD = (ROOT / 'code/modules/naval/hull_load.dm').read_text(encoding='utf-8')
 
 # What the draught calls a material, as the recipe file names it.
@@ -32,8 +33,8 @@ def recipe_costs():
     return out
 
 
-def table(name):
-    block = SOURCE.split('var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
+def table(name, source=None):
+    block = (source or SOURCE).split('var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
     rows = {}
     for key, path, cost in re.findall(r'"(\w)" = list\("name" = "[^"]+", "path" = (/[\w/]+), "cost" = list\(([^)]*)\)', block):
         rows[key] = (path, dict((m, int(n)) for m, n in re.findall(r'"(\w+)" = (\d+)', cost)))
@@ -53,6 +54,59 @@ class DraughtSources(unittest.TestCase):
                 self.assertEqual(len(bought), 1)
                 (name, number), = bought.items()
                 self.assertIn((number), [amount for material, amount in rows_for if material in MATERIALS[name]], rows_for)
+
+    def test_designer_has_a_picture_of_every_floor_and_piece(self):
+        # scripts/build_ship_designer_icons.py cuts them from the game's DMIs.
+        designer = (ROOT / 'code/modules/naval/ship_designer.dm').read_text(encoding='utf-8')
+        sent = dict(re.findall(r'"shipd_(\w+)\.png" = \'icons/ship_designer/(\w+)\.png\'', designer))
+        turning = set(re.findall(r'"(\w)" = list\([^\n]*"turns" = TRUE', SOURCE))
+        wanted = ['floor_%s' % key for key in table('ship_draught_floors')]
+        for key in table('ship_draught_pieces'):
+            wanted += ['piece_%s_%d' % (key, facing) for facing in (1, 2, 4, 8)] if key in turning else ['piece_%s' % key]
+        self.assertEqual(sorted(sent), sorted(wanted))
+        # Windows serves the browser cache without regard to case.
+        self.assertEqual(len({name.lower() for name in sent}), len(sent))
+        for name, source in sent.items():
+            with self.subTest(picture=name):
+                self.assertEqual(name, source)
+                data = (ROOT / 'icons/ship_designer' / (source + '.png')).read_bytes()
+                self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
+                self.assertEqual((int.from_bytes(data[16:20], 'big'), int.from_bytes(data[20:24], 'big')), (32, 32))
+        on_disk = sorted(path.stem for path in (ROOT / 'icons/ship_designer').glob('*.png'))
+        self.assertEqual(on_disk, sorted(wanted))
+
+    def test_submarine_designer_has_a_picture_of_every_fitting(self):
+        # scripts/build_sub_designer_icons.py cuts them from the game's DMIs.
+        designer = (ROOT / 'code/modules/naval/sub_designer.dm').read_text(encoding='utf-8')
+        sent = dict(re.findall(r'"(\w)" = \'icons/sub_designer/fit_(\w)\.png\'', designer))
+        self.assertEqual(sorted(sent), sorted(table('sub_draught_fittings', SUB)))
+        self.assertEqual(len({key.lower() for key in sent}), len(sent))
+        for key, source in sent.items():
+            with self.subTest(fitting=key):
+                self.assertEqual(key, source)
+                data = (ROOT / 'icons/sub_designer' / ('fit_%s.png' % source)).read_bytes()
+                self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
+                self.assertEqual((int.from_bytes(data[16:20], 'big'), int.from_bytes(data[20:24], 'big')), (32, 32))
+        on_disk = sorted(path.stem for path in (ROOT / 'icons/sub_designer').glob('*.png'))
+        self.assertEqual(on_disk, sorted('fit_%s' % key for key in sent))
+
+    def test_submarine_costs_match_hand_recipes(self):
+        # Submarine sheets (sub_draught.dm) reckon the same way.
+        recipes = recipe_costs()
+        rows = table('sub_draught_fittings', SUB)
+        self.assertGreaterEqual(len(rows), 6)
+        for key, (path, cost) in rows.items():
+            with self.subTest(fitting=key, path=path):
+                (name, number), = cost.items()
+                self.assertIn(number, [amount for material, amount in recipes.get(path, []) if material in MATERIALS[name]], path)
+
+        def steel(path):
+            return [amount for material, amount in recipes[path] if material == '/material/steel/'][0]
+
+        section = int(re.search(r'#define SUB_DRAUGHT_SECTION_STEEL (\d+)', SUB).group(1))
+        self.assertEqual(section, steel('/obj/structure/vehicleparts/frame/ship/steel/submarine/section'))
+        fixed = int(re.search(r'sub_draught_fixed_cost = list\("steel" = (\d+)\)', SUB).group(1))
+        self.assertEqual(fixed, steel('/obj/structure/vehicleparts/axis/ship/submarine/controls') + steel('/obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank'))
 
     def test_plank_wall_takes_the_frame_boards(self):
         boards = re.search(r'#define WALLFRAME_PLANK_BOARDS (\d+)', (ROOT / 'code/modules/1713/structures.dm').read_text(encoding='utf-8')).group(1)

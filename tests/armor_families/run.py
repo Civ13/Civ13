@@ -24,6 +24,8 @@ CONTROLS = {
                       '\t\t\tC.armor_tier = tier\n', '\t\t\tC.armor_tier = C.armor_tier\n', 'FAIL:'),
     'era-closed': ('code/game/objects/structures/blacksmithing/blacksmithing.dm',
                    '"4+" = list("cancel","helmets","other helmets","armor",', '"4" = list("cancel","helmets","other helmets","armor",', 'FAIL:'),
+    'no-strengths': ('code/game/objects/armor_families.dm',
+                     '\tif (!armor_family || armor_tier <= 0)\n\t\treturn null\n\tif (armor_underlayer)\n', '\treturn null\n\tif (armor_underlayer)\n', 'FAIL:'),
     'full-underlayer': ('code/game/objects/armor_families.dm',
                         '\tif (armor_underlayer && (type == HIT_CUT || type == HIT_PIERCE))\n\t\treturn 0\n', '', 'FAIL:'),
 }

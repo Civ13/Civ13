@@ -60,9 +60,15 @@
 	return ..()
 
 // How tight caulking can make her where she lies: sound afloat on deep water,
-// tight in the shallows.
+// tight in the shallows or at a berth (berth.dm).
 /datum/hull_ledger/proc/caulk_floor()
-	return over_deep() ? HULL_SEAMS_FAIR : 0
+	return bottom_reachable() ? 0 : HULL_SEAMS_FAIR
+
+// Twists of oakum it takes to caulk her as tight as she can be made here.
+/datum/hull_ledger/proc/caulk_wanted()
+	if (!has_seams() || seams <= caulk_floor() + 0.001)
+		return 0
+	return CEILING((seams - caulk_floor()) * seep_tiles / CAULK_TILES_PER_TWIST, 1)
 
 // Why H cannot caulk the hull under plank P with W, or null.
 /proc/hull_caulk_refusal(mob/living/human/H, obj/item/stack/tarred_oakum/W, obj/covers/P)
@@ -88,7 +94,7 @@
 	if (L.depth() >= HULL_DEPTH_AWASH)
 		return "her seams are under water: bail her first"
 	if (L.seams <= L.caulk_floor() + 0.001)
-		return L.seams <= 0.001 ? "her seams are tight" : "her seams are as tight as they can be made afloat on deep water: lay her in the shallows to finish the job"
+		return L.seams <= 0.001 ? "her seams are tight" : "her seams are as tight as they can be made afloat on deep water: lay her in the shallows or bring her to a berth to finish the job"
 	return null
 
 // One twist driven home. Returns how much tighter her seams are.

@@ -69,14 +69,15 @@ var/global/list/region_travel_generic_defaults = list()
 	return TRUE
 
 // Deck cargo that is not an item. Masts, benches, chests and the helm have
-// narrower deck entries; vehicles, engines and trails are never cargo.
+// narrower deck entries. Carts, small boats, machines and engines go whole;
+// frame vehicle parts and trails are never cargo.
 /proc/region_travel_generic_cargo_type_ok(path)
 	if(ispath(path, /mob/living/simple_animal)) return TRUE
-	if(!ispath(path, /obj/structure)) return FALSE
+	if(!ispath(path, /obj/structure) && !ispath(path, /obj/machinery)) return FALSE
 	// Nor what only an admin or the map places: spawners, traders, printers,
 	// level links, docks and helms, which a forged record must never create.
-	for(var/denied in list(/obj/structure/vehicleparts, /obj/structure/vehicle, /obj/structure/hull_tiller, /obj/structure/region_gate,
-		/obj/structure/engine, /obj/structure/animalspawner, /obj/structure/money_printer, /obj/structure/event_stash,
+	for(var/denied in list(/obj/structure/vehicleparts, /obj/structure/hull_tiller, /obj/structure/region_gate,
+		/obj/structure/animalspawner, /obj/structure/money_printer, /obj/structure/event_stash,
 		/obj/structure/npc_vendor, /obj/structure/specialist_trader, /obj/structure/supplier, /obj/structure/multiz,
 		/obj/structure/docking_port, /obj/structure/chart_helm, /obj/structure/vessel_helm, /obj/structure/cargo_hold))
 		if(ispath(path, denied)) return FALSE

@@ -38,10 +38,16 @@ landing, under a point of interest, or as a deliberate repeating accent.
 Do not alternate it randomly with unrelated stone. The edge and both corners
 are directional; the field and inset are fixed.
 
-Both new palettes are available to map authors. They do not change map generation,
-physics, doors, or loot, and do not change the existing crafting and firing
-process for clay. A player route for the new terracotta set is separate from art
-and mapper integration.
+Both palettes are available to map authors and do not change map generation,
+physics, doors, or loot.
+
+Players build the terracotta set too. Clay is shaped into unfired terracotta
+tiles (Pottery & Cookware), fired in a kiln into a stack of terracotta tiles,
+and the tiles lay the field, border, corners and inset through normal floor
+placement. Border and corner pieces go down facing south; **Rotate Terracotta
+Border** from beside one turns it. The same tiles lay herringbone brick paving
+(`/obj/covers/brick_paving`, Brickmaking), which is tougher than the tile floor.
+Terracotta is fireproof but takes less damage than cut stone before it breaks.
 
 ## Verification
 
@@ -76,3 +82,12 @@ patterns 1, 7 and 8 onto the warm brown hues of the other wood floors. The pink
 slabs share their edge crossings, so the random pick per tile never shows a
 break. The eleven wood patterns carry descriptive names (narrow plank,
 basketweave, herringbone, parquet and so on) in place of numbers.
+
+## Iron floors
+
+`/obj/covers/iron_plate` and `/obj/covers/iron_grating` are laid from iron
+(Iron Smithing), one bar each. Both are fireproof and count as an iron floor
+for foundations and wall weathering. The plate is the hardest floor before
+steel. The grating lets blood and spills fall through when someone walks on
+it; gibs, writing, cobwebs and molten metal stay. The art is drawn by
+`scripts/draw_iron_floors.py` (`--check` compares it with the sheet).

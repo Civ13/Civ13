@@ -163,13 +163,21 @@ var/global/weather_storm_count = 0
 		return back_x
 	return min(back_x, back_y)
 
+// The map's wind as a unit vector, so a diagonal wind carries storms no
+// faster than a straight one.
+/proc/weather_wind_unit()
+	var/list/v = weather_wind_vector()
+	if (v[1] && v[2])
+		return list(v[1] * 0.7071, v[2] * 0.7071)
+	return v
+
 // Tiles a decisecond: a tile every 8 seconds in a calm, every 2.5 in a gale.
 /proc/weather_wind_speed()
 	return 0.0125 + 0.007 * (map ? map.windspeedvar : 1)
 
-// The next wind direction: it holds or veers a quarter turn, never reverses.
+// The next wind direction: it holds or veers an eighth of a turn, never reverses.
 /proc/weather_veer(direction)
-	var/static/list/compass = list("North", "East", "South", "West")
+	var/static/list/compass = list("North", "Northeast", "East", "Southeast", "South", "Southwest", "West", "Northwest")
 	var/at = compass.Find(direction)
 	if (!at)
 		return pick(compass)
@@ -181,10 +189,14 @@ var/global/weather_storm_count = 0
 		at = 1
 	return compass[at]
 
-// Wind strength 0 to 4 at a tile: the map's wind, and a gale under a storm.
+// Wind strength 0 to 4 at a tile: the local wind (weather_wind.dm), and a
+// gale under a storm. Before the air grid exists it is the map's wind.
 /proc/weather_wind_at(atom/A)
 	. = map ? map.windspeedvar : 1
 	var/turf/T = get_turf(A)
+	if (T && weather_air)
+		var/list/v = weather_wind_vector_at(T)
+		. = weather_wind_strength(sqrt(v[1] * v[1] + v[2] * v[2]))
 	if (!T || !weather_storm_count)
 		return
 	var/strength = weather_storm_strength(T.x, T.y)
@@ -218,7 +230,7 @@ var/global/weather_storm_count = 0
 		aim_x = rand(round(world.maxx * 0.1), max(1, round(world.maxx * 0.9)))
 	if (isnull(aim_y))
 		aim_y = rand(round(world.maxy * 0.1), max(1, round(world.maxy * 0.9)))
-	var/list/wind = weather_wind_vector()
+	var/list/wind = weather_wind_unit()
 	var/speed = weather_wind_speed()
 	S.vel_x = wind[1] * speed
 	S.vel_y = wind[2] * speed
@@ -394,7 +406,7 @@ var/global/weather_sample_zone_look = null
 
 /proc/weather_systems_step()
 	weather_vanes_turn()
-	var/list/wind = weather_wind_vector()
+	var/list/wind = weather_wind_unit()
 	var/speed = weather_wind_speed()
 	for (var/datum/weather_system/S in weather_systems.Copy())
 		if (S.spent())

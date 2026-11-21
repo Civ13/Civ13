@@ -118,6 +118,31 @@ var/naval_runtime_error = FALSE
 	S = new(A)
 	naval_check(isnull(S.refusal) && S.frames.len == 6 && S.width == 2 && S.height == 3 && S.engine && S.tank && S.seat && S.movers.len == 4 && !S.missing().len, "a 2 by 3 bed with its parts surveys complete from an axis on any frame")
 	naval_check(findtext(S.report(), "2 by 3 frames") && findtext(S.report(), "everything a vehicle needs"), "the build sheet says what was found ([S.report()])")
+	// Design checks (craft/vehicle_checks.dm): a fuelled bed only lacks a lamp.
+	var/datum/design_report/DR = S.check_design()
+	naval_check(!DR.blocked() && !DR.count(DESIGN_WARNING) && DR.count(DESIGN_NOTE) == 1 && findtext(S.report(), "no lamp"), "the fuelled bed has no warnings, only a note about its lamp ([jointext(DR.texts(DESIGN_WARNING), " ")])")
+	qdel(DR)
+	var/datum/reagents/fuel = S.tank.reagents
+	var/list/kept = list()
+	for (var/datum/reagent/G in fuel.reagent_list)
+		kept[G.id] = G.volume
+	fuel.clear_reagents()
+	DR = S.check_design()
+	naval_check(findtext(jointext(DR.texts(DESIGN_WARNING), " "), "is empty"), "an empty tank is warned of before assembly")
+	qdel(DR)
+	fuel.add_reagent("water", 10)
+	DR = S.check_design()
+	naval_check(findtext(jointext(DR.texts(DESIGN_WARNING), " "), "holds nothing"), "a tank of something the engine cannot burn is warned of")
+	qdel(DR)
+	fuel.clear_reagents()
+	for (var/id in kept)
+		fuel.add_reagent(id, kept[id])
+	var/old_power = S.engine.maxpower
+	S.engine.maxpower = 1
+	DR = S.check_design()
+	naval_check(findtext(jointext(DR.texts(DESIGN_WARNING), " "), "it will stall"), "an engine too weak for the weight is warned of")
+	qdel(DR)
+	S.engine.maxpower = old_power
 	A.name = "Mule"
 	naval_check(isnull(A.assemble(NORTH)) && A.hand_built && A.dir == NORTH, "the bed assembles facing north")
 	// A second bed laid against it is its own vehicle.

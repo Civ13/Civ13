@@ -160,6 +160,14 @@ class InputTrace(unittest.TestCase):
                                 '\t\treturn\n')
         self.assertEqual(prior.count(approved_click_route), 1, 'approved click route block')
         prior = prior.replace(approved_click_route, '')
+        # Touch and familiarity hooks run once per dispatched click and never
+        # change where the click goes (repository.dm, familiarity.dm).
+        approved_touch_hook = '\tmagic_touch_hook(src, A) // repository.dm: a readied tie catches this touch; the click goes on as usual\n'
+        self.assertEqual(prior.count(approved_touch_hook), 1, 'approved touch hook')
+        prior = prior.replace(approved_touch_hook, '')
+        approved_familiar_click = '\tnote_familiar_click(src, W, A) // research familiarity (familiarity.dm)\n'
+        self.assertEqual(prior.count(approved_familiar_click), 1, 'approved familiarity hook')
+        prior = prior.replace(approved_familiar_click, '')
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')

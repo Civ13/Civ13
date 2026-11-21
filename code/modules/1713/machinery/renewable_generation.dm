@@ -26,7 +26,7 @@
 	var/area/A = get_area(src)
 	if (!map || !A || A.location != AREA_OUTSIDE || !isturf(loc))
 		return 0
-	var/fraction = wind_fraction(clamp(round(map.windspeedvar), 0, 4))
+	var/fraction = wind_fraction(clamp(round(weather_wind_at(src)), 0, 4))
 	// Rotors closer than three tiles share the same air and lose half.
 	for (var/obj/structure/civ_generator/wind/other in range(2, loc))
 		if (other != src && other.anchored)
@@ -34,7 +34,7 @@
 			break
 	return round(peak_output * fraction)
 
-// Output fraction by map.windspeedvar: 0 calm, 1 light, 2 moderate, 3 strong, 4 gale.
+// Output fraction by the local wind (weather_wind_at): 0 calm, 1 light, 2 moderate, 3 strong, 4 gale.
 /obj/structure/civ_generator/wind/proc/wind_fraction(speed)
 	return 0
 

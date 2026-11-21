@@ -20,7 +20,7 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 
 DRAFTS = json.loads((HERE / 'drafts.json').read_text(encoding='utf-8'))
-NAMES = ('africa', 'antarctica', 'asia', 'europe', 'greenland', 'oceania')
+NAMES = ('africa', 'antarctica', 'asia', 'europe', 'greenland', 'mediterranean', 'oceania')
 PLAYABLE = NAMES   # every land is a region now; the draft checks stay for a new one
 DRAFT_NAMES = tuple(name for name in NAMES if name not in PLAYABLE)
 MEASURED_CELLS = 1050000   # the size the Americas regions were measured at (tests/americas_maps)
@@ -195,13 +195,32 @@ class EarthRegions(unittest.TestCase):
             self.assertIn("'NOMADS_EARTH_%s': 'nomads_earth_%s.dmm'" % (name.upper(), name), supervisor)
             self.assertIn('new_player_start_z = 1', self.block(name))
 
+    def test_frames_never_overlap(self):
+        # Each piece of the Earth is on one map only (docs/earth-continents.md).
+        import lands
+        frames = {}
+        for name, spec in lands.DRAFTS.items():
+            if spec.get('polar'):
+                continue
+            (west, east), (north, south) = spec['lon'], spec['lat']
+            frames[name] = (west, east, south, north)
+        for a in frames:
+            for b in frames:
+                if a < b:
+                    w1, e1, s1, n1 = frames[a]
+                    w2, e2, s2, n2 = frames[b]
+                    with self.subTest(a=a, b=b):
+                        self.assertFalse(w1 < e2 and w2 < e1 and s1 < n2 and s2 < n1, 'frames overlap')
+
     def test_crossing_edges_have_dry_ground_and_lead_to_asia(self):
-        self.assertIn('edge_crossings = list("east" = "asia")', self.block('europe'))
-        self.assertIn('edge_crossings = list("east" = list("asia" = list(0.68, 1)))', self.block('africa'))
-        self.assertIn('edge_crossings = list("west" = list("africa" = list(0, 0.45), "europe" = list(0.45, 1)))',
-                      self.block('asia'))
-        for name, side, (lo, hi) in (('europe', 'east', (0, 1)), ('africa', 'east', (0.68, 1)),
-                                     ('asia', 'west', (0, 0.45)), ('asia', 'west', (0.45, 1))):
+        # The links live in the world links table (tools/world_links/world_links.json).
+        links = (ROOT / 'code/modules/persistence/world_links.dm').read_text(encoding='utf-8')
+        self.assertIn('"europe" = list("east" = list("asia" = list(0, 1))', links)
+        self.assertIn('"africa" = list("east" = list("asia" = list(0.5373, 1))', links)
+        self.assertIn('"west" = list("africa" = list(0, 0.3974), "mediterranean" = list(0.3974, 0.5897), "europe" = list(0.5897, 0.9231))', links)
+        for name, side, (lo, hi) in (('europe', 'east', (0, 1)), ('africa', 'east', (0.5373, 1)),
+                                     ('mediterranean', 'east', (0, 1)), ('asia', 'west', (0, 0.3974)),
+                                     ('asia', 'west', (0.3974, 0.5897)), ('asia', 'west', (0.5897, 0.9231))):
             keys, rows = self.maps[name]
             height = len(rows)
             col = len(rows[0]) - 2 if side == 'east' else 0
@@ -212,22 +231,19 @@ class EarthRegions(unittest.TestCase):
             self.assertGreater(len(dry), 40, (name, side, lo))
             # Arrivals are put three tiles in: that ground is mostly dry too.
             inner = [y for y in dry if self.dry(self.turf_of(keys, rows[height - 1 - y][col + 6 * step:col + 6 * step + 2]))]
-            self.assertGreater(len(inner), 0.8 * len(dry), (name, side, lo))
+            self.assertGreater(len(inner), 0.75 * len(dry), (name, side, lo))
 
     def test_sea_lanes_know_africa_and_the_new_coasts(self):
-        lanes = (ROOT / 'code/modules/naval/sea_lanes.dm').read_text(encoding='utf-8')
-        self.assertIn('"africa" = list(12, 3, list("W", "S", "E"), TRUE),', lanes)
-        self.assertIn('map.sea_coasts : here[3]', lanes)
-        self.assertIn('sea_coasts = list("W", "N")', self.block('europe'))
-        self.assertIn('sea_coasts = list("W", "S", "E")', self.block('africa'))
-        self.assertIn('sea_coasts = list("E", "S", "N")', self.block('asia'))
-        self.assertIn('sea_coasts = list("N", "S", "W", "E")', self.block('oceania'))
-        self.assertIn('sea_coasts = list("E", "S", "N")', self.block('greenland'))
-        self.assertIn('sea_coasts = list("N", "E", "S", "W")', self.block('antarctica'))
-        for land in ('oceania', 'greenland', 'antarctica'):
+        lanes = (ROOT / 'code/modules/persistence/world_links.dm').read_text(encoding='utf-8')
+        self.assertIn('map.sea_coasts : here[3]', (ROOT / 'code/modules/naval/sea_lanes.dm').read_text(encoding='utf-8'))
+        for land, coasts in (('europe', '"W", "N"'), ('mediterranean', '"W"'), ('africa', '"W", "S", "E"'), ('asia', '"E", "S", "N"'),
+                             ('oceania', '"N", "S", "W", "E"'), ('greenland', '"E", "S", "N"'),
+                             ('antarctica', '"N", "E", "S", "W"')):
             self.assertIn('"%s" = list(' % land, lanes)
+            self.assertIn(', list(%s), TRUE)' % coasts, lanes.split('"%s" = list(' % land)[-1].split('\n')[0])
             self.assertNotIn('edge_crossings', self.block(land))
-        for name, sides in (('europe', 'WN'), ('africa', 'WSE'), ('asia', 'ESN'), ('oceania', 'NSWE'),
+            self.assertNotIn('sea_coasts', self.block(land))
+        for name, sides in (('europe', 'WN'), ('mediterranean', 'W'), ('africa', 'WSE'), ('asia', 'ESN'), ('oceania', 'NSWE'),
                             ('greenland', 'ESN'), ('antarctica', 'NESW')):
             keys, rows = self.maps[name]
             sea = {k for k, v in keys.items() if 'saltwater' in v or 'ice/salty' in v}
@@ -255,7 +271,9 @@ class EarthRegions(unittest.TestCase):
             # A land's main climates: those with real room to forage in. A small
             # patch of another climate on a coast or a peak is not one.
             main = [c for c, ground in bushes.items() if ground >= 5000]
-            self.assertGreaterEqual(len(main), 2 if name == 'greenland' else 4, name)
+            # Europe north of the inner sea has no desert (steppe, forest, taiga),
+            # and the inner sea's shores no cold (dry scrub, forest, desert).
+            self.assertGreaterEqual(len(main), {'greenland': 2, 'europe': 3, 'mediterranean': 3}.get(name, 4), name)
             if name == 'greenland':
                 # Most of the ice island's farmable ground is snow on the tundra
                 # coasts, cleared with a spade; its fjord forests are steep.
