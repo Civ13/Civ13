@@ -57,7 +57,7 @@ The weather process still rolls the season's pool through
 `change_weather_somehow()` and the per-map policy in
 [weather-policy.md](weather-policy.md). A wet or extreme result now calls
 `weather_roll()`, which sends one storm across the map instead of changing
-every zone. Wide maps are rolled more often and hold more storms at once
+every zone. The storm forms on a low's front ([weather-fronts.md](weather-fronts.md)). Wide maps are rolled more often and hold more storms at once
 (`weather_system_capacity()`: one per 40,000 tiles, at most 6).
 
 The scripted blizzard, sandstorm and heat wave timers are gone, along with
