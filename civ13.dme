@@ -2111,6 +2111,7 @@
 #include "code\modules\1713\lifting_machines.dm"
 #include "code\modules\1713\building_site.dm"
 #include "code\modules\1713\mechanical_power.dm"
+#include "code\modules\1713\mechanisms.dm"
 #include "code\modules\1713\machine_shop.dm"
 #include "code\modules\1713\power_cranes.dm"
 #include "code\modules\1713\earthworking_heavy.dm"
