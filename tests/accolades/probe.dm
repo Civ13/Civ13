@@ -190,3 +190,41 @@ var/acc_runtime_error = FALSE
 	S.persistence_owner_ckey = "@2gina"
 	acc_check(accolade_mob_ckey(S) == "gina", "a second character earns for the same person")
 	acc_check(karma_character_ckey(S) == "gina", "karma follows the person, not the slot")
+
+	// Extra character slots: bought in order with points, spent once.
+	acc_check(character_slot_count(character_slot_state("ivy")) == 1, "every account has one character")
+	acc_check(istext(character_slot_buy("ivy")), "a slot cannot be bought without points")
+	for (var/id in list("sailor", "settled", "survivor", "old_hand", "four_seasons", "apprentice", "scholar"))
+		accolade_meet("ivy", id)
+		accolade_claim("ivy", id)
+	var/ivy_points = accolade_points("ivy")
+	acc_check(ivy_points >= 100, "the test account earned enough for a slot")
+	var/list/bought = character_slot_buy("ivy")
+	acc_check(islist(bought) && bought["body"]["slot"] == 2, "the first extra slot is slot 2")
+	var/list/ivy = character_slot_state("ivy")
+	acc_check(character_slot_open(ivy, 2) && !character_slot_open(ivy, 3), "only the bought slot opens")
+	acc_check(character_slot_balance("ivy") == ivy_points - 100 && accolade_points("ivy") == ivy_points, "a slot spends points without taking back accolades")
+	acc_check(character_slot_next(ivy) == 3 && character_slot_cost(3) == 200 && character_slot_cost(4) == 300, "slots 3 and 4 cost 200 and 300")
+	shared_records.add("ivy", "character_slot", list("slot" = 2, "points" = 100), "ivy", "", character_slot_record_id("character_slot", "ivy", 2))
+	character_slot_forget("ivy")
+	acc_check(character_slot_balance("ivy") == ivy_points - 100, "the same slot from two regions is paid for once")
+	// Switching back to a slot waits an hour.
+	shared_records.add("ivy", "character_switch", list("slot" = 2, "from" = 1), "ivy")
+	character_slot_forget("ivy")
+	ivy = character_slot_state("ivy")
+	acc_check(ivy["active"] == 2, "the account plays the slot it switched to")
+	acc_check(character_slot_return_wait(ivy, 1) > 3000 && !character_slot_return_wait(ivy, 2), "a slot left waits an hour")
+	// Kin: the account's other characters are named on examine.
+	var/mob/living/human/K1 = new /mob/living/human(locate(9, 6, 1))
+	K1.real_name = "Ivy Stone"
+	K1.persistence_owner_ckey = "ivy"
+	var/mob/living/human/K2 = new /mob/living/human(locate(10, 6, 1))
+	K2.real_name = "Ash Stone"
+	K2.persistence_owner_ckey = "@2ivy"
+	K1.character_slot_note_name()
+	K2.character_slot_note_name()
+	acc_check(english_list(K1.character_kin_names()) == "Ash Stone" && english_list(K2.character_kin_names()) == "Ivy Stone", "kin see each other's names")
+	acc_check(!length(M.character_kin_names()), "a single character has no kin")
+	acc_check(!K1.character_slot_body_refusal(), "a calm character may be left")
+	K1.round_fact_hit_time = world.time
+	acc_check(K1.character_slot_body_refusal() == "was hurt in the last ten minutes", "a character just hurt may not be left")
