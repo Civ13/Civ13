@@ -444,12 +444,12 @@ def main():
         k = (t - 2) % 10
         if t < 4 or k < 2:
             return None
-        return (min(k - 2, 6) * 14, 0, 0.75, 1.0)
+        return (min(k - 2, 6) * 14, 4, 0.5, 1.0)
     drag = lambda t: ((t * 3) % 96 - 40, 0)
     save(panels([
         ('Gun: 2px kick, 5 deg back, 3 ds', [(east, 1, 1, repeat(fire, 8, 3, start=2), None)], []),
         ('Large gun: 3px kick', [(east, 1, 1, repeat(fire_big, 8, 3, start=2), None)], []),
-        ('Throw: wind-up, 6 deg drive, 4 ds', [(east, 0.5, 1, repeat(throw, 10, 4, start=2), None)], [(rock, 0.5, 1, thrown)]),
+        ('Throw: wind-up, 6 deg drive, 4 ds', [(east, 0.5, 1, repeat(throw, 10, 4, start=2), None)], [(tool, 0.5, 1, thrown)]),
         ('Throw facing south: squash', [(south, 1, 1.5, repeat(throw_s, 10, 4, start=2), None)], []),
         ('Shoved: 4px, 10 deg away, 5 ds', [(east, 0, 1, hold(stand), shover), (east, 1, 1, repeat(shoved, 12, 5, start=3), None)], []),
         ('Pick up: stoop, 4 ds', [(east, 0.5, 1, repeat(stoop, 10, 4, start=2), None)], [(tool, 1.5, 1, lambda t: None if (t - 2) % 10 >= 2 and t >= 4 else (0, 0, 0.75, 1.0))]),
