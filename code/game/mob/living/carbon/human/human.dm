@@ -1426,7 +1426,7 @@ var/list/coefflist = list()
 	if (loc != old_location)
 		reset_corpse_decay_age()
 		// Walking onto a map edge the land carries on beyond (region_edge.dm).
-		if (map && map.edge_crossings)
+		if (region_edge_links())
 			region_edge_check()
 	if (human_subtile_pulse)
 		return .
