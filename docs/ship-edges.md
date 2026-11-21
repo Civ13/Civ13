@@ -43,8 +43,27 @@ Code: `code/modules/naval/hull_sides.dm`.
 - People climb over a gunwale like a railing. Climbing over into open water
   asks first.
 
+## Gangways and the gangplank
+
+Code: `code/modules/naval/hull_gangway.dm`.
+
+- A wooden gangway (4 soft wood) or steel gangway (4 steel) is a gate in her
+  gunwale: it closes her side like a railing and opens like any railing gate.
+- Alt-click it (or use its "Run out or take in the gangplank" verb) to run a
+  plank across up to 3 tiles of open water to a pier, the shore or another
+  ship (`hull_gangplank_plan`). She must be stopped. A ship lying right
+  alongside needs no plank.
+- Gangplank tiles are `/obj/covers/repairedfloor/rope/boarding/gangplank`:
+  boarding-line floors, so `hull_floor_in` ignores them and she never becomes
+  a jetty. They are not saved.
+- While a plank is out, `craft.gangplank_refusal()` stops the tiller's
+  sailing orders (speeds, turns, berth, refit, leaving these waters, voyages)
+  and her body is held. A broken plank brings the rest in, and a plank whose
+  gangway has moved away falls in at the next check.
+
 ## Tests
 
 `tests/naval_carrier/draught_probe.dm` ("Her sides"): draught gunwale sides
 and costs, the slipway gunwale stages and markers, a launched boat with no open
-side, the crossing entry, the refit refusal and `hull_rail_sides_free`.
+side, the crossing entry, the refit refusal, `hull_rail_sides_free`, and the
+gangway: plank plan, stopped-only, the hold, taking it in and a broken plank.

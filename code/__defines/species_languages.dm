@@ -22,3 +22,10 @@
 #define LANGUAGE_LESSON_DAILY_CAP 90	// score a language can gain in one real day from lessons: one long sitting can reach Fluent
 #define LANGUAGE_STUDY_GAIN 5		// score per sitting with a language book
 #define LANGUAGE_STUDY_DAILY_CAP 10	// score a language can gain in one real day from books and writing
+// Language drift (code/game/mob/language/drift.dm).
+#define LANGUAGE_DRIFT_TICK 18000		// deciseconds between drift updates: half an hour
+#define LANGUAGE_DRIFT_HEAR_COOLDOWN 200	// deciseconds between counted lines for one listener
+#define LANGUAGE_DRIFT_MIN_LINES 10		// lines a community must hear in a tick to change at all
+#define LANGUAGE_DRIFT_GAIN 0.5			// drift a fully isolated community gains a tick: about 60 hours of talk to split
+#define LANGUAGE_SPLIT_DRIFT 60			// drift a community needs to split off at an era change
+#define LANGUAGE_SPLIT_MIN_NATIVES 5		// living native speakers a community needs to split off

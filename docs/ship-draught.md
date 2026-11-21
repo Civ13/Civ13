@@ -213,8 +213,12 @@ ballast and periscope station reads each hull section's `hull_tile`
 The window (`open_sub_designer()`) is a 3-column grid, bow to the top and
 starboard on the right, talking to a `/datum/sub_designer` per drawer. Every
 change is sent as a code; the server answers with `summary_text()`, and Save
-keeps it on the sheet. Tests: `tests/submarine/sheet.dm` in the submarine
-probe.
+keeps it on the sheet. A fitting is drawn on the grid and on the palette as
+its game sprite: PNGs under `icons/sub_designer/`, cut from the game's DMIs by
+`python3 scripts/build_sub_designer_icons.py` (`--check` reports stale ones)
+and sent with `browse_rsc` as `subd_fit_<key>.png` (`sub_designer_sprites`);
+a fitting with no picture shows as its letter. Tests:
+`tests/submarine/sheet.dm` in the submarine probe.
 
 ### Assembling a submarine from her sheet
 
@@ -226,10 +230,14 @@ as the sheet, and `assemble()` shapes the sections from `D.layout()` instead of
 sheet shows where they go. `hull_layout()` reads `sheet_code` first, so her
 turning square (`hull_square()`) and later reshaping follow her plan.
 
-Art: `submarine_art_tile()` gives each section the Scout's tiles (lengths 4
-and 5) or the Explorer's (6 and 7), skipping middle rows for the shorter boat
-so the bow and stern art stay whole. A boat built from a sheet is drawn from
-her sheet by "Draw her lines", not from her art tiles.
+Art: every length has a hull drawn for it by `scripts/draw_submarine_hull.py`,
+and `submarine_art_tile()` gives each section its tile row for row: the
+Coaster's for 4 rows, the Scout's for 5, the Cruiser's for 6 and the
+Explorer's for 7. The Coaster and Cruiser have plain sides; a lock-out hatch
+is the `sub_hatch_<column>_deck` and `_roof` states laid over whichever side
+section the sheet made a hatch (`hatch_art()`). A 6-row boat still handles as
+an Explorer (`hull_class`). A boat built from a sheet is drawn from her sheet
+by "Draw her lines", not from her art tiles.
 
 Banks: `battery_capacity()` and `air_capacity()` are half a bank in her hull
 plus one bank (`SUB_BATTERY_MAX`, `SUB_AIR_BANK_MAX`) for each battery or air

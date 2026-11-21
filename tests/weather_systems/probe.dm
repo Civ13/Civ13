@@ -204,7 +204,7 @@ var/ws_runtime_error = FALSE
 	ws_check(!weather_heat_at(field), "no heat once it has gone")
 
 	// Wind veers, never reverses.
-	var/static/list/opposite = list("North" = "South", "South" = "North", "East" = "West", "West" = "East")
+	var/static/list/opposite = list("North" = "South", "South" = "North", "East" = "West", "West" = "East", "Northeast" = "Southwest", "Southwest" = "Northeast", "Southeast" = "Northwest", "Northwest" = "Southeast")
 	var/reversed = FALSE
 	var/turned = FALSE
 	var/direction = "North"
@@ -215,7 +215,7 @@ var/ws_runtime_error = FALSE
 		if (next != direction)
 			turned = TRUE
 		direction = next
-	ws_check(!reversed && turned, "wind veers by quarter turns and never reverses")
+	ws_check(!reversed && turned, "wind veers by eighth turns and never reverses")
 
 	// A storm comes round to a new wind without jumping.
 	S = weather_system_spawn(WEATHER_SYSTEM_STORM, FALSE, 100, 60)
@@ -243,9 +243,14 @@ var/ws_runtime_error = FALSE
 	var/obj/structure/weather_vane/shut_in = new(indoors)
 	ws_check(vane.icon_state == "weather_vane_west" && (vane in weather_vanes), "a weather vane points into the wind")
 	map.winddirection = "North"
+	// The local wind (weather_wind.dm) comes round over a few ticks; settle it at once.
+	if (weather_air)
+		weather_air.settle(TRUE)
 	weather_vanes_turn()
 	ws_check(vane.icon_state == "weather_vane_north" && shut_in.icon_state == "weather_vane_east", "the vane swings with the wind, but not under a roof")
 	map.winddirection = "West"
+	if (weather_air)
+		weather_air.settle(TRUE)
 	weather_vanes_turn()
 	// A little before the forecast time it is still dry; at it, raining.
 	ws_age(S, eta - 300)

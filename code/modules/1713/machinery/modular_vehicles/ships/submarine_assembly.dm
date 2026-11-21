@@ -117,8 +117,9 @@
 	var/hull = submarine_class_for_length(length)
 	var/datum/sub_draught/D = sheet()
 	if (D)
-		// A boat drawn on a sheet: its plan, and the art of the pen's boat of
-		// her length (or the nearest, submarine_art_tile()).
+		// A boat drawn on a sheet: its plan, and the art of the hull of her
+		// length (submarine_art_tile()). She handles as the pen's boat of
+		// the nearest length.
 		hull = length >= 6 ? "explorer" : "scout"
 		shape_hull(S, facing, hull, D.layout(), length)
 		qdel(D)
@@ -145,21 +146,22 @@
 /obj/structure/vehicleparts/axis/ship/submarine/proc/sheet()
 	return sheet_code ? sub_draught_from_code(sheet_code) : null
 
-// The art tile of the pen's boat for a section of a boat this long: the
-// Scout's for 4 and 5, the Explorer's for 6 and 7, skipping middle rows of the
-// longer plan for the shorter boat so the bow and stern art stay whole.
+// The art tile for a section of a boat this long. Every length has a hull
+// drawn for it (scripts/draw_submarine_hull.py): the Coaster's for 4, the
+// Scout's for 5, the Cruiser's for 6 and the Explorer's for 7, row for row.
 /proc/submarine_art_tile(length, col, row)
-	var/list/rows
+	var/art
 	switch (length)
 		if (4)
-			rows = list(1, 2, 4, 5)
+			art = "coaster"
 		if (5)
-			rows = list(1, 2, 3, 4, 5)
+			art = "scout"
 		if (6)
-			rows = list(1, 2, 3, 4, 6, 7)
+			art = "cruiser"
 		else
-			rows = list(1, 2, 3, 4, 5, 6, 7)
-	return "[length >= 6 ? "explorer" : "scout"]_[col]_[rows[clamp(row, 1, rows.len)]]"
+			art = "explorer"
+			length = 7
+	return "[art]_[col]_[clamp(row, 1, length)]"
 
 // Handing the controls a submarine sheet: the hull floated for them is shaped
 // to that plan when they assemble her.

@@ -2,8 +2,9 @@
 
 `code/modules/1713/weather_air.dm` keeps a coarse field of air over the map:
 temperature, dew point, pressure and cloud cover. It is the base the later
-meteorology steps build on (fronts, wind from pressure, fog, dew and frost).
-Nothing a player sees reads it yet; `get_temp()` still comes from
+meteorology steps build on (fronts in [weather-fronts.md](weather-fronts.md), the wind field in
+[weather-wind.md](weather-wind.md), then fog, dew and frost).
+Players feel its wind; its temperature waits: `get_temp()` still comes from
 [climate-normals.md](climate-normals.md).
 
 ## Cells

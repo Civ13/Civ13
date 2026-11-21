@@ -107,6 +107,14 @@
 		return
 	to_chat(usr, jointext(H.origin_language_report(), "<br>"))
 
+/client/proc/cmd_admin_check_language_drift()
+	set category = "Admin"
+	set name = "Check Language Drift"
+	set desc = "Show how far each nation's native speakers have drifted from other speakers of their language."
+	if (!check_rights(R_ADMIN))
+		return
+	to_chat(usr, jointext(language_drift_report(), "<br>"))
+
 /client/proc/cmd_admin_set_origin(mob/living/human/H as mob in human_mob_list)
 	set category = "Admin"
 	set name = "Set Origin"

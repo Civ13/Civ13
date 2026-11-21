@@ -189,6 +189,11 @@
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
+	if (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west", "Leave these waters", "Set out on a voyage", "Refit the hull"))
+		var/plank = craft.gangplank_refusal()
+		if (plank)
+			to_chat(H, SPAN_WARNING(plank))
+			return
 	if (choice == "Sea chart")
 		to_chat(H, craft.sea_chart_text())
 		return

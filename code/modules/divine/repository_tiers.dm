@@ -556,11 +556,17 @@ var/global/list/magic_balance_cache = null
 		options += "Turn someone away from it for good"
 	if (!maker)
 		options += "Stop keeping it"
+	var/nation = magic_repo_nation_option(O) // repository_nations.dm
+	if (nation)
+		options += nation
 	if (!options.len)
 		to_chat(src, SPAN_NOTICE("No one tied to it stands with you."))
 		return
 	var/pick = player_input(src, "What do you do?", "Keepers", null, "anything", options, TRUE)
 	if (!pick || !O.magic_repo_is_keeper(src) || !magic_repo_reachable(O))
+		return
+	if (pick == nation)
+		magic_repo_nation_toggle(O)
 		return
 	if (pick == "Stop keeping it")
 		O.magic_repo_keepers -= magic_key()
