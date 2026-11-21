@@ -34,7 +34,11 @@
 
 /datum/craft_drive/fitted/sail/jib
 	kind = "sail"
-	thrust = CRAFT_SAIL_THRUST * JIB_THRUST_SHARE
+
+// Half a mast's thrust (hull_drives.dm sets a sail's).
+/datum/craft_drive/fitted/sail/jib/New(atom/movable/new_source)
+	..()
+	thrust *= JIB_THRUST_SHARE
 
 // A jib draws only from her bow: no deck of hers ahead of the bowsprit.
 /datum/craft_drive/fitted/sail/jib/ready()
