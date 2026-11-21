@@ -187,7 +187,8 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('4 * f[1], 4 * f[2], 10 * f[3], f[3] ? 1 : 0.94, 2', knock)
         self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL', proc_body(MOTION, '/mob/living/human/proc/body_motion_stoop('))
         kneel = proc_body(MOTION, '/mob/living/human/proc/body_motion_kneel(')
-        self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_REDUCED', kneel)
+        self.assertIn('min_level = BODY_MOTION_REDUCED)', kneel)
+        self.assertIn('BODY_MOTION_PRIORITY_LOW, min_level', kneel)
         self.assertIn('!may_do_after || !may_do_mob', kneel)
         self.assertIn('0.8, max(1, duration), LINEAR_EASING', kneel)
         haul = proc_body(MOTION, '/mob/living/human/proc/body_motion_haul_dir(')
@@ -195,6 +196,21 @@ class BodyMotionSources(unittest.TestCase):
         stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
         self.assertLess(stride.index('body_motion_haul_dir()'), stride.index('body_motion_terrain_drags()'))
         self.assertIn('BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_REDUCED', stride)
+
+    def test_everyday_motions_hooked(self):
+        jump = proc_body(read('code/game/atoms.dm'), '/atom/proc/jump_act(')
+        self.assertLess(jump.index('user.body_motion_jump()'), jump.index('user.throw_at(target, 5, 0.5, user)'))
+        drink = proc_body(read('code/game/turfs/floor_attackby.dm'), '/turf/floor/beach/water/attack_hand(')
+        self.assertLess(drink.index('H.body_motion_kneel(src, 50, BODY_MOTION_FULL)'), drink.index('do_after(H,50,src)'))
+        self.assertIn('H.body_motion_stop(kneel, 3)', drink)
+        self.assertIn('H.body_motion_throw(src, BODY_MOTION_FULL)', read('code/modules/1713/fishing_grounds.dm'))
+        shock = proc_body(read('code/game/mob/living/carbon/carbon.dm'), '/mob/living/human/electrocute_act(')
+        self.assertLess(shock.index('mildly shocked'), shock.index('body_motion_jolt()'))
+        emote = proc_body(MOTION, '/mob/living/human/proc/body_motion_emote(')
+        for act in ('"cough"', '"sneeze"'):
+            self.assertIn(act, emote)
+        self.assertIn('BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED', proc_body(MOTION, '/mob/living/human/proc/body_motion_jump('))
+        self.assertIn('BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED', proc_body(MOTION, '/mob/living/human/proc/body_motion_jolt('))
 
 
 if __name__ == '__main__':

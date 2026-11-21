@@ -1290,7 +1290,11 @@
 			to_chat(H, SPAN_WARNING("It's probably not a good idea to drink saltwater."))
 			return
 		to_chat(H, SPAN_NOTICE("You start drinking some water from the ground..."))
-		if (!do_after(H,50,src))
+		var/kneel = H.body_motion_kneel(src, 50, BODY_MOTION_FULL)
+		var/drank = do_after(H,50,src)
+		if (kneel)
+			H.body_motion_stop(kneel, 3)
+		if (!drank)
 			return
 		var/watertype = "water"
 		if (radiation > 0)

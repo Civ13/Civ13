@@ -225,6 +225,14 @@
 		if ("wave")
 			keys = list(list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT), list(0, 1, 0, 1, 3, LINEAR_EASING),
 				list(0, 0, 0, 1, 1, SINE_EASING))
+		if ("cough")
+			// Two small hunches forward.
+			keys = list(list(f[1], f[2], 6 * f[3], 0.96, 1, QUAD_EASING | EASE_OUT), list(0, 0, 0, 1, 1, SINE_EASING),
+				list(f[1], f[2], 6 * f[3], 0.96, 1, QUAD_EASING | EASE_OUT), list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN))
+		if ("sneeze")
+			// A breath back and up, then a snap forward.
+			keys = list(list(-f[1], 1 - f[2], 0, 1, 2, SINE_EASING), list(2 * f[1], 2 * f[2], 8 * f[3], 0.94, 1, QUAD_EASING | EASE_IN),
+				list(0, 0, 0, 1, 2, SINE_EASING | EASE_OUT))
 		if ("salute")
 			keys = list(list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT), list(0, 1, 0, 1, 4, LINEAR_EASING),
 				list(0, 0, 0, 1, 1, SINE_EASING))
@@ -446,10 +454,10 @@
 // Throwing: 1px back, then a 3px drive with a 6 degree roll into the throw
 // (a squash at the feet north and south), home over 2 ds. Kept at REDUCED: it
 // shows who threw. 4 ds.
-/mob/living/human/proc/body_motion_throw(atom/target)
+/mob/living/human/proc/body_motion_throw(atom/target, min_level = BODY_MOTION_REDUCED)
 	var/direction = (target && get_turf(target) != get_turf(src)) ? get_dir(src, target) : dir
 	var/list/f = body_motion_forward(direction)
-	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, min_level, list(
 		list(-f[1], -f[2], 0, 1, 1, LINEAR_EASING),
 		list(3 * f[1], 3 * f[2], 6 * f[3], f[3] ? 1 : 0.96, 1, QUAD_EASING | EASE_OUT),
 		list(0, 0, 0, 1, 2, QUAD_EASING | EASE_IN)))
@@ -480,14 +488,34 @@
 // hold for the treatment, then rise over 3 ds. Kept at REDUCED: it shows who
 // is treating. Returns the motion's serial for body_motion_stop(serial, 3),
 // or 0 when none played.
-/mob/living/human/proc/body_motion_kneel(atom/patient, duration)
+/mob/living/human/proc/body_motion_kneel(atom/patient, duration, min_level = BODY_MOTION_REDUCED)
 	if (!may_do_after || !may_do_mob)
 		return 0
 	var/turf/T = get_turf(patient)
 	var/direction = (T && T != get_turf(src)) ? get_dir(src, T) : dir
 	var/list/f = body_motion_forward(direction)
-	var/played = body_motion_play(BODY_MOTION_PRIORITY_LOW, BODY_MOTION_REDUCED, list(
+	var/played = body_motion_play(BODY_MOTION_PRIORITY_LOW, min_level, list(
 		list(f[1], f[2], 0, 0.8, 3, SINE_EASING | EASE_OUT),
 		list(f[1], f[2], 0, 0.8, max(1, duration), LINEAR_EASING),
 		list(0, 0, 0, 1, 3, SINE_EASING | EASE_IN)))
 	return played ? body_motion_serial : 0
+
+// Jumping: a crouch, a 4px rise, the drop and a small landing squash. Kept
+// at REDUCED: it shows who leapt. 7 ds.
+/mob/living/human/proc/body_motion_jump()
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(0, -1, 0, 0.86, 1, QUAD_EASING | EASE_OUT),
+		list(0, 4, 0, 1, 2, QUAD_EASING | EASE_OUT),
+		list(0, 0, 0, 1, 2, QUAD_EASING | EASE_IN),
+		list(0, -1, 0, 0.92, 1, LINEAR_EASING),
+		list(0, 0, 0, 1, 1, SINE_EASING | EASE_OUT)))
+
+// A mild electric shock: a 1px jitter, lifted 1px. Kept at REDUCED: it marks
+// a live hazard. 4 ds.
+/mob/living/human/proc/body_motion_jolt()
+	return body_motion_play(BODY_MOTION_PRIORITY_COMBAT, BODY_MOTION_REDUCED, list(
+		list(-1, 1, 0, 1, 0.5, LINEAR_EASING),
+		list(1, 1, 0, 1, 1, LINEAR_EASING),
+		list(-1, 1, 0, 1, 1, LINEAR_EASING),
+		list(1, 0, 0, 1, 1, LINEAR_EASING),
+		list(0, 0, 0, 1, 0.5, LINEAR_EASING)))

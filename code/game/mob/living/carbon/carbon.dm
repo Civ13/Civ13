@@ -123,6 +123,7 @@
 			"<span class = 'red'>You feel a mild shock course through your body.</span>", \
 			"<span class = 'red'>You hear a light zapping.</span>" \
 		)
+		body_motion_jolt()
 
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
 	s.set_up(5, TRUE, loc)

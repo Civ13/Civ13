@@ -457,6 +457,32 @@ def main():
         ('Hauling a body: heave 8 deg', [(east, 1.5, 1, repeat(heave, 8, 7), drag), (east, 0.5, 1, hold(lying), drag)], []),
     ], 26, (3, 3)), out / 'actions.gif')
 
+    # 11. Jumping, coughs and sneezes, drinking, casting and a mild shock.
+    for mine, name in ((matrix(0, -1, 0, squash=0.86), 'jump_crouch'), (matrix(0, 4), 'jump_peak'),
+                       (matrix(2, 0, 8, squash=0.94), 'sneeze_east')):
+        assert all(abs(x - y) < 1e-3 for x, y in zip(mine, keys[name])), name
+    jump = keys_track([(0, -1, 0, 0.86, 1, 'quad_out'), (0, 4, 0, 1, 2, 'quad_out'), (0, 0, 0, 1, 2, 'quad_in'),
+                       (0, -1, 0, 0.92, 1, 'linear'), (0, 0, 0, 1, 1, 'sine_out')])
+    leap = offset_track([((0, 0), 1), ((32, 0), 4), ((32, 0), 7)])
+    def jump_shift(t):
+        k = (t - 2) % 14
+        if t < 2:
+            return (-16, 0)
+        return (leap(k)[0] - 16, 0) if k < 12 else (16, 0)
+    cough = keys_track([(1, 0, 6, 0.96, 1, 'quad_out'), (0, 0, 0, 1, 1, 'sine'), (1, 0, 6, 0.96, 1, 'quad_out'), (0, 0, 0, 1, 2, 'sine_in')])
+    sneeze = keys_track([(-1, 1, 0, 1, 2, 'sine'), (2, 0, 8, 0.94, 1, 'quad_in'), (0, 0, 0, 1, 2, 'sine_out')])
+    drink = keys_track([(1, 0, 0, 0.8, 3, 'sine_out'), (1, 0, 0, 0.8, 14, 'linear'), (0, 0, 0, 1, 3, 'sine_in')])
+    jolt = keys_track([(-1, 1, 0, 1, 0.5, 'linear'), (1, 1, 0, 1, 1, 'linear'), (-1, 1, 0, 1, 1, 'linear'),
+                       (1, 0, 0, 1, 1, 'linear'), (0, 0, 0, 1, 0.5, 'linear')])
+    save(panels([
+        ('Jump: crouch, 4px rise, land, 7 ds', [(east, 1, 1, repeat(jump, 14, 7, start=2), jump_shift)], []),
+        ('Cough: two hunches, 5 ds', [(east, 1, 1, repeat(cough, 10, 5, start=2), None)], []),
+        ('Sneeze: breath, snap, 5 ds', [(east, 1, 1, repeat(sneeze, 10, 5, start=2), None)], []),
+        ('Drinking from a river, held', [(east, 0.5, 1, repeat(drink, 24, 20, start=2), None)], [], False),
+        ('Fishing cast: the throw', [(east, 0.5, 1, repeat(throw, 10, 4, start=2), None)], []),
+        ('Mild shock: jitter, 4 ds', [(south, 1, 1, repeat(jolt, 8, 4, start=2), None)], []),
+    ], 26, (3, 3)), out / 'everyday.gif')
+
 
 if __name__ == '__main__':
     main()
