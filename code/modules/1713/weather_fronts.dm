@@ -230,6 +230,7 @@ var/global/weather_centre_serial = 0
 	S.radius_x = rand(18, 32)
 	S.radius_y = rand(18, 32)
 	S.peak = 1
+	S.convective = TRUE
 	S.origin_x = x
 	S.origin_y = y
 	S.origin_time = world.time
