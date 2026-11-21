@@ -134,7 +134,9 @@ var/world_is_open = TRUE
 	// Build the shared research-tree node registry (faction-agnostic).
 	build_research_tree()
 	// The admin Spawn picker's type list, built here so its first opening does not stall.
-	build_spawn_catalog()
+	// The gateway hosts no play and starts as fast as it can: there it is built on first use.
+	if (!region_gateway_here())
+		build_spawn_catalog()
 	processScheduler = new
 	// SStimer: addtimer() callbacks such as full-auto fire.
 	Master.start_timer_loop()

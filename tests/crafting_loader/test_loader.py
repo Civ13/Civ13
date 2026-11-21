@@ -70,8 +70,8 @@ def loader_source():
 
 
 class Loader:
-    def __init__(self, filenames, files, source=None):
-        self.filenames, self.files = filenames, files
+    def __init__(self, filenames, files, source=None, gateway=False):
+        self.filenames, self.files, self.gateway = filenames, files, gateway
         self.notices, self.log, self.reads, self.opened = [], Log(), [], []
         self.rows = defaultdict(DMList)
         text = loader_source() if source is None else source
@@ -94,6 +94,7 @@ class Loader:
             'world': SimpleNamespace(log=self.log),
             'admin_notice': lambda message, level: self.notices.append(message),
             'R_DEBUG': 'debug',
+            'region_gateway_here': lambda: self.gateway,
         }
         source_adapter.project(text, '/proc/loader_fixture', '', env)()
 
@@ -121,6 +122,13 @@ class CraftingLoaderTests(unittest.TestCase):
         result = Loader(['material_recipes_bad\rcatalog.txt'], {})
         self.assertIn(r'bad\rcatalog.txt', result.notices[0])
         self.assertNotIn('\r', result.notices[0])
+
+    def test_the_gateway_loads_no_recipes(self):
+        # Nobody crafts in the gateway, which starts as fast as it can (Val, 2026-11-21).
+        files = {'config/crafting/material_recipes_global.txt': recipe('Steel sheet')}
+        self.assertTrue(dict(Loader(['material_recipes_global.txt'], files).rows))
+        result = Loader(['material_recipes_global.txt'], files, gateway=True)
+        self.assertEqual((result.reads, result.notices, dict(result.rows)), ([], [], {}))
 
     def test_unrelated_files_are_ignored_without_file_access_or_warning(self):
         result = Loader(['furniture_joinery.json', 'README.txt', 'notes/'], {})

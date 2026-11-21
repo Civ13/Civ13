@@ -17034,6 +17034,53 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Cook phenolic resin in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 84,
+      "source_commit": "2f00b7dc33ff312a21fa4f011c9b6209496af83e",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "phenolic_resin"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "Set a powered bakelizer to phenolic resin with its Change Setting verb and fill it with petroleum.",
+        "Every 5 petroleum makes 10 units of phenolic resin; use an empty container on the bakelizer to draw it off."
+      ],
+      "conditions": "Needs a powered bakelizer.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press resin laminate",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 208,
+      "source_commit": "2f00b7dc33ff312a21fa4f011c9b6209496af83e",
+      "inputs": [
+        "/material/cloth",
+        "phenolic_resin"
+      ],
+      "outputs": [
+        "/material/resin_laminate"
+      ],
+      "tools": [
+        "/obj/structure/hot_press"
+      ],
+      "steps": [
+        "Pour 10 units of phenolic resin (or pine resin) into a hot press.",
+        "Use 4 sheets of cloth on it for 2 sheets of laminate, or 4 silk for 3; pine resin gives half."
+      ],
+      "conditions": "Needs a hot press, 10 resin and 4 cloth or silk.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Tap lacquer trees",
       "file": "code/modules/1713/lacquer.dm",
       "line": 82,

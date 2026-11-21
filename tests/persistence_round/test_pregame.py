@@ -139,8 +139,11 @@ class PregamePersistenceContracts(unittest.TestCase):
         self.assertLess(body.index('call(region_autostart)(src)'), body.index('skip_pregame_countdown ? 1'))
         group = (ROOT / 'code/modules/persistence/shard_group.dm').read_text()
         hook = group.split('/proc/region_round_autostart(datum/controller/gameticker/T)', 1)[1].split('\n/', 1)[0]
-        # The always-on Barracks and the Tutorial's practice rooms skip it.
-        self.assertIn('if(shard_group.kind in list("BARRACKS", "TUTORIAL"))\n\t\tT.skip_pregame_countdown = TRUE', hook)
+        # The always-on Barracks, the Tutorial's practice rooms and the gateway skip it.
+        self.assertIn('if(shard_group.kind in list("BARRACKS", "TUTORIAL", "GATEWAY"))\n\t\tT.skip_pregame_countdown = TRUE', hook)
+        # Without a countdown the round starts on the next tick after setup, not a second later.
+        self.assertIn('while(!world_setup_finished)\n\t\tsleep(1)', hook)
+        self.assertIn('i<((skip_pregame_countdown && round_progressing) ? 1 : 10)', body)
         self.assertLess(hook.index('while(!world_setup_finished)'), hook.index('T.skip_pregame_countdown = TRUE'))
         check = group.split('/datum/shard_group/proc/autostarts_round()', 1)[1].split('\n/', 1)[0]
         self.assertLess(check.index('kind == "BATTLE"'), check.index('return FALSE'))

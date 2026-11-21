@@ -25,11 +25,14 @@
 // Language drift (code/game/mob/language/drift.dm).
 #define LANGUAGE_DRIFT_TICK 18000		// deciseconds between drift updates: half an hour
 #define LANGUAGE_DRIFT_HEAR_COOLDOWN 200	// deciseconds between counted lines for one listener
-#define LANGUAGE_DRIFT_MIN_LINES 10		// lines a community must hear in a tick to change at all
-#define LANGUAGE_DRIFT_GAIN 0.5			// drift a fully isolated community gains a tick: about 60 hours of talk to split
-#define LANGUAGE_SPLIT_DRIFT 60			// drift a community needs to split off at an era change
+#define LANGUAGE_DRIFT_MIN_LINES 10		// lines from its own nation a community must hear in a tick to drift
+#define LANGUAGE_DRIFT_GAIN 0.25		// drift an isolated community gains a tick: about 120 hours of talk to reach the split level
+#define LANGUAGE_DRIFT_CONTACT_LINES 3	// lines from other nations in a tick that count as contact
+#define LANGUAGE_DRIFT_CONTACT_LOSS 5	// drift a community loses in a tick with contact
+#define LANGUAGE_SPLIT_DRIFT 60			// drift a community must hold to split off
 #define LANGUAGE_SPLIT_MIN_NATIVES 5		// living native speakers a community needs to split off
+#define LANGUAGE_SPLIT_HOLD 10080		// real minutes drift must stay at LANGUAGE_SPLIT_DRIFT with no contact: 7 days
 #define LANGUAGE_DAUGHTERS_PER_ROOT 2	// daughter languages one built-in language can have on a world
 #define LANGUAGE_DAUGHTER_KIN 80		// how much of each other parent and daughter follow at the split
-#define LANGUAGE_DAUGHTER_KIN_STEP 10	// lost at each later era change the daughter has drifted far again
+#define LANGUAGE_DAUGHTER_KIN_STEP 10	// lost each time the daughter holds a far drift again
 #define LANGUAGE_DAUGHTER_KIN_MIN 40		// parent and daughter never follow less of each other than this
