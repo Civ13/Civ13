@@ -751,6 +751,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/medieval/knight" = "mail_plate",
 		"/obj/item/clothing/shoes/orc" = "mail_plate",
 		"/obj/item/clothing/suit/armor/imperial/imperial_chestplate" = "mail_plate",
+		"/obj/item/clothing/suit/armor/proof_cuirass" = "mail_plate",
+		"/obj/item/clothing/suit/armor/proof_cuirass/japanese" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval/chainmail" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval/emirate" = "mail_plate",
@@ -1420,6 +1422,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/integrated_circuit" = "digital_computing",
 		"/obj/item/circuit_shell/compact_remote" = "digital_computing",
+		"/obj/item/circuit_shell/mechanism_port" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
@@ -1449,6 +1452,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/voting" = "early_economy",
 		// --- electricity (23) ---
 		"/obj/structure/workshop_machine/wire_bench" = "electricity",
+		"/obj/structure/mechanism_relay" = "electricity",
 		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
@@ -1923,7 +1927,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (9) ---
+		// --- iron_smithing (10) ---
+		"/obj/item/weapon/grapnel" = "iron_smithing",
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",
 		"/obj/covers/iron_plate" = "iron_smithing",
@@ -1979,9 +1984,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",
 		"/obj/item/weapon/wirecutters" = "iron_tools",
-		// --- martial_disciplines (2) ---
+		// --- martial_disciplines (3) ---
 		"/obj/structure/striking_post" = "martial_disciplines",
 		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
+		"/obj/structure/martial_gear/heavy_bag" = "martial_disciplines",
+		// --- school_wing_chun (1) ---
+		"/obj/structure/martial_gear/wooden_dummy" = "school_wing_chun",
 		// --- law_order (15) ---
 		"/obj/covers/jail/steeljail" = "law_order",
 		"/obj/covers/jail/woodjail" = "law_order",
@@ -2971,6 +2979,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
 		"/obj/item/sail" = "oared_ships",
 		"/obj/item/sail/wool" = "oared_ships",
+		"/obj/item/sail/tarred" = "oared_ships",
 		"/obj/item/weapon/covers/ship" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0/north" = "wagons_ships",

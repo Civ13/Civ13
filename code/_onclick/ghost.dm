@@ -16,6 +16,15 @@
 			reenter_corpse()						// (cloning scanner, body bag, closet, mech, etc)
 			return
 
+	// Spirits haunt living players and drift no other way (spirit_observe.dm).
+	if (is_spirit())
+		var/list/T = observer_targets()
+		for (var/label in T)
+			if (T[label] == A)
+				ManualFollow(A)
+				return
+		return
+
 	// Things you might plausibly want to follow
 	if (istype(A,/atom/movable))
 		ManualFollow(A)

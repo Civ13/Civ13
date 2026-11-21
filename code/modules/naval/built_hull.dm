@@ -46,12 +46,18 @@
 /obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null)
 	var/turf/T = get_turf(src)
 	// A refit would survey a holed tile out of her hull: patch her first.
-	if (craft && craft.ledger && craft.ledger.holes > 0)
+	// At a berth a floor lifted for a refit is meant to go (berth_refit.dm).
+	if (craft && craft.ledger && craft.ledger.holes > 0 && !craft_berth(craft))
 		return "Patch the [craft.ledger.holes == 1 ? "hole" : "holes"] in her hull before she is surveyed again."
 	var/survey = built_hull_survey(T, craft)
 	if (istext(survey))
 		return survey
 	var/datum/craft_body/built/B = body()
+	// A berth may ask more of her (berth_build.dm).
+	var/obj/structure/berth = istype(T, /turf/floor/beach/water) ? null : berth_ground_at(T)
+	var/berth_why = berth ? berth.berth_commission_refusal(survey, heading || (B ? B.dir : NORTH)) : null
+	if (berth_why)
+		return berth_why
 	if (!B)
 		B = new /datum/craft_body/built
 		craft = new /datum/craft(B)
@@ -183,6 +189,8 @@
 	var/own_claim = expedition_personal_claim_option(expedition_personal_claimant(H))
 	if (own_claim)
 		options.Insert(2, own_claim)
+	// A refit to a draught at a berth (berth_refit.dm).
+	options += refit_options(H)
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -223,6 +231,8 @@
 				return
 	if (choice == "Draw her lines")
 		draw_lines(H)
+		return
+	if (refit_action(H, choice))
 		return
 	if (choice == "Rail her sides")
 		rail_sides(H)
@@ -289,6 +299,8 @@
 				to_chat(H, SPAN_WARNING(problem))
 				return
 			to_chat(H, SPAN_NOTICE("The hull is surveyed again. [status_text()]"))
+			if (refit_code)
+				report_refit(H, mark_refit(), FALSE)
 			return
 		if ("Strike the hull")
 			if (WWinput(H, "Strike the [craft.name]? Her floors stay where they are, but she is no longer a ship and her papers are lost.", name, "No", list("Yes", "No")) != "Yes" || !craft || get_dist(H, src) > 1)

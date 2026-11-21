@@ -125,12 +125,36 @@
 	civ_data[4] = null
 	return TRUE
 
+// One leadership seat per person (docs/character-slots.md): the person behind
+// a character, its account with any character slot taken off the owner key.
+/proc/faction_leader_person(mob/living/human/H)
+	var/key = istype(H) ? (H.persistence_owner_ckey || H.ckey) : null
+	if (!istext(key) || !length(key))
+		return null
+	return copytext(key, 1, 2) == "@" ? copytext(key, 3) : key
+
+// The faction another character of H's account leads, or null.
+/obj/map_metadata/proc/faction_kin_leads_elsewhere(mob/living/human/H, faction)
+	var/person = faction_leader_person(H)
+	if (!person)
+		return null
+	for (var/other in custom_civs)
+		if (other == faction)
+			continue
+		var/list/civ_data = faction_leader_record(other)
+		var/mob/living/human/L = civ_data ? civ_data[4] : null
+		if (istype(L) && L != H && !QDELETED(L) && faction_leader_person(L) == person)
+			return other
+	return null
+
 // Atomic, non-yielding claim/transfer of an existing faction's leader record.
 // A null previous leader means claiming a vacant position, not overriding one.
 // Callers own map eligibility, proximity, prompts and player-facing messages.
 /obj/map_metadata/proc/change_faction_leader(faction, mob/living/human/previous, mob/living/human/next)
 	var/list/civ_data = faction_leader_record(faction)
 	if (!civ_data || civ_data[4] != previous)
+		return FALSE
+	if (faction_kin_leads_elsewhere(next, faction))
 		return FALSE
 	if (!istype(next) || QDELETED(next) || next.stat == DEAD || next.civilization != faction || next == previous)
 		return FALSE

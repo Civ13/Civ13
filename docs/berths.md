@@ -70,9 +70,39 @@ tiles. Several gates side by side across a wide mouth work as one.
   gate tile is, and the gate can be opened to sail out.
 - The gate saves `shut` and `drained`; the trench tiles save themselves.
 
-A hull can't be re-surveyed ("Refit the hull") on dry ground yet, because
-`built_hull_survey()` wants floors over water. The berth refit in the next part
-will deal with that.
+## Building and refitting at a berth
+
+`code/modules/naval/berth_build.dm`. `built_hull_survey()` takes floors over
+open water, or, when the tiller does not stand on water, floors on the ground
+of the berth it stands on (`berth_ground_at()`, `berth_ground()`):
+
+| Berth | Ground |
+| --- | --- |
+| Drydock | every tile of the basin, flooded or dry |
+| Slipway (no keel laid) | dry open ground in front of the post, 1 to 40 tiles along the ways and up to 20 to either side |
+
+A floor joining hers off that ground still joins her to the shore. A hull can
+be laid down from nothing there, or have floors added and lifted and be
+surveyed again with "Refit the hull", as afloat. `berth_commission_refusal()`
+lets a berth ask more: on a slipway her bow must point the way the post faces
+and her stern lie on the tile in front of it, so she is a hauled hull and the
+post launches her. A boathouse slip is open water, so it needs nothing new.
+
+## Refitting to a draught
+
+`code/modules/naval/berth_refit.dm`. Holding a ship's draught at the tiller of
+a hull at a berth, "Mark out a refit" keeps the draught's code on the tiller
+(`refit_code`, tmp) and lays it over her: its first tiller or steering oar on
+her tiller, its bow her way (`refit_target()`). `refit_diff()` compares her
+main deck tile by tile with `ship_draught_piece_on()`: add (green), lift
+(red), change a floor or fitting (amber) and turn a fitting (faint amber).
+Each is a `/obj/structure/berth_refit_mark` (not saved).
+
+The work is done by hand at hand costs. A floor lifted at a berth is a hole in
+the ledger, but `commission()` refits a hull at a berth despite holes, so
+"Refit the hull" takes the lifted tiles out of her. It then marks her again;
+"Check the refit" does the same, and when nothing differs the marks and the
+draught go. Decks above and below are not compared.
 
 ## What a berth allows
 
@@ -105,6 +135,6 @@ the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 
 ## Tests
 
-`tests/naval_carrier/berth_probe.dm` (77 checks):
+`tests/naval_carrier/berth_probe.dm` (101 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300

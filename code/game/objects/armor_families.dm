@@ -154,6 +154,9 @@ var/global/list/armor_family_multipliers = list(
 /obj/item/clothing/suit/armor/medieval/iron_chestplate
 	armor_family = ARMOR_FAMILY_PLATE
 	armor_tier = ARMOR_TIER_IRON
+/obj/item/clothing/suit/armor/proof_cuirass
+	armor_family = ARMOR_FAMILY_PLATE
+	armor_tier = ARMOR_TIER_STEEL
 /obj/item/clothing/suit/armor/imperial/imperial_chestplate
 	armor_family = ARMOR_FAMILY_PLATE
 	armor_tier = ARMOR_TIER_STEEL

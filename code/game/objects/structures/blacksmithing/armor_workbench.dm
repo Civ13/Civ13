@@ -26,6 +26,7 @@
 	return list(
 		"Armor carrier" = list("node" = "weaving", "era" = 0, "result" = /obj/item/armor_component/carrier, "inputs" = list(/obj/item/stack/material/cloth = list(4, "cloth"), /obj/item/stack/material/leather = list(2, "leather"))),
 		"Aramid panels" = list("node" = "modern_armor", "era" = 7, "result" = /obj/item/armor_component/aramid_panels, "inputs" = list(/obj/item/stack/material/kevlar = list(14, "kevlar"))),
+		"Resin body shield" = list("node" = "trench_warfare", "era" = 5, "result" = /obj/item/clothing/accessory/armor/modern/resin_shield, "inputs" = list(/obj/item/stack/material/cloth = list(8, "cloth"), /obj/item/stack/material/resin = list(4, "resin"))),
 		"Standard aramid vest" = list("node" = "modern_armor", "era" = 7, "result" = /obj/item/clothing/accessory/armor/nomads/kevlarblack, "inputs" = list(/obj/item/armor_component/carrier = list(1), /obj/item/armor_component/aramid_panels = list(1))))
 
 /obj/structure/component_workbench/armor/tool_recipes()

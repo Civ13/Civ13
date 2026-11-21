@@ -6,6 +6,8 @@
 		player_help_service.bind_body(client, src)
 	winset(src, null, "mainwindow.title='[customserver_name()]'")//For displaying the server name.
 	update_Login_details()	//handles setting lastKnownIP and computer_id for use by the ban systems as well as checking for multikeying
+	if(client)
+		client.character_slot_restore() // the character slot this account plays (character_slots.dm)
 	if(region_home_reclaim_ok(src) && map_storage.reclaim_saved_player(src))
 		return
 	
