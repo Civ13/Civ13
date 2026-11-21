@@ -122,6 +122,7 @@ var/body_motion_probe_checks = 0
 	// The gap between two starts.
 	H.body_motion_until = world.time - 1
 	H.body_motion_started = world.time - 1
+	H.body_motion_priority = BODY_MOTION_PRIORITY_COMBAT
 	body_motion_probe_assert(!H.body_motion_recoil(A), "min_gap_between_motions")
 	body_motion_probe_idle(H)
 
