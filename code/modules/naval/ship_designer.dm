@@ -336,7 +336,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .sp{flex:1 1 auto}.dim{color:var(--dim)}
 #main{flex:1 1 auto;min-height:0;display:flex;gap:12px;padding:10px 12px}
 #sheetcol{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
-#sheetbar{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+#deckbar,#sheetbar{flex:0 0 auto;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+#deckbar button,#sheetbar button{white-space:nowrap}
+#deckkey{flex:1 1 auto;min-width:0;text-align:right;font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k{display:inline-block;width:12px;height:12px;vertical-align:-2px;margin:0 4px 0 10px}
+.k.g{background:#c3b18c;border:1px dashed #7a6547}.k.r{background:#7d5a35;border:2px solid var(--hi);border-radius:50%}
+.k.h{background:repeating-linear-gradient(135deg,#8f633a 0,#8f633a 2px,var(--hi) 2px,var(--hi) 3px)}
 #frame{flex:1 1 auto;min-height:0;position:relative;border:2px solid var(--line);background:#1b1611;overflow:hidden}
 #c{position:absolute;left:0;top:0;cursor:crosshair}
 .edge{position:absolute;font:bold 10px Verdana,sans-serif;letter-spacing:2px;color:#f3e6c4;background:rgba(33,28,22,0.72);padding:2px 6px;border-radius:2px;pointer-events:none}
@@ -387,7 +392,8 @@ table{border-collapse:collapse;width:100%}td{padding:4px 0;border-bottom:1px sol
 </style></head><body>
 <div id='top'><h1>Ship's draught</h1><input id='nm' maxlength='40' style='width:210px' title='Her name'><span id='st'></span><span class='sp'></span><span class='dim'>Start from</span><select id='ex' title='Ready-made draughts to start from'><option value=''>a ready-made ship...</option></select><button class='primary' id='save'>Save to the sheet</button></div>
 <div id='main'><div id='sheetcol'>
-<div id='sheetbar'><span class='dim'>Deck</span><span class='seg' id='levels'></span><span class='dim' style='margin-left:8px'>Zoom</span><span class='seg'><button id='z_sheet'>Whole sheet</button><button id='z_ship'>Fit ship</button><button id='z_in' title='Closer (mouse wheel)'>+</button><button id='z_out' title='Further (mouse wheel)'>-</button></span><span class='sp'></span><button id='b_undo' title='Undo'>Undo <kbd>Ctrl Z</kbd></button><button id='b_redo' title='Redo (Ctrl Y)'>Redo</button><button id='b_clear' title='Wipe the sheet (Undo brings it back)'>Clear</button></div>
+<div id='deckbar'><span class='dim'>Deck</span><span class='seg' id='levels'></span><span id='deckkey'></span></div>
+<div id='sheetbar'><span class='dim'>Zoom</span><span class='seg'><button id='z_sheet'>Whole sheet</button><button id='z_ship'>Fit ship</button><button id='z_in' title='Closer (mouse wheel)'>+</button><button id='z_out' title='Further (mouse wheel)'>-</button></span><span class='sp'></span><button id='b_undo' title='Undo'>Undo <kbd>Ctrl Z</kbd></button><button id='b_redo' title='Redo (Ctrl Y)'>Redo</button><button id='b_clear' title='Wipe the sheet (Undo brings it back)'>Clear</button></div>
 <div id='frame'><canvas id='c'></canvas><div class='edge' style='left:50%;top:5px;transform:translateX(-50%)'>BOW</div><div class='edge' style='left:50%;bottom:5px;transform:translateX(-50%)'>STERN</div><div class='edge' style='left:5px;top:50%;transform:translateY(-50%)'>PORT</div><div class='edge' style='right:5px;top:50%;transform:translateY(-50%)'>STARBOARD</div></div>
 <div id='hover'></div><div id='part'></div></div>
 <div id='side'>
@@ -467,18 +473,24 @@ for(k in set){p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
 if(!set[key(x+1,y)]){g.moveTo(px+Z,py);g.lineTo(px+Z,py+Z);}if(!set[key(x-1,y)]){g.moveTo(px,py);g.lineTo(px,py+Z);}
 if(!set[key(x,y+1)]){g.moveTo(px,py);g.lineTo(px+Z,py);}if(!set[key(x,y-1)]){g.moveTo(px,py+Z);g.lineTo(px+Z,py+Z);}}
 g.stroke();}
-// A deck off her main deck: the level it rests on shows faintly beneath it,
-// and the head of every ladder climbing to it is marked.
-function drawDeck(){var k,c,p,px,py,base=under(lv),set=decks[lv]||{},below=lv>0?lv-1:0,f=LV[lv][1];
-g.globalAlpha=0.3;for(k in cells){p=k.split(',');floorAt(g,cells[k][0],sx(+p[0]),sy(+p[1]),Z);}
-if(base){g.globalAlpha=0.45;for(k in decks[base]||{}){p=k.split(',');floorAt(g,LV[base][1],sx(+p[0]),sy(+p[1]),Z);}}
-g.globalAlpha=1;outline(cells,'rgba(42,26,12,0.45)');
-for(k in set){c=set[k];p=k.split(',');px=sx(+p[0]);py=sy(+p[1]);floorAt(g,f,px,py,Z);
+// A deck off her main deck. The rest of her is only a flat wash with a
+// dashed line round it, so nothing but the deck in hand is drawn as planks
+// or plate. A deck above casts a shadow on what it rests on, her hold is
+// sunk under an inner shadow, and the head of every ladder climbing to the
+// deck is ringed.
+function wash(set,a){var k,p;g.fillStyle='rgba(74,52,28,'+a+')';for(k in set){p=k.split(',');g.fillRect(sx(+p[0]),sy(+p[1]),Z,Z);}}
+function drawDeck(){var k,c,p,x,y,px,py,base=under(lv),set=decks[lv]||{},below=lv>0?lv-1:0,f=LV[lv][1],o=Math.max(2,Math.round(Z/8)),dash=[Math.max(3,Z/4),Math.max(2,Z/6)];
+wash(cells,0.16);g.setLineDash(dash);outline(cells,'rgba(42,26,12,0.55)');
+if(base){wash(decks[base]||{},0.2);outline(decks[base]||{},'rgba(42,26,12,0.7)');}
+g.setLineDash([]);
+if(lv>0){g.fillStyle='rgba(26,16,8,0.4)';for(k in set){p=k.split(',');g.fillRect(sx(+p[0])+o,sy(+p[1])+o,Z,Z);}}
+for(k in set){c=set[k];p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);floorAt(g,f,px,py,Z);
+if(lv<0){g.fillStyle='rgba(16,10,5,0.38)';if(!set[key(x,y+1)])g.fillRect(px,py,Z,o);if(!set[key(x-1,y)])g.fillRect(px,py,o,Z);}
 if(c[0]){pieceAt(g,c[0],c[1],px,py,Z);if(turns(c[0]))arrowAt(g,c[1],px,py,Z);}
 if(lv>0&&pieceOf(below,tileAt(below,k))=='X')headAt(g,px,py,Z);}
 outline(set,INK);}
-// The head of a ladder from the deck below: a gold ring.
-function headAt(c,px,py,k){c.strokeStyle=GOLD;c.lineWidth=Math.max(2,k/10);c.beginPath();c.arc(px+k/2,py+k/2,k/2-c.lineWidth,0,Math.PI*2);c.stroke();}
+// The head of a ladder from the deck below: a gold ring, dark under bright.
+function headAt(c,px,py,k){var w=Math.max(2,k/10),r=k/2-w-1;c.beginPath();c.arc(px+k/2,py+k/2,r,0,Math.PI*2);c.strokeStyle='rgba(20,12,6,0.85)';c.lineWidth=w+2;c.stroke();c.strokeStyle=GOLD;c.lineWidth=w;c.stroke();}
 function boxOutline(x0,y0,x1,y1){g.lineWidth=2;g.strokeStyle=GOLD;g.strokeRect(sx(Math.min(x0,x1))+1,sy(Math.max(y0,y1))+1,(Math.abs(x1-x0)+1)*Z-2,(Math.abs(y1-y0)+1)*Z-2);}
 function draw(){var W=cv.width,H=cv.height,S=N*Z,ox=-vx,oy=-vy;g.setLineDash([]);g.globalAlpha=1;
 g.fillStyle='#1b1611';g.fillRect(0,0,W,H);g.fillStyle=PAPER;g.fillRect(ox,oy,S,S);g.imageSmoothingEnabled=Z%32!=0;
@@ -522,15 +534,18 @@ function tile(into,k,name,tip){var b=document.createElement('button'),c=document
 b.appendChild(c);b.setAttribute('aria-label',name);b.onclick=function(){tool(k);};b.onmouseenter=b.onfocus=function(){peek=k;part();};b.onmouseleave=b.onblur=function(){if(peek==k){peek=null;part();}};into.appendChild(b);ICONS.push([c,k]);}
 function group(name){var w=document.createElement('div'),h=document.createElement('div'),d=document.createElement('div');h.className='grp';h.appendChild(document.createTextNode(name));d.className='pal';w.appendChild(h);w.appendChild(d);$('pal').appendChild(w);return d;}
 function palette(){$('pal').innerHTML='';ICONS=[];var hull=group(lv?cap(LV[lv][0]):'Hull'),G={},i;
-if(lv){tile(hull,'u','Lay deck','A tile of '+LV[lv][0]+', over a tile of the '+LV[under(lv)][0]+'. Right-click takes it up.');tile(hull,'x','Erase','Take this tile of '+LV[lv][0]+' up');}
+if(lv){tile(hull,'u',partName('u'),'A tile of '+LV[lv][0]+', over a tile of the '+LV[under(lv)][0]+'. Right-click takes it up.');tile(hull,'x','Erase','Take this tile of '+LV[lv][0]+' up');}
 else{for(i=0;i<FLOORS.length;i++)tile(hull,FLOORS[i][0],cap(FLOORS[i][1]),'Lay '+FLOORS[i][1]);
 tile(hull,'u','Deck above','A deck on the level above this tile. Right-click takes it off.');tile(hull,'x','Erase','Take the whole tile off the sheet, with every deck on it');}
 for(i=0;i<PIECES.length;i++){var P=PIECES[i];if(!allowed(P[0],lv))continue;if(!G[P[3]])G[P[3]]=group(P[3]);tile(G[P[3]],P[0],cap(P[1]),cap(P[1])+(P[2]?' (turn it with R)':'')+(P[6]?': stands under a clear tile of the deck above':''));}
 icons();}
 function levels(){var s=$('levels'),order=[],i,l;s.innerHTML='';for(l in LV)order.push(+l);order.sort(function(a,b){return b-a;});
-for(i=0;i<order.length;i++){l=order[i];var b=document.createElement('button');b.id='l_'+l;b.title=cap(LV[l][0]);b.appendChild(document.createTextNode(l==0?'Main':(l<0?'Hold':(l==1?'Above':'Above 2'))));
+for(i=0;i<order.length;i++){l=order[i];var b=document.createElement('button');b.id='l_'+l;b.title=l==0?'Her main deck: the hull she floats on':(l<0?'Her '+LV[l][0]+', under her main deck':'Her '+LV[l][0]+', resting on her '+LV[under(l)][0]);b.appendChild(document.createTextNode(cap(LV[l][0])));
 b.onclick=(function(n){return function(){level(n);};})(l);s.appendChild(b);}}
-function level(n){if(lv==n)return;lv=n;if(t!='x'&&t!='u'&&(FNAMES[t]?lv:!allowed(t,lv)))t=lv?'u':FLOORS[0][0];palette();mark();if(typeof part=='function')part();tell();draw();}
+// What the marks on the sheet mean on the deck in view, beside the switcher.
+function deckKey(){var h;if(!lv)h=(LV[1]?'<i class=\'k h\'></i>'+esc(LV[1][0])+' over it':'')+(LV[-1]?'<i class=\'k r\'></i>ladder up from the '+esc(LV[-1][0]):'');
+else h='<i class=\'k g\'></i>'+(lv<0?'her main deck, overhead':'the rest of her, beneath')+(lv>0?'<i class=\'k r\'></i>head of a ladder':'');$('deckkey').innerHTML=h;}
+function level(n){if(lv==n)return;lv=n;if(t!='x'&&t!='u'&&(FNAMES[t]?lv:!allowed(t,lv)))t=lv?'u':FLOORS[0][0];palette();deckKey();mark();if(typeof part=='function')part();tell();draw();}
 function mark(){var b=document.getElementsByTagName('button'),i,id;for(i=0;i<b.length;i++){id=b[i].id;
 if(id.indexOf('t_')==0)b[i].className=id=='t_'+t?'tile on':'tile';if(id.indexOf('f_')==0)b[i].className=id=='f_'+fd?'on':'';if(id.indexOf('l_')==0)b[i].className=id=='l_'+lv?'on':'';}
 $('m_box').className=box?'on':'';$('m_free').className=box?'':'on';$('m_on').className=mirror?'on':'';$('m_off').className=mirror?'':'on';
@@ -538,8 +553,9 @@ $('z_sheet').className=fit=='sheet'?'on':'';$('z_ship').className=fit=='ship'?'o
 function tool(x){t=x;mark();part();draw();}
 // The Part panel: the piece of a lit finding, else the palette picture the
 // pointer is on, else the picked tool.
-function partName(k){return FNAMES[k]?cap(FNAMES[k]):(k=='u'?'Deck above':(k=='x'?'Erase':(NAMES[k]?cap(NAMES[k][1]):k)));}
+function partName(k){return FNAMES[k]?cap(FNAMES[k]):(k=='u'?(lv?cap(LV[lv][0])+' tile':'Deck above'):(k=='x'?'Erase':(NAMES[k]?cap(NAMES[k][1]):k)));}
 function part(){var f=litCheck(),k=f&&f.part?f.part:(peek||t),H=HELP[k],L=[['what','What'],['use','Use'],['how','How']],i;
+if(lv&&k=='x')H={what:'The eraser.',use:'Takes up one tile of her '+LV[lv][0]+' and what stands on it'+(lv>0&&LV[lv+1]?', with any deck resting on that tile':'')+'. Her main deck stays as drawn.',how:'Click or drag over tiles. Undo brings them back.'};
 var h='<canvas id=\'pp\' width=\'32\' height=\'32\'></canvas><div class=\'pb\'><div class=\'pn\'>'+esc(partName(k))+'<span>'+(k==t?'picked to draw with'+(turns(k)?' &middot; R turns it':''):(f&&f.part?'named by the check':'click to pick it'))+'</span></div>';
 if(H)for(i=0;i<L.length;i++)if(H[L[i][0]])h+='<div class=\'pr\'><i>'+L[i][1]+'</i><span>'+esc(H[L[i][0]])+'</span></div>';
 $('part').innerHTML=h+'</div>';var c=$('pp');c.k=k;paintIcon([c,k]);}
@@ -648,7 +664,7 @@ $('z_in').onclick=function(){zoom(1,cv.width/2,cv.height/2);};$('z_out').onclick
 $('b_undo').onclick=undo;$('b_redo').onclick=redo;$('b_clear').onclick=clearAll;$('save').onclick=function(){send('save');};
 $('ex').onchange=loadExample;$('nm').oninput=function(){changed();};
 (function(){var s=$('ex');for(var i=0;i<EXAMPLES.length;i++){var o=document.createElement('option');o.value=i;o.appendChild(document.createTextNode(cap(EXAMPLES[i][0])));s.appendChild(o);}})();
-$('nm').value=DATA.NAME;load(DATA.START,DATA.START_DECKS);levels();palette();mark();part();tell();resize();window.onresize=resize;
+$('nm').value=DATA.NAME;load(DATA.START,DATA.START_DECKS);levels();deckKey();palette();mark();part();tell();resize();window.onresize=resize;
 </script></body></html>
 "}
 
