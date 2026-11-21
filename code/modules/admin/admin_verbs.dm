@@ -58,6 +58,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/accolades_admin,	//see, grant or remove a player's lifetime accolades (code/modules/accolades)
 	/client/proc/province_blocs_admin,	//mark blocs, freeze claims, release provinces (code/modules/provinces/province_blocs.dm)
 	/client/proc/cmd_admin_divine_patron,	//speak as a god: initiate followers, teach invocations, answer prayers,
+	/client/proc/divine_sight,			//observe as a god: prayers, followers and bound spirits in one panel,
 	/client/proc/cmd_admin_magic_whitelist,	//who may follow a god and learn magic on persistent worlds (shared list),
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
