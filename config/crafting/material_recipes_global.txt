@@ -733,6 +733,11 @@ RECIPE: /material/silk/,dark hanfu,/obj/item/clothing/under/hanfu,2,100,0,1,clot
 RECIPE: /material/silk/,green hanfu,/obj/item/clothing/under/hanfu/green,2,100,0,1,clothing,0,0,38,8,null
 RECIPE: /material/silk/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
 RECIPE: /material/silk/,customizable scarf,/obj/item/clothing/accessory/custom/scarf,1,30,0,1,accessories,0,0,70,8,null
+RECIPE: /material/tarred_canvas/,foldable canopy,/obj/item/weapon/tent,4,75,0,1,furniture,0,0,19,8,null
+RECIPE: /material/tarred_canvas/,small tarred sail,/obj/item/sail/tarred,15,125,0,1,none,0,0,22,8,null
+RECIPE: /material/oilcloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/waxed_cloth/,foldable canopy,/obj/item/weapon/tent,4,75,0,1,furniture,0,0,19,8,null
+RECIPE: /material/waxed_cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
 
 //**************************************************************
 //*********************| CLOTH |********************************
@@ -845,7 +850,7 @@ RECIPE: /material/cloth/,fancy red jacket,/obj/item/clothing/suit/storage/jacket
 RECIPE: /material/cloth/,blue vest,/obj/item/clothing/suit/storage/jacket/piratejacket3,4,75,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/cloth/,black vest,/obj/item/clothing/suit/storage/jacket/piratejacket4,4,75,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
-RECIPE: /material/cloth/,oilskin coat,/obj/item/clothing/suit/oilskin_coat,6,120,0,1,jackets & vests,0,0,0,8,null
+RECIPE: /material/oilcloth/,oilskin coat,/obj/item/clothing/suit/oilskin_coat,6,120,0,1,jackets & vests,0,0,0,8,null
 RECIPE: /material/cloth/,beekeeper suit,/obj/item/clothing/suit/beekeeper_suit,6,120,0,1,jackets & vests,0,0,0,8,null
 RECIPE: /material/cloth/,bee veil,/obj/item/clothing/head/bee_veil,3,60,0,1,hats,0,0,0,8,null
 RECIPE: /material/cloth/,black umbrella,/obj/item/weapon/umbrella/cloth,4,90,0,1,none,0,0,0,8,null
@@ -900,7 +905,7 @@ RECIPE: /material/cloth/,red egyptian headdress,/obj/item/clothing/head/egyptian
 RECIPE: /material/cloth/,hedjet crown,/obj/item/clothing/head/hedjet,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,deshret crown,/obj/item/clothing/head/deshret,5,65,0,1,hats,0,0,18,1,null
 RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats,0,0,18,8,null
-RECIPE: /material/cloth/,sou'wester,/obj/item/clothing/head/souwester,3,60,0,1,hats,0,0,0,8,null
+RECIPE: /material/oilcloth/,sou'wester,/obj/item/clothing/head/souwester,3,60,0,1,hats,0,0,0,8,null
 RECIPE: /material/cloth/,pschent crown,/obj/item/clothing/head/pschent,5,65,0,1,hats,0,0,24,1,null
 RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
 RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,8,null

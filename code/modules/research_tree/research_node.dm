@@ -2971,6 +2971,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
 		"/obj/item/sail" = "oared_ships",
 		"/obj/item/sail/wool" = "oared_ships",
+		"/obj/item/sail/tarred" = "oared_ships",
 		"/obj/item/weapon/covers/ship" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0/north" = "wagons_ships",
