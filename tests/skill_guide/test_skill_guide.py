@@ -23,7 +23,7 @@ class SkillGuide(unittest.TestCase):
         # lists; a skill shown there without a row here is the same gap.
         rows = set(re.findall(r'^\t"(\w+)" = list\("', GUIDE, re.M))
         self.assertEqual(rows, {'strength', 'crafting', 'dexterity', 'stamina', 'swords', 'bows', 'rifle', 'pistol',
-                                'machinegun', 'throwing', 'medical', 'farming', 'hunting', 'swimming', 'philosophy'})
+                                'machinegun', 'throwing', 'medical', 'farming', 'hunting', 'swimming', 'unarmed', 'philosophy'})
 
     def test_magic_is_never_mentioned(self):
         self.assertNotIn('magic', GUIDE.lower().replace('magic is left out on purpose', ''))
