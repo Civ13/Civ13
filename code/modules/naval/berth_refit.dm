@@ -108,8 +108,8 @@
 		mine[T] = TRUE
 	for (var/turf/T in target)
 		var/list/want = target[T]
-		var/floor_name = ship_draught_floors[want[1]]["name"]
-		var/list/piece = want[2] ? ship_draught_pieces[want[2]] : null
+		var/floor_name = ship_draught_floors()[want[1]]["name"]
+		var/list/piece = want[2] ? ship_draught_pieces()[want[2]] : null
 		if (!mine[T])
 			.[T] = list("add", piece ? "a [floor_name] with a [piece["name"]]" : "a [floor_name]")
 			continue
@@ -117,7 +117,7 @@
 		if (have[1] != want[1])
 			.[T] = list("change", "the floor for a [floor_name]")
 		else if (have[2] != want[2])
-			var/list/old = have[2] ? ship_draught_pieces[have[2]] : null
+			var/list/old = have[2] ? ship_draught_pieces()[have[2]] : null
 			if (!piece)
 				.[T] = list("remove", "the [old["name"]]")
 			else
@@ -127,7 +127,7 @@
 	for (var/turf/T in mine)
 		if (!target[T])
 			var/list/have = refit_tile(T)
-			var/list/old = have[2] ? ship_draught_pieces[have[2]] : null
+			var/list/old = have[2] ? ship_draught_pieces()[have[2]] : null
 			.[T] = list("remove", old ? "the floor and the [old["name"]]" : "the floor")
 
 /obj/structure/hull_tiller/proc/clear_refit_marks()

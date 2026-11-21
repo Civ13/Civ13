@@ -249,15 +249,9 @@
 				var/obj/item/clothing/G = H.gloves
 				G.gunshot_residue = chambered.name
 
-	#define DISABLE_CASINGS // goodbye lag (EXPERIMENTAL) - Kachnov
-
 	switch(handle_casings)
 		if (EJECT_CASINGS) //eject casing onto ground.
-			#ifndef DISABLE_CASINGS
-			chambered.loc = get_turf(src)
-			chambered.randomrotation()
-			#endif
-
+			drop_casing(chambered)
 			playsound(loc, casing_sound, 50, TRUE)
 
 		if (CYCLE_CASINGS) //cycle the casing back to the end.
@@ -272,6 +266,26 @@
 
 	if (handle_casings != HOLD_CASINGS)
 		chambered = null
+
+// Drops a casing the gun's action threw out onto the gun's tile, where it can be
+// picked up for handloading and decays like other spent brass. A tile keeps at
+// most CASINGS_PER_TILE spent casings; later ones are deleted so a machine gun
+// firing from one spot stays cheap. Live rounds are always kept.
+/obj/item/weapon/gun/projectile/proc/drop_casing(obj/item/ammo_casing/C)
+	if (!C)
+		return
+	var/turf/T = get_turf(src)
+	if (!T)
+		qdel(C)
+		return
+	if (!C.BB)
+		var/spent = 0
+		for (var/obj/item/ammo_casing/other in T)
+			if (!other.BB && ++spent >= CASINGS_PER_TILE)
+				qdel(C)
+				return
+	C.loc = T
+	C.randomrotation()
 
 //Attempts to load A into src, depending on the type of thing being loaded and the load_method
 //Maybe this should be broken up into separate procs for each load method?
