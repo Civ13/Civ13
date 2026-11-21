@@ -113,6 +113,7 @@ var/global/next_language_drift_tick = 0
 	language_drift_use = list()
 	language_drift_contact = list()
 	language_split_check()
+	people_isolation_tick() // peoples_split.dm
 
 // How far one tick moves a community that heard `use` lines from its own
 // nation and `contact` lines from outside.

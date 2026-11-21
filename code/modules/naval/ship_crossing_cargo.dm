@@ -128,7 +128,8 @@
 			coupled[M.fueltank] = TRUE
 	var/list/hold = islist(R["hold"]) ? R["hold"] : list()
 	var/list/upper = islist(R["upper"]) ? R["upper"] : list()
-	for (var/list/tile in R["tiles"] + hold + upper)
+	var/list/top = islist(R["top"]) ? R["top"] : list()
+	for (var/list/tile in R["tiles"] + hold + upper + top)
 		for (var/list/E in tile[3])
 			if (E[1] != "e" || E.len != 4)
 				continue
