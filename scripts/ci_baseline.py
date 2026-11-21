@@ -1458,6 +1458,7 @@ SUITES = {
         'paths': ('tests/ship_draught/',), 'shared_paths': (
             'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
             'code/modules/naval/ship_designer.dm', 'scripts/build_ship_designer_icons.py',
+            'code/modules/naval/sub_draught.dm',
             'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
