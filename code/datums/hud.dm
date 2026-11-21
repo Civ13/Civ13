@@ -219,7 +219,7 @@
 		"m_intent" = 			list("type" = /obj/screen/mov_intent, "loc" = "EAST-1,SOUTH:2"),
 		"damage zone" = 		list("type" = /obj/screen/zone_sel3,   "loc" = "EAST,SOUTH:2", "icon" = 'icons/mob/screen/zone_sel_console.dmi'),
 		"tactic" = 				list("type" = /obj/screen/tactic,	 "loc" = "EAST-3,SOUTH+1:2"),
-		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "EAST-4,SOUTH+1:2"),
+		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "EAST-3,SOUTH+3:2"),
 		"mode" = 				list("type" = /obj/screen/mode,	   "loc" = "EAST-2,SOUTH+1:2"),
 		"secondary attack" = 	list("type" = /obj/screen/kick_jump_bite,	   "loc" = "EAST-1,SOUTH+1:2"),
 		"random damage zone" = 	list("type" = /obj/screen/zone_sel_random,   "loc" = "EAST,SOUTH+2:2"),
