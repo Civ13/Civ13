@@ -82,7 +82,10 @@ class Projection:
         self.globals = dict(persistence_admission_identity=0,
                             persistence_save_in_progress=False,
                             persistence_active_operation=None,
-                            persistence_load_recovery_required=False)
+                            persistence_load_recovery_required=False,
+                            # Hidden material virtues: plain items carry none.
+                            arcane_copy_virtue=lambda *_args: None,
+                            arcane_same_virtue=lambda *_args: True)
         # Fuel values come from the shared tables in code/modules/1713/solid_fuel.dm.
         self.globals |= solid_fuel_globals()
 

@@ -21,6 +21,9 @@
 
 	//make sure the air can transmit speech - hearer's side
 	original_message = message
+	// Chat translation (docs/chat-translation.md) only reads speech this
+	// listener fully understood; garbled speech is marked as untranslatable.
+	var/understood = TRUE
 
 	if (sleeping || stat == TRUE)
 		hear_sleep(message)
@@ -30,10 +33,12 @@
 	if (language && (language.flags & NONVERBAL))
 		if (!speaker || ((sdisabilities & BLIND) || blinded || find_trait("Blind")) || !(speaker in view(src)))
 			message = stars(message)
+			understood = FALSE
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
 		// A speaker hears their own words as they came out, gaps and all.
 		if (speaker != src && !say_understands(speaker,language))
+			understood = FALSE
 			if (istype(speaker,/mob/living/simple_animal))
 				var/mob/living/simple_animal/S = speaker
 				if (S && S.speak.len)
@@ -64,6 +69,11 @@
 						speaker_name = "<font color='yellow'>[speaker_name] (GUNNER)</font>"
 					for (var/obj/structure/bed/chair/loader/D in speaker.loc)
 						speaker_name = "<font color='yellow'>[speaker_name] (LOADER)</font>"
+	// Capitalize here when a language formats it: format_message() would
+	// otherwise only see the marker's tag.
+	if (language && !animal)
+		message = capitalize(message)
+	message = understood ? "<span class='chat-tr'>[message]</span>" : "<span class='chat-notr'>[message]</span>"
 	if (italics)
 		message = "<i>[message]</i>"
 	alt_name = speaker_name

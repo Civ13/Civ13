@@ -1,8 +1,8 @@
 # Ship's draughts
 
 A ship's draught is a ship drawn on paper before she is built. It is the
-first part of the freeform ship designer: later parts add a drawing window,
-building a draught on a slipway and launching her as a built hull.
+heart of the freeform ship designer: players draw one in a window, build it
+on a slipway and launch her as a built hull.
 
 Code: `code/modules/naval/ship_draught.dm`. Limits: `code/__defines/naval.dm`.
 
@@ -76,3 +76,29 @@ server parses it with `ship_draught_from_code()` and answers with
 `summary_text()` (`shipStats`). Summaries are limited to one per 0.3 s per
 sheet. **Save to the sheet** stores the drawing (finished or not) on the item.
 The server re-checks the drawer is holding the sheet and a pen on every part.
+
+## Building on the slipway
+
+`code/modules/naval/slipway_draught.dm`. Use a drawn ship's draught on an
+empty slipway post. The draught must pass `problems()` and the berth must be
+open ground, trench or water with nothing solid on it, no floor already laid
+and no other berth across it. Her stern row goes on the tile in front of the
+post, her middle column on the post's line, and her bow runs the way the post
+faces (`slipway_draught_turn()`, the inverse of `ship_draught_bow_up()`).
+
+The post keeps the draught as `draught_code` beside the usual `design`
+(her name), `pieces_done` and `paid`. `slipway_draught_plan()` makes the
+piece plan: one piece per floor tile from stern to bow (plank floors, then
+steel), then one per fitting, a stage per kind in `ship_draught_pieces` order.
+Each piece costs its hand recipe; the deck above is not built on the slipway
+and is laid by hand once she is afloat. Iron and planks pay for pieces as well
+as the usual materials (`piece_material()`).
+
+When a piece is paid for, the real floor or fitting appears on its tile with
+its facing turned to the berth (`draught_place()`). Tiles still to build show
+a `slipway_frame`: the cradle where the floor goes, then a faint picture of the
+fitting still to stand there. Frames are rebuilt from the code after a load;
+what is already built saves as ordinary objects. Several shipwrights can work
+at once, each fitting the next piece in turn, and a worker keeps going while
+the stack in hand pays (`add_draught_piece()`). Giving her up takes the
+draught off the post and leaves what is built.

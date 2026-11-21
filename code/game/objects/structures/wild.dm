@@ -241,11 +241,15 @@ var/list/seed_list_jungle
 			work_animation.stop()
 		if (completed)
 			health = 0
+			var/turf/fell_at = get_turf(src)
+			var/was_tree = istype(src, /obj/structure/wild/tree)
 			try_destroy()
 			HT.apply_wear(0.25, WEAR_WORK)
 			if (istype(user, /mob/living/human))
 				var/mob/living/human/H = user
 				H.adaptStat("strength", 1)
+				if (was_tree && QDELETED(src))
+					H.arcane_felled_tree(fell_at)
 			return
 	else
 		switch(W.damtype)
