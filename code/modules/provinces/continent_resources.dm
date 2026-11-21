@@ -100,7 +100,7 @@
 
 // What a chance or an amount of resource is multiplied by when mined here now.
 /proc/continent_ore_factor(resource, turf/T = null)
-	return continent_phased(continent_rate(resource, T))
+	return continent_phased(continent_rate(resource, T)) * underground_ore_factor(resource, T) // underground_ores.dm
 
 // The resource an ore type counts as, or null for one the continents leave alone.
 /proc/continent_ore_resource(ore_type)
