@@ -139,6 +139,8 @@ def project(source, declaration, args, env, method=False, *, defines=None):
             code = 'if deferred' + code[5:] + ':'  # injected timer callback boundary
         elif code == 'try':
             code = 'try:'
+        elif code == 'catch':
+            code = 'except Exception:'
         elif re.fullmatch(r'catch\s*\(\s*[A-Za-z_]\w*\s*\)', code):
             name = re.fullmatch(r'catch\s*\(\s*([A-Za-z_]\w*)\s*\)', code)[1]
             code = 'except Exception as ' + name + ':'

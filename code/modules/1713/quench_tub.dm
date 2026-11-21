@@ -75,20 +75,17 @@
 		to_chat(user, SPAN_NOTICE("You plunge \the [W] hissing into \the [src]. It comes out hard."))
 	return TRUE
 
-// Forging leaves the new piece on the anvil's tile: quench what appeared.
-/obj/structure/anvil/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name, picked = null)
-	if (!quench_hardens(material_name) || !quench_tub())
-		return ..()
-	var/list/before = list()
-	var/turf/T = get_turf(src)
-	for (var/obj/item/weapon/material/W in T)
-		before += W
-	. = ..()
-	var/obj/structure/quench_tub/Q = quench_tub()
-	if (!Q || !T)
+// Each piece forged from iron or steel sheet comes off the anvil into the
+// tub: a steel Japanese blade is clay-hardened first when the smith can
+// (tatara.dm), then everything gets the plain quench.
+/obj/structure/anvil/finish_forged_piece(obj/item/made, mob/user, mob/living/human/H, material_name)
+	..()
+	var/obj/item/weapon/material/W = made
+	if (!istype(W) || QDELETED(W) || !quench_hardens(material_name))
 		return
-	for (var/obj/item/weapon/material/W in T)
-		if (!(W in before))
-			Q.quench(W, user)
+	clay_harden(W, H)
+	var/obj/structure/quench_tub/Q = quench_tub()
+	if (Q)
+		Q.quench(W, user)
 
 #undef QUENCHED_QUALITY

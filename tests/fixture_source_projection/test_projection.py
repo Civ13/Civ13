@@ -104,5 +104,25 @@ class ProjectionTest(unittest.TestCase):
             self.assertTrue(selected[name]['selected'])
 
 
+class ProcessingListProjectionTest(unittest.TestCase):
+    def test_current_priorities_are_projected_without_replacing_values(self):
+        helper = load('processing_list_projection', ROOT / 'scripts/processing_list_projection.py')
+        source = (ROOT / 'code/__defines/subsystem.dm').read_text(encoding='utf-8')
+        result = helper.project_priorities(source)
+        self.assertEqual(len(result.splitlines()), 2)
+        for line in result.splitlines():
+            self.assertIn(line, source.splitlines())
+
+    def test_missing_priority_fails_closed(self):
+        helper = load('processing_list_projection', ROOT / 'scripts/processing_list_projection.py')
+        with self.assertRaisesRegex(ValueError, 'PROCESS_PRIORITY_MEDIUM'):
+            helper.project_priorities('#define PROCESS_PRIORITY_VERY_HIGH 1\n')
+
+    def test_duplicate_priority_fails_closed(self):
+        helper = load('processing_list_projection', ROOT / 'scripts/processing_list_projection.py')
+        with self.assertRaisesRegex(ValueError, 'PROCESS_PRIORITY_VERY_HIGH'):
+            helper.project_priorities('#define PROCESS_PRIORITY_VERY_HIGH 1\n#define PROCESS_PRIORITY_VERY_HIGH 2\n#define PROCESS_PRIORITY_MEDIUM 3\n')
+
+
 if __name__ == '__main__':
     unittest.main()

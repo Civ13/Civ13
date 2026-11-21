@@ -1,0 +1,340 @@
+{
+  "source_review_sha": "5015ab8f495a1d33938005c8a6583c30c7175e12",
+  "references": [
+    [
+      "code/_helpers/global_lists.dm",
+      "",
+      "var/global/list/living_mob_list = list()"
+    ],
+    [
+      "code/_helpers/global_lists.dm",
+      "",
+      "var/global/list/living_complex_animal_list = list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/proc/register_living_mob(var/datum/M)",
+      "/proc/register_living_mob(var/datum/M)"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/proc/register_living_mob(var/datum/M)",
+      "\tglobal.living_mob_list += M"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/proc/register_living_mob(var/datum/M)",
+      "\t\tglobal.living_complex_animal_list += M"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/proc/unregister_living_mob(var/datum/M)",
+      "/proc/unregister_living_mob(var/datum/M)"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/proc/unregister_living_mob(var/datum/M)",
+      "\t. = global.living_mob_list.Remove(M)"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/proc/unregister_living_mob(var/datum/M)",
+      "\t\tglobal.living_complex_animal_list.Remove(M)"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/proc/switch_from_living_to_dead_mob_list()",
+      "/mob/proc/switch_from_living_to_dead_mob_list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/proc/switch_from_living_to_dead_mob_list()",
+      "\tremove_from_living_mob_list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/proc/switch_from_dead_to_living_mob_list()",
+      "/mob/proc/switch_from_dead_to_living_mob_list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/proc/switch_from_dead_to_living_mob_list()",
+      "\t. = add_to_living_mob_list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/proc/add_to_living_mob_list()",
+      "/mob/proc/add_to_living_mob_list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/living/add_to_living_mob_list()",
+      "/mob/living/add_to_living_mob_list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/living/add_to_living_mob_list()",
+      "\tif((src in global.living_mob_list) || (src in global.dead_mob_list))"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/living/add_to_living_mob_list()",
+      "\tregister_living_mob(src)"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/proc/remove_from_living_mob_list()",
+      "/mob/proc/remove_from_living_mob_list()"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/proc/remove_from_living_mob_list()",
+      "\treturn unregister_living_mob(src)"
+    ],
+    [
+      "code/_helpers/mobs.dm",
+      "/mob/living/add_to_dead_mob_list()",
+      "\tif((src in global.living_mob_list) || (src in global.dead_mob_list))"
+    ],
+    [
+      "code/_helpers/unsorted.dm",
+      "/mob/dview/New()",
+      "\t\tunregister_living_mob(src)"
+    ],
+    [
+      "code/game/gameticker.dm",
+      "/datum/controller/gameticker/proc/station_explosion_cinematic(var/station_missed=0, var/override = null)",
+      "\t\tfor(var/mob/living/M in living_mob_list)"
+    ],
+    [
+      "code/game/gameticker.dm",
+      "/datum/controller/gameticker/proc/station_explosion_cinematic(var/station_missed=0, var/override = null)",
+      "\t\tfor(var/mob/living/M in living_mob_list)"
+    ],
+    [
+      "code/game/gameticker.dm",
+      "/datum/controller/gameticker/proc/station_explosion_cinematic(var/station_missed=0, var/override = null)",
+      "\t\t\tfor(var/mob/living/M in living_mob_list)"
+    ],
+    [
+      "code/game/mob/death.dm",
+      "/mob/proc/death(gibbed, deathmessage=\"seizes up and falls limp...\")",
+      "\tunregister_living_mob(src)"
+    ],
+    [
+      "code/game/mob/living/carbon/human/announcer.dm",
+      "/mob/living/human/announcer/New(var/new_loc, var/new_species = null)",
+      "\tunregister_living_mob(src)"
+    ],
+    [
+      "code/game/mob/living/carbon/human/resuscitation.dm",
+      "/mob/living/human/proc/restart_from_death(mob/user)",
+      "\tswitch_from_dead_to_living_mob_list()"
+    ],
+    [
+      "code/game/mob/living/living.dm",
+      "/mob/living/proc/rejuvenate()",
+      "\t\tregister_living_mob(src)"
+    ],
+    [
+      "code/game/mob/living/simple_animal/simple_animal.dm",
+      "/mob/living/simple_animal/Life()",
+      "\t\t\tregister_living_mob(src)"
+    ],
+    [
+      "code/game/mob/mob.dm",
+      "/mob/Destroy()",
+      "\tunregister_living_mob(src)"
+    ],
+    [
+      "code/game/mob/mob.dm",
+      "/mob/New()",
+      "\t\tregister_living_mob(src)"
+    ],
+    [
+      "code/game/mob/mob_movement.dm",
+      "/client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)",
+      "\t\t\t\tfor (var/mob/living/simple_animal/complex_animal/C in living_complex_animal_list)"
+    ],
+    [
+      "code/game/objects/effects/spawner.dm",
+      "/obj/effect/spawner/mobspawner/proc/nearby_population()",
+      "\tfor (var/mob/living/simple_animal/A in living_mob_list)"
+    ],
+    [
+      "code/modules/1713/complex_animal/_backend.dm",
+      "/mob/living/simple_animal/complex_animal/Move()",
+      "\tfor (var/mob/living/L in living_complex_animal_list)"
+    ],
+    [
+      "code/modules/1713/machinery/modular_vehicles/ships/sea_life.dm",
+      "/proc/sea_life_cycle()",
+      "\tfor (var/mob/living/simple_animal/sea/A in living_mob_list)"
+    ],
+    [
+      "code/modules/1713/voting.dm",
+      "/obj/structure/voting/proc/find_roles()",
+      "\tfor(var/mob/living/human/H in living_mob_list)"
+    ],
+    [
+      "code/modules/admin/verbs/modifyvariables.dm",
+      "/client/proc/modify_variables(var/atom/O, var/param_var_name = null, var/autodetect_class = FALSE)",
+      "\t\t\t\t\tregister_living_mob(O)"
+    ],
+    [
+      "code/modules/admin/verbs/modifyvariables.dm",
+      "/client/proc/modify_variables(var/atom/O, var/param_var_name = null, var/autodetect_class = FALSE)",
+      "\t\t\t\t\tunregister_living_mob(O)"
+    ],
+    [
+      "code/modules/ecology/ecology_spawning.dm",
+      "/datum/ecology_species/proc/population()",
+      "\tfor (var/mob/living/simple_animal/A in living_mob_list)"
+    ],
+    [
+      "code/modules/ecology/ecology_spawning.dm",
+      "/datum/ecology_spawner/proc/census()",
+      "\tfor (var/mob/living/simple_animal/A in living_mob_list)"
+    ],
+    [
+      "code/modules/research_tree/research_bench.dm",
+      "/obj/structure/research_bench/proc/pick_faction_member(mob/living/human/H, prompt, require_researcher = FALSE)",
+      "\tfor (var/mob/living/human/M in living_mob_list)"
+    ],
+    [
+      "code/modules/research_tree/research_faction.dm",
+      "/proc/faction_is_extant(faction)",
+      "\tfor (var/mob/living/human/H in living_mob_list)"
+    ],
+    [
+      "code/processes/human_corpse_decay.dm",
+      "/mob/living/human/after_load()",
+      "\t\tunregister_living_mob(src)"
+    ],
+    [
+      "code/processes/mob.dm",
+      "/process/mob/fire()",
+      "\t\t\tunregister_living_mob(M)"
+    ],
+    [
+      "code/processes/mob.dm",
+      "/process/mob/reset_current_list()",
+      "\tPROCESS_USE_FASTEST_LIST(living_mob_list)"
+    ],
+    [
+      "code/world.dm",
+      "/world/proc/replace_custom_hub_text(T)",
+      "\tT = replacetext(T, \"{LIVING}\", living_mob_list.len)"
+    ]
+  ],
+  "guards": [
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "/proc/register_living_mob(var/datum/M)",
+      "label": "ordered-append",
+      "body": "\tglobal.living_mob_list += M\n\tif (istype(M, /mob/living/simple_animal/complex_animal))\n\t\tglobal.living_complex_animal_list += M\n"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "/proc/unregister_living_mob(var/datum/M)",
+      "label": "last-removal-return",
+      "body": "\t. = global.living_mob_list.Remove(M)\n\tif (istype(M, /mob/living/simple_animal/complex_animal))\n\t\tglobal.living_complex_animal_list.Remove(M)\n"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "/mob/proc/switch_from_living_to_dead_mob_list()",
+      "label": "switch-dead",
+      "body": "\tremove_from_living_mob_list()\n\t. = add_to_dead_mob_list()\n"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "/mob/proc/switch_from_dead_to_living_mob_list()",
+      "label": "switch-live",
+      "body": "\tremove_from_dead_mob_list()\n\t. = add_to_living_mob_list()\n"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "/mob/living/add_to_living_mob_list()",
+      "label": "duplicate-guard",
+      "body": "\tif((src in global.living_mob_list) || (src in global.dead_mob_list))\n\t\treturn FALSE\n\tregister_living_mob(src)\n\treturn TRUE\n"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "/mob/proc/remove_from_living_mob_list()",
+      "label": "remove-return",
+      "body": "\treturn unregister_living_mob(src)\n"
+    },
+    {
+      "path": "code/_helpers/mobs.dm",
+      "owner": "/mob/living/add_to_dead_mob_list()",
+      "label": "cross-list-duplicate-guard",
+      "body": "\tif((src in global.living_mob_list) || (src in global.dead_mob_list))\n\t\treturn FALSE\n\tglobal.dead_mob_list += src\n\treturn TRUE\n"
+    },
+    {
+      "path": "code/_helpers/unsorted.dm",
+      "owner": "/mob/dview/New()",
+      "label": "dummy-identity",
+      "body": "\t..()\n\t// We don't want to be in any mob lists; we're a dummy not a mob.\n\tmob_list -= src\n\tif (stat == DEAD)\n\t\tdead_mob_list -= src\n\telse\n\t\tunregister_living_mob(src)\n"
+    },
+    {
+      "path": "code/game/mob/death.dm",
+      "owner": "/mob/proc/death(gibbed, deathmessage=\"seizes up and falls limp...\")",
+      "label": "death-order",
+      "body": "\ttimeofdeath = world.time\n\tif (mind) mind.store_memory(\"Time of death: [stationtime2text()]\", FALSE)\n\tunregister_living_mob(src)\n\tdead_mob_list |= src\n"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/announcer.dm",
+      "owner": "/mob/living/human/announcer/New(",
+      "label": "announcer-identity",
+      "body": "\t..(new_loc, new_species)\n\tmob_list -= src\n\tunregister_living_mob(src)\n\thuman_mob_list -= src\n"
+    },
+    {
+      "path": "code/game/mob/living/carbon/human/resuscitation.dm",
+      "owner": "/mob/living/human/proc/restart_from_death(mob/user)",
+      "label": "defib-switch",
+      "body": "\tswitch_from_dead_to_living_mob_list()\n"
+    },
+    {
+      "path": "code/game/mob/living/living.dm",
+      "owner": "/mob/living/proc/rejuvenate()",
+      "label": "rejuvenate-guard",
+      "body": "\tif (stat == DEAD)\n\t\tdead_mob_list -= src\n\t\tregister_living_mob(src)\n\t\ttimeofdeath = FALSE\n\n\t// restore us to consciousness\n\tset_stat(CONSCIOUS)\n"
+    },
+    {
+      "path": "code/game/mob/living/simple_animal/simple_animal.dm",
+      "owner": "/mob/living/simple_animal/Life()",
+      "label": "life-revival-guard",
+      "body": "\tif (stat == DEAD)\n\t\tif (health > 0)\n\t\t\ticon_state = icon_living\n\t\t\tdead_mob_list -= src\n\t\t\tregister_living_mob(src)\n\t\t\tstat = CONSCIOUS\n\t\t\tdensity = initial(density)\n\t\treturn FALSE\n"
+    },
+    {
+      "path": "code/game/mob/mob.dm",
+      "owner": "/mob/New()",
+      "label": "constructor-dead-and-live",
+      "body": "\tmob_list += src\n\tif (stat == DEAD)\n\t\tdead_mob_list += src\n\telse\n\t\tregister_living_mob(src)\n\t..()\n"
+    },
+    {
+      "path": "code/game/mob/mob.dm",
+      "owner": "/mob/Destroy()",
+      "label": "destructor-order",
+      "body": "\tagent_characters -= src\n\tmob_list -= src\n\tdead_mob_list -= src\n\tunregister_living_mob(src)\n\tunset_using_object()\n"
+    },
+    {
+      "path": "code/modules/admin/verbs/modifyvariables.dm",
+      "owner": "/client/proc/modify_variables(",
+      "label": "admin-stat-transitions",
+      "body": "\t\t\telse if (variable==\"stat\")\n\t\t\t\tvar/var_new = input(\"Enter new number:\",\"Num\",O.vars[variable]) as null|num\n\t\t\t\tif (var_new == null) return\n\t\t\t\tif ((O.vars[variable] == 2) && (var_new < 2))//Bringing the dead back to life\n\t\t\t\t\tdead_mob_list -= O\n\t\t\t\t\tregister_living_mob(O)\n\t\t\t\tif ((O.vars[variable] < 2) && (var_new == 2))//Kill he\n\t\t\t\t\tunregister_living_mob(O)\n\t\t\t\t\tdead_mob_list += O\n\t\t\t\tO.vars[variable] = var_new\n"
+    },
+    {
+      "path": "code/processes/human_corpse_decay.dm",
+      "owner": "/mob/living/human/after_load()",
+      "label": "after-load-dead-only",
+      "body": "\tunregister_corpse_decay()\n\tif (stat == DEAD)\n\t\tunregister_living_mob(src)\n\t\tdead_mob_list |= src\n\t\tupdate_canmove()\n"
+    },
+    {
+      "path": "code/processes/mob.dm",
+      "owner": "/process/mob/fire()",
+      "label": "deleted-cleanup-after-null-filter",
+      "body": "\t\tvar/mob/M = current\n\t\tif (!M || !isliving(M))\n\t\t\tcontinue\n\n\t\tif (isDeleted(M))\n\t\t\tcatchBadType(M)\n\t\t\tmob_list -= M\n\t\t\tunregister_living_mob(M)\n"
+    }
+  ]
+}

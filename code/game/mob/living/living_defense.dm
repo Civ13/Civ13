@@ -154,7 +154,7 @@
 /mob/living/proc/hit_with_weapon(obj/item/I, mob/living/user, var/effective_force, var/hit_zone)
 	visible_message("<span class='danger'>[src] has been [I.attack_verb.len? pick(I.attack_verb) : "attacked"] with the [I.name] by [user]!</span>")
 
-	var/blocked = run_armor_check(hit_zone, "melee", damage_source = I)
+	var/blocked = run_armor_check(hit_zone, I.get_hit_kind(), damage_source = I)
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 
 	I.on_weapon_contact(src, user)
@@ -168,7 +168,7 @@
 	//Apply weapon damage
 	var/weapon_sharp = is_sharp(I)
 	var/weapon_edge = I.edge
-	if (prob(max(getarmor(hit_zone, "melee") - I.armor_penetration, FALSE))) //melee armor provides a chance to turn sharp/edge weapon attacks into blunt ones
+	if (prob(max(getarmor(hit_zone, I.get_hit_kind()) - I.armor_penetration, FALSE))) //melee armor provides a chance to turn sharp/edge weapon attacks into blunt ones
 		weapon_sharp = FALSE
 		weapon_edge = FALSE
 
@@ -198,7 +198,7 @@
 			return
 
 		visible_message("<span class = 'red'>[src] has been hit by [O].</span>")
-		var/armor = run_armor_check(null, "melee", damage_source = AM)
+		var/armor = run_armor_check(null, O.get_hit_kind(), damage_source = AM)
 
 		if (armor < 2)
 			apply_damage(throw_damage, dtype, null, armor, is_sharp(O), O.edge, O)

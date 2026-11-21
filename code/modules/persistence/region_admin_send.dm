@@ -104,7 +104,7 @@ var/global/region_admin_send_running = FALSE
 /proc/region_admin_send_kind_refusal(list/peer)
 	switch(peer["kind"])
 		if("EVENT") return "[peer["name"]] is an event region: use Event Transfer, which keeps their characters here."
-		if("BARRACKS", "BATTLE", "TUTORIAL") return "[peer["name"]] never keeps a character, so nobody can be sent there."
+		if("BARRACKS", "BATTLE", "TUTORIAL", "GATEWAY") return "[peer["name"]] never keeps a character, so nobody can be sent there."
 		if("EXPEDITION")
 			if(peer["state"] == "UP" && peer["map"] == "A New Land") return "[peer["name"]] is a free slot with no land in it yet."
 	return null

@@ -15,6 +15,11 @@ def read(path):
 
 
 class TileOccupancySources(unittest.TestCase):
+    def test_moving_covers_claim_only_their_own_tile(self):
+        source = (ROOT / 'code/game/objects/tile_occupancy.dm').read_text()
+        self.assertIn('C.loc == T && C.is_floor_cover() && !QDELETED(C)', source)
+        self.assertIn('O.loc == T && O.takes_wall_slot() && !QDELETED(O)', source)
+
     def test_included(self):
         self.assertIn('#include "code\\game\\objects\\tile_occupancy.dm"', read('civ13.dme'))
 
@@ -22,7 +27,7 @@ class TileOccupancySources(unittest.TestCase):
         stack = read('code/game/objects/items/stacks/stack.dm')
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
         first = body.index('tile_build_refusal(get_turf(build_loc), recipe.result_type)')
-        wait = body.index('if (!do_after(user, buildtime)')
+        wait = body.index('if (!do_after(user, buildtime, ship_craft = ship_craft)')
         second = body.index('tile_build_refusal(get_turf(build_loc), recipe.result_type)', first + 1)
         pay = body.index('if (use(required,')
         self.assertLess(first, wait)
@@ -33,7 +38,7 @@ class TileOccupancySources(unittest.TestCase):
         stack = read('code/game/objects/items/stacks/stack.dm')
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):]
         subfloor = body.index('tile_subfloor_for(get_turf(build_loc), recipe.result_type)')
-        self.assertLess(body.index('if (!do_after(user, buildtime)'), subfloor)
+        self.assertLess(body.index('if (!do_after(user, buildtime, ship_craft = ship_craft)'), subfloor)
         self.assertLess(subfloor, body.index('building_floor_error(get_turf(build_loc))'))
         self.assertIn('floor.replace_subfloor(subfloor)', body)
         rule = read('code/game/objects/tile_occupancy.dm')

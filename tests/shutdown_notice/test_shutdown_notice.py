@@ -40,6 +40,20 @@ class ShutdownNoticeSources(unittest.TestCase):
         self.assertIn('warn_seconds = warn_seconds)', read('code/modules/persistence/admin.dm'))
         self.assertIn('planned_shutdown_status_text()', read('code/game/mob/mob.dm'))
 
+    def test_host_shutdown_completion_does_not_promise_restart(self):
+        transaction = read('code/modules/persistence/restart_transaction.dm')
+        completion = transaction.split('diagnostic_phase = "final_validation"', 1)[1]
+        host_shutdown = completion.split('else if(shutdown)', 1)[1].split('else if(stay_down)', 1)[0]
+        self.assertIn('else if(prewarned)', host_shutdown)
+        fresh, maintenance = host_shutdown.split('else if(prewarned)', 1)
+        maintenance, neutral = maintenance.split('\n\t\t\telse\n', 1)
+        self.assertIn('restarting into a fresh nonpersistent round', fresh)
+        self.assertIn('The server is restarting; reconnect', maintenance)
+        self.assertIn('The server is shutting down. Your progress has been saved.', neutral)
+        self.assertNotIn('restarting', neutral)
+        self.assertNotIn('reconnect', neutral)
+        self.assertIn('write_stop_marker("host")', neutral)
+
     def test_round_save_and_shutdown_notices_name_their_region(self):
         webhooks = read('code/modules/webhooks/webhooks.dm')
         helper = webhooks[webhooks.index('/proc/webhook_add_region('):]

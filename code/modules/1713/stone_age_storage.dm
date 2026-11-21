@@ -219,7 +219,8 @@
 	result = /obj/structure/storage_container/storage_jar
 
 // A jar comes out of the fire too big to sit in the oven: it is set down on
-// the first open tile beside it.
+// the first open tile beside it. Returns the placed jar, or null when there is
+// nowhere to set it down (the caller then keeps the unfired jar).
 /obj/item/weapon/clay/storage_jar/fired_result(atom/where)
 	var/turf/origin = get_turf(where)
 	if (!origin)
@@ -230,8 +231,7 @@
 		if (storage_jar_spot_ok(T))
 			spot = T
 			break
-	new result(spot)
-	return null
+	return new result(spot)
 
 /proc/storage_jar_spot_ok(turf/T)
 	if (!T || T.density)
@@ -252,6 +252,7 @@
 	food_decay_step = 150
 	dump_time = 15
 	flammable = FALSE
+	dismantle_wood_fallback = FALSE // fired clay, not wood
 
 /////////////////////////////////////////////////////////////////// zeer pot
 

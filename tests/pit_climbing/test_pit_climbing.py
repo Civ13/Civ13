@@ -115,7 +115,7 @@ class HoleLadder(unittest.TestCase):
         self.assertLess(crossed.index('if (has_ladder || trapdoor_shut_at(loc))'), crossed.index('return ..()'))
         self.assertIn('. |= list("has_ladder")', LADDER)
     def test_fitting_rechecks_after_wait_and_pays_once(self):
-        fit = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user)')
+        fit = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user, turf/from_below = null)')
         wait = fit.index('do_after')
         self.assertLess(wait, fit.index('QDELETED(ladder) || has_ladder'))
         self.assertLess(fit.index('QDELETED(ladder) || has_ladder'), fit.index('qdel(ladder)'))
@@ -130,6 +130,34 @@ class HoleLadder(unittest.TestCase):
     def test_lower_ladder_is_removed_with_the_hole(self):
         self.assertIn('qdel(L)', ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/Destroy()'))
         self.assertIn('ladder_list -= src', LADDER)
+
+    def test_below_fit_resolves_existing_pit_before_generic_standing_ladder(self):
+        edge = (ROOT / 'code/modules/multiz/edge_climbing.dm').read_text()
+        place = edge.split('proc/try_stand_ladder(atom/A, mob/user)', 1)[1].split('\n/', 1)[0]
+        self.assertLess(place.index('T.z != here.z'), place.index('dug_pit_above_ladder_site(T)'))
+        self.assertLess(place.index('P.fit_ladder(src, user, T)'), place.index('placed_ladder_spot(T, user, why)'))
+        site = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/below_ladder_worksite(mob/user, turf/lower)')
+        for guard in ('user.z != lower.z', 'lower.Adjacent(user)', '!dug_open_to_below(lower)', 'no_mans_land'):
+            self.assertIn(guard, site)
+        fit = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user, turf/from_below = null)')
+        self.assertIn('worksite = from_below ? from_below : src', fit)
+        self.assertIn('!below_ladder_worksite(user, from_below)', fit.split('do_after', 1)[1])
+        self.assertIn('T != from_below', fit.split('do_after', 1)[1])
+
+    def test_lower_remove_checks_same_endpoint_after_wait(self):
+        hand = ladder_proc('/obj/structure/multiz/ladder/up/hole_ladder/attack_hand(mob/user)')
+        self.assertLess(hand.index('trapdoor_from_below'), hand.index('P.remove_ladder(user, src)'))
+        self.assertLess(hand.index('P.remove_ladder(user, src)'), hand.index('trench_climb_place(user, T)'))
+        remove = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/remove_ladder(mob/user, obj/structure/multiz/ladder/up/hole_ladder/from_below = null)')
+        before, after = remove.split('do_after', 1)
+        for side in (before, after):
+            self.assertIn('!below_ladder_worksite(user, lower) || landing() != lower || lower_ladder() != from_below', side)
+        types = (ROOT / 'code/modules/multiz/structures.dm').read_text()
+        self.assertIn('density = FALSE', types.split('/obj/structure/multiz\n', 1)[1].split('\n/', 1)[0])
+        self.assertLess(after.index('lower_ladder() != from_below'), after.index('has_ladder = FALSE'))
+        self.assertLess(after.index('has_ladder = FALSE'), after.index('item = new'))
+        self.assertEqual(after.count('item = new'), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

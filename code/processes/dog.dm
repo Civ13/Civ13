@@ -18,9 +18,7 @@
 						var/mob/M = dog.walking_to
 						if (world.time - M.last_movement >= 10)
 							continue
-					var/dist_x = abs(dog.x - dog.walking_to.x)
-					var/dist_y = abs(dog.y - dog.walking_to.y)
-					if (dist_x > 1 || dist_y > 1 || dog.walking_to != dog.following)
+					if (abs(dog.x - dog.walking_to.x) > 1 || abs(dog.y - dog.walking_to.y) > 1 || dog.walking_to != dog.following)
 						var/direction = get_dir(dog, dog.walking_to)
 						var/turf/target = get_step(dog.loc, direction)
 						if (target.density)

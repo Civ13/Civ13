@@ -211,6 +211,7 @@
 			return
 		throw_mode_off()
 	var/obj/item/W = get_active_hand() //trying to resolve an item in hand
+	note_familiar_click(src, W, A) // research familiarity (familiarity.dm)
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
 		if (hand)

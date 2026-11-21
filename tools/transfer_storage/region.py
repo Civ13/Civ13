@@ -810,15 +810,7 @@ class RegionStore(TrainLeaseQueue):
         if op in ('colony', 'colony_used') and not faction_id_valid(faction):
             raise TransferError('bad faction id')
         with self._tx():
-            locked = self.db.execute('SELECT 1 FROM train_home_lock WHERE ckey = ?', (ckey,)).fetchone() or self.db.execute('SELECT 1 FROM train_home_wait WHERE ckey = ?', (ckey,)).fetchone()
-            for (request,) in self.db.execute("SELECT request FROM train_lease WHERE state IN ('pending','granted','cancel_pending','sealed')"):
-                if ckey in json.loads(request)['accounts']:
-                    locked = True
-            for (manifest,) in self.db.execute('SELECT manifest FROM active'):
-                train = _train_payload(json.loads(manifest).get('items', []))
-                if train and ckey in train['accounts']:
-                    locked = True
-            if locked:
+            if self._account_train_locked(ckey):
                 if op == 'claim':
                     return {'verdict': 'PENDING', 'home': self.home_of(ckey)}
                 raise TransferError('account is leased to a physical train')
@@ -849,6 +841,38 @@ class RegionStore(TrainLeaseQueue):
             self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev, faction) VALUES (?, ?, ?, ?, ?, ?)',
                             (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev')), faction or ''))
         return {'verdict': 'PENDING', 'home': home}
+
+    def _account_train_locked(self, ckey):
+        if (self.db.execute('SELECT 1 FROM train_home_lock WHERE ckey = ?', (ckey,)).fetchone()
+                or self.db.execute('SELECT 1 FROM train_home_wait WHERE ckey = ?', (ckey,)).fetchone()):
+            return True
+        for (request,) in self.db.execute(
+                "SELECT request FROM train_lease WHERE state IN ('pending','granted','cancel_pending','sealed')"):
+            if ckey in json.loads(request)['accounts']:
+                return True
+        for (manifest,) in self.db.execute('SELECT manifest FROM active'):
+            train = _train_payload(json.loads(manifest).get('items', []))
+            if train and ckey in train['accounts']:
+                return True
+        return False
+
+    def lobby_account_status(self, ckey):
+        """Read-only barriers from this store, not authority to admit or route."""
+        if not account_key_valid(ckey):
+            raise TransferError('bad account key')
+        self._require_open()
+        if self._account_train_locked(ckey):
+            state = 'PENDING'
+        elif self.travelling_here(ckey) or any(ckey in character_owners(manifest) for (manifest,) in
+                                              self.db.execute('SELECT manifest FROM active')):
+            # Even returning/finalizing custody blocks a lobby handoff.
+            state = 'TRAVELLING'
+        elif self.db.execute('SELECT 1 FROM account_request WHERE ckey = ?', (ckey,)).fetchone():
+            state = 'PENDING'
+        else:
+            state = 'CLEAR'
+        return {'group': self.group, 'region': self.region, 'epoch': self._meta('homes_epoch'),
+                'rev': int(self._meta('homes_rev')), 'state': state}
 
     def travelling_here(self, ckey):
         """The land a character of ckey is travelling here from, or None. Known

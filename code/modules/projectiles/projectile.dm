@@ -629,10 +629,10 @@
 
 		if (isliving(AM) && AM != firer && !is_firer_mount(AM))
 			var/mob/living/L = AM
+			if (L in bodies_passed)
+				continue
 			// A body filed under another tile is only reached where it is drawn.
 			if (L.loc != T && !body_in_line(L, T))
-				continue
-			if (L in bodies_passed)
 				continue
 			bodies_passed += L
 			if (L != original && height_passes_over(los_target_top(L)))
@@ -931,7 +931,7 @@
 /obj/item/projectile/proc/projectile_tile_order(turf/T)
 	var/list/riders = null
 	for (var/mob/living/L in T)
-		if (los_on_vehicle_deck(L) && (L == original || fired_from_deck_axis))
+		if ((L == original || fired_from_deck_axis) && los_on_vehicle_deck(L))
 			if (!riders)
 				riders = list()
 			riders += L

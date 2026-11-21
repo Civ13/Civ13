@@ -5,9 +5,15 @@
 // it in knows about (their own worn gear, or things they have seen), so it never
 // reveals what is in a container they haven't searched.
 
+// FALSE for storage that must keep each item separate (a drying rack keeps one
+// leaf bundle per slot, with its progress written into that bundle's name).
+/obj/item/weapon/storage/var/merges_stacks = TRUE
+
 // The stacks in S that W may top up for user.
 /obj/item/weapon/storage/proc/stack_merge_targets(obj/item/W, mob/user)
 	. = list()
+	if (!merges_stacks)
+		return
 	var/obj/item/stack/ST = W
 	if (!istype(ST) || ST.amount <= 0)
 		return

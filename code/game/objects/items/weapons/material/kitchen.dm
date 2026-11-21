@@ -50,6 +50,8 @@
 			user.visible_message("<span class='warning'>\The [user] begins to feed \the [M]!</span>")
 			if (!(M.can_force_feed(user, loaded) && do_mob(user, M, 5 SECONDS)))
 				return
+			if (!reagents.total_volume || !M.can_finish_force_feed(user, loaded))
+				return
 			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
 			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
 			// Past capacity it still goes down, but it comes back up.
@@ -164,6 +166,23 @@
 	return ..()
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom(mob/living/human/M, mob/living/human/user)
+	// A connected player picks the cut in the Haircut window (haircut_window.dm),
+	// for their own hair or someone else's. Clientless actors keep the prompts.
+	var/client/C = user.client
+	if (!C)
+		return groom_classic(M, user)
+	if (!grooming_valid(M, user))
+		return
+	var/datum/grooming_preview/P = C.grooming_preview
+	if (P)
+		if (P.cutting)
+			return
+		qdel(P)
+	P = new(user, M, src)
+	C.grooming_preview = P
+	P.ui_interact(user)
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom_classic(mob/living/human/M, mob/living/human/user)
 	if (M == user)
 		user.visible_message("[user] starts cutting their own hair...", "You start cutting your hair...")
 	else
@@ -188,6 +207,51 @@
 	M.update_hair()
 	M.update_body()
 	user.visible_message("[user] finishes cutting [M == user ? "their own" : "[M]'s"] hair.", "You finish cutting [M == user ? "your" : "[M]'s"] hair.")
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/grooming_valid(mob/living/human/M, mob/living/human/user)
+	if (QDELETED(src) || QDELETED(M) || QDELETED(user) || user.get_active_hand() != src || user.incapacitated() || user.a_intent == I_HARM)
+		return FALSE
+	if (!M.species || !M.body_build || (M != user && !(M in range(user, 1))))
+		return FALSE
+	var/obj/item/organ/external/head/H = M.get_organ("head")
+	return H && !H.is_stump()
+
+// The styles a razor can leave M with now: nothing longer than the hair is.
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/grooming_hair_choices(mob/living/human/M)
+	return M.generate_valid_hairstyles(TRUE, TRUE)
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/grooming_beard_choices(mob/living/human/M)
+	return M.gender == MALE ? M.generate_valid_facial_hairstyles(TRUE) : list()
+
+// The timed cut to a pair of styles chosen in the Haircut window. Either may
+// be the style M already has. Everything is checked again after the wait.
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom_cut(mob/living/human/M, mob/living/human/user, new_hstyle, new_fstyle)
+	var/old_hstyle = M.h_style
+	var/old_fstyle = M.f_style
+	if (!grooming_valid(M, user) || (new_hstyle == old_hstyle && new_fstyle == old_fstyle))
+		return FALSE
+	if (M == user)
+		user.visible_message("[user] starts cutting their own hair...", "You start cutting your hair...")
+	else
+		user.visible_message("[user] starts cutting [M]'s hair...", "You start cutting [M]'s hair...")
+	if (!do_after(user, 80, M) || !grooming_valid(M, user) || M.h_style != old_hstyle || M.f_style != old_fstyle)
+		return FALSE
+	if (new_hstyle != old_hstyle && !(new_hstyle in grooming_hair_choices(M)))
+		return FALSE
+	if (new_fstyle != old_fstyle && !(new_fstyle in grooming_beard_choices(M)))
+		return FALSE
+	if (new_hstyle != old_hstyle)
+		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
+		M.h_style = new_hstyle
+		M.h_growth = S.growth
+	if (new_fstyle != old_fstyle)
+		var/datum/sprite_accessory/F = facial_hair_styles_list[new_fstyle]
+		M.f_style = new_fstyle
+		M.f_growth = F.growth
+	M.update_hair()
+	M.update_body()
+	user.visible_message("[user] finishes cutting [M == user ? "their own" : "[M]'s"] hair.", "You finish cutting [M == user ? "your" : "[M]'s"] hair.")
+	return TRUE
 
 /obj/item/weapon/material/kitchen/utensil/knife/shank
 	name = "shank"

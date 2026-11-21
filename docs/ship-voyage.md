@@ -128,6 +128,37 @@ When her time is up she looks at the course on the chart:
 A voyage is not saved: a world restarted mid-voyage finds her lying off the
 coast where she set out.
 
+### Holding her course once word is sent ahead (#6258)
+
+Waking a land, or plotting a course that may open one, is a commitment
+(`crossing_hold` on the tiller, `code/modules/naval/ship_crossing.dm`). Before
+the request can yield she is held: `plotting` while the world chart is asked
+for a course, `asking` while the host doorman is asked to wake the land
+(`shard_group.ask_wake()`), `committed` once the doorman took the wake or gave
+no reply (it may be waking), and `departing` while her crew leave. While held:
+
+- Nothing else sends her anywhere: another **Leave these waters**, another
+  voyage, a stale prompt from before and **Turn back** are refused in server
+  code, and the tiller shows where she is bound and how long the hold lasts.
+- A retry to the same land sends no second word: it waits on the first wake.
+- A definite refusal before the doorman took the wake lets her go at once. The
+  wake's own deadline (its eta plus a minute) ends a committed hold; a single
+  failed poll does not. A voyage still holds its land after that and asks
+  again on its next look; a land that answers late is crossed to then.
+- Every step after a yield checks that the hold and voyage are still hers; a
+  stale continuation neither moves her nor clears a newer hold. An admin's
+  send overrides the hold.
+- A course the chart never answered is sailed unconfirmed and asked again
+  under way with the same voyage id, which the directory answers with the same
+  course; she never plots a second.
+
+Crew who set out on the voyage and logged out at sea still make the crossing
+with her; anyone else aboard without a player is named, so her crew can put
+them ashore (live report 2026-11-19).
+
+Tests: `tests/naval_carrier/voyage_hold_probe.dm` (stubbed doorman, polls,
+transfer agent and departures; nothing is woken).
+
 ## Settle, claim or abandon
 
 A land opened for a ship is undecided until its crew choose

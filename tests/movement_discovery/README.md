@@ -1,9 +1,10 @@
 # Ordered movement discovery candidate
 
-Original audit oracle: `978a13d526ecc891fd7e755b7d6d6add2ca720ec`.
-Current reconciliation oracle/master: `bc7209b23d4ee39651a736a7a9ddb1d1081166ac`.
-The full-file projection now pins this master so its newer persistence guards,
-set_stat handling and animal retaliation code remain intact.
+The two historical observer-loop excerpts in fixtures/ come from
+bc7209b23d4ee39651a736a7a9ddb1d1081166ac; they are independent ordered
+callback, RNG and geometry oracles. The current registry inventory and lifecycle
+guard excerpts audit source revision 5015ab8f495a1d33938005c8a6583c30c7175e12.
+The offline suite does not read Git history or regenerate its own expectations.
 Issue: https://github.com/Civ13/Civ13/issues/3267 (movement discovery only).
 
 Run offline with a verified Python executable:
@@ -14,19 +15,18 @@ Run offline with a verified Python executable:
 
 The two synchronous helpers mirror the existing living-list writes into an
 ordered complex-animal subset. They do not infer membership from stat, remove
-duplicates, use dog_mob_list, filter z, or prune geometry. All surrounding caller
-guards and the full movement files are projected against immutable Git source.
-The animal body intentionally retains its existing `abs(x - C.y)` calculation.
-This October 26 reconciliation starts from published b252e3d and consolidates
-the unpublished October 25 test/documentation fixups into one merge of the pinned
-master above. No feature branch is imported. Both conflicting additions in
-AGENTS.md and all guarded movement/cleanables/tree/discovery CI steps are retained.
-Production changes from master merge automatically, including snow-cover movement
-and persistence-area guards; no production conflict requires manual resolution.
+duplicates, use dog_mob_list, filter z, or prune geometry. Compare exact
+observer-loop bodies to the frozen legacy excerpts, with only the collection
+change and the declared base_type comparison normalized. The animal body
+intentionally retains its existing abs(x - C.y) calculation. Check each
+current registry reference against a reviewed inventory by file and owning
+procedure; check admission, death/revival, and cleanup ordering in separately
+reviewed contiguous guard fragments. Unrelated code no longer needs to match a
+historical whole-file snapshot.
 
 ## Complete production mutation audit
 
-| File | Original writes | Lifecycle |
+| File | Current call sites | Lifecycle |
 | --- | ---: | --- |
 | code/_helpers/mobs.dm | 2 | Guarded admission, removal and living/dead switches; defib uses these |
 | code/game/mob/mob.dm | 2 | Constructor append at the original parent-call position; Destroy removal |
@@ -34,15 +34,16 @@ and persistence-area guards; no production conflict requires manual resolution.
 | code/game/mob/living/living.dm | 1 | Rejuvenation appends before stat becomes conscious |
 | code/game/mob/living/simple_animal/simple_animal.dm | 1 | Life revival appends before conscious stat |
 | code/modules/admin/verbs/modifyvariables.dm | 2 | Existing stat edit death/revival, accepting the original datum target |
-| code/processes/mob.dm | 2 | Deleted-mob cleanup and existing null cleanup branch |
+| code/processes/mob.dm | 1 | Deleted-mob cleanup; null/nonliving entries are filtered before it |
 | code/_helpers/unsorted.dm | 1 | dview removal; cannot be a complex animal |
 | code/game/mob/living/carbon/human/announcer.dm | 1 | Announcer removal; cannot be a complex animal |
 | code/processes/human_corpse_decay.dm | 1 | Restored dead human removal; cannot be a complex animal |
 
-Fourteen writes total; no production alias, reassignment, Copy/Insert/Cut or
-other list mutator found. Tests scan all tracked production DM and permit only
-the paired helper writes. All fourteen original sites are mapped one for one;
-readers other than the two movement loops keep living_mob_list. Test-only writes
+Thirteen current calls to the paired helpers; the removed processor null branch
+is historical, not new coverage. Tests scan production DM for list references
+and helper calls (including the living/dead wrappers and defib call);
+unreviewed readers, aliases, reassignment, extra calls or list mutations fail.
+Readers other than the two movement loops keep living_mob_list. Test-only writes
 in hud_visual (human only), process_snapshot_ownership (standalone stub registry)
 and the season_transition generated human control remain separate test adapters.
 
@@ -90,10 +91,10 @@ These are operation counts, not timings, native profiling or server performance
 claims. Maintenance adds one type check per living-list mutation and a second
 append/removal for complex animals; no cost comparison is claimed. The new CI
 step is offline and uses the existing introduced-suite/extensive guard. Ordinary
-BYOND compilation remains separate and has not been run for this reconciliation.
-Ordinary CI targets the manifest version 516.1688; historical frozen Windows
-fixtures remain bound to 516.1681 and their expired deadline. Screenshots, full gameplay and runtime acceptance remain unavailable
-under the explicit no-launch scope. $0; OpenDream remains paused.
+BYOND compilation is separate from staging and offline adapter evidence.
+Historical frozen Windows fixtures remain historical; the repaired packet is
+not compiled or executed by the suite. No real-client or native acceptance is
+claimed by these checks.
 
 ## Source-only native parity packet
 
@@ -103,16 +104,20 @@ under the explicit no-launch scope. $0; OpenDream remains paused.
 
 The preparer has no execution flag. It writes a new directory and refuses reuse;
 its only subprocesses are read-only Git identity/diff reads. The manifest binds
-the exact checkout head, dirty patch, source hashes, all fourteen write sites,
-fixture hashes, oracle commit and selected control. Final review packets must
+the exact checkout head, dirty patch, production-reference source hashes, the
+thirteen-site inventory, frozen oracle and guard fixture hashes, and selected
+control. Git is consulted only for the active checkout's provenance; semantic
+checks run from the files on disk. Final review packets must
 be generated from the exact committed candidate with an empty dirty patch.
 
 The prepared 16x16x2 world contains no game startup, map, credentials or external
 integration. It extracts complete production mob New/Destroy, dview/announcer
 New and all membership/switch helpers. Named adapters extract contiguous death,
 rejuvenation, simple-animal Life, admin-stat and restored-human membership
-fragments plus both processor cleanup writes. The full original and candidate
-movement discovery loops are extracted without copying their input lists.
+fragments and the sole processor cleanup's membership write. The native
+nulling case calls the list helper directly, not an obsolete processor branch.
+The frozen legacy and extracted candidate loops iterate without copying their
+input lists. Unrelated agent/HUD bookkeeping is an inert fixture adapter.
 
 Parent movement returns through a fixture stub, probability calls use a logged
 deterministic tape, human constructor bookkeeping is adapted, and native Del

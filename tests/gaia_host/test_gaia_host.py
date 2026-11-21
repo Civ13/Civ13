@@ -623,6 +623,16 @@ class GaiaHostTests(unittest.TestCase):
         self.host.watch_step(None)
         self.assertEqual(self.machine.suspended, 0)
 
+    def test_deferred_idle_update_does_not_prevent_normal_sleep(self):
+        self.running()
+        self.host.update_pending = lambda: True
+        self.host.idle_update_action = lambda: None
+        idle, _ = self.host.watch_step(None)
+        self.machine.clock = 15 * 60
+        self.host.watch_step(idle)
+        self.assertEqual(self.machine.suspended, 1)
+        self.assertFalse(self.machine.detached)
+
     def test_watch_puts_an_idle_saved_world_to_sleep_on_disk_when_asked(self):
         self.config['freeze_cold'] = True
         self.running()
@@ -1370,3 +1380,32 @@ class HostControlsContractTests(unittest.TestCase):
             written = set(host.host_status())
         region_only = {'staged', 'stage', 'group'}  # RegionHost.host_status adds these
         self.assertLessEqual(read - region_only, written)
+
+
+class PagerCheckTests(unittest.TestCase):
+    # Runs on every host: CI (Linux) fails on any skip, so stand in for the
+    # Windows session lookup rather than skipping off Windows.
+    def windows(self):
+        import ctypes
+        from types import SimpleNamespace
+        from unittest import mock
+        kernel32 = SimpleNamespace(ProcessIdToSessionId=lambda pid, session: 1)
+        fake_ctypes = SimpleNamespace(c_ulong=ctypes.c_ulong, byref=lambda value: value,
+                                      windll=SimpleNamespace(kernel32=kernel32))
+        fake_os = SimpleNamespace(name='nt', getpid=os.getpid)
+        return mock.patch.multiple(gaia_host, os=fake_os, ctypes=fake_ctypes)
+
+    def test_hung_tasklist_is_unknown_not_a_crash(self):
+        platform = gaia_host.Platform()
+
+        def hang(argv, **kwargs):
+            raise gaia_host.subprocess.TimeoutExpired(argv, kwargs.get('timeout'))
+        platform.run = hang
+        with self.windows():
+            self.assertIsNone(platform.byond_pager_running())
+
+    def test_a_listed_pager_is_running(self):
+        platform = gaia_host.Platform()
+        platform.run = lambda argv, **kwargs: (0, '"byond.exe","1234","Console","1","10,000 K"\n')
+        with self.windows():
+            self.assertTrue(platform.byond_pager_running())

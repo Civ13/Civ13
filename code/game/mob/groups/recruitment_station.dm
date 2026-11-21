@@ -11,7 +11,7 @@
 	name = "recruitment station"
 	desc = "A stall where people can apply to join a faction. Its faction's leader designates it."
 	icon = 'icons/obj/vending.dmi'
-	icon_state = "market_stall"
+	icon_state = "recruitment_stall"
 	density = TRUE
 	anchored = TRUE
 	flammable = TRUE

@@ -252,7 +252,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			else
 				user.visible_message("<span class='danger'>[user] attempts to force more of [src] down [M]'s throat.</span>")
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (!do_after(user, 30, M, check_for_repeats = FALSE))
+			if (!do_after(user, 30, M, check_for_repeats = FALSE) || !M.can_finish_force_feed(user, src))
 				return FALSE
 			M.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]) Reagents: [reagentlist(src)]</font>"))
 			user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Fed [name] by [M.name] ([M.ckey]) Reagents: [reagentlist(src)]</font>"))

@@ -297,8 +297,12 @@ class RepeatClickPayment(unittest.TestCase):
         shells = proc('code/modules/projectiles/ammo_crafting.dm', '/obj/item/stack/ammopart/casing/tank/attack_self')
         self.assert_order(shells, 'if (crafting_shells)', 'crafting_shells = TRUE', 'Which type of shell',
                           'if (QDELETED(src) || loc != user)', 'new/obj/item/cannon_ball/shell/tank', 'crafting_shells = FALSE\n\t\tto_chat', 'qdel(src)')
-        press = proc('code/modules/1713/production.dm', '/obj/structure/printingpress/attackby')
-        self.assert_order(press, 'Add to original or copy?', 'if (input == "Cancel" || QDELETED(W) || W.loc != user)', 'base += W')
+        source = 'code/modules/1713/production.dm'
+        press = proc(source, '/obj/structure/printingpress/attackby')
+        self.assertIn('return insert_press_book_or_map(W, user)', press)
+        insert = proc(source, '/obj/structure/printingpress/proc/insert_press_book_or_map')
+        self.assert_order(insert, 'Add to original or copy?', 'choice == "Cancel"', 'QDELETED(document)',
+                          'document.loc != user', 'if (slot.len)', 'slot += document', 'user.transfer_held_item_to')
 
 class PlantPotCinchona(unittest.TestCase):
     """Exercise the shared planting body with an injected wait boundary."""

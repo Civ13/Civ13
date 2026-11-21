@@ -2,6 +2,8 @@
 // All startup, client, GC, parent movement and non-membership effects below
 // are fixture adapters. production.dm contains the extracted production bodies.
 var/list/mob_list = list()
+// Civ13 bookkeeping outside the list contract is inert in the isolated fixture.
+var/list/agent_characters = list()
 var/list/human_mob_list = list()
 var/list/dead_mob_list = list()
 var/list/living_mob_list = list()
@@ -42,6 +44,8 @@ var/probe_failure
     return
 /proc/qdel(datum/D)
     if (D) del(D)
+/proc/show_browse(client/C, content, options)
+    return
 /proc/isnewplayer(mob/M)
     return istype(M, /mob/new_player)
 /mob/new_player
@@ -189,16 +193,16 @@ var/probe_failure
     probe_expect_names("b,a,a", "lifecycle.duplicate-append")
     unregister_living_mob(A)
     probe_expect_names("b,a", "lifecycle.duplicate-last-remove")
-    probe_cleanup_one(B)
-    probe_expect_names("a", "lifecycle.cleanup-one")
-    probe_cleanup_two(A)
-    probe_expect_names("", "lifecycle.cleanup-two")
+    probe_deleted_cleanup_membership(B)
+    probe_expect_names("a", "lifecycle.deleted-cleanup-membership")
+    unregister_living_mob(A)
+    probe_expect_names("", "lifecycle.direct-helper-removal")
     register_living_mob(A)
     register_living_mob(A)
     del(A)
     probe_expect_names("", "lifecycle.native-nulling")
     probe_assert(living_complex_animal_list.len == 1 && isnull(living_complex_animal_list[1]), "lifecycle.native-null-slot")
-    probe_cleanup_two(null)
+    // Native reference clearing is followed by the direct removal helper,\n    // never attributed to an obsolete processor null branch.\n    unregister_living_mob(null)
     probe_expect_names("", "lifecycle.null-cleanup")
     probe_results += list(list("case" = "lifecycle", "passed" = TRUE))
 

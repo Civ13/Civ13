@@ -14,6 +14,11 @@ in `door_fittings.dm`:
   not); the far side has a thumb-turn; a key blank filed to the key opens it;
 - a locked door cannot be taken down from outside; from inside, unlocked, it
   comes down and the lock is returned;
+- a pen label shows after the key's own name, replaces rather than stacks,
+  leaves the cut and family alone so the key still locks and unlocks, is carried
+  by a filed copy, clears back to the original name when empty, and can only be
+  written with the pen in hand on a key the writer holds or stands beside (not
+  one inside a container);
 - a spring latch locks itself when the door shuts;
 - a padlock fits a crate with no tool, keeps it shut, and a crowbar on harm
   intent breaks it;

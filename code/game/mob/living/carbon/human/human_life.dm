@@ -324,6 +324,7 @@
 
 	handle_disease()
 	handle_survival_hints()
+	handle_familiarity() // familiarity.dm
 
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
@@ -501,8 +502,15 @@
 		return FALSE
 	return TRUE
 
+/mob/living/human/proc/earmuffs_equipped()
+	return istype(l_ear, /obj/item/clothing/ears/earmuffs) || istype(r_ear, /obj/item/clothing/ears/earmuffs)
+
 /mob/living/human/handle_disabilities()
 	..()
+	// The inherited handler can decay the hearing timer. Keep equipped
+	// protection in force after it runs, without resetting a longer timer.
+	if (ear_deaf < TRUE && earmuffs_equipped())
+		ear_deaf = TRUE
 	//Vision
 	var/obj/item/organ/vision
 	if (species.vision_organ)
@@ -812,13 +820,15 @@
 		//Ears
 		if ((sdisabilities & DEAF) || find_trait("Deaf"))	//disabled-deaf, doesn't get better on its own
 			ear_deaf = max(ear_deaf, TRUE)
-		else if (ear_deaf)			//deafness, heals slowly over time
-			ear_deaf = max(ear_deaf-1, FALSE)
-		else if (istype(l_ear, /obj/item/clothing/ears/earmuffs) || istype(r_ear, /obj/item/clothing/ears/earmuffs))	//resting your ears with earmuffs heals ear damage faster
-			ear_damage = max(ear_damage-0.15, FALSE)
-			ear_deaf = max(ear_deaf, TRUE)
-		else if (ear_damage < 25)	//ear damage heals slowly under this threshold. otherwise you'll need earmuffs
-			ear_damage = max(ear_damage-0.05, FALSE)
+		else
+			var/muffled = earmuffs_equipped()
+			// One tick while muffled can be the previous equipment floor.
+			if (ear_deaf > (muffled ? TRUE : FALSE))
+				ear_deaf = max(ear_deaf-1, FALSE)
+			else if (muffled)	//resting your ears with earmuffs heals ear damage faster
+				ear_damage = max(ear_damage-0.15, FALSE)
+			else if (ear_damage < 25)	//ear damage heals slowly under this threshold. otherwise you'll need earmuffs
+				ear_damage = max(ear_damage-0.05, FALSE)
 
 		//Resting
 		if (resting)
