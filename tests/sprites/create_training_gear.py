@@ -12,7 +12,9 @@ tile centre: east and west show the wheel side on (rim, spokes, hub) and the
 belt running across the tile, north and south show the slatted drum end on
 between its posts and the belt running up the tile. The handrail and console
 are at the end the gear faces. The moving states turn the wheel, or run the
-belt stripes, backward under the walker.
+belt stripes, backward under the walker. `treadmill_front` repeats the hood,
+uprights, handrail and console of the south-facing treadmill, pixel for pixel,
+to be laid over a runner who faces south and so stands behind them.
 
 Run with Pillow to reproduce
   icons/obj/training.dmi                      item icons and structures
@@ -530,6 +532,48 @@ def treadmill_side(step, lit):
     return f.outline().under(ground_shadow(16, 30.9, 14.5, 1.1))
 
 
+def treadmill_south_front(f, step, lit):
+    """What stands between a south-facing runner and the viewer: the hood, the
+    uprights, the bar with its grips and the console on the bar's end."""
+    f.rect(8, 27, 23, 30, IRON[2])                                # hood
+    f.rect(8, 27, 23, 27, IRON[0])
+    f.rect(8, 30, 23, 30, IRON[4])
+    f.pts(IRON[4], (13, 29), (14, 29), (17, 29), (18, 29))
+    for x0 in (6, 24):
+        for y in range(15, 30):
+            f.put(x0, y, IRON[1]); f.put(x0 + 1, y, IRON[3])
+    f.rect(6, 15, 25, 15, IRON[1])
+    f.rect(6, 16, 25, 16, IRON[3])
+    f.rect(4, 14, 5, 14, RUBBER[1]); f.rect(26, 14, 27, 14, RUBBER[1])       # grips
+    f.rect(4, 15, 5, 15, RUBBER[2]); f.rect(26, 15, 27, 15, RUBBER[2])
+    f.rect(20, 11, 27, 14, IRON[4])                               # console on the rail's end
+    f.rect(20, 11, 27, 11, IRON[1])
+    f.pts(LAMP[0] if lit else LAMP[2], (25, 13))
+    f.pts(LAMP[1] if lit and step % 2 == 0 else LAMP[2], (26, 13))
+
+
+TREADMILL_LAMPS = ((25, 13), (26, 13))
+
+
+def treadmill_front():
+    """The overlay drawn above a runner on a south-facing treadmill. Every
+    pixel matches the south frames of `treadmill` and `treadmill_running`,
+    except that the edge of the bar is drawn where it crosses the moving belt.
+    The two lamps are left open so the lit ones underneath show through."""
+    whole = treadmill_end(0, False, False)
+    front = Frame()
+    treadmill_south_front(front, 0, False)
+    solid = set(front.px)
+    front.outline()
+    f = Frame()
+    for p, c in front.px.items():
+        if p in TREADMILL_LAMPS:
+            continue
+        on_belt = 10 <= p[0] <= 21 and 3 <= p[1] <= 26
+        f.px[p] = c if p in solid or on_belt else whole.px[p]
+    return f
+
+
 def treadmill_end(step, lit, north):
     """The belt running up the tile. Facing north the hood, rail and console
     stand at the top; facing south they stand at the bottom."""
@@ -561,21 +605,7 @@ def treadmill_end(step, lit, north):
         f.pts(LAMP[1] if lit and step % 2 == 0 else LAMP[2], (19, 2))
     else:
         f.rect(8, 2, 23, 2, IRON[2])                              # tail roller
-        f.rect(8, 27, 23, 30, IRON[2])                            # hood
-        f.rect(8, 27, 23, 27, IRON[0])
-        f.rect(8, 30, 23, 30, IRON[4])
-        f.pts(IRON[4], (13, 29), (14, 29), (17, 29), (18, 29))
-        for x0 in (6, 24):
-            for y in range(15, 30):
-                f.put(x0, y, IRON[1]); f.put(x0 + 1, y, IRON[3])
-        f.rect(6, 15, 25, 15, IRON[1])
-        f.rect(6, 16, 25, 16, IRON[3])
-        f.rect(4, 14, 5, 14, RUBBER[1]); f.rect(26, 14, 27, 14, RUBBER[1])   # grips
-        f.rect(4, 15, 5, 15, RUBBER[2]); f.rect(26, 15, 27, 15, RUBBER[2])
-        f.rect(20, 11, 27, 14, IRON[4])                           # console on the rail's end
-        f.rect(20, 11, 27, 11, IRON[1])
-        f.pts(LAMP[0] if lit else LAMP[2], (25, 13))
-        f.pts(LAMP[1] if lit and step % 2 == 0 else LAMP[2], (26, 13))
+        treadmill_south_front(f, step, lit)
     return f.outline().under(ground_shadow(16, 30.9, 10.5, 1.1))
 
 
@@ -757,6 +787,7 @@ OBJ = {
     'treadmill': (4, 1, None, treadmill(0, False)),
     'treadmill_running': (4, 4, 1, [fr for step in range(4) for fr in treadmill(step, True)]),
     'skipping_rope': (1, 1, None, [skipping_rope()]),
+    'treadmill_front': (1, 1, None, [treadmill_front()]),
 }
 
 
@@ -796,6 +827,15 @@ def check_drawing():
             solid = [p for p, c in fr.px.items() if c[3] == 255]
             if not solid:
                 problems.append('%s: empty frame' % name)
+    front = OBJ['treadmill_front'][3][0]
+    for name in ('treadmill', 'treadmill_running'):
+        dirs, count, _, frs = OBJ[name]
+        for step in range(count):
+            south = frs[step * dirs]
+            for p, c in front.px.items():
+                on_belt = 10 <= p[0] <= 21 and 3 <= p[1] <= 26
+                if south.px.get(p) != c and not (on_belt and c == OUT + (255,)):
+                    problems.append('treadmill_front: pixel %s does not match %s frame %d' % (p, name, step + 1))
     for name, (left, right) in HELD.items():
         for fr in left + right:
             if not fr.px:
@@ -873,7 +913,8 @@ def write_preview(path, scale=6):
 
 def write_in_use(path, scale=5):
     """A plain body on the tread wheel and the treadmill and with the rope,
-    facing south, north, east and west. Each row shows the still state and the
+    facing south, north, east and west (the south-facing treadmill with its
+    `treadmill_front` overlay). Each row shows the still state and the
     third frame of the moving state (the rope: carried and swung, each hand),
     large and then at game size."""
     grass, back = (86, 128, 62, 255), (30, 32, 36, 255)
@@ -885,6 +926,8 @@ def write_in_use(path, scale=5):
                 tile = Image.new('RGBA', (32, 32), grass)
                 tile.alpha_composite(OBJ[name][3][first + d].image())
                 tile.alpha_composite(base_body(d))
+                if d == 0 and still == 'treadmill':               # the rail goes back over a south-facing runner
+                    tile.alpha_composite(OBJ['treadmill_front'][3][0].image())
                 row.append(tile)
         rows.append(row)
     for side in (0, 1):

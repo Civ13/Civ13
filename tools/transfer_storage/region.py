@@ -1073,7 +1073,7 @@ class RegionStore(TrainLeaseQueue):
         request = {k: body[k] for k in ('op', 'actor', 'faction', 'name', 'with', 'nation', 'applicant', 'yes',
                                         'candidate', 'to', 'tier', 'issuer', 'type', 'person', 'pname', 'pfaction',
                                         'religion', 'age', 'role', 'motion', 'choice', 'citizens',
-                                        'wealth', 'sname', 'act', 'reason', 'office') if k in body}
+                                        'wealth', 'sname', 'act', 'reason', 'office', 'other', 'treaty') if k in body}
         if not nation_request_valid(request):
             raise TransferError('bad nation request')
         if request['op'] != 'staff' and not request['faction'].startswith('civ:%s:' % self.region):

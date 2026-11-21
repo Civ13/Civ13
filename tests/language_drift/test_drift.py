@@ -144,5 +144,32 @@ class Daughters(unittest.TestCase):
             self.assertIn(label, probe)
 
 
+class AdminUndo(unittest.TestCase):
+    ADMIN = read('code/modules/admin/verbs/origin_languages.dm')
+    UNDO = read('code/game/mob/language/daughter_admin.dm')
+
+    def test_merge_and_rename_verbs_are_registered_and_guarded(self):
+        registry = read('code/modules/admin/admin_verbs.dm')
+        for verb in ('cmd_admin_merge_language', 'cmd_admin_rename_language'):
+            self.assertIn('/client/proc/%s,' % verb, registry)
+            body = self.ADMIN[self.ADMIN.index('/client/proc/%s(' % verb):]
+            self.assertIn('check_rights(R_ADMIN)', body.split('\n/client/proc/')[0])
+
+    def test_merge_refuses_a_language_with_daughters(self):
+        body = self.UNDO[self.UNDO.index('/proc/merge_daughter_language('):]
+        self.assertIn('daughter_language_children(name).len', body.split('\n/proc/')[0])
+
+    def test_rename_moves_every_name_keyed_store(self):
+        body = self.UNDO[self.UNDO.index('/proc/rename_daughter_language('):]
+        for needle in ('records[new_name] = record', 'L.mutual_intelligibility[new_name]', 'rename_language_community_keys(language_drift_table(), old, new_name)',
+                       'H.partial_languages[new_name]', 'H.native_tongue = new_name', 'H.rename_language_buckets(old, new_name)', 'C.parent_name = new_name'):
+            self.assertIn(needle, body)
+
+    def test_native_probe_covers_undo(self):
+        probe = read('tests/language_drift/probe.dm')
+        self.assertIn('its speakers speak the parent again', probe)
+        self.assertIn('speakers keep their scores, mother tongue and today', probe)
+
+
 if __name__ == '__main__':
     unittest.main()

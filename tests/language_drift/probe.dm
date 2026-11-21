@@ -192,6 +192,22 @@ var/drift_runtime_error = FALSE
 		var/datum/language/daughter/R = all_languages["Vulgar"]
 		drift_check(istype(R) && R.key == old_key && jointext(R.syllables, "|") == old_sounds && language_kinship(R, latin) == LANGUAGE_DAUGHTER_KIN - LANGUAGE_DAUGHTER_KIN_STEP, "a saved daughter restores with its key, sounds and kinship")
 
+		// Renaming and merging back (daughter_admin.dm).
+		var/mob/living/human/hill = second[1]
+		var/hill_drift_key = language_community_key("Hill Clans", sister)
+		set_language_drift(hill_drift_key, 12)
+		hill.language_gain_today = list("lesson:Highland" = 4)
+		drift_check(isnull(rename_daughter_language("Highland", "Latin")), "a rename needs a free name")
+		drift_check(rename_daughter_language("Highland", "Upland") == 5, "a rename reaches every speaker")
+		drift_check(!all_languages["Highland"] && all_languages["Upland"] == sister && sister.name == "Upland", "the language answers to its new name")
+		drift_check(hill.partial_languages["Upland"] && isnull(hill.partial_languages["Highland"]) && hill.native_tongue == "Upland" && hill.knows_language(sister) && hill.language_gain_today["lesson:Upland"] == 4, "speakers keep their scores, mother tongue and today's learning")
+		drift_check(language_kinship(latin, sister) && !("Highland" in latin.mutual_intelligibility) && language_drift(language_community_key("Hill Clans", sister)) == 12 && islist(language_lineage_part("daughters")["Upland"]), "kinship, drift and the record move to the new name")
+		var/sister_key = sister.key
+		drift_check(merge_daughter_language("Upland") == 5, "merging back reaches every speaker")
+		drift_check(!all_languages["Upland"] && !language_keys[sister_key] && !(("Upland") in language_lineage_part("daughters")) && !("Upland" in latin.mutual_intelligibility), "the merged language is forgotten")
+		drift_check(!hill.knows_language(sister) && hill.knows_language(latin) && hill.mother_tongue() == latin && hill.default_language == latin && isnull(hill.native_tongue), "its speakers speak the parent again")
+		drift_check(language_daughter_count(latin) == 1 && !language_drift(language_community_key("Hill Clans", sister)), "the split no longer counts")
+
 		// Travel to a land that never heard of it.
 		var/list/T = A.region_travel_tongues()
 		drift_check(islist(T["daughters"]) && ("Vulgar" in T["daughters"]) && T["native"] == "Vulgar", "a traveller carries the daughter's record")
@@ -204,7 +220,7 @@ var/drift_runtime_error = FALSE
 		var/mob/living/human/arrival = drift_speaker("none", italian)
 		drift_check(arrival.region_travel_restore_tongues(T) && arrival.knows_language(all_languages["Vulgar"]) && arrival.mother_tongue() == all_languages["Vulgar"], "the arrival speaks the daughter as their mother tongue")
 		var/list/imported = records["Vulgar"]
-		drift_check(islist(imported) && imported["imported"] && language_daughter_count(latin) == 1, "an imported daughter is saved but does not count towards the cap")
+		drift_check(islist(imported) && imported["imported"] && language_daughter_count(latin) == 0, "an imported daughter is saved but does not count towards the cap")
 		var/list/bad = T.Copy()
 		var/list/bad_daughters = list("Vulgar" = list("parent" = "Latin", "root" = "Klingon", "nation" = "x", "era" = 1, "kin" = 80))
 		bad["daughters"] = bad_daughters

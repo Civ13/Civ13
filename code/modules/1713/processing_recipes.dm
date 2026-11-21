@@ -48,6 +48,9 @@ var/global/list/processing_recipes = null
 			new /datum/processing_recipe("mortar", null, /obj/item/stack/farming/seeds/flax, "linseed_oil", 2),
 			new /datum/processing_recipe("mortar", null, /obj/item/weapon/reagent_containers/food/snacks/grown/olives, "olive_oil", 6),
 			new /datum/processing_recipe("mortar", null, /obj/item/weapon/reagent_containers/food/snacks/roasted_coffee, "coffee_grounds", 3),
+			new /datum/processing_recipe("mortar", null, /obj/item/stack/material/poppy, "poppy_straw", 3),
+			new /datum/processing_recipe("mortar", null, /obj/item/stack/material/coca, "coca_leaf", 3),
+			new /datum/processing_recipe("mortar", null, /obj/item/stack/material/cannabis, "thc", 3),
 
 			new /datum/processing_recipe("flint knapping", "Sharp flake", /obj/item/weapon/flint, null, 1, 40, 10),
 			new /datum/processing_recipe("flint knapping", "Three arrowheads", /obj/item/weapon/flint, /obj/item/stack/arrowhead/flint, 3, 60, 25),

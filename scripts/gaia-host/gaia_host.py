@@ -1253,8 +1253,6 @@ class Host:
             wait = self.update_unsaved_while_empty()
             if wait is not None:
                 return (now if idle_since is None else idle_since), wait
-        if not self.may_sleep():
-            return None, 30
         if idle_since is None:
             return now, 30
         if now - idle_since < self.config['freeze_idle_minutes'] * 60:
@@ -1271,6 +1269,10 @@ class Host:
             except Refused as refusal:
                 self.log({'staged_install_refused': str(refusal)})
                 return None, 30
+        if not self.may_sleep():
+            # Stays awake (the mainland, a gateway, the tutorial): an idle update above still
+            # goes in, but the world is never frozen.
+            return idle_since, 30
         try:
             self.log(self.freeze())
             # Only a world with a save can start again from it; one never played stays frozen.
