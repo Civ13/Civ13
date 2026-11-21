@@ -2291,6 +2291,7 @@
 #include "code\modules\1713\modern_telephone.dm"
 #include "code\modules\1713\smart_home.dm"
 #include "code\modules\1713\modern_terminal.dm"
+#include "code\modules\1713\physical_data_lan.dm"
 #include "code\modules\1713\training_course.dm"
 #include "code\modules\1713\training_gear.dm"
 #include "code\modules\1713\backrooms\gateway_core.dm"
