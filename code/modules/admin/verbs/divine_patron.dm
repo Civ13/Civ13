@@ -10,7 +10,7 @@
 	var/claim = divine_claim_of(src)
 	var/list/actions = list()
 	if (claim)
-		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
+		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "Set customs", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
 	else
 		actions += "Speak as a god"
 	actions += "Set my divine name"
@@ -125,6 +125,8 @@
 						known += divine_invocation_names[spell]
 					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""][H.magic_allowed() ? "" : ", SUSPENDED (not on the magic whitelist)"]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""][karma_mob_ckey(H) ? karma_staff_badge(karma_mob_ckey(H)) : ""]"
 			to_chat(usr, "<b>Followers of [claim_label] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
+		if ("Set customs")
+			arcane_edit_customs(claim) // arcane_devotion.dm
 		if ("List apostates")
 			arcane_list_apostates(claim) // arcane_apostate.dm
 		if ("List enchantments", "Strip enchantment") // arcane_enchant.dm
@@ -134,6 +136,11 @@
 			var/list/found = list()
 			for (var/obj/item/I in arcane_enchantments_of(H.ckey))
 				found["[I.name] ([I.type]): [arcane_enchant_names[I.arcane_enchant]], [I.arcane_charges] left, at [arcane_enchant_place(I)]"] = I
+			for (var/obj/O in arcane_wards_of(H.ckey)) // arcane_ward.dm
+				var/list/owners = list()
+				for (var/key in O.arcane_ward_owners)
+					owners += "[O.arcane_ward_owners[key]] ([key])"
+				found["[O.name] ([O.type]): Warding for [english_list(owners)], [O.arcane_ward_charges] left, at [arcane_enchant_place(O)]"] = O
 			if (!found.len)
 				to_chat(usr, SPAN_NOTICE("[H.real_name] has no enchantments in this world."))
 				return
@@ -145,7 +152,12 @@
 				return
 			var/picked = input(usr, "Strip which enchantment?", "Divine Patron") as null|anything in found
 			var/obj/item/I = found[picked]
-			if (!I || QDELETED(I) || !I.arcane_enchant_live() || divine_claim_of(src) != claim)
+			if (I && !istype(I) && !QDELETED(I) && I.arcane_ward_live() && divine_claim_of(src) == claim)
+				log_admin("[key_name(usr)] as [claim] stripped the ward made by [I.arcane_ward_by] from [I] ([I.type]).")
+				I.arcane_ward_end()
+				to_chat(usr, SPAN_NOTICE("Stripped the ward from [I]."))
+				return
+			if (!istype(I) || QDELETED(I) || !I.arcane_enchant_live() || divine_claim_of(src) != claim)
 				return
 			log_admin("[key_name(usr)] as [claim] stripped [I.arcane_enchant] made by [I.arcane_enchanter] from [I] ([I.type]).")
 			I.arcane_enchant_end()

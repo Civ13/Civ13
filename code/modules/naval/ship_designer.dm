@@ -47,6 +47,31 @@ var/global/list/ship_designer_sprites = list(
 	"shipd_piece_G.png" = 'icons/ship_designer/piece_G.png',
 	"shipd_piece_C.png" = 'icons/ship_designer/piece_C.png',
 	"shipd_piece_B.png" = 'icons/ship_designer/piece_B.png',
+	"shipd_piece_N.png" = 'icons/ship_designer/piece_N.png',
+	"shipd_piece_Q.png" = 'icons/ship_designer/piece_Q.png',
+	"shipd_piece_U.png" = 'icons/ship_designer/piece_U.png',
+	"shipd_piece_E.png" = 'icons/ship_designer/piece_E.png',
+	"shipd_piece_H_1.png" = 'icons/ship_designer/piece_H_1.png',
+	"shipd_piece_H_2.png" = 'icons/ship_designer/piece_H_2.png',
+	"shipd_piece_H_4.png" = 'icons/ship_designer/piece_H_4.png',
+	"shipd_piece_H_8.png" = 'icons/ship_designer/piece_H_8.png',
+	"shipd_piece_Z_1.png" = 'icons/ship_designer/piece_Z_1.png',
+	"shipd_piece_Z_2.png" = 'icons/ship_designer/piece_Z_2.png',
+	"shipd_piece_Z_4.png" = 'icons/ship_designer/piece_Z_4.png',
+	"shipd_piece_Z_8.png" = 'icons/ship_designer/piece_Z_8.png',
+	"shipd_piece_L_1.png" = 'icons/ship_designer/piece_L_1.png',
+	"shipd_piece_L_2.png" = 'icons/ship_designer/piece_L_2.png',
+	"shipd_piece_L_4.png" = 'icons/ship_designer/piece_L_4.png',
+	"shipd_piece_L_8.png" = 'icons/ship_designer/piece_L_8.png',
+	"shipd_piece_V.png" = 'icons/ship_designer/piece_V.png',
+	"shipd_piece_I_1.png" = 'icons/ship_designer/piece_I_1.png',
+	"shipd_piece_I_2.png" = 'icons/ship_designer/piece_I_2.png',
+	"shipd_piece_I_4.png" = 'icons/ship_designer/piece_I_4.png',
+	"shipd_piece_I_8.png" = 'icons/ship_designer/piece_I_8.png',
+	"shipd_piece_Y_1.png" = 'icons/ship_designer/piece_Y_1.png',
+	"shipd_piece_Y_2.png" = 'icons/ship_designer/piece_Y_2.png',
+	"shipd_piece_Y_4.png" = 'icons/ship_designer/piece_Y_4.png',
+	"shipd_piece_Y_8.png" = 'icons/ship_designer/piece_Y_8.png',
 )
 
 // The names the window asks for: one picture for a floor or a fixed piece,
@@ -84,7 +109,8 @@ var/global/list/ship_designer_sprites = list(
 // probe checks).
 /proc/ship_draught_examples()
 	. = list()
-	// A rowing galley: 27 planks, seven benches a side, steered from the stern.
+	// A rowing galley: 27 planks, seven benches a side, steered from the stern,
+	// with a pump for her bilge.
 	var/datum/ship_draught/galley = new
 	galley.name = "rowing galley"
 	for (var/x = 0, x < 3, x++)
@@ -95,6 +121,7 @@ var/global/list/ship_designer_sprites = list(
 		galley.set_piece(2, y, "R", WEST)
 	galley.set_piece(1, 0, "O")
 	galley.set_piece(1, 8, "K")
+	galley.set_piece(1, 7, "P")
 	. += galley
 	// A sloop: forty planks, two masts, a hold of crates and a pump.
 	var/datum/ship_draught/sloop = new
@@ -110,7 +137,8 @@ var/global/list/ship_designer_sprites = list(
 	sloop.set_piece(2, 1, "P")
 	sloop.set_piece(1, 9, "K")
 	. += sloop
-	// A steel cutter: a plated hull with a small cabin aft, one mast and oars.
+	// A steel cutter: a plated hull with a small cabin aft, one mast, oars and
+	// a pump.
 	var/datum/ship_draught/cutter = new
 	cutter.name = "steel cutter"
 	for (var/x = 0, x < 5, x++)
@@ -128,6 +156,7 @@ var/global/list/ship_designer_sprites = list(
 		cutter.set_piece(0, y, "R", EAST)
 		cutter.set_piece(4, y, "R", WEST)
 	cutter.set_piece(2, 8, "A")
+	cutter.set_piece(2, 7, "P")
 	for (var/x = 0, x < 5, x++)
 		for (var/y = 0, y < 2, y++)
 			cutter.set_upper(x, y, TRUE)
@@ -162,16 +191,27 @@ var/global/list/ship_designer_sprites = list(
 		H << browse_rsc(ship_designer_sprites[sprite], sprite)
 	show_browse(H, ship_designer_html(src, D), "window=[SHIP_DESIGNER_WINDOW];size=1060x780")
 	onclose(H, SHIP_DESIGNER_WINDOW, src)
-	ship_designer_stats(H, D ? D : new /datum/ship_draught)
+	// The figures for the drawing as the window holds it (centred on the
+	// sheet), so the cells a check lights up are the window's own.
+	var/datum/ship_draught/shown = new
+	shown.name = D ? D.name : "ship"
+	for (var/list/C in ship_designer_cells(D))
+		shown.set_floor(C[1], C[2], C[3])
+		shown.set_piece(C[1], C[2], length(C[4]) ? C[4] : null, C[5])
+		shown.set_upper(C[1], C[2], C[6])
+	ship_designer_stats(H, shown)
+	qdel(shown)
 	if (D)
 		qdel(D)
 
 // Which heading of the window's palette each piece is drawn under. A piece
 // in none of them goes under "Other", so a new piece still shows.
 var/global/list/ship_designer_groups = list(
-	"Steering and drive" = list("O", "T", "M", "R"),
-	"Gear" = list("K", "A", "P", "C", "B"),
-	"Cabin" = list("W", "D", "G"),
+	"Steering and drive" = list("O", "T", "M", "N", "R", "E"),
+	"Gear" = list("K", "A", "P", "Q", "U", "C", "B"),
+	"Arms" = list("H", "Z", "L"),
+	"Cabin" = list("W", "D", "G", "V", "I"),
+	"Sides" = list("Y"),
 )
 
 /proc/ship_designer_group(key)
@@ -200,6 +240,7 @@ var/global/list/ship_designer_groups = list(
 		qdel(E)
 	var/list/data = list(
 		"N" = SHIP_DRAUGHT_SIDE,
+		"SMALL" = HULL_SMALL_MAX_TILES,
 		"MID" = round(SHIP_DRAUGHT_SIDE / 2),
 		"REF" = "\ref[S]",
 		"PART" = SHIP_DESIGNER_PART,
@@ -208,6 +249,7 @@ var/global/list/ship_designer_groups = list(
 		"EXAMPLES" = examples,
 		"START" = ship_designer_cells(D),
 		"NAME" = D ? D.name : "ship",
+		"HELP" = design_part_help_for("ship"),
 	)
 	var/list/halves = splittext(ship_designer_page(), "@@DATA@@")
 	return halves[1] + json_encode(data) + halves[2]
@@ -216,9 +258,14 @@ var/global/list/ship_designer_groups = list(
 // The sheet is a view onto the 40x40 grid: Z pixels a tile, moved and zoomed
 // freely. A click is turned into a tile from the canvas's own rectangle, so
 // the drawing lands under the pointer however the window is sized.
+// The palette is pictures only, so every piece fits beside the sheet; the
+// Part panel under the sheet names the picked (or pointed at) one and says
+// what it is, what it is for and how to use it (DATA.HELP). The Checks
+// panel lists what the server found (F.checks): pointing at a finding, or
+// clicking it to keep it, lights its tiles on the sheet.
 /proc/ship_designer_page()
 	return @{"<!doctype html><html><head><meta charset='utf-8'><title>Ship's draught</title><style>
-:root{--line:#66513b;--dim:#bfae96;--bg:#211c16;--text:#eee5d3;--panel:#30271e;--accent:#b48c4d;--hi:#ffd985;--soft:#54432f;--chip:#443623;--inset:#262019;--good:#c4e8c0;--goodline:#6caa68;--goodbg:#253b25;--warn:#f3c79a;--warnline:#c77a39;--warnbg:#3a2a1a}
+:root{--line:#66513b;--dim:#bfae96;--bg:#211c16;--text:#eee5d3;--panel:#30271e;--accent:#b48c4d;--hi:#ffd985;--soft:#54432f;--chip:#443623;--inset:#262019;--good:#c4e8c0;--goodline:#6caa68;--goodbg:#253b25;--warn:#f3c79a;--warnline:#c77a39;--warnbg:#3a2a1a;--amber:#f2dc8f;--amberline:#c9a52e;--amberbg:#373016}
 *{box-sizing:border-box}html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:13px Verdana,sans-serif;overflow:hidden;display:flex;flex-direction:column;user-select:none}
 #top{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:9px 12px 8px;border-bottom:1px solid var(--line)}
@@ -244,10 +291,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .sec{flex:0 0 auto;border:1px solid var(--line);background:var(--panel)}
 .sec h2{font-size:14px;margin:0;padding:7px 9px;border-bottom:2px solid var(--accent)}
 .sec .in{padding:8px 9px}
-.grp{color:var(--dim);font-size:11px;margin:5px 0 2px}.grp:first-child{margin-top:0}
-.pal{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
-button.tile{padding:3px 1px 2px;text-align:center;font-size:10px;line-height:1.15;border:2px solid transparent;font-weight:normal}
-button.tile canvas{width:32px;height:32px;display:block;margin:0 auto 2px;border-radius:2px;image-rendering:pixelated}
+#pal{display:flex;flex-wrap:wrap;gap:6px 12px}
+.grp{color:var(--dim);font-size:11px;margin:0 0 2px}
+.pal{display:flex;gap:3px}
+button.tile{width:38px;height:38px;padding:1px;border:2px solid transparent;font-weight:normal;flex:0 0 auto}
+button.tile canvas{width:32px;height:32px;display:block;border-radius:2px;image-rendering:pixelated}
 button.tile.on,button.tile.on:hover{border-color:var(--hi);background:#5a4526;color:var(--text);font-weight:normal}
 .row{display:flex;align-items:center;gap:4px;margin-top:6px}.row .lab{color:var(--dim);width:52px}
 .row.off .seg{opacity:0.4}
@@ -260,27 +308,51 @@ table{border-collapse:collapse;width:100%}td{padding:4px 0;border-bottom:1px sol
 .note.ok{background:var(--goodbg);border-color:var(--goodline);color:var(--good)}
 .note.bad{background:var(--warnbg);border-color:var(--warnline);color:var(--warn)}
 .note div{margin-top:3px}
+.note.ok .also{color:var(--amber)}
+#part{flex:0 0 auto;height:122px;margin-top:4px;border:1px solid var(--line);background:var(--panel);padding:7px 10px 6px;overflow-y:auto;font-size:12px;line-height:1.35;user-select:text}
+#part canvas{float:left;width:32px;height:32px;margin:1px 10px 0 0;border:1px solid var(--line);border-radius:2px;image-rendering:pixelated}
+#part .pn{font-size:14px;font-weight:bold;margin-bottom:3px}
+#part .pn span{font-size:11px;font-weight:normal;color:var(--dim);margin-left:8px}
+#part .pb{overflow:hidden}
+#part .pr{display:flex;margin-top:2px}
+#part .pr i{flex:0 0 40px;font-style:normal;color:var(--accent);font-size:11px;padding-top:1px}
+#part .pr span{flex:1 1 auto;min-width:0}
+.ck{display:flex;gap:7px;align-items:flex-start;width:100%;margin-top:4px;padding:5px 7px 5px 6px;border:1px solid var(--soft);border-left:3px solid var(--dim);border-radius:3px;background:var(--inset);color:var(--text);cursor:default;font-size:12px;line-height:1.3;text-align:left}
+.ck.has{cursor:pointer}
+.ck .tag{flex:0 0 52px;text-align:center;font-size:10px;font-weight:bold;letter-spacing:0.5px;text-transform:uppercase;border-radius:2px;padding:1px 0;margin-top:1px;border:1px solid var(--dim);color:var(--dim)}
+.ck .tx{flex:1 1 auto;min-width:0}
+.ck .wh{display:block;color:var(--dim);font-size:11px;margin-top:1px}
+.ck.error{border-left-color:var(--warnline);background:var(--warnbg)}.ck.error .tag{background:var(--warnline);border-color:var(--warnline);color:#241405}
+.ck.warning{border-left-color:var(--amberline);background:var(--amberbg)}.ck.warning .tag{border-color:var(--amberline);color:var(--amber)}
+.ck.note{color:var(--dim)}
+.ck.has:hover,.ck.lit{border-color:var(--hi);border-left-color:var(--hi)}
+.ck.pin{box-shadow:inset 0 0 0 1px var(--hi)}.ck.pin .wh{color:var(--hi)}
+.ck:focus-visible{outline:2px solid var(--hi);outline-offset:1px}
+.cnt{color:var(--dim);font-size:11px;font-weight:normal;float:right;margin-top:2px}
 </style></head><body>
 <div id='top'><h1>Ship's draught</h1><input id='nm' maxlength='40' style='width:210px' title='Her name'><span id='st'></span><span class='sp'></span><span class='dim'>Start from</span><select id='ex' title='Ready-made draughts to start from'><option value=''>a ready-made ship...</option></select><button class='primary' id='save'>Save to the sheet</button></div>
 <div id='main'><div id='sheetcol'>
 <div id='sheetbar'><span class='dim'>Zoom</span><span class='seg'><button id='z_sheet'>Whole sheet</button><button id='z_ship'>Fit ship</button><button id='z_in' title='Closer (mouse wheel)'>+</button><button id='z_out' title='Further (mouse wheel)'>-</button></span><span class='sp'></span><button id='b_undo' title='Undo'>Undo <kbd>Ctrl Z</kbd></button><button id='b_redo' title='Redo (Ctrl Y)'>Redo</button><button id='b_clear' title='Wipe the sheet (Undo brings it back)'>Clear</button></div>
 <div id='frame'><canvas id='c'></canvas><div class='edge' style='left:50%;top:5px;transform:translateX(-50%)'>BOW</div><div class='edge' style='left:50%;bottom:5px;transform:translateX(-50%)'>STERN</div><div class='edge' style='left:5px;top:50%;transform:translateY(-50%)'>PORT</div><div class='edge' style='right:5px;top:50%;transform:translateY(-50%)'>STARBOARD</div></div>
-<div id='hover'></div></div>
+<div id='hover'></div><div id='part'></div></div>
 <div id='side'>
 <div class='sec'><h2>Draw</h2><div class='in'><div id='pal'></div>
 <div class='row' id='facerow'><span class='lab'>Facing</span><span class='seg'><button id='f_1' title='Facing the bow'>&uarr;</button><button id='f_4' title='Facing starboard'>&rarr;</button><button id='f_2' title='Facing the stern'>&darr;</button><button id='f_8' title='Facing port'>&larr;</button></span><kbd title='R turns the piece'>R</kbd><span class='sp'></span><span class='seg'><button id='m_free' title='Draw tile by tile'>Freehand</button><button id='m_box' title='Drag out a box of tiles'>Box</button></span></div>
 <div class='row'><span class='lab'>Mirror</span><span class='seg'><button id='m_on'>On</button><button id='m_off'>Off</button></span><span class='dim' style='font-size:11px;margin-left:4px'>port and starboard match</span></div>
 </div></div>
+<div class='sec'><h2>Checks<span class='cnt' id='chkn'></span></h2><div class='in' id='chk'><span class='dim'>Reckoning...</span></div></div>
 <div class='sec'><h2>Her figures</h2><div class='in' id='fig'><span class='dim'>Reckoning...</span></div></div>
 </div></div>
 <script>var DATA=@@DATA@@;
-var N=DATA.N,MID=DATA.MID,REF=DATA.REF,PART=DATA.PART,PIECES=DATA.PIECES,FLOORS=DATA.FLOORS,EXAMPLES=DATA.EXAMPLES;
+var N=DATA.N,SMALL=DATA.SMALL,MID=DATA.MID,REF=DATA.REF,PART=DATA.PART,PIECES=DATA.PIECES,FLOORS=DATA.FLOORS,EXAMPLES=DATA.EXAMPLES;
 function $(i){return document.getElementById(i);}
 var cv=$('c'),g=cv.getContext('2d'),frame=$('frame');
 var cells={},t=FLOORS[0][0],fd=1,box=false,mirror=false,undos=[],redos=[],down=null,pan=null,hov=null,before=null;
 var parts=null,busy=0,timer=null,IMG={},Z=16,vx=0,vy=0,fit='ship',rev=0,savedRev=0,sendRev=0,note='',noteBad=false;
 var ZOOMS=[8,12,16,24,32,48],INK='#2a1a0c',GOLD='#ffd985',PAPER='#d8c8a2';
-var NAMES={},FNAMES={},ICONS=[];
+var NAMES={},FNAMES={},ICONS=[],HELP=DATA.HELP||{};
+var CHK=[],lit=-1,pin=-1,peek=null;
+var LEVEL={error:['Fix','#ff6f3c'],warning:['Warning','#ffd23f'],note:['Note','#fff6dc']};
 for(var i=0;i<PIECES.length;i++)NAMES[PIECES[i][0]]=PIECES[i];
 for(var i=0;i<FLOORS.length;i++)FNAMES[FLOORS[i][0]]=FLOORS[i][1];
 var FACING={1:'the bow',2:'the stern',4:'starboard',8:'port'};
@@ -336,10 +408,27 @@ for(k in cells){p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
 if(!cells[key(x+1,y)]){g.moveTo(px+Z,py);g.lineTo(px+Z,py+Z);}if(!cells[key(x-1,y)]){g.moveTo(px,py);g.lineTo(px,py+Z);}
 if(!cells[key(x,y+1)]){g.moveTo(px,py);g.lineTo(px+Z,py);}if(!cells[key(x,y-1)]){g.moveTo(px,py+Z);g.lineTo(px+Z,py+Z);}}
 g.stroke();
+var nc=0;for(k in cells)nc++;
+if(nc>SMALL){g.strokeStyle='#e0b25c';g.lineWidth=Math.max(2,Math.round(Z/6));var r=g.lineWidth/2+1;g.beginPath();
+for(k in cells){c=cells[k];if('WDGVI'.indexOf(c[1]||'-')>=0)continue;p=k.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
+if(!cells[key(x+1,y)]&&!(c[1]=='Y'&&c[2]==4)){g.moveTo(px+Z-r,py);g.lineTo(px+Z-r,py+Z);}if(!cells[key(x-1,y)]&&!(c[1]=='Y'&&c[2]==8)){g.moveTo(px+r,py);g.lineTo(px+r,py+Z);}
+if(!cells[key(x,y+1)]&&!(c[1]=='Y'&&c[2]==1)){g.moveTo(px,py+r);g.lineTo(px+Z,py+r);}if(!cells[key(x,y-1)]&&!(c[1]=='Y'&&c[2]==2)){g.moveTo(px,py+Z-r);g.lineTo(px+Z,py+Z-r);}}
+g.stroke();}
 g.setLineDash([6,5]);g.strokeStyle='rgba(120,60,30,0.75)';g.lineWidth=1;g.beginPath();g.moveTo(ox+(MID+0.5)*Z,oy);g.lineTo(ox+(MID+0.5)*Z,oy+S);g.stroke();g.setLineDash([]);
+lightCells();
 if(pan||!hov)return;
 if(down&&box){boxOutline(down[0],down[1],hov[0],hov[1]);if(mirror)boxOutline(mirrorX(down[0]),down[1],mirrorX(hov[0]),hov[1]);return;}
 ghost(hov[0],hov[1],fd);if(mirror&&mirrorX(hov[0])!=hov[0])ghost(mirrorX(hov[0]),hov[1],mirrorDir(fd));}
+// The tiles of the finding pointed at (or kept): a wash of its colour and a
+// line round them, dark under bright so it shows on paper, plank and plate.
+function litCheck(){var i=lit>=0?lit:pin;return i>=0&&CHK[i]?CHK[i]:null;}
+function lightCells(){var f=litCheck();if(!f||!f.cells||!f.cells.length)return;
+var S={},i,p,x,y,px,py,col=(LEVEL[f.level]||LEVEL.note)[1],w=Z>=24?3:2;for(i=0;i<f.cells.length;i++)S[f.cells[i]]=1;
+g.globalAlpha=0.3;g.fillStyle=col;for(i in S){p=i.split(',');g.fillRect(sx(+p[0]),sy(+p[1]),Z,Z);}g.globalAlpha=1;
+g.beginPath();for(i in S){p=i.split(',');x=+p[0];y=+p[1];px=sx(x);py=sy(y);
+if(!S[key(x+1,y)]){g.moveTo(px+Z,py);g.lineTo(px+Z,py+Z);}if(!S[key(x-1,y)]){g.moveTo(px,py);g.lineTo(px,py+Z);}
+if(!S[key(x,y+1)]){g.moveTo(px,py);g.lineTo(px+Z,py);}if(!S[key(x,y-1)]){g.moveTo(px,py+Z);g.lineTo(px+Z,py+Z);}}
+g.lineCap='square';g.strokeStyle='rgba(20,12,6,0.9)';g.lineWidth=w+3;g.stroke();g.strokeStyle=col;g.lineWidth=w;g.stroke();g.lineCap='butt';}
 
 // ---- The palette ----
 function paintIcon(I){var c=I[0].getContext('2d'),k=I[1];c.imageSmoothingEnabled=false;c.clearRect(0,0,32,32);
@@ -347,10 +436,10 @@ if(FNAMES[k]){floorAt(c,k,0,0,32);return;}
 if(k=='u'){floorAt(c,FLOORS[0][0],0,0,32);hatch(c,0,0,32);return;}
 if(k=='x'){c.fillStyle=PAPER;c.fillRect(0,0,32,32);c.strokeStyle='#c0492b';c.lineWidth=4;c.beginPath();c.moveTo(8,8);c.lineTo(24,24);c.moveTo(24,8);c.lineTo(8,24);c.stroke();return;}
 c.fillStyle='#1b1611';c.fillRect(0,0,32,32);pieceAt(c,k,turns(k)?fd:1,0,0,32);}
-function icons(){for(var i=0;i<ICONS.length;i++)paintIcon(ICONS[i]);}
+function icons(){for(var i=0;i<ICONS.length;i++)paintIcon(ICONS[i]);var c=$('pp');if(c)paintIcon([c,c.k]);}
 function tile(into,k,name,tip){var b=document.createElement('button'),c=document.createElement('canvas');b.className='tile';b.id='t_'+k;b.title=tip;c.width=32;c.height=32;
-b.appendChild(c);b.appendChild(document.createTextNode(name));b.onclick=function(){tool(k);};into.appendChild(b);ICONS.push([c,k]);}
-function group(name){var h=document.createElement('div'),d=document.createElement('div');h.className='grp';h.appendChild(document.createTextNode(name));d.className='pal';$('pal').appendChild(h);$('pal').appendChild(d);return d;}
+b.appendChild(c);b.setAttribute('aria-label',name);b.onclick=function(){tool(k);};b.onmouseenter=b.onfocus=function(){peek=k;part();};b.onmouseleave=b.onblur=function(){if(peek==k){peek=null;part();}};into.appendChild(b);ICONS.push([c,k]);}
+function group(name){var w=document.createElement('div'),h=document.createElement('div'),d=document.createElement('div');h.className='grp';h.appendChild(document.createTextNode(name));d.className='pal';w.appendChild(h);w.appendChild(d);$('pal').appendChild(w);return d;}
 function palette(){var hull=group('Hull'),G={},i;
 for(i=0;i<FLOORS.length;i++)tile(hull,FLOORS[i][0],cap(FLOORS[i][1]),'Lay '+FLOORS[i][1]);
 tile(hull,'u','Deck above','A deck on the level above this tile. Right-click takes it off.');tile(hull,'x','Erase','Take the whole tile off the sheet');
@@ -359,7 +448,14 @@ function mark(){var b=document.getElementsByTagName('button'),i,id;for(i=0;i<b.l
 if(id.indexOf('t_')==0)b[i].className=id=='t_'+t?'tile on':'tile';if(id.indexOf('f_')==0)b[i].className=id=='f_'+fd?'on':'';}
 $('m_box').className=box?'on':'';$('m_free').className=box?'':'on';$('m_on').className=mirror?'on':'';$('m_off').className=mirror?'':'on';
 $('z_sheet').className=fit=='sheet'?'on':'';$('z_ship').className=fit=='ship'?'on':'';$('facerow').className=turns(t)?'row':'row off';}
-function tool(x){t=x;mark();draw();}
+function tool(x){t=x;mark();part();draw();}
+// The Part panel: the piece of a lit finding, else the palette picture the
+// pointer is on, else the picked tool.
+function partName(k){return FNAMES[k]?cap(FNAMES[k]):(k=='u'?'Deck above':(k=='x'?'Erase':(NAMES[k]?cap(NAMES[k][1]):k)));}
+function part(){var f=litCheck(),k=f&&f.part?f.part:(peek||t),H=HELP[k],L=[['what','What'],['use','Use'],['how','How']],i;
+var h='<canvas id=\'pp\' width=\'32\' height=\'32\'></canvas><div class=\'pb\'><div class=\'pn\'>'+esc(partName(k))+'<span>'+(k==t?'picked to draw with'+(turns(k)?' &middot; R turns it':''):(f&&f.part?'named by the check':'click to pick it'))+'</span></div>';
+if(H)for(i=0;i<L.length;i++)if(H[L[i][0]])h+='<div class=\'pr\'><i>'+L[i][1]+'</i><span>'+esc(H[L[i][0]])+'</span></div>';
+$('part').innerHTML=h+'</div>';var c=$('pp');c.k=k;paintIcon([c,k]);}
 function face(d){fd=d;icons();mark();draw();}
 function turn(){face({1:4,4:2,2:8,8:1}[fd]);}
 
@@ -418,13 +514,30 @@ h+=row('Decks',F.upper?F.upper+' tile'+(F.upper==1?'':'s')+' of deck above &midd
 if(F.tiles){var c='';for(i=0;i<F.costs.length;i++)c+='<span class=\'chip\'>'+esc(F.costs[i])+'</span>';h+=row('Cost',c||'nothing');
 var d=[];for(i=0;i<F.drives.length;i++)d.push(esc(F.drives[i][0])+' <b>'+esc(F.drives[i][1])+'</b>');
 h+=row('Speed',d.length?d.join(' &middot; '):'<b>Slow ahead</b>, poled along: she has no masts or rowing benches');
-if(F.ballast)h+=row('Ballast','Wants about '+F.ballast+' more tiles of weight low in her, or she sails crank');}
+if(F.ballast)h+=row('Ballast','Wants about '+F.ballast+' more tiles of weight low in her, or she sails crank');
+h+=row('Sides',F.gunwales?F.gunwales+' gunwale'+(F.gunwales==1?'':'s')+' along her open edges, in her cost':(F.tiles>SMALL?'Closed all round':'Open: small craft need no gunwales'));}
 h+='</table>';
-if(!F.tiles)h+='<div class=\'note\'>'+esc(F.problems[0]||'Nothing is drawn yet.')+'</div>';
-else if(F.problems.length){h+='<div class=\'note bad\'><b>Not ready to build</b>';for(i=0;i<F.problems.length;i++)h+='<div>'+esc(F.problems[i])+'</div>';h+='</div>';}
-else h+='<div class=\'note ok\'><b>Ready to build.</b> As drawn she can be built and commissioned.</div>';
-$('fig').innerHTML=h;}
-function shipStats(s){busy=0;s=txt(s);try{figures(JSON.parse(s));}catch(e){$('fig').innerHTML=s;}}
+$('fig').innerHTML=h;checks(F);}
+// ---- The checks: what stops her being built, what to look at, and advice ----
+function several(n,one){return n+' '+one+(n==1?'':'s');}
+function where(i){var f=CHK[i];return i==pin?'&#9679; lit on the sheet':'&#9675; '+several(f.cells.length,'tile')+' on the sheet';}
+function markChecks(){var b=$('chk').getElementsByTagName('button'),j,f,w;for(j=0;j<b.length;j++){f=CHK[j];b[j].className='ck '+f.level+(f.cells.length||f.part?' has':'')+(j==pin?' pin':'')+(j==lit?' lit':'');w=b[j].getElementsByTagName('span')[2];if(w)w.innerHTML=where(j);}}
+function light(i){lit=i;markChecks();part();draw();}
+function seen(f){for(var i=0;i<f.cells.length;i++){var p=f.cells[i].split(','),px=sx(+p[0]),py=sy(+p[1]);if(px<0||py<0||px+Z>cv.width||py+Z>cv.height)return false;}return true;}
+function keep(i){pin=pin==i?-1:i;var f=CHK[pin];if(f&&f.cells.length&&!seen(f)){fit='ship';applyFit();if(!seen(f)){fit='sheet';applyFit();}mark();}markChecks();part();draw();}
+function showChecks(){var h='',i,f,n=[0,0,0];for(i=0;i<CHK.length;i++)n[CHK[i].level=='error'?0:(CHK[i].level=='warning'?1:2)]++;
+if(n[0])h+='<div class=\'note bad\' style=\'margin-top:0\'><b>Not ready to build.</b> '+several(n[0],'thing')+' to fix first.</div>';
+else h+='<div class=\'note ok\' style=\'margin-top:0\'><b>Ready to build.</b> As drawn she can be built and commissioned.'+(n[1]?'<div class=\'also\'>'+several(n[1],'warning')+' below will not stop the build, but read '+(n[1]==1?'it':'them')+' first.</div>':'')+'</div>';
+for(i=0;i<CHK.length;i++){f=CHK[i];var L=f.level,has=f.cells.length||f.part;
+h+='<button class=\'ck '+L+(has?' has':'')+(i==pin?' pin':'')+'\' id=\'ck_'+i+'\''+(has?' title=\'Click to keep it lit on the sheet; click again to let go\'':'')+'><span class=\'tag\'>'+LEVEL[L][0]+'</span><span class=\'tx\'>'+esc(f.text)+(f.cells.length?'<span class=\'wh\'>'+where(i)+'</span>':'')+'</span></button>';}
+var c=$('chk');c.innerHTML=h;var p=[];if(n[0])p.push(n[0]+' to fix');if(n[1])p.push(several(n[1],'warning'));if(n[2])p.push(several(n[2],'note'));$('chkn').innerHTML=p.join(' &middot; ');
+var b=c.getElementsByTagName('button');for(i=0;i<b.length;i++)(function(i){b[i].onmouseenter=b[i].onfocus=function(){light(i);};b[i].onmouseleave=b[i].onblur=function(){if(lit==i)light(-1);};b[i].onclick=function(){keep(i);};})(i);}
+function checks(F){var was=CHK[pin]?CHK[pin].text:null,i,L=F.checks;
+if(!L){L=[];for(i=0;i<F.problems.length;i++)L.push({level:'error',text:F.problems[i]});}
+CHK=[];lit=-1;pin=-1;for(i=0;i<L.length;i++){CHK.push({level:LEVEL[L[i].level]?L[i].level:'note',text:L[i].text||'',cells:L[i].cells||[],part:L[i].part||''});if(was!==null&&CHK[i].text==was)pin=i;}
+if(!F.tiles){CHK=[];pin=-1;$('chkn').innerHTML='';$('chk').innerHTML='<div class=\'note\' style=\'margin-top:0\'>'+esc(F.problems[0]||'Nothing is drawn yet.')+'</div>';}else showChecks();
+part();draw();}
+function shipStats(s){busy=0;s=txt(s);var F=null;try{F=JSON.parse(s);}catch(e){}if(F)figures(F);else $('fig').innerHTML=s;}
 function shipStatus(s){busy=0;s=txt(s);if(s=='Saved on the sheet.')return;if(s)say(s,true);else if(note=='Saving...'||note=='Wait a moment...')say('');}
 function shipSaved(){busy=0;savedRev=sendRev;say(rev==savedRev?'Saved on the sheet.':'');}
 
@@ -437,7 +550,7 @@ $('z_in').onclick=function(){zoom(1,cv.width/2,cv.height/2);};$('z_out').onclick
 $('b_undo').onclick=undo;$('b_redo').onclick=redo;$('b_clear').onclick=clearAll;$('save').onclick=function(){send('save');};
 $('ex').onchange=loadExample;$('nm').oninput=function(){changed();};
 (function(){var s=$('ex');for(var i=0;i<EXAMPLES.length;i++){var o=document.createElement('option');o.value=i;o.appendChild(document.createTextNode(cap(EXAMPLES[i][0])));s.appendChild(o);}})();
-$('nm').value=DATA.NAME;load(DATA.START);palette();icons();mark();tell();resize();window.onresize=resize;
+$('nm').value=DATA.NAME;load(DATA.START);palette();icons();mark();part();tell();resize();window.onresize=resize;
 </script></body></html>
 "}
 

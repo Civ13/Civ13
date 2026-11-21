@@ -157,9 +157,9 @@ var/global/list/arcane_altar_thresholds = list(list(0, 0), list(5, 0), list(15, 
 
 /mob/living/human/proc/arcane_refresh_verbs()
 	if (istext(divine_patron) && length(divine_patron) && magic_allowed())
-		verbs |= list(/mob/living/human/proc/arcane_tend_altar, /mob/living/human/proc/arcane_commune) // commune: arcane_spirits.dm
+		verbs |= list(/mob/living/human/proc/arcane_tend_altar, /mob/living/human/proc/arcane_commune, /mob/living/human/proc/arcane_whisper_stone) // commune: arcane_spirits.dm; whisper: arcane_ward.dm
 	else
-		verbs -= list(/mob/living/human/proc/arcane_tend_altar, /mob/living/human/proc/arcane_commune)
+		verbs -= list(/mob/living/human/proc/arcane_tend_altar, /mob/living/human/proc/arcane_commune, /mob/living/human/proc/arcane_whisper_stone)
 
 /mob/living/human/proc/arcane_tend_altar()
 	set name = "Tend an Altar"
@@ -185,6 +185,7 @@ var/global/list/arcane_altar_thresholds = list(list(0, 0), list(5, 0), list(15, 
 	var/list/options = list()
 	if (O.arcane_altar_live() == god)
 		options += "Make an offering"
+		options += "Keep a devotion" // arcane_devotion.dm
 		if (O.arcane_altar_by == ckey)
 			options += "Let this altar go"
 	else
@@ -194,6 +195,8 @@ var/global/list/arcane_altar_thresholds = list(list(0, 0), list(5, 0), list(15, 
 		return
 	if (pick == "Make an offering")
 		arcane_offer_at(O)
+	else if (pick == "Keep a devotion")
+		arcane_devote_at(O) // arcane_devotion.dm
 	else if (pick == "Let this altar go")
 		if (O.arcane_altar_by == ckey)
 			arcane_altar_spots -= O.arcane_altar_spot

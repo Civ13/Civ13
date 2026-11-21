@@ -175,30 +175,14 @@ var/global/list/sub_draught_fixed_cost = list("steel" = 56)
 			.["[col],[row]"] = entry
 
 // Why she could not be assembled as drawn; an empty list when she could.
+// The checks themselves are design checks of kind "sub" (draught_checks.dm).
 /datum/sub_draught/proc/problems()
-	. = list()
-	for (var/fitting in sub_draught_fittings)
-		var/list/P = sub_draught_fittings[fitting]
-		var/need = P["need"]
-		if (!need)
-			continue
-		var/count = fitting_count(fitting)
-		if (count < need)
-			. += "She has no [P["name"]]: put one in a section."
-		else if (count > need)
-			. += "She has [count] of the [P["name"]]: only one works her."
-	if (!hatches())
-		. += "She has no lock-out hatch: crew cannot board her or leave her under water. Make one of her side sections a hatch."
-	// A bulkhead right across her with no door shuts off the rooms aft of it.
-	for (var/row = 2, row <= length, row++)
-		var/sealed = TRUE
-		for (var/col = 1, col <= SUB_DRAUGHT_BEAM, col++)
-			var/list/C = cell(col, row)
-			if (!stern_tank(col, row) && C[3] != "b")
-				sealed = FALSE
-				break
-		if (sealed)
-			. += "Row [row] is a bulkhead right across her: put a watertight door in it or nobody can reach the rooms aft."
+	return design_errors("sub", src)
+
+// Everything the checks find: errors, warnings and advice. The caller owns
+// the report.
+/datum/sub_draught/proc/check_design()
+	return design_report("sub", src)
 
 /datum/sub_draught/proc/buildable()
 	var/list/P = problems()
@@ -233,11 +217,13 @@ var/global/list/sub_draught_fixed_cost = list("steel" = 56)
 	// The same reckoning as battery_capacity() and air_capacity(): half a bank
 	// in her hull and one more for each bank fitted.
 	lines += "Her battery holds [round(50 * (1 + batteries))]% of a Scout's and her air bank [round(50 * (1 + air))]%."
-	var/list/P = problems()
-	if (P.len)
-		lines += "<span class='warning'>Not ready to assemble: [jointext(P, " ")]</span>"
+	var/datum/design_report/R = check_design()
+	if (R.blocked())
+		lines += "<span class='warning'>Not ready to assemble:</span>"
 	else
 		lines += "As drawn she can be assembled on the water."
+	lines += R.chat_lines()
+	qdel(R)
 	return jointext(lines, "<br>")
 
 // ---- Design codes ----
