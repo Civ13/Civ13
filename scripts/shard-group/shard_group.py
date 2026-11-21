@@ -146,6 +146,10 @@ KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHE
          'EXPEDITION', 'GATEWAY')
 # Kinds whose world never saves: an ordinary round with SKIP_PERSISTENCE_SAVING (region_mode_config).
 UNSAVED_KINDS = ('EVENT', 'TUTORIAL', 'GATEWAY')
+# Kinds that stay up for players even while the lands are down (Val, 2026-11-21: the
+# tutorial stays current and available): never asleep, back at once after a crash, and
+# updated by a plain restart on their own port while empty, never a standby handover.
+ALWAYS_UP_KINDS = ('GATEWAY', 'TUTORIAL')
 GATEWAY_MAP = 'maps/special/gateway.dmm'
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
@@ -1132,10 +1136,14 @@ class RegionHost(Host):
     def is_gateway(self):
         return self.region_kind() == 'GATEWAY'
 
+    def always_up(self):
+        return self.region_kind() in ALWAYS_UP_KINDS
+
     def may_sleep(self):
         # The gateway is every player's way in and the group's hub entry: a frozen world
         # stops answering the hub and holds each join until it thaws, so it stays awake.
-        return not self.is_gateway()
+        # The tutorial stays awake too, so it opens at once even while the lands are down.
+        return not self.always_up()
 
     def protects_mainland_uptime(self):
         try:
@@ -1146,7 +1154,7 @@ class RegionHost(Host):
     def automatic_start_action(self):
         # The gateway is every player's way in: a watchdog start brings it back on the build it
         # has instead of compiling first; updates reach it by its empty-world restart.
-        if self.protects_mainland_uptime() or self.is_gateway():
+        if self.protects_mainland_uptime() or self.always_up():
             return 'start-current'
         return super().automatic_start_action()
 
@@ -1243,8 +1251,8 @@ class RegionHost(Host):
         except (OSError, ValueError):
             return None
         region = next((r for r in group['regions'] if r['id'] == self.config['region']), None)
-        gateway = bool(region) and region['kind'] == 'GATEWAY'
-        if (group['persistent'] and not gateway) or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
+        always_up = bool(region) and region['kind'] in ALWAYS_UP_KINDS
+        if (group['persistent'] and not always_up) or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
             return None  # saving groups hand over instead; a battle updates when its round ends
         if not self.battle_moved_on(group):
             # Val (2026-11-18): a restart per merge pinged Discord every few minutes. The
@@ -1569,7 +1577,7 @@ class RegionHost(Host):
             raise Refused('the world does not answer lifecycle status')
         if world.get('busy') or not world.get('ready'):
             raise Refused('the world is busy or not ready, so it cannot save now')
-        if self.is_gateway():
+        if self.always_up():
             return  # it restarts on its own port (do_handover): no standby, no second world in memory
         if self.platform.listening(self.standby_port()):
             raise Refused('port %d (the standby port) is in use' % self.standby_port())
@@ -1607,13 +1615,14 @@ class RegionHost(Host):
         revision = self.staged_revision()
         if not revision or not self.update_pending():
             raise RuntimeError('no staged build newer than the running one')
-        if region['kind'] == 'GATEWAY':
+        if region['kind'] in ALWAYS_UP_KINDS:
             # The hub lists a world by the port its DreamDaemon was started on; a standby
             # that takes the port over with world.OpenPort is not listed again. The gateway
-            # keeps nothing, so it restarts on its own port onto the staged build instead.
+            # and the tutorial keep nothing, so they restart on their own port onto the
+            # staged build instead.
             if automatic and (self.world() or {}).get('clients'):
-                raise RuntimeError('players are passing through the gateway; automatic update deferred')
-            self.record(phase='restarting the gateway on its own port', revision=revision)
+                raise RuntimeError('players are in the %s; automatic update deferred' % region['kind'].lower())
+            self.record(phase='restarting the %s on its own port' % region['kind'].lower(), revision=revision)
             with self.handover_slot():
                 self.do_stop(operation)
                 self.do_update(operation)

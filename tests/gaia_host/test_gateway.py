@@ -50,6 +50,53 @@ class GatewayTests(unittest.TestCase):
         self.assertTrue(self.host(group, 'gaia').may_sleep())
         self.assertEqual('start-current', self.host(group, 'door').automatic_start_action(), 'a crashed gateway comes back at once')
 
+    def tutorial_group(self):
+        self.group['regions'][1].update(id='door', name='Tutorial', kind='TUTORIAL', map='maps/small/tiny.dmm')
+        return self.write_group()
+
+    def test_tutorial_stays_up_and_restarts_onto_updates_when_empty(self):
+        # Val (2026-11-21): the tutorial stays current and available while the lands are down.
+        group = self.tutorial_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'door')
+        self.assertFalse(host.may_sleep())
+        self.assertEqual('start-current', host.automatic_start_action())
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1721}
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(group['persistent'])
+        self.assertEqual(30, host.update_unsaved_while_empty())
+        self.assertEqual('restart', host.read_state()['action'])
+
+    def test_tutorial_handover_restarts_without_a_standby_and_waits_for_players(self):
+        group = self.tutorial_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'door')
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1721}
+        self.machine.pids_by_port = {1721: 100}
+        host.work('stage', host.request_stage()['operation'])
+        clients = [2]
+        self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: {
+            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': clients[0], 'persistence_mode': 0}
+        with self.assertRaisesRegex(RuntimeError, 'players are in the tutorial'):
+            host.do_handover('x', automatic=True)
+        clients[0] = 0
+        start = self.machine.start_task
+
+        def start_task(name, dmb='region.dmb'):
+            self.machine.up.add(1721)
+            return start(name, dmb)
+        self.machine.start_task = start_task
+        host.precheck_handover()
+        host.work('handover', host.request('handover')['operation'])
+        self.assertEqual(('done', NEWER), (host.read_state()['phase'], host.built_revision()))
+        self.assertFalse([argv for argv, _ in self.machine.calls if argv[0] == 'standby'])
+
     def test_update_restarts_on_its_own_port_without_a_standby(self):
         group = self.gateway_group()
         shard_group.setup(group, self.machine)
