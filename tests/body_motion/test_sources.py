@@ -104,11 +104,25 @@ class BodyMotionSources(unittest.TestCase):
             self.assertEqual(text.count('var/climb_motion = body_motion_climb('), count, path)
             self.assertEqual(text.count('body_motion_stop(climb_motion)'), count, path)
 
+    def test_stride_hook_and_gap(self):
+        self.assertIn('mob.last_movement = world.time\n\t\tif (ishuman(mob))\n\t\t\tvar/mob/living/human/strider = mob\n\t\t\tstrider.body_motion_stride()',
+                      read('code/game/mob/mob_movement.dm'))
+        self.assertIn('#define BODY_MOTION_PRIORITY_STRIDE 0', DEFINES)
+        # A hit cuts in over a bounce: the start gap holds back equal or lower priorities only.
+        self.assertIn('priority <= body_motion_priority && world.time < body_motion_started + BODY_MOTION_MIN_GAP', MOTION)
+        stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
+        for key in ('list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT)', 'list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT)',
+                    'list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT)'):
+            self.assertIn(key, stride)
+        self.assertIn('swim_skill_applies(loc)', stride)
+
     def test_gestures_are_full_level_only(self):
         for header in ('/mob/living/human/proc/body_motion_work(', '/mob/living/human/proc/body_motion_settle(',
                        '/mob/living/human/proc/body_motion_emote(', '/mob/living/human/proc/body_motion_stance_set(',
                        '/mob/living/human/proc/body_motion_swim_stroke(', '/mob/living/human/proc/body_motion_climb('):
             self.assertIn('BODY_MOTION_PRIORITY_LOW, BODY_MOTION_FULL', proc_body(MOTION, header))
+        stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
+        self.assertEqual(stride.count('BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL'), 3)
 
     def test_config_line(self):
         self.assertIn('var/body_motion = BODY_MOTION_FULL', CONFIG)

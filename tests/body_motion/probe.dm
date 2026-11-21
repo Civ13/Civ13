@@ -213,6 +213,29 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(H.body_motion_struggle() && H.body_motion_until == world.time + 6, "struggle_6ds")
 	body_motion_probe_idle(H)
 
+	// --- walking, running and sprinting bounce ----------------------------------
+	H.m_intent = "walk"
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 4 && H.body_motion_priority == BODY_MOTION_PRIORITY_STRIDE, "walk_bounce_4ds")
+	body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "bounce_ends_at_rest")
+	body_motion_probe_assert(!H.body_motion_stride(), "one_bounce_at_a_time")
+	// Anything else cuts in over a bounce, even straight after it starts.
+	body_motion_probe_assert(H.body_motion_recoil(A), "recoil_over_bounce")
+	body_motion_probe_idle(H)
+	H.m_intent = "run"
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 3, "run_bounce_3ds")
+	body_motion_probe_idle(H)
+	H.sprinting = TRUE
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 2, "sprint_bounce_2ds")
+	body_motion_probe_idle(H)
+	H.sprinting = FALSE
+	H.m_intent = "stealth"
+	body_motion_probe_assert(!H.body_motion_stride(), "no_bounce_sneaking")
+	H.m_intent = "walk"
+	H.prone = TRUE
+	body_motion_probe_assert(!H.body_motion_stride(), "no_bounce_prone")
+	H.prone = FALSE
+	body_motion_probe_idle(H)
+
 	// --- climbing ---------------------------------------------------------------
 	var/climb_start = H.body_motion_climb(TRUE, 30)
 	body_motion_probe_assert(climb_start && climb_start == H.body_motion_serial && H.body_motion_until == world.time + 30, "climb_pulls_cover_the_wait")
@@ -245,7 +268,7 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(!H.body_motion_stance_set(), "reduced_drops_stance_set")
 	body_motion_probe_assert(H.body_motion_parry(A), "reduced_keeps_parry")
 	body_motion_probe_idle(H)
-	body_motion_probe_assert(!H.body_motion_climb(TRUE, 30) && !H.body_motion_swim_stroke(), "reduced_drops_climb_and_stroke")
+	body_motion_probe_assert(!H.body_motion_climb(TRUE, 30) && !H.body_motion_swim_stroke() && !H.body_motion_stride(), "reduced_drops_climb_stroke_and_bounce")
 	body_motion_probe_assert(H.body_motion_sink(), "reduced_keeps_sink")
 	body_motion_probe_idle(H)
 	body_motion_probe_assert(H.body_motion_struggle(), "reduced_keeps_struggle")

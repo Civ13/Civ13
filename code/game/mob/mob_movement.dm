@@ -1068,6 +1068,9 @@
 		if (!isnull(subtile_deadline) && (mob != input_actor || !input_actor || input_actor.client != src))
 			return FALSE
 		mob.last_movement = world.time
+		if (ishuman(mob))
+			var/mob/living/human/strider = mob
+			strider.body_motion_stride()
 		if (!isnull(subtile_deadline))
 			move_delay = subtile_deadline
 			return .

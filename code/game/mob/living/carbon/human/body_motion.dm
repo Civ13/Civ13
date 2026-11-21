@@ -61,8 +61,9 @@
 		return FALSE
 	if (world.time < body_motion_until && priority < body_motion_priority)
 		return FALSE
-	// At most one motion start per BODY_MOTION_MIN_GAP; posture changes always play.
-	if (priority < BODY_MOTION_PRIORITY_POSTURE && world.time < body_motion_started + BODY_MOTION_MIN_GAP)
+	// At most one motion start per BODY_MOTION_MIN_GAP; posture changes always
+	// play, and a higher priority motion cuts in (a hit during the stride bounce).
+	if (priority < BODY_MOTION_PRIORITY_POSTURE && priority <= body_motion_priority && world.time < body_motion_started + BODY_MOTION_MIN_GAP)
 		return FALSE
 	return TRUE
 
@@ -348,3 +349,28 @@
 	body_motion_claim(body_motion_priority, 1, rest)
 	animate(src, transform = rest, time = 1, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 	return TRUE
+
+// Walking, running and sprinting: a vertical hop with no lean or squash, one
+// cycle each time a moving body has no motion running, so the cycle sets the
+// cadence. Walk 1px over 4 ds, run 2px over 3 ds, sprint a flatter, faster
+// 1px over 2 ds. Upright bodies moving under their own power only. FULL only:
+// it loops and carries no gameplay information.
+/mob/living/human/proc/body_motion_stride()
+	if (world.time < body_motion_until || lying || prone || buckled || riding || pulledby)
+		return FALSE
+	// Deep water has its own stroke (body_motion_swim_stroke()).
+	if (free_diving || swim_skill_applies(loc))
+		return FALSE
+	if (m_intent == "run")
+		if (is_sprinting())
+			return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, list(
+				list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT),
+				list(0, 0, 0, 1, 1, QUAD_EASING | EASE_IN)))
+		return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, list(
+			list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT),
+			list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_IN)))
+	if (m_intent == "walk")
+		return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, list(
+			list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT),
+			list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
+	return FALSE
