@@ -59,7 +59,7 @@ class NationRevolt:
             if self.nation_of(f) == nation]
 
     def signatures_needed(self, nation):
-        share = self.government_info(nation)['revolt']
+        share = self.revolt_share(nation)
         return max(2, -(-int(share * self.eligible(nation) * 1000) // 1000))
 
     def revolt_cooldown(self, nation, account=''):
@@ -142,6 +142,8 @@ class NationRevolt:
         row = self.revolt_row(nation)
         self.drop_revolt(nation)
         if row:
+            # Surviving a revolt strengthens the government (an overthrow resets it).
+            self.legitimacy_shift(nation, 5 if row['ripe'] else 1)
             # Unfilled, it bars only the citizen who opened it.
             self.db.execute('INSERT OR REPLACE INTO nation_revolt_cooldown VALUES (?, ?, ?)',
                             (nation, '' if row['ripe'] else row['by'], now + REVOLT_COOLDOWN))

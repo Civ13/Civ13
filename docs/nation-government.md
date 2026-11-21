@@ -145,6 +145,21 @@ when a treaty starts or ends, and Nation view lists each nation's treaties.
 Treaties do not yet change sieges or other play; they are the record later
 features read.
 
+## Legitimacy
+
+Every government holds a legitimacy score from 0 to 100
+(`tools/transfer_storage/nation_legitimacy.py`), shown on its government
+line. A new government starts at 50. Once a day a head who played that day
+adds 2, a head away longer takes 2 off, and an empty seat under personal rule
+takes 2 off; a confederation drifts 1 a day back towards 50. A motion that
+carries adds 1 and one that fails takes 1 off; a faction admitted adds 2 and
+one that secedes takes 3 off; a filled revolt petition that fails adds 5 and
+one that never fills adds 1.
+
+The share of eligible citizens a revolt petition needs is the government's
+share (below) times 0.5 + legitimacy / 100: half of it at 0, as listed at
+50, half again at 100, and never above 90%.
+
 ## Revolt
 
 Citizens can overthrow any government, in play rather than by a menu
@@ -224,6 +239,7 @@ stays a member for the notice period and may **Stay** to withdraw it.
   `nation_treaty_offer`: a nation's standing agreement, to which nation, kind
   and when. A confederation's treaty votes are `nation_vote` rows of kind
   `treaty:<proposal>`.
+- `nation_legitimacy`: nation, score, and when its daily change last ran.
 - `nation_frozen`: nations staff froze, and since when.
 - `nation_staff_log`: nation, when, staff account, act and reason (the last
   100 kept).
@@ -231,4 +247,4 @@ stays a member for the notice period and may **Stay** to withdraw it.
   -> when another petition may open.
 
 The registry snapshot every world reads adds `government`, `government_votes`,
-`leaving`, `eras`, `motions`, `term_ends`, `census`, `revolt`, `frozen`, `staff_log`, `offices` and `treaties` to each nation.
+`leaving`, `eras`, `motions`, `term_ends`, `census`, `revolt`, `frozen`, `staff_log`, `offices`, `treaties` and `legitimacy` to each nation; `government.revolt` is the share after legitimacy.

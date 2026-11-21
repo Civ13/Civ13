@@ -71,6 +71,8 @@ var/global/list/nation_government_info = list(
 	if (islist(P) && istext(P["name"]))
 		line += ". Becoming a [html_encode(lowertext(P["name"]))][istext(P["pname"]) && length(P["pname"]) ? " under [html_encode(P["pname"])]" : ""] within a day"
 	var/list/N = nation_registry[nid]
+	if (islist(N) && isnum(N["legitimacy"]) && G["type"] != "confederation")
+		line += ". Legitimacy [N["legitimacy"]]/100"
 	if (islist(N) && N["frozen"])
 		line += ". Staff have paused changes to it for now"
 	return line + "."
@@ -591,7 +593,7 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 /mob/living/human/proc/nation_revolt_menu(faction, id, nid)
 	var/list/R = nation_revolt_of(nid)
 	var/list/lines = list("<b>Revolt in [html_encode(nation_registry[nid]["name"])]</b>", nation_government_line(nid))
-	lines += "Citizens can overthrow their government: a petition needs the signatures of [nation_revolt_share(nid)] of the eligible citizens within 2 days. Every citizen is then warned, and from a day later the signers have 3 days to hold a member faction's nation assembly for 30 minutes. Signing is not a crime in itself."
+	lines += "Citizens can overthrow their government: a petition needs the signatures of [nation_revolt_share(nid)] of the eligible citizens within 2 days (fewer the lower the government's legitimacy). Every citizen is then warned, and from a day later the signers have 3 days to hold a member faction's nation assembly for 30 minutes. Signing is not a crime in itself."
 	var/account = nation_account()
 	var/is_head = account == nation_head_account(nid)
 	if (R)
@@ -641,18 +643,11 @@ var/global/list/nation_assembly_holds = list() // nid -> list(holder, assembly, 
 	nation_ask(body, faction)
 
 // "half", "a third" style share of eligible citizens, from the coordinator's count.
+// The share of eligible citizens a petition needs, as the coordinator sets it
+// from the government and its legitimacy.
 /proc/nation_revolt_share(nid)
 	var/list/G = nation_government_of(nid)
-	switch (G["revolt"])
-		if (0.33)
-			return "a third"
-		if (0.4)
-			return "two fifths"
-		if (0.66)
-			return "two thirds"
-		if (0.75)
-			return "three quarters"
-	return "half"
+	return isnum(G["revolt"]) ? "[round(G["revolt"] * 100)]%" : "half"
 
 // Tells this land's citizens when a revolt petition opens, fills or closes.
 /proc/nation_revolt_announce(nid, list/was)
