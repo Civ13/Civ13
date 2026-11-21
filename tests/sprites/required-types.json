@@ -109,5 +109,8 @@
   "/obj/item/naval_torpedo/magnetic",
   "/obj/structure/naval_mine/torpedo",
   "/obj/structure/boathouse",
-  "/obj/effect/boathouse_pile"
+  "/obj/effect/boathouse_pile",
+  "/obj/item/clothing/suit/armor/proof_cuirass",
+  "/obj/item/clothing/suit/armor/proof_cuirass/japanese",
+  "/obj/item/clothing/accessory/armor/modern/resin_shield"
 ]
