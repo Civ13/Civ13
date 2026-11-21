@@ -35,9 +35,11 @@ each world reports with the 'era' op.
 import json
 import time
 
+from tools.transfer_storage.nation_motions import CITIZENS_MAX, WEALTH_MAX, NationMotions
 from tools.transfer_storage.region import account_key_valid, faction_id_valid
 
-NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency', 'govern', 'stay', 'era')
+NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency', 'govern', 'stay', 'era', 'ballot',
+              'stand', 'census')
 NATION_NAME_MAX = 40
 # Member factions allowed by assembly tier: none, meeting ground, assembly
 # hall, parliament.
@@ -53,14 +55,22 @@ DAY = 24 * HOUR
 # whether the ruler alone decides (admissions, the common money, a change of
 # government). Starting values from the approved plan, to tune after play.
 GOVERNMENTS = {
-    'confederation': {'name': 'Confederation', 'ruler': None, 'age': 0, 'bonus': 0, 'notice': 0, 'personal': False},
-    'theocracy': {'name': 'Theocracy', 'ruler': 'High Priest', 'age': 0, 'bonus': 0, 'notice': DAY, 'personal': True},
-    'monarchy': {'name': 'Monarchy', 'ruler': 'Monarch', 'age': 1, 'bonus': 1, 'notice': 2 * DAY, 'personal': True},
+    'confederation': {'name': 'Confederation', 'ruler': None, 'age': 0, 'bonus': 0, 'notice': 0, 'personal': False,
+                      'body': None, 'term': 0},
+    'theocracy': {'name': 'Theocracy', 'ruler': 'High Priest', 'age': 0, 'bonus': 0, 'notice': DAY, 'personal': True,
+                  'body': None, 'term': 0},
+    'monarchy': {'name': 'Monarchy', 'ruler': 'Monarch', 'age': 1, 'bonus': 1, 'notice': 2 * DAY, 'personal': True,
+                 'body': None, 'term': 0},
     'dictatorship': {'name': 'Dictatorship', 'ruler': 'Dictator', 'age': 1, 'bonus': 2, 'notice': 3 * DAY,
-                     'personal': True},
-    'republic': {'name': 'Republic', 'ruler': 'Consul', 'age': 1, 'bonus': 1, 'notice': DAY, 'personal': False},
-    'democracy': {'name': 'Democracy', 'ruler': 'Archon', 'age': 1, 'bonus': 0, 'notice': DAY, 'personal': False},
-    'league': {'name': 'Merchant league', 'ruler': 'Doge', 'age': 2, 'bonus': 1, 'notice': DAY, 'personal': False},
+                     'personal': True, 'body': None, 'term': 0},
+    # Elective governments decide by motion (nation_motions.py) and elect
+    # their head for a term in days.
+    'republic': {'name': 'Republic', 'ruler': 'Consul', 'age': 1, 'bonus': 1, 'notice': DAY, 'personal': False,
+                 'body': 'senate', 'term': 14},
+    'democracy': {'name': 'Democracy', 'ruler': 'Archon', 'age': 1, 'bonus': 0, 'notice': DAY, 'personal': False,
+                  'body': 'referendum', 'term': 7},
+    'league': {'name': 'Merchant league', 'ruler': 'Doge', 'age': 2, 'bonus': 1, 'notice': DAY, 'personal': False,
+               'body': 'council', 'term': 14},
 }
 DEFAULT_GOVERNMENT = 'confederation'
 GOVERNMENT_NOTICE = DAY
@@ -103,8 +113,17 @@ def nation_request_valid(r):
         return type(r.get('tier')) is int and 0 <= r['tier'] < len(NATION_CAPACITY)
     if op == 'era':
         return type(r.get('age')) is int and 0 <= r['age'] <= AGE_MAX
+    if r.get('role', 'leader') not in ('leader', 'citizen'):
+        return False
     if op == 'govern':
         return government_proposal_valid(r)
+    if op == 'ballot':
+        return type(r.get('motion')) is int and type(r.get('choice')) is str and 0 < len(r['choice']) <= 32
+    if op == 'stand':
+        return text_valid(r.get('pname'), PERSON_NAME_MAX)
+    if op == 'census':
+        return type(r.get('citizens')) is int and 0 <= r['citizens'] <= CITIZENS_MAX and \
+            type(r.get('wealth')) is int and 0 <= r['wealth'] <= WEALTH_MAX
     return True  # secede, stay
 
 
@@ -140,7 +159,7 @@ def faction_land(faction):
     return faction[4:].partition(':')[0]
 
 
-class Nations:
+class Nations(NationMotions):
     def __init__(self, db):
         self.db = db
         db.execute('''CREATE TABLE IF NOT EXISTS nation(
@@ -171,6 +190,7 @@ class Nations:
         # Member factions seceding after their government's notice.
         db.execute('''CREATE TABLE IF NOT EXISTS nation_leaving(
             faction TEXT PRIMARY KEY, nation TEXT NOT NULL, at INTEGER NOT NULL)''')
+        self._motion_tables()
         db.execute("CREATE TABLE IF NOT EXISTS nation_seq(id INTEGER PRIMARY KEY CHECK (id = 1), next INTEGER NOT NULL)")
         db.execute('INSERT OR IGNORE INTO nation_seq VALUES (1, 1)')
 
@@ -210,6 +230,9 @@ class Nations:
         g['pending'] = json.loads(g['pending']) if g['pending'] else None
         return g
 
+    def government_info(self, nation):
+        return GOVERNMENTS[self.government(nation)['type']]
+
     def ruler(self, nation):
         """The account that rules alone, or None."""
         g = self.government(nation)
@@ -248,6 +271,8 @@ class Nations:
                 'government': self.government_snapshot(nid),
                 'government_votes': {v: json.loads(c) for v, c in votes.get('government', {}).items()},
                 'leaving': dict(self.db.execute('SELECT faction, at FROM nation_leaving WHERE nation = ?', (nid,))),
+                'motions': self.motions_snapshot(nid), 'term_ends': self.term_ends(nid),
+                'census': {f: list(self.census(f)) for f in self.members(nid)},
                 'eras': dict(self.db.execute('''SELECT e.faction, e.age FROM nation_era e
                     JOIN nation_member m ON m.faction = e.faction WHERE m.nation = ?''', (nid,)))}
         return result
@@ -261,6 +286,7 @@ class Nations:
             pending = {'type': kind, 'name': GOVERNMENTS[kind]['name'], 'at': g['pending_at'], 'person': person,
                        'pname': pname, 'pfaction': pfaction, 'religion': religion}
         return {'type': g['type'], 'name': info['name'], 'ruler': info['ruler'], 'personal': info['personal'],
+                'body': info['body'], 'term': info['term'],
                 'notice': info['notice'], 'since': g['since'], 'changed': g['changed'],
                 'head_account': g['head_account'], 'head_name': g['head_name'], 'religion': g['religion'],
                 'pending': pending}
@@ -279,6 +305,7 @@ class Nations:
         for (nation,) in self.db.execute('SELECT nation FROM nation_government WHERE pending_at <= ?',
                                          (int(now),)).fetchall():
             self._establish(nation, int(now))
+        self.motions_due(int(now))
 
     # -- deciding --------------------------------------------------------------
 
@@ -302,6 +329,9 @@ class Nations:
             # Kept even outside a nation, like the assembly.
             self.db.execute('INSERT OR REPLACE INTO nation_era VALUES (?, ?)', (faction, r['age']))
             return None
+        if op == 'census':
+            self.db.execute('INSERT OR REPLACE INTO nation_census VALUES (?, ?, ?)', (faction, r['citizens'], r['wealth']))
+            return None
         if op == 'assembly':
             # Kept even outside a nation, so a faction that joins brings it.
             if r['tier']:
@@ -314,6 +344,24 @@ class Nations:
             return self._apply(faction, r['nation'], now)
         if not nation:
             return 'Your faction is not part of a nation.'
+        citizen = r.get('role') == 'citizen'
+        if self.body(nation):
+            if op == 'ballot':
+                return self.ballot(nation, r, now)
+            if op == 'stand':
+                return self.stand(nation, r, now)
+            if op == 'vote':
+                return self._elective_admit(nation, r, now)
+            if op == 'currency':
+                if r['issuer'] and self.nation_of(r['issuer']) != nation:
+                    return "Only a member faction's coin can be the nation's money."
+                return self.propose(nation, 'currency', r['issuer'], r, now)
+            if op == 'govern':
+                return self._govern(faction, nation, r, now)
+        elif op in ('ballot', 'stand'):
+            return 'The nation holds no elections or motions under its government.'
+        if citizen and op != 'govern':
+            return "Only a member faction's leader can do that."
         if op == 'secede':
             return self._secede(faction, nation, now)
         if op == 'stay':
@@ -363,6 +411,8 @@ class Nations:
             return '%s holds as many factions as its assembly allows.' % row[0]
         self._drop_application(faction)
         self.db.execute('INSERT INTO nation_application VALUES (?, ?, ?)', (faction, nation, now))
+        if self.body(nation):
+            self.open_motion(nation, 'admit', faction, 'world', now)
         return 'Your faction applied to join %s. Its member factions will vote.' % row[0]
 
     def _drop_application(self, faction):
@@ -427,7 +477,9 @@ class Nations:
             return None  # a stale row under the new name; keep the old one
         for table, column in (('nation_member', 'faction'), ('nation_application', 'faction'), ('nation_vote', 'voter'),
                               ('nation_vote', 'choice'), ('nation_cooldown', 'faction'), ('nation_assembly', 'faction'),
-                              ('nation', 'head'), ('nation_currency', 'issuer')):
+                              ('nation', 'head'), ('nation_currency', 'issuer'), ('nation_era', 'faction'),
+                              ('nation_leaving', 'faction'), ('nation_ballot', 'voter'),
+                              ('nation_candidate', 'faction'), ('nation_census', 'faction')):
             self.db.execute('UPDATE OR REPLACE %s SET %s = ? WHERE %s = ?' % (table, column, column), (new, old))
         self.db.execute('UPDATE nation_vote SET kind = ? WHERE kind = ?', ('admit:' + new, 'admit:' + old))
         # Proposals name the head's faction inside their JSON.
@@ -438,6 +490,15 @@ class Nations:
                 c[3] = new
                 self.db.execute("UPDATE nation_vote SET choice = ? WHERE nation = ? AND kind = 'government' AND voter = ?",
                                 (json.dumps(c), nation, voter))
+        for mid, kind, subject in self.db.execute('SELECT id, kind, subject FROM nation_motion').fetchall():
+            c = json.loads(subject)
+            if kind in ('admit', 'currency') and c == old:
+                c = new
+            elif kind == 'government' and c[3] == old:
+                c[3] = new
+            else:
+                continue
+            self.db.execute('UPDATE nation_motion SET subject = ? WHERE id = ?', (json.dumps(c), mid))
         for nation, pending in self.db.execute(
                 'SELECT nation, pending FROM nation_government WHERE pending IS NOT NULL').fetchall():
             c = json.loads(pending)
@@ -475,6 +536,9 @@ class Nations:
             self.db.execute('DELETE FROM nation_currency WHERE nation = ?', (nation,))
             self.db.execute('DELETE FROM nation_government WHERE nation = ?', (nation,))
             self.db.execute('DELETE FROM nation_leaving WHERE nation = ?', (nation,))
+            self.db.execute('DELETE FROM nation_term WHERE nation = ?', (nation,))
+            for (mid,) in self.db.execute('SELECT id FROM nation_motion WHERE nation = ?', (nation,)).fetchall():
+                self.close_motion(mid)
             for (f,) in self.db.execute('SELECT faction FROM nation_application WHERE nation = ?', (nation,)).fetchall():
                 self._drop_application(f)
             return 'Your faction seceded, and with one faction left the nation dissolved.'
@@ -524,6 +588,10 @@ class Nations:
                 return 'Only the %s can change the government.' % GOVERNMENTS[g['type']]['ruler']
             self._propose(nation, government_choice(r), now)
             return 'By your decree the nation becomes a %s in a day.' % info['name'].lower()
+        if self.body(nation):
+            return self.propose(nation, 'government', json.loads(government_choice(r)), r, now)
+        if r.get('role') == 'citizen':
+            return "Only a member faction's leader can do that."
         choice = government_choice(r)
         self.db.execute('INSERT OR REPLACE INTO nation_vote VALUES (?, ?, ?, ?)', (nation, 'government', faction, choice))
         members = len(self.members(nation))
@@ -555,6 +623,12 @@ class Nations:
         if pfaction:
             self.db.execute('UPDATE nation SET head = ? WHERE id = ?', (pfaction, nation))
         self.db.execute("DELETE FROM nation_vote WHERE nation = ? AND kind = 'head'", (nation,))
+        # Motions of the old government lapse; an elective head serves a term.
+        for (mid,) in self.db.execute('SELECT id FROM nation_motion WHERE nation = ?', (nation,)).fetchall():
+            self.close_motion(mid)
+        self.db.execute('DELETE FROM nation_term WHERE nation = ?', (nation,))
+        if GOVERNMENTS[kind]['body'] and person:
+            self.db.execute('INSERT INTO nation_term VALUES (?, ?)', (nation, now + GOVERNMENTS[kind]['term'] * DAY))
 
     def _collapse(self, nation, now):
         """The government falls back to a confederation (a ruler gone)."""
@@ -562,6 +636,9 @@ class Nations:
             return
         self.db.execute('INSERT OR REPLACE INTO nation_government VALUES (?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL)',
                         (nation, DEFAULT_GOVERNMENT, now, now))
+        for (mid,) in self.db.execute('SELECT id FROM nation_motion WHERE nation = ?', (nation,)).fetchall():
+            self.close_motion(mid)
+        self.db.execute('DELETE FROM nation_term WHERE nation = ?', (nation,))
 
     def _ruler_admits(self, actor, ruler, nation, applicant, yes, now):
         title = GOVERNMENTS[self.government(nation)['type']]['ruler']
@@ -589,3 +666,15 @@ class Nations:
             return "By the %s's word the nation has a new common money." % title
         self.db.execute('DELETE FROM nation_currency WHERE nation = ?', (nation,))
         return "By the %s's word the nation has no common money." % title
+
+    def _elective_admit(self, nation, r, now):
+        """A leader's admission vote under an elective government: a ballot on
+        the application's motion."""
+        applicant = r['applicant']
+        if not self.db.execute('SELECT 1 FROM nation_application WHERE faction = ? AND nation = ?',
+                               (applicant, nation)).fetchone():
+            return 'There is no such application.'
+        mid = self.open_motion(nation, 'admit', applicant, 'world', now)
+        if mid is None:
+            return 'The nation has too many open motions; wait for some to close.'
+        return self.ballot(nation, dict(r, motion=mid, choice='yes' if r['yes'] else 'no'), now)

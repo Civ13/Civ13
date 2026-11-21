@@ -151,8 +151,8 @@ the tiles it left their ground back. Each hold floor keeps the turf type it
 hollowed (`hold_origin`, text, saved with it). `plan()` refuses a move when
 the ground ahead of the hold is anything else or holds something solid, and
 counts the hold in `BUILT_HULL_MAX_DECK_TILES`. `carries()` answers for all
-her decks, so an engine in the hold drives her. An airship has no hold, and a
-hull with a hold cannot cross the sea yet.
+her decks, so an engine in the hold drives her. An airship has no hold. A
+hull with a hold crosses the sea with it ([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
 
 ### Airships
 
@@ -488,6 +488,25 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   wreck, set down by the board: the board keeps the crate and leaves what was
   in it. A crew takes a contract with a registered ship lying in the home
   waters and can give it up.
+
+## Cargo
+
+`craft/craft_cargo.dm`: every carrier asks one question of each thing on its
+tiles, `M.craft_cargo()`: built hulls and airships at every step (deck, upper
+deck and hold), turf-built vessels at every hop and turn, spacecraft, frame
+ships and modular vehicles as they gather what they move, a sinking or
+wrecked hull, the carrier's elevators, and a ship packed for a crossing.
+Anything that stands in the world is cargo by default: floors, structures,
+crates and chests with what they hold, machines (`/obj/machinery`, which frame
+ships and vehicles now carry too), items, carts and small boats, animals and
+people. It answers FALSE for what only draws something or is not really there:
+lighting, flick animations and speech bubbles (`/atom/movable/overlay`,
+`/obj/chat_text`), aiming marks, stack badges, HUD objects, map metadata, a
+vessel's wake, ghosts and admin observers, lobby players, `dview` and agent
+proxies. A thing that must stay where it was laid answers through
+`craft_left_behind()` (naval mines, boathouse piles), which the default calls.
+A new type that should never ride overrides `craft_cargo()`; one that should
+ride needs nothing. Probe: `tests/naval_carrier/cargo_probe.dm`.
 
 ## Ships between worlds
 

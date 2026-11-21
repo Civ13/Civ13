@@ -70,12 +70,35 @@ class NationGovernmentSource(unittest.TestCase):
         self.assertIn('var/list/old_registry = nation_registry', refresh)
         self.assertIn('nation_government_announce(old_registry)', refresh)
         self.assertIn('nation_eras_report()', refresh)
+        self.assertIn('nation_census_report()', refresh)
 
     def test_agent_passes_the_new_fields(self):
         region = read('tools/transfer_storage/region.py')
         keys = re.search(r"request = \{k: body\[k\] for k in \(([^)]*)\)", region).group(1)
-        for key in ('issuer', 'type', 'person', 'pname', 'pfaction', 'religion', 'age'):
+        for key in ('issuer', 'type', 'person', 'pname', 'pfaction', 'religion', 'age', 'role', 'motion', 'choice',
+                    'citizens', 'wealth'):
             self.assertIn("'%s'" % key, keys)
+
+
+    def test_citizens_are_verified_settled_and_active(self):
+        eligible = proc_text(self.text, '/proc/nation_citizen_eligible(')
+        self.assertIn('account_verified(account)', eligible)
+        self.assertIn('row[1] <= world.realtime - CITIZEN_MEMBER_DAYS * 864000', eligible)
+        self.assertIn('row[2] >= world.realtime - CITIZEN_SEEN_DAYS * 864000', eligible)
+        self.assertIn('#define CITIZEN_MEMBER_DAYS 3', self.text)
+        self.assertIn('#define CITIZEN_SEEN_DAYS 7', self.text)
+
+    def test_requests_say_who_speaks(self):
+        ask = proc_text(read('code/game/mob/groups/nation.dm'), '/mob/living/human/proc/nation_ask(')
+        self.assertIn('body["role"] = map.is_faction_leader(src, faction) || (nid && nation_rules(nid)) ? "leader" : "citizen"', ask)
+
+    def test_ballots_follow_the_body(self):
+        menu = proc_text(self.text, '/mob/living/human/proc/nation_motions_menu(')
+        self.assertIn('var/can_vote = voters == "leader" ? leader : eligible', menu)
+        self.assertIn('"op" = "ballot"', menu)
+        self.assertIn('"op" = "stand"', menu)
+        propose = proc_text(self.text, '/mob/living/human/proc/nation_may_propose(')
+        self.assertIn('G["body"] == "referendum" && nation_eligible()', propose)
 
 
 if __name__ == '__main__':

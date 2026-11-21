@@ -619,7 +619,7 @@ var/global/hull_ledger_timer_off = FALSE
 		if (!U)
 			continue
 		for (var/atom/movable/M in U)
-			if (M.loc != U || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+			if (M.loc != U || QDELETED(M) || !M.craft_cargo())
 				continue
 			if (hull_floats_free(M))
 				M.forceMove(cells[i])

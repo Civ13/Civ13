@@ -103,7 +103,13 @@ class WornGearTests(unittest.TestCase):
         for path in ('/obj/item/weapon/grab', '/obj/item/hand_hold', '/obj/item/organ'):
             self.assertIn(path, denied)
         self.assertIn('if(root && region_travel_generic_cargo_type_ok(path)) return TRUE', proc(GENERIC, '/proc/region_travel_generic_type_ok'))
-        self.assertIn('/obj/structure/vehicleparts, /obj/structure/vehicle, /obj/structure/hull_tiller, /obj/structure/region_gate', proc(GENERIC, '/proc/region_travel_generic_cargo_type_ok'))
+        # Carts, small boats and machines are deck cargo (cargo_probe.dm); frame
+        # vehicle parts, engines, helms and level links never are.
+        cargo_ok = proc(GENERIC, '/proc/region_travel_generic_cargo_type_ok')
+        self.assertIn('/obj/structure/vehicleparts, /obj/structure/hull_tiller, /obj/structure/region_gate', cargo_ok)
+        for path in ('/obj/structure/engine', '/obj/structure/multiz', '/obj/structure/vessel_helm'):
+            self.assertIn(path, cargo_ok)
+        self.assertIn('!ispath(path, /obj/machinery)', cargo_ok)
         # A creature inside never travels, and links to other things stay behind.
         capture = proc(GENERIC, '/proc/region_travel_generic_capture')
         self.assertIn('if(ismob(A)) return null', capture)

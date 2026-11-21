@@ -242,7 +242,7 @@ var/global/weather_centre_serial = 0
 	for (var/datum/weather_centre/C in weather_centres)
 		. += C.temperature_at(x, y)
 
-// For the admin Weather Map: list(id, kind, x, y, radius, depth hPa now).
+// For the Admin Map (admin_map.dm): list(id, kind, x, y, radius, depth hPa now).
 /proc/weather_centres_map_data()
 	. = list()
 	for (var/datum/weather_centre/C in weather_centres)

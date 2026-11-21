@@ -158,6 +158,13 @@ var/naval_runtime_error = FALSE
 	var/obj/item/ship_draught/pad = new(yard)
 	var/html = ship_designer_html(pad, null)
 	naval_check(findtext(html, "C13SHIP") && findtext(html, "rowing galley"), "the window carries the drawing tools and the ready-made ships")
+	var/list/pictures = ship_designer_sprite_names()
+	var/pictures_sent = TRUE
+	for (var/picture in pictures)
+		if (!isfile(ship_designer_sprites[picture]))
+			pictures_sent = FALSE
+			world.log << "no picture [picture]"
+	naval_check(pictures.len == ship_designer_sprites.len && pictures_sent, "the window is sent a picture of every floor and fitting, one per facing for those that turn ([pictures.len])")
 	var/mob/living/human/naval_probe/drawer = new(yard)
 	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,1,w,M,1,0", "Little/Auk", TRUE) == "Saved on the sheet." && pad.draughts_name() == "Little Auk", "saving keeps the drawing and its cleaned name on the sheet")
 	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,0,w,T,1,0", "Bad", TRUE) != "Saved on the sheet." && pad.draughts_name() == "Little Auk", "a damaged drawing is refused and the sheet keeps what it had")

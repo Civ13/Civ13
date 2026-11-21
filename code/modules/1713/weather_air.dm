@@ -248,7 +248,7 @@ var/global/datum/weather_air_grid/weather_air = null
 	var/datum/weather_air_grid/G = weather_air_grid()
 	return clamp(G.value_at(G.cloud, T.x, T.y), 0, 1)
 
-// The grid for the admin Weather Map: list(cols, rows, cell size, temperatures,
+// The grid for the Admin Map (admin_map.dm): list(cols, rows, cell size, temperatures,
 // humidities, pressures, clouds), each rounded, one entry per cell by index.
 /proc/weather_air_map_data()
 	var/datum/weather_air_grid/G = weather_air_grid()
