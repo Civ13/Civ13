@@ -13,7 +13,7 @@
 #define WEATHER_CENTRE_SPAWN_PROB 2
 // Air that can raise a thunderstorm in the afternoon.
 #define WEATHER_CONVECTION_TEMP 24
-#define WEATHER_CONVECTION_RH 65
+#define WEATHER_CONVECTION_DEW 15 // muggy air: a dew point of 15 C or more
 #define WEATHER_CONVECTION_PROB 3
 
 var/global/list/weather_centres = list()
@@ -208,7 +208,7 @@ var/global/weather_centre_serial = 0
 	for (var/i = 1, i <= G.temp.len, i++)
 		if (G.water[i] || G.temp[i] < WEATHER_CONVECTION_TEMP || G.cloud[i] >= 0.5)
 			continue
-		if (weather_relative_humidity(G.temp[i], G.dew[i]) < WEATHER_CONVECTION_RH)
+		if (G.dew[i] < WEATHER_CONVECTION_DEW)
 			continue
 		var/heat = G.temp[i] + G.dew[i]
 		if (heat > best_heat)
@@ -258,5 +258,5 @@ var/global/weather_centre_serial = 0
 #undef WEATHER_CENTRE_MAX
 #undef WEATHER_CENTRE_SPAWN_PROB
 #undef WEATHER_CONVECTION_TEMP
-#undef WEATHER_CONVECTION_RH
+#undef WEATHER_CONVECTION_DEW
 #undef WEATHER_CONVECTION_PROB

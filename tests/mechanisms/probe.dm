@@ -378,11 +378,30 @@ var/mechanisms_runtime = null
 	stamps.work_step()
 	var/obj/item/stack/bark/crushed/tanbark = locate() in saw_turf
 	mechanisms_assert(tanbark && tanbark.amount == 2 && !stamps.hopper_count(), "bark_stamps_crush_bark")
+	// Driven bellows keep a furnace beside them blowing; a power loom weaves.
+	var/obj/structure/furnace/bloomery = new(locate(1, 6, 2))
+	var/obj/structure/workshop_machine/bellows/blower = new(locate(1, 5, 2))
+	blower.anchored = FALSE
+	mechanisms_assert(!bloomery.bellows_blowing(), "loose_bellows_do_not_blow")
+	blower.anchored = TRUE
+	mechanisms_assert(blower.driven() && bloomery.bellows_blowing(), "driven_bellows_blow")
+	qdel(stamps)
+	for (var/obj/item/old_item in saw_turf)
+		qdel(old_item)
+	var/obj/structure/workshop_machine/hopper/power_loom/power_loom = new(locate(3, 4, 2))
+	power_loom.load_item(new /obj/item/stack/material/cotton(locate(3, 3, 2), 3), miller)
+	power_loom.load_item(new /obj/item/stack/silk_thread(locate(3, 3, 2), 2), miller)
+	power_loom.work_step()
+	var/obj/item/stack/material/cloth/woven = locate() in saw_turf
+	var/obj/item/stack/material/silk/silk_cloth = locate() in saw_turf
+	mechanisms_assert(woven && woven.amount == 3 && silk_cloth && silk_cloth.amount == 1 && power_loom.hopper_count() == 1, "power_loom_weaves_four")
+	var/obj/structure/water_lift/archimedes_screw/screw = new(locate(12, 11, 2))
+	mechanisms_assert((screw in processing_objects) && !screw.driven_lift() && screw.next_lift == world.time + 300, "dry_screw_waits")
 	var/obj/structure/sluice_gate/sluice = new(locate(12, 9, 2))
 	mechanisms_assert(mechanism_actuatable(sluice) && mechanism_actuate(sluice, TRUE) && sluice.open && !sluice.density, "cord_draws_up_sluice")
 	mechanisms_assert(mechanism_actuate(sluice, FALSE) && !sluice.open && !mechanism_actuate(sluice, FALSE), "cord_lowers_sluice")
 	mechanisms_assert("bark_crushed" in icon_states('icons/obj/bark.dmi'), "icon_bark_crushed")
-	for (var/state in list("millstones", "millstones_on", "sash_saw", "sash_saw_on", "fulling_stocks", "fulling_stocks_on", "bark_stamps", "bark_stamps_on"))
+	for (var/state in list("millstones", "millstones_on", "sash_saw", "sash_saw_on", "fulling_stocks", "fulling_stocks_on", "bark_stamps", "bark_stamps_on", "power_loom", "power_loom_on"))
 		mechanisms_assert(state in icon_states('icons/obj/hopper_machines.dmi'), "icon_[state]")
 
 	// Contraptions (contraptions.dm): a counterweight drum drives while its

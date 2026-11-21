@@ -336,5 +336,13 @@
     "inputs": {
       "/obj/item/stack/material/plastic": 1
     }
+  },
+  "/obj/structure/workshop_machine/hopper/power_loom": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 1
+    }
   }
 }

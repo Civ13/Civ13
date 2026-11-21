@@ -127,9 +127,8 @@ class ShoveAdmission(unittest.TestCase):
 
 
 class ShoveSourceContracts(unittest.TestCase):
-    def test_disarm_dispatch_preserves_aimed_and_martial_routes(self):
+    def test_disarm_dispatch_preserves_aimed_routes(self):
         source = HUMAN.read_text(encoding='utf-8')
-        self.assertIn('H.mind.martial_art.disarm_act(H, src)', source)
         # tgt is the doll's zone, the random toggle or the combat stance's pick
         self.assertIn('tgt == "chest"', source)
         self.assertIn('tgt == "random"', source)

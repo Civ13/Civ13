@@ -50,14 +50,16 @@ class AnimalAttackContracts(unittest.TestCase):
             self.assertIn(guard, observed)
         self.assertLess(self.attack.index('var/observed_attack'), self.attack.index('H.apply_damage('))
         post_hit = self.attack.split('var/lost_limb', 1)[1]
-        self.assertNotIn('H.stat', post_hit)
-        self.assertNotIn('H.sleeping', post_hit)
-        self.assertIn('if (observed_attack && player_help_service', post_hit)
+        # The injury record uses only what was decided before the hit; a predator
+        # checking whether its prey died (to feed) is not part of that decision.
+        record = post_hit.split('if (observed_attack && player_help_service', 1)[1].split('\n', 1)[0]
+        self.assertNotIn('H.stat', record)
+        self.assertNotIn('H.sleeping', record)
 
     def test_damage_choices(self):
         for operation in ('var/damage = rand(melee_damage_lower, melee_damage_upper)',
                           'if (prob(95) || !can_bite_limbs_off)',
-                          'H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)',
+                          'H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, HIT_CUT), sharp=1, edge=1)',
                           'affecting.droplimb(FALSE, DROPLIMB_EDGE)',
                           'L.adjustBruteLoss(damage)', 'NB.adjust_mood(-(10), "seeing someone maimed")'):
             self.assertEqual(self.attack.count(operation), 1)
