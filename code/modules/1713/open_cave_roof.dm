@@ -32,8 +32,7 @@
 		return "Mine the rock out first."
 	if (!istype(get_area(src), /area/caribbean/void/caves))
 		return "There is no rock overhead here."
-	var/dug = dug_underground_z()
-	if (dug && z == dug)
+	if (underground_added(z) || underground_depth_of(z) > 1)
 		return "There is solid ground above you here."
 	var/up = multiz_level_above(z)
 	if (up)
