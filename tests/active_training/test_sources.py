@@ -125,7 +125,8 @@ class TrainingGearSources(unittest.TestCase):
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         for text in (CORE, GEAR, COURSE):
-            for state in re.findall(r'(?:icon_state|turning_state) = "(\w+)"', text):
+            for state in re.findall(r'(?:icon_state|turning_state) = "(\w+)"|\? "(\w+)" :', text):
+                state = state[0] or state[1]
                 self.assertIn('\'%s\'' % state, read('tests/sprites/create_training_gear.py'), state)
 
 
