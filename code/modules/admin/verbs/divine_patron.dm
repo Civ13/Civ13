@@ -131,6 +131,11 @@
 			var/list/found = list()
 			for (var/obj/item/I in arcane_enchantments_of(H.ckey))
 				found["[I.name] ([I.type]): [arcane_enchant_names[I.arcane_enchant]], [I.arcane_charges] left, at [arcane_enchant_place(I)]"] = I
+			for (var/obj/O in arcane_wards_of(H.ckey)) // arcane_ward.dm
+				var/list/owners = list()
+				for (var/key in O.arcane_ward_owners)
+					owners += "[O.arcane_ward_owners[key]] ([key])"
+				found["[O.name] ([O.type]): Warding for [english_list(owners)], [O.arcane_ward_charges] left, at [arcane_enchant_place(O)]"] = O
 			if (!found.len)
 				to_chat(usr, SPAN_NOTICE("[H.real_name] has no enchantments in this world."))
 				return
@@ -142,7 +147,12 @@
 				return
 			var/picked = input(usr, "Strip which enchantment?", "Divine Patron") as null|anything in found
 			var/obj/item/I = found[picked]
-			if (!I || QDELETED(I) || !I.arcane_enchant_live() || divine_claim_of(src) != claim)
+			if (I && !istype(I) && !QDELETED(I) && I.arcane_ward_live() && divine_claim_of(src) == claim)
+				log_admin("[key_name(usr)] as [claim] stripped the ward made by [I.arcane_ward_by] from [I] ([I.type]).")
+				I.arcane_ward_end()
+				to_chat(usr, SPAN_NOTICE("Stripped the ward from [I]."))
+				return
+			if (!istype(I) || QDELETED(I) || !I.arcane_enchant_live() || divine_claim_of(src) != claim)
 				return
 			log_admin("[key_name(usr)] as [claim] stripped [I.arcane_enchant] made by [I.arcane_enchanter] from [I] ([I.type]).")
 			I.arcane_enchant_end()

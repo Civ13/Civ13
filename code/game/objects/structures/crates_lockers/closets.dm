@@ -177,6 +177,8 @@
 	return added_units
 
 /obj/structure/closet/proc/toggle(mob/user as mob)
+	if (!opened && arcane_ward_refuses(user)) // arcane_ward.dm
+		return
 	if (!(opened ? close() : open()))
 		to_chat(user, "<span class='notice'>It won't budge!</span>")
 		return
