@@ -9,7 +9,7 @@ import { Choice, Pill, Row, Rows } from './kit';
 // Character setup: who you are, the traits you take and your own settings.
 // Every control sends one action at once; the server answers with the new state.
 type UI = ScreenProps<CharacterSetupData>;
-const tabs = [['character', 'Character'], ['traits', 'Traits'], ['settings', 'Settings']] as const;
+const tabs = [['character', 'Character'], ['traits', 'Traits'], ['chart', 'Birth chart'], ['settings', 'Settings']] as const;
 type Tab = typeof tabs[number][0];
 
 export function CharacterSetup(ui: UI) {
@@ -27,9 +27,10 @@ export function CharacterSetup(ui: UI) {
         {key === 'traits' && over <= 0 && list(traits.chosen).length ? <Pill tone="muted">{list(traits.chosen).length}</Pill> : null}
       </button>)}</div>
     {!!data.notice && <NoticeBox danger>{str(data.notice)}</NoticeBox>}
-    {locked && tab !== 'settings' && <NoticeBox>You can change your character and traits once this one has died.</NoticeBox>}
+    {locked && tab !== 'settings' && tab !== 'chart' && <NoticeBox>You can change your character and traits once this one has died.</NoticeBox>}
     {tab === 'character' && <Character ui={own} />}
     {tab === 'traits' && <Traits ui={own} />}
+    {tab === 'chart' && <Chart ui={own} />}
     {tab === 'settings' && <Settings ui={ui} />}
   </div>;
 }
@@ -215,6 +216,39 @@ function Traits({ ui }: { ui: UI }) {
         {!shown.length && <NoticeBox>No trait matches.</NoticeBox>}
       </div>
     </div>
+  </>;
+}
+
+// The birth chart: drawn at birth unless a verified player picks a sign.
+function Chart({ ui }: { ui: UI }) {
+  const chart = ui.data.chart ?? {};
+  const signs = list(chart.signs);
+  const choice = str(chart.choice) || 'random', verified = !!chart.verified, current = chart.current ? str(chart.current) : '';
+  const living = !!ui.data.locked;
+  return <>
+    <Section title="Birth chart">
+      <p className="kit-hint">Every character is born under one of twelve signs. A sign leans your starting skills a little: three a bit stronger, three a bit weaker. Skills still grow with use as before.</p>
+      {living
+        ? <NoticeBox>{current ? `This character was born under ${signs.find(sign => str(sign.id) === current)?.name ?? current}. A new character can be born under another sign.` : 'This character has no sign.'}</NoticeBox>
+        : <div className="setup-chart-random">
+          <Action ui={ui} action="birth_chart" value="random" selected={choice === 'random'}>Leave it to the stars</Action>
+          <span className="kit-hint">Your sign is drawn when you are born.</span>
+        </div>}
+      {!living && !verified && <div className="setup-chart-verify">
+        <span className="kit-hint">Verify your Discord account to choose your sign.</span>
+        <Action ui={ui} action="verify_discord">Verify Discord</Action>
+      </div>}
+    </Section>
+    <div className="setup-traits" role="group" aria-label="Signs">{signs.map(sign => {
+      const id = str(sign.id), on = living ? id === current : id === choice;
+      return <div key={id} className={on ? 'setup-trait setup-trait-on' : 'setup-trait'}>
+        <div className="setup-trait-head"><strong>{str(sign.name)}</strong><Pill tone="muted">{str(sign.season)}</Pill>{on && <Pill tone="ready">{living ? 'Yours' : 'Chosen'}</Pill>}</div>
+        <p className="setup-trait-desc">{str(sign.calling)}</p>
+        <p className="setup-chart-up">{str(sign.strengths)}</p>
+        <p className="setup-chart-down">{str(sign.weaknesses)}</p>
+        {!living && <div className="setup-trait-foot"><Action ui={ui} action="birth_chart" value={id} selected={on} disabled={!verified}>{on ? 'Chosen' : 'Choose'}</Action></div>}
+      </div>;
+    })}</div>
   </>;
 }
 

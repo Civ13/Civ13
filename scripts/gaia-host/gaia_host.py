@@ -62,8 +62,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
 from supervisor import LifecycleRefused, byond_text_md5, query  # noqa: E402
 import player_changelog  # noqa: E402
+import process_safety  # noqa: E402
+from process_safety import Unverified  # noqa: E402,F401
 
-# Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
+# Console programs (git, dm.exe, schtasks, netstat) run by the windowless host
 # service would each flash a console window on Windows.
 NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 # Long-lived children (DreamDaemon, workers, agents) get a hidden console of their own rather than
@@ -258,10 +260,33 @@ def parse_proc_net(text, ipv6=False):
     return rows
 
 
+TIMED_OUT = 124  # Platform.run's exit code for a program it ended at its timeout (as coreutils timeout)
+
+
+def end_owned_tree(process):
+    """End a child this host started (a Popen) and everything it started, after a timeout."""
+    try:
+        kids = process_safety.descendants(process.pid, (process_safety.identity(process.pid) or {}).get('created'))
+    except (OSError, ValueError):
+        kids = []
+    try:
+        process.kill()
+    except OSError:
+        pass
+    for kid in kids:
+        try:
+            process_safety.end(kid)
+        except (OSError, RuntimeError):
+            pass
+
+
 class Platform:
     """Everything that touches the machine, so tests can replace it."""
 
     def run(self, argv, cwd=None, timeout=1800, low_priority=False):
+        """(exit code, last 4000 characters of output). Never raises for a hung program: past
+        timeout it and everything it started are ended and the answer is (TIMED_OUT, ...), so a
+        caller treats it like any failed command (a hung tasklist kept Gaia down, 2026-11-19)."""
         # stdin is DEVNULL so Windows never duplicates an inherited console handle: a host started by the
         # launcher gets the launcher's console input, and duplicating it fails with WinError 50.
         extra = {}
@@ -269,9 +294,19 @@ class Platform:
             extra['creationflags'] = NO_WINDOW | BELOW_NORMAL_PRIORITY
         elif low_priority:
             extra['preexec_fn'] = lambda: os.nice(10)
-        result = subprocess.run(argv, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=timeout,
-                                **dict({'creationflags': NO_WINDOW}, **extra))
-        return result.returncode, (result.stdout + result.stderr)[-4000:]
+        process = subprocess.Popen(argv, cwd=cwd, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   text=True, **dict({'creationflags': NO_WINDOW}, **extra))
+        try:
+            out, err = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            end_owned_tree(process)
+            try:
+                out, err = process.communicate(timeout=5)
+            except (subprocess.SubprocessError, OSError, ValueError):
+                out, err = '', ''
+            note = '%s timed out after %s s and was ended' % (Path(str(argv[0])).name, timeout)
+            return TIMED_OUT, ((out or '') + (err or '') + '\n' + note)[-4000:]
+        return process.returncode, ((out or '') + (err or ''))[-4000:]
 
     def listening(self, port):
         # On Windows a loopback connect to a closed port is retried for about 2 s before it is
@@ -304,25 +339,12 @@ class Platform:
         raise Refused('a standby world needs a region host (scripts/shard-group)')
 
     def byond_pager_running(self):
-        """True/False whether byond.exe runs in this logon session; None off Windows or unknown."""
+        """True/False whether byond.exe runs in this logon session; None off Windows or unknown.
+        Asks the kernel directly (process_safety), never tasklist: a broken WMI provider made
+        tasklist hang and every Gaia start crash on the timeout (2026-11-19)."""
         if os.name != 'nt':
             return None
-        try:
-            session = ctypes.c_ulong()
-            if not ctypes.windll.kernel32.ProcessIdToSessionId(os.getpid(), ctypes.byref(session)):
-                return None
-        except (OSError, AttributeError):
-            return None
-        try:
-            code, out = self.run(['tasklist', '/FI', 'IMAGENAME eq byond.exe', '/FI', 'SESSION eq %d' % session.value,
-                                  '/FO', 'CSV', '/NH'], timeout=30)
-        except (subprocess.SubprocessError, OSError):
-            # A broken WMI provider makes tasklist hang ("Provider load failure"); the
-            # timeout crashed every Gaia start until a reboot (2026-11-19). Unknown, not absent.
-            return None
-        if code != 0:
-            return None
-        return '"byond.exe"' in out.lower()
+        return process_safety.running_in_session('byond.exe')
 
     def task_ready(self, name):
         code, out = self.run(['schtasks', '/Query', '/TN', name, '/FO', 'LIST'], timeout=60)
@@ -472,27 +494,15 @@ class Platform:
         finally:
             ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
 
-    def terminate(self, pid):
-        if os.name != 'nt':
-            os.kill(pid, 9)  # SIGKILL also ends a stopped process
-            return
-        handle = self._open(pid, 0x0001)  # PROCESS_TERMINATE
-        if not handle:
-            raise RuntimeError('cannot open the server process (WinError %d)' % ctypes.GetLastError())
-        try:
-            if not ctypes.windll.kernel32.TerminateProcess(ctypes.c_void_p(handle), 1):
-                raise RuntimeError('TerminateProcess failed (WinError %d)' % ctypes.GetLastError())
-        finally:
-            ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+    def terminate(self, pid, expect=None):
+        """End one process. With expect (process_safety.Expect) it is checked first, on the
+        handle that then ends it, and an unverified process is left running (Unverified)."""
+        process_safety.end(pid, expect, tree=False)
 
-    def kill_tree(self, pid):
-        """End a process and everything it started (a stream save helper, a shell() child)."""
-        if os.name != 'nt':
-            os.kill(pid, 9)
-            return
-        code, out = self.run(['taskkill', '/F', '/T', '/PID', str(pid)], timeout=60)
-        if code != 0 and self.alive(pid):
-            self.terminate(pid)
+    def kill_tree(self, pid, expect=None):
+        """End a process and everything it started (a stream save helper, a shell() child), after
+        checking it against expect. Never taskkill: it goes through the same tools WMI breaks."""
+        process_safety.end(pid, expect, tree=os.name == 'nt')
 
     def resume(self, pid):
         if os.name != 'nt':
@@ -1001,7 +1011,10 @@ class Host:
             raise Refused('only a server that saved before freezing can be stopped while asleep')
         if self.lock.exists():
             raise Refused('another action is still running: %s' % self.read_state().get('action'))
-        self.platform.terminate(state['pid'])
+        try:
+            self.platform.terminate(state['pid'], expect=self.world_expect(born_before=state.get('frozen_at')))
+        except Unverified as error:
+            raise Refused('the frozen world was not stopped: %s' % error)
         self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state['pid'],
                                          'detected_at': int(self.platform.now()), 'evicted': reason})
         self.freeze_file.unlink(missing_ok=True)
@@ -1038,7 +1051,13 @@ class Host:
             result['was_asleep_on_save' if was_cold else 'already_stopped'] = True
             return result
         self.note_kill_during_action(reason)
-        self.platform.kill_tree(pid)
+        try:
+            self.platform.kill_tree(pid, expect=self.world_expect())
+        except Unverified as error:
+            # Fail closed: never end a process that is not shown to be this world's DreamDaemon.
+            self.killed_file.unlink(missing_ok=True)
+            raise Refused('nothing was ended on port %d: %s. If that is a hung world, end it by hand '
+                          '(Task Manager, Details) and try again' % (self.config['port'], error))
         released = self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
@@ -1047,6 +1066,10 @@ class Host:
         if not self.lock.exists():
             self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
         return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
+
+    def world_expect(self, born_before=None):
+        """What a process must be before this host ends it as its world."""
+        return process_safety.world_expect(self.config, born_before)
 
     def note_kill_during_action(self, reason):
         """Tell the action holding the lock, if any, that a forced stop ended its world."""
@@ -1062,7 +1085,10 @@ class Host:
     def end_after_forced_stop(self):
         pid = self.platform.server_pid(self.config['port'])
         if pid:
-            self.platform.kill_tree(pid)
+            try:
+                self.platform.kill_tree(pid, expect=self.world_expect())
+            except Unverified as error:
+                self.log({'forced_stop_refused': str(error)[:300]})
             self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
@@ -1700,7 +1726,7 @@ class Host:
             if not pid:
                 raise RuntimeError('the world answers but its process was not found')
             self.running_file.unlink(missing_ok=True)  # it is going down on purpose
-            self.platform.kill_tree(pid)
+            self.platform.kill_tree(pid, expect=self.world_expect())
             self.release_save_locks(pid)
             self.record(phase='stopped', saved=False)
             return
@@ -1746,7 +1772,8 @@ class Host:
         before the save, or None when it could not be found (then the port alone decides,
         closed on several polls in a row). True when the process is known to have ended."""
         port = self.config['port']
-        deadline = self.platform.now() + self.config['save_timeout_seconds']
+        listened_by = self.platform.now()  # pid listened before this call, so it is older than now
+        deadline = listened_by + self.config['save_timeout_seconds']
         closed_since = None
         misses = 0
         while True:
@@ -1764,7 +1791,7 @@ class Host:
                 closed_since = now if closed_since is None else closed_since
                 self.record(phase='waiting for the server to exit')
                 if now - closed_since >= STOP_LINGER_SECONDS:
-                    self.platform.kill_tree(pid)
+                    self.platform.kill_tree(pid, expect=self.world_expect(born_before=listened_by))
                     self.log({'stop': 'the world closed its port after saving but did not exit; ended it', 'pid': pid})
                     self.release_save_locks(pid)
                     return not self.platform.alive(pid)
@@ -1791,6 +1818,8 @@ class Host:
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
         code, out = self.platform.run([git, 'rev-parse', 'HEAD'], cwd=repo, timeout=60)
+        if code != 0:
+            raise RuntimeError('git rev-parse failed after the compile: ' + out.strip()[-200:])
         revision = out.strip()[-40:]
         self.record_build(revision)
         self.record(phase='compiled', revision=revision)

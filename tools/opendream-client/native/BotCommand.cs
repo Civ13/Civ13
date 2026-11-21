@@ -14,9 +14,13 @@ public static class BotCommand {
     public static readonly TimeSpan StartWait = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan Poll = TimeSpan.FromSeconds(2);
 
-    public sealed record Hooks(Func<ProcessStartInfo, (int Exit, string Output)> Run, Func<TimeSpan, Task> Delay);
+    // StartDirect: the start used when Windows' WMI service does not answer (null: no fallback).
+    public sealed record Hooks(Func<ProcessStartInfo, (int Exit, string Output)> Run, Func<TimeSpan, Task> Delay, Func<HostBot, int>? StartDirect = null);
 
-    public static Hooks System { get; } = new(LocalHosting.RunCaptured, Task.Delay);
+    public static Hooks System { get; } = new(LocalHosting.RunCaptured, Task.Delay, bot => ProcessSafety.StartDetached(CommandLine(bot), bot.Root));
+
+    // A WMI create that has not answered by then is treated as broken (criticality: a start never waits on WMI).
+    public static readonly TimeSpan DetachLimit = TimeSpan.FromSeconds(20);
 
     // Returns the action and an explicit --root, or throws for anything else on the command line.
     public static (string Action, string? Root) Parse(string[] args) {
@@ -109,8 +113,21 @@ public static class BotCommand {
         var status = Status(bot, hooks);
         if (!status.Ok) { output.WriteLine("Status failed: " + status.Error); return false; }
         if (status.Running) { output.WriteLine("Civilizationbot is already running."); return true; }
-        var (exit, text) = hooks.Run(DetachedStart(bot));
-        if (exit != 0 || !text.Contains("CREATED")) { output.WriteLine("Could not start Civilizationbot: " + LocalBot.FailureText(exit, text)); return false; }
+        int exit;
+        string text;
+        try { (exit, text) = hooks.Run(DetachedStart(bot)); }
+        catch (Exception e) when (e is IOException or global::System.ComponentModel.Win32Exception or InvalidOperationException) { (exit, text) = (1, e.Message); }
+        if (exit != 0 || !text.Contains("CREATED")) {
+            // WMI broken or hung (2026-11-19): start the supervisor directly rather than not at all.
+            if (hooks.StartDirect is not { } direct) { output.WriteLine("Could not start Civilizationbot: " + LocalBot.FailureText(exit, text)); return false; }
+            try {
+                var pid = direct(bot);
+                output.WriteLine($"Windows' process service (WMI) did not start Civilizationbot ({LocalBot.FailureText(exit, text).Trim()}); started it directly as process {pid}.");
+            } catch (Exception e) when (e is IOException or global::System.ComponentModel.Win32Exception or InvalidOperationException or PlatformNotSupportedException) {
+                output.WriteLine("Could not start Civilizationbot: " + LocalBot.FailureText(exit, text) + "; a direct start failed too: " + e.Message);
+                return false;
+            }
+        }
         for (var waited = TimeSpan.Zero; waited < StartWait; waited += Poll) {
             await hooks.Delay(Poll);
             status = Status(bot, hooks);
@@ -142,7 +159,7 @@ public static class BotCommand {
         foreach (var argument in new[] { "-NoProfile", "-NonInteractive", "-Command", DetachScript }) step.ArgumentList.Add(argument);
         step.Environment["CIV13_BOT_COMMAND"] = CommandLine(bot);
         step.Environment["CIV13_BOT_ROOT"] = bot.Root;
-        return step;
+        return step.WithLimit(DetachLimit);
     }
 
     public const string DetachScript =
