@@ -1655,6 +1655,7 @@
 #include "code\modules\persistence\admission_contract.dm"
 #include "code\modules\persistence\restart_transaction.dm"
 #include "code\modules\persistence\nomads_lifecycle.dm"
+#include "code\modules\persistence\occupied_checkpoint.dm"
 #include "code\modules\persistence\blackout_diagnostics.dm"
 #include "code\modules\persistence\durable_graph.dm"
 #include "code\modules\persistence\durable_contract.dm"
