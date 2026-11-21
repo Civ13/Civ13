@@ -56,3 +56,23 @@ A tile whose only cover is a wall is drawn as a plank floor with a plank wall.
 
 Probe: `tests/naval_carrier/draught_probe.dm`
 (`python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/draught_probe.dm`).
+
+## The designer window
+
+`code/modules/naval/ship_designer.dm`. A blank **ship's draught** is a hand
+recipe (1 wood, paper & printing, Papermaking, beside the blank map). Hold it
+with a pen, pencil or pigment in either hand and choose **Draw on the sheet**.
+
+The window draws the sheet as a 40x40 grid, bow up, with a line down the
+middle column. Tools: plank and steel floors, erase, deck above on and off,
+every piece in `ship_draught_pieces` with a facing, a rectangle mode, a
+port/starboard mirror about the middle column, undo, clear, and the ready-made
+draughts in `ship_draught_examples()` (rowing galley, sloop, steel cutter).
+
+The window never reckons anything itself. About half a second after each
+change it sends the drawing as a `C13SHIP` code in parts of 900 characters
+(`ship=begin/part/end`, each part acknowledged like the painting editor); the
+server parses it with `ship_draught_from_code()` and answers with
+`summary_text()` (`shipStats`). Summaries are limited to one per 0.3 s per
+sheet. **Save to the sheet** stores the drawing (finished or not) on the item.
+The server re-checks the drawer is holding the sheet and a pen on every part.

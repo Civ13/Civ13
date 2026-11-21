@@ -141,12 +141,15 @@
 /proc/region_travel_bag_blockers(obj/item/weapon/storage/B)
 	. = list()
 	for(var/atom/movable/A in B.contents)
+		// An empty false bottom stays behind; a full one has to be emptied first.
+		if(istype(A, /obj/false_bottom) && !length(A.contents))
+			continue
 		var/obj/item/I = A
 		if(!istype(I) || !(region_travel_item_kind(I) || region_travel_loose_kind(I) || region_travel_generic_kind(I)))
 			. += A.name
 
 /proc/region_travel_bag_kind(obj/item/weapon/storage/B)
-	if(!istype(B) || QDELETED(B) || B.contents.len > REGION_TRAVEL_BAG_ITEMS_MAX) return null
+	if(!istype(B) || QDELETED(B) || B.shown_contents_count() > REGION_TRAVEL_BAG_ITEMS_MAX) return null
 	if(length(region_travel_bag_blockers(B))) return null
 	var/list/held = list()
 	for(var/obj/item/I in B.contents)

@@ -419,10 +419,10 @@ class ExpeditionSlotTests(unittest.TestCase):
                 mock.patch.object(shard_group, 'transfer_code', return_value=shard_group.read_record(
                     Path(self.group['root']) / 'coordinator.json')['code']):
             self.assertFalse(shard_group.ensure_coordinator(group, start=lambda *a: started.append(a[0]) or 4243,
-                                                            refresh=True, terminate=killed.append))
+                                                            refresh=True, terminate=lambda pid, expect=None: killed.append(pid)))
             group['regions'] = [dict(r, kind='SURFACE') for r in group['regions']]
             self.assertTrue(shard_group.ensure_coordinator(group, start=lambda *a: started.append(a[0]) or 4243,
-                                                           refresh=True, terminate=killed.append))
+                                                           refresh=True, terminate=lambda pid, expect=None: killed.append(pid)))
         self.assertEqual([4242], killed)
         self.assertNotIn('--slots', started[-1])
         self.assertEqual(str(Path(self.group['root']) / 'expeditions'), argv[argv.index('--expeditions') + 1])

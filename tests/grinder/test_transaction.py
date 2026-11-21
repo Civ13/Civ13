@@ -826,6 +826,7 @@ class AcquisitionProjection(Projection):
             isnull=lambda value: value is None,
             # One floor and one wall per tile: a machine takes neither slot.
             tile_build_refusal=lambda *_args: None,
+            railing_build_refusal=lambda *_args: None,
             # Stairs alone may be built down through an opening (edge_climbing.dm).
             cover_type_is_stairs=lambda *_args: False,
             # Only a new lining on a dug well may replace what stands on the tile (dug_wells.dm).

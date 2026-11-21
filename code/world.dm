@@ -556,9 +556,10 @@ var/world_topic_spam_protect_time = world.timeofday
 
 var/global/nextsave = 0
 var/global/persistence_reboot_scheduled = FALSE
-// Automatic saves never run during active play (Val, 2026-11-05). They wait
-// until no one but the host is online; admins can still save by hand, and
-// players can vote for a save (see persistence_save_vote_block_reason()).
+// Automatic saves wait until no one but the host is online (Val, 2026-11-05);
+// admins can still save by hand, and players can vote for a save (see
+// persistence_save_vote_block_reason()). The one exception is the four-hour
+// checkpoint (occupied_checkpoint.dm, Val 2026-11-21).
 var/global/persistence_played_since_save = FALSE
 var/global/persistence_empty_since = 0
 var/global/persistence_reboot_due = FALSE
@@ -583,9 +584,11 @@ var/global/persistence_reboot_due = FALSE
 				if (!nextsave)
 					nextsave = world.realtime + 216000
 				if (persistence_active_players())
-					// Hold every automatic save while people are playing.
+					// Hold every automatic save while people are playing, except
+					// the checkpoint that keeps the last save under four hours old.
 					persistence_played_since_save = TRUE
 					persistence_empty_since = 0
+					persistence_occupied_checkpoint()
 				else
 					// The empty timer restarts while any save runs. Pulling the
 					// schedule in during a save started a second save as soon as
