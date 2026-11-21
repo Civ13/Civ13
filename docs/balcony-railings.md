@@ -18,7 +18,8 @@ terraces, wall walks and the sides of a stairwell. Code:
 | steel pipe railing | 2 steel | Steelmaking | 350 |
 | glass balustrade | 3 glass | Modern Construction | 80 |
 
-Recipes are in the "railings" group of `config/crafting/material_recipes_global.txt`
+Every kind also has a gate (`<kind>/gate`, one more unit of material; brick
+gates from the Brick Railing Gate choice). Recipes are in the "railings" group of `config/crafting/material_recipes_global.txt`
 and stay open-ended (era cap 8).
 
 ## Rules
@@ -30,8 +31,14 @@ and stay open-ended (era cap 8).
 - `railing_build_refusal()` allows one railing (or parapet or other border
   barrier) along each side of a tile; two railings on one tile make a corner.
   `produce_recipe` asks it before and after the build wait.
-- Nobody walks across a railing (`CheckExit`/`CanPass` of the base type);
-  climbing over and grab-throwing over keep the base behaviour.
+- Nobody walks across a railing (`CheckExit`/`CanPass` of the base type).
+  Climbing over from the railing's own tile when the far side is open air
+  (`drop_beyond()`) asks first. Grab-throwing someone over into a drop is
+  written to the attack logs. Climb Down over a shut railing's edge takes 2 s
+  longer (`railing_climb_delay()`, asked by `climb_down_edge()`).
+- A gate opens and shuts by hand (help or disarm intent, `set_gate_open()`).
+  Open, it is not dense and its `CheckExit` lets people out; `after_load()`
+  restores that from `gate_open`.
 - Thrown items and projectiles pass (`PASSTABLE`). `railing_cover_verdict()`,
   asked by `directional_cover_verdict()`, lets every shot over except that a
   stone, sandstone or brick balustrade stops 30% of shots coming in across it

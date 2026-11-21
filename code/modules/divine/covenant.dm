@@ -32,6 +32,7 @@ var/global/list/divine_invocation_names = list(
 	"affliction" = "Affliction",
 	"omen" = "Omen",
 	"vigil" = "Vigil of Recovery",
+	"repository" = "Keep a repository", // repository.dm
 )
 
 /mob/living/human
@@ -75,6 +76,7 @@ var/global/list/divine_invocation_names = list(
 		verbs |= /mob/living/human/proc/divine_beseech
 	else
 		verbs -= /mob/living/human/proc/divine_beseech
+	magic_repo_refresh_verbs() // repository.dm
 
 // Any movement, body change, logout or transfer ends what is pending, including
 // leaving and coming back to the same tile, which snapshots cannot see.
@@ -171,6 +173,8 @@ var/global/list/divine_invocation_names = list(
 		return "You need to hold your stick."
 	if (!divine_component())
 		return "Your pouch is empty."
+	if (spell == "repository")
+		return magic_repo_begin_problem() // repository.dm
 	return null
 
 // The legal target of an invocation at this moment, or null.
@@ -190,6 +194,8 @@ var/global/list/divine_invocation_names = list(
 			return target == caster
 		if ("vigil")
 			return get_dist(A, B) <= 1
+		if ("repository")
+			return target == caster
 	return FALSE
 
 // Fixed, server-made effect and cost specification shown to the god.
@@ -203,6 +209,8 @@ var/global/list/divine_invocation_names = list(
 			return "omen-v1: one private message you write; costs the slot, one pouch item"
 		if ("vigil")
 			return "vigil-v1: heal 15 brute and 15 burn, ease pain 30 on the patient; costs the slot, one pouch item, 25% energy from everyone keeping it"
+		if ("repository")
+			return "repository-v1: begin a personal repository in the small thing they hold; then 30 minutes of channelling paid with hunger, thirst and energy or stored charge; costs the slot, one pouch item"
 	return null
 
 /mob/living/human/proc/divine_beseech()
@@ -231,7 +239,7 @@ var/global/list/divine_invocation_names = list(
 	if (!spell || usr != src || !client || divine_request)
 		return
 	var/mob/living/human/target = src
-	if (spell != "omen")
+	if (spell != "omen" && spell != "repository")
 		var/list/targets = list()
 		var/range = spell == "affliction" ? DIVINE_AFFLICTION_RANGE : 1
 		for (var/mob/living/human/H in view(range, src))
@@ -463,6 +471,8 @@ var/global/list/divine_invocation_names = list(
 			target.heal_overall_damage(15, 15)
 			target.adjustHalLoss(-30)
 			to_chat(target, SPAN_NOTICE("You feel your strength returning."))
+		if ("repository")
+			caster.magic_repo_begin() // repository.dm
 	log_admin("Divine use applied: [spell] by [key_name(caster)] on [key_name(target)] for [R.approved_deity] (approved by [R.approver_ckey]).")
 	divine_finish_request(R)
 	return TRUE
