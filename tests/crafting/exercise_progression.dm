@@ -1,7 +1,7 @@
 /proc/recipe_ci_exercise_progression()
-	var/list/types = list(/obj/item/weapon/lifting_weight/heavy, /obj/item/weapon/lifting_weight/great, /obj/structure/training_course/hurdle, /obj/structure/training_course/balance_log, /obj/structure/training_course/post/finish, /obj/item/weapon/lifting_weight/hand_weights, /obj/item/weapon/lifting_weight/barbell, /obj/structure/training_course/hurdle/steel)
-	var/list/materials = list(/material/stone,/material/stone,/material/wood,/material/wood,/material/wood,/material/bronze,/material/iron,/material/steel)
-	var/list/costs = list(5,10,3,4,3,3,12,3)
+	var/list/types = list(/obj/item/weapon/lifting_weight/heavy, /obj/item/weapon/lifting_weight/great, /obj/structure/treadwheel, /obj/item/weapon/lifting_weight/hand_weights, /obj/item/weapon/lifting_weight/barbell, /obj/structure/treadwheel/treadmill)
+	var/list/materials = list(/material/stone,/material/stone,/material/wood,/material/bronze,/material/iron,/material/steel)
+	var/list/costs = list(5,10,8,3,12,6)
 	var/mob/living/human/recipe_ci/H = new(locate(1,1,1))
 	for (var/i = 1, i <= types.len, i++)
 		var/path = types[i]
@@ -31,4 +31,5 @@
 	map.ordinal_age = 0
 	H.stats["crafting"] = list(1,105)
 	recipe_ci_food_expect(exercise_can_build(H,/obj/item/weapon/lifting_weight), "small lifting stone needs no crafting skill")
+	recipe_ci_food_expect(exercise_build_skill(/obj/item/weapon/skipping_rope) == 0, "skipping rope needs no crafting skill")
 	qdel(H)
