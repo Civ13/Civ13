@@ -21,6 +21,19 @@ def num(v):
     return str(int(v)) if v == int(v) else ('%g' % v)
 
 
+def edges(table_links):
+    out = []
+    regions = sorted(table_links)
+    for i, rid in enumerate(regions):
+        sides = table_links[rid]
+        parts = []
+        for side in sorted(sides):
+            dests = ', '.join('"%s" = list(%s, %s)' % (s[0], num(s[1]), num(s[2])) for s in sides[side])
+            parts.append('"%s" = list(%s)' % (side, dests))
+        out.append('\t"%s" = list(%s)%s' % (rid, ', '.join(parts), ',' if i < len(regions) - 1 else ''))
+    return out
+
+
 def render(table):
     lines = [
         '// ============================================================',
@@ -30,20 +43,43 @@ def render(table):
         '// Do not edit by hand: change the JSON and run the script.',
         '// ============================================================',
         '',
-        '// Region id = the map edges that lead on, in the shape of',
+        '// Region id = the map edges walked over, in the shape of',
         '// /obj/map_metadata/var/edge_crossings (region_edge.dm): side = list(region id =',
         '// list(from, to)), the stretch of that edge counted west to east or south to north.',
         'var/global/list/world_links = list(',
     ]
-    table_links = crossings(table)
-    regions = sorted(table_links)
-    for i, rid in enumerate(regions):
-        sides = table_links[rid]
-        parts = []
-        for side in sorted(sides):
-            dests = ', '.join('"%s" = list(%s, %s)' % (s[0], num(s[1]), num(s[2])) for s in sides[side])
-            parts.append('"%s" = list(%s)' % (side, dests))
-        lines.append('\t"%s" = list(%s)%s' % (rid, ', '.join(parts), ',' if i < len(regions) - 1 else ''))
+    lines += edges(crossings(table, 'walk'))
+    lines += [
+        ')',
+        '',
+        '// The same for the edges ships sail over, into and out of the oceans.',
+        'var/global/list/world_sea_links = list(',
+    ]
+    lines += edges(crossings(table, 'sail'))
+    lines += [
+        ')',
+        '',
+        '// Ocean id = list(width, height, name, chart x, chart y, wrap sides).',
+        'var/global/list/world_oceans = list(',
+    ]
+    oceans = list(table['oceans'].items())
+    for i, (oid, o) in enumerate(oceans):
+        wraps = ', '.join('"%s"' % w for w in o.get('wrap', []))
+        lines.append('\t"%s" = list(%d, %d, "%s", %d, %d, list(%s))%s' % (
+            oid, o['size'][0], o['size'][1], o['name'], o['chart'][0], o['chart'][1], wraps,
+            ',' if i < len(oceans) - 1 else ''))
+    lines += [
+        ')',
+        '',
+        '// Ocean id = list(land id = list(x0, y0, x1, y1)): the waters of an island land',
+        '// inside this ocean. Sailing into the box crosses to the land; leaving the land',
+        '// by a sea edge comes out on that side of the box.',
+        'var/global/list/world_insets = list(',
+    ]
+    insets = [(oid, o['insets']) for oid, o in oceans if o.get('insets')]
+    for i, (oid, boxes) in enumerate(insets):
+        parts = ', '.join('"%s" = list(%s)' % (b['land'], ', '.join(str(v) for v in b['box'])) for b in boxes)
+        lines.append('\t"%s" = list(%s)%s' % (oid, parts, ',' if i < len(insets) - 1 else ''))
     lines += [
         ')',
         '',
