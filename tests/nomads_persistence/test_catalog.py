@@ -27,7 +27,7 @@ class NomadsCatalogTests(unittest.TestCase):
         regions = {'/obj/map_metadata/nomads/barren', '/obj/map_metadata/nomads/barren/moon', '/obj/map_metadata/nomads/orbit',
                    '/obj/map_metadata/nomads/expedition'}
         self.assertEqual(set(declarations) | regions, admitted)
-        self.assertEqual(len(admitted), 38)
+        self.assertEqual(len(admitted), 43)
         # The native probe and the --spatial runner pin the same count; keep them in
         # step here so a new profile fails offline instead of in the native lane.
         probe = (ROOT/'tests/nomads_persistence/probe.dm').read_text()
@@ -62,7 +62,7 @@ class NomadsCatalogTests(unittest.TestCase):
             self.assertEqual(len(types), 1, path.name)
             actual[declarations[types.pop()]] = path.name
         self.assertEqual(core.NOMADS_MAPS, actual)
-        self.assertEqual(len(actual), 33)
+        self.assertEqual(len(actual), 38)
         self.assertNotIn('NOMADS_WASTELAND_3', core.NOMADS_MAPS)
 
     def test_all_authored_maps_build_the_configured_map_and_verify_cache(self):

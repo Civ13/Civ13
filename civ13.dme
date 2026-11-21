@@ -786,6 +786,7 @@
 #include "code\game\objects\map_metadata\nomads\nomads_mountain.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_new_world.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_north_america.dm"
+#include "code\game\objects\map_metadata\nomads\nomads_ocean.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_oceania.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_pangea.dm"
 #include "code\game\objects\map_metadata\nomads\nomads_persistence_beta.dm"
