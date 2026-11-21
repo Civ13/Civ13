@@ -191,7 +191,7 @@
 				if (prob(25))
 					crash = TRUE
 		try_destroy()
-		if (crash && src)
+		if (crash && !QDELETED(src))
 			toggle_state()
 	else
 		switch(severity)
@@ -217,6 +217,7 @@
 		if (prob(60))
 			health -= proj.damage * 0.1
 			visible_message(SPAN_WARNING("\The [src] is hit by \the [proj.name]!"))
+			try_destroy()
 		else if (prob(10))
 			visible_message(SPAN_DANGER("\The [src]\'s propeller is hit, shooting it down!"))
 			toggle_state()
@@ -293,6 +294,12 @@
 			animate(payload, pixel_y = 0, time = 5, easing = LINEAR_EASING)
 		payload = null
 	return
+
+// A flying drone with no health left is wrecked once its payload (if any) has dropped.
+/obj/structure/drone/flying/try_destroy()
+	..()
+	if (health <= 0 && !QDELETED(src))
+		qdel(src)
 
 /obj/structure/drone/flying/Move()
 	..()
