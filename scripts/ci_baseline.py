@@ -581,7 +581,8 @@ SUITES = {
                          'code/game/mob/living/carbon/human/human_defines.dm')},
     # Martial schools: era coverage, research nodes, rank defines, travel hooks.
     'martial_schools': {'files': ('tests/martial_schools/test_sources.py',),
-        'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm', 'code/__defines/martial.dm'),
+        'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm',
+                  'code/modules/1713/martial_arts/martial_training.dm', 'code/__defines/martial.dm'),
         'shared_paths': ('code/modules/research_tree/research_node.dm',
                          'code/modules/persistence/region_travel.dm')},
     # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.

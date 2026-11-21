@@ -1349,6 +1349,7 @@
 #include "code\modules\1713\martial_arts\hand_conditioning.dm"
 #include "code\modules\1713\martial_arts\kravmaga.dm"
 #include "code\modules\1713\martial_arts\martial_schools.dm"
+#include "code\modules\1713\martial_arts\martial_training.dm"
 #include "code\modules\1713\martial_arts\sleepingcarp.dm"
 #include "code\modules\1713\martial_arts\wrestling.dm"
 #include "code\modules\1713\moldy_men\moldy_men_hooks.dm"
