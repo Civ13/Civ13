@@ -198,6 +198,9 @@
 /obj/structure/slipway/proc/offer_draught(mob/living/human/H, obj/item/ship_draught/S)
 	if (!istype(H) || busy || !Adjacent(H))
 		return
+	if (S.sub_draught_kind())
+		to_chat(H, SPAN_WARNING("A submarine is not built on a slipway: float her hull sections on the water and assemble her there."))
+		return
 	var/datum/ship_draught/D = S.draught()
 	var/refusal = draught_refusal(D)
 	if (refusal)

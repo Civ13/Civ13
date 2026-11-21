@@ -151,3 +151,56 @@ the draught puts it. Her floored tiles are adopted by a temporary built body
 and moved in one slide (`move_to` with `slide_time`), carrying everyone and
 everything aboard; her tiller then commissions her under the draught's name
 with her bow along the ways. The post is cleared.
+
+## Kinds of sheet
+
+A ship's draught can carry more than one kind of plan. `draught_kinds`
+(`code/modules/naval/draught_kinds.dm`) lists each kind by its design code
+prefix with the proc that reads its code and the sheet proc that keeps it:
+`SHIP` (`ship_draught_from_code`, `take`) and `SUB`
+(`sub_draught_from_code`, `take_sub`). Pasting a code onto a sheet
+(`paste_any_code()`) goes through the table, so a later planner (a spaceship,
+a rocket, a satellite, a station) is one more row with its own datum and
+window. `S.draught()` still returns only a ship, so the slipway never sees a
+submarine; it refuses a submarine sheet by name.
+
+## Submarine sheets
+
+`code/modules/naval/sub_draught.dm` and the window in `sub_designer.dm`.
+`/datum/sub_draught` keeps `length` (`SUB_DRAUGHT_MIN_LENGTH` to
+`SUB_DRAUGHT_MAX_LENGTH`, 4 to 7: the longest boat turns in
+`VEHICLE_MAX_TURNING_SQUARE`) and `cells` keyed `"col,row"` like
+`submarine_layouts`: column 1 is starboard, row 1 the bow, three columns
+(`SUB_DRAUGHT_BEAM`). Each cell is `list(frame, fitting, bow-side wall)`:
+
+- frame: `sub_draught_frames` (`h` pressure hull, `x` lock-out hatch, only in
+  side sections between the bow and stern rows);
+- fitting: `sub_draught_fittings` (wheel, ballast and periscope station,
+  battery bank, air bank, locker, berth) or null; none on the stern row;
+- wall: `sub_draught_walls` (`b` bulkhead, `d` watertight door) across the
+  section's bow side, or null.
+
+The builder never draws the parts every boat has: the glass bow on row 1, the
+hull down both sides (open at a hatch), and the stern row as the engine room
+(the outer sections sealed tanks, the diesel and its tank in the middle).
+`wall_code()` writes a section's walls in the `set_hull_walls()` format and
+`layout()` gives the whole boat as a `submarine_layouts` entry.
+
+`problems()`: one wheel, one station, at least one lock-out hatch, and no
+bulkhead right across her without a door. `costs()` is her sections
+(`SUB_DRAUGHT_SECTION_STEEL` each), `sub_draught_fixed_cost` (the controls and
+the stern fuel tank) and her fittings' hand recipes; `tests/ship_draught`
+holds all of them to the recipe file.
+
+Codes: `C13SUB/1/<name>/<length>/<col,row,frame,fitting,wall>;...` with every
+section listed and `-` for none. `sub_draught_examples()` are the pen's Scout
+and Explorer read from `submarine_layouts`. "Draw her lines" at a boat's
+ballast and periscope station reads each hull section's `hull_tile`
+(`<class>_<col>_<row>`), walls and fittings back into a sheet
+(`sub_draught_survey()`).
+
+The window (`open_sub_designer()`) is a 3-column grid, bow to the top and
+starboard on the right, talking to a `/datum/sub_designer` per drawer. Every
+change is sent as a code; the server answers with `summary_text()`, and Save
+keeps it on the sheet. Tests: `tests/submarine/sheet.dm` in the submarine
+probe.

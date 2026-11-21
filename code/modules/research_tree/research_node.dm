@@ -442,6 +442,8 @@ var/global/list/node_grid_col_cache = null
 	// --- Military: Archery ---
 	register_research_node(new /datum/research_node("archery", "Archery", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("crossbows", "Crossbows", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("archery"), 2))
+	// --- Military: Martial disciplines (hand_conditioning.dm) ---
+	register_research_node(new /datum/research_node("martial_disciplines", "Martial Disciplines", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	// --- Military: Order & Defense ---
 	// Law & Order era 1: organized justice (jails, cuffs, batons). The truly
 	// primitive pieces (noose, rope cuffs) live in stone_arms era0 instead.
@@ -1958,6 +1960,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",
 		"/obj/item/weapon/wirecutters" = "iron_tools",
+		// --- martial_disciplines (2) ---
+		"/obj/structure/striking_post" = "martial_disciplines",
+		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
 		// --- law_order (15) ---
 		"/obj/covers/jail/steeljail" = "law_order",
 		"/obj/covers/jail/woodjail" = "law_order",
@@ -2007,8 +2012,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pillory" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/steeljail" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/woodjail" = "law_order",
-		// --- machined_tools (6) ---
+		// --- machined_tools (8) ---
 		"/obj/structure/workshop_machine/fitting/drill_press" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/line_shaft/iron" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/rope_drive" = "machined_tools",
 		"/obj/item/weapon/enginemaker" = "machined_tools",
 		"/obj/item/weapon/fishing/modern" = "machined_tools",
 		"/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty" = "machined_tools",
@@ -2957,8 +2964,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (6) ---
+		// --- watermills (9) ---
 		"/obj/structure/water_lift/windmill" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",
+		"/obj/structure/workshop_machine/transmission/gear_box" = "watermills",
 		"/obj/structure/workshop_machine/trip_hammer" = "watermills",
 		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
 		"/obj/structure/workshop_machine/mover/windmill" = "watermills",

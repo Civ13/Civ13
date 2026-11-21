@@ -10,7 +10,7 @@
 	var/claim = divine_claim_of(src)
 	var/list/actions = list()
 	if (claim)
-		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
+		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
 	else
 		actions += "Speak as a god"
 	actions += "Set my divine name"
@@ -47,6 +47,9 @@
 			var/mob/living/human/H = divine_pick_human("Initiate whom as a follower of [claim_label]?")
 			if (!H || divine_claim_of(src) != claim || !magic_whitelist_admit(H))
 				return
+			if (!H.arcane_apostate_may_join(claim)) // arcane_apostate.dm
+				to_chat(usr, SPAN_WARNING("[H.real_name] renounced another god too recently. Only that god can take them in yet."))
+				return
 			if (H.divine_patron && divine_book_key(H.divine_patron) != claim)
 				if (alert(usr, "[H.real_name] already follows [H.divine_patron]. Make them follow [claim_label] instead? They forget everything taught before.", "Divine Patron", "Yes", "No") != "Yes")
 					return
@@ -58,6 +61,7 @@
 			H.divine_patron = (own && divine_book_key(own["name"]) == claim) ? own["name"] : claim
 			if (!islist(H.divine_known))
 				H.divine_known = list()
+			H.arcane_apostate_return(claim) // arcane_apostate.dm
 			H.divine_refresh_verbs()
 			if (words)
 				to_chat(H, CHAT_TYPED(CHAT_PRAYER, "<span class='notice'><i>[words]</i></span>"))
@@ -118,6 +122,8 @@
 						known += divine_invocation_names[spell]
 					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""][H.magic_allowed() ? "" : ", SUSPENDED (not on the magic whitelist)"]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""][karma_mob_ckey(H) ? karma_staff_badge(karma_mob_ckey(H)) : ""]"
 			to_chat(usr, "<b>Followers of [claim_label] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
+		if ("List apostates")
+			arcane_list_apostates(claim) // arcane_apostate.dm
 		if ("List enchantments", "Strip enchantment") // arcane_enchant.dm
 			var/mob/living/human/H = divine_pick_human("Whose enchantments?", claim)
 			if (!H || !H.ckey)
