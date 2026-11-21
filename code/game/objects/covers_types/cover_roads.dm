@@ -231,7 +231,7 @@
 	if (is_tool(O, TOOL_SHOVEL))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
 		to_chat(user, SPAN_NOTICE("You begin filling over in the earth of \the [src]."))
-		if (do_after(user, work_delay(user, 30, WORK_DIG, O), src))
+		if (do_after(user, work_delay(user, 30, WORK_SHIFT, O), src))
 			to_chat(user, SPAN_NOTICE("You finish filling over \the [src]."))
 			qdel(src)
 

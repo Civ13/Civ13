@@ -10,10 +10,15 @@
 	1 - halfblock
 	2 - fullblock
 */
+// Extra armor penetration a hit of this kind gets from the armor it meets.
+/mob/living/proc/armor_gap_penetration(def_zone, attack_flag)
+	return 0
+
 /mob/living/proc/run_armor_check(var/def_zone = null, var/attack_flag = "melee", var/armor_pen = FALSE, var/absorb_text = null, var/soften_text = null, var/obj/item/damage_source = null)
 	if (armor_pen >= 100)
 		return FALSE //might as well just skip the processing
 
+	armor_pen += armor_gap_penetration(def_zone, attack_flag)
 	var/armor = getarmor(def_zone, attack_flag)
 	var/absorb = FALSE
 
@@ -28,17 +33,11 @@
 		absorb -= 1
 	if (prob(armor_pen))
 		absorb -= 1
-	var/dmg = 0
-	if (damage_source)
-		if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
-			dmg = 8
-		else
-			dmg = 0.8
+	var/dmg = armor_hit_wear(damage_source, attack_flag)
 	if (absorb >= 2)
 		if (istype(src, /mob/living/human))
 			var/mob/living/human/H = src
-			if(!(istype(damage_source,/obj/item/weapon/melee)))
-				H.damage_armor(def_zone, dmg)
+			H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[absorb_text]")
 		else
@@ -47,8 +46,7 @@
 	if (absorb == TRUE)
 		if (istype(src, /mob/living/human))
 			var/mob/living/human/H = src
-			if(!(istype(damage_source,/obj/item/weapon/melee)))
-				H.damage_armor(def_zone, dmg)
+			H.damage_armor(def_zone, dmg)
 		if (absorb_text)
 			show_message("[soften_text]",4)
 		else

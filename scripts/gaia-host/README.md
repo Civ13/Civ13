@@ -242,6 +242,30 @@ action and phase, build, staged update and the update-when-empty switch.
 Save and stop, save and restart and cancelling a countdown stay world-side verbs,
 which the same menu opens. Host Controls needs `serve` (or `watch`) running.
 
+## Process safety
+
+Every check and kill the host makes is sorted by how critical it is
+(`process_safety.py`). On 2026-11-19 a broken WMI provider made `tasklist` hang
+and every Gaia start crashed on the timeout, so these rules hold:
+
+- **Looking never kills.** Process and pager checks ask the kernel directly
+  (Toolhelp32, `OpenProcess`, `/proc`), never `tasklist`, `taskkill`, `wmic` or
+  WMI/CIM, and answer "unknown" when they cannot tell.
+- **A hung program never crashes the host.** `Platform.run` ends a program (and
+  what it started) at its timeout and answers exit code 124 (`TIMED_OUT`), which
+  callers treat like any failed command.
+- **Boot gates fail open.** An unknown pager check counts as signed in, so the
+  world starts; at worst it is up before the hub lists it.
+- **Kills fail closed.** A world, standby, transfer agent, coordinator or help
+  bridge is only ended after its executable is checked (DreamDaemon or Python),
+  and a pid read from a file or recorded earlier must belong to a process older
+  than that record. The check and the kill use one handle, so a reused pid
+  cannot redirect it. An unverified process is left running: Force stop answers
+  "nothing was ended" and names the process to end by hand.
+
+`tests/gaia_host/test_gaia_host.py` (`ProcessToolGuardTests`) fails when host
+scripts shell out to those tools again.
+
 ## Routing relay (`relay.py`)
 
 `relay.py` lets a region group publish one extra port instead of one router
