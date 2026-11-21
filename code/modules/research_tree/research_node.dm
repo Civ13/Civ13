@@ -1996,6 +1996,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/striking_post" = "martial_disciplines",
 		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
 		"/obj/structure/martial_gear/heavy_bag" = "martial_disciplines",
+		// --- school_grappling (1) ---
+		"/obj/structure/martial_gear/wrestling_mat" = "school_grappling",
 		// --- school_wing_chun (1) ---
 		"/obj/structure/martial_gear/wooden_dummy" = "school_wing_chun",
 		// --- law_order (15) ---

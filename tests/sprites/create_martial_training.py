@@ -6,17 +6,21 @@ gravel that has a dent where fingers have been driven in; the heavy bag, a
 long stitched leather punching bag hung by a short chain from the crossbeam
 of a braced timber gallows on two footed posts; and the wooden dummy, a
 thick upright log trunk slung on two slats between frame posts, with two
-upper arms angled forward, one lower middle arm and a bent leg to the floor.
+upper arms angled forward, one lower middle arm and a bent leg to the floor;
+and the wrestling mat, a thick pad of quilted hide lying flat over most of
+the tile, six stitched panels inside a darker rolled binding, with its
+front edge showing the thickness of the padding.
 Every pixel is placed by this script from fixed palettes (Pillow only); no
 external or generated artwork. Light falls from the upper left.
 
 Run with Pillow to reproduce
   icons/obj/martial_training.dmi              `makiwara`, `gravel_pail`,
-                                              `heavy_bag` and `wooden_dummy`,
-                                              one direction each
+                                              `heavy_bag`, `wooden_dummy` and
+                                              `wrestling_mat`, one direction
+                                              each
 
 `--check` verifies the committed sheet byte for byte, `--preview <png>`
-writes a 4x review sheet of all four states on grass, dirt and a wooden
+writes a 4x review sheet of all five states on grass, dirt and a wooden
 floor, each with a 1x copy beneath. Released under Civ13 AGPL-3.0.
 """
 import io
@@ -384,11 +388,83 @@ def wooden_dummy():
     return f.outline().under(ground_shadow(16.5, 29.2, 14.0, 2.3))
 
 
+# --- wrestling mat -----------------------------------------------------------
+
+MAT_SEAMS_X = (11, 20)
+MAT_SEAM_Y = 15
+
+
+def wrestling_mat():
+    """A low padded mat seen from above and a little from the south: the top
+    face quilted into six panels inside a rolled binding, and a strip of the
+    front edge below it."""
+    f = Frame()
+    x0, x1, y0, y1 = 2, 29, 6, 24
+    # the rolled binding round the top face, with a crease inside it
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            if (x in (x0, x1)) and (y == y0):
+                continue                                          # rounded far corners
+            ring = min(x - x0, x1 - x, y - y0, y1 - y)
+            if ring == 0:
+                lit = y == y0 or x == x0
+                tone = 2 if lit else 3
+                if y == y1 and x < x1:
+                    tone = 2                                      # the front roll catches the light
+                if (x + y) % 4 == 0:
+                    tone += 1                                     # whipped binding thong
+                f.put(x, y, LEATHER[tone])
+            elif ring == 1:
+                f.put(x, y, LEATHER[4] if (y == y1 - 1 or x == x1 - 1) else LEATHER[3])
+    # six padded panels, each swelling between its seams
+    xs = (x0 + 2,) + MAT_SEAMS_X + (x1 - 1,)
+    ys = (y0 + 2, MAT_SEAM_Y, y1 - 1)
+    for j in range(2):
+        for i in range(3):
+            px0 = xs[i] + (1 if i else 0)
+            px1 = xs[i + 1] - 1
+            py0 = ys[j] + (1 if j else 0)
+            py1 = ys[j + 1] - 1
+            for y in range(py0, py1 + 1):
+                for x in range(px0, px1 + 1):
+                    tone = 1
+                    if y == py0 or x == px0:
+                        tone = 0                                  # lit shoulder of the pad
+                    if y == py1 or x == px1:
+                        tone = 2                                  # turning down into the seam
+                    if tone == 1 and noise(x, y, 17) > 0.86:
+                        tone = 2                                  # scuffs in the hide
+                    elif tone == 1 and noise(x, y, 23) > 0.9:
+                        tone = 0
+                    f.put(x, y, LEATHER[tone])
+    # the seams, sewn with pale thong
+    for x in MAT_SEAMS_X:
+        for y in range(y0 + 2, y1 - 1):
+            f.put(x, y, ROPE[1] if y % 2 == 0 else LEATHER[4])
+    for x in range(x0 + 2, x1 - 1):
+        f.put(x, MAT_SEAM_Y, ROPE[1] if x % 2 == 1 else LEATHER[4])
+    for x in MAT_SEAMS_X:
+        f.put(x, MAT_SEAM_Y, LEATHER[4])                          # tufted crossing
+    # the front edge: the thickness of the padding, in shade
+    for y in range(y1 + 1, y1 + 4):
+        for x in range(x0, x1 + 1):
+            if y == y1 + 3 and x in (x0, x1):
+                continue
+            tone = 3 if y == y1 + 1 and x < x1 - 1 else 4
+            if x == x0 and y < y1 + 3:
+                tone = 2
+            f.put(x, y, LEATHER[tone])
+    for x in range(x0 + 2, x1 - 1, 3):                            # side seam stitches
+        f.put(x, y1 + 2, ROPE[1])
+    return f.outline().under(ground_shadow(17.0, 28.0, 14.6, 2.4))
+
+
 OBJ = {
     'makiwara': (1, 1, None, [makiwara()]),
     'gravel_pail': (1, 1, None, [gravel_pail()]),
     'heavy_bag': (1, 1, None, [heavy_bag()]),
     'wooden_dummy': (1, 1, None, [wooden_dummy()]),
+    'wrestling_mat': (1, 1, None, [wrestling_mat()]),
 }
 
 
@@ -428,10 +504,15 @@ def check_drawing():
     pail = [p for p, c in OBJ['gravel_pail'][3][0].px.items() if c[3] == 255]
     if min(y for _, y in pail) <= min(y for _, y in post):
         problems.append('gravel_pail: should stand lower than the makiwara')
-    for name in ('heavy_bag', 'wooden_dummy'):                    # frames span the tile
+    for name in ('heavy_bag', 'wooden_dummy', 'wrestling_mat'):   # frames span the tile
         xs = [x for (x, _), c in OBJ[name][3][0].px.items() if c[3] == 255]
         if max(xs) - min(xs) < 24:
             problems.append('%s: frame should span most of the tile' % name)
+    mat = [p for p, c in OBJ['wrestling_mat'][3][0].px.items() if c[3] == 255]
+    if max(y for _, y in mat) - min(y for _, y in mat) < 20:
+        problems.append('wrestling_mat: should cover most of the tile')
+    if min(y for _, y in mat) < 4:
+        problems.append('wrestling_mat: should lie low and flat')
     return problems
 
 
