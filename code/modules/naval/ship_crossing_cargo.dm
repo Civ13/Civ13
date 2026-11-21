@@ -7,8 +7,9 @@
 // as "b" entries: who they were, how they looked, what they wore and their
 // wounds. A body is laid down dead again on arrival; nobody plays it.
 //
-// Refused still: an animal a player or agent controls, anything ridden or
-// strapped in, a vehicle or engine, and a body that holds a creature.
+// Carts, small boats and machines go the same way, empty. Refused still: an
+// animal a player or agent controls, anything ridden or strapped in, a loaded
+// cart, a frame vehicle or engine, and a body that holds a creature.
 // ============================================================
 
 #define SEA_CROSSING_BODY_ITEMS_MAX 40
@@ -30,6 +31,14 @@
 		var/mob/living/sat = O.buckled_mob
 		if (sat && !(ishuman(sat) && sat.stat != DEAD))
 			return "[sat.name] is strapped into [O.name]"
+		// A cart or boat goes empty. Living crew riding it get off as she leaves.
+		if (istype(O, /obj/structure/vehicle))
+			var/obj/structure/vehicle/V = O
+			if (length(V.ontop_o))
+				return "unload \the [V.name] first"
+			for (var/mob/living/rider in V.ontop | list(V.driver))
+				if (!(ishuman(rider) && rider.stat != DEAD))
+					return "[rider.name] must get off \the [V.name] first"
 	var/list/R = region_travel_generic_capture(M, 0, null, null, TRUE)
 	var/kind = R ? "item:[json_encode(R)]" : null
 	if (!kind || !region_travel_generic_record(kind, TRUE))

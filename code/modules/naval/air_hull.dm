@@ -461,7 +461,7 @@ var/global/list/air_hull_crafts = list()
 	for (var/turf/S in old)
 		var/list/riders = list()
 		for (var/atom/movable/M in S)
-			if (M.loc != S || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect/vessel_path) || M.craft_left_behind())
+			if (M.loc != S || QDELETED(M) || !M.craft_cargo())
 				continue
 			// Floors first, so nobody reaches open air before the deck does.
 			if (istype(M, /obj/covers))
@@ -1013,7 +1013,7 @@ var/global/list/air_hull_crafts = list()
 			tree.health -= 20
 			tree.try_destroy()
 		for (var/atom/movable/M in D.contents.Copy())
-			if (M.loc != D || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+			if (M.loc != D || QDELETED(M) || !M.craft_cargo())
 				continue
 			if (istype(M, /obj/covers/airship_deck) || istype(M, /obj/structure/airship_gas_cell) || istype(M, /obj/structure/airship_helm) || istype(M, /obj/structure/airship_bomb_hatch))
 				wreck += M

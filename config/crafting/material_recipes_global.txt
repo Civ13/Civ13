@@ -3332,11 +3332,9 @@ RECIPE: /material/stone/,heavy lifting stone,/obj/item/weapon/lifting_weight/hea
 RECIPE: /material/stone/,great lifting stone,/obj/item/weapon/lifting_weight/great,10,90,0,1,sports,30,0,0,8,null
 RECIPE: /material/bronze/,bronze hand weights,/obj/item/weapon/lifting_weight/hand_weights,3,80,0,1,sports,30,0,0,8,null
 RECIPE: /material/iron/,iron barbell,/obj/item/weapon/lifting_weight/barbell,12,120,0,1,sports,105,0,0,8,null
-RECIPE: /material/wood/,course start post,/obj/structure/training_course/post,4,80,1,1,sports,30,0,0,8,null
-RECIPE: /material/wood/,course finish post,/obj/structure/training_course/post/finish,3,70,1,1,sports,30,0,0,8,null
-RECIPE: /material/wood/,log hurdle,/obj/structure/training_course/hurdle,3,60,1,1,sports,30,0,0,8,null
-RECIPE: /material/wood/,balance log,/obj/structure/training_course/balance_log,4,60,1,1,sports,30,0,0,8,null
-RECIPE: /material/steel/,steel hurdle,/obj/structure/training_course/hurdle/steel,3,100,1,1,sports,105,0,0,8,null
+RECIPE: /material/rope/,skipping rope,/obj/item/weapon/skipping_rope,2,40,0,1,sports,0,0,0,8,null
+RECIPE: /material/wood/,tread wheel,/obj/structure/treadwheel,8,120,1,1,sports,30,0,0,8,null
+RECIPE: /material/steel/,treadmill,/obj/structure/treadwheel/treadmill,6,150,1,1,sports,105,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null
 RECIPE: /material/electronics/,powered radio program desk,/obj/structure/telecom/station,6,150,1,1,none,105,0,0,8,null

@@ -82,6 +82,7 @@ var/global/list/nation_assembly_tiers = list(
 	nation_renames_send()
 	nation_assemblies_report()
 	nation_eras_report()
+	nation_census_report()
 	return TRUE
 
 /proc/nations_refresh_due()
@@ -159,6 +160,11 @@ var/global/list/nation_assembly_tiers = list(
 
 /mob/living/human/proc/nation_ask(list/body, faction)
 	body["actor"] = faction_roster_account(src) || ckey
+	// A leader (or a nation's ruler) speaks for the faction; anyone else asks
+	// as a citizen, which only elective governments hear (nation_motions.py).
+	var/nid = nation_of_id(nation_faction_id(faction))
+	if (isnull(body["role"]))
+		body["role"] = map.is_faction_leader(src, faction) || (nid && nation_rules(nid)) ? "leader" : "citizen"
 	if (!nation_send(body))
 		to_chat(src, SPAN_WARNING("The other lands cannot be reached right now. Try again later."))
 		return FALSE
@@ -227,6 +233,8 @@ var/global/list/nation_assembly_tiers = list(
 		else if (nid && nation_rules(nid))
 			text += " You rule it as its [G["ruler"]]."
 			choices += list("Government", "Vote on an application", "Vote on a common money")
+		if (nid && G["body"] && nation_home_faction(faction))
+			choices.Insert(2, "Motions and elections")
 	choices += "Cancel"
 	var/pick = WWinput(src, text, "Nation", "Cancel", choices)
 	if (pick == "View nations")
@@ -235,6 +243,10 @@ var/global/list/nation_assembly_tiers = list(
 	if (pick == "Cancel" || !pick)
 		return
 	// The dialog blocks; the faction and leadership must still hold.
+	if (pick == "Motions and elections")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_motions_menu(faction, id, nid)
+		return
 	if (stat || civilization != faction || !(map.is_faction_leader(src, faction) || nation_rules(nid)) || !nation_home_faction(faction) || nation_of_id(id) != nid)
 		return
 	switch (pick)

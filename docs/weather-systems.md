@@ -163,9 +163,11 @@ rough or raging. The sprites are drawn by
 
 ## Admin tools
 
-- **Weather Map** (Admin tab): a live map of a level with every system, its
+- **Admin Map** (Admin tab): a live map of a level with every system, its
   course, the wind and the players. Click a spot to send a storm, a severe
   storm or a heat wave there; click a system to end it; or clear the sky.
+  Clicking a player's marker shows the weather and air over them. It is the
+  former Weather Map and Player Map in one window, with a switch per layer.
 - **Randomly Change the Weather** (Debug): one roll of the season's pool.
 
 ## Tests

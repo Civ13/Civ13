@@ -54,6 +54,26 @@ class DraughtSources(unittest.TestCase):
                 (name, number), = bought.items()
                 self.assertIn((number), [amount for material, amount in rows_for if material in MATERIALS[name]], rows_for)
 
+    def test_designer_has_a_picture_of_every_floor_and_piece(self):
+        # scripts/build_ship_designer_icons.py cuts them from the game's DMIs.
+        designer = (ROOT / 'code/modules/naval/ship_designer.dm').read_text(encoding='utf-8')
+        sent = dict(re.findall(r'"shipd_(\w+)\.png" = \'icons/ship_designer/(\w+)\.png\'', designer))
+        turning = set(re.findall(r'"(\w)" = list\([^\n]*"turns" = TRUE', SOURCE))
+        wanted = ['floor_%s' % key for key in table('ship_draught_floors')]
+        for key in table('ship_draught_pieces'):
+            wanted += ['piece_%s_%d' % (key, facing) for facing in (1, 2, 4, 8)] if key in turning else ['piece_%s' % key]
+        self.assertEqual(sorted(sent), sorted(wanted))
+        # Windows serves the browser cache without regard to case.
+        self.assertEqual(len({name.lower() for name in sent}), len(sent))
+        for name, source in sent.items():
+            with self.subTest(picture=name):
+                self.assertEqual(name, source)
+                data = (ROOT / 'icons/ship_designer' / (source + '.png')).read_bytes()
+                self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
+                self.assertEqual((int.from_bytes(data[16:20], 'big'), int.from_bytes(data[20:24], 'big')), (32, 32))
+        on_disk = sorted(path.stem for path in (ROOT / 'icons/ship_designer').glob('*.png'))
+        self.assertEqual(on_disk, sorted(wanted))
+
     def test_plank_wall_takes_the_frame_boards(self):
         boards = re.search(r'#define WALLFRAME_PLANK_BOARDS (\d+)', (ROOT / 'code/modules/1713/structures.dm').read_text(encoding='utf-8')).group(1)
         self.assertEqual(table('ship_draught_pieces')['W'][1]['planks'], int(boards))
