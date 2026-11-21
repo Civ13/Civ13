@@ -832,13 +832,15 @@ and concurrency rejection controls retain their original guards.
 
 ### Lost-limb wound recovery
 
-`run-durable-world.py --wounds --byond-bin <516.1681-bin>` uses the production
+`run-durable-world.py --wounds --byond-bin <pinned-byond-bin>` uses the production
 wound constructor, encoder and loader with normal startup disabled and isolated
 native savefiles. It checks 18 disk round trips: edged, blunt and burned wounds,
 clean and unclean, through actual current-format export, explicit typed entries
 and legacy flat entries. Assertions retain injury/stage/bleeding/treatment state,
-helper arrays, embedded item identity and the cyclic organ/wound backlink.
-Missing dynamic stage tables are rejected rather than reconstructed as healing.
+rebuilt helper arrays and the cyclic organ/wound backlink. The current exporter
+omits the tmp caches; explicit entries contain poisoned tmp fields that the
+importer must ignore. Missing or malformed canonical stages, invalid stage or
+amount, and inconsistent saved current-stage fields are rejected.
 The explicit entries model supported historical encodings; they are not the
 incident Gaia save graph or full-world recovery evidence.
 

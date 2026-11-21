@@ -184,8 +184,8 @@ the river even when stopped. Running, it lifts water and waste out over a
 river in flood: over a flood the outfall takes only the pump's rate from its
 inlets, and with the river low the pump's rate adds to the outfall's own.
 Flushed waste goes out over the flood too and fouls the water as usual. The
-steam pumping engine (12 iron, Steam Power) lifts 6 tile-levels a minute and
-burns one minute of fuel per river tick while it is on (coal 30 minutes,
+steam sewer pump (formerly steam pumping engine; 12 iron, Steam Power) lifts
+6 tile-levels a minute and burns one minute of fuel per river tick while it is on (coal 30 minutes,
 charcoal 20, a log, plank or bamboo 10, up to 240), and stops when the fire
 burns out. The electric sewage pump (8 steel, Utilities) lifts 10 and draws
 20 power from a cable laid under it or an outlet. Pumps tick at the end of
@@ -276,10 +276,12 @@ Nothing ticks.
 `running` is cached once a minute at the end of `drain_hollows()` (and when
 switched) so depth lookups stay cheap.
 
-- **Lever pump** (6 iron, Workshops), reach 3: each 3-second stroke keeps its
-  reach dry 30 seconds more, banking at most 5 minutes. Unsaved.
-- **Steam mine pump** (12 iron, Steam Power), reach 7: started by hand, burns
-  a minute of fuel per river tick (same fuel table as the sewer steam pump).
+- **Hand bilge and cellar pump** (formerly lever pump; 6 iron, Workshops),
+  reach 3: each 3-second stroke keeps its reach dry 30 seconds more, banking
+  at most 5 minutes. Unsaved.
+- **Steam bilge and mine pump** (formerly steam mine pump; 12 iron, Steam
+  Power), reach 7: started by hand, burns a minute of fuel per river tick
+  (same fuel table as the steam sewer pump).
 - **Sump pump** (4 steel, Utilities), reach 3, 15 power from a cable or an
   outlet. Its float switch runs it only while `seep_depth_at(T, TRUE)` (the
   depth as if nothing pumped) is above 0. On mains it charges its battery

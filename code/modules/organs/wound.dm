@@ -392,7 +392,7 @@ datum/wound/cut/massive
 
 /datum/wound/lost_limb/New(var/obj/item/organ/external/lost_limb, var/losstype, var/clean, var/restore_shell = FALSE)
 	// Load_Entry registers this shell before decoding the saved organ/wound
-	// cycle. Its saved stages, helper lists and injury state replace these
+	// cycle. Its saved stages and injury state replace these
 	// neutral base values; ordinary amputations still require their limb.
 	if(restore_shell)
 		return ..(0)
@@ -423,14 +423,20 @@ datum/wound/cut/massive
 /datum/wound/lost_limb/proc/validate_restored_state()
 	// Missing dynamic stage tables cannot be reconstructed from subtype defaults.
 	// Reject incomplete historical data rather than silently healing the injury.
-	if(!islist(stages) || !stages.len || !islist(desc_list) || !islist(damage_list) || desc_list.len != stages.len || damage_list.len != stages.len)
-		throw EXCEPTION("Saved lost-limb wound is missing its stage tables")
-	if(!isnum(current_stage) || current_stage != round(current_stage) || current_stage < 1 || current_stage > stages.len || !isnum(amount) || amount <= 0)
-		throw EXCEPTION("Saved lost-limb wound has an invalid stage or amount")
+	if(!islist(stages) || !stages.len)
+		throw EXCEPTION("Saved lost-limb wound is missing its stage table")
+	// These caches are tmp and are never imported. Rebuild them from the
+	// saved table without recalculating the injury or its current stage.
+	desc_list = list()
+	damage_list = list()
 	for(var/i = 1, i <= stages.len, i++)
 		var/stage = stages[i]
-		if(desc_list[i] != stage || damage_list[i] != stages[stage])
-			throw EXCEPTION("Saved lost-limb wound has inconsistent stage tables")
+		if(!istext(stage) || !length(stage) || !isnum(stages[stage]) || stages[stage] < 0)
+			throw EXCEPTION("Saved lost-limb wound has a malformed stage table")
+		desc_list += stage
+		damage_list += stages[stage]
+	if(!isnum(current_stage) || current_stage != round(current_stage) || current_stage < 1 || current_stage > stages.len || !isnum(amount) || amount <= 0)
+		throw EXCEPTION("Saved lost-limb wound has an invalid stage or amount")
 	if(desc != desc_list[current_stage] || min_damage != damage_list[current_stage])
 		throw EXCEPTION("Saved lost-limb wound has inconsistent current stage")
 	return TRUE

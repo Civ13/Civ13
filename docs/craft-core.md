@@ -156,6 +156,15 @@ hull with a hold cannot cross the sea yet.
 
 ### Airships
 
+Basic wooden dirigibles use the 1903 Lighter-than-Air Flight research, after
+Wagons & Ships and Utilities. Craft wooden airship planks and the helm from
+wood, a gas cell from cloth, and a gasbag from leather. The Utilities water-gas
+retort makes hydrogen from water and coal or charcoal. Fill the gasbag at the
+retort, then use it on the hung gas cell. A basic airship can make slow ahead
+without an engine. Powered Flight still gates the aircraft, metal airship frames
+and bomb hatch, and anyone who already knows Powered Flight keeps access to
+the wooden kit.
+
 `naval/air_hull.dm`: `/datum/craft_body/built/air` is a built hull laid as
 `/obj/covers/airship_deck` planks on the ground or the open-air level, started
 anywhere clear on the ground or beside a ladder top and grown edge to edge (`air_deck_lay_refusal()`), at most 60 tiles. Its

@@ -474,6 +474,12 @@ var/naval_runtime_error = FALSE
 	naval_check(HO && skiff.x == 45 && skiff.step_x == 1 && bow_plank.step_x == 1 && deckhand.step_x == 1 && pail.step_x == 1, "the first pulse moves her deck, tiller, cargo and crew one pixel east together")
 	naval_check(P.path_markers.len == 2, "starting to cover the water ahead marks it ([P.path_markers.len])")
 	naval_check((deckhand in HO.carried) && (bow_plank in HO.footprint) && vehicle_offset_riders[deckhand] == HO, "everyone aboard is carried; her planks are her body")
+	// Place a fresh fitting while the deck is visibly off its turf centre.
+	var/list/craft_deck = vessel_building_deck_at(deckhand)
+	var/datum/ship_construction/fitting = new(deckhand, craft_deck)
+	var/obj/structure/cellar_pump/lever/deck_pump = new(fitting.target(deckhand))
+	fitting.align(deck_pump)
+	naval_check(deck_pump.loc == deckhand.loc && deck_pump.step_x == HO.ox && vehicle_offset_riders[deck_pump] == HO, "a fresh fitting is centred on the moving deck immediately")
 	// A step under way checks nobody else moved the walker; the deck carrying
 	// them is not somebody else, so the step goes on from where she put them.
 	var/datum/human_subtile_transaction/walk = new
@@ -512,8 +518,18 @@ var/naval_runtime_error = FALSE
 	naval_check(!(swimmer in HO.carried) && swimmer.x == 45 && swimmer.step_x == -16, "someone whose centre is over the water astern is not taken aboard")
 	qdel(boarder)
 	qdel(swimmer)
+	naval_check(fitting.target(deckhand) == deckhand.loc && deck_pump.step_x == HO.ox, "carried motion does not cancel stationary work")
+	var/datum/ship_construction/empty_fit = new
+	naval_check(!empty_fit.stationary(deckhand) && !empty_fit.target(deckhand) && !empty_fit.bind_fixture(deck_pump), "zero-argument load-sweep context remains inert")
+	qdel(empty_fit)
+	naval_check(fitting.bind_fixture(deck_pump) && fitting.fixture_stationary(deck_pump, TRUE), "dismantling binds the actual offset fixture to her deck")
+	deck_pump.step_x += 1
+	naval_check(!fitting.fixture_stationary(deck_pump), "a moved fixture interrupts the wait")
+	deck_pump.step_x -= 1
+	naval_check(fitting.fixture_stationary(deck_pump, TRUE), "the original piece is still on her deck")
 	// The deckhand walks three pixels aft as she sails.
 	deckhand.step_x -= 3
+	naval_check(!fitting.target(deckhand), "actually walking on deck still interrupts the work")
 	// That was the walk's own pulse, so its snapshot is where the deckhand stands.
 	walk.expected = deckhand.human_subtile_snapshot()
 	deckhand.human_subtile_transaction = walk
@@ -524,6 +540,7 @@ var/naval_runtime_error = FALSE
 	naval_check(skiff.x == 46 && skiff.step_x == -16 && bow_plank.x == 48 && bow_plank.step_x == -16 && !P.path_markers.len, "past half a tile her own move carries her a tile on and the offset wraps ([skiff.x],[skiff.step_x])")
 	naval_check(deckhand.x == 47 && deckhand.step_x == -19 && pail.x == 47 && pail.step_x == -16, "the deckhand keeps the three pixels walked; the pail rides ([deckhand.x],[deckhand.step_x])")
 	naval_check(hull_planks(locate(45, 25, 2)) == 0 && hull_planks(locate(48, 25, 2)) == 1 && P.tiles_since_burn == 1, "her planks moved a tile and her drives paid for it")
+	naval_check(deck_pump.x == 47 && deck_pump.step_x == HO.ox, "the new fitting crosses a world tile with her deck")
 	// Someone pulled off her deck is no longer carried.
 	pail.forceMove(locate(52, 40, 2))
 	P.offset_tick()
@@ -572,12 +589,16 @@ var/naval_runtime_error = FALSE
 	naval_check(P.finish_turn() && !skiff.step_x && !bow_plank.step_x && P.body.heading() == NORTH, "and comes about square on her tiles")
 	P.offset_tick()
 	naval_check(skiff.step_y == 1 && !skiff.step_x, "then creeps north")
+	naval_check(deck_pump.step_x == skiff.step_x && deck_pump.step_y == skiff.step_y, "the new fitting follows turn and subsequent northward pulse")
 	// A step taken on deck just before all stop is kept when she squares.
 	var/deck_y = (deckhand.y * 32 + deckhand.step_y) - (skiff.y * 32 + skiff.step_y)
 	deckhand.step_y += 2
 	P.set_speed(VESSEL_SPEED_STOP)
 	naval_check(!skiff.step_y && !P.hop_timer, "all stop squares her")
 	naval_check((deckhand.y * 32 + deckhand.step_y) - (skiff.y * 32 + skiff.step_y) == deck_y + 2, "and the deckhand keeps the step just taken")
+	naval_check(!deck_pump.step_x && !deck_pump.step_y && !vehicle_offset_riders[deck_pump], "the new fitting squares and releases with the hull")
+	qdel(deck_pump)
+	qdel(fitting)
 	qdel(deckhand)
 	qdel(pail)
 	qdel(skiff)

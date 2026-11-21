@@ -3,21 +3,19 @@ import ast
 import hashlib
 import json
 from pathlib import Path
-import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
 import prepare_native as prep
-from test_lifecycle import BASE, ROOT, TYPE, WRITES, baseline, read
-from test_movement import body
+from test_lifecycle import FIXTURES, ROOT, TYPE, WRITES, load_audit, read
+from test_movement import body, legacy_body
 
 
 class NativePreparationTests(unittest.TestCase):
-    def test_master_reconciliation_preserves_source_projection_and_all_fourteen_writes(self):
-        self.assertEqual(sum(WRITES.values()), 14)
-        for path in WRITES:
-            self.assertIn('living_mob_list', baseline(path))
+    def test_master_reconciliation_preserves_audited_writes_and_suite_admission(self):
+        self.assertEqual(sum(WRITES.values()), 13)
+        self.assertIn('in living_mob_list)', legacy_body('code/modules/1713/complex_animal/_backend.dm'))
         workflow = read('.github/workflows/test.yml')
         # Only this suite's own lane; other suites' workflow wiring belongs to master.
         self.assertIn("contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/movement_discovery')", workflow)
@@ -45,7 +43,7 @@ class NativePreparationTests(unittest.TestCase):
         for mode in ('legacy', 'candidate'):
             for path, kind in (('code/game/mob/mob_movement.dm', 'human'),
                                ('code/modules/1713/complex_animal/_backend.dm', 'animal')):
-                original = body(path, baseline(path) if mode == 'legacy' else read(path))
+                original = legacy_body(path) if mode == 'legacy' else body(path, read(path))
                 if kind == 'animal':
                     original = original.replace('\t..()\n', '\tprobe_parent_move()\n', 1)
                 self.assertIn(original, source)
@@ -56,35 +54,47 @@ class NativePreparationTests(unittest.TestCase):
         source = prep.production()
         for signature in ('probe_death_fragment', 'probe_rejuvenate_fragment',
                           'probe_life_fragment', 'probe_admin_fragment',
-                          'probe_after_load_fragment', 'probe_cleanup_one', 'probe_cleanup_two'):
+                          'probe_after_load_fragment', 'probe_deleted_cleanup_membership'):
             self.assertIn(signature + '(', source)
         self.assertIn('\t\tregister_living_mob(src)\n\t\ttimeofdeath = FALSE', source)
         self.assertIn('\tset_stat(CONSCIOUS)', source)
         self.assertIn('\t\t\tregister_living_mob(src)\n\t\t\tstat = CONSCIOUS', source)
         self.assertIn('return global.dead_mob_list.Remove(src)', source)
+        self.assertEqual(source.count('/proc/probe_deleted_cleanup_membership('), 1)
+        fixture = (prep.HERE / 'native_probe.dm').read_text()
+        self.assertIn('probe_deleted_cleanup_membership(B)', fixture)
+        self.assertIn('unregister_living_mob(null)', fixture)
+        self.assertNotIn('probe_cleanup_two', source + fixture)
 
     def test_seven_packets_hash_exact_sources_and_never_launch_native_tools(self):
-        original_call = subprocess.check_output
-        def git_only(args, **kwargs):
-            self.assertEqual(args[0], 'git')
-            return original_call(args, **kwargs)
-        before = {path: (ROOT / path).read_bytes() for path in WRITES}
-        with tempfile.TemporaryDirectory() as temp, patch.object(prep.subprocess, 'check_output', side_effect=git_only):
+        all_sources = {row[0] for row in load_audit()['references']}
+        before = {path: (ROOT / path).read_bytes() for path in all_sources}
+        # Packet bytes and semantic evidence do not depend on a Git checkout.
+        # Verify shell exclusion independently of the read-only CLI provenance.
+        with tempfile.TemporaryDirectory() as temp, \
+                patch.object(prep, 'checkout_metadata', return_value=('f' * 40, b'')), \
+                patch.object(prep.subprocess, 'check_output', side_effect=AssertionError('unexpected subprocess')):
             for control in prep.CONTROLS:
                 target = Path(temp) / control
                 manifest = prep.stage(target, control)
                 self.assertTrue(manifest['prepared_only'])
                 self.assertFalse(manifest['compiled'])
                 self.assertFalse(manifest['executed'])
-                self.assertEqual(manifest['oracle_commit'], BASE)
+                self.assertEqual(manifest['head_sha'], 'f' * 40)
+                self.assertEqual(manifest['audit_source_sha'], load_audit()['source_review_sha'])
+                self.assertEqual(manifest['source_sha256'], {
+                    path: hashlib.sha256(before[path]).hexdigest() for path in all_sources})
+                for path in FIXTURES.iterdir():
+                    self.assertEqual(manifest['contract_fixture_sha256'][path.name],
+                                     hashlib.sha256(path.read_bytes()).hexdigest())
                 self.assertEqual(manifest['world'], [16, 16, 2])
-                self.assertEqual(sum(manifest['write_inventory'].values()), 14)
+                self.assertEqual(sum(manifest['write_inventory'].values()), 13)
                 for name, digest in manifest['files'].items():
                     self.assertEqual(hashlib.sha256((target / name).read_bytes()).hexdigest(), digest)
                 self.assertEqual((target / 'probe.dm').read_bytes(), (prep.HERE / 'native_probe.dm').read_bytes())
                 with self.assertRaises(FileExistsError):
                     prep.stage(target, control)
-        self.assertEqual(before, {path: (ROOT / path).read_bytes() for path in WRITES})
+        self.assertEqual(before, {path: (ROOT / path).read_bytes() for path in all_sources})
 
     def test_control_mutations_only_touch_the_intended_candidate_operation(self):
         source = prep.production()
