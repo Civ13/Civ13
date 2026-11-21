@@ -7,7 +7,6 @@ GLOBAL_VAR_INIT(game_version, "Civilization 13")
 GLOBAL_VAR_INIT(abandon_allowed, TRUE)
 GLOBAL_VAR_INIT(enter_allowed, TRUE)
 GLOBAL_VAR_INIT(changelog_hash, "")
-GLOBAL_VAR_INIT(hub_visibility, FALSE)
 
 
 //This was a define, but I changed it to a variable so it can be changed in-game.(kept the all-caps definition because... code...) -Errorage
