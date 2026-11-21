@@ -149,6 +149,8 @@
 	chance += max(0, target_armor) / 4
 	chance *= 0.6 + Clamp(force, 1, 5) / 10
 	chance *= (100 - punch_protection()) / 100
+	// Conditioned knuckles (hand_conditioning.dm) take more before they give.
+	chance *= hand_conditioning_factor()
 	return max(0, chance)
 
 // Overridden by the probe so it decides each roll.
