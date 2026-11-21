@@ -2972,6 +2972,7 @@ var/global/list/node_grid_col_cache = null
 		// --- wagons_ships (29) ---
 		"/obj/structure/canal_lock" = "wagons_ships",
 		"/obj/structure/canal_lock/dock_gate" = "wagons_ships",
+		"/obj/structure/keel_blocks" = "wagons_ships",
 		"/obj/item/stack/rail_sleepers" = "wagons_ships",
 		"/obj/item/stack/rail_lengths/wooden" = "wagons_ships",
 		"/obj/structure/trains/storage/chaldron" = "wagons_ships",
