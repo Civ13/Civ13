@@ -185,6 +185,7 @@ var/global/datum/weather_air_grid/weather_air = null
 			pressure[i] += (pressure_target - pressure[i]) * WEATHER_AIR_PRESSURE_RATE
 			cloud[i] += (cloud_target - cloud[i]) * WEATHER_AIR_CLOUD_RATE
 	settle_wind(snap) // weather_wind.dm
+	settle_precip() // weather_precip.dm
 	steps++
 
 // One weather tick (processes/weather.dm, through weather_systems_step()).
@@ -194,6 +195,7 @@ var/global/datum/weather_air_grid/weather_air = null
 		weather_air = new
 		return
 	weather_air.settle()
+	weather_hail_step() // weather_precip.dm
 
 /proc/weather_air_grid()
 	if (!weather_air)
