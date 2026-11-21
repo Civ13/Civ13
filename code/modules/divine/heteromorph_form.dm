@@ -87,6 +87,11 @@ var/global/list/heteromorph_forms_live = list()
 		icon_dead = icon_state
 	heteromorph_body = H
 	heteromorph_started = world.time
+	var/datum/heteromorph/K = heteromorph_kind(kind)
+	if (K && ("fire" in K.breaths))
+		verbs += /mob/living/simple_animal/heteromorph_form/proc/heteromorph_breathe_fire // heteromorph_breath.dm
+	if (K && ("haze" in K.breaths))
+		verbs += /mob/living/simple_animal/heteromorph_form/proc/heteromorph_breathe_haze
 
 /mob/living/simple_animal/heteromorph_form/Life()
 	if (heteromorph_leaving)

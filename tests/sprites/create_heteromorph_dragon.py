@@ -1,3 +1,8 @@
+# Licence note: the gold states, transform_flash and shadow_fly are original
+# Civ13 art (AGPL-3.0). The ash states (ash, ash_walk, ash_attack, ash_fly) are
+# an adaptation of the ash drake by tgstation (github.com/tgstation/tgstation),
+# icons/mob/simple/lavaland/96x96megafauna.dmi, CC BY-SA 3.0, and are released
+# under CC BY-SA 3.0. See icons/mob/heteromorph_dragon.ATTRIBUTION.txt.
 """Script-placed 96px art for the heteromorph's true form: a large golden
 dragon, plus the burst of golden light shown while it changes form.
 
@@ -28,7 +33,19 @@ is the dragon seen from straight above, flattened to half height, in pure black
 at no more than 35% alpha with a feathered edge; it stays on the ground as an
 underlay, centred on the footprint.
 
+Ash colour: ash, ash_walk, ash_attack and ash_fly repeat the gold states pose
+for pose (same geometry, frame counts and delays) in the colours and features
+of tgstation's ash drake, redrawn here in this sheet's own shapes: ash-grey
+scales shading to dark red-grey, a dark red underside and wing arms, dusty red
+membrane, charcoal horns, pale spikes down the neck, back and tail, clawed
+finger tips and yellow eyes. No tgstation pixels are copied; the palette and
+features are adapted from it, so those four states are CC BY-SA 3.0 (credit:
+tgstation (github.com/tgstation/tgstation),
+icons/mob/simple/lavaland/96x96megafauna.dmi, CC BY-SA 3.0). ash_fly uses the
+shared shadow_fly.
+
 Run with Pillow to reproduce icons/mob/heteromorph_dragon.dmi.
+`--ash-preview <png>` writes ash beside gold, every ash dir and frame at 2x.
 `--preview <png>` also writes a review sheet: every ground state, dir and frame
 at 2x on a grass-coloured and a dark background, with a 1x strip.
 `--flight-preview <png>` writes the flight sheet: gold_fly lifted over
@@ -61,6 +78,32 @@ GRASS, GRASS2 = (88, 134, 66), (74, 118, 56)
 DARK, DARK2 = (30, 32, 36), (38, 40, 46)
 
 DIRS = ('S', 'N', 'E', 'W')          # BYOND's order for dirs = 4
+
+# Colour styles. The drawing code reads the names above, so a style is applied
+# by refilling those ramps in place; ARM is the wing-arm ramp, HEADHORN the two
+# head horns, SPIKY adds the ash drake's spikes and finger claws.
+ARM, HEADHORN, SPIKY = GOLD, HORN, False
+STYLES = {
+    'gold': dict(GOLD=list(GOLD), BELLY=list(BELLY), MEMB=list(MEMB), HORN=list(HORN), OUT=OUT, EYE=EYE, PUPIL=PUPIL,
+                 ARM=None, HEADHORN=None, SPIKY=False),
+    # after tgstation's ash drake (CC BY-SA 3.0)
+    'ash': dict(GOLD=[(190, 182, 186), (150, 141, 144), (121, 102, 110), (96, 68, 76), (66, 44, 54), (40, 30, 38)],
+                BELLY=[(176, 82, 66), (146, 56, 46), (118, 36, 31), (78, 20, 28)],
+                MEMB=[(176, 110, 102), (146, 72, 66), (110, 42, 42), (72, 20, 28)],
+                HORN=[(222, 216, 220), (172, 162, 168), (116, 104, 114)],
+                OUT=(26, 16, 20), EYE=(255, 223, 138), PUPIL=(96, 34, 12),
+                ARM=[(176, 70, 56), (146, 52, 42), (118, 36, 31), (94, 26, 31), (74, 17, 30), (54, 11, 11)],
+                HEADHORN=[(104, 100, 108), (66, 62, 68), (40, 36, 44)], SPIKY=True),
+}
+
+
+def use_style(name):
+    global OUT, EYE, PUPIL, ARM, HEADHORN, SPIKY
+    st = STYLES[name]
+    GOLD[:], BELLY[:], MEMB[:], HORN[:] = st['GOLD'], st['BELLY'], st['MEMB'], st['HORN']
+    OUT, EYE, PUPIL, SPIKY = st['OUT'], st['EYE'], st['PUPIL'], st['SPIKY']
+    ARM = st['ARM'] or GOLD
+    HEADHORN = st['HEADHORN'] or HORN
 
 
 def scale_tex(x, y):
@@ -210,7 +253,10 @@ def taper(n, r0, r1):
 
 def tail(c, ctrl, r0, r1, belly=None):
     pts = curve(ctrl)
-    c.limb(pts, taper(len(pts), r0, r1), belly=belly)
+    rad = taper(len(pts), r0, r1)
+    c.limb(pts, rad, belly=belly)
+    if SPIKY:
+        spines(c, pts[:-2], lambda i: rad[i], every=3, start=1)
     # leaf-shaped blade on the tip, pointing the way the tail ends
     (ax, ay), (bx, by) = pts[-3], pts[-1]
     d = math.hypot(bx - ax, by - ay) or 1.0
@@ -237,8 +283,13 @@ def wing(c, shoulder, wrist, tips, scallops, root, off=0.0, arm=(3.4, 2.6, 1.8),
         return v + (0.18 if (x + 2 * y) % 9 == 0 else 0)      # faint veining
     c.poly(outline, MEMB, lv)
     for t in tips:
-        c.limb([wrist, t], [1.1, 0.7], flat=0.62 + off, tex=False, sep=False)
-    c.limb([shoulder, elbow, wrist], list(arm), off=off, sep=False)
+        c.limb([wrist, t], [1.1, 0.7], ARM, flat=0.62 + off, tex=False, sep=False)
+        if SPIKY:                                             # a claw on each finger tip
+            d = math.hypot(t[0] - wrist[0], t[1] - wrist[1]) or 1.0
+            ux, uy = (t[0] - wrist[0]) / d, (t[1] - wrist[1]) / d
+            c.put(round(t[0] + ux), round(t[1] + uy), HORN[1])
+            c.put(round(t[0] + ux * 2), round(t[1] + uy * 2), HORN[0])
+    c.limb([shoulder, elbow, wrist], list(arm), ARM, off=off, sep=False)
     if not claw:
         return
     wx, wy = int(wrist[0]), int(wrist[1])
@@ -257,6 +308,9 @@ def spines(c, pts, dist, every=2, start=1):
         r = dist(i)
         c.put(round(ax + nx * r), round(ay + ny * r), HORN[1])
         c.put(round(ax + nx * (r + 1)), round(ay + ny * (r + 1)), HORN[0])
+        if SPIKY:
+            c.put(round(ax + nx * (r + 2)), round(ay + ny * (r + 2)), HORN[0])
+            c.put(round(ax + nx * r) + 1, round(ay + ny * r), HORN[2])
 
 
 def claws(c, x, y, step=2, n=3):
@@ -268,6 +322,17 @@ def claws(c, x, y, step=2, n=3):
 # --------------------------------------------------------------------------
 # side view (east; west is the same drawing flipped)
 # --------------------------------------------------------------------------
+
+def back_spikes(c, by, breath=0):
+    """Pale spikes along the top of the side-view body (spiky styles only)."""
+    if not SPIKY:
+        return
+    for x in range(29, 62, 4):
+        top = int(round(66 + by - (11 + breath) * math.sqrt(max(0.0, 1 - ((x - 46) / 19.0) ** 2))))
+        c.pts(HORN[2], (x - 1, top), (x + 1, top))
+        c.pts(HORN[1], (x, top), (x, top - 1), (x - 1, top - 1))
+        c.pts(HORN[0], (x - 1, top - 2), (x - 1, top - 3))
+
 
 def side_leg(c, hip, foot, hind, far):
     off = 0.2 if far else 0.0
@@ -290,14 +355,14 @@ def side_leg(c, hip, foot, hind, far):
 
 def side_head(c, hx, hy, jaw):
     # far horn, then near horn, both swept back over the neck
-    c.limb(curve([(hx - 1, hy - 5), (hx - 8, hy - 11), (hx - 14, hy - 13)]), taper(9, 2.0, 0.6), HORN, off=0.3, tex=False)
+    c.limb(curve([(hx - 1, hy - 5), (hx - 8, hy - 11), (hx - 14, hy - 13)]), taper(9, 2.0, 0.6), HEADHORN, off=0.3, tex=False)
     c.limb([(hx - 1, hy + 4), (hx + 11, hy + 6 + jaw)], [2.6, 1.6], BELLY, off=0.1, tex=False)
     if jaw:
         c.poly([(hx + 1, hy + 3), (hx + 13, hy + 3), (hx + 12, hy + 5 + jaw), (hx + 2, hy + 5)], [MOUTH, MOUTH2],
                lambda x, y: 0.0 if y < hy + 5 + jaw // 2 else 1.0)
     c.ellipse(hx, hy, 7, 6)
     c.limb([(hx + 2, hy + 1), (hx + 12, hy + 2)], [5, 3.2], sep=False)
-    c.limb(curve([(hx - 3, hy - 4), (hx - 10, hy - 8), (hx - 17, hy - 9)]), taper(9, 2.3, 0.6), HORN, tex=False)
+    c.limb(curve([(hx - 3, hy - 4), (hx - 10, hy - 8), (hx - 17, hy - 9)]), taper(9, 2.3, 0.6), HEADHORN, tex=False)
     if jaw:                                                  # teeth
         c.pts(HORN[0], (hx + 5, hy + 5), (hx + 8, hy + 5), (hx + 11, hy + 5), (hx + 13, hy + 5),
               (hx + 6, hy + 5 + jaw), (hx + 9, hy + 5 + jaw))
@@ -331,6 +396,7 @@ def side(flip, bob=0, breath=0, phase=None, head=(0, 0), jaw=0, claw=None, lift=
               belly=lambda nx, ny, x, y: (2 if x % 4 == 0 else 1) if ny > 0.52 else 0)
     c.ellipse(59, 65 + by, 9, 10 + breath, sep=False,
               belly=lambda nx, ny, x, y: (2 if x % 4 == 0 else 1) if ny > 0.6 or nx > 0.62 else 0)
+    back_spikes(c, by, breath)
     # neck, plated down the throat
     neck = curve([(60, 61 + by), (67, 54 + by), (71, 46 + by + head[1] * 0.5), (hx - 4, hy + 3)])
     c.limb(neck, taper(len(neck), 8.0, 5.0), belly=(0.75, 0.66, 0.45, 3), sep=False)
@@ -372,7 +438,7 @@ def fb_foot(c, x, y, off=0.0):
 
 def south_head(c, hy, jaw=0):
     for s_ in (-1, 1):                                        # horns: up, out and back
-        c.limb(curve([(48 + s_ * 6, hy - 5), (48 + s_ * 11, hy - 13), (48 + s_ * 13, hy - 21)]), taper(9, 2.4, 0.6), HORN,
+        c.limb(curve([(48 + s_ * 6, hy - 5), (48 + s_ * 11, hy - 13), (48 + s_ * 13, hy - 21)]), taper(9, 2.4, 0.6), HEADHORN,
                off=0.25 if s_ > 0 else 0.0, tex=False)
     c.ellipse(48, hy, 9, 8)
     for y in range(hy - 9, hy - 5, 2):                        # crest spines
@@ -396,6 +462,9 @@ def south_head(c, hy, jaw=0):
         c.pts(EYE, (ex, hy - 2), (ex + s_, hy - 2), (ex, hy - 1), (ex + s_, hy - 1))
         c.pts(PUPIL, (ex, hy - 1))
         c.pts(HORN[1], (48 + s_ * 9, hy + 3), (48 + s_ * 10, hy + 4))                               # cheek spurs
+        if SPIKY:
+            c.pts(HORN[1], (48 + s_ * 3, hy - 7), (48 + s_ * 9, hy), (48 + s_ * 10, hy + 1))
+            c.pts(HORN[0], (48 + s_ * 3, hy - 8), (48 + s_ * 3, hy - 9), (48 + s_ * 10, hy), (48 + s_ * 11, hy))
 
 
 def south(bob=0, breath=0, phase=None, head=0, jaw=0, claw=0, lift=0, sway=0):
@@ -449,7 +518,7 @@ def north_head(c, hy, by):
     c.limb([(48, 60 + by), (48, hy + 5)], [8.5, 6.5])
     c.ellipse(48, hy, 8, 7)
     for s_ in (-1, 1):
-        c.limb(curve([(48 + s_ * 5, hy - 2), (48 + s_ * 10, hy - 10), (48 + s_ * 12, hy - 18)]), taper(9, 2.4, 0.6), HORN,
+        c.limb(curve([(48 + s_ * 5, hy - 2), (48 + s_ * 10, hy - 10), (48 + s_ * 12, hy - 18)]), taper(9, 2.4, 0.6), HEADHORN,
                off=0.25 if s_ > 0 else 0.0, tex=False)
         c.pts(HORN[1], (48 + s_ * 8, hy + 3), (48 + s_ * 9, hy + 4))
 
@@ -482,6 +551,9 @@ def north(bob=0, breath=0, phase=None, head=0, lift=0, flare=0, sway=0):
             if y % 4 == 0:
                 c.pts(HORN[0], (48, y))
                 c.pts(HORN[1], (47, y), (49, y))
+                if SPIKY:
+                    c.pts(HORN[0], (48, y - 1))
+                    c.pts(HORN[2], (46, y + 1), (50, y + 1))
     # tail trailing toward the viewer and off to one side
     tail(c, [(48, 79 + by), (49, 86), (57, 90), (68, 88 + sway), (75, 82 + sway)], 6.0, 1.3)
     return c.outline()
@@ -541,6 +613,7 @@ def side_fly(flip, f):
               belly=lambda nx, ny, x, y: (2 if x % 4 == 0 else 1) if ny > 0.52 else 0)
     c.ellipse(59, 65 + by, 9, 10, sep=False,
               belly=lambda nx, ny, x, y: (2 if x % 4 == 0 else 1) if ny > 0.6 or nx > 0.62 else 0)
+    back_spikes(c, by)
     # neck stretched forward and low
     neck = curve([(60, 61 + by), (68, 57 + by), (73, 52 + by), (hx - 4, hy + 3)])
     c.limb(neck, taper(len(neck), 8.0, 5.0), belly=(0.75, 0.66, 0.45, 3), sep=False)
@@ -602,6 +675,9 @@ def north_fly(f):
             if y % 4 == 0:
                 c.pts(HORN[0], (48, y))
                 c.pts(HORN[1], (47, y), (49, y))
+                if SPIKY:
+                    c.pts(HORN[0], (48, y - 1))
+                    c.pts(HORN[2], (46, y + 1), (50, y + 1))
     tail(c, [(48, 78 + by), (50, 85 + by), (59, 89 + by), (70, 87 + by + sw), (78, 82 + by + 2 * sw)], 6.0, 1.3)
     return c.outline()
 
@@ -756,14 +832,21 @@ def build():
              north=dict(head=-2, lift=2, flare=3)),
     ]
     states = []
-    for name, poses, delay in (('gold', idle, (8, 8)), ('gold_walk', walk, (3, 3, 3, 3)),
-                               ('gold_attack', attack, (2, 2, 3))):
-        frames = [[dragon(d, **pose).image() for d in DIRS] for pose in poses]
-        states.append((name, 4, delay, frames))
+
+    def ground_states(colour):
+        for name, poses, delay in (('', idle, (8, 8)), ('_walk', walk, (3, 3, 3, 3)), ('_attack', attack, (2, 2, 3))):
+            frames = [[dragon(d, **pose).image() for d in DIRS] for pose in poses]
+            states.append((colour + name, 4, delay, frames))
+    ground_states('gold')
     states.append(('transform_flash', 1, (1, 1, 1, 2, 2, 2), [[flash(i).image()] for i in range(6)]))
     # flight states go after the flash so the earlier cells keep their place in the sheet
     states.append(('gold_fly', 4, FLY_DELAY, [[fly_frame(d, f).image() for d in DIRS] for f in range(4)]))
     states.append(('shadow_fly', 4, FLY_DELAY, [[shadow(d, f).image() for d in DIRS] for f in range(4)]))
+    # the ash colour: every gold pose again in the ash style (CC BY-SA 3.0, see the top of this file)
+    use_style('ash')
+    ground_states('ash')
+    states.append(('ash_fly', 4, FLY_DELAY, [[fly_frame(d, f).image() for d in DIRS] for f in range(4)]))
+    use_style('gold')
     return states
 
 
@@ -899,6 +982,50 @@ def write_flight_preview(path, states, scale=2):
     sheet.convert('RGB').save(path)
 
 
+def write_ash_preview(path, states, scale=2):
+    """Per background, one row per dir: gold f1, then ash (2), ash_walk (4),
+    ash_attack (3), ash_fly lifted over shadow_fly (4), then gold_fly f1."""
+    by_name = dict((s[0], s) for s in states)
+    shd = by_name['shadow_fly']
+    cols = [('gold', 0)] + [(n, f) for n in ('ash', 'ash_walk', 'ash_attack', 'ash_fly')
+                             for f in range(len(by_name[n][3]))] + [('gold_fly', 0)]
+    label, ch = 14, S + FLY_LIFT
+    pw, ph = S * len(cols), (label + ch) * 4 + label + S + 6
+    sheet = Image.new('RGBA', (pw * scale, ph * scale * 2), (0, 0, 0, 255))
+    for bi, kind in enumerate(('grass', 'dark')):
+        panel = ground(kind, pw, ph)
+        mark = (255, 255, 255, 255) if kind == 'dark' else (40, 70, 30, 255)
+        notes = []
+        for di, d in enumerate(DIRS):
+            y = label + di * (label + ch) + FLY_LIFT
+            for col, (name, fi) in enumerate(cols):
+                x = col * S
+                for k in range(16, 80, 3):
+                    for px_, py_ in ((x + k, y + 32), (x + k, y + 95), (x + 16, y + 32 + k - 16), (x + 79, y + 32 + k - 16)):
+                        panel.putpixel((px_, py_), mark)
+                im = by_name[name][3][fi][di]
+                if name.endswith('_fly'):
+                    panel.alpha_composite(shd[3][fi][di], (x, y))
+                    panel.alpha_composite(im, (x, y - FLY_LIFT))
+                else:
+                    panel.alpha_composite(im, (x, y))
+                notes.append((x + 2, y - FLY_LIFT - label + 2, '%s %s f%d d%s' % (name, d, fi + 1, by_name[name][2][fi])))
+        big = panel.resize((pw * scale, ph * scale), Image.NEAREST)
+        sy = ((label + ch) * 4 + label) * scale              # true-size strip, pasted unscaled
+        x = 4
+        for name in ('gold', 'ash', 'ash_walk', 'ash_attack', 'gold_fly', 'ash_fly'):
+            for di in range(4):
+                big.alpha_composite(by_name[name][3][0][di], (x, sy))
+                x += S + 4
+        draw = ImageDraw.Draw(big)
+        for x, y, text in notes:
+            draw.text((x * scale, y * scale), text, fill=(240, 240, 240))
+        draw.text((4, sy - 12), '1x: gold, ash, ash_walk, ash_attack, gold_fly, ash_fly - f1 of each, S N E W', fill=(240, 240, 240))
+        sheet.alpha_composite(big, (0, bi * ph * scale))
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    sheet.convert('RGB').save(path)
+
+
 def main():
     states = build()
     write_dmi(ROOT / 'icons/mob/heteromorph_dragon.dmi', states)
@@ -906,6 +1033,8 @@ def main():
         write_preview(sys.argv[sys.argv.index('--preview') + 1], states)
     if '--flight-preview' in sys.argv[1:-1]:
         write_flight_preview(sys.argv[sys.argv.index('--flight-preview') + 1], states)
+    if '--ash-preview' in sys.argv[1:-1]:
+        write_ash_preview(sys.argv[sys.argv.index('--ash-preview') + 1], states)
 
 
 if __name__ == '__main__':
