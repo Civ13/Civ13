@@ -435,6 +435,84 @@ class ElectiveTests(unittest.TestCase):
         self.assertEqual(self.db.execute('SELECT COUNT(*) FROM nation_motion').fetchone()[0], 0)
 
 
+class RevoltTests(ElectiveTests.__base__):
+    """Revolt petitions and the assembly hold (tools/transfer_storage/nation_revolt.py)."""
+
+    setUp = ElectiveTests.setUp
+    ask = ElectiveTests.ask
+    become = ElectiveTests.become
+    snap = ElectiveTests.snap
+
+    def petition(self, who='ann', now=None, **kw):
+        kw.setdefault('type', 'confederation')
+        return self.ask('alpha', 'revolt', B, now=self.now if now is None else now, actor=who, role='citizen',
+                        sname=who.title(), **kw)
+
+    def sign(self, who, faction=B, now=None):
+        return self.ask('alpha', 'sign', faction, now=self.now if now is None else now, actor=who, role='citizen',
+                        sname=who.title())
+
+    def test_petition_fills_waits_and_overthrows(self):
+        self.become('monarchy')
+        self.assertIn('own rule', self.petition('val'))
+        self.assertIn('open a revolt petition', self.petition())
+        self.assertIn('already open', self.petition('bob'))
+        r = self.snap()['revolt']
+        self.assertEqual((r['type'], r['needed'], [s['account'] for s in r['signers']]), ('confederation', 5, ['ann']))
+        self.assertIn('own rule', self.sign('val', A))
+        for who in ('bob', 'cat', 'dan'):
+            self.assertIn('You sign', self.sign(who))
+        self.assertIn('has its signatures', self.sign('eve', C))
+        self.assertIn('already has', self.sign('fay'))
+        ripe = self.now
+        self.assertEqual(self.snap()['revolt']['hold_from'], ripe + 86400)
+        self.assertIn('wait a day', self.ask('alpha', 'overthrow', B, now=ripe + 10, actor='ann', role='citizen'))
+        self.assertIn('Only a signer', self.ask('alpha', 'overthrow', B, now=ripe + 86400, actor='fay', role='citizen'))
+        self.assertIn('falls', self.ask('alpha', 'overthrow', B, now=ripe + 86400, actor='eve', role='citizen'))
+        self.now = ripe + 86400
+        snap = self.snap()
+        self.assertEqual(snap['government']['type'], 'confederation')
+        self.assertEqual(snap['revolt'], {'cooldown': ripe + 86400 + 7 * 86400})
+        self.assertIn('recently', self.petition('bob', type='monarchy', person='bob', pname='Bob', pfaction=B))
+
+    def test_unfilled_petition_bars_only_its_opener(self):
+        self.become('monarchy')
+        self.petition()
+        self.now += 2 * 86400 + 1
+        self.assertIsNone(self.snap()['revolt']['cooldown'])
+        self.assertIn('too few signers', self.petition())
+        self.assertIn('open a revolt petition', self.petition('bob'))
+
+    def test_hold_window_closes(self):
+        self.become('dictatorship')
+        self.petition(type='monarchy', person='cat', pname='Cat', pfaction=C)
+        self.sign('bob')
+        self.sign('cat', C)
+        self.assertIn('has its signatures', self.sign('dan'))  # a third of 10, rounded up
+        ripe = self.now
+        late = ripe + 4 * 86400 + 1
+        self.ask('alpha', 'present', A, now=ripe + 2 * 86400, actor='val', role='citizen')  # the dictator stays
+        self.assertIn('passed', self.n.overthrow(self.nid, {'actor': 'ann'}, late))
+        self.n.snapshot(late)
+        self.assertEqual(self.snap(late)['revolt']['cooldown'], late + 7 * 86400)
+        self.assertEqual(self.snap(late)['government']['type'], 'dictatorship')
+
+    def test_rename_follows_signatures_and_candidate(self):
+        self.become('monarchy')
+        self.petition(type='monarchy', person='bob', pname='Bob', pfaction=B)
+        self.ask('alpha', 'rename', B, to='civ:alpha:Bark', now=self.now)
+        r = self.snap()['revolt']
+        self.assertEqual((r['pfaction'], r['signers'][0]['faction']), ('civ:alpha:Bark', 'civ:alpha:Bark'))
+
+    def test_request_needs_signer_name(self):
+        from tools.transfer_storage.nations import nation_request_valid
+        base = {'op': 'sign', 'actor': 'ann', 'faction': B, 'role': 'citizen'}
+        self.assertFalse(nation_request_valid(base))
+        self.assertTrue(nation_request_valid(dict(base, sname='Ann')))
+        self.assertTrue(nation_request_valid(dict(base, op='revolt', sname='Ann', type='confederation')))
+        self.assertFalse(nation_request_valid(dict(base, op='revolt', sname='Ann', type='monarchy')))
+
+
 class AgentRoundTripTests(unittest.TestCase):
     TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40}
 
