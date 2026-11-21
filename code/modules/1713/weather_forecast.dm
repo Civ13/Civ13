@@ -210,7 +210,7 @@ var/global/list/weather_vanes = list()
 	return "The column is steady: no change in the next quarter of an hour."
 
 /obj/item/weapon/barometer/attack_self(mob/user)
-	to_chat(user, SPAN_NOTICE("You tap the glass of \the [src]. [barometer_reading(user)]"))
+	to_chat(user, SPAN_NOTICE("You tap the glass of \the [src]. [barometer_hpa_reading(user)]"))
 
 /obj/item/weapon/barometer/examine(mob/user)
 	..()
