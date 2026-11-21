@@ -518,6 +518,7 @@ SUITES = {
     'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
         'paths': ('tests/cleaning_rag/',), 'shared_paths': (
             'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
     'lipstick_application': {'files': ('tests/lipstick_application/test_completion.py',),
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
@@ -808,6 +809,10 @@ SUITES = {
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
         'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
+    # Execution devices recheck occupancy after the placement wait (issue #6499).
+    'punishment_race': {'files': ('tests/punishment_race/test_occupancy.py',),
+        'paths': ('tests/punishment_race/',), 'shared_paths': (
+            'code/modules/1713/punishment.dm',)},
     'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py', 'tests/cattle_plough/test_detach_race.py'),
         'paths': ('tests/cattle_plough/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
