@@ -523,6 +523,11 @@ var/global/list/airborne_aircraft = list()
 		var/turf/T = get_step(F.loc, m_dir)
 		// The black ring wall of a bounded flight level is an edge too, at both heights.
 		if (!T || istype(T, /turf/wall/indestructable/black))
+			// Over a linked edge she flies on to the land her heading meets (aircraft_edge.dm).
+			if (!edge_blocked && air_edge_travel_on())
+				if (!air_edge_fly_on(m_dir))
+					edge_blocked = TRUE
+				return FALSE
 			if (!edge_blocked)
 				pilot_message(SPAN_WARNING(length(air_crossing_destinations()) ? "You are at the edge of the land. Use Fly to another land on the control column, or turn back before you stall." : "You are at the edge of the world. Turn back or you will stall."))
 			edge_blocked = TRUE
