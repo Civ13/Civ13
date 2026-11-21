@@ -63,13 +63,6 @@ var/global/datum/karma_admin_window/karma_admin_window = new
 	var/label = "K: [standing_label ? standing_label : "-"] +[summary["kindly"]]/-[summary["poorly"]]"
 	return " (<a href='?src=\ref[karma_admin_window];karma_ckey=[ckey];karma_act=refresh' title='Hidden karma: weighted [summary["kindly_weighted"]] kindly, [summary["poorly_weighted"]] poorly'><font color='[colour]'>[label]</font></a>)"
 
-// One line for the Player Panel and prayer lines: standing and weighted counts.
-/proc/karma_brief(ckey)
-	var/list/dossier = karma_dossier(ckey)
-	var/list/summary = dossier["summary"]
-	var/list/standing = dossier["standing"]
-	return "[standing ? "Standing [karma_standing_name(standing["value"])]" : "No standing"], kindly [summary["kindly"]] ([summary["kindly_weighted"]]), poorly [summary["poorly"]] ([summary["poorly_weighted"]])"
-
 /datum/karma_admin_window/proc/show(client/C, ckey)
 	if (!C || !C.holder || !(C.holder.rights & R_ADMIN))
 		return

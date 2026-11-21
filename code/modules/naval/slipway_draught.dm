@@ -20,10 +20,17 @@
 // The post keeps the draught as its design code (draught_code) beside the
 // usual pieces_done and paid, so a half-built ship saves with the post. What
 // is already built is ordinary floors and fittings that save on their own.
+//
+// When the last piece is fitted she is launched from the post: she slides
+// down the ways along the post's facing until every tile of her floats on
+// open water, carrying everyone aboard, and her tiller commissions her as a
+// built hull under the name on her draught. The berth must have that water
+// ahead of it before she is laid out.
 // ============================================================
 
 #define SLIPWAY_FLOOR_TIME 30 // ticks to lay one floor tile
 #define SLIPWAY_FIT_TIME 50   // ticks to set one fitting
+#define SLIPWAY_DRAUGHT_RUN 12 // tiles she may slide past her own length to float
 
 // A ship's draught as a piece plan: one piece per floor tile, then one per
 // fitting. order[i] is list(sheet key "x,y", "floor" or the piece key).
@@ -176,6 +183,8 @@
 				return "\The [M] at [T.x],[T.y] already floors part of the berth."
 			if (M.density)
 				return "\The [M] is in the way on the berth at [T.x],[T.y]."
+	if (draught_landing(berth, draught_length(D)) < 0)
+		return "There is no open water for the [D.name] within [draught_length(D) + SLIPWAY_DRAUGHT_RUN] tiles [dir2text(dir)] of the slipway. Face the slipway to the water with a wrench."
 	return null
 
 /obj/structure/slipway/proc/lay_draught(datum/ship_draught/D)
@@ -188,6 +197,9 @@
 // Using a ship's draught on an empty post lays her out on the berth.
 /obj/structure/slipway/proc/offer_draught(mob/living/human/H, obj/item/ship_draught/S)
 	if (!istype(H) || busy || !Adjacent(H))
+		return
+	if (S.sub_draught_kind())
+		to_chat(H, SPAN_WARNING("A submarine is not built on a slipway: float her hull sections on the water and assemble her there."))
 		return
 	var/datum/ship_draught/D = S.draught()
 	var/refusal = draught_refusal(D)
@@ -279,6 +291,126 @@
 		H.visible_message(SPAN_NOTICE("[H] works on the [P.name]."), SPAN_NOTICE("You fit [fitted] piece\s. [status_text()]"))
 	return TRUE
 
+// ---- The launch ----
+
+// Her length from stern to bow, in tiles.
+/proc/draught_length(datum/ship_draught/D)
+	var/list/B = D.extent()
+	return B ? B[4] - B[2] + 1 : 0
+
+// One tile along the ways: list(dx, dy).
+/obj/structure/slipway/proc/ways_step()
+	switch (dir)
+		if (EAST)
+			return list(1, 0)
+		if (WEST)
+			return list(-1, 0)
+		if (SOUTH)
+			return list(0, -1)
+	return list(0, 1)
+
+// The slide, in tiles, that puts every tile of the berth on open water with
+// nothing in the way and no other floor alongside; -1 when there is none.
+/obj/structure/slipway/proc/draught_landing(list/berth, length)
+	var/list/W = ways_step()
+	var/list/hull = list()
+	for (var/turf/T in berth)
+		hull[T] = TRUE
+	for (var/k = 1, k <= length + SLIPWAY_DRAUGHT_RUN, k++)
+		var/list/dest = list()
+		var/ok = TRUE
+		for (var/turf/T in berth)
+			var/turf/D = locate(T.x + W[1] * k, T.y + W[2] * k, z)
+			if (!D || !istype(D, /turf/floor/beach/water))
+				ok = FALSE
+				break
+			if (!hull[D] && (hull_floor_in(D) || vessel_at(D) || craft_at(D) || slipway_dense_in(D)))
+				ok = FALSE
+				break
+			dest[D] = TRUE
+		if (!ok)
+			continue
+		// She must float free, not joined to a jetty or another hull.
+		for (var/turf/D in dest)
+			for (var/d in cardinal)
+				var/turf/N = get_step(D, d)
+				if (N && !dest[N] && !hull[N] && hull_floor_in(N))
+					ok = FALSE
+			if (!ok)
+				break
+		if (ok)
+			return k
+	return -1
+
+// TRUE when something solid stands on T.
+/proc/slipway_dense_in(turf/T)
+	if (T.density)
+		return TRUE
+	for (var/atom/movable/M in T)
+		if (M.loc == T && M.simulated && M.density && !isliving(M))
+			return TRUE
+	return FALSE
+
+// Launches the finished draught. Returns her tiller, or the reason she stayed.
+/obj/structure/slipway/proc/launch_draught()
+	var/datum/slipway_design/draught/P = draught_plan()
+	if (!P)
+		return "No ship is being built here."
+	if (!finished())
+		return "The [P.name] is not finished: [status_text()]"
+	var/hull_name = P.name
+	var/list/berth = draught_berth(P.draught)
+	if (!berth)
+		return "The berth runs off the edge of the world."
+	var/list/hull = list()
+	for (var/turf/T in berth)
+		if (istype(T, /turf/floor/trench) && !istype(T, /turf/floor/trench/flooded))
+			return "The dry dock is not flooded: open it to the water first."
+		if (hull_floor_in(T))
+			hull += T
+	var/list/helms = P.draught.helms()
+	var/list/xy = splittext(helms[1], ",")
+	var/turf/helm_at = draught_turf(P.draught, text2num(xy[1]), text2num(xy[2]))
+	var/obj/structure/hull_tiller/tiller = locate() in helm_at
+	if (!tiller || !(helm_at in hull))
+		var/list/helm_cell = P.draught.cell(text2num(xy[1]), text2num(xy[2]))
+		return "Her helm is gone: set her [helm_cell[2] == "O" ? "steering oar" : "tiller"] back on its floor where the draught shows it."
+	var/k = draught_landing(berth, draught_length(P.draught))
+	if (k < 0)
+		return "There is no open water for her within [draught_length(P.draught) + SLIPWAY_DRAUGHT_RUN] tiles [dir2text(dir)] of the slipway."
+	// The ways: every tile she slides over must be clear.
+	var/list/W = ways_step()
+	for (var/step = 1, step < k, step++)
+		for (var/turf/T in hull)
+			var/turf/D = locate(T.x + W[1] * step, T.y + W[2] * step, z)
+			if (!D || (D in berth))
+				continue
+			if (slipway_dense_in(D) || (istype(D, /turf/floor/trench) && !istype(D, /turf/floor/trench/flooded)))
+				return "[capitalize(D.name)] at [D.x],[D.y] is in the way down the ways."
+	// She slides as one hull, everyone aboard with her (craft/built_body.dm).
+	var/datum/craft_body/built/B = new
+	B.hull_name = hull_name
+	B.adopt(hull, helm_at, dir)
+	var/list/box = B.box(B.offsets)
+	B.slide_time = glide_dock_time(k)
+	var/moved = B.move_to(B.px + box[1] + W[1] * k, B.py + box[2] + W[2] * k, dir)
+	B.slide_time = 0
+	if (!moved)
+		B.set_afloat(FALSE)
+		return "The launch failed: [B.last_refusal]."
+	design = null
+	draught_code = ""
+	pieces_done = 0
+	paid = list()
+	clear_frames()
+	helm_at = get_turf(tiller)
+	helm_at.visible_message(SPAN_NOTICE("The [hull_name] slides down the ways and into the water with a great splash!"))
+	var/problem = tiller.commission(hull_name, dir)
+	if (problem)
+		log_game("Slipway: the [hull_name] launched at [helm_at.x],[helm_at.y],[helm_at.z] but was not commissioned: [problem]")
+		return "She is afloat, but her tiller could not commission her: [problem]"
+	return tiller
+
 // ---- The outline on the berth ----
 
 // Shows what is still to build on tile T (sheet key): the cradle where her
@@ -326,3 +458,4 @@
 
 #undef SLIPWAY_FLOOR_TIME
 #undef SLIPWAY_FIT_TIME
+#undef SLIPWAY_DRAUGHT_RUN

@@ -198,8 +198,11 @@ class KarmaAdmin(unittest.TestCase):
         self.assertIn('if (!C || !check_rights(R_ADMIN))', self.dm)
         with open(os.path.join(ROOT, 'code', 'modules', 'admin', 'admin_verbs.dm'), encoding='utf-8') as f:
             self.assertIn('/client/proc/cmd_admin_karma,', f.read())
-        with open(os.path.join(ROOT, 'code', 'modules', 'admin', 'admin.dm'), encoding='utf-8') as f:
-            self.assertIn('karma_brief(karma_mob_ckey(M))', f.read())
+        with open(os.path.join(ROOT, 'code', 'modules', 'admin', 'player_panel_pages.dm'), encoding='utf-8') as f:
+            panel = f.read()
+        # The Player Panel shows the karma card to admins only.
+        self.assertIn('if (karma_key && (rights & R_ADMIN))', panel)
+        self.assertIn('player_karma_tiles_html(karma_key)', panel)
 
     def test_every_change_needs_a_reason_and_is_logged(self):
         for action in ('karma_set_standing(', 'karma_set_bar(', 'shared_records.revoke(target'):

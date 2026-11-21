@@ -227,7 +227,7 @@ function Chart({ ui }: { ui: UI }) {
   const living = !!ui.data.locked;
   return <>
     <Section title="Birth chart">
-      <p className="kit-hint">Every character is born under one of twelve signs. A sign leans your starting skills a little: three a bit stronger, three a bit weaker. Skills still grow with use as before.</p>
+      <p className="kit-hint">Every character is born under one of twelve signs. A sign leans your starting skills a little: three a bit stronger, three a bit weaker. Its first strength also trains a little faster and its first weakness a little slower, unless one of your traits already changes how fast that skill trains.</p>
       {living
         ? <NoticeBox>{current ? `This character was born under ${signs.find(sign => str(sign.id) === current)?.name ?? current}. A new character can be born under another sign.` : 'This character has no sign.'}</NoticeBox>
         : <div className="setup-chart-random">
@@ -242,7 +242,7 @@ function Chart({ ui }: { ui: UI }) {
     <div className="setup-traits" role="group" aria-label="Signs">{signs.map(sign => {
       const id = str(sign.id), on = living ? id === current : id === choice;
       return <div key={id} className={on ? 'setup-trait setup-trait-on' : 'setup-trait'}>
-        <div className="setup-trait-head"><strong>{str(sign.name)}</strong><Pill tone="muted">{str(sign.season)}</Pill>{on && <Pill tone="ready">{living ? 'Yours' : 'Chosen'}</Pill>}</div>
+        <div className="setup-trait-head">{/^[\w-]+\.png$/.test(str(sign.image)) && <img className="setup-chart-glyph" src={str(sign.image)} width={48} height={48} alt="" />}<strong>{str(sign.name)}</strong><Pill tone="muted">{str(sign.season)}</Pill>{on && <Pill tone="ready">{living ? 'Yours' : 'Chosen'}</Pill>}</div>
         <p className="setup-trait-desc">{str(sign.calling)}</p>
         <p className="setup-chart-up">{str(sign.strengths)}</p>
         <p className="setup-chart-down">{str(sign.weaknesses)}</p>

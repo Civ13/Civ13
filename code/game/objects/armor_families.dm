@@ -23,6 +23,9 @@ var/global/list/armor_family_multipliers = list(
 // Graded stock (steel_grades.dm): blows by one factor, arrows by another.
 /obj/item/clothing/var/armor_blow_grade = 1
 /obj/item/clothing/var/armor_arrow_grade = 1
+// An under-layer worn beneath other armor only cushions: it keeps its blunt
+// value and half its arrow value, and gives nothing against cuts or thrusts.
+/obj/item/clothing/var/armor_underlayer = FALSE
 
 // The family value for one kind of hit, or null when the piece has no family
 // or the family does not set that kind.
@@ -37,7 +40,10 @@ var/global/list/armor_family_multipliers = list(
 	if (!(type in multipliers))
 		return null
 	// + 0.001: 45 x 1.3 is 58.4999 in floats.
-	var/value = min(ARMOR_FAMILY_CAP, round(armor_tier * multipliers[type] + 0.001, 1))
+	if (armor_underlayer && (type == HIT_CUT || type == HIT_PIERCE))
+		return 0
+	var/share = (armor_underlayer && type == "arrow") ? 0.5 : 1
+	var/value = min(ARMOR_FAMILY_CAP, round(armor_tier * multipliers[type] * share + 0.001, 1))
 	var/grade = type == "arrow" ? armor_arrow_grade : armor_blow_grade
 	if (grade > 1)
 		value = max(value, min(ARMOR_GRADE_CAP, round(value * grade, 1)))
@@ -72,6 +78,15 @@ var/global/list/armor_family_multipliers = list(
 /obj/item/clothing/suit/armor/ancient/linen
 	armor_family = ARMOR_FAMILY_PADDED
 	armor_tier = ARMOR_TIER_HIDE
+// Worn under armor on the uniform: cushions only.
+/obj/item/clothing/accessory/armor/padded_jack
+	armor_family = ARMOR_FAMILY_PADDED
+	armor_tier = ARMOR_TIER_HIDE
+	armor_underlayer = TRUE
+// Mail worn on the uniform's armor slot protects as mail.
+/obj/item/clothing/accessory/armor/chainmail
+	armor_family = ARMOR_FAMILY_MAIL
+	armor_tier = ARMOR_TIER_IRON
 /obj/item/clothing/suit/armor/ancient/aztec_harness
 	armor_family = ARMOR_FAMILY_PADDED
 	armor_tier = ARMOR_TIER_HIDE
@@ -317,19 +332,35 @@ var/global/list/armor_family_multipliers = list(
 	return wear
 
 // A thrust slips between rings and lames: mail and lamellar on the struck
-// part give a pierce hit ARMOR_GAP_PENETRATION extra penetration.
+// part give a pierce hit ARMOR_GAP_PENETRATION extra penetration, unless
+// plate also covers it.
 /mob/living/human/armor_gap_penetration(def_zone, attack_flag)
 	if (attack_flag != HIT_PIERCE || !def_zone)
 		return 0
 	var/obj/item/organ/external/affecting = isorgan(def_zone) ? def_zone : get_organ(def_zone)
 	if (!affecting)
 		return 0
+	var/gaps = FALSE
 	for (var/obj/item/clothing/C in list(head, wear_mask, wear_suit, w_uniform, gloves, shoes))
-		if (!(C.body_parts_covered & affecting.body_part))
-			continue
-		if (C.armor_family == ARMOR_FAMILY_MAIL || C.armor_family == ARMOR_FAMILY_LAMELLAR)
-			return ARMOR_GAP_PENETRATION
-	return 0
+		var/list/layers = list(C) + C.accessories
+		for (var/obj/item/clothing/L in layers)
+			if (!(L.body_parts_covered & affecting.body_part))
+				continue
+			// Plate over the part leaves no gap to find.
+			if (L.armor_family == ARMOR_FAMILY_PLATE)
+				return 0
+			if (L.armor_family == ARMOR_FAMILY_MAIL || L.armor_family == ARMOR_FAMILY_LAMELLAR)
+				gaps = TRUE
+	return gaps ? ARMOR_GAP_PENETRATION : 0
+
+// Tell both sides when a thrust got through the gaps in mail or lamellar.
+/mob/living/human/proc/armor_gap_message(obj/item/I, mob/living/user, blocked, hit_zone)
+	if (blocked >= 2 || !I || I.get_hit_kind() != HIT_PIERCE || !armor_gap_penetration(hit_zone, HIT_PIERCE))
+		return FALSE
+	to_chat(src, "<span class='warning'>The point finds a gap in your armor!</span>")
+	if (user && user != src)
+		to_chat(user, "<span class='notice'>Your thrust finds a gap in [src]'s armor.</span>")
+	return TRUE
 
 // A blow that armor fully stops still bruises the body under it.
 /mob/living/human/proc/armor_bruise(obj/item/I, effective_force, blocked, hit_zone)
@@ -341,3 +372,47 @@ var/global/list/armor_family_multipliers = list(
 	apply_damage(effective_force * ARMOR_BRUISE_SHARE, BRUTE, hit_zone, 0, used_weapon = I)
 	to_chat(src, "<span class='warning'>The blow bruises your [affecting.name] through your armor.</span>")
 	return TRUE
+
+// Examine says what a family piece is good and bad against, and what it is
+// made of, so players can choose armor without reading numbers.
+/obj/item/clothing/examine(mob/user)
+	..(user)
+	var/strengths = armor_family_strengths()
+	if (strengths)
+		to_chat(user, SPAN_NOTICE(strengths))
+
+/obj/item/clothing/proc/armor_family_strengths()
+	if (!armor_family || armor_tier <= 0)
+		return null
+	if (armor_underlayer)
+		return "Worn under armor, it softens blows and arrows. On its own it does little against blades or points."
+	var/material = armor_tier_name(armor_tier)
+	var/made = material ? " It is made of [material]." : ""
+	switch (armor_family)
+		if (ARMOR_FAMILY_PADDED)
+			return "Padded armor: it softens blows and arrows well, but blades and points get through more easily.[made]"
+		if (ARMOR_FAMILY_LEATHER)
+			return "Leather armor: light and good against cuts, but weak against thrusts and blows.[made]"
+		if (ARMOR_FAMILY_LAMELLAR)
+			return "Lamellar armor: very good against arrows and good against cuts, but a thrust can find the gaps.[made]"
+		if (ARMOR_FAMILY_MAIL)
+			return "Mail: very good against cuts, but blows go through it and a thrust can find the gaps. Wear padding underneath.[made]"
+		if (ARMOR_FAMILY_PLATE)
+			return "Plate armor: strong against cuts, thrusts and arrows, and fair against blows, but heavy.[made]"
+	return null
+
+/proc/armor_tier_name(tier)
+	switch (tier)
+		if (ARMOR_TIER_HIDE)
+			return "hide or cloth"
+		if (ARMOR_TIER_LACED)
+			return "laced leather"
+		if (ARMOR_TIER_CHITIN)
+			return "chitin"
+		if (ARMOR_TIER_BRONZE)
+			return "bronze"
+		if (ARMOR_TIER_IRON)
+			return "iron"
+		if (ARMOR_TIER_STEEL)
+			return "steel"
+	return null

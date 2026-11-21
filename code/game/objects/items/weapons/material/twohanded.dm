@@ -29,7 +29,7 @@
 
 /obj/item/weapon/material/twohanded/update_held_icon()
 	var/mob/living/M = loc
-	if(istype(M) && !issmall(M) && ((M.r_hand == src && !M.l_hand) || (M.l_hand == src && !M.r_hand)))
+	if(istype(M) && !issmall(M) && has_free_offhand(M))
 		wielded = 1
 		force = force_wielded
 		name = "[base_name] (wielded)"
@@ -40,6 +40,20 @@
 		name = "[base_name]"
 	update_icon()
 	..()
+
+// A missing or stumped hand is not a free hand: wielding needs the other hand's item slot empty and its organ present.
+/obj/item/weapon/material/twohanded/proc/has_free_offhand(mob/living/M)
+	var/offhand_slot
+	if(M.r_hand == src && !M.l_hand)
+		offhand_slot = slot_l_hand
+	else if(M.l_hand == src && !M.r_hand)
+		offhand_slot = slot_r_hand
+	else
+		return FALSE
+	if(ishuman(M))
+		var/mob/living/human/H = M
+		return H.has_organ_for_slot(offhand_slot)
+	return TRUE
 
 /obj/item/weapon/material/twohanded/update_force()
 	base_name = name

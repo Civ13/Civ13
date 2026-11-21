@@ -31,7 +31,7 @@ grade and arrows by its pierce grade, never past 90 and never lowering a value.
 
 ## Families
 
-- Padded: linothorax, aztec harness, padded head-caps, arabic turban helmets,
+- Padded: linothorax, padded jack (under-layer), aztec harness, padded head-caps, arabic turban helmets,
   emirate turban.
 - Leather: leather armor, steppe leather armor (laced), leather helmet,
   skullcap, hatchigane, khepresh.
@@ -39,13 +39,33 @@ grade and arrows by its pierce grade, never past 90 and never lowering a value.
   armor and helmets, bronze egyptian and chinese lamellar, scaled and segmented
   armor, alligator scale (hide), chitin, varangian lamellar, imperial chinese
   armor, kote and tsuranuki.
-- Mail: early and medieval chainmail, hauberk, emirate armor, coif, mamluk coif.
+- Mail: early and medieval chainmail, chainmail on the armor slot, hauberk, emirate armor, coif, mamluk coif.
 - Plate: plated armor and its colors, samurai lord armor and helmets (steel),
   bronze, iron and imperial chestplates, medieval, roman, gaelic and classical
   bronze helmets, sallets, morion, cabasset, gauntlets, plated boots.
 
+## Layering
+
+A padded jack (5 cloth, crafted like linothorax) goes on the uniform's armor
+slot under any suit armor. As an under-layer (`armor_underlayer`) it keeps the
+padded blunt value (39) and half the arrow value (15) and gives nothing
+against cuts or thrusts, so it covers mail's weakness to blows without
+stacking blade protection. Layers add up as worn clothing always has.
+
+Chainmail worn on the armor slot protects as iron mail. A thrust finds the
+gaps in mail and lamellar on the struck part unless plate also covers it
+(`docs/melee-hit-kinds.md`).
+
 Fantasy, sci-fi, modern and other armor has no family and keeps its own
 values; cut, pierce and blunt fall back to its melee value.
+
+## Telling players
+
+Examining a family piece adds one line saying what it is good and bad against
+and what it is made of (`armor_family_strengths`); an under-layer says it
+softens blows and arrows. A thrust that gets through mail or lamellar tells
+both sides it found a gap, and a blow stopped by armor tells the wearer it
+bruised them.
 
 ## Era windows
 

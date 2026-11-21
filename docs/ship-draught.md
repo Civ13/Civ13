@@ -63,19 +63,55 @@ Probe: `tests/naval_carrier/draught_probe.dm`
 recipe (1 wood, paper & printing, Papermaking, beside the blank map). Hold it
 with a pen, pencil or pigment in either hand and choose **Draw on the sheet**.
 
-The window draws the sheet as a 40x40 grid, bow up, with a line down the
-middle column. Tools: plank and steel floors, erase, deck above on and off,
-every piece in `ship_draught_pieces` with a facing, a rectangle mode, a
-port/starboard mirror about the middle column, undo, clear, and the ready-made
-draughts in `ship_draught_examples()` (rowing galley, sloop, steel cutter).
+The window (1060x780, the brown and gold of Character Setup) is one page,
+`ship_designer_page()`, and one block of JSON, so its palette is built from
+`ship_draught_floors` and `ship_draught_pieces`:
+
+- `PIECES`: `[key, name, turns, palette group, helm]`. The group is the
+  heading a piece is drawn under (`ship_designer_groups`; a piece in none goes
+  under "Other"). A helm cannot be drag-painted.
+- `FLOORS`: `[key, name]`.
+
+The sheet is a parchment view onto the 40x40 grid, bow up, with BOW, STERN,
+PORT and STARBOARD on its edges and a dashed line down the middle column.
+**Fit ship** shows her at up to full sprite size (32 px a tile), **Whole
+sheet** all forty tiles; the wheel and the + and - buttons zoom, the middle
+button drags the sheet. A click is turned into a tile from the canvas's own
+rectangle and the view, never from a fixed tile size, so the drawing lands
+under the pointer however the window is sized.
+
+Tools: every floor, deck above (right-click takes it off), erase, every piece
+with a facing (the arrows or R), freehand or box, a port/starboard mirror
+about the middle column, undo and redo (Ctrl+Z, Ctrl+Y), clear, and the
+ready-made draughts in `ship_draught_examples()` (rowing galley, sloop, steel
+cutter). The tile under the pointer shows a ghost of what a click will lay,
+mirrored when the mirror is on, and a line under the sheet names what is on
+it. The hull is edged in ink and a deck above is hatched in gold.
+
+Floors and pieces are drawn as pictures on the grid and on the palette; a
+gold arrow marks the facing of a piece that turns. The pictures are PNGs
+under `icons/ship_designer/`, made by
+`python3 scripts/build_ship_designer_icons.py` (`--check` reports stale ones)
+and sent to the window with `browse_rsc` as `shipd_*.png`
+(`ship_designer_sprites`). Most are cut from the game's DMIs; a fitting that
+stands on a floor gets a one-pixel ink outline so it reads on planks and
+steel alike. The ship mast and the steering oar are plan views placed pixel
+by pixel in that script, because their game sprites say nothing at one tile.
+Rerun the script and add the new names to the list when a floor or piece is
+added. A picture that fails to load falls back to the flat floor colour or
+the piece's letter.
 
 The window never reckons anything itself. About half a second after each
 change it sends the drawing as a `C13SHIP` code in parts of 900 characters
 (`ship=begin/part/end`, each part acknowledged like the painting editor); the
 server parses it with `ship_draught_from_code()` and answers with
-`summary_text()` (`shipStats`). Summaries are limited to one per 0.3 s per
-sheet. **Save to the sheet** stores the drawing (finished or not) on the item.
-The server re-checks the drawer is holding the sheet and a pen on every part.
+`summary_data()` as JSON (`shipStats`): the same figures as `summary_text()`,
+which the **Her figures** panel lays out as size against the tile cap, decks,
+cost, speed, ballast and a green or orange note on whether she can be built.
+Summaries are limited to one per 0.3 s per sheet. **Save to the sheet**
+stores the drawing (finished or not) on the item and answers `shipSaved`,
+which clears the window's "Unsaved changes" mark. The server re-checks the
+drawer is holding the sheet and a pen on every part.
 
 ## Building on the slipway
 
@@ -102,3 +138,69 @@ what is already built saves as ordinary objects. Several shipwrights can work
 at once, each fitting the next piece in turn, and a worker keeps going while
 the stack in hand pays (`add_draught_piece()`). Giving her up takes the
 draught off the post and leaves what is built.
+
+## Launching her
+
+`launch_draught()`. Laying a draught out already needs water ahead:
+`draught_landing()` finds the first slide, at most her length plus 12 tiles
+along the post's facing, that puts every berth tile on water with no floor,
+ship or solid thing there and no other floor alongside (she must float free).
+When she is finished, the post offers the launch. The tiles she slides over
+must be clear, a dry dock must be flooded, and her helm must still stand where
+the draught puts it. Her floored tiles are adopted by a temporary built body
+and moved in one slide (`move_to` with `slide_time`), carrying everyone and
+everything aboard; her tiller then commissions her under the draught's name
+with her bow along the ways. The post is cleared.
+
+## Kinds of sheet
+
+A ship's draught can carry more than one kind of plan. `draught_kinds`
+(`code/modules/naval/draught_kinds.dm`) lists each kind by its design code
+prefix with the proc that reads its code and the sheet proc that keeps it:
+`SHIP` (`ship_draught_from_code`, `take`) and `SUB`
+(`sub_draught_from_code`, `take_sub`). Pasting a code onto a sheet
+(`paste_any_code()`) goes through the table, so a later planner (a spaceship,
+a rocket, a satellite, a station) is one more row with its own datum and
+window. `S.draught()` still returns only a ship, so the slipway never sees a
+submarine; it refuses a submarine sheet by name.
+
+## Submarine sheets
+
+`code/modules/naval/sub_draught.dm` and the window in `sub_designer.dm`.
+`/datum/sub_draught` keeps `length` (`SUB_DRAUGHT_MIN_LENGTH` to
+`SUB_DRAUGHT_MAX_LENGTH`, 4 to 7: the longest boat turns in
+`VEHICLE_MAX_TURNING_SQUARE`) and `cells` keyed `"col,row"` like
+`submarine_layouts`: column 1 is starboard, row 1 the bow, three columns
+(`SUB_DRAUGHT_BEAM`). Each cell is `list(frame, fitting, bow-side wall)`:
+
+- frame: `sub_draught_frames` (`h` pressure hull, `x` lock-out hatch, only in
+  side sections between the bow and stern rows);
+- fitting: `sub_draught_fittings` (wheel, ballast and periscope station,
+  battery bank, air bank, locker, berth) or null; none on the stern row;
+- wall: `sub_draught_walls` (`b` bulkhead, `d` watertight door) across the
+  section's bow side, or null.
+
+The builder never draws the parts every boat has: the glass bow on row 1, the
+hull down both sides (open at a hatch), and the stern row as the engine room
+(the outer sections sealed tanks, the diesel and its tank in the middle).
+`wall_code()` writes a section's walls in the `set_hull_walls()` format and
+`layout()` gives the whole boat as a `submarine_layouts` entry.
+
+`problems()`: one wheel, one station, at least one lock-out hatch, and no
+bulkhead right across her without a door. `costs()` is her sections
+(`SUB_DRAUGHT_SECTION_STEEL` each), `sub_draught_fixed_cost` (the controls and
+the stern fuel tank) and her fittings' hand recipes; `tests/ship_draught`
+holds all of them to the recipe file.
+
+Codes: `C13SUB/1/<name>/<length>/<col,row,frame,fitting,wall>;...` with every
+section listed and `-` for none. `sub_draught_examples()` are the pen's Scout
+and Explorer read from `submarine_layouts`. "Draw her lines" at a boat's
+ballast and periscope station reads each hull section's `hull_tile`
+(`<class>_<col>_<row>`), walls and fittings back into a sheet
+(`sub_draught_survey()`).
+
+The window (`open_sub_designer()`) is a 3-column grid, bow to the top and
+starboard on the right, talking to a `/datum/sub_designer` per drawer. Every
+change is sent as a code; the server answers with `summary_text()`, and Save
+keeps it on the sheet. Tests: `tests/submarine/sheet.dm` in the submarine
+probe.

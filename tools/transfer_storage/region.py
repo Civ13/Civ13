@@ -1069,7 +1069,9 @@ class RegionStore(TrainLeaseQueue):
         if type(body) is not dict:
             raise TransferError('bad nation request')
         request = {k: body[k] for k in ('op', 'actor', 'faction', 'name', 'with', 'nation', 'applicant', 'yes',
-                                        'candidate', 'to', 'tier') if k in body}
+                                        'candidate', 'to', 'tier', 'issuer', 'type', 'person', 'pname', 'pfaction',
+                                        'religion', 'age', 'role', 'motion', 'choice', 'citizens',
+                                        'wealth', 'sname') if k in body}
         if not nation_request_valid(request):
             raise TransferError('bad nation request')
         if not request['faction'].startswith('civ:%s:' % self.region):

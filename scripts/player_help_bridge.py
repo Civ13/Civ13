@@ -70,20 +70,20 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3997aa497cc19f508e128fc4cfd4488fca4c2a48'
+WIKI_REVIEWED_REVISION = 'a62b62db2d94c55ed14523bf8c075e27887ca926'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('68f043ddc232b3d7c6043122a858695c3478f66e35c4ea0e2c5d74f032de44cf', 'character skills traits languages'),
+    'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('1e10b1f26c4e2f6d2659b32f0e6b045bb04b2129516382a37479574b9f107bcc', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
-    'guides/Guide_to_Combat.md': ('de84bad88a540fa643d5cdbd2bf83fddff72206d534158a000aed6e68b4ec937', 'combat fight fighting intent aim shoot melee grenade cover'),
+    'guides/Guide_to_Combat.md': ('2ad471dd049e3953df3694c57d20bf9319aeaf264c35f46527210efa0ed6828d', 'combat fight fighting intent aim shoot melee grenade cover'),
     'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('bea441ce9370c9866fc3266fb0b695ec6786028e75506b8be8f007a5e217317f', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('7edfde6819a8a1724497c66f627a9a46d55a30b7734f4d89d6a3be82aa1dd831', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('24b870c09bbebbf103a2d14ba1a5c149d11b55ae5603d48838ea357896f8f16b', 'cooking cook food meal ingredients'),
-    'guides/Guide_to_Exercise.md': ('78978bc3f36321ef3ec2faac33df4f26aca6a519962b88fa5d8a474db8b01f19', 'exercise training strength weights running fatigue'),
+    'guides/Guide_to_Exercise.md': ('611c065dc4b6c0a2a75dcbd70500f114fd03621e7d47bfd769d5bc7c87549770', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('0fd2e652e8b00706b9661fa6fd5b608ca4eebcfc3dbba48044fbf2ce0bfa2dee', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('4c4df8eecd80fdfc521fae4b7aa0a3544ddaaba6c96c0fbe3bd67d73d84352d0', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('1b0cb495916de8649525deabdd27273a00a9b188129619e850412cd2d351d50d', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('a1dceecdde4f7f2f1c0607e292ab5f91f32651324faa743d38b24f3fb18c2c7f', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('9a9624b8100b78c30e2dba394b9276a1b7c72eab5f875b03c80ca3294c0b9d2c', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Survival.md': ('50341c5c6a632a6cede79031fcec567c320e63e9b5e381a7e79cd1fcd9e4ddd8', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
@@ -119,7 +119,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('eb5fa6ded23f5446aca18e3c82fd1589a670374583d2b95967fede0e75e9e537', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('82489284ef440ef40d8d09acee2cb97ff4f16bcdf5ecfe39cb4169a59e68c692', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('56a33c3e86b252b58df3c72ee3a7c44ca1dc49567b9408e226394b55c68041d9', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -135,7 +135,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('9f24388939799c86a0c28017d695994257a70175480e0b6836907e6e4e68b963', 'guides overview list of guides index'),
+    'guides_overview.md': ('76c2236776c06f3e0d95935dae0c4627926f847031a86d2df1b082f8d912812c', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
@@ -769,7 +769,7 @@ TOXIN_SOURCE_SECTIONS = (
      '6617bf5ecc8f8d3a5530534b2b3042724af964338892879bfcab05c174215291'),
     ('code/modules/reagents/Chemistry-Reagents.dm',
      '/datum/reagent/proc/remove_self(', '/datum/reagent/proc/initialize_data(',
-     'e4d3922f5e5644a9ff438a80f730e0b815ed2c557b710aea8a642a12e0cd8884'),
+     '9c0c4936fd7edf28389e77c2fe174077798e806bfbfe3a599cad1062d55084a1'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
      '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),

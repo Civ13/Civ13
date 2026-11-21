@@ -27,7 +27,6 @@
 
 #define MAGIC_REPO_MAKE_TIME 18000       // deciseconds of channelling for a personal repository (30 minutes)
 #define MAGIC_REPO_SITTING 600           // deciseconds per channelling step (one minute)
-#define MAGIC_REPO_PERSONAL_CEILING 100  // tier 1 capacity before size and skill
 #define MAGIC_REPO_STORED_SEED 10        // charge a personal repository costs when paid from storage
 #define MAGIC_REPO_BODY_SHARE 90         // each minute costs 1/90 of a full stomach and of full water
 #define MAGIC_REPO_SKILL_FLOOR 5         // the grant lifts a follower's magic to at least this
@@ -74,6 +73,8 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	. = ..()
 	if (magic_repo_id)
 		magic_repo_index[magic_repo_id] = src
+	if (magic_tie_id)
+		magic_tie_index[magic_tie_id] = src // repository_ties.dm
 
 /proc/magic_repo_find(id)
 	if (!istext(id))
@@ -98,7 +99,7 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 
 // A dormant repository has no effects and takes no charge.
 /obj/proc/magic_repo_dormant()
-	if (!magic_repo_finished() || magic_repo_withdrawn)
+	if (!magic_repo_finished() || magic_repo_withdrawn || magic_repo_captured)
 		return TRUE
 	if (!magic_whitelist_applies())
 		return FALSE
@@ -119,12 +120,14 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 /proc/ward_charge(obj/repo)
 	if (!istype(repo) || !repo.magic_repo_finished())
 		return 0
+	repo.magic_repo_tick() // repository_tiers.dm
 	return repo.magic_repo_charge
 
 // Adds up to amount, within the source's daily caps. Returns what was added.
 /proc/ward_refill(obj/repo, amount, source, mob/living/human/by = null)
 	if (!istype(repo) || QDELETED(repo) || !isnum(amount) || amount <= 0 || !istext(source))
 		return 0
+	repo.magic_repo_tick() // repository_tiers.dm
 	if (repo.magic_repo_dormant())
 		return 0
 	repo.magic_repo_roll_day()
@@ -146,14 +149,20 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	repo.magic_repo_today[source] = (repo.magic_repo_today[source] || 0) + added
 	if (follower_slot)
 		repo.magic_repo_today[follower_slot] = (repo.magic_repo_today[follower_slot] || 0) + added
+	repo.magic_repo_tick()
 	return added
 
 // Takes amount. Returns the charge left, or FALSE once it is empty.
 /proc/ward_drain(obj/repo, amount, attacker = null)
 	if (!istype(repo) || QDELETED(repo) || !repo.magic_repo_finished() || repo.magic_repo_dormant())
 		return FALSE
+	var/before = repo.magic_repo_charge
 	if (isnum(amount) && amount > 0)
 		repo.magic_repo_charge = max(0, repo.magic_repo_charge - amount)
+		ward_low_warning(repo, before) // repository_wards.dm
+	repo.magic_repo_tick() // repository_tiers.dm
+	if (!repo.magic_repo_finished())
+		return FALSE
 	return repo.magic_repo_charge > 0 ? repo.magic_repo_charge : FALSE
 
 // ---------- the maker's side ----------
@@ -197,7 +206,7 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	. = list()
 	for (var/id in magic_registered_repos)
 		var/obj/O = magic_repo_find(id)
-		if (O && !O.magic_repo_dormant())
+		if (O && !O.magic_repo_dormant() && islist(O.magic_repo_registrants) && (magic_key() in O.magic_repo_registrants))
 			. += O
 
 // Small things a personal repository can be made from: worn or carried trinkets.
@@ -210,8 +219,12 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 		return FALSE
 	return TRUE
 
-// Size factor within the personal form: things made to be worn hold more.
+// Size factor within the form (config/magic_law_balance.json "sizes"); among
+// trinkets, things made to be worn hold more.
 /proc/magic_repo_size_factor(obj/O)
+	var/factor = magic_balance_path_value("sizes", O) // repository_tiers.dm
+	if (isnum(factor))
+		return clamp(factor, 0.1, 1)
 	if (istype(O, /obj/item/clothing/accessory) || istype(O, /obj/item/clothing/mask/necklace))
 		return 1
 	return 0.75
@@ -278,12 +291,16 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	if (!magic_has_grant())
 		to_chat(src, SPAN_WARNING("Nothing happens."))
 		return
-	var/obj/item/I = magic_repo_unfinished_held()
-	if (!I)
-		to_chat(src, SPAN_WARNING("Hold the thing you are making."))
-		return
 	if (map && map.persistence && (!persistence_player_restore_ready || persistence_save_in_progress || persistence_active_operation))
 		to_chat(src, SPAN_WARNING("Wait for the world save or load to finish."))
+		return
+	var/obj/item/I = magic_repo_unfinished_held()
+	if (!I)
+		var/obj/R = magic_repo_rite_at_hand() // repository_tiers.dm
+		if (R)
+			magic_channel_rite(R)
+			return
+		to_chat(src, SPAN_WARNING("Hold the thing you are making, or stand beside the one you are pouring a rite into."))
 		return
 	magic_channelling = TRUE
 	to_chat(src, SPAN_NOTICE("You close your eyes and pour yourself into \the [I]."))
@@ -313,10 +330,9 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	magic_channelling = FALSE
 
 /mob/living/human/proc/magic_repo_finish(obj/item/I)
-	var/skill = max(0.05, magic_skill() / 100)
 	I.magic_repo_tier = 1
 	I.magic_repo_skill = magic_skill()
-	I.magic_repo_capacity = max(1, round(MAGIC_REPO_PERSONAL_CEILING * magic_repo_size_factor(I) * skill))
+	I.magic_repo_capacity = magic_repo_capacity_for(I, 1, I.magic_repo_skill) // repository_tiers.dm
 	I.magic_repo_charge = 0
 	I.magic_repo_keepers = list(magic_key())
 	I.magic_repo_registrants = list(magic_key())
@@ -337,7 +353,19 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 		return
 	if (!magic_allowed() || !istext(divine_patron))
 		return
-	var/list/options = list(magic_tie_ready ? "Stop readying a tie" : "Tie myself to the next thing I touch")
+	var/list/options = list()
+	if (magic_tie_ready)
+		options += "Stop readying a tie"
+	else
+		options += "Tie myself to the next thing I touch"
+		if (magic_registered_repositories().len)
+			options += "Tie the next thing I touch to..."
+	var/obj/here = magic_repo_at_hand()
+	if (here)
+		options += "Look over the threads here"
+		options += "Move a thread I made from here"
+		if (here.magic_repo_is_keeper(src))
+			options += "Tend the keepers here"
 	var/list/held = list()
 	for (var/id in magic_registered_repos)
 		var/obj/O = magic_repo_find(id)
@@ -348,10 +376,34 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	switch (pick)
 		if ("Tie myself to the next thing I touch")
 			magic_tie_ready = TRUE
+			magic_tie_mode = "self"
 			to_chat(src, SPAN_NOTICE("You ready yourself. The next thing you touch, you will hold onto."))
+		if ("Tie the next thing I touch to...")
+			var/list/repos = list()
+			for (var/obj/O in magic_registered_repositories())
+				if (O.magic_repo_deity == divine_book_key(divine_patron))
+					repos["[O.name] ([O.magic_repo_id])"] = O.magic_repo_id
+			var/id = repos[player_input(src, "Tie it to which?", "Ties", null, "anything", repos, TRUE)]
+			if (!id)
+				return
+			magic_tie_ready = TRUE
+			magic_tie_mode = "target"
+			magic_tie_repo = id
+			to_chat(src, SPAN_NOTICE("You ready a thread. The next thing you touch, you will bind."))
 		if ("Stop readying a tie")
 			magic_tie_ready = FALSE
+			magic_tie_mode = null
+			magic_tie_repo = null
 			to_chat(src, SPAN_NOTICE("You let the thought go."))
+		if ("Look over the threads here")
+			if (here && !QDELETED(here))
+				magic_tie_review(here) // repository_ties.dm
+		if ("Move a thread I made from here")
+			if (here && !QDELETED(here))
+				magic_tie_move(here) // repository_ties.dm
+		if ("Tend the keepers here")
+			if (here && !QDELETED(here))
+				magic_repo_keeper_menu(here) // repository_tiers.dm
 		if ("Loosen a tie")
 			var/which = player_input(src, "Loosen which tie?", "Ties", null, "anything", held, TRUE)
 			var/id = held[which]
@@ -363,18 +415,31 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 				O.magic_repo_registrants -= magic_key()
 			to_chat(src, SPAN_NOTICE("You let that tie go."))
 
+// A repository of this character's god in hand or beside them that they are tied to.
+/mob/living/human/proc/magic_repo_at_hand()
+	for (var/obj/O in magic_registered_repositories())
+		if ((O in GetAllContents(4)) || O.Adjacent(src))
+			return O
+	return null
+
 // click.dm: a readied tie catches the next touch, whatever its intent, and the
 // touch still does what it would have done.
 /proc/magic_touch_hook(mob/user, atom/A)
 	var/mob/living/human/H = user
-	if (!istype(H) || !H.magic_tie_ready || !istype(A, /obj))
+	if (!istype(H) || !H.magic_tie_ready || !A)
+		return
+	if (!A.Adjacent(H) && !(A in H.GetAllContents(4)))
+		return
+	if (H.magic_tie_mode == "target")
+		H.magic_tie_ready = FALSE
+		H.magic_tie_mode = null
+		H.magic_tie_target(A) // repository_ties.dm
 		return
 	var/obj/O = A
-	if (!O.magic_repo_id)
-		return
-	if (!O.Adjacent(H) && !(O in H.GetAllContents(4)))
+	if (!istype(O) || !O.magic_repo_id)
 		return
 	H.magic_tie_ready = FALSE
+	H.magic_tie_mode = null
 	H.magic_tie_to(O)
 
 /mob/living/human/proc/magic_tie_to(obj/O)
@@ -404,10 +469,17 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 		return
 	if (!magic_repo_is_keeper(user))
 		return
+	magic_repo_tick() // repository_tiers.dm
+	if (!magic_repo_id)
+		return
+	if (magic_repo_captured)
+		to_chat(user, SPAN_NOTICE("It feels cold and still, as if it has lost its place."))
+		return
 	if (magic_repo_dormant())
 		to_chat(user, SPAN_NOTICE("It feels cold and still."))
 		return
 	to_chat(user, SPAN_NOTICE("You sense it holds about [round(magic_repo_charge)] of [magic_repo_capacity]. [length(magic_repo_registrants)] [length(magic_repo_registrants) == 1 ? "thread runs" : "threads run"] to it."))
+	magic_repo_tier_examine(user) // repository_tiers.dm
 
 // The god took the grant back: everything this character keeps goes still.
 /mob/living/human/proc/magic_repo_withdraw_all()
@@ -427,6 +499,8 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 	else
 		verbs -= /mob/living/human/proc/magic_ready_tie
 		magic_tie_ready = FALSE
+		magic_tie_mode = null
+		magic_tie_repo = null
 	if (magic_has_grant())
 		verbs |= /mob/living/human/proc/magic_channel
 	else
@@ -434,7 +508,6 @@ var/global/list/magic_repo_follower_caps = list("devotion" = 30)
 
 #undef MAGIC_REPO_MAKE_TIME
 #undef MAGIC_REPO_SITTING
-#undef MAGIC_REPO_PERSONAL_CEILING
 #undef MAGIC_REPO_STORED_SEED
 #undef MAGIC_REPO_BODY_SHARE
 #undef MAGIC_REPO_SKILL_FLOOR

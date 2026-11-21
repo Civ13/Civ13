@@ -83,6 +83,8 @@ var/global/list/arcane_storm_marks = list()
 	var/mob/living/human/H = user
 	if (!istype(H) || !H.arcane_magic_user())
 		return
+	arcane_enchant_examine(H) // arcane_enchant.dm
+	arcane_bless_examine(H) // arcane_bless.dm
 	var/aspect = arcane_virtue()
 	if (!aspect)
 		return
@@ -94,8 +96,11 @@ var/global/list/arcane_storm_marks = list()
 /mob/living/human/proc/arcane_magic_user()
 	return istext(divine_patron) && length(divine_patron) && client && client.mob == src && magic_allowed()
 
-// Filled in by the pact plan: a keeper of a repository may gather Ward materials.
+// A keeper of a finished repository may gather Ward materials.
 /mob/living/human/proc/arcane_ward_keeper()
+	for (var/obj/O in magic_repos_kept())
+		if (O.magic_repo_finished())
+			return TRUE
 	return FALSE
 
 // Whether this magic user can put this aspect into what they gather.
@@ -122,6 +127,7 @@ var/global/list/arcane_storm_marks = list()
 // A night's rest lets a magic user gather again (called from divine_rested).
 /mob/living/human/proc/arcane_rested()
 	arcane_gathers_spent = 0
+	arcane_communed_at = 0 // arcane_spirits.dm
 
 // Puts a virtue into an item this character just gathered, if they can.
 // Says nothing when they can't: to everyone else it is simply the item.

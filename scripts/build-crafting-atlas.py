@@ -123,9 +123,9 @@ def needs_handle(title):
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
-        if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/training_course')):
-            modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/training_course/hurdle/steel')
-            skill=105 if modern else 0 if typepath == '/obj/item/weapon/lifting_weight' else 30
+        if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/treadwheel', '/obj/item/weapon/skipping_rope')):
+            modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/treadwheel/treadmill')
+            skill=105 if modern else 0 if typepath in ('/obj/item/weapon/lifting_weight', '/obj/item/weapon/skipping_rope') else 30
             if skill:conditions+=f' Crafting skill {skill}.'
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
         if typepath.startswith(('/obj/structure/telecom', '/obj/item/tv_camera')) or typepath == '/obj/item/weapon/telephone/landline':

@@ -5,6 +5,8 @@
 // climates, the way the two Americas regions are. Each is one surface level;
 // mountains are surface rock, and like every single-level map they get an
 // unformed underground at boot (dug_underground.dm).
+// Which map edges lead on to which land, and which edges face open sea, are
+// in tools/world_links/world_links.json (docs/world-links.md), by region id.
 /obj/map_metadata/nomads/earth_europe
 	ID = MAP_NOMADS_EARTH_EUROPE
 	// The sun's path (sun_shadows.dm): degrees north.
@@ -20,10 +22,6 @@
 	// scale with it, short of in proportion.
 	ecology_wildlife_cap = 1000
 	wild_plant_cap = 550
-	// The steppe runs on over the east edge into Asia (region_edge.dm).
-	edge_crossings = list("east" = "asia")
-	// Open sea along these edges, best first (sea_lanes.dm): ships make landfall there.
-	sea_coasts = list("W", "N")
 	new_player_start_z = 1
 	// The standing open-air level aircraft fly on, and nine storeys above it (building_admission.dm).
 	building_levels = 10
@@ -41,9 +39,6 @@
 	terrain_height_file = "maps/heights/nomads_earth_africa.txt"
 	ecology_wildlife_cap = 1100
 	wild_plant_cap = 600
-	// The desert peninsula in the north-east runs on into Asia (region_edge.dm).
-	edge_crossings = list("east" = list("asia" = list(0.68, 1)))
-	sea_coasts = list("W", "S", "E")
 	new_player_start_z = 1
 	building_levels = 10
 	building_level_standing = TRUE
@@ -63,10 +58,6 @@
 	terrain_height_file = "maps/heights/nomads_earth_asia.txt"
 	ecology_wildlife_cap = 1000
 	wild_plant_cap = 550
-	// Walk on over the west edge (region_edge.dm): its southern part runs on
-	// into Africa, its northern part, the steppe, into Europe.
-	edge_crossings = list("west" = list("africa" = list(0, 0.45), "europe" = list(0.45, 1)))
-	sea_coasts = list("E", "S", "N")
 	new_player_start_z = 1
 	building_levels = 10
 	building_level_standing = TRUE
@@ -83,7 +74,6 @@
 	ecology_wildlife_cap = 500
 	wild_plant_cap = 300
 	// Sea all round: reached by ship and plane only (sea_lanes.dm).
-	sea_coasts = list("N", "S", "W", "E")
 	new_player_start_z = 1
 	building_levels = 10
 	building_level_standing = TRUE
@@ -100,7 +90,6 @@
 	ecology_wildlife_cap = 300
 	wild_plant_cap = 150
 	// Sea all round: reached by ship and plane only (sea_lanes.dm).
-	sea_coasts = list("E", "S", "N")
 	new_player_start_z = 1
 	building_levels = 10
 	building_level_standing = TRUE
@@ -117,7 +106,6 @@
 	ecology_wildlife_cap = 200
 	wild_plant_cap = 100
 	// Sea all round: reached by ship and plane only (sea_lanes.dm).
-	sea_coasts = list("N", "E", "S", "W")
 	new_player_start_z = 1
 	building_levels = 10
 	building_level_standing = TRUE

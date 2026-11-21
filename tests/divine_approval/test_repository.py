@@ -56,8 +56,10 @@ class Repository(unittest.TestCase):
 
     def test_capacity_from_size_and_skill(self):
         finish = body(REPO, '/mob/living/human/proc/magic_repo_finish(')
-        self.assertIn('MAGIC_REPO_PERSONAL_CEILING * magic_repo_size_factor(I) * skill', finish)
-        self.assertIn('max(0.05, magic_skill() / 100)', finish)
+        self.assertIn('magic_repo_capacity_for(I, 1, I.magic_repo_skill)', finish)
+        tiers = (ROOT / 'code/modules/divine/repository_tiers.dm').read_text()
+        capacity = body(tiers, '/proc/magic_repo_capacity_for(')
+        self.assertIn('ceiling * magic_repo_size_factor(O) * max(0.05, skill / 100)', capacity)
 
     def test_allowance_grows_with_skill(self):
         self.assertIn('min(5, 1 + round(magic_skill() / 25))', body(REPO, '/mob/living/human/proc/magic_repo_allowance()'))

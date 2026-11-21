@@ -101,6 +101,7 @@
 /obj/item/Destroy()
 	if (extraction_surface_source?.service) extraction_surface_source.service.observe_disposal(src)
 	unregister_abandoned_item()
+	arcane_enchant_forget() // arcane_enchant.dm
 	actions = list()
 	if (ismob(loc))
 		var/mob/m = loc
@@ -170,6 +171,7 @@
 		return
 	if (isturf(loc) && anchored) return
 	if (!user) return
+	if (magic_repo_id && magic_repo_move_refused(user)) return // repository_wards.dm
 	if (istype(user, /mob/living/human))
 		var/mob/living/human/HM = user
 		if (HM.werewolf && HM.body_build.name != "Default") return

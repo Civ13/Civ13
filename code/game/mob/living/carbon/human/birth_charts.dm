@@ -115,6 +115,19 @@ var/list/birth_chart_stats = list("strength", "dexterity", "stamina", "crafting"
 		return
 	add_note("Birth chart", summary)
 
+// The calling: the sign's +10 stat trains a little faster and its -10 stat a
+// little slower. trait_skill_gain_mult() uses it only when no trait already
+// changes that stat's training, so a sign never stacks with a trait.
+/mob/living/human/proc/birth_chart_gain_mult(statname)
+	if (!birth_chart_valid(birth_chart))
+		return 1
+	var/offset = birth_chart_signs[birth_chart]["stats"][statname]
+	if (offset >= 10)
+		return BIRTH_CHART_CALLING_FAST
+	if (offset <= -10)
+		return BIRTH_CHART_CALLING_SLOW
+	return 1
+
 // Choosing a sign is for Discord-verified accounts (the soft whitelist).
 // Fails closed: an unverified key, or a verified list not yet loaded, rolls.
 /proc/birth_chart_choice_allowed(client/C, sign_id)
@@ -132,8 +145,20 @@ var/list/birth_chart_stats = list("strength", "dexterity", "stamina", "crafting"
 		return
 	birth_chart = value
 
+// Each sign's glyph (icons/misc/birth_signs.dmi, drawn by
+// tests/character_traits/birth_sign_sprites.py), sent once per client.
+/datum/preferences/var/tmp/birth_sign_icons_sent = FALSE
+
+/datum/preferences/proc/send_birth_sign_icons(mob/user)
+	if (birth_sign_icons_sent || !user || !user.client)
+		return
+	for (var/sign_id in birth_chart_signs)
+		user << browse_rsc(icon('icons/misc/birth_signs.dmi', sign_id), "birth_sign_[sign_id].png")
+	birth_sign_icons_sent = TRUE
+
 /datum/preferences/proc/birth_chart_setup_data(mob/user)
 	var/list/data = list()
+	send_birth_sign_icons(user)
 	data["choice"] = birth_chart_valid(birth_chart) ? birth_chart : "random"
 	data["verified"] = (user && user.client && verified_discord_id(user.client.ckey)) ? 1 : 0
 	var/mob/living/human/H = user
@@ -143,7 +168,7 @@ var/list/birth_chart_stats = list("strength", "dexterity", "stamina", "crafting"
 	for (var/sign_id in birth_chart_signs)
 		var/list/S = birth_chart_signs[sign_id]
 		signs += list(list("id" = sign_id, "name" = capitalize(S["name"]), "season" = capitalize(S["season"]), "calling" = capitalize(S["calling"]),
-			"strengths" = birth_chart_side_text(sign_id, TRUE), "weaknesses" = birth_chart_side_text(sign_id, FALSE)))
+			"strengths" = birth_chart_side_text(sign_id, TRUE), "weaknesses" = birth_chart_side_text(sign_id, FALSE), "image" = "birth_sign_[sign_id].png"))
 	data["signs"] = signs
 	return data
 

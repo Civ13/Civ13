@@ -416,6 +416,7 @@ button.rs-row-main { cursor: pointer; }
 .setup-replaces { color: var(--civ-warn); }
 .setup-trait-foot { display: flex; justify-content: flex-end; margin-top: 4px; } .setup-trait-foot .Button { margin: 0; }
 .setup-chart-random, .setup-chart-verify { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; }
+.setup-chart-glyph { width: 48px; height: 48px; image-rendering: pixelated; flex: none; }
 .setup-chart-up, .setup-chart-down { margin: 2px 0; font-size: 12.5px; } .setup-chart-up { color: var(--civ-good); } .setup-chart-down { color: var(--civ-bad-text); }
 
 // Haircut: the figure on the left, style tiles on the right, one action bar.

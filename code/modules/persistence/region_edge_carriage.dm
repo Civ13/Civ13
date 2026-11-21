@@ -216,10 +216,11 @@
 // was asked about travelling on (the step itself still does not happen).
 /obj/structure/vehicle/carriage/proc/region_edge_reached(m_dir)
 	var/mob/living/human/H = driver
-	if (!istype(H) || !map || !length(map.edge_crossings) || z != map.edge_crossing_z || m_dir != facing)
+	var/list/links = region_edge_links()
+	if (!istype(H) || !links || z != map.edge_crossing_z || m_dir != facing)
 		return FALSE
 	var/side = null
-	for (var/name in map.edge_crossings)
+	for (var/name in links)
 		if (region_edge_dir(name) == m_dir)
 			side = name
 	if (!side)

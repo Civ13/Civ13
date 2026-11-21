@@ -1,0 +1,53 @@
+{
+  "comment": "Every land and ocean of the earth group and the map edges between them (docs/world-links.md). Edit this file, then run python3 tools/world_links/build.py and python3 tools/ocean_maps/generate.py.",
+  "lands": {
+    "northamerica": {"chart": [0, 6], "coasts": ["E", "W", "N", "S"], "flight": true},
+    "southamerica": {"chart": [2, 0], "coasts": ["E", "W", "S", "N"], "flight": true},
+    "gaia": {"chart": [6, 7], "coasts": ["W", "E"], "flight": true},
+    "europe": {"chart": [11, 9], "coasts": ["W", "N"], "flight": true},
+    "desert": {"chart": [12, 4], "coasts": ["N"], "flight": true},
+    "africa": {"chart": [12, 3], "coasts": ["W", "S", "E"], "flight": true},
+    "oceania": {"chart": [21, 1], "coasts": ["N", "S", "W", "E"], "flight": true},
+    "greenland": {"chart": [6, 11], "coasts": ["E", "S", "N"], "flight": true},
+    "antarctica": {"chart": [10, -5], "coasts": ["N", "E", "S", "W"], "flight": true},
+    "jungle": {"chart": [13, 1], "coasts": ["W"], "flight": true},
+    "asia": {"chart": [18, 8], "coasts": ["E", "S", "N"], "flight": true}
+  },
+  "oceans": {
+    "atlantic": {"name": "Atlantic Ocean", "size": [600, 900], "seed": 11, "chart": [7, 5], "insets": [{"land": "gaia", "box": [250, 560, 299, 594]}, {"land": "greenland", "box": [200, 780, 239, 829]}]},
+    "pacific": {"name": "Pacific Ocean", "size": [900, 900], "seed": 12, "chart": [25, 5]},
+    "indian": {"name": "Indian Ocean", "size": [600, 600], "seed": 13, "chart": [17, 0]},
+    "arctic": {"name": "Arctic Ocean", "size": [1000, 300], "seed": 14, "chart": [12, 13], "cold": true, "ice": ["north", 40], "wrap": ["west"]},
+    "southern": {"name": "Southern Ocean", "size": [1200, 300], "seed": 15, "chart": [12, -3], "cold": true, "wrap": ["west"]}
+  },
+  "links": [
+    {"kind": "walk", "a": ["northamerica", "south", 0, 1], "b": ["southamerica", "north", 0, 1]},
+    {"kind": "walk", "a": ["europe", "east", 0, 1], "b": ["asia", "west", 0.45, 1]},
+    {"kind": "walk", "a": ["africa", "east", 0.68, 1], "b": ["asia", "west", 0, 0.45]},
+    {"kind": "sail", "a": ["northamerica", "north", 0, 1], "b": ["arctic", "south", 0.12, 0.32]},
+    {"kind": "sail", "a": ["atlantic", "north", 0, 1], "b": ["arctic", "south", 0.32, 0.42]},
+    {"kind": "sail", "a": ["europe", "north", 0, 1], "b": ["arctic", "south", 0.42, 0.6]},
+    {"kind": "sail", "a": ["asia", "north", 0, 1], "b": ["arctic", "south", 0.6, 1]},
+    {"kind": "sail", "a": ["pacific", "north", 0, 1], "b": ["arctic", "south", 0, 0.12]},
+    {"kind": "sail", "a": ["southamerica", "east", 0, 1], "b": ["atlantic", "west", 0, 0.4]},
+    {"kind": "sail", "a": ["northamerica", "east", 0, 1], "b": ["atlantic", "west", 0.4, 1]},
+    {"kind": "sail", "a": ["atlantic", "east", 0, 0.42], "b": ["africa", "west", 0, 1]},
+    {"kind": "sail", "a": ["atlantic", "east", 0.5, 1], "b": ["europe", "west", 0, 1]},
+    {"kind": "sail", "a": ["atlantic", "south", 0, 1], "b": ["southern", "north", 0.3, 0.42]},
+    {"kind": "sail", "a": ["oceania", "east", 0, 1], "b": ["pacific", "west", 0, 0.35]},
+    {"kind": "sail", "a": ["asia", "east", 0, 0.85], "b": ["pacific", "west", 0.35, 1]},
+    {"kind": "sail", "a": ["pacific", "east", 0, 0.45], "b": ["southamerica", "west", 0, 1]},
+    {"kind": "sail", "a": ["pacific", "east", 0.45, 1], "b": ["northamerica", "west", 0, 0.85]},
+    {"kind": "sail", "a": ["pacific", "south", 0, 0.3], "b": ["oceania", "north", 0, 1]},
+    {"kind": "sail", "a": ["pacific", "south", 0.3, 1], "b": ["southern", "north", 0, 0.25]},
+    {"kind": "sail", "a": ["southamerica", "south", 0, 1], "b": ["southern", "north", 0.25, 0.3]},
+    {"kind": "sail", "a": ["africa", "east", 0, 0.68], "b": ["indian", "west", 0, 1]},
+    {"kind": "sail", "a": ["indian", "north", 0, 1], "b": ["asia", "south", 0, 1]},
+    {"kind": "sail", "a": ["indian", "east", 0, 1], "b": ["oceania", "west", 0, 1]},
+    {"kind": "sail", "a": ["indian", "south", 0, 1], "b": ["southern", "north", 0.48, 0.65]},
+    {"kind": "sail", "a": ["africa", "south", 0, 1], "b": ["southern", "north", 0.42, 0.48]},
+    {"kind": "sail", "a": ["oceania", "south", 0, 1], "b": ["southern", "north", 0.65, 1]},
+    {"kind": "sail", "a": ["southern", "south", 0, 1], "b": ["antarctica", "north", 0, 1]},
+    {"kind": "sail", "a": ["asia", "east", 0.85, 1], "b": ["northamerica", "west", 0.85, 1]}
+  ]
+}

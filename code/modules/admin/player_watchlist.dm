@@ -68,12 +68,28 @@
 	dat += "</body></html>"
 	usr << browse(dat, "window=watchlist;size=520x480")
 
-// One line for the Player Panel: what every region knows about ckey.
-/proc/player_records_summary_html(ckey, datum/admins/holder)
+// The every-region records of one account as tiles: notes, warnings, active
+// bans, hours played and the watchlist (shared_player_records.dm), for the Player
+// Panel (player_panel_pages.dm). New record kinds get a tile here.
+/proc/player_records_tiles_html(ckey, datum/admins/holder)
 	ckey = ckey(ckey)
 	if (!length(ckey))
 		return ""
 	var/list/sum = shared_records.summary(ckey)
 	var/bans = length(shared_records.active_bans(ckey, "any"))
-	var/watch = sum["watch"] ? ", <font color=#aa0000><b>on the watchlist</b></font>" : ""
-	return "<b>Every region:</b> [sum["notes"]] notes, [sum["warnings"]] warnings, [bans] active bans, [sum["hours"]] hours played[watch] (<A href='?src=\ref[holder];notes=show;ckey=[ckey]'>details</A>)"
+	var/html = "<div class='tiles'>"
+	html += "<div class='tile[sum["notes"] ? " note" : ""]'><b>[sum["notes"]]</b>notes</div>"
+	html += "<div class='tile[sum["warnings"] ? " note" : ""]'><b>[sum["warnings"]]</b>warnings</div>"
+	html += "<div class='tile[bans ? " bad" : ""]'><b>[bans]</b>active bans</div>"
+	html += "<div class='tile'><b>[sum["hours"]]</b>hours played</div>"
+	html += "<div class='tile[sum["watch"] ? " bad" : ""]'><b>[sum["watch"] ? "Yes" : "No"]</b>[sum["watch"] ? "on the watchlist" : "watchlist"]</div>"
+	html += "</div><div class='btns'>"
+	html += "<a href='?src=\ref[holder];notes=show;ckey=[ckey]'>Notes and details</a>"
+	html += "<a href='?_src_=holder;warn=[ckey]'>Warn</a>"
+	if (sum["watch"])
+		html += "<a href='?src=\ref[holder];watchlist_remove=[ckey]'>Remove from watchlist</a>"
+	else
+		html += "<a href='?src=\ref[holder];watchlist_add=[ckey]'>Add to watchlist</a>"
+	html += "<a href='?_src_=holder;CentCom=[ckey]'>CentCom ban database</a>"
+	html += "</div>"
+	return html

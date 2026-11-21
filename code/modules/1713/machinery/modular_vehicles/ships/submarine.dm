@@ -416,6 +416,7 @@ var/global/list/ship_axes = list()
 	options += "Name the boat"
 	if (!B.submerged)
 		options += "Paint the stripes"
+	options += "Draw her lines"
 	options += "Cancel"
 	var/choice = WWinput(user, "[B] is [B.submerged ? "submerged" : "on the surface"].", name, "Cancel", options)
 	if (QDELETED(src) || QDELETED(B) || !Adjacent(user) || boat() != B)
@@ -442,6 +443,8 @@ var/global/list/ship_axes = list()
 			B.order_name(user, src)
 		if ("Paint the stripes")
 			B.order_paint(user, src)
+		if ("Draw her lines")
+			B.draw_lines(user, src)
 
 // ---- Hull ----
 
