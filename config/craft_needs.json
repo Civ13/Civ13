@@ -317,5 +317,11 @@
       "/obj/item/machine_part/shaft": 1,
       "/obj/item/machine_part/bearing": 2
     }
+  },
+  "/obj/item/stack/data_lan_cable/sealed": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/plastic": 1
+    }
   }
 }
