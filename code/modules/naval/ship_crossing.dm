@@ -39,7 +39,7 @@
 	desc = "Open water beyond the edge of the chart."
 	invisibility = 101
 	icon = null
-	// The voyage fields the next crew member carries (travel_extra()).
+	// The voyage fields each crew member carries (travel_extra()), by mob.
 	var/list/pending = null
 
 /obj/structure/region_gate/sea_crossing/accepts_arrivals()
@@ -49,7 +49,7 @@
 	return TRUE
 
 /obj/structure/region_gate/sea_crossing/travel_extra(mob/living/human/H)
-	return pending
+	return pending ? pending[H] : null
 
 /obj/structure/region_gate/sea_crossing/attack_hand(mob/living/human/user)
 	return
@@ -964,7 +964,7 @@ var/global/list/sea_crossing_marked = list()
 // Sends her to region id. Null when she left, else why not. Sleeps. voyage:
 // the voyage she makes the crossing on (ship_voyage.dm), else a new one.
 // Whatever she is bound for holds until she leaves or it ends (crossing_wake()).
-/obj/structure/hull_tiller/proc/cross(id, mob/living/human/notify = null, voyage = null)
+/obj/structure/hull_tiller/proc/cross(id, mob/living/human/notify = null, voyage = null, list/sea_edge = null)
 	var/reason = crossing_refusal(notify)
 	if (reason)
 		return reason
@@ -993,7 +993,7 @@ var/global/list/sea_crossing_marked = list()
 		hold = crossing_hold_current() || crossing_hold_take("departing", id, voyage)
 		hold["busy"] = TRUE
 		hold["state"] = "departing"
-	. = cross_away(id, voyage, hold)
+	. = cross_away(id, voyage, hold, sea_edge)
 	if (. && crossing_hold_is(hold))
 		// She stays: a land that took the wake stays hers until it runs out.
 		hold["busy"] = FALSE
@@ -1003,7 +1003,7 @@ var/global/list/sea_crossing_marked = list()
 
 // The rest of a crossing, once the land answers: she is packed and her crew
 // go. Null when she left, else why not.
-/obj/structure/hull_tiller/proc/cross_away(id, voyage, list/hold)
+/obj/structure/hull_tiller/proc/cross_away(id, voyage, list/hold, list/sea_edge = null)
 	// The wake slept: whatever changed meanwhile is asked again before she is touched.
 	if (!crossing_continues(hold, voyage))
 		return "The crossing was called off."
@@ -1063,27 +1063,38 @@ var/global/list/sea_crossing_marked = list()
 	var/list/parked = sea_crossing_strip(src, TRUE, gate)
 	// The struck tiller leaves the water too; it is deleted once she is away.
 	loc = null
-	var/carried = FALSE
-	var/departed = 0
-	var/list/stayed = list()
+	// The whole crew go as one party in one transfer (region_travel.dm), the
+	// first of them carrying her record: crew sent one by one waited on each
+	// other's transfer and could be left behind (HMS Gnome 2, 2026-11-15).
+	var/list/aboard = list()
+	gate.pending = list()
 	for (var/mob/living/human/H in crew)
 		if (QDELETED(H) || H.loc != gate)
 			continue
-		gate.pending = list("voyage" = voyage)
+		var/list/extra = list("voyage" = voyage)
 		if (admin_crossing_by)
-			gate.pending["admin_send"] = region_admin_send_crew_landing(H, id, admin_crossing_by)
-		if (!carried)
-			gate.pending["ship"] = record
-		var/result = gate.depart(H)
-		if (result == "departed")
-			departed++
-			if (!carried)
-				carried = TRUE
-		else
-			stayed += H
-			log_game("Sea crossing: [key_name(H)] stays behind from the [record["name"]]: [result]")
-			to_chat(H, SPAN_WARNING("You stay behind: [result]"))
+			extra["admin_send"] = region_admin_send_crew_landing(H, id, admin_crossing_by)
+		if (!aboard.len)
+			extra["ship"] = record
+			if (islist(sea_edge))
+				extra["sea_edge"] = sea_edge
+		gate.pending[H] = extra
+		aboard += H
+	var/list/party = gate.depart_party(aboard)
 	gate.pending = null
+	var/list/gone = party["departed"]
+	var/list/refused = party["stayed"]
+	var/departed = gone.len
+	// Her record went with the first of them, or with nobody.
+	var/carried = aboard.len && (aboard[1] in gone)
+	var/list/stayed = list()
+	for (var/mob/living/human/H in crew)
+		if (H in gone)
+			continue
+		stayed += H
+		var/result = refused[H] || "the crossing could not take you"
+		log_game("Sea crossing: [key_name(H)] stays behind from the [record["name"]]: [result]")
+		to_chat(H, SPAN_WARNING("You stay behind: [result]"))
 	if (!carried)
 		// Nobody could take her: she is built again where she lay, and the
 		// animals and dead who waited are put back aboard as they were.
@@ -1151,6 +1162,12 @@ var/global/list/sea_crossing_tillers = list()
 			var/list/from = R["from"]
 			if (sea_crossing_fits(offsets, from[1], from[2], from[3]))
 				pivot = locate(from[1], from[2], from[3])
+		// Over a linked map edge (ship_edge_crossing.dm): the matching place on the facing edge.
+		if (!pivot && incoming && islist(P["sea_edge"]))
+			if (hold.len)
+				pivot = sea_edge_anchorage(offsets, P["sea_edge"], P["from"], hold)
+			if (!pivot)
+				pivot = sea_edge_anchorage(offsets, P["sea_edge"], P["from"])
 		var/list/sides = incoming ? sea_crossing_sides(P["from"]) : cardinal
 		// Water with ground below for her hold first; failing that, any water
 		// (her hold cargo is then stowed on deck).

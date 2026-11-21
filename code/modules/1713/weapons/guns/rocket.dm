@@ -113,17 +113,43 @@
 	else
 		to_chat(user, SPAN_NOTICE("<b>UNLOADED</B>"))
 
+// Both sides of the wait use the same check. The launcher may be carried or
+// reachable from the ground; the round must still belong to the loading hand.
+/obj/item/weapon/gun/launcher/rocket/proc/rocket_load_refusal(obj/item/ammo_casing/rocket/R, mob/living/loader)
+	if (QDELETED(src) || QDELETED(R) || QDELETED(loader) || R.loc != loader || loader.get_active_hand() != R)
+		return "You must keep the rocket in your active hand."
+	// These rounds share the legacy generic caliber string, but belong to
+	// different launcher families with their own loading paths.
+	if (R.caliber != caliber || istype(R, /obj/item/ammo_casing/rocket/atgm) || istype(R, /obj/item/ammo_casing/rocket/panzerfaust) || istype(R, /obj/item/ammo_casing/rocket/m72law) || istype(R, /obj/item/ammo_casing/rocket/rpg22))
+		return "\The [R] does not fit in \the [src]."
+	if (!Adjacent(loader))
+		return "You are too far from \the [src] to load it."
+	if (rockets.len >= max_rockets)
+		return "\The [src] cannot hold more rockets."
+	return null
+
 /obj/item/weapon/gun/launcher/rocket/attackby(obj/item/I as obj, mob/user as mob)
-	if(istype(I, /obj/item/ammo_casing/rocket))
-		playsound(src.loc, 'sound/effects/rpgreload.ogg', 80, 0)
-		if(rockets.len < max_rockets && do_after(user, load_delay, src, can_move = TRUE))
-			user.drop_item()
-			I.loc = src
-			rockets += I
-			to_chat(user, "You put the [I] into the [src].") // We don't include \the here as all of the rockets are proper-nouned, so it would output badly, e.g: "You put PG-7V rocket in RPG-7.".
-			update_icon()
-		else
-			to_chat(usr, "\The [src] cannot hold more rockets.")
+	var/obj/item/ammo_casing/rocket/R = I
+	var/mob/living/loader = user
+	if (!istype(R) || !istype(loader))
+		return
+	var/refusal = rocket_load_refusal(R, loader)
+	if (refusal)
+		to_chat(loader, SPAN_WARNING(refusal))
+		return
+	playsound(loc, 'sound/effects/rpgreload.ogg', 80, 0)
+	if (!do_after(loader, load_delay, src, can_move = TRUE))
+		return
+	refusal = rocket_load_refusal(R, loader)
+	if (refusal)
+		to_chat(loader, SPAN_WARNING(refusal))
+		return
+	// Revalidation and transfer do not wait. Only register a delivered round.
+	if (!loader.transfer_held_item_to(R, src) || QDELETED(src))
+		return
+	rockets += R
+	to_chat(loader, "You put the [R] into the [src].")
+	update_icon()
 
 /obj/item/weapon/gun/launcher/rocket/proc/unload(mob/user)
 	if(rockets.len)

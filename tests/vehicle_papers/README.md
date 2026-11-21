@@ -35,3 +35,20 @@ the tank is taken apart, and a turret armed with only a machine gun.
 It expects `"failures": 0`. No client connects, so the axis menu is not
 exercised; the probe calls `assemble()`, `fit_parts()`, `take_apart()`,
 `do_move()` and `do_matrix()` directly.
+
+## Vehicle sheets (`sheet_probe.dm`)
+
+A native probe for `code/modules/craft/vehicle_draught.dm` and
+`vehicle_draught_checks.dm`: the four ready-made sheets pass their checks and
+read back from their design codes, bad codes are refused (tiles not filling
+the size, an engine too big, an unknown part, a 2 wide plane, an airframe
+section on a car axis), each `vehicle_sheet` check fires (no frame, no
+engine, a bare corner, a wheel off the corners, a tiny engine, no tank, no
+seat, two seats, a pilot out of the wing row, a turret on a plane), every
+key has a part description, a field car laid out by hand around an axis with
+the sheet clipped to it is compared tile by tile (a missing seat and tank
+named, everything laid out front to the north), a heavy axis refuses the
+light axis's sheet, and the assembled car is drawn back onto a sheet tile for
+tile.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/vehicle_papers/sheet_probe.dm 300

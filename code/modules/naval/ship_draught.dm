@@ -74,6 +74,9 @@ var/global/list/ship_draught_pieces = list(
 	"I" = list("name" = "steel door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel, "cost" = list("steel" = 15), "load" = 0.5, "turns" = TRUE, "decks" = TRUE),
 	// A mast with a crow's nest at her masthead (hull_masts.dm).
 	"N" = list("name" = "mast with a crow's nest", "path" = /obj/structure/vehicleparts/movement/sail/crows_nest, "cost" = list("wood" = 23), "load" = 0.5, "drive" = "sail"),
+	// Her bow (hull_bow.dm): a bowsprit carries a jib, half a mast's push.
+	"J" = list("name" = "bowsprit", "path" = /obj/structure/vehicleparts/movement/sail/bowsprit, "cost" = list("wood" = 10), "load" = 0.5, "drive" = "sail"),
+	"F" = list("name" = "figurehead", "path" = /obj/structure/figurehead, "cost" = list("wood" = 6), "load" = 0.1, "turns" = TRUE),
 	// A gate in her gunwale on an edge tile, facing out (hull_gangway.dm).
 	"Y" = list("name" = "gangway", "path" = /obj/structure/railing/built/gunwale/gangway, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE),
 	// A wooden ladder stood up to the deck above (edge_climbing.dm): this is
@@ -232,6 +235,10 @@ var/global/list/ship_draught_decks = list(
 // Her masts, with or without a crow's nest.
 /datum/ship_draught/proc/mast_count()
 	return piece_count("M") + piece_count("N")
+
+// What her sails push on a reach: her masts, and half a mast for each jib.
+/datum/ship_draught/proc/sail_push()
+	return (mast_count() + piece_count("J") * 0.5) * CRAFT_SAIL_THRUST
 
 /datum/ship_draught/proc/helms()
 	. = list()
@@ -452,7 +459,7 @@ var/global/list/ship_draught_decks = list(
 // The best telegraph step her masts make on a reach, her benches manned, and
 // both together (VESSEL_SPEED_SLOW when nothing makes more: she can be poled).
 /datum/ship_draught/proc/sail_step()
-	var/push = mast_count() * CRAFT_SAIL_THRUST
+	var/push = sail_push()
 	return push / mass() >= CRAFT_THRUST_HALF ? VESSEL_SPEED_HALF : VESSEL_SPEED_SLOW
 
 /datum/ship_draught/proc/oar_step()
@@ -483,7 +490,7 @@ var/global/list/ship_draught_decks = list(
 
 /datum/ship_draught/proc/best_step()
 	var/oars = piece_count("R") * CRAFT_OAR_THRUST + engine_push()
-	var/all = oars + mast_count() * CRAFT_SAIL_THRUST
+	var/all = oars + sail_push()
 	if (oars / mass() >= CRAFT_THRUST_FULL)
 		return VESSEL_SPEED_FULL
 	return all / mass() >= CRAFT_THRUST_HALF ? VESSEL_SPEED_HALF : VESSEL_SPEED_SLOW
@@ -510,7 +517,7 @@ var/global/list/ship_draught_decks = list(
 	if (!cells.len)
 		return jointext(lines, "<br>")
 	lines += "Building her takes [costs_text()]."
-	var/masts = mast_count()
+	var/masts = mast_count() + piece_count("J")
 	var/benches = piece_count("R")
 	var/engines = engine_push()
 	var/list/drives = list()
@@ -545,7 +552,7 @@ var/global/list/ship_draught_decks = list(
 // what summary_text() says, nothing reckoned twice.
 /datum/ship_draught/proc/summary_data()
 	var/upper = other_deck_tiles()
-	var/masts = mast_count()
+	var/masts = mast_count() + piece_count("J")
 	var/benches = piece_count("R")
 	var/list/cost_parts = list()
 	var/list/deck_rows = list()
@@ -828,6 +835,11 @@ var/global/list/ship_draught_decks = list(
 
 /obj/item/ship_draught/examine(mob/user, distance)
 	..()
+	var/datum/vehicle_draught/car = vehicle_draught()
+	if (car)
+		to_chat(user, car.summary_text())
+		qdel(car)
+		return
 	var/datum/sub_draught/sub = sub_draught()
 	if (sub)
 		to_chat(user, sub.summary_text())
@@ -846,17 +858,25 @@ var/global/list/ship_draught_decks = list(
 		sub_sheet_menu(H, sub)
 		qdel(sub)
 		return
+	var/datum/vehicle_draught/car = vehicle_draught()
+	if (car)
+		vehicle_sheet_menu(H, car)
+		qdel(car)
+		return
 	var/datum/ship_draught/D = draught()
 	var/list/options = list("Draw on the sheet", "Paste a design code", "Cancel")
 	if (D)
 		options.Insert(2, "Copy her design code")
 	else
 		options.Insert(2, "Draw a submarine on the sheet")
+		options.Insert(3, "Draw a vehicle on the sheet")
 	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank. Hold a pen or pencil to draw a ship on it.", name, "Cancel", options)
 	if (choice == "Draw on the sheet")
 		open_designer(H)
 	else if (choice == "Draw a submarine on the sheet" && !draught_code)
 		open_sub_designer(H)
+	else if (choice == "Draw a vehicle on the sheet" && !draught_code)
+		open_vehicle_designer(H)
 	else if (choice == "Copy her design code" && D)
 		design_code_show(H, "Ship's draught: [D.name]", draught_code, "Paste it into any ship's draught to draw the same ship.")
 	else if (choice == "Paste a design code")

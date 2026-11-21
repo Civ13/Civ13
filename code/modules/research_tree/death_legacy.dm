@@ -47,7 +47,8 @@ var/global/death_legacy_test_hours = 0
 /proc/death_legacy_account(mob/living/human/H)
 	if (!istype(H))
 		return null
-	var/account = H.client ? H.client.ckey : (H.ckey || H.persistence_owner_ckey)
+	// The owner key: each character slot keeps its own record (player_reclaim.dm).
+	var/account = H.client ? H.client.owner_key() : (H.persistence_owner_ckey || H.ckey)
 	return istext(account) && length(account) && copytext(account, 1, 6) != "guest" ? account : null
 
 /proc/death_legacy_near(list/record, turf/T)
@@ -193,7 +194,7 @@ var/global/death_legacy_test_hours = 0
 /mob/new_player/proc/death_legacy_preview(list/factions, wilds)
 	if (!client || !death_legacy_enabled())
 		return ""
-	var/account = client.ckey
+	var/account = client.owner_key()
 	var/list/record = death_legacy_record(account)
 	if (!record)
 		return ""
@@ -220,7 +221,7 @@ var/global/death_legacy_test_hours = 0
 /proc/death_legacy_return(mob/living/human/H)
 	if (!istype(H) || !H.client || IsGuestKey(H.client.key))
 		return FALSE
-	return death_legacy_apply(H, H.client.ckey)
+	return death_legacy_apply(H, H.client.owner_key())
 
 /proc/death_legacy_apply(mob/living/human/H, account)
 	if (!death_legacy_enabled() || !istype(H) || !account)

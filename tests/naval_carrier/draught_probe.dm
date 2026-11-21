@@ -101,6 +101,19 @@ var/naval_runtime_error = FALSE
 	nest_ship.set_piece(1, 3, "N")
 	naval_check(nest_ship.mast_count() == 1 && nest_ship.sail_step() == VESSEL_SPEED_HALF && nest_ship.costs()["wood"] == 95, "a mast with a crow's nest drives her like a mast and costs 8 wood more ([nest_ship.costs_text()])")
 	qdel(nest_ship)
+	var/datum/ship_draught/jib_ship = draught_box(3, 5, "Jib")
+	jib_ship.set_piece(1, 4, "J")
+	jib_ship.set_piece(1, 0, "F", NORTH)
+	naval_check(jib_ship.sail_push() == CRAFT_SAIL_THRUST * 0.5 && jib_ship.costs()["wood"] == 88 && findtext(jib_ship.summary_text(), "under sail"), "a bowsprit's jib pushes half a mast and the figurehead costs its wood ([jib_ship.costs_text()])")
+	var/datum/design_report/jib_report = design_report("ship", jib_ship)
+	naval_check(!findtext(jointext(jib_report.texts(DESIGN_WARNING), " "), "bowsprit"), "a bowsprit at her bow draws no warning about it")
+	qdel(jib_report)
+	jib_ship.set_piece(1, 4, null)
+	jib_ship.set_piece(1, 3, "J")
+	jib_report = design_report("ship", jib_ship)
+	naval_check(findtext(jointext(jib_report.texts(DESIGN_WARNING), " "), "bowsprit"), "a bowsprit behind more of her deck is warned of")
+	qdel(jib_report)
+	qdel(jib_ship)
 	var/datum/ship_draught/raft = draught_box(3, 4, "Raft")
 	naval_check(!length(raft.gunwale_sides()), "small craft of 12 tiles are left open")
 	qdel(raft)
@@ -547,6 +560,35 @@ var/naval_runtime_error = FALSE
 		naval_check(!topman.climbed_tree && !aloft_mast.mast_aloft() && !petrel_craft.aloft_reach(), "climbed down, nobody is aloft")
 		qdel(aloft_mast)
 		qdel(topman)
+
+		// ---- Her bow (naval/hull_bow.dm) ----
+		var/bow_dir = petrel_craft.body.heading()
+		var/turf/bow_turf
+		var/turf/stern_turf
+		for (var/turf/T in petrel_deck)
+			if (!(locate(/obj/structure/hull_tiller) in T) && !(locate(/obj/structure/vehicleparts/movement/sail) in T))
+				if (!bow_turf && !petrel_craft.body.carries(get_step(T, bow_dir)))
+					bow_turf = T
+				if (!stern_turf && !petrel_craft.body.carries(get_step(T, turn(bow_dir, 180))))
+					stern_turf = T
+		var/obj/structure/vehicleparts/movement/sail/bowsprit/sprit = new(bow_turf)
+		sprit.sails = new /obj/item/sail(sprit)
+		var/datum/craft_drive/fitted/sail/jib/jib = sprit.craft_drive()
+		jib.craft = petrel_craft
+		naval_check(jib.ready() && jib.thrust == CRAFT_SAIL_THRUST * 0.5, "a jib rigged on a bowsprit at her bow draws, with half a mast's thrust")
+		sprit.forceMove(stern_turf)
+		naval_check(!jib.ready(), "a bowsprit with her deck ahead of it draws nothing")
+		jib.craft = null
+		qdel(jib)
+		var/mob/living/human/naval_probe/sprit_climber = new(get_turf(sprit))
+		sprit_climber.a_intent = I_GRAB
+		naval_check(!sprit.mast_grab_climb(sprit_climber), "nobody climbs a bowsprit")
+		qdel(sprit_climber)
+		qdel(sprit)
+		var/obj/structure/figurehead/figure = new(bow_turf)
+		naval_check(!figure.carving && figure.carve("wolf") && figure.name == "wolf figurehead" && !figure.carve("dragon"), "a figurehead is carved once, as one of its figures")
+		naval_check(ship_draught_piece_on(bow_turf, petrel_tiller) ~= list("F", figure.dir), "drawing her lines draws a figurehead")
+		qdel(figure)
 	qdel(petrel)
 	draught_design_checks()
 

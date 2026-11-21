@@ -44,8 +44,46 @@ var/global/list/persistence_player_claims = list()
 
 /proc/persistence_owner_valid(account)
 	if(!istext(account) || !length(account)) return FALSE
+	var/slot = owner_key_slot(account)
+	if(!slot) return FALSE
+	if(slot > 1) return persistence_owner_valid(owner_key_account(account)) // valid when its account is
 	if(is_account_key(account) || is_agent_account(account)) return TRUE
 	return ckey(account) == account && !persistence_guest_account(account)
+
+// Character slots (docs/character-slots.md). Slot 1 owns a
+// body under the account itself, exactly as before slots; slots 2 to 4 own
+// theirs under "@<slot><account>". No ckey, account key or agent account
+// starts with "@", so an owner key never names another account, and the key
+// still fits the 32 characters of a BYOND ckey plus two.
+var/global/const/character_slots_max = 4 // slot 1 plus three more
+
+// The slot an owner key belongs to: 1 for a plain account, 2 to 4 for a slot key, 0 when invalid.
+/proc/owner_key_slot(key)
+	if(!istext(key) || !length(key)) return 0
+	if(copytext(key, 1, 2) != "@") return 1
+	var/slot = text2num(copytext(key, 2, 3))
+	if(!isnum(slot) || slot < 2 || slot > character_slots_max || length(key) < 4) return 0
+	if(copytext(key, 3, 4) == "@") return 0 // slot keys never nest
+	return slot
+
+// The account (the person) behind an owner key.
+/proc/owner_key_account(key)
+	var/slot = owner_key_slot(key)
+	if(!slot) return null
+	if(slot == 1) return key
+	return copytext(key, 3)
+
+/proc/owner_key_for(account, slot = 1)
+	if(!istext(account) || !length(account) || owner_key_slot(account) != 1) return null
+	if(!isnum(slot) || slot <= 1) return account
+	if(slot > character_slots_max) return null
+	return "@[round(slot)][account]"
+
+/client/var/tmp/character_slot = 1 // the slot this client plays; only the Characters window changes it
+
+// The owner key this client's character is saved under.
+/client/proc/owner_key()
+	return owner_key_for(ckey, character_slot) || ckey
 
 /mob/living/human/proc/record_persistence_owner()
 	if(!client || !client.ckey)
@@ -53,7 +91,7 @@ var/global/list/persistence_player_claims = list()
 	if(IsGuestKey(client.key))
 		persistence_owner_ckey = null
 		return
-	var/account = client.ckey
+	var/account = client.owner_key()
 	for(var/mob/living/human/H in world)
 		if(H != src && H.persistence_owner_ckey == account)
 			H.persistence_owner_ckey = null
@@ -71,14 +109,14 @@ var/global/list/persistence_player_claims = list()
 	for(var/mob/living/human/H in world)
 		if(QDELETED(H) || H.gcDestroyed) continue
 		if(H.client && !IsGuestKey(H.client.key))
-			var/account = H.client.ckey
+			var/account = H.client.owner_key()
 			if(!account || active[account])
 				throw EXCEPTION("Duplicate or missing authenticated player account")
 			active[account] = H
 	for(var/mob/living/human/H in world)
 		if(QDELETED(H) || H.gcDestroyed) continue
 		if(H.client)
-			H.persistence_owner_ckey = IsGuestKey(H.client.key) ? null : H.client.ckey
+			H.persistence_owner_ckey = IsGuestKey(H.client.key) ? null : H.client.owner_key()
 		else if(H.persistence_owner_ckey && active[H.persistence_owner_ckey])
 			H.persistence_owner_ckey = null
 	// Only a living body can be taken back. A body that died keeps its owner's
@@ -148,32 +186,33 @@ var/global/list/persistence_player_claims = list()
 /map_storage/proc/reclaim_saved_player(mob/new_player/lobby)
 	if(!lobby || !lobby.client || lobby.client.mob != lobby) return FALSE
 	var/client/C = lobby.client
+	var/owner = C.owner_key()
 	// Retain saved-body reconnect admission: account bans and recovery readiness.
 	// Fresh-character entry locks, round/join gates and role checks are separate.
 	// A rejected account leaves both its lobby and the saved claim untouched.
 	if(IsGuestKey(C.key) || C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server"))
 		return FALSE
-	var/mob/living/human/H = find_restored_player(C.ckey)
+	var/mob/living/human/H = find_restored_player(owner)
 	if(persistence_bed_return_enabled())
-		if(persistence_player_claims[C.ckey] || character_recovery_unready()) return FALSE
-		var/list/bodies = local_character_bodies(C.ckey)
+		if(persistence_player_claims[owner] || character_recovery_unready()) return FALSE
+		var/list/bodies = local_character_bodies(owner)
 		if(length(bodies) != 1) return FALSE
 		H = bodies[1]
-		if(!return_player_eligible(H, C.ckey)) return FALSE
+		if(!return_player_eligible(H, owner)) return FALSE
 	if(!H) return FALSE
 	// Reserve before movement/Entered/Login hooks can reenter or yield. A failed
 	// return retains the original body claim; release only this lobby's reservation.
-	persistence_player_claims[C.ckey] = lobby
+	persistence_player_claims[owner] = lobby
 	try
 		// Movement hooks may yield or change account admission; recheck before handoff.
-		if(!prepare_character_return(H) || !H || persistence_player_claims[C.ckey] != lobby || lobby.client != C || C.mob != lobby || H.persistence_owner_ckey != C.ckey || H.client || H.key || H.stat == DEAD || player_restoration_blocked() || (persistence_bed_return_enabled() && !return_player_eligible(H, C.ckey)) || IsGuestKey(C.key) || C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server"))
-			if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
+		if(!prepare_character_return(H) || !H || persistence_player_claims[owner] != lobby || lobby.client != C || C.mob != lobby || H.persistence_owner_ckey != owner || H.client || H.key || H.stat == DEAD || player_restoration_blocked() || (persistence_bed_return_enabled() && !return_player_eligible(H, owner)) || IsGuestKey(C.key) || C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server"))
+			if(persistence_player_claims[owner] == lobby) persistence_player_claims.Remove(owner)
 			return FALSE
 		// Defend unique local ownership after callbacks, including direct owner changes.
 		if(persistence_bed_return_enabled())
-			var/list/current_bodies = local_character_bodies(C.ckey)
+			var/list/current_bodies = local_character_bodies(owner)
 			if(length(current_bodies) != 1 || current_bodies[1] != H)
-				if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
+				if(persistence_player_claims[owner] == lobby) persistence_player_claims.Remove(owner)
 				return FALSE
 		lobby.spawning = TRUE
 		lobby.close_spawn_windows()
@@ -181,12 +220,12 @@ var/global/list/persistence_player_claims = list()
 		if(C.mob != H)
 			throw EXCEPTION("Saved player body did not receive its authenticated client")
 		finish_character_return(H)
-		persistence_restored_bodies.Remove(C.ckey)
+		persistence_restored_bodies.Remove(owner)
 	catch(var/exception/reclaim_error)
-		if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
+		if(persistence_player_claims[owner] == lobby) persistence_player_claims.Remove(owner)
 		if(lobby && lobby.client == C && C.mob == lobby) lobby.spawning = FALSE
 		throw reclaim_error
-	if(persistence_player_claims[C.ckey] == lobby) persistence_player_claims.Remove(C.ckey)
+	if(persistence_player_claims[owner] == lobby) persistence_player_claims.Remove(owner)
 	qdel(lobby)
 	return TRUE
 

@@ -137,3 +137,9 @@
 #define SUB_DRAUGHT_MIN_LENGTH 4
 #define SUB_DRAUGHT_MAX_LENGTH 7
 #define DESIGN_CODE_SUB_MAX 800
+
+// Vehicle sheets (craft/vehicle_draught.dm): a hand-built land vehicle is
+// this many tiles each way (VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE at most).
+#define VEHICLE_DRAUGHT_MIN 2
+#define VEHICLE_DRAUGHT_MAX 5
+#define DESIGN_CODE_CAR_MAX 700
