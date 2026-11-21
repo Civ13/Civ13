@@ -79,13 +79,15 @@ var/global/list/obsidian_volcano_cells = list()
 // Mined rock near a volcano, on its own level or under it: an independent roll
 // like flint nodules and gem pockets, so the ore table is unchanged. Every age.
 /turf/proc/mining_obsidian(mob/living/human/H)
-	if (!prob(OBSIDIAN_MINING_CHANCE))
+	if (!prob(OBSIDIAN_MINING_CHANCE * underground_ore_factor("obsidian", src))) // underground_ores.dm
 		return 0
 	var/volcanic = near_volcano(src)
 	if (!volcanic)
 		var/up_z = multiz_level_above(z)
 		if (up_z)
 			volcanic = near_volcano(locate(x, y, up_z))
+	if (!volcanic && underground_depth_of(z) > 1)
+		volcanic = near_volcano(underground_surface_over(src))
 	if (!volcanic)
 		return 0
 	var/obj/item/stack/ore/obsidian/O = new /obj/item/stack/ore/obsidian(src)
