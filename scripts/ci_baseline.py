@@ -1882,7 +1882,7 @@ SUITES = {
             'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Character slot owner keys (docs/character-slots.md); source checks only.
-    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py',),
+    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py'),
         'paths': ('tests/character_slots/',), 'shared_paths': (
             'docs/character-slots.md', 'code/modules/persistence/player_reclaim.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_home.dm',
@@ -1891,7 +1891,9 @@ SUITES = {
             'code/game/objects/map_metadata/nomads/nomads_start.dm', 'code/modules/accolades/accolades.dm',
             'code/modules/karma/karma_give.dm', 'code/modules/divine/magic_whitelist.dm',
             'code/modules/player_activity/player_activity.dm', 'code/modules/admin/verbs/research_knowledge.dm',
-            'code/game/mob/groups/nation.dm', 'tools/transfer_storage/region.py')},
+            'code/game/mob/groups/nation.dm', 'tools/transfer_storage/region.py',
+            'code/modules/accolades/character_slots.dm', 'code/game/mob/new_player/login.dm',
+            'code/modules/admin/accolades_admin.dm')},
 
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
