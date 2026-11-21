@@ -83,6 +83,7 @@ var/global/list/nation_assembly_tiers = list(
 	nation_assemblies_report()
 	nation_eras_report()
 	nation_census_report()
+	nation_succession_report()
 	return TRUE
 
 /proc/nations_refresh_due()
@@ -235,6 +236,8 @@ var/global/list/nation_assembly_tiers = list(
 			choices += list("Government", "Vote on an application", "Vote on a common money")
 		if (nid && G["body"] && nation_home_faction(faction))
 			choices.Insert(2, "Motions and elections")
+		if (nid && (G["type"] == "monarchy" || G["type"] == "republic") && nation_heads(nid))
+			choices.Insert(2, G["type"] == "monarchy" ? "Name an heir" : "Name a deputy")
 	choices += "Cancel"
 	var/pick = WWinput(src, text, "Nation", "Cancel", choices)
 	if (pick == "View nations")
@@ -243,6 +246,10 @@ var/global/list/nation_assembly_tiers = list(
 	if (pick == "Cancel" || !pick)
 		return
 	// The dialog blocks; the faction and leadership must still hold.
+	if (pick == "Name an heir" || pick == "Name a deputy")
+		if (civilization == faction && nation_of_id(id) == nid)
+			nation_name_successor(faction, id, nid)
+		return
 	if (pick == "Motions and elections")
 		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
 			nation_motions_menu(faction, id, nid)
