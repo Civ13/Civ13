@@ -60,7 +60,7 @@
 	name = "tobacco seeds"
 	plant = "tobacco"
 	color = "#d88046" //orange brown
-	biomes = list("desert", "jungle", "savanna", "semiarid")
+	biomes = list("temperate", "sea", "semiarid", "savanna", "jungle")
 
 /obj/item/stack/farming/seeds/juniper
 	name = "juniper seeds"
@@ -110,7 +110,17 @@
 	name = "hemp seeds"
 	plant = "hemp"
 	color = "#7cfc00"  //lawn green, just like the t-shirts.
-	biomes = list("jungle", "savanna", "sea", "semiarid", "desert")
+	biomes = list("temperate", "taiga", "sea", "semiarid", "savanna")
+	seasons = list("SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+
+// Drug cannabis: the same species as hemp, grown for its flowering tops
+// instead of its stalk fibre.
+/obj/item/stack/farming/seeds/cannabis
+	name = "cannabis seeds"
+	desc = "Seeds of cannabis grown for its flowering tops rather than for fibre."
+	plant = "cannabis"
+	color = "#4f8a2b"
+	biomes = list("temperate", "sea", "semiarid", "savanna")
 	seasons = list("SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 
 /obj/item/stack/farming/seeds/flax
@@ -138,7 +148,7 @@
 	desc = "Seeds of the opium poppy."
 	plant = "poppy"
 	color = "#5f5c54" //grey
-	biomes = list("jungle", "savanna", "desert")
+	biomes = list("temperate", "sea", "semiarid", "desert", "savanna")
 
 /obj/item/stack/farming/seeds/coffee
 	name = "coffee seeds"
@@ -452,7 +462,7 @@
 	icon_state = "poppy-grow1"
 	plant = "poppy"
 	stack = "material/poppy"
-	biomes = list("jungle", "savanna", "desert")
+	biomes = list("temperate", "sea", "semiarid", "desert", "savanna")
 	max_water = 75
 
 /obj/structure/farming/plant/tobacco
@@ -461,22 +471,34 @@
 	icon_state = "tobacco-grow1"
 	plant = "tobacco"
 	stack = "material/tobacco_green"
-	biomes = list("desert", "jungle", "savanna", "semiarid")
+	biomes = list("temperate", "sea", "semiarid", "savanna", "jungle")
 	max_water = 55
 
 /obj/structure/farming/plant/hemp
 	name = "hemp plant"
-	desc = "A hemp plant. Good to make ropes and uh, other things."
+	desc = "A fibre hemp plant, grown tall and close for its stalks. Good for rope and cloth."
 	icon_state = "hemp-grow1"
 	plant = "hemp"
 	stack = "material/hemp"
-	biomes = list("jungle", "savanna", "sea", "semiarid", "desert")
+	biomes = list("temperate", "taiga", "sea", "semiarid", "savanna")
+	seasons = list("SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
+	max_water = 60
+
+/obj/structure/farming/plant/cannabis
+	name = "cannabis plant"
+	desc = "A bushy cannabis plant grown for its sticky flowering tops."
+	icon_state = "hemp-grow1"
+	plant = "cannabis"
+	sprite_plant = "hemp"
+	stack = "material/cannabis_fresh"
+	stack_amount = 2
+	biomes = list("temperate", "sea", "semiarid", "savanna")
 	seasons = list("SUMMER", "SPRING", "FALL", "Wet Season", "Dry Season")
 	max_water = 60
 
 /obj/structure/farming/plant/flax
 	name = "flax plant"
-	desc = "A flax plant. Closely related to hemp in fibrous rope-making but has none of the uh, other stuff."
+	desc = "A flax plant. Like fibre hemp, its stalks make rope and linen."
 	icon_state = "flax-grow1"
 	plant = "flax"
 	stack ="material/flax"
@@ -646,7 +668,7 @@
 
 /obj/structure/farming/plant/coca
 	name = "coca"
-	desc = "A coca plant. Produces coca leaves that can be refined to cocaine."
+	desc = "A coca shrub. Its leaves are chewed or brewed as a mild stimulant."
 	icon_state = "coca-grow1"
 	plant = "coca"
 	stack = "material/coca"
