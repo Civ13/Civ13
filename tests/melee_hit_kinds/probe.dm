@@ -82,9 +82,9 @@
 	kind_check(armor_rating(list(melee = 40), "arrow") == 0, "other keys never fall back to melee")
 	kind_check(armor_rating(null, HIT_CUT) == 0, "no armor list protects nothing")
 
-	// Existing worn armor protects exactly as before against every kind.
-	var/list/worn = list(/obj/item/clothing/suit/armor/medieval, /obj/item/clothing/suit/armor/medieval/chainmail,
-		/obj/item/clothing/suit/armor/samurai, /obj/item/clothing/suit/armor/ancient/linen)
+	// Worn armor without a family protects as its melee value against every kind.
+	var/list/worn = list(/obj/item/clothing/suit/armor/ork_grunt, /obj/item/clothing/suit/armor/darkplate,
+		/obj/item/clothing/suit/armor/scrap, /obj/item/clothing/suit/armor/creed)
 	var/mob/living/human/wearer = new(locate(2,2,1))
 	for(var/path in worn)
 		var/obj/item/clothing/suit = new path(locate(2,2,1))

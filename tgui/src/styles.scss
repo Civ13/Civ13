@@ -416,6 +416,38 @@ button.rs-row-main { cursor: pointer; }
 .setup-replaces { color: var(--civ-warn); }
 .setup-trait-foot { display: flex; justify-content: flex-end; margin-top: 4px; } .setup-trait-foot .Button { margin: 0; }
 
+// Haircut: the figure on the left, style tiles on the right, one action bar.
+.cut { display: flex; flex-direction: column; gap: 8px; height: calc(100vh - 80px); min-height: 440px; }
+.cut canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.cut-lead { margin: 0; color: var(--civ-dim); }
+.cut-columns { display: flex; gap: 10px; flex: 1 1 0; min-height: 0; }
+.cut-side { flex: 0 0 216px; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px; background: var(--civ-panel); border: 1px solid var(--civ-line); border-radius: 4px; }
+.cut-stage { flex: none; }
+.cut-changes { width: 100%; margin: 2px 0 0; padding-top: 6px; border-top: 1px solid var(--civ-line-soft); font-size: 12.5px; }
+.cut-changes dt { margin-top: 6px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--civ-dim); }
+.cut-changes dd { margin: 2px 0 0; } .cut-changes s, .cut-same { color: var(--civ-dim); } .cut-changes b { color: var(--civ-highlight); }
+.cut-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.cut-foot { margin-top: auto; text-align: center; }
+.cut-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.cut-panel { display: flex; flex-direction: column; min-height: 0; background: var(--civ-panel); border: 1px solid var(--civ-line); }
+.cut-panel-hair { flex: 3 1 0; } .cut-panel-beard { flex: 2 1 0; }
+.cut-head { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-bottom: 2px solid var(--civ-accent); }
+.cut-head h2 { margin: 0 auto 0 0; font-size: 15px; }
+.cut-find { width: 130px; }
+.cut-tiles { flex: 1 1 0; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 4px; padding: 6px; overflow-y: scroll; background: var(--civ-inset); }
+.cut-tile { position: relative; width: 84px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 3px 2px 4px; font: 11px/1.15 Verdana, sans-serif; color: var(--civ-text); background: var(--civ-chip); border: 2px solid transparent; border-radius: 4px; cursor: pointer; }
+.cut-tile:hover { background: var(--civ-raised); }
+.cut-tile:focus-visible { outline: 2px solid var(--civ-highlight); outline-offset: 1px; }
+.cut-tile:disabled { cursor: default; opacity: .6; }
+.cut-tile-on { border-color: var(--civ-highlight); background: var(--civ-raised); }
+.cut-thumb { width: 72px; height: 60px; background: var(--civ-inset); border-radius: 3px; }
+.cut-now { position: absolute; top: 2px; left: 2px; padding: 0 5px; font-size: 10px; font-weight: bold; color: var(--civ-bg); background: var(--civ-accent); border-radius: 8px; }
+.cut-name { display: flex; align-items: center; min-height: 26px; text-align: center; overflow-wrap: anywhere; }
+.cut-actions { display: flex; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px solid var(--civ-line); }
+.cut-actions .kit-hint { flex: 1 1 0; } .cut-actions .Button { margin: 0; padding: 3px 14px; }
+.cut-actions .cut-cancel { background: var(--civ-chip); color: var(--civ-text); }
+.cut-actions .cut-go:not(.Button--disabled) { background: var(--civ-accent); color: var(--civ-bg); font-weight: bold; }
+
 /* Storage window: "You" on the left, "Nearby" on the right, the transfer queue along the bottom. */
 .stor { display: flex; flex-direction: column; gap: 8px; height: calc(100vh - 74px); min-height: 380px; position: relative; }
 .stor-bar { display: flex; align-items: center; gap: 10px; padding: 4px 6px; background: var(--civ-panel); border: 1px solid var(--civ-line); }

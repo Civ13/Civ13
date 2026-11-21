@@ -52,6 +52,10 @@
 	.["host"] = world.host ? world.host : null
 	.["game_id"] = game_id
 	.["players"] = length_char(clients) //GLOB.clients
+	// A gateway (region_gateway.dm) is empty by design; say who plays behind it.
+	if(region_gateway_here())
+		.["gateway"] = TRUE
+		.["group_players"] = region_gateway_players()
 	//.["revision"] = GLOB.revdata.commit
 	//.["revision_date"] = GLOB.revdata.date
 	.["hub"] = GLOB.hub_visibility
