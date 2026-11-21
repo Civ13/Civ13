@@ -28,6 +28,7 @@ REVIEWED = {
     'original_job_title': 'regex hit on a comparison, not an assignment',
     'move_delay': 'assigned on client, not on the saved gun',
     'last_action': 'grabs are never saved (should_save = FALSE)',
+    'last_preview': 'declared var/tmp on the ship\'s draught (ship_designer.dm): a summary rate limit, never saved',
     'stopped_until': 'football map mode is not persistent',
     'round_deadline': 'extraction raid instances are not persistent',
     'next_checkpoint': 'extraction raid instances are not persistent',
