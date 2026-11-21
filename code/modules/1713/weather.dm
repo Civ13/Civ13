@@ -308,7 +308,8 @@
 							look = ""
 							local = WEATHER_NONE
 							strength = weather_intensity
-				if ("Dry Season", "FALL", "SPRING")
+				// Temperate summers rain too, in showers and summer storms.
+				if ("Dry Season", "FALL", "SPRING", "SUMMER")
 					switch (weather)
 						if (WEATHER_EXTREME)
 							look = "rain2"
@@ -322,10 +323,6 @@
 							look = ""
 							local = WEATHER_NONE
 							strength = weather_intensity
-				if ("SUMMER")
-					look = ""
-					local = WEATHER_NONE
-					strength = weather_intensity
 		else
 			look = ""
 			local = WEATHER_NONE
