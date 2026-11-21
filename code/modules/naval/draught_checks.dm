@@ -165,11 +165,24 @@
 	if (inboard.len)
 		R.error("[inboard.len] gangway\s face[inboard.len == 1 ? "s" : ""] her own deck: a gangway stands on her edge, facing out over the side.", inboard, "Y")
 
+// A bowsprit carries her jib from her bow: nothing of hers ahead of it
+// (hull_bow.dm).
+/datum/design_check/ship/bowsprits
+	order = 46
+
+/datum/design_check/ship/bowsprits/ship_check(datum/ship_draught/D, datum/design_report/R)
+	var/list/aft = list()
+	for (var/key in D.piece_cells("J"))
+		if (D.cells[ship_draught_step_key(key, NORTH)])
+			aft += key
+	if (aft.len)
+		R.warning("[aft.len] bowsprit\s stand[aft.len == 1 ? "s" : ""] behind more of her deck: a jib draws only from a bowsprit at her bow, the top of the sheet.", aft, "J")
+
 /datum/design_check/ship/drives
 	order = 50
 
 /datum/design_check/ship/drives/ship_check(datum/ship_draught/D, datum/design_report/R)
-	var/masts = D.piece_count("M")
+	var/masts = D.mast_count() + D.piece_count("J")
 	var/benches = D.piece_count("R")
 	var/engines = D.engine_push()
 	if (!masts && !benches && !engines)
