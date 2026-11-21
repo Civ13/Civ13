@@ -181,6 +181,9 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 /mob/living/human/proc/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
 
 	var/datum/reagent/B = get_blood(container.reagents)
+	// Never top up another donor's blood: it would take this donor's type (#6239).
+	if (B && (!B.data || B.data["donor"] != src))
+		return null
 	if (!B) B = new /datum/reagent/blood
 	B.holder = container
 	B.volume += amount
@@ -219,7 +222,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		return null
 
 	. = ..()
-	vessel.remove_reagent("blood",amount) // Removes blood if human
+	if (.)
+		vessel.remove_reagent("blood",amount) // Removes blood if human
 
 //Transfers blood from container ot vessels
 /mob/living/human/proc/inject_blood(var/datum/reagent/blood/injected, var/amount)

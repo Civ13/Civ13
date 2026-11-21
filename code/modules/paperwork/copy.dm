@@ -156,21 +156,29 @@
 /obj/structure/printingpress/Destroy()
 	src.copying = FALSE
 	var/turf/place = get_turf(src)
-	// Rescue only papers actually retained by this press, including old saves
-	// whose input lists refer to papers hidden at null. Book behavior is unchanged.
-	var/list/papers = list()
-	for (var/obj/item/weapon/paper/original in src.base)
-		papers |= original
-	for (var/obj/item/weapon/paper/stock in src.copy)
-		papers |= stock
-	for (var/obj/item/weapon/paper/P in papers)
-		if (islist(src.base))
-			src.base -= P
-		if (islist(src.copy))
-			src.copy -= P
-		if (P && !P.gc_destroyed && (P.loc == src || isnull(P.loc)))
-			P.loc = place
+	src.eject_press_documents(place)
+	src.refund_printing_sheets(place)
 	return ..()
+
+/obj/structure/printingpress/proc/eject_press_documents(turf/place, mob/user = null)
+	if (!isturf(place))
+		return FALSE
+	// Include legacy books/maps kept at null. Never take a moved item back.
+	var/list/documents = list()
+	for (var/obj/item/weapon/original in src.base)
+		documents |= original
+	for (var/obj/item/weapon/stock in src.copy)
+		documents |= stock
+	for (var/obj/item/weapon/D in documents)
+		if (islist(src.base))
+			src.base -= D
+		if (islist(src.copy))
+			src.copy -= D
+		if (D && !D.gc_destroyed && (D.loc == src || isnull(D.loc)))
+			D.loc = place
+			if (user)
+				to_chat(user, SPAN_NOTICE("You remove \the [D]."))
+	return TRUE
 
 /obj/structure/printingpress/proc/copy_paper_document(mob/actor)
 	var/client/expected_client = actor ? actor.client : null

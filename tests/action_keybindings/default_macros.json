@@ -129,6 +129,7 @@
     {"id": "", "key": "ALT+L", "command": "looc", "disabled": false},
     {"id": "", "key": "CTRL+L", "command": "attack-direction", "disabled": false},
     {"id": "", "key": "M", "command": "m-intent-run", "disabled": false},
+    {"id": "", "key": "SHIFT+M", "command": "m-intent-sprint", "disabled": false},
     {"id": "", "key": "N", "command": "tactic-intent", "disabled": false},
     {"id": "ooc", "key": "O", "command": "ooc", "disabled": false},
     {"id": "", "key": "Q", "command": ".northwest", "disabled": false},

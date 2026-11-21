@@ -1,0 +1,23 @@
+	if(phase == 26)
+		for(var/atom/T)
+			var/area/A = get_area(T)
+			if (T.z == event_z && (istype(T, /mob/living) || istype(T, /obj)))
+				var/cseverity=severity/3
+				if (ismob(T))
+					if (A.location == 0)
+						cseverity = severity/100
+					else
+						cseverity = severity/30
+					T.rad_act(cseverity)
+					if (ishuman(T))
+						var/mob/living/human/H = T
+						H.Weaken(3)
+						if (H.HUDtech.Find("flash"))
+							flick("e_flash", H.HUDtech["flash"])
+			if (istype(T, /obj/structure/window))
+				var/obj/structure/window/W = T
+				if (W.z == event_z)
+					W.shatter()
+			else if (istype(T, /obj))
+				if (prob(20) && T.density && T.z == event_z)
+					T.ex_act(1.0)

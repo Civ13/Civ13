@@ -163,8 +163,9 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 	var/longest = abs(w)
 	var/shortest = abs(h)
 	if(!(longest > shortest))
-		longest = abs(h)
-		shortest = abs(w)
+		var/previous_longest = longest
+		longest = shortest
+		shortest = previous_longest
 		if(h < 0) dy2 = -1
 		else if (h > 0) dy2 = 1
 		dx2 = 0

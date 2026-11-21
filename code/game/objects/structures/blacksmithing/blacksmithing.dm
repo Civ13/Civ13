@@ -50,13 +50,18 @@
 					to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 					var/rtype = anvil_recipes[parsed_choice2[1]][9]
 					if (!trial_craft_ruined(user, "[rtype]"))
-						apply_stock_grade(new rtype (loc,material_name), P)
+						finish_forged_piece(apply_stock_grade(new rtype (loc,material_name), P), user, H, material_name)
 						note_craft_practice(user, "[rtype]")
 				in_use = FALSE
 			else
 				in_use = FALSE
 			update_icon()
 			return
+
+// Hook for each piece the anvil makes, from sheet metal (after its stock
+// grade) or from poured mold metal: quench_tub.dm clay-hardens and quenches it.
+/obj/structure/anvil/proc/finish_forged_piece(obj/item/made, mob/user, mob/living/human/H, material_name)
+	return
 
 // Poured mold metal pays anvil_mold_cost(); the menu, wait and payment mirror forge_stack_recipe.
 /obj/structure/anvil/proc/forge_mold_recipe(obj/item/weapon/clay/mold/ML, mob/user, mob/living/human/H, category, list/materials = null)
@@ -91,7 +96,7 @@
 			to_chat(user, "You finish crafting \the [parsed_choice2[1]].")
 			var/obj/item/weapon/material/rtype = row[9]
 			if (!trial_craft_ruined(user, "[rtype]"))
-				new rtype (loc,material)
+				finish_forged_piece(new rtype (loc,material), user, H, material)
 				note_craft_practice(user, "[rtype]")
 			if (ML.capacity < 1)
 				ML.current_material = null

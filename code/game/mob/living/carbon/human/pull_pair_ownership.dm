@@ -36,7 +36,8 @@ var/global/datum/subtile_pull_ownership/subtile_pull_ownership = new
 	return istype(A, /atom/movable) && !isDeleted(A) && isturf(A.loc) && world.icon_size == 32 && A.bound_x == 0 && A.bound_y == 0 && A.bound_width == 32 && A.bound_height == 32 && isnum(A.step_x) && isnum(A.step_y) && A.step_x == round(A.step_x) && A.step_y == round(A.step_y) && A.step_x >= 0 && A.step_x < 32 && A.step_y >= 0 && A.step_y < 32 && (!aligned || (!A.step_x && !A.step_y))
 
 /proc/subtile_pull_shift(list/before, direction, amount)
-	if (!human_subtile_same(before, before) || !(direction in list(NORTH, SOUTH, EAST, WEST)) || !isnum(amount) || amount <= 0 || amount > 2 || amount != round(amount))
+	var/static/list/cardinal_directions = list(NORTH, SOUTH, EAST, WEST)
+	if (!human_subtile_same(before, before) || !(direction in cardinal_directions) || !isnum(amount) || amount <= 0 || amount > 2 || amount != round(amount))
 		return null
 	var/list/after = before.Copy()
 	after["sx"] += (direction == EAST) ? amount : (direction == WEST) ? -amount : 0

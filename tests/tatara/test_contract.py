@@ -225,14 +225,40 @@ class JapaneseBlades(unittest.TestCase):
         harden = proc_body(SOURCE, '/obj/structure/anvil/proc/clay_harden(')
         self.assertIn('W.get_material_name() != "steel"', harden)
         self.assertIn('crafting_node_allowed(H, "japanese_swordsmithing")', harden)
-        self.assertLess(harden.index('Q.station_take_water(null)'), harden.index('C.use(1)'))
+        self.assertLess(harden.index('Q.station_take_water(H)'), harden.index('S.use(1)'))
         self.assertIn('W.hamon = TRUE', harden)
         self.assertIn('W.update_force()', harden)
-        forge = proc_body(SOURCE, '/obj/structure/anvil/forge_stack_recipe(')
-        self.assertIn('material_name != "steel"', forge)
-        self.assertLess(forge.index('before += W'), forge.index('. = ..()'))
-        self.assertIn('clay_harden(W, H)', forge)
+        # Each missing piece is named instead of failing silently.
+        self.assertIn('crafting_node_allowed_or_warn(H, "japanese_swordsmithing")', harden)
+        self.assertIn('clay_tub_problem()', harden)
+        self.assertIn('Hold clay in your other hand', harden)
+        problem = proc_body(SOURCE, '/obj/structure/anvil/proc/clay_tub_problem(')
+        self.assertIn('if (!Q.anchored)', problem)
+        # A clay lump stack or a plain unfired lump, in either hand or on the anvil's tile.
+        clay = proc_body(SOURCE, '/proc/is_hardening_clay(')
+        self.assertIn('istype(I, /obj/item/stack/material/clay)', clay)
+        self.assertIn('I.type == /obj/item/weapon/clay', clay)
+        held = proc_body(SOURCE, '/obj/structure/anvil/proc/hardening_clay(')
+        for where in ('H.get_inactive_hand()', 'H.get_active_hand()', 'get_turf(src)'):
+            self.assertIn(where, held)
 
+    def test_forge_hook_hardens_before_quenching(self):
+        # No same-type forge_stack_recipe overrides (their order would follow
+        # the .dme include order): the base proc calls finish_forged_piece().
+        anvil = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text(encoding='utf-8')
+        self.assertIn('finish_forged_piece(apply_stock_grade(new rtype (loc,material_name), P), user, H, material_name)', anvil)
+        quench = (ROOT / 'code/modules/1713/quench_tub.dm').read_text(encoding='utf-8')
+        for text in (SOURCE, quench):
+            self.assertNotIn('/obj/structure/anvil/forge_stack_recipe(', text)
+        hook = proc_body(quench, '/obj/structure/anvil/finish_forged_piece(')
+        self.assertLess(hook.index('clay_harden(W, H)'), hook.index('Q.quench(W, user)'))
+        # Mold-cast pieces go through the same hook.
+        self.assertIn('finish_forged_piece(new rtype (loc,material), user, H, material)', anvil)
+        self.assertIn('. = I', proc_body((ROOT / 'code/modules/1713/steel_grades.dm').read_text(encoding='utf-8'), '/obj/structure/anvil/proc/apply_stock_grade('))
+        probe = (ROOT / 'tests/tatara/clay_hardening_probe.dm').read_text(encoding='utf-8')
+        for label in ('an unfired clay lump in the other hand counts', 'a loose tub does not clay-harden',
+                      'clay hardening comes before the plain quench'):
+            self.assertIn(label, probe)
 
 if __name__ == '__main__':
     unittest.main()

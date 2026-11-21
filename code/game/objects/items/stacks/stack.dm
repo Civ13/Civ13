@@ -417,6 +417,12 @@
 		if (guard_refusal)
 			to_chat(user, guard_refusal)
 		return
+	// Keep the actual support, not the world turf under the ship at admission.
+	var/datum/ship_construction/ship_craft
+	if ((ispath(recipe.result_type, /obj/structure) || ispath(recipe.result_type, /obj/covers)) && ship_same_tile_fixture(recipe.result_type) && !cover_type_is_stairs(recipe.result_type))
+		var/list/deck = vessel_building_deck_at(H)
+		if (deck && !(istype(deck[1], /obj/structure/vehicleparts/frame/ship) && ispath(recipe.result_type, /obj/covers)))
+			ship_craft = new(H, deck)
 	// Tools and second materials declared in config/craft_needs.json.
 	var/needs_refusal = craft_needs_refusal(H, recipe, quantity, src)
 	if (needs_refusal)
@@ -1505,7 +1511,7 @@
 					secondary_refund(H)
 					return
 
-	else if (ispath(recipe.result_type, /obj/structure/drill))
+	else if (needs_drill_steel(recipe))
 		if (!drill_construction_steel(H))
 			to_chat(user, SPAN_WARNING("You need at least 20 steel in your other hand to build an industrial drill."))
 			secondary_refund(H)
@@ -1599,14 +1605,14 @@
 		secondary_refund(H)
 		return
 
-	if (recipe.one_per_turf && (locate(recipe.result_type) in user.loc) && !well_relining(recipe.result_type, user.loc))
+	if (!ship_craft && recipe.one_per_turf && (locate(recipe.result_type) in user.loc) && !well_relining(recipe.result_type, user.loc))
 		to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
 		secondary_refund(H)
 		return
 
 	// Stairs from an upper floor go down: facing an opening, they are laid on
 	// the floor below it and climb back up to the builder (edge_climbing.dm).
-	var/atom/build_loc = user.loc
+	var/atom/build_loc = ship_craft ? ship_craft.target(H) : user.loc
 	var/list/stairs_down = null
 	if (cover_type_is_stairs(recipe.result_type))
 		var/list/stairs_why = list()
@@ -1618,6 +1624,10 @@
 			secondary_refund(H)
 			return
 
+	if (ship_craft && !build_loc)
+		to_chat(user, SPAN_WARNING("Stay in place on the same deck to build."))
+		secondary_refund(H)
+		return
 	// One floor and one wall per tile (tile_occupancy.dm).
 	var/tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
 	if (tile_refusal)
@@ -1706,13 +1716,13 @@
 		buildtime = reference_build_time(H, "[recipe.result_type]", round(buildtime)) // working from a book (subject_prototypes.dm)
 
 		to_chat(user, "<span class='notice'>Building [recipe.title] ...</span>")
-		if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))
+		if (!do_after(user, buildtime, ship_craft = ship_craft) || !crafting_recipe_allowed(H, "[recipe.result_type]"))
 			secondary_refund(H)
 			return
 
 		// Hammocks pay only after this wait. Do not reject legacy recipes here:
 		// some already consumed secondary inputs before do_after.
-		if (recipe.result_type == /obj/structure/bed/hammock && recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
+		if (!ship_craft && recipe.result_type == /obj/structure/bed/hammock && recipe.one_per_turf && (locate(recipe.result_type) in user.loc))
 			to_chat(user, "<span class='warning'>There is another [recipe.title] here!</span>")
 			secondary_refund(H)
 			return
@@ -1726,7 +1736,8 @@
 		if (press_construction && !press_construction.valid())
 			secondary_refund(H)
 			return
-		secondary_forget(H)
+		if (!ship_craft)
+			secondary_forget(H)
 		if (H && !joinery && !carving && !cloth_payment)
 			H.adaptStat("crafting", 1*recipe.req_amount, recipe.result_type)
 	if (findtext(recipe.title, "coil"))
@@ -1791,16 +1802,24 @@
 			inpt = 150
 		required = 2*(inpt/75)
 	
+	if (ship_craft)
+		build_loc = ship_craft.target(H)
+		if (!build_loc)
+			to_chat(user, SPAN_WARNING("Stay in place on the same deck to build."))
+			secondary_refund(H)
+			return
 	if (recipe.result_type == /obj/structure/barbwire)
 		var/barbwire_amount = 0
 		for (var/obj/structure/barbwire/B in get_turf(user))
 			barbwire_amount++
 		if (barbwire_amount >= 2)
 			to_chat(H, SPAN_WARNING("You cannot build more barbwire here."))
+			if (ship_craft)
+				secondary_refund(H)
 			return
 
 	// Recheck after do_after, before consuming either drill construction input.
-	if (ispath(recipe.result_type, /obj/structure/drill))
+	if (needs_drill_steel(recipe))
 		var/obj/item/stack/material/steel/drill_steel = drill_construction_steel(H)
 		if (!can_use(required) || !drill_steel)
 			to_chat(user, SPAN_WARNING("Keep the electronics and 20 steel in your hands until construction completes."))
@@ -1820,7 +1839,7 @@
 		var/obj/covers/floor_type = recipe.result_type
 		building_floor_recipe = !initial(floor_type.wall) && initial(floor_type.layer) < 2.1
 	// Anything else is built where the builder stands now.
-	if (!stairs_down)
+	if (!stairs_down && !ship_craft)
 		build_loc = user.loc
 	if (stairs_down)
 		var/list/stairs_why = list()
@@ -1834,11 +1853,23 @@
 		var/building_error = building_floor_error(get_turf(build_loc))
 		if (building_error)
 			to_chat(user, SPAN_WARNING(building_error))
+			if (ship_craft)
+				secondary_refund(H)
 			return
+	// Check square contents: an offset fixture based on the adjacent tile
+	// cannot invalidate this tile's one-per-turf recipe.
+	if (ship_craft && recipe.one_per_turf && !well_relining(recipe.result_type, build_loc))
+		for (var/atom/movable/existing in build_loc)
+			if (existing.loc == build_loc && istype(existing, recipe.result_type) && !QDELETED(existing))
+				to_chat(user, SPAN_WARNING("There is another [recipe.title] here!"))
+				secondary_refund(H)
+				return
 	// The tile may have gained a floor or wall during the wait.
 	tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
+		if (ship_craft)
+			secondary_refund(H)
 		return
 
 	if (needs_crafting_handle)
@@ -1853,19 +1884,29 @@
 	needs_refusal = craft_needs_refusal(H, recipe, quantity, src)
 	if (needs_refusal)
 		to_chat(user, needs_refusal)
+		if (ship_craft)
+			secondary_refund(H)
 		return
 	if (press_construction && !press_construction.valid())
+		if (ship_craft)
+			secondary_refund(H)
 		return
 	if (joinery && !joinery.valid())
 		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
+		if (ship_craft)
+			secondary_refund(H)
 		return
 	if (carving && !carving.valid())
 		to_chat(user, SPAN_WARNING("Keep the sandstone and selected carving tools in place until carving completes."))
 		return
 	if (cloth_payment && !cloth_payment.valid())
 		to_chat(user, SPAN_WARNING("Keep the selected cloth and other materials in place until construction completes."))
+		if (ship_craft)
+			secondary_refund(H)
 		return
 	if (use(required, (joinery || carving) ? null : H))
+		if (ship_craft)
+			secondary_forget(H)
 		if (joinery)
 			joinery.consume_component()
 		if ((joinery || carving) && H && recipe.time)
@@ -1901,8 +1942,13 @@
 			WW.update_icon()
 			return
 
+		if (ship_craft && !build_override_object && !newtotem && !build_override_door && !faction_override_door && !istype(O, /obj/structure/vending/sales))
+			ship_craft.align(O)
+
 		if (building_floor_recipe)
 			var/obj/covers/floor = O
+			if (ship_craft && subfloor == ship_craft.support)
+				floor.afloat = subfloor.afloat
 			if (!subfloor || !floor.replace_subfloor(subfloor))
 				floor.building_finish_floor()
 
@@ -2007,6 +2053,8 @@
 
 		if (build_override_object)
 			if (!build_override_object.persistence_set_loc(get_turf(O))) return FALSE
+			if (ship_craft)
+				ship_craft.align(build_override_object)
 			build_override_object.set_dir(user.dir)
 			build_override_object.add_fingerprint(user)
 			qdel(O)
@@ -2014,12 +2062,16 @@
 
 		if (newtotem)
 			if (!newtotem.persistence_set_loc(get_turf(O))) return FALSE
+			if (ship_craft)
+				ship_craft.align(newtotem)
 			newtotem.set_dir(user.dir)
 			newtotem.add_fingerprint(user)
 			qdel(O)
 			return
 		if (build_override_door)
 			if (!build_override_door.persistence_set_loc(get_turf(O))) return FALSE
+			if (ship_craft)
+				ship_craft.align(build_override_door)
 			build_override_door.set_dir(user.dir)
 			build_override_door.add_fingerprint(user)
 			qdel(O)
@@ -2028,6 +2080,8 @@
 			return
 		if (faction_override_door)
 			if (!faction_override_door.persistence_set_loc(get_turf(O))) return FALSE
+			if (ship_craft)
+				ship_craft.align(faction_override_door)
 			faction_override_door.set_dir(user.dir)
 			faction_override_door.add_fingerprint(user)
 			qdel(O)
@@ -2240,6 +2294,8 @@
 			build_override_supply.name = customname
 			build_override_supply.desc = "A [customvar2], property of [customvar]."
 			if (!build_override_supply.persistence_set_loc(get_turf(O))) return FALSE
+			if (ship_craft)
+				ship_craft.align(build_override_supply)
 			build_override_supply.add_fingerprint(user)
 			qdel(O)
 			return
@@ -2252,6 +2308,8 @@
 			build_override_vending.name = customname
 			build_override_vending.desc = "A [customvar2], property of [customvar]."
 			if (!build_override_vending.persistence_set_loc(get_turf(O))) return FALSE
+			if (ship_craft)
+				ship_craft.align(build_override_vending)
 			build_override_vending.add_fingerprint(user)
 			qdel(O)
 			return
@@ -2281,6 +2339,8 @@
 		if (istype(O, /obj/item/weapon/storage)) //BubbleWrap - so newly formed boxes are empty
 			for (var/obj/item/I in O)
 				qdel(I)
+	else if (ship_craft)
+		secondary_refund(H)
 
 /obj/item/stack/Topic(href, href_list)
 	..()
@@ -2346,6 +2406,12 @@
 	return null
 
 // The recipe stack pays electronics; the other held stack pays steel.
+// Powered drills built from electronics also take 20 steel from the other
+// hand. Drill subtypes built from wood, iron or steel (water stamp mill,
+// trommel, amalgamator drum, shaking table, regolith rig) do not.
+/obj/item/stack/proc/needs_drill_steel(datum/stack_recipe/recipe)
+	return istype(src, /obj/item/stack/material/electronics) && ispath(recipe?.result_type, /obj/structure/drill)
+
 /obj/item/stack/proc/drill_construction_steel(mob/living/human/H)
 	if (!istype(src, /obj/item/stack/material/electronics) || !H)
 		return null

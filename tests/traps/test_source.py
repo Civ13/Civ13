@@ -1,10 +1,27 @@
-"""Offline source contracts for traps (#4248, #4249); these do not execute DM."""
+"""Offline source contracts for traps (#4248, #4249, #6223); these do not execute DM."""
+import importlib.util
 from pathlib import Path
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "code/game/objects/items/weapons/traps.dm"
 DISARM_GUARD = 'if (!deployed || buckled_mob || !anchored)'
+spec = importlib.util.spec_from_file_location('source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+adapter = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(adapter)
+
+
+def project_release(source, *, deployed, victim):
+    """Run the trap's unbuckle override over a fake parent; return (result, anchored)."""
+    body = adapter.extract(source, '/obj/item/weapon/trap_lifecycle/unbuckle_mob')
+    body = body.replace('..()', 'parent_unbuckle()')
+    body = re.sub(r'(?<![\w.])(deployed|anchored)\b', r'trap.\1', body)
+    trap = type('Trap', (), {})()
+    trap.deployed, trap.anchored = deployed, True
+    names = {'trap': trap, 'parent_unbuckle': lambda: victim}
+    result = adapter.project('/fixture/run()\n' + body, '/fixture/run', '', names)()
+    return result, trap.anchored
 
 
 def proc_body(source, header):
@@ -88,6 +105,22 @@ class TrapsSource(unittest.TestCase):
         self.assertIn('\n\t\tfinish_trigger()', bear)
         finish = proc_body(self.source, '/obj/item/weapon/trap_lifecycle/proc/finish_trigger()')
         self.assertIn('\n\tif (!buckled_mob)\n\t\tanchored = FALSE\n\tdeployed = FALSE\n\tupdate_icon()', finish)
+
+
+    def test_any_release_from_a_sprung_trap_unanchors_it(self):
+        # #6223: Resist uses the generic unbuckle, which left the trap anchored.
+        victim = object()
+        self.assertEqual(project_release(self.source, deployed=False, victim=victim), (victim, False))
+        # Nothing released, or a still-armed trap, stays put.
+        self.assertEqual(project_release(self.source, deployed=False, victim=None), (None, True))
+        self.assertEqual(project_release(self.source, deployed=True, victim=victim), (victim, True))
+        living = (ROOT / 'code/game/mob/living/living.dm').read_text(encoding='utf-8')
+        self.assertIn('user_unbuckle_mob', living)
+
+    def test_release_override_is_load_bearing(self):
+        old = self.source.replace('\tif (released && !deployed)\n\t\tanchored = FALSE\n', '', 1)
+        self.assertNotEqual(old, self.source)
+        self.assertEqual(project_release(old, deployed=False, victim=object())[1], True)
 
 
 if __name__ == "__main__":

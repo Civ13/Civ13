@@ -164,5 +164,81 @@ class LegcuffCooldownTests(unittest.TestCase):
         self.assertIsNone(actor.legcuffed)
 
 
+
+# Issue #6194: a helper can swap the restraint during the wait. Each completion
+# path must act only on the restraint it started on. (proc, slot, local, inv update)
+SWAP_PATHS = (
+    ('escape_handcuffs', 'handcuffed', 'HC', None),
+    ('break_handcuffs', 'handcuffed', 'HC', 'update_inv_handcuffed'),
+    ('break_legcuffs', 'legcuffed', 'LC', 'update_inv_legcuffed'),
+)
+
+
+def project_swap_completion(source, proc, slot, local, update, actor, original,
+                            *, completed=True, buckled=False):
+    body = adapter.extract(source, '/mob/living/human/proc/' + proc)
+    body = body[body.index('\tif (do_after(src, '):]
+    # Message text and the shout are engine output boundaries; keep guards and mutations.
+    body, count = re.subn(r'\t\tvisible_message\(\n(?:\t\t\t[^\n]*\n)+\t\t\t\)',
+                          '\t\tvisible_message()', body)
+    if count != 1:
+        raise AssertionError(proc + ' completion message boundary changed')
+    body = body.replace('5 SECONDS', '50')  # DM duration macro
+    body = re.sub(r'\t\tsay\(pick\([^\n]*\)\)\n', '', body)
+    body = re.sub(r'(?<![\w.])' + slot + r'\b', 'actor.' + slot, body)
+    removed = []
+
+    def take(item):
+        removed.append(item)
+        if getattr(actor, slot) is item:
+            setattr(actor, slot, None)
+    names = {
+        'src': actor, 'actor': actor, local: original, 'buckled': buckled,
+        'breakouttime': 1200, 'INCAPACITATION_DEFAULT': 0,
+        'INCAPACITATION_RESTRAINED': 0, 'do_after': lambda *a, **kw: completed,
+        'visible_message': lambda: None, 'drop_from_inventory': take, 'qdel': take,
+    }
+    if update:
+        names[update] = lambda: None
+    adapter.project(fixture(body), '/fixture/run', '', names)()
+    return removed
+
+
+class RestraintSwapTests(unittest.TestCase):
+    def setUp(self):
+        self.source = read('code/game/mob/living/carbon/resist.dm')
+
+    def test_completion_acts_on_original_but_not_missing_or_replacement(self):
+        for proc, slot, local, update in SWAP_PATHS:
+            original, replacement = object(), object()
+            for current, expected in ((original, [original]), (None, []), (replacement, [])):
+                with self.subTest(proc=proc, current=current):
+                    actor = SimpleNamespace(**{slot: current})
+                    self.assertEqual(project_swap_completion(
+                        self.source, proc, slot, local, update, actor, original), expected)
+                    self.assertIs(getattr(actor, slot), None if current is original else current)
+            for kwargs in ({'completed': False}, {'buckled': True}):
+                with self.subTest(proc=proc, kwargs=kwargs):
+                    actor = SimpleNamespace(**{slot: original})
+                    self.assertEqual(project_swap_completion(
+                        self.source, proc, slot, local, update, actor, original, **kwargs), [])
+                    self.assertIs(getattr(actor, slot), original)
+
+    def test_old_slot_only_guard_is_a_negative_control(self):
+        for proc, slot, local, update in SWAP_PATHS:
+            with self.subTest(proc=proc):
+                declaration = '/mob/living/human/proc/' + proc + '()'
+                prefix, body = self.source.split(declaration, 1)
+                before, after = body.split('\tif (do_after(src, ', 1)
+                after, count = re.subn(r'\t\tif \([^\n]*buckled[^\n]*\)',
+                                       '\t\tif (!' + slot + ' || buckled)', after, count=1)
+                self.assertEqual(count, 1)
+                old = prefix + declaration + before + '\tif (do_after(src, ' + after
+                original, replacement = object(), object()
+                actor = SimpleNamespace(**{slot: replacement})
+                self.assertEqual(project_swap_completion(
+                    old, proc, slot, local, update, actor, original), [replacement])
+                self.assertIsNone(getattr(actor, slot))
+
 if __name__ == '__main__':
     unittest.main()

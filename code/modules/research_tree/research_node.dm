@@ -400,7 +400,10 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
 	register_research_node(new /datum/research_node("industrial_milling", "Industrial Milling", "Industrial", 235, 3, RESEARCH_MODE_ANALYSIS, list("amalgamation","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
-	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
+	// A wooden dirigible can fly on hydrogen from the Utilities water-gas retort.
+	// This analysis subject does not advance the era or unlock powered aircraft.
+	register_research_node(new /datum/research_node("lighter_than_air_flight", "Lighter-than-Air Flight", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","utilities"), 5))
+	// Powered Flight unlocks the light plane's hangar and advances the era to 1943.
 	// The civil twin of Mechanized Warfare: also opens WW2. Prototype: a small
 	// fuel tank (gated on combustion, its own direct prereq).
 	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_PROTOTYPE, list("combustion"), 6, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small))
@@ -993,13 +996,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/naval_torpedo" = "naval_mines",
 		"/obj/item/naval_torpedo/magnetic" = "magnetic_mines",
 		"/obj/item/weapon/aircraft_bomb" = "powered_flight",
-		"/obj/item/airship_planks" = "powered_flight",
+		"/obj/item/airship_planks" = "lighter_than_air_flight",
 		"/obj/item/airship_planks/aluminium" = "powered_flight",
 		"/obj/item/airship_planks/steel" = "powered_flight",
-		"/obj/item/airship_gas_cell" = "powered_flight",
-		"/obj/item/airship_helm_kit" = "powered_flight",
+		"/obj/item/airship_gas_cell" = "lighter_than_air_flight",
+		"/obj/item/airship_helm_kit" = "lighter_than_air_flight",
 		"/obj/structure/airship_bomb_hatch" = "powered_flight",
-		"/obj/item/weapon/reagent_containers/gas_vessel" = "powered_flight",
+		"/obj/item/weapon/reagent_containers/gas_vessel" = "lighter_than_air_flight",
 		"/obj/item/gas_hose" = "powered_flight",
 		"/obj/structure/gas_works/hydrogen_generator" = "powered_flight",
 		"/obj/structure/gas_works/helium_separator" = "powered_flight",
@@ -2228,12 +2231,28 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/straw_wall" = "primitive_construction",
 		"/obj/structure/workshop_machine/shear_legs" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
+		"/obj/covers/tatami/trim" = "primitive_construction",
+		"/obj/covers/tatami/trim/angle" = "primitive_construction",
+		"/obj/covers/tatami/trim/corner" = "primitive_construction",
+		"/obj/covers/tatami/trim/cee" = "primitive_construction",
+		"/obj/covers/tatami/trim/full" = "primitive_construction",
 		"/obj/covers/tatami_dark" = "primitive_construction",
 		"/obj/covers/tatami_dark_vertical" = "primitive_construction",
 		"/obj/covers/tatami_vertical" = "primitive_construction",
 		"/obj/covers/thatch" = "primitive_construction",
 		"/obj/covers/thatch2" = "primitive_construction",
 		"/obj/covers/wood" = "primitive_construction",
+		"/obj/covers/wood/alt/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/two/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/three/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/four/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/five/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/six/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/seven/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/eight/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/nine/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/ten/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/eleven/constructed" = "primitive_construction",
 		"/obj/covers/wood/stairs" = "primitive_construction",
 		"/obj/covers/wood_wall/adjustable" = "primitive_construction",
 		"/obj/covers/wood_wall/aztec" = "primitive_construction",
@@ -2665,6 +2684,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/sandstone_wall/egyptian" = "stone_masonry",
 		"/obj/covers/sandstone_wall/egyptian/archway" = "stone_masonry",
 		"/obj/covers/slatefloor" = "stone_masonry",
+		"/obj/covers/cobblestone/vertical" = "stone_masonry",
+		"/obj/covers/cobblestone/horizontal" = "stone_masonry",
+		"/obj/covers/cobblestone/horizontal/dark" = "stone_masonry",
+		"/obj/covers/stone/slab/decorative/mossy" = "stone_masonry",
 		"/obj/covers/stone/slab/decorative" = "stone_masonry",
 		"/obj/covers/stone_wall" = "stone_masonry",
 		"/obj/covers/stone_wall/classic" = "stone_masonry",

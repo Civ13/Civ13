@@ -106,3 +106,35 @@ Steel** (`open_hearth`, era 5) needs Steelmaking and Factories.
 Pig iron no longer hammers into steel on an anvil; the mapped industrial
 furnace (`/obj/structure/machinery/factory`) melts iron ore into pig iron.
 Coke burns in kilns, factory furnaces and bloomeries as well.
+
+## Alloy steels
+
+Code: `code/modules/1713/alloy_steels.dm`.
+
+From 1873 (ordinal 4), when Open Hearth Steel can first be researched,
+every mined wall also rolls for **nickel ore** (3%, 8-16 lumps). That is a
+world-era rule; the miner does not need Open Hearth Steel knowledge.
+**Cobalt ore** (1.5%, 4-8) still starts in 1903 (5), and **chromite**
+(3%, 8-16) in 1943 (6). The rolls are independent of other ores and scaled
+by `continent_ore_factor` (`mining_alloy_ores()`).
+
+Works take alloy ore as an addition beside their charge (`addition_key()`),
+up to 20 lumps; Empty and automation handle additions too. Leftover
+additions stay for the next firing.
+
+| Alloy | Made in | Addition | Forged quality | Armour (blows / bullets and arrows) |
+| --- | --- | --- | --- | --- |
+| Nickel steel | open hearth | 1 nickel ore per 4 steel tapped | x1.15 | x1.1 / x1.25 |
+| Maraging steel | arc furnace, Cold War age (7) on | 1 nickel + 1 cobalt per 2 bars; comes out unaged (grade 1), aged in any kiln firing (up to 20 bars) | x1.25 | x1.2 / x1.35 |
+| Inconel | arc furnace | 3 nickel + 1 chromite per bar | not forged | - |
+
+The arc furnace makes maraging steel first, then Inconel, each bar taking
+one unit of the melt; the rest is fine steel. Cobalt is refused before the
+Cold War age. **Inconel** (`/obj/item/stack/inconel`) is a heat part: a
+locomotive overhauled with 5 Inconel instead of 10 iron or steel sets
+`inconel_parts`, and its `mileage` then grows at half rate until the next
+overhaul (`train_servicing.dm`).
+
+Armour forged on an anvil from graded stock goes through
+`grade_forged_armor()`: melee armour by `armor_blunt_grade`, arrow and gun
+armour by `armor_pierce_grade`, never lowered and never lifted past 90.

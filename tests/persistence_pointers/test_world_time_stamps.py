@@ -23,6 +23,7 @@ EXTRA_SAVED_TYPES = {'/datum/wound'}
 # Reviewed: not a world.time stamp on that type, or deliberately left alone.
 REVIEWED = {
     'civilization': 'regex hit on a comparison, not an assignment',
+    'next_sprint_collision': 'declared var/tmp on humans (sprint.dm), so never saved',
     'faction_text': 'regex hit on a comparison, not an assignment',
     'original_job_title': 'regex hit on a comparison, not an assignment',
     'move_delay': 'assigned on client, not on the saved gun',
@@ -40,6 +41,7 @@ REVIEWED = {
     'data': 'reagent message throttles share the generic data field with blood and dose data',
     'lob_launch_time': 'projectiles are never saved (should_save = 0 in projectile.dm)',
     'held_since': 'capture clock of a Broadside TDM tiller; the Broadside map is not persistent',
+    'crossing_hold': 'declared var/tmp/list on hull tillers (ship_crossing.dm), so never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].

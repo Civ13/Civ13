@@ -28,6 +28,7 @@ import sys
 import time
 
 from gaia_host import Refused
+import fresh_world
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -42,8 +43,8 @@ WORLD_FILE = 'config/expedition_land.json'
 TERRAIN_FILES = (('land.heights.txt', 'config/expedition_heights.txt'),
                  ('land.flow.txt', 'config/expedition_heights.flow.txt'),
                  ('land.flood.txt', 'config/expedition_heights.flood.txt'))
-# A world's save: moved aside together when a slot is archived (as fresh_world.WORLD_PATHS).
-WORLD_PATHS = ('map_saves', 'map_backups', 'map_rollback')
+# Move the same world-local state when a slot is archived, parked, or restored.
+WORLD_PATHS = fresh_world.WORLD_PATHS + fresh_world.WORLD_DATA_PATHS
 STATES = ('FREE', 'LAND')
 HISTORY_KEPT = 50
 
@@ -133,6 +134,8 @@ def saved_world(path):
     """The world paths in a region folder that hold anything."""
     found = []
     for name in WORLD_PATHS:
+        if name in fresh_world.WORLD_DATA_PATHS:
+            fresh_world.safe_world_data_path(Path(path), name)
         folder = Path(path) / name
         if folder.is_dir() and any(folder.iterdir()):
             found.append(name)
@@ -161,8 +164,12 @@ def parked_dir(group, key):
 def move_world(source, target):
     """Move the world paths that hold anything from source to target. Returns their names."""
     moved = []
-    for name in saved_world(source):
-        target.mkdir(parents=True, exist_ok=True)
+    names = saved_world(source)
+    for name in names:
+        if name in fresh_world.WORLD_DATA_PATHS:
+            fresh_world.safe_world_data_path(Path(target), name)
+    for name in names:
+        (target / name).parent.mkdir(parents=True, exist_ok=True)
         if (target / name).is_dir() and not any((target / name).iterdir()):
             (target / name).rmdir()
         shutil.move(str(Path(source) / name), str(target / name))
@@ -191,8 +198,8 @@ def park(group, host, region_id, now=None):
     target = parked_dir(group, record['key'])
     if target.exists():
         raise Refused('land %s is already parked in %s' % (record['key'], target))
-    target.mkdir(parents=True)
     moved = move_world(host.repo, target)
+    target.mkdir(parents=True, exist_ok=True)  # a land can be parked before its first save
     host.cold_file.unlink(missing_ok=True)  # it starts from its save wherever it is restored
     kept = {field: record.get(field) for field in ('key', 'land_dir', 'map', 'world', 'given_at', 'seconds')}
     (target / 'slot.json').write_text(json.dumps(dict(kept, parked_at=stamp(now), parked_from=region_id), indent=1) + '\n',
@@ -310,11 +317,7 @@ def archive(group, host, region_id, now=None):
     check_stopped(host)
     record = read_slot(group, region_id)
     target = unused(slots_dir(group) / 'archive', '%s-%s' % (region_id, stamp(now)))
-    moved = []
-    for name in saved_world(host.repo):
-        target.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(host.repo / name), str(target / name))
-        moved.append(name)
+    moved = move_world(host.repo, target)
     if host.cold_file.exists():  # a slot saved and evicted: its cold record goes with its save
         target.mkdir(parents=True, exist_ok=True)
         shutil.move(str(host.cold_file), str(target / host.cold_file.name))

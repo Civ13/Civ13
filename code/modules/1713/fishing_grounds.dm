@@ -233,18 +233,9 @@ var/global/list/fishing_grounds_published = null
 	var/kind = fish_water_kind(T)
 	if (!kind)
 		return null
-	fishing_grounds_sync()
-	var/cx = round(T.x / FISH_GROUND_SIZE)
-	var/cy = round(T.y / FISH_GROUND_SIZE)
-	var/key = fishing_ground_key(kind, cx, cy, T.z)
-	var/datum/fishing_ground/G = fishing_grounds[key]
 	var/capacity = fish_water_capacity(T, kind)
-	if (!G)
-		if (!create)
-			return null
-		G = new /datum/fishing_ground(kind, cx, cy, T.z, capacity)
-		fishing_grounds[key] = G
-	else if (capacity > G.capacity)
+	var/datum/fishing_ground/G = fishing_ground_cell(T, kind, capacity, create)
+	if (G && capacity > G.capacity)
 		G.settle()
 		G.stock += capacity - G.capacity
 		G.capacity = capacity
@@ -689,8 +680,8 @@ var/global/list/fishing_grounds_published = null
 
 // ---- Flood strandings ----
 
-// The ground of one kind that the tile lies in, for callers that are not
-// standing on fishing water (floodwater over land).
+// Look up one kind of ground for a tile, including floodwater or ice.
+// An existing ground's capacity is left to the caller.
 /proc/fishing_ground_cell(turf/T, kind, capacity, create = TRUE)
 	fishing_grounds_sync()
 	var/cx = round(T.x / FISH_GROUND_SIZE)

@@ -95,6 +95,12 @@
 /obj/structure/gatecontrol/attack_hand(var/mob/user as mob)
 	if (cooldown <= world.time)
 		for (var/obj/structure/gate/G in range(distance,src.loc))
+			if (G.is_iron_grid_gate())
+				if (G.set_iron_grid_open(!G.open))
+					var/action = G.open ? "open" : "close"
+					user.visible_message("<span class='warning'>[user] [action]s the gates!</span>", "<span class='notice'>You [action] the gates.</span>", "<span class='notice'>You hear something [G.open ? "opening" : "closing"].</span>")
+					cooldown = world.time + 6 SECONDS
+				continue
 			if (G.open)
 				user.visible_message("<span class='warning'>[user] closes the gates!</span>",
 									"<span class='notice'>You close the gates.</span>",
@@ -168,6 +174,32 @@
 	anchored = TRUE
 	density = FALSE
 	open = TRUE
+
+// Only the old arched iron gate and its pre-opened map preset use these states.
+// Other gate families have distinct controllers and animations.
+/obj/structure/gate/proc/is_iron_grid_gate()
+	return type == /obj/structure/gate || type == /obj/structure/gate/open
+
+/obj/structure/gate
+	var/tmp/iron_grid_moving = FALSE
+
+// Use one transition for both mechanical and older gate controls.
+/obj/structure/gate/proc/set_iron_grid_open(raise)
+	if (!is_iron_grid_gate() || iron_grid_moving || open == raise)
+		return FALSE
+	iron_grid_moving = TRUE
+	open = raise
+	icon_state = raise ? "gate_opening" : "gate_closing"
+	playsound(loc, 'sound/effects/castle_gate.ogg', 100)
+	addtimer(CALLBACK(src, PROC_REF(finish_iron_grid_motion), raise), 3 SECONDS)
+	return TRUE
+
+/obj/structure/gate/proc/finish_iron_grid_motion(raise)
+	iron_grid_moving = FALSE
+	if (open != raise)
+		return
+	icon_state = raise ? "gate1" : "gate0"
+	density = !raise
 
 /obj/structure/gate/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))

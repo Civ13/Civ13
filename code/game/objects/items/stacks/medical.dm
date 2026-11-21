@@ -161,7 +161,7 @@
 			return FALSE // keep it tight; bandage the wounds underneath instead
 		user.visible_message(SPAN_NOTICE("\The [user] starts loosening the tourniquet on [H]'s [affecting.name]."), \
 							SPAN_NOTICE("You start loosening the tourniquet on [whose] [affecting.name]."))
-		if (!do_mob(user, H, 20) || !affecting.tourniquet)
+		if (!do_mob(user, H, 20) || !tourniquet_patient_in_reach(H, user) || !affecting.tourniquet)
 			return TRUE
 		affecting.remove_tourniquet()
 		user.visible_message(SPAN_NOTICE("\The [user] removes the tourniquet from [H]'s [affecting.name]."), \
@@ -171,13 +171,20 @@
 		return FALSE
 	return tie_stack_tourniquet(H, affecting, user, binding, tie_time, lasts, strip_name, FALSE)
 
+// TRUE while the helper can still reach the patient: themself, or someone beside them.
+/proc/tourniquet_patient_in_reach(mob/living/human/H, mob/user)
+	if (QDELETED(H) || QDELETED(user))
+		return FALSE
+	return H == user || user.Adjacent(H)
+
 /proc/tie_stack_tourniquet(mob/living/human/H, obj/item/organ/external/affecting, mob/user, obj/item/stack/binding, tie_time, lasts, strip_name, replacing)
 	var/whose = H == user ? "your" : "[H]'s"
 	var/strip = strip_name ? strip_name : (binding.singular_name ? binding.singular_name : binding.name)
 	var/action = replacing ? "replacing the makeshift tourniquet on" : "tying \a [strip] tight above the wound on"
 	user.visible_message(SPAN_NOTICE("\The [user] starts [action] [H]'s [affecting.name]."), \
 						SPAN_NOTICE("You start [action] [whose] [affecting.name]."))
-	if (!do_mob(user, H, tie_time) || affecting.tourniquet_grade() == TOURNIQUET_FULL || !binding.use(1))
+	// The patient must still be in reach when the knot is tied (#6214).
+	if (!do_mob(user, H, tie_time) || !tourniquet_patient_in_reach(H, user) || affecting.tourniquet_grade() == TOURNIQUET_FULL || !binding.use(1))
 		return TRUE
 	affecting.apply_tourniquet(lasts)
 	if (lasts)
@@ -290,6 +297,9 @@
 	max_amount = 5
 	flags = CONDUCT
 
+// Every limb a splint can go on. Remove splints in the strip window covers the same list.
+var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_arm", "l_leg", "r_leg", "l_hand", "r_hand", "l_foot", "r_foot")
+
 /obj/item/stack/medical/splint/attack(mob/living/human/M as mob, mob/user as mob)
 	if (..())
 		return TRUE
@@ -299,7 +309,7 @@
 		if (!affecting)
 			return
 		var/limb = affecting.name
-		if (!(affecting.limb_name in list("chest", "head", "groin", "l_arm","r_arm","l_leg","r_leg", "l_hand", "r_hand", "l_foot", "r_foot")))
+		if (!(affecting.limb_name in splintable_organs))
 			to_chat(user, SPAN_WARNING("You can't apply a splint there!"))
 			return
 		else if (affecting.status & ORGAN_SPLINTED)
@@ -316,6 +326,8 @@
 				return
 			user.visible_message(SPAN_NOTICE("[user] starts to apply \the [src] to their [limb]."), SPAN_DANGER("You start to apply \the [src] to your [limb]."), SPAN_DANGER("You hear something being wrapped."))
 		if (do_mob(user, M, 50))
+			if (!splint_still_needed(H, affecting, user))
+				return
 			if (M != user)
 				user.visible_message(SPAN_NOTICE("[user] finishes applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You finish applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You hear something being wrapped."))
 			else
@@ -327,6 +339,21 @@
 			affecting.status |= ORGAN_SPLINTED
 			use(1)
 		return
+
+// After the wait: the patient is still in reach, the limb is still attached
+// and still needs a splint, and nobody else splinted it meanwhile.
+/obj/item/stack/medical/splint/proc/splint_still_needed(mob/living/human/H, obj/item/organ/external/affecting, mob/user)
+	if (QDELETED(H) || QDELETED(affecting) || H.get_organ(affecting.limb_name) != affecting)
+		return FALSE
+	if (H != user && !user.Adjacent(H))
+		to_chat(user, SPAN_WARNING("[H] is too far away to splint."))
+		return FALSE
+	if (affecting.status & ORGAN_SPLINTED)
+		to_chat(user, SPAN_WARNING("[H]'s [affecting.name] is already splinted!"))
+		return FALSE
+	if (!(affecting.status & ORGAN_BROKEN) && !affecting.is_dislocated())
+		return FALSE
+	return TRUE
 
 /obj/item/stack/medical/splint/small
 	amount = 1

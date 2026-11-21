@@ -149,7 +149,13 @@ class RegionWakeTests(unittest.TestCase):
         self.assertLess(stopped, body.index('Nobody seems to be coming back'))
         self.assertIn('is closed for now: its land is not running', body)
         wake = proc(GROUP, '/datum/shard_group/proc/wake_peer')
-        self.assertLess(wake.index('peer["state"] == "STOPPED"'), wake.index('if(!peer_wakeable(id))'))
+        self.assertIn('ask_wake(id)', wake)
+        ask = proc(GROUP, '/datum/shard_group/proc/ask_wake')
+        stopped = ask.index('peer["state"] == "STOPPED"')
+        refused = ask.index('"result" = "refused"', stopped)
+        self.assertLess(stopped, refused)
+        self.assertLess(refused, ask.index('if(!peer_wakeable(id))'))
+        self.assertLess(refused, ask.index('ask_doorman('))
         self.assertNotIn('"STOPPED"', proc(GROUP, '/datum/shard_group/proc/peer_wakeable'))
 
     def test_admins_hear_when_a_stopped_land_turns_travellers_back(self):
@@ -183,9 +189,14 @@ class RegionWakeTests(unittest.TestCase):
         self.assertLess(recheck, body.index('begin_escrow'))
 
     def test_waking_is_bounded(self):
-        body = proc(GROUP, '/datum/shard_group/proc/wake_peer')
-        self.assertIn('Clamp(reply["eta"], 0, 900)', body)
-        self.assertIn('while(world.time < deadline)', body)
+        ask = proc(GROUP, '/datum/shard_group/proc/ask_wake')
+        wake = proc(GROUP, '/datum/shard_group/proc/wake_peer')
+        await_peer = proc(GROUP, '/datum/shard_group/proc/await_peer')
+        self.assertIn('Clamp(reply["eta"], 0, 900)', ask)
+        self.assertIn('var/list/asked = ask_wake(id)', wake)
+        self.assertIn('var/eta = asked["eta"]', wake)
+        self.assertIn('await_peer(id, world.time + (eta + 60) * 10)', wake)
+        self.assertIn('while(world.time < deadline)', await_peer)
 
 
 if __name__ == '__main__':

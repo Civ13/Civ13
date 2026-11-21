@@ -875,10 +875,14 @@
 	if (!feeding_on)
 		return FALSE
 	var/mob/living/C = feeding_on
-	if (QDELETED(C) || C.stat != DEAD || !isturf(C.loc) || stat != CONSCIOUS || client || simplehunger >= predator_sated_hunger || get_dist(src, C) > 7)
+	if (QDELETED(C) || C.stat != DEAD || !isturf(C.loc) || stat != CONSCIOUS || client || simplehunger >= predator_sated_hunger)
 		stop_feeding()
 		return FALSE
-	if (get_dist(src, C) > 1)
+	var/distance = get_dist(src, C)
+	if (distance > 7)
+		stop_feeding()
+		return FALSE
+	if (distance > 1)
 		if (!moving || target_obj != C)
 			do_movement(C)
 		return TRUE

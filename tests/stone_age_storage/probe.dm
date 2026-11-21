@@ -189,7 +189,63 @@ var/store_runtime_error = FALSE
 	for (var/turf/near in range(1, T))
 		for (var/obj/structure/storage_container/storage_jar/J in near)
 			found++
-	store_check(isnull(returned) && found == 1, "firing an unfired jar sets a storage jar down beside the kiln")
+	store_check(istype(returned, /obj/structure/storage_container/storage_jar) && found == 1, "firing an unfired jar sets a storage jar down beside the kiln")
+	store_oven_jar_checks()
+	store_jar_salvage_checks()
+
+// Drive the real oven pass: one jar out, nothing left in the oven, and a second
+// pass makes nothing more. An oven with nowhere to set a jar keeps the charge.
+/proc/store_oven_jar_checks()
+	var/turf/T = locate(4, 16, 1)
+	var/obj/structure/oven/O = new(T)
+	var/obj/item/weapon/clay/storage_jar/wet = new(O)
+	var/obj/item/weapon/clay/storage_jar/zeer_pot/pot = new(O)
+	var/obj/item/weapon/clay/washbasin/control = new(T) // an ordinary item result stays in the oven
+	control.loc = O
+	var/runtime_before = store_runtime_error
+	O.process()
+	O.process()
+	var/jars = 0
+	var/zeers = 0
+	for (var/turf/near in range(1, T))
+		for (var/obj/structure/storage_container/storage_jar/J in near)
+			if (istype(J, /obj/structure/storage_container/storage_jar/zeer_pot))
+				zeers++
+			else
+				jars++
+	var/left = 0
+	for (var/obj/item/weapon/clay/storage_jar/S in T)
+		left++
+	var/held_structures = 0
+	for (var/obj/structure/S in O.contents)
+		held_structures++
+	store_check(jars == 1 && zeers == 1, "two oven passes fire one jar and one zeer pot, not more")
+	store_check(QDELETED(wet) && QDELETED(pot) && !left, "the unfired jars are used up")
+	store_check(!held_structures, "no fired jar is put inside the oven")
+	store_check(QDELETED(control) && (locate(/obj/item/weapon/washbasin) in T), "an ordinary fired item still comes out of the oven")
+	store_check(store_runtime_error == runtime_before, "firing jars in an oven raises no runtime error")
+	var/before = 0
+	for (var/obj/structure/storage_container/storage_jar/J in world)
+		before++
+	var/obj/structure/oven/lost = new(null)
+	var/obj/item/weapon/clay/storage_jar/kept = new(T)
+	kept.loc = lost
+	lost.process()
+	var/placed = 0
+	for (var/obj/structure/storage_container/storage_jar/J in world)
+		placed++
+	store_check(!QDELETED(kept) && placed == before, "with nowhere to set a jar down the unfired jar is kept and nothing is made")
+
+// Fired pottery has no recipe of its own and is not wood, so a hammer gives no wood.
+/proc/store_jar_salvage_checks()
+	var/turf/T = locate(10, 16, 1)
+	var/obj/structure/storage_container/storage_jar/J = new(T)
+	var/obj/structure/storage_container/storage_jar/zeer_pot/Z = new(T)
+	var/obj/structure/storage_container/basket/B = new(T)
+	var/obj/structure/S = new(T) // a recipe-less structure still gives back wood
+	store_check(isnull(crafted_refund_stack(J.type, /obj/item/stack/material/wood)) && isnull(crafted_refund_stack(Z.type, /obj/item/stack/material/wood)), "a fired jar or zeer pot gives no wood when dismantled")
+	store_check(crafted_refund_stack(S.type, /obj/item/stack/material/wood) == /obj/item/stack/material/wood, "a recipe-less wooden structure still gives back wood")
+	store_check(crafted_refund_stack(B.type, /obj/item/stack/material/wood) != /obj/item/stack/material/wood || crafted_refund_units(B.type) > 0, "a crafted container keeps its recipe refund")
 
 /proc/store_reload_checks()
 	var/turf/T = locate(16, 5, 1)

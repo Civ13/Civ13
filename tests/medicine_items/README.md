@@ -1,6 +1,6 @@
 # Pill and syringe probe
 
-Native probe for #4226 and #4227, run on Linux with the pinned compiler:
+Native probe for #4226, #4227 and #6201, run on Linux with the pinned compiler:
 
     python3 tests/ecology_spawning/run_linux.py . tests/medicine_items/probe.dm
 
@@ -8,6 +8,8 @@ Native probe for #4226 and #4227, run on Linux with the pinned compiler:
   refused and keeps its dose; a container with room takes all of it.
 - A syringe injection stops when the patient moves away during the wait; a
   patient who stays is injected.
+- A thick helmet blocks a syringe aimed at the head even when the patient wears
+  no suit; their bare chest can still be injected.
 - A dropper stops when the patient moves away, and transfers only the selected
   dose to a patient who remains within reach.
 

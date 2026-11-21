@@ -11,6 +11,8 @@ import secrets
 from gaia_host import Refused
 
 WORLD_PATHS = ('map_saves', 'map_backups', 'map_rollback')
+# Region-local data belongs to this world, unlike account data or shared custody.
+WORLD_DATA_PATHS = ('data/persistence-bed-notices',)
 SEPARATE_DOMAINS = ('extraction_accounts', 'extraction_world', 'extraction_surface',
                     'extraction_loot', 'vehicle_key_service', 'safehouse_spool')
 
@@ -19,16 +21,26 @@ def pending(host):
     return host.state_dir / 'fresh-world-pending.json'
 
 
-def safe_tree(path):
+def refuse_link(path):
     """Reject links/junctions rather than moving data with ambiguous ownership."""
     if path.is_symlink() or getattr(path, 'is_junction', lambda: False)():
         raise Refused('fresh world refuses linked paths: ' + str(path))
     # Windows junction detection also on Python versions without Path.is_junction.
     if path.exists() and getattr(path.lstat(), 'st_file_attributes', 0) & 0x400:
         raise Refused('fresh world refuses reparse points: ' + str(path))
+
+
+def safe_tree(path):
+    refuse_link(path)
     if path.is_dir():
         for child in path.iterdir():
             safe_tree(child)
+
+
+def safe_world_data_path(root, name):
+    path = root / name
+    refuse_link(path.parent)  # do not traverse a linked or reparse-point data directory
+    safe_tree(path)
 
 
 def cold_stopped(host):
@@ -86,6 +98,8 @@ def check(host, linked=False):
         raise Refused('fresh world refuses a linked archive folder')
     for name in WORLD_PATHS:
         safe_tree(host.repo / name)
+    for name in WORLD_DATA_PATHS:
+        safe_world_data_path(host.repo, name)
     if linked:  # the group reset archives these too (group_fresh_world.py)
         for name in SEPARATE_DOMAINS:
             safe_tree(host.repo / 'data' / name)
@@ -122,13 +136,16 @@ def work(host, operation):
         archive.mkdir(parents=True, exist_ok=False)
         manifest = {'version': 1, 'operation': operation, 'region': host.config['region'],
                     'repository': str(host.repo), 'archive': str(archive),
-                    'paths': [name for name in WORLD_PATHS if (host.repo / name).exists()],
+                    'paths': [name for name in WORLD_PATHS + WORLD_DATA_PATHS
+                              if (host.repo / name).exists()],
                     'moved': [], 'phase': 'archiving'}
         host.write_json(pending(host), manifest)
         host.record(phase='archiving old world', archive=str(archive))
         for name in manifest['paths']:
             # Same filesystem rename: no copy-then-delete and no archive retention pruning.
-            os.rename(host.repo / name, archive / name)
+            destination = archive / name
+            destination.parent.mkdir(exist_ok=True)
+            os.rename(host.repo / name, destination)
             manifest['moved'].append(name)
             host.write_json(pending(host), manifest)
         (host.repo / 'map_saves').mkdir()  # check_save accepts an existing empty directory as fresh.

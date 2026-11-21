@@ -425,6 +425,8 @@
 			football_bump(AM)
 	if (now_pushing || !yes)
 		return
+	if (sprint_collide(AM))
+		return
 	if (try_bump_mining(AM))
 		return
 	if (try_bump_chopping(AM))

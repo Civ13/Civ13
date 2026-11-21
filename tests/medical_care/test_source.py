@@ -191,6 +191,12 @@ class MedicalCare(unittest.TestCase):
         tie = block(MEDICAL, "/proc/tie_stack_tourniquet")
         self.assertIn("binding.use(1)", tie)
         self.assertLess(tie.index("do_mob(user, H, tie_time)"), tie.index("affecting.apply_tourniquet(lasts)"))
+        # The patient must still be in reach after the wait, before gauze is used (#6214).
+        self.assertLess(tie.index("tourniquet_patient_in_reach(H, user)"), tie.index("binding.use(1)"))
+        self.assertLess(tq.index("tourniquet_patient_in_reach(H, user)"), tq.index("affecting.remove_tourniquet()"))
+        reach = block(MEDICAL, "/proc/tourniquet_patient_in_reach")
+        self.assertIn("QDELETED(H)", reach)
+        self.assertIn("H == user || user.Adjacent(H)", reach)
         self.assertIn("affected.remove_tourniquet()", block(SURGERY, "/datum/surgery_step/fix_vein"))
 
     def test_splinted_fracture_heals_over_time(self):

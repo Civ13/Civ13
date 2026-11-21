@@ -139,6 +139,9 @@
 			del(src)
 			return
 
+	// Once an empty-world cutover has been released, retry on the new world.
+	if(!nomads_lifecycle.admit_client())
+		return null
 	clients += src
 	directory[ckey] = src
 

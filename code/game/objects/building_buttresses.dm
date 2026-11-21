@@ -73,6 +73,12 @@
 	return impact_smash(amount)
 
 /obj/structure/building_brace/attackby(obj/item/W, mob/user)
+	// Not on harm intent, a hammer takes a brace down (structures.dm) unless a
+	// roof stands only because it braces its wall (building_dismantle.dm).
+	if (is_tool(W, TOOL_HAMMER) && user && user.a_intent != I_HARM && !not_disassemblable)
+		if (!brace_dismantle_check(user))
+			return
+		return ..()
 	if (istype(W, /obj/item/weapon))
 		weapon_structure_damage(W, user, 1, 0.2, material_name == "wood" ? 'sound/effects/wood_cutting.ogg' : 'sound/weapons/smash.ogg')
 		return

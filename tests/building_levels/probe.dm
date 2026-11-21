@@ -251,6 +251,16 @@
 				break
 			lone_wood.fire_act(1000)
 		building_assert(QDELETED(lone_wood) && !QDELETED(lone_roof) && lone_roof.building_floor() && lone_roof.building_floor().is_subfloor(), "a burned finished floor leaves the slab")
+		// A ground pillar under a two-storey column holds up both storeys; with
+		// a second ground pillar beside it, it holds nothing and may come down.
+		var/obj/structure/roof_support/base_pillar = new(locate(1,10,1))
+		building_assert(building_construct_roof(locate(1,10,1), /obj/roof/wood, null), "dismantle column storey 1")
+		new /obj/structure/roof_support(locate(1,10,2))
+		building_assert(building_construct_roof(locate(1,10,2), /obj/roof/wood, null), "dismantle column storey 2")
+		building_assert(building_load_held(base_pillar) == 2 && !base_pillar.pillar_dismantle_check(null), "a ground pillar holding two storeys will not come down")
+		building_assert(base_pillar.loc == locate(1,10,1), "the load check puts the pillar back")
+		new /obj/structure/roof_support(locate(2,10,1))
+		building_assert(building_load_held(base_pillar) == 0, "with a second ground pillar it holds nothing")
 		text2file("PASS: linked building levels", "result.txt")
 	catch (var/exception/E)
 		world.log << "BUILDING exception: [E] at [E.file]:[E.line]"

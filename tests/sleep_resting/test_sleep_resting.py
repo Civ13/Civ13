@@ -106,6 +106,7 @@ class Harness:
         selected='/proc/do_after()\n'+'\n'.join(lines)+'\n\treturn .\n'
         args='user,delay,target=None,needhand=True,progress=True,incapacitation_flags=DEFAULT,can_move=False,check_for_repeats=True,mining_context=None'
         if bridge: args+=',gameplay_context=None'
+        args+=',ship_craft=None'
         self.env['DEFAULT']=DEFAULT
         self.core=A.project(selected,'/proc/do_after',args,self.env)
         def do_after(*args,**kwargs):

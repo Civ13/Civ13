@@ -53,7 +53,10 @@ def procedure(signature,env,hammer=False):
         if not line.strip():continue
         depth=len(line)-len(line.lstrip('\t'));line=line.strip()
         if line.startswith('var/'):
-            left,right=line.split(' = ',1);line=left.rsplit('/',1)[-1]+' = '+right
+            left,sep,right=line.partition(' = ')
+            if not re.fullmatch(r'var/(?:[\w/]+/)?\w+', left):
+                raise AssertionError('Unreviewed variable declaration: '+line)
+            line=left.rsplit('/',1)[-1]+' = '+(right if sep else 'null')
         m=re.fullmatch(r'(?:(\w+) = )?new\s+([\w/]+)\((.*)\)',line)
         if m:line=(m[1]+' = ' if m[1] else '')+'construct('+expr(m[2],FIELDS)+','+expr(m[3],FIELDS)+')'
         elif line.startswith('if ('):line='if '+expr(line[4:-1],FIELDS)+':'
@@ -68,6 +71,7 @@ def procedure(signature,env,hammer=False):
     # crafted_refund_stack (dismantle_refund.dm) reads the loaded recipe lists;
     # these fixtures load none, so it returns its no-recipe fallback.
     namespace=dict(env);namespace.setdefault('machine_drop_fitted_parts',lambda obj:None)
+    namespace.setdefault('QDELETED',lambda obj:obj.deleted)
     namespace.setdefault('crafted_refund_stack',lambda path,fallback=None:fallback);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
     return namespace['action']
 
@@ -102,7 +106,8 @@ class Bedding:
         self.objects=[]
         self.env=dict(construct=self.new,qdel=lambda obj:setattr(obj,'deleted',True),
                       to_chat=lambda *a:None,playsound=lambda *a:None,SPAN_NOTICE=lambda text:text,
-                      do_after=lambda *a:True,get_turf=lambda obj:'floor',istype=lambda obj,kind:obj.type==kind)
+                      do_after=lambda *a:True,do_ship_fixture_after=lambda *a:True,
+                      QDELETED=lambda obj:obj.deleted,get_turf=lambda obj:'floor',istype=lambda obj,kind:obj.type==kind)
 
     def new(self,kind,loc='floor'):
         if kind.startswith(ITEM):values=defaults(ITEM)
@@ -167,6 +172,20 @@ class BedrollContracts(unittest.TestCase):
             procedure('',f.env,hammer=True)(bed,None,NS(type='/obj/item/weapon/hammer'))
             self.assertTrue(bed.deleted);self.assertEqual(f.objects[-1].type,'/obj/item/stack/material/wood')
 
+    def test_generic_hammer_notifies_only_if_bed_deletion_commits(self):
+        for commits in (True, False):
+            f=Bedding()
+            notices=[]
+            f.env['persistence_queue_bed_notice']=lambda *notice:notices.append(notice)
+            if not commits:
+                f.env['qdel']=lambda obj:None
+            bed=NS(type='/obj/structure/bed',loc='floor',contents=[],deleted=False,
+                   padding_material=None,not_disassemblable=False,
+                   persistence_bed_notice_recipient=lambda user:'owner')
+            hammer=NS(type='/obj/item/weapon/hammer')
+            procedure('',f.env,hammer=True)(bed,NS(real_name='Character Name'),hammer)
+            self.assertEqual(notices,[('owner','Character Name')] if commits else [])
+
     def test_atlas_and_help_name_the_paid_cloth_alternative(self):
         data=json.loads((ROOT/'UI/crafting-atlas.json').read_text())
         row=next(r for r in data['recipes'] if r['name']=='cloth bedroll')
@@ -191,15 +210,15 @@ class HammockContracts(unittest.TestCase):
     def test_occupancy_changed_during_wait_rejects_before_payment(self):
         source=(ROOT/'code/game/objects/items/stacks/stack.dm').read_text()
         production=block(source,'/obj/item/stack/proc/produce_recipe(')
-        start=production.index('\t\tif (recipe.result_type == /obj/structure/bed/hammock')
+        start=production.index('\t\tif (!ship_craft && recipe.result_type == /obj/structure/bed/hammock')
         end=production.index('\t\t// The builder may have moved, turned',start)
-        self.assertLess(production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'),start)
+        self.assertLess(production.index('if (!do_after(user, buildtime, ship_craft = ship_craft) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'),start)
         self.assertLess(start,production.index('H.adaptStat("crafting"'))
         self.assertLess(start,production.index('\tif (use(required,'))
         body='\n'.join(line[1:] for line in production[start:end].splitlines())
         guard,_=compile_body('/proc/completion_occupancy()\n'+body+'\n\treturn TRUE\n',
                              '/proc/completion_occupancy()', 'recipe,user',
-                             dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None))
+                             dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None,ship_craft=None))
         path='/obj/structure/bed/hammock'
         for one_per,late_output,paid in ((True,path,False),(True,None,True),
                                         (True,'/obj/structure/bed/wood',True),(False,path,True)):
@@ -218,13 +237,13 @@ class HammockContracts(unittest.TestCase):
         broad_body=body.replace('recipe.result_type == /obj/structure/bed/hammock && ','')
         broad_guard,_=compile_body('/proc/old_completion()\n'+broad_body+'\n\treturn TRUE\n',
                                   '/proc/old_completion()', 'recipe,user',
-                                  dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None))
+                                  dict(locate=lambda path:path,to_chat=lambda *args:None,secondary_refund=lambda *args:None,H=None,ship_craft=None))
         self.assertFalse(broad_guard(powered,NS(loc=[sawmill])))
         prepayment=production[production.index('else if (recipe.result_type == '+sawmill+')'):]
         prepayment=prepayment[:prepayment.index('\n\telse if (')]
         self.assertIn("secondary_take(NR, 1, H)",prepayment)
         self.assertIn('qdelHandReturn(',prepayment)
-        self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'))
+        self.assertLess(production.index(prepayment),production.index('if (!do_after(user, buildtime, ship_craft = ship_craft) || !crafting_recipe_allowed(H, "[recipe.result_type]"))'))
         rows=(ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines()
         fields=next(row.split('RECIPE: ',1)[1].split(',') for row in rows if ','+sawmill+',' in row)
         self.assertEqual(fields[5],'1')

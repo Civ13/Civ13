@@ -824,12 +824,17 @@ default behaviour is:
 			if (GRAB_PASSIVE)
 				qdel(G)
 			if (GRAB_AGGRESSIVE)
-				if (prob(19)) //same chance of breaking the grab as disarm
-					visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s grip!</span>", "<span class='warning'>You have broken free of [G.assailant]'s grip!</span>")
+				// 19% between equals; strength and dexterity shift it (physical_contest.dm).
+				if (prob(physical_contest_chance(19, physical_contest_ratio(src, G.assailant, 0.6, 0.4))))
+					if (G.hand_partner)
+						visible_message("<span class='warning'>[src] has pulled their hand free of [G.assailant]'s grip!</span>", "<span class='warning'>You have pulled your hand free of [G.assailant]'s grip!</span>")
+					else
+						visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s grip!</span>", "<span class='warning'>You have broken free of [G.assailant]'s grip!</span>")
 					qdel(G)
 			if (GRAB_NECK)
 				//If you move when grabbing someone then it's easier for them to break free. Same if the affected mob is immune to stun.
-				if (((world.time - G.assailant.l_move_time < 30 || !stunned) && prob(15)) || prob(3))
+				var/neck_ratio = physical_contest_ratio(src, G.assailant, 0.7, 0.3)
+				if (((world.time - G.assailant.l_move_time < 30 || !stunned) && prob(physical_contest_chance(15, neck_ratio))) || prob(physical_contest_chance(3, neck_ratio)))
 					visible_message("<span class='warning'>[src] has broken free of [G.assailant]'s headlock!</span>", "<span class='warning'>You have broken free of [G.assailant]'s headlock!</span>")
 					qdel(G)
 	if (resisting)

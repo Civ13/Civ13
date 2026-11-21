@@ -151,6 +151,10 @@
 		// those nodes. Later nodes are still earned; factionless players
 		// still never get specialist trees.
 		return TRUE
+	// Existing Powered Flight knowledge already included the wooden airship kit.
+	// Preserve that access, but never let the civilian subject teach Powered Flight.
+	if (node_id == "lighter_than_air_flight" && is_node_done(faction, "powered_flight"))
+		return TRUE
 	var/list/entry = get_node_entry(faction, node_id)
 	return entry && entry[RNODE_ENTRY_STATUS] == RNODE_DONE
 

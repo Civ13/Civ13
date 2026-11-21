@@ -72,7 +72,7 @@ var/lifecycle_reclaim_ok = TRUE
 	return fixture_revision
 /proc/lifecycle_request(datum/nomads_lifecycle_control/probe/L, action = "status")
 	var/list/I = list("nomads_lifecycle" = "1", "token" = L.fixture_token, "action" = action)
-	if(action == "save_shutdown")
+	if(action != "status")
 		I["session"] = L.boot_session()
 		I["operation"] = md5("operation-[checks]")
 	return I
@@ -87,6 +87,46 @@ var/lifecycle_reclaim_ok = TRUE
 		var/list/I = lifecycle_request(L)
 		var/list/R = lifecycle_reply(L, I)
 		check(R["ok"] && R["ready"] && nomads_lifecycle_hex(R["session"], 32), "ready status invalid")
+		check(R["handover_empty_guard"], "empty handover guard not advertised")
+		I = lifecycle_request(L, "handover_save")
+		I["only_if_empty"] = "0"
+		R = lifecycle_reply(L, I)
+		check(!R["ok"] && !L.busy && !L.used_operations.len, "malformed empty guard reserved an operation")
+		I["only_if_empty"] = "1"
+		clients += "fixture-client"
+		R = lifecycle_reply(L, I)
+		check(!R["ok"] && R["error"] == "handover_players_arrived" && !L.busy && !L.used_operations.len, "late arrival reserved an automatic save")
+		clients.Cut()
+
+		// Simulate the saved state to exercise the actual Topic release without
+		// entering wait_for_handover or invoking a shutdown.
+		L.busy = TRUE
+		L.operation = md5("guarded-handover")
+		L.handover_empty_only = TRUE
+		T.handover_state = "saved"
+		I = lifecycle_request(L, "handover_release")
+		I["operation"] = L.operation
+		check(L.admit_client() && L.handover_client_arrived, "arrival during import was not recorded")
+		R = lifecycle_reply(L, I)
+		check(!R["ok"] && R["error"] == "handover_players_arrived" && T.handover_state == "saved", "join and disconnect did not veto automatic release")
+		I["action"] = "handover_cancel"
+		R = lifecycle_reply(L, I)
+		check(R["ok"] && T.handover_state == "cancelled" && L.admit_client(), "failed cutover did not leave admission open")
+
+		T.handover_state = "saved"
+		L.handover_client_arrived = FALSE
+		I["action"] = "handover_release"
+		R = lifecycle_reply(L, I)
+		check(R["ok"] && T.handover_state == "released" && !L.admit_client(), "uninterrupted empty cutover did not lock admission")
+		T.handover_state = "saved"
+		L.handover_empty_only = FALSE
+		clients += "fixture-client"
+		R = lifecycle_reply(L, I)
+		check(R["ok"] && T.handover_state == "released" && L.admit_client(), "manual handover did not preserve admission")
+		clients.Cut()
+		T = new_transaction()
+		L = new
+		nomads_lifecycle = L
 		// Explicit zero must not be confused with an absent mode; both modes
 		// are echoed and mismatched or malformed bindings reserve nothing.
 		for(var/mode = 0, mode <= 1, mode++)

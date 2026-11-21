@@ -967,8 +967,13 @@
 		update_icon()
 		return TRUE
 
+	// walk -> run -> sprint -> crawl -> sneak -> walk. Sprinting is skipped
+	// while too winded to start one (sprint.dm).
 	switch (C.m_intent)
 		if ("run")
+			if (!C.sprinting && C.start_sprint(FALSE))
+				return TRUE
+			C.sprinting = FALSE
 			C.m_intent = "proning"
 		if ("proning")
 			if (C.facing_dir)
@@ -977,6 +982,7 @@
 		if ("stealth")
 			C.m_intent = "walk"
 		if ("walk")
+			C.sprinting = FALSE
 			C.m_intent = "run"
 		else
 			C.m_intent = "walk"
@@ -1000,15 +1006,36 @@
 
 /obj/screen/mov_intent/update_icon()
 	var/mob/living/human/C = parentmob
+	overlays.Cut()
 	switch(C.m_intent)
 		if ("run")
 			icon_state = "running"
+			if (C.is_sprinting())
+				if (mov_intent_has_state(icon, "sprinting"))
+					icon_state = "sprinting"
+				else
+					// Stand-in until the HUD styles draw a sprint icon: the
+					// running icon washed orange.
+					var/image/glow = image(icon, icon_state)
+					glow.color = "#ff7a1a"
+					glow.alpha = 150
+					overlays += glow
 		if ("walk")
 			icon_state = "walking"
 		if ("proning")
 			icon_state = "proning"
 		if ("stealth")
 			icon_state = "stealth"
+
+// Whether a HUD icon file has an icon state, checked once per file.
+/proc/mov_intent_has_state(icon_file, state)
+	var/static/list/states_by_icon = list()
+	var/key = "[icon_file]"
+	var/list/states = states_by_icon[key]
+	if (!states)
+		states = icon_states(icon_file)
+		states_by_icon[key] = states
+	return (state in states)
 
 //-----------------------mov_intent END------------------------------
 /obj/screen/equip

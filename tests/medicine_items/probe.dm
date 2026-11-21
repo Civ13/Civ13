@@ -1,5 +1,6 @@
 // Native probe: pills only dissolve when the whole dose fits (#4226), and a
-// syringe injection stops when the patient moves out of reach (#4227).
+// syringe injection stops when the patient moves out of reach (#4227), and a
+// helmet blocks head injections even without a suit (#6201).
 // Run: python3 tests/ecology_spawning/run_linux.py . tests/medicine_items/probe.dm
 /world
 	hub = ""
@@ -40,6 +41,7 @@ var/mi_runtime_error = FALSE
 		map = new /obj/map_metadata/mi_probe
 		mi_pill_checks()
 		mi_syringe_checks()
+		mi_syringe_helmet_checks()
 		mi_dropper_checks()
 	catch(var/exception/e)
 		mi_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -91,6 +93,26 @@ var/mi_runtime_error = FALSE
 		S.afterattack(patient, user, TRUE)
 	sleep(S.time + 10)
 	mi_check(S.reagents.get_reagent_amount("anti_toxin") < 5, "a patient who stays is injected")
+
+/proc/mi_syringe_helmet_checks()
+	var/mob/living/human/user = new(locate(5, 8, 1))
+	var/mob/living/human/patient = new(locate(6, 8, 1))
+	var/obj/item/clothing/head/helmet/helmet = new(patient)
+	patient.head = helmet
+	mi_check(!patient.wear_suit && (patient.head.item_flags & THICKMATERIAL), "the patient wears a thick helmet and no suit")
+	var/obj/item/weapon/reagent_containers/syringe/S = new(user)
+	S.reagents.add_reagent("anti_toxin", 5)
+	S.mode = SYRINGE_INJECT
+	user.targeted_organ = "head"
+	spawn(0)
+		S.afterattack(patient, user, TRUE)
+	sleep(S.time + 10)
+	mi_check(!patient.reagents.get_reagent_amount("anti_toxin") && S.reagents.get_reagent_amount("anti_toxin") == 5, "a helmet blocks a head injection without a suit")
+	user.targeted_organ = "chest"
+	spawn(0)
+		S.afterattack(patient, user, TRUE)
+	sleep(S.time + 10)
+	mi_check(S.reagents.get_reagent_amount("anti_toxin") < 5, "the unsuited chest under a helmet can still be injected")
 
 /proc/mi_dropper_checks()
 	var/mob/living/human/user = new(locate(5, 5, 1))

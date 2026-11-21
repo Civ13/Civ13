@@ -1068,7 +1068,9 @@ var/global/list/npc_appearance_cache = list()
 					break
 			if(controlled)
 				continue
-			var/dist_to_dest = get_dist(T, dest_turf)
+			var/dist_to_dest
+			if(!self_targeting)
+				dist_to_dest = get_dist(T, dest_turf)
 			var/dist_to_me = get_dist(my_turf, T)
 			if(self_targeting)
 				if(dist_to_me < best_dist)

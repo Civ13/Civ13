@@ -143,6 +143,7 @@ var/global/list/sub_blast_doors = list()
 // ---- Main Processing Loop ----
 
 /datum/flooding_controller/proc/process_tick()
+	var/static/list/flood_directions = list(NORTH, SOUTH, EAST, WEST)
 	tick_counter++
 
 	// Process all tracked turfs (water and fire stay per tile)
@@ -188,7 +189,7 @@ var/global/list/sub_blast_doors = list()
 			// held back the most water.
 			var/leak_fraction = B.health > 0 ? 0.1 : 0.25
 			var/leak_cap = B.health > 0 ? 3 : 8
-			for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+			for(var/direction in flood_directions)
 				var/turf/floor/sub_deck/neighbor = get_step(B, direction)
 				if(neighbor && istype(neighbor) && neighbor.flooding_owner == src && neighbor.water_depth > 10)
 					// Spread water through the now-open bulkhead
@@ -204,7 +205,7 @@ var/global/list/sub_blast_doors = list()
 			continue
 		if(!D.state) continue  // Door is closed
 		// Door is open - check both sides for water
-		for(var/direction in list(NORTH, SOUTH, EAST, WEST))
+		for(var/direction in flood_directions)
 			var/turf/floor/sub_deck/neighbor = get_step(D, direction)
 			if(!neighbor || !istype(neighbor) || neighbor.flooding_owner != src) continue
 			if(neighbor.water_depth > 10)

@@ -108,10 +108,18 @@
 // Field 12 of a recipe row is the last age it can be crafted in. Rows at
 // RECIPE_OPEN_ENDED_AGE or later never retire, so 2013-era rows stay
 // craftable in the 2026 age.
+//
+// On persistent worlds an era advance never takes technology away: the upper
+// age is waived there, so anything a character could already make stays
+// craftable. Research, minimum eras, stations, materials and skills still
+// apply through their own checks. Other maps keep ordinary retirement.
+/proc/recipe_upper_age_waived()
+	return map && map.persistence
+
 /proc/recipe_age_allowed(max_age)
 	if (!map || !isnum(max_age))
 		return FALSE
-	return max_age >= RECIPE_OPEN_ENDED_AGE || map.ordinal_age <= max_age
+	return max_age >= RECIPE_OPEN_ENDED_AGE || map.ordinal_age <= max_age || recipe_upper_age_waived()
 
 /material/proc/generate_recipes_civs(var/list/current_res = list(0,0,0), faction = "global", research_faction = null, mob/living/human/user = null)
 
@@ -150,7 +158,7 @@
 			continue
 		if (ispath(text2path(i[3]), /obj/item/weapon/gun_mount) && (!map || map.ordinal_age < 6 || map.ordinal_age > LATEST_ORDINAL_AGE))
 			continue
-		if (ispath(text2path(i[3]), /obj/item/blackpowder_part/stock) && (!map || map.ordinal_age < 3 || map.ordinal_age > 4))
+		if (ispath(text2path(i[3]), /obj/item/blackpowder_part/stock) && (!map || map.ordinal_age < 3 || (map.ordinal_age > 4 && !recipe_upper_age_waived())))
 			continue
 		var/research_allowed
 		// is_node_done handles a null/"none" faction fine (baseline-era grants

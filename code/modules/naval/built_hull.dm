@@ -150,8 +150,9 @@
 		commission_menu(H)
 		return
 	craft.fit_drives()
-	// At sea on the world chart (ship_voyage.dm): nobody steers until she is back or ashore.
-	if (voyage)
+	// At sea on the world chart (ship_voyage.dm), or bound for a land woken for
+	// her (ship_crossing.dm): nobody steers until she is back, ashore or gone.
+	if (voyage || crossing_hold_current())
 		voyage_status_menu(H)
 		return
 	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")

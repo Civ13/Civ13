@@ -71,7 +71,7 @@ var/list/keybinding_failures = list()
 	P.client = C
 	C.prefs = P
 	var/list/defaults = P.action_keybinding_map(list())
-	check(defaults && defaults.len == 42, "all defaults")
+	check(defaults && defaults.len == 48, "all defaults")
 	check(!P.set_action_keybinding("hotkeymode", "prone", "J"), "conflict rejected")
 	check(!P.action_keybindings.len, "rejected edit preserves preferences")
 	check(P.set_action_keybinding("hotkeymode", "prone", "0"), "prone rebind")

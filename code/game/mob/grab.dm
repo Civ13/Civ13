@@ -25,6 +25,8 @@
 	var/last_hit_zone = FALSE
 	var/force_down //determines if the affecting mob will be pinned to the ground
 	var/dancing //determines if assailant and affecting keep looking at each other. Basically a wrestling position
+	var/grabbed_zone = null // the body part taken hold of (grab_hand_hold.dm)
+	var/tmp/obj/item/hand_hold/hand_partner = null // the held person's half of a hand hold
 
 	layer = 21
 	abstract = TRUE
@@ -94,6 +96,10 @@
 		assailant.client.screen -= hud
 		assailant.client.screen += hud
 
+	if (hand_partner && !hand_hold_intact())
+		qdel(src)
+		return PROCESS_KILL
+
 	if (assailant.pulling == affecting)
 		assailant.stop_pulling()
 
@@ -122,12 +128,18 @@
 				hud.icon_state = "reinforce1"
 		else
 			hud.icon_state = "!reinforce"
+		// A hand can be gripped firmly, but no further.
+		if (hand_partner && state >= GRAB_AGGRESSIVE)
+			hud.icon_state = "!reinforce"
 
 	if (state >= GRAB_AGGRESSIVE)
-		affecting.drop_l_hand()
-		affecting.drop_r_hand()
-		affecting.canmove = FALSE
-		if (ishuman(affecting))
+		// A firm grip on a hand leaves their other hand free, and they can still
+		// move, but only to tiles beside the grabber (hand_hold_leash_blocks).
+		if (!hand_partner)
+			affecting.drop_l_hand()
+			affecting.drop_r_hand()
+			affecting.canmove = FALSE
+		if (ishuman(affecting) && !hand_partner)
 			handle_eye_mouth_covering(affecting, assailant, assailant.targeted_organ)
 
 		if (force_down)
@@ -230,7 +242,7 @@
 		return
 	if (!assailant.canClick())
 		return
-	if (world.time < (last_action + UPGRADE_COOLDOWN))
+	if (world.time < (last_action + grab_upgrade_cooldown()))
 		return
 	if (!assailant.canmove || assailant.lying)
 		qdel(src)
@@ -240,6 +252,10 @@
 		return
 
 	last_action = world.time
+
+	if (hand_partner)
+		hand_hold_tighten()
+		return
 
 	if (state < GRAB_AGGRESSIVE)
 		if (!allow_upgrade)
@@ -280,6 +296,12 @@
 			var/mob/living/human/C = affecting
 			C.losebreath += 3.5 // This wasn't ACTUALLY strangling anything (value was 1), in fact if you use a doctor's book, the assailant/affecting will always have 1 unit of oxygen damage, this is because you recover 1 unit per tick, and it tries to deal 1 unit of oxygen loss per tick. I've quick-fixed it by changing it to 1 --> 3.5, but needs refactoring.
 	adjust_position()
+
+// How long a grabber waits between tightening steps: 4 seconds between
+// equals, quicker against a weaker victim and slower against a stronger one.
+/obj/item/weapon/grab/proc/grab_upgrade_cooldown()
+	var/ratio = physical_contest_ratio(assailant, affecting, 0.7, 0.3)
+	return round(UPGRADE_COOLDOWN / ratio)
 
 //This is used to make sure the victim hasn't managed to yackety sax away before using the grab.
 /obj/item/weapon/grab/proc/confirm()
@@ -340,6 +362,8 @@
 			devour(affecting, assailant)
 
 /obj/item/weapon/grab/dropped()
+	if (hand_partner && !destroying && assailant && affecting)
+		assailant.visible_message(SPAN_NOTICE("[assailant] lets go of [affecting]'s hand."), SPAN_NOTICE("You let go of [affecting]'s hand."))
 	if (ismob(loc))
 		var/mob/M = loc
 		M.mouth_covered = FALSE
@@ -362,6 +386,8 @@
 	var/destroying = FALSE
 
 /obj/item/weapon/grab/Destroy()
+	if (hand_partner)
+		hand_hold_release()
 
 	// I don't even think this works since its loc is already == null but whatever - Kachnov
 	if (loc)

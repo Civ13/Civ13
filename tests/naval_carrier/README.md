@@ -423,6 +423,22 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Sea routes between the continents (`sea_lanes.dm`):** distances and compass bearings from the shared layout; unknown lands have no route and a land with no coast is not offered, nor a stopped one; an up one is, with its name, bearing, region and sailing time; landfall tries the coasts facing where she came from first; she sets out with no chart owner, the lookout sights nothing on a route, she waits off a coast whose world is down and turns back after waiting too long.
 - **A land across the sea:** voyages sail on from the land's own chart tile; a settled land is on every chart and the land she lies off is not offered; settling needs a mooring post and 3 beds slept in by different people within 40 tiles of it; a settled land, or the mainland, is never undecided.
 
+## Holding her course for a woken land (`voyage_hold_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/voyage_hold_probe.dm
+```
+
+The host doorman, peer polls, the transfer agent and the sea-crossing gate's departures are stubbed in the probe and counted; nothing is woken or sent.
+
+- **Two crews, two lands:** while the doorman is asked for Far One the other crew member's crossing to Far Two, a stale Leave these waters prompt, a stale voyage prompt and Turn back are refused; once the slow wake is accepted the tiller shows "Bound for Far One", a second crossing to the same land waits on the first, failed polls keep her waiting, and when Far One answers both crew (logged out, but aboard when she set out) leave on the same voyage. Far Two gets zero wake requests.
+- **Refusal:** a definite doorman refusal holds nothing, Turn back works again and the crew may choose another land.
+- **Stale continuation:** a crossing whose hold was replaced comes back "called off", without moving her or clearing the newer hold.
+- **Lost reply:** no doorman reply holds her for Far One and Far Two is not asked; when the wake runs out she is free and still there.
+- **Late readiness:** after a wake ran out her voyage still holds Far One, and when it answers late she crosses with no second wake.
+- **Retry:** a crew problem after the wake keeps her bound (no Turn back); the retry crosses on the first wake.
+- **Courses:** while a course is plotted another course or crossing waits; with no answer she sails on it unconfirmed and asks again under way with the same voyage id; Turn back before landfall and scouting are unchanged.
+
 ## Sea lighting behind a ship (`sea_lighting_probe.dm`)
 
 ```bash

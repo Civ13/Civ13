@@ -133,21 +133,35 @@
 					if (G.assailant == M)
 						to_chat(M, SPAN_NOTICE("You already grabbed [src]."))
 						return
+				// The grab takes hold of the targeted part (grab_hand_hold.dm).
+				var/grab_zone = grab_target_zone(tgt, H.targeted_organ == "random")
+				if (!grab_zone)
+					to_chat(M, SPAN_WARNING("[src] is missing that limb!"))
+					return FALSE
 				if (w_uniform)
 					w_uniform.add_fingerprint(M)
 
 				var/obj/item/weapon/grab/G = new /obj/item/weapon/grab(M, src)
 				if (buckled)
 					to_chat(M, SPAN_NOTICE("You cannot grab [src], \he is buckled in!"))
-				if (!G)	//the grab will delete itself in New if affecting is anchored
+				if (!G || QDELETED(G))	//the grab will delete itself in New if affecting is anchored
 					return
 				M.put_in_active_hand(G)
 				G.synch()
+				G.grabbed_zone = grab_zone
 				LAssailant = M
 
 				H.do_attack_animation(src)
 				playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
-				M.visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>", "<span class='notice'>You have grabbed [src] passively.</span>")
+				if (G.try_hand_hold())
+					M.visible_message("<span class='notice'>[M] takes [src]'s [parse_zone(grab_zone)].</span>", "<span class='notice'>You take [src]'s [parse_zone(grab_zone)].</span>")
+					to_chat(src, SPAN_NOTICE("[M] is holding your hand. Drop it to let go."))
+					return TRUE
+				var/grab_part = grab_zone_description(grab_zone, src)
+				if (grab_part)
+					M.visible_message("<span class='warning'>[M] has grabbed [src] by the [grab_part]!</span>", "<span class='notice'>You have grabbed [src] by the [grab_part].</span>")
+				else
+					M.visible_message("<span class='warning'>[M] has grabbed [src] passively!</span>", "<span class='notice'>You have grabbed [src] passively.</span>")
 				return TRUE
 			if (I_HARM)
 				var/tgtm = M.targeted_organ
@@ -187,7 +201,7 @@
 						accurate = TRUE
 					if (I_HARM, I_GRAB)
 						// We're in a fighting stance, there's a chance we block
-						if (canmove && src!=H && prob(20))
+						if (canmove && src!=H && prob(physical_contest_chance(20, physical_contest_ratio(src, H, 0.3, 0.7))))
 							block = TRUE
 
 				if (M.grabbed_by.len)
@@ -228,7 +242,7 @@
 					*/
 					if (prob(80))
 						hit_zone = ran_zone(hit_zone)
-					if (prob(15) && hit_zone != "chest") // Missed!
+					if (prob(physical_contest_chance(15, physical_contest_ratio(src, H, 0, 1))) && hit_zone != "chest") // Missed! A nimbler target dodges more.
 						if (!lying)
 							attack_message = "[H] attempted to strike [src], but missed!"
 							adaptStat("dexterity", 1)
@@ -290,6 +304,9 @@
 				// Finally, apply damage to target
 				apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge, toxic=H.lizard)
 				hand_struck(hit_zone, real_damage)
+				// A bare-knuckle punch can hurt the puncher's own hand (punch_injury.dm).
+				if (H != src && istype(attack, /datum/unarmed_attack/punch) && !attack.deal_halloss)
+					H.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, "melee"))
 
 			if (I_DISARM)
 				if (M == src)
@@ -330,8 +347,12 @@
 							visible_message("<span class='danger'>[src]'s [W] goes off during the struggle!</span>")
 							return W.afterattack(target,src)
 
+				// 25% push and 35% disarm between equals; strength drives the push,
+				// dexterity the disarm (physical_contest.dm).
+				var/push_chance = physical_contest_chance(25, physical_contest_ratio(M, src, 0.7, 0.3))
+				var/disarm_chance = physical_contest_chance(35, physical_contest_ratio(M, src, 0.3, 0.7))
 				var/randn = rand(1, 100)
-				if (!(species.flags & NO_SLIP) && randn <= 25)
+				if (!(species.flags & NO_SLIP) && randn <= push_chance)
 					var/armor_check = run_armor_check(affecting, "melee")
 					apply_effect(3, WEAKEN, armor_check)
 					playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
@@ -341,7 +362,7 @@
 						M.visible_message("<span class='warning'>[M] attempted to push [src]!</span>", "<span class = 'danger'>You attempt to push [src]!</span>")
 					return
 
-				if (randn <= 60)
+				if (randn <= push_chance + disarm_chance)
 					//See about breaking grips or pulls
 					if (break_all_grabs(M))
 						playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)

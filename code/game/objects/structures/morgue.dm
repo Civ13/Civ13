@@ -310,9 +310,7 @@
 					L.adjustBurnLoss(20)
 					L.adjustBrainLoss(5)
 					if(L.stat == DEAD || !(L in contents)) //In case we die or are removed at any point.
-						cremating = 0
-						update()
-						break
+						break // the cycle keeps running for any later occupant (#6273)
 					sleep(30)
 					L.emote("scream")
 			if(M.stat == DEAD)

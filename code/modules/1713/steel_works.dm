@@ -23,6 +23,7 @@
 	var/base_state = "bloomery"
 	var/charge = 0 // units of charge metal loaded
 	var/list/loaded = list() // charge type path text => units, to give back on Empty
+	var/list/additions = list() // alloy ore key => units (alloy_steels.dm)
 	var/fuel = 0
 	var/burning = FALSE
 	var/burn_left = 0 // deciseconds of firing left; saved, so a load resumes it
@@ -78,6 +79,9 @@
 		to_chat(user, SPAN_NOTICE("It is at work. About [max(1, round(burn_left / 600))] minute\s left."))
 	else
 		to_chat(user, SPAN_NOTICE("It holds [charge] of [charge_limit] [charge_name] and [round(fuel, 0.1)] fuel ([fuel_names()]). Firing it takes [fuel_needed()] fuel."))
+	var/added = additions_text()
+	if (added)
+		to_chat(user, SPAN_NOTICE("Alloy additions: [added]."))
 
 /obj/structure/steel_works/attackby(obj/item/I, mob/living/human/H)
 	if (!I || !I.loc || !istype(H))
@@ -96,6 +100,9 @@
 		return
 	if (accepts_charge(I))
 		load_charge(I, H)
+		return
+	if (addition_key(I))
+		load_addition(I, H)
 		return
 	if (istype(I, /obj/item/stack))
 		var/value = solid_fuel_value(I, fuel_rates())
@@ -218,9 +225,10 @@
 // Puts out what one firing made. Default: output_ratio per unit of charge.
 /obj/structure/steel_works/proc/produce(turf/T)
 	var/made = round(charge * output_ratio)
-	if (made > 0)
-		spawn_stack(output_type, T, made)
-	visible_message(SPAN_NOTICE("\The [src] finishes its work: [made] [made == 1 ? "piece" : "pieces"] out."))
+	var/alloyed = alloy_output(T, made) // alloy_steels.dm
+	if (made - alloyed > 0)
+		spawn_stack(output_type, T, made - alloyed)
+	visible_message(SPAN_NOTICE("\The [src] finishes its work: [made] [made == 1 ? "piece" : "pieces"] out[alloyed ? ", [alloyed] of it alloy" : ""]."))
 	return made
 
 /obj/structure/steel_works/after_load()
@@ -238,8 +246,9 @@
 	set src in range(1)
 	if (burning || !istype(usr, /mob/living/human))
 		return
-	if (charge > 0)
+	if (charge > 0 || additions_total() > 0)
 		return_charge(get_turf(src))
+		return_additions(get_turf(src))
 		charge = 0
 		loaded = list()
 		visible_message(SPAN_NOTICE("[usr] empties \the [src]."))
@@ -257,6 +266,8 @@
 	var/obj/item/stack/S = I
 	if (accepts_charge(S))
 		return max(0, min(S.amount, charge_limit - charge))
+	if (addition_key(S))
+		return min(S.amount, addition_room())
 	var/value = solid_fuel_unit_value(S, fuel_rates())
 	if (value <= 0)
 		return 0
@@ -269,6 +280,8 @@
 	var/obj/item/stack/S = I
 	if (accepts_charge(S))
 		note_loaded(S.type, factory_consume_units(S, amount))
+	else if (addition_key(S))
+		note_addition(addition_key(S), factory_consume_units(S, amount))
 	else
 		var/value = solid_fuel_unit_value(S, fuel_rates())
 		record_wood_fuel(S, amount * value)
@@ -280,7 +293,7 @@
 /obj/structure/steel_works/factory_offer(to_dir = 0, filter_type = null)
 	if (!anchored)
 		return null
-	return factory_offer_tile_output(src, list(output_type), filter_type)
+	return factory_offer_tile_output(src, list(output_type) + alloy_output_types(), filter_type)
 
 /obj/structure/steel_works/factory_take(obj/item/I, atom/destination)
 	return factory_take_tile_output(src, I, destination)
@@ -542,9 +555,10 @@
 	// Scrap steel melts back whole; pig iron loses some to the slag.
 	var/scrap = loaded_steel()
 	var/made = round(max(0, charge - scrap) * output_ratio) + scrap
-	if (made > 0)
-		spawn_stack(/obj/item/stack/material/steel/fine, T, made)
-	visible_message(SPAN_NOTICE("\The [src] is tapped: [made] fine steel runs out."))
+	var/alloyed = alloy_output(T, made) // alloy_steels.dm
+	if (made - alloyed > 0)
+		spawn_stack(/obj/item/stack/material/steel/fine, T, made - alloyed)
+	visible_message(SPAN_NOTICE("\The [src] is tapped: [made] steel runs out[alloyed ? ", [alloyed] of it alloy steel" : ""]."))
 	return made
 
 //////////////////////////////////////////////////////////////////////////////

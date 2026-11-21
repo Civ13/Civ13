@@ -206,7 +206,12 @@
 				continue // Carved stone is already usable; never replace it with clay.
 			if (CL.result == CL.type)
 				continue // already fired (bricks and blocks); firing again must not copy them
-			contents += CL.fired_result(src)
+			// A placed structure (a big jar) is set down outside; only items go in.
+			var/fired = CL.fired_result(src)
+			if (!fired)
+				continue // nothing was made, so the unfired piece stays
+			if (isitem(fired))
+				contents += fired
 			contents -= I
 			qdel(I)
 

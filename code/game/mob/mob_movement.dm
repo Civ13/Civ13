@@ -183,6 +183,9 @@
 /client/verb/drop_item()
 	set hidden = TRUE
 	if (mob.stat == CONSCIOUS && isturf(mob.loc))
+		var/obj/item/held = mob.get_active_hand()
+		if (held && held.player_drop_refused(mob))
+			return
 		return mob.drop_item()
 	return
 
@@ -633,6 +636,14 @@
 				mob.next_cannotmove_message = world.time + 10
 			return FALSE
 
+		// A firm grip on your hand keeps you beside whoever holds it (grab_hand_hold.dm).
+		var/mob/firm_holder = mob.hand_hold_leash_blocks(n)
+		if (firm_holder)
+			if (world.time >= mob.next_cannotmove_message)
+				to_chat(src, SPAN_WARNING("[firm_holder] has a firm grip on your hand! Resist to pull free."))
+				mob.next_cannotmove_message = world.time + 10
+			return FALSE
+
 		move_delay = world.time + mob.movement_delay()//set move delay
 
 
@@ -781,17 +792,26 @@
 				if (fine_step != FINE_STEP_NUDGE)
 					mob.velocity = min(mob.velocity+1, 15)
 				mob.velocity_lastdir = direct
-				move_delay += mob.get_run_delay() + standing_on_snow
+				// A sprint is a faster run that burns stamina hard (sprint.dm).
+				var/sprint_step = mob_is_human && H.is_sprinting()
+				if (sprint_step)
+					move_delay += mob.get_run_delay() / SPRINT_SPEED_MULT + standing_on_snow
+				else
+					move_delay += mob.get_run_delay() + standing_on_snow
 				if (mob_is_human)
-					H.nutrition -= 0.005 * distance_fraction
-					H.water -= 0.005 * distance_fraction
+					var/upkeep = sprint_step ? SPRINT_UPKEEP_MULT : 1
+					var/effort = sprint_step ? SPRINT_STAMINA_MULT : 1
+					H.nutrition -= 0.005 * distance_fraction * upkeep
+					H.water -= 0.005 * distance_fraction * upkeep
 					if (H.stats["stamina"][1] > 0)
 						if (H.find_trait("Flat Footed"))
-							H.stats["stamina"][1] -= 2 * distance_fraction
+							H.stats["stamina"][1] -= 2 * distance_fraction * effort
 						else
-							H.stats["stamina"][1] -= distance_fraction
+							H.stats["stamina"][1] -= distance_fraction * effort
+					if (sprint_step)
+						H.sprint_stamina_check()
 					if (H.bodytemperature < H.species.body_temperature)
-						H.bodytemperature += 0.66 * distance_fraction
+						H.bodytemperature += 0.66 * distance_fraction * upkeep
 			if ("walk")
 				move_delay += mob.get_walk_delay() + standing_on_snow
 				if (mob_is_human)
