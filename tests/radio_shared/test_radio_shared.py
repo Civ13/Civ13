@@ -21,6 +21,8 @@ def body(source, header):
 
 
 def normalise(text):
+    # Spirits skip the observers' radio (spirit_observe.dm), added after the freeze.
+    text = text.replace('\t\tif (O.is_spirit_observer())\n\t\t\tcontinue\n', '')
     lines = []
     for line in text.splitlines():
         line = re.sub(r'//.*', '', line).rstrip()

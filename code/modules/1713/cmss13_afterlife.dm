@@ -10,6 +10,8 @@
 /client/var/tmp/no_death_notices = FALSE
 
 /proc/death_notice_text(mob/living/human/H, mob/observer/ghost/G)
+	if (G && G.is_spirit()) // spirit_observe.dm: spirits learn who, not where
+		return "<span class='deadsay'><b>[H.get_visible_name()]</b> has died.</span>"
 	var/area/A = get_area(H)
 	var/where = A ? " in [A.name]" : ""
 	var/link = G ? " (<a href='?src=\ref[G];track=\ref[H]'>follow</a>)" : ""
