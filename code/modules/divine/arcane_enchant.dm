@@ -26,6 +26,7 @@ var/global/list/arcane_enchant_names = list(
 	"cleansing" = "Cleansing",
 	"warding" = "Warding", // arcane_ward.dm
 	"paired" = "Paired stones", // arcane_ward.dm
+	"veil" = "Veil", // arcane_veil.dm
 )
 
 // Enchantment id -> materials and charges by strength 1 / 2 / 3.
@@ -34,6 +35,7 @@ var/global/list/arcane_enchant_recipes = list(
 	"cleansing" = list("aspect" = "mercy", "count" = 1, "gem" = 0, "charges" = list(3, 5, 8)),
 	"warding" = list("aspect" = "ward", "count" = 2, "gem" = 0, "charges" = list(10, 20, 30), "vigil" = TRUE),
 	"paired" = list("aspect" = "omen", "count" = 2, "gem" = 0, "charges" = list(5, 10, 15)),
+	"veil" = list("aspect" = "omen", "count" = 2, "also" = list("ward" = 1), "gem" = 0, "charges" = list(3, 6, 10), "vigil" = TRUE), // arcane_veil.dm
 )
 
 // Enchantment id -> the one plain line a magic user sees on examine.
@@ -42,6 +44,7 @@ var/global/list/arcane_enchant_lines = list(
 	"cleansing" = "It seems cleaner than it ought to.",
 	"warding" = "It feels guarded.",
 	"paired" = "It feels as if something is listening.",
+	"veil" = "It is easy to overlook.",
 )
 
 // Enchanted items in this world. Runtime only: rebuilt as items load, and an
@@ -126,6 +129,8 @@ var/global/list/arcane_enchanted = list()
 		return FALSE
 	if (kind == "paired")
 		return arcane_single_gem(I) // arcane_ward.dm
+	if (kind == "veil")
+		return arcane_veilable(I) // arcane_veil.dm
 	if (istype(I, /obj/item/stack))
 		return FALSE
 	switch (kind)
@@ -180,6 +185,15 @@ var/global/list/arcane_enchanted = list()
 			needed--
 	if (needed)
 		return null
+	var/list/also = recipe["also"]
+	for (var/aspect in also)
+		var/more = also[aspect]
+		for (var/obj/item/I in pouch)
+			if (more && I.arcane_virtue() == aspect && !I.arcane_enchant && !(I in picked))
+				picked += I
+				more--
+		if (more)
+			return null
 	var/gems = recipe["gem"]
 	for (var/obj/item/I in pouch)
 		if (gems && arcane_is_gem(I) && !(I in picked) && !I.arcane_enchant)
@@ -315,7 +329,8 @@ var/global/list/arcane_enchanted = list()
 			arcane_enchant_let_go(O, ckey)
 	if (kind == "unbinding" && !arcane_unbind_pick(target)) // arcane_unbind.dm
 		return null
-	if (kind == "warding" || kind == "unbinding")
+	var/list/needs = arcane_enchant_recipes[kind]
+	if (kind == "unbinding" || (needs && needs["vigil"]))
 		if (kind == "warding")
 			arcane_imbue_owners = arcane_ward_pick_owners() // arcane_ward.dm
 		var/list/roster = divine_gather_vigil(target)
