@@ -140,6 +140,30 @@ var/naval_runtime_error = FALSE
 	naval_check(barge.sail_step() == VESSEL_SPEED_SLOW && barge.wants_ballast() > 0, "one mast is too little for sixty tiles, and she wants ballast ([barge.wants_ballast()])")
 	naval_check(findtext(barge.summary_text(), "ballast"), "the summary tells her builder about ballast")
 
+	// ---- The designer window ----
+	var/list/examples = ship_draught_examples()
+	naval_check(examples.len == 3, "three ready-made draughts to start from")
+	for (var/datum/ship_draught/E in examples)
+		naval_check(E.buildable(), "the ready-made [E.name] can be built as drawn ([jointext(E.problems(), " ")])")
+		var/list/cells = ship_designer_cells(E)
+		var/inside = TRUE
+		for (var/list/C in cells)
+			if (!ship_draught_on_sheet(C[1], C[2]))
+				inside = FALSE
+		naval_check(cells.len == E.hull_tiles() && inside, "the [E.name] is laid out on the sheet for the window")
+	var/datum/ship_draught/galley_example = examples[1]
+	naval_check(galley_example.oar_step() == VESSEL_SPEED_FULL, "the ready-made galley rows at full ahead")
+	var/datum/ship_draught/sloop_example = examples[2]
+	naval_check(sloop_example.sail_step() == VESSEL_SPEED_HALF, "the ready-made sloop sails at half ahead")
+	var/obj/item/ship_draught/pad = new(yard)
+	var/html = ship_designer_html(pad, null)
+	naval_check(findtext(html, "C13SHIP") && findtext(html, "rowing galley"), "the window carries the drawing tools and the ready-made ships")
+	var/mob/living/human/naval_probe/drawer = new(yard)
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,1,w,M,1,0", "Little/Auk", TRUE) == "Saved on the sheet." && pad.draughts_name() == "Little Auk", "saving keeps the drawing and its cleaned name on the sheet")
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/0,0,w,T,1,0;0,0,w,T,1,0", "Bad", TRUE) != "Saved on the sheet." && pad.draughts_name() == "Little Auk", "a damaged drawing is refused and the sheet keeps what it had")
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/", "Empty", FALSE) == null, "an empty sheet still gets a summary")
+	naval_check(pad.accept_drawing(drawer, "C13SHIP/1/ship/", "Empty", FALSE) == "", "a summary asked for again at once is put off")
+
 	// ---- Drawing a ship afloat ----
 	for (var/x = 22, x <= 60, x++)
 		for (var/y = 4, y <= 50, y++)

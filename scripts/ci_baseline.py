@@ -2742,6 +2742,12 @@ SUITES = {
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm',
             'code/modules/client/preferencesSQLite/preference_setup/global/setting_datums.dm',
             'code/modules/client/preferencesSQLite/preferences.dm')},
+    # False bottoms: hidden compartments the storage grid, window and searches skip.
+    'false_bottom': {'files': ('tests/false_bottom/test_source.py',),
+        'paths': ('tests/false_bottom/', 'code/modules/storage_window/false_bottom.dm'),
+        'shared_paths': ('code/game/objects/items/weapons/storage/storage.dm',
+            'code/modules/storage_window/storage_window.dm',
+            'code/modules/persistence/region_travel_gear.dm')},
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
