@@ -129,6 +129,7 @@ var/global/list/divine_invocation_names = list(
 		divine_break_covenant()
 	if (divine_vigil_member)
 		divine_leave_vigil()
+	divine_self_worship() // repository_nations.dm
 	divine_refresh_verbs()
 
 /mob/living/human/proc/divine_slot_ready()
@@ -193,7 +194,9 @@ var/global/list/divine_invocation_names = list(
 
 // The legal target of an invocation at this moment, or null.
 /proc/divine_target_legal(mob/living/human/caster, spell, mob/living/human/target)
-	if (spell == "imbue" || spell == "bless") // the target is the held item (arcane_enchant.dm)
+	if (spell == "imbue") // the held item, or the chest or door beside them (arcane_enchant.dm, arcane_ward.dm)
+		return istype(caster) && target && target == caster.arcane_imbue_target()
+	if (spell == "bless") // the target is the held item (arcane_bless.dm)
 		return istype(caster) && target && target == caster.arcane_imbue_item()
 	if (!istype(caster) || !istype(target) || QDELETED(target) || target.stat == DEAD)
 		return FALSE
@@ -276,7 +279,7 @@ var/global/list/divine_invocation_names = list(
 	var/scope = divine_scope(spell)
 	if (spell == "imbue")
 		scope = arcane_imbue_choose() // arcane_enchant.dm
-		target = arcane_imbue_item()
+		target = arcane_imbue_target()
 		if (!scope || !target)
 			return
 	else if (spell == "bless")
@@ -452,6 +455,7 @@ var/global/list/divine_invocation_names = list(
 		if (!R.current())
 			divine_finish_request(R)
 		return
+	divine_note_self_approval(R, C) // repository_nations.dm
 	if (istype(R, /datum/divine_use_request/ritual))
 		var/datum/divine_use_request/ritual/V = R
 		if (!V.start_channel())

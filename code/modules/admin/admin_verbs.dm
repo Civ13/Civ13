@@ -53,6 +53,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
 	/client/proc/cmd_admin_create_divine_book,	//write a god's one original book and entrust it to a player,
 	/client/proc/cmd_admin_karma,	//a player's hidden karma: standing, who rated them, void and bar (code/modules/karma)
+	/client/proc/accolades_admin,	//see, grant or remove a player's lifetime accolades (code/modules/accolades)
 	/client/proc/cmd_admin_divine_patron,	//speak as a god: initiate followers, teach invocations, answer prayers,
 	/client/proc/cmd_admin_magic_whitelist,	//who may follow a god and learn magic on persistent worlds (shared list),
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,

@@ -181,11 +181,14 @@ class WindDirectionTests(unittest.TestCase):
     def test_cardinal_diagonal_and_absent_winds(self):
         self.assert_vectors(self.weather, self.sailing)
 
-    def test_wind_selection_remains_cardinal(self):
+    def test_wind_selection_uses_eight_headings(self):
         veer = self.adapter.extract(self.weather, "/proc/weather_veer")
-        self.assertIn('list("North", "East", "South", "West")', veer)
+        eight = '"North", "Northeast", "East", "Southeast", "South", "Southwest", "West", "Northwest"'
+        self.assertIn('list(%s)' % eight, veer)
         admin = self.adapter.read("code/modules/admin/verbs/time_of_day.dm")
-        self.assertIn('map.winddirection = pick("North", "South", "East", "West")', admin)
+        self.assertIn('map.winddirection = pick(%s)' % eight, admin)
+        for name in ("Northeast", "Southeast", "Southwest", "Northwest"):
+            self.assertIn(name, self.EXPECTED)
 
 
 if __name__ == "__main__":

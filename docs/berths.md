@@ -3,8 +3,8 @@
 A berth is any place that holds a boat for her upkeep
 (`code/modules/naval/berth.dm`). The plan is in the project thread "Add
 drydocks and shipyards for ship work": every berth repairs, refits and builds.
-This first part makes the boathouse slip a berth for built hulls and adds the
-shared repair rules. The slipway, drydock and shipyard office follow.
+The boathouse slip and the slipway (after a haul-out) are berths now; the
+drydock and shipyard office follow.
 
 ## Which berth holds her
 
@@ -15,9 +15,33 @@ no record of the hulls in it, so nothing new is saved.
 | Berth | Holds | Dry |
 | --- | --- | --- |
 | Boathouse | a built hull lying wholly in its 7x7 slip | no |
+| Slipway | a built hull hauled out on its berth: every tile on dry ground, bow to the water, stern on the tile in front of the post | yes |
 
-`berth_dry(craft)` is for berths that hold a hull out of the water (the
-slipway after a haul-out, a drained drydock). None does yet.
+`craft_berth()` looks for a boathouse when her first tile is water, and for a
+slipway next to one of her tiles when it is ground.
+
+A hull at a dry berth (`berth_dry()`, `lies_dry()`) gathers no bilge water and
+her ledger does not step: nothing seeps, wears, drifts or fouls.
+
+## Hauling out on the slipway
+
+`code/modules/naval/slipway_haul.dm`. Bring a built hull to a stop within 12
+tiles off the foot of an empty slipway, her bow to the open water the way the
+post faces, and use the post: "Haul the <name> out". It needs one pair of hands
+within two tiles of the post (not aboard) for every 20 tiles of hull; a horse
+or an ox counts as two. After three seconds for every tile she moves, she is
+drawn up stern first until her stern lies on the tile in front of the post, in
+line with it. Every tile she rests on must be dry open ground (not water or a
+flooded trench), and the ways she slides over must be clear.
+
+The body is moved with `move_to()`; for that one move `ways_tiles` on the
+built body lets `tile_refusal()` accept the berth ground. She is stopped and
+anchored and her bilge is emptied.
+
+Hauled out, the post offers "Launch the <name> again", which slides her back
+down to open water like a launch (`draught_landing()`), and "Survey her
+condition". A keel or a draught cannot be laid while she is on the berth.
+Nothing is saved: a hauled hull is found from where she lies.
 
 ## What a berth allows
 
@@ -50,6 +74,6 @@ the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 
 ## Tests
 
-`tests/naval_carrier/berth_probe.dm` (30 checks):
+`tests/naval_carrier/berth_probe.dm` (51 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300

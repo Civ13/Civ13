@@ -50,7 +50,8 @@ class ArcaneEnchantSource(unittest.TestCase):
         self.assertIn('#define ARCANE_ENCHANT_CAP 5', TEXT)
         choose = body(TEXT, '/mob/living/human/proc/arcane_imbue_choose()')
         self.assertIn('own.len >= ARCANE_ENCHANT_CAP', choose)
-        self.assertIn('arcane_enchant_end()', choose)
+        self.assertIn('arcane_enchant_let_go(O, ckey)', choose)
+        self.assertIn('arcane_enchant_end()', body(TEXT, '/proc/arcane_enchant_let_go('))
 
     def test_index_follows_items(self):
         self.assertIn('arcane_enchant_forget()', body(read('code/game/objects/items.dm'), '/obj/item/Destroy()'))
