@@ -66,6 +66,7 @@
 		if (H.stat != DEAD && H.client && !QDELETED(H))
 			players += H
 	for (var/mob/living/human/H in players)
+		H.people_played_year = TRUE // peoples_blend.dm
 		var/key = people_community_key(H.civilization, H.origin_id)
 		if (key)
 			active[key] = TRUE
@@ -108,6 +109,8 @@
 			isolation[key] = (isnum(isolation[key]) ? isolation[key] : 0) + 1
 		if (isolation[key] <= 0)
 			isolation -= key
+	people_blend_year(active, year) // peoples_blend.dm
+	people_belong_year()
 	active.Cut()
 	contact.Cut()
 	var/list/heard = language_lineage_part("people_heard")
@@ -144,12 +147,14 @@
 		.++
 		people_split_ready_notice(parts[1], parts[2])
 
-/proc/people_split_ready_notice(nation, id)
+/proc/people_split_ready_notice(nation, id, text = null)
 	var/datum/origin/O = origin_by_id(id)
 	for (var/mob/living/human/H in living_mob_list)
 		if (H.civilization != nation)
 			continue
-		if (H.origin_id == id)
+		if (text)
+			to_chat(H, SPAN_NOTICE(text))
+		else if (H.origin_id == id)
 			to_chat(H, SPAN_NOTICE("Your people have lived apart from the rest of the [O ? O.name : "world"] for so long that they have become a people of their own."))
 		if (map.is_faction_leader(H, nation))
 			H.offer_people_naming()
@@ -167,6 +172,19 @@
 		if (parts && parts[1] == nation)
 			keys += key
 	return keys
+
+// What a waiting key is, for menus: "Hearthlanders" or "Hearthlanders and Fjordfolk".
+/proc/people_pending_label(key)
+	var/list/parts = people_community_parts(key)
+	if (!parts)
+		return key
+	var/list/pair = people_blend_pair(parts[2])
+	if (pair)
+		var/datum/origin/A = origin_by_id(pair[1])
+		var/datum/origin/B = origin_by_id(pair[2])
+		return "[A ? A.name : pair[1]] and [B ? B.name : pair[2]]"
+	var/datum/origin/O = origin_by_id(parts[2])
+	return O ? O.name : parts[2]
 
 // Called at login (knowledge_spread.dm's Login).
 /mob/living/human/proc/offer_pending_people_naming()
@@ -193,14 +211,15 @@
 	if (keys.len > 1)
 		var/list/choices = list()
 		for (var/k in keys)
-			var/datum/origin/O = origin_by_id(people_community_parts(k)[2])
-			choices[O ? O.name : k] = k
-		var/picked = player_input(src, "More than one of your nation's peoples has grown apart. Which one do you want to name?", "Name Our People", null, "anything", choices, TRUE)
+			choices[people_pending_label(k)] = k
+		var/picked = player_input(src, "More than one new people has grown in your nation. Which one do you want to name?", "Name Our People", null, "anything", choices, TRUE)
 		if (!picked)
 			return
 		key = choices[picked]
-	var/datum/origin/parent = origin_by_id(people_community_parts(key)[2])
-	var/wanted = player_input(src, "Your nation's [parent ? parent.name : "people"] have become a people of their own. What are they called? (3 to 24 letters, a name of this world. The name cannot be changed later.)", "Name Our People", null, "text", null, TRUE)
+	var/blend = people_blend_pair(people_community_parts(key)[2])
+	var/datum/origin/parent = blend ? null : origin_by_id(people_community_parts(key)[2])
+	var/question = blend ? "A people of both the [people_pending_label(key)] has grown in your nation. What are they called?" : "Your nation's [parent ? parent.name : "people"] have become a people of their own. What are they called?"
+	var/wanted = player_input(src, "[question] (3 to 24 letters, a name of this world. The name cannot be changed later.)", "Name Our People", null, "text", null, TRUE)
 	if (isnull(wanted))
 		return
 	var/problem = people_name_problem(wanted)
@@ -210,11 +229,11 @@
 	if (!(key in language_lineage_part("people_pending")) || !map.is_faction_leader(src, civilization))
 		to_chat(src, SPAN_WARNING("Your nation has no new people to name."))
 		return
-	var/datum/origin/N = split_people(key, people_clean_name(wanted))
+	var/datum/origin/N = blend ? blend_people(key, people_clean_name(wanted)) : split_people(key, people_clean_name(wanted))
 	if (!N)
 		to_chat(src, SPAN_WARNING("The people could not be named. Please adminhelp this."))
 		return
-	log_game("[key_name(src)] named [civilization]'s new people, grown from the [parent ? parent.name : "?"]: [N.name].")
+	log_game("[key_name(src)] named [civilization]'s new people, grown from the [people_pending_label(key)]: [N.name].")
 	message_admins("[key_name_admin(src)] named [civilization]'s new people: [N.name].")
 	if (!people_pending_for(civilization).len)
 		verbs -= /mob/living/human/proc/name_our_people
@@ -266,9 +285,14 @@
 	var/list/lines = list()
 	var/list/isolation = language_lineage_part("people_isolation")
 	var/list/pending = language_lineage_part("people_pending")
+	var/list/blend = language_lineage_part("people_blend")
+	for (var/key in blend)
+		var/list/parts = people_community_parts(key)
+		if (parts)
+			lines += "[parts[1]], [people_pending_label(key)] together: [blend[key]] of [PEOPLE_BLEND_YEARS] years[(key in pending) ? ", waiting for its leader to name the blend" : ""]."
 	for (var/key in isolation | pending)
 		var/list/parts = people_community_parts(key)
-		if (!parts)
+		if (!parts || people_blend_pair(parts[2]))
 			continue
 		var/datum/origin/O = origin_by_id(parts[2])
 		var/list/counts = people_nation_counts(parts[1], parts[2])
