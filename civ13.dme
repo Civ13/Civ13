@@ -1058,6 +1058,7 @@
 #include "code\modules\1713\nylon.dm"
 #include "code\modules\1713\resin.dm"
 #include "code\modules\1713\resin_laminate.dm"
+#include "code\modules\1713\resin_printer.dm"
 #include "code\modules\1713\silk.dm"
 #include "code\modules\1713\steel_grades.dm"
 #include "code\modules\1713\steel_works.dm"
