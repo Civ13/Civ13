@@ -17081,6 +17081,52 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Spin nylon thread in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 97,
+      "source_commit": "386ee2eb20fd130d8661adc5fab2862f853328fa",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "/obj/item/stack/nylon_thread"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "From WW2, set a powered bakelizer to nylon thread with its Change Setting verb and fill it with petroleum.",
+        "Every 5 petroleum spins 2 skeins; take them out with the Remove verb."
+      ],
+      "conditions": "Needs a powered bakelizer in WW2 or later.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Weave nylon cloth",
+      "file": "code/modules/1713/production.dm",
+      "line": 338,
+      "source_commit": "386ee2eb20fd130d8661adc5fab2862f853328fa",
+      "inputs": [
+        "/obj/item/stack/nylon_thread"
+      ],
+      "outputs": [
+        "/material/nylon"
+      ],
+      "tools": [
+        "/obj/structure/loom"
+      ],
+      "steps": [
+        "Use nylon thread on an anchored loom.",
+        "Each skein weaves into one nylon cloth."
+      ],
+      "conditions": "Needs an anchored loom.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Tap lacquer trees",
       "file": "code/modules/1713/lacquer.dm",
       "line": 82,
