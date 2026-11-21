@@ -1757,6 +1757,7 @@
 #include "code\modules\naval\hull_rigging.dm"
 #include "code\modules\naval\hull_sides.dm"
 #include "code\modules\naval\hull_fouling.dm"
+#include "code\modules\naval\hull_gangway.dm"
 #include "code\modules\naval\hull_hold.dm"
 #include "code\modules\naval\hull_watch.dm"
 #include "code\modules\naval\boat_hauling.dm"
