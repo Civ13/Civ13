@@ -177,9 +177,8 @@ var/list/gamemode_cache = list()
 	var/player_activity = FALSE
 	var/webhook_game_ready_server = null
 	// Server-side chat translation (code/modules/chat/chat_translate.dm): the
-	// host's Ollama address and model. Off unless both are set.
+	// host's Edge translator service (tools/edge-translator). Off unless set.
 	var/chat_translate_url = null
-	var/chat_translate_model = null
 
 	// In-game bug reports (code/modules/bug_reports). The token is deliberately not kept here.
 	var/bug_report_github_repo = "Civ13/Civ13"
@@ -561,8 +560,6 @@ var/list/gamemode_cache = list()
 					config.voice_token_url = value
 				if ("chat_translate_url")
 					config.chat_translate_url = value
-				if ("chat_translate_model")
-					config.chat_translate_model = value
 
 				if ("bug_report_github_repo")
 					config.bug_report_github_repo = value

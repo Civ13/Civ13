@@ -80,7 +80,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
-                 'migrate-underground', 'records', 'add-regions')
+                 'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
 SEND_LANDINGS = ('shore', 'coords', 'arrival')
@@ -146,6 +146,10 @@ KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHE
          'EXPEDITION', 'GATEWAY')
 # Kinds whose world never saves: an ordinary round with SKIP_PERSISTENCE_SAVING (region_mode_config).
 UNSAVED_KINDS = ('EVENT', 'TUTORIAL', 'GATEWAY')
+# Kinds that stay up for players even while the lands are down (Val, 2026-11-21: the
+# tutorial stays current and available): never asleep, back at once after a crash, and
+# updated by a plain restart on their own port while empty, never a standby handover.
+ALWAYS_UP_KINDS = ('GATEWAY', 'TUTORIAL')
 GATEWAY_MAP = 'maps/special/gateway.dmm'
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
@@ -1152,10 +1156,14 @@ class RegionHost(Host):
     def is_gateway(self):
         return self.region_kind() == 'GATEWAY'
 
+    def always_up(self):
+        return self.region_kind() in ALWAYS_UP_KINDS
+
     def may_sleep(self):
         # The gateway is every player's way in and the group's hub entry: a frozen world
         # stops answering the hub and holds each join until it thaws, so it stays awake.
-        return not self.is_gateway()
+        # The tutorial stays awake too, so it opens at once even while the lands are down.
+        return not self.always_up()
 
     def protects_mainland_uptime(self):
         try:
@@ -1166,7 +1174,7 @@ class RegionHost(Host):
     def automatic_start_action(self):
         # The gateway is every player's way in: a watchdog start brings it back on the build it
         # has instead of compiling first; updates reach it by its empty-world restart.
-        if self.protects_mainland_uptime() or self.is_gateway():
+        if self.protects_mainland_uptime() or self.always_up():
             return 'start-current'
         return super().automatic_start_action()
 
@@ -1263,8 +1271,8 @@ class RegionHost(Host):
         except (OSError, ValueError):
             return None
         region = next((r for r in group['regions'] if r['id'] == self.config['region']), None)
-        gateway = bool(region) and region['kind'] == 'GATEWAY'
-        if (group['persistent'] and not gateway) or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
+        always_up = bool(region) and region['kind'] in ALWAYS_UP_KINDS
+        if (group['persistent'] and not always_up) or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
             return None  # saving groups hand over instead; a battle updates when its round ends
         if not self.battle_moved_on(group):
             # Val (2026-11-18): a restart per merge pinged Discord every few minutes. The
@@ -1589,7 +1597,7 @@ class RegionHost(Host):
             raise Refused('the world does not answer lifecycle status')
         if world.get('busy') or not world.get('ready'):
             raise Refused('the world is busy or not ready, so it cannot save now')
-        if self.is_gateway():
+        if self.always_up():
             return  # it restarts on its own port (do_handover): no standby, no second world in memory
         if self.platform.listening(self.standby_port()):
             raise Refused('port %d (the standby port) is in use' % self.standby_port())
@@ -1627,13 +1635,14 @@ class RegionHost(Host):
         revision = self.staged_revision()
         if not revision or not self.update_pending():
             raise RuntimeError('no staged build newer than the running one')
-        if region['kind'] == 'GATEWAY':
+        if region['kind'] in ALWAYS_UP_KINDS:
             # The hub lists a world by the port its DreamDaemon was started on; a standby
             # that takes the port over with world.OpenPort is not listed again. The gateway
-            # keeps nothing, so it restarts on its own port onto the staged build instead.
+            # and the tutorial keep nothing, so they restart on their own port onto the
+            # staged build instead.
             if automatic and (self.world() or {}).get('clients'):
-                raise RuntimeError('players are passing through the gateway; automatic update deferred')
-            self.record(phase='restarting the gateway on its own port', revision=revision)
+                raise RuntimeError('players are in the %s; automatic update deferred' % region['kind'].lower())
+            self.record(phase='restarting the %s on its own port' % region['kind'].lower(), revision=revision)
             with self.handover_slot():
                 self.do_stop(operation)
                 self.do_update(operation)
@@ -3605,6 +3614,29 @@ def group_status(group, only=None, view=region_view, platform=None):
     return result
 
 
+def group_account(group, ckey):
+    """One account's lifetime points and character slots (docs/character-slots.md),
+    read from the coordinator's shared player records. Read-only: staff grant,
+    remove and lock in game (Admin > Player Accolades)."""
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.transfer_storage import records
+    ckey = records.canonical_ckey(ckey or '')
+    if not ckey:
+        raise Refused('give a player key with --ckey')
+    path = Path(group['root']) / 'coordinator.sqlite'
+    if not path.exists():
+        return {'db': str(path), 'ckey': ckey, 'text': 'No coordinator database yet: accounts are kept once the group runs.'}
+    db = sqlite3.connect('file:%s?mode=ro' % path.as_posix(), uri=True)
+    try:
+        if not db.execute("SELECT name FROM sqlite_master WHERE name = 'player_record'").fetchone():
+            return {'db': str(path), 'ckey': ckey, 'text': 'The coordinator has no player records yet.'}
+        account = records.account_summary(db, ckey)
+    finally:
+        db.close()
+    return dict(account, db=str(path), ckey=ckey, text='%s\n%s' % (ckey, account['text']))
+
+
 def group_records(group, ckey=None, search=None, export=None, now=None):
     """The launcher's Player records window (records.py): read-only look at the shared
     player records (notes, warnings, bans, watchlist, memos) in the coordinator
@@ -3853,7 +3885,7 @@ def main(argv=None):
     parser.add_argument('--standby-port', type=int, help='set-port: the handover standby port')
     parser.add_argument('--apply', action='store_true', help='set-gate, set-port, add-gateway, add-regions: carry the plan out (without it, only the plan)')
     parser.add_argument('--bot-profile', help='set-gate: the bot profile.json to repoint (default: the group\'s bot_profile)')
-    parser.add_argument('--ckey', help='records: every record about one player key')
+    parser.add_argument('--ckey', help='records: every record about one player key; accounts: the player key to look up')
     parser.add_argument('--search', help='records: records whose key or text holds this')
     parser.add_argument('--export', help='records: write every record to this JSON file')
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
@@ -3950,6 +3982,10 @@ def main(argv=None):
             if args.region:
                 raise Refused('player activity covers the whole group; leave out --region')
             result = player_activity_report(group)
+        elif args.action == 'accounts':
+            if args.region:
+                raise Refused('accounts are shared by the whole group; leave out --region')
+            result = group_account(group, args.ckey)
         elif args.action == 'records':
             if args.region:
                 raise Refused('player records are shared by the whole group; leave out --region')

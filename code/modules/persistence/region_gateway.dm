@@ -98,8 +98,16 @@
 			return list("wait" = "Your home land could not be worked out. An admin has been told.")
 	return list("wait" = "The world directory gave no answer yet. Waiting...")
 
+// The practice rooms link a waiting player is offered, or "" without a tutorial
+// region that is up or can be woken (tutorial_region.dm).
+/proc/region_gateway_practice_link()
+	return tutorial_region_peer() ? " While you wait, <a href='byond://?gateway_practice=1'>try the practice rooms</a>; you come back here when you leave them." : ""
+
 // Sends a lobby on to the account's land, trying again until it works or
 // GATEWAY_FORWARD_WAIT passes. Admins go too: there is no work to do here.
+// While the land cannot be reached the player is offered the practice rooms
+// (Val, 2026-11-21: the tutorial stays available when the lands are not), and
+// leaving them brings the player back here to be sent on again.
 /proc/region_gateway_forward(mob/new_player/lobby)
 	set waitfor = FALSE
 	var/client/C = lobby ? lobby.client : null
@@ -108,6 +116,7 @@
 	lobby.gateway_forwarding = TRUE
 	var/deadline = world.time + GATEWAY_FORWARD_WAIT
 	var/told = null
+	var/offered = FALSE
 	var/sent = FALSE
 	while(lobby && C && lobby.client == C)
 		var/list/where = region_gateway_destination(C.key)
@@ -117,15 +126,24 @@
 		if(home)
 			var/list/peer = shard_group.peers[home]
 			var/name = peer ? peer["name"] : home
-			to_chat(C, SPAN_NOTICE("Taking you to [html_encode(name)]... If nothing happens, <a href='byond://?gateway_retry=1'>try again</a>."))
+			if(told != home)
+				told = home
+				to_chat(C, SPAN_NOTICE("Taking you to [html_encode(name)]... If nothing happens, <a href='byond://?gateway_retry=1'>try again</a>."))
 			if(shard_group.send_player(C, home))
 				sent = TRUE
 				break
 		else if(where["wait"] != told)
 			told = where["wait"]
 			to_chat(C, SPAN_NOTICE(told))
+		if(!C || lobby.client != C)
+			break
+		if(!offered)
+			var/practice = region_gateway_practice_link()
+			if(practice)
+				offered = TRUE
+				to_chat(C, SPAN_NOTICE(trim(practice)))
 		if(world.time >= deadline)
-			if(C) to_chat(C, SPAN_WARNING("Your land could not be reached yet. <a href='byond://?gateway_retry=1'>Try again</a>, or reconnect in a few minutes."))
+			to_chat(C, SPAN_WARNING("Your land could not be reached yet. <a href='byond://?gateway_retry=1'>Try again</a>, or reconnect in a few minutes.[region_gateway_practice_link()]"))
 			break
 		sleep(GATEWAY_RETRY_DELAY)
 	if(lobby)

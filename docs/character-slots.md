@@ -52,6 +52,11 @@ All under the account's ckey in shared player records:
 | `character_switch` | `slot`, `from` | random; the latest (by `at`, a unix digit string) is the slot played |
 | `character_named` | `slot`, `name` | `md5("character_named\|ckey\|slot\|name")`, written from the minute tick once an account has two slots |
 
+Hosts: the launcher's Player records lookup (`shard_group.py records --ckey`)
+starts with the account's points and slots, and `shard_group.py accounts
+--ckey K` answers them alone (`tools/transfer_storage/records.py`
+`account_summary`, read-only).
+
 Staff: Admin > Player Accolades shows the slots, points spent and names, and
 "Lock slot" revokes a `character_slot` record with a reason. The character
 stays asleep and the points stay spent.
