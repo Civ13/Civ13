@@ -204,3 +204,23 @@ starboard on the right, talking to a `/datum/sub_designer` per drawer. Every
 change is sent as a code; the server answers with `summary_text()`, and Save
 keeps it on the sheet. Tests: `tests/submarine/sheet.dm` in the submarine
 probe.
+
+### Assembling a submarine from her sheet
+
+Using a sheet on loose submarine controls clips it to them (`sheet_code` on
+the axis, saved; refused when the sheet has problems or the boat is already
+assembled). `assembly_refusal()` then wants a hull 3 wide and exactly as long
+as the sheet, and `assemble()` shapes the sections from `D.layout()` instead of
+`submarine_layouts`. Fittings are whatever the crew stood on the sections; the
+sheet shows where they go. `hull_layout()` reads `sheet_code` first, so her
+turning square (`hull_square()`) and later reshaping follow her plan.
+
+Art: `submarine_art_tile()` gives each section the Scout's tiles (lengths 4
+and 5) or the Explorer's (6 and 7), skipping middle rows for the shorter boat
+so the bow and stern art stay whole. A boat built from a sheet is drawn from
+her sheet by "Draw her lines", not from her art tiles.
+
+Banks: `battery_capacity()` and `air_capacity()` are half a bank in her hull
+plus one bank (`SUB_BATTERY_MAX`, `SUB_AIR_BANK_MAX`) for each battery or air
+bank standing in her sections (`fitting_count()`), so the pen's boats with one
+of each keep their old figures. Assembly trims a charge above her capacity.
