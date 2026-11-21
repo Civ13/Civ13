@@ -82,12 +82,19 @@ var/naval_runtime_error = FALSE
 	var/datum/ship_draught/D = draught_box(3, 5, "Wren")
 	naval_check(D.buildable() && D.hull_tiles() == 15, "a 3 by 5 hull with a tiller can be built ([jointext(D.problems(), " ")])")
 	var/list/cost = D.costs()
-	naval_check(cost["wood"] == 40 && cost.len == 1, "she costs her floors and her tiller: 40 wood ([D.costs_text()])")
+	naval_check(cost["wood"] == 72 && cost.len == 1, "she costs her floors, her tiller and 16 gunwales: 72 wood ([D.costs_text()])")
+	naval_check(length(D.gunwale_sides()) == 16, "a 3 by 5 boat has 16 open sides to rail")
 	naval_check(D.size_class() == HULL_CLASS_BOAT, "fifteen tiles make a boat")
 	D.set_upper(1, 1, TRUE)
 	D.set_floor(1, 0, "s")
 	cost = D.costs()
-	naval_check(cost["wood"] == 40 && cost["steel"] == 1, "a steel floor costs steel and a deck above costs a floor ([D.costs_text()])")
+	naval_check(cost["wood"] == 70 && cost["steel"] == 3, "a steel floor costs steel with a steel bulwark on its open side, and a deck above costs a floor ([D.costs_text()])")
+	D.set_piece(0, 0, "W")
+	naval_check(length(D.gunwale_sides()) == 14, "a plank wall closes both open sides of its corner tile")
+	D.set_piece(0, 0, null)
+	var/datum/ship_draught/raft = draught_box(3, 4, "Raft")
+	naval_check(!length(raft.gunwale_sides()), "small craft of 12 tiles are left open")
+	qdel(raft)
 
 	// ---- Codes ----
 	var/code = D.to_code()
@@ -340,6 +347,80 @@ var/naval_runtime_error = FALSE
 	ways.abandon()
 	naval_check(!ways.design && !ways.draught_code && !slipway_frame_count(ways), "giving her up clears the post")
 	qdel(skiff)
+
+	// ---- Her sides (naval/hull_sides.dm) ----
+	var/obj/structure/railing/built/gunwale/G = new(locate(3, 3, 2))
+	var/obj/structure/railing/built/gunwale/bulwark/BW = new(locate(3, 3, 2))
+	naval_check(!G.hull_load() && !BW.hull_load(), "gunwales and bulwarks are part of her hull and weigh nothing on her deck")
+	qdel(G)
+	qdel(BW)
+	var/datum/ship_draught/petrel = draught_box(3, 5, "Petrel")
+	petrel.set_floor(2, 4, "s")
+	var/datum/slipway_design/draught/rail_plan = slipway_draught_plan(petrel)
+	var/list/rail_stages = list()
+	for (var/list/stage in rail_plan.stages)
+		rail_stages += stage["name"]
+	naval_check(jointext(rail_stages, "|") == "Plank floors|Steel floors|Tillers|Wooden gunwales|Steel bulwarks" && rail_plan.total_pieces() == 32, "a boat's draught ends with her gunwales, bulwarks on steel ([jointext(rail_stages, "|")])")
+	rail_plan.draught = null
+	qdel(rail_plan)
+	var/obj/structure/slipway/rail_ways = new(locate(5, 40, 2))
+	rail_ways.dir = EAST
+	naval_check(!rail_ways.draught_refusal(petrel), "the berth takes the Petrel")
+	rail_ways.lay_draught(petrel)
+	guard = 0
+	while (rail_ways.pieces_done < 16 && guard++ < 50)
+		var/list/needed = rail_ways.still_needed()
+		for (var/key in needed)
+			var/path = pay_paths[key]
+			var/obj/item/stack/stack = new path(rail_ways.loc)
+			stack.amount = needed[key]
+			rail_ways.pay(stack)
+	naval_check(slipway_frames_named(rail_ways, "gunwale") == 11 && slipway_frames_named(rail_ways, "bulwark") == 1, "with her floors and tiller in, her edge tiles are marked for gunwales and her steel corner for a bulwark ([slipway_frames_named(rail_ways, "gunwale")], [slipway_frames_named(rail_ways, "bulwark")])")
+	guard = 0
+	while (rail_ways.next_piece() && guard++ < 50)
+		var/list/needed = rail_ways.still_needed()
+		for (var/key in needed)
+			var/path = pay_paths[key]
+			var/obj/item/stack/stack = new path(rail_ways.loc)
+			stack.amount = needed[key]
+			rail_ways.pay(stack)
+	var/obj/structure/railing/built/gunwale/stern_rail
+	for (var/obj/structure/railing/built/gunwale/R in locate(6, 40, 2))
+		if (R.dir == WEST)
+			stern_rail = R
+	var/obj/structure/railing/built/gunwale/bulwark/bow_bulwark
+	for (var/obj/structure/railing/built/gunwale/bulwark/R in locate(10, 39, 2))
+		if (R.dir == EAST)
+			bow_bulwark = R
+	naval_check(rail_ways.finished() && stern_rail && bow_bulwark, "her gunwales stand along her edges turned with her: the stern rail faces west, the steel bow corner's bulwark east")
+	launched = rail_ways.launch()
+	var/obj/structure/hull_tiller/petrel_tiller = launched
+	naval_check(istype(petrel_tiller) && petrel_tiller.craft && !length(petrel_tiller.open_sides()), "launched, the Petrel has no open side ([istext(launched) ? launched : "launched"])")
+	if (istype(petrel_tiller) && petrel_tiller.craft)
+		var/list/petrel_deck = petrel_tiller.craft.body.cells()
+		var/rails_aboard = 0
+		for (var/turf/T in petrel_deck)
+			for (var/obj/structure/railing/built/gunwale/R in T)
+				rails_aboard++
+		naval_check(rails_aboard == 16 && !hull_sides_refusal(petrel_deck), "all 16 gunwales slid down the ways with her")
+		var/turf/rail_turf
+		for (var/turf/T in petrel_deck)
+			if (!rail_turf && (locate(/obj/structure/railing/built/gunwale) in T) && !(locate(/obj/structure/railing/built/gunwale/bulwark) in T))
+				rail_turf = T
+		var/list/packed = list("crew" = list(), "refused" = list(), "blocking" = list(), "items" = 0, "cargo" = 0)
+		var/list/rail_entries = sea_crossing_pack_tile(rail_turf, petrel_tiller, packed)
+		var/rail_kinds = 0
+		for (var/list/E in rail_entries)
+			if (E[1] == "r")
+				rail_kinds++
+		naval_check(rail_kinds && !packed["cargo"], "her gunwales cross the sea as part of her hull, not as cargo")
+		for (var/obj/structure/railing/built/gunwale/R in rail_turf)
+			qdel(R)
+		naval_check(length(petrel_tiller.open_sides()) && findtext(petrel_tiller.status_text(), "open"), "a gunwale taken off opens her side and the tiller says so")
+		var/why = hull_sides_refusal(petrel_deck)
+		naval_check(why && findtext(why, "Rail her sides") && (locate(/obj/effect/vessel_path/open_side) in rail_turf), "she cannot be refitted with an open side, and it is marked on her deck ([why])")
+		naval_check(hull_rail_sides_free(petrel_deck) && !hull_sides_refusal(petrel_deck), "railing her open sides closes her all round")
+	qdel(petrel)
 
 /proc/slipway_frames_named(obj/structure/slipway/S, text)
 	. = 0

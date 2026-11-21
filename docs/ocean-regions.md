@@ -12,8 +12,8 @@ Arctic and the Southern Ocean. Each is its own world (shard kind `OCEANIC`).
 | arctic | `maps/nomads/nomads_ocean_arctic.dmm` | 1000 x 300 | Pack ice along the north; west and east join |
 | southern | `maps/nomads/nomads_ocean_southern.dmm` | 1200 x 300 | West and east join; Antarctica to the south |
 
-Code: `code/modules/naval/ocean_regions.dm` (metadata, the ocean area, the
-breakers turf). Which stretch of which ocean edge meets which coast is in the
+Code: `code/game/objects/map_metadata/nomads/nomads_ocean.dm` (metadata) and
+`code/modules/naval/ocean_regions.dm` (the ocean area, the breakers turf). Which stretch of which ocean edge meets which coast is in the
 world links table ([world-links.md](world-links.md)): `world_sea_links`,
 `world_oceans` and `world_insets` in `code/modules/persistence/world_links.dm`.
 

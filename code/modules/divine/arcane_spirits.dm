@@ -106,8 +106,12 @@ var/global/list/datum/arcane_communion/arcane_communions = list()
 	set desc = "Stay close to where your body lies, or stop."
 	if (!client || admin_ghosted)
 		return
+	if (arcane_anchor && spirit_leashed && spirit_binding(ckey)) // spirit_wait.dm
+		to_chat(src, SPAN_WARNING("You are still bound to your body."))
+		return
 	if (arcane_anchor)
 		arcane_anchor = null
+		spirit_leashed = FALSE
 		arcane_linger_stopped[ckey] = world.realtime
 		if (arcane_communion)
 			arcane_communion.finish("the spirit stopped lingering")
@@ -131,6 +135,7 @@ var/global/list/datum/arcane_communion/arcane_communions = list()
 // A lingering ghost goes nowhere beyond its anchor's reach (incorporeal steps,
 // Jump to Mob, Follow and level changes all move it through forceMove).
 /mob/observer/ghost/forceMove(atom/destination, special_event, list/throw_hop_token = null)
+	spirit_refresh_leash() // spirit_wait.dm: a bound spirit follows its body
 	if (arcane_anchor && destination && !arcane_in_anchor_range(destination))
 		return FALSE
 	return ..()

@@ -97,3 +97,78 @@
 	var/datum/sub_draught/drawn = sub_draught_survey(X)
 	submarine_check(istype(drawn) && drawn.name == "Lines" && copytext(drawn.to_code(), length("C13SUB/1/Lines/") + 1) == copytext(explorer.to_code(), length("C13SUB/1/Explorer/") + 1), "drawing an Explorer's lines gives the Explorer sheet")
 	submarine_check(istext(sub_draught_survey(new /obj/structure/vehicleparts/axis/ship/submarine)), "an unassembled boat cannot be drawn")
+
+// A boat assembled from a sheet (ships/submarine_assembly.dm): six sections
+// long, which only a sheet allows, with two battery banks. Runs after the
+// hand-built checks have cleared the sea.
+/proc/submarine_sheet_assembly_checks()
+	submarine_clear_boats()
+	var/mob/living/submarine_probe/builder = new(locate(2, 2, 2))
+	var/datum/sub_draught/D = new(6)
+	D.name = "Longfin"
+	D.set_fitting(2, 1, "W")
+	D.set_fitting(1, 2, "S")
+	D.set_frame(1, 3, "x")
+	D.set_frame(3, 3, "x")
+	D.set_fitting(1, 4, "E")
+	D.set_fitting(3, 4, "E")
+	D.set_fitting(1, 5, "A")
+	D.set_wall(1, 4, "b")
+	D.set_wall(2, 4, "d")
+	D.set_wall(3, 4, "b")
+	submarine_check(D.buildable(), "the Longfin is drawn ready to assemble")
+	var/obj/item/ship_draught/S = new(locate(2, 2, 2))
+	S.take_sub(D)
+
+	// Bow south: column c lies at x 9 + c, row r at y 9 + r.
+	submarine_lay_sections(10, 10, 12, 15)
+	new /obj/structure/vehicleparts/shipwheel(locate(11, 10, 2))
+	new /obj/structure/vehicleparts/sub_station/loose(locate(10, 11, 2))
+	new /obj/structure/engine/internal/diesel/premade/chiha(locate(11, 15, 2))
+	new /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank(locate(11, 15, 2))
+	new /obj/structure/vehicleparts/sub_fitting/battery/loose(locate(10, 13, 2))
+	new /obj/structure/vehicleparts/sub_fitting/battery/loose(locate(12, 13, 2))
+	new /obj/structure/vehicleparts/sub_fitting/air/loose(locate(10, 14, 2))
+	var/obj/structure/vehicleparts/axis/ship/submarine/controls/A = new(locate(11, 12, 2))
+	var/datum/vehicle_survey/V = new(A)
+	submarine_check(V.refusal && findtext(V.refusal, "5 (a Scout) or 7 (an Explorer)"), "without a sheet a 3 by 6 hull is refused ([V.refusal])")
+
+	var/obj/item/ship_draught/bare = new(locate(2, 2, 2))
+	bare.take_sub(new /datum/sub_draught(6))
+	A.attackby(bare, builder)
+	submarine_check(!A.sheet_code, "a sheet that cannot be assembled is not clipped on")
+	A.attackby(S, builder)
+	submarine_check(A.sheet_code == S.draught_code, "the controls take the Longfin's sheet")
+	V = new(A)
+	submarine_check(!V.refusal && !V.missing().len, "with the sheet the 3 by 6 hull surveys as a boat ([V.refusal])")
+
+	submarine_check(isnull(A.assemble(SOUTH)) && A.frames().len == 18 && A.hull_class == "explorer", "she assembles bow south with eighteen sections")
+	var/list/hull_states = icon_states('icons/obj/vehicles/submarine_hull.dmi')
+	var/art = TRUE
+	for (var/obj/structure/vehicleparts/frame/ship/steel/submarine/F in A.frames())
+		if (!("[F.hull_tile]_deck" in hull_states))
+			art = FALSE
+	submarine_check(art && submarine_hull_at(11, 15).hull_tile == "explorer_2_7" && submarine_hull_at(11, 13).hull_tile == "explorer_2_4", "every section has hull art, the stern row the Explorer's stern")
+	submarine_check(istype(submarine_hull_at(10, 12), /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch) && istype(submarine_hull_at(12, 12), /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch) && !istype(submarine_hull_at(10, 13), /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch), "her hatches are where the sheet put them")
+	submarine_check(submarine_hull_at(10, 13).w_front[1] == "sub_bulkhead" && submarine_hull_at(11, 13).door_walls().len == 1 && submarine_hull_at(10, 10).w_front[1] == "sub_glass", "her bulkhead, door and glass bow are where the sheet put them")
+	var/list/layout = A.hull_layout()
+	submarine_check(layout.len == 18 && A.hull_square() == 6, "her plan is the sheet's, six rows long")
+	submarine_check(A.battery_capacity() == 5400 * 3 / 2 && A.air_capacity() == 6000 && A.battery <= A.battery_capacity(), "two battery banks hold half again a Scout's charge; one air bank a Scout's air")
+	submarine_check(isnull(A.change_depth(TRUE)) && A.submerged && isnull(A.change_depth(FALSE)) && !A.submerged, "she dives and surfaces")
+	submarine_check(A.do_matrix(A.dir, TURN_LEFT(A.dir), "left") && submarine_span(A, "x") == 6 && submarine_span(A, "y") == 3, "she turns in her square")
+	var/datum/sub_draught/drawn = sub_draught_survey(A)
+	submarine_check(istype(drawn) && drawn.length == 6 && drawn.fitting_count("E") == 2, "drawing her lines gives her sheet back")
+	var/before = A.sheet_code
+	var/obj/item/ship_draught/scout_sheet = new(locate(2, 2, 2))
+	var/list/examples = sub_draught_examples()
+	scout_sheet.take_sub(examples[1])
+	A.attackby(scout_sheet, builder)
+	submarine_check(A.sheet_code == before, "an assembled boat keeps her plan")
+	submarine_clear_boats()
+
+	// A boat with no banks has half a Scout's battery and air.
+	var/obj/structure/vehicleparts/axis/ship/submarine/P = build_submarine(locate(10, 10, 2), "bankless")
+	for (var/obj/structure/vehicleparts/sub_fitting/B in world)
+		qdel(B)
+	submarine_check(P.battery_capacity() == 5400 / 2 && P.air_capacity() == 6000 / 2, "a boat stripped of her banks keeps half a bank of each in her hull")
+	submarine_clear_boats()

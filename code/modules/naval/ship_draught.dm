@@ -197,6 +197,27 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			ship_draught_add_cost(., P["cost"])
 		if (C[4])
 			ship_draught_add_cost(., ship_draught_upper_cost)
+	for (var/list/side in gunwale_sides())
+		var/list/C = cells[side[1]]
+		ship_draught_add_cost(., C[1] == "s" ? list("steel" = 2) : list("wood" = 2))
+
+// The open sides of her deck as drawn, which get a gunwale (a steel bulwark on
+// steel floor) when she is built: list(list(sheet key, sheet direction)).
+// Small craft get none, and a tile with a wall, door or window is closed.
+/datum/ship_draught/proc/gunwale_sides()
+	. = list()
+	if (cells.len <= HULL_SMALL_MAX_TILES)
+		return
+	for (var/key in cells)
+		var/list/C = cells[key]
+		if (C[2] == "W" || C[2] == "D" || C[2] == "G")
+			continue
+		var/list/xy = splittext(key, ",")
+		var/x = text2num(xy[1])
+		var/y = text2num(xy[2])
+		for (var/d in cardinal)
+			if (!cell(x + (d == EAST ? 1 : d == WEST ? -1 : 0), y + (d == NORTH ? 1 : d == SOUTH ? -1 : 0)))
+				. += list(list(key, d))
 
 /datum/ship_draught/proc/costs_text()
 	var/list/C = costs()

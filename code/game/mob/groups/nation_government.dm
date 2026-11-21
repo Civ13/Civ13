@@ -70,6 +70,9 @@ var/global/list/nation_government_info = list(
 	var/list/P = G["pending"]
 	if (islist(P) && istext(P["name"]))
 		line += ". Becoming a [html_encode(lowertext(P["name"]))][istext(P["pname"]) && length(P["pname"]) ? " under [html_encode(P["pname"])]" : ""] within a day"
+	var/list/N = nation_registry[nid]
+	if (islist(N) && N["frozen"])
+		line += ". Staff have paused changes to it for now"
 	return line + "."
 
 // Tells this land's citizens when their nation's government is changing or
