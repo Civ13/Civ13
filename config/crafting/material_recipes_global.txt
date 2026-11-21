@@ -1544,6 +1544,7 @@ RECIPE: /material/bronze/,reflector lighthouse lamp,/obj/structure/lighthouse_be
 RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/glass/,casement window,/obj/structure/simple_door/key_door/anyone/casement,4,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pound lock,/obj/structure/canal_lock,12,300,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,dock gate,/obj/structure/canal_lock/dock_gate,24,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,clay tablet,/obj/item/weapon/paper/clay_tablet,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,reed stylus,/obj/item/weapon/pen/stylus,1,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,senet board,/obj/item/game_board/senet,3,100,0,1,construction,0,0,0,8,null
@@ -2439,6 +2440,7 @@ RECIPE: /material/wood/soft/,ship rudder axis (2500 weight),/obj/structure/vehic
 RECIPE: /material/wood/soft/,light ship rudder axis (1200 weight),/obj/structure/vehicleparts/axis/ship,25,200,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,ship rudder control,/obj/structure/vehicleparts/shipwheel,10,100,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,ship mast,/obj/structure/vehicleparts/movement/sail,15,140,0,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/wood/soft/,ship mast with a crow's nest,/obj/structure/vehicleparts/movement/sail/crows_nest,23,200,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,slipway,/obj/structure/slipway,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,boathouse,/obj/structure/boathouse,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,tiller,/obj/structure/hull_tiller,10,100,1,1,vehicle parts,41,0,0,8,null

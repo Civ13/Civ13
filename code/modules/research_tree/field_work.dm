@@ -141,6 +141,8 @@ var/global/list/field_activity_caps = null
 // Called from the systems themselves whenever someone does the activity.
 /proc/note_field_work(mob/user, activity, amount = 1)
 	var/mob/living/human/H = user
+	if (activity == "harvests")
+		accolade_meet_mob(H, "farmer") // a crop harvest (farming.dm); accolades.dm
 	if (!istype(H) || H.stat == DEAD || amount <= 0 || !map || !map.book_research_enabled())
 		return FALSE
 	var/cap = field_activity_cap(activity)

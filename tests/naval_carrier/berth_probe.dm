@@ -196,10 +196,91 @@ var/berth_runtime_error = FALSE
 	berth_check(!craft_at(stern) && isnull(craft_berth(tern)) && !L.lies_dry() && istype(get_turf(tern_tiller), /turf/floor/beach/water), "afloat again, the berth is empty")
 	berth_check(findtext(post.relaunch(tern), "No ship"), "nothing is left to launch")
 
+/proc/berth_dock_checks()
+	// A basin of trench from x 4 to 9 and y 24 to 28, with three dock gates
+	// across its mouth at x 10, y 25 to 27, opening on the sea at x 11.
+	for (var/x = 4, x <= 9, x++)
+		for (var/y = 24, y <= 28, y++)
+			var/turf/T = locate(x, y, 1)
+			T.ChangeTurf(/turf/floor/trench/flooded/salty)
+	var/list/gates = list()
+	for (var/y = 25, y <= 27, y++)
+		var/turf/T = locate(10, y, 1)
+		T.ChangeTurf(/turf/floor/trench/flooded/salty)
+		gates += new /obj/structure/canal_lock/dock_gate(T)
+	var/obj/structure/canal_lock/dock_gate/gate = gates[2]
+	gate.refresh_basin()
+	var/list/basin = gate.basin()
+	berth_check(islist(basin) && basin.len == 30, "the basin is thirty tiles of trench behind the gates ([islist(basin) ? basin.len : gate.survey_basin()])")
+	var/list/all = gate.all_gates()
+	berth_check(all.len == 3, "the three gates work together ([all.len])")
+	if (!research_nodes.len)
+		build_research_tree()
+	berth_check(get_recipe_node_req("/obj/structure/canal_lock/dock_gate") == "wagons_ships", "Wagons & Ships gates the dock gate ([get_recipe_node_req("/obj/structure/canal_lock/dock_gate")])")
+	berth_check(dock_floats(locate(6, 26, 1)) && dock_floats(locate(10, 26, 1)) && !dock_floats(locate(3, 26, 1)), "a hull floats in the flooded basin and through an open gate")
+
+	// The Petrel sails in from the sea.
+	var/obj/structure/hull_tiller/petrel_tiller = berth_hull(13, 25, 17, 27, "Petrel", WEST)
+	var/datum/craft/petrel = petrel_tiller.craft
+	var/datum/craft_body/built/B = petrel.body
+	var/datum/hull_ledger/L = petrel.ledger
+	berth_check(B.move_to(5, 25, WEST), "she sails into the basin ([B.last_refusal])")
+	berth_check(craft_at(locate(9, 26, 1)) == petrel && craft_at(locate(5, 25, 1)) == petrel && !craft_at(locate(13, 26, 1)), "she lies wholly in the basin")
+	var/obj/structure/S = craft_berth(petrel)
+	berth_check(istype(S, /obj/structure/canal_lock/dock_gate) && !S.berth_dry(petrel) && L.bottom_reachable(), "the flooded dock holds her like a slip")
+	berth_check(findtext(gate.pump_refusal(), "Shut the gate"), "the dock cannot be pumped with the gates open ([gate.pump_refusal()])")
+	for (var/obj/structure/canal_lock/dock_gate/G in all)
+		G.set_shut(TRUE)
+	berth_check(gate.density && gate.chamber_level < -100 && isnull(gate.pump_refusal()), "shut, the gates hold the water and the dock can be pumped ([gate.pump_refusal()])")
+	berth_check(!dock_floats(locate(10, 26, 1)), "no hull passes a shut gate")
+	berth_check(gate.pump_rate() == 1, "by hand one go pumps one tile")
+	var/obj/structure/cellar_pump/lever/hand_pump = new(locate(10, 23, 1))
+	berth_check(gate.pump_rate() == 2, "a hand pump by the gate doubles it ([gate.pump_rate()])")
+	qdel(hand_pump)
+	L.water = 20
+	L.fouling = 0.5
+	berth_check(gate.drain(), "the dock is pumped dry")
+	sleep(10)
+	var/dry = TRUE
+	for (var/turf/T in basin)
+		if (!istype(T, /turf/floor/trench) || istype(T, /turf/floor/trench/flooded))
+			dry = FALSE
+	berth_check(dry, "every tile of the basin is dry and stays dry behind the gates")
+	berth_check(istype(locate(10, 26, 1), /turf/floor/trench/flooded) && istype(locate(11, 26, 1), /turf/floor/beach/water), "the sea stands outside the gates")
+	berth_check(gate.drained && craft_berth(petrel) && L.lies_dry() && L.water == 0 && petrel.anchored, "she lies dry on the dock floor, held, her bilge empty")
+	var/floors = 0
+	for (var/turf/T in B.cells())
+		if (locate(/obj/covers) in T)
+			floors++
+	berth_check(floors == 15, "all fifteen of her floors are still under her ([floors])")
+	berth_check(!B.can_move_to(4, 25, WEST), "she cannot sail on the dock floor")
+	L.crewed = TRUE
+	L.water = 3
+	L.step_ledger(600)
+	berth_check(L.water == 0 && near_zero_change(L.fouling, 0.5), "dry in the dock nothing changes")
+	L.crewed = FALSE
+	var/mob/living/human/berth_probe/H = new(locate(6, 26, 1))
+	var/obj/covers/plank = locate(/obj/covers) in locate(7, 26, 1)
+	berth_check(isnull(hull_bottom_refusal(H, plank)), "her bottom can be scraped ([hull_bottom_refusal(H, plank)])")
+	qdel(H)
+	berth_check(findtext(gate.pump_refusal(), "already dry"), "a dry dock is not pumped again")
+	// Flooded and opened, she sails out.
+	berth_check(gate.flood(), "the sluices flood the dock")
+	berth_check(istype(locate(6, 27, 1), /turf/floor/trench/flooded/salty) && !gate.drained && !L.lies_dry(), "the basin is salt water again and she floats")
+	for (var/obj/structure/canal_lock/dock_gate/G in all)
+		G.set_shut(FALSE)
+	berth_check(B.move_to(13, 25, WEST), "with the gates open she sails out ([B.last_refusal])")
+	berth_check(isnull(craft_berth(petrel)), "out at sea no berth holds her")
+	// A basin open to the sea elsewhere is no dock.
+	var/turf/leak = locate(10, 29, 1)
+	leak.ChangeTurf(/turf/floor/trench/flooded/salty)
+	berth_check(findtext(gate.survey_basin(), "open to the water"), "a basin that touches the sea past its gates is refused ([gate.survey_basin()])")
+
 /proc/berth_run()
 	try
 		berth_checks()
 		berth_haul_checks()
+		berth_dock_checks()
 	catch(var/exception/e)
 		berth_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = berth_failures, "runtime_error" = berth_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

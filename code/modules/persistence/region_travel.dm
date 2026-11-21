@@ -240,6 +240,10 @@ var/global/list/region_travel_carry_types = list(
 	// The sign they were born under travels too (birth_charts.dm).
 	if(birth_chart_valid(birth_chart))
 		P["chart"] = birth_chart
+	// The martial school, its ranks and hardened hands travel too (martial_schools.dm).
+	var/list/martial = martial_travel_record()
+	if(martial)
+		P["martial"] = martial
 	// Accolade progress (accolades.dm): time played, seasons, time in the faction.
 	var/list/progress = accolade_progress_clean(accolade_progress)
 	if(progress.len)
@@ -306,6 +310,7 @@ var/global/list/region_travel_carry_types = list(
 	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
 	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
 	if(("chart" in P) && !birth_chart_valid(P["chart"])) return null
+	if(("martial" in P) && !martial_travel_valid(P["martial"])) return null
 	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
 	if(("trade_lock" in P) && !isnum(P["trade_lock"])) return null
 	if(("study_interest" in P) && !(P["study_interest"] in scholar_disciplines)) return null
@@ -526,6 +531,8 @@ var/global/list/region_travel_carry_types = list(
 		H.traits_dirty = TRUE
 	if(birth_chart_valid(P["chart"]))
 		H.birth_chart = P["chart"]
+	if(islist(P["martial"]))
+		H.martial_travel_restore(P["martial"])
 	var/list/progress = accolade_progress_clean(P["accolades"])
 	if(progress.len)
 		H.accolade_progress = progress

@@ -34,6 +34,13 @@
 #define ACCOLADE_APPRENTICE_SUBJECTS 10
 #define ACCOLADE_SCHOLAR_SUBJECTS 50
 #define ACCOLADE_WANDERER_LANDS 3
+#define ACCOLADE_MAKER_RECIPES 25
+#define ACCOLADE_ARTISAN_RECIPES 100
+#define ACCOLADE_HUNTER_KILLS 10
+#define ACCOLADE_WINTER_MINUTES 120
+#define ACCOLADE_FOUNDER_MEMBERS 5
+#define ACCOLADE_TEACHER_READERS 3
+#define ACCOLADE_OTHERS_MIN_HOURS 5 // hours of their own play before another account counts
 
 // id -> list(name, points, group, condition). Order is the window's order.
 /proc/accolade_catalog()
@@ -49,7 +56,20 @@
 		"sailor" = list("Sailor", 10, "Travel", "Set out on a voyage from a boat's tiller."),
 		"wanderer" = list("Wanderer", 15, "Travel", "Live in 3 different lands."),
 		"world_traveller" = list("World Traveller", 40, "Travel", "Live in every land of the world."),
-		"citizen" = list("Citizen", 10, "Community", "Spend 10 hours of play in one faction."))
+		"long_winter" = list("Long Winter", 15, "Survival", "Spend 2 hours of play outdoors in a tundra or taiga winter with one character."),
+		"copyist" = list("Copyist", 10, "Knowledge", "Copy a book, a chapter or a map by hand."),
+		"maker" = list("Maker", 10, "Making", "Craft 25 different things with one character."),
+		"artisan" = list("Artisan", 30, "Making", "Craft 100 different things with one character."),
+		"smelter" = list("Smelter", 10, "Making", "Light a furnace or a tatara to smelt metal."),
+		"farmer" = list("Farmer", 5, "Food", "Harvest a ripe crop."),
+		"herder" = list("Herder", 10, "Food", "Tame an animal."),
+		"hunter" = list("Hunter", 10, "Food", "Kill 10 wild animals with one character."),
+		"aviator" = list("Aviator", 30, "Travel", "Fly an aircraft and land it safely."),
+		"citizen" = list("Citizen", 10, "Community", "Spend 10 hours of play in one faction."),
+		"founder" = list("Founder", 25, "Community", "Found a faction that grows to 5 members from other accounts."),
+		"elder" = list("Elder", 30, "Community", "Lead a faction when its research moves your land into a new era."),
+		"defender" = list("Defender", 20, "Community", "Help hold your faction's seat through a siege, or drive off a raid."),
+		"teacher" = list("Teacher", 20, "Community", "3 other players learn a subject from a chapter you wrote."))
 	return catalog
 
 /proc/accolade_name(id)
@@ -267,6 +287,18 @@ var/global/list/accolade_cache = list() // ckey -> list(world.time, state)
 				seasons |= name
 		if(seasons.len)
 			.["seasons"] = seasons
+	for(var/counter in list("kills", "winter_minutes"))
+		if(isnum(progress[counter]))
+			.[counter] = clamp(round(progress[counter], 1), 0, 1000000)
+	if(islist(progress["crafted"]))
+		var/list/crafted = list()
+		for(var/type_text in progress["crafted"])
+			if(istext(type_text) && length(type_text) <= 200 && crafted.len < ACCOLADE_ARTISAN_RECIPES)
+				crafted |= type_text
+		if(crafted.len)
+			.["crafted"] = crafted
+	if(istext(progress["founded"]) && length(progress["founded"]) <= 64)
+		.["founded"] = progress["founded"]
 	if(istext(progress["faction"]) && length(progress["faction"]) <= 64)
 		.["faction"] = progress["faction"]
 		.["faction_minutes"] = isnum(progress["faction_minutes"]) ? clamp(round(progress["faction_minutes"], 1), 0, 1000000) : 0
@@ -310,6 +342,14 @@ var/global/list/accolade_cache = list() // ckey -> list(world.time, state)
 		accolade_meet(account, "four_seasons")
 	if(faction && progress["faction_minutes"] >= ACCOLADE_CITIZEN_MINUTES)
 		accolade_meet(account, "citizen")
+	if(season == SEASON_WINTER)
+		var/area/A = get_area(src)
+		if(A && A.location == AREA_OUTSIDE && (A.climate in list("tundra", "taiga")))
+			progress["winter_minutes"] = (progress["winter_minutes"] || 0) + 1
+			if(progress["winter_minutes"] >= ACCOLADE_WINTER_MINUTES)
+				accolade_meet(account, "long_winter")
+	if(faction && progress["founded"] == faction)
+		accolade_check_founder(account, faction)
 	accolade_check_knowledge(account)
 	accolade_note_land(account)
 
@@ -332,6 +372,109 @@ var/global/list/accolade_cache = list() // ckey -> list(world.time, state)
 	for(var/mob/living/human/H in human_mob_list)
 		if(H.client && H.stat != DEAD && H.civilization == faction)
 			accolade_meet_mob(H, "pioneer")
+			if(map && map.is_faction_leader(H, faction))
+				accolade_meet_mob(H, "elder")
+
+// -- the second list ----------------------------------------------------------
+
+// Another account counts toward a group accolade only with hours of its own
+// play, and never as a guest or host agent.
+/proc/accolade_other_counts(account, ckey)
+	var/other = accolade_account_ckey(account)
+	return other && other != ckey && shared_records.playtime_hours(other) >= ACCOLADE_OTHERS_MIN_HOURS
+
+// A crafted recipe result: Maker and Artisan count different things made.
+/mob/living/human/proc/accolade_crafted(result_type)
+	if(!result_type || !accolades_earned_here())
+		return
+	var/account = accolade_mob_ckey(src)
+	if(!account)
+		return
+	var/list/progress = accolade_progress_clean(accolade_progress)
+	var/list/crafted = progress["crafted"] || list()
+	if(crafted.len < ACCOLADE_ARTISAN_RECIPES)
+		crafted |= "[result_type]"
+	progress["crafted"] = crafted
+	accolade_progress = progress
+	if(crafted.len >= ACCOLADE_MAKER_RECIPES)
+		accolade_meet(account, "maker")
+	if(crafted.len >= ACCOLADE_ARTISAN_RECIPES)
+		accolade_meet(account, "artisan")
+
+// Hunter: wild animals only, never someone's tamed beast or kept livestock.
+/proc/accolade_animal_killed(mob/living/simple_animal/A)
+	if(!A || !ishuman(A.lastattacker))
+		return
+	if(A.domesticable && !A.wild)
+		return
+	if(istype(A, /mob/living/simple_animal/complex_animal))
+		var/mob/living/simple_animal/complex_animal/C = A
+		if(C.tamed || C.owner)
+			return
+	var/mob/living/human/H = A.lastattacker
+	var/account = accolade_mob_ckey(H)
+	if(!account || !accolades_earned_here())
+		return
+	var/list/progress = accolade_progress_clean(H.accolade_progress)
+	progress["kills"] = (progress["kills"] || 0) + 1
+	H.accolade_progress = progress
+	if(progress["kills"] >= ACCOLADE_HUNTER_KILLS)
+		accolade_meet(account, "hunter")
+
+// Founder: the character remembers the faction it founded.
+/mob/living/human/proc/accolade_founded(faction)
+	if(!istext(faction))
+		return
+	var/list/progress = accolade_progress_clean(accolade_progress)
+	progress["founded"] = faction
+	accolade_progress = progress
+
+/proc/accolade_check_founder(ckey, faction)
+	if(!map || accolade_status(accolade_state(ckey), "founder") != "open")
+		return
+	var/others = 0
+	for(var/account in map.faction_roster(faction))
+		if(accolade_other_counts(account, ckey))
+			others++
+	if(others >= ACCOLADE_FOUNDER_MEMBERS)
+		accolade_meet(ckey, "founder")
+
+// Defender: the holders beside a seat when a siege on it fails.
+/proc/accolade_siege_held(atom/seat, holder)
+	if(!seat || !holder)
+		return
+	for(var/mob/living/human/H in range(3, seat))
+		if(H.client && H.stat != DEAD && H.civilization && H.civilization != "none" && province_group_of(H.civilization) == holder)
+			accolade_meet_mob(H, "defender")
+
+// Teacher: each chapter remembers the account that wrote it.
+/obj/item/weapon/book/var/list/chapter_authors = null // node id -> ckey
+
+/obj/item/weapon/book/proc/record_chapter_author(node_id, mob/living/human/writer)
+	var/account = accolade_mob_ckey(writer)
+	if(!account || !istext(node_id))
+		return
+	if(!islist(chapter_authors))
+		chapter_authors = list()
+	chapter_authors[node_id] = account
+
+// A reader learned a chapter: its writer is credited once per reader.
+/proc/accolade_learned_from(mob/living/human/reader, obj/item/weapon/book/source, node_id)
+	if(!istype(source) || !islist(source.chapter_authors) || !accolades_earned_here())
+		return
+	var/author = source.chapter_authors[node_id]
+	var/reader_ckey = accolade_mob_ckey(reader)
+	if(!istext(author) || !reader_ckey || !accolade_other_counts(reader_ckey, author))
+		return
+	if(!shared_records.add(author, "accolade_taught", list("reader" = reader_ckey), id = accolade_record_id("accolade_taught", author, reader_ckey)))
+		return
+	accolade_forget(author)
+	var/readers = 0
+	for(var/list/record in shared_records.records_for(author))
+		if(record["kind"] == "accolade_taught" && !record["revoked"])
+			readers++
+	if(readers >= ACCOLADE_TEACHER_READERS)
+		accolade_meet(author, "teacher")
 
 /proc/accolades_tick()
 	for(var/mob/living/human/H in human_mob_list)
@@ -449,3 +592,10 @@ var/global/list/accolade_cache = list() // ckey -> list(world.time, state)
 #undef ACCOLADE_APPRENTICE_SUBJECTS
 #undef ACCOLADE_SCHOLAR_SUBJECTS
 #undef ACCOLADE_WANDERER_LANDS
+#undef ACCOLADE_MAKER_RECIPES
+#undef ACCOLADE_ARTISAN_RECIPES
+#undef ACCOLADE_HUNTER_KILLS
+#undef ACCOLADE_WINTER_MINUTES
+#undef ACCOLADE_FOUNDER_MEMBERS
+#undef ACCOLADE_TEACHER_READERS
+#undef ACCOLADE_OTHERS_MIN_HOURS

@@ -444,6 +444,19 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("crossbows", "Crossbows", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("archery"), 2))
 	// --- Military: Martial disciplines (hand_conditioning.dm) ---
 	register_research_node(new /datum/research_node("martial_disciplines", "Martial Disciplines", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
+	// Martial schools (martial_schools.dm): one per school, from its own era on.
+	register_research_node(new /datum/research_node("school_grappling", "Grappling", "Military", 80, 0, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 0))
+	register_research_node(new /datum/research_node("school_pugilism", "Classical Pugilism", "Military", 115, 0, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 1))
+	register_research_node(new /datum/research_node("school_pankration", "Pankration", "Military", 115, 0, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 1))
+	register_research_node(new /datum/research_node("school_shaolin", "Shaolin Kung Fu", "Military", 150, 1, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 2))
+	register_research_node(new /datum/research_node("school_wing_chun", "Wing Chun", "Military", 185, 2, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 3))
+	register_research_node(new /datum/research_node("school_hard_hand", "Hard-Hand Striking", "Military", 185, 2, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 3))
+	register_research_node(new /datum/research_node("school_savate", "Savate", "Military", 220, 3, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 4))
+	register_research_node(new /datum/research_node("school_judo", "Judo", "Military", 255, 4, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 5))
+	register_research_node(new /datum/research_node("school_combatives", "Military Combatives", "Military", 290, 5, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 6))
+	register_research_node(new /datum/research_node("school_krav_maga", "Krav Maga", "Military", 325, 6, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 7))
+	register_research_node(new /datum/research_node("school_bjj", "Brazilian Jiu-Jitsu", "Military", 360, 7, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 8))
+	register_research_node(new /datum/research_node("school_mma", "Mixed Martial Arts", "Military", 395, 8, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 9))
 	// --- Military: Order & Defense ---
 	// Law & Order era 1: organized justice (jails, cuffs, batons). The truly
 	// primitive pieces (noose, rope cuffs) live in stone_arms era0 instead.
@@ -2931,6 +2944,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/phoneline" = "utilities",
 		// --- wagons_ships (29) ---
 		"/obj/structure/canal_lock" = "wagons_ships",
+		"/obj/structure/canal_lock/dock_gate" = "wagons_ships",
 		"/obj/item/stack/rail_sleepers" = "wagons_ships",
 		"/obj/item/stack/rail_lengths/wooden" = "wagons_ships",
 		"/obj/structure/trains/storage/chaldron" = "wagons_ships",
@@ -2963,6 +2977,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/vehicleparts/frame/ship" = "wagons_ships",
 		"/obj/structure/vehicleparts/frame/ship/steel" = "wagons_ships",
 		"/obj/structure/vehicleparts/movement/sail" = "wagons_ships",
+		"/obj/structure/vehicleparts/movement/sail/crows_nest" = "wagons_ships",
 		"/obj/structure/vehicleparts/shipwheel" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/blue/bport0/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",

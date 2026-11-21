@@ -61,6 +61,17 @@ add('ship-stocks', 'ship_stocks.tmpl', { stocks: ([['Treasury', 1240, 'reales'],
 add('crew-log', 'crew_log.tmpl', { crew: [['Anne Hale', 'Captain'], ['Tom Reed', 'Boatswain'], ['Will Marsh', 'Sailor'], ['Edda Stone', 'Surgeon']].map(([name, job]) => ({ name, job })) });
 add('faction-list', 'faction_list.tmpl', { factions: [{ name: 'Dawnward Guild', motto: 'Build together', flavour: 'A fictional fellowship.', members: 4, symbol: '', renamed: '' }, { name: 'Ash Company', members: 1, symbol: '' }] });
 add('known-languages', 'known_languages.tmpl', { current_default: 'Common', languages: [{ name: 'Common', prefix: ',0', description: 'Spoken nearly everywhere.', is_default: 1 }, { name: 'Old Tongue', prefix: ',o', description: 'A scholarly language.' }] });
+// A speaker whose people's language split off: the family block under the list.
+add('known-languages-family', 'known_languages.tmpl', { current_default: 'Dawnish', languages: [
+  { name: 'Dawnish', prefix: ',da', description: 'Mother tongue. A language that grew out of Old Tongue among the Dawnward Guild (Medieval Age).', is_default: 1 },
+  { name: 'Old Tongue', prefix: ',o', description: 'Fluent. A scholarly language.' },
+  { name: 'Ashen', prefix: 'not yet speakable', description: 'Broken, 22%. Keep listening to people who speak it.' }],
+  families: [{ root: 'Old Tongue', members: [
+    { name: 'Old Tongue', depth: 0, known: 1 },
+    { name: 'Dawnish', parent: 'Old Tongue', nation: 'Dawnward Guild', era: 'Medieval Age', depth: 1, known: 1, mother: 1 },
+    { name: 'Ashen', parent: 'Old Tongue', nation: 'Ash Company', era: 'Imperial Age', depth: 1, learning: 1 }],
+  links: [{ a: 'Old Tongue', b: 'Dawnish', percent: 80 }, { a: 'Old Tongue', b: 'Ashen', percent: 70 }, { a: 'Dawnish', b: 'Ashen', percent: 60 }] }],
+}, 'Known languages');
 add('panel', 'panel.tmpl', { sections: [
   { title: 'Lock', rows: [{ label: 'Dial', value: 35, buttons: [{ label: '-', action: 'decrement' }, { label: '+', action: 'increment' }] }, { label: 'Door', value: 'Open', tone: 'good' }], buttons: [{ label: 'Close the safe', action: 'open' }] },
   { title: 'Contents', items: [{ name: 'Ledger', detail: 'A bound book of accounts.', buttons: [{ label: 'Read', action: 'read', id: 'a' }, { label: 'Take', action: 'retrieve', id: 'a' }] }, { name: 'Silver coins', buttons: [{ label: 'Take', action: 'retrieve', id: 'b' }] }], empty: 'It is empty.' },

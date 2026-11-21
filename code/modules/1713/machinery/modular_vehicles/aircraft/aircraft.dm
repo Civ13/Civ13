@@ -375,6 +375,7 @@ var/global/list/airborne_aircraft = list()
 		// Roll out at first gear's pace, ready to taxi.
 		vehicle_m_delay = get_speed()
 		visible_message(SPAN_NOTICE(runway ? "\The [src] touches down on the runway." : "\The [src] touches down smoothly on the level ground."))
+		accolade_meet_mob(driver || user, "aviator")
 		if (on_arresting_wires())
 			currentspeed = 0
 			moving = FALSE

@@ -16,8 +16,7 @@
 		return FALSE
 	if (istype(T.loc, /area/caribbean/void/caves))
 		return TRUE
-	var/under_z = underground_level_z()
-	return under_z && T.z == under_z
+	return underground_depth_of(T.z) > 0
 
 // The cellar temperature for a surface season temperature: close to
 // CELLAR_TEMPERATURE, a little colder in winter and a little warmer in summer.

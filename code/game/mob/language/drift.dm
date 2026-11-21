@@ -20,7 +20,7 @@
 // language_lineage_state (field version 6), as
 //   list("drift" = list("Nation|Language" = drift), "daughters" = list())
 // Heard lines are not saved. What a community does once its drift is high is
-// in the era check (language_era_advanced, in a later file).
+// in the era check (language_era_advanced, daughter.dm).
 
 /obj/map_metadata/var/list/language_lineage_state = list()
 
@@ -149,10 +149,12 @@ var/global/next_language_drift_tick = 0
 		var/natives = L ? language_community_natives(parts[1], L) : 0
 		var/value = drift[key]
 		var/line = "[parts[1]], [parts[2]]: [round(value)]% drift, [natives] living native\s"
-		if (value >= LANGUAGE_SPLIT_DRIFT && natives >= LANGUAGE_SPLIT_MIN_NATIVES)
+		if (key in language_lineage_part("pending"))
+			line += " - <b>waiting for its leader to name it</b>"
+		else if (value >= LANGUAGE_SPLIT_DRIFT && natives >= LANGUAGE_SPLIT_MIN_NATIVES)
 			line += " - <b>ready to split</b>"
 		var/heard = language_drift_use[key] + language_drift_contact[key]
 		if (heard)
-			line += " (this half hour: [language_drift_use[key]] own, [language_drift_contact[key]] outside)"
+			line += " (this half hour: [language_drift_use[key] || 0] lines heard from their own, [language_drift_contact[key] || 0] from outsiders)"
 		lines += line
 	return lines

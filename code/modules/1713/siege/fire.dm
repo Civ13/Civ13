@@ -23,6 +23,8 @@
 	update_icon()
 
 /obj/structure/brazier/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (resin_cook_attackby(src, W, user)) // resin.dm
+		return
 	if (user.a_intent == I_HELP)
 		if (is_tool(W, TOOL_WRENCH) || (is_tool(W, TOOL_HAMMER)))
 			if (is_tool(W, TOOL_WRENCH))

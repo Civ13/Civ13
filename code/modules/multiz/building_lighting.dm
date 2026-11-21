@@ -10,7 +10,7 @@
 #define BUILDING_WAKE_RANGE 7
 
 /proc/building_level_lazy(z)
-	return z > building_base_maxz() && !dug_underground_forming && z != dug_underground_z()
+	return z > building_base_maxz() && !dug_underground_forming && !underground_added(z)
 
 // A cell of an added level that nothing has woken or replaced: it skipped its
 // constructor during allocation, so it holds its compiled defaults, is not in
@@ -56,4 +56,10 @@ var/global/list/building_levels_with_ground = list()
 		building_wake_cells(src)
 	if (!ispath(path, /turf/sky/building))
 		building_levels_with_ground["[z]"] = TRUE
+	if (ispath(path, /turf/wall/rockwall/bedrock) && x == 1 && y == 1)
+		// A load placing an underground level's marker: from here on its
+		// cells are rock, not open air to wake.
+		. = ..()
+		underground_levels_refresh()
+		return
 	return ..()
