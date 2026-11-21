@@ -209,6 +209,15 @@
 		next_region_go = world.time + 50
 		shard_group.send_player(src, id)
 		return
+	// The gateway's Try again link (region_gateway.dm).
+	if(href_list["gateway_retry"])
+		if(!region_gateway_here() || !istype(mob, /mob/new_player) || usr != mob)
+			return
+		if(next_region_go > world.time)
+			return
+		next_region_go = world.time + 50
+		region_gateway_forward(mob)
+		return
 	// The Regions panel's Refresh: ask the regions again and redraw it in place.
 	if(href_list["region_refresh"])
 		if(usr != mob || !shard_group.enabled)
@@ -228,7 +237,12 @@
 // once. Admins stay (they may have work here) and are told how to go.
 /mob/new_player/Login()
 	. = ..()
-	if(!QDELETED(src) && client && client.mob == src && shard_group.relay_on() && shard_group.region == shard_group.gate)
+	if(QDELETED(src) || !client || client.mob != src)
+		return
+	// A gateway (region_gateway.dm) sends everyone on, admins and new players too.
+	if(region_gateway_here())
+		region_gateway_forward(src)
+	else if(shard_group.relay_on() && shard_group.region == shard_group.gate)
 		region_gate_forward(src)
 
 /proc/region_gate_forward(mob/new_player/lobby)

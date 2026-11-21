@@ -3,6 +3,14 @@
 Design and migration proposal. This document does not install a world,
 allocate ports, or change any live routing.
 
+**Status:** built as the shard group's `GATEWAY` region kind: see
+[Gateway world](../scripts/shard-group/README.md#gateway-world). It reuses the
+existing relay, gate and `set-gate` port swap rather than a separate supervisor
+or a dynamic port pool; Gaia moves to the gateway's chosen port once, behind the
+relay. The read-only `lobby_home` lookup below is not used by it: the gateway asks
+its own transfer agent the Join check's question, which claims nothing in a world
+that is neither a home nor the start region.
+
 ## Goal
 
 Run a small, independently supervised BYOND world on public TCP **1714**. It

@@ -522,6 +522,7 @@ public static class LocalHosting {
                 parts.Add(AwayText(away));
         }
         if (Str(entry, "kind") == "EVENT") parts.Insert(0, "event region");
+        if (Str(entry, "kind") == "GATEWAY") parts.Insert(0, "gateway");
         if (LandText(entry) is { } land) parts.Add(land);
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }

@@ -72,7 +72,7 @@ public static class HostSettings {
     // running worlds pick it up within a minute). The mainland stays the era source and bot link either way.
     public sealed record StartChoice(string Id, string Name);
     // Kinds nobody can start in, as shard_group.py START_REGION_REFUSED_KINDS.
-    private static readonly string[] NoStartKinds = ["RAID", "ORBIT", "BATTLE", "EVENT", "EXPEDITION", "TUTORIAL"];
+    private static readonly string[] NoStartKinds = ["RAID", "ORBIT", "BATTLE", "EVENT", "EXPEDITION", "TUTORIAL", "GATEWAY"];
 
     // The mainland, the current start region (the mainland unless start_region names another) and every region
     // a new character may start in, in the group's order.
