@@ -1053,6 +1053,7 @@
 #include "code\modules\1713\automated_sifting.dm"
 #include "code\modules\1713\rubber_tapping.dm"
 #include "code\modules\1713\lacquer.dm"
+#include "code\modules\1713\fiberglass.dm"
 #include "code\modules\1713\nylon.dm"
 #include "code\modules\1713\resin.dm"
 #include "code\modules\1713\resin_laminate.dm"
