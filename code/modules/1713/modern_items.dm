@@ -776,6 +776,8 @@
 	set name = "Remove Plastic"
 	set src in range(1)
 
+	if (bakelizer_eject_nylon(usr) && !plastic) // resin_laminate.dm
+		return
 	if (!plastic)
 		to_chat(usr, "Theres no finished plastic in the [src].")
 		bakelizer_desc()
