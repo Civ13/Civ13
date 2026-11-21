@@ -54,9 +54,13 @@ The ship must be at all stop, not grappled, with the world not saving. Then:
    restrained, with an account, and carry only what a traveller may carry.
 3. She is taken off the water at once (the crew wait aboard, out of reach),
    so nothing aboard can be picked up twice.
-4. Each crew member leaves as an ordinary traveller. The first carries the
-   ship's record in their payload (up to 48 KB instead of 8 KB); everyone
-   carries the voyage id.
+4. The crew leave together as one party: every crew member's payload goes
+   in one transfer (`depart_party()` in `region_travel.dm`). The first carries
+   the ship's record and the voyage id; the others carry the voyage id only.
+   Crew sent one after another used to wait on each other's transfer and
+   could be left behind. A crossing over a linked map edge
+   ([ocean-regions.md](ocean-regions.md)) also carries where along the edge
+   she left.
 5. If nobody could leave, she is built again where she lay and the crew stand
    on her. If she left but someone could not follow, they are put ashore.
 

@@ -1399,6 +1399,8 @@ var/list/seed_list_jungle
 	icon_state = "cinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
+	if (silk_pick_attack_hand(src, user)) // silk.dm
+		return
 	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
 		var/mob/living/human/H = user
 		if (H.gorillaman)
