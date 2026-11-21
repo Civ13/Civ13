@@ -2452,6 +2452,7 @@ RECIPE: /material/wood/soft/,ship mast,/obj/structure/vehicleparts/movement/sail
 RECIPE: /material/wood/soft/,ship mast with a crow's nest,/obj/structure/vehicleparts/movement/sail/crows_nest,23,200,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,bowsprit,/obj/structure/vehicleparts/movement/sail/bowsprit,10,120,0,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,figurehead,/obj/structure/figurehead,6,90,0,1,vehicle parts,10,0,0,8,null
+RECIPE: /material/iron/,grapnel,/obj/item/weapon/grapnel,3,60,0,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/wood/soft/,slipway,/obj/structure/slipway,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,boathouse,/obj/structure/boathouse,20,200,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/wood/soft/,tiller,/obj/structure/hull_tiller,10,100,1,1,vehicle parts,41,0,0,8,null

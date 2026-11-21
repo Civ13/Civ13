@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '8cee016109bdbf8eec50d5abf704fbf35f4165f6'
+WIKI_REVIEWED_REVISION = 'e534481157b91f925e6c0757d45e28239d95ac35'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -81,13 +81,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Construction.md': ('d8eebb02435d4409fec74214d14ea239ab4f5a331b8ba6c7d506e5b2c99dc68f', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('24b870c09bbebbf103a2d14ba1a5c149d11b55ae5603d48838ea357896f8f16b', 'cooking cook food meal ingredients'),
-    'guides/Guide_to_Exercise.md': ('54ac09d99a32724a5aa092f6a8c9481d4e0d5279178ef4d4e67fa853c6f6ada0', 'exercise training strength weights running fatigue'),
+    'guides/Guide_to_Exercise.md': ('5a73fe4f1a404173d0fbc57a18c413502edcce1c8e6ec938572980304ec60ce6', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
     'guides/Guide_to_Farming.md': ('4c4df8eecd80fdfc521fae4b7aa0a3544ddaaba6c96c0fbe3bd67d73d84352d0', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('1b0cb495916de8649525deabdd27273a00a9b188129619e850412cd2d351d50d', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('7949b65c20a17b601964529349f788ce1584eea2f512f35acae7040270d2f906', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('901fda146e67b9b4935a149be1e632449fe73ee57e93f337483a8e95fd951a51', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('aae521a52b291a3fac7b5054dce39aff5ef0f9ef634f08a22ba434d2827e6110', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('d7a914556fcd2b49e110c475ce620131cd5d61eb73a9152588511e43fe128274', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('48fc3e9f1fc3ec33abc25fea7b5572de7394232278d12dc7a1419e61c58be47d', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Survival.md': ('6e0ba0b108522f0a9c2836b47af18a179427aab1b1497f5428c1994000b650df', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
@@ -119,7 +119,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('f0f715f1ad02029f8a3226a7189a404cf06d71dcc0052749b1deb29751e9cb09', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('b3b8a1a10ea0c0848dd21692e764e8e8ea4893d8cc22a5e653ae64544d1129a6', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('56a33c3e86b252b58df3c72ee3a7c44ca1dc49567b9408e226394b55c68041d9', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -769,7 +769,7 @@ TOXIN_SOURCE_SECTIONS = (
      '6617bf5ecc8f8d3a5530534b2b3042724af964338892879bfcab05c174215291'),
     ('code/modules/reagents/Chemistry-Reagents.dm',
      '/datum/reagent/proc/remove_self(', '/datum/reagent/proc/initialize_data(',
-     '9c0c4936fd7edf28389e77c2fe174077798e806bfbfe3a599cad1062d55084a1'),
+     '39e947ba77325601a80d32541632960d9fc0e58c96da1451af274db60108c1a5'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
      '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),

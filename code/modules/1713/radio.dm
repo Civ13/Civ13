@@ -247,6 +247,8 @@ var/global/FREQM = rand(101,120)
 					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, R)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
+		if (O.is_spirit_observer())
+			continue
 		O.hear_radio(msg, verbage, speaker.default_language, speaker, R, R)
 	// other lands, through a keyed relay station (radio_relay.dm)
 	civ_relay_outbound(R:freq, speaker, msg, verbage)
@@ -291,6 +293,8 @@ var/global/FREQM = rand(101,120)
 					hearer.hear_radio_broadcast(msg, radio)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
+		if (O.is_spirit_observer())
+			continue
 		O.hear_radio_broadcast(msg, null)
 
 /mob/proc/hear_radio_broadcast(var/message, var/obj/origin = null, var/obj/destination = null)

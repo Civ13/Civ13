@@ -68,7 +68,7 @@
 		removed = touch_met
 	removed = min(removed, volume)
 	// Overdose handlers get the amount metabolized this tick, including a final partial dose (#6295).
-	if (overdose && (dose > overdose) && (location != CHEM_TOUCH))
+	if (overdose && (dose > overdose_limit(M)) && (location != CHEM_TOUCH))
 		overdose(M, alien, removed)
 	max_dose = max(volume, max_dose)
 	dose = min(dose + removed, max_dose)
