@@ -310,7 +310,6 @@
 		viewer_client << browse_rsc(base, base_file)
 		pictures += "<tr><th scope='row'>[capitalize(view)]</th><td><div class='portrait'><img src='[current_file]' alt='Current [view]'></div></td><td><div class='portrait'><img src='[base_file]' alt='Proposed [view]'><img id='beard-[view]' style='display:none' alt=''><img id='scalp-[view]' style='display:none' alt=''></div></td></tr>"
 	viewer_client << browse_rsc('UI/js/grooming_preview.js', "civ13_grooming_preview.js")
-	var/apply_href = html_encode("byond://?src=[token];groom=apply;nonce=[nonce]")
 	var/html = {"<html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>
 		<style>
 		body{background:#222;color:#eee;font:14px sans-serif;text-align:center;}
@@ -319,7 +318,7 @@
 		.portrait img{width:160px;height:160px;position:absolute;left:-32px;top:-2px;image-rendering:pixelated;}
 		button,a{margin:0 6px;} a{color:#9df;}
 		</style><script src='civ13_grooming_preview.js'></script></head>
-		<body id='grooming-preview' data-apply='[apply_href]'>
+		<body id='grooming-preview' data-ref='[html_encode(token)]' data-nonce='[html_encode(nonce)]'>
 		<h2>Preview haircut</h2>
 		<label for='groom-hair'>Hairstyle <select id='groom-hair'>[hair_options]</select></label>
 		<label for='groom-beard' style='[beard_visibility]'>Facial hair <select id='groom-beard'>[beard_options]</select></label>

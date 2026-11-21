@@ -9,8 +9,9 @@ function select(sources) {
         getAttribute: (name) => src && src + '-' + name,
     }))};
 }
+const attributes = {'data-ref': '[0x42]', 'data-nonce': '0123456789abcdef0123456789abcdef'};
 const nodes = {
-    'grooming-preview': {getAttribute: () => 'byond://?src=session;groom=apply;nonce=test'},
+    'grooming-preview': {getAttribute: (key) => attributes[key]},
     'groom-hair': select(['current-hair', 'second-hair']),
     'groom-beard': select(['current-beard', '']),
     'groom-apply': {},
@@ -38,7 +39,17 @@ nodes['groom-beard'].selectedIndex = 1;
 nodes['groom-beard'].onchange();
 assert.equal(nodes['beard-side'].style.display, 'none');
 assert.equal(window.location.href, 'initial');
+const originalRef = attributes['data-ref'];
+attributes['data-ref'] = 'invalid reference';
 nodes['groom-apply'].onclick();
-assert.equal(window.location.href, 'byond://?src=session;groom=apply;nonce=test;hair=2;beard=2');
+assert.equal(window.location.href, 'initial');
+attributes['data-ref'] = originalRef;
+const originalNonce = attributes['data-nonce'];
+attributes['data-nonce'] = 'value;separator';
+nodes['groom-apply'].onclick();
+assert.equal(window.location.href, 'initial');
+attributes['data-nonce'] = originalNonce;
+nodes['groom-apply'].onclick();
+assert.equal(window.location.href, 'byond://?src=[0x42];groom=apply;nonce=0123456789abcdef0123456789abcdef;hair=2;beard=2');
 assert.equal(nodes['groom-apply'].disabled, true);
 console.log('Grooming dropdown, preview layers, and Apply: passed');

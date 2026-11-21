@@ -28,8 +28,13 @@
         beard.onchange = render;
         apply.onclick = function () {
             if (apply.disabled) { return false; }
+            var ref = panel.getAttribute('data-ref');
+            var nonce = panel.getAttribute('data-nonce');
+            // Keep BYOND's native reference syntax without accepting a URL.
+            if (!/^(?:\[0x[0-9a-f]+\]|0x[0-9a-f]+)$/i.test(ref) ||
+                    !/^[0-9a-f]{32}$/i.test(nonce)) { return false; }
             apply.disabled = true;
-            window.location.href = panel.getAttribute('data-apply') +
+            window.location.href = 'byond://?src=' + ref + ';groom=apply;nonce=' + nonce +
                 ';hair=' + (hair.selectedIndex + 1) + ';beard=' + (beard.selectedIndex + 1);
             return false;
         };
