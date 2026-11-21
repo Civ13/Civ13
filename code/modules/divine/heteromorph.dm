@@ -53,10 +53,14 @@ var/global/list/heteromorph_kinds = null
 	var/list/L = heteromorph_kinds()
 	return L[id]
 
-// The planet the current world stands for, or null for Earth worlds. No
-// planet exists yet, so every world is Earth until one sets this.
+// The planet the current world stands for, or null for Earth worlds. A
+// planet's map sets heteromorph_origin (for example "yggdrasil"); kinds whose
+// origin names that planet can then be created there and nowhere else.
+/obj/map_metadata
+	var/heteromorph_origin = null
+
 /proc/heteromorph_world_origin()
-	return null
+	return map ? map.heteromorph_origin : null
 
 /mob/living/human
 	var/heteromorph_id = null          // saved: kind id, see heteromorph_kinds()
@@ -146,5 +150,8 @@ var/global/list/heteromorph_kinds = null
 		if (QDELETED(H) || !H.heteromorph_id)
 			continue
 		var/datum/heteromorph/K = heteromorph_kind(H.heteromorph_id)
-		lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"]): [K ? K.name : H.heteromorph_id] ([H.heteromorph_colour]), granted by [H.heteromorph_granted_by ? H.heteromorph_granted_by : "unknown"][H.heteromorph_active() ? "" : ", QUIET (not staff-run now)"][H.stat == DEAD ? ", dead" : ""]"
+		var/mob/living/simple_animal/heteromorph_form/F = H.loc
+		var/in_form = istype(F) && F.heteromorph_body == H
+		var/who = in_form ? F.ckey : H.ckey
+		lines += "[H.real_name] ([who ? who : "no player"]): [K ? K.name : H.heteromorph_id] ([H.heteromorph_colour]), granted by [H.heteromorph_granted_by ? H.heteromorph_granted_by : "unknown"][in_form ? ", IN TRUE FORM at [F.x],[F.y],[F.z]" : ""][(in_form || H.heteromorph_active()) ? "" : ", QUIET (not staff-run now)"][H.stat == DEAD ? ", dead" : ""]"
 	return lines
