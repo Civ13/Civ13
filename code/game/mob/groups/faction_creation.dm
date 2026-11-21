@@ -186,6 +186,11 @@
 		to_chat(owner, SPAN_WARNING("That faction already exists. Choose another name."))
 		return FALSE
 
+	var/kin_faction = map.faction_kin_leads_elsewhere(owner, draft_name)
+	if (kin_faction)
+		to_chat(owner, SPAN_WARNING("Another of your characters leads [kin_faction]. One player holds one leadership seat."))
+		return FALSE
+
 	var/newname = draft_name
 	owner.civilization = newname
 	// The founder is the first member on the roster (faction_roster.dm).

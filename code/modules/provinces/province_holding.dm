@@ -66,6 +66,21 @@
 			count++
 	return count
 
+// Why a group cannot take another province of this land, or null. The cap
+// counts the group's whole bloc (province_blocs.dm): factions staff marked as
+// one bloc and factions led by the same player share it, and a bloc never
+// holds more than half of a land's provinces.
+/proc/province_cap_refusal(group)
+	if (province_claims_frozen(group))
+		return "staff froze its claims"
+	var/held = province_bloc_holdings(group)
+	if (held >= PROVINCE_CAP_PER_LAND)
+		return "its bloc already holds [held] provinces of this land"
+	var/datum/province_map/P = map.province_map()
+	if (P && (held + 1) * 2 > length(P.names))
+		return "its bloc would hold more than half of this land"
+	return null
+
 // TRUE when the group's stake meets the minimum to lead or keep a province.
 /proc/province_stake_enough(list/G)
 	return islist(G) && G[1] >= 6 && G[2] >= 4
@@ -143,7 +158,7 @@
 			continue
 		if (now - row[5] < PROVINCE_GAIN_HOURS * 36000 || !window)
 			continue
-		if (province_holdings_count(contender) >= PROVINCE_CAP_PER_LAND)
+		if (province_cap_refusal(contender))
 			continue
 		if (holder)
 			province_tell_leaders(holder, "[province_group_name(contender)] has taken the [name] from you.")

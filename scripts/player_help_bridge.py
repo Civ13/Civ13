@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3da028f4636554234d307c5203983d7664ef1ea6'
+WIKI_REVIEWED_REVISION = 'e534481157b91f925e6c0757d45e28239d95ac35'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -87,7 +87,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Fishing.md': ('1b0cb495916de8649525deabdd27273a00a9b188129619e850412cd2d351d50d', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('7949b65c20a17b601964529349f788ce1584eea2f512f35acae7040270d2f906', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('901fda146e67b9b4935a149be1e632449fe73ee57e93f337483a8e95fd951a51', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
     'guides/Guide_to_Power.md': ('aae521a52b291a3fac7b5054dce39aff5ef0f9ef634f08a22ba434d2827e6110', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
@@ -97,7 +97,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('d7a914556fcd2b49e110c475ce620131cd5d61eb73a9152588511e43fe128274', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('48fc3e9f1fc3ec33abc25fea7b5572de7394232278d12dc7a1419e61c58be47d', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Survival.md': ('6e0ba0b108522f0a9c2836b47af18a179427aab1b1497f5428c1994000b650df', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
@@ -769,7 +769,7 @@ TOXIN_SOURCE_SECTIONS = (
      '6617bf5ecc8f8d3a5530534b2b3042724af964338892879bfcab05c174215291'),
     ('code/modules/reagents/Chemistry-Reagents.dm',
      '/datum/reagent/proc/remove_self(', '/datum/reagent/proc/initialize_data(',
-     '9c0c4936fd7edf28389e77c2fe174077798e806bfbfe3a599cad1062d55084a1'),
+     '39e947ba77325601a80d32541632960d9fc0e58c96da1451af274db60108c1a5'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
      '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),

@@ -171,6 +171,12 @@ var/global/weather_centre_serial = 0
 			weather_centre_end(C)
 	if (!map || !map.valid_weather_types || !(WEATHER_WET in map.valid_weather_types))
 		return
+	// Regions on the world calendar share their lows, highs and storms (weather_shared.dm).
+	if (weather_shared_on())
+		weather_shared_sync()
+		weather_heat_from_highs()
+		weather_convection_step()
+		return
 	if (weather_centres.len < WEATHER_CENTRE_MAX && (!weather_centres.len || prob(WEATHER_CENTRE_SPAWN_PROB)))
 		weather_centre_spawn(prob(weather_centre_low_chance()) ? WEATHER_CENTRE_LOW : WEATHER_CENTRE_HIGH)
 	weather_heat_from_highs()
