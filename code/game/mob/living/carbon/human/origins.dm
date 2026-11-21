@@ -156,6 +156,46 @@
 	language = "Carib"
 	name_style = "carib"
 
+// Gaia's own peoples (peoples.dm): Gaia is not Earth, so these roots carry
+// names of the land. Each keeps the language and name style of the
+// real-world root it replaces on Gaia (gaia_root_renames).
+
+/datum/origin/fjordfolk
+	id = "fjordfolk"
+	name = "Fjordfolk"
+	language = "Old Norse"
+	name_style = "oldnorse"
+
+/datum/origin/hearthlanders
+	id = "hearthlanders"
+	name = "Hearthlanders"
+	language = "Latin"
+	name_style = "roman"
+
+/datum/origin/isleborn
+	id = "isleborn"
+	name = "Isleborn"
+	language = "Greek"
+	name_style = "greek"
+
+/datum/origin/dunefolk
+	id = "dunefolk"
+	name = "Dunefolk"
+	language = "Egyptian"
+	name_style = "egyptian"
+
+/datum/origin/grasslanders
+	id = "grasslanders"
+	name = "Grasslanders"
+	language = "Swahili"
+	name_style = "swahili"
+
+/datum/origin/mistwood
+	id = "mistwood"
+	name = "Mistwood Folk"
+	language = "Japanese"
+	name_style = "japanese"
+
 // Names of the peoples added with this file. They live here rather than in
 // config/names so that the offline fixtures, which stage an exact pinned set
 // of name files, are not affected by a new people.
@@ -172,21 +212,27 @@ var/global/list/origins_by_id = null
 		for (var/origin_type in typesof(/datum/origin) - /datum/origin)
 			var/datum/origin/O = new origin_type
 			origins_by_id[O.id] = O
-	return istext(id) ? origins_by_id[id] : null
+	if (!istext(id))
+		return null
+	// A root people, else one that formed in play (peoples.dm).
+	. = origins_by_id[id]
+	if (!.)
+		. = world_people(id)
 
 // Land (map ID) -> list(climate = origin id). "default" covers a climate the
 // land has no people for, so nobody is left without an origin.
 /proc/land_origin_tables()
 	var/static/list/tables = null
 	if (!tables)
+		// Gaia's own peoples (peoples.dm): not Earth, so no real-world names.
 		var/list/gaia = list(
-			"tundra" = "northmen", "taiga" = "northmen",
-			"temperate" = "latins", "semiarid" = "latins",
-			"sea" = "hellenes",
-			"desert" = "egyptians",
-			"savanna" = "swahili",
-			"jungle" = "yamato",
-			"default" = "latins")
+			"tundra" = "fjordfolk", "taiga" = "fjordfolk",
+			"temperate" = "hearthlanders", "semiarid" = "hearthlanders",
+			"sea" = "isleborn",
+			"desert" = "dunefolk",
+			"savanna" = "grasslanders",
+			"jungle" = "mistwood",
+			"default" = "hearthlanders")
 		var/list/europe = list(
 			"tundra" = "northmen", "taiga" = "northmen",
 			"temperate" = "gaels",
