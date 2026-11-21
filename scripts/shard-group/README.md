@@ -45,7 +45,7 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 
 See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
-`public_host` (the address players use to join) and 1 to 16 `regions`, each
+`public_host` (the address players use to join) and 1 to 24 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
 `ORBIT`, `BARRACKS`, `BATTLE`, `EVENT`, `TUTORIAL` or `OTHER`; a `RAID`, `BATTLE`, `EVENT` or `TUTORIAL` region cannot be the mainland;
 a `TUTORIAL` region only runs the practice rooms and never saves, see [docs/practice-rooms.md](../../docs/practice-rooms.md#tutorial-region)), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
@@ -387,6 +387,23 @@ With the whole group stopped for maintenance, neither step launches anything:
 `add-gateway --apply` only sets the gateway up, and `set-gate` only swaps the ports
 (and moves the front door files). The next start brings the gateway up on the public
 port; its first start compiles it.
+
+## Adding the missing Earth regions
+
+A group that hosts Earth (Gaia or any Earth land) can take every Earth land and sea it
+lacks in one step (launcher: All regions > More > Front door and ports > Add missing
+Earth regions):
+
+```
+python shard_group.py --config group.json add-regions [--apply]
+```
+
+The list is `EARTH_REGIONS` in shard_group.py (the lands of docs/earth-continents.md
+and the seas of docs/ocean-regions.md). A region is missing when neither its id nor
+its map is in the group. Each keeps its usual port (1740-1754) when that is free,
+otherwise one is chosen like any omitted port. With `--apply` they are added to the
+group file and set up stopped; running regions keep playing and learn the new peers
+on their next start.
 
 ## Travel between regions
 

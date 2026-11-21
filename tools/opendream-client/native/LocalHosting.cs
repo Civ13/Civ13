@@ -26,6 +26,8 @@ public sealed record ControlAnswer(bool Ok, string Message, bool Busy);
 public static class LocalHosting {
     public const string MenuKey = "H";
     public const string FileName = "host.json";
+    // shard_group.py MAX_REGIONS: the most regions a group holds, so every list of them reads them all.
+    public const int MaxRegions = 24;
     public static string Menu => MenuKey + ": Host local DreamDaemon server";
 
     public static HostProfile? Load(string root) {
@@ -297,7 +299,7 @@ public static class LocalHosting {
         if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("regions", out var list) || list.ValueKind != JsonValueKind.Array)
             throw new InvalidDataException("The group config lists no regions.");
         var found = new List<(string Id, string Name, int Port, int TransferPort)>();
-        foreach (var region in list.EnumerateArray().Take(16)) {
+        foreach (var region in list.EnumerateArray().Take(MaxRegions)) {
             if (region.ValueKind != JsonValueKind.Object || Str(region, "id") is not { } id || !RegionId.IsMatch(id)) continue;
             found.Add((id, Clean(Str(region, "name") ?? id), OptionalPort(region, "port"), OptionalPort(region, "transfer_port")));
         }
@@ -347,7 +349,7 @@ public static class LocalHosting {
         try {
             using var document = JsonDocument.Parse(line);
             if (!document.RootElement.TryGetProperty("regions", out var regions) || regions.ValueKind != JsonValueKind.Object) return found;
-            foreach (var region in regions.EnumerateObject().Take(16)) {
+            foreach (var region in regions.EnumerateObject().Take(MaxRegions)) {
                 var entry = region.Value;
                 if (entry.ValueKind != JsonValueKind.Object || !RegionId.IsMatch(region.Name) || !Bool(entry, "listening") || Bool(entry, "busy")) continue;
                 string? error = null;
@@ -379,7 +381,7 @@ public static class LocalHosting {
                 var busy = false;
                 var regions = new List<string>();
                 if (json.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Object) {
-                    foreach (var region in list.EnumerateObject().Take(16)) {
+                    foreach (var region in list.EnumerateObject().Take(MaxRegions)) {
                         if (region.Value.ValueKind != JsonValueKind.Object) continue;
                         var entry = region.Value;
                         busy |= Bool(entry, "busy");
@@ -405,7 +407,7 @@ public static class LocalHosting {
             if (action is "unlock" or "force-unlock") {
                 var lines = new List<string>();
                 if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)
-                    foreach (var region in done.EnumerateObject().Take(16))
+                    foreach (var region in done.EnumerateObject().Take(MaxRegions))
                         if (region.Value.ValueKind == JsonValueKind.Object) lines.Add(Clean(region.Name) + ": " + DescribeUnlock(region.Value));
                 if (refused != null) lines.Add("Refused: " + refused + ".");
                 return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script did not check any region." : string.Join(" ", lines), false);
@@ -414,7 +416,7 @@ public static class LocalHosting {
                 // {"done": {id: {"copied": [paths], "running": bool}}, "refused": {id: reason}}
                 var lines = new List<string>();
                 if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)
-                    foreach (var region in done.EnumerateObject().Take(16)) {
+                    foreach (var region in done.EnumerateObject().Take(MaxRegions)) {
                         if (region.Value.ValueKind != JsonValueKind.Object) continue;
                         var count = region.Value.TryGetProperty("copied", out var copied) && copied.ValueKind == JsonValueKind.Array ? copied.GetArrayLength() : 0;
                         lines.Add(Clean(region.Name) + ": " + (count == 0 ? "already current" : count == 1 ? "1 file written" : $"{count} files written")
@@ -426,7 +428,7 @@ public static class LocalHosting {
             if (action is "freeze" or "thaw") {
                 // {"done": {id: {"frozen": true, ...} | {"thawed": true, ...}}, "refused": {id: reason}}
                 var done = json.TryGetProperty("done", out var doneJson) && doneJson.ValueKind == JsonValueKind.Object
-                    ? doneJson.EnumerateObject().Take(16).Select(entry => Clean(entry.Name)).ToList() : [];
+                    ? doneJson.EnumerateObject().Take(MaxRegions).Select(entry => Clean(entry.Name)).ToList() : [];
                 if (done.Count == 0) return new ControlAnswer(false, refused != null ? "Refused: " + refused : "The group script did not " + action + " any region.", false);
                 var text = (action == "freeze" ? "Asleep now (a join or travel wakes it): " : "Woken: ") + string.Join(", ", done) + ".";
                 return new ControlAnswer(true, refused != null ? text + " Refused: " + refused + "." : text, false);
@@ -437,7 +439,7 @@ public static class LocalHosting {
                     && index >= 0 && index < EpochNames.Length ? EpochNames[index] : "the chosen epoch";
                 var lines = new List<string>();
                 if (json.TryGetProperty("regions", out var done) && done.ValueKind == JsonValueKind.Object)
-                    foreach (var region in done.EnumerateObject().Take(16)) {
+                    foreach (var region in done.EnumerateObject().Take(MaxRegions)) {
                         var state = region.Value.ValueKind == JsonValueKind.String ? Short(region.Value.GetString()!) : "no answer";
                         lines.Add(Clean(region.Name) + ": " + (state == "set" ? "now " + name : state == "current" ? "already at " + name + " or later" : state));
                     }
@@ -448,13 +450,13 @@ public static class LocalHosting {
                 // {"accepted": {id: {"state": "stopped" | "cold" | "asleep", "already_staging"?}}, "skipped": {id: why}}
                 var lines = new List<string>();
                 if (json.TryGetProperty("accepted", out var chosen) && chosen.ValueKind == JsonValueKind.Object)
-                    foreach (var region in chosen.EnumerateObject().Take(16)) {
+                    foreach (var region in chosen.EnumerateObject().Take(MaxRegions)) {
                         var state = region.Value.ValueKind == JsonValueKind.Object && Str(region.Value, "state") is { } known ? Lower(known) : "stopped";
                         lines.Add(Clean(region.Name) + (state == "asleep" ? " (asleep: installs while it sleeps)" : " (" + state + ": installs once built)"));
                     }
                 var left = new List<string>();
                 if (json.TryGetProperty("skipped", out var skipped) && skipped.ValueKind == JsonValueKind.Object)
-                    foreach (var region in skipped.EnumerateObject().Take(16))
+                    foreach (var region in skipped.EnumerateObject().Take(MaxRegions))
                         left.Add(Clean(region.Name) + " (" + (region.Value.ValueKind == JsonValueKind.String ? Short(region.Value.GetString()!) : "skipped") + ")");
                 var text = lines.Count == 0 ? "No region needed updating while stopped or asleep."
                     : "Building the latest update, one region at a time, for " + string.Join(", ", lines) + ".";
@@ -464,7 +466,7 @@ public static class LocalHosting {
             if (action == "setup") {
                 // {"revision", "created": [ids], "regions": [ids], "region", "running": [ids], "enrolled": [...]}
                 var created = json.TryGetProperty("created", out var made) && made.ValueKind == JsonValueKind.Array
-                    ? made.EnumerateArray().Take(16).Where(item => item.ValueKind == JsonValueKind.String).Select(item => Clean(item.GetString()!)).ToList() : [];
+                    ? made.EnumerateArray().Take(MaxRegions).Where(item => item.ValueKind == JsonValueKind.String).Select(item => Clean(item.GetString()!)).ToList() : [];
                 var which = Str(json, "region") is { } one ? Clean(one) : "every region";
                 var text = created.Count > 0 ? "Set up " + string.Join(", ", created) + "." : "Refreshed the config of " + which + ".";
                 if (json.TryGetProperty("enrolled", out var enrolled) && enrolled.ValueKind == JsonValueKind.Array && enrolled.GetArrayLength() > 0)
@@ -666,7 +668,7 @@ public static class LocalHosting {
         // A region host (Civ13 scripts/shard-group) also lists every region of its group.
         var regions = new List<string>();
         if (status.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Array) {
-            foreach (var region in list.EnumerateArray().Take(16)) {
+            foreach (var region in list.EnumerateArray().Take(MaxRegions)) {
                 if (region.ValueKind != JsonValueKind.Object || Str(region, "name") is not { } name || Str(region, "state") is not { } state) continue;
                 var clean = Clean(name);
                 var players = region.TryGetProperty("players", out var count) && count.ValueKind == JsonValueKind.Number ? $", {count.GetInt32()} players" : "";
