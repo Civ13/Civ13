@@ -2584,6 +2584,10 @@ SUITES = {
         'tests/twohanded_wield/', 'code/game/objects/items/weapons/material/twohanded.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/inventory.dm',
             'code/modules/organs/organ_external.dm')},
+    # A finished CPR round is credited before the post-wait recheck.
+    'cpr_cycle_credit': {'files': ('tests/cpr_cycle_credit/test_credit_order.py',), 'paths': (
+        'tests/cpr_cycle_credit/',),
+        'shared_paths': ('code/game/mob/living/carbon/human/resuscitation.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
