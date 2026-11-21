@@ -83,6 +83,7 @@ var/global/list/nation_assembly_tiers = list(
 	nation_assemblies_report()
 	nation_eras_report()
 	nation_census_report()
+	province_vassal_tribute() // province_treaties.dm
 	nation_succession_report()
 	return TRUE
 

@@ -456,7 +456,10 @@ class Treaties(unittest.TestCase):
         self.assertIn('findtext(group_a, "nation:") != 1 || findtext(group_b, "nation:") != 1', kinds)
         self.assertIn('nation_treaties_of(copytext(group_a, 8))["in_force"]', kinds)
         friendly = text[text.index('/proc/province_groups_friendly'):text.index('/proc/province_treaty_siege_block')]
-        self.assertIn('("alliance" in kinds) || ("pact" in kinds)', friendly)
+        self.assertIn('province_groups_allied(group_a, group_b) || ("pact" in province_treaty_kinds(group_a, group_b))', friendly)
+        allied = text[text.index('/proc/province_groups_allied'):text.index('/proc/province_groups_friendly')]
+        # An overlord and its vassal count as allies.
+        self.assertIn('("alliance" in kinds) || ("overlord" in kinds) || ("vassal" in kinds)', allied)
         block = text[text.index('/proc/province_treaty_siege_block'):text.index('/proc/province_siege_side')]
         self.assertLess(block.index('return null'), block.index('province_groups_at_war'))
         side = text[text.index('/proc/province_siege_side'):]
@@ -480,6 +483,36 @@ class Treaties(unittest.TestCase):
         self.assertIn('province_siege_side(province_group_of(H.civilization), siege["group"], holder)', step)
         self.assertIn('#include "code\\modules\\provinces\\province_treaties.dm"', DME.read_text(encoding='utf-8'))
         self.assertIn('## Treaties', (ROOT / 'docs/provinces.md').read_text(encoding='utf-8'))
+
+
+class VassalTribute(unittest.TestCase):
+    """Vassal tribute and siege reports (province_treaties.dm)."""
+
+    def test_tribute_rules(self):
+        text = TREATIES.read_text(encoding='utf-8')
+        for line in ('#define VASSAL_TRIBUTE_DAYS 7', '#define VASSAL_TRIBUTE_SHARE 0.1', '#define VASSAL_TRIBUTE_CAP 100'):
+            self.assertIn(line, text)
+        import re
+        for name in re.findall(r'^#define (\w+)', text, re.M):
+            self.assertIn(f'#undef {name}', text)
+        tribute = text[text.index('/proc/province_vassal_tribute'):]
+        # Real coin moves from a home faction's box, only when an overlord box is here.
+        self.assertLess(tribute.index('if (!to_box)'), tribute.index('province_coin_move(from_box, to_box, due)'))
+        self.assertIn('nation_home_faction(name) ? map.faction_strongbox(name) : null', tribute)
+        self.assertIn('min(VASSAL_TRIBUTE_CAP, round(from_box.coin_worth() * VASSAL_TRIBUTE_SHARE))', tribute)
+        move = text[text.index('/proc/province_coin_move'):text.index('/proc/province_vassal_tribute')]
+        self.assertNotIn('new /obj', move)
+        self.assertIn('out.forceMove(into)', move)
+        self.assertIn('province_vassal_tribute()', (ROOT / 'code/game/mob/groups/nation.dm').read_text(encoding='utf-8'))
+        self.assertNotIn('sleep(', text)
+
+    def test_siege_wins_are_reported(self):
+        siege = SIEGE.read_text(encoding='utf-8')
+        won = siege[siege.index('/proc/province_siege_won'):siege.index('/proc/province_siege_text')]
+        self.assertIn('province_siege_report(siege["faction"], holder)', won)
+        text = TREATIES.read_text(encoding='utf-8')
+        report = text[text.index('/proc/province_siege_report'):text.index('/proc/nation_overlord_of')]
+        self.assertIn('"op" = "siege_won", "actor" = "world"', report)
 
 
 class RichProvinces(unittest.TestCase):

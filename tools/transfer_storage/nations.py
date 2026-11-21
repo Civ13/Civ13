@@ -41,12 +41,13 @@ from tools.transfer_storage.nation_revolt import NationRevolt
 from tools.transfer_storage.nation_offices import OFFICES, NationOffices
 from tools.transfer_storage.nation_treaties import TREATY_KINDS, NationTreaties
 from tools.transfer_storage.nation_legitimacy import NationLegitimacy
+from tools.transfer_storage.nation_vassals import NationVassals
 from tools.transfer_storage.nation_staff import FROZEN_OPS, STAFF_ACTS, STAFF_REASON_MAX, NationStaff
 from tools.transfer_storage.region import account_key_valid, faction_id_valid
 
 NATION_OPS = ('found', 'apply', 'vote', 'head', 'secede', 'rename', 'assembly', 'currency', 'govern', 'stay', 'era', 'ballot',
               'stand', 'census', 'present', 'heir', 'deputy', 'faith', 'claim', 'revolt', 'sign', 'overthrow', 'staff',
-              'appoint', 'dismiss', 'treaty')
+              'appoint', 'dismiss', 'treaty', 'siege_won')
 NATION_NAME_MAX = 40
 # Member factions allowed by assembly tier: none, meeting ground, assembly
 # hall, parliament.
@@ -140,6 +141,8 @@ def nation_request_valid(r):
     if op == 'treaty':
         return type(r.get('other')) is str and 0 < len(r['other']) <= 16 and r.get('treaty') in TREATY_KINDS \
             and r.get('act') in ('agree', 'renounce')
+    if op == 'siege_won':
+        return type(r.get('other')) is str and 0 < len(r['other']) <= 16
     if op == 'revolt':
         return government_proposal_valid(r) and text_valid(r.get('sname'), PERSON_NAME_MAX)
     if op == 'sign':
@@ -194,7 +197,7 @@ def faction_land(faction):
 
 
 class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, NationOffices, NationTreaties,
-              NationLegitimacy):
+              NationLegitimacy, NationVassals):
     def __init__(self, db):
         self.db = db
         db.execute('''CREATE TABLE IF NOT EXISTS nation(
@@ -232,6 +235,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, Nation
         self._office_tables()
         self._treaty_tables()
         self._legitimacy_tables()
+        self._vassal_tables()
         db.execute("CREATE TABLE IF NOT EXISTS nation_seq(id INTEGER PRIMARY KEY CHECK (id = 1), next INTEGER NOT NULL)")
         db.execute('INSERT OR IGNORE INTO nation_seq VALUES (1, 1)')
 
@@ -357,6 +361,7 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, Nation
         self.offices_due()
         self.treaties_due(int(now))
         self.legitimacy_due(int(now))
+        self.vassals_due(int(now))
 
     # -- deciding --------------------------------------------------------------
 
@@ -398,6 +403,8 @@ class Nations(NationMotions, NationSuccession, NationRevolt, NationStaff, Nation
                 self.db.execute('DELETE FROM nation_assembly WHERE faction = ?', (faction,))
             return None
         nation = self.nation_of(faction)
+        if op == 'siege_won':
+            return self.siege_won(nation, r['other'], now) if nation else None
         if op == 'apply':
             return self._apply(faction, r['nation'], now)
         if not nation:
