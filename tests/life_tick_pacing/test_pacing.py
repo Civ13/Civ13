@@ -251,7 +251,8 @@ class OverlayRedraw(unittest.TestCase):
         self.assertEqual(hygiene.count('overlays_standing[27] = img_nasties'), 1)
         self.assertIn('if (nasties_state != hygiene_overlay_state || !overlays_standing[27])\n'
                       '\t\thygiene_overlay_state = nasties_state\n'
-                      '\t\toverlays_standing[27] = img_nasties\n'
+                      '\t\tvar/image/img_nasties = image(', hygiene)
+        self.assertIn('\t\toverlays_standing[27] = img_nasties\n'
                       '\t\tqueue_overlay_redraw()', hygiene)
 
 
