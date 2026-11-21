@@ -309,9 +309,10 @@
 				// A bare-knuckle punch can hurt the puncher's own hand (punch_injury.dm).
 				if (H != src && istype(attack, /datum/unarmed_attack/punch) && !attack.deal_halloss)
 					H.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, HIT_BLUNT))
-					// A real punch on a living person teaches the unarmed skill (hand_conditioning.dm).
+					// A real punch on a living person teaches the unarmed skill (hand_conditioning.dm),
+					// more when it lands on a Master of the same school (martial_training.dm).
 					if (stat != DEAD)
-						H.practice_unarmed(0.5)
+						H.practice_unarmed(0.5, src)
 
 			if (I_DISARM)
 				if (M == src)
