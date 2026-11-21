@@ -435,6 +435,7 @@
 #include "code\game\mob\observer\ghost\login.dm"
 #include "code\game\mob\observer\ghost\logout.dm"
 #include "code\game\mob\observer\ghost\say.dm"
+#include "code\game\objects\armor_families.dm"
 #include "code\game\objects\buckling.dm"
 #include "code\game\objects\controls.dm"
 #include "code\game\objects\covers.dm"

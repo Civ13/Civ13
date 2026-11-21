@@ -87,6 +87,13 @@
 /proc/grade_forged_armor(obj/item/clothing/C, obj/item/stack/material/stock)
 	if (!istype(C) || !istype(stock) || !C.armor)
 		return FALSE
+	// Family armor takes its tier from the metal (armor_families.dm).
+	if (C.armor_family)
+		var/tier = armor_tier_for_stock(stock)
+		if (tier)
+			C.armor_tier = tier
+		C.armor_blow_grade = stock.armor_blunt_grade
+		C.armor_arrow_grade = stock.armor_pierce_grade
 	if (stock.armor_blunt_grade == 1 && stock.armor_pierce_grade == 1)
 		return FALSE
 	for (var/key in list("melee", "arrow", "gun"))
