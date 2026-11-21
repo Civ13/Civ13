@@ -108,8 +108,7 @@ Code: `code/modules/naval/hull_bow.dm`.
   only while no deck of hers lies ahead of it along her heading. It is not
   climbed and takes no crow's nest.
 - A figurehead (6 wood, vehicle parts) is cosmetic. The first click with an
-  empty hand carves it as one of `figurehead_carvings` (placeholder sprites
-  from existing statues until the Fable art pass).
+  empty hand carves it as one of `figurehead_carvings`.
 - Draught pieces `J` (bowsprit) and `F` (figurehead, turns).
   `sail_push()` counts a jib as half a mast; the design check
   `/datum/design_check/ship/bowsprits` warns of a bowsprit with deck ahead of
@@ -130,6 +129,25 @@ Code: `code/modules/naval/hull_grapnel.dm`, joining `craft_grapple.dm`.
   off at once.
 - The hooks ride in `craft_grapple.hooks` and drop on `home` (her deck tile the
   lines run from) when the lines part. Like the lines, nothing is saved.
+
+## Sprites
+
+`tests/sprites/create_ship_edges.py` draws them all (`--check` verifies the
+committed sheets, `--preview <png>` writes a review sheet):
+
+- `icons/obj/ship_edges.dmi`: `gunwale` and `bulwark` with their `_gate` and
+  `_gate_open` gangway states (the `railing_style` of each type, four
+  directions like `railings_built.dmi`), the uncarved `figurehead` and
+  `figurehead_bear`, `_wolf`, `_goose`, `_monkey`, `_serpent`, `_ram` and
+  `_face` (four directions), and the `grapnel`.
+- `icons/mob/items/lefthand_ship_edges.dmi` and `righthand_ship_edges.dmi`:
+  the held `grapnel`.
+- `icons/obj/vehicles/ship_bowsprit.dmi`: the mast's `sail0`, `sail1` and
+  `sail2` as a bare spar, a furled jib and a set jib. The dir is the way the
+  spar points.
+- `icons/obj/vehicles/ship_mast_nest.dmi`: the mast's three states with a
+  crow's nest at the masthead. The mast's `update_icon()` picks this file
+  while `crows_nest` is set.
 
 ## Tests
 

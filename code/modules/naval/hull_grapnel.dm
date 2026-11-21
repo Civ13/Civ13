@@ -17,8 +17,13 @@
 /obj/item/weapon/grapnel
 	name = "grapnel"
 	desc = "A four-fluked iron hook on a stout line, thrown to catch another ship's rail and hold her alongside."
-	icon = 'icons/obj/stairs.dmi'
-	icon_state = "grapplehook"
+	icon = 'icons/obj/ship_edges.dmi'
+	icon_state = "grapnel"
+	item_state = "grapnel"
+	item_icons = list(
+		slot_l_hand_str = 'icons/mob/items/lefthand_ship_edges.dmi',
+		slot_r_hand_str = 'icons/mob/items/righthand_ship_edges.dmi',
+		)
 	w_class = ITEM_SIZE_NORMAL
 	slot_flags = SLOT_SHOULDER
 	force = WEAPON_FORCE_NORMAL
