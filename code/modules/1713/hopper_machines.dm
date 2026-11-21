@@ -444,11 +444,14 @@ var/global/list/millstone_grains = list(
 //////////////////////////////////////////////////////////////////////////////
 // Power loom: cotton and retted fibre to cloth, silk thread to silk.
 
-var/global/list/power_loom_yarns = list(
-	"cotton" = list(/obj/item/stack/material/cotton, /obj/item/stack/material/cloth),
-	"retted fibre" = list(/obj/item/stack/material/rettedfabric, /obj/item/stack/material/cloth),
-	"silk" = list(/obj/item/stack/silk_thread, /obj/item/stack/material/silk),
-)
+// Feed kind -> list(yarn, cloth). A plain proc, not a global or static list:
+// the world's global initialiser is at BYOND's procedure size limit.
+/proc/power_loom_yarns()
+	return list(
+		"cotton" = list(/obj/item/stack/material/cotton, /obj/item/stack/material/cloth),
+		"retted fibre" = list(/obj/item/stack/material/rettedfabric, /obj/item/stack/material/cloth),
+		"silk" = list(/obj/item/stack/silk_thread, /obj/item/stack/material/silk),
+	)
 
 /obj/structure/workshop_machine/hopper/power_loom
 	name = "power loom"
@@ -462,8 +465,8 @@ var/global/list/power_loom_yarns = list(
 	return "yarn"
 
 /obj/structure/workshop_machine/hopper/power_loom/feed_kind(obj/item/I)
-	for (var/kind in power_loom_yarns)
-		var/list/pair = power_loom_yarns[kind]
+	for (var/kind in power_loom_yarns())
+		var/list/pair = power_loom_yarns()[kind]
 		if (I.type == pair[1])
 			return kind
 	return null
@@ -472,7 +475,7 @@ var/global/list/power_loom_yarns = list(
 	return list(/obj/item/stack/material/cloth, /obj/item/stack/material/silk)
 
 /obj/structure/workshop_machine/hopper/power_loom/make_product(kind, turf/T)
-	var/list/pair = power_loom_yarns[kind]
+	var/list/pair = power_loom_yarns()[kind]
 	if (!pair)
 		return
 	var/path = pair[2]
@@ -483,7 +486,7 @@ var/global/list/power_loom_yarns = list(
 			break
 
 /obj/structure/workshop_machine/hopper/power_loom/return_feed(kind, count, turf/T)
-	var/list/pair = power_loom_yarns[kind]
+	var/list/pair = power_loom_yarns()[kind]
 	if (pair && count > 0)
 		var/path = pair[1]
 		new path(T, count)
