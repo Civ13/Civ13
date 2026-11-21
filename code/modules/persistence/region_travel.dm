@@ -234,6 +234,9 @@ var/global/list/region_travel_carry_types = list(
 	var/list/tongues = region_travel_tongues()
 	if(tongues)
 		P["tongues"] = tongues
+	// The sign they were born under travels too (birth_charts.dm).
+	if(birth_chart_valid(birth_chart))
+		P["chart"] = birth_chart
 	// Wounds travel as overall damage, so a trip never heals (raid exits let
 	// hurt raiders leave; other gates still ask for full health).
 	var/brute = clamp(round(getBruteLoss()), 0, 200)
@@ -295,6 +298,7 @@ var/global/list/region_travel_carry_types = list(
 		return null
 	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
 	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
+	if(("chart" in P) && !birth_chart_valid(P["chart"])) return null
 	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
 	if(("trade_lock" in P) && !isnum(P["trade_lock"])) return null
 	if(("study_interest" in P) && !(P["study_interest"] in scholar_disciplines)) return null
@@ -511,6 +515,8 @@ var/global/list/region_travel_carry_types = list(
 	if(islist(P["traits"]))
 		H.traits = P["traits"].Copy()
 		H.traits_dirty = TRUE
+	if(birth_chart_valid(P["chart"]))
+		H.birth_chart = P["chart"]
 	if(isnum(P["study_field_lock"]))
 		H.study_field_lock = P["study_field_lock"]
 	if(isnum(P["trade_lock"]))
@@ -673,6 +679,7 @@ var/global/list/region_travel_carry_types = list(
 		return FALSE
 	H.record_persistence_owner()
 	H.region_travel_tongue_notes()
+	H.note_birth_chart()
 	region_admin_send_claimed(H)
 	to_chat(H, SPAN_NOTICE("You arrive in [shard_group.enabled ? shard_group.name : "a new land"]."))
 	qdel(lobby)
