@@ -1155,6 +1155,7 @@
 #include "code\modules\1713\weather_lightning.dm"
 #include "code\modules\1713\weather_policy.dm"
 #include "code\modules\1713\weather_systems.dm"
+#include "code\modules\1713\weather_shared.dm"
 #include "code\modules\1713\weather_wind.dm"
 #include "code\modules\1713\world_calendar.dm"
 #include "code\modules\1713\swimming.dm"
