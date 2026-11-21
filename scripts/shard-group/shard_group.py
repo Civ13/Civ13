@@ -1163,7 +1163,9 @@ class RegionHost(Host):
         # The gateway is every player's way in and the group's hub entry: a frozen world
         # stops answering the hub and holds each join until it thaws, so it stays awake.
         # The tutorial stays awake too, so it opens at once even while the lands are down.
-        return not self.always_up()
+        # The mainland never sleeps either (Val, 2026-11-21): it is where new players start
+        # and the land everyone else's trails lead back to.
+        return not self.always_up() and not self.protects_mainland_uptime()
 
     def protects_mainland_uptime(self):
         try:
