@@ -221,7 +221,7 @@ var/global/list/fire_gilding_bases = list("copper", "bronze", "brass", "silver",
 	if (!filled)
 		to_chat(user, SPAN_NOTICE("The tube of \the [src] is empty. It needs [THERMOMETER_MERCURY] units of quicksilver."))
 		return
-	to_chat(user, SPAN_NOTICE(thermometer_reading(user)))
+	to_chat(user, SPAN_NOTICE(thermometer_feels_reading(user)))
 
 /obj/item/weapon/thermometer/attackby(obj/item/I, mob/user)
 	if (!filled && holds_mercury(I))

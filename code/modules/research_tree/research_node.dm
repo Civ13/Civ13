@@ -658,6 +658,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/component_workbench/toolsmith" = "bronze_working",
 		"/obj/item/clothing/accessory/pendant_hone" = "bronze_working",
 		"/obj/structure/fluid_tank/plain" = "bronze_working",
+		"/obj/structure/weather_instrument/rain_gauge" = "bronze_working",
 		"/obj/covers/copper_plate" = "bronze_working",
 		"/obj/covers/bronze_plate" = "bronze_working",
 		"/obj/covers/lead_sheet" = "bronze_working",
@@ -1205,7 +1206,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/thrown/kunai_normal" = "bronze_weapons",
 		"/obj/item/weapon/material/thrown/star" = "bronze_weapons",
 		"/obj/item/weapon/melee/classic_baton/whip" = "bronze_weapons",
-		// --- bronze_working (7) ---
+		// --- bronze_working (8) ---
 		"/obj/structure/bell" = "bronze_working",
 		"/obj/item/weapon/clay/mold" = "bronze_working",
 		"/obj/item/weapon/storage/ore_collector" = "bronze_working",
@@ -1458,7 +1459,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (23) ---
+		// --- electricity (24) ---
 		"/obj/structure/workshop_machine/wire_bench" = "electricity",
 		"/obj/structure/mechanism_relay" = "electricity",
 		"/obj/item/gem_tester/refractometer" = "electricity",
@@ -1487,6 +1488,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/material/electronics" = "electricity",
 		"/obj/structure/grinder/constructed" = "electricity",
 		"/obj/structure/telegraph" = "electricity",
+		"/obj/structure/weather_instrument/station" = "electricity",
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
@@ -2135,7 +2137,7 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (20) ---
+		// --- optics_instruments (21) ---
 		"/obj/structure/tower_clock" = "optics_instruments",
 		"/obj/structure/clock_face" = "optics_instruments",
 		"/obj/structure/lighthouse_beacon/reflector" = "optics_instruments",
@@ -2154,6 +2156,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/attachment/scope/adjustable/binoculars" = "optics_instruments",
 		"/obj/item/weapon/barometer/empty" = "optics_instruments",
 		"/obj/item/weapon/thermometer/empty" = "optics_instruments",
+		"/obj/item/weapon/hygrometer" = "optics_instruments",
 		"/obj/item/weapon/compass" = "optics_instruments",
 		"/obj/item/weapon/globe" = "optics_instruments",
 		"/obj/item/weapon/watch/pocket" = "optics_instruments",
@@ -2677,8 +2680,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/ballista_bolt" = "siege_engines",
 		"/obj/item/weapon/ladder_fork" = "siege_engines",
 		"/obj/structure/siege_engine/tower" = "siege_engines",
-		// --- steam_power (6) ---
+		// --- steam_power (7) ---
 		"/obj/structure/cellar_pump/steam" = "steam_power",
+		"/obj/structure/weather_instrument/anemometer" = "steam_power",
 		"/obj/structure/sewer_pump/steam" = "steam_power",
 		"/obj/structure/workshop_machine/steam_site/steam_shovel" = "steam_power",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
