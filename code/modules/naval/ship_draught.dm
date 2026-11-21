@@ -799,6 +799,7 @@ var/global/list/ship_draught_decks = list(
 		return "She is not afloat."
 	var/angle = craft_turn_angle(B.dir, NORTH)
 	var/uz = B.upper_z()
+	var/tz = B.top_z()
 	var/lz = B.lower_z()
 	var/list/turned = list()
 	var/minx = 0
@@ -828,7 +829,9 @@ var/global/list/ship_draught_decks = list(
 		var/list/piece = ship_draught_piece_on(T, tiller)
 		if (piece)
 			D.set_piece(x, y, piece[1], (piece[2] in cardinal) ? turn(piece[2], angle) : NORTH)
-		D.survey_deck(1, x, y, B.upper_deck_cell(T, uz), angle)
+		var/turf/U = B.upper_deck_cell(T, uz)
+		D.survey_deck(1, x, y, U, angle)
+		D.survey_deck(2, x, y, B.upper_deck_cell(U, tz), angle)
 		D.survey_deck(-1, x, y, B.lower_deck_cell(T, lz), angle)
 	return D
 

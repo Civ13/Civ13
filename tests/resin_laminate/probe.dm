@@ -64,6 +64,9 @@ var/laminate_wait_ok = TRUE
 		n += NT.amount
 	laminate_check(n == 2, "two skeins of nylon thread lie by the bakelizer")
 	laminate_check(bakelizer_setting_age("nylon_thread") == 6 && bakelizer_setting_age("phenolic_resin") == 0, "nylon waits for WW2")
+	K.setting = "photopolymer"
+	K.bakelizer_make()
+	laminate_check(K.photopolymer == 2 && K.bakelizer_eject_photopolymer(null) && K.photopolymer == 0 && bakelizer_setting_age("photopolymer") == 9, "the Digital Age photopolymer setting fills two bottles per step")
 	var/material/NY = get_material_by_name("nylon")
 	laminate_check(NY && NY.stack_type == /obj/item/stack/material/nylon, "nylon is a material")
 	// Hot press.

@@ -542,6 +542,9 @@
 	var/outside_c = outside_temperature_c(exposure_turf)
 	if (!isnull(outside_c))
 		loc_temp = outside_c
+	else
+		// Wind chill, humid heat and the sun out of doors (feels_like.dm).
+		loc_temp = feels_like_temperature(loc_temp)
 	outside_exposure_step(exposure_turf)
 	seabed_exposure_step(exposure_turf)
 	cold_wetness = min(1, max(0, cold_wetness))

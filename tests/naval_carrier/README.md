@@ -248,6 +248,20 @@ is past the 300-tile deck cap and refused; with half its roofs taken down
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/upper_deck_probe.dm 300
 
+## A second deck above (`second_deck_probe.dm`)
+
+Four levels: a hull roofed over, and nine tiles of that upper deck roofed again,
+with a ladder up to the second deck. The tiller reads out the second deck; a
+sailor and a pail up there are aboard and ride a step east, every roof keeping
+its floor; a floor or something solid two levels up stops her with the reason,
+while air over her upper deck's open tiles at that height does not; coming
+about swings the second deck whole; her lines draw it and pass the design
+checks; sinking brings the pail down to the water. A draught with a second deck
+above is built on the slipway (refused where a floor is in the way two levels
+up), with a ladder between the decks above, and launches with both.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/second_deck_probe.dm 300
+
 ## Sea chart and harbours (`chart_probe.dm`)
 
 The mirror sea chart and mooring posts (`code/modules/naval/craft_chart.dm`):
@@ -305,7 +319,9 @@ An ocean world (`code/modules/naval/ocean_sites.dm`) on a 600 x 300 fixture:
 the same sites rolled on every start, clear of the edges; an islet raised
 when a ship comes near and gone after she leaves, rising the same again; a
 bunk kept as home, a mooring post and a world save each keeping it; a reef of
-shallows richer in fish than open sea; a wreck with salvage; a named sea mark.
+shallows richer in fish than open sea; a wreck with salvage; a named sea mark;
+a ship nobody has been aboard for a week foundering while a crewed one does not;
+and a ship off the Arctic's west edge coming out at its east edge.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ocean_sites_probe.dm 300
 

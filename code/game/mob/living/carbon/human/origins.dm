@@ -340,6 +340,9 @@ var/global/list/origins_by_id = null
 /mob/living/human/var/origin_land = null
 // Not saved: a people requested before the character first picks one.
 /mob/living/human/var/tmp/origin_wish = null
+// Not saved: the people of the account's last character, when this one
+// returns close to where it died (death_legacy.dm).
+/mob/living/human/var/tmp/legacy_people = null
 
 /mob/living/human/proc/get_origin()
 	return origin_by_id(origin_id)
@@ -374,28 +377,40 @@ var/global/list/origins_by_id = null
 			peoples[O.name] = O
 	return peoples
 
-// A new character on a land with peoples. Someone at the keyboard may pick a
-// people of this land and may keep the name and looks from character setup;
-// everyone else belongs to the people of their birthplace.
+// A new character on a land with peoples. One who starts among people is
+// born into that community (peoples.dm): its most common people by default,
+// or another people living there. One who starts in the wild belongs to the
+// people of the birthplace, or another people of this land. Someone at the
+// keyboard picks and may keep the name and looks from character setup.
 /mob/living/human/proc/choose_origin(climate)
 	if (!map || origin_id)
 		return FALSE
 	var/datum/origin/O = land_origin_for(map.ID, climate)
+	var/list/community = community_peoples(get_turf(src), src)
+	var/list/peoples = community.len ? community_people_choices(community) : land_peoples(map.ID)
+	if (community.len && peoples.len)
+		O = peoples[peoples[1]]
+	// Returning where the last character died: the same people, if it lives here.
+	if (legacy_people)
+		var/datum/origin/kept = origin_by_id(legacy_people)
+		if (kept && (!community.len || (kept.name in peoples)))
+			O = kept
+		legacy_people = null
 	// A people asked for when the character was made (agent spawn), if this land has it.
 	if (origin_wish)
 		var/datum/origin/wished = origin_by_id(origin_wish)
-		if (wished && (wished.name in land_peoples(map.ID)))
+		if (wished && (wished.name in peoples))
 			O = wished
 		origin_wish = null
 	var/keep_setup = FALSE
 	if (client)
-		var/list/peoples = land_peoples(map.ID)
 		if (peoples.len > 1)
-			var/by_birth = "By birthplace[O ? " ([O.name])" : ""]"
+			var/by_birth = community.len ? "The people here[O ? " ([O.name])" : ""]" : "By birthplace[O ? " ([O.name])" : ""]"
 			var/list/options = list(by_birth)
 			for (var/people in peoples)
 				options += people
-			var/picked = WWinput(src, "Which people do you belong to? Your people gives you your mother tongue.", "Your People", by_birth, options)
+			var/question = community.len ? "You were born among these peoples. Which do you belong to? Your people gives you your mother tongue." : "Which people do you belong to? Your people gives you your mother tongue."
+			var/picked = WWinput(src, question, "Your People", by_birth, options)
 			if (QDELETED(src) || origin_id)
 				return FALSE
 			if (picked && peoples[picked])

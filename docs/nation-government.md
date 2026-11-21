@@ -146,6 +146,32 @@ Treaties change provinces (`docs/provinces.md`, "Treaties"): allies and pact
 partners never contest each other's provinces, a nation besieges another only
 while at war with it, and allies at a besieged seat fight on their ally's side.
 
+## Vassals
+
+A nation may be another's vassal (`tools/transfer_storage/nation_vassals.py`,
+through the `treaty` op, so each nation decides under its own government):
+
+- **By agreement.** One nation agrees to take the other as a vassal
+  (`overlord`) and the other agrees to serve (`vassal`), in either order; the
+  offer stands for 7 days. A nation at war can surrender this way, which ends
+  the war.
+- **Imposed.** A nation at war with another that has won 2 sieges against it in
+  the last 14 days may make it a vassal alone (`impose`). Worlds report each
+  siege won between nations at war (`siege_won` op, `province_treaties.dm`).
+  The new vassal loses 5 legitimacy.
+- **Release.** The overlord renounces its vassal alone.
+- **Independence.** After 14 days a vassal may declare independence alone; it
+  ends the vassalage, starts a war and gives the vassal 5 legitimacy.
+
+No chains: a vassal takes no vassals, and a nation with vassals cannot become
+one. An overlord keeps at most 4. The two cannot declare war on each other,
+count as allies for provinces and sieges, and the vassal pays tribute: once a
+week each vassal member faction moves a tenth of its strongbox coin (at most
+100 silver) to an overlord member faction's strongbox in the same world. Real
+coin moves; nothing is minted, and with no overlord box in that world nothing is
+due. Nation view and Foreign affairs show the vassalage as `vassal`/`overlord`
+rows in the treaty snapshot.
+
 ## Legitimacy
 
 Every government holds a legitimacy score from 0 to 100
@@ -241,6 +267,8 @@ stays a member for the notice period and may **Stay** to withdraw it.
   and when. A confederation's treaty votes are `nation_vote` rows of kind
   `treaty:<proposal>`.
 - `nation_legitimacy`: nation, score, and when its daily change last ran.
+- `nation_vassal`: vassal -> overlord, since when and whether imposed;
+  `nation_siege_win`: winner, loser and when (14 days kept).
 - `nation_frozen`: nations staff froze, and since when.
 - `nation_staff_log`: nation, when, staff account, act and reason (the last
   100 kept).

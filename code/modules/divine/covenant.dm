@@ -50,9 +50,10 @@ var/global/list/divine_invocation_names = list(
 	var/tmp/datum/divine_covenant_runtime/divine_covenant = null
 	var/tmp/datum/divine_use_request/divine_request = null
 	var/tmp/datum/divine_use_request/ritual/divine_vigil_member = null // a vigil this body is keeping
+	var/tmp/divine_invite_from = null   // a god's invitation waiting for an answer (divine_patron.dm)
 
 /mob/living/human/persistence_runtime_var(key)
-	return key == "divine_covenant" || key == "divine_request" || key == "divine_vigil_member" || ..()
+	return key == "divine_covenant" || key == "divine_request" || key == "divine_vigil_member" || key == "divine_invite_from" || ..()
 
 /proc/divine_claimants(deity)
 	var/key = divine_book_key(deity)

@@ -97,10 +97,32 @@
 	for (var/turf/U in upper_cells())
 		.++
 
+// The level her second deck above stands on, or 0 where there is none.
+/datum/craft_body/built/proc/top_z()
+	var/uz = upper_z()
+	return uz ? building_upper_z(uz) : 0
+
+// Her second deck above: one entry per entry of upper (her upper deck), the
+// tile above it that holds the upper face of a roof built on her upper deck,
+// or the top of a ladder that stands there; null where there is none.
+/datum/craft_body/built/proc/top_cells(list/upper = null)
+	. = list()
+	var/tz = top_z()
+	if (!upper)
+		upper = upper_cells()
+	for (var/i = 1, i <= upper.len, i++)
+		. += upper_deck_cell(upper[i], tz)
+
+/datum/craft_body/built/proc/top_tile_count()
+	. = 0
+	for (var/turf/T in top_cells())
+		.++
+
 // Everyone and everything aboard, on her deck, the deck above and her hold.
 /datum/craft_body/built/aboard()
 	. = ..()
-	for (var/turf/U in upper_cells() + lower_cells())
+	var/list/upper = upper_cells()
+	for (var/turf/U in upper + top_cells(upper) + lower_cells())
 		for (var/atom/movable/M in U)
 			if (M.loc != U || QDELETED(M))
 				continue
@@ -264,6 +286,28 @@
 				last_refusal = why
 				return null
 		upper_dest += UD
+	// Her second deck above the same way, a level higher.
+	var/list/top = top_cells(upper)
+	var/list/top_dest = list()
+	var/tz = top_z()
+	var/list/top_set = null
+	for (var/i = 1, i <= top.len, i++)
+		var/turf/T = top[i]
+		if (!T)
+			top_dest += null
+			continue
+		if (!top_set)
+			top_set = list()
+			for (var/turf/O in top)
+				top_set[O] = TRUE
+		var/turf/D = dest[i]
+		var/turf/TD = locate(D.x, D.y, tz)
+		if (!TD || !top_set[TD])
+			var/why = upper_tile_refusal(TD)
+			if (why)
+				last_refusal = why
+				return null
+		top_dest += TD
 	// Her hold must find rock or deep water below the tiles she moves to.
 	var/list/lower = lower_cells(mine)
 	var/list/lower_dest = list()
@@ -305,15 +349,16 @@
 				last_refusal = why
 				return null
 	var/upper_count = 0
-	for (var/turf/U in upper)
+	for (var/turf/U in upper + top)
 		upper_count++
 	var/lower_count = 0
 	for (var/turf/L in lower)
 		lower_count++
 	if (upper_count + lower_count + offsets.len > BUILT_HULL_MAX_DECK_TILES)
-		last_refusal = "her decks are too large to sail: [offsets.len] tiles of hull, [upper_count] of upper deck and [lower_count] of hold, more than [BUILT_HULL_MAX_DECK_TILES] in all. Take down some of the roofs over her deck"
+		last_refusal = "her decks are too large to sail: [offsets.len] tiles of hull, [upper_count] of decks above and [lower_count] of hold, more than [BUILT_HULL_MAX_DECK_TILES] in all. Take down some of the roofs over her deck"
 		return null
-	return list(nx, ny, turned, dest, upper, upper_dest, lower, lower_dest)
+	// Her second deck above rides with her upper deck: it moves after it.
+	return list(nx, ny, turned, dest, upper + top, upper_dest + top_dest, lower, lower_dest)
 
 /datum/craft_body/built/move_cells(x, y, heading)
 	var/list/P = plan(x, y, heading)
@@ -344,9 +389,6 @@
 	for (var/list/O in offsets)
 		old += locate(px + O[1], py + O[2], z)
 	var/list/dest = P[4]
-	var/list/old_set = list()
-	for (var/turf/S in old)
-		old_set[S] = TRUE
 	var/list/dest_set = list()
 	for (var/turf/D in dest)
 		dest_set[D] = TRUE
@@ -411,19 +453,9 @@
 			lower_cargo += list(riders)
 		// A roof aboard makes the tiles under it indoors (roof_stuff.dm): the
 		// areas of her tiles sail with her, and the sea's come back behind.
-		var/list/old_area = null
-		var/list/fresh_area = null
-		for (var/list/riders in cargo)
-			if (locate(/obj/roof) in riders)
-				old_area = list()
-				break
-		if (old_area)
-			fresh_area = list()
-			for (var/turf/S in old)
-				old_area += S.loc
-			for (var/turf/D in dest)
-				if (!old_set[D])
-					fresh_area += D.loc
+		// A roof on her upper deck does the same for the tiles of it.
+		var/list/areas = built_hull_areas_before(cargo, old, dest)
+		var/list/upper_areas = built_hull_areas_before(upper_cargo, upper_old, upper_new)
 		// The tiles she arrives on are dry before anyone steps onto them.
 		for (var/i = 1, i <= dest.len, i++)
 			var/turf/D = dest[i]
@@ -482,25 +514,8 @@
 						continue
 					craft_step_move(M, D, D.x - S.x, D.y - S.y, gliding)
 		after_hold_move(lower_old, lower_new, hold_origin)
-		if (old_area)
-			var/list/changed = list()
-			for (var/i = 1, i <= dest.len, i++)
-				var/turf/D = dest[i]
-				var/area/A = old_area[i]
-				if (A && D.loc != A)
-					A.contents += D
-					changed += D
-			var/k = 0
-			for (var/turf/S in old)
-				if (dest_set[S])
-					continue
-				var/area/A = fresh_area[++k]
-				if (A && S.loc != A)
-					A.contents += S
-					changed += S
-			for (var/turf/T in changed)
-				for (var/atom/movable/lighting_overlay/LO in T)
-					LO.update_overlay()
+		built_hull_areas_after(areas)
+		built_hull_areas_after(upper_areas)
 		craft_rigid_settle(carry)
 		carry = null
 		glide_keep(gliding ? everything : null)
@@ -561,6 +576,67 @@
 		if (angle)
 			craft.on_turn(angle)
 	return TRUE
+
+// The areas a move carries, taken before it: when a roof rides on one of the
+// tiles in old, list(old tiles, new tiles, each old tile's area, the area of
+// each new tile she did not already cover), else null. old and dest pair up
+// by index and may hold nulls where a deck has no tile.
+/proc/built_hull_areas_before(list/cargo, list/old, list/dest)
+	var/roofed = FALSE
+	for (var/list/riders in cargo)
+		if (locate(/obj/roof) in riders)
+			roofed = TRUE
+			break
+	if (!roofed)
+		return null
+	var/list/from = list()
+	var/list/onto = list()
+	for (var/i = 1, i <= old.len, i++)
+		if (old[i] && dest[i])
+			from += old[i]
+			onto += dest[i]
+	var/list/from_set = list()
+	for (var/turf/S in from)
+		from_set[S] = TRUE
+	var/list/old_area = list()
+	var/list/fresh_area = list()
+	for (var/turf/S in from)
+		old_area += S.loc
+	for (var/turf/D in onto)
+		if (!from_set[D])
+			fresh_area += D.loc
+	return list(from, onto, old_area, fresh_area)
+
+// After the move: each new tile takes the area of the tile it came from, and
+// each tile she left takes the area of the open tiles she moved onto.
+/proc/built_hull_areas_after(list/state)
+	if (!state)
+		return
+	var/list/from = state[1]
+	var/list/onto = state[2]
+	var/list/old_area = state[3]
+	var/list/fresh_area = state[4]
+	var/list/to_set = list()
+	for (var/turf/D in onto)
+		to_set[D] = TRUE
+	var/list/changed = list()
+	for (var/i = 1, i <= onto.len, i++)
+		var/turf/D = onto[i]
+		var/area/A = old_area[i]
+		if (A && D.loc != A)
+			A.contents += D
+			changed += D
+	var/k = 0
+	for (var/turf/S in from)
+		if (to_set[S])
+			continue
+		var/area/A = fresh_area[++k]
+		if (A && S.loc != A)
+			A.contents += S
+			changed += S
+	for (var/turf/T in changed)
+		for (var/atom/movable/lighting_overlay/LO in T)
+			LO.update_overlay()
 
 // Turns about the pivot.
 /datum/craft_body/built/turn_to(heading)

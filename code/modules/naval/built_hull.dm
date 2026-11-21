@@ -135,9 +135,10 @@
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/upper = B.upper_tile_count()
 	var/hold = B.lower_tile_count()
+	var/top = upper ? B.top_tile_count() : 0
 	var/list/open = open_sides()
 	var/open_text = open.len ? " [open.len] side\s of her deck are open: rail them before she can be refitted." : ""
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? "[hold ? "," : " and"] [upper] of upper deck" : ""][hold ? " and [hold] of hold" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""][open_text]"
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? "[hold ? "," : " and"] [upper] of upper deck[top ? " with [top] of second deck above" : ""]" : ""][hold ? " and [hold] of hold" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""][open_text]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()
