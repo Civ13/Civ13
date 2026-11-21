@@ -7,11 +7,41 @@
 ## The drive
 
 A prime mover (`/obj/structure/workshop_machine/mover`) drives the fastened
-workshop machines and hoists within one tile of it. There is no network, no
+workshop machines and hoists within one tile of it, and through transmission
+parts (below) the machines beside those parts. There is no network object, no
 process and no list of movers: a machine calls `driven_time(base)` when it
-starts a step, which asks `mechanical_drive_factor(src)` for the lowest time
-share among the turning movers next to it. A mover answers from what stands
-around it at that moment and updates its own icon when asked or examined.
+starts a step, which asks `mechanical_drive_factor(src)`. That walks
+`mechanical_drive_load(src)` from what stands around the machine at that moment
+(bounded at 64 movers and parts) and returns
+`1 - (1 - best) * min(1, strength / draw)`: the best share among the turning
+movers joined to it, closing on hand time when the machines on that drive draw
+more than the movers' summed strength. Movers update their own icon when asked
+or examined.
+
+Strength (`current_capacity()`): treadwheel 1, horse gin 2, mill wheel 3 (4 on
+a mill race), windmill 1/2/3 in light/moderate/strong wind. Draw
+(`/obj/structure/var/drive_draw`, set in `transmission.dm`): 1 for the
+potter's wheel, mason's saw, cement mixer, shear legs and cranes, wire bench,
+drill press, hand pump and hydraulic monitor; 2 for the trip hammer, rolling
+mill, stone crusher, water stamp mill and blast furnace. A caller that draws
+nothing itself (a lift turf) counts as 1.
+
+## Transmission
+
+`code/modules/1713/transmission.dm`, sprites `icons/obj/transmission.dmi`
+(drawn by `tests/sprites/create_transmission.py`). Parts join when they stand
+within one tile of each other, diagonals included.
+
+| Part | Cost | Research | What it does |
+| --- | --- | --- | --- |
+| Wooden line shaft | 4 wood, bearing | Watermills | carries drive; a run with any wooden length turns at most 8 lengths |
+| Shaft clutch | 5 wood, gear, bearing | Watermills | a length that carries only while thrown in; by hand or as a cord actuator (`mechanisms.dm`) |
+| Gear box | 8 wood, 2 gears, shaft | Watermills | also joins the gear box directly above or below |
+| Iron line shaft | 3 iron, bearing | Machined Tools | an all-iron run turns up to 16 lengths |
+| Rope drive wheel | 4 iron, bearing, 2 rope | Machined Tools | rope on it ties it to a free wheel within 7 tiles on the level; drive passes between them |
+
+A run that is too long binds: only the movers right beside the machine still
+drive it, and the parts' examine says why.
 
 Driven today: potter's wheel, mason's saw, cement mixer, shear legs and the
 treadwheel crane. A step never takes less than half a second.

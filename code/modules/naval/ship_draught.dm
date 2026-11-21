@@ -301,6 +301,38 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		lines += "As drawn she can be built and commissioned."
 	return jointext(lines, "<br>")
 
+// The same summary as fields, for the designer window to lay out:
+// what summary_text() says, nothing reckoned twice.
+/datum/ship_draught/proc/summary_data()
+	var/upper = upper_tiles()
+	var/masts = piece_count("M")
+	var/benches = piece_count("R")
+	var/list/cost_parts = list()
+	var/list/drives = list()
+	if (cells.len)
+		var/list/C = costs()
+		for (var/material in C)
+			cost_parts += "[C[material]] [material]"
+		if (masts)
+			drives += list(list("Sail", ship_draught_step_name(sail_step())))
+		if (benches)
+			drives += list(list("Oars", ship_draught_step_name(oar_step())))
+		if (masts && benches)
+			drives += list(list("Both", ship_draught_step_name(best_step())))
+	return list(
+		"name" = name,
+		"tiles" = cells.len,
+		"max_tiles" = SHIP_DRAUGHT_MAX_TILES,
+		"upper" = upper,
+		"max_deck" = SHIP_DRAUGHT_MAX_DECK,
+		"class" = size_class_name(),
+		"costs" = cost_parts,
+		"drives" = drives,
+		"masts" = masts,
+		"ballast" = cells.len ? wants_ballast() : 0,
+		"problems" = problems(),
+	)
+
 // ---- Design codes ----
 
 /datum/ship_draught/proc/to_code()
@@ -476,6 +508,11 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 
 /obj/item/ship_draught/examine(mob/user, distance)
 	..()
+	var/datum/sub_draught/sub = sub_draught()
+	if (sub)
+		to_chat(user, sub.summary_text())
+		qdel(sub)
+		return
 	var/datum/ship_draught/D = draught()
 	to_chat(user, D ? D.summary_text() : "The sheet is blank.")
 	if (D)
@@ -484,26 +521,26 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 /obj/item/ship_draught/attack_self(mob/living/human/H)
 	if (!istype(H))
 		return
+	var/datum/sub_draught/sub = sub_draught()
+	if (sub)
+		sub_sheet_menu(H, sub)
+		qdel(sub)
+		return
 	var/datum/ship_draught/D = draught()
 	var/list/options = list("Draw on the sheet", "Paste a design code", "Cancel")
 	if (D)
 		options.Insert(2, "Copy her design code")
+	else
+		options.Insert(2, "Draw a submarine on the sheet")
 	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank. Hold a pen or pencil to draw a ship on it.", name, "Cancel", options)
 	if (choice == "Draw on the sheet")
 		open_designer(H)
+	else if (choice == "Draw a submarine on the sheet" && !draught_code)
+		open_sub_designer(H)
 	else if (choice == "Copy her design code" && D)
 		design_code_show(H, "Ship's draught: [D.name]", draught_code, "Paste it into any ship's draught to draw the same ship.")
 	else if (choice == "Paste a design code")
-		var/typed = design_code_ask(H, name, "Paste a ship design code (C13SHIP/...). It replaces what is drawn on this sheet.", DESIGN_CODE_SHIP_MAX)
-		if (typed && H.get_active_hand() == src)
-			var/datum/ship_draught/pasted = ship_draught_from_code(typed)
-			if (!pasted)
-				to_chat(H, SPAN_WARNING(design_code_refusal(typed, "SHIP")))
-			else
-				take(pasted)
-				design_code_log(H, "ship", name, typed)
-				to_chat(H, SPAN_NOTICE("You draw the [pasted.name] on the sheet."))
-				qdel(pasted)
+		paste_any_code(H)
 	if (D)
 		qdel(D)
 

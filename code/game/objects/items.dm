@@ -171,6 +171,7 @@
 		return
 	if (isturf(loc) && anchored) return
 	if (!user) return
+	if (magic_repo_id && magic_repo_move_refused(user)) return // repository_wards.dm
 	if (istype(user, /mob/living/human))
 		var/mob/living/human/HM = user
 		if (HM.werewolf && HM.body_build.name != "Default") return

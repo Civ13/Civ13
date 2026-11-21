@@ -43,6 +43,43 @@ def load(path=TABLE):
             raise ValueError('%s: coasts are distinct N, S, E or W' % rid)
         if not isinstance(land.get('flight', False), bool):
             raise ValueError('%s: flight is true or false' % rid)
+    oceans = data.get('oceans', {})
+    if not isinstance(oceans, dict):
+        raise ValueError('oceans is a table')
+    for oid, ocean in oceans.items():
+        if oid in lands:
+            raise ValueError('%s is both a land and an ocean' % oid)
+        size = ocean.get('size')
+        if not (isinstance(size, list) and len(size) == 2 and all(isinstance(v, int) and 100 <= v <= 2000 for v in size)):
+            raise ValueError('%s: size is [width, height], 100 to 2000 tiles' % oid)
+        if not isinstance(ocean.get('name'), str) or not ocean['name']:
+            raise ValueError('%s: no name' % oid)
+        chart = ocean.get('chart')
+        if not (isinstance(chart, list) and len(chart) == 2 and all(isinstance(v, int) for v in chart)):
+            raise ValueError('%s: chart is [x, y]' % oid)
+        for side in ocean.get('wrap', []):
+            if side not in ('west', 'south'):
+                raise ValueError('%s: wrap names west (joins east) or south (joins north)' % oid)
+        ice = ocean.get('ice')
+        if ice is not None and not (isinstance(ice, list) and len(ice) == 2 and ice[0] in SIDES and isinstance(ice[1], int)):
+            raise ValueError('%s: ice is [side, depth]' % oid)
+        boxes = []
+        for inset in ocean.get('insets', []):
+            land = inset.get('land')
+            box = inset.get('box')
+            if land not in lands:
+                raise ValueError('%s: inset land %r is not a land' % (oid, land))
+            if not (isinstance(box, list) and len(box) == 4 and all(isinstance(v, int) for v in box)):
+                raise ValueError('%s: inset box is [x0, y0, x1, y1]' % oid)
+            x0, y0, x1, y1 = box
+            # Room all round: ships come out beside it, never on the map's edge.
+            if not (10 < x0 < x1 < size[0] - 10 and 10 < y0 < y1 < size[1] - 10):
+                raise ValueError('%s: the %s inset must lie inside the map with room round it' % (oid, land))
+            for other in boxes:
+                if not (x1 + 10 < other[0] or other[2] + 10 < x0 or y1 + 10 < other[1] or other[3] + 10 < y0):
+                    raise ValueError('%s: insets lie too close together' % oid)
+            boxes.append(box)
+    regions = set(lands) | set(oceans)
     links = []
     for i, link in enumerate(data.get('links', [])):
         where = 'link %d' % (i + 1)
@@ -55,8 +92,8 @@ def load(path=TABLE):
         if b[1] != OPPOSITE[a[1]]:
             raise ValueError('%s: %s %s must face %s %s' % (where, a[0], a[1], b[0], OPPOSITE[a[1]]))
         for end in (a, b):
-            if end[0] not in lands:
-                raise ValueError('%s: %s is not a land in the table' % (where, end[0]))
+            if end[0] not in regions:
+                raise ValueError('%s: %s is not a land or ocean in the table' % (where, end[0]))
         links.append({'kind': link['kind'], 'a': a, 'b': b})
     # Stretches of one edge never overlap, and a region leads only once to another per edge.
     spans = {}
@@ -71,13 +108,16 @@ def load(path=TABLE):
         for (_, a_hi, _), (b_lo, _, _) in zip(stretches, stretches[1:]):
             if a_hi > b_lo:
                 raise ValueError('%s %s: stretches overlap' % (rid, side))
-    return {'lands': lands, 'links': links}
+    return {'lands': lands, 'oceans': oceans, 'links': links}
 
 
-def crossings(table):
-    """{region: {side: [(dest, from, to, kind, dest_from, dest_to)]}}, both ways round."""
+def crossings(table, kind=None):
+    """{region: {side: [(dest, from, to, kind, dest_from, dest_to)]}}, both ways round.
+    With kind, only links of that kind."""
     out = {}
     for link in table['links']:
+        if kind and link['kind'] != kind:
+            continue
         for here, there in ((link['a'], link['b']), (link['b'], link['a'])):
             out.setdefault(here[0], {}).setdefault(here[1], []).append(
                 (there[0], here[2], here[3], link['kind'], there[2], there[3]))
