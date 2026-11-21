@@ -3105,6 +3105,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/curtain" = "weaving",
 		"/obj/structure/curtain/leather" = "weaving",
 		"/obj/structure/loom" = "weaving",
+		"/obj/structure/silkworm_tray" = "weaving",
 		"/obj/structure/religious/tribalmask" = "weaving",
 		"/obj/item/clothing/shoes/weather/mukluks" = "weaving",
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",

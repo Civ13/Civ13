@@ -332,6 +332,9 @@
 	if (istype(W, /obj/item/stack/material/wool))
 		produce(W, H, /obj/item/stack/material/woolcloth)
 		return
+	if (istype(W, /obj/item/stack/silk_thread)) // silk.dm
+		produce(W, H, /obj/item/stack/material/silk)
+		return
 	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return

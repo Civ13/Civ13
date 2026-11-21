@@ -726,6 +726,14 @@ RECIPE: /material/woolcloth/,blue bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0
 RECIPE: /material/woolcloth/,yellow bedsheet,/obj/item/weapon/bedsheet/blue,2,75,0,1,bedsheets,0,0,28,8,null
 RECIPE: /material/woolcloth/,red bedsheet,/obj/item/weapon/bedsheet/red,2,75,0,1,bedsheets,0,0,28,8,null
 
+//*********************| SILK |*********************************
+RECIPE: /material/silk/,white kimono,/obj/item/clothing/under/kimono,3,85,0,1,clothing,0,0,18,8,null
+RECIPE: /material/silk/,light hanfu,/obj/item/clothing/under/hanfu/light,2,100,0,1,clothing,0,0,38,8,null
+RECIPE: /material/silk/,dark hanfu,/obj/item/clothing/under/hanfu,2,100,0,1,clothing,0,0,38,8,null
+RECIPE: /material/silk/,green hanfu,/obj/item/clothing/under/hanfu/green,2,100,0,1,clothing,0,0,38,8,null
+RECIPE: /material/silk/,customizable sash,/obj/item/clothing/accessory/custom/sash,1,30,0,1,accessories,0,0,0,8,null
+RECIPE: /material/silk/,customizable scarf,/obj/item/clothing/accessory/custom/scarf,1,30,0,1,accessories,0,0,70,8,null
+
 //**************************************************************
 //*********************| CLOTH |********************************
 //**************************************************************
@@ -2464,6 +2472,7 @@ RECIPE: /material/wood/soft/,salting container,/obj/structure/salting_container,
 RECIPE: /material/wood/soft/,small mill,/obj/structure/mill,4,90,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/,dehydrator,/obj/structure/dehydrator,5,110,1,1,economy & production,4,0,0,8,null
 RECIPE: /material/wood/soft/,loom,/obj/structure/loom,8,150,1,1,economy & production,19,0,0,8,null
+RECIPE: /material/wood/,silkworm tray,/obj/structure/silkworm_tray,4,80,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,retting trough,/obj/structure/converter/retting_trough,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,flax comb,/obj/structure/flax_comb,8,150,1,1,economy & production,19,0,0,8,null
 RECIPE: /material/wood/soft/,hemp dressing bench,/obj/structure/hemp_dressing_bench,8,150,1,1,economy & production,19,0,0,8,null
