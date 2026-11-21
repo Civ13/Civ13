@@ -102,3 +102,11 @@ Both states (`fog_view`, `mist_view`) were drawn for Civ13 (2026-11-21) by
 `tests/sprites/create_weather_fog.py`, a seeded Pillow script that paints a
 soft grey haze with a clear centre. No borrowed or generated artwork. They are
 under the same terms as the rest of Civ13's art.
+
+## icons/obj/frost_covers.dmi
+
+All three states (`mulch`, `row_cover`, `cloche`) were drawn for Civ13
+(2026-11-21) by `tests/sprites/create_frost_covers.py`, a seeded Pillow script
+that paints a straw mulch bed, a draped fleece row cover and a glass bell jar
+to sit under or over a crop. No borrowed or generated artwork. They are under
+the same terms as the rest of Civ13's art.

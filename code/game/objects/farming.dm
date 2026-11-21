@@ -1280,6 +1280,10 @@
 	if (istype(src, /obj/structure/farming/plant/mushroom) || istype(src, /obj/structure/farming/plant/mushroompsy))
 		return
 
+	// Night frost (crop_frost.dm): nips a tender crop back, or kills it.
+	if (frost_plant_step())
+		return
+
 	// River floodwater (flood_effects.dm): waters, drowns, or leaves silt.
 	if (flood_plant_step())
 		return

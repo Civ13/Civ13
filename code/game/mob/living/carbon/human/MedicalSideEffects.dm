@@ -56,7 +56,10 @@
 	if (life_tick % 15 != FALSE)
 		return FALSE
 
-	var/list/L = typesof(/datum/medical_effect)-/datum/medical_effect
+	// The type tree is fixed; retain only this read-only traversal list.
+	var/static/list/L
+	if (!L)
+		L = typesof(/datum/medical_effect)-/datum/medical_effect
 	for (var/T in L)
 		var/datum/medical_effect/M = new T
 		if (M.manifest(src))
