@@ -70,11 +70,11 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '86532e6708ef57a030fdc914d947ba12e4950096'
+WIKI_REVIEWED_REVISION = '2499fd0ca8864c5779adbfb2b9bca244dad0e7e0'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
-    'guides/Guide_to_Peoples_and_Languages.md': ('3b6265f9337c239b342416bc98a0982de278fd4d93a779c8a239da44e71060ed', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
+    'guides/Guide_to_Peoples_and_Languages.md': ('007c6498d643b994fae1831c21047e3bac74ac629cdc25460d7c6a7287910665', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
     'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
@@ -98,7 +98,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('0fb849380462bb52591cf545d4a7c48243a1d66682a6e0acc8cc0e786c565225', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('66e32fe7a62222792b87f4cbbffcddb90ed8eda91adf7265ce415b94a10266b3', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Survival.md': ('e0067091fe648cf478f320375128dcee2380d7848c714ce4f3b0aef8be48ed2f', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
@@ -120,8 +120,8 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('080ea4dc7a53274c07848018c341254b0a65c656934579b71d9ec538b551cdc6', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('5bcb260b4fc707ca63548706eb86a33b738e8ba3434802200ec67ee70608f37a', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
+    'guides/Guide_to_Boats.md': ('9b04468304b341551d3d397cc7738711bda3078bdd2273d7d86923776122784f', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Aircraft.md': ('097b6e8645bde1a0b4e9877e82b3d37df543a1263aa5f9297cf8ea5c5d7cc9a7', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
@@ -136,7 +136,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('3a5019f865a6eae2a9e388d0b82f0efde731b49c1f708dffe4c94fc716b6d431', 'guides overview list of guides index'),
+    'guides_overview.md': ('f24ea38d81d77773e7f5ca92aa9bffa0a0d88d8ede56fe90a0521d9599fa66a1', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 

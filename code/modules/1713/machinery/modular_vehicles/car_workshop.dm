@@ -148,6 +148,16 @@ var/global/list/car_workshop_prototypes = list()
 /obj/structure/car_workshop/proc/clear_footprint(model)
 	return bay_clear(model_size(model))
 
+// The stock a fed stack goes to, or null. Subtypes take more kinds.
+/obj/structure/car_workshop/proc/stock_key(obj/item/I)
+	if (istype(I, /obj/item/stack/material/steel)) return "steel"
+	if (istype(I, /obj/item/stack/material/wood)) return "wood"
+	if (istype(I, /obj/item/stack/material/aluminium)) return "aluminium"
+	if (istype(I, /obj/item/stack/material/glass)) return "glass"
+	if (is_cloth_sheet(I)) return "cloth"
+	if (istype(I, /obj/item/stack/cable_coil)) return "cable"
+	return null
+
 // The most of a material the press holds: 200, or enough for its dearest
 // model (a carrier's 400 steel), or for a vehicle sheet
 // (craft/vehicle_sheet_works.dm, sheet_stock_cap()).
@@ -169,13 +179,7 @@ var/global/list/car_workshop_prototypes = list()
 	if (project && istype(I, /obj/item/stack))
 		project_add(H, I)
 		return
-	var/key
-	if (istype(I, /obj/item/stack/material/steel)) key = "steel"
-	else if (istype(I, /obj/item/stack/material/wood)) key = "wood"
-	else if (istype(I, /obj/item/stack/material/aluminium)) key = "aluminium"
-	else if (istype(I, /obj/item/stack/material/glass)) key = "glass"
-	else if (is_cloth_sheet(I)) key = "cloth"
-	else if (istype(I, /obj/item/stack/cable_coil)) key = "cable"
+	var/key = stock_key(I)
 	if (key)
 		var/obj/item/stack/S = I
 		var/wool_payment = key == "cloth" && istype(S, /obj/item/stack/material/woolcloth)

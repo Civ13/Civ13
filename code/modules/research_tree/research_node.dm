@@ -989,6 +989,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
 		"/obj/structure/car_workshop/hangar" = "powered_flight",
+		"/obj/structure/car_workshop/airship_yard" = "lighter_than_air_flight",
 		"/obj/structure/vehicleparts/frame/car/aircraft/section" = "powered_flight",
 		"/obj/structure/vehicleparts/axis/aircraft/airframe" = "powered_flight",
 		"/obj/structure/bed/chair/drivers/aircraft/loose" = "powered_flight",

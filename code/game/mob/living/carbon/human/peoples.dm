@@ -370,3 +370,67 @@ var/global/list/people_blocked_parts = null
 #undef PEOPLE_NAME_MIN
 #undef PEOPLE_NAME_MAX
 #undef PEOPLE_RECORD_KEYS
+
+// ------------------------------------------------------------
+// The viewer's people in Check Known Languages
+// ------------------------------------------------------------
+// Read-only, for the viewer's own window: their people, the peoples it grew
+// from (root first), the formed peoples that share a parent with it or grew
+// from it, and the peoples they were raised among or welcomed by. Every
+// string is escaped like the rest of known_languages_ui_data(). No member
+// counts, years apart or other nations' details are sent.
+/mob/proc/people_family_rows()
+	return null
+
+/mob/living/human/people_family_rows()
+	var/datum/origin/own = get_origin()
+	if (!own)
+		return null
+	var/list/lineage = list()
+	var/list/seen = list()
+	var/datum/origin/step = own
+	while (step && !(step.id in seen) && seen.len < 12)
+		seen += step.id
+		lineage.Insert(1, list(people_family_row(step)))
+		var/datum/origin/next = null
+		if (islist(step.parents) && step.parents.len)
+			next = origin_by_id(step.parents[1])
+		step = next
+	var/list/kin = list()
+	var/list/records = people_records()
+	for (var/id in records)
+		if (id == own.id)
+			continue
+		var/datum/origin/O = world_people(id)
+		if (!O || !islist(O.parents))
+			continue
+		var/related = (own.id in O.parents) ? "grew from yours" : null
+		if (!related && islist(own.parents))
+			for (var/pid in own.parents)
+				if (pid in O.parents)
+					related = "shares your roots"
+					break
+		if (related)
+			var/list/row = people_family_row(O)
+			row["relation"] = related
+			kin += list(row)
+	var/list/raised = list()
+	for (var/id in people_raised)
+		if (raised_among(id))
+			var/datum/origin/O = origin_by_id(id)
+			if (O)
+				raised += html_encode(O.name)
+	var/list/welcomed = list()
+	for (var/id in people_welcomed)
+		var/datum/origin/O = origin_by_id(id)
+		if (O)
+			welcomed += html_encode(O.name)
+	return list("name" = html_encode(own.name), "language" = html_encode(own.language), "land" = html_encode(origin_land ? origin_land : ""), "lineage" = lineage, "kin" = kin, "raised_among" = raised, "welcomed_by" = welcomed)
+
+/proc/people_family_row(datum/origin/O)
+	var/list/parent_names = list()
+	for (var/pid in O.parents)
+		var/datum/origin/P = origin_by_id(pid)
+		if (P)
+			parent_names += html_encode(P.name)
+	return list("name" = html_encode(O.name), "language" = html_encode(O.language), "formed" = O.world_record ? 1 : 0, "year" = O.world_record ? O.formed_year : 0, "nation" = html_encode(O.nation ? O.nation : ""), "homeland" = html_encode(O.homeland ? O.homeland : ""), "parents" = parent_names)

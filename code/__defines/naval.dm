@@ -143,3 +143,12 @@
 #define VEHICLE_DRAUGHT_MIN 2
 #define VEHICLE_DRAUGHT_MAX 5
 #define DESIGN_CODE_CAR_MAX 700
+
+// Airship sheets (naval/air_draught.dm): a crewed airship's deck fits a
+// rectangle this many tiles each way, with no more deck tiles than her gas
+// cells can hold up (naval/air_hull.dm).
+#define AIR_DRAUGHT_MIN 2
+#define AIR_DRAUGHT_MAX 12
+#define AIR_DRAUGHT_MAX_DECK 60
+#define AIR_DRAUGHT_CELL_GAS 60 // units of gas that fill one cell
+#define DESIGN_CODE_AIR_MAX 2400

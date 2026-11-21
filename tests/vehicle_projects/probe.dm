@@ -290,11 +290,14 @@ var/project_runtime_error = FALSE
 		for (var/atom/movable/part in locations)
 			back_home = back_home && part.loc == locations[part]
 		project_check(turned && back_home, "[model]: turns a full circle in place")
+		// Since #6151 a turn is drawn by glide_turn() sliding each part from its
+		// old tile (glide_slide); the engine's own glide is held at a whole tile
+		// so it does not draw the move a second time.
 		var/swung = 0
 		for (var/atom/movable/part in made.glide_was)
-			if (part.glide_size == craft_glide_size(glide_turn_time()))
+			if (part.glide_size == world.icon_size)
 				swung++
-		project_check(swung > 0, "[model]: a turn is drawn swinging round ([swung] parts glide a tile)")
+		project_check(swung > 0, "[model]: a turn is drawn swinging round ([swung] parts held for the slide)")
 		made.glide_rest_now()
 		project_check(!length(made.glide_was), "[model]: after the turn everything has its own glide back")
 		// Each step is drawn as a glide lasting the step (craft/glide.dm).
