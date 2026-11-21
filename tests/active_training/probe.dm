@@ -293,15 +293,18 @@ var/training_probe_fumble = 0
 
 	// --- the treadmill: Modern, and trains past the wheel ----------------
 	var/obj/structure/treadwheel/treadmill/mill = new(locate(14, 14, 1))
-	mill.set_dir(NORTH)
+	mill.set_dir(SOUTH)
 	R.forceMove(locate(14, 13, 1))
 	training_probe_assert(!mill.step_in(R), "treadmill_needs_modern_era")
 	map.ordinal_age = 8
 	training_probe_assert(mill.step_in(R) && mill.icon_state == "treadmill_running", "treadmill_in_modern_era")
+	// Facing the viewer, its rail draws over the runner; only while in use.
+	training_probe_assert(mill.overlays.len == 1 && mill.front_state() == "treadmill_front" && !wheel.front_state(), "south_treadmill_rail_in_front")
 	for (var/i = 1, i <= 40, i++)
-		mill.relaymove(R, NORTH)
+		mill.relaymove(R, SOUTH)
 	training_probe_assert(R.stats["dexterity"][1] > 125 && R.stats["stamina"][1] > 125, "treadmill_trains_further")
-	mill.relaymove(R, SOUTH)
+	mill.relaymove(R, NORTH)
+	training_probe_assert(!mill.overlays.len && !R.buckled, "rail_overlay_cleared_when_empty")
 	map.ordinal_age = 0
 
 	// --- the skipping rope ------------------------------------------------
@@ -371,7 +374,7 @@ var/training_probe_fumble = 0
 	training_probe_assert(exercise_modern_gear(/obj/item/weapon/lifting_weight/barbell) && exercise_modern_gear(/obj/structure/treadwheel/treadmill) && !exercise_modern_gear(/obj/structure/treadwheel), "modern_gear_paths")
 	training_probe_assert(exercise_build_skill(/obj/item/weapon/lifting_weight) == 0 && exercise_build_skill(/obj/item/weapon/skipping_rope) == 0 && exercise_build_skill(/obj/structure/treadwheel) == 30 && exercise_build_skill(/obj/structure/treadwheel/treadmill) == 105 && exercise_build_skill(/obj/item/weapon/lifting_weight/heavy) == 30 && exercise_build_skill(/obj/item/weapon/lifting_weight/barbell) == 105, "build_skills")
 	training_probe_assert(!exercise_recipe_era(/obj/item/weapon/lifting_weight/barbell) && exercise_recipe_era(/obj/item/weapon/lifting_weight/hand_weights), "modern_recipes_wait_for_their_era")
-	for (var/state in list("lifting_stone_small", "lifting_stone_heavy", "lifting_stone_great", "hand_weights", "barbell", "course_start", "course_finish", "log_hurdle", "balance_log", "steel_hurdle", "treadwheel", "treadwheel_turning", "treadmill", "treadmill_running", "skipping_rope"))
+	for (var/state in list("lifting_stone_small", "lifting_stone_heavy", "lifting_stone_great", "hand_weights", "barbell", "course_start", "course_finish", "log_hurdle", "balance_log", "steel_hurdle", "treadwheel", "treadwheel_turning", "treadmill", "treadmill_running", "treadmill_front", "skipping_rope"))
 		training_probe_assert(state in icon_states('icons/obj/training.dmi'), "icon_state_[state]")
 	for (var/held in list("lifting_stone_small", "lifting_stone_heavy", "lifting_stone_great", "hand_weights", "barbell", "skipping_rope"))
 		training_probe_assert((held in icon_states('icons/mob/items/lefthand_training.dmi')) && ("[held]_lift" in icon_states('icons/mob/items/righthand_training.dmi')), "held_state_[held]")
