@@ -1,15 +1,16 @@
 {
   "_comment": "Balance numbers for magic repositories (code/modules/divine/repository_tiers.dm). Hidden mechanic: never quote these in changelogs, the wiki or player guides. Days are real days; minutes are channelling minutes, which keepers can split across sittings.",
   "tiers": [
-    {"name": "personal", "ceiling": 100, "skill": 5, "full_days": 0, "vigil": 1, "verified": false, "channel_minutes": 30, "seed": 10},
-    {"name": "shrine", "ceiling": 400, "skill": 20, "full_days": 7, "vigil": 2, "verified": false, "channel_minutes": 120, "seed": 50},
-    {"name": "settlement", "ceiling": 1500, "skill": 40, "full_days": 7, "vigil": 3, "verified": true, "channel_minutes": 360, "seed": 200},
-    {"name": "provincial", "ceiling": 5000, "skill": 60, "full_days": 14, "vigil": 5, "verified": true, "channel_minutes": 720, "seed": 750},
-    {"name": "national", "ceiling": 15000, "skill": 80, "full_days": 14, "vigil": 8, "verified": true, "channel_minutes": 1440, "seed": 2500}
+    {"name": "personal", "keepers": 1, "ceiling": 100, "skill": 5, "full_days": 0, "vigil": 1, "verified": false, "channel_minutes": 30, "seed": 10},
+    {"name": "shrine", "keepers": 2, "ceiling": 400, "skill": 20, "full_days": 7, "vigil": 2, "verified": false, "channel_minutes": 120, "seed": 50},
+    {"name": "settlement", "keepers": 3, "ceiling": 1500, "skill": 40, "full_days": 7, "vigil": 3, "verified": true, "channel_minutes": 360, "seed": 200},
+    {"name": "provincial", "keepers": 5, "ceiling": 5000, "skill": 60, "full_days": 14, "vigil": 5, "verified": true, "channel_minutes": 720, "seed": 750},
+    {"name": "national", "keepers": 8, "ceiling": 15000, "skill": 80, "full_days": 14, "vigil": 8, "verified": true, "channel_minutes": 1440, "seed": 2500}
   ],
   "full_fraction": 0.75,
   "neglect": {"low_fraction": 0.1, "low_days": 7, "empty_days": 30},
   "rite_range": 3,
+  "keeper_grace_days": 7,
   "reach": {"personal_radius": 3, "shrine_radius": 7, "warning_fraction": 0.25},
   "seat_range": 40,
   "forms": [
