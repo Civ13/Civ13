@@ -195,6 +195,9 @@ var/ws_runtime_error = FALSE
 	if (H)
 		H.origin_x = 60
 		H.origin_y = 60
+		// Fixed size: a heat wave can be 120 tiles wide, which reaches the sand.
+		H.radius_x = 80
+		H.radius_y = 80
 		H.origin_time = world.time
 		H.born = world.time - 6000
 		weather_sample_time = -1

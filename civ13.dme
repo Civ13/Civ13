@@ -1154,6 +1154,7 @@
 #include "code\modules\1713\late_mining.dm"
 #include "code\modules\1713\weather_lightning.dm"
 #include "code\modules\1713\weather_policy.dm"
+#include "code\modules\1713\weather_precip.dm"
 #include "code\modules\1713\weather_systems.dm"
 #include "code\modules\1713\weather_shared.dm"
 #include "code\modules\1713\weather_wind.dm"
