@@ -18,8 +18,8 @@ controls=[
  ('prompt-stale-no-transfer','SOURCE','/obj/structure/printingpress/proc/insert_copy_paper',' || !paper_document_copy_current(snapshot)','',2,'test_insert_normal_cancel_stale_slot_revision_session_and_drop_callbacks'),
  ('double-capacity-debit','PAPER',None,'!copy_skip_space && isnull(document_record)','isnull(document_record)',1,'test_delayed_constructor_capacity_guard_has_legacy_positive_and_copy_controls'),
  ('classified-teleprinter-refusal','TELE',None,' || !isnull(C.document_record)','',1,'test_teleprinter_legacy_positive_and_classified_deleted_lost_custody_negative'),
- ('void-press-publication','SOURCE',None,'if (!isturf(place))','if (FALSE)',1,'test_press_retirement_during_construction_and_void_publication_cleanup'),
- ('reserved-insertion-rescue','SOURCE','/obj/structure/printingpress/Destroy','if (P && !P.gc_destroyed && (P.loc == src || isnull(P.loc)))','if (FALSE)',1,'test_destruction_during_held_transfer_rescues_reserved_input_before_parent'),
+ ('void-press-publication','SOURCE','/obj/structure/printingpress/proc/copy_paper_document','if (!isturf(place))','if (FALSE)',1,'test_press_retirement_during_construction_and_void_publication_cleanup'),
+ ('reserved-insertion-rescue','SOURCE','/obj/structure/printingpress/proc/eject_press_documents','(D.loc == src || isnull(D.loc))','FALSE',1,'test_destruction_during_held_transfer_rescues_reserved_input_before_parent'),
 ]
 def run():
  rows=[]

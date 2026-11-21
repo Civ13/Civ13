@@ -90,5 +90,57 @@ class DistributionContract(unittest.TestCase):
         problem = proc(printing, "/obj/structure/printingpress/proc/whole_book_print_problem")
         self.assertIn("stock.monk_copy_blank()", problem)
         self.assertIn("printing_sheets < needed", problem)
+    def test_press_rechecks_slot_admission_after_prompt_and_before_transfer(self):
+        source = read("code/modules/1713/production.dm")
+        body = proc(source, "/obj/structure/printingpress/proc/insert_press_book_or_map")
+        before, after = body.split("var/choice = WWinput", 1)
+        for guard in ("copying", "paper_document_copy_actor_valid", "user.get_active_hand() != document"):
+            self.assertIn(guard, before)
+            self.assertIn(guard, after.split("slot += document", 1)[0])
+        self.assertLess(after.index("if (slot.len)"), after.index("slot += document"))
+        self.assertLess(after.index("B.monk_copy_blank()"), after.index("slot += document"))
+        self.assertLess(after.index("slot += document"), after.index("user.transfer_held_item_to"))
+        self.assertNotIn("locate(0,0,0)", body)
+        self.assertIn("slot -= document", after.split("user.transfer_held_item_to", 1)[1])
+
+    def test_press_can_unload_both_slots_and_reset_after_save(self):
+        source = read("code/modules/1713/production.dm")
+        unload = proc(source, "/obj/structure/printingpress/verb/unload_printing_press")
+        self.assertIn("copying || !paper_document_copy_actor_valid", unload)
+        self.assertIn("eject_press_documents(get_turf(src), usr)", unload)
+        restore = proc(source, "/obj/structure/printingpress/after_load")
+        self.assertIn("copying = FALSE", restore)
+        self.assertIn('icon_state = "printingpress0"', restore)
+        runtime = proc(source, "/obj/structure/printingpress/persistence_runtime_var")
+        self.assertIn('key == "copying" || ..()', runtime)
+        paper = read("code/modules/paperwork/copy.dm")
+        destroy = proc(paper, "/obj/structure/printingpress/Destroy")
+        self.assertLess(destroy.index("eject_press_documents"), destroy.index("return ..()"))
+        self.assertLess(destroy.index("refund_printing_sheets"), destroy.index("return ..()"))
+        book = read("code/modules/research_tree/book_printing.dm")
+        self.assertNotIn("/obj/structure/printingpress/Destroy()", book)
+        refund = proc(book, "/obj/structure/printingpress/proc/refund_printing_sheets")
+        self.assertIn("i <= printing_sheets", refund)
+        self.assertIn("new /obj/item/weapon/paper(place)", refund)
+        self.assertIn("printing_sheets = 0", refund)
+
+    def test_press_does_not_erase_original_legacy_research(self):
+        source = read("code/modules/1713/production.dm")
+        body = proc(source, "/obj/structure/printingpress/attack_hand")
+        legacy = body.split("var/obj/item/weapon/book/research/NC = B", 1)[1]
+        legacy = legacy.split("else if (istype(B, /obj/item/weapon/book/language_book))", 1)[0]
+        self.assertIn("NB.completed = 0", legacy)
+        self.assertIn('NB.k_class = "none"', legacy)
+        self.assertNotRegex(legacy, r"NC\.(completed|k_class|k_level|styleb)\s*=")
+
+    def test_whole_book_and_map_check_custody_before_copying(self):
+        for file, finish, side_effect in (
+            ("code/modules/research_tree/book_printing.dm", "finish_whole_book_print", "new /obj/item/weapon/book"),
+            ("code/game/objects/items/cartography_notes.dm", "finish_map_print", "original.copy_map_into(stock)"),
+        ):
+            with self.subTest(finish=finish):
+                body = proc(read(file), "/obj/structure/printingpress/proc/" + finish)
+                self.assertLess(body.index("!press_retains_document(original) || !press_retains_document(stock)"),
+                                body.index(side_effect))
 if __name__ == "__main__":
     unittest.main()

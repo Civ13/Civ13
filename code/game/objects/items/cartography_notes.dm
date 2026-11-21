@@ -129,7 +129,7 @@
 	if (!istype(original) || !istype(stock) || original == stock)
 		return "Both documents must be maps."
 	if (!stock.map_copy_blank())
-		return "The copy must be a blank map."
+		return "The copy must be a blank map. Use Unload Printing Press to recover the maps."
 	if (!original.map_has_content())
 		return "There is nothing on [original] to print."
 	return null
@@ -139,6 +139,8 @@
 		return FALSE
 	var/obj/item/weapon/cartography_map/original = base[1]
 	var/obj/item/weapon/cartography_map/stock = copy[1]
+	if (!press_retains_document(original) || !press_retains_document(stock))
+		return FALSE
 	var/problem = cartography_print_problem(original, stock)
 	if (problem)
 		to_chat(H, SPAN_WARNING(problem))
@@ -160,6 +162,8 @@
 		return FALSE
 	var/obj/item/weapon/cartography_map/original = base[1]
 	var/obj/item/weapon/cartography_map/stock = copy[1]
+	if (!press_retains_document(original) || !press_retains_document(stock))
+		return FALSE
 	var/problem = cartography_print_problem(original, stock)
 	if (problem)
 		if (user)
