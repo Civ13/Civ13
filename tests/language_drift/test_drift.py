@@ -22,27 +22,33 @@ def proc(name):
 
 
 def step(use, contact):
-    total = use + contact
-    return D['LANGUAGE_DRIFT_GAIN'] * (1 - 2 * contact / total) if total else 0
+    if contact >= D['LANGUAGE_DRIFT_CONTACT_LINES']:
+        return -D['LANGUAGE_DRIFT_CONTACT_LOSS']
+    return D['LANGUAGE_DRIFT_GAIN'] if use >= D['LANGUAGE_DRIFT_MIN_LINES'] else 0
 
 
 class Pacing(unittest.TestCase):
-    def test_an_isolated_nation_needs_days_of_talk_to_split(self):
+    def test_splits_are_rare_and_need_long_isolation(self):
         ticks = D['LANGUAGE_SPLIT_DRIFT'] / D['LANGUAGE_DRIFT_GAIN']
         hours = ticks * D['LANGUAGE_DRIFT_TICK'] / 36000
-        self.assertTrue(40 <= hours <= 100, hours)
+        self.assertTrue(100 <= hours <= 200, hours)
+        self.assertGreaterEqual(D['LANGUAGE_SPLIT_HOLD'] / 1440, 7)
 
     def test_a_listener_can_fill_a_tick_alone_but_not_flood_it(self):
         per_tick = D['LANGUAGE_DRIFT_TICK'] / D['LANGUAGE_DRIFT_HEAR_COOLDOWN']
         self.assertGreater(per_tick, D['LANGUAGE_DRIFT_MIN_LINES'])
         self.assertLessEqual(per_tick, 100)
 
-    def test_contact_slows_then_reverses_drift(self):
+    def test_any_real_contact_reverses_drift(self):
         self.assertEqual(step(40, 0), D['LANGUAGE_DRIFT_GAIN'])
-        self.assertAlmostEqual(step(30, 10), D['LANGUAGE_DRIFT_GAIN'] / 2)
-        self.assertEqual(step(20, 20), 0)
-        self.assertLess(step(10, 30), 0)
-        self.assertIn('LANGUAGE_DRIFT_GAIN * (1 - 2 * contact / total)', proc('/proc/language_drift_step('))
+        self.assertEqual(step(40, D['LANGUAGE_DRIFT_CONTACT_LINES'] - 1), D['LANGUAGE_DRIFT_GAIN'])
+        self.assertLess(step(80, D['LANGUAGE_DRIFT_CONTACT_LINES']), 0)
+        self.assertEqual(step(D['LANGUAGE_DRIFT_MIN_LINES'] - 1, 0), 0)
+        # One contact tick undoes many isolated ones.
+        self.assertGreaterEqual(D['LANGUAGE_DRIFT_CONTACT_LOSS'] / D['LANGUAGE_DRIFT_GAIN'], 10)
+        body = proc('/proc/language_drift_step(')
+        self.assertIn('contact >= LANGUAGE_DRIFT_CONTACT_LINES', body)
+        self.assertLess(body.index('LANGUAGE_DRIFT_CONTACT_LINES'), body.index('LANGUAGE_DRIFT_MIN_LINES'))
 
     def test_split_needs_a_real_community(self):
         self.assertGreaterEqual(D['LANGUAGE_SPLIT_MIN_NATIVES'], 3)
@@ -60,13 +66,13 @@ class Boundaries(unittest.TestCase):
         first = body.split('\n')[1]
         self.assertIn('civilization == "none"', first)
         self.assertIn('world.time < next_language_drift_heard', first)
-        self.assertIn('mother_tongue() != L', body)
-        self.assertIn('S.language_score(L) >= LANGUAGE_CONVERSATIONAL', body)
+        self.assertIn('S.civilization != civilization', body)
+        self.assertIn('canonical_language(L) == native', body)
         self.assertNotIn('for (', body)
 
     def test_quiet_communities_do_not_change_and_lines_reset(self):
         body = proc('/proc/language_drift_tick(')
-        self.assertIn('total < LANGUAGE_DRIFT_MIN_LINES', body)
+        self.assertIn('if (step < 0)\n\t\t\theld -= key', body)
         self.assertIn('language_drift_use = list()', body)
         self.assertIn('language_drift_contact = list()', body)
 
@@ -114,9 +120,15 @@ class Daughters(unittest.TestCase):
         self.assertNotIn('mutual_intelligibility.Find(reference.type)', hear)
         self.assertIn('language_kinship(L, reference)', hear)
 
-    def test_both_era_advances_run_the_check(self):
-        self.assertIn('language_era_advanced()', read('code/modules/research_tree/book_research.dm'))
-        self.assertIn('language_era_advanced()', read('code/modules/research_tree/research_faction.dm'))
+    def test_splits_follow_isolation_not_research(self):
+        self.assertIn('language_split_check()', proc('/proc/language_drift_tick('))
+        for path in ('code/modules/research_tree/book_research.dm', 'code/modules/research_tree/research_faction.dm'):
+            self.assertNotIn('language_split_check', read(path))
+            self.assertNotIn('language_era_advanced', read(path))
+        check = DAUGHTER[DAUGHTER.index('/proc/language_split_check()'):]
+        check = check[:check.index('\n/proc/')]
+        self.assertIn('language_real_minute() - held[key] < LANGUAGE_SPLIT_HOLD', check)
+        self.assertNotIn('ordinal_age', check)
 
     def test_naming_is_verified_and_leader_only(self):
         body = DAUGHTER[DAUGHTER.index('/mob/living/human/proc/name_our_language()'):]
