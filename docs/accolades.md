@@ -29,6 +29,7 @@ sees the same accolades:
 | `accolade_met` | `accolade`, `land` | md5 of kind, ckey and accolade |
 | `accolade` | `accolade`, `points` (`grant`, `reason` for staff grants) | md5 of kind, ckey and accolade; staff grants get fresh ids |
 | `accolade_land` | `land` | md5 of kind, ckey and land |
+| `accolade_taught` | `reader` | md5 of kind, writer ckey and reader ckey |
 
 Ids made from the ckey mean two regions writing the same claim store it once,
 and a claim staff revoked cannot be claimed again.
@@ -36,7 +37,7 @@ and a claim staff revoked cannot be claimed again.
 Per-character counters (`accolade_progress`: minutes, seasons, faction and
 minutes in it) are saved with the body and carried on trips (`P["accolades"]`).
 
-## The first list
+## Accolades
 
 | Accolade | Condition | Points |
 | --- | --- | --- |
@@ -52,6 +53,26 @@ minutes in it) are saved with the body and carried on trips (`P["accolades"]`).
 | Wanderer | Live in 3 different lands | 15 |
 | World Traveller | Live in every surface land of the group | 40 |
 | Citizen | 10 hours of play in one faction | 10 |
+| Long Winter | One character spends 2 hours of play outdoors in a tundra or taiga winter | 15 |
+| Copyist | Copy a book, a research chapter or a map by hand | 10 |
+| Maker | One character crafts 25 different things | 10 |
+| Artisan | One character crafts 100 different things | 30 |
+| Smelter | Light a furnace or tatara to smelt | 10 |
+| Farmer | Harvest a ripe crop | 5 |
+| Herder | Tame an animal | 10 |
+| Hunter | One character kills 10 wild animals (never tamed beasts or kept livestock) | 10 |
+| Aviator | Land an aircraft safely after flying it | 30 |
+| Founder | Found a faction that grows to 5 members from other accounts | 25 |
+| Elder | Lead the faction whose research moves the land into a new era | 30 |
+| Defender | Be beside your seat when a siege on it fails, or near when a nomad raid is driven off | 20 |
+| Teacher | 3 other accounts learn a subject from a chapter you wrote | 20 |
+
+Founder and Teacher count another account only when it has at least 5 hours
+of its own play (`shared_records.playtime_hours`) and is not a guest or host
+agent. Teacher keeps one `accolade_taught` record per reader (id from the
+writer and the reader), and each book chapter remembers its writer's ckey
+(`chapter_authors`). Per-character counters also keep things crafted, wild
+animals killed, winter minutes outdoors and the faction the character founded.
 
 No accolade rewards killing players, dying or anything hidden.
 

@@ -17,6 +17,7 @@ LAND_MAPS = {
     'northamerica': ('maps/nomads/nomads_americas_north.dmm', 1),
     'southamerica': ('maps/nomads/nomads_americas_south.dmm', 1),
     'europe': ('maps/nomads/nomads_earth_europe.dmm', 1),
+    'mediterranean': ('maps/nomads/nomads_earth_mediterranean.dmm', 1),
     'africa': ('maps/nomads/nomads_earth_africa.dmm', 1),
     'asia': ('maps/nomads/nomads_earth_asia.dmm', 1),
     'oceania': ('maps/nomads/nomads_earth_oceania.dmm', 1),

@@ -22,7 +22,7 @@ coasts; a world outside the earth group (a test fixture) can still set
 
 ```json
 "lands": {"europe": {"chart": [11, 9], "coasts": ["W", "N"], "flight": true}},
-"links": [{"kind": "walk", "a": ["europe", "east", 0, 1], "b": ["asia", "west", 0.45, 1]}]
+"links": [{"kind": "both", "a": ["europe", "east", 0, 1], "b": ["asia", "west", 0.5897, 0.9231]}]
 ```
 
 - `chart`: the land's place on the world chart, x east and y north, in chart tiles.
@@ -35,7 +35,9 @@ coasts; a world outside the earth group (a test fixture) can still set
 - A link joins a stretch of one region's edge (`[region, side, from, to]`, as
   fractions of the edge counted west to east or south to north) to the facing
   edge of another. Each link is written once; both directions are made from it.
-  `kind` is `walk` (dry ground on both ends) or `sail` (open water, ocean regions).
+  `kind` is `walk` (dry ground on both ends), `sail` (open water, ocean regions)
+  or `both` (a land edge that is partly shore: walked where it is dry, sailed
+  where it is water; it is in both `world_links` and `world_sea_links`).
 
 `load()` refuses a link whose ends do not face each other, a stretch outside 0 to
 1, overlapping stretches on one edge, and a region not listed under `lands`.
