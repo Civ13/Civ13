@@ -124,7 +124,8 @@
 		if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
 			for(var/obj/item/football/FB in range(1,src))
 				if ((!FB.owner || FB.owner == src || src.football == FB) && isturf(FB.loc))
-					src.put_in_active_hand(FB)
+					if (!src.put_in_active_hand(FB) || FB.loc != src)
+						return // lying down or a full hand: no catch (#6292)
 					FB.pickup(src)
 					src.football = null
 					FB.owner = null
@@ -138,8 +139,9 @@
 			if (gloves && istype(gloves, /obj/item/clothing/gloves/goalkeeper))
 				var/area/A = get_area(src.loc)
 				if (istype(A, /area/caribbean/football/blue/goalkeeper) || istype(A, /area/caribbean/football/red/goalkeeper))
+					if (!src.put_in_active_hand(FB) || FB.loc != src)
+						return // lying down or a full hand: the ball is not caught (#6292)
 					visible_message("<font color='yellow'>[src] blocks and picks up the ball!</font>")
-					src.put_in_active_hand(FB)
 					if (FB.owner)
 						FB.owner.football = null
 						FB.owner = null

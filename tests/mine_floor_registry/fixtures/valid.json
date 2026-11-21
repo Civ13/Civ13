@@ -1,0 +1,94 @@
+{
+	"schema": 1,
+	"lineage": "gaia-probe_1",
+	"generation": 7,
+	"next_mine_id": 4,
+	"limits": {
+		"mines": 8,
+		"depth": 4,
+		"floors": 8,
+		"side": 64,
+		"border": 2
+	},
+	"mines": [
+		{
+			"id": 3,
+			"deepest": 1,
+			"created": 6
+		},
+		{
+			"id": 1,
+			"deepest": 2,
+			"created": 2
+		},
+		{
+			"id": 2,
+			"deepest": 0,
+			"created": 5
+		}
+	],
+	"floors": [
+		{
+			"mine": 3,
+			"depth": 1,
+			"width": 20,
+			"height": 10,
+			"generator": 1,
+			"seed": 99,
+			"created": 6
+		},
+		{
+			"mine": 1,
+			"depth": 2,
+			"width": 32,
+			"height": 32,
+			"generator": 1,
+			"seed": 16777215,
+			"created": 4
+		},
+		{
+			"mine": 1,
+			"depth": 1,
+			"width": 32,
+			"height": 32,
+			"generator": 1,
+			"seed": 0,
+			"created": 2
+		}
+	],
+	"placements": [
+		{
+			"mine": 1,
+			"depth": 1,
+			"z": 3,
+			"x1": 1,
+			"y1": 1,
+			"x2": 36,
+			"y2": 36,
+			"border": 2,
+			"generation": 1
+		},
+		{
+			"mine": 3,
+			"depth": 1,
+			"z": 3,
+			"x1": 37,
+			"y1": 1,
+			"x2": 58,
+			"y2": 12,
+			"border": 1,
+			"generation": 3
+		},
+		{
+			"mine": 1,
+			"depth": 2,
+			"z": 4,
+			"x1": 65,
+			"y1": 65,
+			"x2": 100,
+			"y2": 100,
+			"border": 2,
+			"generation": 1
+		}
+	]
+}

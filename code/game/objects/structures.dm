@@ -3,6 +3,7 @@
 	w_class = 10
 
 	var/climbable = FALSE
+	var/dismantle_wood_fallback = TRUE // FALSE: not wood, so no recipe means no wood back (crafted_refund_stack)
 	var/breakable = FALSE
 	var/crushable = TRUE // If the structure can be crushed by vehicles.
 	var/parts
@@ -44,19 +45,21 @@
 				if (T != src && T.anchored)
 					to_chat(user, SPAN_WARNING("You can't anchor \the [src] here, there's already \a [T] anchored here."))
 					return
-		if (do_after(user, 15, src))
+		if (do_ship_fixture_after(user, 15, src) && !QDELETED(src))
 			toggle_anchor(user)
 			return
 	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
-		if (do_after(user, 25, src))
+		if (do_ship_fixture_after(user, 25, src) && !QDELETED(src))
+			var/bed_notice_owner
 			// Recover bed upholstery only after the wait, before frame output/deletion.
 			if (istype(src, /obj/structure/bed))
 				var/obj/structure/bed/B = src
 				if (B.padding_material && !B.remove_padding())
 					to_chat(user, SPAN_NOTICE("The padding cannot be recovered intact."))
 					return
+				bed_notice_owner = B.persistence_bed_notice_recipient(user)
 			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
 			// One unit of what it was built from, never more than it cost.
 			var/refund = crafted_refund_stack(type, /obj/item/stack/material/wood)
@@ -66,6 +69,8 @@
 			for (var/obj/item/weapon/book/b in contents)
 				b.loc = (get_turf(src))
 			qdel(src)
+			if (bed_notice_owner && QDELETED(src))
+				persistence_queue_bed_notice(bed_notice_owner, user.real_name)
 			return
 
 // Called after a wrench fastens or unfastens the structure.

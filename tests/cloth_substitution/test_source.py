@@ -90,7 +90,7 @@ class ClothTests(unittest.TestCase):
         branch=s.split('else if (findtext(recipe.title, "stormy sea")',1)[1].split('else if (findtext(recipe.title, "monumental marble statue',1)[0]
         self.assertIn('new(src, H, recipe, quantity, 3)',branch)
         self.assertNotIn('amount -=',branch)
-        self.assertLess(s.index('!do_after(user, buildtime)'),s.rindex('!cloth_payment.valid()'))
+        self.assertLess(s.index('!do_after(user, buildtime, ship_craft = ship_craft)'),s.rindex('!cloth_payment.valid()'))
         self.assertLess(s.rindex('!cloth_payment.valid()'),s.index('if (use(required,'))
         self.assertLess(s.index('if (use(required,'),s.index('cloth_payment.consume_secondary()'))
         self.assertLess(s.index('cloth_payment.consume_secondary()'),s.index('O = new recipe.result_type'))

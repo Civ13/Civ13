@@ -132,7 +132,7 @@ class UpDownButtons(unittest.TestCase):
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8-sig')
         produce = stack.split('/obj/item/stack/proc/produce_recipe(', 1)[1].split('\n/obj/item/stack/proc/', 1)[0]
         first = produce.index('stairs_down_spot(user, recipe.result_type, stairs_why)')
-        wait = produce.index('do_after(user, buildtime)')
+        wait = produce.index('do_after(user, buildtime, ship_craft = ship_craft)')
         second = produce.index('stairs_down_spot(user, recipe.result_type, stairs_why)', wait)
         self.assertLess(first, wait)
         self.assertLess(second, produce.index('new recipe.result_type(build_loc)'))

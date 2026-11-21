@@ -29,10 +29,14 @@ def translate(source):
         'var/mob/M = dog.walking_to': 'M = dog',
         'if (world.time - M.last_movement >= 10)': 'if M["movement_age"] >= 10:',
         'continue': 'continue',
-        'var/dist_x = abs(dog.x - dog.walking_to.x)': 'dist_x = abs(dog["dx"])',
-        'var/dist_y = abs(dog.y - dog.walking_to.y)': 'dist_y = abs(dog["dy"])',
+        'var/dist_x = abs(dog.x - dog.walking_to.x)': 'dist_x = ctx.distance(dog, "dx")',
+        'var/dist_y = abs(dog.y - dog.walking_to.y)': 'dist_y = ctx.distance(dog, "dy")',
         'if (dist_x > 1 || dist_y > 1 || dog.walking_to != dog.following)':
             'if dist_x > 1 or dist_y > 1 or not dog["following_target"]:',
+        'if (abs(dog.x - dog.walking_to.x) > 1 || abs(dog.y - dog.walking_to.y) > 1 || dog.walking_to != dog.following)':
+            'if ctx.distance(dog, "dx") > 1 or ctx.distance(dog, "dy") > 1 or not dog["following_target"]:',
+        'if (abs(dog.x - dog.walking_to.x) >= 1 || abs(dog.y - dog.walking_to.y) > 1 || dog.walking_to != dog.following)':
+            'if ctx.distance(dog, "dx") >= 1 or ctx.distance(dog, "dy") > 1 or not dog["following_target"]:',
         'var/direction = get_dir(dog, dog.walking_to)': 'direction = ctx.get_dir(dog)',
         'var/turf/target = get_step(dog.loc, get_dir(dog, dog.walking_to))':
             'target = ctx.get_step(dog, ctx.get_dir(dog))',
@@ -80,6 +84,10 @@ def dog(name='dog', **changes):
 
 def trace_details(source, dogs):
     class Context:
+        def distance(self, dog, axis):
+            self.distances.append((dog['name'], axis))
+            return abs(dog[axis])
+
         def get_dir(self, dog):
             self.directions.append(dog['name'])
             return dog['direction']
@@ -96,6 +104,7 @@ def trace_details(source, dogs):
     ctx.dogs = dogs
     ctx.events = []
     ctx.directions = []
+    ctx.distances = []
     ctx.checked = []
     ctx.stepped = []
     translate(source)(ctx)
@@ -179,6 +188,27 @@ class DogProcessTests(unittest.TestCase):
         self.assertEqual(actual.checked, expected.checked)
         self.assertNotEqual(actual.stepped, expected.stepped)
         self.assertEqual(actual.stepped, [('dog', 'NORTH')])
+
+    def test_short_circuit_distance_parity_and_count(self):
+        dogs = [dog(f'{x},{y},{follow}', dx=x, dy=y, following_target=follow)
+                for x in (-2, -1, 0, 1, 2)
+                for y in (-2, -1, 0, 1, 2)
+                for follow in (False, True)]
+        old = trace_details(self.old, dogs)
+        new = trace_details(self.new, dogs)
+        self.assertEqual(new.events, old.events)
+        self.assertEqual(new.checked, old.checked)
+        self.assertEqual(new.stepped, old.stepped)
+        self.assertEqual(len(old.distances), 100)
+        self.assertEqual(len(new.distances), 80)
+        self.assertEqual(sum(axis == 'dy' for _, axis in new.distances), 30)
+
+    def test_distance_boundary_negative_control(self):
+        marker = 'abs(dog.x - dog.walking_to.x) > 1'
+        self.assertEqual(self.new.count(marker), 1)
+        mutant = self.new.replace(marker, 'abs(dog.x - dog.walking_to.x) >= 1')
+        self.assertNotEqual(trace(mutant, [dog(dx=-1, dy=0)]),
+                            trace(self.old, [dog(dx=-1, dy=0)]))
 
     def test_unknown_source_fails_closed(self):
         with self.assertRaisesRegex(ValueError, 'Unsupported dog instruction'):

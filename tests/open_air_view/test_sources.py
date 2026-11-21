@@ -118,6 +118,17 @@ class LookUp(unittest.TestCase):
                       'building_open_turf(above)', '(locate(/obj/covers) in above)'):
             self.assertIn(guard, target)
 
+    def test_only_clear_existing_pit_bypasses_ambient_roof_area(self):
+        target = self.source.split('/mob/living/human/proc/look_up_target(list/why)\n', 1)[1].split('\n/', 1)[0]
+        self.assertLess(target.index('locate(/obj/roof) in here'), target.index('P.dug_open_to_below(here)'))
+        self.assertLess(target.index('trapdoor_shut_at(above)'), target.index('P.dug_open_to_below(here)'))
+        self.assertLess(target.index('P.dug_open_to_below(here)'), target.index('los_turf_roofed(here)'))
+        self.assertIn('if (P || !building_open_turf(above)', target)
+        ladder = (ROOT / 'code/modules/multiz/hole_ladder.dm').read_text()
+        aperture = ladder.split('proc/dug_open_to_below(turf/lower)', 1)[1].split('\n/', 1)[0]
+        for guard in ('dug_pit_above_ladder_site(lower) != src', 'leaf_covered', 'upper.density', 'trapdoor_shut_at(upper)', 'locate(/obj/roof) in lower', 'istype(A, /obj/covers)'):
+            self.assertIn(guard, aperture)
+
     def test_stops_on_move_and_each_vision_update(self):
         movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()
         self.assertIn('H.update_laddervision(null)\n\t\tH.stop_looking_up()', movement)

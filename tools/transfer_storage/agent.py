@@ -90,6 +90,8 @@ def _routes(store, radio):
         # Home worlds: DM asks /account; the coordinator reads /accounts and answers /homes.
         '/account': lambda body: store.account(body['ckey'], body['op'], body.get('region'),
                                                  body.get('body') in (True, 1), body.get('faction')),
+        # A loopback-only custody barrier for the coordinator, never a claim.
+        '/lobby/account-status': lambda body: store.lobby_account_status(body['ckey']),
         '/accounts': lambda body: store.account_requests(),
         '/homes': lambda body: store.apply_homes(body['epoch'], body['rev'], body['rows'], body['done'],
                                                  body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions'),

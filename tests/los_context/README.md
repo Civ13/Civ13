@@ -17,9 +17,10 @@ examination and screen-slot hover remain independent of world geometry.
 Capture covers the actual z level and viewport (up to 63x63), plus one edge tile,
 accepts ordinary terrain and clutter, and derives blockers from raw opacity.
 Fresh hover/examine captures include `step_x/32` and `step_y/32` in the eye and
-moving targets. Presentation captures place the eye at its step offset rounded
-to half a tile (`los_eye_x`/`los_eye_y`; tile centres while `world.cpu` is high, and
-fixed while the body stands still) and
+moving targets. Presentation captures place the eye at its step offset sampled
+on entry into a 16-by-16 pixel quadrant and rounded to the existing half-tile
+grid (`los_eye_x`/`los_eye_y`; tile centres while `world.cpu` is high, and fixed
+while the body stands still) and
 anchor human targets to native tile centers. On maps with hills a terrain
 answer (`los_terrain.dm`, docs/terrain-height.md#line-of-sight) also hides
 targets below the sight line. Moving opaque blockers retain physical offsets in both
@@ -111,9 +112,10 @@ add a derived 4x4-cell center index. Each target visits inclusive bins covering
 the eye/target hull bounding box expanded by a blocker's half-cell extent, then
 runs the unchanged exact blocker predicate. Empty/sparse captures use the flat
 path. Native tile identity remains distinct from fractional blocker centers;
-there is no cross-snapshot visibility cache. Player-driven presentation now
-refreshes on tile transitions rather than transparent-player offset pulses;
-vision/blocker invalidations and periodic raw-writer audits remain active.
+there is no cross-snapshot visibility cache. Player-driven presentation
+refreshes on tile or eye quadrant changes rather than every transparent-player
+offset pulse. Vision/blocker invalidations and periodic raw-writer audits
+remain active.
 BYOND's one-argument `round` supplies floor semantics for negative bin indices.
 
 The production projection checks 48,600 target/blocker pairs with fractional

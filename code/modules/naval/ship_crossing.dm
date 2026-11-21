@@ -27,6 +27,9 @@
 #define SEA_CROSSING_ANCHOR_DEPTH 60
 // Animals, bodies and structures on her deck.
 #define SEA_CROSSING_CARGO_MAX 40
+// Deciseconds a hold outlives its deadline while a crossing is still busy with
+// it, so a crossing that never came back cannot keep her bound for ever.
+#define SEA_CROSSING_HOLD_GRACE 600
 
 // ---------------------------------------------------------------- the gate
 
@@ -600,6 +603,12 @@ var/global/list/sea_crossing_marked = list()
 /obj/structure/hull_tiller
 	// The voyage a ship built from a crossing came on, so her crew find her.
 	var/crossing_voyage = null
+	// The crossing she is bound to while a world is woken for her, or null:
+	// "op", "region", "voyage", "state" ("plotting" a voyage's course,
+	// "asking" the doorman, "committed" once it took the wake or did not
+	// answer, "departing"), "until" (world.time) and "busy" (a crossing is
+	// at work on it). Nothing else may send her anywhere meanwhile.
+	var/tmp/list/crossing_hold = null
 	// An admin is sending her (region_admin_send.dm): she may leave from
 	// anywhere on the water, and who sent her rides with the crew.
 	var/tmp/admin_crossing = FALSE
@@ -630,7 +639,7 @@ var/global/list/sea_crossing_marked = list()
 	return null
 
 /obj/structure/hull_tiller/proc/crossing_menu(mob/living/human/H)
-	var/reason = crossing_refusal(H)
+	var/reason = crossing_menu_refusal(H)
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
@@ -645,6 +654,11 @@ var/global/list/sea_crossing_marked = list()
 	var/choice = WWinput(H, "Leave these waters with everyone and everything aboard? Your crew go with her and carry on there.", craft.name, "Stay", places + list("Stay"))
 	if (!choice || choice == "Stay" || !places[choice] || get_dist(H, src) > 1)
 		return
+	// The prompt slept: another of her crew may have sent her somewhere meanwhile.
+	reason = crossing_menu_refusal(H, places[choice])
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+		return
 	// Leaving a land nobody settled or claimed, the captain may give it up (land_choices.dm).
 	var/abandon = abandon_choice(H)
 	var/by = H.ckey
@@ -654,8 +668,127 @@ var/global/list/sea_crossing_marked = list()
 	else if (abandon)
 		expedition_land_ask("abandon", by)
 
+// Why "Leave these waters" cannot send her (to id) now, or null.
+/obj/structure/hull_tiller/proc/crossing_menu_refusal(mob/living/human/H, id = null)
+	if (voyage)
+		return "She is on a voyage. Her crew sail on with it."
+	return crossing_refusal(H) || crossing_hold_refusal(id)
+
+// ---------------------------------------------------------------- holding her course
+
+// Her hold, dropped once it is past its deadline and nobody is at work on it.
+/obj/structure/hull_tiller/proc/crossing_hold_current()
+	var/list/hold = crossing_hold
+	// Her crew leaving one by one can take a while: a departure is given longer.
+	if (hold && world.time >= hold["until"] + (hold["busy"] ? (hold["state"] == "departing" ? SEA_CROSSING_HOLD_GRACE * 5 : SEA_CROSSING_HOLD_GRACE) : 0))
+		log_game("Sea crossing: [craft ? "the [craft.name]" : "a ship"] stops holding her course for [hold["region"] || "her voyage"] (op [hold["op"]], [hold["state"]]).")
+		crossing_hold = null
+	return crossing_hold
+
+// The name of the land she holds her course for.
+/obj/structure/hull_tiller/proc/crossing_hold_name(list/hold)
+	var/list/peer = hold && hold["region"] ? shard_group.peers[hold["region"]] : null
+	return peer ? peer["name"] : (hold && hold["region"] ? hold["region"] : "her course")
+
+// What her tiller says while she holds her course, or "".
+/obj/structure/hull_tiller/proc/crossing_hold_text()
+	var/list/hold = crossing_hold_current()
+	if (!hold)
+		return ""
+	var/name = crossing_hold_name(hold)
+	switch (hold["state"])
+		if ("plotting")
+			return "Her course is being sent to the world chart."
+		if ("asking")
+			return "Word is being sent ahead to [name]. She holds her course for it."
+		if ("departing")
+			return "She is leaving for [name]."
+	var/minutes = max(1, round((hold["until"] - world.time) / 600, 1))
+	return "Bound for [name]: word was sent ahead and its harbour is made ready. She holds her course for it, about [minutes] minute\s more at most."
+
+// Why she may not be sent to id now because of her hold, or null. Only the
+// land she is bound for, and only once nobody is already at work on it.
+/obj/structure/hull_tiller/proc/crossing_hold_refusal(id = null)
+	var/list/hold = crossing_hold_current()
+	if (!hold)
+		return null
+	if (hold["state"] == "plotting")
+		return "Her course is being sent to the world chart. Wait a moment."
+	var/name = crossing_hold_name(hold)
+	if (id != hold["region"])
+		return "She is bound for [name]: word was sent ahead. She holds her course until it answers."
+	if (hold["busy"])
+		return "She is already waiting on word from [name]."
+	return null
+
+/obj/structure/hull_tiller/proc/crossing_hold_take(state, region = null, voyage_id = null, until = 600)
+	crossing_hold = list("op" = "[num2text(world.time, 20)]-[rand(100000, 999999)]", "region" = region, "voyage" = voyage_id,
+		"state" = state, "until" = world.time + until, "busy" = TRUE)
+	return crossing_hold
+
+// Lets go of hold if it is still hers; a stale continuation never clears a newer one.
+/obj/structure/hull_tiller/proc/crossing_hold_release(list/hold)
+	if (hold && crossing_hold == hold)
+		crossing_hold = null
+
+/obj/structure/hull_tiller/proc/crossing_hold_is(list/hold)
+	return !QDELETED(src) && craft && crossing_hold == hold
+
+// TRUE while hold is hers and, for a voyage, that voyage is still the one she sails.
+/obj/structure/hull_tiller/proc/crossing_continues(list/hold, voyage_id)
+	if (!crossing_hold_is(hold))
+		return FALSE
+	return !voyage_id || (islist(voyage) && voyage["id"] == voyage_id)
+
+// TRUE while she should keep waiting on the land hold is bound for.
+/obj/structure/hull_tiller/proc/crossing_waits(list/hold, voyage_id)
+	return crossing_continues(hold, voyage_id) && world.time < hold["until"]
+
+// Wakes region id for her crossing and holds her course for it. The hold,
+// once the land answers; otherwise why not. Sleeps. A definite refusal before
+// the doorman took the wake lets her go; once it took it (or did not answer,
+// so it may have) she is bound there until it answers or the wake runs out.
+/obj/structure/hull_tiller/proc/crossing_wake(id, mob/living/human/notify, voyage_id)
+	var/list/hold = crossing_hold_current()
+	var/name = shard_group.peers[id]["name"]
+	if (hold)
+		// Bound here already: no second word is sent, she waits on the first.
+		hold["busy"] = TRUE
+		if (voyage_id)
+			hold["voyage"] = voyage_id
+	else
+		hold = crossing_hold_take("asking", id, voyage_id)
+		var/list/asked = shard_group.ask_wake(id)
+		if (!crossing_continues(hold, voyage_id))
+			return "The crossing was called off."
+		switch (asked["result"])
+			if ("up")
+				return hold
+			if ("refused")
+				crossing_hold_release(hold)
+				return asked["reason"]
+		var/eta = asked["eta"]
+		hold["state"] = "committed"
+		hold["woke"] = TRUE
+		hold["until"] = world.time + (eta + 60) * 10
+		log_game("Sea crossing: the [craft.name] is bound for [id]: the wake was [asked["result"]] (op [hold["op"]], eta [eta] s[voyage_id ? ", voyage [voyage_id]" : ""]).")
+		if (notify)
+			to_chat(notify, SPAN_NOTICE(shard_group.wake_notice(id, eta)))
+		craft.crew_message(SPAN_NOTICE("Word is sent ahead to [name]. The [craft.name] holds her course for it and waits."))
+	if (shard_group.peers[id]["state"] == "UP" || shard_group.await_peer(id, hold["until"], CALLBACK(src, PROC_REF(crossing_waits), hold, voyage_id)))
+		if (!crossing_continues(hold, voyage_id))
+			return "The crossing was called off."
+		return hold
+	if (!crossing_continues(hold, voyage_id))
+		return "The crossing was called off."
+	// The wake ran out: the end of this hold. A voyage may ask again.
+	log_game("Sea crossing: [id] did not answer the [craft.name] in time (op [hold["op"]]).")
+	crossing_hold_release(hold)
+	return "[name] did not answer in time. Try again in a while."
+
 // Sends her to region id. Null when she left, else why not. Sleeps. voyage:
 // the voyage she makes the crossing on (ship_voyage.dm), else a new one.
+// Whatever she is bound for holds until she leaves or it ends (crossing_wake()).
 /obj/structure/hull_tiller/proc/cross(id, mob/living/human/notify = null, voyage = null)
 	var/reason = crossing_refusal(notify)
 	if (reason)
@@ -665,27 +798,62 @@ var/global/list/sea_crossing_marked = list()
 		return "That land is not known here."
 	if (shard_group.peer_transfers_held(id))
 		return "No ship can make landfall there for now: that land is closed to arrivals. Ask an admin."
-	if (peer["state"] != "UP")
-		var/woke = shard_group.wake_peer(id, notify)
-		if (woke)
-			return woke
-		if (QDELETED(src) || !craft)
-			return "The crossing was called off."
-		reason = crossing_refusal(notify)
+	// An admin's send (region_admin_send.dm) overrides what she was bound for.
+	if (admin_crossing)
+		crossing_hold = null
+	else
+		if (voyage ? (!islist(src.voyage) || src.voyage["id"] != voyage) : src.voyage)
+			return voyage ? "That voyage is over." : "She is on a voyage. Her crew sail on with it."
+		reason = crossing_hold_refusal(id)
 		if (reason)
 			return reason
+	var/list/hold = null
+	if (peer["state"] != "UP")
+		var/woke = crossing_wake(id, notify, voyage)
+		if (istext(woke))
+			return woke
+		hold = woke
+		hold["state"] = "departing"
+	else
+		hold = crossing_hold_current() || crossing_hold_take("departing", id, voyage)
+		hold["busy"] = TRUE
+		hold["state"] = "departing"
+	. = cross_away(id, voyage, hold)
+	if (. && crossing_hold_is(hold))
+		// She stays: a land that took the wake stays hers until it runs out.
+		hold["busy"] = FALSE
+		hold["state"] = "committed"
+		if (!hold["woke"] || hold["until"] <= world.time)
+			crossing_hold_release(hold)
+
+// The rest of a crossing, once the land answers: she is packed and her crew
+// go. Null when she left, else why not.
+/obj/structure/hull_tiller/proc/cross_away(id, voyage, list/hold)
+	// The wake slept: whatever changed meanwhile is asked again before she is touched.
+	if (!crossing_continues(hold, voyage))
+		return "The crossing was called off."
+	var/reason = crossing_refusal()
+	if (reason)
+		return reason
 	var/list/packed = sea_crossing_pack(src)
 	if (istext(packed))
 		return packed
 	var/list/crew = packed["crew"]
 	if (!crew.len)
 		return "Nobody is aboard to sail her."
+	// Who set out on her voyage (ship_voyage.dm): one of them who logged out at
+	// sea still goes with her (live report 2026-11-19: a crew stuck off the
+	// coast because a crewmate had logged out on the way).
+	var/list/sailed = (voyage && islist(src.voyage) && islist(src.voyage["crew"])) ? src.voyage["crew"] : list()
 	for (var/mob/living/human/H in crew)
 		var/problem = null
+		var/logged_out = !H.client && H.persistence_owner_ckey && (admin_crossing || (H.persistence_owner_ckey in sailed))
 		// An admin's crossing (region_admin_send.dm) also takes a logged-out player's body.
-		if (H.client ? IsGuestKey(H.client.key) : !(agent_travel_account(H) || (admin_crossing && H.persistence_owner_ckey)))
-			problem = "only players with a BYOND account can make the crossing"
-		else if (H.stat != CONSCIOUS || H.restrained())
+		if (H.client && IsGuestKey(H.client.key))
+			problem = "[H.real_name] plays as a guest, and only players with a BYOND account can make the crossing"
+		else if (!H.client && !logged_out && !agent_travel_account(H))
+			problem = H.persistence_owner_ckey ? "[H.real_name] is logged out. Wake them or put them ashore" : "[H.real_name] has no player to go with them. Put them ashore"
+		else if ((logged_out ? H.stat == DEAD : H.stat != CONSCIOUS) || H.restrained())
 			problem = "[H.real_name] cannot make the crossing like this"
 		else
 			var/list/items = H.region_travel_items()
@@ -711,8 +879,9 @@ var/global/list/sea_crossing_marked = list()
 			H.buckled.unbuckle_mob()
 		if (H.client)
 			H.record_persistence_owner()
-		else if (agent_travel_account(H) || !admin_crossing)
+		else if (agent_travel_account(H))
 			H.persistence_owner_ckey = agent_travel_account(H)
+		// A logged-out player's body keeps its owner (checked above).
 		H.forceMove(gate)
 	log_game("Sea crossing: the [record["name"]] ([length(record["tiles"])] tiles, [crew.len] crew) leaves [pivot.x],[pivot.y],[pivot.z] for [id] (voyage [voyage]).")
 	// The animals and dead wait in the gate too: they go only once she has.
@@ -855,3 +1024,4 @@ var/global/list/sea_crossing_tillers = list()
 #undef SEA_CROSSING_CHEST_ITEMS_MAX
 #undef SEA_CROSSING_ANCHOR_DEPTH
 #undef SEA_CROSSING_CARGO_MAX
+#undef SEA_CROSSING_HOLD_GRACE

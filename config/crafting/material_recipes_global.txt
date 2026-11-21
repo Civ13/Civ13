@@ -251,6 +251,7 @@ RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
 
 RECIPE: /material/concrete/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
+RECIPE: /material/concrete/,concrete ramp,/obj/covers/concretefloor/ramp,1,20,1,1,none,103,0,0,8,null
 RECIPE: /material/concrete/,septic tank,/obj/structure/sewer_piece/cesspit/septic,6,200,1,1,construction,0,0,0,8,null
 RECIPE: /material/concrete/,concrete bridge span,/obj/item/weapon/bridge_span/concrete,6,100,0,1,none,103,0,0,8,null
 
@@ -1186,14 +1187,6 @@ RECIPE: /material/kevlar/,civilian kevlar armor,/obj/item/clothing/accessory/arm
 RECIPE: /material/kevlar/,USSR 6B3 body armor,/obj/item/clothing/suit/b3,12,260,0,1,none,175,0,175,7,null
 
 //**************************************************************
-//*********************| CHITIN |*******************************
-//**************************************************************
-
-RECIPE: /material/chitin/,chitin mask,/obj/item/clothing/mask/chitinmask,4,65,0,1,none,0,0,0,0,null
-RECIPE: /material/chitin/,chitin helmet,/obj/item/clothing/head/helmet/chitin,7,115,0,1,none,0,0,0,0,null
-RECIPE: /material/chitin/,chitin armor,/obj/item/clothing/suit/armor/chitin,14,180,0,1,none,0,0,0,0,null
-
-//**************************************************************
 //*********************| BEARPELT |*****************************
 //**************************************************************
 //*****************| BROWN BEARPELT CLOTHES|***************************
@@ -1601,6 +1594,8 @@ RECIPE: /material/stone/,sidewalk,/obj/covers/sidewalk,1,25,1,1,floors,100,0,0,8
 //*************| STONE CONSTRUCTIONS & DECORATIONS |***************
 
 RECIPE: /material/stone/,stone stairs,/obj/covers/cobblestone/stairs,2,45,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,earth ramp,/obj/covers/cobblestone/ramp_earth,2,40,1,1,construction,0,0,0,8,null
+RECIPE: /material/stone/,stone ramp,/obj/covers/cobblestone/ramp_gentle,2,45,1,1,construction,0,0,0,8,null
 
 RECIPE: /material/stone/,stone altar,/obj/structure/altar/stone,15,200,1,1,religious & decoration,0,0,0,8,null
 
@@ -2541,6 +2536,7 @@ RECIPE: /material/wood/,thatch floor,/obj/covers/thatch,0.75,20,1,1,construction
 RECIPE: /material/wood/,split thatch floor,/obj/covers/thatch2,0.75,20,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood floor,/obj/covers/wood,1,25,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/soft/,wood stairs,/obj/covers/wood/stairs,2,35,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,timber ramp,/obj/covers/wood/ramp,2,35,1,1,construction,18,0,0,8,null
 RECIPE: /material/wood/soft/,fancy wood floor,/obj/covers/fancywood,1.5,25,1,1,construction,42,0,0,8,null
 
 RECIPE: /material/wood/soft/,window,/obj/structure/window_frame,5,80,1,1,construction,18,0,0,8,null
@@ -2605,7 +2601,7 @@ RECIPE: /material/wood/,wood spear,/obj/item/weapon/material/spear,4,50,0,1,weap
 RECIPE: /material/wood/,pilum,/obj/item/weapon/material/pilum,3,50,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood dory,/obj/item/weapon/material/spear/dory,6,70,0,1,weapons,0,22,0,2,wood
 RECIPE: /material/wood/,wood sarissa,/obj/item/weapon/material/spear/sarissa,8,90,0,1,weapons,0,22,0,2,wood
-RECIPE: /material/wood/soft/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,2,wood
+RECIPE: /material/wood/soft/,training sword,/obj/item/weapon/material/sword/training,8,80,0,1,weapons,0,24,0,3,wood
 RECIPE: /material/wood/,macuahuitl,/obj/item/weapon/macuahuitl/unedged,5,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,tepoztopilli,/obj/item/weapon/macuahuitl/tepoztopilli/unedged,4,90,0,1,weapons,0,26,0,3,null
 RECIPE: /material/wood/,police baton,/obj/item/weapon/melee/classic_baton,4,90,0,1,weapons,0,95,0,8,null
@@ -3115,10 +3111,10 @@ RECIPE: /material/iron/,iron shutters,/obj/structure/simple_door/key_door/anyone
 RECIPE: /material/iron/,iron hatch,/obj/item/trapdoor_kit/iron,6,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door closer,/obj/item/door_fitting/spring_closer,3,80,0,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2,80,0,1,construction,0,0,0,8,null
-RECIPE: /material/iron/,steam pumping engine,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null
-RECIPE: /material/iron/,lever pump,/obj/structure/cellar_pump/lever,6,120,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,steam sewer pump,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,hand bilge and cellar pump,/obj/structure/cellar_pump/lever,6,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,anchor,/obj/structure/hull_anchor,8,120,1,1,vehicle parts,41,0,0,8,null
-RECIPE: /material/iron/,steam mine pump,/obj/structure/cellar_pump/steam,12,250,1,1,construction,0,0,0,8,null
+RECIPE: /material/iron/,steam bilge and mine pump,/obj/structure/cellar_pump/steam,12,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,cast iron hand pump,/obj/structure/well_fitting/pump,6,180,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,faction door,/obj/structure/simple_door/key_door/faction_door,15,180,1,1,construction,28,0,0,8,null
 
@@ -3420,6 +3416,29 @@ RECIPE: /material/steel/,magnetic torpedo,/obj/item/naval_torpedo/magnetic,16,28
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,HEAT guided missile,/obj/item/ammo_casing/rocket/atgm,12,300,0,1,ammunition,0,0,0,8,null
 RECIPE: /material/steel/,HE guided missile,/obj/item/ammo_casing/rocket/atgm/he,12,300,0,1,ammunition,0,0,0,8,null
+
+// Decorative floor variants (existing construction materials and research).
+RECIPE: /material/stone/,light running cobblestone floor,/obj/covers/cobblestone/vertical,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,light crosswise cobblestone floor,/obj/covers/cobblestone/horizontal,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,dark crosswise cobblestone floor,/obj/covers/cobblestone/horizontal/dark,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/stone/,mossy old stone floor,/obj/covers/stone/slab/decorative/mossy,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 1,/obj/covers/wood/alt/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 2,/obj/covers/wood/alt/two/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 3,/obj/covers/wood/alt/three/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 4,/obj/covers/wood/alt/four/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 5,/obj/covers/wood/alt/five/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 6,/obj/covers/wood/alt/six/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 7,/obj/covers/wood/alt/seven/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 8,/obj/covers/wood/alt/eight/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 9,/obj/covers/wood/alt/nine/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 10,/obj/covers/wood/alt/ten/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/wood/soft/,wood floor pattern 11,/obj/covers/wood/alt/eleven/constructed,1,25,1,1,construction,18,0,0,8,null
+RECIPE: /material/bamboo/,edged tatami floor,/obj/covers/tatami/trim,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,inside-corner tatami floor,/obj/covers/tatami/trim/angle,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,outside-corner tatami floor,/obj/covers/tatami/trim/corner,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,three-sided tatami floor,/obj/covers/tatami/trim/cee,1,20,1,1,construction,0,0,0,8,null
+RECIPE: /material/bamboo/,fully framed tatami floor,/obj/covers/tatami/trim/full,1,20,1,1,construction,0,0,0,8,null
+
 //**| GENERATED TOOL MATERIAL VARIANTS: edit config/recipe_variants.json, then run scripts/recipe_variants.py --write |**
 RECIPE: /material/copper/,copper hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,copper
 RECIPE: /material/bronze/,bronze hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,bronze

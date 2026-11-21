@@ -38,7 +38,7 @@
 			user.visible_message("<span class='warning'>[user] attempts to force [M] to swallow \the [src]!</span>", "<span class='warning'>You try and force [M] to swallow \the [src].")
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (!do_mob(user, M))
+			if (!do_mob(user, M) || loc != user || !M.can_finish_force_feed(user, src))
 				return
 
 			user.drop_from_inventory(src) //icon update

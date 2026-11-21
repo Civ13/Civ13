@@ -496,6 +496,14 @@ def publish_ready(root, *, revision, expected_map, host, generation, session, st
     return state
 
 
+class LifecycleRefused(RuntimeError):
+    """A well-formed response explicitly refused the requested lifecycle action."""
+
+    def __init__(self, code):
+        self.code = code
+        super().__init__('Lifecycle request rejected: %s' % code)
+
+
 def query(port, token, action='status', operation=None, session=None, expected_persistence=None, extra=None):
     values = {'nomads_lifecycle': '1', 'token': token, 'action': action}
     if extra:  # action-specific fields, such as the port a standby world opens
@@ -531,7 +539,9 @@ def query(port, token, action='status', operation=None, session=None, expected_p
         if not isinstance(result, dict) or not result.get('ok'):
             # The world's reason (port_not_opened, invalid_session_or_operation, ...) goes in the
             # message so a refused step says why.
-            raise RuntimeError('Lifecycle request rejected: %s' % result.get('error') if isinstance(result, dict) else 'Lifecycle request rejected')
+            if isinstance(result, dict):
+                raise LifecycleRefused(result.get('error'))
+            raise RuntimeError('Lifecycle request rejected')
         return result
 
 

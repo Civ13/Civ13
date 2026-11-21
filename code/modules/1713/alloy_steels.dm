@@ -1,7 +1,7 @@
 // Alloy steels (docs/steelmaking.md, "Alloy steels").
 //
-// Nickel and cobalt ores turn up in mined rock from the Early Modern age,
-// chromite from the World War age.
+// Nickel turns up in mined rock when Open Hearth Steel can first be
+// researched (1873); cobalt and chromite still start in 1903 and 1943.
 // - Nickel steel (open hearth, 1890s): a little nickel in the melt. Armour
 //   forged from it stops blows a little better and bullets and arrows a good
 //   deal better; blades come out a little better than from fine steel.
@@ -12,9 +12,10 @@
 //   out of the melt soft and is aged in a kiln to full hardness. The best
 //   steel for armour and blades.
 
-#define NICKEL_ORE_CHANCE 3 // percent per mined wall, from the Early Modern age
+#define NICKEL_ORE_CHANCE 3 // percent per mined wall
+#define NICKEL_ORE_AGE 4 // Open Hearth Steel needs a tier-4 bench (1873).
 #define COBALT_ORE_CHANCE 1.5
-#define ALLOY_ORE_AGE 5
+#define COBALT_ORE_AGE 5
 #define NICKEL_STEEL_PER_ORE 4 // steel one nickel ore alloys in an open hearth
 #define ALLOY_ADDITION_LIMIT 20 // alloy ore one works holds
 #define CHROMITE_ORE_CHANCE 3
@@ -31,8 +32,8 @@
 /obj/item/stack/ore/nickel
 	name = "nickel ore"
 	desc = "Pentlandite: heavy bronze-yellow lumps with a metallic shine. A little of it added to an open hearth melt makes nickel steel."
-	icon_state = "ore_iron"
-	color = "#c9bd84"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "ore_nickel"
 	singular_name = "lump"
 	flags = CONDUCT
 	flammable = FALSE
@@ -40,8 +41,8 @@
 /obj/item/stack/ore/cobalt
 	name = "cobalt ore"
 	desc = "Cobaltite: silvery-white crystals with a faint pink bloom where they weather. Steelmakers alloy cobalt into the hardest steels."
-	icon_state = "ore_iron"
-	color = "#c8b6c6"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "ore_cobalt"
 	singular_name = "lump"
 	flags = CONDUCT
 	flammable = FALSE
@@ -49,7 +50,7 @@
 // Nickel and cobalt found in one mined wall, independent of the other ore rolls.
 /turf/proc/mining_alloy_ores(mob/living/human/H)
 	. = 0
-	if (!map || map.ordinal_age < ALLOY_ORE_AGE)
+	if (!map || map.ordinal_age < NICKEL_ORE_AGE)
 		return
 	var/doubled = istype(get_area(src), /area/caribbean/void/caves/special)
 	if (prob(NICKEL_ORE_CHANCE * continent_ore_factor("nickel", src)))
@@ -58,7 +59,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#c9bd84><b>nickel</b></font> ore!"))
 		. += amount
-	if (prob(COBALT_ORE_CHANCE * continent_ore_factor("cobalt", src)))
+	if (map.ordinal_age >= COBALT_ORE_AGE && prob(COBALT_ORE_CHANCE * continent_ore_factor("cobalt", src)))
 		var/amount = rand(4, 8) * (doubled ? 2 : 1)
 		spawn_stack(/obj/item/stack/ore/cobalt, src, amount)
 		if (H)
@@ -74,8 +75,8 @@
 /obj/item/stack/ore/chromite
 	name = "chromite"
 	desc = "Chromium ore: heavy black grains with a dull metallic lustre. Melted with nickel in an electric arc furnace it makes Inconel."
-	icon_state = "ore_iron"
-	color = "#5d5a63"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "ore_chromite"
 	singular_name = "lump"
 	flags = CONDUCT
 	flammable = FALSE
@@ -92,6 +93,13 @@
 /obj/item/stack/material/steel/nickel/New()
 	. = ..()
 	stacktype = type
+
+/obj/item/stack/material/steel/nickel/grade_sheet()
+	return "sheet-nickel"
+
+/obj/item/stack/material/steel/nickel/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
 
 /obj/item/stack/material/steel/nickel/grade_name()
 	return "nickel"
@@ -110,6 +118,13 @@
 	. = ..()
 	stacktype = type
 
+/obj/item/stack/material/steel/maraging_soft/grade_sheet()
+	return "sheet-maraging_soft"
+
+/obj/item/stack/material/steel/maraging_soft/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
+
 /obj/item/stack/material/steel/maraging_soft/grade_name()
 	return "unaged maraging"
 
@@ -125,6 +140,13 @@
 /obj/item/stack/material/steel/maraging/New()
 	. = ..()
 	stacktype = type
+
+/obj/item/stack/material/steel/maraging/grade_sheet()
+	return "sheet-maraging"
+
+/obj/item/stack/material/steel/maraging/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
 
 /obj/item/stack/material/steel/maraging/grade_name()
 	return "maraging"
@@ -167,9 +189,8 @@
 /obj/item/stack/inconel
 	name = "Inconel"
 	desc = "Dull grey bars of a nickel-chromium superalloy that keeps its strength red hot. Overhaul an engine with Inconel parts and it wears half as fast."
-	icon = 'icons/obj/aluminium.dmi'
-	icon_state = "sheet-aluminium"
-	color = "#a3a196"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "sheet-inconel"
 	singular_name = "bar"
 	max_amount = 50
 	w_class = ITEM_SIZE_NORMAL
@@ -179,6 +200,10 @@
 /obj/item/stack/inconel/New()
 	. = ..()
 	stacktype = type
+	update_icon()
+
+/obj/item/stack/inconel/update_icon()
+	icon_state = "sheet-inconel[pile_suffix(amount, list(13, 26, 39))]"
 
 //////////////////////////////////////////////////////////////////////////////
 // Alloy additions in the steelworks (steel_works.dm calls these hooks)
@@ -314,8 +339,9 @@
 	return list(/obj/item/stack/material/steel/maraging_soft, /obj/item/stack/inconel)
 
 #undef NICKEL_ORE_CHANCE
+#undef NICKEL_ORE_AGE
 #undef COBALT_ORE_CHANCE
-#undef ALLOY_ORE_AGE
+#undef COBALT_ORE_AGE
 #undef NICKEL_STEEL_PER_ORE
 #undef ALLOY_ADDITION_LIMIT
 #undef CHROMITE_ORE_CHANCE

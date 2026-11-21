@@ -234,24 +234,20 @@
 	else
 		WW = user.l_hand
 	if (WW.reagents.has_reagent("water", 5))
+		var/flour_reagent
 		if (src.reagents.has_reagent("flour", 5))
-			WW.reagents.remove_reagent("water", 5)
-			src.reagents.remove_reagent("flour", 5)
-			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
-			return
+			flour_reagent = "flour"
 		else if (src.reagents.has_reagent("barleyflour", 5))
-			WW.reagents.remove_reagent("water", 5)
-			src.reagents.remove_reagent("barleyflour", 5)
-			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
-			return
+			flour_reagent = "barleyflour"
 		else if (src.reagents.has_reagent("oatflour", 5))
-			WW.reagents.remove_reagent("water", 5)
-			src.reagents.remove_reagent("oatflour", 5)
-			new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
-			return
+			flour_reagent = "oatflour"
 		else
 			to_chat(user, "<span class = 'warning'>You need more flour.</span>")
 			return
+		WW.reagents.remove_reagent("water", 5)
+		src.reagents.remove_reagent(flour_reagent, 5)
+		new/obj/item/weapon/reagent_containers/food/snacks/dough(user.loc)
+		return
 	else
 		to_chat(user, "<span class = 'warning'>You need more water.</span>")
 		return

@@ -96,16 +96,17 @@
 	. = 0
 
 	if (reagents)
-		for (var/datum/reagent/R in reagents.reagent_list)
-			if (istype(R, /datum/reagent/ethanol))
-				var/datum/reagent/ethanol/E = R
-				. += (min(max(E.strength, 25), 50) * E.volume)
+		. = accumulate_alcohol_power(reagents, .)
 
 	if (rag && rag.reagents)
-		for (var/datum/reagent/R in rag.reagents.reagent_list)
-			if (istype(R, /datum/reagent/ethanol))
-				var/datum/reagent/ethanol/E = R
-				. += (min(max(E.strength, 25), 50) * E.volume)
+		. = accumulate_alcohol_power(rag.reagents, .)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/proc/accumulate_alcohol_power(datum/reagents/holder, power)
+	. = power
+	for (var/datum/reagent/R in holder.reagent_list)
+		if (istype(R, /datum/reagent/ethanol))
+			var/datum/reagent/ethanol/E = R
+			. += (min(max(E.strength, 25), 50) * E.volume)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/proc/shatter_check(var/distance)
 	if (!isGlass || !shatter_duration)

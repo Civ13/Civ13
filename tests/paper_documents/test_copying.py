@@ -16,6 +16,13 @@ TELE=(vm.ROOT/'code/modules/1713/telegraph.dm').read_text(encoding='utf-8')
 EN='civ13:english:v1';RU='civ13:russian:v1';PLAIN='/obj/item/weapon/paper'
 
 class Turf(vm.Ref):kind='turf'
+class Book(vm.Ref):
+ def __init__(self,place):
+  self.moves=[];self.loc=place;self.gc_destroyed=False
+ def __setattr__(self,key,value):
+  if key=='loc':self.moves.append(value)
+  super().__setattr__(key,value)
+
 class Machine(vm.Ref):
  def __init__(self,place):
   self.loc=place;self.gc_destroyed=False;self.near=True;self.copying=False
@@ -58,17 +65,20 @@ def environment(source=None,paper_source=None):
  def prompt(*args):return state['prompt']()
  def parent_destroy(machine):
   # Explicit parent effect seam: movable Destroy deletes contents after override.
+  machine.events.append('parent')
   for p in state['all_papers']:
    if p.loc is machine:qdel(p)
   machine.gc_destroyed=True;return True
  env.update(istype=istype,MAX_FIELDS=50,new_copy_paper=factory,qdel=qdel,
+  notice=lambda user:None,
   get_turf=lambda a:a.loc if a and isinstance(a.loc,Turf) else None,
   remove_input=remove_input,append_input=append_input,unique_input=unique_input,
   paper_inputs=lambda items:[x for x in (items or []) if isinstance(x,Paper)],
+  press_documents=lambda items:[x for x in (items or []) if isinstance(x,(Paper,Book))],
   do_after=wait,WWinput=prompt,parent_destroy=parent_destroy,world=state['world'])
- names={'paper_document_copy_metadata_valid','paper_document_copy_metadata','paper_document_copy_snapshot','paper_document_copy_current','paper_document_create_copy','paper_document_copy_actor_valid','new_copy_paper','qdel','get_turf','remove_input','append_input','unique_input','paper_inputs','do_after','WWinput','parent_destroy'}
+ names={'paper_document_copy_metadata_valid','paper_document_copy_metadata','paper_document_copy_snapshot','paper_document_copy_current','paper_document_create_copy','paper_document_copy_actor_valid','new_copy_paper','qdel','get_turf','remove_input','append_input','unique_input','paper_inputs','press_documents','notice','do_after','WWinput','parent_destroy'}
  vm.ALLOWED |= names
- vm.METHODS |= {'document_copy_legacy_valid','copy_drawings_from','updateinfolinks','update_icon','visible_message','transfer_held_item_to'}
+ vm.METHODS |= {'document_copy_legacy_valid','copy_drawings_from','updateinfolinks','update_icon','visible_message','transfer_held_item_to','eject_press_documents','refund_printing_sheets'}
  Paper.document_copy_legacy_valid=vm.project(paper_source,'/obj/item/weapon/paper/proc/document_copy_legacy_valid','self,legacy',env)
  adapted=source
  marker='var/obj/item/weapon/paper/result = new /obj/item/weapon/paper(null, TRUE)'
@@ -77,13 +87,15 @@ def environment(source=None,paper_source=None):
  for field in ('base','copy'):
   adapted=adapted.replace('src.'+field+'.len','length(src.'+field+')')
   adapted=adapted.replace('src.'+field+'[1]','src.'+field+'[0]')
-  for item in ('original','stock','P'):
+  for item in ('original','stock','P','D'):
    adapted=adapted.replace('src.'+field+' -= '+item,'remove_input(src.'+field+','+item+')')
   adapted=adapted.replace('src.'+field+' += P','append_input(src.'+field+',P)')
  adapted=adapted.replace('choices += "Original"','choices.append("Original")').replace('choices += "Copy"','choices.append("Copy")')
- adapted=adapted.replace('papers |= original','unique_input(papers,original)').replace('papers |= stock','unique_input(papers,stock)')
- adapted=adapted.replace('for (var/obj/item/weapon/paper/original in src.base)','for (var/original in paper_inputs(src.base))')
- adapted=adapted.replace('for (var/obj/item/weapon/paper/stock in src.copy)','for (var/stock in paper_inputs(src.copy))')
+ adapted=adapted.replace('documents |= original','unique_input(documents,original)').replace('documents |= stock','unique_input(documents,stock)')
+ adapted=adapted.replace('for (var/obj/item/weapon/original in src.base)','for (var/original in press_documents(src.base))')
+ adapted=adapted.replace('for (var/obj/item/weapon/stock in src.copy)','for (var/stock in press_documents(src.copy))')
+ adapted=adapted.replace('for (var/obj/item/weapon/D in documents)','for (var/D in documents)')
+ adapted=re.sub(r'(?m)^(\s*)to_chat\(user, [^\n]*\)\s*$',r'\1notice(user)',adapted)
  adapted=adapted.replace('receivers[check_index]','receivers[check_index-1]').replace('places[check_index]','places[check_index-1]')
  adapted=adapted.replace('outputs[publish_index]','outputs[publish_index-1]').replace('places[publish_index]','places[publish_index-1]')
  adapted=adapted.replace('return ..()','return parent_destroy(src)')
@@ -91,6 +103,8 @@ def environment(source=None,paper_source=None):
   env['paper_document_'+name]=vm.project(adapted,'/proc/paper_document_'+name,args,env)
  insert=vm.project(adapted,'/obj/structure/printingpress/proc/insert_copy_paper','src,P,actor',env)
  press=vm.project(adapted,'/obj/structure/printingpress/proc/copy_paper_document','src,actor',env)
+ Machine.eject_press_documents=vm.project(adapted,'/obj/structure/printingpress/proc/eject_press_documents','src,place,user=None',env)
+ Machine.refund_printing_sheets=lambda machine,place:machine.events.append('refund')
  destroy=vm.project(adapted,'/obj/structure/printingpress/Destroy','src',env)
  mail=vm.project(adapted,'/obj/structure/mailbox/proc/copy_paper_delivery','src,original,actor',env)
  def transfer(actor,p,machine):
@@ -221,11 +235,13 @@ class Copies(unittest.TestCase):
     else:self.assertNotIn(self.paper,self.machine.base);self.assertNotIn(self.paper,self.machine.copy)
     if change not in ('normal','transfer'):self.assertIs(self.paper.loc,self.actor)
     self.assertFalse(self.paper.gc_destroyed)
- def test_destroy_recovers_only_retained_papers_once_and_ignores_books_or_stolen(self):
-  self.loaded_press();self.stock.loc=None;stolen=self.Paper(self.actor);book=vm.Ref()
-  self.machine.base += [self.paper,stolen,book];self.machine.copy += [self.paper]
+ def test_destroy_recovers_retained_paper_and_books_but_does_not_steal_moved_inputs(self):
+  self.loaded_press();self.stock.loc=None;stolen=self.Paper(self.actor);book=Book(self.machine)
+  self.machine.base += [stolen,book];self.machine.copy += [self.paper,book]
   self.assertTrue(self.destroy(self.machine));self.assertIs(self.paper.loc,self.place);self.assertIs(self.stock.loc,self.place)
-  self.assertIs(stolen.loc,self.actor);self.assertIn(book,self.machine.base);self.assertFalse(self.paper.gc_destroyed)
+  self.assertEqual(book.moves,[self.machine,self.place]);self.assertIs(book.loc,self.place);self.assertIs(stolen.loc,self.actor);self.assertFalse(self.paper.gc_destroyed)
+  self.assertEqual((self.machine.base,self.machine.copy),([],[]))
+  self.assertEqual(self.machine.events,['refund','parent'])
  def test_destruction_during_held_transfer_rescues_reserved_input_before_parent(self):
   self.actor.active=self.paper
   self.state['transfer_hook']=lambda p:self.destroy(self.machine)

@@ -623,6 +623,16 @@ class GaiaHostTests(unittest.TestCase):
         self.host.watch_step(None)
         self.assertEqual(self.machine.suspended, 0)
 
+    def test_deferred_idle_update_does_not_prevent_normal_sleep(self):
+        self.running()
+        self.host.update_pending = lambda: True
+        self.host.idle_update_action = lambda: None
+        idle, _ = self.host.watch_step(None)
+        self.machine.clock = 15 * 60
+        self.host.watch_step(idle)
+        self.assertEqual(self.machine.suspended, 1)
+        self.assertFalse(self.machine.detached)
+
     def test_watch_puts_an_idle_saved_world_to_sleep_on_disk_when_asked(self):
         self.config['freeze_cold'] = True
         self.running()

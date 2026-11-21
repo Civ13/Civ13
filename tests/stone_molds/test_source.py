@@ -47,7 +47,7 @@ def commit_contract(stack):
     # Select through the next absolute declaration, preserving the full body.
     body = re.split(r'\n/(?=\w)', stack.split('/obj/item/stack/proc/produce_recipe(',1)[1],maxsplit=1)[0]
     assert body.count('!carving.valid()') == 2, 'admission and completion guards'
-    assert body.index('!do_after(user, buildtime)') < body.rindex('!carving.valid()') < body.index('if (use(required,'), 'post-wait before payment'
+    assert body.index('!do_after(user, buildtime, ship_craft = ship_craft)') < body.rindex('!carving.valid()') < body.index('if (use(required,'), 'post-wait before payment'
     assert body.index('if (use(required,') < body.index('if ((joinery || carving) && H && recipe.time)') < body.index('O = new recipe.result_type'), 'paid XP and output'
     assert 'quantity != 1 || !carving.valid()' in body, 'single mold batch'
     assert '(joinery || carving) ? null : H' in body, 'exact paid material'
@@ -180,7 +180,7 @@ class StoneMoldTests(unittest.TestCase):
     def test_oven_guard_and_reference_instructions(self):
         oven=read('code/game/objects/structures/kitchen/oven.dm')
         branch=oven.split('var/obj/item/weapon/clay/CL = I',1)[1]
-        self.assertLess(branch.index('if (stone_mold_type(CL.type))'),branch.index('contents += CL.fired_result(src)'))
+        self.assertLess(branch.index('if (stone_mold_type(CL.type))'),branch.index('var/fired = CL.fired_result(src)'))
         self.assertIn('continue // Carved stone',branch)
         self.assertIn('Chisel and hammer/mallet equipped or at your feet.',read(STACK))
         for file in ('scripts/build-crafting-atlas.py','scripts/player_help_bridge.py'):

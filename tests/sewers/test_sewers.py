@@ -56,12 +56,18 @@ class SewersSource(unittest.TestCase):
         self.assertIn('RECIPE: /material/stonebrick/,brick sewer,/obj/structure/sewer_piece/drain/brick,', recipes)
         self.assertIn('"/obj/structure/sewer_piece/drain/brick" = "imperial_architecture",', research)
         for name, path, node in (
-                ('steam pumping engine', '/obj/structure/sewer_pump/steam', 'steam_power'),
+                ('steam sewer pump', '/obj/structure/sewer_pump/steam', 'steam_power'),
                 ('electric sewage pump', '/obj/structure/sewer_pump/electric', 'utilities'),
                 ('settling tank', '/obj/structure/sewer_settling_tank', 'germ_theory'),
                 ('septic tank', '/obj/structure/sewer_piece/cesspit/septic', 'public_health')):
             self.assertRegex(recipes, rf'RECIPE: /material/\w+/,{name},{path},')
             self.assertIn(f'"{path}" = "{node}",', research)
+
+    def test_steam_sewer_pump_examine_identifies_its_placement(self):
+        definition = SEWERS.split('/obj/structure/sewer_pump/steam\n', 1)[1].split('\n/', 1)[0]
+        self.assertIn('name = "steam sewer pump"', definition)
+        examine = SEWERS.split('/obj/structure/sewer_pump/steam/examine(', 1)[1].split('\n/', 1)[0]
+        self.assertIn("Use it on a sewer outfall. It does not pump a cellar, mine or ship's bilge.", examine)
 
     def test_hollows_drain_once_a_minute(self):
         hollows = (ROOT / 'code/modules/1713/flood_hollows.dm').read_text(encoding='utf-8')

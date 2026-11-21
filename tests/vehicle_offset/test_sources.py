@@ -4,6 +4,7 @@ The native probe (probe.dm, run.py) drives a crate, a motorcycle with its
 rider, a frame car and a carriage by pixels in a real build and times the
 pixel writes of a pulse. These checks keep the rules the probe relies on.
 """
+import importlib.util
 from pathlib import Path
 import re
 import unittest
@@ -14,6 +15,43 @@ DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
 PROBE = (ROOT / 'tests/vehicle_offset/probe.dm').read_text(encoding='utf-8')
 RIDE = (ROOT / 'code/modules/craft/vehicle_offset_ride.dm').read_text(encoding='utf-8')
 FRAME = (ROOT / 'code/modules/craft/vehicle_offset_frame.dm').read_text(encoding='utf-8')
+
+
+SPEC = importlib.util.spec_from_file_location(
+    'vehicle_offset_source_adapter', ROOT / 'tests/save_movement/source_adapter.py',
+)
+ADAPTER = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(ADAPTER)
+
+
+class DrawAtom:
+    def __init__(self, x, y, sx, sy, rider=False):
+        self.x, self.y = x, y
+        self._step_x, self._step_y = sx, sy
+        self.rider = rider
+        self.writes = []
+        self.drawn = []
+
+    @property
+    def step_x(self):
+        return self._step_x
+
+    @step_x.setter
+    def step_x(self, value):
+        self.writes.append(('x', value))
+        self._step_x = value
+
+    @property
+    def step_y(self):
+        return self._step_y
+
+    @step_y.setter
+    def step_y(self, value):
+        self.writes.append(('y', value))
+        self._step_y = value
+
+    def vehicle_offset_drawn(self):
+        self.drawn.append((self.step_x, self.step_y))
 
 
 def proc(text, name):
@@ -35,10 +73,52 @@ class VehicleOffsetSources(unittest.TestCase):
     def test_pulses_write_directly(self):
         # Pixel pulses never call Move(); only the tile step moves things between turfs.
         draw = proc(CORE, '/datum/vehicle_offset/proc/draw(')
-        self.assertIn('A.step_x = ox + own[1]', draw)
+        self.assertIn('draw_one(A)', draw)
+        writer = proc(CORE, '/datum/vehicle_offset/proc/draw_one(')
+        self.assertIn('A.step_x = ox + own[1]', writer)
+        self.assertNotIn('Move(', writer)
         self.assertNotIn('Move(', draw)
         self.assertNotIn('spawn(', CORE)
         self.assertNotIn('sleep(', CORE)
+
+    def test_small_boats_only_write_changed_step_axes(self):
+        draw = ADAPTER.project(
+            CORE, '/datum/vehicle_offset/proc/draw_one', 'A, carried, ox, oy, write_changed_steps_only',
+            {'ismob': lambda atom: atom.rider, 'VEHICLE_OFFSET_TILE': 32},
+        )
+        self.assertIn('var/write_changed_steps_only = FALSE', CORE)
+        self.assertIn('/datum/vehicle_offset/single/small_boat\n\twrite_changed_steps_only = TRUE', CORE)
+        self.assertEqual(CORE.count('write_changed_steps_only = TRUE'), 1)
+        for kind in ('boat', 'raft'):
+            block = proc(RIDE, f'/obj/structure/vehicle/{kind}\n')
+            self.assertIn('offset_mover_type = /datum/vehicle_offset/single/small_boat', block)
+        self.assertEqual(RIDE.count('offset_mover_type = /datum/vehicle_offset/single/small_boat'), 2)
+
+        for optimized in (False, True):
+            hull = DrawAtom(4, 9, 0, 0)
+            rider = DrawAtom(4, 9, 2, -1, rider=True)
+            cargo = DrawAtom(4, 9, -2, 1)
+            carried = {hull: {1: 0, 2: 0}, rider: {1: 2, 2: -1}, cargo: {1: -2, 2: 1}}
+            cases = (
+                (0, 0, 4, 9, ''), (4, 0, 4, 9, 'x'), (4, 3, 4, 9, 'y'),
+                (15, 0, 4, 9, 'xy'), (-16, 0, 5, 9, 'x'),
+            )
+            for ox, oy, x, y, axes in cases:
+                with self.subTest(optimized=optimized, ox=ox, oy=oy):
+                    for atom in carried:
+                        atom.x, atom.y = x, y
+                        atom.writes.clear()
+                        draw(atom, carried, ox, oy, optimized)
+                        own = carried[atom]
+                        self.assertEqual((atom.step_x, atom.step_y), (ox + own[1], oy + own[2]))
+                        self.assertEqual((own[3], own[4]), (x * 32 + atom.step_x, y * 32 + atom.step_y))
+                        self.assertEqual(''.join(axis for axis, _ in atom.writes), axes if optimized else 'xy')
+            # A separately displaced rider still gets corrected when hull offsets do not change.
+            rider.step_y = 3
+            rider.writes.clear()
+            draw(rider, carried, -16, 0, optimized)
+            self.assertEqual(rider.writes, [('y', -1)] if optimized else [('x', -14), ('y', -1)])
+            self.assertEqual(rider.drawn, [(2, -1), (6, -1), (6, 2), (17, -1), (-14, -1), (-14, -1)])
 
     def test_nothing_saved(self):
         # A datum, never a var on a saved atom: saves keep tiles only.

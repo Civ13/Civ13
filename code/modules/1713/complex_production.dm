@@ -794,9 +794,10 @@
 		cranking = TRUE
 		to_chat(user, "You start to crank the lever.")
 		icon_state = active_state
-		var/cranked = do_after(user, 35)
+		// Track the grinder too: moving it away mid-crank interrupts the batch (#6275).
+		var/cranked = do_after(user, 35, src)
 		cranking = FALSE
-		if (cranked && input != null)
+		if (cranked && !QDELETED(src) && user.Adjacent(src) && input != null)
 			playsound(loc, 'sound/effects/rollermove.ogg', 35, TRUE)
 			to_chat(user, "The grinder plops out some mince!")
 			for(var/i=1, i<=output_amount, i++)

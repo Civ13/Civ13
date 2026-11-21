@@ -35,9 +35,9 @@
 /proc/wild_browse_plant(obj/structure/wild/W)
 	if (!istype(W) || istype(W, /obj/structure/wild/berrybush) || istype(W, /obj/structure/wild/burnedbush) || istype(W, /obj/structure/wild/burnedtree))
 		return FALSE
-	if (istype(W, /obj/structure/wild/jungle/acacia/dead) || istype(W, /obj/structure/wild/jungle/cherry/dead) || istype(W, /obj/structure/wild/jungle/medpine/dead))
-		return FALSE
-	return istype(W, /obj/structure/wild/smallbush) || istype(W, /obj/structure/wild/bush) || istype(W, /obj/structure/wild/tallgrass) || istype(W, /obj/structure/wild/junglebush) || istype(W, /obj/structure/wild/jungle) || istype(W, /obj/structure/wild/palm) || istype(W, /obj/structure/wild/tree/cactus) || istype(W, /obj/structure/wild/flowers)
+	if (istype(W, /obj/structure/wild/jungle))
+		return !istype(W, /obj/structure/wild/jungle/acacia/dead) && !istype(W, /obj/structure/wild/jungle/cherry/dead) && !istype(W, /obj/structure/wild/jungle/medpine/dead)
+	return istype(W, /obj/structure/wild/smallbush) || istype(W, /obj/structure/wild/bush) || istype(W, /obj/structure/wild/tallgrass) || istype(W, /obj/structure/wild/junglebush) || istype(W, /obj/structure/wild/palm) || istype(W, /obj/structure/wild/tree/cactus) || istype(W, /obj/structure/wild/flowers)
 
 /mob/living/simple_animal/proc/wild_forager()
 	return herbivore || granivore
