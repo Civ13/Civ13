@@ -1792,6 +1792,8 @@ SUITES = {
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
             'code/game/objects/items/weapons/material/misc.dm',
+            'code/game/objects/items/weapons/material/kitchen.dm',
+            'code/game/objects/items/weapons/material/haircut_window.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm',

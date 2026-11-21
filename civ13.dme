@@ -606,6 +606,7 @@
 #include "code\game\objects\items\weapons\grenades\grenade.dm"
 #include "code\game\objects\items\weapons\grenades\smokebomb.dm"
 #include "code\game\objects\items\weapons\material\ashtray.dm"
+#include "code\game\objects\items\weapons\material\haircut_window.dm"
 #include "code\game\objects\items\weapons\material\kitchen.dm"
 #include "code\game\objects\items\weapons\material\light_weapons.dm"
 #include "code\game\objects\items\weapons\material\material_weapons.dm"
