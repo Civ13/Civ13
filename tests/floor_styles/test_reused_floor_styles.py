@@ -18,7 +18,7 @@ STONE = {
     '/obj/covers/cobblestone/vertical': 'cobble_vertical',
     '/obj/covers/cobblestone/horizontal': 'cobble_horizontal',
     '/obj/covers/cobblestone/horizontal/dark': 'cobble_horizontal_dark',
-    '/obj/covers/cobblestone/old_stone': 'stone_old',
+    '/obj/covers/stone/slab/decorative/mossy': 'stone_old',
 }
 TRIM = {
     '/obj/covers/tatami/trim': 'tatami_frame',

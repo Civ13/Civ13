@@ -295,10 +295,6 @@
 	name = "dark crosswise cobblestone floor"
 	icon_state = "cobble_horizontal_dark"
 
-/obj/covers/cobblestone/old_stone
-	name = "mossy old stone floor"
-	icon_state = "stone_old"
-
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"
 	icon = 'icons/obj/stairs.dmi'
@@ -356,6 +352,10 @@
 	explosion_resistance = 2
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/stone/slab/decorative/mossy
+	name = "mossy old stone floor"
+	icon_state = "stone_old"
 
 /obj/covers/stonebrickfloor
 	name = "stone brick floor"
@@ -934,24 +934,25 @@
 	name = "reverse cobble border stop"
 	icon_state = "trim_stop_reverse"
 
-/obj/covers/cobblestone/terracotta
+/obj/covers/terracotta
+	parent_type = /obj/covers/stone/slab/decorative
 	name = "terracotta floor"
 	desc = "A floor made from kiln-fired clay tiles."
 	icon = 'icons/turf/flooring/terracotta.dmi'
 	icon_state = "terracotta"
 
-/obj/covers/cobblestone/terracotta/edge
+/obj/covers/terracotta/edge
 	name = "terracotta border"
 	icon_state = "terracotta_edge"
 
-/obj/covers/cobblestone/terracotta/inside
+/obj/covers/terracotta/inside
 	name = "inside terracotta corner"
 	icon_state = "terracotta_inner"
 
-/obj/covers/cobblestone/terracotta/outside
+/obj/covers/terracotta/outside
 	name = "outside terracotta corner"
 	icon_state = "terracotta_outer"
 
-/obj/covers/cobblestone/terracotta/inset
+/obj/covers/terracotta/inset
 	name = "patterned terracotta inset"
 	icon_state = "terracotta_inset"

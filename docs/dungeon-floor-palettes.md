@@ -23,7 +23,7 @@ Directions are single-frame BYOND S, N, E, W.
 
 ## Terracotta
 
-The `/obj/covers/cobblestone/terracotta` family comprises the field,
+The `/obj/covers/terracotta` family comprises the field,
 `edge`, `inside`, `outside`, and `inset`. Use the patterned inset at a
 landing, under a point of interest, or as a deliberate repeating accent.
 Do not alternate it randomly with unrelated stone. The edge and both corners
@@ -44,3 +44,13 @@ The check compares the 32-pixel DMI state, frames and direction metadata against
 the mapped floor cover declarations. Visually check a one-cell and a three-cell
 sill, a turn, and a decorated terracotta room as assemblies rather than
 judging the individual tiles alone.
+
+## Matching pieces players can build
+
+The Crafting Atlas exposes 11 existing wood patterns, three more cobblestone
+patterns, mossy old stone, and five framed tatami mats. They use normal floor
+placement, the same materials as their comparable recipes, and existing
+Primitive Construction or Stone Masonry gates. The framed tatami is one mat,
+not a second cover. Lay it from bamboo and use **Rotate Tatami Trim** from
+beside the installed mat to align a directional border. The fully framed mat
+does not need rotation.
