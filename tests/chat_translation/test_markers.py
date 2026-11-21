@@ -1,4 +1,4 @@
-"""Server markers for on-device chat translation (docs/chat-translation.md).
+"""Chat translation markers and the server translator (docs/chat-translation.md).
 
 The chat window translates only the text inside chat-tr and never a line that
 holds chat-notr. Speech this listener did not understand (scrambled, starred,
@@ -57,12 +57,57 @@ class ClientContract(unittest.TestCase):
         body = section(CHAT, 'function translationSource(div, type) {', '\n        }\n')
         self.assertLess(body.index("querySelector('.chat-notr')) return ''"), body.index("querySelectorAll('.chat-tr')"))
 
-    def test_only_live_lines_and_no_network(self):
+    def test_only_live_lines_and_only_to_the_game_server(self):
         self.assertEqual(CHAT.count('queueTranslation(messageDiv, chatType);'), 1)
         self.assertNotIn('queueTranslation', section(CHAT, 'function restoreHistory()', 'function setChatIdentity('))
         js = section(CHAT, 'const TRANSLATE_KEY', 'setupTranslationSettings();')
-        for forbidden in ('fetch(', 'XMLHttpRequest', 'WebSocket', 'sendBeacon', 'byond://'):
+        for forbidden in ('fetch(', 'XMLHttpRequest', 'WebSocket', 'sendBeacon'):
             self.assertNotIn(forbidden, js)
+        # The one way out is the game server that sent the line, and only once it offers translation.
+        self.assertEqual(js.count('byond://'), 1)
+        self.assertIn("window.location.href = 'byond://?chat_translate=' + id", js)
+        self.assertIn('if (serverTranslate) return serverTranslateJob(job);', js)
+
+
+SERVER = (ROOT / 'code/modules/chat/chat_translate.dm').read_text(encoding='utf-8')
+CLIENT_PROCS = (ROOT / 'code/modules/client/client_procs.dm').read_text(encoding='utf-8')
+CHAT_DM = (ROOT / 'code/modules/chat/chat.dm').read_text(encoding='utf-8')
+CONFIG = (ROOT / 'code/datums/configuration.dm').read_text(encoding='utf-8')
+
+
+class ServerTranslation(unittest.TestCase):
+    """Behaviour is covered by the native probe:
+    python3 tests/ecology_spawning/run_linux.py . tests/chat_translation/probe.dm 300
+    """
+
+    def test_included_and_wired(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8').splitlines()
+        self.assertIn('#include "code\\modules\\chat\\chat_translate.dm"', dme)
+        self.assertIn('chat_translator.handle_topic(src, href_list)', CLIENT_PROCS)
+        self.assertIn('chat_translator.announce(client)', CHAT_DM)
+        for key in ('"chat_translate_url"', '"chat_translate_model"'):
+            self.assertIn(key, CONFIG)
+
+    def test_off_unless_configured(self):
+        enabled = section(SERVER, '/datum/chat_translator/proc/enabled()', '\n\n')
+        self.assertIn('config.chat_translate_url', enabled)
+        self.assertIn('config.chat_translate_model', enabled)
+
+    def test_text_is_never_logged_or_saved(self):
+        for line in SERVER.splitlines():
+            if any(word in line for word in ('log_', 'world.log', 'message_admins', 'text2file', 'fdel', '<< file')):
+                self.assertNotIn('text', line.replace('log_game("Chat translation:', ''), line.strip())
+
+    def test_bounded(self):
+        for define in ('CHAT_TRANSLATE_MAX_CHARS 500', 'CHAT_TRANSLATE_QUEUE_LIMIT 40', 'CHAT_TRANSLATE_CACHE_LIMIT 1000', 'CHAT_TRANSLATE_CLIENT_PER_MINUTE 40'):
+            self.assertIn('#define ' + define, SERVER)
+        self.assertNotIn('spawn(', SERVER)
+
+    def test_languages_match_the_window(self):
+        import re
+        window = re.findall(r"\['([a-z]{2})', '([A-Za-z]+)'\]", section(CHAT, 'const TRANSLATE_LANGS', '];'))
+        server = re.findall(r'"([a-z]{2})" = "([A-Za-z]+)"', section(SERVER, 'chat_translate_languages = list(', ')'))
+        self.assertEqual(window, server)
 
     def test_translations_not_saved(self):
         self.assertIn('const html = untranslatedHtml(child);', CHAT)

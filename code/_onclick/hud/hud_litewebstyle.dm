@@ -30,6 +30,7 @@
 		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,	   "loc" = ui_secondary_attack),
 		"mode"		= list("type" = /obj/screen/mode,	   "loc" = ui_mode),
 		"tactic"	  = list("type" = /obj/screen/tactic,	 "loc" = ui_tactic),
+		"combat stance" = list("type" = /obj/screen/combat_stance, "loc" = ui_combat_stance),
 		"intent"	  = list("type" = /obj/screen/intent,	 "loc" = ui_disarm),
 		"random damage zone" = list("type" = /obj/screen/zone_sel_random,   "loc" = ui_random_damage_zone),
 		"damage zone" = list("type" = /obj/screen/zone_sel2,   "loc" = ui_damage_zone, "icon" = ui_hud_zone_sel_liteweb),

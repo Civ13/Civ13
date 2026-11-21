@@ -130,8 +130,9 @@ class ShoveSourceContracts(unittest.TestCase):
     def test_disarm_dispatch_preserves_aimed_and_martial_routes(self):
         source = HUMAN.read_text(encoding='utf-8')
         self.assertIn('H.mind.martial_art.disarm_act(H, src)', source)
-        self.assertIn('M.targeted_organ == "chest"', source)
-        self.assertIn('M.targeted_organ == "random"', source)
+        # tgt is the doll's zone, the random toggle or the combat stance's pick
+        self.assertIn('tgt == "chest"', source)
+        self.assertIn('tgt == "random"', source)
         self.assertIn('try_deliberate_shove(M)', source)
         self.assertIn('drop_from_inventory(I)', source)
         self.assertIn('M.resist_grab()', source)

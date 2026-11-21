@@ -19,6 +19,7 @@ MATERIALS = {'wood': ('/material/wood/soft/', '/material/wood/'), 'steel': ('/ma
 RECIPE_PATH = {
     '/obj/covers/repairedfloor': '/obj/item/weapon/covers',
     '/obj/covers/wood_wall/adjustable': '/obj/structure/wallframe',
+    '/obj/structure/multiz/ladder/up/placed': '/obj/item/weapon/hole_ladder',
 }
 
 

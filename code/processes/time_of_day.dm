@@ -17,6 +17,9 @@ var/TOD_may_automatically_change = FALSE
 	if (!roundstart_time || (map && map.times_of_day.len == 1))
 		return
 	try
+		// Regions on the world calendar take the hour from it (world_calendar.dm).
+		if (world_calendar_tick())
+			return
 		game_hour+=2
 		TOD_ticks += schedule_interval/10
 		if (TOD_ticks >= time_of_day2ticks[time_of_day])

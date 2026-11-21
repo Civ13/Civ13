@@ -144,7 +144,7 @@ class ReturnFixture:
                       buckle_lying=True, buckled_mob=None, gc_destroyed=False,
                       gcDestroyed=False, density=False)
         self.world.append(self.bed)
-        self.client = NS(ckey='account', key='Account', quickBan_isbanned=lambda kind: False)
+        self.client = NS(ckey='account', key='Account', owner_key=lambda: 'account', quickBan_isbanned=lambda kind: False)
         self.lobby = NS(client=self.client, spawning=False, close_spawn_windows=lambda: None)
         self.client.mob = self.lobby
         self.registered['account'] = DMList([self.body])
@@ -424,14 +424,14 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertIs(f.client.mob, f.body)
 
     def test_generated_omission_controls_expose_reservation_and_fresh_fallthrough(self):
-        omitted = SOURCE.replace('persistence_player_claims[C.ckey] || character_recovery_unready()',
+        omitted = SOURCE.replace('persistence_player_claims[owner] || character_recovery_unready()',
                                  'character_recovery_unready()')
         self.assertNotEqual(omitted, SOURCE)
         with patch.dict(globals(), SOURCE=omitted):
             f = ReturnFixture()
             f.claims['account'] = object()
             self.assertTrue(f.store.reclaim_saved_player(f.lobby))  # would violate the reservation oracle
-        omitted = SOURCE.replace('if(character_return_pending(lobby.client.ckey))', 'if(FALSE)')
+        omitted = SOURCE.replace('if(character_return_pending(lobby.client.owner_key()))', 'if(FALSE)')
         self.assertNotEqual(omitted, SOURCE)
         with patch.dict(globals(), SOURCE=omitted):
             f = ReturnFixture()
@@ -696,7 +696,7 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertRegex(nomads, r'if\(persistence_restored\)\n\s+return')
         reclaim = adapter.extract(SOURCE, '/map_storage/proc/reclaim_saved_player')
         self.assertNotIn('persistence_restored =', reclaim)
-        self.assertLess(reclaim.index('if(C.mob != H)'), reclaim.index('persistence_restored_bodies.Remove(C.ckey)'))
+        self.assertLess(reclaim.index('if(C.mob != H)'), reclaim.index('persistence_restored_bodies.Remove(owner)'))
 
     def test_saved_container_and_vehicle_relationships_hold_without_extraction(self):
         for case in ('container', 'riding', 'driver', 'driver_vehicle', 'riding_mob'):
@@ -872,12 +872,12 @@ class BedDestructionNoticeTests(unittest.TestCase):
         self.assertIn('var/owner = persistence_bed_owner_ckey', recipient)
         self.assertIn('actor.mob != user', recipient)
         self.assertIn('IsGuestKey(actor.key)', recipient)
-        self.assertIn('actor.ckey == owner', recipient)
+        self.assertIn('actor.owner_key() == owner', recipient)
         self.assertIn('return persistence_bed_notice_path(owner) ? owner : null', recipient)
         self.assertNotIn('account_key', recipient)
         path = adapter.extract(SOURCE, '/proc/persistence_bed_notice_path')
-        self.assertIn('ckey(owner) != owner', path)
-        self.assertIn('IsGuestKey(owner)', path)
+        self.assertIn('persistence_owner_valid(owner)', path)
+        self.assertIn('IsGuestKey(owner_key_account(owner))', path)
         self.assertIn('length(owner) > 64', path)
         self.assertIn('data/persistence-bed-notices/bed-[owner].pending', path)
 
@@ -918,18 +918,18 @@ class BedDestructionNoticeTests(unittest.TestCase):
         queue('owner', '<First Character>')
         clock.realtime = 2
         queue('owner', 'Different Character')
-        deliver(NS(key='Another', ckey='another', account_key='owner'))
-        deliver(NS(key='Guest-1', ckey='owner'))
+        deliver(NS(key='Another', ckey='another', account_key='owner', owner_key=lambda: 'another'))
+        deliver(NS(key='Guest-1', ckey='owner', owner_key=lambda: 'owner'))
         self.assertEqual(json.loads(files['bed-owner']), {'hour_utc': '2026-11-20 19:00', 'actor_name': '<First Character>'})
         self.assertEqual(messages, [])
-        deliver(NS(key='Owner', ckey='owner'))
-        deliver(NS(key='Owner', ckey='owner'))
+        deliver(NS(key='Owner', ckey='owner', owner_key=lambda: 'owner'))
+        deliver(NS(key='Owner', ckey='owner', owner_key=lambda: 'owner'))
         self.assertEqual(files, {})
         self.assertEqual(messages, [('owner', '&lt;First Character&gt; destroyed your assigned bed in '
                                      'this region during the hour starting 2026-11-20 19:00 UTC.')])
         for contents in ('1', '[', '["Unrelated Time", "Unrelated Name"]', '{"unknown": true, "another": false}'):
             files['bed-owner'] = contents
-            deliver(NS(key='Owner', ckey='owner'))
+            deliver(NS(key='Owner', ckey='owner', owner_key=lambda: 'owner'))
             self.assertNotIn('bed-owner', files)
             self.assertEqual(messages[-1], ('owner', 'Another player destroyed your assigned bed in this region.'))
 

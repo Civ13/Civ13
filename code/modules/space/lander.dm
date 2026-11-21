@@ -894,7 +894,7 @@ var/global/list/landed_landers = list()
 	var/list/aboard = crew()
 	var/list/crew_keys = list()
 	for (var/mob/living/human/C in aboard)
-		crew_keys += C.client.ckey
+		crew_keys += C.client.owner_key()
 	for (var/mob/living/human/other in range(LANDER_DECK_RADIUS, src))
 		if (other.stat != DEAD && !(other in aboard) && istype(get_turf(other), /turf/floor/lander_deck))
 			return "Everyone in the cabin must strap in or leave it first."
