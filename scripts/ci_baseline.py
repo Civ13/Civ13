@@ -1335,12 +1335,13 @@ SUITES = {
     'tactical_map': {'files': ('tests/tactical_map/test_tactical_map.py',),
         'paths': ('tests/tactical_map/',), 'shared_paths': (
             'code/modules/1713/tactical_map.dm', 'code/game/jobs/job_controller.dm')},
-    # Admin player map wiring, staff guards and the client script run in Node
-    # (skipped without it); native_probe.py is developer evidence only.
-    'admin_player_map': {'files': ('tests/admin_player_map/test_admin_player_map.py',),
-        'paths': ('tests/admin_player_map/',), 'shared_paths': (
-            'code/modules/admin/verbs/player_map.dm', 'code/modules/1713/tactical_map.dm',
-            'code/modules/admin/admin_verbs.dm')},
+    # Admin map (players, weather and air in one window): wiring, staff guards
+    # and the client script run in Node (skipped without it); native_probe.py
+    # is developer evidence only.
+    'admin_map': {'files': ('tests/admin_map/test_admin_map.py',),
+        'paths': ('tests/admin_map/',), 'shared_paths': (
+            'code/modules/admin/verbs/admin_map.dm', 'code/modules/1713/tactical_map.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/player_panel_pages.dm')},
     # Admin player list and per-player panel: wiring, rank guards, escaping and
     # the list script run in Node (skipped without it); native_probe.py is
     # developer evidence only.
@@ -1351,7 +1352,7 @@ SUITES = {
     'admin_spectate': {'files': ('tests/admin_spectate/test_admin_spectate.py',),
         'paths': ('tests/admin_spectate/',), 'shared_paths': (
             'code/modules/admin/verbs/admin_spectate.dm', 'code/modules/admin/admin_verbs.dm',
-            'code/modules/admin/verbs/player_map.dm', 'code/game/mob/observer/ghost/ghost.dm',
+            'code/modules/admin/verbs/admin_map.dm', 'code/game/mob/observer/ghost/ghost.dm',
             'code/game/mob/observer/ghost/login.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),

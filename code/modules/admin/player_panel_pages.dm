@@ -354,7 +354,10 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 	body += "<div class='btns'><span class='lbl'>Move</span>"
 	body += "<a href='?src=\ref[src];jumpto=\ref[M]'>Jump to</a>"
 	body += "<a href='?src=\ref[src];getmob=\ref[M]'>Get</a>"
-	body += "<a href='?src=\ref[src];sendmob=\ref[M]'>Send to</a></div>"
+	body += "<a href='?src=\ref[src];sendmob=\ref[M]'>Send to</a>"
+	if (get_turf(M) && (rights & (R_ADMIN|R_MOD)))
+		body += "<a href='?src=\ref[admin_maps];am=show;m=\ref[M]'>Show on map</a>"
+	body += "</div>"
 	body += "<div class='btns'><span class='lbl'>Speak</span>"
 	body += "<a href='?src=\ref[src];narrateto=\ref[M]'>Narrate to</a>"
 	body += "<a href='?src=\ref[src];subtlemessage=\ref[M]'>Subtle message</a>"
