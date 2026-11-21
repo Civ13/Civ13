@@ -119,6 +119,10 @@ var/global/list/nation_government_info = list(
 			if (islist(V) && V.len == 5 && islist(nation_government_info[V[1]]))
 				lines += "[nation_faction_label(voter)] votes for a [lowertext(nation_government_info[V[1]][1])][length(V[3]) ? " under [V[3]]" : ""]."
 	var/is_ruler = nation_rules(nid)
+	if (!G["personal"] && !nation_may_propose(nid))
+		lines += G["body"] == "referendum" ? "Only citizens with a verified account who have been members for 3 days and played this week can propose a change." : "Only a member faction's leader can propose a change."
+		to_chat(src, jointext(lines, "<br>"))
+		return
 	if (G["personal"] && !is_ruler)
 		lines += "Only the [G["ruler"]] can change the government."
 		to_chat(src, jointext(lines, "<br>"))
@@ -127,7 +131,7 @@ var/global/list/nation_government_info = list(
 	for (var/kind in GOVERNMENT_TYPES)
 		var/list/I = nation_government_info[kind]
 		options["[I[1]] ([ordinal_age_name(I[3])] or later)"] = kind
-	var/pick = WWinput(src, "[jointext(lines, " ")] [is_ruler ? "As ruler you decide alone." : "Two thirds of the member factions must agree."] Which government should the nation have?", "Nation Government", "Cancel", options + "Cancel")
+	var/pick = WWinput(src, "[jointext(lines, " ")] [nation_change_rule(nid)] Which government should the nation have?", "Nation Government", "Cancel", options + "Cancel")
 	var/kind = options[pick]
 	if (!kind)
 		return
@@ -144,7 +148,7 @@ var/global/list/nation_government_info = list(
 		body["pfaction"] = nation_faction_id(head.civilization)
 		if (kind == "theocracy")
 			body["religion"] = copytext(head.religion, 1, 41)
-	if (civilization != faction || nation_of_id(id) != nid || !(map.is_faction_leader(src, faction) || nation_rules(nid)))
+	if (civilization != faction || nation_of_id(id) != nid || !nation_may_propose(nid))
 		return
 	nation_ask(body, faction)
 
@@ -169,6 +173,170 @@ var/global/list/nation_government_info = list(
 	if (!H || !H.client || nation_of_id(nation_faction_id(H.civilization)) != nid)
 		return null
 	return H
+
+// How a change of government passes under the nation's government, for prompts.
+/proc/nation_change_rule(nid)
+	var/list/G = nation_government_of(nid)
+	if (G["personal"])
+		return "As ruler you decide alone."
+	switch (G["body"])
+		if ("senate")
+			return "The senate decides: each member faction's leader votes with the weight of its active citizens, and two thirds must agree."
+		if ("referendum")
+			return "The citizens decide by referendum: two thirds must agree and half of them must vote."
+		if ("council")
+			return "The league council decides: each member faction's leader votes with the weight of its strongbox, and two thirds must agree."
+	return "Two thirds of the member factions must agree."
+
+// --- Citizens and the census (elective governments) -------------------------------
+
+#define CITIZEN_MEMBER_DAYS 3
+#define CITIZEN_SEEN_DAYS 7
+
+// Whether the account counts as an eligible citizen of the faction: a
+// verified account on its roster for CITIZEN_MEMBER_DAYS that has played a
+// member in the last CITIZEN_SEEN_DAYS.
+/proc/nation_citizen_eligible(faction, account)
+	if (!map || !istext(account) || !account_verified(account))
+		return FALSE
+	var/list/row = map.faction_roster(faction)[account]
+	if (!islist(row) || row.len != 2 || !isnum(row[1]) || !isnum(row[2]))
+		return FALSE
+	return row[1] <= world.realtime - CITIZEN_MEMBER_DAYS * 864000 && row[2] >= world.realtime - CITIZEN_SEEN_DAYS * 864000
+
+/proc/nation_citizen_count(faction)
+	var/count = 0
+	for (var/account in map.faction_roster(faction))
+		if (nation_citizen_eligible(faction, account))
+			count++
+	return min(count, 1000)
+
+/proc/nation_faction_wealth(faction)
+	var/obj/structure/closet/crate/faction_strongbox/B = map.faction_strongbox(faction)
+	return B ? clamp(round(B.coin_worth()), 0, 10000000) : 0
+
+// Tells the coordinator each member faction of this land's eligible citizens
+// and strongbox worth, when they differ from the registry. Sleeps.
+/proc/nation_census_report()
+	if (!map)
+		return
+	var/prefix = "civ:[shard_group.region]:"
+	for (var/nid in nation_registry)
+		var/list/N = nation_registry[nid]
+		var/list/known = islist(N["census"]) ? N["census"] : list()
+		for (var/id in N["members"])
+			if (!istext(id) || findtext(id, prefix) != 1 || nation_pending_for(id, "census"))
+				continue
+			var/name = copytext(id, length(prefix) + 1)
+			if (!nation_home_faction(name))
+				continue
+			var/citizens = nation_citizen_count(name)
+			var/wealth = nation_faction_wealth(name)
+			var/list/row = known[id]
+			if (!islist(row) || row.len != 2 || row[1] != citizens || row[2] != wealth)
+				nation_send(list("op" = "census", "actor" = "world", "faction" = id, "citizens" = citizens, "wealth" = wealth))
+
+/mob/living/human/proc/nation_eligible()
+	return nation_citizen_eligible(civilization, nation_account())
+
+// Whether this character may propose a change of government or a common
+// money: the ruler, a member faction's leader, or in a democracy any eligible
+// citizen.
+/mob/living/human/proc/nation_may_propose(nid)
+	var/list/G = nation_government_of(nid)
+	if (G["personal"])
+		return nation_rules(nid)
+	if (map.is_faction_leader(src, civilization))
+		return TRUE
+	return G["body"] == "referendum" && nation_eligible()
+
+// --- Motions and elections -------------------------------------------------------
+
+/proc/nation_motion_label(list/M)
+	var/subject = M["subject"]
+	switch (M["kind"])
+		if ("admit")
+			return "Admit [nation_faction_label(subject)]"
+		if ("currency")
+			return istext(subject) && length(subject) ? "Adopt the coin of [nation_faction_label(subject)]" : "Have no common money"
+		if ("government")
+			var/list/P = subject
+			if (islist(P) && P.len == 5 && islist(nation_government_info[P[1]]))
+				return "Become a [lowertext(nation_government_info[P[1]][1])][length(P[3]) ? " under [P[3]]" : ""]"
+		if ("election")
+			return "Elect the head of the nation"
+	return "A motion"
+
+/mob/living/human/proc/nation_motions_menu(faction, id, nid)
+	var/list/N = nation_registry[nid]
+	var/list/G = nation_government_of(nid)
+	var/list/lines = list("<b>Motions and elections of [html_encode(N["name"])]</b>", nation_government_line(nid))
+	if (isnum(N["term_ends"]))
+		lines += "The [html_encode(G["ruler"])]'s term ends in [max(1, round((N["term_ends"] - world.realtime / 10 - 946684800) / 3600))] hours."
+	var/eligible = nation_eligible()
+	var/leader = map.is_faction_leader(src, faction)
+	var/account = nation_account()
+	var/list/options = list()
+	for (var/list/M in N["motions"])
+		if (!islist(M) || !isnum(M["id"]))
+			continue
+		var/label = nation_motion_label(M)
+		var/voters = M["voters"]
+		if (M["kind"] == "election")
+			var/list/names = list()
+			for (var/list/C in M["candidates"])
+				names += "[html_encode(C["name"])] ([C["votes"]])"
+			lines += "[label]: [names.len ? jointext(names, ", ") : "nobody has stood yet"]. Closes within a day of opening."
+		else
+			lines += "[label]: [M["yes"]] for, [M["no"]] against, of [M["possible"]]."
+		var/can_vote = voters == "leader" ? leader : eligible
+		if (can_vote)
+			options["Vote: [label]"] = M
+		if (M["kind"] == "election" && eligible)
+			var/standing = FALSE
+			for (var/list/C in M["candidates"])
+				if (C["account"] == account)
+					standing = TRUE
+			if (!standing)
+				options["Stand for election"] = M
+	if (nation_may_propose(nid))
+		options["Propose a common money"] = "currency"
+		options["Propose a change of government"] = "government"
+	if (!eligible)
+		lines += "Citizens vote with a verified account after 3 days as members, if they have played this week."
+	to_chat(src, jointext(lines, "<br>"))
+	if (!options.len)
+		return
+	var/pick = WWinput(src, "What will you do?", "Motions and elections", "Cancel", options + "Cancel")
+	var/choice = options[pick]
+	if (!choice || civilization != faction || nation_of_id(id) != nid)
+		return
+	if (choice == "government")
+		nation_government_menu(faction, id, nid)
+		return
+	if (choice == "currency")
+		nation_currency_vote(faction, id, nid)
+		return
+	var/list/M = choice
+	if (pick == "Stand for election")
+		nation_ask(list("op" = "stand", "faction" = id, "pname" = copytext(real_name, 1, 65)), faction)
+		return
+	var/list/answers = list()
+	if (M["kind"] == "election")
+		for (var/list/C in M["candidates"])
+			answers["[C["name"]] of [nation_faction_label(C["faction"])]"] = C["account"]
+		if (!answers.len)
+			to_chat(src, SPAN_NOTICE("Nobody has stood yet."))
+			return
+	else
+		answers = list("For" = "yes", "Against" = "no")
+	var/vote = WWinput(src, "[nation_motion_label(M)]: your vote?", "Vote", "Cancel", answers + "Cancel")
+	if (!answers[vote] || civilization != faction || nation_of_id(id) != nid)
+		return
+	nation_ask(list("op" = "ballot", "faction" = id, "motion" = M["id"], "choice" = answers[vote]), faction)
+
+#undef CITIZEN_MEMBER_DAYS
+#undef CITIZEN_SEEN_DAYS
 
 /mob/living/human/proc/nation_stay(faction, id, nid)
 	if (WWinput(src, "Withdraw [faction]'s notice and stay in [nation_registry[nid]["name"]]?", "Stay", "Cancel", list("Stay", "Cancel")) != "Stay")
