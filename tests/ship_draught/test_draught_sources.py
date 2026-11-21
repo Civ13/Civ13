@@ -20,6 +20,7 @@ RECIPE_PATH = {
     '/obj/covers/repairedfloor': '/obj/item/weapon/covers',
     '/obj/covers/wood_wall/adjustable': '/obj/structure/wallframe',
     '/obj/structure/multiz/ladder/up/placed': '/obj/item/weapon/hole_ladder',
+    '/obj/structure/roof_support': '/obj/structure/roof_support',
 }
 
 
@@ -35,7 +36,7 @@ def recipe_costs():
 
 
 def table(name, source=None):
-    block = (source or SOURCE).split('var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
+    block = (source or SOURCE).split('/proc/%s()\n\tvar/static/list/table\n\tif (!table)\n\t\ttable = list(' % name if '/proc/%s()\n' % name in (source or SOURCE) else 'var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
     rows = {}
     for key, path, cost in re.findall(r'"(\w)" = list\("name" = "[^"]+", "path" = (/[\w/]+), "cost" = list\(([^)]*)\)', block):
         rows[key] = (path, dict((m, int(n)) for m, n in re.findall(r'"(\w+)" = (\d+)', cost)))
