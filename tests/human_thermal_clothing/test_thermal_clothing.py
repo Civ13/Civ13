@@ -190,5 +190,51 @@ class DiscomfortCoverageChecks(unittest.TestCase):
             self.assertTrue(mutant_detected, 'missing head coverage must be detected')
 
 
+
+class BedrollTemperatureChecks(unittest.TestCase):
+    def test_warm_scan_guard_preserves_temperature_and_cold_order(self):
+        source = (ROOT / 'code/game/mob/living/carbon/human/human_life.dm').read_text(encoding='utf-8')
+        start = source.index('\tif (loc_temp < 22)\n\t\tfor (var/obj/structure/bed/bedroll/BRL')
+        end = source.index('\n\n\tvar/pain_held', start)
+        after = source[start:end]
+        before = ('\tfor (var/obj/structure/bed/bedroll/BRL in src.loc)\n'
+                  '\t\tif (BRL.used == TRUE && BRL.buckled_mob == src)\n'
+                  '\t\t\tif (loc_temp < 22)\n'
+                  '\t\t\t\tloc_temp = 22\n'
+                  '\t\t\t\tbreak')
+        self.assertEqual(after, '\tif (loc_temp < 22)\n' + '\n'.join('\t' + line for line in before.splitlines()))
+
+        def project(fragment):
+            return ADAPTER.project('/check()\n' + fragment + '\n\treturn loc_temp\n',
+                                   '/check', 'src, loc_temp, typed_iter', {'TRUE': True})
+
+        original, current = project(before), project(after)
+        wrong_threshold = project(after.replace('if (loc_temp < 22)', 'if (loc_temp < 21)', 1))
+        wrong_occupant = project(after.replace('BRL.buckled_mob == src', 'BRL.buckled_mob != src'))
+        actor, other = SimpleNamespace(), SimpleNamespace()
+        occupied = SimpleNamespace(used=True, buckled_mob=actor)
+        empty = SimpleNamespace(used=False, buckled_mob=actor)
+        foreign = SimpleNamespace(used=True, buckled_mob=other)
+        detected = [False, False]
+        for items in ([], [empty, foreign], [empty, occupied, foreign], [foreign, occupied]):
+            actor.loc = items
+            for temperature in (-10, 21, 21.5, 22, 23, 100):
+                def run(proc):
+                    visits = []
+                    def typed_iter(values, kind):
+                        self.assertEqual(kind, '/obj/structure/bed/bedroll')
+                        for item in values:
+                            visits.append(item)
+                            yield item
+                    return proc(actor, temperature, typed_iter), visits
+                old_value, old_visits = run(original)
+                new_value, new_visits = run(current)
+                self.assertEqual(new_value, old_value)
+                self.assertEqual(new_visits, old_visits if temperature < 22 else [])
+                detected[0] |= run(wrong_threshold)[0] != new_value
+                detected[1] |= run(wrong_occupant)[0] != new_value
+        self.assertTrue(all(detected), detected)
+
+
 if __name__ == '__main__':
     unittest.main()

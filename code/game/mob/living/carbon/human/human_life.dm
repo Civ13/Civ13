@@ -568,11 +568,12 @@
 
 	loc_temp = canopy_shelter_temperature(exposure_turf, loc_temp)
 	loc_temp = umbrella_shade_temperature(loc_temp)
-	for (var/obj/structure/bed/bedroll/BRL in src.loc)
-		if (BRL.used == TRUE && BRL.buckled_mob == src)
-			if (loc_temp < 22)
-				loc_temp = 22
-				break
+	if (loc_temp < 22)
+		for (var/obj/structure/bed/bedroll/BRL in src.loc)
+			if (BRL.used == TRUE && BRL.buckled_mob == src)
+				if (loc_temp < 22)
+					loc_temp = 22
+					break
 
 	var/pain_held = sleep_pain_hold()
 	if (!pain_held && loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
