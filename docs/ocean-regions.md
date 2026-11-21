@@ -105,13 +105,25 @@ under during a world save.
 Sea life keeps its own cap (`sea_life_cap` in the metadata), and someone who
 logs out at sea stays aboard and wakes there, as anywhere else.
 
-The probe is `tests/naval_carrier/ocean_sites_probe.dm`.
+A ship nobody has been aboard for a week (awake, asleep or logged out) and that
+lies at no harbour founders and goes down, so the oceans do not fill with
+hulks. Her tiller keeps `unmanned_since` (world.realtime), saved with her.
+
+## Round the world
+
+The Arctic and the Southern Ocean have `wrap` in the world links table: their
+west and east edges join. A ship off either of those edges is offered "Sail
+over the horizon" as at any linked edge, needs the same mast or engine and two
+crew, and comes out at the other edge of the same ocean at the matching place
+along it (`sea_edge_wrap()` in `ship_edge_crossing.dm`). She stays in the same
+world, so nobody travels and nothing is sent.
+
+The probe for sites, upkeep and the wrap is `tests/naval_carrier/ocean_sites_probe.dm`.
 
 ## Not yet
 
 These maps are not in any live group until the host step that adds the seas.
-The east-west wrap of the Arctic and Southern oceans, abandoned ships
-foundering, and straits come in later PRs of the ocean regions plan.
+Straits come in a later PR of the ocean regions plan.
 
 ## Indian Ocean reef shelf prototype
 

@@ -17,6 +17,10 @@
 //
 // The islands and wrecks are built by the open sea's own builders
 // (open_sea_sites.dm), on the ocean's one level.
+//
+// Upkeep: a ship nobody has been aboard for a week (awake, asleep or logged
+// out) and that lies at no harbour founders and goes down, so the oceans do
+// not fill with hulks.
 // ============================================================
 
 #define OCEAN_SITE_SCAN 100           // how often the sites look for ships, in ticks
@@ -26,9 +30,14 @@
 #define OCEAN_SITE_LANDING 80         // nor this near the landing rock in the middle
 #define OCEAN_SITE_TILES 30000        // one site for every so many tiles of ocean
 #define OCEAN_SITE_BASE /turf/floor/beach/water/deep/saltwater
+// A ship left with nobody aboard this long on an ocean founders (world.realtime).
+#define OCEAN_FOUNDER_AFTER (7 * 24 * 36000)
+// Every so many site scans, the ships are looked over for that.
+#define OCEAN_FOUNDER_SCANS 30
 
 var/global/list/ocean_sites = list()      // every /datum/ocean_site of this world
 var/global/ocean_sites_timer = 0
+var/global/ocean_founder_scans = 0
 
 /datum/ocean_site
 	var/id = ""
@@ -343,6 +352,9 @@ var/global/ocean_sites_timer = 0
 /proc/ocean_sites_tick()
 	if (!ocean_world() || persistence_save_in_progress || !persistence_player_restore_ready)
 		return
+	if (++ocean_founder_scans >= OCEAN_FOUNDER_SCANS)
+		ocean_founder_scans = 0
+		ocean_ships_upkeep()
 	for (var/datum/ocean_site/S in ocean_sites)
 		var/near = ocean_site_nearest(S)
 		if (near <= OCEAN_SITE_NEAR)
@@ -350,6 +362,51 @@ var/global/ocean_sites_timer = 0
 			S.raise()
 		else if (near > OCEAN_SITE_FAR && S.raised())
 			S.watch()
+
+// ---------------------------------------------------------------- upkeep
+
+// Saved: world.realtime when the last soul left her, or 0 while someone is
+// aboard. On an ocean she founders OCEAN_FOUNDER_AFTER later.
+/obj/structure/hull_tiller
+	var/unmanned_since = 0
+
+// TRUE while anyone lies aboard her, awake, asleep or logged out.
+/proc/ocean_ship_manned(datum/craft/C)
+	var/datum/craft_body/built/B = C.body
+	var/list/cells = B.cells()
+	cells |= B.upper_cells(cells)
+	for (var/turf/T in cells)
+		for (var/mob/living/human/H in T)
+			if (H.stat != DEAD)
+				return TRUE
+	return FALSE
+
+// Ships nobody has been aboard for a week go down. Returns how many did.
+/proc/ocean_ships_upkeep(now = world.realtime)
+	. = 0
+	crafts_prune()
+	for (var/datum/craft/C in crafts.Copy())
+		var/datum/craft_body/built/B = C.body
+		if (!istype(B) || !B.placed() || !C.ledger)
+			continue
+		var/obj/structure/hull_tiller/helm = null
+		for (var/obj/structure/hull_tiller/T in locate(B.px, B.py, B.z))
+			if (T.craft == C)
+				helm = T
+		if (!helm)
+			continue
+		// Someone aboard, or moored at a harbour: she is looked after.
+		if (ocean_ship_manned(C) || craft_berth(C))
+			helm.unmanned_since = 0
+			continue
+		if (!helm.unmanned_since || helm.unmanned_since > now)
+			helm.unmanned_since = now
+			continue
+		if (now - helm.unmanned_since < OCEAN_FOUNDER_AFTER)
+			continue
+		log_game("Ocean upkeep: the [C.name] founders after a week with nobody aboard.")
+		if (C.ledger.sink())
+			.++
 
 // Called at round start (the roundstart hook below).
 /proc/ocean_sites_start()
@@ -371,3 +428,5 @@ var/global/ocean_sites_timer = 0
 #undef OCEAN_SITE_LANDING
 #undef OCEAN_SITE_TILES
 #undef OCEAN_SITE_BASE
+#undef OCEAN_FOUNDER_AFTER
+#undef OCEAN_FOUNDER_SCANS
