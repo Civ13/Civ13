@@ -126,7 +126,7 @@ var/global/list/martial_schools = list(
 	if (after > before)
 		to_chat(src, SPAN_NOTICE("<b>You are now [after == MARTIAL_RANK_ADEPT ? "an" : "a"] [martial_rank_name(after)] of [martial_school_name(martial_school)].</b>"))
 		if (after == MARTIAL_RANK_MASTER)
-			note_martial_mastery()
+			note_martial_mastery(MARTIAL_MASTERY_LEVELS)
 	return added
 
 // Overridden by the probe to change the day.
@@ -140,25 +140,6 @@ var/global/list/martial_schools = list(
 		martial_fight_day = today
 		martial_fight_points = 0
 	return max(0, MARTIAL_FIGHT_DAILY - martial_fight_points)
-
-// First Master in any school pays Military Science once, like the body-skill
-// milestones in learning_by_doing.dm. Returns the levels gained.
-/mob/living/human/proc/note_martial_mastery()
-	. = 0
-	if (!learning_by_doing_enabled() || stat == DEAD)
-		return
-	var/key = skill_mastery_key("military", "school")
-	if (!islist(skill_mastery))
-		skill_mastery = list()
-	if (key in skill_mastery)
-		return
-	skill_mastery += key
-	if (!islist(scholarship))
-		scholarship = list()
-	var/before = scholar_level("military")
-	scholarship["military"] = min(SCHOLAR_MAX_LEVEL, round(before + MARTIAL_MASTERY_LEVELS, 0.01))
-	. = scholarship["military"] - before
-	to_chat(src, SPAN_NOTICE("<b>You have mastered a fighting school.</b> What your body knows now, your mind keeps: you gain [round(., 0.1)] levels of [scholar_disciplines["military"]]."))
 
 // Schools this character may take up now: their research is known.
 /mob/living/human/proc/martial_school_choices()
