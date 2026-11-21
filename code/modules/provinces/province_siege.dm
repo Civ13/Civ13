@@ -365,6 +365,7 @@ var/global/province_siege_timer = null
 		if (siege["shown"])
 			var/list/cooldown = row["cooldown"]
 			cooldown[siege["group"]] = world.realtime + SIEGE_COOLDOWN_DAYS * 864000
+			accolade_siege_held(province_seat(c, holder), holder)
 			province_siege_end(c, row, "The siege on the [name] failed: the seat held.", "Your siege on the [name] failed. Your side can declare here again in [SIEGE_COOLDOWN_DAYS] days.")
 		else
 			var/obj/structure/closet/crate/faction_strongbox/B = map.faction_strongbox(siege["faction"])

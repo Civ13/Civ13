@@ -86,6 +86,8 @@
 		tame_trust = 0
 		tame_fed = null
 		user.visible_message(SPAN_NOTICE("\The [src] has grown used to people. It is tame now."), SPAN_NOTICE("\The [src] trusts you now. It is tame: [tame_done_text()]"))
+		if (ishuman(user))
+			accolade_meet_mob(user, "herder")
 	else
 		to_chat(user, SPAN_NOTICE("\The [src] is getting used to you ([tame_trust] of [TAME_FEEDINGS]). Feed it again later."))
 	return TRUE
