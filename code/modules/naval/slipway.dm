@@ -304,6 +304,9 @@ var/global/list/slipway_designs = null
 		add_piece(user, W)
 		return
 	if (istype(W, /obj/item/ship_draught) && !design)
+		if (hauled_hull())
+			to_chat(user, SPAN_WARNING("A ship is hauled out on the berth: launch her again first."))
+			return
 		offer_draught(user, W)
 		return
 	return ..()
@@ -321,6 +324,11 @@ var/global/list/slipway_designs = null
 		if (finished())
 			options["Launch the [D.name]"] = "launch"
 		options["Abandon the [D.name]"] = "abandon"
+	// A hull hauled out on the berth, or one lying off it (slipway_haul.dm).
+	if (haul_options(options))
+		for (var/label in options.Copy())
+			if (!(options[label] in list("relaunch", "survey")))
+				options -= label
 	var/text = status_text()
 	if (!D)
 		var/list/lines = list(text, "The berth runs [dir2text(dir)] from the post; turn it with a wrench before a keel is laid. Use a ship's draught on the post to build a ship of your own design.")
@@ -332,6 +340,8 @@ var/global/list/slipway_designs = null
 	if (!(choice in options) || busy || !Adjacent(H))
 		return
 	var/action = options[choice]
+	if (haul_action(H, action))
+		return
 	if (istype(action, /datum/slipway_design))
 		var/datum/slipway_design/S = action
 		var/refusal = keel_refusal(S, H)

@@ -124,6 +124,8 @@ var/global/magic_whitelist_path = null
 /mob/living/human/proc/magic_allowed()
 	if (!magic_whitelist_applies())
 		return TRUE
+	if (divine_is_own_god()) // repository_nations.dm: a god playing their own follower
+		return TRUE
 	return magic_whitelisted(magic_key())
 
 // Whatever a character can still do once their player leaves the list: a

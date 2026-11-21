@@ -314,7 +314,7 @@
 	sail_set = !sail_set
 	update_icon()
 	if (sail_set)
-		to_chat(H, SPAN_NOTICE("You set the sail. You are [point_of_sail_name(dir)]; hold a direction to steer."))
+		to_chat(H, SPAN_NOTICE("You set the sail. You are [point_of_sail_name(dir, weather_wind_dir_at(src))]; hold a direction to steer."))
 	else
 		to_chat(H, SPAN_NOTICE("You furl the sail."))
 

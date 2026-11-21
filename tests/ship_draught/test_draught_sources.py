@@ -75,6 +75,21 @@ class DraughtSources(unittest.TestCase):
         on_disk = sorted(path.stem for path in (ROOT / 'icons/ship_designer').glob('*.png'))
         self.assertEqual(on_disk, sorted(wanted))
 
+    def test_submarine_designer_has_a_picture_of_every_fitting(self):
+        # scripts/build_sub_designer_icons.py cuts them from the game's DMIs.
+        designer = (ROOT / 'code/modules/naval/sub_designer.dm').read_text(encoding='utf-8')
+        sent = dict(re.findall(r'"(\w)" = \'icons/sub_designer/fit_(\w)\.png\'', designer))
+        self.assertEqual(sorted(sent), sorted(table('sub_draught_fittings', SUB)))
+        self.assertEqual(len({key.lower() for key in sent}), len(sent))
+        for key, source in sent.items():
+            with self.subTest(fitting=key):
+                self.assertEqual(key, source)
+                data = (ROOT / 'icons/sub_designer' / ('fit_%s.png' % source)).read_bytes()
+                self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
+                self.assertEqual((int.from_bytes(data[16:20], 'big'), int.from_bytes(data[20:24], 'big')), (32, 32))
+        on_disk = sorted(path.stem for path in (ROOT / 'icons/sub_designer').glob('*.png'))
+        self.assertEqual(on_disk, sorted('fit_%s' % key for key in sent))
+
     def test_submarine_costs_match_hand_recipes(self):
         # Submarine sheets (sub_draught.dm) reckon the same way.
         recipes = recipe_costs()

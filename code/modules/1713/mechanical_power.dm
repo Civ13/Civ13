@@ -237,7 +237,7 @@ var/global/list/horse_gin_animals = list(
 	drive_factor = 0.5
 
 /obj/structure/workshop_machine/mover/windmill/proc/wind_speed()
-	return map ? clamp(round(map.windspeedvar), 0, 4) : 0
+	return map ? clamp(round(weather_wind_at(src)), 0, 4) : 0
 
 /obj/structure/workshop_machine/mover/windmill/idle_reason()
 	var/area/A = get_area(src)

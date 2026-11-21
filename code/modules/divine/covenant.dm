@@ -129,6 +129,7 @@ var/global/list/divine_invocation_names = list(
 		divine_break_covenant()
 	if (divine_vigil_member)
 		divine_leave_vigil()
+	divine_self_worship() // repository_nations.dm
 	divine_refresh_verbs()
 
 /mob/living/human/proc/divine_slot_ready()
@@ -454,6 +455,7 @@ var/global/list/divine_invocation_names = list(
 		if (!R.current())
 			divine_finish_request(R)
 		return
+	divine_note_self_approval(R, C) // repository_nations.dm
 	if (istype(R, /datum/divine_use_request/ritual))
 		var/datum/divine_use_request/ritual/V = R
 		if (!V.start_channel())

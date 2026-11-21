@@ -21,5 +21,9 @@ hook in `cmss13_gear.dm`:
   run, a clutch thrown out stops what lies past it and a cord throws it in, a
   gear box carries drive down a level, a rope drive carries it once roped,
   and a still treadwheel drives nothing;
-- every new icon state is in `icons/obj/mechanisms.dmi` and
-  `icons/obj/transmission.dmi`.
+- hopper machines (`hopper_machines.dm`): millstones take grain and refuse
+  planks, wait for a drive, grind two a step at the drive's pace, stop when
+  empty or at 20 products and give feed back when taken apart; a sash saw
+  turns a log into two planks and bark;
+- every new icon state is in `icons/obj/mechanisms.dmi`,
+  `icons/obj/transmission.dmi` and `icons/obj/hopper_machines.dmi`.
