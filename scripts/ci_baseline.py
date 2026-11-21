@@ -2499,11 +2499,13 @@ SUITES = {
                               'tests/save_policy/test_save_validator_boot.py',
                               'tests/save_policy/test_private_scratch_savefiles.py',
                               'tests/save_policy/test_stack_recipes_unsaved.py',
-                              'tests/save_policy/test_action_locks_unsaved.py'), 'paths': (
+                              'tests/save_policy/test_action_locks_unsaved.py',
+                              'tests/save_policy/test_occupied_checkpoint.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
         'code/modules/research_tree/scholar_practice.dm', 'code/game/objects/structures/tree_climbing.dm',
         'code/game/mob/living/carbon/human/resuscitation.dm',
         'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+        'code/modules/persistence/occupied_checkpoint.dm',
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
@@ -2703,6 +2705,8 @@ SUITES = {
     'death_legacy': {'files': ('tests/death_legacy/test_death_legacy.py',),
         'paths': ('tests/death_legacy/', 'code/modules/research_tree/death_legacy.dm', 'code/game/mob/living/carbon/human/death.dm',
                   'code/game/mob/groups/faction_start.dm', 'code/modules/persistence/bed_return.dm')},
+    'familiarity': {'files': ('tests/familiarity/test_familiarity.py',),
+        'paths': ('tests/familiarity/', 'code/modules/research_tree/familiarity.dm')},
     'knowledge_spread': {'files': ('tests/knowledge_spread/test_knowledge_spread.py',),
         'paths': ('tests/knowledge_spread/', 'code/modules/research_tree/knowledge_spread.dm', 'code/modules/research_tree/tech_tree_view.dm',
                   'code/modules/research_tree/book_interface.dm', 'code/modules/research_tree/book_research.dm', 'code/modules/research_tree/era_loss.dm',

@@ -339,6 +339,50 @@ nothing.
 The Windows wrappers are `ports.bat`, `set-gate.bat REGION [apply]` and
 `set-port.bat REGION PORT [apply]`.
 
+## Gateway world
+
+A region of kind `GATEWAY` is a small world ([maps/special/gateway.dmm](../../maps/special/gateway.dmm),
+[region_gateway.dm](../../code/modules/persistence/region_gateway.dm)) that sits on
+the front door's port for good and hosts no play. The BYOND hub lists a world by
+the port its DreamDaemon was started on; a standby handover that takes the port
+over with `world.OpenPort` is not listed again, so a playable front door drops off
+the hub after its updates. The gateway is started on its port and stays there:
+
+- Every player who joins it (admins and guests too) is sent on through the relay to
+  the land their character lives in, or to the start region when they have none.
+  It asks its own transfer agent the Join check's question (`/account` claim
+  without a body), which for a world that is nobody's home and not the start region
+  never claims anything: a pending, travelling or unanswered account is told why
+  and tried again every few seconds for two minutes, then offered Try again. A
+  character on a laid-up land across the sea has its land summoned first. Nobody
+  can Join, start a character or be sent there; trails and the Regions panel skip it.
+- It never saves (`save_minutes` 0, `SKIP_PERSISTENCE_SAVING`) and never sleeps.
+  An update is a plain restart on its own port onto the staged build (also when
+  `handover` or `deploy.bat` asks), done by the host service while it is empty.
+- Its hub entry and `status` topic describe the lands behind it: the mainland's map
+  and the players across every land (`group_players`; `players` stays its own count).
+- It is the world the bot watches (it is the gate), and it is always awake to post
+  other lands' OOC to Discord.
+- A group has at most one; it cannot be the mainland or the start region, and it
+  needs the routing relay (`relay_port`).
+
+Putting one in front of a group that already plays takes two commands; the
+launcher has both under All regions > More > Front door and ports:
+
+```
+python shard_group.py --config group.json add-gateway [--region gateway] [--apply]
+python shard_group.py --config group.json set-gate --region gateway [--apply]
+```
+
+`add-gateway` plans, and with `--apply` adds the region to the group file (ports
+chosen like any omitted port), sets it up and starts it on that port while the
+front door keeps playing; its first start compiles it. Once it runs, `set-gate`
+swaps the two worlds' ports as for any front door move: the gateway takes the public
+port and the old front door (Gaia on the live host) moves behind the relay on the
+gateway's port, saved and started again once. `set-gate` refuses a gateway that is
+not running yet, so the public port never waits on a first build. The mainland and
+the start region stay as they were.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback

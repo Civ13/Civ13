@@ -484,7 +484,10 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	if (config.hub_banner_url)
 		s += "<img src=\"[config.hub_banner_url]\"><br>"
-	if (map)
+	// The gateway is the group's hub entry: it shows the lands, not its own empty map.
+	if (region_gateway_here())
+		s += region_gateway_hub_status()
+	else if (map)
 		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 	var/list/player_status = player_status_observation()
 	s += "<b>World:</b> [hub_status_text(player_world_activity(player_status))]<br>"
@@ -492,7 +495,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	// we can't execute code in config settings, so this is a workaround.
 	var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
-	if (map)
+	if (map && !region_gateway_here())
 		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
 	if (hub_body)
 		s += hub_body
@@ -553,9 +556,10 @@ var/world_topic_spam_protect_time = world.timeofday
 
 var/global/nextsave = 0
 var/global/persistence_reboot_scheduled = FALSE
-// Automatic saves never run during active play (Val, 2026-11-05). They wait
-// until no one but the host is online; admins can still save by hand, and
-// players can vote for a save (see persistence_save_vote_block_reason()).
+// Automatic saves wait until no one but the host is online (Val, 2026-11-05);
+// admins can still save by hand, and players can vote for a save (see
+// persistence_save_vote_block_reason()). The one exception is the four-hour
+// checkpoint (occupied_checkpoint.dm, Val 2026-11-21).
 var/global/persistence_played_since_save = FALSE
 var/global/persistence_empty_since = 0
 var/global/persistence_reboot_due = FALSE
@@ -580,9 +584,11 @@ var/global/persistence_reboot_due = FALSE
 				if (!nextsave)
 					nextsave = world.realtime + 216000
 				if (persistence_active_players())
-					// Hold every automatic save while people are playing.
+					// Hold every automatic save while people are playing, except
+					// the checkpoint that keeps the last save under four hours old.
 					persistence_played_since_save = TRUE
 					persistence_empty_since = 0
+					persistence_occupied_checkpoint()
 				else
 					// The empty timer restarts while any save runs. Pulling the
 					// schedule in during a save started a second save as soon as

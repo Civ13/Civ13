@@ -1227,6 +1227,8 @@ class Host:
             wait = self.update_unsaved_while_empty()
             if wait is not None:
                 return (now if idle_since is None else idle_since), wait
+        if not self.may_sleep():
+            return None, 30
         if idle_since is None:
             return now, 30
         if now - idle_since < self.config['freeze_idle_minutes'] * 60:
@@ -1537,6 +1539,10 @@ class Host:
 
     def update_while_empty(self):
         return None
+
+    def may_sleep(self):
+        """Whether an empty world may freeze (RegionHost: never the gateway)."""
+        return True
 
     def update_unsaved_while_empty(self):
         return None

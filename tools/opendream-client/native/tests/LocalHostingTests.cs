@@ -229,11 +229,19 @@ static class LocalHostingTests {
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-gate", "--region", "gaia", "--bot-profile", @"D:\bot\profile.json", "--apply" }), "set-gate apply argv");
         Require(GroupPorts.Step(host.Control!, "set-port", "moon", 1721, true).ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-port", "--region", "moon", "--port", "1721", "--apply" }), "set-port argv");
+        Require(GroupPorts.Step(host.Control!, "add-gateway").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway" }), "add-gateway plan argv never applies");
+        Require(GroupPorts.Step(host.Control!, "add-gateway", null, null, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway", "--apply" }), "add-gateway apply argv");
+        var gatewayPlan = GroupPorts.ParsePlan(0, "{\"ok\": true, \"accepted\": false, \"plan\": {\"region\": \"gateway\", \"already\": false, "
+            + "\"steps\": [\"Add the region gateway (Gateway) on port 1771.\"], \"problems\": [], \"warnings\": []}}");
+        Require(gatewayPlan.Ok && !gatewayPlan.Accepted && !gatewayPlan.Already && gatewayPlan.Steps.Count == 1, "add-gateway plan parsed");
         foreach (var unsafeStep in new Action[] { () => GroupPorts.Step(host.Control!, "setup"), () => GroupPorts.Step(host.Control!, "set-gate"),
                 () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"),
                 () => GroupPorts.Step(host.Control!, "ports", null, null, true), () => GroupPorts.Step(host.Control!, "set-port", "moon"),
                 () => GroupPorts.Step(host.Control!, "set-port", "moon", 80), () => GroupPorts.Step(host.Control!, "set-gate", "gaia", 1721),
-                () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config") })
+                () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config"), () => GroupPorts.Step(host.Control!, "add-gateway", "gaia"),
+                () => GroupPorts.Step(host.Control!, "add-gateway", null, null, true, @"D:\bot\profile.json") })
             try { unsafeStep(); throw new Exception("unsafe ports step accepted"); } catch (ArgumentException) { assertions++; }
         var doors = GroupPorts.ParseReport(0, "noise\n{\"ok\": true, \"gate\": \"north\", \"public_host\": \"play.example\", \"public_ports\": [1713, 1714, 1717], \"problems\": [], \"host_service\": \"reloads\", " +
             "\"ports\": [{\"port\": 1714, \"use\": \"game\", \"region\": \"north\", \"name\": \"North\\u0007 America\", \"public\": true, \"gate\": true, \"listening\": true}, " +
@@ -354,7 +362,8 @@ static class LocalHostingTests {
         Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2, "update when empty kept other settings");
         // Start region: the mainland unless start_region names another; never a kind nobody can start in.
         File.WriteAllText(groupConfig, "{\"mainland\": \"northamerica\", \"shutdown_warning_seconds\": 60, \"regions\": [{\"id\": \"northamerica\", \"name\": \"North America\", \"kind\": \"SURFACE\"}, "
-            + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}]}");
+            + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}, "
+            + "{\"id\": \"gateway\", \"name\": \"Gateway\", \"kind\": \"GATEWAY\"}]}");
         var startRegion = HostSettings.StartRegion(host.Control!.Group!);
         Require(startRegion.Mainland == "northamerica" && startRegion.Current == "northamerica"
             && startRegion.Choices.Select(choice => choice.Id + "=" + choice.Name).SequenceEqual(new[] { "northamerica=North America", "gaia=Gaia" }), "start region choices");

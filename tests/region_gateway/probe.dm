@@ -1,0 +1,134 @@
+// Gateway region fixture: the real region_gateway.dm, shard_group.dm and
+// region_home.dm procs on a small world with a hand-made group. The transfer
+// agent is a stub subtype that answers /account with canned verdicts. No client
+// joins: the login forward, the relay route and the link are not driven.
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 20
+	maxy = 20
+	maxz = 1
+	area = /area/caribbean
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+/world/Topic(T, addr, master, key)
+	return "Closed gateway region fixture"
+
+var/global/list/gateway_probe_checks = list()
+var/global/list/gateway_probe_failed = list()
+var/global/gateway_probe_runtime_error = FALSE
+
+/world/Error(exception/E)
+	gateway_probe_runtime_error = TRUE
+	world.log << "Unexpected fixture runtime: [E] at [E.file]:[E.line]"
+	return ..()
+
+/proc/gateway_probe_check(label, passed)
+	gateway_probe_checks += list(list("label" = label, "passed" = !!passed))
+	if (!passed)
+		gateway_probe_failed += label
+
+// The gateway's transfer agent: the next /account answer, and what was asked.
+/datum/transfer_bridge/gateway_probe
+	var/list/next_answer = null
+	var/list/asked = list()
+
+/datum/transfer_bridge/gateway_probe/enabled()
+	return TRUE
+
+/datum/transfer_bridge/gateway_probe/request(path, list/body)
+	asked += list(list("path" = path, "body" = body))
+	if (path == "/chart/request")
+		return list("ok" = TRUE, "result" = list())
+	return next_answer
+
+/proc/gateway_probe_group(region)
+	return json_encode(list("group" = "earth", "region" = region, "mainland" = "gaia", "start_region" = "gaia",
+		"regions" = list(
+			list("id" = "gateway", "name" = "Gateway", "kind" = "GATEWAY", "address" = "play.example:1714"),
+			list("id" = "gaia", "name" = "Gaia", "kind" = "SURFACE", "address" = "play.example:1771"),
+			list("id" = "northamerica", "name" = "North America", "kind" = "SURFACE", "address" = "play.example:1744"))))
+
+/proc/gateway_probe_answer(verdict, home)
+	return list("ok" = TRUE, "result" = list("verdict" = verdict, "home" = home))
+
+/proc/gateway_probe_run()
+	makeDatumRefLists()
+	var/datum/transfer_bridge/gateway_probe/bridge = new
+	transfer_bridge = bridge
+
+	gateway_probe_check("config/accepts_gateway", shard_group.configure(gateway_probe_group("gateway")) && shard_group.kind == "GATEWAY")
+	gateway_probe_check("here", region_gateway_here())
+	gateway_probe_check("kind_text", shard_kind_text("GATEWAY", "gateway") == "gateway")
+
+	// Every account goes on: the home the agent names, or the start region for a new one.
+	bridge.next_answer = gateway_probe_answer("ELSEWHERE", "northamerica")
+	var/list/where = region_gateway_destination("Somebody")
+	gateway_probe_check("home/elsewhere", where["home"] == "northamerica")
+	var/list/sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("home/claim_without_body", sent["path"] == "/account" && sent["body"]["op"] == "claim" && sent["body"]["ckey"] == "somebody" && isnull(sent["body"]["body"]))
+	bridge.next_answer = gateway_probe_answer("ELSEWHERE", "gaia")
+	where = region_gateway_destination("Newcomer")
+	gateway_probe_check("home/new_player_start_region", where["home"] == "gaia")
+	bridge.next_answer = gateway_probe_answer("PENDING", null)
+	where = region_gateway_destination("Somebody")
+	gateway_probe_check("wait/pending", isnull(where["home"]) && findtext(where["wait"], "settled"))
+	bridge.next_answer = gateway_probe_answer("TRAVELLING", "northamerica")
+	where = region_gateway_destination("Somebody")
+	gateway_probe_check("wait/travelling", isnull(where["home"]) && findtext(where["wait"], "on its way"))
+	bridge.next_answer = null
+	where = region_gateway_destination("Somebody")
+	gateway_probe_check("wait/agent_silent", isnull(where["home"]) && findtext(where["wait"], "not answering"))
+	bridge.next_answer = gateway_probe_answer("ELSEWHERE", "atlantis")
+	where = region_gateway_destination("Somebody")
+	gateway_probe_check("wait/unknown_home", isnull(where["home"]) && findtext(where["wait"], "not known"))
+	bridge.next_answer = gateway_probe_answer("HOME", "gateway")
+	where = region_gateway_destination("Somebody")
+	gateway_probe_check("wait/home_here_is_a_mistake", isnull(where["home"]) && findtext(where["wait"], "admin"))
+	bridge.next_answer = gateway_probe_answer("ELSEWHERE", "land:3,4")
+	var/before = bridge.asked.len
+	where = region_gateway_destination("Sailor")
+	sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("wait/parked_land_summoned", isnull(where["home"]) && bridge.asked.len == before + 2 && sent["path"] == "/chart/request" && sent["body"]["op"] == "summon")
+	before = bridge.asked.len
+	where = region_gateway_destination("Guest-12345")
+	gateway_probe_check("guest/start_region_unasked", where["home"] == "gaia" && bridge.asked.len == before)
+
+	// Nobody plays here, not even a guest.
+	var/mob/new_player/lobby = new
+	gateway_probe_check("join/refused", !region_home_admit(lobby))
+	qdel(lobby)
+
+	// The hub entry describes the lands behind it.
+	shard_group.peers["gaia"]["map"] = "Gaia"
+	shard_group.peers["gaia"]["players"] = 3
+	shard_group.peers["northamerica"]["players"] = 2
+	gateway_probe_check("players/across_lands", region_gateway_players() == 5)
+	var/hub = region_gateway_hub_status()
+	gateway_probe_check("hub/mainland_and_players", findtext(hub, "Mainland:") && findtext(hub, "Gaia") && findtext(hub, "5 across the lands"))
+
+	// Seen from a land: no Join link, no trail, nobody sent there.
+	gateway_probe_check("config/land_view", shard_group.configure(gateway_probe_group("gaia")) && !region_gateway_here())
+	var/list/peer = shard_group.peers["gateway"]
+	peer["state"] = "UP"
+	shard_group.peers["northamerica"]["state"] = "UP"
+	var/panel = shard_group.panel_html()
+	gateway_probe_check("panel/no_join", !findtext(panel, "play.example:1714") && findtext(panel, "play.example:1744"))
+	var/list/trails = region_trail_peer_choices()
+	gateway_probe_check("trails/none", !("gateway" in trails.Copy()) && !trails.Find("Gateway (gateway)") && trails.Find("North America (northamerica)"))
+	gateway_probe_check("admin_send/refused", findtext(region_admin_send_kind_refusal(peer), "never keeps a character"))
+	shard_group.enabled = FALSE
+
+/world/New()
+	OpenPort("none")
+	GLOB.all_observable_events = list()
+	GLOB.moved_event = new /decl/observ/moved
+	GLOB.dir_set_event = new /decl/observ/dir_set
+	GLOB.name_set_event = new /decl/observ/name_set
+	GLOB.stat_set_event = new /decl/observ/stat_set
+	gateway_probe_run()
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "check_count" = gateway_probe_checks.len, "failed_labels" = gateway_probe_failed, "runtime_error" = gateway_probe_runtime_error, "checks" = gateway_probe_checks)), "result.json")
+	world.log << "COMPLETE gateway region fixture"
+	del(world)

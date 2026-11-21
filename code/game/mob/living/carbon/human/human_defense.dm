@@ -536,11 +536,11 @@ bullet_act
 		if (gear && istype(gear ,/obj/item/clothing))
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & def_zone.body_part)
-				protection += armor_rating(C.armor, type)
+				protection += C.armor_value(type)
 				if (C.accessories.len)
 					for (var/obj/item/clothing/accessory/AC in C.accessories)
 						if (AC.body_parts_covered & def_zone.body_part)
-							protection += armor_rating(AC.armor, type)
+							protection += AC.armor_value(type)
 							if (istype(AC, /obj/item/clothing/accessory/armor/coldwar/plates))
 								var/obj/item/clothing/accessory/armor/coldwar/plates/ACP = AC
 								for (var/obj/item/weapon/armorplates/plt in ACP.hold)
