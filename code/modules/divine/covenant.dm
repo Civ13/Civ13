@@ -78,6 +78,7 @@ var/global/list/divine_invocation_names = list(
 	else
 		verbs -= /mob/living/human/proc/divine_beseech
 	magic_repo_refresh_verbs() // repository.dm
+	arcane_refresh_verbs() // arcane_altars.dm
 
 // Any movement, body change, logout or transfer ends what is pending, including
 // leaving and coming back to the same tile, which snapshots cannot see.
@@ -139,10 +140,10 @@ var/global/list/divine_invocation_names = list(
 
 /mob/living/human/proc/divine_focus()
 	var/obj/item/I = get_active_hand()
-	if (istype(I, /obj/item/weapon/branch))
+	if (istype(I, /obj/item/weapon/branch) || arcane_storm_focus(I)) // storm wood: arcane_altars.dm
 		return I
 	I = get_inactive_hand()
-	if (istype(I, /obj/item/weapon/branch))
+	if (istype(I, /obj/item/weapon/branch) || arcane_storm_focus(I))
 		return I
 	return null
 
@@ -452,6 +453,9 @@ var/global/list/divine_invocation_names = list(
 		return FALSE
 	caster.divine_slot_spent = TRUE
 	caster.divine_spent_realtime = world.realtime
+	if (arcane_storm_focus(caster.divine_focus())) // storm wood brings the slot back after 45 minutes
+		caster.divine_spent_realtime -= DIVINE_REST_FALLBACK / 4
+	var/bonus = arcane_component_bonus(component, spell) // arcane_altars.dm
 	if (component)
 		var/obj/item/weapon/storage/S = component.loc
 		if (istype(S))
@@ -460,14 +464,14 @@ var/global/list/divine_invocation_names = list(
 	switch (spell)
 		if ("mercy")
 			divine_drain(caster, 0.3)
-			target.adjustHalLoss(-40)
+			target.adjustHalLoss(-round(40 * bonus))
 			divine_drain(target, -0.25)
 			to_chat(target, SPAN_NOTICE("Your pain eases and you feel a little stronger."))
 			if (target != caster)
 				to_chat(caster, SPAN_NOTICE("You feel drained."))
 		if ("affliction")
 			divine_drain(caster, 0.3)
-			target.adjustHalLoss(20)
+			target.adjustHalLoss(round(20 * bonus))
 			divine_drain(target, 0.4)
 			to_chat(target, SPAN_WARNING("A sudden ache runs through you and your limbs feel heavy."))
 			to_chat(caster, SPAN_NOTICE("You feel drained."))
@@ -479,8 +483,8 @@ var/global/list/divine_invocation_names = list(
 				divine_drain(M, 0.25)
 				if (M != target)
 					to_chat(M, SPAN_NOTICE("The vigil is over. You feel tired."))
-			target.heal_overall_damage(15, 15)
-			target.adjustHalLoss(-30)
+			target.heal_overall_damage(round(15 * bonus), round(15 * bonus))
+			target.adjustHalLoss(-round(30 * bonus))
 			to_chat(target, SPAN_NOTICE("You feel your strength returning."))
 		if ("repository")
 			caster.magic_repo_begin() // repository.dm
