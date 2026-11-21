@@ -422,6 +422,7 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Packing:** with a hold she packs; the record holds both hold tiles, the raft, cart, microscope and both ladder ends; a hold tile under no deck tile and a ladder entry that is no ladder are refused; a loaded raft keeps her in port.
 - **Leaving:** stripped, nothing is left on the water or in the hold and the rock closes where the hold was.
 - **Arriving:** an anchorage with rock under her hold is found; she is built with her two hold tiles, the ladder paired, the planks and the cask (still holding its water) in the hold and the raft, cart, microscope and goat on deck; she sails on with her hold. Over dirt she is built without a hold, the hold's cargo is stowed on the deck above, and no ladder is left leading to nothing.
+- **Engines:** a 5000cc diesel with its barrel of 200 diesel no longer keeps a hull in port; the record holds an engine entry, a tank offset past one tile is refused, and she is rebuilt with the same engine (size, power, name), stopped, coupled to its barrel with the diesel, and fitted as a drive. `slipway_probe.dm` also packs the freighter with her 82-tile hold and diesel.
 - **Whole cargo:** a raft, dugout, outrigger, shopping cart, carriage, microscope and washing machine each round-trip as a deck cargo record.
 
 ## Voyages on the world chart (`voyage_probe.dm`)
