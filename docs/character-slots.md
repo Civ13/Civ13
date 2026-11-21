@@ -32,6 +32,9 @@ helpers are in `code/modules/persistence/player_reclaim.dm`.
 - One leadership seat per player: a character cannot found or be handed a
   faction while another character of the same account leads one
   (`faction_kin_leads_elsewhere` in `faction_membership.dm`).
+- Each player counts once: kin living in one province give one resident's
+  stake (`province_stakes`), and a siege's member count counts each player
+  once (`province_siege_block`).
 - Court marks follow kin: a warrant or outlawry against one character shows
   when examining the account's other characters (`justice_kin_accounts`).
 - Province caps count a whole bloc (`code/modules/provinces/province_blocs.dm`):
