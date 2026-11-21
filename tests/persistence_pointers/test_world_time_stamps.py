@@ -43,6 +43,8 @@ REVIEWED = {
     'lob_launch_time': 'projectiles are never saved (should_save = 0 in projectile.dm)',
     'held_since': 'capture clock of a Broadside TDM tiller; the Broadside map is not persistent',
     'crossing_hold': 'declared var/tmp/list on hull tillers (ship_crossing.dm), so never saved',
+    'familiar_last_use': 'declared var/tmp/list on humans (familiarity.dm), so never saved',
+    'next_familiar_click': 'declared var/tmp on humans (familiarity.dm), so never saved',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].

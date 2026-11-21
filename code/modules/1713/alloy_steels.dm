@@ -32,8 +32,8 @@
 /obj/item/stack/ore/nickel
 	name = "nickel ore"
 	desc = "Pentlandite: heavy bronze-yellow lumps with a metallic shine. A little of it added to an open hearth melt makes nickel steel."
-	icon_state = "ore_iron"
-	color = "#c9bd84"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "ore_nickel"
 	singular_name = "lump"
 	flags = CONDUCT
 	flammable = FALSE
@@ -41,8 +41,8 @@
 /obj/item/stack/ore/cobalt
 	name = "cobalt ore"
 	desc = "Cobaltite: silvery-white crystals with a faint pink bloom where they weather. Steelmakers alloy cobalt into the hardest steels."
-	icon_state = "ore_iron"
-	color = "#c8b6c6"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "ore_cobalt"
 	singular_name = "lump"
 	flags = CONDUCT
 	flammable = FALSE
@@ -75,8 +75,8 @@
 /obj/item/stack/ore/chromite
 	name = "chromite"
 	desc = "Chromium ore: heavy black grains with a dull metallic lustre. Melted with nickel in an electric arc furnace it makes Inconel."
-	icon_state = "ore_iron"
-	color = "#5d5a63"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "ore_chromite"
 	singular_name = "lump"
 	flags = CONDUCT
 	flammable = FALSE
@@ -93,6 +93,13 @@
 /obj/item/stack/material/steel/nickel/New()
 	. = ..()
 	stacktype = type
+
+/obj/item/stack/material/steel/nickel/grade_sheet()
+	return "sheet-nickel"
+
+/obj/item/stack/material/steel/nickel/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
 
 /obj/item/stack/material/steel/nickel/grade_name()
 	return "nickel"
@@ -111,6 +118,13 @@
 	. = ..()
 	stacktype = type
 
+/obj/item/stack/material/steel/maraging_soft/grade_sheet()
+	return "sheet-maraging_soft"
+
+/obj/item/stack/material/steel/maraging_soft/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
+
 /obj/item/stack/material/steel/maraging_soft/grade_name()
 	return "unaged maraging"
 
@@ -126,6 +140,13 @@
 /obj/item/stack/material/steel/maraging/New()
 	. = ..()
 	stacktype = type
+
+/obj/item/stack/material/steel/maraging/grade_sheet()
+	return "sheet-maraging"
+
+/obj/item/stack/material/steel/maraging/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
 
 /obj/item/stack/material/steel/maraging/grade_name()
 	return "maraging"
@@ -168,9 +189,8 @@
 /obj/item/stack/inconel
 	name = "Inconel"
 	desc = "Dull grey bars of a nickel-chromium superalloy that keeps its strength red hot. Overhaul an engine with Inconel parts and it wears half as fast."
-	icon = 'icons/obj/aluminium.dmi'
-	icon_state = "sheet-aluminium"
-	color = "#a3a196"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "sheet-inconel"
 	singular_name = "bar"
 	max_amount = 50
 	w_class = ITEM_SIZE_NORMAL
@@ -180,6 +200,10 @@
 /obj/item/stack/inconel/New()
 	. = ..()
 	stacktype = type
+	update_icon()
+
+/obj/item/stack/inconel/update_icon()
+	icon_state = "sheet-inconel[pile_suffix(amount, list(13, 26, 39))]"
 
 //////////////////////////////////////////////////////////////////////////////
 // Alloy additions in the steelworks (steel_works.dm calls these hooks)

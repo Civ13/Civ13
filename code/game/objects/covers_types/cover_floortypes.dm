@@ -158,37 +158,37 @@
 // Recipe outputs retain the mapped patterns without giving old mapped or saved
 // covers the salvage of a player-built floor. Refunds key on the exact type.
 /obj/covers/wood/alt/constructed
-	name = "wood floor pattern 1"
+	name = "narrow plank floor"
 
 /obj/covers/wood/alt/two/constructed
-	name = "wood floor pattern 2"
+	name = "basketweave wood floor"
 
 /obj/covers/wood/alt/three/constructed
-	name = "wood floor pattern 3"
+	name = "dark herringbone wood floor"
 
 /obj/covers/wood/alt/four/constructed
-	name = "wood floor pattern 4"
+	name = "herringbone wood floor"
 
 /obj/covers/wood/alt/five/constructed
-	name = "wood floor pattern 5"
+	name = "double herringbone wood floor"
 
 /obj/covers/wood/alt/six/constructed
-	name = "wood floor pattern 6"
+	name = "diamond parquet floor"
 
 /obj/covers/wood/alt/seven/constructed
-	name = "wood floor pattern 7"
+	name = "checkered parquet floor"
 
 /obj/covers/wood/alt/eight/constructed
-	name = "wood floor pattern 8"
+	name = "pinwheel parquet floor"
 
 /obj/covers/wood/alt/nine/constructed
-	name = "wood floor pattern 9"
+	name = "woven strip wood floor"
 
 /obj/covers/wood/alt/ten/constructed
-	name = "wood floor pattern 10"
+	name = "redwood plank floor"
 
 /obj/covers/wood/alt/eleven/constructed
-	name = "wood floor pattern 11"
+	name = "nailed board floor"
 
 /obj/covers/wood/stairs
 	name = "wood stairs"

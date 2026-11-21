@@ -67,3 +67,12 @@ not a second cover. Lay it from bamboo and use **Rotate Tatami Trim** from
 beside the installed mat to align a directional border. The fully framed mat
 does not need rotation. Wood recipes use distinct construction types with
 the same sprites, so old mapped floors do not acquire new salvage.
+
+## Refreshed stock floors
+
+`scripts/draw_floor_refresh.py` redraws mossy old stone, the plain marble floor
+and the three raw pink marble slabs, darkens the dark tatami, and moves wood
+patterns 1, 7 and 8 onto the warm brown hues of the other wood floors. The pink
+slabs share their edge crossings, so the random pick per tile never shows a
+break. The eleven wood patterns carry descriptive names (narrow plank,
+basketweave, herringbone, parquet and so on) in place of numbers.

@@ -324,6 +324,7 @@
 
 	handle_disease()
 	handle_survival_hints()
+	handle_familiarity() // familiarity.dm
 
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)

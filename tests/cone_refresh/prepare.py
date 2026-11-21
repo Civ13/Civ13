@@ -52,7 +52,7 @@ def transform_sources(control=None):
     start = cone.index('/mob/living/human/update_vision_cone()')
     end = cone.index('mob/living/human/proc/rest_cone_act()', start)
     body = cone[start:end]
-    assert body.count('if (client &&') == 1 and body.count('client.') == 8
+    assert body.count('if (client &&') == 1 and body.count('client.') == 9
     body = body.replace('if (client &&', 'if (cone_client &&').replace('client.', 'cone_client.')
     cone = cone[:start] + body + cone[end:]
     return {'human.dm': human, 'axis.dm': axis, 'wheels.dm': wheels, 'vision_cone.dm': cone}

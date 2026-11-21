@@ -47,6 +47,8 @@ var/global/list/region_trail_next_request = list()
 		if(peer["kind"] == "ORBIT") continue
 		// The tutorial is reached from the lobby, never on foot.
 		if(peer["kind"] == "TUTORIAL") continue
+		// Nobody lives in the gateway: it only sends players on (region_gateway.dm).
+		if(peer["kind"] == "GATEWAY") continue
 		// Lands across the sea are reached only by ship (expedition_land.dm).
 		if(peer["kind"] == "EXPEDITION") continue
 		// A trail never leaves its world: the Moon and Mars are reached only
