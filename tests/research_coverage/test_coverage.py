@@ -134,7 +134,7 @@ class Coverage(unittest.TestCase):
         self.assertIn('return crafting_node_allowed(H, node_id)', source)
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
         self.assertIn('if (!crafting_recipe_allowed(H, "[recipe.result_type]"))', stack)
-        self.assertIn('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', stack)
+        self.assertIn('if (!do_after(user, buildtime, ship_craft = ship_craft) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', stack)
         menu = (ROOT / 'code/game/objects/items/stacks/civ_recipes.dm').read_text()
         self.assertIn('research_allowed = is_basic_crafting_recipe(i[3])', menu)
         self.assertNotIn('research_allowed = (current_res[1]', menu)

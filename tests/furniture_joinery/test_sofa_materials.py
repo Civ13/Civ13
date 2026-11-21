@@ -195,6 +195,8 @@ class SofaMaterials(unittest.TestCase):
                        update_icon=lambda: None)
         env.update(qdel=lambda obj: setattr(obj, 'deleted', True),
                    do_after=lambda *args: after(furniture),
+                   do_ship_fixture_after=lambda *args: after(furniture),
+                   QDELETED=lambda obj: obj.deleted,
                    to_chat=lambda *args: None, SPAN_NOTICE=lambda text: text,
                    playsound=lambda *args: None,
                    istype=lambda obj, path: getattr(obj, 'type', '').startswith(path))
