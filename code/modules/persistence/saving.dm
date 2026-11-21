@@ -70,6 +70,8 @@
 	var/save_phase_started = save_started
 	if(building_allocating_z || dimension_recovery_required)
 		throw EXCEPTION("Cannot save an incomplete building level; finish allocation or restart recovery")
+	// Heteromorph forms put their human bodies back so only humans are saved.
+	heteromorph_return_all("The world holds still, and your human shape returns.") // heteromorph_form.dm
 	prepare_player_ownership()
 	var/generation_nonce = md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]")
 	var/generation = "round-v2:[generation_nonce]"

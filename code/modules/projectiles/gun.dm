@@ -414,6 +414,9 @@
 		zombie_horde_noise(get_turf(user), silencer ? 6 : 20)
 	if (muzzle_flash)
 		set_light(muzzle_flash)
+	if (ishuman(user) && loc == user)
+		var/mob/living/human/shooter = user
+		shooter.body_motion_fire(target, src)
 
 	var/datum/firemode/F = firemodes[sel_mode]
 

@@ -22,6 +22,24 @@ a faction outside a nation has no government to choose.
 | Republic | Classical Age | Consul, elected | +1 | 24 hours | The senate, by motion |
 | Democracy | Classical Age | Archon, elected | 0 | 24 hours | The citizens, by referendum |
 | Merchant league | Medieval Age | Doge, elected | +1 | 24 hours | The league council, by motion |
+| Council of elders | Stone Age | Eldest, elected | 0 | 24 hours | The elders' council (a senate), by motion |
+| Feudal crown | Medieval Age | King, for life, with an heir | +1 | 48 hours | The king |
+| Constitutional monarchy | Industrial Age | Prime Minister, elected | +2 | 24 hours | Parliament (a senate), by motion |
+| One-party state | Cold War | Chairman | +3 | 72 hours | The chairman |
+
+The last four are **era governments**, each tied to its age:
+
+- **Council of elders** gives the Stone Age an elective government. The eldest
+  may be away 7 days (a consul 3) before an election opens.
+- **Feudal crown** works like a monarchy (heir, empty-throne claim) but keeps
+  up to 8 vassal nations instead of 4, and its vassals wait 28 days instead of
+  14 before declaring independence. Its revolt share is 45% (a monarchy's 50%).
+- **Constitutional monarchy** decides like a republic, holds two more factions
+  and needs 75% of citizens to revolt, but the prime minister may be away only
+  3 days.
+- **One-party state** rules alone and holds three more factions, but a revolt
+  petition needs only 25% of eligible citizens (see Revolt). If the chairman
+  is away 3 days the seat goes empty until the member factions choose again.
 
 A nation never holds more than 9 factions. A type unlocks once a majority of
 the member factions' lands have reached its ordinal age; each world reports
@@ -52,6 +70,7 @@ and changes of government by **motion**, and elects its head for a term. Use
 | Republic | Senate: each member faction's leader, weighted by the faction's eligible citizens (at least 1) | All eligible citizens | 14 days |
 | Democracy | Referendum of all eligible citizens; a third must take part | All eligible citizens | 7 days |
 | Merchant league | Council: each member faction's leader, weighted by the coin in its strongbox (at least 1), no faction above 40% | The council | 14 days |
+| Council of elders, constitutional monarchy | Senate, as for a republic | All eligible citizens | 14 days |
 
 An **eligible citizen** has a Discord-verified account, has been on the
 faction's roster for 3 days and has played a member in the last 7. Each world
@@ -146,6 +165,32 @@ Treaties change provinces (`docs/provinces.md`, "Treaties"): allies and pact
 partners never contest each other's provinces, a nation besieges another only
 while at war with it, and allies at a besieged seat fight on their ally's side.
 
+## Vassals
+
+A nation may be another's vassal (`tools/transfer_storage/nation_vassals.py`,
+through the `treaty` op, so each nation decides under its own government):
+
+- **By agreement.** One nation agrees to take the other as a vassal
+  (`overlord`) and the other agrees to serve (`vassal`), in either order; the
+  offer stands for 7 days. A nation at war can surrender this way, which ends
+  the war.
+- **Imposed.** A nation at war with another that has won 2 sieges against it in
+  the last 14 days may make it a vassal alone (`impose`). Worlds report each
+  siege won between nations at war (`siege_won` op, `province_treaties.dm`).
+  The new vassal loses 5 legitimacy.
+- **Release.** The overlord renounces its vassal alone.
+- **Independence.** After 14 days a vassal may declare independence alone; it
+  ends the vassalage, starts a war and gives the vassal 5 legitimacy.
+
+No chains: a vassal takes no vassals, and a nation with vassals cannot become
+one. An overlord keeps at most 4. The two cannot declare war on each other,
+count as allies for provinces and sieges, and the vassal pays tribute: once a
+week each vassal member faction moves a tenth of its strongbox coin (at most
+100 silver) to an overlord member faction's strongbox in the same world. Real
+coin moves; nothing is minted, and with no overlord box in that world nothing is
+due. Nation view and Foreign affairs show the vassalage as `vassal`/`overlord`
+rows in the treaty snapshot.
+
 ## Legitimacy
 
 Every government holds a legitimacy score from 0 to 100
@@ -174,11 +219,13 @@ Citizens can overthrow any government, in play rather than by a menu
 
    | Government | Share |
    | --- | --- |
-   | Confederation, theocracy, monarchy | half |
+   | Confederation, theocracy, monarchy, council of elders | half |
+   | Feudal crown | 45% |
    | Dictatorship | a third |
+   | One-party state | a quarter |
    | Merchant league | two fifths |
    | Republic | two thirds |
-   | Democracy | three quarters |
+   | Democracy, constitutional monarchy | three quarters |
 
 3. Once it fills, every citizen is warned. From a day later the signers have
    3 days to hold any member faction's nation assembly for 30 minutes. Where
@@ -241,6 +288,8 @@ stays a member for the notice period and may **Stay** to withdraw it.
   and when. A confederation's treaty votes are `nation_vote` rows of kind
   `treaty:<proposal>`.
 - `nation_legitimacy`: nation, score, and when its daily change last ran.
+- `nation_vassal`: vassal -> overlord, since when and whether imposed;
+  `nation_siege_win`: winner, loser and when (14 days kept).
 - `nation_frozen`: nations staff froze, and since when.
 - `nation_staff_log`: nation, when, staff account, act and reason (the last
   100 kept).

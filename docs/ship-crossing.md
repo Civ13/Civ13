@@ -84,9 +84,14 @@ Her upper deck (the upper faces of the roofs over her deck, `built_body.dm`)
 packs as `record["upper"]`, one entry per tile over one of her deck tiles. A
 roof goes as a `"u"` entry on the tile it stands on, the floor on top of a
 roof over her deck as an `"f"` entry, and walls, ladder tops and cargo up there
-as on her deck; a tile may be only a ladder's top. A floor on a roof of the
-upper deck itself (a third storey) would be left in the air, so it keeps her
-in port. Taken off the water, her upper deck goes first, then her deck, and on
+as on her deck; a tile may be only a ladder's top. Her second deck above (the
+floors on roofs of her upper deck, `top_cells()`) packs the same way as
+`record["top"]`, each tile over one of her upper deck tiles; it is anchored
+under open air two building levels up, and where that or her upper deck
+cannot be built, what stood on it is stowed on her deck. A floor on a roof of
+the second deck (a fourth storey) would be left in the air, so it keeps her in
+port. Taken off the water, her second deck goes first, then her upper deck,
+then her deck, and on
 each tile what stands there before its floors and roofs, so nothing falls to a
 tile already cleared. On arrival she is anchored, where she can, under open
 air on the building level above; each face is built on its roof again and

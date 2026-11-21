@@ -1,8 +1,9 @@
 """Spent casings from self-loading guns and cased cannon shells, on the production types.
 
 Compiles the production game with normal startup disabled, then on a synthetic
-6x4x1 world fires a machine gun past the per-tile casing cap, keeps live
-rounds, and fires tank and field-gun shells. Prints the evidence directory.
+40x30x1 world fires a machine gun into one heap past its cap, keeps live
+rounds, splits and gathers heaps, fires tank and field-gun shells and
+measures loose casings against heaps. Prints the evidence directory.
 """
 import argparse
 import importlib.util
@@ -19,7 +20,8 @@ HELPERS = 'code/modules/projectiles/guns/projectile.dm'
 # Each control removes one part of the fix and must fail its own assertion.
 CONTROLS = {
     'no-ejection': ('\t\t\tdrop_casing(chambered)\n', '\t\t\tchambered.loc = null\n', 'FAIL:'),
-    'no-tile-cap': ('++spent >= CASINGS_PER_TILE', '++spent >= CASINGS_PER_TILE * 100', 'FAIL:'),
+    'no-tile-cap': ('if (H.heap_count < CASINGS_PER_TILE)', 'if (TRUE)', 'FAIL:'),
+    'no-heap': ('\t\tvar/obj/item/H = C.heap_find(T)\n', '\t\tvar/obj/item/H = null\n', 'FAIL:'),
 }
 
 
@@ -104,6 +106,13 @@ def main():
             raise RuntimeError('Casing ejection probe failed')
         if args.negative_control:
             print('PASS: negative control failed as expected', flush=True)
+        else:
+            # One process per mode: RSS never shrinks, so modes cannot share a run.
+            for mode in ('loose', 'heap'):
+                (output / 'casing_measure.txt').unlink(missing_ok=True)
+                subprocess.run(command + ['-trusted', '-params', f'measure={mode}', '-log', f'measure-{mode}.log'],
+                               cwd=output, capture_output=True, text=True, timeout=120)
+                print('Measurement ' + (output / 'casing_measure.txt').read_text(encoding='utf-8'), flush=True)
         (output / 'metadata.json').write_text(json.dumps({'negative_control': args.negative_control, 'result': 'passed'}), encoding='utf-8')
     finally:
         for path in generated.values():

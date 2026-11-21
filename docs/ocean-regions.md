@@ -120,10 +120,42 @@ world, so nobody travels and nothing is sent.
 
 The probe for sites, upkeep and the wrap is `tests/naval_carrier/ocean_sites_probe.dm`.
 
+## Straits
+
+`code/modules/naval/strait_boom.dm`. A boom winch (20 iron, vehicle parts,
+after Wagons and Ships) is built on a shore facing the water. Iron used on it
+lays a boom of floating segments, one iron a tile, straight across to the far
+shore, at most 60 tiles. A raised boom is dense, so it stops every hull and
+swimmer.
+
+- The owner (the builder, or anyone of the same civilization) raises and
+  lowers it by hand and sets a toll in money value. With a toll of 0 anyone
+  may lower it.
+- Anyone else pays the toll with coins at the winch. The coins go into the
+  winch, the owner takes them out, and the boom drops for a minute. It does
+  not rise under a hull lying over it.
+- A ship at full ahead that runs against it rams it (`boom_ram()`, called
+  from `sail_hop()` before she would stop). The segments across her bow
+  break, one bow plank is lost on each (the ledger counts the holes), and she
+  drops to slow ahead.
+- A hatchet or knife cuts a segment in three minutes, from a boat or a shore.
+- Iron on the winch mends broken segments, one iron each.
+- On a land with provinces, a boom goes only where no other side holds the
+  province.
+- The winch finds its boom by walking from its own tile, so nothing needs
+  references across a save. A boom saved lowered loads raised.
+
+The named straits (`named_straits`) tell a crew when she enters one: Gibraltar,
+the Dardanelles, the Bosporus and Sicily on the Mediterranean; Dover and the
+Danish straits on Europe; Bab-el-Mandeb on Africa; Hormuz and Malacca on Asia.
+The Bering Strait needs a link between Asia and North America, which the maps
+do not have yet.
+
+The probe is `tests/naval_carrier/strait_boom_probe.dm`.
+
 ## Not yet
 
 These maps are not in any live group until the host step that adds the seas.
-Straits come in a later PR of the ocean regions plan.
 
 ## Indian Ocean reef shelf prototype
 

@@ -83,6 +83,7 @@ var/global/list/nation_assembly_tiers = list(
 	nation_assemblies_report()
 	nation_eras_report()
 	nation_census_report()
+	province_vassal_tribute() // province_treaties.dm
 	nation_succession_report()
 	return TRUE
 
@@ -236,8 +237,8 @@ var/global/list/nation_assembly_tiers = list(
 			choices += list("Government", "Vote on an application", "Vote on a common money")
 		if (nid && G["body"] && nation_home_faction(faction))
 			choices.Insert(2, "Motions and elections")
-		if (nid && (G["type"] == "monarchy" || G["type"] == "republic") && nation_heads(nid))
-			choices.Insert(2, G["type"] == "monarchy" ? "Name an heir" : "Name a deputy")
+		if (nid && (nation_hereditary(G) || G["type"] == "republic") && nation_heads(nid))
+			choices.Insert(2, nation_hereditary(G) ? "Name an heir" : "Name a deputy")
 		if (nid && nation_home_faction(faction))
 			var/office = nation_office_of(nid, nation_account())
 			if (office == "treasurer" && !("Vote on a common money" in choices))
