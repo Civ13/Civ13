@@ -51,6 +51,8 @@
 		return
 	if (!istype(H))
 		return
+	if (resin_cook_attackby(src, I, H)) // resin.dm
+		return TRUE
 
 	if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
 		var/obj/item/weapon/reagent_containers/glass/small_pot/POT = I
