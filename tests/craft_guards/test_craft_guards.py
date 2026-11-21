@@ -109,7 +109,7 @@ class CraftGuardTest(unittest.TestCase):
         self.assertLess(finish, body.index('O = new recipe.result_type(build_loc)'))
         # Cover the reported consumer, not just a synthetic instant recipe.
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
-        self.assertRegex(recipes, r'(?m)^RECIPE: /material/iron/,lever pump,/obj/structure/cellar_pump/lever,6,[1-9]\d*,')
+        self.assertRegex(recipes, r'(?m)^RECIPE: /material/iron/,hand bilge and cellar pump,/obj/structure/cellar_pump/lever,6,[1-9]\d*,')
 
     def test_ship_fixture_uses_retained_plank_and_draws_only_the_new_result(self):
         guards = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text()
