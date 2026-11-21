@@ -2655,6 +2655,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/lift_platform/iron" = "steam_power",
 		"/obj/structure/lift_drive/steam" = "steam_power",
 		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
+		"/obj/structure/workshop_machine/mover/steam_engine" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
 		// --- steel_blades (5) ---
 		"/obj/item/wrist_loop/sword_knot" = "steel_blades",
@@ -2983,7 +2984,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (11) ---
+		// --- watermills (13) ---
+		"/obj/structure/workshop_machine/mover/counterweight" = "watermills",
+		"/obj/structure/mechanism/cam_drum" = "watermills",
 		"/obj/structure/workshop_machine/hopper/millstones" = "watermills",
 		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
 		"/obj/structure/water_lift/windmill" = "watermills",
