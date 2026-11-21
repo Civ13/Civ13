@@ -38,7 +38,6 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/land_status,
 	/datum/admins/proc/player_art,	//see every finished player painting, who painted it, and remove offensive ones	//see and set each land's settlement stage (frontier, colonised, settled)
 	/datum/admins/proc/world_chart_panel,	//see the world chart for boat expeditions and reroll charted lands
-	/client/proc/player_panel_new,		//shows an interface for all players, with links to various panels,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
 	/client/proc/admin_view_storage,	//see everything inside a container, who has searched it and which faction filled it
@@ -112,7 +111,6 @@ var/list/admin_verbs_trialadmin = list(
 	/client/proc/quickBan_person,
 	/client/proc/quickBan_unban,
 	/client/proc/cmd_admin_get,
-	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
 	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
@@ -326,7 +324,6 @@ var/list/admin_verbs_mod = list(
 	/client/proc/admin_view_player,		// share a player's camera
 	/client/proc/admin_stop_player_view,
 	/datum/admins/proc/show_player_info,
-	/client/proc/player_panel_new,
 	/client/proc/admin_player_map,	//live map of a level with every player on it,
 	/client/proc/admin_weather_map,	//live map of the weather systems, and sending or ending storms,
 	/client/proc/admin_clothing_designs,	//list and rename player clothing designs
@@ -562,18 +559,9 @@ var/list/admin_verbs_magic = list(
 /client/proc/player_panel()
 	set name = "Player Panel"
 	set category = "Admin"
-	if (holder)
-		holder.player_panel_old()
-
-	return
-
-/client/proc/player_panel_new()
-	set name = "Player Panel New"
-	set category = "Admin"
+	set desc = "Everyone with a key: search, filter, and open their player panel."
 	if (holder)
 		holder.player_panel_new()
-
-	return
 
 /client/proc/game_panel()
 	set name = "Game Panel"

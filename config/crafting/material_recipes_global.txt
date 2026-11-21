@@ -871,6 +871,7 @@ RECIPE: /material/cloth/,pimp coat,/obj/item/clothing/suit/pimpsuit,6,109,0,1,ja
 //*****************| CLOTH ARMOR |***************************
 
 RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,8,null
+RECIPE: /material/cloth/,padded jack,/obj/item/clothing/accessory/armor/padded_jack,5,80,0,1,armor,0,20,23,8,null
 
 RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,armor,0,0,38,8,null
 RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,armor,0,0,38,8,null
