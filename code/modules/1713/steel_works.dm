@@ -15,12 +15,12 @@
 #define STEEL_WORKS_FEED_LIMIT 50 // fuel units automation loads
 
 /obj/structure/steel_works
-	icon = 'icons/obj/metallurgy.dmi'
+	icon = 'icons/obj/steelmaking.dmi'
 	density = TRUE
 	anchored = TRUE
 	not_movable = TRUE
 	not_disassemblable = FALSE
-	var/base_state = "bloomery"
+	var/base_state = "coke_bank"
 	var/charge = 0 // units of charge metal loaded
 	var/list/loaded = list() // charge type path text => units, to give back on Empty
 	var/list/additions = list() // alloy ore key => units (alloy_steels.dm)
@@ -304,15 +304,15 @@
 /obj/item/stack/ore/coke
 	name = "coke"
 	desc = "Mineral coal baked in a closed heap until the tar and sulphur are driven off. Light, grey and porous, it burns hot and clean enough to smelt iron."
-	icon_state = "ore_charcoal"
-	color = "#9a9fa6"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "ore_coke"
 	singular_name = "lump"
 
 /obj/structure/steel_works/coke_bank
 	name = "coke bank"
 	desc = "A low brick oven for baking mineral coal into coke. Load it with coal and light it: five minutes later, every five coal come out as three coke."
-	icon_state = "clay_kiln"
-	base_state = "clay_kiln"
+	icon_state = "coke_bank"
+	base_state = "coke_bank"
 	charge_type = /obj/item/stack/ore/coal
 	charge_name = "coal"
 	charge_limit = 20
@@ -339,8 +339,8 @@
 /obj/structure/steel_works/finery
 	name = "finery forge"
 	desc = "An open hearth with a hooded blast. Pig iron melted in it loses its carbon and comes out as wrought iron: two pig iron make one bar."
-	icon_state = "stone_kiln"
-	base_state = "stone_kiln"
+	icon_state = "finery"
+	base_state = "finery"
 	charge_name = "pig iron"
 	charge_limit = 20
 	charge_min = 2
@@ -357,8 +357,8 @@
 /obj/structure/steel_works/cementation
 	name = "cementation furnace"
 	desc = "A conical brick furnace with two long clay chests inside. Wrought iron bars packed in charcoal there come out as blister steel after a long firing. Fuel it with charcoal: it packs the chests as well as heating them."
-	icon_state = "sandstone_kiln"
-	base_state = "sandstone_kiln"
+	icon_state = "cementation"
+	base_state = "cementation"
 	charge_type = /obj/item/stack/material/iron
 	charge_name = "wrought iron bars"
 	charge_limit = 30
@@ -399,8 +399,8 @@
 /obj/structure/steel_works/puddling
 	name = "puddling furnace"
 	desc = "A long, low brick furnace whose flame plays over a hearth of pig iron. While it boils, someone must stir it with an empty hand, or much of the iron is lost. Ten pig iron make eight wrought iron."
-	icon_state = "blast_furnace"
-	base_state = "blast_furnace"
+	icon_state = "puddling"
+	base_state = "puddling"
 	charge_name = "pig iron"
 	charge_limit = 10
 	charge_min = 2
@@ -455,8 +455,8 @@
 /obj/structure/steel_works/bessemer
 	name = "Bessemer converter"
 	desc = "A pear-shaped iron vessel on trunnions. Load it with pig iron and coke and light it: air roars up through the melt. When the flame at the mouth drops, tip it with an empty hand. Ten pig iron make nine steel."
-	icon_state = "blast_furnace"
-	base_state = "blast_furnace"
+	icon_state = "bessemer"
+	base_state = "bessemer"
 	charge_name = "pig iron"
 	charge_limit = 15
 	charge_min = 5
@@ -534,8 +534,8 @@
 /obj/structure/steel_works/open_hearth
 	name = "open hearth furnace"
 	desc = "A big regenerative furnace with arched charging doors. It melts pig iron and scrap steel together over a slow firing into fine steel. It burns coal, coke or charcoal."
-	icon_state = "blast_furnace"
-	base_state = "blast_furnace"
+	icon_state = "open_hearth"
+	base_state = "open_hearth"
 	charge_name = "pig iron or steel"
 	charge_limit = 40
 	charge_min = 5
@@ -569,8 +569,8 @@
 /obj/structure/steel_works/arc_furnace
 	name = "electric arc furnace"
 	desc = "A round steel shell with three carbon electrodes through its lid. Cabled to a powered grid, it melts scrap iron and steel into fine steel. It burns no fuel, but draws heavily and pauses while the power is off."
-	icon_state = "blast_furnace"
-	base_state = "blast_furnace"
+	icon_state = "arc_furnace"
+	base_state = "arc_furnace"
 	charge_name = "scrap iron or steel"
 	charge_limit = 40
 	charge_min = 5
