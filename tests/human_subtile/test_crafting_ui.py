@@ -197,6 +197,8 @@ def restore_crafting_projection(path, source):
             ('\t\tif (open_cave_roof_attempt(H, C)) // open_cave_roof.dm\n\t\t\treturn\n', ''),
             # Hidden material virtue on water drawn at dawn (tests/divine_approval/test_arcane_materials.py).
             ('\t\t\t\t\tif (ishuman(user) && watertype == "water")\n\t\t\t\t\t\tvar/mob/living/human/drawer = user\n\t\t\t\t\t\tdrawer.arcane_drew_water(RG)\n', ''),
+            # Hidden storm glass from sand dug near a lightning strike (tests/divine_approval/test_arcane_ward.py).
+            ('\t\t\t\t\t\tH.arcane_dug_sand(T) // arcane_materials.dm: storm glass\n', ''),
         )
     else:
         edits = ()

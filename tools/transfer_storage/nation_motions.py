@@ -278,6 +278,8 @@ class NationMotions:
             g = self.government(nation)
             if not g['pending']:
                 self._propose(nation, json.dumps(subject), now)
+        elif kind == 'office':
+            self.fill_office(nation, subject, now)
 
     def fail(self, nation, motion, kind, subject):
         self.close_motion(motion)

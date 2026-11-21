@@ -77,7 +77,8 @@
 	if (!ready())
 		return 0
 	var/heading = craft && craft.body ? craft.body.heading() : 0
-	return round(thrust / sail_delay_factor(heading))
+	var/turf/at = craft && craft.body ? craft.body.origin() : null
+	return round(thrust / sail_delay_factor(heading, at ? weather_wind_dir_at(at) : null))
 
 /datum/craft_drive/fitted/sail/under_way(state)
 	var/obj/structure/vehicleparts/movement/sail/M = source
@@ -211,4 +212,5 @@
 	var/tiles = mass()
 	. = "Under [english_list(under)]: [speeds[max_speed() + 1]] at best. Her drives push [thrust()]; [tiles] tile[tiles == 1 ? "" : "s"] of hull need [tiles * CRAFT_THRUST_HALF] for half ahead and [tiles * CRAFT_THRUST_FULL] from engines or oars for full ahead."
 	if (sails && body)
-		. += " Her sails are [point_of_sail_name(body.heading())]."
+		var/turf/at = body.origin()
+		. += " Her sails are [point_of_sail_name(body.heading(), at ? weather_wind_dir_at(at) : null)]."

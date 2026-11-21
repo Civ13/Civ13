@@ -1,9 +1,9 @@
 # Language drift
 
 Approved by Val on 2026-11-21 after a player asked whether languages evolve as
-eras pass, the way Latin became French and Spanish. This file covers part 1:
-drift tracking and the admin view. Splitting into daughter languages at an era
-change, naming them and the language family tree come in later parts.
+eras pass, the way Latin became French and Spanish. Part 1 tracks drift;
+part 2 splits drifted communities into daughter languages at an era change.
+The language family tree comes in part 3.
 
 ## Speech communities
 
@@ -42,4 +42,42 @@ not saved.
 
 Admin > **Check Language Drift** lists every community with drift, its living
 native speakers, and whether it is ready to split (drift at least 60 and at
-least 5 living natives).
+least 5 living natives), and those waiting for a name.
+
+## Splitting at an era change (part 2, `daughter.dm`)
+
+When the world enters a new era (a capstone in `book_research_node_finished`
+or `complete_node`), `language_era_advanced` makes every community with at
+least 60 drift and 5 living natives **ready to split**, unless its root
+language already has 2 daughters on this world. Members are told; the
+nation's leader gets **Name Our Language** (IC tab), which needs a
+Discord-verified account. Naming is the split. An admin can make any
+community ready, and name it, with **Force Language Split**.
+
+At the split:
+
+- the daughter is a runtime `/datum/language/daughter` registered under its
+  own name, with its own two-letter say key and its parent's syllables run
+  through 3-5 sound changes picked by a seed from its name;
+- the nation's living natives get it at their score in the parent; it becomes
+  their mother tongue (`native_tongue`) and default language; they keep the
+  parent;
+- parent and daughter follow 80% of each other; the parent's relatives follow
+  the daughter at their share of that; sister daughters at least 60%;
+- the community's drift starts again at 0.
+
+A daughter community that drifts past 60 again does not split again: at the
+next era change it loses 10 kinship with its parent (never below 40) and its
+drift halves.
+
+Daughters write in their root language's script, so papers stay readable.
+Every daughter shares one type, so identity checks use `language_same` and
+kinship tables use `language_kin_key` (name for daughters, type otherwise).
+
+Records are in `language_lineage_state["daughters"]`; ready communities in
+`["pending"]`. A traveller carries the records of the daughters they know, and
+a land that has never heard of one saves it as `imported`, which never counts
+towards that land's cap.
+
+`tests/language_drift/probe.dm` drives this natively:
+`python3 tests/ecology_spawning/run_linux.py . tests/language_drift/probe.dm`.

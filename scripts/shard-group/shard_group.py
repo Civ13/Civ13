@@ -2658,7 +2658,7 @@ def add_gateway(group, region_id=None, apply=False, platform=None):
 
     Adds a GATEWAY region (maps/special/gateway.dmm, ports chosen like any omitted
     port) to the group file, sets it up and starts it on that port while the current
-    front door keeps playing. The second half is `set-gate --region <id> --apply`, which
+    front door keeps playing (with the front door stopped it is only set up). The second half is `set-gate --region <id> --apply`, which
     swaps the two worlds' ports: the gateway takes the public port (1714 on the live
     host) and stays on it, and the old front door moves behind the relay on the
     gateway's port. Without apply, only the plan. A group that already has a gateway
@@ -2688,23 +2688,31 @@ def add_gateway(group, region_id=None, apply=False, platform=None):
         raise Refused(str(error))
     entry = planned['regions'][-1]
     front = next((r for r in group['regions'] if r['id'] == gate), None)
+    # With the front door stopped (the whole group down for maintenance) nothing has to
+    # keep playing, so the gateway is only set up; set-gate then just swaps the ports.
+    offline = bool(front) and not platform.listening(front['port'])
     steps = ['Add the region %s (Gateway) on port %d%s; it never saves, never sleeps and hosts no play.'
              % (region_id, entry['port'], ', travel agent %d' % entry['transfer_port'] if entry.get('transfer_port') else ''),
+             'Set it up there without starting it: %s is stopped, so the next start brings both up.' % front['name']
+             if offline else
              'Set it up and start it there (the first start compiles it); %s keeps playing on port %d meanwhile.'
              % (front['name'], front['port']) if front else 'Set it up and start it there.',
              'Then run set-gate --region %s --apply: the gateway takes port %s for good and %s moves to port %d behind '
              'the relay (it is saved and started again once).' % (region_id, front['port'] if front else '?',
                                                                   front['name'] if front else 'the front door', entry['port'])]
     plan = {'region': region_id, 'port': entry['port'], 'transfer_port': entry.get('transfer_port'), 'gate': gate,
-            'already': False, 'steps': steps, 'problems': [], 'warnings': []}
+            'offline': offline, 'already': False, 'steps': steps, 'problems': [], 'warnings': []}
     if not apply:
         return {'plan': plan, 'accepted': False}
     shutil.copy2(path, unused_backup_path(path))
     write_json_atomic(path, planned)
     group = load_group(str(path))
     result = {'plan': plan, 'accepted': True, 'setup': setup(group, platform, region_id)}
-    (region, host), = hosts(group, region_id, platform)
-    result['start'] = host.request('start')
+    if offline:
+        result['start'] = None
+    else:
+        (region, host), = hosts(group, region_id, platform)
+        result['start'] = host.request('start')
     result['next'] = 'set-gate --region %s --apply' % region_id
     return result
 

@@ -239,6 +239,13 @@ var/global/list/nation_assembly_tiers = list(
 		if (nid && (G["type"] == "monarchy" || G["type"] == "republic") && nation_heads(nid))
 			choices.Insert(2, G["type"] == "monarchy" ? "Name an heir" : "Name a deputy")
 		if (nid && nation_home_faction(faction))
+			var/office = nation_office_of(nid, nation_account())
+			if (office == "treasurer" && !("Vote on a common money" in choices))
+				choices += "Vote on a common money"
+			if (office == "chancellor" && G["personal"] && istext(G["head_account"]) && !("Vote on an application" in choices))
+				choices += "Vote on an application"
+			if (istext(G["ruler"]))
+				choices += "Offices of state"
 			choices += "Revolt"
 	choices += "Cancel"
 	var/pick = WWinput(src, text, "Nation", "Cancel", choices)
@@ -252,6 +259,10 @@ var/global/list/nation_assembly_tiers = list(
 		if (civilization == faction && nation_of_id(id) == nid)
 			nation_name_successor(faction, id, nid)
 		return
+	if (pick == "Offices of state")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_offices_menu(faction, id, nid)
+		return
 	if (pick == "Revolt")
 		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
 			nation_revolt_menu(faction, id, nid)
@@ -260,7 +271,7 @@ var/global/list/nation_assembly_tiers = list(
 		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
 			nation_motions_menu(faction, id, nid)
 		return
-	if (stat || civilization != faction || !(map.is_faction_leader(src, faction) || nation_rules(nid)) || !nation_home_faction(faction) || nation_of_id(id) != nid)
+	if (stat || civilization != faction || !(map.is_faction_leader(src, faction) || nation_rules(nid) || nation_office_of(nid, nation_account())) || !nation_home_faction(faction) || nation_of_id(id) != nid)
 		return
 	switch (pick)
 		if ("Found a nation")
@@ -293,6 +304,9 @@ var/global/list/nation_assembly_tiers = list(
 		var/assembly = isnum(N["assembly"]) && N["assembly"] >= 1 && N["assembly"] <= nation_assembly_tiers.len ? ", a [nation_assembly_tiers[N["assembly"]][1]]" : ""
 		lines += "<b>[html_encode(N["name"])]</b>: [jointext(members, ", ")]. Head: [istext(N["head"]) ? html_encode(nation_faction_label(N["head"])) : "none"]. Holds [length(N["members"])]/[N["capacity"]] factions[assembly]."
 		lines += "&nbsp;&nbsp;[nation_government_line(nid)]"
+		var/offices = nation_offices_line(nid)
+		if (offices)
+			lines += "&nbsp;&nbsp;[offices]"
 		var/revolt = nation_revolt_line(nid)
 		if (revolt)
 			lines += "&nbsp;&nbsp;[revolt]"
