@@ -3407,6 +3407,7 @@ RECIPE: /material/wood/,makiwara post,/obj/structure/striking_post,4,80,1,1,spor
 RECIPE: /material/wood/,gravel pail,/obj/structure/striking_post/gravel_pail,3,60,1,1,sports,0,0,0,8,null
 RECIPE: /material/leather/,heavy bag,/obj/structure/martial_gear/heavy_bag,4,80,1,1,sports,20,0,0,8,null
 RECIPE: /material/wood/,wooden dummy,/obj/structure/martial_gear/wooden_dummy,8,120,1,1,sports,40,0,0,8,null
+RECIPE: /material/leather/,wrestling mat,/obj/structure/martial_gear/wrestling_mat,6,100,1,1,sports,20,0,0,8,null
 
 RECIPE: /material/steel/,dovetail-to-Picatinny rail adapter,/obj/item/weapon/gun_mount,2,120,0,1,tools,0,80,0,8,null
 RECIPE: /material/electronics/,powered radio program desk,/obj/structure/telecom/station,6,150,1,1,none,105,0,0,8,null

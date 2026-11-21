@@ -27,8 +27,9 @@ All of it is data in `code/game/mob/living/carbon/human/origins.dm`:
 | Jungle | Caribs, Maya |
 | Desert | Arabs, Egyptians |
 
-`nomads_spawn()` calls `choose_origin(climate)` on these lands. A player at
-the keyboard is asked which people of the land they belong to (default: the
+`nomads_spawn()` calls `choose_origin(climate)` on these lands. A character
+who starts among people is born into that community instead (docs/peoples.md).
+A player at the keyboard is asked which people of the land they belong to (default: the
 people of the birthplace) and whether to take a name of that people and looks
 of their birthplace or keep their character setup. Characters without a client, such as agents,
 get the people of their birthplace. A restored character is never asked again.

@@ -321,6 +321,52 @@ var/global/list/people_blocked_parts = null
 	add_note("Origin", origin_summary())
 	return TRUE
 
+// ------------------------------------------------------------
+// Born into a community
+// ------------------------------------------------------------
+// A new character who starts among people (a settlement, a recruitment
+// station, a bed in town) is born into the people of that community rather
+// than the root of the land. The community is every living character with a
+// people within PEOPLE_COMMUNITY_RANGE tiles on the same level; with fewer
+// than PEOPLE_COMMUNITY_MIN of them, the start counts as the wild.
+
+// list(people id = living count), most common first, or an empty list.
+/proc/community_peoples(turf/T, mob/living/human/except = null)
+	var/list/counts = list()
+	if (!T)
+		return counts
+	var/total = 0
+	for (var/mob/living/human/H in human_mob_list)
+		if (H == except || H.stat == DEAD || !istext(H.origin_id) || QDELETED(H))
+			continue
+		var/turf/at = get_turf(H)
+		if (!at || at.z != T.z || max(abs(at.x - T.x), abs(at.y - T.y)) > PEOPLE_COMMUNITY_RANGE)
+			continue
+		if (!origin_by_id(H.origin_id))
+			continue
+		counts[H.origin_id] = (counts[H.origin_id] || 0) + 1
+		total++
+	if (total < PEOPLE_COMMUNITY_MIN)
+		return list()
+	var/list/sorted = list()
+	while (counts.len)
+		var/best = null
+		for (var/id in counts)
+			if (!best || counts[id] > counts[best])
+				best = id
+		sorted[best] = counts[best]
+		counts -= best
+	return sorted
+
+// The peoples of a community, by name, most common first.
+/proc/community_people_choices(list/community)
+	var/list/choices = list()
+	for (var/id in community)
+		var/datum/origin/O = origin_by_id(id)
+		if (O)
+			choices["[O.name]"] = O
+	return choices
+
 #undef PEOPLE_NAME_MIN
 #undef PEOPLE_NAME_MAX
 #undef PEOPLE_RECORD_KEYS

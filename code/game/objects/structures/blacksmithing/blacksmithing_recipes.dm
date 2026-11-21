@@ -378,7 +378,6 @@ var/global/list/anvil_recipes = anvil_recipes_table()
 
 	///*Steel Armor*///
 			/*World Wars*/
-	"Dayfield Body Armor" = list("Dayfield Body Armor","armor",5,8,10,0,0,0,/obj/item/clothing/accessory/armor/modern/british),
 	"Breastplate Body Armor" = list("Breastplate Body Armor","armor",5,8,12,0,0,0,/obj/item/clothing/accessory/armor/modern/plate),
 
 	///*Kevlar Armor*///

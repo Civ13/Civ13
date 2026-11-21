@@ -136,6 +136,7 @@ class PeoplesAreNeverATarget(unittest.TestCase):
         'code/modules/admin/verbs/origin_languages.dm',
         'code/modules/agent_control/agent_characters.dm',
         'code/modules/persistence/region_travel_tongues.dm',
+        'code/modules/research_tree/death_legacy.dm',
     }
     READ = re.compile(r'\borigin_id\b|\bget_origin\(|\borigin_summary\(|\borigin_land\b')
 
@@ -190,7 +191,8 @@ class AdminAndAgentTools(unittest.TestCase):
         self.assertIn('out["languages"] = H.language_rows()', chars)
         choose = ORIGINS[ORIGINS.index('/mob/living/human/proc/choose_origin'):ORIGINS.index('/mob/living/human/proc/apply_origin')]
         # Only a people of this land, and the wish is used once.
-        self.assertIn('if (wished && (wished.name in land_peoples(map.ID)))', choose)
+        self.assertIn('if (wished && (wished.name in peoples))', choose)
+        self.assertIn('var/list/peoples = community.len ? community_people_choices(community) : land_peoples(map.ID)', choose)
         self.assertIn('/mob/living/human/var/tmp/origin_wish', ORIGINS)
         catalog = (ROOT / 'tools/agent-control/catalog.py').read_text()
         self.assertIn('"origin": {"type": "string"', catalog)
