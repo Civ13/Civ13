@@ -1820,6 +1820,7 @@
 #include "code\modules\naval\minesweeping.dm"
 #include "code\modules\naval\naval_mines.dm"
 #include "code\modules\naval\ocean_regions.dm"
+#include "code\modules\naval\ocean_sites.dm"
 #include "code\modules\naval\open_sea.dm"
 #include "code\modules\naval\open_sea_chart.dm"
 #include "code\modules\naval\open_sea_sites.dm"
