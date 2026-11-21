@@ -45,7 +45,7 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 
 See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
-`public_host` (the address players use to join) and 1 to 16 `regions`, each
+`public_host` (the address players use to join) and 1 to 32 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
 `ORBIT`, `BARRACKS`, `BATTLE`, `EVENT`, `TUTORIAL` or `OTHER`; a `RAID`, `BATTLE`, `EVENT` or `TUTORIAL` region cannot be the mainland;
 a `TUTORIAL` region only runs the practice rooms and never saves, see [docs/practice-rooms.md](../../docs/practice-rooms.md#tutorial-region)), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
@@ -388,6 +388,23 @@ With the whole group stopped for maintenance, neither step launches anything:
 (and moves the front door files). The next start brings the gateway up on the public
 port; its first start compiles it.
 
+## Adding the missing Earth regions
+
+A group that hosts Earth (Gaia or any Earth land) can take every Earth land and sea it
+lacks in one step (launcher: All regions > More > Front door and ports > Add missing
+Earth regions):
+
+```
+python shard_group.py --config group.json add-regions [--apply]
+```
+
+The list is `EARTH_REGIONS` in shard_group.py (the lands of docs/earth-continents.md
+and the seas of docs/ocean-regions.md). A region is missing when neither its id nor
+its map is in the group. Each keeps its usual port (1740-1754) when that is free,
+otherwise one is chosen like any omitted port. With `--apply` they are added to the
+group file and set up stopped; running regions keep playing and learn the new peers
+on their next start.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback
@@ -726,3 +743,14 @@ when it exits and ignores the stop file until it is ended.
 The launcher offers a recoverable, exact-region-confirmed fresh-world action for
 stopped unlinked regions. Connected transfers and separate extraction persistence
 are refused there; the group fresh world archives them for every region. See [scope, recovery and coordinated-reset plan](../../docs/launcher-fresh-world.md).
+
+## Chat translator
+
+With `"chat_translator": {}` in the group config (optional `"port"` (55581), `"node"`, `"npm"`, `"edge"`
+(msedge.exe) and `"profile"` (Edge's profile; default `<root>/chat-translator/edge-profile`)), the host
+service keeps the Edge chat translator (`tools/edge-translator`) running for the whole group: it copies the
+service into `<root>/chat-translator/app`, runs `npm ci --ignore-scripts` there when the lock file changes,
+and restarts it if it exits. Every region's merged config gets `CHAT_TRANSLATE_URL http://127.0.0.1:<port>`
+at its next update or `config-apply`, unless its config.local.txt sets or turns off that line.
+`translator-status`, `translator-start` and `translator-stop` (kept stopped until start) back the launcher's
+Translator tab.

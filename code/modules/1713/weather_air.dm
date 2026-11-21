@@ -103,6 +103,10 @@ var/global/datum/weather_air_grid/weather_air = null
 
 // The open-sky ground at x, y: the highest level whose area is outdoors, or
 // the first level when none is.
+// TRUE from morning to evening, when the sun is up.
+/proc/weather_air_daytime()
+	return time_of_day == "Morning" || time_of_day == "Midday" || time_of_day == "Afternoon" || time_of_day == "Evening"
+
 /proc/weather_air_sky_turf(x, y)
 	for (var/z = world.maxz, z >= 1, z--)
 		var/turf/T = locate(x, y, z)
@@ -161,13 +165,19 @@ var/global/datum/weather_air_grid/weather_air = null
 			var/heat = sky[2]
 			// Cloud: a storm's own cover, or a grey sky in near-saturated air.
 			var/rh_now = snap ? weather_air_humidity_normal(climate) : weather_relative_humidity(temp[i], dew[i])
-			var/cloud_target = max(storm, rh_now >= 90 ? (rh_now - 90) / 20 : 0)
+			// By night saturated air lies on the ground as fog (weather_fog.dm) instead.
+			var/cloud_target = max(storm, rh_now >= 90 && weather_air_daytime() ? (rh_now - 90) / 20 : 0)
 			// Water warms and cools slowly, so its daily swing is halved.
 			var/daily = climate_daily_offset(climate, time_of_day, (snap ? cloud_target : cloud[i]) >= 0.4)
 			if (water[i])
 				daily /= 2
-			var/temp_target = climate_mean_at(climate, season, fraction) + daily - 2 * storm + 6 * heat + weather_centres_temperature_at(x, y)
-			// Air over water and under rain is moister; heat dries it.
+			var/mean_target = climate_mean_at(climate, season, fraction) - 2 * storm + 6 * heat + weather_centres_temperature_at(x, y)
+			var/temp_target = mean_target + daily
+			// Air over water and under rain is moister; heat dries it. The
+			// humidity is the day's mean: the moisture stays as the air cools by
+			// night, so clear nights reach the dew point. Under rain it follows the
+			// air itself, which the rain keeps near saturation.
+			var/dew_base = mean_target + daily * min(storm, 1)
 			var/rh_target = weather_air_humidity_normal(climate)
 			if (water[i])
 				rh_target += 10
@@ -175,16 +185,18 @@ var/global/datum/weather_air_grid/weather_air = null
 			var/pressure_target = WEATHER_AIR_SEA_LEVEL_HPA - (sky[3] ? 30 : 18) * storm + 10 * heat + weather_centres_pressure_at(x, y)
 			if (snap)
 				temp[i] = temp_target
-				dew[i] = weather_dew_point(temp_target, rh_target)
+				dew[i] = min(temp_target, weather_dew_point(dew_base, rh_target))
 				pressure[i] = pressure_target
 				cloud[i] = cloud_target
 				continue
 			temp[i] += (temp_target - temp[i]) * WEATHER_AIR_TEMP_RATE
-			var/dew_target = weather_dew_point(temp[i], rh_target)
+			var/dew_target = weather_dew_point(dew_base, rh_target)
 			dew[i] = min(temp[i], dew[i] + (dew_target - dew[i]) * WEATHER_AIR_DEW_RATE)
 			pressure[i] += (pressure_target - pressure[i]) * WEATHER_AIR_PRESSURE_RATE
 			cloud[i] += (cloud_target - cloud[i]) * WEATHER_AIR_CLOUD_RATE
 	settle_wind(snap) // weather_wind.dm
+	settle_precip() // weather_precip.dm
+	settle_fog(snap) // weather_fog.dm
 	steps++
 
 // One weather tick (processes/weather.dm, through weather_systems_step()).
@@ -194,6 +206,7 @@ var/global/datum/weather_air_grid/weather_air = null
 		weather_air = new
 		return
 	weather_air.settle()
+	weather_hail_step() // weather_precip.dm
 
 /proc/weather_air_grid()
 	if (!weather_air)
@@ -258,7 +271,7 @@ var/global/datum/weather_air_grid/weather_air = null
 	return clamp(G.value_at(G.cloud, T.x, T.y), 0, 1)
 
 // The grid for the Admin Map (admin_map.dm): list(cols, rows, cell size, temperatures,
-// humidities, pressures, clouds, wind east and wind north in m/s), each rounded,
+// humidities, pressures, clouds, wind east and wind north in m/s, fog %), each rounded,
 // one entry per cell by index.
 /proc/weather_air_map_data()
 	var/datum/weather_air_grid/G = weather_air_grid()
@@ -268,6 +281,7 @@ var/global/datum/weather_air_grid/weather_air = null
 	var/list/c = list()
 	var/list/we = list()
 	var/list/wn = list()
+	var/list/f = list()
 	for (var/i = 1, i <= G.temp.len, i++)
 		t += round(G.temp[i], 0.1)
 		h += round(weather_relative_humidity(G.temp[i], G.dew[i]))
@@ -275,7 +289,8 @@ var/global/datum/weather_air_grid/weather_air = null
 		c += round(G.cloud[i] * 100)
 		we += round(G.wind_x[i], 0.1)
 		wn += round(G.wind_y[i], 0.1)
-	return list(G.cols, G.rows, WEATHER_AIR_CELL, t, h, p, c, we, wn)
+		f += G.fog.len >= i ? round(G.fog[i] * 100) : 0
+	return list(G.cols, G.rows, WEATHER_AIR_CELL, t, h, p, c, we, wn, f)
 
 #undef WEATHER_AIR_CELL
 #undef WEATHER_AIR_SEA_LEVEL_HPA

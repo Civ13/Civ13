@@ -88,6 +88,32 @@ class DiseaseImmunity(unittest.TestCase):
         self.assertEqual(flu.count("flu_downs = 0"), 2)
         self.assertIn("<big><font color='#3d9e3d'><b>You feel much better now! The illness is gone.</b></font></big>", flu)
 
+    def test_disease_classifications_preserve_membership_and_active_guard(self):
+        # This projects the two source helpers; it does not execute BYOND DM.
+        severe = read(HUMAN + "severe_disease.dm")
+        severe = severe.split("/mob/living/human/proc/is_severe_disease()", 1)[1].split("\n\n", 1)[0]
+        immunity = self.src.split("/mob/living/human/proc/builds_disease_immunity(kind)", 1)[1].split("\n\n", 1)[0]
+
+        def check(body, variable, expected, expression):
+            declaration = re.search(rf"var/static/list/{variable} = list\(([^)]*)\)", body)
+            self.assertIsNotNone(declaration)
+            self.assertEqual(re.findall(r'"([^"]+)"', declaration.group(1)), expected)
+            self.assertIn(expression, body)
+            self.assertEqual(body.count(variable), 2)  # Declared and read only.
+
+        severe_args = ("severe_diseases", ["plague", "typhus", "malaria", "cholera"],
+                       "return disease && (disease_type in severe_diseases)")
+        immunity_args = ("immune_diseases", ["flu", "plague", "typhus", "malaria", "cholera"],
+                         "return kind in immune_diseases")
+        check(severe, *severe_args)
+        check(immunity, *immunity_args)
+        # Negative controls prove this projection rejects a lost guard or a
+        # broadened classification instead of merely finding the helper.
+        with self.assertRaises(AssertionError):
+            check(severe.replace("disease && ", ""), *severe_args)
+        with self.assertRaises(AssertionError):
+            check(immunity.replace('"flu"', '"worms"'), *immunity_args)
+
     def test_resistance_blocks_contagion_and_flu_recovery_grants_it(self):
         severe = read(HUMAN + "severe_disease.dm")
         # Proximity and filth rolls go through infection_chance_scale(), which

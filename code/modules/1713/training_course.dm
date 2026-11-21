@@ -48,6 +48,24 @@
 
 /obj/structure/treadwheel/update_icon()
 	icon_state = buckled_mob ? turning_state : initial(icon_state)
+	overlays.Cut()
+	var/front = front_state()
+	if (front)
+		var/image/I = image(icon, front)
+		I.layer = MOB_LAYER + 0.1
+		overlays += I
+
+// What stands in front of the runner and draws over them; nothing by default.
+/obj/structure/treadwheel/proc/front_state()
+	return null
+
+// Facing the viewer, the treadmill's rail and console are in front of the runner.
+/obj/structure/treadwheel/treadmill/front_state()
+	return buckled_mob && dir == SOUTH ? "treadmill_front" : null
+
+/obj/structure/treadwheel/set_dir(new_dir)
+	. = ..()
+	update_icon()
 
 /obj/structure/treadwheel/examine(mob/user, distance = -1)
 	. = ..()

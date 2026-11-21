@@ -245,8 +245,9 @@
 		else if (find_trait("Dwarfism"))
 			food_m *= 0.8
 		food_m *= trait_food_mult()
-		food_m *= home_rest_hunger_mult()
-		water_m *= home_rest_hunger_mult()
+		var/rest_hunger_mult = home_rest_hunger_mult()
+		food_m *= rest_hunger_mult
+		water_m *= rest_hunger_mult
 		if (orc)
 			food_m *= 1.5
 		if (goblin)
@@ -309,14 +310,8 @@
 		if (CONSCIOUS)
 			adjustOxyLoss(-5)
 
-//drug addictions
-	for(var/ad in addictions)
-		if (addictions[ad]>0)
-			var/ind = addictions[ad]
-			process_addictions(ad,ind)
-			addictions[ad] -= 0.05
-		if (addictions[ad] < 0)
-			addictions[ad] = 0
+//drug addictions, tolerance, mixing and lasting harm (drug_classes.dm)
+	handle_drugs()
 
 //death
 	if (getBrainLoss() > 60)
@@ -1465,10 +1460,10 @@
 		return
 	else
 		switch(drug)
-			if ("cocaine")
-				if (ingested.has_reagent("cocaine"))
+			if ("stimulant")
+				if (drug_class_active("stimulant"))
 					return
-				adjust_mood(-((value/100)*0.26), "craving cocaine")
+				adjust_mood(-((value/100)*0.26), "craving stimulants")
 				switch (value)
 					if (0 to 24)
 						return
@@ -1509,8 +1504,8 @@
 						if (prob(12))
 							make_dizzy(6)
 						return
-			if ("opium")
-				if (ingested.has_reagent("opium"))
+			if ("opioid")
+				if (drug_class_active("opioid"))
 					return
 				adjust_mood(-((value/100)*0.32), "craving opium")
 				switch (value)
@@ -1562,23 +1557,46 @@
 							apply_effect(17, AGONY, FALSE)
 							apply_effect(10, DROWSY, FALSE)
 						return
-			if ("tobacco")
-				if (ingested.has_reagent("nicotine"))
+			if ("nicotine")
+				if (drug_class_active("nicotine"))
 					return
 				adjust_mood(-((value/100)*0.14), "craving tobacco")
 				switch (value)
 					if (0 to 21)
 						return
 					if (21 to 44)
+						if (prob(3))
+							to_chat(src, "You could do with a smoke.")
 						return
 					if (44 to 72)
+						if (prob(4))
+							to_chat(src, "You feel irritable and can't settle without a smoke.")
+						if (prob(3))
+							make_jittery(10)
 						return
-					if (72 to 87)
+					if (72 to 100)
+						if (prob(5))
+							to_chat(src, "You badly want a smoke. Your hands won't keep still.")
+						if (prob(5))
+							make_jittery(20)
 						return
-					if (87 to 100)
-						return
+			if ("cannabis")
+				if (drug_class_active("cannabis"))
+					return
+				adjust_mood(-((value/100)*0.10), "missing cannabis")
+				if (value >= 40 && prob(3))
+					to_chat(src, "You feel restless and low.")
+				return
+			if ("caffeine")
+				if (drug_class_active("caffeine"))
+					return
+				if (value >= 30)
+					adjust_mood(-((value/100)*0.08), "missing coffee")
+					if (prob(3))
+						custom_pain("Your head aches for want of coffee.", 0)
+				return
 			if ("alcohol")
-				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
+				if (drug_class_active("alcohol"))
 					return
 				adjust_mood(-((value/100)*0.20), "craving alcohol")
 				switch (value)

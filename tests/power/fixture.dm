@@ -15,6 +15,8 @@ world
 	return
 /proc/to_chat(mob/user, message)
 	return
+/proc/mechanism_relay_open_on(atom/T)
+	return FALSE
 /obj/structure
 	var/smart_off = FALSE
 	var/smart_hub_id = null

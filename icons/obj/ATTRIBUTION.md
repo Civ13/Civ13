@@ -45,6 +45,12 @@ umbrellas, lean-to) were drawn for Civ13 (2026-11-12), pixel by pixel from a fix
 palette by `tests/sprites/create_rain_gear.py`. No borrowed or generated artwork.
 They are under the same terms as the rest of Civ13's art.
 
+The `proof_cuirass` and `proof_do` states in `clothing/suits.dmi`, `resin_shield`
+in `clothing/ties.dmi` and their worn states in `icons/mob/suit.dmi` and
+`icons/mob/ties.dmi` were drawn for Civ13 by Fable (2026-11-21), pixel by pixel from
+fixed palettes by `tests/sprites/create_gun_armor.py`. No borrowed or generated
+artwork. They are under the same terms as the rest of Civ13's art.
+
 ## icons/mob/sea_life.dmi
 
 All states (`kelp_turtle`, `kelp_turtle_dead`, `reef_eel`, `reef_eel_hidden`,
@@ -86,3 +92,10 @@ All states (`weather_vane_north`, `weather_vane_east`, `weather_vane_south`,
 pixel from a fixed palette by `tests/sprites/create_weather_instruments.py`.
 No borrowed or generated artwork. They are under the same terms as the rest of
 Civ13's art.
+
+## icons/effects/weather_fog.dmi
+
+Both states (`fog_view`, `mist_view`) were drawn for Civ13 (2026-11-21) by
+`tests/sprites/create_weather_fog.py`, a seeded Pillow script that paints a
+soft grey haze with a clear centre. No borrowed or generated artwork. They are
+under the same terms as the rest of Civ13's art.

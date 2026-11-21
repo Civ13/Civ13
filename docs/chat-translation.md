@@ -33,14 +33,16 @@ computer only).
 
 Dream Seeker's WebView2 (157) has `Translator` and `LanguageDetector`, but
 every language pair reports "unavailable" and there is no switch a server can
-flip for its players, so Val asked for a workaround. The world translates
-instead, through the host's own Ollama model
-(`code/modules/chat/chat_translate.dm`):
+flip for its players, so Val asked for a workaround. Val then ruled out Ollama
+as the translator and asked for Edge: the world translates through a local
+service that drives Microsoft Edge's own on-device Translator
+(`tools/edge-translator`, see its README), and `code/modules/chat/chat_translate.dm`
+talks to it.
 
-- Off unless `CHAT_TRANSLATE_URL` (Ollama base address) and
-  `CHAT_TRANSLATE_MODEL` are set (config.txt or the host's config.local.txt).
-  Use a model the host already keeps loaded, such as the Player Help model, so
-  translation never forces a model swap.
+- Off unless `CHAT_TRANSLATE_URL` (the service, e.g. `http://127.0.0.1:55581`)
+  is set. On a region group the host service runs the service and sets it for
+  every region when the group config has `"chat_translator"`; the launcher's
+  Translator tab shows and controls it (Val, 2026-11-21).
 - When the chat page is ready the world calls `setTranslateServer("1")`. The
   page then sends each new eligible line (the same text the on-device path
   would use) as `byond://?chat_translate=<id>&lang=<reader's language>&text=`.
@@ -49,15 +51,20 @@ instead, through the host's own Ollama model
   `text` empty when no translation is needed or possible, so the page's
   one-at-a-time queue never stalls (20 s timeout per line).
 - English lines for English readers (plain ASCII where at least a quarter of
-  the words are common English words) never reach the model. Otherwise one
-  `/api/chat` call (JSON schema reply, `think` off, temperature 0) serves every
-  reader of the same text and language, and the result is cached in memory
-  (1000 entries). Limits: 500 characters, 40 distinct texts waiting (oldest
-  dropped), 40 requests per window per minute, 30 s per call, five minutes off
-  after three failed calls in a row. Nothing is logged or written to disk.
-- Tests: `tests/chat_translation/probe.dm` (native, stand-in model and
+  the words are common English words) never leave the world. Otherwise one
+  `POST /translate {"text","target"}` call serves every reader of the same
+  text and language, and the result is cached in memory (1000 entries).
+  Limits: 500 characters, 40 distinct texts waiting (oldest dropped), 40
+  requests per window per minute, 20 s per call, five minutes off after three
+  failed calls in a row. Nothing is logged or written to disk.
+- Edge on the host (158, probe 2026-11-21): translation works once its
+  component updater may fetch language packs (es>en, fr>en, en>de translated;
+  20-80 ms warm). Its LanguageDetector never loaded, so the service detects
+  languages itself (`detect.js`).
+- Tests: `tests/chat_translation/probe.dm` (native, stand-in service and
   windows: `python3 tests/ecology_spawning/run_linux.py . tests/chat_translation/probe.dm 300`),
-  the server-mode case in the browser test, and `test_markers.py`.
+  `tools/edge-translator/test/test.js` (run by `test_edge_service.py`), the
+  server-mode case in the browser test, and `test_markers.py`.
 
 The rest of this file is the original proposal, kept for its acceptance list.
 

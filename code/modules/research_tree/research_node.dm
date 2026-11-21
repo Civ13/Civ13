@@ -708,6 +708,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/clay/mold/parts" = "bronze_working",
 		"/obj/structure/workshop_machine/lathe/pole" = "workshops",
 		"/obj/structure/fluid_pump/hand" = "workshops",
+		"/obj/structure/yard_office" = "workshops",
 		"/obj/structure/workshop_machine/lathe/engine" = "machined_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
@@ -751,6 +752,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/medieval/knight" = "mail_plate",
 		"/obj/item/clothing/shoes/orc" = "mail_plate",
 		"/obj/item/clothing/suit/armor/imperial/imperial_chestplate" = "mail_plate",
+		"/obj/item/clothing/suit/armor/proof_cuirass" = "mail_plate",
+		"/obj/item/clothing/suit/armor/proof_cuirass/japanese" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval/chainmail" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval/emirate" = "mail_plate",
@@ -1016,6 +1019,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/airship_planks/aluminium" = "powered_flight",
 		"/obj/item/airship_planks/steel" = "powered_flight",
 		"/obj/item/airship_gas_cell" = "lighter_than_air_flight",
+		"/obj/item/airship_gas_cell/rubber" = "lighter_than_air_flight",
 		"/obj/item/airship_helm_kit" = "lighter_than_air_flight",
 		"/obj/structure/airship_bomb_hatch" = "powered_flight",
 		"/obj/item/weapon/reagent_containers/gas_vessel" = "lighter_than_air_flight",
@@ -1306,6 +1310,7 @@ var/global/list/node_grid_col_cache = null
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
+		"/obj/structure/hot_press" = "combustion",
 		// --- cooperage (17) ---
 		"/obj/structure/closet/ice_house" = "cooperage",
 		"/obj/structure/well_fitting/windlass" = "cooperage",
@@ -1420,6 +1425,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/integrated_circuit" = "digital_computing",
 		"/obj/item/circuit_shell/compact_remote" = "digital_computing",
+		"/obj/item/circuit_shell/mechanism_port" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
@@ -1449,6 +1455,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/voting" = "early_economy",
 		// --- electricity (23) ---
 		"/obj/structure/workshop_machine/wire_bench" = "electricity",
+		"/obj/structure/mechanism_relay" = "electricity",
 		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
@@ -1457,6 +1464,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/lift_drive/electric" = "electricity",
 		"/obj/structure/lift_call/button" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
+		"/obj/item/stack/data_lan_cable" = "electricity",
+		"/obj/item/stack/data_lan_cable/sealed" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
 		"/obj/item/stack/cable_coil/iron" = "electricity",
@@ -1537,6 +1546,7 @@ var/global/list/node_grid_col_cache = null
         "/obj/item/tv_camera/helmet" = "assembly_line",
         "/obj/structure/telecom/station/tv" = "assembly_line",
         "/obj/structure/telecom/terminal" = "assembly_line",
+        "/obj/structure/telecom/terminal/data_lan" = "assembly_line",
         "/obj/item/weapon/telephone/landline" = "utilities",
 		"/obj/structure/radio/transmitter" = "factories",
 		// --- field_artillery (7) ---
@@ -1844,7 +1854,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/head/ww2/sov_ushanka/nomads" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/greykerchief" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/redkerchief" = "haberdashery",
-		// --- herbalism (10) ---
+		// --- herbalism (11) ---
 		"/obj/item/stack/medical/bruise_pack/bint" = "herbalism",
 		"/obj/item/stack/medical/bruise_pack/bint/leather" = "herbalism",
 		"/obj/item/stack/medical/splint" = "herbalism",
@@ -1853,6 +1863,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/prosthesis/woodfoot" = "herbalism",
 		"/obj/item/weapon/reagent_containers/food/snacks/leaf_salad" = "herbalism",
 		"/obj/item/weapon/reagent_containers/glass/mortar" = "herbalism",
+		"/obj/item/weapon/reagent_containers/pill/hashish" = "herbalism",
 		"/obj/item/weapon/reagent_containers/pill/opium" = "herbalism",
 		"/obj/structure/drying_rack" = "herbalism",
 		// --- hygiene (14) ---
@@ -1923,7 +1934,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (9) ---
+		// --- iron_smithing (10) ---
+		"/obj/item/weapon/grapnel" = "iron_smithing",
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",
 		"/obj/covers/iron_plate" = "iron_smithing",
@@ -2958,6 +2970,7 @@ var/global/list/node_grid_col_cache = null
 		// --- wagons_ships (29) ---
 		"/obj/structure/canal_lock" = "wagons_ships",
 		"/obj/structure/canal_lock/dock_gate" = "wagons_ships",
+		"/obj/structure/keel_blocks" = "wagons_ships",
 		"/obj/item/stack/rail_sleepers" = "wagons_ships",
 		"/obj/item/stack/rail_lengths/wooden" = "wagons_ships",
 		"/obj/structure/trains/storage/chaldron" = "wagons_ships",
@@ -2974,6 +2987,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
 		"/obj/item/sail" = "oared_ships",
 		"/obj/item/sail/wool" = "oared_ships",
+		"/obj/item/sail/tarred" = "oared_ships",
+		"/obj/item/weapon/reagent_containers/glass/finishing_pot" = "fine_furniture",
 		"/obj/item/weapon/covers/ship" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0/north" = "wagons_ships",
@@ -3002,6 +3017,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mechanism/cam_drum" = "watermills",
 		"/obj/structure/workshop_machine/hopper/millstones" = "watermills",
 		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
+		"/obj/structure/workshop_machine/hopper/fulling_stocks" = "watermills",
+		"/obj/structure/workshop_machine/hopper/bark_stamps" = "watermills",
+		"/obj/structure/workshop_machine/hopper/power_loom" = "textile_mills",
 		"/obj/structure/water_lift/windmill" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
 		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",

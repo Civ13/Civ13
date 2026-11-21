@@ -49,6 +49,34 @@ axis, frame, mover, part and engine key plus the eraser.
   blank sheet of paper in hand, draws it on a new sheet
   (`vehicle_draught_survey()`).
 
+## In a workshop
+
+`code/modules/craft/vehicle_sheet_works.dm`: using a vehicle sheet on a press
+builds it from the press's stock. The automobile workshop takes `car` and
+`heavy` sheets and the aircraft hangar `plane` sheets (`sheet_axes()`); the
+shipyard office, submarine pen, rover bay and private workshop take none.
+
+- The press refuses a sheet whose `vehicle_sheet` checks report an error, one
+  of another axis (naming the right press), one it lacks research for
+  (Mechanized Warfare for a turret or tracks, Aviation & Rocketry for a
+  twin's wings), a piece-by-piece project in the bay, a bay that is not
+  clear, or stock it lacks (`sheet_refusal()`).
+- Cost (`sheet_costs()`): the sheet's `costs()`, with the corner wheels taken
+  from the wheel stock in place of their steel, no cost for movers off the
+  corners (they are not made), and 10 cable. A sheet press holds up to 1000
+  steel (`stock_cap()`); every press holds at least enough for its dearest
+  model.
+- It needs the `max(width, length)` square northeast of the press clear and
+  builds the vehicle front to the north, its front left corner on the
+  square's north-west tile, then assembles it as a hand builder would
+  (`assemble()`), with empty tanks and a key. It draws 20 power for the
+  usual assembly time.
+
+The aircraft hangar also builds the UH-1 helicopter (`"Helicopter"`, Rocketry,
+a 7x7 square) from `aircraft_huey_layout`.
+
+Test: `tests/vehicle_papers/sheet_works_probe.dm`.
+
 ## The window
 
 `code/modules/craft/vehicle_designer.dm`: "Draw a vehicle on the sheet" on a
@@ -57,4 +85,4 @@ blank draught, or "Draw on the sheet" on a vehicle sheet. The page is
 header); every change is sent as a code and answered with `carStats`,
 `carChecks` and `carStatus`.
 
-Tests: `tests/vehicle_papers/sheet_probe.dm`, `tests/ship_draught/test_design_checks.py`.
+Tests: `tests/vehicle_papers/sheet_probe.dm`, `tests/vehicle_papers/sheet_works_probe.dm`, `tests/ship_draught/test_design_checks.py`.

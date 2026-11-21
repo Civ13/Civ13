@@ -93,6 +93,10 @@ var/global/list/find_not_animals = list(
 	if (!what && weather_heat_at(T))
 		what = "heat wave"
 	if (!what)
+		what = weather_fog_level(T) || null
+	if (!what && weather_frost_at(T))
+		what = "hoarfrost"
+	if (!what)
 		return null
 	return list("weather:[what]:[lowertext("[season]")]", "the [what]")
 

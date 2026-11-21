@@ -13,7 +13,7 @@
 #define WEATHER_CENTRE_SPAWN_PROB 2
 // Air that can raise a thunderstorm in the afternoon.
 #define WEATHER_CONVECTION_TEMP 24
-#define WEATHER_CONVECTION_RH 65
+#define WEATHER_CONVECTION_DEW 15 // muggy air: a dew point of 15 C or more
 #define WEATHER_CONVECTION_PROB 3
 
 var/global/list/weather_centres = list()
@@ -171,6 +171,12 @@ var/global/weather_centre_serial = 0
 			weather_centre_end(C)
 	if (!map || !map.valid_weather_types || !(WEATHER_WET in map.valid_weather_types))
 		return
+	// Regions on the world calendar share their lows, highs and storms (weather_shared.dm).
+	if (weather_shared_on())
+		weather_shared_sync()
+		weather_heat_from_highs()
+		weather_convection_step()
+		return
 	if (weather_centres.len < WEATHER_CENTRE_MAX && (!weather_centres.len || prob(WEATHER_CENTRE_SPAWN_PROB)))
 		weather_centre_spawn(prob(weather_centre_low_chance()) ? WEATHER_CENTRE_LOW : WEATHER_CENTRE_HIGH)
 	weather_heat_from_highs()
@@ -202,7 +208,7 @@ var/global/weather_centre_serial = 0
 	for (var/i = 1, i <= G.temp.len, i++)
 		if (G.water[i] || G.temp[i] < WEATHER_CONVECTION_TEMP || G.cloud[i] >= 0.5)
 			continue
-		if (weather_relative_humidity(G.temp[i], G.dew[i]) < WEATHER_CONVECTION_RH)
+		if (G.dew[i] < WEATHER_CONVECTION_DEW)
 			continue
 		var/heat = G.temp[i] + G.dew[i]
 		if (heat > best_heat)
@@ -224,6 +230,7 @@ var/global/weather_centre_serial = 0
 	S.radius_x = rand(18, 32)
 	S.radius_y = rand(18, 32)
 	S.peak = 1
+	S.convective = TRUE
 	S.origin_x = x
 	S.origin_y = y
 	S.origin_time = world.time
@@ -251,5 +258,5 @@ var/global/weather_centre_serial = 0
 #undef WEATHER_CENTRE_MAX
 #undef WEATHER_CENTRE_SPAWN_PROB
 #undef WEATHER_CONVECTION_TEMP
-#undef WEATHER_CONVECTION_RH
+#undef WEATHER_CONVECTION_DEW
 #undef WEATHER_CONVECTION_PROB

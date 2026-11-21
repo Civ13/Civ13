@@ -94,6 +94,8 @@
 	..()
 
 /obj/item/stack/material/attackby(var/obj/item/W, var/mob/user)
+	if (cloth_treat_attackby(src, W, user)) // treated_cloth.dm
+		return TRUE
 	if (istype(W, /obj/item/stack/rods))
 		material.build_rod_product(user, W, src)
 		update_icon()
@@ -481,7 +483,8 @@
 /obj/item/stack/material/cannabis_fresh
 	name = "fresh cannabis tops"
 	desc = "Sticky green flowering tops. Dry them on a rack before smoking."
-	icon_state = "hemp"
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "cannabis_fresh"
 	default_type = "cannabis_fresh"
 	value = 2
 	w_class = ITEM_SIZE_TINY
@@ -492,7 +495,8 @@
 /obj/item/stack/material/cannabis
 	name = "dried cannabis"
 	desc = "Dried cannabis flower, ready to roll or smoke in a pipe."
-	icon_state = "hemp"
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "cannabis"
 	default_type = "cannabis"
 	value = 4
 	w_class = ITEM_SIZE_TINY

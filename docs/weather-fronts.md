@@ -40,7 +40,7 @@ still work.
 
 **Thunderstorms:** at Midday and in the Afternoon, with fewer storms than the
 map holds, there is a 3% chance each tick that the warmest land cell at 24 C or
-more, at least 65% humidity and under half cloud throws up a storm in place.
+more, a dew point of at least 15 C (muggy air) and under half cloud throws up a storm in place.
 It is 18 to 32 tiles across, lasts 10 to 20 minutes and is at full strength,
 so heavy rain and lightning reach its core. It is severe when the cell is
 30 C or more with a dew point of 20 C or more. The map policy must allow wet

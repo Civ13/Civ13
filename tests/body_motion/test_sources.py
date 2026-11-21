@@ -69,7 +69,7 @@ class BodyMotionSources(unittest.TestCase):
     def test_recoil_hooks(self):
         weapon = proc_body(DEFENSE, '/mob/living/human/hit_with_weapon(')
         self.assertIn('if (effective_force && blocked < 2)\n\t\tbody_motion_recoil(user, (body_motion_blunt(I)', weapon)
-        self.assertIn('toxic=H.lizard)\n\t\t\t\tbody_motion_recoil(H)', ATTACKHAND)
+        self.assertRegex(ATTACKHAND, r'toxic=H\.lizard\)\n\t+body_motion_recoil\(H\)')
 
     def test_work_seat_and_emote_hooks(self):
         strike = proc_body(WORK, '/datum/resource_work_animation/proc/show_strike()')

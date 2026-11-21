@@ -26,6 +26,7 @@ var/global/list/arcane_enchant_names = list(
 	"cleansing" = "Cleansing",
 	"warding" = "Warding", // arcane_ward.dm
 	"paired" = "Paired stones", // arcane_ward.dm
+	"veil" = "Veil", // arcane_veil.dm
 )
 
 // Enchantment id -> materials and charges by strength 1 / 2 / 3.
@@ -34,6 +35,7 @@ var/global/list/arcane_enchant_recipes = list(
 	"cleansing" = list("aspect" = "mercy", "count" = 1, "gem" = 0, "charges" = list(3, 5, 8)),
 	"warding" = list("aspect" = "ward", "count" = 2, "gem" = 0, "charges" = list(10, 20, 30), "vigil" = TRUE),
 	"paired" = list("aspect" = "omen", "count" = 2, "gem" = 0, "charges" = list(5, 10, 15)),
+	"veil" = list("aspect" = "omen", "count" = 2, "also" = list("ward" = 1), "gem" = 0, "charges" = list(3, 6, 10), "vigil" = TRUE), // arcane_veil.dm
 )
 
 // Enchantment id -> the one plain line a magic user sees on examine.
@@ -42,6 +44,7 @@ var/global/list/arcane_enchant_lines = list(
 	"cleansing" = "It seems cleaner than it ought to.",
 	"warding" = "It feels guarded.",
 	"paired" = "It feels as if something is listening.",
+	"veil" = "It is easy to overlook.",
 )
 
 // Enchanted items in this world. Runtime only: rebuilt as items load, and an
@@ -126,6 +129,8 @@ var/global/list/arcane_enchanted = list()
 		return FALSE
 	if (kind == "paired")
 		return arcane_single_gem(I) // arcane_ward.dm
+	if (kind == "veil")
+		return arcane_veilable(I) // arcane_veil.dm
 	if (istype(I, /obj/item/stack))
 		return FALSE
 	switch (kind)
@@ -162,6 +167,8 @@ var/global/list/arcane_enchanted = list()
 /mob/living/human/proc/arcane_imbue_materials(kind)
 	var/list/pouch = arcane_pouch_items()
 	var/list/picked = list()
+	if (kind == "unbinding")
+		return arcane_unbind_materials() // arcane_unbind.dm
 	if (kind == "unweave" || kind == "unbless")
 		for (var/obj/item/I in pouch)
 			if (I.arcane_virtue() && !I.arcane_enchant)
@@ -178,6 +185,15 @@ var/global/list/arcane_enchanted = list()
 			needed--
 	if (needed)
 		return null
+	var/list/also = recipe["also"]
+	for (var/aspect in also)
+		var/more = also[aspect]
+		for (var/obj/item/I in pouch)
+			if (more && I.arcane_virtue() == aspect && !I.arcane_enchant && !(I in picked))
+				picked += I
+				more--
+		if (more)
+			return null
 	var/gems = recipe["gem"]
 	for (var/obj/item/I in pouch)
 		if (gems && arcane_is_gem(I) && !(I in picked) && !I.arcane_enchant)
@@ -211,6 +227,8 @@ var/global/list/arcane_enchanted = list()
 	if (!kind)
 		return null
 	var/obj/item/I = target
+	if (kind == "unbinding")
+		return arcane_unbind_problem(target) // arcane_unbind.dm
 	if (kind == "unweave")
 		if (istype(I) ? !I.arcane_enchant_live() : !target.arcane_ward_live())
 			return "There is nothing woven into [target]."
@@ -254,11 +272,12 @@ var/global/list/arcane_enchanted = list()
 	arcane_imbue_structure = null
 	arcane_imbue_vigil = null
 	arcane_imbue_owners = null
+	arcane_unbind_repo = null
 	var/obj/item/I = arcane_imbue_item()
 	var/obj/target = I
 	if (!I && divine_focus() && !(get_active_hand() && get_inactive_hand())) // a free hand: ward something beside them (arcane_ward.dm)
 		var/list/beside = list()
-		for (var/obj/O in arcane_wardables_beside())
+		for (var/obj/O in arcane_wardables_beside() + arcane_fires_beside()) // arcane_unbind.dm
 			beside["[O.name] ([dir2text(get_dir(src, O))])"] = O
 		if (beside.len == 1)
 			target = beside[beside[1]]
@@ -277,6 +296,8 @@ var/global/list/arcane_enchanted = list()
 		choices["Unweave what is in it"] = "unweave"
 	if (I && I.arcane_bless_tier)
 		choices["Unweave its blessing"] = "unbless" // arcane_bless.dm
+	if (!I && arcane_unbind_fire(target))
+		choices["Work an Unbinding"] = "unbinding" // arcane_unbind.dm
 	if (!choices.len)
 		to_chat(src, SPAN_WARNING("Nothing you know can be woven into [target]."))
 		return null
@@ -306,8 +327,12 @@ var/global/list/arcane_enchanted = list()
 			if (!O || QDELETED(O))
 				return null
 			arcane_enchant_let_go(O, ckey)
-	if (kind == "warding")
-		arcane_imbue_owners = arcane_ward_pick_owners() // arcane_ward.dm
+	if (kind == "unbinding" && !arcane_unbind_pick(target)) // arcane_unbind.dm
+		return null
+	var/list/needs = arcane_enchant_recipes[kind]
+	if (kind == "unbinding" || (needs && needs["vigil"]))
+		if (kind == "warding")
+			arcane_imbue_owners = arcane_ward_pick_owners() // arcane_ward.dm
 		var/list/roster = divine_gather_vigil(target)
 		if (!roster || QDELETED(target) || target != arcane_imbue_target())
 			return null
@@ -317,6 +342,8 @@ var/global/list/arcane_enchanted = list()
 		to_chat(src, SPAN_WARNING(problem))
 		return null
 	arcane_imbue_pick = kind
+	if (kind == "unbinding")
+		return arcane_unbind_scope(target, arcane_imbue_materials(kind), length(arcane_imbue_vigil)) // arcane_unbind.dm
 	return arcane_imbue_scope(kind, target, arcane_imbue_materials(kind), arcane_imbue_owners, length(arcane_imbue_vigil))
 
 // Lets go of one of this magic user's enchantments, both stones of a pair.
@@ -354,6 +381,12 @@ var/global/list/arcane_enchanted = list()
 	if (kind == "paired" && !partner)
 		return FALSE
 	var/charges = arcane_enchant_names[kind] ? arcane_imbue_charges(kind, materials) : 0
+	var/obj/unbind_repo = arcane_unbind_repo
+	arcane_unbind_repo = null
+	var/unbind_amount = kind == "unbinding" ? arcane_unbind_amount(materials) : 0 // arcane_unbind.dm
+	var/list/burnt = list()
+	for (var/obj/item/M in materials)
+		burnt += "[M.name] ([M.arcane_virtue()] [M.arcane_strength])"
 	for (var/obj/item/M in materials)
 		if (istype(M, /obj/item/stack))
 			var/obj/item/stack/S = M
@@ -364,6 +397,8 @@ var/global/list/arcane_enchanted = list()
 		if (istype(holder))
 			holder.remove_from_storage(M, get_turf(src))
 		qdel(M)
+	if (kind == "unbinding")
+		return arcane_unbind_apply(target, unbind_repo, unbind_amount, burnt) // arcane_unbind.dm
 	if (kind == "unbless")
 		log_admin("Blessing unwoven: [key_name(src)] unwove the tier [I.arcane_bless_tier] [I.arcane_bless_stat] blessing made by [I.arcane_blesser] from [I] ([I.type]).")
 		I.arcane_bless_end()

@@ -31,6 +31,7 @@
 // A mast with her crow's nest already fitted (draught piece N).
 /obj/structure/vehicleparts/movement/sail/crows_nest
 	name = "wood mast with a crow's nest"
+	icon = 'icons/obj/vehicles/ship_mast_nest.dmi'
 	crows_nest = TRUE
 
 /obj/structure/vehicleparts/movement/sail/proc/mast_aloft()
@@ -142,6 +143,7 @@
 		return TRUE
 	S.use(MAST_NEST_WOOD)
 	crows_nest = TRUE
+	update_icon()
 	name = "[initial(name)] with a crow's nest"
 	to_chat(H, SPAN_NOTICE("The crow's nest is up. Climb the mast to keep a lookout from it."))
 	return TRUE

@@ -304,11 +304,10 @@ BUG_REPORT_GITHUB_LABELS bug
 ## launchers so they can fetch their sealed Discord token (http or https).
 #VOICE_TOKEN_URL http://valzargaming.com:8080/voice/token
 
-## Chat translation: the game asks this Ollama server to translate new chat
-## lines into each player's chosen language (Chat Tabs... > Translation). Both
-## lines are needed; the model should be one the host already keeps loaded.
-#CHAT_TRANSLATE_URL http://127.0.0.1:11434
-#CHAT_TRANSLATE_MODEL qwen3:8b
+## Chat translation: the game asks the host's Edge translator service
+## (tools/edge-translator, start.bat) to translate new chat lines into each
+## player's chosen language (Chat Tabs... > Translation).
+#CHAT_TRANSLATE_URL http://127.0.0.1:55581
 
 LANGUAGE english
 # Dynamic z allocation: optional examples (defaults shown; all lines commented).

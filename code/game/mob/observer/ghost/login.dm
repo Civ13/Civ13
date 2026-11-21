@@ -6,3 +6,4 @@
 	if (client && client.admin_ghost_hidden && admin_spectate_allowed(client))
 		set_admin_hidden(TRUE)
 	updateghostimages()
+	spirit_update_sight() // spirit_observe.dm

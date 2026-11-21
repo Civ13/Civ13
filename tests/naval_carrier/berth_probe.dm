@@ -303,12 +303,56 @@ var/berth_runtime_error = FALSE
 	// A floor more, and the refit takes it in.
 	berth_floors(9, 15, 9, 15)
 	berth_check(isnull(tiller.commission()) && gull.ledger.tiles == 16 && post.hauled_hull() == gull, "a refit on the berth takes in a new floor ([gull.ledger.tiles])")
+	berth_refit_checks(tiller)
 	berth_check(isnull(post.relaunch(gull)) && istype(get_turf(tiller), /turf/floor/beach/water) && !gull.ledger.lies_dry(), "she is launched from the berth she was built on ([post.relaunch(gull)])")
 	// Floors on plain ground are no hull.
 	berth_floors(1, 14, 2, 15)
 	var/obj/structure/hull_tiller/shore_tiller = new(locate(1, 14, 1))
 	berth_check(findtext(shore_tiller.commission("Mud", NORTH), "at a berth"), "floors on plain ground are no hull ([shore_tiller.commission("Mud", NORTH)])")
 	qdel(shore_tiller)
+
+// The Gull, hauled out on the slipway, is refitted to a draught of her own
+// lines with one tile moved and a mast added.
+/proc/berth_refit_checks(obj/structure/hull_tiller/tiller)
+	var/datum/craft/gull = tiller.craft
+	var/datum/ship_draught/D = ship_draught_survey(tiller)
+	berth_check(istype(D), "her lines can be drawn on the berth ([D])")
+	// World x,y lies at sheet (16 - y, x - 4) with her bow to the east.
+	D.clear(1, 5)
+	D.set_floor(0, 5, "w")
+	D.set_piece(1, 2, "M")
+	tiller.refit_code = D.to_code()
+	qdel(D)
+	var/list/options = tiller.refit_options(new /mob/living/human/berth_probe(locate(5, 16, 1)))
+	berth_check(("Check the refit" in options) && ("Clear the refit marks" in options), "at a berth the tiller offers to check the refit")
+	var/list/diff = tiller.mark_refit()
+	berth_check(islist(diff) && diff.len == 3, "three tiles differ from the draught ([islist(diff) ? diff.len : diff])")
+	if (!islist(diff) || diff.len != 3)
+		return
+	var/list/E = diff[locate(9, 15, 1)]
+	berth_check(E && E[1] == "remove", "the tile she loses is marked to lift")
+	E = diff[locate(9, 16, 1)]
+	berth_check(E && E[1] == "add", "the tile she gains is marked to add")
+	E = diff[locate(6, 15, 1)]
+	berth_check(E && E[1] == "change" && findtext(E[2], "mast"), "the mast is marked to set")
+	var/marks = 0
+	for (var/obj/structure/berth_refit_mark/M in range(6, locate(6, 15, 1)))
+		marks++
+	berth_check(marks == 3 && tiller.refit_marks.len == 3, "three marks are chalked on her ([marks])")
+	berth_check(findtext(berth_refit_summary(diff), "1 tile to add"), "the summary counts the work ([berth_refit_summary(diff)])")
+	// The work by hand.
+	for (var/obj/covers/C in locate(9, 15, 1))
+		qdel(C)
+	berth_floors(9, 16, 9, 16)
+	new /obj/structure/vehicleparts/movement/sail(locate(6, 15, 1))
+	var/why = tiller.commission()
+	berth_check(isnull(why) && gull.ledger.tiles == 16 && gull.body.contains(locate(9, 16, 1)), "she is surveyed again with her new tile ([why])")
+	diff = tiller.mark_refit()
+	berth_check(islist(diff) && !diff.len && !tiller.refit_code && !tiller.refit_marks.len, "she matches her draught and the marks are gone ([islist(diff) ? diff.len : diff])")
+	for (var/obj/structure/vehicleparts/movement/sail/S in locate(6, 15, 1))
+		qdel(S)
+	tiller.refit_code = ""
+	tiller.clear_refit_marks()
 
 /proc/berth_dock_build_checks(obj/structure/canal_lock/dock_gate/gate)
 	for (var/obj/structure/canal_lock/dock_gate/G in gate.all_gates())
@@ -330,12 +374,59 @@ var/berth_runtime_error = FALSE
 	for (var/obj/structure/canal_lock/dock_gate/G in gate.all_gates())
 		G.set_shut(FALSE)
 
+/proc/berth_yard_checks()
+	// A yard office by the slipway at 3,20.
+	var/obj/structure/slipway/post = locate() in locate(3, 20, 1)
+	berth_check(istype(post) && !post.design, "the slipway at 3,20 is empty")
+	if (!istype(post))
+		return
+	berth_check(yard_time(post, 30) == 30, "without a yard office work takes its usual time")
+	var/obj/structure/yard_office/office = new(locate(2, 22, 1))
+	berth_check(yard_time(post, 30) == 20 && yard_time(locate(30, 25, 1), 30) == 30, "within the yard's reach work takes two thirds of the time, beyond it as long as ever")
+	if (!research_nodes.len)
+		build_research_tree()
+	berth_check(get_recipe_node_req("/obj/structure/yard_office") == "workshops", "Workshops gates the yard office ([get_recipe_node_req("/obj/structure/yard_office")])")
+	new /obj/item/stack/material/wood(office, 30)
+	berth_check(office.stock()["wood"] == 30, "the yard stores thirty wood ([office.stock()["wood"]])")
+	var/datum/slipway_design/schooner = slipway_design_list()["sailing schooner"]
+	post.lay_keel(schooner)
+	var/list/options = list()
+	post.yard_options(options)
+	berth_check(options["Fit from the yard stock"] == "yard", "the post offers to fit from the yard's stock")
+	var/fitted = post.fit_from_stock(null, FALSE)
+	berth_check(fitted == 3 && post.pieces_done == 3 && !office.stock()["wood"], "the yard's thirty wood fit three pieces ([fitted])")
+	options = list()
+	post.yard_options(options)
+	berth_check(!options["Fit from the yard stock"], "with the stock spent the post offers nothing from it")
+	var/list/lines = office.survey_lines()
+	berth_check(lines.len >= 1 && findtext(jointext(lines, " "), "building a sailing schooner"), "the yard survey lists the slipway and her ship ([jointext(lines, " ")])")
+	var/list/back = post.abandon()
+	berth_check(back["wood"] == 30, "abandoned, her thirty wood come back by the post")
+	for (var/obj/item/stack/material/wood/W in get_turf(post))
+		qdel(W)
+	var/obj/item/ship_draught/D = new(office)
+	berth_check(office.draughts().len == 1, "a draught is filed on the office shelf")
+	qdel(D)
+	qdel(office)
+	berth_check(yard_time(post, 30) == 30, "with the office gone work is slow again")
+
+/proc/berth_sprite_checks()
+	var/list/states = icon_states('icons/obj/berths.dmi')
+	for (var/state in list("dock_gate_shut", "dock_gate_open", "refit_add", "refit_remove", "refit_change", "refit_turn", "yard_office", "keel_blocks"))
+		berth_check(state in states, "berths.dmi draws [state]")
+	var/obj/structure/berth_refit_mark/M = new(locate(30, 2, 1))
+	M.set_kind("remove", "the floor")
+	berth_check(M.icon_state == "refit_remove", "a mark to lift shows the lift sprite")
+	qdel(M)
+
 /proc/berth_run()
 	try
 		berth_checks()
 		berth_haul_checks()
 		berth_dock_checks()
 		berth_build_checks()
+		berth_yard_checks()
+		berth_sprite_checks()
 	catch(var/exception/e)
 		berth_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = berth_failures, "runtime_error" = berth_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

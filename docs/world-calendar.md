@@ -62,6 +62,7 @@ Day" and "Toggle Season Change" turn the calendar off for that world as before.
 | --- | --- | --- | --- |
 | Gaia | 30 W | UTC-2 | 45 N |
 | Europe | 10 E | UTC+1 | 50 N |
+| Mediterranean | 15 E | UTC+1 | 38 N |
 | Africa | 20 E | UTC+1 | 5 N |
 | Asia | 90 E | UTC+6 | 40 N |
 | Oceania | 135 E | UTC+9 | 25 S |
@@ -75,8 +76,9 @@ Day" and "Toggle Season Change" turn the calendar off for that world as before.
 | Arctic Ocean | 0 | UTC+0 | 78 N |
 | Southern Ocean | 0 | UTC+0 | 60 S |
 
-A new region sets `world_longitude` next to its `sun_latitude` in its map metadata and
-gets added to the probe's region list. TDM round maps and other maps without a longitude
+A new region sets `world_longitude` and `world_region` next to its `sun_latitude` in its
+map metadata, gets a row in `weather_region_frames` (weather_shared.dm) and is added to
+the probe's region list. TDM round maps and other maps without a longitude
 keep their own clock.
 
 The agent control status (`agent_actions.dm`) reports `calendar`, from

@@ -55,8 +55,38 @@ leaves every added underground plane out, `ground_planes` counts them with the
 compiled levels so they never use up a roof level, and a restore, which cannot
 see its underground before the cells load, counts every one the map may add.
 `BUILDING_EXTRA_LEVELS` is 15: ten open-air levels and four underground ones
-over a single-level map. Depth tiers (tools needed to go deeper) and regional
-geology are later work.
+over a single-level map. Tools needed to go deeper are later work.
+
+## What each depth holds
+
+Every depth has its own ore table (`underground_ores.dm`). Its factor
+multiplies an ore's chance in `continent_ore_factor`, together with the land's
+own rate, so every era gate and continent rate still applies: depth makes an
+ore richer where it is already found, never earlier. The surface and the cave
+keep the ordinary table (factor 1). Factors for depths 2, 3 and 4:
+
+| Ore | 2 | 3 | 4 |
+| --- | --- | --- | --- |
+| copper, tin, iron, calamine | 1.5 | 1.25 | 1 |
+| lead | 1.5 | 1.5 | 1.25 |
+| coal | 2 | 1.5 | 1 |
+| saltpetre | 1.25 | 2 | 1.5 |
+| sulphur | 1.25 | 2 | 2.5 |
+| silver, gold (and their lodes) | 1.5 | 2.5 | 3 |
+| diamond | 1.5 | 2.5 | 4 |
+| uranium, rough gemstones | 1.5 | 2 | 3 |
+| nickel | 1.5 | 2 | 2 |
+| cobalt, chromite | 1.25 | 1.5 | 2 |
+| obsidian, cinnabar | 1 | 1.5 | 2 |
+| bauxite | 0.5 | 0.25 | 0.25 |
+| flint | 0.5 | 0 | 0 |
+
+So the second level is the iron, copper, tin and coal level, the third the
+silver, gold, gems, sulphur and saltpetre level, and the fourth the richest
+precious veins, diamonds, uranium and alloy ores. Bauxite is weathered surface
+rock and flint is chalk, so they thin out below the cave. Obsidian on a deeper
+level also counts a volcano on the land straight above, not only one on the
+level above it.
 
 ## Every map
 

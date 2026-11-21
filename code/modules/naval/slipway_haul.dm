@@ -241,7 +241,7 @@
 				return TRUE
 			busy = TRUE
 			H.visible_message(SPAN_NOTICE("[H] sets the hands at the post to haul the [C.name] up the ways."), SPAN_NOTICE("You set the hands to haul the [C.name] up the ways."))
-			var/ok = do_after(H, SLIPWAY_HAUL_TIME * haul_distance(C), src)
+			var/ok = do_after(H, yard_time(src, SLIPWAY_HAUL_TIME * haul_distance(C)), src)
 			busy = FALSE
 			if (!ok || QDELETED(src) || QDELETED(C) || !Adjacent(H))
 				return TRUE

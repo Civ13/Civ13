@@ -6,6 +6,11 @@
 	return isturf(A) ? A.loc : null
 /proc/to_chat(target, message)
 	target << message
+// The depth table is checked by tests/building_levels (--cave); here only
+// that the roll uses it.
+var/global/flint_probe_depth_factor = 1
+/proc/underground_ore_factor(resource, turf/T)
+	return resource == "flint" ? flint_probe_depth_factor : 1
 
 /world
 	maxx = 3
@@ -126,6 +131,13 @@
 	if (hits && (total / hits < 1.8 || total / hits > 2.2))
 		failures++
 		world.log << "FAIL mean nodules [total / hits], expected about 2"
+	flint_probe_depth_factor = 0
+	for (var/i = 1, i <= 2000, i++)
+		if (plain.mining_flint_nodules(null, null))
+			failures++
+			world.log << "FAIL flint found where the depth leaves none"
+			break
+	flint_probe_depth_factor = 1
 	var/sandy_hits = 0
 	var/desert_hits = 0
 	for (var/i = 1, i <= trials, i++)

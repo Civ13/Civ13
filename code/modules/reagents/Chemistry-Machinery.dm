@@ -265,6 +265,7 @@
 	not_disassemblable = TRUE
 	var/active = FALSE
 	var/obj/item/weapon/reagent_containers/glass/beaker/collector = null
+	var/mob/living/human/operator = null // who started the run (drug_refining.dm)
 /obj/structure/lab_distillery/New()
 	..()
 	reagents = new /datum/reagents(80)
@@ -296,6 +297,7 @@
 		return
 	if (collector && !active)
 		to_chat(H, "You turn the distiller active.")
+		operator = istype(H) ? H : null
 		active = TRUE
 		update_icon()
 		process_machine()
@@ -351,6 +353,12 @@
 	else
 		spawn(15 SECONDS)
 			var/largest = reagents.get_master_reagent_id()
+			if (collector && drug_refine(largest, operator))
+				operator = null
+				active = FALSE
+				update_icon()
+				return
+			operator = null
 			var/voltotransf = min(collector.reagents.get_free_space(),reagents.get_reagent_amount(largest))
 			var/chems_got_back_div = 1 // Divider for how many chems you get back vs how much you put in (0.1, you get a tenth of the chems back)
 			var/topick // What chems you got back

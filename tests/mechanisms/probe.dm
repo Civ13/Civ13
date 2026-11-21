@@ -344,7 +344,64 @@ var/mechanisms_runtime = null
 	var/obj/item/stack/material/woodplank/planks = locate() in saw_turf
 	mechanisms_assert(planks && planks.amount == 2 && (locate(/obj/item/stack/bark) in saw_turf) && saw_mill.hopper_count() == 2, "sash_saw_cuts_two_planks")
 	mechanisms_assert(saw_mill.drive_draw == 2 && mill_tread.drive_capacity == 1, "hopper_draw")
-	for (var/state in list("millstones", "millstones_on", "sash_saw", "sash_saw_on"))
+	// Fulling stocks and bark stamps; a cord works the hopper gate, belts feed
+	// the hopper and carry the products off.
+	qdel(saw_mill)
+	for (var/obj/item/old_item in saw_turf)
+		qdel(old_item)
+	var/obj/structure/workshop_machine/hopper/fulling_stocks/stocks = new(locate(3, 4, 2))
+	var/obj/item/stack/material/wool/fleece = new(locate(3, 3, 2), 3)
+	stocks.load_item(fleece, miller)
+	mechanisms_assert(stocks.hopper_count() == 3 && stocks.work_step() && stocks.output_count(saw_turf) == 2 && stocks.hopper_count() == 1, "fulling_stocks_felt_wool")
+	mechanisms_assert(mechanism_actuatable(stocks) && mechanism_actuate(stocks, FALSE) && stocks.gate_shut, "cord_shuts_hopper_gate")
+	mechanisms_assert(stocks.work_step() && stocks.hopper_count() == 1, "shut_gate_holds_the_feed")
+	mechanisms_assert(mechanism_actuate(stocks, TRUE) && !stocks.gate_shut, "cord_opens_hopper_gate")
+	var/obj/item/stack/material/wool/belt_wool = new(locate(3, 5, 2), 4)
+	mechanisms_assert(stocks.factory_insert(belt_wool) == 4 && stocks.hopper_count() == 5 && QDELETED(belt_wool), "belt_fills_the_hopper")
+	var/obj/item/stack/material/woolcloth/offered = stocks.factory_offer()
+	mechanisms_assert(istype(offered) && offered.loc == saw_turf, "arm_unloads_the_product")
+	qdel(offered)
+	var/obj/structure/factory_belt/out_belt = new(locate(3, 5, 2))
+	out_belt.set_dir(NORTH)
+	stocks.work_step()
+	mechanisms_assert((locate(/obj/item/stack/material/woolcloth) in get_turf(out_belt)) && !(locate(/obj/item/stack/material/woolcloth) in saw_turf), "products_go_onto_outgoing_belt")
+	out_belt.set_dir(SOUTH)
+	mechanisms_assert(!stocks.outgoing_belt(), "inward_belt_is_not_an_outlet")
+	qdel(out_belt)
+	stocks.dismantled()
+	qdel(stocks)
+	for (var/obj/item/old_item in saw_turf)
+		qdel(old_item)
+	var/obj/structure/workshop_machine/hopper/bark_stamps/stamps = new(locate(3, 4, 2))
+	stamps.load_item(new /obj/item/stack/bark(locate(3, 3, 2), 1), miller)
+	mechanisms_assert(!stamps.feed_kind(new /obj/item/stack/bark/crushed(locate(3, 3, 2), 1)), "stamps_refuse_tanbark")
+	stamps.work_step()
+	var/obj/item/stack/bark/crushed/tanbark = locate() in saw_turf
+	mechanisms_assert(tanbark && tanbark.amount == 2 && !stamps.hopper_count(), "bark_stamps_crush_bark")
+	// Driven bellows keep a furnace beside them blowing; a power loom weaves.
+	var/obj/structure/furnace/bloomery = new(locate(1, 6, 2))
+	var/obj/structure/workshop_machine/bellows/blower = new(locate(1, 5, 2))
+	blower.anchored = FALSE
+	mechanisms_assert(!bloomery.bellows_blowing(), "loose_bellows_do_not_blow")
+	blower.anchored = TRUE
+	mechanisms_assert(blower.driven() && bloomery.bellows_blowing(), "driven_bellows_blow")
+	qdel(stamps)
+	for (var/obj/item/old_item in saw_turf)
+		qdel(old_item)
+	var/obj/structure/workshop_machine/hopper/power_loom/power_loom = new(locate(3, 4, 2))
+	power_loom.load_item(new /obj/item/stack/material/cotton(locate(3, 3, 2), 3), miller)
+	power_loom.load_item(new /obj/item/stack/silk_thread(locate(3, 3, 2), 2), miller)
+	power_loom.work_step()
+	var/obj/item/stack/material/cloth/woven = locate() in saw_turf
+	var/obj/item/stack/material/silk/silk_cloth = locate() in saw_turf
+	mechanisms_assert(woven && woven.amount == 3 && silk_cloth && silk_cloth.amount == 1 && power_loom.hopper_count() == 1, "power_loom_weaves_four")
+	var/obj/structure/water_lift/archimedes_screw/screw = new(locate(12, 11, 2))
+	mechanisms_assert((screw in processing_objects) && !screw.driven_lift() && screw.next_lift == world.time + 300, "dry_screw_waits")
+	var/obj/structure/sluice_gate/sluice = new(locate(12, 9, 2))
+	mechanisms_assert(mechanism_actuatable(sluice) && mechanism_actuate(sluice, TRUE) && sluice.open && !sluice.density, "cord_draws_up_sluice")
+	mechanisms_assert(mechanism_actuate(sluice, FALSE) && !sluice.open && !mechanism_actuate(sluice, FALSE), "cord_lowers_sluice")
+	mechanisms_assert("bark_crushed" in icon_states('icons/obj/bark.dmi'), "icon_bark_crushed")
+	for (var/state in list("millstones", "millstones_on", "sash_saw", "sash_saw_on", "fulling_stocks", "fulling_stocks_on", "bark_stamps", "bark_stamps_on", "power_loom", "power_loom_on"))
 		mechanisms_assert(state in icon_states('icons/obj/hopper_machines.dmi'), "icon_[state]")
 
 	// Contraptions (contraptions.dm): a counterweight drum drives while its
@@ -388,7 +445,30 @@ var/mechanisms_runtime = null
 	mechanisms_hands(stoker, hammer_logs)
 	hammer.attackby(hammer_logs, stoker)
 	mechanisms_assert(hammer.fuel == 2 && !mechanisms_runtime, "steam_hammer_takes_wood")
-	for (var/state in list("counterweight", "counterweight_on", "cam_drum", "cam_drum_on", "steam_engine", "steam_engine_on"))
+	// Bridges: a relay cuts the electric device on its tile while open, and a
+	// mechanism port joins an integrated circuit to the cords.
+	var/obj/structure/mechanism_relay/relay = new(locate(3, 8, 2))
+	mechanisms_assert(!mechanism_relay_open_on(get_turf(relay)), "closed_relay_passes_power")
+	mechanisms_assert(mechanism_actuatable(relay) && mechanism_actuate(relay, FALSE) && !relay.closed && mechanism_relay_open_on(get_turf(relay)), "cord_opens_relay")
+	mechanisms_assert(mechanism_actuate(relay, null) && relay.closed, "pull_cord_toggles_relay")
+	var/obj/item/circuit_shell/mechanism_port/port = new(locate(6, 8, 2))
+	var/obj/structure/bell/port_bell = new(locate(6, 10, 2))
+	port.links = "0,2"
+	port_bell.next_ring = 0
+	mechanisms_assert(port.circuit_pull(TRUE) && port_bell.next_ring > world.time, "port_pulls_its_cords")
+	port_bell.next_ring = 0
+	mechanisms_assert(!port.circuit_pull(TRUE) && port_bell.next_ring == 0, "port_waits_between_pulls")
+	mechanisms_assert(mechanism_actuatable(port) && !mechanism_actuate(port, TRUE), "port_without_circuit_senses_nothing")
+	var/obj/item/integrated_circuit/port_circuit = new(port)
+	port.circuit = port_circuit
+	mechanisms_assert(port.circuit_installed(port_circuit, null) && port.port_component.parent == port_circuit, "port_component_joins_circuit")
+	mechanisms_assert(mechanism_actuate(port, FALSE) && port.port_component.thrown_output.value == FALSE, "cord_signals_into_circuit")
+	var/obj/item/circuit_shell/mechanism_port/carried_port = new(locate(6, 8, 2))
+	carried_port.links = "0,2"
+	carried_port.forceMove(stoker)
+	port_bell.next_ring = 0
+	mechanisms_assert(!carried_port.circuit_pull(TRUE) && port_bell.next_ring == 0, "carried_port_pulls_nothing")
+	for (var/state in list("counterweight", "counterweight_on", "cam_drum", "cam_drum_on", "steam_engine", "steam_engine_on", "relay_closed", "relay_open"))
 		mechanisms_assert(state in icon_states('icons/obj/contraptions.dmi'), "icon_[state]")
 
 	// The new art is in the icon file.

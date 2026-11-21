@@ -61,6 +61,8 @@
 	..()
 	if (sails && sails_on && canvas == SAIL_FURLED && !axis)
 		icon_state = base_icon
+	// A mast with a crow's nest has the same states with the nest drawn on.
+	icon = crows_nest ? 'icons/obj/vehicles/ship_mast_nest.dmi' : initial(icon)
 
 /obj/structure/vehicleparts/movement/sail/examine(mob/user, distance = -1)
 	. = ..()

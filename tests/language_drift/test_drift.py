@@ -22,27 +22,33 @@ def proc(name):
 
 
 def step(use, contact):
-    total = use + contact
-    return D['LANGUAGE_DRIFT_GAIN'] * (1 - 2 * contact / total) if total else 0
+    if contact >= D['LANGUAGE_DRIFT_CONTACT_LINES']:
+        return -D['LANGUAGE_DRIFT_CONTACT_LOSS']
+    return D['LANGUAGE_DRIFT_GAIN'] if use >= D['LANGUAGE_DRIFT_MIN_LINES'] else 0
 
 
 class Pacing(unittest.TestCase):
-    def test_an_isolated_nation_needs_days_of_talk_to_split(self):
+    def test_splits_are_rare_and_need_long_isolation(self):
         ticks = D['LANGUAGE_SPLIT_DRIFT'] / D['LANGUAGE_DRIFT_GAIN']
         hours = ticks * D['LANGUAGE_DRIFT_TICK'] / 36000
-        self.assertTrue(40 <= hours <= 100, hours)
+        self.assertTrue(100 <= hours <= 200, hours)
+        self.assertGreaterEqual(D['LANGUAGE_SPLIT_HOLD'] / 1440, 7)
 
     def test_a_listener_can_fill_a_tick_alone_but_not_flood_it(self):
         per_tick = D['LANGUAGE_DRIFT_TICK'] / D['LANGUAGE_DRIFT_HEAR_COOLDOWN']
         self.assertGreater(per_tick, D['LANGUAGE_DRIFT_MIN_LINES'])
         self.assertLessEqual(per_tick, 100)
 
-    def test_contact_slows_then_reverses_drift(self):
+    def test_any_real_contact_reverses_drift(self):
         self.assertEqual(step(40, 0), D['LANGUAGE_DRIFT_GAIN'])
-        self.assertAlmostEqual(step(30, 10), D['LANGUAGE_DRIFT_GAIN'] / 2)
-        self.assertEqual(step(20, 20), 0)
-        self.assertLess(step(10, 30), 0)
-        self.assertIn('LANGUAGE_DRIFT_GAIN * (1 - 2 * contact / total)', proc('/proc/language_drift_step('))
+        self.assertEqual(step(40, D['LANGUAGE_DRIFT_CONTACT_LINES'] - 1), D['LANGUAGE_DRIFT_GAIN'])
+        self.assertLess(step(80, D['LANGUAGE_DRIFT_CONTACT_LINES']), 0)
+        self.assertEqual(step(D['LANGUAGE_DRIFT_MIN_LINES'] - 1, 0), 0)
+        # One contact tick undoes many isolated ones.
+        self.assertGreaterEqual(D['LANGUAGE_DRIFT_CONTACT_LOSS'] / D['LANGUAGE_DRIFT_GAIN'], 10)
+        body = proc('/proc/language_drift_step(')
+        self.assertIn('contact >= LANGUAGE_DRIFT_CONTACT_LINES', body)
+        self.assertLess(body.index('LANGUAGE_DRIFT_CONTACT_LINES'), body.index('LANGUAGE_DRIFT_MIN_LINES'))
 
     def test_split_needs_a_real_community(self):
         self.assertGreaterEqual(D['LANGUAGE_SPLIT_MIN_NATIVES'], 3)
@@ -60,13 +66,13 @@ class Boundaries(unittest.TestCase):
         first = body.split('\n')[1]
         self.assertIn('civilization == "none"', first)
         self.assertIn('world.time < next_language_drift_heard', first)
-        self.assertIn('mother_tongue() != L', body)
-        self.assertIn('S.language_score(L) >= LANGUAGE_CONVERSATIONAL', body)
+        self.assertIn('S.civilization != civilization', body)
+        self.assertIn('canonical_language(L) == native', body)
         self.assertNotIn('for (', body)
 
     def test_quiet_communities_do_not_change_and_lines_reset(self):
         body = proc('/proc/language_drift_tick(')
-        self.assertIn('total < LANGUAGE_DRIFT_MIN_LINES', body)
+        self.assertIn('if (step < 0)\n\t\t\theld -= key', body)
         self.assertIn('language_drift_use = list()', body)
         self.assertIn('language_drift_contact = list()', body)
 
@@ -114,9 +120,15 @@ class Daughters(unittest.TestCase):
         self.assertNotIn('mutual_intelligibility.Find(reference.type)', hear)
         self.assertIn('language_kinship(L, reference)', hear)
 
-    def test_both_era_advances_run_the_check(self):
-        self.assertIn('language_era_advanced()', read('code/modules/research_tree/book_research.dm'))
-        self.assertIn('language_era_advanced()', read('code/modules/research_tree/research_faction.dm'))
+    def test_splits_follow_isolation_not_research(self):
+        self.assertIn('language_split_check()', proc('/proc/language_drift_tick('))
+        for path in ('code/modules/research_tree/book_research.dm', 'code/modules/research_tree/research_faction.dm'):
+            self.assertNotIn('language_split_check', read(path))
+            self.assertNotIn('language_era_advanced', read(path))
+        check = DAUGHTER[DAUGHTER.index('/proc/language_split_check()'):]
+        check = check[:check.index('\n/proc/')]
+        self.assertIn('language_real_minute() - held[key] < LANGUAGE_SPLIT_HOLD', check)
+        self.assertNotIn('ordinal_age', check)
 
     def test_naming_is_verified_and_leader_only(self):
         body = DAUGHTER[DAUGHTER.index('/mob/living/human/proc/name_our_language()'):]
@@ -142,6 +154,33 @@ class Daughters(unittest.TestCase):
         for label in ('naming makes the daughter', 'a root has at most its share of daughters',
                       'a saved daughter restores with its key, sounds and kinship', 'and where it is not'):
             self.assertIn(label, probe)
+
+
+class AdminUndo(unittest.TestCase):
+    ADMIN = read('code/modules/admin/verbs/origin_languages.dm')
+    UNDO = read('code/game/mob/language/daughter_admin.dm')
+
+    def test_merge_and_rename_verbs_are_registered_and_guarded(self):
+        registry = read('code/modules/admin/admin_verbs.dm')
+        for verb in ('cmd_admin_merge_language', 'cmd_admin_rename_language'):
+            self.assertIn('/client/proc/%s,' % verb, registry)
+            body = self.ADMIN[self.ADMIN.index('/client/proc/%s(' % verb):]
+            self.assertIn('check_rights(R_ADMIN)', body.split('\n/client/proc/')[0])
+
+    def test_merge_refuses_a_language_with_daughters(self):
+        body = self.UNDO[self.UNDO.index('/proc/merge_daughter_language('):]
+        self.assertIn('daughter_language_children(name).len', body.split('\n/proc/')[0])
+
+    def test_rename_moves_every_name_keyed_store(self):
+        body = self.UNDO[self.UNDO.index('/proc/rename_daughter_language('):]
+        for needle in ('records[new_name] = record', 'L.mutual_intelligibility[new_name]', 'rename_language_community_keys(language_drift_table(), old, new_name)',
+                       'H.partial_languages[new_name]', 'H.native_tongue = new_name', 'H.rename_language_buckets(old, new_name)', 'C.parent_name = new_name'):
+            self.assertIn(needle, body)
+
+    def test_native_probe_covers_undo(self):
+        probe = read('tests/language_drift/probe.dm')
+        self.assertIn('its speakers speak the parent again', probe)
+        self.assertIn('speakers keep their scores, mother tongue and today', probe)
 
 
 if __name__ == '__main__':

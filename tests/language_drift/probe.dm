@@ -48,6 +48,11 @@ var/drift_runtime_error = FALSE
 		listener.next_language_drift_heard = -1
 		listener.language_drift_heard(L, speaker)
 
+// Pretends a community's drift reached the split level a full hold ago.
+/proc/drift_held_long(key)
+	var/list/held = language_lineage_part("held")
+	held[key] = language_real_minute() - LANGUAGE_SPLIT_HOLD
+
 /world/New()
 	OpenPort("none")
 	try
@@ -77,37 +82,51 @@ var/drift_runtime_error = FALSE
 		// Drift from heard lines.
 		drift_hear(A, B, latin, 12)
 		drift_check(language_drift_use[key] == 12 && !language_drift_contact[key], "lines from the same nation count as use")
-		drift_hear(A, learner, latin, 5)
-		drift_check(!language_drift_contact[key], "a speaker who barely knows the language is no contact")
+		drift_hear(A, learner, italian, 2)
+		drift_check(language_drift_contact[key] == 2, "a line from another nation in any language is contact")
+		drift_hear(A, B, italian, 3)
+		drift_check(language_drift_use[key] == 12, "own nation's lines in another language are not use")
 		A.next_language_drift_heard = -1
 		A.language_drift_heard(latin, B)
 		A.language_drift_heard(latin, B)
 		drift_check(language_drift_use[key] == 13, "one listener counts at most one line per cooldown")
 		language_drift_tick()
-		drift_check(language_drift(key) == LANGUAGE_DRIFT_GAIN, "an isolated community gains the full step")
+		drift_check(language_drift(key) == LANGUAGE_DRIFT_GAIN, "a couple of passing outsiders do not stop an isolated community")
 		drift_check(!language_drift_use.len && !language_drift_contact.len, "heard lines reset each tick")
-		drift_hear(A, B, latin, 5)
-		drift_hear(A, outsider, latin, 15)
+		set_language_drift(key, 10)
+		drift_hear(A, B, latin, 30)
+		drift_hear(A, outsider, latin, LANGUAGE_DRIFT_CONTACT_LINES)
 		language_drift_tick()
-		drift_check(language_drift(key) == LANGUAGE_DRIFT_GAIN / 2, "mostly outside contact pulls drift back")
-		drift_hear(A, B, latin, 5)
+		drift_check(language_drift(key) == 10 - LANGUAGE_DRIFT_CONTACT_LOSS, "real contact pulls drift back however much the nation talks")
+		drift_hear(A, B, latin, LANGUAGE_DRIFT_MIN_LINES - 1)
 		language_drift_tick()
-		drift_check(language_drift(key) == LANGUAGE_DRIFT_GAIN / 2, "a quiet community does not change")
+		drift_check(language_drift(key) == 10 - LANGUAGE_DRIFT_CONTACT_LOSS, "a quiet community does not change")
 		set_language_drift(key, 0)
 		drift_check(!(key in language_drift_table()), "a community back at nothing is forgotten")
 		var/mob/living/human/nomad = drift_speaker("none", latin)
 		drift_hear(nomad, B, latin, 20)
-		drift_check(!language_drift_use.len, "a nationless listener belongs to no community")
+		drift_check(!language_drift_use.len && !language_drift_contact.len, "a nationless listener belongs to no community")
 		language_drift_use = list()
 
-		// The era check.
+		// The split check.
+		var/list/held = language_lineage_part("held")
 		set_language_drift(key, 70)
-		map.ordinal_age = 3
-		drift_check(language_era_advanced() == 1 && (key in language_lineage_part("pending")), "a drifted community with five natives is ready at the era change")
-		drift_check(language_era_advanced() == 0, "a waiting community is not counted twice")
+		drift_check(language_split_check() == 0 && isnum(held[key]) && !(key in language_lineage_part("pending")), "a drifted community first waits out the hold")
+		drift_held_long(key)
+		drift_check(language_split_check() == 1 && (key in language_lineage_part("pending")) && !(key in held), "after the hold a drifted community with five natives is ready")
+		drift_check(language_split_check() == 0, "a waiting community is not counted twice")
 		var/sea_key = language_community_key("Sea Folk", latin)
 		set_language_drift(sea_key, 90)
-		language_era_advanced()
+		drift_held_long(sea_key)
+		language_drift_contact[sea_key] = LANGUAGE_DRIFT_CONTACT_LINES
+		language_drift_tick()
+		drift_check(language_drift(sea_key) == 90 - LANGUAGE_DRIFT_CONTACT_LOSS && language_real_minute() - held[sea_key] < LANGUAGE_SPLIT_HOLD, "contact restarts the hold")
+		set_language_drift(sea_key, 50)
+		language_split_check()
+		drift_check(!(sea_key in held), "drift below the split level drops the hold")
+		set_language_drift(sea_key, 90)
+		drift_held_long(sea_key)
+		language_split_check()
 		drift_check(!(sea_key in language_lineage_part("pending")), "too few natives cannot split")
 		drift_check(findtext(jointext(language_drift_report(), "\n"), "waiting for its leader to name it"), "the admin view shows the waiting split")
 
@@ -151,20 +170,23 @@ var/drift_runtime_error = FALSE
 			second += drift_speaker("Hill Clans", latin)
 		var/hill_key = language_community_key("Hill Clans", latin)
 		set_language_drift(hill_key, 80)
-		language_era_advanced()
+		drift_held_long(hill_key)
+		language_split_check()
 		var/datum/language/sister = split_language(hill_key, "Highland")
 		drift_check(istype(sister) && language_kinship(sister, D) >= LANGUAGE_DAUGHTER_KIN - LANGUAGE_DAUGHTER_KIN_STEP * 2 && language_kinship(sister, D) < LANGUAGE_DAUGHTER_KIN, "a second daughter of the same root is a sister")
 		for (var/i in 1 to 5)
 			drift_speaker("Marsh Folk", latin)
 		var/marsh_key = language_community_key("Marsh Folk", latin)
 		set_language_drift(marsh_key, 80)
-		language_era_advanced()
+		drift_held_long(marsh_key)
+		language_split_check()
 		drift_check(!(marsh_key in language_lineage_part("pending")) && language_daughter_count(latin) == LANGUAGE_DAUGHTERS_PER_ROOT, "a root has at most its share of daughters")
 
 		// A daughter that drifts again grows further from its parent.
 		var/vulgar_key = language_community_key("Iron Pact", D)
 		set_language_drift(vulgar_key, 70)
-		language_era_advanced()
+		drift_held_long(vulgar_key)
+		language_split_check()
 		drift_check(language_kinship(D, latin) == LANGUAGE_DAUGHTER_KIN - LANGUAGE_DAUGHTER_KIN_STEP && language_drift(vulgar_key) == 35 && !(vulgar_key in language_lineage_part("pending")), "a drifted daughter loses kinship instead of splitting")
 
 		// The family view in Check Known Languages.
@@ -192,6 +214,22 @@ var/drift_runtime_error = FALSE
 		var/datum/language/daughter/R = all_languages["Vulgar"]
 		drift_check(istype(R) && R.key == old_key && jointext(R.syllables, "|") == old_sounds && language_kinship(R, latin) == LANGUAGE_DAUGHTER_KIN - LANGUAGE_DAUGHTER_KIN_STEP, "a saved daughter restores with its key, sounds and kinship")
 
+		// Renaming and merging back (daughter_admin.dm).
+		var/mob/living/human/hill = second[1]
+		var/hill_drift_key = language_community_key("Hill Clans", sister)
+		set_language_drift(hill_drift_key, 12)
+		hill.language_gain_today = list("lesson:Highland" = 4)
+		drift_check(isnull(rename_daughter_language("Highland", "Latin")), "a rename needs a free name")
+		drift_check(rename_daughter_language("Highland", "Upland") == 5, "a rename reaches every speaker")
+		drift_check(!all_languages["Highland"] && all_languages["Upland"] == sister && sister.name == "Upland", "the language answers to its new name")
+		drift_check(hill.partial_languages["Upland"] && isnull(hill.partial_languages["Highland"]) && hill.native_tongue == "Upland" && hill.knows_language(sister) && hill.language_gain_today["lesson:Upland"] == 4, "speakers keep their scores, mother tongue and today's learning")
+		drift_check(language_kinship(latin, sister) && !("Highland" in latin.mutual_intelligibility) && language_drift(language_community_key("Hill Clans", sister)) == 12 && islist(language_lineage_part("daughters")["Upland"]), "kinship, drift and the record move to the new name")
+		var/sister_key = sister.key
+		drift_check(merge_daughter_language("Upland") == 5, "merging back reaches every speaker")
+		drift_check(!all_languages["Upland"] && !language_keys[sister_key] && !(("Upland") in language_lineage_part("daughters")) && !("Upland" in latin.mutual_intelligibility), "the merged language is forgotten")
+		drift_check(!hill.knows_language(sister) && hill.knows_language(latin) && hill.mother_tongue() == latin && hill.default_language == latin && isnull(hill.native_tongue), "its speakers speak the parent again")
+		drift_check(language_daughter_count(latin) == 1 && !language_drift(language_community_key("Hill Clans", sister)), "the split no longer counts")
+
 		// Travel to a land that never heard of it.
 		var/list/T = A.region_travel_tongues()
 		drift_check(islist(T["daughters"]) && ("Vulgar" in T["daughters"]) && T["native"] == "Vulgar", "a traveller carries the daughter's record")
@@ -204,7 +242,7 @@ var/drift_runtime_error = FALSE
 		var/mob/living/human/arrival = drift_speaker("none", italian)
 		drift_check(arrival.region_travel_restore_tongues(T) && arrival.knows_language(all_languages["Vulgar"]) && arrival.mother_tongue() == all_languages["Vulgar"], "the arrival speaks the daughter as their mother tongue")
 		var/list/imported = records["Vulgar"]
-		drift_check(islist(imported) && imported["imported"] && language_daughter_count(latin) == 1, "an imported daughter is saved but does not count towards the cap")
+		drift_check(islist(imported) && imported["imported"] && language_daughter_count(latin) == 0, "an imported daughter is saved but does not count towards the cap")
 		var/list/bad = T.Copy()
 		var/list/bad_daughters = list("Vulgar" = list("parent" = "Latin", "root" = "Klingon", "nation" = "x", "era" = 1, "kin" = 80))
 		bad["daughters"] = bad_daughters

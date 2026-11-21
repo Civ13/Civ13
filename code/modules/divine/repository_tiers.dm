@@ -153,6 +153,8 @@ var/global/list/magic_balance_cache = null
 	if (map && map.persistence && !persistence_player_restore_ready)
 		return
 	magic_repo_check_seat()
+	magic_repo_check_keepers() // repository_upkeep.dm
+	magic_repo_check_home()
 	if (magic_repo_dormant())
 		// Still repositories neither grow nor wither; the clocks start again on waking.
 		magic_repo_full_since = 0
@@ -448,6 +450,8 @@ var/global/list/magic_balance_cache = null
 			D.magic_repo_capacity = magic_repo_capacity_for(D, D.magic_repo_tier, D.magic_repo_skill)
 			D.magic_repo_charge = min(D.magic_repo_charge, D.magic_repo_capacity)
 			D.magic_repo_full_since = 0
+			D.magic_repo_home = null // a shrine belongs where it now stands (repository_upkeep.dm)
+			D.magic_repo_astray = FALSE
 			to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("What \the [O] held pours into \the [D]. \The [O] is only \a [O] again.")))
 			log_game("[key_name(src)] moved repository [D.magic_repo_id] from [O.type] into [D.type].")
 		if ("repository_consecrate")

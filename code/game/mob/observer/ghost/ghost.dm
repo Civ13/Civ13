@@ -79,9 +79,16 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/observer/ghost/Destroy()
 	stop_following()
+	spirit_hud_remove() // spirit_hud.dm
+	if (spirit_sight) // spirit_observe.dm
+		if (client)
+			client.screen -= spirit_sight
+		QDEL_NULL(spirit_sight)
 	return ..()
 
 /mob/observer/ghost/Topic(href, href_list)
+	if (divine_topic(href_list)) // divine_sight.dm
+		return
 	if (href_list["track"])
 		var/atom/movable/target = locate(href_list["track"])
 		if (istype(target))
@@ -193,6 +200,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return
 
 	stop_following()
+	divine_sight_stop() // divine_sight.dm
 	mind.current.key = key
 	mind.current.teleop = null
 
@@ -213,13 +221,13 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 	return TRUE
 
-/mob/observer/ghost/verb/follow(input in ghost_follow_targets()+"Cancel")
+/mob/observer/ghost/verb/follow(input in observer_targets_for(usr)+"Cancel")
 	set category = "Ghost"
-	set name = "Follow" // "Haunt"
-	set desc = "Follow and haunt a mob."
+	set name = "Haunt"
+	set desc = "Follow and haunt someone."
 
 	if (input != "Cancel")
-		var/list/mobs = ghost_follow_targets()
+		var/list/mobs = observer_targets()
 		if (mobs[input])
 			ManualFollow(mobs[input])
 
@@ -257,10 +265,10 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		GLOB.destroyed_event.unregister(following, src)
 		following = null
 
-/mob/observer/ghost/verb/jumptomob(target in ghost_follow_targets() + "Cancel") //Moves the ghost instead of just changing the ghosts's eye -Nodrak
+/mob/observer/ghost/verb/jumptomob(target in observer_targets_for(usr) + "Cancel") //Moves the ghost instead of just changing the ghosts's eye -Nodrak
 	set category = "Ghost"
 	set name = "Jump to Mob"
-	set desc = "Teleport to a mob"
+	set desc = "Teleport to someone"
 
 	if (target == "Cancel") // also prevents sending the observer to nullspace when there are no mobs
 		return
@@ -270,10 +278,13 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		if (!target)//Make sure we actually have a target
 			return
 		else
-			var/mob/M = ghost_follow_targets()[target] //Destination mob
+			var/mob/M = observer_targets()[target] //Destination mob
 			var/turf/T = get_turf(M) //Turf of the destination mob
+			if (!T)
+				return
 			stop_following()
-			forceMove(T)
+			if (!forceMove(T) && arcane_anchor)
+				to_chat(src, SPAN_NOTICE("They are beyond your reach."))
 
 /mob/observer/ghost/memory()
 	set hidden = TRUE
@@ -324,6 +335,9 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 /mob/observer/ghost/verb/toggle_darkness()
 	set name = "Toggle Darkness"
 	set category = "Ghost"
+	if (is_spirit()) // spirit_observe.dm
+		spirit_refuse("see through the dark beyond a few steps")
+		return
 	seedarkness = !(seedarkness)
 	updateghostsight()
 

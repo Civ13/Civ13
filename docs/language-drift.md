@@ -2,8 +2,12 @@
 
 Approved by Val on 2026-11-21 after a player asked whether languages evolve as
 eras pass, the way Latin became French and Spanish. Part 1 tracks drift;
-part 2 splits drifted communities into daughter languages at an era change;
-part 3 shows language families in Check Known Languages.
+part 2 splits drifted communities into daughter languages; part 3 shows
+language families in Check Known Languages.
+
+Val, 2026-11-21: eras follow research, which players drive, so splits are not
+tied to eras. Drift must be rare: nations that meet each other are observed by
+each other and do not drift; only a nation isolated for too long does.
 
 ## Speech communities
 
@@ -14,18 +18,23 @@ default) is that language. Nationless characters belong to no community.
 ## What moves drift
 
 Only heard speech counts (`hear_say.dm` calls `language_drift_heard`). A line
-counts for the listener's community when the listener is a native speaker in a
-nation, at most one line every 20 seconds per listener:
+counts for the listener's community when the listener is in a nation, at most
+one line every 20 seconds per listener:
 
-- a line from a member of the same nation is **use**;
-- a line from a Conversational speaker of another nation, or of none, is
-  **contact**.
+- a line in the listener's mother tongue from a member of the same nation is
+  **use**;
+- a line in any language from anyone outside the nation (another nation or
+  none) is **contact**.
 
-Every half hour, each community that heard at least 10 lines moves by
-`0.5 * (1 - 2 * contact share)`, kept between 0 and 100. A nation that only
-talks among itself gains 1 drift an hour of talk, so about 60 hours to reach
-the split threshold of 60. Hearing outsiders in a quarter of its lines halves
-that; above half, drift falls back. A language nobody speaks does not change.
+Every half hour each community moves:
+
+- 3 or more contact lines: drift falls by 5, and the split hold restarts;
+- otherwise 10 or more use lines: drift rises by 0.25;
+- otherwise nothing changes. A language nobody speaks does not change.
+
+A nation cut off from everyone needs about 120 hours of its own talk to reach
+the split level of 60, and one half hour of real contact undoes 10 hours of
+it. One or two passing lines from a stranger are not contact.
 
 Numbers are `LANGUAGE_DRIFT_*` and `LANGUAGE_SPLIT_*` in
 `code/__defines/species_languages.dm`.
@@ -42,14 +51,17 @@ not saved.
 
 Admin > **Check Language Drift** lists every community with drift, its living
 native speakers, and whether it is ready to split (drift at least 60 and at
-least 5 living natives), and those waiting for a name.
+least 5 living natives, held for 7 days without contact), and those waiting
+for a name.
 
-## Splitting at an era change (part 2, `daughter.dm`)
+## Splitting after long isolation (part 2, `daughter.dm`)
 
-When the world enters a new era (a capstone in `book_research_node_finished`
-or `complete_node`), `language_era_advanced` makes every community with at
-least 60 drift and 5 living natives **ready to split**, unless its root
-language already has 2 daughters on this world. Members are told; the
+After every drift update, `language_split_check` records when a community's
+drift first reached 60 (`["held"]`, in real minutes). A community that stays
+there for 7 real days with no contact tick, and has 5 living natives, becomes
+**ready to split**, unless its root language already has 2 daughters on this
+world. Contact, or drift falling below 60, restarts the wait. Research and
+eras play no part. Members are told; the
 nation's leader gets **Name Our Language** (IC tab), which needs a
 Discord-verified account. Naming is the split. An admin can make any
 community ready, and name it, with **Force Language Split**.
@@ -66,8 +78,8 @@ At the split:
   the daughter at their share of that; sister daughters at least 60%;
 - the community's drift starts again at 0.
 
-A daughter community that drifts past 60 again does not split again: at the
-next era change it loses 10 kinship with its parent (never below 40) and its
+A daughter community that holds a drift of 60 again for 7 isolated days does
+not split again: it loses 10 kinship with its parent (never below 40) and its
 drift halves.
 
 Daughters write in their root language's script, so papers stay readable.
@@ -75,7 +87,8 @@ Every daughter shares one type, so identity checks use `language_same` and
 kinship tables use `language_kin_key` (name for daughters, type otherwise).
 
 Records are in `language_lineage_state["daughters"]`; ready communities in
-`["pending"]`. A traveller carries the records of the daughters they know, and
+`["pending"]` (when they became ready), communities waiting out the hold in
+`["held"]`. A traveller carries the records of the daughters they know, and
 a land that has never heard of one saves it as `imported`, which never counts
 towards that land's cap.
 
@@ -92,3 +105,14 @@ and how much each pair follows of the other in plain words. Data comes from
 `language_family_rows()` (daughter.dm) as the `families` key; kinship is the
 lower of the two directions rounded to 5, and drift is never sent. Layout by
 Fable.
+
+## Undoing and renaming (part 4, `daughter_admin.dm`)
+
+Admins can **Merge Language Back**: everyone in the world who has the daughter
+keeps the better of their two scores in its parent, gets the parent back as
+mother tongue and default where the daughter was, and the daughter's record,
+say key, kinship, drift and any wait to split are forgotten. A daughter with
+daughters of its own is merged only after them. **Rename Language** moves
+scores, mother tongues, today's learning, notes, kinship, drift and child
+records to the new name. Travellers already in another land keep the old
+name there.

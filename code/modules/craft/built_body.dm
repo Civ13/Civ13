@@ -111,6 +111,11 @@
 // Why a tile of the building level cannot take a tile of her upper deck, or
 // null. Only open air with nothing built or standing in it will do.
 /datum/craft_body/built/proc/upper_tile_refusal(turf/D)
+	return built_hull_upper_refusal(D)
+
+// The same for any tile, so a ship built from a crossing record can ask it
+// before she exists (naval/ship_crossing.dm).
+/proc/built_hull_upper_refusal(turf/D)
 	if (!D)
 		return "the edge of the world"
 	if (!building_open_turf(D))
@@ -124,6 +129,21 @@
 	for (var/atom/movable/M in D)
 		if (M.loc == D && M.density && !istype(M, /atom/movable/lighting_overlay))
 			return "[M.name] in the way of her upper deck at [D.x],[D.y]"
+	return null
+
+// Why a tile of the level above cannot take the top of one of her masts, or
+// null. Open air, or the edge of the levels, will do.
+/datum/craft_body/built/proc/mast_tile_refusal(turf/D)
+	if (!D)
+		return null
+	if (!building_open_turf(D))
+		return "[D.name] over her mast at [D.x],[D.y]"
+	for (var/obj/covers/C in D)
+		if (C.loc == D)
+			return "a floor over her mast at [D.x],[D.y]"
+	for (var/atom/movable/M in D)
+		if (M.loc == D && M.density && !istype(M, /atom/movable/lighting_overlay))
+			return "[M.name] in the way of her mast at [D.x],[D.y]"
 	return null
 
 // The box around a set of offsets: list(min dx, min dy, max dx, max dy).
@@ -266,6 +286,24 @@
 				last_refusal = why
 				return null
 		lower_dest += LD
+	// A mast stands up through the level above her deck: where no deck of
+	// hers is over it, the air there must be clear for her to pass, so a
+	// bridge or a floor built over the water stops her masts.
+	if (uz)
+		for (var/i = 1, i <= mine.len, i++)
+			if (upper[i])
+				continue
+			var/turf/T = mine[i]
+			if (!(locate(/obj/structure/vehicleparts/movement/sail) in T))
+				continue
+			var/turf/D = dest[i]
+			var/turf/MD = locate(D.x, D.y, uz)
+			if (upper_set && upper_set[MD])
+				continue
+			var/why = mast_tile_refusal(MD)
+			if (why)
+				last_refusal = why
+				return null
 	var/upper_count = 0
 	for (var/turf/U in upper)
 		upper_count++

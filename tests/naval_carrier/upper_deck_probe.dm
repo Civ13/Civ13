@@ -164,11 +164,30 @@ var/naval_runtime_error = FALSE
 	naval_check(foot.target == head && head.x == foot.x && head.y == foot.y, "the ladder swung whole")
 
 	// ---- Crossing the sea ----
-	naval_check(findtext(tiller.crossing_refusal(null), "upper deck"), "she may not cross the sea with an upper deck yet")
+	var/sea_refusal = tiller.crossing_refusal(null)
+	naval_check(!sea_refusal || !findtext(sea_refusal, "upper deck"), "her upper deck no longer keeps her from crossing the sea (cargo_probe.dm)")
 
 	tiller.decommission()
 	qdel(tiller)
 	qdel(bea)
+
+	// ---- A mast under a bridge ----
+	for (var/x = 50, x <= 52, x++)
+		for (var/y = 10, y <= 12, y++)
+			hull_lay(x, y)
+	var/obj/structure/vehicleparts/movement/sail/mast = new(locate(51, 11, 2))
+	var/obj/structure/hull_tiller/sloop_tiller = new(locate(50, 11, 2))
+	naval_check(isnull(sloop_tiller.commission("Wren", EAST)) && sloop_tiller.craft, "a sloop with a mast and no deck above is commissioned")
+	var/datum/craft_body/built/SB = sloop_tiller.craft.body
+	var/turf/SO = SB.origin()
+	var/obj/covers/repairedfloor/low_bridge = new(locate(52, 11, 3))
+	naval_check(!SB.move_to(SO.x + 1, SO.y, EAST) && findtext(SB.last_refusal, "over her mast") && mast.x == 51, "a floor on the level above stops her mast, with the reason ([SB.last_refusal])")
+	var/obj/covers/repairedfloor/beside = new(locate(53, 12, 3))
+	qdel(low_bridge)
+	naval_check(SB.move_to(SO.x + 1, SO.y, EAST) && mast.x == 52, "a floor over her plain deck lets her pass; only her mast needs the air clear ([SB.last_refusal])")
+	qdel(beside)
+	sloop_tiller.decommission()
+	qdel(sloop_tiller)
 
 	// ---- The cap on her decks, and the timing at it ----
 	for (var/x = 40, x <= 49, x++)

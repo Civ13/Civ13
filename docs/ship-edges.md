@@ -108,12 +108,50 @@ Code: `code/modules/naval/hull_bow.dm`.
   only while no deck of hers lies ahead of it along her heading. It is not
   climbed and takes no crow's nest.
 - A figurehead (6 wood, vehicle parts) is cosmetic. The first click with an
-  empty hand carves it as one of `figurehead_carvings` (placeholder sprites
-  from existing statues until the Fable art pass).
+  empty hand carves it as one of `figurehead_carvings`.
 - Draught pieces `J` (bowsprit) and `F` (figurehead, turns).
   `sail_push()` counts a jib as half a mast; the design check
   `/datum/design_check/ship/bowsprits` warns of a bowsprit with deck ahead of
   it on the sheet.
+
+## Grapnels thrown by hand
+
+Code: `code/modules/naval/hull_grapnel.dm`, joining `craft_grapple.dm`.
+
+- A grapnel (3 iron, vehicle parts, Iron Smithing) is thrown by clicking
+  another ship's deck or rail within 5 tiles while standing on her deck. After
+  a 1.5 s swing it catches 60 times in 100; a miss is hauled back.
+- A catch throws her lines as from the helm (`order_grapple(other, TRUE)`,
+  which skips the helm's coiling cooldown), or holds on the lines already
+  joining the two ships, from either side.
+- Several hooks hold harder: `craft_grapple.cut_time()` is 5 s plus 3 s for
+  every hook, for cutting at the helm or at a line. The thrower still casts
+  off at once.
+- The hooks ride in `craft_grapple.hooks` and drop on `home` (her deck tile the
+  lines run from) when the lines part. Like the lines, nothing is saved.
+
+## Sprites
+
+`tests/sprites/create_ship_edges.py` draws them all (`--check` verifies the
+committed sheets, `--preview <png>` writes a review sheet):
+
+- `icons/obj/ship_edges.dmi`: `gunwale` and `bulwark` with their `_gate` and
+  `_gate_open` gangway states (the `railing_style` of each type, four
+  directions like `railings_built.dmi`), the uncarved `figurehead` and
+  `figurehead_bear`, `_wolf`, `_goose`, `_monkey`, `_serpent`, `_ram` and
+  `_face` (four directions), and the `grapnel`.
+- `icons/mob/items/lefthand_ship_edges.dmi` and `righthand_ship_edges.dmi`:
+  the held `grapnel`.
+- `icons/obj/vehicles/ship_bowsprit.dmi`: the mast's `sail0`, `sail1` and
+  `sail2` as a bare spar, a furled jib and a set jib. The dir is the way the
+  spar points. The cell is 96x96 with her own tile in the middle, and the
+  type's `pixel_x` and `pixel_y` of -32 centre it, so the spar stands 28
+  pixels out over the next tile in every direction. A turning hull turns
+  her dir and does not touch a structure's pixel offsets (only loose items
+  are swung, in `/obj/item/craft_turned`).
+- `icons/obj/vehicles/ship_mast_nest.dmi`: the mast's three states with a
+  crow's nest at the masthead. The mast's `update_icon()` picks this file
+  while `crows_nest` is set.
 
 ## Tests
 
@@ -121,3 +159,7 @@ Code: `code/modules/naval/hull_bow.dm`.
 and costs, the slipway gunwale stages and markers, a launched boat with no open
 side, the crossing entry, the refit refusal, `hull_rail_sides_free`, and the
 gangway: plank plan, stopped-only, the hold, taking it in and a broken plank.
+
+`tests/naval_carrier/chart_probe.dm` ("Grapnels thrown by hand"): refusals,
+hooks adding to the lines from both ships, the cut time, hooks coming back
+when the lines part, and a hook throwing lines during the helm's cooldown.

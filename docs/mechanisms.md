@@ -23,6 +23,11 @@ tile is looked up at each pull. Nothing ticks.
 | Castle drop trapdoor | Drops or shuts |
 | Gate winch | Raises or drops its gates at once |
 | Shaft clutch (`transmission.dm`) | Thrown: in. Thrown back: out. One pull: toggles |
+| Counterweight drum (`contraptions.dm`) | Thrown: releases. Thrown back: brakes. One pull: toggles |
+| Relay (`contraptions.dm`) | Thrown: closes. Thrown back: opens. One pull: toggles |
+| Hopper machine gate (`hopper_machines.dm`) | Thrown: opens. Thrown back: shuts. One pull: toggles |
+| Sluice gate (`flood_defences.dm`) | Thrown: draws up. Thrown back: lowers. One pull: toggles |
+| Mechanism port | Sends Pulled into its circuit |
 | Bell | Rings an alarm (not on a lever thrown back) |
 | Rock drop (6 stone, Field Defenses) | Stones fall on its tile: 15 brute, armour applies, knockdown. Hung up again by hand (4 s) |
 
@@ -48,3 +53,22 @@ the **Set Alarm** verb:
 
 `alarm_hour` is -1 off, 24 every hour, or 0 to 23. Both use the same pull as a
 pull cord (toggle doors and gates, ring bells, drop rocks).
+
+## Bridges to electricity and circuits
+
+A **relay** (3 copper, Electricity; `contraptions.dm`) is an actuator set on
+the same tile as a lamp, outlet or other cabled device. Open, it cuts that
+device's power through `smart_power_cut()` (`mechanism_relay_open_on`);
+closed, the device draws again. A lever thrown over closes it, thrown back
+opens it, and a pull cord or plate toggles it. It can also be thrown by hand.
+
+A **mechanism port** (5 electronics, Digital Computing;
+`code/modules/wiremod/shell/mechanism_port.dm`) is a circuit shell that is
+both a trigger and an actuator while it lies on the floor:
+
+- Rope on it ties cords like any trigger. A signal on its component's **Pull**
+  input pulls them, at most once every 2 s; **Mode** picks `throw`,
+  `throw back` or `toggle` (the default).
+- A lever's or plate's cord tied to it fires **Pulled** and sets **Thrown**
+  (FALSE for a lever thrown back), but only while a circuit is inserted.
+- Picking it up drops its cords. Like the compact remote it is not saved.

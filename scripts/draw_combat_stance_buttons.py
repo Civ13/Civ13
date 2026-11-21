@@ -252,7 +252,9 @@ def draw_liteweb(sheet, stance):
     im = sheet.get_state("defend").frames[0].copy()
     plate, band, amber = (39, 55, 36, 255), (19, 21, 18, 255), (125, 89, 53, 255)
     label = LABELS[stance]
-    left = centred(label, SMALL, 3, 27)
+    # The plaque's crest sits half a pixel right of the tile centre, as the
+    # tactic plaque's lettering does, so odd spare pixels go to the left.
+    left = (33 - text_width(label, SMALL)) // 2
     right = left + text_width(label, SMALL) - 1
     for y in range(13, 20):
         for x in range(3, 28):

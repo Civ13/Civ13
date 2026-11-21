@@ -630,6 +630,117 @@ class OfficeTests(ElectiveTests.__base__):
                                           pfaction=B))
 
 
+class TreatyTests(unittest.TestCase):
+    """Treaties between nations (tools/transfer_storage/nation_treaties.py)."""
+
+    def setUp(self):
+        self.db = sqlite3.connect(':memory:', isolation_level=None)
+        self.n = Nations(self.db)
+        self.ask('alpha', 'found', A, name='Union', **{'with': [B]})
+        self.ask('beta', 'found', D, name='League', **{'with': [E]})
+        self.u, self.l = self.n.nation_of(A), self.n.nation_of(D)
+
+    def ask(self, land, op, faction, now=T, actor='leader', **kw):
+        return self.n.decide(land, dict(kw, op=op, actor=actor, faction=faction), now)
+
+    def treaty(self, land, faction, other, kind, act='agree', now=T, **kw):
+        return self.ask(land, 'treaty', faction, now=now, other=other, treaty=kind, act=act, **kw)
+
+    def kinds(self, nid, now=T):
+        return sorted(t['kind'] for t in self.n.snapshot(now)[nid]['treaties']['in_force'])
+
+    def test_both_confederations_agree_by_majority(self):
+        self.assertIn('more than half', self.treaty('alpha', A, self.l, 'alliance'))
+        self.assertIn('offers an alliance', self.treaty('alpha', B, self.l, 'alliance'))
+        self.assertEqual(self.n.snapshot(T)[self.l]['treaties']['offers']['received'][0]['kind'], 'alliance')
+        self.treaty('beta', D, self.u, 'alliance')
+        self.assertIn('in force', self.treaty('beta', E, self.u, 'alliance'))
+        self.assertEqual(self.kinds(self.u), ['alliance'])
+        self.assertIn('already', self.treaty('alpha', A, self.l, 'alliance'))
+        # War is declared alone and ends the alliance; peace needs both.
+        self.treaty('beta', D, self.u, 'war')
+        self.assertIn('declares war', self.treaty('beta', E, self.u, 'war'))
+        self.assertEqual(self.kinds(self.l), ['war'])
+        self.assertIn('make peace first', self.treaty('alpha', A, self.l, 'trade'))
+        self.treaty('alpha', A, self.l, 'peace')
+        self.treaty('alpha', B, self.l, 'peace')
+        self.treaty('beta', D, self.u, 'peace')
+        self.assertIn('war is over', self.treaty('beta', E, self.u, 'peace'))
+        self.assertEqual(self.kinds(self.u), [])
+
+    def test_offers_lapse_renounce_and_dissolve(self):
+        for f in (A, B):
+            self.treaty('alpha', f, self.l, 'trade')
+        self.n.snapshot(T + 7 * 86400 + 1)
+        self.assertEqual(self.n.snapshot(T + 7 * 86400 + 1)[self.u]['treaties']['offers']['made'], [])
+        for land, fs, other in (('alpha', (A, B), self.l), ('beta', (D, E), self.u)):
+            for f in fs:
+                self.treaty(land, f, other, 'trade', now=T + 8 * 86400)
+        self.assertEqual(self.kinds(self.u, T + 8 * 86400), ['trade'])
+        self.assertIn('no such treaty', self.treaty('alpha', A, self.l, 'pact', act='renounce', now=T + 8 * 86400))
+        self.treaty('alpha', A, self.l, 'trade', act='renounce', now=T + 8 * 86400)
+        self.assertIn('renounces', self.treaty('alpha', B, self.l, 'trade', act='renounce', now=T + 8 * 86400))
+        self.treaty('alpha', A, self.l, 'war', now=T + 8 * 86400)
+        self.treaty('alpha', B, self.l, 'war', now=T + 8 * 86400)
+        self.ask('beta', 'secede', E, now=T + 8 * 86400)
+        self.n.snapshot(T + 8 * 86400)
+        self.assertEqual(self.db.execute('SELECT COUNT(*) FROM nation_treaty').fetchone()[0], 0)
+
+    def test_ruler_decides_alone(self):
+        for f in (A, B):
+            self.ask('alpha', 'era', f, age=1)
+        for f in (A, B):
+            self.ask('alpha', 'govern', f, type='monarchy', person='val', pname='Val', pfaction=A)
+        now = T + 86400
+        self.assertIn('Only the Monarch', self.treaty('alpha', A, self.l, 'war', now=now))
+        self.assertIn('declares war', self.treaty('alpha', A, self.l, 'war', now=now, actor='val', role='citizen'))
+        self.assertIn('no such nation', self.treaty('alpha', A, 'n99', 'pact', now=now, actor='val', role='citizen'))
+
+    def test_senate_decides_by_motion(self):
+        for f, c in ((A, 3), (B, 1)):
+            self.ask('alpha', 'era', f, age=1)
+            self.ask('alpha', 'census', f, citizens=c, wealth=0)
+        for f in (A, B):
+            self.ask('alpha', 'govern', f, type='republic', person='val', pname='Val', pfaction=A)
+        now = T + 86400
+        self.assertIn('decided at once', self.treaty('alpha', A, self.l, 'pact', now=now))  # 3 of 4 senators
+        self.assertEqual(self.n.snapshot(now)[self.u]['treaties']['offers']['made'][0]['kind'], 'pact')
+
+
+class LegitimacyTests(ElectiveTests.__base__):
+    """Legitimacy (tools/transfer_storage/nation_legitimacy.py)."""
+
+    setUp = ElectiveTests.setUp
+    ask = ElectiveTests.ask
+    become = ElectiveTests.become
+    snap = ElectiveTests.snap
+
+    def test_present_head_builds_and_absence_erodes(self):
+        self.become('monarchy')
+        self.assertEqual(self.snap()['legitimacy'], 50)
+        for day in range(1, 6):
+            self.ask('alpha', 'present', A, now=self.now + day * 86400 - 60, actor='val', role='citizen')
+        self.now += 5 * 86400
+        self.assertEqual(self.snap()['legitimacy'], 60)
+        # A higher score raises the revolt threshold: 0.5 * 1.1 of 10 citizens.
+        self.assertEqual(self.n.signatures_needed(self.nid), 6)
+        self.now += 2 * 86400
+        self.assertEqual(self.snap()['legitimacy'], 56)
+
+    def test_low_legitimacy_halves_the_threshold_and_events_move_it(self):
+        self.become('democracy')
+        self.db.execute('UPDATE nation_legitimacy SET score = 0')
+        self.assertEqual(self.n.signatures_needed(self.nid), 4)  # 0.75 * 0.5 of 10, rounded up
+        self.ask('alpha', 'currency', B, now=self.now, actor='ann', role='citizen', issuer=B)
+        self.now += 86400 + 1  # the referendum fails for want of a quorum
+        self.ask('alpha', 'present', A, now=self.now - 1, actor='val', role='citizen')
+        self.assertEqual(self.snap()['legitimacy'], 2)  # floor 0, then +2 for the head who played
+
+    def test_confederation_drifts_to_the_middle(self):
+        self.db.execute('UPDATE nation_legitimacy SET score = 40')
+        self.assertEqual(self.snap(T + 3 * 86400)['legitimacy'], 43)
+
+
 class AgentRoundTripTests(unittest.TestCase):
     TOKENS = {'alpha': 'a' * 40, 'beta': 'b' * 40}
 

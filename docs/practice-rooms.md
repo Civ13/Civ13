@@ -58,6 +58,14 @@ Barracks: a region of kind `TUTORIAL` on the blank map
   own world otherwise (or when waking fails).
 - Nobody has a home there, trails and orbital batteries skip it, and it can be
   neither the mainland nor the gate. A group has at most one.
+- It stays available while the lands are down (Val, 2026-11-21): like the
+  gateway it never sleeps, a crash brings it back on the build it has, and an
+  update reaches it by a plain restart on its own port once it is empty (never a
+  standby handover).
+- A gateway (scripts/shard-group/README.md, "Gateway world") offers the rooms to
+  a player whose land cannot be reached yet, and leaving them brings the player
+  back to the gateway, which sends them on again. The gateway never opens rooms
+  of its own.
 
 Add one to a group config like any region, for example
 `{"id": "tutorial", "name": "Tutorial", "kind": "TUTORIAL", "port": 1760, "transfer_port": 1770, "map": "maps/special/tutorial.dmm"}`

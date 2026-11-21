@@ -8,9 +8,11 @@
 // wounds. A body is laid down dead again on arrival; nobody plays it.
 //
 // Carts, small boats and machines go the same way, empty, and engines with
-// their fuel tanks coupled again. Refused still: an animal a player or agent
-// controls, anything ridden or strapped in, a loaded cart, a frame vehicle,
-// and a body that holds a creature.
+// their fuel tanks coupled again; a canoe or motorboat takes her outboard
+// and its tank inside her. A car, truck or light plane parked on deck goes
+// whole, as a garage keeps it. Refused still: an animal a player or agent
+// controls, anything ridden or strapped in, a loaded cart, a frame vehicle
+// the garage record does not take, and a body that holds a creature.
 // ============================================================
 
 #define SEA_CROSSING_BODY_ITEMS_MAX 40
@@ -52,7 +54,31 @@
 
 // Builds a "g" entry at T. Returns what was made, or null.
 /proc/sea_crossing_cargo_build(list/E, turf/T)
-	return region_travel_make_generic(E[2], T, TRUE)
+	var/atom/movable/made = region_travel_make_generic(E[2], T, TRUE)
+	if (istype(made, /obj/structure/vehicle))
+		var/obj/structure/vehicle/V = made
+		V.crossing_rebuilt()
+	return made
+
+// A cart or boat built again from a crossing record. An outboard clamped in
+// her crossed inside her; it arrives stopped and coupled to her tank again,
+// which the record cannot keep (the two are parts of her, not of each other).
+/obj/structure/vehicle/proc/crossing_rebuilt()
+	if (!engine || engine.loc != src)
+		return
+	engine.on = FALSE
+	engine.fueltank = (fueltank && fueltank.loc == src) ? fueltank : null
+	if (axis)
+		engine.connections |= axis
+	engine.update_icon()
+
+// A canoe works her outboard from her own tank, never through the engine's.
+/obj/structure/vehicle/raft/dugout/outrigger/crossing_rebuilt()
+	motor_on = FALSE
+	if (engine && engine.loc == src)
+		engine.on = FALSE
+		engine.fueltank = null
+	update_icon()
 
 // ---------------------------------------------------------------- engines
 
@@ -101,7 +127,8 @@
 		if (M.fueltank)
 			coupled[M.fueltank] = TRUE
 	var/list/hold = islist(R["hold"]) ? R["hold"] : list()
-	for (var/list/tile in R["tiles"] + hold)
+	var/list/upper = islist(R["upper"]) ? R["upper"] : list()
+	for (var/list/tile in R["tiles"] + hold + upper)
 		for (var/list/E in tile[3])
 			if (E[1] != "e" || E.len != 4)
 				continue
@@ -230,3 +257,163 @@
 	return H
 
 #undef SEA_CROSSING_BODY_ITEMS_MAX
+
+// ---------------------------------------------------------------- vehicles
+
+// A car, truck or light plane parked on her deck crosses whole, the way a
+// garage or a hangar keeps one: the vehicle codec's bounded record of its
+// frames, wheels, engine, tank, seats and boot cargo (extraction/vehicle_codec.dm).
+// What the codec refuses (a tank's turret, a heavy axis, something loose on
+// its tiles) keeps her in port with the codec's reason.
+
+#define SEA_CROSSING_VEHICLES_MAX 8
+
+// Packs every vehicle standing on tiles. list("vehicles" = entries, "claimed"
+// = every atom a record holds), or why not. deck: her main deck tiles; a
+// vehicle anywhere else, or partly off her deck, cannot cross. pivot: her
+// tiller's tile. Writes nothing: each part keeps whether it saves.
+/proc/sea_crossing_pack_vehicles(list/tiles, list/deck, turf/pivot)
+	var/list/entries = list()
+	var/list/claimed = list()
+	var/list/seen = list()
+	var/list/on_deck = list()
+	for (var/turf/T in deck)
+		on_deck[T] = TRUE
+	for (var/turf/T in tiles)
+		for (var/obj/structure/vehicleparts/frame/F in T)
+			var/obj/structure/vehicleparts/axis/A = F.axis
+			if (F.loc != T || !A || QDELETED(A) || seen[A])
+				continue
+			seen[A] = TRUE
+			for (var/obj/structure/vehicleparts/frame/O in A.components)
+				if (!on_deck[get_turf(O)])
+					return "drive \the [A.name] wholly onto her main deck"
+			var/list/E = sea_crossing_vehicle_entry(A, pivot)
+			if (istext(E))
+				return E
+			entries += list(E["entry"])
+			claimed |= E["claimed"]
+			if (entries.len > SEA_CROSSING_VEHICLES_MAX)
+				return "she carries more than [SEA_CROSSING_VEHICLES_MAX] vehicles"
+	return list("vehicles" = entries, "claimed" = claimed)
+
+// One vehicle's entry, list(dx, dy, record) with its axis's tile from her
+// pivot, and what it holds, or why it cannot cross.
+/proc/sea_crossing_vehicle_entry(obj/structure/vehicleparts/axis/A, turf/pivot)
+	var/turf/at = get_turf(A)
+	if (!at || A.driver || A.moving || A.currentspeed || (A.engine && A.engine.on))
+		return "stop \the [A.name], switch its engine off and get out of it"
+	var/list/flags = list()
+	for (var/obj/O in vehicle_storage_objects(A.components | list(A)))
+		flags[O] = O.should_save
+	var/datum/extraction_vehicle_codec/codec = new
+	codec.ignore_ground = TRUE
+	var/list/record = codec.encode(A)
+	var/datum/extraction_vehicle_transfer/transfer = new
+	transfer.ignore_ground = TRUE
+	var/held = record && transfer.capture(A, TRUE)
+	var/list/claimed = held ? vehicle_storage_objects(transfer.parts) : list()
+	for (var/obj/O in claimed)
+		if (!(O in flags))
+			flags[O] = O.should_save
+	// Encoding marks the parts unsaved for a garage; she is not gone yet.
+	for (var/obj/O in flags)
+		if (!QDELETED(O))
+			O.should_save = flags[O]
+	if (!held)
+		var/why = codec.last_error || transfer.last_error
+		return "\the [A.name] cannot be carried[why ? " ([why])" : ""]. Only a car or light plane that fits a garage, with nothing loose on it but what is in its boot, can cross"
+	return list("entry" = list(at.x - pivot.x, at.y - pivot.y, record), "claimed" = claimed)
+
+// TRUE when record R's vehicles are well formed.
+/proc/sea_crossing_vehicles_ok(list/R)
+	if (isnull(R["vehicles"]))
+		return TRUE
+	var/list/V = R["vehicles"]
+	if (!islist(V) || !V.len || V.len > SEA_CROSSING_VEHICLES_MAX)
+		return FALSE
+	var/datum/extraction_vehicle_codec/codec = new
+	codec.ignore_ground = TRUE
+	for (var/list/E in V)
+		if (!islist(E) || E.len != 3 || !isnum(E[1]) || !isnum(E[2]) || abs(E[1]) > 30 || abs(E[2]) > 30 || E[1] != round(E[1]) || E[2] != round(E[2]))
+			return FALSE
+		if (!codec.validate(E[3]))
+			return FALSE
+	return TRUE
+
+// Builds record R's vehicles round pivot, parked as they stood. Returns
+// everything made. One whose tiles are taken is put down beside her instead
+// (sea_crossing_vehicle_ashore) or, failing that, lost and logged.
+/proc/sea_crossing_build_vehicles(list/R, turf/pivot)
+	. = list()
+	for (var/list/E in R["vehicles"])
+		var/turf/at = locate(pivot.x + E[1], pivot.y + E[2], pivot.z)
+		var/obj/structure/vehicleparts/axis/A = sea_crossing_vehicle_decode(E[3], at)
+		if (!A)
+			log_game("Sea crossing: a vehicle of the [R["name"]] could not be parked on her deck at [pivot.x],[pivot.y],[pivot.z].")
+			continue
+		var/datum/extraction_vehicle_transfer/transfer = new
+		transfer.ignore_ground = TRUE
+		. += A
+		if (transfer.capture(A, TRUE))
+			. |= vehicle_storage_objects(transfer.parts)
+
+// Decodes one vehicle record with its axis at T, saved like any vehicle. The axis, or null.
+/proc/sea_crossing_vehicle_decode(list/record, turf/T)
+	if (!T)
+		return null
+	var/datum/extraction_vehicle_codec/codec = new
+	codec.ignore_ground = TRUE
+	var/obj/structure/vehicleparts/axis/A = codec.decode(record, T)
+	if (!istype(A))
+		if (A)
+			qdel(A)
+		return null
+	var/datum/extraction_vehicle_transfer/transfer = new
+	transfer.ignore_ground = TRUE
+	if (transfer.capture(A, TRUE))
+		for (var/obj/O in vehicle_storage_objects(transfer.parts))
+			O.should_save = initial(O.should_save)
+	A.should_save = initial(A.should_save)
+	return A
+
+// A record's vehicles put down near T when no ship can be built: each at the
+// first clear spot within a few tiles, or lost and logged.
+/proc/sea_crossing_wreck_vehicles(list/R, turf/T)
+	for (var/list/E in R["vehicles"])
+		var/obj/structure/vehicleparts/axis/A = null
+		for (var/turf/near in range(6, T))
+			A = sea_crossing_vehicle_decode(E[3], near)
+			if (A)
+				break
+		if (!A)
+			log_game("Sea crossing: a vehicle of the [R["name"]] was lost with her: no clear ground near [T.x],[T.y],[T.z].")
+
+// Takes the vehicles parked on tiles off her deck: every part and what is in
+// its boot. They crossed in her record.
+/proc/sea_crossing_strip_vehicles(list/tiles)
+	var/list/seen = list()
+	for (var/turf/T in tiles)
+		for (var/obj/structure/vehicleparts/frame/F in T)
+			var/obj/structure/vehicleparts/axis/A = F.axis
+			if (!A || QDELETED(A) || seen[A])
+				continue
+			seen[A] = TRUE
+			var/datum/extraction_vehicle_transfer/transfer = new
+			transfer.ignore_ground = TRUE
+			if (!transfer.capture(A, TRUE))
+				continue
+			for (var/obj/item/I in transfer.cargo)
+				qdel(I)
+			for (var/obj/O in transfer.parts - transfer.cargo)
+				for (var/obj/child in O.contents.Copy())
+					if (!istype(child, /atom/movable/lighting_overlay))
+						qdel(child)
+				if (istype(O, /obj/structure/vehicleparts/frame))
+					O:broken = TRUE
+				if (O != A)
+					qdel(O)
+			if (!QDELETED(A))
+				qdel(A)
+
+#undef SEA_CROSSING_VEHICLES_MAX

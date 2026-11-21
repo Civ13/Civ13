@@ -54,6 +54,7 @@ try {
         BotRepairTests.Run(root);
         Console.WriteLine("PASS bot command: " + await BotCommandTests.Run(root) + " assertions; --bot parsing, detached start, start/stop/restart sequences.");
         LocalHelpTests.Run(root);
+        LocalTranslatorTests.Run(root);
         StartMenuShortcutTests.Run(root);
         return 0;
     }
@@ -81,6 +82,7 @@ try {
     assertions += BotRepairTests.Run(root);
     assertions += await BotCommandTests.Run(root);
     assertions += LocalHelpTests.Run(root);
+    assertions += LocalTranslatorTests.Run(root);
     assertions += StartMenuShortcutTests.Run(root);
     assertions += DiscordPresenceTests.Run(root);
     assertions += await DiscordSignInTests.Run(root);

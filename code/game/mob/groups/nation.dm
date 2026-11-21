@@ -246,6 +246,7 @@ var/global/list/nation_assembly_tiers = list(
 				choices += "Vote on an application"
 			if (istext(G["ruler"]))
 				choices += "Offices of state"
+			choices += "Foreign affairs"
 			choices += "Revolt"
 	choices += "Cancel"
 	var/pick = WWinput(src, text, "Nation", "Cancel", choices)
@@ -258,6 +259,10 @@ var/global/list/nation_assembly_tiers = list(
 	if (pick == "Name an heir" || pick == "Name a deputy")
 		if (civilization == faction && nation_of_id(id) == nid)
 			nation_name_successor(faction, id, nid)
+		return
+	if (pick == "Foreign affairs")
+		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
+			nation_foreign_menu(faction, id, nid)
 		return
 	if (pick == "Offices of state")
 		if (!stat && civilization == faction && nation_home_faction(faction) && nation_of_id(id) == nid)
@@ -304,6 +309,9 @@ var/global/list/nation_assembly_tiers = list(
 		var/assembly = isnum(N["assembly"]) && N["assembly"] >= 1 && N["assembly"] <= nation_assembly_tiers.len ? ", a [nation_assembly_tiers[N["assembly"]][1]]" : ""
 		lines += "<b>[html_encode(N["name"])]</b>: [jointext(members, ", ")]. Head: [istext(N["head"]) ? html_encode(nation_faction_label(N["head"])) : "none"]. Holds [length(N["members"])]/[N["capacity"]] factions[assembly]."
 		lines += "&nbsp;&nbsp;[nation_government_line(nid)]"
+		var/treaties = nation_treaties_line(nid)
+		if (treaties)
+			lines += "&nbsp;&nbsp;[treaties]"
 		var/offices = nation_offices_line(nid)
 		if (offices)
 			lines += "&nbsp;&nbsp;[offices]"
