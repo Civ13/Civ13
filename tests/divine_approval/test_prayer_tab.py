@@ -52,6 +52,31 @@ class PrayerTab(unittest.TestCase):
         self.assertIn('CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("Your prayer goes unanswered."))', COVENANT)
         self.assertIn('to_chat(H, CHAT_TYPED(CHAT_PRAYER, "<span class=\'notice\'><i>[words]</i></span>"))', VERB)
 
+    def test_unfollowing_prayers_offer_an_invitation(self):
+        pray = body(PRAY, '/mob/verb/pray()')
+        self.assertIn("divine_invite=\\ref[src]'>Invite</A>", pray)
+        self.assertLess(pray.index('follower.divine_patron'), pray.index('divine_invite='))
+        topic = TOPIC.split('href_list["divine_invite"]', 1)[1].split('else if', 1)[0]
+        self.assertIn('check_rights(R_ADMIN)', topic)
+        self.assertIn('divine_invite_follower(M)', topic)
+        invite = body(VERB, '/client/proc/divine_invite_follower(')
+        for guard in ('check_rights(R_ADMIN)', 'if (H.divine_patron)', 'H.divine_invite_from',
+                      'arcane_apostate_may_join(claim)', 'magic_whitelist_admit(H)', 'log_admin('):
+            self.assertIn(guard, invite)
+        self.assertNotIn('H.divine_patron =', invite)  # only the player's acceptance changes devotion
+        answer = body(VERB, '/mob/living/human/proc/divine_answer_invitation(')
+        self.assertIn('player_alert(src,', answer)
+        self.assertIn('list("Follow", "Decline")', answer)
+        self.assertIn('divine_invite_from = null', answer)
+        follow = answer.split('else\n\t\toutcome = "accepted"', 1)[1]
+        self.assertIn('divine_patron = deity', follow)
+        self.assertIn('arcane_apostate_return(claim)', follow)
+        self.assertIn('divine_refresh_verbs()', follow)
+        for recheck in ('divine_patron ||', '!magic_allowed()', '!arcane_apostate_may_join(claim)'):
+            self.assertIn(recheck, answer.split('outcome = "accepted"', 1)[0])
+        self.assertIn('var/tmp/divine_invite_from = null', COVENANT)
+        self.assertIn('key == "divine_invite_from"', COVENANT)
+
 
 if __name__ == '__main__':
     unittest.main()

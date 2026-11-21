@@ -123,13 +123,9 @@
 		return
 	if (!istype(H) || QDELETED(H))
 		return
-	var/list/peoples = list()
-	for (var/origin_type in typesof(/datum/origin) - /datum/origin)
-		var/datum/origin/candidate = origin_type
-		var/datum/origin/O = origin_by_id(initial(candidate.id))
-		if (O)
-			peoples["[O.name] ([O.language])"] = O
-	var/picked = input(usr, "Which people does [H.real_name] belong to?", "Set Origin") as null|anything in peoples
+	// Roots and peoples that formed in play (peoples.dm).
+	var/list/peoples = all_people_choices()
+	var/picked = input(usr, "Which people does [H.real_name] belong to?", "Set Origin") as null|anything in sortList(peoples)
 	if (!picked || !istype(H) || QDELETED(H))
 		return
 	var/datum/origin/O = peoples[picked]

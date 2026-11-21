@@ -747,6 +747,12 @@ RECIPE: /material/nylon/,foldable canopy,/obj/item/weapon/tent,3,75,0,1,furnitur
 RECIPE: /material/nylon/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/nylon/,folding umbrella,/obj/item/weapon/umbrella/nylon,2,60,0,1,none,0,0,0,8,null
 RECIPE: /material/nylon/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
+RECIPE: /material/fiberglass/,white hardhat,/obj/item/clothing/head/helmet/modern/hardhat,2,100,0,1,none,108,0,0,8,null
+RECIPE: /material/fiberglass/,yellow hardhat,/obj/item/clothing/head/helmet/modern/hardhat/yellow,2,100,0,1,none,108,0,0,8,null
+RECIPE: /material/fiberglass/,orange hardhat,/obj/item/clothing/head/helmet/modern/hardhat/orange,2,100,0,1,none,108,0,0,8,null
+RECIPE: /material/aramid_laminate/,civilian kevlar armor,/obj/item/clothing/accessory/armor/nomads/civiliankevlar,7,210,0,1,none,180,0,185,8,null
+RECIPE: /material/aramid_laminate/,USSR 6B3 body armor,/obj/item/clothing/suit/b3,8,260,0,1,none,175,0,175,7,null
+RECIPE: /material/steel/,layup table,/obj/structure/layup_table,10,240,1,1,production,120,0,0,8,null
 
 //**************************************************************
 //*********************| CLOTH |********************************

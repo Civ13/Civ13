@@ -173,7 +173,10 @@
 		return FALSE
 	vehicle_deck_busy = TRUE
 	visible_message(SPAN_NOTICE("[src] starts climbing onto \the [F]."), SPAN_NOTICE("You start climbing [from_inside ? ((locate(/obj/structure/vehicle_stairs) in F.loc) ? "the stairs" : "out through the hatch") : "onto the roof"]..."))
-	var/done = do_after(src, from_inside ? VEHICLE_DECK_DOWN_TIME : VEHICLE_DECK_CLIMB_TIME, F)
+	var/climb_time = from_inside ? VEHICLE_DECK_DOWN_TIME : VEHICLE_DECK_CLIMB_TIME
+	var/climb_motion = body_motion_climb(TRUE, climb_time)
+	var/done = do_after(src, climb_time, F)
+	body_motion_stop(climb_motion)
 	vehicle_deck_busy = FALSE
 	if (!done)
 		return FALSE
@@ -296,7 +299,9 @@
 		return FALSE
 	vehicle_deck_busy = TRUE
 	to_chat(src, SPAN_NOTICE("You start climbing down..."))
+	var/climb_motion = body_motion_climb(FALSE, VEHICLE_DECK_DOWN_TIME)
 	var/done = do_after(src, VEHICLE_DECK_DOWN_TIME, F)
+	body_motion_stop(climb_motion)
 	vehicle_deck_busy = FALSE
 	if (!done || vehicle_deck != F)
 		return FALSE

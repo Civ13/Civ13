@@ -90,12 +90,21 @@
 
 // A wait that a step of the hull under the worker does not spoil: the hull
 // carries worker and work together, so the wait starts again.
-/proc/hull_wait(mob/living/H, time, atom/target)
+// climb: 1 pulls the body up, -1 down, for each attempt (body_motion.dm).
+/proc/hull_wait(mob/living/H, time, atom/target, climb = 0)
 	for (var/tries = 1, tries <= 20, tries++)
 		var/off_x = H.x - target.x
 		var/off_y = H.y - target.y
 		var/began = world.time
-		if (do_after(H, time, target))
+		var/climb_motion = 0
+		if (climb && ishuman(H))
+			var/mob/living/human/climber = H
+			climb_motion = climber.body_motion_climb(climb > 0, time)
+		var/done = do_after(H, time, target)
+		if (climb_motion)
+			var/mob/living/human/climber = H
+			climber.body_motion_stop(climb_motion)
+		if (done)
 			return TRUE
 		if (QDELETED(H) || QDELETED(target) || world.time <= began || H.x - target.x != off_x || H.y - target.y != off_y || H.stat || H.lying)
 			return FALSE
