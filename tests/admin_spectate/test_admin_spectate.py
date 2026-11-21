@@ -67,7 +67,11 @@ class AdminSpectateTests(unittest.TestCase):
         self.assertIn('G.admin_hidden_from(usr)', fit)
         ghost = read('code/game/mob/observer/ghost/ghost.dm')
         self.assertNotIn('getfitmobs()', ghost)
-        self.assertEqual(ghost.count('ghost_follow_targets()'), 4)
+        # Follow (Haunt) and Jump to Mob list through observer_targets(), which
+        # gives non-spirits ghost_follow_targets() (spirit_observe.dm).
+        self.assertEqual(ghost.count('observer_targets'), 4)
+        spirit = (ROOT / 'code/game/mob/observer/ghost/spirit_observe.dm').read_text(encoding='utf-8')
+        self.assertEqual(spirit.count('return ghost_follow_targets()'), 2)
         self.assertIn('user.client.holder', proc_body(self.text, '/mob/observer/ghost/proc/admin_hidden_from('))
 
     def test_camera_mirror_and_shield(self):

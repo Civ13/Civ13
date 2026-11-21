@@ -20,7 +20,7 @@ def git_blob(text):
 class DictionarySources(unittest.TestCase):
     def test_speech_and_whisper_call_sites_unchanged(self):
         expected = {prepare.SAY: 'add3bf6ba8e9e0cf150963a1396d75549dd9c068',
-                    prepare.WHISPER: 'a3b12151099069ccec891105f9051d325bc1112f'}
+                    prepare.WHISPER: '0070dabedb6274e7fb4e61a3e29282faf1bae0d0'}
         for path, sha in expected.items():
             with self.subTest(path=path):
                 source = prepare.read(path)

@@ -105,7 +105,7 @@
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 40
-	M.addictions["alcohol"] += 0.02
+	M.drug_dose("alcohol", 0.02, 0.02)
 
 	M.radiation -= 1 * removed
 

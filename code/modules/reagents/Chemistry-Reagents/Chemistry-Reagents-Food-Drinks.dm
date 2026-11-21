@@ -780,6 +780,7 @@
 	if (adj_temp > 0)
 		holder.remove_reagent("frostoil", 10 * removed)
 	M.add_chemical_effect(CE_PULSE, TRUE)
+	M.drug_dose("caffeine", 0.02, 0.05)
 	coffee_perk(M, removed)
 
 /datum/reagent/drink/coffee/overdose(var/mob/living/human/M, var/alien)

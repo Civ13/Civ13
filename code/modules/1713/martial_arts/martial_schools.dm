@@ -94,10 +94,12 @@ var/global/list/martial_schools = list(
 	var/points = martial_progress[school_id]
 	return isnum(points) ? points : 0
 
-// Practice in the followed school. Returns the points added.
-/mob/living/human/proc/martial_practice(amount)
+// Practice in the followed school, sped up by training company
+// (martial_training.dm). Returns the points added.
+/mob/living/human/proc/martial_practice(amount, mob/living/human/sparring = null)
 	if (!martial_school || !(martial_school in martial_schools) || amount <= 0)
 		return 0
+	amount *= martial_training_mult(sparring)
 	if (!islist(martial_progress))
 		martial_progress = list()
 	var/before = martial_rank(martial_school)

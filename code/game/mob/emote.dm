@@ -58,7 +58,7 @@
 				continue
 			if (findtext(message," snores.")) //Because we have so many sleeping people.
 				break
-			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_sight) && !(M in viewers(src,null)))
+			if (M.ghost_hears_everywhere(/datum/client_preference/ghost_sight) && !(M in viewers(src,null)))
 				if (animal_noise && !M.is_preference_enabled(/datum/client_preference/ghost_animals))
 					continue
 				M.show_message(chat_message, m_type)

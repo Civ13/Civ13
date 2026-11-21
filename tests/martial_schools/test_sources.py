@@ -20,6 +20,9 @@ SOURCE = read('code/modules/1713/martial_arts/martial_schools.dm')
 NODES = read('code/modules/research_tree/research_node.dm')
 DEFINES = read('code/__defines/martial.dm')
 TRAVEL = read('code/modules/persistence/region_travel.dm')
+TRAINING = read('code/modules/1713/martial_arts/martial_training.dm')
+RECIPES = read('config/crafting/material_recipes_global.txt')
+ATTACK = read('code/game/mob/living/carbon/human/human_attackhand.dm')
 CONDITIONING = read('code/modules/1713/martial_arts/hand_conditioning.dm')
 DME = read('civ13.dme')
 
@@ -47,6 +50,29 @@ class Schools(unittest.TestCase):
         self.assertNotIn('/obj/item/weapon', SOURCE)
 
 
+class Training(unittest.TestCase):
+    def test_gear_recipes_and_research(self):
+        for material, name, path, node in (
+                ('leather', 'heavy bag', '/obj/structure/martial_gear/heavy_bag', 'martial_disciplines'),
+                ('wood', 'wooden dummy', '/obj/structure/martial_gear/wooden_dummy', 'school_wing_chun')):
+            self.assertRegex(RECIPES, r'RECIPE: /material/%s/,%s,%s,\d+,\d+,1,1,sports,' % (material, name, path))
+            self.assertIn('"%s" = "%s",' % (path, node), NODES)
+
+    def test_company_multipliers(self):
+        for name, value in (('PARTNER', '1.5'), ('MASTER', '2'), ('SPARRING', '2.5')):
+            self.assertIn('#define MARTIAL_%s_MULT %s' % (name, value), TRAINING)
+        # The Master bonuses are behind the verified soft whitelist.
+        self.assertIn('account_verified(other.ckey)', TRAINING)
+        self.assertIn('amount *= martial_training_mult(sparring)', SOURCE)
+        self.assertIn('H.practice_unarmed(0.5, src)', ATTACK)
+        self.assertIn('martial_practice(amount / 2, sparring)', CONDITIONING)
+
+    def test_training_defines_are_undefined(self):
+        for name in re.findall(r'^#define (\w+)', TRAINING, re.M):
+            self.assertIn('#undef %s' % name, TRAINING)
+        self.assertIn('#include "code\\modules\\1713\\martial_arts\\martial_training.dm"', DME)
+
+
 class Wiring(unittest.TestCase):
     def test_rank_defines(self):
         for i, rank in enumerate(('NONE', 'NOVICE', 'STUDENT', 'ADEPT', 'MASTER')):
@@ -62,8 +88,7 @@ class Wiring(unittest.TestCase):
 
     def test_solo_training_and_practice_hooks(self):
         self.assertIn('verb/practise_martial_forms_verb()', SOURCE)
-        self.assertIn('martial_practice(amount / 2)', CONDITIONING)
-
+        
     def test_travel_hooks(self):
         self.assertIn('P["martial"] = martial', TRAVEL)
         self.assertIn('!martial_travel_valid(P["martial"])', TRAVEL)

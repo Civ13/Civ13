@@ -1923,7 +1923,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (9) ---
+		// --- iron_smithing (10) ---
+		"/obj/item/weapon/grapnel" = "iron_smithing",
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",
 		"/obj/covers/iron_plate" = "iron_smithing",
@@ -1979,9 +1980,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",
 		"/obj/item/weapon/wirecutters" = "iron_tools",
-		// --- martial_disciplines (2) ---
+		// --- martial_disciplines (3) ---
 		"/obj/structure/striking_post" = "martial_disciplines",
 		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
+		"/obj/structure/martial_gear/heavy_bag" = "martial_disciplines",
+		// --- school_wing_chun (1) ---
+		"/obj/structure/martial_gear/wooden_dummy" = "school_wing_chun",
 		// --- law_order (15) ---
 		"/obj/covers/jail/steeljail" = "law_order",
 		"/obj/covers/jail/woodjail" = "law_order",
