@@ -20,6 +20,7 @@
 #define WORK_MINE "mine"
 #define WORK_CHOP "chop"
 #define WORK_TILL "till"
+#define WORK_SHIFT "shift" // moving loose earth: piles, backfill, filling roads
 // Bounds on a worker's total wait multiplier against the base wait.
 #define WORK_MIN_MULT 0.25
 #define WORK_MAX_MULT 3

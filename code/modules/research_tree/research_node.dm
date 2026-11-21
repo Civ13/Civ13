@@ -2216,6 +2216,10 @@ var/global/list/node_grid_col_cache = null
 		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
 		"/obj/item/weapon/material/shovel/navvy" = "machined_tools",
+		"/obj/item/weapon/material/shovel/mattock" = "bronze_working",
+		"/obj/structure/wheelbarrow" = "iron_tools",
+		"/obj/structure/closet/crate/cart/slip_scraper" = "wagons_ships",
+		"/obj/item/weapon/grenade/blasting_charge" = "gunpowder",
 		"/obj/item/weapon/material/hatchet/chainsaw" = "power_tools",
 		"/obj/structure/drill" = "electricity",
 		"/obj/structure/drill/fracking" = "hydraulic_fracturing",

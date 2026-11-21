@@ -120,6 +120,7 @@
 	value = 55
 
 /obj/item/weapon/material/shovel
+	var/shifting_mult = 1 // speed at moving loose earth against breaking ground (work_speed.dm)
 	tool_flags = TOOL_SHOVEL
 	name = "shovel"
 	desc = "A long tool for digging and moving dirt."
