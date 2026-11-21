@@ -46,6 +46,12 @@
   "weight": "17",
   "integrity": "150"
  },
+ "/material/cannabis": {
+  "hardness": "10"
+ },
+ "/material/cannabis_fresh": {
+  "hardness": "10"
+ },
  "/material/carpet": {
   "hardness": "12"
  },
