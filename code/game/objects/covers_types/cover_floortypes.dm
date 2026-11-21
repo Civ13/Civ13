@@ -215,6 +215,10 @@
 	if (!directional_trim)
 		verbs -= /obj/covers/tatami/trim/verb/rotate_trim
 
+/obj/covers/tatami/trim/persistence_runtime_var(key)
+	// The base mat is derived on construction; only the cover type and direction need saving.
+	return key == "underlays" || ..()
+
 /obj/covers/tatami/trim/verb/rotate_trim()
 	set name = "Rotate Tatami Trim"
 	set category = null

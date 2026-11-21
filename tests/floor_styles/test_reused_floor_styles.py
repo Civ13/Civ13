@@ -96,6 +96,9 @@ class ReusedFloorStyles(unittest.TestCase):
         self.assertIn('underlays += image(icon = \'icons/turf/floors.dmi\', icon_state = "tatami0")', new)
         self.assertIn('verbs -= /obj/covers/tatami/trim/verb/rotate_trim', new)
         self.assertIn('directional_trim = FALSE', source_body('/obj/covers/tatami/trim/full'))
+        runtime = source_body('/obj/covers/tatami/trim/persistence_runtime_var(key)')
+        self.assertIn('return key == "underlays" || ..()', runtime)
+        self.assertNotIn('"dir"', runtime)
         rotate = source_body('/obj/covers/tatami/trim/verb/rotate_trim()')
         for guard in ('!directional_trim', '!isliving(usr)', 'usr.incapacitated()',
                       '!usr.Adjacent(src)', 'persistence_save_in_progress',
