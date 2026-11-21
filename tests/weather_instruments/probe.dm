@@ -133,7 +133,6 @@ var/wi_runtime_error = FALSE
 	var/obj/structure/weather_instrument/rain_gauge/out = new(field)
 	var/obj/structure/weather_instrument/rain_gauge/under = new(hall)
 	wi_check(out in weather_instruments(), "gauges join the instrument list")
-	season = "SPRING" // the old climate table rains in a temperate spring
 	wi_storm(20, 32)
 	weather_storm_count = max(weather_storm_count, 1)
 	for (var/n = 1, n <= 20, n++)
@@ -198,3 +197,8 @@ var/wi_runtime_error = FALSE
 	wi_check(findtext(outlook, "low lies to the east") && findtext(outlook, "coming"), "a low coming from the east ([outlook])")
 	L.vel_x = 0.01
 	wi_check(findtext(weather_station_outlook(ST), "moving away"), "and one going away")
+
+	// Temperate summers rain (they used to stay dry).
+	season = "SUMMER"
+	var/list/summer = climate_weather_state("temperate", WEATHER_WET, 2)
+	wi_check(summer[1] == "rain2" && summer[2] == WEATHER_WET, "a temperate summer storm rains ([summer[1]])")
