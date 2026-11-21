@@ -48,7 +48,8 @@ that is in the tile's climate and the current season, so one storm rains on
 temperate ground, snows on tundra and raises sand over dry desert. That table
 is the one zone weather has always used; the Farmer's Almanac test reads it.
 Roofed areas are always `WEATHER_NONE`. What the weather does to the air
-temperature is in [climate-normals.md](climate-normals.md).
+temperature is in [climate-normals.md](climate-normals.md), and the air grid
+of temperature, humidity, pressure and cloud is in [weather-air.md](weather-air.md).
 
 ## Rolls and events
 
@@ -56,7 +57,7 @@ The weather process still rolls the season's pool through
 `change_weather_somehow()` and the per-map policy in
 [weather-policy.md](weather-policy.md). A wet or extreme result now calls
 `weather_roll()`, which sends one storm across the map instead of changing
-every zone. Wide maps are rolled more often and hold more storms at once
+every zone. The storm forms on a low's front ([weather-fronts.md](weather-fronts.md)). Wide maps are rolled more often and hold more storms at once
 (`weather_system_capacity()`: one per 40,000 tiles, at most 6).
 
 The scripted blizzard, sandstorm and heat wave timers are gone, along with
@@ -183,13 +184,16 @@ what is drawn.
 
 `weather_upwind_distance()` computes the backward offset to the nearest map
 edge beyond the storm's bounding oval. It preserves current cardinal spawn
-coordinates and accepts diagonal vectors for future use. Gameplay still selects
-only cardinal winds; scheduled arrival timing, wind veering, sailing and vane
-art are unchanged. The weather probe includes cardinal parity and diagonal
-near-corner boundary checks.
+coordinates and accepts diagonal vectors for future use. Storms and sailing use
+the same wind-from heading parser, which accepts all eight compass headings and
+falls back to West. Storms use the opposite direction as a grid step (both axes
+step on a diagonal), not a normalized speed vector. Gameplay and the admin wind
+selector still choose only cardinal winds. Scheduled arrival timing, veering,
+cardinal sailing and vane art are unchanged. The weather probe includes cardinal
+parity and diagonal near-corner boundary checks.
 
 ## Not yet done
 
-Moisture gained over water and lost over high ground, wind in eight
-directions, lightning that starts fires (and poles that draw it away), and
-rip tides.
+Moisture gained over water and lost over high ground, naturally selecting all
+eight wind directions, lightning that starts fires (and poles that draw it
+away), and rip tides.

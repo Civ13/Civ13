@@ -21,6 +21,15 @@ config has a horizontal sill and a south-side border. Rotate all pieces in a
 span together, and preserve their left-to-right order relative to SOUTH.
 Directions are single-frame BYOND S, N, E, W.
 
+The sill and border come in two tones. The plain types sit on the light
+cobblestone floors; the `/dark` types (`sill/dark`, `sill/dark/cap_left`,
+`trim/dark`, `trim/dark/inside` and so on) sit on the default and dark crosswise
+cobblestone floors. Keep one tone per room.
+
+The four cobblestone floor states are drawn by `scripts/draw_cobble_floors.py`
+and the two kits by `scripts/draw_cobble_floor_trim.py --tone light|dark`. Run
+the floor script first: the kits take their field and stone colour from it.
+
 ## Terracotta
 
 The `/obj/covers/stone/slab/decorative/terracotta` family comprises the field,
@@ -38,6 +47,9 @@ and mapper integration.
 
 ```sh
 python3 scripts/check_floor_palette_assets.py
+python3 scripts/draw_cobble_floors.py --repo-root . --check
+python3 scripts/draw_cobble_floor_trim.py --repo-root . --tone light --output icons/turf/flooring/cobble_trim.dmi --check
+python3 scripts/draw_cobble_floor_trim.py --repo-root . --tone dark --output icons/turf/flooring/cobble_trim_dark.dmi --check
 ```
 
 The check compares the 32-pixel DMI state, frames and direction metadata against
@@ -55,3 +67,12 @@ not a second cover. Lay it from bamboo and use **Rotate Tatami Trim** from
 beside the installed mat to align a directional border. The fully framed mat
 does not need rotation. Wood recipes use distinct construction types with
 the same sprites, so old mapped floors do not acquire new salvage.
+
+## Refreshed stock floors
+
+`scripts/draw_floor_refresh.py` redraws mossy old stone, the plain marble floor
+and the three raw pink marble slabs, darkens the dark tatami, and moves wood
+patterns 1, 7 and 8 onto the warm brown hues of the other wood floors. The pink
+slabs share their edge crossings, so the random pick per tile never shows a
+break. The eleven wood patterns carry descriptive names (narrow plank,
+basketweave, herringbone, parquet and so on) in place of numbers.

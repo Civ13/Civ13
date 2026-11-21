@@ -52,15 +52,17 @@ var/global/weather_storm_count = 0
 
 // 0 outside the oval, rising to the system's power over its outer 40%.
 /datum/weather_system/proc/strength_at(x, y)
-	var/dx = (x - centre_x()) / radius_x
+	var/offset_x = x - centre_x()
+	var/dx = offset_x / radius_x
 	if (dx >= 1.1 || dx <= -1.1)
 		return 0
-	var/dy = (y - centre_y()) / radius_y
+	var/offset_y = y - centre_y()
+	var/dy = offset_y / radius_y
 	var/reach = dx * dx + dy * dy
 	if (reach >= 1.21)
 		return 0
 	// A ragged edge, fixed to the system so it travels with it.
-	var/d = sqrt(reach) + 0.08 * sin((x - centre_x()) * 9 + (y - centre_y()) * 5 + wobble)
+	var/d = sqrt(reach) + 0.08 * sin(offset_x * 9 + offset_y * 5 + wobble)
 	if (d >= 1)
 		return 0
 	return power() * min(1, (1 - d) * 2.5)
@@ -114,17 +116,31 @@ var/global/weather_storm_count = 0
 
 // ---- wind ---------------------------------------------------
 
-// The way the wind carries things, as a unit step. winddirection names where
-// the wind blows from (a ship sailing north into a "North" wind is slowest).
+// The compass heading the wind blows from, shared by storms and sailing.
+// Saved winds and current selection use the cardinal headings. The parser
+// also accepts diagonal headings without changing which winds are selected.
+/proc/weather_wind_from_dir(direction)
+	if (istext(direction))
+		var/heading = text2dir(direction)
+		if (heading)
+			return heading
+	return WEST
+
+// The opposite heading, as a grid step, not a normalized speed vector.
+// For example, a "North" wind carries a storm south.
 /proc/weather_wind_vector()
-	switch (map ? map.winddirection : "West")
-		if ("North")
-			return list(0, -1)
-		if ("South")
-			return list(0, 1)
-		if ("East")
-			return list(-1, 0)
-	return list(1, 0)
+	var/from_dir = weather_wind_from_dir(map?.winddirection)
+	var/wind_x = 0
+	var/wind_y = 0
+	if (from_dir & WEST)
+		wind_x = 1
+	else if (from_dir & EAST)
+		wind_x = -1
+	if (from_dir & SOUTH)
+		wind_y = 1
+	else if (from_dir & NORTH)
+		wind_y = -1
+	return list(wind_x, wind_y)
 
 // Distance backwards along a nonzero wind vector until the whole bounding
 // oval is outside one map edge. Choosing the nearer exit avoids overshooting
@@ -245,7 +261,8 @@ var/global/weather_storm_count = 0
 			storms++
 	if (storms >= weather_system_capacity())
 		return
-	weather_system_spawn(WEATHER_SYSTEM_STORM, result == WEATHER_EXTREME)
+	// The storm forms on a low's front (weather_fronts.dm).
+	weather_front_storm(result == WEATHER_EXTREME)
 
 // ---- the weather on a tile ---------------------------------
 
@@ -389,6 +406,7 @@ var/global/weather_sample_zone_look = null
 		if (abs(new_x - S.vel_x) > 0.0002 || abs(new_y - S.vel_y) > 0.0002)
 			S.set_course(new_x, new_y)
 	weather_systems_tell()
+	weather_air_step()
 
 /proc/weather_bearing(dx, dy)
 	if (abs(dx) > abs(dy) * 2)

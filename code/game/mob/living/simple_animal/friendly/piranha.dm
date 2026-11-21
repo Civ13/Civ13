@@ -104,7 +104,7 @@ PIRANHA_CALM_TIME out of reach, and anyone in the air (a jump) is never bitten.
 	H.piranha_last_bite = world.time
 	invisibility = 0
 	if (H.piranha_bites == 1)
-		H.apply_damage(PIRANHA_NIP_DAMAGE, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1)
+		H.apply_damage(PIRANHA_NIP_DAMAGE, BRUTE, affecting, H.run_armor_check(affecting, HIT_PIERCE), sharp=1)
 		to_chat(H, SPAN_DANGER("Something nips your [affecting.name]! Piranhas - get out of the water!"))
 		visible_message("<span class='notice'>Piranhas flash around [H]!</span>")
 		return
@@ -116,7 +116,7 @@ PIRANHA_CALM_TIME out of reach, and anyone in the air (a jump) is never bitten.
 			NB.adjust_mood(-(10))
 		return
 	var/damage = min(PIRANHA_NIP_DAMAGE + 2 * H.piranha_bites, PIRANHA_BITE_CAP)
-	H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+	H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, HIT_PIERCE), sharp=1, edge=1)
 	if (H.piranha_bites >= 4)
 		visible_message("<span class='danger'>The water churns red as the piranhas tear at [H]'s [affecting.name]!</span>")
 	else

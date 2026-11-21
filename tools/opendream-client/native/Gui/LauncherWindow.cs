@@ -64,6 +64,11 @@ internal sealed partial class LauncherWindow : Form {
     // The last status lines the board was drawn from, kept so a later update check can redraw it.
     private string serverStatusOutput = "", groupStatusOutput = "";
     private string? hostStatusProblem;
+    // Experimental WMI watch (WmiHealth, off unless experimental.json turns it on): the last warning, if any.
+    private string? wmiWarning;
+    private DateTime wmiCheckedAt = DateTime.MinValue;
+    private bool wmiChecking;
+    private static readonly TimeSpan WmiCheckEvery = TimeSpan.FromMinutes(10);
     private bool? plainRunning;
     private DateTime hostCheckedAt;
     private bool hostRefreshing, hostRefreshAgain;
@@ -310,6 +315,12 @@ internal sealed partial class LauncherWindow : Form {
                     // Read-only host report for the whole group (PlayerActivity, shard_group.py activity): no host gate.
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
                     using var dialog = new PlayerActivityDialog(control);
+                    dialog.ShowDialog(this);
+                    return Task.CompletedTask;
+                }, null),
+                ("Windows process check (experimental)…", () => {
+                    // Is Windows' WMI service answering? Read-only check plus one-click repairs, each elevated only on a click (WmiHealth).
+                    using var dialog = new WmiHealthDialog(root);
                     dialog.ShowDialog(this);
                     return Task.CompletedTask;
                 }, null),
@@ -810,6 +821,20 @@ internal sealed partial class LauncherWindow : Form {
         } finally { hostRefreshing = false; }
     }
 
+    private async Task WatchWmi(bool now) {
+        if (wmiChecking || !WmiHealth.Enabled(root) || (!now && DateTime.Now - wmiCheckedAt < WmiCheckEvery)) return;
+        wmiChecking = true;
+        try {
+            var diagnosis = await Task.Run(() => WmiHealth.Check());
+            wmiCheckedAt = DateTime.Now;
+            var warning = diagnosis.NeedsHelp ? "Windows' process service (WMI): " + diagnosis.Summary + " All regions > More > Windows process check." : null;
+            if (warning != wmiWarning) {
+                wmiWarning = warning;
+                if (warning != null) HostLine(warning);
+            }
+        } finally { wmiChecking = false; }
+    }
+
     private async Task ReadHostState(HostProfile profile) {
         if (profile.Control is { } control) {
             ControlAnswer answer;
@@ -846,6 +871,10 @@ internal sealed partial class LauncherWindow : Form {
             }
             hostStateText = text;
             hostCheckedAt = DateTime.Now;
+            // A status read that timed out is the usual first sign of a broken WMI; check it at once then.
+            var timedOut = hostStatusProblem?.Contains("did not answer within", StringComparison.Ordinal) == true;
+            _ = WatchWmi(timedOut);
+            if (wmiWarning != null) hostStatusProblem = hostStatusProblem == null ? wmiWarning : hostStatusProblem + Environment.NewLine + wmiWarning;
             ShowBoard();
             ApplyHostGates();
             return;
@@ -1195,7 +1224,7 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     // Update when empty (group config update_when_empty): once the last player leaves a region and it has saved,
-    // the host service builds the latest master beside it and restarts it onto that build. Applies at the next check.
+    // the host service builds the latest master beside it and attempts a standby handover. Applies at the next check.
     private void ShowUpdateWhenEmpty() {
         if (host?.Control?.Group is not { } group) return;
         bool current, follows;
@@ -1211,10 +1240,11 @@ internal sealed partial class LauncherWindow : Form {
             Text = "When the last player leaves a region and it has saved, the host service checks for new commits (every few minutes). " +
                 "If there are any, it builds them beside the running world, then hands the region over: the save is backed up, the new " +
                 "build loads it beside the old world, and only a load that succeeds takes over. A save the new code cannot read leaves the " +
-                "old world running. Nobody is kicked: if a player joins while it builds, it waits until the region is empty again, and a " +
-                "failed build leaves the world running. Asleep regions keep their build until they are next awake and empty. " +
+                "old world running. The host checks again for players after the standby starts and defers if the region is occupied. " +
+                "The mainland keeps its existing build while asleep or recovering and updates only through a standby handover. " +
+                "Mainlands without save or handover support defer automatic updates. " +
                 "It never wipes a world. A TDM group, which does not save, updates between rounds: the battle takes the update with " +
-                "its next map, and an empty barracks restarts onto it." +
+                "its next map, and an empty non-mainland barracks restarts onto it." +
                 (follows ? "" : " This group does not fetch yet, so turning it on also sets it to follow origin/master.") });
         var enabled = new CheckBox { Text = "Update regions when they are empty", AutoSize = true, Checked = current };
         layout.Controls.Add(enabled);

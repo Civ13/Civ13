@@ -361,8 +361,11 @@ var/global/list/persistence_freeze_notified = list()
 		else if(shutdown)
 			if(!isnull(expected_persistence) && expected_persistence == 0)
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting into a fresh nonpersistent round.</b></font>")
-			else
+			else if(prewarned)
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
+			else
+				// The legacy host command is shared by Stop and Restart; only the host knows if it will start another world.
+				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is shutting down. Your progress has been saved.</b></font>")
 			if(!prewarned)
 				// The host's Save and stop (or restart, which starts the world itself): its
 				// watchdog must not take this exit for a crash, even if the host stopped waiting.

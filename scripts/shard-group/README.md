@@ -339,6 +339,50 @@ nothing.
 The Windows wrappers are `ports.bat`, `set-gate.bat REGION [apply]` and
 `set-port.bat REGION PORT [apply]`.
 
+## Gateway world
+
+A region of kind `GATEWAY` is a small world ([maps/special/gateway.dmm](../../maps/special/gateway.dmm),
+[region_gateway.dm](../../code/modules/persistence/region_gateway.dm)) that sits on
+the front door's port for good and hosts no play. The BYOND hub lists a world by
+the port its DreamDaemon was started on; a standby handover that takes the port
+over with `world.OpenPort` is not listed again, so a playable front door drops off
+the hub after its updates. The gateway is started on its port and stays there:
+
+- Every player who joins it (admins and guests too) is sent on through the relay to
+  the land their character lives in, or to the start region when they have none.
+  It asks its own transfer agent the Join check's question (`/account` claim
+  without a body), which for a world that is nobody's home and not the start region
+  never claims anything: a pending, travelling or unanswered account is told why
+  and tried again every few seconds for two minutes, then offered Try again. A
+  character on a laid-up land across the sea has its land summoned first. Nobody
+  can Join, start a character or be sent there; trails and the Regions panel skip it.
+- It never saves (`save_minutes` 0, `SKIP_PERSISTENCE_SAVING`) and never sleeps.
+  An update is a plain restart on its own port onto the staged build (also when
+  `handover` or `deploy.bat` asks), done by the host service while it is empty.
+- Its hub entry and `status` topic describe the lands behind it: the mainland's map
+  and the players across every land (`group_players`; `players` stays its own count).
+- It is the world the bot watches (it is the gate), and it is always awake to post
+  other lands' OOC to Discord.
+- A group has at most one; it cannot be the mainland or the start region, and it
+  needs the routing relay (`relay_port`).
+
+Putting one in front of a group that already plays takes two commands; the
+launcher has both under All regions > More > Front door and ports:
+
+```
+python shard_group.py --config group.json add-gateway [--region gateway] [--apply]
+python shard_group.py --config group.json set-gate --region gateway [--apply]
+```
+
+`add-gateway` plans, and with `--apply` adds the region to the group file (ports
+chosen like any omitted port), sets it up and starts it on that port while the
+front door keeps playing; its first start compiles it. Once it runs, `set-gate`
+swaps the two worlds' ports as for any front door move: the gateway takes the public
+port and the old front door (Gaia on the live host) moves behind the relay on the
+gateway's port, saved and started again once. `set-gate` refuses a gateway that is
+not running yet, so the public port never waits on a first build. The mainland and
+the start region stay as they were.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback
@@ -450,8 +494,8 @@ The host service (`gaia_host.py serve`) installs a ready build by itself:
 - an awake region that is empty and has saved since its last player (the moment
   it would otherwise go to sleep) is restarted, and its `update` copies
   `region.dmb` and `region.rsc` from the staging worktree instead of compiling;
-- an asleep region is stopped (it saved before it froze) and a cold one is
-  updated the same way, so its next wake starts on the new build.
+- an asleep or cold non-mainland region can take the staged build before its
+  next wake. The mainland retains its existing build until a standby handover.
 
 A staged build is never installed over a newer build, and an `update` of any
 other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
@@ -469,13 +513,20 @@ never a plain restart: the handover backs up the save, the new build loads it
 beside the running world, and only a successful load takes the port. A save the
 new code cannot read (an unknown durable timer, say) fails that load and the old
 world plays on; that build is not tried again unattended, and a refused handover
-(low memory) waits for the next check rather than restarting. A player joining meanwhile holds the
-restart until the region is empty again, a failed build leaves the world
+(low memory) waits for the next check rather than restarting. The host checks
+for players again after the standby boots and defers if anyone has joined; this
+status check is not atomic with the subsequent save request. A failed build leaves the world
 running (and is not retried until the revision changes or a Build update runs).
-Asleep and cold regions
-are staged the same way; an asleep region keeps its old build (the host service
-does not install into it) until it is next awake, empty and saved, when it hands
-over like any other, and a cold region takes the build at its next start. It
+Asleep and cold regions are staged the same way. The mainland keeps its old
+build while asleep or cold and automatically starts that recorded build on a
+wake or watchdog recovery; it takes an update only after an awake, empty and
+saved standby handover. An older mainland build without handover support defers
+automatic updates until an operator updates it manually. A nonpersistent
+mainland likewise defers, because it has no save for the standby to validate.
+If the recorded mainland build is missing or changed, automatic recovery is
+refused for manual investigation. A rejected handover revision stays rejected
+across recovery; an explicit handover retry or a different revision can proceed.
+Non-mainland cold regions can take the build at their next start. It
 never wipes a world. The key is read at each
 check, so the launcher's **Update when empty** toggle applies without a setup;
 turning it on also sets `fetch: origin` and `revision: origin/master` for a
@@ -554,6 +605,15 @@ without stopping it for the load:
    reconnect to the same address within seconds and find their characters as
    after any restart. The region's worktree is checked out at the new revision
    and `build.json` records the live slot.
+
+Automatic handovers additionally require the running world's
+`handover_empty_guard` capability. The save request reserves only an empty
+world; if anyone connects before release (even if they disconnect before the
+standby finishes loading), the host cancels the cutover, keeps the current
+world up and may retry later. New arrivals after a successful automatic
+release must reconnect. Older running builds need one operator-initiated
+update to gain this capability. Manual handovers retain their existing
+warning and player behavior.
 
 A failure before step 4 (the standby does not boot, the save fails, the load is
 rejected or times out after `load_timeout_seconds`, default 1800) stops the

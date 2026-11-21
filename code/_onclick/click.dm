@@ -205,12 +205,14 @@
 		RestrainedClickOn(A)
 		return
 	blackout_click_trace("dispatch")
+	magic_touch_hook(src, A) // repository.dm: a readied tie catches this touch; the click goes on as usual
 	if (in_throw_mode)
 		if (isturf(A) || isturf(A.loc))
 			throw_item(A)
 			return
 		throw_mode_off()
 	var/obj/item/W = get_active_hand() //trying to resolve an item in hand
+	note_familiar_click(src, W, A) // research familiarity (familiarity.dm)
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
 		if (hand)

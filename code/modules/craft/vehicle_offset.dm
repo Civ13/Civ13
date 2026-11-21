@@ -2,7 +2,7 @@
 // Vehicle offsets (docs/vehicle-offset.md): a vehicle that moves by pixels
 // ------------------------------------------------------------
 // One shared sub-tile offset per vehicle, the way free-moving players move.
-// Every pulse writes the same step_x/step_y on everything the vehicle
+// Every pulse synchronizes step_x/step_y on everything the vehicle
 // carries, so the hull, the riders and the cargo stay together to the pixel
 // and the riders' views follow their own step offset. The vehicle's own
 // whole-tile step runs only when the offset passes half a tile; the offset
@@ -74,6 +74,7 @@ var/global/list/vehicle_offset_riders = list()
 	var/crossings = 0
 	var/watch_checked = -1000
 	var/watch_cached = FALSE
+	var/write_changed_steps_only = FALSE
 
 /datum/vehicle_offset/New(atom/movable/vehicle)
 	..()
@@ -134,8 +135,16 @@ var/global/list/vehicle_offset_riders = list()
 
 /datum/vehicle_offset/proc/draw_one(atom/movable/A)
 	var/list/own = carried[A]
-	A.step_x = ox + own[1]
-	A.step_y = oy + own[2]
+	if (write_changed_steps_only)
+		var/target_x = ox + own[1]
+		var/target_y = oy + own[2]
+		if (A.step_x != target_x)
+			A.step_x = target_x
+		if (A.step_y != target_y)
+			A.step_y = target_y
+	else
+		A.step_x = ox + own[1]
+		A.step_y = oy + own[2]
 	own[3] = A.x * VEHICLE_OFFSET_TILE + A.step_x
 	own[4] = A.y * VEHICLE_OFFSET_TILE + A.step_y
 	if (ismob(A))
@@ -356,6 +365,10 @@ var/global/list/vehicle_offset_riders = list()
 	if (V.driver && V.driver.dir == dir && !V.do_vehicle_check())
 		return FALSE
 	return ..()
+
+// Only single-tile boats opt into eliding unchanged native step assignments.
+/datum/vehicle_offset/single/small_boat
+	write_changed_steps_only = TRUE
 
 // Its own do_move.
 /datum/vehicle_offset/single/commit(dir)

@@ -38,7 +38,7 @@ All eras are accepted, preferably store them in relevant sections with appropria
 	item_state = "chitin_armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 15, gun = 5, energy = 15, bomb = 25, bio = 0, rad = FALSE) //weaker than bronze, stronger than bone.
-	slowdown = 0.90
+	slowdown = 0.5
 	health = 30
 
 /* - 2. Classical Era Tribes & Content (Crabs)*/

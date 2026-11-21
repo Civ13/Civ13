@@ -66,7 +66,7 @@
 		apply_coin_mark(issuer, fineness)
 
 /obj/item/stack/proc/stack_compatible(obj/item/stack/S)
-	return TRUE
+	return arcane_same_virtue(src, S)
 
 /obj/item/stack/money/stack_compatible(obj/item/stack/S)
 	var/obj/item/stack/money/M = S

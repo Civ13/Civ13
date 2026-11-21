@@ -157,7 +157,7 @@ class FakeMachine:
     def server_pid(self, port):
         return self.pids_by_port.get(port) if port in self.up else None
 
-    def kill_tree(self, pid):
+    def kill_tree(self, pid, expect=None):
         self.calls.append((['kill_tree', pid], None))
         for port, owner in list(self.pids_by_port.items()):
             if owner == pid:
@@ -695,16 +695,16 @@ class ShardGroupTests(unittest.TestCase):
         # A new start region (launcher Start region) restarts a running coordinator at the next check.
         ended = []
         with mock.patch.object(shard_group, 'coordinator_pid', lambda g: 4242):
-            self.assertFalse(shard_group.ensure_coordinator(group, start, refresh=True, terminate=ended.append))
+            self.assertFalse(shard_group.ensure_coordinator(group, start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
             moved = dict(group, start_region='deep')
-            self.assertTrue(shard_group.ensure_coordinator(moved, start, refresh=True, terminate=ended.append))
+            self.assertTrue(shard_group.ensure_coordinator(moved, start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
         self.assertEqual([4242], ended)
         self.assertEqual('deep', started[1][started[1].index('--start-region') + 1])
         started.pop()
         # So does a new mainland.
         with mock.patch.object(shard_group, 'coordinator_pid', lambda g: 4242):
-            self.assertTrue(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=ended.append))
-            self.assertFalse(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=ended.append))
+            self.assertTrue(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
+            self.assertFalse(shard_group.ensure_coordinator(dict(moved, mainland='deep'), start, refresh=True, terminate=lambda pid, expect=None: ended.append(pid)))
         self.assertEqual('deep', started[1][started[1].index('--mainland') + 1])
         started.pop()
         self.assertEqual('4242', (self.base / 'regions' / 'coordinator.pid').read_text().strip())
@@ -1348,7 +1348,7 @@ class ShardGroupTests(unittest.TestCase):
                 listeners[port].append(pid)
                 listening.add(port)
             return pid
-        def terminate(platform, pid):
+        def terminate(platform, pid, expect=None):
             ended.append(pid)
             alive.discard(pid)
             for port, owners in listeners.items():
@@ -1754,7 +1754,7 @@ class PlayerHelpTests(unittest.TestCase):
             clock[0] += seconds
             self.alive.discard(11)  # gaia sees the stop file; deep (an older bridge without it) does not
         killed = []
-        def kill(pid):
+        def kill(pid, expect=None):
             killed.append(pid)
             self.alive.discard(pid)
         result = shard_group.help_stop(group, timeout=5, sleep=sleep, clock=lambda: clock[0], kill=kill)
@@ -1802,7 +1802,7 @@ class PlayerHelpTests(unittest.TestCase):
         self.alive.add(102)
         self.lock('deep', 102)
         # Stopping one region leaves the other running and is not undone by the host service.
-        def kill(pid):
+        def kill(pid, expect=None):
             self.alive.discard(pid)
         result = shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=kill, region_id='gaia')
         self.assertEqual({'stopped': ['gaia'], 'forced': ['gaia']}, result)
@@ -1818,6 +1818,20 @@ class PlayerHelpTests(unittest.TestCase):
         self.assertEqual((False, True), tuple(shard_group.help_status(group)['regions'][r]['wanted'] for r in ('gaia', 'deep')))
         with self.assertRaises(shard_group.Refused):
             shard_group.help_start(group, start, region_id='moon')
+        # A pid file naming some other process (a reused pid after a reboot) is never ended.
+        self.alive.add(103)
+        self.lock('deep', 103)
+        seen = []
+
+        def refuse(pid, expect=None):
+            seen.append(expect)
+            raise shard_group.Unverified('process %d is not Python (it is C:\\x.exe); it was left running' % pid)
+        result = shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=refuse, region_id='deep')
+        self.assertEqual([], result['forced'])
+        self.assertIn('not Python', result['not_ended']['deep'])
+        self.assertIn(103, self.alive)
+        self.assertEqual('Python', seen[0].what)
+        self.assertIsNotNone(seen[0].born_before, 'the pid file time bounds the process age')
 
     def test_actions_without_player_help(self):
         del self.group['player_help']
@@ -2059,19 +2073,18 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready', host.read_json(host.stage_file))
         self.assertEqual(len(refusals), 2)
 
-    def test_a_cold_region_gets_the_staged_build_before_its_next_wake(self):
+    def test_a_cold_mainland_keeps_its_existing_build_before_wake(self):
         self.group['update_when_empty'] = False
         group, host = self.built()
         host.work('stage', host.request_stage()['operation'])
         host.write_json(host.cold_file, {'frozen_at': 0})
+        self.machine.detached.clear()
         host.watch_step(None)
-        self.assertEqual(self.machine.detached[-1][-2], 'update')
-        host.work('update', self.machine.detached[-1][-1])
-        self.assertEqual(host.built_revision(), NEWER)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] == 'update'])
+        self.assertEqual(host.built_revision(), REVISION)
         self.assertEqual(host.status()['state'], 'cold', 'it still starts on the next wake')
 
-    def test_an_empty_region_restarts_onto_the_staged_build_instead_of_sleeping(self):
-        # Without update_when_empty a staged build still goes in by a restart at the idle minutes.
+    def test_an_empty_mainland_hands_over_instead_of_restarting_at_idle(self):
         self.group['update_when_empty'] = False
         group, host = self.built()
         host.work('stage', host.request_stage()['operation'])
@@ -2079,8 +2092,21 @@ class StagedBuildTests(unittest.TestCase):
         idle, _ = host.watch_step(None)
         self.machine.clock += 15 * 60
         host.watch_step(idle)
-        self.assertEqual(self.machine.detached[-1][-2], 'restart')
+        self.assertEqual(self.machine.detached[-1][-2], 'auto-handover')
         self.assertFalse(host.frozen())
+
+    def test_idle_update_does_not_retry_a_failed_mainland_handover(self):
+        self.group['update_when_empty'] = False
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        host.record(action='auto-handover', phase='failed', revision=NEWER, error='standby load failed')
+        self.machine.up = {1720}
+        self.machine.detached.clear()
+        idle, _ = host.watch_step(None)
+        for _ in range(3):
+            self.machine.clock += 15 * 60
+            idle, _ = host.watch_step(idle)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('restart', 'handover', 'auto-handover')])
 
     def test_an_empty_saved_region_updates_at_once_when_master_moves_on(self):
         # Val (2026-11-13): once the region is empty and has saved, an update is built beside it
@@ -2096,7 +2122,7 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('stage', self.machine.detached[-1][-2], 'only one build')
         host.work('stage', self.machine.detached[-1][-1])
         host.watch_step(idle)
-        self.assertEqual('handover', self.machine.detached[-1][-2], 'the new build loads the save before it takes over')
+        self.assertEqual('auto-handover', self.machine.detached[-1][-2], 'the new build loads the save before it takes over')
 
     def test_an_unattended_update_never_falls_back_to_a_plain_restart(self):
         # A save the new code cannot read must not leave the region down: only a handover,
@@ -2118,7 +2144,7 @@ class StagedBuildTests(unittest.TestCase):
         host.record(action='handover', phase='failed', revision=NEWER, error='the standby world did not load the save in time')
         self.machine.up = {1720}
         host.watch_step(None)
-        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('restart', 'handover')])
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('restart', 'handover', 'auto-handover')])
 
     def test_an_asleep_region_keeps_its_build_until_it_can_hand_over(self):
         group, host = self.built()
@@ -2192,7 +2218,7 @@ class StagedBuildTests(unittest.TestCase):
         host.watch_step(None)
         self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('stage', 'restart')])
 
-    def tdm_built(self, kind='BARRACKS'):
+    def tdm_built(self, kind='BARRACKS', mainland=False):
         # A TDM group (Val, 2026-11-18): rounds never save, so an empty world just restarts.
         self.group['persistent'] = False
         self.group['regions'][0]['kind'] = kind
@@ -2200,6 +2226,10 @@ class StagedBuildTests(unittest.TestCase):
         self.group['regions'][1]['map'] = 'maps/small/tiny.dmm'
         if kind == 'BATTLE':
             self.group['mainland'] = 'deep'
+        elif not mainland:
+            self.group['regions'].append({'id': 'main', 'name': 'Main', 'kind': 'SURFACE', 'port': 1722,
+                                          'map': 'maps/small/tiny.dmm'})
+            self.group['mainland'] = 'main'
         group, host = self.built()
         self.machine.up = {1720}
         self.machine.query = lambda *args, **kwargs: {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32,
@@ -2212,6 +2242,15 @@ class StagedBuildTests(unittest.TestCase):
             return run(argv, cwd, timeout, low_priority)
         self.machine.run = newer_is_not_older
         return group, host
+
+    def test_nonpersistent_mainland_does_not_automatically_restart_for_updates(self):
+        group, host = self.tdm_built(mainland=True)
+        host.work('stage', host.request_stage()['operation'])
+        self.machine.detached.clear()
+        idle, _ = host.watch_step(None)
+        self.machine.clock += 15 * 60
+        host.watch_step(idle)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] in ('restart', 'handover', 'auto-handover', 'update')])
 
     def test_a_tdm_barracks_waits_for_the_battle_to_take_the_update(self):
         # Val (2026-11-18): a restart per merge pinged Discord every few minutes; the barracks
@@ -2369,7 +2408,7 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('asleep', result['accepted']['gaia']['state'])
         self.assertTrue(gaia.frozen(), 'still asleep while it builds')
         self.assertTrue(gaia.install_marker.exists(), 'installed as soon as it is built, host service or not')
-        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        self.machine.terminate = lambda pid, expect=None: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
         gaia.work('stage', self.machine.detached[-1][-1])
         stage = gaia.read_json(gaia.stage_file)
         self.assertEqual(('ready', 'installing'), (stage['phase'], stage.get('install')), stage)
@@ -2383,7 +2422,7 @@ class StagedBuildTests(unittest.TestCase):
         # Val (2026-11-13): asleep regions must be able to take the new update.
         group, host = StagedBuildTests.built(self)
         self.machine.pids = {77}
-        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        self.machine.terminate = lambda pid, expect=None: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
         host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
         self.machine.up = {1720}
         answer = host.request('update')
@@ -2398,7 +2437,7 @@ class StagedBuildTests(unittest.TestCase):
         group, host = StagedBuildTests.built(self)
         host.work('stage', host.request_stage()['operation'])
         self.machine.pids = {77}
-        self.machine.terminate = lambda pid: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
+        self.machine.terminate = lambda pid, expect=None: (self.machine.pids.discard(pid), self.machine.up.discard(1720))
         host.write_json(host.freeze_file, {'pid': 77, 'frozen_at': 0})
         answer = host.request('update')
         self.assertEqual(('update', 'asleep'), (answer['action'], answer['state']), answer)
@@ -2495,7 +2534,7 @@ class HandoverTests(unittest.TestCase):
                         me.write_save(Path(host.config['repository']) / 'map_saves', intent=True)
                 busy = world['handover'] in ('saving', 'saved')
                 return {'ok': True, 'ready': not busy, 'busy': busy, 'session': me.SESSION, 'clients': 3,
-                        'handover': world['handover'], 'error': save_error if world['handover'] == 'saving' else None}
+                        'handover': world['handover'], 'handover_empty_guard': True, 'error': save_error if world['handover'] == 'saving' else None}
             if port == me.STANDBY:
                 if action == 'standby_load':
                     standby.update(standby='loading', operation=operation)
@@ -2526,6 +2565,283 @@ class HandoverTests(unittest.TestCase):
             return start_standby(dmb, port)
         machine.start_standby = boot
         return group, host
+
+    def empty_live_world(self):
+        query = self.machine.query
+        def empty(port, token, action='status', operation=None, session=None, extra=None):
+            answer = query(port, token, action, operation, session, extra)
+            return dict(answer, clients=0) if port == self.LIVE and action == 'status' else answer
+        self.machine.query = empty
+
+    def recover_current_build(self, host):
+        self.machine.up.clear()
+        before = host.read_state()
+        accepted = host.request('start-current')
+        if before.get('revision') == host.staged_revision() and not before.get('retryable'):
+            self.assertEqual((host.read_json(host.failed_handover_file) or {}).get('revision'), before.get('revision'), before)
+        with mock.patch.object(host, 'do_start'):
+            host.work('start-current', accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done')
+        self.machine.up.add(self.LIVE)
+
+    def test_automatic_handover_loads_the_standby_before_releasing_mainland(self):
+        group, host = self.staged()
+        self.empty_live_world()
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
+        names = [action for _, action, _ in self.actions if action != 'status']
+        self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'])
+        self.assertEqual([extra for _, action, extra in self.actions if action == 'handover_save'],
+                         [{'only_if_empty': '1'}])
+
+    def test_automatic_handover_late_save_refusal_defers(self):
+        self.check_automatic_occupancy_refusal('handover_save')
+
+    def test_automatic_handover_late_release_refusal_defers(self):
+        self.check_automatic_occupancy_refusal('handover_release')
+
+    def check_automatic_occupancy_refusal(self, refused_action):
+        group, host = self.staged()
+        self.empty_live_world()
+        query = self.machine.query
+
+        def late_arrival(port, token, action='status', operation=None, session=None, extra=None):
+            if action == refused_action:
+                if action == 'handover_save':
+                    self.assertEqual(extra, {'only_if_empty': '1'})
+                self.actions.append((port, action, extra))
+                raise shard_group.gaia_host.LifecycleRefused('handover_players_arrived')
+            return query(port, token, action, operation, session, extra)
+
+        self.machine.query = late_arrival
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertTrue(state.get('retryable'), state)
+        self.assertFalse(host.failed_staged_handover())
+        self.assertIn(self.LIVE, self.machine.up)
+        self.assertNotIn(self.STANDBY, self.machine.up)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        expected = ['handover_save', 'handover_cancel'] if refused_action == 'handover_save' else [
+            'handover_save', 'standby_load', 'handover_release', 'handover_cancel']
+        self.assertEqual(names, expected)
+
+    def test_automatic_handover_failed_load_keeps_old_world(self):
+        group, host = self.staged(load_error='invalid save')
+        self.empty_live_world()
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed')
+        self.assertEqual(host.read_json(host.failed_handover_file)['revision'], NEWER)
+        self.assertIn(self.LIVE, self.machine.up)
+        self.assertFalse(any(action == 'handover_release' for _, action, _ in self.actions))
+        self.recover_current_build(host)
+        host = self.host(group, 'gaia')  # a new host process must see the same rejection
+        self.assertTrue(host.failed_staged_handover())
+        self.assertIsNone(host.idle_update_action())
+        self.machine.detached.clear()
+        host.watch_step(None)
+        self.assertFalse([argv for argv in self.machine.detached if argv[-2] == 'auto-handover'])
+
+        self.machine.revision = 'f' * 40
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.staged_revision(), 'f' * 40)
+        self.assertFalse(host.failed_staged_handover())
+        self.assertEqual(host.idle_update_action(), 'auto-handover')
+
+    def test_automatic_handover_defers_if_player_arrives_before_lock(self):
+        group, host = self.staged()
+        accepted = host.request('auto-handover')
+        host.work('auto-handover', accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed')
+        self.assertIn('not confirmed empty', host.read_state()['error'])
+        self.assertFalse(any(action == 'handover_save' for _, action, _ in self.actions))
+        self.assertIn(self.LIVE, self.machine.up)
+        self.recover_current_build(host)
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_automatic_handover_failed_save_remains_rejected_after_recovery(self):
+        group, host = self.staged(save_error='World save failed; server remains running')
+        self.empty_live_world()
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.assertIn('World save failed', host.read_state()['error'])
+        self.recover_current_build(host)
+        self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_manual_update_handover_failure_and_retry_survive_recovery(self):
+        group, host = self.staged(load_error='invalid save')
+        host.work('update-handover', host.request('update-handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed', host.read_state())
+        self.assertIn('invalid save', host.read_state()['error'])
+        self.assertTrue(host.failed_staged_handover())
+        self.recover_current_build(host)
+        host = self.host(group, 'gaia')
+        self.assertTrue(host.failed_staged_handover())
+
+        accepted = host.request('update-handover')
+        self.assertTrue(host.failed_handover_file.exists())
+        with mock.patch.object(host, 'do_handover') as handover:
+            host.work('update-handover', accepted['operation'])
+        handover.assert_called_once_with(accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done')
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_failed_manual_update_handover_retry_rejects_revision_again(self):
+        group, host = self.staged(load_error='invalid save')
+        self.empty_live_world()
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.recover_current_build(host)
+        accepted = host.request('update-handover')
+        self.assertTrue(host.failed_handover_file.exists())
+        host.work('update-handover', accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed', host.read_state())
+        self.assertTrue(host.failed_staged_handover())
+        self.recover_current_build(host)
+        self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_early_manual_retry_failure_keeps_the_prior_rejection(self):
+        group, host = self.staged()
+        host.record(action='auto-handover', phase='failed', revision=NEWER, error='invalid save')
+        self.recover_current_build(host)
+        for action, step in (('handover', 'do_handover'), ('update-handover', 'wait_for_build')):
+            with self.subTest(action=action):
+                accepted = host.request(action)
+                with mock.patch.object(host, step, side_effect=RuntimeError('early failure')):
+                    host.work(action, accepted['operation'])
+                self.assertEqual(host.read_state()['phase'], 'failed')
+                self.assertNotIn('revision', host.read_state())
+                self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+                self.recover_current_build(host)
+                self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_concurrent_requests_serialize_rejection_preservation(self):
+        import threading
+        group, host = self.staged()
+        host.record(action='auto-handover', phase='failed', revision=NEWER, error='invalid save')
+        self.machine.up.clear()
+        writing, release, second_finished = threading.Event(), threading.Event(), threading.Event()
+        writes, outcomes = [], []
+        real_write = host.write_json
+
+        def blocked_write(path, value):
+            if path == host.failed_handover_file:
+                writes.append(value)
+                writing.set()
+                if not release.wait(5):
+                    raise RuntimeError('test did not release the writer')
+            return real_write(path, value)
+
+        def request(finished=None):
+            try:
+                outcomes.append(host.request('start-current'))
+            except Exception as error:
+                outcomes.append(error)
+            finally:
+                if finished:
+                    finished.set()
+
+        with mock.patch.object(host, 'write_json', side_effect=blocked_write):
+            first = threading.Thread(target=request)
+            first.start()
+            try:
+                self.assertTrue(writing.wait(5), 'first request did not reach preservation')
+                second = threading.Thread(target=request, args=(second_finished,))
+                second.start()
+                self.assertTrue(second_finished.wait(5), 'the competing request waited on the marker write')
+            finally:
+                release.set()
+                first.join(5)
+                if 'second' in locals():
+                    second.join(5)
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(sum(isinstance(result, shard_group.Refused) for result in outcomes), 1)
+        accepted = next(result for result in outcomes if isinstance(result, dict))
+        with mock.patch.object(host, 'do_start'):
+            host.work('start-current', accepted['operation'])
+        self.assertTrue(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_automatic_handover_defers_if_player_arrives_during_standby_boot(self):
+        group, host = self.staged()
+        query = self.machine.query
+        def joining(port, token, action='status', operation=None, session=None, extra=None):
+            answer = query(port, token, action, operation, session, extra)
+            if port == self.LIVE and action == 'status' and self.STANDBY not in self.machine.up:
+                answer['clients'] = 0
+            return answer
+        self.machine.query = joining
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed')
+        self.assertTrue(host.read_state()['retryable'])
+        self.assertIn(self.LIVE, self.machine.up)
+        self.assertNotIn(self.STANDBY, self.machine.up)
+        self.assertFalse(any(action == 'handover_save' for _, action, _ in self.actions))
+        self.recover_current_build(host)
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_automatic_handover_never_uses_legacy_stop_and_start(self):
+        group, host = self.staged()
+        query = self.machine.query
+        def legacy(port, token, action='status', operation=None, session=None, extra=None):
+            result = query(port, token, action, operation, session, extra)
+            if port == self.LIVE and action == 'status':
+                result.pop('handover_empty_guard', None)
+            return result
+        self.machine.query = legacy
+        with mock.patch.object(host, 'do_stop') as stop, mock.patch.object(host, 'do_update') as update:
+            host.work('auto-handover', host.request('auto-handover')['operation'])
+        self.assertEqual(host.read_state()['phase'], 'failed')
+        self.assertIn('automatic update deferred', host.read_state()['error'])
+        stop.assert_not_called()
+        update.assert_not_called()
+        self.assertEqual([a for _, a, _ in self.actions if a != 'status'], [])
+        self.recover_current_build(host)
+        host = self.host(group, 'gaia')
+        self.assertTrue(host.failed_staged_handover())
+        accepted = host.request('handover')  # an explicit manual retry is allowed
+        with mock.patch.object(host, 'do_handover'):
+            host.work('handover', accepted['operation'])
+        self.assertEqual(host.read_state()['phase'], 'done')
+        self.assertFalse(self.host(group, 'gaia').failed_staged_handover())
+
+    def test_mainland_cold_wake_uses_recorded_build_without_refresh(self):
+        group, host = self.staged()
+        self.machine.up.clear()
+        host.write_json(host.cold_file, {'frozen_at': 0})
+        accepted = host.start_cold('player connection')
+        self.assertEqual(accepted['action'], 'start-current')
+        revisions = []
+        with mock.patch.object(host, 'do_refresh') as refresh, mock.patch.object(host, 'do_start', side_effect=lambda op: revisions.append(host.startup_revision())):
+            host.work('start-current', accepted['operation'])
+        refresh.assert_not_called()
+        self.assertEqual(revisions, [REVISION])
+        self.assertEqual(host.read_state()['phase'], 'done')
+
+    def test_mainland_cold_wake_refuses_a_changed_build(self):
+        group, host = self.staged()
+        self.machine.up.clear()
+        host.write_json(host.cold_file, {'frozen_at': 0})
+        host.dmb().write_bytes(b'changed')
+        with self.assertRaisesRegex(shard_group.Refused, 'missing or changed'):
+            host.start_cold('player connection')
+        self.assertTrue(host.cold_file.exists())
+
+    def test_mainland_watchdog_starts_the_recorded_build_without_refresh(self):
+        group, host = self.staged()
+        self.machine.up.clear()
+        self.machine.detached.clear()
+        host.watchdog_restart('crash', 'lost world')
+        action, operation = self.machine.detached[-1][-2:]
+        self.assertEqual(action, 'start-current')
+        with mock.patch.object(host, 'do_refresh') as refresh, mock.patch.object(host, 'do_start') as start:
+            host.work(action, operation)
+        refresh.assert_not_called()
+        start.assert_called_once_with(operation)
+        self.assertEqual(host.read_state()['phase'], 'done')
+
+    def test_non_mainland_automatic_start_keeps_existing_behavior(self):
+        group, host = self.staged()
+        self.group['mainland'] = 'deep'
+        self.write_group()
+        self.assertEqual(host.automatic_start_action(), 'start')
 
     def test_handover_warns_players_for_the_group_configs_current_warning(self):
         group, host = self.staged()
@@ -3067,7 +3383,7 @@ class SaveValidatorTests(unittest.TestCase):
         with mock.patch.object(shard_group, 'region_config', lambda group, region: {'state_dir': str(self.base / 'regions' / region['id'] / 'data' / 'shard-host')}):
             return shard_group.ensure_save_validation(self.config(), start, free_mb=lambda: free,
                                                       now=lambda: self.clock[0], alive=lambda pid: pid in self.alive,
-                                                      terminate=lambda pid: self.alive.discard(pid))
+                                                      terminate=lambda pid, expect=None: self.alive.discard(pid))
 
     def finish_validator(self, ok=True, files=None):
         """What the validate-only world leaves behind."""

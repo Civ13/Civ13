@@ -60,7 +60,6 @@ scripts\launch_map.bat SUBCOM13
 | Script | Description |
 |---|---|
 | `launch.py` | Pulls latest from git, rebuilds, copies config, starts DreamDaemon. Production server launcher. |
-| `mapswap.py` | Called by the epoch/map vote process. Pulls, rebuilds, copies binaries, kills old server, restarts. |
 | `copyconfigfiles.py` | Copies `config\` files to the live server directory. Called by other scripts. |
 
 ## Configuration

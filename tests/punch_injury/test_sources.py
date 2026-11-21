@@ -33,7 +33,7 @@ class PunchInjurySources(unittest.TestCase):
 
     def test_landed_full_punches_risk_the_hand(self):
         hook = ('if (H != src && istype(attack, /datum/unarmed_attack/punch) && !attack.deal_halloss)\n'
-                '\t\t\t\t\tH.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, "melee"))')
+                '\t\t\t\t\tH.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, HIT_BLUNT))')
         self.assertIn(hook, ATTACK)
         # after the miss/block early return, so only landed punches count
         self.assertLess(ATTACK.index('if (miss_type)\n\t\t\t\t\treturn FALSE'), ATTACK.index(hook))

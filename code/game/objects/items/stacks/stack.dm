@@ -135,6 +135,7 @@
 	if (_amount)
 		var/obj/item/stack/S = new type(src.loc, _amount, FALSE)
 		S.color = color
+		arcane_copy_virtue(src, S)
 		if (prob(_amount/amount * 100))
 			transfer_fingerprints_to(S)
 			if (blood_DNA)
@@ -1630,6 +1631,9 @@
 		return
 	// One floor and one wall per tile (tile_occupancy.dm).
 	var/tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
+	// One railing along each side of a tile (railing_built.dm).
+	if (!tile_refusal)
+		tile_refusal = railing_build_refusal(get_turf(build_loc), recipe.result_type, user)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
 		secondary_refund(H)
@@ -1866,6 +1870,8 @@
 				return
 	// The tile may have gained a floor or wall during the wait.
 	tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
+	if (!tile_refusal)
+		tile_refusal = railing_build_refusal(get_turf(build_loc), recipe.result_type, user)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
 		if (ship_craft)

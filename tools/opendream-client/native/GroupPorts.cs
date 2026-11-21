@@ -26,12 +26,14 @@ public static class GroupPorts {
     // Kinds nobody lives in, so none can be the front door (group_ports.py GATE_REFUSED_KINDS).
     private static readonly string[] NoGateKinds = ["RAID", "EVENT", "TUTORIAL", "EXPEDITION"];
 
-    // action: "ports" (read only), "set-gate" (region) or "set-port" (region and port). apply: carry the plan out;
-    // without it the script only answers with the plan. botProfile: the bot profile.json to repoint with the gate.
+    // action: "ports" (read only), "set-gate" (region), "set-port" (region and port) or "add-gateway" (nothing else).
+    // apply: carry the plan out; without it the script only answers with the plan. botProfile: the bot profile.json
+    // to repoint with the gate.
     public static ProcessStartInfo Step(HostControl control, string action, string? region = null, int? port = null, bool apply = false, string? botProfile = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
-        if (action is not ("ports" or "set-gate" or "set-port")) throw new ArgumentException("Unsupported ports action.", nameof(action));
-        if ((action == "ports") != (region == null) || (region != null && !RegionId.IsMatch(region))) throw new ArgumentException("Not a region id.", nameof(region));
+        if (action is not ("ports" or "set-gate" or "set-port" or "add-gateway")) throw new ArgumentException("Unsupported ports action.", nameof(action));
+        if ((action is "ports" or "add-gateway") != (region == null) || (region != null && !RegionId.IsMatch(region))) throw new ArgumentException("Not a region id.", nameof(region));
+        if (action == "add-gateway" && botProfile != null) throw new ArgumentException("add-gateway moves no bot.", nameof(botProfile));
         if ((action == "set-port") != (port != null) || port is < 1024 or > 65535) throw new ArgumentException("A port is a whole number from 1024 to 65535.", nameof(port));
         if (action == "ports" && (apply || botProfile != null)) throw new ArgumentException("ports only lists.", nameof(apply));
         if (botProfile != null && (botProfile.Length == 0 || botProfile.StartsWith('-') || botProfile.Any(char.IsControl)))
@@ -104,6 +106,14 @@ public static class GroupPorts {
 
     public static Plan RunGate(HostControl control, string region, bool apply, string? botProfile = null, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
         var (exit, output) = (run ?? LocalHosting.RunCaptured)(Step(control, "set-gate", region, null, apply, botProfile));
+        return ParsePlan(exit, output);
+    }
+
+    // A gateway world (shard_group.py add-gateway): an always-up world that takes the front door's port for good and
+    // sends every player on to their land, so the hub listing never follows a game world's restarts. Applying adds,
+    // sets up and starts it beside the current front door; "Make this the front door" on it then swaps the ports.
+    public static Plan RunAddGateway(HostControl control, bool apply, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
+        var (exit, output) = (run ?? LocalHosting.RunCaptured)(Step(control, "add-gateway", null, null, apply));
         return ParsePlan(exit, output);
     }
 

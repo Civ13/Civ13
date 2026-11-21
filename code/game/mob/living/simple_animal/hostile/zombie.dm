@@ -201,7 +201,7 @@
 		var/dam_zone = pick("chest", "l_hand", "r_hand", "l_leg", "r_leg")
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
 		try_infect(H, 3, "zombie", FALSE)
-		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, HIT_CUT), sharp=1, edge=1)
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob
 		L.adjustBruteLoss(damage)

@@ -3,7 +3,8 @@
 // Staff open a live map of a level with every weather system drawn on it: its
 // oval, how strong it is, where it is heading, and the wind. Clicking the map
 // picks a spot or a system; the buttons send a storm or a heat wave over the
-// spot, end the picked system, or clear the sky. It reuses the tactical map's
+// spot, end the picked system, or clear the sky. An air layer shades the
+// air grid (weather_air.dm): temperature, humidity, pressure or cloud. It reuses the tactical map's
 // terrain sampling, like the player map (player_map.dm).
 
 #define WMAP_REFRESH 30 // deciseconds between live updates
@@ -80,7 +81,7 @@ var/global/datum/admin_weather_map_controller/admin_weather_maps = new
 			zone = "extreme, strength [weather_intensity]"
 		if (WEATHER_SMOG)
 			zone = "smog"
-	return json_encode(list("s" = systems, "p" = players, "w" = list(wind[1], wind[2], map ? map.windspeedvar : 1, map ? map.winddesc : ""), "zone" = zone, "season" = season ? "[season]" : "none", "cap" = weather_system_capacity(), "edit" = admin_weather_map_can_change(C) ? 1 : 0))
+	return json_encode(list("s" = systems, "p" = players, "w" = list(wind[1], wind[2], map ? map.windspeedvar : 1, map ? map.winddesc : ""), "zone" = zone, "season" = season ? "[season]" : "none", "cap" = weather_system_capacity(), "a" = weather_air_map_data(), "c" = weather_centres_map_data(), "edit" = admin_weather_map_can_change(C) ? 1 : 0))
 
 /datum/admin_weather_map_controller/Topic(href, href_list)
 	var/client/C = usr ? usr.client : null
@@ -136,6 +137,7 @@ var/global/datum/admin_weather_map_controller/admin_weather_maps = new
 	html += "#list div{padding:2px 3px;cursor:pointer}#list div:hover,#list div.on{background:#33402f}"
 	html += "</style></head><body>"
 	html += "<b>Weather map</b> - level <select id='z' onchange='lvl(this.value)'></select>"
+	html += " - Air layer <select id='lay' onchange='LAY=this.value;draw()'><option value=''>none</option><option value='t'>temperature</option><option value='h'>humidity</option><option value='p'>pressure</option><option value='c'>cloud</option></select>"
 	html += " - North is up. Refreshes every [WMAP_REFRESH / 10] seconds. Weather is the same sky over every level.<br>"
 	html += "<div id='wrap'><canvas id='m' width='[base[2] * scale]' height='[base[3] * scale]'></canvas>"
 	html += "<div id='side'><div id='sky'></div><div id='sel'></div><div id='list'></div></div></div><script>"
@@ -149,7 +151,7 @@ var/global/datum/admin_weather_map_controller/admin_weather_maps = new
 // with textContent only, never as HTML.
 /proc/admin_weather_map_script()
 	return @{"
-var cv=document.getElementById('m'),g=cv.getContext('2d'),bg=document.createElement('canvas'),SEL=null,AT=null;
+var cv=document.getElementById('m'),g=cv.getContext('2d'),bg=document.createElement('canvas'),SEL=null,AT=null,LAY='';
 bg.width=cv.width;bg.height=cv.height;
 (function(){var b=bg.getContext('2d');for(var y=0;y<H;y++){for(var x=0;x<W;x++){b.fillStyle=COL[T.charAt(y*W+x)]||COL['0'];b.fillRect(x*K,(H-1-y)*K,K,K);}}})();
 function px(tx){return (tx-0.5)/CELL*K;}
@@ -165,7 +167,15 @@ function arrow(x,y,dx,dy,len,c){var n=Math.sqrt(dx*dx+dy*dy);if(!n)return;dx/=n;
 g.strokeStyle=c;g.fillStyle=c;g.lineWidth=2;g.beginPath();g.moveTo(x,y);g.lineTo(ex,ey);g.stroke();
 g.beginPath();g.moveTo(ex,ey);g.lineTo(ex-dx*7+dy*4,ey+dy*7+dx*4);g.lineTo(ex-dx*7-dy*4,ey+dy*7-dx*4);g.closePath();g.fill();}
 function levels(){var s=document.getElementById('z');clear(s);for(var i=1;i<=ZMAX;i++){var o=el('option','level '+i);o.value=i;if(i==Z)o.selected=true;s.appendChild(o);}}
-function draw(){g.drawImage(bg,0,0);var i,s;
+function airfill(v){if(LAY=='t'){var f=Math.max(0,Math.min(1,(v+30)/75));return 'rgba('+Math.round(255*f)+','+Math.round(90+60*(1-Math.abs(f-0.5)*2))+','+Math.round(255*(1-f))+',0.45)';}
+if(LAY=='h'){return 'rgba(30,140,230,'+(0.08+0.5*v/100)+')';}
+if(LAY=='p'){var d=Math.max(-1,Math.min(1,(v-1013)/25));return d<0?'rgba(170,60,220,'+(0.1-0.45*d)+')':'rgba(240,170,40,'+(0.1+0.45*d)+')';}
+return 'rgba(235,235,235,'+(0.05+0.55*v/100)+')';}
+function air(){if(!LAY||!D.a)return;var A=D.a,cols=A[0],rows=A[1],cs=A[2],f={t:3,h:4,p:5,c:6}[LAY],vals=A[f];
+for(var r=0;r<rows;r++)for(var c=0;c<cols;c++){var v=vals[r*cols+c];g.fillStyle=airfill(v);var x0=px(c*cs+1),x1=px(c*cs+cs+1),y0=py(r*cs+cs+1),y1=py(r*cs+1);g.fillRect(x0,y0,x1-x0,y1-y0);}}
+function airtip(tx,ty){if(!D.a)return null;var A=D.a,c=Math.min(A[0]-1,Math.floor((tx-1)/A[2])),r=Math.min(A[1]-1,Math.floor((ty-1)/A[2])),i=r*A[0]+c;
+return 'Air here: '+A[3][i]+' C, '+A[4][i]+'% humidity, '+A[5][i]+' hPa, '+A[6][i]+'% cloud';}
+function draw(){g.drawImage(bg,0,0);air();var i,s;
 for(i=0;i<D.s.length;i++){s=D.s[i];var x=px(s[3]),y=py(s[4]),rx=s[5]/CELL*K,ry=s[6]/CELL*K,p=s[7]/100;
 oval(x,y,rx,ry);g.fillStyle=tint(s,0.10+0.25*p);g.fill();
 if(s[1]!='heat'){oval(x,y,rx*0.72,ry*0.72);g.fillStyle=tint(s,0.12+0.2*p);g.fill();oval(x,y,rx*0.4,ry*0.4);g.fillStyle=tint(s,0.15+0.25*p);g.fill();}
@@ -174,6 +184,9 @@ arrow(x,y,s[8],s[9],Math.max(18,rx*0.6),'#fff');
 g.fillStyle='#fff';g.font='bold 12px Verdana';g.fillText('#'+s[0],x+4,y-4);}
 for(i=0;i<D.p.length;i++){g.fillStyle='#000';g.fillRect(px(D.p[i][0])-3,py(D.p[i][1])-3,6,6);g.fillStyle='#f0d81c';g.fillRect(px(D.p[i][0])-2,py(D.p[i][1])-2,4,4);}
 if(AT){g.strokeStyle='#fff';g.lineWidth=1;g.beginPath();g.moveTo(px(AT[0])-8,py(AT[1]));g.lineTo(px(AT[0])+8,py(AT[1]));g.moveTo(px(AT[0]),py(AT[1])-8);g.lineTo(px(AT[0]),py(AT[1])+8);g.stroke();}
+if(D.c){for(i=0;i<D.c.length;i++){var c=D.c[i],cx=px(c[2]),cy=py(c[3]),lo=c[1]=='low';
+oval(cx,cy,c[4]/CELL*K,c[4]/CELL*K);g.strokeStyle=lo?'rgba(220,60,60,0.8)':'rgba(60,120,240,0.8)';g.lineWidth=1;g.setLineDash([6,4]);g.stroke();g.setLineDash([]);
+g.font='bold 22px Verdana';g.fillStyle=lo?'#e04040':'#4080f0';g.fillText(lo?'L':'H',cx-8,cy+8);g.font='11px Verdana';g.fillStyle='#fff';g.fillText((lo?'-':'+')+c[5]+' hPa',cx-18,cy+22);}}
 arrow(30,cv.height-16,D.w[0],D.w[1],22,'#ffe680');
 sky();panel();list();}
 function sky(){var k=document.getElementById('sky');clear(k);
@@ -182,13 +195,14 @@ k.appendChild(document.createTextNode('Season: '+D.season));k.appendChild(el('br
 k.appendChild(document.createTextNode('Wind: '+(D.w[3]||'none')+' (yellow arrow)'));k.appendChild(el('br'));
 k.appendChild(document.createTextNode('Systems: '+D.s.length+' (storms roll up to '+D.cap+' at once)'));k.appendChild(el('br'));
 k.appendChild(document.createTextNode('Pinned zone weather: '+D.zone));k.appendChild(el('br'));
+k.appendChild(document.createTextNode('Pressure centres: '+(D.c?D.c.length:0)+' (red L low, blue H high)'));k.appendChild(el('br'));
 k.appendChild(document.createTextNode('Yellow squares are players. Blue storm, purple severe storm, orange heat wave.'));
 if(D.edit){k.appendChild(el('br'));k.appendChild(btn('Clear the sky',function(){go('wm=clear');}));}}
 function panel(){var p=document.getElementById('sel');clear(p);var s=null;for(var i=0;i<D.s.length;i++)if(D.s[i][0]==SEL)s=D.s[i];
 if(s){p.appendChild(el('b','#'+s[0]+' '+kind(s)));p.appendChild(el('br'));
 p.appendChild(document.createTextNode('Centre '+s[3]+', '+s[4]+'; '+(s[5]*2)+' by '+(s[6]*2)+' tiles; strength '+s[7]+'%; '+s[10]+' min left'));p.appendChild(el('br'));
 if(D.edit)p.appendChild(btn('End this system',function(){go('wm=end&id='+s[0]);}));return;}
-if(AT){p.appendChild(el('b','Spot '+AT[0]+', '+AT[1]));p.appendChild(el('br'));
+if(AT){p.appendChild(el('b','Spot '+AT[0]+', '+AT[1]));p.appendChild(el('br'));var tip=airtip(AT[0],AT[1]);if(tip){p.appendChild(document.createTextNode(tip));p.appendChild(el('br'));}
 if(D.edit){p.appendChild(document.createTextNode('Send here, arriving from upwind in about a minute:'));p.appendChild(el('br'));
 p.appendChild(btn('Storm',function(){go('wm=spawn&k=storm&x='+AT[0]+'&y='+AT[1]);}));
 p.appendChild(btn('Severe storm',function(){go('wm=spawn&k=severe&x='+AT[0]+'&y='+AT[1]);}));
