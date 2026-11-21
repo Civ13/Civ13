@@ -20,6 +20,10 @@ SOURCE = read('code/modules/1713/martial_arts/martial_schools.dm')
 NODES = read('code/modules/research_tree/research_node.dm')
 DEFINES = read('code/__defines/martial.dm')
 TRAVEL = read('code/modules/persistence/region_travel.dm')
+MOVES = read('code/modules/1713/martial_arts/martial_moves.dm')
+GRAB = read('code/game/mob/grab.dm')
+LIVING = read('code/game/mob/living/living.dm')
+MIND = read('code/datums/mind.dm')
 TRAINING = read('code/modules/1713/martial_arts/martial_training.dm')
 RECIPES = read('config/crafting/material_recipes_global.txt')
 ATTACK = read('code/game/mob/living/carbon/human/human_attackhand.dm')
@@ -71,6 +75,29 @@ class Training(unittest.TestCase):
         for name in re.findall(r'^#define (\w+)', TRAINING, re.M):
             self.assertIn('#undef %s' % name, TRAINING)
         self.assertIn('#include "code\\modules\\1713\\martial_arts\\martial_training.dm"', DME)
+
+
+class Moves(unittest.TestCase):
+    def test_every_school_has_moves(self):
+        for school_id, _, _, _ in SCHOOL.findall(SOURCE):
+            self.assertIn('if ("%s")' % school_id, MOVES)
+
+    def test_moves_ride_the_normal_paths(self):
+        self.assertIn('real_damage *= H.martial_punch_mult(hit_zone)', ATTACK)
+        self.assertIn('ratio *= martial_grapple_edge(assailant, affecting)', GRAB)
+        self.assertEqual(LIVING.count('martial_grapple_edge(src, G.assailant)'), 2)
+        self.assertIn('#include "code\\modules\\1713\\martial_arts\\martial_moves.dm"', DME)
+
+    def test_old_ss13_arts_are_retired(self):
+        for name in ('_martial', 'boxing', 'kravmaga', 'sleepingcarp', 'wrestling'):
+            self.assertFalse((ROOT / 'code/modules/1713/martial_arts/%s.dm' % name).exists(), name)
+            self.assertNotIn('martial_arts\\%s.dm' % name, DME)
+        self.assertNotIn('martial_art', MIND)
+        self.assertNotIn('mind.martial_art', ATTACK)
+
+    def test_no_new_global_initialisers(self):
+        # The world's global initialiser is at the compiler's size limit.
+        self.assertNotRegex(MOVES, r'^var/global/', )
 
 
 class Wiring(unittest.TestCase):
