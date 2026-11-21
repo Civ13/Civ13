@@ -71,7 +71,11 @@ var/global/datum/shared_records/shared_records = new
 // near 1.8e9 only holds every 128th second, and json_encode would write it
 // with six significant digits. The snapshot files use digit strings too.
 /datum/shared_records/proc/now_unix()
-	var/stamp = rustg_unix_timestamp()
+	var/stamp = null
+	try
+		stamp = rustg_unix_timestamp()
+	catch
+		stamp = null // rust_g is not installed (a bare Linux host): use the coarse clock below
 	if (istext(stamp))
 		var/dot = findtext(stamp, ".")
 		if (dot)

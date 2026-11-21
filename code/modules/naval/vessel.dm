@@ -338,7 +338,7 @@ var/global/list/naval_vessels = list()
 			for (var/atom/movable/M in S)
 				if (M.loc != S || QDELETED(M))
 					continue
-				if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
+				if (!M.craft_cargo())
 					continue
 				aboard += M
 			cargo[S] = aboard
@@ -412,7 +412,7 @@ var/global/list/naval_vessels = list()
 			var/datum/craft/C = craft_of_vessel(src)
 			for (var/turf/N in moved_to)
 				for (var/atom/movable/M in N)
-					if (M.loc != N || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+					if (M.loc != N || !M.craft_cargo())
 						continue
 					M.craft_turned(C, turned)
 		for (var/turf/N in moved_to)
@@ -710,7 +710,7 @@ var/global/list/naval_vessels = list()
 			surface += T
 		var/turf/above = T.z == base_z ? T : locate(T.x, T.y, base_z)
 		for (var/atom/movable/M in T)
-			if (M.loc != T || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+			if (M.loc != T || QDELETED(M) || !M.craft_cargo())
 				continue
 			if (istype(M, /obj/structure/vehicleparts) || istype(M, /obj/effect/pseudovehicle))
 				// The controls sit inside a frame: take them down with it.

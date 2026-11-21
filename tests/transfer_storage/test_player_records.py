@@ -279,8 +279,8 @@ class SharedRecordsSource(unittest.TestCase):
         verbs = open(os.path.join(ROOT, 'code/modules/admin/admin_verbs.dm'), encoding='utf-8').read()
         for verb in ('admin_memo_write', 'admin_memo_delete', 'player_memo_write', 'player_memo_delete', 'watchlist_show'):
             self.assertIn('/client/proc/' + verb + ',', verbs)
-        admin = open(os.path.join(ROOT, 'code/modules/admin/admin.dm'), encoding='utf-8').read()
-        self.assertIn('player_records_summary_html(M.ckey, src)', admin)
+        panel = open(os.path.join(ROOT, 'code/modules/admin/player_panel_pages.dm'), encoding='utf-8').read()
+        self.assertIn('player_records_tiles_html(M.ckey, src)', panel)
 
     def test_heartbeat_reports_asleep(self):
         activity = open(os.path.join(ROOT, 'code/modules/player_activity/player_activity.dm'), encoding='utf-8').read()

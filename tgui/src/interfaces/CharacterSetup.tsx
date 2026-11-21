@@ -242,7 +242,7 @@ function Chart({ ui }: { ui: UI }) {
     <div className="setup-traits" role="group" aria-label="Signs">{signs.map(sign => {
       const id = str(sign.id), on = living ? id === current : id === choice;
       return <div key={id} className={on ? 'setup-trait setup-trait-on' : 'setup-trait'}>
-        <div className="setup-trait-head"><strong>{str(sign.name)}</strong><Pill tone="muted">{str(sign.season)}</Pill>{on && <Pill tone="ready">{living ? 'Yours' : 'Chosen'}</Pill>}</div>
+        <div className="setup-trait-head">{/^[\w-]+\.png$/.test(str(sign.image)) && <img className="setup-chart-glyph" src={str(sign.image)} width={48} height={48} alt="" />}<strong>{str(sign.name)}</strong><Pill tone="muted">{str(sign.season)}</Pill>{on && <Pill tone="ready">{living ? 'Yours' : 'Chosen'}</Pill>}</div>
         <p className="setup-trait-desc">{str(sign.calling)}</p>
         <p className="setup-chart-up">{str(sign.strengths)}</p>
         <p className="setup-chart-down">{str(sign.weaknesses)}</p>

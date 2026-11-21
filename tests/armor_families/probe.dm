@@ -107,6 +107,33 @@
 	steel_plate.armor_blow_grade = 1.1
 	family_check(steel_plate.armor_value(HIT_BLUNT) == 72 && steel_plate.armor_value(HIT_CUT) == 90 && steel_plate.armor_value("arrow") == 91, "a grade lifts values up to 90 and leaves arrows to their own grade ([steel_plate.armor_value(HIT_BLUNT)]/[steel_plate.armor_value(HIT_CUT)])")
 
+	// A padded jack under armor cushions blows and arrows only.
+	var/obj/item/clothing/jack = new /obj/item/clothing/accessory/armor/padded_jack(locate(2,2,1))
+	family_check(jack.armor_value(HIT_CUT) == 0 && jack.armor_value(HIT_PIERCE) == 0, "a padded jack gives nothing against cuts and thrusts")
+	family_check(jack.armor_value(HIT_BLUNT) == 39 && jack.armor_value("arrow") == 15 && jack.armor_value("melee") == 13, "a padded jack gives blunt 39, arrow 15, melee 13 ([jack.armor_value(HIT_BLUNT)]/[jack.armor_value("arrow")]/[jack.armor_value("melee")])")
+	var/mob/living/human/layered = new(locate(2,3,1))
+	var/obj/item/clothing/under/tunic = new /obj/item/clothing/under/roman(locate(2,3,1))
+	layered.equip_to_slot_or_del(tunic, slot_w_uniform)
+	family_check(layered.w_uniform == tunic, "the layered wearer puts on a tunic")
+	family_check(tunic.can_attach_accessory(jack), "a padded jack goes on the tunic's armor slot")
+	tunic.accessories += jack
+	var/obj/item/clothing/mail_over = new /obj/item/clothing/suit/armor/medieval/chainmail(locate(2,3,1))
+	layered.equip_to_slot_or_del(mail_over, slot_wear_suit)
+	family_check(layered.getarmor("chest", HIT_BLUNT) == 28 + 39 && layered.getarmor("chest", HIT_CUT) == 77, "mail over a padded jack gives blunt [layered.getarmor("chest", HIT_BLUNT)], cut [layered.getarmor("chest", HIT_CUT)]")
+	family_check(layered.getarmor("chest", "arrow") == 50 + 15, "mail over a padded jack gives arrow [layered.getarmor("chest", "arrow")]")
+	family_check(layered.armor_gap_penetration("chest", HIT_PIERCE) == ARMOR_GAP_PENETRATION, "a thrust still finds the gaps in mail over padding")
+	layered.drop_from_inventory(mail_over)
+	family_check(layered.armor_gap_penetration("chest", HIT_PIERCE) == 0, "padding alone has no gaps")
+	// Mail on the armor slot protects as mail; plate over it closes the gaps.
+	tunic.accessories -= jack
+	var/obj/item/clothing/mail_under = new /obj/item/clothing/accessory/armor/chainmail(locate(2,3,1))
+	tunic.accessories += mail_under
+	family_check(layered.getarmor("chest", HIT_CUT) == 77, "accessory mail protects as mail (cut [layered.getarmor("chest", HIT_CUT)])")
+	family_check(layered.armor_gap_penetration("chest", HIT_PIERCE) == ARMOR_GAP_PENETRATION, "a thrust finds the gaps in accessory mail")
+	var/obj/item/clothing/plate_over = new /obj/item/clothing/suit/armor/medieval(locate(2,3,1))
+	layered.equip_to_slot_or_del(plate_over, slot_wear_suit)
+	family_check(layered.armor_gap_penetration("chest", HIT_PIERCE) == 0, "plate over mail leaves no gap")
+
 	// Armor never goes out of date: anvil armor stays on offer in later eras.
 	var/obj/structure/anvil/anvil = new(locate(3,3,1))
 	var/mob/living/human/smith = new(locate(3,2,1))

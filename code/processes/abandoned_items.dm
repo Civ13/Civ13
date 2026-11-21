@@ -119,6 +119,7 @@ var/global/abandoned_item_cursor = 1
 	// or scheduler slot is meaningful in this runtime.
 	reset_abandonment()
 	register_abandoned_item()
+	arcane_enchant_loaded() // arcane_enchant.dm
 
 /obj/item/proc/abandonment_protected()
 	if (anchored || nodrop || abstract || contents.len || pulledby || throwing)

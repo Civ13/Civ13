@@ -101,6 +101,7 @@
 /obj/item/Destroy()
 	if (extraction_surface_source?.service) extraction_surface_source.service.observe_disposal(src)
 	unregister_abandoned_item()
+	arcane_enchant_forget() // arcane_enchant.dm
 	actions = list()
 	if (ismob(loc))
 		var/mob/m = loc
