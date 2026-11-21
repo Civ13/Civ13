@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '8baa28bf0c3a703458654b890f21c4b23a670721'
+WIKI_REVIEWED_REVISION = '228402e219179f6914f2366268e8657a4349e8e8'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('bf0420a8d62a4d72031dee075dac3b69c45040e84322c7005c648389b1cd4e24', 'character skills traits languages'),
@@ -83,7 +83,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('24b870c09bbebbf103a2d14ba1a5c149d11b55ae5603d48838ea357896f8f16b', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('97c183623f0ebf9e79e57dcaa87358d43732ef06ccc0817c6aa216666450dd1e', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('0fd2e652e8b00706b9661fa6fd5b608ca4eebcfc3dbba48044fbf2ce0bfa2dee', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('4c4df8eecd80fdfc521fae4b7aa0a3544ddaaba6c96c0fbe3bd67d73d84352d0', 'farming farm plant crops soil water'),
     'guides/Guide_to_Fishing.md': ('1b0cb495916de8649525deabdd27273a00a9b188129619e850412cd2d351d50d', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
