@@ -347,6 +347,7 @@
 #include "code\game\mob\living\carbon\human\nomads_spawn.dm"
 #include "code\game\mob\living\carbon\human\origins.dm"
 #include "code\game\mob\living\carbon\human\peoples.dm"
+#include "code\game\mob\living\carbon\human\peoples_split.dm"
 #include "code\game\mob\living\carbon\human\resuscitation.dm"
 #include "code\game\mob\living\carbon\human\say.dm"
 #include "code\game\mob\living\carbon\human\playstyle_traits.dm"

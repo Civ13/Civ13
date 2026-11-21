@@ -55,6 +55,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_found_people,	//record a new people by hand (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_rename_people,	//rename a people that formed in this world (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_merge_people,	//merge a formed people back into the one it grew from (verbs/peoples_admin.dm),
+	/client/proc/cmd_admin_force_people_split,	//make a nation's people ready to split and optionally name it (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_set_language_score,	//set a language score from 0 to 100,
 	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
 	/client/proc/cmd_admin_create_divine_book,	//write a god's one original book and entrust it to a player,
