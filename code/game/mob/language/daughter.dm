@@ -96,7 +96,9 @@
 
 // Sound changes: each daughter picks some of these by a seed taken from its
 // name, so the same name always sounds the same and two daughters differ.
-var/global/list/language_sound_changes = list(
+var/global/list/language_sound_changes = language_sound_changes_table()
+/proc/language_sound_changes_table()
+	return list(
 	list("c", "ch"), list("ct", "tt"), list("p", "b"), list("t", "d"),
 	list("u", "o"), list("a", "e"), list("e", "ie"), list("o", "ue"),
 	list("s", "h"), list("f", "h"), list("l", "ll"), list("n", "gn"),

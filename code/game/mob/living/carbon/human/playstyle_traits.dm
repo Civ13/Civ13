@@ -8,7 +8,6 @@
 // most drawbacks slow how fast a skill is learned rather than capping it.
 // ============================================================
 
-var/global/list/playstyle_trait_names = list("Recluse Scholar", "Menacing", "Hardened Fighter", "Quartermaster", "Green Thumb", "Tinkerer", "Wanderer", "Rallying Voice")
 var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machinegun", "swords", "throwing")
 
 #define PLAYSTYLE_FAST_SKILL 1.5

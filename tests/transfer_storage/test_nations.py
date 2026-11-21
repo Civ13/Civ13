@@ -15,6 +15,7 @@ from tools.transfer_storage.nations import (NATION_CAPACITY, SECEDE_COOLDOWN, AP
 from tools.transfer_storage.region import RegionStore, TransferError  # noqa: E402
 
 A, B, C, D, E = ('civ:alpha:Ash', 'civ:alpha:Birch', 'civ:alpha:Cedar', 'civ:beta:Dune', 'civ:beta:Elm')
+G, H = 'civ:gamma:Gorse', 'civ:gamma:Holly'
 T = 1_000_000
 
 
@@ -705,6 +706,125 @@ class TreatyTests(unittest.TestCase):
         now = T + 86400
         self.assertIn('decided at once', self.treaty('alpha', A, self.l, 'pact', now=now))  # 3 of 4 senators
         self.assertEqual(self.n.snapshot(now)[self.u]['treaties']['offers']['made'][0]['kind'], 'pact')
+
+
+class VassalTests(TreatyTests.__base__):
+    """Vassals (tools/transfer_storage/nation_vassals.py)."""
+
+    setUp = TreatyTests.setUp
+    ask = TreatyTests.ask
+    treaty = TreatyTests.treaty
+    kinds = TreatyTests.kinds
+
+    def both(self, kind, other_kind, now=T):
+        for f in (A, B):
+            self.treaty('alpha', f, self.l, kind, now=now)
+        out = None
+        for f in (D, E):
+            out = self.treaty('beta', f, self.u, other_kind, now=now)
+        return out
+
+    def test_agreement_binds_and_forbids_war(self):
+        self.assertIn('vassalage is in force', self.both('overlord', 'vassal'))
+        self.assertEqual(self.kinds(self.u), ['overlord'])
+        self.assertEqual(self.kinds(self.l), ['vassal'])
+        self.assertEqual(self.n.overlord_of(self.l), self.u)
+        self.assertIn('cannot go to war', self.treaty('alpha', A, self.l, 'war'))
+        self.assertIn('already in force', self.treaty('alpha', A, self.l, 'overlord'))
+        # Independence waits out the lock, then starts a war.
+        self.assertIn('14 days', self.treaty('beta', D, self.u, 'independence', now=T + 86400))
+        later = T + 15 * 86400
+        self.treaty('beta', D, self.u, 'independence', now=later)
+        self.assertIn('independence', self.treaty('beta', E, self.u, 'independence', now=later))
+        self.assertEqual(self.kinds(self.u, later), ['war'])
+        self.assertIsNone(self.n.overlord_of(self.l))
+
+    def test_surrender_ends_a_war_and_release(self):
+        for f in (A, B):
+            self.treaty('alpha', f, self.l, 'war')
+        self.assertIn('vassalage is in force', self.both('overlord', 'vassal'))
+        self.assertEqual(self.kinds(self.u), ['overlord'])
+        self.assertIn('independence', self.treaty('beta', D, self.u, 'vassal', act='renounce'))
+        self.treaty('alpha', A, self.l, 'overlord', act='renounce')
+        self.assertIn('releases', self.treaty('alpha', B, self.l, 'overlord', act='renounce'))
+        self.assertEqual(self.kinds(self.u), [])
+
+    def test_imposed_after_two_siege_wins_in_war(self):
+        self.assertIn('at war', self.treaty('alpha', A, self.l, 'impose'))
+        for f in (A, B):
+            self.treaty('alpha', f, self.l, 'war')
+        self.ask('alpha', 'siege_won', A, actor='world', other=self.l, now=T + 100)
+        self.assertIn('win 2 sieges', self.treaty('alpha', A, self.l, 'impose', now=T + 200))
+        # A siege won by the other side, or outside a war, does not count for us.
+        self.ask('beta', 'siege_won', D, actor='world', other=self.u, now=T + 150)
+        self.ask('alpha', 'siege_won', B, actor='world', other=self.l, now=T + 300)
+        self.treaty('alpha', A, self.l, 'impose', now=T + 400)
+        self.assertIn('imposes vassalage', self.treaty('alpha', B, self.l, 'impose', now=T + 400))
+        self.assertEqual(self.kinds(self.l, T + 400), ['vassal'])
+        self.assertTrue(self.n.snapshot(T + 400)[self.l]['treaties']['in_force'][0]['imposed'])
+        self.assertEqual(self.n.legitimacy(self.l), 45)
+
+    def test_wins_lapse(self):
+        for f in (A, B):
+            self.treaty('alpha', f, self.l, 'war')
+        for f in (A, B):
+            self.ask('alpha', 'siege_won', f, actor='world', other=self.l, now=T + 100)
+        late = T + 15 * 86400
+        self.assertIn('win 2 sieges', self.treaty('alpha', A, self.l, 'impose', now=late))
+
+    def test_no_chains_and_dissolve(self):
+        self.ask('gamma', 'found', G, name='Third', **{'with': [H]})
+        third = self.n.nation_of(G)
+        self.both('overlord', 'vassal')
+        for f in (G, H):
+            self.treaty('gamma', f, self.l, 'overlord')
+        self.assertIn('already serves', self.treaty('beta', D, third, 'vassal'))
+        self.assertIn('cannot take vassals', self.treaty('beta', D, third, 'overlord'))
+        self.assertIn('with vassals cannot', self.treaty('alpha', A, third, 'vassal'))
+        self.ask('beta', 'secede', E)
+        self.n.snapshot(T)
+        self.assertEqual(self.db.execute('SELECT COUNT(*) FROM nation_vassal').fetchone()[0], 0)
+
+
+class EraGovernmentTests(TreatyTests.__base__):
+    """Era governments (GOVERNMENTS in tools/transfer_storage/nations.py)."""
+
+    setUp = TreatyTests.setUp
+    ask = TreatyTests.ask
+    treaty = TreatyTests.treaty
+
+    def become(self, kind, age, now=T):
+        for f in (A, B):
+            self.ask('alpha', 'era', f, age=age, now=now)
+        out = None
+        for f in (A, B):
+            out = self.ask('alpha', 'govern', f, type=kind, person='val', pname='Val', pfaction=A, now=now)
+        return out
+
+    def test_each_type_waits_for_its_age(self):
+        for kind, age in (('feudal', 2), ('constitutional', 4), ('oneparty', 7)):
+            with self.subTest(kind=kind):
+                self.setUp()
+                self.assertIn('age it belongs to', self.become(kind, age - 1))
+                self.become(kind, age)
+                self.n.snapshot(T + 86400 * 3 + 1)
+                self.assertEqual(self.n.government(self.u)['type'], kind)
+
+    def test_elders_in_the_stone_age_elect_an_eldest(self):
+        self.become('elders', 0)
+        g = self.n.snapshot(T + 86400 + 1)[self.u]['government']
+        self.assertEqual((g['type'], g['ruler'], g['body']), ('elders', 'Eldest', 'senate'))
+
+    def test_feudal_crown_names_an_heir_and_holds_vassals_longer(self):
+        self.become('feudal', 2)
+        now = T + 3 * 86400
+        self.n.snapshot(now)
+        self.assertIn('named heir', self.ask('alpha', 'heir', B, actor='val', role='citizen', now=now,
+                                             person='kim', pname='Kim', pfaction=B))
+        for f in (D, E):
+            self.treaty('beta', f, self.u, 'vassal', now=now)
+        self.assertIn('vassalage is in force', self.treaty('alpha', A, self.l, 'overlord', now=now, actor='val', role='citizen'))
+        self.assertIn('28 days', self.treaty('beta', D, self.u, 'independence', now=now + 20 * 86400))
 
 
 class LegitimacyTests(ElectiveTests.__base__):

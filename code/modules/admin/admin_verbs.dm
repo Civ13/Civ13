@@ -60,6 +60,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_found_people,	//record a new people by hand (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_rename_people,	//rename a people that formed in this world (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_merge_people,	//merge a formed people back into the one it grew from (verbs/peoples_admin.dm),
+	/client/proc/cmd_admin_force_people_split,	//make a nation's people ready to split and optionally name it (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_set_language_score,	//set a language score from 0 to 100,
 	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
 	/client/proc/cmd_admin_create_divine_book,	//write a god's one original book and entrust it to a player,
@@ -203,7 +204,9 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/host_controls,
 	/datum/admins/proc/resume_pending_recovery
 	)
-var/list/admin_verbs_debug = list(
+var/list/admin_verbs_debug = admin_verbs_debug_table()
+/proc/admin_verbs_debug_table()
+	return list(
 	/client/proc/toggle_ecology_spawning,
 	/client/proc/ecology_spawning_status,
 	/client/proc/pollution_status,
@@ -269,7 +272,9 @@ var/list/admin_verbs_rejuv = list(
 	)
 
 //verbs which can be hidden - needs work
-var/list/admin_verbs_hideable = list(
+var/list/admin_verbs_hideable = admin_verbs_hideable_table()
+/proc/admin_verbs_hideable_table()
+	return list(
 	/client/proc/deadmin_self,
 //	/client/proc/deadchat,
 	/datum/admins/proc/toggleenter,

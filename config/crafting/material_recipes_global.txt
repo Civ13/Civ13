@@ -3189,6 +3189,7 @@ RECIPE: /material/iron/,spring door hinges,/obj/item/door_fitting/spring_hinge,2
 RECIPE: /material/iron/,steam sewer pump,/obj/structure/sewer_pump/steam,12,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,hand bilge and cellar pump,/obj/structure/cellar_pump/lever,6,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,anchor,/obj/structure/hull_anchor,8,120,1,1,vehicle parts,41,0,0,8,null
+RECIPE: /material/iron/,boom winch,/obj/structure/strait_winch,20,240,1,1,vehicle parts,41,0,0,8,null
 RECIPE: /material/iron/,steam bilge and mine pump,/obj/structure/cellar_pump/steam,12,250,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,cast iron hand pump,/obj/structure/well_fitting/pump,6,180,1,1,construction,0,0,0,8,null
 RECIPE: /material/iron/,faction door,/obj/structure/simple_door/key_door/faction_door,15,180,1,1,construction,28,0,0,8,null

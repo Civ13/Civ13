@@ -55,6 +55,23 @@
 		return FALSE
 	return a == 10 || a == 127 || (a == 172 && b >= 16 && b <= 31) || (a == 192 && b == 168) || (a == 100 && b >= 64 && b <= 127)
 
+// TRUE for a loopback address: how a player the relay brought here appears.
+/proc/region_relay_ip_loopback(value)
+	return value == "127.0.0.1" || value == "::1"
+
+// The address to route a player's next connection for, from the address this
+// world sees for them and its own internet address. A player on the host's
+// network (a LAN address) reaches the relay from the router's public address,
+// so that address is routed. A player the relay brought here appears from
+// loopback: that is passed on as it is, and the relay keeps the route it holds
+// for the player's own address. Rewriting loopback to the host's public address
+// moved the route off the player, who then arrived unrouted (TDM Barracks to
+// Battle behind the gateway, 2026-11-21).
+/proc/region_relay_route_ip(public, internet)
+	if(region_relay_ip_private(public) && !region_relay_ip_loopback(public) && region_relay_ip_valid(internet) && !region_relay_ip_private(internet))
+		return internet
+	return public
+
 /datum/shard_group/proc/configure_relay(list/settings)
 	relay = null
 	relay_control = null
@@ -139,8 +156,7 @@
 	// A player on the host's own network reached this world from a LAN address,
 	// but their link to the relay goes out through the router and comes back
 	// from its public address (Val, Join to Gaia, 2026-11-15): route that one.
-	if(region_relay_ip_private(public) && region_relay_ip_valid(world.internet_address) && !region_relay_ip_private(world.internet_address))
-		public = world.internet_address
+	public = region_relay_route_ip(public, world.internet_address)
 	var/route = "route=1&ip=[url_encode(public)]&ckey=[url_encode(C.ckey)]&port=[port]"
 	var/list/reply = ask_relay(route)
 	if(reply && !reply["ok"] && C)
@@ -175,6 +191,8 @@
 // The player's real address: their own, or the one the relay routed for them.
 // Null only for a local connection (the host).
 /client/proc/public_address()
+	if(relay_address && (!address || region_relay_ip_loopback(address)))
+		return relay_address
 	return address || relay_address
 
 // A connection from this machine that the relay did not bring here. The relay
@@ -191,7 +209,8 @@
 
 /client/New(TopicData)
 	// Before the bans and the login log read the address.
-	if(!address && shard_group.relay_on())
+	// The relay's connections arrive from loopback (or with no address at all).
+	if((!address || region_relay_ip_loopback(address)) && shard_group.relay_on())
 		relay_address = shard_group.relay_lookup(src)
 	relay_checked = TRUE
 	return ..()

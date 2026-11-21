@@ -344,6 +344,7 @@
 	src.visible_message(SPAN_WARNING("[src] prepares to throw \the [item]!"), SPAN_WARNING("You prepare to throw \the [item]!"))
 	if (item && do_after(src, max(1, round(abs_dist(src, target)/throwtime_divider)), get_turf(src)))
 		playsound(src, 'sound/effects/throw.ogg', 50, TRUE)
+		body_motion_throw(target)
 		remove_from_mob(item)
 		item.loc = loc
 		// Thrown down from an airship's gondola (pedal_airship_combat.dm).

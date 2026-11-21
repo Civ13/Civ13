@@ -223,7 +223,9 @@ var/global/list/persistence_last_save = null
 
 // Engine built-ins that BYOND marks tmp. The saver and loader handle these
 // themselves (position, appearance, bounds), so their treatment is unchanged.
-var/global/list/persistence_builtin_tmp_vars = list(
+var/global/list/persistence_builtin_tmp_vars = persistence_builtin_tmp_vars_table()
+/proc/persistence_builtin_tmp_vars_table()
+	return list(
 	"animate_movement" = TRUE, "loc" = TRUE, "x" = TRUE, "y" = TRUE, "z" = TRUE,
 	"locs" = TRUE, "bound_x" = TRUE, "bound_y" = TRUE, "bound_width" = TRUE,
 	"bound_height" = TRUE, "vis_locs" = TRUE, "pixloc" = TRUE, "visibility" = TRUE,

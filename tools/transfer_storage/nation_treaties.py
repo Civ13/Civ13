@@ -18,8 +18,10 @@ in a confederation. Treaties end when either nation dissolves.
 """
 import json
 
+from tools.transfer_storage.nation_vassals import VASSAL_KINDS
+
 DAY = 24 * 3600
-TREATY_KINDS = ('alliance', 'pact', 'trade', 'war', 'peace')
+TREATY_KINDS = ('alliance', 'pact', 'trade', 'war', 'peace') + VASSAL_KINDS
 TREATY_NAMES = {'alliance': 'an alliance', 'pact': 'a non-aggression pact', 'trade': 'a trade treaty',
                 'war': 'war', 'peace': 'peace'}
 TREATY_OFFER_DAYS = 7
@@ -52,7 +54,7 @@ class NationTreaties:
             'SELECT other, kind, at FROM nation_treaty_offer WHERE nation = ? ORDER BY at', (nation,))],
                   'received': [{'other': n, 'kind': k, 'at': at} for n, k, at in self.db.execute(
             'SELECT nation, kind, at FROM nation_treaty_offer WHERE other = ? ORDER BY at', (nation,))]}
-        return {'in_force': rows, 'offers': offers}
+        return {'in_force': rows + self.vassal_rows(nation), 'offers': offers}
 
     # -- deciding under the nation's government -----------------------------------
 
@@ -60,7 +62,7 @@ class NationTreaties:
         other, kind, act = r['other'], r['treaty'], r['act']
         if other == nation or not self.db.execute('SELECT 1 FROM nation WHERE id = ?', (other,)).fetchone():
             return 'There is no such nation.'
-        check = self.treaty_check(nation, other, kind, act)
+        check = self.treaty_check(nation, other, kind, act, now)
         if check:
             return check
         subject = [act, other, kind]
@@ -81,8 +83,12 @@ class NationTreaties:
             return self.treaty_apply(nation, subject, now)
         return 'Your vote is counted; more than half of the member factions must agree.'
 
-    def treaty_check(self, nation, other, kind, act):
+    def treaty_check(self, nation, other, kind, act, now):
+        if kind in VASSAL_KINDS:
+            return self.vassal_check(nation, other, kind, act, now)  # nation_vassals.py
         at_war = self.treaty(nation, other, 'war')
+        if kind == 'war' and act != 'renounce' and self.bound(nation, other):
+            return 'A vassal and its overlord cannot go to war: declare independence, or release the vassal.'
         if act == 'renounce':
             if kind not in ('alliance', 'pact', 'trade') or not self.treaty(nation, other, kind):
                 return 'There is no such treaty to renounce.'
@@ -103,9 +109,11 @@ class NationTreaties:
         act, other, kind = subject
         if not self.db.execute('SELECT 1 FROM nation WHERE id = ?', (other,)).fetchone():
             return 'There is no such nation.'
-        check = self.treaty_check(nation, other, kind, act)
+        check = self.treaty_check(nation, other, kind, act, now)
         if check:
             return check
+        if kind in VASSAL_KINDS:
+            return self.vassal_apply(nation, subject, now)
         a, b = pair(nation, other)
         if act == 'renounce':
             self.db.execute('DELETE FROM nation_treaty WHERE a = ? AND b = ? AND kind = ?', (a, b, kind))

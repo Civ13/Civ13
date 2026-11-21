@@ -1,4 +1,3 @@
-var/global/list/limb_icon_cache = list()
 
 /obj/item/organ/external/set_dir()
 	return

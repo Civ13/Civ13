@@ -1,0 +1,20 @@
+{
+  "_comment": "Balance numbers for heteromorph true forms (code/modules/divine/heteromorph_form.dm). Hidden mechanic: never quote these in changelogs, the wiki or player guides. Seconds and minutes are real time.",
+  "dragonoid": {
+    "health": 1500,
+    "melee_lower": 30,
+    "melee_upper": 45,
+    "transform_seconds": 10,
+    "max_minutes": 20,
+    "cooldown_minutes": 30,
+    "revert_fraction": 0.15,
+    "revert_brute": 25,
+    "revert_weaken": 8,
+    "nutrition_per_life": 0.5,
+    "water_per_life": 0.25,
+    "takeoff_seconds": 3,
+    "fly_speed": -1,
+    "fly_nutrition_multiplier": 2,
+    "fall_brute": 30
+  }
+}

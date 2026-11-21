@@ -153,9 +153,120 @@ var/peoples_runtime_error = FALSE
 		agent.origin_wish = "fjordfolk"
 		peoples_check(agent.choose_origin("temperate") && agent.origin_id == "fjordfolk", "an agent may ask for a people living there")
 
+		// Splits after long isolation.
+		for (var/mob/living/human/H in human_mob_list.Copy())
+			human_mob_list -= H
+			living_mob_list -= H
+		var/list/pact = list()
+		for (var/i in 1 to 5)
+			var/mob/living/human/H = peoples_person("hearthlanders")
+			H.civilization = "Iron Pact"
+			pact += H
+		var/mob/living/human/pact_fjord = peoples_person("fjordfolk")
+		pact_fjord.civilization = "Iron Pact"
+		var/pact_key = people_community_key("Iron Pact", "hearthlanders")
+		var/list/active = language_lineage_part("people_active")
+		var/list/contact = language_lineage_part("people_contact")
+		var/list/isolation = language_lineage_part("people_isolation")
+		var/list/pending = language_lineage_part("people_pending")
+		var/start_year = 1000
+		peoples_check(!people_year_check(start_year) && language_lineage_part("people_year")["year"] == start_year, "the first tick only marks the year")
+		peoples_check(!people_year_check(start_year + 1) && !isolation[pact_key], "a year nobody played adds nothing")
+		var/year = start_year + 1
+		for (var/i in 1 to 10)
+			active[pact_key] = TRUE
+			people_year_check(++year)
+		peoples_check(isolation[pact_key] == 10, "each played year without contact adds a year apart")
+		active[pact_key] = TRUE
+		contact["Iron Pact"] = TRUE
+		people_year_check(++year)
+		peoples_check(isolation[pact_key] == 5 && !contact.len && !active.len, "a year with contact halves it and the flags reset")
+		var/mob/living/human/neighbour = peoples_person("fjordfolk")
+		neighbour.civilization = "Sea League"
+		var/mob/living/human/S = pact[1]
+		neighbour.client = null
+		S.people_heard(neighbour)
+		peoples_check(!language_lineage_part("people_heard")["Iron Pact"], "speech from a body nobody plays is not contact")
+		isolation[pact_key] = PEOPLE_SPLIT_YEARS - 1
+		active[pact_key] = TRUE
+		peoples_check(!people_year_check(++year) || (pact_key in pending), "the split comes at the year it reaches the limit")
+		peoples_check((pact_key in pending), "a nation apart long enough is ready to split")
+		peoples_check(findtext(jointext(people_isolation_report(), "\n"), "waiting for its leader"), "the admin report shows the waiting split")
+		var/fen_key = people_community_key("Fen Kin", "hearthlanders")
+		isolation[fen_key] = PEOPLE_SPLIT_YEARS + 5
+		people_split_check(year)
+		peoples_check(!(fen_key in pending), "a nation with too few members does not split")
+		peoples_check(isnull(split_people(pact_key, "Germans")) && (pact_key in pending), "a blocked name does not split")
+		var/datum/origin/iron = split_people(pact_key, "Ironvale Folk")
+		peoples_check(istype(iron) && iron.nation == "Iron Pact" && iron.parents[1] == "hearthlanders" && iron.language == "Latin", "naming makes the new people")
+		var/moved = 0
+		for (var/mob/living/human/H in pact)
+			if (H.origin_id == iron.id)
+				moved++
+		peoples_check(moved == 5 && pact_fjord.origin_id == "fjordfolk" && neighbour.origin_id == "fjordfolk", "only the nation's members of that people join it")
+		peoples_check(!(pact_key in pending) && !(pact_key in isolation), "the split clears the wait and the years")
+
+		// Blending.
+		for (var/mob/living/human/H in human_mob_list.Copy())
+			human_mob_list -= H
+			living_mob_list -= H
+		var/list/league = list()
+		for (var/i in 1 to 3)
+			var/mob/living/human/H = peoples_person("fjordfolk")
+			H.civilization = "Sea League"
+			H.loc = locate(1, 1, 1)
+			league += H
+		for (var/i in 1 to 2)
+			var/mob/living/human/H = peoples_person("isleborn")
+			H.civilization = "Sea League"
+			H.loc = locate(2, 1, 1)
+			league += H
+		var/blend_key = people_blend_key("Sea League", "isleborn", "fjordfolk")
+		peoples_check(blend_key == people_blend_key("Sea League", "fjordfolk", "isleborn") && people_blend_pair(people_community_parts(blend_key)[2]).len == 2, "a blend key does not depend on order")
+		var/list/blend_table = language_lineage_part("people_blend")
+		var/list/b_active = list(people_community_key("Sea League", "fjordfolk") = TRUE)
+		for (var/i in 1 to PEOPLE_BLEND_YEARS - 1)
+			people_blend_year(b_active, 2000 + i)
+		peoples_check(blend_table[blend_key] == PEOPLE_BLEND_YEARS - 1 && !(blend_key in pending), "a mixed nation counts years together")
+		people_blend_year(b_active, 2100)
+		peoples_check((blend_key in pending) && people_pending_label(blend_key) == "Fjordfolk and Isleborn", "after enough years the blend waits for a name")
+		var/list/pending_league = people_pending_for("Sea League")
+		peoples_check(pending_league.len == 1, "the leader sees one waiting people")
+		var/datum/origin/tide = blend_people(blend_key, "Tidewater Folk")
+		peoples_check(istype(tide) && tide.parents.len == 2 && tide.parents[1] == "fjordfolk" && tide.language == "Old Norse" && tide.nation == "Sea League", "the blend has both parents and the larger group's tongue")
+		var/still = 0
+		for (var/mob/living/human/H in league)
+			if (H.origin_id == "fjordfolk" || H.origin_id == "isleborn")
+				still++
+		peoples_check(still == 5, "nobody's own people changes")
+		people_blend_year(b_active, 2101)
+		peoples_check(!(blend_key in pending), "a nation does not blend the same two peoples twice")
+		var/mob/living/human/baby = peoples_person(null, null)
+		baby.loc = locate(1, 2, 1)
+		peoples_check(community_blend_people(get_turf(baby), baby) == tide, "the blend belongs to the nation living there")
+		peoples_check(baby.choose_origin("temperate") && baby.origin_id == tide.id, "a newcomer among them is born into the blend")
+		var/mob/living/human/solo = league[5]
+		solo.civilization = "Lone Isle"
+		var/list/lone = list(people_community_key("Lone Isle", "isleborn") = TRUE)
+		people_blend_year(lone, 2102)
+		peoples_check(!length(people_pending_for("Lone Isle")), "a nation too small never blends")
+
+		// Belonging.
+		var/mob/living/human/guest = peoples_person("hearthlanders")
+		guest.loc = locate(1, 1, 1)
+		for (var/i in 1 to PEOPLE_RAISED_YEARS)
+			guest.people_played_year = TRUE
+			people_belong_year()
+		peoples_check(guest.raised_among("fjordfolk") && !guest.raised_among("isleborn") && guest.origin_id == "hearthlanders", "living among a people for years raises a character among them, birth people kept")
+		var/mob/living/human/idle = peoples_person("hearthlanders")
+		idle.loc = locate(1, 1, 1)
+		for (var/i in 1 to PEOPLE_RAISED_YEARS)
+			people_belong_year()
+		peoples_check(!idle.raised_among("fjordfolk"), "years not played do not count")
+
 		// The year.
-		var/year = world_calendar_year()
-		peoples_check(isnum(year) && year > 0 && year == round(year), "the calendar year is a whole number")
+		var/now_year = world_calendar_year()
+		peoples_check(isnum(now_year) && now_year > 0 && now_year == round(now_year), "the calendar year is a whole number")
 	catch(var/exception/e)
 		peoples_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = peoples_failures, "runtime_error" = peoples_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

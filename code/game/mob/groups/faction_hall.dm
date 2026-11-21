@@ -21,7 +21,9 @@ var/global/list/faction_halls = list() // every faction hall, designated or not
 
 // Tier -> list(name, member limit, earliest ordinal age, indoors,
 // list(material kind = list(stack type, amount, label))).
-var/global/list/faction_hall_tiers = list(
+var/global/list/faction_hall_tiers = faction_hall_tiers_table()
+/proc/faction_hall_tiers_table()
+	return list(
 	list("council fire", 15, 0, FALSE, list(
 		"wood" = list(/obj/item/stack/material/wood, 40, "wood"),
 		"stone" = list(/obj/item/stack/material/stone, 40, "stone"))),

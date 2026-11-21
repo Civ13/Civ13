@@ -90,10 +90,60 @@ A character who returns close to where the account's last one died (the
 death legacy, docs/death-legacy.md) keeps that people, if it lives there or
 the start is in the wild. The death record carries `"people"` for this.
 
+## Splits after long isolation
+
+Code: `peoples_split.dm`. Splits are rare on purpose: contact between factions
+is watched, and only a nation that stays out of touch for a long time becomes
+a people of its own. Research eras play no part.
+
+A community is one nation's members of one people. While the drift tick runs,
+it notes which communities had a member playing that year, and which nations
+had contact with another faction or with someone of none: hearing their
+speech (3 lines in a year), or standing within 10 tiles of them (trade,
+visits, a shared settlement). At each new calendar year:
+
+| That year | Years apart |
+| --- | --- |
+| Nobody of the community played | unchanged |
+| Played, no contact | +1 |
+| Played, contact | halved |
+
+At 180 years apart (`PEOPLE_SPLIT_YEARS`, about a month of real time), with at
+least 5 living members (`PEOPLE_SPLIT_MIN`) who are at least half of the
+nation, the community is ready. The nation's Discord-verified leader names it
+with **Name Our People** (IC tab, offered at login too). The name passes the
+blocklist. The living members of that nation and people join the new people,
+whose mother tongue is the one most of them speak natively, which may be a
+daughter language. Nobody else changes.
+
+Admins: **Check Peoples** lists every community's years apart and any waiting
+split; **Force People Split** makes one ready and may name it at once.
+
+## Blending
+
+Code: `peoples_blend.dm`. A nation of at least 4 living members
+(`PEOPLE_BLEND_MIN`) where its two largest peoples each make up a quarter of
+them counts a year together for every played year (a year the mix fails
+halves it). After 30 such years (`PEOPLE_BLEND_YEARS`, about 5 real days), the
+nation's verified leader names a people of both with **Name Our People**. Its
+parents are both peoples and its mother tongue is the larger group's. Nobody's
+own people changes: the blend is the default for newcomers born among that
+nation (`community_blend_people()`), who may still pick a people living there.
+A nation blends the same two peoples once.
+
+## Belonging
+
+A character who plays a year in a community whose most common people is not
+their own counts one year raised among that people (`people_raised`). After
+20 such years (`PEOPLE_RAISED_YEARS`, about 3 real days) their notes read
+"Raised among the X". That people's leader may then welcome them with
+**Welcome Among Us** (IC tab, within 3 tiles), which adds "Welcomed among the X
+by ..." to their notes. Both are records only: a character keeps their birth
+people for life and no game rule reads either.
+
 ## Still to come
 
-Splits after long isolation with little contact between factions, blending
-in mixed settlements, "Raised among", and a family view of peoples.
+A family view of peoples beside the language families view (Fable).
 
 ## Tests
 

@@ -1553,7 +1553,9 @@ var/global/list/firearm_field_slots = list(FIREARM_SLOT_FEED, FIREARM_SLOT_FURNI
 		"nsv_receiver" = list(),
 	)
 
-var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka",
+var/global/list/firearm_family_labels = firearm_family_labels_table()
+/proc/firearm_family_labels_table()
+	return list("ak" = "AK", "ar" = "AR", "mauser" = "Mauser", "mosin" = "Mosin", "arisaka" = "Arisaka",
 	"enfield" = "Lee-Enfield", "springfield" = "Springfield", "lebel" = "Lebel", "berthier" = "Berthier", "carcano" = "Carcano",
 	"murata" = "Murata", "berdan" = "Berdan", "vg" = "Volkssturmgewehr", "m24" = "M24", "sharps" = "Sharps", "rollingblock" = "Rolling-block",
 	"martini" = "Martini-Henry", "ptrd" = "PTRD", "pzb" = "PzB", "barrett" = "Barrett",
@@ -1562,7 +1564,9 @@ var/global/list/firearm_family_labels = list("ak" = "AK", "ar" = "AR", "mauser" 
 	"nambu" = "Nambu", "bergmann" = "Bergmann", "luger" = "Luger", "walther" = "Walther P38", "browninghp" = "Browning Hi-Power", "c96" = "Mauser C96", "borchardt" = "Borchardt", "colthammerless" = "Colt Pocket Hammerless", "m1911" = "M1911", "tt" = "Tokarev", "makarov" = "Makarov", "aps" = "Stechkin", "glock" = "Glock", "beretta" = "Beretta M9", "jericho" = "Jericho 941", "sig250" = "SIG 250", "p220" = "SIG P220", "pl14" = "PL-14", "mp443" = "MP-443", "deagle" = "Desert Eagle", "nagant" = "Nagant", "m1892" = "Modele 1892", "colt_saa" = "Colt Single Action", "colt1892" = "Colt M1892", "policepositive" = "Colt Police Positive", "smithwesson" = "Smith & Wesson", "enfieldno2" = "Enfield No. 2", "webley" = "Webley", "type26" = "Type 26", "derringer" = "Derringer", "magnum44" = "Magnum 44", "mckellen" = "Mckellen", "judge" = "Taurus Judge", "revolving" = "Colt Revolving",
 	"pump" = "Pump-action", "ks23" = "KS-23", "coachgun" = "Coach gun", "mts225" = "MTS-225", "remington11" = "Remington 11", "spas" = "SPAS-12", "saiga" = "Saiga-12", "usas12" = "USAS-12", "ar12" = "AR-12", "mp40" = "MP40", "erma" = "Erma EMP", "mab38" = "MAB 38", "sten" = "Sten", "thompson" = "Thompson", "greasegun" = "M3 Grease Gun", "ppsh" = "PPSh", "ppd" = "PPD", "pps" = "PPS", "type100" = "Type 100", "mp5" = "MP5", "uzi" = "Uzi", "skorpion" = "Skorpion", "tec9" = "TEC-9", "vector" = "Kriss Vector", "mac10" = "MAC-10", "p90" = "P90", "sr3" = "SR-3", "stg" = "StG-44", "fg42" = "FG42", "m14" = "M14", "fal" = "FAL", "g3" = "G3", "ar10" = "AR-10", "hk417" = "HK417", "scar" = "SCAR", "aug" = "AUG", "l85" = "L85", "qbz95" = "QBZ-95", "vz58" = "VZ-58",
 	"bar" = "BAR", "breda30" = "Breda 30", "browninglmg" = "Browning M1919", "dp" = "DP", "madsen" = "Madsen", "mg13" = "MG 13", "mg34" = "MG 34", "type99" = "Type 96/99", "mg3" = "MG 3", "m60" = "M60", "c6" = "C6", "m249" = "M249", "negev" = "Negev", "rpd" = "RPD", "rpk" = "RPK", "pkm" = "PKM", "nsv" = "NSV")
-var/global/list/firearm_caliber_labels = list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
+var/global/list/firearm_caliber_labels = firearm_caliber_labels_table()
+/proc/firearm_caliber_labels_table()
+	return list("a762x39" = "7.62x39mm", "a545x39" = "5.45x39mm", "a556x45" = "5.56x45mm",
 	"a792x57" = "7.92x57mm", "a765x53" = "7.65x53mm", "a7x57" = "7x57mm", "a762x54" = "7.62x54mmR",
 	"a65x50" = "6.5x50mm", "a77x58" = "7.7x58mm", "a303" = ".303 British", "a3006" = ".30-06", "a8x50" = "8x50mmR",
 	"a65x52" = "6.5x52mm", "a8x53" = "8x53mm", "a792x33" = "7.92x33mm Kurz", "a762x51" = "7.62x51mm", "a4570" = ".45-70",

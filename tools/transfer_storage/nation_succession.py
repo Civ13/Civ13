@@ -6,13 +6,15 @@ government allows (GOVERNMENTS 'away', days), the seat passes on:
 
 - Theocracy: the seat goes empty; it follows the faith's leadership whenever a
   world reports a citizen leading the state religion ('faith' op).
-- Monarchy: the named heir takes the throne ('heir' op by the monarch). With
+- Monarchy and feudal crown: the named heir takes the throne ('heir' op by the monarch). With
   none, the throne is empty until a citizen claims it by holding the nation's
   assembly ('claim' op, nation_government.dm).
 - Dictatorship: the government collapses to a confederation.
 - Republic: the consul's named deputy ('deputy' op) acts while an election
   opens at once.
-- Democracy and merchant league: an election opens at once.
+- Democracy, merchant league, council of elders and constitutional monarchy:
+  an election opens at once.
+- One-party state: the seat goes empty until the member factions choose again.
 
 An empty seat under a personal rule leaves its decisions to the member
 factions until it is filled. Heirs, deputies and claimants are citizens with
@@ -20,6 +22,8 @@ a verified account, which their world vouches for.
 """
 
 DAY = 24 * 3600
+# Types whose head names an heir, and whose empty seat can be claimed.
+HEREDITARY = ('monarchy', 'feudal')
 
 
 class NationSuccession:
@@ -65,7 +69,7 @@ class NationSuccession:
     def name_successor(self, nation, r, now):
         g = self.government(nation)
         title = self.government_info(nation)['ruler']
-        wanted = {'monarchy': 'heir', 'republic': 'deputy'}.get(g['type'])
+        wanted = 'heir' if g['type'] in HEREDITARY else {'republic': 'deputy'}.get(g['type'])
         if r['op'] != wanted:
             return 'Your nation has no %s to name.' % r['op']
         if r['actor'] != g['head_account']:
@@ -88,7 +92,7 @@ class NationSuccession:
 
     def claim(self, nation, r, now):
         g = self.government(nation)
-        if g['type'] != 'monarchy' or g['head_account']:
+        if g['type'] not in HEREDITARY or g['head_account']:
             return 'The throne is not empty.'
         self.seat(nation, r['actor'], r['pname'], r['faction'], now)
         return 'You hold the assembly and take the empty throne.'
@@ -107,7 +111,7 @@ class NationSuccession:
             kind = g['type']
             if kind == 'dictatorship':
                 self._collapse(nation, now)
-            elif kind in ('monarchy', 'republic'):
+            elif kind in HEREDITARY + ('republic',):
                 heir = self.successor(nation)
                 if heir and self.nation_of(heir['faction']) == nation:
                     self.seat(nation, heir['account'], heir['name'], heir['faction'], now)

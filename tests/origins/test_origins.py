@@ -130,6 +130,8 @@ class PeoplesAreNeverATarget(unittest.TestCase):
     READERS = {
         'code/game/mob/living/carbon/human/origins.dm',
         'code/game/mob/living/carbon/human/peoples.dm',
+        'code/game/mob/living/carbon/human/peoples_split.dm',
+        'code/game/mob/living/carbon/human/peoples_blend.dm',
         'code/modules/admin/verbs/peoples_admin.dm',
         'code/game/mob/language/proficiency.dm',
         'code/modules/1713/jobs/spawn_outfits.dm',
@@ -138,7 +140,7 @@ class PeoplesAreNeverATarget(unittest.TestCase):
         'code/modules/persistence/region_travel_tongues.dm',
         'code/modules/research_tree/death_legacy.dm',
     }
-    READ = re.compile(r'\borigin_id\b|\bget_origin\(|\borigin_summary\(|\borigin_land\b')
+    READ = re.compile(r'\borigin_id\b|\bget_origin\(|\borigin_summary\(|\borigin_land\b|\bpeople_raised\b|\bpeople_welcomed\b|\braised_among\(')
 
     def test_only_record_keepers_read_a_people(self):
         readers = set()

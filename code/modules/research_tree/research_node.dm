@@ -2988,6 +2988,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/berth/deck" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
 		"/obj/structure/hull_anchor" = "wagons_ships",
+		"/obj/structure/strait_winch" = "wagons_ships",
 		"/obj/structure/hull_tiller/steering_oar" = "oared_ships",
 		"/obj/structure/hull_anchor/stone" = "oared_ships",
 		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",

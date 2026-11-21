@@ -268,9 +268,10 @@
 		chambered = null
 
 // Drops a casing the gun's action threw out onto the gun's tile, where it can be
-// picked up for handloading and decays like other spent brass. A tile keeps at
-// most CASINGS_PER_TILE spent casings; later ones are deleted so a machine gun
-// firing from one spot stays cheap. Live rounds are always kept.
+// picked up for handloading and decays like other spent brass. Spent casings
+// join a heap of the same cartridge on the tile (item_heaps.dm), so a machine
+// gun firing from one spot leaves one object, not hundreds. A heap holds at most
+// CASINGS_PER_TILE casings; later ones are deleted. Live rounds are always kept.
 /obj/item/weapon/gun/projectile/proc/drop_casing(obj/item/ammo_casing/C)
 	if (!C)
 		return
@@ -279,11 +280,12 @@
 		qdel(C)
 		return
 	if (!C.BB)
-		var/spent = 0
-		for (var/obj/item/ammo_casing/other in T)
-			if (!other.BB && ++spent >= CASINGS_PER_TILE)
-				qdel(C)
-				return
+		var/obj/item/H = C.heap_find(T)
+		if (H)
+			if (H.heap_count < CASINGS_PER_TILE)
+				H.heap_add(1)
+			qdel(C)
+			return
 	C.loc = T
 	C.randomrotation()
 
@@ -404,6 +406,9 @@
 		return FALSE
 	if (caliber != C.caliber)
 		to_chat(user, "<span class='warning'>\The [C] is of the wrong caliber!</span>")
+		return FALSE
+	if (C.heap_count > 1)
+		to_chat(user, "<span class='warning'>Take one casing from \the [C] first.</span>")
 		return FALSE
 	if (loaded.len >= max_shells)
 		to_chat(user, "<span class='warning'>[src] is full.</span>")

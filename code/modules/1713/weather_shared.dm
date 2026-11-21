@@ -36,7 +36,9 @@
 
 // Land id = list(width, height, latitude). The oceans' sizes come from
 // world_oceans; their latitudes are here.
-var/global/list/weather_region_frames = list(
+var/global/list/weather_region_frames = weather_region_frames_table()
+/proc/weather_region_frames_table()
+	return list(
 	"northamerica" = list(1132, 920, 35),
 	"southamerica" = list(848, 1224, -20),
 	"gaia" = list(500, 350, 45),
