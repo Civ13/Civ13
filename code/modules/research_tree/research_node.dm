@@ -2144,6 +2144,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gavelblock" = "papermaking",
 		"/obj/item/weapon/gavelhammer" = "papermaking",
 		"/obj/item/weapon/paper" = "papermaking",
+		"/obj/item/ship_draught" = "papermaking",
 		"/obj/item/weapon/pen" = "papermaking",
 		"/obj/item/weapon/stamp/mail" = "papermaking",
 		"/obj/item/weapon/stamp/faction_seal" = "papermaking",

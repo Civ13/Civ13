@@ -463,6 +463,13 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 /obj/item/ship_draught/proc/draught()
 	return draught_code ? ship_draught_from_code(draught_code) : null
 
+// The name of the ship drawn on the sheet, or null when it is blank.
+/obj/item/ship_draught/proc/draughts_name()
+	var/datum/ship_draught/D = draught()
+	. = D ? D.name : null
+	if (D)
+		qdel(D)
+
 /obj/item/ship_draught/proc/take(datum/ship_draught/D)
 	draught_code = D ? D.to_code() : ""
 	name = D ? "ship's draught ([D.name])" : initial(name)
@@ -478,11 +485,13 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 	if (!istype(H))
 		return
 	var/datum/ship_draught/D = draught()
-	var/list/options = list("Paste a design code", "Cancel")
+	var/list/options = list("Draw on the sheet", "Paste a design code", "Cancel")
 	if (D)
-		options.Insert(1, "Copy her design code")
-	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank.", name, "Cancel", options)
-	if (choice == "Copy her design code" && D)
+		options.Insert(2, "Copy her design code")
+	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank. Hold a pen or pencil to draw a ship on it.", name, "Cancel", options)
+	if (choice == "Draw on the sheet")
+		open_designer(H)
+	else if (choice == "Copy her design code" && D)
 		design_code_show(H, "Ship's draught: [D.name]", draught_code, "Paste it into any ship's draught to draw the same ship.")
 	else if (choice == "Paste a design code")
 		var/typed = design_code_ask(H, name, "Paste a ship design code (C13SHIP/...). It replaces what is drawn on this sheet.", DESIGN_CODE_SHIP_MAX)

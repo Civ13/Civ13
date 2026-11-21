@@ -1766,6 +1766,7 @@
 #include "code\modules\naval\sea_weather.dm"
 #include "code\modules\naval\ship_crossing.dm"
 #include "code\modules\naval\ship_crossing_cargo.dm"
+#include "code\modules\naval\ship_designer.dm"
 #include "code\modules\naval\ship_draught.dm"
 #include "code\modules\naval\ship_papers.dm"
 #include "code\modules\naval\ship_voyage.dm"
