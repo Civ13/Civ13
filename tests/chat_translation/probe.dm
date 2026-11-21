@@ -1,6 +1,6 @@
 // Native probe of server-side chat translation (code/modules/chat/chat_translate.dm),
 // included by tests/ecology_spawning/run_linux.py, never by the game DME. The
-// model and the chat window are stood in for: ask_model returns canned answers
+// translator service and the chat window are stood in for: ask_translator returns canned answers
 // and deliver_one records what each window would receive.
 /world
 	hub = ""
@@ -25,7 +25,7 @@
 	var/list/asked = list()
 	var/list/received = list() // "window id" -> list(source, translation)
 	var/model_ticks = 2
-/datum/chat_translator/tr_probe/ask_model(key)
+/datum/chat_translator/tr_probe/ask_translator(key)
 	asked += key
 	sleep(model_ticks)
 	return answers[key]
@@ -54,12 +54,11 @@ var/tr_runtime_error = FALSE
 	var/datum/tr_window/A = new
 	var/datum/tr_window/B = new
 
-	// Off without both settings: still answers, never asks the model.
+	// Off without an address: still answers, never asks the translator.
 	tr_ask(T, A, 1, "en", "hola amigo")
-	tr_check(!T.asked.len && islist(tr_got(T, A, 1)) && tr_got(T, A, 1)[2] == "", "off: answered empty, model not asked")
-	config.chat_translate_url = "http://127.0.0.1:11434/"
-	config.chat_translate_model = "qwen3:8b"
-	tr_check(T.enabled(), "on with an address and a model")
+	tr_check(!T.asked.len && islist(tr_got(T, A, 1)) && tr_got(T, A, 1)[2] == "", "off: answered empty, translator not asked")
+	config.chat_translate_url = "http://127.0.0.1:55581/"
+	tr_check(T.enabled(), "on with an address")
 
 	// Bad requests are ignored.
 	tr_ask(T, A, 0, "en", "hola")
@@ -78,7 +77,7 @@ var/tr_runtime_error = FALSE
 	tr_ask(T, A, 5, "en", "hola amigo")
 	tr_ask(T, B, 1, "en", "hola amigo")
 	sleep(10)
-	tr_check(T.asked.len == 1, "two readers, one model call")
+	tr_check(T.asked.len == 1, "two readers, one translator call")
 	tr_check(tr_got(T, A, 5)[1] == "es" && tr_got(T, A, 5)[2] == "hello friend", "first reader gets the translation")
 	tr_check(tr_got(T, B, 1)[2] == "hello friend", "second reader gets it too")
 	tr_ask(T, B, 2, "en", "hola amigo")
@@ -102,7 +101,7 @@ var/tr_runtime_error = FALSE
 	tr_check(world.time < T.paused_until, "three failures pause translation")
 	var/before = T.asked.len
 	tr_ask(T, A, 11, "en", "bonjour quatre")
-	tr_check(T.asked.len == before && tr_got(T, A, 11)[2] == "", "paused: answered empty, model not asked")
+	tr_check(T.asked.len == before && tr_got(T, A, 11)[2] == "", "paused: answered empty, translator not asked")
 	T.paused_until = 0
 
 	// Per-window limit.
@@ -127,16 +126,16 @@ var/tr_runtime_error = FALSE
 	T.waiting.Cut()
 
 	// Request body and reply parsing.
-	var/body = T.request_body("de", "hola")
-	tr_check(findtext(body, "\"stream\":false") && findtext(body, "\"think\":false") && !findtext(body, "@false@"), "booleans are real JSON booleans")
-	var/list/decoded = json_decode(body)
-	tr_check(decoded["model"] == "qwen3:8b" && decoded["messages"][2]["content"] == "hola", "model and text sent")
-	var/list/r = T.parse_reply(json_encode(list("message" = list("content" = "{\"source\":\"ES\",\"translation\":\" hallo \"}"))), "de", "hola")
+	var/list/decoded = json_decode(T.request_body("de", "hola"))
+	tr_check(decoded["text"] == "hola" && decoded["target"] == "de" && decoded.len == 2, "only the text and the language are sent")
+	var/list/r = T.parse_reply("{\"source\":\"ES\",\"translation\":\" hallo \"}", "de", "hola")
 	tr_check(r && r[1] == "es" && r[2] == "hallo", "reply parsed")
-	r = T.parse_reply(json_encode(list("message" = list("content" = "{\"source\":\"de\",\"translation\":\"hola\"}"))), "de", "hola")
+	r = T.parse_reply("{\"source\":\"de\",\"translation\":\"hola\"}", "de", "hola")
 	tr_check(r && r[2] == "", "same language gives no translation")
+	r = T.parse_reply("{\"source\":\"und\",\"translation\":\"\"}", "de", "hmm")
+	tr_check(r && r[2] == "", "undetected language gives no translation")
 	tr_check(isnull(T.parse_reply("not json", "de", "x")), "bad reply is a failure")
-	tr_check(isnull(T.parse_reply(json_encode(list("message" = list("content" = "nope"))), "de", "x")), "bad content is a failure")
+	tr_check(isnull(T.parse_reply("\"nope\"", "de", "x")), "bad content is a failure")
 
 /world/New()
 	OpenPort("none")

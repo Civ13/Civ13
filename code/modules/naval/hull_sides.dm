@@ -25,8 +25,9 @@
 /obj/structure/railing/built/gunwale
 	name = "wooden gunwale"
 	desc = "The planked top edge of a boat's side, a little above her deck. It keeps the crew aboard and the sea out."
-	icon_state = "wood"
-	railing_style = "wood"
+	icon = 'icons/obj/ship_edges.dmi'
+	icon_state = "gunwale"
+	railing_style = "gunwale"
 	material_name = "wood"
 	health = 120
 	maxhealth = 120
@@ -34,8 +35,8 @@
 /obj/structure/railing/built/gunwale/bulwark
 	name = "steel bulwark"
 	desc = "A riveted steel plate standing above the deck along a ship's side, topped with a rail."
-	icon_state = "steel_pipe"
-	railing_style = "steel_pipe"
+	icon_state = "bulwark"
+	railing_style = "bulwark"
 	material_name = "steel"
 	health = 350
 	maxhealth = 350

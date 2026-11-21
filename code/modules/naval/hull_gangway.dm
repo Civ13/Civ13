@@ -17,14 +17,14 @@ var/global/list/hull_gangways_out = list()
 /obj/structure/railing/built/gunwale/gangway
 	name = "wooden gangway"
 	desc = "A gate in a boat's gunwale, with a gangplank stowed beside it."
-	icon_state = "wood_gate"
+	icon_state = "gunwale_gate"
 	gate = TRUE
 	var/tmp/list/planks = list()
 
 /obj/structure/railing/built/gunwale/bulwark/gangway
 	name = "steel gangway"
 	desc = "A hinged section of a ship's bulwark, with a gangplank stowed beside it."
-	icon_state = "steel_pipe_gate"
+	icon_state = "bulwark_gate"
 	gate = TRUE
 	var/tmp/list/planks = list()
 

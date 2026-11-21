@@ -161,5 +161,30 @@
 		if(row && (row[2] in list("armor", "japanese armor", "other armor", "helmets", "other helmets", "japanese helmets", "sallet helmets")))
 			family_check(row[4] >= RECIPE_OPEN_ENDED_AGE, "[key] stays craftable to the end (last age [row[4]])")
 
+	// Gunfire-era armor: the proof cuirass and the japanese proof do share stats.
+	var/obj/item/clothing/proof = new /obj/item/clothing/suit/armor/proof_cuirass(locate(1,1,1))
+	var/obj/item/clothing/proof_do = new /obj/item/clothing/suit/armor/proof_cuirass/japanese(locate(1,1,1))
+	for(var/obj/item/clothing/P in list(proof, proof_do))
+		family_check(P.armor_value(HIT_CUT) == 85 && P.armor_value(HIT_BLUNT) == 65 && P.armor_value("arrow") == 91 && P.armor_value("gun") == 30, "[P] is steel plate with gun 30 ([P.armor_value(HIT_CUT)]/[P.armor_value("gun")])")
+		family_check(P.slowdown == 1.0 && P.body_parts_covered == (UPPER_TORSO|LOWER_TORSO), "[P] is heavy and torso-only")
+	var/list/proof_row = anvil_recipes["Proof Cuirass"]
+	var/list/proof_do_row = anvil_recipes["Japanese Proof Do"]
+	map.ordinal_age = 2
+	family_check(!anvil_recipe_offered(proof_row, "armor", proof_row[5]), "the proof cuirass waits for the Imperial age")
+	for(var/age in 3 to 9)
+		map.ordinal_age = age
+		family_check(anvil_recipe_offered(proof_row, "armor", proof_row[5]), "steel proof cuirass is offered in age [age]")
+		family_check(anvil_recipe_offered(proof_do_row, "japanese armor", proof_do_row[5]), "steel proof do is offered in age [age]")
+	// The WW1 resin body shield: cloth and resin at the armor workbench.
+	var/obj/item/clothing/shield = new /obj/item/clothing/accessory/armor/modern/resin_shield(locate(1,1,1))
+	family_check(shield.armor_value("gun") == 25 && shield.armor_value(HIT_CUT) == 30, "the resin body shield gives gun 25")
+	var/obj/structure/component_workbench/armor/bench = new(locate(5,3,1))
+	var/list/shield_recipe = bench.armor_recipes()["Resin body shield"]
+	family_check(shield_recipe && shield_recipe["era"] == 5 && shield_recipe["node"] == "trench_warfare", "the resin body shield is a WW1 trench warfare recipe")
+	var/list/shield_inputs = shield_recipe["inputs"]
+	family_check(shield_inputs[/obj/item/stack/material/cloth][1] == 8 && shield_inputs[/obj/item/stack/material/resin][1] == 4, "the resin body shield takes 8 cloth and 4 resin")
+	var/obj/item/stack/material/resin/lumps = new(locate(5,3,1), 4)
+	family_check(bench.input_valid(lumps, /obj/item/stack/material/resin, shield_inputs[/obj/item/stack/material/resin]), "resin lumps pay the body shield's resin")
+
 	text2file("PASS: armor families protect by construction and material and never go out of date", "armor_family_result.txt")
 	del(world)

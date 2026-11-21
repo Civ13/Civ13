@@ -62,6 +62,9 @@ MAST_HEART = (104, 66, 30, 255)
 CANVAS = (232, 220, 192, 255)
 CANVAS_SHADE = (196, 180, 140, 255)
 CANVAS_TIE = (150, 134, 100, 255)
+LINE = (204, 182, 132, 255)  # hemp lashings
+LINE_DARK = (140, 116, 74, 255)
+TUB_RIM = (46, 28, 10, 255)
 IRON = (70, 72, 78, 255)
 IRON_LIGHT = (112, 116, 124, 255)
 IRON_DARK = (38, 39, 44, 255)
@@ -115,34 +118,61 @@ def draw_mast():
 
 
 def draw_crows_nest():
-    """The mast from above with her crow's nest: a ring of planking round
-    the masthead, over the yard and furled sail."""
+    """The mast from above with her crow's nest, as in ship_mast_nest.dmi: a
+    round tub of staves round the masthead, over the yard and furled sail."""
     img = draw_mast()
     px = img.load()
-    for dy in range(-7, 8):
-        for dx in range(-7, 8):
-            r2 = dx * dx + dy * dy
-            if 30 <= r2 <= 49:
-                px[15 + dx, 18 + dy] = SPAR_DARK if r2 >= 42 else SPAR_LIGHT
+    for dy in range(-6, 7):
+        for dx in range(-6, 7):
+            d = (dx * dx + dy * dy) ** 0.5
+            if d > 6.4 or d <= 3.5:
+                continue  # inside the tub the masthead shows
+            if d > 5.5:
+                colour = TUB_RIM
+            elif d > 4.4:  # the staves, lit from the top left
+                side = (dx + dy) / d
+                colour = SPAR_LIGHT if side < -0.5 else SPAR_DARK if side > 0.6 else SPAR
+            else:
+                colour = MAST_HEART  # the shadow inside her wall
+            px[15 + dx, 18 + dy] = colour
     return img
 
 
 def draw_bowsprit():
-    """A bowsprit from above: a spar running up the tile to her stem, with
-    the jib furled along it."""
+    """A bowsprit from above, as in ship_bowsprit.dmi: a spar stepped in a
+    chock at the foot of the tile, lashed to her stem, tapering to an iron
+    cap at the top, with the jib furled along it under its gaskets."""
     img = Image.new('RGBA', (TILE, TILE), (0, 0, 0, 0))
     px = img.load()
     for y in range(2, 30):
-        px[15, y] = SPAR_LIGHT
-        px[16, y] = SPAR
-        px[17, y] = SPAR_DARK
-    for y in range(8, 28):
-        tie = y % 4 == 0
-        px[13, y] = CANVAS_TIE if tie else CANVAS
-        px[14, y] = CANVAS_TIE if tie else CANVAS_SHADE
-    for x in range(14, 19):  # the iron cap at her stem
-        px[x, 28] = IRON
-        px[x, 29] = IRON
+        if y >= 14:  # the stout inboard half
+            px[14, y] = SPAR_LIGHT
+            px[15, y] = SPAR
+            px[16, y] = SPAR
+            px[17, y] = SPAR_DARK
+        else:
+            px[15, y] = SPAR_LIGHT
+            px[16, y] = SPAR_DARK
+    for y in (27, 28, 29):  # the heel chock
+        for x in range(13, 19):
+            px[x, y] = SPAR_LIGHT if x == 13 or y == 27 else SPAR_DARK
+    for y in (20, 22, 24):  # the gammoning
+        for x in range(14, 18):
+            px[x, y] = LINE if x % 2 else LINE_DARK
+    for x in range(14, 18):  # the band where she tapers, and the cap
+        px[x, 14] = IRON
+    for y in (2, 3):
+        px[15, y] = IRON_LIGHT
+        px[16, y] = IRON
+    for y in (5, 6, 17, 18):  # the furled jib, rounded at its ends
+        px[15, y] = CANVAS
+        px[16, y] = CANVAS_SHADE
+    for y in range(7, 17):
+        tie = y % 4 == 1
+        px[14, y] = CANVAS_TIE if tie else CANVAS
+        px[15, y] = CANVAS_TIE if tie else CANVAS
+        px[16, y] = CANVAS_TIE if tie else CANVAS
+        px[17, y] = CANVAS_TIE if tie else CANVAS_SHADE
     return img
 
 
@@ -233,7 +263,7 @@ SPRITES = {
     'piece_N': {'draw': draw_crows_nest, 'outline': True},
     'piece_J': {'draw': draw_bowsprit, 'outline': True},
     # /obj/structure/figurehead, uncarved
-    'piece_F': {'layers': [('icons/obj/statue.dmi', 'tikistatue2', None)], 'turns': True, 'outline': True},
+    'piece_F': {'layers': [('icons/obj/ship_edges.dmi', 'figurehead', None)], 'turns': True, 'outline': True},
     # /obj/structure/bed/chair/wood/rowing_bench
     'piece_R': {'layers': [('icons/obj/bed_chair.dmi', 'bleacher', None)], 'turns': True, 'outline': True},
     # /obj/structure/hull_anchor/stone
@@ -250,8 +280,8 @@ SPRITES = {
     'piece_G': {'layers': [('icons/obj/windows.dmi', 'windownew_frame', None)]},
     # /obj/structure/closet/crate/empty
     'piece_C': {'layers': [('icons/obj/storage.dmi', 'wood_crate', None)], 'outline': True},
-    # The gangway gate in her gunwale, from the built railing sheet.
-    'piece_Y': {'layers': [('icons/obj/railings_built.dmi', 'wood_gate', None)], 'turns': True},
+    # /obj/structure/railing/built/gunwale/gangway: the gate in her gunwale.
+    'piece_Y': {'layers': [('icons/obj/ship_edges.dmi', 'gunwale_gate', None)], 'turns': True},
     # /obj/structure/multiz/ladder/up/placed (the foot of a stood-up ladder)
     'piece_X': {'layers': [('icons/obj/stairs.dmi', 'ladderup_wood', None)], 'outline': True},
     # /obj/structure/bed/wood (wood tint on the bed overlay)
