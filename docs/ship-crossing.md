@@ -42,7 +42,7 @@ The ship must be at all stop, not grappled, with the world not saving. Then:
    the record check. Ladders between her deck and her hold go as ladders and
    are paired again on arrival. Still refused, and named at the tiller with an
    arrow on deck: an animal a player or agent controls, a ridden animal, a
-   loaded cart, a frame vehicle, anything strapped into a seat that
+   loaded cart, a frame vehicle the vehicle codec refuses (see below), anything strapped into a seat that
    is not crew, a body holding a creature, and what only an admin or the map
    places (spawners, traders, money printers, stairs and other level links,
    docks, helms). A barrel holds at most 10000
@@ -74,7 +74,8 @@ entries as her deck (its floor, ladders, chests, loose things, animals,
 structures). The hold's crew are crew like those on deck. Taken off the water,
 her hold floors and cargo go with her deck and each hold tile gets back the
 ground it was hollowed from. On arrival she is anchored, where she can, over
-rock or deep water that takes her hold; the hold is hollowed out under her
+rock or deep water that takes her hold (never against another hull's floor,
+which would join the two); the hold is hollowed out under her
 deck and its cargo put back in it. Where no such water is free, she is built
 without a hold: what it carried is stowed on the deck tile above, its floor is
 lost, and a ladder that would lead to nothing is taken down.
@@ -92,6 +93,19 @@ air on the building level above; each face is built on its roof again and
 linked to it (`building_link()`). Where a tile has no open air above it, its
 roof stays a plain roof and what stood up there is stowed on the deck below.
 
+A car, truck or light plane parked wholly on her main deck crosses whole as
+`record["vehicles"]`: one entry per vehicle, its axis's tile from her pivot
+and the record a garage or hangar keeps (`extraction/vehicle_codec.dm`:
+frames, walls, wheels, engine, tank and its fuel, seats, plate, key binding,
+boot cargo). Packing writes nothing: the codec's `should_save` marks are put
+back. The vehicle must be stopped with its engine off and nobody in it; one
+partly off her deck, on her hold or upper deck, with something loose on its
+tiles, or of a kind the codec does not take (a tank's turret, a heavy axis)
+keeps her in port with the reason. Taken off the water, its parts and boot
+cargo go first. On arrival it is parked again where it stood once her deck is
+built, saved like any vehicle; ashore (no anchorage) it is put down at the
+first clear ground nearby. At most 8 vehicles.
+
 ## Arriving
 
 The crew member carrying the record arrives first: the ship is built off the
@@ -108,7 +122,7 @@ again.
 ## Tests
 
 `tests/naval_carrier/crossing_probe.dm` and `cargo_probe.dm` (holds, upper
-decks, carts, boats with outboards and machines; run like the other naval probes):
+decks, cars, carts, boats with outboards and machines; run like the other naval probes):
 packing and refusals, bad records, payload sizes, stripping her, the anchorage
 search, building her again with mast, chest and cargo, and crew arrivals by
 voyage. Not covered: two live worlds with the transfer agent between them.

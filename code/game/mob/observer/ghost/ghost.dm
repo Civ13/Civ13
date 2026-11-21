@@ -79,6 +79,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 
 /mob/observer/ghost/Destroy()
 	stop_following()
+	spirit_hud_remove() // spirit_hud.dm
 	if (spirit_sight) // spirit_observe.dm
 		if (client)
 			client.screen -= spirit_sight

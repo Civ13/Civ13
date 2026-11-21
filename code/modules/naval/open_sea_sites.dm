@@ -50,6 +50,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 	var/seed = 1
 	var/cell = 0                  // The sea cell it is loaded in, or 0.
 	var/charted = 0               // 1 once a survey put it on every ship's chart.
+	var/level = 0                 // The level it is built on; 0 is the open sea's (ocean_sites.dm builds at sea level 1).
 	var/tmp/linger_timer = 0
 
 /datum/chart_site/sea/New()
@@ -62,6 +63,9 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 		deltimer(linger_timer)
 		linger_timer = 0
 	return ..()
+
+/datum/chart_site/sea/proc/site_level()
+	return level || open_sea_level()
 
 // Builds the site in the water of a cell: list(x1, y1, x2, y2).
 /datum/chart_site/sea/proc/build(list/box)
@@ -183,7 +187,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 
 /datum/chart_site/sea/island/build(list/box)
 	var/datum/sea_dice/dice = new(seed)
-	var/z = open_sea_level()
+	var/z = site_level()
 	var/cx = round((box[1] + box[3]) / 2)
 	var/cy = round((box[2] + box[4]) / 2)
 	// Never so wide that a ship cannot lie off it inside the cell.
@@ -290,7 +294,7 @@ var/global/list/open_sea_sites = list()   // every /datum/chart_site/sea of this
 
 /datum/chart_site/sea/wreck/build(list/box)
 	var/datum/sea_dice/dice = new(seed)
-	var/z = open_sea_level()
+	var/z = site_level()
 	var/cx = round((box[1] + box[3]) / 2)
 	var/cy = round((box[2] + box[4]) / 2)
 	var/half_long = 3 + dice.cast(3)
