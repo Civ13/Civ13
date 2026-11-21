@@ -70,7 +70,7 @@ class ArcaneWardSource(unittest.TestCase):
 
     def test_enchanted_items_are_never_used_as_materials(self):
         materials = body(ENCHANT, '/mob/living/human/proc/arcane_imbue_materials(')
-        self.assertEqual(materials.count('!I.arcane_enchant'), 3)
+        self.assertEqual(materials.count('!I.arcane_enchant'), 4)
 
     def test_new_materials(self):
         water = body(MATERIALS, '/mob/living/human/proc/arcane_drew_water(')

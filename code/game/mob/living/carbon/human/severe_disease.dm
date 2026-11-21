@@ -6,7 +6,8 @@
 #define SEVERE_DISEASE_PAIN 30
 #define SEVERE_DISEASE_PAIN_CRITICAL 60
 /mob/living/human/proc/is_severe_disease()
-	return disease && (disease_type in list("plague", "typhus", "malaria", "cholera"))
+	var/static/list/severe_diseases = list("plague", "typhus", "malaria", "cholera")
+	return disease && (disease_type in severe_diseases)
 
 /mob/living/human/proc/clear_disease()
 	// Pain is shared with injuries and other causes. Stop adding illness pain;

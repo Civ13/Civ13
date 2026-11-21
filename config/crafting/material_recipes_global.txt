@@ -739,6 +739,10 @@ RECIPE: /material/tarred_canvas/,small tarred sail,/obj/item/sail/tarred,15,125,
 RECIPE: /material/oilcloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
 RECIPE: /material/waxed_cloth/,foldable canopy,/obj/item/weapon/tent,4,75,0,1,furniture,0,0,19,8,null
 RECIPE: /material/waxed_cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/rubberised_cloth/,customizable poncho,/obj/item/clothing/suit/storage/jacket/custom/poncho,2,100,0,1,jackets & vests,0,0,57,8,null
+RECIPE: /material/rubberised_cloth/,rubberised gas cell,/obj/item/airship_gas_cell/rubber,20,200,0,1,vehicle parts,126,0,0,8,null
+RECIPE: /material/rubberised_cloth/,german gas mask,/obj/item/clothing/mask/gas/german,6,70,0,1,gas masks,0,0,102,8,null
+RECIPE: /material/rubberised_cloth/,british gas mask,/obj/item/clothing/mask/gas/british,6,70,0,1,gas masks,0,0,102,8,null
 
 //**************************************************************
 //*********************| CLOTH |********************************
@@ -1556,6 +1560,7 @@ RECIPE: /material/glass/,lantern room glazing,/obj/structure/lighthouse_lantern,
 RECIPE: /material/glass/,casement window,/obj/structure/simple_door/key_door/anyone/casement,4,60,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,pound lock,/obj/structure/canal_lock,12,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/stone/,dock gate,/obj/structure/canal_lock/dock_gate,24,300,1,1,construction,0,0,0,8,null
+RECIPE: /material/wood/,yard office,/obj/structure/yard_office,30,300,1,1,construction,0,0,0,8,null
 RECIPE: /material/clay/,clay tablet,/obj/item/weapon/paper/clay_tablet,1,40,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,reed stylus,/obj/item/weapon/pen/stylus,1,30,0,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,senet board,/obj/item/game_board/senet,3,100,0,1,construction,0,0,0,8,null
@@ -3397,6 +3402,9 @@ RECIPE: /material/electronics/,educational television receiver,/obj/structure/te
 RECIPE: /material/electronics/,television program desk,/obj/structure/telecom/station/tv,10,150,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,network landline telephone,/obj/item/weapon/telephone/landline,2,120,1,1,none,100,0,0,8,null
 RECIPE: /material/electronics/,cable network terminal,/obj/structure/telecom/terminal,8,150,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,land data terminal,/obj/structure/telecom/terminal/data_lan,8,150,1,1,none,160,0,0,8,null
+RECIPE: /material/copper/,land data cable coil,/obj/item/stack/data_lan_cable,1,35,0,1,electrical,105,0,0,8,null
+RECIPE: /material/copper/,sealed data cable coil,/obj/item/stack/data_lan_cable/sealed,1,45,0,1,electrical,115,0,0,8,null
 RECIPE: /material/iron/,broadcast antenna,/obj/structure/telecom/antenna,5,100,1,1,none,105,0,0,8,null
 RECIPE: /material/electronics/,long-range radio relay,/obj/structure/telecom/relay,12,150,1,1,none,160,0,0,8,null
 RECIPE: /material/electronics/,solar array controller,/obj/structure/civ_generator/solar,20,200,1,1,none,105,0,0,8,null

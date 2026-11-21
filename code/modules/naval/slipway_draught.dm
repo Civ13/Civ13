@@ -304,7 +304,7 @@
 		var/list/stage = P.stages[next[1]]
 		if (!fitted)
 			to_chat(H, SPAN_NOTICE("You start work on the [stage["verb"]]..."))
-		if (!do_after(H, stage["part"] == "fitting" ? SLIPWAY_FIT_TIME : SLIPWAY_FLOOR_TIME, target || src) || QDELETED(src) || QDELETED(S) || draught_code != code || S.loc != H)
+		if (!do_after(H, yard_time(src, stage["part"] == "fitting" ? SLIPWAY_FIT_TIME : SLIPWAY_FLOOR_TIME), target || src) || QDELETED(src) || QDELETED(S) || draught_code != code || S.loc != H)
 			break
 		var/before = pieces_done
 		var/took = pay(S)

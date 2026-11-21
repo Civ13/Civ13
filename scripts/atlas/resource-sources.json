@@ -16989,6 +16989,29 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Rubberise cloth with latex",
+      "file": "code/modules/1713/treated_cloth.dm",
+      "line": 272,
+      "source_commit": "c714c60456ec18db9a99bcf04f1a3cda1e3dfa9f",
+      "inputs": [
+        "/material/cloth",
+        "latex",
+        "/obj/item/stack/ore/sulphur"
+      ],
+      "outputs": [
+        "/material/rubberised_cloth"
+      ],
+      "tools": [],
+      "steps": [
+        "Outside harm intent, hold sulphur in your other hand and use an open container holding latex on plain cloth.",
+        "Each sheet soaks up 5 units of latex, up to five sheets at a time, and the batch uses one sulphur."
+      ],
+      "conditions": "Needs 5 latex per sheet and one sulphur per batch.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Wax cloth with beeswax",
       "file": "code/modules/1713/treated_cloth.dm",
       "line": 199,

@@ -26,7 +26,8 @@
 #define POISON_TOLERANCE_DECAY 0.005
 
 /mob/living/human/proc/builds_disease_immunity(kind)
-	return kind in list("flu", "plague", "typhus", "malaria", "cholera")
+	var/static/list/immune_diseases = list("flu", "plague", "typhus", "malaria", "cholera")
+	return kind in immune_diseases
 
 /mob/living/human/proc/disease_resistance_to(kind)
 	if (!(kind in disease_resistance))

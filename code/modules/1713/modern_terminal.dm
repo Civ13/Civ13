@@ -33,7 +33,7 @@
 	for (var/obj/structure/telecom/terminal/T in civ_telecom_devices)
 		if (delivered >= 32)
 			break
-		if (T == src || !T.operational() || !civ_network_connected(T))
+		if (T == src || istype(T, /obj/structure/telecom/terminal/data_lan) || !T.operational() || !civ_network_connected(T))
 			continue
 		delivered++
 		for (var/mob/living/human/H in view(3, T))
