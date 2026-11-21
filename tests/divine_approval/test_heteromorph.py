@@ -5,6 +5,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 TEXT = (ROOT / 'code/modules/divine/heteromorph.dm').read_text()
 VERB = (ROOT / 'code/modules/admin/verbs/divine_patron.dm').read_text()
+FORM = (ROOT / 'code/modules/divine/heteromorph_form.dm').read_text()
 
 
 def body(text, path):
@@ -25,6 +26,8 @@ class Heteromorph(unittest.TestCase):
     def test_prompts_stay_in_admin_code(self):
         for forbidden in ('input(', 'alert(', 'sleep(', 'spawn('):
             self.assertNotIn(forbidden, TEXT)
+        for forbidden in ('input(', 'alert('):
+            self.assertNotIn(forbidden, FORM)
 
     def test_dragonoid_is_staff_only_and_world_gated(self):
         dragon = body(TEXT, '/datum/heteromorph/dragonoid')
@@ -54,6 +57,58 @@ class Heteromorph(unittest.TestCase):
         self.assertIn('heteromorph_active()', clue)
         examine = (ROOT / 'code/game/mob/living/carbon/human/examine.dm').read_text()
         self.assertIn('heteromorph_examine(user)', examine)
+
+
+class TrueForm(unittest.TestCase):
+    def test_built_with_fable_art(self):
+        dme = (ROOT / 'civ13.dme').read_text()
+        self.assertIn('#include "code\\modules\\divine\\heteromorph_form.dm"', dme)
+        self.assertTrue((ROOT / 'icons/mob/heteromorph_dragon.dmi').exists())
+        self.assertTrue((ROOT / 'tests/sprites/create_heteromorph_dragon.py').exists())
+        self.assertIn('form_type = /mob/living/simple_animal/heteromorph_form/dragon', FORM)
+
+    def test_change_and_return_never_sleep(self):
+        for path in ('/mob/living/human/proc/heteromorph_become_form(',
+                     '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_return(',
+                     '/proc/heteromorph_return_all('):
+            proc = body(FORM, path)
+            for forbidden in ('sleep(', 'do_after(', 'spawn('):
+                self.assertNotIn(forbidden, proc)
+        take = body(FORM, '/mob/living/human/proc/heteromorph_take_form()')
+        self.assertLess(take.index('heteromorph_form_problem(K)'), take.index('do_after('))
+        self.assertLess(take.rindex('heteromorph_form_problem(K)'), take.index('heteromorph_become_form(K)'))
+        self.assertLess(take.index('do_after('), take.rindex('heteromorph_form_problem(K)'))
+
+    def test_low_health_returns_instead_of_dying(self):
+        self.assertIn('heteromorph_return(TRUE', body(FORM, '/mob/living/simple_animal/heteromorph_form/updatehealth()'))
+        death = body(FORM, '/mob/living/simple_animal/heteromorph_form/death(')
+        self.assertIn('heteromorph_return(TRUE', death)
+        self.assertNotIn('..(', death)
+        self.assertIn('heteromorph_return(TRUE', body(FORM, '/mob/living/simple_animal/heteromorph_form/gib()'))
+        destroy = body(FORM, '/mob/living/simple_animal/heteromorph_form/Destroy()')
+        self.assertIn('heteromorph_body.forceMove(get_turf(src))', destroy)
+
+    def test_saves_only_ever_see_the_human(self):
+        save = (ROOT / 'code/modules/persistence/saving.dm').read_text()
+        capture = body(save, '/map_storage/proc/save_world_contents(')
+        self.assertLess(capture.index('heteromorph_return_all('), capture.index('prepare_player_ownership()'))
+        for var in ('heteromorph_body', 'heteromorph_started', 'heteromorph_leaving'):
+            self.assertIn('var/tmp/', FORM.split(var, 1)[0].rsplit('\n', 1)[1])
+
+    def test_every_change_is_logged_and_verb_is_gated(self):
+        self.assertIn('heteromorph_log(', body(FORM, '/mob/living/human/proc/heteromorph_become_form('))
+        self.assertIn('heteromorph_log(', body(FORM, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_return('))
+        refresh = body(FORM, '/mob/living/human/proc/heteromorph_refresh_verbs()')
+        self.assertIn('heteromorph_active()', refresh)
+        covenant = (ROOT / 'code/modules/divine/covenant.dm').read_text()
+        self.assertIn('heteromorph_refresh_verbs()', body(covenant, '/mob/living/human/proc/divine_refresh_verbs()'))
+
+    def test_balance_numbers_are_in_config(self):
+        import json
+        row = json.loads((ROOT / 'config/heteromorph_balance.json').read_text())['dragonoid']
+        for key in ('health', 'transform_seconds', 'max_minutes', 'cooldown_minutes', 'revert_fraction'):
+            self.assertIsInstance(row[key], (int, float))
+            self.assertIn('"%s"' % key, FORM)
 
 
 if __name__ == '__main__':
