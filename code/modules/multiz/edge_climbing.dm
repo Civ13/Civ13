@@ -300,7 +300,8 @@
 	for (var/obj/covers/C in T)
 		if (C.stairs && !C.gc_destroyed && !C.gcDestroyed)
 			return C
-	return null
+	// The top section of a full ramp climbs like stairs (ramps.dm).
+	return ramp_top_in(T)
 
 /proc/cover_type_is_stairs(path)
 	if (!ispath(path, /obj/covers))
@@ -372,8 +373,8 @@
 	. = null
 	var/problem
 	var/turf/T = get_turf(S)
-	if (!istype(H) || !isturf(H.loc) || H.stat || H.lying || H.restrained() || H.buckled)
-		problem = "You can't climb the stairs right now."
+	if (!istype(H) || !isturf(H.loc) || H.stat || H.lying || H.restrained() || (H.buckled && !ramp_takes_chair(H, S)))
+		problem = "You can't climb the [S && S.ramp_sections ? "ramp" : "stairs"] right now."
 	else if (persistence_save_in_progress)
 		problem = "You can't climb while the world is saving."
 	var/level = (!problem && T) ? multiz_level_above(T.z) : 0
@@ -388,8 +389,10 @@
 		var/list/directions = list()
 		if (S.dir in list(NORTH, SOUTH, EAST, WEST))
 			directions += S.dir
-		directions |= ledge_climb_directions(H.dir)
-		directions |= list(NORTH, SOUTH, EAST, WEST)
+		// A ramp leaves straight ahead; stairs onto any side.
+		if (!S.ramp_sections)
+			directions |= ledge_climb_directions(H.dir)
+			directions |= list(NORTH, SOUTH, EAST, WEST)
 		for (var/d in directions)
 			var/turf/landing = get_step(well, d)
 			if (!ledge_landing_clear(landing))
@@ -417,27 +420,38 @@
 			to_chat(src, SPAN_WARNING(why.len && why[1] ? why[1] : "You can't climb these stairs."))
 		return FALSE
 	var/turf/start = get_turf(src)
-	if (wait && !do_after(src, STAIRS_CLIMB_TIME, S))
+	// Two people haul a heavy load up a gentle ramp, as slowly as a hoist.
+	var/heavy = S.ramp_carries >= RAMP_HEAVY && pulling && needs_hoist(pulling) && ramp_haul_helper(src, pulling)
+	if (heavy)
+		visible_message(SPAN_NOTICE("[src] and [ramp_haul_helper(src, pulling)] start hauling \the [pulling] up \the [S]."), SPAN_NOTICE("You start hauling \the [pulling] up \the [S] with help."))
+	if ((wait || heavy) && !do_after(src, heavy ? RAMP_HEAVY_TIME : STAIRS_CLIMB_TIME, S))
 		return FALSE
 	if (QDELETED(S) || get_turf(src) != start || stairs_destination(src, S) != destination)
 		return FALSE
-	stairs_check_load(src, destination)
+	stairs_check_load(src, destination, S)
 	if (pulledby)
 		pulledby.stop_pulling()
 	stairs_moved_at = world.time
 	if (!S.stairwell_top)
 		stairs_refresh_top(S)
+	var/obj/chair = ramp_takes_chair(src, S) ? buckled : null
 	if (trench_climb_place(src, destination))
+		if (chair && chair.loc != loc)
+			chair.forceMove(loc)
 		stairs_bring_load(src)
-		to_chat(src, SPAN_NOTICE("You climb up the stairs."))
+		to_chat(src, SPAN_NOTICE(S.ramp_sections ? "You [chair ? "roll" : "walk"] up \the [S]." : "You climb up the stairs."))
 		return TRUE
 	return FALSE
 
-// Clicking stairs you stand on or beside climbs them.
+// Clicking stairs, or the top of a ramp, you stand on or beside climbs them.
 /obj/covers/attack_hand(mob/user)
-	if (stairs && ishuman(user) && Adjacent(user) && user.a_intent != I_HARM)
+	if ((stairs || ramp_sections) && ishuman(user) && Adjacent(user) && user.a_intent != I_HARM)
 		var/mob/living/human/H = user
-		H.climb_stairs(src)
+		var/ramp_why = ramp_sections ? ramp_problem(src) : null
+		if (ramp_why)
+			to_chat(H, SPAN_NOTICE(ramp_why))
+		else
+			H.climb_stairs(src)
 		return
 	return ..()
 
@@ -460,7 +474,8 @@
 // Walking off an upper floor onto the open air over stairs steps down onto
 // them instead of falling. Returns TRUE when it handled the move.
 /proc/stairs_soft_descent(atom/movable/A, turf/below)
-	if (!ishuman(A) || !below || below.density || !stairs_in(below))
+	var/obj/covers/route = (ishuman(A) && below) ? stairs_in(below) : null
+	if (!route || below.density)
 		return FALSE
 	// The stairs are the footing, whatever they were built on (shallow water,
 	// a floor over open air); only something solid on them stops the step down.
@@ -470,14 +485,14 @@
 	var/mob/living/human/H = A
 	if (!persistence_movement_allowed(H, below))
 		return FALSE
-	stairs_check_load(H, below)
+	stairs_check_load(H, below, route)
 	if (H.pulledby)
 		H.pulledby.stop_pulling()
 	H.stairs_moved_at = world.time
 	if (!trench_climb_place(H, below) && H.loc != below)
 		return FALSE
 	stairs_bring_load(H)
-	to_chat(H, SPAN_NOTICE("You walk down the stairs."))
+	to_chat(H, SPAN_NOTICE(route.ramp_sections ? "You walk down \the [route]." : "You walk down the stairs."))
 	return TRUE
 
 //////// The top of the stairs, seen from above ////////

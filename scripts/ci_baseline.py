@@ -2364,6 +2364,9 @@ SUITES = {
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
+    'ramps': {'files': ('tests/ramps/test_contract.py',), 'paths': (
+        'tests/ramps/', 'code/modules/multiz/ramps.dm', 'code/__defines/ramps.dm',
+        'icons/obj/ramps.dmi', 'tests/sprites/create_ramps.py')},
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
