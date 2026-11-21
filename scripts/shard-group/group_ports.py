@@ -205,6 +205,11 @@ def plan_gate(sg, group, region_id, platform=None, bot_profile=None):
         raise Refused('a %s region cannot be the front door' % new['kind'])
     raw = read_json(group['_path']) or {}
     changes = {}
+    early = []
+    if new['kind'] == 'GATEWAY' and old != region_id and not machine_of(sg, group, platform).listening(new['port']):
+        # The gateway must already run, so the public port is never left waiting on its first build.
+        early.append('the gateway %s is not running on port %d; start it first (add-gateway --apply starts it)'
+                     % (region_id, new['port']))
     if old != region_id:
         was = region_of(group, old)
         changes[region_id] = {'port': [new['port'], was['port']]}
@@ -213,7 +218,9 @@ def plan_gate(sg, group, region_id, platform=None, bot_profile=None):
         # The front door keeps its hub listing: the new gate is listed as the old one was.
         if listed.get(old) is not None and listed.get(region_id) != listed.get(old):
             changes[region_id]['public'] = [listed.get(region_id), listed.get(old)]
-    return build_plan(sg, group, 'set-gate', changes, [old, region_id], platform, bot_profile)
+    plan = build_plan(sg, group, 'set-gate', changes, [old, region_id], platform, bot_profile)
+    plan['problems'][:0] = early
+    return plan
 
 
 def plan_port(sg, group, region_id, port=None, transfer_port=None, standby_port=None, platform=None, bot_profile=None):
