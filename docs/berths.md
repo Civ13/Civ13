@@ -3,8 +3,8 @@
 A berth is any place that holds a boat for her upkeep
 (`code/modules/naval/berth.dm`). The plan is in the project thread "Add
 drydocks and shipyards for ship work": every berth repairs, refits and builds.
-The boathouse slip and the slipway (after a haul-out) are berths now; the
-drydock and shipyard office follow.
+The boathouse slip, the slipway (after a haul-out) and the drydock are berths
+now; the shipyard office follows.
 
 ## Which berth holds her
 
@@ -16,8 +16,10 @@ no record of the hulls in it, so nothing new is saved.
 | --- | --- | --- |
 | Boathouse | a built hull lying wholly in its 7x7 slip | no |
 | Slipway | a built hull hauled out on its berth: every tile on dry ground, bow to the water, stern on the tile in front of the post | yes |
+| Drydock | a built hull with every tile in a dock basin | when pumped out |
 
-`craft_berth()` looks for a boathouse when her first tile is water, and for a
+`craft_berth()` asks the dock gate of her first tile (`dock_basin_turfs`)
+first, then looks for a boathouse when her first tile is water, and for a
 slipway next to one of her tiles when it is ground.
 
 A hull at a dry berth (`berth_dry()`, `lies_dry()`) gathers no bilge water and
@@ -42,6 +44,35 @@ Hauled out, the post offers "Launch the <name> again", which slides her back
 down to open water like a launch (`draught_landing()`), and "Survey her
 condition". A keel or a draught cannot be laid while she is on the berth.
 Nothing is saved: a hauled hull is found from where she lies.
+
+## The drydock
+
+`code/modules/naval/drydock.dm`. A dock gate (`/obj/structure/canal_lock/dock_gate`,
+24 stone, construction, Wagons & Ships) stands on the flooded trench at the
+mouth of a dug basin. The basin is every trench tile joined to the gate's tile
+through its 8 neighbours, not counting tiles with a dock gate. It may touch
+open water only at its gates, diagonals included, and holds at most 400
+tiles. Several gates side by side across a wide mouth work as one.
+
+- `dock_basin_turfs` maps each basin and gate tile to its gate. It is rebuilt
+  from the gates (New, after_load, every use) and never saved.
+  `tile_refusal()` lets a built hull float on a flooded basin tile and pass an
+  open gate tile (`dock_floats()`); a shut gate is dense.
+- A dock gate is a pound lock, so `canal_level()` reads its `chamber_level`.
+  Shut, that is -1000, so no trench floods from the gate tile.
+- "Pump out the dock" needs every gate shut and every hull in the basin wholly
+  inside it. Each 2 s go pumps one tile, plus one for each hand bilge pump and
+  four for each steam or sump pump within 3 tiles of a gate. When the basin's
+  tile count is reached, `drain()` turns every tile dry at once (tile by tile
+  it would flood again from its neighbours). Hulls there are stopped, anchored
+  and emptied, and lie dry.
+- "Open the sluices" (10 s) floods the basin with salt or fresh water as the
+  gate tile is, and the gate can be opened to sail out.
+- The gate saves `shut` and `drained`; the trench tiles save themselves.
+
+A hull can't be re-surveyed ("Refit the hull") on dry ground yet, because
+`built_hull_survey()` wants floors over water. The berth refit in the next part
+will deal with that.
 
 ## What a berth allows
 
@@ -74,6 +105,6 @@ the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 
 ## Tests
 
-`tests/naval_carrier/berth_probe.dm` (51 checks):
+`tests/naval_carrier/berth_probe.dm` (77 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
