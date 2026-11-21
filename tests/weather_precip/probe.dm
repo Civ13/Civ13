@@ -99,6 +99,7 @@ var/wp_runtime_error = FALSE
 	// Before the air grid exists, the climate table decides alone.
 	weather_air = null
 	var/datum/weather_system/S = wp_storm(48, 32)
+	var/list/drawn
 	wp_check(weather_look_at(field) == "rain2" && weather_precip_at(field) == "rain", "no grid: a spring storm rains ([weather_look_at(field)])")
 
 	// With the grid, the air on the tile decides.
@@ -107,6 +108,8 @@ var/wp_runtime_error = FALSE
 	wp_check(weather_look_at(field) == "rain2" && weather_precip_at(field) == "rain", "10 C: rain")
 	wp_air(2, 1)
 	wp_check(weather_look_at(field) == "rain2" && weather_at(field) == WEATHER_WET && weather_precip_at(field) == "sleet", "2 C: sleet, wet like rain ([weather_precip_at(field)])")
+	drawn = weather_chunk_state(12, 7, 1)
+	wp_check(drawn && drawn[1] == "sleet2" && ("sleet2" in icon_states('icons/effects/weather_chunks.dmi')), "and drawn as sleet ([drawn ? drawn[1] : "nothing"])")
 	wp_air(-5, -7)
 	wp_check(findtext(weather_look_at(field), "snow") && weather_precip_at(field) == "snow", "-5 C: the spring rain falls as snow ([weather_look_at(field)])")
 	season = "WINTER"
@@ -145,6 +148,8 @@ var/wp_runtime_error = FALSE
 	T.lifetime = 60000
 	weather_sample_time = -1
 	wp_check(T.convective && weather_precip_at(field) == "hail" && weather_look_at(field) == "rain3", "a severe thunderstorm's core hails ([weather_precip_at(field)])")
+	drawn = weather_chunk_state(12, 7, 1)
+	wp_check(drawn && drawn[1] == "hail" && ("hail" in icon_states('icons/effects/weather_chunks.dmi')), "the client draws hail with its own art ([drawn ? drawn[1] : "nothing"])")
 	var/mob/living/human/H = new /mob/living/human(field)
 	var/before = H.getBruteLoss()
 	wp_check(weather_hail_strike(H, 100) == "hit" && H.getBruteLoss() > before, "hail hurts a bare head")

@@ -280,6 +280,10 @@ var/global/datum/shard_group/shard_group = new
 	// players are at an event (region_event.dm).
 	if(kind != "EVENT")
 		.["event_away"] = length(event_stashes())
+	// The launcher's region board shows each region's local time (world_calendar.dm).
+	var/list/calendar = world_calendar_status()
+	if(calendar)
+		.["calendar"] = calendar
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.

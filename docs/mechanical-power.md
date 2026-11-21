@@ -148,3 +148,20 @@ coil types owned by `materials/wire_materials.dm`): one unit makes a 25 m
 coil in 2.5 seconds, where the hand recipe makes 10 m in 3.5. The wait goes
 through `driven_time()`, so a prime mover next to the bench speeds it. Each
 unit is taken only after its own wait succeeds.
+
+## Fulling stocks, bark stamps, hopper gates and belts
+
+Two more hopper machines (`hopper_machines.dm`, Watermills, draw 2):
+
+| Machine | Cost | Feed | Product per unit |
+| --- | --- | --- | --- |
+| Fulling stocks | 10 wood, shaft | wool pile (2 a step) | 1 wool cloth |
+| Bark stamps | 8 wood, shaft, 2 iron | bark (2 a step) | 2 tanbark (`/obj/item/stack/bark/crushed`, each soaks out 10 tannin like whole bark) |
+
+Every hopper machine:
+
+- has a gate (`gate_shut`, saved) that a cord works. A lever thrown over opens it and thrown back shuts it, and a pull cord toggles it. A shut gate makes the step treat the drive as absent.
+- takes feed from factory belts and arms (`factory_accepts`/`factory_insert`), and offers its products to arms (`factory_offer`, any item of `product_types()` on its tile).
+- moves each new product onto a fastened belt beside it that points away from it (`outgoing_belt()`), so the output pile never forms.
+
+The flood-defence sluice gate (`flood_defences.dm`) is a cord actuator too: thrown over draws it up, thrown back lowers it.

@@ -47,10 +47,18 @@ afternoons are the only ones that hail.
 Before the air grid exists, the climate table decides alone, as it did
 before.
 
+## Drawing
+
+Sleet and hail have their own falling art, drawn by Fable 5.2 with
+`tests/sprites/create_weather_precip.py` (`sleet1`, `sleet2`, `hail` in
+`icons/effects/weather.dmi`, cut into chunks by `tools/weather/make_chunks.py`).
+`weather_precip_draw_look()` picks them for the chunk drawing; the readers
+still answer the rain looks. A `glaze` overlay for iced ground is in the
+sheet but not drawn yet.
+
 ## Not yet done
 
-Sprites for sleet, hail and glaze (Fable 5.2), hail damage to crops and
-animals.
+Drawing the glaze on iced ground, hail damage to crops and animals.
 
 ## Tests
 
