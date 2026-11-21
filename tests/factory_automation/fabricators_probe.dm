@@ -86,7 +86,7 @@ var/machine_runtime_error = FALSE
 
 /proc/machine_recipe_checks()
 	var/list/recipes = factory_load_recipes()
-	machine_check(recipes.len == 693 && !factory_recipe_errors.len, "the curated factory recipe list loads six hundred and ninety-three recipes without errors ([english_list(factory_recipe_errors)])")
+	machine_check(recipes.len == 698 && !factory_recipe_errors.len, "the curated factory recipe list loads six hundred and ninety-eight recipes without errors ([english_list(factory_recipe_errors)])")
 	var/datum/factory_recipe/R = recipes["electronic circuits"]
 	machine_check(R && R.output_type == /obj/item/stack/material/electronics && R.output_amount == 3 && R.inputs[/obj/item/stack/material/copper] == 2 && R.inputs[/obj/item/stack/material/plastic] == 1 && R.tier == 2 && R.node == "automation", "recipe rows parse output, inputs, tier and node")
 	for (var/name in recipes)
@@ -96,7 +96,7 @@ var/machine_runtime_error = FALSE
 	var/list/bad = factory_load_recipes("bad_recipes.txt")
 	machine_check(bad.len == 1 && factory_recipe_errors.len == 4, "invalid and duplicate rows are reported and skipped")
 	factory_load_recipes()
-	machine_check(factory_get_recipes().len == 693, "the real list reloads")
+	machine_check(factory_get_recipes().len == 698, "the real list reloads")
 	var/datum/factory_recipe/SL = factory_get_recipes()["synthetic leather"]
 	machine_check(SL && SL.output_type == /obj/item/stack/material/leather/synthetic && SL.output_amount == 2 && SL.inputs[/obj/item/stack/material/cloth] == 1 && SL.inputs[/obj/item/stack/material/plastic] == 1 && SL.tier == 1 && SL.node == "synthetics", "synthetic leather is two sheets from one cloth and one plastic, with Synthetic Fabrics")
 	var/obj/item/stack/material/leather/synthetic/fake = new(locate(16, 16, 1), 2, FALSE)
@@ -292,4 +292,22 @@ var/machine_runtime_error = FALSE
 	var/obj/item/clothing/head/helmet/modern/hardhat/H = locate() in P.loc
 	machine_check(H && P.buffered(/obj/item/stack/material/plastic) == 3 && P.icon_state == "autoclaveb", "a powered 3D printer prints a hardhat from three plastic in three seconds")
 	for (var/obj/O in power + list(P, C, plastic, H))
+		qdel(O)
+	// Resin 3D printer (resin_printer.dm): only the photopolymer rows.
+	var/obj/structure/factory_fabricator/printer/resin/RP = new(locate(12, 5, 1))
+	var/list/resin_prints = RP.available_recipes("probe_civ")
+	var/only_resin = resin_prints.len == 5
+	for (var/name in resin_prints)
+		if (!factory_resin_print(factory_recipes[name]))
+			only_resin = FALSE
+	machine_check(only_resin, "a resin 3D printer lists only the five resin printing recipes")
+	machine_check(RP.set_recipe("resin printed gear set"), "a resin 3D printer takes a resin printing recipe")
+	var/obj/item/stack/photopolymer/bottles = new(locate(13, 5, 1), 5)
+	machine_check(RP.factory_insert(bottles) == 2 && bottles.amount == 3, "a resin 3D printer buffers two cycles of resin")
+	var/list/rpower = machine_power(RP, 12, 6)
+	for (var/i in 1 to 2)
+		RP.fab_step()
+	var/obj/item/machine_part/gear/printed/G = locate() in RP.loc
+	machine_check(G && G.precise && RP.buffered(/obj/item/stack/photopolymer) == 1 && RP.icon_state == "resin_printer_on", "a powered resin 3D printer prints a precise gear set from one bottle")
+	for (var/obj/O in rpower + list(RP, bottles, G))
 		qdel(O)

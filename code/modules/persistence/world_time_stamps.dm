@@ -11,7 +11,12 @@
 // A default of 0 or -1 means "ready" for a cooldown, and "since round start"
 // for an age stamp. tests/world_time_stamps fails when a new stamp on a saved
 // type appears without an entry here or a reviewed exception there.
-var/global/list/persistence_world_time_stamps = list(
+var/global/list/persistence_world_time_stamps = persistence_world_time_stamps_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/persistence_world_time_stamps_table()
+	return list(
 	"last_bumped" = list(/atom),
 	"next_attack_hand" = list(/obj/structure/simple_door),
 	"next_fill" = list(/obj/structure/sea_office),

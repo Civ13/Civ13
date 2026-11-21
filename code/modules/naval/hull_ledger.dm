@@ -293,7 +293,7 @@ var/global/hull_ledger_timer_off = FALSE
 		return FALSE
 	if (T.z == B.z)
 		return B.contains(T)
-	if (T.z == B.upper_z())
+	if (T.z == B.upper_z() || T.z == B.top_z())
 		return B.contains(locate(T.x, T.y, B.z))
 	return FALSE
 
@@ -605,6 +605,8 @@ var/global/hull_ledger_timer_off = FALSE
 	stop_sinking()
 	var/list/cells = B.cells()
 	var/list/upper = B.upper_cells(cells)
+	// Her second deck above comes down first, onto the tile under it.
+	var/list/top = B.top_cells(upper)
 	var/turf/pivot = locate(B.px, B.py, B.z)
 	C.crew_message(SPAN_DANGER("<b>The [C.name] goes down!</b> You are in the water."))
 	log_game("Built hull [C.name] ([cells.len] tiles) sank at [pivot.x],[pivot.y],[pivot.z].")
@@ -616,7 +618,18 @@ var/global/hull_ledger_timer_off = FALSE
 			helm = T
 	if (helm)
 		helm.decommission()
-	// What stood on her upper deck comes down to the water.
+	// What stood on her decks above comes down to the water.
+	for (var/i = 1, i <= top.len, i++)
+		var/turf/U = top[i]
+		if (!U)
+			continue
+		for (var/atom/movable/M in U)
+			if (M.loc != U || QDELETED(M) || !M.craft_cargo())
+				continue
+			if (hull_floats_free(M))
+				M.forceMove(cells[i])
+			else if (istype(M, /obj))
+				qdel(M)
 	for (var/i = 1, i <= upper.len, i++)
 		var/turf/U = upper[i]
 		if (!U)

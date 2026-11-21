@@ -30,7 +30,12 @@ var/global/list/field_activities = list(
 	"firing" = "pieces of clay or loads of glass sand fired in an oven")
 
 // experiment id => list(node id, activity, amount needed, share of the node, what to do)
-var/global/list/field_experiments = list(
+var/global/list/field_experiments = field_experiments_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/field_experiments_table()
+	return list(
 	"emergency_medicine_theatre" = list("emergency_medicine", "surgery", 15, 0.3, "Complete 15 surgery steps"),
 	"emergency_medicine_cases" = list("emergency_medicine", "diagnosis", 6, 0.2, "Diagnose 6 sick patients with a doctor's handbook"),
 	"soil_science_harvests" = list("soil_science", "harvests", 40, 0.4, "Harvest 40 crops"),

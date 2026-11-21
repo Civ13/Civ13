@@ -1345,6 +1345,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/factory_fabricator/computerized" = "digital_computing",
 		// --- additive_manufacturing (9) ---
 		"/obj/structure/factory_fabricator/printer" = "additive_manufacturing",
+		"/obj/structure/factory_fabricator/printer/resin" = "additive_manufacturing",
 		// --- consumer_electronics (9) ---
 		"/obj/item/weapon/telephone/mobile/smartphone" = "consumer_electronics",
 		"/obj/structure/lamp/lamp_big/led" = "consumer_electronics",

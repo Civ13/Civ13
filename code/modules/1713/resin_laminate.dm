@@ -76,7 +76,7 @@
 // Built per call: proc-static and global lists add to the world's global
 // initialiser, which is at the compiler's size limit.
 /proc/bakelizer_settings()
-	return list("plastic" = "plastic sheets", "phenolic_resin" = "phenolic resin", "nylon_thread" = "nylon thread", "epoxy" = "epoxy")
+	return list("plastic" = "plastic sheets", "phenolic_resin" = "phenolic resin", "nylon_thread" = "nylon thread", "epoxy" = "epoxy", "photopolymer" = "photopolymer resin")
 
 // The earliest ordinal age (research_faction.dm) a setting can be chosen in.
 /proc/bakelizer_setting_age(id)
@@ -85,11 +85,13 @@
 			return 6 // WW2
 		if ("epoxy")
 			return 7 // Cold War (fiberglass.dm)
+		if ("photopolymer")
+			return 9 // Digital Age (resin_printer.dm)
 	return 0
 
 // Settings that make solid goods, drawn out with the Remove verb, not poured.
 /proc/bakelizer_solid_setting(id)
-	return id == "plastic" || id == "nylon_thread"
+	return id == "plastic" || id == "nylon_thread" || id == "photopolymer"
 
 /obj/structure/bakelizer/var/setting = "plastic"
 /obj/structure/bakelizer/var/list/stock = null // reagent id = units ready to draw off
@@ -105,6 +107,9 @@
 	if (setting == "nylon_thread")
 		nylon_thread += BAKELIZER_NYLON_SKEINS
 		return
+	if (setting == "photopolymer")
+		photopolymer += BAKELIZER_NYLON_SKEINS // resin_printer.dm: bottles
+		return
 	if (!stock)
 		stock = list()
 	stock[setting] = (stock[setting] || 0) + BAKELIZER_LIQUID_UNITS
@@ -113,6 +118,8 @@
 	var/list/parts = list("[plastic] plastic sheets")
 	if (nylon_thread)
 		parts += "[nylon_thread] skeins of nylon thread"
+	if (photopolymer)
+		parts += "[photopolymer] bottles of photopolymer resin"
 	for (var/id in stock)
 		parts += "[stock[id]] units of [bakelizer_settings()[id] || id]"
 	desc = "A machine used to transform petroleum into plastics and resins. It is set to make [bakelizer_settings()[setting]]. Has [volume] petroleum, [english_list(parts)] inside."
