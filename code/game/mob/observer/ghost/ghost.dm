@@ -86,6 +86,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	return ..()
 
 /mob/observer/ghost/Topic(href, href_list)
+	if (divine_topic(href_list)) // divine_sight.dm
+		return
 	if (href_list["track"])
 		var/atom/movable/target = locate(href_list["track"])
 		if (istype(target))
@@ -197,6 +199,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 		return
 
 	stop_following()
+	divine_sight_stop() // divine_sight.dm
 	mind.current.key = key
 	mind.current.teleop = null
 
