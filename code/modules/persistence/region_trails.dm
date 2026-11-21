@@ -252,6 +252,8 @@ var/global/list/region_trail_next_request = list()
 // Only the plain trail marker is held to the edge; launch pads go anywhere.
 /proc/region_trail_build_refusal(mob/user, result_type)
 	if(result_type != /obj/structure/region_gate/trail_marker) return null
+	// Over the map edges every land is reached directly (region_posts_retire.dm).
+	if(sea_edge_travel_on()) return "Trails are not marked any more: walk, ride or sail off the edge of the land, and you come out where it leads."
 	if(region_trail_at_edge(get_turf(user))) return null
 	if(open_sea_world()) return "On the open sea a trail marker is a landing. Build it on dry ground at the shore of the home island, within [OPEN_SEA_LANDING_TILES] tiles of the water."
 	return "Trails lead out of the land from its edge. Build the trail marker outdoors, on the ground, within [REGION_TRAIL_EDGE_TILES] tiles of the edge of the world."
@@ -269,6 +271,9 @@ var/global/list/region_trail_next_request = list()
 	if(!M || !M.client) return
 	if(!shard_group.enabled)
 		to_chat(M, SPAN_WARNING("This server is not part of a region group, so a trail cannot lead anywhere."))
+		return
+	if(sea_edge_travel_on())
+		to_chat(M, SPAN_WARNING("Lands are reached over the map edges here; trails are not placed any more. Use Send Player to Region to move someone."))
 		return
 	var/list/choices = region_trail_peer_choices()
 	if(!length(choices))

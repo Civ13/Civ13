@@ -162,7 +162,8 @@
 
 /obj/structure/hull_tiller/proc/voyage_menu(mob/living/human/H)
 	// Known lands across the sea (sea_lanes.dm) need no chart and one sailor.
-	var/list/known = sea_lane_destinations()
+	// Over the map edges the continents are reached by sailing off them (ship_edge_crossing.dm).
+	var/list/known = sea_edge_travel_on() ? list() : sea_lane_destinations()
 	var/reason = voyage_refusal(H, length(known) ? 1 : VOYAGE_MIN_CREW)
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))

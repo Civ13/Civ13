@@ -159,6 +159,25 @@ Planes fly off linked edges and are carried over the oceans, which have no air
 level; see "Over the map edges" in docs/aircraft-crossing.md
 (`aircraft_edge.dm`). The probe checks are in `tests/aircraft/crossing.dm`.
 
+## Switch-on
+
+Everything above waits for the host's group option `edge_travel_oceans`. Once it
+is on (`region_posts_retire.dm`):
+
+- Building a trail marker is refused, and admins cannot place trails. Admin >
+  Send Player to Region still moves anyone stranded.
+- Once a minute after the world has loaded, every trail marker and plain trail
+  becomes a signpost in the same spot. The signpost keeps the post's name, the
+  post's 10 wood is left beside it, and its old destination goes to the game
+  log. A player still waiting on a trail request is told. Launch pads, railway
+  stations and the hidden gates of crossings stay.
+- Set out on a voyage no longer lists the continents' sea lanes, and Leave
+  these waters is not offered; ships sail over the horizon instead. Chart
+  voyages to expedition lands stay. Fly to another land only says to fly off
+  the edge (`aircraft_edge.dm`).
+
+The probe is `tests/edge_crossings/posts_probe.dm`.
+
 ## Not yet
 
 These maps are not in any live group until the host step that adds the seas.

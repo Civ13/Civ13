@@ -175,7 +175,7 @@
 		options.Insert(2, "Open sea chart")
 	// Off the edge of the map she can cross to a land across the sea (ship_crossing.dm).
 	var/datum/craft_body/built/edge_body = craft.body
-	if (istype(edge_body) && edge_body.at_map_edge() && length(sea_crossing_destinations()))
+	if (istype(edge_body) && edge_body.at_map_edge() && !sea_edge_travel_on() && length(sea_crossing_destinations()))
 		options.Insert(2, "Leave these waters")
 	// Off a linked edge of the earth group she sails on over it (ship_edge_crossing.dm).
 	if (istype(edge_body) && edge_body.at_map_edge() && edge_body.sea_edge_link())

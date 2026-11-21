@@ -1766,6 +1766,7 @@
 #include "code\modules\persistence\region_edge.dm"
 #include "code\modules\persistence\region_edge_carriage.dm"
 #include "code\modules\persistence\region_edge_deep.dm"
+#include "code\modules\persistence\region_posts_retire.dm"
 #include "code\modules\persistence\region_gateway.dm"
 #include "code\modules\persistence\region_trails.dm"
 #include "code\modules\persistence\region_admin_send.dm"
