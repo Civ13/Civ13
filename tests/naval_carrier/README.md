@@ -392,7 +392,10 @@ lying wholly in a boathouse slip over deep water is held by the boathouse, can
 be caulked right down to tight and scraped, and her patches planked over with
 one wood or plated with one steel sheet; the same hull out at sea is told to
 find the shallows or a berth. The boathouse survey lists her work with costs.
-A dugout stored in the boathouse dries three times as fast.
+A dugout stored in the boathouse dries three times as fast. A slipway hauls a
+hull lying off its ways up onto dry ground with enough hands at the post,
+refuses her under way or with the ways blocked, holds her dry (no bilge, no
+wear, no fouling) and launches her again.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
 

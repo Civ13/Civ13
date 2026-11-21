@@ -38,14 +38,22 @@ var/berth_runtime_error = FALSE
 			T.ChangeTurf(x <= 10 ? /turf/floor/beach/sand : /turf/floor/beach/water/deep/saltwater)
 
 // A wooden hull of planks laid the way a player lays them, commissioned.
-/proc/berth_hull(x1, y1, x2, y2, hull_name)
+/proc/berth_hull(x1, y1, x2, y2, hull_name, heading = NORTH)
 	for (var/x = x1, x <= x2, x++)
 		for (var/y = y1, y <= y2, y++)
 			var/obj/covers/repairedfloor/ship/C = new(locate(x, y, 1))
 			C.updateturf()
 	var/obj/structure/hull_tiller/tiller = new(locate(x1, y1, 1))
-	berth_check(isnull(tiller.commission(hull_name, NORTH)) && tiller.craft && tiller.craft.ledger, "the [hull_name] is commissioned")
+	berth_check(isnull(tiller.commission(hull_name, heading)) && tiller.craft && tiller.craft.ledger, "the [hull_name] is commissioned")
 	return tiller
+
+/obj/structure/boathouse_probe_block
+	name = "probe block"
+	anchored = TRUE
+	density = TRUE
+
+/proc/near_zero_change(a, b)
+	return abs(a - b) <= 0.001
 
 /proc/berth_near(a, b, slack = 0.01)
 	return abs(a - b) <= slack
@@ -131,16 +139,67 @@ var/berth_runtime_error = FALSE
 	wren.set_anchor(TRUE)
 
 	// ---- Small boats dry faster stored ----
-	var/obj/structure/vehicle/raft/dugout/canoe = new(locate(5, 20, 1))
+	var/obj/structure/vehicle/raft/dugout/canoe = new(locate(5, 28, 1))
 	berth_check(canoe.dry_factor() == 1, "a dugout on the shore dries at the plain rate")
 	var/obj/structure/boathouse_stored_tile/shelf = new(house)
 	canoe.loc = shelf
 	berth_check(canoe.dry_factor() == 3, "stored in the boathouse she dries three times as fast")
 	berth_check(findtext(canoe.berth_condition_text(), "dries out 3 times"), "and the survey says so")
 
+/proc/berth_haul_checks()
+	// A slipway at 3,20 facing east: its berth is the sand from x 4 to 10.
+	var/obj/structure/slipway/post = new(locate(3, 20, 1))
+	post.dir = EAST
+	var/obj/structure/hull_tiller/tern_tiller = berth_hull(15, 19, 19, 21, "Tern", EAST)
+	var/datum/craft/tern = tern_tiller.craft
+	var/datum/hull_ledger/L = tern.ledger
+	berth_check(post.hull_off_ways() == tern && post.haul_distance(tern) == 11, "the Tern lies off the ways, eleven tiles from the berth ([post.haul_distance(tern)])")
+	berth_check(isnull(craft_berth(tern)) && !L.lies_dry(), "afloat, nothing holds her")
+	berth_check(findtext(post.haul_refusal(tern), "pair"), "with nobody at the post she cannot be hauled ([post.haul_refusal(tern)])")
+	var/mob/living/human/berth_probe/hauler = new(locate(3, 21, 1))
+	berth_check(slipway_hands_needed(tern) == 1 && post.haul_hands(tern) == 1 && isnull(post.haul_refusal(tern)), "one pair of hands hauls her fifteen tiles ([post.haul_refusal(tern)])")
+	tern.set_anchor(FALSE)
+	tern.set_speed(VESSEL_SPEED_SLOW)
+	berth_check(findtext(post.haul_refusal(tern), "stop"), "under way she must stop first")
+	tern.set_speed(VESSEL_SPEED_STOP)
+	var/obj/structure/probe_block = new /obj/structure/boathouse_probe_block(locate(10, 22, 1))
+	berth_check(isnull(post.haul_refusal(tern)), "something off to the side is not in her way")
+	qdel(probe_block)
+	probe_block = new /obj/structure/boathouse_probe_block(locate(9, 20, 1))
+	berth_check(findtext(post.haul_refusal(tern), "in the way"), "something solid on the berth stops her ([post.haul_refusal(tern)])")
+	qdel(probe_block)
+	var/list/options = list()
+	post.haul_options(options)
+	berth_check(options["Haul the Tern out"] == "haul", "the post offers to haul her out")
+	L.water = 12
+	L.fouling = 0.5
+	berth_check(isnull(post.haul_out(tern)), "she is hauled up the ways ([post.haul_out(tern)])")
+	var/turf/stern = locate(4, 20, 1)
+	berth_check(craft_at(stern) == tern && craft_at(locate(8, 21, 1)) == tern && !craft_at(locate(15, 20, 1)), "her stern lies in front of the post and the sea is clear behind her")
+	berth_check(post.hauled_hull() == tern && craft_berth(tern) == post && L.lies_dry(), "the slipway holds her dry")
+	berth_check(L.water == 0 && tern.anchored, "the water ran out of her and she is held")
+	L.water = 5
+	L.crewed = TRUE
+	var/seams_was = L.seams
+	L.step_ledger(600)
+	berth_check(L.water == 0 && L.seams == seams_was && near_zero_change(L.fouling, 0.5), "hauled out she gathers no water, wears nothing and grows nothing")
+	L.crewed = FALSE
+	var/mob/living/human/berth_probe/H = new(locate(6, 20, 1))
+	var/obj/covers/plank = locate(/obj/covers) in locate(6, 21, 1)
+	berth_check(isnull(hull_bottom_refusal(H, plank)) && L.caulk_floor() == 0, "her bottom and seams can be worked ([hull_bottom_refusal(H, plank)])")
+	options = list()
+	berth_check(post.haul_options(options) && options["Launch the Tern again"] == "relaunch" && options["Survey her condition"] == "survey", "the post offers to launch her again and to survey her")
+	berth_check(findtext(L.berth_condition_text(), "Bottom to scrape"), "the survey lists her bottom")
+	qdel(H)
+	qdel(hauler)
+	berth_check(isnull(post.relaunch(tern)), "she slides back down the ways ([post.relaunch(tern)])")
+	berth_check(!craft_at(stern) && isnull(craft_berth(tern)) && !L.lies_dry() && istype(get_turf(tern_tiller), /turf/floor/beach/water), "afloat again, the berth is empty")
+	berth_check(findtext(post.relaunch(tern), "No ship"), "nothing is left to launch")
+
 /proc/berth_run()
 	try
 		berth_checks()
+		berth_haul_checks()
 	catch(var/exception/e)
 		berth_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = berth_failures, "runtime_error" = berth_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

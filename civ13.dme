@@ -1796,6 +1796,7 @@
 #include "code\modules\naval\shipyard.dm"
 #include "code\modules\naval\slipway.dm"
 #include "code\modules\naval\slipway_draught.dm"
+#include "code\modules\naval\slipway_haul.dm"
 #include "code\modules\naval\slipway_hull.dm"
 #include "code\modules\naval\sub_designer.dm"
 #include "code\modules\naval\sub_draught.dm"

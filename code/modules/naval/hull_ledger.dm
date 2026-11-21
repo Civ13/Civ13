@@ -330,6 +330,10 @@ var/global/hull_ledger_timer_off = FALSE
 /datum/hull_ledger/proc/step_ledger(seconds)
 	if (!craft || !craft.body || !craft.body.placed() || sinking)
 		return
+	// Hauled out or in a drained dock she lies dry and nothing changes (berth.dm).
+	if (lies_dry())
+		water = 0
+		return
 	var/rate = seep_rate()
 	if (rate > 0)
 		add_water(rate * (under_way() ? 1 : HULL_SEEP_AT_REST) * seconds / 60)

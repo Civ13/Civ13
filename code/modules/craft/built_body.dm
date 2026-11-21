@@ -158,6 +158,10 @@
 	return (dir == NORTH || dir == SOUTH) ? B[3] - B[1] + 1 : B[4] - B[2] + 1
 
 // The offsets as they would lie with the bow to heading.
+/datum/craft_body/built
+	// Ground she may be hauled onto during one haul-out (turf = TRUE).
+	var/tmp/list/ways_tiles = null
+
 /datum/craft_body/built/proc/turned_offsets(heading)
 	var/angle = craft_turn_angle(dir, heading)
 	. = list()
@@ -170,7 +174,9 @@
 
 // Why a tile the hull does not already cover cannot take it, or null.
 /datum/craft_body/built/proc/tile_refusal(turf/D)
-	if (!istype(D, /turf/floor/beach/water))
+	// Hauled up a slipway (slipway_haul.dm), she may come to rest on the
+	// ground of its berth.
+	if (!istype(D, /turf/floor/beach/water) && !(ways_tiles && ways_tiles[D]))
 		return "[D.name] ahead at [D.x],[D.y]"
 	// A turf lists what overlaps it by pixels too (a hull sailing by pixels,
 	// vehicle_offset_hull.dm), so only a floor filed on D is in the way.
