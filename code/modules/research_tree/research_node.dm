@@ -2117,6 +2117,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/armor/ancient/aztec_harness" = "padded_armor",
 		"/obj/item/clothing/suit/armor/ancient/gator_scale_armor" = "padded_armor",
 		"/obj/item/clothing/suit/armor/ancient/linen" = "padded_armor",
+		"/obj/item/clothing/accessory/armor/padded_jack" = "padded_armor",
 		"/obj/item/clothing/suit/armor/chitin" = "padded_armor",
 		"/obj/item/clothing/suit/armor/medieval/leather" = "padded_armor",
 		"/obj/item/clothing/suit/armor/medieval/steppe_leather" = "padded_armor",
