@@ -11,6 +11,12 @@
 // Like the ship designer, every change goes to the server, which reads it as
 // a design code and answers with the sheet's own summary, so the window never
 // disagrees with the sheet. Save keeps the drawing on the sheet.
+//
+// Beside the plan, the Part panel says what the picked (or pointed at) tool
+// is, what it is for and how to use it, and the Checks panel lists what the
+// server found: pointing at a finding, or clicking it to keep it, rings its
+// sections on the plan. Both are their own block at the end of the script
+// (sub_designer_script()) and wrap tool(), draw() and subStats() from outside.
 // ============================================================
 
 #define SUB_DESIGNER_WINDOW "sub_designer"
@@ -45,7 +51,7 @@ var/global/list/sub_designers = list() // mob -> /datum/sub_designer
 	var/datum/sub_draught/D = sub_draught()
 	if (!D)
 		D = new /datum/sub_draught(5)
-	show_browse(H, sub_designer_html(S, D), "window=[SUB_DESIGNER_WINDOW];size=640x560")
+	show_browse(H, sub_designer_html(S, D), "window=[SUB_DESIGNER_WINDOW];size=900x580")
 	onclose(H, SUB_DESIGNER_WINDOW, S)
 	sub_designer_stats(H, D)
 	qdel(D)
@@ -74,6 +80,14 @@ var/global/list/sub_designers = list() // mob -> /datum/sub_designer
 	html += "#wrap{display:flex;gap:12px;align-items:flex-start}table{border-collapse:collapse}td.s{width:54px;height:54px;text-align:center;vertical-align:middle;cursor:pointer;font-size:10px;color:#fff;box-sizing:border-box}"
 	html += "button{background:#4a3a2a;color:#e9dfc8;border:1px solid #806040;margin:1px;padding:3px 6px;cursor:pointer}button.on{background:#b48c4d;color:#211c16}"
 	html += "#side{width:300px}#stats{margin-top:6px;padding:4px;background:#1d1916;border:1px solid #5a3d22;min-height:80px}#st{margin-top:4px;color:#ffd985;min-height:16px}.warning{color:#e08060}"
+	// The Part and Checks panels (the third column).
+	html += "#info{flex:1 1 0;min-width:0}.sec{border:1px solid #66513b;background:#30271e;margin-bottom:8px}.sec h2{font-size:13px;margin:0;padding:5px 8px;border-bottom:2px solid #b48c4d}.sec h2 span{float:right;font-size:11px;font-weight:normal;color:#bfae96;margin-top:1px}.sec .in{padding:6px 8px}"
+	html += "#part{min-height:118px;line-height:1.35}.pn{font-size:13px;font-weight:bold;margin-bottom:3px}.pn span{font-size:11px;font-weight:normal;color:#bfae96;margin-left:8px}.pr{display:flex;margin-top:2px}.pr i{flex:0 0 38px;font-style:normal;color:#b48c4d;font-size:11px;padding-top:1px}.pr span{flex:1 1 auto;min-width:0}"
+	html += ".vd{padding:5px 7px;border:1px solid #6caa68;border-radius:3px;background:#253b25;color:#c4e8c0}.vd.bad{border-color:#c77a39;background:#3a2a1a;color:#f3c79a}.vd.none{border-color:#66513b;background:none;color:#bfae96}.vd .also{color:#f2dc8f;margin-top:3px}"
+	html += ".ck{display:flex;gap:7px;align-items:flex-start;margin-top:4px;padding:5px 7px 5px 6px;border:1px solid #54432f;border-left:3px solid #bfae96;border-radius:3px;background:#262019;line-height:1.3;cursor:default}.ck.has{cursor:pointer}"
+	html += ".ck .tag{flex:0 0 52px;text-align:center;font-size:10px;font-weight:bold;letter-spacing:0.5px;text-transform:uppercase;border-radius:2px;padding:1px 0;margin-top:1px;border:1px solid #bfae96;color:#bfae96}.ck .tx{flex:1 1 auto;min-width:0}.ck .wh{display:block;color:#bfae96;font-size:11px;margin-top:1px}"
+	html += ".ck.error{border-left-color:#c77a39;background:#3a2a1a}.ck.error .tag{background:#c77a39;border-color:#c77a39;color:#241405}.ck.warning{border-left-color:#c9a52e;background:#373016;color:#e9dfc8}.ck.warning .tag{border-color:#c9a52e;color:#f2dc8f}.ck.note{color:#bfae96}"
+	html += ".ck.has:hover,.ck.lit{border-color:#ffd985}.ck.pin{box-shadow:inset 0 0 0 1px #ffd985}.ck.pin .wh{color:#ffd985}.ck:focus{outline:2px solid #ffd985;outline-offset:1px}#side{flex:0 0 300px}"
 	html += "input,select{background:#1d1916;color:#e9dfc8;border:1px solid #806040}.hint{color:#b0a080}.lbl{color:#b0a080;font-size:10px;text-align:center}.fit{display:inline-block;background:#211c16;border:1px solid #b48c4d;border-radius:3px;padding:1px 4px;font-size:12px;color:#ffd985}</style></head><body><div id='wrap'><div>"
 	html += "<div class='lbl'>bow</div><table id='g'></table><div class='lbl'>stern</div><div class='lbl'>port &#8592; &#8594; starboard</div></div><div id='side'>"
 	html += "<div>Name: <input id='nm' maxlength='40' style='width:200px' value='[html_encode(D.name)]' onchange='changed()'></div>"
@@ -85,8 +99,8 @@ var/global/list/sub_designers = list() // mob -> /datum/sub_designer
 	html += "<div id='stats'></div><div id='st'></div>"
 	html += "<div style='margin-top:6px'><button onclick=\"send('save')\">Save to the sheet</button></div>"
 	html += "<div class='hint' style='margin-top:6px'>The glass bow and the engine room in the stern, with its fuel and ballast tanks, are part of every boat. Hatches go in her side sections. Right-click a section to take its fitting out.</div>"
-	html += "</div></div><script>"
-	html += "var REF='\ref[S]',BEAM=[SUB_DRAUGHT_BEAM],MINL=[SUB_DRAUGHT_MIN_LENGTH],MAXL=[SUB_DRAUGHT_MAX_LENGTH],FITS=[json_encode(fittings)],EXAMPLES=[json_encode(examples)],START=[json_encode(sub_designer_sheet(D))];"
+	html += "</div><div id='info'><div class='sec'><h2>Part</h2><div class='in' id='part'></div></div><div class='sec'><h2>Checks<span id='chkn'></span></h2><div class='in' id='checks'><span class='hint'>Reckoning...</span></div></div></div></div><script>"
+	html += "var REF='\ref[S]',BEAM=[SUB_DRAUGHT_BEAM],MINL=[SUB_DRAUGHT_MIN_LENGTH],MAXL=[SUB_DRAUGHT_MAX_LENGTH],FITS=[json_encode(fittings)],EXAMPLES=[json_encode(examples)],START=[json_encode(sub_designer_sheet(D))],HELP=[json_encode(design_part_help_for("sub"))];"
 	html += sub_designer_script()
 	html += "</script></body></html>"
 	return jointext(html, "")
@@ -127,6 +141,47 @@ function loadExample(){var i=document.getElementById('ex').value;if(i==='')retur
 (function(){var s=document.getElementById('len');for(var n=MINL;n<=MAXL;n++){var o=document.createElement('option');o.value=n;o.innerHTML=n;s.appendChild(o);}
 var f=document.getElementById('fits');var h='';for(var i=0;i<FITS.length;i++)h+='<button id=\"t_'+FITS[i][0]+'\" onclick=\"tool(\''+FITS[i][0]+'\')\"><span class=fit>'+FITS[i][0]+'</span> '+FITS[i][1]+'</button>';f.innerHTML=h;
 var e=document.getElementById('ex');for(var j=0;j<EXAMPLES.length;j++){var o2=document.createElement('option');o2.value=j;o2.innerHTML=EXAMPLES[j][0];e.appendChild(o2);}})();
+
+// ---- The Part and Checks panels ----
+// Their own block: tool(), draw() and subStats() above are wrapped from here
+// and not changed. A finding's cells are 'col,row': row r is table row r-1
+// and column c is cell BEAM-c of it, as draw() lays the plan out.
+var SUBCHK=[],subLit=-1,subPin=-1,subPeek=null;
+var SUBLEVEL={error:['Fix','#ff6f3c'],warning:['Warning','#ffd23f'],note:['Note','#fff6dc']};
+var SUBTOOLS={h:'Hull section',x:'Lock-out hatch',wb:'Bulkhead',wd:'Watertight door',wn:'Open bow side'};
+function subEsc(s){return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function subSeveral(n,one){return n+' '+one+(n==1?'':'s');}
+function subName(k){var n=SUBTOOLS[k]||fitName(k);return n.charAt(0).toUpperCase()+n.substring(1);}
+function subFinding(){var i=subLit>=0?subLit:subPin;return i>=0&&SUBCHK[i]?SUBCHK[i]:null;}
+function subPart(){var f=subFinding(),k=f&&f.part?f.part:(subPeek||cur),H=HELP[k],L=[['what','What'],['use','Use'],['how','How']],i;
+var h='<div class=pn>'+subEsc(subName(k))+'<span>'+(k==cur?'picked to draw with':(f&&f.part?'named by the check':'click to pick it'))+'</span></div>';
+if(H)for(i=0;i<L.length;i++)if(H[L[i][0]])h+='<div class=pr><i>'+L[i][1]+'</i><span>'+subEsc(H[L[i][0]])+'</span></div>';
+document.getElementById('part').innerHTML=h;}
+function subLight(){var g=document.getElementById('g'),f=subFinding(),r,c,p,td,col;
+for(r=0;r<g.rows.length;r++)for(c=0;c<g.rows[r].cells.length;c++){td=g.rows[r].cells[c];td.style.outline='';td.style.outlineOffset='';td.style.boxShadow='';}
+if(!f)return;col=SUBLEVEL[f.level][1];
+for(c=0;c<f.cells.length;c++){p=f.cells[c].split(',');td=g.rows[p[1]-1]&&g.rows[p[1]-1].cells[BEAM-p[0]];if(!td)continue;
+td.style.outline='3px solid '+col;td.style.outlineOffset='-5px';td.style.boxShadow='inset 0 0 0 6px rgba(20,12,6,0.8)';}}
+function subWhere(i){return i==subPin?'&#9679; ringed on the plan':'&#9675; '+subSeveral(SUBCHK[i].cells.length,'section')+' on the plan';}
+function subMark(){var b=document.getElementById('checks').getElementsByTagName('div'),i,j=0,f,w;for(i=0;i<b.length;i++){if(b[i].id.indexOf('ck_')!=0)continue;f=SUBCHK[j];
+b[i].className='ck '+f.level+(f.cells.length||f.part?' has':'')+(j==subPin?' pin':'')+(j==subLit?' lit':'');w=b[i].getElementsByTagName('span')[2];if(w)w.innerHTML=subWhere(j);j++;}}
+function subShow(i){subLit=i;subMark();subPart();subLight();}
+function subKeep(i){subPin=subPin==i?-1:i;subMark();subPart();subLight();}
+function subChecks(s){s=(s+'').replace(/\+/g,' ');try{s=decodeURIComponent(s);}catch(e){}var L=[],i,f,was=SUBCHK[subPin]?SUBCHK[subPin].text:null,n=[0,0,0],h='',p=[];
+try{L=JSON.parse(s)||[];}catch(e){L=[];}
+SUBCHK=[];subLit=-1;subPin=-1;for(i=0;i<L.length;i++){f={level:SUBLEVEL[L[i].level]?L[i].level:'note',text:L[i].text||'',cells:L[i].cells||[],part:L[i].part||''};SUBCHK.push(f);if(was!==null&&f.text==was)subPin=i;n[f.level=='error'?0:(f.level=='warning'?1:2)]++;}
+if(n[0])h+='<div class=\'vd bad\'><b>Not ready to assemble.</b> '+subSeveral(n[0],'thing')+' to fix first.</div>';
+else h+='<div class=vd><b>Ready to assemble.</b> As drawn she can be assembled on the water.'+(n[1]?'<div class=also>'+subSeveral(n[1],'warning')+' below will not stop the build, but read '+(n[1]==1?'it':'them')+' first.</div>':'')+'</div>';
+for(i=0;i<SUBCHK.length;i++){f=SUBCHK[i];h+='<div tabindex=0 id=ck_'+i+' class=ck'+(f.cells.length||f.part?' title=\'Click to keep it ringed on the plan; click again to let go\'':'')+'><span class=tag>'+SUBLEVEL[f.level][0]+'</span><span class=tx>'+subEsc(f.text)+(f.cells.length?'<span class=wh></span>':'')+'</span></div>';}
+var c=document.getElementById('checks');c.innerHTML=h;if(n[0])p.push(n[0]+' to fix');if(n[1])p.push(subSeveral(n[1],'warning'));if(n[2])p.push(subSeveral(n[2],'note'));document.getElementById('chkn').innerHTML=p.join(' &middot; ');
+for(i=0;i<SUBCHK.length;i++)(function(i){var b=document.getElementById('ck_'+i);b.onmouseenter=b.onfocus=function(){subShow(i);};b.onmouseleave=b.onblur=function(){if(subLit==i)subShow(-1);};b.onclick=function(){subKeep(i);};})(i);
+subMark();subPart();subLight();}
+// The summary's own lines of findings are left out: the Checks panel has them.
+var subStatsPlain=subStats;subStats=function(t){subStatsPlain((t+'').replace(/(<br>)?<span class=.(warning|notice).>.*?<\/span>/g,''));};
+var subToolPlain=tool;tool=function(t){subToolPlain(t);subPart();};
+var subDrawPlain=draw;draw=function(){subDrawPlain();subLight();};
+// Pointing at a tool's button shows what it is before it is picked.
+document.onmouseover=function(e){var b=e.target;while(b&&b.tagName!='BUTTON')b=b.parentNode;var k=b&&b.id&&b.id.indexOf('t_')==0?b.id.substring(2):null;if(k!=subPeek){subPeek=k;subPart();}};
 load(START);tool('h');draw();
 "}
 
@@ -135,6 +190,11 @@ load(START);tool('h');draw();
 
 /proc/sub_designer_stats(mob/user, datum/sub_draught/D)
 	user << output(list2params(list(D.summary_text())), "[SUB_DESIGNER_WINDOW].browser:subStats")
+	// The same findings as fields, for the window's checks panel to lay out
+	// and light up ("col,row" cells).
+	var/datum/design_report/R = D.check_design()
+	user << output(list2params(list(json_encode(R.data()))), "[SUB_DESIGNER_WINDOW].browser:subChecks")
+	qdel(R)
 
 /datum/sub_designer/Topic(href, list/href_list)
 	var/mob/living/human/H = usr
