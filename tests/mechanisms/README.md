@@ -29,6 +29,10 @@ hook in `cmss13_gear.dm`:
   its weight falls and a cord brakes and releases it; a cam drum pulls its
   cords in turn at the drive's pace; a stationary steam engine drives once
   stoked and burns a minute of fuel a minute;
+- bridges: a relay opened or closed by a cord cuts or restores the device on
+  its tile; a mechanism port pulls its cords on a circuit signal, waits 2 s
+  between pulls, pulls nothing while carried, and sends a cord's pull into its
+  circuit only when one is inserted;
 - every new icon state is in `icons/obj/mechanisms.dmi`,
   `icons/obj/transmission.dmi`, `icons/obj/hopper_machines.dmi` and
   `icons/obj/contraptions.dmi`.

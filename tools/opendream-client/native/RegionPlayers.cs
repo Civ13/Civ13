@@ -81,7 +81,7 @@ public static class RegionPlayers {
             }
         var destinations = new List<Destination>();
         if (json.TryGetProperty("destinations", out var places) && places.ValueKind == JsonValueKind.Object)
-            foreach (var place in places.EnumerateObject().Take(16))
+            foreach (var place in places.EnumerateObject().Take(LocalHosting.MaxRegions))
                 if (place.Value.ValueKind == JsonValueKind.String && RegionId.IsMatch(place.Value.GetString()!))
                     destinations.Add(new Destination(Short(place.Name), place.Value.GetString()!));
         var recent = new List<string>();

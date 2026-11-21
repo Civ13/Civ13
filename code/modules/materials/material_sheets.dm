@@ -94,6 +94,8 @@
 	..()
 
 /obj/item/stack/material/attackby(var/obj/item/W, var/mob/user)
+	if (cloth_treat_attackby(src, W, user)) // treated_cloth.dm
+		return TRUE
 	if (istype(W, /obj/item/stack/rods))
 		material.build_rod_product(user, W, src)
 		update_icon()

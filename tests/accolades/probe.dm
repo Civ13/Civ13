@@ -145,7 +145,7 @@ var/acc_runtime_error = FALSE
 	// The window's sections build for an account with ready and claimed accolades.
 	var/datum/accolade_window/W = new
 	acc_check(istype(W), "the window datum builds")
-	acc_check(length(accolade_catalog()) == 25, "twenty-five accolades")
+	acc_check(length(accolade_catalog()) == 26, "twenty-six accolades")
 
 	// Maker: different things made, not the same thing twice.
 	var/mob/living/human/M = new /mob/living/human(locate(6, 6, 1))
@@ -228,3 +228,16 @@ var/acc_runtime_error = FALSE
 	acc_check(!K1.character_slot_body_refusal(), "a calm character may be left")
 	K1.round_fact_hit_time = world.time
 	acc_check(K1.character_slot_body_refusal() == "was hurt in the last ten minutes", "a character just hurt may not be left")
+
+	// Structuring: one seat per player, court marks and province caps follow kin.
+	acc_check(faction_leader_person(K2) == "ivy" && faction_leader_person(K1) == "ivy", "kin are one person for leadership")
+	var/list/kin_accounts = justice_kin_accounts("@2ivy")
+	acc_check(("ivy" in kin_accounts) && ("@3ivy" in kin_accounts) && length(kin_accounts) == 4, "court marks reach every slot of the person")
+	var/list/marks = map.province_bloc_marks()
+	marks["faction:Rome"] = "bloc test"
+	marks["faction:Carthage"] = "bloc test"
+	acc_check(("faction:Carthage" in province_bloc_groups("faction:Rome")) && !("faction:Sparta" in province_bloc_groups("faction:Rome")), "staff-marked groups share a bloc")
+	var/list/frozen = map.province_frozen_groups()
+	frozen["faction:Sparta"] = list("test", "staff", world.realtime)
+	acc_check(province_claims_frozen("faction:Sparta") && !province_claims_frozen("faction:Rome"), "staff can freeze a side's claims")
+	acc_check(accolade_name("magistrate") == "Magistrate", "Magistrate is in the catalog")

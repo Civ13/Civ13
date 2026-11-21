@@ -218,6 +218,14 @@
 		next_region_go = world.time + 50
 		region_gateway_forward(mob)
 		return
+	// The gateway's practice rooms link while a land cannot be reached (region_gateway.dm).
+	if(href_list["gateway_practice"])
+		if(!region_gateway_here() || !istype(mob, /mob/new_player) || usr != mob)
+			return
+		var/practice = tutorial_region_peer()
+		if(practice)
+			tutorial_region_send(src, practice)
+		return
 	// The Regions panel's Refresh: ask the regions again and redraw it in place.
 	if(href_list["region_refresh"])
 		if(usr != mob || !shard_group.enabled)

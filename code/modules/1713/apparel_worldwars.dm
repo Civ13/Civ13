@@ -1805,6 +1805,20 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 
 ///////////////other////////////////
 
+// A body shield of cloth layers hardened with pine resin (resin.dm), the
+// lightest WW1 protection: it stops shrapnel and spent pistol rounds, not
+// rifle fire. Made at the armor assembly workbench. Dayfield sprite reused.
+/obj/item/clothing/accessory/armor/modern/resin_shield
+	name = "resin body shield"
+	desc = "Layers of cloth hardened with resin and stitched into a vest. It stops shrapnel and pistol rounds, but not a rifle bullet."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "modern_dayfield"
+	item_state = "modern_dayfield"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 40, gun = 25, energy = 10, bomb = 30, bio = 10, rad = 0)
+	value = 30
+	slowdown = 0.4
+
 /obj/item/clothing/accessory/armor/modern/lightplate
 	name = "Light breastplate body-armor"
 	desc = "Wearable light armor made of steel sheets."
