@@ -147,8 +147,8 @@ var/bc_runtime_error = FALSE
 	G.birth_chart = "hearth"
 	G.traits = list("Green Thumb")
 	G.traits_dirty = TRUE
-	bc_check(G.trait_skill_gain_mult("farming") == PLAYSTYLE_FAST_SKILL, "Green Thumb farming: trait only")
-	bc_check(G.trait_skill_gain_mult("hunting") == PLAYSTYLE_SLOW_SKILL, "Green Thumb hunting: trait only")
+	bc_check(G.trait_skill_gain_mult("farming") == 1.5, "Green Thumb farming: trait only")
+	bc_check(G.trait_skill_gain_mult("hunting") == 0.75, "Green Thumb hunting: trait only")
 	G.birth_chart = "owl"
 	bc_check(G.trait_skill_gain_mult("philosophy") == BIRTH_CHART_CALLING_FAST, "calling still applies where the trait is silent")
 	var/mob/living/human/N = bc_human()

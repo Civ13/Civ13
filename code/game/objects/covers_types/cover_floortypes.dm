@@ -978,22 +978,51 @@
 	desc = "A floor made from kiln-fired clay tiles."
 	icon = 'icons/turf/flooring/terracotta.dmi'
 	icon_state = "terracotta"
+	buildstack = /obj/item/stack/material/terracotta
+	// Fired clay is fireproof but brittle next to cut stone.
+	health = 80
+	maxhealth = 80
+	var/directional_border = FALSE
 
 /obj/covers/stone/slab/decorative/terracotta/edge
 	name = "terracotta border"
+	desc = "A terracotta floor with a banded edge. Use Rotate Terracotta Border from beside it to line up the edge."
 	icon_state = "terracotta_edge"
+	directional_border = TRUE
 
 /obj/covers/stone/slab/decorative/terracotta/inside
 	name = "inside terracotta corner"
+	desc = "A terracotta floor with a banded inside corner. Use Rotate Terracotta Border from beside it to turn it."
 	icon_state = "terracotta_inner"
+	directional_border = TRUE
 
 /obj/covers/stone/slab/decorative/terracotta/outside
 	name = "outside terracotta corner"
+	desc = "A terracotta floor with a banded outside corner. Use Rotate Terracotta Border from beside it to turn it."
 	icon_state = "terracotta_outer"
+	directional_border = TRUE
 
 /obj/covers/stone/slab/decorative/terracotta/inset
 	name = "patterned terracotta inset"
+	desc = "A terracotta floor set with a glazed rosette."
 	icon_state = "terracotta_inset"
+
+/obj/covers/brick_paving
+	name = "brick paving"
+	desc = "Fired clay pavers laid in a herringbone."
+	icon = 'icons/turf/flooring/terracotta.dmi'
+	icon_state = "brick_paving"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
+	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 3
+	health = 140
+	maxhealth = 140
+	material = "Stone"
+	buildstack = /obj/item/stack/material/terracotta
 
 // The same sill and border cut for the dark cobblestone floors.
 /obj/covers/cobblestone/sill/dark

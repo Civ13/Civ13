@@ -249,6 +249,15 @@ RECIPE: /material/clay/,unfired large clay pitcher,/obj/item/weapon/clay/largecl
 RECIPE: /material/clay/,unfired clay blocks,/obj/item/weapon/clay/claybricks,0.5,50,0,1,none,0,0,0,8,null
 RECIPE: /material/clay/,unfired clay bricks,/obj/item/weapon/clay/advclaybricks,0.5,50,0,1,none,82,0,0,8,null
 RECIPE: /material/clay/,unfired cement bricks,/obj/item/weapon/clay/advclaybricks/cement,4,50,0,1,none,82,0,0,8,null
+RECIPE: /material/clay/,unfired terracotta tiles,/obj/item/weapon/clay/floortiles,0.5,50,0,1,none,0,0,0,8,null
+
+// Kiln-fired terracotta tiles (fire the unfired tiles above).
+RECIPE: /material/terracotta/,terracotta floor,/obj/covers/stone/slab/decorative/terracotta,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,terracotta border,/obj/covers/stone/slab/decorative/terracotta/edge,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,inside terracotta corner,/obj/covers/stone/slab/decorative/terracotta/inside,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,outside terracotta corner,/obj/covers/stone/slab/decorative/terracotta/outside,1,25,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,patterned terracotta inset,/obj/covers/stone/slab/decorative/terracotta/inset,2,40,1,1,floors,0,0,0,8,null
+RECIPE: /material/terracotta/,brick paving,/obj/covers/brick_paving,1,30,1,1,floors,0,0,0,8,null
 
 RECIPE: /material/concrete/,concrete floor,/obj/covers/concretefloor,1,15,1,1,none,103,0,0,8,null
 RECIPE: /material/concrete/,concrete ramp,/obj/covers/concretefloor/ramp,1,20,1,1,none,103,0,0,8,null

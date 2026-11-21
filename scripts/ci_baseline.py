@@ -1187,6 +1187,10 @@ SUITES = {
                   'code/game/objects/covers_types/cover_floortypes.dm',
                   'icons/turf/floors.dmi', 'icons/turf/flooring/wood.dmi',
                   'icons/turf/flooring/decals.dmi'), 'shared_paths': ()},
+    'terracotta_floors': {'files': ('tests/terracotta_floors/test_terracotta_floors.py',),
+        'paths': ('tests/terracotta_floors/', 'code/modules/1713/terracotta_floors.dm',
+                  'icons/turf/flooring/terracotta.dmi'),
+        'shared_paths': ('code/game/objects/covers_types/cover_floortypes.dm',)},
     'recipe_skill_needs': {'files': ('tests/recipe_skill_needs/test_recipe_skill_needs.py',),
         'paths': ('tests/recipe_skill_needs/', 'code/game/objects/items/stacks/stack_makeable.dm'),
         'shared_paths': ('code/game/objects/items/stacks/recipe_skill_needs.dm',)},
@@ -1337,12 +1341,13 @@ SUITES = {
     'tactical_map': {'files': ('tests/tactical_map/test_tactical_map.py',),
         'paths': ('tests/tactical_map/',), 'shared_paths': (
             'code/modules/1713/tactical_map.dm', 'code/game/jobs/job_controller.dm')},
-    # Admin player map wiring, staff guards and the client script run in Node
-    # (skipped without it); native_probe.py is developer evidence only.
-    'admin_player_map': {'files': ('tests/admin_player_map/test_admin_player_map.py',),
-        'paths': ('tests/admin_player_map/',), 'shared_paths': (
-            'code/modules/admin/verbs/player_map.dm', 'code/modules/1713/tactical_map.dm',
-            'code/modules/admin/admin_verbs.dm')},
+    # Admin map (players, weather and air in one window): wiring, staff guards
+    # and the client script run in Node (skipped without it); native_probe.py
+    # is developer evidence only.
+    'admin_map': {'files': ('tests/admin_map/test_admin_map.py',),
+        'paths': ('tests/admin_map/',), 'shared_paths': (
+            'code/modules/admin/verbs/admin_map.dm', 'code/modules/1713/tactical_map.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/player_panel_pages.dm')},
     # Admin player list and per-player panel: wiring, rank guards, escaping and
     # the list script run in Node (skipped without it); native_probe.py is
     # developer evidence only.
@@ -1353,7 +1358,7 @@ SUITES = {
     'admin_spectate': {'files': ('tests/admin_spectate/test_admin_spectate.py',),
         'paths': ('tests/admin_spectate/',), 'shared_paths': (
             'code/modules/admin/verbs/admin_spectate.dm', 'code/modules/admin/admin_verbs.dm',
-            'code/modules/admin/verbs/player_map.dm', 'code/game/mob/observer/ghost/ghost.dm',
+            'code/modules/admin/verbs/admin_map.dm', 'code/game/mob/observer/ghost/ghost.dm',
             'code/game/mob/observer/ghost/login.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
@@ -2526,7 +2531,7 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py'), 'paths': (
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py'), 'paths': (
         'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (

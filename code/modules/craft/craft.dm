@@ -221,7 +221,7 @@ var/global/list/crafts = list()
 		for (var/atom/movable/M in T)
 			if (M.loc != T || QDELETED(M))
 				continue
-			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
+			if (!M.craft_cargo())
 				continue
 			. += M
 

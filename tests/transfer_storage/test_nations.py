@@ -243,6 +243,15 @@ class GovernmentTests(unittest.TestCase):
         self.assertEqual((g['type'], g['religion']), ('theocracy', 'Sun'))
         self.assertEqual(self.n.snapshot(T + GOVERNMENT_NOTICE)[self.nid]['head'], 'civ:alpha:Oak')
 
+    def test_rename_keeps_era_and_notice(self):
+        self.ask('alpha', 'era', C, age=2)
+        self.crown()
+        self.ask('alpha', 'secede', C, now=T + GOVERNMENT_NOTICE)
+        self.ask('alpha', 'rename', C, to='civ:alpha:Cork', now=T + GOVERNMENT_NOTICE)
+        snap = self.n.snapshot(T + GOVERNMENT_NOTICE)[self.nid]
+        self.assertEqual(snap['eras']['civ:alpha:Cork'], 1)
+        self.assertIn('civ:alpha:Cork', snap['leaving'])
+
     def test_dictatorship_capacity_is_capped(self):
         for tier in (3,):
             self.ask('alpha', 'assembly', A, tier=tier)
@@ -252,6 +261,126 @@ class GovernmentTests(unittest.TestCase):
             self.ask('alpha', 'govern', f, type='dictatorship', person='val', pname='Val', pfaction=A)
         self.n.snapshot(T + GOVERNMENT_NOTICE)
         self.assertEqual(self.n.capacity(self.nid), 9)
+
+
+class ElectiveTests(unittest.TestCase):
+    """Motions and elections of republics, democracies and leagues
+    (tools/transfer_storage/nation_motions.py)."""
+
+    def setUp(self):
+        self.db = sqlite3.connect(':memory:', isolation_level=None)
+        self.n = Nations(self.db)
+        self.ask('alpha', 'found', A, name='Union', **{'with': [B]})
+        self.nid = self.n.nation_of(A)
+        self.ask('alpha', 'apply', C, nation=self.nid)
+        self.ask('alpha', 'vote', A, applicant=C, yes=True)
+        self.ask('alpha', 'vote', B, applicant=C, yes=True)
+        for f, citizens, wealth in ((A, 6, 1000), (B, 2, 10), (C, 2, 10)):
+            self.ask('alpha', 'era', f, age=2)
+            self.ask('alpha', 'census', f, citizens=citizens, wealth=wealth)
+
+    def ask(self, land, op, faction, now=T, actor='leader', **kw):
+        return self.n.decide(land, dict(kw, op=op, actor=actor, faction=faction), now)
+
+    def become(self, kind):
+        for f in (A, B, C):
+            self.ask('alpha', 'govern', f, type=kind, person='val', pname='Val', pfaction=A)
+        self.now = T + GOVERNMENT_NOTICE
+        self.assertEqual(self.snap()['government']['type'], kind)
+
+    def snap(self, now=None):
+        return self.n.snapshot(self.now if now is None and hasattr(self, 'now') else (now or T))[self.nid]
+
+    def motion(self, kind):
+        return [m for m in self.snap()['motions'] if m['kind'] == kind]
+
+    def test_senate_weights_by_citizens_and_closes_early(self):
+        self.become('republic')
+        self.assertEqual(self.snap()['term_ends'], self.now + 14 * 86400)
+        self.ask('beta', 'apply', D, nation=self.nid, now=self.now)
+        [m] = self.motion('admit')
+        # A alone holds 6 of 10 citizens: its yes carries at once.
+        self.assertIn('counted', self.ask('alpha', 'vote', A, now=self.now, applicant=D, yes=True))
+        self.assertEqual(self.n.nation_of(D), self.nid)
+        self.assertEqual(self.motion('admit'), [])
+
+    def test_senate_leader_only_and_ballot_change(self):
+        self.become('republic')
+        self.assertIn("leader can bring", self.ask('alpha', 'currency', B, now=self.now, role='citizen', issuer=B))
+        self.assertIn('open', self.ask('alpha', 'currency', B, now=self.now, issuer=B))
+        [m] = self.motion('currency')
+        self.assertIn('no vote', self.ask('alpha', 'ballot', C, now=self.now, role='citizen', motion=m['id'], choice='yes'))
+        self.ask('alpha', 'ballot', A, now=self.now, motion=m['id'], choice='no')
+        self.assertEqual(self.motion('currency'), [])  # 6 of 10 against: it cannot pass
+        self.assertIsNone(self.n.currency(self.nid))
+
+    def test_referendum_needs_quorum(self):
+        self.become('democracy')
+        self.assertIn('open', self.ask('alpha', 'currency', A, now=self.now, actor='ann', role='citizen', issuer=B))
+        [m] = self.motion('currency')
+        self.assertEqual(m['possible'], 10)
+        self.n.snapshot(self.now + 86400)
+        self.assertIsNone(self.n.currency(self.nid))  # 1 of 10 voted: under a third
+        self.ask('alpha', 'currency', A, now=self.now, actor='ann', role='citizen', issuer=B)
+        [m] = self.motion('currency')
+        for who in ('bob', 'cat', 'dan'):
+            self.ask('alpha', 'ballot', B, now=self.now, actor=who, role='citizen', motion=m['id'], choice='yes')
+        self.ask('alpha', 'ballot', B, now=self.now, actor='bob', role='citizen', motion=m['id'], choice='yes')
+        self.assertEqual(self.motion('currency')[0]['yes'], 4)  # one ballot per account
+        self.n.snapshot(self.now + 2 * 86400)
+        self.assertEqual(self.n.currency(self.nid), B)
+
+    def test_change_of_government_needs_two_thirds_and_half_turnout(self):
+        self.become('democracy')
+        self.now += GOVERNMENT_COOLDOWN
+        self.ask('alpha', 'govern', A, now=self.now, actor='ann', role='citizen', type='confederation')
+        [m] = self.motion('government')
+        for who in ('bob', 'cat', 'dan'):
+            self.ask('alpha', 'ballot', A, now=self.now, actor=who, role='citizen', motion=m['id'], choice='yes')
+        self.n.snapshot(self.now + 86400)
+        self.assertIsNone(self.snap(self.now + 86400)['government']['pending'])  # 4 of 10: under half
+        self.ask('alpha', 'govern', A, now=self.now + 86400, actor='ann', role='citizen', type='confederation')
+        [m] = self.motion('government')
+        for who in ('bob', 'cat', 'dan', 'eve'):
+            self.ask('alpha', 'ballot', A, now=self.now + 86400, actor=who, role='citizen', motion=m['id'], choice='yes')
+        self.ask('alpha', 'ballot', A, now=self.now + 86400, actor='fay', role='citizen', motion=m['id'], choice='no')
+        g = self.snap(self.now + 2 * 86400)['government']
+        self.assertEqual(g['pending']['type'], 'confederation')
+
+    def test_election_at_term_end(self):
+        self.become('democracy')
+        end = self.snap()['term_ends']
+        self.assertEqual(self.motion('election'), [])
+        self.now = end
+        [m] = self.motion('election')
+        self.assertIn('stand', self.ask('alpha', 'stand', B, now=end, actor='bob', role='citizen', pname='Bob'))
+        self.ask('alpha', 'stand', C, now=end, actor='cat', role='citizen', pname='Cat')
+        self.ask('alpha', 'ballot', A, now=end, actor='ann', role='citizen', motion=m['id'], choice='cat')
+        self.assertIn('not standing', self.ask('alpha', 'ballot', A, now=end, actor='ann', role='citizen',
+                                               motion=m['id'], choice='zed'))
+        self.now = end + 86400
+        g = self.snap()['government']
+        self.assertEqual((g['head_account'], g['head_name']), ('cat', 'Cat'))
+        self.assertEqual(self.snap()['head'], C)
+        self.assertEqual(self.snap()['term_ends'], end + 86400 + 7 * 86400)
+
+    def test_league_council_weighs_strongboxes_with_a_cap(self):
+        self.become('league')
+        self.assertEqual(self.n.weights(self.nid), {A: 0.4 * 1020, B: 10, C: 10})
+        self.ask('alpha', 'currency', A, now=self.now, issuer=A)
+        self.assertEqual(self.n.currency(self.nid), A)  # 408 of 428 at once
+
+    def test_rename_and_dissolve_follow_motions(self):
+        self.become('republic')
+        self.ask('alpha', 'currency', B, now=self.now, issuer=B)
+        self.ask('alpha', 'rename', B, to='civ:alpha:Bark', now=self.now)
+        [m] = self.motion('currency')
+        self.assertEqual(m['subject'], 'civ:alpha:Bark')
+        self.assertEqual(m['ballots'], {'civ:alpha:Bark': 'yes'})
+        self.ask('alpha', 'secede', C, now=self.now)
+        self.ask('alpha', 'secede', 'civ:alpha:Bark', now=self.now)
+        self.n.snapshot(self.now + 3 * 86400)
+        self.assertEqual(self.db.execute('SELECT COUNT(*) FROM nation_motion').fetchone()[0], 0)
 
 
 class AgentRoundTripTests(unittest.TestCase):
