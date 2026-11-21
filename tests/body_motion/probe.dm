@@ -266,6 +266,47 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(!H.body_motion_stop(old_climb) && H.body_motion_priority == BODY_MOTION_PRIORITY_COMBAT, "stop_leaves_other_motion")
 	body_motion_probe_idle(H)
 
+	// --- actions: firing, throwing, shoves, stooping, kneeling -----------------
+	var/turf/east_tile = locate(6, 5, 1)
+	body_motion_probe_assert(H.body_motion_fire(east_tile, null) && H.body_motion_until == world.time + 3 && H.body_motion_priority == BODY_MOTION_PRIORITY_COMBAT, "fire_kick_3ds")
+	body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "fire_ends_at_rest")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_throw(east_tile) && H.body_motion_until == world.time + 4, "throw_4ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_knockback(A) && H.body_motion_until == world.time + 5, "shove_knockback_5ds")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_knockback(H) && !H.body_motion_knockback(null), "no_knockback_without_shover")
+	body_motion_probe_assert(H.body_motion_stoop(east_tile) && H.body_motion_until == world.time + 4 && H.body_motion_priority == BODY_MOTION_PRIORITY_LOW, "stoop_4ds")
+	body_motion_probe_idle(H)
+	var/kneel = H.body_motion_kneel(A, 20)
+	body_motion_probe_assert(kneel && kneel == H.body_motion_serial && H.body_motion_until == world.time + 26, "kneel_holds_for_treatment")
+	body_motion_probe_assert(H.body_motion_stop(kneel, 3) && H.body_motion_until == world.time + 3 && body_motion_matrix_same(H.transform, rest), "kneel_rises_in_3ds")
+	body_motion_probe_idle(H)
+	H.may_do_mob = FALSE
+	body_motion_probe_assert(!H.body_motion_kneel(A, 20), "no_kneel_during_another_wait")
+	H.may_do_mob = TRUE
+	// A shove lands over a stoop; a stoop never cuts a shove.
+	H.body_motion_stoop(east_tile)
+	H.body_motion_started = -100
+	body_motion_probe_assert(H.body_motion_knockback(A), "shove_cuts_stoop")
+	H.body_motion_started = -100
+	body_motion_probe_assert(!H.body_motion_stoop(east_tile), "stoop_waits_for_shove")
+	body_motion_probe_idle(H)
+
+	// --- hauling a heavy load --------------------------------------------------
+	H.m_intent = "walk"
+	H.pulling = A
+	body_motion_probe_assert(H.body_motion_haul_dir() == EAST, "haul_leans_away_from_load")
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 7, "haul_heave_7ds")
+	body_motion_probe_idle(H)
+	var/obj/structure/light_load = new(locate(4, 5, 1))
+	H.pulling = light_load
+	body_motion_probe_assert(!H.body_motion_haul_dir(), "light_load_no_heave")
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 4, "light_load_plain_bounce")
+	body_motion_probe_idle(H)
+	H.pulling = null
+	qdel(light_load)
+
 	// --- unwatched bodies snap -------------------------------------------------
 	H.probe_watched = FALSE
 	body_motion_probe_assert(!H.body_motion_recoil(A), "unwatched_no_recoil")
@@ -289,6 +330,21 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_idle(H)
 	body_motion_probe_assert(H.body_motion_struggle(), "reduced_keeps_struggle")
 	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_fire(locate(6, 5, 1), null), "reduced_keeps_fire")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_throw(locate(6, 5, 1)), "reduced_keeps_throw")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(H.body_motion_knockback(A), "reduced_keeps_shove")
+	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_stoop(locate(6, 5, 1)), "reduced_drops_stoop")
+	var/reduced_kneel = H.body_motion_kneel(A, 10)
+	body_motion_probe_assert(reduced_kneel, "reduced_keeps_kneel")
+	H.body_motion_stop(reduced_kneel, 3)
+	body_motion_probe_idle(H)
+	H.pulling = A
+	body_motion_probe_assert(H.body_motion_stride(), "reduced_keeps_haul")
+	H.pulling = null
+	body_motion_probe_idle(H)
 	config.body_motion = BODY_MOTION_OFF
 	body_motion_probe_assert(!H.body_motion_recoil(A), "off_no_recoil")
 	H.lying = TRUE
@@ -309,7 +365,7 @@ var/body_motion_probe_checks = 0
 	H.pixel_y = -2
 	H.pixel_w = 5
 	H.pixel_z = -4
-	var/list/owned_motions = list("recoil", "work", "emote", "swing", "parry", "stride", "climb", "sink")
+	var/list/owned_motions = list("recoil", "work", "emote", "swing", "parry", "stride", "climb", "sink", "fire", "throw", "shove", "stoop", "kneel")
 	for (var/kind in owned_motions)
 		body_motion_probe_idle(H)
 		H.body_motion_stroke_next = 0
@@ -330,6 +386,16 @@ var/body_motion_probe_checks = 0
 				H.body_motion_stop(H.body_motion_climb(TRUE, 20))
 			if ("sink")
 				H.body_motion_sink()
+			if ("fire")
+				H.body_motion_fire(locate(6, 5, 1), null)
+			if ("throw")
+				H.body_motion_throw(locate(6, 5, 1))
+			if ("shove")
+				H.body_motion_knockback(A)
+			if ("stoop")
+				H.body_motion_stoop(locate(6, 5, 1))
+			if ("kneel")
+				H.body_motion_stop(H.body_motion_kneel(A, 10), 3)
 		body_motion_probe_assert(H.pixel_x == 3 && H.pixel_y == -2 && H.pixel_w == 5 && H.pixel_z == -4, "pixel_offsets_kept_[kind]")
 	body_motion_probe_idle(H)
 	H.pixel_x = 0
@@ -388,7 +454,13 @@ var/body_motion_probe_checks = 0
 		"recoil_south" = body_motion_probe_keys(body_motion_matrix(stand, 0, -3)),
 		"swim_dip" = body_motion_probe_keys(body_motion_matrix(stand, 0, -1)),
 		"sink" = body_motion_probe_keys(body_motion_matrix(stand, 0, -3)),
-		"climb_up" = body_motion_probe_keys(body_motion_matrix(stand, 0, 1)))
+		"climb_up" = body_motion_probe_keys(body_motion_matrix(stand, 0, 1)),
+		"fire_east" = body_motion_probe_keys(body_motion_matrix(stand, -2, 0, -5)),
+		"throw_east" = body_motion_probe_keys(body_motion_matrix(stand, 3, 0, 6)),
+		"shove_east" = body_motion_probe_keys(body_motion_matrix(stand, 4, 0, 10)),
+		"stoop_east" = body_motion_probe_keys(body_motion_matrix(stand, 1, 0, 0, 0.88)),
+		"kneel_east" = body_motion_probe_keys(body_motion_matrix(stand, 1, 0, 0, 0.85)),
+		"haul_east" = body_motion_probe_keys(body_motion_matrix(stand, 0, 0, 6)))
 	if (!text2file(json_encode(keys), "keys.json"))
 		throw EXCEPTION("render export failed: keys.json")
 
