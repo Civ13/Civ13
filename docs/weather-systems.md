@@ -48,7 +48,8 @@ that is in the tile's climate and the current season, so one storm rains on
 temperate ground, snows on tundra and raises sand over dry desert. That table
 is the one zone weather has always used; the Farmer's Almanac test reads it.
 Roofed areas are always `WEATHER_NONE`. What the weather does to the air
-temperature is in [climate-normals.md](climate-normals.md).
+temperature is in [climate-normals.md](climate-normals.md), and the air grid
+of temperature, humidity, pressure and cloud is in [weather-air.md](weather-air.md).
 
 ## Rolls and events
 

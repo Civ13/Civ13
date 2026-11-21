@@ -1431,6 +1431,11 @@ SUITES = {
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (
             'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
+    # Stdlib-only: ship's draughts cost the hand recipes and weigh like the ledger.
+    'ship_draught': {'files': ('tests/ship_draught/test_draught_sources.py',),
+        'paths': ('tests/ship_draught/',), 'shared_paths': (
+            'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
+            'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (
@@ -2389,6 +2394,9 @@ SUITES = {
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
+    'ramps': {'files': ('tests/ramps/test_contract.py',), 'paths': (
+        'tests/ramps/', 'code/modules/multiz/ramps.dm', 'code/__defines/ramps.dm',
+        'icons/obj/ramps.dmi', 'tests/sprites/create_ramps.py')},
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
@@ -2693,6 +2701,8 @@ SUITES = {
     'death_legacy': {'files': ('tests/death_legacy/test_death_legacy.py',),
         'paths': ('tests/death_legacy/', 'code/modules/research_tree/death_legacy.dm', 'code/game/mob/living/carbon/human/death.dm',
                   'code/game/mob/groups/faction_start.dm', 'code/modules/persistence/bed_return.dm')},
+    'familiarity': {'files': ('tests/familiarity/test_familiarity.py',),
+        'paths': ('tests/familiarity/', 'code/modules/research_tree/familiarity.dm')},
     'knowledge_spread': {'files': ('tests/knowledge_spread/test_knowledge_spread.py',),
         'paths': ('tests/knowledge_spread/', 'code/modules/research_tree/knowledge_spread.dm', 'code/modules/research_tree/tech_tree_view.dm',
                   'code/modules/research_tree/book_interface.dm', 'code/modules/research_tree/book_research.dm', 'code/modules/research_tree/era_loss.dm',
