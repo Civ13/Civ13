@@ -884,8 +884,8 @@
 	var/turf/T = get_turf(src)
 	var/area/area_above = null
 	var/dug_z = dug_underground_z()
-	if (dug_z && z == dug_z)
-		area_above = get_area(locate(x, y, multiz_level_above(z)))
+	if (underground_added(z))
+		area_above = get_area(locate(x, y, underground_surface_z()))
 	else if (z==1 && world.maxz>=2 && !dug_z)
 		area_above = get_area(get_turf(locate(x,y,z+1)))
 	// Independent ore rolls use the old table's marginal rates, not its conditional
