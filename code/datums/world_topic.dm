@@ -58,7 +58,8 @@
 		.["group_players"] = region_gateway_players()
 	//.["revision"] = GLOB.revdata.commit
 	//.["revision_date"] = GLOB.revdata.date
-	.["hub"] = GLOB.hub_visibility
+	// Whether the BYOND hub lists this world right now (hub.dm, configuration.dm).
+	.["hub"] = world.visibility ? 1 : 0
 
 	//var/list/adm = get_admin_counts()
 	//var/list/presentmins = adm["present"]

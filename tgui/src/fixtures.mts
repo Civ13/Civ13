@@ -72,6 +72,14 @@ add('known-languages-family', 'known_languages.tmpl', { current_default: 'Dawnis
     { name: 'Ashen', parent: 'Old Tongue', nation: 'Ash Company', era: 'Imperial Age', depth: 1, learning: 1 }],
   links: [{ a: 'Old Tongue', b: 'Dawnish', percent: 80 }, { a: 'Old Tongue', b: 'Ashen', percent: 70 }, { a: 'Dawnish', b: 'Ashen', percent: 60 }] }],
 }, 'Known languages');
+// A speaker of a formed people: the "Your people" block with its lineage, kin and upbringing.
+add('known-languages-people', 'known_languages.tmpl', { current_default: 'Latin', languages: [{ name: 'Latin', prefix: ',l', description: 'Mother tongue. The speech of the Hearthlanders.', is_default: 1 }],
+  people: { name: 'Saltmarsh Kin', language: 'Latin', land: 'the Saltmarsh', lineage: [
+    { name: 'Hearthlanders', language: 'Latin', formed: 0, year: 0, nation: '', homeland: '', parents: [] },
+    { name: 'Saltmarsh Kin', language: 'Latin', formed: 1, year: 58800, nation: 'Iron Pact', homeland: 'the Saltmarsh', parents: ['Hearthlanders'] }],
+  kin: [{ name: 'Tidewater Folk', language: 'Latin', formed: 1, year: 58790, nation: '', homeland: 'the Tidewater', parents: ['Hearthlanders'], relation: 'shares your roots' }],
+  raised_among: ['Fjordfolk'], welcomed_by: [] },
+}, 'Known languages');
 add('panel', 'panel.tmpl', { sections: [
   { title: 'Lock', rows: [{ label: 'Dial', value: 35, buttons: [{ label: '-', action: 'decrement' }, { label: '+', action: 'increment' }] }, { label: 'Door', value: 'Open', tone: 'good' }], buttons: [{ label: 'Close the safe', action: 'open' }] },
   { title: 'Contents', items: [{ name: 'Ledger', detail: 'A bound book of accounts.', buttons: [{ label: 'Read', action: 'read', id: 'a' }, { label: 'Take', action: 'retrieve', id: 'a' }] }, { name: 'Silver coins', buttons: [{ label: 'Take', action: 'retrieve', id: 'b' }] }], empty: 'It is empty.' },

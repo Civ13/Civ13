@@ -36,7 +36,8 @@ class Deck(unittest.TestCase):
         self.assertIn('C && !C.anchored', lay)
         survey = extract(SOURCE, '/proc/air_hull_survey')
         self.assertIn('found.len > AIR_HULL_MAX_TILES', survey)
-        self.assertIn('#define AIR_HULL_MAX_TILES 60\n', SOURCE)
+        self.assertIn('#define AIR_HULL_MAX_TILES AIR_DRAUGHT_MAX_DECK\n', SOURCE)
+        self.assertIn('#define AIR_DRAUGHT_MAX_DECK 60', (ROOT / 'code/__defines/naval.dm').read_text(encoding='utf-8'))
 
     def test_floors_move_before_what_stands_on_them(self):
         move = extract(BUILT, '/datum/craft_body/built/move_to')
