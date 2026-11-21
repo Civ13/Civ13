@@ -10,7 +10,7 @@
 	var/claim = divine_claim_of(src)
 	var/list/actions = list()
 	if (claim)
-		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
+		actions += list("Initiate a follower", "Teach an invocation", "Take back an invocation", "Release a follower", "List followers", "List apostates", "Set customs", "List enchantments", "Strip enchantment", "Pending prayers", "Stop speaking as a god")
 	else
 		actions += "Speak as a god"
 	actions += "Set my divine name"
@@ -125,6 +125,8 @@
 						known += divine_invocation_names[spell]
 					lines += "[H.real_name] ([H.ckey ? H.ckey : "no player"])[H.stat == DEAD ? ", dead" : ""][H.magic_allowed() ? "" : ", SUSPENDED (not on the magic whitelist)"]: [known.len ? english_list(known) : "nothing taught"][H.divine_slot_spent ? ", spent until rested" : ""][karma_mob_ckey(H) ? karma_staff_badge(karma_mob_ckey(H)) : ""]"
 			to_chat(usr, "<b>Followers of [claim_label] in this world:</b><br>[lines.len ? jointext(lines, "<br>") : "none"]")
+		if ("Set customs")
+			arcane_edit_customs(claim) // arcane_devotion.dm
 		if ("List apostates")
 			arcane_list_apostates(claim) // arcane_apostate.dm
 		if ("List enchantments", "Strip enchantment") // arcane_enchant.dm

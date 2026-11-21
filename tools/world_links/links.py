@@ -12,7 +12,9 @@ TABLE = Path(__file__).resolve().with_name('world_links.json')
 SIDES = ('north', 'south', 'east', 'west')
 OPPOSITE = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east'}
 COASTS = ('N', 'S', 'E', 'W')
-KINDS = ('walk', 'sail')
+# walk: over dry ground only; sail: by ship only; both: a land edge that is
+# partly shore, walked where it is dry and sailed where it is water.
+KINDS = ('walk', 'sail', 'both')
 
 
 def _end(end, where):
@@ -113,10 +115,11 @@ def load(path=TABLE):
 
 def crossings(table, kind=None):
     """{region: {side: [(dest, from, to, kind, dest_from, dest_to)]}}, both ways round.
-    With kind, only links of that kind."""
+    With kind 'walk' or 'sail', only the links walked or sailed over (a 'both'
+    link is in each)."""
     out = {}
     for link in table['links']:
-        if kind and link['kind'] != kind:
+        if kind and link['kind'] not in (kind, 'both'):
             continue
         for here, there in ((link['a'], link['b']), (link['b'], link['a'])):
             out.setdefault(here[0], {}).setdefault(here[1], []).append(

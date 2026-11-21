@@ -129,6 +129,7 @@
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		note_smelting(H, src)
 		start_smelt()
+		accolade_meet_mob(H, "smelter")
 	else if (!on && firing_refusal())
 		to_chat(H, SPAN_WARNING(firing_refusal()))
 	else if (!on)

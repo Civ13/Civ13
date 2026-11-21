@@ -189,6 +189,7 @@
 		return
 	burning = TRUE
 	note_field_work(H, "smelting", iron_sand) // natural_science_work.dm
+	accolade_meet_mob(H, "smelter")
 	burn_left = TATARA_BURN_TIME
 	burn_ticks = 0
 	blown_ticks = 0

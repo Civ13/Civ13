@@ -38,6 +38,11 @@
 
 // The language a character grew up with: their people's, else their default.
 /mob/living/human/proc/mother_tongue()
+	// Set when their people's language split off a daughter (daughter.dm).
+	if (native_tongue)
+		var/datum/language/N = canonical_language(all_languages[native_tongue])
+		if (N)
+			return N
 	var/datum/origin/O = get_origin()
 	if (O)
 		var/datum/language/L = all_languages[O.language]

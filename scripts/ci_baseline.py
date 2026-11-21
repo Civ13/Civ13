@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'npc_cover_direction': {'files': ('tests/npc_cover/test_direction_projection.py',),
+        'paths': ('tests/npc_cover/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',)},
     'bottle_alcohol_power': {'files': ('tests/bottle_alcohol_power/test_alcohol_power.py',),
         'paths': ('tests/bottle_alcohol_power/', 'code/modules/reagents/reagent_containers/food/drinks/bottle.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -1047,7 +1050,7 @@ SUITES = {
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
             'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
             'maps/nomads/nomads_earth_asia.dmm', 'maps/nomads/nomads_earth_oceania.dmm',
-            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
+            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
             'maps/nomads/nomads_gaia.dmm')},
     # Walking between lands over shared map edges: links answered on the facing
     # edge with dry ground on both stretches, parsed from the DMMs; no BYOND runtime.
@@ -1068,7 +1071,7 @@ SUITES = {
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
             'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
             'maps/nomads/nomads_earth_asia.dmm', 'maps/nomads/nomads_earth_oceania.dmm',
-            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
+            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
             'maps/nomads/nomads_gaia.dmm')},
     # Draft lands of the rest of the Earth (maps/earth_drafts): DMM parse, sizes,
     # file digests and that no build or region list names them; no BYOND runtime.
@@ -1077,9 +1080,9 @@ SUITES = {
                   'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
                   'maps/nomads/nomads_earth_asia.dmm', 'maps/heights/nomads_earth_asia.txt',
                   'maps/heights/nomads_earth_asia.flow.txt', 'maps/heights/nomads_earth_asia.flood.txt',
-                  'maps/nomads/nomads_earth_oceania.dmm', 'maps/nomads/nomads_earth_greenland.dmm',
+                  'maps/nomads/nomads_earth_oceania.dmm', 'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm',
                   'maps/nomads/nomads_earth_antarctica.dmm', 'maps/heights/nomads_earth_oceania.txt',
-                  'maps/heights/nomads_earth_greenland.txt', 'maps/heights/nomads_earth_antarctica.txt',
+                  'maps/heights/nomads_earth_greenland.txt', 'maps/heights/nomads_earth_mediterranean.txt', 'maps/heights/nomads_earth_antarctica.txt',
                   'maps/heights/nomads_earth_europe.txt', 'maps/heights/nomads_earth_europe.flow.txt',
                   'maps/heights/nomads_earth_europe.flood.txt', 'maps/heights/nomads_earth_africa.txt',
                   'maps/heights/nomads_earth_africa.flow.txt', 'maps/heights/nomads_earth_africa.flood.txt',
@@ -1477,12 +1480,15 @@ SUITES = {
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (
             'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
-    # Stdlib-only: ship's draughts cost the hand recipes and weigh like the ledger.
-    'ship_draught': {'files': ('tests/ship_draught/test_draught_sources.py',),
+    # Stdlib-only: ship's draughts cost the hand recipes and weigh like the
+    # ledger; every part a vehicle editor offers is described.
+    'ship_draught': {'files': ('tests/ship_draught/test_draught_sources.py', 'tests/ship_draught/test_design_checks.py'),
         'paths': ('tests/ship_draught/',), 'shared_paths': (
             'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
             'code/modules/naval/ship_designer.dm', 'scripts/build_ship_designer_icons.py',
-            'code/modules/naval/sub_draught.dm',
+            'code/modules/naval/sub_draught.dm', 'code/modules/naval/draught_part_help.dm',
+            'code/modules/naval/draught_checks.dm', 'code/modules/craft/design_checks.dm',
+            'code/modules/craft/vehicle_checks.dm', 'code/__defines/design_checks.dm',
             'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
@@ -1843,7 +1849,16 @@ SUITES = {
             'code/modules/client/player_tutorial.dm', 'code/modules/naval/ship_voyage.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_travel.dm',
             'code/modules/research_tree/character_knowledge.dm', 'code/modules/research_tree/research_faction.dm',
-            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm')},
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm',
+            'code/game/objects/items/cartography_notes.dm', 'code/modules/research_tree/book_research.dm',
+            'code/modules/1713/book.dm', 'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/structures/blacksmithing/refining.dm', 'code/modules/1713/tatara.dm',
+            'code/modules/research_tree/field_work.dm', 'code/modules/1713/domestication.dm',
+            'code/modules/1713/complex_animal/_backend.dm', 'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/helicopter.dm',
+            'code/game/mob/groups/faction_creation.dm', 'code/modules/provinces/province_siege.dm',
+            'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
@@ -2573,7 +2588,7 @@ SUITES = {
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py'), 'paths': (
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py', 'tests/divine_approval/test_arcane_devotion.py'), 'paths': (
         'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/divine_repositories.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (

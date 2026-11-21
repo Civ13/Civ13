@@ -383,6 +383,11 @@ gateway's port, saved and started again once. `set-gate` refuses a gateway that 
 not running yet, so the public port never waits on a first build. The mainland and
 the start region stay as they were.
 
+With the whole group stopped for maintenance, neither step launches anything:
+`add-gateway --apply` only sets the gateway up, and `set-gate` only swaps the ports
+(and moves the front door files). The next start brings the gateway up on the public
+port; its first start compiles it.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback

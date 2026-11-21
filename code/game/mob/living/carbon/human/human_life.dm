@@ -690,7 +690,9 @@
 			// First layer blocks 80% of a body's weighted heat loss; an
 			// overlapping layer adds 16%. Exposed parts still lose heat.
 			protection += 0.8 * get_thermal_protection(coverage & ~covered)
-			protection += 0.16 * get_thermal_protection(coverage & covered)
+			var/overlap = coverage & covered
+			if (overlap)
+				protection += 0.16 * get_thermal_protection(overlap)
 			covered |= coverage
 	return min(0.9, protection) * (1 - 0.5 * cold_wetness)
 
