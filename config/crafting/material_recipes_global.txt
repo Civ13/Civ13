@@ -1468,7 +1468,6 @@ RECIPE: /material/coca/,cocaine,/obj/item/weapon/reagent_containers/pill/cocaine
 //*********************| POPPY |********************************
 //**************************************************************
 
-RECIPE: /material/poppy/,opium,/obj/item/weapon/reagent_containers/pill/opium,3,50,0,1,none,0,0,29,8,null
 
 //*************************************************************
 //*********************| BONE |********************************
@@ -1813,6 +1812,7 @@ RECIPE: /material/rags/,beggar clothing,/obj/item/clothing/under/medieval/beggar
 //*************************************************************
 
 RECIPE: /material/hemp/,rope,/obj/item/stack/material/rope,1,10,0,1,none,0,0,0,8,null
+RECIPE: /material/cannabis_fresh/,lump of hashish,/obj/item/weapon/reagent_containers/pill/hashish,5,80,0,1,none,0,0,0,8,null
 RECIPE: /material/cannabis/,joint,/obj/item/clothing/mask/smokable/cigarette/joint,2,10,0,1,none,0,0,0,8,null
 
 //*************************************************************

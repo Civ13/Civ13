@@ -2876,6 +2876,8 @@ SUITES = {
                   'code/modules/1713/light_fuel.dm')},
     'preserves': {'files': ('tests/preserves/test_preserves.py',),
         'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi')},
+    'drug_preparations': {'files': ('tests/drug_preparations/test_drug_preparations.py',),
+        'paths': ('tests/drug_preparations/', 'code/modules/1713/drug_preparations.dm', 'tests/sprites/create_drugs.py')},
     'drug_classes': {'files': ('tests/drug_classes/test_drug_classes.py',),
         'paths': ('tests/drug_classes/', 'code/modules/reagents/drug_classes.dm')},
     'drug_crops': {'files': ('tests/drug_crops/test_drug_crops.py',),
@@ -2891,6 +2893,11 @@ SUITES = {
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/mob.dm',
             'code/game/mob/living/carbon/human/death.dm', 'code/modules/divine/arcane_spirits.dm',
             'code/modules/admin/verbs/random_verbs.dm')},
+    # Divine Sight: how gods observe (hidden mechanic).
+    'divine_sight': {'files': ('tests/divine_sight/test_divine_sight.py',),
+        'paths': ('tests/divine_sight/', 'code/modules/divine/divine_sight.dm',
+            'code/modules/divine/divine_sight_panel.dm', 'icons/mob/divine_presence.dmi'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/modules/admin/admin_verbs.dm')},
     # Observing as a spirit on persistent worlds: limited sight, local hearing, haunting.
     'spirit_observe': {'files': ('tests/spirit_observe/test_spirit_observe.py',),
         'paths': ('tests/spirit_observe/', 'code/game/mob/observer/ghost/spirit_observe.dm',
