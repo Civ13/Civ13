@@ -303,6 +303,9 @@ class NationMotions:
                         (account, name, nation))
         self.db.execute('UPDATE nation SET head = ? WHERE id = ?', (faction, nation))
         self.db.execute('INSERT OR REPLACE INTO nation_term VALUES (?, ?)', (nation, now + term))
+        self.db.execute('INSERT OR REPLACE INTO nation_seen VALUES (?, ?, ?)', (nation, account, now))
+        # A deputy serves the consul who named them.
+        self.db.execute('DELETE FROM nation_successor WHERE nation = ?', (nation,))
 
     def motions_due(self, now):
         """Closes motions that are due, drops motions of nations that are no

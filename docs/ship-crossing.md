@@ -33,10 +33,14 @@ The ship must be at all stop, not grappled, with the world not saving. Then:
    how it looked, what it wore and its wounds, laid down dead again on
    arrival. Carts, small boats (rafts, dugouts, outriggers), bicycles and
    machines go whole the same way, once unloaded; living crew riding one get
-   off as she leaves. Ladders between her deck and her hold go as ladders and
+   off as she leaves. An engine goes whole too ("e" entry), with where its fuel
+   barrel stands beside it; it arrives stopped and coupled to that barrel
+   again, so an engine ship such as the slipway freighter can cross. Built
+   walls keep their health (up to 1000000) so a freighter's wheelhouse passes
+   the record check. Ladders between her deck and her hold go as ladders and
    are paired again on arrival. Still refused, and named at the tiller with an
    arrow on deck: an animal a player or agent controls, a ridden animal, a
-   loaded cart, an engine or frame vehicle, anything strapped into a seat that
+   loaded cart, a frame vehicle or a small boat with an engine aboard, anything strapped into a seat that
    is not crew, a body holding a creature, and what only an admin or the map
    places (spawners, traders, money printers, stairs and other level links,
    docks, helms). A barrel holds at most 10000

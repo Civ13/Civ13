@@ -84,6 +84,7 @@ var/global/list/arcane_storm_marks = list()
 	if (!istype(H) || !H.arcane_magic_user())
 		return
 	arcane_enchant_examine(H) // arcane_enchant.dm
+	arcane_bless_examine(H) // arcane_bless.dm
 	var/aspect = arcane_virtue()
 	if (!aspect)
 		return

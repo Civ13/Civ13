@@ -1,0 +1,21 @@
+{
+  "comment": "Every land and ocean of the earth group and the map edges between them (docs/world-links.md). Edit this file, then run python3 tools/world_links/build.py to rewrite code/modules/persistence/world_links.dm.",
+  "lands": {
+    "northamerica": {"chart": [0, 6], "coasts": ["E", "W", "N", "S"], "flight": true},
+    "southamerica": {"chart": [2, 0], "coasts": ["E", "W", "S", "N"], "flight": true},
+    "gaia": {"chart": [6, 7], "coasts": ["W", "E"], "flight": true},
+    "europe": {"chart": [11, 9], "coasts": ["W", "N"], "flight": true},
+    "desert": {"chart": [12, 4], "coasts": ["N"], "flight": true},
+    "africa": {"chart": [12, 3], "coasts": ["W", "S", "E"], "flight": true},
+    "oceania": {"chart": [21, 1], "coasts": ["N", "S", "W", "E"], "flight": true},
+    "greenland": {"chart": [6, 11], "coasts": ["E", "S", "N"], "flight": true},
+    "antarctica": {"chart": [10, -5], "coasts": ["N", "E", "S", "W"], "flight": true},
+    "jungle": {"chart": [13, 1], "coasts": ["W"], "flight": true},
+    "asia": {"chart": [18, 8], "coasts": ["E", "S", "N"], "flight": true}
+  },
+  "links": [
+    {"kind": "walk", "a": ["northamerica", "south", 0, 1], "b": ["southamerica", "north", 0, 1]},
+    {"kind": "walk", "a": ["europe", "east", 0, 1], "b": ["asia", "west", 0.45, 1]},
+    {"kind": "walk", "a": ["africa", "east", 0.68, 1], "b": ["asia", "west", 0, 0.45]}
+  ]
+}

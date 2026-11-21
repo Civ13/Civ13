@@ -70,6 +70,8 @@
 				return
 			var/list/options = list()
 			for (var/spell in divine_invocation_names)
+				if (magic_repo_rite_spell(spell)) // repository_tiers.dm: they come with the grant
+					continue
 				if (teaching != (spell in H.divine_known))
 					options[divine_invocation_names[spell]] = spell
 			if (!options.len)
@@ -83,7 +85,7 @@
 				H.divine_known = list()
 			if (teaching)
 				H.divine_known |= spell
-				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch.[spell == "repository" ? " Hold something small of your own in your other hand when you ask." : ""][spell == "imbue" ? " Hold the thing in your other hand and keep what it needs in your pouch." : ""]")))
+				to_chat(H, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You understand a new prayer: [picked]. Use Beseech, with your stick in hand and something in your pouch.[spell == "repository" ? " Hold something small of your own in your other hand when you ask." : ""][spell == "imbue" ? " Hold the thing in your other hand and keep what it needs in your pouch." : ""][spell == "bless" ? " Stand at an altar with the thing in your other hand and your sacrifice laid on the altar." : ""]")))
 				if (spell == "repository")
 					H.magic_grant_received() // repository.dm
 			else

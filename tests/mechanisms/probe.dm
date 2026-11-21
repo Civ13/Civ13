@@ -10,7 +10,7 @@
 	visibility = 0
 	maxx = 16
 	maxy = 16
-	maxz = 1
+	maxz = 2
 	fps = 20
 	turf = /turf/floor/plating/mechanisms_probe
 	area = /area
@@ -217,9 +217,60 @@ var/mechanisms_runtime = null
 	sleep(12)
 	mechanisms_assert(hatch.state, "trapdoor_open")
 
+	// A pulley block carries cords one level up; without it the cord hangs slack.
+	var/obj/structure/bell/upper_bell = new(locate(5, 6, 2))
+	var/obj/structure/mechanism/lever/upper_lever = new(locate(2, 2, 1))
+	var/mob/living/human/rigger = mechanisms_actor(2, 3, "Rigger")
+	mechanisms_assert(!(upper_bell in mechanism_reachable_actuators(upper_lever)), "no_pulley_no_upstairs")
+	var/obj/structure/mechanism_pulley/pulley = new(locate(3, 2, 1))
+	mechanisms_assert(upper_bell in mechanism_reachable_actuators(upper_lever), "pulley_reaches_upstairs")
+	mechanisms_assert(mechanism_offset_words(upper_lever, get_turf(upper_bell)) == "4 north, 3 east, one level up", "upstairs_words")
+	var/obj/item/stack/material/rope/rope2 = new(null, 5)
+	mechanisms_hands(rigger, rope2)
+	mechanisms_answer(rigger, "Tie a cord to [upper_bell.name] (4 north, 3 east, one level up)")
+	mechanism_rope_on_trigger(upper_lever, rope2, rigger)
+	mechanisms_assert(upper_lever.links == "3,4,1", "upstairs_entry")
+	upper_bell.next_ring = 0
+	upper_lever.attack_hand(rigger)
+	mechanisms_assert(upper_bell.next_ring > world.time, "rings_upstairs")
+	qdel(pulley)
+	upper_bell.next_ring = 0
+	upper_lever.thrown = FALSE
+	upper_lever.next_pull = 0
+	upper_lever.attack_hand(rigger)
+	mechanisms_assert(upper_bell.next_ring == 0, "slack_without_pulley")
+
+	// Clock alarms: a water clock pulls at its hour, a tower clock every hour.
+	var/obj/structure/water_clock/wclock = new(locate(3, 12, 1))
+	wclock.water = 60
+	wclock.links = "1,0"
+	var/obj/structure/bell/clock_bell = new(locate(4, 12, 1))
+	var/h = mechanism_hour24()
+	wclock.alarm_hour = (h + 5) % 24
+	wclock.last_hour = (h + 23) % 24
+	clock_bell.next_ring = 0
+	wclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring == 0 && wclock.last_hour == h, "water_clock_waits_for_its_hour")
+	wclock.alarm_hour = h
+	wclock.last_hour = (h + 23) % 24
+	wclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring > world.time, "water_clock_alarm_pulls")
+	clock_bell.next_ring = 0
+	wclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring == 0, "water_clock_once_an_hour")
+	mechanisms_assert(mechanism_alarm_name(-1) == "off" && mechanism_alarm_name(24) == "every hour" && mechanism_alarm_name(0) == "at 12 AM" && mechanism_alarm_name(13) == "at 1 PM", "alarm_names")
+	var/obj/structure/tower_clock/tclock = new(locate(3, 16, 1))
+	tclock.wound = 60
+	tclock.links = "1,-4"
+	tclock.alarm_hour = 24
+	tclock.last_hour = (clock_hour() % 12) + 1
+	clock_bell.next_ring = 0
+	tclock.process_interval(2)
+	mechanisms_assert(clock_bell.next_ring > world.time, "tower_clock_hourly_pulls")
+
 	// The new art is in the icon file.
 	var/list/states = icon_states('icons/obj/mechanisms.dmi')
-	for (var/state in list("lever", "lever_pulled", "pull_cord", "pull_cord_pulled", "pressure_plate", "pressure_plate_pressed", "rock_drop", "rock_drop_empty"))
+	for (var/state in list("lever", "lever_pulled", "pull_cord", "pull_cord_pulled", "pressure_plate", "pressure_plate_pressed", "rock_drop", "rock_drop_empty", "pulley"))
 		mechanisms_assert(state in states, "icon_[state]")
 
 /world/New()

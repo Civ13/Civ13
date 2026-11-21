@@ -71,6 +71,7 @@ class NationGovernmentSource(unittest.TestCase):
         self.assertIn('nation_government_announce(old_registry)', refresh)
         self.assertIn('nation_eras_report()', refresh)
         self.assertIn('nation_census_report()', refresh)
+        self.assertIn('nation_succession_report()', refresh)
 
     def test_agent_passes_the_new_fields(self):
         region = read('tools/transfer_storage/region.py')
@@ -99,6 +100,24 @@ class NationGovernmentSource(unittest.TestCase):
         self.assertIn('"op" = "stand"', menu)
         propose = proc_text(self.text, '/mob/living/human/proc/nation_may_propose(')
         self.assertIn('G["body"] == "referendum" && nation_eligible()', propose)
+
+
+    def test_throne_claim_is_held_and_contested(self):
+        offer = proc_text(self.text, '/mob/living/human/proc/throne_claim_offer(')
+        self.assertIn('account_verified(nation_account())', offer)
+        self.assertIn('G["type"] != "monarchy" || istext(G["head_account"])', offer)
+        tick = proc_text(self.text, '/proc/throne_claim_tick(')
+        self.assertIn('get_dist(claimant, A) > THRONE_CLAIM_RANGE', tick)
+        self.assertIn('if (!contested)\n\t\tC[3] += THRONE_CLAIM_STEP', tick)
+        self.assertIn('"op" = "claim"', tick)
+        self.assertIn('#define THRONE_CLAIM_TIME 18000', self.text)
+
+    def test_head_presence_and_faith_are_reported(self):
+        report = proc_text(self.text, '/proc/nation_succession_report(')
+        self.assertIn('"op" = "present"', report)
+        self.assertIn('H.nation_heads(nid)', report)
+        self.assertIn('H.religious_leader && H.religion == G["religion"]', report)
+        self.assertIn('account_verified(H.nation_account())', report)
 
 
 if __name__ == '__main__':

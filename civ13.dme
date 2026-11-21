@@ -1534,6 +1534,7 @@
 #include "code\modules\divine\identity.dm"
 #include "code\modules\divine\approval.dm"
 #include "code\modules\divine\arcane_altars.dm"
+#include "code\modules\divine\arcane_bless.dm"
 #include "code\modules\divine\arcane_enchant.dm"
 #include "code\modules\divine\arcane_materials.dm"
 #include "code\modules\divine\ritual.dm"
@@ -1657,6 +1658,7 @@
 #include "code\modules\persistence\last_save_status.dm"
 #include "code\modules\persistence\restore_contract.dm"
 #include "code\modules\persistence\world_chart.dm"
+#include "code\modules\persistence\world_links.dm"
 #include "code\modules\persistence\world_time_stamps.dm"
 #include "code\modules\persistence\debug_lossy.dm"
 #include "code\modules\persistence\expedition_land.dm"
@@ -2232,5 +2234,6 @@
 #include "code\modules\divine\magic_whitelist.dm"
 #include "code\modules\divine\repository.dm"
 #include "code\modules\divine\repository_ties.dm"
+#include "code\modules\divine\repository_tiers.dm"
 // Must stay last: global_init needs every other global initialized first.
 #include "code\global_init_last.dm"
