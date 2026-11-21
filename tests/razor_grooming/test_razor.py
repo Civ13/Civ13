@@ -36,10 +36,10 @@ class RazorGrooming(unittest.TestCase):
 
     def test_grooming_checks_eligibility_again_after_the_cut_wait(self):
         select = proc_body(self.source, RAZOR + '/proc/groom_select(')
-        self.assertIn('(new_hstyle in hairlist)', select)
-        self.assertIn('(new_fstyle in fhairlist)', select)
-        self.assertIn('WWinput_list_or_null(hairlist)', select)
-        self.assertIn('WWinput_list_or_null(fhairlist)', select)
+        self.assertIn('else if (hair_choice in hairlist)', select)
+        self.assertIn('if (beard_choice in fhairlist)', select)
+        self.assertIn('WWinput_list_or_null(hair_choices)', select)
+        self.assertIn('WWinput_list_or_null(beard_choices)', select)
         self.assertNotIn('usr', re.sub(r'"[^"]*"', '', select))
         apply = select.index('if (choice != "apply")')
         wait = select.index('if (!do_after(user, 80, M)')
@@ -53,10 +53,19 @@ class RazorGrooming(unittest.TestCase):
 
     def test_only_self_grooming_gets_a_bare_head_preview(self):
         groom = proc_body(self.source, RAZOR + '/proc/groom(')
-        self.assertIn('if (C && M == user)\n\t\tP = new()', groom)
+        self.assertIn('if (M != user || !C)\n\t\treturn groom_classic(M, user)', groom)
+        self.assertLess(groom.index('return groom_classic'), groom.index('P = new()'))
+        classic = proc_body(self.source, RAZOR + '/proc/groom_classic(')
+        hair = classic.index('if (new_hstyle && (new_hstyle in hairlist))')
+        beard = classic.index('if (new_fstyle && (new_fstyle in fhairlist))')
+        self.assertNotIn('return', classic[hair:beard])
+        self.assertLess(classic.index('M.h_style = new_hstyle'), beard)
+        self.assertNotIn('P.ask', classic)
         select = proc_body(self.source, RAZOR + '/proc/groom_select(')
-        self.assertIn('P && (old_hstyle in hairlist) ?', select)
-        self.assertIn('P && (old_fstyle in fhairlist) ?', select)
+        self.assertIn('Keep current hair', select)
+        self.assertIn('Keep current facial hair', select)
+        self.assertIn('if (hair_choice == keep_hair)\n\t\t\tnew_hstyle = old_hstyle', select)
+        self.assertIn('else if (beard_choice != keep_beard)\n\t\t\t\t\treturn', select)
 
     def test_preview_does_not_change_character_and_keeps_face_colors(self):
         draw = proc_body(self.source, '/mob/living/human/proc/grooming_portrait(')

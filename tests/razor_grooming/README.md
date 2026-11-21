@@ -9,6 +9,8 @@ Offline source checks, run by the `razor_grooming` suite in `scripts/ci_baseline
 - Self-grooming previews privately draw the player's current and proposed appearance. Style and
   growth only change after Apply and an uninterrupted timed cut. Cancel, window
   close, another choice, and stale or foreign browser replies cannot commit.
+  The self-flow can keep either current style without canceling the whole cut.
+- Other-target and clientless grooming keep the classic independent prompts.
 - Cut options still use the existing species, gender and hair-growth limits.
   An eligible held razor and target are checked again at completion.
 - `material_recipes_global.txt` has hygiene-gated razor rows (including copper),
@@ -24,4 +26,5 @@ Manual follow-up: on a connected client, choose a different style, compare
 front and side previews, try another, and close without applying. Reopen, apply,
 and check both completion and interruption by putting the razor away. For
 barbering, verify that no bare-head preview is shown and that walking out of range
-cancels. Offline checks do not exercise BYOND browser delivery.
+preserves the ordinary cut-wait behavior. The portrait intentionally omits
+headwear and is an approximation of unusual in-world face overlays. Offline checks do not exercise BYOND browser delivery.

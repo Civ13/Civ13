@@ -166,24 +166,48 @@
 	return ..()
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom(mob/living/human/M, mob/living/human/user)
-	if (!grooming_valid(M, user))
-		return
+	// Preview only self-grooming for a connected player. Preserve the classic
+	// independent hair/beard prompts for other targets and clientless actors.
 	var/client/C = user.client
-	if (C?.grooming_preview)
+	if (M != user || !C)
+		return groom_classic(M, user)
+	if (C.grooming_preview || !grooming_valid(M, user))
 		return
-	var/datum/grooming_preview/P
-	// Only preview your own bare head; a barber must not see through a disguise.
-	if (C && M == user)
-		P = new()
-		P.viewer = user
-		P.viewer_client = C
-		P.razor = src
-		P.subject = M
-		C.grooming_preview = P
+	var/datum/grooming_preview/P = new()
+	P.viewer = user
+	P.viewer_client = C
+	P.razor = src
+	P.subject = M
+	C.grooming_preview = P
 	groom_select(M, user, P)
-	if (P)
-		P.close()
-		qdel(P)
+	P.close()
+	qdel(P)
+
+/obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/groom_classic(mob/living/human/M, mob/living/human/user)
+	if (M == user)
+		user.visible_message("[user] starts cutting their own hair...", "You start cutting your hair...")
+	else
+		user.visible_message("[user] starts cutting [M]'s hair...", "You start cutting [M]'s hair...")
+	if (!do_after(user, 80, M))
+		return
+	var/list/hairlist = M.generate_valid_hairstyles(1,1)
+	var/new_hstyle = WWinput(user, "Please select a hair style.", "Grooming", WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
+	if (new_hstyle && (new_hstyle in hairlist))
+		M.h_style = new_hstyle
+		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
+		if (S)
+			M.h_growth = S.growth
+	if (M.gender == MALE)
+		var/list/fhairlist = M.generate_valid_facial_hairstyles(1)
+		var/new_fstyle = WWinput(user, "Please select a facial hair style.", "Grooming", WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
+		if (new_fstyle && (new_fstyle in fhairlist))
+			M.f_style = new_fstyle
+			var/datum/sprite_accessory/F = facial_hair_styles_list[new_fstyle]
+			if (F)
+				M.f_growth = F.growth
+	M.update_hair()
+	M.update_body()
+	user.visible_message("[user] finishes cutting [M == user ? "their own" : "[M]'s"] hair.", "You finish cutting [M == user ? "your" : "[M]'s"] hair.")
 
 /obj/item/weapon/material/kitchen/utensil/knife/razorblade/proc/grooming_valid(mob/living/human/M, mob/living/human/user)
 	if (QDELETED(src) || QDELETED(M) || QDELETED(user) || user.get_active_hand() != src || user.incapacitated() || user.a_intent == I_HARM)
@@ -198,28 +222,39 @@
 	var/old_fstyle = M.f_style
 	var/new_hstyle
 	var/new_fstyle
-	while (grooming_valid(M, user) && (!P || P.valid()))
+	while (grooming_valid(M, user) && P.valid())
 		var/list/hairlist = M.generate_valid_hairstyles(TRUE, TRUE)
-		if (!length(hairlist))
+		var/keep_hair = "Keep current hair"
+		var/list/hair_choices = list(keep_hair) + hairlist
+		var/hair_choice = WWinput(user, "Choose a hairstyle to preview.", "Grooming", keep_hair, WWinput_list_or_null(hair_choices))
+		if (!P.valid())
 			return
-		new_hstyle = WWinput(user, P ? "Choose a hairstyle to preview." : "Please select a hair style.", "Grooming", P && (old_hstyle in hairlist) ? old_hstyle : WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
-		if (!(new_hstyle in hairlist) || !grooming_valid(M, user) || (P && !P.valid()))
+		if (hair_choice == keep_hair)
+			new_hstyle = old_hstyle
+		else if (hair_choice in hairlist)
+			new_hstyle = hair_choice
+		else
 			return
 		new_fstyle = old_fstyle
 		if (M.gender == MALE)
 			var/list/fhairlist = M.generate_valid_facial_hairstyles(TRUE)
 			if (length(fhairlist))
-				new_fstyle = WWinput(user, P ? "Choose a facial hairstyle to preview." : "Please select a facial hair style.", "Grooming", P && (old_fstyle in fhairlist) ? old_fstyle : WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
-				if (!(new_fstyle in fhairlist) || !grooming_valid(M, user) || (P && !P.valid()))
+				var/keep_beard = "Keep current facial hair"
+				var/list/beard_choices = list(keep_beard) + fhairlist
+				var/beard_choice = WWinput(user, "Choose a facial hairstyle to preview.", "Grooming", keep_beard, WWinput_list_or_null(beard_choices))
+				if (!P.valid())
 					return
-		if (P)
-			var/choice = P.ask(new_hstyle, new_fstyle)
-			if (choice == "retry")
-				continue
-			if (choice != "apply")
-				return
+				if (beard_choice in fhairlist)
+					new_fstyle = beard_choice
+				else if (beard_choice != keep_beard)
+					return
+		var/choice = P.ask(new_hstyle, new_fstyle)
+		if (choice == "retry")
+			continue
+		if (choice != "apply")
+			return
 		break
-	if (!new_hstyle || !grooming_valid(M, user) || (P && !P.valid()) || M.h_style != old_hstyle || M.f_style != old_fstyle)
+	if (!grooming_valid(M, user) || !P.valid() || M.h_style != old_hstyle || M.f_style != old_fstyle)
 		return
 	if (new_hstyle == old_hstyle && new_fstyle == old_fstyle)
 		return
@@ -227,9 +262,9 @@
 		user.visible_message("[user] starts cutting their own hair...", "You start cutting your hair...")
 	else
 		user.visible_message("[user] starts cutting [M]'s hair...", "You start cutting [M]'s hair...")
-	if (!do_after(user, 80, M) || !grooming_valid(M, user) || (P && !P.valid()) || M.h_style != old_hstyle || M.f_style != old_fstyle)
+	if (!do_after(user, 80, M) || !grooming_valid(M, user) || !P.valid() || M.h_style != old_hstyle || M.f_style != old_fstyle)
 		return
-	if (!(new_hstyle in M.generate_valid_hairstyles(TRUE, TRUE)))
+	if (new_hstyle != old_hstyle && !(new_hstyle in M.generate_valid_hairstyles(TRUE, TRUE)))
 		return
 	if (new_fstyle != old_fstyle && (M.gender != MALE || !(new_fstyle in M.generate_valid_facial_hairstyles(TRUE))))
 		return
