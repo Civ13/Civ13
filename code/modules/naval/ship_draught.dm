@@ -15,10 +15,18 @@
 // against her burden, and the best telegraph step her sails and oars give,
 // by the same figures her ledger and drives use afloat.
 //
+// Besides her main deck she can have decks on other levels (ship_draught_decks):
+// a hold under her hull and decks above it, each tile over a tile of the level
+// toward her main deck, with its own fittings. A ladder joins each deck to the
+// next: it stands on the lower deck and the tile above it is left clear.
+//
 // A draught travels as a design code (design_codes.dm):
 //   C13SHIP/1/<name>/<tile>;<tile>;...
 // where each tile is "x,y,floor,piece,dir,upper" (piece "-" for none, upper
-// 0 or 1). The paper item keeps that same code, so it saves as one text var.
+// 0 or 1). A draught with a hold, a second deck above or fittings on a deck
+// above writes C13SHIP/2: the same tiles, then "/" and every tile off her
+// main deck as "level,x,y,piece,dir". The paper item keeps that same code, so
+// it saves as one text var.
 //
 // "Draw her lines" at a commissioned tiller copies a ship afloat onto a blank
 // sheet of paper.
@@ -39,7 +47,8 @@ var/global/list/ship_draught_floors = list(
 
 // What can stand on a tile. "load" is what it weighs on a deck in tiles of
 // hull (hull_load()); "turns" when its facing matters; "helm" for what steers
-// her; "drive" for what pushes her. The order is the order a survey looks for
+// her; "drive" for what pushes her; "decks" when it may stand on a deck off
+// her main deck too; "ladder" for what climbs to the deck above. The order is the order a survey looks for
 // them: a subtype before its parent.
 var/global/list/ship_draught_pieces = list(
 	"O" = list("name" = "steering oar", "path" = /obj/structure/hull_tiller/steering_oar, "cost" = list("wood" = 6), "load" = 0.5, "helm" = TRUE),
@@ -48,32 +57,45 @@ var/global/list/ship_draught_pieces = list(
 	"R" = list("name" = "rowing bench", "path" = /obj/structure/bed/chair/wood/rowing_bench, "cost" = list("wood" = 6), "load" = 0.1, "turns" = TRUE, "drive" = "oars"),
 	"K" = list("name" = "killick", "path" = /obj/structure/hull_anchor/stone, "cost" = list("wood" = 8), "load" = 0.4),
 	"A" = list("name" = "iron anchor", "path" = /obj/structure/hull_anchor, "cost" = list("iron" = 8), "load" = 1),
-	"P" = list("name" = "hand bilge pump", "path" = /obj/structure/cellar_pump/lever, "cost" = list("iron" = 6), "load" = 0.5),
-	"W" = list("name" = "plank wall", "path" = /obj/covers/wood_wall/adjustable, "cost" = list("wood" = 2, "planks" = 4), "load" = 0.3),
-	"D" = list("name" = "door", "path" = /obj/structure/simple_door/key_door/anyone/wood, "cost" = list("wood" = 5), "load" = 0.5, "turns" = TRUE),
-	"G" = list("name" = "window", "path" = /obj/structure/window_frame, "cost" = list("wood" = 5), "load" = 0.1),
-	"C" = list("name" = "wood crate", "path" = /obj/structure/closet/crate/empty, "cost" = list("wood" = 5), "load" = 0.5),
-	"B" = list("name" = "bed", "path" = /obj/structure/bed/wood, "cost" = list("wood" = 4), "load" = 0.1),
+	"P" = list("name" = "hand bilge pump", "path" = /obj/structure/cellar_pump/lever, "cost" = list("iron" = 6), "load" = 0.5, "decks" = TRUE),
+	"W" = list("name" = "plank wall", "path" = /obj/covers/wood_wall/adjustable, "cost" = list("wood" = 2, "planks" = 4), "load" = 0.3, "decks" = TRUE),
+	"D" = list("name" = "door", "path" = /obj/structure/simple_door/key_door/anyone/wood, "cost" = list("wood" = 5), "load" = 0.5, "turns" = TRUE, "decks" = TRUE),
+	"G" = list("name" = "window", "path" = /obj/structure/window_frame, "cost" = list("wood" = 5), "load" = 0.1, "decks" = TRUE),
+	"C" = list("name" = "wood crate", "path" = /obj/structure/closet/crate/empty, "cost" = list("wood" = 5), "load" = 0.5, "decks" = TRUE),
+	"B" = list("name" = "bed", "path" = /obj/structure/bed/wood, "cost" = list("wood" = 4), "load" = 0.1, "decks" = TRUE),
 	// Everything else a built hull takes aboard and works afloat.
-	"Q" = list("name" = "steam bilge pump", "path" = /obj/structure/cellar_pump/steam, "cost" = list("iron" = 12), "load" = 0.5),
-	"U" = list("name" = "sump pump", "path" = /obj/structure/cellar_pump/sump, "cost" = list("steel" = 4), "load" = 0.1),
+	"Q" = list("name" = "steam bilge pump", "path" = /obj/structure/cellar_pump/steam, "cost" = list("iron" = 12), "load" = 0.5, "decks" = TRUE),
+	"U" = list("name" = "sump pump", "path" = /obj/structure/cellar_pump/sump, "cost" = list("steel" = 4), "load" = 0.1, "decks" = TRUE),
 	"E" = list("name" = "steam engine", "path" = /obj/structure/engine/external/steam, "cost" = list("steel" = 15), "load" = 1, "drive" = "engine"),
 	"H" = list("name" = "wooden cannon", "path" = /obj/structure/cannon/hooped, "cost" = list("wood" = 12), "load" = 1.5, "turns" = TRUE, "fires" = TRUE),
 	"Z" = list("name" = "cannon", "path" = /obj/structure/cannon, "cost" = list("steel" = 35), "load" = 1.5, "turns" = TRUE, "fires" = TRUE),
 	"L" = list("name" = "torpedo tube", "path" = /obj/structure/torpedo_tube, "cost" = list("steel" = 25), "load" = 0.5, "turns" = TRUE, "fires" = TRUE),
-	"V" = list("name" = "steel window", "path" = /obj/structure/window_frame/metal, "cost" = list("steel" = 5), "load" = 0.1),
-	"I" = list("name" = "steel door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel, "cost" = list("steel" = 15), "load" = 0.5, "turns" = TRUE),
+	"V" = list("name" = "steel window", "path" = /obj/structure/window_frame/metal, "cost" = list("steel" = 5), "load" = 0.1, "decks" = TRUE),
+	"I" = list("name" = "steel door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel, "cost" = list("steel" = 15), "load" = 0.5, "turns" = TRUE, "decks" = TRUE),
 	// A gate in her gunwale on an edge tile, facing out (hull_gangway.dm).
 	"Y" = list("name" = "gangway", "path" = /obj/structure/railing/built/gunwale/gangway, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE),
+	// A wooden ladder stood up to the deck above (edge_climbing.dm): this is
+	// its foot; its head stands on the clear tile above.
+	"X" = list("name" = "ladder", "path" = /obj/structure/multiz/ladder/up/placed, "cost" = list("wood" = 4), "load" = 0.1, "decks" = TRUE, "ladder" = TRUE),
 )
 
-// A tile of deck on the level above costs a floor, like any floor laid there.
-var/global/list/ship_draught_upper_cost = list("wood" = 2)
+// Her decks off the main deck, by level (her main deck is level 0). A deck
+// above stands on the level below it, her hold under her hull. "floor" is
+// what each tile of it is laid with, and what that costs.
+var/global/list/ship_draught_decks = list(
+	"-1" = list("name" = "hold", "floor" = "s", "cost" = list("steel" = 1)),
+	"1" = list("name" = "deck above", "floor" = "w", "cost" = list("wood" = 2)),
+	"2" = list("name" = "second deck above", "floor" = "w", "cost" = list("wood" = 2)),
+)
+
 
 /datum/ship_draught
 	var/name = "ship"
 	// "x,y" = list(floor key, piece key or null, piece dir, upper deck TRUE/FALSE)
 	var/list/cells = list()
+	// Her other decks: level text = list("x,y" = list(piece key or null, piece dir)).
+	// Deck "1" is the same tiles as the cells' upper flags.
+	var/list/decks = list()
 
 /datum/ship_draught/proc/cell(x, y)
 	return cells["[x],[y]"]
@@ -100,31 +122,109 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 	return TRUE
 
 /datum/ship_draught/proc/set_upper(x, y, state)
-	var/list/C = cell(x, y)
-	if (!C)
+	return set_deck(1, x, y, state)
+
+// The level a deck tile on level stands on: her main deck for the hold and
+// the deck above, the deck below for any higher one.
+/proc/ship_draught_support(level)
+	return level > 1 ? level - 1 : 0
+
+/proc/ship_draught_level_name(level)
+	if (!level)
+		return "main deck"
+	var/list/L = ship_draught_decks["[level]"]
+	return L ? L["name"] : null
+
+// The tile of level at x,y: a main-deck cell, or list(piece, dir) on another
+// deck, or null.
+/datum/ship_draught/proc/deck_cell(level, x, y)
+	if (!level)
+		return cell(x, y)
+	var/list/L = decks["[level]"]
+	return L ? L["[x],[y]"] : null
+
+// Lays (state TRUE) or takes up a tile of a deck off her main deck. It must
+// stand over a tile of the level it rests on. Taking one up takes up what
+// stands on it, and the deck above it there.
+/datum/ship_draught/proc/set_deck(level, x, y, state)
+	if (!ship_draught_decks["[level]"])
 		return FALSE
-	C[4] = state ? TRUE : FALSE
+	var/key = "[x],[y]"
+	var/list/L = decks["[level]"]
+	if (!state)
+		if (L)
+			L -= key
+			if (!L.len)
+				decks -= "[level]"
+		if (level == 1)
+			var/list/C = cell(x, y)
+			if (C)
+				C[4] = FALSE
+		if (level > 0)
+			set_deck(level + 1, x, y, FALSE)
+		return TRUE
+	if (!deck_cell(ship_draught_support(level), x, y))
+		return FALSE
+	if (!L)
+		L = list()
+		decks["[level]"] = L
+	if (!L[key])
+		L[key] = list(null, NORTH)
+	if (level == 1)
+		var/list/C = cell(x, y)
+		C[4] = TRUE
+	return TRUE
+
+// Stands a piece on a deck tile off her main deck (null clears it). Only the
+// pieces marked "decks" go there, and nothing climbs above her top deck.
+/datum/ship_draught/proc/set_deck_piece(level, x, y, piece, piece_dir = NORTH)
+	var/list/D = deck_cell(level, x, y)
+	if (!level || !D || !(piece_dir in cardinal))
+		return FALSE
+	if (piece)
+		var/list/P = ship_draught_pieces[piece]
+		if (!P || !P["decks"] || (P["ladder"] && level != -1 && !ship_draught_decks["[level + 1]"]))
+			return FALSE
+	D[1] = piece
+	D[2] = piece_dir
 	return TRUE
 
 /datum/ship_draught/proc/clear(x, y)
 	cells -= "[x],[y]"
+	for (var/level in decks.Copy())
+		set_deck(text2num(level), x, y, FALSE)
+
+// Tiles of a deck off her main deck.
+/datum/ship_draught/proc/deck_tiles(level)
+	var/list/L = decks["[level]"]
+	return L ? L.len : 0
+
+// Tiles of every deck but her main one.
+/datum/ship_draught/proc/other_deck_tiles()
+	. = 0
+	for (var/level in decks)
+		var/list/L = decks[level]
+		. += L.len
 
 /datum/ship_draught/proc/hull_tiles()
 	return cells.len
 
 /datum/ship_draught/proc/upper_tiles()
-	. = 0
-	for (var/key in cells)
-		var/list/C = cells[key]
-		if (C[4])
-			.++
+	return deck_tiles(1)
 
+// How many of piece she carries, on every deck.
 /datum/ship_draught/proc/piece_count(piece)
 	. = 0
 	for (var/key in cells)
 		var/list/C = cells[key]
 		if (C[2] == piece)
 			.++
+	for (var/level in decks)
+		var/list/L = decks[level]
+		for (var/key in L)
+			var/list/T = L[key]
+			if (T[1] == piece)
+				.++
 
 // The tiles that carry a helm, as "x,y" keys.
 /datum/ship_draught/proc/helms()
@@ -158,20 +258,84 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 /datum/ship_draught/proc/joined()
 	if (!cells.len)
 		return FALSE
-	var/start = cells[1]
-	var/list/found = list("[start]" = TRUE)
-	var/list/queue = list(start)
-	while (queue.len)
-		var/key = queue[1]
-		queue.Cut(1, 2)
-		var/list/xy = splittext(key, ",")
-		var/x = text2num(xy[1])
-		var/y = text2num(xy[2])
-		for (var/next in list("[x + 1],[y]", "[x - 1],[y]", "[x],[y + 1]", "[x],[y - 1]"))
-			if (cells[next] && !found[next])
-				found[next] = TRUE
-				queue += next
-	return found.len == cells.len
+	var/list/parts = ship_draught_parts(cells)
+	return parts.len == 1
+
+// The pieces a set of "x,y" keys falls into, joined edge to edge: a list of
+// lists of keys.
+/proc/ship_draught_parts(list/tiles)
+	. = list()
+	var/list/found = list()
+	for (var/start in tiles)
+		if (found[start])
+			continue
+		var/list/part = list(start)
+		found[start] = TRUE
+		var/i = 1
+		while (i <= part.len)
+			var/list/xy = splittext(part[i], ",")
+			i++
+			var/x = text2num(xy[1])
+			var/y = text2num(xy[2])
+			for (var/next in list("[x + 1],[y]", "[x - 1],[y]", "[x],[y + 1]", "[x],[y - 1]"))
+				if (tiles[next] && !found[next])
+					found[next] = TRUE
+					part += next
+		. += list(part)
+
+// The ladders drawn with no clear tile of deck above them:
+// list(list(level, "x,y")).
+/datum/ship_draught/proc/nowhere_ladders()
+	. = list()
+	var/list/levels = list(0)
+	for (var/level in ship_draught_decks)
+		levels += text2num(level)
+	for (var/level in levels)
+		var/list/tiles = level ? decks["[level]"] : cells
+		if (!tiles)
+			continue
+		for (var/key in tiles)
+			var/list/C = tiles[key]
+			if ((level ? C[1] : C[2]) != "X")
+				continue
+			var/list/xy = splittext(key, ",")
+			if (!ladder_leads(level, text2num(xy[1]), text2num(xy[2])))
+				. += list(list(level, key))
+
+// TRUE when a ladder on level at x,y has a clear tile of deck above it.
+/datum/ship_draught/proc/ladder_leads(level, x, y)
+	var/up = level + 1
+	var/list/above = deck_cell(up, x, y)
+	// A main-deck cell keeps its piece second, a deck tile first.
+	return above && !above[up ? 1 : 2]
+
+// The parts of each deck off her main deck that no drawn ladder reaches:
+// level text = list of parts, each a list of "x,y" keys.
+/datum/ship_draught/proc/unreached_decks()
+	. = list()
+	for (var/level in ship_draught_decks)
+		var/list/tiles = decks[level]
+		if (!tiles)
+			continue
+		var/n = text2num(level)
+		// A hold is climbed out of from itself; a deck above is climbed to
+		// from the level below.
+		var/from = n < 0 ? n : ship_draught_support(n)
+		var/list/unreached = list()
+		for (var/list/part in ship_draught_parts(tiles))
+			var/reached = FALSE
+			for (var/key in part)
+				var/list/xy = splittext(key, ",")
+				var/x = text2num(xy[1])
+				var/y = text2num(xy[2])
+				var/list/F = deck_cell(from, x, y)
+				if (F && (from ? F[1] : F[2]) == "X" && ladder_leads(from, x, y))
+					reached = TRUE
+					break
+			if (!reached)
+				unreached += list(part)
+		if (unreached.len)
+			.[level] = unreached
 
 // Why she could not be commissioned as drawn; an empty list when she could.
 // The checks themselves are design checks of kind "ship" (draught_checks.dm).
@@ -197,8 +361,15 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		if (C[2])
 			var/list/P = ship_draught_pieces[C[2]]
 			ship_draught_add_cost(., P["cost"])
-		if (C[4])
-			ship_draught_add_cost(., ship_draught_upper_cost)
+	for (var/level in decks)
+		var/list/L = decks[level]
+		var/list/deck = ship_draught_decks[level]
+		for (var/key in L)
+			var/list/D = L[key]
+			ship_draught_add_cost(., deck["cost"])
+			if (D[1])
+				var/list/P = ship_draught_pieces[D[1]]
+				ship_draught_add_cost(., P["cost"])
 	for (var/list/side in gunwale_sides())
 		var/list/C = cells[side[1]]
 		ship_draught_add_cost(., C[1] == "s" ? list("steel" = 2) : list("wood" = 2))
@@ -230,7 +401,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		parts += "[C[material]] [material]"
 	return parts.len ? english_list(parts) : "nothing"
 
-// What stands on her deck weighs, in tiles of hull.
+// What stands on her decks weighs, in tiles of hull.
 /datum/ship_draught/proc/load()
 	. = 0
 	for (var/key in cells)
@@ -238,6 +409,13 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		if (C[2])
 			var/list/P = ship_draught_pieces[C[2]]
 			. += P["load"]
+	for (var/level in decks)
+		var/list/L = decks[level]
+		for (var/key in L)
+			var/list/D = L[key]
+			if (D[1])
+				var/list/P = ship_draught_pieces[D[1]]
+				. += P["load"]
 
 /datum/ship_draught/proc/size_class()
 	if (cells.len <= HULL_SMALL_MAX_TILES)
@@ -322,8 +500,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 
 /datum/ship_draught/proc/summary_text()
 	var/list/lines = list()
-	var/upper = upper_tiles()
-	lines += "<b>[name]</b>: [cells.len] tile\s of hull[upper ? " and [upper] of deck above" : ""], a [size_class_name()], bow to the top of the sheet."
+	lines += "<b>[name]</b>: [cells.len] tile\s of hull[decks_text()], a [size_class_name()], bow to the top of the sheet."
 	if (!cells.len)
 		return jointext(lines, "<br>")
 	lines += "Building her takes [costs_text()]."
@@ -350,13 +527,26 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 	qdel(R)
 	return jointext(lines, "<br>")
 
+// " and 12 of deck above and 20 of hold", or "" for a single deck.
+/datum/ship_draught/proc/decks_text()
+	. = ""
+	for (var/level in ship_draught_decks)
+		var/n = deck_tiles(text2num(level))
+		if (n)
+			. += " and [n] of [ship_draught_decks[level]["name"]]"
+
 // The same summary as fields, for the designer window to lay out:
 // what summary_text() says, nothing reckoned twice.
 /datum/ship_draught/proc/summary_data()
-	var/upper = upper_tiles()
+	var/upper = other_deck_tiles()
 	var/masts = piece_count("M")
 	var/benches = piece_count("R")
 	var/list/cost_parts = list()
+	var/list/deck_rows = list()
+	for (var/level in ship_draught_decks)
+		var/n = deck_tiles(text2num(level))
+		if (n)
+			deck_rows += list(list(ship_draught_decks[level]["name"], n))
 	var/list/drives = list()
 	if (cells.len)
 		var/list/C = costs()
@@ -379,6 +569,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		"tiles" = cells.len,
 		"max_tiles" = SHIP_DRAUGHT_MAX_TILES,
 		"upper" = upper,
+		"decks" = deck_rows,
 		"max_deck" = SHIP_DRAUGHT_MAX_DECK,
 		"class" = size_class_name(),
 		"costs" = cost_parts,
@@ -401,7 +592,27 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		var/x = text2num(xy[1]) - (B ? B[1] : 0)
 		var/y = text2num(xy[2]) - (B ? B[2] : 0)
 		tiles += "[x],[y],[C[1]],[C[2] ? C[2] : "-"],[C[3]],[C[4] ? 1 : 0]"
-	return "C13SHIP/1/[ship_draught_code_name(name)]/[jointext(tiles, ";")]"
+	var/list/others = list()
+	var/plain = TRUE
+	// Level by level, each in the order of her hull tiles, so a draught read
+	// back writes the same code.
+	for (var/level in ship_draught_decks)
+		var/list/L = decks[level]
+		if (!L)
+			continue
+		for (var/key in cells)
+			var/list/D = L[key]
+			if (!D)
+				continue
+			var/list/xy = splittext(key, ",")
+			others += "[level],[text2num(xy[1]) - B[1]],[text2num(xy[2]) - B[2]],[D[1] ? D[1] : "-"],[D[2]]"
+			if (level != "1" || D[1])
+				plain = FALSE
+	// A draught whose only other deck is a bare deck above says it all in
+	// the upper flags, and keeps to the first format.
+	if (plain)
+		return "C13SHIP/1/[ship_draught_code_name(name)]/[jointext(tiles, ";")]"
+	return "C13SHIP/2/[ship_draught_code_name(name)]/[jointext(tiles, ";")]/[jointext(others, ";")]"
 
 // A name as a code field: "_" for spaces, no "/" or ";".
 /proc/ship_draught_code_name(text)
@@ -421,7 +632,11 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 // A draught from a code, or null when the code is not a working ship code.
 /proc/ship_draught_from_code(code)
 	var/list/F = design_code_fields(code, "SHIP", DESIGN_CODE_SHIP_MAX)
-	if (!F || F.len != 2)
+	if (!F)
+		F = design_code_fields(code, "SHIP", DESIGN_CODE_SHIP_MAX, 2)
+		if (!F || F.len != 3)
+			return null
+	else if (F.len != 2)
 		return null
 	var/datum/ship_draught/D = new
 	D.name = ship_draught_clean_name(replacetext(F[1], "_", " "))
@@ -444,6 +659,30 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			qdel(D)
 			return null
 		D.set_upper(x, y, T[6] == "1")
+	if (F.len < 3)
+		return D
+	// Her other decks, lowest first so each tile finds the one it rests on.
+	var/list/others = length(F[3]) ? splittext(F[3], ";") : list()
+	if (others.len > SHIP_DRAUGHT_MAX_DECK)
+		qdel(D)
+		return null
+	var/list/by_level = list()
+	for (var/tile in others)
+		var/list/T = splittext(tile, ",")
+		if (T.len != 5 || !ship_draught_decks[T[1]])
+			qdel(D)
+			return null
+		if (!by_level[T[1]])
+			by_level[T[1]] = list()
+		by_level[T[1]] += list(T)
+	for (var/level in ship_draught_decks)
+		var/n = text2num(level)
+		for (var/list/T in by_level[level])
+			var/x = text2num(T[2])
+			var/y = text2num(T[3])
+			if (!D.set_deck(n, x, y, TRUE) || !D.set_deck_piece(n, x, y, T[4] == "-" ? null : T[4], text2num(T[5])))
+				qdel(D)
+				return null
 	return D
 
 /proc/ship_draught_add_cost(list/into, list/cost)
@@ -482,6 +721,8 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			return list("C", M.dir)
 		if (istype(M, /obj/structure/railing/built/gunwale/bulwark/gangway))
 			return list("Y", M.dir)
+		if (istype(M, /obj/structure/multiz/ladder/up))
+			return list("X", NORTH)
 	return null
 
 // Her lines with her bow to the top of the sheet, or the reason she cannot
@@ -495,6 +736,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		return "She is not afloat."
 	var/angle = craft_turn_angle(B.dir, NORTH)
 	var/uz = B.upper_z()
+	var/lz = B.lower_z()
 	var/list/turned = list()
 	var/minx = 0
 	var/miny = 0
@@ -523,9 +765,18 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		var/list/piece = ship_draught_piece_on(T, tiller)
 		if (piece)
 			D.set_piece(x, y, piece[1], (piece[2] in cardinal) ? turn(piece[2], angle) : NORTH)
-		if (B.upper_deck_cell(T, uz))
-			D.set_upper(x, y, TRUE)
+		D.survey_deck(1, x, y, B.upper_deck_cell(T, uz), angle)
+		D.survey_deck(-1, x, y, B.lower_deck_cell(T, lz), angle)
 	return D
+
+// Draws tile U of one of her other decks (null for none) at x,y, with what
+// stands on it when it may stand on that deck.
+/datum/ship_draught/proc/survey_deck(level, x, y, turf/U, angle)
+	if (!U || !set_deck(level, x, y, TRUE))
+		return
+	var/list/piece = ship_draught_piece_on(U, null)
+	if (piece)
+		set_deck_piece(level, x, y, piece[1], (piece[2] in cardinal) ? turn(piece[2], angle) : NORTH)
 
 // An offset of a hull whose bow points to heading, as it lies with her bow to
 // the north.

@@ -216,6 +216,8 @@ SPRITES = {
     'piece_C': {'layers': [('icons/obj/storage.dmi', 'wood_crate', None)], 'outline': True},
     # The gangway gate in her gunwale, from the built railing sheet.
     'piece_Y': {'layers': [('icons/obj/railings_built.dmi', 'wood_gate', None)], 'turns': True},
+    # /obj/structure/multiz/ladder/up/placed (the foot of a stood-up ladder)
+    'piece_X': {'layers': [('icons/obj/stairs.dmi', 'ladderup_wood', None)], 'outline': True},
     # /obj/structure/bed/wood (wood tint on the bed overlay)
     'piece_B': {'layers': [('icons/obj/bed_chair.dmi', 'bed', WOOD)], 'outline': True},
     # /obj/structure/cellar_pump/steam
