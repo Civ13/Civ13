@@ -115,7 +115,9 @@ var/list/not_resolved_in_attackby_objects = list(/obj/structure/chemical_dispens
 	return FALSE //not resolved
 
 /obj/item/weapon/reagent_containers/glass/attackby(obj/item/weapon/W as obj, mob/user as mob) //TO DO TODO: fix this mess to something normal
-	if (istype(W, /obj/item/weapon/pen))
+	if (istype(W, /obj/item/weapon/paper) && paper_twist_fold(src, W, user)) // drug_refining.dm
+		return
+	else if (istype(W, /obj/item/weapon/pen))
 		update_name_label(user)
 		return
 	else if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown/grapes)) //liquid transfer?

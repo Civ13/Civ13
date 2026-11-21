@@ -1456,13 +1456,11 @@ RECIPE: /material/whitefoxpelt/,hide sling bag,/obj/item/weapon/storage/backpack
 
 RECIPE: /material/tobacco/,cigar,/obj/item/clothing/mask/smokable/cigarette/cigar,3,75,0,1,none,0,0,23,8,null
 RECIPE: /material/tobacco/,cuban cigar,/obj/item/clothing/mask/smokable/cigarette/cigar/havana,5,100,0,1,none,0,0,57,8,null
-RECIPE: /material/tobacco/,cigarette,/obj/item/clothing/mask/smokable/cigarette,2,60,0,1,none,0,0,80,8,null
 
 //**************************************************************
 //*********************| COCAINE |******************************
 //**************************************************************
 
-RECIPE: /material/coca/,cocaine,/obj/item/weapon/reagent_containers/pill/cocaine,10,55,0,1,none,0,0,93,8,null
 
 //**************************************************************
 //*********************| POPPY |********************************
