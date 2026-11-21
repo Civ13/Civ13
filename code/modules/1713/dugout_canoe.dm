@@ -117,6 +117,9 @@
 /obj/structure/vehicle/raft/dugout/step_delay(m_dir)
 	return (paddling() ? paddle_delay : initial(vehicle_m_delay)) + wear_delay()
 
+/obj/structure/vehicle/raft/dugout/can_travel_open_sea()
+	return open_sea
+
 /obj/structure/vehicle/raft/dugout/do_vehicle_check()
 	if (!driver)
 		return FALSE
@@ -126,7 +129,7 @@
 	var/turf/DT = get_step(src, driver.dir)
 	if (istype(DT, /turf/floor/beach/water))
 		var/turf/floor/beach/water/W = DT
-		if (!open_sea && W.salty && istype(W, /turf/floor/beach/water/deep))
+		if (!can_travel_open_sea() && W.salty && istype(W, /turf/floor/beach/water/deep))
 			to_chat(driver, SPAN_WARNING("The open sea is too much for a canoe. Keep to the shallows."))
 			return FALSE
 		if (W.salty && weather_wind_at(W) >= rough_wind)
