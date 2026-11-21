@@ -7,7 +7,7 @@
 	hub_password = ""
 	maxx = 5
 	maxy = 5
-	maxz = 1
+	maxz = 2
 	turf = /turf/floor/plating
 	area = /area
 	visibility = 0
@@ -20,6 +20,8 @@
 	return
 /obj/map_metadata/peoples_probe/New()
 	map = src
+	ID = MAP_NOMADS_GAIA
+	title = "Nomads (Gaia)"
 /mob/living/human/peoples_tester/New()
 	languages = list()
 	partial_languages = list()
@@ -108,9 +110,105 @@ var/peoples_runtime_error = FALSE
 		peoples_check(away.settle_people_record() && away.origin_id == "hearthlanders", "someone away during the merge follows at login")
 		peoples_check(findtext(jointext(world_peoples_report(), "\n"), "No peoples"), "the admin report lists what is left")
 
+		// Born into a community.
+		for (var/mob/living/human/H in human_mob_list.Copy())
+			human_mob_list -= H
+			living_mob_list -= H
+		var/turf/here = locate(3, 3, 1)
+		var/datum/origin/marsh = found_people("Fenreach Kin", list("hearthlanders"), "Latin", "Gaia")
+		peoples_check(!community_peoples(here).len, "nobody around is the wild")
+		var/list/townsfolk = list()
+		for (var/i in 1 to 2)
+			var/mob/living/human/H = peoples_person(marsh.id)
+			H.loc = locate(i, 1, 1)
+			townsfolk += H
+		var/mob/living/human/stranger = peoples_person("fjordfolk")
+		stranger.loc = locate(5, 5, 1)
+		var/mob/living/human/dead = peoples_person("fjordfolk")
+		dead.loc = here
+		dead.stat = DEAD
+		var/mob/living/human/nowhere = peoples_person("fjordfolk")
+		peoples_check(nowhere.loc == null, "a character nowhere is not counted")
+		var/list/community = community_peoples(here)
+		peoples_check(community.len == 2 && community[1] == marsh.id && community[marsh.id] == 2 && community["fjordfolk"] == 1, "a community counts the living around, most common first")
+		var/list/choices = community_people_choices(community)
+		peoples_check(choices[1] == "Fenreach Kin" && choices.len == 2, "the newcomer picks among the peoples living there")
+		var/mob/living/human/newcomer = peoples_person(null, null)
+		newcomer.loc = here
+		peoples_check(community_peoples(here, newcomer).len == 2, "the newcomer does not count themselves")
+		peoples_check(newcomer.choose_origin("tundra") && newcomer.origin_id == marsh.id && newcomer.origin_land == "Gaia", "a newcomer without a keyboard joins the most common people there")
+		var/mob/living/human/wild = peoples_person(null, null)
+		wild.loc = locate(5, 1, 2)
+		peoples_check(wild.loc && wild.choose_origin("tundra") && wild.origin_id == "fjordfolk", "one born in the wild takes the birthplace root")
+		var/mob/living/human/returner = peoples_person(null, null)
+		returner.loc = here
+		returner.legacy_people = "fjordfolk"
+		peoples_check(returner.choose_origin("temperate") && returner.origin_id == "fjordfolk" && isnull(returner.legacy_people), "a returning character keeps their last people if it lives there")
+		var/mob/living/human/returner2 = peoples_person(null, null)
+		returner2.loc = here
+		returner2.legacy_people = "zulu"
+		peoples_check(returner2.choose_origin("temperate") && returner2.origin_id == marsh.id, "but not a people that does not live there")
+		var/mob/living/human/agent = peoples_person(null, null)
+		agent.loc = here
+		agent.origin_wish = "fjordfolk"
+		peoples_check(agent.choose_origin("temperate") && agent.origin_id == "fjordfolk", "an agent may ask for a people living there")
+
+		// Splits after long isolation.
+		for (var/mob/living/human/H in human_mob_list.Copy())
+			human_mob_list -= H
+			living_mob_list -= H
+		var/list/pact = list()
+		for (var/i in 1 to 5)
+			var/mob/living/human/H = peoples_person("hearthlanders")
+			H.civilization = "Iron Pact"
+			pact += H
+		var/mob/living/human/pact_fjord = peoples_person("fjordfolk")
+		pact_fjord.civilization = "Iron Pact"
+		var/pact_key = people_community_key("Iron Pact", "hearthlanders")
+		var/list/active = language_lineage_part("people_active")
+		var/list/contact = language_lineage_part("people_contact")
+		var/list/isolation = language_lineage_part("people_isolation")
+		var/list/pending = language_lineage_part("people_pending")
+		var/start_year = 1000
+		peoples_check(!people_year_check(start_year) && language_lineage_part("people_year")["year"] == start_year, "the first tick only marks the year")
+		peoples_check(!people_year_check(start_year + 1) && !isolation[pact_key], "a year nobody played adds nothing")
+		var/year = start_year + 1
+		for (var/i in 1 to 10)
+			active[pact_key] = TRUE
+			people_year_check(++year)
+		peoples_check(isolation[pact_key] == 10, "each played year without contact adds a year apart")
+		active[pact_key] = TRUE
+		contact["Iron Pact"] = TRUE
+		people_year_check(++year)
+		peoples_check(isolation[pact_key] == 5 && !contact.len && !active.len, "a year with contact halves it and the flags reset")
+		var/mob/living/human/neighbour = peoples_person("fjordfolk")
+		neighbour.civilization = "Sea League"
+		var/mob/living/human/S = pact[1]
+		neighbour.client = null
+		S.people_heard(neighbour)
+		peoples_check(!language_lineage_part("people_heard")["Iron Pact"], "speech from a body nobody plays is not contact")
+		isolation[pact_key] = PEOPLE_SPLIT_YEARS - 1
+		active[pact_key] = TRUE
+		peoples_check(!people_year_check(++year) || (pact_key in pending), "the split comes at the year it reaches the limit")
+		peoples_check((pact_key in pending), "a nation apart long enough is ready to split")
+		peoples_check(findtext(jointext(people_isolation_report(), "\n"), "waiting for its leader"), "the admin report shows the waiting split")
+		var/fen_key = people_community_key("Fen Kin", "hearthlanders")
+		isolation[fen_key] = PEOPLE_SPLIT_YEARS + 5
+		people_split_check(year)
+		peoples_check(!(fen_key in pending), "a nation with too few members does not split")
+		peoples_check(isnull(split_people(pact_key, "Germans")) && (pact_key in pending), "a blocked name does not split")
+		var/datum/origin/iron = split_people(pact_key, "Ironvale Folk")
+		peoples_check(istype(iron) && iron.nation == "Iron Pact" && iron.parents[1] == "hearthlanders" && iron.language == "Latin", "naming makes the new people")
+		var/moved = 0
+		for (var/mob/living/human/H in pact)
+			if (H.origin_id == iron.id)
+				moved++
+		peoples_check(moved == 5 && pact_fjord.origin_id == "fjordfolk" && neighbour.origin_id == "fjordfolk", "only the nation's members of that people join it")
+		peoples_check(!(pact_key in pending) && !(pact_key in isolation), "the split clears the wait and the years")
+
 		// The year.
-		var/year = world_calendar_year()
-		peoples_check(isnum(year) && year > 0 && year == round(year), "the calendar year is a whole number")
+		var/now_year = world_calendar_year()
+		peoples_check(isnum(now_year) && now_year > 0 && now_year == round(now_year), "the calendar year is a whole number")
 	catch(var/exception/e)
 		peoples_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = peoples_failures, "runtime_error" = peoples_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

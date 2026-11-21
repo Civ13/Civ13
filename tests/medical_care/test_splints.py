@@ -77,13 +77,13 @@ def still_needed(source):
 def complete_attack(source, H, affecting, user, M):
     """Run attack() from the wait onward with the wait succeeding."""
     body = adapter.extract(source, '/obj/item/stack/medical/splint/attack')
-    body = body[body.index('\t\tif (do_mob(user, M, 50))'):]
+    body = body[body.index('\t\tif (kneel_wait(user, M, 50))'):]
     body = '\n'.join(line[1:] for line in body.splitlines())
     body = re.sub(r'user\.visible_message\([^\n]*\)', 'user.visible_message()', body)
     used = []
     check, _ = still_needed(source)
     names = env([])
-    names.update({'do_mob': lambda *a: True, 'use': used.append, 'prob': lambda p: True,
+    names.update({'do_mob': lambda *a: True, 'kneel_wait': lambda *a: True, 'use': used.append, 'prob': lambda p: True,
                   'splint_still_needed': check, 'H': H, 'affecting': affecting,
                   'user': user, 'M': M, 'limb': affecting.name})
     adapter.project('/fixture/run()\n' + body, '/fixture/run', '', names)()

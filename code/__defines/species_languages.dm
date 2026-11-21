@@ -35,4 +35,11 @@
 #define LANGUAGE_DAUGHTERS_PER_ROOT 2	// daughter languages one built-in language can have on a world
 #define LANGUAGE_DAUGHTER_KIN 80		// how much of each other parent and daughter follow at the split
 #define LANGUAGE_DAUGHTER_KIN_STEP 10	// lost each time the daughter holds a far drift again
+// Peoples (code/game/mob/living/carbon/human/peoples.dm).
+#define PEOPLE_COMMUNITY_RANGE 40		// tiles around a new character's start that make up their community
+#define PEOPLE_COMMUNITY_MIN 3			// living characters with a people there before a newcomer is born into it
+#define PEOPLE_SPLIT_YEARS 180			// calendar years a nation's people must stay out of touch to split: about a month of real time
+#define PEOPLE_SPLIT_MIN 5				// living members a split needs, and at least half of the nation
+#define PEOPLE_CONTACT_RANGE 10			// tiles to someone of another faction that count as contact
+#define PEOPLE_CONTACT_LINES 3			// lines heard from another faction in a year that count as contact
 #define LANGUAGE_DAUGHTER_KIN_MIN 40		// parent and daughter never follow less of each other than this

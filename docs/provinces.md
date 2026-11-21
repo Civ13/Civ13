@@ -222,6 +222,12 @@ unchanged.
 - **Allies at the seat.** Members of a nation allied to the holder count as
   defenders at the seat; allies of the attacker count as attackers unless they
   are also allied to the holder, when they defend.
+- **Vassals.** An overlord and its vassal count as allies in all of the above.
+  A siege won by one nation against another at war is reported to the
+  coordinator; 2 within 14 days let the winner impose vassalage. Tribute
+  (weekly, a tenth of each vassal member faction's strongbox, at most 100
+  silver) moves real coin to an overlord member faction's strongbox in the same
+  world; state is `faction_recruitment["vassal_tribute"]`.
 
 ## Continent resources
 

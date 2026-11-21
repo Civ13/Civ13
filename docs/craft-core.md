@@ -140,6 +140,15 @@ and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
 A hull with an upper deck crosses the sea and sets out on voyages with it
 ([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
 
+A roof built on her upper deck makes a second deck above, its floor one
+building level higher again. `top_cells()` finds it the same way from her upper
+deck tiles, `plan()` checks the air ahead of it like the upper deck's and counts
+it toward the deck cap, and `move_to()` carries it after the upper deck. A roof
+on the upper deck makes the tiles under it indoors, and those areas sail with
+her too (`built_hull_areas_before()`). It crosses the sea with her as
+`record["top"]` ([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
+Measured in `tests/naval_carrier/second_deck_probe.dm`.
+
 ### Holds
 
 A built hull can also carry a hold on the level below her deck

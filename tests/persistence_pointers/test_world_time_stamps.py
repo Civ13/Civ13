@@ -54,7 +54,9 @@ REVIEWED = {
     'familiar_last_use': 'declared var/tmp/list on humans (familiarity.dm), so never saved',
     'next_familiar_click': 'declared var/tmp on humans (familiarity.dm), so never saved',
     'frost_nipped_at': 'declared var/tmp on crops (crop_frost.dm), so never saved',
+    'next_feels_like_message': 'declared var/tmp on humans (feels_like.dm), so never saved',
     'spirit_hud_ends': 'declared var/tmp on ghosts (spirit_hud.dm), so never saved',
+    'heteromorph_started': 'declared var/tmp on heteromorph forms (heteromorph_form.dm); saves return every form to human first',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
@@ -66,7 +68,7 @@ def dm_files():
 
 
 def registry():
-    body = REGISTRY[REGISTRY.index('persistence_world_time_stamps = list('):]
+    body = REGISTRY[REGISTRY.index('/proc/persistence_world_time_stamps_table()'):]
     body = body[:body.index('\n)\n')]
     entries = {}
     for name, owners in re.findall(r'^\t"(\w+)" = list\(([^)]*)\)', body, re.M):

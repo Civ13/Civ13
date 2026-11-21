@@ -1,5 +1,10 @@
 //admin verb groups - They can overlap if you so wish. Only one of each verb will exist in the verbs list regardless
-var/list/admin_verbs_default = list(
+var/list/admin_verbs_default = admin_verbs_default_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/admin_verbs_default_table()
+	return list(
 	/datum/admins/proc/show_player_panel,	//shows an interface for individual players, with various links (links require additional flags,
 	/client/proc/player_panel,
 	/client/proc/deadmin_self,			//destroys our own admin datum so we can play as a regular player,
@@ -55,6 +60,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_found_people,	//record a new people by hand (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_rename_people,	//rename a people that formed in this world (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_merge_people,	//merge a formed people back into the one it grew from (verbs/peoples_admin.dm),
+	/client/proc/cmd_admin_force_people_split,	//make a nation's people ready to split and optionally name it (verbs/peoples_admin.dm),
 	/client/proc/cmd_admin_set_language_score,	//set a language score from 0 to 100,
 	/client/proc/cmd_admin_restore_research,	//give back research and scholarship lost to a bug, adds only,
 	/client/proc/cmd_admin_create_divine_book,	//write a god's one original book and entrust it to a player,

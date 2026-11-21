@@ -120,5 +120,6 @@
   "/obj/item/weapon/grapnel",
   "/obj/item/clothing/suit/armor/proof_cuirass",
   "/obj/item/clothing/suit/armor/proof_cuirass/japanese",
-  "/obj/item/clothing/accessory/armor/modern/resin_shield"
+  "/obj/item/clothing/accessory/armor/modern/resin_shield",
+  "/obj/item/clothing/accessory/armor/modern/british/heavy"
 ]

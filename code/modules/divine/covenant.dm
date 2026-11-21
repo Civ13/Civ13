@@ -86,6 +86,7 @@ var/global/list/divine_invocation_names = list(
 		verbs -= /mob/living/human/proc/divine_beseech
 	magic_repo_refresh_verbs() // repository.dm
 	arcane_refresh_verbs() // arcane_altars.dm
+	heteromorph_refresh_verbs() // heteromorph_form.dm
 
 // Any movement, body change, logout or transfer ends what is pending, including
 // leaving and coming back to the same tile, which snapshots cannot see.
