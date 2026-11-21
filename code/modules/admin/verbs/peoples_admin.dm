@@ -88,7 +88,7 @@
 	set desc = "Every people that formed in this world: parents, language, where and when, and living members."
 	if (!check_rights(R_ADMIN))
 		return
-	to_chat(usr, jointext(world_peoples_report(), "<br>"))
+	to_chat(usr, jointext(world_peoples_report() + list("<b>Nations growing apart</b>") + people_isolation_report(), "<br>"))
 
 /client/proc/cmd_admin_found_people()
 	set category = "Admin"
@@ -165,3 +165,40 @@
 		return
 	log_admin("[key_name(usr)] merged the people [old_name] back ([moved] characters moved).")
 	message_admins("[key_name_admin(usr)] merged the people [old_name] back ([moved] characters moved).")
+
+/client/proc/cmd_admin_force_people_split()
+	set category = "Admin"
+	set name = "Force People Split"
+	set desc = "Make one nation's members of a people ready to become a people of their own, and optionally name it now."
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/choices = list()
+	for (var/mob/living/human/H in human_mob_list)
+		var/key = people_community_key(H.civilization, H.origin_id)
+		var/datum/origin/O = origin_by_id(H.origin_id)
+		if (key && O && H.stat != DEAD)
+			choices["[H.civilization]: [O.name]"] = key
+	if (!choices.len)
+		to_chat(usr, "No nation has living members with a people.")
+		return
+	var/picked = input(usr, "Which nation's people?", "Force People Split") as null|anything in sortList(choices)
+	if (!picked)
+		return
+	var/key = choices[picked]
+	var/list/pending = language_lineage_part("people_pending")
+	pending[key] = world_calendar_year()
+	var/list/parts = people_community_parts(key)
+	var/wanted = input(usr, "Name the new people now, or leave this empty to let the nation's leader name it.", "Force People Split") as text|null
+	if (wanted && length(trim(wanted)))
+		var/problem = people_name_problem(wanted)
+		if (problem)
+			to_chat(usr, SPAN_WARNING("[problem] The split is waiting for the leader instead."))
+		else
+			var/datum/origin/N = split_people(key, people_clean_name(wanted))
+			if (N)
+				log_admin("[key_name(usr)] split [parts[1]]'s people into [N.name].")
+				message_admins("[key_name_admin(usr)] split [parts[1]]'s people into [N.name].")
+				return
+	people_split_ready_notice(parts[1], parts[2])
+	log_admin("[key_name(usr)] made [picked] ready to split.")
+	message_admins("[key_name_admin(usr)] made [picked] ready to split.")
