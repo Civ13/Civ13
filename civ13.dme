@@ -1399,6 +1399,7 @@
 #include "code\modules\1713\weapons\guns\mg\special.dm"
 #include "code\modules\1713\weapons\guns\mg\stationary\mg.dm"
 #include "code\modules\accolades\accolades.dm"
+#include "code\modules\accolades\character_slots.dm"
 #include "code\modules\accounts\discord_accounts.dm"
 #include "code\modules\admin\accolades_admin.dm"
 #include "code\modules\admin\admin.dm"
