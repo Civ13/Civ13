@@ -271,16 +271,71 @@ var/berth_runtime_error = FALSE
 		G.set_shut(FALSE)
 	berth_check(B.move_to(13, 25, WEST), "with the gates open she sails out ([B.last_refusal])")
 	berth_check(isnull(craft_berth(petrel)), "out at sea no berth holds her")
+	berth_dock_build_checks(gate)
 	// A basin open to the sea elsewhere is no dock.
 	var/turf/leak = locate(10, 29, 1)
 	leak.ChangeTurf(/turf/floor/trench/flooded/salty)
 	berth_check(findtext(gate.survey_basin(), "open to the water"), "a basin that touches the sea past its gates is refused ([gate.survey_basin()])")
+
+// Lays wooden floors from x1,y1 to x2,y2 the way a player lays them.
+/proc/berth_floors(x1, y1, x2, y2)
+	for (var/x = x1, x <= x2, x++)
+		for (var/y = y1, y <= y2, y++)
+			var/obj/covers/repairedfloor/ship/C = new(locate(x, y, 1))
+			C.updateturf()
+
+/proc/berth_build_checks()
+	// A slipway at 3,15 facing east: a hull is laid down on its dry berth.
+	var/obj/structure/slipway/post = new(locate(3, 15, 1))
+	post.dir = EAST
+	berth_floors(4, 14, 8, 16)
+	var/obj/structure/hull_tiller/tiller = new(locate(4, 15, 1))
+	berth_check(berth_ground_at(locate(6, 15, 1)) == post && !berth_ground_at(locate(3, 16, 1)), "the slipway's berth is the ground in front of the post")
+	berth_check(islist(built_hull_survey(get_turf(tiller))), "floors on the berth survey as a hull ([built_hull_survey(get_turf(tiller))])")
+	berth_check(findtext(tiller.commission("Gull", NORTH), "bow must point"), "on the slipway her bow must point to the water ([tiller.commission("Gull", NORTH)])")
+	var/obj/covers/repairedfloor/ship/stray = new(locate(3, 16, 1))
+	stray.updateturf()
+	berth_check(findtext(built_hull_survey(get_turf(tiller)), "joined to the shore"), "a floor off the berth joins her to the shore")
+	qdel(stray)
+	berth_check(isnull(tiller.commission("Gull", EAST)) && tiller.craft, "she is commissioned on the berth")
+	var/datum/craft/gull = tiller.craft
+	berth_check(gull.ledger.tiles == 15 && post.hauled_hull() == gull && craft_berth(gull) == post && gull.ledger.lies_dry(), "she lies hauled out on the slipway")
+	// A floor more, and the refit takes it in.
+	berth_floors(9, 15, 9, 15)
+	berth_check(isnull(tiller.commission()) && gull.ledger.tiles == 16 && post.hauled_hull() == gull, "a refit on the berth takes in a new floor ([gull.ledger.tiles])")
+	berth_check(isnull(post.relaunch(gull)) && istype(get_turf(tiller), /turf/floor/beach/water) && !gull.ledger.lies_dry(), "she is launched from the berth she was built on ([post.relaunch(gull)])")
+	// Floors on plain ground are no hull.
+	berth_floors(1, 14, 2, 15)
+	var/obj/structure/hull_tiller/shore_tiller = new(locate(1, 14, 1))
+	berth_check(findtext(shore_tiller.commission("Mud", NORTH), "at a berth"), "floors on plain ground are no hull ([shore_tiller.commission("Mud", NORTH)])")
+	qdel(shore_tiller)
+
+/proc/berth_dock_build_checks(obj/structure/canal_lock/dock_gate/gate)
+	for (var/obj/structure/canal_lock/dock_gate/G in gate.all_gates())
+		G.set_shut(TRUE)
+	berth_check(gate.drain(), "the empty dock is pumped dry")
+	sleep(10)
+	berth_floors(5, 25, 7, 27)
+	var/obj/structure/hull_tiller/tiller = new(locate(5, 26, 1))
+	berth_check(isnull(tiller.commission("Skua", EAST)) && tiller.craft, "a hull is laid down on the dry dock floor")
+	var/datum/craft/skua = tiller.craft
+	berth_check(istype(craft_berth(skua), /obj/structure/canal_lock/dock_gate) && skua.ledger.lies_dry(), "the dock holds her dry ([craft_berth(skua)])")
+	berth_check(gate.flood() && !skua.ledger.lies_dry() && craft_at(locate(6, 26, 1)) == skua, "flooded, she floats in the basin")
+	berth_check(isnull(tiller.commission()) && skua.ledger.tiles == 9, "afloat in the basin she can be refitted")
+	tiller.decommission()
+	for (var/turf/T in block(locate(5, 25, 1), locate(7, 27, 1)))
+		for (var/obj/covers/C in T)
+			qdel(C)
+	qdel(tiller)
+	for (var/obj/structure/canal_lock/dock_gate/G in gate.all_gates())
+		G.set_shut(FALSE)
 
 /proc/berth_run()
 	try
 		berth_checks()
 		berth_haul_checks()
 		berth_dock_checks()
+		berth_build_checks()
 	catch(var/exception/e)
 		berth_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = berth_failures, "runtime_error" = berth_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

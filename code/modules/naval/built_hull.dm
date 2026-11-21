@@ -52,6 +52,11 @@
 	if (istext(survey))
 		return survey
 	var/datum/craft_body/built/B = body()
+	// A berth may ask more of her (berth_build.dm).
+	var/obj/structure/berth = istype(T, /turf/floor/beach/water) ? null : berth_ground_at(T)
+	var/berth_why = berth ? berth.berth_commission_refusal(survey, heading || (B ? B.dir : NORTH)) : null
+	if (berth_why)
+		return berth_why
 	if (!B)
 		B = new /datum/craft_body/built
 		craft = new /datum/craft(B)
