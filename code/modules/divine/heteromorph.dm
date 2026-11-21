@@ -31,8 +31,8 @@
 /datum/heteromorph/dragonoid
 	id = "dragonoid"
 	name = "Dragonoid"
-	colours = list("gold" = "Gold")
-	guise_clues = list("gold" = "Their eyes catch the light like beaten gold, and a faint warmth and smell of woodsmoke hang about them.")
+	colours = list("gold" = "Gold", "ash" = "Ash (dark red)")
+	guise_clues = list("gold" = "Their eyes catch the light like beaten gold, and a faint warmth and smell of woodsmoke hang about them.", "ash" = "Their eyes glint a hard yellow, and the air about them is warm and smells of cinders.")
 
 // id -> /datum/heteromorph, built on first use.
 var/global/list/heteromorph_kinds = null

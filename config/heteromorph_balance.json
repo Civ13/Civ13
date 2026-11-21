@@ -15,6 +15,14 @@
     "takeoff_seconds": 3,
     "fly_speed": -1,
     "fly_nutrition_multiplier": 2,
-    "fall_brute": 30
+    "fall_brute": 30,
+    "breath_cooldown_seconds": 45,
+    "breath_length": 5,
+    "fire_burn_lower": 20,
+    "fire_burn_upper": 35,
+    "fire_stacks": 2,
+    "fire_edge_chance": 50,
+    "haze_stamina": 60,
+    "haze_weaken": 2
   }
 }

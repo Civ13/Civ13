@@ -7,6 +7,7 @@ TEXT = (ROOT / 'code/modules/divine/heteromorph.dm').read_text()
 VERB = (ROOT / 'code/modules/admin/verbs/divine_patron.dm').read_text()
 FORM = (ROOT / 'code/modules/divine/heteromorph_form.dm').read_text()
 FLIGHT = (ROOT / 'code/modules/divine/heteromorph_flight.dm').read_text()
+BREATH = (ROOT / 'code/modules/divine/heteromorph_breath.dm').read_text()
 
 
 def body(text, path):
@@ -147,6 +148,40 @@ class Flight(unittest.TestCase):
         self.assertIn('fall_brute', ret)
         for var in ('heteromorph_flying', 'heteromorph_busy', 'heteromorph_shadow'):
             self.assertIn('var/tmp/', FLIGHT.split(var, 1)[0].rsplit('\n', 1)[1])
+
+
+class Breath(unittest.TestCase):
+    def test_built_and_offered_by_kind(self):
+        dme = (ROOT / 'civ13.dme').read_text()
+        self.assertIn('#include "code\\modules\\divine\\heteromorph_breath.dm"', dme)
+        self.assertIn('breaths = list("fire", "haze")', BREATH)
+        setup = body(FORM, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_setup(')
+        self.assertIn('"fire" in K.breaths', setup)
+        self.assertIn('"haze" in K.breaths', setup)
+        for forbidden in ('input(', 'alert(', 'sleep('):
+            self.assertNotIn(forbidden, BREATH)
+
+    def test_shared_cooldown_before_any_effect(self):
+        breathe = body(BREATH, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_breathe(')
+        self.assertLess(breathe.index('heteromorph_breath_problem()'), breathe.index('heteromorph_breath_ready ='))
+        self.assertLess(breathe.index('heteromorph_breath_ready ='), breathe.index('heteromorph_breath_cone('))
+        self.assertIn('world.time < heteromorph_breath_ready', body(BREATH, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_breath_problem()'))
+        self.assertIn('heteromorph_log(', breathe)
+
+    def test_buildings_catch_only_at_the_far_edge(self):
+        breathe = body(BREATH, '/mob/living/simple_animal/heteromorph_form/proc/heteromorph_breathe(')
+        self.assertEqual(breathe.count('fire_spread_to('), 1)
+        edge = breathe[:breathe.index('fire_spread_to(')].rsplit('\n', 2)[1]
+        self.assertIn('row == length', edge)
+        self.assertIn('L == src || L == heteromorph_body', breathe)
+
+    def test_walls_stop_the_cone_and_haze_does_no_harm(self):
+        cone = body(BREATH, '/proc/heteromorph_breath_cone(')
+        self.assertIn('S.density', cone)
+        self.assertIn('break', cone)
+        wilt = body(BREATH, '/proc/heteromorph_wilt(')
+        for harm in ('adjustBruteLoss', 'adjustBurnLoss', 'IgniteMob'):
+            self.assertNotIn(harm, wilt)
 
 
 if __name__ == '__main__':
