@@ -137,6 +137,10 @@
 					if (G.assailant == M)
 						to_chat(M, SPAN_NOTICE("You already grabbed [src]."))
 						return
+				// A sprawl or a strike on the reaching arm (combat_reactions.dm).
+				if (combat_reaction_try(H, COMBAT_TRIGGER_GRAB_REACH, tgt, null))
+					H.do_attack_animation(src)
+					return TRUE
 				// The grab takes hold of the targeted part (grab_hand_hold.dm).
 				var/grab_zone = grab_target_zone(tgt, H.targeted_organ == "random")
 				if (!grab_zone)
@@ -183,6 +187,10 @@
 					attack_generic(H,rand(1,3),"punched")
 					return
 				if (src != M)
+					// Bong Sau, a slip, a block or a stop-hit (combat_reactions.dm).
+					if (combat_reaction_try(H, COMBAT_TRIGGER_INCOMING, tgt, null))
+						H.do_attack_animation(src)
+						return TRUE
 					if(attempt_dodge())//Trying to dodge it before they even have the chance to miss us.
 						return 1
 
@@ -308,6 +316,8 @@
 				// Finally, apply damage to target
 				apply_damage(real_damage, (attack.deal_halloss ? HALLOSS : BRUTE), affecting, armor, sharp=attack.sharp, edge=attack.edge, toxic=H.lizard)
 				hand_struck(hit_zone, real_damage)
+				if (H != src)
+					combat_reaction_try(H, COMBAT_TRIGGER_AFTER_HIT, hit_zone, null)
 				// A bare-knuckle punch can hurt the puncher's own hand (punch_injury.dm).
 				if (H != src && istype(attack, /datum/unarmed_attack/punch) && !attack.deal_halloss)
 					H.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, HIT_BLUNT))

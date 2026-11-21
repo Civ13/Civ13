@@ -576,7 +576,8 @@ SUITES = {
                          'code/game/mob/living/simple_animal/simple_animal.dm')},
     # Combat stances: melee paths ask the stance, doll/hotkey/HUD wiring, agent tools.
     'combat_stance': {'files': ('tests/combat_stance/test_sources.py',),
-        'paths': ('tests/combat_stance/', 'code/game/mob/combat_stance.dm', 'code/__defines/combat_stance.dm'),
+        'paths': ('tests/combat_stance/', 'code/game/mob/combat_stance.dm', 'code/game/mob/combat_reactions.dm',
+                  'code/__defines/combat_stance.dm', 'code/__defines/martial.dm'),
         'shared_paths': ('code/_onclick/item_attack.dm',
                          'code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/human_defense.dm',

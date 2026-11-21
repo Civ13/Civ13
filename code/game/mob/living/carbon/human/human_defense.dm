@@ -613,7 +613,11 @@ bullet_act
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue
 		. = shield.handle_shield(src, damage, damage_source, attacker, def_zone, attack_text)
-		if (.) return
+		if (.)
+			// A parried blow may be answered at once (combat_reactions.dm).
+			if (isliving(attacker) && istype(damage_source, /obj/item) && !istype(damage_source, /obj/item/projectile))
+				combat_reaction_try(attacker, COMBAT_TRIGGER_AFTER_PARRY, def_zone, damage_source)
+			return
 	return FALSE
 
 /mob/living/human/resolve_item_attack(obj/item/I, mob/living/user, var/target_zone)
@@ -622,6 +626,10 @@ bullet_act
 
 	if (user == src) // Attacking yourself can't miss
 		return target_zone
+
+	// A stop-hit or other "before" reaction spoils the swing (combat_reactions.dm).
+	if (combat_reaction_try(user, COMBAT_TRIGGER_INCOMING, target_zone, I))
+		return null
 
 	var/hit_zone = get_zone_with_miss_chance(target_zone, src)
 
@@ -700,6 +708,8 @@ bullet_act
 	var/previous_self_damage = track_self_injury ? getBruteLoss() + getBurnLoss() : 0
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
 	armor_bruise(I, effective_force, blocked, hit_zone)
+	if (user != src)
+		combat_reaction_try(user, COMBAT_TRIGGER_AFTER_HIT, hit_zone, I)
 	if (track_self_injury && getBruteLoss() + getBurnLoss() > previous_self_damage && player_help_service)
 		player_help_service.record_observed_injury(client, src, "self_weapon_hit")
 	if (!map.civilizations && !map.nomads && !map.is_RP && ishuman(src) && ishuman(user))

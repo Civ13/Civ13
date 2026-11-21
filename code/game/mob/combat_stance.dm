@@ -64,6 +64,8 @@ var/global/list/combat_random_zones = list("l_foot","r_foot","l_leg","r_leg","ch
 // The zone an attack of `kind` on `target` goes for. Random and Manual work as
 // before; any other stance scores the zones and picks one.
 /mob/proc/resolve_attack_zone(mob/living/target, obj/item/weapon, kind = COMBAT_ATTACK_WEAPON)
+	if (forced_attack_zone)
+		return forced_attack_zone // a reaction's aimed strike (combat_reactions.dm)
 	if (targeted_organ == "random")
 		if (kind == COMBAT_ATTACK_SHOVE)
 			return "random"

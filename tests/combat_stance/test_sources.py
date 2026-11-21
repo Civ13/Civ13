@@ -19,6 +19,7 @@ def read(path):
 
 
 SOURCE = read('code/game/mob/combat_stance.dm')
+REACTIONS = read('code/game/mob/combat_reactions.dm')
 DEFINES = read('code/__defines/combat_stance.dm')
 DME = read('civ13.dme')
 ITEM_ATTACK = read('code/_onclick/item_attack.dm')
@@ -103,6 +104,30 @@ class CombatStanceSources(unittest.TestCase):
         self.assertIn('out["combat"] = M.combat_stance', AGENT)
         self.assertIn('"combat": ("%s")' % '", "'.join(STANCES), AUTOPILOT)
         self.assertEqual(CATALOG.count('"enum": ["%s"]' % '", "'.join(STANCES)), 2)
+
+
+    def test_reaction_hooks(self):
+        self.assertIn('if (combat_reaction_try(user, COMBAT_TRIGGER_INCOMING, target_zone, I))\n\t\treturn null', DEFENSE)
+        self.assertIn('combat_reaction_try(attacker, COMBAT_TRIGGER_AFTER_PARRY, def_zone, damage_source)', DEFENSE)
+        self.assertIn('combat_reaction_try(user, COMBAT_TRIGGER_AFTER_HIT, hit_zone, I)', DEFENSE)
+        self.assertIn('if (combat_reaction_try(H, COMBAT_TRIGGER_INCOMING, tgt, null))', ATTACK_HAND)
+        self.assertIn('combat_reaction_try(H, COMBAT_TRIGGER_AFTER_HIT, hit_zone, null)', ATTACK_HAND)
+        self.assertIn('if (combat_reaction_try(H, COMBAT_TRIGGER_GRAB_REACH, tgt, null))', ATTACK_HAND)
+        # the incoming check runs before dodging
+        self.assertLess(ATTACK_HAND.index('COMBAT_TRIGGER_INCOMING, tgt, null'), ATTACK_HAND.index('if(attempt_dodge())'))
+
+    def test_reactions_never_chain(self):
+        self.assertIn('if (!attacker || attacker == src || in_combat_reaction || attacker.in_combat_reaction)', REACTIONS)
+        self.assertIn('next_move = old_next_move', REACTIONS)
+        self.assertIn('if (forced_attack_zone)\n\t\treturn forced_attack_zone', SOURCE)
+
+    def test_martial_reflexes_follow_the_plan(self):
+        # Student 25%, Adept 45%, Master 65%; hands free; idle; not help intent.
+        self.assertIn('var/global/list/martial_reflex_chance = list(0, 0, 25, 45, 65)', REACTIONS)
+        self.assertIn('if (!martial_school || a_intent == I_HELP || world.time < next_martial_reflex)', REACTIONS)
+        for school, reflex in (('wing_chun', 'bong_sau'), ('pugilism', 'slip'), ('grappling', 'sprawl'), ('hard_hand', 'block_counter')):
+            self.assertIn('if ("%s")' % school, REACTIONS)
+            self.assertIn('return "%s"' % reflex, REACTIONS)
 
 
 if __name__ == '__main__':

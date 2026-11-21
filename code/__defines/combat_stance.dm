@@ -18,3 +18,17 @@
 #define COMBAT_READ_WINDOW 50
 // How long the zone doll shows an automatic pick (deciseconds).
 #define COMBAT_DOLL_FLASH_TIME 8
+
+// Reaction triggers (code/game/mob/combat_reactions.dm).
+#define COMBAT_TRIGGER_INCOMING "incoming"
+#define COMBAT_TRIGGER_GRAB_REACH "grab reach"
+#define COMBAT_TRIGGER_AFTER_PARRY "after parry"
+#define COMBAT_TRIGGER_AFTER_HIT "after hit"
+// Stance reactions: skill needed (getStatCoeff, 1 = average), cooldown, stamina.
+#define COMBAT_REACTION_SKILL 1.2
+#define COMBAT_REACTION_COOLDOWN 40
+#define COMBAT_REACTION_STAMINA 5
+// Martial reflexes (martial arts plan): idle time, cooldown, stamina.
+#define MARTIAL_REFLEX_IDLE 20
+#define MARTIAL_REFLEX_COOLDOWN 20
+#define MARTIAL_REFLEX_STAMINA 4

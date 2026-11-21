@@ -204,11 +204,105 @@ var/combat_stance_runtime = null
 	var/datum/gender/T = new /datum/gender/neuter
 	combat_stance_assert(findtext(A.combat_stance_examine_line(T), "opening"), "examine_line")
 
+// Stand-in rank until the martial arts schools PR fills martial_rank in.
+var/combat_stance_probe_rank = 0
+/mob/living/human/martial_rank(school_id)
+	return school_id == martial_school ? combat_stance_probe_rank : 0
+
+// Fires a ready reaction up to `tries` times; TRUE if it ever stops the action.
+/proc/combat_stance_react(mob/living/human/D, mob/living/human/A, trigger, zone, obj/item/W, tries = 40)
+	for (var/i in 1 to tries)
+		D.next_combat_reaction = 0
+		D.next_martial_reflex = 0
+		D.stats["stamina"] = list(100, 100)
+		D.next_click = world.time - 100
+		A.loc = locate(D.x - 1, D.y, D.z) // a landed counter may knock them back
+		if (D.combat_reaction_try(A, trigger, zone, W))
+			return TRUE
+	return FALSE
+
+/proc/combat_stance_probe_reactions()
+	var/mob/living/human/A = combat_stance_actor(5, 7, "Swinger")
+	var/mob/living/human/D = combat_stance_actor(6, 7, "Fighter")
+	D.dir = SOUTH
+
+	// Martial reflexes: Wing Chun Bong Sau turns a chest punch aside.
+	D.martial_school = "wing_chun"
+	combat_stance_probe_rank = MARTIAL_RANK_NOVICE
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", null), "novice_no_reflex")
+	combat_stance_probe_rank = MARTIAL_RANK_MASTER
+	D.stats["dexterity"] = list(300, 300)
+	combat_stance_assert(combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", null), "bong_sau_chest_punch")
+	combat_stance_assert(D.next_martial_reflex > world.time, "reflex_cooldown_set")
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "head", null), "bong_sau_only_chest")
+	var/obj/item/weapon/W = new /obj/item/weapon/wrench(null)
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", W), "bong_sau_not_against_weapons")
+	D.a_intent = I_HELP
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", null), "help_intent_no_reflex")
+	D.a_intent = I_HARM
+	var/obj/item/weapon/DW = new /obj/item/weapon/wrench(null)
+	D.put_in_active_hand(DW)
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", null), "held_weapon_no_hand_reflex")
+	D.drop_from_inventory(DW)
+	D.dir = EAST
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", null), "never_from_behind")
+	D.dir = SOUTH
+	A.in_combat_reaction = TRUE
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", null), "reaction_never_answers_reaction")
+	A.in_combat_reaction = FALSE
+	// Busy clicking: no reflex.
+	D.next_martial_reflex = 0
+	D.next_click = world.time
+	combat_stance_assert(!D.combat_reaction_try(A, COMBAT_TRIGGER_INCOMING, "chest", null), "busy_no_reflex")
+	D.martial_school = "pugilism"
+	combat_stance_assert(combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "head", null) && !combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", null), "pugilism_slips_head_punch")
+	D.martial_school = "grappling"
+	combat_stance_assert(combat_stance_react(D, A, COMBAT_TRIGGER_GRAB_REACH, "chest", null), "grappling_sprawls_grab")
+	D.martial_school = null
+
+	// Stance reactions need training: average skill never reacts.
+	D.stats["dexterity"] = list(100, 100)
+	D.set_combat_stance(COMBAT_STANCE_MEASURED, TRUE)
+	D.put_in_active_hand(DW)
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", W), "untrained_no_stance_reaction")
+	// A trained Measured fighter stop-hits the swinging arm.
+	D.stats["dexterity"] = list(200, 200)
+	A.note_struck_by(D, "chest", "r_arm")
+	A.last_struck_time = -1000
+	combat_stance_assert(combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", W), "measured_stop_hit")
+	combat_stance_assert(D.next_move <= world.time, "stop_hit_keeps_click_cooldown")
+	combat_stance_assert(D.next_combat_reaction > world.time, "stance_cooldown_set")
+	// Guarded ripostes after a parry and counters after a hit; it can't stop a swing.
+	D.set_combat_stance(COMBAT_STANCE_GUARDED, TRUE)
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_INCOMING, "chest", W), "guarded_no_stop_hit")
+	var/fired = FALSE
+	var/stopped = FALSE
+	for (var/i in 1 to 40)
+		D.next_combat_reaction = 0
+		D.stats["stamina"] = list(100, 100)
+		A.loc = locate(D.x - 1, D.y, D.z)
+		if (D.combat_reaction_try(A, COMBAT_TRIGGER_AFTER_HIT, "chest", W))
+			stopped = TRUE
+		if (D.next_combat_reaction > world.time)
+			fired = TRUE
+	combat_stance_assert(fired && !stopped, "guarded_counter_fires_without_stopping")
+	// Disarming strikes the reaching arm and stops the grab.
+	D.set_combat_stance(COMBAT_STANCE_DISARMING, TRUE)
+	combat_stance_assert(combat_stance_react(D, A, COMBAT_TRIGGER_GRAB_REACH, "chest", null), "disarming_stops_grab")
+	// Manual has no stance reactions.
+	D.set_combat_stance(COMBAT_STANCE_MANUAL, TRUE)
+	combat_stance_assert(!combat_stance_react(D, A, COMBAT_TRIGGER_GRAB_REACH, "chest", null), "manual_no_reactions")
+	// A forced zone wins over the stance.
+	A.forced_attack_zone = "l_foot"
+	combat_stance_assert(A.resolve_attack_zone(D, W) == "l_foot", "forced_zone")
+	A.forced_attack_zone = null
+
 /world/New()
 	OpenPort("none")
 	var/error = null
 	try
 		combat_stance_probe_run()
+		combat_stance_probe_reactions()
 	catch (var/exception/probe_error)
 		error = "[probe_error.name] ([probe_error.file]:[probe_error.line])"
 	if (!error && combat_stance_runtime)
