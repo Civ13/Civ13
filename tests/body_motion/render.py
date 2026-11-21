@@ -180,8 +180,10 @@ def draw_body(canvas, img, centre, m, shift=(0, 0), alpha=1.0, water=False):
     W, H = canvas.size
     src = img.load()
     out = canvas.load()
-    for py in range(max(0, int(cy - 24 * SCALE)), min(H, int(cy + 24 * SCALE))):
-        for px in range(max(0, int(cx - 24 * SCALE)), min(W, int(cx + 24 * SCALE))):
+    # Scan around where the shifted body is drawn, not the tile it stands on.
+    bx, by = cx + shift[0] * SCALE, cy - shift[1] * SCALE
+    for py in range(max(0, int(by - 24 * SCALE)), min(H, int(by + 24 * SCALE))):
+        for px in range(max(0, int(bx - 24 * SCALE)), min(W, int(bx + 24 * SCALE))):
             X = (px + 0.5 - cx) / SCALE - shift[0]
             Y = (cy - (py + 0.5)) / SCALE - shift[1]
             X, Y = X - c, Y - f
@@ -397,6 +399,24 @@ def main():
         ('Climbing up: 1px pull every 10 ds', [(north, 1, 1, repeat(pull_up, 10, 10, start=2), None)], []),
         ('Climbing down: 1px dip every 10 ds', [(south, 1, 1, repeat(pull_down, 10, 10, start=2), None)], []),
     ], 24, (3, 3)), out / 'swim-and-climb.gif')
+
+    # 9. Walking, running and sprinting, and the same gaits dragged by water.
+    def glide(px_per_ds):
+        return lambda t: ((t * px_per_ds) % 128 - 48, 0)
+    def gait(keys):
+        return repeat(keys_track(keys), sum(k[4] for k in keys), sum(k[4] for k in keys))
+    walk = gait([(0, 1, 0, 1, 2, 'sine_out'), (0, 0, 0, 1, 2, 'sine_in')])
+    run = gait([(0, 2, 0, 1, 1.5, 'quad_out'), (0, 0, 0, 1, 1.5, 'quad_in')])
+    sprint = gait([(0, 1, 0, 1, 1, 'quad_out'), (0, 0, 0, 1, 1, 'quad_in')])
+    wade_walk = gait([(0, -1, 0, 1, 3, 'sine_in'), (0, 0, 0, 1, 3, 'sine_out')])
+    wade_run = gait([(0, -1, 0, 1, 2, 'quad_in'), (0, 0, 0, 1, 2, 'quad_out')])
+    save(panels([
+        ('Walk: 1px hop, 4 ds', [(east, 1, 1, walk, glide(7))], []),
+        ('Run: 2px hop, 3 ds', [(east, 1, 1, run, glide(10))], []),
+        ('Sprint: 1px hop, 2 ds', [(east, 1, 1, sprint, glide(14))], []),
+        ('Wading walk: 1px sink, 6 ds', [(east, 1, 1, wade_walk, glide(4))], [], True),
+        ('Wading run: 1px sink, 4 ds', [(east, 1, 1, wade_run, glide(6))], [], True),
+    ], 36, (4, 3)), out / 'gaits.gif')
 
 
 if __name__ == '__main__':
