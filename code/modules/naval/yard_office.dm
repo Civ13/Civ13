@@ -25,7 +25,8 @@
 #define YARD_FIT_TIME 40     // deciseconds to fit one piece from the stock
 #define YARD_SHELF_MAX 20    // draughts on the shelf
 
-var/global/list/yard_offices = list()
+// Not initialised here: world's global initialiser is at its size limit.
+var/global/list/yard_offices
 
 /obj/structure/yard_office
 	name = "yard office"
@@ -40,15 +41,18 @@ var/global/list/yard_offices = list()
 
 /obj/structure/yard_office/New()
 	..()
+	LAZYINITLIST(yard_offices)
 	yard_offices |= src
 
 /obj/structure/yard_office/after_load()
 	..()
 	busy = FALSE
+	LAZYINITLIST(yard_offices)
 	yard_offices |= src
 
 /obj/structure/yard_office/Destroy()
-	yard_offices -= src
+	if (yard_offices)
+		yard_offices -= src
 	var/turf/T = get_turf(src)
 	for (var/obj/item/I in contents)
 		I.forceMove(T)

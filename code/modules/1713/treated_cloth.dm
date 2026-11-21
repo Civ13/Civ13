@@ -26,11 +26,19 @@
 #define CLOTH_COAT_TIME 40
 
 // stack type = rain_resist of clothing sewn from it
-var/global/list/coated_cloth_rain_resist = list(
-	/obj/item/stack/material/tarred_canvas = 75,
-	/obj/item/stack/material/oilcloth = 75,
-	/obj/item/stack/material/waxed_cloth = 70,
-	/obj/item/stack/material/rubberised_cloth = 90)
+// A proc, not a global list: world's global initialiser is at BYOND's
+// procedure size limit, and every initialised global adds to it.
+/proc/coated_cloth_rain_resist(path)
+	switch (path)
+		if (/obj/item/stack/material/tarred_canvas)
+			return 75
+		if (/obj/item/stack/material/oilcloth)
+			return 75
+		if (/obj/item/stack/material/waxed_cloth)
+			return 70
+		if (/obj/item/stack/material/rubberised_cloth)
+			return 90
+	return 0
 
 /material/tarred_canvas
 	name = "tarred_canvas"
@@ -200,7 +208,7 @@ var/global/list/coated_cloth_rain_resist = list(
 /proc/coated_cloth_crafted(obj/item/stack/S, atom/O)
 	if (!istype(S) || !istype(O, /obj/item/clothing))
 		return FALSE
-	var/resist = coated_cloth_rain_resist[S.type]
+	var/resist = coated_cloth_rain_resist(S.type)
 	if (!resist)
 		return FALSE
 	var/obj/item/clothing/C = O
