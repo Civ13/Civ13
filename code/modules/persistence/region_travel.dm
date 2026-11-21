@@ -669,7 +669,7 @@ var/global/list/region_travel_carry_types = list(
 // Hands a waiting body to its player if they are already in the lobby.
 /proc/region_travel_offer(mob/living/human/H)
 	for(var/client/C in clients)
-		if(C.ckey == H.persistence_owner_ckey && istype(C.mob, /mob/new_player))
+		if(C.owner_key() == H.persistence_owner_ckey && istype(C.mob, /mob/new_player))
 			var/mob/new_player/lobby = C.mob
 			spawn(0) // the claim may wait for the home world decision
 				region_travel_claim(lobby)
@@ -679,11 +679,11 @@ var/global/list/region_travel_carry_types = list(
 	if(!lobby || !lobby.client || lobby.client.mob != lobby || IsGuestKey(lobby.client.key)) return FALSE
 	var/client/C = lobby.client
 	if(C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server")) return FALSE
-	var/mob/living/human/H = region_travel_waiting_body(C.ckey)
+	var/mob/living/human/H = region_travel_waiting_body(C.owner_key())
 	if(!H) return FALSE
 	// The arrival was recorded as this land becoming the home; wait for the
 	// coordinator's next pass to decide it.
-	if(!region_home_admit(lobby, wait) || lobby.client != C || C.mob != lobby || H != region_travel_waiting_body(C.ckey)) return FALSE
+	if(!region_home_admit(lobby, wait) || lobby.client != C || C.mob != lobby || H != region_travel_waiting_body(C.owner_key())) return FALSE
 	lobby.spawning = TRUE
 	lobby.close_spawn_windows()
 	H.region_arrival_pending = FALSE

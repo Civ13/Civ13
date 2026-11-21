@@ -48,7 +48,7 @@ class PreparationTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(SOURCE / name, target)
         file = bad / 'code/modules/persistence/player_reclaim.dm'
-        file.write_text(file.read_text().replace('H.persistence_owner_ckey != C.ckey', 'FALSE'), newline='\n')
+        file.write_text(file.read_text().replace('H.persistence_owner_ckey != owner', 'FALSE'), newline='\n')
         with patch.object(PREP, 'load_helpers', side_effect=AssertionError('import before pin check')):
             with self.assertRaisesRegex(ValueError, 'Lifecycle procedure contract changed'):
                 PREP.prepare(bad, self.output)
@@ -99,9 +99,9 @@ class PreparationTests(unittest.TestCase):
             'var/datum/character_return_client/C', 'var/client/C').replace(
             'character_return_transfer(C, H)', 'H.key = C.key')
         self.assertEqual(inverted, original)
-        for guard in ('persistence_player_claims[C.ckey] != lobby', 'C.mob != lobby',
-                      'H.persistence_owner_ckey != C.ckey', 'H.client || H.key',
-                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(C.ckey)'):
+        for guard in ('persistence_player_claims[owner] != lobby', 'C.mob != lobby',
+                      'H.persistence_owner_ckey != owner', 'H.client || H.key',
+                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(owner)'):
             self.assertIn(guard, after)
 
     def test_admission_adaptation_is_exactly_reversible(self):
@@ -130,9 +130,9 @@ class PreparationTests(unittest.TestCase):
             exec(compile(block, 'recovery-adapter-excerpt', 'exec'), namespace)
         adapted = namespace['replacements']['code/modules/persistence/player_reclaim.dm']
         self.assertEqual(adapted.count('lobby.claim_client'), 5)
-        for guard in ('persistence_player_claims[C.ckey] != lobby', 'C.mob != lobby',
-                      'H.persistence_owner_ckey != C.ckey', 'H.client || H.key',
-                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(C.ckey)'):
+        for guard in ('persistence_player_claims[owner] != lobby', 'C.mob != lobby',
+                      'H.persistence_owner_ckey != owner', 'H.client || H.key',
+                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(owner)'):
             self.assertIn(guard, adapted)
 
     def test_only_dedicated_disabled_stubs_removed(self):
@@ -174,16 +174,16 @@ class PreparationTests(unittest.TestCase):
     def test_claim_consumption_omission_is_generated_only_and_case_bound(self):
         receipt = self.prepare('omit-claim-consume')
         source = (self.output / 'player_reclaim.dm').read_text()
-        self.assertNotIn('persistence_restored_bodies.Remove(C.ckey)', source)
-        self.assertIn('persistence_restored_bodies.Remove(C.ckey)', (SOURCE / 'code/modules/persistence/player_reclaim.dm').read_text())
+        self.assertNotIn('persistence_restored_bodies.Remove(owner)', source)
+        self.assertIn('persistence_restored_bodies.Remove(owner)', (SOURCE / 'code/modules/persistence/player_reclaim.dm').read_text())
         self.assertEqual(receipt['cases'], ['repeat-return'])
         self.assertEqual(receipt['expected_result'], 'FAIL: repeated return moved back to bed')
 
     def test_reservation_omission_retains_posthook_ownership_checks(self):
         receipt = self.prepare('omit-reservation')
         source = (self.output / 'player_reclaim.dm').read_text()
-        self.assertNotIn('persistence_player_claims[C.ckey] || character_recovery_unready()', source)
-        self.assertIn('persistence_player_claims[C.ckey] != lobby', source)
+        self.assertNotIn('persistence_player_claims[owner] || character_recovery_unready()', source)
+        self.assertIn('persistence_player_claims[owner] != lobby', source)
         self.assertEqual(receipt['cases'], ['reserved'])
 
     def test_bed_owner_omission_does_not_stub_bed_policy(self):
