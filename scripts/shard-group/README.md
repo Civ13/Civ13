@@ -562,6 +562,15 @@ without stopping it for the load:
    after any restart. The region's worktree is checked out at the new revision
    and `build.json` records the live slot.
 
+Automatic handovers additionally require the running world's
+`handover_empty_guard` capability. The save request reserves only an empty
+world; if anyone connects before release (even if they disconnect before the
+standby finishes loading), the host cancels the cutover, keeps the current
+world up and may retry later. New arrivals after a successful automatic
+release must reconnect. Older running builds need one operator-initiated
+update to gain this capability. Manual handovers retain their existing
+warning and player behavior.
+
 A failure before step 4 (the standby does not boot, the save fails, the load is
 rejected or times out after `load_timeout_seconds`, default 1800) stops the
 standby and cancels the freeze (`handover_cancel`); the old world carries on and

@@ -2520,7 +2520,7 @@ class HandoverTests(unittest.TestCase):
                         me.write_save(Path(host.config['repository']) / 'map_saves', intent=True)
                 busy = world['handover'] in ('saving', 'saved')
                 return {'ok': True, 'ready': not busy, 'busy': busy, 'session': me.SESSION, 'clients': 3,
-                        'handover': world['handover'], 'error': save_error if world['handover'] == 'saving' else None}
+                        'handover': world['handover'], 'handover_empty_guard': True, 'error': save_error if world['handover'] == 'saving' else None}
             if port == me.STANDBY:
                 if action == 'standby_load':
                     standby.update(standby='loading', operation=operation)
@@ -2577,6 +2577,40 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual(host.read_state()['phase'], 'done', host.read_state())
         names = [action for _, action, _ in self.actions if action != 'status']
         self.assertEqual(names, ['handover_save', 'standby_load', 'handover_release', 'standby_open'])
+        self.assertEqual([extra for _, action, extra in self.actions if action == 'handover_save'],
+                         [{'only_if_empty': '1'}])
+
+    def test_automatic_handover_late_save_refusal_defers(self):
+        self.check_automatic_occupancy_refusal('handover_save')
+
+    def test_automatic_handover_late_release_refusal_defers(self):
+        self.check_automatic_occupancy_refusal('handover_release')
+
+    def check_automatic_occupancy_refusal(self, refused_action):
+        group, host = self.staged()
+        self.empty_live_world()
+        query = self.machine.query
+
+        def late_arrival(port, token, action='status', operation=None, session=None, extra=None):
+            if action == refused_action:
+                if action == 'handover_save':
+                    self.assertEqual(extra, {'only_if_empty': '1'})
+                self.actions.append((port, action, extra))
+                raise shard_group.gaia_host.LifecycleRefused('handover_players_arrived')
+            return query(port, token, action, operation, session, extra)
+
+        self.machine.query = late_arrival
+        host.work('auto-handover', host.request('auto-handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertTrue(state.get('retryable'), state)
+        self.assertFalse(host.failed_staged_handover())
+        self.assertIn(self.LIVE, self.machine.up)
+        self.assertNotIn(self.STANDBY, self.machine.up)
+        names = [action for _, action, _ in self.actions if action != 'status']
+        expected = ['handover_save', 'handover_cancel'] if refused_action == 'handover_save' else [
+            'handover_save', 'standby_load', 'handover_release', 'handover_cancel']
+        self.assertEqual(names, expected)
 
     def test_automatic_handover_failed_load_keeps_old_world(self):
         group, host = self.staged(load_error='invalid save')
@@ -2735,7 +2769,7 @@ class HandoverTests(unittest.TestCase):
         def legacy(port, token, action='status', operation=None, session=None, extra=None):
             result = query(port, token, action, operation, session, extra)
             if port == self.LIVE and action == 'status':
-                result.pop('handover', None)
+                result.pop('handover_empty_guard', None)
             return result
         self.machine.query = legacy
         with mock.patch.object(host, 'do_stop') as stop, mock.patch.object(host, 'do_update') as update:
@@ -2744,6 +2778,7 @@ class HandoverTests(unittest.TestCase):
         self.assertIn('automatic update deferred', host.read_state()['error'])
         stop.assert_not_called()
         update.assert_not_called()
+        self.assertEqual([a for _, a, _ in self.actions if a != 'status'], [])
         self.recover_current_build(host)
         host = self.host(group, 'gaia')
         self.assertTrue(host.failed_staged_handover())

@@ -60,7 +60,7 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
-from supervisor import byond_text_md5, query  # noqa: E402
+from supervisor import LifecycleRefused, byond_text_md5, query  # noqa: E402
 import player_changelog  # noqa: E402
 
 # Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host

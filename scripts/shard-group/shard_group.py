@@ -1571,9 +1571,9 @@ class RegionHost(Host):
             raise RuntimeError('the world gave no valid session')
         if self.platform.listening(spare_port):
             raise RuntimeError('port %d (the standby port) is in use' % spare_port)
-        if automatic and 'handover' not in before:
+        if automatic and before.get('handover_empty_guard') is not True:
             self.record(revision=revision)
-            raise RuntimeError('the running build cannot hand over; automatic update deferred')
+            raise RuntimeError('the running build cannot guard an empty handover; automatic update deferred')
         if 'handover' not in before:
             # The running build predates handovers (its status has no handover field), so it
             # cannot freeze and save for a standby: the first update onto a build that can is
@@ -1593,7 +1593,7 @@ class RegionHost(Host):
                 if not self.saved_since_last_client():
                     raise RuntimeError('the world has not saved since the last player; automatic update deferred')
                 session = before.get('session', '')
-                if not gaia_host.HEX32.match(session or '') or 'handover' not in before:
+                if not gaia_host.HEX32.match(session or '') or before.get('handover_empty_guard') is not True:
                     raise RuntimeError('the world no longer supports a safe handover')
             self.handover_work(operation, group, region, revision, port, spare_port, token, before, session, automatic)
 
@@ -1631,7 +1631,8 @@ class RegionHost(Host):
             if automatic:
                 before = self.world()
                 if (not before or before.get('busy') or not before.get('ready') or before.get('clients') != 0
-                        or before.get('session') != session or not self.saved_since_last_client()):
+                        or before.get('session') != session or before.get('handover_empty_guard') is not True
+                        or not self.saved_since_last_client()):
                     self.record(retryable=True)
                     raise RuntimeError('the world is no longer confirmed empty and ready; automatic update deferred')
             warning = self.shutdown_warning()
@@ -1640,6 +1641,8 @@ class RegionHost(Host):
             else:
                 self.record(phase='saving', clients=before.get('clients'))
             fields = gaia_host.warning_fields(before, warning)
+            if automatic:
+                fields = {**(fields or {}), 'only_if_empty': '1'}
             answer = (self.platform.query(port, token, 'handover_save', operation, session, extra=fields) if fields
                       else self.platform.query(port, token, 'handover_save', operation, session))
             if answer.get('operation') != operation:
@@ -1668,6 +1671,8 @@ class RegionHost(Host):
                             standby=True)
             self.finish_backup(backup)
         except Exception as error:
+            if automatic and isinstance(error, gaia_host.LifecycleRefused) and error.code == 'handover_players_arrived':
+                self.record(retryable=True)
             if backup is not None:
                 backup.join()  # never leave a copy running into the next handover
             # The old world is still running: stop the standby and release the freeze.
@@ -1689,7 +1694,9 @@ class RegionHost(Host):
             self.ask_world(port, token, 'handover_release', operation, session,
                            taken=lambda s: s.get('handover') == 'released', untaken=lambda s: s.get('handover') == 'saved',
                            gone_is_taken=True)
-        except Exception:
+        except Exception as error:
+            if automatic and isinstance(error, gaia_host.LifecycleRefused) and error.code == 'handover_players_arrived':
+                self.record(retryable=True)
             # Not released: the old world stays the region, so the loaded standby must not keep
             # its port (the next handover would be refused with the standby port in use).
             self.stop_standby(spare_port, standby_pid)
