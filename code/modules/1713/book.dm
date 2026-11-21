@@ -52,6 +52,7 @@
 				if (QDELETED(src) || !user.Adjacent(src) || user.religious_clergy != "Monks" || !recipe_held(user, B) || !B.monk_copy_blank() || !monk_copy_source_allowed())
 					return
 				to_chat(user, "You finish copying \the [src].")
+				accolade_meet_mob(user, "copyist")
 				if (istype(src, /obj/item/weapon/book) && !istype(src, /obj/item/weapon/book/holybook) && !istype(src, /obj/item/weapon/book/research))
 					var/obj/item/weapon/book/NC = src
 					var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(user))

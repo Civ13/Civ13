@@ -54,6 +54,15 @@ var/global/list/ship_draught_pieces = list(
 	"G" = list("name" = "window", "path" = /obj/structure/window_frame, "cost" = list("wood" = 5), "load" = 0.1),
 	"C" = list("name" = "wood crate", "path" = /obj/structure/closet/crate/empty, "cost" = list("wood" = 5), "load" = 0.5),
 	"B" = list("name" = "bed", "path" = /obj/structure/bed/wood, "cost" = list("wood" = 4), "load" = 0.1),
+	// Everything else a built hull takes aboard and works afloat.
+	"Q" = list("name" = "steam bilge pump", "path" = /obj/structure/cellar_pump/steam, "cost" = list("iron" = 12), "load" = 0.5),
+	"U" = list("name" = "sump pump", "path" = /obj/structure/cellar_pump/sump, "cost" = list("steel" = 4), "load" = 0.1),
+	"E" = list("name" = "steam engine", "path" = /obj/structure/engine/external/steam, "cost" = list("steel" = 15), "load" = 1, "drive" = "engine"),
+	"H" = list("name" = "wooden cannon", "path" = /obj/structure/cannon/hooped, "cost" = list("wood" = 12), "load" = 1.5, "turns" = TRUE, "fires" = TRUE),
+	"Z" = list("name" = "cannon", "path" = /obj/structure/cannon, "cost" = list("steel" = 35), "load" = 1.5, "turns" = TRUE, "fires" = TRUE),
+	"L" = list("name" = "torpedo tube", "path" = /obj/structure/torpedo_tube, "cost" = list("steel" = 25), "load" = 0.5, "turns" = TRUE, "fires" = TRUE),
+	"V" = list("name" = "steel window", "path" = /obj/structure/window_frame/metal, "cost" = list("steel" = 5), "load" = 0.1),
+	"I" = list("name" = "steel door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel, "cost" = list("steel" = 15), "load" = 0.5, "turns" = TRUE),
 	// A gate in her gunwale on an edge tile, facing out (hull_gangway.dm).
 	"Y" = list("name" = "gangway", "path" = /obj/structure/railing/built/gunwale/gangway, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE),
 )
@@ -165,36 +174,14 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 	return found.len == cells.len
 
 // Why she could not be commissioned as drawn; an empty list when she could.
+// The checks themselves are design checks of kind "ship" (draught_checks.dm).
 /datum/ship_draught/proc/problems()
-	. = list()
-	if (!cells.len)
-		. += "Nothing is drawn yet: draw her floors first."
-		return
-	if (cells.len > SHIP_DRAUGHT_MAX_TILES)
-		. += "She has [cells.len] tiles of hull: a hull may have at most [SHIP_DRAUGHT_MAX_TILES]."
-	var/upper = upper_tiles()
-	if (cells.len + upper > SHIP_DRAUGHT_MAX_DECK)
-		. += "Her decks are [cells.len + upper] tiles in all: at most [SHIP_DRAUGHT_MAX_DECK] can sail. Draw less deck above."
-	if (!joined())
-		. += "Her floors are in more than one piece: every tile must touch another along an edge."
-	var/list/H = helms()
-	if (!H.len)
-		. += "She has no helm: put a tiller or a steering oar on one of her tiles."
-	else if (H.len > 1)
-		. += "She has [H.len] helms: only one tiller or steering oar can steer her."
-	var/inboard = 0
-	for (var/key in cells)
-		var/list/C = cells[key]
-		if (C[2] != "Y")
-			continue
-		var/list/xy = splittext(key, ",")
-		var/x = text2num(xy[1])
-		var/y = text2num(xy[2])
-		var/d = C[3]
-		if (cell(x + (d == EAST ? 1 : d == WEST ? -1 : 0), y + (d == NORTH ? 1 : d == SOUTH ? -1 : 0)))
-			inboard++
-	if (inboard)
-		. += "[inboard] gangway\s face[inboard == 1 ? "s" : ""] her own deck: a gangway stands on her edge, facing out over the side."
+	return design_errors("ship", src)
+
+// Everything the checks find: errors, warnings and advice. The caller owns
+// the report.
+/datum/ship_draught/proc/check_design()
+	return design_report("ship", src)
 
 /datum/ship_draught/proc/buildable()
 	var/list/P = problems()
@@ -267,12 +254,16 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			return "boat"
 	return "ship"
 
+// What she carries free: her fittings up to this weigh nothing extra.
+/datum/ship_draught/proc/burden()
+	return cells.len * DRAUGHT_BURDEN_PER_TILE
+
 // What her drives push against, empty of cargo and crew: her tiles, and the
 // weight of her fittings past her burden (small craft carry theirs free).
 /datum/ship_draught/proc/mass()
 	. = max(1, cells.len)
 	if (size_class() != HULL_CLASS_SMALL)
-		. += max(0, round(load() - cells.len * DRAUGHT_BURDEN_PER_TILE))
+		. += max(0, round(load() - burden()))
 
 // The best telegraph step her masts make on a reach, her benches manned, and
 // both together (VESSEL_SPEED_SLOW when nothing makes more: she can be poled).
@@ -286,8 +277,28 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		return VESSEL_SPEED_FULL
 	return push / mass() >= CRAFT_THRUST_HALF ? VESSEL_SPEED_HALF : VESSEL_SPEED_SLOW
 
+// What her engines push with every fire lit, against her mass, like her
+// drives afloat (hull_drives.dm).
+/datum/ship_draught/proc/engine_push()
+	. = 0
+	for (var/key in cells)
+		var/list/C = cells[key]
+		if (!C[2])
+			continue
+		var/list/P = ship_draught_pieces[C[2]]
+		if (P["drive"] != "engine")
+			continue
+		var/obj/structure/engine/E = P["path"]
+		. += max(0, initial(E.maxpower))
+
+/datum/ship_draught/proc/engine_step()
+	var/push = engine_push()
+	if (push / mass() >= CRAFT_THRUST_FULL)
+		return VESSEL_SPEED_FULL
+	return push / mass() >= CRAFT_THRUST_HALF ? VESSEL_SPEED_HALF : VESSEL_SPEED_SLOW
+
 /datum/ship_draught/proc/best_step()
-	var/oars = piece_count("R") * CRAFT_OAR_THRUST
+	var/oars = piece_count("R") * CRAFT_OAR_THRUST + engine_push()
 	var/all = oars + piece_count("M") * CRAFT_SAIL_THRUST
 	if (oars / mass() >= CRAFT_THRUST_FULL)
 		return VESSEL_SPEED_FULL
@@ -318,25 +329,25 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 	lines += "Building her takes [costs_text()]."
 	var/masts = piece_count("M")
 	var/benches = piece_count("R")
+	var/engines = engine_push()
 	var/list/drives = list()
 	if (masts)
 		drives += "under sail on a reach: [ship_draught_step_name(sail_step())]"
 	if (benches)
 		drives += "with every bench manned: [ship_draught_step_name(oar_step())]"
-	if (masts && benches)
-		drives += "with both: [ship_draught_step_name(best_step())]"
+	if (engines)
+		drives += "under steam with every fire lit: [ship_draught_step_name(engine_step())]"
+	if ((masts ? 1 : 0) + (benches ? 1 : 0) + (engines ? 1 : 0) > 1)
+		drives += "with all of them: [ship_draught_step_name(best_step())]"
 	if (drives.len)
 		lines += "Empty, she should make [jointext(drives, "; ")]."
-	else
-		lines += "She has no masts or rowing benches: she can only be poled along at slow ahead, unless you fit an engine."
-	var/ballast = wants_ballast()
-	if (ballast)
-		lines += "With [masts] mast\s she wants about [ballast] more tiles of weight low in her as ballast, or she sails crank."
-	var/list/P = problems()
-	if (P.len)
-		lines += "<span class='warning'>Not ready to build: [jointext(P, " ")]</span>"
+	var/datum/design_report/R = check_design()
+	if (R.blocked())
+		lines += "<span class='warning'>Not ready to build:</span>"
 	else
 		lines += "As drawn she can be built and commissioned."
+	lines += R.chat_lines()
+	qdel(R)
 	return jointext(lines, "<br>")
 
 // The same summary as fields, for the designer window to lay out:
@@ -355,8 +366,14 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 			drives += list(list("Sail", ship_draught_step_name(sail_step())))
 		if (benches)
 			drives += list(list("Oars", ship_draught_step_name(oar_step())))
-		if (masts && benches)
-			drives += list(list("Both", ship_draught_step_name(best_step())))
+		var/engines = engine_push()
+		if (engines)
+			drives += list(list("Steam", ship_draught_step_name(engine_step())))
+		if ((masts ? 1 : 0) + (benches ? 1 : 0) + (engines ? 1 : 0) > 1)
+			drives += list(list("All", ship_draught_step_name(best_step())))
+	var/datum/design_report/R = check_design()
+	var/list/checks = R.data()
+	qdel(R)
 	return list(
 		"name" = name,
 		"tiles" = cells.len,
@@ -370,6 +387,7 @@ var/global/list/ship_draught_upper_cost = list("wood" = 2)
 		"gunwales" = length(gunwale_sides()),
 		"ballast" = cells.len ? wants_ballast() : 0,
 		"problems" = problems(),
+		"checks" = checks,
 	)
 
 // ---- Design codes ----

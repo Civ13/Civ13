@@ -90,7 +90,8 @@
 	// is not a durable language ID. No knowledge is inferred from client labels.
 	for (var/datum/language/known in actor.languages)
 		// Reading and writing take a real command of the language (proficiency.dm).
-		if (known.type == L.type && actor.can_speak(known) && actor.language_score(known) >= LANGUAGE_CONVERSATIONAL)
+		// A daughter language writes in its root's script (daughter.dm).
+		if (language_same(language_root(known), L) && actor.can_speak(known) && actor.language_score(known) >= LANGUAGE_CONVERSATIONAL)
 			return TRUE
 	return FALSE
 
