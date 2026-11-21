@@ -7,7 +7,7 @@
 	hub_password = ""
 	maxx = 5
 	maxy = 5
-	maxz = 1
+	maxz = 2
 	turf = /turf/floor/plating
 	area = /area
 	visibility = 0
@@ -20,6 +20,8 @@
 	return
 /obj/map_metadata/peoples_probe/New()
 	map = src
+	ID = MAP_NOMADS_GAIA
+	title = "Nomads (Gaia)"
 /mob/living/human/peoples_tester/New()
 	languages = list()
 	partial_languages = list()
@@ -107,6 +109,49 @@ var/peoples_runtime_error = FALSE
 		var/mob/living/human/away = peoples_person(salt.id, "Gaia")
 		peoples_check(away.settle_people_record() && away.origin_id == "hearthlanders", "someone away during the merge follows at login")
 		peoples_check(findtext(jointext(world_peoples_report(), "\n"), "No peoples"), "the admin report lists what is left")
+
+		// Born into a community.
+		for (var/mob/living/human/H in human_mob_list.Copy())
+			human_mob_list -= H
+			living_mob_list -= H
+		var/turf/here = locate(3, 3, 1)
+		var/datum/origin/marsh = found_people("Fenreach Kin", list("hearthlanders"), "Latin", "Gaia")
+		peoples_check(!community_peoples(here).len, "nobody around is the wild")
+		var/list/townsfolk = list()
+		for (var/i in 1 to 2)
+			var/mob/living/human/H = peoples_person(marsh.id)
+			H.loc = locate(i, 1, 1)
+			townsfolk += H
+		var/mob/living/human/stranger = peoples_person("fjordfolk")
+		stranger.loc = locate(5, 5, 1)
+		var/mob/living/human/dead = peoples_person("fjordfolk")
+		dead.loc = here
+		dead.stat = DEAD
+		var/mob/living/human/nowhere = peoples_person("fjordfolk")
+		peoples_check(nowhere.loc == null, "a character nowhere is not counted")
+		var/list/community = community_peoples(here)
+		peoples_check(community.len == 2 && community[1] == marsh.id && community[marsh.id] == 2 && community["fjordfolk"] == 1, "a community counts the living around, most common first")
+		var/list/choices = community_people_choices(community)
+		peoples_check(choices[1] == "Fenreach Kin" && choices.len == 2, "the newcomer picks among the peoples living there")
+		var/mob/living/human/newcomer = peoples_person(null, null)
+		newcomer.loc = here
+		peoples_check(community_peoples(here, newcomer).len == 2, "the newcomer does not count themselves")
+		peoples_check(newcomer.choose_origin("tundra") && newcomer.origin_id == marsh.id && newcomer.origin_land == "Gaia", "a newcomer without a keyboard joins the most common people there")
+		var/mob/living/human/wild = peoples_person(null, null)
+		wild.loc = locate(5, 1, 2)
+		peoples_check(wild.loc && wild.choose_origin("tundra") && wild.origin_id == "fjordfolk", "one born in the wild takes the birthplace root")
+		var/mob/living/human/returner = peoples_person(null, null)
+		returner.loc = here
+		returner.legacy_people = "fjordfolk"
+		peoples_check(returner.choose_origin("temperate") && returner.origin_id == "fjordfolk" && isnull(returner.legacy_people), "a returning character keeps their last people if it lives there")
+		var/mob/living/human/returner2 = peoples_person(null, null)
+		returner2.loc = here
+		returner2.legacy_people = "zulu"
+		peoples_check(returner2.choose_origin("temperate") && returner2.origin_id == marsh.id, "but not a people that does not live there")
+		var/mob/living/human/agent = peoples_person(null, null)
+		agent.loc = here
+		agent.origin_wish = "fjordfolk"
+		peoples_check(agent.choose_origin("temperate") && agent.origin_id == "fjordfolk", "an agent may ask for a people living there")
 
 		// The year.
 		var/year = world_calendar_year()
