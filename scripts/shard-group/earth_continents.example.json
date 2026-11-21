@@ -1,7 +1,8 @@
 {
-  "_comment": "Earth-shaped continents (docs/earth-continents.md). Europe and Asia keep their region ids and ports and only change their maps, as fresh worlds. Africa takes the place of the desert and jungle regions: remove those two entries and add this one on a free port. Oceania, Greenland and Antarctica are new lands reached by sea and air; pick free ports for them. The ids are fixed: Europe's east edge and Africa's north-east edge lead to asia, and Asia's west edge to europe and africa.",
+  "_comment": "Earth-shaped continents (docs/earth-continents.md). Europe and Asia keep their region ids and ports and only change their maps, as fresh worlds. Africa takes the place of the desert and jungle regions: remove those two entries and add this one on a free port. Oceania, Greenland and Antarctica are new lands reached by sea and air; pick free ports for them. The Mediterranean lies between Europe and Africa; pick a free port for it too. The ids are fixed: the edges between them are in tools/world_links/world_links.json.",
   "regions": [
     {"id": "europe", "name": "Europe", "kind": "SURFACE", "port": 1740, "map": "maps/nomads/nomads_earth_europe.dmm"},
+    {"id": "mediterranean", "name": "Mediterranean", "kind": "SURFACE", "port": 1749, "map": "maps/nomads/nomads_earth_mediterranean.dmm"},
     {"id": "africa", "name": "Africa", "kind": "SURFACE", "port": 1741, "map": "maps/nomads/nomads_earth_africa.dmm"},
     {"id": "asia", "name": "Asia", "kind": "SURFACE", "port": 1743, "map": "maps/nomads/nomads_earth_asia.dmm"},
     {"id": "oceania", "name": "Oceania", "kind": "SURFACE", "port": 1742, "map": "maps/nomads/nomads_earth_oceania.dmm"},

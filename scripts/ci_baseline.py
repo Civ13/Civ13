@@ -1047,7 +1047,7 @@ SUITES = {
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
             'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
             'maps/nomads/nomads_earth_asia.dmm', 'maps/nomads/nomads_earth_oceania.dmm',
-            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
+            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
             'maps/nomads/nomads_gaia.dmm')},
     # Walking between lands over shared map edges: links answered on the facing
     # edge with dry ground on both stretches, parsed from the DMMs; no BYOND runtime.
@@ -1068,7 +1068,7 @@ SUITES = {
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
             'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
             'maps/nomads/nomads_earth_asia.dmm', 'maps/nomads/nomads_earth_oceania.dmm',
-            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
+            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
             'maps/nomads/nomads_gaia.dmm')},
     # Draft lands of the rest of the Earth (maps/earth_drafts): DMM parse, sizes,
     # file digests and that no build or region list names them; no BYOND runtime.
@@ -1077,9 +1077,9 @@ SUITES = {
                   'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
                   'maps/nomads/nomads_earth_asia.dmm', 'maps/heights/nomads_earth_asia.txt',
                   'maps/heights/nomads_earth_asia.flow.txt', 'maps/heights/nomads_earth_asia.flood.txt',
-                  'maps/nomads/nomads_earth_oceania.dmm', 'maps/nomads/nomads_earth_greenland.dmm',
+                  'maps/nomads/nomads_earth_oceania.dmm', 'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm',
                   'maps/nomads/nomads_earth_antarctica.dmm', 'maps/heights/nomads_earth_oceania.txt',
-                  'maps/heights/nomads_earth_greenland.txt', 'maps/heights/nomads_earth_antarctica.txt',
+                  'maps/heights/nomads_earth_greenland.txt', 'maps/heights/nomads_earth_mediterranean.txt', 'maps/heights/nomads_earth_antarctica.txt',
                   'maps/heights/nomads_earth_europe.txt', 'maps/heights/nomads_earth_europe.flow.txt',
                   'maps/heights/nomads_earth_europe.flood.txt', 'maps/heights/nomads_earth_africa.txt',
                   'maps/heights/nomads_earth_africa.flow.txt', 'maps/heights/nomads_earth_africa.flood.txt',
