@@ -20,6 +20,48 @@
 
 var/global/list/ship_designers = list() // mob -> sheet being drawn
 
+// The window's pictures: every floor and fitting as its own sprite in the
+// game, cut from the DMIs by scripts/build_ship_designer_icons.py (rerun it
+// when ship_draught_floors or ship_draught_pieces change). A turning piece
+// has one picture per facing. The window falls back to the letter of a piece
+// whose picture is missing.
+var/global/list/ship_designer_sprites = list(
+	"shipd_floor_w.png" = 'icons/ship_designer/floor_w.png',
+	"shipd_floor_s.png" = 'icons/ship_designer/floor_s.png',
+	"shipd_piece_O.png" = 'icons/ship_designer/piece_O.png',
+	"shipd_piece_T.png" = 'icons/ship_designer/piece_T.png',
+	"shipd_piece_M.png" = 'icons/ship_designer/piece_M.png',
+	"shipd_piece_R_1.png" = 'icons/ship_designer/piece_R_1.png',
+	"shipd_piece_R_2.png" = 'icons/ship_designer/piece_R_2.png',
+	"shipd_piece_R_4.png" = 'icons/ship_designer/piece_R_4.png',
+	"shipd_piece_R_8.png" = 'icons/ship_designer/piece_R_8.png',
+	"shipd_piece_K.png" = 'icons/ship_designer/piece_K.png',
+	"shipd_piece_A.png" = 'icons/ship_designer/piece_A.png',
+	"shipd_piece_P.png" = 'icons/ship_designer/piece_P.png',
+	"shipd_piece_W.png" = 'icons/ship_designer/piece_W.png',
+	"shipd_piece_D_1.png" = 'icons/ship_designer/piece_D_1.png',
+	"shipd_piece_D_2.png" = 'icons/ship_designer/piece_D_2.png',
+	"shipd_piece_D_4.png" = 'icons/ship_designer/piece_D_4.png',
+	"shipd_piece_D_8.png" = 'icons/ship_designer/piece_D_8.png',
+	"shipd_piece_G.png" = 'icons/ship_designer/piece_G.png',
+	"shipd_piece_C.png" = 'icons/ship_designer/piece_C.png',
+	"shipd_piece_B.png" = 'icons/ship_designer/piece_B.png',
+)
+
+// The names the window asks for: one picture for a floor or a fixed piece,
+// one per facing for a piece that turns.
+/proc/ship_designer_sprite_names()
+	. = list()
+	for (var/key in ship_draught_floors)
+		. += "shipd_floor_[key].png"
+	for (var/key in ship_draught_pieces)
+		var/list/P = ship_draught_pieces[key]
+		if (P["turns"])
+			for (var/d in cardinal)
+				. += "shipd_piece_[key]_[d].png"
+		else
+			. += "shipd_piece_[key].png"
+
 /obj/item/ship_draught
 	var/tmp/list/upload_parts = null
 	var/tmp/upload_count = 0
@@ -115,6 +157,8 @@ var/global/list/ship_designers = list() // mob -> sheet being drawn
 		previous.upload_parts = null
 	ship_designers[H] = src
 	var/datum/ship_draught/D = draught()
+	for (var/sprite in ship_designer_sprites)
+		H << browse_rsc(ship_designer_sprites[sprite], sprite)
 	show_browse(H, ship_designer_html(src, D), "window=[SHIP_DESIGNER_WINDOW];size=900x700")
 	onclose(H, SHIP_DESIGNER_WINDOW, src)
 	ship_designer_stats(H, D ? D : new /datum/ship_draught)
@@ -132,8 +176,8 @@ var/global/list/ship_designers = list() // mob -> sheet being drawn
 		qdel(E)
 	var/list/html = list("<html><head><meta charset='utf-8'><title>Ship's draught</title><style>")
 	html += "body{background:#2b2622;color:#e9dfc8;font-family:Verdana,sans-serif;font-size:12px;margin:6px}"
-	html += "#wrap{display:flex;gap:10px}canvas{border:2px solid #5a3d22;cursor:crosshair;background:#20303a}"
-	html += "button{background:#4a3a2a;color:#e9dfc8;border:1px solid #806040;margin:1px;padding:3px 6px;cursor:pointer}button.on{background:#a07040;color:#fff}"
+	html += "#wrap{display:flex;gap:10px}canvas{border:2px solid #5a3d22;cursor:crosshair;background:#20303a;image-rendering:pixelated}"
+	html += "button{background:#4a3a2a;color:#e9dfc8;border:1px solid #806040;margin:1px;padding:3px 6px;cursor:pointer}button.on{background:#a07040;color:#fff}button img{width:16px;height:16px;vertical-align:middle;margin-right:3px;image-rendering:pixelated}"
 	html += "#side{width:290px}#stats{margin-top:6px;padding:4px;background:#1d1916;border:1px solid #5a3d22;min-height:80px}#st{margin-top:4px;color:#e0c070;min-height:16px}.warning{color:#e08060}"
 	html += "input,select{background:#1d1916;color:#e9dfc8;border:1px solid #806040}.hint{color:#b0a080}</style></head><body><div id='wrap'><canvas id='c'></canvas><div id='side'>"
 	html += "<div>Name: <input id='nm' maxlength='40' style='width:200px' value='[html_encode(D ? D.name : "ship")]'></div>"
@@ -155,22 +199,28 @@ var/global/list/ship_designers = list() // mob -> sheet being drawn
 // Raw string: no DM interpolation inside.
 /proc/ship_designer_script()
 	return @{"
-var cv=document.getElementById('c'),g=cv.getContext('2d'),cells={},t='w',fd=1,rect=false,mirror=false,undos=[],down=null,parts=null,mode='',busy=false,timer=null,last=null;
-cv.width=N*K;cv.height=N*K;
+var cv=document.getElementById('c'),g=cv.getContext('2d'),cells={},t='w',fd=1,rect=false,mirror=false,undos=[],down=null,parts=null,mode='',busy=false,timer=null,last=null,IMG={};
+cv.width=N*K;cv.height=N*K;g.imageSmoothingEnabled=false;
 var NAMES={};for(var i=0;i<PIECES.length;i++)NAMES[PIECES[i][0]]=PIECES[i];
 function key(x,y){return x+','+y;}
 function load(list){cells={};for(var i=0;i<list.length;i++){var c=list[i];cells[key(c[0],c[1])]=[c[2],c[3],c[4],c[5]];}}
 function st(s){document.getElementById('st').innerHTML=s;}
 var ARROW={1:'↑',2:'↓',4:'→',8:'←'};
+function shown(i){return i&&i.complete&&i.naturalWidth>0;}
+function pic(n){if(!IMG[n]){var i=new Image();i.onload=function(){draw();};i.src='shipd_'+n+'.png';IMG[n]=i;}return IMG[n];}
+function pieceName(k,d){return 'piece_'+k+(NAMES[k]&&NAMES[k][2]?'_'+d:'');}
 function drawCell(x,y){var c=cells[key(x,y)],px=x*K,py=(N-1-y)*K;g.fillStyle='#20303a';g.fillRect(px,py,K,K);
-if(c){g.fillStyle=c[0]=='s'?'#8a9098':'#9a6a3a';g.fillRect(px,py,K,K);if(c[3]){g.strokeStyle='#e0d060';g.lineWidth=2;g.strokeRect(px+2,py+2,K-4,K-4);g.lineWidth=1;}
-if(c[1]){g.fillStyle='#fff';g.font='bold 11px Verdana';g.textAlign='center';g.fillText(c[1],px+K/2-(NAMES[c[1]]&&NAMES[c[1]][2]?3:0),py+K-4);if(NAMES[c[1]]&&NAMES[c[1]][2]){g.font='9px Verdana';g.fillText(ARROW[c[2]]||'',px+K-4,py+K-4);}}}
+if(c){g.fillStyle=c[0]=='s'?'#8a9098':'#9a6a3a';g.fillRect(px,py,K,K);var f=pic('floor_'+c[0]);if(shown(f))g.drawImage(f,px,py,K,K);
+if(c[1]){var turns=NAMES[c[1]]&&NAMES[c[1]][2],p=pic(pieceName(c[1],c[2]));g.textAlign='center';
+if(shown(p)){g.save();g.beginPath();g.rect(px,py,K,K);g.clip();g.shadowColor='rgba(0,0,0,0.7)';g.shadowBlur=2;g.drawImage(p,px,py,K,K);g.restore();}else{g.fillStyle='#fff';g.font='bold 11px Verdana';g.fillText(c[1],px+K/2-(turns?3:0),py+K-4);}
+if(turns){g.font='bold 9px Verdana';g.lineWidth=2;g.strokeStyle='#000';g.strokeText(ARROW[c[2]]||'',px+K-4,py+K-4);g.lineWidth=1;g.fillStyle='#fff';g.fillText(ARROW[c[2]]||'',px+K-4,py+K-4);}}
+if(c[3]){g.strokeStyle='#e0d060';g.lineWidth=2;g.strokeRect(px+2,py+2,K-4,K-4);g.lineWidth=1;}}
 g.strokeStyle='rgba(255,255,255,0.08)';g.strokeRect(px+0.5,py+0.5,K-1,K-1);}
 function draw(){for(var y=0;y<N;y++)for(var x=0;x<N;x++)drawCell(x,y);g.strokeStyle='rgba(255,255,255,0.25)';g.beginPath();g.moveTo((MID+0.5)*K,0);g.lineTo((MID+0.5)*K,N*K);g.stroke();}
 function mark(){var b=document.getElementsByTagName('button');for(var i=0;i<b.length;i++){var id=b[i].id;if(id.indexOf('t_')==0)b[i].className=id=='t_'+t?'on':'';if(id.indexOf('f_')==0)b[i].className=id=='f_'+fd?'on':'';}
 document.getElementById('m_r').className=rect?'on':'';document.getElementById('m_m').className=mirror?'on':'';}
 function tool(x){t=x;mark();}
-function face(d){fd=d;mark();}
+function face(d){fd=d;for(var i=0;i<PIECES.length;i++)if(PIECES[i][2]){var m=document.getElementById('i_'+PIECES[i][0]);if(m)m.src='shipd_'+pieceName(PIECES[i][0],d)+'.png';}mark();}
 function toggleRect(){rect=!rect;mark();}
 function toggleMirror(){mirror=!mirror;mark();}
 function snap(){undos.push(JSON.stringify(cells));if(undos.length>60)undos.shift();}
@@ -202,7 +252,10 @@ function txt(s){return decodeURIComponent((s+'').replace(/\+/g,' '));}
 function shipStats(s){busy=false;document.getElementById('stats').innerHTML=txt(s);}
 function shipStatus(s){busy=false;st(txt(s));}
 function loadExample(){var v=document.getElementById('ex').value;if(v==='')return;snap();var e=EXAMPLES[parseInt(v,10)];load(e[1]);document.getElementById('nm').value=e[0];draw();changed();}
-(function(){var el=document.getElementById('pcs');for(var i=0;i<PIECES.length;i++){var b=document.createElement('button');b.id='t_'+PIECES[i][0];b.innerHTML=PIECES[i][0]+' '+PIECES[i][1];
+function label(b,src,id,letter){var t=b.innerHTML,m=document.createElement('img');m.id=id;m.onerror=function(){m.style.display='none';if(letter&&!b.lettered){b.lettered=true;b.insertBefore(document.createTextNode(letter+' '),b.firstChild);}};b.insertBefore(m,b.firstChild);m.src='shipd_'+src+'.png';}
+(function(){label(document.getElementById('t_w'),'floor_w','i_w','');label(document.getElementById('t_s'),'floor_s','i_s','');
+var el=document.getElementById('pcs');for(var i=0;i<PIECES.length;i++){var b=document.createElement('button');b.id='t_'+PIECES[i][0];b.innerHTML=PIECES[i][1];
+label(b,pieceName(PIECES[i][0],fd),'i_'+PIECES[i][0],PIECES[i][0]);
 b.onclick=(function(k){return function(){tool(k);};})(PIECES[i][0]);el.appendChild(b);}
 var s=document.getElementById('ex');for(var i=0;i<EXAMPLES.length;i++){var o=document.createElement('option');o.value=i;o.innerHTML=EXAMPLES[i][0];s.appendChild(o);}})();
 load(START);mark();draw();
