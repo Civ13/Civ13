@@ -725,7 +725,7 @@ bullet_act
 						done = TRUE
 				if (!done)
 					Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
-	I.on_weapon_contact(src, user)
+	I.on_weapon_contact(src, user, hit_zone)
 	return blocked
 
 /mob/living/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)

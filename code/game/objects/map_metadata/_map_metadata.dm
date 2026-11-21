@@ -1163,6 +1163,10 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 		season_run_queue()
 
 /obj/map_metadata/proc/season_loop_delay()
+	// On the world calendar the loop wakes at the calendar's next season (world_calendar.dm).
+	if (map == src && world_calendar_seasons_on())
+		var/list/c = world_calendar_season()
+		return max(100, round(c[3] * 600) + 50)
 	var/minutes = season_duration_minutes
 	if (isnull(minutes))
 		minutes = config ? config.season_duration_minutes : 60
@@ -1289,6 +1293,14 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	// Anchor the recurring cadence to requests while terrain work yields.
 	if (looping)
 		season_schedule_loop()
+	// On the world calendar a natural change only steps toward the calendar's
+	// season; a forced (admin) change holds until the calendar's next season.
+	if (world_calendar_seasons_on())
+		if (force)
+			var/list/c = world_calendar_season()
+			world_calendar_season_hold = world.time + round(c[3] * 600)
+		else if (!world_calendar_season_due())
+			return
 	// Flat scalar records retain each natural request and no actor/turf references.
 	if (force)
 		for (var/i = 1, i <= season_queue.len, i += 4)

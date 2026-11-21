@@ -11,6 +11,7 @@
 	ID = MAP_NOMADS_EARTH_EUROPE
 	// The sun's path (sun_shadows.dm): degrees north.
 	sun_latitude = 50
+	world_longitude = 10 // world calendar time zone (world_calendar.dm)
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	title = "Nomads (Europe)"
@@ -50,6 +51,7 @@
 	ID = MAP_NOMADS_EARTH_AFRICA
 	// The sun's path (sun_shadows.dm): the land lies across the equator.
 	sun_latitude = 5
+	world_longitude = 20 // world calendar time zone (world_calendar.dm)
 	title = "Nomads (Africa)"
 	description = "Africa from the desert south of the inner sea to the southern cape, with the desert peninsula to its east."
 	research_active = TRUE
@@ -65,6 +67,7 @@
 	ID = MAP_NOMADS_EARTH_ASIA
 	// The sun's path (sun_shadows.dm): degrees north.
 	sun_latitude = 40
+	world_longitude = 90 // world calendar time zone (world_calendar.dm)
 	// Cinnabar on an old mercury belt: twice as common (mercury.dm).
 	cinnabar_rich = TRUE
 	// Black iron sand on its coasts and rivers (tatara.dm).
@@ -84,6 +87,7 @@
 	ID = MAP_NOMADS_EARTH_OCEANIA
 	// The sun's path (sun_shadows.dm): degrees south.
 	sun_latitude = -25
+	world_longitude = 135 // world calendar time zone (world_calendar.dm)
 	title = "Nomads (Oceania)"
 	description = "The island continent of the south, the great islands north of it and the island chains of the warm seas."
 	research_active = TRUE
@@ -100,6 +104,7 @@
 	ID = MAP_NOMADS_EARTH_GREENLAND
 	// The sun's path (sun_shadows.dm): degrees north.
 	sun_latitude = 72
+	world_longitude = -40 // world calendar time zone (world_calendar.dm)
 	title = "Nomads (Greenland)"
 	description = "The great ice island of the north, with green fjords along its southern coasts."
 	research_active = TRUE
@@ -116,6 +121,7 @@
 	ID = MAP_NOMADS_EARTH_ANTARCTICA
 	// The sun's path (sun_shadows.dm): degrees south.
 	sun_latitude = -78
+	world_longitude = 0 // world calendar time zone (world_calendar.dm)
 	title = "Nomads (Antarctica)"
 	description = "The frozen continent around the southern pole: ice, mountains and a cold sea."
 	research_active = TRUE
