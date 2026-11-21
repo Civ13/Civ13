@@ -830,4 +830,64 @@
 	passable = TRUE
 	not_movable = TRUE
 	amount = 1
-	layer = 1.99
+	layer = 1.99// Decorative flooring pieces for dungeon and ordinary map construction.
+// These are full, passable floor covers, not door objects or fake openings.
+// Place one cover per cell and set dir explicitly on directional map pieces.
+
+/obj/covers/cobblestone/sill
+	name = "cobble sill"
+	desc = "A flat cobbled threshold with a dressed stone rib."
+	icon = 'icons/turf/flooring/cobble_trim.dmi'
+	icon_state = "sill_center"
+
+/obj/covers/cobblestone/sill/cap_left
+	name = "left cobble sill cap"
+	icon_state = "sill_cap_left"
+
+/obj/covers/cobblestone/sill/cap_right
+	name = "right cobble sill cap"
+	icon_state = "sill_cap_right"
+
+/obj/covers/cobblestone/trim
+	name = "cobble border"
+	desc = "A dressed edge for a cobbled floor."
+	icon = 'icons/turf/flooring/cobble_trim.dmi'
+	icon_state = "trim_straight"
+
+/obj/covers/cobblestone/trim/inside
+	name = "inside cobble corner"
+	icon_state = "trim_corner_inside"
+
+/obj/covers/cobblestone/trim/outside
+	name = "outside cobble corner"
+	icon_state = "trim_corner_outside"
+
+/obj/covers/cobblestone/trim/stop
+	name = "cobble border stop"
+	icon_state = "trim_stop"
+
+/obj/covers/cobblestone/trim/stop/reverse
+	name = "reverse cobble border stop"
+	icon_state = "trim_stop_reverse"
+
+/obj/covers/cobblestone/terracotta
+	name = "terracotta floor"
+	desc = "A floor made from kiln-fired clay tiles."
+	icon = 'icons/turf/flooring/terracotta.dmi'
+	icon_state = "terracotta"
+
+/obj/covers/cobblestone/terracotta/edge
+	name = "terracotta border"
+	icon_state = "terracotta_edge"
+
+/obj/covers/cobblestone/terracotta/inside
+	name = "inside terracotta corner"
+	icon_state = "terracotta_inner"
+
+/obj/covers/cobblestone/terracotta/outside
+	name = "outside terracotta corner"
+	icon_state = "terracotta_outer"
+
+/obj/covers/cobblestone/terracotta/inset
+	name = "patterned terracotta inset"
+	icon_state = "terracotta_inset"
