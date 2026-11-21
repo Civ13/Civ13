@@ -33,10 +33,10 @@ to be done about them, either removing or renaming them, or incorporating duplic
 
 @Fantastic Fwoosh - Recipes mentioned above by @Masqhir AKA:BlackTea have been fixed but ill leave the note up as a helpful pointer.
 - Its worth mentioning that single recipes with multiple field entries of material are fine, but time jumps or separate ones need
-(Material) or (Timeperiod) in the recipe name; by recommendation like i've applied if no more appropriate title can be orchestrated.
-
-*/
-var/global/list/anvil_recipes = list(
+(Material) or (Timeperiod) in the recipe name; by recommendation like i've applied if no more appropriate title can be orchestrated. */
+var/global/list/anvil_recipes = anvil_recipes_table() // built in a proc: all global initialisers share one size-limited proc
+/proc/anvil_recipes_table()
+	return list(
 	"Pistol Barrel" = list("Pistol Barrel","flintlock parts",3,4,0,20,0,0,/obj/item/blackpowder_part/barrel/pistol),
 	"Musket Barrel" = list("Musket Barrel","flintlock parts",3,4,0,30,0,0,/obj/item/blackpowder_part/barrel/musket),
 	"Flintlock Mechanism" = list("Flintlock Mechanism","flintlock parts",3,4,2,0,0,0,/obj/item/blackpowder_part/mechanism),
