@@ -2881,6 +2881,8 @@ SUITES = {
         'paths': ('tests/drug_preparations/', 'code/modules/1713/drug_preparations.dm', 'tests/sprites/create_drugs.py')},
     'drug_refining': {'files': ('tests/drug_refining/test_drug_refining.py',),
         'paths': ('tests/drug_refining/', 'code/modules/reagents/drug_refining.dm')},
+    'faction_substances': {'files': ('tests/faction_substances/test_source.py',),
+        'paths': ('tests/faction_substances/', 'code/game/mob/groups/faction_substances.dm')},
     'drug_classes': {'files': ('tests/drug_classes/test_drug_classes.py',),
         'paths': ('tests/drug_classes/', 'code/modules/reagents/drug_classes.dm')},
     'drug_crops': {'files': ('tests/drug_crops/test_drug_crops.py',),
