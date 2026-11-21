@@ -21,6 +21,15 @@ pull holds. A ladder needs both hands, so it takes only people, small animals
 after the wait, so the climber is told why and nothing moves. Edge climbing
 still drops pulls.
 
+Ramps (`code/modules/multiz/ramps.dm`, suite `tests/ramps`) are a straight run
+of cover sections facing the climb direction, with open air over every
+section. The top section of a full run is found by `stairs_in` and climbs like
+stairs. Each kind passes its `ramp_carries` to the load rule: an earth ramp
+(4 sections) takes what stairs take, a timber ramp (4) adds wheeled loads and
+wheelchair riders, and a stone or concrete ramp (8) adds a hoist-only load when
+`ramp_haul_helper` finds a second person beside the hauler or the load; that
+haul waits `RAMP_HEAVY_TIME`.
+
 ## Shear legs
 
 10 wood, Primitive Construction. One unfastened item or structure per haul;

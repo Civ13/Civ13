@@ -297,7 +297,7 @@
 				real_damage /= getStatCoeff("strength")
 				if (tactic == "charge")
 					real_damage *= 1.1
-				var/armor = run_armor_check(affecting, "melee")
+				var/armor = run_armor_check(affecting, hit_kind_for(attack.sharp, attack.edge))
 				// Apply additional unarmed effects.
 				attack.apply_effects(H, src, armor, rand_damage, hit_zone)
 
@@ -306,7 +306,7 @@
 				hand_struck(hit_zone, real_damage)
 				// A bare-knuckle punch can hurt the puncher's own hand (punch_injury.dm).
 				if (H != src && istype(attack, /datum/unarmed_attack/punch) && !attack.deal_halloss)
-					H.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, "melee"))
+					H.punch_hurts_hand(src, hit_zone, rand_damage, getarmor(affecting, HIT_BLUNT))
 
 			if (I_DISARM)
 				if (M == src)
@@ -353,7 +353,7 @@
 				var/disarm_chance = physical_contest_chance(35, physical_contest_ratio(M, src, 0.3, 0.7))
 				var/randn = rand(1, 100)
 				if (!(species.flags & NO_SLIP) && randn <= push_chance)
-					var/armor_check = run_armor_check(affecting, "melee")
+					var/armor_check = run_armor_check(affecting, HIT_BLUNT)
 					apply_effect(3, WEAKEN, armor_check)
 					playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, TRUE, -1)
 					if (armor_check < 2)

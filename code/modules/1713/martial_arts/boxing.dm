@@ -31,7 +31,7 @@
 
 
 	var/obj/item/organ/external/affecting = D.get_bodypart(ran_zone(A.targeted_organ))
-	var/armor_block = D.run_armor_check(affecting, "melee")
+	var/armor_block = D.run_armor_check(affecting, HIT_BLUNT)
 
 	playsound(D.loc, "swing_hit", 25, TRUE, -1)
 

@@ -536,20 +536,20 @@ bullet_act
 		if (gear && istype(gear ,/obj/item/clothing))
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & def_zone.body_part)
-				protection += C.armor[type]
+				protection += armor_rating(C.armor, type)
 				if (C.accessories.len)
 					for (var/obj/item/clothing/accessory/AC in C.accessories)
 						if (AC.body_parts_covered & def_zone.body_part)
-							protection += AC.armor[type]
+							protection += armor_rating(AC.armor, type)
 							if (istype(AC, /obj/item/clothing/accessory/armor/coldwar/plates))
 								var/obj/item/clothing/accessory/armor/coldwar/plates/ACP = AC
 								for (var/obj/item/weapon/armorplates/plt in ACP.hold)
-									if (type == "melee" || type == "arrow" || type == "gun")
+									if (type == "melee" || is_melee_hit_kind(type) || type == "arrow" || type == "gun")
 										protection += plt.protection
 				if(istype(C, /obj/item/clothing/suit/storage))
 					var/obj/item/clothing/suit/storage/S = C
 					for (var/obj/item/weapon/armorplates/P in S.pockets)
-						if (type == "melee" || type == "arrow" || type == "gun")
+						if (type == "melee" || is_melee_hit_kind(type) || type == "arrow" || type == "gun")
 							protection += P.protection
 
 	return protection
@@ -694,7 +694,7 @@ bullet_act
 		user.visible_message("<span class = 'danger'>[user] has [I.attack_verb.len? pick(I.attack_verb) : "attacked"] \himself in the [affecting.name] with \the [I.name]!</span>", "<span class = 'danger'>You have [I.attack_verb.len? pick(I.attack_verb) : "attacked"] yourself in the [affecting.name] with \the [I.name]!</span>")
 	receive_damage()
 	instadeath_check()
-	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
+	var/blocked = run_armor_check(hit_zone, I.get_hit_kind(), I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
 	// Only the player's own conscious action is currently proven perceivable.
 	var/track_self_injury = user == src && client && client.mob == src && stat == CONSCIOUS && sleeping <= 0
 	var/previous_self_damage = track_self_injury ? getBruteLoss() + getBurnLoss() : 0
@@ -935,7 +935,7 @@ bullet_act
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
 		else
 			visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
-		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM) //I guess "melee" is the best fit here
+		var/armor = run_armor_check(affecting, O.get_hit_kind(), O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM)
 
 		if(armor < 100)
 			var/sharp = O.sharp
@@ -1082,7 +1082,7 @@ bullet_act
 		to_chat(user, SPAN_DANGER("They are missing that limb!"))
 		return
 
-	var/armour = run_armor_check(hit_zone, "melee")
+	var/armour = run_armor_check(hit_zone, HIT_BLUNT)
 	switch(hit_zone)
 		if("chest")//If we aim for the chest we kick them in the direction we're facing.
 			if(lying)

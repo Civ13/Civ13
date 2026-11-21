@@ -89,6 +89,16 @@ class DirectionTests(unittest.TestCase):
         self.assertGreater(distance_mutant_differences, 0, 'the wrong-distance control must be detected')
         self.assertGreater(mutant_differences, 0, 'the wrong-facing control must be detected')
 
+class ConeImageTests(unittest.TestCase):
+    def test_old_cone_images_leave_client_images_at_once(self):
+        text = (ROOT / 'code/game/mob/vision_cone.dm').read_text(encoding='utf-8')
+        start = text.index('/mob/living/human/update_vision_cone()')
+        body = text[start:text.index('mob/living/human/proc/rest_cone_act()', start)]
+        removal = body.index('client.images -= client.hidden_atoms')
+        self.assertLess(removal, body.index('client.hidden_atoms = list()'))
+        self.assertNotIn('spawn(', body)
+        self.assertNotIn('qdel(', body)
+
 
 if __name__ == '__main__':
     unittest.main()

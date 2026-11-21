@@ -10,6 +10,7 @@
 //   C13CLOTH/1/<body>/<colours>/<pieces>/<name>  tailoring designs
 //   C13SYMBOL/1/<palette>/<packed>        faction symbols (32x32, pixels packed
 //                                         as for pictures, up to 16 colours)
+//   C13SHIP/1/<name>/<tiles>              ship's draughts (naval/ship_draught.dm)
 //
 // A code only describes a design. Importing never skips the normal rules:
 // pictures still need the pigments, a canvas and room under the region cap,
@@ -59,6 +60,8 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a clothing design"
 		if ("SYMBOL")
 			return "a faction symbol"
+		if ("SHIP")
+			return "a ship's draught"
 	return null
 
 // Why a pasted code was refused, for the player.

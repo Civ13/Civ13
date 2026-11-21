@@ -312,7 +312,7 @@ var/global/list/sea_noises = list()
 	if (ishuman(L))
 		var/mob/living/human/H = L
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(pick("l_leg", "r_leg", "l_arm", "r_arm", "chest")))
-		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp = 1)
+		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, HIT_PIERCE), sharp = 1)
 		sea_tear_suit(H, damage / 2)
 	else
 		L.adjustBruteLoss(damage)
