@@ -156,6 +156,36 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual('restart', host.read_state()['action'])
         self.assertIsNone(self.host(group, 'gaia').update_unsaved_while_empty(), 'saving lands still hand over')
 
+    def test_an_empty_restart_installs_the_staged_build_without_compiling(self):
+        # The TDM front door was shut for 35 seconds while a restart compiled a revision
+        # newer than the staged build (2026-11-21): the gateway installs what is staged.
+        group = self.gateway_group()
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'door')
+        host.log = lambda values: None
+        host.work('update', host.request('update')['operation'])
+        self.machine.revision = NEWER
+        self.machine.up = {1721}
+        self.machine.pids_by_port = {1721: 100}
+        start = self.machine.start_task
+
+        def start_task(name, dmb='region.dmb'):
+            self.machine.up.add(1721)
+            return start(name, dmb)
+        self.machine.start_task = start_task
+        self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: {
+            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': 0, 'persistence_mode': 0}
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(host.update_pending())
+        self.machine.revision = 'f' * 40  # master moved on after the stage
+        self.machine.calls.clear()
+        host.work('restart', host.request('restart')['operation'])
+        state = host.read_state()
+        self.assertEqual(('done', NEWER), (state['phase'], host.built_revision()), state)
+        commands = [argv for argv, _ in self.machine.calls]
+        self.assertFalse([argv for argv in commands if argv[0] == 'DreamMaker'], 'no compile with the port closed')
+        self.assertEqual('start', commands[-1][0])
+
     def test_add_gateway_plans_then_adds_sets_up_and_starts_it(self):
         self.group['relay_port'] = 1740
         self.group['regions'][0]['port'] = 1714

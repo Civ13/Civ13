@@ -2006,6 +2006,26 @@ class RegionHost(Host):
         answer = self.update_answer(self.git_text(['rev-parse', 'HEAD'], self.repo), available, group['repository'])
         return dict(answer, region=self.config['region'])
 
+    def do_refresh(self, operation):
+        """A restart of an always-up region (the gateway, the tutorial) installs the build
+        staged beside it, even when the group has moved on since: compiling the newer
+        revision with the world stopped kept the TDM front door shut for 35 seconds
+        (2026-11-21). The newer revision is staged beside it next and installed by the
+        next empty restart. Other regions, or one with nothing staged, refresh as before."""
+        staged = self.staged_revision() if self.always_up() else None
+        if staged and self.update_pending():
+            group = load_group(self.config['group_config'])
+            region = next(r for r in group['regions'] if r['id'] == self.config['region'])
+            self.record(phase='installing the staged build', revision=staged)
+            prepare_tree(group, region, self.repo, staged, self.platform, self.config['git'])
+            if self.platform.listening(self.config['port']):
+                raise RuntimeError('the region started during the update; not installing')
+            if self.install_staged(staged):
+                self.record_build(staged, DMB_SLOTS[0])
+                self.record(phase='compiled', revision=staged, map=region['map'], staged=True)
+                return
+        return super().do_refresh(operation)
+
     def do_update(self, operation):
         """Check out the group's revision in this region's worktree and compile region.dme."""
         group = load_group(self.config['group_config'])
