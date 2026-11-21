@@ -34,6 +34,22 @@ Code: `code/modules/naval/hull_sides.dm`.
   as drawn (`/datum/ship_draught/proc/gunwale_sides`). They are in her cost
   and the slipway builds them as the last stages, after her fittings.
 
+## On the draught and in the designer
+
+- Gunwales are not drawn: `gunwale_sides()` puts one on every open side of a
+  draught of more than 12 tiles. The design code is unchanged (`C13SHIP/1`).
+- Piece `Y` is a gangway (4 wood). Draw it on an edge tile facing out over
+  the side; it closes that side instead of a gunwale, and `problems()` refuses
+  one that faces her own deck. On the slipway it is built with her fittings.
+  "Draw her lines" draws a wooden or steel gangway as `Y`.
+- The designer window draws her gunwale rim in gold inside the hull outline
+  (gaps where a wall, door, window or gangway closes the side) and lists the
+  gunwale count under "Sides" in her figures (`summary_data()["gunwales"]`).
+  The palette shows the gangway under "Sides".
+- Letters reserved: `N` crow's nest, `J` bowsprit and jib, `F` figurehead
+  (ship edges); `L` ladder and `Z` stairs (multi-deck, which takes
+  `C13SHIP/2`).
+
 ## How gunwales behave
 
 - Part of her hull: `hull_load()` is 0, they move with her like anything on

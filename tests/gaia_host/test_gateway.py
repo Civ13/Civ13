@@ -97,6 +97,7 @@ class GatewayTests(unittest.TestCase):
         self.group['relay_port'] = 1740
         self.group['regions'][0]['port'] = 1714
         self.group['live'] = True
+        self.machine.up = {1714}  # Gaia plays on the front door meanwhile
         group = self.write_group()
         answer = shard_group.add_gateway(group, platform=self.machine)
         self.assertFalse(answer['accepted'])
@@ -116,15 +117,34 @@ class GatewayTests(unittest.TestCase):
         self.assertTrue(again['plan']['already'])
         self.assertEqual('set-gate --region gateway --apply', again['next'])
 
+    def test_add_gateway_with_the_group_stopped_only_sets_it_up(self):
+        self.group['relay_port'] = 1740
+        self.group['regions'][0]['port'] = 1714
+        self.group['live'] = True
+        group = self.write_group()
+        answer = shard_group.add_gateway(group, apply=True, platform=self.machine)
+        self.assertTrue(answer['accepted'] and answer['plan']['offline'])
+        self.assertIsNone(answer['start'], 'nothing is launched while the group is down')
+        self.assertFalse(self.machine.detached)
+        self.assertTrue((self.base / 'regions' / 'gateway' / '.git').exists())
+        self.assertEqual('set-gate --region gateway --apply', answer['next'])
+        group = shard_group.load_group(self.path)
+        plan = shard_group.group_ports.plan_gate(shard_group, group, 'gateway', platform=self.machine)
+        self.assertFalse(plan['problems'], plan['problems'])
+        port = answer['plan']['port']
+        self.assertEqual({'gateway': [port, 1714], 'gaia': [1714, port]}, {k: v['port'] for k, v in plan['changes'].items()})
+        self.assertFalse(plan['regions']['gateway']['start'], 'the whole group is down: nothing is started')
+
     def test_add_gateway_needs_the_relay(self):
         with self.assertRaisesRegex(shard_group.Refused, 'routing relay'):
             shard_group.add_gateway(self.write_group(), platform=self.machine)
 
     def test_set_gate_waits_for_a_running_gateway(self):
         group = self.gateway_group()
+        self.machine.up = {1720}  # Gaia plays on the front door
         plan = shard_group.group_ports.plan_gate(shard_group, group, 'door', platform=self.machine)
         self.assertTrue(any('not running' in problem for problem in plan['problems']), plan['problems'])
-        self.machine.up = {1721}
+        self.machine.up = {1720, 1721}
         plan = shard_group.group_ports.plan_gate(shard_group, group, 'door', platform=self.machine)
         self.assertFalse(any('not running' in problem for problem in plan['problems']), plan['problems'])
         self.assertEqual({'door': {'port': [1721, 1720]}, 'gaia': {'port': [1720, 1721]}},

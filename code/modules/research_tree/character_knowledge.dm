@@ -48,6 +48,7 @@
 	refresh_recipe_knowledge_menus()
 	if (is_new)
 		player_activity.node_learned(src, node_id)
+		accolade_check_knowledge()
 	return TRUE
 
 /mob/living/human/proc/initialize_recipe_knowledge()

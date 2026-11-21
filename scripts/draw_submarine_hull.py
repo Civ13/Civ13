@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Draws icons/obj/vehicles/submarine_hull.dmi: the roof, deck and fittings of
-the Scout (3x5) and Explorer (3x7) submarines.
+the Scout (3x5) and Explorer (3x7) submarines of the pen, and of the Coaster
+(3x4) and Cruiser (3x6) hulls a submarine sheet of those lengths is built to.
 
 Every pixel is placed by the plain drawing code below from a fixed palette
 (Pillow only; no image generation, no borrowed art). Each boat is drawn
@@ -11,6 +12,13 @@ a boat facing south, row 1 its bow) and holds the four directions the boat
 can face. A roof tile the accent stripe crosses also gets a "..._stripe"
 state: the stripe alone in white, which the game tints to the colour the crew
 painted and lays over the roof.
+
+The Scout and the Explorer have their lock-out hatches drawn into the row the
+pen fits them in. A sheet can put a hatch in any side section, so the Coaster
+and the Cruiser are drawn with plain sides, and the hatch is its own pair of
+states, "sub_hatch_<column>_deck" and "..._roof" (column 1 or 3), that the
+game lays over whichever side section is a hatch. They are the same pixels
+as the hatches drawn into the Scout and the Explorer.
 
 Usage: python3 scripts/draw_submarine_hull.py [--preview out.png]
 """
@@ -78,8 +86,22 @@ def erode(mask, n):
     return big.crop((n, n, n + mask.width, n + mask.height))
 
 
-def exterior(W, L, sail_row=None, lock_row=None, canopy=1.0, tanks=None, planes=True, pods=False, **kw):
-    """Roof art: what people outside the boat see."""
+def draw_roof_locks(d, W, lock_row):
+    """Lock-out hatches on both sides of the hull, ringed in yellow."""
+    cx = W * T / 2
+    ly = int(lock_row * T)
+    for lock_side in (-1, 1):
+        lx = int(cx + lock_side * (W * T / 2 - 13)) - (1 if lock_side > 0 else 0)
+        d.ellipse([lx - 7, ly - 7, lx + 7, ly + 7], fill=YEL, outline=OUT)
+        d.ellipse([lx - 5, ly - 5, lx + 5, ly + 5], fill=H3, outline=OUT)
+        d.line([lx - 2, ly, lx + 2, ly], fill=RIV)
+        d.line([lx, ly - 2, lx, ly + 2], fill=RIV)
+
+
+def exterior(W, L, sail_row=None, lock_row=None, canopy=1.0, tanks=None, planes=True, pods=False, stripes=None, sail=(13, 22), **kw):
+    """Roof art: what people outside the boat see. stripes gives the pixel rows
+    of the accent stripes when the usual two would run under the sail; sail is
+    the half width and half length of the conning tower."""
     w, h = W * T, L * T
     cx = w / 2
     im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
@@ -123,7 +145,7 @@ def exterior(W, L, sail_row=None, lock_row=None, canopy=1.0, tanks=None, planes=
                         x = int(cx + side * (hw - k) - (0 if side > 0 else 1))
                         px[x, y] = OUT
     # accent stripes
-    for ys in ((int(34 * canopy) + 6, h - 62) if L > 2 else (h - 34,)):
+    for ys in (stripes if stripes else (int(34 * canopy) + 6, h - 62) if L > 2 else (h - 34,)):
         for y in range(ys, ys + 3):
             for x in range(w):
                 if inner[x, y]:
@@ -164,7 +186,7 @@ def exterior(W, L, sail_row=None, lock_row=None, canopy=1.0, tanks=None, planes=
     # sail (conning tower) with its hatch and periscope
     if sail_row is not None:
         sy = int(sail_row * T)
-        sw, sh = 13, 22
+        sw, sh = sail
         d.rounded_rectangle([cx - sw + 2, sy - sh + 3, cx + sw + 1, sy + sh + 3], 9, fill=H4)       # shadow
         d.rounded_rectangle([cx - sw, sy - sh, cx + sw - 1, sy + sh], 9, fill=H2, outline=OUT)
         d.rounded_rectangle([cx - sw + 2, sy - sh + 2, cx + sw - 6, sy + sh - 6], 7, fill=H1)
@@ -176,13 +198,7 @@ def exterior(W, L, sail_row=None, lock_row=None, canopy=1.0, tanks=None, planes=
         d.rectangle([cx + 5, sy - 16, cx + 6, sy - 9], fill=OUT)                 # snorkel / mast
     # lock-out hatches on both sides of the hull, ringed in yellow
     if lock_row is not None:
-        ly = int(lock_row * T)
-        for lock_side in (-1, 1):
-            lx = int(cx + lock_side * (W * T / 2 - 13)) - (1 if lock_side > 0 else 0)
-            d.ellipse([lx - 7, ly - 7, lx + 7, ly + 7], fill=YEL, outline=OUT)
-            d.ellipse([lx - 5, ly - 5, lx + 5, ly + 5], fill=H3, outline=OUT)
-            d.line([lx - 2, ly, lx + 2, ly], fill=RIV)
-            d.line([lx, ly - 2, lx, ly + 2], fill=RIV)
+        draw_roof_locks(d, W, lock_row)
     # stern planes, rudder and screw
     ty = h - 22
     if planes:
@@ -218,6 +234,19 @@ def deck_fill(im, mask_inner):
                 elif x % 16 == 1 or y % 16 == 1:
                     c = D2
                 px[x, y] = c
+
+
+def draw_deck_lock(px, mp, wi, edge, col, row):
+    """A lock-out chamber: a flooded-floor grate and a yellow outer hatch in the hull."""
+    x0, y0 = col * T, row * T
+    for y in range(y0, y0 + T):
+        for x in range(x0, x0 + T):
+            if wi[x, y]:
+                px[x, y] = G4 if (x + y) % 4 == 0 else (70, 92, 108, 255)
+    for y in range(y0 + 8, y0 + 24):
+        for x in (range(x0, x0 + 7) if col == 0 else range(x0 + T - 7, x0 + T)):
+            if mp[x, y] and not wi[x, y] and edge[x, y]:
+                px[x, y] = YEL if (y // 3) % 2 == 0 else OUT
 
 
 def interior(W, L, spec, **kw):
@@ -258,15 +287,7 @@ def interior(W, L, spec, **kw):
                 px[x, y] = H4
     # lock-out chambers: a flooded-floor grate and a yellow outer hatch in the hull
     for (col, row) in spec.get('locks', []):
-        x0, y0 = col * T, row * T
-        for y in range(y0, y0 + T):
-            for x in range(x0, x0 + T):
-                if wi[x, y]:
-                    px[x, y] = G4 if (x + y) % 4 == 0 else (70, 92, 108, 255)
-        for y in range(y0 + 8, y0 + 24):
-            for x in (range(x0, x0 + 7) if col == 0 else range(x0 + T - 7, x0 + T)):
-                if mp[x, y] and not wi[x, y] and edge[x, y]:
-                    px[x, y] = YEL if (y // 3) % 2 == 0 else OUT
+        draw_deck_lock(px, mp, wi, edge, col, row)
     # sealed tank spaces in the stern quarters: dark plating nobody walks on
     for (col, row) in spec.get('sealed', []):
         x0, y0 = col * T, row * T
@@ -352,7 +373,36 @@ BOATS = {
     'explorer': dict(W=3, L=7,
                      ext=dict(sail_row=2.3, lock_row=3.5, tanks=(70, 150)),
                      deck=dict(glass=1.0, locks=[(0, 3), (2, 3)], sealed=[(0, 6), (2, 6)], walk=[(1, 6.0)])),
+    # The hulls of the two lengths only a submarine sheet builds. Their sides
+    # are plain: a sheet's hatches are laid over them (hatch_overlays()).
+    # The Coaster is too short for the usual sail and stripes: a stubbier
+    # sail, and the after stripe moved clear of it.
+    'coaster': dict(W=3, L=4,
+                    ext=dict(sail_row=1.95, sail=(13, 17), stripes=(40, 90), tanks=(56, 88)),
+                    deck=dict(glass=1.0, sealed=[(0, 3), (2, 3)], walk=[(1, 3.0)])),
+    'cruiser': dict(W=3, L=6,
+                    ext=dict(sail_row=2.2, tanks=(66, 136)),
+                    deck=dict(glass=1.0, sealed=[(0, 5), (2, 5)], walk=[(1, 5.0)])),
 }
+
+
+def hatch_overlays():
+    """The lock-out hatch of a side section on its own: {column: (deck, roof)}
+    for columns 1 and 3, drawn for a section of the parallel body."""
+    W, L, row = 3, 6, 2
+    w, h = W * T, L * T
+    roof = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    draw_roof_locks(ImageDraw.Draw(roof), W, row + 0.5)
+    deck = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    mask = hull_mask(W, L, **BIG)
+    mp, wi, edge = mask.load(), erode(mask, 5).load(), erode(mask, 1).load()
+    for col in (0, W - 1):
+        draw_deck_lock(deck.load(), mp, wi, edge, col, row)
+    out = {}
+    for c in (1, W):
+        box = ((W - c) * T, row * T, (W - c + 1) * T, (row + 1) * T)
+        out[c] = (deck.crop(box), roof.crop(box))
+    return out
 
 
 def boat_art(name):
@@ -379,6 +429,9 @@ def build_states():
                 states.append((f'{name}_{c}_{r}_roof', four_dirs(roof.crop(box))))
                 if stripe.crop(box).getbbox():
                     states.append((f'{name}_{c}_{r}_stripe', four_dirs(stripe.crop(box))))
+    for c, (deck, roof) in hatch_overlays().items():
+        states.append((f'sub_hatch_{c}_deck', four_dirs(deck)))
+        states.append((f'sub_hatch_{c}_roof', four_dirs(roof)))
     for kind in ('bulkhead', 'door_closed', 'door_open'):
         north = edge_strip(kind)
         # the direction of these states is the tile edge the wall stands on

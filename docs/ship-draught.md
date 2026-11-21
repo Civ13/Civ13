@@ -14,8 +14,11 @@ Code: `code/modules/naval/ship_draught.dm`. Limits: `code/__defines/naval.dm`.
 
 - floor: `ship_draught_floors` (`w` plank floor, `s` steel floor);
 - piece: `ship_draught_pieces` (tiller, steering oar, mast, rowing bench,
-  killick, iron anchor, hand bilge pump, plank wall, door, window, crate, bed)
-  or null;
+  killick, iron anchor, hand bilge pump, plank wall, door, window, crate, bed,
+  steam bilge pump, sump pump, steam engine, wooden cannon, cannon, torpedo
+  tube, steel window, steel door) or null. Every piece is something a built
+  hull takes aboard and works afloat; a row's `fires` flag marks a gun and
+  `drive = "engine"` an engine;
 - upper deck: TRUE when the tile carries deck on the level above.
 
 ## Checks, cost and speed
@@ -23,7 +26,11 @@ Code: `code/modules/naval/ship_draught.dm`. Limits: `code/__defines/naval.dm`.
 `problems()` makes the same checks a tiller makes when she is commissioned:
 floors joined edge to edge, one helm, at most `SHIP_DRAUGHT_MAX_TILES` tiles of
 hull and `SHIP_DRAUGHT_MAX_DECK` tiles of deck in all. `buildable()` is TRUE
-when there are none.
+when there are none. These are the errors of her design checks
+(`check_design()`, [design-checks.md](design-checks.md)), which also warn of
+what she can be built with but will not work well: no drive, no pump, no or
+too small an anchor, ballast, guns pointing across her deck, fittings crew
+cannot reach.
 
 `costs()` adds up the hand recipe of every floor and piece; a tile of upper
 deck costs a floor, and each side in `gunwale_sides()` costs a gunwale (2 wood,
@@ -34,8 +41,9 @@ or 2 steel for a bulwark on steel floor; boats and ships only, see
 `load()`, `mass()`, `sail_step()`, `oar_step()`, `best_step()` and
 `wants_ballast()` use the figures afloat: each piece weighs its `hull_load()`
 (the probe checks every piece), burden and ballast are hull_load.dm's, and
-pushes are `CRAFT_SAIL_THRUST` (a mast on a reach) and `CRAFT_OAR_THRUST` (a
-manned bench). The estimate is for an empty ship; cargo, crew and bilge water
+pushes are `CRAFT_SAIL_THRUST` (a mast on a reach), `CRAFT_OAR_THRUST` (a
+manned bench) and an engine's `maxpower` with every fire lit (`engine_push()`,
+`engine_step()`). The estimate is for an empty ship; cargo, crew and bilge water
 make her slower.
 
 ## Codes and the sheet
@@ -205,8 +213,12 @@ ballast and periscope station reads each hull section's `hull_tile`
 The window (`open_sub_designer()`) is a 3-column grid, bow to the top and
 starboard on the right, talking to a `/datum/sub_designer` per drawer. Every
 change is sent as a code; the server answers with `summary_text()`, and Save
-keeps it on the sheet. Tests: `tests/submarine/sheet.dm` in the submarine
-probe.
+keeps it on the sheet. A fitting is drawn on the grid and on the palette as
+its game sprite: PNGs under `icons/sub_designer/`, cut from the game's DMIs by
+`python3 scripts/build_sub_designer_icons.py` (`--check` reports stale ones)
+and sent with `browse_rsc` as `subd_fit_<key>.png` (`sub_designer_sprites`);
+a fitting with no picture shows as its letter. Tests:
+`tests/submarine/sheet.dm` in the submarine probe.
 
 ### Assembling a submarine from her sheet
 
@@ -218,10 +230,14 @@ as the sheet, and `assemble()` shapes the sections from `D.layout()` instead of
 sheet shows where they go. `hull_layout()` reads `sheet_code` first, so her
 turning square (`hull_square()`) and later reshaping follow her plan.
 
-Art: `submarine_art_tile()` gives each section the Scout's tiles (lengths 4
-and 5) or the Explorer's (6 and 7), skipping middle rows for the shorter boat
-so the bow and stern art stay whole. A boat built from a sheet is drawn from
-her sheet by "Draw her lines", not from her art tiles.
+Art: every length has a hull drawn for it by `scripts/draw_submarine_hull.py`,
+and `submarine_art_tile()` gives each section its tile row for row: the
+Coaster's for 4 rows, the Scout's for 5, the Cruiser's for 6 and the
+Explorer's for 7. The Coaster and Cruiser have plain sides; a lock-out hatch
+is the `sub_hatch_<column>_deck` and `_roof` states laid over whichever side
+section the sheet made a hatch (`hatch_art()`). A 6-row boat still handles as
+an Explorer (`hull_class`). A boat built from a sheet is drawn from her sheet
+by "Draw her lines", not from her art tiles.
 
 Banks: `battery_capacity()` and `air_capacity()` are half a bank in her hull
 plus one bank (`SUB_BATTERY_MAX`, `SUB_AIR_BANK_MAX`) for each battery or air

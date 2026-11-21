@@ -108,6 +108,7 @@
 /mob/living/human/Login()
 	..()
 	grant_common_knowledge()
+	offer_pending_language_naming()
 
 // The era moved up: every living character gains what became common.
 /proc/knowledge_era_advanced()

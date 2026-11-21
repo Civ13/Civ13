@@ -194,7 +194,9 @@ var/global/list/divine_invocation_names = list(
 
 // The legal target of an invocation at this moment, or null.
 /proc/divine_target_legal(mob/living/human/caster, spell, mob/living/human/target)
-	if (spell == "imbue" || spell == "bless") // the target is the held item (arcane_enchant.dm)
+	if (spell == "imbue") // the held item, or the chest or door beside them (arcane_enchant.dm, arcane_ward.dm)
+		return istype(caster) && target && target == caster.arcane_imbue_target()
+	if (spell == "bless") // the target is the held item (arcane_bless.dm)
 		return istype(caster) && target && target == caster.arcane_imbue_item()
 	if (!istype(caster) || !istype(target) || QDELETED(target) || target.stat == DEAD)
 		return FALSE
@@ -277,7 +279,7 @@ var/global/list/divine_invocation_names = list(
 	var/scope = divine_scope(spell)
 	if (spell == "imbue")
 		scope = arcane_imbue_choose() // arcane_enchant.dm
-		target = arcane_imbue_item()
+		target = arcane_imbue_target()
 		if (!scope || !target)
 			return
 	else if (spell == "bless")
