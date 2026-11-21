@@ -40,6 +40,8 @@
 
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
+	if (magic_repo_id)
+		magic_repo_examine(user) // repository.dm; only its keepers learn anything
 	return distance == -1 || (get_dist(src, user) <= distance)
 
 // Shared touch admission for structures and stationary guns. Keep caller-specific
