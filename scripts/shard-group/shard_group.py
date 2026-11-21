@@ -346,6 +346,9 @@ def check_group(group, path):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
             raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
+    # Ships sail over linked map edges (docs/ocean-regions.md); off until the oceans run.
+    if type(group.setdefault('edge_travel_oceans', False)) is not bool:
+        raise ValueError('edge_travel_oceans must be true or false')
     # Routing relay (scripts/gaia-host/relay.py): one public port for every region.
     # Players join the gate region directly; it (or any region sending a traveller)
     # writes a route for the player's address and links them to relay_port.
@@ -2475,6 +2478,7 @@ def write_region_files(group, region, path):
                 'start_region': group['start_region'],
                 'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in UNSAVED_KINDS else 0,
                 'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
+                'edge_travel_oceans': group['edge_travel_oceans'],
                 # The host service's doorman on this machine; regions ask it which peers
                 # sleep (a direct poll would wake them) and to wake one for a traveller.
                 'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
