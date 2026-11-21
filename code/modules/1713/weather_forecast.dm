@@ -150,9 +150,7 @@ var/global/list/weather_vanes = list()
 /obj/structure/weather_vane/proc/turn_to_wind()
 	if (!map || sheltered())
 		return
-	// Four arrow sprites: a diagonal wind shows its east or west half.
-	var/from = weather_wind_dir_at(src)
-	var/look = "weather_vane_[lowertext(dir2text(from & (EAST|WEST) ? from & (EAST|WEST) : from))]"
+	var/look = "weather_vane_[lowertext(dir2text(weather_wind_dir_at(src)))]"
 	if (icon_state != look)
 		icon_state = look
 

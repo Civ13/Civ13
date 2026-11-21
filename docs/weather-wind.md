@@ -51,8 +51,8 @@ reader gives the map's wind exactly as before.
 
 Sailing (step time, sail push, the craft's report and the outrigger canoe),
 drifting hulls, windmills, wind generators, the weather vane and sea state all
-read the local wind. The vane has four arrow sprites, so a diagonal wind shows
-its east or west half; its examine text names all eight headings.
+read the local wind. The vane has an arrow sprite for each of the eight
+headings, and its examine text names them.
 
 ## Admin tools
 
