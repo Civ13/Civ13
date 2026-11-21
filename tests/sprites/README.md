@@ -212,6 +212,8 @@ listing was retained. These limits are not waived by a green workflow.
 
 `create_transmission.py` owns `icons/obj/transmission.dmi`: the wooden and wrought-iron line shafts (`line_shaft`, `line_shaft_iron`), the dog clutch apart and closed (`clutch`, `clutch_engaged`) - all four-direction, the shaft running edge to edge so neighbouring tiles join - plus the single-direction `gear_box` (pit wheel, lantern pinion, upright shaft stub) and `rope_drive` pulley. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
+`create_hopper_machines.py` owns `icons/obj/hopper_machines.dmi`: the mill stones on their hurst frame with tun, hopper and meal spout (`millstones`, `millstones_on`) and the water-powered sash saw over its carriage bed and log (`sash_saw`, `sash_saw_on`) - single-direction, the `_on` states four-frame loops. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
+
 `create_machine_shop.py` owns `icons/obj/machine_shop.dmi`: the steam hammer, drill press and hydraulic press, standing and working. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.
 
 `create_power_cranes.py` owns `icons/obj/power_cranes.dmi`: the steam crane and the tower crane, standing and hauling. `--check` verifies the committed sheet, `--preview <png>` writes a review sheet.

@@ -271,6 +271,24 @@ class MechanicalPower(unittest.TestCase):
         self.assertIn('#define TRANSMISSION_IRON_RUN 16', TRANSMISSION)
         self.assertIn('code\\modules\\1713\\transmission.dm', DME)
 
+    def test_hopper_machines_recipes_parts_and_step(self):
+        rows = recipe_rows()
+        H = '/obj/structure/workshop_machine/hopper/'
+        want = {
+            H + 'millstones': ('/material/stone/', 12, {GEAR: 1, SHAFT: 1}),
+            H + 'sash_saw': ('/material/wood/', 10, {GEAR: 1, SHAFT: 1, '/obj/item/stack/material/iron': 2}),
+        }
+        for path, (material, count, parts) in want.items():
+            self.assertEqual(len(rows.get(path, [])), 1, path)
+            self.assertEqual((rows[path][0][0], float(rows[path][0][3])), (material, count), path)
+            self.assertIn('"%s" = "watermills"' % path, NODES)
+            self.assertEqual(NEEDS[path], {'tools': [], 'inputs': parts}, path)
+        hopper = (ROOT / 'code/modules/1713/hopper_machines.dm').read_text(encoding='utf-8')
+        self.assertIn('#define HOPPER_OUTPUT_CAP 20', hopper)
+        # the drive is asked once a step, not every object tick
+        self.assertEqual(hopper.count('mechanical_drive_factor(src)'), 2)
+        self.assertIn('if (world.time < next_step)', proc_body(hopper, '/obj/structure/workshop_machine/hopper/process_interval('))
+
     def test_movers_have_a_strength(self):
         for name, cap in (('treadwheel', 1), ('horse_gin', 2), ('mill_wheel', 3)):
             self.assertIn('drive_capacity = %d\n' % cap, type_block(BASE + '/' + name))

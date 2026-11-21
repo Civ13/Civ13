@@ -40,6 +40,22 @@ within one tile of each other, diagonals included.
 | Iron line shaft | 3 iron, bearing | Machined Tools | an all-iron run turns up to 16 lengths |
 | Rope drive wheel | 4 iron, bearing, 2 rope | Machined Tools | rope on it ties it to a free wheel within 7 tiles on the level; drive passes between them |
 
+## Hopper machines
+
+`code/modules/1713/hopper_machines.dm`, sprites `icons/obj/hopper_machines.dmi`
+(drawn by `tests/sprites/create_hopper_machines.py`). A hopper machine
+(`/obj/structure/workshop_machine/hopper`, draw 2) holds up to 20 feed as
+saved counts (`hopper`, kind -> count) and joins `processing_objects` while it
+has feed. It asks the drive only when a step is due (`next_step`): a step takes
+`60 s * share * 2` (a minute at half hand time), and an undriven or blocked
+machine looks again after a minute. It stops at 20 products on its tile.
+Taking it apart gives the feed back.
+
+| Machine | Cost | Research | Feed | Step |
+| --- | --- | --- | --- | --- |
+| Millstones | 12 stone, gear, shaft | Watermills | wheat, oats, barley, rice (single items or from a sack) | 2 grain to flour or rice |
+| Sash saw | 10 wood, gear, shaft, 2 iron | Watermills | plain log stacks | 1 log to 2 planks and a bark |
+
 A run that is too long binds: only the movers right beside the machine still
 drive it, and the parts' examine says why.
 
