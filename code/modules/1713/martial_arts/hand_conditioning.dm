@@ -3,7 +3,7 @@
 // (punch_injury.dm). It is earned only by risking the hand: every set on a
 // makiwara post, a gravel pail or bare rock can bruise, split or break it.
 // Conditioning fades slowly without practice. Sets share the exercise
-// fatigue of the lifting stones and the obstacle course (active_training.dm).
+// fatigue of the lifting stones and the tread wheels (active_training.dm).
 
 #define HAND_CONDITIONING_MAX 100
 // A set is one sitting of strikes, about six seconds.

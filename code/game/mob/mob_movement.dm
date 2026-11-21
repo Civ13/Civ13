@@ -593,6 +593,12 @@
 		move_delay = world.time + 5
 		return mob.buckled.relaymove(mob, direct)
 
+	// In a tread wheel or on a treadmill, the facing key strides in place and
+	// any other steps off (training_course.dm).
+	if (istype(mob.buckled, /obj/structure/treadwheel))
+		move_delay = world.time + mob.movement_delay()
+		return mob.buckled.relaymove(mob, direct)
+
 	if (!mob.canmove)
 		return
 

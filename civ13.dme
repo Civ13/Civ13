@@ -2130,6 +2130,7 @@
 #include "code\modules\1713\gem_science.dm"
 #include "code\modules\1713\marble_bricks.dm"
 #include "code\modules\1713\terracotta_floors.dm"
+#include "code\modules\1713\iron_floors.dm"
 #include "code\modules\1713\stone_age_arms.dm"
 #include "code\modules\1713\obsidian.dm"
 #include "code\modules\1713\open_cave_roof.dm"

@@ -1187,6 +1187,9 @@ SUITES = {
                   'code/game/objects/covers_types/cover_floortypes.dm',
                   'icons/turf/floors.dmi', 'icons/turf/flooring/wood.dmi',
                   'icons/turf/flooring/decals.dmi'), 'shared_paths': ()},
+    'iron_floors': {'files': ('tests/iron_floors/test_iron_floors.py',),
+        'paths': ('tests/iron_floors/', 'code/modules/1713/iron_floors.dm',
+                  'icons/turf/flooring/iron.dmi'), 'shared_paths': ()},
     'terracotta_floors': {'files': ('tests/terracotta_floors/test_terracotta_floors.py',),
         'paths': ('tests/terracotta_floors/', 'code/modules/1713/terracotta_floors.dm',
                   'icons/turf/flooring/terracotta.dmi'),
@@ -1453,6 +1456,7 @@ SUITES = {
     'ship_draught': {'files': ('tests/ship_draught/test_draught_sources.py',),
         'paths': ('tests/ship_draught/',), 'shared_paths': (
             'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
+            'code/modules/naval/ship_designer.dm', 'scripts/build_ship_designer_icons.py',
             'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
@@ -2403,6 +2407,9 @@ SUITES = {
         'tests/power_cranes/', 'code/modules/1713/power_cranes.dm', 'code/modules/1713/lifting_machines.dm',
         'config/craft_needs.json', 'icons/obj/power_cranes.dmi', 'tests/sprites/create_power_cranes.py')},
     # Source contracts only; this suite does not run DM.
+    'road_garden': {'files': ('tests/road_garden/test_contract.py',), 'paths': ('tests/road_garden/',),
+        'shared_paths': ('code/game/objects/covers_types/cover_roads.dm',
+                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm')},
     'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
         'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
         'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
