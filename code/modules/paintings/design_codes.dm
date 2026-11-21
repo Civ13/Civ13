@@ -25,15 +25,15 @@
 var/global/list/design_code_import_log = list() // newest last, shown in Player Art
 var/global/list/design_code_last_import = list() // ckey -> world.time
 
-// The fields after "C13<kind>/1/", or null when the code is another kind,
-// another version or too long. Spaces and line breaks pasted with it are dropped.
-/proc/design_code_fields(code, kind, max_length = DESIGN_CODE_SHORT_MAX)
+// The fields after "C13<kind>/<version>/", or null when the code is another
+// kind, another version or too long. Spaces and line breaks pasted with it are dropped.
+/proc/design_code_fields(code, kind, max_length = DESIGN_CODE_SHORT_MAX, version = 1)
 	if (!istext(code))
 		return null
 	code = replacetext(replacetext(replacetext(replacetext(code, " ", ""), "\n", ""), ascii2text(13), ""), "\t", "")
 	if (!length(code) || length(code) > max_length)
 		return null
-	var/head = "C13[kind]/1/"
+	var/head = "C13[kind]/[version]/"
 	if (cmptext(copytext(code, 1, length(head) + 1), head) != 1)
 		return null
 	return splittext(copytext(code, length(head) + 1), "/")
