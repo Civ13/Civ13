@@ -15,6 +15,11 @@
 // Moon: z 1 under a z 2 surface) names it here. Its map file holds unformed
 // rock there, which forms on demand like a dug cave (see below).
 /obj/map_metadata/var/underground_compiled_z = 0
+// Levels under the surface (docs/underground-level.md, "Deeper levels"): the
+// cave and the deeper ones under it. Each deeper level is one more plane of
+// unformed rock, added the first time someone digs down into it, and saved
+// sparse around that rock, so a depth nobody reaches costs a header.
+/obj/map_metadata/var/underground_depth = 4
 
 /turf/wall/rockwall/bedrock
 	name = "bedrock"
@@ -41,61 +46,165 @@
 /proc/dug_underground_fits()
 	return world.maxx * world.maxy <= DUG_UNFORMED_MEASURED_CELLS
 
-// The cave is the one full level a dig-down map may add; restoring a saved
-// world recreates it through the same admission before the save fills it in.
-// On a map without building levels it is the only added level at all. A map
-// that also opts into building levels (building_admission.dm) may have open-air
-// levels already standing, so its cave is simply the next level, charged
-// against the building profile along with them.
+// The cave and the levels under it are the full levels a map may add below
+// its surface. Each is added alone, the next time someone digs below the
+// deepest one; a restore recreates saved ones through the building profile
+// (building_admission.dm), which counts every underground level the map may
+// have. Unformed rock costs about 14 bytes a cell, so the underground planes
+// are left out of the charged cells: a dig is admitted whenever the other
+// added planes still fit their measured profile.
 /datum/world_z_budget/underground_admitted(target_z)
-	if (!dug_underground_supported())
+	var/limit = underground_depth_limit()
+	if (!limit || target_z != world.maxz + 1 || !dug_underground_fits())
+		return FALSE
+	var/list/caves = underground_levels()
+	if (caves.len >= limit)
+		return FALSE
+	var/levels = map.building_levels ? min(map.building_levels, initial(roof_limit)) : 0
+	if (target_z > building_base_maxz() + underground_added_limit() + levels)
 		return FALSE
 	var/pending = (instance_reserve - instance_used) + (safehouse_reserve - safehouse_used)
 	var/cells = world.maxx * world.maxy
-	// Added first at boot, the unformed cave fits beside any measured surface.
-	var/first = target_z == building_base_maxz() + 1 && !pending && dug_underground_fits()
-	if (!map.building_levels)
-		return target_z == building_base_maxz() + 1 && (first || cells * (target_z + pending) <= NEW_Z_MEASURED_CELLS)
-	if (target_z != world.maxz + 1 || target_z > building_base_maxz() + 1 + min(map.building_levels, initial(roof_limit)) || !dug_underground_fits())
-		return FALSE
-	return first || cells * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS
+	// Every plane but the compiled ones and the unformed underground.
+	var/charged = target_z - (underground_added_count() + 1) + pending
+	if (charged <= building_base_maxz())
+		return TRUE // nothing but unformed rock is added
+	if (map.building_level_standing && building_base_maxz() == 1 && !pending && cells * charged <= NEW_Z_STANDING_MEASURED_CELLS)
+		return TRUE
+	return cells * charged <= (map.building_levels ? NEW_Z_BUILDING_MEASURED_CELLS : NEW_Z_MEASURED_CELLS)
 
-// The unformed cave: about 14 bytes a cell until dug, so a map's cave plane
-// is left out of the total-cell ceiling. A restore cannot see the cave until
-// its cells load, so a restored added level counts it on a map that has one.
+// The unformed underground planes are left out of the total-cell ceiling. A
+// restore cannot see its underground until the cells load, so it counts every
+// underground level the map may add.
 /datum/world_z_budget/free_planes(target_z, purpose)
-	if (target_z <= building_base_maxz() || !dug_underground_supported() || !dug_underground_fits())
+	if (target_z <= building_base_maxz() || !underground_depth_limit() || !dug_underground_fits())
 		return 0
-	return dug_underground_z() || (purpose in list("underground", "restore")) ? 1 : 0
+	if (purpose == "restore")
+		return underground_added_limit()
+	return min(underground_added_count() + (purpose == "underground" ? 1 : 0), underground_added_limit())
 
 /datum/world_z_budget/ground_planes()
-	return base_z + (dug_underground_z() ? 1 : 0)
+	return base_z + underground_added_count()
 
 // How many open-air building levels stand above the compiled map: every added
 // level but the dug cave and an open practice level.
 /proc/building_levels_built()
-	var/built = world.maxz - building_base_maxz()
-	if (dug_underground_z())
-		built--
+	var/built = world.maxz - building_base_maxz() - underground_added_count()
 	if (practice_room_z && practice_room_z > building_base_maxz())
 		built--
 	return max(built, 0)
 
-// The physical z of the dug cave level, or 0. Scans the few added levels,
-// then remembers the answer (dug_underground_live_z, turf_changing.dm) while
-// its bedrock marker stands.
+// The underground levels, shallowest first: the compiled one (if the map has
+// one), then the added ones in the order they were dug. A deeper level is only
+// ever added under the deepest, so the added levels' z order is their depth
+// order, and a restore, which recreates levels in z order, keeps it. Each
+// added level carries a bedrock marker in its corner, so a restored world
+// recognises its underground from the saved cells alone. The answer is kept
+// (underground_live_levels, turf_changing.dm) while those markers stand.
+var/global/underground_live_maxz = 0
 
+/proc/underground_levels()
+	if (!map)
+		return list()
+	if (underground_live_maxz && underground_live_maxz == world.maxz && !building_allocating_z)
+		var/valid = TRUE
+		for (var/z in underground_live_levels)
+			if (z != map.underground_compiled_z && !istype(locate(1, 1, z), /turf/wall/rockwall/bedrock))
+				valid = FALSE
+				break
+		if (valid)
+			return underground_live_levels
+	var/list/found = list()
+	if (map.underground_compiled_z)
+		found += map.underground_compiled_z
+	var/limit = underground_depth_limit()
+	for (var/z = building_base_maxz() + 1, z <= world.maxz && found.len < limit, z++)
+		if (z != building_allocating_z && istype(locate(1, 1, z), /turf/wall/rockwall/bedrock))
+			found += z
+	underground_live_levels = found
+	underground_live_maxz = building_allocating_z ? 0 : world.maxz
+	return found
+
+// Forgets the kept answer: a load or an allocation changed the levels.
+/proc/underground_levels_refresh()
+	underground_live_maxz = 0
+	return underground_levels()
+
+// How many levels this map may have under its surface, or 0 for none.
+/proc/underground_depth_limit()
+	if (!map)
+		return 0
+	if (map.underground_compiled_z)
+		return max(1, map.underground_depth)
+	return dug_underground_supported() ? max(0, map.underground_depth) : 0
+
+// The underground levels added above the compiled map, and how many may be.
+/proc/underground_added_count()
+	var/list/caves = underground_levels()
+	return caves.len - (map && map.underground_compiled_z ? 1 : 0)
+
+/proc/underground_added_limit()
+	var/limit = underground_depth_limit()
+	return limit ? limit - (map.underground_compiled_z ? 1 : 0) : 0
+
+// How deep z lies: 1 for the cave under the surface, 2 under that..., 0 when
+// z is not underground.
+/proc/underground_depth_of(z)
+	if (!z)
+		return 0
+	var/list/caves = underground_levels()
+	return caves.Find(z)
+
+// TRUE for an underground level added above the compiled map: never a
+// building level, whatever its z.
+/proc/underground_added(z)
+	return z > building_base_maxz() && underground_depth_of(z)
+
+// The underground level at depth, or 0.
+/proc/underground_z_at(depth)
+	var/list/caves = underground_levels()
+	return depth >= 1 && depth <= caves.len ? caves[depth] : 0
+
+// The ground level straight over the underground (z 1, or Gaia's z 2).
+/proc/underground_surface_z()
+	var/list/caves = underground_levels()
+	if (!caves.len)
+		return DUG_SURFACE_Z
+	var/list/column = multiz_column()
+	return column.len > caves.len ? column[caves.len + 1] : DUG_SURFACE_Z
+
+// The physical z of the dug cave (the first added underground level of a
+// single-level map), or 0.
 /proc/dug_underground_z()
 	if (!dug_underground_supported())
 		return 0
-	if (dug_underground_live_z && dug_underground_live_z <= world.maxz && dug_underground_live_z != building_allocating_z && istype(locate(1, 1, dug_underground_live_z), /turf/wall/rockwall/bedrock))
-		return dug_underground_live_z
-	dug_underground_live_z = 0
-	for (var/z = building_base_maxz() + 1, z <= world.maxz, z++)
-		if (z != building_allocating_z && istype(locate(1, 1, z), /turf/wall/rockwall/bedrock))
-			dug_underground_live_z = z
-			return z
-	return 0
+	var/list/caves = underground_levels()
+	return caves.len ? caves[1] : 0
+
+// Every level from the deepest underground up to the highest open-air level,
+// in the order a ladder climbs them. BYOND only appends levels, so a level's
+// z says nothing about its height: an added underground level may lie among
+// the open-air levels. The practice level stands apart.
+var/global/list/multiz_column_cache
+var/global/list/multiz_column_caves
+var/global/multiz_column_maxz = 0
+var/global/multiz_column_practice = 0
+
+/proc/multiz_column()
+	var/list/caves = underground_levels()
+	if (multiz_column_cache && caves == multiz_column_caves && multiz_column_maxz == world.maxz && multiz_column_practice == practice_room_z)
+		return multiz_column_cache
+	var/list/column = list()
+	for (var/i = caves.len, i >= 1, i--)
+		column += caves[i]
+	for (var/z = 1 to world.maxz)
+		if (z != practice_room_z && !(z in caves))
+			column += z
+	multiz_column_cache = column
+	multiz_column_caves = caves
+	multiz_column_maxz = world.maxz
+	multiz_column_practice = practice_room_z
+	return column
 
 // Where a ladder, tunnel or falling item goes from z. 0 means solid ground.
 /proc/multiz_level_below(z)
@@ -104,37 +213,26 @@
 	// An orbit world's decks are linked planes (space/orbit_world.dm).
 	if (orbit_world())
 		return orbit_plane_link(z, "down")
-	var/dug = dug_underground_z()
-	if (dug)
-		if (z == dug)
-			return 0
-		if (z == DUG_SURFACE_Z)
-			return dug
-		// The cave may lie between two open-air levels: step over it.
-		return z - 1 == dug ? z - 2 : z - 1
-	return z > 1 ? z - 1 : 0
+	var/list/column = multiz_column()
+	var/i = column.Find(z)
+	return i > 1 ? column[i - 1] : 0
 
 /proc/multiz_level_above(z)
-	if (practice_room_z && (z == practice_room_z || z + 1 == practice_room_z))
+	if (practice_room_z && z == practice_room_z)
 		return 0
 	if (orbit_world())
 		return orbit_plane_link(z, "up")
-	var/dug = dug_underground_z()
-	if (dug)
-		if (z == dug)
-			return DUG_SURFACE_Z
-		var/up = z + 1 == dug ? z + 2 : z + 1
-		return up <= world.maxz ? up : 0
-	return z < world.maxz ? z + 1 : 0
+	var/list/column = multiz_column()
+	var/i = column.Find(z)
+	return i && i < column.len ? column[i + 1] : 0
 
-// The highest ground level open to the sky (radiation, observer spawn). A dug
-// level can be world.maxz while lying under the surface, and an added building
-// level is open air over the surface (Gaia keeps one from round start).
+// The highest ground level open to the sky (radiation, observer spawn). An
+// underground level can be world.maxz while lying under the surface, and an
+// added building level is open air over the surface (Gaia keeps one from
+// round start).
 /proc/multiz_top_z()
-	var/top = practice_room_z && practice_room_z == world.maxz ? world.maxz - 1 : world.maxz
-	var/dug = dug_underground_z()
-	if (dug && dug == top)
-		top--
+	var/list/column = multiz_column()
+	var/top = column.len ? column[column.len] : world.maxz
 	if (map && map.building_levels && top > building_base_maxz())
 		return building_base_maxz()
 	return top
@@ -174,14 +272,30 @@
 	return F.reach_at(T.x, T.y) > 0
 
 // The water or lava above underground cell T, as underground_above() reads it.
+// Only the cave straight under the surface feels water or lava overhead;
+// the levels under it lie beneath that cave's rock (see dug_underground_rock).
 /proc/underground_above_cell(turf/T)
 	if (!T)
 		return null
-	var/surface_z = multiz_level_above(T.z) || DUG_SURFACE_Z
+	var/depth = underground_depth_of(T.z)
+	if (depth > 1)
+		return null
+	// A level no map names as underground (a fixture, an old tunnel level)
+	// lies under the level above it.
+	var/surface_z = depth ? underground_surface_z() : (multiz_level_above(T.z) || DUG_SURFACE_Z)
 	return underground_above(locate(T.x, T.y, surface_z))
 
-/proc/dug_underground_rock(turf/surface)
-	switch (underground_above(surface))
+// What the rock under surface tile T holds at depth: the cave under the
+// surface feels every kind of water above; deeper levels lie under that rock,
+// so only the sea floor and lava reach them.
+/proc/underground_above_at(turf/surface, depth = 1)
+	var/above = underground_above(surface)
+	if (depth > 1 && (above == "wet" || above == "mud"))
+		return null
+	return above
+
+/proc/dug_underground_rock(turf/surface, depth = 1)
+	switch (underground_above_at(surface, depth))
 		if ("sea")
 			return /turf/wall/rockwall
 		if ("wet")
@@ -218,21 +332,23 @@
 	return top + (bottom - top) * ty
 
 // Per-cell jitter in [0, 1), so pocket edges are ragged but repeatable.
-/proc/dug_underground_jitter(x, y)
-	var/hash = md5("[map ? map.ID : "map"]:cell:[x]:[y]")
+/proc/dug_underground_jitter(x, y, depth = 1)
+	var/hash = md5(depth > 1 ? "[map ? map.ID : "map"]:cell[depth]:[x]:[y]" : "[map ? map.ID : "map"]:cell:[x]:[y]")
 	return text2num(copytext(hash, 1, 5), 16) / 65536
 
-/proc/dug_underground_cell(x, y, surface_z = DUG_SURFACE_Z)
+// Each depth has its own pockets and veins; the cave keeps its original seed.
+/proc/dug_underground_cell(x, y, surface_z = DUG_SURFACE_Z, depth = 1)
 	if (x == 1 || y == 1 || x == world.maxx || y == world.maxy)
 		return /turf/wall/rockwall/bedrock
 	var/turf/surface = locate(x, y, surface_z)
-	var/rock = dug_underground_rock(surface)
+	var/rock = dug_underground_rock(surface, depth)
 	// No natural pockets under water or lava.
-	if (underground_above(surface))
+	if (underground_above_at(surface, depth))
 		return rock
-	if (dug_underground_noise("pocket", x, y) > 0.8 && dug_underground_jitter(x, y) < 0.7)
+	var/salt = depth > 1 ? "[depth]" : ""
+	if (dug_underground_noise("pocket[salt]", x, y) > 0.8 && dug_underground_jitter(x, y, depth) < 0.7)
 		return /turf/floor/dirt
-	if (dug_underground_noise("vein", x, y) > 0.82)
+	if (dug_underground_noise("vein[salt]", x, y) > 0.82)
 		return /turf/wall/rockwall
 	return rock
 
@@ -257,15 +373,13 @@ var/global/dug_underground_forming = FALSE
 /turf/sky/building/unformed/New()
 	return
 
-// The underground level of this map: a compiled one, or the dug cave.
+// The cave straight under the surface: a compiled one, or the dug cave.
 /proc/underground_level_z()
-	if (map && map.underground_compiled_z)
-		dug_underground_live_z = map.underground_compiled_z
-		return map.underground_compiled_z
-	return dug_underground_z()
+	return underground_z_at(1)
 
+// Unformed rock: the native fill on any underground level.
 /proc/dug_underground_unformed(turf/T)
-	return T && istype(T, /turf/sky/building) && T.z == underground_level_z()
+	return T && istype(T, /turf/sky/building) && underground_depth_of(T.z)
 
 // An unformed cell is rock no one has reached: nothing but a ghost moves in.
 /turf/sky/building/Enter(atom/movable/O, atom/oldloc)
@@ -286,10 +400,11 @@ var/global/dug_underground_forming = FALSE
 /proc/dug_underground_form(turf/T, solid = FALSE)
 	if (!dug_underground_unformed(T))
 		return T
-	var/surface_z = multiz_level_above(T.z) || DUG_SURFACE_Z
-	var/path = dug_underground_cell(T.x, T.y, surface_z)
+	var/surface_z = underground_surface_z()
+	var/depth = underground_depth_of(T.z)
+	var/path = dug_underground_cell(T.x, T.y, surface_z, depth)
 	if (solid && path == /turf/floor/dirt)
-		path = dug_underground_rock(locate(T.x, T.y, surface_z))
+		path = dug_underground_rock(locate(T.x, T.y, surface_z), depth)
 	var/was_forming = dug_underground_forming
 	dug_underground_forming = TRUE
 	var/turf/W = T.ChangeTurf(path)
@@ -305,7 +420,7 @@ var/global/dug_underground_forming = FALSE
 /proc/dug_underground_form_around(turf/start)
 	// A load restores formed cells itself; forming around them would only be
 	// overwritten by the cells still to come.
-	if (!start || dug_underground_forming || persistence_save_in_progress || start.z != underground_level_z())
+	if (!start || dug_underground_forming || persistence_save_in_progress || !underground_depth_of(start.z))
 		return 0
 	dug_underground_forming = TRUE
 	var/formed = 0
@@ -352,7 +467,7 @@ var/global/dug_underground_forming = FALSE
 // pour into the tunnels (flood_cellars.dm). Run once the level is in place
 // after a load; breaches are not saved.
 /proc/underground_breach_scan(z)
-	if (!z || z != underground_level_z())
+	if (!z || underground_depth_of(z) != 1)
 		return 0
 	var/found = 0
 	for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
@@ -418,20 +533,30 @@ var/global/dug_underground_forming = FALSE
 				T.lighting_build_overlay()
 		TICK_CHECK
 
-/proc/dug_underground_error()
-	if (!dug_underground_supported())
+// Why the underground level at depth cannot be dug into yet, or null.
+/proc/underground_dig_error(depth = 1)
+	if (depth < 1 || depth > underground_depth_limit())
 		return "There is only bedrock below."
-	if (dug_underground_z())
+	if (underground_z_at(depth))
 		return null
+	var/list/caves = underground_levels()
+	if (depth != caves.len + 1)
+		return "There is only bedrock below."
 	if (persistence_save_in_progress || building_allocating_z || world_z_budget.active)
 		return "The ground is settling. Try again shortly."
 	return world_z_budget.error(world.maxz + 1, "underground")
 
-// Allocates the cave level as unformed rock. Returns TRUE once it exists.
-/proc/dug_underground_create()
-	if (dug_underground_z())
+/proc/dug_underground_error()
+	if (!dug_underground_supported())
+		return "There is only bedrock below."
+	return underground_dig_error(1)
+
+// Allocates the underground level at depth as unformed rock, under the
+// deepest one. Returns TRUE once it exists.
+/proc/underground_create(depth = 1)
+	if (underground_z_at(depth))
 		return TRUE
-	if (dug_underground_error())
+	if (underground_dig_error(depth))
 		return FALSE
 	var/target_z = world.maxz + 1
 	var/datum/new_z_reservation/reservation = world_z_budget.reserve(target_z, "underground")
@@ -457,34 +582,40 @@ var/global/dug_underground_forming = FALSE
 		return FALSE
 	// The bedrock corner marks the level, so a restored world recognises it
 	// from its saved cells alone.
-	dug_underground_live_z = 0
 	var/turf/marker = locate(1, 1, target_z)
 	dug_underground_forming = TRUE
 	marker.ChangeTurf(/turf/wall/rockwall/bedrock)
 	dug_underground_forming = FALSE
-	log_game("Underground level created at z [target_z] ([world.maxx]x[world.maxy]), unformed.")
-	return dug_underground_z() == target_z
+	underground_levels_refresh()
+	log_game("Underground level [depth] created at z [target_z] ([world.maxx]x[world.maxy]), unformed.")
+	return underground_z_at(depth) == target_z
+
+/proc/dug_underground_create()
+	if (!dug_underground_supported())
+		return FALSE
+	return underground_create(1)
 
 // Restored worlds: the load regenerates unformed cells in the world's default
 // area, so the cave area is put back on them, and formed cells get the
 // lighting that startup did not build (it ran before the level existed).
 /map_storage/proc/restore_dug_underground()
+	underground_levels_refresh()
 	// Open cells under lakes and rivers pour again (they are not saved).
 	tunnel_breaches.Cut()
 	underground_breach_scan(underground_level_z())
-	var/z = dug_underground_z()
-	if (!z)
-		return
 	var/area/caves = dug_underground_area()
-	var/list/strays = list()
-	for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
-		var/area/A = T.loc
-		if (A != caves && A.type == world.area)
-			strays += T
-		TICK_CHECK
-	if (strays.len)
-		caves.contents.Add(strays)
-	dug_underground_light_level(z)
+	for (var/z in underground_levels())
+		if (z <= building_base_maxz())
+			continue
+		var/list/strays = list()
+		for (var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
+			var/area/A = T.loc
+			if (A != caves && A.type == world.area)
+				strays += T
+			TICK_CHECK
+		if (strays.len)
+			caves.contents.Add(strays)
+		dug_underground_light_level(z)
 
 // Starts every world with its cave level (unformed rock costs about five
 // bytes a cell), after the startup import settles like the standing building
@@ -528,47 +659,59 @@ var/global/dug_underground_boot_done = FALSE
 	user.adaptStat("crafting", 1)
 	user.adaptStat("strength", 1)
 
-// Tunnel digging on dig-down maps. Returns TRUE when it handled the request,
-// FALSE to fall back to the older fixed-level tunnel code.
+// Tunnel digging on every map with an underground: from the surface down
+// into the cave, and from any underground level up, or down into the next
+// level while the map's depth allows. Returns TRUE when it handled the
+// request, FALSE to fall back to the older fixed-level tunnel code.
 /proc/dug_underground_tunnel(mob/living/human/user)
-	if (!istype(user) || !dug_underground_supported())
+	if (!istype(user) || !underground_depth_limit())
 		return FALSE
 	var/turf/floor/here = get_turf(user)
 	if (!istype(here))
 		return FALSE
-	var/dug = dug_underground_z()
-	if (here.z == DUG_SURFACE_Z)
-		return dug_underground_tunnel_down(user, here)
-	if (dug && here.z == dug)
-		return dug_underground_tunnel_up(user, here)
-	return FALSE
+	var/depth = underground_depth_of(here.z)
+	if (!depth)
+		if (here.z == underground_surface_z())
+			return dug_underground_tunnel_down(user, here, 1)
+		return FALSE
+	if (depth < underground_depth_limit())
+		var/way = WWinput(user, "Dig up to the level above, or down into the rock below?", "Tunnel", "Down", list("Down", "Up", "Cancel"))
+		if (way == "Cancel" || get_turf(user) != here)
+			return TRUE
+		if (way == "Down")
+			return dug_underground_tunnel_down(user, here, depth + 1)
+	return dug_underground_tunnel_up(user, here)
 
-/proc/dug_underground_tunnel_down(mob/living/human/user, turf/floor/here)
+// Each level down is harder going: half as long again per level.
+/proc/underground_shaft_time(depth)
+	return 200 + 100 * (max(depth, 1) - 1)
+
+/proc/dug_underground_tunnel_down(mob/living/human/user, turf/floor/here, depth = 1)
 	if (locate(/obj/structure/multiz) in here)
 		to_chat(user, SPAN_WARNING("There already is something here."))
 		return TRUE
 	if (!here.is_diggable)
 		to_chat(user, SPAN_WARNING("You cannot dig a hole here!"))
 		return TRUE
-	var/error = dug_underground_error()
+	var/error = underground_dig_error(depth)
 	if (error)
 		to_chat(user, SPAN_WARNING(error))
 		return TRUE
-	if (!dug_underground_open_below(user, here, FALSE))
+	if (!dug_underground_open_below(user, here, FALSE, depth))
 		return TRUE
 	user.visible_message(SPAN_DANGER("[user] starts digging a tunnel downwards!"), SPAN_DANGER("You start digging a tunnel downwards."))
-	if (!do_after(user, dug_underground_dig_time(user, 200), here))
+	if (!do_after(user, dug_underground_dig_time(user, underground_shaft_time(depth)), here))
 		return TRUE
-	if (get_turf(user) != here || !here.is_diggable || (locate(/obj/structure/multiz) in here))
+	if (get_turf(user) != here || (locate(/obj/structure/multiz) in here))
 		return TRUE // another digger finished this entrance during the wait
-	if (!dug_underground_z())
+	if (!underground_z_at(depth))
 		user.visible_message(SPAN_DANGER("The ground groans as [user] breaks into the deep rock below!"), SPAN_DANGER("You break into the deep rock below. The ground groans and settles..."))
-	if (!dug_underground_create())
+	if (!underground_create(depth))
 		if (world_z_budget.last_error)
-			log_debug("Dug underground refused: [world_z_budget.last_error]")
+			log_debug("Underground level [depth] refused: [world_z_budget.last_error]")
 		to_chat(user, SPAN_WARNING("The ground below will not give way."))
 		return TRUE
-	var/turf/below = dug_underground_open_below(user, here, TRUE)
+	var/turf/below = dug_underground_open_below(user, here, TRUE, depth)
 	if (!below)
 		return TRUE
 	new /obj/structure/multiz/ladder/ww2/tunneltop/pit(here)
@@ -577,9 +720,10 @@ var/global/dug_underground_boot_done = FALSE
 	dug_underground_finish(user)
 	return TRUE
 
-// Checks (and with open = TRUE, clears) the cell under a surface tile.
-/proc/dug_underground_open_below(mob/living/human/user, turf/here, open)
-	var/dug = dug_underground_z()
+// Checks (and with open = TRUE, clears) the cell under a tile, on the
+// underground level at depth.
+/proc/dug_underground_open_below(mob/living/human/user, turf/here, open, depth = 1)
+	var/dug = underground_z_at(depth)
 	if (!dug)
 		return !open // the level is generated when the digging finishes
 	var/turf/below = dug_underground_form(locate(here.x, here.y, dug))
@@ -601,9 +745,14 @@ var/global/dug_underground_boot_done = FALSE
 	if (locate(/obj/structure/multiz) in here)
 		to_chat(user, SPAN_WARNING("There already is something here."))
 		return TRUE
-	var/turf/above = locate(here.x, here.y, DUG_SURFACE_Z)
-	if (dug_underground_surface_blocked(above))
-		switch (underground_above(above))
+	var/up_z = multiz_level_above(here.z)
+	var/turf/above = up_z ? locate(here.x, here.y, up_z) : null
+	// Under another underground level the shaft breaks into its rock.
+	var/deep = above && underground_depth_of(up_z)
+	if (deep)
+		above = dug_underground_form(above)
+	if (!above || (deep ? underground_shaft_blocked(above) : dug_underground_surface_blocked(above)))
+		switch (deep ? null : underground_above(above))
 			if ("lava")
 				to_chat(user, SPAN_WARNING("The rock overhead is searing hot. There is lava above; you cannot dig up here."))
 			if ("sea", "wet", "mud")
@@ -614,13 +763,28 @@ var/global/dug_underground_boot_done = FALSE
 	user.visible_message(SPAN_DANGER("[user] starts digging up!"), SPAN_NOTICE("You start digging up."))
 	if (!do_after(user, dug_underground_dig_time(user, 400), here))
 		return TRUE
-	if (get_turf(user) != here || (locate(/obj/structure/multiz) in here) || dug_underground_surface_blocked(above))
+	if (get_turf(user) != here || (locate(/obj/structure/multiz) in here))
 		return TRUE
+	above = locate(here.x, here.y, up_z)
+	if (deep ? underground_shaft_blocked(above) : dug_underground_surface_blocked(above))
+		return TRUE
+	if (deep && istype(above, /turf/floor/dirt/underground))
+		above = above.ChangeTurf(/turf/floor/dirt)
 	new /obj/structure/multiz/ladder/ww2/tunneltop/pit(above)
 	user.visible_message(SPAN_DANGER("[user] finishes digging up!"), SPAN_NOTICE("You finish digging up."))
 	excavation_shaft_spoil(user)
 	dug_underground_finish(user)
 	return TRUE
+
+// An underground cell a shaft from below cannot open: solid stone, hot rock,
+// or something already standing there.
+/proc/underground_shaft_blocked(turf/T)
+	if (!T || dug_underground_unformed(T) || istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground/hot))
+		return TRUE
+	for (var/obj/O in T)
+		if (O.density || istype(O, /obj/structure/multiz))
+			return TRUE
+	return FALSE
 
 /proc/dug_underground_surface_blocked(turf/above)
 	var/turf/floor/F = above
@@ -639,8 +803,10 @@ var/global/dug_underground_boot_done = FALSE
 /proc/level_report_name(z)
 	if (z == practice_room_z)
 		return "practice rooms"
-	if (z == underground_level_z())
-		return dug_underground_z() == z ? "cave (added)" : "cave (compiled)"
+	var/depth = underground_depth_of(z)
+	if (depth)
+		var/where = z > building_base_maxz() ? "added" : "compiled"
+		return depth == 1 ? "cave ([where])" : "underground [depth] ([where])"
 	if (z <= building_base_maxz())
 		return "ground"
 	return "open air"

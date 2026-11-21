@@ -1,6 +1,6 @@
-// The cave level of a dig-down map once found (multiz/dug_underground.dm):
-// a cell there that opens forms the unformed rock around it.
-var/global/dug_underground_live_z = 0
+// The underground levels once found (multiz/dug_underground.dm), shallowest
+// first: a cell there that opens forms the unformed rock around it.
+var/global/list/underground_live_levels = list()
 
 /turf/proc/underground_opened()
 	return
@@ -79,7 +79,7 @@ var/global/dug_underground_live_z = 0
 	W.sync_fullbright_coverage()
 	if (terrain_shading_applied)
 		W.terrain_shade_refresh()
-	if (dug_underground_live_z && W.z == dug_underground_live_z && !W.density)
+	if (underground_live_levels.len && !W.density && (W.z in underground_live_levels))
 		W.underground_opened()
 	return W
 
