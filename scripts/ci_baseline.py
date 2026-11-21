@@ -41,6 +41,9 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'bottle_alcohol_power': {'files': ('tests/bottle_alcohol_power/test_alcohol_power.py',),
+        'paths': ('tests/bottle_alcohol_power/', 'code/modules/reagents/reagent_containers/food/drinks/bottle.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'flour_dough': {'files': ('tests/flour_dough/test_dough.py',),
         'paths': ('tests/flour_dough/', 'code/modules/reagents/reagent_containers/food/condiment.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
