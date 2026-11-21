@@ -180,9 +180,9 @@ public static class LocalHosting {
 
     // The limit for a host or group action: status reads, quick requests, or long work.
     public static TimeSpan ActionLimit(string action) => action switch {
-        "status" or "help-status" or "ports" => StatusLimit,
+        "status" or "help-status" or "translator-status" or "ports" => StatusLimit,
         "start" or "restart" or "force-restart" => StartLimit,
-        "stop" or "kill" or "unlock" or "force-unlock" or "freeze" or "thaw" or "help-start" or "help-stop" => RequestLimit,
+        "stop" or "kill" or "unlock" or "force-unlock" or "freeze" or "thaw" or "help-start" or "help-stop" or "translator-stop" => RequestLimit,
         _ => LongLimit,
     };
 
@@ -238,7 +238,8 @@ public static class LocalHosting {
     // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
-        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved"];
+        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved",
+        "translator-status", "translator-start", "translator-stop"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];

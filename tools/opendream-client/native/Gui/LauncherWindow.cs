@@ -541,6 +541,7 @@ internal sealed partial class LauncherWindow : Form {
         tabs.TabPages.Add(hostPage = BuildHostPage(profile));
         if (profile.Bot is { } bot) tabs.TabPages.Add(BuildBotPage(bot));
         if (profile.Control is { Group: not null } helpControl) tabs.TabPages.Add(BuildHelpPage(helpControl));
+        if (profile.Control is { Group: not null } translatorControl) tabs.TabPages.Add(BuildTranslatorPage(translatorControl));
         if (profile.Control != null || profile.Bot != null) tabs.TabPages.Add(BuildUpdatesPage(profile));
     }
 
