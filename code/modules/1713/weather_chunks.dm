@@ -107,7 +107,7 @@ var/global/list/weather_chunk_images = list() // image key = image
 	var/alpha = 255
 	if (strength < WEATHER_BAND_STEADY)
 		alpha = round(70 + 185 * max(0, strength - WEATHER_BAND_LIGHT) / (WEATHER_BAND_STEADY - WEATHER_BAND_LIGHT))
-	return list(state[1], alpha, shadow, shadow_mask, rain_mask)
+	return list(weather_precip_draw_look(state), alpha, shadow, shadow_mask, rain_mask)
 
 // The cloud shadow slides the way the wind carries the storms.
 /proc/weather_shadow_look()
