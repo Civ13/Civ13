@@ -254,12 +254,12 @@
 /obj/structure/vehicle/raft/persistence_runtime_var(key)
 	return key == "offset_paddling" || ..()
 
-// Deciseconds per tile while paddling.
+// Deciseconds per tile while paddling: the same pace as her tile steps, so
+// wear, a paddle in hand, a set sail and a running engine all count
+// (step_delay, naval/small_boat_upkeep.dm and naval/outrigger_canoe.dm).
 /obj/structure/vehicle/raft/proc/vehicle_offset_paddle_delay()
+	vehicle_m_delay = step_delay(vehicle_offset_heading())
 	return vehicle_m_delay
-
-/obj/structure/vehicle/raft/dugout/vehicle_offset_paddle_delay()
-	return paddling() ? paddle_delay : initial(vehicle_m_delay)
 
 // TRUE while the driver holds a key for the way they face.
 /obj/structure/vehicle/raft/proc/vehicle_offset_paddle_held()
