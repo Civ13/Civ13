@@ -68,6 +68,12 @@ export type CharacterSetupData = {
     toggles?: { key?: string; label?: string; on?: Flag; on_label?: string; off_label?: string }[];
   };
 };
+// Haircut: eligible styles as rows of the shared style sheet, and the figure they are drawn on.
+export type HaircutStyle = { name?: string; length?: number; row?: number; tint?: Flag };
+export type HaircutData = {
+  sheet?: string; body?: string; self?: Flag; name?: string; hair?: string; beard?: string; hair_color?: string; beard_color?: string;
+  hair_styles?: HaircutStyle[]; beard_styles?: HaircutStyle[]; seconds?: number;
+};
 // The storage window: hands, worn bags and pockets, storages nearby, the queue of moves.
 export type StorageItem = { id?: string; name?: string; size?: string; size_class?: number; cost?: number; image?: string; count?: number; queued?: Flag; moving?: Flag };
 export type StorageGroup = {

@@ -428,20 +428,19 @@
 				"1" = list("cancel","shields","helmets","armor"),
 				"2" = list("cancel","shields","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
 				"3" = list("cancel","guns","helmets","other helmets","armor","other armor","other weapons","sallet helmets","japanese armor","japanese helmets","japanese headwear"),
-				"4" = list("cancel","helmets"),
-				"5" = list("cancel","helmets"),
-				"8+" = list("cancel","armor")), optlist)
+				// Armor never goes out of date: every later era keeps it.
+				"4+" = list("cancel","helmets","other helmets","armor","other armor","sallet helmets","japanese armor","japanese helmets","japanese headwear")), optlist)
 	else if (istype(P, /obj/item/stack/material/steel))
 		// No Orkish armour or weapons need steel at the moment.
 		if (!H.orc)
 			optlist = era_pick(list(
-				"2" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
-				"3" = list("cancel","japanese armor","japanese helmets","japanese headwear", "other weapons"),
-				"4" = list("cancel","guns"),
-				"5" = list("cancel","helmets","mk1 brodie","m15 adrian","machine guns"),
-				"6" = list("cancel","helmets","machine guns"),
-				"7" = list("cancel","helmets","ussr heavy visored helmets","guns","machine guns"),
-				"8+" = list("cancel","helmets","guns","machine guns")), optlist)
+				"2" = list("cancel","armor","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+				"3" = list("cancel","armor","japanese armor","japanese helmets","japanese headwear", "other weapons"),
+				"4" = list("cancel","guns","armor","japanese armor","japanese helmets","japanese headwear"),
+				"5" = list("cancel","helmets","mk1 brodie","m15 adrian","machine guns","armor","japanese armor","japanese helmets","japanese headwear"),
+				"6" = list("cancel","helmets","machine guns","armor","japanese armor","japanese helmets","japanese headwear"),
+				"7" = list("cancel","helmets","ussr heavy visored helmets","guns","machine guns","armor","japanese armor","japanese helmets","japanese headwear"),
+				"8+" = list("cancel","helmets","guns","machine guns","armor","japanese armor","japanese helmets","japanese headwear")), optlist)
 	else if (istype(P, /obj/item/stack/material/kevlar))
 		if (map.ordinal_age >= 7)
 			optlist = list("cancel","helmets","us lwt helmets","pasgt helmets","pasgt armor","armor")
@@ -450,7 +449,7 @@
 			"0" = list("cancel","shields","helmets","armor"),
 			"1" = list("cancel","shields","helmets","armor"),
 			"2" = list("cancel","shields","helmets","armor"),
-			"3" = list("cancel","helmets")), optlist)
+			"3+" = list("cancel","helmets","armor")), optlist)
 	else
 		return null
 	// Machine parts are forged in every era; orcs keep their own lists.

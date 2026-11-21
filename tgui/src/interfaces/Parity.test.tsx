@@ -115,6 +115,7 @@ describe('standard screen parity', () => {
       'faction_creation.tmpl',
       'faction_list.tmpl',
       'faction_symbol.tmpl',
+      'haircut.tmpl',
       'known_languages.tmpl',
       'panel.tmpl',
       'paper_editor.tmpl',

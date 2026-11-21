@@ -1792,6 +1792,8 @@ SUITES = {
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
             'code/game/objects/items/weapons/material/misc.dm',
+            'code/game/objects/items/weapons/material/kitchen.dm',
+            'code/game/objects/items/weapons/material/haircut_window.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm',
@@ -2497,11 +2499,13 @@ SUITES = {
                               'tests/save_policy/test_save_validator_boot.py',
                               'tests/save_policy/test_private_scratch_savefiles.py',
                               'tests/save_policy/test_stack_recipes_unsaved.py',
-                              'tests/save_policy/test_action_locks_unsaved.py'), 'paths': (
+                              'tests/save_policy/test_action_locks_unsaved.py',
+                              'tests/save_policy/test_occupied_checkpoint.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
         'code/modules/research_tree/scholar_practice.dm', 'code/game/objects/structures/tree_climbing.dm',
         'code/game/mob/living/carbon/human/resuscitation.dm',
         'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+        'code/modules/persistence/occupied_checkpoint.dm',
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
