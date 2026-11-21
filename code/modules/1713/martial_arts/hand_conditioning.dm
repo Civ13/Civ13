@@ -40,6 +40,8 @@
 /mob/living/human/proc/practice_unarmed(amount)
 	ensure_unarmed_stat()
 	adaptStat("unarmed", amount)
+	// Punches and hand sets count toward the followed school (martial_schools.dm).
+	martial_practice(amount / 2)
 
 // Punch damage from the unarmed skill: +25% at 200, -12.5% at 50.
 /mob/living/human/proc/unarmed_damage_mult()

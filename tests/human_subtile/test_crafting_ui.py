@@ -93,11 +93,12 @@ def restore_crafting_projection(path, source):
         # the lode ore roll (tests/lode), the nickel and cobalt roll
         # (tests/steelmaking), one rubble batch for every ore find
         # (tests/mining_yields), each continent's ore rates (tests/provinces) and
-        # an ore vein counted as Natural Science field work (tests/late_research).
+        # an ore vein counted as Natural Science field work (tests/late_research)
+        # and deeper underground levels reading the surface area (tests/building_levels --cave).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != 'c3b7e79300529ce4df45f1659124ee9ae3cd79da99e7f303e7dc91011a8cd509':
+        if hashlib.sha256(mining.encode()).hexdigest() != 'a41a5ead391314515740881abe6d5479499de0c690ee7e34a65d95c1f1a209b4':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
