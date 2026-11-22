@@ -8,3 +8,7 @@
 // Share of maximum stamina needed to start a session, so a tired character
 // does not stutter through one tick at a time.
 #define TRAINING_STAMINA_START 0.2
+// Sets are short and pay TRAINING_SET_SCALE of a full set, at
+// TRAINING_SET_FATIGUE fatigue each, so gains come often but in small steps.
+#define TRAINING_SET_SCALE 0.5
+#define TRAINING_SET_FATIGUE 1

@@ -100,10 +100,10 @@ var/training_probe_overlap = null
 		H.stats[skill] = list(60, 60)
 	return H
 
-// One use, six lifts (two waits each), then the lifter moves.
+// One use, one set of three lifts (two waits each), then the lifter moves.
 /proc/training_probe_set(mob/living/human/H, obj/item/weapon/lifting_weight/W)
 	H.stats["stamina"][1] = H.stats["stamina"][2]
-	training_probe_waits = 12
+	training_probe_waits = 6
 	W.attack_self(H)
 
 /proc/training_probe_run()
@@ -128,13 +128,13 @@ var/training_probe_overlap = null
 	training_probe_assert(small.in_hand_of(H) && small.heft_for(H) == 0, "small_stone_right_weight")
 	var/before = H.stats["strength"][1]
 	var/breath = H.stats["stamina"][1]
-	training_probe_waits = 10
+	training_probe_waits = 4
 	small.attack_self(H)
-	training_probe_assert(!small.lifting && small.reps == 0 && !H.exercise_equipment && H.stats["strength"][1] == before && H.exercise_fatigue == 0, "five_lifts_then_moving_pays_nothing")
-	training_probe_assert(H.stats["stamina"][1] < breath && abs(breath - H.stats["stamina"][1] - H.training_stamina_cost(100)) < 0.001, "lifting_drains_stamina")
+	training_probe_assert(!small.lifting && small.reps == 0 && !H.exercise_equipment && H.stats["strength"][1] == before && H.exercise_fatigue == 0, "two_lifts_then_moving_pays_nothing")
+	training_probe_assert(H.stats["stamina"][1] < breath && abs(breath - H.stats["stamina"][1] - H.training_stamina_cost(40)) < 0.001, "lifting_drains_stamina")
 	training_probe_assert(small.item_state == "lifting_stone_small", "lift_pose_put_down")
 	training_probe_set(H, small)
-	training_probe_assert(small.reps == 0 && !H.exercise_equipment && H.stats["strength"][1] > before && H.exercise_fatigue == 2, "six_lifts_pay_the_set")
+	training_probe_assert(small.reps == 0 && !H.exercise_equipment && H.stats["strength"][1] > before && H.exercise_fatigue == 1, "three_lifts_pay_a_small_set")
 	training_probe_assert(H.nutrition < 300 && H.water < 300, "set_costs_food_and_water")
 	var/full_gain = H.stats["strength"][1] - before
 
@@ -144,6 +144,9 @@ var/training_probe_overlap = null
 	training_probe_waits = 24
 	small.attack_self(H)
 	training_probe_assert(H.exercise_fatigue == 4 && training_probe_waits == 0 && !H.exercise_equipment, "one_use_lifts_set_after_set")
+	// Small sets carry fractions of a step: four small sets pay what two full
+	// ones would, never more than the exact rate.
+	training_probe_assert(isnum(H.exercise_carry["strength"]) && H.exercise_carry["strength"] >= 0 && H.exercise_carry["strength"] < 1, "set_fractions_carry_over")
 	// Worn out (fatigue 6): sets pay nothing but the session goes on.
 	H.exercise_fatigue = 6
 	H.exercise_rest_epoch = world.time
@@ -180,9 +183,13 @@ var/training_probe_overlap = null
 	H.stats["strength"] = list(85, 85)
 	training_probe_assert(small.heft_for(H) == 1, "small_stone_outgrown")
 	before = H.stats["strength"][1]
-	training_probe_set(H, small)
+	H.exercise_carry = null
+	H.stats["stamina"][1] = H.stats["stamina"][2]
+	training_probe_waits = 12
+	small.attack_self(H)
 	var/light_gain = H.stats["strength"][1] - before
 	training_probe_assert(light_gain > 0 && light_gain < full_gain && H.exercise_fatigue == 2, "light_weight_teaches_little")
+	H.exercise_carry = null
 	H.exercise_fatigue = 0
 	H.stats["strength"] = list(100, 100)
 	training_probe_set(H, small)
@@ -208,7 +215,7 @@ var/training_probe_overlap = null
 	training_probe_assert(great.reps == 0 && training_probe_waits == 5, "no_lift_with_a_full_hand")
 	H.drop_from_inventory(small)
 	training_probe_set(H, great)
-	training_probe_assert(H.stats["strength"][1] > 110 && H.exercise_fatigue == 2, "great_stone_trains_the_strong")
+	training_probe_assert(H.stats["strength"][1] > 110 && H.exercise_fatigue == 1, "great_stone_trains_the_strong")
 
 	// Fatigue: at six a set teaches nothing.
 	H.exercise_fatigue = 6
@@ -219,7 +226,7 @@ var/training_probe_overlap = null
 	H.exercise_fatigue = 0
 	H.nutrition = 10
 	training_probe_set(H, great)
-	training_probe_assert(H.stats["strength"][1] == before && H.exercise_fatigue == 0 && training_probe_waits == 12, "hunger_blocks_training")
+	training_probe_assert(H.stats["strength"][1] == before && H.exercise_fatigue == 0 && training_probe_waits == 6, "hunger_blocks_training")
 	H.nutrition = 300
 
 	// Hauling: forty tiles with a heavy stone in hand pay strength and stamina.
@@ -377,12 +384,13 @@ var/training_probe_overlap = null
 	R.stats["stamina"] = list(60, 60)
 	var/obj/item/weapon/skipping_rope/rope = new(R.loc)
 	R.put_in_active_hand(rope)
-	training_probe_waits = 5
+	R.exercise_carry = null
+	training_probe_waits = 2
 	rope.attack_self(R)
-	training_probe_assert(rope.skips == 0 && !rope.skipping && !R.exercise_equipment && R.stats["dexterity"][1] == 60 && R.stats["stamina"][1] < 60 && rope.item_state == "skipping_rope", "five_skips_pay_nothing_and_drain_stamina")
-	training_probe_waits = 6
+	training_probe_assert(rope.skips == 0 && !rope.skipping && !R.exercise_equipment && R.stats["dexterity"][1] == 60 && R.stats["stamina"][1] < 60 && rope.item_state == "skipping_rope", "two_skips_pay_nothing_and_drain_stamina")
+	training_probe_waits = 3
 	rope.attack_self(R)
-	training_probe_assert(rope.skips == 0 && !R.exercise_equipment && R.stats["dexterity"][1] > 60 && R.stats["stamina"][2] > 60 && R.exercise_fatigue == 2, "sixth_skip_pays_the_set")
+	training_probe_assert(rope.skips == 0 && !R.exercise_equipment && R.stats["dexterity"][1] > 60 && R.stats["stamina"][2] > 60 && R.exercise_fatigue == 1, "third_skip_pays_a_small_set")
 	// One use keeps skipping, set after set; dropping the rope ends it.
 	R.exercise_fatigue = 0
 	R.stats["stamina"][1] = R.stats["stamina"][2]
