@@ -221,6 +221,32 @@ class WiringTest(unittest.TestCase):
         self.assertIn('FLOOD_VIEW_MOVE', view)
         self.assertIn('flood_drawn_revision == flood_draw_revision', view)
 
+    def test_flood_view_row_indices_match_the_clipped_grid(self):
+        effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        view = effects.split('/client/proc/flood_refresh_view()', 1)[1].split('\n/', 1)[0]
+        match = re.search(
+            r'for \(var/y in y0 \+ 1 to y1 - 1\)\s+'
+            r'var/row_offset = ([^\n]+)\s+'
+            r'for \(var/x in x0 \+ 1 to x1 - 1\)\s+'
+            r'var/band = bands\[([^\n]+)\]', view)
+        self.assertIsNotNone(match, 'redraw loop must expose its row and cell index')
+        row_expr, cell_expr = match.groups()
+        # Interior, edges, corners and small maps exercise clipped windows.
+        for maxx, maxy, cx, cy in ((100, 100, 50, 50), (100, 100, 1, 50),
+                                   (100, 100, 100, 100), (8, 6, 1, 1)):
+            x0, x1 = max(1, cx - 13), min(maxx, cx + 13)
+            y0, y1 = max(1, cy - 13), min(maxy, cy + 13)
+            w = x1 - x0 + 1
+            for y in range(y0 + 1, y1):
+                local = dict(y=y, y0=y0, x0=x0, w=w)
+                local['row_offset'] = eval(row_expr, {'__builtins__': {}}, local)
+                for x in range(x0 + 1, x1):
+                    local['x'] = x
+                    actual = eval(cell_expr, {'__builtins__': {}}, local)
+                    expected = (y - y0) * w + (x - x0) + 1
+                    self.assertEqual(actual, expected, (maxx, maxy, x, y))
+                    self.assertTrue(1 <= actual <= w * (y1 - y0 + 1))
+
     def test_state_is_saved_and_cache_is_not(self):
         self.assertIn('key == "river_flood_cache" || key == "river_flood_loaded"', MODULE)
         self.assertIn('var/tmp/datum/river_flood/river_flood_cache', MODULE)
