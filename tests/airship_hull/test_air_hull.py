@@ -126,7 +126,9 @@ class HighFlight(unittest.TestCase):
     def test_views_and_wreck_reach_the_first_solid_level(self):
         views = extract(SOURCE, '/datum/craft/air/proc/update_views')
         self.assertIn('air_hull_solid_below(locate(min_x, min_y, B.z))', views)
-        self.assertIn('var/turf/G = air_hull_solid_below(air)', views)
+        # The crew see the ground through the open-air view; no ground turf
+        # goes in vis_contents (it was washed out and resent every tick).
+        self.assertNotIn('ground_view', SOURCE)
         crash = extract(SOURCE, '/datum/craft/air/proc/crash')
         self.assertIn('var/turf/G = air_hull_solid_below(D)', crash)
         self.assertIn('15 * (levels - 1)', crash)
