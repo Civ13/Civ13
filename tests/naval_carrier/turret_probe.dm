@@ -102,6 +102,35 @@ var/naval_runtime_error = FALSE
 	naval_check(G.take_from_magazine() && G.loaded.len == 1, "she still hoists after sailing and turning")
 	G.loaded.Cut()
 
+
+	// ---- Belt armour ----
+	var/obj/structure/hull_armour/plate = new(locate(G.x + 1, G.y, 2))
+	var/turf/PT = get_turf(plate)
+	var/list/belt = C.armour_belt()
+	naval_check(belt[1] == 1 && belt[2] >= 8 && findtext(tiller.status_text(), "Belt armour covers 1 of her"), "the tiller counts her belt ([belt[1]] of [belt[2]])")
+	naval_check(plate.hull_load() == 1, "a plate weighs like a tile of hull")
+	var/obj/covers/plated_floor = null
+	for (var/obj/covers/F in PT)
+		plated_floor = F
+	naval_check(plated_floor && hull_armour_soften(plated_floor, 3) == 4 && hull_armour_soften(plated_floor, 2) == 3 && !QDELETED(plate), "a blast on a plated tile reaches her floor a step lighter, and a light one leaves the plate")
+	var/holes_before = C.ledger ? C.ledger.holes : 0
+	plate.ex_act(1)
+	naval_check(!QDELETED(plate), "the plate takes its blast through the floor it covers")
+	plated_floor.ex_act(1)
+	naval_check(!QDELETED(plated_floor) && (!C.ledger || C.ledger.holes == holes_before), "a direct hit on a plated tile leaves her floor and she is not holed")
+	naval_check(QDELETED(plate) && !hull_armour_at(PT), "the direct hit spent the plate")
+	var/turf/bare = locate(PT.x, PT.y, 2)
+	var/obj/covers/bare_floor = null
+	for (var/obj/covers/F in bare)
+		bare_floor = F
+	naval_check(bare_floor && hull_armour_soften(bare_floor, 1) == 1, "without the plate a blast hits her floor in full")
+	// Her hold under a plated tile is covered too.
+	var/obj/structure/hull_armour/plate2 = new(locate(R.x, R.y, 2))
+	var/obj/covers/hold_floor = null
+	for (var/obj/covers/F in get_turf(R))
+		hold_floor = F
+	naval_check(hold_floor && hull_armour_at(get_turf(R)) == plate2 && hull_armour_soften(hold_floor, 2) == 3, "the hold floor under a plated tile is covered by the belt")
+
 	// ---- Off a ship ----
 	var/obj/structure/cannon/modern/ship_turret/fort = new(locate(10, 10, 2))
 	var/obj/structure/shellrack/fort_rack = probe_rack(locate(10, 10, 1), 1)
