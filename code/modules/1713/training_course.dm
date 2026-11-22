@@ -12,7 +12,6 @@
 #define TREAD_SET_WINDOW 1200
 #define SKIP_SET_REPS 6
 #define SKIP_TIME 20
-#define SKIP_SET_WINDOW 300
 
 /obj/structure/treadwheel
 	name = "tread wheel"
@@ -223,13 +222,14 @@
 	var/reward_rate = 0.005
 	var/tmp/skips = 0
 	var/tmp/skipping = FALSE
+	var/tmp/winded = FALSE
 
 /obj/item/weapon/skipping_rope/persistence_runtime_var(key)
-	return (key in list("skips", "skipping")) || ..()
+	return (key in list("skips", "skipping", "winded")) || ..()
 
 /obj/item/weapon/skipping_rope/examine(mob/user, distance = -1)
 	. = ..()
-	to_chat(user, "Hold it and use it in your hand to skip; [SKIP_SET_REPS] skips make a set. It trains dexterity and some stamina, and takes both hands.")
+	to_chat(user, "Hold it and use it in your hand to start skipping; you keep skipping until you stop or tire, and [SKIP_SET_REPS] skips make a set. It trains dexterity and some stamina, and takes both hands.")
 
 /obj/item/weapon/skipping_rope/proc/end_set()
 	skips = 0
@@ -264,57 +264,95 @@
 
 /obj/item/weapon/skipping_rope/attack_self(mob/user)
 	var/mob/living/human/H = user
-	if (!istype(H) || !in_hand_of(H) || skipping)
+	if (!istype(H) || !in_hand_of(H))
+		return
+	if (skipping)
+		// Using it again ends the session after the skip in progress.
+		if (H.exercise_equipment == src)
+			H.cancel_exercise()
+		to_chat(H, "<span class='notice'>You finish this skip and coil up \the [src].</span>")
 		return
 	var/refusal = skip_refusal(H)
+	if (!refusal)
+		refusal = H.exercise_need_refusal()
+	if (!refusal && !H.training_has_stamina(SKIP_TIME, TRUE))
+		refusal = "You are too out of breath to train. Rest a little first."
 	if (refusal)
 		to_chat(H, "<span class='warning'>[refusal]</span>")
 		return
-	skip(H)
+	train(H)
 
 /obj/item/weapon/skipping_rope/proc/skip_wait(mob/living/human/H, duration)
 	return do_after(H, duration, H, TRUE, FALSE)
 
-/obj/item/weapon/skipping_rope/proc/skip(mob/living/human/H)
-	if (H.exercise_equipment != src)
-		skips = 0
-		to_chat(H, "<span class='notice'>You take a handle in each hand. Skip [SKIP_SET_REPS] times for a set.</span>")
-	H.hold_exercise(src, SKIP_SET_WINDOW)
+// One use starts a session: skip after skip, a set every SKIP_SET_REPS, until
+// the skipper stops, moves, lets go or runs out of breath.
+/obj/item/weapon/skipping_rope/proc/train(mob/living/human/H)
+	H.cancel_exercise()
+	H.exercise_equipment = src
+	var/token = ++H.exercise_token
+	skips = 0
+	winded = FALSE
 	skipping = TRUE
+	H.visible_message("<span class='notice'>[H] takes a handle in each hand and starts skipping.</span>", "<span class='notice'>You take a handle in each hand and start skipping; every [SKIP_SET_REPS] skips make a set. You will keep going until you tire. Use it again, move or use Stop Exercise to stop.</span>")
+	var/stop_reason = null
+	while (isnull(stop_reason))
+		stop_reason = skip(H, token)
+	skipping = FALSE
+	swing_state(FALSE)
+	skips = 0
+	if (H.exercise_token == token)
+		H.exercise_equipment = null
+		H.exercise_token++
+	if (stop_reason)
+		to_chat(H, "<span class='warning'>[stop_reason]</span>")
+
+// One skip of a session: null to carry on, or why it ended ("" when the
+// player ended it and has already been told).
+/obj/item/weapon/skipping_rope/proc/skip(mob/living/human/H, token)
+	if (H.exercise_token != token || QDELETED(H))
+		return ""
+	if (!in_hand_of(H))
+		return "You stop skipping."
+	var/refusal = skip_refusal(H)
+	if (refusal)
+		return refusal
+	if (!H.training_has_stamina(SKIP_TIME))
+		return "You are out of breath and coil up \the [src]."
 	swing_state(TRUE)
 	animate(H, pixel_y = 3, time = 2, loop = 4, easing = QUAD_EASING | EASE_OUT, flags = ANIMATION_RELATIVE | ANIMATION_PARALLEL)
 	animate(pixel_y = -3, time = 3, easing = QUAD_EASING | EASE_IN, flags = ANIMATION_RELATIVE)
 	var/turf/start = H.loc
-	var/ok = skip_wait(H, SKIP_TIME) && in_hand_of(H) && H.loc == start
-	swing_state(FALSE)
-	skipping = FALSE
-	if (!ok || H.exercise_equipment != src)
-		if (in_hand_of(H))
-			to_chat(H, "<span class='warning'>You tangle your feet in the rope. Hold still and try that one again.</span>")
-		return FALSE
-	skips++
-	if (skips < SKIP_SET_REPS)
-		to_chat(H, "<span class='notice'>Skip, skip, skip. [skips]/[SKIP_SET_REPS].</span>")
-		return TRUE
-	finish_set(H)
-	return TRUE
-
-/obj/item/weapon/skipping_rope/proc/finish_set(mob/living/human/H)
-	H.exercise_equipment = null
-	H.exercise_token++
+	var/ok = skip_wait(H, SKIP_TIME) && H.exercise_token == token && in_hand_of(H) && H.loc == start
+	if (H.exercise_token != token)
+		return ""
+	if (!ok)
+		return in_hand_of(H) ? "You tangle your feet in the rope and stop." : "You stop skipping."
+	H.training_spend_stamina(SKIP_TIME)
+	if (++skips < SKIP_SET_REPS)
+		return null
 	skips = 0
-	var/refusal = H.exercise_refusal()
+	return finish_set(H)
+
+// A finished set pays dexterity and some stamina unless the skipper is worn
+// out; null to carry on.
+/obj/item/weapon/skipping_rope/proc/finish_set(mob/living/human/H)
+	var/refusal = H.exercise_need_refusal()
 	if (refusal)
-		to_chat(H, "<span class='warning'>Set done, but it taught you nothing. [refusal]</span>")
-		return FALSE
+		return "Set done, but it taught you nothing. [refusal]"
+	if (H.exercise_fatigued())
+		if (!winded)
+			winded = TRUE
+			to_chat(H, "<span class='warning'>You are worn out: your sets teach nothing until you recover a little (about a minute). You keep skipping.</span>")
+		return null
+	winded = FALSE
 	var/nimble = H.exercise_reward("dexterity", reward_rate, skill_cap)
 	var/hardy = H.exercise_reward("stamina", reward_rate, skill_cap, 0.5)
 	if (!nimble && !hardy)
-		to_chat(H, "<span class='notice'>Set done. You have grown past anything \the [src] can teach you.</span>")
-		return FALSE
+		return "You have grown past anything \the [src] can teach you."
 	H.exercise_spend(2)
-	H.visible_message("<span class='notice'>[H] coils up \the [src], breathing hard.</span>", "<span class='notice'>Set done. Fatigue: [H.exercise_fatigue]/6.</span>")
-	return TRUE
+	to_chat(H, "<span class='notice'>Set done. Fatigue: [H.exercise_fatigue]/6.</span>")
+	return null
 
 // --- the old obstacle course -----------------------------------------------
 // Pieces built before the tread wheel turn into one (start posts) or into the
@@ -373,4 +411,3 @@
 #undef TREAD_SET_WINDOW
 #undef SKIP_SET_REPS
 #undef SKIP_TIME
-#undef SKIP_SET_WINDOW

@@ -92,12 +92,13 @@
 #define SCHOLAR_TITLE_APPRENTICE 12
 #define SCHOLAR_TITLE_SCHOLAR 40
 #define SCHOLAR_TITLE_MASTER 75
-// Practice tools (scholar_practice.dm): skill per session, session length
-// (deciseconds), stamina per session, the level practice alone can reach,
-// and the bonus for practising with a discipline's instrument.
+// Practice tools (scholar_practice.dm): skill per SCHOLAR_PRACTICE_TIME of
+// continuous practice (deciseconds), how often practice pays (one tick), the
+// level practice alone can reach, and the bonus for a discipline's instrument.
+// Stamina drains at TRAINING_STAMINA_DRAIN (code/__defines/training.dm).
 #define SCHOLAR_PRACTICE_GAIN 0.5
 #define SCHOLAR_PRACTICE_TIME 450
-#define SCHOLAR_PRACTICE_STAMINA 10
+#define SCHOLAR_PRACTICE_TICK 20
 #define SCHOLAR_PRACTICE_CAP 24
 #define SCHOLAR_PRACTICE_INSTRUMENT_RATE 1.5
 

@@ -2,7 +2,10 @@
 // heavy or too light, hauling, the tread wheel and treadmill, the skipping
 // rope, fatigue, caps, eras and the old fixtures and course pieces turning
 // into the new gear. Real humans, items and structures; the two-second waits
-// and the dice are replaced so every outcome is decided by the test.
+// and the dice are replaced so every outcome is decided by the test. Weights
+// and the rope train continuously (Val, 2026-11-22): one use keeps going, so
+// each wait spends one of training_probe_waits and the session ends, as if
+// the player moved, when they run out.
 /world
 	hub = ""
 	visibility = 0
@@ -38,17 +41,46 @@
 	exercise_token++
 
 var/training_probe_checks = 0
-var/training_probe_wait = TRUE
+var/training_probe_waits = 0
 var/training_probe_fumble = 0
+// When training_probe_waits falls to training_probe_stop_at, the player does
+// training_probe_action mid-session: "verb" (Stop Exercise), "use" (uses the
+// item again), "drop", or "wheel" (tries to step into training_probe_wheel).
+var/training_probe_stop_at = -1
+var/training_probe_action = null
+var/obj/structure/treadwheel/training_probe_wheel
+var/training_probe_overlap = null
+
+/proc/training_probe_tick(mob/living/human/H, obj/item/I)
+	if (training_probe_waits <= 0)
+		return FALSE
+	training_probe_waits--
+	if (training_probe_waits == training_probe_stop_at)
+		training_probe_stop_at = -1
+		switch (training_probe_action)
+			if ("verb")
+				H.stop_exercise()
+			if ("use")
+				I.attack_self(H)
+			if ("drop")
+				H.drop_from_inventory(I)
+			if ("wheel")
+				training_probe_overlap = training_probe_wheel.step_in(H)
+	return TRUE
 
 /obj/item/weapon/lifting_weight/lift_wait(mob/living/human/H, duration)
-	return training_probe_wait
+	return training_probe_tick(H, src)
 
 /obj/item/weapon/lifting_weight/fumble_chance(mob/living/human/H)
 	return ..() ? training_probe_fumble : 0
 
 /obj/item/weapon/skipping_rope/skip_wait(mob/living/human/H, duration)
-	return training_probe_wait
+	return training_probe_tick(H, src)
+
+/proc/training_probe_interrupt(waits, stop_at, action)
+	training_probe_waits = waits
+	training_probe_stop_at = stop_at
+	training_probe_action = action
 
 /proc/training_probe_assert(ok, label)
 	training_probe_checks++
@@ -68,9 +100,11 @@ var/training_probe_fumble = 0
 		H.stats[skill] = list(60, 60)
 	return H
 
+// One use, six lifts (two waits each), then the lifter moves.
 /proc/training_probe_set(mob/living/human/H, obj/item/weapon/lifting_weight/W)
-	for (var/i = 1, i <= 6, i++)
-		W.attack_self(H)
+	H.stats["stamina"][1] = H.stats["stamina"][2]
+	training_probe_waits = 12
+	W.attack_self(H)
 
 /proc/training_probe_run()
 	config = new
@@ -93,30 +127,54 @@ var/training_probe_fumble = 0
 	H.put_in_active_hand(small)
 	training_probe_assert(small.in_hand_of(H) && small.heft_for(H) == 0, "small_stone_right_weight")
 	var/before = H.stats["strength"][1]
-	for (var/i = 1, i <= 5, i++)
-		small.attack_self(H)
-	training_probe_assert(small.reps == 5 && H.exercise_equipment == small && H.stats["strength"][1] == before && H.exercise_fatigue == 0, "five_lifts_pay_nothing_yet")
-	training_probe_assert(small.item_state == "lifting_stone_small", "lift_pose_put_down")
+	var/breath = H.stats["stamina"][1]
+	training_probe_waits = 10
 	small.attack_self(H)
-	training_probe_assert(small.reps == 0 && !H.exercise_equipment && H.stats["strength"][1] > before && H.exercise_fatigue == 2, "sixth_lift_pays_the_set")
+	training_probe_assert(!small.lifting && small.reps == 0 && !H.exercise_equipment && H.stats["strength"][1] == before && H.exercise_fatigue == 0, "five_lifts_then_moving_pays_nothing")
+	training_probe_assert(H.stats["stamina"][1] < breath && abs(breath - H.stats["stamina"][1] - H.training_stamina_cost(100)) < 0.001, "lifting_drains_stamina")
+	training_probe_assert(small.item_state == "lifting_stone_small", "lift_pose_put_down")
+	training_probe_set(H, small)
+	training_probe_assert(small.reps == 0 && !H.exercise_equipment && H.stats["strength"][1] > before && H.exercise_fatigue == 2, "six_lifts_pay_the_set")
 	training_probe_assert(H.nutrition < 300 && H.water < 300, "set_costs_food_and_water")
 	var/full_gain = H.stats["strength"][1] - before
 
-	// A lift that is interrupted is lost; the set is kept.
+	// One use keeps lifting, set after set, with no further clicks.
 	H.exercise_fatigue = 0
+	H.stats["stamina"][1] = 60
+	training_probe_waits = 24
 	small.attack_self(H)
-	training_probe_wait = FALSE
+	training_probe_assert(H.exercise_fatigue == 4 && training_probe_waits == 0 && !H.exercise_equipment, "one_use_lifts_set_after_set")
+	// Worn out (fatigue 6): sets pay nothing but the session goes on.
+	H.exercise_fatigue = 6
+	H.exercise_rest_epoch = world.time
+	H.stats["stamina"][1] = 60
+	before = H.stats["strength"][1]
+	training_probe_waits = 24
 	small.attack_self(H)
-	training_probe_wait = TRUE
-	training_probe_assert(small.reps == 1 && H.exercise_equipment == small && !small.lifting, "interrupted_lift_keeps_set")
-	// Dropping it, or resting too long, starts the set over.
-	H.drop_from_inventory(small)
-	training_probe_assert(small.reps == 0 && !H.exercise_equipment, "dropping_ends_set")
+	training_probe_assert(training_probe_waits == 0 && small.winded && H.stats["strength"][1] == before && H.exercise_fatigue == 6, "worn_out_keeps_lifting_without_gain")
+	// The session ends by itself when stamina runs out.
+	H.exercise_fatigue = 0
+	H.stats["stamina"][1] = 15
+	training_probe_waits = 1000
+	small.attack_self(H)
+	training_probe_assert(!H.exercise_equipment && !small.lifting && training_probe_waits < 1000 && training_probe_waits > 980 && !H.training_has_stamina(20), "out_of_breath_ends_session")
+	training_probe_waits = 1000
+	small.attack_self(H)
+	training_probe_assert(training_probe_waits == 1000 && !H.exercise_equipment, "winded_cannot_start")
+	H.stats["stamina"][1] = 60
+	// Stop Exercise, using it again or dropping it ends the session mid-set.
+	training_probe_interrupt(20, 15, "verb")
+	small.attack_self(H)
+	training_probe_assert(training_probe_waits == 15 && small.reps == 0 && !small.lifting && !H.exercise_equipment, "stop_exercise_ends_session")
+	training_probe_interrupt(20, 15, "use")
+	small.attack_self(H)
+	training_probe_assert(training_probe_waits == 15 && small.reps == 0 && !small.lifting && !H.exercise_equipment, "using_again_ends_session")
+	training_probe_interrupt(20, 15, "drop")
+	small.attack_self(H)
+	training_probe_assert(small.loc == H.loc && small.reps == 0 && !small.lifting && !H.exercise_equipment && small.item_state == "lifting_stone_small", "dropping_ends_session")
 	H.put_in_active_hand(small)
-	small.attack_self(H)
-	H.lapse_exercise(H.exercise_token)
-	training_probe_assert(small.reps == 0 && !H.exercise_equipment, "long_rest_restarts_set")
-	H.lapse_exercise(H.exercise_token - 1)
+	H.exercise_fatigue = 0
+	H.stats["stamina"][1] = 60
 
 	// Too light: a quarter of the gain. Past the cap: nothing, and no fatigue.
 	H.stats["strength"] = list(85, 85)
@@ -137,6 +195,7 @@ var/training_probe_fumble = 0
 	H.put_in_active_hand(great)
 	training_probe_assert(great.heft_for(H) == -1, "great_stone_too_heavy")
 	training_probe_fumble = 100
+	training_probe_waits = 2
 	great.attack_self(H)
 	training_probe_assert(great.loc == H.loc && !H.exercise_equipment && great.reps == 0, "too_heavy_slips")
 	training_probe_fumble = 0
@@ -144,8 +203,9 @@ var/training_probe_fumble = 0
 	H.put_in_active_hand(great)
 	H.put_in_inactive_hand(small)
 	training_probe_assert(great.lift_refusal(H) && findtext(great.lift_refusal(H), "both hands"), "both_hands_needed")
+	training_probe_waits = 5
 	great.attack_self(H)
-	training_probe_assert(great.reps == 0, "no_lift_with_a_full_hand")
+	training_probe_assert(great.reps == 0 && training_probe_waits == 5, "no_lift_with_a_full_hand")
 	H.drop_from_inventory(small)
 	training_probe_set(H, great)
 	training_probe_assert(H.stats["strength"][1] > 110 && H.exercise_fatigue == 2, "great_stone_trains_the_strong")
@@ -159,7 +219,7 @@ var/training_probe_fumble = 0
 	H.exercise_fatigue = 0
 	H.nutrition = 10
 	training_probe_set(H, great)
-	training_probe_assert(H.stats["strength"][1] == before && H.exercise_fatigue == 0, "hunger_blocks_gain")
+	training_probe_assert(H.stats["strength"][1] == before && H.exercise_fatigue == 0 && training_probe_waits == 12, "hunger_blocks_training")
 	H.nutrition = 300
 
 	// Hauling: forty tiles with a heavy stone in hand pay strength and stamina.
@@ -199,7 +259,7 @@ var/training_probe_fumble = 0
 	training_probe_assert(H.stats["strength"][1] == 150, "barbell_cap")
 	map.ordinal_age = 0
 	H.drop_from_inventory(bar)
-	training_probe_assert(great.persistence_runtime_var("reps") && great.persistence_runtime_var("lifting") && great.persistence_runtime_var("carry_tiles") && !great.persistence_runtime_var("name"), "weight_runtime_fields_unsaved")
+	training_probe_assert(great.persistence_runtime_var("reps") && great.persistence_runtime_var("lifting") && great.persistence_runtime_var("carry_tiles") && great.persistence_runtime_var("winded") && !great.persistence_runtime_var("name"), "weight_runtime_fields_unsaved")
 	training_probe_assert(H.persistence_runtime_var("exercise_equipment") && H.persistence_runtime_var("exercise_token") && !H.persistence_runtime_var("exercise_fatigue"), "human_runtime_fields_unsaved")
 
 	// --- the tread wheel -------------------------------------------------
@@ -263,8 +323,11 @@ var/training_probe_fumble = 0
 	// A lifting set and the wheel cannot overlap.
 	R.forceMove(locate(9, 10, 1))
 	R.put_in_active_hand(small)
+	training_probe_wheel = wheel
+	training_probe_overlap = null
+	training_probe_interrupt(6, 3, "wheel")
 	small.attack_self(R)
-	training_probe_assert(!wheel.step_in(R) && !R.buckled, "no_wheel_during_a_set")
+	training_probe_assert(training_probe_overlap == FALSE && !R.buckled, "no_wheel_during_a_set")
 	R.cancel_exercise()
 	R.drop_from_inventory(small)
 	// Fatigued: strides allowed, nothing taught.
@@ -314,19 +377,22 @@ var/training_probe_fumble = 0
 	R.stats["stamina"] = list(60, 60)
 	var/obj/item/weapon/skipping_rope/rope = new(R.loc)
 	R.put_in_active_hand(rope)
-	for (var/i = 1, i <= 5, i++)
-		rope.attack_self(R)
-	training_probe_assert(rope.skips == 5 && R.exercise_equipment == rope && R.stats["dexterity"][1] == 60 && rope.item_state == "skipping_rope", "five_skips_pay_nothing_yet")
+	training_probe_waits = 5
 	rope.attack_self(R)
-	training_probe_assert(rope.skips == 0 && !R.exercise_equipment && R.stats["dexterity"][1] > 60 && R.stats["stamina"][1] > 60 && R.exercise_fatigue == 2, "sixth_skip_pays_the_set")
-	// A tangled skip is lost; the set is kept. Dropping the rope ends it.
+	training_probe_assert(rope.skips == 0 && !rope.skipping && !R.exercise_equipment && R.stats["dexterity"][1] == 60 && R.stats["stamina"][1] < 60 && rope.item_state == "skipping_rope", "five_skips_pay_nothing_and_drain_stamina")
+	training_probe_waits = 6
 	rope.attack_self(R)
-	training_probe_wait = FALSE
+	training_probe_assert(rope.skips == 0 && !R.exercise_equipment && R.stats["dexterity"][1] > 60 && R.stats["stamina"][2] > 60 && R.exercise_fatigue == 2, "sixth_skip_pays_the_set")
+	// One use keeps skipping, set after set; dropping the rope ends it.
+	R.exercise_fatigue = 0
+	R.stats["stamina"][1] = R.stats["stamina"][2]
+	training_probe_waits = 12
 	rope.attack_self(R)
-	training_probe_wait = TRUE
-	training_probe_assert(rope.skips == 1 && R.exercise_equipment == rope && !rope.skipping, "tangled_skip_keeps_set")
-	R.drop_from_inventory(rope)
-	training_probe_assert(rope.skips == 0 && !R.exercise_equipment, "dropping_rope_ends_set")
+	training_probe_assert(R.exercise_fatigue == 4 && training_probe_waits == 0, "one_use_skips_set_after_set")
+	R.stats["stamina"][1] = R.stats["stamina"][2]
+	training_probe_interrupt(10, 7, "drop")
+	rope.attack_self(R)
+	training_probe_assert(rope.loc == R.loc && rope.skips == 0 && !rope.skipping && !R.exercise_equipment, "dropping_rope_ends_session")
 	// Both hands.
 	R.put_in_active_hand(rope)
 	R.put_in_inactive_hand(small)

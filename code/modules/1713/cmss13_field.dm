@@ -112,14 +112,9 @@
 		if (feedback)
 			to_chat(src, "You need dry floor or ground to exercise on.")
 		return FALSE
-	if (exercise_equipment)
+	if (exercise_equipment || scholar_practising)
 		if (feedback)
-			to_chat(src, "Finish your set on the training equipment or use Stop Exercise first.")
-		return FALSE
-	recover_exercise()
-	if (exercise_fatigue >= 6)
-		if (feedback)
-			to_chat(src, "You are too fatigued to exercise. Rest; one fatigue point recovers per running-server minute.")
+			to_chat(src, "Finish what you are doing or use Stop Exercise first.")
 		return FALSE
 	var/skill = floor_exercise_skill(kind)
 	if (stats[skill][1] < 10)
@@ -132,38 +127,78 @@
 		return FALSE
 	return TRUE
 
+/mob/living/human/proc/floor_exercise_wait(duration)
+	return do_after(src, duration, src)
+
+// One choice starts a session: set after set of FLOOR_EXERCISE_REPS, until the
+// player stops, moves or runs out of breath. A set while worn out (fatigue 6)
+// teaches nothing, but the session goes on and pays again once rested a little.
 /mob/living/human/proc/do_floor_exercise(kind)
-	if (floor_exercise_busy || !floor_exercise_ready(kind, TRUE))
+	if (floor_exercise_busy)
+		cancel_exercise()
+		to_chat(src, "You finish this repetition and get up.")
+		return FALSE
+	if (!floor_exercise_ready(kind, TRUE))
+		return FALSE
+	if (!training_has_stamina(FLOOR_EXERCISE_REP_TIME, TRUE))
+		to_chat(src, "You are too out of breath to exercise. Rest a little first.")
 		return FALSE
 	floor_exercise_busy = TRUE
+	var/token = ++exercise_token
 	var/turf/start = loc
-	visible_message("<span class='notice'>[src] drops to the ground and starts doing [kind].</span>", "<span class='notice'>You start a set of [kind]. Stay still for [FLOOR_EXERCISE_REPS] repetitions.</span>")
-	for (var/rep = 1 to FLOOR_EXERCISE_REPS)
-		if (!do_after(src, FLOOR_EXERCISE_REP_TIME, src) || loc != start || !floor_exercise_ready(kind))
-			floor_exercise_busy = FALSE
-			to_chat(src, "<span class='warning'>You stop your [kind]. An unfinished set gives no training.</span>")
-			return FALSE
-		if (rep < FLOOR_EXERCISE_REPS)
-			to_chat(src, "Repetition [rep]/[FLOOR_EXERCISE_REPS] done.")
 	var/skill = floor_exercise_skill(kind)
-	var/list/values = stats[skill]
-	var/rate = FLOOR_EXERCISE_RATE * (1 - exercise_fatigue / 8) * (values[2] >= 50 ? 0.5 : 1)
-	var/steps = max(1, round(rate * 1000 + 0.00001))
-	adaptStat(skill, (steps + 0.001) * 0.15)
-	values[1] = min(FLOOR_EXERCISE_CAP, values[1])
-	values[2] = min(FLOOR_EXERCISE_CAP, values[2])
-	exercise_fatigue = min(6, exercise_fatigue + 2)
+	var/rep = 0
+	var/sets = 0
+	var/winded = FALSE
+	var/stop_reason = null
+	visible_message("<span class='notice'>[src] drops to the ground and starts doing [kind].</span>", "<span class='notice'>You start doing [kind]; every [FLOOR_EXERCISE_REPS] repetitions make a set. You will keep going until you tire. Stay still; move or use Stop Exercise to stop.</span>")
+	while (isnull(stop_reason))
+		if (!training_has_stamina(FLOOR_EXERCISE_REP_TIME))
+			stop_reason = "You are out of breath and stop your [kind]."
+			break
+		var/ok = floor_exercise_wait(FLOOR_EXERCISE_REP_TIME)
+		if (token != exercise_token)
+			stop_reason = ""
+			break
+		if (!ok || loc != start || !floor_exercise_ready(kind))
+			stop_reason = "You stop your [kind]."
+			break
+		training_spend_stamina(FLOOR_EXERCISE_REP_TIME)
+		if (++rep < FLOOR_EXERCISE_REPS)
+			continue
+		rep = 0
+		if (exercise_fatigued())
+			if (!winded)
+				winded = TRUE
+				to_chat(src, "<span class='warning'>You are worn out: your sets teach nothing until you recover a little (about a minute). You keep going.</span>")
+			continue
+		winded = FALSE
+		var/list/values = stats[skill]
+		var/rate = FLOOR_EXERCISE_RATE * (1 - exercise_fatigue / 8) * (values[2] >= 50 ? 0.5 : 1)
+		var/steps = max(1, round(rate * 1000 + 0.00001))
+		adaptStat(skill, (steps + 0.001) * 0.15)
+		values[1] = min(FLOOR_EXERCISE_CAP, values[1])
+		values[2] = min(FLOOR_EXERCISE_CAP, values[2])
+		exercise_fatigue = min(6, exercise_fatigue + 2)
+		sets++
+		to_chat(src, "<span class='notice'>Set of [kind] complete. Fatigue: [exercise_fatigue]/6.</span>")
 	floor_exercise_busy = FALSE
-	to_chat(src, "<span class='notice'>Set of [kind] complete. Fatigue: [exercise_fatigue]/6.</span>")
-	return TRUE
+	if (token == exercise_token)
+		exercise_token++
+	if (stop_reason)
+		to_chat(src, "<span class='warning'>[stop_reason]</span>")
+	return sets > 0
 
 /mob/living/human/verb/floor_exercise()
 	set name = "Floor Exercise"
-	set desc = "Do a set of push-ups (strength) or sit-ups (stamina) wherever you stand."
+	set desc = "Do push-ups (strength) or sit-ups (stamina) wherever you stand, until you stop or tire."
 	set category = "IC"
 	if (usr != src)
 		return
-	var/choice = WWinput(src, "Push-ups train strength and sit-ups train stamina, up to [FLOOR_EXERCISE_CAP]. A set is three repetitions; stay still until it finishes.", "Floor Exercise", "Cancel", list("Push-ups", "Sit-ups", "Cancel"))
+	if (floor_exercise_busy)
+		do_floor_exercise()
+		return
+	var/choice = WWinput(src, "Push-ups train strength and sit-ups train stamina, up to [FLOOR_EXERCISE_CAP]. You keep going, three repetitions to a set, until you move, tire or use Stop Exercise.", "Floor Exercise", "Cancel", list("Push-ups", "Sit-ups", "Cancel"))
 	if (choice == "Push-ups")
 		do_floor_exercise("push-ups")
 	else if (choice == "Sit-ups")
