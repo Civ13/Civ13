@@ -221,7 +221,7 @@ A container that is too small or too full refuses what you drop on it and says w
 3. Use **Sleep** in the IC tab and stay connected for the two minutes it takes.
 4. Use **Wake Up** when you come back.
 
-Outside Gaia, a faction member who slept properly in a province their faction holds and then logged off is safe until they log back in: nobody can hurt, rob or move them. Everywhere else sleepers can still be attacked, so sleep somewhere safe. While you sleep properly your hunger and thirst don't drop. You can't sleep while you have fleas in your clothes or are too dirty. Being ill does not stop you: a severe illness waits while you sleep, and flu passes twice as fast in a bed. The full rules are in [Saving your character](../Starter_Guide.md#saving-your-character).
+Outside Gaia, a faction member who slept properly in a province their faction holds, or on their faction's island, and then logged off is safe until they log back in: nobody can hurt, rob or move them. Everywhere else sleepers can still be attacked, so sleep somewhere safe. While you sleep properly your hunger and thirst don't drop. You can't sleep while you have fleas in your clothes or are too dirty. Being ill does not stop you: a severe illness waits while you sleep, and flu passes twice as fast in a bed. The full rules are in [Saving your character](../Starter_Guide.md#saving-your-character).
 
 ## Finding other people
 
