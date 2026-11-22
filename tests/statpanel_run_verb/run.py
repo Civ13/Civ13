@@ -59,9 +59,13 @@ def run(byond_bin, proc_source):
 
 
 EXPECTED = {
-    'Crafting Atlas': "command='Crafting-Atlas'",
-    'Open Web Crafting Atlas': "command='Open-Web-Crafting-Atlas'",
-    'Open Wiki': "command='Open-Wiki'",
+    'Crafting Atlas': 'command=Crafting-Atlas',
+    'Open Web Crafting Atlas': 'command=Open-Web-Crafting-Atlas',
+    'Open Wiki': 'command=Open-Wiki',
+    "Don't Panic": 'command=Don%27t-Panic',
+    'Unknown Button': '',
+    'unknown_button': '',
+    'Unlisted Button': '',
 }
 
 
@@ -72,7 +76,15 @@ def main():
     args = parser.parse_args()
     source = (HERE / 'pre_fix_run_verb.dm.txt' if args.negative_control else SOURCE).read_text(encoding='utf-8')
     got = run(args.byond_bin, proc_text(source))
-    wrong = {name: got.get(name) for name, want in EXPECTED.items() if got.get(name) != want}
+    expected = {
+        name: {'accepted': bool(command), 'command': command}
+        for name, command in EXPECTED.items()
+    }
+    # The historical fixture tests the Atlas name collision, not the newer
+    # registration boundary. Only require that the known collision still fails.
+    if args.negative_control:
+        expected = {'Crafting Atlas': expected['Crafting Atlas']}
+    wrong = {name: got.get(name) for name, want in expected.items() if got.get(name) != want}
     print(json.dumps({'commands': got, 'wrong': wrong}, indent=1))
     if args.negative_control:
         if not wrong:
