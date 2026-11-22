@@ -16,3 +16,7 @@
 // Ticks from a strike's drop until its first payload leaves the aircraft
 // (turf/airstrike spawns payload i after i * 5 ticks).
 #define AIR_SUPPORT_FIRST_RELEASE 5
+
+// The longest airframe a builder may lay or draw (aircraft_assembly.dm,
+// craft/vehicle_draught.dm): the airliner's six sections, nose to tail.
+#define AIRCRAFT_MAX_LENGTH 6

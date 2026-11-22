@@ -142,6 +142,18 @@ var/naval_runtime_error = FALSE
 	naval_check(istype(A, /obj/structure/vehicleparts/axis/aircraft) && A.components.len, "the hangar assembles the light plane from its sheet ([A])")
 	works_clear_bay(G, 7)
 
+	// A twin longer than the hangar's own: 5 wide and 5 long.
+	works_fill(G)
+	var/datum/vehicle_draught/twin = examples[5]
+	naval_check(vehicle_sheet_bay_size(twin) == 5 && (aircraft_model_node("Twin-engine plane") in vehicle_sheet_nodes(twin)), "the twin transport needs a 5x5 bay and the twin's research")
+	var/obj/structure/vehicleparts/axis/aircraft/TA = G.build_sheet_vehicle(twin)
+	naval_check(istype(TA) && TA.frames().len == 25 && TA.wing_engines().len == 1 && TA.maxpower == 1500, "the hangar assembles the twin transport from its sheet ([TA])")
+	if (istype(TA))
+		var/drawn = vehicle_draught_survey(TA)
+		var/datum/vehicle_draught/back = istype(drawn, /datum/vehicle_draught) ? drawn : null
+		naval_check(back && back.width == 5 && back.length == 5 && back.count_parts("E") == 2, "and it draws back onto a sheet 5 by 5 with both engines ([drawn])")
+	works_clear_bay(G, 7)
+
 	works_fill(G)
 	naval_check(("Helicopter" in G.models()) && G.model_size("Helicopter") == 7 && aircraft_model_node("Helicopter") == "rocketry", "the hangar offers the helicopter in a 7x7 square after Rocketry")
 	var/obj/structure/vehicleparts/axis/aircraft/helicopter/huey/heli = G.complete_assembly("Helicopter")
