@@ -167,7 +167,7 @@ class RegionWakeTests(unittest.TestCase):
 
     def test_travellers_hear_a_land_is_being_prepared(self):
         notice = proc(GROUP, '/datum/shard_group/proc/wake_notice')
-        self.assertIn('the land is being prepared for you', notice)
+        self.assertIn('is not ready yet: it is [peer_wait_state(id)] for you.', notice)
         ask = proc(GROUP, '/datum/shard_group/proc/ask_wake')
         self.assertIn('peer["preparing"] = reply["preparing"] ? TRUE : FALSE', ask)
         self.assertLess(ask.index('peer["preparing"] = reply'), ask.index('"result" = "accepted"'))
@@ -213,7 +213,13 @@ class RegionWakeTests(unittest.TestCase):
         self.assertIn('Clamp(reply["eta"], 0, eta_cap)', ask)
         self.assertIn('var/list/asked = ask_wake(id)', wake)
         self.assertIn('var/eta = asked["eta"]', wake)
-        self.assertIn('await_peer(id, world.time + (eta + 60) * 10)', wake)
+        self.assertIn('await_peer(id, world.time + (eta + 60) * 10, null, notify, eta, started)', wake)
+        # Waiting players hear the land's state and time left, and that it is ready.
+        self.assertLess(wake.index('await_peer('), wake.index('ready_notice(id, notify, world.time - started)'))
+        self.assertIn('wait_status(id, eta, started)', await_peer)
+        status = proc(GROUP, '/datum/shard_group/proc/peer_wait_state')
+        for words in ('being built', 'starting up', 'waking from a deep sleep', 'waking up'):
+            self.assertIn(words, status)
         self.assertIn('while(world.time < deadline)', await_peer)
 
 

@@ -386,6 +386,8 @@ var/global/datum/shard_group/shard_group = new
 	// it may ("startable": not kept down on purpose) and whether it is being prepared now.
 	peer["startable"] = entry["startable"] ? TRUE : FALSE
 	peer["preparing"] = entry["preparing"] ? TRUE : FALSE
+	peer["phase"] = istext(entry["phase"]) ? copytext(entry["phase"], 1, 41) : null
+	peer["cold"] = entry["cold"] ? TRUE : FALSE
 	switch(entry["state"])
 		if("asleep")
 			peer["state"] = entry["cold"] ? "COLD" : "ASLEEP"
@@ -563,8 +565,13 @@ var/global/datum/shard_group/shard_group = new
 // Asks a waking peer every two seconds until it answers or deadline
 // (world.time) passes; TRUE once it answers. A failed poll is not the end.
 // still_wanted: optional callback; the wait stops (FALSE) once it returns FALSE.
-/datum/shard_group/proc/await_peer(id, deadline, datum/callback/still_wanted = null)
+// notify: a mob that hears how the land is getting on, about every minute
+// (Val, 2026-11-22: waiting players see its status and how long is left), from
+// eta seconds after started (world.time) on.
+/datum/shard_group/proc/await_peer(id, deadline, datum/callback/still_wanted = null, mob/notify = null, eta = 0, started = 0)
 	var/asks = 0
+	var/said = null
+	var/said_at = world.time
 	while(world.time < deadline)
 		sleep(20)
 		if(still_wanted && !still_wanted.Invoke())
@@ -573,9 +580,54 @@ var/global/datum/shard_group/shard_group = new
 			return TRUE
 		// Every half minute the doorman is asked too: a land whose start ended without
 		// it (a failed build) reads stopped again, and nobody waits out the deadline.
-		if(++asks % 15 == 0 && peer_start_ended(id))
-			return FALSE
+		if(++asks % 15 == 0)
+			if(peer_start_ended(id))
+				return FALSE
+			if(notify && notify.client)
+				var/line = wait_status(id, eta, started)
+				if(line != said || world.time - said_at >= 600)
+					said = line
+					said_at = world.time
+					to_chat(notify, SPAN_NOTICE(line))
 	return FALSE
+
+// What a waiting player hears: the land's state and how long is left.
+/datum/shard_group/proc/wait_status(id, eta, started)
+	var/list/peer = peers[id]
+	var/name = peer ? peer["name"] : id
+	var/left = round(eta - (world.time - started) / 10)
+	var/when = left > 90 ? "About [round(left / 60, 1)] minutes left." : left > 0 ? "Less than two minutes left." : "Taking longer than expected; still waiting."
+	return "[name]: [peer_wait_state(id)]. [when]"
+
+// The state of a land being woken or prepared, in words.
+/datum/shard_group/proc/peer_wait_state(id)
+	var/list/peer = peers[id]
+	if(!peer)
+		return "not answering"
+	var/phase = peer["phase"]
+	if(peer["preparing"] && istext(phase))
+		if(findtext(phase, "waiting"))
+			return "waiting its turn to be built"
+		if(findtext(phase, "compil") || findtext(phase, "checking out") || findtext(phase, "install"))
+			return "being built"
+		if(findtext(phase, "start") || findtext(phase, "save"))
+			return "starting up"
+		return "being prepared"
+	if(peer["preparing"])
+		return "being prepared"
+	if(peer["state"] == "COLD" || peer["cold"])
+		return "waking from a deep sleep"
+	return "waking up"
+
+// Tells a waiting player the land is ready, and after a wait long enough to have
+// looked away (waited, in deciseconds), flashes their window.
+/datum/shard_group/proc/ready_notice(id, mob/notify, waited = 0)
+	if(!notify || !notify.client)
+		return
+	var/list/peer = peers[id]
+	to_chat(notify, SPAN_NOTICE("<b>[peer ? peer["name"] : id] is ready.</b>"))
+	if(waited >= 600)
+		winset(notify.client, "mainwindow", "flash=2;")
 
 // TRUE when the doorman reads a peer as stopped again (its start failed or was undone).
 /datum/shard_group/proc/peer_start_ended(id)
@@ -588,12 +640,15 @@ var/global/datum/shard_group/shard_group = new
 	return TRUE
 
 // The words a player hears while a peer is woken for them.
-/datum/shard_group/proc/wake_notice(id, eta)
+/datum/shard_group/proc/wake_notice(id, eta, mob/notify = null)
 	var/list/peer = peers[id]
 	var/name = peer ? peer["name"] : id
+	// A player in the gateway lobby is sent on by itself; a traveller waits where they stand.
+	var/stay = istype(notify, /mob/new_player) ? "You are sent on as soon as it is ready." : "Stay where you are."
+	var/when = eta >= 60 ? " It may take up to [round(eta / 60) + 1] minutes." : ""
 	if(peer && peer["preparing"])
-		return "[name] is not ready yet. Word is sent ahead and the land is being prepared for you; it may take up to [round(eta / 60) + 1] minutes. Stay by the trail."
-	return eta >= 60 ? "[name] lies quiet. Word is sent ahead; it may take [round(eta / 60) + 1] minutes. Stay by the trail." : "[name] lies quiet. Word is sent ahead; stay by the trail."
+		return "[name] is not ready yet: it is [peer_wait_state(id)] for you.[when] [stay]"
+	return "[name] lies quiet: it is [peer_wait_state(id)].[when] [stay]"
 
 // Wakes a sleeping peer through the doorman and waits until it answers.
 // Null once it is up, otherwise why not. Sleeps; notify hears how long.
@@ -608,8 +663,10 @@ var/global/datum/shard_group/shard_group = new
 			return "Nobody answers the call to [peers[id]["name"]] right now. Try again in a while."
 	var/eta = asked["eta"]
 	if(notify)
-		to_chat(notify, SPAN_NOTICE(wake_notice(id, eta)))
-	if(await_peer(id, world.time + (eta + 60) * 10))
+		to_chat(notify, SPAN_NOTICE(wake_notice(id, eta, notify)))
+	var/started = world.time
+	if(await_peer(id, world.time + (eta + 60) * 10, null, notify, eta, started))
+		ready_notice(id, notify, world.time - started)
 		return null
 	if(peers[id]["state"] == "STOPPED")
 		return "[peers[id]["name"]] could not be made ready. Ask an admin."

@@ -394,6 +394,11 @@ static class LocalHostingTests {
             && !File.ReadAllText(groupConfig).Contains("\"keep_down\": false") && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "gaia kept down, the gateway never");
         HostSettings.SetKeptDown(host.Control!.Group!, Array.Empty<string>());
         Require(!File.ReadAllText(groupConfig).Contains("keep_down"), "nothing kept down");
+        // Ready lands: on with 15 minutes by default; saved values read back, other settings kept.
+        Require(HostSettings.Readiness(host.Control!.Group!) == (true, 15), "ready lands on, 15 minutes by default");
+        HostSettings.SetReadiness(host.Control!.Group!, false, 30);
+        Require(HostSettings.Readiness(host.Control!.Group!) == (false, 30) && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "ready lands saved");
+        Reject(() => HostSettings.SetReadiness(host.Control!.Group!, true, 1441), "cold storage over a day");
         File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, shutdown_warning_seconds = 300, update_when_empty = true, fetch = "origin", regions = new object[] {
             new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
         var places = HostSettings.Locations(host.Control!.Group!);

@@ -962,6 +962,25 @@ class ShardGroupTests(unittest.TestCase):
         self.assertLess(commands.index(['DreamMaker', 'region.dme']), commands.index(['start', config['task'], 'region.dmb']))
         self.assertEqual(json.loads((Path(config['state_dir']) / 'build.json').read_text())['revision'], REVISION)
 
+    def test_lands_in_the_world_links_keep_their_neighbours_ready(self):
+        self.refuse_config('ready_neighbours must be true or false', ready_neighbours='yes')
+        self.refuse_config('cold_after_minutes must be', cold_after_minutes=-1)
+        self.group['regions'] = [
+            {'id': 'gaia', 'name': 'Gaia', 'kind': 'SURFACE', 'port': 1720, 'map': 'maps/small/tiny.dmm'},
+            {'id': 'atlantic', 'name': 'Atlantic', 'kind': 'OCEANIC', 'port': 1721, 'map': 'maps/small/tiny.dmm'},
+            {'id': 'europe', 'name': 'Europe', 'kind': 'SURFACE', 'port': 1722, 'map': 'maps/small/tiny.dmm'},
+            {'id': 'deep', 'name': 'The Deep', 'kind': 'UNDERGROUND', 'port': 1723, 'map': str(self.outside)}]
+        group = self.write_group()
+        self.assertEqual(self.host(group, 'gaia').readiness(), {'group': 'europe', 'region': 'gaia', 'neighbours': ['atlantic'],
+                                                                 'exempt': True, 'cold_after_minutes': 15})
+        atlantic = self.host(group, 'atlantic').readiness()
+        self.assertEqual((atlantic['neighbours'], atlantic['exempt']), (['europe', 'gaia'], True))
+        europe = self.host(group, 'europe').readiness()
+        self.assertEqual((europe['neighbours'], europe['exempt']), (['atlantic'], False))  # Asia is not in this group
+        self.assertIsNone(self.host(group, 'deep').readiness(), 'not in the world links: left alone')
+        self.group['ready_neighbours'] = False
+        self.assertIsNone(self.host(self.write_group(), 'europe').readiness())
+
     def test_a_traveller_starts_a_stopped_region_unless_it_is_kept_down(self):
         # Val (2026-11-22): travel to a land that is not up prepares it, unless a person kept it down.
         self.refuse_config('keep_down must be true or false', region_keep_down='yes')
