@@ -1345,6 +1345,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_load.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_hulls.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_storage.dm"
+#include "code\modules\1713\machinery\modular_vehicles\vehicle_breaches.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_decks.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_door_hold.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_projects.dm"
