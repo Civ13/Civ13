@@ -104,6 +104,24 @@ const settle = page => page.waitForTimeout(150);
     await settle(page);
     check((await page.evaluate(() => window.__tr.detected.length)) === 0, 'nothing is translated until it is turned on');
 
+    // With it off, a line that may be in another language offers a Translate
+    // button; nothing is sent until it is pressed. English lines offer none.
+    await page.evaluate(m => window.receiveMessage(m), say("<span class='ooc'>OOC: <EM>Cy:</EM> <span class='message chat-tr'>the storm is coming</span></span>"));
+    await settle(page);
+    let offers = await page.evaluate(() => Array.from(document.querySelectorAll('#messages > .message')).map(m => !!m.querySelector('.chat-translate-offer button')));
+    check(offers[0] === true && offers[1] === false, 'Translate offered on the Spanish line only: ' + JSON.stringify(offers));
+    await page.click('.chat-translate-offer button');
+    await settle(page);
+    let firstLine = await page.evaluate(() => { const m = document.querySelector('#messages > .message'); const t = m.querySelector('.chat-translation'); return { tr: t ? t.textContent : null, offer: !!m.querySelector('.chat-translate-offer') }; });
+    check(firstLine.tr === 'Translated from Spanish:hello friend' && !firstLine.offer, 'pressing Translate shows the translation: ' + JSON.stringify(firstLine));
+    check((await page.evaluate(() => document.getElementById('chat-translate-on').checked)) === false, 'pressing Translate leaves automatic translation off');
+    await page.evaluate(m => window.receiveMessage(m), say("<span class='ooc'>OOC: <EM>Bo:</EM> <span class='message chat-tr'>zzq vvk pplm</span></span>"));
+    await settle(page);
+    await page.click('#messages > .message:last-child .chat-translate-offer button');
+    await settle(page);
+    check((await page.evaluate(() => document.querySelector('#messages > .message:last-child .chat-translate-offer').textContent)).indexOf('No translation') === 0, 'a line with nothing to translate says so');
+    await page.evaluate(() => window.clearChat());
+
     // A desktop in another language starts on, into that language; the
     // first offered language in the list wins, and regions are ignored.
     const firstRun = async langs => {

@@ -8,7 +8,11 @@ English. Val, 2026-11-22: until a player saves a choice under **Tabs... >
 Translation** (key `civ13-chat-translate-v2`, that computer only), the first
 offered language in `navigator.languages` (the Windows display language in
 WebView2) decides: English means off, any other offered language means on into
-that language. The old v1 setting keeps only its language (non-English means on). Only words players typed are translated: unmarked game
+that language. The old v1 setting keeps only its language (non-English means on).
+With automatic translation off, a marked line that does not look English (or
+any marked line, for a non-English reader) gets a **Translate** button; only a
+pressed line is sent, ahead of automatic lines, and automatic translation stays
+off. Val, 2026-11-22: an English reader saw no way to translate a German OOC line. Only words players typed are translated: unmarked game
 messages are never sent ("Thibault Sommer makes a trench." had come back as
 "trench coat"), lines with fewer than 3 letters are skipped, and the service's
 detector needs a clear winner with at least two hints in lines of three or
