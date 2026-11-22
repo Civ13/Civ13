@@ -199,23 +199,6 @@
 /obj/item/weapon/storage/envelope/accepts_inventory_drag(obj/item/W, mob/user)
 	return opened
 
-// Addressing requires the same active pen, actor and reachable physical envelope
-// before and after each prompt. A complete address is not editable.
-/obj/item/weapon/storage/envelope/proc/addressing_current(mob/writer, client/writer_client, datum/agent_character/writer_agent, obj/item/weapon/pen/pen, atom/expected_loc, expected_addressee, expected_sender)
-	if (gc_destroyed || opened || !writer || writer.gc_destroyed || writer.incapacitated())
-		return FALSE
-	if (writer.client != writer_client)
-		return FALSE
-	if (writer_client && writer_client.mob != writer)
-		return FALSE
-	if (!writer_client && (!writer_agent || agent_character_for(writer) != writer_agent))
-		return FALSE
-	if (!pen || pen.gc_destroyed || pen.loc != writer || writer.get_active_hand() != pen)
-		return FALSE
-	if (loc != expected_loc || addressee != expected_addressee || sender != expected_sender || (addressee && sender))
-		return FALSE
-	return loc == writer || (isturf(loc) && Adjacent(writer))
-
 /obj/item/weapon/storage/envelope/attackby(obj/item/W as obj, mob/user as mob)
 	if(!opened)
 		if(is_tool(W, TOOL_KNIFE))
@@ -269,3 +252,20 @@
 		to_chat(usr, "<span class='warning'>The envelope is closed! Use a knife to open it.</span>")
 		return TRUE
 	return..()
+
+// Addressing requires the same active pen, actor and reachable physical envelope
+// before and after each prompt. A complete address is not editable.
+/obj/item/weapon/storage/envelope/proc/addressing_current(mob/writer, client/writer_client, datum/agent_character/writer_agent, obj/item/weapon/pen/pen, atom/expected_loc, expected_addressee, expected_sender)
+	if (gc_destroyed || opened || !writer || writer.gc_destroyed || writer.incapacitated())
+		return FALSE
+	if (writer.client != writer_client)
+		return FALSE
+	if (writer_client && writer_client.mob != writer)
+		return FALSE
+	if (!writer_client && (!writer_agent || agent_character_for(writer) != writer_agent))
+		return FALSE
+	if (!pen || pen.gc_destroyed || pen.loc != writer || writer.get_active_hand() != pen)
+		return FALSE
+	if (loc != expected_loc || addressee != expected_addressee || sender != expected_sender || (addressee && sender))
+		return FALSE
+	return loc == writer || (isturf(loc) && Adjacent(writer))
