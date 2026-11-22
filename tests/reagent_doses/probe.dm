@@ -89,3 +89,8 @@ var/rd_runtime_error = FALSE
 	bare.eye_blind = 0
 	P.affect_touch(bare, 0, 1)
 	rd_check(bare.eye_blind > 0, "uncovered eyes are still blinded")
+
+	// #6738: eye-slot goggles that cover the eyes also block a dropper.
+	var/obj/item/weapon/reagent_containers/dropper/D = new(locate(7, 2, 1))
+	rd_check(D.eye_shield(goggled) == G, "eye-covering goggles shield the eyes from a dropper")
+	rd_check(isnull(D.eye_shield(bare)), "a dropper reaches uncovered eyes")

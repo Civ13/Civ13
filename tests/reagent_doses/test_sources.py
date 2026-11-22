@@ -1,4 +1,4 @@
-"""Offline source contract for reagent dose fixes (#6295, #6310, #6312, #6335).
+"""Offline source contract for reagent dose fixes (#6295, #6310, #6312, #6335, #6738).
 
 Behaviour is covered natively by tests/reagent_doses/probe.dm.
 """
@@ -36,6 +36,13 @@ class ReagentDoses(unittest.TestCase):
         drinks = read('Chemistry-Reagents/Chemistry-Reagents-Food-Drinks.dm')
         touch = drinks.split('/datum/reagent/capsaicin/condensed/affect_touch(', 1)[1].split('\n/', 1)[0]
         self.assertIn('list(H.head, H.wear_mask, H.eyes)', touch)
+
+    def test_dropper_checks_eye_slot(self):
+        dropper = read('reagent_containers/dropper.dm')
+        shield = dropper.split('/obj/item/weapon/reagent_containers/dropper/proc/eye_shield(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('list(victim.head, victim.wear_mask, victim.eyes)', shield)
+        self.assertIn('body_parts_covered & EYES', shield)
+        self.assertIn('var/obj/item/safe_thing = eye_shield(victim)', dropper)
 
 
 if __name__ == '__main__':
