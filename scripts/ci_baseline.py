@@ -2755,6 +2755,9 @@ SUITES = {
     'camel_pack_range': {'files': ('tests/camel_pack_range/test_withdraw_range.py',), 'paths': (
         'tests/camel_pack_range/',),
         'shared_paths': ('code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
+    'powder_loading_container': {'files': ('tests/powder_loading_container/test_powder_loading_container.py',),
+        'paths': ('tests/powder_loading_container/',),
+        'shared_paths': ('code/modules/projectiles/ammo_crafting.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
