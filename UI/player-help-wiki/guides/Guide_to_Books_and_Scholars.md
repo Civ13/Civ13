@@ -281,7 +281,7 @@ If you want to focus, you can take an optional field of study: **Engineer, Strat
 
 ## Practice
 
-You can also train a discipline by hand. Hold its practice tool and use it in hand for a 45 second session. Each session costs some stamina, needs light and trains only that discipline. A writing desk beside you shortens the session, and your master standing nearby doubles what you learn.
+You can also train a discipline by hand. Hold its practice tool and use it in hand once: you keep practising, a little at a time, until you use it again, move, put it down, use **Stop Exercise**, run out of stamina or lose the light. Practice slowly uses up your stamina, so a rested character can keep at it for about four minutes. It trains only that discipline. A writing desk beside you makes you learn faster, and your master standing nearby doubles what you learn.
 
 | Discipline | Practice tool | How to make it |
 | --- | --- | --- |
@@ -292,7 +292,7 @@ You can also train a discipline by hand. Hold its practice tool and use it in ha
 | Agriculture | **Seed tray** | 2 soft wood (Basic Toolmaking) |
 | Military Science | **War game board** | 2 soft wood (Basic Toolmaking) |
 
-Practice is a way to get started, not a way to the top. Each session teaches a little, less as you improve, and practice stops at level 24, enough to research two ages past a discipline's first and to earn the Apprentice title. Beyond that, only research, hands-on work, study and tutoring teach you more.
+Practice is a way to get started, not a way to the top. Practice teaches a little, less as you improve, and practice stops at level 24, enough to research two ages past a discipline's first and to earn the Apprentice title. Beyond that, only research, hands-on work, study and tutoring teach you more.
 
 ## The scholar's trade
 
@@ -340,7 +340,7 @@ Books are still the only way to send knowledge to another land or to keep it aft
 - Keep spare copies of each capstone in different places. If the last one burns, the whole world loses that age until someone who knows it writes it down again.
 - A scribe doesn't need to be a scholar: anyone can copy chapters at a bench.
 - Got a newcomer and no spare books? Have them stand by while you work, then let them try. A few pieces later they know the trade.
-- New to a discipline? Practise with its tool between study sessions while your stamina recovers.
+- New to a discipline? Practise with its tool between study sessions, then rest while your stamina recovers.
 - Short on scholarship for the next age? Do the subject's deeds, prototypes and field studies yourself instead of waiting at the bench. They teach more.
 - Keep a bench lit, stocked and next to your bookcases, and research with a pen at a desk nearby.
 - Rip out single chapters to lend or sell, and keep the master book at home.
