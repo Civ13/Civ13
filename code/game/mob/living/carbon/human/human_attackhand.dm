@@ -11,6 +11,8 @@
 /mob/living/human/attack_hand(mob/living/human/M as mob)
 	if (map && istype(map, /obj/map_metadata/football))
 		return
+	if (offline_sleep_refuses(M))
+		return
 	if (tree_melee_refused(M, src))
 		return
 	var/mob/living/human/H = M
@@ -425,6 +427,8 @@
 /mob/living/human/attack_generic(var/mob/user, var/damage, var/attack_message)
 
 	if (!damage || !istype(user))
+		return
+	if (offline_sleep_protected())
 		return
 
 	user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>attacked [name] ([ckey])</font>"))

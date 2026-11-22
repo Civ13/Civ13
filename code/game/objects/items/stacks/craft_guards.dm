@@ -235,6 +235,11 @@ var/global/list/craft_guards = null
 // Only callers that commit to the live fixture can opt in. Any other
 // target or actor keeps the original world-space wait and cancellation.
 /proc/do_ship_fixture_after(mob/user, delay, obj/structure/fixture)
+	// A bed under a protected offline sleeper is neither unfastened nor dismantled.
+	if (istype(fixture, /obj/structure/bed))
+		var/obj/structure/bed/sleeper_bed = fixture
+		if (sleeper_bed.offline_sleeper_refuses(user))
+			return FALSE
 	var/mob/living/human/H = user
 	var/list/deck = istype(H) ? vessel_building_deck_at(H) : null
 	if (deck)

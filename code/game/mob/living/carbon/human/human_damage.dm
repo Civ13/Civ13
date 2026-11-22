@@ -26,6 +26,7 @@
 /mob/living/human/adjustBrainLoss(var/amount)
 
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (amount > 0 && offline_sleep_protected())	return FALSE
 
 	if (species && species.has_organ["brain"])
 		var/obj/item/organ/brain/sponge = internal_organs_by_name["brain"]
@@ -278,6 +279,7 @@ In most cases it makes more sense to use apply_damage() instead! And make sure t
 // damage MANY external organs, in random order
 /mob/living/human/take_overall_damage(var/brute, var/burn, var/sharp = FALSE, var/edge = FALSE, var/used_weapon = null)
 	if (status_flags & GODMODE)	return	//godmode
+	if (offline_sleep_protected())	return
 	var/list/obj/item/organ/external/parts = get_damageable_organs()
 	var/update = FALSE
 	while (parts.len && (brute>0 || burn>0) )
@@ -324,6 +326,8 @@ This function restores all organs.
 	return organs_by_name[zone]
 
 /mob/living/human/apply_damage(var/damage = FALSE, var/damagetype = BRUTE, var/def_zone = null, var/blocked = FALSE, var/obj/used_weapon = null, var/sharp = FALSE, var/edge = FALSE, var/toxic = FALSE)
+	if (damage > 0 && offline_sleep_protected())
+		return FALSE
 
 	//visible_message("Hit debug. [damage] | [damagetype] | [def_zone] | [blocked] | [sharp] | [used_weapon]")
 

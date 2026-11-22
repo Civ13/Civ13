@@ -587,6 +587,10 @@
 
 		if (tree_melee_refused(src, AM))
 			return
+		if (isliving(AM))
+			var/mob/living/sleeper = AM
+			if (sleeper.offline_sleep_refuses(src))
+				return
 
 		if (!can_pull_mobs || !can_pull_size)
 			to_chat(src, "<span class='warning'>It won't budge!</span>")

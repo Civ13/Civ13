@@ -272,6 +272,8 @@ var/list/antibiotic_strengths = list("penicillin" = 1, "prontosil" = 0.75, "herb
 		germ_level -= 2 //at germ_level == 1000, this will cure the infection in 5 minutes
 
 /obj/item/organ/proc/take_damage(amount, silent = 0)
+	if (amount > 0 && owner && owner.offline_sleep_protected())
+		return
 
 	damage = between(0, damage + amount, max_damage)
 

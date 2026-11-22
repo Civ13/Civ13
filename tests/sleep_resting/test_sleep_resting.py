@@ -89,7 +89,7 @@ class Harness:
             SPAN_NOTICE=lambda s:s, SPAN_WARNING=lambda s:s, WWalert=lambda *a:None,
             WWinput=lambda *a:actor.answer, usr=actor, map=SimpleNamespace(ID='ordinary'),
             MAP_VOYAGE='voyage', persistence_sleep_transfer_blocked=lambda:False,
-            persistence_bed_return_enabled=lambda:False)
+            persistence_bed_return_enabled=lambda:False, offline_sleep_protection_map_allowed=lambda:True)
         source=(ROOT/'code/_helpers/mobs.dm').read_text(encoding='utf-8-sig')
         pattern=r'#ifdef CIV13_GAMEPLAY_BRIDGE\n(/proc/do_after[^\n]+)\n#else\n(/proc/do_after[^\n]+)\n#endif'
         source,count=re.subn(pattern,lambda m:m[1] if bridge else m[2],source)

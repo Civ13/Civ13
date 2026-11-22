@@ -3011,6 +3011,12 @@ SUITES = {
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     'surgery_amputation_log': {'files': ('tests/surgery_amputation_log/test_source.py',),
         'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm')},
+    # A properly sleeping, logged-off character is safe off Gaia.
+    'offline_sleep_protection': {'files': ('tests/offline_sleep_protection/test_source.py',),
+        'paths': ('tests/offline_sleep_protection/', 'code/modules/persistence/offline_sleep_protection.dm',
+            'code/game/mob/living/carbon/human/human_damage.dm', 'code/game/mob/living/living.dm',
+            'code/game/mob/grab.dm', 'code/game/objects/buckling.dm', 'code/game/mob/living/logout.dm',
+            'code/game/mob/living/carbon/human/stripping.dm', 'code/game/objects/items/stacks/craft_guards.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
     'origins': {'files': ('tests/origins/test_origins.py', 'tests/origins/test_travel.py', 'tests/origins/test_peoples.py'),
         'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm',

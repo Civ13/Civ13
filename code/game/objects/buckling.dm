@@ -78,6 +78,12 @@
 		return
 	if (M == buckled_mob)
 		return
+	if (M.offline_sleep_refuses(user))
+		return
+	if (isliving(buckled_mob))
+		var/mob/living/sleeper = buckled_mob
+		if (sleeper.offline_sleep_refuses(user))
+			return
 	add_fingerprint(user)
 	unbuckle_mob()
 
@@ -94,6 +100,10 @@
 				"<span class='notice'>You hear metal clanking.</span>")
 
 /obj/proc/user_unbuckle_mob(mob/user)
+	if (isliving(buckled_mob))
+		var/mob/living/sleeper = buckled_mob
+		if (sleeper.offline_sleep_refuses(user))
+			return null
 	var/mob/living/M = unbuckle_mob()
 	if (M)
 		if (M != user)

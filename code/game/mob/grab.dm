@@ -46,6 +46,11 @@
 	if (affecting.anchored || !assailant.Adjacent(victim))
 		qdel(src)
 		return
+	if (isliving(affecting))
+		var/mob/living/sleeper = affecting
+		if (sleeper.offline_sleep_refuses(user))
+			qdel(src)
+			return
 
 	affecting.grabbed_by += src
 
@@ -317,6 +322,11 @@
 	if (!assailant || !affecting)
 		qdel(src)
 		return FALSE
+	if (isliving(affecting))
+		var/mob/living/sleeper = affecting
+		if (sleeper.offline_sleep_protected())
+			qdel(src)
+			return FALSE
 
 	if (affecting)
 		if (!isturf(assailant.loc) || ( !isturf(affecting.loc) || assailant.loc != affecting.loc && get_dist(assailant, affecting) > 1) )

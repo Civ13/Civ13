@@ -42,6 +42,8 @@
 
 //Cleaning with soap routines
 /mob/living/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (offline_sleep_refuses(user))
+		return TRUE
 	if(istype(W, /obj/item/weapon/soap))
 		var/obj/item/weapon/soap/S = W
 		if( src.is_nude())

@@ -90,6 +90,7 @@
 
 /mob/living/human/attack_hand(mob/M as mob)
 	if (!istype(M, /mob/living/human)) return
+	if (offline_sleep_refuses(M)) return
 	if (ishuman(M))
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
@@ -461,6 +462,8 @@
 
 /mob/living/human/show_inv(mob/user as mob)
 	if(user.incapacitated()  || !user.Adjacent(src))
+		return
+	if (offline_sleep_refuses(user))
 		return
 	user.set_using_object(src)
 	var/dat = {"
