@@ -34,6 +34,13 @@ var/global/list/building_levels_with_ground = list()
 		if (T.z == center.z)
 			T.building_wake()
 
+// A deck a vessel carries here lights this cell (craft/glide.dm); it drew
+// black for whoever climbed up to it. Only cells reached unlit call this. The
+// open air beside her is woken by the level-view scan of whoever looks at it.
+/turf/sky/building/craft_deck_arrived()
+	if (created_lighting_corners_and_overlays && !building_allocating_z && building_level_lazy(z))
+		building_wake()
+
 // A registered cell that still has no lighting (linked unwoken from the level
 // above, or left unlit by a restore) gets its lighting here too; it drew black.
 /turf/sky/building/proc/building_wake()
