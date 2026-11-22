@@ -16,6 +16,7 @@
 		verbs += /mob/living/human/proc/faction_papers
 		verbs += /mob/living/human/proc/faction_treaties
 		verbs += /mob/living/human/proc/province_holdings
+		verbs += /mob/living/human/proc/faction_island
 		verbs += /mob/living/human/proc/province_defence_window
 
 /mob/living/human/proc/make_nation()
@@ -37,6 +38,7 @@
 		verbs += /mob/living/human/proc/faction_papers
 		verbs += /mob/living/human/proc/faction_treaties
 		verbs += /mob/living/human/proc/province_holdings
+		verbs += /mob/living/human/proc/faction_island
 		verbs += /mob/living/human/proc/province_defence_window
 
 /mob/living/human/proc/make_tribesman()

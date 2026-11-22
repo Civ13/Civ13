@@ -92,6 +92,33 @@ def account_key_valid(ckey):
     return isinstance(ckey, str) and 0 < len(ckey) <= limit and all(c.isdigit() or ('a' <= c <= 'z') or c == '@' for c in ckey)
 
 
+
+def _chart_request_row(row):
+    """A queued chart request as the coordinator reads it (data decoded)."""
+    request = dict(zip(('id', 'op', 'x', 'y', 'owner', 'admin', 'voyage'), row[:7]))
+    if row[7]:
+        try:
+            request['data'] = json.loads(row[7])
+        except ValueError:
+            pass
+    return request
+
+
+def _island_access_data(op, data):
+    """The checked fields of an island 'access' or 'pass' request (island_access.dm)."""
+    if type(data) is not dict:
+        raise TransferError('bad island access')
+    if op == 'access':
+        mode, people = data.get('mode'), data.get('people')
+        if mode not in ('OPEN', 'GUESTS', 'MEMBERS') or type(people) is not list or len(people) > 50 \
+                or not all(account_key_valid(p) for p in people):
+            raise TransferError('bad island access')
+        return {'mode': mode, 'people': people}
+    account, hours = data.get('account'), data.get('hours')
+    if not account_key_valid(account) or type(hours) is not int or not 0 <= hours <= 168:
+        raise TransferError('bad visitor pass')
+    return {'account': account, 'hours': hours}
+
 class TransferError(Exception):
     """A request that the current state refuses. Nothing was changed."""
 
@@ -257,6 +284,9 @@ class RegionStore(TrainLeaseQueue):
         # A ship's course names its voyage (added for boat expeditions' voyages).
         if 'voyage' not in [row[1] for row in db.execute('PRAGMA table_info(chart_request)')]:
             db.execute('ALTER TABLE chart_request ADD COLUMN voyage TEXT')
+        # Island access settings and visitor passes carry their fields as JSON (island_access.dm).
+        if 'data' not in [row[1] for row in db.execute('PRAGMA table_info(chart_request)')]:
+            db.execute('ALTER TABLE chart_request ADD COLUMN data TEXT')
         db.execute("INSERT OR IGNORE INTO meta VALUES ('train_history', '0')")
         self.init_train_leases()
         db.execute('CREATE TABLE IF NOT EXISTS train_home_lock(ckey TEXT PRIMARY KEY)')
@@ -923,8 +953,8 @@ class RegionStore(TrainLeaseQueue):
                                   for i, r, st, p, a in self.db.execute(
                                       'SELECT id, region, stage, paused, admin FROM land_request ORDER BY id')],
                 'chart_rev': json.loads(self._meta('chart')).get('key'),
-                'chart_requests': [dict(zip(('id', 'op', 'x', 'y', 'owner', 'admin', 'voyage'), row)) for row in self.db.execute(
-                    'SELECT id, op, x, y, owner, admin, voyage FROM chart_request ORDER BY id')],
+                'chart_requests': [_chart_request_row(row) for row in self.db.execute(
+                    'SELECT id, op, x, y, owner, admin, voyage, data FROM chart_request ORDER BY id')],
                 'nation_requests': [dict(json.loads(b), id=i) for i, b in self.db.execute(
                     'SELECT id, body FROM nation_request ORDER BY id')]}
 
@@ -1103,7 +1133,7 @@ class RegionStore(TrainLeaseQueue):
 
     # -- world chart ---------------------------------------------------------
 
-    def request_chart(self, op, x, y, admin, owner=None, voyage=None):
+    def request_chart(self, op, x, y, admin, owner=None, voyage=None, data=None):
         """A chart change from this world, decided on the coordinator's next
         pass: an admin's 'reroll' of a charted tile or 'reveal' of the tiles
         round one for an owner, or a ship's 'scout' (what her crew saw round a
@@ -1111,9 +1141,12 @@ class RegionStore(TrainLeaseQueue):
         voyage), or a land's own crew deciding on it: 'settle', 'claim' (owner
         is the colony's parent faction), 'unclaim' (that faction gives its claim
         up) or 'abandon', or 'summon': the account's character is on a parked
-        land (its home is 'land:x,y') and asks for it to be restored. admin is
+        land (its home is 'land:x,y') and asks for it to be restored. 'access'
+        and 'pass' come from a faction's leader or officers, in any land, for
+        the island it claims at x, y (owner is the faction): data holds the
+        new mode and people, or a visitor pass's account and hours. admin is
         the account asking."""
-        if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'unclaim', 'abandon', 'summon'):
+        if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'unclaim', 'abandon', 'summon', 'access', 'pass'):
             raise TransferError('unknown chart request')
         if type(x) is not int or type(y) is not int or not 0 <= x < 1000 or not 0 <= y < 1000:
             raise TransferError('bad chart tile')
@@ -1125,6 +1158,10 @@ class RegionStore(TrainLeaseQueue):
             if not (isinstance(owner, str) and (re.match(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$', owner)
                                                 or owner == 'crew:' + admin)):
                 raise TransferError('bad claiming faction')
+        elif op in ('access', 'pass'):
+            if not (isinstance(owner, str) and re.match(r'^civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}$', owner)):
+                raise TransferError('bad island faction')
+            data = _island_access_data(op, data)
         elif op in ('settle', 'abandon', 'summon'):
             owner = None
         elif op != 'reroll' and not (isinstance(owner, str) and re.match(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$', owner)):
@@ -1132,9 +1169,10 @@ class RegionStore(TrainLeaseQueue):
         if op == 'course' and not (isinstance(voyage, str) and re.match(r'^[a-z0-9_\-]{1,80}$', voyage)):
             raise TransferError('bad voyage')
         with self._tx():
-            cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin, voyage) VALUES (?, ?, ?, ?, ?, ?)',
+            cursor = self.db.execute('INSERT INTO chart_request(op, x, y, owner, admin, voyage, data) VALUES (?, ?, ?, ?, ?, ?, ?)',
                                      (op, x, y, owner if op not in ('reroll', 'settle', 'abandon', 'summon') else None, admin,
-                                      voyage if op == 'course' else None))
+                                      voyage if op == 'course' else None,
+                                      json.dumps(data, sort_keys=True) if op in ('access', 'pass') else None))
         return {'id': cursor.lastrowid}
 
     def chart(self):

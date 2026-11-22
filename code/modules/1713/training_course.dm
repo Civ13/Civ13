@@ -10,7 +10,7 @@
 #define TREAD_SET_STRIDES 40
 #define TREAD_PAUSE 50
 #define TREAD_SET_WINDOW 1200
-#define SKIP_SET_REPS 6
+#define SKIP_SET_REPS 3
 #define SKIP_TIME 20
 
 /obj/structure/treadwheel
@@ -346,11 +346,11 @@
 			to_chat(H, "<span class='warning'>You are worn out: your sets teach nothing until you recover a little (about a minute). You keep skipping.</span>")
 		return null
 	winded = FALSE
-	var/nimble = H.exercise_reward("dexterity", reward_rate, skill_cap)
-	var/hardy = H.exercise_reward("stamina", reward_rate, skill_cap, 0.5)
+	var/nimble = H.exercise_reward("dexterity", reward_rate, skill_cap, TRAINING_SET_SCALE)
+	var/hardy = H.exercise_reward("stamina", reward_rate, skill_cap, 0.5 * TRAINING_SET_SCALE)
 	if (!nimble && !hardy)
 		return "You have grown past anything \the [src] can teach you."
-	H.exercise_spend(2)
+	H.exercise_spend(TRAINING_SET_FATIGUE)
 	to_chat(H, "<span class='notice'>Set done. Fatigue: [H.exercise_fatigue]/6.</span>")
 	return null
 

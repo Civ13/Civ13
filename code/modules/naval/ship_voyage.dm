@@ -88,7 +88,7 @@
 
 // Lands owner's chart shows that a ship can make for:
 // "label" = list(x, y, tiles).
-/proc/voyage_destinations(owner, list/origin)
+/proc/voyage_destinations(owner, list/origin, mob/living/human/captain = null)
 	. = list()
 	var/list/tiles = world_chart["tiles"]
 	if (!islist(tiles) || !owner || !origin)
@@ -110,8 +110,12 @@
 			continue
 		if (!voyage_seen(owner, x, y) && !(found["state"] in list("SETTLED", "CLAIMED")))
 			continue
+		// A faction's island shows only to a captain it lets land (island_access.dm).
+		var/island = island_access_claimant_at(key)
+		if (island && captain && !island_access_admits(captain, island))
+			continue
 		var/tiles_away = voyage_distance(origin, x, y)
-		.["[capitalize(world_chart_tile_label(template))] at [x],[y]: [tiles_away] tile\s, about [tiles_away] minute\s[found["region"] ? " (a land already opened)" : (found["parked"] ? " (laid up: its harbour is made ready as she sails)" : "")]"] = list(x, y, tiles_away)
+		.["[capitalize(world_chart_tile_label(template))] at [x],[y]: [tiles_away] tile\s, about [tiles_away] minute\s[island ? " ([island_access_member(captain, island) ? "your faction's island" : "[party_train_party_name(island)]'s island"])" : ""][found["region"] ? " (a land already opened)" : (found["parked"] ? " (laid up: its harbour is made ready as she sails)" : "")]"] = list(x, y, tiles_away)
 
 // The chart tile a scouting voyage turns round at, toward dir.
 /proc/voyage_scout_target(list/origin, dir)
@@ -181,7 +185,7 @@
 	var/list/lands = list()
 	var/list/scouting = list()
 	if (origin && owner)
-		lands = voyage_destinations(owner, origin)
+		lands = voyage_destinations(owner, origin, H)
 		scouting = list("Scout the unknown water to the north" = NORTH, "Scout the unknown water to the east" = EAST,
 			"Scout the unknown water to the south" = SOUTH, "Scout the unknown water to the west" = WEST)
 	var/load = sea_crossing_load(src)
@@ -221,13 +225,18 @@
 	var/list/land = lands[choice]
 	if (!islist(land))
 		return
-	reason = landfall_rest_refusal()
+	reason = landfall_rest_refusal() || voyage_island_refusal(land[1], land[2])
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
 	if (WWinput(H, "Set out for [choice]? Everyone aboard sails with her; whoever stays ashore is left behind.", craft.name, "No", list("Yes", "No")) != "Yes" || get_dist(H, src) > 1 || !craft)
 		return
 	if (!provisions_menu(H, land[3]))
+		return
+	// Her crew may have changed while the prompts were open.
+	reason = voyage_island_refusal(land[1], land[2])
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
 		return
 	// Sailing on from a land nobody settled or claimed, the captain may give it up (land_choices.dm).
 	var/abandon = abandon_choice(H)
@@ -279,6 +288,21 @@
 	player_activity.voyage(H, kind)
 	accolade_meet_mob(H, "sailor")
 	return TRUE
+
+// Why she cannot sail for the land at chart tile (x, y), or null: a faction's
+// island takes only those it lets land, and all aboard sail (island_access.dm).
+/obj/structure/hull_tiller/proc/voyage_island_refusal(x, y)
+	var/island = island_access_claimant_at("[x],[y]")
+	if (!island)
+		return null
+	var/datum/craft_body/built/B = body()
+	if (!B)
+		return null
+	for (var/mob/living/human/M in B.aboard())
+		var/reason = island_access_refusal(M, island)
+		if (reason)
+			return "She cannot sail there: [reason]. Put them ashore first."
+	return null
 
 /proc/voyage_course_body(x, y, owner, by, id)
 	return list("op" = "course", "x" = x, "y" = y, "owner" = owner, "admin" = by, "voyage" = id)

@@ -100,6 +100,15 @@ UNVISITED_SECONDS = 7 * 24 * 3600
 # Who may claim a land: a faction (its colony's parent, civ:<land>:<name>) or one
 # player for themself (crew:<ckey>). Each claims one land, so a player may hold
 # a land of their own and their faction another.
+# Who may land on a faction's claimed island (island_access.dm): anyone
+# (OPEN), its members and the people and pass holders it names (GUESTS, the
+# default), or its members alone (MEMBERS: the border is closed).
+ACCESS_MODES = ('OPEN', 'GUESTS', 'MEMBERS')
+ACCESS_DEFAULT = 'GUESTS'
+ACCESS_PEOPLE_MAX = 50
+ACCESS_PASSES_MAX = 100
+ACCESS_PASS_HOURS_MAX = 168
+
 _CLAIMANT = re.compile(r'^(civ:[a-z0-9_\-]{1,40}:[^\x00-\x1f]{1,60}|crew:[a-z0-9_\-]{1,40})$')
 NO_SLOT = 'every harbour master is busy: no new land can be opened for a crew right now. Try a land that is already open, or wait.'
 # Crews open lands by themselves (no admin decides), so the chart keeps them in
@@ -292,6 +301,11 @@ class WorldChart:
         # One claim per faction, one faction per land.
         db.execute('''CREATE TABLE IF NOT EXISTS chart_claim(
             faction TEXT PRIMARY KEY, x INTEGER NOT NULL, y INTEGER NOT NULL, by TEXT, at INTEGER NOT NULL)''')
+        # Who a faction lets land on its claimed island: a mode, the accounts it
+        # names and visitor passes (account -> when it runs out, unix seconds).
+        db.execute('''CREATE TABLE IF NOT EXISTS chart_access(
+            faction TEXT PRIMARY KEY, mode TEXT NOT NULL, people TEXT NOT NULL, passes TEXT NOT NULL,
+            by TEXT, at INTEGER NOT NULL)''')
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('seed', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('rev', '0')")
         if mainland and not db.execute('SELECT 1 FROM chart_pin LIMIT 1').fetchone():
@@ -444,6 +458,7 @@ class WorldChart:
                 'SELECT DISTINCT owner FROM chart_seen ORDER BY owner')}
             answer['courses'] = self.courses()
             answer['claims'] = self.claims()
+            answer['access'] = self.access()
         return answer
 
     def seen_mask(self, owner):
@@ -719,6 +734,76 @@ class WorldChart:
     def claims(self):
         return {f: '%d,%d' % (x, y) for f, x, y in self.db.execute('SELECT faction, x, y FROM chart_claim ORDER BY faction')}
 
+    # -- island access (island_access.dm) --------------------------------------
+    # A faction's claimed island takes only those its leader or officers let
+    # land. Worlds check the rows before anyone sets out for the island, and
+    # the island turns away whoever is ashore without leave.
+
+    def _access_row(self, faction):
+        row = self.db.execute('SELECT mode, people, passes FROM chart_access WHERE faction = ?', (faction,)).fetchone()
+        if not row:
+            return {'mode': ACCESS_DEFAULT, 'people': [], 'passes': {}}
+        try:
+            people, passes = json.loads(row[1]), json.loads(row[2])
+        except ValueError:
+            people, passes = [], {}
+        return {'mode': row[0] if row[0] in ACCESS_MODES else ACCESS_DEFAULT,
+                'people': [p for p in people if account_key_valid(p)] if type(people) is list else [],
+                'passes': {a: t for a, t in passes.items() if account_key_valid(a) and type(t) is int}
+                if type(passes) is dict else {}}
+
+    def _access_claimed(self, faction):
+        """True when faction (a civ: id, never a player) holds a claim."""
+        return isinstance(faction, str) and faction.startswith('civ:') and claimant_valid(faction) \
+            and faction in self.claims()
+
+    def _access_write(self, faction, row, by, now):
+        self.db.execute('INSERT OR REPLACE INTO chart_access VALUES (?, ?, ?, ?, ?, ?)',
+                        (faction, row['mode'], json.dumps(sorted(set(row['people']))),
+                         json.dumps(row['passes'], sort_keys=True), by, now))
+        self._bump()
+
+    def access(self, now=None):
+        """Every claimed island's access: faction -> mode, people and the
+        passes still running (account -> unix seconds they run out)."""
+        now = int(time.time() if now is None else now)
+        answer = {}
+        for faction in self.claims():
+            if not faction.startswith('civ:'):
+                continue
+            row = self._access_row(faction)
+            row['passes'] = {a: t for a, t in row['passes'].items() if t > now}
+            answer[faction] = row
+        return answer
+
+    def set_access(self, faction, mode, people, by=None, now=None):
+        """faction's leader or officers set who may land on its island. True when taken."""
+        if mode not in ACCESS_MODES or type(people) is not list or len(people) > ACCESS_PEOPLE_MAX \
+                or not all(account_key_valid(p) for p in people) or not self._access_claimed(faction):
+            return False
+        now = int(time.time() if now is None else now)
+        row = self._access_row(faction)
+        row['mode'], row['people'] = mode, people
+        row['passes'] = {a: t for a, t in row['passes'].items() if t > now}
+        self._access_write(faction, row, by, now)
+        return True
+
+    def grant_pass(self, faction, account, hours, by=None, now=None):
+        """A visitor pass to faction's island for account, for hours (0 takes it back). True when taken."""
+        if not account_key_valid(account) or type(hours) is not int or not 0 <= hours <= ACCESS_PASS_HOURS_MAX \
+                or not self._access_claimed(faction):
+            return False
+        now = int(time.time() if now is None else now)
+        row = self._access_row(faction)
+        passes = {a: t for a, t in row['passes'].items() if t > now and a != account}
+        if hours:
+            if len(passes) >= ACCESS_PASSES_MAX:
+                return False
+            passes[account] = now + hours * 3600
+        row['passes'] = passes
+        self._access_write(faction, row, by, now)
+        return True
+
     def visit(self, region, now=None):
         """Someone is on the land in region now: its 7 days start again."""
         now = int(time.time() if now is None else now)
@@ -759,6 +844,8 @@ class WorldChart:
         x, y, _ = found
         if not self.db.execute('DELETE FROM chart_claim WHERE faction = ? AND x = ? AND y = ?', (faction, x, y)).rowcount:
             return False
+        # A land given up or lapsed is open to every ship again.
+        self.db.execute('DELETE FROM chart_access WHERE faction = ?', (faction,))
         self.db.execute("UPDATE chart_tile SET state = 'SETTLED', by = ? WHERE region = ?", (by, region))
         self._bump()
         return True
@@ -784,6 +871,7 @@ class WorldChart:
                         {'region': region, 'key': '%d,%d' % (x, y), 'by': by, 'at': now})
         self.db.execute("UPDATE chart_tile SET state = 'LOST', region = NULL, by = ? WHERE x = ? AND y = ?", (by, x, y))
         self.db.execute('DELETE FROM chart_landed WHERE slot = ?', (region,))
+        self.db.execute('DELETE FROM chart_access WHERE faction IN (SELECT faction FROM chart_claim WHERE x = ? AND y = ?)', (x, y))
         self.db.execute('DELETE FROM chart_claim WHERE x = ? AND y = ?', (x, y))
         self.db.execute("UPDATE chart_course SET state = 'REFUSED', reason = 'that land was abandoned for good' "
                         "WHERE slot = ? AND state != 'REFUSED'", (region,))

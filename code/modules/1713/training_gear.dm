@@ -1,8 +1,8 @@
 // Lifting weights: stones in three sizes, bronze hand weights and the Modern
 // barbell. Held in the hand; one use starts a session of lifts that runs until
-// the lifter stops or tires, and six lifts make a set. A weight that is too heavy slips, one that is too light teaches
+// the lifter stops or tires, and three lifts make a set. A weight that is too heavy slips, one that is too light teaches
 // little, and hauling a heavy one about is a workout of its own.
-#define LIFT_SET_REPS 6
+#define LIFT_SET_REPS 3
 #define LIFT_HEAVE_TIME 8
 #define LIFT_HOLD_TIME 12
 #define CARRY_SET_TILES 40
@@ -114,7 +114,7 @@
 	var/mob/living/human/H = user
 	if (!istype(H))
 		return
-	to_chat(H, "Hold it and use it in your hand to start lifting; you keep lifting until you stop or tire, and six lifts make a set.[carry_trains ? " Carrying it about also trains strength and stamina." : ""]")
+	to_chat(H, "Hold it and use it in your hand to start lifting; you keep lifting until you stop or tire, and every three lifts make a set.[carry_trains ? " Carrying it about also trains strength and stamina." : ""]")
 	if (H.stats["strength"][1] >= skill_cap)
 		to_chat(H, "<span class='notice'>You have grown past anything this can teach you.</span>")
 		return
@@ -261,9 +261,9 @@
 		return null
 	winded = FALSE
 	var/light = heft_for(H) > 0
-	if (!H.exercise_reward("strength", reward_rate, skill_cap, light ? 0.25 : 1))
+	if (!H.exercise_reward("strength", reward_rate, skill_cap, (light ? 0.25 : 1) * TRAINING_SET_SCALE))
 		return "You have grown past anything \the [src] can teach you."
-	H.exercise_spend(2)
+	H.exercise_spend(TRAINING_SET_FATIGUE)
 	to_chat(H, "<span class='notice'>Set done. [light ? "\The [src] is light for you now and taught you little. " : ""]Fatigue: [H.exercise_fatigue]/6.</span>")
 	return null
 

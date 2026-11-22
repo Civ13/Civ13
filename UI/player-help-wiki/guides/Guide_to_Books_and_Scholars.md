@@ -281,7 +281,7 @@ If you want to focus, you can take an optional field of study: **Engineer, Strat
 
 ## Practice
 
-You can also train a discipline by hand. Hold its practice tool and use it in hand once: you keep practising, a little at a time, until you use it again, move, put it down, use **Stop Exercise**, run out of stamina or lose the light. Practice slowly uses up your stamina, so a rested character can keep at it for about four minutes. It trains only that discipline. A writing desk beside you makes you learn faster, and your master standing nearby doubles what you learn.
+You can also train a discipline by hand. Hold its practice tool and use it in hand once: you keep practising, a little at a time, until you use it again, move, put it down, use **Stop Exercise**, run out of stamina or lose the light. Practice slowly uses up your stamina, which does not recover while you practise, so a rested character can keep at it for about four minutes. It trains only that discipline. A writing desk beside you makes you learn faster, and your master standing nearby doubles what you learn.
 
 | Discipline | Practice tool | How to make it |
 | --- | --- | --- |

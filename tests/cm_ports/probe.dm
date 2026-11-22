@@ -320,12 +320,12 @@ var/floor_probe_waits = 0
 	var/strength_before = athlete.stats["strength"][1]
 	var/breath = athlete.stats["stamina"][1]
 	athlete.do_floor_exercise("push-ups")
-	probe_check(!athlete.floor_exercise_busy && athlete.exercise_fatigue == 4 && athlete.stats["strength"][1] > strength_before && athlete.stats["stamina"][1] < breath, "floor exercise keeps going set after set and drains stamina")
+	probe_check(!athlete.floor_exercise_busy && athlete.exercise_fatigue == 2 && athlete.stats["strength"][1] > strength_before && athlete.stats["stamina"][1] < breath, "floor exercise keeps going set after set and drains stamina")
 	athlete.exercise_fatigue = 0
 	athlete.stats["stamina"] = list(10, 40)
 	floor_probe_waits = 20
 	athlete.do_floor_exercise("push-ups")
-	probe_check(!athlete.floor_exercise_busy && floor_probe_waits == 18 && athlete.stats["stamina"][1] < athlete.training_stamina_cost(80), "floor exercise stops when stamina runs out")
+	probe_check(!athlete.floor_exercise_busy && floor_probe_waits == 5 && athlete.stats["stamina"][1] < athlete.training_stamina_cost(40), "floor exercise stops when stamina runs out")
 	athlete.stats["stamina"] = list(5, 40)
 	floor_probe_waits = 20
 	athlete.do_floor_exercise("push-ups")

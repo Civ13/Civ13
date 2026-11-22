@@ -211,6 +211,41 @@ faction while the faction lives there (`code/modules/naval/island_claim.dm`):
 The check runs with the land's chart refresh (`land_stages_refresh_due`).
 State: `map.faction_recruitment["island_claim"] = list(parent, short since)`.
 
+### Island borders
+
+A faction decides who may land on its claimed island
+(`code/modules/naval/island_access.dm`). Its leader, and officers holding the
+papers power, set the border from any land with **Faction > Faction Island**:
+
+| Border | Who may land |
+| --- | --- |
+| Open to visitors | anyone |
+| Members and guests (the default) | members, the guests the faction names (each named while standing beside the officer, up to 50) and holders of a visitor pass |
+| Members only | members alone, whatever passes say: the border is closed |
+
+A member is anyone who travels as the faction (`colony_faction_id`): its own
+members and its colonies' members. **Grant Island Visitor Pass** (a verb on the
+faction's recruitment station) gives someone beside the station a pass for 1
+hour to 7 days, or takes it back. The world directory keeps the border and the
+passes (`chart_access` in `world_chart.py`; chart ops `access` and `pass`, sent
+from any land for the tile the faction claims) and sends them with the chart
+(`access`), so every land knows them.
+
+- The voyage menu lists the island only to a captain it admits, and the tiller
+  refuses a voyage, or a landfall, while anyone aboard may not land.
+- Every trail, crossing and flight out of any land refuses them too
+  (`region_gate/depart_party`). An admin's send is never stopped.
+- On the island, whoever is ashore without leave (the border closed, a pass ran
+  out, a member was expelled) is told to go and after 10 minutes is put ashore
+  in the start land. Restrained captives stay where they are held.
+- The faction's own members are protected while they sleep offline in a bed
+  there ([offline sleep protection](../code/modules/persistence/offline_sleep_protection.dm)).
+- Giving the claim up, or its lapse, drops the border with it: the land is
+  open to every ship again.
+
+Tests: `python3 -B tests/transfer_storage/test_world_chart.py` (borders, passes,
+requests from another land).
+
 Tests: `tests/naval_carrier/voyage_probe.dm` (see `tests/naval_carrier/README.md`),
 `python3 -B tests/transfer_storage/test_world_chart.py` (courses, land choices),
 `python3 -B tests/gaia_host/test_expedition_slots.py` (opening lands).

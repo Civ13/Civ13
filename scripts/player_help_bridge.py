@@ -111,7 +111,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c299f9fad916d8397111d37a721530e9f76f1c8b'
+WIKI_REVIEWED_REVISION = '014e81804a2bc0c2db5d37e26b98e8d73c36503d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -123,7 +123,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Construction.md': ('6de3dc86ffcdb60ef2711137bdb3ab7301423b78b12c44d1a6b2c3f0e4ba1973', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
-    'guides/Guide_to_Exercise.md': ('7e79827f204eb90b55ccf8ab94803fac2856237ac598dcf3c78c0cbfe8860504', 'exercise training strength weights running fatigue'),
+    'guides/Guide_to_Exercise.md': ('9bc778ebfcf154ac5b1b9c962a16272cd507e57ad06a052c39759238f6ab9057', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs'),
     'guides/Guide_to_Farming.md': ('b74f967a070a3cdcb9c0cb08450a3e0ce73aeb148f78a9b67642bbb90b6a66b7', 'farming farm plant crops soil water frost mulch cloche'),
     'guides/Guide_to_Fishing.md': ('bf8032bff6af977f89793883b0c4565f2f87f4497d18dee75ea5efe816898375', 'fishing fish rod bait'),
@@ -168,7 +168,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('5db9ff546c6958023d928ab1f86e70b17bb3b0439a7d94720675520157f89942', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Books_and_Scholars.md': ('fc5815d23fcabfa352ff86b356d65cd9ceaff9299a5b741cf3339a4c5850105e', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('d7b63f0abf91216d9d96246bae1d4f49388e5efb8ac975640666213e3fb65f23', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('c9f94ed47900119d56fe52c9d95c38f7d08386e0dd2a780e85a45a8dfc7752e9', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),

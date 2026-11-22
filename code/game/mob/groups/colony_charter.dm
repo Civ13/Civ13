@@ -151,7 +151,7 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 /obj/structure/colony_charter/examine(mob/user)
 	..()
 	if (!faction)
-		to_chat(user, "No charter hangs on it yet. A faction's leader who has travelled here from their own land can plant one.")
+		to_chat(user, "No charter hangs on it yet. A faction's leader who has travelled here from their own land can plant one.[expedition_land_key() ? " Planted on a land across the sea, it claims the island as the faction's own: only those the faction lets land can sail here (Faction > Faction Island)." : ""]")
 		return
 	var/list/row = map ? map.faction_colonies()[faction] : null
 	if (islist(row))
@@ -161,6 +161,8 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	var/claim = islist(row) ? island_claim_text(row[1]) : null
 	if (claim)
 		to_chat(user, claim)
+		// The claimed island's border (island_access.dm).
+		to_chat(user, island_access_status_text(row[1]))
 
 // Why user cannot plant a charter here now, or null.
 /obj/structure/colony_charter/proc/plant_block(mob/living/human/user)

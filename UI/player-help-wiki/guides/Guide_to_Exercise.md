@@ -20,7 +20,7 @@ To train:
 
 1. Hold the weight. The two-handed ones need your other hand empty.
 2. Use it in your hand once to start lifting. You keep lifting by yourself, about two seconds a lift, while you stand still.
-3. Every **six lifts** make a set. Strength is paid when each set is done.
+3. Every **three lifts** make a set. A little strength is paid when each set is done.
 
 To stop, use the weight in your hand again, move, switch hands, put it down or use **Stop Exercise**. A set you stop part way through earns nothing.
 
@@ -34,7 +34,7 @@ A **skipping rope** is made from 2 rope in the **sports** section of the craftin
 
 1. Hold the rope with your other hand empty.
 2. Use it in your hand once to start skipping. You keep skipping by yourself, about two seconds a skip, while you stand still.
-3. Every **six skips** make a set. Each set pays dexterity and a little stamina, up to **1.25**.
+3. Every **three skips** make a set. Each set pays a little dexterity and stamina, up to **1.25**.
 
 You stop the same way as with weights.
 
@@ -61,7 +61,7 @@ If you stop for more than five seconds, the set starts over. To get off, press a
 
 ## Floor exercises
 
-No equipment? Use **Floor Exercise** in the IC tab and choose **Push-ups** (strength) or **Sit-ups** (stamina). You keep going on dry ground, **three repetitions of 8 seconds** to a set, until you move, run out of stamina, use **Floor Exercise** again or use **Stop Exercise**.
+No equipment? Use **Floor Exercise** in the IC tab and choose **Push-ups** (strength) or **Sit-ups** (stamina). You keep going on dry ground, **three repetitions of 4 seconds** to a set, until you move, run out of stamina, use **Floor Exercise** again or use **Stop Exercise**.
 
 Floor exercises train more slowly than equipment and stop at **1.0**. Past that you need weights, a skipping rope or a tread wheel. They use the same fatigue as equipment, and you cannot do them while you are training with a piece of equipment.
 
@@ -143,8 +143,8 @@ It takes many hours of practice to become a Master. The first time you become a 
 
 ## Stamina, fatigue and rest
 
-- Lifting, skipping and floor exercises use up your **stamina** while you keep at them, faster than it comes back. A rested character can keep going for about four minutes before they run out and stop. You need about a fifth of your stamina to start again.
-- Each completed set adds **2 fatigue**, up to a maximum of 6. At 6 your sets teach nothing, but you keep training, and your sets pay again once you have recovered a little.
+- Lifting, skipping and floor exercises use up your **stamina** while you keep at them, and your stamina does not recover until you stop. A rested character can keep going for about four minutes before they run out. You need about a fifth of your stamina to start again.
+- Each set of weights, rope or floor exercises adds **1 fatigue**; tread wheel, hand hardening and martial sets add 2. Fatigue goes up to a maximum of 6. At 6 your sets teach nothing, but you keep training, and your sets pay again once you have recovered a little.
 - Each set also makes you a little hungrier and thirstier, and you cannot gain while very hungry or thirsty.
 - One fatigue point recovers per minute.
 - The more fatigued you are, the less each set teaches you. Gains are also halved once a skill reaches 1.0.

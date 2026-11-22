@@ -37,9 +37,12 @@
 	// The weight, rope or wheel mid-set; anything else is idle.
 	var/tmp/datum/exercise_equipment
 	var/tmp/exercise_token = 0
+	// Fractions of a 0.1% skill step earned but not yet paid, by skill, so
+	// small frequent sets add up to the same gain as fewer big ones.
+	var/tmp/list/exercise_carry
 
 /mob/living/human/persistence_runtime_var(key)
-	return (key in list("exercise_rest_epoch", "exercise_equipment", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token")) || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment", "exercise_carry", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()
@@ -145,13 +148,24 @@
 	if (!islist(values) || values[1] < 10 || values[1] >= cap || values[2] >= cap)
 		return FALSE
 	var/paid = rate * scale * (1 - exercise_fatigue / 8) * (values[2] >= 100 ? 0.5 : 1)
-	// adaptStat rounds to 0.1%. Quantize here and stay clear of a binary float
-	// that lands just under the step after its division.
-	var/steps = max(1, round(paid * 1000 + 0.00001))
-	adaptStat(skill, (steps + 0.001) * (skill == "dexterity" ? 0.1 : 0.15))
+	exercise_pay_steps(skill, paid * 1000, cap)
+	return TRUE
+
+// Pay `steps` 0.1% steps of skill (fractions carry over to the next payment),
+// clamped to cap. adaptStat rounds to 0.1%; the + 0.001 keeps a binary float
+// clear of landing just under the step after its division.
+/mob/living/human/proc/exercise_pay_steps(skill, steps, cap)
+	if (!islist(exercise_carry))
+		exercise_carry = list()
+	var/carried = (isnum(exercise_carry[skill]) ? exercise_carry[skill] : 0) + steps
+	var/whole = round(carried + 0.00001)
+	exercise_carry[skill] = max(0, carried - whole)
+	if (whole > 0)
+		adaptStat(skill, (whole + 0.001) * (skill == "dexterity" ? 0.1 : 0.15))
+	var/list/values = stats[skill]
 	values[1] = min(cap, values[1])
 	values[2] = min(cap, values[2])
-	return TRUE
+	return whole
 
 // Stack recipe guard: training gear needs its era, research and skill.
 /datum/craft_guard/skill_gate/exercise
