@@ -405,7 +405,8 @@ def main():
         ('Climbing down: 1px dip every 10 ds', [(south, 1, 1, repeat(pull_down, 10, 10, start=2), None)], []),
     ], 24, (3, 3)), out / 'swim-and-climb.gif')
 
-    # 9. Walking, running and sprinting, and the same gaits dragged by water.
+    # 9. Walking, running and sprinting glide flat. The removed per-step hop is
+    # drawn beside each for comparison (it is no longer in the game).
     def glide(px_per_ds):
         return lambda t: ((t * px_per_ds) % 128 - 48, 0)
     def gait(keys):
@@ -413,14 +414,13 @@ def main():
     walk = gait([(0, 1, 0, 1, 2, 'sine_out'), (0, 0, 0, 1, 2, 'sine_in')])
     run = gait([(0, 2, 0, 1, 1.5, 'quad_out'), (0, 0, 0, 1, 1.5, 'quad_in')])
     sprint = gait([(0, 1, 0, 1, 1, 'quad_out'), (0, 0, 0, 1, 1, 'quad_in')])
-    wade_walk = gait([(0, -1, 0, 1, 3, 'sine_in'), (0, 0, 0, 1, 3, 'sine_out')])
-    wade_run = gait([(0, -1, 0, 1, 2, 'quad_in'), (0, 0, 0, 1, 2, 'quad_out')])
     save(panels([
-        ('Walk: 1px hop, 4 ds', [(east, 1, 1, walk, glide(7))], []),
-        ('Run: 2px hop, 3 ds', [(east, 1, 1, run, glide(10))], []),
-        ('Sprint: 1px hop, 2 ds', [(east, 1, 1, sprint, glide(14))], []),
-        ('Wading walk: 1px sink, 6 ds', [(east, 1, 1, wade_walk, glide(4))], [], True),
-        ('Wading run: 1px sink, 4 ds', [(east, 1, 1, wade_run, glide(6))], [], True),
+        ('Before: walk, 1px hop', [(east, 1, 1, walk, glide(7))], []),
+        ('Now: walk, flat', [(east, 1, 1, hold(stand), glide(7))], []),
+        ('Before: run, 2px hop', [(east, 1, 1, run, glide(10))], []),
+        ('Now: run, flat', [(east, 1, 1, hold(stand), glide(10))], []),
+        ('Before: sprint, 1px hop', [(east, 1, 1, sprint, glide(14))], []),
+        ('Now: sprint, flat', [(east, 1, 1, hold(stand), glide(14))], []),
     ], 36, (4, 3)), out / 'gaits.gif')
 
     # 10. Firing, throwing, shoves, stooping, kneeling and hauling.
@@ -492,7 +492,7 @@ def main():
     save(panels([
         ('Today: prone crawl slides', [(east, 1, 1, hold(lying), glide(1.5))], []),
         ('Crawl: elbow pull every 6 ds', [(east, 1, 1, repeat(crawl_track(1), 6, 6), glide(1.5))], []),
-        ('Walk, for comparison', [(east, 1, 1, walk, glide(7))], []),
+        ('Walk, for comparison', [(east, 1, 1, hold(stand), glide(7))], []),
         ('Sneak: held low, 7 ds steps', [(east, 1, 1, sneak, glide(3))], []),
     ], 36, (4, 3)), out / 'crawl-and-sneak.gif')
 

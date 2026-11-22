@@ -110,18 +110,20 @@ class BodyMotionSources(unittest.TestCase):
         self.assertIn('mob.last_movement = world.time\n\t\tif (ishuman(mob))\n\t\t\tvar/mob/living/human/strider = mob\n\t\t\tstrider.body_motion_stride()',
                       read('code/game/mob/mob_movement.dm'))
         self.assertIn('#define BODY_MOTION_PRIORITY_STRIDE 0', DEFINES)
-        # A hit cuts in over a bounce: the start gap holds back equal or lower priorities only.
+        # A hit cuts in over a step motion: the start gap holds back equal or lower priorities only.
         self.assertIn('priority <= body_motion_priority && world.time < body_motion_started + BODY_MOTION_MIN_GAP', MOTION)
         stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
-        for key in ('list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT)', 'list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT)',
-                    'list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT)', 'list(0, -1, 0, 1, 3, SINE_EASING | EASE_IN)',
-                    'list(0, -1, 0, 1, 2, QUAD_EASING | EASE_IN)', 'list(0, -1, 0, 1, 1.5, QUAD_EASING | EASE_IN)'):
-            self.assertIn(key, stride)
         self.assertIn('swim_skill_applies(loc)', stride)
         self.assertIn('istype(loc, /turf/floor/beach/water/ice)', stride)
-        drags = proc_body(MOTION, '/mob/living/human/proc/body_motion_terrain_drags(')
-        for check in ('/turf/floor/trench/flooded', 'flood_band_at(F)', 'has_snow_cover()', 'F.muddy'):
-            self.assertIn(check, drags)
+
+    def test_plain_gaits_do_not_bounce(self):
+        # Walking, running and sprinting glide flat: no hop, no terrain sink.
+        stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
+        self.assertEqual(stride.count('body_motion_play('), 2)  # heavy-haul heave and sneaking crouch only
+        for gone in ('is_sprinting()', 'm_intent == "run")\n', 'else if (m_intent == "walk")', 'body_motion_terrain_drags'):
+            self.assertNotIn(gone, stride)
+        self.assertNotIn('body_motion_terrain_drags', MOTION)
+        self.assertTrue(stride.rstrip().endswith('return FALSE'))
 
     def test_gestures_are_full_level_only(self):
         for header in ('/mob/living/human/proc/body_motion_work(', '/mob/living/human/proc/body_motion_settle(',
@@ -194,7 +196,7 @@ class BodyMotionSources(unittest.TestCase):
         haul = proc_body(MOTION, '/mob/living/human/proc/body_motion_haul_dir(')
         self.assertIn('added * pull_drag_mult() < 1', haul)
         stride = proc_body(MOTION, '/mob/living/human/proc/body_motion_stride(')
-        self.assertLess(stride.index('body_motion_haul_dir()'), stride.index('body_motion_terrain_drags()'))
+        self.assertLess(stride.index('body_motion_haul_dir()'), stride.index('m_intent == "stealth"'))
         self.assertIn('BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_REDUCED', stride)
 
     def test_everyday_motions_hooked(self):

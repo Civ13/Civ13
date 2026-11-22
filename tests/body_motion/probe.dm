@@ -214,39 +214,35 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(H.body_motion_struggle() && H.body_motion_until == world.time + 6, "struggle_6ds")
 	body_motion_probe_idle(H)
 
-	// --- walking, running and sprinting bounce ----------------------------------
+	// --- walking, running and sprinting stay flat -------------------------------
+	var/stride_started = H.body_motion_started
 	H.m_intent = "walk"
-	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 4 && H.body_motion_priority == BODY_MOTION_PRIORITY_STRIDE, "walk_bounce_4ds")
-	body_motion_probe_assert(body_motion_matrix_same(H.transform, rest), "bounce_ends_at_rest")
-	body_motion_probe_assert(!H.body_motion_stride(), "one_bounce_at_a_time")
-	// Anything else cuts in over a bounce, even straight after it starts.
-	body_motion_probe_assert(H.body_motion_recoil(A), "recoil_over_bounce")
-	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_stride() && body_motion_matrix_same(H.transform, rest), "walk_does_not_bounce")
 	H.m_intent = "run"
-	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 3, "run_bounce_3ds")
-	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_stride() && body_motion_matrix_same(H.transform, rest), "run_does_not_bounce")
 	H.sprinting = TRUE
-	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 2, "sprint_bounce_2ds")
-	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_stride() && body_motion_matrix_same(H.transform, rest), "sprint_does_not_bounce")
 	H.sprinting = FALSE
-	H.m_intent = "stealth"
-	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_priority == BODY_MOTION_PRIORITY_STRIDE, "sneaking_crouches")
-	body_motion_probe_idle(H)
-	// Wading drags the body down on a slower beat; ice glides flat.
-	H.m_intent = "walk"
+	// Wading, like dry ground, no longer moves the body on a step.
 	var/turf/home = H.loc
 	var/turf/shallows = new /turf/floor/beach/water(locate(7, 7, 1))
 	H.loc = shallows
-	body_motion_probe_assert(H.body_motion_terrain_drags() && H.body_motion_stride() && H.body_motion_until == world.time + 6, "wading_walk_sinks_6ds")
-	body_motion_probe_idle(H)
+	H.m_intent = "walk"
+	body_motion_probe_assert(!H.body_motion_stride(), "wading_walk_does_not_sink")
 	H.m_intent = "run"
-	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 4, "wading_run_sinks_4ds")
+	body_motion_probe_assert(!H.body_motion_stride(), "wading_run_does_not_sink")
+	H.loc = home
+	body_motion_probe_assert(H.body_motion_started == stride_started && world.time >= H.body_motion_until, "plain_steps_claim_no_motion")
+	H.m_intent = "stealth"
+	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_priority == BODY_MOTION_PRIORITY_STRIDE, "sneaking_crouches")
+	body_motion_probe_assert(!H.body_motion_stride(), "one_step_motion_at_a_time")
+	// Anything else cuts in over a step motion, even straight after it starts.
+	body_motion_probe_assert(H.body_motion_recoil(A), "recoil_over_step_motion")
 	body_motion_probe_idle(H)
 	var/turf/ice = new /turf/floor/beach/water/ice(locate(7, 8, 1))
 	H.loc = ice
 	body_motion_probe_assert(!H.body_motion_stride(), "ice_glides_flat")
 	H.loc = home
-	body_motion_probe_assert(!H.body_motion_terrain_drags(), "dry_ground_hops")
 	H.m_intent = "walk"
 	H.prone = TRUE
 	body_motion_probe_assert(!H.body_motion_stride(), "no_bounce_prone")
@@ -340,8 +336,7 @@ var/body_motion_probe_checks = 0
 	var/obj/structure/light_load = new(locate(4, 5, 1))
 	H.pulling = light_load
 	body_motion_probe_assert(!H.body_motion_haul_dir(), "light_load_no_heave")
-	body_motion_probe_assert(H.body_motion_stride() && H.body_motion_until == world.time + 4, "light_load_plain_bounce")
-	body_motion_probe_idle(H)
+	body_motion_probe_assert(!H.body_motion_stride(), "light_load_no_bounce")
 	H.pulling = null
 	qdel(light_load)
 
@@ -363,7 +358,7 @@ var/body_motion_probe_checks = 0
 	body_motion_probe_assert(!H.body_motion_stance_set(), "reduced_drops_stance_set")
 	body_motion_probe_assert(H.body_motion_parry(A), "reduced_keeps_parry")
 	body_motion_probe_idle(H)
-	body_motion_probe_assert(!H.body_motion_climb(TRUE, 30) && !H.body_motion_swim_stroke() && !H.body_motion_stride(), "reduced_drops_climb_stroke_and_bounce")
+	body_motion_probe_assert(!H.body_motion_climb(TRUE, 30) && !H.body_motion_swim_stroke() && !H.body_motion_stride(), "reduced_drops_climb_and_stroke")
 	body_motion_probe_assert(H.body_motion_sink(), "reduced_keeps_sink")
 	body_motion_probe_idle(H)
 	body_motion_probe_assert(H.body_motion_struggle(), "reduced_keeps_struggle")
@@ -430,7 +425,9 @@ var/body_motion_probe_checks = 0
 			if ("parry")
 				H.body_motion_parry(A)
 			if ("stride")
+				H.m_intent = "stealth"
 				H.body_motion_stride()
+				H.m_intent = "walk"
 			if ("climb")
 				H.body_motion_stop(H.body_motion_climb(TRUE, 20))
 			if ("sink")
