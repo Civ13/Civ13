@@ -474,6 +474,8 @@ RECIPE: /material/electronics/,computerized fabricator,/obj/structure/factory_fa
 RECIPE: /material/electronics/,3D printer,/obj/structure/factory_fabricator/printer,12,300,1,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,integrated circuit,/obj/item/integrated_circuit,4,100,0,1,none,205,0,0,8,null
 RECIPE: /material/electronics/,compact remote,/obj/item/circuit_shell/compact_remote,5,100,0,1,none,205,0,0,8,null
+RECIPE: /material/electronics/,punch card,/obj/item/weapon/punch_card,1,30,0,1,none,205,0,0,8,null
+RECIPE: /material/electronics/,punch card assembler,/obj/structure/punch_assembler,8,180,1,1,none,205,0,0,8,null
 
 //*****************| ELECTRONICS RADIO & COMMUNICATION |***************************
 

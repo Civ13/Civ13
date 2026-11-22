@@ -4,6 +4,9 @@
 	// The circuit inside is live graph state and is not written to saves.
 	should_save = FALSE
 	var/obj/item/integrated_circuit/circuit
+	// The 512 KiB the circuit's memory components share, created on first use.
+	// Volatile: it is wiped when the circuit leaves or the shell is deleted.
+	var/datum/wiremod_memory_pool/memory_pool
 
 /obj/item/circuit_shell/AltClick(mob/user)
 	if(circuit?.can_be_edited_by(user))
@@ -24,10 +27,29 @@
 	if(istype(item, /obj/item/integrated_circuit))
 		insert_circuit(item, user)
 		return TRUE
+	if(istype(item, /obj/item/weapon/punch_card) && circuit)
+		for(var/obj/item/circuit_component/punch_card_reader/reader as anything in circuit.attached_components)
+			if(reader.insert_card(item, user))
+				return TRUE
+		to_chat(user, "<span class='warning'>The circuit has no punch card reader.</span>")
+		return TRUE
 	if(circuit && user && user.a_intent != I_HARM && is_tool(item, TOOL_SCREWDRIVER))
 		remove_circuit(user)
 		return TRUE
 	return ..()
+
+// The pool exists only once a memory component asks for it.
+/obj/item/circuit_shell/proc/get_memory_pool()
+	if(QDELETED(src))
+		return null
+	if(!memory_pool)
+		memory_pool = new /datum/wiremod_memory_pool(src)
+	return memory_pool
+
+// Dropping the circuit, or switching it off, loses the memory with it.
+/obj/item/circuit_shell/proc/wipe_memory()
+	if(memory_pool)
+		memory_pool.wipe()
 
 /obj/item/circuit_shell/proc/insert_circuit(obj/item/integrated_circuit/new_circuit, mob/user)
 	if(!istype(new_circuit) || QDELETED(new_circuit))
@@ -68,6 +90,7 @@
 		return FALSE
 	var/obj/item/integrated_circuit/removed = circuit
 	circuit_uninstalled(removed, user)
+	wipe_memory()
 	circuit = null
 	if(user)
 		user.put_in_hands(removed)
@@ -88,4 +111,5 @@
 
 /obj/item/circuit_shell/Destroy()
 	QDEL_NULL(circuit)
+	QDEL_NULL(memory_pool)
 	return ..()

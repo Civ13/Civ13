@@ -332,6 +332,9 @@ var/datum/probe_globals/GLOB = new
 /atom/proc/attackby(obj/item/used, mob/user)
 	return FALSE
 
+/atom/proc/attack_hand(mob/user)
+	return FALSE
+
 // The real examine prints its text and returns a number, not a list.
 /atom/proc/examine(mob/user)
 	to_chat(user, "That's [src].")
@@ -454,6 +457,51 @@ var/datum/probe_globals/GLOB = new
 	calls++
 	if(target)
 		target.accept_current(input)
+
+// A stand-in for the memory and the punch reader on a CPU's bus, so a probe can
+// run a program synchronously: it answers every Trigger with the word at the
+// address the CPU drove, taking code words from `program` below `data_base`
+// and data words from `ram`, and records stores instead of performing them.
+/obj/item/circuit_component/probe_bus
+	display_name = "Probe Bus"
+	var/datum/port/input/address_input
+	var/datum/port/input/command_input
+	var/datum/port/input/data_input
+	var/datum/port/input/trigger_input
+	var/datum/port/output/data_output
+	var/list/program = list()
+	var/list/ram = list()
+	var/data_base = 4096
+	var/list/writes = list()
+	var/list/accesses = list()
+
+/obj/item/circuit_component/probe_bus/populate_ports()
+	address_input = add_input_port("Address", PORT_TYPE_STRING)
+	command_input = add_input_port("Command", PORT_TYPE_NUMBER)
+	data_input = add_input_port("Data", PORT_TYPE_STRING)
+	trigger_input = add_input_port("Trigger", PORT_TYPE_SIGNAL, trigger = PROC_REF(service))
+	data_output = add_output_port("Data", PORT_TYPE_STRING)
+
+/obj/item/circuit_component/probe_bus/proc/service(datum/port/input/input)
+	var/address = wiremod_u32_num(wiremod_binary_to_word(address_input.value))
+	if(!isnum(address))
+		address = 0
+	var/command = isnum(command_input.value) ? command_input.value : 0
+	accesses += list(list("address" = address, "command" = command))
+	if(command == 1)
+		var/word = wiremod_binary_to_word(data_input.value)
+		writes += list(list("address" = wiremod_u32_num(address), "word" = word))
+		if(address >= data_base)
+			ram["[address]"] = word
+		return
+	var/word = wiremod_u32(0)
+	if(address >= data_base)
+		word = ram["[address]"] ? ram["[address]"] : wiremod_u32(0)
+	else
+		var/index = floor(address / 4) + 1
+		if(index >= 1 && index <= length(program))
+			word = program[index]
+	data_output.set_output(wiremod_word_to_binary(word, 32))
 
 /proc/check(condition, message)
 	checks++
@@ -1182,7 +1230,7 @@ var/datum/probe_globals/GLOB = new
 /proc/test_component_lists()
 	var/list/available = wiremod_available_components()
 	var/list/unlisted = wiremod_unlisted_components()
-	var/list/unaccounted = typesof(/obj/item/circuit_component) - /obj/item/circuit_component - /obj/item/circuit_component/probe_crash - /obj/item/circuit_component/probe_acceptor - /obj/item/circuit_component/sound_emitter/probe_emitter
+	var/list/unaccounted = typesof(/obj/item/circuit_component) - /obj/item/circuit_component - /obj/item/circuit_component/probe_crash - /obj/item/circuit_component/probe_acceptor - /obj/item/circuit_component/probe_bus - /obj/item/circuit_component/sound_emitter/probe_emitter
 	var/both = 0
 	var/bad = 0
 	var/list/seen = list()
@@ -1908,11 +1956,296 @@ var/datum/probe_globals/GLOB = new
 	qdel(beaker)
 	user.other_hand = null
 
+/proc/test_binary_and_assembler(mob/living/user)
+	// The one bit order: most significant bit first, exactly 32 characters.
+	// DBG removed after numeric checks.
+	var/word_12345678 = wiremod_binary_to_word("00010010001101000101011001111000")
+	check(wiremod_word_to_binary(word_12345678, 32) == "00010010001101000101011001111000", "a word is written most significant bit first")
+	check(wiremod_word_to_binary(word_12345678, 32) == "00010010001101000101011001111000", "a word is read most significant bit first")
+	check(wiremod_u32_eq(wiremod_u32(-1), wiremod_binary_to_word("11111111111111111111111111111111")) && wiremod_s32(wiremod_binary_to_word("11111111111111111111111111111111")) == -1, "words wrap as unsigned 32-bit values")
+	check(wiremod_sign_extend(0x800, 12) == -2048 && wiremod_bits(wiremod_binary_to_word("11110000000000000000000000000000"), 28, 4) == 0xF, "fields sign-extend and read from their bit offset")
+	check(isnull(wiremod_binary_to_word("102")) && isnull(wiremod_binary_to_word("")), "a word is only a text of 0s and 1s")
+
+	// Instructions assemble to the encodings RV32I defines.
+	var/list/parsed = punch_assembler_parse("addi x1, x0, 5\nsw x1, 0(x0)")
+	check(!length(parsed["errors"]) && length(parsed["words"]) == 2, "two instructions make two words")
+	check(wiremod_u32_eq(parsed["words"][1], wiremod_binary_to_word("00000000010100000000000010010011")), "addi x1, x0, 5 has the RV32I encoding")
+	check(wiremod_u32_eq(parsed["words"][2], wiremod_binary_to_word("00000000000100000010000000100011")), "sw x1, 0(x0) puts rs2 above rs1")
+	parsed = punch_assembler_parse("add x9, x7, x8\nsrai x12, x11, 4\nlui x2, 0x12345\nauipc x3, 1")
+	check(wiremod_u32_eq(parsed["words"][1], wiremod_binary_to_word("00000000100000111000010010110011")), "add x9, x7, x8 has the RV32I encoding")
+	check(wiremod_u32_eq(parsed["words"][2], wiremod_binary_to_word("01000000010001011101011000010011")), "srai x12, x11, 4 has the RV32I encoding")
+	check(wiremod_u32_eq(parsed["words"][3], wiremod_binary_to_word("00010010001101000101000100110111")) && wiremod_u32_eq(parsed["words"][4], wiremod_binary_to_word("00000000000000000001000110010111")), "lui and auipc place the upper immediate")
+
+	// Labels count bytes, pseudo-instructions keep a fixed word count and a
+	// comment never reaches the parser.
+	parsed = punch_assembler_parse("start:\n\taddi x1, x0, 1 # one\n\tbeq x1, x1, start\n\tla x5, target\n\tnop\ntarget:\n\tnop")
+	check(!length(parsed["errors"]) && length(parsed["words"]) == 6, "labels, la and comments make the expected words ([length(parsed["words"])])")
+	check(wiremod_u32_eq(parsed["words"][2], wiremod_binary_to_word("11111110000100001000111011100011")), "a branch back to its own label is four bytes back")
+	check(wiremod_u32_eq(parsed["words"][3], wiremod_binary_to_word("00000000000000000000001010110111")) && wiremod_u32_eq(parsed["words"][4], wiremod_binary_to_word("00000001010000101000001010010011")), "la is always the same two words and names the byte address")
+
+	parsed = punch_assembler_parse(".word 1, 2, 3\nnop")
+	check(length(parsed["words"]) == 4 && wiremod_u32_eq(parsed["words"][4], wiremod_binary_to_word("00000000000000000000000000010011")), ".word emits one word per value")
+
+	parsed = punch_assembler_parse("bogus x1\nadd x1, x2\naddi x1, x0, 1")
+	check(!length(parsed["words"]) && length(parsed["errors"]) == 2, "any bad line produces no words and names every bad line")
+	check(findtext(parsed["errors"][1], "Line 1") && findtext(parsed["errors"][2], "Line 2"), "each error names its line")
+
+	// A card is 25 words and a chain is at most 100 cards.
+	var/obj/item/weapon/punch_card/card = new()
+	check(card.set_words(list(1, 2, 3)) && card.word_count() == 3, "a card keeps the words it was given")
+	card.set_words(list())
+	var/list/many = list()
+	for(var/index in 1 to 30)
+		many += index
+	card.set_words(many)
+	check(card.word_count() == 25, "a card cannot hold more than 25 words")
+	check(wiremod_u32_num(card.get_word(1)) == 1 && isnull(card.get_word(26)), "a card reads its words by position")
+	qdel(card)
+
+	var/obj/item/weapon/punch_card/head = new()
+	var/obj/item/weapon/punch_card/current = head
+	var/linked = 0
+	for(var/index in 2 to 100)
+		var/obj/item/weapon/punch_card/next = new()
+		if(!current.link_card(next))
+			break
+		linked++
+		current = next
+	var/obj/item/weapon/punch_card/extra = new()
+	check(linked == 99 && head.chain_length() == 100, "cards chain up to one hundred")
+	check(!head.link_card(extra) && head.chain_length() == 100, "a full chain takes no more cards")
+	for(var/obj/item/weapon/punch_card/entry as anything in head.chain())
+		qdel(entry)
+	qdel(extra)
+
+	// The reader emits the exact word count, then holds Finished high.
+	var/obj/item/circuit_shell/compact_remote/shell = new(user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	shell.attackby(circuit, user)
+	var/obj/item/circuit_component/punch_card_reader/reader = print(circuit, user, /obj/item/circuit_component/punch_card_reader)
+	var/obj/item/weapon/punch_card/first = new()
+	first.set_words(list(wiremod_binary_to_word("00010001000100010001000100010001"), wiremod_binary_to_word("00100010001000100010001000100010")))
+	var/obj/item/weapon/punch_card/second = new()
+	second.set_words(list(wiremod_binary_to_word("00110011001100110011001100110011")))
+	first.link_card(second)
+	check(reader.insert_card(first, user) && length(reader.cards) == 2 && length(reader.words) == 3, "a reader takes a chain and counts every word")
+	set_port(reader, 1, COMPONENT_SIGNAL)
+	check(output_value(reader, 1) == wiremod_word_to_binary(wiremod_binary_to_word("00010001000100010001000100010001"), 32) && reader.position == 1, "the reader emits the first word")
+	set_port(reader, 1, COMPONENT_SIGNAL)
+	set_port(reader, 1, COMPONENT_SIGNAL)
+	check(output_value(reader, 1) == wiremod_word_to_binary(wiremod_binary_to_word("00110011001100110011001100110011"), 32) && reader.position == 3, "the short last card contributes only its own words")
+	check(reader.finished == FALSE, "the reader is not finished while a word remains")
+	set_port(reader, 1, COMPONENT_SIGNAL)
+	check(reader.finished && output_value(reader, 3) == TRUE, "Finished rises on the trigger after the last word")
+	check(output_value(reader, 1) == wiremod_word_to_binary(wiremod_binary_to_word("00110011001100110011001100110011"), 32), "a finished reader emits no padding word")
+	set_port(reader, 3, COMPONENT_SIGNAL)
+	check(!reader.finished && output_value(reader, 3) == FALSE && reader.position == 0, "Restart rewinds and clears Finished")
+	set_port(reader, 1, COMPONENT_SIGNAL)
+	check(output_value(reader, 1) == wiremod_word_to_binary(wiremod_binary_to_word("00010001000100010001000100010001"), 32), "Restart replays from the first word")
+	set_port(reader, 2, COMPONENT_SIGNAL)
+	check(!length(reader.cards) && !length(reader.words) && first.loc && second.loc, "Eject returns the cards and clears the program")
+	qdel(first)
+	qdel(second)
+	qdel(shell)
+
+/proc/test_memory_pool(mob/living/user)
+	var/obj/item/circuit_shell/compact_remote/shell = new(user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	shell.attackby(circuit, user)
+	var/obj/item/circuit_component/memory/large/first = print(circuit, user, /obj/item/circuit_component/memory/large)
+	var/obj/item/circuit_component/memory/large/second = print(circuit, user, /obj/item/circuit_component/memory/large)
+	var/datum/wiremod_memory_pool/pool = shell.get_memory_pool()
+	pool.ensure()
+	check(first.slice_bytes + second.slice_bytes == CIRCUIT_MEMORY_TOTAL_BYTES, "two large memories split the whole 512 KiB")
+	check(first.slice_bytes == 262144 && second.slice_bytes == 262144, "two large memories get equal shares")
+	check(first.slice_base == 0 && second.slice_base == first.slice_bytes, "slices follow one another")
+
+	check(pool.write_word(first, 0, wiremod_binary_to_word("11011110101011011011111011101111")), "a word can be stored in a large memory")
+	check(wiremod_u32_eq(pool.read_word(first, 0), wiremod_binary_to_word("11011110101011011011111011101111")), "the word reads back")
+	check(wiremod_u32_num(pool.read_word(second, 0)) == 0, "another memory's slice starts empty")
+	check(length(pool.pages) == 1, "a page is allocated only when written")
+	check(!pool.write_word(first, 1, 0) && !pool.write_word(first, first.slice_bytes, 0), "an unaligned or out-of-slice store is refused")
+	check(isnull(pool.read_word(first, 1)) && isnull(pool.read_word(first, first.slice_bytes)), "an unaligned or out-of-slice read gives nothing")
+
+	// The ports perform one aligned word per Trigger.
+	enter(circuit, user, first, 1, wiremod_word_to_binary(0, 19))
+	check(output_value(first, 1) == wiremod_word_to_binary(wiremod_binary_to_word("11011110101011011011111011101111"), 32), "the Output port reads the stored word")
+	enter(circuit, user, first, 2, wiremod_word_to_binary(0x1234, 32))
+	enter(circuit, user, first, 3, 1)
+	set_port(first, 4, COMPONENT_SIGNAL)
+	check(wiremod_u32_num(pool.read_word(first, 0)) == 0x1234, "Mode 1 with Trigger stores whole 32-bit words")
+	enter(circuit, user, first, 3, 0)
+	set_port(first, 4, COMPONENT_SIGNAL)
+	check(output_value(first, 1) == wiremod_word_to_binary(0x1234, 32), "Mode 0 with Trigger reads them back")
+	enter(circuit, user, first, 1, wiremod_word_to_binary(0, 18))
+	enter(circuit, user, first, 3, 1)
+	enter(circuit, user, first, 2, wiremod_word_to_binary(0x99, 32))
+	set_port(first, 4, COMPONENT_SIGNAL)
+	check(wiremod_u32_num(pool.read_word(first, 0)) == 0x1234, "an Address that is not 19 bits is refused")
+
+	// A small memory claims 1 KiB from the large ones, and remapping wipes the pool.
+	var/obj/item/circuit_component/memory/small/small = print(circuit, user, /obj/item/circuit_component/memory/small)
+	pool.ensure()
+	check(small.slice_bytes == CIRCUIT_MEMORY_SMALL_BYTES, "a small memory holds 1 KiB")
+	check(first.slice_bytes + second.slice_bytes + small.slice_bytes == CIRCUIT_MEMORY_TOTAL_BYTES, "the small memory is taken from the large shares")
+	check(first.slice_bytes == 262144 && second.slice_bytes == 261120, "the leftover kilobyte goes to the first large memory ([first.slice_bytes], [second.slice_bytes])")
+	check(wiremod_u32_num(pool.read_word(first, 0)) == 0, "changing the memory set wipes the pool")
+	check(!length(pool.pages), "the wiped pool keeps no pages")
+
+	act(circuit, user, "detach_component", list("component_id" = small.circuit_id))
+	pool.ensure()
+	check(first.slice_bytes + second.slice_bytes == CIRCUIT_MEMORY_TOTAL_BYTES, "removing the small memory gives the kilobyte back")
+
+	// The pool is volatile with the shell.
+	qdel(shell)
+	check(shell.gc_destroyed, "deleting the shell deletes the pool")
+	qdel(circuit)
+
+/proc/test_riscv_cpu(mob/living/user)
+	var/obj/item/circuit_shell/compact_remote/shell = new(user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	shell.attackby(circuit, user)
+	var/obj/item/circuit_component/riscv_cpu/cpu = print(circuit, user, /obj/item/circuit_component/riscv_cpu)
+	cpu.stop_clock()
+	var/obj/item/circuit_component/probe_bus/bus = new(circuit)
+	circuit.add_component(bus)
+	wire(circuit, user, cpu, 1, bus, 1)
+	wire(circuit, user, cpu, 2, bus, 2)
+	wire(circuit, user, cpu, 3, bus, 3)
+	wire(circuit, user, cpu, 5, bus, 4)
+	wire(circuit, user, bus, 1, cpu, 1)
+
+	var/list/parsed = punch_assembler_parse({"li x1, 0x12345678
+sw x1, 4096(x0)
+lb x2, 4097(x0)
+lbu x3, 4096(x0)
+sb x1, 4098(x0)
+lw x4, 4096(x0)
+lh x5, 4098(x0)
+li x15, 0xBEEF
+sh x15, 4096(x0)
+lw x6, 4096(x0)
+li x7, 5
+li x8, 7
+add x9, x7, x8
+sub x10, x8, x7
+li x11, 0x80000000
+srai x12, x11, 4
+li x13, 0x80000
+li x14, 0x1FF
+sw x14, 0(x13)
+li x16, 0x90000
+li x17, 0x55
+sw x17, 0(x16)
+ecall"})
+	check(!length(parsed["errors"]), "the CPU test program assembles")
+	bus.program = parsed["words"]
+	cpu.budget = 200
+	cpu.pump()
+	check(length(bus.accesses) && bus.accesses[1]["address"] == 0 && bus.accesses[1]["command"] == 0, "a fetch drives pc with Command 0 and pulses Triggered")
+
+	check(cpu.get_reg_num(2) == 0x56, "lb sign-extends a byte from the addressed position")
+	check(cpu.get_reg_num(3) == 0x78, "lbu zero-extends a byte")
+	check(wiremod_u32_eq(cpu.get_reg(4), wiremod_binary_to_word("00010010011110000101011001111000")), "sb patches only its byte of the word")
+	check(cpu.get_reg_num(5) == 0x1278, "lh reads the addressed halfword")
+	check(wiremod_u32_eq(cpu.get_reg(6), wiremod_binary_to_word("00010010011110001011111011101111")), "sh patches only its halfword")
+	check(cpu.get_reg_num(9) == 12 && cpu.get_reg_num(10) == 2, "register arithmetic runs")
+	check(wiremod_u32_eq(cpu.get_reg(12), wiremod_binary_to_word("11111000000000000000000000000000")), "srai shifts in the sign")
+	check(cpu.chip_select_latch == 255 && output_value(cpu, 4) == 255, "a store to 0x80000 latches Chip select as a byte")
+	var/latch_on_bus = FALSE
+	var/masked_store = FALSE
+	for(var/list/write in bus.writes)
+		if(write["address"] == CIRCUIT_CHIP_SELECT_ADDRESS)
+			latch_on_bus = TRUE
+		if(write["address"] == 0x10000)
+			masked_store = TRUE
+	check(!latch_on_bus, "the Chip select store emits no bus cycle")
+	check(masked_store, "an address beyond 512 KiB is masked to 19 bits on the bus")
+	check(cpu.halted && cpu.fault_text == "The program halted." && output_value(cpu, 2) == 0, "ecall halts with Command 0")
+	check(output_value(cpu, 1) == "" && output_value(cpu, 3) == "", "a halted CPU leaves Address and Data empty")
+
+	set_port(cpu, 3, COMPONENT_SIGNAL)
+	cpu.stop_clock()
+	check(!cpu.halted && isnull(cpu.fault_text) && cpu.chip_select_latch == 0 && output_value(cpu, 4) == 0, "Reset recovers the CPU and clears Chip select")
+
+	var/obj/item/circuit_component/riscv_cpu/broken = print(circuit, user, /obj/item/circuit_component/riscv_cpu)
+	broken.stop_clock()
+	broken.budget = 10
+	broken.pump()
+	check(output_value(broken, 1) == wiremod_word_to_binary(0, 19), "an idle CPU fetches address zero")
+	set_port(broken, 1, "101")
+	check(broken.halted && findtext(broken.fault_text, "32-bit"), "a short Data in word faults the CPU")
+	check(output_value(broken, 2) == 0 && output_value(broken, 1) == "" && output_value(broken, 3) == "", "a fault empties the bus outputs")
+	set_port(broken, 3, COMPONENT_SIGNAL)
+	broken.stop_clock()
+	broken.budget = 10
+	broken.pump()
+	set_port(broken, 1, wiremod_word_to_binary(wiremod_binary_to_word("11111111111111111111111111111111"), 32))
+	check(broken.halted && findtext(broken.fault_text, "Unknown instruction"), "an unknown opcode faults the CPU")
+	set_port(broken, 3, COMPONENT_SIGNAL)
+	broken.stop_clock()
+	broken.budget = 10
+	broken.pump()
+	set_port(broken, 1, wiremod_word_to_binary(0x73, 32))
+	check(broken.halted && broken.fault_text == "The program halted.", "ecall halts on purpose")
+
+	qdel(shell)
+	qdel(circuit)
+
+/proc/test_cpu_from_reader(mob/living/user)
+	var/obj/item/circuit_shell/compact_remote/shell = new(user)
+	var/obj/item/integrated_circuit/circuit = new(user)
+	shell.attackby(circuit, user)
+	var/obj/item/circuit_component/riscv_cpu/cpu = print(circuit, user, /obj/item/circuit_component/riscv_cpu)
+	cpu.stop_clock()
+	var/obj/item/circuit_component/punch_card_reader/reader = print(circuit, user, /obj/item/circuit_component/punch_card_reader)
+	wire(circuit, user, reader, 1, cpu, 1)
+	wire(circuit, user, cpu, 5, reader, 1)
+
+	var/list/parsed = punch_assembler_parse({"li x1, 0x41424344
+li x2, 0
+li x3, 0x80000
+li x4, 7
+sw x4, 0(x3)
+jalr x0, 0(x0)"})
+	check(!length(parsed["errors"]), "the loader program assembles")
+	var/obj/item/weapon/punch_card/card = new()
+	card.set_words(parsed["words"])
+	check(reader.insert_card(card, user), "the loader is punched onto one card")
+	cpu.budget = 200
+	cpu.pump()
+	check(wiremod_u32_eq(cpu.get_reg(1), wiremod_binary_to_word("01000001010000100100001101000100")) && cpu.get_reg_num(2) == 0, "the CPU runs a linear program from the reader")
+	check(output_value(cpu, 4) == 7 && cpu.chip_select_latch == 7, "the loader latches Chip select without a bus cycle")
+	check(reader.position == length(parsed["words"]) && reader.finished, "the reader finishes on the fetch after the last word")
+	check(!cpu.halted && cpu.pc == 0, "the loader returns the program counter to zero")
+
+	// The player switches Data in from the reader to memory once Finished rises.
+	var/obj/item/circuit_component/probe_bus/bus2 = new(circuit)
+	circuit.add_component(bus2)
+	bus2.program = punch_assembler_parse("addi x5, x0, 42\necall")["words"]
+	wire(circuit, user, bus2, 1, cpu, 1)
+	wire(circuit, user, cpu, 1, bus2, 1)
+	wire(circuit, user, cpu, 2, bus2, 2)
+	wire(circuit, user, cpu, 3, bus2, 3)
+	wire(circuit, user, cpu, 5, bus2, 4)
+	// CPU may be waiting on a fetch from before the switch; service the new source.
+	if(cpu.state != CIRCUIT_CPU_STATE_IDLE)
+		bus2.service(bus2.trigger_input)
+	cpu.budget = 100
+	cpu.pump()
+	check(cpu.get_reg_num(5) == 42 && cpu.halted, "the same CPU runs the memory word after the source switch")
+	check(output_value(cpu, 4) == 7, "switching Data in does not reset the Chip select latch")
+	check(length(bus2.accesses) && bus2.accesses[1]["address"] == 0, "the switched source starts at address zero")
+
+	qdel(card)
+	qdel(shell)
+	qdel(circuit)
+
 /world/New()
 	world.OpenPort("none")
 	spawn(0)
 		var/mob/living/user = new(locate(1, 1, 1))
-		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_shell_circuit, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components, /proc/test_parity_components))
+		for(var/test in list(/proc/test_datatypes, /proc/test_connections, /proc/test_components, /proc/test_limits, /proc/test_delay, /proc/test_untrusted_input, /proc/test_hand_components, /proc/test_stable_ids, /proc/test_action_table, /proc/test_component_lists, /proc/test_manual_values, /proc/test_list_handoff, /proc/test_refresh_coalescing, /proc/test_shell_circuit, /proc/test_remote_and_cleanup, /proc/test_operation_dropdown, /proc/test_info_panel, /proc/test_entities, /proc/test_entity_cleanup, /proc/test_new_components, /proc/test_parity_components, /proc/test_binary_and_assembler, /proc/test_memory_pool, /proc/test_riscv_cpu, /proc/test_cpu_from_reader))
 			try
 				call(test)(user)
 			catch(var/exception/failure)

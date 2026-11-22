@@ -64,6 +64,35 @@
 // Bits in a number the Binary Conversion component reads or writes.
 #define CIRCUIT_BINARY_BITS 8
 
+// Memory: one shell owns this many bytes, split evenly across its memory
+// components. A small memory claims 1 KiB and takes it from the large ones.
+#define CIRCUIT_MEMORY_TOTAL_BYTES 524288
+#define CIRCUIT_MEMORY_SMALL_BYTES 1024
+#define CIRCUIT_MEMORY_PAGE_BYTES 4096
+#define CIRCUIT_MEMORY_MAX_PAGES 128
+#define CIRCUIT_MEMORY_WORD_BYTES 4
+// The 19-bit local address space of a memory component, in bytes.
+#define CIRCUIT_MEMORY_LOCAL_BYTES 0x80000
+// A store to this address sets Chip select instead of reaching memory.
+#define CIRCUIT_CHIP_SELECT_ADDRESS 0x80000
+
+// CPU clock bounds. The clock is an instruction budget per server tick, not a
+// timer per hertz; above the per-tick cap the core runs slower than asked.
+#define CIRCUIT_CPU_MIN_CLOCK 1
+#define CIRCUIT_CPU_MAX_CLOCK 500000
+#define CIRCUIT_CPU_MAX_PER_TICK 256
+// What the core is waiting for: nothing, a fetched word, a load, or the read
+// half of a read-modify-write.
+#define CIRCUIT_CPU_STATE_IDLE 0
+#define CIRCUIT_CPU_STATE_FETCH 1
+#define CIRCUIT_CPU_STATE_LOAD 2
+#define CIRCUIT_CPU_STATE_RMW_READ 3
+
+// Punch card geometry: 10 rows of 80 bits, 25 32-bit words.
+#define PUNCH_CARD_BITS 800
+#define PUNCH_CARD_WORDS 25
+#define PUNCH_CARD_MAX_CHAIN 100
+
 #define COMPONENT_DEFAULT_NAME "component"
 #define COMPONENT_DEFAULT_CATEGORY "General"
 #define COMPONENT_SIGNAL (world.time / 10)

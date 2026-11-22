@@ -62,6 +62,10 @@
 		/obj/item/circuit_component/speech,
 		/obj/item/circuit_component/radio,
 		/obj/item/circuit_component/pathfinder,
+		/obj/item/circuit_component/riscv_cpu,
+		/obj/item/circuit_component/memory/large,
+		/obj/item/circuit_component/memory/small,
+		/obj/item/circuit_component/punch_card_reader,
 	)
 
 // Every other component type, with the reason it is not in the menu. The tests
@@ -76,6 +80,7 @@
 		/obj/item/circuit_component/variable/setter = "Made from the variable menu, tied to one variable.",
 		/obj/item/circuit_component/variable/triggered_setter = "Made from the variable menu, tied to one variable.",
 		/obj/item/circuit_component/compact_remote = "Built into a compact remote; it is attached when an integrated circuit is inserted.",
+		/obj/item/circuit_component/memory = "Base of the memory sizes; it carries the shared ports and has no slice of its own.",
 	)
 
 /obj/item/integrated_circuit
@@ -121,6 +126,16 @@
 	for(var/obj/item/circuit_component/component as anything in attached_components)
 		component.anchor_changed()
 	refresh_editor()
+
+// Switching the circuit off loses the shell's memory with everything else it
+// was holding. Components are told through the same anchor hook they already use.
+/obj/item/integrated_circuit/proc/set_on(new_value)
+	on = new_value ? TRUE : FALSE
+	if(!on)
+		var/obj/item/circuit_shell/shell = wiremod_circuit_shell(src)
+		if(shell)
+			shell.wipe_memory()
+	anchor_changed()
 
 /obj/item/integrated_circuit/proc/refresh_variable_options()
 	for(var/obj/item/circuit_component/component as anything in attached_components)
