@@ -52,6 +52,9 @@ When translation is on, what other players type in another language (speech,
 emotes, radio, OOC and LOOC) is translated into your language. Game messages
 are never translated, and very short lines are left as they are.
 
+With translation off, a **Translate** button appears after any chat line that
+may be in another language. Click it to translate just that line.
+
 To turn translation on or off, or to change your language:
 
 1. Click **Tabs...** at the right end of the chat tab row.
