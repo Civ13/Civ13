@@ -45,7 +45,8 @@ class RestoreIntegrationSources(unittest.TestCase):
                    'storage.ClearMap()', 'storage.run_world_operation("load", operation)',
                    'storage.load_map_metadata()', 'storage.restore_durable_world()',
                    'map.apply_persistence_age_floor()', 'storage.restore_round_state(src, saved_round)',
-                   'storage.restore_zone_spawns()', 'attempt.release_transients()',
+                   'storage.restore_zone_spawns()', 'storage.restore_dug_levels_after_load()',
+                   'attempt.release_transients()',
                    'operation.restoring_players = TRUE', 'storage.finish_player_restoration()',
                    'operation.finish(TRUE)')
         offsets = [self.wrapper.index(call) for call in ordered]
@@ -181,6 +182,16 @@ class RestoreIntegrationSources(unittest.TestCase):
         self.assertIn('operation.enter_contents(src, "load")', source)
         self.assertIn('persistence_load_recovery_required == (!expected && mutated)', source)
         self.assertIn('wrapper enters admitted contents once', source)
+
+    def test_cave_rebuild_waits_for_committed_zones(self):
+        # The cave area it may construct during the staged load was an unrequested
+        # staged area and refused Orbit's whole save (2026-11-22).
+        loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+        contents = loading.split('/map_storage/proc/load_world_contents(', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('\trestore_dug_levels', contents)
+        after = self.functions.split('/map_storage/proc/restore_dug_levels_after_load()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('restore_dug_levels()', after)
+        self.assertIn('catch', after)
 
 
 if __name__ == '__main__':
