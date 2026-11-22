@@ -240,13 +240,7 @@
 	watchlist_login(src)
 	agent_control.update_handover_verbs(src)
 
-	// Forcibly enable hardware-accelerated graphics, as we need them for the lighting overlays.
-	// (but turn them off first, since sometimes BYOND doesn't turn them on properly otherwise)
-	spawn(5) // And wait a half-second, since it sounds like you can do this too fast.
-		if (src)
-			winset(src, null, "command=\".configure graphics-hwmode off\"")
-			sleep(1) // wait a bit more, possibly fixes hardware mode not re-activating right
-			winset(src, null, "command=\".configure graphics-hwmode on\"")
+	ensure_hardware_graphics()
 	
 	send_resources()
 
@@ -282,6 +276,26 @@
 		sleep(1)
 
 	movementMachine_clients += src
+
+// Hardware graphics are needed for the lighting overlays. Region travel
+// relinks the same Dream Seeker to another world, and every world used to turn
+// hardware mode off and on again at connect: after a few trips the renderer
+// came back as a blank black window (Val, 2026-11-22). Leave it alone when it is
+// already on; turn it on when it is off, and only kick it off and on again
+// when the client says plainly that turning it on did not take.
+/client/proc/ensure_hardware_graphics()
+	set waitfor = FALSE
+	sleep(5) // let the skin finish loading first
+	if (!src || winget(src, null, "hwmode") == "true")
+		return
+	winset(src, null, "command=\".configure graphics-hwmode on\"")
+	sleep(5)
+	if (!src || winget(src, null, "hwmode") != "false")
+		return
+	winset(src, null, "command=\".configure graphics-hwmode off\"")
+	sleep(1)
+	if (src)
+		winset(src, null, "command=\".configure graphics-hwmode on\"")
 
 /client/MouseEntered(atom/object, location, control, params)
 	UpdateMouseScreenLoc(params)

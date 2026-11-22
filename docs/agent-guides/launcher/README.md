@@ -11,6 +11,10 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-22: Ready lands -->
+Launcher 1.5.38 renames the menu item to **Travel and ready lands…** and adds the group's `ready_neighbours` checkbox and
+`cold_after_minutes` (HostSettings.Readiness/SetReadiness), read by the host service at each check.
+
 <!-- 2026-11-22: Travel starts -->
 Launcher 1.5.37 adds **All regions > More > Travel starts…** (HostSettings.TravelStarts/SetKeptDown): one tick per
 land (the gateway is left out); an unticked land gets `"keep_down": true` in the group config, so a traveller is turned

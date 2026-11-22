@@ -462,6 +462,9 @@ var/world_topic_spam_protect_time = world.timeofday
 	if(state["character_unconfirmed"]) return "Character recovery is not confirmed - joining may be delayed."
 	return "Round is open - account, character and role checks still apply."
 
+// The BYOND hub keeps about this many characters of a listing's status.
+#define HUB_STATUS_MAX_LENGTH 255
+
 /world/proc/update_status()
 
 	if (world.port == config.testing_port)
@@ -497,13 +500,18 @@ var/world_topic_spam_protect_time = world.timeofday
 		community_links += discord_link
 	if (website_link)
 		community_links += website_link
-	if (community_links.len)
-		s += "[jointext(community_links, " | ")]<br>"
+	// Anything the hub would cut mid-tag is left out rather than shown broken.
+	var/links_line = community_links.len ? "[jointext(community_links, " | ")]<br>" : ""
+	if (links_line && length(s) + length(links_line) <= HUB_STATUS_MAX_LENGTH)
+		s += links_line
 
-	if (config.hub_banner_url)
-		s += "<img src=\"[config.hub_banner_url]\"><br>"
+	var/banner_line = config.hub_banner_url ? "<img src=\"[config.hub_banner_url]\"><br>" : ""
+	if (banner_line && length(s) + length(banner_line) <= HUB_STATUS_MAX_LENGTH)
+		s += banner_line
 
 	status = s
+
+#undef HUB_STATUS_MAX_LENGTH
 
 /proc/get_packaged_server_status_data()
 	. = ""

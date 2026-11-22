@@ -2286,6 +2286,13 @@ jobs:
           source "$PWD/BYOND/byond/bin/byondsetup"
           pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/resin_laminate/probe.dm
 
+      - name: Run isolated particle board regressions
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/particle_board')
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          pwsh -NoProfile -File tests/resource_extraction/run.ps1 -ByondBin "$PWD/BYOND/byond/bin" -Probe tests/particle_board/probe.dm
+
       - name: Run isolated fiberglass regressions
         if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/fiberglass')
         shell: bash
