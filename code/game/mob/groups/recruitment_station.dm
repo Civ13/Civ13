@@ -47,6 +47,9 @@
 	..()
 	if (!faction)
 		to_chat(user, "It has not been designated for a faction yet.")
+		var/mob/living/human/H = user
+		if (istype(H) && H.civilization && H.civilization != "none" && map && map.is_faction_leader(H, H.civilization))
+			to_chat(user, "[H.civilization] has [recruitment_station_count(H.civilization)] of the [recruitment_station_limit()] recruitment stations a faction may have.")
 	else if (!map || !map.recruitment_supported(faction))
 		to_chat(user, "It is marked for [faction], which is not recruiting here.")
 	else
@@ -60,6 +63,49 @@
 	if (!ishuman(user))
 		return
 	user.open_recruitment_panel(src)
+
+// --- Station limit -----------------------------------------------------------
+// Val, 2026-11-22: "There should be a limit to how many faction recruiting
+// stations can exist for any single faction" (3 by default). Anyone may build
+// the stall; the limit applies when a leader designates one. Stations already
+// designated over a lowered limit keep working, but the faction cannot
+// designate another until it releases or loses enough to be under the limit.
+// Counted in this world: each region's factions and stations are its own.
+
+/proc/recruitment_station_limit()
+	return config && isnum(config.recruitment_station_limit) ? config.recruitment_station_limit : 3
+
+/proc/recruitment_station_count(faction)
+	. = 0
+	if (!faction)
+		return
+	for (var/obj/structure/recruitment_station/S in recruitment_stations)
+		if (S.faction == faction && !QDELETED(S))
+			.++
+
+// Why faction cannot designate another station, or null.
+/proc/recruitment_station_limit_problem(faction)
+	var/limit = recruitment_station_limit()
+	var/count = recruitment_station_count(faction)
+	if (count < limit)
+		return null
+	return "[faction] already has [count] recruitment station[count == 1 ? "" : "s"], and a faction may have at most [limit]. Release one of them (open it and choose Release this station) before designating this one."
+
+/client/proc/set_recruitment_station_limit()
+	set category = "Special"
+	set name = "Set Recruitment Station Limit"
+	if (!check_rights(R_SERVER) || !config)
+		return
+	var/current = recruitment_station_limit()
+	var/value = player_input(src, "The most recruitment stations one faction may have designated in this world (1-50). Factions already over a lower limit keep their stations but cannot designate more. This lasts until the next restart; set RECRUITMENT_STATION_LIMIT in the host settings to keep it.", "Recruitment Station Limit", current, "num", null, TRUE)
+	if (!isnum(value))
+		return
+	value = min(50, max(1, round(value)))
+	if (value == current)
+		return
+	config.recruitment_station_limit = value
+	log_admin("[key_name(src)] set the recruitment station limit from [current] to [value].")
+	message_admins("[key_name_admin(src)] set the recruitment station limit from [current] to [value].", key_name(src))
 
 // --- Panel -----------------------------------------------------------------
 
@@ -259,6 +305,8 @@
 		var/own = H.civilization
 		if (!own || own == "none" || !map.is_faction_leader(H, own) || !map.recruitment_supported(own))
 			message = "Only a faction's leader can designate a station for it."
+		else if (recruitment_station_limit_problem(own))
+			message = recruitment_station_limit_problem(own)
 		else
 			station.faction = own
 			map.recruitment_ensure_policy(own)

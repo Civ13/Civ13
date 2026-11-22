@@ -350,6 +350,7 @@ var/list/admin_verbs_manager = list(
 	/client/proc/toggle_disruptive_votes,
 	/client/proc/toggle_playing,
 	/client/proc/toggle_tts,
+	/client/proc/set_recruitment_station_limit,
 	/client/proc/start_epochswap_vote,
 	/client/proc/end_vote_early,
 	/client/proc/force_vote_choice,

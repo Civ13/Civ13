@@ -36,7 +36,7 @@ class FactionRecruitmentSource(unittest.TestCase):
     def test_config_keys_are_parsed_and_documented(self):
         config = read('code/datums/configuration.dm')
         text = read('config/config.txt')
-        for key in ('recruitment_expiry_days', 'recruitment_queue_limit', 'recruitment_cooldown_minutes'):
+        for key in ('recruitment_expiry_days', 'recruitment_queue_limit', 'recruitment_cooldown_minutes', 'recruitment_station_limit'):
             self.assertIn(f'var/{key} = ', config)
             self.assertIn(f'"{key}"', config)
             self.assertIn(key.upper() + ' ', text)
@@ -282,6 +282,30 @@ class NationSource(unittest.TestCase):
         self.assertIn('nation_name_ok(name)', found)
         self.assertIn('nation_rename_faction(old_name, new_name)', read('code/game/mob/groups/faction_rename.dm'))
         self.assertIn('nations_refresh_due()', read('code/modules/persistence/shard_group.dm'))
+
+
+    def test_station_limit_applies_when_designating(self):
+        source = read('code/game/mob/groups/recruitment_station.dm')
+        topic = run.proc_text(source, '/datum/recruitment_panel/Topic(')
+        designate = topic.split('if (href_list["designate"])', 1)[1].split('else if (href_list["unbind"])', 1)[0]
+        # The limit is checked before the station takes the faction.
+        self.assertLess(designate.index('recruitment_station_limit_problem(own)'), designate.index('station.faction = own'))
+        problem = run.proc_text(source, '/proc/recruitment_station_limit_problem(')
+        self.assertIn('if (count < limit)', problem)
+        count = run.proc_text(source, '/proc/recruitment_station_count(')
+        self.assertIn('for (var/obj/structure/recruitment_station/S in recruitment_stations)', count)
+        self.assertIn('S.faction == faction', count)
+        self.assertIn(': 3', run.proc_text(source, '/proc/recruitment_station_limit('))
+        self.assertIn('RECRUITMENT_STATION_LIMIT 3', read('config/config.txt'))
+        self.assertIn('"recruitment_station_limit" = list(1, 50)', read('code/datums/configuration.dm'))
+
+    def test_admins_can_change_station_limit(self):
+        source = read('code/game/mob/groups/recruitment_station.dm')
+        verb = run.proc_text(source, '/client/proc/set_recruitment_station_limit(')
+        self.assertIn('check_rights(R_SERVER)', verb)
+        self.assertIn('config.recruitment_station_limit = value', verb)
+        self.assertIn('min(50, max(1, round(value)))', verb)
+        self.assertIn('/client/proc/set_recruitment_station_limit,', read('code/modules/admin/admin_verbs.dm'))
 
 
 if __name__ == '__main__':

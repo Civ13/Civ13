@@ -43,6 +43,12 @@ RECRUITMENT_EXPIRY_DAYS 7
 RECRUITMENT_QUEUE_LIMIT 50
 RECRUITMENT_COOLDOWN_MINUTES 5
 
+## The most recruitment stations one faction may have designated in a world
+## (1-50). Stations over the limit when it is lowered keep working; the faction
+## cannot designate another until it is back under the limit. Admins can change
+## it until the next restart with Special > Set Recruitment Station Limit.
+RECRUITMENT_STATION_LIMIT 3
+
 ## Faction members: the most accounts any faction may hold (2-500). Below it a
 ## faction's limit is what its hall and colonies support (10 to 50), and a
 ## leader may set a lower one. Then days without playing a member before an
