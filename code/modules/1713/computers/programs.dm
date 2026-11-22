@@ -1715,6 +1715,18 @@
 		mainmenu += "<a href='?src=\ref[src];nile=2'>Buy</a>&nbsp;<a href='?src=\ref[src];nile=3'>Sell</a>&nbsp;<a href='?src=\ref[src];nile=4'>Account</a><br>"
 	..()
 
+// Seller-side actions must resolve the live order against the requesting
+// character's group account, not the buttons shown by an earlier render.
+/datum/program/nilestore/proc/active_seller_order(id, mob/living/human/actor)
+	if (!map || !istext(id) || !istype(actor) || QDELETED(actor) || actor != usr || actor != user || !origin || QDELETED(origin) || actor != origin.user || actor.stat || actor.lying || !actor.can_use_hands() || actor.z != origin.z || get_dist(actor, origin) > 1)
+		return null
+	var/account = actor.civilization
+	var/list/order = map.globalmarketplace[id]
+	if (!islist(order) || order.len < 7 || order[1] != account || order[5] != "nile" || order[6] != id || order[7] != 1)
+		return null
+	var/obj/item/I = order[2]
+	return istype(I) && !QDELETED(I) ? order : null
+
 /datum/program/nilestore/Topic(href, href_list, hsrc)
 	..()
 	mainbody = ""
@@ -1754,28 +1766,39 @@
 					do_html(user)
 					return
 
-		if (findtext(href_list["nile"],"ch"))
-			var/tcode = replacetext(href_list["nile"],"ch","")
-			var/cost = text2num(map.globalmarketplace[tcode][4])
-			var/newprice = player_input(user, "What shall the new price be, in dollars?", "nile.ug", cost/4, "num", null, TRUE)
-			if (!isnum(newprice))
+		if (findtext(href_list["nile"],"ch") == 1)
+			var/tcode = copytext(href_list["nile"], 3)
+			var/mob/living/human/actor = usr
+			var/obj/map_metadata/order_map = map
+			var/obj/structure/computer/order_computer = origin
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
 				return
-			if (newprice <= 0)
+			var/cost = order[4]
+			var/newprice = player_input(actor, "What shall the new price be, in dollars?", "nile.ug", cost/4, "num", null, TRUE)
+			if (!isnum(newprice) || newprice <= 0 || map != order_map || origin != order_computer || active_seller_order(tcode, actor) != order)
 				return
-			map.globalmarketplace[tcode][4] = newprice*4
+			order[4] = newprice*4
 			mainbody += "You update the listing's price."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
-		if (findtext(href_list["nile"],"cn"))
-			var/tcode = replacetext(href_list["nile"],"cn","")
-			var/obj/BO = map.globalmarketplace[tcode][2]
-			BO.forceMove(get_turf(origin))
-			map.globalmarketplace[tcode][7] = 0
-			map.globalmarketplace -= map.globalmarketplace[tcode]
+		if (findtext(href_list["nile"],"cn") == 1)
+			var/tcode = copytext(href_list["nile"], 3)
+			var/mob/living/human/actor = usr
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
+				return
+			var/turf/site = get_turf(origin)
+			if (!site)
+				return
+			var/obj/item/BO = order[2]
+			order[7] = 0
+			map.globalmarketplace -= tcode
+			BO.forceMove(site)
 			mainbody += "You cancel your sell order and get your items back."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
 		switch(href_list["nile"])
 			if ("2") //buy
@@ -1835,7 +1858,7 @@
 				if (href_list["nile"] == "7") //change
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody = "You have no orders on the market!"
@@ -1847,7 +1870,7 @@
 				if (href_list["nile"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody = "You have no orders on the market!"
