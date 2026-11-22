@@ -84,10 +84,9 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		drip(bloodloss)
 		bleeding_hint()
 	else // we're not bleeding, regenerate some blood (experimental) - Kachnov
-		for (var/datum/reagent/r in vessel.reagent_list)
-			if (istype(r, /datum/reagent/blood))
-				if (r.volume >= species.blood_volume)
-					return // we're full on blood.
+		for (var/datum/reagent/blood/r in vessel.reagent_list)
+			if (r.volume >= species.blood_volume)
+				return // we're full on blood.
 		vessel.add_reagent("blood", 1.00)
 
 // Blood only builds back once every wound has stopped bleeding, and nothing
