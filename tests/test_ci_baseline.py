@@ -484,7 +484,8 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['paper_documents']
         self.assertEqual(suite['files'], ('tests/paper_documents/test_documents.py',
             'tests/paper_documents/test_views.py', 'tests/paper_documents/test_mutations.py',
-            'tests/paper_documents/test_copying.py', 'tests/paper_documents/test_authoring.py', 'tests/paper_documents/test_lifecycle.py', 'tests/paper_documents/test_editor.py', 'tests/paper_documents/test_study.py', 'tests/paper_documents/test_stamps.py', 'tests/paper_documents/test_forms.py'))
+            'tests/paper_documents/test_copying.py', 'tests/paper_documents/test_authoring.py', 'tests/paper_documents/test_lifecycle.py', 'tests/paper_documents/test_editor.py', 'tests/paper_documents/test_study.py', 'tests/paper_documents/test_stamps.py', 'tests/paper_documents/test_forms.py',
+            'tests/paper_documents/test_bundle_actions.py'))
         self.assertEqual(self.selected(['tests/paper_documents/test_mutations.py']),
             {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'paper_documents'})
 
