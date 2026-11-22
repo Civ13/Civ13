@@ -101,9 +101,23 @@ made by `tests/sprites/create_vessel_openings.py`)
   lowered into the hold, and someone standing on it climbs down. Shut, it is
   deck.
 
+## Phase 5: land vehicle emergency exits
+
+`code/modules/1713/machinery/modular_vehicles/vehicle_exits.dm` (hook in
+`vehicle_door_hold.dm`)
+
+- **Inside release:** a locked car or bus door opens from inside after a
+  moment at the handle or emergency release, and is left unlocked and open.
+  From outside a locked door still opens only with its key.
+- **Tank escape hatch:** a vehicle on a heavy axis has an escape hatch in its
+  belly. From inside, while she is stopped, "Drop through the escape hatch"
+  takes 6 seconds and puts the crewman, prone, on the nearest clear ground
+  within three tiles that is not under her. It is an exit only.
+- Trains are open platforms in Civ13 and need no end doors or emergency
+  windows; breakable glass (phase 2) covers bus and car windows.
+
 ## Later phases
 
-5. Tank belly hatch, bus emergency door release, train end doors.
 6. Aircraft bailout and canopy jettison, ship lifeboat stations.
 
 Val approved all phases on the recommended answers (2026-11-22); new art comes from
