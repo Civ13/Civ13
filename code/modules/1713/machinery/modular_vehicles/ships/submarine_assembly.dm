@@ -182,6 +182,17 @@
 		to_chat(user, SPAN_WARNING("The [D.name] cannot be assembled as drawn: [jointext(P, " ")]"))
 		qdel(D)
 		return TRUE
+	// Clipping a new sheet over another must not swap her plan by a misclick.
+	var/datum/sub_draught/old = sheet()
+	if (old)
+		var/old_name = old.name
+		qdel(old)
+		if (S.draught_code != sheet_code && WWinput(user, "Clip the sheet of the [D.name] to \the [src]? It replaces the sheet of the [old_name] clipped there now.", name, "No", list("Yes", "No")) != "Yes")
+			qdel(D)
+			return TRUE
+		if (QDELETED(S) || S.loc != user || get_dist(user, src) > 1 || components.len)
+			qdel(D)
+			return TRUE
 	sheet_code = S.draught_code
 	to_chat(user, SPAN_NOTICE("You clip the sheet of the [D.name] to \the [src]. Float [SUBMARINE_ASSEMBLY_BEAM * D.length] hull sections [SUBMARINE_ASSEMBLY_BEAM] wide and [D.length] long, stand her fittings where the sheet shows them, and assemble her."))
 	qdel(D)
