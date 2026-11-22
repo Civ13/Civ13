@@ -17,9 +17,17 @@
 	if (!T)
 		return null
 	for (var/obj/structure/trains/platform/P in range(1, T))
-		if (P.car_kind == "ice_car" && (T in train_platform_tiles(P.loc, P.dir)))
+		if ((P.car_kind == "ice_car" || train_car_insulated(P.car_kind)) && (T in train_platform_tiles(P.loc, P.dir)))
 			return P
 	return null
+
+// A car drawn on a train sheet with insulated sides (train_draught.dm) keeps
+// its ice like an ice car.
+/proc/train_car_insulated(kind)
+	if (copytext(kind, 1, 3) != "c:")
+		return FALSE
+	var/list/L = train_car_layout(kind)
+	return L && L["insulated"]
 
 /obj/structure/closet/ice_house/reefer
 	name = "ice bunker"

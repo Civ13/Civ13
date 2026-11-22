@@ -1586,6 +1586,15 @@ SUITES = {
             'code/modules/space/station_plan.dm', 'code/modules/space/station_plan_checks.dm',
             'code/modules/space/station_designer.dm', 'scripts/build_station_designer_icons.py',
             'icons/station_designer/')},
+    # Stdlib-only: train sheets' stock cars cost their kits, every part is
+    # described and the rail works is wired. The native probe is probe.dm.
+    'train_draught': {'files': ('tests/train_draught/test_train_sheet.py', 'tests/train_draught/test_designer_pictures.py'),
+        'paths': ('tests/train_draught/',), 'shared_paths': (
+            'code/modules/1713/train_draught.dm', 'code/modules/1713/train_draught_checks.dm',
+            'code/modules/1713/train_works.dm', 'code/modules/1713/train_designer.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/research_tree/research_node.dm',
+            'config/crafting/material_recipes_global.txt', 'icons/obj/vehicles/train_platforms.dmi',
+            'docs/train-sheets.md', 'scripts/build_train_designer_icons.py', 'icons/train_designer/')},
     # Stdlib-only: every part the house planner offers is described and costs
     # its recipe, and the window's page is sound. The native probe is run.py.
     'house_plans': {'files': ('tests/house_plans/test_sources.py',),

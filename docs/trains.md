@@ -12,6 +12,7 @@ Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
 `double_heading/`, `tender/`, `collision/`, `crash/`, `brakes/`,
 `brake_van/`, `rolling/` and `adhesion/` checks) and `tests/train_collision`.
 Step cost by train length: [train-step-cost.md](train-step-cost.md).
+Whole trains drawn on a train sheet and built at a rail works: [train-sheets.md](train-sheets.md).
 
 ## Controls
 
