@@ -146,7 +146,12 @@
 		L += S.return_inv()
 	return L
 
+/obj/item/weapon/storage/proc/storage_contents_accessible()
+	return TRUE
+
 /obj/item/weapon/storage/proc/show_to(mob/user as mob)
+	if (!storage_contents_accessible())
+		return
 	if (user.s_active != src)
 		for (var/obj/item/I in src)
 			if (I.on_found(user))
@@ -196,6 +201,8 @@
 	is_seeing -= user
 
 /obj/item/weapon/storage/proc/open(mob/user as mob)
+	if (!storage_contents_accessible())
+		return
 	if (storage_window_open(user, src))
 		return
 	if (ishuman(user))
@@ -412,6 +419,8 @@
 //This proc return TRUE if the item can be picked up and FALSE if it can't.
 //Set the stop_messages to stop it from printing messages
 /obj/item/weapon/storage/proc/can_be_inserted(obj/item/W as obj, stop_messages = FALSE)
+	if (!storage_contents_accessible())
+		return FALSE
 	if (W?.extraction_surface_source) return FALSE
 	if (!istype(W)) return //Not an item
 
@@ -620,6 +629,8 @@
 /obj/item/weapon/storage/verb/quick_empty()
 	set name = "Empty Contents"
 	set category = null
+	if (!storage_contents_accessible())
+		return
 
 	if ((!ishuman(usr) && (loc != usr)) || usr.stat || usr.restrained())
 		return
