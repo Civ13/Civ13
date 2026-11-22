@@ -289,3 +289,13 @@ and `set-port --region ID --port N` (scripts/shard-group/group_ports.py). The di
 (no `--apply`), shows it for one confirmation, then applies and follows `<root>/port-change.json` through `ports`
 every 3 s. It passes `--bot-profile` from host.json's bot and restarts a running bot itself when the change ends
 with `bot.restart`. Keep the wording plain: the dialog says "front door", never "gate" or "relay".
+
+<!-- 2026-11-22: Daily maintenance -->
+Val asked (2026-11-22) that every server shut down, update and restart on the same build at a set time
+of day. All regions > More > **Daily maintenance…** (HostSettings.DailyMaintenance/SetDailyMaintenance)
+writes the group config's `maintenance` {enabled, time, warning_minutes}; the host service starts the run
+(scripts/shard-group/daily_maintenance.py), so it works while the launcher is closed. **Run daily
+maintenance now** runs `shard_group.py maintenance` (it only starts the detached run). The group status
+line ends with LocalHosting.DescribeMaintenance (next start, a run under way, the last run's problems);
+keep its wording in step with daily_maintenance.py phases. HostSettings mirrors check_settings' default
+(on only for a live, saving group that fetches); change both together. Launcher 1.5.43.

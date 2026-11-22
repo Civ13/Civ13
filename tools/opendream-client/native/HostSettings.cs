@@ -89,6 +89,41 @@ public static class HostSettings {
         return followed;
     }
 
+    // Daily maintenance (the group config's "maintenance"; scripts/shard-group/daily_maintenance.py): at Time, host local
+    // time, the host service builds one revision beside every region, counts down WarningMinutes for the players of every
+    // occupied region at once, then hands each running region over to it; asleep and stopped regions install it without
+    // waking, and the gateway stays on its port. On unless set false for the live group that saves and follows a remote.
+    public sealed record Maintenance(bool Enabled, string Time, int WarningMinutes, bool Persistent);
+    public const string DefaultMaintenanceTime = "03:00";
+    public const int DefaultMaintenanceWarningMinutes = 10;
+    public const int MaxMaintenanceWarningMinutes = 60;
+    private static readonly Regex MaintenanceTime = new("^([01][0-9]|2[0-3]):[0-5][0-9]$");
+
+    public static Maintenance DailyMaintenance(HostGroup group) {
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
+        static bool Flag(JsonNode? node, bool fallback) => node is JsonValue value && value.TryGetValue<bool>(out var on) ? on : fallback;
+        var persistent = Flag(root["persistent"], true);
+        var follows = root["fetch"] is JsonValue fetch && fetch.TryGetValue<string>(out var remote) && remote.Length > 0;
+        var settings = root["maintenance"] as JsonObject;
+        var enabled = Flag(settings?["enabled"], persistent && Flag(root["live"], false) && follows);
+        var time = settings?["time"] is JsonValue at && at.TryGetValue<string>(out var text) && MaintenanceTime.IsMatch(text) ? text : DefaultMaintenanceTime;
+        var warning = settings?["warning_minutes"] is JsonValue minutes && minutes.TryGetValue<int>(out var count)
+            && count is >= 0 and <= MaxMaintenanceWarningMinutes ? count : DefaultMaintenanceWarningMinutes;
+        return new Maintenance(enabled, time, warning, persistent);
+    }
+
+    // Keeps the group's other maintenance keys (late_minutes) and every other setting.
+    public static void SetDailyMaintenance(HostGroup group, bool enabled, string time, int warningMinutes) {
+        if (!MaintenanceTime.IsMatch(time)) throw new InvalidDataException("The maintenance time must be HH:MM (24-hour).");
+        if (warningMinutes is < 0 or > MaxMaintenanceWarningMinutes) throw new InvalidDataException("The players' countdown must be 0 to 60 minutes.");
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
+        if (root["maintenance"] is not JsonObject settings) root["maintenance"] = settings = new JsonObject();
+        settings["enabled"] = enabled;
+        settings["time"] = time;
+        settings["warning_minutes"] = warningMinutes;
+        WriteGroup(group, root);
+    }
+
     // Start region: where new characters start, and fallen ones whose bed does not keep their home (the group
     // config's start_region; shard_group.py restarts the group coordinator on it at its next helper check, and
     // running worlds pick it up within a minute). The mainland stays the era source and bot link either way.

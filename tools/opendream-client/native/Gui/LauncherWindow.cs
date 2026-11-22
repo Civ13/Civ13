@@ -285,12 +285,14 @@ internal sealed partial class LauncherWindow : Form {
             all.Controls.Add(MoreButton(
                 ("Update (stopped and asleep regions)", () => GroupAction("update", "Update"), HostGate.All),
                 ("Build update", () => GroupAction("stage", "Build update"), HostGate.All),
+                ("Run daily maintenance now", () => GroupAction("maintenance", "Run daily maintenance now"), HostGate.All),
                 ("Restart host service", () => GroupAction("restart-host", "Restart host service"), HostGate.AllIdle),
                 ("Advance epoch…", AdvanceEpoch, HostGate.AllIdle),
                 ("-", null, null),
                 ("Host settings…", () => { ShowHostSettings(); return Task.CompletedTask; }, null),
                 ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
+                ("Daily maintenance…", () => { ShowDailyMaintenance(); return Task.CompletedTask; }, null),
                 ("Start region…", () => { ShowStartRegion(); return Task.CompletedTask; }, null),
                 ("Travel and ready lands…", () => { ShowTravelStarts(); return Task.CompletedTask; }, null),
                 ("Front door and ports…", () => {
@@ -995,6 +997,10 @@ internal sealed partial class LauncherWindow : Form {
             "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
                 "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",
+            "maintenance" => "Run the daily maintenance now? The latest master is prepared in the background while everyone keeps playing; " +
+                "if it cannot be prepared for any region, nothing changes anywhere. Players in every occupied region then see the same " +
+                "countdown, and each running region saves and switches to the update, one after another (its players are moved across " +
+                "automatically). Regions that are asleep or stopped get the update without being started. The gateway stays on its port.",
             "unlock" => UnlockQuestion,
             "force-unlock" => ForceUnlockQuestion,
             "freeze" => $"Put {target} to sleep now? Only an empty, saved world sleeps; a join or travel wakes it.",
@@ -1317,6 +1323,64 @@ internal sealed partial class LauncherWindow : Form {
                 : "Update when empty on: regions move onto new commits once empty and saved." + (followed ? " The group now follows origin/master." : ""));
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
             HostLine("Could not save Update when empty: " + e.Message);
+        }
+    }
+
+    // Daily maintenance (group config "maintenance", scripts/shard-group/daily_maintenance.py): once a day at a set host time every
+    // region moves onto one build together. The host service starts it, so it runs while the launcher is closed.
+    private void ShowDailyMaintenance() {
+        if (host?.Control?.Group is not { } group) return;
+        HostSettings.Maintenance current;
+        try { current = HostSettings.DailyMaintenance(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not read " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = "Daily maintenance", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
+            Text = current.Persistent
+                ? "Once a day, at the time below (this computer's clock), every region is updated to the latest master together.\n\n" +
+                    "The update is prepared in the background while everyone keeps playing. If it cannot be prepared for any region, " +
+                    "nothing changes anywhere that day.\n\n" +
+                    "Players in every occupied region then see the same countdown. When it ends, each running region saves and switches " +
+                    "to the update, one after another, and its players are moved across automatically. Regions that are asleep or " +
+                    "stopped get the update without being started. The gateway stays on its port.\n\n" +
+                    "An admin who uses Cancel Planned Restart in the game keeps that region as it is until the next day. If this computer " +
+                    "is off at the set time, maintenance still runs up to 90 minutes late; after that it waits for the next day.\n\n" +
+                    "The quietest hours on this host have been 01:00 to 05:00."
+                : "This group does not save (TDM), so daily maintenance is not used. Its battle updates between rounds and its barracks when empty." });
+        var enabled = new CheckBox { Text = "Run daily maintenance", AutoSize = true, Checked = current.Enabled, Enabled = current.Persistent };
+        layout.Controls.Add(enabled);
+        // Labels anchored Left only are centred on the row's height, so they line up with the boxes at any DPI.
+        var row = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0, 6, 0, 0), Enabled = current.Persistent };
+        row.Controls.Add(new Label { Text = "Time (24-hour)", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(0, 0, 6, 0) });
+        var parts = current.Time.Split(':');
+        var time = new DateTimePicker { Format = DateTimePickerFormat.Custom, CustomFormat = "HH:mm", ShowUpDown = true, Width = LogicalToDeviceUnits(80),
+            Value = DateTime.Today.AddHours(int.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture)).AddMinutes(int.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture)) };
+        row.Controls.Add(time);
+        row.Controls.Add(new Label { Text = "Players' countdown (minutes)", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(16, 0, 6, 0) });
+        var warning = new NumericUpDown { Minimum = 0, Maximum = HostSettings.MaxMaintenanceWarningMinutes, Value = current.WarningMinutes, Width = LogicalToDeviceUnits(60) };
+        row.Controls.Add(warning);
+        layout.Controls.Add(row);
+        var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+        var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK, Enabled = current.Persistent };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        buttons.Controls.Add(save);
+        buttons.Controls.Add(cancel);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = save;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        var chosen = time.Value.ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+        try {
+            HostSettings.SetDailyMaintenance(group, enabled.Checked, chosen, (int)warning.Value);
+            HostLine(enabled.Checked ? $"Daily maintenance on at {chosen} with a {(int)warning.Value}-minute countdown; the host service applies it within a minute."
+                : "Daily maintenance off: regions take updates only when empty or from Save, update and restart.");
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not save Daily maintenance: " + e.Message);
         }
     }
 

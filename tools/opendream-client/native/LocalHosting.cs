@@ -231,7 +231,9 @@ public static class LocalHosting {
 
     // The limit for a host or group action: status reads, quick requests, or long work.
     public static TimeSpan ActionLimit(string action) => action switch {
-        "status" or "help-status" or "translator-status" or "ports" => StatusLimit,
+        "status" or "help-status" or "translator-status" or "ports" or "maintenance-status" => StatusLimit,
+        // Run maintenance now only starts the detached run (daily_maintenance.py); it answers at once.
+        "maintenance" => RequestLimit,
         "start" or "restart" or "force-restart" => StartLimit,
         "stop" or "kill" or "unlock" or "force-unlock" or "freeze" or "thaw" or "help-start" or "help-stop" or "translator-stop" => RequestLimit,
         _ => LongLimit,
@@ -290,7 +292,7 @@ public static class LocalHosting {
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
         "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved",
-        "translator-status", "translator-start", "translator-stop"];
+        "translator-status", "translator-start", "translator-stop", "maintenance", "maintenance-status"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
@@ -458,8 +460,16 @@ public static class LocalHosting {
                 // Present only when the group has travel (transfer ports): the coordinator moves characters between regions.
                 if (json.TryGetProperty("coordinator", out var coordinator) && coordinator.ValueKind is JsonValueKind.True or JsonValueKind.False)
                     summary += coordinator.GetBoolean() ? " Travel coordinator running." : " Travel coordinator is not running (a start or restart starts it).";
+                if (json.TryGetProperty("maintenance", out var maintenance) && maintenance.ValueKind == JsonValueKind.Object
+                        && DescribeMaintenance(maintenance) is { Length: > 0 } daily)
+                    summary += " " + daily;
                 return new ControlAnswer(true, summary, busy);
             }
+            if (action == "maintenance-status")
+                return new ControlAnswer(true, DescribeMaintenance(json) is { Length: > 0 } daily ? daily : "Daily maintenance: no status yet.", false);
+            if (action == "maintenance")
+                return new ControlAnswer(true, "Daily maintenance started: building one revision beside every region, then warning the players " +
+                    "and handing each running region over to it. The gateway stays on its port. Its progress shows on the status line.", true);
             if (action is "unlock" or "force-unlock") {
                 var lines = new List<string>();
                 if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)
@@ -582,6 +592,35 @@ public static class LocalHosting {
             text += Bool(standby, "listening") ? ", new build running beside it" : ", new build starting beside it";
         return text;
     }
+
+    // The group status's "maintenance" (scripts/shard-group/daily_maintenance.py status): the daily time and next start,
+    // a run under way, or how the last run ended. Empty when there is nothing to say.
+    public static string DescribeMaintenance(JsonElement maintenance) {
+        if (maintenance.ValueKind != JsonValueKind.Object) return "";
+        if (!Bool(maintenance, "persistent")) return "Daily maintenance: not used (this group updates between rounds).";
+        var text = Bool(maintenance, "enabled") && Str(maintenance, "next") is { } next && DailyStamp(next) is { } when
+            ? "Daily maintenance next at " + when + "." : "Daily maintenance off.";
+        if (!maintenance.TryGetProperty("last", out var last) || last.ValueKind != JsonValueKind.Object) return text;
+        var phase = Str(last, "phase") is { } known ? Words(known) : "";
+        var revision = Str(last, "revision") is { Length: 40 } full && full.All(Uri.IsHexDigit) ? " onto " + full[..8] : "";
+        var day = Str(last, "day") is { } stamp && DailyStamp(stamp + " 00:00") is { } valid ? valid[..10] : "";
+        if (Bool(maintenance, "running")) return text + " Running now" + revision + (phase.Length > 0 ? " (" + phase + ")" : "") + ".";
+        if (phase.Length == 0) return text;
+        text += " Last run" + (day.Length > 0 ? " " + day : "") + revision + ": " + phase;
+        if (Str(last, "error") is { Length: > 0 } error) text += ": " + Short(error);
+        else if (last.TryGetProperty("result", out var result) && result.ValueKind == JsonValueKind.Object
+                && result.TryGetProperty("problems", out var problems) && problems.ValueKind == JsonValueKind.Object) {
+            var names = problems.EnumerateObject().Take(MaxRegions)
+                .Select(entry => Clean(entry.Name) + " (" + (entry.Value.ValueKind == JsonValueKind.String ? Short(entry.Value.GetString()!) : "see the log") + ")").ToList();
+            if (names.Count > 0) text += ": " + string.Join(", ", names);
+        }
+        return text + ".";
+    }
+
+    // "YYYY-MM-DD HH:MM" from the host's own clock, checked before it is shown.
+    private static string? DailyStamp(string text) =>
+        DateTime.TryParseExact(text, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var at)
+            ? at.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) : null;
 
     // Lowercase letters, apostrophes and single spaces only (64 at most), for a phase name shown in a line.
     private static string Words(string text) {
