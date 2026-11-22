@@ -891,6 +891,7 @@ concrete about 1.67, aluminium about 0.92.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/turret_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/passage_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
