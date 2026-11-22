@@ -364,7 +364,17 @@ the hub after its updates. The gateway is started on its port and stays there:
   leaves it running. To put new code on it, name it: `restart --region ID`. A
   crashed gateway comes back at once on the build it has (`start-current`).
 - Its hub entry and `status` topic describe the lands behind it: the mainland's map
-  and the players across every land (`group_players`; `players` stays its own count).
+  and the connected player total for the configured regions in that group,
+  including practice and battle worlds when present. It excludes the gateway's
+  own forwarding clients. The total comes from the existing polls, without
+  waking regions. Confirmed asleep, cold or stopped regions contribute zero;
+  unchecked, unreachable, waking, invalid or expired observations make the
+  count partial. The Hub description labels a partial count as "at least", or
+  "unavailable" when no region is confirmed. The `status` topic supplies the
+  known sum in `group_players` and the number of unconfirmed regions in
+  `group_players_unknown_regions`; `players` still counts local clients only.
+  BYOND's built-in listing count is for the gateway world itself, not the sum
+  shown in the description.
 - It is the world the bot watches (it is the gate), and it is always awake to post
   other lands' OOC to Discord.
 - A group has at most one; it cannot be the mainland or the start region, and it
