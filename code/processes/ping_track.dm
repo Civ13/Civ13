@@ -42,10 +42,11 @@
 	// BYOND treats "update_ping" and ".update_ping" the same for hascall.
 	if (!hascall(C, ".update_ping"))
 		return
-	if (!client_ckey_check[C.ckey])
+	var/next_check = client_ckey_check[C.ckey]
+	if (!next_check)
 		client_ckey_check[C.ckey] = world.time+100
 		return
-	if (world.time < client_ckey_check[C.ckey])
+	if (world.time < next_check)
 		return
 
 	winset(C, null, "command=.update_ping+[world.time+world.tick_lag*world.tick_usage/100]")
