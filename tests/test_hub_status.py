@@ -88,13 +88,13 @@ def fragments(name="Civilization 13", discord="https://discord.gg/hBEtg4x",
     links = [item for item in (link(discord, "Discord", new_window), link(website, "Website")) if item]
     if links:
         parts.append(status_template('s += "[jointext', {'jointext(community_links, " | ")': " | ".join(links)}))
-    if banner:
-        parts.append(status_template('s += "<img', {"config.hub_banner_url": "https://i.imgur.com/napac0L.png"}))
     if map_title is not None:
         parts.append(status_template('s += "<b>Map:', {"hub_status_text(map.title)": encode(map_title),
                                                      "hub_status_text(roundduration2text())": encode(duration)}))
         parts.append(status_template('s += "<b>Gamemode:', {"hub_status_text(map.gamemode)": encode(mode)}))
     parts.append(body.replace("ROUNDTIME", duration.lower().capitalize()))
+    if banner:
+        parts.append(status_template('s += "<img', {"config.hub_banner_url": "https://i.imgur.com/napac0L.png"}))
     return "".join(parts)
 
 
@@ -161,6 +161,14 @@ class HubStatusTests(unittest.TestCase):
                 self.assertIn('<img src="https://i.imgur.com/napac0L.png">', output)
                 self.assertIn(">Discord</a> | <a ", output)
                 self.assertIn(">Website</a><br>", output)
+
+    def test_banner_is_the_last_status_line(self):
+        # The hub cuts a status at its image; the readable lines must come first.
+        banner = STATUS.index('s += "<img')
+        for line in ('region_gateway_hub_status()', '<b>Map:</b>', '<b>World:</b>',
+                     '<b>Joining:</b>', '<b>Gamemode:</b>', 's += hub_body'):
+            self.assertLess(STATUS.index(line), banner, line)
+        self.assertLess(banner, STATUS.index("status = s"))
 
     def test_missing_map_and_empty_urls_have_no_dangling_separator(self):
         output = fragments(discord=None, website="", map_title=None)
