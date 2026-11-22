@@ -50,7 +50,12 @@ def material_stacks():
     """{'/material/wood/soft': 'woodplank', ...} from the material datums,
     with subtypes inheriting their parent's stack_type as DM does."""
     explicit, paths = {}, set()
-    lines = uncomment((ROOT / 'code/modules/materials/materials.dm').read_text(encoding='utf-8'))
+    # Most materials live in materials.dm; a feature may declare its own
+    # (particle_board.dm), so every source file is read.
+    lines = []
+    for path in sorted((ROOT / 'code').rglob('*.dm')):
+        lines.extend(uncomment(path.read_text(encoding='utf-8', errors='replace')))
+        lines.append('')
     current = None
     for line in lines:
         if line.startswith('/material'):

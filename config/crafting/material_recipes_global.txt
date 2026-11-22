@@ -2789,6 +2789,14 @@ RECIPE: /material/wood/soft/,shell rack,/obj/structure/shellrack,6,90,1,1,furnit
 RECIPE: /material/wood/soft/,large crate,/obj/structure/closet/crate/empty/large,8,80,1,1,furniture,95,0,0,8,null
 RECIPE: /material/wood/soft/,military crate,/obj/structure/closet/crate/ww2,5,50,1,1,furniture,105,0,0,8,null
 RECIPE: /material/wood/soft/,standing clock,/obj/structure/wallclock,6,150,1,1,furniture,110,0,0,8,null
+//**| PARTICLE BOARD |** (code/modules/1713/particle_board.dm: indoor builds only)
+RECIPE: /material/particle_board/,particle board shelf,/obj/structure/table/rack/shelf/wooden/particle_board,4,60,1,1,furniture,0,0,0,8,null
+RECIPE: /material/particle_board/,particle board table,/obj/structure/table/modern/table/particle_board,4,35,1,1,furniture,0,0,0,8,null
+RECIPE: /material/particle_board/,particle board wardrobe,/obj/structure/closet/cabinet/particle_board,4,50,1,1,furniture,0,0,0,8,null
+RECIPE: /material/particle_board/,particle board wall cabinet,/obj/structure/closet/cabinet/particle_board/wall,3,40,1,1,furniture,0,0,0,8,null
+RECIPE: /material/particle_board/,particle board bookcase,/obj/structure/bookcase/particle_board,4,50,1,1,furniture,0,0,0,8,null
+RECIPE: /material/particle_board/,particle board partition,/obj/covers/wood_wall/particle_board,3,60,1,1,construction,0,0,0,8,null
+RECIPE: /material/particle_board/,particle board floor,/obj/covers/wood/particle_board,1,15,1,1,construction,0,0,0,8,null
 RECIPE: /material/wood/,torch mount,/obj/structure/torch_stand,1,35,1,1,furniture,25,0,0,6,null
 
 //*********************| WOOD DECORATION & MONUMENTS |**************************
