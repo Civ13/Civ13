@@ -128,6 +128,8 @@ SUITES = {
         'paths': ('tests/leech_wait/', 'code/game/mob/living/simple_animal/friendly/leech.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
+    'scheduled_task_guard': {'files': ('tests/scheduled_task_guard/test_guard.py',), 'paths': ('tests/scheduled_task_guard/', 'code/processes/scheduler.dm', 'code/__defines/qdel.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'cleanables_scheduler': {'files': ('tests/cleanables_scheduler/test_resume.py',),
         'paths': ('tests/cleanables_scheduler/', 'code/processes/cleanables.dm'),
         'shared_paths': ('code/processes/_process.dm', 'code/processes/___defines.dm', 'code/_macros.dm')},
