@@ -2977,6 +2977,8 @@ SUITES = {
             'code/modules/persistence/region_travel_gear.dm')},
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
+    'surgery_amputation_log': {'files': ('tests/surgery_amputation_log/test_source.py',),
+        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
     'origins': {'files': ('tests/origins/test_origins.py', 'tests/origins/test_travel.py', 'tests/origins/test_peoples.py'),
         'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm',
