@@ -106,7 +106,7 @@
 	// Ordinary saves allow read-only geometry refresh as players still move.
 	// World reconstruction/mutation retains denied masks rather than exposing
 	// native corner leaks while fresh capture is unavailable.
-	if(V.eligible() && ((persistence_active_operation && persistence_active_operation.kind != "save") || V.mutations.len))
+	if(((persistence_active_operation && persistence_active_operation.kind != "save") || V.mutations.len) && V.eligible())
 		if(root_tree_presenter)
 			root_tree_presenter.invalidate()
 		los_dirty = TRUE

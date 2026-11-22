@@ -200,7 +200,7 @@ class Preparation(unittest.TestCase):
     def test_mutation_suspension_phase_is_in_actual_early_return_before_capture(self):
         relative='code/modules/visibility/los_lifecycle.dm'
         source=(ROOT/relative).read_text();adapted=Q.adapt(relative,source)
-        start=adapted.index('if(V.eligible() && ((persistence_active_operation')
+        start=adapted.index('if(((persistence_active_operation')
         end=adapted.index('var/key = V.presentation_key()',start)
         branch=adapted[start:end]
         self.assertEqual(branch.count('tree_native_trace("mutation_suspended", src)'),1)
@@ -213,7 +213,7 @@ class Preparation(unittest.TestCase):
         self.assertLess(end,adapted.index('var/datum/los_snapshot/S = V.capture(TRUE)'))
         failed=adapted[adapted.index('if(!S)'):]
         self.assertIn('tree_native_trace("capture_unavailable", src)',failed)
-        with self.assertRaises(ValueError):Q.adapt(relative,source.replace('|| V.mutations.len))','|| FALSE))',1))
+        with self.assertRaises(ValueError):Q.adapt(relative,source.replace('|| V.mutations.len) && V.eligible())','|| FALSE) && V.eligible())',1))
 
     def test_source_selector_drift_fails_closed(self):
         with self.assertRaises(ValueError):Q.adapt('code/datums/observation/moved.dm','/atom/Entered()\n\treturn\n')
