@@ -1017,6 +1017,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mine_sweep/magnetic" = "magnetic_mines",
 		"/obj/structure/mine_sweep/oropesa" = "naval_mines",
 		"/obj/structure/torpedo_tube" = "naval_mines",
+		"/obj/structure/cannon/modern/ship_turret" = "naval_mines",
 		"/obj/item/naval_torpedo" = "naval_mines",
 		"/obj/item/naval_torpedo/magnetic" = "magnetic_mines",
 		"/obj/item/weapon/aircraft_bomb" = "powered_flight",

@@ -823,6 +823,24 @@ frames is fitted.
 - Boats, ships and aircraft opt out (`uses_load_factor()`); the engine stall
   limit in `check_engine()` is unchanged.
 
+## Gun turrets
+
+`code/modules/naval/ship_turret.dm` adds the ship's gun turret
+(`/obj/structure/cannon/modern/ship_turret`, 60 steel, Naval Mines research):
+a one-tile breech-loader that fires the field shells (`/obj/item/cannon_ball/shell`)
+and reuses the unused `modern_ship` state in `icons/obj/cannon.dmi`.
+
+- Its barbette is found by position: `magazine()` looks for a shell rack on
+  the tile right under it, one or two levels down (`multiz_level_below()`).
+  On a ship every tile on the way down must be one of her own decks
+  (`craft_holding()` and `body.carries()`), so a rack in the rock beside her
+  hold does not count. Ashore any rack dug under it does.
+- A loader beside it Alt-clicks it (or uses Hoist a Shell): after five
+  seconds `take_from_magazine()` moves one shell from the rack into the
+  breech. Nothing links turret and rack, so a hop or a turn needs no fix-up
+  and nothing extra is saved.
+- Bomb racks do not feed it.
+
 ## Hull weight
 
 `code/modules/naval/hull_weight.dm` weighs a built hull's own floors with the
@@ -849,6 +867,7 @@ concrete about 1.67, aluminium about 0.92.
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/turret_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300
