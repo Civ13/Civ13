@@ -47,8 +47,11 @@
 			return
 
 /obj/item/weapon/leech/attack(var/mob/living/human/C, var/mob/living/user)
+	if (!istype(C) || !C.vessel)
+		return ..()
 	visible_message("[user] starts to attach the leech to [C]...")
-	if (do_after(user,150,src))
+	// Wait on the patient, so walking away interrupts the treatment.
+	if (do_after(user,150,C) && !QDELETED(src) && !QDELETED(C) && loc == user && user.Adjacent(C))
 		visible_message("[user] has finished leeching [C].")
 		fill = 1
 		C.adjustToxLoss(-7)
