@@ -116,7 +116,7 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 	expect(V.shadow_turf == start && (V.shadow in start.vis_contents), "no shadow below")
 	var/turf_views = 0
 	for(var/turf/T in range(11, V.loc))
-		for(var/atom/D in T.vis_contents)
+		for(var/atom/movable/D in T.vis_contents)
 			if(isturf(D))
 				turf_views++
 			for(var/atom/W in D.vis_contents)

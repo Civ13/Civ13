@@ -109,7 +109,8 @@ var/aircraft_runtime_error = FALSE
 		for (var/atom/V in T.vis_contents)
 			if (isturf(V))
 				return FALSE
-			for (var/atom/W in V.vis_contents)
+			var/atom/movable/M = V
+			for (var/atom/W in M.vis_contents)
 				if (isturf(W))
 					return FALSE
 	return TRUE
