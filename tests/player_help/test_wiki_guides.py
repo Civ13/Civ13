@@ -108,7 +108,9 @@ class WikiGuideTests(unittest.TestCase):
         self.assertIn('"matching_wiki_chunks": 0', prompt)
         self.assertIn('does not prove', prompt)
         no_wiki = {}
-        no_wiki_corpus = bridge.gameplay_knowledge(ROOT, wiki_status=no_wiki)
+        # Neither a checkout nor the copies shipped with the game.
+        with mock.patch.object(bridge, 'WIKI_BUNDLE', 'UI/no-such-bundle'):
+            no_wiki_corpus = bridge.gameplay_knowledge(ROOT, wiki_status=no_wiki)
         self.assertFalse(no_wiki['configured'])
         prompt = self.prompt(no_wiki_corpus, no_wiki, 'qzxv unknown')
         self.assertIn('"configured": false', prompt)
@@ -273,10 +275,16 @@ class WikiGuideTests(unittest.TestCase):
             bridge.gameplay_knowledge(ROOT, self.wiki, wiki_status=status)
         self.assertEqual(status['changed_guides'], 1)
 
-    def test_legacy_missing_still_fails_closed(self):
-        (self.wiki / 'src/Starter_Guide.md').unlink()
-        with self.assertRaises(FileNotFoundError):
-            bridge.gameplay_knowledge(ROOT, self.wiki)
+    def test_bundled_guides_answer_without_a_checkout(self):
+        # Every pinned guide ships with the game, so a missing or stale wiki
+        # checkout on the host cannot drop one from Help.
+        for wiki_root in (None, self.wiki):
+            status = {}
+            corpus = bridge.gameplay_knowledge(ROOT, wiki_root, wiki_status=status)
+            self.assertTrue(status['configured'])
+            self.assertEqual(status['verified_guides'], len(bridge.WIKI_REVIEWED_GUIDES))
+            self.assertEqual((status['missing_guides'], status['changed_guides']), (0, 0))
+            self.assertTrue(any('Guide_to_Fishing' in row['topic'] for row in corpus))
 
 
 if __name__ == '__main__':

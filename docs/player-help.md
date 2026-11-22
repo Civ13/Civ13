@@ -371,20 +371,31 @@ changes fail startup rather than silently supplying unrelated code. Source hashe
 identify the files used. This is read-only evidence retrieval, not an admin MCP
 connection or model-controlled source browser.
 
-Set `wiki_root` in the private config to an up-to-date checkout of `civ13-wiki`.
-The three existing pages—`Guide_to_Crafting.md`, `Guide_to_Metallurgy.md`, and
-`Starter_Guide.md`—remain required when configured. Their content is not pinned,
-so their freshness is unknown. The bridge also checks an explicit allowlist of
-15 public character, chemistry, communications, construction, cooking, farming,
-fishing, hygiene, medical, radiation, ranching, religion, research, tank, and
-weapons guides. The allowlist and normalized-content hashes in
-`scripts/player_help_bridge.py` record the reviewed wiki revision
-`48094b1fbac7031a3a49c5c9ddce84e51dea0258`.
+The reviewed player guides ship with the game under `UI/player-help-wiki/`, as
+plain copies of the `civ13-wiki` pages listed in `WIKI_REVIEWED_GUIDES` in
+`scripts/player_help_bridge.py`. The list records each page's
+normalized-content hash, its search keywords and the reviewed wiki revision. A
+copy is used only when it matches its hash, and
+`tests/player_help/test_wiki_answers.py` fails when a pin and its copy differ,
+so a host never needs a wiki checkout on the right branch for Help to read the
+guides. `wiki_root` in the private config is optional: a page whose shipped copy
+is missing or changed is also looked for there, under the same hash.
 
-Additional pages are loaded only when their UTF-8 content matches the reviewed
-hash after line-ending normalization; missing, changed, invalid, and oversized
-additional pages are excluded. Missing required original pages still fail startup;
-omitting `wiki_root` disables wiki retrieval. The prompt reports bounded coverage
+Each guide is cut at its headings into excerpts of about 2,400 characters. An
+excerpt opens with the headings above it and links to its own section. A
+question is matched against an excerpt's headings, its guide's keywords and its
+text; words found in few entries count for more than common ones, and the two
+best guide excerpts always reach the model. Lines about hidden discoveries are
+left out of the excerpts, and an internal server name is reworded in excerpts
+and in answers.
+
+`tests/player_help/wiki_eval/questions.json` holds player questions with the
+wiki passage that answers each one. `python3 tests/player_help/wiki_eval/run.py`
+reports how many reach the model with that passage; with `--ollama-url` and
+`--model` it also sends them to a model and scores the answers. Add a question
+there when a player reports a wrong answer.
+
+The prompt reports bounded coverage
 counts, keyword-match and context-truncation status. Neither a missing page nor a
 zero keyword match establishes that a recipe or gameplay use does not exist.
 Matching reviewed wiki content establishes provenance, not that every guide is
@@ -398,8 +409,8 @@ The original public wiki is unchanged. Re-review the projection when updating
 the Medical guide pin or disease behavior.
 
 No network downloads, arbitrary files, or recursive repository scans occur.
-To refresh the additional guides, review the new wiki revision and update the
-explicit hashes before restarting the bridge. Worker health alone does not attest
+To refresh the guides, run `python3 scripts/agent_preflight.py wiki-pins --wiki-root <wiki checkout> --write`,
+review the changed copies and restart the bridge once the game is updated. Worker health alone does not attest
 which wiki pages were loaded. Retrieved wiki excerpts are JSON-encoded untrusted
 data, not instructions; this boundary does not guarantee a model cannot be misled.
 

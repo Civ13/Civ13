@@ -60,7 +60,7 @@ class BronzeRetrievalTests(unittest.TestCase):
                                  'Missing retrieval is not evidence',
                                  'Do not claim research is unlocked from era alone.'):
                     self.assertIn(required, prompt)
-                self.assertLess(len(prompt), 20000)
+                self.assertLess(len(prompt), 20500)
 
     def test_bronze_working_bootstrap_uses_unfired_type_and_full_study(self):
         prompt = self.prompt('How can I unlock Bronze Working?')
