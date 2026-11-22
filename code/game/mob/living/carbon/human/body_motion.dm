@@ -62,7 +62,7 @@
 	if (world.time < body_motion_until && priority < body_motion_priority)
 		return FALSE
 	// At most one motion start per BODY_MOTION_MIN_GAP; posture changes always
-	// play, and a higher priority motion cuts in (a hit during the stride bounce).
+	// play, and a higher priority motion cuts in (a hit during a sneaking step).
 	if (priority < BODY_MOTION_PRIORITY_POSTURE && priority <= body_motion_priority && world.time < body_motion_started + BODY_MOTION_MIN_GAP)
 		return FALSE
 	return TRUE
@@ -309,7 +309,7 @@
 
 // Swimming stroke on a deep-water step: a 1px dip, no squash (the water mask
 // already hides the lower half). At most one per 12 ds, so fast swimmers
-// stroke every second step and it never reads as a walking bob. 5 ds.
+// stroke every second step and it never reads as a bob on every step. 5 ds.
 /mob/living/human/proc/body_motion_swim_stroke()
 	if (world.time < body_motion_stroke_next)
 		return FALSE
@@ -363,15 +363,10 @@
 	animate(src, transform = rest, time = time, easing = SINE_EASING | EASE_IN, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
 	return TRUE
 
-// Walking, running and sprinting: a vertical hop with no lean or squash, one
-// cycle each time a moving body has no motion running, so the cycle sets the
-// cadence. Walk 1px over 4 ds, run 2px over 3 ds, sprint a flatter, faster
-// 1px over 2 ds. Upright bodies moving under their own power only. FULL only:
-// it loops and carries no gameplay information.
-//
-// Terrain: shallow water, floodwater, flooded trenches, mud and snow drag the
-// body down instead (a 1px sink on a slower beat) unless the footwear is made
-// for it; ice glides flat; deep water has its own stroke.
+// The stride: what a moving body does on a step under its own power. Plain
+// walking, running and sprinting glide flat with no bounce on any ground
+// (Val, 2026-11-22: the per-step hop was removed). Only two steps still move
+// the body: the heavy-haul heave and the sneaking crouch. Upright bodies only.
 /mob/living/human/proc/body_motion_stride()
 	if (world.time < body_motion_until || lying || prone || buckled || riding || pulledby)
 		return FALSE
@@ -379,7 +374,6 @@
 		return FALSE
 	if (istype(loc, /turf/floor/beach/water/ice))
 		return FALSE
-	var/list/keys
 	var/haul = body_motion_haul_dir()
 	if (haul && (m_intent == "walk" || m_intent == "run"))
 		// Hauling something heavy: an 8 degree heave away from the load on the
@@ -389,43 +383,13 @@
 			list(0, f[2], 8 * f[3], 1, 2, QUAD_EASING | EASE_OUT),
 			list(0, f[2], 8 * f[3], 1, 3, LINEAR_EASING),
 			list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN)))
-	var/drag = body_motion_terrain_drags()
-	if (m_intent == "run")
-		if (is_sprinting())
-			keys = drag ? list(list(0, -1, 0, 1, 1.5, QUAD_EASING | EASE_IN), list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_OUT)) \
-				: list(list(0, 1, 0, 1, 1, QUAD_EASING | EASE_OUT), list(0, 0, 0, 1, 1, QUAD_EASING | EASE_IN))
-		else
-			keys = drag ? list(list(0, -1, 0, 1, 2, QUAD_EASING | EASE_IN), list(0, 0, 0, 1, 2, QUAD_EASING | EASE_OUT)) \
-				: list(list(0, 2, 0, 1, 1.5, QUAD_EASING | EASE_OUT), list(0, 0, 0, 1, 1.5, QUAD_EASING | EASE_IN))
-	else if (m_intent == "stealth")
+	if (m_intent == "stealth")
 		// Sneaking: held low, squashed at the feet, rising only briefly
-		// between slow steps. 7 ds.
-		keys = list(list(0, -1, 0, 0.92, 1.5, SINE_EASING | EASE_OUT), list(0, -1, 0, 0.92, 4, LINEAR_EASING),
-			list(0, 0, 0, 1, 1.5, SINE_EASING | EASE_IN))
-	else if (m_intent == "walk")
-		keys = drag ? list(list(0, -1, 0, 1, 3, SINE_EASING | EASE_IN), list(0, 0, 0, 1, 3, SINE_EASING | EASE_OUT)) \
-			: list(list(0, 1, 0, 1, 2, SINE_EASING | EASE_OUT), list(0, 0, 0, 1, 2, SINE_EASING | EASE_IN))
-	else
-		return FALSE
-	return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, keys)
-
-// Whether the ground here drags at the feet: shallow or flood water, a flooded
-// trench, mud or snow, unless the footwear is made for it (the same footwear
-// that keeps its wearer on top of the snow, or wades and stays out of the mud).
-/mob/living/human/proc/body_motion_terrain_drags()
-	var/turf/floor/F = loc
-	if (!istype(F))
-		return FALSE
-	if (istype(F, /turf/floor/beach/water) || istype(F, /turf/floor/trench/flooded))
-		return footwear_terrain_mult(src, "wade") > 0.6
-	if (!F.iscovered())
-		var/band = flood_band_at(F)
-		if (band >= FLOOD_BAND_ANKLE && band <= FLOOD_BAND_WAIST)
-			return footwear_terrain_mult(src, "wade") > 0.6
-	if (F.has_snow_cover())
-		return footwear_terrain_mult(src, "snow") > 0.4
-	if (F.muddy)
-		return footwear_terrain_mult(src, "mud") > 0.6
+		// between slow steps. FULL only. 7 ds.
+		return body_motion_play(BODY_MOTION_PRIORITY_STRIDE, BODY_MOTION_FULL, list(
+			list(0, -1, 0, 0.92, 1.5, SINE_EASING | EASE_OUT),
+			list(0, -1, 0, 0.92, 4, LINEAR_EASING),
+			list(0, 0, 0, 1, 1.5, SINE_EASING | EASE_IN)))
 	return FALSE
 
 // The direction away from a heavy load being pulled, or 0. Heavy means the
