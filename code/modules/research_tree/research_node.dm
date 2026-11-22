@@ -2301,6 +2301,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/bucket" = "pottery_storage",
+		"/obj/item/weapon/reagent_containers/glass/butter_churn" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/copper_large" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/copper_small" = "pottery_storage",

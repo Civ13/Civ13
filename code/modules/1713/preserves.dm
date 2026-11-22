@@ -5,6 +5,8 @@
 // - wine, cider, beer or mead sours into vinegar, 6 units at a time
 // - up to 4 fruits or vegetables packed inside, with 5 vinegar and 2 salt for
 //   each, become pickles after 3 working spells. Pickles never spoil.
+// - cooked meat or fish packed inside, sealed with 5 butter or lard for each,
+//   is potted after 3 working spells (butter.dm).
 // Alt-click an open crock (or use its verb) to take food back out.
 //
 // Jam: 10 fruit juice with 5 sugar, 5 honey or 5 maple syrup sets into 10 jam. A preserve
@@ -82,7 +84,10 @@
 	crock_schedule()
 
 /obj/item/weapon/reagent_containers/glass/crock/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown))
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/butter))
+		press_butter(W, user)
+		return TRUE
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		pack_food(W, user)
 		return TRUE
 	return ..()
@@ -103,8 +108,8 @@
 	if (!is_open_container())
 		to_chat(user, SPAN_WARNING("Take the lid off \the [src] first."))
 		return FALSE
-	if (!crock_can_pickle(S))
-		to_chat(user, SPAN_WARNING("\The [S] will not keep in brine."))
+	if (!crock_can_pickle(S) && !crock_can_pot(S) && !S.potted)
+		to_chat(user, SPAN_WARNING(istype(S, /obj/item/weapon/reagent_containers/food/snacks/grown) ? "\The [S] will not keep in brine." : "\The [S] will not keep under fat. Only cooked, unspoiled meat or fish can be potted."))
 		return FALSE
 	if (crock_food().len >= CROCK_MAX_FOOD)
 		to_chat(user, SPAN_WARNING("\The [src] is packed full."))
@@ -112,7 +117,10 @@
 	if (user)
 		user.remove_from_mob(S)
 	S.forceMove(src)
-	pickle_progress = 0
+	if (istype(S, /obj/item/weapon/reagent_containers/food/snacks/grown))
+		pickle_progress = 0
+	else if (!S.potted)
+		pot_progress = 0
 	to_chat(user, SPAN_NOTICE("You pack \the [S] into \the [src]."))
 	return TRUE
 
@@ -144,6 +152,7 @@
 	user.put_in_hands(I)
 	if (!crock_food().len)
 		pickle_progress = 0
+		pot_progress = 0
 	to_chat(user, SPAN_NOTICE("You take \the [I] out of \the [src]."))
 	return TRUE
 
@@ -163,7 +172,8 @@
 		if (reagents.get_reagent_amount(id) > 0)
 			return TRUE
 	var/list/food = unpickled_food()
-	return has_brine_for(food.len)
+	var/list/to_pot = unpotted_food()
+	return has_brine_for(food.len) || has_seal_for(to_pot.len)
 
 /obj/item/weapon/reagent_containers/glass/crock/proc/crock_schedule()
 	if (crock_working || QDELETED(src) || !crock_has_work())
@@ -199,6 +209,8 @@
 			reagents.remove_reagent("sodiumchloride", PICKLE_SALT * food.len)
 			for (var/obj/item/weapon/reagent_containers/food/snacks/S in food)
 				pickle_food(S)
+	if (crock_pot_work())
+		. = TRUE
 	crock_schedule()
 
 /proc/pickle_food(obj/item/weapon/reagent_containers/food/snacks/S)

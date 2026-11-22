@@ -81,7 +81,7 @@ var/global/list/diet_neutral_descriptors = list("jaw tension", "spices", "salt",
 // Reagents whose own identity fixes the profile, regardless of carried flavour.
 var/global/list/diet_reagent_profiles = list(
 	"protein" = list("protein" = 0.7, "fat" = 0.3), "egg" = list("protein" = 0.6, "fat" = 0.4),
-	"cornoil" = list("fat" = 1), "honey" = list("carbohydrate" = 1),
+	"cornoil" = list("fat" = 1), "butter" = list("fat" = 1), "honey" = list("carbohydrate" = 1),
 	"flour" = list("carbohydrate" = 1), "barleyflour" = list("carbohydrate" = 1),
 	"oatflour" = list("carbohydrate" = 1), "rice" = list("carbohydrate" = 1),
 	"glucose" = list("carbohydrate" = 1), "tomato" = list("vitamins" = 1),
