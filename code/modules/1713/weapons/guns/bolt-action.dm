@@ -93,6 +93,9 @@
 	if (!user.has_empty_hand(both = FALSE) && !istype(src,/obj/item/weapon/gun/projectile/boltaction/mosin/obrez))
 		to_chat(user, "<span class='warning'>You need both hands to fire \the [src]!</span>")
 		return FALSE
+	if (jammed_until > world.time)
+		to_chat(user, "<span class = 'danger'>\The [src] has jammed! You can't fire it until it has unjammed.</span>")
+		return FALSE
 	return TRUE
 
 /obj/item/weapon/gun/projectile/boltaction/load_ammo(var/obj/item/A, mob/user)

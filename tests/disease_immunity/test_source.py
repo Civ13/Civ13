@@ -72,7 +72,7 @@ class DiseaseImmunity(unittest.TestCase):
         self.assertIn("if (resists_disease(fighting))", self.src)
         self.assertIn("disease_resistance -= faded", self.src)
         # Only the illness being fought is exempt from fading.
-        self.assertIn("if (kind == fighting)\n\t\t\tcontinue", self.src)
+        self.assertIn("if (kind == fighting)\n\t\t\t\tcontinue", self.src)
 
     def test_flu_never_sleeps_or_paralyses_and_floors_once(self):
         # Chat feedback 2026-11-17: sick players spent minutes unable to act.
