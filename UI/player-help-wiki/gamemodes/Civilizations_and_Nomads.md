@@ -253,7 +253,7 @@ Every province your side holds has a daily **defence window** of 3 hours, or 4 w
 * **Nations and treaties:** a nation can only declare a siege on another nation's province while the two are at war. If they make peace, a pact or an alliance during the siege, it is called off, the deposit is kept and nobody has to wait to declare again. Members of a nation allied to the holder count as defenders at the seat. Allies of the attacker count as attackers, unless they are allied to the holder too, when they defend. Factions outside a nation siege as before.
 * **A taken seat** suspends one rank's benefits for 7 days, and the province cannot be besieged again for 3 days. Against a Camp or an unranked settlement, or when the same side wins twice within 14 days, the holder's hold also starts slipping.
 
-Lands across the sea have no provinces, so stations there always work. A faction's claimed land across the sea stays its own unless the faction leaves it empty (see [Settle, claim or abandon](../guides/Guide_to_Boats.md#settle-claim-or-abandon)).
+Lands across the sea have no provinces, so stations there always work. A faction's claimed land across the sea stays its own unless the faction leaves it empty (see [Settle, claim or abandon](../guides/Guide_to_Boats.md#settle-claim-or-abandon)), and only the people the faction lets land can reach it (see [Your faction's island](../guides/Guide_to_Boats.md#your-factions-island)).
 
 #### Family and adoption
 

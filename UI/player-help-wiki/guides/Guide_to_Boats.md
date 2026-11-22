@@ -684,6 +684,7 @@ Click the tiller to sail:
 - **Fuel:** a fuel engine burns from its own tank every 30 seconds under way, three times as much at full ahead as at slow, on top of what it burns idling. When the tank cannot pay the engine stalls and she drops to the best speed her other drives make. Stop the engine at anchor to save fuel.
 - The water she is about to cover is **marked in yellow** five seconds before she moves onto it and before a turn.
 - She stops by herself, and tells everyone aboard why, at land, at somebody else's floor, at another ship, at anything solid in the water and at the edge of the world.
+- **Canals:** she floats in a **flooded trench** as well as on open water, so you can dig a canal or a sheltered harbour for her. Every tile of her keeps the canal's levels: no part of her crosses a step where the canal goes up or down. A [pound lock](Guide_to_Trenches.md#pound-locks) lets a tile in only while its chamber stands at that tile's water level, and a lock is one tile long, so a hull longer than one tile cannot be lifted over a step. Keep her canals level.
 - **Pushing her off:** a ship stuck against the shore with no room to turn can be pushed by hand. Stand beside her on land or in the shallows, not on her deck or in deep water, and click one of her floors with an empty hand. After a three-second heave she moves one tile away from you, keeping her heading. One person can push a hull of about **20 tiles**; a bigger ship needs more people heaving the same way within a few seconds of each other, and stronger people count for more. She can't be pushed while she is under way, and land or anything solid still stops her.
 - **Gunwales** are part of her hull: they add no weight, sail and turn with her, cross the sea with her, and shots fly over them. Climb over one like a railing to go over the side. Climbing over into open water asks first. A boat or ship commissioned before gunwales were needed keeps sailing with open sides, and her tiller counts them; rail them before you refit her.
 - **Going aloft:** grab a ship mast with a free hand (or right-click it and choose **Climb the Mast**) to climb to the masthead. From up there you see over walls and hills, **Look into Distance** reaches 8 tiles, and her lookout sees **4 tiles further** through haze, rain and dark. Use **8 wood** on a mast to build a **crow's nest** on it, or craft a **ship mast with a crow's nest** (23 wood, vehicle parts, Wagons & Ships): from the nest the lookout sees **8 tiles further** and you look 11 tiles out. Move, grab the mast again or use **Climb Down** to come down. Being stunned up there, or the mast breaking, is a fall.
@@ -928,6 +929,24 @@ A new land is undecided until its crew choose:
 A land that nobody settles or claims, and that nobody visits for **7 days**, is abandoned.
 
 **A claimed land stays your faction's** while your faction lives there. If raiders destroy the charter, the colony still stands: members who arrive still join it, nobody else can claim the land, and the colony's leader can plant the charter again. The claim lapses only if fewer than **3** of the colony's members have their own fastened bed there for **14 days** in a row. Members are warned when that starts, and examining the charter shows how long is left. When a claim lapses the charter comes down and the land stays settled, open to any faction's claim.
+
+### Your faction's island
+
+Every faction can claim **one island of its own** across the sea, as a safe haven that only the people it chooses can reach. To claim one, your leader sails there (see above) and plants the colony charter. **Faction > Faction Island** shows whether your faction has an island and who may land there; without one, it tells you how to claim it.
+
+Your leader, and officers who issue papers, choose the island's border from any land with **Faction > Faction Island**:
+
+| Border | Who may land |
+| --- | --- |
+| **Open to visitors** | Anyone. |
+| **Members and guests** (the start) | Members, the guests your faction names, and anyone holding one of its visitor passes. A guest is named while standing beside the officer. |
+| **Members only** | Only members. The border is closed, whatever passes say. |
+
+**Visitor passes:** your leader or an officer who issues papers right-clicks one of your faction's recruitment stations and chooses **Grant Island Visitor Pass**. It goes to someone standing beside the station, for 1 hour to 7 days, and can be taken back the same way. A pass only works while the border admits guests.
+
+Nobody else can sail for the island. Your chart only lists it for people it admits, and a ship will not set out, or make landfall, with anyone aboard who may not land. Every other way there refuses them too. Anyone who is on the island without leave, because the border closed, a pass ran out or they left the faction, is warned and has **10 minutes** to go. After that they are put ashore on the mainland. Captives held in restraints stay where they are.
+
+Members who properly go to **Sleep** in their own bed on the island, and then log off, cannot be harmed while they are away, just as in a province their faction holds. If your faction gives the claim up, or it lapses, the border goes with it and any ship can reach the land again.
 
 Until a land is settled or claimed, **dying there sends you back to the mainland**, even if you have a bed there. Your body and gear stay where you fell, and your crew and ship carry on without you.
 
