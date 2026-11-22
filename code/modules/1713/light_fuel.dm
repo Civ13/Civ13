@@ -55,7 +55,7 @@
 		if (units <= 0)
 			continue
 		var/reagent_name = R.name
-		C.reagents.remove_reagent(R.id, units)
+		C.reagents.remove_reagent(R.id, units, exact = TRUE)
 		light_fuel_fat_used(C)
 		return list(round(units * per_unit), reagent_name)
 	return null
