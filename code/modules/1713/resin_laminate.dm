@@ -183,7 +183,7 @@
 
 /obj/structure/hot_press
 	name = "hot press"
-	desc = "A heavy screw press with heated platens. Pour in phenolic or pine resin, then lay four sheets of cloth or silk in it to press resin laminate."
+	desc = "A heavy screw press with heated platens. Pour in phenolic or pine resin, then lay four sheets of cloth or silk in it to press resin laminate, or four piles of sawdust to press particle board."
 	icon = 'icons/obj/resin_works.dmi'
 	icon_state = "hot_press"
 	anchored = TRUE
@@ -237,6 +237,9 @@
 			to_chat(H, SPAN_NOTICE("You pour [poured] units of resin into \the [src]."))
 		else
 			to_chat(H, SPAN_WARNING("\The [src] is full of resin."))
+		return TRUE
+	if (istype(W, /obj/item/stack/sawdust)) // particle_board.dm
+		press_particle_board(W, H)
 		return TRUE
 	if (istype(W, /obj/item/stack/material))
 		var/obj/item/stack/material/S = W

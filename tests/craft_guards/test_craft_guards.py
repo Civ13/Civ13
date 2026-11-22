@@ -29,6 +29,7 @@ EXPECTED = {
     'land_permit': (70, True, False),
     'well_fitting': (75, True, False),
     'deep_water': (80, True, False),
+    'particle_board_afloat': (85, True, False),
     'religious_work': (90, False, False),
     'handle': (94, False, True),
     'needs': (95, False, True),

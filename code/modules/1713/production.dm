@@ -2586,6 +2586,7 @@
 			icon_state = "sawmill_power"
 		else
 			icon_state = "primitive_sawmill"
+		sawmill_sawdust(current_material) // particle_board.dm
 		qdel(current_material)
 		var/obj/item/stack/this_production = new current_work.type(null, current_work.amount, FALSE) //deleting and creating for sterilization effect (we need really new object)
 		current_user.put_in_active_hand(this_production)

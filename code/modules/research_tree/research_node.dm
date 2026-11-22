@@ -1321,6 +1321,14 @@ var/global/list/node_grid_col_cache = null
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
 		"/obj/structure/hot_press" = "combustion",
+		// Particle board is pressed in the hot press (particle_board.dm).
+		"/obj/structure/table/rack/shelf/wooden/particle_board" = "combustion",
+		"/obj/structure/table/modern/table/particle_board" = "combustion",
+		"/obj/structure/closet/cabinet/particle_board" = "combustion",
+		"/obj/structure/closet/cabinet/particle_board/wall" = "combustion",
+		"/obj/structure/bookcase/particle_board" = "combustion",
+		"/obj/covers/wood_wall/particle_board" = "combustion",
+		"/obj/covers/wood/particle_board" = "combustion",
 		"/obj/structure/layup_table" = "modern_construction",
 		// --- cooperage (17) ---
 		"/obj/structure/closet/ice_house" = "cooperage",

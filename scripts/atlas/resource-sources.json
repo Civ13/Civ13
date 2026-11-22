@@ -113,7 +113,8 @@
     "code/modules/reagents/reagent_containers/spray.dm",
     "code/modules/reagents/reagent_containers/syringe.dm",
     "code/modules/1713/stone_crushing.dm",
-    "code/modules/1713/tatara.dm"
+    "code/modules/1713/tatara.dm",
+    "code/modules/1713/particle_board.dm"
   ],
   "plant_harvest_mappings": [
     {
@@ -17076,6 +17077,54 @@
         "Use 4 sheets of cloth on it for 2 sheets of laminate, or 4 silk for 3; pine resin gives half."
       ],
       "conditions": "Needs a hot press, 10 resin and 4 cloth or silk.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Sweep sawdust from a saw mill",
+      "file": "code/modules/1713/particle_board.dm",
+      "line": 120,
+      "source_commit": "3ef6b184fe9f5d3fb7abc1f679ee5af5b8d5102a",
+      "inputs": [
+        "/material/wood"
+      ],
+      "outputs": [
+        "/obj/item/stack/sawdust"
+      ],
+      "tools": [
+        "/obj/structure/sawmill/large",
+        "/obj/structure/sawmill/powered"
+      ],
+      "steps": [
+        "Cut logs into planks on a large or powered saw mill.",
+        "One pile of sawdust is left beside the mill for every two logs cut."
+      ],
+      "conditions": "Needs a large or powered saw mill; the primitive mill leaves none.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press particle board",
+      "file": "code/modules/1713/particle_board.dm",
+      "line": 226,
+      "source_commit": "3ef6b184fe9f5d3fb7abc1f679ee5af5b8d5102a",
+      "inputs": [
+        "/obj/item/stack/sawdust",
+        "phenolic_resin"
+      ],
+      "outputs": [
+        "/material/particle_board"
+      ],
+      "tools": [
+        "/obj/structure/hot_press"
+      ],
+      "steps": [
+        "Pour 10 units of phenolic resin (or pine resin) into a hot press.",
+        "Use 4 piles of sawdust on it for 3 sheets of particle board; pine resin gives 2."
+      ],
+      "conditions": "Needs a hot press, 10 resin and 4 piles of sawdust.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
