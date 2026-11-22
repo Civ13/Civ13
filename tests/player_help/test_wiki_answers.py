@@ -6,6 +6,7 @@ same questions against a live model when an operator wants answer scores.
 """
 import importlib.util
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -57,10 +58,14 @@ class WikiAnswerTests(unittest.TestCase):
 
     def test_question_set_quotes_the_shipped_guides(self):
         self.assertGreaterEqual(len(QUESTIONS), 30)
+        self.assertEqual(len({entry['id'] for entry in QUESTIONS}), len(QUESTIONS))
         for entry in QUESTIONS:
             if entry['page'] is None:
                 continue
             page = (ROOT / bridge.WIKI_BUNDLE / entry['page']).read_text(encoding='utf-8')
+            with self.subTest(question=entry['id'], section=entry['section']):
+                # The section is the heading a reader would open to check the answer.
+                self.assertRegex(page, r'(?m)^#+ +' + re.escape(entry['section']) + r'\s*$')
             for marker in entry['evidence']:
                 with self.subTest(question=entry['id'], marker=options(marker)[0]):
                     # The first option is always the named guide's own wording.

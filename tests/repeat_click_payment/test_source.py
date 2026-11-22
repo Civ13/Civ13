@@ -282,8 +282,10 @@ class RepeatClickPayment(unittest.TestCase):
         self.assertEqual(programs.count('QDELETED(ST) || user.get_active_hand() != ST)'), 2)
         self.assertEqual(programs.count('QDELETED(M) || user.get_active_hand() != M)'), 2)
         vendor = proc('code/game/objects/structures/vending/vending_sales.dm', '/obj/structure/vending/sales/attackby')
-        self.assert_order(vendor, 'var/atom/drop_loc = W.loc', 'What price do you want to set',
-                          'if (QDELETED(W) || W.loc != drop_loc)', 'product_records.Add(product)')
+        # The price is asked while the seller still holds the item; the listing
+        # is made only if they still hold it at the stall afterwards.
+        self.assert_order(vendor, 'What price do you want to set',
+                          'QDELETED(W) || W.loc != user || !in_range(src, user)', 'return add_product(W, inputp, user)')
 
     def test_mines_shells_and_printing_press(self):
         grenades = read('code/game/objects/items/weapons/grenades/grenade.dm')

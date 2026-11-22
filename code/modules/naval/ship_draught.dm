@@ -104,6 +104,7 @@
 	"GP" = list("name" = "wooden gun port", "path" = /obj/structure/railing/built/gunwale/gun_port, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE, "decks" = TRUE),
 	"GS" = list("name" = "steel gun port", "path" = /obj/structure/railing/built/gunwale/bulwark/gun_port, "cost" = list("steel" = 4), "load" = 0, "turns" = TRUE, "decks" = TRUE),
 	"CH" = list("name" = "cargo hatch", "path" = /obj/structure/cargo_hatch, "cost" = list("wood" = 6), "load" = 0.1),
+	"LD" = list("name" = "lifeboat davits", "path" = /obj/structure/lifeboat_davit, "cost" = list("steel" = 6), "load" = 0.1, "turns" = TRUE),
 )
 	return table
 

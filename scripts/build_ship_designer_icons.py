@@ -288,6 +288,8 @@ SPRITES = {
     'piece_GS': {'layers': [('icons/obj/vessel_openings.dmi', 'gunport_steel_gate', None)], 'turns': True},
     # /obj/structure/cargo_hatch, battened down
     'piece_CH': {'layers': [('icons/obj/vessel_openings.dmi', 'cargo_hatch', None)]},
+    # /obj/structure/lifeboat_davit, empty
+    'piece_LD': {'layers': [('icons/obj/vessel_openings.dmi', 'davit', None)], 'turns': True, 'outline': True},
     # /obj/structure/multiz/ladder/up/placed (the foot of a stood-up ladder)
     'piece_X': {'layers': [('icons/obj/stairs.dmi', 'ladderup_wood', None)], 'outline': True},
     # /obj/structure/roof_support (a deck pillar)

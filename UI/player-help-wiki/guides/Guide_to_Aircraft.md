@@ -145,6 +145,16 @@ A light plane can carry a gun and two bombs:
 
 Filled bombs go off when a heavy blast reaches them, on the plane or in a store, so keep them apart from anything else that explodes. An empty casing is harmless.
 
+## Bailing out
+
+Anyone aboard a plane in the air can right-click the floor they stand on and choose **Bail out**.
+
+- It takes two seconds. A plane with a door opens it for you. A plane with no door, such as a small single-seater, jettisons its cockpit canopy.
+- You drop to the ground straight below, or to the nearest open tile if something solid stands there.
+- With a **parachute pack** on your back you float down and land on your feet.
+- Without one, a jump just off the ground is a hard landing. From any higher you break both legs, and from cruise height you are badly hurt as well.
+- A jettisoned canopy stays off. On the ground, use **2 sheets of glass** on the cockpit to fit a new one, which takes eight seconds. Examining the plane shows when the canopy is missing.
+
 ## Damage and repair
 
 People on the ground can shoot at a plane as it passes over them:

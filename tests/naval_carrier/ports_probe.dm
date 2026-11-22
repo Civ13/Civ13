@@ -157,6 +157,26 @@ var/naval_runtime_error = FALSE
 	hatch.set_open(FALSE)
 	naval_check(hatch.icon_state == "cargo_hatch", "it battens down again")
 
+	// ---- Lifeboat davits ----
+	var/obj/structure/lifeboat_davit/davit = new(locate(33, 12, 2))
+	davit.dir = EAST
+	var/obj/structure/vehicle/raft/raft = new(locate(35, 12, 2))
+	naval_check(davit.hoist_refusal(raft) && !davit.hoist(raft) && raft.loc == locate(35, 12, 2), "a boat not right under the davits is not hoisted")
+	raft.forceMove(locate(34, 12, 2))
+	naval_check(davit.hoist(raft) && raft.loc == davit && davit.stowed() == raft && davit.icon_state == "davit_boat", "a boat alongside under them is hoisted and stowed")
+	var/obj/structure/vehicle/raft/second = new(locate(34, 12, 2))
+	naval_check(findtext(davit.hoist_refusal(second), "already"), "a second boat is refused")
+	naval_check(findtext(davit.lower_refusal(), "in the way"), "the boat is not lowered onto another")
+	qdel(second)
+	tiller.craft.set_speed(VESSEL_SPEED_HALF)
+	naval_check(findtext(davit.lower_refusal(), "stopped"), "not while she is under way")
+	tiller.craft.set_speed(VESSEL_SPEED_STOP)
+	naval_check(davit.lower() == raft && raft.loc == locate(34, 12, 2) && !davit.stowed() && davit.icon_state == "davit", "lowered, it floats beside her")
+	davit.hoist(raft)
+	qdel(davit)
+	naval_check(raft.loc == locate(33, 12, 2) && !QDELETED(raft), "a davit that goes drops its boat on deck")
+	qdel(raft)
+
 	// ---- On the designer's sheet ----
 	var/datum/ship_draught/D = draught_box(6, 10, "Frigate")
 	var/sides = length(D.gunwale_sides())
@@ -169,7 +189,12 @@ var/naval_runtime_error = FALSE
 	naval_check(findtext(jointext(D.problems(), " "), "no hold under it"), "a cargo hatch with no hold under it is refused ([jointext(D.problems(), " ")])")
 	D.set_deck(-1, 2, 2, TRUE)
 	naval_check(!findtext(jointext(D.problems(), " "), "no hold under"), "drawn over her hold it is not ([jointext(D.problems(), " ")])")
-	for (var/key in list("GP", "GS", "CH"))
+	D.set_piece(0, 2, "LD", WEST)
+	naval_check(!findtext(jointext(D.problems(), " "), "davits"), "davits on her edge facing out are fine ([jointext(D.problems(), " ")])")
+	D.set_piece(0, 2, "LD", EAST)
+	naval_check(findtext(jointext(D.problems(), " "), "her own deck: davits stand"), "davits facing inboard are refused ([jointext(D.problems(), " ")])")
+	D.set_piece(0, 2, null)
+	for (var/key in list("GP", "GS", "CH", "LD"))
 		var/list/P = ship_draught_pieces()[key]
 		naval_check(P && ispath(P["path"]) && P["cost"], "the sheet's [key] is a [P ? P["name"] : "missing piece"] with a cost")
 	qdel(D)

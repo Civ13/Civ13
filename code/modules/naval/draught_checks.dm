@@ -173,6 +173,14 @@
 				in_ports += key
 		if (in_ports.len)
 			R.error("[in_ports.len] gun port\s face[in_ports.len == 1 ? "s" : ""] her own deck: a gun port stands on her edge, facing out over the side.", in_ports, port)
+	// Davits hang their boat over her side (hull_davits.dm).
+	var/list/in_davits = list()
+	for (var/key in D.piece_cells("LD"))
+		var/list/C = D.cells[key]
+		if (D.cells[ship_draught_step_key(key, C[3])])
+			in_davits += key
+	if (in_davits.len)
+		R.error("[in_davits.len] pair\s of davits face[in_davits.len == 1 ? "s" : ""] her own deck: davits stand on her edge, facing out over the water.", in_davits, "LD")
 
 // A cargo hatch opens into her hold (hull_ports.dm).
 /datum/design_check/ship/cargo_hatches

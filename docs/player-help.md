@@ -393,7 +393,9 @@ and in answers.
 wiki passage that answers each one. `python3 tests/player_help/wiki_eval/run.py`
 reports how many reach the model with that passage; with `--ollama-url` and
 `--model` it also sends them to a model and scores the answers. Add a question
-there when a player reports a wrong answer.
+there when a player reports a wrong answer;
+`tests/player_help/wiki_eval/README.md` explains the format, and `run.py --list`
+prints the set for reading.
 
 The prompt reports bounded coverage
 counts, keyword-match and context-truncation status. Neither a missing page nor a
