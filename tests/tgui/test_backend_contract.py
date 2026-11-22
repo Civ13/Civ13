@@ -213,7 +213,10 @@ class BackendContract(unittest.TestCase):
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn("document.getElementById('tgui-loading').textContent=", DM)
         external = (ROOT / "code/modules/nano/nanoexternal.dm").read_text()
-        self.assertIn("istype(ui, /datum/nanoui/tgui) && ui.user != mob", external)
+        native_close = external.split('/client/verb/nanoclose', 1)[1].split('///', 1)[0]
+        guard = 'if (!mob || ui.user != mob || ui.user.client != src || !(ui in mob.open_uis))'
+        self.assertLess(native_close.index(guard), native_close.index('ui.close()'))
+        self.assertLess(native_close.index(guard), native_close.index('Topic(href,'))
         self.assertNotIn('"manage"', DM)
 
     def test_recruitment_actions_reach_the_existing_topic(self):
