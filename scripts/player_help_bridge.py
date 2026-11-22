@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '8cd66ed8b2263e15277ab43794b3dd5c029960e6'
+WIKI_REVIEWED_REVISION = '19e1654ca2b0fc2300d75b04365b17ebe623f78e'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -121,7 +121,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('7a7a693f8f1d50fe32737f46b09b6fdfc143c33f16c7e3969d9e2dee64208d7a', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('5c503693bca6224877567df3699d993a01f192b3768ad3e20a11fdae44779e45', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('07180ee59517de08f1eac31fc7b2c18e67a17fd66612986102c8eb263f0ebaa1', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
