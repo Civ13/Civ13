@@ -24,6 +24,7 @@ var/global/list/divine_sight_verbs = list(
 	/mob/observer/ghost/proc/divine_manifest,
 	/mob/observer/ghost/proc/divine_whisper,
 	/mob/observer/ghost/proc/divine_patron_menu,
+	/mob/observer/ghost/proc/divine_lift_sleep_protection,
 	/mob/observer/ghost/proc/divine_sight_leave,
 )
 

@@ -34,7 +34,7 @@ class OfflineSleepProtection(unittest.TestCase):
     def test_condition(self):
         body = proc(self.mod, "/mob/living/human/offline_sleep_protected()")
         # Only the Sleep verb's completed wait sets inducedSSD; a client ends it.
-        self.assertIn("if (!inducedSSD || client || stat == DEAD", body)
+        self.assertIn("if (!inducedSSD || client || offline_sleep_protection_lifted || stat == DEAD", body)
         self.assertIn("offline_sleep_protection_map_allowed()", body)
         self.assertIn("for (var/obj/structure/bed/B in loc)", body)
         self.assertIn("B.anchored && B.buckle_lying", body)
@@ -102,6 +102,25 @@ class OfflineSleepProtection(unittest.TestCase):
         release = proc(self.mod, "/mob/living/human/proc/offline_sleep_release_holds()")
         self.assertIn("pulledby.stop_pulling()", release)
         self.assertIn("qdel(G)", release)
+
+    def test_staff_and_gods_can_lift_it(self):
+        body = proc(self.mod, "/mob/living/human/offline_sleep_protected()")
+        self.assertIn("offline_sleep_protection_lifted", body)
+        lift = proc(self.mod, "/client/proc/cmd_admin_lift_sleep_protection()")
+        self.assertIn("if (!check_rights(R_ADMIN))", lift)
+        self.assertIn("H.offline_sleep_protection_lifted = TRUE", lift)
+        self.assertIn("log_admin(", lift)
+        self.assertIn("/client/proc/cmd_admin_lift_sleep_protection,", read("code/modules/admin/admin_verbs.dm"))
+        divine = proc(self.mod, "/mob/observer/ghost/proc/divine_lift_sleep_protection()")
+        self.assertIn("if (!divine_allowed())", divine)
+        self.assertIn("/mob/observer/ghost/proc/divine_lift_sleep_protection,", read("code/modules/divine/divine_sight.dm"))
+        # Refused players are told how to ask.
+        self.assertIn("adminhelp or pray", proc(self.mod, "/mob/living/proc/offline_sleep_refuses("))
+
+    def test_next_sleep_restores_it(self):
+        helpers = read("code/game/mob/living/carbon/human/human_helpers.dm")
+        self.assertIn("offline_sleep_protection_lifted = FALSE", proc(helpers, "/mob/living/human/proc/enter_bed_sleep()"))
+        self.assertIn("offline_sleep_protection_lifted = FALSE", proc(read("code/modules/persistence/bed_return.dm"), "/mob/living/human/proc/enter_saved_bed_sleep()"))
 
 
 if __name__ == "__main__":
