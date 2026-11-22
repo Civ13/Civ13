@@ -429,6 +429,18 @@
 		if (sealed)
 			R.error("Row [row] is a bulkhead right across her: put a watertight door in it or nobody can reach the rooms aft.", row_cells, "wd")
 
+/datum/design_check/sub/tubes
+	order = 35
+
+/datum/design_check/sub/tubes/sub_check(datum/sub_draught/D, datum/design_report/R)
+	var/list/aft = list()
+	for (var/key in D.fitting_cells("T"))
+		var/list/at = splittext(key, ",")
+		if (text2num(at[2]) != 1)
+			aft += key
+	if (aft.len)
+		R.error("A torpedo tube fires only from her bow row: move [aft.len == 1 ? "it" : "them"] to the first row.", aft, "T")
+
 /datum/design_check/sub/banks
 	order = 40
 

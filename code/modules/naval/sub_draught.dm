@@ -39,6 +39,7 @@ var/global/list/sub_draught_fittings = list(
 	"A" = list("name" = "air bank", "path" = /obj/structure/vehicleparts/sub_fitting/air/loose, "cost" = list("steel" = 8)),
 	"L" = list("name" = "locker", "path" = /obj/structure/closet, "cost" = list("iron" = 4)),
 	"B" = list("name" = "berth", "path" = /obj/structure/bed/wood, "cost" = list("wood" = 4)),
+	"T" = list("name" = "torpedo tube", "path" = /obj/structure/torpedo_tube, "cost" = list("steel" = 25)),
 )
 
 // What can close a section's bow side: the letter set_hull_walls() reads.
@@ -296,6 +297,8 @@ var/global/list/sub_draught_fixed_cost = list("steel" = 56)
 		return "A"
 	if (ispath(path, /obj/structure/vehicleparts/shipwheel))
 		return "W"
+	if (ispath(path, /obj/structure/torpedo_tube))
+		return "T"
 	return null
 
 // The bow-side wall key of a wall code, or null.

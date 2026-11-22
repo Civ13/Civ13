@@ -64,6 +64,46 @@ var/submarine_runtime_error = FALSE
 	for (var/obj/structure/vehicleparts/frame/F in S.frames())
 		. = min(., F.y)
 
+// Torpedo tubes in a submerged boat (code/modules/naval/sub_torpedo_tubes.dm).
+/proc/submarine_tube_checks(obj/structure/vehicleparts/axis/ship/submarine/S)
+	var/obj/structure/vehicleparts/frame/bow = null
+	var/obj/structure/vehicleparts/frame/aft = null
+	for (var/obj/structure/vehicleparts/frame/F in S.frames())
+		if (submarine_at(get_step(F, S.dir)) != S && submarine_at(get_step(F, turn(S.dir, 90))) == S && submarine_at(get_step(F, turn(S.dir, -90))) == S)
+			bow = F
+		else if (submarine_at(get_step(F, S.dir)) == S && !aft)
+			aft = F
+	submarine_check(bow && aft, "the boat has a middle bow section and a section further aft")
+	var/obj/structure/torpedo_tube/tube = new(get_turf(bow))
+	tube.anchored = TRUE
+	tube.dir = turn(S.dir, 90)
+	submarine_check(tube.sub_boat() == S && tube.fire_dir() == S.dir, "a tube in a submarine fires along her heading, not the way it was trained")
+	var/turf/ahead = get_step(get_turf(bow), S.dir)
+	var/turf/surface = locate(ahead.x, ahead.y, 2)
+	submarine_check(tube.muzzle() == surface, "submerged, she fires from periscope depth onto the surface above her bow")
+	var/obj/covers/submarine_probe_raft/tube_raft = new(surface)
+	submarine_check(tube.muzzle() == ahead, "with something floating there the torpedo runs along the sea layer")
+	qdel(tube_raft)
+	tube.loaded = /obj/structure/naval_mine/torpedo
+	submarine_check(!tube.fire_problem(), "a loaded bow tube may fire")
+	submarine_check(findtext(tube.tube_lock_refusal(), "torpedo in it"), "a diver cannot use a loaded tube")
+	tube.loaded = null
+	submarine_check(!tube.tube_lock_refusal() && tube.tube_exit() == ahead, "an empty tube lets a diver out onto the seabed ahead of her bow")
+	tube.diver_in_tube = TRUE
+	tube.loaded = /obj/structure/naval_mine/torpedo
+	submarine_check(findtext(tube.fire_problem(), "Someone is in"), "the tube cannot fire with a diver in it")
+	tube.diver_in_tube = FALSE
+	tube.loaded = null
+	var/mob/living/submarine_probe/diver/outside = new(ahead)
+	submarine_check(tube.tube_knock(outside) && !tube.tube_knock(outside), "a diver at a shut outer door hammers for the crew, once every few seconds")
+	qdel(outside)
+	var/obj/structure/torpedo_tube/aft_tube = new(get_turf(aft))
+	aft_tube.anchored = TRUE
+	aft_tube.loaded = /obj/structure/naval_mine/torpedo
+	submarine_check(findtext(aft_tube.fire_problem(), "bow sections") && !aft_tube.tube_exit(), "a tube aft of the bow row neither fires nor lets divers out")
+	qdel(aft_tube)
+	qdel(tube)
+
 /proc/submarine_checks()
 	// Surface (z2): land at x 1-3, shallows at x 4, deep ocean from x 5.
 	// Below (z1): solid rock, with an old tunnel dug at x 25-27, y 3.
@@ -272,6 +312,7 @@ var/submarine_runtime_error = FALSE
 	submarine_check(findtext(S.depth_refusal(FALSE), "[real_raft.name]"), "a moored raft above blocks surfacing too")
 	qdel(real_raft)
 	submarine_check(!S.depth_refusal(FALSE), "with both gone it may surface")
+	submarine_tube_checks(S)
 
 	// Contacts: ships and aircraft on the surface, submerged boats by sonar.
 	var/obj/structure/vehicleparts/axis/ship/submarine/surface_ship = build_submarine(locate(20, 20, 2), "surface ship")

@@ -198,6 +198,10 @@
 
 // The first tile past her own hull along the tube's line, or null.
 /obj/structure/torpedo_tube/proc/muzzle(datum/craft/C)
+	// A submarine's tube fires along her heading (sub_torpedo_tubes.dm).
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = sub_boat()
+	if (B)
+		return sub_tube_muzzle(B)
 	var/turf/T = get_turf(src)
 	for (var/i = 1, i <= 30 && T, i++)
 		T = get_step(T, dir)
@@ -213,6 +217,11 @@
 		return "\The [src] is empty."
 	if (!anchored)
 		return "Bolt \the [src] down first."
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = sub_boat()
+	if (B)
+		var/sub_problem = sub_tube_problem(B)
+		if (sub_problem)
+			return sub_problem
 	var/turf/T = muzzle(aboard())
 	if (!T || (!torpedo_water(T) && !torpedo_craft_at(T)))
 		return "\The [src] does not point at open water."
@@ -232,13 +241,16 @@
 	playsound(loc, 'sound/effects/bang.ogg', 40, TRUE)
 	visible_message(SPAN_WARNING("\The [src] fires with a hiss of air and a splash!"))
 	var/obj/structure/naval_mine/torpedo/R = new run_type(T)
-	R.dir = dir
+	R.dir = fire_dir()
 	R.start(C)
 	return R
 
 /obj/structure/torpedo_tube/attack_hand(mob/living/human/H)
 	if (!istype(H))
 		return ..()
+	// Fitted in a submarine: firing submerged and the diver lock-out.
+	if (sub_tube_attack_hand(H))
+		return
 	if (!anchored)
 		set_dir(turn(dir, -90))
 		H.visible_message(SPAN_NOTICE("[H] trains \the [src] round to face [dir2text(dir)]."))
@@ -258,6 +270,9 @@
 		var/obj/item/naval_torpedo/P = W
 		if (loaded)
 			to_chat(user, SPAN_WARNING("\The [src] is already loaded."))
+			return
+		if (diver_in_tube)
+			to_chat(user, SPAN_WARNING("Someone is in \the [src]."))
 			return
 		user.visible_message(SPAN_NOTICE("[user] starts to slide \the [P] into \the [src]."))
 		if (!do_after(user, TORPEDO_LOAD_TIME, src) || QDELETED(P) || loaded)
