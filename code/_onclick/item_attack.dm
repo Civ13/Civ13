@@ -67,6 +67,8 @@ avoid code duplication. This includes items that may sometimes act as a standard
 /mob/living/attackby(obj/item/I, mob/user, icon_x, icon_y)
 	if (!ismob(user))
 		return FALSE
+	if (offline_sleep_refuses(user))
+		return TRUE
 	if (tree_melee_refused(user, src))
 		return TRUE
 	if (can_operate(src) && do_surgery(src,user,I)) //Surgery

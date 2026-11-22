@@ -106,6 +106,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 //Makes a blood drop, leaking amt units of blood from the mob
 /mob/living/human/proc/drip(var/amt as num)
+	if (offline_sleep_protected())
+		return
 
 	if (species && species.flags & NO_BLOOD) //TODO: Make drips come from the reagents instead.
 		return

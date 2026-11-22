@@ -255,6 +255,8 @@
 
 
 /obj/item/organ/external/take_damage(brute, burn, sharp, edge, used_weapon = null, silent = 0)
+	if (owner && owner.offline_sleep_protected())
+		return 0
 	brute = round(brute * species.brute_mod, 0.1)
 	burn = round(burn * species.burn_mod, 0.1)
 	if((brute <= 0) && (burn <= 0))
@@ -801,6 +803,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/droplimb(var/clean, var/disintegrate = DROPLIMB_EDGE, var/ignore_children = null)
 
 	if (cannot_amputate || !owner)
+		return
+	if (owner.offline_sleep_protected())
 		return
 
 	switch(disintegrate)

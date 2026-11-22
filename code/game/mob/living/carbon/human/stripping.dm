@@ -2,6 +2,9 @@
 
 	if (!slot_to_strip || !user.IsAdvancedToolUser())
 		return
+	if (offline_sleep_refuses(user))
+		show_browse(user, null, text("window=mob[name]"))
+		return
 
 	if (user.incapacitated()  || !user.Adjacent(src))
 		show_browse(user, null, text("window=mob[name]"))

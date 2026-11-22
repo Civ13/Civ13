@@ -390,6 +390,7 @@ default behaviour is:
 
 /mob/living/proc/adjustBruteLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (amount > 0 && offline_sleep_protected())	return FALSE
 	bruteloss = min(max(bruteloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -400,6 +401,7 @@ default behaviour is:
 
 /mob/living/proc/adjustBurnLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (amount > 0 && offline_sleep_protected())	return FALSE
 	burnloss = min(max(burnloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -410,6 +412,7 @@ default behaviour is:
 
 /mob/living/proc/adjustOxyLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (amount > 0 && offline_sleep_protected())	return FALSE
 	oxyloss = min(max(oxyloss + amount, FALSE),(maxHealth*2))
 
 /mob/living/proc/setOxyLoss(var/amount)
@@ -421,6 +424,7 @@ default behaviour is:
 
 /mob/living/proc/adjustToxLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (amount > 0 && offline_sleep_protected())	return FALSE
 	toxloss = min(max(toxloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -434,6 +438,7 @@ default behaviour is:
 
 /mob/living/proc/adjustCloneLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (amount > 0 && offline_sleep_protected())	return FALSE
 	cloneloss = min(max(cloneloss + amount, FALSE),(maxHealth*2))
 
 /mob/living/proc/setCloneLoss(var/amount)
@@ -445,6 +450,7 @@ default behaviour is:
 
 /mob/living/proc/adjustBrainLoss(var/amount)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (amount > 0 && offline_sleep_protected())	return FALSE
 	brainloss = min(max(brainloss + amount, FALSE),(maxHealth*2))
 	if (amount > 0)
 		check_arena_promotion()
@@ -546,6 +552,7 @@ default behaviour is:
 // damage ONE external organ, organ gets randomly selected from damaged ones.
 /mob/living/proc/take_organ_damage(var/brute, var/burn, var/emp=0)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (offline_sleep_protected())	return FALSE
 	adjustBruteLoss(brute)
 	adjustBurnLoss(burn)
 	updatehealth()
@@ -559,6 +566,7 @@ default behaviour is:
 // damage MANY external organs, in random order
 /mob/living/proc/take_overall_damage(var/brute, var/burn, var/used_weapon = null)
 	if (status_flags & GODMODE)	return FALSE	//godmode
+	if (offline_sleep_protected())	return FALSE
 	adjustBruteLoss(brute)
 	adjustBurnLoss(burn)
 	updatehealth()

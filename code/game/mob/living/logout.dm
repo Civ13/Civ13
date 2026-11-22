@@ -14,4 +14,8 @@
 		human_subtile_visual_owner.human_subtile_release_visuals()
 	human_subtile_release_glide()
 	human_clients_mob_list -= src
-	return ..()
+	. = ..()
+	// A sleeper who logged off properly lets go of every hold (offline_sleep_protection.dm).
+	spawn(1)
+		if (src && !client)
+			offline_sleep_release_holds()

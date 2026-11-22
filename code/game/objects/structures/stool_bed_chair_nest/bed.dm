@@ -152,6 +152,8 @@
 				return
 
 /obj/structure/bed/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (offline_sleeper_refuses(user))
+		return
 	if (istype(W,/obj/item/stack))
 		if (padding_material)
 			to_chat(user, "\The [src] is already padded.")
