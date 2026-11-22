@@ -62,6 +62,8 @@ var/global/list/capstone_demonstrations = capstone_demonstrations_table()
 		var/kit = demonstration_kit_name(N.id)
 		var/kit_text = kit ? "once the book holds half the chapter, whoever carries it can build a crude experimental [kit] for this; " : ""
 		return "A demonstration: [demonstration_text(N.id)] ([kit_text]record it with Record a Demonstration on paper or parchment and use the notes on the bench, or record it straight into the book)"
+	if (capstone_bill_replaces_prototype(N.id))
+		return "Its bill of materials delivered to the bench, in place of a prototype"
 	var/pname = N.prototype_display_name()
 	return "A working [pname ? pname : "prototype"] used on the bench"
 
@@ -376,7 +378,7 @@ var/global/list/capstone_demonstrations = capstone_demonstrations_table()
 		if (B.has_research_chapter(node_id))
 			to_chat(src, SPAN_NOTICE("The demonstration is written into [B]. The chapter on <b>[N.name]</b> is finished."))
 		else
-			to_chat(src, SPAN_NOTICE("The demonstration is written into [B]. The chapter on <b>[N.name]</b> is finished once the study is done."))
+			to_chat(src, SPAN_NOTICE("The demonstration is written into [B]. The chapter on <b>[N.name]</b> is finished once the study[node_has_bill(N.id) ? " and its bill are" : " is"] done."))
 	return TRUE
 
 /obj/item/weapon/paper/verb/record_demonstration_paper()
@@ -414,7 +416,7 @@ var/global/list/capstone_demonstrations = capstone_demonstrations_table()
 	if (B.add_research_work(N.id, 0, TRUE, user))
 		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished."))
 	else
-		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished once the study is done."))
+		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished once the study[node_has_bill(N.id) ? " and its bill are" : " is"] done."))
 	book_refresh_ui()
 	return TRUE
 

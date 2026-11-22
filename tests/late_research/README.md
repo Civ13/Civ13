@@ -23,3 +23,8 @@ Soil Science, Crop Breeding, Infantry Support Weapons and Guided Missiles exist 
 book-research worlds. The fixture checks that each follows from earlier subjects, unlocks
 recipes or a standing effect, has field work, gates its recipes on personal knowledge, and
 is never done, listed or assignable where book research is off.
+
+Era bills (`docs/era-bills.md`, `code/modules/research_tree/era_bills.dm`): the fixture checks each
+bill names real stacks from earlier subjects, only book-research worlds bill, a damaged saved record is
+cleaned, a bill takes only what it still owes, anyone at the bench may deliver, the World War II capstones
+refuse their old part and take the bill in its place, and a paid bill finishes the chapter.
