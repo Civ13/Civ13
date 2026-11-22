@@ -2969,6 +2969,8 @@ SUITES = {
         'paths': ('tests/drug_crops/',)},
     'coffee': {'files': ('tests/coffee/test_coffee.py',),
         'paths': ('tests/coffee/', 'code/modules/1713/coffee.dm', 'tests/sprites/create_coffee.py')},
+    'butter': {'files': ('tests/butter/test_butter.py',),
+        'paths': ('tests/butter/', 'code/modules/1713/butter.dm', 'tests/sprites/create_butter.py')},
     'syrups': {'files': ('tests/syrups/test_syrups.py',),
         'paths': ('tests/syrups/', 'code/modules/1713/syrups.dm')},
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),

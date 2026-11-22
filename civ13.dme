@@ -2230,6 +2230,7 @@
 #include "code\modules\1713\herbalism.dm"
 #include "code\modules\1713\processing_recipes.dm"
 #include "code\modules\1713\preserves.dm"
+#include "code\modules\1713\butter.dm"
 #include "code\modules\1713\husbandry_feeding.dm"
 #include "code\modules\1713\fish_pen.dm"
 #include "code\modules\1713\wild_bees.dm"
