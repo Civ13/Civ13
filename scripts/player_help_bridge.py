@@ -70,11 +70,11 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '6d2477e62341565927cf4d596b5fa5bb2b26598d'
+WIKI_REVIEWED_REVISION = '9c6ac4eb63c0e338471f294c7ac80bcb80632390'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
-    'guides/Guide_to_Peoples_and_Languages.md': ('007c6498d643b994fae1831c21047e3bac74ac629cdc25460d7c6a7287910665', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
+    'guides/Guide_to_Peoples_and_Languages.md': ('ec8abe24ffa48f2ac1f8a9d4ced3389392fcc46760acc24ddd7bf6195bcc096f', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
     'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
