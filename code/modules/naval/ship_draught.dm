@@ -498,7 +498,16 @@ var/global/list/ship_draught_decks = list(
 // What her drives push against, empty of cargo and crew: her tiles, and the
 // weight of her fittings past her burden (small craft carry theirs free).
 /datum/ship_draught/proc/mass()
-	. = max(1, cells.len)
+	. = 0
+	// Her floors by what they are made of, as a hull afloat counts them
+	// (hull_weight.dm): her decks above are planked and her hold is plated.
+	for (var/key in cells)
+		var/list/C = cells[key]
+		. += hull_material_weight(C[1] == "s" ? "steel" : "wood")
+	for (var/level in decks)
+		var/list/L = decks[level]
+		. += L.len * hull_material_weight(text2num(level) < 0 ? "steel" : "wood")
+	. = max(1, round(., 0.1))
 	if (size_class() != HULL_CLASS_SMALL)
 		. += max(0, round(load() - burden()))
 

@@ -82,6 +82,6 @@ bunkers, and the berth is free for the next keel.
   (`/obj/covers/steelplating`) and the wheelhouse as built metal walls on
   deck, and her hold as a built hull's hold (`naval/hull_hold.dm`, 82 tiles
   hollowed out of the rock, the bulkhead the rock left between hold and engine
-  room). The bunker filling point becomes a 5000cc diesel engine with a fuel
+  room). The bunker filling point becomes a 9000cc diesel engine with a fuel
   barrel (250 units of diesel), which makes full ahead. An old freighter's
   bunker fuel goes into the barrel when she is converted after a load.

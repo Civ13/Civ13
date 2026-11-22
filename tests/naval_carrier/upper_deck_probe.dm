@@ -123,6 +123,11 @@ var/naval_runtime_error = FALSE
 	var/datum/craft_body/built/B = C.body
 	naval_check(B.upper_z() == 3 && B.upper_tile_count() == 15, "her upper deck is fifteen tiles ([B.upper_tile_count()])")
 	naval_check(findtext(tiller.status_text(), "15 tiles of hull and 15 of upper deck"), "the tiller reads out both decks ([tiller.status_text()])")
+	// ---- Weight (naval/hull_weight.dm) ----
+	C.fit_drives()
+	naval_check(C.structure_weight == 15 && C.mass() == 30, "her upper deck weighs like a second deck of planks: mass [C.mass()] for 15 tiles of hull")
+	naval_check(C.turn_time() == VESSEL_PATH_WARNING, "a hull five tiles long comes about after the usual warning ([C.turn_time()])")
+	naval_check(abs(hull_material_weight("wood") - 1) < 0.001 && abs(hull_material_weight("steel") - 1.67) < 0.001 && abs(hull_material_weight("aluminium") - 0.92) < 0.001, "floors weigh by the vehicles' hull table against planks ([hull_material_weight("wood")], [hull_material_weight("steel")], [hull_material_weight("aluminium")])")
 	naval_check(istype(get_area(locate(33, 11, 2)), /area/caribbean/roofed) && !istype(get_area(locate(35, 11, 2)), /area/caribbean/roofed), "under her roofs is indoors and the sea beside her is not")
 
 	// A floor that belongs to nobody aboard is not her deck.
@@ -189,6 +194,17 @@ var/naval_runtime_error = FALSE
 	sloop_tiller.decommission()
 	qdel(sloop_tiller)
 
+	// ---- A steel deck weighs more ----
+	for (var/x = 52, x <= 55, x++)
+		var/obj/covers/steelplating/plate = new(locate(x, 45, 2))
+		plate.updateturf()
+	var/obj/structure/hull_tiller/cutter = new(locate(52, 45, 2))
+	naval_check(isnull(cutter.commission("Iron", EAST)), "a steel-plated hull is commissioned")
+	cutter.craft.fit_drives()
+	naval_check(abs(cutter.craft.structure_weight - 2.7) < 0.01 && abs(cutter.craft.mass() - 6.7) < 0.01, "four steel tiles weigh 6.7 tiles of plank hull ([cutter.craft.mass()])")
+	cutter.decommission()
+	qdel(cutter)
+
 	// ---- The cap on her decks, and the timing at it ----
 	for (var/x = 40, x <= 49, x++)
 		for (var/y = 20, y <= 39, y++)
@@ -211,6 +227,8 @@ var/naval_runtime_error = FALSE
 			for (var/obj/roof/R in locate(x, y, 2))
 				qdel(R)
 	naval_check(BB.upper_tile_count() == 100 && deck_floors(locate(47, 30, 3)) == 0, "taking down half her roofs takes their floors too ([BB.upper_tile_count()])")
+	big.craft.fit_drives()
+	naval_check(big.craft.mass() == 300 && big.craft.turn_time() == VESSEL_PATH_WARNING + 50, "200 tiles of hull and 100 of upper deck weigh 300, and twenty tiles long she takes ten seconds to come about ([big.craft.mass()], [big.craft.turn_time()])")
 	for (var/i = 1, i <= 10, i++)
 		new /obj/item/weapon/reagent_containers/glass/bucket(locate(40 + (i % 5), 30, 3))
 		new /mob/living/human/naval_probe(locate(40 + (i % 5), 25, 3))
