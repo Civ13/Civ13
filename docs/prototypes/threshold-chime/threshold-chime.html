@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Civ13 · Spellwork composer</title>
+<style>
+:root{color-scheme:dark;--field:#1b2220;--canvas:#101615;--panel:#19201e;--line:#35413a;--muted:#b1bdb3;--text:#f2eee2;--warm:#e7bd77;--green:#9fcca8;--red:#ffb8a7;font-family:system-ui,Segoe UI,sans-serif}
+[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 0,#26342d,var(--canvas) 66%);color:var(--text);font-size:15px;line-height:1.5}button{font:inherit}header{border-bottom:1px solid var(--line);padding:18px max(24px,calc((100vw - 1040px)/2));display:flex;gap:15px;align-items:center;white-space:nowrap;color:var(--muted)}header strong{font-family:Georgia,serif;letter-spacing:.08em;color:var(--text);font-size:20px}.tag{text-transform:uppercase;letter-spacing:.15em;font-size:11px;font-weight:750}.badge{border:1px solid #6f6647;color:var(--warm);border-radius:4px;padding:4px 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-left:auto}
+main{max-width:1040px;margin:auto;padding:30px 0 44px}h1,h2,h3,p{margin:0}h1{font:46px/1.12 Georgia,serif;margin:3px 0 9px}h2{font:27px Georgia,serif;margin:0 0 9px}h3{font-size:14px}.lede,.muted{color:var(--muted)}.copper{color:var(--warm)}.cols{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:22px;align-items:start}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}.left{min-height:478px}.scene{padding:0;overflow:hidden}.scene svg{display:block;width:100%;background:#111a16}.scene footer{padding:16px}.fixture{margin-top:14px}.choice{display:block;text-align:left;width:100%;padding:10px 12px;margin:7px 0;border-radius:7px;border:1px solid var(--line);background:#222c27;color:var(--text);cursor:pointer}.choice:hover:not(:disabled),.choice[aria-pressed=true]{border-color:var(--warm);background:#343327}.choice:disabled{opacity:.48;cursor:not-allowed}.choice small{display:block;color:var(--muted);font-size:12px}.group{margin:14px 0 10px}.button{padding:8px 14px;border-radius:6px;border:1px solid #596257;background:#25302a;color:var(--text);font-weight:650;cursor:pointer}.button.primary{background:var(--warm);border-color:var(--warm);color:#241d12}.button:disabled{opacity:.45;cursor:not-allowed}.button:focus-visible,.choice:focus-visible{outline:2px solid var(--warm);outline-offset:3px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.stepper{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}.step{border:1px solid var(--line);border-radius:4px;padding:3px 7px;color:var(--muted);font-size:11px;font-weight:650}.step.on{border-color:#8e7950;color:var(--warm)}.wrap{display:grid;gap:9px;margin-top:14px}.fact{border:1px solid var(--line);border-radius:7px;padding:10px 12px;background:#222c27}.fact span{display:block;color:var(--warm);font-size:11px;text-transform:uppercase;letter-spacing:.13em;margin-bottom:2px}.status{border-left:3px solid var(--green);background:#26342b;padding:9px 11px;border-radius:3px;margin-top:13px}.status.error{border-color:var(--red);background:#392a27;color:#ffddd5}.status.pending{border-color:var(--warm);background:#393124}.counter{font-variant-numeric:tabular-nums}.tiny{font-size:12px}.scene-notes{font-size:13px}.fixture h3{margin-bottom:5px}
+@media(max-width:1080px){main{padding-left:22px;padding-right:22px}}@media(max-width:700px){header{padding:12px;gap:8px}header strong{font-size:15px}main{padding:18px 12px}h1{font-size:36px}.cols{grid-template-columns:1fr;margin-top:16px}.left{min-height:0}.card{padding:16px}.scene{padding:0}.badge{font-size:9px}}
+.graph-node{margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:7px}.graph-node label{display:block;margin-top:8px}.graph-node input:not([type=checkbox]),.graph-node select,input[data-field=name],textarea[data-field=blueprint]{width:100%;background:#101615;color:var(--text);padding:8px;border:1px solid #596257;border-radius:5px;font:inherit}.target-row{grid-template-columns:1fr auto;display:grid;gap:8px;align-items:center}.levels{font-size:12px;color:var(--green)}.overline{color:var(--warm);font-size:12px;margin:2px 0 10px}.graph-node button{margin:2px}.lift-preview{border-top:1px solid var(--line);padding:12px 0 0;margin-top:12px}
+</style><header><strong>CIVILIZATION 13</strong><span class=tag id=header-context>Divine covenant</span><span class=badge>Standalone prototype</span></header>
+<main><div id=intro><div class="tag copper">Beseech · Spellwork composer</div><h1>Wire a spell.</h1><p class=lede>Choose a trigger, targets and effect. Route only through an existing repository.</p></div>
+<div class=cols><section class="card left" aria-labelledby=flow-heading><div class=stepper aria-label="Request progress" id=steps></div><div id=flow></div></section>
+<aside><section class="card scene" id=scene><svg aria-label="Illustration of linked door and bell" viewBox="0 0 384 185" role=img>
+<defs><pattern id=grid width=24 height=24 patternUnits=userSpaceOnUse><path d="M24 0H0V24" fill="none" stroke="#29382f"/></pattern></defs><rect width=384 height=185 fill="url(#grid)"/>
+<path d="M122 92H258" stroke="#ac8a54" stroke-width="2" stroke-dasharray="5 6"/><circle cx=191 cy=92 r=15 fill="#283329" stroke="#b2915c"/><path d="M182 92h5l3-5 4 10 3-5h3" fill=none stroke="#ebc47b" stroke-width=1.5/>
+<path d="M69 125V68a25 25 0 0 1 50 0v57z" fill="#5a4432" stroke="#ccab73" stroke-width=3/><path d="M77 124V69a17 17 0 0 1 34 0v55M88 49v75m12-75v75" fill=none stroke="#9d7650"/><circle cx=106 cy=96 r=3 fill="#f2cc89"/>
+<path d="M264 119V52h50v67m-56 0h62" fill=none stroke="#8c7956" stroke-width=4/><path d="M289 61v9m-12 30h24l-3-12V82a9 9 0 0 0-18 0v6z" fill="#b28a55" stroke="#e4bc7a" stroke-width=2/><circle cx=289 cy=104 r=3 fill="#e7bd77"/>
+<text x=94 y=153 text-anchor=middle font-size=12 fill="#f2eee2">Workshop door</text><text x=289 y=153 text-anchor=middle font-size=12 fill="#f2eee2">Courtyard bell</text>
+</svg><footer><div class="tag copper">One local signal</div><p class="muted scene-notes">Chime example: ordinary door and bell. The lift preview appears on the left when a lift binding is active.</p></footer></section>
+<section class="card fixture"><h3>Prototype controls</h3><p class="muted tiny">Synthetic scene only. No game connection or real approvals.</p><div class=actions id=fixture></div></section></aside></div></main>
+<script>
+'use strict';
+// The labels and IDs below are fictional fixture data, not production types.
+const province='riverside';
+const locations=Object.freeze({
+  repository: {id:'archive-fixture', label:'Riverside repository', detail:'Existing fixture · available to this province'},
+  door: {id:'workshop-fixture', label:'Workshop door', detail:'Closed · 1 tile away'},
+  bell: {id:'courtyard-fixture', label:'Courtyard bell', detail:'Ordinary local bell · 3 tiles from the door'},
+});
+const roles=['repository','door','bell'];
+const MAGE='casting mage';
+const speechExample="What's up?";
+const graphPreset=recipe=>recipe==='lift'?
+  {name:'Phrase Lift',trigger:'phrase',phrase:speechExample,selector:'nearby',effect:'lift',radius:3,seconds:3,includeCaster:false}:
+  {name:'Threshold Chime',trigger:'door',phrase:speechExample,selector:'bell',effect:'ring',radius:3,seconds:3,includeCaster:false};
+const actors=()=>[
+  {id:'mage',name:'Casting mage',dx:0,dy:0,terrain:'open',z:1,available:true},
+  {id:'shaft',name:'Mara · open shaft',dx:1,dy:1,terrain:'open',z:1,available:true},
+  {id:'ceiling',name:'Iven · solid ceiling',dx:2,dy:0,terrain:'ceiling',z:1,available:true},
+  {id:'occupied',name:'Rook · occupied upper tile',dx:3,dy:0,terrain:'occupied',z:1,available:true},
+  {id:'distant',name:'Tavi · outside range',dx:4,dy:0,terrain:'open',z:1,available:true},
+];
+const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initial=(lineage=1)=>({lineage,serial:0,observer:false,discoveredLinkId:null,discovererEligible:true,step:'choose',blueprintOpen:false,blueprintBuffer:'',graph:graphPreset('chime'),actors:actors(),held:[],liftCooldown:0,pulseCooldown:0,seenEvents:[],pulseCount:0,chosen:{repository:false,door:false,bell:false},world:Object.fromEntries(roles.map(role=>[role,{id:locations[role].id,revision:0,available:true,province}])),request:null,binding:null,invalidReason:'',opened:false,ringCount:0,cooling:false,slotAvailable:true,pouchItems:1,message:'',error:false});
+let state=initial();
+const phases=[['choose','1. Existing objects'],['review','2. Review'],['pending','3. Patron'],['active','4. Active']];
+const flow=document.querySelector('#flow'),steps=document.querySelector('#steps'),fixture=document.querySelector('#fixture');
+const B=(id,title,opts='')=>'<button class="button '+(opts.includes('primary')?'primary':'')+'" data-act="'+id+'" '+(opts.includes('disabled')?'disabled':'')+'>'+title+'</button>';
+const status=(title,text,style='')=>'<div role=status class="status '+style+'"><strong>'+title+'</strong><p>'+text+'</p></div>';
+const eligible=role=>state.world[role]?.available && state.world[role].province===province;
+const graphRoles=g=>['repository',...(g.trigger==='door'?['door']:[]),...(g.selector==='bell'?['bell']:[])];
+const graphValid=g=>g && ['door','phrase'].includes(g.trigger) &&
+  (g.trigger!=='phrase'||(g.phrase.trim().length>0&&g.phrase.length<=48)) &&
+  ((g.selector==='bell'&&g.effect==='ring')||(g.selector==='nearby'&&g.effect==='lift')) &&
+  Number.isInteger(g.radius)&&g.radius>=1&&g.radius<=3&&Number.isInteger(g.seconds)&&g.seconds>=1&&g.seconds<=3&&typeof g.includeCaster==='boolean'&&typeof g.name==='string'&&g.name.trim().length>0&&g.name.length<=40;
+const choicesReady=()=>graphValid(state.graph)&&graphRoles(state.graph).every(role=>state.chosen[role]&&eligible(role));
+const activeGraph=()=>state.binding?.endpoints?.graph||state.request?.graph||state.graph;
+const option=(value,label,current)=>'<option value="'+value+'" '+(current===value?'selected':'')+'>'+label+'</option>';
+const field=(key,text,options)=>'<label>'+text+'<select data-field="'+key+'">'+options.map(([v,l])=>option(v,l,state.graph[key])).join('')+'</select></label>';
+const form=()=>{
+  const g=state.graph;
+  return '<p class=overline>Example presets</p><div class=actions>'+B('preset-chime','Threshold Chime')+B('preset-lift','Phrase Lift')+'</div><label class=group>Spell name<input data-field=name maxlength=40 value="'+safe(g.name)+'"></label>'+label('repository','Through · required existing repository')
+    +'<div class=graph-node><h3>1 · Trigger</h3>'+field('trigger','Signal source',[['door','Selected door finishes opening'],['phrase','Casting mage speaks an exact IC phrase']])
+    +(g.trigger==='door'?label('door','Select source door'):'<label>Exact IC phrase<input data-field=phrase maxlength=48 value="'+safe(g.phrase)+'"></label><p class="muted tiny">Only a direct utterance by the casting mage qualifies.</p>')+'</div>'
+    +'<div class=graph-node><h3>2 · Target</h3>'+field('selector','Selector',[['bell','One ordinary local bell'],['nearby','Nearby eligible mobs']])
+    +(g.selector==='bell'?label('bell','Select receiver')+'<button class=choice disabled>Church bell <small>Not eligible · broadcasts beyond the local area</small></button>':field('radius','Radius about trigger origin',[[1,'1 tile'],[2,'2 tiles'],[3,'3 tiles']])+'<label><input type=checkbox data-field=includeCaster '+(g.includeCaster?'checked':'')+'> Include the casting mage if in scope</label><p class="muted tiny">Same region and starting floor · at most 4 targets</p>')+'</div>'
+    +'<div class=graph-node><h3>3 · Effect</h3>'+field('effect','Effect node',[['ring','Ring an ordinary bell'],['lift','Lift / hold / release mobs']])
+    +(g.effect==='lift'?field('seconds','Hold duration',[[1,'1 second'],[2,'2 seconds'],[3,'3 seconds']])+'<p class="muted tiny">At most one level to floor 2. Open headroom required; stop at obstructions. Then normal gravity.</p>':'')+'</div>'
+    +(graphValid(g)?'':status('Incomplete graph','Choose compatible target and effect types and complete the trigger.','error'));
+};
+const label=(role,heading)=>{
+  const loc=locations[role];
+  const available=eligible(role);
+  return '<h3 class=group>'+heading+'</h3><button class=choice data-act="'+role+'" aria-pressed="'+(state.chosen[role]&&available)+'" '+(available?'':'disabled')+'>'+loc.label+' <small>'+(available?loc.detail:'Unavailable to this province')+'</small></button>';
+};
+const F=(name,value)=>'<div class=fact><span>'+name+'</span>'+value+'</div>';
+const facts=()=>{
+  const g=activeGraph(),doorSource=g.trigger==='door';
+  return '<div class=wrap>'+F('Spell',safe(g.name))+F('Through · existing repository','Riverside repository')
+    +F('Trigger · authorized source',doorSource?'Workshop door finishes opening':'Casting mage only · direct IC: “'+safe(g.phrase)+'”')
+    +F('Target · location and limits',g.selector==='bell'?'One existing ordinary courtyard bell · local':'Within '+g.radius+' tiles of '+(doorSource?'the opened door':'the mage at speech time')+' · same region and starting z · at most 4 · casting mage '+(g.includeCaster?'included if in scope':'excluded'))
+    +F('Effect · approved bounds',g.effect==='ring'?'Ring the courtyard bell nearby · shared ordinary cooldown':'Rise at most one level to z2 where open · hold '+g.seconds+' seconds · release to normal gravity. Blocked movement stops; no new injury in the fixture.')
+    +F('Only on successful grant','Spend one available invocation slot and consume one item already in your pouch. Create no items.')+'</div>';
+};
+const livePanel=g=>{
+  const source=g.trigger==='door'?B('open','Open door normally','primary')+B('close','Close door')+B('locked','Try locked door'):
+    B('speak','Say “'+safe(g.phrase)+'” in IC','primary')+B('wrong-speaker','Another player says it')+B('wrong-phrase','Say a different phrase')+B('echo','Replay / echo')+B('ooc','Say it in OOC');
+  const lift=g.effect==='lift'?'<div class=lift-preview><h3>Lift preview · synthetic floors</h3>'+state.actors.map(a=>{
+    const h=state.held.find(h=>h.id===a.id);
+    return '<p class=target-row><span>'+a.name+'</span><span class=levels>'+(a.available?'z'+a.z+(h?' · '+h.remaining+'s remaining':a.terrain==='open'?'':' · blocked'):'unavailable')+'</span></p>';
+  }).join('')+'<div class=actions>'+B('tick','Advance 1 second')+'</div></div>':
+    '<p class="tiny muted counter" style="margin-top:10px">Local rings: <strong data-count>'+state.ringCount+'</strong> · '+(state.cooling?'Bell cooldown in progress':'Bell ready')+'</p>';
+  return '<div class=actions>'+source+'</div>'+lift;
+};
+function render(){
+  const stage=state.step==='suspended'?'active':['declined','patron'].includes(state.step)?'pending':state.step;
+  steps.innerHTML=phases.map(([k,v])=>'<span class="step '+(stage===k?'on':'')+'" '+(stage===k?'aria-current="step"':'')+'>'+v+'</span>').join('');
+  let content='';
+  document.querySelector('#intro').hidden=state.observer;
+  document.querySelector('#scene').hidden=state.observer;
+  document.querySelector('#header-context').textContent=state.observer?'Ordinary view':'Divine covenant';
+  if(state.observer){
+    flow.innerHTML='<h2 id=flow-heading>Courtyard</h2><p class=muted>Workshop door, courtyard bell, and Riverside repository.</p>';
+    steps.innerHTML='';fixture.innerHTML=B('view-ordinary','Return to follower fixture');return;
+  }
+  if(state.step==='choose'){
+    content='<h2 id=flow-heading>Compose a spell</h2><p class=muted>Wire one typed trigger to one target selector and compatible effect. Choose a currently accessible existing repository.</p>'+form()+'<div class=actions>'+B('review','Review spell',choicesReady()?'primary':'primary disabled')+'</div>';
+    content+='<div class=graph-node><h3>Portable blueprint</h3><p class="muted tiny">Local copy and paste. No repository, approvals, objects or active state included.</p>'+B('export','Export blueprint',graphValid(state.graph)?'':'disabled')+B('paste','Paste blueprint')+(state.blueprintOpen?'<label>Blueprint JSON<textarea data-field=blueprint rows=6 maxlength=4096>'+safe(state.blueprintBuffer)+'</textarea></label>'+B('import','Import as unbound draft'):'')+'</div>';
+    if(!eligible('repository'))content+=status('Repository required','No eligible repository is available to this province. You cannot request the binding.','error');
+  }
+  if(state.step==='review')content='<h2 id=flow-heading>Review your prayer</h2><p class=muted>Check the exact repository and graph, including the authorized source, target scope and limits.</p>'+facts()+'<div class=actions>'+B('edit','Edit choices')+B('request','Beseech patron',choicesReady()&&state.slotAvailable&&state.pouchItems?'primary':'primary disabled')+'</div>';
+  if(state.step==='pending')content='<h2 id=flow-heading>Waiting for your patron</h2><p class=muted>No slot or pouch item has been spent.</p>'+facts()+status('Request pending','Hold still. Only a separate authorized patron can answer.','pending')+'<div class=actions>'+B('edit','Cancel and edit')+B('inspect','Open patron review')+'</div>';
+  if(state.step==='patron')content='<h2 id=flow-heading>Patron review</h2><p class=muted>Grant or refuse this exact graph and repository. A grant cannot change sources, targets or parameters.</p>'+facts()+'<div class=actions>'+B('deny','Refuse')+B('approve','Grant binding','primary')+'</div>';
+  if(state.step==='active')content='<h2 id=flow-heading>Binding active</h2><p class=muted>The existing repository anchors this spell.</p>'+facts()+status('One bounded graph','The link survives an ordinary restart. It ends only on an authorized removal or a world reset. The objects remain.')+livePanel(activeGraph());
+  if(state.step==='suspended')content='<h2 id=flow-heading>Binding suspended</h2>'+facts()+status('No pulses delivered','The same binding is retained but its repository or an approved object no longer matches. A replacement at the same spot is not linked.','error');
+  if(state.step==='active'||state.step==='suspended')content+='<p class="tiny muted counter" style="margin-top:10px">Binding '+state.binding.id+' · world '+state.binding.lineage+'</p>';
+  if(state.step==='declined')content='<h2 id=flow-heading>Binding inactive</h2>'+status(state.slotAvailable?'No resources spent':'Binding ended',state.slotAvailable?'No objects were created or changed.':'The original slot and pouch cost were spent on grant. Ending the link creates no items.','error')+'<div class=actions>'+B('reset','Reset prototype','primary')+'</div>';
+  if(state.message)content+=status(state.error?'No pulse delivered':'Fixture event',state.message,state.error?'error':'');
+  flow.innerHTML=content;
+  const change=B('move-repo','Move repository')+B('revoke-repo','Revoke province access')+B('destroy-repo','Remove repository');
+  const removal=B('remove-caster','Original mage removes')+B('remove-undiscovered','Try unrelated mage')+B('remove-discovered','Mage with verified discovery removes')+B('remove-patron','Patron God removes')+B('revoke-discovered','Revoke discoverer eligibility');
+  fixture.innerHTML=['review','choose'].includes(state.step)?B('destroy-repo','Remove repository')+B('reset','Reset scene'):['pending','patron'].includes(state.step)?change+B('change-repo','Change repository identity')+B('stale','Move the bell')+B('unauthorized','Try requester approval')+B('expire','Expire request')+B('reload','Restart before grant'):['active','suspended'].includes(state.step)?change+B('change-repo','Change repository identity')+B('stale','Move the bell')+B('settle','End cooldown')+(activeGraph().effect==='lift'?B('target-loss','Remove rising target'): '')+B('reload','Save and restart')+B('world-reset','World reset')+B('view-ordinary','View as ordinary player')+removal:B('reset','Reset scene');
+}
+function isCurrent(snapshot){
+  return !!snapshot && graphValid(snapshot.graph) && graphRoles(snapshot.graph).every(role=>{
+    const object=state.world[role];
+    const before=snapshot[role];
+    return !!before && eligible(role) && before.id===object.id && before.revision===object.revision && before.province===object.province;
+  });
+}
+function reject(message){
+  state.request=null;state.step='declined';state.message=message;state.error=true;
+}
+function suspend(message){releaseAll();state.step='suspended';state.message=message;state.error=true;}
+function bindingCurrent(){return state.binding?.lineage===state.lineage&&isCurrent(state.binding.endpoints);}
+function removeBinding(actor,discoveredLinkId=null){
+  const b=state.binding;
+  if(!b || b.lineage!==state.lineage)return;
+  // These roles model server-verified authority; the actual player UI would not assign them.
+  if(actor!==b.caster && actor!==b.patron && !(actor==='verified-mage' && discoveredLinkId===b.id && state.discovererEligible)){
+    state.message='This mage lacks current authority to remove this specific binding. Nothing was removed.';state.error=true;return;
+  }
+  releaseAll();state.binding=null;state.discoveredLinkId=null;reject('The enchantment was removed. No existing objects disappeared.');
+}
+function alter(role,change,message){
+  const old=state.world[role];
+  state.world[role]={...old,...change,revision:old.revision+1};
+  state.chosen[role]=false;state.invalidReason=message;state.message=message;state.error=true;
+  if(state.binding&&graphRoles(activeGraph()).includes(role))suspend(message+' The link remains recorded but does not fire.');
+}
+const blueprintKeys=['name','trigger','phrase','selector','effect','radius','seconds','includeCaster'];
+function portable(){
+  return JSON.stringify({version:1,spell:Object.fromEntries(blueprintKeys.map(k=>[k,state.graph[k]]))},null,2);
+}
+function importPortable(data){
+  if(typeof data!=='string'||data.length>4096)return null;
+  try{
+    const x=JSON.parse(data), exact=(obj,keys)=>obj!==null&&typeof obj==='object'&&!Array.isArray(obj)&&Object.keys(obj).length===keys.length&&keys.every(k=>Object.hasOwn(obj,k));
+    if(!exact(x,['version','spell'])||x.version!==1||!exact(x.spell,blueprintKeys)||typeof x.spell.phrase!=='string'||x.spell.phrase.length>48||!graphValid(x.spell))return null;
+    return Object.fromEntries(blueprintKeys.map(k=>[k,x.spell[k]]));
+  }catch{return null;}
+}
+function release(id){
+  const a=state.actors.find(a=>a.id===id);
+  if(a?.available)a.z=1; // Fixture only: production releases to existing gravity/collision logic.
+  state.held=state.held.filter(h=>h.id!==id);
+}
+function releaseAll(){for(const h of state.held.slice())release(h.id);}
+function tick(){
+  if(state.step!=='active')return;
+  if(!bindingCurrent()){suspend('An approved object is no longer eligible.');return;}
+  state.liftCooldown=Math.max(0,state.liftCooldown-1);
+  state.pulseCooldown=Math.max(0,state.pulseCooldown-1);
+  for(const h of state.held.slice())if(--h.remaining===0)release(h.id);
+  state.message=state.held.length?'The held targets remain aloft.':'There are no active holds. Released targets use normal gravity.';
+}
+function fire(event){
+  if(state.step!=='active')return;
+  if(!bindingCurrent()){suspend('An approved object is no longer eligible. No pulse delivered.');return;}
+  const g=activeGraph();
+  if(g.trigger!==event.kind)return;
+  if(g.trigger==='phrase'&&(event.channel!=='IC' || event.speaker!==MAGE || event.replay || event.message!==g.phrase)){
+    state.error=true;state.message='Not the approved caster’s direct matching IC speech. No pulse.';return;
+  }
+  if(state.seenEvents.includes(event.id)||state.pulseCooldown){state.error=true;state.message='Duplicate or cooling trigger. No pulse.';return;}
+  state.seenEvents=[...state.seenEvents.slice(-15),event.id];
+  if((g.effect==='ring'&&state.cooling)||(g.effect==='lift'&&(state.liftCooldown||state.held.length))){
+    state.error=true;state.message=g.effect==='ring'?'Bell cooldown; no ring.':'Lift cooldown; no additional hold.';return;
+  }
+  state.pulseCooldown=1;
+  state.pulseCount++;
+  if(g.effect==='ring'){state.ringCount++;state.cooling=true;state.message=g.trigger==='door'?'Door opened; one local bell rang.':'Direct IC phrase matched; one local bell rang.';return;}
+  const chosen=state.actors.filter(a=>a.available&&a.z===1&&Math.max(Math.abs(a.dx),Math.abs(a.dy))<=g.radius&&(g.includeCaster||a.id!=='mage')).slice(0,4);
+  let bumped=0;
+  for(const a of chosen){
+    if(a.terrain!=='open'){bumped++;continue;}
+    state.held.push({id:a.id,remaining:g.seconds});
+    a.z=2; // Synthetic floor labels, never an engine z calculation.
+  }
+  state.liftCooldown=g.seconds+1;
+  state.message=state.held.length+' rose; '+bumped+' stopped at blocked headroom. No new injury in this mock.';
+}
+let eventSequence=0;
+const fixtureEvent=(kind,extra={})=>({id:++eventSequence,kind,...extra});
+function act(action){
+  if(action==='reset'){const serial=state.serial;state=initial(state.lineage);state.serial=serial;return;} // Fixture reset, never an in-world action.
+  if(action==='view-ordinary'){state.observer=!state.observer;return;}
+  if(state.observer)return;
+  state.message='';state.error=false;
+  if(roles.includes(action)){
+    if(state.step==='choose'&&eligible(action))state.chosen[action]=!state.chosen[action];
+    return;
+  }
+  switch(action){
+    case 'preset-chime':if(state.step==='choose')state.graph=graphPreset('chime');break;
+    case 'preset-lift':if(state.step==='choose')state.graph=graphPreset('lift');break;
+    case 'export':
+      if(state.step==='choose'&&graphValid(state.graph)){state.blueprintBuffer=portable();state.blueprintOpen=true;state.message='Copy the blueprint text if you want to share it. Nothing was uploaded.';}
+      break;
+    case 'paste':if(state.step==='choose'){state.blueprintOpen=true;state.blueprintBuffer='';}break;
+    case 'import':
+      if(state.step==='choose'){
+        const draft=importPortable(state.blueprintBuffer);
+        if(!draft){state.error=true;state.message='Invalid or unsupported blueprint. No changes applied.';break;}
+        state.graph=draft;state.chosen={repository:false,door:false,bell:false};state.request=null;state.blueprintOpen=false;state.blueprintBuffer='';
+        state.message='Imported an inactive draft. Select an existing repository and any required objects, then review and request approval.';
+      }
+      break;
+    case 'review':if(state.step==='choose'&&choicesReady())state.step='review';break;
+    case 'edit':if(['review','pending','patron'].includes(state.step)){state.request=null;state.invalidReason='';state.step='choose';}break;
+    case 'request':
+      if(state.step==='review'&&choicesReady()&&state.slotAvailable&&state.pouchItems>0){
+        state.request=Object.freeze({graph:Object.freeze({...state.graph}),...Object.fromEntries(graphRoles(state.graph).map(role=>[role,Object.freeze({...state.world[role]})]))});
+        state.invalidReason='';state.step='pending';
+      }
+      break;
+    case 'inspect':if(state.step==='pending')state.step='patron';break;
+    case 'unauthorized':state.message='Only a different authorized patron may grant this request.';state.error=true;break;
+    case 'deny':if(state.step==='patron')reject('The patron refused this prayer.');break;
+    case 'expire':if(['pending','patron'].includes(state.step))reject('The request expired without an answer.');break;
+    case 'move-repo':alter('repository',{},'The selected repository moved.');break;
+    case 'revoke-repo':alter('repository',{available:false},'The province lost access to the repository.');break;
+    case 'destroy-repo':alter('repository',{available:false},'The selected repository is gone.');break;
+    case 'change-repo':alter('repository',{id:'different-archive-fixture'},'The repository identity changed.');break;
+    case 'stale':alter('bell',{},'The selected bell moved.');break;
+    case 'approve':
+      if(state.step==='patron'){
+        if(!isCurrent(state.request)||!state.slotAvailable||state.pouchItems<1){reject(state.invalidReason||'An approved object is no longer eligible.');break;}
+        state.binding=Object.freeze({id:'spell-'+state.lineage+'-'+(++state.serial),lineage:state.lineage,caster:'original-mage',patron:'patron-god',endpoints:state.request});
+        // This fixture seeds proof of an offscreen in-world discovery for one eligible mage only.
+        state.discoveredLinkId=state.binding.id;state.request=null;state.slotAvailable=false;state.pouchItems--;state.step='active';
+      }
+      break;
+    case 'open':
+      if(state.step==='active'){
+        if(state.opened){state.error=true;state.message='The door is already open.';break;}
+        state.opened=true;fire(fixtureEvent('door'));
+      }
+      break;
+    case 'close':if(state.step==='active'){state.opened=false;state.message='Door closed. No pulse.';}break;
+    case 'locked':state.error=true;state.message='The lock held. No pulse was emitted.';break;
+    case 'speak':case 'wrong-speaker':case 'wrong-phrase':case 'echo':case 'ooc':
+      fire(fixtureEvent('phrase',{speaker:action==='wrong-speaker'?'other':MAGE,channel:action==='ooc'?'OOC':'IC',replay:action==='echo',message:action==='wrong-phrase'?'Different words':activeGraph().phrase}));break;
+    case 'tick':tick();break;
+    case 'target-loss':release('shaft');state.actors.find(a=>a.id==='shaft').available=false;state.message='Target left the fixture. Its hold was cleared.';break;
+    case 'settle':state.cooling=false;state.pulseCooldown=0;state.liftCooldown=0;state.message='Fixture cooldown ended.';break;
+    case 'reload':
+      if(state.binding){
+        const record=JSON.stringify({binding:state.binding,discoveredLinkId:state.discoveredLinkId});
+        const loaded=JSON.parse(record);state.request=null;state.cooling=false;releaseAll();state.liftCooldown=0;state.pulseCooldown=0;state.seenEvents=[];
+        state.binding=loaded.binding.lineage===state.lineage?Object.freeze(loaded.binding):null;
+        state.discoveredLinkId=state.binding?loaded.discoveredLinkId:null;
+        if(bindingCurrent()){state.step='active';state.message='The same binding was restored silently. No new cost, no pulse.';}
+        else if(state.binding)suspend('The same binding remains suspended. Restart did not rebind a replacement.');
+      } else if(state.request){reject('Restart cancelled the unanswered prayer. No approval or queued pulse was restored.');}
+      break;
+    case 'remove-caster':removeBinding('original-mage');break;
+    case 'remove-patron':removeBinding('patron-god');break;
+    case 'remove-discovered':removeBinding('verified-mage',state.discoveredLinkId);break;
+    case 'remove-undiscovered':removeBinding('unrelated-mage','some-other-link');break;
+    case 'revoke-discovered':state.discovererEligible=false;state.message='The discoverer is no longer eligible to remove the binding.';break;
+    case 'world-reset':
+      state=initial(state.lineage+1);state.message='A new world lineage started. Old enchantments do not carry over.';break;
+  }
+}
+document.addEventListener('input',e=>{
+  if(state.step!=='choose'||state.observer)return;
+  const k=e.target.dataset.field;
+  if(k==='blueprint'){state.blueprintBuffer=e.target.value.slice(0,4097);return;}
+  if(k==='name'||k==='phrase'){
+    state.graph={...state.graph,[k]:e.target.value.slice(0,k==='name'?40:48)};
+    const review=flow.querySelector?.('[data-act=review]');if(review)review.disabled=!choicesReady();
+    const exp=flow.querySelector?.('[data-act=export]');if(exp)exp.disabled=!graphValid(state.graph);
+  }
+});
+document.addEventListener('change',e=>{
+  if(state.step!=='choose'||state.observer)return;
+  const k=e.target.dataset.field;
+  if(!['trigger','selector','effect','radius','seconds','includeCaster'].includes(k))return;
+  state.graph={...state.graph,[k]:k==='includeCaster'?e.target.checked:['radius','seconds'].includes(k)?Number(e.target.value):e.target.value};
+  render();
+});
+document.addEventListener('click',e=>{const t=e.target.closest('button[data-act]');if(!t||t.disabled)return;act(t.dataset.act);render();});render();
+</script></html>
