@@ -359,6 +359,9 @@ static class LocalHostingTests {
         Require(deployStep.FileName.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) && deployStep.CreateNoWindow && deployStep.RedirectStandardOutput && deployStep.RedirectStandardInput &&
             deployStep.ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy }), "deploy step changed");
         Require(LocalHosting.GroupScriptStep(host.Control!, "restart-host").ArgumentList.Last() == restartHost, "restart-host step changed");
+        Require(LocalHosting.GroupScriptStep(host.Control!, "start-host").ArgumentList.SequenceEqual(new[] { "/d", "/c", restartHost, "start" })
+            && LocalHosting.LimitOf(LocalHosting.GroupScriptStep(host.Control!, "start-host")) == LocalHosting.RequestLimit
+            && LocalHosting.LimitOf(LocalHosting.GroupScriptStep(host.Control!, "deploy")) == LocalHosting.DeployLimit, "start-host step and script limits");
         Require(LocalHosting.GroupScriptStep(host.Control!, "deploy", resume: true).ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy, "continue" }), "deploy continue step changed");
         try { LocalHosting.GroupScriptStep(host.Control!, "restart-host", resume: true); throw new Exception("restart-host continue accepted"); } catch (ArgumentException) { assertions++; }
         Require(LocalHosting.GroupScriptStep(host.Control!, "deploy", true, ["gaia", "mars"]).ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy, "continue", "gaia", "mars" })

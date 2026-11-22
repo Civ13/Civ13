@@ -1583,9 +1583,19 @@ internal sealed partial class LauncherWindow : Form {
             }, cancel.Token));
             lock (output) return (exit, output.ToString());
         } catch (IOException e) when (e is LocalHosting.StepTimedOut or LocalHosting.StepCancelled) {
-            // Ending the script stops nothing it already asked the host for.
-            throw new IOException(e.Message + " No world was stopped by this. A build or handover it already asked for carries on in the host service: " +
-                "wait for the board to settle, then run the action again.", e);
+            // Both scripts end the host service task before they start it again (deploy.bat in its last step).
+            // Cut short between the two, the service would stay down until the next logon: start it, which
+            // does nothing while it runs. This step has its own limit and is not tied to the cancelled one.
+            var service = "";
+            try {
+                var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, "start-host"), _ => { }));
+                if (exit != 0) service = $" The host service could not be started again (exit {exit}): use Restart host service.";
+            } catch (Exception x) when (x is Win32Exception or IOException or InvalidOperationException) {
+                service = " The host service could not be started again (" + x.Message + "): use Restart host service.";
+            }
+            // Ending the script ends neither a world nor work it already handed to a worker.
+            throw new IOException(e.Message + " No world was stopped by this. A build or handover it already asked for carries on: " +
+                "wait for the board to settle, then run the action again." + service, e);
         } finally {
             groupScriptCancel = null;
             ShowGroupScriptCancel();
@@ -1603,7 +1613,7 @@ internal sealed partial class LauncherWindow : Form {
         if (groupScriptCancel is not { } cancel) return;
         if (MessageBox.Show(this,
                 "Cancel the running script? It is ended where it stands. No world is stopped by this, and a build or handover it already asked for " +
-                "carries on in the host service. Use this for a script that hangs; a normal update can sit quietly for many minutes while it builds.",
+                "carries on. Use this for a script that hangs; a normal update can sit quietly for many minutes while it builds.",
                 "Civ13 Launcher", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
         // It may have finished while the question was open.
         if (!ReferenceEquals(groupScriptCancel, cancel)) return;

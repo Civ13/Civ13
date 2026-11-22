@@ -166,7 +166,8 @@ public static class LocalHosting {
         var output = step.RedirectStandardOutput ? process.StandardOutput.ReadToEndAsync() : Task.FromResult("");
         var error = step.RedirectStandardError ? process.StandardError.ReadToEndAsync() : Task.FromResult("");
         if (!process.WaitForExit(limit)) {
-            try { process.Kill(true); } catch (Exception e) when (e is InvalidOperationException or Win32Exception or NotSupportedException) { }
+            // Everything the step started is ended, except work it already handed to a detached worker.
+            ProcessSafety.EndScript(process);
             process.WaitForExit(5000);
             throw new StepTimedOut($"{Path.GetFileName(step.FileName)} did not answer within {Describe(limit)} and was ended.");
         }
@@ -194,7 +195,12 @@ public static class LocalHosting {
         var limit = LimitOf(step);
         using var process = Process.Start(step) ?? throw new IOException("Could not start " + Path.GetFileName(step.FileName) + ".");
         if (step.RedirectStandardInput) process.StandardInput.Close();
-        void Line(object _, DataReceivedEventArgs e) { if (e.Data is { Length: > 0 } text) line(text); }
+        // A null line is that stream's end; both are waited for (bounded) so the last lines are never dropped.
+        using var drained = new CountdownEvent((step.RedirectStandardOutput ? 1 : 0) + (step.RedirectStandardError ? 1 : 0) + 1);
+        void Line(object _, DataReceivedEventArgs e) {
+            if (e.Data == null) { try { drained.Signal(); } catch (Exception x) when (x is ObjectDisposedException or InvalidOperationException) { } }
+            else if (e.Data.Length > 0) line(e.Data);
+        }
         process.OutputDataReceived += Line;
         process.ErrorDataReceived += Line;
         if (step.RedirectStandardOutput) process.BeginOutputReadLine();
@@ -208,14 +214,16 @@ public static class LocalHosting {
         try { ended = WaitHandle.WaitAny([exited.WaitHandle, cancel.WaitHandle], limit) == 0 ? 0 : cancel.IsCancellationRequested ? 2 : 1; }
         catch (ObjectDisposedException) { ended = 2; }
         if (ended != 0) {
-            try { process.Kill(true); } catch (Exception e) when (e is InvalidOperationException or Win32Exception or NotSupportedException) { }
+            // Everything the script started is ended, except work it already handed to a detached worker.
+            ProcessSafety.EndScript(process);
             process.WaitForExit(5000);
             var name = Path.GetFileName(step.FileName);
             throw ended == 2 ? new StepCancelled($"{name} was cancelled after {Describe(Whole(watch.Elapsed))} and ended.")
                 : new StepTimedOut($"{name} did not finish within {Describe(limit)} and was ended.");
         }
-        // Drain the last lines, but never wait on a grandchild that kept the pipes open.
-        process.WaitForExit(TimeSpan.FromSeconds(10));
+        // Drain the last lines, but never wait long on a grandchild that kept the pipes open.
+        drained.Signal();
+        drained.Wait(TimeSpan.FromSeconds(10));
         return process.ExitCode;
     }
 
@@ -314,12 +322,15 @@ public static class LocalHosting {
     }
 
     // deploy.bat (resume: "deploy.bat continue", which carries on from waiting for the save; regions: only
-    // those region ids, none for every region) or restart-host.bat, run by cmd.exe with its output read line by line.
+    // those region ids, none for every region), restart-host.bat, or "restart-host.bat start" (start-host: bring the
+    // host service back after a script was cut short), run by cmd.exe with its output read line by line.
     public static ProcessStartInfo GroupScriptStep(HostControl control, string script, bool resume = false, IReadOnlyList<string>? regions = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         var path = script switch {
             "deploy" => group.Deploy,
             "restart-host" => group.RestartHost,
+            // restart-host.bat start: only starts the host service task (a no-op while it runs).
+            "start-host" => group.RestartHost,
             _ => throw new ArgumentException("Unsupported group script.", nameof(script)),
         };
         if ((resume || regions is { Count: > 0 }) && script != "deploy") throw new ArgumentException("Only deploy can continue or choose regions.", nameof(script));
@@ -328,6 +339,7 @@ public static class LocalHosting {
             WorkingDirectory = Path.GetDirectoryName(path)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "/d", "/c", path }) step.ArgumentList.Add(argument);
         if (resume) step.ArgumentList.Add("continue");
+        if (script == "start-host") step.ArgumentList.Add("start");
         foreach (var region in regions ?? []) step.ArgumentList.Add(region);
         return step.WithLimit(GroupScriptLimit(script));
     }

@@ -9,6 +9,9 @@ if errorlevel 1 (
     echo The task "%CIV13_TASK%" is not registered. Run install-host-task.bat from an administrator terminal.
     exit /b 1
 )
+rem "restart-host.bat start" only starts the task: the launcher runs it after a restart or deploy was cut
+rem short, so the service is never left ended. Starting a task that already runs does nothing.
+if /i "%~1"=="start" goto :start
 schtasks /End /TN "%CIV13_TASK%" >nul 2>&1
 rem Give the old service a moment to release the doorman port before the new one binds it.
 rem ping, not timeout: run from Git Bash, "timeout" is the coreutils one and fails at once,
@@ -16,3 +19,8 @@ rem and timeout.exe refuses to run when the launcher starts this with no console
 "%SystemRoot%\System32\PING.EXE" -n 6 127.0.0.1 >nul
 schtasks /Run /TN "%CIV13_TASK%" || exit /b 1
 echo "%CIV13_TASK%" restarted.
+exit /b 0
+
+:start
+schtasks /Run /TN "%CIV13_TASK%" >nul || exit /b 1
+echo "%CIV13_TASK%" is running.

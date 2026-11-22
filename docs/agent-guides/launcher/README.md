@@ -21,7 +21,10 @@ region it cannot read as `state: unknown` with `error`, which the board shows as
 Launcher 1.5.42: deploy.bat and restart-host.bat run through `LocalHosting.RunStreamed` with a limit
 (`GroupScriptLimit`: 3 h for a deploy, above deploy.bat's own 90 + 60 min waits; 2 min for restart-host) and the
 Host tab shows "Cancel running script" while one runs. Both end the script tree only: no world is stopped, and a
-build or handover already requested carries on in the host service. Run any new long script the same way.
+build or handover already requested carries on. `ProcessSafety.EndScript` ends what a cut-short step started but
+spares handed-over work (a `--worker` process or a world, which can still be the step's own child); `RunCaptured`
+uses it too. After a cut-short script the launcher runs `restart-host.bat start`, so the host service is never
+left ended between its stop and its start. Run any new long script the same way.
 
 <!-- 2026-11-22: Send hold and follow -->
 Launcher 1.5.40: Val asked (2026-11-22) why Send was greyed out in **Players…**, and that Send freeze the chosen

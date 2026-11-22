@@ -63,7 +63,8 @@ public static class ProcessSafety {
 
     // Pids started (directly or not) by pid; a child only counts when it is younger than its parent,
     // since a parent pid in the table may name a process that has since been reused.
-    public static IReadOnlyList<int> Descendants(int pid, DateTime startUtc) {
+    // spare: a child it names is left out together with everything that child started.
+    public static IReadOnlyList<int> Descendants(int pid, DateTime startUtc, Func<int, bool>? spare = null) {
         if (!OperatingSystem.IsWindows()) return [];
         var parents = new Dictionary<int, List<int>>();
         foreach (var process in Process.GetProcesses()) {
@@ -83,6 +84,7 @@ public static class ProcessSafety {
             foreach (var child in children) {
                 if (born.ContainsKey(child) || Inspect(child) is not { } ident) continue;
                 if (ident.StartUtc + Slack < born[parent]) continue; // older than its "parent": that pid was reused
+                if (spare != null && spare(child)) continue;
                 born[child] = ident.StartUtc;
                 found.Add(child);
                 queue.Enqueue(child);
@@ -111,6 +113,26 @@ public static class ProcessSafety {
         var ended = Native.WaitForSingleObject(handle, 5000) == 0 || !StillActive(handle);
         foreach (var child in children) EndChild(child);
         return new(ended, ended ? null : $"process {pid} was told to end but is still running");
+    }
+
+    // Work the host scripts hand over on purpose: a detached worker (gaia_host.py / shard_group.py "--worker") or a
+    // world. It may still be a child of the script that asked for it, and must outlive that script.
+    public static bool HandedOver(int pid) {
+        if (CommandLine(pid) is { } line && HandedOverLine(line)) return true;
+        return Inspect(pid)?.Image is { } image && Path.GetFileName(image).ToLowerInvariant() is "dd.exe" or "dreamdaemon.exe";
+    }
+
+    public static bool HandedOverLine(string commandLine) => (" " + commandLine + " ").Contains(" --worker ", StringComparison.Ordinal);
+
+    // Ends a script the launcher started and everything it started, except handed-over work (HandedOver).
+    // Off Windows there is no such inspection, so the whole tree is ended.
+    public static void EndScript(Process process) {
+        try {
+            if (!OperatingSystem.IsWindows()) { process.Kill(true); return; }
+            var children = Inspect(process.Id) is { } ident ? Descendants(process.Id, ident.StartUtc, HandedOver) : [];
+            process.Kill();
+            foreach (var child in children) EndChild(child);
+        } catch (Exception e) when (e is InvalidOperationException or Win32Exception or NotSupportedException) { }
     }
 
     private static void EndChild(int pid) {
