@@ -20,10 +20,10 @@
 // Monk copying consumes its blank input and only copies ordinary writing.
 // Research chapters and unfinished research use the bench copying workflow.
 /obj/item/weapon/book/proc/monk_copy_source_allowed()
-	return !page_busy && !istype(src, /obj/item/weapon/book/node_book) && !istype(src, /obj/item/weapon/book/node_compendium) && !length(research_chapters) && !length(research_progress)
+	return !page_busy && !istype(src, /obj/item/weapon/book/node_book) && !istype(src, /obj/item/weapon/book/node_compendium) && !length(research_chapters) && !length(research_progress) && !length(research_bills)
 
 /obj/item/weapon/book/proc/monk_copy_blank()
-	return !unique && !page_busy && !author && !title && !dat && !length(written_pages) && !length(research_chapters) && !length(research_progress) && !store && !length(contents)
+	return !unique && !page_busy && !author && !title && !dat && !length(written_pages) && !length(research_chapters) && !length(research_progress) && !length(research_bills) && !store && !length(contents)
 
 // Whether players may write their own pages in this book. Ordinary books
 // and recipe manuals take notes; sealed books (holy books, skill scrolls) do not.

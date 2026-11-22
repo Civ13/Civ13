@@ -61,6 +61,7 @@
 	record_chapter_language(node_id, writer, language)
 	record_chapter_author(node_id, writer) // accolades.dm: Teacher
 	clear_research_progress(node_id)
+	clear_research_bill(node_id)
 	map?.book_research_node_finished(get_research_node(node_id), !discovered)
 	return TRUE
 
@@ -119,6 +120,9 @@
 	if (entry[1] < N.cost_ticks)
 		return FALSE
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && !entry[2])
+		return FALSE
+	// Late capstones also need their bill of materials (era_bills.dm).
+	if (!bill_complete(node_id))
 		return FALSE
 	add_research_chapter(node_id, TRUE, writer)
 	return TRUE
@@ -389,6 +393,9 @@
 	var/datum/research_node/N = get_research_node(assigned_node)
 	if (!N || B.has_research_chapter(assigned_node))
 		return
+	// Anyone may deliver toward a capstone's bill (era_bills.dm).
+	if (take_bill_delivery(W, user, B, N))
+		return
 	if (!user.knows_research_prereqs(assigned_node))
 		to_chat(user, SPAN_WARNING("You don't know enough to work on <b>[N.name]</b> yet."))
 		return
@@ -398,6 +405,9 @@
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))
 		if (node_needs_demonstration(assigned_node))
 			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs a working demonstration: [demonstration_text(assigned_node)]. Record it with Record a Demonstration on paper or in a book."))
+			return
+		if (capstone_bill_replaces_prototype(assigned_node))
+			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs its bill of materials delivered to the bench instead: [bill_left_text(B.bill_left(assigned_node))]."))
 			return
 		if (bench_tier() < N.min_bench_tier)
 			to_chat(user, SPAN_WARNING("This prototype belongs to a later era than your civilization has reached."))
@@ -596,7 +606,7 @@
 	for (var/node_id in progress)
 		var/datum/research_node/N = get_research_node(node_id)
 		var/list/entry = progress[node_id]
-		to_chat(user, "An unfinished chapter on [N.name] ([round(entry[1] / N.cost_ticks * 100)]%).")
+		to_chat(user, "An unfinished chapter on [N.name] ([round(entry[1] / N.cost_ticks * 100)]%).[bill_status_text(src, node_id)]")
 
 /obj/structure/research_bench/proc/book_ui_data(mob/living/human/H, list/data)
 	var/obj/item/weapon/book/B = placed_book()
@@ -637,6 +647,7 @@
 	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stays within [BOOK_RESEARCH_NEAR] tiles and in sight of the bench, with a pencil, pen or writing slate in hand or resting on the bench."
 	if (AN.mode == RESEARCH_MODE_PROTOTYPE)
 		text += " It also needs [lowertext(copytext(prototype_need_label(AN), 1, 2))][copytext(prototype_need_label(AN), 2)][B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
+	text += bill_status_text(B, assigned_node)
 	if (!H.knows_research_prereqs(assigned_node))
 		text += " You don't know its groundwork yet."
 	if (!H.meets_scholar_requirement(assigned_node))

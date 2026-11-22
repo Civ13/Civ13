@@ -1997,6 +1997,7 @@
 #include "code\modules\research_tree\death_legacy.dm"
 #include "code\modules\research_tree\knowledge_spread.dm"
 #include "code\modules\research_tree\demonstrations.dm"
+#include "code\modules\research_tree\era_bills.dm"
 #include "code\modules\research_tree\skill_guide.dm"
 #include "code\modules\research_tree\subject_prototypes.dm"
 #include "code\modules\research_tree\node_broadcast.dm"
