@@ -1118,6 +1118,36 @@ var/naval_runtime_error = FALSE
 	sea_crossing_strip(tiller)
 	qdel(tiller)
 
+// A floor lifted from her edge to clear an obstacle (player report: a plank
+// hull that would not pass a trench after a corner plank was taken up). The
+// hole stays part of her shape until a refit cuts it away, and the refusal says
+// so; a hole inside her outline must still be patched first.
+/proc/edge_hole_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(30, 20, 33, 24, "Scow")
+	var/datum/craft/C = tiller.craft
+	var/datum/craft_body/built/B = C.body
+	var/datum/hull_ledger/L = C.ledger
+	var/turf/trench = locate(34, 24, 2)
+	trench.ChangeTurf(/turf/floor/trench)
+	var/turf/O = B.origin()
+	naval_check(!B.can_move_to(O.x + 1, O.y, NORTH) && findtext(B.last_refusal, "trench") && !findtext(B.last_refusal, "lifted"), "a trench off her corner stops a step east ([B.last_refusal])")
+	var/turf/corner = locate(33, 24, 2)
+	qdel(locate(/obj/covers) in corner)
+	naval_check(L.holes == 1 && L.edge_hole_at(corner) && L.inner_holes() == 0, "the corner plank taken up is a hole on her edge")
+	naval_check(!B.can_move_to(O.x + 1, O.y, NORTH) && findtext(B.last_refusal, "trench") && findtext(B.last_refusal, "floor lifted at 33,24") && findtext(B.last_refusal, "refit"), "until she is refitted the hole is still hers, and the refusal says so ([B.last_refusal])")
+	var/turf/inner = locate(31, 22, 2)
+	qdel(locate(/obj/covers) in inner)
+	naval_check(L.holes == 2 && !L.edge_hole_at(inner) && L.inner_holes() == 1, "a plank taken up inside her is a hole in her bottom")
+	naval_check(findtext(tiller.commission(), "Patch the hole"), "a hole inside her outline must be patched before a refit")
+	hull_lay(31, 22)
+	L.survey()
+	var/why = tiller.commission()
+	naval_check(isnull(why) && B.tile_count() == 19 && L.holes == 0 && !B.contains(corner), "a refit cuts the lifted corner away ([why])")
+	O = B.origin()
+	naval_check(B.can_move_to(O.x + 1, O.y, NORTH), "and she can now step east past the trench ([B.last_refusal])")
+	tiller.decommission()
+	qdel(tiller)
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -1132,6 +1162,7 @@ var/naval_runtime_error = FALSE
 		awash_checks()
 		compartment_checks()
 		compartment_crossing_checks()
+		edge_hole_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

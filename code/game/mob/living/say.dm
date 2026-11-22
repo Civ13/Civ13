@@ -70,7 +70,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 
 	switch(copytext(message,1,2))
 		if ("*") return emote(copytext(message,2))
-		if ("^") return custom_emote(1, copytext(message,2))
+		if ("^") return custom_emote(1, copytext(message,2), null, TRUE)
 
 	message = trim_left(message)
 

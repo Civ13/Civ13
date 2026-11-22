@@ -4,11 +4,13 @@
 // common words and letters. Returns an ISO 639-1 code from LANGS, or 'und'.
 'use strict';
 
+const MIN_LETTERS = 3;
+
 const LANGS = ['en', 'es', 'pt', 'fr', 'de', 'it', 'nl', 'pl', 'ru', 'uk', 'tr', 'sv', 'fi', 'cs', 'ro',
   'el', 'ar', 'hi', 'id', 'vi', 'th', 'zh', 'ja', 'ko'];
 
 const WORDS = {
-  en: 'the and is are you i to of it that this what where have do not can we they my your for with on at be was just get go me so yes hello hi hey thanks good morning night okay'.split(' '),
+  en: 'the a an and is are you i to of it that this what where have do not can we they my your for with on at be was just get go me so yes hello hi hey thanks good morning night okay he she his her makes made into from'.split(' '),
   es: 'el la los las de que y en un una es por con para no se lo como pero mas muy hola gracias donde esta estoy tengo quiero vamos aqui bien amigo buenos buenas dias tardes noches adios hasta luego si tal estas eres soy hay todo nada bueno buena senor'.split(' '),
   pt: 'o a os as de que e em um uma nao com para por voce eu ele ela muito obrigado obrigada onde esta estou tenho quero vamos aqui bem tudo bom boa dia noite tarde ola tchau sim voces tambem'.split(' '),
   fr: 'le la les des de du et est un une je tu il elle nous vous pas que qui pour avec dans sur bonjour merci oui ou suis ai bonsoir salut revoir mes ami amis comment ca va tres bien'.split(' '),
@@ -46,7 +48,8 @@ function detect(text) {
   const lower = t.toLowerCase();
   const plain = lower.normalize('NFD').replace(/[̀-ͯ]/g, '');
   const words = plain.match(/[a-z']+/g) || [];
-  if (!words.length) return 'und';
+  // Too short to tell (ok, hm, xd): leave it as written.
+  if (words.join('').replace(/'/g, '').length < MIN_LETTERS) return 'und';
   const score = {};
   for (const lang in WORDS) {
     let n = 0;
@@ -56,8 +59,17 @@ function detect(text) {
   for (const [re, lang, weight] of LETTERS) if (re.test(lower)) score[lang] = (score[lang] || 0) + weight;
   let best = 'und';
   let top = 0;
-  for (const lang in score) if (score[lang] > top) { top = score[lang]; best = lang; }
-  return top > 0 ? best : 'und';
+  let second = 0;
+  for (const lang in score) {
+    if (score[lang] > top) { second = top; top = score[lang]; best = lang; }
+    else if (score[lang] > second) second = score[lang];
+  }
+  // Confidence: a clear winner, and in a line of three or more words more than
+  // one hint. One shared short word ("a" in "Ada makes a trench") is not
+  // evidence of Portuguese.
+  if (top === 0 || top === second) return 'und';
+  if (words.length >= 3 && top < 2) return 'und';
+  return best;
 }
 
 module.exports = { detect, LANGS };

@@ -4,22 +4,29 @@
 
 Val approved the feature and changed two choices from the proposal below: all
 chat is translated automatically, and the reader's language defaults to
-English. So **Translate chat into my language** is on by default, and the
-reader picks their language under **Tabs... > Translation** (saved on that
-computer only).
+English. Val, 2026-11-22: **Translate chat into my language** is now off by
+default and each player turns it on under **Tabs... > Translation** (saved on
+that computer only, key `civ13-chat-translate-v2`; the old v1 setting keeps
+only its language). Only words players typed are translated: unmarked game
+messages are never sent ("Thibault Sommer makes a trench." had come back as
+"trench coat"), lines with fewer than 3 letters are skipped, and the service's
+detector needs a clear winner with at least two hints in lines of three or
+more words.
 
 - Server: `hear_say` wraps speech the listener fully understood in
   `<span class='chat-tr'>` and garbled speech (scrambled, starred, nonverbal
   unseen, animal noises) in `<span class='chat-notr'>`. Radio, phone and
-  voicepipe speech is not marked yet (their shared comprehension helper is
-  frozen by `tests/device_hearing`), so those lines are translated whole. OOC, LOOC and cross-region OOC
+  voicepipe speech is marked by each device proc with `chat_translate_mark`
+  after the frozen comprehension helper (`tests/device_hearing`): `chat-tr`
+  when the words came through unchanged. Emotes mark only words a player typed
+  (Me verb, `^` prefix, the emote box). OOC, LOOC and cross-region OOC
   bodies are `chat-tr`.
 - Client (`interface/chat/chat.html`): each new live line is checked by the
   browser's `LanguageDetector`; if it is in another language with confidence
   of at least 0.6, the browser's `Translator` puts a labelled translation under
   the untouched original. Lines with `chat-notr` are skipped; lines with
-  `chat-tr` send only that body; other lines (emotes, game messages) are sent
-  whole. Restored history is never translated, and translations are stripped
+  `chat-tr` send only that body; other lines (canned emotes, game messages)
+  are never sent. Restored history is never translated, and translations are stripped
   before history is saved.
 - A missing language pack shows a **Download** button once per language pair
   per session; nothing downloads without a click. Up to 20 lines wait in the

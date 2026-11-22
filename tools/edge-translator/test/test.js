@@ -17,6 +17,9 @@ const cases = [
   ['hola', 'es'], ['hola!', 'es'], ['buenos dias', 'es'], ['guten morgen', 'de'], ['gute nacht', 'de'],
   ['wie geht es dir', 'de'], ['bonsoir', 'fr'], ['au revoir', 'fr'], ['buongiorno', 'it'], ['bom dia', 'pt'],
   ['goedemorgen', 'nl'], ['dobranoc', 'pl'], ['gunaydin', 'tr'], ['god morgon', 'sv'], ['good morning', 'en'],
+  // Game messages and short noise never count as another language (2026-11-22:
+  // "Thibault Sommer makes a trench." came back as Portuguese).
+  ['Thibault Sommer makes a trench.', 'en'], ['Thibault Sommer digs', 'und'], ['ok', 'und'], ['xd', 'und'],
   ['xin chào, cảm ơn bạn', 'vi'], ['the storm is coming, get inside', 'en'], ['!!! 123', 'und'], ['', 'und'],
 ];
 for (const [text, want] of cases) assert.strictEqual(detect(text), want, text);

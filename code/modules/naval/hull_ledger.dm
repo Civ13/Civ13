@@ -147,6 +147,27 @@ var/global/hull_ledger_timer_off = FALSE
 			return FALSE
 	return TRUE
 
+// TRUE when T is a hole on the outside of her hull: a floor lifted from her
+// edge, which a refit cuts away from her shape (built_hull.dm). A hole with
+// her own tiles on every side is in her bottom and must be patched.
+/datum/hull_ledger/proc/edge_hole_at(turf/T)
+	if (!hole_at(T))
+		return FALSE
+	for (var/d in cardinal)
+		if (!craft.body.contains(get_step(T, d)))
+			return TRUE
+	return FALSE
+
+// Holes a refit cannot cut away: holes inside her outline and breaches in her
+// hold.
+/datum/hull_ledger/proc/inner_holes()
+	. = hold_breaches()
+	if (!craft || !craft.body)
+		return
+	for (var/turf/T in craft.body.cells())
+		if (hole_at(T) && !edge_hole_at(T))
+			.++
+
 // Counts her tiles again: after she is commissioned, refitted or loaded.
 /datum/hull_ledger/proc/survey()
 	tiles = 1

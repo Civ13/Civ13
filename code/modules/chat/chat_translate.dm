@@ -43,6 +43,12 @@ var/global/list/chat_translate_english_words = chat_translate_english_words_tabl
 	"go", "come", "get", "got", "need", "want", "know", "just", "here", "there", "now",
 	"im", "its", "whats", "lets", "some", "all", "any", "one", "if", "so", "too", "very")
 
+// Wraps words a player said in the marker the chat window translates (chat-tr),
+// or in chat-notr when this listener did not understand them. Lines without
+// either marker are game messages and are never translated.
+/proc/chat_translate_mark(message, understood)
+	return understood ? "<span class='chat-tr'>[message]</span>" : "<span class='chat-notr'>[message]</span>"
+
 /datum/chat_translator
 	var/tmp/list/queue = list() // keys waiting for the translator, oldest first
 	var/tmp/list/waiting = list() // key -> list of list(client, id)
