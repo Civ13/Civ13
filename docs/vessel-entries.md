@@ -116,9 +116,27 @@ made by `tests/sprites/create_vessel_openings.py`)
 - Trains are open platforms in Civ13 and need no end doors or emergency
   windows; breakable glass (phase 2) covers bus and car windows.
 
-## Later phases
+## Phase 6: bailing out and lifeboats
 
-6. Aircraft bailout and canopy jettison, ship lifeboat stations.
+`code/modules/1713/machinery/modular_vehicles/aircraft/aircraft_bailout.dm`
+and `code/modules/naval/hull_davits.dm`
 
-Val approved all phases on the recommended answers (2026-11-22); new art comes from
-Fable 5.2 where it adds sprites.
+- **Bail out:** aboard an airborne aircraft, "Bail out" (2 seconds) opens her
+  door, or on a plane with no door jettisons the cockpit canopy, and drops the
+  jumper to the ground straight below (the nearest open tile if that one is
+  solid). A parachute pack lands them on their feet. Without one, a jump just
+  off the ground is a hard landing; higher, both legs break, and from above
+  the hills worse. A jettisoned canopy is refitted on the ground with two
+  sheets of glass (hook in `breach_attackby`).
+- **Lifeboat davits** (6 steel, Steelmaking; sheet piece **LD** under Sides,
+  on her edge facing out): drag a small boat (raft, dugout, outrigger or
+  boat) afloat right under them onto them to hoist it aboard (8 seconds);
+  click them to lower it into the water beside her. Only while she is
+  stopped, and only an empty boat. The stowed boat rides inside the davits as
+  nested contents, so it moves and saves with her, and falls on deck if the
+  davits are destroyed.
+
+## Status
+
+All six phases are built. Val approved them on the recommended answers
+(2026-11-22). The new art (`icons/obj/vessel_openings.dmi`) comes from Fable 5.2.

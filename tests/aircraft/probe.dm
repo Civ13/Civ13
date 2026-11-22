@@ -745,6 +745,7 @@ var/aircraft_runtime_error = FALSE
 #include "crossing.dm"
 #include "building_impact.dm"
 #include "huey_cases.dm"
+#include "bailout.dm"
 
 /proc/aircraft_run()
 	try
@@ -756,6 +757,7 @@ var/aircraft_runtime_error = FALSE
 		aircraft_checks()
 		aircraft_building_impact_checks()
 		aircraft_crossing_checks()
+		aircraft_bailout_checks()
 	catch(var/exception/e)
 		aircraft_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = aircraft_failures, "runtime_error" = aircraft_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

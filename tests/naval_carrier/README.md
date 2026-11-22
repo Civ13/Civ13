@@ -259,9 +259,12 @@ count as aboard and a swimmer alongside does not; a barred port is hammered
 on from outside, once per cooldown; a gangway bars the same way and a plain
 gunwale does not; an open port on an awash deck ships water and a dry or shut
 one does not; a cargo hatch over a hold lowers a crate into it only while open,
-and one over rock lowers nothing. On the sheet a gun port on her edge closes
-that side, one facing inboard is refused, and a cargo hatch needs her hold
-drawn under it.
+and one over rock lowers nothing. Lifeboat davits (`hull_davits.dm`) hoist a
+boat only from right under them, refuse a second, do not lower onto another
+boat or while she is under way, lower it beside her, and drop it on deck when
+they go. On the sheet a gun port on her edge closes that side, one facing
+inboard is refused, a cargo hatch needs her hold drawn under it, and davits
+must face out.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ports_probe.dm 300
 

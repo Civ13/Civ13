@@ -93,6 +93,10 @@ var/global/list/ship_designer_sprites = ship_designer_sprites_table()
 	"shipd_piece_GS_4.png" = 'icons/ship_designer/piece_GS_4.png',
 	"shipd_piece_GS_8.png" = 'icons/ship_designer/piece_GS_8.png',
 	"shipd_piece_CH.png" = 'icons/ship_designer/piece_CH.png',
+	"shipd_piece_LD_1.png" = 'icons/ship_designer/piece_LD_1.png',
+	"shipd_piece_LD_2.png" = 'icons/ship_designer/piece_LD_2.png',
+	"shipd_piece_LD_4.png" = 'icons/ship_designer/piece_LD_4.png',
+	"shipd_piece_LD_8.png" = 'icons/ship_designer/piece_LD_8.png',
 	"shipd_piece_X.png" = 'icons/ship_designer/piece_X.png',
 	"shipd_piece_S.png" = 'icons/ship_designer/piece_S.png',
 )
@@ -282,7 +286,7 @@ var/global/list/ship_designer_groups = ship_designer_groups_table()
 	"Gear" = list("K", "A", "P", "Q", "U", "C", "B"),
 	"Arms" = list("H", "Z", "L"),
 	"Cabin" = list("W", "D", "G", "V", "I", "WB", "WT"),
-	"Sides" = list("Y", "GP", "GS", "F"),
+	"Sides" = list("Y", "GP", "GS", "LD", "F"),
 	"Between decks" = list("S", "X", "CH"),
 )
 

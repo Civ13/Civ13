@@ -1990,6 +1990,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/railing/built/gunwale/bulwark" = "steelmaking",
 		"/obj/structure/railing/built/gunwale/bulwark/gangway" = "steelmaking",
 		"/obj/structure/railing/built/gunwale/bulwark/gun_port" = "steelmaking",
+		"/obj/structure/lifeboat_davit" = "steelmaking",
 		"/obj/structure/steel_works/open_hearth" = "open_hearth",
 		"/obj/structure/steel_works/arc_furnace" = "alloys",
 		"/obj/structure/carburizing_pot" = "iron_smithing",
