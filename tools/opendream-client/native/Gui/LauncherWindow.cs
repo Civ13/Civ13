@@ -263,7 +263,8 @@ internal sealed partial class LauncherWindow : Form {
         var group = profile.Control?.Group;
         // The board answers "what is running, what is out of date, what is broken"; the rows below act on it.
         // Plain docking: the board fills the tab and each button row sits under it, wrapping at the tab's width.
-        hostBoard = new RegionBoardView { Choosable = group != null };
+        hostBoard = new RegionBoardView { Choosable = group != null, Dismissed = new DismissedProblems(root) };
+        hostBoard.FixRequested += RunFix;
         page.Controls.Add(hostBoard);
         FlowLayoutPanel Row(string caption) {
             var flow = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Bottom, Margin = new Padding(0), Padding = new Padding(0, 3, 0, 0) };
@@ -426,7 +427,8 @@ internal sealed partial class LauncherWindow : Form {
         IReadOnlyList<LocalHosting.GroupRegion> regions;
         try { regions = LocalHosting.GroupRegions(group); }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException or InvalidDataException) {
-            row.Controls.Add(new Label { Text = "Regions unavailable: " + e.Message, AutoSize = true, Margin = new Padding(0, 9, 0, 3) });
+            row.Controls.Add(new Label { Text = "Regions unavailable: " + e.Message + " Next: check the group config that host.json names, then reopen the launcher.",
+                AutoSize = true, MaximumSize = new Size(LogicalToDeviceUnits(720), 0), Margin = new Padding(0, 9, 0, 3) });
             return;
         }
         var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 190, Margin = new Padding(0, 4, 8, 3) };
@@ -474,14 +476,7 @@ internal sealed partial class LauncherWindow : Form {
             dialog.ShowDialog(this);
             return Task.CompletedTask;
         }, null));
-        menu.Add(("Open its world log", () => {
-            string? path;
-            try { path = LocalHosting.RegionLog(group, Chosen()); }
-            catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException) { HostLine("Could not read " + group.Config + ": " + e.Message); return Task.CompletedTask; }
-            if (path == null) { HostLine("The group config names no root folder."); return Task.CompletedTask; }
-            Open(new ProcessStartInfo(path) { UseShellExecute = true }, "the world log");
-            return Task.CompletedTask;
-        }, null));
+        menu.Add(("Open its world log", () => { OpenWorldLog(Chosen()); return Task.CompletedTask; }, null));
         menu.Add(("-", null, null));
         foreach (var (text, action) in new[] { ("Update and restart without saving…", "update-unsaved"), ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"),
                 ("Force clear lock files", "force-unlock"), ("Fresh world…", "fresh-world") })
@@ -906,6 +901,8 @@ internal sealed partial class LauncherWindow : Form {
                 null, RegionBuild.Unknown, "Not checked", null, "port " + host.Port, null));
         }
         // A failed check keeps the last rows under its message rather than blanking the board.
+        // Only a status that answered can tell that a dismissed problem has gone away.
+        if (hostStatusProblem == null) hostBoard.Dismissed?.Prune(cards);
         if (cards.Count > 0 || hostStatusProblem == null) hostBoard.ShowCards(cards, coordinator, "Checked " + hostCheckedAt.ToString("T"));
         if (hostStatusProblem != null) hostBoard.ShowMessage(hostStatusProblem, true);
     }
@@ -978,7 +975,8 @@ internal sealed partial class LauncherWindow : Form {
     // Group actions run shard_group.py for every region; deploy and restart-host run their .bat in a
     // hidden cmd.exe and stream its lines here. Nothing opens a console window or takes focus.
     // region: one region id (the One region row), or null for every region.
-    private async Task GroupAction(string action, string label, string? region = null) {
+    // confirmed: the operator already answered one question for several regions (RunFix).
+    private async Task GroupAction(string action, string label, string? region = null, bool confirmed = false) {
         if (host?.Control is not { } control || control.Group == null) return;
         var target = region == null ? "every region" : "region " + region;
         var question = action switch {
@@ -1009,8 +1007,8 @@ internal sealed partial class LauncherWindow : Form {
         if (region == null && action is "start" or "stop" or "restart" or "update" or "stage" && BusyNames() is { Length: > 0 } skipped)
             question += $" Busy now and left alone: {skipped}.";
         if (action == "fresh-world") { if (region != null) await FreshWorld(region); return; }
-        if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
-        if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
+        if (action == "deploy") { await ChooseAndDeploy(label, region == null ? null : [region]); return; }
+        if (!confirmed && MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
                 action is "force-unlock" or "update-unsaved" ? MessageBoxIcon.Warning : MessageBoxIcon.Question,
                 action == "update-unsaved" ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1) != DialogResult.OK) return;
         if (action == "restart-host") {
@@ -1044,6 +1042,53 @@ internal sealed partial class LauncherWindow : Form {
             // An accepted action holds its region's lock by now, so the status read keeps that region busy until it settles.
             await RefreshHostState();
         }
+    }
+
+    // A fix button on the board: cards is the row it was pressed on, every region sharing the problem (the board's
+    // group banner), or nothing for the board's own lines. Each runs the same action, with the same question and
+    // locks, as the button of that name below the board; several regions get one question, then each in turn.
+    // The board discards the returned task, so a failure is reported here rather than lost.
+    private async Task RunFix(IReadOnlyList<RegionCard> cards, RegionFix fix) {
+        try { await RunFixNow(cards, fix); }
+        catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException or UnauthorizedAccessException) { HostLine(fix.Label + " failed: " + e.Message); }
+    }
+
+    private async Task RunFixNow(IReadOnlyList<RegionCard> cards, RegionFix fix) {
+        if (host == null) return;
+        switch (fix.Action) {
+            case RegionFix.CheckStatus: await RefreshHostState(); return;
+            case RegionFix.RestartHost: await GroupAction("restart-host", "Restart host service"); return;
+            case RegionFix.OpenLog:
+                if (cards.Count > 0) OpenWorldLog(cards[0].Id);
+                return;
+        }
+        if (cards.Count == 0) return;
+        if (cards is [{ Id: "server" }]) {
+            if (fix.Action == "start") await StartHosting();
+            else await HostAction(fix.Action, fix.Label);
+            return;
+        }
+        if (cards.Count == 1) { await GroupAction(fix.Action, fix.Label, cards[0].Id); return; }
+        var ids = cards.Select(card => card.Id).Where(id => id != "server").Distinct().ToList();
+        if (fix.Action == "deploy") { await ChooseAndDeploy(fix.Label, ids); return; }
+        var names = string.Join(", ", cards.Select(card => card.Name));
+        if (MessageBox.Show(this, $"{fix.Label} these {ids.Count} regions: {names}? Each gets the same request as its own {fix.Label} button, one after another.",
+                "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        foreach (var id in ids) await GroupAction(fix.Action, fix.Label, id, true);
+    }
+
+    // A region's world log, or host.json's own server's.
+    private void OpenWorldLog(string id) {
+        if (host == null) return;
+        if (id == "server" || host.Control?.Group is not { } group) {
+            Open(new ProcessStartInfo(Path.Combine(host.GameDirectory, "logs", "world.log")) { UseShellExecute = true }, "the world log");
+            return;
+        }
+        string? path;
+        try { path = LocalHosting.RegionLog(group, id); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException) { HostLine("Could not read " + group.Config + ": " + e.Message); return; }
+        if (path == null) { HostLine("The group config names no root folder."); return; }
+        Open(new ProcessStartInfo(path) { UseShellExecute = true }, "the world log");
     }
 
     // The names of the regions an every-region action would skip, for its question.
@@ -1425,7 +1470,8 @@ internal sealed partial class LauncherWindow : Form {
 
     // Asks which regions to update (all ticked, or only `only` from the One region row; the mainland is
     // marked), then deploys them.
-    private async Task ChooseAndDeploy(string label, string? only = null) {
+    // only: the regions to tick (the One region row's region, or the regions sharing a problem on the board).
+    private async Task ChooseAndDeploy(string label, IReadOnlyCollection<string>? only = null) {
         if (host?.Control?.Group is not { } group) return;
         IReadOnlyList<LocalHosting.GroupRegion> regions;
         try { regions = LocalHosting.GroupRegions(group); }
@@ -1442,7 +1488,7 @@ internal sealed partial class LauncherWindow : Form {
         bool Busy(string id) => busyRegions.Contains(id) || actingRegions.Contains(id);
         foreach (var region in regions)
             list.Items.Add(region.Name + (region.Mainland ? " (mainland)" : "") + (Busy(region.Id) ? " (busy now)" : ""),
-                only == null ? !Busy(region.Id) : region.Id == only);
+                only == null ? !Busy(region.Id) : only.Contains(region.Id));
         layout.Controls.Add(list);
         var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
         var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
@@ -1556,6 +1602,8 @@ internal sealed partial class LauncherWindow : Form {
             _ => false,
         };
         foreach (var (button, gate) in hostActions) button.Enabled = Open(gate);
+        // The board's own fix buttons follow the same locks, per region.
+        hostBoard?.SetGates(busyRegions.Concat(actingRegions).ToHashSet(), locked, anyBusy);
         foreach (var (item, gate) in hostMenuActions) item.Enabled = Open(gate);
         if (hostStart != null) hostStart.Enabled = !locked && !ownBusy && byond != null;
         var settled = hostControlBusy && !anyBusy;
