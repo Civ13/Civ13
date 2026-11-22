@@ -76,6 +76,10 @@ Pick your members wisely. Or cunningly use them to your advantage.
 
 Work smart, not hard!
 
+```admonish tip
+New to factions? [Factions, Provinces & Nations](../guides/Guide_to_Factions.md) walks through founding a faction, its offices, holding provinces, faction islands, nations and war step by step. The sections below are the full reference.
+```
+
 #### General
 
 * To **Create** a faction, open the **Faction tab** and click **Create Faction**. Choose a name for it and draw your faction's symbol on the 32x32 canvas, or stamp one of the classic shapes and draw over it. Your banner colours are taken from the drawing. As Leader you can change the symbol later with **Modify Faction Symbol** on the **Faction tab**.
@@ -214,6 +218,8 @@ On maps that allow custom factions, a faction can take members through a **recru
 #### Provinces
 
 Each continent is divided into **provinces** that follow the land: coasts, rivers, lakes, mountain ranges and straits. Choose **Province Holdings** on the **Faction tab** to see which province you stand in, whether you count as one of your faction's residents there (and if not, why), and how much stake every side has in every province.
+
+There is no button or item that claims a province. Your faction claims one by living there: settle enough residents around a fastened hall to lead the province on stake, and keep that lead until the province is yours.
 
 * **Stake:** each resident is worth 1 point. A resident is a member who has been in the faction for 3 days, has had their own bed for 3 days within 40 tiles of one of the faction's fastened halls, and plays regularly: 10 hours in all on this land, and 4 hours over at least 3 different days of the last week. Your faction's best hall in the province adds 2 points per stage, never more than its residents there. Factions of one nation add their stake together, but a large group's residents count for less beyond the first 10.
 * **Leading:** a side leads a province with at least 6 points from at least 4 people, 35% of all the stake there and 1.25 times the next side.

@@ -50,6 +50,7 @@ QUESTION_SYNONYMS = {
     'rain': 'weather', 'storm': 'weather', 'heal': 'medical', 'dirty': 'hygiene wash', 'smell': 'hygiene wash',
     'language': 'languages', 'translate': 'translation', 'interface': 'hud', 'screen': 'hud',
     'travel': 'trail', 'continent': 'land region climate', 'country': 'land region climate',
+    'territory': 'province', 'claim': 'take hold', 'capture': 'take siege', 'conquer': 'province siege',
 }
 # Irregular forms the suffix fold cannot reach, so "where is it grown" finds "Where they grow".
 IRREGULAR_WORDS = {
@@ -111,7 +112,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c8c608376d828cb0dec21f56a19f3d6631aadab9'
+WIKI_REVIEWED_REVISION = '89dd79673c2f268deadbb2ccb3d539fcb778fde0'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -149,7 +150,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('fc23f954b4a8120e96ff5ca78be457261658aadf18490fe6401780851dd174fa', 'new player beginner start first round basics'),
     'Hotkeys.md': ('d7184103137b1ff83ffe7cd7ebc94878df8ed5a5c0a4b6a66447c9e25d4292fb', 'hotkeys hotkey keys keyboard controls key press'),
-    'FAQ.md': ('0e8aa3c8f9ac3d65173d39752b650037b330a19ebc87c21b1daaf03044737368', 'faq frequently asked questions common question quick answers'),
+    'FAQ.md': ('66708ea71b238c9c16224d837724577c482a89fc1383ded54d227b4297bb7550', 'faq frequently asked questions common question quick answers'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('9d9317e9e196b3e14f4b9237a68d6a41d3e2906d35e1b6cae529d389765eeebb', 'merchant role supplies export trade colony'),
@@ -157,7 +158,7 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('da9db1861986be3b459d83e6085e10c89cc113cf2601729ea791259e49715be3', 'civilizations nomads gaia faction nation government monarchy republic democracy revolt'),
+    'gamemodes/Civilizations_and_Nomads.md': ('68f1a8de2e23f06460bf2ee20a063a8525b07b168c7f67f23d75d8163b7588bc', 'civilizations nomads gaia faction nation government monarchy republic democracy revolt'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
@@ -180,7 +181,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('679cef92412118192e9790a2020227e15e5c2dea317bcd13b5a6cfd06ed367e0', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('277fea5469946954179bce3d9ce3b9531e4b36f0781fd93262bf0a65a6f52201', 'guides overview list of guides index'),
+    'guides_overview.md': ('93f508e5f75da77bcf872848c622aa1ba91e2641cccabec23cc1da2ce5191b7a', 'guides overview list of guides index'),
     'guides/Guide_to_Accolades_and_Characters.md': ('ba470e71fc388556c68e2e5d002ba6701dbd616cab102ba7b699ad9e14ab31a1', 'accolades accolade achievements lifetime points extra second another character characters slot switch switching kin family relatives'),
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
@@ -243,8 +244,26 @@ WIKI_HIDDEN_LINE = re.compile(r'\b(?:magic\w*|mana|wizard\w*|sorcer\w*|wands?|qu
 INTERNAL_NAME = re.compile(r'(?:Nations RP \()?\bPersistence\b(?: Beta\))?')
 
 
+# The game's own label for a persistent world's mode ("Persistent (Book Research)")
+# is an internal name too. It told the model the mode was only about research, and
+# an answer repeated it (2026-11-22), so the model is given public wording instead
+# and an answer that still carries the label has it reworded.
+INTERNAL_MODE = re.compile(r'["\'“”]?\bPersistent \((Book Research|Auto-Research)\)["\'“”]?(?: (?:game ?)?mode)?', re.IGNORECASE)
+PUBLIC_MODES = {
+    'book research': 'Civilizations and Nomads on a persistent world (research is written into books)',
+    'auto-research': 'Civilizations and Nomads on a persistent world (research advances on its own)',
+}
+
+
+def public_mode(label):
+    found = INTERNAL_MODE.fullmatch(label.strip())
+    if found:
+        return PUBLIC_MODES[found.group(1).lower()]
+    return 'Civilizations and Nomads on a persistent world' if re.match(r'\s*persisten', label, re.IGNORECASE) else label
+
+
 def public_wording(text):
-    return INTERNAL_NAME.sub('the persistent world', text)
+    return INTERNAL_NAME.sub('the persistent world', INTERNAL_MODE.sub('Civilizations and Nomads', text))
 
 
 def wiki_anchor(heading):
@@ -1166,6 +1185,8 @@ def public_game_context(request):
     if not isinstance(raw, dict):
         return {}
     result = {key: raw[key][:120] for key in ('map', 'map_id', 'gamemode', 'era', 'season', 'time_of_day') if isinstance(raw.get(key), str)}
+    if 'gamemode' in result:
+        result['gamemode'] = public_mode(result['gamemode'])
     if type(raw.get('era_ordinal')) is int and 0 <= raw['era_ordinal'] <= 100:
         result['era_ordinal'] = raw['era_ordinal']
     if type(raw.get('civilizations')) is bool or raw.get('civilizations') in (0, 1):

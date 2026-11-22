@@ -296,5 +296,17 @@
   "evidence": ["dries you about three times faster"], "answer": ["fire", "wring"]},
  {"id": "faq-recruit", "question": "how do you invite people to your faction?", "page": "FAQ.md", "section": "How do I invite someone to my faction?",
   "expected": "Get close, right-click them and choose Recruit; a recruitment station also takes members.",
-  "evidence": ["Get close to them, right-click them and choose"], "answer": ["recruit", "right.?click|station"]}
+  "evidence": ["Get close to them, right-click them and choose"], "answer": ["recruit", "right.?click|station"]},
+ {"id": "province-claim", "question": "How do I claim a province for my faction?", "page": "gamemodes/Civilizations_and_Nomads.md", "section": "Provinces", "gamemode": "Persistent (Book Research)",
+  "expected": "There is no claim button: settle enough residents around a fastened hall to lead the province on stake (6 points from 4 people, 35% of the stake, 1.25 times the next side) and hold that lead for 72 hours.",
+  "evidence": ["Your faction claims one by living there", "a side that leads a province for **72 hours** in a row takes it"], "answer": ["resident|stake", "72 hours|three days|3 days"], "forbid": ["(can(no|')t|not possible to|no way to|unable to) (claim|take|hold|capture)"]},
+ {"id": "province-claim-territory", "question": "how does my faction take over territory?", "page": "gamemodes/Civilizations_and_Nomads.md", "section": "Provinces", "gamemode": "Persistent (Book Research)",
+  "expected": "Land is held as provinces: lead one on stake with your residents for 72 hours to take it, or besiege a rival's seat during its defence window.",
+  "evidence": ["a side that leads a province for **72 hours** in a row takes it"], "answer": ["province", "resident|stake|siege|war banner"], "forbid": ["(can(no|')t|not possible to|no way to|unable to) (claim|take|hold|capture)"]},
+ {"id": "province-requirements", "question": "how many people do we need to hold a province?", "page": "gamemodes/Civilizations_and_Nomads.md", "section": "Provinces", "gamemode": "Persistent (Book Research)",
+  "expected": "At least 6 points of stake from at least 4 people, 35% of all the stake there and 1.25 times the next side; a holder below 6 points from 4 people loses it after 48 hours.",
+  "evidence": ["a side leads a province with at least 6 points from at least 4 people"], "answer": ["4 (people|residents|members)|four (people|residents|members)", "6 points|six points"]},
+ {"id": "province-which", "question": "how can i see which province im standing in", "page": "gamemodes/Civilizations_and_Nomads.md", "section": "Provinces", "gamemode": "Persistent (Book Research)",
+  "expected": "Choose Province Holdings on the Faction tab.",
+  "evidence": ["Choose **Province Holdings** on the **Faction tab**"], "answer": ["province holdings", "faction"]}
 ]

@@ -123,6 +123,7 @@ New to the game? Go to [Start Here](topics/Start_Here.md).
 
 ## [Society & Trade](topics/Society_and_Trade.md)
 
+- [Factions, Provinces & Nations](guides/Guide_to_Factions.md)
 - [Communications](guides/Guide_to_Communications.md)
 - [Peoples and Languages](guides/Guide_to_Peoples_and_Languages.md)
 - [Races](guides/Guide_to_Races.md)
