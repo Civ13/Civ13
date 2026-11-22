@@ -10,7 +10,7 @@ NILE = SOURCE.split("/datum/program/nilestore/proc/active_seller_order", 1)[1].s
 
 class NileSellerTests(unittest.TestCase):
     def test_live_order_bound_to_requester_and_group_without_migration(self):
-        gate = NILE.split("/datum/program/nilestore/Topic", 1)[0]
+        gate = NILE.split("/datum/program/nilestore/program_action", 1)[0]
         for check in (
             "actor != usr", "actor != user", "actor != origin.user",
             "actor.z != origin.z", "get_dist(actor, origin) > 1",
