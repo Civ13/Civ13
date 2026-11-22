@@ -101,3 +101,38 @@ var/global/list/approved_discord_ids = list()
 	if (!istext(id))
 		return null
 	return id
+
+// The bot rewrites SQL/approved.txt and SQL/whitelist.txt as players verify in
+// Discord. Startup and Reload Lists read them once; this watch re-reads a file
+// whenever its text changes, so a new verification reaches a running world
+// within a few minutes. A file that fails validation keeps the prior list and is
+// retried on the next pass.
+/proc/watch_verified_access_lists()
+	set waitfor = FALSE
+	var/static/watching = FALSE
+	if (watching)
+		return
+	watching = TRUE
+	var/list/loaded_text = list()
+	for (var/access_kind in list("approved", "whitelist"))
+		loaded_text[access_kind] = verified_access_file_text(access_kind)
+	while (TRUE)
+		sleep(2 MINUTES)
+		for (var/access_kind in list("approved", "whitelist"))
+			var/access_text = verified_access_file_text(access_kind)
+			if (!istext(access_text) || access_text == loaded_text[access_kind])
+				continue
+			if (reload_verified_access_list(access_kind))
+				loaded_text[access_kind] = access_text
+
+// The current text of an access file, or null when it is missing or unreadable.
+/proc/verified_access_file_text(access_kind)
+	var/access_filename = access_kind == "approved" ? "SQL/approved.txt" : (access_kind == "whitelist" ? "SQL/whitelist.txt" : null)
+	if (!access_filename || !fexists(access_filename))
+		return null
+	var/access_text = null
+	try
+		access_text = file2text(access_filename)
+	catch
+		return null
+	return access_text

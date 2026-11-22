@@ -163,6 +163,19 @@ class AccessLists(unittest.TestCase):
         self.assertEqual(self.h.ids('alpha=990000000000000001\n',DMList(['alpha','beta'])),[])
         self.assertEqual(self.h.ids(None,DMList(['alpha'])),[])
 
+    def test_running_world_rereads_changed_files(self):
+        watch=adapter.extract(SOURCE,'/proc/watch_verified_access_lists')
+        self.assertIn('set waitfor = FALSE',watch)
+        self.assertIn('sleep(2 MINUTES)',watch)
+        self.assertIn('access_text == loaded_text[access_kind]',watch)
+        self.assertLess(watch.index('if (reload_verified_access_list(access_kind))'),watch.index('loaded_text[access_kind] = access_text'))
+        reader=adapter.extract(SOURCE,'/proc/verified_access_file_text')
+        self.assertIn('"SQL/approved.txt"',reader)
+        self.assertIn('"SQL/whitelist.txt"',reader)
+        self.assertIn('fexists(access_filename)',reader)
+        setup=(ROOT/'code/setup.dm').read_text(encoding='utf-8-sig')
+        self.assertLess(setup.index('reload_verified_access_list("whitelist")'),setup.index('watch_verified_access_lists()'))
+
     def test_include_and_initial_readiness(self):
         self.assertEqual((ROOT/'civ13.dme').read_text(encoding='utf-8-sig').count('#include "code\\_helpers\\access_lists.dm"'),1)
         world=(ROOT/'code/world.dm').read_text(encoding='utf-8-sig')
