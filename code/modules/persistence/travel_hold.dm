@@ -53,7 +53,7 @@ var/global/list/travel_holds = null
 
 // Holds travellers still for a trip to where, guarding guarded and the tiles
 // in ground. Returns the hold, to renew and end.
-/proc/travel_hold_begin(list/travellers, where, list/guarded = null, list/ground = null, admin = FALSE)
+/proc/travel_hold_begin(list/travellers, where, list/guarded = null, list/ground = null, admin = FALSE, preserve_pull = FALSE)
 	travel_hold_sweep()
 	var/datum/travel_hold/hold = new
 	hold.where = where
@@ -68,18 +68,18 @@ var/global/list/travel_holds = null
 	LAZYINITLIST(travel_holds)
 	travel_holds += hold
 	for (var/mob/living/human/H in travellers)
-		travel_hold_add(hold, H)
+		travel_hold_add(hold, H, preserve_pull)
 	return hold
 
 // Adds H to hold, letting go of anyone else's grip on them.
-/proc/travel_hold_add(datum/travel_hold/hold, mob/living/human/H)
+/proc/travel_hold_add(datum/travel_hold/hold, mob/living/human/H, preserve_pull = FALSE)
 	if (!hold || !istype(H) || QDELETED(H) || (H in hold.travellers))
 		return
 	var/was = H.travel_held()
 	hold.travellers += H
 	H.travel_hold = hold
 	var/mob/M = H.pulledby
-	if (M && !(M in hold.travellers))
+	if (!preserve_pull && M && !(M in hold.travellers))
 		M.stop_pulling()
 	if (was)
 		return
