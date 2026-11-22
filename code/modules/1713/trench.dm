@@ -103,6 +103,9 @@
 	..()
 
 /turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
+	// A hole in a built hull sailing the canal (hull_ledger.dm).
+	if (hull_patch_attack(C, user, src))
+		return TRUE
 	if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
 		if (choice == "Yes" && !QDELETED(C) && C.loc == user)
