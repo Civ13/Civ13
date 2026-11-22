@@ -1130,6 +1130,7 @@
 #include "code\modules\1713\fish_shoals.dm"
 #include "code\modules\1713\fish_signs.dm"
 #include "code\modules\1713\ice_breaking.dm"
+#include "code\modules\1713\ice_dynamics.dm"
 #include "code\modules\1713\ice_fishing.dm"
 #include "code\modules\1713\fish_species.dm"
 #include "code\modules\1713\tools.dm"

@@ -35,6 +35,7 @@ var/fg_runtime_error = FALSE
 		new /obj/map_metadata/fishing_grounds_probe
 		fishing_grounds_checks()
 		ice_breaking_checks()
+		ice_dynamics_checks()
 	catch(var/exception/e)
 		fg_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = fg_failures, "runtime_error" = fg_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -502,7 +503,7 @@ var/fg_runtime_error = FALSE
 	fg_check(istype(locate(10, 42, 1), /turf/floor/beach/water/ice/salty), "broken sea ice freezes back as sea ice")
 	fg_water(10, 42, /turf/floor/beach/water/shallowsaltwater)
 	ib_steps(SM, 1)
-	fg_check(QDELETED(SM), "thin ice that something else melted forgets its marker")
+	fg_check(!QDELETED(SM) && !SM.thin && SM.cold_minutes == 5, "thin ice that something else melted counts towards freezing again from the start")
 	var/turf/frozen_by_season = fg_water(11, 44, /turf/floor/beach/water)
 	var/obj/structure/broken_ice/probe/FM = new(frozen_by_season)
 	FM.opened(FALSE, TRUE)
@@ -533,3 +534,113 @@ var/fg_runtime_error = FALSE
 	P1.opened(FALSE, TRUE)
 	broken_ice_pass()
 	fg_check(P1.cold_minutes == 5 && broken_ice_pass_due, "one pass counts five minutes on each marker and books the next pass")
+
+// ---- Ice that forms and melts (code/modules/1713/ice_dynamics.dm) ----
+
+/proc/ib_sweep_reset()
+	ice_front_changed = null
+	ice_area_temps = null
+
+// Up to n sweeps of one tile; TRUE once its type is no longer start_type.
+/proc/ib_front_changes(turf/T, n = 40)
+	var/x = T.x
+	var/y = T.y
+	var/start_type = T.type
+	for (var/i = 1 to n)
+		ib_sweep_reset()
+		ice_front_look(locate(x, y, 1))
+		if (locate(x, y, 1):type != start_type)
+			return TRUE
+	return FALSE
+
+/proc/ice_dynamics_checks()
+	var/turf/land = locate(60, 60, 1)
+	map.persistence = TRUE
+	fg_check(ice_dynamics_on(), "the weather moves the ice on a persistent map")
+	fg_check(ice_type_for(FALSE, TRUE) == /turf/floor/beach/water/ice && ice_type_for(FALSE, FALSE) == /turf/floor/beach/water/ice/deep && ice_type_for(TRUE, TRUE) == /turf/floor/beach/water/ice/salty && ice_type_for(TRUE, FALSE) == /turf/floor/beach/water/ice/salty/deep, "ice remembers fresh or salt and deep or shallow water")
+	var/turf/deep_ice = fg_water(30, 5, /turf/floor/beach/water/ice/deep)
+	var/turf/deep_sea_ice = fg_water(32, 5, /turf/floor/beach/water/ice/salty/deep)
+	fg_check(ice_open_water_type(deep_ice) == /turf/floor/beach/water/deep && ice_open_water_type(deep_sea_ice) == /turf/floor/beach/water/deep/saltwater, "and opens deep where it froze over deep water")
+
+	// A tundra pond: shore at its edge, open water in its middle.
+	for (var/turf/T in block(locate(2, 40, 1), locate(6, 44, 1)))
+		fg_water(T.x, T.y, /turf/floor/beach/water)
+	var/turf/middle = locate(4, 42, 1)
+	var/turf/edge = locate(2, 42, 1)
+	fg_check(ice_area_temp(middle) <= -15, "the pond lies in hard frost ([ice_area_temp(middle)])")
+	fg_check(!ib_front_changes(middle), "open water with no shore or ice beside it does not freeze")
+	fg_check(ib_front_changes(edge), "water against the shore freezes in hard frost")
+	var/turf/frozen_edge = locate(2, 42, 1)
+	var/obj/structure/broken_ice/young = locate() in frozen_edge
+	fg_check(istype(frozen_edge, /turf/floor/beach/water/ice) && young && young.thin && frozen_edge.name == "thin ice" && young.shallow && !young.salty, "and the new ice is thin and remembers its water")
+	ib_sweep_reset()
+	ice_front_note(frozen_edge)
+	fg_check(!ice_front_freeze_edges(locate(3, 42, 1)) || locate(3, 41, 1):type != /turf/floor/beach/water, "ice made this sweep is no edge until the next")
+	var/turf/next = locate(3, 43, 1)
+	ice_keep_open(next)
+	fg_check(ice_is_kept_open(next) && !ib_front_changes(next), "a channel a boat keeps using stays open")
+	ice_kept_open = null
+	var/turf/cart_water = locate(5, 43, 1)
+	new /obj/structure/vehicle/raft(cart_water)
+	fg_check(!ib_front_changes(cart_water, 10), "water with a boat in it does not freeze")
+
+	// Harder cold for deep, flowing and salt water.
+	var/turf/deep = fg_water(8, 40, /turf/floor/beach/water/deep)
+	var/turf/sea = fg_water(10, 40, /turf/floor/beach/water/deep/saltwater)
+	fg_check(ice_freeze_threshold(locate(5, 5, 1)) == -2 && ice_freeze_threshold(deep) == -8 && ice_freeze_threshold(sea) == -15 && ice_freeze_threshold(fg_water(12, 40, /turf/floor/beach/water/shallowsaltwater)) == -6, "still shallow water freezes at -2, the shallow sea at -6, deep water at -8 and the deep sea at -15")
+	fg_check(isnull(ice_freeze_threshold(fg_water(12, 41, /turf/floor/beach/water/swamp))) && isnull(ice_freeze_threshold(fg_water(12, 42, /turf/floor/beach/water/flooded))), "swamps and seasonal floods are left alone")
+	fg_check(ib_front_changes(sea) && istype(locate(10, 40, 1), /turf/floor/beach/water/ice/salty/deep), "in tundra cold even the deep sea freezes at its shore, as deep sea ice")
+
+	// A thaw: jungle ice melts from its edges.
+	var/turf/jungle_ice = fg_water(16, 50, /turf/floor/beach/water/ice/deep)
+	fg_check(ib_front_changes(jungle_ice) && locate(16, 50, 1):type == /turf/floor/beach/water/deep, "warm ice melts from its edge, deep where it froze deep")
+	for (var/turf/T in block(locate(14, 40, 1), locate(18, 44, 1)))
+		fg_water(T.x, T.y, /turf/floor/beach/water/ice)
+	fg_check(!ib_front_changes(locate(16, 42, 1), 15), "but not from the middle of a sheet")
+
+	// Salt.
+	var/turf/salted_water = fg_water(8, 46, /turf/floor/beach/water)
+	var/obj/structure/broken_ice/probe/S = new(salted_water)
+	S.opened(FALSE, TRUE)
+	S.salted_until = trap_now_minutes() + 120
+	S.probe_temp = -8
+	ib_steps(S, 8)
+	fg_check(is_liquid_water(locate(8, 46, 1)) && !S.cold_minutes, "salted water stays open in a hard frost")
+	S.probe_temp = -20
+	ib_steps(S, 6)
+	fg_check(istype(locate(8, 46, 1), /turf/floor/beach/water/ice), "but freezes in bitter cold")
+	var/turf/salted_ice = fg_water(8, 48, /turf/floor/beach/water/ice)
+	var/obj/structure/broken_ice/probe/SI = new(salted_ice)
+	SI.salted_until = trap_now_minutes() + 120
+	SI.probe_temp = -5
+	fg_check(ice_is_thin(salted_ice), "salted ice is thin")
+	ib_steps(SI, 1)
+	fg_check(is_liquid_water(locate(8, 48, 1)), "and breaks up into open water in a frost")
+	SI.salted_until = 0
+	SI.probe_temp = 5
+	ib_steps(SI, 1)
+	fg_check(QDELETED(SI), "once the salt is spent, open water in a thaw is the front's again")
+	var/obj/item/weapon/reagent_containers/food/condiment/saltpile/pile = new(land)
+	fg_check(ice_salt_ok(pile) && !ice_salt_ok(new /obj/item/weapon/reagent_containers/food/condiment/sugar(land)) && !ice_salt_ok(new /obj/item/weapon/material/pickaxe(land)), "a salt pile has salt to scatter, sugar or a pick does not")
+
+	// Thin ice cracks under a load.
+	var/turf/thin_spot = fg_water(20, 46, /turf/floor/beach/water/ice)
+	var/obj/structure/broken_ice/probe/TM = new(thin_spot)
+	TM.thin = TRUE
+	var/obj/structure/vehicle/raft/cart = new(land)
+	fg_check(ice_load_cracks(cart) && !ice_load_cracks(new /obj/item/weapon/material/pickaxe(land)), "a vehicle is a load for thin ice, a dropped pick is not")
+	cart.forceMove(thin_spot)
+	fg_check(is_liquid_water(locate(20, 46, 1)), "thin ice cracks and gives way under a cart")
+	var/turf/thick_spot = fg_water(5, 30, /turf/floor/beach/water/ice)
+	var/obj/structure/vehicle/raft/cart2 = new(land)
+	cart2.forceMove(thick_spot)
+	fg_check(istype(locate(5, 30, 1), /turf/floor/beach/water/ice), "thick ice in hard frost bears it")
+
+	// The sweep walks the registered water a batch at a time.
+	ice_front_cursor = 1
+	var/sweeps = ice_front_sweeps
+	var/looked = 0
+	for (var/i = 1 to 20)
+		looked += ice_front_step(100)
+	fg_check(looked >= water_turf_list.len && ice_front_sweeps > sweeps, "steps walk every water tile and start a new sweep ([looked] looked at, [water_turf_list.len] registered)")
+	map.persistence = FALSE

@@ -39,7 +39,9 @@ class FishingGrounds(unittest.TestCase):
 
     def test_one_cast_for_every_tool(self):
         self.assertIn('/turf/floor/beach/water/attackby(obj/item/C as obj, mob/user as mob)\n'
-                      '\tif (ishuman(user) && fishing_tool_profile(C))\n\t\tfish_cast(C, user)\n\t\treturn\n\t..()\n',
+                      '\tif (ishuman(user) && fishing_tool_profile(C))\n\t\tfish_cast(C, user)\n\t\treturn\n'
+                      '\t// Salt keeps water and ice open (ice_dynamics.dm).\n'
+                      '\tif (ishuman(user) && ice_salt_ok(C))\n\t\tice_salt(src, C, user)\n\t\treturn\n\t..()\n',
                       self.source)
         cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
         # The stock is asked before the wait and debited after the roll.
@@ -145,6 +147,28 @@ class FishingGrounds(unittest.TestCase):
         self.assertIn('why = ice_refusal(D, mine_set)', built)
         self.assertLess(built.index('break_ice_ahead(P[4], old)'), built.index('var/list/cargo = list()'))
         self.assertIn('/datum/craft_body/built/air/ice_refusal(turf/D, list/mine_set)\n\treturn null', ice)
+
+    def test_ice_forms_and_melts_in_one_batched_sweep(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\ice_dynamics.dm"'), 1)
+        dyn = (ROOT / 'code/modules/1713/ice_dynamics.dm').read_text(encoding='utf-8')
+        # One looping timer over the registered water, never a timer per tile
+        # or a walk through the world.
+        self.assertEqual(dyn.count('addtimer('), 1)
+        self.assertIn('TIMER_LOOP | TIMER_STOPPABLE', dyn)
+        self.assertNotIn('in world', dyn)
+        self.assertNotIn('spawn(', dyn)
+        self.assertIn('water_turf_list[ice_front_cursor++]', dyn)
+        self.assertIn('/hook/roundstart/proc/ice_front_begin()', dyn)
+        # Shared state starts empty: no initialised global lists.
+        for name in ('ice_area_temps', 'ice_front_changed', 'ice_kept_open'):
+            self.assertIn('var/global/list/%s ' % name, dyn)
+        # Salt is offered to both open water and ice.
+        self.assertEqual(self.source.count('ice_salt(src, C, user)'), 2)
+        # The shared temperatures live in __defines.
+        defines = (ROOT / 'code/__defines/fishing.dm').read_text(encoding='utf-8')
+        for name in ('ICE_FREEZE_TEMP', 'ICE_MELT_TEMP', 'ICE_SALT_LIMIT', 'ICE_SALT_MINUTES'):
+            self.assertIn('#define %s ' % name, defines)
 
     def test_new_species_are_raw_fish_with_their_own_sheet(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
