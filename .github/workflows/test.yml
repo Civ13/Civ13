@@ -1662,6 +1662,12 @@ jobs:
           python3 tests/building_levels/run.py --cave-first --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/cave-first-positive"
           python3 tests/building_levels/run.py --cave --negative-control cave-step-over --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/cave-step-over"
           python3 tests/building_levels/run.py --cave --negative-control cave-roof-count --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/cave-roof-count"
+      - name: Verify house plans against the building rules
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/house_plans') || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/building_levels') || inputs.persistence_integration_regressions == true
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/house_plans/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/house-plans"
       - name: Upload linked building evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/building_levels') || inputs.persistence_integration_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
