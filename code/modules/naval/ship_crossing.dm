@@ -793,6 +793,15 @@ var/global/list/sea_crossing_marked = list()
 	// order. Bay keys refer to the source ship's order, not survey order.
 	var/list/bay_offsets = (islist(ledger) && islist(ledger["bays"])) ? offsets : null
 	var/problem = tiller.commission(R["name"], R["dir"], bay_offsets)
+	if (problem && bay_offsets)
+		// A hull that surveys differently still arrives; only her compartment
+		// water map is dropped, so the bilge keeps its total but evens out.
+		log_game("Sea crossing: the [R["name"]] at [pivot.x],[pivot.y],[pivot.z] kept no compartment water map: [problem].")
+		problem = tiller.commission(R["name"], R["dir"])
+		if (!problem)
+			ledger = ledger.Copy()
+			ledger -= "bays"
+			ledger -= "bay_order_heading"
 	if (problem)
 		log_game("Sea crossing: the [R["name"]] could not be commissioned at [pivot.x],[pivot.y],[pivot.z]: [problem].")
 		qdel(tiller)
