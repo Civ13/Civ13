@@ -99,6 +99,7 @@
 		return FALSE
 	sleeping = 66
 	inducedSSD = TRUE
+	offline_sleep_protection_lifted = FALSE
 	if (s_active)
 		s_active.close(src)
 	sleep_update()
