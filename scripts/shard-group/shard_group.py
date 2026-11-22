@@ -1797,7 +1797,7 @@ class RegionHost(Host):
             raise RuntimeError('the world gave no valid session')
         if self.platform.listening(spare_port):
             raise RuntimeError('port %d (the standby port) is in use' % spare_port)
-        if automatic and before.get('handover_empty_guard') is not True:
+        if automatic and not guards_empty_handover(before):
             self.record(revision=revision)
             raise RuntimeError('the running build cannot guard an empty handover; automatic update deferred')
         if 'handover' not in before:
@@ -1819,7 +1819,7 @@ class RegionHost(Host):
                 if not self.saved_since_last_client():
                     raise RuntimeError('the world has not saved since the last player; automatic update deferred')
                 session = before.get('session', '')
-                if not gaia_host.HEX32.match(session or '') or before.get('handover_empty_guard') is not True:
+                if not gaia_host.HEX32.match(session or '') or not guards_empty_handover(before):
                     raise RuntimeError('the world no longer supports a safe handover')
             self.handover_work(operation, group, region, revision, port, spare_port, token, before, session, automatic)
 
@@ -1857,7 +1857,7 @@ class RegionHost(Host):
             if automatic:
                 before = self.world()
                 if (not before or before.get('busy') or not before.get('ready') or before.get('clients') != 0
-                        or before.get('session') != session or before.get('handover_empty_guard') is not True
+                        or before.get('session') != session or not guards_empty_handover(before)
                         or not self.saved_since_last_client()):
                     self.record(retryable=True)
                     raise RuntimeError('the world is no longer confirmed empty and ready; automatic update deferred')
@@ -2749,7 +2749,16 @@ def write_json_atomic(path, value):
     """Write value as JSON through a temporary file, so a reader never sees half a file."""
     temporary = path.with_name(path.name + '.tmp')
     temporary.write_text(json.dumps(value, indent=1) + '\n', encoding='utf-8')
-    os.replace(temporary, path)
+    gaia_host.replace_file(temporary, path)
+
+
+def guards_empty_handover(status):
+    """True when a world's lifecycle status advertises the empty-handover guard.
+
+    DM's json_encode writes TRUE as 1, so a live world reports 1 rather than JSON
+    true; testing `is True` deferred every automatic handover (2026-11-22)."""
+    value = (status or {}).get('handover_empty_guard')
+    return value is True or (type(value) is int and value == 1)
 
 
 def enrol(group, region_id):

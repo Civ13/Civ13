@@ -525,6 +525,22 @@ class Platform:
         return time.time()
 
 
+def replace_file(source, target, attempts=20, delay=0.05):
+    """os.replace, retried while Windows refuses it with access denied.
+
+    Windows denies replacing a file another process has open (the launcher and the
+    host service read these status files every few seconds), so a single
+    os.replace failed whole stages with WinError 5 on stage.json (2026-11-22)."""
+    for attempt in range(attempts):
+        try:
+            os.replace(source, target)
+            return
+        except PermissionError:
+            if attempt == attempts - 1:
+                raise
+            time.sleep(delay)
+
+
 def sha256(path):
     digest = hashlib.sha256()
     with open(path, 'rb') as handle:
@@ -1012,7 +1028,7 @@ class Host:
         self.state_dir.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix('.tmp')
         temporary.write_text(json.dumps(value), encoding='utf-8')
-        os.replace(temporary, path)
+        replace_file(temporary, path)
 
     def recover_interrupted_save(self):
         """Swap the completed generation back in after an interrupted save (see the module function)."""
