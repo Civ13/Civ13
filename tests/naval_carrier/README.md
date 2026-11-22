@@ -279,6 +279,21 @@ up), with a ladder between the decks above, and launches with both.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/second_deck_probe.dm 300
 
+## A hold dug in a refit, and boarding from a level up (`hold_refit_probe.dm`)
+
+A hull hauled out on a slipway is refitted to her own lines with two hold tiles
+and a ladder added: her deck matches, but the refit stays open with three pieces
+of hold to dig and the tiller offers "Dig out the hold"; floors come before the
+ladder, which is refused until its floor is down; the rock is hollowed, she
+carries the new hold and not the rock beside it, the ladder joins deck and hold,
+and the refit then closes. No hold is dug under a tile that is not her deck, and
+a crate in the new hold is aboard her. A gangway on the upper deck of a roofed
+hull at sea runs its plank two tiles over open air to a quay floor a level up,
+holds her while it is out, and lets her go when taken in; a gangway on her main
+deck still runs over water to a pier.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hold_refit_probe.dm 300
+
 ## Sea chart and harbours (`chart_probe.dm`)
 
 The mirror sea chart and mooring posts (`code/modules/naval/craft_chart.dm`):

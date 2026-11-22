@@ -102,7 +102,20 @@ The work is done by hand at hand costs. A floor lifted at a berth is a hole in
 the ledger, but `commission()` refits a hull at a berth despite holes, so
 "Refit the hull" takes the lifted tiles out of her. It then marks her again;
 "Check the refit" does the same, and when nothing differs the marks and the
-draught go. Decks above and below are not compared.
+draught go. Decks above are not compared.
+
+Her hold is (`code/modules/naval/berth_refit_hold.dm`). Nobody can reach the
+rock under her, so `mark_refit()` counts what the draught's hold still wants
+(`refit_hold_work()`: a hold floor under each hold tile not yet hollowed, then
+each ladder the hold has, list(kind, deck turf, hold turf)) in
+`refit_hold_left`, and the refit stays open while any is left. "Dig out the
+hold" at the tiller does it from the stack in hand at the slipway's prices
+(`ship_draught_decks["-1"]` 1 steel a floor, the ladder piece 4 wood), 3 s a
+floor and 5 s a ladder (`yard_time()`), with `hull_hold_lay()` and the
+slipway's ladder pair. A hold tile must be under a tile of her deck, in rock or
+deep water, and keep her within `BUILT_HULL_MAX_DECK_TILES`; a ladder waits for
+the floor under it. Holds are only added: hold floors the draught does not have
+stay. Digging marks her compartments to be mapped again (`bays_dirty`).
 
 ## The yard office
 

@@ -4,7 +4,8 @@
 // A gangway is a gate in her gunwale (or bulwark). Like any railing it closes
 // her side. Alt-click it, or use "Run out the gangplank", to run a plank from
 // it across up to HULL_GANGPLANK_MAX tiles of water to a pier, the shore or
-// another ship. While the plank is out she is held: she will not get under
+// another ship. A gangway on her upper deck runs it over open air to a quay
+// or pier floor on that level. While the plank is out she is held: she will not get under
 // way, turn, make for a berth or leave these waters until it is taken in. The
 // plank is not saved, and falls in if she is moved anyway.
 // ============================================================
@@ -68,10 +69,11 @@ var/global/list/hull_gangways_out = list()
 		planks -= P
 	hull_take_in_gangplank(G)
 
-// Where the plank from gangway G would run: list of water turfs to lay it
-// over, or a refusal text.
+// Where the plank from gangway G would run: list of water (or, a level up,
+// open air) turfs to lay it over, or a refusal text.
 /proc/hull_gangplank_plan(obj/structure/railing/built/gunwale/G)
 	var/turf/T = get_turf(G)
+	var/aloft = building_open_turf(T)
 	var/list/over = list()
 	for (var/n = 1, n <= HULL_GANGPLANK_MAX + 1, n++)
 		T = get_step(T, G.dir)
@@ -82,14 +84,16 @@ var/global/list/hull_gangways_out = list()
 		for (var/obj/O in T)
 			if (O.density && O.anchored && !istype(O, /obj/structure/railing))
 				return "\The [O] is in the way of the gangplank."
-		if (hull_floor_in(T) || !istype(T, /turf/floor/beach/water))
+		// From a gangway on her upper deck the plank runs over open air to
+		// a quay or pier built up a level, so she can be boarded from above.
+		if (hull_floor_in(T) || (!istype(T, /turf/floor/beach/water) && !(aloft && building_open_turf(T))))
 			if (!over.len)
 				return "She lies right alongside here: step across."
 			return over
 		if (locate(/obj/covers) in T)
 			return "Lines or another plank already cross that water."
 		over += T
-	return "There is no pier, shore or ship within [HULL_GANGPLANK_MAX] tiles of water to run the gangplank out to."
+	return "There is no pier, quay, shore or ship within [HULL_GANGPLANK_MAX] tiles to run the gangplank out to."
 
 // Runs the gangplank out from gangway G. Returns null, or why not.
 /proc/hull_run_out_gangplank(obj/structure/railing/built/gunwale/G, mob/living/human/H = null)
@@ -98,7 +102,7 @@ var/global/list/hull_gangways_out = list()
 		return "That is not a gangway."
 	if (planks.len)
 		return "The gangplank is already out."
-	var/datum/craft/C = craft_at(get_turf(G))
+	var/datum/craft/C = craft_holding(get_turf(G))
 	if (C && C.speed != VESSEL_SPEED_STOP)
 		return "She must be stopped before the gangplank goes out."
 	var/plan = hull_gangplank_plan(G)
@@ -129,7 +133,7 @@ var/global/list/hull_gangways_out = list()
 	for (var/obj/covers/repairedfloor/rope/boarding/gangplank/P in old)
 		P.from = null
 		qdel(P)
-	var/datum/craft/C = craft_at(get_turf(G))
+	var/datum/craft/C = craft_holding(get_turf(G))
 	if (C && C.body && !C.grapple && !C.gangplank_refusal())
 		C.body.hold(0)
 	return TRUE
@@ -146,7 +150,7 @@ var/global/list/hull_gangways_out = list()
 			// She moved anyway (a crossing, a shove): the plank fell in.
 			hull_take_in_gangplank(G)
 			continue
-		if (craft_at(get_turf(G)) == src)
+		if (craft_holding(get_turf(G)) == src)
 			return "Her gangplank is out at \the [G]. Take it in first."
 	return null
 
