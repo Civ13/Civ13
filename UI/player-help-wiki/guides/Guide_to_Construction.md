@@ -37,6 +37,37 @@ direction.
 walls of the same type, so they connect seamlessly to each other.</b>
 These walls are marked as **Adaptive**.
 
+## Planning a house on paper
+
+A [ship's draught](Guide_to_Boats.md#ships-draughts) (1 wood, Papermaking) can hold a **house plan**. Drawing one costs nothing and builds nothing: it shows you, before you spend any material, where the game will refuse a roof and what the house will be missing.
+
+Hold a blank ship's draught with a pen, pencil or pigment in your other hand, use the sheet and choose **Draw a house on the sheet**.
+
+<img src="../images/house_plan_designer.png" alt="The house plan window showing the second storey of a timber house: the sheet on the left, the parts to draw with in the middle, and the part description, notes and checks on the right">
+
+- **The sheet** is 20 by 20 tiles with north at the top and shows one storey at a time. The **Storey** buttons go from the ground floor up to the sixth storey. A dot on a button shows that storey has something drawn on it, and the dot turns red when a check found a fault there.
+- **Each tile holds three things:** one piece (a wall, door, window, pillar, roof support, stairs or ladder), one floor and one roofing. Pick a part and click or drag to draw it. Right-click clears what the picked tool draws, and the eraser clears the whole tile.
+- **A roof is the floor of the storey above**, just as when you build. Roof every tile of a storey, the wall tiles included, before you draw the next storey on top of it.
+- **Drag a box** draws the outline of a room when a wall is picked, and fills the box with a floor, a roofing or the eraser.
+- **Roof this storey** roofs everything inside the walls with the picked roofing and leaves the tile over stairs and ladders open. **Copy the walls below** stands the walls, windows and pillars of the storey below on the one you are looking at. A door is copied as a window.
+- Upstairs, the walls of the storey below show through faintly so you can stand the next walls on them, and the opening over stairs or a ladder is marked.
+- **Start from** loads a ready-made cabin, two-storey house or stone tower house to change as you like.
+- **Save to the sheet** keeps the drawing. Use the sheet again to see its summary, change it, or copy its design code to keep outside the game or give to someone else. Pasting a code onto any ship's draught draws the same house.
+
+A wall on the plan stands for every wall of its strength. A timber wall is any wall that carries two storeys, such as a log, plank, bamboo, straw or earth wall. A stone wall is any that carries four, such as stone, brick, clay, sandstone or marble. The **Figures** panel counts the parts and gives rough materials from one usual recipe for each, so treat it as a guide.
+
+**Checks.** The panel on the right judges the drawing as you draw. Click a check to ring its tiles on the sheet; the window steps to the storey it is about.
+
+| Check | What it means |
+| --- | --- |
+| **Fix** | The game will refuse this when you build. A roof tile has no support in reach, the walls are too weak for that storey, the ground-floor walls need a stone or concrete floor under them, a wall upstairs has no roof tile under it or nothing strong enough beneath it, or a lone pillar upstairs is asked to hold tiles it is not next to. The rules are the ones under [Roofs](#roofs) and [Upper storeys](#upper-storeys). |
+| **Warning** | You can build it, but something is missing: no stairs or ladder to a storey, stairs with a roof straight over them, a room with no door, a tile inside the walls with no roof over it on any storey, or no roof at all. |
+| **Note** | Advice: a roofed space that is not closed in by walls, windows and doors, stone walls on soft ground that could never take a third storey, or an upper floor with an open edge to fall from. |
+
+The plan cannot see the ground you will build on, so it treats bare ground as soft. On rock a house can go higher than its plan says.
+
+**Notes of your own.** Pick the **Note** tool, click a tile and type up to 80 characters, for example where the hearth goes or whose room it is. A plan holds 12 notes. They show as a corner mark on the tile, are listed in the Notes panel and travel with the plan and its design code.
+
 ## Construction materials
 
 A few more details about particular materials.
@@ -883,7 +914,7 @@ How far each support reaches, counted in tiles from the support to the roof tile
 - **A stone, marble, sandstone or concrete pillar** holds the roof up to 2 tiles away.
 - **A wooden or bamboo roof support** holds the roof up to 3 tiles away.
 
-Fences, palisades, sandbags, snow walls, empty wall frames and walls that are still being built do not hold a roof. In a room more than three tiles across, the middle of the room is too far from the walls: put a roof support or pillar in the middle first. If the game refuses a roof, it tells you how far away the nearest support is and how far that support reaches.
+Fences, palisades, sandbags, snow walls, empty wall frames and walls that are still being built do not hold a roof. In a room more than two tiles across, the middle of the room is too far from the walls: put a roof support or pillar in the middle first. If the game refuses a roof, it tells you how far away the nearest support is and how far that support reaches.
 
 Roofing piles up, up to 25 pieces in one pile, and the pile's name shows how many it holds. Drop roofing on a pile of the same roofing and it joins the pile. Use the roofing in your hand on more of the same roofing to pick up all of it from that tile. To take a single piece off a pile you are holding, click the pile with your other, empty hand. Each roof tile you build uses one piece. Roof tiles fired in a kiln come out in one pile.
 
