@@ -135,6 +135,30 @@ var/naval_runtime_error = FALSE
 	naval_check(hold_floor && hull_armour_at(get_turf(R)) == plate2 && hull_armour_soften(hold_floor, 2) == 3, "the hold floor under a plated tile is covered by the belt")
 
 
+
+	// ---- A breach in her hold ----
+	var/turf/HT = null
+	for (var/turf/L in B.lower_cells())
+		if (!hull_armour_at(L) && !(locate(/obj/structure/shellrack) in L))
+			HT = L
+	var/obj/covers/hold_plate = HT ? hull_hold_cover(HT) : null
+	var/holes_was = C.ledger.holes
+	var/hold_was = B.lower_tile_count()
+	naval_check(hold_plate && !istype(hold_plate, /obj/covers/steelplating/hold/breach), "a whole hold floor to blow out")
+	hold_plate.ex_act(1)
+	var/obj/covers/steelplating/hold/breach/BR = locate() in HT
+	naval_check((QDELETED(hold_plate) || hold_plate.loc != HT) && BR && BR.hold_origin && C.ledger.holes == holes_was + 1, "a blast through her hold floor leaves a breach and holes her ([C.ledger.holes], old floor at [hold_plate.loc])")
+	naval_check(B.lower_tile_count() == hold_was && C.ledger.hold_breaches() == 1, "the breach is still part of her hold")
+	C.ledger.survey()
+	naval_check(C.ledger.holes == holes_was + 1, "a survey still counts the breach as a hole ([C.ledger.holes])")
+	BR.ex_act(1)
+	naval_check(!QDELETED(BR) && C.ledger.holes == holes_was + 1, "another blast opens it no wider")
+	O = B.origin()
+	naval_check(B.move_to(O.x, O.y + 1, NORTH) && BR.y == HT.y + 1 && B.lower_tile_count() == hold_was, "the breach sails with her hold ([B.last_refusal])")
+	var/obj/covers/shut = hull_breach_shut(BR)
+	naval_check(shut && !istype(shut, /obj/covers/steelplating/hold/breach) && shut.hold_origin && QDELETED(BR) && C.ledger.holes == holes_was, "welded shut, the breach is a whole hold floor again and the hole is gone ([C.ledger.holes])")
+	naval_check(C.ledger.hold_breaches() == 0 && B.lower_tile_count() == hold_was, "her hold is whole")
+
 	// ---- The gate: a full broadside and a step in the same tick ----
 	// A 200-tile steel battleship with a hold, eight turrets on their
 	// magazines and her sides belted.

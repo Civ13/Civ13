@@ -202,7 +202,9 @@ class Lifecycle(unittest.TestCase):
   close=body('code/modules/nano/_nanoui.dm','/datum/nanoui/proc/close')
   self.assertLess(close.index('paper_authoring_notify(src, "close")'),close.index('GLOB.nanomanager.ui_closed'))
   native=body('code/modules/nano/nanoexternal.dm','/client/verb/nanoclose')
-  self.assertIn('istype(ui, /datum/nanoui/tgui) && ui.user != mob',native)
+  owner_guard = 'if (!mob || ui.user != mob || ui.user.client != src || !(ui in mob.open_uis))'
+  self.assertLess(native.index(owner_guard),native.index('ui.close()'))
+  self.assertLess(native.index(owner_guard),native.index('if (ui.ref)'))
   self.assertIn('if (ui.ref)',native);self.assertIn('else if (ui.on_close_logic)',native)
   self.assertIn('!isnull(ui.ref)',vm.body(SOURCE,'/datum/paper_document_authoring/proc/bind_ui'))
 
