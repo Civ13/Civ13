@@ -159,7 +159,7 @@
 		return TRUE
 	if (istype(A, /obj/structure/sink))
 		var/obj/structure/sink/S = A
-		if (S.dry || S.volume <= 0)
+		if (S.heat_dried() || S.volume <= 0)
 			return FALSE // let the sink say it is dry
 		if (soak(user, S))
 			S.volume = max(0, S.volume - FIRE_BEATER_WET_WATER)
