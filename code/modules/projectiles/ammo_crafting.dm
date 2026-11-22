@@ -1,24 +1,20 @@
+// Powder comes from the container the player used on the casing, never from
+// whatever happens to be in the other hand (#6843).
+/obj/item/stack/ammopart/casing/proc/fill_gunpowder_from(obj/item/weapon/reagent_containers/RC, mob/user, fill_name, filled_name)
+	var/needed = gunpowder_max*amount
+	if (!istype(RC) || !RC.reagents || !RC.reagents.has_reagent("gunpowder", needed))
+		to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the [fill_name].</span>")
+		return FALSE
+	RC.reagents.remove_reagent("gunpowder", needed)
+	to_chat(user, "You fill the [filled_name] with gunpowder.")
+	gunpowder = needed
+	return TRUE
+
 /obj/item/stack/ammopart/casing/grenade/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
-		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
-			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
-		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
+		fill_gunpowder_from(W, user, "casing(s)", "casings")
+		return
 	
 	if (istype(W, /obj/item/stack/material/iron))	//If the grenade casing is hit with iron, continue
 		if (!(gunpowder >= gunpowder_max*amount))
@@ -99,24 +95,8 @@
 /obj/item/stack/ammopart/casing/booster/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
-		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
-			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the booster.</span>")
-				return
-			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the booster with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
-		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the booster.</span>")
-				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max)
-				to_chat(user, "You fill the booster with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
+		fill_gunpowder_from(W, user, "booster", "booster")
+		return
 	if (istype(W, /obj/item/stack/ammopart/warhead))
 		if (!(gunpowder >= gunpowder_max*amount))
 			to_chat(user, "<span class = 'notice'>You need to fill the booster with gunpowder before attaching the charge.</span>")
@@ -148,24 +128,8 @@
 /obj/item/stack/ammopart/casing/artillery/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
-		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
-			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
-		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
+		fill_gunpowder_from(W, user, "casing(s)", "casings")
+		return
 	if (istype(W, /obj/item/stack/ammopart/bullet))
 		if (!(gunpowder >= gunpowder_max*amount))
 			to_chat(user, "<span class = 'notice'>You need to fill the casing(s) with gunpowder before putting the bullet on the casing.</span>")
@@ -241,24 +205,8 @@
 
 /obj/item/stack/ammopart/casing/artillery/wired/advanced/filled/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
-		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
-			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
-		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
+		fill_gunpowder_from(W, user, "casing(s)", "casings")
+		return
 	if (istype(W, /obj/item/stack/ammopart/bullet))
 		if (!(gunpowder >= gunpowder_max*amount))
 			to_chat(user, "<span class = 'notice'>You need to fill the casing(s) with gunpowder before putting the bullet on the casing.</span>")
@@ -356,24 +304,8 @@
 /obj/item/stack/ammopart/casing/tank/attackby(obj/item/W as obj, mob/user as mob)
 	if (!istype(W)) return
 	if (istype(W, /obj/item/weapon/reagent_containers) && gunpowder < gunpowder_max*amount)
-		if (istype(user.l_hand, /obj/item/weapon/reagent_containers))
-			if (!user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.l_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.l_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
-		else if (istype(user.r_hand, /obj/item/weapon/reagent_containers))
-			if (!user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				to_chat(user, "<span class = 'notice'>You need enough gunpowder in the container to fill the casing(s).</span>")
-				return
-			else if (user.r_hand.reagents.has_reagent("gunpowder",gunpowder_max*amount))
-				user.r_hand.reagents.remove_reagent("gunpowder",gunpowder_max*amount)
-				to_chat(user, "You fill the casings with gunpowder.")
-				gunpowder = gunpowder_max*amount
-				return
+		fill_gunpowder_from(W, user, "casing(s)", "casings")
+		return
 	if (istype(W, /obj/item/stack/ammopart/bullet))
 		if (!(gunpowder >= gunpowder_max*amount))
 			to_chat(user, "<span class = 'notice'>You need to fill the casing(s) with gunpowder before putting the bullet on the casing.</span>")
