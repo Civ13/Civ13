@@ -1042,24 +1042,39 @@
 
 /obj/structure/vehicle/motorcycle/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass))
-		var/obj/item/weapon/reagent_containers/glass/GC = W
-		if (fueltank.reagents.total_volume >= fueltank.reagents.maximum_volume)
-			to_chat(user, "The fueltank is full already.")
-		if (fueltank.reagents.total_volume < fueltank.reagents.maximum_volume)
-			if (!GC.reagents.has_reagent("gasoline"))
-				to_chat(user, "\The [W] has no gasoline in it.")
-			if (GC.reagents.get_reagent_amount("gasoline") <= fueltank.reagents.maximum_volume-fueltank.reagents.total_volume)
-				fueltank.reagents.add_reagent("gasoline",GC.reagents.get_reagent_amount("gasoline"))
-				GC.reagents.del_reagent("gasoline")
-				to_chat(user, "You empty \the [W] into the fueltank.")
-			else
-				var/amttransf = fueltank.reagents.maximum_volume-fueltank.reagents.total_volume
-				fueltank.reagents.add_reagent("gasoline",amttransf)
-				GC.reagents.remove_reagent("gasoline",amttransf)
-				to_chat(user, "You fill the fueltank completely with \the [W].")
+		motorcycle_refuel(W, user)
 		update_customdesc()
 		return
 	..()
+
+// Pours every fuel the installed engine burns, up to the tank's free space.
+// Other reagents stay in the container. Returns the units transferred.
+/obj/structure/vehicle/motorcycle/proc/motorcycle_refuel(obj/item/weapon/reagent_containers/glass/GC, mob/user)
+	if (!fueltank || !fueltank.reagents || !GC || !GC.reagents)
+		return 0
+	var/room = fueltank.reagents.maximum_volume - fueltank.reagents.total_volume
+	if (room <= 0)
+		to_chat(user, "The fueltank is full already.")
+		return 0
+	var/list/accepted = engine ? engine.fuels : list("gasoline")
+	var/poured = 0
+	for (var/fuel in accepted)
+		if (room <= 0)
+			break
+		var/amount = min(room, GC.reagents.get_reagent_amount(fuel))
+		if (amount <= 0)
+			continue
+		fueltank.reagents.add_reagent(fuel, amount)
+		GC.reagents.remove_reagent(fuel, amount)
+		room -= amount
+		poured += amount
+	if (poured <= 0)
+		to_chat(user, "\The [GC] has no fuel this engine can burn.")
+	else if (room <= 0)
+		to_chat(user, "You fill the fueltank completely with \the [GC].")
+	else
+		to_chat(user, "You empty the fuel in \the [GC] into the fueltank.")
+	return poured
 
 /obj/structure/vehicle/motorcycle/do_color(_color = null)
 	var/tempcolor = customcolor

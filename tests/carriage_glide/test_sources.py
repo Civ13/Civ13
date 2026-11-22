@@ -174,7 +174,7 @@ class Sources(unittest.TestCase):
         body=body[:-len(tail)]
         body=re.sub(r'(?m)^\t','',body)
         s=s[:start]+body+s[end:]
-        b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'7c136f55b12bc1b0b25195b8c513c334fde1de4a')
+        b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'a2916e33f2d5228ae2774344fc3c7966bf903781')
     def test_ci_is_explicit_source_only_and_preserves_mixed_file_fallback(self):
         s=(ROOT/'scripts/ci_baseline.py').read_text()
         self.assertIn("'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',)",s)
