@@ -118,6 +118,8 @@ SUITES = {
         'paths': ('tests/chemsmoke_initial_splash/', 'tests/save_movement/source_adapter.py', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/effect_system.dm')},
     'bayonet_mouth': {'files': ('tests/bayonet_mouth/test_sources.py',),
         'paths': ('tests/bayonet_mouth/', 'code/modules/projectiles/gun.dm')},
+    'suit_patch_wait': {'files': ('tests/suit_patch_wait/test_sources.py',),
+        'paths': ('tests/suit_patch_wait/', 'code/modules/space/pressure_suits.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'cleanables_scheduler': {'files': ('tests/cleanables_scheduler/test_resume.py',),
@@ -189,6 +191,9 @@ SUITES = {
         'paths': ('tests/appearance_genders/', 'code/modules/nano/modules/appearance_changer.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/species/species.dm',
                          'tgui/src/interfaces/Standard.tsx')},
+    'reaction_priority_empty': {'files': ('tests/reaction_priority/test_priority.py',),
+        'paths': ('tests/reaction_priority/',), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Holder.dm', 'tests/save_movement/source_adapter.py')},
     'reagent_metabolism_empty': {'files': ('tests/reagent_metabolism/test_empty.py',),
         'paths': ('tests/reagent_metabolism/',), 'shared_paths': (
             'code/modules/reagents/Chemistry-Metabolism.dm',
