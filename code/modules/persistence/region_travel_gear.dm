@@ -16,7 +16,10 @@
 
 // How a worn or held item travels, or null when it cannot. Anything no
 // narrower kind fits travels whole as "item:" (region_travel_generic.dm).
-/proc/region_travel_worn_kind(obj/item/I)
+/proc/region_travel_worn_kind(obj/item/I, list/leave_behind = null)
+	if (length(leave_behind) && istype(I, /obj/item/weapon/storage) && length(I.contents & leave_behind))
+		// A generic capture would include the real contents, not the projected bag.
+		return region_travel_bag_kind(I, leave_behind)
 	var/kind = region_travel_held_kind(I)
 	if(kind) return kind
 	kind = region_travel_bag_kind(I)
@@ -138,9 +141,10 @@
 	return G
 
 // Names of the things in a bag that cannot travel inside it.
-/proc/region_travel_bag_blockers(obj/item/weapon/storage/B)
+/proc/region_travel_bag_blockers(obj/item/weapon/storage/B, list/leave_behind = null)
 	. = list()
 	for(var/atom/movable/A in B.contents)
+		if(length(leave_behind) && (A in leave_behind)) continue
 		// An empty false bottom stays behind; a full one has to be emptied first.
 		if(istype(A, /obj/false_bottom) && !length(A.contents))
 			continue
@@ -148,11 +152,17 @@
 		if(!istype(I) || !(region_travel_item_kind(I) || region_travel_loose_kind(I) || region_travel_generic_kind(I)))
 			. += A.name
 
-/proc/region_travel_bag_kind(obj/item/weapon/storage/B)
-	if(!istype(B) || QDELETED(B) || B.shown_contents_count() > REGION_TRAVEL_BAG_ITEMS_MAX) return null
-	if(length(region_travel_bag_blockers(B))) return null
+/proc/region_travel_bag_kind(obj/item/weapon/storage/B, list/leave_behind = null)
+	if(!istype(B) || QDELETED(B)) return null
+	var/shown_count = B.shown_contents_count()
+	if(length(leave_behind))
+		var/atom/compartment = B.false_bottom()
+		for(var/atom/movable/A in B.contents)
+			if(A != compartment && (A in leave_behind)) shown_count--
+	if(shown_count > REGION_TRAVEL_BAG_ITEMS_MAX || length(region_travel_bag_blockers(B, leave_behind))) return null
 	var/list/held = list()
 	for(var/obj/item/I in B.contents)
+		if(length(leave_behind) && (I in leave_behind)) continue
 		var/kind = region_travel_held_kind(I) || region_travel_generic_kind(I)
 		var/amount = 1
 		if(kind == "type")
