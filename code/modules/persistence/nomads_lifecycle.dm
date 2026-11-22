@@ -85,7 +85,25 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
-	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation ? operation : standby_operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "handover_empty_guard" = TRUE, "port" = world.port, "debug" = agent_diagnostic_state(), "shutdown_warning" = TRUE, "shutdown_in" = planned_shutdown_remaining())
+	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation ? operation : standby_operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "handover_empty_guard" = TRUE, "port" = world.port, "debug" = agent_diagnostic_state(), "shutdown_warning" = TRUE, "shutdown_in" = planned_shutdown_remaining(), "planned_notice" = TRUE)
+
+// planned_notice: the players' countdown before the daily maintenance hands this world over to the
+// day's build (kind "update"). It only counts down; the host's handover_save follows when it ends,
+// and an admin's Cancel Planned Restart calls it off (shutdown_in goes back to null), which the host
+// reads as "leave this land on its build today".
+/datum/nomads_lifecycle_control/proc/host_planned_notice(value)
+	var/list/state = snapshot()
+	var/seconds = istext(value) ? text2num(value) : null
+	if(!isnum(seconds) || seconds != round(seconds) || seconds < 1 || seconds > 3600)
+		state["notice"] = "refused:seconds"
+	else if(busy || persistence_save_in_progress || persistence_restart.busy || persistence_restart.startup_hold)
+		state["notice"] = "refused:busy"
+	else
+		spawn(0)
+			planned_shutdown_countdown("update", seconds, "daily maintenance")
+		state["notice"] = "started"
+		state["shutdown_in"] = seconds
+	return state
 
 // A standby world has no lifecycle operation of its own, so its replies echo the host's
 // handover operation (standby_operation) in "operation" like any accepted request.
@@ -154,6 +172,9 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(action == "players") allowed = list("nomads_lifecycle", "token", "action")
 	// A port or the front door moved (scripts/shard-group/group_ports.py): read the directory again.
 	if(action == "reload_group") allowed = list("nomads_lifecycle", "token", "action")
+	// The host's daily maintenance (scripts/shard-group/daily_maintenance.py) warns every occupied land at
+	// once, then hands each over in turn; the countdown runs here, so an admin can still call it off.
+	if(action == "planned_notice") allowed = list("nomads_lifecycle", "token", "action", "seconds")
 	if(action == "send_players")
 		allowed = list("nomads_lifecycle", "token", "action", "ckeys", "to", "landing", "dry_run")
 		for(var/optional in list("at", "ship"))
@@ -162,13 +183,14 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	// The players' warning before the save, in whole seconds (0-3600); status advertises it as shutdown_warning.
 	if((action == "save_shutdown" || action == "handover_save") && ("warn" in input)) allowed += "warn"
 	if(action == "handover_save" && ("only_if_empty" in input)) allowed += "only_if_empty"
-	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "reload_group", "set_epoch", "players", "send_players")))
+	if(input["nomads_lifecycle"] != "1" || input.len != allowed.len || !(action in list("status", "save_idle", "save_shutdown", "maintenance_save_shutdown", "maintenance_failed", "diagnose", "handover_save", "handover_release", "handover_cancel", "standby_load", "standby_open", "reload_group", "planned_notice", "set_epoch", "players", "send_players")))
 		return json_encode(snapshot(FALSE, "malformed_request"))
 	for(var/key in input)
 		if(!(key in allowed)) return json_encode(snapshot(FALSE, "malformed_request"))
 	if(action == "status") return json_encode(snapshot())
 	if(action == "save_idle") return json_encode(save_idle())
 	if(action == "set_epoch") return json_encode(host_set_epoch(input["epoch"]))
+	if(action == "planned_notice") return json_encode(host_planned_notice(input["seconds"]))
 	if(action == "reload_group")
 		var/list/reloaded = snapshot()
 		reloaded["reload"] = shard_group ? shard_group.reload_directory() : "refused:no_group"
