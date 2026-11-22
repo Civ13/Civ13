@@ -108,16 +108,19 @@ def _island_access_data(op, data):
     """The checked fields of an island 'access' or 'pass' request (island_access.dm)."""
     if type(data) is not dict:
         raise TransferError('bad island access')
+    incarnation = data.get('incarnation')
+    if not isinstance(incarnation, str) or not re.fullmatch(r'[0-9a-f]{32}', incarnation):
+        raise TransferError('missing or invalid island claim incarnation')
     if op == 'access':
         mode, people = data.get('mode'), data.get('people')
         if mode not in ('OPEN', 'GUESTS', 'MEMBERS') or type(people) is not list or len(people) > 50 \
                 or not all(account_key_valid(p) for p in people):
             raise TransferError('bad island access')
-        return {'mode': mode, 'people': people}
+        return {'mode': mode, 'people': people, 'incarnation': incarnation}
     account, hours = data.get('account'), data.get('hours')
     if not account_key_valid(account) or type(hours) is not int or not 0 <= hours <= 168:
         raise TransferError('bad visitor pass')
-    return {'account': account, 'hours': hours}
+    return {'account': account, 'hours': hours, 'incarnation': incarnation}
 
 class TransferError(Exception):
     """A request that the current state refuses. Nothing was changed."""
