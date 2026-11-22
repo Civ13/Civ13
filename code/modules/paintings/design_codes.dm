@@ -11,6 +11,7 @@
 //   C13SYMBOL/1/<palette>/<packed>        faction symbols (32x32, pixels packed
 //                                         as for pictures, up to 16 colours)
 //   C13SHIP/1/<name>/<tiles>              ship's draughts (naval/ship_draught.dm)
+//   C13HOUSE/1/<name>/<tiles>/<notes>     house plans (game/objects/house_plan.dm)
 //
 // A code only describes a design. Importing never skips the normal rules:
 // pictures still need the pigments, a canvas and room under the region cap,
@@ -70,6 +71,8 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "an airship sheet"
 		if ("STATION")
 			return "a space station plan"
+		if ("HOUSE")
+			return "a house plan"
 	return null
 
 // Why a pasted code was refused, for the player.

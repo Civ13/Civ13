@@ -1578,6 +1578,14 @@ SUITES = {
             'code/modules/space/station_plan.dm', 'code/modules/space/station_plan_checks.dm',
             'code/modules/space/station_designer.dm', 'scripts/build_station_designer_icons.py',
             'icons/station_designer/')},
+    # Stdlib-only: every part the house planner offers is described and costs
+    # its recipe, and the window's page is sound. The native probe is run.py.
+    'house_plans': {'files': ('tests/house_plans/test_sources.py',),
+        'paths': ('tests/house_plans/',), 'shared_paths': (
+            'code/game/objects/house_plan.dm', 'code/game/objects/house_plan_checks.dm',
+            'code/game/objects/house_designer.dm', 'code/__defines/house_plans.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
+            'code/modules/paintings/design_codes.dm', 'config/crafting/material_recipes_global.txt')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (
