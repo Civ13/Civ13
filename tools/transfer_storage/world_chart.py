@@ -21,7 +21,7 @@ import re
 import secrets
 import time
 
-from tools.transfer_storage.region import account_key_valid
+from tools.transfer_storage.region import ISLAND_ACCESS_MODES, account_key_valid, island_access_change_valid
 
 CHART_WIDTH = 48
 CHART_HEIGHT = 32
@@ -103,7 +103,6 @@ UNVISITED_SECONDS = 7 * 24 * 3600
 # Who may land on a faction's claimed island (island_access.dm): anyone
 # (OPEN), its members and the people and pass holders it names (GUESTS, the
 # default), or its members alone (MEMBERS: the border is closed).
-ACCESS_MODES = ('OPEN', 'GUESTS', 'MEMBERS')
 ACCESS_DEFAULT = 'GUESTS'
 ACCESS_PEOPLE_MAX = 50
 ACCESS_PASSES_MAX = 100
@@ -747,7 +746,7 @@ class WorldChart:
             people, passes = json.loads(row[1]), json.loads(row[2])
         except ValueError:
             people, passes = [], {}
-        return {'mode': row[0] if row[0] in ACCESS_MODES else ACCESS_DEFAULT,
+        return {'mode': row[0] if row[0] in ISLAND_ACCESS_MODES else ACCESS_DEFAULT,
                 'people': [p for p in people if account_key_valid(p)] if type(people) is list else [],
                 'passes': {a: t for a, t in passes.items() if account_key_valid(a) and type(t) is int}
                 if type(passes) is dict else {}}
@@ -776,15 +775,30 @@ class WorldChart:
             answer[faction] = row
         return answer
 
-    def set_access(self, faction, mode, people, by=None, now=None):
-        """faction's leader or officers set who may land on its island. True when taken."""
-        if mode not in ACCESS_MODES or type(people) is not list or len(people) > ACCESS_PEOPLE_MAX \
-                or not all(account_key_valid(p) for p in people) or not self._access_claimed(faction):
+    def change_access(self, faction, change, by=None, now=None):
+        """Apply one officer's intent to the current border. True when accepted."""
+        if not island_access_change_valid(change) or not self._access_claimed(faction):
             return False
-        now = int(time.time() if now is None else now)
+        field, value = next(iter(change.items()))
         row = self._access_row(faction)
-        row['mode'], row['people'] = mode, people
-        row['passes'] = {a: t for a, t in row['passes'].items() if t > now}
+        if field == 'mode':
+            if row['mode'] == value:
+                return True
+            row['mode'] = value
+        else:
+            people = set(row['people'])
+            if field == 'add_guest':
+                if value in people:
+                    return True
+                if len(people) >= ACCESS_PEOPLE_MAX:
+                    return False
+                people.add(value)
+            elif value in people:  # remove_guest
+                people.remove(value)
+            else:
+                return True
+            row['people'] = sorted(people)
+        now = int(time.time() if now is None else now)
         self._access_write(faction, row, by, now)
         return True
 
