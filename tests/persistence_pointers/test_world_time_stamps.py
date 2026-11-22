@@ -23,6 +23,7 @@ EXTRA_SAVED_TYPES = {'/datum/wound'}
 # Reviewed: not a world.time stamp on that type, or deliberately left alone.
 REVIEWED = {
     'civilization': 'regex hit on a comparison, not an assignment',
+    'island_unwelcome_since': 'declared var/tmp on humans (island_access.dm), so never saved',
     'next_sprint_collision': 'declared var/tmp on humans (sprint.dm), so never saved',
     'body_motion_until': 'declared var/tmp on humans (body_motion.dm), so never saved',
     'body_motion_started': 'declared var/tmp on humans (body_motion.dm), so never saved',

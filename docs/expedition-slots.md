@@ -21,6 +21,11 @@ The plan proposes four slots, `far1` to `far4`; the group limit is 32 regions.
 
 ### Adding slots to a running group
 
+A group that hosts Earth gets the four slots with the missing Earth regions:
+`shard_group.py --config group.json add-regions` (the plan) and `--apply`, or
+the launcher's **Add missing Earth regions** (front door dialog). Each slot is
+added stopped and set up, on the ports below. By hand:
+
 1. Add the slots to the group config (`far1` to `far4`: ports 1811-1814,
    transfer ports 1831-1834; each standby port defaults to its port + 10).
    Check `status` first: the group takes at most 32 regions.

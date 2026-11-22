@@ -112,7 +112,7 @@ def _routes(store, radio):
         # The world chart (docs/world-chart.md): DM reads /chart, admins queue /chart/request.
         '/chart': lambda body: store.chart(),
         '/chart/request': lambda body: store.request_chart(body.get('op'), body.get('x'), body.get('y'), body.get('admin'),
-                                                           body.get('owner'), body.get('voyage')),
+                                                           body.get('owner'), body.get('voyage'), body.get('data')),
     }
 
 

@@ -412,6 +412,14 @@ class Coordinator(TrainCustody):
             return bool(self.chart.reveal(owner, x, y))
         if op == 'course' and owner_valid(owner):
             return self.chart.set_course(request.get('voyage'), owner, x, y, origin, by=admin) is not None
+        if op in ('access', 'pass'):
+            # A faction's leader or officers, from any land, for the island it claims at x, y.
+            data = request.get('data')
+            if type(data) is not dict or self.chart.claims().get(owner) != '%d,%d' % (x, y):
+                return False
+            if op == 'access':
+                return self.chart.set_access(owner, data.get('mode'), data.get('people'), admin)
+            return self.chart.grant_pass(owner, data.get('account'), data.get('hours'), admin)
         if op == 'summon':
             # Somebody whose character is on a parked land came back: only they can wake it.
             return self.home(admin) == land_home(x, y) and self.chart.summon(x, y)

@@ -31,11 +31,16 @@
 	return FALSE
 
 // Val (2026-11-22): only a faction member sleeping in a province their own
-// faction (or its nation) holds is protected. Lands without provinces, unheld
+// faction (or its nation) holds, or on their faction's claimed island, is protected. Lands without provinces, unheld
 // provinces and the factionless never qualify.
 /mob/living/human/proc/offline_sleep_province_owned()
 	if (!civilization || civilization == "none" || !map)
 		return FALSE
+	// A faction's claimed island across the sea has no provinces: its own
+	// members sleep safe there (island_access.dm).
+	var/island = island_claim_parent()
+	if (island)
+		return colony_faction_id(src) == island
 	var/datum/province_map/P = map.province_map()
 	if (!P)
 		return FALSE

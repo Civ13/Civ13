@@ -73,6 +73,7 @@
 	var/parent = island_claim_parent()
 	if (!parent || !map)
 		return
+	island_access_sweep(parent) // whoever is ashore without leave (island_access.dm)
 	var/list/S = map.recruitment_state()
 	var/list/state = S["island_claim"]
 	if (!islist(state) || state.len != 2 || state[1] != parent)

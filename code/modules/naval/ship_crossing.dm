@@ -1306,6 +1306,9 @@ var/global/list/sea_crossing_marked = list()
 			var/list/items = H.region_travel_items()
 			if (istext(items))
 				problem = "[H.real_name]: [items]"
+		// A faction's claimed island takes only those it lets land (island_access.dm).
+		if (!problem && !admin_crossing)
+			problem = island_access_departure_refusal(id, H)
 		if (problem)
 			return "She cannot leave: [problem]"
 	var/list/record = packed["record"]
@@ -1318,6 +1321,7 @@ var/global/list/sea_crossing_marked = list()
 	var/turf/pivot = get_turf(src)
 	var/obj/structure/region_gate/sea_crossing/gate = new(pivot)
 	gate.destination = id
+	gate.admin_sent = admin_crossing
 	// Everyone waits inside the gate while she is taken off the water, so
 	// nobody stands in the sea and nothing aboard can be picked up twice.
 	for (var/mob/living/human/H in crew)
