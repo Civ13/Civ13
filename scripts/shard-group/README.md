@@ -357,10 +357,12 @@ the hub after its updates. The gateway is started on its port and stays there:
   character on a laid-up land across the sea has its land summoned first. Nobody
   can Join, start a character or be sent there; trails and the Regions panel skip it.
 - It never saves (`save_minutes` 0, `SKIP_PERSISTENCE_SAVING`) and never sleeps.
-  An update is a plain restart on its own port onto the staged build (also when
-  `handover` or `deploy.bat` asks), done by the host service while it is empty.
-  A restart installs the staged build as it is, never compiling with the port
-  closed, even when the group has moved on since; the newer revision is staged next.
+  It never stages a build and always stays on its port (Val, 2026-11-21). The host
+  service never stages, updates or restarts it, not even while it is empty; a
+  group-wide `restart`, `force-restart`, `update`, `stage`, `handover`,
+  `update-unsaved` or `update-handover` (and deploy.bat) reports it as refused and
+  leaves it running. To put new code on it, name it: `restart --region ID`. A
+  crashed gateway comes back at once on the build it has (`start-current`).
 - Its hub entry and `status` topic describe the lands behind it: the mainland's map
   and the players across every land (`group_players`; `players` stays its own count).
 - It is the world the bot watches (it is the gate), and it is always awake to post
