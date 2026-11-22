@@ -170,7 +170,10 @@ not; a hole lets in 25 bucketfuls a minute while she is awake and takes her past
 awash; three quarters full she lists and makes slow ahead at best; a patch takes
 two pieces of wood and a hammer, closes the hole and weeps; a hull holed inside
 her outline cannot be refitted, while a plank lifted from her edge is named in
-the refusal of a step it blocks and a refit cuts it away so she passes; full on deep water she founders, a crew that gets ahead of the
+the refusal of a step it blocks and a refit cuts it away so she passes; a hull
+sails off the sea into a flooded-trench canal and along it, but no tile of hers
+climbs a step in the canal except into a pound lock standing at her level, and a
+hole over the canal is patched as at sea; full on deep water she founders, a crew that gets ahead of the
 water stops the count, and four half minutes later her floors, tiller and
 fittings are lost while her crew, loose things and chests are left in the
 water; full in the shallows she settles on the bottom, neither sails nor turns,

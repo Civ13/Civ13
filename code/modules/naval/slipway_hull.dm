@@ -35,7 +35,7 @@
 			return FALSE
 	if (!surface)
 		return FALSE
-	// Built hulls float on the sea, lakes and rivers, not in flooded trenches,
+	// A slipway ship sails as a built hull only off the sea, lakes and rivers,
 	// and a hold is hollowed out of rock or deep water.
 	for (var/turf/T in cells())
 		var/datum/vessel_level/L = level_for_z(T.z)

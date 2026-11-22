@@ -1148,6 +1148,43 @@ var/naval_runtime_error = FALSE
 	tiller.decommission()
 	qdel(tiller)
 
+// A canal of flooded trench dug in from the sea (canals.dm), with ground one
+// step higher from x 18 inland.
+/datum/terrain_heights/bilge_canal/at(x, y, z)
+	return x <= 18 ? 1 : 0
+
+// Built hulls sail flooded-trench canals and keep to their levels: every tile
+// of her keeps the rule a boat keeps, and a pound lock lets a tile through only
+// at the level of the water it opens to.
+/proc/canal_hull_checks()
+	map.terrain_height_file = "probe"
+	map.terrain_heights_cache = new /datum/terrain_heights/bilge_canal
+	for (var/x = 17, x <= 20, x++)
+		var/turf/T = locate(x, 40, 2)
+		T.ChangeTurf(/turf/floor/trench/flooded)
+	var/obj/structure/hull_tiller/tiller = bilge_hull(22, 40, 23, 40, "Barge")
+	var/datum/craft_body/built/B = tiller.craft.body
+	var/turf/O = B.origin()
+	naval_check(B.can_move_to(O.x - 2, O.y, B.dir) && B.move_to(O.x - 2, O.y, B.dir), "she sails off the sea into a flooded trench ([B.last_refusal])")
+	O = B.origin()
+	naval_check(O.x == 20 && B.can_move_to(O.x - 1, O.y, B.dir) && B.move_to(O.x - 1, O.y, B.dir), "and along the level canal ([B.last_refusal])")
+	O = B.origin()
+	naval_check(!B.can_move_to(O.x - 1, O.y, B.dir) && findtext(B.last_refusal, "step in the canal at 18,40"), "no tile of hers climbs a step in the canal ([B.last_refusal])")
+	var/obj/structure/canal_lock/K = new(locate(18, 40, 2))
+	naval_check(!K.high && K.chamber_level == 0 && B.can_move_to(O.x - 1, O.y, B.dir), "a lock standing low lets her bow into it ([B.last_refusal])")
+	K.set_high(TRUE)
+	naval_check(!B.can_move_to(O.x - 1, O.y, B.dir) && findtext(B.last_refusal, "step in the canal"), "a lock standing high does not")
+	var/turf/hole = locate(19, 40, 2)
+	qdel(locate(/obj/covers) in hole)
+	var/obj/item/stack/material/wood/timber = new(locate(20, 40, 2))
+	timber.amount = 5
+	naval_check(tiller.craft.ledger.hole_at(hole) && istype(hull_patch_lay(tiller.craft, timber, hole), /obj/covers/repairedfloor/ship/patch) && !tiller.craft.ledger.hole_at(hole), "a hole over the canal is patched like one over the sea")
+	tiller.decommission()
+	qdel(tiller)
+	qdel(K)
+	map.terrain_height_file = null
+	map.terrain_heights_cache = null
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -1163,6 +1200,7 @@ var/naval_runtime_error = FALSE
 		compartment_checks()
 		compartment_crossing_checks()
 		edge_hole_checks()
+		canal_hull_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

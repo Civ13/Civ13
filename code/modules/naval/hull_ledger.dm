@@ -576,12 +576,18 @@ var/global/hull_ledger_timer_off = FALSE
 	return P
 
 // Wood used on the open water of a hole patches it.
-/turf/floor/beach/water/attackby(obj/item/C as obj, mob/user as mob)
+// Water and flooded canal trenches (trench.dm) both ask it: TRUE when it did.
+/proc/hull_patch_attack(obj/item/C, mob/user, turf/T)
 	if (istype(C, /obj/item/stack/material/wood) && ishuman(user))
-		var/datum/craft/aboard = craft_at(src)
-		if (aboard && aboard.ledger && aboard.ledger.hole_at(src))
-			hull_patch(user, C, src)
+		var/datum/craft/aboard = craft_at(T)
+		if (aboard && aboard.ledger && aboard.ledger.hole_at(T))
+			hull_patch(user, C, T)
 			return TRUE
+	return FALSE
+
+/turf/floor/beach/water/attackby(obj/item/C as obj, mob/user as mob)
+	if (hull_patch_attack(C, user, src))
+		return TRUE
 	return ..()
 
 // ---- Foundering ----

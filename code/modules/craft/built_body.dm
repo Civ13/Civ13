@@ -236,7 +236,9 @@
 /datum/craft_body/built/proc/tile_refusal(turf/D)
 	// Hauled up a slipway (slipway_haul.dm), she may come to rest on the
 	// ground of its berth; she floats in a flooded dock basin (drydock.dm).
-	if (!istype(D, /turf/floor/beach/water) && !(ways_tiles && ways_tiles[D]) && !dock_floats(D))
+	// A flooded trench is a canal (canals.dm): she floats in it as a boat
+	// does, and plan() keeps her to its levels.
+	if (!istype(D, /turf/floor/beach/water) && !istype(D, /turf/floor/trench/flooded) && !(ways_tiles && ways_tiles[D]) && !dock_floats(D))
 		return "[D.name] ahead at [D.x],[D.y]"
 	// A turf lists what overlaps it by pixels too (a hull sailing by pixels,
 	// vehicle_offset_hull.dm), so only a floor filed on D is in the way.
@@ -299,6 +301,14 @@
 			if (why)
 				last_refusal = why + lifted_floor_hint(index)
 				return null
+		// Every tile of her keeps to the canal rule a boat keeps: no tile
+		// crosses a step between canal levels, except through a pound lock
+		// standing at the level of the water it opens to.
+		var/list/S = offsets[index]
+		var/turf/from = locate(px + S[1], py + S[2], z)
+		if (canal_step_blocked(from, D))
+			last_refusal = "a step in the canal at [D.x],[D.y]: work a pound lock to the level of her water"
+			return null
 		dest += D
 	// Her upper deck must find open air above the tiles she moves to.
 	var/list/upper = upper_cells(mine)
