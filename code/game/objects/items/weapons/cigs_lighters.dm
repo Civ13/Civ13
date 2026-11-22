@@ -121,6 +121,11 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	flags |= NOREACT // so it doesn't react until you light it
 	create_reagents(chem_volume) // making the cigarette a chemical holder with a maximum volume of 15
 
+/obj/item/clothing/mask/smokable/proc/update_smokable_inventory(mob/M)
+	M.update_inv_wear_mask(0)
+	M.update_inv_l_hand(0)
+	M.update_inv_r_hand(1)
+
 /obj/item/clothing/mask/smokable/process()
 	smoketime--
 	if (smoketime < 1)
@@ -157,9 +162,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		item_state = icon_on
 		if (ismob(loc))
 			var/mob/living/M = loc
-			M.update_inv_wear_mask(0)
-			M.update_inv_l_hand(0)
-			M.update_inv_r_hand(1)
+			update_smokable_inventory(M)
 		var/turf/T = get_turf(src)
 		T.visible_message(flavor_text)
 		set_light(2, 0.25, "#E38F46")
@@ -176,9 +179,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			if (!nomessage)
 				to_chat(M, "<span class='notice'>Your [name] goes out.</span>")
 			M.remove_from_mob(src) //un-equip it so the overlays can update
-			M.update_inv_wear_mask(0)
-			M.update_inv_l_hand(0)
-			M.update_inv_r_hand(1)
+			update_smokable_inventory(M)
 		processing_objects -= src
 		qdel(src)
 	else
@@ -190,9 +191,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			var/mob/living/M = loc
 			if (!nomessage)
 				to_chat(M, "<span class='notice'>Your [name] goes out, and you empty the ash.</span>")
-			M.update_inv_wear_mask(0)
-			M.update_inv_l_hand(0)
-			M.update_inv_r_hand(1)
+			update_smokable_inventory(M)
 		processing_objects -= src
 
 /obj/item/clothing/mask/smokable/attackby(obj/item/weapon/W as obj, mob/user as mob)
@@ -350,9 +349,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/smokable/cigarette/cigar/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	..()
 
-	user.update_inv_wear_mask(0)
-	user.update_inv_l_hand(0)
-	user.update_inv_r_hand(1)
+	update_smokable_inventory(user)
 
 /////////////////
 //SMOKING PIPES//
@@ -386,9 +383,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		processing_objects += src
 		if (ismob(loc))
 			var/mob/living/M = loc
-			M.update_inv_wear_mask(0)
-			M.update_inv_l_hand(0)
-			M.update_inv_r_hand(1)
+			update_smokable_inventory(M)
 
 /obj/item/clothing/mask/smokable/pipe/attack_self(mob/user as mob)
 	if (lit == TRUE)
@@ -480,9 +475,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		var/obj/item/weapon/flame/match/M = W
 		if (M.lit)
 			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
-	user.update_inv_wear_mask(0)
-	user.update_inv_l_hand(0)
-	user.update_inv_r_hand(1)
+	update_smokable_inventory(user)
 
 /obj/item/clothing/mask/smokable/pipe/cobpipe
 	name = "corn cob pipe"
@@ -525,9 +518,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		var/obj/item/weapon/flame/match/M = W
 		if (M.lit)
 			light("<span class='notice'>[user] lights their [name] with the [W].</span>")
-	user.update_inv_wear_mask(0)
-	user.update_inv_l_hand(0)
-	user.update_inv_r_hand(1)
+	update_smokable_inventory(user)
 
 /////////
 //ZIPPO//
