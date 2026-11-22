@@ -21,7 +21,7 @@ import re
 import secrets
 import time
 
-from tools.transfer_storage.region import account_key_valid
+from tools.transfer_storage.region import ISLAND_ACCESS_MODES, account_key_valid, island_access_change_valid
 
 CHART_WIDTH = 48
 CHART_HEIGHT = 32
@@ -103,7 +103,6 @@ UNVISITED_SECONDS = 7 * 24 * 3600
 # Who may land on a faction's claimed island (island_access.dm): anyone
 # (OPEN), its members and the people and pass holders it names (GUESTS, the
 # default), or its members alone (MEMBERS: the border is closed).
-ACCESS_MODES = ('OPEN', 'GUESTS', 'MEMBERS')
 ACCESS_DEFAULT = 'GUESTS'
 ACCESS_PEOPLE_MAX = 50
 ACCESS_PASSES_MAX = 100
@@ -127,6 +126,12 @@ COURSE_UNDER_WAY_SECONDS = 2 * 3600  # a land with a course this fresh has a shi
 SLOT_PARK = 'park'
 SLOT_DISCARD = 'discard'
 CLEARING = 'a harbour is being cleared for a new land. Set out for it again in about ten minutes.'
+# Val (2026-11-22): how many lands, faction islands among them, can exist or run
+# at once is never capped for the host. With every slot taken and no idle land to
+# lay up, the coordinator asks the host for one more slot (<expeditions>/grow/).
+SLOT_GROW = 'grow'
+GROW_WISH = 'request.json'
+GROWING = 'a new harbour is being built for that land. Set out for it again in a few minutes.'
 
 _VOYAGE = re.compile(r'^[a-z0-9_\-]{1,80}$')
 _OWNER = re.compile(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$')
@@ -301,6 +306,10 @@ class WorldChart:
         # One claim per faction, one faction per land.
         db.execute('''CREATE TABLE IF NOT EXISTS chart_claim(
             faction TEXT PRIMARY KEY, x INTEGER NOT NULL, y INTEGER NOT NULL, by TEXT, at INTEGER NOT NULL)''')
+        # A new lifetime is distinct even when the same faction reclaims the
+        # same tile in the same second. Keep the old claims' identities stable.
+        if 'incarnation' not in {row[1] for row in db.execute('PRAGMA table_info(chart_claim)')}:
+            db.execute('ALTER TABLE chart_claim ADD COLUMN incarnation TEXT')
         # Who a faction lets land on its claimed island: a mode, the accounts it
         # names and visitor passes (account -> when it runs out, unix seconds).
         db.execute('''CREATE TABLE IF NOT EXISTS chart_access(
@@ -308,6 +317,8 @@ class WorldChart:
             by TEXT, at INTEGER NOT NULL)''')
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('seed', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('rev', '0')")
+        if db.execute('UPDATE chart_claim SET incarnation = lower(hex(randomblob(16))) WHERE incarnation IS NULL').rowcount:
+            self._bump()  # Publish the migrated identities to existing region replicas.
         if mainland and not db.execute('SELECT 1 FROM chart_pin LIMIT 1').fetchone():
             db.execute('INSERT INTO chart_pin VALUES (?, ?, ?)', (mainland, CHART_WIDTH // 2, CHART_HEIGHT // 2))
 
@@ -458,6 +469,9 @@ class WorldChart:
                 'SELECT DISTINCT owner FROM chart_seen ORDER BY owner')}
             answer['courses'] = self.courses()
             answer['claims'] = self.claims()
+            answer['claim_incarnations'] = {
+                f: token for f, token in self.db.execute(
+                    "SELECT faction, incarnation FROM chart_claim WHERE faction LIKE 'civ:%'")}
             answer['access'] = self.access()
         return answer
 
@@ -548,6 +562,18 @@ class WorldChart:
             return slot
         return None
 
+    def request_slot(self, now):
+        """Asks the host for one more slot (<expeditions>/grow/request.json):
+        every slot is taken and no land is idle enough to lay up. The host adds
+        it, set up and stopped, and the coordinator is restarted with it. True
+        when the wish stands (now or already)."""
+        if not self.expeditions:
+            return False
+        wish = self.expeditions / SLOT_GROW / GROW_WISH
+        if not wish.exists():
+            _write_json(wish, {'at': now, 'slots': len(self.slots)})
+        return True
+
     def refresh_parks(self, now):
         """A parking the host carried out takes the land off its slot; one it
         called off (somebody was there) or never did is forgotten. True when
@@ -603,7 +629,10 @@ class WorldChart:
         slot = next((s for s in self.slots if self.slot_free(s)), None)
         if not slot:
             # A land being archived or parked frees its slot soon; else the stalest empty land is parked.
-            return None, (CLEARING if self.clearing() or self.make_room(now) else NO_SLOT)
+            # With nothing to lay up, the host is asked for one more slot: lands are never capped.
+            if self.clearing() or self.make_room(now):
+                return None, CLEARING
+            return None, (GROWING if self.request_slot(now) else NO_SLOT)
         parked = self.parked(x, y)
         _write_json(self.expeditions / SLOT_WANTED / (slot + '.json'),
                     {'region': slot, 'key': '%d,%d' % (x, y), 'template': tile['template'], 'voyage': voyage, 'at': now,
@@ -734,6 +763,10 @@ class WorldChart:
     def claims(self):
         return {f: '%d,%d' % (x, y) for f, x, y in self.db.execute('SELECT faction, x, y FROM chart_claim ORDER BY faction')}
 
+    def claim_incarnation(self, faction):
+        row = self.db.execute('SELECT incarnation FROM chart_claim WHERE faction = ?', (faction,)).fetchone()
+        return row[0] if row else None
+
     # -- island access (island_access.dm) --------------------------------------
     # A faction's claimed island takes only those its leader or officers let
     # land. Worlds check the rows before anyone sets out for the island, and
@@ -747,7 +780,7 @@ class WorldChart:
             people, passes = json.loads(row[1]), json.loads(row[2])
         except ValueError:
             people, passes = [], {}
-        return {'mode': row[0] if row[0] in ACCESS_MODES else ACCESS_DEFAULT,
+        return {'mode': row[0] if row[0] in ISLAND_ACCESS_MODES else ACCESS_DEFAULT,
                 'people': [p for p in people if account_key_valid(p)] if type(people) is list else [],
                 'passes': {a: t for a, t in passes.items() if account_key_valid(a) and type(t) is int}
                 if type(passes) is dict else {}}
@@ -776,15 +809,30 @@ class WorldChart:
             answer[faction] = row
         return answer
 
-    def set_access(self, faction, mode, people, by=None, now=None):
-        """faction's leader or officers set who may land on its island. True when taken."""
-        if mode not in ACCESS_MODES or type(people) is not list or len(people) > ACCESS_PEOPLE_MAX \
-                or not all(account_key_valid(p) for p in people) or not self._access_claimed(faction):
+    def change_access(self, faction, change, by=None, now=None):
+        """Apply one officer's intent to the current border. True when accepted."""
+        if not island_access_change_valid(change) or not self._access_claimed(faction):
             return False
-        now = int(time.time() if now is None else now)
+        field, value = next(iter(change.items()))
         row = self._access_row(faction)
-        row['mode'], row['people'] = mode, people
-        row['passes'] = {a: t for a, t in row['passes'].items() if t > now}
+        if field == 'mode':
+            if row['mode'] == value:
+                return True
+            row['mode'] = value
+        else:
+            people = set(row['people'])
+            if field == 'add_guest':
+                if value in people:
+                    return True
+                if len(people) >= ACCESS_PEOPLE_MAX:
+                    return False
+                people.add(value)
+            elif value in people:  # remove_guest
+                people.remove(value)
+            else:
+                return True
+            row['people'] = sorted(people)
+        now = int(time.time() if now is None else now)
         self._access_write(faction, row, by, now)
         return True
 
@@ -830,7 +878,8 @@ class WorldChart:
         if self.db.execute('SELECT 1 FROM chart_claim WHERE faction = ? OR (x = ? AND y = ?)', (faction, x, y)).fetchone():
             return False
         now = int(time.time() if now is None else now)
-        self.db.execute('INSERT INTO chart_claim VALUES (?, ?, ?, ?, ?)', (faction, x, y, by, now))
+        self.db.execute('INSERT INTO chart_claim(faction, x, y, by, at, incarnation) VALUES (?, ?, ?, ?, ?, ?)',
+                        (faction, x, y, by, now, secrets.token_hex(16)))
         self.db.execute("UPDATE chart_tile SET state = 'CLAIMED', by = ? WHERE region = ?", (by, region))
         self._bump()
         return True

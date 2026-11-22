@@ -84,7 +84,7 @@ from shard_map_selection import select_map_block  # noqa: E402
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
-                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'add-gateway',
+                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'expedition-grow', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
                  'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status',
                  'migrate-underground', 'records', 'accounts', 'add-regions')
@@ -189,7 +189,11 @@ TRANSFER_PORT_OFFSET = 10  # a transfer agent the group does not place sits this
 FRONT_FOLDER = 'front-door'
 FRONT_FILES = ('admins.txt', 'magic_whitelist.txt')
 FRONT_CONFIG_KEYS = ('WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS', 'WEBHOOK_KEY')
-MAX_REGIONS = 32
+# Regions other than expedition slots. Slots come and go with ships' lands and
+# factions' islands, and are never capped for the host (Val, 2026-11-22): the
+# whole group may grow to MAX_REGIONS, a ceiling only the free ports set.
+MAX_CORE_REGIONS = 32
+MAX_REGIONS = 512
 # The Earth regions a group that hosts Earth may be missing (add-regions): the lands of
 # docs/earth-continents.md and the seas of docs/ocean-regions.md, with the ports the
 # live host keeps for them (another free port when one is taken).
@@ -355,7 +359,9 @@ def check_group(group, path):
         raise ValueError('public_host must be a plain host name or IPv4 address')
     regions = group.get('regions')
     if type(regions) is not list or not 1 <= len(regions) <= MAX_REGIONS:
-        raise ValueError('a group has 1 to %d regions' % MAX_REGIONS)
+        raise ValueError('a group has 1 to %d regions besides its expedition slots, and %d in all' % (MAX_CORE_REGIONS, MAX_REGIONS))
+    if sum(1 for r in regions if type(r) is dict and r.get('kind') != 'EXPEDITION') > MAX_CORE_REGIONS:
+        raise ValueError('a group has 1 to %d regions besides its expedition slots, and %d in all' % (MAX_CORE_REGIONS, MAX_REGIONS))
     ids, ports = set(), set()
     for region in regions:
         if type(region) is not dict or not ID.match(str(region.get('id', ''))) or region['id'] in ids:
@@ -3864,12 +3870,67 @@ def ensure_save_validation(group, start=None, free_mb=None, now=time.time, alive
     return {}
 
 
+def next_expedition_slot(group):
+    """The next slot to add: far<N>, one past the highest far number in the group."""
+    numbers = [int(r['id'][3:]) for r in group['regions'] if re.match(r'^far[0-9]{1,4}$', r['id'])]
+    number = max(numbers, default=0) + 1
+    return 'far%d' % number, 'Far Land %d' % number
+
+
+def add_expedition_slot(group, platform=None):
+    """Add one expedition slot to the group file, with ports nobody uses, and set it up
+    stopped (setup --region). The coordinator is restarted with it on the next host pass
+    (ensure_coordinator compares its slot list). Returns what was done."""
+    platform = platform or Platform()
+    path = Path(group['_path'])
+    raw = json.loads(path.read_text(encoding='utf-8-sig'))
+    region_id, name = next_expedition_slot(raw)
+    raw['regions'].append({'id': region_id, 'name': name, 'kind': 'EXPEDITION', 'map': EXPEDITION_SLOT_MAP})
+    fill_ports(raw, platform.listening)
+    check_group(json.loads(json.dumps(raw)), path)
+    shutil.copy2(path, unused_backup_path(path))
+    write_json_atomic(path, raw)
+    group = load_group(str(path))
+    done = setup(group, platform, region_id)
+    added = next(r for r in raw['regions'] if r['id'] == region_id)
+    return {'region': region_id, 'port': added['port'], 'transfer_port': added.get('transfer_port'), 'setup': done}
+
+
+def grow_expeditions(group, platform=None):
+    """The coordinator asked for one more slot (<expeditions>/grow/request.json): every
+    slot held a land and none was idle enough to lay up. Adds it and drops the wish.
+    Never touches a running world. Returns what was done, or None with no wish."""
+    wish = expedition_slots.slots_dir(group) / 'grow' / 'request.json'
+    if not wish.exists():
+        return None
+    lock = wish.with_name('growing.lock')
+    try:
+        lock.touch(exist_ok=False)
+    except FileExistsError:
+        return {'busy': True}
+    try:
+        result = add_expedition_slot(group, platform)
+        wish.unlink(missing_ok=True)
+        return result
+    finally:
+        lock.unlink(missing_ok=True)
+
+
 def serve_expeditions(group, start=detach, platform=None):
     """Open the lands ships' courses asked for in the group's EXPEDITION slots
-    and start each once built (expedition_slots.serve)."""
+    and start each once built (expedition_slots.serve). Asked for one more slot,
+    the host adds it in a worker (expedition-grow)."""
     if not any(r['kind'] == 'EXPEDITION' for r in group['regions']):
         return {}
     folder = expedition_slots.slots_dir(group)
+    grow = folder / 'grow'
+    lock = grow / 'growing.lock'
+    if (grow / 'request.json').exists() and not group_busy(group):
+        if lock.exists() and time.time() - lock.stat().st_mtime > 3600:
+            lock.unlink(missing_ok=True)  # a worker that died long ago
+        if not lock.exists():
+            start([sys.executable, '-I', '-B', str(Path(__file__).resolve()), '--config', group['_path'], 'expedition-grow'],
+                  folder, folder / 'grow.log')
 
     def launch(region_id):
         folder.mkdir(parents=True, exist_ok=True)
@@ -4555,6 +4616,8 @@ def main(argv=None):
             (region, host), = hosts(group, args.region)
             expedition_slots.expedition_region(group, args.region)
             result = expedition_slots.open_land(group, host, args.region, update_offline)
+        elif args.action == 'expedition-grow':
+            result = grow_expeditions(group) or {'grown': False}
         elif args.action == 'expedition-status':
             result = {'slots': expedition_slots.status(group), 'parked': expedition_slots.parked(group)}
         elif args.action == 'config-apply':

@@ -8,7 +8,7 @@
 #define SHARD_REFRESH_FLOOR 150
 // The doorman refreshes every 30 s; an older entry means it lost the world.
 #define SHARD_DOORMAN_FRESH_SECONDS 90
-#define SHARD_MAX_REGIONS 32
+#define SHARD_MAX_REGIONS 512 // expedition slots grow without a cap; shard_group.py keeps other regions to 32
 
 var/global/datum/shard_group/shard_group = new
 

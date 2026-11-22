@@ -68,6 +68,7 @@ MAX_COLONIES = 50
 MAX_NATIONS = 200
 MAX_NATION_REQUESTS = 200
 NATION_RESULT_SECONDS = 7 * 24 * 3600
+ISLAND_PASS_RESULT_SECONDS = 24 * 3600
 FACTION_NAME_MAX = 64
 
 
@@ -104,20 +105,35 @@ def _chart_request_row(row):
     return request
 
 
+ISLAND_ACCESS_MODES = ('OPEN', 'GUESTS', 'MEMBERS')
+
+
+def island_access_change_valid(data):
+    """An access edit changes exactly one field or one named guest."""
+    if type(data) is not dict or len(data) != 1:
+        return False
+    field, value = next(iter(data.items()))
+    if field == 'mode':
+        return value in ISLAND_ACCESS_MODES
+    return field in ('add_guest', 'remove_guest') and account_key_valid(value)
+
+
 def _island_access_data(op, data):
     """The checked fields of an island 'access' or 'pass' request (island_access.dm)."""
     if type(data) is not dict:
         raise TransferError('bad island access')
+    incarnation = data.get('incarnation')
+    if not isinstance(incarnation, str) or not re.fullmatch(r'[0-9a-f]{32}', incarnation):
+        raise TransferError('missing or invalid island claim incarnation')
     if op == 'access':
-        mode, people = data.get('mode'), data.get('people')
-        if mode not in ('OPEN', 'GUESTS', 'MEMBERS') or type(people) is not list or len(people) > 50 \
-                or not all(account_key_valid(p) for p in people):
+        change = {k: v for k, v in data.items() if k != 'incarnation'}
+        if not island_access_change_valid(change):
             raise TransferError('bad island access')
-        return {'mode': mode, 'people': people}
+        return dict(change, incarnation=incarnation)
     account, hours = data.get('account'), data.get('hours')
     if not account_key_valid(account) or type(hours) is not int or not 0 <= hours <= 168:
         raise TransferError('bad visitor pass')
-    return {'account': account, 'hours': hours}
+    return {'account': account, 'hours': hours, 'incarnation': incarnation}
 
 class TransferError(Exception):
     """A request that the current state refuses. Nothing was changed."""
@@ -281,6 +297,8 @@ class RegionStore(TrainLeaseQueue):
         db.execute('''CREATE TABLE IF NOT EXISTS chart_request(
             id INTEGER PRIMARY KEY AUTOINCREMENT, op TEXT NOT NULL, x INTEGER NOT NULL, y INTEGER NOT NULL,
             owner TEXT, admin TEXT NOT NULL)''')
+        db.execute('''CREATE TABLE IF NOT EXISTS chart_pass_result(
+            id INTEGER PRIMARY KEY, actor TEXT NOT NULL, applied INTEGER NOT NULL, at INTEGER NOT NULL)''')
         # A ship's course names its voyage (added for boat expeditions' voyages).
         if 'voyage' not in [row[1] for row in db.execute('PRAGMA table_info(chart_request)')]:
             db.execute('ALTER TABLE chart_request ADD COLUMN voyage TEXT')
@@ -960,7 +978,7 @@ class RegionStore(TrainLeaseQueue):
 
     def apply_homes(self, epoch, rev, rows, done, reset=False, mainland=None, train_locks=None, train_decisions=None,
                     lands=None, land_done=None, chart=None, chart_done=None, colony_grants=None,
-                    nations=None, nation_results=None, start_region=None, travelling=None):
+                    nations=None, nation_results=None, start_region=None, travelling=None, chart_pass_results=None):
         """The coordinator's answer: ledger rows newer than our copy (region
         None removes a home) and the request ids it has decided."""
         if not isinstance(epoch, str) or not epoch or not isinstance(rev, int) or rev < 0:
@@ -1023,6 +1041,19 @@ class RegionStore(TrainLeaseQueue):
                         or not all(isinstance(r, str) for r in chart['rows']) or type(chart.get('tiles')) is not dict:
                     raise TransferError('invalid world chart snapshot')
                 self._set_meta('chart', json.dumps(chart, sort_keys=True))
+            if chart_pass_results is not None:
+                acknowledged = set(chart_done or [])
+                if type(chart_pass_results) is not list or not all(
+                        type(r) is dict and type(r.get('id')) is int and r['id'] in acknowledged
+                        and type(r.get('applied')) is bool for r in chart_pass_results):
+                    raise TransferError('invalid chart pass results')
+                now = int(time.time())
+                for r in chart_pass_results:
+                    row = self.db.execute("SELECT admin FROM chart_request WHERE id = ? AND op = 'pass'", (r['id'],)).fetchone()
+                    if row:
+                        self.db.execute('INSERT OR IGNORE INTO chart_pass_result VALUES (?, ?, ?, ?)',
+                                        (r['id'], row[0], r['applied'], now))
+                self.db.execute('DELETE FROM chart_pass_result WHERE at < ?', (now - ISLAND_PASS_RESULT_SECONDS,))
             for request_id in chart_done or []:
                 self.db.execute('DELETE FROM chart_request WHERE id = ?', (int(request_id),))
             if nations is not None:
@@ -1144,7 +1175,7 @@ class RegionStore(TrainLeaseQueue):
         land (its home is 'land:x,y') and asks for it to be restored. 'access'
         and 'pass' come from a faction's leader or officers, in any land, for
         the island it claims at x, y (owner is the faction): data holds the
-        new mode and people, or a visitor pass's account and hours. admin is
+        new mode, one guest edit, or a visitor pass's account and hours. admin is
         the account asking."""
         if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'unclaim', 'abandon', 'summon', 'access', 'pass'):
             raise TransferError('unknown chart request')
@@ -1181,6 +1212,18 @@ class RegionStore(TrainLeaseQueue):
         return {'chart': json.loads(self._meta('chart')),
                 'pending': [dict(zip(('op', 'x', 'y', 'owner', 'admin'), row)) for row in self.db.execute(
                     'SELECT op, x, y, owner, admin FROM chart_request ORDER BY id')]}
+
+    def chart_pass_result(self, request_id, actor):
+        """Only an explicit coordinator outcome can confirm a visitor pass write."""
+        if type(request_id) is not int or request_id < 1 or not account_key_valid(actor):
+            raise TransferError('bad visitor pass result lookup')
+        result = self.db.execute('SELECT applied FROM chart_pass_result WHERE id = ? AND actor = ? AND at >= ?',
+                                 (request_id, actor, int(time.time()) - ISLAND_PASS_RESULT_SECONDS)).fetchone()
+        if result:
+            return {'status': 'applied' if result[0] else 'refused'}
+        pending = self.db.execute("SELECT 1 FROM chart_request WHERE id = ? AND op = 'pass' AND admin = ?",
+                                  (request_id, actor)).fetchone()
+        return {'status': 'pending' if pending else 'unknown'}
 
     # -- inspection ---------------------------------------------------------
 
