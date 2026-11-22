@@ -276,7 +276,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon", "station_plan"))
 			P[key] = extra[key]
 		// Where an admin chose to land them (region_admin_send.dm).
 		else if(key == "admin_send")
@@ -348,6 +348,8 @@ var/global/list/region_travel_carry_types = list(
 	// A solo party is only ever its own player's.
 	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
 	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
+	// A station plan rides to orbit with a launch complex trip (space/station_plan.dm).
+	if(!isnull(P["station_plan"]) && (!istext(P["station_plan"]) || length(P["station_plan"]) > DESIGN_CODE_STATION_MAX)) return null
 	if(!isnull(P["faction"]) && !colony_parent_valid(P["faction"])) return null
 	if(!isnull(P["faction_leader"]) && P["faction_leader"] != 1) return null
 	if(!space_flight_payload_ok(P)) return null
