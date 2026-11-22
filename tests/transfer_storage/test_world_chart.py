@@ -235,7 +235,11 @@ class CourseTests(unittest.TestCase):
             slot_record(self.exp, slot, state='LAND', key='0,0')
         refused = self.c.set_course('v1', 'faction:rome', self.x, self.y, now=1)
         self.assertEqual(('REFUSED', None), (refused['state'], refused['region']))
-        self.assertIn('harbour master', refused['reason'])
+        # Every slot holds a land and none can be laid up: the host is asked for one more.
+        self.assertEqual(wc.GROWING, refused['reason'])
+        with open(os.path.join(self.exp, 'grow', 'request.json'), encoding='utf-8') as f:
+            self.assertEqual(2, json.load(f)['slots'])
+        self.assertEqual(wc.GROWING, self.c.set_course('v1b', 'faction:rome', self.x, self.y, now=2)['reason'], 'asked once')
         self.assertIsNone(self.wanted('far1'))
         self.assertIn('does not show', self.c.set_course('v2', 'faction:gaul', self.x, self.y, now=1)['reason'])
         self.assertIn('no charted land', self.c.set_course('v3', 'faction:rome', 0, 0, now=1)['reason'])
@@ -495,12 +499,12 @@ class OpenLandRuleTests(unittest.TestCase):
     def test_the_land_empty_longest_is_parked_when_no_slot_is_free(self):
         hour, late = wc.PARK_IDLE_SECONDS, 2000 + wc.COURSE_UNDER_WAY_SECONDS
         self.two_lands()
-        # Ships were on their way to both a moment ago: nothing is parked under them.
-        self.assertIn('harbour master', self.course('v3', 'crew:kim', self.lands[2], 2000 + hour, 'kim')['reason'])
+        # Ships were on their way to both a moment ago: nothing is parked under them, and one more slot is asked for.
+        self.assertEqual(wc.GROWING, self.course('v3', 'crew:kim', self.lands[2], 2000 + hour, 'kim')['reason'])
         self.assertTrue(self.c.visit('far1', now=late))
         self.assertTrue(self.c.visit('far2', now=late + 10))
         # Both visited within the hour: nothing is parked.
-        self.assertIn('harbour master', self.course('v4', 'crew:kim', self.lands[2], late + hour - 10, 'kim')['reason'])
+        self.assertEqual(wc.GROWING, self.course('v4', 'crew:kim', self.lands[2], late + hour - 10, 'kim')['reason'])
         # The settled land has stood empty an hour: it is asked to give its slot up, and loses nothing.
         cleared = self.course('v5', 'crew:kim', self.lands[2], late + hour, 'kim')
         self.assertEqual(wc.CLEARING, cleared['reason'])

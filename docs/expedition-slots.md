@@ -19,6 +19,22 @@ A slot cannot be the mainland or the relay gate, and no region may be called
 `expeditions` (the slots keep their lands in that folder of the group root).
 The plan proposes four slots, `far1` to `far4`; the group limit is 32 regions.
 
+### Slots are never capped
+
+How many lands, faction islands among them, exist or run at once is never
+capped for the host (Val, 2026-11-22). Parked lands wait on disk without a
+slot, and slots grow with demand: when a ship needs a world, every slot holds a
+land and none has stood empty long enough to lay up, the coordinator writes
+`<root>/expeditions/grow/request.json` and tells the crew a harbour is being
+built. The host service's next pass starts `shard_group.py expedition-grow`,
+which adds the next slot (`far5`, `far6`, ...) to the group file with ports
+nobody uses (never the gateway's), sets it up stopped and drops the wish; the
+coordinator is restarted with it on the pass after, and the ship sets out
+again. A stopped slot costs disk (its worktree), not memory; each running land
+is its own small 32-bit world that sleeps when empty. Expedition slots do not
+count toward the group's 32 other regions; the whole group may hold 512, a
+ceiling only the free ports set. The launcher (1.5.44) lists every region.
+
 ### Adding slots to a running group
 
 A group that hosts Earth gets the four slots with the missing Earth regions:

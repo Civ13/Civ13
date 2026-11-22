@@ -187,7 +187,8 @@ class RegionWakeTests(unittest.TestCase):
         self.assertIn('shard_group.peer_closed(destination)', approve)
 
     def test_travel_wakes_the_destination_then_checks_again(self):
-        body = proc(TRAVEL, GATE + '/proc/travel')
+        # travel() asks and holds the traveller still; travel_confirmed() wakes and checks again.
+        body = proc(TRAVEL, GATE + '/proc/travel_confirmed')
         wake = body.index('shard_group.wake_peer(destination, H)')
         self.assertLess(wake, body.index('reason = travel_refusal(H)', wake))
         self.assertLess(wake, body.index('H.record_persistence_owner()'))

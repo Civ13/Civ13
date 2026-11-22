@@ -27,7 +27,7 @@ public static class LocalHosting {
     public const string MenuKey = "H";
     public const string FileName = "host.json";
     // shard_group.py MAX_REGIONS: the most regions a group holds, so every list of them reads them all.
-    public const int MaxRegions = 32;
+    public const int MaxRegions = 512;
     public static string Menu => MenuKey + ": Host local DreamDaemon server";
 
     public static HostProfile? Load(string root) {
