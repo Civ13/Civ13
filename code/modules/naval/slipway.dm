@@ -65,12 +65,36 @@
 		list("name" = "Wheelhouse and fittings", "pieces" = 1, "cost" = list("steel" = 10, "glass" = 10), "part" = "fittings", "verb" = "wheelhouse fit-out"),
 	)
 
+// A steel warship (naval/ship_turret.dm, naval/hull_armour.dm): the
+// freighter's hull with a gun turret fore and aft over a shell rack in her
+// hold, and belt armour along both sides.
+/datum/slipway_design/cruiser
+	name = "light cruiser"
+	vessel_type = /datum/vessel/freighter/cruiser
+	node = "naval_mines"
+	blurb = "a steel warship, 20 tiles long and 7 wide, with a gun turret fore and aft fed from shell racks in her hold, belt armour along both sides and a diesel engine below; she burns diesel or petroleum"
+	keel_icon = 'icons/turf/floors.dmi'
+	keel_state = "steel_grid"
+	rib_icon = 'icons/turf/floors.dmi'
+	rib_state = "catwalk_plated"
+	stages = list(
+		list("name" = "Keel", "pieces" = 2, "cost" = list("steel" = 10), "part" = "keel", "verb" = "keel section"),
+		list("name" = "Frames", "pieces" = 4, "cost" = list("steel" = 10), "part" = "frames", "verb" = "set of frames"),
+		list("name" = "Hull plating", "pieces" = 6, "cost" = list("steel" = 12), "part" = "hull", "verb" = "run of hull plates"),
+		list("name" = "Hold, magazines and bulkheads", "pieces" = 2, "cost" = list("steel" = 12), "part" = "below", "verb" = "bulkhead"),
+		list("name" = "Deck", "pieces" = 4, "cost" = list("steel" = 8), "part" = "deck", "verb" = "run of deck plating"),
+		list("name" = "Belt armour", "pieces" = 4, "cost" = list("steel" = 60), "part" = "hull", "verb" = "run of belt armour"),
+		list("name" = "Engine", "pieces" = 1, "cost" = list("steel" = 20, "cable" = 20), "part" = "below", "verb" = "engine"),
+		list("name" = "Gun turrets", "pieces" = 2, "cost" = list("steel" = 60), "part" = "fittings", "verb" = "gun turret"),
+		list("name" = "Wheelhouse and fittings", "pieces" = 1, "cost" = list("steel" = 10, "glass" = 10), "part" = "fittings", "verb" = "wheelhouse fit-out"),
+	)
+
 var/global/list/slipway_designs = null
 
 /proc/slipway_design_list()
 	if (!slipway_designs)
 		slipway_designs = list()
-		for (var/path in list(/datum/slipway_design/schooner, /datum/slipway_design/freighter))
+		for (var/path in list(/datum/slipway_design/schooner, /datum/slipway_design/freighter, /datum/slipway_design/cruiser))
 			var/datum/slipway_design/D = new path
 			slipway_designs[D.name] = D
 	return slipway_designs
@@ -743,6 +767,63 @@ var/global/list/slipway_designs = null
 	)
 	deck.legend = list(
 		"D" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
+		"H" = list("turf" = /turf/wall/sub_hull/freighter),
+		"f" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
+		"W" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/vessel_helm)),
+		"O" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/simple_door/key_door/anyone/ship)),
+		"L" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/multiz/ladder)),
+	)
+	levels += deck
+
+// The light cruiser: the freighter's hull and engine room, a gun turret fore
+// and aft over a shell rack in her hold (the barbette, naval/ship_turret.dm)
+// and belt armour plates along both sides of her deck.
+/datum/vessel/freighter/cruiser
+	name = "light cruiser"
+	magnetic_base = 160
+
+/datum/vessel/freighter/cruiser/New()
+	..()
+	levels = list()
+	var/datum/vessel_level/hold = new
+	hold.dz = -1
+	hold.allowed = list(/turf/wall/rockwall, /turf/floor/beach/water/deep)
+	hold.rows = list(
+		".HHHHHHHHHHHHHHHHH..",
+		"HHeeeeBhhhhhhhhhhhH.",
+		"HeeTeeBhhhhhhhhhhhhH",
+		"Heeeee1LhhRhhhhRhhhH",
+		"HeeeeeBhhhhhhhhhhhhH",
+		"HHeeeeBhhhhhhhhhhhH.",
+		".HHHHHHHHHHHHHHHHH..",
+	)
+	hold.legend = list(
+		"H" = list("turf" = /turf/wall/sub_hull/freighter/hold),
+		"B" = list("turf" = /turf/wall/sub_bulkhead/freighter),
+		"e" = list("turf" = /turf/floor/sub_deck/freighter/engine_room),
+		"h" = list("turf" = /turf/floor/sub_deck/freighter),
+		"1" = list("turf" = /turf/floor/sub_deck/freighter/engine_room, "spawn" = list(/obj/structure/simple_door/blast)),
+		"L" = list("turf" = /turf/floor/sub_deck/freighter, "spawn" = list(/obj/structure/multiz/ladder/up)),
+		"T" = list("turf" = /turf/floor/sub_deck/freighter/engine_room, "spawn" = list(/obj/structure/vessel_bunker)),
+		"R" = list("turf" = /turf/floor/sub_deck/freighter, "spawn" = list(/obj/structure/shellrack)),
+	)
+	levels += hold
+	var/datum/vessel_level/deck = new
+	deck.dz = 0
+	deck.allowed = list(/turf/floor/beach/water/deep)
+	deck.rows = list(
+		".AAAAAAAAAAAAAAAAA..",
+		"DDDDDDDDDDDDDDDDDDD.",
+		"DHHHHDDDDDDDDDDDDDDD",
+		"DHWfODDLDDGDDDDGDDDD",
+		"DHHHHDDDDDDDDDDDDDDD",
+		"DDDDDDDDDDDDDDDDDDD.",
+		".AAAAAAAAAAAAAAAAA..",
+	)
+	deck.legend = list(
+		"D" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
+		"A" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/hull_armour)),
+		"G" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/cannon/modern/ship_turret)),
 		"H" = list("turf" = /turf/wall/sub_hull/freighter),
 		"f" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
 		"W" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/vessel_helm)),
