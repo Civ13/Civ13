@@ -732,8 +732,11 @@ var/global/list/hud_icon_px_cache = list()
 	return ..()
 
 /client/MouseDrop(src_object, over_object, src_location, over_location, src_control, over_control, params)
-	// Held still while an admin sends them to another land (region_admin_send.dm).
-	if (region_admin_send_held_input(mob))
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_hold_input(mob))
+		return
+	// Nobody drags a leaving traveller, their things or anything aboard their ship.
+	if (travel_holds && ((isatom(src_object) && travel_hold_refuses(mob, src_object)) || (isatom(over_object) && travel_hold_refuses(mob, over_object))))
 		return
 	var/mob/living/human/H = hud_edit_human()
 	if (H)

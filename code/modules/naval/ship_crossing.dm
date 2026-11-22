@@ -1233,6 +1233,27 @@ var/global/list/sea_crossing_marked = list()
 		reason = crossing_hold_refusal(id)
 		if (reason)
 			return reason
+	// Everyone aboard is held still and she is guarded, from here until she
+	// leaves or stays (travel_hold.dm).
+	var/datum/travel_hold/held = crossing_travel_hold(peer["name"])
+	. = cross_on(id, notify, voyage, sea_edge)
+	travel_hold_end(held)
+
+// Everyone aboard her held still, her decks and tiller guarded.
+/obj/structure/hull_tiller/proc/crossing_travel_hold(where)
+	var/list/aboard = list()
+	var/list/decks = list()
+	var/datum/craft_body/built/B = craft ? craft.body : null
+	if (istype(B))
+		for (var/turf/T in B.cells())
+			decks += T
+			for (var/mob/living/human/H in T)
+				aboard += H
+	return travel_hold_begin(aboard, where, list(src), decks)
+
+// The rest of cross(), with everyone aboard held still.
+/obj/structure/hull_tiller/proc/cross_on(id, mob/living/human/notify, voyage, list/sea_edge)
+	var/list/peer = shard_group.peers[id]
 	var/list/hold = null
 	if (peer["state"] != "UP")
 		var/woke = crossing_wake(id, notify, voyage)

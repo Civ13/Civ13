@@ -555,6 +555,12 @@ var/global/list/space_cargo_stacks = list(
 // cell lx,ly (or any flat cell when null). Returns null once anyone left, or
 // the reason nobody did.
 /obj/structure/crewed_lander/proc/launch(obj/structure/region_gate/trail_marker/launch_pad/pad, lx = null, ly = null, mob/living/human/notify = null)
+	// The crew are held still and the lander guarded until it flies or stays (travel_hold.dm).
+	var/datum/travel_hold/held = travel_hold_begin(crew(), pad.destination_name(), list(src, pad), list(get_turf(src)))
+	. = launch_on(pad, lx, ly, notify)
+	travel_hold_end(held)
+
+/obj/structure/crewed_lander/proc/launch_on(obj/structure/region_gate/trail_marker/launch_pad/pad, lx, ly, mob/living/human/notify)
 	var/destination = pad.destination
 	var/homeward = space_flight_return_ok(destination)
 	var/orbital = space_flight_orbit_ok(destination)
@@ -921,6 +927,12 @@ var/global/list/landed_landers = list()
 // Sends every strapped-in crew member home. Returns null once anyone left (the
 // lander is then spent), or the reason nobody did.
 /obj/structure/landed_lander/proc/deorbit(mob/living/human/notify = null)
+	// The crew are held still and the lander guarded until it lifts off or stays (travel_hold.dm).
+	var/datum/travel_hold/held = travel_hold_begin(crew(), region_trail_name(shard_group.mainland), list(src), list(get_turf(src)))
+	. = deorbit_on(notify)
+	travel_hold_end(held)
+
+/obj/structure/landed_lander/proc/deorbit_on(mob/living/human/notify)
 	var/home = shard_group.mainland
 	if (shard_group.enabled && shard_group.peers[home] && shard_group.peers[home]["state"] != "UP")
 		var/woke = shard_group.wake_peer(home, notify)

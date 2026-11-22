@@ -824,6 +824,16 @@ var/global/list/region_travel_carry_types = list(
 		return
 	if(player_alert(H, "Travel to [destination_name()]? You leave this land with what you wear and carry, and continue there.", "Travel", list("Travel", "Stay")) != "Travel")
 		return
+	// From here they are held still, with what they ride or pull guarded, until
+	// they leave or stay (travel_hold.dm).
+	var/datum/travel_hold/hold = travel_hold_begin(list(H), destination_name(), travel_hold_belongings(H))
+	travel_confirmed(H)
+	travel_hold_end(hold)
+
+// The rest of travel(), once they said yes and are held still.
+/obj/structure/region_gate/proc/travel_confirmed(mob/living/human/H)
+	var/reason
+	var/list/items
 	// The prompt slept: check everything again.
 	reason = travel_refusal(H)
 	if(!reason)

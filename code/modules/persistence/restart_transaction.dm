@@ -94,8 +94,8 @@ var/global/list/persistence_freeze_notified = list()
 				else
 					to_chat(src, "<span class='warning'>[reason]</span>")
 			return
-	// Held still while an admin sends them to another land (region_admin_send.dm).
-	if (region_admin_send_held_input(mob))
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_hold_input(mob))
 		return
 	return ..()
 

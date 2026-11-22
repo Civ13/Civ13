@@ -45,13 +45,17 @@
 		blackout_click_trace("click_clock")
 		return
 	next_click = world.time + 1
-	// Held still while an admin sends them to another land (region_admin_send.dm).
-	if (region_admin_send_held_input(src))
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_hold_input(src))
 		return
 	/*if (client.buildmode)  //unused now
 		build_click(src, client.buildmode, params, A)
 		return*/
 	var/list/modifiers = params2list(params)
+	// Travellers leaving, their things and their ship are not to be touched;
+	// they can still be looked at (travel_hold.dm).
+	if (travel_holds && !(modifiers["shift"] && !modifiers["ctrl"] && !modifiers["alt"] && !modifiers["middle"]) && travel_hold_refuses(src, A))
+		return
 	var/icon_x = text2num(modifiers["icon-x"])
 	var/icon_y = text2num(modifiers["icon-y"])
 	if (modifiers["shift"] && modifiers["ctrl"])
@@ -315,8 +319,8 @@
 	next_move = max(world.time + timeout, next_move)
 
 /mob/proc/canClick()
-	// Held still while an admin sends them to another land (region_admin_send.dm).
-	if (region_send_held())
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_held())
 		return FALSE
 	if (config.no_click_cooldown || next_move <= world.time)
 		return TRUE

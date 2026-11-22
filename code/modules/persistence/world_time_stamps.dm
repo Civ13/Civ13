@@ -34,6 +34,7 @@ var/global/list/persistence_world_time_stamps = persistence_world_time_stamps_ta
 	"next_load" = list(/mob),
 	"next_cannotmove_message" = list(/mob),
 	"next_gracewall_message" = list(/mob),
+	"travel_guard_told" = list(/mob),
 	"next_language_learn" = list(/mob),
 	"next_language_practice" = list(/mob/living/human),
 	"next_language_drift_heard" = list(/mob/living/human),
