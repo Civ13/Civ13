@@ -227,7 +227,7 @@ class ConsoleStyleWiring(unittest.TestCase):
 
     def test_every_species_control_has_a_place(self):
         species = read('code/game/mob/living/carbon/human/species/species_hud.dm')
-        process = re.search(r'var/list/ProcessHUD = list\((.*?)\)\n', species, re.S)[1]
+        process = re.search(r'var/tmp/list/ProcessHUD = list\((.*?)\)\n', species, re.S)[1]
         wanted = set(re.findall(r'(?<!\*)"([^"]+)"', re.sub(r'/\*.*?\*/', '', process)))
         self.assertIn('needs', wanted)
         tiles = default_tiles()
