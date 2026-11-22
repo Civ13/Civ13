@@ -82,12 +82,15 @@
 	region_event_send(requester, picked, event_id, mode)
 
 /proc/region_event_release_panel(mob/requester, list/away)
+	var/client/release_actor = requester?.client
+	if(!release_actor || !check_rights(R_ADMIN, TRUE, requester)) return
 	var/list/options = list("Everyone away")
 	for(var/obj/structure/event_stash/S in away) options += S.owner_ckey
 	var/pick = input(requester, "Bring whose character back into play now? Use this when a player will not come back from the event (for example it closed). A player who rejoins later takes their character from where it returned.", "Bring back") as null|anything in options
-	if(!pick || !check_rights(R_ADMIN)) return
+	if(!pick || requester?.client != release_actor || !check_rights(R_ADMIN, TRUE, requester)) return
 	var/mode = region_event_mode_choice(requester)
-	if(!mode) return
+	// The mode prompt sleeps; recheck authority at the release boundary.
+	if(!mode || requester?.client != release_actor || !check_rights(R_ADMIN, TRUE, requester)) return
 	var/count = 0
 	for(var/obj/structure/event_stash/S in event_stashes())
 		if(pick != "Everyone away" && S.owner_ckey != pick) continue
