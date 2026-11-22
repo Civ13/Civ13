@@ -484,8 +484,6 @@ var/world_topic_spam_protect_time = world.timeofday
 	if (community_links.len)
 		s += "[jointext(community_links, " | ")]<br>"
 
-	if (config.hub_banner_url)
-		s += "<img src=\"[config.hub_banner_url]\"><br>"
 	// The gateway is the group's hub entry: it shows the lands, not its own empty map.
 	if (region_gateway_here())
 		s += region_gateway_hub_status()
@@ -501,6 +499,10 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
 	if (hub_body)
 		s += hub_body
+	// The BYOND hub cuts a listing's status at an image, so the banner goes last
+	// and never hides the map, players or joining lines above it.
+	if (config.hub_banner_url)
+		s += "<img src=\"[config.hub_banner_url]\"><br>"
 
 	status = s
 
