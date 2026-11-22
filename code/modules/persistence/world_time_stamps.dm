@@ -20,6 +20,7 @@ var/global/list/persistence_world_time_stamps = persistence_world_time_stamps_ta
 	"last_bumped" = list(/atom),
 	"next_attack_hand" = list(/obj/structure/simple_door),
 	"next_fill" = list(/obj/structure/sea_office),
+	"last_knock" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch),
 	"ram_tick" = list(/obj/structure/vehicleparts/axis),
 	"bellows_until" = list(/obj/structure/furnace),
 	"pumped_until" = list(/obj/structure/fluid_pump/hand),

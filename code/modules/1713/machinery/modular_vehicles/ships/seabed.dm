@@ -17,6 +17,14 @@
 // first. A diver who cannot get back can drop the suit's weights and swim up
 // to the open sea straight above, where the suit keeps them afloat while the
 // bottle lasts.
+//
+// The crew can dog the outer hatch shut from inside: a dogged hatch keeps out
+// anyone on the seabed, who can only hammer on it for the crew to hear. Whoever
+// goes out through it undogs it on the way. The same chamber is the boat's
+// escape trunk: a crew member without a suit floods it, opens the outer hatch
+// and makes a free ascent to the surface. That is safe on the shelf, hurts in
+// open water and kills deeper, so the hatch refuses it there
+// (docs/vessel-entries.md).
 
 // Sea zones: code/__defines/_submarine_definitions.dm
 // The farthest distance from rock, in tiles, of each zone shallower than the abyss.
@@ -29,6 +37,12 @@
 #define SEABED_ASCENT_TIME (15 SECONDS)
 #define SEABED_REFILL_TIME (3 SECONDS)
 #define SEABED_HAND_PUMP_TIME (20 SECONDS)
+#define SEABED_DOG_TIME (2 SECONDS)
+#define SEABED_KNOCK_COOLDOWN (5 SECONDS)
+// Breath lost on a free ascent from each zone (shelf, open water).
+#define SEABED_ESCAPE_OXYLOSS_SHELF 10
+#define SEABED_ESCAPE_OXYLOSS_OPEN 45
+#define SEABED_ESCAPE_BRUTE_OPEN 10
 
 var/global/seabed_zones_ready = FALSE
 // Cells of each zone after the last pass, for admins and tests.
@@ -282,7 +296,10 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 // ---- The lock-out hatch ----
 
 /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch
-	desc = "A riveted steel pressure hull section with a side hatch. Submerged, it works as a lock-out chamber: a diver sealed in a diving suit uses it to flood out to the seabed and to pump back in."
+	desc = "A riveted steel pressure hull section with a side hatch. Submerged, it works as a lock-out chamber: a diver sealed in a diving suit uses it to flood out to the seabed and to pump back in. It is also the boat's escape trunk, and the crew can dog its outer hatch shut from inside."
+	// TRUE while the crew have the outer hatch dogged shut from inside.
+	var/outer_dogged = FALSE
+	var/tmp/last_knock = -1000
 
 /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/boat()
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = axis
@@ -312,13 +329,113 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
 	if (!ishuman(user) || !B || !B.submerged)
 		return ..()
-	if (!Adjacent(user))
+	if (!Adjacent(user) || user.region_send_held())
 		return
 	var/turf/here = get_turf(user)
 	if (here && here.iscovered())
-		lock_out(user)
+		inside_menu(user)
+	else if (outer_dogged)
+		knock(user)
 	else
 		lock_in(user)
+
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/examine(mob/user)
+	. = ..()
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
+	if (B && B.submerged)
+		to_chat(user, SPAN_NOTICE("Its outer hatch is [outer_dogged ? "dogged shut from inside" : "free to open from the seabed"]."))
+
+// What the crew can do with the hatch from inside a submerged boat.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/inside_menu(mob/living/human/user)
+	var/list/options = list("Lock out (diving suit)", "Escape to the surface", outer_dogged ? "Free the outer hatch" : "Dog the outer hatch", "Cancel")
+	var/choice = WWinput(user, "The lock-out chamber. What do you do?", "Lock-out hatch", "Cancel", options)
+	if (!choice || choice == "Cancel" || QDELETED(src) || !Adjacent(user) || user.incapacitated())
+		return
+	switch (choice)
+		if ("Lock out (diving suit)")
+			lock_out(user)
+		if ("Escape to the surface")
+			escape(user)
+		if ("Dog the outer hatch", "Free the outer hatch")
+			dog_hatch(user, choice == "Dog the outer hatch")
+
+// Dogs the outer hatch shut (or frees it) from inside.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/dog_hatch(mob/living/human/user, dog)
+	if (outer_dogged == dog)
+		return FALSE
+	if (user && !do_after(user, SEABED_DOG_TIME, src))
+		return FALSE
+	set_dogged(dog)
+	if (user)
+		user.visible_message(SPAN_NOTICE("[user] [dog ? "spins the wheel and dogs the outer hatch of the lock-out chamber shut" : "spins the wheel and frees the outer hatch of the lock-out chamber"]."))
+	return TRUE
+
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/set_dogged(dog)
+	outer_dogged = !!dog
+	playsound(loc, 'sound/effects/door_lock_unlock.ogg', 60)
+
+// Why someone on the seabed cannot come in through this hatch, or null.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/lock_in_refusal()
+	if (outer_dogged)
+		return "The outer hatch is dogged shut from inside. Hammer on it for the crew to let you in."
+	return null
+
+// Someone outside hammers on a dogged hatch: the crew hear it.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/knock(mob/living/human/user)
+	to_chat(user, SPAN_WARNING(lock_in_refusal()))
+	if (world.time < last_knock + SEABED_KNOCK_COOLDOWN)
+		return FALSE
+	last_knock = world.time
+	playsound(loc, 'sound/effects/clang.ogg', 60)
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
+	if (B)
+		B.crew_message(SPAN_WARNING("Someone hammers on the outer hatch of the lock-out chamber."))
+	user.visible_message(SPAN_NOTICE("[user] hammers on the outer hatch."))
+	return TRUE
+
+// Why a crew member cannot make a free ascent from here, or null.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/escape_refusal()
+	var/turf/exit = lockout_exit()
+	if (!exit)
+		return "Rock or wreckage presses against the outer hatch."
+	if (sea_zone_of(exit) > SEA_ZONE_OPEN)
+		return "The boat lies too deep for a free ascent: the sea would kill you on the way up. Wait for rescue, or go out in a suit built for this depth."
+	var/turf/up = locate(exit.x, exit.y, multiz_level_above(exit.z))
+	if (!sea_layer_open_surface(up) || up.iscovered())
+		return "Something floats on the water above the hatch."
+	return null
+
+// The surface cell a free ascent comes up in.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/escape_surface()
+	var/turf/exit = lockout_exit()
+	return exit ? locate(exit.x, exit.y, multiz_level_above(exit.z)) : null
+
+// The escape trunk: floods the chamber and lets a crew member without a suit
+// make a free ascent to the surface.
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/escape(mob/living/human/user)
+	var/problem = escape_refusal()
+	if (problem)
+		to_chat(user, SPAN_WARNING(problem))
+		return FALSE
+	var/deep = sea_zone_of(lockout_exit()) == SEA_ZONE_OPEN
+	user.visible_message(SPAN_WARNING("[user] climbs into the escape trunk and floods it."), SPAN_WARNING("You climb into the escape trunk and open the flood valve. The cold water rises past your chest[deep ? ". It is a long way up from here" : ""]..."))
+	if (!do_after(user, SEABED_LOCKOUT_TIME, src))
+		return FALSE
+	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
+	if (QDELETED(src) || !B || !B.submerged || user.region_send_held() || escape_refusal())
+		return FALSE
+	var/turf/up = escape_surface()
+	if (outer_dogged)
+		set_dogged(FALSE)
+	user.forceMove(up)
+	if (deep)
+		user.adjustOxyLoss(SEABED_ESCAPE_OXYLOSS_OPEN)
+		user.adjustBruteLoss(SEABED_ESCAPE_BRUTE_OPEN)
+		to_chat(user, SPAN_DANGER("You kick up through the dark, breathing out all the way, and break the surface gasping, ears and chest burning."))
+	else
+		user.adjustOxyLoss(SEABED_ESCAPE_OXYLOSS_SHELF)
+		to_chat(user, SPAN_NOTICE("You kick up through the green water, breathing out all the way, and break the surface."))
+	return TRUE
 
 // Floods the chamber and lets a sealed diver out onto the seabed.
 /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/lock_out(mob/living/human/user)
@@ -333,8 +450,10 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 		return FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
 	var/turf/exit = lockout_exit()
-	if (QDELETED(src) || !B || !B.submerged || !exit || !user.can_walk_seabed())
+	if (QDELETED(src) || !B || !B.submerged || !exit || !user.can_walk_seabed() || user.region_send_held())
 		return FALSE
+	if (outer_dogged)
+		set_dogged(FALSE)
 	user.forceMove(exit)
 	to_chat(user, SPAN_NOTICE("The outer hatch swings open and you step out onto the seabed."))
 	return TRUE
@@ -342,6 +461,10 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 // Lets a diver in from the seabed and blows the chamber dry with bank air,
 // or pumps it out by hand when the bank is short.
 /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/proc/lock_in(mob/living/human/user)
+	var/problem = lock_in_refusal()
+	if (problem)
+		to_chat(user, SPAN_WARNING(problem))
+		return FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
 	var/blow = B && B.air_bank >= SUB_AIR_LOCKIN_COST
 	if (blow)
@@ -351,7 +474,7 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	if (!do_after(user, blow ? SEABED_LOCKOUT_TIME : SEABED_HAND_PUMP_TIME, src))
 		return FALSE
 	B = boat()
-	if (QDELETED(src) || !B || !B.submerged || !Adjacent(user))
+	if (QDELETED(src) || !B || !B.submerged || !Adjacent(user) || user.region_send_held() || lock_in_refusal())
 		return FALSE
 	if (blow)
 		B.blow_chamber()
@@ -367,3 +490,8 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 #undef SEABED_ASCENT_TIME
 #undef SEABED_REFILL_TIME
 #undef SEABED_HAND_PUMP_TIME
+#undef SEABED_DOG_TIME
+#undef SEABED_KNOCK_COOLDOWN
+#undef SEABED_ESCAPE_OXYLOSS_SHELF
+#undef SEABED_ESCAPE_OXYLOSS_OPEN
+#undef SEABED_ESCAPE_BRUTE_OPEN

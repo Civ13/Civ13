@@ -192,6 +192,29 @@ var/submarine_runtime_error = FALSE
 	locate(15, 12, 1).ChangeTurf(/turf/wall/rockwall)
 	submarine_check(port && !port.lockout_exit(), "rock against the hull keeps the hatch shut")
 	locate(15, 12, 1).ChangeTurf(/turf/floor/beach/water/deep/saltwater/underwater/sea_layer)
+
+	// Hatch security and the escape trunk (docs/vessel-entries.md).
+	submarine_check(port && !port.outer_dogged && !port.lock_in_refusal(), "a new boat's outer hatch is free to open from the seabed")
+	port.set_dogged(TRUE)
+	submarine_check(port.outer_dogged && findtext(port.lock_in_refusal(), "dogged shut"), "a hatch dogged from inside refuses a diver outside")
+	var/mob/living/submarine_probe/diver/knocker = new(locate(15, 12, 1))
+	submarine_check(port.knock(knocker) && !port.knock(knocker), "hammering on a dogged hatch reaches the crew, once every few seconds")
+	qdel(knocker)
+	port.set_dogged(FALSE)
+	submarine_check(!port.outer_dogged && !port.lock_in_refusal(), "freeing the outer hatch lets divers in again")
+	var/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/trunk_exit = locate(15, 12, 1)
+	var/was_zone = trunk_exit.depth_zone
+	trunk_exit.depth_zone = SEA_ZONE_SHELF
+	submarine_check(!port.escape_refusal() && port.escape_surface() == locate(15, 12, 2), "on the shelf the escape trunk opens for a free ascent to the surface above the hatch")
+	trunk_exit.depth_zone = SEA_ZONE_OPEN
+	submarine_check(!port.escape_refusal(), "a free ascent from open water is allowed")
+	trunk_exit.depth_zone = SEA_ZONE_DEEP
+	submarine_check(findtext(port.escape_refusal(), "too deep"), "the deep is too deep for a free ascent")
+	trunk_exit.depth_zone = SEA_ZONE_SHELF
+	var/obj/covers/submarine_probe_raft/trunk_raft = new(locate(15, 12, 2))
+	submarine_check(findtext(port.escape_refusal(), "floats on the water"), "something floating above the hatch blocks a free ascent")
+	qdel(trunk_raft)
+	trunk_exit.depth_zone = was_zone
 	var/obj/item/weapon/shoring_kit/dropped = new(locate(20, 22, 1))
 	locate(20, 22, 1).Entered(dropped)
 	qdel(inside)
