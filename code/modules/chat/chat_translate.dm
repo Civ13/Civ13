@@ -174,7 +174,10 @@ var/global/list/chat_translate_english_words = chat_translate_english_words_tabl
 				log_game("Chat translation: the translator did not answer [CHAT_TRANSLATE_FAILURE_LIMIT] times in a row; paused for five minutes.")
 			continue
 		failures = 0
-		remember(key, result[1], result[2])
+		// A cold Edge language pack can return a successful but empty reply.
+		// Only cache empties confirmed to already be in the target language.
+		if (result[2] || findtext(key, "[result[1]]\n") == 1)
+			remember(key, result[1], result[2])
 		if (result[2])
 			translated++
 		answer_all(W, result[1], result[2])

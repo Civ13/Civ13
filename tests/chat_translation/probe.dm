@@ -83,6 +83,31 @@ var/tr_runtime_error = FALSE
 	tr_ask(T, B, 2, "en", "hola amigo")
 	tr_check(T.asked.len == 1 && tr_got(T, B, 2)[2] == "hello friend", "repeat answered from the cache")
 
+	// A cold pair answers without translating, then warms for an identical later line.
+	var/cold_key = "de\nhola mundo"
+	T.answers[cold_key] = T.parse_reply("{\"source\":\"es\",\"translation\":\"\"}", "de", "hola mundo")
+	var/before_cold = T.asked.len
+	T.failures = 2
+	tr_ask(T, A, 12, "de", "hola mundo")
+	sleep(10)
+	tr_check(T.asked.len == before_cold + 1 && islist(tr_got(T, A, 12)) && tr_got(T, A, 12)[2] == "", "cold pair delivers the original without a translation")
+	tr_check(!T.cache[cold_key] && !T.failures && !T.paused_until, "cold reply is not cached or counted as a failure")
+	T.answers[cold_key] = T.parse_reply("{\"source\":\"es\",\"translation\":\"hallo welt\"}", "de", "hola mundo")
+	tr_ask(T, A, 13, "de", "hola mundo")
+	sleep(10)
+	tr_check(T.asked.len == before_cold + 2 && islist(tr_got(T, A, 13)) && tr_got(T, A, 13)[2] == "hallo welt", "identical new line is translated after the pair warms")
+	tr_ask(T, B, 3, "de", "hola mundo")
+	tr_check(T.asked.len == before_cold + 2 && islist(tr_got(T, B, 3)) && tr_got(T, B, 3)[2] == "hallo welt", "warm translation is cached")
+
+	// A reply explicitly identified as already in its target language stays cacheable.
+	var/same_key = "de\nguten morgen"
+	T.answers[same_key] = T.parse_reply("{\"source\":\"DE\",\"translation\":\"\"}", "de", "guten morgen")
+	var/before_same = T.asked.len
+	tr_ask(T, A, 14, "de", "guten morgen")
+	sleep(10)
+	tr_ask(T, B, 4, "de", "guten morgen")
+	tr_check(T.asked.len == before_same + 1 && islist(tr_got(T, B, 4)) && tr_got(T, B, 4)[2] == "", "same-language empty answer is cached")
+
 	// Accented text is never taken for English; English for a German reader goes to the model.
 	T.answers["en\ncafé por favor"] = list("es", "coffee please")
 	T.answers["de\nthe storm is coming"] = list("en", "der Sturm kommt")

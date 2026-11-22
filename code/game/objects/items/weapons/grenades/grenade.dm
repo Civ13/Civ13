@@ -914,6 +914,9 @@
 	secondary_action = TRUE
 
 /obj/item/weapon/grenade/antitank/n75/secondary_attack_self(mob/living/human/user)
+	return place_as_antitank_mine(user)
+
+/obj/item/weapon/grenade/antitank/proc/place_as_antitank_mine(mob/living/human/user)
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
 		if (inp == "Yes")
@@ -939,21 +942,7 @@
 	secondary_action = TRUE
 
 /obj/item/weapon/grenade/antitank/type99/secondary_attack_self(mob/living/human/user)
-	if (secondary_action)
-		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
-		if (inp == "Yes")
-			to_chat(user, "Placing the mine...")
-			if (do_after(user, 60, src))
-				// A lagged repeat click can reach here after the first one already
-				// placed this grenade; only a grenade still in hand becomes a mine.
-				if (!QDELETED(src) && loc == user)
-					to_chat(user, "You successfully place the mine here using \the [src].")
-					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
-					BT.origin = src.type
-					firer = user
-					qdel(src)
-		else
-			return
+	return place_as_antitank_mine(user)
 
 /obj/item/weapon/grenade/antitank/prime()
 	set waitfor = 0
