@@ -6,7 +6,7 @@ export function checkPR(event) {
   if (!event?.pull_request || !Object.hasOwn(event.pull_request, 'body')) {
     throw Error('PR event with a description is required');
   }
-  return changelogLine(event.pull_request.body);
+  return changelogLine(event.pull_request.body, { rejectFiller: true });
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

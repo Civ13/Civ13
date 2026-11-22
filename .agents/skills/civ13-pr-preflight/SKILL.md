@@ -12,6 +12,10 @@ results for each new head, including any documented local-build exception below.
 Inspect existing branch ownership and use
 CODEX.md's handoff rules if an action is blocked.
 
+PR body: fill `Changelog:` with player-facing text only when players see the
+change. Otherwise leave the line blank; never write `none (...)`, `n/a` or an
+explanation there (the "Changelog contracts" check fails on that filler).
+
 ## 1. Compile locally, even in a cloud session
 
 Cloud sessions can compile. Do not report "BYOND unavailable" without trying:
