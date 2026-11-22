@@ -244,8 +244,15 @@
 		return FALSE
 	mark_path(box[1], box[2], heading)
 	turning_to = heading
-	addtimer(CALLBACK(src, PROC_REF(finish_turn)), VESSEL_PATH_WARNING)
+	addtimer(CALLBACK(src, PROC_REF(finish_turn)), turn_time())
 	return TRUE
+
+// How long she takes to come about once the order is given: the warning for
+// a hull up to ten tiles long, half a second more for every tile past that,
+// at most half a minute.
+/datum/craft/proc/turn_time()
+	var/length = body ? body.length_tiles() : 0
+	return clamp(VESSEL_PATH_WARNING + max(0, length - 10) * 5, VESSEL_PATH_WARNING, 300)
 
 // Where a turn puts the box corner: list(x, y). Bodies turn about their own
 // pivot, so the body is asked.

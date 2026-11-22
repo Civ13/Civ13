@@ -132,7 +132,10 @@
 	var/weighs = ledger && ledger.carries_load()
 	var/weight = 0
 	var/rigged = 0
-	for (var/atom/movable/M in body.aboard())
+	var/list/aboard = body.aboard()
+	// The same walk weighs her floors (hull_weight.dm).
+	count_structure(aboard)
+	for (var/atom/movable/M in aboard)
 		var/datum/craft_drive/D = M.craft_drive()
 		if (D)
 			add_drive(D)

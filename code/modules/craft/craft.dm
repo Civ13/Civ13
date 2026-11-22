@@ -93,6 +93,8 @@ var/global/list/crafts = list()
 // like more of them (naval/hull_ledger.dm).
 /datum/craft/proc/mass()
 	. = body ? max(1, body.tile_count()) : 1
+	// Her floors past plank weight, and her other decks (naval/hull_weight.dm).
+	. = max(1, . + structure_weight)
 	if (ledger)
 		. += ledger.water_weight() + ledger.load_weight() + ledger.foul_weight()
 

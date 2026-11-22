@@ -823,6 +823,29 @@ frames is fitted.
 - Boats, ships and aircraft opt out (`uses_load_factor()`); the engine stall
   limit in `check_engine()` is unchanged.
 
+## Hull weight
+
+`code/modules/naval/hull_weight.dm` weighs a built hull's own floors with the
+same material table the land vehicles use (`vehicle_hull_stats()` in
+`modular_vehicles/vehicle_hulls.dm`), so there is one weight table, not two.
+A plank tile is the measure of 1; every other floor weighs its material's
+weight against plank (`hull_material_weight()`): steel, iron, stone or
+concrete about 1.67, aluminium about 0.92.
+
+- `fit_drives()` already walks `body.aboard()` before each hop; it hands the
+  same list to `count_structure()`, which counts one floor per turf, deck,
+  upper deck and hold alike, and stores `structure_weight` as the weight past
+  one plank per tile of her hull. `craft.mass()` adds it before water, load
+  and fouling, so speed is still push over mass (`max_speed()`).
+- Airships keep their own lift table (`air_weight`, air_hull.dm) and opt out
+  (`weighs_floors()`).
+- The ship designer's estimate (`/datum/ship_draught/mass()`) counts the same
+  weights from the draught: plank or steel deck cells, and every extra deck
+  tile at its level's floor (the hold is plated with steel).
+- Turning: `turn_time()` is the path warning (5 seconds) for a hull up to ten
+  tiles long, half a second more for each tile past that, at most 30 seconds.
+  Turf-built template vessels keep their fixed turn.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
