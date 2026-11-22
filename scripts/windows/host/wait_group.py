@@ -41,6 +41,13 @@ def reached(entry, until):
     return entry.get('state') == 'awake' and (entry.get('world') or {}).get('ready') == 1 and not entry.get('busy')
 
 
+# Waits the gateway never takes part in: a group stage, update or handover skips it
+# (shard_group GATEWAY_SKIPPED_ACTIONS), so it never has a build to wait for and
+# "Save, update and restart" failed at once on "gateway failed: no build is being
+# staged" (2026-11-22). Naming it with --region still waits for it.
+GATEWAY_SKIPPED_WAITS = ('staged', 'compiled', 'handed-over')
+
+
 def failed(entry, until=None):
     """Why a region that has not reached `until` never will, or None while it still might."""
     if until == 'staged':  # only the stage counts; the world's own last action does not matter here
@@ -91,6 +98,8 @@ def main(argv=None):
                     print('No region %s in the group.' % ', '.join(missing), flush=True)
                     return 1
                 regions = {name: regions[name] for name in args.region}
+            elif args.until in GATEWAY_SKIPPED_WAITS:
+                regions = {name: entry for name, entry in regions.items() if entry.get('kind') != 'GATEWAY'}
             line = ', '.join('%s %s/%s' % (name, entry.get('state'), (entry.get('operation') or {}).get('phase'))
                              for name, entry in sorted(regions.items()))
         if line != last:
