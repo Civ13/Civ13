@@ -189,6 +189,10 @@
 			return list(1.35, 1.35)
 		if ("iron")
 			return list(1.5, 1)
+		// Moulded plastic: lighter than any wood and never rots, but flexes
+		// more than iron, so it lasts a little less than an iron handle.
+		if ("plastic")
+			return list(1.4, 1.4)
 	var/material/wood = get_material_by_name("wood")
 	var/material/M = get_material_by_name(handle_material_name)
 	if (!wood || !M)

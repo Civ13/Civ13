@@ -37,7 +37,8 @@ The handle's material carries into the finished tool through
 uses: durability scales by the handle's integrity against wood (0.5-1.5x), and
 pickaxe, shovel and hoe work speed by its weight against wood (0.75-1.25x). A sawn
 plank handle lasts 35% longer and works 35% faster; a reinforced (iron) handle
-lasts 50% longer at the usual speed. Tools without durability or a work speed
+lasts 50% longer at the usual speed; a moulded plastic handle (plastic sheets,
+modern era) lasts 40% longer and works 40% faster. Tools without durability or a work speed
 (rammer, hammers, fire hook, club) only use the handle up.
 
 The sledgehammer names have no active catalog rows. Wood spears and molds keep their existing exclusions. This change
