@@ -181,6 +181,7 @@ def suites(args):
 
 
 def wiki_pins(args):
+    """Compare the Help pins and the bundled guide copies to a civ13-wiki checkout."""
     bridge = ROOT / 'scripts/player_help_bridge.py'
     source = bridge.read_text(encoding='utf-8')
     wiki = Path(args.wiki_root).resolve()
@@ -188,35 +189,55 @@ def wiki_pins(args):
     spec = importlib.util.spec_from_file_location('player_help_bridge_for_preflight', bridge)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    stale, missing, digests = [], [], {}
+    bundle = ROOT / module.WIKI_BUNDLE
+    stale, missing, unbundled, digests, texts = [], [], [], {}, {}
     for relative, (expected, _aliases) in module.WIKI_REVIEWED_GUIDES.items():
         path = wiki / 'src' / relative
         if not path.exists():
             missing.append(relative)
             continue
         text = path.read_bytes().decode('utf-8').replace('\r\n', '\n').replace('\r', '\n')
+        texts[relative] = text
         digest = hashlib.sha256(text.encode('utf-8')).hexdigest()
         if digest != expected:
             stale.append(relative)
             digests[relative] = digest
             source = source.replace(expected, digest)
+        # The game ships its own copy of every pinned guide; Help reads that copy.
+        copy = bundle / relative
+        if not copy.exists() or copy.read_bytes() != text.encode('utf-8'):
+            unbundled.append(relative)
+    extra = sorted(str(path.relative_to(bundle)).replace(os.sep, '/') for path in bundle.rglob('*.md')
+                   if str(path.relative_to(bundle)).replace(os.sep, '/') not in module.WIKI_REVIEWED_GUIDES) if bundle.is_dir() else []
     print(f'Wiki checkout {revision or "(unknown)"}; pinned revision {module.WIKI_REVIEWED_REVISION}')
-    print(f'{len(module.WIKI_REVIEWED_GUIDES) - len(stale) - len(missing)} current, {len(stale)} changed, {len(missing)} missing')
+    print(f'{len(module.WIKI_REVIEWED_GUIDES) - len(stale) - len(missing)} current, {len(stale)} changed, {len(missing)} missing, '
+          f'{len(unbundled)} bundled copies to refresh, {len(extra)} bundled copies no longer pinned')
     for relative in stale:
         print('  changed:', relative)
     for relative in missing:
         print('  missing:', relative)
+    for relative in unbundled:
+        if relative not in stale:
+            print('  bundled copy differs:', relative)
+    for relative in extra:
+        print('  bundled but not pinned:', relative)
     # New player guides are never pinned by accident: list the ones Help does not read yet.
-    pinned = set(module.WIKI_REVIEWED_GUIDES) | set(module.WIKI_LEGACY_GUIDES)
+    pinned = set(module.WIKI_REVIEWED_GUIDES)
     unpinned = sorted(str(path.relative_to(wiki / 'src')).replace(os.sep, '/')
-                      for folder in ('guides', 'gamemodes') for path in (wiki / 'src' / folder).glob('*.md'))
-    unpinned = [relative for relative in unpinned if relative not in pinned]
+                      for folder in ('guides', 'gamemodes', 'regions') for path in (wiki / 'src' / folder).glob('*.md'))
+    unpinned = [relative for relative in unpinned if relative not in pinned and relative not in module.WIKI_UNPINNED]
     for relative in unpinned:
         print('  unpinned (add a hash and aliases to WIKI_REVIEWED_GUIDES if players should get it):', relative)
-    if stale and args.write:
+    if (stale or unbundled or extra) and args.write:
         if revision:
             source = source.replace(module.WIKI_REVIEWED_REVISION, revision)
         bridge.write_text(source, encoding='utf-8')
+        for relative in unbundled:
+            copy = bundle / relative
+            copy.parent.mkdir(parents=True, exist_ok=True)
+            copy.write_bytes(texts[relative].encode('utf-8'))
+        for relative in extra:
+            (bundle / relative).unlink()
         # The wiki guide tests freeze the same revision and a few hashes as literals.
         tests = ROOT / 'tests/player_help/test_wiki_guides.py'
         text = tests.read_text(encoding='utf-8')
@@ -225,9 +246,9 @@ def wiki_pins(args):
         if revision:
             text = text.replace(module.WIKI_REVIEWED_REVISION, revision)
         tests.write_text(text, encoding='utf-8')
-        print('Updated hashes and revision in scripts/player_help_bridge.py and tests/player_help/test_wiki_guides.py. '
-              'Review the changed guides before committing.')
-    return 1 if (stale and not args.write) or missing else 0
+        print(f'Updated hashes and revision in scripts/player_help_bridge.py and tests/player_help/test_wiki_guides.py, '
+              f'and the guide copies under {module.WIKI_BUNDLE}. Review the changed guides before committing.')
+    return 1 if ((stale or unbundled or extra) and not args.write) or missing else 0
 
 
 def patterns(args):

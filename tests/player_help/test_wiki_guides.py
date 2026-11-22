@@ -108,7 +108,9 @@ class WikiGuideTests(unittest.TestCase):
         self.assertIn('"matching_wiki_chunks": 0', prompt)
         self.assertIn('does not prove', prompt)
         no_wiki = {}
-        no_wiki_corpus = bridge.gameplay_knowledge(ROOT, wiki_status=no_wiki)
+        # Neither a checkout nor the copies shipped with the game.
+        with mock.patch.object(bridge, 'WIKI_BUNDLE', 'UI/no-such-bundle'):
+            no_wiki_corpus = bridge.gameplay_knowledge(ROOT, wiki_status=no_wiki)
         self.assertFalse(no_wiki['configured'])
         prompt = self.prompt(no_wiki_corpus, no_wiki, 'qzxv unknown')
         self.assertIn('"configured": false', prompt)
@@ -138,7 +140,7 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'fc586a95d71ce599078568a265bef32a04da1cd8')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '9ddc62791d548afd4dd4b5e7ff325d1ff90995a5')
         cases = {
             'Chemistry': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8',
                           'chemistry reaction bench',
@@ -148,7 +150,7 @@ class WikiGuideTests(unittest.TestCase):
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
-            'Construction': ('d8eebb02435d4409fec74214d14ea239ab4f5a331b8ba6c7d506e5b2c99dc68f',
+            'Construction': ('0d1d364e6e4ea6d3664f9f0840e84fdc8dcd8ef6d3b05feb1475129556d65df6',
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),
@@ -273,10 +275,16 @@ class WikiGuideTests(unittest.TestCase):
             bridge.gameplay_knowledge(ROOT, self.wiki, wiki_status=status)
         self.assertEqual(status['changed_guides'], 1)
 
-    def test_legacy_missing_still_fails_closed(self):
-        (self.wiki / 'src/Starter_Guide.md').unlink()
-        with self.assertRaises(FileNotFoundError):
-            bridge.gameplay_knowledge(ROOT, self.wiki)
+    def test_bundled_guides_answer_without_a_checkout(self):
+        # Every pinned guide ships with the game, so a missing or stale wiki
+        # checkout on the host cannot drop one from Help.
+        for wiki_root in (None, self.wiki):
+            status = {}
+            corpus = bridge.gameplay_knowledge(ROOT, wiki_root, wiki_status=status)
+            self.assertTrue(status['configured'])
+            self.assertEqual(status['verified_guides'], len(bridge.WIKI_REVIEWED_GUIDES))
+            self.assertEqual((status['missing_guides'], status['changed_guides']), (0, 0))
+            self.assertTrue(any('Guide_to_Fishing' in row['topic'] for row in corpus))
 
 
 if __name__ == '__main__':

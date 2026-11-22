@@ -2229,8 +2229,10 @@ SUITES = {
             'tests/animal_harvest/action_admission_probe.dm')},
     # Offline injected transport and temporary wiki fixtures. Shared production
     # inputs remain shared so they do not suppress other suites' fallback.
-    'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py',),
-        'paths': (), 'shared_paths': (
+    # test_wiki_answers reads the guide copies shipped under UI/player-help-wiki
+    # and the question set; both belong to this suite alone.
+    'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py', 'tests/player_help/test_wiki_answers.py'),
+        'paths': ('UI/player-help-wiki/', 'tests/player_help/wiki_eval/'), 'shared_paths': (
             'code/game/mob/living/carbon/human/shit_piss.dm',
             'code/game/mob/living/carbon/human/emotes/emote.dm',
             'code/modules/reagents/reagent_containers/glass.dm',

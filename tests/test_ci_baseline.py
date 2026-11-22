@@ -729,8 +729,11 @@ class BaselinePolicyTests(unittest.TestCase):
 
     def test_help_wiki_guides_are_required_offline_for_exact_and_shared_inputs(self):
         suite = ci.SUITES['help_wiki_guides']
-        self.assertEqual(suite['files'], ('tests/player_help/test_wiki_guides.py',))
-        self.assertEqual(suite['paths'], ())
+        self.assertEqual(suite['files'], ('tests/player_help/test_wiki_guides.py', 'tests/player_help/test_wiki_answers.py'))
+        self.assertEqual(suite['paths'], ('UI/player-help-wiki/', 'tests/player_help/wiki_eval/'))
+        for path in ('UI/player-help-wiki/guides/Guide_to_Chat.md', 'tests/player_help/wiki_eval/questions.json'):
+            self.assertEqual(ci.impact([path])['fallback_reasons'], [])
+            self.assertTrue(ci.impact([path])['suites']['help_wiki_guides']['selected'])
         tree = ast.parse((ROOT / 'scripts/player_help_bridge.py').read_text(encoding='utf-8'))
         production_sources = {node.value for node in ast.walk(tree)
                               if isinstance(node, ast.Constant) and isinstance(node.value, str)
@@ -747,7 +750,7 @@ class BaselinePolicyTests(unittest.TestCase):
             output = Path(directory) / 'wiki.json'
             self.assertEqual(ci.run_unit('help_wiki_guides', output), 0)
             result = json.loads(output.read_text())
-        self.assertEqual(result, dict(status='passed', tests=12, failures=0, errors=0, skipped=0))
+        self.assertEqual(result, dict(status='passed', tests=18, failures=0, errors=0, skipped=0))
         plan, baseline, compiler, jobs = fixtures(('tests/player_help/test_wiki_guides.py',))
         baseline['suites']['help_wiki_guides']['counts'] = result
         self.assertEqual(ci.aggregate(plan, baseline, compiler, jobs, False), [])
