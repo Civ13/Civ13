@@ -1350,6 +1350,7 @@
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_breaches.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_decks.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_door_hold.dm"
+#include "code\modules\1713\machinery\modular_vehicles\vehicle_exits.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_projects.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_speeds.dm"
 #include "code\modules\1713\machinery\modular_vehicles\vehicle_ram.dm"

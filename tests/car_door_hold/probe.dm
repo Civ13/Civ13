@@ -80,8 +80,11 @@ var/car_door_hold_runtime = null
 	car_door_hold_assert(F.doors_locked(), "closed_with_lock_starts_locked")
 	F.attack_hand(outside)
 	car_door_hold_assert(!car_door_hold_door(F), "locked_resists_outside")
+	// Inside, the release opens a locked door; the lock keeps people out, not in.
 	F.attack_hand(inside)
-	car_door_hold_assert(!car_door_hold_door(F), "locked_resists_inside")
+	car_door_hold_assert(car_door_hold_door(F) && F.door_unlocked && !F.doors_locked(), "inside_release_opens_locked")
+	F.key_turn_doors(null)
+	car_door_hold_assert(!car_door_hold_door(F) && F.doors_locked(), "key_locks_it_again")
 
 	// The key unlocks and opens; a hand shuts it without locking it.
 	F.key_turn_doors(null)
@@ -167,6 +170,30 @@ var/car_door_hold_runtime = null
 	var/obj/structure/vehicleparts/frame/plain = new(locate(8, 8, 1))
 	plain.w_right = list("c_door", TRUE, TRUE, 20, 45, TRUE, FALSE)
 	car_door_hold_assert(!plain.doors_locked(), "lockless_door_unlocked")
+
+	// A tank's escape hatch: from inside, while she is stopped, out onto clear
+	// ground beside her (vehicle_exits.dm).
+	var/obj/structure/vehicleparts/axis/heavy/tank_axis = new(locate(2, 3, 1))
+	var/obj/structure/vehicleparts/frame/tank_a = new(locate(2, 3, 1))
+	var/obj/structure/vehicleparts/frame/tank_b = new(locate(3, 3, 1))
+	tank_a.axis = tank_axis
+	tank_b.axis = tank_axis
+	car_door_hold_assert(tank_a.has_belly_hatch() && !F.has_belly_hatch(), "only_a_tank_has_a_belly_hatch")
+	var/mob/living/human/crewman = car_door_hold_actor(2, 3, "Gunner")
+	var/mob/living/human/infantry = car_door_hold_actor(2, 2, "Infantry")
+	car_door_hold_assert(tank_a.belly_hatch_refusal(infantry) && !tank_a.use_belly_hatch(infantry, TRUE) && infantry.loc == locate(2, 2, 1), "the_hatch_does_not_open_from_outside")
+	tank_axis.moving = TRUE
+	car_door_hold_assert(findtext(tank_a.belly_hatch_refusal(crewman), "stopped"), "not_while_she_moves")
+	tank_axis.moving = FALSE
+	var/turf/out = tank_a.use_belly_hatch(crewman, TRUE)
+	car_door_hold_assert(out && crewman.loc == out && get_dist(out, tank_a) == 1 && !(locate(/obj/structure/vehicleparts) in out), "crewman_crawls_out_beside_her")
+	var/mob/living/human/boxed = car_door_hold_actor(3, 3, "Loader")
+	for (var/turf/T in range(3, tank_b))
+		if (!(locate(/obj/structure/vehicleparts) in T))
+			T.density = TRUE
+	car_door_hold_assert(findtext(tank_b.belly_hatch_refusal(boxed), "no clear ground"), "no_clear_ground_no_exit")
+	for (var/turf/T in range(3, tank_b))
+		T.density = FALSE
 
 	// Ships keep their own hatches.
 	var/obj/structure/vehicleparts/frame/ship/S = new(locate(10, 10, 1))

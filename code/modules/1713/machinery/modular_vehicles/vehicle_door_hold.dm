@@ -5,8 +5,9 @@
 // the hand that uses the generic tightened grip (grip.dm): "Tighten or Loosen
 // Grip" or using it in hand braces it, a fall can shake a loose hold free, and a
 // blow to the hand can break it. Someone outside yanking on a held door starts a
-// contest of strength against the hold. Locked doors stay locked: only the
-// vehicle's key opens them. Everything runs on clicks and moves; nothing ticks.
+// contest of strength against the hold. Locked doors stay locked from outside:
+// only the vehicle's key opens them there. Inside, the handle or the emergency
+// release opens a locked door (vehicle_exits.dm). Everything runs on clicks and moves; nothing ticks.
 
 #define CAR_DOOR_YANK_TIME 12			// ds of pulling before each yank resolves
 #define CAR_DOOR_TIGHT_GRIP 1.75		// a tightened hold counts this much more
@@ -135,7 +136,7 @@
 		shut_door_by_hand(user)
 		return
 	if (doors_locked())
-		to_chat(user, SPAN_WARNING("The door is locked. Its key will open it."))
+		inside_release(user)
 		return
 	var/obj/item/car_door_hold/hold = door_held()
 	if (hold && hold.holder != user)
@@ -232,10 +233,12 @@
 
 /obj/structure/vehicleparts/frame/examine(mob/user, distance = -1)
 	. = ..()
+	if (user && has_belly_hatch() && door_inside(user))
+		to_chat(user, SPAN_NOTICE("Her escape hatch is in the floor: right-click her to drop through it while she is stopped."))
 	if (!user || get_dist(user, src) > 3 || !has_hand_door())
 		return
 	var/state = doors_open() ? "open" : (doors_locked() ? "shut and locked" : "shut")
-	to_chat(user, SPAN_NOTICE("Its door is [state]."))
+	to_chat(user, SPAN_NOTICE("Its door is [state][door_inside(user) && doors_locked() ? ": the inside release opens it" : ""]."))
 	var/obj/item/car_door_hold/hold = door_held()
 	if (hold)
 		to_chat(user, SPAN_NOTICE("[hold.holder] is holding it shut[hold.grip_tightened ? " with a tight grip" : ""]."))
