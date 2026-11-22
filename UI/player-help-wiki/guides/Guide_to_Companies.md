@@ -21,7 +21,7 @@ Only shareholders can build or stock company stalls. When you build one, you cho
 
 To stock a stall, use an item on it and set its price. A price of 0 gives the item away free. Stacks add to an existing product line. A wrench secures or unsecures the stall, and only shareholders can use one on it. Shareholders cannot buy from their own company's stalls.
 
-Customers put coins (or the stall's fiat currency) into the stall, then pick a product. If the customer belongs to a faction, its **sales tax** is added on top of the price and goes to that faction's treasury. The rest goes into the company's undistributed profits.
+Customers put coins (or the stall's fiat currency) into the stall, then pick a product. If you pick a product before putting in enough money, the stall waits; put in the rest and the purchase completes. If the customer belongs to a faction, its **sales tax** is added on top of the price and goes to that faction's treasury. The rest goes into the company's undistributed profits.
 
 ## The stock market
 
