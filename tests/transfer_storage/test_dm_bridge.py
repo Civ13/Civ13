@@ -198,7 +198,7 @@ class TradePost(unittest.TestCase):
         self.assertIn('begin_import(transfer_id) : begin_return(transfer_id)',
                       proc(BRIDGE, '/datum/transfer_bridge/proc/poll_once'))
         travel = read('code/modules/persistence/region_travel.dm')
-        self.assertIn('transfer_bridge.begin_escrow(destination, list(payload), TRUE)', travel)
+        self.assertIn('transfer_bridge.begin_escrow(destination, payloads, TRUE)', travel)
         self.assertNotIn('begin_escrow(peer, list(payload), TRUE)', POST)
 
     def test_polling_starts_only_after_reconcile(self):

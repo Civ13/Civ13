@@ -2,11 +2,11 @@
 // script and the unit tests read these, so a window's sample data lives in one
 // place. Names and text are invented for previews. Node runs this file as it is,
 // so it uses only type syntax that can be erased.
-import type { AppearanceData, CharacterSetupData, HaircutData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
+import type { AppearanceData, CharacterSetupData, ComputerData, HaircutData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
 import type { Data } from './types.ts';
 // Windows with a declared snapshot type; their fixtures are checked against it.
 type Typed = {
-  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'haircut.tmpl': HaircutData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
+  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'computer.tmpl': ComputerData; 'haircut.tmpl': HaircutData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
   'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'spawn_menu.tmpl': SpawnMenuData; 'storage_window.tmpl': StorageWindowData; 'warehouse_book.tmpl': WarehouseData;
   'vending_machine.tmpl': VendingData; 'vending_machine2.tmpl': VendingData; 'vending_machine_gulag.tmpl': VendingData; 'vending_machine_taotd.tmpl': VendingData;
 };
@@ -15,7 +15,7 @@ export const screens: Fixture[] = [];
 // Window sizes as the game opens them (width, height).
 const sizes = {
   'appearance_changer.tmpl': [800, 450], 'book_reader.tmpl': [625, 650], 'character_flavor.tmpl': [500, 200], 'character_notes.tmpl': [625, 650], 'character_setup.tmpl': [860, 720],
-  'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
+  'chem_disp.tmpl': [390, 655], 'computer.tmpl': [640, 480], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
   'faction_creation.tmpl': [620, 900], 'haircut.tmpl': [800, 660], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
   'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
   'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'spawn_menu.tmpl': [640, 640], 'storage_window.tmpl': [760, 600], 'tech_tree.tmpl': [900, 680],
@@ -253,3 +253,26 @@ add('circuit-editor', 'wiremod_circuit.tmpl', {
   global_basic_types: ['number', 'boolean', 'string', 'any', 'entity'], variables: [{ name: 'last roll', datatype: 'number', color: 'green', is_list: 0 }],
   examined_name: null, examined_desc: null, examined_notices: [], examined_rel_x: 0, examined_rel_y: 0,
 }, 'integrated circuit');
+const computer: ComputerData = {
+  name: 'minicomputer', shell: 'cli', os_name: 'Unga OS', os_version: '1969 edition', powered: 1, case_open: 0, status: '',
+  boot_lines: ['UNGA OS 1969 EDITION', 'MEMORY CHECK OK', 'TAPE DRIVE READY', '1 PROGRAM LOADED'],
+  hardware: [
+    { index: 1, slot: 'cpu', slot_label: 'Processor', name: 'transistor logic board', detail: 'tier 1', icon: 'cpu_chip' },
+    { index: 2, slot: 'drive', slot_label: 'Storage', name: 'tape drive', detail: '16 KB', icon: 'tape_drive' },
+    { index: 3, slot: 'media', slot_label: 'Media', name: 'diskette reader', detail: 'data diskette inside', icon: 'disk_reader' },
+  ],
+  empty_slots: [{ slot: 'expansion', slot_label: 'Expansion' }],
+  programs: [{ id: 'files', name: 'Files', desc: 'Write, read, print and copy text files.', available: 1, reason: '' },
+    { id: 'ledger', name: 'Ledger', desc: 'Keep accounts in columns.', available: 0, reason: 'Needs a tier 2 processor.' }],
+  active: '', files: null,
+};
+const computerFiles: ComputerData['files'] = {
+  drive: { name: 'tape drive', used_kb: 1.2, capacity_kb: 16 },
+  list: [{ index: 1, name: 'NOTES', size_kb: 0.4 }, { index: 2, name: 'HARBOUR LOG', size_kb: 0.8 }],
+  open: null, disk: { name: 'data diskette', used_kb: 0.4, capacity_kb: 4, list: [{ index: 1, name: 'MAP', size_kb: 0.4 }] },
+  printer: { paper: 12 }, max_chars: 4000, max_name: 24,
+};
+add('computer', 'computer.tmpl', computer, 'Minicomputer');
+add('computer-files', 'computer.tmpl', { ...computer, active: 'files', status: 'Saved NOTES.', files: computerFiles }, 'Minicomputer');
+add('computer-editor', 'computer.tmpl', { ...computer, active: 'files', files: { ...computerFiles, open: { index: 1, name: 'NOTES', body: 'Grain count, east store: 41 sacks.\nAsk Mira about the second tape.' } } }, 'Minicomputer');
+add('computer-hardware', 'computer.tmpl', { ...computer, tab: 'hardware', case_open: 1 }, 'Minicomputer');

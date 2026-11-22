@@ -46,27 +46,26 @@
 			</body>
 			</html>
 			"}
-	show_browse(usr, fullpage,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+	show_browse(user, fullpage,"window=[name];border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+
+// The sole browser dispatch boundary. Program implementations handle the
+// already-bound actor through an internal proc, never a Topic override.
+/datum/program/proc/program_actor_ready(mob/living/human/actor, generation = null)
+	if (!actor || actor != usr || actor != user || !origin || QDELETED(origin) || origin.user != actor || origin.active_console_program != src || !(src in origin.programs))
+		return FALSE
+	if (!isnull(generation) && generation != origin.console_session_generation)
+		return FALSE
+	return origin.console_operator_ready(actor)
 
 /datum/program/Topic(href, href_list, hsrc)
-
-	if (!origin)
+	var/mob/living/human/actor = usr
+	if (!program_actor_ready(actor))
 		return
+	actor.face_atom(origin)
+	return program_action(href_list, actor, origin.console_session_generation)
 
-	var/mob/living/human/user = origin.user
-
-	if (!user || user.lying || !ishuman(user))
-		return
-
-	user.face_atom(origin)
-
-	if (get_dist(origin, user) > 1)
-		to_chat(user, "<span class = 'danger'>Get next to \the [origin] to use it.</span>")
-		return FALSE
-
-	if (!user.can_use_hands())
-		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
-		return FALSE
+/datum/program/proc/program_action(list/href_list, mob/living/human/user, session_generation)
+	return
 
 ///////////////////ORION TRAIL GAME//////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -210,8 +209,7 @@
 		mainbody += "<center><b><a href='?src=\ref[src];newgame=1'>New Game</a></b></center>"
 	..()
 
-/datum/program/orion_trail/Topic(href, href_list, hsrc)
-	..()
+/datum/program/orion_trail/program_action(list/href_list, mob/living/human/user, session_generation)
 	if(busy)
 		return
 	busy = TRUE
@@ -789,6 +787,17 @@
 		"mail_msg" = "Message",
 	)
 
+// Mail is stored as text; escape at each HTML boundary, not on save.
+/proc/monkeysoftmail_text_html(value)
+	return html_encode("[value]")
+
+/proc/monkeysoftmail_body_html(value)
+	var/encoded = monkeysoftmail_text_html(value)
+	var/carriage_return = ascii2text(13)
+	encoded = replacetext(encoded, "[carriage_return]\n", "\n")
+	encoded = replacetext(encoded, carriage_return, "\n")
+	return replacetext(encoded, "\n", "<br>")
+
 /datum/program/monkeysoftmail/do_html(mob/living/human/user)
 	if (mainmenu == "---")
 		mainmenu = "<h2><font color=#60AFFE>MONKEYSOFT</font> E-MAIL CLIENT</h2><br>"
@@ -824,13 +833,12 @@
 					if (istype(email_list[i], /datum/email))
 						var/datum/email/em = email_list[i]
 						if (em.read)
-							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+							mainbody += "<a href='?src=\ref[src];mail=[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</a><br>"
 						else
-							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</b></a><br>"
 	..()
 
-/datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
-	..()
+/datum/program/monkeysoftmail/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	var/mdomain = "monkeysoft.ug"
 	switch(user.civilization)
@@ -856,7 +864,7 @@
 		cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = cname
-	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
+	mainbody = "<b>Logged in as <i>[monkeysoftmail_text_html(cname)]</i></b><br>"
 	if (href_list["mail"])
 		if (map && href_list["mail"]=="99999")
 			var/list/email_list = map.emails[cname]
@@ -865,32 +873,44 @@
 					if (istype(email_list[i], /datum/email))
 						var/datum/email/em = email_list[i]
 						if (em.read)
-							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</a><br>"
 						else
-							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</b></a><br>"
 
 		else
 			var/tcode = text2num(replacetext(href_list["mail"],"c",""))
 			var/datum/email/chosen = map.emails[cname][tcode]
 			chosen.read = TRUE
-			mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+			mainbody += "---<br>From: <i>[monkeysoftmail_text_html(chosen.sender)]</i><br>To: <i>[monkeysoftmail_text_html(chosen.receiver)]</i><br><i>Received at [monkeysoftmail_text_html(chosen.date)]</i><br>---<br><b>[monkeysoftmail_text_html(chosen.subject)]</b><br>[monkeysoftmail_body_html(chosen.message)]<br>"
 			mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 
 	if (href_list["sendmail"])
 		switch(href_list["sendmail"])
 			if ("2")
-				tmp_comp_vars["mail_rec"] = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@kogama.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
+				var/prompt_result = WWinput(user, "Who to send the e-mail to?","e-mail",cname,list("mail@rednikov.ug","mail@kogama.ug","mail@goldstein.ug","mail@blu.ug","mail@police.gov"))
+				if (!program_actor_ready(user, session_generation))
+					return
+				tmp_comp_vars["mail_rec"] = prompt_result
 			if ("3")
-				tmp_comp_vars["mail_subj"] = player_input(user, "What is the subject?", "e-mail", tmp_comp_vars["mail_subj"], "text", null, FALSE)
+				var/prompt_result = player_input(user, "What is the subject?", "e-mail", tmp_comp_vars["mail_subj"], "text", null, FALSE)
+				if (!program_actor_ready(user, session_generation))
+					return
+				tmp_comp_vars["mail_subj"] = prompt_result
 			if ("4")
-				tmp_comp_vars["mail_msg"] = player_input(user, "What is the message?", "e-mail", tmp_comp_vars["mail_msg"], "message", null, FALSE)
+				var/prompt_result = player_input(user, "What is the message?", "e-mail", tmp_comp_vars["mail_msg"], "message", null, FALSE)
+				if (!program_actor_ready(user, session_generation))
+					return
+				tmp_comp_vars["mail_msg"] = prompt_result
 			if ("5")
-				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(cname))
+				var/prompt_result = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(cname))
+				if (!program_actor_ready(user, session_generation))
+					return
+				tmp_comp_vars["mail_snd"] = prompt_result
 
 //		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br><br>"
-		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
+		mainbody += "From: [monkeysoftmail_text_html(tmp_comp_vars["mail_snd"])]<br>To: <a href='?src=\ref[src];sendmail=2'>[monkeysoftmail_text_html(tmp_comp_vars["mail_rec"])]</a><br>"
+		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[monkeysoftmail_text_html(tmp_comp_vars["mail_subj"])]</a><br><br>"
+		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[monkeysoftmail_body_html(tmp_comp_vars["mail_msg"])]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 	if (href_list["mail_send"])
 		var/datum/email/eml = new/datum/email
@@ -908,10 +928,10 @@
 		tmp_comp_vars["mail_subj"] = "RE:[chosen.subject]"
 		tmp_comp_vars["mail_snd"] = chosen.receiver
 		tmp_comp_vars["mail_rec"] = chosen.sender
-		tmp_comp_vars["mail_msg"] = "___________________<br>[chosen.message]"
-		mainbody += "From: [chosen.receiver]<br>To: [chosen.sender]<br>"
-		mainbody += "Subject: RE:[chosen.subject]<br><br>"
-		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
+		tmp_comp_vars["mail_msg"] = "___________________\n[chosen.message]"
+		mainbody += "From: [monkeysoftmail_text_html(chosen.receiver)]<br>To: [monkeysoftmail_text_html(chosen.sender)]<br>"
+		mainbody += "Subject: RE:[monkeysoftmail_text_html(chosen.subject)]<br><br>"
+		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[monkeysoftmail_body_html(tmp_comp_vars["mail_msg"])]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 
 	sleep(0.5)
@@ -931,12 +951,24 @@
 		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><br>"
 	..()
 
-/datum/program/deepnet/Topic(href, href_list, hsrc)
-	..()
+// Seller-side actions must resolve the live order against the requesting
+// character's account, not against the buttons shown by an earlier render.
+/datum/program/deepnet/proc/active_seller_order(id, mob/living/human/actor)
+	if (!map || !istext(id) || !istype(actor) || QDELETED(actor) || actor != usr || actor != user || !origin || QDELETED(origin) || actor != origin.user || actor.stat || actor.lying || !actor.can_use_hands() || actor.z != origin.z || get_dist(actor, origin) > 1)
+		return null
+	var/account = deepnet_account(actor)
+	var/list/order = map.globalmarketplace[id]
+	if (!islist(order) || order.len < 7 || order[1] != account || order[5] != "deepnet" || order[6] != id || order[7] != 1)
+		return null
+	var/obj/item/I = order[2]
+	return istype(I) && !QDELETED(I) ? order : null
+
+/datum/program/deepnet/proc/deepnet_account(mob/living/human/actor)
+	return actor.original_job_title == "Legitimate Business" ? actor.real_name : actor.civilization
+
+/datum/program/deepnet/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
-	var/u_account = user.civilization
-	if (user.original_job_title == "Legitimate Business")
-		u_account = user.real_name
+	var/u_account = deepnet_account(user)
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
@@ -973,28 +1005,39 @@
 					do_html(user)
 					return
 
-		if (findtext(href_list["deepnet"],"ch"))
-			var/tcode = replacetext(href_list["deepnet"],"ch","")
-			var/cost = (map.globalmarketplace[tcode][4])
-			var/newprice = player_input(user, "What shall the new price be, in dollars?", "DEEPNET", cost/4, "num", null, TRUE)
-			if (!isnum(newprice))
+		if (findtext(href_list["deepnet"],"ch") == 1)
+			var/tcode = copytext(href_list["deepnet"], 3)
+			var/mob/living/human/actor = usr
+			var/obj/map_metadata/order_map = map
+			var/obj/structure/computer/order_computer = origin
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
 				return
-			if (newprice <= 0)
+			var/cost = order[4]
+			var/newprice = player_input(actor, "What shall the new price be, in dollars?", "DEEPNET", cost/4, "num", null, TRUE)
+			if (!program_actor_ready(user, session_generation) || !isnum(newprice) || newprice <= 0 || map != order_map || origin != order_computer || active_seller_order(tcode, actor) != order)
 				return
-			map.globalmarketplace[tcode][4] = newprice*4
+			order[4] = newprice*4
 			mainbody += "You update the listing's price."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
-		if (findtext(href_list["deepnet"],"cn"))
-			var/tcode = replacetext(href_list["deepnet"],"cn","")
-			var/obj/BO = map.globalmarketplace[tcode][2]
-			BO.forceMove(get_turf(origin))
-			map.globalmarketplace[tcode][7] = 0
-			map.globalmarketplace -= map.globalmarketplace[tcode]
+		if (findtext(href_list["deepnet"],"cn") == 1)
+			var/tcode = copytext(href_list["deepnet"], 3)
+			var/mob/living/human/actor = usr
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
+				return
+			var/turf/site = get_turf(origin)
+			if (!site)
+				return
+			var/obj/item/BO = order[2]
+			order[7] = 0
+			map.globalmarketplace -= tcode
+			BO.forceMove(site)
 			mainbody += "You cancel your sell order and get your items back."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
 		switch(href_list["deepnet"])
 			if ("2") //buy
@@ -1017,7 +1060,7 @@
 								return
 							else
 								var/price = player_input(user, "What price do you want to place the [ST.amount] [ST] for sale in the DEEPNET? (in dollars) 0 to cancel.", null, null, "num", null, TRUE)
-								if (!isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
+								if (!program_actor_ready(user, session_generation) || !isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
 									return
 								if (price <= 0)
 									return
@@ -1033,14 +1076,14 @@
 									return
 						else
 							var/price = player_input(user, "What price do you want to place the [M] for sale in the DEEPNET? (in dollars).", null, null, "num", null, TRUE)
-							if (!isnum(price) || QDELETED(M) || user.get_active_hand() != M)
+							if (!program_actor_ready(user, session_generation) || !isnum(price) || QDELETED(M) || user.get_active_hand() != M)
 								return
 							if (price <= 0)
 								return
 							else
 								//owner, object, amount, price, sale/buy, id number, fulfilled
 								var/idx = rand(1,999999)
-								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"deepnet","[idx]",1))
+								map.globalmarketplace += list("[idx]" = list(u_account,M,1,price*4,"deepnet","[idx]",1))
 								user.drop_from_inventory(M)
 								M.forceMove(locate(0,0,0))
 								mainbody += "You place \the [M] for sale in the <b>DEEPNET</b>."
@@ -1052,7 +1095,7 @@
 				if (href_list["deepnet"] == "7") //change
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == u_account)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
@@ -1064,7 +1107,7 @@
 				if (href_list["deepnet"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == u_account)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
@@ -1114,8 +1157,7 @@
 			mainbody += "<a href='?src=\ref[src];cartrader=[i]'>[i]</a><br>"
 	..()
 
-/datum/program/cartrader/Topic(href, href_list, hsrc)
-	..()
+/datum/program/cartrader/program_action(list/href_list, mob/living/human/user, session_generation)
 	if (href_list["carlist"])
 		var/list/choice = list("Yamasaki M125 motorcycle (160)","ASNO Piccolino (400)","ASNO Quattroporte (500)","Yamasaki Kazoku (600)","SMC Wyoming (700)","SMC Falcon (750)","Ubermacht Erstenklasse (800)","Yamasaki Shinobu 5000 (1200)")
 		mainbody = ""
@@ -1143,6 +1185,8 @@
 
 		var/obj/effects/premadevehicles/PV
 		var/chosencolor = WWinput(user,"Which color do you want?","Car Purchase","Black",list("Black","Red","Blue","Green","Yellow","Dark Grey","Light Grey","White"))
+		if (!program_actor_ready(user, session_generation) || !chosencolor)
+			return
 		var/basecolor = chosencolor
 		switch(chosencolor)
 			if ("Black")
@@ -1297,8 +1341,7 @@
 	mainmenu += "<a href='?src=\ref[src];bail=1'>Pay Bail</a>"
 	..()
 
-/datum/program/bail/Topic(href, href_list, hsrc)
-	..()
+/datum/program/bail/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	for(var/mob/living/human/H in world) // DEBUG: Change to player_list
 		var/area/A = get_area(H)
@@ -1316,7 +1359,7 @@
 						if (H.bail_price > 0)
 							available_prisoners += H
 			var/choice = WWinput(usr, "Who do you wish to pay the bail for?","Choose a bail","Cancel",available_prisoners)
-			if (choice == "Cancel" || !choice)
+			if (!program_actor_ready(user, session_generation) || choice == "Cancel" || !choice)
 				return
 			else
 				var/mob/living/human/U
@@ -1365,8 +1408,7 @@
 	mainmenu += "<a href='?src=\ref[src];fix=1'>Restore doors</a>"
 	..()
 
-/datum/program/swiftfix/Topic(href, href_list, hsrc)
-	..()
+/datum/program/swiftfix/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	if (href_list["fix"])
 		if (href_list["fix"] == "1")
@@ -1378,9 +1420,10 @@
 					else if (istype(user.get_inactive_hand(),/obj/item/stack/money))
 						M = user.get_inactive_hand()
 					if (M && M.value*M.amount >= 100*4)
+						var/repair_group = user.civilization
 						if(WWinput(user, "This will attempt to repair any missing doors for 100 dollars. Are you sure?", "Door Repair", "Yes", list("Yes", "No")) == "No")
 							return
-						else if (QDELETED(M) || M.value*M.amount < 100*4 || !M.use(100/5)) // re-check after the prompt sleeps
+						else if (!program_actor_ready(user, session_generation) || user.civilization != repair_group || QDELETED(M) || !user.item_is_in_hands(M) || M.value*M.amount < 100*4 || !M.use(100/5)) // re-check after the prompt sleeps
 							return
 						else
 							switch(user.civilization)
@@ -1438,7 +1481,7 @@
 		mainbody = "<font color='yellow'>This service is intended for civilians.</font>"
 	..()
 
-/datum/program/permits/Topic(href, href_list, hsrc)
+/datum/program/permits/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	if (href_list["permits"])
 		if (user.civilization == "Sheriff Office" || user.civilization == "Paramedics" || user.civilization == "Government")
@@ -1498,7 +1541,7 @@
 		mainmenu = "<h2>WARRANT TERMINAL</h2><br>"
 		mainmenu += "<a href='?src=\ref[src];warrants=2'>List Warrants</a>&nbsp;<a href='?src=\ref[src];warrants=3'>Register Suspect</a>&nbsp;<a href='?src=\ref[src];warrants=4'>Issue a Warrant</a>"
 	..()
-/datum/program/warrants/Topic(href, href_list, hsrc)
+/datum/program/warrants/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	if (href_list["warrants"])
 		if (href_list["warrants"] == "2")
@@ -1588,13 +1631,13 @@
 					if(M.stat != DEAD)
 						civilians += M
 				var/choice = WWinput(usr, "Who to issue a warrant for?","Assign a person","Cancel",civilians)
-				if (choice == "Cancel" || !choice)
+				if (!program_actor_ready(user, session_generation) || user.original_job_title != "County Judge" || user.civilization != "Government" || choice == "Cancel" || !choice)
 					return
 				else
 					var/mob/living/human/U
 					U = choice
 					var/crimechoice = WWinput(usr, "Choose a crime:","Arrest Warrant Reason","Cancel",crimelist)
-					if (crimechoice == "Cancel" || !crimechoice)
+					if (!program_actor_ready(user, session_generation) || user.original_job_title != "County Judge" || user.civilization != "Government" || QDELETED(U) || crimechoice == "Cancel" || !crimechoice)
 						return
 					else
 						if (!(U.real_name in map.warrants))
@@ -1681,8 +1724,19 @@
 		mainmenu += "<a href='?src=\ref[src];nile=2'>Buy</a>&nbsp;<a href='?src=\ref[src];nile=3'>Sell</a>&nbsp;<a href='?src=\ref[src];nile=4'>Account</a><br>"
 	..()
 
-/datum/program/nilestore/Topic(href, href_list, hsrc)
-	..()
+// Seller-side actions must resolve the live order against the requesting
+// character's group account, not the buttons shown by an earlier render.
+/datum/program/nilestore/proc/active_seller_order(id, mob/living/human/actor)
+	if (!map || !istext(id) || !istype(actor) || QDELETED(actor) || actor != usr || actor != user || !origin || QDELETED(origin) || actor != origin.user || actor.stat || actor.lying || !actor.can_use_hands() || actor.z != origin.z || get_dist(actor, origin) > 1)
+		return null
+	var/account = actor.civilization
+	var/list/order = map.globalmarketplace[id]
+	if (!islist(order) || order.len < 7 || order[1] != account || order[5] != "nile" || order[6] != id || order[7] != 1)
+		return null
+	var/obj/item/I = order[2]
+	return istype(I) && !QDELETED(I) ? order : null
+
+/datum/program/nilestore/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	if (href_list["nile"])
 		if (findtext(href_list["nile"],"b"))
@@ -1720,28 +1774,39 @@
 					do_html(user)
 					return
 
-		if (findtext(href_list["nile"],"ch"))
-			var/tcode = replacetext(href_list["nile"],"ch","")
-			var/cost = text2num(map.globalmarketplace[tcode][4])
-			var/newprice = player_input(user, "What shall the new price be, in dollars?", "nile.ug", cost/4, "num", null, TRUE)
-			if (!isnum(newprice))
+		if (findtext(href_list["nile"],"ch") == 1)
+			var/tcode = copytext(href_list["nile"], 3)
+			var/mob/living/human/actor = usr
+			var/obj/map_metadata/order_map = map
+			var/obj/structure/computer/order_computer = origin
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
 				return
-			if (newprice <= 0)
+			var/cost = order[4]
+			var/newprice = player_input(actor, "What shall the new price be, in dollars?", "nile.ug", cost/4, "num", null, TRUE)
+			if (!program_actor_ready(user, session_generation) || !isnum(newprice) || newprice <= 0 || map != order_map || origin != order_computer || active_seller_order(tcode, actor) != order)
 				return
-			map.globalmarketplace[tcode][4] = newprice*4
+			order[4] = newprice*4
 			mainbody += "You update the listing's price."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
-		if (findtext(href_list["nile"],"cn"))
-			var/tcode = replacetext(href_list["nile"],"cn","")
-			var/obj/BO = map.globalmarketplace[tcode][2]
-			BO.forceMove(get_turf(origin))
-			map.globalmarketplace[tcode][7] = 0
-			map.globalmarketplace -= map.globalmarketplace[tcode]
+		if (findtext(href_list["nile"],"cn") == 1)
+			var/tcode = copytext(href_list["nile"], 3)
+			var/mob/living/human/actor = usr
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
+				return
+			var/turf/site = get_turf(origin)
+			if (!site)
+				return
+			var/obj/item/BO = order[2]
+			order[7] = 0
+			map.globalmarketplace -= tcode
+			BO.forceMove(site)
 			mainbody += "You cancel your sell order and get your items back."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
 		switch(href_list["nile"])
 			if ("2") //buy
@@ -1766,7 +1831,7 @@
 								return
 							else
 								var/price = player_input(user, "What price do you want to place the [ST.amount] [ST] for sale in the nile? (in dollars) 0 to cancel.", null, null, "num", null, TRUE)
-								if (!isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
+								if (!program_actor_ready(user, session_generation) || !isnum(price) || QDELETED(ST) || user.get_active_hand() != ST)
 									return
 								if (price <= 0)
 									return
@@ -1782,7 +1847,7 @@
 									return
 						else
 							var/price = player_input(user, "What price do you want to place the [M] for sale at nile.ug? (in dollars).", null, null, "num", null, TRUE)
-							if (!isnum(price) || QDELETED(M) || user.get_active_hand() != M)
+							if (!program_actor_ready(user, session_generation) || !isnum(price) || QDELETED(M) || user.get_active_hand() != M)
 								return
 							if (price <= 0)
 								return
@@ -1801,7 +1866,7 @@
 				if (href_list["nile"] == "7") //change
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody = "You have no orders on the market!"
@@ -1813,7 +1878,7 @@
 				if (href_list["nile"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == user.civilization)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody = "You have no orders on the market!"
@@ -1862,8 +1927,7 @@
 		mainmenu += "<a href='?src=\ref[src];elektra=2'>Buy</a><br>"
 	..()
 
-/datum/program/elektra/Topic(href, href_list, hsrc)
-	..()
+/datum/program/elektra/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	if (findtext(href_list["elektra"],"B"))
 		var/selectedprec = splittext(href_list["elektra"],"-")[2]
@@ -1947,8 +2011,7 @@
 			mainbody = "<font color='red'><b>ACCESS DENIED</b></font><br>"
 	..()
 
-/datum/program/junglebank/Topic(href, href_list, hsrc)
-	..()
+/datum/program/junglebank/program_action(list/href_list, mob/living/human/user, session_generation)
 	mainbody = ""
 	if (href_list["bank"])
 		if (findtext(href_list["bank"],"b"))
@@ -1980,6 +2043,8 @@
 			var/choice1 = WWinput(user, "Are you sure you want to sell [map.globalmarketplace[tcode][1]] stocks for [map.globalmarketplace[tcode][4]/4] dollars?","Selling Stocks","No", list("Yes","No"))
 			// The prompt sleeps: only sell a stock this user still owns, so two
 			// answers cannot both pay out.
+			if (!program_actor_ready(user, session_generation))
+				return
 			if (choice1 != "Yes" || !map.globalmarketplace[tcode] || map.globalmarketplace[tcode][7] != 0 || map.globalmarketplace[tcode][2] != user)
 				sleep(0.5)
 				do_html(user)
@@ -2105,8 +2170,7 @@
 			mainbody += "<a href='?src=\ref[src];vehiclegiver=[i]'>[i]</a><br>"
 	..()
 
-/datum/program/carspawn/Topic(href, href_list, hsrc)
-	..()
+/datum/program/carspawn/program_action(list/href_list, mob/living/human/user, session_generation)
 	if (href_list["vehiclelist"])
 		var/list/choice
 		mainbody = "Supply Points Available: "

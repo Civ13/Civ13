@@ -2070,6 +2070,14 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
         'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'legacy_computer_panels': {'files': (
+        'tests/legacy_program_session/test_authority.py',
+        'tests/legacy_computer_mail/test_defensive_rendering.py',
+        'tests/legacy_deepnet_orders/test_seller_authority.py',
+        'tests/legacy_nile_orders/test_seller_authority.py'), 'paths': (
+        'tests/legacy_program_session/', 'tests/legacy_computer_mail/',
+        'tests/legacy_deepnet_orders/', 'tests/legacy_nile_orders/',
+        'code/modules/1713/computers/'), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Stdlib-only order checks: prompt paths re-check before paying (lagged repeat clicks).
     'repeat_click_payment': {'files': ('tests/repeat_click_payment/test_source.py',), 'paths': (
         'tests/repeat_click_payment/',), 'shared_paths': ('tests/save_movement/source_adapter.py',

@@ -94,7 +94,8 @@ class InventoryDragTests(unittest.TestCase):
 
     def test_special_storages_opt_out_of_drag_insertion(self):
         self.assertEqual(proc_body(KEYCHAIN, '/obj/item/weapon/storage/belt/keychain/accepts_inventory_drag').strip(), 'return FALSE')
-        self.assertEqual(proc_body(MAIL, '/obj/item/weapon/storage/envelope/accepts_inventory_drag').strip(), 'return opened')
+        self.assertEqual(proc_body(MAIL, '/obj/item/weapon/storage/envelope/accepts_inventory_drag').strip(), 'return storage_contents_accessible()')
+        self.assertEqual(proc_body(MAIL, '/obj/item/weapon/storage/envelope/storage_contents_accessible').strip(), 'return opened')
         self.assertEqual(proc_body(DRAG, '/obj/item/weapon/storage/proc/accepts_inventory_drag').strip(), 'return TRUE')
 
 
