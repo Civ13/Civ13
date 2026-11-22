@@ -173,10 +173,10 @@ var/global/list/familiarity_node_cache = list()
 // src noticed thing nearby: once per kind.
 /mob/living/human/proc/note_familiar_sight(atom/movable/thing)
 	var/node_id = familiarity_node_of(thing)
-	if (!node_id || !can_grow_familiar(node_id))
+	if (!node_id)
 		return 0
 	var/kind = "n:[thing.type]"
-	if (familiarity_value(kind))
+	if (familiarity_value(kind) || !can_grow_familiar(node_id))
 		return 0
 	if (!islist(familiarity))
 		familiarity = list("day" = familiarity_today())

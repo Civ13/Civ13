@@ -35,6 +35,26 @@ class FamiliarityTests(unittest.TestCase):
                        'knows_recipe_node(node_id)', 'recipe_knowledge_exempt()', 'study_fraction(node_id) < 0.99'):
             self.assertIn(needle, grow)
 
+    def test_seen_sight_skips_growth_checks_without_skipping_node_cache(self):
+        module = read(MODULE)
+        sight = module.split('/mob/living/human/proc/note_familiar_sight(', 1)[1].split(
+            '/proc/note_familiar_click(', 1)[0]
+        expected = ('\tvar/node_id = familiarity_node_of(thing)\n'
+                    '\tif (!node_id)\n\t\treturn 0\n'
+                    '\tvar/kind = "n:[thing.type]"\n'
+                    '\tif (familiarity_value(kind) || !can_grow_familiar(node_id))\n'
+                    '\t\treturn 0\n')
+        self.assertIn(expected, sight)
+        self.assertEqual(sight.count('can_grow_familiar(node_id)'), 1)
+        self.assertLess(sight.index(expected), sight.index('familiarity[kind] = 1'))
+        self.assertLess(sight.index('familiarity[kind] = 1'), sight.index('return add_familiarity('))
+        # These changes would either repeat the eligibility work or admit a
+        # previously seen type. The source contract must reject both.
+        for mutant in (sight.replace('familiarity_value(kind) || !can_grow_familiar(node_id)',
+                                     '!can_grow_familiar(node_id) || familiarity_value(kind)'),
+                       sight.replace('familiarity_value(kind) || ', '')):
+            self.assertNotIn(expected, mutant)
+
     def test_it_never_finishes_a_subject_alone(self):
         base, step, floor = define('FAMILIARITY_CAP_BASE'), define('FAMILIARITY_CAP_STEP'), define('FAMILIARITY_CAP_FLOOR')
         self.assertLess(base, 1)
