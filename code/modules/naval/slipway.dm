@@ -353,7 +353,7 @@ var/global/list/slipway_designs = null
 	// A hull hauled out on the berth, or one lying off it (slipway_haul.dm).
 	if (haul_options(options))
 		for (var/label in options.Copy())
-			if (!(options[label] in list("relaunch", "survey")))
+			if (!(options[label] in list("relaunch", "survey")) && !istype(options[label], /datum/craft))
 				options -= label
 	var/text = status_text()
 	if (!D)

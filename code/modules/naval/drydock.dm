@@ -329,10 +329,14 @@ var/global/list/dock_basin_turfs = list()
 		options["Open the sluices"] = "flood"
 	if (basin())
 		options["Survey her condition"] = "survey"
+		breakup_options(options, breakup_hulls())
 	var/B = survey_basin()
 	var/text = islist(B) ? "The gate is [shut ? "shut" : "open"] and the basin is [drained ? "dry" : "flooded"]." : B
 	var/choice = WWinput(H, text, name, "Cancel", options + list("Cancel"))
 	if (!(choice in options) || busy || !Adjacent(H))
+		return
+	if (istype(options[choice], /datum/craft))
+		breakup_action(H, options[choice])
 		return
 	switch (options[choice])
 		if ("gate")

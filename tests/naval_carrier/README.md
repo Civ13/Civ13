@@ -460,7 +460,13 @@ plain ground or joined off the berth are refused. On the slipway berth a draught
 with one tile moved and a mast added marks three tiles (lift, add, change);
 done by hand and refitted, she matches it and the marks are gone. A yard office by the slipway cuts work
 to two thirds of the time within its reach, fits three schooner pieces from
-thirty wood in its stock, lists the slipway in its survey and files a draught.
+thirty wood in its stock, lists the slipway in its survey and files a draught. A hauled-out
+hull is offered for breaking up at the post (and one in the boathouse slip at
+the boathouse); she is refused afloat, with someone aboard, registered to a
+party the player is not in (her listed captain may) or, unregistered, to an
+unverified player. Broken up, three quarters of her wood is stacked by the
+post, her chest's contents, loose rope and a stranger's block are set down
+there whole, and her floors, chest and tiller are gone.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
 

@@ -219,6 +219,10 @@
 // The post's menu for a hauled hull or one off the ways. TRUE when the
 // action was one of these.
 /obj/structure/slipway/proc/haul_action(mob/living/human/H, action)
+	// Breaking her up for parts (berth_breakup.dm).
+	if (istype(action, /datum/craft))
+		breakup_action(H, action)
+		return TRUE
 	switch (action)
 		if ("survey")
 			var/datum/craft/C = hauled_hull()
@@ -260,6 +264,7 @@
 	if (C)
 		options["Launch the [C.name] again"] = "relaunch"
 		options["Survey her condition"] = "survey"
+		breakup_options(options, breakup_hulls())
 		return TRUE
 	if (!design)
 		C = hull_off_ways()
