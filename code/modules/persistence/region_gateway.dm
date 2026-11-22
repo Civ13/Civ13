@@ -17,6 +17,8 @@
 #define GATEWAY_FORWARD_WAIT (2 MINUTES)
 #define GATEWAY_RETRY_DELAY (5 SECONDS)
 #define GATEWAY_STATUS_INTERVAL (1 MINUTES)
+// The shard board polls once a minute; allow a delayed poll but not a stuck cache.
+#define GATEWAY_POPULATION_MAX_AGE (3 MINUTES)
 
 /obj/map_metadata/gateway
 	dig_down_underground = FALSE
@@ -150,24 +152,45 @@
 		lobby.gateway_forwarding = FALSE
 	return sent
 
-// Players across every land of the group: this world's clients and each peer's
-// last answer (asleep lands count as empty).
-/proc/region_gateway_players()
-	. = length(clients)
+// Count connected clients in the regions behind the gateway, not clients
+// waiting to be forwarded here. Reuse the shard board's observations; this
+// must not make network requests or wake sleeping regions.
+/proc/region_gateway_population()
+	var/players = 0
+	var/unknown = 0
 	for(var/id in shard_group.peers)
 		var/list/peer = shard_group.peers[id]
-		if(islist(peer) && isnum(peer["players"]))
-			. += peer["players"]
+		var/checked = peer["checked"]
+		if(!isnum(checked) || world.time - checked > GATEWAY_POPULATION_MAX_AGE)
+			unknown++
+			continue
+		// The doorman has confirmed these regions cannot host clients.
+		if(peer["state"] in list("ASLEEP", "COLD", "STOPPED"))
+			continue
+		var/count = peer["players"]
+		if(peer["state"] != "UP" || !isnum(count) || isnan(count) || isinf(count) || count < 0 || count != round(count))
+			unknown++
+			continue
+		players += count
+	return list("players" = players, "unknown" = unknown)
 
-// The hub lists the gateway, so its entry describes the group: the mainland's
-// map and everyone playing in any land, not this empty world.
+// BYOND's built-in count is for the listed world itself. Use its status text
+// for the region-wide population and say when the sum is only a lower bound.
 /proc/region_gateway_hub_status()
 	var/list/mainland = shard_group.peers[shard_group.mainland]
 	var/title = islist(mainland) && istext(mainland["map"]) ? mainland["map"] : null
+	var/list/population = region_gateway_population()
+	var/players = population["players"]
+	var/unknown = population["unknown"]
 	. = ""
 	if(title)
 		. += "<b>Mainland:</b> [hub_status_text(title)]<br>"
-	. += "<b>Players:</b> [region_gateway_players()] across the lands<br>"
+	if(!unknown)
+		. += "<b>Players across regions:</b> [players]<br>"
+	else if(unknown == length(shard_group.peers))
+		. += "<b>Players across regions:</b> unavailable<br>"
+	else
+		. += "<b>Players across regions:</b> at least [players] ([unknown] [unknown == 1 ? "region" : "regions"] unconfirmed)<br>"
 
 // The peers' player counts change without anyone logging in here.
 /proc/region_gateway_status_loop()
@@ -184,3 +207,4 @@
 #undef GATEWAY_FORWARD_WAIT
 #undef GATEWAY_RETRY_DELAY
 #undef GATEWAY_STATUS_INTERVAL
+#undef GATEWAY_POPULATION_MAX_AGE
