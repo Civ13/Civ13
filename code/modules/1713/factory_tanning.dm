@@ -232,8 +232,14 @@ var/global/list/factory_active_tanning_drums = list()
 	else if (wait_reason)
 		to_chat(user, SPAN_WARNING("It waits: [wait_reason]."))
 
+// A waiting drum gives its grid reservation back so other machines can run
+// (#6856); drum_step() reserves again once it can work.
 /obj/structure/tanning_drum/proc/drum_wait(reason)
 	wait_reason = reason
+	if (powersource && (src in powersource.power_consumers))
+		drum_release_power()
+	else
+		powered = FALSE
 	if (working)
 		working = FALSE
 		update_icon()
@@ -260,6 +266,14 @@ var/global/list/factory_active_tanning_drums = list()
 	reagents.add_reagent("tannin", TANNING_DRUM_BARK_YIELD)
 	return TRUE
 
+// Why the next hide cannot be tanned from the liquids held now, or null.
+/obj/structure/tanning_drum/proc/drum_supply_wait(wash)
+	if (wash && reagents.get_reagent_amount("water") < TANNING_DRUM_COST)
+		return "it needs water"
+	if (reagents.get_reagent_amount("tannin") < TANNING_DRUM_COST)
+		return bark ? "it needs water to soak its bark" : "it needs tannin or bark"
+	return null
+
 // One process step (a second). Returns TRUE when a leather sheet was made.
 /obj/structure/tanning_drum/proc/drum_step()
 	if (QDELETED(src) || !isturf(loc))
@@ -276,26 +290,30 @@ var/global/list/factory_active_tanning_drums = list()
 		update_icon()
 		return FALSE
 	if (!anchored)
-		drum_release_power()
 		return drum_wait("it is not fastened in place")
-	if (!draw_cable_power())
-		powered = FALSE
-		return drum_wait("it has no power")
-	powered = TRUE
-	drum_brew()
-	var/wash = tanning_drum_needs_wash(text2path("[key]"))
-	if (wash && reagents.get_reagent_amount("water") < TANNING_DRUM_COST)
-		return drum_wait("it needs water")
-	if (reagents.get_reagent_amount("tannin") < TANNING_DRUM_COST)
-		return drum_wait(bark ? "it needs water to soak its bark" : "it needs tannin or bark")
 	var/turf/T = loc
 	var/obj/item/stack/material/leather/target = null
 	for (var/obj/item/stack/material/leather/L in T)
 		if (L.type == /obj/item/stack/material/leather && L.amount < L.max_amount)
 			target = L
 			break
+	// Supplies and output space are checked before power is reserved, so an
+	// idle drum does not hold grid capacity it cannot use.
 	if (!target && factory_loose_items(T) >= TANNING_DRUM_OUTPUT_LIMIT)
 		return drum_wait("its tile is full")
+	var/wash = tanning_drum_needs_wash(text2path("[key]"))
+	var/can_brew = bark >= 1 && reagents.get_reagent_amount("tannin") < TANNING_DRUM_COST && reagents.get_reagent_amount("water") >= TANNING_DRUM_BARK_YIELD
+	if (!can_brew)
+		var/supply_wait = drum_supply_wait(wash)
+		if (supply_wait)
+			return drum_wait(supply_wait)
+	if (!draw_cable_power())
+		return drum_wait("it has no power")
+	powered = TRUE
+	drum_brew()
+	var/after_brew = drum_supply_wait(wash)
+	if (after_brew)
+		return drum_wait(after_brew)
 	wait_reason = null
 	if (!working)
 		working = TRUE

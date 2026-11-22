@@ -146,6 +146,8 @@ var/machine_runtime_error = FALSE
 	factory_tanning_drums_step()
 	factory_tanning_drums_step()
 	machine_check(D.hide_count() == 27 && D.wait_reason == "it needs water" && !D.working && D.icon_state == "tanning_drum_off", "without water an unwashed hide waits")
+	var/obj/structure/cable/grid = power[1]
+	machine_check(!D.powered && !(D in grid.power_consumers), "a drum waiting for supplies gives its power reservation back")
 	// Saving.
 	machine_check(!D.persistence_runtime_var("hides") && !D.persistence_runtime_var("bark") && D.persistence_runtime_var("work_steps") && D.persistence_runtime_var("working"), "the hoppers are saved and progress is not")
 	D.hides["/obj/item/stack/material/stone"] = 4
