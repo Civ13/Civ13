@@ -193,6 +193,16 @@ class RestoreIntegrationSources(unittest.TestCase):
         self.assertIn('restore_dug_levels()', after)
         self.assertIn('catch', after)
 
+    def test_level_opens_retry_a_briefly_held_file(self):
+        # The handover backup copies map_saves while the standby loads it (Orbit, 2026-11-22).
+        loading = (ROOT / 'code/modules/persistence/loading.dm').read_text()
+        contents = loading.split('/map_storage/proc/load_world_contents(', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('new("map_saves/', contents)
+        self.assertEqual(contents.count('open_saved_level('), 2)
+        opener = loading.split('/map_storage/proc/open_saved_level(z)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('sleep(', opener)
+        self.assertIn('another process may hold it', opener)
+
 
 if __name__ == '__main__':
     unittest.main()

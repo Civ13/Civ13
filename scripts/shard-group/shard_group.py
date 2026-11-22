@@ -2295,6 +2295,51 @@ def compile_reported(out):
     return bool(re.search(r'\d+ errors?\b', out or ''))
 
 
+# A checkout ended at its timeout leaves its worktree's index.lock behind, and every
+# later checkout there then fails with "index.lock: File exists" (ten regions on
+# 2026-11-22, after parallel checkouts of 148 commits ran past 600 s). No checkout
+# holds the lock this long, so an older one is a leftover.
+STALE_INDEX_LOCK_SECONDS = 1800
+CHECKOUT_TIMEOUT_SECONDS = 1800
+
+
+def worktree_index_lock(path):
+    """The index.lock git takes for the worktree at path, or None when it cannot tell."""
+    dotgit = Path(path) / '.git'
+    try:
+        if dotgit.is_dir():
+            return dotgit / 'index.lock'
+        text = dotgit.read_text(encoding='utf-8').strip()
+    except OSError:
+        return None
+    if not text.startswith('gitdir:'):
+        return None
+    gitdir = Path(text[len('gitdir:'):].strip())
+    if not gitdir.is_absolute():
+        gitdir = Path(path) / gitdir
+    return gitdir / 'index.lock'
+
+
+def checkout_revision(path, revision, platform, git):
+    """git checkout --force --detach revision in path, clearing an index.lock left by a
+    checkout that was ended (here at its timeout, or earlier by a killed worker)."""
+    lock = worktree_index_lock(path)
+    if lock is not None:
+        try:
+            if time.time() - lock.stat().st_mtime > STALE_INDEX_LOCK_SECONDS:
+                lock.unlink()
+        except OSError:
+            pass
+    code, out = platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path,
+                             timeout=CHECKOUT_TIMEOUT_SECONDS)
+    if code == gaia_host.TIMED_OUT and lock is not None:
+        try:
+            lock.unlink()  # its git was ended with the timeout, so nothing holds it
+        except OSError:
+            pass
+    return code, out
+
+
 def prepare_tree(group, region, path, revision, platform, git, live=False):
     """Check a region's worktree (or its staging worktree) out at revision and write
     everything its compile needs: overlays, the persistent config, rust_g and region.dme.
@@ -2302,7 +2347,7 @@ def prepare_tree(group, region, path, revision, platform, git, live=False):
     live: the world is still running from this worktree (a TDM battle taking an update
     between rounds), so rust_g, which it has loaded, is replaced only when it changed."""
     # --force: the region's config/config.txt override below is rewritten every update.
-    code, out = platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path, timeout=600)
+    code, out = checkout_revision(path, revision, platform, git)
     if code != 0:
         raise RuntimeError('checkout failed: ' + out.strip()[-300:])
     apply_overlays(group, region, path)
