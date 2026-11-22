@@ -12,58 +12,31 @@
 	var/statpanel_next_update = 0
 
 /client/proc/run_verb(verb_name as text)
-	// 1) Collect all available verbs
+	// The panel is a second view of the native verb lists, not a proc API.
+	// Resolve against the current lists, since the client's mob and rights can
+	// change after a button was rendered.
+	if (!istext(verb_name) || !length(verb_name))
+		return FALSE
+
 	var/list/all_verbs = list()
 	all_verbs += verbs
 	if (mob)
 		all_verbs += mob.verbs
 
-	// 2) Try to find and execute by name or path. Exact names win over every
-	// looser match, so "Crafting Atlas" never lands on "Open Web Crafting Atlas".
 	for (var/v in all_verbs)
-		if (!v) continue
-		if (v:name == verb_name || "[v]" == verb_name)
-			var/cmd_name = replacetext(verb_name, " ", "-")
+		if (!v)
+			continue
+		var/registered_name
+		try
+			if (!v:category)
+				continue
+			registered_name = v:name
+		catch
+			continue
+		if (registered_name == verb_name)
+			var/cmd_name = replacetext(registered_name, " ", "-")
 			winset(src, null, "command='[cmd_name]'")
 			return TRUE
-
-	// If verb_name has spaces, try the underscored version: the verb's own
-	// name, or a path that ends in exactly that proc name (not one containing it).
-	if (findtext(verb_name, " "))
-		var/und_name = replacetext(verb_name, " ", "_")
-		var/path_tail = "/[und_name]"
-		for (var/v in all_verbs)
-			if (!v) continue
-			var/v_path = "[v]"
-			if (v:name == und_name || v_path == und_name || (length(v_path) >= length(path_tail) && cmptext(copytext(v_path, length(v_path) - length(path_tail) + 1), path_tail)))
-				var/cmd_name = replacetext(v:name, " ", "-")
-				winset(src, null, "command='[cmd_name]'")
-				return TRUE
-
-	// 3) Try direct proc calls as fallback
-	// No spaces: try direct match
-	if (!findtext(verb_name, " "))
-		if (hascall(src, verb_name))
-			call(src, verb_name)()
-			return TRUE
-		
-		var/datum/admins/A = holder
-		if (A && hascall(A, verb_name))
-			if (check_rights(R_ADMIN, FALSE, src))
-				call(A, verb_name)()
-				return TRUE
-
-	// Spaces: try underscored version as proc name
-	else
-		var/und_name = lowertext(replacetext(verb_name, " ", "_"))
-		if (hascall(src, und_name))
-			call(src, und_name)()
-			return TRUE
-		var/datum/admins/A = holder
-		if (A && hascall(A, und_name))
-			if (check_rights(R_ADMIN, FALSE, src))
-				call(A, und_name)()
-				return TRUE
 
 	return FALSE
 
@@ -159,9 +132,8 @@
 			display_category = "Server"
 		
 		if (lowertext(display_category) == target_tab)
-			v_name = replacetext(v_name, "\"", "'")
-			v_name = replacetext(v_name, "\n", " ")
-			verbs_data += list(list("name" = v_name, "command" = v_name, "category" = v_category))
+			var/display_name = replacetext(replacetext(v_name, "\"", "'"), "\n", " ")
+			verbs_data += list(list("name" = display_name, "command" = v_name, "category" = v_category))
 		
 		add_stat_tab(display_category)
 
