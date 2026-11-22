@@ -1,6 +1,7 @@
 // Hand-built aircraft (craft/vehicle_assembly.dm): the same frames-and-axis
 // assembly as cars and boats. A builder lays crafted airframe sections in a
-// rectangle 3 sections wide and 3 to 5 long, stands the parts on them (an engine, a fuel tank,
+// rectangle 3 sections wide and 3 to 6 long (or 5 wide and 4 to 6 long for a
+// twin), stands the parts on them (an engine, a fuel tank,
 // a pilot's seat, wheels on the four corners, passenger seats anywhere) and
 // sets the airframe controls down on any section. Assembling turns every
 // section into the piece of plane its place calls for, counted from the front
@@ -10,12 +11,18 @@
 // shaped pieces, which assemble again into any shape.
 
 // The airframe pieces are drawn for a three-section wingspan: a nose, a wing
-// each side of the cockpit and a tail. Length runs from 3 to the largest
-// vehicle (a nose, a wing row, fuselage rows and a tail). The twin-engine
-// pieces (aircraft_twin.dm) make a five-section wingspan, 4 long.
+// each side of the cockpit and a tail. Length runs from 3 to
+// AIRCRAFT_MAX_LENGTH (a nose, a wing row, fuselage rows and a tail). The
+// twin-engine pieces (aircraft_twin.dm) make a five-section wingspan, 4 to
+// AIRCRAFT_MAX_LENGTH long: the fuselage row repeats, as in the airliner.
 #define AIRCRAFT_ASSEMBLY_SPAN 3
 #define AIRCRAFT_TWIN_SPAN 5
 #define AIRCRAFT_TWIN_LENGTH 4
+
+// What a twin's wings bear: the twin-engine plane's 1400 at 4 long and 100
+// more for each cabin row, the airliner's 1600 at 6.
+/proc/aircraft_twin_wing_load(length)
+	return 1400 + 100 * clamp(length - AIRCRAFT_TWIN_LENGTH, 0, AIRCRAFT_MAX_LENGTH - AIRCRAFT_TWIN_LENGTH)
 
 /obj/structure/vehicleparts/frame/car/aircraft/section
 	name = "airframe section"
@@ -23,7 +30,7 @@
 
 /obj/structure/vehicleparts/axis/aircraft/airframe
 	name = "airframe controls"
-	desc = "Control runs, trim and instruments for a hand-built aircraft. Lay airframe sections in a rectangle 3 sections wide and 3 to 5 long, stand an engine, a fuel tank, a pilot's seat and corner wheels on them, set this down on any section and click it to assemble."
+	desc = "Control runs, trim and instruments for a hand-built aircraft. Lay airframe sections in a rectangle 3 sections wide and 3 to 6 long (or 5 wide and 4 to 6 long for a twin-engine plane), stand an engine, a fuel tank, a pilot's seat and corner wheels on them, set this down on any section and click it to assemble."
 	icon = 'icons/obj/vehicles/vehicleparts.dmi'
 	icon_state = "axis_powered"
 	anchored = FALSE
@@ -43,11 +50,27 @@
 	return null
 
 /obj/structure/vehicleparts/axis/aircraft/assembly_refusal(datum/vehicle_survey/S)
-	if (min(S.width, S.height) == AIRCRAFT_ASSEMBLY_SPAN && max(S.width, S.height) >= AIRCRAFT_ASSEMBLY_SPAN)
+	if (aircraft_airframe_size_ok(S.width, S.height) || aircraft_airframe_size_ok(S.height, S.width))
 		return null
-	if (min(S.width, S.height) == AIRCRAFT_TWIN_LENGTH && max(S.width, S.height) == AIRCRAFT_TWIN_SPAN)
-		return null
-	return "the airframe is [S.width] by [S.height] sections; a plane is [AIRCRAFT_ASSEMBLY_SPAN] sections wide (a wing each side of the cockpit) and [AIRCRAFT_ASSEMBLY_SPAN] to 5 long, or a twin-engine plane [AIRCRAFT_TWIN_SPAN] wide and [AIRCRAFT_TWIN_LENGTH] long"
+	return "the airframe is [S.width] by [S.height] sections; a plane is [AIRCRAFT_ASSEMBLY_SPAN] sections wide (a wing each side of the cockpit) and [AIRCRAFT_ASSEMBLY_SPAN] to [AIRCRAFT_MAX_LENGTH] long, or a twin-engine plane [AIRCRAFT_TWIN_SPAN] wide and [AIRCRAFT_TWIN_LENGTH] to [AIRCRAFT_MAX_LENGTH] long"
+
+// An airframe's longest side: the airliner's length.
+/obj/structure/vehicleparts/axis/aircraft/assembly_max_size()
+	return max(..(), AIRCRAFT_MAX_LENGTH)
+
+// The longest twin's airframe: five sections across, as the airliner.
+/obj/structure/vehicleparts/axis/aircraft/assembly_max_frames()
+	return max(..(), AIRCRAFT_TWIN_SPAN * AIRCRAFT_MAX_LENGTH)
+
+// TRUE when an airframe may be span sections across the wings and length
+// from nose to tail: a single-engine plane or a twin (craft/vehicle_draught.dm
+// draws the same sizes).
+/proc/aircraft_airframe_size_ok(span, length)
+	if (span == AIRCRAFT_ASSEMBLY_SPAN)
+		return length >= AIRCRAFT_ASSEMBLY_SPAN && length <= AIRCRAFT_MAX_LENGTH
+	if (span == AIRCRAFT_TWIN_SPAN)
+		return length >= AIRCRAFT_TWIN_LENGTH && length <= AIRCRAFT_MAX_LENGTH
+	return FALSE
 
 // The airframe piece for a section in row (1 = nose) of rows, column (1 = the
 // plane's left) of cols; cockpit marks the pilot's tile in the wing row.
@@ -92,7 +115,7 @@
 		cols = (facing & (NORTH | SOUTH)) ? S.width : S.height
 		var/turf/T = get_turf(F)
 		var/cockpit = row == 2 && S.seat && get_turf(S.seat) == T
-		var/path = cols == AIRCRAFT_TWIN_SPAN ? aircraft_twin_section_type(row, col, cockpit) : aircraft_section_type(row, rows, col, cols, cockpit)
+		var/path = cols == AIRCRAFT_TWIN_SPAN ? aircraft_twin_section_type(row, col, cockpit, rows) : aircraft_section_type(row, rows, col, cols, cockpit)
 		if (!path || F.type == path)
 			continue
 		var/obj/structure/vehicleparts/frame/N = new path(T)
@@ -113,13 +136,15 @@
 	if (S.refusal)
 		return S.refusal
 	var/span = (facing & (NORTH | SOUTH)) ? S.width : S.height
-	var/twin = max(S.width, S.height) == AIRCRAFT_TWIN_SPAN && min(S.width, S.height) == AIRCRAFT_TWIN_LENGTH
+	var/sections_long = (facing & (NORTH | SOUTH)) ? S.height : S.width
+	// Only a twin's airframe is more than three sections across either way.
+	var/twin = min(S.width, S.height) > AIRCRAFT_ASSEMBLY_SPAN
 	// Two engines on the wings are the later, all-metal design (aircraft_model_node()).
 	var/mob/living/human/builder = usr
 	if (twin && istype(builder) && map && !research_node_known(builder, aircraft_model_node("Twin-engine plane")))
 		var/datum/research_node/N = get_research_node(aircraft_model_node("Twin-engine plane"))
 		return "a twin-engine airframe needs [N ? N.name : "more"] research"
-	if (span != (twin ? AIRCRAFT_TWIN_SPAN : AIRCRAFT_ASSEMBLY_SPAN))
+	if (!aircraft_airframe_size_ok(span, sections_long))
 		return twin ? "its wings would be [span] sections across; a twin-engine plane's wings run along the 5-section side" : "its wings would be [span] sections across; point the nose along the airframe's long side"
 	shape_airframe(S, facing)
 	. = ..(facing)
@@ -130,9 +155,10 @@
 	var/extra = max(0, round((frames().len - 12) / 2))
 	takeoff_roll = initial(takeoff_roll) + extra
 	rough_takeoff_roll = initial(rough_takeoff_roll) + extra * 2
-	// Two engines lift a twin's weight, as the hangar's twin-engine plane.
+	// Two engines lift a twin's weight, as the hangar's twin-engine plane; a
+	// longer cabin's wings bear more, up to the airliner's.
 	if (twin)
-		maxpower = max(maxpower, 1400)
+		maxpower = max(maxpower, aircraft_twin_wing_load(sections_long))
 	finish_airframe_parts()
 	for (var/obj/O in components)
 		O.update_icon()

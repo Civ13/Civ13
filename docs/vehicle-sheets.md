@@ -8,10 +8,13 @@ instead of a ship or a submarine: kind `CAR` in `draught_kinds`
 ## The sheet
 
 - Axis: `car` (light axis, 800), `heavy` (heavy axis, 2500) or `plane`
-  (airframe controls, 800; a twin's wings bear 1400).
+  (airframe controls, 800; a twin's wings bear 1400 at 4 long and 100 more
+  for each section past that, `aircraft_twin_wing_load()`).
 - Size: land vehicles 2 to 5 tiles each way (`VEHICLE_DRAUGHT_MIN`/`MAX`);
-  planes 3 wide and 3 to 5 long, or 5 wide and 4 long, as the airframe
-  assembly allows (`aircraft_assembly.dm`).
+  planes 3 wide and 3 to 6 long, or 5 wide (a twin) and 4 to 6 long
+  (`AIRCRAFT_MAX_LENGTH`), as the airframe assembly allows
+  (`aircraft_airframe_size_ok()` in `aircraft_assembly.dm`). A twin longer
+  than 4 repeats its fuselage row, as the hangar's airliner does.
 - Engine: one of the engine maker's kinds (`vehicle_draught_engines`) and a
   size in cc within its limits. Its power is `initial(maxpower) * cc / 1000`.
 - Tiles `"col,row"` (column 1 the vehicle's left, row 1 its front): a frame
@@ -107,8 +110,11 @@ Tests: `tests/vehicle_papers/sheet_works_probe.dm` (car),
 
 ## The window
 
-`code/modules/craft/vehicle_designer.dm`: "Draw a vehicle on the sheet" on a
-blank draught, or "Draw on the sheet" on a vehicle sheet. The page is
+`code/modules/craft/vehicle_designer.dm`: "Draw a vehicle on the sheet", "Draw
+a tank on the sheet" or "Draw a plane on the sheet" on a blank draught (the
+same window, opened on the light axis, the heavy axis or the airframe
+controls with that kind's ready-made sheet), or "Draw on the sheet" on a
+vehicle sheet. The page is
 `vehicle_designer_page()` with its data at `@@DATA@@` (contract in the file
 header); every change is sent as a code and answered with `carStats`,
 `carChecks` and `carStatus`.
