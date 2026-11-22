@@ -2146,7 +2146,7 @@ var/global/orbit_failures = 0
 	orbit_check("two command modules are refused", findtext(jointext(P.problems(), " "), "command modules") ? 1 : 0, 1)
 	P.set_piece(4, 2, null)
 	P.set_piece(7, 7, "S")
-	orbit_check("a loose module is refused", findtext(jointext(P.problems(), " "), "do not dock") ? 1 : 0, 1)
+	orbit_check("a loose module is refused", findtext(jointext(P.problems(), " "), "does not dock") ? 1 : 0, 1)
 	P.set_piece(7, 7, null)
 	var/list/K = splittext(P.piece_cells("K")[1], ",")
 	P.set_piece(text2num(K[1]), text2num(K[2]) + 2, "S")
@@ -2158,6 +2158,28 @@ var/global/orbit_failures = 0
 	orbit_check("a big plan notes its extra steel", findtext(jointext(R.texts(DESIGN_NOTE), " "), "60 more steel") ? 1 : 0, 1)
 	qdel(R)
 	orbit_check("every plan part is described", length(design_part_help_for("station_plan")) >= length(station_plan_pieces()) + 1 ? 1 : 0, 1)
+
+	// The station designer (space/station_designer.dm): its page, pictures and answer.
+	orbit_check("the designer page takes one block of data", length(splittext(station_designer_page(), "@@DATA@@")), 2)
+	var/pictured = 0
+	for (var/key in station_plan_pieces())
+		if (station_designer_sprites()["mod_[key]"])
+			pictured++
+	orbit_check("every module has a picture in the designer", pictured, length(station_plan_pieces()))
+	var/list/window = json_decode(json_encode(station_designer_data(null, starter)))
+	orbit_check("the designer is given the grid, the modules and the part book", "[window["SIDE"]],[length(window["PIECES"])],[length(window["EXAMPLES"])],[length(window["HELP"]) >= length(window["PIECES"]) + 1 ? 1 : 0]", "[STATION_PLAN_SIDE],[length(station_plan_pieces())],[length(examples)],1")
+	orbit_check("the designer opens on the sheet's own plan", length(window["START"][2]), starter.module_count())
+	var/list/answer = json_decode(json_encode(station_designer_answer(starter)))
+	var/list/drawn_keel = answer["keel"]
+	orbit_check("the designer draws the keel out from the keel airlock", "[length(drawn_keel)],[drawn_keel[1][3]],[drawn_keel[2][3]],[drawn_keel[5][3]]", "5,truss,wing,thruster")
+	var/list/keel_first = splittext(starter.keel_slots()[1], ",")
+	orbit_check("the drawn keel lies on the plan's keel slots", "[drawn_keel[1][1]],[drawn_keel[1][2]]", "[keel_first[1]],[keel_first[2]]")
+	orbit_check("the designer's figures are the plan's", "[answer["count"]],[answer["steel"]],[answer["bunks"]],[length(answer["checks"])]", "[starter.module_count()],[starter.costs()["steel"]],[starter.bunks()],[length(starter.check_design().data())]")
+	answer = station_designer_answer(nokeel)
+	orbit_check("no keel airlock, no keel drawn", length(answer["keel"]), 0)
+	var/datum/station_plan/edge = station_plan_from_code("C13STATION/1/edge/1,1,C;1,2,K")
+	orbit_check("a keel running off the sheet is drawn only on it", length(station_designer_keel(edge)), 4)
+	qdel(edge)
 
 	// The office takes the plan's materials and sends it up with the crew.
 	var/obj/structure/region_gate/launch_complex/office = new(locate(3, 3, 1))

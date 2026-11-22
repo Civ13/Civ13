@@ -104,6 +104,59 @@ class VehicleDesignerPictures(unittest.TestCase):
                 self.assertTrue((ROOT / path).is_file(), path)
 
 
+class StationDesigner(unittest.TestCase):
+    """The station designer window (code/modules/space/station_designer.dm)."""
+    SOURCE = (SPACE / 'station_designer.dm').read_text(encoding='utf-8')
+
+    def pictures(self):
+        block = self.SOURCE.split('/proc/station_designer_sprites()', 1)[1].split('\treturn table', 1)[0]
+        return re.findall(r'"(\w+)" = \'(icons/station_designer/(\w+)\.png)\'', block)
+
+    def test_every_module_has_a_picture_cut_by_the_script(self):
+        # scripts/build_station_designer_icons.py cuts them from the game's DMIs.
+        pairs = self.pictures()
+        names = [name for name, _path, _stem in pairs]
+        self.assertEqual(len({name.lower() for name in names}), len(names))
+        for name, path, stem in pairs:
+            with self.subTest(picture=name):
+                self.assertEqual(name, stem)
+                data = (ROOT / path).read_bytes()
+                self.assertEqual(data[:8], b'\x89PNG\r\n\x1a\n')
+                self.assertEqual(data[16:24], b'\x00\x00\x00\x20\x00\x00\x00\x20')
+        block = STATION.split('/proc/station_plan_pieces()', 1)[1].split('\treturn table', 1)[0]
+        for key in re.findall(r'^\t\t"(\w)" = list\(', block, re.M):
+            self.assertIn('mod_' + key, names)
+        for name in ('hull', 'floor', 'hatch', 'keel_truss', 'keel_wing', 'keel_thruster'):
+            self.assertIn(name, names)
+        on_disk = sorted(path.stem for path in (ROOT / 'icons/station_designer').glob('*.png'))
+        self.assertEqual(on_disk, sorted(names))
+        script = (ROOT / 'scripts/build_station_designer_icons.py').read_text(encoding='utf-8')
+        self.assertEqual(sorted(re.findall(r"^    '(\w+)': \{'layers'", script, re.M)), sorted(names))
+
+    def test_the_window_replaces_the_stopgap_and_is_built(self):
+        self.assertIn('#include "code\\modules\\space\\station_designer.dm"', DME)
+        self.assertEqual(STATION.count('proc/open_station_designer'), 0)
+        self.assertEqual(self.SOURCE.count('/obj/item/ship_draught/proc/open_station_designer(mob/living/human/H)'), 1)
+        # No global initialiser: the world's global init proc is full.
+        self.assertNotRegex(self.SOURCE, r'var/global/')
+
+    def test_the_page_is_one_raw_string_with_one_block_of_data(self):
+        page = self.SOURCE.split('/proc/station_designer_page()\n\treturn @{"', 1)[1]
+        self.assertEqual(page.count('"}'), 1)
+        page = page.split('"}', 1)[0]
+        self.assertEqual(page.count('@@DATA@@'), 1)
+        self.assertNotIn('\u2014', self.SOURCE)
+        for name in ('stationPlan', 'stationStatus'):
+            self.assertIn('function %s(' % name, page)
+            self.assertIn('.browser:%s"' % name, self.SOURCE)
+
+    def test_what_the_window_sends_is_checked(self):
+        topic = self.SOURCE.split('/datum/station_designer/Topic(', 1)[1].split('\n/proc/', 1)[0]
+        for needed in ('H != drawer', 'station_designers()[H] != src', 'ship_designer_can_draw(H, sheet)', 'length(code) > DESIGN_CODE_STATION_MAX', 'station_plan_from_code(code)', 'station_plan_clean_name(href_list["name"])', 'sheet.take_station(D)'):
+            self.assertIn(needed, topic)
+        self.assertLess(topic.index('station_plan_from_code(code)'), topic.index('sheet.take_station(D)'))
+
+
 class Checks(unittest.TestCase):
     def test_check_parents_name_a_kind_and_skip_themselves(self):
         for path, kind in (('code/modules/naval/draught_checks.dm', 'ship'), ('code/modules/naval/draught_checks.dm', 'sub'), ('code/modules/craft/vehicle_checks.dm', 'vehicle'), ('code/modules/craft/vehicle_draught_checks.dm', 'vehicle_sheet')):

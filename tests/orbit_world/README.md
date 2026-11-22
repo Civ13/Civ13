@@ -248,7 +248,9 @@ ready-made plan can be launched and survives its design code, bad codes are
 refused, a plan the size of the starter costs what the starter does and a
 bigger one pays 60 steel a module, two command modules, a loose module, a
 blocked keel and a missing keel airlock are refused, every part is
-described, the office asks for the plan's materials and sends the plan up
+described, the station designer's page takes one block of data, has a
+picture of every module, opens on the sheet's plan and answers with the
+plan's own figures and its keel slots on the grid, the office asks for the plan's materials and sends the plan up
 with the crew, the first arrival founds every module of the plan sealed with
 its keel, power and life support on the grid, and the plan drawn at its
 console matches the one it was built from.

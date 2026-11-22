@@ -54,7 +54,7 @@
 		if (!(at in joined))
 			loose += at
 	if (loose.len)
-		R.error("[loose.len] module\s do not dock to the rest: each module must stand beside another, north, south, east or west.", loose)
+		R.error("[loose.len] module\s [loose.len == 1 ? "does" : "do"] not dock to the rest: each module must stand beside another, north, south, east or west.", loose)
 
 // The keel airlock and the keel.
 /datum/design_check/station_plan/keel
@@ -76,7 +76,7 @@
 		if (D.cells[slot])
 			blocked += slot
 	if (blocked.len)
-		R.error("Her keel runs 12 tiles out from the keel airlock with a solar boom across it; [blocked.len] module\s stand in its way.", blocked, "K")
+		R.error("Her keel runs 12 tiles out from the keel airlock with a solar boom across it; [blocked.len] module\s [blocked.len == 1 ? "stands" : "stand"] in its way.", blocked, "K")
 
 // Air: the life support is in the command module, and air moves through open hatches.
 /datum/design_check/station_plan/air
@@ -89,7 +89,7 @@
 		if (hops[at] > 2)
 			far += at
 	if (far.len)
-		R.warning("[far.len] module\s are more than two hatches from the command module's heater and scrubber; build life support there or keep the hatches open.", far)
+		R.warning("[far.len] module\s [far.len == 1 ? "is" : "are"] more than two hatches from the command module's heater and scrubber; build life support there or keep the hatches open.", far)
 
 /datum/design_check/station_plan/living
 	order = 60
