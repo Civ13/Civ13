@@ -200,6 +200,111 @@ class DoormanTests(base.GaiaHostTests):
         self.assertEqual((old.cold_state, newer.cold_state), ({'evicted': 'memory for waking port 1803'}, None))
         self.assertIsNone(wanted.state)
 
+    # -- lands kept ready for players next door (Val, 2026-11-22) -------------
+    def lands(self):
+        test = self
+
+        class Land:
+            def __init__(self, port, region, neighbours, exempt=False):
+                self.config = dict(gaia_host.FREEZE_DEFAULTS, port=port)
+                self.region, self.neighbours, self.exempt = region, neighbours, exempt
+                self.awake, self.players, self.frozen_state, self.cold_state = False, 0, None, None
+                self.lock = test.root / ('no-lock-%d' % port)
+                self.started, self.kept_down = [], False
+                self.log = lambda values: None
+
+            def readiness(self):
+                return {'group': 'earth', 'region': self.region, 'neighbours': self.neighbours,
+                        'exempt': self.exempt, 'cold_after_minutes': 15}
+
+            def frozen(self):
+                return self.frozen_state
+
+            def cold(self):
+                return self.cold_state
+
+            def keep_down(self):
+                return self.kept_down
+
+            def byond_signed_in(self):
+                return True
+
+            def evict(self, reason):
+                self.cold_state, self.frozen_state = {'evicted': reason}, None
+                return {'evicted': True}
+
+            def start_cold(self, reason):
+                self.started.append(reason)
+                self.cold_state = None
+                return {'accepted': True}
+
+        class Ports(Machine):
+            def listening(self, port):
+                land = lands.get(port)
+                return bool(land and (land.awake or land.frozen_state))
+
+        lands = {}
+        machine = Ports()
+        gaia = Land(1801, 'gaia', ['atlantic'])
+        atlantic = Land(1802, 'atlantic', ['gaia', 'europe'], exempt=True)
+        europe = Land(1803, 'europe', ['atlantic', 'asia'])
+        asia = Land(1804, 'asia', ['europe'])
+        for land in (gaia, atlantic, europe, asia):
+            lands[land.config['port']] = land
+        door = doorman.Doorman(list(lands.values()), machine, clock=lambda: self.clock[0], wall=lambda: self.clock[0])
+        for land in lands.values():
+            door.instances[land.config['port']].status = {'players': 0}
+        return door, machine, gaia, atlantic, europe, asia
+
+    def test_a_land_next_to_players_is_started_ahead_from_cold_storage(self):
+        door, machine, gaia, atlantic, europe, asia = self.lands()
+        europe.awake = True
+        door.instances[1803].status = {'players': 2}
+        asia.cold_state = atlantic.cold_state = {'evicted': 'earlier'}
+        # One start at a time: the always-ready Atlantic first (lowest port), Asia on a later pass.
+        self.assertEqual(door.keep_ready(self.clock[0]), {1802: 'started ahead'})
+        self.assertEqual((len(atlantic.started), asia.started), (1, []))
+        atlantic.awake = True
+        door.instances[1802].waking_since = None
+        self.assertEqual(door.keep_ready(self.clock[0]), {1804: 'started ahead'})
+        self.assertEqual(asia.started, ['ready: next to players in europe'])
+        # A land kept down is never started ahead.
+        asia.cold_state, asia.started, asia.kept_down = {'evicted': 'again'}, [], True
+        door.instances[1804].next_ready_start = 0
+        self.assertEqual(door.keep_ready(self.clock[0]), {})
+
+    def test_a_land_with_nobody_next_door_goes_to_cold_storage_after_15_minutes(self):
+        door, machine, gaia, atlantic, europe, asia = self.lands()
+        for land in (atlantic, europe, asia):
+            land.frozen_state = {'pid': 1, 'frozen_at': 1}
+        start = self.clock[0]
+        self.assertEqual(door.keep_ready(start), {})
+        self.assertEqual(door.keep_ready(start + 14 * 60), {})
+        # Players arrive in Gaia: the Atlantic is next door (and always ready anyway), Europe and Asia are not.
+        gaia.awake = True
+        door.instances[1801].status = {'players': 1}
+        self.assertEqual(door.keep_ready(start + 15 * 60), {1803: 'cold storage', 1804: 'cold storage'})
+        self.assertEqual(europe.cold_state, {'evicted': 'cold storage: no players next door for 15 minutes'})
+        self.assertIsNotNone(atlantic.frozen_state, 'the oceans around the mainland stay ready')
+        # A player next door resets the wait: Europe stays suspended while Asia has players.
+        europe.cold_state, europe.frozen_state = None, {'pid': 2, 'frozen_at': 2}
+        asia.awake, asia.cold_state = True, None
+        door.instances[1804].status = {'players': 1}
+        self.assertEqual(door.keep_ready(start + 16 * 60), {})
+        self.assertEqual(door.keep_ready(start + 40 * 60), {})
+        self.assertIsNone(europe.cold_state)
+        # Asia empties: Europe waits another full 15 minutes before cold storage.
+        door.instances[1804].status = {'players': 0}
+        self.assertEqual(door.keep_ready(start + 41 * 60), {})
+        self.assertEqual(door.keep_ready(start + 55 * 60), {})
+        self.assertEqual(door.keep_ready(start + 56 * 60), {1803: 'cold storage'})
+
+    def test_lands_outside_the_world_links_are_left_alone(self):
+        self.running()
+        self.host.freeze()
+        self.assertEqual(self.door.keep_ready(self.clock[0] + 3600), {})
+        self.assertIsNotNone(self.host.frozen())
+
     def test_routed_instances_are_marked_for_the_launcher(self):
         self.running()
         self.assertNotIn('routed', self.ask('host_status=1')['instances'][0])

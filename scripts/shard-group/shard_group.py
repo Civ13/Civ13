@@ -214,6 +214,44 @@ def unused_backup_path(path):
     return candidate
 
 
+WORLD_LINKS_TABLE = HERE.parents[1] / 'tools' / 'world_links' / 'world_links.json'
+_NEIGHBOURS = {}
+
+
+def world_neighbours(table=None):
+    """{region id: set of region ids next to it} from the world links table (map edges walked or
+    sailed over, and the islands set inside an ocean), both ways round, or {} when it cannot be
+    read. Cached until the file changes."""
+    path = Path(table or WORLD_LINKS_TABLE)
+    try:
+        stamp = path.stat().st_mtime_ns
+    except OSError:
+        return {}
+    cached = _NEIGHBOURS.get(str(path))
+    if cached and cached[0] == stamp:
+        return cached[1]
+    try:
+        data = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return {}
+    out = {}
+    def join(a, b):
+        if isinstance(a, str) and isinstance(b, str) and a != b:
+            out.setdefault(a, set()).add(b)
+            out.setdefault(b, set()).add(a)
+    for rid in list((data.get('lands') or {})) + list((data.get('oceans') or {})):
+        out.setdefault(rid, set())
+    for link in data.get('links') or []:
+        ends = [link.get(side) for side in ('a', 'b')]
+        if all(isinstance(end, list) and end for end in ends):
+            join(ends[0][0], ends[1][0])
+    for oid, ocean in (data.get('oceans') or {}).items():
+        for inset in (ocean or {}).get('insets') or []:
+            join(oid, (inset or {}).get('land'))
+    _NEIGHBOURS[str(path)] = (stamp, out)
+    return out
+
+
 def load_group(path):
     group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
     if isinstance(group, dict) and fill_ports(group):
@@ -388,6 +426,14 @@ def check_group(group, path):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
             raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
+    # Val (2026-11-22): a land next to one with players stays ready to wake in seconds (suspended in
+    # memory, started ahead from cold storage); one with nobody next door goes to cold storage after
+    # cold_after_minutes. Only regions in the world links table take part (RegionHost.readiness).
+    if type(group.setdefault('ready_neighbours', True)) is not bool:
+        raise ValueError('ready_neighbours must be true or false')
+    cold_after = group.setdefault('cold_after_minutes', 15)
+    if type(cold_after) is not int or not 0 <= cold_after <= 1440:
+        raise ValueError('cold_after_minutes must be a whole number from 0 (never) to 1440')
     # Ships sail over linked map edges (docs/ocean-regions.md); off until the oceans run.
     if type(group.setdefault('edge_travel_oceans', False)) is not bool:
         raise ValueError('edge_travel_oceans must be true or false')
@@ -1224,6 +1270,29 @@ class RegionHost(Host):
         except (OSError, ValueError, KeyError):
             return True  # an unreadable policy must not start a world
         return next((bool(r.get('keep_down')) for r in group['regions'] if r['id'] == self.config['region']), True)
+
+    def readiness(self):
+        """How this region takes part in keeping lands ready (doorman.Doorman.keep_ready), or None
+        when it does not: the group turned it off, or the region is not in the world links table.
+        exempt: never put in cold storage and always kept ready (the mainland, the always-up kinds
+        and the oceans around the mainland)."""
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError, KeyError):
+            return None
+        if not group.get('ready_neighbours', True):
+            return None
+        region_id = self.config['region']
+        region = next((r for r in group['regions'] if r['id'] == region_id), None)
+        links = world_neighbours()
+        if region is None or region_id not in links:
+            return None
+        ids = {r['id'] for r in group['regions']}
+        mainland = group['mainland']
+        exempt = (region_id == mainland or region['kind'] in ALWAYS_UP_KINDS
+                  or (region['kind'] == 'OCEANIC' and mainland in links.get(region_id, ())))
+        return {'group': group['group'], 'region': region_id, 'neighbours': sorted(links[region_id] & ids),
+                'exempt': exempt, 'cold_after_minutes': group.get('cold_after_minutes', 15)}
 
     def travel_start_refusal(self):
         if not (self.repo / '.git').exists():
