@@ -294,6 +294,8 @@
 			return null
 		if (!mine_set[D])
 			var/why = tile_refusal(D)
+			if (!why)
+				why = ice_refusal(D, mine_set) // ice_breaking.dm
 			if (why)
 				last_refusal = why + lifted_floor_hint(index)
 				return null
@@ -436,6 +438,8 @@
 	var/list/old = list()
 	for (var/list/O in offsets)
 		old += locate(px + O[1], py + O[2], z)
+	// Thin ice her armoured bow is cleared to enter breaks first (ice_breaking.dm).
+	break_ice_ahead(P[4], old)
 	var/list/dest = P[4]
 	var/list/dest_set = list()
 	for (var/turf/D in dest)

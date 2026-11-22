@@ -445,10 +445,15 @@ var/global/list/fishing_grounds_published = null
 		return
 	..()
 
-// An axe, pick or chisel on ice cuts a fishing hole (ice_fishing.dm).
+// An axe, pick or chisel on ice cuts a fishing hole (ice_fishing.dm), or on
+// harm intent breaks the tile open (ice_breaking.dm).
 /turf/floor/beach/water/ice/attackby(obj/item/C as obj, mob/user as mob)
 	if (ishuman(user) && ice_hole_tool_delay(C))
 		ice_hole_cut(src, C, user)
+		return
+	// A crowbar cannot cut a hole, but it breaks the ice (ice_breaking.dm).
+	if (ishuman(user) && ice_break_tool_delay(C))
+		ice_break(src, C, user)
 		return
 	..()
 
