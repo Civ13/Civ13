@@ -386,6 +386,8 @@ var/global/hull_ledger_timer_off = FALSE
 		flood_holes(holes * HULL_HOLE_PER_MINUTE * seconds / 60)
 	// What the wind does to her sails (hull_rigging.dm).
 	step_rigging(seconds)
+	// Open gun ports on a deck awash ship water (hull_ports.dm).
+	step_ports(seconds)
 	// What her load lets over the side (hull_load.dm).
 	step_load(seconds)
 	// Her powered pumps answer the water (hull_pumps.dm).

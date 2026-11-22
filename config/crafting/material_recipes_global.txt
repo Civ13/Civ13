@@ -3259,6 +3259,9 @@ RECIPE: /material/wood/soft/,wooden gunwale,/obj/structure/railing/built/gunwale
 RECIPE: /material/steel/,steel bulwark,/obj/structure/railing/built/gunwale/bulwark,2,60,0,1,railings,105,0,0,8,null
 RECIPE: /material/wood/soft/,wooden gangway,/obj/structure/railing/built/gunwale/gangway,4,60,0,1,railings,10,0,0,8,null
 RECIPE: /material/steel/,steel gangway,/obj/structure/railing/built/gunwale/bulwark/gangway,4,80,0,1,railings,105,0,0,8,null
+RECIPE: /material/wood/soft/,wooden gun port,/obj/structure/railing/built/gunwale/gun_port,4,60,0,1,railings,10,0,0,8,null
+RECIPE: /material/steel/,steel gun port,/obj/structure/railing/built/gunwale/bulwark/gun_port,4,80,0,1,railings,105,0,0,8,null
+RECIPE: /material/wood/soft/,cargo hatch,/obj/structure/cargo_hatch,6,60,0,1,railings,10,0,0,8,null
 RECIPE: /material/iron/,barbwire,/obj/item/stack/material/barbwire,1,30,1,1,construction,120,0,0,8,null
 
 //*********************| IRON PROJECTILES & BULLETS |**************************

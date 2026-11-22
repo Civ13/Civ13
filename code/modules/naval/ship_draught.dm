@@ -101,6 +101,9 @@
 	// in one. Two letters each: every single capital is taken.
 	"WT" = list("name" = "watertight door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight, "cost" = list("steel" = 20), "load" = 0.5, "turns" = TRUE, "decks" = TRUE),
 	"WB" = list("name" = "watertight bulkhead", "path" = /obj/structure/hull_bulkhead, "cost" = list("steel" = 8), "load" = 0.5, "decks" = TRUE, "carries" = 1),
+	"GP" = list("name" = "wooden gun port", "path" = /obj/structure/railing/built/gunwale/gun_port, "cost" = list("wood" = 4), "load" = 0, "turns" = TRUE, "decks" = TRUE),
+	"GS" = list("name" = "steel gun port", "path" = /obj/structure/railing/built/gunwale/bulwark/gun_port, "cost" = list("steel" = 4), "load" = 0, "turns" = TRUE, "decks" = TRUE),
+	"CH" = list("name" = "cargo hatch", "path" = /obj/structure/cargo_hatch, "cost" = list("wood" = 6), "load" = 0.1),
 )
 	return table
 
@@ -452,8 +455,8 @@ var/global/list/ship_draught_decks = list(
 		var/x = text2num(xy[1])
 		var/y = text2num(xy[2])
 		for (var/d in cardinal)
-			if (C[2] == "Y" && C[3] == d)
-				continue // her gangway closes that side
+			if ((C[2] in list("Y", "GP", "GS")) && C[3] == d)
+				continue // her gangway or gun port closes that side
 			if (!cell(x + (d == EAST ? 1 : d == WEST ? -1 : 0), y + (d == NORTH ? 1 : d == SOUTH ? -1 : 0)))
 				. += list(list(key, d))
 
@@ -795,6 +798,12 @@ var/global/list/ship_draught_decks = list(
 			return list("G", M.dir)
 		if (istype(M, /obj/structure/closet/crate))
 			return list("C", M.dir)
+		if (istype(M, /obj/structure/railing/built/gunwale/bulwark/gun_port))
+			return list("GS", M.dir)
+		if (istype(M, /obj/structure/railing/built/gunwale/gun_port))
+			return list("GP", M.dir)
+		if (istype(M, /obj/structure/cargo_hatch))
+			return list("CH", NORTH)
 		if (istype(M, /obj/structure/railing/built/gunwale/bulwark/gangway))
 			return list("Y", M.dir)
 		if (istype(M, /obj/structure/multiz/ladder/up))
