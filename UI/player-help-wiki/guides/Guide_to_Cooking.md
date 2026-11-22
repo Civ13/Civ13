@@ -511,6 +511,18 @@ Uses:
 - **Rum**: molasses and water ferment into rum with yeast. You need less molasses than sugar for the same amount of rum.
 - All syrups are sweet food and lift your mood a little.
 
+## Butter
+
+<img src="../images/butter_churn.png"> <img src="../images/butter.png"> <img src="../images/butter_salted.png"> <img src="../images/buttered_bread.png">
+
+Once your group knows **Pottery & Cookware**, you can make a **butter churn** from 3 soft wood (kitchen category).
+
+- **Churning**: pour [milk](#milk) or cream into the churn, put the lid on (use it in hand), then Alt-click it or use **Churn Butter**. Churning takes about 20 seconds. Every 30 milk gives a pat of butter and leaves 20 buttermilk, and every 15 cream gives a pat and leaves 5 buttermilk. Buttermilk is drinkable and quenches thirst like milk.
+- **Salted butter**: add 1 salt to the churn for each pat, or click a pat with a salt shaker or salt pile. Fresh butter turns rancid after about an hour on the ground, but salted butter keeps four times as long. Stored butter lasts longer still, the same as any other stored food.
+- **Buttered bread**: click a slice of bread with a pat of butter. Each pat spreads two slices.
+- **Potted food**: butter or lard seals cooked meat and fish in a clay crock so it keeps. See [Preserves](Guide_to_Farming.md#preserves).
+- Butter counts as fat in a [balanced diet](#balanced-diet).
+
 ## Canning
 
 Canning is a good way to preserve food for later consumption.

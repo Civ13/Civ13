@@ -101,7 +101,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'af3690524b5634974c0b1b8c89a076834d00077d'
+WIKI_REVIEWED_REVISION = 'ac6b4e22b974556e8da66ff3828386a10d671ee1'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -112,10 +112,10 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('0d1d364e6e4ea6d3664f9f0840e84fdc8dcd8ef6d3b05feb1475129556d65df6', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
-    'guides/Guide_to_Cooking.md': ('cc66fa9ecc45d02fb09be49981d4f9a5992b583aaa9d8f7029a4a3851f30f96c', 'cooking cook food meal ingredients'),
+    'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('d808fc78abe7a897305f07cc48b23256d4db61c4261ae43c17509502cd218404', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs'),
-    'guides/Guide_to_Farming.md': ('31862a1d6090f28b414558ecdd63b0088b8dfd701494cf26c53193c46c2b30b1', 'farming farm plant crops soil water frost mulch cloche'),
+    'guides/Guide_to_Farming.md': ('b74f967a070a3cdcb9c0cb08450a3e0ce73aeb148f78a9b67642bbb90b6a66b7', 'farming farm plant crops soil water frost mulch cloche'),
     'guides/Guide_to_Fishing.md': ('bf8032bff6af977f89793883b0c4565f2f87f4497d18dee75ea5efe816898375', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),

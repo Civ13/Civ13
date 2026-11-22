@@ -309,6 +309,7 @@ Once your group knows **Pottery & Cookware**, you can make a **clay crock** from
 
 - **Vinegar**: pour wine, cider, beer or mead into a crock and put the lid on (use it in hand). While closed it slowly sours into vinegar, a few units every couple of minutes.
 - **Pickling**: with the lid off, click fruit or vegetables onto the crock to pack up to 4 of them inside. Add 5 vinegar and 2 salt for each one, then close the lid. After about six minutes they come out pickled and never spoil. Alt-click the open crock to take food back out.
+- **Potting under fat**: with the lid off, click cooked, unspoiled meat or fish onto the crock to pack it inside. Seal each piece with 5 butter or 5 lard. To add butter, click the open crock with a pat ([butter](Guide_to_Cooking.md#butter)). Then close the lid. After about six minutes the food comes out potted. Potted food ages six times more slowly while it stays in the closed crock. Opening the crock or taking the food out lets it spoil as usual. Potted food can go back into a crock.
 - **Jam**: mix 10 berry, grape, apple, apricot or orange juice with 5 sugar, 5 honey or 5 maple syrup ([syrups](Guide_to_Cooking.md#syrups)) to get 10 jam. A preserve jar holds 20 jam; click a slice of bread with it to spread 5 jam and make jellied toast.
 
 ## Farmer's almanac
