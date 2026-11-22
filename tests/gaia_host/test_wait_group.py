@@ -109,6 +109,18 @@ class WaitGroupTests(unittest.TestCase):
                 mock.patch.object(wait_group.time, 'monotonic', side_effect=[0, 0, 10]):
             self.assertEqual(wait_group.main(['--config', 'g.json', '--until', 'stopped', '--timeout', '5']), 2)
 
+    def test_a_group_deploy_does_not_wait_for_the_gateway(self):
+        # The group stage and handover skip the gateway, so it never has a staged build.
+        staged = region('awake', 'done', listening=True, ready=1)
+        staged['stage'] = {'phase': 'ready'}
+        gateway = region('awake', 'done', listening=True, ready=1)
+        gateway['kind'] = 'GATEWAY'
+        regions = {'gaia': staged, 'gateway': gateway}
+        with mock.patch.object(wait_group, 'status', return_value=regions):
+            self.assertEqual(wait_group.main(['--config', 'g.json', '--until', 'staged']), 0)
+            # Named on purpose, it is still waited for.
+            self.assertEqual(wait_group.main(['--config', 'g.json', '--until', 'staged', '--region', 'gateway']), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
