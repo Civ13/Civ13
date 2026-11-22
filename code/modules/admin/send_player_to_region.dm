@@ -57,6 +57,18 @@
 		return
 	if(WWinput(requester, "Send [ready.len] of [bodies.len] to [place] now? The dry run is in your chat.", "Send Player to Region", "No", list("Send", "No")) != "Send") return
 	if(!check_rights(R_ADMIN)) return
+	if(region_admin_send_running)
+		to_chat(requester, SPAN_WARNING("Another region transfer is still running here. Try again when it finishes."))
+		return
+	// Hold them still, then check again: the prompt waited on the admin.
+	var/list/checked = region_admin_send_hold_and_check(ready, id, landing, ship)
+	ready = checked["ready"]
+	for(var/list/row in checked["rows"])
+		if(!row["ok"])
+			to_chat(requester, SPAN_WARNING("No longer ready: [html_encode(row["ckey"])] ([html_encode(row["name"])]): [html_encode(row["reason"])]"))
+	if(!ready.len)
+		to_chat(requester, SPAN_WARNING("Nobody can be sent now: everyone changed since the dry run."))
+		return
 	log_admin("[key_name(requester)] started a region transfer of [ready.len] character\s to [id].")
 	region_admin_send_run(ready, id, landing, ship, requester.ckey, requester)
 
