@@ -3,12 +3,18 @@
 		return FALSE
 	var/obj/item/weapon/reagent_containers/glass/G = O
 	if (stat == CONSCIOUS && istype(G) && G.is_open_container())
-		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
-		var/transfered = udder.trans_id_to(G, "milk", rand(5,10))
-		if (G.reagents.total_volume >= G.volume)
+		// Only ask for what the container can hold, so a full one leaves the udder alone (#6320).
+		var/free = G.reagents.get_free_space()
+		if (free <= 0)
 			to_chat(user, SPAN_RED("The [O] is full."))
-		if (!transfered)
+			return TRUE
+		if (!udder.has_reagent("milk"))
 			to_chat(user, SPAN_RED("The udder is dry. Wait a bit."))
+			return TRUE
+		user.visible_message("<span class='notice'>[user] milks [src] using \the [O].</span>")
+		udder.trans_id_to(G, "milk", min(rand(5,10), free))
+		if (G.reagents.get_free_space() <= 0)
+			to_chat(user, SPAN_RED("The [O] is full."))
 		return TRUE
 	return FALSE
 
@@ -183,10 +189,6 @@
 	if(calf)
 		return
 	if ((istype(O,/obj/item/weapon/plough) && !plough) && user.a_intent == I_HELP)	//makes sure that you'll bash your cow
-		if (istype(O,/obj/item/weapon/plough/iron))									//if you do something wrong
-			plough_material = "iron"
-		else
-			plough_material = "wood"
 		if(istype(user.l_hand, /obj/item/stack/material/rope/) || istype(user.r_hand, /obj/item/stack/material/rope/))
 			if( user.a_intent == I_HELP )
 				if(plough)
@@ -204,6 +206,10 @@
 						to_chat(user, SPAN_WARNING("You need at least a stack of 2 ropes on one of your hands in order to do this."))
 						return
 				if (do_after(user,35,src))
+					if (plough || stat == DEAD || QDELETED(O) || O.loc != user || QDELETED(NR) || NR.amount < 2)
+						return
+					// Set only on success, so a refused second attach keeps the fitted plough's material.
+					plough_material = istype(O, /obj/item/weapon/plough/iron) ? "iron" : "wood"
 					NR.amount -= 2
 					if (NR.amount <= 0)
 						qdel(NR)			//When dealing with stack amount, it could stay as object with 0 amount
@@ -235,22 +241,7 @@
 			road_status = "Adjust to make Roads"
 		var/choice1 = WWinput(usr, "What would you like to do with the cow's plough?", "Cattle Pulled Plough", "Remove", list("Remove", road_status, plough_status, "Cancel"))
 		if (choice1 == "Remove")
-			to_chat(user, "You try to detach the plough from the cow.")
-			if (do_after(user,35,src))
-				if(cattle_gender == "female")
-					icon_state = "cow"
-				else if(cattle_gender == "male")
-					icon_state = "bull"
-				plough = FALSE
-				new/obj/item/stack/material/rope(user.loc)
-				new/obj/item/stack/material/rope(user.loc)
-				if(plough_material == "iron")
-					new/obj/item/weapon/plough/iron(user.loc)
-					plough_material = null						//I hate this much of redundancy that's needed
-				else if(plough_material == "wood")
-					new/obj/item/weapon/plough(user.loc)
-					plough_material = null
-				plough_material = null
+			detach_plough(user)
 		else if (choice1 == "Raise Plough")
 			plough_raised = TRUE
 		else if (choice1 == "Lower Plough")
@@ -261,6 +252,27 @@
 			plough_road = FALSE
 		else
 			return
+
+// Two handlers can wait at once, and death drops the harness, so recheck after the wait.
+/mob/living/simple_animal/cattle/proc/detach_plough(mob/user)
+	to_chat(user, "You try to detach the plough from the cow.")
+	if (!do_after(user, 35, src))
+		return FALSE
+	if (!plough || stat == DEAD)
+		return FALSE
+	plough = FALSE
+	if (cattle_gender == "female")
+		icon_state = "cow"
+	else if (cattle_gender == "male")
+		icon_state = "bull"
+	new /obj/item/stack/material/rope(user.loc)
+	new /obj/item/stack/material/rope(user.loc)
+	if (plough_material == "iron")
+		new /obj/item/weapon/plough/iron(user.loc)
+	else if (plough_material == "wood")
+		new /obj/item/weapon/plough(user.loc)
+	plough_material = null
+	return TRUE
 
 /mob/living/simple_animal/cattle/proc/do_plough(atom/movable/O)
 	if(plough && !plough_raised)
@@ -1015,10 +1027,11 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && sheep_count.len < 58)
+	// Lambs neither conceive nor sire until they mature.
+	if (!pregnant && !lamb && sheep_count.len < 58)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/sheep/M in nearbyObjects)
-			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/sheep/female))
+			if (M.stat == CONSCIOUS && !M.lamb && !istype(M, /mob/living/simple_animal/sheep/female))
 				pregnant = TRUE
 				birthCountdown = 600 // life ticks once per 2 seconds, 300 == 10 minutes
 				break
@@ -1111,7 +1124,10 @@
 		for (var/obj/item/IT in packed_items)
 			choicelist += IT.name
 		var/choice1 = WWinput(usr, "What do you want to remove from the camel's pack?", "Camel Pack", "Cancel", choicelist)
-		if (choice1 == "Cancel")
+		if (!choice1 || choice1 == "Cancel")
+			return
+		// The menu waits on the player: the camel must still be within the verb's range.
+		if (!usr || usr.stat || QDELETED(src) || usr.z != z || get_dist(src, usr) > 2)
 			return
 		else
 			for (var/obj/item/ITS in packed_items)

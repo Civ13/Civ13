@@ -164,7 +164,7 @@
 
 /client/verb/attack_self()
 	set hidden = TRUE
-	if (mob && isliving(mob))
+	if (mob && isliving(mob) && !travel_hold_input(mob))
 		var/mob/living/L = mob
 		L.mode()
 	return
@@ -172,7 +172,7 @@
 
 /client/verb/toggle_throw_mode()
 	set hidden = TRUE
-	if (!istype(mob, /mob/living/human))
+	if (!istype(mob, /mob/living/human) || travel_hold_input(mob))
 		return
 	if (!mob.stat && isturf(mob.loc) && !mob.restrained())
 		mob:toggle_throw_mode()
@@ -182,7 +182,10 @@
 
 /client/verb/drop_item()
 	set hidden = TRUE
-	if (mob.stat == CONSCIOUS && isturf(mob.loc))
+	if (mob.stat == CONSCIOUS && isturf(mob.loc) && !travel_hold_input(mob))
+		var/obj/item/held = mob.get_active_hand()
+		if (held && held.player_drop_refused(mob))
+			return
 		return mob.drop_item()
 	return
 
@@ -385,6 +388,12 @@
 	// This mob's level is being saved (restart_transaction.dm).
 	if (persistence_frozen_levels.len && persistence_input_frozen(src))
 		return
+	// Leaving for another land (travel_hold.dm).
+	if (travel_hold_input(mob))
+		return
+	// Nobody boards a ship or craft whose crew are leaving (travel_hold.dm).
+	if (travel_holds && mob && travel_hold_bars_step(mob, get_step(mob, direct)))
+		return
 
 	// these checks occur once in the movement process, but they currently have to be rewritten here due to initial movements
 	if (!canmove)
@@ -585,6 +594,17 @@
 
 	if (Process_Grab())	return
 
+	// Lying in a bathtub, a direction climbs out that way (bathtubs.dm).
+	if (istype(mob.buckled, /obj/structure/shower/bathtub))
+		move_delay = world.time + 5
+		return mob.buckled.relaymove(mob, direct)
+
+	// In a tread wheel or on a treadmill, the facing key strides in place and
+	// any other steps off (training_course.dm).
+	if (istype(mob.buckled, /obj/structure/treadwheel))
+		move_delay = world.time + mob.movement_delay()
+		return mob.buckled.relaymove(mob, direct)
+
 	if (!mob.canmove)
 		return
 
@@ -625,6 +645,14 @@
 		if (mob.pinned.len)
 			if (world.time >= mob.next_cannotmove_message)
 				to_chat(src, SPAN_NOTICE("You're pinned to a wall by [mob.pinned[1]]!"))
+				mob.next_cannotmove_message = world.time + 10
+			return FALSE
+
+		// A firm grip on your hand keeps you beside whoever holds it (grab_hand_hold.dm).
+		var/mob/firm_holder = mob.hand_hold_leash_blocks(n)
+		if (firm_holder)
+			if (world.time >= mob.next_cannotmove_message)
+				to_chat(src, SPAN_WARNING("[firm_holder] has a firm grip on your hand! Resist to pull free."))
 				mob.next_cannotmove_message = world.time + 10
 			return FALSE
 
@@ -758,6 +786,8 @@
 			if (!H.crab)
 				if (istype(F, /turf/floor/beach/water))
 					move_delay += H.water_step_delay(F)
+					if (H.swim_skill_applies(F) && !H.buckled)
+						H.body_motion_swim_stroke()
 				else
 					move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))
@@ -776,17 +806,26 @@
 				if (fine_step != FINE_STEP_NUDGE)
 					mob.velocity = min(mob.velocity+1, 15)
 				mob.velocity_lastdir = direct
-				move_delay += mob.get_run_delay() + standing_on_snow
+				// A sprint is a faster run that burns stamina hard (sprint.dm).
+				var/sprint_step = mob_is_human && H.is_sprinting()
+				if (sprint_step)
+					move_delay += mob.get_run_delay() / SPRINT_SPEED_MULT + standing_on_snow
+				else
+					move_delay += mob.get_run_delay() + standing_on_snow
 				if (mob_is_human)
-					H.nutrition -= 0.005 * distance_fraction
-					H.water -= 0.005 * distance_fraction
+					var/upkeep = sprint_step ? SPRINT_UPKEEP_MULT : 1
+					var/effort = sprint_step ? SPRINT_STAMINA_MULT : 1
+					H.nutrition -= 0.005 * distance_fraction * upkeep
+					H.water -= 0.005 * distance_fraction * upkeep
 					if (H.stats["stamina"][1] > 0)
 						if (H.find_trait("Flat Footed"))
-							H.stats["stamina"][1] -= 2 * distance_fraction
+							H.stats["stamina"][1] -= 2 * distance_fraction * effort
 						else
-							H.stats["stamina"][1] -= distance_fraction
+							H.stats["stamina"][1] -= distance_fraction * effort
+					if (sprint_step)
+						H.sprint_stamina_check()
 					if (H.bodytemperature < H.species.body_temperature)
-						H.bodytemperature += 0.66 * distance_fraction
+						H.bodytemperature += 0.66 * distance_fraction * upkeep
 			if ("walk")
 				move_delay += mob.get_walk_delay() + standing_on_snow
 				if (mob_is_human)
@@ -827,8 +866,9 @@
 		if (mob.pulling)
 
 			// A step interrupted mid-tile west or south leaves loc two tiles
-			// from the pulled object while the bodies still touch.
-			var/pull_touching = (mob.step_x || mob.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32
+			// from the pulled object while the bodies still touch, and a thing
+			// dragged off the grid can sit diagonally with both corners blocked.
+			var/pull_touching = (mob.step_x || mob.step_y || mob.pulling.step_x || mob.pulling.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32
 			if (!mob.pulling.Adjacent(mob) && !pull_touching)
 				mob.stop_pulling()
 
@@ -1034,6 +1074,9 @@
 		if (!isnull(subtile_deadline) && (mob != input_actor || !input_actor || input_actor.client != src))
 			return FALSE
 		mob.last_movement = world.time
+		if (ishuman(mob))
+			var/mob/living/human/strider = mob
+			strider.body_motion_stride()
 		if (!isnull(subtile_deadline))
 			move_delay = subtile_deadline
 			return .
@@ -1093,8 +1136,11 @@
 
 	switch(mob.incorporeal_move)
 		if (1)
-			mob.forceMove(get_step(mob, direct))
+			var/turf/step = get_step(mob, direct)
 			mob.dir = direct
+			if (!mob.incorporeal_step_allowed(step)) // spirit_observe.dm: walls stop spirits
+				return
+			mob.forceMove(step)
 		if (2)
 			if (prob(50))
 				var/locx

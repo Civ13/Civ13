@@ -19,12 +19,9 @@
 // (pedal_airship_combat.dm, airborne_launch_turf).
 // ============================================================
 
-#define AIR_HULL_MAX_TILES 60
+#define AIR_HULL_MAX_TILES AIR_DRAUGHT_MAX_DECK
 // Tiles of deck, or people aboard, one gas cell holds up.
 #define AIR_HULL_CELL_LIFT 12
-// Ground shown around her in full, and a fainter ring beyond.
-#define AIR_HULL_VIEW_RANGE 7
-#define AIR_HULL_VIEW_FAR 10
 #define AIR_HULL_LAY_TIME 20
 #define AIR_HULL_CELL_TIME 30
 // Lift a gas cell loses for each hole.
@@ -35,7 +32,7 @@
 #define AIR_HULL_CREW_HIT_CHANCE 25
 #define AIR_HULL_PATCH_TIME 40
 // Units of gas that fill one cell (naval/gas_works.dm).
-#define AIR_HULL_CELL_GAS 60
+#define AIR_HULL_CELL_GAS AIR_DRAUGHT_CELL_GAS
 // Plastic sheets to rubberise a cloth cell, and skin layers to line one.
 #define AIR_HULL_RUBBER_SHEETS 5
 #define AIR_HULL_SKIN_LAYERS 6
@@ -233,10 +230,10 @@ var/global/list/air_hull_crafts = list()
 /obj/item/airship_gas_cell/attackby(obj/item/W, mob/user)
 	if (type != /obj/item/airship_gas_cell)
 		return ..()
-	if (istype(W, /obj/item/stack/material/plastic))
+	if (istype(W, /obj/item/stack/material/plastic) || istype(W, /obj/item/stack/material/rubber))
 		var/obj/item/stack/S = W
 		if (S.amount < AIR_HULL_RUBBER_SHEETS)
-			to_chat(user, SPAN_WARNING("You need [AIR_HULL_RUBBER_SHEETS] plastic sheets to coat the whole cell."))
+			to_chat(user, SPAN_WARNING("You need [AIR_HULL_RUBBER_SHEETS] sheets of plastic or rubber to coat the whole cell."))
 			return
 		to_chat(user, SPAN_NOTICE("You start coating \the [src] with rubber..."))
 		if (!do_after(user, AIR_HULL_CELL_TIME, src) || QDELETED(src) || !S.use(AIR_HULL_RUBBER_SHEETS))
@@ -423,6 +420,10 @@ var/global/list/air_hull_crafts = list()
 /datum/craft_body/built/air/upper_z()
 	return 0
 
+// No hold: what lies below her is the ground she flies over.
+/datum/craft_body/built/air/lower_z()
+	return 0
+
 // TRUE while she stands on the ground rather than hanging in the open air.
 /datum/craft_body/built/air/proc/landed()
 	if (!placed())
@@ -457,7 +458,7 @@ var/global/list/air_hull_crafts = list()
 	for (var/turf/S in old)
 		var/list/riders = list()
 		for (var/atom/movable/M in S)
-			if (M.loc != S || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || istype(M, /obj/effect/vessel_path) || M.craft_left_behind())
+			if (M.loc != S || QDELETED(M) || !M.craft_cargo())
 				continue
 			// Floors first, so nobody reaches open air before the deck does.
 			if (istype(M, /obj/covers))
@@ -534,9 +535,6 @@ var/global/list/air_hull_crafts = list()
 
 /datum/craft/air
 	name = "airship"
-	var/tmp/obj/effect/aircraft_ground_view/ground_view
-	var/tmp/obj/effect/aircraft_ground_view/ground_view_far
-	var/tmp/turf/ground_view_anchor
 	var/tmp/obj/effect/air_hull_shadow/shadow
 	var/tmp/turf/shadow_anchor
 
@@ -601,8 +599,6 @@ var/global/list/air_hull_crafts = list()
 	var/list/box = B.box(B.offsets)
 	var/min_x = B.px + box[1]
 	var/min_y = B.py + box[2]
-	var/max_x = B.px + box[3]
-	var/max_y = B.py + box[4]
 	// Her shadow, laid out from the corner of her box on the ground.
 	if (!shadow)
 		shadow = new
@@ -615,45 +611,6 @@ var/global/list/air_hull_crafts = list()
 		if (corner)
 			corner.vis_contents += shadow
 	shadow.vis_contents = deck
-	// The ground around her, seen through the open air.
-	var/list/near = list()
-	var/list/far = list()
-	var/vx = world.maxx + 1
-	var/vy = world.maxy + 1
-	for (var/turf/air in block(locate(max(1, min_x - AIR_HULL_VIEW_FAR), max(1, min_y - AIR_HULL_VIEW_FAR), B.z), locate(min(world.maxx, max_x + AIR_HULL_VIEW_FAR), min(world.maxy, max_y + AIR_HULL_VIEW_FAR), B.z)))
-		if (!istype(air, /turf/sky/building) || (locate(/obj/covers) in air))
-			continue
-		var/turf/G = air_hull_solid_below(air)
-		if (!G)
-			continue
-		var/dx = max(0, min_x - air.x, air.x - max_x)
-		var/dy = max(0, min_y - air.y, air.y - max_y)
-		if (max(dx, dy) <= AIR_HULL_VIEW_RANGE)
-			near += G
-		else
-			far += G
-		vx = min(vx, G.x)
-		vy = min(vy, G.y)
-	var/turf/anchor = (near.len || far.len) ? locate(vx, vy, B.z) : null
-	// Never anchored on her own deck: the shadow already draws the deck.
-	if (anchor && B.contains(anchor))
-		anchor = null
-	if (!ground_view)
-		ground_view = new
-		ground_view.loc = null
-	if (!ground_view_far)
-		ground_view_far = new /obj/effect/aircraft_ground_view/far
-		ground_view_far.loc = null
-	if (ground_view_anchor != anchor)
-		if (ground_view_anchor)
-			ground_view_anchor.vis_contents -= ground_view
-			ground_view_anchor.vis_contents -= ground_view_far
-		ground_view_anchor = anchor
-		if (anchor)
-			anchor.vis_contents += ground_view_far
-			anchor.vis_contents += ground_view
-	ground_view.vis_contents = anchor ? near : list()
-	ground_view_far.vis_contents = anchor ? far : list()
 
 /datum/craft/air/proc/clear_views()
 	if (shadow_anchor && shadow)
@@ -663,18 +620,6 @@ var/global/list/air_hull_crafts = list()
 		shadow.vis_contents = list()
 		qdel(shadow)
 	shadow = null
-	if (ground_view_anchor)
-		ground_view_anchor.vis_contents -= ground_view
-		ground_view_anchor.vis_contents -= ground_view_far
-	ground_view_anchor = null
-	if (ground_view)
-		ground_view.vis_contents = list()
-		qdel(ground_view)
-	if (ground_view_far)
-		ground_view_far.vis_contents = list()
-		qdel(ground_view_far)
-	ground_view = null
-	ground_view_far = null
 
 // ---- Seeing, dropping and shooting through open air ----
 
@@ -1009,7 +954,7 @@ var/global/list/air_hull_crafts = list()
 			tree.health -= 20
 			tree.try_destroy()
 		for (var/atom/movable/M in D.contents.Copy())
-			if (M.loc != D || QDELETED(M) || istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright))
+			if (M.loc != D || QDELETED(M) || !M.craft_cargo())
 				continue
 			if (istype(M, /obj/covers/airship_deck) || istype(M, /obj/structure/airship_gas_cell) || istype(M, /obj/structure/airship_helm) || istype(M, /obj/structure/airship_bomb_hatch))
 				wreck += M
@@ -1266,7 +1211,7 @@ var/global/list/air_hull_crafts = list()
 	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Cast off" : "Hold position")
 	var/datum/craft_body/built/air/AB = craft.body
 	options += AB.landed() ? "Lift off" : "Land"
-	options += list("Refit the deck", "Strike the airship", "Cancel")
+	options += list("Refit the deck", "Draw her lines", "Strike the airship", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
@@ -1299,6 +1244,10 @@ var/global/list/air_hull_crafts = list()
 			if (!craft.order_turn(heading))
 				to_chat(H, SPAN_WARNING("She cannot come about here: [craft.last_refusal]."))
 				return
+			return
+		// A blank sheet of paper in hand becomes her airship sheet (air_draught.dm).
+		if ("Draw her lines")
+			draw_air_lines(H)
 			return
 		if ("Refit the deck")
 			if (!craft.anchored)
@@ -1348,8 +1297,6 @@ var/global/list/air_hull_crafts = list()
 
 #undef AIR_HULL_MAX_TILES
 #undef AIR_HULL_CELL_LIFT
-#undef AIR_HULL_VIEW_RANGE
-#undef AIR_HULL_VIEW_FAR
 #undef AIR_HULL_LAY_TIME
 #undef AIR_HULL_CELL_TIME
 #undef AIR_HULL_HOLE_LIFT

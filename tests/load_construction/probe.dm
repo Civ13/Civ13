@@ -94,19 +94,29 @@ var/load_construction_stop = 1e9
 	if(.)
 		var/datum/built = .
 		built.persistence_reset_omitted_fields(list())
-// Builds the type a second time and reports drifted fields whose values differ.
-// The second copy stays: deleting it races the constructor's spawn callbacks.
+// Builds the type LOAD_CONSTRUCTION_BUILDS - 1 more times, each from its own
+// seed, and reports a field whose value differs between builds. A field that
+// any build moved off its default counts, so a coin flip (female = prob(50))
+// that one build left at its default is still compared. Two builds missed
+// such a field half the time.
+// The extra copies stay: deleting them races the constructor's spawn callbacks.
+#define LOAD_CONSTRUCTION_BUILDS 4
 /proc/load_construction_record_drift(datum/D, T, turf/loc)
+	var/list/builds = list(D)
 	var/list/fields = load_construction_drift_fields(D)
-	if(!fields.len)
-		return
-	rand_seed(load_construction_seed(T) + 1)
-	var/datum/again = load_construction_restore(T, loc)
-	if(QDELETED(again))
-		return
+	for(var/i = 1, i < LOAD_CONSTRUCTION_BUILDS, i++)
+		rand_seed(load_construction_seed(T) + i)
+		var/datum/again = load_construction_restore(T, loc)
+		if(QDELETED(again))
+			return
+		builds += again
+		fields |= load_construction_drift_fields(again)
 	for(var/key in fields)
-		if(again.vars[key] != D.vars[key])
-			text2file("DRIFT\t[T]\t[key]", "construction_drift.txt")
+		for(var/datum/other in builds)
+			if(other.vars[key] != D.vars[key])
+				text2file("DRIFT\t[T]\t[key]", "construction_drift.txt")
+				break
+#undef LOAD_CONSTRUCTION_BUILDS
 /proc/sweep()
 	var/n = 0
 	var/fails = 0

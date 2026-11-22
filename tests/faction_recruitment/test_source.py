@@ -284,6 +284,48 @@ class NationSource(unittest.TestCase):
         self.assertIn('nations_refresh_due()', read('code/modules/persistence/shard_group.dm'))
 
 
+
+class IslandClaimSource(unittest.TestCase):
+    """Val (2026-11-18): a claimed island is never stolen unless abandoned."""
+
+    def setUp(self):
+        self.claim = read('code/modules/naval/island_claim.dm')
+        self.colony = read('code/game/mob/groups/colony_charter.dm')
+
+    def test_numbers_and_inclusion(self):
+        self.assertIn('#define ISLAND_CLAIM_RESIDENTS 3', self.claim)
+        self.assertIn('#define ISLAND_CLAIM_LAPSE_DAYS 14', self.claim)
+        for name in ('ISLAND_CLAIM_RESIDENTS', 'ISLAND_CLAIM_LAPSE_DAYS'):
+            self.assertIn(f'#undef {name}', self.claim)
+        self.assertIn('#include "code\\modules\\naval\\island_claim.dm"', read('civ13.dme'))
+        self.assertNotIn('sleep(', self.claim)
+        self.assertNotIn('spawn(', self.claim)
+        self.assertNotIn(' in world', self.claim)
+
+    def test_the_claim_stands_without_its_charter(self):
+        for name in ('/obj/map_metadata/proc/colony_home_faction(', '/obj/map_metadata/proc/colony_report('):
+            self.assertIn('island_claim_holds(', run.proc_text(self.colony, name))
+        block = run.proc_text(self.colony, '/obj/structure/colony_charter/proc/plant_block(')
+        self.assertLess(block.index('island_claim_leader_parent(user)'), block.index('user.colony_origin_leader'))
+        plant = run.proc_text(self.colony, '/obj/structure/colony_charter/proc/plant(')
+        self.assertIn('island_claim_leader_parent(user) || user.colony_origin', plant)
+        self.assertIn('!island_claim_holds(origin)', plant)
+
+    def test_an_empty_land_lapses_through_the_world_directory(self):
+        check = run.proc_text(self.claim, '/proc/island_claim_check(')
+        self.assertIn('residents >= ISLAND_CLAIM_RESIDENTS', check)
+        self.assertIn('ISLAND_CLAIM_LAPSE_DAYS * 864000', check)
+        self.assertIn('expedition_land_ask("unclaim", null, parent)', check)
+        self.assertLess(check.index('expedition_land_ask('), check.index('C.faction = null'))
+        residents = run.proc_text(self.claim, '/proc/island_claim_residents(')
+        self.assertIn('B.anchored', residents)
+        self.assertIn('map.faction_roster(name)', residents)
+        self.assertIn('island_claim_check() // island_claim.dm', read('code/modules/persistence/land_stage.dm'))
+
+
+class StationLimitSource(unittest.TestCase):
+    """Val (2026-11-22): at most 3 recruitment stations per faction."""
+
     def test_station_limit_applies_when_designating(self):
         source = read('code/game/mob/groups/recruitment_station.dm')
         topic = run.proc_text(source, '/datum/recruitment_panel/Topic(')

@@ -45,7 +45,7 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
 
 See [group.example.json](group.example.json). Required keys: `group`,
 `repository`, `root` (outside the repository), `compiler`, `daemon`, `git`,
-`public_host` (the address players use to join) and 1 to 16 `regions`, each
+`public_host` (the address players use to join) and 1 to 32 `regions`, each
 with a unique `id`, `name`, `kind` (`SURFACE`, `OCEANIC`, `UNDERGROUND`, `RAILYARD`, `RAID`,
 `ORBIT`, `BARRACKS`, `BATTLE`, `EVENT`, `TUTORIAL` or `OTHER`; a `RAID`, `BATTLE`, `EVENT` or `TUTORIAL` region cannot be the mainland;
 a `TUTORIAL` region only runs the practice rooms and never saves, see [docs/practice-rooms.md](../../docs/practice-rooms.md#tutorial-region)), `port` and `map`. Optional: `revision` (default `HEAD`), `public`
@@ -339,6 +339,86 @@ nothing.
 The Windows wrappers are `ports.bat`, `set-gate.bat REGION [apply]` and
 `set-port.bat REGION PORT [apply]`.
 
+## Gateway world
+
+A region of kind `GATEWAY` is a small world ([maps/special/gateway.dmm](../../maps/special/gateway.dmm),
+[region_gateway.dm](../../code/modules/persistence/region_gateway.dm)) that sits on
+the front door's port for good and hosts no play. The BYOND hub lists a world by
+the port its DreamDaemon was started on; a standby handover that takes the port
+over with `world.OpenPort` is not listed again, so a playable front door drops off
+the hub after its updates. The gateway is started on its port and stays there:
+
+- Every player who joins it (admins and guests too) is sent on through the relay to
+  the land their character lives in, or to the start region when they have none.
+  It asks its own transfer agent the Join check's question (`/account` claim
+  without a body), which for a world that is nobody's home and not the start region
+  never claims anything: a pending, travelling or unanswered account is told why
+  and tried again every few seconds for two minutes, then offered Try again. A
+  character on a laid-up land across the sea has its land summoned first. Nobody
+  can Join, start a character or be sent there; trails and the Regions panel skip it.
+- It never saves (`save_minutes` 0, `SKIP_PERSISTENCE_SAVING`) and never sleeps.
+  It never stages a build and always stays on its port (Val, 2026-11-21). The host
+  service never stages, updates or restarts it, not even while it is empty; a
+  group-wide `restart`, `force-restart`, `update`, `stage`, `handover`,
+  `update-unsaved` or `update-handover` (and deploy.bat) reports it as refused and
+  leaves it running. To put new code on it, name it: `restart --region ID`. A
+  crashed gateway comes back at once on the build it has (`start-current`).
+- Its hub entry and `status` topic describe the lands behind it: the mainland's map
+  and the connected player total for the configured regions in that group,
+  including practice and battle worlds when present. It excludes the gateway's
+  own forwarding clients. The total comes from the existing polls, without
+  waking regions. Confirmed asleep, cold or stopped regions contribute zero;
+  unchecked, unreachable, waking, invalid or expired observations make the
+  count partial. The Hub description shows the known sum as a plain number, and
+  leaves the line out while no region is confirmed. The `status` topic supplies the
+  known sum in `group_players` and the number of unconfirmed regions in
+  `group_players_unknown_regions`; `players` still counts local clients only.
+  BYOND's built-in listing count is for the gateway world itself, not the sum
+  shown in the description.
+- It is the world the bot watches (it is the gate), and it is always awake to post
+  other lands' OOC to Discord.
+- A group has at most one; it cannot be the mainland or the start region, and it
+  needs the routing relay (`relay_port`).
+
+Putting one in front of a group that already plays takes two commands; the
+launcher has both under All regions > More > Front door and ports:
+
+```
+python shard_group.py --config group.json add-gateway [--region gateway] [--apply]
+python shard_group.py --config group.json set-gate --region gateway [--apply]
+```
+
+`add-gateway` plans, and with `--apply` adds the region to the group file (ports
+chosen like any omitted port), sets it up and starts it on that port while the
+front door keeps playing; its first start compiles it. Once it runs, `set-gate`
+swaps the two worlds' ports as for any front door move: the gateway takes the public
+port and the old front door (Gaia on the live host) moves behind the relay on the
+gateway's port, saved and started again once. `set-gate` refuses a gateway that is
+not running yet, so the public port never waits on a first build. The mainland and
+the start region stay as they were.
+
+With the whole group stopped for maintenance, neither step launches anything:
+`add-gateway --apply` only sets the gateway up, and `set-gate` only swaps the ports
+(and moves the front door files). The next start brings the gateway up on the public
+port; its first start compiles it.
+
+## Adding the missing Earth regions
+
+A group that hosts Earth (Gaia or any Earth land) can take every Earth land and sea it
+lacks in one step (launcher: All regions > More > Front door and ports > Add missing
+Earth regions):
+
+```
+python shard_group.py --config group.json add-regions [--apply]
+```
+
+The list is `EARTH_REGIONS` in shard_group.py (the lands of docs/earth-continents.md
+and the seas of docs/ocean-regions.md). A region is missing when neither its id nor
+its map is in the group. Each keeps its usual port (1740-1754) when that is free,
+otherwise one is chosen like any omitted port. With `--apply` they are added to the
+group file and set up stopped; running regions keep playing and learn the new peers
+on their next start.
+
 ## Travel between regions
 
 Travel is off unless every region has a `transfer_port` (a free loopback
@@ -433,6 +513,13 @@ take turns (`<root>/.staging/compile.lock`), so a deploy never compiles every
 region at once. Progress is in `data/shard-host/stage.json` (`phase` is
 `ready`, `current` or `failed` with `error`) and `status` shows it under
 `stage`, with `pending` true while a ready build is newer than the running one.
+A stage a person waits on (`stage`, deploy.bat, the in-game Save, update and
+restart, Update on an asleep region) writes `<root>/.staging/urgent/<id>`, and
+the host service's background stages let it take the next compile first
+(`waiting for a requested build of another region`); a background stage of the
+same region already in the queue is moved up the same way. When its turn comes
+a stage builds what the group `revision` names then (local refs, no fetch), so
+a stage queued before a pull never builds the older revision.
 A plain `update` of a stopped region takes the same compile slot at the same
 priority, and runs DreamMaker once more when it stops without reporting any
 result (killed or crashed while loading), so updating every region at once
@@ -443,13 +530,60 @@ The host service (`gaia_host.py serve`) installs a ready build by itself:
 - an awake region that is empty and has saved since its last player (the moment
   it would otherwise go to sleep) is restarted, and its `update` copies
   `region.dmb` and `region.rsc` from the staging worktree instead of compiling;
-- an asleep region is stopped (it saved before it froze) and a cold one is
-  updated the same way, so its next wake starts on the new build.
+- an asleep or cold non-mainland region can take the staged build before its
+  next wake. The mainland retains its existing build until a standby handover.
 
 A staged build is never installed over a newer build, and an `update` of any
 other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
 runs `stage` on that interval; with `revision: origin/master` and `fetch:
 origin`, merged changes then reach each region the next time it is empty.
+
+**Travel starts** (Val, 2026-11-22): a traveller bound for a region that is
+not running (trail, map edge, ship, plane, admin send) starts it through the
+doorman (`wake=1&port=N&start=1`) and hears it is being prepared, the way one
+bound for a sleeping region wakes it; one already being prepared is only waited
+on. `keep_down` (region key, `true` or absent) keeps a region down on purpose:
+travellers are turned back there and the admins are told. `status` shows
+`keep_down: true` for it. The launcher sets it in **Travel starts…**.
+
+**Ready lands** (Val, 2026-11-22; `ready_neighbours`, group key, default `true`;
+`cold_after_minutes`, default 15, 0 = never): for every region in
+`tools/world_links/world_links.json`, the host service's doorman checks every 30
+seconds which regions have players. A region next to one with players (a map
+edge walked or sailed over, or an island inset in an ocean) stays suspended in
+memory, so a traveller wakes it in seconds; one in cold storage is started
+ahead, one at a time and only with `cold_start_min_free_mb` free. A stopped or
+`keep_down` region is never started ahead. A frozen region with nobody next
+door for `cold_after_minutes` goes to cold storage (it saved before it froze),
+freeing its memory; its next wake loads that save. The mainland, the
+always-up kinds and the oceans next to the mainland (the Atlantic around Gaia)
+are always kept ready and never go to cold storage. Low-memory eviction takes
+regions nobody is next to first. 15 minutes matches `freeze_idle_minutes`: a
+cold start loads the save (minutes, `cold_start_estimate_seconds` 300) while a
+thaw takes seconds, so a shorter wait would put a land in cold storage while a
+player who just logged out of the land next door may still return. Regions
+outside the table (TDM, nomads groups) are left alone.
+
+**Daily maintenance** (`maintenance`, group key; `daily_maintenance.py`): once a
+day every region moves onto one build together. `{"enabled": true, "time":
+"03:00", "warning_minutes": 10, "late_minutes": 90}`; `time` is the host's local
+time (the quietest hours on the Earth host were 1-5 AM Eastern). It is on by
+default only for the live group (`live: true`) that saves and fetches a remote,
+and off for TDM groups, which update between rounds. The host service starts one
+detached run per day at the time (`maintenance --scheduled`), or up to
+`late_minutes` later if the host was off or busy. The run resolves the group
+revision once and pins it in `<root>/.maintenance/pin.json`, so every stage and
+handover (and any empty-region update meanwhile) builds that commit. It stages
+every region that is not on it; if any build fails, no region is touched. It then
+sends every occupied running region the same countdown (lifecycle
+`planned_notice`, `warning_minutes`), hands each running region over in turn
+(a busy one is asked again later, so it never holds the others), and installs
+the build into asleep, cold and stopped regions without waking them
+(`update_offline`). An admin's **Cancel Planned Restart** keeps that region on
+its build for the day. The gateway is never staged or moved. The result per
+region is in `<root>/.maintenance/state.json`, `maintenance-status` and the
+group status; the launcher's **Daily maintenance...** sets it and **Run daily
+maintenance now** starts a run at once.
 
 **Update when empty** (`update_when_empty`, group key, default `true`): the host
 service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
@@ -462,18 +596,42 @@ never a plain restart: the handover backs up the save, the new build loads it
 beside the running world, and only a successful load takes the port. A save the
 new code cannot read (an unknown durable timer, say) fails that load and the old
 world plays on; that build is not tried again unattended, and a refused handover
-(low memory) waits for the next check rather than restarting. A player joining meanwhile holds the
-restart until the region is empty again, a failed build leaves the world
-running (and is not retried until the revision changes or a Build update runs),
-and a world that does not save (TDM) is never touched. Asleep and cold regions
-are staged the same way; an asleep region keeps its old build (the host service
-does not install into it) until it is next awake, empty and saved, when it hands
-over like any other, and a cold region takes the build at its next start. It
+(low memory) waits for the next check rather than restarting. The host checks
+for players again after the standby boots and defers if anyone has joined; this
+status check is not atomic with the subsequent save request. A failed build leaves the world
+running (and is not retried until the revision changes or a Build update runs).
+Asleep and cold regions are staged the same way. The mainland keeps its old
+build while asleep or cold and automatically starts that recorded build on a
+wake or watchdog recovery; it takes an update only after an awake, empty and
+saved standby handover. An older mainland build without handover support defers
+automatic updates until an operator updates it manually. A nonpersistent
+mainland likewise defers, because it has no save for the standby to validate.
+If the recorded mainland build is missing or changed, automatic recovery is
+refused for manual investigation. A rejected handover revision stays rejected
+across recovery; an explicit handover retry or a different revision can proceed.
+Non-mainland cold regions can take the build at their next start. It
 never wipes a world. The key is read at each
 check, so the launcher's **Update when empty** toggle applies without a setup;
 turning it on also sets `fetch: origin` and `revision: origin/master` for a
 group that does not fetch, since otherwise new commits only appear once the
 source checkout is pulled.
+
+The same key updates a group that does not save (`persistent: false`, the TDM
+pair) between rounds. The battle world takes the update with its next map: when
+its round ends, `battle_mapswap.py` fetches and, if the group revision has moved
+past the world's, builds the voted map (or, after a round with no vote, its
+current map: `battle_mapswap.py --update`) at that revision, moves the region's
+worktree onto it and puts the build in the live slot, so the reboot that ends
+the round starts the new code. A fetch or build that fails falls back to the map
+alone at the old revision, and that revision is not tried again
+(`data/shard-host/round-update.json`). The barracks (or any other region of such
+a group) has no save to load, so once it is empty it stages the update beside
+itself and restarts onto it. It does so only after the battle has taken an
+update at the end of a round (the battle's worktree is ahead of its build), so it
+restarts at most once a round rather than on every merge, and never while the
+battle is between rounds (its `rotation.json` reads `building`), when its players
+are on their way back. Such a group is never handed over: a world in pregame
+reports no round yet, which otherwise reads as saving.
 
 ### Updating the regions that are not running
 
@@ -530,6 +688,15 @@ without stopping it for the load:
    reconnect to the same address within seconds and find their characters as
    after any restart. The region's worktree is checked out at the new revision
    and `build.json` records the live slot.
+
+Automatic handovers additionally require the running world's
+`handover_empty_guard` capability. The save request reserves only an empty
+world; if anyone connects before release (even if they disconnect before the
+standby finishes loading), the host cancels the cutover, keeps the current
+world up and may retry later. New arrivals after a successful automatic
+release must reconnect. Older running builds need one operator-initiated
+update to gain this capability. Manual handovers retain their existing
+warning and player behavior.
 
 A failure before step 4 (the standby does not boot, the save fails, the load is
 rejected or times out after `load_timeout_seconds`, default 1800) stops the
@@ -637,3 +804,14 @@ when it exits and ignores the stop file until it is ended.
 The launcher offers a recoverable, exact-region-confirmed fresh-world action for
 stopped unlinked regions. Connected transfers and separate extraction persistence
 are refused there; the group fresh world archives them for every region. See [scope, recovery and coordinated-reset plan](../../docs/launcher-fresh-world.md).
+
+## Chat translator
+
+With `"chat_translator": {}` in the group config (optional `"port"` (55581), `"node"`, `"npm"`, `"edge"`
+(msedge.exe) and `"profile"` (Edge's profile; default `<root>/chat-translator/edge-profile`)), the host
+service keeps the Edge chat translator (`tools/edge-translator`) running for the whole group: it copies the
+service into `<root>/chat-translator/app`, runs `npm ci --ignore-scripts` there when the lock file changes,
+and restarts it if it exits. Every region's merged config gets `CHAT_TRANSLATE_URL http://127.0.0.1:<port>`
+at its next update or `config-apply`, unless its config.local.txt sets or turns off that line.
+`translator-status`, `translator-start` and `translator-stop` (kept stopped until start) back the launcher's
+Translator tab.

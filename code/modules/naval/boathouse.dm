@@ -370,10 +370,18 @@
 	var/list/stored = stored_boats()
 	if (stored.len)
 		options["Take a boat out"] = "retrieve"
+	options["Survey her condition"] = "survey"
+	breakup_options(options, breakup_hulls())
 	var/list/names = stored_names()
 	var/text = names.len ? "Stored ([names.len]/[capacity]): [english_list(names)]." : "Nothing is stored ([capacity] spaces)."
 	var/choice = WWinput(H, "[text] The slip is the 7x7 square of water to the [dir2text(slip_dir)] of the boathouse.", name, "Cancel", options + list("Cancel"))
 	if (!(choice in options) || busy || !Adjacent(H))
+		return
+	if (options[choice] == "survey")
+		show_condition(H)
+		return
+	if (istype(options[choice], /datum/craft))
+		breakup_action(H, options[choice])
 		return
 	if (options[choice] == "store")
 		var/list/boats = boats_in_slip()

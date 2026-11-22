@@ -144,6 +144,14 @@
     "reason": "Whole live grab/action graph is excluded; legacy constructors are rejected before instantiation."
   },
   {
+    "owner": "/obj/item/weapon/grab",
+    "field": "hand_partner",
+    "type": "/obj/item/hand_hold",
+    "path": "code/game/mob/grab.dm",
+    "policy": "unsaved_graph",
+    "reason": "Whole live grab/action graph is excluded; the held hand is should_save = FALSE and region travel refuses it."
+  },
+  {
     "owner": "/obj/structure/optable",
     "field": "victim",
     "type": "/mob/living/human",

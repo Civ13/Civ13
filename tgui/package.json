@@ -11,6 +11,7 @@
     "test": "vitest run",
     "check": "npm run typecheck && npm test && npm run build && npm run test:bundle",
     "test:browser": "node scripts/browser-smoke.mjs",
+    "test:browser:wiremod": "node scripts/wiremod-browser-smoke.mjs",
     "test:bundle": "node scripts/bundle-smoke.mjs"
   },
   "dependencies": {

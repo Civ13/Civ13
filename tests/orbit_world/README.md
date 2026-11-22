@@ -242,3 +242,15 @@ a picked-over derelict leaves the chart and another turns up, a field has
 asteroids with ore that keep their place and stays on the chart, the site
 cap and the pause refuse a load and leave the ship holding off in the lanes,
 and the sites are saved as one text and read back with what is built where.
+
+It also checks station plans (`code/modules/space/station_plan.dm`): every
+ready-made plan can be launched and survives its design code, bad codes are
+refused, a plan the size of the starter costs what the starter does and a
+bigger one pays 60 steel a module, two command modules, a loose module, a
+blocked keel and a missing keel airlock are refused, every part is
+described, the station designer's page takes one block of data, has a
+picture of every module, opens on the sheet's plan and answers with the
+plan's own figures and its keel slots on the grid, the office asks for the plan's materials and sends the plan up
+with the crew, the first arrival founds every module of the plan sealed with
+its keel, power and life support on the grid, and the plan drawn at its
+console matches the one it was built from.

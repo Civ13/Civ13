@@ -82,7 +82,10 @@ class Projection:
         self.globals = dict(persistence_admission_identity=0,
                             persistence_save_in_progress=False,
                             persistence_active_operation=None,
-                            persistence_load_recovery_required=False)
+                            persistence_load_recovery_required=False,
+                            # Hidden material virtues: plain items carry none.
+                            arcane_copy_virtue=lambda *_args: None,
+                            arcane_same_virtue=lambda *_args: True)
         # Fuel values come from the shared tables in code/modules/1713/solid_fuel.dm.
         self.globals |= solid_fuel_globals()
 
@@ -119,6 +122,7 @@ class Projection:
                             isnum=lambda value: isinstance(value, (int, float)),
                             isturf=lambda item: bool(item and getattr(item, 'turf', False)),
                             CONSCIOUS=0,
+                            resin_cook_attackby=lambda *_args: False,
                             wood_chip_logs_per_batch=lambda: self.run('/proc/wood_chip_logs_per_batch', Record()),
                             round=math.floor, min=min, prob=lambda _chance: False,
                             qdel=lambda obj: (setattr(obj, 'gcDestroyed', True), setattr(obj, 'loc', None)),
@@ -826,6 +830,7 @@ class AcquisitionProjection(Projection):
             isnull=lambda value: value is None,
             # One floor and one wall per tile: a machine takes neither slot.
             tile_build_refusal=lambda *_args: None,
+            railing_build_refusal=lambda *_args: None,
             # Stairs alone may be built down through an opening (edge_climbing.dm).
             cover_type_is_stairs=lambda *_args: False,
             # Only a new lining on a dug well may replace what stands on the tile (dug_wells.dm).
@@ -837,6 +842,9 @@ class AcquisitionProjection(Projection):
 
     def expression(self, text, receiver, local):
         # Known DM interpolation/ternary and dynamic-constructor adapters only.
+        # The fixture builds ashore; ship_craft is always the default null.
+        text = text.replace('ship_craft ? ship_craft.target(H) : user.loc', 'user.loc')
+        text = text.replace('do_after(user, buildtime, ship_craft = ship_craft)', 'do_after(user, buildtime)')
         text = text.replace('/material/woolcloth', repr('/material/woolcloth'))
         text = text.replace('"[recipe.result_type]"', 'recipe.result_type')
         text = text.replace('"[type]/"', 'material_prefix').replace('(joinery || carving) ? null : H', 'H')
@@ -874,7 +882,7 @@ class AcquisitionProjection(Projection):
         recipe = Record(req_amount=int(row[3]), time=int(row[4]), one_per_turf=int(row[5]),
                         on_floor=int(row[6]), title=row[1], use_material=None, result_type=row[2])
         self.run('/datum/acquisition/proc/build', stock, user=actor, H=actor, recipe=recipe,
-                 required=recipe.req_amount, produced=1, joinery=None, press_construction=None, carving=None, cloth_payment=None)
+                 required=recipe.req_amount, produced=1, joinery=None, press_construction=None, carving=None, cloth_payment=None, ship_craft=None)
         return stock
 
 

@@ -8,7 +8,7 @@
 #define SHARD_REFRESH_FLOOR 150
 // The doorman refreshes every 30 s; an older entry means it lost the world.
 #define SHARD_DOORMAN_FRESH_SECONDS 90
-#define SHARD_MAX_REGIONS 16
+#define SHARD_MAX_REGIONS 512 // expedition slots grow without a cap; shard_group.py keeps other regions to 32
 
 var/global/datum/shard_group/shard_group = new
 
@@ -68,6 +68,9 @@ var/global/datum/shard_group/shard_group = new
 	var/travel_save_seconds = 60
 	// A resetting raid world (region_raid_reset.dm): minutes between resets, 0 = never.
 	var/reset_minutes = 0
+	// Ships sail over linked map edges (naval/ship_edge_crossing.dm). Off until
+	// the host turns it on for the group, with the oceans running.
+	var/edge_travel_oceans = FALSE
 	var/saving_loop = FALSE
 	// host:port of the host's doorman (scripts/gaia-host/doorman.py), which knows
 	// which regions are asleep. Null when the host runs none. A sleeping peer is
@@ -108,7 +111,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("every region needs a unique id")
 		if(!istext(entry["name"]) || !length(entry["name"]) || length(entry["name"]) > 64)
 			return refuse("region [entry["id"]] needs a name of 1 to 64 characters")
-		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT", "TUTORIAL", "EXPEDITION")))
+		if(!(entry["kind"] in list("SURFACE", "OCEANIC", "UNDERGROUND", "RAILYARD", "RAID", "ORBIT", "OTHER", "BARRACKS", "BATTLE", "EVENT", "TUTORIAL", "EXPEDITION", "GATEWAY")))
 			return refuse("region [entry["id"]] has an unknown kind")
 		if(!shard_address_valid(entry["address"]) || (entry["address"] in seen_addresses))
 			return refuse("region [entry["id"]] needs a unique host:port address")
@@ -136,6 +139,7 @@ var/global/datum/shard_group/shard_group = new
 			return refuse("only a RAID region can reset")
 		reset_minutes = round(settings["reset_minutes"])
 	doorman = null
+	edge_travel_oceans = settings["edge_travel_oceans"] == TRUE || settings["edge_travel_oceans"] == 1
 	if(!isnull(settings["doorman"]))
 		if(!shard_address_valid(settings["doorman"]))
 			return refuse("doorman must be a host:port address")
@@ -276,6 +280,10 @@ var/global/datum/shard_group/shard_group = new
 	// players are at an event (region_event.dm).
 	if(kind != "EVENT")
 		.["event_away"] = length(event_stashes())
+	// The launcher's region board shows each region's local time (world_calendar.dm).
+	var/list/calendar = world_calendar_status()
+	if(calendar)
+		.["calendar"] = calendar
 
 // Reads one peer's answer to the shard_region topic. A world that answers for
 // another group or region id is never shown as that region.
@@ -354,13 +362,14 @@ var/global/datum/shard_group/shard_group = new
 /proc/region_round_autostart(datum/controller/gameticker/T)
 	if(!T || !shard_group.autostarts_round())
 		return FALSE
+	// Checked every tick: the round (and a gateway's first forward) starts as soon as setup ends.
 	while(!world_setup_finished)
-		sleep(10)
+		sleep(1)
 	if(!shard_group.autostarts_round())
 		return FALSE
 	T.admin_started = TRUE
 	// The Barracks is an always-on lobby: no pregame countdown.
-	if(shard_group.kind in list("BARRACKS", "TUTORIAL"))
+	if(shard_group.kind in list("BARRACKS", "TUTORIAL", "GATEWAY"))
 		T.skip_pregame_countdown = TRUE
 	log_game("Region group: [shard_group.region] starts its round on its own.")
 	return TRUE
@@ -373,6 +382,12 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	peer["checked"] = now
 	peer["players"] = 0
+	// A traveller's wake starts a stopped land (Val, 2026-11-22): the doorman says whether
+	// it may ("startable": not kept down on purpose) and whether it is being prepared now.
+	peer["startable"] = entry["startable"] ? TRUE : FALSE
+	peer["preparing"] = entry["preparing"] ? TRUE : FALSE
+	peer["phase"] = istext(entry["phase"]) ? copytext(entry["phase"], 1, 41) : null
+	peer["cold"] = entry["cold"] ? TRUE : FALSE
 	switch(entry["state"])
 		if("asleep")
 			peer["state"] = entry["cold"] ? "COLD" : "ASLEEP"
@@ -490,41 +505,172 @@ var/global/datum/shard_group/shard_group = new
 	poll_once()
 	return TRUE
 
-// A peer that is asleep but can be woken through the doorman.
+// A peer that is asleep, or stopped but not kept down, and can be woken (or
+// started) through the doorman.
 /datum/shard_group/proc/peer_wakeable(id)
 	var/list/peer = peers[id]
-	return doorman && peer && (peer["state"] in list("ASLEEP", "COLD", "WAKING"))
+	if(!doorman || !peer)
+		return FALSE
+	return (peer["state"] in list("ASLEEP", "COLD", "WAKING")) || peer["state"] == "STOPPED" && peer["startable"]
+
+// A peer that is stopped and that no traveller may start: kept down on purpose,
+// busy with another host action, or without a doorman to start it.
+/datum/shard_group/proc/peer_closed(id)
+	var/list/peer = peers[id]
+	return peer && peer["state"] == "STOPPED" && !peer_wakeable(id)
+
+// Asks the doorman to wake a sleeping peer, without waiting for it. A list:
+// "result" is "up" (it already answers), "refused" (a definite no: nothing was
+// woken, "reason" says why), "accepted" (the doorman is waking it; "eta" in
+// seconds) or "ambiguous" (no reply came: it may be waking, so treat it as
+// accepted and wake nothing else). Sleeps while the doorman is asked.
+/datum/shard_group/proc/ask_wake(id)
+	var/list/peer = peers[id]
+	if(!peer)
+		return list("result" = "refused", "reason" = "That land is not known here.")
+	if(peer["state"] == "UP")
+		return list("result" = "up")
+	if(peer_closed(id))
+		return list("result" = "refused", "reason" = "[peer["name"]] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back.")
+	if(!peer_wakeable(id))
+		return list("result" = "refused", "reason" = "Nobody seems to be coming back from [peer["name"]] right now.")
+	// start=1: a stopped land is started for the traveller; one already being prepared is
+	// only waited on, so many travellers cost one start and one compile.
+	var/list/reply = ask_doorman("wake=1&port=[shard_address_port(peer["address"])]&start=1")
+	if(!islist(reply))
+		log_game("Region travel: no reply from the doorman to waking [id]; it may be waking.")
+		return list("result" = "ambiguous", "eta" = 60)
+	if(!reply["ok"])
+		log_game("Region travel: waking [id] was refused: [reply["error"]][reply["reason"] ? " ([reply["reason"]])" : ""].")
+		switch(reply["error"])
+			if("low memory")
+				return list("result" = "refused", "reason" = "[peer["name"]] cannot be reached while this land's host is short of memory. Try again later.")
+			if("kept down")
+				peer["startable"] = FALSE
+				return list("result" = "refused", "reason" = "[peer["name"]] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back.")
+			if("not startable")
+				if(peer["state"] == "STOPPED")
+					peer["startable"] = FALSE
+				return list("result" = "refused", "reason" = "[peer["name"]] cannot be made ready right now. Ask an admin.")
+		return list("result" = "refused", "reason" = "[peer["name"]] cannot be woken right now. Ask an admin.")
+	var/was_stopped = peer["state"] == "STOPPED"
+	peer["state"] = "WAKING"
+	peer["preparing"] = reply["preparing"] ? TRUE : FALSE
+	if(peer["preparing"] && was_stopped)
+		log_game("Region travel: [id] was not running; the host is preparing it for a traveller.")
+		message_admins("[html_encode(peer["name"])] was not running, so it is being started for a traveller.")
+	var/eta_cap = peer["preparing"] ? 1800 : 900
+	return list("result" = "accepted", "eta" = isnum(reply["eta"]) ? Clamp(reply["eta"], 0, eta_cap) : 60, "preparing" = peer["preparing"])
+
+// Asks a waking peer every two seconds until it answers or deadline
+// (world.time) passes; TRUE once it answers. A failed poll is not the end.
+// still_wanted: optional callback; the wait stops (FALSE) once it returns FALSE.
+// notify: a mob that hears how the land is getting on, about every minute
+// (Val, 2026-11-22: waiting players see its status and how long is left), from
+// eta seconds after started (world.time) on.
+/datum/shard_group/proc/await_peer(id, deadline, datum/callback/still_wanted = null, mob/notify = null, eta = 0, started = 0)
+	var/asks = 0
+	var/said = null
+	var/said_at = world.time
+	while(world.time < deadline)
+		sleep(20)
+		if(still_wanted && !still_wanted.Invoke())
+			return FALSE
+		if(poll_peer(id))
+			return TRUE
+		// Every half minute the doorman is asked too: a land whose start ended without
+		// it (a failed build) reads stopped again, and nobody waits out the deadline.
+		if(++asks % 15 == 0)
+			if(peer_start_ended(id))
+				return FALSE
+			if(notify && notify.client)
+				var/line = wait_status(id, eta, started)
+				if(line != said || world.time - said_at >= 600)
+					said = line
+					said_at = world.time
+					to_chat(notify, SPAN_NOTICE(line))
+	return FALSE
+
+// What a waiting player hears: the land's state and how long is left.
+/datum/shard_group/proc/wait_status(id, eta, started)
+	var/list/peer = peers[id]
+	var/name = peer ? peer["name"] : id
+	var/left = round(eta - (world.time - started) / 10)
+	var/when = left > 90 ? "About [round(left / 60, 1)] minutes left." : left > 0 ? "Less than two minutes left." : "Taking longer than expected; still waiting."
+	return "[name]: [peer_wait_state(id)]. [when]"
+
+// The state of a land being woken or prepared, in words.
+/datum/shard_group/proc/peer_wait_state(id)
+	var/list/peer = peers[id]
+	if(!peer)
+		return "not answering"
+	var/phase = peer["phase"]
+	if(peer["preparing"] && istext(phase))
+		if(findtext(phase, "waiting"))
+			return "waiting its turn to be built"
+		if(findtext(phase, "compil") || findtext(phase, "checking out") || findtext(phase, "install"))
+			return "being built"
+		if(findtext(phase, "start") || findtext(phase, "save"))
+			return "starting up"
+		return "being prepared"
+	if(peer["preparing"])
+		return "being prepared"
+	if(peer["state"] == "COLD" || peer["cold"])
+		return "waking from a deep sleep"
+	return "waking up"
+
+// Tells a waiting player the land is ready, and after a wait long enough to have
+// looked away (waited, in deciseconds), flashes their window.
+/datum/shard_group/proc/ready_notice(id, mob/notify, waited = 0)
+	if(!notify || !notify.client)
+		return
+	var/list/peer = peers[id]
+	to_chat(notify, SPAN_NOTICE("<b>[peer ? peer["name"] : id] is ready.</b>"))
+	if(waited >= 600)
+		winset(notify.client, "mainwindow", "flash=2;")
+
+// TRUE when the doorman reads a peer as stopped again (its start failed or was undone).
+/datum/shard_group/proc/peer_start_ended(id)
+	var/list/peer = peers[id]
+	var/list/hosted = peer ? doorman_states() : null
+	var/list/entry = hosted ? hosted["[shard_address_port(peer["address"])]"] : null
+	if(!islist(entry) || entry["state"] != "stopped")
+		return FALSE
+	record_sleeping(id, entry, world.time)
+	return TRUE
+
+// The words a player hears while a peer is woken for them.
+/datum/shard_group/proc/wake_notice(id, eta, mob/notify = null)
+	var/list/peer = peers[id]
+	var/name = peer ? peer["name"] : id
+	// A player in the gateway lobby is sent on by itself; a traveller waits where they stand.
+	var/stay = istype(notify, /mob/new_player) ? "You are sent on as soon as it is ready." : "Stay where you are."
+	var/when = eta >= 60 ? " It may take up to [round(eta / 60) + 1] minutes." : ""
+	if(peer && peer["preparing"])
+		return "[name] is not ready yet: it is [peer_wait_state(id)] for you.[when] [stay]"
+	return "[name] lies quiet: it is [peer_wait_state(id)].[when] [stay]"
 
 // Wakes a sleeping peer through the doorman and waits until it answers.
 // Null once it is up, otherwise why not. Sleeps; notify hears how long.
 /datum/shard_group/proc/wake_peer(id, mob/notify = null)
-	var/list/peer = peers[id]
-	if(!peer)
-		return "That land is not known here."
-	if(peer["state"] == "UP")
-		return null
-	if(peer["state"] == "STOPPED")
-		return "[peer["name"]] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back."
-	if(!peer_wakeable(id))
-		return "Nobody seems to be coming back from [peer["name"]] right now."
-	var/list/reply = ask_doorman("wake=1&port=[shard_address_port(peer["address"])]")
-	if(!reply)
-		return "Nobody answers the call to [peer["name"]] right now. Try again in a while."
-	if(!reply["ok"])
-		log_game("Region travel: waking [id] was refused: [reply["error"]].")
-		if(reply["error"] == "low memory")
-			return "[peer["name"]] cannot be reached while this land's host is short of memory. Try again later."
-		return "[peer["name"]] cannot be woken right now. Ask an admin."
-	var/eta = isnum(reply["eta"]) ? Clamp(reply["eta"], 0, 900) : 60
-	if(notify)
-		to_chat(notify, SPAN_NOTICE(eta >= 60 ? "[peer["name"]] lies quiet. Word is sent ahead; it may take [round(eta / 60) + 1] minutes. Stay by the trail." : "[peer["name"]] lies quiet. Word is sent ahead; stay by the trail."))
-	peer["state"] = "WAKING"
-	var/deadline = world.time + (eta + 60) * 10
-	while(world.time < deadline)
-		sleep(20)
-		if(poll_peer(id))
+	var/list/asked = ask_wake(id)
+	switch(asked["result"])
+		if("up")
 			return null
-	return "[peer["name"]] did not answer in time. Try again in a while."
+		if("refused")
+			return asked["reason"]
+		if("ambiguous")
+			return "Nobody answers the call to [peers[id]["name"]] right now. Try again in a while."
+	var/eta = asked["eta"]
+	if(notify)
+		to_chat(notify, SPAN_NOTICE(wake_notice(id, eta, notify)))
+	var/started = world.time
+	if(await_peer(id, world.time + (eta + 60) * 10, null, notify, eta, started))
+		ready_notice(id, notify, world.time - started)
+		return null
+	if(peers[id]["state"] == "STOPPED")
+		return "[peers[id]["name"]] could not be made ready. Ask an admin."
+	return "[peers[id]["name"]] did not answer in time. Try again in a while."
 
 /datum/shard_group/proc/start_polling()
 	if(!enabled || polling)
@@ -600,8 +746,8 @@ var/global/datum/shard_group/shard_group = new
 		// Joining a frozen world wakes it at once; a cold one takes minutes, so it is woken from a trail.
 		// Event regions are reached only when an admin sends players there (region_event.dm).
 		// Lands across the sea only by ship (expedition_land.dm).
-		var/join = (state == "UP" || state == "ASLEEP") && peer["kind"] != "EVENT" && peer["kind"] != "EXPEDITION" ? "<a href='[player_href(id)]'>Join</a>" : ""
-		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[land_stage_column(id, peer["kind"])]</td><td>[shard_state_text(state)]</td><td>[players]</td><td>[join]</td></tr>"
+		var/join = (state == "UP" || state == "ASLEEP") && peer["kind"] != "EVENT" && peer["kind"] != "EXPEDITION" && peer["kind"] != "GATEWAY" ? "<a href='[player_href(id)]'>Join</a>" : ""
+		lines += "<tr class='[lowertext(state)]'><td>[html_encode(peer["name"])]</td><td>[shard_kind_text(peer["kind"], id)]</td><td>[land_stage_column(id, peer["kind"])]</td><td>[shard_state_text(state, peer)]</td><td>[players]</td><td>[join]</td></tr>"
 	lines += "</table>"
 	if(!order.len)
 		lines += "<p>This is the only region in the group.</p>"
@@ -631,13 +777,18 @@ var/global/datum/shard_group/shard_group = new
 		if("BATTLE") return "battle"
 		if("EVENT") return "event"
 		if("TUTORIAL") return "practice rooms"
+		if("GATEWAY") return "gateway"
 		if("EXPEDITION") return "land across the sea"
 	// Mars and the Moon are OTHER regions with a surveyed surface (space/survey.dm).
 	if(kind == "OTHER" && survey_region_ok(id) && get_space_survey_map(id))
 		return "off-world"
 	return "special"
 
-/proc/shard_state_text(state)
+/proc/shard_state_text(state, list/peer = null)
+	if(state == "STOPPED" && peer && peer["startable"])
+		return "not running, starts when someone travels there"
+	if(state == "WAKING" && peer && peer["preparing"])
+		return "being prepared"
 	switch(state)
 		if("UP") return "up"
 		if("ASLEEP") return "asleep, wakes when someone arrives"

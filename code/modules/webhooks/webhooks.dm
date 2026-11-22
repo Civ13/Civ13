@@ -45,6 +45,7 @@
 // resumed tells the bot this round was loaded from a save, not freshly started.
 /proc/webhook_send_round_start(round = "", resumed = FALSE)
     var/list/query = list("round" = round, "resumed" = resumed ? TRUE : FALSE)
+    webhook_add_region(query)
     webhook_send("round_start", query)
 
 // One announcement per process, only after startup has chosen its identity.
@@ -81,10 +82,21 @@ var/global/round_start_announced = FALSE
 		var/elapsed = world.timeofday - started
 		if(elapsed < 0) elapsed += 864000 // midnight wrap
 		query["seconds"] = round(elapsed / 10, 0.1)
+	webhook_add_region(query)
 	try
 		webhook_send("world_save", query)
 	catch
 		world.log << "World save notice could not be queued."
+
+// Region notices name their region (Val, 2026-11-18): every region of a group posts to the
+// same bot server, so round, save and shutdown lines say which region they are about.
+// "region" is the region id and "region_name" its display name; both are left out
+// when this world is not part of a region group.
+/proc/webhook_add_region(list/query)
+	if(!islist(query) || !shard_group || !shard_group.enabled || !istext(shard_group.region)) return query
+	query["region"] = shard_group.region
+	if(istext(shard_group.name) && length(shard_group.name)) query["region_name"] = copytext(shard_group.name, 1, 81)
+	return query
 
 /proc/webhook_send_login(ckey, ip = "", cid = "")
     var/list/query = list("ckey" = ckey, "ip" = ip, "cid" = cid)

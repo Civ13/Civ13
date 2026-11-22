@@ -6,11 +6,7 @@
 #ifndef CIV13_ROOT_TREE_PRESENTATION
 #define CIV13_ROOT_TREE_PRESENTATION 1
 #endif
-#define LOS_DENY 0
-#define LOS_WORLD 1
-#define LOS_SURFACE 2
-#define LOS_OWN_SLOT 3
-#define LOS_SELF 4
+// Visibility verdicts: code/__defines/visibility.dm
 
 /client/var/tmp/datum/los_context/los_context
 var/global/list/los_active_contexts
@@ -668,7 +664,7 @@ var/global/list/los_active_contexts
 /datum/los_context/proc/policy_key(tile_anchored = FALSE)
 	if (!eligible() || !viewport() || mutations.len || (persistence_active_operation && persistence_active_operation.kind != "save") || body.stat || is_blind(body))
 		return null
-	// Presentation follows the eye in half-tile steps; reads use the exact offset.
+	// Presentation follows the eye quadrant; reads retain the exact physical offset.
 	var/offset_key = tile_anchored ? ",q[los_eye_bucket(body)]" : ",[body.step_x],[body.step_y]"
 	return "[revision]|\ref[body]|[body.x],[body.y],[body.z][offset_key]|[owner.view]|[owner.pixel_x],[owner.pixel_y]|[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_x : 0],[world.time <= owner.los_camera_union_until ? owner.los_camera_radius_y : 0]|[owner.perspective]|[body.sight & ~body.los_height_sight]|[body.see_invisible]|[body.see_in_dark]|[body.dir]|[body.resting],[body.lying],[body.prone],[los_up_tree(body)],[los_on_vehicle_deck(body)]|[config ? config.disable_fov : 1]|\ref[body.pulling]"
 
@@ -753,8 +749,8 @@ var/global/list/los_active_contexts
 	S.presentation = presentation
 	S.revision = revision
 	S.policy = key
-	// Presentation follows the eye's pixel offset in half-tile steps, so a
-	// sub-tile step refreshes it at most twice per tile. Information reads
+	// Presentation follows the eye quadrant. Movement inside it does not
+	// change the presented eye. Information reads
 	// capture the exact physical offset rather than borrowing a visual lease.
 	if (presentation)
 		S.eye_x = body.x + los_eye_x(body) / 32

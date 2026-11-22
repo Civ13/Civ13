@@ -19,7 +19,7 @@ INSTANCE_OVERRIDES = {
     '/mob/living/simple_animal': {'glide_size', 'step_x', 'step_y'},
 }
 # Helpers that answer from the type and key only.
-TYPE_ONLY_CALLS = {'persistence_world_time_stamp', 'src'}
+TYPE_ONLY_CALLS = {'persistence_world_time_stamp', 'persistence_declared_tmp', 'src'}
 ALLOWED = {'key', 'return', 'switch', 'if', 'else', 'in', 'list', 'TRUE', 'FALSE', 'null'}
 
 TOP = re.compile(r'^(/[\w/]+?)/(?:proc/)?persistence_runtime_var\((?:var/)?(\w+)\)\s*$')

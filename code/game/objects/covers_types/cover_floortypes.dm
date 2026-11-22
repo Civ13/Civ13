@@ -155,6 +155,41 @@
 /obj/covers/wood/alt/eleven
 	icon_state = "woodalt11"
 
+// Recipe outputs retain the mapped patterns without giving old mapped or saved
+// covers the salvage of a player-built floor. Refunds key on the exact type.
+/obj/covers/wood/alt/constructed
+	name = "narrow plank floor"
+
+/obj/covers/wood/alt/two/constructed
+	name = "basketweave wood floor"
+
+/obj/covers/wood/alt/three/constructed
+	name = "dark herringbone wood floor"
+
+/obj/covers/wood/alt/four/constructed
+	name = "herringbone wood floor"
+
+/obj/covers/wood/alt/five/constructed
+	name = "double herringbone wood floor"
+
+/obj/covers/wood/alt/six/constructed
+	name = "diamond parquet floor"
+
+/obj/covers/wood/alt/seven/constructed
+	name = "checkered parquet floor"
+
+/obj/covers/wood/alt/eight/constructed
+	name = "pinwheel parquet floor"
+
+/obj/covers/wood/alt/nine/constructed
+	name = "woven strip wood floor"
+
+/obj/covers/wood/alt/ten/constructed
+	name = "redwood plank floor"
+
+/obj/covers/wood/alt/eleven/constructed
+	name = "nailed board floor"
+
 /obj/covers/wood/stairs
 	name = "wood stairs"
 	icon = 'icons/obj/stairs.dmi'
@@ -199,6 +234,58 @@
 	layer = 1.99
 	material = "Bamboo"
 
+// These fitted mats reuse the mappers' trim art without creating an invisible
+// decal marker or a second floor object. The stateless underlay is rebuilt on
+// construction/load; normal cover behavior owns the floor slot and recovery.
+/obj/covers/tatami/trim
+	name = "edged tatami floor"
+	desc = "A tatami mat with bamboo trim. Use Rotate Tatami Trim from beside it to line up the edge."
+	icon = 'icons/turf/flooring/decals.dmi'
+	icon_state = "tatami_frame"
+	var/directional_trim = TRUE
+
+/obj/covers/tatami/trim/New()
+	..()
+	underlays += image(icon = 'icons/turf/floors.dmi', icon_state = "tatami0")
+	if (!directional_trim)
+		verbs -= /obj/covers/tatami/trim/verb/rotate_trim
+
+/obj/covers/tatami/trim/persistence_runtime_var(key)
+	// The base mat is derived on construction; only the cover type and direction need saving.
+	return key == "underlays" || ..()
+
+/obj/covers/tatami/trim/verb/rotate_trim()
+	set name = "Rotate Tatami Trim"
+	set category = null
+	set src in oview(1)
+	if (!directional_trim || !isliving(usr) || usr.incapacitated() || !usr.Adjacent(src))
+		return
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		return
+	// Diagonal construction facings use their north/south component.
+	var/cardinal_dir = dir & (NORTH | SOUTH)
+	if (!cardinal_dir)
+		cardinal_dir = dir
+	set_dir(turn(cardinal_dir, 90))
+
+/obj/covers/tatami/trim/angle
+	name = "inside-corner tatami floor"
+	icon_state = "tatami_frame_angle"
+
+/obj/covers/tatami/trim/corner
+	name = "outside-corner tatami floor"
+	icon_state = "tatami_frame_corner"
+
+/obj/covers/tatami/trim/cee
+	name = "three-sided tatami floor"
+	icon_state = "tatami_frame_cee"
+
+/obj/covers/tatami/trim/full
+	name = "fully framed tatami floor"
+	desc = "A tatami mat with bamboo trim on all sides."
+	icon_state = "tatami_frame_full"
+	directional_trim = FALSE
+
 /* Stone Floors*/
 
 /obj/covers/slate
@@ -234,6 +321,18 @@
 	explosion_resistance = 2
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/cobblestone/vertical
+	name = "light running cobblestone floor"
+	icon_state = "cobble_vertical"
+
+/obj/covers/cobblestone/horizontal
+	name = "light crosswise cobblestone floor"
+	icon_state = "cobble_horizontal"
+
+/obj/covers/cobblestone/horizontal/dark
+	name = "dark crosswise cobblestone floor"
+	icon_state = "cobble_horizontal_dark"
 
 /obj/covers/cobblestone/stairs
 	name = "stone stairs"
@@ -292,6 +391,10 @@
 	explosion_resistance = 2
 	material = "Stone"
 	buildstack = /obj/item/stack/material/stone
+
+/obj/covers/stone/slab/decorative/mossy
+	name = "mossy old stone floor"
+	icon_state = "stone_old"
 
 /obj/covers/stonebrickfloor
 	name = "stone brick floor"
@@ -830,4 +933,128 @@
 	passable = TRUE
 	not_movable = TRUE
 	amount = 1
+	layer = 1.99// Decorative flooring pieces for dungeon and ordinary map construction.
+// These are full, passable floor covers, not door objects or fake openings.
+// Place one cover per cell and set dir explicitly on directional map pieces.
+
+/obj/covers/cobblestone/sill
+	name = "cobble sill"
+	desc = "A flat cobbled threshold with a dressed stone rib."
+	icon = 'icons/turf/flooring/cobble_trim.dmi'
+	icon_state = "sill_center"
+
+/obj/covers/cobblestone/sill/cap_left
+	name = "left cobble sill cap"
+	icon_state = "sill_cap_left"
+
+/obj/covers/cobblestone/sill/cap_right
+	name = "right cobble sill cap"
+	icon_state = "sill_cap_right"
+
+/obj/covers/cobblestone/trim
+	name = "cobble border"
+	desc = "A dressed edge for a cobbled floor."
+	icon = 'icons/turf/flooring/cobble_trim.dmi'
+	icon_state = "trim_straight"
+
+/obj/covers/cobblestone/trim/inside
+	name = "inside cobble corner"
+	icon_state = "trim_corner_inside"
+
+/obj/covers/cobblestone/trim/outside
+	name = "outside cobble corner"
+	icon_state = "trim_corner_outside"
+
+/obj/covers/cobblestone/trim/stop
+	name = "cobble border stop"
+	icon_state = "trim_stop"
+
+/obj/covers/cobblestone/trim/stop/reverse
+	name = "reverse cobble border stop"
+	icon_state = "trim_stop_reverse"
+
+/obj/covers/stone/slab/decorative/terracotta
+	name = "terracotta floor"
+	desc = "A floor made from kiln-fired clay tiles."
+	icon = 'icons/turf/flooring/terracotta.dmi'
+	icon_state = "terracotta"
+	buildstack = /obj/item/stack/material/terracotta
+	// Fired clay is fireproof but brittle next to cut stone.
+	health = 80
+	maxhealth = 80
+	var/directional_border = FALSE
+
+/obj/covers/stone/slab/decorative/terracotta/edge
+	name = "terracotta border"
+	desc = "A terracotta floor with a banded edge. Use Rotate Terracotta Border from beside it to line up the edge."
+	icon_state = "terracotta_edge"
+	directional_border = TRUE
+
+/obj/covers/stone/slab/decorative/terracotta/inside
+	name = "inside terracotta corner"
+	desc = "A terracotta floor with a banded inside corner. Use Rotate Terracotta Border from beside it to turn it."
+	icon_state = "terracotta_inner"
+	directional_border = TRUE
+
+/obj/covers/stone/slab/decorative/terracotta/outside
+	name = "outside terracotta corner"
+	desc = "A terracotta floor with a banded outside corner. Use Rotate Terracotta Border from beside it to turn it."
+	icon_state = "terracotta_outer"
+	directional_border = TRUE
+
+/obj/covers/stone/slab/decorative/terracotta/inset
+	name = "patterned terracotta inset"
+	desc = "A terracotta floor set with a glazed rosette."
+	icon_state = "terracotta_inset"
+
+/obj/covers/brick_paving
+	name = "brick paving"
+	desc = "Fired clay pavers laid in a herringbone."
+	icon = 'icons/turf/flooring/terracotta.dmi'
+	icon_state = "brick_paving"
+	passable = TRUE
+	not_movable = TRUE
+	amount = 0
+	wood = FALSE
 	layer = 1.99
+	flammable = FALSE
+	explosion_resistance = 3
+	health = 140
+	maxhealth = 140
+	material = "Stone"
+	buildstack = /obj/item/stack/material/terracotta
+
+// The same sill and border cut for the dark cobblestone floors.
+/obj/covers/cobblestone/sill/dark
+	name = "dark cobble sill"
+	icon = 'icons/turf/flooring/cobble_trim_dark.dmi'
+	icon_state = "sill_center"
+
+/obj/covers/cobblestone/sill/dark/cap_left
+	name = "left dark cobble sill cap"
+	icon_state = "sill_cap_left"
+
+/obj/covers/cobblestone/sill/dark/cap_right
+	name = "right dark cobble sill cap"
+	icon_state = "sill_cap_right"
+
+/obj/covers/cobblestone/trim/dark
+	name = "dark cobble border"
+	icon = 'icons/turf/flooring/cobble_trim_dark.dmi'
+	icon_state = "trim_straight"
+
+/obj/covers/cobblestone/trim/dark/inside
+	name = "inside dark cobble corner"
+	icon_state = "trim_corner_inside"
+
+/obj/covers/cobblestone/trim/dark/outside
+	name = "outside dark cobble corner"
+	icon_state = "trim_corner_outside"
+
+/obj/covers/cobblestone/trim/dark/stop
+	name = "dark cobble border stop"
+	icon_state = "trim_stop"
+
+/obj/covers/cobblestone/trim/dark/stop/reverse
+	name = "reverse dark cobble border stop"
+	icon_state = "trim_stop_reverse"

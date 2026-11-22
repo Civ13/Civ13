@@ -248,9 +248,19 @@ var/global/flood_draw_revision = 0
 	I.mouse_opacity = 0
 	return I
 
+// TRUE when tile x, y on level z may stand under water, so the drawing asks
+// its depth. Below ground any open tile may: seepage under shallows, swamp and
+// coast water and tunnel water from a breach stand whatever the river does.
+/datum/river_flood/proc/may_be_wet(x, y, z)
+	if (z == cellar_z())
+		return TRUE
+	var/r = reach_at(x, y)
+	return (r && stage[r] > 0) || hollow_at(x, y)
+
 /client/proc/flood_refresh_view()
 	var/turf/centre = get_turf(eye)
-	if (!centre || !flood_anywhere())
+	var/datum/river_flood/F = map && map.river_flood()
+	if (!centre || !F || (!F.flooding && centre.z != F.cellar_z()))
 		flood_clear_images()
 		flood_drawn_revision = flood_draw_revision
 		return
@@ -261,7 +271,6 @@ var/global/flood_draw_revision = 0
 	flood_drawn_y = centre.y
 	flood_drawn_z = centre.z
 	flood_clear_images()
-	var/datum/river_flood/F = map.river_flood()
 	if (centre.z != F.z_level && centre.z != F.cellar_z())
 		return
 	// Bands over the view and a one-tile ring, so edges at the rim are right.
@@ -274,8 +283,7 @@ var/global/flood_draw_revision = 0
 	var/any = FALSE
 	for (var/y in y0 to y1)
 		for (var/x in x0 to x1)
-			var/r = F.reach_at(x, y)
-			if ((!r || F.stage[r] <= 0) && !F.hollow_at(x, y))
+			if (!F.may_be_wet(x, y, centre.z))
 				continue
 			var/band = flood_band_at(locate(x, y, centre.z))
 			if (band)
@@ -285,8 +293,9 @@ var/global/flood_draw_revision = 0
 		return
 	var/list/drawn = list()
 	for (var/y in y0 + 1 to y1 - 1)
+		var/row_offset = (y - y0) * w
 		for (var/x in x0 + 1 to x1 - 1)
-			var/band = bands[(y - y0) * w + (x - x0) + 1]
+			var/band = bands[row_offset + (x - x0) + 1]
 			if (!band)
 				continue
 			var/turf/T = locate(x, y, centre.z)
@@ -302,7 +311,8 @@ var/global/flood_draw_revision = 0
 					continue
 				if (!other)
 					// The river's own water needs no waterline.
-					if (!istype(D, /turf/floor/beach/water))
+					// Nor does solid rock below ground.
+					if (!istype(D, /turf/floor/beach/water) && (D.z != F.cellar_z() || cellar_holds_water(D)))
 						drawn += flood_image(D, "flood_edge[band]", d)
 				else
 					drawn += flood_image(D, "flood_step[band]", d)

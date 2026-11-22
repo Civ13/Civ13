@@ -37,6 +37,25 @@ class FactionSealSource(unittest.TestCase):
         self.assertIn('row[3] = faction_seal_tick()', self.text)
         self.assertIn('tick > row[3]', self.text)
 
+    def test_signature_inspection_stays_on_the_read_boundary(self):
+        signature_lines = self.text.split('/proc/faction_seal_signature_lines(', 1)[1].split('/proc/', 1)[0]
+        self.assertIn('new(P, reader, "paper", null)', signature_lines)
+        self.assertIn('request.project(reader)', signature_lines)
+        self.assertIn('projection["error"]', signature_lines)
+        self.assertIn('html_encode(section["text"])', signature_lines)
+        self.assertNotIn('document_record', signature_lines)
+        self.assertIn('identity not verified', signature_lines)
+        guard = self.text.split('/proc/faction_seal_can_inspect(', 1)[1].split('/proc/', 1)[0]
+        self.assertIn('reader.client.mob == reader', guard)
+        self.assertIn('P.loc == reader || (isturf(P.loc) && P.Adjacent(reader))', guard)
+        self.assertLess(signature_lines.index('faction_seal_can_inspect'), signature_lines.index('request.project'))
+        verb = self.text.split('/obj/item/weapon/paper/verb/check_seals()', 1)[1]
+        self.assertLess(verb.index('faction_seal_can_inspect'), verb.index('faction_seal_check_text'))
+
+    def test_seal_verdict_does_not_authenticate_contents(self):
+        self.assertIn('impression matches the current register', self.text)
+        self.assertIn('does not authenticate the current contents', self.text)
+
     def test_recipe_and_research(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
         self.assertIn('RECIPE: /material/wood/soft/,seal matrix,/obj/item/weapon/stamp/faction_seal,', recipes)

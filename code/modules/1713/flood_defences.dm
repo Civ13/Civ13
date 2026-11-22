@@ -85,7 +85,7 @@
 
 /obj/structure/sluice_gate
 	name = "sluice gate"
-	desc = "Timber boards in a frame, set in a gap in a levee. Shut, it holds the river back like the bank around it; drawn up, it lets floodwater through onto the fields behind, to leave its silt there."
+	desc = "Timber boards in a frame, set in a gap in a levee. Shut, it holds the river back like the bank around it; drawn up, it lets floodwater through onto the fields behind, to leave its silt there. A lever's cord can draw it up and lower it."
 	icon = 'icons/obj/flood_defences.dmi'
 	icon_state = "sluice_gate"
 	anchored = TRUE
@@ -122,9 +122,10 @@
 
 /obj/structure/sluice_gate/proc/set_open(state)
 	if (open == state)
-		return
+		return FALSE
 	open = state
 	sluice_update()
+	return TRUE
 
 /obj/structure/sluice_gate/attack_hand(mob/living/user)
 	if (!istype(user))
@@ -231,10 +232,53 @@
 
 /obj/structure/water_lift/archimedes_screw
 	name = "Archimedes screw"
-	desc = "A wooden screw in a sealed barrel, laid at a slant and turned by a crank. Set on the edge of a flooded hollow, it lifts water out over the rim far faster than a bucket."
+	desc = "A wooden screw in a sealed barrel, laid at a slant and turned by a crank. Set on the edge of a flooded hollow, it lifts water out over the rim far faster than a bucket. Beside a treadwheel, horse gin, mill wheel or windmill, or on a line shaft, it turns on its own and drains the hollow while it is driven."
 	icon_state = "archimedes_screw"
 	use_state = "archimedes_screw_use"
 	lift = 1.5
+	drive_draw = 1
+	var/tmp/next_lift = 0
+
+/obj/structure/water_lift/archimedes_screw/persistence_runtime_var(key)
+	return key == "next_lift" || ..()
+
+/obj/structure/water_lift/archimedes_screw/New()
+	..()
+	processing_objects |= src
+
+/obj/structure/water_lift/archimedes_screw/after_load()
+	..()
+	processing_objects |= src
+
+/obj/structure/water_lift/archimedes_screw/on_runtime_spawn()
+	..()
+	processing_objects |= src
+
+/obj/structure/water_lift/archimedes_screw/Destroy()
+	processing_objects -= src
+	return ..()
+
+// One driven turn: lifts a load when a drive turns it and its hollow holds
+// water; TRUE when it lifted. Undriven or dry, it looks again in 30 s.
+/obj/structure/water_lift/archimedes_screw/proc/driven_lift()
+	// The hollow is looked up first: it is cheap, and most screws stand dry.
+	var/h = (anchored && !busy) ? lift_hollow() : 0
+	var/datum/river_flood/F = h ? map.river_flood() : null
+	var/factor = (F && F.hollow_volume[h] > 0) ? mechanical_drive_factor(src) : 1
+	if (factor >= 1 || lift_once() <= 0)
+		next_lift = world.time + 300
+		if (icon_state != initial(icon_state))
+			icon_state = initial(icon_state)
+		return FALSE
+	icon_state = use_state
+	next_lift = world.time + round(work_time * factor * 2)
+	return TRUE
+
+/obj/structure/water_lift/archimedes_screw/process_interval(configured_seconds = 2)
+	if (QDELETED(src))
+		return PROCESS_KILL
+	if (world.time >= next_lift)
+		driven_lift()
 
 // ---- river gauge ---------------------------------------------------------------
 

@@ -62,3 +62,17 @@ line; a different message, a connection notice or Clear Chat in between starts
 a new line. It also checks that similar but different warnings stay separate,
 that a counted line keeps its type and raises unread counts on other tabs, and
 that the counter goes past ten. Set `CHAT_SCREENSHOT` to save a picture.
+
+`chat-translate.browser.test.js` checks on-device chat translation with a fake
+Translator and LanguageDetector: on by default into English, only the marked
+body of understood speech and OOC is sent, garbled (`chat-notr`) speech is
+never sent, a language pack downloads only after a click, translations are not
+saved in history or applied to restored lines, the setting saves locally, and
+bursts are capped. It proves nothing about Dream Seeker's real browser.
+
+`chat-plain.browser.test.js` checks the Plain chat text switch under Tabs...:
+names on OOC lines are bold and upright, the switch is off by default, and
+with it on no chat line is italic or underlined while links keep their colour
+and bold stays. The choice is saved and survives a reload. Set
+`CHAT_SCREENSHOT` to save a picture (`CHAT_PLAIN=1` with the switch on,
+`CHAT_SMALL=1` for a small window, `CHAT_SETTINGS=1` with the panel open).

@@ -38,12 +38,14 @@
 	var/turf/here = B ? B.origin() : null
 	if (here)
 		var/range = VEHICLE_OFFSET_WATCH_RANGE + max(B.length_tiles(), B.beam_tiles())
-		// Her upper deck counts as near her too.
+		// Her upper deck and her hold count as near her too.
 		var/datum/craft_body/built/BB = B
 		var/upper = istype(BB) ? BB.upper_z() : 0
+		var/lower = istype(BB) ? BB.lower_z() : 0
+		var/top = istype(BB) ? BB.top_z() : 0
 		for (var/client/C in clients)
 			var/turf/there = get_turf(C.mob)
-			if (there && (there.z == here.z || (upper && there.z == upper)) && get_dist(here, there) <= range)
+			if (there && (there.z == here.z || (upper && there.z == upper) || (top && there.z == top) || (lower && there.z == lower)) && get_dist(here, there) <= range)
 				watch_cached = TRUE
 				break
 	return watch_cached

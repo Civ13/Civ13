@@ -17,6 +17,20 @@ class Documents(unittest.TestCase):
   record=self.paper.document_record
   args=dict(actor=self.actor,pen=self.pen,document_id=record['document_id'],revision=record['revision'],language_id=language,kind=kind,value=text);args.update(changes)
   return self.service.append(**args)
+ def test_envelope_state_controls_both_storage_clients(self):
+  root=Path(ROOT)
+  storage=(root/'code/game/objects/items/weapons/storage/storage.dm').read_text(encoding='utf-8')
+  mail=(root/'code/game/objects/structures/mail.dm').read_text(encoding='utf-8')
+  window=(root/'code/modules/storage_window/storage_window.dm').read_text(encoding='utf-8')
+  strip=(root/'code/modules/storage_window/storage_strip.dm').read_text(encoding='utf-8')
+  self.assertIn('return TRUE',body(storage,'/obj/item/weapon/storage/proc/storage_contents_accessible'))
+  self.assertIn('return opened',body(mail,'/obj/item/weapon/storage/envelope/storage_contents_accessible'))
+  self.assertIn('opened = FALSE\n\t\t\tclose_all()',body(mail,'/obj/item/weapon/storage/envelope/attack_self'))
+  for name in ('proc/show_to','proc/open','proc/can_be_inserted','verb/quick_empty'):
+   self.assertIn('if (!storage_contents_accessible())',body(storage,'/obj/item/weapon/storage/'+name))
+  self.assertIn('!S.storage_contents_accessible()',body(window,'/proc/storage_window_access'))
+  self.assertIn('storage_window_access(H, A)',body(window,'/datum/storage_window/proc/reachable'))
+  self.assertIn('return I.loc == S && S.storage_contents_accessible()',body(strip,'/proc/storage_strip_take_wait'))
  def test_legacy_import_is_opaque_and_preserves_original_fields(self):
   before=copy.deepcopy(self.paper.__dict__);record=self.initialize()
   self.assertEqual(record['legacy'],{k:v for k,v in LEGACY.items() if k!='info_links'});self.assertEqual(record['legacy_policy'],'legacy_unclassified');self.assertEqual(record['sections'],[])

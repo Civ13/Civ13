@@ -84,10 +84,9 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		drip(bloodloss)
 		bleeding_hint()
 	else // we're not bleeding, regenerate some blood (experimental) - Kachnov
-		for (var/datum/reagent/r in vessel.reagent_list)
-			if (istype(r, /datum/reagent/blood))
-				if (r.volume >= species.blood_volume)
-					return // we're full on blood.
+		for (var/datum/reagent/blood/r in vessel.reagent_list)
+			if (r.volume >= species.blood_volume)
+				return // we're full on blood.
 		vessel.add_reagent("blood", 1.00)
 
 // Blood only builds back once every wound has stopped bleeding, and nothing
@@ -107,6 +106,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 
 //Makes a blood drop, leaking amt units of blood from the mob
 /mob/living/human/proc/drip(var/amt as num)
+	if (offline_sleep_protected())
+		return
 
 	if (species && species.flags & NO_BLOOD) //TODO: Make drips come from the reagents instead.
 		return
@@ -181,6 +182,9 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 /mob/living/human/proc/take_blood(obj/item/weapon/reagent_containers/container, var/amount)
 
 	var/datum/reagent/B = get_blood(container.reagents)
+	// Never top up another donor's blood: it would take this donor's type (#6239).
+	if (B && (!B.data || B.data["donor"] != src))
+		return null
 	if (!B) B = new /datum/reagent/blood
 	B.holder = container
 	B.volume += amount
@@ -219,7 +223,8 @@ var/const/BLOOD_VOLUME_SURVIVE = 20
 		return null
 
 	. = ..()
-	vessel.remove_reagent("blood",amount) // Removes blood if human
+	if (.)
+		vessel.remove_reagent("blood",amount) // Removes blood if human
 
 //Transfers blood from container ot vessels
 /mob/living/human/proc/inject_blood(var/datum/reagent/blood/injected, var/amount)

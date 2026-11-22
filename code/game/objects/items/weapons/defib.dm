@@ -376,9 +376,16 @@
 	var/adjust_health = barely_in_crit - H.health //need to increase health by this much
 	H.adjustOxyLoss(-adjust_health)*/
 
+	// The shock's own burn can push the wounds past the limit, so success is
+	// only announced once the heart has actually restarted (#6225).
+	if(!make_alive(H, user))
+		var/reason = H.resuscitation_blocker()
+		make_announcement("buzzes, \"Resuscitation failed. [reason ? reason : "The patient did not respond."]\"", "warning")
+		playsound(get_turf(src), 'sound/machines/defib_failed.ogg', 50, 0)
+		return
+
 	make_announcement("pings, \"Resuscitation successful.\"", "notice")
 	playsound(get_turf(src), 'sound/machines/defib_success.ogg', 50, 0)
-	make_alive(H, user)
 
 	log_and_message_admins("used \a [src] to revive [key_name(H)].")
 

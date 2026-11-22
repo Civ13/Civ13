@@ -52,7 +52,15 @@
 		return 0
 	if (findtext(falling, "rain") || falling == "monsoon")
 		return 10
-	if (weather_at(T) == WEATHER_NONE && (time_of_day in list("Night", "Dark Night", "Early Morning")) && temp <= 30)
+	if (weather_at(T) != WEATHER_NONE || temp > 30)
+		return 0
+	// Dew on the open ground (weather_fog.dm) once the air grid is up, and a
+	// little more out of fog; before that, any clear night.
+	if (weather_air)
+		if (weather_fog_level(T) == "fog")
+			return 3
+		return weather_dew_at(T) ? 2 : 0
+	if (time_of_day in list("Night", "Dark Night", "Early Morning"))
 		return 2
 	return 0
 

@@ -85,6 +85,7 @@ class InputTrace(unittest.TestCase):
         def crawl_block(delay, posture, message=''):
             return ('\tif (ishuman(src))\n'
                     '\t\tvar/mob/living/human/crawling_human = src\n'
+                    '\t\tcrawling_human.body_motion_crawl(' + delay + ')\n'  # body_motion.dm
                     '\t\ttry\n'
                     '\t\t\tif (crawling_human.human_subtile_crawl_move(F, ' + delay + ', "' + posture + '"))\n'
                     + message +
@@ -160,6 +161,31 @@ class InputTrace(unittest.TestCase):
                                 '\t\treturn\n')
         self.assertEqual(prior.count(approved_click_route), 1, 'approved click route block')
         prior = prior.replace(approved_click_route, '')
+        # Touch and familiarity hooks run once per dispatched click and never
+        # change where the click goes (repository.dm, familiarity.dm).
+        approved_touch_hook = '\tmagic_touch_hook(src, A) // repository.dm: a readied tie catches this touch; the click goes on as usual\n'
+        self.assertEqual(prior.count(approved_touch_hook), 1, 'approved touch hook')
+        prior = prior.replace(approved_touch_hook, '')
+        approved_familiar_click = '\tnote_familiar_click(src, W, A) // research familiarity (familiarity.dm)\n'
+        self.assertEqual(prior.count(approved_familiar_click), 1, 'approved familiarity hook')
+        prior = prior.replace(approved_familiar_click, '')
+        # #6785/#6793 hold travellers still while they leave for another land
+        # (travel_hold.dm): clicks, touches and the click cooldown wait out the trip.
+        approved_travel_holds = (
+            ('\t// Held still while they leave for another land (travel_hold.dm).\n'
+             '\tif (travel_hold_input(src))\n'
+             '\t\treturn\n', 'travel hold input'),
+            ('\t// Travellers leaving, their things and their ship are not to be touched;\n'
+             '\t// they can still be looked at (travel_hold.dm).\n'
+             '\tif (travel_holds && !(modifiers["shift"] && !modifiers["ctrl"] && !modifiers["alt"] && !modifiers["middle"]) && travel_hold_refuses(src, A))\n'
+             '\t\treturn\n', 'travel hold touch'),
+            ('\t// Held still while they leave for another land (travel_hold.dm).\n'
+             '\tif (travel_held())\n'
+             '\t\treturn FALSE\n', 'travel hold cooldown'),
+        )
+        for approved, label in approved_travel_holds:
+            self.assertEqual(prior.count(approved), 1, 'approved ' + label)
+            prior = prior.replace(approved, '')
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')

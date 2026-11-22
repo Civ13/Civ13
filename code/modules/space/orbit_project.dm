@@ -64,13 +64,16 @@ var/global/list/orbit_station_requirements = list(
 	icon_state = "solar_screen"
 	density = TRUE
 	crushable = FALSE
-	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded"
+	map_storage_saved_vars = "icon_state;dir;name;pixel_x;pixel_y;party;delivered;completed;completed_at;boarded;plan_code"
 	var/party = null
 	var/list/delivered = list()
 	var/completed = FALSE
 	var/completed_at = null // realtime text, for players and logs
 	// Someone has flown up, so the party holds a station plane.
 	var/boarded = FALSE
+	// The station plan it builds (space/station_plan.dm), as a design code,
+	// or "" for the starter station.
+	var/plan_code = ""
 
 /obj/structure/region_gate/launch_complex/New()
 	..()
@@ -92,10 +95,23 @@ var/global/list/orbit_station_requirements = list(
 			return P
 	return null
 
-/obj/structure/region_gate/launch_complex/proc/remaining()
-	var/list/left = list()
+// What the station takes: the starter's materials, or the plan's.
+/obj/structure/region_gate/launch_complex/proc/requirements()
+	var/datum/station_plan/D = plan_code ? station_plan_from_code(plan_code) : null
+	if (!D)
+		return orbit_station_requirements
+	var/list/costs = D.costs()
+	qdel(D)
+	. = list()
 	for (var/kind in orbit_station_requirements)
 		var/list/need = orbit_station_requirements[kind]
+		.[kind] = list(need[1], costs[kind] || 0, need[3])
+
+/obj/structure/region_gate/launch_complex/proc/remaining()
+	var/list/left = list()
+	var/list/needs = requirements()
+	for (var/kind in needs)
+		var/list/need = needs[kind]
 		var/missing = need[2] - (delivered[kind] || 0)
 		if (missing > 0)
 			left[kind] = missing
@@ -103,8 +119,9 @@ var/global/list/orbit_station_requirements = list(
 
 /obj/structure/region_gate/launch_complex/proc/progress_text()
 	var/list/parts = list()
-	for (var/kind in orbit_station_requirements)
-		var/list/need = orbit_station_requirements[kind]
+	var/list/needs = requirements()
+	for (var/kind in needs)
+		var/list/need = needs[kind]
 		parts += "[need[3]] [delivered[kind] || 0]/[need[2]]"
 	return jointext(parts, ", ")
 
@@ -190,11 +207,16 @@ var/global/list/orbit_station_requirements = list(
 	visible_message(SPAN_NOTICE("[user] starts a space station project for [party_train_party_name(party)]."))
 
 /obj/structure/region_gate/launch_complex/attackby(obj/item/W, mob/user)
+	var/obj/item/ship_draught/sheet = W
+	if (istype(sheet) && sheet.station_plan_kind())
+		take_plan(user, sheet)
+		return TRUE
 	if (!istype(W, /obj/item/stack) || completed || !party)
 		return ..()
 	var/obj/item/stack/S = W
-	for (var/kind in orbit_station_requirements)
-		var/list/need = orbit_station_requirements[kind]
+	var/list/needs = requirements()
+	for (var/kind in needs)
+		var/list/need = needs[kind]
 		if (!stack_matches_recipe_material(S, need[1]))
 			continue
 		var/missing = need[2] - (delivered[kind] || 0)
@@ -210,6 +232,53 @@ var/global/list/orbit_station_requirements = list(
 			complete(user)
 		return TRUE
 	return ..()
+
+// Why the office will not build plan D for user, or null.
+/obj/structure/region_gate/launch_complex/proc/plan_refusal(mob/living/human/user, datum/station_plan/D)
+	if (!D)
+		return "That station plan cannot be read."
+	if (completed)
+		return "This station is already built; add to it in orbit with module kits."
+	if (!party)
+		return "Start the station project here first."
+	if (boarded)
+		return "The station is already in orbit."
+	var/list/problems = D.problems()
+	if (problems.len)
+		return "The [D.name] cannot be launched as drawn: [problems[1]]"
+	var/list/missing = list()
+	for (var/node_id in D.nodes())
+		if (!research_node_known(user, node_id))
+			var/datum/research_node/N = get_research_node(node_id)
+			missing += N ? N.name : node_id
+	if (missing.len)
+		return "Your people have not researched what the [D.name] needs: [english_list(missing)]."
+	return null
+
+// The office builds the station drawn on sheet S from now on. What has been
+// handed over counts toward it.
+/obj/structure/region_gate/launch_complex/proc/take_plan(mob/living/human/user, obj/item/ship_draught/S)
+	var/datum/station_plan/D = S.station_plan()
+	var/reason = plan_refusal(user, D)
+	if (reason)
+		to_chat(user, SPAN_WARNING(reason))
+		if (D)
+			qdel(D)
+		return FALSE
+	plan_code = D.to_code()
+	log_game("Orbit station: [key_name(user)] set the station of [party] at [x],[y],[z] to the plan [D.name] ([plan_code]).")
+	to_chat(user, SPAN_NOTICE("The office will build the [D.name]. Bring [progress_text()]."))
+	qdel(D)
+	if (!length(remaining()))
+		complete(user)
+	return TRUE
+
+// The plan rides with every member who flies up; the first to arrive founds it.
+/obj/structure/region_gate/launch_complex/travel_extra(mob/living/human/H)
+	. = ..()
+	if (plan_code)
+		. = islist(.) ? . : list()
+		.["station_plan"] = plan_code
 
 /obj/structure/region_gate/launch_complex/proc/complete(mob/user)
 	if (completed)
@@ -239,7 +308,15 @@ var/global/list/orbit_station_requirements = list(
 		if (!z)
 			message_admins("Orbit station: every plane is taken; [html_encode(party_train_party_name(party))] arrived without a station.")
 			return null
-		hatch = orbit_found_station(party, z)
+		// A station plan (station_plan.dm), else the starter layout.
+		var/datum/station_plan/D = istext(P["station_plan"]) ? station_plan_from_code(P["station_plan"]) : null
+		if (D)
+			hatch = orbit_found_station_plan(party, z, D)
+			if (!hatch)
+				log_game("Orbit station: the plan [D.name] of [party] did not fit plane [z]; the starter station was built.")
+			qdel(D)
+		if (!hatch)
+			hatch = orbit_found_station(party, z)
 		if (!hatch)
 			orbit_release_plane(z)
 			return null

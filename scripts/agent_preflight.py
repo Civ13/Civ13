@@ -2,8 +2,11 @@
 
 Catches the failures that most often sent agent PRs through extra CI rounds:
 byte-pinned source files, stale generated crafting files, offline suites that
-were not run locally, and stale player-help wiki guide pins. Starts no BYOND
-process and needs no network. It does not replace the hosted compiler or CI.
+were not run locally, and stale player-help wiki guide pins. Needs no network.
+`compile` (also run by `all` when a compiler is found) builds the game with a
+little extra global data, because the engine puts every initialised global into
+one proc with a size limit and test probes add globals of their own. It does
+not replace the hosted compiler or CI.
 
     python3 scripts/agent_preflight.py pins            # who pins the files you changed
     python3 scripts/agent_preflight.py generated       # atlas + recipe audit drift
@@ -12,7 +15,8 @@ process and needs no network. It does not replace the hosted compiler or CI.
     python3 scripts/agent_preflight.py suites --affected
     python3 scripts/agent_preflight.py patterns [--write]  # forbidden-pattern ratchet
     python3 scripts/agent_preflight.py wiki-pins --wiki-root ../civ13-wiki [--write]
-    python3 scripts/agent_preflight.py all             # pins + generated + patterns + suites
+    python3 scripts/agent_preflight.py compile         # full compile plus global-init headroom
+    python3 scripts/agent_preflight.py all             # pins + generated + patterns + suites + compile
 """
 import argparse
 import hashlib
@@ -177,6 +181,7 @@ def suites(args):
 
 
 def wiki_pins(args):
+    """Compare the Help pins and the bundled guide copies to a civ13-wiki checkout."""
     bridge = ROOT / 'scripts/player_help_bridge.py'
     source = bridge.read_text(encoding='utf-8')
     wiki = Path(args.wiki_root).resolve()
@@ -184,35 +189,55 @@ def wiki_pins(args):
     spec = importlib.util.spec_from_file_location('player_help_bridge_for_preflight', bridge)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    stale, missing, digests = [], [], {}
+    bundle = ROOT / module.WIKI_BUNDLE
+    stale, missing, unbundled, digests, texts = [], [], [], {}, {}
     for relative, (expected, _aliases) in module.WIKI_REVIEWED_GUIDES.items():
         path = wiki / 'src' / relative
         if not path.exists():
             missing.append(relative)
             continue
         text = path.read_bytes().decode('utf-8').replace('\r\n', '\n').replace('\r', '\n')
+        texts[relative] = text
         digest = hashlib.sha256(text.encode('utf-8')).hexdigest()
         if digest != expected:
             stale.append(relative)
             digests[relative] = digest
             source = source.replace(expected, digest)
+        # The game ships its own copy of every pinned guide; Help reads that copy.
+        copy = bundle / relative
+        if not copy.exists() or copy.read_bytes() != text.encode('utf-8'):
+            unbundled.append(relative)
+    extra = sorted(str(path.relative_to(bundle)).replace(os.sep, '/') for path in bundle.rglob('*.md')
+                   if str(path.relative_to(bundle)).replace(os.sep, '/') not in module.WIKI_REVIEWED_GUIDES) if bundle.is_dir() else []
     print(f'Wiki checkout {revision or "(unknown)"}; pinned revision {module.WIKI_REVIEWED_REVISION}')
-    print(f'{len(module.WIKI_REVIEWED_GUIDES) - len(stale) - len(missing)} current, {len(stale)} changed, {len(missing)} missing')
+    print(f'{len(module.WIKI_REVIEWED_GUIDES) - len(stale) - len(missing)} current, {len(stale)} changed, {len(missing)} missing, '
+          f'{len(unbundled)} bundled copies to refresh, {len(extra)} bundled copies no longer pinned')
     for relative in stale:
         print('  changed:', relative)
     for relative in missing:
         print('  missing:', relative)
+    for relative in unbundled:
+        if relative not in stale:
+            print('  bundled copy differs:', relative)
+    for relative in extra:
+        print('  bundled but not pinned:', relative)
     # New player guides are never pinned by accident: list the ones Help does not read yet.
-    pinned = set(module.WIKI_REVIEWED_GUIDES) | set(module.WIKI_LEGACY_GUIDES)
+    pinned = set(module.WIKI_REVIEWED_GUIDES)
     unpinned = sorted(str(path.relative_to(wiki / 'src')).replace(os.sep, '/')
-                      for folder in ('guides', 'gamemodes') for path in (wiki / 'src' / folder).glob('*.md'))
-    unpinned = [relative for relative in unpinned if relative not in pinned]
+                      for folder in ('guides', 'gamemodes', 'regions') for path in (wiki / 'src' / folder).glob('*.md'))
+    unpinned = [relative for relative in unpinned if relative not in pinned and relative not in module.WIKI_UNPINNED]
     for relative in unpinned:
         print('  unpinned (add a hash and aliases to WIKI_REVIEWED_GUIDES if players should get it):', relative)
-    if stale and args.write:
+    if (stale or unbundled or extra) and args.write:
         if revision:
             source = source.replace(module.WIKI_REVIEWED_REVISION, revision)
         bridge.write_text(source, encoding='utf-8')
+        for relative in unbundled:
+            copy = bundle / relative
+            copy.parent.mkdir(parents=True, exist_ok=True)
+            copy.write_bytes(texts[relative].encode('utf-8'))
+        for relative in extra:
+            (bundle / relative).unlink()
         # The wiki guide tests freeze the same revision and a few hashes as literals.
         tests = ROOT / 'tests/player_help/test_wiki_guides.py'
         text = tests.read_text(encoding='utf-8')
@@ -221,9 +246,9 @@ def wiki_pins(args):
         if revision:
             text = text.replace(module.WIKI_REVIEWED_REVISION, revision)
         tests.write_text(text, encoding='utf-8')
-        print('Updated hashes and revision in scripts/player_help_bridge.py and tests/player_help/test_wiki_guides.py. '
-              'Review the changed guides before committing.')
-    return 1 if (stale and not args.write) or missing else 0
+        print(f'Updated hashes and revision in scripts/player_help_bridge.py and tests/player_help/test_wiki_guides.py, '
+              f'and the guide copies under {module.WIKI_BUNDLE}. Review the changed guides before committing.')
+    return 1 if ((stale or unbundled or extra) and not args.write) or missing else 0
 
 
 def patterns(args):
@@ -232,6 +257,65 @@ def patterns(args):
     if args.write:
         command.append('--write')
     return subprocess.run(command, cwd=ROOT).returncode
+
+
+# Extra initialised globals the compile check adds: probes declare their own
+# globals, so a branch that only just fits breaks every probe build in CI.
+HEADROOM_ENTRIES = 1000
+
+
+def find_compiler():
+    """The pinned DreamMaker (or dm.exe) if one is installed, else None."""
+    names = ('dm.exe',) if os.name == 'nt' else ('DreamMaker',)
+    dirs = [os.environ.get('BYOND_BIN')]
+    version = json.loads((ROOT / 'tools/byond/version.json').read_text())['version']
+    home = os.environ.get('BYOND_HOME') or str(Path.home() / f'byond-{version}')
+    dirs.append(str(Path(home) / 'byond' / 'bin'))
+    for folder in dirs:
+        for name in names:
+            if folder and (Path(folder) / name).is_file():
+                return Path(folder) / name
+    for name in names:
+        found = shutil.which(name)
+        if found:
+            return Path(found)
+    return None
+
+
+def compile_check(args):
+    """Compile civ13.dme plus HEADROOM_ENTRIES extra global list entries."""
+    compiler = find_compiler()
+    if not compiler:
+        print('compile: skipped, no DreamMaker found (bash scripts/cloud_byond_setup.sh installs the pin)')
+        return 0
+    prefix = 'zz_preflight_headroom'
+    entries = ','.join(f'"k{i}" = {i}' for i in range(HEADROOM_ENTRIES))
+    created = [ROOT / f'{prefix}{ext}' for ext in ('.dme', '.dm', '.dmb', '.rsc', '.int', '.lk', '.dyn.rsc')]
+    try:
+        (ROOT / f'{prefix}.dm').write_text(f'var/global/list/{prefix} = list({entries})\n')
+        dme = (ROOT / 'civ13.dme').read_text(encoding='latin-1')
+        (ROOT / f'{prefix}.dme').write_text(dme + f'\n#include "{prefix}.dm"\n', encoding='latin-1')
+        env = dict(os.environ)
+        env['LD_LIBRARY_PATH'] = str(compiler.parent) + os.pathsep + env.get('LD_LIBRARY_PATH', '')
+        run = subprocess.run([str(compiler), '-max_errors', '0', f'{prefix}.dme'], cwd=ROOT, env=env,
+                             capture_output=True, text=True, errors='replace')
+        output = run.stdout + run.stderr
+        problems = [line for line in output.splitlines() if re.search(r':\s?(error|warning):', line)]
+        for line in problems[:40]:
+            print(line)
+        if any('Procedure is too large' in line for line in problems):
+            print(f'compile: FAILED - the global initialiser has no room for {HEADROOM_ENTRIES} more entries. '
+                  'Build large global lists in a proc (var/global/list/x = x_table()) instead of inline.')
+            return 1
+        if run.returncode != 0 or '0 errors, 0 warnings' not in output:
+            print('compile: FAILED')
+            return 1
+        print(f'compile: passed (0 errors, 0 warnings, room for {HEADROOM_ENTRIES} more global entries)')
+        return 0
+    finally:
+        for path in created:
+            if path.exists():
+                path.unlink()
 
 
 def main():
@@ -250,7 +334,8 @@ def main():
     p.add_argument('--write', action='store_true')
     p = sub.add_parser('patterns', help='Forbidden source patterns (spawn, in world, untyped WWinput results)')
     p.add_argument('--write', action='store_true', help='Record lowered counts in the baseline')
-    p = sub.add_parser('all', help='pins, generated, patterns and all suites')
+    sub.add_parser('compile', help='Compile with global-initialiser headroom (skipped without a compiler)')
+    p = sub.add_parser('all', help='pins, generated, patterns, all suites and compile')
     p.add_argument('--write', action='store_true')
     args = parser.parse_args()
     if args.command == 'all':
@@ -261,9 +346,11 @@ def main():
         print()
         status = patterns(args) or status
         print()
-        return suites(args) or status
+        status = suites(args) or status
+        print()
+        return compile_check(args) or status
     return {'pins': pins, 'generated': generated, 'patterns': patterns, 'suites': suites,
-            'wiki-pins': wiki_pins}[args.command](args)
+            'wiki-pins': wiki_pins, 'compile': compile_check}[args.command](args)
 
 
 if __name__ == '__main__':

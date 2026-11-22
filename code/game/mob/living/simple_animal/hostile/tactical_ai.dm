@@ -44,6 +44,7 @@
 	var/list/nearby_allies
 	var/list/nearby_officers
 	var/cover_count = 0
+	var/current_dir
 	
 	// Scan 7x7 area around self
 	for(var/turf/T in range(3, src))
@@ -68,7 +69,8 @@
 			score += 100
 			
 			// Flanking bonus: prefer positions that are at a different angle from current
-			var/current_dir = get_dir(src, enemy)
+			if(cover_count == 1)
+				current_dir = get_dir(src, enemy)
 			var/new_dir = get_dir(T, enemy)
 			if(new_dir != current_dir)
 				score += 40
@@ -662,7 +664,7 @@
 			// only sometimes does. The guard expires by itself after this tick.
 			if (!prob(bite_fracture_chance))
 				H.bite_fracture_guard = world.time + 1
-			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+			H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, HIT_CUT), sharp=1, edge=1)
 			H.bite_fracture_guard = 0
 		else
 			affecting.droplimb(FALSE, DROPLIMB_EDGE)
@@ -677,6 +679,9 @@
 			start_feeding(H)
 	else if (isliving(target_mob))
 		var/mob/living/L = target_mob
+		if (istype(L, /mob/living/simple_animal))
+			var/mob/living/simple_animal/prey = L
+			prey.note_harm("predators")
 		L.adjustBruteLoss(damage)
 		do_attack_animation(L)
 		if (L.stat == DEAD)
@@ -872,10 +877,14 @@
 	if (!feeding_on)
 		return FALSE
 	var/mob/living/C = feeding_on
-	if (QDELETED(C) || C.stat != DEAD || !isturf(C.loc) || stat != CONSCIOUS || client || simplehunger >= predator_sated_hunger || get_dist(src, C) > 7)
+	if (QDELETED(C) || C.stat != DEAD || !isturf(C.loc) || stat != CONSCIOUS || client || simplehunger >= predator_sated_hunger)
 		stop_feeding()
 		return FALSE
-	if (get_dist(src, C) > 1)
+	var/distance = get_dist(src, C)
+	if (distance > 7)
+		stop_feeding()
+		return FALSE
+	if (distance > 1)
 		if (!moving || target_obj != C)
 			do_movement(C)
 		return TRUE

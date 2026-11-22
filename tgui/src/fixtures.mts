@@ -2,11 +2,11 @@
 // script and the unit tests read these, so a window's sample data lives in one
 // place. Names and text are invented for previews. Node runs this file as it is,
 // so it uses only type syntax that can be erased.
-import type { AppearanceData, CharacterSetupData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
+import type { AppearanceData, CharacterSetupData, ComputerData, HaircutData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
 import type { Data } from './types.ts';
 // Windows with a declared snapshot type; their fixtures are checked against it.
 type Typed = {
-  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
+  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'computer.tmpl': ComputerData; 'haircut.tmpl': HaircutData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
   'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'spawn_menu.tmpl': SpawnMenuData; 'storage_window.tmpl': StorageWindowData; 'warehouse_book.tmpl': WarehouseData;
   'vending_machine.tmpl': VendingData; 'vending_machine2.tmpl': VendingData; 'vending_machine_gulag.tmpl': VendingData; 'vending_machine_taotd.tmpl': VendingData;
 };
@@ -15,12 +15,12 @@ export const screens: Fixture[] = [];
 // Window sizes as the game opens them (width, height).
 const sizes = {
   'appearance_changer.tmpl': [800, 450], 'book_reader.tmpl': [625, 650], 'character_flavor.tmpl': [500, 200], 'character_notes.tmpl': [625, 650], 'character_setup.tmpl': [860, 720],
-  'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
-  'faction_creation.tmpl': [620, 900], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
+  'chem_disp.tmpl': [390, 655], 'computer.tmpl': [640, 480], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
+  'faction_creation.tmpl': [620, 900], 'haircut.tmpl': [800, 660], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
   'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
   'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'spawn_menu.tmpl': [640, 640], 'storage_window.tmpl': [760, 600], 'tech_tree.tmpl': [900, 680],
   'vending_machine.tmpl': [540, 600], 'vending_machine2.tmpl': [540, 600], 'vending_machine_gulag.tmpl': [540, 600], 'vending_machine_taotd.tmpl': [540, 600],
-  'warehouse_book.tmpl': [400, 500],
+  'warehouse_book.tmpl': [400, 500], 'wiremod_circuit.tmpl': [760, 700],
 } satisfies Record<string, [number, number]>;
 function add<T extends keyof typeof sizes>(name: string, template: T, data: T extends keyof Typed ? Typed[T] : Data, title?: string, size?: [number, number]) {
   const [width, height] = size ?? sizes[template];
@@ -61,6 +61,25 @@ add('ship-stocks', 'ship_stocks.tmpl', { stocks: ([['Treasury', 1240, 'reales'],
 add('crew-log', 'crew_log.tmpl', { crew: [['Anne Hale', 'Captain'], ['Tom Reed', 'Boatswain'], ['Will Marsh', 'Sailor'], ['Edda Stone', 'Surgeon']].map(([name, job]) => ({ name, job })) });
 add('faction-list', 'faction_list.tmpl', { factions: [{ name: 'Dawnward Guild', motto: 'Build together', flavour: 'A fictional fellowship.', members: 4, symbol: '', renamed: '' }, { name: 'Ash Company', members: 1, symbol: '' }] });
 add('known-languages', 'known_languages.tmpl', { current_default: 'Common', languages: [{ name: 'Common', prefix: ',0', description: 'Spoken nearly everywhere.', is_default: 1 }, { name: 'Old Tongue', prefix: ',o', description: 'A scholarly language.' }] });
+// A speaker whose people's language split off: the family block under the list.
+add('known-languages-family', 'known_languages.tmpl', { current_default: 'Dawnish', languages: [
+  { name: 'Dawnish', prefix: ',da', description: 'Mother tongue. A language that grew out of Old Tongue among the Dawnward Guild (Medieval Age).', is_default: 1 },
+  { name: 'Old Tongue', prefix: ',o', description: 'Fluent. A scholarly language.' },
+  { name: 'Ashen', prefix: 'not yet speakable', description: 'Broken, 22%. Keep listening to people who speak it.' }],
+  families: [{ root: 'Old Tongue', members: [
+    { name: 'Old Tongue', depth: 0, known: 1 },
+    { name: 'Dawnish', parent: 'Old Tongue', nation: 'Dawnward Guild', era: 'Medieval Age', depth: 1, known: 1, mother: 1 },
+    { name: 'Ashen', parent: 'Old Tongue', nation: 'Ash Company', era: 'Imperial Age', depth: 1, learning: 1 }],
+  links: [{ a: 'Old Tongue', b: 'Dawnish', percent: 80 }, { a: 'Old Tongue', b: 'Ashen', percent: 70 }, { a: 'Dawnish', b: 'Ashen', percent: 60 }] }],
+}, 'Known languages');
+// A speaker of a formed people: the "Your people" block with its lineage, kin and upbringing.
+add('known-languages-people', 'known_languages.tmpl', { current_default: 'Latin', languages: [{ name: 'Latin', prefix: ',l', description: 'Mother tongue. The speech of the Hearthlanders.', is_default: 1 }],
+  people: { name: 'Saltmarsh Kin', language: 'Latin', land: 'the Saltmarsh', lineage: [
+    { name: 'Hearthlanders', language: 'Latin', formed: 0, year: 0, nation: '', homeland: '', parents: [] },
+    { name: 'Saltmarsh Kin', language: 'Latin', formed: 1, year: 58800, nation: 'Iron Pact', homeland: 'the Saltmarsh', parents: ['Hearthlanders'] }],
+  kin: [{ name: 'Tidewater Folk', language: 'Latin', formed: 1, year: 58790, nation: '', homeland: 'the Tidewater', parents: ['Hearthlanders'], relation: 'shares your roots' }],
+  raised_among: ['Fjordfolk'], welcomed_by: [] },
+}, 'Known languages');
 add('panel', 'panel.tmpl', { sections: [
   { title: 'Lock', rows: [{ label: 'Dial', value: 35, buttons: [{ label: '-', action: 'decrement' }, { label: '+', action: 'increment' }] }, { label: 'Door', value: 'Open', tone: 'good' }], buttons: [{ label: 'Close the safe', action: 'open' }] },
   { title: 'Contents', items: [{ name: 'Ledger', detail: 'A bound book of accounts.', buttons: [{ label: 'Read', action: 'read', id: 'a' }, { label: 'Take', action: 'retrieve', id: 'a' }] }, { name: 'Silver coins', buttons: [{ label: 'Take', action: 'retrieve', id: 'b' }] }], empty: 'It is empty.' },
@@ -152,6 +171,13 @@ const setup: CharacterSetupData = {
       { id: 'senses', title: 'Senses and speech', traits: [trait('Deaf', -3, 'You cannot hear at all.', { taken: 1 }), trait('Stutter', -1, 'You have a permanent stutter.')] },
     ],
   },
+  chart: {
+    choice: 'random', verified: 1,
+    signs: [
+      { id: 'ox', name: 'The Ox', season: 'Early spring', calling: 'Ploughman, hauler and builder', strengths: 'Strength +10, Farming +5, Stamina +5', weaknesses: 'Dexterity -10, Philosophy -5, Swimming -5' },
+      { id: 'owl', name: 'The Owl', season: 'Early winter', calling: 'Scholar, researcher and teacher', strengths: 'Philosophy +10, Medical +5, Crafting +5', weaknesses: 'Strength -10, Stamina -5, Swords -5' },
+    ],
+  },
   settings: {
     ui_style: 'ConsoleStyle', ui_styles: ['ConsoleStyle', '1713Style', 'NewStyle'], cursor: 'Default', cursors: ['Default', 'Red Crosshair', 'Green Crosshair', 'White Crosshair'],
     client_fps: 60, fps_choices: [30, 60, 100, 120, 144], tutorial: 'in progress (3 of 9 steps done)',
@@ -160,7 +186,17 @@ const setup: CharacterSetupData = {
 };
 add('character-setup', 'character_setup.tmpl', setup, 'Character Setup');
 add('character-setup-traits', 'character_setup.tmpl', { ...setup, tab: 'traits' }, 'Character Setup');
+add('character-setup-chart', 'character_setup.tmpl', { ...setup, tab: 'chart' }, 'Character Setup');
 add('character-setup-settings', 'character_setup.tmpl', { ...setup, tab: 'settings' }, 'Character Setup');
+// Haircut: a long-haired, bearded character choosing among shorter styles.
+const cuts = (names: string[], lengths: number[], first: number) => names.map((name, i) => ({ name, length: lengths[i], row: first + i, tint: 1 }));
+const haircut: HaircutData = {
+  sheet: 'civ13_haircut_styles.png', body: 'haircut_sample.png', self: 1, name: 'Tomas Reed', hair: 'Shoulder-length Hair', beard: 'Full Beard', hair_color: '#603818', beard_color: '#603818', seconds: 8,
+  hair_styles: cuts(['Bald', 'Skinhead', 'Buzzcut', 'Short Hair', 'Cut Hair', 'Crewcut', 'Quiff', 'Bowl', 'Parted', 'Mohawk', 'Bedhead', 'Combover', 'Fade', 'Undercut', 'Half-banged Hair', 'Spiky', 'Dreadlocks', 'Shoulder-length Hair'], [0, 0, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 3, 3], 0),
+  beard_styles: cuts(['Shaved', '3 O\'clock Shadow', 'Goatee', 'Chinstrap', 'Mutton Chops', 'Medium Beard', 'Full Beard'], [0, 1, 1, 1, 2, 2, 3], 40),
+};
+add('haircut', 'haircut.tmpl', haircut, 'Haircut');
+add('haircut-barber', 'haircut.tmpl', { ...haircut, self: 0, beard_styles: [] }, 'Haircut');
 // Storage window: your things on the left, a basket, a chest and the floor on the right, one move running.
 const stor = (id: string, name: string, size_class: number, extra: Data = {}) => ({ id, name, size_class, size: ['', 'tiny', 'small', 'normal', 'large', 'bulky'][size_class], cost: [0, 1, 2, 4, 8, 16][size_class], image: '', ...extra });
 const storage: StorageWindowData = {
@@ -187,3 +223,56 @@ add('spawn-menu', 'spawn_menu.tmpl', { query: 'rifle', kind: 'obj', matches: 212
   { path: '/obj/item/weapon/gun/projectile/semiautomatic/svt', name: 'SVT-40', kind: 'obj' },
   { path: '/obj/structure/closet/crate/rifles', name: 'rifle crate', kind: 'obj' },
 ] }, 'Spawn');
+// A compact remote's circuit: each press rolls a die, multiplies or adds a bonus, reports who
+// pressed it and finds a marked key. The texts and colours are the ones the game sends.
+const port = (name: string, type: string, ref: string, extra: Data = {}) =>
+  ({ name, type, color: ({ any: 'blue', number: 'green', string: 'orange', signal: 'teal', boolean: 'bad', list: 'white', option: 'violet', entity: 'purple' } as Record<string, string>)[type], ref, ...extra });
+const circuitPart = (id: number, type: string, name: string, category: string, x: number, y: number, description: string, input_ports: Data[], output_ports: Data[], extra: Data = {}) =>
+  ({ id, type: `/obj/item/circuit_component/${type}`, name, description, category, x, y, removable: 1, input_ports, output_ports, ...extra });
+const operations = ['Add', 'Subtract', 'Multiply', 'Divide', 'Modulo', 'Power', 'Minimum', 'Maximum'];
+const circuitParts = [
+  circuitPart(1, 'compact_remote', 'Compact Remote', 'General', 20, 40, "The remote's button. Each press sends a signal on Signal, and User becomes the person who pressed it. Wire User into a text input to get their name.",
+    [], [port('User', 'entity', 'output-1-1'), port('Signal', 'signal', 'output-1-2')], { removable: 0 }),
+  circuitPart(2, 'random', 'Random', 'Math', 230, 40, 'Each signal on Trigger picks a whole number from Minimum to Maximum, both included. Nothing happens if Minimum is above Maximum or either is not set. The bounds are limited to 1,000,000 either side of zero.', [
+    port('Minimum', 'number', 'input-2-1', { connected_to: [], current_data: 1 }), port('Maximum', 'number', 'input-2-2', { connected_to: [], current_data: 6 }),
+    port('Trigger', 'signal', 'input-2-3', { connected_to: ['output-1-2'], current_data: null })], [port('Result', 'number', 'output-2-1')]),
+  circuitPart(3, 'operator/arithmetic', 'Arithmetic', 'Math', 40, 290, 'Works out a number from A and B with the chosen Operation: add, subtract, multiply, divide, modulo (the remainder), power, minimum or maximum. It waits until both A and B are set. Dividing by zero, or a power with no real answer, leaves Result empty.', [
+    port('A', 'number', 'input-3-1', { connected_to: ['output-2-1'], current_data: 4 }), port('B', 'number', 'input-3-2', { connected_to: [], current_data: 2 }),
+    port('Operation', 'option', 'input-3-3', { connected_to: [], current_data: 'Add', datatype_data: operations })], [port('Result', 'number', 'output-3-1')]),
+  circuitPart(4, 'operator/string_concat', 'String Concat', 'String', 490, 40, 'Joins text A and text B end to end. An input that is not set counts as empty text, and a number is joined as its digits. The result is cut at 5,000 characters.', [
+    port('A', 'string', 'input-4-1', { connected_to: ['output-1-1'], current_data: 'Mara Voss' }), port('B', 'string', 'input-4-2', { connected_to: [], current_data: ' rolled ' })],
+    [port('Result', 'string', 'output-4-1')]),
+  circuitPart(5, 'variable/setter', 'Setter: last roll', 'Utility', 440, 250, 'Stores its Input in its variable whenever Input changes. Every getter of that variable then gives the new value.', [port('Input', 'number', 'input-5-1', { connected_to: ['output-3-1'], current_data: 6 })], []),
+  circuitPart(6, 'direction', 'Direction', 'Entity', 400, 400, 'Finds Target from where the circuit is: the compass direction to it and the distance in tiles. It looks when Target changes and at every signal on Trigger. A target more than 7 tiles away, on another level or gone leaves both outputs empty. On the same tile Distance is 0 and Direction is empty.', [
+    port('Target', 'entity', 'input-6-1', { connected_to: [], current_data: null }), port('Trigger', 'signal', 'input-6-2', { connected_to: [], current_data: null })],
+    [port('Direction', 'string', 'output-6-1'), port('Distance', 'number', 'output-6-2')]),
+];
+add('circuit-editor', 'wiremod_circuit.tmpl', {
+  on: 1, display_name: 'Dice roller', grid_mode: 1, screen_x: 0, screen_y: 0, is_admin: 0, components: circuitParts,
+  component_catalog: [circuitParts[2], circuitParts[1], circuitParts[3], circuitParts[5]].map(part => ({ id: 0, type: part.type, name: part.name, description: part.description, category: part.category, x: 0, y: 0, removable: 1, input_ports: part.input_ports.map(p => ({ ...p, ref: '', connected_to: [] })), output_ports: part.output_ports.map(p => ({ ...p, ref: '' })) })),
+  global_basic_types: ['number', 'boolean', 'string', 'any', 'entity'], variables: [{ name: 'last roll', datatype: 'number', color: 'green', is_list: 0 }],
+  examined_name: null, examined_desc: null, examined_notices: [], examined_rel_x: 0, examined_rel_y: 0,
+}, 'integrated circuit');
+const computer: ComputerData = {
+  name: 'minicomputer', shell: 'cli', os_name: 'Unga OS', os_version: '1969 edition', powered: 1, case_open: 0, status: '',
+  boot_lines: ['UNGA OS 1969 EDITION', 'MEMORY CHECK OK', 'TAPE DRIVE READY', '1 PROGRAM LOADED'],
+  hardware: [
+    { index: 1, slot: 'cpu', slot_label: 'Processor', name: 'transistor logic board', detail: 'tier 1', icon: 'cpu_chip' },
+    { index: 2, slot: 'drive', slot_label: 'Storage', name: 'tape drive', detail: '16 KB', icon: 'tape_drive' },
+    { index: 3, slot: 'media', slot_label: 'Media', name: 'diskette reader', detail: 'data diskette inside', icon: 'disk_reader' },
+  ],
+  empty_slots: [{ slot: 'expansion', slot_label: 'Expansion' }],
+  programs: [{ id: 'files', name: 'Files', desc: 'Write, read, print and copy text files.', available: 1, reason: '' },
+    { id: 'ledger', name: 'Ledger', desc: 'Keep accounts in columns.', available: 0, reason: 'Needs a tier 2 processor.' }],
+  active: '', files: null,
+};
+const computerFiles: ComputerData['files'] = {
+  drive: { name: 'tape drive', used_kb: 1.2, capacity_kb: 16 },
+  list: [{ index: 1, name: 'NOTES', size_kb: 0.4 }, { index: 2, name: 'HARBOUR LOG', size_kb: 0.8 }],
+  open: null, disk: { name: 'data diskette', used_kb: 0.4, capacity_kb: 4, list: [{ index: 1, name: 'MAP', size_kb: 0.4 }] },
+  printer: { paper: 12 }, max_chars: 4000, max_name: 24,
+};
+add('computer', 'computer.tmpl', computer, 'Minicomputer');
+add('computer-files', 'computer.tmpl', { ...computer, active: 'files', status: 'Saved NOTES.', files: computerFiles }, 'Minicomputer');
+add('computer-editor', 'computer.tmpl', { ...computer, active: 'files', files: { ...computerFiles, open: { index: 1, name: 'NOTES', body: 'Grain count, east store: 41 sacks.\nAsk Mira about the second tape.' } } }, 'Minicomputer');
+add('computer-hardware', 'computer.tmpl', { ...computer, tab: 'hardware', case_open: 1 }, 'Minicomputer');

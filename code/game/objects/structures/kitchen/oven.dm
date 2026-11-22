@@ -51,6 +51,8 @@
 		return
 	if (!istype(H))
 		return
+	if (resin_cook_attackby(src, I, H)) // resin.dm
+		return TRUE
 
 	if (istype(I, /obj/item/weapon/reagent_containers/glass/small_pot))
 		var/obj/item/weapon/reagent_containers/glass/small_pot/POT = I
@@ -101,6 +103,7 @@
 	if (!on && fuel > 0)
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
 		on = TRUE
+		note_firing(H, src)
 		fire_loop()
 	else
 		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
@@ -138,6 +141,7 @@
 					visible_message("<span class = 'notice'>\The [I] finishes boiling.</span>")
 					// Brew before the salt step below, which boils the water away.
 					coffee_brew_notice(I.reagents, src, I.reagents.brew_coffee())
+					syrup_boil_notice(I.reagents, src, I.reagents.boil_syrups()) // syrups.dm
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
 						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
 						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))
@@ -205,7 +209,12 @@
 				continue // Carved stone is already usable; never replace it with clay.
 			if (CL.result == CL.type)
 				continue // already fired (bricks and blocks); firing again must not copy them
-			contents += CL.fired_result(src)
+			// A placed structure (a big jar) is set down outside; only items go in.
+			var/fired = CL.fired_result(src)
+			if (!fired)
+				continue // nothing was made, so the unfired piece stays
+			if (isitem(fired))
+				contents += fired
 			contents -= I
 			qdel(I)
 
@@ -323,6 +332,7 @@
 	else if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
+		note_firing(H, src)
 		var/epoch = ++fire_epoch
 		keep_fire_on(epoch)
 		keep_sound_on(epoch)
@@ -505,6 +515,7 @@
 	if (!on && fuel > 0)
 		H.visible_message(SPAN_NOTICE("[H] lights \the [name]."), SPAN_NOTICE("You light \the [name]."))
 		on = TRUE
+		note_firing(H, src)
 		keep_fire_on()
 		keep_sound_on()
 	//no manual turning off

@@ -328,46 +328,18 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	if (nomads || civilizations || ID==MAP_COLONY || ID==MAP_FOUR_COLONIES || ID==MAP_PIONEERS)
 		var/amt_to_create = (world.maxx*world.maxy)/5000
 		if (grass_turf_list.len)
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/tinto(G)
-					v++
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/azul(G)
-					v++
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/amar(G)
-					v++
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/majo(G)
-					v++
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/narco(G)
-					v++
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/zelenyy(G)
-					v++
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/marron(G)
-					v++
-			for (var/v=1, v<=amt_to_create)
-				var/turf/floor/grass/G = pick(grass_turf_list)
-				if (G.isemptyfloor())
-					new/obj/structure/wild/berrybush/corcairghorm(G)
-					v++
+			// Each kind of berry bush on its share of the open grass. A land with
+			// little grass (the ice lands) gets fewer, and a full or crowded
+			// grass list gives up after a bounded number of picks instead of
+			// spinning forever.
+			amt_to_create = min(amt_to_create, round(grass_turf_list.len / 16))
+			for (var/kind in list(/obj/structure/wild/berrybush/tinto, /obj/structure/wild/berrybush/azul, /obj/structure/wild/berrybush/amar, /obj/structure/wild/berrybush/majo, /obj/structure/wild/berrybush/narco, /obj/structure/wild/berrybush/zelenyy, /obj/structure/wild/berrybush/marron, /obj/structure/wild/berrybush/corcairghorm))
+				var/placed = 0
+				for (var/tries = 1, placed < amt_to_create && tries <= amt_to_create * 20, tries++)
+					var/turf/floor/grass/G = pick(grass_turf_list)
+					if (G.isemptyfloor())
+						new kind(G)
+						placed++
 
 /obj/map_metadata/proc/religious_timer()
 	if (custom_religions.len > 0)
@@ -1191,6 +1163,10 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 		season_run_queue()
 
 /obj/map_metadata/proc/season_loop_delay()
+	// On the world calendar the loop wakes at the calendar's next season (world_calendar.dm).
+	if (map == src && world_calendar_seasons_on())
+		var/list/c = world_calendar_season()
+		return max(100, round(c[3] * 600) + 50)
 	var/minutes = season_duration_minutes
 	if (isnull(minutes))
 		minutes = config ? config.season_duration_minutes : 60
@@ -1317,6 +1293,14 @@ var/civmax_research = list(LEGACY_RESEARCH_MAX,LEGACY_RESEARCH_MAX,LEGACY_RESEAR
 	// Anchor the recurring cadence to requests while terrain work yields.
 	if (looping)
 		season_schedule_loop()
+	// On the world calendar a natural change only steps toward the calendar's
+	// season; a forced (admin) change holds until the calendar's next season.
+	if (world_calendar_seasons_on())
+		if (force)
+			var/list/c = world_calendar_season()
+			world_calendar_season_hold = world.time + round(c[3] * 600)
+		else if (!world_calendar_season_due())
+			return
 	// Flat scalar records retain each natural request and no actor/turf references.
 	if (force)
 		for (var/i = 1, i <= season_queue.len, i += 4)

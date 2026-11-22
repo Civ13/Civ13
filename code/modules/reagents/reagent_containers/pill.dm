@@ -38,7 +38,7 @@
 			user.visible_message("<span class='warning'>[user] attempts to force [M] to swallow \the [src]!</span>", "<span class='warning'>You try and force [M] to swallow \the [src].")
 
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-			if (!do_mob(user, M))
+			if (!do_mob(user, M) || loc != user || !M.can_finish_force_feed(user, src))
 				return
 
 			user.drop_from_inventory(src) //icon update
@@ -145,9 +145,9 @@
 
 /obj/item/weapon/reagent_containers/pill/opium
 	name = "opium ball"
-	desc = "A ball of dried opium. A strong painkiller."
-	icon = 'icons/obj/materials.dmi'
-	icon_state = "opium_extracted"
+	desc = "A sticky ball of raw poppy latex, scraped from lanced pods. A strong painkiller and a strong habit."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "opium_latex"
 	value = 17
 	is_contraband = TRUE
 	New()

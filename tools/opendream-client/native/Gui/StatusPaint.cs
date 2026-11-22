@@ -8,7 +8,7 @@ namespace Civ13.Launcher.Gui;
 // green is fine, blue is resting or ready, grey is off, amber is in progress or needs an update, red needs you.
 // Every pill also carries a shape and a word, so nothing depends on colour alone.
 internal enum Tone { Good, Info, Idle, Busy, Bad }
-internal enum Glyph { None, Dot, Ring, Moon, Arc, Alert, Check, Down, Box, Dash, Person }
+internal enum Glyph { None, Dot, Ring, Moon, Sun, Arc, Alert, Check, Down, Box, Dash, Person }
 
 internal static class StatusPaint {
     public static readonly Color Ink = Color.FromArgb(28, 33, 40);
@@ -19,6 +19,9 @@ internal static class StatusPaint {
     public static readonly Color SelectedEdge = Color.FromArgb(64, 120, 216);
     public static readonly Color Hover = Color.FromArgb(243, 246, 250);
     public static readonly Color ProblemBack = Color.FromArgb(255, 245, 244);
+    // The board's fix buttons: a plain outline, and the text of one that cannot be used now.
+    public static readonly Color ButtonEdge = Color.FromArgb(190, 197, 207);
+    public static readonly Color Disabled = Color.FromArgb(150, 157, 168);
 
     public static Color Fore(Tone tone) => tone switch {
         Tone.Good => Color.FromArgb(22, 101, 46),
@@ -27,6 +30,11 @@ internal static class StatusPaint {
         Tone.Bad => Color.FromArgb(170, 32, 24),
         _ => Color.FromArgb(75, 85, 99),
     };
+
+    // A region's local day or night on the board. Not a status: the sun is a warmer gold than the amber
+    // of "in progress" and the moon is slate, not the blue of "Asleep", so neither reads as a state pill.
+    public static readonly Color Day = Color.FromArgb(196, 124, 0);
+    public static readonly Color Night = Color.FromArgb(84, 96, 132);
 
     public static Color Back(Tone tone) => tone switch {
         Tone.Good => Color.FromArgb(220, 243, 225),
@@ -120,6 +128,18 @@ internal static class StatusPaint {
                 g.FillEllipse(brush, box);
                 using var cut = new SolidBrush(back);
                 g.FillEllipse(cut, box.X + box.Width * 0.38f, box.Y - box.Height * 0.12f, box.Width * 0.82f, box.Height * 0.82f);
+                break;
+            }
+            case Glyph.Sun: {
+                // A disc with eight short rays; the rays are thinner than the other strokes so they stay apart at 11 px.
+                float cx = box.X + box.Width / 2f, cy = box.Y + box.Height / 2f, half = Math.Min(box.Width, box.Height) / 2f;
+                g.FillEllipse(brush, cx - half * 0.46f, cy - half * 0.46f, half * 0.92f, half * 0.92f);
+                using var ray = new Pen(color, 1.2f * scale) { StartCap = LineCap.Round, EndCap = LineCap.Round };
+                for (var step = 0; step < 8; step++) {
+                    var angle = step * Math.PI / 4;
+                    float dx = (float)Math.Cos(angle), dy = (float)Math.Sin(angle);
+                    g.DrawLine(ray, cx + dx * half * 0.72f, cy + dy * half * 0.72f, cx + dx * half, cy + dy * half);
+                }
                 break;
             }
             case Glyph.Arc:

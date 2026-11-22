@@ -94,6 +94,9 @@ var/global/list/persistence_freeze_notified = list()
 				else
 					to_chat(src, "<span class='warning'>[reason]</span>")
 			return
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_hold_input(mob))
+		return
 	return ..()
 
 /datum/persistence_restart_transaction
@@ -113,6 +116,9 @@ var/global/list/persistence_freeze_notified = list()
 	// The last attempt failed but left no intent and the server running, so a
 	// new save/restart may be accepted despite last_error.
 	var/save_failure_retryable = FALSE
+	// The completed generation when that failure happened: a later save that
+	// completes changes it, and the stale failure is no longer reported.
+	var/save_failure_generation
 	var/intent_path = "map_saves/restart_intent.json"
 	var/lifecycle_operation
 	var/lifecycle_session
@@ -304,6 +310,7 @@ var/global/list/persistence_freeze_notified = list()
 	// A new attempt owns the outcome; an earlier failure's message is stale.
 	last_error = null
 	save_failure_retryable = FALSE
+	save_failure_generation = null
 	map_storage.last_error = null
 	lifecycle_operation = (shutdown || handover) ? operation : null
 	lifecycle_session = (shutdown || handover) ? session : null
@@ -361,8 +368,11 @@ var/global/list/persistence_freeze_notified = list()
 		else if(shutdown)
 			if(!isnull(expected_persistence) && expected_persistence == 0)
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting into a fresh nonpersistent round.</b></font>")
-			else
+			else if(prewarned)
 				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is restarting; reconnect in a few minutes to continue where you left off.</b></font>")
+			else
+				// The legacy host command is shared by Stop and Restart; only the host knows if it will start another world.
+				to_chat(world, "<font color='yellow' size=4><b>Save complete. The server is shutting down. Your progress has been saved.</b></font>")
 			if(!prewarned)
 				// The host's Save and stop (or restart, which starts the world itself): its
 				// watchdog must not take this exit for a crash, even if the host stopped waiting.
@@ -397,6 +407,7 @@ var/global/list/persistence_freeze_notified = list()
 				cleanup = " Intent cleanup FAILED: [cleanup_error]. Further saves are blocked until the intent is resolved."
 		report("[e].[cleanup]")
 		save_failure_retryable = !exists()
+		save_failure_generation = trim(file2text("map_saves/save_complete.txt"))
 	busy = FALSE
 	diagnostic_phase = "failed"
 	expected_generation = null

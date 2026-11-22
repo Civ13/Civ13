@@ -150,7 +150,7 @@
 		swim_train(T, sea_zone_of(T) >= SEA_ZONE_OPEN ? FREE_DIVE_OPEN_TRAIN : 1)
 		return
 	if (nitrogen_load > 0)
-		scuba_nitrogen_step(T)
+		scuba_nitrogen_step(T, FALSE)
 	if (swim_breath < 0)
 		swim_breath = swim_breath_max()
 	swim_breath = max(0, swim_breath - 1)
@@ -174,13 +174,30 @@
 	set name = "Surface"
 	set desc = "Swim back up from the seabed to the open sea."
 	set category = "IC"
+	surface_from_seabed()
+
+// Surface on a held breath or scuba, or drop a suit's weights. Shared by the
+// Surface verb and the HUD up button (multiz/floor_buttons.dm).
+/mob/living/human/proc/surface_from_seabed()
 	if (!free_diving)
 		if (sea_layer_cell(get_turf(src)) && seabed_diving_rating())
-			seabed_ascend()
-		else
-			to_chat(src, SPAN_WARNING("You are not under the water."))
-		return
-	free_dive_surface()
+			return seabed_ascend()
+		to_chat(src, SPAN_WARNING("You are not under the water."))
+		return FALSE
+	return free_dive_surface()
+
+// What the HUD up and down buttons do in the sea: "Surface" on the seabed,
+// "Dive" swimming over the seabed, else null. Looks at the water only, so a
+// tired swimmer still sees Dive lit and pressing it says why not.
+/mob/living/human/proc/sea_updown_offer(direction)
+	var/turf/T = get_turf(src)
+	if (direction == UP)
+		if (free_diving || (sea_layer_cell(T) && seabed_diving_rating()))
+			return "Surface"
+		return null
+	if (direction == DOWN && !free_diving && can_swim_deep() && free_dive_target(T))
+		return "Dive"
+	return null
 
 #undef FREE_DIVE_DESCENT
 #undef FREE_DIVE_ASCENT_SHELF

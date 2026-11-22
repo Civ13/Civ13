@@ -247,10 +247,102 @@
       "/obj/item/stack/hay": 4
     }
   },
-  "/obj/structure/training_course/post": {
+  "/obj/structure/workshop_machine/transmission/line_shaft": {
     "tools": [],
     "inputs": {
-      "/obj/item/stack/material/cloth": 1
+      "/obj/item/machine_part/bearing": 1
+    }
+  },
+  "/obj/structure/workshop_machine/transmission/line_shaft/clutch": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/bearing": 1
+    }
+  },
+  "/obj/structure/workshop_machine/transmission/gear_box": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 2,
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/transmission/line_shaft/iron": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/bearing": 1
+    }
+  },
+  "/obj/structure/workshop_machine/transmission/rope_drive": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/bearing": 1,
+      "/obj/item/stack/material/rope": 2
+    }
+  },
+  "/obj/structure/workshop_machine/hopper/millstones": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/hopper/sash_saw": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/stack/material/iron": 2
+    }
+  },
+  "/obj/structure/workshop_machine/mover/counterweight": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/stack/material/rope": 2
+    }
+  },
+  "/obj/structure/mechanism/cam_drum": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/mover/steam_engine": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 2
+    }
+  },
+  "/obj/structure/workshop_machine/hopper/fulling_stocks": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1
+    }
+  },
+  "/obj/structure/workshop_machine/hopper/bark_stamps": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/stack/material/iron": 2
+    }
+  },
+  "/obj/item/stack/data_lan_cable/sealed": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/material/plastic": 1
+    }
+  },
+  "/obj/structure/workshop_machine/hopper/power_loom": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/machine_part/gear": 1,
+      "/obj/item/machine_part/shaft": 1,
+      "/obj/item/machine_part/bearing": 1
     }
   }
 }

@@ -16,17 +16,13 @@
 // world's group and up or able to wake. Region ids are the host's (earth.json).
 // ============================================================
 
-// id = list(x, y, coasts, flight): x grows east, y grows north. coasts: the map
-// edges with open deep water along them, best first. flight: TRUE when the map
-// has a standing open-air level that aircraft fly on (aircraft_crossing.dm).
-var/global/list/continent_layout = list(
-	"northamerica" = list(0, 6, list("E", "W", "N", "S"), TRUE),
-	"southamerica" = list(2, 0, list("E", "W", "S", "N"), TRUE),
-	"gaia" = list(6, 7, list("W", "E"), TRUE),
-	"europe" = list(11, 9, list("S", "W"), TRUE),
-	"desert" = list(12, 4, list("N"), TRUE),
-	"jungle" = list(13, 1, list("W"), TRUE),
-	"asia" = list(18, 8, list("E", "S", "W"), TRUE))
+// continent_layout (region id = list(x, y, coasts, flight)) is written from
+// tools/world_links/world_links.json into code/modules/persistence/world_links.dm.
+
+// This map's own open-sea edges, when they are not the layout's: a region's
+// world can move to a new map (the Earth-shaped Europe) before the layout
+// entry for its id changes.
+/obj/map_metadata/var/list/sea_coasts = null
 
 /proc/continent_place(id)
 	if (!istext(id))
@@ -81,7 +77,7 @@ var/global/list/continent_layout = list(
 		if (id == shard_group.region || !continent_coastal(id))
 			continue
 		var/list/peer = shard_group.peers[id]
-		if (!islist(peer) || peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
+		if (!islist(peer) || shard_group.peer_closed(id) || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 			continue
 		var/tiles = continent_distance(shard_group.region, id)
 		.["[peer["name"]], across the sea to the [continent_bearing(shard_group.region, id)]: [tiles] tile\s, about [tiles] minute\s"] = list(id, tiles)
@@ -94,7 +90,7 @@ var/global/list/continent_layout = list(
 	if (!here || !continent_place(from))
 		return
 	var/list/coasts = list()
-	for (var/side in here[3])
+	for (var/side in ((map && length(map.sea_coasts)) ? map.sea_coasts : here[3]))
 		coasts += text2dir_side(side)
 	for (var/d in continent_sides_toward(shard_group.region, from))
 		if (d in coasts)

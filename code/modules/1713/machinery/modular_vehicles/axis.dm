@@ -2,7 +2,9 @@ var/global/list/tank_names_german = list("Lute", "Greta", "Erika", "Sieg", "Teuf
 var/global/list/tank_names_soviet = list("Slavianka", "Katya", "Rodina", "Vernyi", "Krasavets", "Grom","Gvozdika","Tyulpan","Krokodil","Grach","Bereza","Zhuravl","Topol","Bogatyr","Yenot","Orel","Natasha","Molodets","Rusalka","Volga","Molot","Serp","Zubr","Kazak")
 var/global/list/tank_names_japanese = list("Banzai", "Satsu-Jin", "Koroshite", "Sakura", "Chibi Chi-to", "I-Go","Bushido","Hinomaru","Shuriken")
 var/global/list/tank_names_usa = list("Charlie", "Alpha", "Foxtrot", "Tango", "Echo", "Zipper-maker", "Uncle Sam", "Steel Coffin", "Crusader","Iron Maiden","Thunderbolt","Hellcat","Black Baron","Raging Bull","Bulldog","Whiskey","Fury","Warthog","Sentinel","Cobra","Raptor","Steel Phantom")
-var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu", "Avalanche", "Bandit", "Cyclone", "Defender", "Eagle", "Falcon", "Guardian", "Havoc", "Ironclad", "Jaguar", "Kodiak", "Lightning", "Maverick", "Nomad", "Panther", "Phantom", "Quicksilver", "Renegade", "Specter", "Sentinel", "Thunderbolt", "Viper", "Warlock", "Xenoh", "Yeti", "Zephyr")
+var/global/list/tank_names_nato = tank_names_nato_table()
+/proc/tank_names_nato_table()
+	return list("Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu", "Avalanche", "Bandit", "Cyclone", "Defender", "Eagle", "Falcon", "Guardian", "Havoc", "Ironclad", "Jaguar", "Kodiak", "Lightning", "Maverick", "Nomad", "Panther", "Phantom", "Quicksilver", "Renegade", "Specter", "Sentinel", "Thunderbolt", "Viper", "Warlock", "Xenoh", "Yeti", "Zephyr")
 
 
 // Gives a vehicle a crew nickname from a per-round list. A restored vehicle
@@ -476,7 +478,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			continue
 		var/turf/T = get_turf(F)
 		for (var/atom/movable/M in T)
-			if (M.loc != T || QDELETED(M) || M.craft_left_behind())
+			if (M.loc != T || QDELETED(M) || !M.craft_cargo())
 				continue
 			if (istype(M, /obj/item/weapon/grenade))
 				var/obj/item/weapon/grenade/G = M
@@ -499,7 +501,7 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 				if (BAT.anchored)
 					qdel(BAT)
 					visible_message(SPAN_WARNING("\The [src] crushes \the [BAT]!"),SPAN_WARNING("You crush \the [BAT]!"))
-			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !aboard[M])
+			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item) || istype(M, /obj/machinery)) && !aboard[M])
 				if (!istype(M, /obj/structure/sign/traffic/zebracrossing) && !istype(M, /obj/structure/sign/traffic/side) && !istype(M, /obj/structure/sign/traffic/central) && !istype(M, /obj/structure/rails) && !istype(M, /obj/structure/cable) && !istype(M, /obj/structure/redmailbox) && !istype(M, /obj/structure/gate) && !istype(M, /obj/structure/lamp/lamppost_small/) && !istype(M, /obj/structure/lamp/lamp_big/alwayson) && !istype(M, /obj/structure/lamp/lamp_small/alwayson) && !istype(M, /obj/structure/billboard) && !istype(M, /obj/structure/multiz) && !istype(M, /obj/structure/vessel_lever))
 					if (istype(M, /obj/structure/vehicleparts/frame))
 						var/obj/structure/vehicleparts/frame/other = M
@@ -830,6 +832,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 		var/list/entry = matrix_current_locs[cell]
 		for (var/atom/movable/M in entry[2])
 			was_at[M] = entry[1]
+	// The swing is drawn by glide_turn(): the engine shows the moves at once.
+	glide_turn_hold(was_at)
+	var/list/was_glide_holder = craft_glide_holder
+	craft_glide_holder = glide_was
 	transforming_vehicle = TRUE
 	transform_tiles = turn_turfs
 	for (var/turf/T in turn_turfs)
@@ -894,8 +900,10 @@ var/global/list/tank_names_nato = list("Alpha", "Bravo", "Charlie", "Delta", "Ec
 			MB.dir = dir
 
 	catch(var/exception/e)
+		craft_glide_holder = was_glide_holder
 		release_transform_tiles(turn_turfs)
 		throw e
+	craft_glide_holder = was_glide_holder
 	release_transform_tiles(turn_turfs)
 	glide_turn(was_at)
 	refresh_passenger_vision()

@@ -15,12 +15,7 @@
 #define STORAGE_WINDOW_ICONS_PER_PUSH 40
 #define STORAGE_WINDOW_FLOOR_LIMIT 30
 #define STORAGE_WINDOW_QUEUE_LIMIT 40
-#define STORAGE_WINDOW_KIND_HANDS "hands"
-#define STORAGE_WINDOW_KIND_POCKETS "pockets"
-#define STORAGE_WINDOW_KIND_WORN "worn"
-#define STORAGE_WINDOW_KIND_NEAR "near"
-#define STORAGE_WINDOW_KIND_BODY "body"
-#define STORAGE_WINDOW_KIND_FLOOR "floor"
+// Storage window kinds: code/__defines/storage_window.dm
 
 /client
 	// Set once this client's browser could not run the storage window.
@@ -289,6 +284,8 @@
 /proc/storage_window_access(mob/user, obj/item/weapon/storage/S)
 	if (istype(S, /obj/structure/closet))
 		return closet_window_access(user, S)
+	if (!S || !S.storage_contents_accessible())
+		return FALSE
 	var/obj/structure/storage_container/C = storage_window_owner_structure(S)
 	if (istype(C) && !C.storage_access_allowed(user))
 		return FALSE
@@ -442,7 +439,7 @@
 				G["space"] = S.max_storage_space
 				G["slots"] = S.storage_slots
 				G["max_size"] = S.max_w_class
-			G["total"] = S.contents.len
+			G["total"] = S.shown_contents_count()
 			if (unseen.len)
 				G["unseen"] = unseen
 			if (search_holder == S && search_item)

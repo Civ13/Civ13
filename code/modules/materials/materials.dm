@@ -307,6 +307,31 @@ var/list/material/name_to_material
 	icon_colour = "#006400" //dark green
 	stack_type = /obj/item/stack/material/leaf/fern
 
+/material/cannabis_fresh
+	name = "cannabis_fresh"
+	display_name = "fresh cannabis"
+	icon_colour = "#4f8a2b"
+	hardness = 10
+	cut_delay = 5
+	shard_type = null
+	tableslam_noise = null
+	sheet_singular_name = "top"
+	sheet_plural_name = "tops"
+	stack_type = /obj/item/stack/material/cannabis_fresh
+	flags = MATERIAL_UNMELTABLE
+
+/material/cannabis
+	name = "cannabis"
+	icon_colour = "#6b7d3a"
+	hardness = 10
+	cut_delay = 5
+	shard_type = null
+	tableslam_noise = null
+	sheet_singular_name = "pinch"
+	sheet_plural_name = "pinches"
+	stack_type = /obj/item/stack/material/cannabis
+	flags = MATERIAL_UNMELTABLE
+
 /material/coca
 	name = "coca"
 	icon_colour = "#faeff1"
@@ -364,6 +389,17 @@ var/list/material/name_to_material
 	sheet_plural_name = "sheets"
 	stack_type = /obj/item/stack/material/plastic
 	integrity = 30
+	resilience = 0.3
+
+/material/rubber
+	name = "rubber"
+	icon_colour = "#3a312b"
+	hardness = 20
+	weight = 8
+	sheet_singular_name = "sheet"
+	sheet_plural_name = "sheets"
+	stack_type = /obj/item/stack/material/rubber
+	integrity = 25
 	resilience = 0.3
 
 /material/tin

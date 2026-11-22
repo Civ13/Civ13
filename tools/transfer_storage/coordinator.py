@@ -47,6 +47,8 @@ from tools.transfer_storage.train_custody import TrainCustody
 from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony_valid, faction_id_valid, land_id_valid
 from tools.transfer_storage.world_chart import WorldChart, land_home, owner_valid, tile_valid
 from tools.transfer_storage.nations import Nations
+from tools.transfer_storage import records as player_records
+from tools.transfer_storage import karma as player_karma
 
 
 # Land readiness (docs/land-stages.md). Placeholder thresholds for Val to tune:
@@ -150,7 +152,8 @@ def read_lands(path, mainland, now=None):
 
 
 class Coordinator(TrainCustody):
-    def __init__(self, path, group, mainland=None, bootstrap_new_group=False, slots=(), expeditions=None, start_region=None):
+    def __init__(self, path, group, mainland=None, bootstrap_new_group=False, slots=(), expeditions=None, start_region=None,
+                 records_dir=None, activity_db=None):
         self.group = group
         self.mainland = mainland
         # Where new characters (and fallen ones with no bed keeping their home)
@@ -192,6 +195,8 @@ class Coordinator(TrainCustody):
             source TEXT NOT NULL, ckey TEXT NOT NULL, region TEXT NOT NULL, PRIMARY KEY (source, ckey))''')
         self.db.execute('''CREATE TABLE IF NOT EXISTS decided(
             store TEXT NOT NULL, id INTEGER NOT NULL, PRIMARY KEY(store, id))''')
+        self.db.execute('''CREATE TABLE IF NOT EXISTS chart_pass_result(
+            store TEXT NOT NULL, id INTEGER NOT NULL, applied INTEGER NOT NULL, PRIMARY KEY(store, id))''')
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('epoch', ?)", (secrets.token_hex(8),))
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('rev', '0')")
 
@@ -215,6 +220,15 @@ class Coordinator(TrainCustody):
         self.nations = Nations(self.db)
         self.db.execute('''CREATE TABLE IF NOT EXISTS nation_result(
             store TEXT NOT NULL, id INTEGER NOT NULL, text TEXT, PRIMARY KEY(store, id))''')
+        # Shared player records (records.py): staff records about accounts,
+        # written here only, published as files beside the regions.
+        player_records.init_group(self.db)
+        root = os.path.dirname(os.path.abspath(path))
+        self.records = player_records.Snapshots(
+            self.db, records_dir or os.path.join(root, player_records.RECORDS_DIR),
+            activity_db if activity_db is not None else os.path.join(root, 'player-activity.sqlite'))
+        # Hidden karma (karma.py): per-ckey files in shared-records/karma/.
+        self.karma = player_karma.KarmaFiles(self.db, self.records.root)
 
     def close(self):
         self.db.close()
@@ -251,6 +265,77 @@ class Coordinator(TrainCustody):
     def home(self, ckey):
         row = self.db.execute('SELECT region FROM home WHERE ckey = ?', (ckey,)).fetchone()
         return row[0] if row else None
+
+    def _lobby_snapshot(self, ckey):
+        """One read transaction, without holding a DB lock across agent I/O."""
+        self.db.execute('BEGIN')
+        try:
+            recovery = self.recovery_status()
+            regions = self.regions()
+            if recovery['state'] != 'ready' or not regions or set(recovery['roster']) != regions.keys():
+                return None
+            return (regions, self._ledger('epoch'), int(self._ledger('rev')), self.home(ckey),
+                    bool(self.db.execute('SELECT 1 FROM train_account_lock WHERE ckey = ?', (ckey,)).fetchone()),
+                    bool(self.db.execute('SELECT 1 FROM travelling WHERE ckey = ?', (ckey,)).fetchone()))
+        finally:
+            self.db.execute('ROLLBACK')  # read-only, including early returns
+
+    def lobby_home(self, ckey):
+        """Resolve an account's route without claiming custody or starting a world.
+
+        Only the reconciled coordinator is authoritative. Its cached travel
+        rows do not rule out a new, uncollected request in a region, so every
+        enrolled agent must give a fresh, consistent answer before we route.
+        No endpoint is exposed for this coordinator method in this slice.
+        The destination still checks admission after handoff.
+        """
+        unavailable = {'state': 'UNAVAILABLE'}
+        if not account_key_valid(ckey):
+            return unavailable
+        try:
+            snapshot = self._lobby_snapshot(ckey)
+        except (sqlite3.Error, ValueError, TypeError, IndexError):
+            return unavailable
+        if snapshot is None:
+            return unavailable
+        regions, epoch, rev, home, train_locked, travelling = snapshot
+        if train_locked:
+            return {'state': 'PENDING'}
+        if travelling:
+            return {'state': 'TRAVELLING'}
+        barriers = set()
+        deadline = time.monotonic() + 2
+        for region, (url, token) in regions.items():
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return unavailable
+            try:
+                answer = call(url, token, '/lobby/account-status', {'ckey': ckey}, timeout=min(1, remaining))
+            except (OSError, ValueError):
+                return unavailable
+            if type(answer) is not dict or answer.get('ok') is not True:
+                return unavailable
+            status = answer.get('result')
+            if (type(status) is not dict or status.get('region') != region or status.get('group') != self.group
+                    or status.get('epoch') != epoch or type(status.get('rev')) is not int or status['rev'] != rev
+                    or status.get('state') not in ('CLEAR', 'PENDING', 'TRAVELLING')):
+                return unavailable
+            barriers.add(status['state'])
+        if time.monotonic() >= deadline:
+            return unavailable
+        try:
+            if self._lobby_snapshot(ckey) != snapshot:
+                return unavailable
+        except (sqlite3.Error, ValueError, TypeError, IndexError):
+            return unavailable
+        if 'PENDING' in barriers:
+            return {'state': 'PENDING'}
+        if 'TRAVELLING' in barriers:
+            return {'state': 'TRAVELLING'}
+        region = home if home is not None else self.start_region
+        if region not in regions:
+            return unavailable
+        return {'state': 'HOME' if home is not None else 'NO_HOME', 'region': region}
 
     def homes(self):
         return {c: r for c, r in self.db.execute('SELECT ckey, region FROM home WHERE region IS NOT NULL ORDER BY ckey')}
@@ -329,6 +414,17 @@ class Coordinator(TrainCustody):
             return bool(self.chart.reveal(owner, x, y))
         if op == 'course' and owner_valid(owner):
             return self.chart.set_course(request.get('voyage'), owner, x, y, origin, by=admin) is not None
+        if op in ('access', 'pass'):
+            # A faction's leader or officers, from any land, for the island it claims at x, y.
+            data = request.get('data')
+            if type(data) is not dict or self.chart.claims().get(owner) != '%d,%d' % (x, y):
+                return False
+            incarnation = self.chart.claim_incarnation(owner)
+            if not incarnation or data.get('incarnation') != incarnation:
+                return False
+            if op == 'access':
+                return self.chart.change_access(owner, {k: v for k, v in data.items() if k != 'incarnation'}, admin)
+            return self.chart.grant_pass(owner, data.get('account'), data.get('hours'), admin)
         if op == 'summon':
             # Somebody whose character is on a parked land came back: only they can wake it.
             return self.home(admin) == land_home(x, y) and self.chart.summon(x, y)
@@ -570,7 +666,7 @@ class Coordinator(TrainCustody):
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
                 land_done[name] = ids
                 self.record_land_sample(name, a.get('land_sample'))
-            chart_done = {}
+            chart_done, chart_pass_results = {}, {}
             for name, a in asked.items():
                 store = 'chart:' + str(a.get('store') or '')
                 requests = [r for r in a.get('chart_requests') or [] if type(r) is dict and isinstance(r.get('id'), int)]
@@ -578,11 +674,18 @@ class Coordinator(TrainCustody):
                 old = {i for (i,) in self.db.execute('SELECT id FROM decided WHERE store = ?', (store,))}
                 for i in old - set(ids):
                     self.db.execute('DELETE FROM decided WHERE store = ? AND id = ?', (store, i))
+                    self.db.execute('DELETE FROM chart_pass_result WHERE store = ? AND id = ?', (store, i))
                 for r in requests:
                     if r['id'] not in old:
-                        self.chart_request(r, name)
+                        applied = self.chart_request(r, name)
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
+                        # Commit the decision alongside its pass mutation. A lost /homes
+                        # reply can resend the decision without changing the pass again.
+                        if r.get('op') == 'pass':
+                            self.db.execute('INSERT INTO chart_pass_result VALUES (?, ?, ?)', (store, r['id'], bool(applied)))
                 chart_done[name] = ids
+                chart_pass_results[name] = [{'id': i, 'applied': bool(applied)} for i, applied in self.db.execute(
+                    'SELECT id, applied FROM chart_pass_result WHERE store = ? ORDER BY id', (store,))]
             # Nation requests, each region's in its own order. An outcome is
             # kept until the agent drops the request, so a lost answer is
             # sent again rather than decided twice.
@@ -624,6 +727,7 @@ class Coordinator(TrainCustody):
                     'train_decisions': lease_decisions.get(name, []),
                     'lands': lands, 'land_done': land_done.get(name, []),
                     'chart_done': chart_done.get(name, []),
+                    'chart_pass_results': chart_pass_results.get(name, []),
                     'nations': nations, 'nation_results': nation_results.get(name, []),
                     'colony_grants': [{'ckey': c, 'faction': f} for c, f in self.db.execute(
                         'SELECT ckey, faction FROM colony_grant WHERE region = ? ORDER BY ckey', (name,))],
@@ -694,6 +798,43 @@ class Coordinator(TrainCustody):
                 delivered += result.get('queued', 0) + result.get('ooc', 0) + result.get('strikes', 0) + result.get('asay', 0)
                 delivered += result.get('announce', 0)
         return delivered
+
+    def records_once(self, now=None):
+        """Collect queued player records from every agent, store them, then
+        acknowledge them and rewrite the shared-records files. Records do not
+        depend on the home ledger's recovery state: they hold no custody.
+        Returns the number of records stored."""
+        stored = 0
+        for name, (url, token) in self.regions().items():
+            # A world drops a record it sent once its region's pull time is
+            # later than the send, so the pull time is taken before the read.
+            pulled = int(time.time() if now is None else now)
+            try:
+                answer = call(url, token, '/records/outbox', timeout=2)
+            except (OSError, ValueError):
+                continue  # down: its records wait in its own store
+            result = answer.get('result') if answer.get('ok') else None
+            if type(result) is not dict:
+                continue  # an agent too old for /records/outbox
+            self.db.execute('BEGIN IMMEDIATE')
+            try:
+                ids, changed = player_records.store_records(self.db, name, result.get('records'), pulled)
+                self.db.execute('COMMIT')
+            except Exception:
+                self.db.execute('ROLLBACK')
+                raise
+            stored += len(ids)
+            self.records.dirty |= changed
+            if any(isinstance(r, dict) and r.get('kind') == 'connection' for r in result.get('records') or []):
+                self.records.connections_dirty = True
+            if ids:
+                try:
+                    call(url, token, '/records/ack', {'ids': ids}, timeout=2)
+                except (OSError, ValueError):
+                    pass  # sent again next pass; storing it twice changes nothing
+        self.records.write(now)
+        self.karma.write(now, self.records.hours)
+        return stored
 
     def relay_once(self):
         """Deliver every outbox envelope once. Returns the number delivered.
@@ -784,6 +925,8 @@ def main(argv=None):
     parser.add_argument('--radio-interval', type=float, default=1.0, help='seconds between radio passes')
     parser.add_argument('--bootstrap-new-group', action='store_true',
                         help='explicitly assert a new group with no previous peers, epochs or custody; never use for recovery')
+    parser.add_argument('--records-dir', help='where the shared player record files go (default: shared-records beside --db)')
+    parser.add_argument('--activity-db', help='the host player activity database (default: player-activity.sqlite beside --db)')
     parser.add_argument('--once', action='store_true', help='relay one pass and exit')
     parser.add_argument('--lands', action='store_true', help='print every land\'s stage as JSON and exit')
     parser.add_argument('--set-land', metavar='REGION=STAGE[,paused]',
@@ -806,7 +949,8 @@ def main(argv=None):
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
     coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group,
-                              [s for s in args.slots.split(',') if s], args.expeditions, args.start_region)
+                              [s for s in args.slots.split(',') if s], args.expeditions, args.start_region,
+                              args.records_dir, args.activity_db)
     if args.chart is not None or args.chart_reveal or args.chart_reroll or args.chart_pin:
         try:
             chart_cli(parser, coordinator.chart, args)
@@ -852,6 +996,10 @@ def main(argv=None):
                               file=sys.stderr)
                 except (OSError, ValueError) as e:
                     print('home pass failed: %s' % e, file=sys.stderr)
+                try:
+                    coordinator.records_once()
+                except (OSError, ValueError, sqlite3.Error) as e:
+                    print('player records pass failed: %s' % e, file=sys.stderr)
             coordinator.relay_radio_once()
             if args.once:
                 return

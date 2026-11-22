@@ -7,37 +7,50 @@ SOURCE = Path(__file__).resolve().parents[2] / 'code/game/mob/player_help.dm'
 
 
 class QuestionDisplaySourceTests(unittest.TestCase):
-    def test_actual_poll_passes_correlated_question_and_snapshots_history(self):
+    def test_actual_poll_remembers_the_correlated_question_then_redraws(self):
         text = SOURCE.read_text(encoding='utf-8')
         poll = text.split('/datum/player_help_service/proc/poll()', 1)[1].split('/datum/player_help_service/proc/response_format', 1)[0]
-        self.assertIn('previous_pairs = C.player_help_turns.Copy()', poll)
-        self.assertLess(poll.index('C.player_help_generation != entry["generation"]'), poll.index('previous_pairs'))
-        self.assertLess(poll.index('previous_pairs'), poll.index('remember(C, entry["question"]'))
-        self.assertIn('render_answer(response["answer"], answer_format, C, entry["question"], previous_pairs)', poll)
+        remember = 'remember(C, asked, response["answer"], answer_format == "plain-v1")'
+        self.assertIn('var/asked = entry["question"]', poll)
+        self.assertLess(poll.index('C.player_help_generation != entry["generation"]'), poll.index(remember))
+        self.assertLess(poll.index(remember), poll.index('show_window(C)'))
+        # Every outcome a connected player has reaches the window, never only the chat.
+        self.assertNotIn('C << ', poll)
+        self.assertEqual(poll.count('refuse(C, '), 5)
 
-    def test_actual_renderer_escapes_questions_and_puts_history_after_links(self):
+    def test_window_escapes_player_text_and_keeps_the_conversation_in_order(self):
         text = SOURCE.read_text(encoding='utf-8')
-        renderer = text.split('/datum/player_help_service/proc/render_answer(', 1)[1].split('// Bounded display subset', 1)[0]
-        self.assertIn('html_encode(question)', renderer)
-        self.assertIn('html_encode(pair["question"])', renderer)
-        self.assertIn('html_encode(pair["answer"])', renderer)
-        self.assertIn('C.player_help_turns.Find(pair)', renderer)
-        self.assertIn('followup_form(C, turn, "Follow up on this exchange")', renderer)
-        form = text.split('/datum/player_help_service/proc/followup_form(', 1)[1].split('// Bounded display subset', 1)[0]
-        for field in ("name='action' value='followup'", "name='token' value='[C.player_help_action_token]'",
-                      "name='turn' value='[turn]'", "name='question' maxlength='500'"):
-            self.assertIn(field, form)
-        self.assertLess(renderer.index('Crafting Atlas</a>'), renderer.index('[history]'))
+        renderer = text.split('/datum/player_help_service/proc/render_window(', 1)[1].split('// Bounded display subset', 1)[0]
+        for escaped in ('html_encode(pair["question"])', 'html_encode(C.player_help_pending)', 'html_encode(C.player_help_notice)',
+                        'html_encode(copytext(C.player_help_draft, 1, 2001))'):
+            self.assertIn(escaped, renderer)
+        # Model text reaches the page only through the bounded renderer.
+        self.assertIn('answer_markup(pair["answer"], ', renderer)
+        self.assertEqual(renderer.count('pair["answer"]'), 3)
+        for field in ("name='action' value='ask'", "name='token' value='[token]'", "name='question' maxlength='500'"):
+            self.assertIn(field, renderer)
+        # Oldest exchange first, then the question box, then the reference links.
+        self.assertLess(renderer.index("<div id='thread'>"), renderer.index("<form class='ask'"))
+        self.assertLess(renderer.index("name='question'"), renderer.index('Crafting Atlas</a>'))
+        self.assertIn('Do not enter personal information', renderer)
+        markup = text.split('/datum/player_help_service/proc/answer_markup(', 1)[1].split('/datum/player_help_service/proc/render_window(', 1)[0]
+        self.assertIn('"<pre>[html_encode(answer)]</pre>"', markup)
+        self.assertIn('return markdown_answer(answer)', markup)
 
-    def test_targeted_followup_revalidates_after_input_and_uses_only_selected_pair(self):
+    def test_window_questions_revalidate_and_a_chosen_exchange_is_the_only_context(self):
         text = SOURCE.read_text(encoding='utf-8')
         topic = text.split('/datum/player_help_service/proc/handle_action(', 1)[1].split('/datum/player_help_service/proc/valid_action', 1)[0]
         self.assertIn('"[turn]" != raw_turn', topic)
-        self.assertLess(topic.index('question = C.player_help_prompt()'), topic.index('valid_action(C, href_list["token"]) && C.mob == body'))
-        # Every refusal is reported; a stale window never fails silently.
-        self.assertIn('This help window is out of date', topic.split('if (href_list["action"] == "reset")', 1)[0])
-        self.assertIn('C.player_help_generation == generation', topic)
-        self.assertIn('C.player_help_turns[turn] == pair', topic)
+        # Every refusal is reported in the window; a stale window never fails silently.
+        self.assertIn('That window was out of date', topic.split('if (href_list["action"] == "reset")', 1)[0])
+        self.assertLess(topic.index('valid_action(C, href_list["token"])'), topic.index('submit(C, question, pair)'))
+        self.assertIn('pair = C.player_help_turns[turn]', topic)
+        self.assertNotIn('C << "', topic)
+        # Only links to the game's own pages are opened for the player.
+        self.assertIn('findtext(url, "https://civ13.github.io/") == 1', topic)
+        verb = text.split('/client/verb/ask_player_help()', 1)[1].split('/datum/player_help_service\n', 1)[0]
+        self.assertIn('player_help_service.open_window(src)', verb)
+        self.assertNotIn('input(', verb)
         enqueue = text.split('/datum/player_help_service/proc/enqueue(', 1)[1].split('/datum/player_help_service/proc/write_request', 1)[0]
         self.assertLess(enqueue.index('!C.player_help_turns.Find(target_pair)'), enqueue.index('reserve(account)'))
         self.assertIn('target_pair ? list(target_pair) : C.player_help_turns.Copy()', enqueue)
@@ -68,7 +81,7 @@ class QuestionDisplaySourceTests(unittest.TestCase):
         self.assertIn(guard, enqueue)
         section = enqueue.split(guard, 1)[1].split('// Retain complete newest pairs', 1)[0]
         self.assertIn('clear_slot(slot)', section)
-        self.assertIn('selected exchange and current context are too large', section)
+        self.assertIn("selected exchange and your character's details are too large", section)
         self.assertNotIn('player_help_turns.Cut', section)
         self.assertNotIn('write_request', section)
         self.assertLess(enqueue.index(guard), enqueue.index('turns.Cut(1, 2)'))

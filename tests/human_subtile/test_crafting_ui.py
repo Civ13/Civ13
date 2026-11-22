@@ -30,7 +30,18 @@ def restore_crafting_projection(path, source):
     # The original crafting reference stays fixed. Later independently reviewed
     # changes are recognized exactly, not erased by broad pattern substitution.
     if path == WAIT:
+        # A raw source file has both conditional signatures, while a projected
+        # one has only the selected signature. Preserve both historic contracts.
+        signature_tail = ', datum/ship_construction/ship_craft = null)'
+        if source.count(signature_tail) != source.count('/proc/do_after(mob/user, delay,'):
+            raise AssertionError('ship construction context must be optional in every wait signature')
+        source = source.replace(signature_tail, ')')
         edits = (
+            ('\t\tif (ship_craft && ship_craft.workpiece)\n'
+             '\t\t\tif (!ship_craft.fixture_stationary(target))\n'
+             '\t\t\t\t. = FALSE\n\t\t\t\tbreak\n'
+             '\t\telse if (target_loc', '\t\tif (target_loc'),
+            ('\t\t\tif (ship_craft)\n\t\t\t\tif (!ship_craft.stationary(user))\n\t\t\t\t\t. = FALSE\n\t\t\t\t\tbreak\n\t\t\telse if (user.loc', '\t\t\tif (user.loc'),
             ('\n\tvar/original_step_x = user.step_x\n\tvar/original_step_y = user.step_y', ''),
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
@@ -69,6 +80,8 @@ def restore_crafting_projection(path, source):
             # (tests/bump_mining).
             ('\tif (!T.start_pickaxe_mining(src, P, TRUE))\n\t\treturn FALSE\n\thalt_held_movement_toward(T)\n\treturn TRUE\n',
              '\treturn T.start_pickaxe_mining(src, P, TRUE)\n'),
+            # A province's rich seam takes a pickaxe first (tests/provinces).
+            ('\tif (province_rich_attackby(src, C, user)) // province_rich.dm\n\t\treturn TRUE\n', ''),
         ):
             source = replace_reviewed_once(source, current, previous)
         # Mining balance is a separately checked production change. Invert only
@@ -77,12 +90,15 @@ def restore_crafting_projection(path, source):
         # gem pocket roll (tests/gemstones), the obsidian roll (tests/obsidian),
         # a land across the sea's lode roll (tests/naval_carrier/voyage_probe.dm),
         # the bauxite roll (tests/aluminium), the cinnabar roll (tests/mercury)
-        # the lode ore roll (tests/lode) and one rubble batch for every ore find
-        # (tests/mining_yields).
+        # the lode ore roll (tests/lode), the nickel and cobalt roll
+        # (tests/steelmaking), one rubble batch for every ore find
+        # (tests/mining_yields), each continent's ore rates (tests/provinces) and
+        # an ore vein counted as Natural Science field work (tests/late_research)
+        # and deeper underground levels reading the surface area (tests/building_levels --cave).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != 'a466d8787be79eacc9fd58388566780d6091f630adaa4bbf83956c28e35f2866':
+        if hashlib.sha256(mining.encode()).hexdigest() != 'a41a5ead391314515740881abe6d5479499de0c690ee7e34a65d95c1f1a209b4':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
@@ -90,6 +106,35 @@ def restore_crafting_projection(path, source):
         # image around the same wait, with release cleanup and unchanged reward.
         wait = 'do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)'
         edits = (
+            # Packed-road garden provenance: reverse only the reviewed post-wait
+            # cover check and the new output type; leave the frozen comparison intact.
+            ('if (!T || T.weather_snow > 0 || (locate(/obj/covers) in T))\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat',
+             'if (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat'),
+            ('var/obj/covers/roads/dirt/DR = new /obj/covers/roads/dirt/worked(T)',
+             'var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)'),
+            # Labour speed (code/modules/materials/work_speed.dm, tests/work_speed):
+            # digging, tilling and mining waits come from work_delay.
+            ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat',
+             '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat'),
+            ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf',
+             '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf'),
+            # Dug earth goes into a wheelbarrow beside the digger (earthworking_tools.dm).
+            ('\t\t\t\t\t\t\tearth_pile_out(T, user, "dirt") // a wheelbarrow beside you takes it (earthworking_tools.dm)',
+             '\t\t\t\t\t\t\tnew /obj/item/weapon/barrier(T)'),
+            ('\t\t\t\t\t\t\tearth_pile_out(T, user, "sand")',
+             '\t\t\t\t\t\t\tnew /obj/item/stack/ore/glass(T)'),
+            ('\t\t\t\t\tif (!do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))',
+             '\t\t\t\t\tif (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))',
+             '\t\t\t\t\t\tif (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 27, WORK_SHIFT, SH)))',
+             '\t\t\t\t\t\tif (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\tif (do_after(user, work_delay(H, 100, WORK_DIG, SH)))',
+             '\t\t\t\tif (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))'),
+            ('\t\t\t\tif (do_after(user, work_delay(H, 70, WORK_TILL, PL), user.loc))',
+             '\t\t\t\tif (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))'),
+            ('\t\t\tvar/timera = work_delay(H, 320, WORK_MINE, C)',
+             '\t\t\tvar/timera = 320/(H.getStatCoeff("strength"))'),
             # Agent support checks: collapse_check shares the read-only mine_supported proc.
             ("// Read-only: whether an opened tile here stays up (a mine support within 2, a wall\n// or open sky next to it, or rock on three sides). collapse_check and agent\n// characters' observations share it. Defined on every floor because a mined\n// tile has already become an ordinary floor when collapse_check asks.\n/turf/floor/proc/mine_supported()\n\tfor (var/obj/structure/mine_support/RS in range(2, src))\n\t\treturn TRUE\n\tfor (var/turf/wall/W in range(1, src))\n\t\treturn TRUE\n\tfor (var/turf/TT in range(1, src))\n\t\tvar/area/AA = get_area(TT)\n\t\tif (AA.location == AREA_OUTSIDE)\n\t\t\treturn TRUE\n\tvar/supportcount = 0\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))\n\t\tsupportcount++\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))\n\t\tsupportcount++\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))\n\t\tsupportcount++\n\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))\n\t\tsupportcount++\n\treturn supportcount >= 3\n\n/turf/floor/dirt/underground/collapse_check()\n\tspawn(50)\n\t\t// ChangeTurf keeps the turf object, so by now the mined rock is an open\n\t\t// floor (e.g. /turf/floor/dirt/mine). Only a tile that is solid again\n\t\t// (filled back in, or mining did not finish) skips the cave-in roll.\n\t\tif (!istype(src, /turf/floor) || density)\n\t\t\treturn\n\t\tvar/area/A = get_area(src)\n\t\tif (A && A.location == AREA_INSIDE)\n\t\t\tvar/supportfound = mine_supported()",
              '/turf/floor/dirt/underground/collapse_check()\n\tspawn(50)\n\t\tvar/area/A = get_area(src)\n\t\tif (A.location == AREA_INSIDE)\n\t\t\t//check for supports\n\t\t\tvar/supportfound = FALSE\n\t\t\tvar/supportcount = 0\n\n\t\t\tfor (var/obj/structure/mine_support/RS in range(2))\n\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/wall/W in range(1))\n\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/TT in range(1))\n\t\t\t\tvar/area/AA = get_area(TT)\n\t\t\t\tif (AA.location == AREA_OUTSIDE)\n\t\t\t\t\tsupportfound = TRUE\n\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x-1,y,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x+1,y,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y+1,z)))\n\t\t\t\tsupportcount++\n\t\t\tfor (var/turf/floor/dirt/underground/U in get_turf(locate(x,y-1,z)))\n\t\t\t\tsupportcount++\n\t\t\tif (supportcount >= 3 && !supportfound)\n\t\t\t\tsupportfound = TRUE'),
@@ -111,8 +156,9 @@ def restore_crafting_projection(path, source):
             ('\tif (!user || !user.may_do_after)\n\t\treturn\n\tif (has_snow_cover() || busy', '\tif (has_snow_cover() || busy'),
             ('\tvar/datum/progressbar/progressbar\n\tvar/datum/resource_work_animation/work_animation\n', '\tvar/datum/progressbar/progressbar\n'),
             ('/datum/pickaxe_mining_action/proc/release()\n\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '/datum/pickaxe_mining_action/proc/release()\n'),
-            ('\t\t\twork_animation = actor.prepare_resource_work_animation(tool, wall, 240 / actor.getStatCoeff("strength") / tool:usespeed)\n'
-             + '\t\t\tvar/completed = ' + wait + '\n'
+            # Labour speed (work_speed.dm): the rock wall wait comes from work_delay.
+            ('\t\t\twork_animation = actor.prepare_resource_work_animation(tool, wall, work_delay(actor, 120, WORK_MINE, tool))\n'
+             + '\t\t\tvar/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)\n'
              + '\t\t\tif (work_animation)\n\t\t\t\twork_animation.stop()\n\t\t\t\twork_animation = null\n'
              + '\t\t\tif (completed && valid(actor, wall))', '\t\t\tif (' + wait + ' && valid(actor, wall))'),
             # #888: shared-turf stock and tunnel-entrance rechecks after the wait.
@@ -148,6 +194,15 @@ def restore_crafting_projection(path, source):
             # Audit fixes: an empty sandbag stops after its warning; ant shoveling returns the parent's result.
             ('SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n\t\t\treturn\n', 'SPAN_NOTICE("You need to fill the sandbag with sand first!"))\n'),
             ('\t\t\tif (H.shoveling)\n\t\t\t\treturn ..()\n', '\t\t\tif (H.shoveling)\n\t\t\t\t..()\n'),
+            # Opening dug-out rock to the sky (tests/open_cave_roof).
+            ('\t\tif (open_cave_roof_attempt(H, C)) // open_cave_roof.dm\n\t\t\treturn\n', ''),
+            # Hidden material virtue on water drawn at dawn (tests/divine_approval/test_arcane_materials.py).
+            ('\t\t\t\t\tif (ishuman(user) && watertype == "water")\n\t\t\t\t\t\tvar/mob/living/human/drawer = user\n\t\t\t\t\t\tdrawer.arcane_drew_water(RG)\n', ''),
+            # Hidden storm glass from sand dug near a lightning strike (tests/divine_approval/test_arcane_ward.py).
+            ('\t\t\t\t\t\tH.arcane_dug_sand(T) // arcane_materials.dm: storm glass\n', ''),
+            # Body motion (tests/body_motion): kneeling while drinking from the ground.
+            ('\t\tvar/kneel = H.body_motion_kneel(src, 50, BODY_MOTION_FULL)\n\t\tvar/drank = do_after(H,50,src)\n\t\tif (kneel)\n\t\t\tH.body_motion_stop(kneel, 3)\n\t\tif (!drank)\n',
+             '\t\tif (!do_after(H,50,src))\n'),
         )
     else:
         edits = ()
@@ -263,7 +318,7 @@ def verify_stack_contract(source):
     if required_flow(produce) != CONTRACTS['required_flow']:
         raise AssertionError('required value/reference ownership changed')
     admission = section(produce, '\tif (!can_use(required))\n',
-                        '\n\tif (recipe.one_per_turf')
+                        '\n\tif (!ship_craft && recipe.one_per_turf')
     if admission != CONTRACTS['stack_admission']:
         raise AssertionError('insufficient-material admission/refusal changed')
     once(produce, CONTRACTS['stack_debit_entry'])
@@ -343,7 +398,7 @@ class CraftingMovementContracts(unittest.TestCase):
             ('\tvar/datum/resource_work_animation/work_animation\n', ''),
             ('\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '\tif (work_animation)\n\t\twork_animation = null\n'),
             ('prepare_resource_work_animation(tool, wall,', 'prepare_resource_work_animation(null, wall,'),
-            ('var/completed = do_after(actor, 240 /', 'var/completed = do_after(actor, 120 /'),
+            ('var/completed = do_after(actor, work_delay(actor, 120,', 'var/completed = do_after(actor, work_delay(actor, 60,'),
             ('wall.mining_proc(actor)', 'wall.mining_proc(null)'),
             ('var/iron_chance = map.ordinal_age >= 1 ? 32 : 0', 'var/iron_chance = 32'),
             ('var/geology_allowed = prob(100 * legacy_remaining / no_ore_chance)', 'var/geology_allowed = TRUE'),
@@ -470,7 +525,7 @@ class CraftingMovementContracts(unittest.TestCase):
     def test_source_derived_stationary_wait_cancels_both_offset_axes(self):
         source = read(WAIT)
         line = next(line.strip() for line in source.splitlines() if 'if (user.loc != original_loc ||' in line)
-        code = expression(line[4:-1])
+        code = expression(line.removeprefix('else ')[4:-1])
         anchor = object()
         original = dict(original_loc=anchor, original_step_x=6, original_step_y=8)
         for loc, sx, sy, cancels in ((anchor, 6, 8, False), (anchor, 8, 8, True),
@@ -478,7 +533,8 @@ class CraftingMovementContracts(unittest.TestCase):
                                      (anchor, 0, 8, True)):
             values = dict(original, user=SimpleNamespace(loc=loc, step_x=sx, step_y=sy))
             self.assertEqual(bool(eval(code, {'__builtins__': {}}, values)), cancels)
-        self.assertRegex(source, r'if \(!can_move\)\n\t\t\t//[^\n]*\n\t\t\t//[^\n]*\n\t\t\tif \(user.loc')
+        self.assertRegex(source, r'if \(!can_move\)\n\t\t\t//[^\n]*\n\t\t\t//[^\n]*\n\t\t\tif \(ship_craft\)')
+        self.assertIn('else if (user.loc != original_loc', source)
 
 
     def test_wait_signature_timing_context_claims_and_cleanup_unchanged(self):
@@ -493,7 +549,7 @@ class CraftingMovementContracts(unittest.TestCase):
             ('var/required = quantity*recipe.req_amount', 'var/required = recipe.req_amount'),
             ('buildtime = reference_build_time(H, "[recipe.result_type]", round(buildtime))', 'buildtime = 1'),
             ('buildtime /= H.getStatCoeff("strength")', 'buildtime *= H.getStatCoeff("strength")'),
-            ('if (!do_after(user, buildtime) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', 'if (do_after(user, buildtime))'),
+            ('if (!do_after(user, buildtime, ship_craft = ship_craft) || !crafting_recipe_allowed(H, "[recipe.result_type]"))', 'if (do_after(user, buildtime, ship_craft = ship_craft))'),
             ('"[recipe.result_type]"))\n\t\t\tsecondary_refund(H)\n', '"[recipe.result_type]"))\n'),
             ('build \\the [recipe.title]!</span>")\n\t\tsecondary_refund(H)\n', 'build \\the [recipe.title]!</span>")\n'),
             ('if (required > 0)', 'if (required > 1)'),
@@ -521,7 +577,7 @@ class CraftingMovementContracts(unittest.TestCase):
         source = read(STACK)
         debit = '\tif (use(required, (joinery || carving) ? null : H))'
         admission = section(source, '\tif (!can_use(required))\n',
-                            '\n\tif (recipe.one_per_turf')
+                            '\n\tif (!ship_craft && recipe.one_per_turf')
         self.assertEqual(admission.count('\n\t\treturn'), 1)
         mutants = (
             ('zero required before debit', source.replace(debit, '\trequired = 0\n' + debit, 1)),

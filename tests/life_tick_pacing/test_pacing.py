@@ -251,7 +251,8 @@ class OverlayRedraw(unittest.TestCase):
         self.assertEqual(hygiene.count('overlays_standing[27] = img_nasties'), 1)
         self.assertIn('if (nasties_state != hygiene_overlay_state || !overlays_standing[27])\n'
                       '\t\thygiene_overlay_state = nasties_state\n'
-                      '\t\toverlays_standing[27] = img_nasties\n'
+                      '\t\tvar/image/img_nasties = image(', hygiene)
+        self.assertIn('\t\toverlays_standing[27] = img_nasties\n'
                       '\t\tqueue_overlay_redraw()', hygiene)
 
 
@@ -317,6 +318,10 @@ class ObserverBuckets(unittest.TestCase):
         self.assertIn('max(abs(O.x - target_x), abs(O.y - target_y)) <= ECOLOGY_AWAKE_RANGE', near)
         self.assertIn('for (var/z = max(1, T.z - 1), z <= min(ecology_observer_cells.len, T.z + 1), z++)', near)
         self.assertIn('var/rows = ecology_observer_rows', near)
+        self.assertIn('var/max_x = min(columns - 1, cx + 1)', near)
+        self.assertIn('var/max_y = min(rows - 1, cy + 1)', near)
+        self.assertIn('x <= max_x', near)
+        self.assertIn('y <= max_y', near)
         self.assertIn('ecology_observer_rows = rows', refresh_src := body(ECOLOGY, '/proc/ecology_refresh_observers('))
         refresh = body(ECOLOGY, '/proc/ecology_refresh_observers(')
         self.assertIn('ecology_observer_turfs = turfs', refresh)

@@ -52,6 +52,7 @@ class FieldWork(unittest.TestCase):
         self.nodes = read("code/modules/research_tree/research_node.dm")
         self.research = read("code/modules/research_tree/book_research.dm")
         self.interface = read("code/modules/research_tree/book_interface.dm")
+        self.scholarship = read("code/modules/research_tree/scholarship.dm")
     def experiments(self):
         return re.findall(r'^\t"(\w+)" = list\("(\w+)", "(\w+)", (\d+), ([\d.]+), "([^"]+)"\)', self.field, re.M)
     def test_included_after_the_define_it_uses(self):
@@ -66,9 +67,15 @@ class FieldWork(unittest.TestCase):
             tier = re.search(r'research_node\("%s", "[^"]+", "\w+", \d+, \d+, \w+, (null|list\([^)]*\)), (\d+)' % node, self.nodes)
             self.assertTrue(tier, node)
             # Early rows are only for first nodes; the rest is practice (practice_work.dm).
+            # Natural Science subjects also take mining, smelting, firing and
+            # syntheses (natural_science_work.dm), at most 0.2 each.
             if int(tier[2]) < 5:
-                self.assertEqual(tier[1], "null", node)
-                self.assertIn(activity, ("forage", "butchering"), node)
+                if activity in ("mining", "smelting", "firing", "reactions"):
+                    self.assertIn('"%s" = "natural_science"' % node, self.scholarship)
+                    self.assertLessEqual(float(share), 0.2, node)
+                else:
+                    self.assertEqual(tier[1], "null", node)
+                    self.assertIn(activity, ("forage", "butchering"), node)
             self.assertIn(activity, activities)
             self.assertGreater(int(needed), 0)
             shares[node] = shares.get(node, 0) + float(share)
@@ -166,8 +173,9 @@ class TeamsAndRushing(unittest.TestCase):
         self.assertIn("H == lead || !H.can_research_node_at(src, node_id)", proc(self.team, "/obj/structure/research_bench/proc/research_helpers"))
     def test_the_lead_may_work_near_the_bench_but_helpers_stay_at_it(self):
         book = (ROOT / "code/modules/research_tree/book_research.dm").read_text(encoding="utf-8")
-        self.assertIn("#define BOOK_RESEARCH_NEAR 3", book)
-        self.assertIn("#define BOOK_RESEARCH_AWAY_RATE 0.75", book)
+        shared = (ROOT / "code/__defines/research.dm").read_text(encoding="utf-8")
+        self.assertIn("#define BOOK_RESEARCH_NEAR 3", shared)
+        self.assertIn("#define BOOK_RESEARCH_AWAY_RATE 0.75", shared)
         self.assertIn("distance > (as_lead ? BOOK_RESEARCH_NEAR : BOOK_RESEARCH_REACH)", book)
         self.assertEqual(book.count("can_research_node_at(src, assigned_node, TRUE)"), 1)
         self.assertNotIn(", TRUE)", proc(self.team, "/obj/structure/research_bench/proc/research_helpers"))
@@ -486,6 +494,21 @@ class NaturalistFinds(unittest.TestCase):
     def test_bench_takes_notes(self):
         self.assertIn("take_find_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
 
+class NaturalScienceWork(unittest.TestCase):
+    def test_included(self):
+        self.assertIn('research_tree\\natural_science_work.dm"', read("civ13.dme"))
+    def test_hooks_count_when_the_fire_is_lit(self):
+        self.assertIn("note_smelting(H, src)\n\t\tstart_smelt()", read("code/game/objects/structures/blacksmithing/refining.dm"))
+        self.assertIn("note_smelting(H, src)", read("code/game/objects/structures/kitchen/stone_kiln_upgrade.dm"))
+        self.assertIn('note_field_work(H, "smelting", iron_sand)', read("code/modules/1713/tatara.dm"))
+        self.assertEqual(read("code/game/objects/structures/kitchen/oven.dm").count("note_firing(H, src)"), 3)
+        self.assertIn('note_field_work(H, "mining")', read("code/game/turfs/floor_attackby.dm"))
+    def test_place_finds_are_rechecked(self):
+        finds = read("code/modules/research_tree/naturalist_finds.dm")
+        record = finds[finds.index("/mob/living/human/proc/record_a_find("):]
+        self.assertLess(record.index("find_place_still_here(src, kind)"), record.index("commit_find(src, carrier"))
+        self.assertIn('"weather:[what]:[lowertext("[season]")]"', finds)
+
 class SubjectDeeds(unittest.TestCase):
     def setUp(self):
         self.src = read("code/modules/research_tree/practice_work.dm")
@@ -499,8 +522,8 @@ class SubjectDeeds(unittest.TestCase):
         self.assertIn('findtext(result_path_string, "[path]/") != 1', proc(self.src, "/proc/note_deed_work"))
     def test_subject_count(self):
         import re
-        block = self.src[self.src.index("var/global/list/subject_deeds = list("):self.src.index("var/global/list/deed_paths")]
-        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 56)
+        block = self.src[self.src.index("/proc/subject_deeds_table()"):self.src.index("var/global/list/deed_paths")]
+        self.assertEqual(len(re.findall(r'^\t"\w+" = list\($', block, re.M)), 57)
 
 class SkillMastery(unittest.TestCase):
     def setUp(self):
@@ -534,6 +557,34 @@ class SkillMastery(unittest.TestCase):
         imp = proc(self.src, "/mob/living/human/persistence_import_fields")
         self.assertIn("skill_mastery = clean_skill_mastery(skill_mastery)", imp)
         self.assertIn("skill_mastery = list()", imp)
+
+
+class EraBills(unittest.TestCase):
+    """Late capstones need a bill of scarce materials on book-research worlds."""
+    def setUp(self):
+        self.src = read("code/modules/research_tree/era_bills.dm")
+        self.book = read("code/modules/research_tree/book_research.dm")
+    def test_included_after_demonstrations(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index("research_tree\\demonstrations.dm\""), dme.index("research_tree\\era_bills.dm\""))
+    def test_tables_are_lazy_and_book_worlds_only(self):
+        self.assertNotIn("var/global", self.src)
+        self.assertIn("map.book_research_enabled()", proc(self.src, "/proc/node_bill"))
+    def test_no_faction_check_on_delivery(self):
+        take = proc(self.src, "/obj/structure/research_bench/proc/take_bill_delivery")
+        for word in ("civilization", "faction", "knows_research_prereqs"):
+            self.assertNotIn(word, take)
+        self.assertLess(self.book.index("take_bill_delivery(W, user, B, N)"), self.book.index("if (!user.knows_research_prereqs(assigned_node))"))
+    def test_the_chapter_waits_for_the_bill_and_clears_it(self):
+        work = proc(self.book, "/obj/item/weapon/book/proc/add_research_work")
+        self.assertLess(work.index("bill_complete(node_id)"), work.index("add_research_chapter("))
+        self.assertIn("clear_research_bill(node_id)", proc(self.book, "/obj/item/weapon/book/proc/add_research_chapter"))
+    def test_both_windows_list_the_bill(self):
+        ui = read("code/modules/research_tree/book_interface.dm")
+        self.assertEqual(ui.count("bill_rows("), 2)
+    def test_copies_never_carry_deliveries(self):
+        self.assertEqual(read("code/modules/1713/book.dm").count("!length(research_bills)"), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

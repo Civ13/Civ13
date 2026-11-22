@@ -19,7 +19,10 @@
 /mob/living/simple_animal/wizard/makes_animal_noises()
 	return FALSE
 
-/mob/proc/custom_emote(var/m_type=1,var/message = null,var/span_class = null)
+// typed is TRUE when a player wrote the emote's words (the Me verb, the ^ say
+// prefix or the input box below). Only those words are marked chat-tr, so chat
+// translation (docs/chat-translation.md) never touches canned emotes.
+/mob/proc/custom_emote(var/m_type=1,var/message = null,var/span_class = null,var/typed = FALSE)
 
 	if (usr && stat || !use_me && usr == src)
 		if (usr.stat != DEAD && usr.stat != UNCONSCIOUS) // fixes spam when you die? - Kachnov
@@ -32,16 +35,20 @@
 	var/input
 	if (!message)
 		input = sanitize(player_input(src, "Choose an emote to display.", null, null, "text", null, TRUE))
+		typed = TRUE
 	else
 		input = message
 	if (input)
 		message = "<b>[src]</b> [input]"
 	else
 		return
+	// The chat line marks typed words; overlays and logs keep the plain text.
+	var/shown = typed ? "<b>[src]</b> <span class='chat-tr'>[input]</span>" : message
 
 	if (span_class)
 		message = "<span class = '[span_class]'>[message]</span>"
-	var/chat_message = CHAT_TYPED(CHAT_IC, message)
+		shown = "<span class = '[span_class]'>[shown]</span>"
+	var/chat_message = CHAT_TYPED(CHAT_IC, shown)
 
 	if (message)
 		if (client)
@@ -58,7 +65,7 @@
 				continue
 			if (findtext(message," snores.")) //Because we have so many sleeping people.
 				break
-			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_sight) && !(M in viewers(src,null)))
+			if (M.ghost_hears_everywhere(/datum/client_preference/ghost_sight) && !(M in viewers(src,null)))
 				if (animal_noise && !M.is_preference_enabled(/datum/client_preference/ghost_animals))
 					continue
 				M.show_message(chat_message, m_type)
@@ -66,29 +73,37 @@
 
 		if (m_type & TRUE)
 			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(get_turf(src), null)
+			var/list/seen_objs = list()
 			for (var/I in see)
 				if (isobj(I))
-					spawn(0)
-						if (I) //It's possible that it could be deleted in the meantime.
-							var/obj/O = I
-							O.see_emote(src, message, TRUE)
+					seen_objs += I
 				else if (ismob(I))
 					var/mob/M = I
 					M.show_message(chat_message, TRUE)
 					M.show_chat_overlay(src, message, "#FFC0CB")
+			emote_notify_objects(seen_objs, message, TRUE)
 
 		else if (m_type & 2)
 			var/list/hear = get_mobs_or_objects_in_view(7,src)
+			var/list/seen_objs = list()
 			for (var/I in hear)
 				if (isobj(I))
-					spawn(0)
-						if (I) //It's possible that it could be deleted in the meantime.
-							var/obj/O = I
-							O.see_emote(src, message, 2)
+					seen_objs += I
 				else if (ismob(I))
 					var/mob/M = I
 					M.show_message(chat_message, 2)
 					M.show_chat_overlay(src, message, "#FFC0CB")
+			emote_notify_objects(seen_objs, message, 2)
+
+// One deferred pass over the objects that saw or heard an emote, rather than
+// one spawned proc per object: a crowded view queued thousands of them.
+/mob/proc/emote_notify_objects(list/objs, message, m_type)
+	if (!length(objs))
+		return
+	spawn(0)
+		for (var/obj/O in objs)
+			if (!QDELETED(O)) //It's possible that it could be deleted in the meantime.
+				O.see_emote(src, message, m_type)
 
 /mob/proc/emote_dead(var/message)
 

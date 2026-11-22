@@ -74,8 +74,38 @@ class OpenAirView(unittest.TestCase):
         process = (ROOT / 'code/processes/open_air_view.dm').read_text()
         self.assertLess(process.index('open_air_view_busy()'), process.index('C.open_air_view_scan()'))
         busy = proc('/proc/open_air_view_busy()')
-        for guard in ('persistence_active_operation', 'persistence_save_in_progress', 'building_allocating_z'):
+        for guard in ('persistence_active_operation', 'persistence_save_in_progress', 'lighting_startup_in_progress'):
             self.assertIn(guard, busy)
+        # A level being added pauses only its own scan and the scan above it.
+        self.assertNotIn('building_allocating_z', busy)
+        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
+        self.assertIn('z == building_allocating_z || multiz_level_below(z) == building_allocating_z', link)
+
+    def test_moving_viewer_is_linked_ahead(self):
+        scan = proc('/client/proc/open_air_view_scan()')
+        self.assertIn('clamp(centre.x - last.x, -OPEN_AIR_VIEW_LEAD, OPEN_AIR_VIEW_LEAD)', scan)
+        self.assertLess(scan.index('var/turf/last = open_air_view_centre'), scan.index('open_air_view_centre = centre'))
+        self.assertIn('open_air_view_link_around(centre.z, cx, cy, rx, ry, lead_x, lead_y)', scan)
+
+    def test_one_failure_does_not_stop_the_scan(self):
+        process = (ROOT / 'code/processes/open_air_view.dm').read_text()
+        self.assertIn('try\n\t\t\tC.open_air_view_scan()\n\t\tcatch (var/exception/scan_error)', process)
+        link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
+        self.assertIn('try\n\t\t\tT.open_air_view_refresh()\n\t\tcatch (var/exception/cell_error)', link)
+        self.assertIn('if (text == open_air_view_last_error)\n\t\treturn', SOURCE)
+
+    def test_existing_views_repair_and_wake(self):
+        refresh = proc('/turf/sky/building/proc/open_air_view_refresh(depth = 1, wake = TRUE)')
+        # A cell first linked from above is woken by a viewer on its own level.
+        # A floored cell in sight is woken too, before the floored return: a
+        # deck a vessel sailed onto an asleep cell drew black.
+        wake_at = refresh.index('if (wake && !lighting_overlay && depth <= OPEN_AIR_VIEW_DEPTH')
+        self.assertLess(wake_at, refresh.index('open_air_view_floored())'))
+        self.assertLess(wake_at, refresh.index('if (!open_air_view)'))
+        for line in ('if (icon)\n\t\t\ticon = null', 'if (!(open_air_view in vis_contents))'):
+            self.assertIn(line, refresh)
+        wake = (ROOT / 'code/modules/multiz/building_lighting.dm').read_text(encoding='utf-8-sig')
+        self.assertIn('else if (lighting_overlay || !created_lighting_corners_and_overlays)\n\t\treturn', wake)
 
 class LookUp(unittest.TestCase):
     def setUp(self):
@@ -91,6 +121,17 @@ class LookUp(unittest.TestCase):
         for guard in ('multiz_level_above(here.z)', 'los_turf_roofed(here)', '(locate(/obj/roof) in here)',
                       'building_open_turf(above)', '(locate(/obj/covers) in above)'):
             self.assertIn(guard, target)
+
+    def test_only_clear_existing_pit_bypasses_ambient_roof_area(self):
+        target = self.source.split('/mob/living/human/proc/look_up_target(list/why)\n', 1)[1].split('\n/', 1)[0]
+        self.assertLess(target.index('locate(/obj/roof) in here'), target.index('P.dug_open_to_below(here)'))
+        self.assertLess(target.index('trapdoor_shut_at(above)'), target.index('P.dug_open_to_below(here)'))
+        self.assertLess(target.index('P.dug_open_to_below(here)'), target.index('los_turf_roofed(here)'))
+        self.assertIn('if (P || !building_open_turf(above)', target)
+        ladder = (ROOT / 'code/modules/multiz/hole_ladder.dm').read_text()
+        aperture = ladder.split('proc/dug_open_to_below(turf/lower)', 1)[1].split('\n/', 1)[0]
+        for guard in ('dug_pit_above_ladder_site(lower) != src', 'leaf_covered', 'upper.density', 'trapdoor_shut_at(upper)', 'locate(/obj/roof) in lower', 'istype(A, /obj/covers)'):
+            self.assertIn(guard, aperture)
 
     def test_stops_on_move_and_each_vision_update(self):
         movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()

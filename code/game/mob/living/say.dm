@@ -70,7 +70,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 
 	switch(copytext(message,1,2))
 		if ("*") return emote(copytext(message,2))
-		if ("^") return custom_emote(1, copytext(message,2))
+		if ("^") return custom_emote(1, copytext(message,2), null, TRUE)
 
 	message = trim_left(message)
 
@@ -169,7 +169,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 				listening_obj |= O
 
 		for (var/mob/M in player_list)
-			if (M.stat == DEAD && M.is_preference_enabled(/datum/client_preference/ghost_ears))
+			if (M.ghost_hears_everywhere()) // spirit_observe.dm
 				listening |= M
 				continue
 			if (M.loc && (M.locs[1] in hearturfs))

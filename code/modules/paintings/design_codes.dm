@@ -10,6 +10,8 @@
 //   C13CLOTH/1/<body>/<colours>/<pieces>/<name>  tailoring designs
 //   C13SYMBOL/1/<palette>/<packed>        faction symbols (32x32, pixels packed
 //                                         as for pictures, up to 16 colours)
+//   C13SHIP/1/<name>/<tiles>              ship's draughts (naval/ship_draught.dm)
+//   C13HOUSE/1/<name>/<tiles>/<notes>     house plans (game/objects/house_plan.dm)
 //
 // A code only describes a design. Importing never skips the normal rules:
 // pictures still need the pigments, a canvas and room under the region cap,
@@ -24,15 +26,15 @@
 var/global/list/design_code_import_log = list() // newest last, shown in Player Art
 var/global/list/design_code_last_import = list() // ckey -> world.time
 
-// The fields after "C13<kind>/1/", or null when the code is another kind,
-// another version or too long. Spaces and line breaks pasted with it are dropped.
-/proc/design_code_fields(code, kind, max_length = DESIGN_CODE_SHORT_MAX)
+// The fields after "C13<kind>/<version>/", or null when the code is another
+// kind, another version or too long. Spaces and line breaks pasted with it are dropped.
+/proc/design_code_fields(code, kind, max_length = DESIGN_CODE_SHORT_MAX, version = 1)
 	if (!istext(code))
 		return null
 	code = replacetext(replacetext(replacetext(replacetext(code, " ", ""), "\n", ""), ascii2text(13), ""), "\t", "")
 	if (!length(code) || length(code) > max_length)
 		return null
-	var/head = "C13[kind]/1/"
+	var/head = "C13[kind]/[version]/"
 	if (cmptext(copytext(code, 1, length(head) + 1), head) != 1)
 		return null
 	return splittext(copytext(code, length(head) + 1), "/")
@@ -59,6 +61,20 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a clothing design"
 		if ("SYMBOL")
 			return "a faction symbol"
+		if ("SHIP")
+			return "a ship's draught"
+		if ("SUB")
+			return "a submarine sheet"
+		if ("CAR")
+			return "a vehicle sheet"
+		if ("AIR")
+			return "an airship sheet"
+		if ("TRAIN")
+			return "a train sheet"
+		if ("STATION")
+			return "a space station plan"
+		if ("HOUSE")
+			return "a house plan"
 	return null
 
 // Why a pasted code was refused, for the player.

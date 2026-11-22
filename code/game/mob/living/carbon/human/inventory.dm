@@ -7,7 +7,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	set name = "quick-equip"
 	set hidden = TRUE
 
-	if (!istype(src))
+	if (!istype(src) || travel_hold_input(src))
 		return
 
 	if (src.using_look())
@@ -107,6 +107,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "head"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -131,6 +132,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 		H.targeted_organ = "l_arm"
 	else
 		H.targeted_organ = "l_arm"
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -149,6 +151,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	H.targeted_organ = "chest"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -174,6 +177,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "r_arm"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -199,6 +203,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "l_leg"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -217,6 +222,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 
 	H.targeted_organ = "groin"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -242,6 +248,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	else
 		H.targeted_organ = "r_leg"
 
+	H.combat_stance_doll_clicked()
 	var/obj/screen/dmg_zone = H.HUDneed["damage zone"]
 	var/obj/screen/ran_dmg_zone = H.HUDneed["random damage zone"]
 	dmg_zone.update_icon()
@@ -260,6 +267,13 @@ This saves us from having to call add_fingerprint() any time something is put in
 	var/obj/item/organ/external/O = organs_by_name[name]
 
 	return (O && !O.is_stump())
+
+// Held items that depend on which hands are attached (two-handed wielding) re-read them after a limb changes.
+/mob/living/human/proc/refresh_held_items()
+	if (l_hand)
+		l_hand.update_held_icon()
+	if (r_hand)
+		r_hand.update_held_icon()
 
 /mob/living/human/proc/has_organ_for_slot(slot)
 	switch(slot)
@@ -617,7 +631,11 @@ This saves us from having to call add_fingerprint() any time something is put in
 		if (mob.stat == DEAD || mob.stat == UNCONSCIOUS)
 			return
 		else
+			var/mob/living/human/cycler = mob
+			if (mob.m_intent == "run" && !cycler.sprinting && cycler.start_sprint(FALSE))
+				return
 			if (mob.m_intent == "run")
+				cycler.sprinting = FALSE
 				mob.m_intent = "proning"
 			else if (mob.m_intent == "proning")
 				if (mob.facing_dir)
@@ -626,6 +644,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 			else if (mob.m_intent == "stealth")
 				mob.m_intent = "walk"
 			else if (mob.m_intent == "walk")
+				cycler.sprinting = FALSE
 				mob.m_intent = "run"
 			else
 				mob.m_intent = "walk"
@@ -699,14 +718,17 @@ This saves us from having to call add_fingerprint() any time something is put in
 	var/mob/living/human/H = mob
 
 	if (H.m_intent == "walk")
+		H.sprinting = FALSE
 		mob.m_intent = "run"
 
 	else if (H.m_intent == "run")
+		H.sprinting = FALSE
 		mob.m_intent = "walk"
 
 	else if (mob.m_intent == "proning")
 		if (mob.facing_dir)
 			mob.set_face_dir()
+		H.sprinting = FALSE
 		mob.m_intent = "run"
 		mob.prone = FALSE
 		H.update_posture_transform()
@@ -734,6 +756,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	if (H.m_intent == "walk")
 		mob.m_intent = "proning"
 	else if (H.m_intent == "run")
+		H.sprinting = FALSE
 		mob.m_intent = "proning"
 	else if (mob.m_intent == "stealth")
 		mob.m_intent = "proning"

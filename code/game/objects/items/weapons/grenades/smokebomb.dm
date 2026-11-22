@@ -99,18 +99,10 @@
 					if (huey_of(AMERICAN))
 						options["Landing zone for the Huey"] = list()
 					var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
-					if(src && choice)
+					if(src && choice && !active)
 						things_to_spawn = options[choice]
 						marks_lz = (choice == "Landing zone for the Huey")
-						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
-						firer = user
-						activate(user)
-						add_fingerprint(user)
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							if(istype(H) && !H.in_throw_mode)
-								H.throw_mode_on()
-						triggered = TRUE
+						finish_supply_selection(user)
 				else
 					visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
 			if (DUTCH)
@@ -122,17 +114,9 @@
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
 					options["Supply Crate"] = list(/obj/structure/supply_crate/faction1)
 					var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
-					if(src && choice)
+					if(src && choice && !active)
 						things_to_spawn = options[choice]
-						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
-						firer = user
-						activate(user)
-						add_fingerprint(user)
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							if(istype(H) && !H.in_throw_mode)
-								H.throw_mode_on()
-						triggered = TRUE
+						finish_supply_selection(user)
 				else
 					visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
 			if (RUSSIAN)
@@ -144,17 +128,9 @@
 					options["Area denial"] = list(/obj/structure/closet/crate/ww2/airdrops/ap)
 					options["Supply Crate"] = list(/obj/structure/supply_crate/faction2)
 					var/choice = player_input(user, "What type of supply drop?", null, null, "anything", options, TRUE)
-					if(src && choice)
+					if(src && choice && !active)
 						things_to_spawn = options[choice]
-						to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
-						firer = user
-						activate(user)
-						add_fingerprint(user)
-						if (ishuman(user))
-							var/mob/living/human/H = user
-							if(istype(H) && !H.in_throw_mode)
-								H.throw_mode_on()
-						triggered = TRUE	
+						finish_supply_selection(user)
 				else
 					visible_message("<span class = 'danger'>There is no sufficient visibility for a supply drop!</span>")
 			else
@@ -165,6 +141,17 @@
 					var/mob/living/human/H = user
 					if(istype(H) && !H.in_throw_mode)
 						H.throw_mode_on()
+
+/obj/item/weapon/grenade/smokebomb/signal/proc/finish_supply_selection(mob/living/human/user)
+	to_chat(user, "<span class='warning'>You light \the [name]! [det_time/10] seconds!</span>")
+	firer = user
+	activate(user)
+	add_fingerprint(user)
+	if (ishuman(user))
+		var/mob/living/human/H = user
+		if(istype(H) && !H.in_throw_mode)
+			H.throw_mode_on()
+	triggered = TRUE
 
 /obj/item/weapon/grenade/smokebomb/signal/prime(mob/living/human/user as mob)
 	if (active)

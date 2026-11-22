@@ -12,6 +12,10 @@ results for each new head, including any documented local-build exception below.
 Inspect existing branch ownership and use
 CODEX.md's handoff rules if an action is blocked.
 
+PR body: fill `Changelog:` with player-facing text only when players see the
+change. Otherwise leave the line blank; never write `none (...)`, `n/a` or an
+explanation there (the "Changelog contracts" check fails on that filler).
+
 ## 1. Compile locally, even in a cloud session
 
 Cloud sessions can compile. Do not report "BYOND unavailable" without trying:
@@ -22,6 +26,15 @@ source "$HOME/byond-516.1688/byond/bin/byondsetup"  # once per shell
 DreamMaker -max_errors 0 civ13.dme                 # ~20 s, expect "0 errors, 0 warnings"
 rm -f civ13.dmb civ13.rsc civ13.int                # build outputs stay out of commits
 ```
+
+The build must also survive the Dream Maker IDE re-sorting `civ13.dme`
+alphabetically (a contributor saw `unexpected token: CIV13_ROOT_TREE_PRESENTATION`
+after that). A new `#define` that another file uses, or that an `#if`/`#ifdef`
+tests, goes in `code/__defines/`; a define only its own file uses ends with
+`#undef`. Run `python3 tests/dme_order/test_define_order.py`, which checks both
+orders. Don't extend a proc with a same-type override in another file (it runs
+in include order and the compiler may only warn `override_before_def`); have
+the base proc call a hook instead.
 
 The script installs i386 libraries and fetches the pinned archive from the
 repository-release mirror, which the agent proxy allows. On Windows use

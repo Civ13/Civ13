@@ -1,0 +1,4071 @@
+{
+  "base_commit": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "checks": {
+    "all_centerline_states": 92,
+    "all_rooms": 8,
+    "blocked_spawn_rejected": true,
+    "minimum_actor_width": 3,
+    "outbound_steps": 91,
+    "return_steps": 91,
+    "validated_safe_return": true
+  },
+  "container_approaches": [
+    {
+      "approach_xy": [
+        42,
+        8
+      ],
+      "kind": "treasure",
+      "object_xy": [
+        42,
+        9
+      ],
+      "room": [
+        3,
+        0
+      ]
+    }
+  ],
+  "entry": [
+    46,
+    20
+  ],
+  "floor_variants": [
+    {
+      "style": "dark",
+      "x": 3,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 3,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 3,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 3,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 3,
+      "y": 9
+    },
+    {
+      "style": "old",
+      "x": 3,
+      "y": 17
+    },
+    {
+      "style": "old",
+      "x": 3,
+      "y": 22
+    },
+    {
+      "style": "dark",
+      "x": 4,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 4,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 4,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 4,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 4,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 4,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 4,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 4,
+      "y": 16
+    },
+    {
+      "style": "old",
+      "x": 4,
+      "y": 21
+    },
+    {
+      "style": "dark",
+      "x": 5,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 5,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 5,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 5,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 5,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 5,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 5,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 5,
+      "y": 20
+    },
+    {
+      "style": "dark",
+      "x": 6,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 6,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 6,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 6,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 6,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 6,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 6,
+      "y": 24
+    },
+    {
+      "style": "dark",
+      "x": 7,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 7,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 7,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 7,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 7,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 7,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 7,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 7,
+      "y": 23
+    },
+    {
+      "style": "dark",
+      "x": 8,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 8,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 8,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 8,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 8,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 8,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 8,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 8,
+      "y": 22
+    },
+    {
+      "style": "dark",
+      "x": 9,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 9,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 9,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 9,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 9,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 9,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 9,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 9,
+      "y": 16
+    },
+    {
+      "style": "dark",
+      "x": 10,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 10,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 10,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 10,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 10,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 10,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 11,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 11,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 11,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 11,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 11,
+      "y": 9
+    },
+    {
+      "style": "old",
+      "x": 11,
+      "y": 24
+    },
+    {
+      "style": "old",
+      "x": 16,
+      "y": 4
+    },
+    {
+      "style": "old",
+      "x": 16,
+      "y": 9
+    },
+    {
+      "style": "old",
+      "x": 17,
+      "y": 3
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 16
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 17
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 18
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 19
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 20
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 21
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 22
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 23
+    },
+    {
+      "style": "dark",
+      "x": 17,
+      "y": 24
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 16
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 17
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 18
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 19
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 20
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 21
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 22
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 23
+    },
+    {
+      "style": "dark",
+      "x": 18,
+      "y": 24
+    },
+    {
+      "style": "old",
+      "x": 19,
+      "y": 11
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 16
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 17
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 18
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 19
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 20
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 21
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 22
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 23
+    },
+    {
+      "style": "vertical",
+      "x": 19,
+      "y": 24
+    },
+    {
+      "style": "old",
+      "x": 20,
+      "y": 5
+    },
+    {
+      "style": "old",
+      "x": 20,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 16
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 17
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 18
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 19
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 20
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 21
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 22
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 23
+    },
+    {
+      "style": "vertical",
+      "x": 20,
+      "y": 24
+    },
+    {
+      "style": "old",
+      "x": 21,
+      "y": 4
+    },
+    {
+      "style": "old",
+      "x": 21,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 16
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 17
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 18
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 19
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 20
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 21
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 22
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 23
+    },
+    {
+      "style": "vertical",
+      "x": 21,
+      "y": 24
+    },
+    {
+      "style": "old",
+      "x": 22,
+      "y": 3
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 16
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 17
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 18
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 19
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 20
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 21
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 22
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 23
+    },
+    {
+      "style": "dark",
+      "x": 22,
+      "y": 24
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 16
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 17
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 18
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 19
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 20
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 21
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 22
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 23
+    },
+    {
+      "style": "dark",
+      "x": 23,
+      "y": 24
+    },
+    {
+      "style": "vertical",
+      "x": 29,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 29,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 29,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 29,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 29,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 29,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 29,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 29,
+      "y": 16
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 30,
+      "y": 11
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 31,
+      "y": 11
+    },
+    {
+      "style": "old",
+      "x": 31,
+      "y": 24
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 32,
+      "y": 11
+    },
+    {
+      "style": "old",
+      "x": 32,
+      "y": 18
+    },
+    {
+      "style": "old",
+      "x": 32,
+      "y": 23
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 33,
+      "y": 11
+    },
+    {
+      "style": "old",
+      "x": 33,
+      "y": 17
+    },
+    {
+      "style": "old",
+      "x": 33,
+      "y": 22
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 34,
+      "y": 11
+    },
+    {
+      "style": "old",
+      "x": 34,
+      "y": 16
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 35,
+      "y": 11
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 10
+    },
+    {
+      "style": "vertical",
+      "x": 36,
+      "y": 11
+    },
+    {
+      "style": "old",
+      "x": 36,
+      "y": 24
+    },
+    {
+      "style": "vertical",
+      "x": 37,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 37,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 37,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 37,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 37,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 37,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 37,
+      "y": 10
+    },
+    {
+      "style": "old",
+      "x": 37,
+      "y": 18
+    },
+    {
+      "style": "old",
+      "x": 37,
+      "y": 23
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 3
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 5
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 6
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 7
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 42,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 43,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 43,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 43,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 43,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 43,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 43,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 43,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 43,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 43,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 44,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 44,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 44,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 44,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 44,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 44,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 44,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 44,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 44,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 45,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 45,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 45,
+      "y": 5
+    },
+    {
+      "style": "old",
+      "x": 45,
+      "y": 6
+    },
+    {
+      "style": "old",
+      "x": 45,
+      "y": 7
+    },
+    {
+      "style": "old",
+      "x": 45,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 45,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 45,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 45,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 46,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 46,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 46,
+      "y": 5
+    },
+    {
+      "style": "old",
+      "x": 46,
+      "y": 6
+    },
+    {
+      "style": "old",
+      "x": 46,
+      "y": 7
+    },
+    {
+      "style": "old",
+      "x": 46,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 46,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 46,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 46,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 47,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 47,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 47,
+      "y": 5
+    },
+    {
+      "style": "old",
+      "x": 47,
+      "y": 6
+    },
+    {
+      "style": "old",
+      "x": 47,
+      "y": 7
+    },
+    {
+      "style": "old",
+      "x": 47,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 47,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 47,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 47,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 48,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 48,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 48,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 48,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 48,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 48,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 48,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 48,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 48,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 49,
+      "y": 3
+    },
+    {
+      "style": "vertical",
+      "x": 49,
+      "y": 4
+    },
+    {
+      "style": "vertical",
+      "x": 49,
+      "y": 5
+    },
+    {
+      "style": "vertical",
+      "x": 49,
+      "y": 6
+    },
+    {
+      "style": "vertical",
+      "x": 49,
+      "y": 7
+    },
+    {
+      "style": "vertical",
+      "x": 49,
+      "y": 8
+    },
+    {
+      "style": "vertical",
+      "x": 49,
+      "y": 9
+    },
+    {
+      "style": "vertical",
+      "x": 49,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 49,
+      "y": 11
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 3
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 4
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 5
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 6
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 7
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 8
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 9
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 10
+    },
+    {
+      "style": "dark",
+      "x": 50,
+      "y": 11
+    }
+  ],
+  "height": 27,
+  "placements": [
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 3,
+      "y": 7
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 3,
+      "y": 8
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 3,
+      "y": 9
+    },
+    {
+      "kind": "chest",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/chest",
+      "x": 3,
+      "y": 19
+    },
+    {
+      "kind": "brazier",
+      "solid": true,
+      "type": "/obj/structure/brazier/stone",
+      "x": 3,
+      "y": 23
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 4,
+      "y": 4
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 4,
+      "y": 10
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 4,
+      "y": 17
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 5,
+      "y": 16
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 5,
+      "y": 24
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 6,
+      "y": 4
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 9,
+      "y": 10
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 9,
+      "y": 16
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 10,
+      "y": 4
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 10,
+      "y": 23
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 11,
+      "y": 5
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 11,
+      "y": 6
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 11,
+      "y": 16
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 11,
+      "y": 18
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 11,
+      "y": 22
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 16,
+      "y": 4
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 16,
+      "y": 5
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 16,
+      "y": 9
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 17,
+      "y": 10
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 17,
+      "y": 17
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 17,
+      "y": 22
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 17,
+      "y": 23
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 18,
+      "y": 3
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 18,
+      "y": 16
+    },
+    {
+      "kind": "chest",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/chest",
+      "x": 19,
+      "y": 11
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 19,
+      "y": 16
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 19,
+      "y": 17
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 20,
+      "y": 24
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 21,
+      "y": 3
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 21,
+      "y": 24
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 22,
+      "y": 24
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 23,
+      "y": 4
+    },
+    {
+      "kind": "brazier",
+      "solid": true,
+      "type": "/obj/structure/brazier/stone",
+      "x": 23,
+      "y": 11
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 23,
+      "y": 17
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 23,
+      "y": 18
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 23,
+      "y": 23
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 24,
+      "y": 9
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 29,
+      "y": 9
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 29,
+      "y": 16
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 29,
+      "y": 18
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 29,
+      "y": 22
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 30,
+      "y": 4
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 30,
+      "y": 10
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 30,
+      "y": 23
+    },
+    {
+      "kind": "bookcase",
+      "solid": true,
+      "type": "/obj/structure/bookcase",
+      "x": 31,
+      "y": 11
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 31,
+      "y": 16
+    },
+    {
+      "kind": "table",
+      "solid": true,
+      "type": "/obj/structure/table/wood",
+      "x": 32,
+      "y": 3
+    },
+    {
+      "kind": "chest",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/chest",
+      "x": 32,
+      "y": 24
+    },
+    {
+      "kind": "table",
+      "solid": true,
+      "type": "/obj/structure/table/wood",
+      "x": 34,
+      "y": 3
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 34,
+      "y": 16
+    },
+    {
+      "kind": "bookcase",
+      "solid": true,
+      "type": "/obj/structure/bookcase",
+      "x": 35,
+      "y": 11
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 36,
+      "y": 9
+    },
+    {
+      "kind": "brazier",
+      "solid": true,
+      "type": "/obj/structure/brazier/stone",
+      "x": 36,
+      "y": 11
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 36,
+      "y": 17
+    },
+    {
+      "kind": "brazier",
+      "solid": true,
+      "type": "/obj/structure/brazier/stone",
+      "x": 36,
+      "y": 24
+    },
+    {
+      "kind": "chest",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/chest",
+      "x": 37,
+      "y": 5
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 37,
+      "y": 22
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 42,
+      "y": 3
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 42,
+      "y": 5
+    },
+    {
+      "kind": "treasure",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/treasurechest",
+      "x": 42,
+      "y": 9
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 43,
+      "y": 4
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 43,
+      "y": 10
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 43,
+      "y": 17
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 43,
+      "y": 18
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 43,
+      "y": 22
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 44,
+      "y": 3
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 45,
+      "y": 3
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 45,
+      "y": 17
+    },
+    {
+      "kind": "chest",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/chest",
+      "x": 45,
+      "y": 23
+    },
+    {
+      "kind": "stairs",
+      "solid": false,
+      "type": "/obj/covers/sandstone/stairs",
+      "x": 46,
+      "y": 20
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 47,
+      "y": 11
+    },
+    {
+      "kind": "table",
+      "solid": true,
+      "type": "/obj/structure/table/wood",
+      "x": 47,
+      "y": 23
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 48,
+      "y": 11
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 49,
+      "y": 4
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 49,
+      "y": 10
+    },
+    {
+      "kind": "column",
+      "solid": true,
+      "type": "/obj/structure/mine_support/stone/ionic/rock",
+      "x": 49,
+      "y": 18
+    },
+    {
+      "kind": "brazier",
+      "solid": true,
+      "type": "/obj/structure/brazier/stone",
+      "x": 49,
+      "y": 19
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 49,
+      "y": 21
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 49,
+      "y": 23
+    },
+    {
+      "kind": "brazier",
+      "solid": true,
+      "type": "/obj/structure/brazier/stone",
+      "x": 50,
+      "y": 6
+    },
+    {
+      "kind": "urn",
+      "solid": true,
+      "type": "/obj/structure/closet/crate/urn",
+      "x": 50,
+      "y": 8
+    },
+    {
+      "kind": "torch",
+      "solid": false,
+      "type": "/obj/structure/torch_stand",
+      "x": 50,
+      "y": 11
+    }
+  ],
+  "reserved_circulation": [
+    [
+      6,
+      6
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      6,
+      8
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      6,
+      10
+    ],
+    [
+      6,
+      11
+    ],
+    [
+      6,
+      12
+    ],
+    [
+      6,
+      13
+    ],
+    [
+      6,
+      14
+    ],
+    [
+      6,
+      15
+    ],
+    [
+      6,
+      16
+    ],
+    [
+      6,
+      17
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      19
+    ],
+    [
+      6,
+      20
+    ],
+    [
+      6,
+      21
+    ],
+    [
+      7,
+      6
+    ],
+    [
+      7,
+      7
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      7,
+      12
+    ],
+    [
+      7,
+      13
+    ],
+    [
+      7,
+      14
+    ],
+    [
+      7,
+      15
+    ],
+    [
+      7,
+      16
+    ],
+    [
+      7,
+      17
+    ],
+    [
+      7,
+      18
+    ],
+    [
+      7,
+      19
+    ],
+    [
+      7,
+      20
+    ],
+    [
+      7,
+      21
+    ],
+    [
+      8,
+      6
+    ],
+    [
+      8,
+      7
+    ],
+    [
+      8,
+      8
+    ],
+    [
+      8,
+      9
+    ],
+    [
+      8,
+      10
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      8,
+      12
+    ],
+    [
+      8,
+      13
+    ],
+    [
+      8,
+      14
+    ],
+    [
+      8,
+      15
+    ],
+    [
+      8,
+      16
+    ],
+    [
+      8,
+      17
+    ],
+    [
+      8,
+      18
+    ],
+    [
+      8,
+      19
+    ],
+    [
+      8,
+      20
+    ],
+    [
+      8,
+      21
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      9,
+      7
+    ],
+    [
+      9,
+      8
+    ],
+    [
+      9,
+      19
+    ],
+    [
+      9,
+      20
+    ],
+    [
+      9,
+      21
+    ],
+    [
+      10,
+      6
+    ],
+    [
+      10,
+      7
+    ],
+    [
+      10,
+      8
+    ],
+    [
+      10,
+      19
+    ],
+    [
+      10,
+      20
+    ],
+    [
+      10,
+      21
+    ],
+    [
+      11,
+      6
+    ],
+    [
+      11,
+      7
+    ],
+    [
+      11,
+      8
+    ],
+    [
+      11,
+      19
+    ],
+    [
+      11,
+      20
+    ],
+    [
+      11,
+      21
+    ],
+    [
+      12,
+      6
+    ],
+    [
+      12,
+      7
+    ],
+    [
+      12,
+      8
+    ],
+    [
+      12,
+      19
+    ],
+    [
+      12,
+      20
+    ],
+    [
+      12,
+      21
+    ],
+    [
+      13,
+      6
+    ],
+    [
+      13,
+      7
+    ],
+    [
+      13,
+      8
+    ],
+    [
+      13,
+      19
+    ],
+    [
+      13,
+      20
+    ],
+    [
+      13,
+      21
+    ],
+    [
+      14,
+      6
+    ],
+    [
+      14,
+      7
+    ],
+    [
+      14,
+      8
+    ],
+    [
+      14,
+      19
+    ],
+    [
+      14,
+      20
+    ],
+    [
+      14,
+      21
+    ],
+    [
+      15,
+      6
+    ],
+    [
+      15,
+      7
+    ],
+    [
+      15,
+      8
+    ],
+    [
+      15,
+      19
+    ],
+    [
+      15,
+      20
+    ],
+    [
+      15,
+      21
+    ],
+    [
+      16,
+      6
+    ],
+    [
+      16,
+      7
+    ],
+    [
+      16,
+      8
+    ],
+    [
+      16,
+      19
+    ],
+    [
+      16,
+      20
+    ],
+    [
+      16,
+      21
+    ],
+    [
+      17,
+      6
+    ],
+    [
+      17,
+      7
+    ],
+    [
+      17,
+      8
+    ],
+    [
+      17,
+      19
+    ],
+    [
+      17,
+      20
+    ],
+    [
+      17,
+      21
+    ],
+    [
+      18,
+      6
+    ],
+    [
+      18,
+      7
+    ],
+    [
+      18,
+      8
+    ],
+    [
+      18,
+      19
+    ],
+    [
+      18,
+      20
+    ],
+    [
+      18,
+      21
+    ],
+    [
+      19,
+      6
+    ],
+    [
+      19,
+      7
+    ],
+    [
+      19,
+      8
+    ],
+    [
+      19,
+      19
+    ],
+    [
+      19,
+      20
+    ],
+    [
+      19,
+      21
+    ],
+    [
+      20,
+      6
+    ],
+    [
+      20,
+      7
+    ],
+    [
+      20,
+      8
+    ],
+    [
+      20,
+      19
+    ],
+    [
+      20,
+      20
+    ],
+    [
+      20,
+      21
+    ],
+    [
+      21,
+      6
+    ],
+    [
+      21,
+      7
+    ],
+    [
+      21,
+      8
+    ],
+    [
+      21,
+      19
+    ],
+    [
+      21,
+      20
+    ],
+    [
+      21,
+      21
+    ],
+    [
+      22,
+      6
+    ],
+    [
+      22,
+      7
+    ],
+    [
+      22,
+      8
+    ],
+    [
+      22,
+      19
+    ],
+    [
+      22,
+      20
+    ],
+    [
+      22,
+      21
+    ],
+    [
+      23,
+      6
+    ],
+    [
+      23,
+      7
+    ],
+    [
+      23,
+      8
+    ],
+    [
+      23,
+      19
+    ],
+    [
+      23,
+      20
+    ],
+    [
+      23,
+      21
+    ],
+    [
+      24,
+      6
+    ],
+    [
+      24,
+      7
+    ],
+    [
+      24,
+      8
+    ],
+    [
+      24,
+      19
+    ],
+    [
+      24,
+      20
+    ],
+    [
+      24,
+      21
+    ],
+    [
+      25,
+      6
+    ],
+    [
+      25,
+      7
+    ],
+    [
+      25,
+      8
+    ],
+    [
+      25,
+      19
+    ],
+    [
+      25,
+      20
+    ],
+    [
+      25,
+      21
+    ],
+    [
+      26,
+      6
+    ],
+    [
+      26,
+      7
+    ],
+    [
+      26,
+      8
+    ],
+    [
+      26,
+      19
+    ],
+    [
+      26,
+      20
+    ],
+    [
+      26,
+      21
+    ],
+    [
+      27,
+      6
+    ],
+    [
+      27,
+      7
+    ],
+    [
+      27,
+      8
+    ],
+    [
+      27,
+      19
+    ],
+    [
+      27,
+      20
+    ],
+    [
+      27,
+      21
+    ],
+    [
+      28,
+      6
+    ],
+    [
+      28,
+      7
+    ],
+    [
+      28,
+      8
+    ],
+    [
+      28,
+      19
+    ],
+    [
+      28,
+      20
+    ],
+    [
+      28,
+      21
+    ],
+    [
+      29,
+      6
+    ],
+    [
+      29,
+      7
+    ],
+    [
+      29,
+      8
+    ],
+    [
+      29,
+      19
+    ],
+    [
+      29,
+      20
+    ],
+    [
+      29,
+      21
+    ],
+    [
+      30,
+      6
+    ],
+    [
+      30,
+      7
+    ],
+    [
+      30,
+      8
+    ],
+    [
+      30,
+      19
+    ],
+    [
+      30,
+      20
+    ],
+    [
+      30,
+      21
+    ],
+    [
+      31,
+      6
+    ],
+    [
+      31,
+      7
+    ],
+    [
+      31,
+      8
+    ],
+    [
+      31,
+      19
+    ],
+    [
+      31,
+      20
+    ],
+    [
+      31,
+      21
+    ],
+    [
+      32,
+      6
+    ],
+    [
+      32,
+      7
+    ],
+    [
+      32,
+      8
+    ],
+    [
+      32,
+      19
+    ],
+    [
+      32,
+      20
+    ],
+    [
+      32,
+      21
+    ],
+    [
+      33,
+      6
+    ],
+    [
+      33,
+      7
+    ],
+    [
+      33,
+      8
+    ],
+    [
+      33,
+      19
+    ],
+    [
+      33,
+      20
+    ],
+    [
+      33,
+      21
+    ],
+    [
+      34,
+      6
+    ],
+    [
+      34,
+      7
+    ],
+    [
+      34,
+      8
+    ],
+    [
+      34,
+      19
+    ],
+    [
+      34,
+      20
+    ],
+    [
+      34,
+      21
+    ],
+    [
+      35,
+      6
+    ],
+    [
+      35,
+      7
+    ],
+    [
+      35,
+      8
+    ],
+    [
+      35,
+      19
+    ],
+    [
+      35,
+      20
+    ],
+    [
+      35,
+      21
+    ],
+    [
+      36,
+      6
+    ],
+    [
+      36,
+      7
+    ],
+    [
+      36,
+      8
+    ],
+    [
+      36,
+      19
+    ],
+    [
+      36,
+      20
+    ],
+    [
+      36,
+      21
+    ],
+    [
+      37,
+      6
+    ],
+    [
+      37,
+      7
+    ],
+    [
+      37,
+      8
+    ],
+    [
+      37,
+      19
+    ],
+    [
+      37,
+      20
+    ],
+    [
+      37,
+      21
+    ],
+    [
+      38,
+      6
+    ],
+    [
+      38,
+      7
+    ],
+    [
+      38,
+      8
+    ],
+    [
+      38,
+      19
+    ],
+    [
+      38,
+      20
+    ],
+    [
+      38,
+      21
+    ],
+    [
+      39,
+      6
+    ],
+    [
+      39,
+      7
+    ],
+    [
+      39,
+      8
+    ],
+    [
+      39,
+      19
+    ],
+    [
+      39,
+      20
+    ],
+    [
+      39,
+      21
+    ],
+    [
+      40,
+      6
+    ],
+    [
+      40,
+      7
+    ],
+    [
+      40,
+      8
+    ],
+    [
+      40,
+      19
+    ],
+    [
+      40,
+      20
+    ],
+    [
+      40,
+      21
+    ],
+    [
+      41,
+      6
+    ],
+    [
+      41,
+      7
+    ],
+    [
+      41,
+      8
+    ],
+    [
+      41,
+      19
+    ],
+    [
+      41,
+      20
+    ],
+    [
+      41,
+      21
+    ],
+    [
+      42,
+      6
+    ],
+    [
+      42,
+      7
+    ],
+    [
+      42,
+      8
+    ],
+    [
+      42,
+      19
+    ],
+    [
+      42,
+      20
+    ],
+    [
+      42,
+      21
+    ],
+    [
+      43,
+      6
+    ],
+    [
+      43,
+      7
+    ],
+    [
+      43,
+      8
+    ],
+    [
+      43,
+      19
+    ],
+    [
+      43,
+      20
+    ],
+    [
+      43,
+      21
+    ],
+    [
+      44,
+      6
+    ],
+    [
+      44,
+      7
+    ],
+    [
+      44,
+      8
+    ],
+    [
+      44,
+      19
+    ],
+    [
+      44,
+      20
+    ],
+    [
+      44,
+      21
+    ],
+    [
+      45,
+      6
+    ],
+    [
+      45,
+      7
+    ],
+    [
+      45,
+      8
+    ],
+    [
+      45,
+      19
+    ],
+    [
+      45,
+      20
+    ],
+    [
+      45,
+      21
+    ],
+    [
+      46,
+      6
+    ],
+    [
+      46,
+      7
+    ],
+    [
+      46,
+      8
+    ],
+    [
+      46,
+      19
+    ],
+    [
+      46,
+      20
+    ],
+    [
+      46,
+      21
+    ],
+    [
+      47,
+      6
+    ],
+    [
+      47,
+      7
+    ],
+    [
+      47,
+      8
+    ],
+    [
+      47,
+      19
+    ],
+    [
+      47,
+      20
+    ],
+    [
+      47,
+      21
+    ]
+  ],
+  "reserved_combat": [
+    [
+      5,
+      18
+    ],
+    [
+      5,
+      19
+    ],
+    [
+      5,
+      20
+    ],
+    [
+      5,
+      21
+    ],
+    [
+      5,
+      22
+    ],
+    [
+      6,
+      18
+    ],
+    [
+      6,
+      19
+    ],
+    [
+      6,
+      20
+    ],
+    [
+      6,
+      21
+    ],
+    [
+      6,
+      22
+    ],
+    [
+      7,
+      18
+    ],
+    [
+      7,
+      19
+    ],
+    [
+      7,
+      20
+    ],
+    [
+      7,
+      21
+    ],
+    [
+      7,
+      22
+    ],
+    [
+      8,
+      18
+    ],
+    [
+      8,
+      19
+    ],
+    [
+      8,
+      20
+    ],
+    [
+      8,
+      21
+    ],
+    [
+      8,
+      22
+    ],
+    [
+      9,
+      18
+    ],
+    [
+      9,
+      19
+    ],
+    [
+      9,
+      20
+    ],
+    [
+      9,
+      21
+    ],
+    [
+      9,
+      22
+    ],
+    [
+      18,
+      5
+    ],
+    [
+      18,
+      6
+    ],
+    [
+      18,
+      7
+    ],
+    [
+      18,
+      8
+    ],
+    [
+      18,
+      9
+    ],
+    [
+      19,
+      5
+    ],
+    [
+      19,
+      6
+    ],
+    [
+      19,
+      7
+    ],
+    [
+      19,
+      8
+    ],
+    [
+      19,
+      9
+    ],
+    [
+      20,
+      5
+    ],
+    [
+      20,
+      6
+    ],
+    [
+      20,
+      7
+    ],
+    [
+      20,
+      8
+    ],
+    [
+      20,
+      9
+    ],
+    [
+      21,
+      5
+    ],
+    [
+      21,
+      6
+    ],
+    [
+      21,
+      7
+    ],
+    [
+      21,
+      8
+    ],
+    [
+      21,
+      9
+    ],
+    [
+      22,
+      5
+    ],
+    [
+      22,
+      6
+    ],
+    [
+      22,
+      7
+    ],
+    [
+      22,
+      8
+    ],
+    [
+      22,
+      9
+    ],
+    [
+      31,
+      18
+    ],
+    [
+      31,
+      19
+    ],
+    [
+      31,
+      20
+    ],
+    [
+      31,
+      21
+    ],
+    [
+      31,
+      22
+    ],
+    [
+      32,
+      18
+    ],
+    [
+      32,
+      19
+    ],
+    [
+      32,
+      20
+    ],
+    [
+      32,
+      21
+    ],
+    [
+      32,
+      22
+    ],
+    [
+      33,
+      18
+    ],
+    [
+      33,
+      19
+    ],
+    [
+      33,
+      20
+    ],
+    [
+      33,
+      21
+    ],
+    [
+      33,
+      22
+    ],
+    [
+      34,
+      18
+    ],
+    [
+      34,
+      19
+    ],
+    [
+      34,
+      20
+    ],
+    [
+      34,
+      21
+    ],
+    [
+      34,
+      22
+    ],
+    [
+      35,
+      18
+    ],
+    [
+      35,
+      19
+    ],
+    [
+      35,
+      20
+    ],
+    [
+      35,
+      21
+    ],
+    [
+      35,
+      22
+    ],
+    [
+      44,
+      5
+    ],
+    [
+      44,
+      6
+    ],
+    [
+      44,
+      7
+    ],
+    [
+      44,
+      8
+    ],
+    [
+      44,
+      9
+    ],
+    [
+      44,
+      18
+    ],
+    [
+      44,
+      19
+    ],
+    [
+      44,
+      20
+    ],
+    [
+      44,
+      21
+    ],
+    [
+      44,
+      22
+    ],
+    [
+      45,
+      5
+    ],
+    [
+      45,
+      6
+    ],
+    [
+      45,
+      7
+    ],
+    [
+      45,
+      8
+    ],
+    [
+      45,
+      9
+    ],
+    [
+      45,
+      18
+    ],
+    [
+      45,
+      19
+    ],
+    [
+      45,
+      20
+    ],
+    [
+      45,
+      21
+    ],
+    [
+      45,
+      22
+    ],
+    [
+      46,
+      5
+    ],
+    [
+      46,
+      6
+    ],
+    [
+      46,
+      7
+    ],
+    [
+      46,
+      8
+    ],
+    [
+      46,
+      9
+    ],
+    [
+      46,
+      18
+    ],
+    [
+      46,
+      19
+    ],
+    [
+      46,
+      20
+    ],
+    [
+      46,
+      21
+    ],
+    [
+      46,
+      22
+    ],
+    [
+      47,
+      5
+    ],
+    [
+      47,
+      6
+    ],
+    [
+      47,
+      7
+    ],
+    [
+      47,
+      8
+    ],
+    [
+      47,
+      9
+    ],
+    [
+      47,
+      18
+    ],
+    [
+      47,
+      19
+    ],
+    [
+      47,
+      20
+    ],
+    [
+      47,
+      21
+    ],
+    [
+      47,
+      22
+    ],
+    [
+      48,
+      5
+    ],
+    [
+      48,
+      6
+    ],
+    [
+      48,
+      7
+    ],
+    [
+      48,
+      8
+    ],
+    [
+      48,
+      9
+    ],
+    [
+      48,
+      18
+    ],
+    [
+      48,
+      19
+    ],
+    [
+      48,
+      20
+    ],
+    [
+      48,
+      21
+    ],
+    [
+      48,
+      22
+    ]
+  ],
+  "rooms": [
+    {
+      "bevel": true,
+      "center": [
+        7,
+        7
+      ],
+      "half_height": 3,
+      "half_width": 4,
+      "id": [
+        0,
+        0
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 0,
+        "dense_fixtures": 9,
+        "fixture_apron": 20,
+        "fixture_tiles": 11,
+        "floor": 59,
+        "reserved_route": 23,
+        "unassigned": 5
+      },
+      "program": "Processional hall",
+      "role": "room",
+      "rotation_degrees": 90
+    },
+    {
+      "bevel": false,
+      "center": [
+        7,
+        20
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        0,
+        1
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 10,
+        "dense_fixtures": 9,
+        "fixture_apron": 28,
+        "fixture_tiles": 10,
+        "floor": 81,
+        "reserved_route": 27,
+        "unassigned": 6
+      },
+      "program": "Collapsed watchpost",
+      "role": "encounter",
+      "rotation_degrees": 180
+    },
+    {
+      "bevel": true,
+      "center": [
+        20,
+        7
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        1,
+        0
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 10,
+        "dense_fixtures": 9,
+        "fixture_apron": 28,
+        "fixture_tiles": 10,
+        "floor": 77,
+        "reserved_route": 27,
+        "unassigned": 2
+      },
+      "program": "Collapsed watchpost",
+      "role": "encounter",
+      "rotation_degrees": 90
+    },
+    {
+      "bevel": false,
+      "center": [
+        20,
+        20
+      ],
+      "half_height": 4,
+      "half_width": 3,
+      "id": [
+        1,
+        1
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 0,
+        "dense_fixtures": 10,
+        "fixture_apron": 24,
+        "fixture_tiles": 12,
+        "floor": 63,
+        "reserved_route": 21,
+        "unassigned": 6
+      },
+      "program": "Processional hall",
+      "role": "room",
+      "rotation_degrees": 180
+    },
+    {
+      "bevel": true,
+      "center": [
+        33,
+        7
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        2,
+        0
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 0,
+        "dense_fixtures": 9,
+        "fixture_apron": 30,
+        "fixture_tiles": 10,
+        "floor": 77,
+        "reserved_route": 27,
+        "unassigned": 10
+      },
+      "program": "Scribe workshop",
+      "role": "room",
+      "rotation_degrees": 90
+    },
+    {
+      "bevel": false,
+      "center": [
+        33,
+        20
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        2,
+        1
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 10,
+        "dense_fixtures": 9,
+        "fixture_apron": 32,
+        "fixture_tiles": 10,
+        "floor": 81,
+        "reserved_route": 27,
+        "unassigned": 2
+      },
+      "program": "Collapsed watchpost",
+      "role": "encounter",
+      "rotation_degrees": 90
+    },
+    {
+      "bevel": false,
+      "center": [
+        46,
+        7
+      ],
+      "half_height": 4,
+      "half_width": 4,
+      "id": [
+        3,
+        0
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 13,
+        "dense_fixtures": 12,
+        "fixture_apron": 32,
+        "fixture_tiles": 14,
+        "floor": 81,
+        "reserved_route": 18,
+        "unassigned": 4
+      },
+      "program": "Reliquary vault",
+      "role": "treasure",
+      "rotation_degrees": 0
+    },
+    {
+      "bevel": false,
+      "center": [
+        46,
+        20
+      ],
+      "half_height": 3,
+      "half_width": 3,
+      "id": [
+        3,
+        1
+      ],
+      "metrics": {
+        "clear_assembly_or_combat": 13,
+        "dense_fixtures": 8,
+        "fixture_apron": 10,
+        "fixture_tiles": 11,
+        "floor": 49,
+        "reserved_route": 14,
+        "unassigned": 1
+      },
+      "program": "Arrival guardroom",
+      "role": "entry",
+      "rotation_degrees": 90
+    }
+  ],
+  "row_zero": "SOUTH",
+  "rows_south_first": [
+    "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVV#########VVVV#########VVV###########V",
+    "VVV#########VVV##.......##VV##.......##VV#.........#V",
+    "VV##.......##VV#.........#VV#.........#VV#.........#V",
+    "VV#.........####.........####.........####.........#V",
+    "VV#................................................#V",
+    "VV#................................................#V",
+    "VV#................................................#V",
+    "VV#.........####.........####.........####.........#V",
+    "VV##.......##VV#.........#VV#.........#VV#.........#V",
+    "VVV###...###VVV##.......##VV##.......##VV#.........#V",
+    "VVVVV#...#VVVVVV#########VVVV#########VVV###########V",
+    "VVVVV#...#VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    "VVVVV#...#VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+    "VV####...####VVV#########VVV###########VVVVVVVVVVVVVV",
+    "VV#.........#VVV#.......#VVV#.........#VVV#########VV",
+    "VV#.........#VVV#.......#VVV#.........#VVV#.......#VV",
+    "VV#.........#####.......#####.........#####.......#VV",
+    "VV#...............................................#VV",
+    "VV#...............................................#VV",
+    "VV#...............................................#VV",
+    "VV#.........#####.......#####.........#####.......#VV",
+    "VV#.........#VVV#.......#VVV#.........#VVV#.......#VV",
+    "VV#.........#VVV#.......#VVV#.........#VVV#########VV",
+    "VV###########VVV#########VVV###########VVVVVVVVVVVVVV",
+    "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+  ],
+  "schema": "civ13-furnished-dungeon-preview/1",
+  "seed": "ruins-06",
+  "source_layout_sha256": "d8ddfb9ecfbd3e48fd5d04bc764d472d2a08659181540a67fccc8b7ae2723f35",
+  "vault_goal": [
+    46,
+    7
+  ],
+  "width": 53
+}

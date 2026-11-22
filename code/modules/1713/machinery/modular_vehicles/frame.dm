@@ -274,6 +274,9 @@
 							return TRUE
 	return FALSE
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
+	// Smashing glass and welding breaches (vehicle_breaches.dm).
+	if (breach_attackby(I, H))
+		return
 	if (axis?.keyed_vehicle_id && (istype(I, /obj/item/vehicle_key) || istype(I, /obj/item/weapon/key)))
 		var/obj/item/vehicle_key/K = I
 		if (!istype(K) || K.loc != H || !K.matches(axis) || !axis.key_access(H) || !Adjacent(H))
@@ -573,32 +576,15 @@
 
 /obj/structure/vehicleparts/frame/try_destroy()
 	//format: type of wall, opacity, density, armor, current health, can open/close, is open?
-	var/isnowopen = FALSE
-
+	// A wall with no health left is wrecked (vehicle_breaches.dm).
 	if (w_left[5] < 0)
-		if (w_left[6] || findtext(w_left[1], "door"))
-			isnowopen = TRUE
-		else
-			isnowopen = FALSE
-		w_left = list(w_left[1],FALSE,FALSE,0,0,FALSE,isnowopen)
+		w_left = breach_wall("left", w_left)
 	if (w_right[5] < 0)
-		if (w_right[6] || findtext(w_right[1], "door"))
-			isnowopen = TRUE
-		else
-			isnowopen = FALSE
-		w_right = list(w_right[1],FALSE,FALSE,0,0,FALSE,isnowopen)
+		w_right = breach_wall("right", w_right)
 	if (w_front[5] < 0)
-		if (w_front[6] || findtext(w_front[1], "door"))
-			isnowopen = TRUE
-		else
-			isnowopen = FALSE
-		w_front = list(w_front[1],FALSE,FALSE,0,0,FALSE,isnowopen)
+		w_front = breach_wall("front", w_front)
 	if (w_back[5] < 0)
-		if (w_back[6] || findtext(w_back[1], "door"))
-			isnowopen = TRUE
-		else
-			isnowopen = FALSE
-		w_back = list(w_back[1],FALSE,FALSE,0,0,FALSE,isnowopen)
+		w_back = breach_wall("back", w_back)
 	if (w_left[5]+w_right[5]+w_back[5]+w_front[5] <= 0)
 		broken = TRUE
 		if (prob(10))

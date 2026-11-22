@@ -12,9 +12,17 @@
 	if (open_air_view_busy())
 		return
 	for (var/client/C in clients)
-		C.open_air_view_scan()
+		// One failing viewer must not stop the scan for everyone after it.
+		try
+			C.open_air_view_scan()
+		catch (var/exception/scan_error)
+			open_air_view_error(scan_error, C.eye)
 		PROCESS_TICK_CHECK
 	open_air_view_sync_fixed()
+	// Proxies whose thing moved without a move hook, or went.
+	for (var/obj/effect/open_air_proxy/P in open_air_proxies)
+		P.open_air_proxy_check()
+		PROCESS_TICK_CHECK
 
 /process/open_air_view/reset_current_list()
 	return

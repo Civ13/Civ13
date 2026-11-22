@@ -34,7 +34,12 @@ var/global/practice_experiments_built = FALSE
 // subject without an entry keeps its generated practice.
 // node id => list of deeds, each list(key, list(result paths), amount, share, what to do).
 // A result path also covers its subtypes.
-var/global/list/subject_deeds = list(
+var/global/list/subject_deeds = subject_deeds_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/subject_deeds_table()
+	return list(
 	"bronze_working" = list(
 		list("molds", list("/obj/item/weapon/clay/mold/shovel"), 2, 0.2, "Shape 2 unfired shovel molds from clay"),
 		list("hammer", list("/obj/item/weapon/hammer"), 1, 0.15, "Make a hammer"),
@@ -127,15 +132,19 @@ var/global/list/subject_deeds = list(
 		list("supports", list("/obj/structure/mine_support"), 2, 0.15, "Set up 2 mine supports"),
 		list("sills", list("/obj/covers/wood_wall/log_build"), 3, 0.15, "Lay 3 log wall sills")),
 	"steel_blades" = list(
-		list("furnace", list("/obj/structure/furnace/blast_furnace"), 1, 0.2, "Build a blast furnace"),
+		list("furnace", list("/obj/structure/furnace"), 1, 0.2, "Build a bloomery"),
 		list("tub", list("/obj/structure/quench_tub"), 1, 0.15, "Build a quench tub"),
 		list("sword", list("/obj/item/weapon/material/sword/gladius", "/obj/item/weapon/material/sword/khopesh"), 1, 0.15, "Make a gladius or a khopesh")),
 	"tailoring" = list(
 		list("pouches", list("/obj/item/clothing/accessory/storage/belt_pouch/cloth"), 2, 0.2, "Sew 2 cloth drawstring pouches"),
 		list("bedroll", list("/obj/item/weapon/bedroll"), 1, 0.15, "Make a bedroll"),
 		list("curtain", list("/obj/structure/curtain"), 1, 0.15, "Hang a curtain")),
+	"blast_furnaces" = list(
+		list("furnace", list("/obj/structure/furnace"), 1, 0.2, "Build a bloomery"),
+		list("pot", list("/obj/structure/carburizing_pot"), 1, 0.15, "Build a carburizing pot"),
+		list("wheel", list("/obj/structure/workshop_machine/mover/mill_wheel"), 1, 0.15, "Build a mill wheel")),
 	"tatara_smelting" = list(
-		list("furnace", list("/obj/structure/furnace/blast_furnace"), 1, 0.2, "Build a blast furnace"),
+		list("furnace", list("/obj/structure/furnace"), 1, 0.2, "Build a bloomery"),
 		list("horseshoes", list("/obj/item/horseshoes"), 1, 0.15, "Forge a set of horseshoes"),
 		list("wedge", list("/obj/item/door_wedge/iron"), 1, 0.15, "Forge an iron wedge")),
 	"workshops" = list(
@@ -169,7 +178,7 @@ var/global/list/subject_deeds = list(
 		list("shutters", list("/obj/structure/simple_door/key_door/anyone/window_shutters/iron"), 1, 0.15, "Fit a set of iron shutters")),
 	"gunsmithing" = list(
 		list("arquebus", list("/obj/item/weapon/gun/projectile/ancient/arquebus"), 1, 0.2, "Make an arquebus"),
-		list("matchlock", list("/obj/item/weapon/gun/projectile/ancient/matchlock"), 1, 0.15, "Make a matchlock musket"),
+		list("handcannon", list("/obj/item/weapon/gun/projectile/ancient/handcannon"), 1, 0.15, "Make a handcannon"),
 		list("pouch", list("/obj/item/ammo_magazine/emptypouch"), 1, 0.15, "Make a bullet pouch")),
 	"haberdashery" = list(
 		list("hats", list("/obj/item/clothing/head/artisan", "/obj/item/clothing/head/cavalier", "/obj/item/clothing/head/phrigian_hat"), 2, 0.2, "Make 2 hats: artisan, cavalier or phrigian"),
@@ -244,7 +253,7 @@ var/global/list/subject_deeds = list(
 		list("walls", list("/obj/covers/stone_wall/brick"), 3, 0.15, "Raise 3 stone brick walls"),
 		list("door", list("/obj/structure/simple_door/key_door/anyone/fire_door"), 1, 0.15, "Build an iron-clad fire door")),
 	"rifling" = list(
-		list("musket", list("/obj/item/weapon/gun/projectile/ancient/matchlock"), 1, 0.2, "Make a matchlock musket"),
+		list("arquebus", list("/obj/item/weapon/gun/projectile/ancient/arquebus"), 1, 0.2, "Make an arquebus"),
 		list("bullets", list("/obj/item/stack/ammopart/bullet"), 3, 0.15, "Make iron bullets 3 times"),
 		list("anvil", list("/obj/structure/anvil/steel"), 1, 0.15, "Build a steel anvil")),
 	"steam_power" = list(

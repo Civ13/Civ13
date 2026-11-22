@@ -90,6 +90,7 @@
 
 /mob/living/human/attack_hand(mob/M as mob)
 	if (!istype(M, /mob/living/human)) return
+	if (offline_sleep_refuses(M)) return
 	if (ishuman(M))
 		var/mob/living/human/H = M
 		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
@@ -123,6 +124,7 @@
 			"<span class = 'red'>You feel a mild shock course through your body.</span>", \
 			"<span class = 'red'>You hear a light zapping.</span>" \
 		)
+		body_motion_jolt()
 
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
 	s.set_up(5, TRUE, loc)
@@ -344,6 +346,7 @@
 	src.visible_message(SPAN_WARNING("[src] prepares to throw \the [item]!"), SPAN_WARNING("You prepare to throw \the [item]!"))
 	if (item && do_after(src, max(1, round(abs_dist(src, target)/throwtime_divider)), get_turf(src)))
 		playsound(src, 'sound/effects/throw.ogg', 50, TRUE)
+		body_motion_throw(target)
 		remove_from_mob(item)
 		item.loc = loc
 		// Thrown down from an airship's gondola (pedal_airship_combat.dm).
@@ -425,6 +428,8 @@
 			football_bump(AM)
 	if (now_pushing || !yes)
 		return
+	if (sprint_collide(AM))
+		return
 	if (try_bump_mining(AM))
 		return
 	if (try_bump_chopping(AM))
@@ -457,6 +462,8 @@
 
 /mob/living/human/show_inv(mob/user as mob)
 	if(user.incapacitated()  || !user.Adjacent(src))
+		return
+	if (offline_sleep_refuses(user))
 		return
 	user.set_using_object(src)
 	var/dat = {"

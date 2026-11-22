@@ -191,3 +191,13 @@
 #define FIRE_PRIORITY_SPEECH_CONTROLLER 900
 #define FIRE_PRIORITY_INPUT 1000 // This must always always be the max highest priority. Player input must never be lost.
 */
+
+// Process priorities (___defines.dm)
+// Process priorities
+#define PROCESS_PRIORITY_VERY_HIGH 1
+#define PROCESS_PRIORITY_HIGH 2
+#define PROCESS_PRIORITY_MEDIUM 3
+#define PROCESS_PRIORITY_LOW 4
+#define PROCESS_PRIORITY_VERY_LOW 5
+// PROCESS_PRIORITY_IRRELEVANT: we don't process or don't use loops, meaning PROCESS_TICK_CHECK never happens
+#define PROCESS_PRIORITY_IRRELEVANT 6

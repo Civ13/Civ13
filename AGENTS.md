@@ -35,6 +35,12 @@ to continue independent authorized work and preserve exact scope and permissions
 - Documentation-only changes need focused documentation checks; compilation
   and gameplay checks are not applicable. CI selection in
   [docs/ci-selection.md](docs/ci-selection.md) also skips docs-only compilation.
+- Include order: the Dream Maker IDE re-sorts `civ13.dme` alphabetically when it
+  saves, so the build must not depend on the listed order. A define used by any
+  other file, or tested with `#if`/`#ifdef`, goes in `code/__defines/` (file-local
+  defines are `#undef`'d at the end of their file). Extend a proc through a hook
+  the base proc calls, not a same-type override in another file, which runs in
+  include order. `tests/dme_order` checks defines in both orders.
 - Lint with `dreamchecker.exe` when relevant; config is `SpacemanDMM.toml`.
   Keep existing formatting, use "-" instead of em dashes, and preserve unrelated work.
 - `_compile_options.dm` controls test/debug flags. Compiled outputs, logs and

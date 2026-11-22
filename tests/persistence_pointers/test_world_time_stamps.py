@@ -23,10 +23,17 @@ EXTRA_SAVED_TYPES = {'/datum/wound'}
 # Reviewed: not a world.time stamp on that type, or deliberately left alone.
 REVIEWED = {
     'civilization': 'regex hit on a comparison, not an assignment',
+    'island_unwelcome_since': 'declared var/tmp on humans (island_access.dm), so never saved',
+    'next_sprint_collision': 'declared var/tmp on humans (sprint.dm), so never saved',
+    'body_motion_until': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_started': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_watch_checked': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_stroke_next': 'declared var/tmp on humans (body_motion.dm), so never saved',
     'faction_text': 'regex hit on a comparison, not an assignment',
     'original_job_title': 'regex hit on a comparison, not an assignment',
     'move_delay': 'assigned on client, not on the saved gun',
     'last_action': 'grabs are never saved (should_save = FALSE)',
+    'last_preview': 'declared var/tmp on the ship\'s draught (ship_designer.dm): a summary rate limit, never saved',
     'stopped_until': 'football map mode is not persistent',
     'round_deadline': 'extraction raid instances are not persistent',
     'next_checkpoint': 'extraction raid instances are not persistent',
@@ -38,24 +45,20 @@ REVIEWED = {
     'time': 'assigned on a callproc helper, not on compasses or syringes',
     'flee_ticket': 'a flee_ticket parameter list, not a saved mob var',
     'data': 'reagent message throttles share the generic data field with blood and dose data',
-    'npc_subtile_watch_checked': 'var/tmp cache of the near-player check, never saved',
-    'lob_launch_time': 'var/tmp on projectiles in flight, which are never saved',
-    'human_subtile_smooth_start': 'var/tmp draw-smoothing stamp on humans, never saved',
-    'antibiotic_dose_shared_at': 'var/tmp stamp of the per-tick antibiotic dose cache on humans, never saved',
-    'life_heat_scan_until': 'var/tmp expiry of the nearby-heat scan cache on humans, never saved',
-    'next_melee_attack': 'var/tmp bite cooldown on animals, never saved',
-    'next_hoof_dust': 'var/tmp dust-puff throttle on ridden horses, never saved',
-    'next_call': 'var/tmp cooldown of the boatswain\'s call, never saved',
-    'held_since': 'var/tmp capture clock on a Broadside TDM tiller, never saved',
-    'voyage': 'var/tmp voyage of a built hull tiller (ship_voyage.dm), never saved',
-    'landfall_at': 'var/tmp landfall rest stamp of a built hull tiller (ship_voyage.dm), never saved',
-    'air_crossing_hold': 'var/tmp hold of a plane arriving from another land (aircraft_crossing.dm), never saved',
-    'bite_fracture_guard': 'var/tmp guard for the instant of one animal bite on humans, never saved',
-    'hold_started': 'var/tmp brace stamp of a hand holding a car door (vehicle_door_hold.dm), never saved',
-    'strain_time': 'var/tmp strain clock of a hand holding a car door (vehicle_door_hold.dm), never saved',
-    'last_hair_growth_time': 'var/tmp last hair-growth tick on humans (human_life.dm), never saved',
-    'human_pull_tile_at': 'var/tmp walk-pace stamp of free-movement pulling on humans (subtile_movement.dm), never saved',
-    'human_pull_tile_pace': 'var/tmp tile duration (a world.time difference) of free-movement pulling on humans, never saved',
+    'lob_launch_time': 'projectiles are never saved (should_save = 0 in projectile.dm)',
+    'combat_reason_time': 'declared var/tmp on mobs (combat_stance.dm), so never saved',
+    'last_struck_time': 'declared var/tmp on mobs (combat_stance.dm), so never saved',
+    'next_combat_reaction': 'declared var/tmp on mobs (combat_reactions.dm), so never saved',
+    'next_martial_reflex': 'declared var/tmp on mobs (combat_reactions.dm), so never saved',
+    'held_since': 'capture clock of a Broadside TDM tiller; the Broadside map is not persistent',
+    'crossing_hold': 'declared var/tmp/list on hull tillers (ship_crossing.dm), so never saved',
+    'familiar_last_use': 'declared var/tmp/list on humans (familiarity.dm), so never saved',
+    'next_familiar_click': 'declared var/tmp on humans (familiarity.dm), so never saved',
+    'frost_nipped_at': 'declared var/tmp on crops (crop_frost.dm), so never saved',
+    'next_feels_like_message': 'declared var/tmp on humans (feels_like.dm), so never saved',
+    'spirit_hud_ends': 'declared var/tmp on ghosts (spirit_hud.dm), so never saved',
+    'heteromorph_started': 'declared var/tmp on heteromorph forms (heteromorph_form.dm); saves return every form to human first',
+    'heteromorph_breath_ready': 'declared var/tmp on heteromorph forms (heteromorph_breath.dm); saves return every form to human first',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
@@ -67,7 +70,7 @@ def dm_files():
 
 
 def registry():
-    body = REGISTRY[REGISTRY.index('persistence_world_time_stamps = list('):]
+    body = REGISTRY[REGISTRY.index('/proc/persistence_world_time_stamps_table()'):]
     body = body[:body.index('\n)\n')]
     entries = {}
     for name, owners in re.findall(r'^\t"(\w+)" = list\(([^)]*)\)', body, re.M):
@@ -191,6 +194,18 @@ class WorldTimeStampRegistry(unittest.TestCase):
             if any(saved_owner(candidate) for candidate in owners):
                 missing.add(f'{name} on {owners}')
         self.assertEqual(sorted(missing), [], 'add these world.time stamps to world_time_stamps.dm or review them')
+
+    def test_tmp_vars_are_skipped(self):
+        # The saver walks D.vars, tmp vars included; the base runtime hook
+        # excludes a field declared var/tmp, on export and import alike.
+        functions = (CODE / 'modules/persistence/functions.dm').read_text()
+        base = functions[functions.index('/datum/proc/persistence_runtime_var(key)'):]
+        base = base[:base.index('\n/', 1)]
+        self.assertIn('persistence_declared_tmp(src, key)', base)
+        helper = functions[functions.index('/proc/persistence_declared_tmp(datum/D, key)'):]
+        helper = helper[:helper.index('\n/', 1)]
+        self.assertIn('!issaved(D.vars[key])', helper)
+
 
 if __name__ == '__main__':
     unittest.main()

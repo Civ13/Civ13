@@ -9,10 +9,26 @@
 kilns, ovens, saw mills, mills, workshop machines, engines, vehicle parts,
 cannon, drills, printing presses, fabricators, tanning drums and research
 forges. `hoist_exempt_types` takes the bellows and the shear legs back out.
-Both ladder climbs in `code/modules/multiz/structures.dm` call
-`ladder_refuses_load(M)` before the wait, so the climber is told why and
-nothing moves. People, animals, crates, carts and everything not listed still
-go up and down ladders as before. Stairs and edge climbing already drop pulls.
+`level_change_load_problem(A, ladder)` decides what a pulled thing may do
+between levels (since 2026-11-18). Hoist-only loads go on neither ladders nor
+stairs, and wheeled carts (`wheeled_load_types`) go on neither. Stairs take
+people, animals, crates and items:
+`stairs_check_load` lets go of what cannot come before the climb, and
+`stairs_bring_load` moves what is still pulled onto the climber's tile, so the
+pull holds. A ladder needs both hands, so it takes only people, small animals
+(mob_size up to MOB_MEDIUM) and loose items. Both ladder climbs in
+`code/modules/multiz/structures.dm` call `ladder_refuses_load(M)` before and
+after the wait, so the climber is told why and nothing moves. Edge climbing
+still drops pulls.
+
+Ramps (`code/modules/multiz/ramps.dm`, suite `tests/ramps`) are a straight run
+of cover sections facing the climb direction, with open air over every
+section. The top section of a full run is found by `stairs_in` and climbs like
+stairs. Each kind passes its `ramp_carries` to the load rule: an earth ramp
+(4 sections) takes what stairs take, a timber ramp (4) adds wheeled loads and
+wheelchair riders, and a stone or concrete ramp (8) adds a hoist-only load when
+`ramp_haul_helper` finds a second person beside the hauler or the load; that
+haul waits `RAMP_HEAVY_TIME`.
 
 ## Shear legs
 

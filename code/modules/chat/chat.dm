@@ -40,9 +40,12 @@
 	for (var/message in message_queue)
 		send_message(message)
 	message_queue.Cut()
+	// Only consume durable notices after the admitted client's chat is ready.
+	persistence_deliver_bed_notice(client)
 	// Start the page's connection watchdog (pings every 5 s, warns after 20 s
 	// without an answer). The server cannot report its own death to the chat.
 	client << output("5000", "browser_chat:startChatHeartbeat")
+	chat_translator.announce(client)
 
 #define MAX_CHAT_QUEUE 200
 

@@ -146,7 +146,12 @@
 		L += S.return_inv()
 	return L
 
+/obj/item/weapon/storage/proc/storage_contents_accessible()
+	return TRUE
+
 /obj/item/weapon/storage/proc/show_to(mob/user as mob)
+	if (!storage_contents_accessible())
+		return
 	if (user.s_active != src)
 		for (var/obj/item/I in src)
 			if (I.on_found(user))
@@ -196,6 +201,8 @@
 	is_seeing -= user
 
 /obj/item/weapon/storage/proc/open(mob/user as mob)
+	if (!storage_contents_accessible())
+		return
 	if (storage_window_open(user, src))
 		return
 	if (ishuman(user))
@@ -246,6 +253,8 @@
 	var/cy = ty
 	boxes.screen_loc = "[tx],[ty] to [mx],[my]"
 	for (var/obj/O in contents)
+		if (istype(O, /obj/false_bottom))
+			continue
 		O.screen_loc = "[cx],[cy]"
 		O.layer = 20
 		O.plane = HUD_PLANE
@@ -277,6 +286,8 @@
 				cy--
 	else
 		for (var/obj/O in contents)
+			if (istype(O, /obj/false_bottom))
+				continue
 			O.screen_loc = "[cx]:16,[cy]:16"
 			O.maptext = ""
 			O.layer = 20
@@ -350,7 +361,7 @@
 //This proc determines the size of the inventory to be displayed. Please touch it only if you know what you're doing.
 /obj/item/weapon/storage/proc/orient2hud(mob/user as mob)
 
-	var/adjusted_contents = contents.len
+	var/adjusted_contents = shown_contents_count()
 
 	var/Xcor = 4
 	var/Ycor = 2
@@ -408,6 +419,8 @@
 //This proc return TRUE if the item can be picked up and FALSE if it can't.
 //Set the stop_messages to stop it from printing messages
 /obj/item/weapon/storage/proc/can_be_inserted(obj/item/W as obj, stop_messages = FALSE)
+	if (!storage_contents_accessible())
+		return FALSE
 	if (W?.extraction_surface_source) return FALSE
 	if (!istype(W)) return //Not an item
 
@@ -421,7 +434,7 @@
 	if (storage_stack_fits(src, W, usr))
 		return TRUE
 
-	if (storage_slots != null && contents.len >= storage_slots)
+	if (storage_slots != null && shown_contents_count() >= storage_slots)
 		if (!stop_messages)
 			to_chat(usr, "<span class='notice'>[src] is full, make some space.</span>")
 		return FALSE //Storage item is full
@@ -616,6 +629,8 @@
 /obj/item/weapon/storage/verb/quick_empty()
 	set name = "Empty Contents"
 	set category = null
+	if (!storage_contents_accessible())
+		return
 
 	if ((!ishuman(usr) && (loc != usr)) || usr.stat || usr.restrained())
 		return

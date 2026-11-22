@@ -13,6 +13,9 @@ var/global/list/crafting_atlas_admin_only = list(
 	/obj/item/weapon/book/divine = "A god's own book. Hidden divine mechanic; only an admin verb writes the original.",
 	/obj/item/cursedtreasure = "Cursed loot. Its effect is a discovery for players.",
 	/obj/item/weapon/moldy_ritual = "Event summoning scroll. Its effect is a discovery for players.",
+	// Integrated circuits, code/modules/wiremod/: the circuit and compact remote are crafted
+	// from electronics; components exist only inside a circuit's editor.
+	/obj/item/circuit_component = "Made in a circuit's editor, not crafted on its own.",
 	// Magic, code/modules/magic/: anything not available on Nomads stays out of the public atlas.
 	// The atlas build fails if a magic type is not covered here.
 	/mob/living/simple_animal/golden_gnat = "Wizard Boy map only; not available on Nomads.",

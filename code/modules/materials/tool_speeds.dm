@@ -9,7 +9,8 @@
 var/global/list/tool_speed_families = list(
 	/obj/item/weapon/material/pickaxe = list("bone" = 1, "stone" = 1.5, "iron" = 2, "steel" = 3),
 	/obj/item/weapon/material/shovel = list("bone" = 0.6, "iron" = 1.5, "steel" = 2),
-	/obj/item/weapon/material/hatchet = list("bone" = 4, "flint" = 3.5, "stone" = 3.3, "bronze" = 1.65, "iron" = 1.7, "steel" = 1.55),
+	/obj/item/weapon/material/shovel/mattock = list("copper" = 1.3, "bronze" = 1.6, "iron" = 2, "steel" = 2.5),
+	/obj/item/weapon/material/hatchet = list("bone" = 4, "flint" = 3.5, "stone" = 3.3, "bronze" = 1.9, "iron" = 1.7, "steel" = 1.4),
 )
 
 // The family's speed for a head of this material, or 0 when the family or

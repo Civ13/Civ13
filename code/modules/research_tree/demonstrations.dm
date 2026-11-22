@@ -19,6 +19,7 @@
 #define DEMO_TEXT 1
 #define DEMO_SECONDS 2
 #define DEMO_KIT 3
+#define DEMO_NEEDS 4
 // How near the recorder must stay to the machine.
 #define DEMO_RANGE 3
 // One check of the machine every this many deciseconds.
@@ -30,13 +31,18 @@
 // Chance per check that an experimental machine fails during a demonstration.
 #define EXPERIMENTAL_MISHAP_CHANCE 4
 
-// node id => list(what to do, seconds to watch, types the experimental kit allows)
-var/global/list/capstone_demonstrations = list(
-	"steam_power" = list("Keep a steam engine running for a minute", 60, list(/obj/structure/engine/external/steam)),
-	"electricity" = list("Keep an electric lamp lit from an engine or generator for a minute", 60, list(/obj/structure/lamp/lamp_small, /obj/structure/lamp/lamppost_small)),
-	"nuclear_power" = list("Keep a reactor producing power, below overheating, for three minutes", 180, list(/obj/structure/civ_generator/nuclear, /obj/structure/reactor_fuel_processor)),
-	"digital_computing" = list("Keep a computerized fabricator running for a minute", 60, list(/obj/structure/factory_fabricator/computerized)),
-	"digital_networks" = list("Keep a mobile phone call connected through a cell tower for a minute", 60, list()))
+// node id => list(what to do, seconds to watch, types the experimental kit
+// allows, every type the demonstration needs built). A needed type must come
+// from an earlier subject or be in the kit list: tests/late_research checks
+// no demonstration needs the subject it proves (Val, 2026-11-18).
+var/global/list/capstone_demonstrations = capstone_demonstrations_table()
+/proc/capstone_demonstrations_table()
+	return list(
+	"steam_power" = list("Keep a steam engine running for a minute", 60, list(/obj/structure/engine/external/steam), list(/obj/structure/engine/external/steam)),
+	"electricity" = list("Keep an electric lamp lit from an engine or generator for a minute", 60, list(/obj/structure/lamp/lamp_small, /obj/structure/lamp/lamppost_small), list(/obj/structure/lamp/lamp_small, /obj/structure/engine/external/steam)),
+	"nuclear_power" = list("Keep a reactor producing power, below overheating, for three minutes", 180, list(/obj/structure/civ_generator/nuclear, /obj/structure/reactor_fuel_processor), list(/obj/structure/civ_generator/nuclear, /obj/structure/reactor_fuel_processor)),
+	"digital_computing" = list("Keep a computerized fabricator running for a minute", 60, list(/obj/structure/factory_fabricator/computerized), list(/obj/structure/factory_fabricator/computerized)),
+	"digital_networks" = list("Keep a mobile phone call connected through a cell tower for a minute", 60, list(), list(/obj/item/weapon/telephone/mobile, /obj/structure/cell_tower)))
 
 /proc/node_demonstration(node_id)
 	if (!map || !map.book_research_enabled() || !istext(node_id))
@@ -51,9 +57,42 @@ var/global/list/capstone_demonstrations = list(
 	if (!N)
 		return "A working prototype"
 	if (node_needs_demonstration(N.id))
-		return "A demonstration: [demonstration_text(N.id)] (record it with Record a Demonstration on paper or parchment and use the notes on the bench, or record it straight into the book)"
+		// The machine usually needs this very chapter, so say how to get one
+		// (Val, 2026-11-18: "Keep a steam engine running" read as circular).
+		var/kit = demonstration_kit_name(N.id)
+		var/kit_text = kit ? "once the book holds half the chapter, whoever carries it can build a crude experimental [kit] for this; " : ""
+		return "A demonstration: [demonstration_text(N.id)] ([kit_text]record it with Record a Demonstration on paper or parchment and use the notes on the bench, or record it straight into the book)"
+	if (capstone_bill_replaces_prototype(N.id))
+		return "Its bill of materials delivered to the bench, in place of a prototype"
 	var/pname = N.prototype_display_name()
 	return "A working [pname ? pname : "prototype"] used on the bench"
+
+// The machine an experimental build makes for node_id's demonstration, or null.
+/proc/demonstration_kit_name(node_id)
+	var/list/D = capstone_demonstrations[node_id]
+	if (!D)
+		return null
+	var/list/kit = D[DEMO_KIT]
+	if (!kit.len)
+		return null
+	var/atom/first = kit[1]
+	return "[initial(first.name)]"
+
+// Crafting hint for a machine an experimental build allows, while H knows the
+// groundwork but carries no book half written: null when it does not apply.
+/proc/demonstration_kit_hint(mob/living/human/H, result_path_string)
+	if (!istype(H) || !map || !map.book_research_enabled())
+		return null
+	var/path = text2path("[result_path_string]")
+	if (!path)
+		return null
+	for (var/node_id in capstone_demonstrations)
+		var/list/D = capstone_demonstrations[node_id]
+		if (!(path in D[DEMO_KIT]) || H.knows_recipe_node(node_id) || !H.knows_research_prereqs(node_id))
+			continue
+		var/datum/research_node/N = get_research_node(node_id)
+		return "Carry a book with half the [N.name] chapter written to build an experimental one"
+	return null
 
 /proc/demonstration_text(node_id)
 	var/list/D = capstone_demonstrations[node_id]
@@ -339,7 +378,7 @@ var/global/list/capstone_demonstrations = list(
 		if (B.has_research_chapter(node_id))
 			to_chat(src, SPAN_NOTICE("The demonstration is written into [B]. The chapter on <b>[N.name]</b> is finished."))
 		else
-			to_chat(src, SPAN_NOTICE("The demonstration is written into [B]. The chapter on <b>[N.name]</b> is finished once the study is done."))
+			to_chat(src, SPAN_NOTICE("The demonstration is written into [B]. The chapter on <b>[N.name]</b> is finished once the study[node_has_bill(N.id) ? " and its bill are" : " is"] done."))
 	return TRUE
 
 /obj/item/weapon/paper/verb/record_demonstration_paper()
@@ -377,7 +416,7 @@ var/global/list/capstone_demonstrations = list(
 	if (B.add_research_work(N.id, 0, TRUE, user))
 		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished."))
 	else
-		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished once the study is done."))
+		to_chat(user, SPAN_NOTICE("You copy the demonstration notes into [B]. The chapter on <b>[N.name]</b> is finished once the study[node_has_bill(N.id) ? " and its bill are" : " is"] done."))
 	book_refresh_ui()
 	return TRUE
 
@@ -387,5 +426,6 @@ var/global/list/capstone_demonstrations = list(
 #undef DEMO_RANGE
 #undef DEMO_STEP
 #undef DEMO_KIT_SHARE
+#undef DEMO_NEEDS
 #undef EXPERIMENTAL_LIFETIME
 #undef EXPERIMENTAL_MISHAP_CHANCE

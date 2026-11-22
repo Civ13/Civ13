@@ -32,7 +32,7 @@ var/global/datum/world_save_idle_pull_registry/subtile_pull_ownership = new
 
 #ifndef BUILDING_MAX_Z
 #define BUILDING_MAX_Z 32
-#define BUILDING_EXTRA_LEVELS 12
+#define BUILDING_EXTRA_LEVELS 15
 #define BUILDING_MAX_LEVEL_CELLS 2000000
 var/building_allocating_z = 0
 /proc/building_base_maxz()
@@ -273,6 +273,9 @@ var/list/mutate_on_tick = null
 // player_reclaim.dm logs a dead body giving up its claim; fixtures keep no game log.
 /proc/log_game(text)
 	return
+// loading.dm notes a saved field the current code no longer has (code/world.dm).
+/proc/log_world(text)
+	world.log << text
 /mob/new_player
 	var/spawning = FALSE
 /mob/new_player/proc/close_spawn_windows()

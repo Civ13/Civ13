@@ -18,6 +18,8 @@ SOURCE = (ROOT / 'code/modules/1713/lode.dm').read_text(encoding='utf-8')
 CRUSH = (ROOT / 'code/modules/1713/stone_crushing.dm').read_text(encoding='utf-8')
 MINING = (ROOT / 'code/game/turfs/floor_attackby.dm').read_text(encoding='utf-8')
 SEAMS = (ROOT / 'code/modules/1713/mountain_seams.dm').read_text(encoding='utf-8')
+# Defines other files use live in code/__defines (tests/dme_order).
+SHARED_DEFINES = (ROOT / 'code/__defines/ore_processing.dm').read_text(encoding='utf-8')
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
 NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
@@ -25,7 +27,7 @@ DMI = ROOT / 'icons/obj/lode.dmi'
 
 
 def define(name):
-    match = re.search(rf'#define {name} ([0-9.]+)', SOURCE)
+    match = re.search(rf'#define {name} ([0-9.]+)', SOURCE + SHARED_DEFINES)
     assert match, name
     return float(match.group(1))
 

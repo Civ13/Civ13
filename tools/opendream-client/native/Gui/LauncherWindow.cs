@@ -64,6 +64,11 @@ internal sealed partial class LauncherWindow : Form {
     // The last status lines the board was drawn from, kept so a later update check can redraw it.
     private string serverStatusOutput = "", groupStatusOutput = "";
     private string? hostStatusProblem;
+    // Experimental WMI watch (WmiHealth, off unless experimental.json turns it on): the last warning, if any.
+    private string? wmiWarning;
+    private DateTime wmiCheckedAt = DateTime.MinValue;
+    private bool wmiChecking;
+    private static readonly TimeSpan WmiCheckEvery = TimeSpan.FromMinutes(10);
     private bool? plainRunning;
     private DateTime hostCheckedAt;
     private bool hostRefreshing, hostRefreshAgain;
@@ -87,6 +92,8 @@ internal sealed partial class LauncherWindow : Form {
     private System.Windows.Forms.Timer? hostPoll, hostIdlePoll;
     private bool hostControlBusy;
     private bool groupScriptRunning;
+    private CancellationTokenSource? groupScriptCancel;
+    private Button? hostScriptCancel;
     // Busy is tracked per region, so one region's start or save never locks the others' buttons.
     // busyRegions: regions the last status says run an action or a handover. actingRegions: regions a
     // launcher request is being sent for right now. actingAll: an every-region request is being sent.
@@ -258,7 +265,8 @@ internal sealed partial class LauncherWindow : Form {
         var group = profile.Control?.Group;
         // The board answers "what is running, what is out of date, what is broken"; the rows below act on it.
         // Plain docking: the board fills the tab and each button row sits under it, wrapping at the tab's width.
-        hostBoard = new RegionBoardView { Choosable = group != null };
+        hostBoard = new RegionBoardView { Choosable = group != null, Dismissed = new DismissedProblems(root) };
+        hostBoard.FixRequested += RunFix;
         page.Controls.Add(hostBoard);
         FlowLayoutPanel Row(string caption) {
             var flow = new FlowLayoutPanel { AutoSize = true, Dock = DockStyle.Bottom, Margin = new Padding(0), Padding = new Padding(0, 3, 0, 0) };
@@ -277,13 +285,16 @@ internal sealed partial class LauncherWindow : Form {
             all.Controls.Add(MoreButton(
                 ("Update (stopped and asleep regions)", () => GroupAction("update", "Update"), HostGate.All),
                 ("Build update", () => GroupAction("stage", "Build update"), HostGate.All),
+                ("Run daily maintenance now", () => GroupAction("maintenance", "Run daily maintenance now"), HostGate.All),
                 ("Restart host service", () => GroupAction("restart-host", "Restart host service"), HostGate.AllIdle),
                 ("Advance epoch…", AdvanceEpoch, HostGate.AllIdle),
                 ("-", null, null),
                 ("Host settings…", () => { ShowHostSettings(); return Task.CompletedTask; }, null),
                 ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
+                ("Daily maintenance…", () => { ShowDailyMaintenance(); return Task.CompletedTask; }, null),
                 ("Start region…", () => { ShowStartRegion(); return Task.CompletedTask; }, null),
+                ("Travel and ready lands…", () => { ShowTravelStarts(); return Task.CompletedTask; }, null),
                 ("Front door and ports…", () => {
                     // Which region players join first, and every port of the group (GroupPorts, shard_group.py set-gate / ports).
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
@@ -313,6 +324,19 @@ internal sealed partial class LauncherWindow : Form {
                     dialog.ShowDialog(this);
                     return Task.CompletedTask;
                 }, null),
+                ("Windows process check (experimental)…", () => {
+                    // Is Windows' WMI service answering? Read-only check plus one-click repairs, each elevated only on a click (WmiHealth).
+                    using var dialog = new WmiHealthDialog(root);
+                    dialog.ShowDialog(this);
+                    return Task.CompletedTask;
+                }, null),
+                ("Player records…", () => {
+                    // Read-only shared notes, warnings, bans, watchlist and memos (PlayerRecords, shard_group.py records): no host gate.
+                    if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
+                    using var dialog = new PlayerRecordsDialog(control);
+                    dialog.ShowDialog(this);
+                    return Task.CompletedTask;
+                }, null),
                 ("-", null, null),
                 ("Update and restart without saving…", () => GroupAction("update-unsaved", "Update and restart without saving"), HostGate.All),
                 ("Force stop", () => GroupAction("kill", "Force stop"), HostGate.All),
@@ -320,6 +344,10 @@ internal sealed partial class LauncherWindow : Form {
                 ("Clear lock files", () => GroupAction("unlock", "Clear lock files"), HostGate.All),
                 ("Force clear lock files", () => GroupAction("force-unlock", "Force clear lock files"), HostGate.All),
                 ("Fresh world (all regions)…", GroupFreshWorld, HostGate.AllIdle)));
+            // Shown only while deploy.bat or restart-host.bat runs; never gated, so a hung script can always be ended.
+            hostScriptCancel = new Button { Text = "Cancel running script", AutoSize = true, Margin = new Padding(0, 3, 6, 3), Visible = false };
+            hostScriptCancel.Click += (_, _) => CancelGroupScript();
+            all.Controls.Add(hostScriptCancel);
         }
         var server = Row(group != null ? "This server" : "Server");
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 3, 6, 3) };
@@ -407,7 +435,8 @@ internal sealed partial class LauncherWindow : Form {
         IReadOnlyList<LocalHosting.GroupRegion> regions;
         try { regions = LocalHosting.GroupRegions(group); }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException or InvalidDataException) {
-            row.Controls.Add(new Label { Text = "Regions unavailable: " + e.Message, AutoSize = true, Margin = new Padding(0, 9, 0, 3) });
+            row.Controls.Add(new Label { Text = "Regions unavailable: " + e.Message + " Next: check the group config that host.json names, then reopen the launcher.",
+                AutoSize = true, MaximumSize = new Size(LogicalToDeviceUnits(720), 0), Margin = new Padding(0, 9, 0, 3) });
             return;
         }
         var picker = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 190, Margin = new Padding(0, 4, 8, 3) };
@@ -455,14 +484,7 @@ internal sealed partial class LauncherWindow : Form {
             dialog.ShowDialog(this);
             return Task.CompletedTask;
         }, null));
-        menu.Add(("Open its world log", () => {
-            string? path;
-            try { path = LocalHosting.RegionLog(group, Chosen()); }
-            catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException) { HostLine("Could not read " + group.Config + ": " + e.Message); return Task.CompletedTask; }
-            if (path == null) { HostLine("The group config names no root folder."); return Task.CompletedTask; }
-            Open(new ProcessStartInfo(path) { UseShellExecute = true }, "the world log");
-            return Task.CompletedTask;
-        }, null));
+        menu.Add(("Open its world log", () => { OpenWorldLog(Chosen()); return Task.CompletedTask; }, null));
         menu.Add(("-", null, null));
         foreach (var (text, action) in new[] { ("Update and restart without saving…", "update-unsaved"), ("Force stop", "kill"), ("Force restart", "force-restart"), ("Clear lock files", "unlock"),
                 ("Force clear lock files", "force-unlock"), ("Fresh world…", "fresh-world") })
@@ -523,6 +545,7 @@ internal sealed partial class LauncherWindow : Form {
         tabs.TabPages.Add(hostPage = BuildHostPage(profile));
         if (profile.Bot is { } bot) tabs.TabPages.Add(BuildBotPage(bot));
         if (profile.Control is { Group: not null } helpControl) tabs.TabPages.Add(BuildHelpPage(helpControl));
+        if (profile.Control is { Group: not null } translatorControl) tabs.TabPages.Add(BuildTranslatorPage(translatorControl));
         if (profile.Control != null || profile.Bot != null) tabs.TabPages.Add(BuildUpdatesPage(profile));
     }
 
@@ -803,6 +826,20 @@ internal sealed partial class LauncherWindow : Form {
         } finally { hostRefreshing = false; }
     }
 
+    private async Task WatchWmi(bool now) {
+        if (wmiChecking || !WmiHealth.Enabled(root) || (!now && DateTime.Now - wmiCheckedAt < WmiCheckEvery)) return;
+        wmiChecking = true;
+        try {
+            var diagnosis = await Task.Run(() => WmiHealth.Check());
+            wmiCheckedAt = DateTime.Now;
+            var warning = diagnosis.NeedsHelp ? "Windows' process service (WMI): " + diagnosis.Summary + " All regions > More > Windows process check." : null;
+            if (warning != wmiWarning) {
+                wmiWarning = warning;
+                if (warning != null) HostLine(warning);
+            }
+        } finally { wmiChecking = false; }
+    }
+
     private async Task ReadHostState(HostProfile profile) {
         if (profile.Control is { } control) {
             ControlAnswer answer;
@@ -839,6 +876,10 @@ internal sealed partial class LauncherWindow : Form {
             }
             hostStateText = text;
             hostCheckedAt = DateTime.Now;
+            // A status read that timed out is the usual first sign of a broken WMI; check it at once then.
+            var timedOut = hostStatusProblem?.Contains("did not answer within", StringComparison.Ordinal) == true;
+            _ = WatchWmi(timedOut);
+            if (wmiWarning != null) hostStatusProblem = hostStatusProblem == null ? wmiWarning : hostStatusProblem + Environment.NewLine + wmiWarning;
             ShowBoard();
             ApplyHostGates();
             return;
@@ -868,6 +909,8 @@ internal sealed partial class LauncherWindow : Form {
                 null, RegionBuild.Unknown, "Not checked", null, "port " + host.Port, null));
         }
         // A failed check keeps the last rows under its message rather than blanking the board.
+        // Only a status that answered can tell that a dismissed problem has gone away.
+        if (hostStatusProblem == null) hostBoard.Dismissed?.Prune(cards);
         if (cards.Count > 0 || hostStatusProblem == null) hostBoard.ShowCards(cards, coordinator, "Checked " + hostCheckedAt.ToString("T"));
         if (hostStatusProblem != null) hostBoard.ShowMessage(hostStatusProblem, true);
     }
@@ -940,7 +983,8 @@ internal sealed partial class LauncherWindow : Form {
     // Group actions run shard_group.py for every region; deploy and restart-host run their .bat in a
     // hidden cmd.exe and stream its lines here. Nothing opens a console window or takes focus.
     // region: one region id (the One region row), or null for every region.
-    private async Task GroupAction(string action, string label, string? region = null) {
+    // confirmed: the operator already answered one question for several regions (RunFix).
+    private async Task GroupAction(string action, string label, string? region = null, bool confirmed = false) {
         if (host?.Control is not { } control || control.Group == null) return;
         var target = region == null ? "every region" : "region " + region;
         var question = action switch {
@@ -953,6 +997,10 @@ internal sealed partial class LauncherWindow : Form {
             "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
                 "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",
+            "maintenance" => "Run the daily maintenance now? The latest master is prepared in the background while everyone keeps playing; " +
+                "if it cannot be prepared for any region, nothing changes anywhere. Players in every occupied region then see the same " +
+                "countdown, and each running region saves and switches to the update, one after another (its players are moved across " +
+                "automatically). Regions that are asleep or stopped get the update without being started. The gateway stays on its port.",
             "unlock" => UnlockQuestion,
             "force-unlock" => ForceUnlockQuestion,
             "freeze" => $"Put {target} to sleep now? Only an empty, saved world sleeps; a join or travel wakes it.",
@@ -971,8 +1019,8 @@ internal sealed partial class LauncherWindow : Form {
         if (region == null && action is "start" or "stop" or "restart" or "update" or "stage" && BusyNames() is { Length: > 0 } skipped)
             question += $" Busy now and left alone: {skipped}.";
         if (action == "fresh-world") { if (region != null) await FreshWorld(region); return; }
-        if (action == "deploy") { await ChooseAndDeploy(label, region); return; }
-        if (MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
+        if (action == "deploy") { await ChooseAndDeploy(label, region == null ? null : [region]); return; }
+        if (!confirmed && MessageBox.Show(this, question, "Civ13 Launcher", MessageBoxButtons.OKCancel,
                 action is "force-unlock" or "update-unsaved" ? MessageBoxIcon.Warning : MessageBoxIcon.Question,
                 action == "update-unsaved" ? MessageBoxDefaultButton.Button2 : MessageBoxDefaultButton.Button1) != DialogResult.OK) return;
         if (action == "restart-host") {
@@ -1006,6 +1054,53 @@ internal sealed partial class LauncherWindow : Form {
             // An accepted action holds its region's lock by now, so the status read keeps that region busy until it settles.
             await RefreshHostState();
         }
+    }
+
+    // A fix button on the board: cards is the row it was pressed on, every region sharing the problem (the board's
+    // group banner), or nothing for the board's own lines. Each runs the same action, with the same question and
+    // locks, as the button of that name below the board; several regions get one question, then each in turn.
+    // The board discards the returned task, so a failure is reported here rather than lost.
+    private async Task RunFix(IReadOnlyList<RegionCard> cards, RegionFix fix) {
+        try { await RunFixNow(cards, fix); }
+        catch (Exception e) when (e is Win32Exception or IOException or InvalidOperationException or UnauthorizedAccessException) { HostLine(fix.Label + " failed: " + e.Message); }
+    }
+
+    private async Task RunFixNow(IReadOnlyList<RegionCard> cards, RegionFix fix) {
+        if (host == null) return;
+        switch (fix.Action) {
+            case RegionFix.CheckStatus: await RefreshHostState(); return;
+            case RegionFix.RestartHost: await GroupAction("restart-host", "Restart host service"); return;
+            case RegionFix.OpenLog:
+                if (cards.Count > 0) OpenWorldLog(cards[0].Id);
+                return;
+        }
+        if (cards.Count == 0) return;
+        if (cards is [{ Id: "server" }]) {
+            if (fix.Action == "start") await StartHosting();
+            else await HostAction(fix.Action, fix.Label);
+            return;
+        }
+        if (cards.Count == 1) { await GroupAction(fix.Action, fix.Label, cards[0].Id); return; }
+        var ids = cards.Select(card => card.Id).Where(id => id != "server").Distinct().ToList();
+        if (fix.Action == "deploy") { await ChooseAndDeploy(fix.Label, ids); return; }
+        var names = string.Join(", ", cards.Select(card => card.Name));
+        if (MessageBox.Show(this, $"{fix.Label} these {ids.Count} regions: {names}? Each gets the same request as its own {fix.Label} button, one after another.",
+                "Civ13 Launcher", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK) return;
+        foreach (var id in ids) await GroupAction(fix.Action, fix.Label, id, true);
+    }
+
+    // A region's world log, or host.json's own server's.
+    private void OpenWorldLog(string id) {
+        if (host == null) return;
+        if (id == "server" || host.Control?.Group is not { } group) {
+            Open(new ProcessStartInfo(Path.Combine(host.GameDirectory, "logs", "world.log")) { UseShellExecute = true }, "the world log");
+            return;
+        }
+        string? path;
+        try { path = LocalHosting.RegionLog(group, id); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or JsonException) { HostLine("Could not read " + group.Config + ": " + e.Message); return; }
+        if (path == null) { HostLine("The group config names no root folder."); return; }
+        Open(new ProcessStartInfo(path) { UseShellExecute = true }, "the world log");
     }
 
     // The names of the regions an every-region action would skip, for its question.
@@ -1188,7 +1283,7 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     // Update when empty (group config update_when_empty): once the last player leaves a region and it has saved,
-    // the host service builds the latest master beside it and restarts it onto that build. Applies at the next check.
+    // the host service builds the latest master beside it and attempts a standby handover. Applies at the next check.
     private void ShowUpdateWhenEmpty() {
         if (host?.Control?.Group is not { } group) return;
         bool current, follows;
@@ -1204,9 +1299,11 @@ internal sealed partial class LauncherWindow : Form {
             Text = "When the last player leaves a region and it has saved, the host service checks for new commits (every few minutes). " +
                 "If there are any, it builds them beside the running world, then hands the region over: the save is backed up, the new " +
                 "build loads it beside the old world, and only a load that succeeds takes over. A save the new code cannot read leaves the " +
-                "old world running. Nobody is kicked: if a player joins while it builds, it waits until the region is empty again, and a " +
-                "failed build leaves the world running. Asleep regions keep their build until they are next awake and empty. " +
-                "It never wipes a world." +
+                "old world running. The host checks again for players after the standby starts and defers if the region is occupied. " +
+                "The mainland keeps its existing build while asleep or recovering and updates only through a standby handover. " +
+                "Mainlands without save or handover support defer automatic updates. " +
+                "It never wipes a world. A TDM group, which does not save, updates between rounds: the battle takes the update with " +
+                "its next map, and an empty non-mainland barracks restarts onto it." +
                 (follows ? "" : " This group does not fetch yet, so turning it on also sets it to follow origin/master.") });
         var enabled = new CheckBox { Text = "Update regions when they are empty", AutoSize = true, Checked = current };
         layout.Controls.Add(enabled);
@@ -1226,6 +1323,64 @@ internal sealed partial class LauncherWindow : Form {
                 : "Update when empty on: regions move onto new commits once empty and saved." + (followed ? " The group now follows origin/master." : ""));
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
             HostLine("Could not save Update when empty: " + e.Message);
+        }
+    }
+
+    // Daily maintenance (group config "maintenance", scripts/shard-group/daily_maintenance.py): once a day at a set host time every
+    // region moves onto one build together. The host service starts it, so it runs while the launcher is closed.
+    private void ShowDailyMaintenance() {
+        if (host?.Control?.Group is not { } group) return;
+        HostSettings.Maintenance current;
+        try { current = HostSettings.DailyMaintenance(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not read " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = "Daily maintenance", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
+            Text = current.Persistent
+                ? "Once a day, at the time below (this computer's clock), every region is updated to the latest master together.\n\n" +
+                    "The update is prepared in the background while everyone keeps playing. If it cannot be prepared for any region, " +
+                    "nothing changes anywhere that day.\n\n" +
+                    "Players in every occupied region then see the same countdown. When it ends, each running region saves and switches " +
+                    "to the update, one after another, and its players are moved across automatically. Regions that are asleep or " +
+                    "stopped get the update without being started. The gateway stays on its port.\n\n" +
+                    "An admin who uses Cancel Planned Restart in the game keeps that region as it is until the next day. If this computer " +
+                    "is off at the set time, maintenance still runs up to 90 minutes late; after that it waits for the next day.\n\n" +
+                    "The quietest hours on this host have been 01:00 to 05:00."
+                : "This group does not save (TDM), so daily maintenance is not used. Its battle updates between rounds and its barracks when empty." });
+        var enabled = new CheckBox { Text = "Run daily maintenance", AutoSize = true, Checked = current.Enabled, Enabled = current.Persistent };
+        layout.Controls.Add(enabled);
+        // Labels anchored Left only are centred on the row's height, so they line up with the boxes at any DPI.
+        var row = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0, 6, 0, 0), Enabled = current.Persistent };
+        row.Controls.Add(new Label { Text = "Time (24-hour)", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(0, 0, 6, 0) });
+        var parts = current.Time.Split(':');
+        var time = new DateTimePicker { Format = DateTimePickerFormat.Custom, CustomFormat = "HH:mm", ShowUpDown = true, Width = LogicalToDeviceUnits(80),
+            Value = DateTime.Today.AddHours(int.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture)).AddMinutes(int.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture)) };
+        row.Controls.Add(time);
+        row.Controls.Add(new Label { Text = "Players' countdown (minutes)", AutoSize = true, Anchor = AnchorStyles.Left, Margin = new Padding(16, 0, 6, 0) });
+        var warning = new NumericUpDown { Minimum = 0, Maximum = HostSettings.MaxMaintenanceWarningMinutes, Value = current.WarningMinutes, Width = LogicalToDeviceUnits(60) };
+        row.Controls.Add(warning);
+        layout.Controls.Add(row);
+        var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+        var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK, Enabled = current.Persistent };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        buttons.Controls.Add(save);
+        buttons.Controls.Add(cancel);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = save;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        var chosen = time.Value.ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+        try {
+            HostSettings.SetDailyMaintenance(group, enabled.Checked, chosen, (int)warning.Value);
+            HostLine(enabled.Checked ? $"Daily maintenance on at {chosen} with a {(int)warning.Value}-minute countdown; the host service applies it within a minute."
+                : "Daily maintenance off: regions take updates only when empty or from Save, update and restart.");
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not save Daily maintenance: " + e.Message);
         }
     }
 
@@ -1268,6 +1423,76 @@ internal sealed partial class LauncherWindow : Form {
             HostLine("Start region set to " + picked.Name + ": new players start there from the host service's next check.");
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
             HostLine("Could not save the start region: " + e.Message);
+        }
+    }
+
+    // Travel starts (group config keep_down per region): a traveller bound for a land that is not running starts it,
+    // unless it is kept down here. Saved at once; the host reads it at each traveller's request, so no world restarts.
+    private void ShowTravelStarts() {
+        if (host?.Control?.Group is not { } group) return;
+        IReadOnlyList<HostSettings.TravelStart> regions;
+        (bool On, int ColdAfterMinutes) ready;
+        try { regions = HostSettings.TravelStarts(group); ready = HostSettings.Readiness(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not read " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = "Travel and ready lands", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
+            Text = "When a player travels to a land that is not running, the host starts it for them (building it first if it is " +
+                "behind, one build at a time) and tells them it is being prepared. Untick a land to keep it down: travellers " +
+                "to it are turned back until you start it yourself. Sleeping lands still wake as before." });
+        var list = new CheckedListBox { CheckOnClick = true, Width = 300, IntegralHeight = false };
+        foreach (var region in regions)
+            list.Items.Add(region.Name, !region.KeptDown);
+        list.Height = Math.Max(1, Math.Min(regions.Count, 16)) * list.ItemHeight + 8;
+        layout.Controls.Add(list);
+        // Ready lands: suspended next to players, cold storage when nobody is next door (ready_neighbours, cold_after_minutes).
+        var keepReady = new CheckBox { AutoSize = true, Checked = ready.On, Margin = new Padding(0, 10, 0, 0),
+            Text = "Keep lands next to players ready to wake in seconds" };
+        layout.Controls.Add(keepReady);
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 2, 0, 6),
+            Text = "A land next to one with players stays suspended in memory, and one in cold storage is started ahead. " +
+                "Gaia and the oceans around it are always kept ready. Kept-down lands are never started ahead." });
+        var coldRow = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0) };
+        coldRow.Controls.Add(new Label { AutoSize = true, Text = "Cold storage after", Margin = new Padding(0, 6, 4, 0) });
+        var coldAfter = new NumericUpDown { Minimum = 0, Maximum = HostSettings.MaxColdAfterMinutes, Value = ready.ColdAfterMinutes, Width = 70 };
+        coldRow.Controls.Add(coldAfter);
+        coldRow.Controls.Add(new Label { AutoSize = true, Text = "minutes with nobody next door (0 = never)", Margin = new Padding(4, 6, 0, 0) });
+        layout.Controls.Add(coldRow);
+        keepReady.CheckedChanged += (_, _) => coldRow.Enabled = keepReady.Checked;
+        coldRow.Enabled = keepReady.Checked;
+        var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+        var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        buttons.Controls.Add(save);
+        buttons.Controls.Add(cancel);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = save;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        var minutes = (int)coldAfter.Value;
+        if (keepReady.Checked != ready.On || minutes != ready.ColdAfterMinutes) {
+            try {
+                HostSettings.SetReadiness(group, keepReady.Checked, minutes);
+                HostLine(!keepReady.Checked ? "Ready lands off: lands sleep and wake on their own timers again."
+                    : "Ready lands on: lands next to players stay ready" + (minutes == 0 ? "; none go to cold storage." : ", and lands with nobody next door go to cold storage after " + minutes + " minutes."));
+            } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+                HostLine("Could not save ready lands: " + e.Message);
+            }
+        }
+        var kept = regions.Where((region, index) => !list.GetItemChecked(index)).Select(region => region.Id).ToList();
+        if (kept.SequenceEqual(regions.Where(region => region.KeptDown).Select(region => region.Id))) return;
+        try {
+            HostSettings.SetKeptDown(group, kept);
+            HostLine(kept.Count == 0 ? "Travel starts on for every land: travellers start any land that is not running."
+                : "Travel starts: " + string.Join(", ", regions.Where(region => kept.Contains(region.Id)).Select(region => region.Name))
+                    + " kept down - travellers are turned back until you start " + (kept.Count == 1 ? "it" : "them") + ".");
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not save travel starts: " + e.Message);
         }
     }
 
@@ -1315,7 +1540,8 @@ internal sealed partial class LauncherWindow : Form {
 
     // Asks which regions to update (all ticked, or only `only` from the One region row; the mainland is
     // marked), then deploys them.
-    private async Task ChooseAndDeploy(string label, string? only = null) {
+    // only: the regions to tick (the One region row's region, or the regions sharing a problem on the board).
+    private async Task ChooseAndDeploy(string label, IReadOnlyCollection<string>? only = null) {
         if (host?.Control?.Group is not { } group) return;
         IReadOnlyList<LocalHosting.GroupRegion> regions;
         try { regions = LocalHosting.GroupRegions(group); }
@@ -1332,7 +1558,7 @@ internal sealed partial class LauncherWindow : Form {
         bool Busy(string id) => busyRegions.Contains(id) || actingRegions.Contains(id);
         foreach (var region in regions)
             list.Items.Add(region.Name + (region.Mainland ? " (mainland)" : "") + (Busy(region.Id) ? " (busy now)" : ""),
-                only == null ? !Busy(region.Id) : region.Id == only);
+                only == null ? !Busy(region.Id) : only.Contains(region.Id));
         layout.Controls.Add(list);
         var buttons = new FlowLayoutPanel { FlowDirection = FlowDirection.RightToLeft, AutoSize = true, Width = 460, Margin = new Padding(0, 8, 0, 0) };
         var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, AutoSize = true };
@@ -1407,24 +1633,57 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     // Runs deploy.bat or restart-host.bat, streaming each line to the Host tab; returns its exit code and output.
+    // The script has a time limit (LocalHosting.GroupScriptLimit) and the Cancel button ends it, so a script
+    // that hangs never locks the Host tab until the launcher is closed.
     private async Task<(int Exit, string Output)> RunGroupScript(HostControl control, string script, bool resume, IReadOnlyList<string>? regions = null) {
         var output = new System.Text.StringBuilder();
-        var exit = await Task.Run(() => {
-            using var process = Process.Start(LocalHosting.GroupScriptStep(control, script, resume, regions)) ?? throw new IOException("Could not start cmd.exe.");
-            process.StandardInput.Close();
-            void Line(object _, DataReceivedEventArgs e) {
-                if (e.Data is not { Length: > 0 } text) return;
+        using var cancel = new CancellationTokenSource();
+        groupScriptCancel = cancel;
+        ShowGroupScriptCancel();
+        try {
+            var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, script, resume, regions), text => {
                 lock (output) output.AppendLine(text);
-                BeginInvoke(() => HostLine(text));
+                try { BeginInvoke(() => HostLine(text)); } catch (InvalidOperationException) { } // the window closed
+            }, cancel.Token));
+            lock (output) return (exit, output.ToString());
+        } catch (IOException e) when (e is LocalHosting.StepTimedOut or LocalHosting.StepCancelled) {
+            // Both scripts end the host service task before they start it again (deploy.bat in its last step).
+            // Cut short between the two, the service would stay down until the next logon: start it, which
+            // does nothing while it runs. This step has its own limit and is not tied to the cancelled one.
+            var service = "";
+            try {
+                var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, "start-host"), _ => { }));
+                if (exit != 0) service = $" The host service could not be started again (exit {exit}): use Restart host service.";
+            } catch (Exception x) when (x is Win32Exception or IOException or InvalidOperationException) {
+                service = " The host service could not be started again (" + x.Message + "): use Restart host service.";
             }
-            process.OutputDataReceived += Line;
-            process.ErrorDataReceived += Line;
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            process.WaitForExit();
-            return process.ExitCode;
-        });
-        lock (output) return (exit, output.ToString());
+            // Ending the script ends neither a world nor work it already handed to a worker.
+            throw new IOException(e.Message + " No world was stopped by this. A build or handover it already asked for carries on: " +
+                "wait for the board to settle, then run the action again." + service, e);
+        } finally {
+            groupScriptCancel = null;
+            ShowGroupScriptCancel();
+        }
+    }
+
+    // The Cancel button shows only while deploy.bat or restart-host.bat runs.
+    private void ShowGroupScriptCancel() {
+        if (hostScriptCancel == null) return;
+        hostScriptCancel.Visible = groupScriptCancel != null;
+        hostScriptCancel.Enabled = groupScriptCancel != null;
+    }
+
+    private void CancelGroupScript() {
+        if (groupScriptCancel is not { } cancel) return;
+        if (MessageBox.Show(this,
+                "Cancel the running script? It is ended where it stands. No world is stopped by this, and a build or handover it already asked for " +
+                "carries on. Use this for a script that hangs; a normal update can sit quietly for many minutes while it builds.",
+                "Civ13 Launcher", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
+        // It may have finished while the question was open.
+        if (!ReferenceEquals(groupScriptCancel, cancel)) return;
+        hostScriptCancel!.Enabled = false;
+        HostLine("Cancelling the running script...");
+        try { cancel.Cancel(); } catch (ObjectDisposedException) { }
     }
 
     // Enables each host action by what it acts on, from the last status and the requests being sent now.
@@ -1446,6 +1705,8 @@ internal sealed partial class LauncherWindow : Form {
             _ => false,
         };
         foreach (var (button, gate) in hostActions) button.Enabled = Open(gate);
+        // The board's own fix buttons follow the same locks, per region.
+        hostBoard?.SetGates(busyRegions.Concat(actingRegions).ToHashSet(), locked, anyBusy);
         foreach (var (item, gate) in hostMenuActions) item.Enabled = Open(gate);
         if (hostStart != null) hostStart.Enabled = !locked && !ownBusy && byond != null;
         var settled = hostControlBusy && !anyBusy;

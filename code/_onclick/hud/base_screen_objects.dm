@@ -195,6 +195,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
+	parentmob.combat_stance_doll_clicked()
 	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
@@ -205,6 +206,8 @@
 /obj/screen/zone_sel/update_icon()
 	overlays.Cut()
 	overlays += image('icons/mob/zone_sel.dmi', "[parentmob.targeted_organ]")
+	if (parentmob.combat_doll_flash)
+		overlays += combat_doll_flash_image('icons/mob/zone_sel.dmi', parentmob.combat_doll_flash)
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
 //--------------------------------------------------ZONE SELECT---------------------------------------------------------
 /obj/screen/zone_sel2
@@ -294,6 +297,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
+	parentmob.combat_stance_doll_clicked()
 	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
@@ -304,6 +308,8 @@
 /obj/screen/zone_sel2/update_icon()
 	overlays.Cut()
 	overlays += image('icons/mob/screen/zone_sel_lw.dmi', "[parentmob.targeted_organ]")
+	if (parentmob.combat_doll_flash)
+		overlays += combat_doll_flash_image('icons/mob/screen/zone_sel_lw.dmi', parentmob.combat_doll_flash)
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
 //--------------------------------------------------ZONE SELECT---------------------------------------------------------
 /obj/screen/zone_sel3
@@ -372,6 +378,7 @@
 		update_icon()
 
 	selecting = parentmob.targeted_organ
+	parentmob.combat_stance_doll_clicked()
 	parentmob.HUDneed["random damage zone"].update_icon()
 	return TRUE
 
@@ -382,6 +389,8 @@
 /obj/screen/zone_sel3/update_icon()
 	overlays.Cut()
 	overlays += image('icons/mob/screen/zone_sel_fof.dmi', "[parentmob.targeted_organ]")
+	if (parentmob.combat_doll_flash)
+		overlays += combat_doll_flash_image('icons/mob/screen/zone_sel_fof.dmi', parentmob.combat_doll_flash)
 //--------------------------------------------------ZONE SELECT END---------------------------------------------------------
 //--------------------------------------------------RANDOM ZONE SELECT---------------------------------------------------------
 /obj/screen/zone_sel_random
@@ -389,12 +398,15 @@
 	icon_state = "random"
 	var/previous_s = ""
 
+// Random leaves any combat stance; choosing a stance leaves random (combat_stance.dm).
 /obj/screen/zone_sel_random/Click(location, control,params)
 	if (parentmob.targeted_organ == "random" && previous_s != "")
 		parentmob.targeted_organ = previous_s
 	else
 		previous_s = parentmob.targeted_organ
 		parentmob.targeted_organ = "random"
+		if (parentmob.combat_stance_active())
+			parentmob.set_combat_stance(COMBAT_STANCE_MANUAL)
 	update_icon()
 	return TRUE
 
@@ -922,6 +934,27 @@
 	else if (parentmob.tactic == "defend")
 		icon_state = "defend"
 
+// Combat stance button beside the tactic button (combat_stance.dm). Click
+// cycles Manual and each stance; the art names the stance (Fable 5.2).
+/obj/screen/combat_stance
+	name = "combat stance"
+	icon_state = "stance_manual"
+
+/obj/screen/combat_stance/New()
+	..()
+	update_icon()
+
+/obj/screen/combat_stance/Click()
+	var/list/order = list(COMBAT_STANCE_MANUAL) + combat_stance_order
+	var/index = order.Find(parentmob.combat_stance)
+	parentmob.set_combat_stance(index && index < order.len ? order[index + 1] : COMBAT_STANCE_MANUAL)
+	return TRUE
+
+/obj/screen/combat_stance/update_icon()
+	var/stance = valid_combat_stance(parentmob.combat_stance) ? parentmob.combat_stance : COMBAT_STANCE_MANUAL
+	icon_state = "stance_[stance]"
+	name = "combat stance: [combat_stance_names[stance]]"
+
 /obj/screen/mood
 	name = "mood"
 
@@ -967,8 +1000,13 @@
 		update_icon()
 		return TRUE
 
+	// walk -> run -> sprint -> crawl -> sneak -> walk. Sprinting is skipped
+	// while too winded to start one (sprint.dm).
 	switch (C.m_intent)
 		if ("run")
+			if (!C.sprinting && C.start_sprint(FALSE))
+				return TRUE
+			C.sprinting = FALSE
 			C.m_intent = "proning"
 		if ("proning")
 			if (C.facing_dir)
@@ -977,6 +1015,7 @@
 		if ("stealth")
 			C.m_intent = "walk"
 		if ("walk")
+			C.sprinting = FALSE
 			C.m_intent = "run"
 		else
 			C.m_intent = "walk"
@@ -1000,15 +1039,36 @@
 
 /obj/screen/mov_intent/update_icon()
 	var/mob/living/human/C = parentmob
+	overlays.Cut()
 	switch(C.m_intent)
 		if ("run")
 			icon_state = "running"
+			if (C.is_sprinting())
+				if (mov_intent_has_state(icon, "sprinting"))
+					icon_state = "sprinting"
+				else
+					// Stand-in until the HUD styles draw a sprint icon: the
+					// running icon washed orange.
+					var/image/glow = image(icon, icon_state)
+					glow.color = "#ff7a1a"
+					glow.alpha = 150
+					overlays += glow
 		if ("walk")
 			icon_state = "walking"
 		if ("proning")
 			icon_state = "proning"
 		if ("stealth")
 			icon_state = "stealth"
+
+// Whether a HUD icon file has an icon state, checked once per file.
+/proc/mov_intent_has_state(icon_file, state)
+	var/static/list/states_by_icon = list()
+	var/key = "[icon_file]"
+	var/list/states = states_by_icon[key]
+	if (!states)
+		states = icon_states(icon_file)
+		states_by_icon[key] = states
+	return (state in states)
 
 //-----------------------mov_intent END------------------------------
 /obj/screen/equip

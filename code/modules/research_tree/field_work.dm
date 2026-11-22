@@ -24,10 +24,18 @@ var/global/list/field_activities = list(
 	"samples" = "survey samples analysed at a mission console",
 	"harvests" = "crops harvested",
 	"forage" = "finds made foraging",
-	"butchering" = "animals butchered")
+	"butchering" = "animals butchered",
+	"mining" = "ore veins struck while mining",
+	"smelting" = "ore or metal smelted in a bloomery, blast furnace, kiln or tatara",
+	"firing" = "pieces of clay or loads of glass sand fired in an oven")
 
 // experiment id => list(node id, activity, amount needed, share of the node, what to do)
-var/global/list/field_experiments = list(
+var/global/list/field_experiments = field_experiments_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/field_experiments_table()
+	return list(
 	"emergency_medicine_theatre" = list("emergency_medicine", "surgery", 15, 0.3, "Complete 15 surgery steps"),
 	"emergency_medicine_cases" = list("emergency_medicine", "diagnosis", 6, 0.2, "Diagnose 6 sick patients with a doctor's handbook"),
 	"soil_science_harvests" = list("soil_science", "harvests", 40, 0.4, "Harvest 40 crops"),
@@ -73,7 +81,18 @@ var/global/list/field_experiments = list(
 	"basic_agriculture_forage" = list("basic_agriculture", "forage", 12, 0.4, "Forage 12 finds from the ground"),
 	"stone_arms_butchering" = list("stone_arms", "butchering", 2, 0.4, "Butcher 2 animals"),
 	"archery_butchering" = list("archery", "butchering", 3, 0.4, "Butcher 3 animals"),
-	"padded_armor_butchering" = list("padded_armor", "butchering", 2, 0.4, "Butcher 2 animals"))
+	"padded_armor_butchering" = list("padded_armor", "butchering", 2, 0.4, "Butcher 2 animals"),
+	// Natural Science from mining, smelting and firing (natural_science_work.dm).
+	"early_cells_mining" = list("early_cells", "mining", 4, 0.15, "Strike 4 ore veins while mining"),
+	"glassworking_firing" = list("glassworking", "firing", 6, 0.15, "Fire 6 pieces of clay or loads of glass sand in an oven"),
+	"optics_instruments_firing" = list("optics_instruments", "firing", 12, 0.15, "Fire 12 pieces of clay or loads of glass sand in an oven"),
+	"gunpowder_mining" = list("gunpowder", "mining", 8, 0.15, "Strike 8 ore veins while mining"),
+	"steelmaking_smelting" = list("steelmaking", "smelting", 40, 0.15, "Smelt 40 ore or metal"),
+	"galvanic_cells_mining" = list("galvanic_cells", "mining", 12, 0.15, "Strike 12 ore veins while mining"),
+	"combustion_reactions" = list("combustion", "reactions", 6, 0.2, "Run 6 syntheses at a reaction bench"),
+	"combustion_smelting" = list("combustion", "smelting", 60, 0.15, "Smelt 60 ore or metal"),
+	"alloys_smelting" = list("alloys", "smelting", 120, 0.25, "Smelt 120 ore or metal"),
+	"alloys_mining" = list("alloys", "mining", 20, 0.15, "Strike 20 ore veins while mining"))
 
 #define FIELD_EXP_NODE 1
 #define FIELD_EXP_ACTIVITY 2
@@ -127,6 +146,8 @@ var/global/list/field_activity_caps = null
 // Called from the systems themselves whenever someone does the activity.
 /proc/note_field_work(mob/user, activity, amount = 1)
 	var/mob/living/human/H = user
+	if (activity == "harvests")
+		accolade_meet_mob(H, "farmer") // a crop harvest (farming.dm); accolades.dm
 	if (!istype(H) || H.stat == DEAD || amount <= 0 || !map || !map.book_research_enabled())
 		return FALSE
 	var/cap = field_activity_cap(activity)

@@ -32,6 +32,24 @@ var/global/list/recipe_node_requirements = list()
 		return null
 	return recipe_node_requirements[result_path_string]
 
+// The research node a sample teaches: the mapping of its nearest mapped type.
+// A subtype with its own node (a knife sheath under the sword sheath) teaches
+// that node, not its parent's.
+/proc/research_sample_node(obj/W)
+	if (!W)
+		return null
+	get_node_recipe_paths(null) // builds recipe_paths_by_node
+	var/best_node = null
+	var/best_len = 0
+	for (var/nid in recipe_paths_by_node)
+		for (var/ptype in recipe_paths_by_node[nid])
+			// Ancestor paths are prefixes, so the longest match is the nearest.
+			var/plen = length("[ptype]")
+			if (plen > best_len && istype(W, ptype))
+				best_len = plen
+				best_node = nid
+	return best_node
+
 // Reverse index: node id => list of unique recipe display names it unlocks.
 // Built lazily (not at boot) and cached, since craftlist_lists is only
 // populated partway through world/New() -- by the time any player actually
@@ -262,18 +280,28 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("bronze_working", "Bronze Working", "Industrial", 142, 0, RESEARCH_MODE_PROTOTYPE, list("basic_tools"), 1, /obj/item/weapon/clay/mold/axehead))
 	// Prototype: a bronze ingot mold (gated on bronze_working, its own direct prereq).
 	register_research_node(new /datum/research_node("iron_smithing", "Iron Smithing", "Industrial", 195, 1, RESEARCH_MODE_PROTOTYPE, list("bronze_working"), 2, /obj/item/weapon/clay/mold))
-	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 4))
+	register_research_node(new /datum/research_node("steelmaking", "Steelmaking", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("blast_furnaces"), 4))
 	// Japanese iron-sand steel (tatara.dm): iron sand smelted in a clay
 	// furnace, so steel without rock ore. A trunk metal: Iron Smithing's clay
 	// mould already teaches the clay work.
 	register_research_node(new /datum/research_node("tatara_smelting", "Tatara Smelting", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))
+	// Crucible steel (crucible_steel.dm): wootz cakes from iron and charcoal
+	// sealed in clay crucibles and fired in a kiln under a bellows blast.
+	register_research_node(new /datum/research_node("crucible_steel", "Crucible Steel", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("iron_smithing"), 2))
+	// Blast furnaces driven by water power, coke, and refining pig iron into
+	// wrought iron and blister steel in bulk (steel_works.dm). A trunk metal.
+	register_research_node(new /datum/research_node("blast_furnaces", "Blast Furnaces & Coke", "Industrial", 200, 2, RESEARCH_MODE_ANALYSIS, list("iron_smithing","watermills"), 3))
 	// Ore processing and quicksilver (mercury.dm, docs/mercury.md): washing and
 	// stamping ore, then mercury amalgamation, then powered milling.
 	register_research_node(new /datum/research_node("ore_dressing", "Ore Dressing", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("resource_processing"), 2))
 	register_research_node(new /datum/research_node("amalgamation", "Amalgamation", "Industrial", 200, 2, RESEARCH_MODE_ANALYSIS, list("ore_dressing","apothecary"), 3))
+	// Open hearth steel (steel_works.dm): pig iron and scrap melted slowly into fine steel.
+	register_research_node(new /datum/research_node("open_hearth", "Open Hearth Steel", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("steelmaking","factories"), 5))
 	register_research_node(new /datum/research_node("alloys", "Alloys", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("steelmaking"), 6))
 	// Hall-Heroult (1886) and Bayer (1888): aluminium from bauxite (aluminium.dm).
 	register_research_node(new /datum/research_node("aluminium_refining", "Aluminium Refining", "Industrial", 305, 5, RESEARCH_MODE_ANALYSIS, list("electricity","alloys"), 6))
+	// Chobham-type armour (1970s): ceramic tiles bonded to aramid (composite_armour.dm).
+	register_research_node(new /datum/research_node("composite_armour", "Composite Armour", "Military", 420, 7, RESEARCH_MODE_ANALYSIS, list("modern_armor","mechanized_war"), 8))
 	// Chemical cells precede electrical power distribution: Galvanic Cells are
 	// groundwork for Electricity.
 	register_research_node(new /datum/research_node("early_cells", "Early Chemical Cells", "Industrial", 95, 0, RESEARCH_MODE_ANALYSIS, list("bronze_working"), 1))
@@ -314,7 +342,10 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("automation", "Automation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("assembly_line","electricity"), 7))
 	// Prototype: an early electronic device (gated on assembly_line, era5, well
 	// before this node's era8 -- assembly_line is baseline-granted by then).
-	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity"), 8, /obj/item/camera/coldwar))
+	// Electronic Computing (1969): transistor minicomputers with a command-line
+	// OS, tape drives, diskettes and line printers (modular computers plan).
+	register_research_node(new /datum/research_node("electronic_computing", "Electronic Computing", "Industrial", 380, 6, RESEARCH_MODE_ANALYSIS, list("automation","electricity"), 7))
+	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity","electronic_computing"), 8, /obj/item/camera/coldwar))
 	// Capstone into the Digital Age (2026). Prototype: a mobile phone (gated on
 	// digital_computing, era8, so it is always buildable before this node).
 	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_computing"), 9))
@@ -374,7 +405,10 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("rail_steam", "Rail & Steam", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("wagons_ships","steam_power"), 4))
 	register_research_node(new /datum/research_node("industrial_milling", "Industrial Milling", "Industrial", 235, 3, RESEARCH_MODE_ANALYSIS, list("amalgamation","steam_power"), 4))
 	register_research_node(new /datum/research_node("automobiles", "Automobiles", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","combustion"), 5))
-	// Powered Flight (1903) unlocks the aircraft hangar that builds the light plane.
+	// A wooden dirigible can fly on hydrogen from the Utilities water-gas retort.
+	// This analysis subject does not advance the era or unlock powered aircraft.
+	register_research_node(new /datum/research_node("lighter_than_air_flight", "Lighter-than-Air Flight", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("wagons_ships","utilities"), 5))
+	// Powered Flight unlocks the light plane's hangar and advances the era to 1943.
 	// The civil twin of Mechanized Warfare: also opens WW2. Prototype: a small
 	// fuel tank (gated on combustion, its own direct prereq).
 	register_research_node(new /datum/research_node("powered_flight", "Powered Flight", "Industrial", 270, 5, RESEARCH_MODE_PROTOTYPE, list("combustion"), 6, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/small))
@@ -413,6 +447,21 @@ var/global/list/node_grid_col_cache = null
 	// --- Military: Archery ---
 	register_research_node(new /datum/research_node("archery", "Archery", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("crossbows", "Crossbows", "Military", 130, 1, RESEARCH_MODE_ANALYSIS, list("archery"), 2))
+	// --- Military: Martial disciplines (hand_conditioning.dm) ---
+	register_research_node(new /datum/research_node("martial_disciplines", "Martial Disciplines", "Military", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
+	// Martial schools (martial_schools.dm): one per school, from its own era on.
+	register_research_node(new /datum/research_node("school_grappling", "Grappling", "Military", 80, 0, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 0))
+	register_research_node(new /datum/research_node("school_pugilism", "Classical Pugilism", "Military", 115, 0, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 1))
+	register_research_node(new /datum/research_node("school_pankration", "Pankration", "Military", 115, 0, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 1))
+	register_research_node(new /datum/research_node("school_shaolin", "Shaolin Kung Fu", "Military", 150, 1, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 2))
+	register_research_node(new /datum/research_node("school_wing_chun", "Wing Chun", "Military", 185, 2, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 3))
+	register_research_node(new /datum/research_node("school_hard_hand", "Hard-Hand Striking", "Military", 185, 2, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 3))
+	register_research_node(new /datum/research_node("school_savate", "Savate", "Military", 220, 3, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 4))
+	register_research_node(new /datum/research_node("school_judo", "Judo", "Military", 255, 4, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 5))
+	register_research_node(new /datum/research_node("school_combatives", "Military Combatives", "Military", 290, 5, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 6))
+	register_research_node(new /datum/research_node("school_krav_maga", "Krav Maga", "Military", 325, 6, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 7))
+	register_research_node(new /datum/research_node("school_bjj", "Brazilian Jiu-Jitsu", "Military", 360, 7, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 8))
+	register_research_node(new /datum/research_node("school_mma", "Mixed Martial Arts", "Military", 395, 8, RESEARCH_MODE_ANALYSIS, list("martial_disciplines"), 9))
 	// --- Military: Order & Defense ---
 	// Law & Order era 1: organized justice (jails, cuffs, batons). The truly
 	// primitive pieces (noose, rope cuffs) live in stone_arms era0 instead.
@@ -594,6 +643,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/sword/gladius" = "bronze_weapons",
 		"/obj/item/weapon/material/sword/khopesh" = "bronze_weapons",
 		"/obj/item/weapon/material/sword/xiphos" = "bronze_weapons",
+		// Short sword sheath holds the bronze swords above, so it unlocks with them.
+		"/obj/item/clothing/accessory/storage/sheath" = "bronze_weapons",
 		"/obj/item/weapon/shield/bronze" = "bronze_weapons",
 		"/obj/item/weapon/shield/egyptian" = "bronze_weapons",
 		"/obj/item/weapon/shield/iron" = "bronze_weapons",
@@ -610,6 +661,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/component_workbench/toolsmith" = "bronze_working",
 		"/obj/item/clothing/accessory/pendant_hone" = "bronze_working",
 		"/obj/structure/fluid_tank/plain" = "bronze_working",
+		"/obj/structure/weather_instrument/rain_gauge" = "bronze_working",
+		"/obj/covers/copper_plate" = "bronze_working",
+		"/obj/covers/bronze_plate" = "bronze_working",
+		"/obj/covers/lead_sheet" = "bronze_working",
 		// cooperage
 		"/obj/structure/simple_door/key_door/anyone/ship" = "wagons_ships",
 		// crossbows
@@ -659,6 +714,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/clay/mold/parts" = "bronze_working",
 		"/obj/structure/workshop_machine/lathe/pole" = "workshops",
 		"/obj/structure/fluid_pump/hand" = "workshops",
+		"/obj/structure/yard_office" = "workshops",
 		"/obj/structure/workshop_machine/lathe/engine" = "machined_tools",
 		// law_order
 		"/obj/item/weapon/key/soviet/guard" = "law_order",
@@ -702,6 +758,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/shoes/medieval/knight" = "mail_plate",
 		"/obj/item/clothing/shoes/orc" = "mail_plate",
 		"/obj/item/clothing/suit/armor/imperial/imperial_chestplate" = "mail_plate",
+		"/obj/item/clothing/suit/armor/proof_cuirass" = "mail_plate",
+		"/obj/item/clothing/suit/armor/proof_cuirass/japanese" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval/chainmail" = "mail_plate",
 		"/obj/item/clothing/suit/armor/medieval/emirate" = "mail_plate",
@@ -825,6 +883,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/component_workbench/weapon" = "stone_arms",
 		// trench_warfare armor (cartridge_ammo)
 		"/obj/item/clothing/accessory/armor/modern/british" = "trench_warfare",
+		"/obj/item/clothing/accessory/armor/modern/british/heavy" = "trench_warfare",
 		"/obj/item/clothing/accessory/armor/modern/plate" = "trench_warfare",
 		"/obj/item/clothing/head/helmet/modern/stahlhelm" = "trench_warfare",
 		"/obj/item/clothing/head/helmet/ww/adrian" = "trench_warfare",
@@ -849,11 +908,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/lifting_weight/great" = "basic_tools",
 		"/obj/item/weapon/lifting_weight/hand_weights" = "bronze_working",
 		"/obj/item/weapon/lifting_weight/barbell" = "factories",
-		"/obj/structure/training_course/post" = "primitive_construction",
-		"/obj/structure/training_course/post/finish" = "primitive_construction",
-		"/obj/structure/training_course/hurdle" = "primitive_construction",
-		"/obj/structure/training_course/balance_log" = "primitive_construction",
-		"/obj/structure/training_course/hurdle/steel" = "factories",
+		"/obj/item/weapon/skipping_rope" = "basic_tools",
+		"/obj/structure/treadwheel" = "primitive_construction",
+		"/obj/structure/treadwheel/treadmill" = "factories",
 		// --- alloys (1) ---
 		"/obj/item/clothing/shoes/weather/climbing_boots" = "alloys",
 		// --- anesthetic_surgery (2) ---
@@ -935,6 +992,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/cargo_hold" = "automobiles",
 		"/obj/structure/car_workshop" = "automobiles",
 		"/obj/structure/car_workshop/hangar" = "powered_flight",
+		"/obj/structure/car_workshop/airship_yard" = "lighter_than_air_flight",
 		"/obj/structure/vehicleparts/frame/car/aircraft/section" = "powered_flight",
 		"/obj/structure/vehicleparts/axis/aircraft/airframe" = "powered_flight",
 		"/obj/structure/bed/chair/drivers/aircraft/loose" = "powered_flight",
@@ -962,16 +1020,19 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mine_sweep/magnetic" = "magnetic_mines",
 		"/obj/structure/mine_sweep/oropesa" = "naval_mines",
 		"/obj/structure/torpedo_tube" = "naval_mines",
+		"/obj/structure/cannon/modern/ship_turret" = "naval_mines",
+		"/obj/structure/hull_armour" = "naval_mines",
 		"/obj/item/naval_torpedo" = "naval_mines",
 		"/obj/item/naval_torpedo/magnetic" = "magnetic_mines",
 		"/obj/item/weapon/aircraft_bomb" = "powered_flight",
-		"/obj/item/airship_planks" = "powered_flight",
+		"/obj/item/airship_planks" = "lighter_than_air_flight",
 		"/obj/item/airship_planks/aluminium" = "powered_flight",
 		"/obj/item/airship_planks/steel" = "powered_flight",
-		"/obj/item/airship_gas_cell" = "powered_flight",
-		"/obj/item/airship_helm_kit" = "powered_flight",
+		"/obj/item/airship_gas_cell" = "lighter_than_air_flight",
+		"/obj/item/airship_gas_cell/rubber" = "lighter_than_air_flight",
+		"/obj/item/airship_helm_kit" = "lighter_than_air_flight",
 		"/obj/structure/airship_bomb_hatch" = "powered_flight",
-		"/obj/item/weapon/reagent_containers/gas_vessel" = "powered_flight",
+		"/obj/item/weapon/reagent_containers/gas_vessel" = "lighter_than_air_flight",
 		"/obj/item/gas_hose" = "powered_flight",
 		"/obj/structure/gas_works/hydrogen_generator" = "powered_flight",
 		"/obj/structure/gas_works/helium_separator" = "powered_flight",
@@ -1123,11 +1184,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/trap_kit/weir" = "basic_tools",
 		"/obj/structure/dugout_log" = "basic_tools",
 		"/obj/item/weapon/paddle" = "basic_tools",
+		"/obj/item/boat_rollers" = "basic_tools",
 		"/obj/item/weapon/leash" = "basic_tools",
 		// --- brickmaking (12) ---
 		"/obj/covers/stone_wall/brick" = "brickmaking",
 		"/obj/covers/stone_wall/brick/archway" = "brickmaking",
 		"/obj/covers/stonebrickfloor" = "brickmaking",
+		"/obj/covers/brick_paving" = "brickmaking",
 		"/obj/item/stack/material/stonebrick" = "brickmaking",
 		"/obj/item/stack/material/marblebrick" = "brickmaking",
 		"/obj/covers/marble_wall/plain/brick" = "brickmaking",
@@ -1149,7 +1212,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/material/thrown/kunai_normal" = "bronze_weapons",
 		"/obj/item/weapon/material/thrown/star" = "bronze_weapons",
 		"/obj/item/weapon/melee/classic_baton/whip" = "bronze_weapons",
-		// --- bronze_working (7) ---
+		// --- bronze_working (8) ---
 		"/obj/structure/bell" = "bronze_working",
 		"/obj/item/weapon/clay/mold" = "bronze_working",
 		"/obj/item/weapon/storage/ore_collector" = "bronze_working",
@@ -1162,6 +1225,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/cannon_ball" = "cannon",
 		"/obj/structure/cannon" = "cannon",
 		"/obj/structure/cannon/hooped" = "cannon",
+		"/obj/structure/railing/built/gunwale/gun_port" = "cannon",
 		// --- cartridge_ammo (5) ---
 		"/obj/item/clothing/accessory/storage/lanyard/pistol" = "cartridge_ammo",
 		"/obj/item/ammo_magazine/emptybelt" = "cartridge_ammo",
@@ -1191,6 +1255,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate/cart/copper" = "carts",
 		"/obj/structure/closet/crate/cart/stone" = "carts",
 		"/obj/structure/closet/crate/cart/wooden" = "carts",
+		"/obj/covers/wood/ramp" = "carts",
 		"/obj/structure/vehicle/carriage" = "carts",
 		"/obj/structure/vehicle/bicycle/running" = "carts",
 		"/obj/structure/vehicle/raft" = "carts",
@@ -1256,6 +1321,16 @@ var/global/list/node_grid_col_cache = null
 		// refineries in the Main tree. Under the specialist Tailoring tree
 		// (Synthetic Fabrics) factionless players could never unlock it.
 		"/obj/structure/bakelizer" = "combustion",
+		"/obj/structure/hot_press" = "combustion",
+		// Particle board is pressed in the hot press (particle_board.dm).
+		"/obj/structure/table/rack/shelf/wooden/particle_board" = "combustion",
+		"/obj/structure/table/modern/table/particle_board" = "combustion",
+		"/obj/structure/closet/cabinet/particle_board" = "combustion",
+		"/obj/structure/closet/cabinet/particle_board/wall" = "combustion",
+		"/obj/structure/bookcase/particle_board" = "combustion",
+		"/obj/covers/wood_wall/particle_board" = "combustion",
+		"/obj/covers/wood/particle_board" = "combustion",
+		"/obj/structure/layup_table" = "modern_construction",
 		// --- cooperage (17) ---
 		"/obj/structure/closet/ice_house" = "cooperage",
 		"/obj/structure/well_fitting/windlass" = "cooperage",
@@ -1271,6 +1346,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/storage/ww2/shaving_kit" = "cooperage",
 		"/obj/structure/closet/crate/chest" = "cooperage",
 		"/obj/structure/closet/crate/empty" = "cooperage",
+		"/obj/structure/cargo_hatch" = "cooperage",
 		"/obj/structure/closet/crate/empty/large" = "cooperage",
 		"/obj/structure/closet/crate/large" = "cooperage",
 		"/obj/structure/closet/crate/ww2" = "cooperage",
@@ -1287,6 +1363,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/factory_fabricator/computerized" = "digital_computing",
 		// --- additive_manufacturing (9) ---
 		"/obj/structure/factory_fabricator/printer" = "additive_manufacturing",
+		"/obj/structure/factory_fabricator/printer/resin" = "additive_manufacturing",
 		// --- consumer_electronics (9) ---
 		"/obj/item/weapon/telephone/mobile/smartphone" = "consumer_electronics",
 		"/obj/structure/lamp/lamp_big/led" = "consumer_electronics",
@@ -1368,6 +1445,20 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/reagent_dispensers/propellant_plant/methalox" = "local_resources",
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
+		"/obj/item/integrated_circuit" = "digital_computing",
+		"/obj/item/computer_module/processor/microprocessor" = "digital_computing",
+		"/obj/item/computer_module/storage/hard_drive" = "digital_computing",
+		"/obj/item/computer_module/processor/multicore" = "consumer_electronics",
+		"/obj/item/computer_module/storage/solid_state" = "consumer_electronics",
+		// --- electronic_computing (7) ---
+		"/obj/structure/modular_computer" = "electronic_computing",
+		"/obj/item/computer_module/processor" = "electronic_computing",
+		"/obj/item/computer_module/storage" = "electronic_computing",
+		"/obj/item/computer_module/media_reader" = "electronic_computing",
+		"/obj/item/computer_module/disk" = "electronic_computing",
+		"/obj/item/computer_module/printer" = "electronic_computing",
+		"/obj/item/circuit_shell/compact_remote" = "digital_computing",
+		"/obj/item/circuit_shell/mechanism_port" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",
 		"/obj/structure/cell_tower" = "digital_computing",
 		"/obj/structure/civ_generator/solar" = "digital_computing",
@@ -1379,6 +1470,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/coin_die" = "early_economy",
 		"/obj/structure/boundary_stone" = "early_economy",
 		"/obj/structure/closet/crate/faction_strongbox" = "early_economy",
+		"/obj/structure/war_banner" = "early_economy",
 		"/obj/structure/closet/crate/money_changer" = "early_economy",
 		"/obj/item/stack/money/coppercoin" = "early_economy",
 		"/obj/item/stack/money/goldcoin" = "early_economy",
@@ -1394,8 +1486,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/supplier" = "early_economy",
 		"/obj/structure/vending/sales/market_stall" = "early_economy",
 		"/obj/structure/voting" = "early_economy",
-		// --- electricity (23) ---
+		// --- electricity (24) ---
 		"/obj/structure/workshop_machine/wire_bench" = "electricity",
+		"/obj/structure/mechanism_relay" = "electricity",
 		"/obj/item/gem_tester/refractometer" = "electricity",
 		"/obj/item/connector" = "electricity",
 		"/obj/item/connector/bus_tie" = "electricity",
@@ -1404,6 +1497,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/lift_drive/electric" = "electricity",
 		"/obj/structure/lift_call/button" = "electricity",
 		"/obj/item/stack/cable_coil/blue" = "electricity",
+		"/obj/item/stack/data_lan_cable" = "electricity",
+		"/obj/item/stack/data_lan_cable/sealed" = "electricity",
 		"/obj/item/stack/cable_coil/cyan" = "electricity",
 		"/obj/item/stack/cable_coil/green" = "electricity",
 		"/obj/item/stack/cable_coil/iron" = "electricity",
@@ -1420,6 +1515,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/stack/material/electronics" = "electricity",
 		"/obj/structure/grinder/constructed" = "electricity",
 		"/obj/structure/telegraph" = "electricity",
+		"/obj/structure/weather_instrument/station" = "electricity",
 		"/obj/structure/teleprinter" = "electricity",
 		// Wind chargers (1920s-30s) need only dynamos and cable.
 		"/obj/structure/civ_generator/wind/charger" = "electricity",
@@ -1427,6 +1523,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/power_meter" = "electricity",
 		"/obj/structure/power_point/outlet" = "electricity",
 		"/obj/structure/power_point/pole" = "electricity",
+		// Electric traction (train_electric.dm).
+		"/obj/structure/train_catenary" = "electricity",
+		"/obj/structure/train_car_kit/loco_electric" = "electricity",
+		"/obj/structure/train_car_kit/loco_tram" = "electricity",
 		"/obj/structure/civ_generator/waterwheel" = "electricity",
 		"/obj/structure/plating_bath" = "electricity",
 		"/obj/structure/aluminium_works/digester" = "aluminium_refining",
@@ -1480,6 +1580,7 @@ var/global/list/node_grid_col_cache = null
         "/obj/item/tv_camera/helmet" = "assembly_line",
         "/obj/structure/telecom/station/tv" = "assembly_line",
         "/obj/structure/telecom/terminal" = "assembly_line",
+        "/obj/structure/telecom/terminal/data_lan" = "assembly_line",
         "/obj/item/weapon/telephone/landline" = "utilities",
 		"/obj/structure/radio/transmitter" = "factories",
 		// --- field_artillery (7) ---
@@ -1716,7 +1817,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/beermug" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/tea/empty" = "glassworking",
 		"/obj/item/weapon/reagent_containers/food/drinks/teapot" = "glassworking",
-		// --- gunpowder (11) ---
+		// --- gunpowder (9) ---
+		// The arquebus is the first matchlock and comes with Gunpowder; the
+		// better matchlock musket and tanegashima need Gunsmithing as well.
 		"/obj/item/ammo_magazine/emptypouch" = "gunpowder",
 		"/obj/item/stack/ammopart/blunderbuss" = "gunpowder",
 		"/obj/item/stack/ammopart/bullet" = "gunpowder",
@@ -1726,9 +1829,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gun/projectile/ancient/arquebus" = "gunpowder",
 		"/obj/item/weapon/gun/projectile/ancient/firelance" = "gunpowder",
 		"/obj/item/weapon/gun/projectile/ancient/handcannon" = "gunpowder",
-		"/obj/item/weapon/gun/projectile/ancient/matchlock" = "gunpowder",
-		"/obj/item/weapon/gun/projectile/ancient/tanegashima" = "gunpowder",
-		// --- gunsmithing (13) ---
+		// --- gunsmithing (15) ---
+		"/obj/item/weapon/gun/projectile/ancient/matchlock" = "gunsmithing",
+		"/obj/item/weapon/gun/projectile/ancient/tanegashima" = "gunsmithing",
 		"/obj/item/weapon/gun_mount" = "gunsmithing",
 		"/obj/item/blackpowder_part/stock/pistol" = "gunsmithing",
 		"/obj/item/blackpowder_part/stock/musket" = "gunsmithing",
@@ -1785,7 +1888,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/head/ww2/sov_ushanka/nomads" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/greykerchief" = "haberdashery",
 		"/obj/item/clothing/mask/shemagh/redkerchief" = "haberdashery",
-		// --- herbalism (10) ---
+		// --- herbalism (11) ---
 		"/obj/item/stack/medical/bruise_pack/bint" = "herbalism",
 		"/obj/item/stack/medical/bruise_pack/bint/leather" = "herbalism",
 		"/obj/item/stack/medical/splint" = "herbalism",
@@ -1794,6 +1897,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/prosthesis/woodfoot" = "herbalism",
 		"/obj/item/weapon/reagent_containers/food/snacks/leaf_salad" = "herbalism",
 		"/obj/item/weapon/reagent_containers/glass/mortar" = "herbalism",
+		"/obj/item/weapon/reagent_containers/pill/hashish" = "herbalism",
 		"/obj/item/weapon/reagent_containers/pill/opium" = "herbalism",
 		"/obj/structure/drying_rack" = "herbalism",
 		// --- hygiene (14) ---
@@ -1850,6 +1954,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mine_support/stone/ionic/sandstone" = "imperial_architecture",
 		"/obj/structure/mine_support/stone/marble" = "imperial_architecture",
 		"/obj/structure/mine_support/stone/obsidian" = "imperial_architecture",
+		"/obj/covers/obsidian_tile" = "imperial_architecture",
 		"/obj/structure/mine_support/stone/solomonic" = "imperial_architecture",
 		"/obj/structure/mine_support/stone/solomonic/obsidian" = "imperial_architecture",
 		"/obj/structure/mine_support/stone/solomonic/rock" = "imperial_architecture",
@@ -1863,15 +1968,33 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (9) ---
+		// --- iron_smithing (10) ---
+		"/obj/item/weapon/grapnel" = "iron_smithing",
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",
+		"/obj/covers/iron_plate" = "iron_smithing",
+		"/obj/covers/iron_grating" = "iron_smithing",
 		"/obj/item/horseshoes" = "iron_smithing",
 		"/obj/item/weapon/reagent_containers/food/drinks/gunpowder" = "iron_smithing",
 		"/obj/structure/anvil" = "iron_smithing",
 		"/obj/structure/quench_tub" = "iron_smithing",
 		"/obj/structure/furnace" = "iron_smithing",
-		"/obj/structure/furnace/blast_furnace" = "iron_smithing",
+		"/obj/structure/furnace/blast_furnace" = "blast_furnaces",
+		"/obj/structure/steel_works/coke_bank" = "blast_furnaces",
+		"/obj/structure/steel_works/finery" = "blast_furnaces",
+		"/obj/structure/steel_works/cementation" = "blast_furnaces",
+		"/obj/structure/steel_works/puddling" = "blast_furnaces",
+		"/obj/structure/steel_works/bessemer" = "steelmaking",
+		"/obj/structure/railing/built/steel_pipe" = "steelmaking",
+		"/obj/structure/railing/built/steel_pipe/gate" = "steelmaking",
+		"/obj/structure/railing/built/gunwale/bulwark" = "steelmaking",
+		"/obj/structure/railing/built/gunwale/bulwark/gangway" = "steelmaking",
+		"/obj/structure/railing/built/gunwale/bulwark/gun_port" = "steelmaking",
+		"/obj/structure/lifeboat_davit" = "steelmaking",
+		"/obj/structure/steel_works/open_hearth" = "open_hearth",
+		"/obj/structure/steel_works/arc_furnace" = "alloys",
+		"/obj/structure/carburizing_pot" = "iron_smithing",
+		"/obj/item/weapon/clay/crucible" = "crucible_steel",
 		"/obj/structure/tatara" = "tatara_smelting",
 		"/obj/structure/workshop_machine/mercury_retort" = "amalgamation",
 		"/obj/item/weapon/reagent_containers/glass/mercury_flask" = "ore_dressing",
@@ -1904,6 +2027,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/hammer/modern" = "iron_tools",
 		"/obj/item/weapon/material/fancycane" = "iron_tools",
 		"/obj/item/weapon/wirecutters" = "iron_tools",
+		// --- martial_disciplines (3) ---
+		"/obj/structure/striking_post" = "martial_disciplines",
+		"/obj/structure/striking_post/gravel_pail" = "martial_disciplines",
+		"/obj/structure/martial_gear/heavy_bag" = "martial_disciplines",
+		// --- school_grappling (1) ---
+		"/obj/structure/martial_gear/wrestling_mat" = "school_grappling",
+		// --- school_wing_chun (1) ---
+		"/obj/structure/martial_gear/wooden_dummy" = "school_wing_chun",
 		// --- law_order (15) ---
 		"/obj/covers/jail/steeljail" = "law_order",
 		"/obj/covers/jail/woodjail" = "law_order",
@@ -1916,11 +2047,17 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/whistle" = "law_order",
 		"/obj/item/weapon/megaphone" = "electricity",
 		"/obj/item/weapon/tripwire_kit" = "basic_tools",
+		"/obj/structure/mechanism/lever" = "basic_tools",
+		"/obj/structure/mechanism/pull_cord" = "basic_tools",
+		"/obj/item/mechanism_kit/pressure_plate" = "field_defenses",
+		"/obj/structure/rock_drop" = "field_defenses",
+		"/obj/structure/mechanism_pulley" = "resource_processing",
 		"/obj/item/flashlight/flare/glowstick" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/blue" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/red" = "synthetics",
 		"/obj/item/flashlight/flare/glowstick/yellow" = "synthetics",
 		"/obj/structure/display_case" = "glassworking",
+		"/obj/covers/glass_block" = "glassworking",
 		"/obj/structure/workshop_machine/glass_bench" = "glassworking",
 		"/obj/item/weapon/attachment/under/bipod" = "gunsmithing",
 		"/obj/item/weapon/storage/lockbox" = "pottery_storage",
@@ -1948,8 +2085,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pillory" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/steeljail" = "law_order",
 		"/obj/structure/simple_door/key_door/custom/jail/woodjail" = "law_order",
-		// --- machined_tools (6) ---
+		// --- machined_tools (8) ---
 		"/obj/structure/workshop_machine/fitting/drill_press" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/line_shaft/iron" = "machined_tools",
+		"/obj/structure/workshop_machine/transmission/rope_drive" = "machined_tools",
 		"/obj/item/weapon/enginemaker" = "machined_tools",
 		"/obj/item/weapon/fishing/modern" = "machined_tools",
 		"/obj/item/weapon/reagent_containers/glass/fire_extinguisher/empty" = "machined_tools",
@@ -1991,6 +2130,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/nbc/olive" = "modern_armor",
 		// --- modern_construction (11) ---
 		"/obj/structure/workshop_machine/shear_legs/crane/steam/tower" = "modern_construction",
+		"/obj/structure/railing/built/glass" = "modern_construction",
+		"/obj/structure/railing/built/glass/gate" = "modern_construction",
 		"/obj/covers/sidewalk" = "modern_construction",
 		"/obj/item/clothing/head/helmet/modern/hardhat" = "modern_construction",
 		"/obj/item/clothing/head/helmet/modern/hardhat/orange" = "modern_construction",
@@ -2025,7 +2166,7 @@ var/global/list/node_grid_col_cache = null
 		// geiger counter deliberately NOT here: it's this node's prototype
 		// item, so it must be craftable earlier (it's under factories, era4).
 		"/obj/structure/sign/radiation" = "nuclear_power",
-		// --- optics_instruments (20) ---
+		// --- optics_instruments (21) ---
 		"/obj/structure/tower_clock" = "optics_instruments",
 		"/obj/structure/clock_face" = "optics_instruments",
 		"/obj/structure/lighthouse_beacon/reflector" = "optics_instruments",
@@ -2044,6 +2185,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/attachment/scope/adjustable/binoculars" = "optics_instruments",
 		"/obj/item/weapon/barometer/empty" = "optics_instruments",
 		"/obj/item/weapon/thermometer/empty" = "optics_instruments",
+		"/obj/item/weapon/hygrometer" = "optics_instruments",
 		"/obj/item/weapon/compass" = "optics_instruments",
 		"/obj/item/weapon/globe" = "optics_instruments",
 		"/obj/item/weapon/watch/pocket" = "optics_instruments",
@@ -2064,6 +2206,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/armor/ancient/aztec_harness" = "padded_armor",
 		"/obj/item/clothing/suit/armor/ancient/gator_scale_armor" = "padded_armor",
 		"/obj/item/clothing/suit/armor/ancient/linen" = "padded_armor",
+		"/obj/item/clothing/accessory/armor/padded_jack" = "padded_armor",
 		"/obj/item/clothing/suit/armor/chitin" = "padded_armor",
 		"/obj/item/clothing/suit/armor/medieval/leather" = "padded_armor",
 		"/obj/item/clothing/suit/armor/medieval/steppe_leather" = "padded_armor",
@@ -2091,6 +2234,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/gavelblock" = "papermaking",
 		"/obj/item/weapon/gavelhammer" = "papermaking",
 		"/obj/item/weapon/paper" = "papermaking",
+		"/obj/item/ship_draught" = "papermaking",
 		"/obj/item/weapon/pen" = "papermaking",
 		"/obj/item/weapon/stamp/mail" = "papermaking",
 		"/obj/item/weapon/stamp/faction_seal" = "papermaking",
@@ -2121,6 +2265,12 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/clay/bigclaypot" = "pottery_storage",
 		"/obj/item/weapon/clay/claybowl" = "pottery_storage",
 		"/obj/item/weapon/clay/claybricks" = "pottery_storage",
+		"/obj/item/weapon/clay/floortiles" = "pottery_storage",
+		"/obj/covers/stone/slab/decorative/terracotta" = "pottery_storage",
+		"/obj/covers/stone/slab/decorative/terracotta/edge" = "pottery_storage",
+		"/obj/covers/stone/slab/decorative/terracotta/inside" = "pottery_storage",
+		"/obj/covers/stone/slab/decorative/terracotta/outside" = "pottery_storage",
+		"/obj/covers/stone/slab/decorative/terracotta/inset" = "pottery_storage",
 		"/obj/item/weapon/clay/claycup" = "pottery_storage",
 		"/obj/item/weapon/clay/crock" = "pottery_storage",
 		"/obj/item/weapon/clay/storage_jar" = "pottery_storage",
@@ -2151,6 +2301,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/waterskin" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/bucket" = "pottery_storage",
+		"/obj/item/weapon/reagent_containers/glass/butter_churn" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/copper_large" = "pottery_storage",
 		"/obj/item/weapon/reagent_containers/glass/small_pot/copper_small" = "pottery_storage",
@@ -2161,6 +2312,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/pot" = "pottery_storage",
 		// --- power tools and resource extraction ---
 		"/obj/item/weapon/material/pickaxe/jackhammer" = "power_tools",
+		"/obj/item/weapon/material/shovel/navvy" = "machined_tools",
+		"/obj/item/weapon/material/shovel/mattock" = "bronze_working",
+		"/obj/structure/wheelbarrow" = "iron_tools",
+		"/obj/structure/closet/crate/cart/slip_scraper" = "wagons_ships",
+		"/obj/item/weapon/grenade/blasting_charge" = "gunpowder",
 		"/obj/item/weapon/material/hatchet/chainsaw" = "power_tools",
 		"/obj/structure/drill" = "electricity",
 		"/obj/structure/drill/fracking" = "hydraulic_fracturing",
@@ -2176,13 +2332,31 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/straw_wall" = "primitive_construction",
 		"/obj/structure/workshop_machine/shear_legs" = "primitive_construction",
 		"/obj/covers/tatami" = "primitive_construction",
+		"/obj/covers/tatami/trim" = "primitive_construction",
+		"/obj/covers/tatami/trim/angle" = "primitive_construction",
+		"/obj/covers/tatami/trim/corner" = "primitive_construction",
+		"/obj/covers/tatami/trim/cee" = "primitive_construction",
+		"/obj/covers/tatami/trim/full" = "primitive_construction",
 		"/obj/covers/tatami_dark" = "primitive_construction",
 		"/obj/covers/tatami_dark_vertical" = "primitive_construction",
 		"/obj/covers/tatami_vertical" = "primitive_construction",
 		"/obj/covers/thatch" = "primitive_construction",
+		"/obj/covers/rush_matting" = "primitive_construction",
 		"/obj/covers/thatch2" = "primitive_construction",
 		"/obj/covers/wood" = "primitive_construction",
+		"/obj/covers/wood/alt/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/two/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/three/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/four/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/five/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/six/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/seven/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/eight/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/nine/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/ten/constructed" = "primitive_construction",
+		"/obj/covers/wood/alt/eleven/constructed" = "primitive_construction",
 		"/obj/covers/wood/stairs" = "primitive_construction",
+		"/obj/covers/cobblestone/ramp_earth" = "primitive_construction",
 		"/obj/covers/wood_wall/adjustable" = "primitive_construction",
 		"/obj/covers/wood_wall/aztec" = "primitive_construction",
 		"/obj/covers/wood_wall/log" = "primitive_construction",
@@ -2212,6 +2386,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate/travois" = "primitive_construction",
 		"/obj/structure/grille/fence" = "primitive_construction",
 		"/obj/structure/grille/fence/picket" = "primitive_construction",
+		"/obj/structure/railing/built" = "primitive_construction",
+		"/obj/structure/railing/built/gate" = "primitive_construction",
+		"/obj/structure/railing/built/gunwale" = "primitive_construction",
+		"/obj/structure/railing/built/gunwale/gangway" = "primitive_construction",
+		"/obj/structure/figurehead" = "primitive_construction",
 		"/obj/structure/mine_support" = "primitive_construction",
 		"/obj/structure/roof_support" = "primitive_construction",
 		"/obj/structure/chimney" = "primitive_construction",
@@ -2266,6 +2445,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/fusible_link" = "steelmaking",
 		"/obj/item/fire_seals" = "steelmaking",
 		"/obj/item/panic_bar" = "factories",
+		// watertight compartments for built hulls (hull_compartments.dm)
+		"/obj/structure/hull_bulkhead" = "steelmaking",
+		"/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight" = "steelmaking",
 		"/obj/item/fitted_lock/padlock" = "iron_smithing",
 		"/obj/item/weapon/key/blank" = "iron_smithing",
 		"/obj/item/weapon/key/skeleton" = "iron_smithing",
@@ -2334,6 +2516,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/train_car_kit/crane_car" = "rail_steam",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam/rail" = "rail_steam",
 		"/obj/structure/train_brake_wheel" = "rail_steam",
+		"/obj/structure/rail_works" = "rail_steam",
 		"/obj/item/train_fire_rake" = "rail_steam",
 		"/obj/structure/rail_ash_pit" = "rail_steam",
 		"/obj/item/train_brake_shoes" = "rail_steam",
@@ -2342,13 +2525,29 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/train_ticket_book" = "rail_steam",
 		"/obj/item/train_list" = "rail_steam",
 		"/obj/item/train_flags" = "rail_steam",
+		"/obj/structure/train_lineside/signal" = "rail_steam",
+		"/obj/structure/train_lineside/board" = "rail_steam",
+		"/obj/structure/train_lever_frame" = "rail_steam",
+		"/obj/structure/train_token_instrument" = "rail_steam",
+		"/obj/item/train_signal_wire" = "rail_steam",
+		"/obj/item/train_jack" = "rail_steam",
+		"/obj/item/train_lamp" = "rail_steam",
+		"/obj/structure/train_lineside/station" = "rail_steam",
+		"/obj/structure/train_crossing_boards" = "rail_steam",
+		"/obj/structure/train_lineside/gate" = "rail_steam",
+		"/obj/structure/train_buffer_stop" = "rail_steam",
+		"/obj/structure/train_turntable" = "rail_steam",
+		"/obj/structure/train_turntable/large" = "rail_steam",
+		"/obj/structure/rail_depot/loading_stage" = "rail_steam",
+		"/obj/structure/workshop_machine/shear_legs/crane/goods" = "rail_steam",
+		"/obj/structure/train_livestock_ramp" = "rail_steam",
+		"/obj/structure/trains/transport/handcar" = "rail_steam",
 		"/obj/structure/rail_depot/coal_stage" = "rail_steam",
 		"/obj/structure/rail_depot/sand_bin" = "rail_steam",
 		"/obj/item/train_snowplough" = "rail_steam",
 		"/obj/structure/train_car_kit/loco_steam" = "rail_steam",
 		"/obj/structure/train_car_kit/loco_mainline" = "rail_steam",
 		"/obj/item/stack/rail_lengths" = "rail_steam",
-		"/obj/item/stack/rail_sleepers" = "rail_steam",
 		"/obj/structure/rails/rotate" = "rail_steam",
 		"/obj/structure/rails/split/switcher" = "rail_steam",
 		"/obj/structure/rails/split/switcher/right" = "rail_steam",
@@ -2412,10 +2611,13 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/flag/pole" = "regalia",
 		// --- reinforced_concrete (14) ---
 		"/obj/covers/concretefloor" = "reinforced_concrete",
+		"/obj/covers/concretefloor/ramp" = "reinforced_concrete",
+		"/obj/covers/cobblestone/ramp_gentle" = "reinforced_concrete",
 		"/obj/item/weapon/bridge_span" = "reinforced_concrete",
 		"/obj/item/weapon/bridge_span/concrete" = "reinforced_concrete",
 		"/obj/covers/steelplating" = "reinforced_concrete",
 		"/obj/covers/steelplating/white" = "reinforced_concrete",
+		"/obj/covers/steel_tread" = "reinforced_concrete",
 		"/obj/covers/stone_wall/roman/modern" = "reinforced_concrete",
 		"/obj/item/weapon/roofbuilder/concrete" = "reinforced_concrete",
 		"/obj/structure/gate/blast" = "reinforced_concrete",
@@ -2512,18 +2714,19 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/ballista_bolt" = "siege_engines",
 		"/obj/item/weapon/ladder_fork" = "siege_engines",
 		"/obj/structure/siege_engine/tower" = "siege_engines",
-		// --- steam_power (6) ---
+		// --- steam_power (7) ---
 		"/obj/structure/cellar_pump/steam" = "steam_power",
+		"/obj/structure/weather_instrument/anemometer" = "steam_power",
 		"/obj/structure/sewer_pump/steam" = "steam_power",
 		"/obj/structure/workshop_machine/steam_site/steam_shovel" = "steam_power",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam" = "steam_power",
 		"/obj/structure/lift_platform/iron" = "steam_power",
 		"/obj/structure/lift_drive/steam" = "steam_power",
 		"/obj/structure/workshop_machine/trip_hammer/steam" = "steam_power",
+		"/obj/structure/workshop_machine/mover/steam_engine" = "steam_power",
 		"/obj/structure/engine/external/steam" = "steam_power",
-		// --- steel_blades (6) ---
+		// --- steel_blades (5) ---
 		"/obj/item/wrist_loop/sword_knot" = "steel_blades",
-		"/obj/item/clothing/accessory/storage/sheath" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/daisho" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/katana" = "steel_blades",
 		"/obj/item/clothing/accessory/storage/sheath/longer" = "steel_blades",
@@ -2574,9 +2777,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/noose" = "stone_arms",
 		// --- stone_masonry (48) ---
 		"/obj/structure/sundial" = "stone_masonry",
+		"/obj/structure/railing/built/stone" = "stone_masonry",
+		"/obj/structure/railing/built/stone/gate" = "stone_masonry",
+		"/obj/structure/railing/built/sandstone" = "stone_masonry",
+		"/obj/structure/railing/built/sandstone/gate" = "stone_masonry",
 		"/obj/structure/flood_platform/plinth" = "stone_masonry",
 		"/obj/structure/workshop_machine/mover/treadwheel" = "stone_masonry",
 		"/obj/covers/cobblestone" = "stone_masonry",
+		"/obj/covers/flagstone" = "stone_masonry",
 		"/obj/structure/furnace/lime_kiln" = "stone_masonry",
 		"/obj/structure/tar_kiln" = "stone_masonry",
 		"/obj/structure/workshop_machine/masons_saw" = "stone_masonry",
@@ -2598,6 +2806,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/covers/sandstone_wall/egyptian" = "stone_masonry",
 		"/obj/covers/sandstone_wall/egyptian/archway" = "stone_masonry",
 		"/obj/covers/slatefloor" = "stone_masonry",
+		"/obj/covers/cobblestone/vertical" = "stone_masonry",
+		"/obj/covers/cobblestone/horizontal" = "stone_masonry",
+		"/obj/covers/cobblestone/horizontal/dark" = "stone_masonry",
+		"/obj/covers/stone/slab/decorative/mossy" = "stone_masonry",
 		"/obj/covers/stone/slab/decorative" = "stone_masonry",
 		"/obj/covers/stone_wall" = "stone_masonry",
 		"/obj/covers/stone_wall/classic" = "stone_masonry",
@@ -2802,6 +3014,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/phoneline" = "utilities",
 		// --- wagons_ships (29) ---
 		"/obj/structure/canal_lock" = "wagons_ships",
+		"/obj/structure/canal_lock/dock_gate" = "wagons_ships",
+		"/obj/structure/keel_blocks" = "wagons_ships",
+		"/obj/item/stack/rail_sleepers" = "wagons_ships",
+		"/obj/item/stack/rail_lengths/wooden" = "wagons_ships",
+		"/obj/structure/trains/storage/chaldron" = "wagons_ships",
 		"/obj/structure/fire_pump" = "wagons_ships",
 		"/obj/structure/slipway" = "wagons_ships",
 		"/obj/structure/boathouse" = "wagons_ships",
@@ -2810,12 +3027,14 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/berth/deck" = "wagons_ships",
 		"/obj/structure/hull_tiller" = "wagons_ships",
 		"/obj/structure/hull_anchor" = "wagons_ships",
+		"/obj/structure/strait_winch" = "wagons_ships",
 		"/obj/structure/hull_tiller/steering_oar" = "oared_ships",
 		"/obj/structure/hull_anchor/stone" = "oared_ships",
 		"/obj/structure/bed/chair/wood/rowing_bench" = "oared_ships",
-		"/obj/item/sail" = "wagons_ships",
-		"/obj/item/sail/wool" = "wagons_ships",
-		"/obj/item/vehicleparts/frame/boat" = "wagons_ships",
+		"/obj/item/sail" = "oared_ships",
+		"/obj/item/sail/wool" = "oared_ships",
+		"/obj/item/sail/tarred" = "oared_ships",
+		"/obj/item/weapon/reagent_containers/glass/finishing_pot" = "fine_furniture",
 		"/obj/item/weapon/covers/ship" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0" = "wagons_ships",
 		"/obj/structure/barricade/ship/aport0/north" = "wagons_ships",
@@ -2832,13 +3051,25 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/vehicleparts/frame/ship" = "wagons_ships",
 		"/obj/structure/vehicleparts/frame/ship/steel" = "wagons_ships",
 		"/obj/structure/vehicleparts/movement/sail" = "wagons_ships",
+		"/obj/structure/vehicleparts/movement/sail/crows_nest" = "wagons_ships",
+		"/obj/structure/vehicleparts/movement/sail/bowsprit" = "wagons_ships",
 		"/obj/structure/vehicleparts/shipwheel" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/blue/bport0/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/blue/bport3/south" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port0/north" = "wagons_ships",
 		"/obj/structure/window/barrier/ship/wood/port2/north" = "wagons_ships",
-		// --- watermills (6) ---
+		// --- watermills (13) ---
+		"/obj/structure/workshop_machine/mover/counterweight" = "watermills",
+		"/obj/structure/mechanism/cam_drum" = "watermills",
+		"/obj/structure/workshop_machine/hopper/millstones" = "watermills",
+		"/obj/structure/workshop_machine/hopper/sash_saw" = "watermills",
+		"/obj/structure/workshop_machine/hopper/fulling_stocks" = "watermills",
+		"/obj/structure/workshop_machine/hopper/bark_stamps" = "watermills",
+		"/obj/structure/workshop_machine/hopper/power_loom" = "textile_mills",
 		"/obj/structure/water_lift/windmill" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft" = "watermills",
+		"/obj/structure/workshop_machine/transmission/line_shaft/clutch" = "watermills",
+		"/obj/structure/workshop_machine/transmission/gear_box" = "watermills",
 		"/obj/structure/workshop_machine/trip_hammer" = "watermills",
 		"/obj/structure/workshop_machine/mover/mill_wheel" = "watermills",
 		"/obj/structure/workshop_machine/mover/windmill" = "watermills",
@@ -2902,6 +3133,11 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/clothing/suit/prehistoricfurcoat/brown" = "weaving",
 		"/obj/item/clothing/suit/prehistoricfurcoat/grey" = "weaving",
 		"/obj/item/clothing/suit/prehistoricfurcoat/white" = "weaving",
+		"/obj/structure/pelt_rug" = "weaving",
+		"/obj/structure/pelt_rug/black" = "weaving",
+		"/obj/structure/pelt_rug/white" = "weaving",
+		"/obj/structure/pelt_rug/wolf" = "weaving",
+		"/obj/structure/pelt_rug/wolf/white" = "weaving",
 		"/obj/item/clothing/suit/zulu_mbata" = "weaving",
 		"/obj/item/clothing/under/aztec_loincloth" = "weaving",
 		"/obj/item/clothing/under/custom/roman" = "weaving",
@@ -2936,6 +3172,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/curtain" = "weaving",
 		"/obj/structure/curtain/leather" = "weaving",
 		"/obj/structure/loom" = "weaving",
+		"/obj/structure/silkworm_tray" = "weaving",
 		"/obj/structure/religious/tribalmask" = "weaving",
 		"/obj/item/clothing/shoes/weather/mukluks" = "weaving",
 		"/obj/item/clothing/shoes/weather/snowshoes" = "weaving",
@@ -2958,6 +3195,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/closet/crate/footlocker" = "workshops",
 		"/obj/structure/closet/crate/lead" = "workshops",
 		"/obj/structure/grille/fence/steel_picket" = "workshops",
+		"/obj/structure/railing/built/wrought_iron" = "iron_smithing",
+		"/obj/structure/railing/built/wrought_iron/gate" = "iron_smithing",
 		"/obj/structure/grille/ironfence" = "workshops",
 		"/obj/structure/research_forge" = "workshops",
 		"/obj/structure/simple_door/key_door/anyone" = "workshops",

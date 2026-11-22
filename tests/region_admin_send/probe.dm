@@ -143,8 +143,45 @@ var/region_admin_send_probe_checks = 0
 	region_admin_send_probe_assert(host["send"] == "dry_run" && length(host["rows"]) == 2, "host_dry_run")
 	host = region_admin_send_host(list("ckeys" = "alice", "to" = "gaia", "landing" = "shore", "dry_run" = "0"))
 	region_admin_send_probe_assert(host["send"] == "refused:nobody can be sent now" && !region_admin_send_running, "host_send_refused")
-	host = region_admin_send_host(list("ckeys" = "alice", "to" = "gaia", "landing" = "coords", "dry_run" = "1"))
-	region_admin_send_probe_assert(findtext(host["send"], "refused:") == 1, "host_bad_landing")
+	// Send held them, checked again, and let go of them when the check refused.
+	region_admin_send_probe_assert(!H.travel_held() && !H.travel_hold && !H.incapacitated() && !travel_holds, "refused_send_releases")
+
+	// Held still for a trip: no clicks, steps or actions until released.
+	var/mob/living/human/region_admin_send_probe/stranger = region_admin_send_probe_actor(14, 12, "carol")
+	var/obj/structure/closet/crate/cart = new(locate(11, 11, 1))
+	var/obj/item/weapon/pen/pocket = new(H)
+	var/datum/travel_hold/hold = travel_hold_begin(list(H), "Gaia", list(cart), list(locate(20, 15, 1)))
+	region_admin_send_probe_assert(H.travel_held() && H.travel_hold.where == "Gaia" && travel_holds.len == 1, "trip_holds")
+	region_admin_send_probe_assert(H.incapacitated() && H.incapacitated(INCAPACITATION_RESTRAINED) && !H.canClick() && travel_hold_input(H), "held_cannot_act")
+	region_admin_send_probe_assert(!stranger.travel_held() && !travel_hold_input(stranger), "others_still_act")
+	region_admin_send_probe_assert(isnull(region_admin_send_refusal(H)), "held_can_still_go")
+	region_admin_send_probe_assert(H.persistence_runtime_var("travel_hold") && H.persistence_runtime_var("travel_hold_told"), "hold_not_saved")
+	// Their body, what they carry, what they pull and the ground of their craft are guarded from others.
+	region_admin_send_probe_assert(travel_hold_refuses(stranger, H) && travel_hold_refuses(stranger, pocket) && travel_hold_refuses(stranger, cart), "belongings_guarded")
+	region_admin_send_probe_assert(travel_hold_refuses(stranger, locate(20, 15, 1)) && travel_hold_bars_step(stranger, locate(20, 15, 1)), "deck_guarded")
+	region_admin_send_probe_assert(!travel_hold_refuses(stranger, locate(19, 15, 1)) && !travel_hold_bars_step(stranger, locate(19, 15, 1)), "elsewhere_free")
+	region_admin_send_probe_assert(!travel_hold_guarding(H, cart) && !travel_hold_bars_step(H, locate(20, 15, 1)), "travellers_not_guarded_from_their_own")
+	// A second hold over the same traveller: ending one leaves them in the other.
+	var/datum/travel_hold/outer = travel_hold_begin(list(H), "Asia")
+	travel_hold_end(outer)
+	region_admin_send_probe_assert(H.travel_hold == hold && H.travel_held() && travel_holds.len == 1, "nested_hold_restored")
+	travel_hold_release(hold, H)
+	region_admin_send_probe_assert(!H.travel_held() && !H.incapacitated() && !travel_hold_input(H) && travel_hold_refuses(stranger, cart), "release_frees_traveller_only")
+	travel_hold_end(hold)
+	region_admin_send_probe_assert(!travel_holds && !travel_hold_refuses(stranger, cart) && !travel_hold_bars_step(stranger, locate(20, 15, 1)), "end_unguards")
+	// A hold nothing renews lapses by itself, and the next one sweeps it away.
+	hold = travel_hold_begin(list(H), "Gaia")
+	hold.until = world.time - 1
+	region_admin_send_probe_assert(!H.travel_held() && !H.incapacitated() && !travel_hold_refuses(stranger, H), "hold_lapses")
+	var/datum/travel_hold/fresh = travel_hold_begin(list(stranger), "Gaia")
+	region_admin_send_probe_assert(travel_holds.len == 1 && travel_holds[1] == fresh && !H.travel_hold, "lapsed_swept")
+	travel_hold_end(fresh)
+	qdel(pocket)
+	qdel(cart)
+	// Hold and check: everyone refused is let go at once, with the refusal in its row.
+	var/list/checked = region_admin_send_hold_and_check(list(H, nobody), "gaia", shore, FALSE)
+	var/list/checked_rows = checked["rows"]
+	region_admin_send_probe_assert(checked_rows.len == 2 && !length(checked["ready"]) && !H.travel_held() && !nobody.travel_held() && !travel_holds, "hold_and_check_releases_refused")
 
 	// The hidden gate: never an arrival point, never saved, carries the landing.
 	var/obj/structure/region_gate/admin_send/gate = new(locate(20, 10, 1))

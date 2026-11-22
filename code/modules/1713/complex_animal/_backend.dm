@@ -43,6 +43,7 @@
 			else
 				faction = H.faction_text
 			tamed = TRUE
+			accolade_meet_mob(H, "herder")
 			if (findtext(name, "Wild"))
 				name = replacetext(name,"Wild", "[H]'s")
 		return
@@ -91,7 +92,7 @@
 				C.knows_about_mobs |= src
 			else if (prob(22) && dist_x <= C.smellrange && dist_y <= C.smellrange)
 				C.knows_about_mobs |= src
-			else if (vars.Find("base_type") && src:base_type == C.base_type)
+			else if (base_type == C.base_type)
 				if (dist_x <= 10 && dist_y <= 10)
 					C.onEveryBaseTypeMovement(src)
 			else

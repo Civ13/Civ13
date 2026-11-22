@@ -34,9 +34,14 @@
 	if (!.)
 		. = broadside_ship_of(get_step(C, turn(C.dir, 180)))
 
-// Black-powder guns only: not tanks, rockets or modern naval turrets.
+// Black-powder guns and the turrets of a player-built ship
+// (naval/ship_turret.dm): not tanks, rockets or the fixed naval guns.
 /proc/broadside_gun_ok(obj/structure/cannon/C)
-	return istype(C) && !istype(C, /obj/structure/cannon/modern) && !istype(C, /obj/structure/cannon/rocket) && !C.broken && C.loaded.len
+	if (!istype(C) || C.broken || !C.loaded.len)
+		return FALSE
+	if (istype(C, /obj/structure/cannon/modern/ship_turret))
+		return TRUE
+	return !istype(C, /obj/structure/cannon/modern) && !istype(C, /obj/structure/cannon/rocket)
 
 // Loaded guns on the ship that holds turf T, grouped by the way they face:
 // list("[dir]" = list(guns)).

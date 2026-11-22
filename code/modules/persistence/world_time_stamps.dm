@@ -4,19 +4,27 @@
 // "world.time - last_bumped <= 60" could block an action for hours. (A door
 // on Gaia stayed shut until the player's last_bumped was cleared by hand.)
 //
-// The saver writes every changed var on mobs and most objects, including tmp
-// vars. Name each world.time stamp here, with the types that own it, so it is
-// neither saved nor imported from an older save, and keeps its type default.
+// The saver writes every changed non-tmp var on mobs and most objects. Name
+// each world.time stamp that is not declared var/tmp here, with the types that
+// own it, so it is neither saved nor imported from an older save, and keeps
+// its type default. (Entries for tmp stamps predate the saver skipping tmp.)
 // A default of 0 or -1 means "ready" for a cooldown, and "since round start"
 // for an age stamp. tests/world_time_stamps fails when a new stamp on a saved
 // type appears without an entry here or a reviewed exception there.
-var/global/list/persistence_world_time_stamps = list(
+var/global/list/persistence_world_time_stamps = persistence_world_time_stamps_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/persistence_world_time_stamps_table()
+	return list(
 	"last_bumped" = list(/atom),
 	"next_attack_hand" = list(/obj/structure/simple_door),
 	"next_fill" = list(/obj/structure/sea_office),
+	"last_knock" = list(/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch, /obj/structure/torpedo_tube),
 	"ram_tick" = list(/obj/structure/vehicleparts/axis),
 	"bellows_until" = list(/obj/structure/furnace),
 	"pumped_until" = list(/obj/structure/fluid_pump/hand),
+	"divine_manifest_until" = list(/mob/observer/ghost),
 	"next_job_fill" = list(/obj/structure/berth/quay/depot),
 	"last_moved" = list(/obj/structure/trains/platform),
 	"next_use" = list(/obj/structure/train_brake_wheel),
@@ -27,8 +35,11 @@ var/global/list/persistence_world_time_stamps = list(
 	"next_load" = list(/mob),
 	"next_cannotmove_message" = list(/mob),
 	"next_gracewall_message" = list(/mob),
+	"travel_guard_told" = list(/mob),
 	"next_language_learn" = list(/mob),
 	"next_language_practice" = list(/mob/living/human),
+	"next_language_drift_heard" = list(/mob/living/human),
+	"next_people_contact_heard" = list(/mob/living/human),
 	"next_mud_message" = list(/mob),
 	"next_pain_time" = list(/mob),
 	"next_slope_message" = list(/mob),
@@ -38,6 +49,10 @@ var/global/list/persistence_world_time_stamps = list(
 	"timeofdeath" = list(/mob),
 	"last_special" = list(/mob/living),
 	"next_weather_scan" = list(/mob/living),
+	"latex_tapped_at" = list(/obj/structure/wild/jungle),
+	"resin_tapped_at" = list(/obj/structure/wild/tree/live_tree/pine),
+	"lacquer_tapped_at" = list(/obj/structure/wild/tree/live_tree),
+	"sap_tapped_at" = list(/obj/structure/wild/tree/live_tree),
 	"announcement_cooldown" = list(/mob/living/human),
 	"soap_cooldown" = list(/mob/living/human),
 	"last_flu_sneeze" = list(/mob/living/human),
@@ -126,7 +141,29 @@ var/global/list/persistence_world_time_stamps = list(
 	"created" = list(/datum/wound),
 	"last_recharge" = list(/obj/structure/survey_console),
 	"record_start" = list(/obj/item/tape_recorder),
-	"smoked_until" = list(/obj/structure/wild_bee_nest, /obj/structure/kept_hive, /obj/structure/beehive)
+	"smoked_until" = list(/obj/structure/wild_bee_nest, /obj/structure/kept_hive, /obj/structure/beehive),
+	"overloaded_until" = list(/obj/item/integrated_circuit),
+	"next_editor_refresh" = list(/obj/item/integrated_circuit),
+	"editor_refresh_timer" = list(/obj/item/integrated_circuit),
+	// Declared var/tmp, which the saver does not skip: these were restored too.
+	"next_melee_attack" = list(/mob/living/simple_animal),
+	"next_hoof_dust" = list(/mob/living/simple_animal),
+	"harm_time" = list(/mob/living/simple_animal),
+	"npc_subtile_watch_checked" = list(/mob/living/simple_animal),
+	"human_subtile_smooth_start" = list(/mob/living/human),
+	"antibiotic_dose_shared_at" = list(/mob/living/human),
+	"life_heat_scan_until" = list(/mob/living/human),
+	"bite_fracture_guard" = list(/mob/living/human),
+	"last_hair_growth_time" = list(/mob/living/human),
+	"human_pull_tile_at" = list(/mob/living/human),
+	"human_pull_tile_pace" = list(/mob/living/human),
+	"next_call" = list(/obj/item/weapon/whistle/broadside),
+	"voyage" = list(/obj/structure/hull_tiller),
+	"landfall_at" = list(/obj/structure/hull_tiller),
+	"air_crossing_hold" = list(/obj/structure/vehicleparts/axis/aircraft),
+	"hold_started" = list(/obj/item/car_door_hold),
+	"strain_time" = list(/obj/item/car_door_hold),
+	"ashore_since" = list(/obj/structure/vehicle/raft)
 )
 
 /proc/persistence_world_time_stamp(datum/D, key)

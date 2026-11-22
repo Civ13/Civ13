@@ -32,6 +32,14 @@ var/global/list/divine_invocation_names = list(
 	"affliction" = "Affliction",
 	"omen" = "Omen",
 	"vigil" = "Vigil of Recovery",
+	"repository" = "Keep a repository", // repository.dm
+	"imbue" = "Imbue", // arcane_enchant.dm
+	"bless" = "Bless", // arcane_bless.dm
+	// Rites the repository grant brings (repository_tiers.dm); never taught alone.
+	"repository_strengthen" = "Strengthen a repository",
+	"repository_attune" = "Re-attune a repository",
+	"repository_move" = "Move a repository into something greater",
+	"repository_consecrate" = "Consecrate a fallen repository",
 )
 
 /mob/living/human
@@ -42,9 +50,10 @@ var/global/list/divine_invocation_names = list(
 	var/tmp/datum/divine_covenant_runtime/divine_covenant = null
 	var/tmp/datum/divine_use_request/divine_request = null
 	var/tmp/datum/divine_use_request/ritual/divine_vigil_member = null // a vigil this body is keeping
+	var/tmp/divine_invite_from = null   // a god's invitation waiting for an answer (divine_patron.dm)
 
 /mob/living/human/persistence_runtime_var(key)
-	return key == "divine_covenant" || key == "divine_request" || key == "divine_vigil_member" || ..()
+	return key == "divine_covenant" || key == "divine_request" || key == "divine_vigil_member" || key == "divine_invite_from" || ..()
 
 /proc/divine_claimants(deity)
 	var/key = divine_book_key(deity)
@@ -71,10 +80,13 @@ var/global/list/divine_invocation_names = list(
 
 /mob/living/human/proc/divine_refresh_verbs()
 	// Off the magic whitelist (magic_whitelist.dm) the patron stays saved but Beseech goes away.
-	if (istext(divine_patron) && length(divine_patron) && magic_allowed())
+	if ((istext(divine_patron) && length(divine_patron) && magic_allowed()) || arcane_apostate_can_pray()) // apostates: arcane_apostate.dm
 		verbs |= /mob/living/human/proc/divine_beseech
 	else
 		verbs -= /mob/living/human/proc/divine_beseech
+	magic_repo_refresh_verbs() // repository.dm
+	arcane_refresh_verbs() // arcane_altars.dm
+	heteromorph_refresh_verbs() // heteromorph_form.dm
 
 // Any movement, body change, logout or transfer ends what is pending, including
 // leaving and coming back to the same tile, which snapshots cannot see.
@@ -119,6 +131,7 @@ var/global/list/divine_invocation_names = list(
 		divine_break_covenant()
 	if (divine_vigil_member)
 		divine_leave_vigil()
+	divine_self_worship() // repository_nations.dm
 	divine_refresh_verbs()
 
 /mob/living/human/proc/divine_slot_ready()
@@ -132,13 +145,14 @@ var/global/list/divine_invocation_names = list(
 // Called when a sleeper finishes waking up: a night's rest restores the slot.
 /mob/living/human/proc/divine_rested()
 	divine_slot_spent = FALSE
+	arcane_rested()
 
 /mob/living/human/proc/divine_focus()
 	var/obj/item/I = get_active_hand()
-	if (istype(I, /obj/item/weapon/branch))
+	if (istype(I, /obj/item/weapon/branch) || arcane_storm_focus(I)) // storm wood: arcane_altars.dm
 		return I
 	I = get_inactive_hand()
-	if (istype(I, /obj/item/weapon/branch))
+	if (istype(I, /obj/item/weapon/branch) || arcane_storm_focus(I))
 		return I
 	return null
 
@@ -162,7 +176,7 @@ var/global/list/divine_invocation_names = list(
 		return "You can't pray like this."
 	if (map && map.persistence && (!persistence_player_restore_ready || persistence_save_in_progress || persistence_active_operation))
 		return "Wait for the world save or load to finish."
-	if (spell && !(spell in divine_known))
+	if (spell && !(spell in divine_spells_allowed()))
 		return "You don't know that prayer."
 	if (!divine_slot_ready())
 		return "You are too spent to pray for that again. Rest first."
@@ -170,16 +184,30 @@ var/global/list/divine_invocation_names = list(
 		return "You need to hold your stick."
 	if (!divine_component())
 		return "Your pouch is empty."
+	if (spell == "repository")
+		return magic_repo_begin_problem() // repository.dm
+	if (spell == "imbue")
+		return arcane_imbue_problem(arcane_imbue_pick) // arcane_enchant.dm
+	if (spell == "bless")
+		return arcane_bless_problem(arcane_bless_pick) // arcane_bless.dm
+	if (magic_repo_rite_spell(spell))
+		return magic_repo_rite_problem(spell) // repository_tiers.dm
 	return null
 
 // The legal target of an invocation at this moment, or null.
 /proc/divine_target_legal(mob/living/human/caster, spell, mob/living/human/target)
+	if (spell == "imbue") // the held item, or the chest or door beside them (arcane_enchant.dm, arcane_ward.dm)
+		return istype(caster) && target && target == caster.arcane_imbue_target()
+	if (spell == "bless") // the target is the held item (arcane_bless.dm)
+		return istype(caster) && target && target == caster.arcane_imbue_item()
 	if (!istype(caster) || !istype(target) || QDELETED(target) || target.stat == DEAD)
 		return FALSE
 	var/turf/A = get_turf(caster)
 	var/turf/B = get_turf(target)
 	if (!A || !B || A.z != B.z)
 		return FALSE
+	if (magic_repo_rite_spell(spell))
+		return target == caster // repository_tiers.dm
 	switch (spell)
 		if ("mercy")
 			return get_dist(A, B) <= 1
@@ -189,6 +217,8 @@ var/global/list/divine_invocation_names = list(
 			return target == caster
 		if ("vigil")
 			return get_dist(A, B) <= 1
+		if ("repository")
+			return target == caster
 	return FALSE
 
 // Fixed, server-made effect and cost specification shown to the god.
@@ -202,6 +232,16 @@ var/global/list/divine_invocation_names = list(
 			return "omen-v1: one private message you write; costs the slot, one pouch item"
 		if ("vigil")
 			return "vigil-v1: heal 15 brute and 15 burn, ease pain 30 on the patient; costs the slot, one pouch item, 25% energy from everyone keeping it"
+		if ("repository")
+			return "repository-v1: begin a personal repository in the small thing they hold; then 30 minutes of channelling paid with hunger, thirst and energy or stored charge; costs the slot, one pouch item"
+		if ("repository_strengthen")
+			return "repository-strengthen-v1: raise a repository they keep one tier, once it has stayed three quarters full for days with enough tied magic users present; then hours of channelling paid from stored charge; costs the slot, one pouch item"
+		if ("repository_attune")
+			return "repository-attune-v1: raise a repository's skill to the keeper's own; hours of channelling paid from stored charge; costs the slot, one pouch item"
+		if ("repository_move")
+			return "repository-move-v1: move a repository they keep, charge and all, into a greater object beside them; the old one becomes ordinary; costs the slot, one pouch item"
+		if ("repository_consecrate")
+			return "repository-consecrate-v1: take up a settlement or greater repository whose seat has fallen, for their own god, keeping its charge; costs the slot, one pouch item"
 	return null
 
 /mob/living/human/proc/divine_beseech()
@@ -211,6 +251,9 @@ var/global/list/divine_invocation_names = list(
 
 	if (usr != src || !client || client.mob != src)
 		return
+	if (arcane_apostate_of)
+		arcane_apostate_beseech() // arcane_apostate.dm
+		return
 	if (divine_request)
 		to_chat(src, SPAN_WARNING("You are already waiting on an answer."))
 		return
@@ -219,9 +262,11 @@ var/global/list/divine_invocation_names = list(
 		to_chat(src, SPAN_WARNING(problem))
 		return
 	var/list/choices = list()
-	for (var/spell in divine_known)
+	for (var/spell in divine_spells_allowed())
 		if (divine_invocation_names[spell])
 			choices[divine_invocation_names[spell]] = spell
+	if (arcane_can_renounce()) // arcane_apostate.dm
+		choices["Renounce"] = "renounce"
 	if (!choices.len)
 		to_chat(src, SPAN_WARNING("You don't know any prayers yet."))
 		return
@@ -229,8 +274,22 @@ var/global/list/divine_invocation_names = list(
 	var/spell = choices[picked]
 	if (!spell || usr != src || !client || divine_request)
 		return
+	if (spell == "renounce")
+		arcane_renounce()
+		return
 	var/mob/living/human/target = src
-	if (spell != "omen")
+	var/scope = divine_scope(spell)
+	if (spell == "imbue")
+		scope = arcane_imbue_choose() // arcane_enchant.dm
+		target = arcane_imbue_target()
+		if (!scope || !target)
+			return
+	else if (spell == "bless")
+		scope = arcane_bless_choose() // arcane_bless.dm
+		target = arcane_imbue_item()
+		if (!scope || !target)
+			return
+	else if (spell != "omen" && findtext(spell, "repository") != 1)
 		var/list/targets = list()
 		var/range = spell == "affliction" ? DIVINE_AFFLICTION_RANGE : 1
 		for (var/mob/living/human/H in view(range, src))
@@ -243,6 +302,8 @@ var/global/list/divine_invocation_names = list(
 		target = targets[who]
 		if (!target)
 			return
+	if (magic_repo_rite_spell(spell) && !magic_repo_rite_choose(spell)) // repository_tiers.dm
+		return
 	var/list/helpers = null
 	if (spell == "vigil")
 		helpers = divine_gather_vigil(target)
@@ -262,13 +323,13 @@ var/global/list/divine_invocation_names = list(
 	if (!operators.len)
 		to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You pray, but nothing answers.")))
 		return
-	var/datum/divine_covenant_runtime/covenant = new(src, divine_book_key(divine_patron), operators, divine_known)
+	var/datum/divine_covenant_runtime/covenant = new(src, divine_book_key(divine_patron), operators, divine_spells_allowed())
 	covenant.active = TRUE
 	var/datum/divine_use_request/R
 	if (spell == "vigil")
 		R = new /datum/divine_use_request/ritual(covenant, spell, target, divine_scope(spell), helpers, divine_focus(), DIVINE_VIGIL_DURATION, 3, DIVINE_REQUEST_LIFETIME)
 	else
-		R = new /datum/divine_use_request(covenant, spell, target, divine_scope(spell), DIVINE_REQUEST_LIFETIME)
+		R = new /datum/divine_use_request(covenant, spell, target, scope, DIVINE_REQUEST_LIFETIME)
 	if (R.state != "requested")
 		qdel(R)
 		qdel(covenant)
@@ -284,7 +345,7 @@ var/global/list/divine_invocation_names = list(
 				M.divine_vigil_member = V
 	to_chat(src, CHAT_TYPED(CHAT_PRAYER, SPAN_NOTICE("You hold still and pray to [divine_label_for(divine_patron)].")))
 	visible_message("<span class='notice'>[src] bows their head.</span>", null, 3)
-	log_game("[key_name(src)] beseeched [divine_patron]: [spell] on [key_name(target)].")
+	log_game("[key_name(src)] beseeched [divine_patron]: [spell] on [ismob(target) ? key_name(target) : "[target] ([target.type])"].")
 	divine_alert_operators(R)
 	var/datum/divine_use_request/watched = R
 	spawn(DIVINE_REQUEST_LIFETIME + 5)
@@ -340,9 +401,9 @@ var/global/list/divine_invocation_names = list(
 	var/mob/living/human/caster = R.covenant.caster
 	var/mob/target = R.target
 	var/spell_name = divine_invocation_names[R.spell_id]
-	var/text = "<b>[caster.divine_patron]: [caster.real_name] ([caster.ckey]) beseeches you for [spell_name]</b>"
-	if (target != caster)
-		text += " on [target.real_name] ([target.ckey ? target.ckey : "no player"])"
+	var/text = "<b>[caster.divine_patron]: [caster.real_name] ([caster.ckey]) beseeches you for [spell_name]</b>[karma_staff_badge(karma_mob_ckey(caster))]"
+	if (target != caster && ismob(target))
+		text += " on [target.real_name] ([target.ckey ? target.ckey : "no player"])[karma_mob_ckey(target) ? karma_staff_badge(karma_mob_ckey(target)) : ""]"
 	if (istype(R, /datum/divine_use_request/ritual))
 		var/datum/divine_use_request/ritual/V = R
 		var/list/names = list()
@@ -396,6 +457,7 @@ var/global/list/divine_invocation_names = list(
 		if (!R.current())
 			divine_finish_request(R)
 		return
+	divine_note_self_approval(R, C) // repository_nations.dm
 	if (istype(R, /datum/divine_use_request/ritual))
 		var/datum/divine_use_request/ritual/V = R
 		if (!V.start_channel())
@@ -425,13 +487,16 @@ var/global/list/divine_invocation_names = list(
 		R.state = "cancelled"
 		divine_finish_request(R)
 		return FALSE
-	var/obj/item/component = caster.divine_component()
+	var/obj/item/component = (spell == "imbue" || spell == "bless") ? null : caster.divine_component() // Imbue and Bless use up their own materials
 	if (!R.consume(caster, spell, target, R.scope_key))
 		to_chat(caster, SPAN_WARNING("Your prayer slips away."))
 		divine_finish_request(R)
 		return FALSE
 	caster.divine_slot_spent = TRUE
 	caster.divine_spent_realtime = world.realtime
+	if (arcane_storm_focus(caster.divine_focus())) // storm wood brings the slot back after 45 minutes
+		caster.divine_spent_realtime -= DIVINE_REST_FALLBACK / 4
+	var/bonus = arcane_component_bonus(component, spell) // arcane_altars.dm
 	if (component)
 		var/obj/item/weapon/storage/S = component.loc
 		if (istype(S))
@@ -440,14 +505,14 @@ var/global/list/divine_invocation_names = list(
 	switch (spell)
 		if ("mercy")
 			divine_drain(caster, 0.3)
-			target.adjustHalLoss(-40)
+			target.adjustHalLoss(-round(40 * bonus))
 			divine_drain(target, -0.25)
 			to_chat(target, SPAN_NOTICE("Your pain eases and you feel a little stronger."))
 			if (target != caster)
 				to_chat(caster, SPAN_NOTICE("You feel drained."))
 		if ("affliction")
 			divine_drain(caster, 0.3)
-			target.adjustHalLoss(20)
+			target.adjustHalLoss(round(20 * bonus))
 			divine_drain(target, 0.4)
 			to_chat(target, SPAN_WARNING("A sudden ache runs through you and your limbs feel heavy."))
 			to_chat(caster, SPAN_NOTICE("You feel drained."))
@@ -459,10 +524,18 @@ var/global/list/divine_invocation_names = list(
 				divine_drain(M, 0.25)
 				if (M != target)
 					to_chat(M, SPAN_NOTICE("The vigil is over. You feel tired."))
-			target.heal_overall_damage(15, 15)
-			target.adjustHalLoss(-30)
+			target.heal_overall_damage(round(15 * bonus), round(15 * bonus))
+			target.adjustHalLoss(-round(30 * bonus))
 			to_chat(target, SPAN_NOTICE("You feel your strength returning."))
-	log_admin("Divine use applied: [spell] by [key_name(caster)] on [key_name(target)] for [R.approved_deity] (approved by [R.approver_ckey]).")
+		if ("repository")
+			caster.magic_repo_begin() // repository.dm
+		if ("imbue")
+			caster.arcane_imbue_apply(R.target) // arcane_enchant.dm
+		if ("bless")
+			caster.arcane_bless_apply(R.target) // arcane_bless.dm
+		if ("repository_strengthen", "repository_attune", "repository_move", "repository_consecrate")
+			caster.magic_repo_rite_granted(spell) // repository_tiers.dm
+	log_admin("Divine use applied: [spell] by [key_name(caster)] on [ismob(target) ? key_name(target) : "[R.target] ([R.target.type])"] for [R.approved_deity] (approved by [R.approver_ckey]).")
 	divine_finish_request(R)
 	return TRUE
 

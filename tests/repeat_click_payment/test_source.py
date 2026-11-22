@@ -178,13 +178,13 @@ class RepeatClickPayment(unittest.TestCase):
 
     def test_computer_payments_recheck(self):
         source = read('code/modules/1713/computers/programs.dm')
-        bail = proc('code/modules/1713/computers/programs.dm', '/datum/program/bail/Topic')
+        bail = proc('code/modules/1713/computers/programs.dm', '/datum/program/bail/program_action')
         self.assert_order(bail, 'Who do you wish to pay the bail for?', 'if (QDELETED(U) || U.bail_price <= 0)',
                           'M.use(U.bail_price/5)', 'U.bail_price = 0')
-        repair = proc('code/modules/1713/computers/programs.dm', '/datum/program/swiftfix/Topic')
+        repair = proc('code/modules/1713/computers/programs.dm', '/datum/program/swiftfix/program_action')
         self.assert_order(repair, 'Are you sure?', '!M.use(100/5)', 'switch(user.civilization)')
         self.assertNotIn('M.amount-=', bail + repair)
-        self.assertIn('/datum/program/bail/Topic', source)
+        self.assertIn('/datum/program/bail/program_action', source)
 
 
     def test_export_radios_pay_once(self):
@@ -275,30 +275,44 @@ class RepeatClickPayment(unittest.TestCase):
 
     def test_market_programs_and_vendor(self):
         programs = read('code/modules/1713/computers/programs.dm')
-        bank = proc('code/modules/1713/computers/programs.dm', '/datum/program/junglebank/Topic')
+        bank = proc('code/modules/1713/computers/programs.dm', '/datum/program/junglebank/program_action')
         self.assert_order(bank, 'map.globalmarketplace[tcode][7] != 1', 'map.marketplaceaccounts[user.name] -= cost')
         self.assert_order(bank, 'Are you sure you want to sell', 'map.globalmarketplace[tcode][2] != user',
                           'map.marketplaceaccounts[user.name] += cost')
         self.assertEqual(programs.count('QDELETED(ST) || user.get_active_hand() != ST)'), 2)
         self.assertEqual(programs.count('QDELETED(M) || user.get_active_hand() != M)'), 2)
         vendor = proc('code/game/objects/structures/vending/vending_sales.dm', '/obj/structure/vending/sales/attackby')
-        self.assert_order(vendor, 'var/atom/drop_loc = W.loc', 'What price do you want to set',
-                          'if (QDELETED(W) || W.loc != drop_loc)', 'product_records.Add(product)')
+        # The price is asked while the seller still holds the item; the listing
+        # is made only if they still hold it at the stall afterwards.
+        self.assert_order(vendor, 'What price do you want to set',
+                          'QDELETED(W) || W.loc != user || !in_range(src, user)', 'return add_product(W, inputp, user)')
 
     def test_mines_shells_and_printing_press(self):
         grenades = read('code/game/objects/items/weapons/grenades/grenade.dm')
-        self.assertEqual(grenades.count('if (!QDELETED(src) && loc == user)'), 3)
+        self.assertEqual(grenades.count('if (!QDELETED(src) && loc == user)'), 2)
         for declaration in ('/obj/item/weapon/grenade/secondary_attack_self',
-                            '/obj/item/weapon/grenade/antitank/n75/secondary_attack_self',
-                            '/obj/item/weapon/grenade/antitank/type99/secondary_attack_self'):
+                            '/obj/item/weapon/grenade/antitank/proc/place_as_antitank_mine'):
             with self.subTest(declaration=declaration):
                 body = proc('code/game/objects/items/weapons/grenades/grenade.dm', declaration)
                 self.assert_order(body, 'if (do_after(user,', 'if (!QDELETED(src) && loc == user)', 'BT = new', 'qdel(src)')
+        for subtype in ('n75', 'type99'):
+            body = proc('code/game/objects/items/weapons/grenades/grenade.dm',
+                        f'/obj/item/weapon/grenade/antitank/{subtype}/secondary_attack_self')
+            self.assertIn('return place_as_antitank_mine(user)', body)
+        placement = proc('code/game/objects/items/weapons/grenades/grenade.dm',
+                         '/obj/item/weapon/grenade/antitank/proc/place_as_antitank_mine')
+        self.assert_order(placement, 'if (secondary_action)', 'WWinput(', 'if (inp == "Yes")',
+                          'if (do_after(user, 60, src))', 'if (!QDELETED(src) && loc == user)',
+                          'BT = new', 'BT.origin = src.type', 'firer = user', 'qdel(src)')
         shells = proc('code/modules/projectiles/ammo_crafting.dm', '/obj/item/stack/ammopart/casing/tank/attack_self')
         self.assert_order(shells, 'if (crafting_shells)', 'crafting_shells = TRUE', 'Which type of shell',
                           'if (QDELETED(src) || loc != user)', 'new/obj/item/cannon_ball/shell/tank', 'crafting_shells = FALSE\n\t\tto_chat', 'qdel(src)')
-        press = proc('code/modules/1713/production.dm', '/obj/structure/printingpress/attackby')
-        self.assert_order(press, 'Add to original or copy?', 'if (input == "Cancel" || QDELETED(W) || W.loc != user)', 'base += W')
+        source = 'code/modules/1713/production.dm'
+        press = proc(source, '/obj/structure/printingpress/attackby')
+        self.assertIn('return insert_press_book_or_map(W, user)', press)
+        insert = proc(source, '/obj/structure/printingpress/proc/insert_press_book_or_map')
+        self.assert_order(insert, 'Add to original or copy?', 'choice == "Cancel"', 'QDELETED(document)',
+                          'document.loc != user', 'if (slot.len)', 'slot += document', 'user.transfer_held_item_to')
 
 class PlantPotCinchona(unittest.TestCase):
     """Exercise the shared planting body with an injected wait boundary."""

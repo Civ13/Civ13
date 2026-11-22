@@ -17,9 +17,7 @@
 #define FLUID_IDLE_RECHECK 5 // an idle network looks again every this many steps
 #define FLUID_REBUILD_STEPS 30 // networks are rebuilt at least this often
 
-#define FLUID_TIER_SOURCE 1
-#define FLUID_TIER_BUFFER 2
-#define FLUID_TIER_SINK 3
+// Factory pipe tiers: code/__defines/factory.dm
 
 var/global/list/fluid_pipes = list()
 var/global/list/fluid_pumps = list()
@@ -141,7 +139,8 @@ var/global/fluid_step_serial = 0
 						continue
 					var/data = R.get_data(id)
 					var/is_toxin = istype(reagent, /datum/reagent/toxin)
-					R.remove_reagent(id, amount)
+					// Debit the entry being credited, not every alcohol (#6870).
+					R.remove_reagent(id, amount, exact = TRUE)
 					var/taken = D.fluid_receive(id, amount, data)
 					if (taken > 0 && is_toxin)
 						fluid_carry_toxin_origin(S, R, D)

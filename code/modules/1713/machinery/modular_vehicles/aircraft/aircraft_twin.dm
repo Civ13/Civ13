@@ -110,7 +110,7 @@
 		E.on = want
 		E.update_icon()
 		if (want)
-			E.running()
+			E.start_running()
 
 // With engines running on the wings they share the load.
 /obj/structure/vehicleparts/axis/aircraft/check_engine()
@@ -177,7 +177,9 @@
 	rough_takeoff_roll = 24
 
 // Built facing south like every hangar plane, so "1,1" is the plane's right.
-var/global/list/aircraft_twin_plane_layout = list(
+var/global/list/aircraft_twin_plane_layout = aircraft_twin_plane_layout_table()
+/proc/aircraft_twin_plane_layout_table()
+	return list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/twin_open, /obj/structure/vehicleparts/movement),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/twin_engine/right, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center/twin),

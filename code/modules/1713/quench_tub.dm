@@ -60,9 +60,13 @@
 
 // Quenches a freshly forged piece. TRUE when it was hardened.
 /obj/structure/quench_tub/proc/quench(obj/item/weapon/material/W, mob/user)
-	if (!istype(W) || W.crafting_quality >= QUENCHED_QUALITY || !station_take_water(null))
+	if (!istype(W))
 		return FALSE
-	W.crafting_quality = QUENCHED_QUALITY
+	// The steel's grade carries through: blister steel hardens less, fine steel more.
+	var/hardened = QUENCHED_QUALITY * W.forged_grade
+	if (W.crafting_quality >= hardened || !station_take_water(null))
+		return FALSE
+	W.crafting_quality = hardened
 	W.update_force()
 	playsound(src, 'sound/effects/watersplash.ogg', 30, TRUE)
 	flick("quench_tub_steam", src)
@@ -71,20 +75,17 @@
 		to_chat(user, SPAN_NOTICE("You plunge \the [W] hissing into \the [src]. It comes out hard."))
 	return TRUE
 
-// Forging leaves the new piece on the anvil's tile: quench what appeared.
-/obj/structure/anvil/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name, picked = null)
-	if (!quench_hardens(material_name) || !quench_tub())
-		return ..()
-	var/list/before = list()
-	var/turf/T = get_turf(src)
-	for (var/obj/item/weapon/material/W in T)
-		before += W
-	. = ..()
-	var/obj/structure/quench_tub/Q = quench_tub()
-	if (!Q || !T)
+// Each piece forged from iron or steel sheet comes off the anvil into the
+// tub: a steel Japanese blade is clay-hardened first when the smith can
+// (tatara.dm), then everything gets the plain quench.
+/obj/structure/anvil/finish_forged_piece(obj/item/made, mob/user, mob/living/human/H, material_name)
+	..()
+	var/obj/item/weapon/material/W = made
+	if (!istype(W) || QDELETED(W) || !quench_hardens(material_name))
 		return
-	for (var/obj/item/weapon/material/W in T)
-		if (!(W in before))
-			Q.quench(W, user)
+	clay_harden(W, H)
+	var/obj/structure/quench_tub/Q = quench_tub()
+	if (Q)
+		Q.quench(W, user)
 
 #undef QUENCHED_QUALITY

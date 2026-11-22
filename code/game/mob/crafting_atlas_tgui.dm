@@ -322,7 +322,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 			variants += list(list("id" = variant["id"], "kind" = html_encode("[variant["kind"]]"), "line" = variant["line"]))
 	var/station_id = station_of(reference, group)
 	var/station = station_id ? display_name(reference, station_id, recipe["processor_name"]) : ""
-	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "manual_hint" = html_encode(manual_hint(viewer, recipe)), "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants, "research" = research_data(viewer, recipe, known), "retired" = retired(recipe), "maximum_era" = recipe["maximum_era"], "station" = html_encode(station), "station_id" = station_id, "site" = html_encode("[group["site"]]"), "elsewhere" = !has_local(matches, catalog), "skill" = skill_data(viewer, recipe))
+	return list("id" = recipe["id"], "name" = html_encode("[recipe["name"]]"), "kind" = html_encode("[recipe["kind"]]"), "inputs" = inputs, "outputs" = outputs, "manual_hint" = html_encode(manual_hint(viewer, recipe)), "conditions" = html_encode("[recipe["conditions"]]"), "era_label" = html_encode("[recipe["era_label"]]"), "era_basis" = html_encode("[recipe["era_basis"]]"), "file" = recipe["file"], "line" = recipe["line"], "variants" = variants, "research" = research_data(viewer, recipe, known), "retired" = retired(recipe), "maximum_era" = recipe_upper_age_waived() ? null : recipe["maximum_era"], "station" = html_encode(station), "station_id" = station_id, "site" = html_encode("[group["site"]]"), "elsewhere" = !has_local(matches, catalog), "skill" = skill_data(viewer, recipe))
 
 // The skill a material recipe needs beside the viewer's own level
 // (recipe_skill_needs.dm), or null when it needs none.
@@ -649,7 +649,7 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 				if (!entry["manual_hint"])
 					row["manual_hint"] = ""
 				else if (row["manual_hint"] && row["manual_hint"] != entry["manual_hint"])
-					row["manual_hint"] = "Needs a manual; select a variant for details"
+					row["manual_hint"] = "Not learned yet; select a variant for details"
 				if (row["research"] == "needed")
 					row["research"] = entry["research"]
 				if (!entry["retired"])
@@ -692,12 +692,39 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || H.knows_recipe_node(node_id))
 		return ""
+	// Book research worlds have no manuals: a subject is learned by reading
+	// its chapter (Val, 2026-11-18: a player holding the finished chapter was
+	// told to find a manual that does not exist).
+	if (map.book_research_enabled())
+		return crafting_node_chapter_hint(H, N)
 	return "Needs the [N.name] manual"
+
+/proc/crafting_node_chapter_hint(mob/living/human/H, datum/research_node/N)
+	var/list/missing = list()
+	for (var/req in N.prereqs)
+		if (!H.knows_recipe_node(req))
+			var/datum/research_node/R = get_research_node(req)
+			missing += R ? R.name : req
+	if (missing.len)
+		return "Learn [english_list(missing)] before [N.name]"
+	var/obj/item/weapon/book/B = H.carried_chapter_book(N.id)
+	if (B)
+		return "Read the [N.name] chapter in [B.name] (use it in hand) to learn it"
+	return "Read the [N.name] chapter to learn it"
 
 /proc/crafting_recipe_manual_hint(mob/viewer, result_path)
 	if (is_research_essential_recipe(result_path))
 		return ""
-	return crafting_node_manual_hint(viewer, get_recipe_node_req(result_path))
+	var/hint = crafting_node_manual_hint(viewer, get_recipe_node_req(result_path))
+	// The craft itself also admits work from a book a third written, guided
+	// work beside a teacher and demonstration kits: those rows stay usable
+	// instead of showing a lock the craft would not apply.
+	if (hint && crafting_recipe_allowed(viewer, "[result_path]"))
+		return ""
+	// A capstone's demonstration machine: say how to build the crude version.
+	if (hint)
+		return demonstration_kit_hint(viewer, result_path) || hint
+	return hint
 
 /mob/living/human/proc/refresh_recipe_knowledge_menus()
 	if (!client)

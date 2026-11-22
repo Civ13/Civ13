@@ -93,7 +93,7 @@ var/global/list/cellar_pumps = list()
 
 // Depth of water on cellar tile T. ignore_pumps: as if nothing kept it dry.
 /datum/river_flood/proc/seep_depth_at(turf/T, ignore_pumps = FALSE)
-	if (T.density || T.x < 1 || T.x > maxx || T.y < 1 || T.y > maxy)
+	if (!cellar_holds_water(T) || T.x < 1 || T.x > maxx || T.y < 1 || T.y > maxy)
 		return 0
 	var/r = reach_at(T.x, T.y)
 	var/turf/S = locate(T.x, T.y, z_level)
@@ -124,6 +124,12 @@ var/global/list/cellar_pumps = list()
 	var/tunnel = tunnel_depth_at(T)
 	if (tunnel > . && (ignore_pumps || !cellar_pumped(T)))
 		. = tunnel
+
+// TRUE for an open floor below ground that water can stand on. Rock nobody
+// has dug into yet (/turf/sky/building/unformed) is not dense, but it is
+// solid: water neither stands in it nor runs through it.
+/proc/cellar_holds_water(turf/T)
+	return T && !T.density && istype(T, /turf/floor)
 
 // Bailed lately, or near a working cellar pump.
 /datum/river_flood/proc/cellar_kept_dry(turf/T)
@@ -194,7 +200,7 @@ var/global/list/cellar_pumps = list()
 
 // Floods the open tunnel within reach steps of B, roof-high but for the edge.
 /datum/river_flood/proc/tunnel_spread(turf/B, reach)
-	if (!B || B.density)
+	if (!cellar_holds_water(B))
 		return
 	var/list/dist = list()
 	dist[B] = 0
@@ -210,7 +216,7 @@ var/global/list/cellar_pumps = list()
 			continue
 		for (var/dir in cardinal)
 			var/turf/N = get_step(T, dir)
-			if (!N || N.density || !isnull(dist[N]))
+			if (!cellar_holds_water(N) || !isnull(dist[N]))
 				continue
 			dist[N] = d + 1
 			queue += N

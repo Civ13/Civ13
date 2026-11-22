@@ -105,7 +105,7 @@
 	if (M.water < 0)
 		M.water += rand(40,50)
 	M.water += removed * 40
-	M.addictions["alcohol"] += 0.02
+	M.drug_dose("alcohol", 0.02, 0.02)
 
 	M.radiation -= 1 * removed
 
@@ -133,7 +133,7 @@
 	if (adj_temp > 0 && M.bodytemperature < targ_temp) // 310 is the normal bodytemp. 310.055
 		M.bodytemperature = min(targ_temp, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
 	if (adj_temp < 0 && M.bodytemperature > targ_temp)
-		M.bodytemperature = min(targ_temp, M.bodytemperature - (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT))
+		M.bodytemperature = max(targ_temp, M.bodytemperature + (adj_temp * TEMPERATURE_DAMAGE_COEFFICIENT)) // cool by adj_temp, stop at the target (#6310)
 
 	if (halluci)
 		M.hallucination = max(M.hallucination, halluci)

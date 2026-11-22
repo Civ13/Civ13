@@ -71,7 +71,7 @@ var/global/list/air_crossing_planes = list()
 		if (id == shard_group.region || !continent_flight(id))
 			continue
 		var/list/peer = shard_group.peers[id]
-		if (!islist(peer) || peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
+		if (!islist(peer) || shard_group.peer_closed(id) || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 			continue
 		var/tiles = continent_distance(shard_group.region, id)
 		.["[peer["name"]], to the [continent_bearing(shard_group.region, id)]: [tiles] tile\s of flying"] = list(id, tiles)
@@ -118,6 +118,10 @@ var/global/list/air_crossing_planes = list()
 	return null
 
 /obj/structure/vehicleparts/axis/aircraft/proc/air_crossing_menu(mob/living/human/pilot)
+	// Where planes fly over the map edges, the heading picks the land (aircraft_edge.dm).
+	if (air_edge_travel_on())
+		to_chat(pilot, SPAN_NOTICE("Fly on over the edge of the land: where you come out depends on your heading. Oceans are crossed in one flight if the fuel holds."))
+		return
 	var/reason = air_crossing_refusal(pilot)
 	if (reason)
 		to_chat(pilot, SPAN_WARNING(reason))
@@ -195,6 +199,24 @@ var/global/list/air_crossing_planes = list()
 		return "That land is not known here."
 	if (shard_group.peer_transfers_held(id))
 		return "No aircraft can land there for now: that land is closed to arrivals. Ask an admin."
+	// Everyone aboard is held still and she is guarded until she leaves or
+	// stays (travel_hold.dm).
+	var/list/aboard = list(pilot)
+	var/list/decks = list()
+	for (var/mob/living/human/H in transporting)
+		aboard |= H
+	for (var/obj/O in components)
+		var/turf/T = get_turf(O)
+		if (T && !(T in decks))
+			decks += T
+	var/datum/travel_hold/held = travel_hold_begin(aboard, peer["name"], components.Copy(), decks)
+	. = air_cross_on(id, tiles, pilot, need, fuel)
+	travel_hold_end(held)
+
+// The rest of air_cross(), with everyone aboard held still.
+/obj/structure/vehicleparts/axis/aircraft/proc/air_cross_on(id, tiles, mob/living/human/pilot, need, fuel)
+	var/list/peer = shard_group.peers[id]
+	var/reason
 	if (peer["state"] != "UP")
 		var/woke = shard_group.wake_peer(id, pilot)
 		if (woke)
@@ -271,6 +293,9 @@ var/global/list/air_crossing_planes = list()
 	var/list/record = packed["record"]
 	var/datum/extraction_vehicle_transfer/transfer = packed["transfer"]
 	var/list/plane = list("v" = 1, "record" = record, "name" = name, "dir" = dir, "gear" = gear, "state" = state, "from" = list(pivot.x, pivot.y, pivot.z))
+	// Flown off an edge (aircraft_edge.dm): she comes in where her line reaches.
+	if (isnum(air_edge_along))
+		plane["along"] = air_edge_along
 	burn_crossing_fuel(fuel, need)
 	log_game("Air crossing: [key_name(pilot)] flies [name] ([crew.len] aboard) from [pivot.x],[pivot.y],[pivot.z] to [id] (flight [flight], [need] fuel).")
 	// She leaves the sky before anyone goes, so nothing aboard can be taken twice.
@@ -346,6 +371,8 @@ var/global/list/air_crossing_planes = list()
 		return FALSE
 	if (!(plane["state"] in list(AIRCRAFT_LOW, AIRCRAFT_CRUISE)))
 		return FALSE
+	if (!isnull(plane["along"]) && (!isnum(plane["along"]) || plane["along"] < 0 || plane["along"] > 1))
+		return FALSE
 	var/list/from = plane["from"]
 	if (!islist(from) || from.len != 3)
 		return FALSE
@@ -409,6 +436,8 @@ var/global/list/air_crossing_planes = list()
 	var/side = turn(plane["dir"], 180)
 	var/along_max = (side == NORTH || side == SOUTH) ? world.maxx : world.maxy
 	var/along = (side == NORTH || side == SOUTH) ? from[1] : from[2]
+	if (isnum(plane["along"]))
+		along = 1 + round(plane["along"] * (along_max - 1))
 	along = clamp(along, AIR_CROSSING_EDGE, along_max - AIR_CROSSING_EDGE)
 	var/depth = AIR_CROSSING_EDGE
 	for (var/offset = 0, offset <= along_max, offset += 3)

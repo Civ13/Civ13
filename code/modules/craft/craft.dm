@@ -93,6 +93,8 @@ var/global/list/crafts = list()
 // like more of them (naval/hull_ledger.dm).
 /datum/craft/proc/mass()
 	. = body ? max(1, body.tile_count()) : 1
+	// Her floors past plank weight, and her other decks (naval/hull_weight.dm).
+	. = max(1, . + structure_weight)
 	if (ledger)
 		. += ledger.water_weight() + ledger.load_weight() + ledger.foul_weight()
 
@@ -179,6 +181,11 @@ var/global/list/crafts = list()
 /datum/craft_body/proc/contains(turf/T)
 	return T in cells()
 
+// TRUE when T is one of her tiles on any deck she has (built hulls carry
+// decks above and below their own level).
+/datum/craft_body/proc/carries(turf/T)
+	return contains(T)
+
 // The south-west corner of the body's box on its main level, or null.
 /datum/craft_body/proc/origin()
 	return null
@@ -216,7 +223,7 @@ var/global/list/crafts = list()
 		for (var/atom/movable/M in T)
 			if (M.loc != T || QDELETED(M))
 				continue
-			if (istype(M, /atom/movable/lighting_overlay) || istype(M, /atom/movable/lighting_fullbright) || M.craft_left_behind())
+			if (!M.craft_cargo())
 				continue
 			. += M
 

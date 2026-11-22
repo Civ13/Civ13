@@ -139,9 +139,28 @@ class Sources(unittest.TestCase):
         # Canal steps stop rafts and boats (canals.dm).
         canal_raft='\tif (canal_step_blocked(get_turf(src), DT))\n\t\tto_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))\n\t\treturn FALSE\n'
         canal_boat='\tif (canal_step_blocked(get_turf(src), T))\n\t\tto_chat(driver, SPAN_WARNING("The canal steps here. Work a pound lock to pass."))\n\t\tmoving = FALSE\n\t\tstopmovementloop()\n\t\treturn FALSE\n'
+        # The raft's own sheet and the engineless boat description guard (small boats rework).
+        for new,old in (("\ticon = 'icons/obj/vehicles/raft.dmi'\n\ticon_state = \"raft\"\n","\ticon = 'icons/obj/vehicles/vehicleparts.dmi'\n\ticon_state = \"raft\"\n"),
+                ('/obj/structure/vehicle/boat/proc/update_customdesc()\n\tif (!engine || !fueltank)\n\t\treturn\n','/obj/structure/vehicle/boat/proc/update_customdesc()\n')):
+            self.assertEqual(s.count(new),1)
+            s=s.replace(new,old)
         for canal in (canal_raft,canal_boat):
             self.assertEqual(s.count(canal),1)
             s=s.replace(canal,'')
+        # Undo only the reviewed raft-ocean change before the legacy checksum.
+        ocean_gate = (
+            '\n/obj/structure/vehicle/raft/proc/can_travel_open_sea()\n\treturn FALSE\n\n'
+            '/obj/structure/vehicle/raft/do_vehicle_check()\n'
+            '\tif (!driver || swamped_refusal())\n\t\treturn FALSE\n'
+        )
+        self.assertEqual(s.count(ocean_gate), 1)
+        s = s.replace(ocean_gate, '/obj/structure/vehicle/raft/do_vehicle_check()\n')
+        live_driver_shape = 'if (istype(DT, /turf/floor/beach/water) || istype(DT, /turf/floor/trench/flooded))'
+        sea_exception = ' && !can_travel_open_sea()'
+        self.assertEqual(s.count(live_driver_shape), 1)
+        self.assertEqual(s.count(sea_exception), 1)
+        s = s.replace(live_driver_shape, live_driver_shape.replace('if (', 'if (driver && ', 1))
+        s = s.replace(sea_exception, '')
         stale='\trelease_stale_ride_glides()\n'
         self.assertEqual(s.count(stale),1)
         s=s.replace(stale,'')
@@ -155,7 +174,7 @@ class Sources(unittest.TestCase):
         body=body[:-len(tail)]
         body=re.sub(r'(?m)^\t','',body)
         s=s[:start]+body+s[end:]
-        b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'7c136f55b12bc1b0b25195b8c513c334fde1de4a')
+        b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'a2916e33f2d5228ae2774344fc3c7966bf903781')
     def test_ci_is_explicit_source_only_and_preserves_mixed_file_fallback(self):
         s=(ROOT/'scripts/ci_baseline.py').read_text()
         self.assertIn("'carriage_glide': {'files': ('tests/carriage_glide/test_sources.py',)",s)

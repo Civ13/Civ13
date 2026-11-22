@@ -1,22 +1,25 @@
 # Copied processing-list removal
 
-Run with BYOND 516.1681 in temporary storage:
+Compile the projections with the pinned BYOND 516.1688 toolchain in temporary storage:
 
 ```powershell
-& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1681-bin>'
-& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1681-bin>' --baseline
-& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1681-bin>' --negative-control
-& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1681-bin>' --guarded-control
-& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1681-bin>' --remove-candidate
-& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1681-bin>' --benchmark --evidence-dir '<fresh-directory>'
+& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1688-bin>' --compile-only
+& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1688-bin>' --baseline --compile-only
+& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1688-bin>' --negative-control --compile-only
+& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1688-bin>' --guarded-control --compile-only
+& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1688-bin>' --remove-candidate --compile-only
+& '<verified-python>' tests/processing_list_removal/run.py --byond-bin '<516.1688-bin>' --benchmark --evidence-dir '<fresh-directory>' --compile-only
 ```
 
 The fixture compiles the selected checkout's actual `PROCESS_LIST_CHECK`,
 `PROCESS_USE_FASTEST_LIST`, `PROCESS_TICK_CHECK`, object `fire` and snapshot reset.
-It substitutes an isolated registry, callbacks and diagnostic adapters, closes
-the runtime port and refuses reopening. No game startup, external service or
-production save is involved. The historical mode pins the same source paths to
-`aa675de6dbade0f3740c516dc4b5945c5c9a43c7`.
+It substitutes an isolated registry, callbacks and diagnostic adapters. The
+`--compile-only` option does not start DreamDaemon or run behavioral assertions.
+The existing native runner can bind a port before the fixture closes it and
+does not reliably prevent outbound BYOND account activity; do not run it until
+initial binding and outbound network activity are reliably constrained. The
+historical mode uses checked-in copies of both source files from
+`aa675de6dbade0f3740c516dc4b5945c5c9a43c7` without requiring Git history.
 
 Assertions cover forward order, budget continuation, duplicates, nulls, native
 self/peer deletion, additions/removals in the live registry, PROCESS_KILL,

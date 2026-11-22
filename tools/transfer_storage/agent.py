@@ -66,6 +66,11 @@ def _routes(store, radio):
         # Orbital strikes: a station fires at one named region (orbit_artillery.dm).
         '/strike/send': lambda body: {'id': radio.strike_send(body.get('envelope'))},
         '/strike/inbox': lambda body: {'envelopes': radio.strike_inbox()},
+        # Shared player records (records.py): DM queues /record; the coordinator
+        # collects /records/outbox and acknowledges what it stored.
+        '/record': lambda body: store.add_records(body.get('records')),
+        '/records/outbox': lambda body: store.record_outbox(),
+        '/records/ack': lambda body: store.ack_records(body.get('ids')),
         '/train/reserve': lambda body: store.reserve_train(body),
         '/train/lease': lambda body: store.train_lease_status(body['journey']),
         '/train/cancel': lambda body: store.cancel_train_lease(body['journey']),
@@ -85,13 +90,15 @@ def _routes(store, radio):
         # Home worlds: DM asks /account; the coordinator reads /accounts and answers /homes.
         '/account': lambda body: store.account(body['ckey'], body['op'], body.get('region'),
                                                  body.get('body') in (True, 1), body.get('faction')),
+        # A loopback-only custody barrier for the coordinator, never a claim.
+        '/lobby/account-status': lambda body: store.lobby_account_status(body['ckey']),
         '/accounts': lambda body: store.account_requests(),
         '/homes': lambda body: store.apply_homes(body['epoch'], body['rev'], body['rows'], body['done'],
                                                  body.get('reset') in (True, 1), body.get('mainland'), body.get('train_locks'), body.get('train_decisions'),
                                                  body.get('lands'), body.get('land_done'), body.get('chart'),
                                                  body.get('chart_done'), body.get('colony_grants'),
                                                  body.get('nations'), body.get('nation_results'), body.get('start_region'),
-                                                 body.get('travelling')),
+                                                 body.get('travelling'), body.get('chart_pass_results')),
         # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
         '/lands': lambda body: store.lands(),
         '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living'), body.get('colonies')),
@@ -105,7 +112,8 @@ def _routes(store, radio):
         # The world chart (docs/world-chart.md): DM reads /chart, admins queue /chart/request.
         '/chart': lambda body: store.chart(),
         '/chart/request': lambda body: store.request_chart(body.get('op'), body.get('x'), body.get('y'), body.get('admin'),
-                                                           body.get('owner'), body.get('voyage')),
+                                                           body.get('owner'), body.get('voyage'), body.get('data')),
+        '/chart/pass-result': lambda body: store.chart_pass_result(body.get('id'), body.get('actor')),
     }
 
 

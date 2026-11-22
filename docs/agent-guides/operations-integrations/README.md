@@ -219,6 +219,8 @@ line in their opening description before being marked ready or merged, outside
 comments, quotes and fenced code. Use concise player-facing text compatible with
 tools/changelog/README.md so the existing GitHub Action can announce it to Discord.
 Use one announcement route per change; do not also add a manifest for that change.
+PRs that are not player-facing leave the `Changelog:` line blank. Never fill it
+with "none (...)", "n/a" or an explanation; the PR check rejects such filler.
 This requirement does not authorize manual posts, publisher settings changes,
 deployment or claims that the change is running on a server.
 

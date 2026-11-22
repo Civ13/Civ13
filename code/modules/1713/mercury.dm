@@ -13,9 +13,8 @@
 #define CINNABAR_RICH_CHANCE 2
 // Mercury units from one cinnabar.
 #define MERCURY_ROAST_UNITS 2
-#define MERCURY_RETORT_UNITS 6
+// Mercury retort: code/__defines/ore_processing.dm
 // Retort load, seal wear per firing and the seal below which it leaks.
-#define RETORT_CAPACITY 10
 #define RETORT_SEAL_WEAR 10
 #define RETORT_SEAL_LEAKS 30
 // Burden stages.
@@ -47,7 +46,7 @@
 /turf/proc/mining_cinnabar(mob/living/human/H)
 	if (!map || map.ordinal_age < 1)
 		return 0
-	if (!prob(map.cinnabar_rich ? CINNABAR_RICH_CHANCE : CINNABAR_CHANCE))
+	if (!prob((map.cinnabar_rich ? CINNABAR_RICH_CHANCE : CINNABAR_CHANCE) * underground_ore_factor("cinnabar", src))) // underground_ores.dm
 		return 0
 	var/obj/item/stack/ore/mercury/C = new /obj/item/stack/ore/mercury(src)
 	C.amount = 4

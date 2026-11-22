@@ -117,6 +117,9 @@ def change_running(sg, group):
     if not journal or journal.get('phase') not in RUNNING_PHASES:
         return None
     if type(journal.get('pid')) is int:
+        boot = sg.Platform().boot_time()
+        if boot is not None and type(journal.get('started')) is int and boot > journal['started'] + 60:
+            return None  # from before the machine restarted: its pid is someone else's now
         return journal if sg.process_alive(journal['pid']) else None
     # Accepted a moment ago: its worker has not written its pid yet.
     started = journal.get('started')
@@ -205,6 +208,15 @@ def plan_gate(sg, group, region_id, platform=None, bot_profile=None):
         raise Refused('a %s region cannot be the front door' % new['kind'])
     raw = read_json(group['_path']) or {}
     changes = {}
+    early = []
+    machine = machine_of(sg, group, platform)
+    if new['kind'] == 'GATEWAY' and old != region_id and machine.listening(region_of(group, old)['port']) \
+            and not machine.listening(new['port']):
+        # While the front door plays, the gateway must already run, so the public port is
+        # never left waiting on its first build. With the group stopped there is nothing to
+        # keep up: only the ports change, and the next start brings the gateway up on it.
+        early.append('the gateway %s is not running on port %d; start it first (add-gateway --apply starts it)'
+                     % (region_id, new['port']))
     if old != region_id:
         was = region_of(group, old)
         changes[region_id] = {'port': [new['port'], was['port']]}
@@ -213,7 +225,9 @@ def plan_gate(sg, group, region_id, platform=None, bot_profile=None):
         # The front door keeps its hub listing: the new gate is listed as the old one was.
         if listed.get(old) is not None and listed.get(region_id) != listed.get(old):
             changes[region_id]['public'] = [listed.get(region_id), listed.get(old)]
-    return build_plan(sg, group, 'set-gate', changes, [old, region_id], platform, bot_profile)
+    plan = build_plan(sg, group, 'set-gate', changes, [old, region_id], platform, bot_profile)
+    plan['problems'][:0] = early
+    return plan
 
 
 def plan_port(sg, group, region_id, port=None, transfer_port=None, standby_port=None, platform=None, bot_profile=None):
@@ -297,7 +311,10 @@ def build_plan(sg, group, kind, changes, gate, platform, bot_profile):
         else:
             entry.update(state='cold' if host.cold() else 'stopped', action='not running: only its ports change')
     if gate:
-        regions.setdefault(gate[1], {'name': region_of(group, gate[1])['name']})['start'] = True
+        # The front door is brought up, unless the whole group is down (stopped for
+        # maintenance): then only the ports change and the next start brings it up.
+        down = not any(machine.listening(r['port']) for r in group['regions'])
+        regions.setdefault(gate[1], {'name': region_of(group, gate[1])['name']})['start'] = not down
     plan = {'kind': kind, 'config': group['_path'], 'gate': gate, 'changes': changes, 'regions': regions,
             'problems': problems, 'warnings': warnings, 'already': not changes, 'host_service': service,
             'public_ports': sorted(row['port'] for row in port_rows(sg, new_group, machine) if row['public']) if new_group else None}
@@ -517,7 +534,8 @@ class Worker:
         self.phase('starting')
         wanted = list(restart)
         if gate and gate[1] not in wanted:
-            wanted.insert(0, gate[1])  # the front door is always brought up
+            if self.plan['regions'].get(gate[1], {}).get('start', True):
+                wanted.insert(0, gate[1])  # the front door is brought up
         elif gate:
             wanted.sort(key=lambda region_id: region_id != gate[1])  # and first
         self.start(new, wanted)

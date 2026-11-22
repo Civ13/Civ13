@@ -23,6 +23,7 @@ def projection(declaration, args, env):
     for field in ('fueltype', 'vol', 'name', 'price', 'desc'):
         body = body.replace('\t' + field + ' = ', '\tpump.' + field + ' = ')
     body = body.replace('pump.vol = maxvol', 'pump.vol = pump.maxvol')
+    body = body.replace('(!restoring)', '(not pump.restoring)')
     return adapter.project('/proc/projected()\n' + body + '\n', '/proc/projected', args, env)
 
 
@@ -33,7 +34,7 @@ class PremadePumpTests(unittest.TestCase):
                 for deal in (False, True):
                     with self.subTest(brand=brand, fuel=fuel, deal=deal):
                         pump = SimpleNamespace(brand=brand, maxvol=1000, vol=0, price=3,
-                                               fueltype='none', name='fuel pump', desc='')
+                                               fueltype='none', name='fuel pump', desc='', restoring=False)
                         events = []
                         game_map = SimpleNamespace(ID='deal' if deal else 'other')
                         desc = projection('/obj/structure/fuelpump/proc/updatedesc', 'pump, game_map',
@@ -69,6 +70,18 @@ class PremadePumpTests(unittest.TestCase):
                         ])
                         self.assertEqual((pump.fueltype, pump.name, pump.vol, pump.price),
                                          (fuel, f'{brand} {fuel} pump', 1000, 0.4))
+
+    def test_a_load_keeps_the_saved_fuel_and_stock(self):
+        # Under restore the saved fields arrive after New(): no new fuel roll,
+        # no refill, only the colour overlay.
+        pump = SimpleNamespace(brand='UngOil', maxvol=1000, vol=250, price=3,
+                               fueltype='gasoline', name='saved', desc='saved', restoring=True)
+        events = []
+        parent = projection(BASE + '/New', 'pump, parent, pick, do_color, updatedesc', {})
+        parent(pump, lambda: events.append('ancestor'), lambda *c: events.append('pick'),
+               lambda: events.append('color'), lambda: events.append('description'))
+        self.assertEqual(events, ['ancestor', 'color'])
+        self.assertEqual((pump.fueltype, pump.vol, pump.name, pump.desc), ('gasoline', 250, 'saved', 'saved'))
 
     def test_brand_defaults_remain_distinct(self):
         self.assertIn('var/brand = "UngOil"\n\ticon_state = "oilpump3"\n\tcustomcolor = "#3cb44b"\n\tmaxvol = 1000', SOURCE)

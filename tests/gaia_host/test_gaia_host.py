@@ -1,12 +1,15 @@
 """Offline tests for scripts/gaia-host/gaia_host.py with a fake machine."""
 import hashlib
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
 import sys
 import tempfile
+import time
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('gaia_host', ROOT / 'scripts/gaia-host/gaia_host.py')
@@ -104,12 +107,12 @@ class FakeMachine:
         self.calls.append(['resume', pid])
         self.suspended -= 1
 
-    def terminate(self, pid):
+    def terminate(self, pid, expect=None):
         self.calls.append(['terminate', pid])
         self.up = False
         self.suspended = 0
 
-    def kill_tree(self, pid):
+    def kill_tree(self, pid, expect=None):
         self.calls.append(['kill_tree', pid])
         self.up = False
         self.suspended = 0
@@ -623,6 +626,16 @@ class GaiaHostTests(unittest.TestCase):
         self.host.watch_step(None)
         self.assertEqual(self.machine.suspended, 0)
 
+    def test_deferred_idle_update_does_not_prevent_normal_sleep(self):
+        self.running()
+        self.host.update_pending = lambda: True
+        self.host.idle_update_action = lambda: None
+        idle, _ = self.host.watch_step(None)
+        self.machine.clock = 15 * 60
+        self.host.watch_step(idle)
+        self.assertEqual(self.machine.suspended, 1)
+        self.assertFalse(self.machine.detached)
+
     def test_watch_puts_an_idle_saved_world_to_sleep_on_disk_when_asked(self):
         self.config['freeze_cold'] = True
         self.running()
@@ -738,30 +751,34 @@ class ListeningTests(unittest.TestCase):
             connect.assert_called_once()
 
 
+class FakePopen:
+    """Stands in for subprocess.Popen in Platform.run and records how it was started."""
+    seen = []
+
+    def __init__(self, argv, **kwargs):
+        FakePopen.seen.append(kwargs)
+        self.pid, self.returncode = 0, 0
+
+    def communicate(self, timeout=None):
+        return '', ''
+
+
 class NoConsoleWindowTests(unittest.TestCase):
+    def started(self, argv, **kwargs):
+        from unittest import mock
+        FakePopen.seen = []
+        with mock.patch.object(gaia_host.subprocess, 'Popen', FakePopen):
+            gaia_host.Platform().run(argv, **kwargs)
+        return FakePopen.seen
+
     def test_console_programs_run_without_a_window(self):
         # The windowless host service (pythonw) would flash a console for every
-        # git/dm.exe/schtasks/tasklist/netstat call without CREATE_NO_WINDOW.
-        import subprocess
-        from unittest import mock
-        seen = []
-        def fake_run(argv, **kwargs):
-            seen.append(kwargs.get('creationflags'))
-            return subprocess.CompletedProcess(argv, 0, '', '')
-        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
-            gaia_host.Platform().run(['git', 'status'])
-        self.assertEqual(seen, [gaia_host.NO_WINDOW])
+        # git/dm.exe/schtasks/netstat call without CREATE_NO_WINDOW.
+        self.assertEqual([kw.get('creationflags') for kw in self.started(['git', 'status'])], [gaia_host.NO_WINDOW])
         self.assertEqual(gaia_host.NO_WINDOW, 0x08000000 if gaia_host.os.name == 'nt' else 0)
 
     def test_staged_compiles_run_below_normal_priority(self):
-        import subprocess
-        from unittest import mock
-        seen = []
-        def fake_run(argv, **kwargs):
-            seen.append(kwargs)
-            return subprocess.CompletedProcess(argv, 0, '', '')
-        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
-            gaia_host.Platform().run(['dm', 'region.dme'], low_priority=True)
+        seen = self.started(['dm', 'region.dme'], low_priority=True)
         if gaia_host.os.name == 'nt':
             self.assertEqual(seen[0]['creationflags'], gaia_host.NO_WINDOW | gaia_host.BELOW_NORMAL_PRIORITY)
         else:
@@ -771,14 +788,7 @@ class NoConsoleWindowTests(unittest.TestCase):
         # Started by the launcher, this script inherits the launcher's console input; subprocess
         # duplicated that handle for git and check-update failed with WinError 50.
         import subprocess
-        from unittest import mock
-        seen = []
-        def fake_run(argv, **kwargs):
-            seen.append(kwargs.get('stdin', 'inherited'))
-            return subprocess.CompletedProcess(argv, 0, '', '')
-        with mock.patch.object(gaia_host.subprocess, 'run', fake_run):
-            gaia_host.Platform().run(['git', 'fetch'])
-        self.assertEqual(seen, [subprocess.DEVNULL])
+        self.assertEqual([kw.get('stdin', 'inherited') for kw in self.started(['git', 'fetch'])], [subprocess.DEVNULL])
 
     def test_detached_children_keep_a_hidden_console(self):
         # DETACHED_PROCESS left DreamDaemon without a console, so every shell() it ran
@@ -795,6 +805,184 @@ class NoConsoleWindowTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class StaleLockTests(GaiaHostTests):
+    """action.lock is released when the worker that held it is gone. It used to stay for
+    ever after a restart of the machine or a killed worker: every action was refused as
+    "another action is still running" and the watchdog left the busy region down."""
+
+    def accepted(self, action='start'):
+        write_save(self.repo / 'map_saves')
+        self.give_token()
+        return self.accept(action)
+
+    def test_a_lock_whose_worker_ended_is_released_and_the_action_reported(self):
+        operation = self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        asked = []
+        self.machine.worker_alive = lambda pid, started: asked.append((pid, started)) or False
+        status = self.host.status()
+        self.assertEqual(asked, [(999, 5)])
+        self.assertFalse(status['busy'])
+        self.assertFalse(self.host.lock.exists())
+        self.assertEqual(status['operation']['phase'], 'failed', status)
+        self.assertEqual(status['operation']['operation'], operation)
+        self.assertIn('start was interrupted (its worker ended)', status['operation']['error'])
+        self.accept('start')  # and the region takes actions again
+
+    def test_a_lock_whose_worker_runs_is_kept(self):
+        self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: True
+        self.assertTrue(self.host.status()['busy'])
+        with self.assertRaisesRegex(gaia_host.Refused, 'another action is still running: start'):
+            self.host.request('start')
+        self.assertEqual(self.host.read_state()['phase'], 'compiling')
+
+    def test_a_lock_from_before_the_machine_restarted_is_released(self):
+        self.accepted()
+        self.host.record(phase='saving', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: True  # the pid is another process now
+        self.machine.boot_time = lambda: time.time() + 3600
+        self.assertFalse(self.host.status()['busy'])
+        self.assertIn('the machine restarted', self.host.read_state()['error'])
+
+    def test_an_accepted_action_whose_worker_never_started_is_released(self):
+        self.accepted()
+        self.assertTrue(self.host.status()['busy'], 'a worker gets time to start')
+        long_ago = time.time() - gaia_host.WORKER_START_SECONDS - 5
+        os.utime(self.host.lock, (long_ago, long_ago))
+        self.assertFalse(self.host.status()['busy'])
+        self.assertIn('its worker never started', self.host.read_state()['error'])
+
+    def test_a_lock_another_caller_holds_without_a_worker_is_left_alone(self):
+        # The group fresh world holds every region's lock in its own process, with no record.
+        self.host.state_dir.mkdir(parents=True)
+        self.host.lock.write_text('f' * 32)
+        long_ago = time.time() - 3600
+        os.utime(self.host.lock, (long_ago, long_ago))
+        self.machine.worker_alive = lambda pid, started: False
+        self.assertTrue(self.host.status()['busy'])
+        self.assertTrue(self.host.lock.exists())
+
+    def test_the_watchdog_restarts_a_region_whose_action_died(self):
+        self.accepted()
+        self.host.record(phase='starting', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: False
+        self.host.mark_running()
+        self.machine.detached.clear()
+        for _ in range(40):  # the port stays closed past the watchdog's patience
+            self.host.watch_step(None)
+            self.machine.clock += 30
+            if self.machine.detached:
+                break
+        self.assertTrue(self.machine.detached, 'the watchdog started it again')
+
+    def test_releasing_a_stale_lock_never_removes_one_taken_meanwhile(self):
+        # Two status calls and a request at once: the slower call decided on the old lock.
+        self.host.state_dir.mkdir(parents=True)
+        self.host.lock.write_text('new-operation')
+        self.assertFalse(gaia_host.release_lock(self.host.lock, 'old-operation'))
+        self.assertEqual(self.host.lock.read_text(), 'new-operation')
+        self.assertTrue(gaia_host.release_lock(self.host.lock, 'new-operation'))
+        self.assertFalse(self.host.lock.exists())
+        self.assertEqual([p.name for p in self.host.state_dir.iterdir()], [])
+
+    def test_the_failure_is_recorded_before_the_lock_is_released(self):
+        self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: False
+        seen = []
+        real = gaia_host.release_lock
+        def release(lock, expected):
+            seen.append(self.host.read_state()['phase'])
+            return real(lock, expected)
+        with mock.patch.object(gaia_host, 'release_lock', release):
+            self.assertFalse(self.host.busy())
+        self.assertEqual(seen, ['failed'])
+
+    def test_a_status_answers_one_json_object_while_it_releases_a_lock(self):
+        self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: False
+        with mock.patch('sys.stdout', new_callable=io.StringIO) as out, mock.patch('sys.stderr', new_callable=io.StringIO) as err:
+            self.assertFalse(self.host.status()['busy'])
+        self.assertEqual(out.getvalue(), '')
+        self.assertIn('stale action lock removed', err.getvalue())
+        self.assertNotIn('{', err.getvalue(), 'the launcher reads the last JSON line of both streams')
+
+    def test_a_request_that_cannot_start_its_worker_leaves_no_lock(self):
+        write_save(self.repo / 'map_saves')
+        self.give_token()
+        def no_worker(argv):
+            raise OSError('could not start the worker')
+        self.machine.detach = no_worker
+        with self.assertRaises(OSError):
+            self.host.request('start')
+        self.assertFalse(self.host.lock.exists())
+
+    def test_the_worker_records_itself(self):
+        operation = self.accepted()
+        seen = []
+        with mock.patch.object(self.host, 'do_refresh', lambda op: seen.append(self.host.read_state().get('worker'))), \
+                mock.patch.object(self.host, 'do_start', lambda op: None):
+            self.host.work('start', operation)
+        self.assertEqual(seen[0]['pid'], os.getpid())
+        self.assertFalse(self.host.lock.exists())
+
+    def test_a_status_file_the_launcher_holds_open_does_not_fail_the_action(self):
+        # Windows refuses replacing a file another process is reading (WinError 5).
+        operation = self.accepted()
+        real, denied = os.replace, []
+        def replace(source, target):
+            if str(target).endswith('operation.json') and len(denied) < 3:
+                denied.append(target)
+                raise PermissionError(13, 'Access is denied')
+            return real(source, target)
+        with mock.patch.object(gaia_host.os, 'replace', replace), mock.patch.object(gaia_host.time, 'sleep', lambda s: None), \
+                mock.patch.object(self.host, 'do_refresh', lambda op: None), mock.patch.object(self.host, 'do_start', lambda op: None):
+            self.host.work('start', operation)
+        self.assertEqual(len(denied), 3)
+        self.assertEqual(self.host.read_state()['phase'], 'done')
+        self.assertEqual(list(self.host.state_dir.glob('*.tmp')), [])
+
+    def test_a_worker_that_cannot_write_its_result_still_releases_the_lock(self):
+        operation = self.accepted()
+        def denied(source, target):
+            raise PermissionError(13, 'Access is denied')
+        logged = []
+        self.host.log = logged.append
+        with mock.patch.object(gaia_host.os, 'replace', denied), mock.patch.object(gaia_host.time, 'sleep', lambda s: None), \
+                mock.patch.object(self.host, 'do_refresh', lambda op: None), mock.patch.object(self.host, 'do_start', lambda op: None):
+            self.host.work('start', operation)
+        self.assertFalse(self.host.lock.exists())
+        self.assertTrue(any('worker_report_failed' in entry for entry in logged), logged)
+
+    def test_a_record_keeps_the_action_when_one_read_of_the_state_fails(self):
+        operation = self.accepted()
+        real, failed = Path.read_text, []
+        def read_text(path, *args, **kwargs):
+            if path.name == 'operation.json' and not failed:
+                failed.append(path)
+                raise PermissionError(13, 'Access is denied')
+            return real(path, *args, **kwargs)
+        with mock.patch.object(Path, 'read_text', read_text), mock.patch.object(gaia_host.time, 'sleep', lambda s: None):
+            self.host.record(phase='saving')
+        state = self.host.read_state()
+        self.assertEqual((state['action'], state['operation'], state['phase']), ('start', operation, 'saving'))
+
+    def test_the_command_line_answers_json_when_an_action_raises(self):
+        self.config.pop('_path')
+        path = self.root / 'gaia-host.json'
+        path.write_text(json.dumps(self.config))
+        with mock.patch.object(gaia_host.Host, 'kill', side_effect=PermissionError(13, 'Access is denied')), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out, mock.patch('sys.stderr', new_callable=io.StringIO):
+            code = gaia_host.main(['--config', str(path), 'kill'])
+        answer = json.loads(out.getvalue().strip().splitlines()[-1])
+        self.assertEqual(code, 1)
+        self.assertFalse(answer['ok'])
+        self.assertIn('kill failed: PermissionError', answer['refused'])
 
 
 class ForcedStopTests(GaiaHostTests):
@@ -825,12 +1013,30 @@ class ForcedStopTests(GaiaHostTests):
         self.assertEqual(['2.sav.lk'], result['released_locks'])
         gaia_host.check_save(saves)
 
+    def test_forced_stop_refuses_an_unverified_port_holder(self):
+        self.machine.up = True
+
+        def refuse(pid, expect=None):
+            raise gaia_host.Unverified('process %d is not DreamDaemon (it is C:\\x.exe); it was left running' % pid)
+        self.machine.kill_tree = refuse
+        with self.assertRaisesRegex(gaia_host.Refused, 'nothing was ended on port .*end it by hand'):
+            self.host.kill()
+        self.assertTrue(self.machine.up)
+        self.assertFalse(self.host.killed_file.exists(), 'no forced stop is reported to a running action')
+
+    def test_forced_stop_asks_for_the_world(self):
+        self.machine.up = True
+        seen = []
+        self.machine.kill_tree = lambda pid, expect=None: seen.append(expect)
+        self.host.kill()
+        self.assertEqual('DreamDaemon', seen[0].what)
+
     def test_kill_keeps_lock_files_while_the_server_lives(self):
         self.machine.up = True
         saves = self.repo / 'map_saves'
         write_save(saves)
         (saves / '1.sav.lk').write_bytes(b'')
-        self.machine.kill_tree = lambda pid: self.machine.calls.append(['kill_tree', pid])  # it survives
+        self.machine.kill_tree = lambda pid, expect=None: self.machine.calls.append(['kill_tree', pid])  # it survives
         self.assertEqual([], self.host.kill()['released_locks'])
         self.assertTrue((saves / '1.sav.lk').exists())
 
@@ -1370,3 +1576,118 @@ class HostControlsContractTests(unittest.TestCase):
             written = set(host.host_status())
         region_only = {'staged', 'stage', 'group'}  # RegionHost.host_status adds these
         self.assertLessEqual(read - region_only, written)
+
+
+class PagerCheckTests(unittest.TestCase):
+    # A broken WMI provider made tasklist hang and every Gaia start crash (2026-11-19): the pager
+    # check asks the kernel directly and never runs a program.
+    def test_the_pager_check_runs_no_program(self):
+        from unittest import mock
+        platform = gaia_host.Platform()
+
+        def hang(argv, **kwargs):
+            raise AssertionError('the pager check ran %s' % argv)
+        platform.run = hang
+        with mock.patch.object(gaia_host.os, 'name', 'nt'), \
+                mock.patch.object(gaia_host.process_safety, 'running_in_session', return_value=True) as ask:
+            self.assertTrue(platform.byond_pager_running())
+        ask.assert_called_once_with('byond.exe')
+
+    def test_an_unanswered_check_is_unknown(self):
+        from unittest import mock
+        with mock.patch.object(gaia_host.os, 'name', 'nt'), \
+                mock.patch.object(gaia_host.process_safety, 'running_in_session', return_value=None):
+            self.assertIsNone(gaia_host.Platform().byond_pager_running())
+
+    def test_an_unknown_pager_does_not_block_a_start(self):
+        # Criticality: a boot gate fails open. Unknown counts as signed in.
+        host = gaia_host.Host.__new__(gaia_host.Host)
+        host.config = {'start_requires_byond_pager': True}
+        host.platform = type('P', (), {'byond_pager_running': lambda self: None})()
+        self.assertTrue(host.byond_signed_in())
+
+
+class ProcessSafetyTests(unittest.TestCase):
+    """Criticality rules (scripts/gaia-host/README.md, Process safety): a hung program never
+    crashes the host, and a kill only ends a process shown to be the one meant."""
+
+    def spawn(self, *argv):
+        import subprocess
+        child = subprocess.Popen(list(argv) or ['sleep', '30'], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+        self.addCleanup(lambda: (child.kill(), child.wait()))
+        return child
+
+    def test_a_hung_program_times_out_instead_of_raising(self):
+        import time
+        started = time.monotonic()
+        code, out = gaia_host.Platform().run(['sh', '-c', 'sleep 30 & echo $!; wait'], timeout=0.5)
+        self.assertEqual(gaia_host.TIMED_OUT, code)
+        self.assertIn('timed out after 0.5 s', out)
+        self.assertLess(time.monotonic() - started, 15)
+        grandchild = int(out.split()[0])
+        self.assertIsNone(gaia_host.process_safety.identity(grandchild) if not gaia_host.process_safety._zombie(grandchild) else None,
+                          'what the hung program started is ended too')
+
+    def test_a_finished_program_still_answers(self):
+        self.assertEqual((0, 'hi\n'), gaia_host.Platform().run(['sh', '-c', 'echo hi']))
+        self.assertEqual(3, gaia_host.Platform().run(['sh', '-c', 'exit 3'])[0])
+
+    def test_identity_names_the_executable(self):
+        child = self.spawn()
+        ident = gaia_host.process_safety.identity(child.pid)
+        self.assertEqual('sleep', Path(ident['exe']).name)
+        self.assertLessEqual(abs(ident['created'] - __import__('time').time()), 30)
+        self.assertIsNone(gaia_host.process_safety.identity(0))
+
+    def test_a_process_that_is_not_the_world_is_left_running(self):
+        child = self.spawn()
+        with self.assertRaisesRegex(gaia_host.Unverified, 'not DreamDaemon'):
+            gaia_host.Platform().kill_tree(child.pid, expect=gaia_host.process_safety.world_expect())
+        self.assertIsNone(child.poll(), 'never end an unverified process')
+
+    def test_a_reused_pid_is_left_running(self):
+        import time
+        child = self.spawn()
+        expect = gaia_host.process_safety.Expect(['sleep'], born_before=time.time() - 600, what='the recorded sleep')
+        with self.assertRaisesRegex(gaia_host.Unverified, 'reused'):
+            gaia_host.Platform().terminate(child.pid, expect=expect)
+        self.assertIsNone(child.poll())
+
+    def test_a_verified_process_is_ended(self):
+        import time
+        child = self.spawn()
+        gaia_host.Platform().terminate(child.pid, expect=gaia_host.process_safety.Expect(['sleep'], born_before=time.time()))
+        self.assertIsNotNone(child.wait(timeout=10))
+
+    def test_the_configured_daemon_counts_as_the_world(self):
+        expect = gaia_host.process_safety.world_expect({'daemon': 'C:/BYOND/bin/MyDaemon.exe'})
+        self.assertIsNone(expect.problem({'exe': 'C:\\BYOND\\bin\\MyDaemon.exe', 'created': 0}))
+        self.assertIsNone(expect.problem({'exe': 'D:\\BYOND\\bin\\dd.exe', 'created': 0}))
+        self.assertIsNotNone(expect.problem({'exe': 'C:\\Windows\\explorer.exe', 'created': 0}))
+        self.assertIsNotNone(expect.problem(None), 'unknown is not a match')
+
+class ProcessToolGuardTests(unittest.TestCase):
+    """Host scripts and the launcher never shell out to tasklist, taskkill, wmic or WMI/CIM cmdlets: they hang
+    when a WMI provider breaks (2026-11-19). Use scripts/gaia-host/process_safety.py."""
+    FORBIDDEN = __import__('re').compile(
+        r"""['"](tasklist|taskkill)(\.exe)?['"]|taskkill\.exe|tasklist\.exe|\bwmic\b|Get-CimInstance|Invoke-CimMethod|Get-WmiObject""",
+        __import__('re').I)
+    # Observation only, with a timeout and an empty answer on failure (agent_runs.windows_processes); the
+    # launcher's experimental WMI check, whose job is to ask WMI (WmiHealth.cs); the bot's detached start,
+    # which falls back to a direct start when WMI does not answer (BotCommand.cs).
+    ALLOWED = {'scripts/shard-group/agent_runs.py', 'tools/opendream-client/native/WmiHealth.cs',
+               'tools/opendream-client/native/BotCommand.cs'}
+
+    def test_no_process_tool_calls(self):
+        found = []
+        for folder in ('scripts/gaia-host', 'scripts/shard-group', 'scripts/windows/host', 'scripts/nomads-lifecycle',
+                       'tools/opendream-client/native'):
+            for path in sorted((ROOT / folder).rglob('*')):
+                relative = path.relative_to(ROOT).as_posix()
+                if path.suffix.lower() not in ('.py', '.bat', '.cmd', '.ps1', '.cs') or relative in self.ALLOWED \
+                        or any(part in ('tests', 'obj', 'bin') for part in path.relative_to(ROOT / folder).parts):
+                    continue
+                for number, line in enumerate(path.read_text(encoding='utf-8', errors='replace').splitlines(), 1):
+                    if self.FORBIDDEN.search(line):
+                        found.append('%s:%d: %s' % (path.relative_to(ROOT).as_posix(), number, line.strip()))
+        self.assertEqual([], found)

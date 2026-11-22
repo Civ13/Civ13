@@ -92,6 +92,21 @@ class FirefightingSourceTests(unittest.TestCase):
         self.assertIn('return ..()', water[start:water.find('\n#undef', start)])
         self.assertIn('return key == "next_smother" || ..()', water)
 
+    def test_soaking_respects_heat_dried_sources(self):
+        # Wells and puddles dried by a heat wave keep dry = FALSE, so every
+        # water draw must use the shared heat_dried() check (issue #6743).
+        sources = {
+            WATER: '/obj/item/weapon/bedsheet/proc/try_soak_blanket(',
+            SOURCE: '/obj/item/weapon/fire_beater/proc/try_soak(',
+            PUMP: '/obj/structure/fire_pump/reel/proc/supplies(',
+        }
+        for path, header in sources.items():
+            text = path.read_text(encoding='utf-8')
+            start = text.index('\n' + header)
+            body = text[start:text.find('\n/', start + 1)]
+            self.assertIn('S.heat_dried()', body, header)
+            self.assertNotIn('S.dry', body, header)
+
     def test_fire_hook(self):
         hook = HOOK.read_text(encoding='utf-8')
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8').splitlines()

@@ -52,7 +52,7 @@ class LegacyPullFollowContracts(unittest.TestCase):
 
     def test_next_input_keeps_a_touching_pull_after_an_interrupted_step(self):
         source = MOVEMENT.read_text(encoding='utf-8')
-        touching = source.index('var/pull_touching = (mob.step_x || mob.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32')
+        touching = source.index('var/pull_touching = (mob.step_x || mob.step_y || mob.pulling.step_x || mob.pulling.step_y) && isturf(mob.pulling.loc) && mob.pulling.z == mob.z && bounds_dist(mob, mob.pulling) < 32')
         drop = source.index('if (!mob.pulling.Adjacent(mob) && !pull_touching)')
         self.assertLess(touching, drop)
         self.assertNotIn('if (!mob.pulling.Adjacent(mob))\n', source)

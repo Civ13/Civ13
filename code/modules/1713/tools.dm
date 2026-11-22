@@ -120,6 +120,7 @@
 	value = 55
 
 /obj/item/weapon/material/shovel
+	var/shifting_mult = 1 // speed at moving loose earth against breaking ground (work_speed.dm)
 	tool_flags = TOOL_SHOVEL
 	name = "shovel"
 	desc = "A long tool for digging and moving dirt."
@@ -134,7 +135,6 @@
 	sharp = FALSE
 	edge = TRUE
 	slot_flags = SLOT_BACK|SLOT_BELT
-	var/dig_speed = 7
 	var/usespeed = 1.5
 	default_material = "iron"
 	force_divisor = 0.25
@@ -148,7 +148,17 @@
 	default_material = "steel"
 	health = 50
 	maxhealth = 50
-	dig_speed = 7
+
+// A navvy's shovel (Val, 2026-11-19): the broad, long-handled steel shovel
+// railway and canal gangs dug with. The fastest hand shovel, from Machined Tools.
+/obj/item/weapon/material/shovel/navvy
+	name = "navvy shovel"
+	desc = "A broad steel shovel on a long handle, made for shifting a lot of earth fast."
+	material = "steel"
+	default_material = "steel"
+	usespeed = 2.5
+	health = 50
+	maxhealth = 50
 
 /obj/item/weapon/material/shovel/bone
 	icon_state = "shovel_bone"
@@ -157,7 +167,6 @@
 	default_material = "bone"
 	health = 7.5
 	maxhealth = 7.5
-	dig_speed = 7
 
 // Foldable shovels
 /obj/item/weapon/material/shovel/spade/foldable
@@ -165,7 +174,6 @@
 	icon_state = "trench_shovel"
 	item_state = "lopata"
 	usespeed = 0.9
-	dig_speed = 7
 	var/path = /obj/item/weapon/foldable_shovel
 	secondary_action = TRUE
 
@@ -180,7 +188,6 @@
 	name = "entrenching tool"
 	desc = "A compact shovel used specifically for digging and moving dirt."
 	icon_state = "trench_shovel"
-	dig_speed = 7
 	force = 35
 	usespeed = 0.8
 
@@ -224,11 +231,9 @@
 	w_class = ITEM_SIZE_SMALL
 	weight = 1.18
 	usespeed = 0.8
-	dig_speed = 7
 
 /obj/item/weapon/material/shovel/spade/wood
 	usespeed = 0.4
-	dig_speed = 7
 	default_material = "wood"
 	material = "wood"
 	icon = 'icons/obj/flint_mining.dmi'
@@ -281,7 +286,6 @@
 	name = "small shovel"
 	icon_state = "lopata"
 	item_state = "lopata"
-	dig_speed = 7
 	usespeed = 0.9
 
 /obj/item/weapon/material/pickaxe
@@ -483,11 +487,7 @@
 			if ((istype(TB, /turf/floor/beach) && !istype(TB, /turf/floor/beach/sand)) || istype(TB, /turf/floor/plating) || istype(TB, /turf/floor/broken_floor) ||istype(TB, /turf/floor/mining) ||istype(TB, /turf/floor/ship) ||istype(TB, /turf/floor/wood) ||istype(TB, /turf/floor/wood_broken) ||!istype(TB, /turf/floor))
 				to_chat(user, SPAN_NOTICE("You can't dig up on that type of floor!"))
 				return
-			var/digging_tunnel_time = 400
-			if (ishuman(user))
-				var/mob/living/human/H = user
-				digging_tunnel_time /= H.getStatCoeff("strength")
-				digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+			var/digging_tunnel_time = dug_underground_dig_time(user, 400)
 			user.visible_message("<span class='danger'>[user] starts digging up!</span>", "<span class='notice'>You start digging up.</span>")
 			if (do_after(user, digging_tunnel_time, user.loc))
 				if (!TB.is_diggable)
@@ -508,11 +508,7 @@
 				to_chat(user, SPAN_NOTICE("You can't dig a tunnel here, there is no earth below."))
 				return
 			else
-				var/digging_tunnel_time = 200
-				if (ishuman(user))
-					var/mob/living/human/H = user
-					digging_tunnel_time /= H.getStatCoeff("strength")
-					digging_tunnel_time /= (H.getStatCoeff("crafting") * H.getStatCoeff("crafting"))
+				var/digging_tunnel_time = dug_underground_dig_time(user, 200)
 				user.visible_message("<span class='danger'>[user] starts digging a tunnel entrance!</span>", "<span class='danger'>You start digging a tunnel entrance.</span>")
 				if (do_after(user, digging_tunnel_time, user.loc))
 					if (!TB.is_diggable)
@@ -546,7 +542,7 @@
 			to_chat(user, SPAN_WARNING("Your people haven't researched Irrigation yet."))
 			return
 		user.visible_message("<span class='notice'>[user] starts to dig an irrigation channel.</span>", "<span class='notice'>You start to dig an irrigation channel.</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
-		if (do_after(user, 25, src))
+		if (do_after(user, work_delay(user, 25, WORK_DIG, src), src))
 			user.visible_message("<span class='notice'>[user] makes an irrigation channel.</span>", "<span class='notice'>You make an irrigation channel.</span>", "<span class='notice'>You finish and the sounds cease.</span>")
 			TB.irrigate("empty")
 			return
@@ -560,7 +556,7 @@
 				return
 			user.visible_message("[user] starts digging up a grave...", "<span class='notice'>You start digging up a grave...</span>", "<span class='notice'>You hear the ground being dug nearby.</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
-			if (do_after(user, 100, src))
+			if (do_after(user, work_delay(user, 100, WORK_DIG, src), src))
 				to_chat(user, SPAN_NOTICE("You finish digging the grave."))
 				new/obj/structure/religious/grave(user.loc)
 				return
@@ -581,7 +577,7 @@
 				return
 			user.visible_message("[user] starts digging up a pit latrine...", "<span class='notice'>You start digging up a pit latrine...</span>", "<span class='notice'>You hear the sound of dirt being excavated nearby.</span>")
 			playsound(src,'sound/effects/shovelling.ogg',100,1)
-			if (do_after(user, 150, src))
+			if (do_after(user, work_delay(user, 150, WORK_DIG, src), src))
 				to_chat(user, SPAN_NOTICE("You finish digging the pit latrine."))
 				new/obj/structure/toilet/pit_latrine(user.loc)
 				return

@@ -61,11 +61,7 @@
 #define FISH_SHOAL_HERRING 60
 #define FISH_SHOAL_FREE 50
 
-#define FISH_WATER_SALT "salt"
-#define FISH_WATER_FRESH "fresh"
-#define FISH_WATER_JUNGLE "jungle"
-#define FISH_WATER_SWAMP "swamp"
-#define FISH_WATER_FLOODED "flooded"
+// Fishing water kinds: code/__defines/fishing.dm
 
 // "kind,cell x,cell y,z" -> /datum/fishing_ground
 var/global/list/fishing_grounds = list()
@@ -237,18 +233,9 @@ var/global/list/fishing_grounds_published = null
 	var/kind = fish_water_kind(T)
 	if (!kind)
 		return null
-	fishing_grounds_sync()
-	var/cx = round(T.x / FISH_GROUND_SIZE)
-	var/cy = round(T.y / FISH_GROUND_SIZE)
-	var/key = fishing_ground_key(kind, cx, cy, T.z)
-	var/datum/fishing_ground/G = fishing_grounds[key]
 	var/capacity = fish_water_capacity(T, kind)
-	if (!G)
-		if (!create)
-			return null
-		G = new /datum/fishing_ground(kind, cx, cy, T.z, capacity)
-		fishing_grounds[key] = G
-	else if (capacity > G.capacity)
+	var/datum/fishing_ground/G = fishing_ground_cell(T, kind, capacity, create)
+	if (G && capacity > G.capacity)
 		G.settle()
 		G.stock += capacity - G.capacity
 		G.capacity = capacity
@@ -456,12 +443,24 @@ var/global/list/fishing_grounds_published = null
 	if (ishuman(user) && fishing_tool_profile(C))
 		fish_cast(C, user)
 		return
+	// Salt keeps water and ice open (ice_dynamics.dm).
+	if (ishuman(user) && ice_salt_ok(C))
+		ice_salt(src, C, user)
+		return
 	..()
 
-// An axe, pick or chisel on ice cuts a fishing hole (ice_fishing.dm).
+// An axe, pick or chisel on ice cuts a fishing hole (ice_fishing.dm), or on
+// harm intent breaks the tile open (ice_breaking.dm).
 /turf/floor/beach/water/ice/attackby(obj/item/C as obj, mob/user as mob)
 	if (ishuman(user) && ice_hole_tool_delay(C))
 		ice_hole_cut(src, C, user)
+		return
+	// A crowbar cannot cut a hole, but it breaks the ice (ice_breaking.dm).
+	if (ishuman(user) && ice_break_tool_delay(C))
+		ice_break(src, C, user)
+		return
+	if (ishuman(user) && ice_salt_ok(C))
+		ice_salt(src, C, user)
 		return
 	..()
 
@@ -511,6 +510,7 @@ var/global/list/fishing_grounds_published = null
 		H.visible_message("[H] stands ready to spear a fish.")
 	else
 		H.visible_message(SPAN_NOTICE("[H] casts \the [W] into the water."), SPAN_NOTICE("You cast \the [W] into the water[baited ? " with bait on the line" : ""]."))
+		H.body_motion_throw(src, BODY_MOTION_FULL)
 	var/done = do_after(H, profile[1], src)
 	H.ocean_fishing = FALSE
 	if (!done || QDELETED(W) || W.loc != H || !Adjacent(H) || !H.fishing_footing())
@@ -693,8 +693,8 @@ var/global/list/fishing_grounds_published = null
 
 // ---- Flood strandings ----
 
-// The ground of one kind that the tile lies in, for callers that are not
-// standing on fishing water (floodwater over land).
+// Look up one kind of ground for a tile, including floodwater or ice.
+// An existing ground's capacity is left to the caller.
 /proc/fishing_ground_cell(turf/T, kind, capacity, create = TRUE)
 	fishing_grounds_sync()
 	var/cx = round(T.x / FISH_GROUND_SIZE)

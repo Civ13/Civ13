@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { changelogLine, run, channel } from './publish.mjs';
+import { changelogLine, isNoChangeFiller, run, channel } from './publish.mjs';
 import { checkQueues } from './check-queues.mjs';
 import { checkPR } from './check-pr.mjs';
 import { readFileSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
@@ -47,7 +47,7 @@ test('only an explicit visible single line opts in', () => {
 
 test('placeholder markers and template prompts fail the publisher and PR description check', () => {
   for (const marker of ['required', 'REQUIRED.', '**required**', '[TODO]', '`TBD`', 'to be determined',
-    'FIXME', 'optional', 'placeholder', 'example', 'none', 'N/A', 'your changelog here',
+    'FIXME', 'optional', 'placeholder', 'example', 'your changelog here',
     'Enter your changelog here', 'Describe the player-visible change', 'Replace the changelog text']) {
     const body = `Changelog: ${marker}\nLauncher update failures now include safe diagnostic codes.`;
     assert.throws(() => changelogLine(body), /placeholder/);
@@ -58,6 +58,32 @@ test('placeholder markers and template prompts fail the publisher and PR descrip
   assert.equal(changelogLine('Changelog: Required tools are shown before crafting.'), 'Required tools are shown before crafting.');
   assert.equal(changelogLine('Changelog: Added a TODO list to the journal.'), 'Added a TODO list to the journal.');
   assert.throws(() => checkPR({}), /PR event/);
+});
+
+test('no-change filler is never published and the PR check asks for a blank field', () => {
+  // Exact lines merged on 2026-11-22 (#6882, #6840, #6805, #6796); three of them posted.
+  const filler = ['none (Help text refresh only).', 'none (test data only)', 'none.', 'none (build fix).',
+    'None', '(none)', '*None*', 'N/A', 'n/a - tooling only', 'NA', 'nil', 'Nothing.', 'not applicable',
+    'No changelog', 'No changelog needed.', 'No changes', 'No player-facing changes.', 'Not player-facing (CI)',
+    'Non-player-facing change', 'No player visible change', 'Internal only', 'Internal: refactor', 'Docs only.',
+    'Documentation', 'Tests only', 'Test data only', 'CI', 'Tooling', 'Build fix', 'Refactor', 'Maintenance.',
+    'Developer only', 'Skip', '-', '\u2014', '`none`'];
+  for (const entry of filler) {
+    const body = `Summary\n\nChangelog: ${entry}\n\nChecks passed.`;
+    assert.equal(isNoChangeFiller(entry), true, entry);
+    assert.equal(changelogLine(body), null, entry);
+    assert.throws(() => checkPR({ pull_request: { body } }), /leave the Changelog: line blank/, entry);
+  }
+  // Ordinary announcements that merely start with similar words still post.
+  for (const text of ['None of your stored food spoils in a cellar any more.', 'Nothing burns in a stone oven unless it is lit.',
+    'No more lag when many players stand near water.', 'Internal combustion engines now need oil.',
+    'Documents can now be sealed with wax.', 'Tests of strength at the training post give smaller gains.',
+    'Build menus show which tools each recipe needs.', 'Maintenance kits repair worn tools.',
+    'Not every tree drops seeds now.', 'Skipping stones across water is now possible.']) {
+    assert.equal(isNoChangeFiller(text), false, text);
+    assert.equal(changelogLine(`Changelog: ${text}`), text);
+    assert.equal(checkPR({ pull_request: { body: `Changelog: ${text}` } }), text);
+  }
 });
 
 test('installed template and documented placeholder labels do not become announcements', () => {
@@ -80,9 +106,17 @@ test('flattened placeholder with a second player changelog label is rejected', (
 });
 
 const commit = 'b'.repeat(40);
-const pr = { number: 42, merged: true, body: 'Changelog: Fixed crafting.', merge_commit_sha: commit, base: { ref: 'master', repo: { full_name: 'Civ13/Civ13' } } };
-const event = () => ({ action: 'closed', number: 42, pull_request: structuredClone(pr) });
-const env = { GITHUB_REPOSITORY: 'Civ13/Civ13', GITHUB_EVENT_NAME: 'pull_request_target', MERGE_CHANGELOG_ENABLED: 'true', DISCORD_CHANGELOG_WEBHOOK: 'https://discord.com/api/webhooks/123/token' };
+const basePR = { number: 42, merged: true, merged_at: '2026-11-22T00:00:00Z', body: 'Changelog: Fixed crafting.', merge_commit_sha: commit, base: { ref: 'master', repo: { full_name: 'Civ13/Civ13' } } };
+const event = () => ({ ref: 'refs/heads/master', after: commit, deleted: false });
+const env = { GITHUB_REPOSITORY: 'Civ13/Civ13', GITHUB_EVENT_NAME: 'push', GITHUB_SHA: commit, MERGE_CHANGELOG_ENABLED: 'true', DISCORD_CHANGELOG_WEBHOOK: 'https://discord.com/api/webhooks/123/token' };
+const noSleep = async () => {};
+// Read-only GitHub lookups for the push's merged PR.
+function lookups(pr, path, listed = [pr]) {
+  if (path === '') return { default_branch: 'master' };
+  if (path === 'commits/' + commit + '/pulls') return structuredClone(listed);
+  if (path === 'pulls/42') return structuredClone(pr);
+  return undefined;
+}
 
 test('repeated CR before LF preserves explicit single-line changelogs', () => {
   const newline = '\r\r\n'; // Windows text output can translate an existing CRLF again.
@@ -93,11 +127,12 @@ test('repeated CR before LF preserves explicit single-line changelogs', () => {
   assert.equal(changelogLine(`Changelog: first\rsecond${newline}`), null);
 });
 
-function harness() {
+function harness(pr = basePR) {
   let stored, posts = 0;
+  const setPR = next => { pr = next; };
   const api = async (path, options) => {
-    if (path === '') return { default_branch: 'master' };
-    if (path === 'pulls/42') return pr;
+    const found = lookups(pr, path);
+    if (found !== undefined) return found;
     if (path.startsWith('compare/')) return { status: 'ahead' };
     if (path.startsWith('git/ref/')) return {};
     if (path === 'contents/receipts/pr-42.json?ref=discord-changelog-receipts') return stored ? { type: 'file', size: 100, sha: 'receipt', content: Buffer.from(JSON.stringify(stored)).toString('base64') } : null;
@@ -111,56 +146,90 @@ function harness() {
     assert.deepEqual(JSON.parse(options.body).allowed_mentions.parse, []);
     posts++; return { id: '123', channel_id: channel };
   };
-  return { api, http, posts: () => posts };
+  return { api, http, sleep: noSleep, setPR, posts: () => posts };
 }
 test('merged PR sends once and rejects changed content on replay', async () => {
   const h = harness();
   await run(env, event(), h); await run(env, event(), h);
   assert.equal(h.posts(), 1);
-  const changed = event(); changed.pull_request.body = 'Changelog: Different.';
-  await assert.rejects(run(env, changed, h), /changed/);
+  h.setPR({ ...basePR, body: 'Changelog: Different.' });
+  await assert.rejects(run(env, event(), h), /changed/);
   assert.equal(h.posts(), 1);
 });
-test('merged CRCRLF event uses the same guarded receipt and suppresses replay', async () => {
-  const h = harness();
-  const e = event();
-  e.pull_request.body = 'Details\r\r\nchangelog: Fixed crafting.\r\r\n';
-  await run(env, e, h);
-  await run(env, e, h);
+test('merged CRCRLF description uses the same guarded receipt and suppresses replay', async () => {
+  const h = harness({ ...basePR, body: 'Details\r\r\nchangelog: Fixed crafting.\r\r\n' });
+  await run(env, event(), h);
+  await run(env, event(), h);
   assert.equal(h.posts(), 1);
 });
-test('absent or blank fields require no credentials or external effects', async () => {
-  for (const body of [null, 'Description', 'Changelog:']) {
-    const e = event(); e.pull_request.body = body;
-    await run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, e, { api: async path => { assert.equal(path, ''); return { default_branch: 'master' }; }, http: async () => { throw Error('Must not call Discord'); } });
+test('absent, blank or filler fields require no credentials or external effects', async () => {
+  for (const body of [null, 'Description', 'Changelog:', 'Help refresh.\n\nChangelog: none (Help text refresh only).\n', 'Changelog: N/A\nFixed crafting.']) {
+    const pr = { ...basePR, body };
+    await run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, event(), { sleep: noSleep, api: async path => { const found = lookups(pr, path); assert.notEqual(found, undefined, path); return found; }, http: async () => { throw Error('Must not call Discord'); } });
   }
+});
+
+test('a push without a merged PR posts nothing after retrying the PR index', async () => {
+  for (const listed of [[], [{ ...basePR, merged_at: null }], [{ ...basePR, merge_commit_sha: 'c'.repeat(40) }], [{ ...basePR, base: { ref: 'other', repo: basePR.base.repo } }]]) {
+    let lists = 0, sleeps = 0;
+    await run(env, event(), { sleep: async () => { sleeps++; }, api: async path => {
+      if (path.startsWith('commits/')) lists++;
+      const found = lookups(basePR, path, listed); assert.notEqual(found, undefined, path);
+      if (path.startsWith('pulls/')) throw Error('Must not fetch an unmatched PR');
+      return found;
+    }, http: async () => { throw Error('Must not call Discord'); } });
+    assert.equal(lists, 4); assert.equal(sleeps, 3);
+  }
+});
+
+test('a lagging PR index is retried before publishing', async () => {
+  const h = harness();
+  let calls = 0;
+  const api = h.api;
+  h.api = async (path, options) => (path.startsWith('commits/') && calls++ === 0) ? [] : api(path, options);
+  await run(env, event(), h);
+  assert.equal(h.posts(), 1);
+});
+
+test('non-master, deleted, mismatched or ambiguous pushes fail closed', async () => {
+  for (const [e, en] of [[{ ...event(), ref: 'refs/heads/other' }, env], [{ ...event(), deleted: true }, env], [{ ...event(), after: 'nope' }, env], [event(), { ...env, GITHUB_SHA: 'c'.repeat(40) }]]) {
+    const h = harness(); await assert.rejects(run(en, e, h), /default-branch push/); assert.equal(h.posts(), 0);
+  }
+  const h = harness();
+  const api = h.api;
+  h.api = async (path, options) => path.startsWith('commits/') ? [basePR, { ...basePR, number: 43 }] : api(path, options);
+  await assert.rejects(run(env, event(), h), /more than one/); assert.equal(h.posts(), 0);
 });
 
 test('placeholder merge rejects before receipt writes, credential checks or Discord access', async () => {
   for (const body of [incidentTail, flattenedTail]) {
-    const e = event(); e.pull_request.body = body;
+    const pr = { ...basePR, body };
     const calls = [];
-    await assert.rejects(run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, e, {
-      api: async path => { calls.push(path); assert.equal(path, ''); return { default_branch: 'master' }; },
+    await assert.rejects(run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, event(), {
+      sleep: noSleep,
+      api: async path => { calls.push(path); const found = lookups(pr, path); assert.notEqual(found, undefined, path); return found; },
       http: async () => { throw Error('Must not contact Discord'); },
     }), /placeholder/);
-    assert.deepEqual(calls, ['']);
+    assert.deepEqual(calls, ['', 'commits/' + commit + '/pulls', 'pulls/42']);
   }
 });
 test('real API adapter uses the canonical repository URL without a trailing slash', async () => {
-  const e = event(); e.pull_request.body = null;
+  const pr = { ...basePR, body: null };
   const calls = [];
-  await run(env, e, { fetcher: async url => {
+  await run(env, event(), { sleep: noSleep, fetcher: async url => {
     calls.push(url);
-    assert.equal(url, 'https://api.github.com/repos/Civ13/Civ13');
-    return { ok: true, status: 200, json: async () => ({ default_branch: 'master' }) };
+    const path = url.replace(/^https:\/\/api\.github\.com\/repos\/Civ13\/Civ13\/?/, '');
+    return { ok: true, status: 200, json: async () => lookups(pr, path) };
   } });
-  assert.equal(calls.length, 1);
+  assert.deepEqual(calls, ['https://api.github.com/repos/Civ13/Civ13', 'https://api.github.com/repos/Civ13/Civ13/commits/' + commit + '/pulls', 'https://api.github.com/repos/Civ13/Civ13/pulls/42']);
 });
 test('unmerged, foreign, wrong branch, stale merge and disabled publishing fail closed', async () => {
-  for (const change of [{ merged: false }, { base: { ref: 'other', repo: pr.base.repo } }, { base: { ref: 'master', repo: { full_name: 'other/repo' } } }, { merge_commit_sha: 'c'.repeat(40) }]) {
-    const e = event(); Object.assign(e.pull_request, change);
-    const h = harness(); await assert.rejects(run(env, e, h)); assert.equal(h.posts(), 0);
+  // The listed PR matches the push, but the authoritative PR fetch disagrees.
+  for (const change of [{ merged: false }, { base: { ref: 'other', repo: basePR.base.repo } }, { base: { ref: 'master', repo: { full_name: 'other/repo' } } }, { merge_commit_sha: 'c'.repeat(40) }, { number: 43 }]) {
+    const h = harness();
+    const api = h.api;
+    h.api = async (path, options) => path === 'pulls/42' ? { ...basePR, ...change } : api(path, options);
+    await assert.rejects(run(env, event(), h), /confirmation mismatch/); assert.equal(h.posts(), 0);
   }
   await assert.rejects(run({ ...env, MERGE_CHANGELOG_ENABLED: 'false' }, event(), harness()), /disabled/);
 });

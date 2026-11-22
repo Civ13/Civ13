@@ -1,35 +1,49 @@
 # Optional Ollama gameplay help
 
-Players use **Help! > Ask for help**. It opens a question dialog, then a private
-answer window. The prompt warns that the question goes to the server owner's AI
-service and should not contain personal information. Answers can be wrong. The
-Crafting Atlas and player wiki remain available without an AI service.
+Players use **Help! > Ask for help**. It opens the help window: the conversation
+so far, a question box and the notice that the question and the character's
+condition go to the server owner's AI service and should not contain personal
+information. Answers can be wrong. The Crafting Atlas and player wiki remain
+available without an AI service.
 
-The question dialog opens before service checks. Opening or cancelling it uses
-no request allowance. Without configuration, a running bridge, or a fresh
-heartbeat, submission shows an unavailable notice. An unanswered request times out after a bounded 60..600
-running-server seconds (including the queue budget) and releases its slot. Failed or empty model answers
-show an explicit notice rather than a blank window. Wait until the bridge has
-published two heartbeats (normally a few seconds) before trying the first question.
+The window is the whole interface. No separate dialog asks the question and no
+outcome is reported only in chat. An empty window offers a few example questions.
+A sent question appears at once under the conversation with a waiting line and
+the box locked; the answer then replaces the waiting line in the same window.
+Opening the window uses no request allowance and happens before service checks.
+Without configuration, a running bridge, or a fresh heartbeat, the window says the
+helper is not answering, and a question sent anyway is refused there. An
+unanswered request times out after a bounded 60..600 running-server seconds
+(including the queue budget) and releases its slot. Every refusal or failure
+(cooldown, busy, unavailable, timeout, an empty model answer) is shown as a
+notice in the window and the question is put back in the box. Wait until the
+bridge has published two heartbeats (normally a few seconds) before the first
+question.
 
 ## Private follow-up conversations
 
-With a conversation-capable worker, the answer window offers a follow-up question
-box with a **Follow up** button, and **New conversation**. Type the question in the
-box and press the button; no separate dialog opens. Ask for help also continues the current session. New
-conversation clears the context; use Ask for help again to ask a fresh question.
-The normal cooldown and one-pending-request-per-account rules still apply.
-Below the wiki and atlas links, retained exchanges display their questions and
-answers as escaped text. **Follow up on this exchange** sends only that selected
-pair as previous context for the next question; the other retained exchanges stay
-visible until normal retention removes them. The general **Follow up** continues
-using the current bounded conversation. Expired, replaced or copied links cannot
-select another client's history. A window left over from a cleared conversation
-(after a reconnect, a change of body, New conversation or 15 idle minutes) says so
-in chat instead of doing nothing. If the selected pair, question and current
-snapshot exceed the request limit, the game refuses the targeted follow-up with
-an explanation rather than silently sending it without the selected pair. The
-existing admission cooldown still applies to a request refused at this size check.
+With a conversation-capable worker, the question box under an answer reads
+**Follow up**. A follow-up is sent with the remembered exchanges, so "it" or
+"there" refers to what was already discussed; the bridge searches the guides
+with the new question first, the earlier questions at half weight and the
+previous answer's subject words at a quarter. **New conversation** clears the
+context and shows the empty window. The cooldown and
+one-pending-request-per-account rules still apply.
+
+Exchanges are shown oldest first, with answers rendered through the same bounded
+Markdown renderer as the newest. When more than one exchange is remembered, **Ask
+about this answer** under an answer sends only that pair as context for the next
+question; the other exchanges stay visible until normal retention removes them.
+Expired, replaced or copied links cannot select another client's history. A
+window left over from a cleared conversation (after a reconnect, a change of
+body, New conversation or 15 idle minutes) is replaced by the current window with
+a notice, and the question typed into it is kept in the box. If the selected
+pair, question and current snapshot exceed the request limit, the game refuses
+the question with an explanation rather than silently sending it without the
+selected pair. The admission cooldown still applies to a request refused at this
+size check. Links to the player wiki and the Crafting Atlas, including the ones
+an answer cites, open in the player's own browser so the conversation stays on
+screen; no other link is opened by the game.
 
 The authenticated client owns its completed question/answer pairs. No browser
 parameter selects an account, session or model role. Action tokens belong to
@@ -54,8 +68,8 @@ the next request carries the bounded server-owned snapshot. Existing startup
 cleanup discards queued files, so an interrupted request can time out.
 
 Worker health advertises conversation protocol 1. A new game omits conversation
-fields for old workers and permits standalone questions. Follow up requires an
-acknowledged conversation response. If a worker rolls back and fails to acknowledge
+fields for old workers and permits standalone questions; the window then shows
+only that one exchange. Follow up requires an acknowledged conversation response. If a worker rolls back and fails to acknowledge
 a request containing history, the game discards that answer and clears context
 instead of displaying it as a contextual reply. Old game/new worker and existing
 plain/Markdown response negotiation remain supported.
@@ -160,7 +174,7 @@ private directory permissions. Do not share a spool across Nomads and TDM.
    a slow trickling server is cut off at the deadline. `poll_seconds` (optional,
    0.05..5, default 0.25) is how often the worker scans the spool for new
    questions; the game checks for answers every half second. The game permits eight
-   outstanding questions, one per account, and a 30-second per-account cooldown.
+   outstanding questions, one per account, and a 10-second per-account cooldown.
    Questions are limited to 500 characters; answers to 4,000. Slow remote
    inference can fill these slots, in which case players receive a busy notice.
 4. For a protected HTTPS proxy, put its bearer token in the worker's private
@@ -187,7 +201,7 @@ the eight fixed slot numbers, never the request ID.
 ## Request limits
 
 The optional `limits` configuration sets the same policy in the bridge and game
-(published through a bounded local `limits.json`). Defaults allow three requests
+(published through a bounded local `limits.json`). Defaults allow five requests
 per account per 120 seconds, ten per 600 seconds, and thirty across the server
 per 60 seconds, in addition to the cooldown and one outstanding request per
 account. The bridge enforces admission again immediately before model dispatch,
@@ -371,20 +385,33 @@ changes fail startup rather than silently supplying unrelated code. Source hashe
 identify the files used. This is read-only evidence retrieval, not an admin MCP
 connection or model-controlled source browser.
 
-Set `wiki_root` in the private config to an up-to-date checkout of `civ13-wiki`.
-The three existing pages—`Guide_to_Crafting.md`, `Guide_to_Metallurgy.md`, and
-`Starter_Guide.md`—remain required when configured. Their content is not pinned,
-so their freshness is unknown. The bridge also checks an explicit allowlist of
-15 public character, chemistry, communications, construction, cooking, farming,
-fishing, hygiene, medical, radiation, ranching, religion, research, tank, and
-weapons guides. The allowlist and normalized-content hashes in
-`scripts/player_help_bridge.py` record the reviewed wiki revision
-`48094b1fbac7031a3a49c5c9ddce84e51dea0258`.
+The reviewed player guides ship with the game under `UI/player-help-wiki/`, as
+plain copies of the `civ13-wiki` pages listed in `WIKI_REVIEWED_GUIDES` in
+`scripts/player_help_bridge.py`. The list records each page's
+normalized-content hash, its search keywords and the reviewed wiki revision. A
+copy is used only when it matches its hash, and
+`tests/player_help/test_wiki_answers.py` fails when a pin and its copy differ,
+so a host never needs a wiki checkout on the right branch for Help to read the
+guides. `wiki_root` in the private config is optional: a page whose shipped copy
+is missing or changed is also looked for there, under the same hash.
 
-Additional pages are loaded only when their UTF-8 content matches the reviewed
-hash after line-ending normalization; missing, changed, invalid, and oversized
-additional pages are excluded. Missing required original pages still fail startup;
-omitting `wiki_root` disables wiki retrieval. The prompt reports bounded coverage
+Each guide is cut at its headings into excerpts of about 2,400 characters. An
+excerpt opens with the headings above it and links to its own section. A
+question is matched against an excerpt's headings, its guide's keywords and its
+text; words found in few entries count for more than common ones, and the two
+best guide excerpts always reach the model. Lines about hidden discoveries are
+left out of the excerpts, and an internal server name is reworded in excerpts
+and in answers.
+
+`tests/player_help/wiki_eval/questions.json` holds player questions with the
+wiki passage that answers each one. `python3 tests/player_help/wiki_eval/run.py`
+reports how many reach the model with that passage; with `--ollama-url` and
+`--model` it also sends them to a model and scores the answers. Add a question
+there when a player reports a wrong answer;
+`tests/player_help/wiki_eval/README.md` explains the format, and `run.py --list`
+prints the set for reading.
+
+The prompt reports bounded coverage
 counts, keyword-match and context-truncation status. Neither a missing page nor a
 zero keyword match establishes that a recipe or gameplay use does not exist.
 Matching reviewed wiki content establishes provenance, not that every guide is
@@ -398,8 +425,8 @@ The original public wiki is unchanged. Re-review the projection when updating
 the Medical guide pin or disease behavior.
 
 No network downloads, arbitrary files, or recursive repository scans occur.
-To refresh the additional guides, review the new wiki revision and update the
-explicit hashes before restarting the bridge. Worker health alone does not attest
+To refresh the guides, run `python3 scripts/agent_preflight.py wiki-pins --wiki-root <wiki checkout> --write`,
+review the changed copies and restart the bridge once the game is updated. Worker health alone does not attest
 which wiki pages were loaded. Retrieved wiki excerpts are JSON-encoded untrusted
 data, not instructions; this boundary does not guarantee a model cannot be misled.
 

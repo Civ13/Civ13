@@ -186,6 +186,10 @@
 
 /obj/item/weapon/gun/projectile/proc/has_next_projectile()
 
+	// a live round already in the chamber (a pumped or bolted shell) fires first (#6329)
+	if (chambered && chambered.BB)
+		return TRUE
+
 	// get the next casing
 	if (loaded.len)
 		return TRUE
@@ -245,15 +249,9 @@
 				var/obj/item/clothing/G = H.gloves
 				G.gunshot_residue = chambered.name
 
-	#define DISABLE_CASINGS // goodbye lag (EXPERIMENTAL) - Kachnov
-
 	switch(handle_casings)
 		if (EJECT_CASINGS) //eject casing onto ground.
-			#ifndef DISABLE_CASINGS
-			chambered.loc = get_turf(src)
-			chambered.randomrotation()
-			#endif
-
+			drop_casing(chambered)
 			playsound(loc, casing_sound, 50, TRUE)
 
 		if (CYCLE_CASINGS) //cycle the casing back to the end.
@@ -268,6 +266,28 @@
 
 	if (handle_casings != HOLD_CASINGS)
 		chambered = null
+
+// Drops a casing the gun's action threw out onto the gun's tile, where it can be
+// picked up for handloading and decays like other spent brass. Spent casings
+// join a heap of the same cartridge on the tile (item_heaps.dm), so a machine
+// gun firing from one spot leaves one object, not hundreds. A heap holds at most
+// CASINGS_PER_TILE casings; later ones are deleted. Live rounds are always kept.
+/obj/item/weapon/gun/projectile/proc/drop_casing(obj/item/ammo_casing/C)
+	if (!C)
+		return
+	var/turf/T = get_turf(src)
+	if (!T)
+		qdel(C)
+		return
+	if (!C.BB)
+		var/obj/item/H = C.heap_find(T)
+		if (H)
+			if (H.heap_count < CASINGS_PER_TILE)
+				H.heap_add(1)
+			qdel(C)
+			return
+	C.loc = T
+	C.randomrotation()
 
 //Attempts to load A into src, depending on the type of thing being loaded and the load_method
 //Maybe this should be broken up into separate procs for each load method?
@@ -386,6 +406,9 @@
 		return FALSE
 	if (caliber != C.caliber)
 		to_chat(user, "<span class='warning'>\The [C] is of the wrong caliber!</span>")
+		return FALSE
+	if (C.heap_count > 1)
+		to_chat(user, "<span class='warning'>Take one casing from \the [C] first.</span>")
 		return FALSE
 	if (loaded.len >= max_shells)
 		to_chat(user, "<span class='warning'>[src] is full.</span>")

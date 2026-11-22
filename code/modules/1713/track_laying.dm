@@ -98,7 +98,7 @@
 		return "You can't lay track there."
 	if ((istype(T, /turf/floor/beach/water) && !bridge_deck_at(T)) || istype(T, /turf/floor/trench))
 		return "Track needs firm, dry ground."
-	if (locate(/obj/structure/rails) in T)
+	if (rail_at(T))
 		return "There is already track there."
 	if (locate(/obj/structure/rail_bed) in T)
 		return "There are already sleepers there."
@@ -111,27 +111,17 @@
 /proc/track_piece_at(turf/T)
 	if (!T)
 		return null
-	var/obj/structure/rails/R = locate(/obj/structure/rails) in T
-	if (R)
-		return R
-	return locate(/obj/structure/rail_bed) in T
+	return rail_at(T) || (locate(/obj/structure/rail_bed) in T)
 
-// The directions a piece of track leads to.
+// The directions a piece of track leads to (rails answer for their own
+// shape: /obj/structure/rails/proc/exits() in trains.dm).
 /proc/track_piece_dirs(atom/piece)
 	if (istype(piece, /obj/structure/rail_bed))
 		var/obj/structure/rail_bed/B = piece
 		return B.shape_dirs()
-	if (istype(piece, /obj/structure/rails/rotate))
-		return cardinal.Copy()
-	if (istype(piece, /obj/structure/rails/turn))
-		var/obj/structure/rails/turn/RT = piece
-		if (RT.turn_dir)
-			return list(OPPOSITE_DIR(RT.dir), RT.turn_dir)
-		return list()
-	// A switcher's split route shifts a wagon onto the parallel track beside
-	// it without turning, so the side tile is not joined to it end to end.
 	if (istype(piece, /obj/structure/rails))
-		return list(piece.dir, OPPOSITE_DIR(piece.dir))
+		var/obj/structure/rails/R = piece
+		return R.exits()
 	return list()
 
 // The directions from piece's tile whose neighbouring track leads back to it.
@@ -227,8 +217,14 @@
 	var/curved = shape[2]
 	if (curved == istype(R, /obj/structure/rails/turn) && (curved ? R.dir == shape[1] : (shape[1] in list(R.dir, OPPOSITE_DIR(R.dir)))))
 		return R
+	var/was_wooden = R.wooden
+	var/was_worn = R.wear
 	qdel(R)
-	return track_make_rail(T, shape[1], curved)
+	var/obj/structure/rails/bent = track_make_rail(T, shape[1], curved)
+	bent.wear = was_worn
+	bent.set_wooden(was_wooden)
+	bent.show_wear()
+	return bent
 
 /proc/track_make_rail(turf/T, d, curved)
 	var/obj/structure/rails/R
@@ -253,7 +249,9 @@
 	layer = 2.5
 	dir = NORTH
 	var/railed = FALSE // rails sit on the sleepers, not yet spiked down
+	var/wooden = FALSE // and they are wooden rails (train_early.dm)
 	var/curved = FALSE // a /obj/structure/rails/turn facing dir once spiked
+	var/wear = 0 // the sleepers' wear, kept while the spikes are out (train_trackwear.dm)
 
 /obj/structure/rail_bed/after_load()
 	..()
@@ -262,7 +260,7 @@
 /obj/structure/rail_bed/update_icon()
 	if (railed)
 		icon_state = curved ? "rails_turn_left" : "rails"
-		color = "#c8c8c8"
+		color = wooden ? WOODEN_RAIL_COLOR : "#c8c8c8"
 	else
 		icon_state = "rails_background"
 		color = null
@@ -312,8 +310,10 @@
 	to_chat(user, SPAN_NOTICE("You start setting the rails on \the [src]."))
 	if (!do_after(user, TRACK_RAIL_TIME, src))
 		return FALSE
+	var/wood = istype(R, /obj/item/stack/rail_lengths/wooden)
 	if (railed || QDELETED(src) || !R.use(1))
 		return FALSE
+	wooden = wood
 	place_rails()
 	playsound(loc, 'sound/effects/clang.ogg', 50, TRUE)
 	user.visible_message(SPAN_NOTICE("[user] sets rails on the sleepers."), SPAN_NOTICE("You set the rails on the sleepers. Spike them down with a hammer."))
@@ -326,16 +326,25 @@
 	var/turf/T = get_turf(src)
 	var/d = dir
 	var/c = curved
+	var/w = wooden
+	var/worn = wear
 	qdel(src)
-	return track_make_rail(T, d, c)
+	var/obj/structure/rails/R = track_make_rail(T, d, c)
+	R.set_wooden(w)
+	// Pulling the spikes and driving them again does not mend the sleepers.
+	R.wear = worn
+	R.show_wear()
+	return R
 
 // Lifts loose rails off the sleepers, or pries up bare sleepers; returns the item.
 /obj/structure/rail_bed/proc/pry()
 	var/turf/T = get_turf(src)
 	if (railed)
+		var/kind = wooden ? /obj/item/stack/rail_lengths/wooden : /obj/item/stack/rail_lengths
 		railed = FALSE
+		wooden = FALSE
 		update_icon()
-		return new /obj/item/stack/rail_lengths(T, 1)
+		return new kind(T, 1)
 	qdel(src)
 	return new /obj/item/stack/rail_sleepers(T, 1)
 
@@ -382,6 +391,8 @@
 		B.curved = istype(src, /obj/structure/rails/turn)
 		B.set_dir(dir)
 		B.railed = TRUE
+		B.wooden = wooden
+		B.wear = wear
 		B.update_icon()
 		. = B
 	else
@@ -391,6 +402,9 @@
 
 // A crowbar takes finished track apart; a hammer no longer turns rails into wood.
 /obj/structure/rails/attackby(obj/item/W, mob/user)
+	// Packing and resleepering worn track (train_trackwear.dm).
+	if (track_maintain(W, user))
+		return TRUE
 	if (is_tool(W, TOOL_HAMMER))
 		to_chat(user, SPAN_NOTICE("This track is already spiked down. Pry it up with a crowbar to take it apart."))
 		return TRUE

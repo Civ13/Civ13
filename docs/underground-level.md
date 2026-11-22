@@ -22,8 +22,71 @@ Americas-size plane (1020 x 1020) natively took 0.44 s and 6 MB; putting it in
 the cave area took 0.23 s and 8 MB.
 
 A bedrock cell at (1, 1) marks the level, so a restored world recognises it
-from its saved cells alone. `dug_underground_z()` caches the answer in
-`dug_underground_live_z` while that marker stands.
+from its saved cells alone. `underground_levels()` caches the underground
+levels in `underground_live_levels` while those markers stand.
+
+## Deeper levels
+
+Every map with an underground has four levels under its surface
+(`underground_depth`, 4 by default): the cave and three deeper ones. A deeper
+level is one more plane of unformed rock, added the first time someone digs
+down from the deepest one (shovel or ant Dig, "Down" on an underground level;
+each level down takes another 100 deciseconds of digging). It is appended
+like the cave and carries the same bedrock marker. A level is only ever added
+under the deepest one, so the added levels' z order is their depth order, and
+a restore, which recreates levels in z order, keeps it: `underground_levels()`
+lists them shallowest first, `underground_depth_of(z)` gives a level's depth
+and `underground_z_at(depth)` the reverse. Maps compiled with their own cave
+(Gaia, Desert, Jungle, Barren, Moon) count it as depth 1 and add three.
+
+`multiz_column()` orders every level as a ladder climbs them: the deepest
+underground level first, then the compiled levels, then the open-air levels
+in the order they were added; `multiz_level_below`/`above` step through it.
+The practice level is left out.
+
+Each depth forms from its own seed (`pocket2`, `vein2`, ...), and only the
+cave straight under the surface feels lakes, rivers and shallows overhead.
+Deeper levels take only the sea floor (seabed rock that cannot be dug) and
+lava (hot rock) from the surface, and their open cells never breach.
+
+Every deeper level saves sparse around unformed rock like the cave (an
+untouched one is a header), and none of them is charged cells: `free_planes`
+leaves every added underground plane out, `ground_planes` counts them with the
+compiled levels so they never use up a roof level, and a restore, which cannot
+see its underground before the cells load, counts every one the map may add.
+`BUILDING_EXTRA_LEVELS` is 15: ten open-air levels and four underground ones
+over a single-level map. Tools needed to go deeper are later work.
+
+## What each depth holds
+
+Every depth has its own ore table (`underground_ores.dm`). Its factor
+multiplies an ore's chance in `continent_ore_factor`, together with the land's
+own rate, so every era gate and continent rate still applies: depth makes an
+ore richer where it is already found, never earlier. The surface and the cave
+keep the ordinary table (factor 1). Factors for depths 2, 3 and 4:
+
+| Ore | 2 | 3 | 4 |
+| --- | --- | --- | --- |
+| copper, tin, iron, calamine | 1.5 | 1.25 | 1 |
+| lead | 1.5 | 1.5 | 1.25 |
+| coal | 2 | 1.5 | 1 |
+| saltpetre | 1.25 | 2 | 1.5 |
+| sulphur | 1.25 | 2 | 2.5 |
+| silver, gold (and their lodes) | 1.5 | 2.5 | 3 |
+| diamond | 1.5 | 2.5 | 4 |
+| uranium, rough gemstones | 1.5 | 2 | 3 |
+| nickel | 1.5 | 2 | 2 |
+| cobalt, chromite | 1.25 | 1.5 | 2 |
+| obsidian, cinnabar | 1 | 1.5 | 2 |
+| bauxite | 0.5 | 0.25 | 0.25 |
+| flint | 0.5 | 0 | 0 |
+
+So the second level is the iron, copper, tin and coal level, the third the
+silver, gold, gems, sulphur and saltpetre level, and the fourth the richest
+precious veins, diamonds, uranium and alloy ores. Bauxite is weathered surface
+rock and flint is chalk, so they thin out below the cave. Obsidian on a deeper
+level also counts a volcano on the land straight above, not only one on the
+level above it.
 
 ## Every map
 
@@ -146,7 +209,7 @@ turns one stopped region over:
 ## Admin view
 
 Admin > Debug > **Level Report** lists every level: ground, the cave (added or
-compiled), open air and practice rooms, with the number of formed cells and
+compiled), each deeper underground level by depth, open air and practice rooms, with the number of formed cells and
 how many of them are open. It walks each plane, so it takes a few seconds on
 the Americas.
 
@@ -154,11 +217,12 @@ the Americas.
 
 - `python3 tests/building_levels/run.py --cave` and `--cave-first`
   (isolated fixture: allocation order, unformed and asleep cells, forming,
-  entry refusal, generator).
+  entry refusal, generator, the three deeper levels and their admission).
 - `python3 -B tests/underground_level/real_map.py --byond-bin <bin> --map
   maps/nomads/nomads_europe.dmm --output <fresh dir>` (full game: boot,
   dig a shaft and tunnel, save, restore, resave; `--storeys N` also grows N
-  open-air levels before the save).
+  open-air levels and `--deep N` digs down to depth N before the save; the
+  map may be one with a compiled cave, such as Gaia).
 - `python3 tests/ecology_spawning/run_linux.py . tests/river_flow/cellar_probe.dm`
   (breach flooding, packing it, wet-earth seepage).
 - `python3 -m unittest tests/gaia_host/test_underground_migration.py`

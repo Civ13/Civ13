@@ -46,10 +46,18 @@ class OriginTable(unittest.TestCase):
         for oid, f in people.items():
             self.assertIn(f['language'].strip('"'), languages, oid)
             self.assertIn('/datum/species/proc/get_random_%s_name(' % f['name_style'].strip('"'), species, oid)
-            self.assertTrue(set(dm_list(f['hair'])) <= hair, oid)
-            self.assertTrue(set(dm_list(f['eyes'])) <= eyes, oid)
-            light, dark = [int(n) for n in re.findall(r'-?\d+', f['skin'])]
-            self.assertTrue(0 >= light > dark >= -185, oid)
+            # A people never sets looks: no look may mark someone as one people.
+            self.assertFalse({'hair', 'eyes', 'skin'} & set(f), oid)
+        looks = ORIGINS[ORIGINS.index('/proc/birthplace_looks('):ORIGINS.index('/proc/land_has_origins')]
+        named = dict(re.findall(r'var/list/(\w+) = list\(([^)]*)\)', looks))
+        rows = re.findall(r'"(\w+)" = list\((\w+), (\w+), list\((-?\d+), (-?\d+)\)\)', looks)
+        self.assertEqual({r[0] for r in rows}, CLIMATES | {'default'})
+        for climate, eye_list, hair_list, light, dark in rows:
+            self.assertTrue(set(dm_list(named[eye_list])) <= eyes, climate)
+            self.assertTrue(set(dm_list(named[hair_list])) <= hair, climate)
+            # Wide ranges: every climate spans at least 60 tones.
+            self.assertTrue(0 >= int(light) > int(dark) >= -185, climate)
+            self.assertGreaterEqual(int(light) - int(dark), 60, climate)
 
     def test_every_land_covers_every_climate(self):
         people = origins()
@@ -78,6 +86,8 @@ class OriginTable(unittest.TestCase):
         apply = ORIGINS[ORIGINS.index('/mob/living/human/proc/apply_origin'):]
         self.assertLess(apply.index('origin_id = O.id'), apply.index('if (keep_setup)'))
         self.assertLess(apply.index('if (keep_setup)'), apply.index('update_character_appearance'))
+        self.assertIn('var/list/looks = birthplace_looks(climate)', apply)
+        self.assertNotIn('O.skin', ORIGINS)
         choose = ORIGINS[ORIGINS.index('/mob/living/human/proc/choose_origin'):ORIGINS.index('/mob/living/human/proc/apply_origin')]
         # Nobody without a keyboard is asked anything, and a second call is a no-op.
         self.assertIn('if (!map || origin_id)\n\t\treturn FALSE', choose)
@@ -108,6 +118,44 @@ class OriginTable(unittest.TestCase):
                 self.assertTrue(all(n.isascii() and n.isalpha() for n in names), language)
         for key in ('qu', 'tp'):
             self.assertEqual(keys.count(key), 1, key)
+
+
+class PeoplesAreNeverATarget(unittest.TestCase):
+    """No game rule may read a character's people, and nobody can see it on sight."""
+
+    # The only files allowed to read a character's people. Each one either
+    # keeps the record (save, travel, admin, agents) or gives a birth default
+    # (mother tongue, starting clothes). Adding a file here needs a reason
+    # that is not a game rule: no stat, price, law, door, job or spawn check.
+    READERS = {
+        'code/game/mob/living/carbon/human/origins.dm',
+        'code/game/mob/living/carbon/human/peoples.dm',
+        'code/game/mob/living/carbon/human/peoples_split.dm',
+        'code/game/mob/living/carbon/human/peoples_names.dm',
+        'code/game/mob/living/carbon/human/peoples_blend.dm',
+        'code/modules/admin/verbs/peoples_admin.dm',
+        'code/game/mob/language/proficiency.dm',
+        'code/modules/1713/jobs/spawn_outfits.dm',
+        'code/modules/admin/verbs/origin_languages.dm',
+        'code/modules/agent_control/agent_characters.dm',
+        'code/modules/persistence/region_travel_tongues.dm',
+        'code/modules/research_tree/death_legacy.dm',
+    }
+    READ = re.compile(r'\borigin_id\b|\bget_origin\(|\borigin_summary\(|\borigin_land\b|\bpeople_raised\b|\bpeople_welcomed\b|\braised_among\(')
+
+    def test_only_record_keepers_read_a_people(self):
+        readers = set()
+        for path in (ROOT / 'code').rglob('*.dm'):
+            for line in path.read_text(encoding='latin-1').splitlines():
+                code = line.split('//')[0]
+                if self.READ.search(code):
+                    readers.add(path.relative_to(ROOT).as_posix())
+                    break
+        self.assertEqual(readers - self.READERS, set())
+
+    def test_examine_never_names_a_people(self):
+        examine = (ROOT / 'code/game/mob/living/carbon/human/examine.dm').read_text(encoding='latin-1')
+        self.assertIsNone(re.search(r'\borigins?\b|\bpeoples?\b|origin_summary|get_origin', examine, re.I))
 
 
 class AdminAndAgentTools(unittest.TestCase):
@@ -146,7 +194,8 @@ class AdminAndAgentTools(unittest.TestCase):
         self.assertIn('out["languages"] = H.language_rows()', chars)
         choose = ORIGINS[ORIGINS.index('/mob/living/human/proc/choose_origin'):ORIGINS.index('/mob/living/human/proc/apply_origin')]
         # Only a people of this land, and the wish is used once.
-        self.assertIn('if (wished && (wished.name in land_peoples(map.ID)))', choose)
+        self.assertIn('if (wished && (wished.name in peoples))', choose)
+        self.assertIn('var/list/peoples = community.len ? community_people_choices(community) : land_peoples(map.ID)', choose)
         self.assertIn('/mob/living/human/var/tmp/origin_wish', ORIGINS)
         catalog = (ROOT / 'tools/agent-control/catalog.py').read_text()
         self.assertIn('"origin": {"type": "string"', catalog)

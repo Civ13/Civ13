@@ -1,6 +1,7 @@
 """Pinned native production removal semantics; immutable baseline and unsafe control."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import platform
@@ -9,6 +10,10 @@ import re
 import subprocess
 import statistics
 import tempfile
+
+spec = importlib.util.spec_from_file_location('processing_list_projection', Path(__file__).resolve().parents[2] / 'scripts/processing_list_projection.py')
+projection = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(projection)
 # Compile checks follow the canonical compiler pin.
 PINNED_BYOND = __import__('json').loads((__import__('pathlib').Path(__file__).resolve().parents[2] / 'tools/byond/version.json').read_text(encoding='utf-8'))['version']
 
@@ -27,9 +32,13 @@ if sum((args.baseline, args.negative_control, args.guarded_control, args.benchma
     parser.error('Choose one mode')
 repo = Path(__file__).resolve().parents[2]
 paths = ['code/processes/___defines.dm', 'code/processes/obj.dm']
-raw = [subprocess.check_output(['git', 'show', BASELINE + ':' + p], cwd=repo, text=True)
-       if args.baseline else (repo / p).read_text() for p in paths]
+baseline_dir = Path(__file__).with_name('baseline')
+raw = [(baseline_dir / name).read_text(encoding='utf-8') for name in ('defines.dm.txt', 'obj.dm.txt')] if args.baseline else [(repo / p).read_text(encoding='utf-8') for p in paths]
 defines, objects = raw
+priority_source = None
+if not args.baseline:
+    priority_source = (repo / 'code/__defines/subsystem.dm').read_text(encoding='utf-8')
+    defines = projection.project_priorities(priority_source) + defines
 if args.guarded_control:
     defines, count = re.subn(r'^#define PROCESS_LIST_CHECK .+$',
                             '#define PROCESS_LIST_CHECK if (priority != PROCESS_PRIORITY_VERY_HIGH) { if (current_list && current_list.len && current_list[1] == current) { current_list.Cut(1, 2); } else { current_list -= current; } }',
@@ -69,6 +78,7 @@ with tempfile.TemporaryDirectory(prefix='civ13-list-removal-') as temp:
                 'architecture': platform.machine(),
                 'checkout_status': subprocess.check_output(['git', 'status', '--porcelain'], cwd=repo, text=True),
                 'source_sha256': [hashlib.sha256(x.encode()).hexdigest() for x in raw],
+                'priority_source_sha256': hashlib.sha256(priority_source.encode()).hexdigest() if priority_source is not None else None,
                 'compiled_sha256': hashlib.sha256((defines + source).encode()).hexdigest(),
                 'probe_sha256': hashlib.sha256(probe.encode()).hexdigest()}
     (out / 'metadata.json').write_text(json.dumps(metadata, indent=2))

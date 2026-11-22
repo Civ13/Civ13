@@ -203,7 +203,8 @@
 
 /datum/vehicle_survey/proc/report()
 	if (refusal)
-		return "This cannot be made into a [ship ? "boat" : "vehicle"]: [refusal]."
+		// The clipped sheet still says what to lay out (vehicle_draught.dm).
+		return jointext(list("This cannot be made into a [ship ? "boat" : "vehicle"]: [refusal].") + sheet_lines(), "<br>")
 	var/list/lines = list("<b>[width] by [height] frames</b>, [frames.len] in all.")
 	var/list/found = list()
 	if (engine)
@@ -229,6 +230,12 @@
 	if (loose_movers)
 		lines += "[loose_movers] wheel\s or track\s not on a corner frame will be left out."
 	lines += turret_lines()
+	// The vehicle sheet clipped to the axis, tile by tile (vehicle_draught.dm).
+	lines += sheet_lines()
+	// What would make it stall, starve or go dark (vehicle_checks.dm).
+	var/datum/design_report/R = check_design()
+	lines += R.chat_lines()
+	qdel(R)
 	return jointext(lines, "<br>")
 
 // What each turret would still need once the things on its tile are fitted.
@@ -504,10 +511,14 @@ var/global/list/vehicle_assembly_colors = list(
 			options += list("Fit new parts", "Take it apart")
 			if (length(built_turrets()))
 				options += "Turret style"
+		if (!ship)
+			options += "Draw its lines"
 	else
 		var/datum/vehicle_survey/S = new(src)
 		if (!S.refusal)
 			options += "Assemble it"
+		if (vehicle_sheet_code)
+			options += "Unclip the sheet"
 	var/choice = WWinput(H, build_sheet(), "Vehicle assembly", "Cancel", options + list("Cancel"))
 	if (!(choice in options) || QDELETED(src) || get_dist(H, src) > 1)
 		return
@@ -536,9 +547,20 @@ var/global/list/vehicle_assembly_colors = list(
 			visible_message(SPAN_NOTICE("[H] takes \the [src] apart."))
 			take_apart()
 			name = initial(name)
+		if ("Draw its lines")
+			draw_vehicle_lines(H)
+		if ("Unclip the sheet")
+			vehicle_sheet_code = null
+			to_chat(H, SPAN_NOTICE("You unclip the sheet's tag from \the [src]."))
 		if ("Assemble it")
 			var/list/ways = list("North" = NORTH, "East" = EAST, "South" = SOUTH, "West" = WEST)
-			var/way = WWinput(H, "Which way does its front point?", "Vehicle assembly", "North", list("North", "East", "South", "West", "Cancel"))
+			// The facing the clipped sheet fits comes first.
+			var/fits = sheet_facing()
+			var/list/order = list("North", "East", "South", "West")
+			if (fits)
+				order -= capitalize(dir2text(fits))
+				order.Insert(1, capitalize(dir2text(fits)))
+			var/way = WWinput(H, "Which way does its front point?", "Vehicle assembly", order[1], order + list("Cancel"))
 			if (!(way in ways))
 				return
 			var/new_name = player_input(H, "What do you want to name this [ship ? "boat" : "vehicle"]?", null, null, "text", null, FALSE)

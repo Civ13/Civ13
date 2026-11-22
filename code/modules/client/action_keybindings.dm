@@ -6,6 +6,7 @@
 		"aim" = list("Toggle aiming mode", "toggle-gun-mode", list(), list("J", "CTRL+J")),
 		"sights" = list("Use sights / drone / tank gun", "on-press-spacebar", list("Space"), list("Space")),
 		"run" = list("Toggle running", "m-intent-run", list(), list("M")),
+		"sprint" = list("Toggle sprinting", "m-intent-sprint", list(), list("SHIFT+M")),
 		"movement" = list("Cycle movement mode", "m-intent-change", list(), list(".")),
 		"defense" = list("Cycle defense intent", "defense-intent-change", list(), list("V")),
 		"secondary" = list("Cycle secondary intent", "secondary-intent-change", list(), list("U")),
@@ -21,15 +22,15 @@
 		"storage_clothing" = list("Open harness / webbing / pockets", "open-clothing-storage", list("CTRL+SHIFT+I"), list("SHIFT+I", "CTRL+SHIFT+I")),
 		"resist" = list("Resist (escape grab, cuffs, buckle, fire)", "Resist", list("CTRL+B"), list("CTRL+B")),
 		"craft" = list("Craft with nearby materials", "craft-within-reach", list("CTRL+SHIFT+C"), list("SHIFT+C", "CTRL+SHIFT+C")),
-		"floor_up" = list("Go up a level (ladder, stairs, ledge)", "go-up", list(), list()),
-		"floor_down" = list("Go down a level (ladder, edge, tree)", "go-down", list(), list()))
+		"floor_up" = list("Go up a level (ladder, stairs, ledge, surface)", "go-up", list(), list()),
+		"floor_down" = list("Go down a level (ladder, edge, tree, dive)", "go-down", list(), list()))
 	return catalog
 
 // Actions added after players had already saved bindings. Their defaults give
 // way to any key a player saved for another action, so an older saved layout
 // (for example prone on K) is kept instead of failing validation and resetting.
 /proc/action_keybinding_yielding()
-	return list("storage", "storage_back", "storage_belt", "storage_clothing", "resist", "craft")
+	return list("storage", "storage_back", "storage_belt", "storage_clothing", "resist", "craft", "sprint")
 
 // Held actions: one key per mode, with a press macro and a matching KEY+UP
 // release macro (skin IDs held_<action>_1 and held_<action>_1_up). They use

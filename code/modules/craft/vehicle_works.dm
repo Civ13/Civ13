@@ -11,7 +11,9 @@
 // tank's turret is the craftable built turret with the craftable tank cannon
 // and crew seats (vehicle_turret.dm), not the map tank's armed one.
 
-var/global/list/works_vehicle_specs = list(
+var/global/list/works_vehicle_specs = works_vehicle_specs_table()
+/proc/works_vehicle_specs_table()
+	return list(
 	"Scout car" = list("path" = /obj/effects/premadevehicles/kurogane/type95, "size" = 3, "node" = null, "gun" = 0,
 		"cost" = list("steel" = 50, "glass" = 4, "cloth" = 4, "cable" = 10, "wheels" = 4)),
 	"Field car" = list("path" = /obj/effects/premadevehicles/car/mercedes, "size" = 3, "node" = null, "gun" = 0,

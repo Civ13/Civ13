@@ -12,6 +12,7 @@ Tests: `tests/train_platforms` (the `drive/`, `load/`, `brake/`,
 `double_heading/`, `tender/`, `collision/`, `crash/`, `brakes/`,
 `brake_van/`, `rolling/` and `adhesion/` checks) and `tests/train_collision`.
 Step cost by train length: [train-step-cost.md](train-step-cost.md).
+Whole trains drawn on a train sheet and built at a rail works: [train-sheets.md](train-sheets.md).
 
 ## Controls
 
@@ -174,8 +175,11 @@ body hits people standing beside the rails (`sweep_sides()`).
 
 Explosions wear the steam and diesel engines down to `broken_down`, and the
 armored one to `disabled`, instead of deleting them; a welding tool repairs
-them. Heavy locomotives cannot be packed back into a kit, put away in a rail
-warehouse, or sent over an inter-region railway.
+them. A heavy locomotive cannot be packed back into a kit. A rail warehouse
+takes it whole, engine and body sections as one unit (`rail_warehouse_unit()`),
+and it comes out as it went in. The inter-region record
+(`train_transfer_codec.dm`) carries it the same way: the engine as the first
+section of its own body. That record is still not wired to player departure.
 
 ## Cab stations and the main-line engine
 
@@ -312,7 +316,8 @@ states.
   are let go roll on by themselves.
 
 A hook and screw link and an automatic coupler couple to each other by hand
-only. Region travel and the warehouse do not carry the kind of coupling yet.
+only. A stored car keeps its couplings; one rolled out of a warehouse hitches
+on only where both drawbars carry a sound coupling.
 
 ## Servicing
 
@@ -376,8 +381,14 @@ A wrench on an engine at half that distance or more starts the overhaul
 (`overhaul_by()`): the engine stopped, standing in the bay of a rail
 warehouse (`engine_shed()`), 10 iron or steel in the other hand, 60 seconds.
 
-Region travel and the warehouse do not carry axle oil, clinker, brake shoes,
-scale or mileage yet.
+A car in a rail warehouse is the car itself, so it keeps all of this. The
+inter-region record carries a fixed list of working state per section
+(`train_transfer_state_fields()`): couplings and their kind, ploughs,
+handbrake, axle oil and a seized axle, brake shoes, tender water and fuel,
+locked doors, a bulk or liquid load, and an engine's sand, mileage, tank and
+boiler water, pressure, injector, fusible plug, clinker and scale. Amounts
+travel as whole numbers inside the limits of their own files; a derailed,
+wrecked or broken-down train is refused.
 
 ## The depot
 
@@ -548,6 +559,70 @@ Four items put somebody in charge of the train behind the engine. All are
   one of `train_hand_signals()` to everyone in sight and tells the people in
   every cab of the train the signaller is aboard or beside.
 
+## Signals
+
+Code: `code/modules/1713/train_signals.dm`. Tests: the `signals/` checks of
+`tests/train_platforms`.
+
+Everything here is `rail_steam`. Nothing stops a train by itself: signals and
+tokens tell the crew what to do, and mark who did not.
+
+- **Lineside posts** (`/obj/structure/train_lineside`) stand up to two tiles
+  to the side of the centre of the track and speak to trains running their
+  `dir`; a wrench turns one. They are kept in `train_lineside`. The driving
+  engine calls `lineside_watch()` when it starts and each time the train is
+  counted (every six tiles): a post up to ten tiles ahead of the leading car
+  is read out to `cab_crew()` once (`sighting()`), and one that was read and
+  is no longer ahead is passed (`passed_by()`).
+- **Semaphore signal** (`/obj/structure/train_lineside/signal`, 4 iron).
+  Danger until put to clear (`set_clear()`), by hand at the post. A train that
+  passes it at danger is seen to, `passed` counts it and its frame rings.
+- **Lever frame** (`/obj/structure/train_lever_frame`, 10 iron) works up to
+  eight signals and switch levers within forty tiles. A **coil of signal wire**
+  (`/obj/item/train_signal_wire`, 2 iron) used on the frame and then on a
+  signal or `/obj/structure/train_lever` writes the frame's `frame_id` to
+  their `worked_by`; used again it takes them off. What is wired does not
+  move by hand. `pull()` works one lever and `locked_by()` is the
+  interlocking: a signal does not clear while a wired signal that faces it
+  along the same line is clear (`train_signals_oppose()`), a switch does not
+  move while a wired signal within ten tiles of it is clear, and a signal
+  always goes back to danger.
+- **Token instruments** (`/obj/structure/train_token_instrument`, 8 iron)
+  are wired as a pair with the same wire, up to 150 tiles apart, and share a
+  `section`. `draw_token()` gives the one `/obj/item/train_token` of the
+  section, and no second while it exists; `restore_token()` takes it back at
+  either end.
+- **Section board** (`/obj/structure/train_lineside/board`, 3 wood), marked
+  for a section with the wire from a paired instrument. The cab is told
+  whether `carries_token()` holds: the token is in a pocket, in a hand or on
+  the floor of an engine of the train. Passing without it is seen and counted.
+
+## Stations and warnings
+
+Code: `code/modules/1713/train_stations.dm`. Tests: the `stations/` checks of
+`tests/train_platforms`.
+
+- **Station name board** (`/obj/structure/train_lineside/station`, 4 wood),
+  named with a pen (`set_station()`). It is a lineside post that
+  `speaks_to()` both directions: `sighting()` tells `train_riders()`,
+  everybody aboard, where the train is coming into.
+- **Whistle and bell.** The driver's stand has "Sound the whistle" (the horn
+  on a diesel, `whistle_name()`), "Ring the bell" and the headlamp.
+  `sound_whistle()` needs the engine running with steam, and tells conscious
+  players up to forty tiles away who cannot see the engine which way it is.
+- **Headlamp and the dark.** `refresh_consist()` multiplies `lead_factor` by
+  `night_factor()`: at Night with no lit `headlamp` on the engine that leads,
+  and no hand lamp showing white on the leading car, the train runs blind at
+  half speed. The leading car's `lamp_range` (5 with the headlamp, else 2) is
+  the light it shows while it moves.
+- **Hand lamp** (`/obj/item/train_lamp`, 2 iron) turns through white, red and
+  green (`set_shade()`), kept in `train_lamps`. `train_lamp_on()` finds one on
+  a car's tiles, held or set down. Red on the last car is the tail lamp the
+  guard's journal reports (`train_tail_lamp_text()`).
+
+Raised platforms were not built: decks are walked onto from the ground, so a
+platform is any floor laid beside the track.
+
 ## Snow
 
 `train_snow.dm`. Snow that falls and lies (`snowfall_ground.dm`:
@@ -563,8 +638,8 @@ coupling of a free end (`plough_use()` from `coupler_use()`: the plough to
 fit, a wrench to take it off, 6 seconds, train standing) and shows as an
 overlay on that coupling from `icons/obj/vehicles/train_plough.dmi` (96 x 96).
 When the end that leads the train carries one, `meet_snow()` clears the tile
-(`/turf/proc/plough_snow()`) and the train keeps its speed. Region travel and
-the warehouse do not carry ploughs yet.
+(`/turf/proc/plough_snow()`) and the train keeps its speed. A plough stays on a
+stored car and is carried by the inter-region record.
 
 ## Reversing
 
@@ -582,6 +657,293 @@ crawl) a train shoves a person off the rails with 5 damage and stops in front
 of furniture without breaking it. Faster, it deals up to 250 damage, knocks the
 person down beside the track and keeps going from 1 up; damage to objects and
 to both trains in a train-on-train bump scales the same way.
+
+## Leaving the rails
+
+Code: `code/modules/1713/train_derail.dm`. Tests: the `derail/` checks of
+`tests/train_platforms`.
+
+A derailment is not a crash: nothing is smashed, but the cars that come off
+(`derailed`, on every `/obj/structure/trains`) stop their train like a wreck
+does until they are put back.
+
+- **Too fast round a curve or through the branch of a switch.** After each
+  step the drive loop calls `curve_check()` with the leading car and where it
+  stood and faced: when it turned, or stepped sideways, at more than
+  `TRAIN_CURVE_SPEED` (3 tiles a second) the train leaves the rails. One
+  car or engine comes off, two from 1.5 times the limit and three from twice.
+  The first notch of every engine is under the limit.
+- **Off the end of the rails.** When the train could not step, the loop calls
+  `overrun_check()`: no rail ahead, no buffer stop under the leading car and
+  more than `TRAIN_OVERRUN_SPEED` (2 tiles a second) puts the leading car on
+  the ground. A lifted rail does the same.
+- `leave_rails()` takes the cars in the order they run, derails the leading
+  units (`train_unit_come_off()`: the leading half of a car, a whole heavy
+  engine with `set_derailed()`), stops the train and throws its riders with
+  `crash_jolt()`. Small one-tile engines only lose their fire, as in a crash.
+- **Rerailing.** A **rerailing jack** (`/obj/item/train_jack`, 6 iron,
+  `rail_steam`) on a derailed section lifts it back (`rerail()`), a section
+  at a time; there has to be rail under it (`rerail_problem()`). A heavy
+  engine also needs `train_breakdown_crane()`: the crane of a braced crane
+  car with fuel within five tiles, which spends one haul.
+
+Not built: damaged rails (rails have no wear) and trailing a switch set the
+wrong way (the track model has no trailing switches).
+
+## Track works
+
+Code: `code/modules/1713/train_trackworks.dm`. Tests: the `trackworks/` checks
+of `tests/train_platforms`. Bridges for track are the steel and concrete decks
+of `bridges.dm`.
+
+- **Buffer stop** (`/obj/structure/train_buffer_stop`, 4 iron, `rail_steam`):
+  a solid stop set on the last tile of rails; a wrench turns it. `rail_hit()`
+  asks `hold(impact)` before the ordinary crash on a solid object. Up to
+  `TRAIN_BUFFER_HOLD` (1.25, about five tiles a second for a light engine) the
+  train stops against it unharmed, and a blow of 0.5 or more is counted on the
+  beam. Above that the train is wrecked as against any obstacle
+  (`train_crash()`) and the stop is broken up (`smash()`): the rails stay.
+- **Crossing boards** (`/obj/structure/train_crossing_boards`, 2 wood): laid
+  on a rail tile where a road crosses. They change nothing for trains.
+- **Crossing gate** (`/obj/structure/train_lineside/gate`, 4 wood): stands on
+  the road two tiles from the rails, like a signal, so the side of a wide
+  car passes inside it; its `dir` points at the rails and a wrench turns it.
+  A shut gate on the tile next to the rails is a solid object in the path
+  of a three-wide car. Gates within `TRAIN_GATE_REACH` (4) tiles are one crossing and
+  swing together (`set_shut()`): shut across the road they are dense, open
+  they are not. They do not shut on anyone or anything solid standing in
+  them (`shut_problem()`). By hand they take 2 seconds.
+- Track fixtures stay put under a passing deck (`train_track_fixture()`):
+  ash pits, drop pits, crossing boards, lineside posts and gates, buffer
+  stops, levers, frames, token instruments, coal stages, sand bins and
+  water cranes are never carried along as cargo.
+- A gate is a lineside post: one gate of each crossing tells a cab coming
+  up to it how the gates stand, and counts a train that runs over the
+  crossing with them open to the road.
+- **From a lever frame**: signal wire from the frame to one gate joins the
+  whole crossing to one lever (`wire_gate()`); the gates then no longer move
+  by hand. A signal of the same frame that reads over the crossing
+  (`train_signal_over_gate()`: the gates stand up to 20 tiles ahead of it)
+  does not clear while the gates are open to the road, and the gates do not
+  open while it is clear.
+
+
+## Turntables
+
+`train_turntable.dm`. A pivot (`/obj/structure/train_turntable`, 20 iron;
+`/large`, 40 iron; both `rail_steam`) with a bridge of rails across a square
+pit. The small table has `radius` 2: five tiles of bridge in a pit five tiles
+square, enough for a heavy locomotive or a four-tile car. The large one has
+`radius` 5: eleven tiles, for a main-line engine with its tender.
+
+- **Setting out.** A wrench on the unlaid pivot sets which way the bridge
+  will lie; an empty hand lays it (`lay()`, 10 seconds). `lay_problem()`
+  wants the whole pit on firm, dry, open floor with no track, sleepers,
+  trains or solid objects in it. Lines are then brought up to the edge of
+  the pit in line with the pivot, on any of its four sides.
+- **The bridge** is `/obj/structure/rails/turntable`: rails to a train
+  (`rail_canmove()` and `rail_target()` treat it as straight track), but not
+  plain track, so it is never bent, joined to or prised up. A car kit is not
+  assembled on it. A crowbar on the pivot takes the bridge up when nothing
+  stands in the pit (`take_up()`), and deleting the pivot takes its bridge.
+- **Turning.** An empty hand on the pivot or any bridge rail offers a
+  quarter left, a quarter right or right round. `work()` wants the user on
+  or next to the bridge and takes `turn_time()` for each quarter: 2 seconds
+  empty and 0.6 seconds more for each unit of weight on it, at most 15; two
+  or more people at the ends of the bridge (`hands()`) halve it.
+- `turn_problem()` refuses while a train on the bridge moves, is derailed,
+  braced or wrecked, or is coupled to anything not on the bridge; while
+  anyone stands in the pit off the bridge; and while anything solid is in
+  the pit.
+- `swing(angle)` moves the bridge rails, every train section on them and
+  what the decks and the bridge carry (`moving_tiles()`, the same rule as a
+  moving deck) round the pivot, turns their `dir`, and puts deck parts,
+  engine bodies and couplings back in place. People on the bridge or in a
+  cab go round with it.
+- A line that meets the pit where the bridge is not lined up ends there: an
+  engine driven on runs off the end of the rails.
+- Art: `turntable_deck`, `turntable_girders` and `turntable_pivot` in
+  `train_platforms.dmi`; the pit is one image under the pivot from
+  `train_turntable.dmi` (160 x 160) or `train_turntable_large.dmi`
+  (352 x 352), all from `tests/sprites/create_trains.py`.
+- Not verified in a real client: the pit image at the edge of the screen,
+  timed turning, and save and load of a laid table.
+
+
+## Track wear
+
+`train_trackwear.dm`. Every rail carries `wear`, 0 to 100. Nothing runs on a
+timer: an idle line does not decay.
+
+- **Traffic.** The drive loop calls `meet_track()` once a step, after the
+  snow. The rail under the leading car takes `TRACK_WEAR_RATE` (0.01) for
+  each unit of the train's weight (`take_traffic()`): doubled on a curve or
+  a switch, and half as much again above 5 tiles a second and once the tile
+  is already rough. A 40-weight train puts 0.4 on plain track, so a tile is
+  rough after about 60 such trains and worn after a hundred or so. Cars
+  rolling free do not count.
+- **States** (`wear_state()`): getting rough at 25, worn at 50, bad at 80.
+  Worn and bad track shows an overlay (`track_worn`, `track_bad`,
+  `show_wear()`), and `examine` says how the tile stands.
+- **Line speed** (`line_speed()`): worn track is good for 5 tiles a second
+  and bad track for 2. Faster than that the rails spread and the leading
+  car or engine leaves them (`leave_rails()`, as on a curve). One-tile
+  engines stall as they do on a curve.
+- **The cab** is told once as a stretch gets worse (`track_told`): rough,
+  then worn, then bad. Sound track clears it.
+- **Platelaying** (`track_maintain()`, asked first by the rails' own
+  `attackby()`): a hammer packs and spikes a rough or worn tile in 3
+  seconds and takes 30 off its wear. Bad track will not hold packing: a set
+  of railway sleepers used on it (5 seconds, one set) makes the tile new.
+  Sleepers also relay a worn tile. Neither is done under a train.
+- Turntable bridge rails wear and are packed like any others.
+- Not verified in a real client: the overlays on curves and switches, and
+  save and load of worn track.
+
+## Early rails
+
+`train_early.dm`. Rails before the steam engine, and the small things that
+still run on them after it.
+
+- **Hand car** (`/obj/structure/trains/transport/handcar`, 6 iron, Rail &
+  Steam). A one-tile car with a walking beam. A rider standing on its tile
+  clicks it to pump (`pump()`): one stroke every 0.8 seconds adds 0.5 tiles
+  a second to a light car, less to a heavy one, and sets the car rolling
+  free (`start_rolling()`, train_rolling.dm). It goes the way the rider
+  faces when that is along the track, else the way it was last pumped
+  (`pump_way`). One rider keeps up 1.5 tiles a second and two riders who
+  both pumped in the last 3 seconds 2.25 (`pump_crew()`). Pumping against
+  the roll takes twice a stroke off the speed. It rolls and coasts like any
+  free car, so it must be pumped to keep going. `pump_problem()` refuses a
+  rider who is not aboard, a pinned handbrake or seized axle, a train with
+  an engine or a draft animal on it, and a train over 4 in weight.
+- **Draft animals.** A horse or an ox (`is_draft_animal()`) is harnessed
+  to the car at either end of a train with no engine: drag the car onto
+  the animal, or use the car's Harness Animal verb (`player_harness()`, 3
+  seconds). It draws 4 in weight for each point of `draft_animal_pull()`:
+  8 for a horse, 4 for an ox, half that when starving
+  (`train_draft_load()`). The car listens for the animal's moves
+  (`GLOB.moved_event`): when the animal gets two tiles away the train
+  steps one tile after it (`draw()`), turning its order round first when
+  the animal is at the tail. There is no momentum: the train stops when
+  the animal does. The traces let go (`unharness()`) when the animal is
+  more than two tiles off or not along the line, a handbrake is on or an
+  axle seized, the load has grown too heavy, or an engine is coupled on.
+  The train slows a ridden animal by up to 3 of move delay
+  (`draft_drag()`, through `hitch_drag()`). Harnesses are not saved.
+- **Chaldron wagon** (`/obj/structure/trains/storage/chaldron`, 12 wood,
+  Wagons & Ships): a wooden storage wagon of 10 slots that weighs 0.6.
+- **Wooden rails** (`/obj/item/stack/rail_lengths/wooden`, 2 wood, Wagons &
+  Ships). Laid on sleepers and spiked like iron rails; the bed and the
+  finished rail carry `wooden` (`set_wooden()`), shown by a tint
+  (`WOODEN_RAIL_COLOR`, `code/__defines/trains.dm`) and the name
+  "wagonway". Prying gives wooden rails back. Hand cars, rolling cars and
+  animal-drawn trains wear no track at all (only `meet_track()` in an
+  engine's drive loop does); an engine wears wooden rails 8 times as fast
+  as iron (`TRACK_WOODEN_WEAR`). Railway sleepers moved to Wagons & Ships
+  so that a wagonway can be built before Rail & Steam.
+- Not verified in a real client: leading and riding a harnessed animal,
+  the feel of pumping, the tint on curves and switches, and save and load
+  of wooden track.
+
+## Electric traction
+
+Code: `code/modules/1713/train_electric.dm`. Tests: the `electric/` checks
+of `tests/train_platforms`.
+
+An electric engine carries no fuel. It takes its power from a wire over the
+track, and the wire takes it from the cable grid (`machinery/cables.dm`,
+`machinery/power_points.dm`), so a railway's trains are a load on a town's
+generators like any machine.
+
+- **Overhead line mast** (`/obj/structure/train_catenary`, 4 steel,
+  Electricity). It stands two tiles from the rails, clear of the cars, and
+  a wrench secures it (`put_up()`): it turns its arm to the track
+  (`track_way()`) and hangs a wire over the tile under the arm's end
+  (`wire_turf()`) and four tiles either way along the line (`covers()`), so
+  a mast every nine tiles makes an unbroken wire. The arm and wire are
+  overlays above the car roofs (`draw_wire()`). A wrench takes it down
+  again (`take_down()`).
+- **The line.** Masts whose wires meet (wire tiles within nine of each
+  other) are one line, a `/datum/catenary_net` found by `network()` and
+  rebuilt only when a mast goes up or comes down
+  (`train_catenary_serial`). A secured mast needs 1 kW, so a distribution
+  transformer, wall outlet or utility pole in reach adopts it like any
+  machine and it becomes a feeder (`feeders()`). `energise()` puts the
+  line's whole demand on the first feeder whose grid can carry it
+  (`draw_cable_power()`); the line is live when one accepts. Nothing runs
+  on a timer: the line is asked when an engine asks.
+- **Drawing power.** An engine with its collector up asks the line for
+  `line_idle + line_draw x throttle` kW (`line_demand()`), at most once a
+  second while nothing changes (`line_check()`, from `steam_factor()`).
+  `request()` refuses an engine the grid cannot carry and keeps what the
+  others draw, so an overloaded line drops the newest load, not every
+  train. A refused engine, one under a dead wire or one past the end of
+  the wire has `steam_factor()` 0: the train coasts and can be braked, and
+  picks the power up again under the next live wire. An engine lets go of
+  its share when the collector comes down, when it is wrecked and when it
+  stops (`drive_ended()`), and a share not asked for again in 30 seconds
+  lapses.
+- **Electric locomotive** (`loco_electric`, kit 55 steel, Electricity):
+  four sections, a cab at each end and an equipment hood with walkways
+  between. Pull 40, as fast as a diesel, up to 155 kW. It works in
+  multiple and has a dead-man's handle like the diesels
+  ([Diesel working](#diesel-working)). `max_fuel` is 0 and `fuel` 1, so
+  the fuel checks of the drive loop never stall it, and `fuel_per_tile()`
+  is 0.
+- **Tram** (`loco_tram`, kit 30 steel, Electricity): four sections people
+  ride in, a driving platform at each end (open at the sides, which is the
+  way in) and a saloon with four seats between, under a roof on every
+  section (`roofed()`, the `m` roof row). Pull 10, so itself and one
+  trailer car; top speed that of a steam locomotive; up to 42 kW.
+- **The live wire.** Somebody riding on a car roof that moves under a live
+  wire is burned, knocked down and thrown off (`train_catenary_strike()`,
+  from `train_deck_clearance()`).
+- Art: `loco_electric_<1-4><l|c|r>`, `loco_tram_<1-4><l|c|r>`, roofs
+  `roof_loco_<kind>_<l|c|r>`, `_b<l|c|r>` for the rear cab and
+  `roof_loco_tram_m<l|c|r>` for the saloon; `catenary_mast`,
+  `catenary_arm`, `catenary_hanger`, `catenary_wire`.
+- Not verified in a real client: the wire and arm drawn over passing
+  trains and at the edge of the screen, the feel of coasting through a
+  gap, and save and load of a line (masts are saved; the line is found
+  again from them).
+
+## Freight handling
+
+`train_goods.dm`. The goods yard: every load is put on and taken off by
+players, and nothing here buys or sells.
+
+- **Loading stage** (`/obj/structure/rail_depot/loading_stage`, 24 wood).
+  It holds up to 3000 units of one kind of bulk (ore, coal or sand: what
+  `train_bulk_item()` allows). Stacks are tipped onto it (`load_bulk()`), a
+  shovel takes 50 back off (`take_off()`), and an empty hand runs the heap
+  down the chute in 4 seconds (`fill_takers()`) into the open wagons and
+  hoppers within 2 tiles (`takers()`, by `bulk_store()`). A car that holds
+  another kind takes nothing; a full car takes only what it has room for.
+  The other end of the trip is the drop pit (see Bulk freight).
+- **Goods crane** (`/obj/structure/workshop_machine/shear_legs/crane/goods`,
+  12 iron). A hand crane with a reach of 3. On top of what any hoist does,
+  `train_crane_swings()` offers the nearest clear deck of a car and the
+  nearest clear ground off the track. The crane car's rail crane uses the
+  same proc and never swings a load onto its own car.
+- **Livestock ramp** (`/obj/structure/train_livestock_ramp`, 6 wood). It
+  faces the car: the tile at its head (`head_tile()`) must be a deck with
+  no shut door or side in the way (`ramp_problem()`), so it stands two
+  tiles from the rails at a stock car's open door. The pen is the ground
+  within 3 tiles behind and beside it, off the track (`pen_tiles()`).
+  `drive_aboard()` moves the penned animals onto the car's free deck
+  tiles, nearest first; `drive_off()` moves the animals on the car into the
+  pen. Each takes 4 seconds (`work()`). `train_livestock()` leaves out
+  people, hostile animals, the dead and ridden mounts. A wrench turns it.
+- **Destination card.** Every car and engine has a holder
+  (`destination_card`, kept on the car's first section, `card_holder()`).
+  A pen writes up to 40 characters (`card_use()`, asked first by the
+  train's own `attackby()`); a blank card takes it out. `examine` reads
+  it, and the guard's journal notes `carded "..."` beside the car.
+- Loading stages, goods cranes and ramps are lineside fixtures
+  (`train_track_fixture()`): a passing train does not carry them off.
+- Not verified in a real client: the timed actions, the pen prompt and the
+  ramp's choice window, and save and load of a heaped stage or a card.
 
 ## Wheel slip and sand
 

@@ -30,6 +30,19 @@ class AtlasAdapterContract(unittest.TestCase):
   self.assertIn('manual_hint_html(viewer, recipe)',proc(CORE,'page_html'))
   self.assertIn('manual_hint_html(viewer, selected)',proc(CORE,'graph_html'))
 
+ def test_book_research_hint_names_the_chapter_and_admitted_routes_stay_unlocked(self):
+  helper=ADAPTER.split('/proc/crafting_node_manual_hint(',1)[1].split('/proc/crafting_node_chapter_hint',1)[0]
+  self.assertLess(helper.index('map.book_research_enabled()'),helper.index('"Needs the [N.name] manual"'))
+  chapter=ADAPTER.split('/proc/crafting_node_chapter_hint(',1)[1].split('/proc/crafting_recipe_manual_hint',1)[0]
+  for marker in ('N.prereqs', 'H.carried_chapter_book(N.id)', '"Read the [N.name] chapter in [B.name]', '"Read the [N.name] chapter to learn it"'):
+   self.assertIn(marker,chapter)
+  self.assertNotIn('manual',chapter)
+  recipe=ADAPTER.split('/proc/crafting_recipe_manual_hint(',1)[1].split('/mob/living/human/proc/refresh_recipe_knowledge_menus',1)[0]
+  self.assertIn('if (hint && crafting_recipe_allowed(viewer, "[result_path]"))',recipe)
+  carried=(ROOT/'code/modules/research_tree/subject_prototypes.dm').read_text().split('/mob/living/human/proc/carried_chapter_book(',1)[1].split('\n/',1)[0]
+  self.assertIn('B.has_research_chapter(node_id)',carried)
+  self.assertIn('/obj/item/weapon/book/research/tree_book',carried)
+
  def test_learning_refreshes_only_current_reader_and_retains_atlas_route(self):
   refresh=ADAPTER.split('/mob/living/human/proc/refresh_recipe_knowledge_menus()',1)[1].split('/datum/crafting_atlas_presenter/tgui/manual_hint',1)[0]
   for marker in ('ui.user == src', 'ui.render_arguments', 'ui.push_data(', 'stack.loc == src', 'item_is_in_hands(stack)'):

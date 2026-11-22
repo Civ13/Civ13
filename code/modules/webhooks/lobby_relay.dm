@@ -19,8 +19,11 @@
 var/global/list/lobby_relay_last_notice = list() // ckey = world.time of the last join-screen notice
 var/global/list/lobby_relay_waiting = list() // ckey = TRUE while announced and still on the join screen
 
+// Arrivals also carry readable text: a bot without the "kind" field (older
+// CivilizationBot, e.g. the civ13.com host) relayed them as "key: (NULL)".
 /proc/webhook_send_lobby_arrival(key, kind)
-	var/list/query = list("ckey" = key, "kind" = kind)
+	var/line = kind == "entered" ? "[key] entered the world." : "[key] is on the join screen."
+	var/list/query = list("ckey" = key, "kind" = kind, "message" = line)
 	webhook_send("lobbymessage", query)
 
 /proc/lobby_relay_hidden(client/C)

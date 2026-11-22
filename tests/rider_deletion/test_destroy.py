@@ -136,7 +136,7 @@ def projected_layer(text, parent, world):
     for field in ('riding_mob', 'riding', 'cancel_exercise', 'unregister_corpse_decay',
                   'organs', 'ingested', 'touching', 'internal_organs', 'stomach_contents'):
         body = re.sub(r'(?<![\w.])' + field + r'\b', 'src.' + field, body)
-    for field in ('human_mob_list', 'human_clients_mob_list'):
+    for field in ('human_mob_list', 'human_clients_mob_list', 'faction_hud_users'):
         body = re.sub(r'(?<![\w.])' + field + r'\b', 'state.' + field, body)
     body = body.replace('..()', 'parent(src)')
     return project('/cleanup()\n' + body + '\n', '/cleanup', 'src', dict(
@@ -157,6 +157,7 @@ class World:
         object.__setattr__(self.human, 'riding', riding)
         self.human_mob_list = Members(self, 'humans', [self.human, self.other_human, self.human])
         self.human_clients_mob_list = Members(self, 'clients', [self.other_human, self.human])
+        self.faction_hud_users = Members(self, 'faction-hud', [self.human, self.other_human])
         self.attempts = self.cleanups = 0
 
         def parent(src):
@@ -183,7 +184,7 @@ class World:
         return self.cleanup(self.human)
 
 
-EFFECTS = ['exercise', 'corpse', 'remove', 'remove', 'qdel-external-a',
+EFFECTS = ['exercise', 'corpse', 'remove', 'remove', 'remove', 'qdel-external-a',
            'qdel-external-b', 'qdel-ingested', 'qdel-touching', 'qdel-internal', 'qdel-food', 'parent']
 
 
@@ -206,6 +207,7 @@ class RiderDestroyTests(unittest.TestCase):
         self.assertEqual([row[0] for row in new.trace if row[0] not in ('write', 'icons')], EFFECTS)
         self.assertEqual(list(new.human_mob_list), [new.human, new.other_human])
         self.assertEqual(list(new.human_clients_mob_list), [new.other_human])
+        self.assertEqual(list(new.faction_hud_users), [new.other_human])
 
     def test_192_case_presence_ownership_retirement_and_flags_matrix(self):
         for present, owner, marker, riding, ride, stop in product((False, True),

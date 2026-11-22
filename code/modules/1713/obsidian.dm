@@ -79,13 +79,15 @@ var/global/list/obsidian_volcano_cells = list()
 // Mined rock near a volcano, on its own level or under it: an independent roll
 // like flint nodules and gem pockets, so the ore table is unchanged. Every age.
 /turf/proc/mining_obsidian(mob/living/human/H)
-	if (!prob(OBSIDIAN_MINING_CHANCE))
+	if (!prob(OBSIDIAN_MINING_CHANCE * underground_ore_factor("obsidian", src))) // underground_ores.dm
 		return 0
 	var/volcanic = near_volcano(src)
 	if (!volcanic)
 		var/up_z = multiz_level_above(z)
 		if (up_z)
 			volcanic = near_volcano(locate(x, y, up_z))
+	if (!volcanic && underground_depth_of(z) > 1)
+		volcanic = near_volcano(underground_surface_over(src))
 	if (!volcanic)
 		return 0
 	var/obj/item/stack/ore/obsidian/O = new /obj/item/stack/ore/obsidian(src)
@@ -313,9 +315,7 @@ var/global/list/obsidian_volcano_cells = list()
 	icon_state = "arrow_obsidian_flight"
 
 // Arrows and atlatl darts only: glass points were never fitted to crossbow bolts.
-/obj/item/ammo_casing/attach_arrowhead(obj/item/W, mob/user, shaft_path)
-	if (!istype(W, /obj/item/stack/arrowhead/obsidian))
-		return ..()
+/obj/item/ammo_casing/proc/attach_obsidian_arrowhead(obj/item/W, mob/user, shaft_path)
 	if (shaft_path != "/obj/item/ammo_casing/arrow" && shaft_path != "/obj/item/ammo_casing/atlatl_dart")
 		to_chat(user, SPAN_WARNING("An obsidian point is too brittle for that."))
 		return FALSE

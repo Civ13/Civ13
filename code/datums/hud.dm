@@ -24,7 +24,6 @@
 	)
 
 	HUDoverlays = list(
-		"screen_cover" = 	list("type" = /obj/screen/cover, "loc" = "-2,1", "icon" = 'icons/mob/screenlimit.dmi',"icon_state" = "cover"),
 		"damageoverlay" = 	list("type" = /obj/screen/damageoverlay, "loc" = "1,1", "icon" = 'icons/mob/screen1_full.dmi'),
 		"flash" =  			list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
 		"pain" = 			list("type" = /obj/screen/full_1_tile_overlay, "loc" = "WEST,SOUTH to EAST,NORTH", "icon" = 'icons/mob/screen/effects.dmi', "icon_state" = "blank"),
@@ -45,6 +44,7 @@
 		"damage zone" = 		list("type" = /obj/screen/zone_sel3,   "loc" = "16,8", "icon" = 'icons/mob/screen/zone_sel.dmi'),
 		"fixeye" = 				list("type" = /obj/screen/fixeye,	 "loc" = "16,7"),
 		"tactic" = 				list("type" = /obj/screen/tactic,	 "loc" = "16,6"),
+		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "16,15"),
 		"mode" = 				list("type" = /obj/screen/mode,	   "loc" = "16,5"),
 		"secondary attack" = 	list("type" = /obj/screen/kick_jump_bite,	   "loc" = "16,4"),
 		"m_intent" = 			list("type" = /obj/screen/mov_intent, "loc" = "16,3"),
@@ -124,6 +124,7 @@
 		"secondary attack" = 	list("type" = /obj/screen/kick_jump_bite,	   "loc" = "11,1"),
 		"mode" = 				list("type" = /obj/screen/mode,	   "loc" = "10,1"),
 		"tactic" = 				list("type" = /obj/screen/tactic,	 "loc" = "9,1"),
+		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "9,2"),
 		"equip" = 				list("type" = /obj/screen/equip,	  "loc" = "7,2"),
 		"intent" =				list("type" = /obj/screen/intent,	 "loc" = "12:16,1"),
 		"help" = 				list("type" = /obj/screen/fastintent/help,	 "loc" = "12,1"),
@@ -218,6 +219,7 @@
 		"m_intent" = 			list("type" = /obj/screen/mov_intent, "loc" = "EAST-1,SOUTH:2"),
 		"damage zone" = 		list("type" = /obj/screen/zone_sel3,   "loc" = "EAST,SOUTH:2", "icon" = 'icons/mob/screen/zone_sel_console.dmi'),
 		"tactic" = 				list("type" = /obj/screen/tactic,	 "loc" = "EAST-3,SOUTH+1:2"),
+		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "EAST-3,SOUTH+3:2"),
 		"mode" = 				list("type" = /obj/screen/mode,	   "loc" = "EAST-2,SOUTH+1:2"),
 		"secondary attack" = 	list("type" = /obj/screen/kick_jump_bite,	   "loc" = "EAST-1,SOUTH+1:2"),
 		"random damage zone" = 	list("type" = /obj/screen/zone_sel_random,   "loc" = "EAST,SOUTH+2:2"),
@@ -293,6 +295,7 @@
 		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,	   "loc" = "11,1"),
 		"mode"		= list("type" = /obj/screen/mode,	   "loc" = "10,1"),
 		"tactic"	  = list("type" = /obj/screen/tactic,	 "loc" = "9,1"),
+		"combat stance" = list("type" = /obj/screen/combat_stance, "loc" = "9,2"),
 		"intent"	  = list("type" = /obj/screen/intent,	 "loc" = "12,1"),
 		"random damage zone" = list("type" = /obj/screen/zone_sel_random,   "loc" = "15,3"),
 		"damage zone" = list("type" = /obj/screen/zone_sel2,   "loc" = "15,1", "icon" = 'icons/mob/screen/zone_sel_lw.dmi'),
@@ -364,6 +367,7 @@
 		"secondary attack"   = list("type" = /obj/screen/kick_jump_bite,	   "loc" = "11,1"),
 		"mode"		= list("type" = /obj/screen/mode,	   "loc" = "10,1"),
 		"tactic"	  = list("type" = /obj/screen/tactic,	 "loc" = "9,1"),
+		"combat stance" = list("type" = /obj/screen/combat_stance, "loc" = "9,2"),
 		"intent"	  = list("type" = /obj/screen/intent,	 "loc" = "13,1"),
 		"random damage zone" = list("type" = /obj/screen/zone_sel_random,   "loc" = "15,3"),
 		"damage zone" = list("type" = /obj/screen/zone_sel3,   "loc" = "15,1", "icon" = 'icons/mob/screen/zone_sel_fof.dmi'),

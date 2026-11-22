@@ -23,7 +23,7 @@ class StackSpawnSource(unittest.TestCase):
         for metal in ('copper', 'iron', 'steel', 'bronze'):
             self.assertIn(f'spawn_stack(/obj/item/stack/arrowhead/{metal}, loc, tamt*3)', anvil)
         refining = (ROOT / FILES[1]).read_text(encoding='utf-8')
-        self.assertEqual(refining.count('spawn_stack(/obj/item/stack/ore/'), 3)
+        self.assertEqual(refining.count('spawn_stack(/obj/item/stack/ore/'), 4)
 
     def test_helper_is_compiled(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')

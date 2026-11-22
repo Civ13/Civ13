@@ -41,13 +41,18 @@ static class BotCommandTests {
 
         const string Running = "{\"ok\":true,\"running\":true,\"stop_pending\":false,\"stdout_log\":\"D:/s/stdout.log\"}";
         const string Stopped = "{\"ok\":true,\"running\":false,\"stop_pending\":false}";
-        async Task<(int Exit, List<string> Calls, string Output)> Script(string action, params (int, string)[] answers) {
+        Require(LocalHosting.LimitOf(detach) == BotCommand.DetachLimit, "a WMI create gets a short limit");
+        async Task<(int Exit, List<string> Calls, string Output)> Script(string action, params (int, string)[] answers) =>
+            await ScriptWith(action, null, answers);
+        async Task<(int Exit, List<string> Calls, string Output)> ScriptWith(string action, Func<HostBot, int>? direct, params (int, string)[] answers) {
             var calls = new List<string>();
             var queue = new Queue<(int, string)>(answers);
             var hooks = new BotCommand.Hooks(step => {
                 calls.Add(step.ArgumentList.Contains("-Command") ? "detach" : step.ArgumentList[1]);
-                return queue.Count > 0 ? queue.Dequeue() : (0, Stopped);
-            }, _ => Task.CompletedTask);
+                var answer = queue.Count > 0 ? queue.Dequeue() : (0, Stopped);
+                if (answer.Item1 == -2) throw new LocalHosting.StepTimedOut("powershell.exe did not answer within 20 s and was ended.");
+                return answer;
+            }, _ => Task.CompletedTask, direct == null ? null : b => { calls.Add("direct"); return direct(b); });
             var output = new StringWriter();
             var exit = await BotCommand.Run(action, bot, output, hooks);
             return (exit, calls, output.ToString());
@@ -59,6 +64,13 @@ static class BotCommandTests {
         Require(r.Exit == 0 && r.Calls.SequenceEqual(["status"]) && r.Output.Contains("already running"), "start while running: " + r.Output);
         r = await Script("start", (0, Stopped), (1, "Portable control failed: Win32_Process.Create returned 9"));
         Require(r.Exit == 1 && r.Output.Contains("returned 9"), "failed create: " + r.Output);
+        // WMI hung or broken (2026-11-19): the supervisor is started directly instead of not at all.
+        r = await ScriptWith("start", _ => 77, (0, Stopped), (-2, ""), (0, Running));
+        Require(r.Exit == 0 && r.Calls.SequenceEqual(["status", "detach", "direct", "status"]) && r.Output.Contains("started it directly as process 77"), "direct start after a WMI timeout: " + r.Output);
+        r = await ScriptWith("start", _ => 78, (0, Stopped), (1, "Invoke-CimMethod : Provider load failure"), (0, Running));
+        Require(r.Exit == 0 && r.Output.Contains("Provider load failure") && r.Output.Contains("process 78"), "direct start after a WMI failure: " + r.Output);
+        r = await ScriptWith("start", _ => throw new System.ComponentModel.Win32Exception(5), (0, Stopped), (-2, ""));
+        Require(r.Exit == 1 && r.Output.Contains("a direct start failed too"), "both starts failed: " + r.Output);
         r = await Script("start", [(0, Stopped), (0, "CREATED 42"), .. Enumerable.Repeat((0, Stopped), 40)]);
         Require(r.Exit == 1 && r.Output.Contains("did not report running"), "start never running: " + r.Output);
 

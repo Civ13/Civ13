@@ -51,6 +51,17 @@ static class LocalHostingTests {
             Require(HostBoard.Card("gaia", "Gaia", true, awayCard.RootElement, 0).Notes.Contains("1 player away at an event"), "event away count on the board card");
         using (var heldCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"transfers_held\":true}}"))
             Require(HostBoard.Card("gaia", "Gaia", true, heldCard.RootElement, 0).Problem?.Contains("Travel in is on hold") == true, "a held transfer agent is a problem on the board card");
+        using (var clockCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"calendar\":{\"clock\":\"06:40 AM\",\"phase\":\"Early Morning\",\"season\":\"WINTER\",\"zone\":-2,\"season_left\":37}}}")) {
+            var card = HostBoard.Card("gaia", "Gaia", true, clockCard.RootElement, 0);
+            Require(card.Clock is { Time: "06:40 AM", Phase: "Early Morning", SeasonText: "Winter", Zone: -2, SeasonLeft: 37, Daylight: true }, "the world calendar on the board card");
+            Require(card.Clock!.ZoneText == "UTC\u22122" && card.Describe().Contains("06:40 AM early morning, winter (37 min left), UTC-2"), "the clock line reads: " + card.Describe());
+        }
+        foreach (var badClock in new[] { "{\"clock\":\"6:40\",\"phase\":\"Night\",\"season\":\"FALL\",\"zone\":0}", "{\"clock\":\"06:40 AM\",\"phase\":\"Dusk\",\"season\":\"FALL\",\"zone\":0}",
+                "{\"clock\":\"06:40 AM\",\"phase\":\"Night\",\"season\":\"FALL\",\"zone\":20}", "{\"clock\":\"06:40 AM\",\"phase\":\"Night\",\"season\":\"monsoon\",\"zone\":0}" })
+            using (var bad = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"calendar\":" + badClock + "}}"))
+                Require(HostBoard.Card("gaia", "Gaia", true, bad.RootElement, 0).Clock == null, "a bad calendar shows no clock: " + badClock);
+        using (var noClock = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"players\":0}}"))
+            Require(HostBoard.Card("gaia", "Gaia", true, noClock.RootElement, 0).Clock == null && new RegionClock("12:00 PM", "Night", "SUMMER", 0, null).ZoneText == "UTC", "no calendar, no clock; UTC+0 reads UTC");
         using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
             Require(LocalHosting.RegionDetails(down.RootElement).Contains("watchdog could not restart it"), "refusal on a stopped region");
         using (var up = JsonDocument.Parse("{\"port\":1714,\"listening\":true,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
@@ -154,6 +165,13 @@ static class LocalHostingTests {
         Require(!status.Busy && status.Message == "Server is not running. Last action: update (failed): compile failed.", "failure line: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": true, \"clients\": 2}, \"regions\": [{\"id\": \"gaia\", \"name\": \"Gaia\", \"state\": \"awake\", \"players\": 2}, {\"id\": \"deep\", \"name\": \"The Deep\", \"state\": \"asleep\", \"players\": null}, 7]}");
         Require(status.Message == "Server port is open. World ready. 2 players.\nRegions: Gaia: awake, 2 players; The Deep: asleep.", "region line: " + status.Message);
+        // A region host passes the world's own answer through, and DM writes TRUE as 1: a ready world read "World not ready."
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 1, \"clients\": 3}}");
+        Require(status.Message == "Server port is open. World ready. 3 players.", "a DM true (1) is ready: " + status.Message);
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 0, \"clients\": 2.0e0}, \"regions\": [{\"name\": \"Gaia\", \"state\": \"awake\", \"players\": 1.0e0}]}");
+        Require(status.Ok && status.Message == "Server port is open. World not ready. 2 players.\nRegions: Gaia: awake, 1 players.", "a count written as 2.0e0 must not throw: " + status.Message);
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 1, \"clients\": 2.5}}");
+        Require(status.Message == "Server port is open. World ready.", "2.5 is not a player count: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": false, \"state\": \"cold\", \"busy\": false}");
         Require(status.Message.StartsWith("Server is asleep (stopped"), "cold line: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"regions\": [{\"name\": \"\u0915\u0940" + string.Concat(Enumerable.Repeat("\u5317", 70)) + " <@&1>\", \"state\": \"awake\"}]}");
@@ -199,15 +217,33 @@ static class LocalHostingTests {
                 (["ann"], "northamerica", "shore", null), (["ann"], "--to", "shore", null), (["ann"], "gaia", "sky", null), (["ann"], "gaia", "coords", null),
                 (["ann"], "gaia", "shore", "1,2,3"), (["ann"], "gaia", "coords", "1,2"), (["ann"], "gaia", "coords", "1,2,3;x") })
             try { RegionPlayers.SendStep(host.Control!, "northamerica", keys, to, landing, at, false, false); throw new Exception("unsafe send accepted: " + string.Join(",", keys) + " " + to + " " + landing + " " + at); } catch (ArgumentException) { assertions++; }
-        var roster = RegionPlayers.ParseRoster(0, "noise\n{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"name\": \"Ann\\u0007 Smith\", \"playing\": 1, \"at\": [5, 6, 1], \"aboard\": \"Gnome 2\"}, {\"ckey\": \"<b>\"}], " +
+        var roster = RegionPlayers.ParseRoster(0, "noise\n{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"name\": \"Ann\\u0007 Smith\", \"playing\": 1, \"at\": [5, 6, 1], \"aboard\": \"Gnome 2\", \"held\": 1}, {\"ckey\": \"<b>\"}], " +
             "\"destinations\": {\"Gaia (up)\": \"gaia\", \"Bad\": \"--x\"}, \"recent\": [{\"time\": 1, \"text\": \"host sent ann\"}], \"running\": false}");
-        Require(roster.Ok && roster.Players.Count == 1 && roster.Players[0] is { Ckey: "ann", Name: "Ann Smith", Playing: true, Aboard: "Gnome 2", At: "5,6,1" }
+        Require(roster.Ok && roster.Players.Count == 1 && roster.Players[0] is { Ckey: "ann", Name: "Ann Smith", Playing: true, Aboard: "Gnome 2", At: "5,6,1", Held: true }
             && roster.Destinations.Count == 1 && roster.Destinations[0].Id == "gaia" && roster.Recent.SequenceEqual(["host sent ann"]), "roster parse");
         Require(!RegionPlayers.ParseRoster(1, "{\"ok\": false, \"refused\": \"gaia is asleep\"}").Ok, "roster refusal");
         var dry = RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"dry_run\", \"rows\": [{\"ckey\": \"ann\", \"name\": \"Ann\", \"ok\": 1, \"warnings\": [\"they leave the horse behind\"]}, " +
             "{\"ckey\": \"bob\", \"name\": \"Bob\", \"ok\": 0, \"reason\": \"They are dead.\"}]}");
         Require(dry.Ok && dry.Ready == 1 && !dry.Started && RegionPlayers.Describe(dry).Contains("Refused: bob (Bob): They are dead.") && RegionPlayers.Describe(dry).Contains("Nothing has moved yet"), "dry run parse");
+        Require(RegionPlayers.Describe(dry).Contains("Ready: ann (Ann): they leave the horse behind") && !RegionPlayers.Describe(dry).Contains("Sending"), "dry run rows say Ready");
         Require(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"started\", \"rows\": []}").Started, "started parse");
+        // A real send answers with its own second check; held players show as frozen in the roster.
+        foreach (var held in new[] { "0", "false" })
+            Require(RegionPlayers.ParseRoster(0, "{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"held\": " + held + "}, {\"ckey\": \"bob\"}]}").Players is [{ Held: false }, { Held: false }], "not held parse");
+        var sent = RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"started\", \"rows\": [{\"ckey\": \"ann\", \"name\": \"Ann\", \"ok\": 1}, {\"ckey\": \"bob\", \"name\": \"Bob\", \"ok\": 0, \"reason\": \"They are dead.\"}]}");
+        Require(sent.Started && sent.Ready == 1 && RegionPlayers.Describe(sent).Contains("Sending: ann (Ann)") && RegionPlayers.Describe(sent).Contains("Refused: bob (Bob): They are dead.")
+            && RegionPlayers.Describe(sent).Contains("Sending 1 now, one at a time. They are frozen until they leave; anyone not ready was released.") && !RegionPlayers.Describe(sent).Contains("Ready:"), "started describe");
+        Require(RegionPlayers.Describe(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"refused:nobody can be sent now\", \"rows\": []}")).Contains("Not sent: nobody can be sent now. Anyone frozen for it was released."), "recheck refusal");
+        Require(RegionPlayers.NewRecent(["a", "b"], ["b", "b", "c"]).SequenceEqual(["b", "c"]) && RegionPlayers.NewRecent([], []).Count == 0, "new recent lines");
+        var during = RegionPlayers.ParseRoster(0, "{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"held\": 1}, {\"ckey\": \"bob\"}], \"recent\": [{\"time\": 1, \"text\": \"old\"}], \"running\": 1}");
+        var following = RegionPlayers.DescribeFollow(sent, during, ["old"], 6, RegionPlayers.FollowState.Running);
+        Require(during.Running && following.Contains("Sending... (6s)") && following.Contains("Frozen now: ann.") && following.Contains("No outcome yet.") && !following.Contains("old"), "follow running");
+        Require(RegionPlayers.DescribeFollow(sent, new RegionPlayers.Roster(false, "Refused: asleep", [], [], [], false), ["old"], 9, RegionPlayers.FollowState.Running).Contains("did not answer the last look (Refused: asleep)"), "follow missed look");
+        var after = RegionPlayers.ParseRoster(0, "{\"ok\": true, \"players\": [{\"ckey\": \"bob\"}], \"recent\": [{\"time\": 1, \"text\": \"old\"}, {\"time\": 2, \"text\": \"sent ann to gaia\"}], \"running\": 0}");
+        var ended = RegionPlayers.DescribeFollow(sent, after, ["old"], 12, RegionPlayers.FollowState.Ended);
+        Require(!after.Running && ended.Contains("The send has ended (12s).") && ended.Contains("None of the players sent are in this region now.") && ended.Contains("sent ann to gaia") && !ended.Contains("No outcome yet"), "follow ended");
+        Require(RegionPlayers.DescribeFollow(sent, during, ["old"], 12, RegionPlayers.FollowState.Ended).Contains("Still here: ann. The lines below say why."), "follow ended with one left");
+        Require(RegionPlayers.DescribeFollow(sent, during, ["old"], 900, RegionPlayers.FollowState.TimedOut).Contains("Stopped following after 15 minutes."), "follow timed out");
         Require(RegionPlayers.Describe(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"refused:another transfer is running\", \"rows\": []}")).Contains("Not sent: another transfer is running."), "refused send");
         // Magic whitelist dialog (MagicWhitelist, shard_group.py magic-whitelist): one shared list for the group.
         Require(MagicWhitelist.Step(host.Control!).ArgumentList.SequenceEqual(
@@ -223,17 +259,30 @@ static class LocalHostingTests {
         Require(!MagicWhitelist.Parse(1, "{\"ok\": false, \"refused\": \"give up to 20 player keys\"}").Ok && !MagicWhitelist.Parse(1, "").Ok, "magic whitelist refusal");
         // Front door and ports dialog (GroupPorts, shard_group.py ports / set-gate / set-port).
         Require(GroupPorts.Step(host.Control!, "ports").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "ports" }), "ports argv");
+        Require(LocalHosting.LimitOf(GroupPorts.Step(host.Control!, "ports")) == LocalHosting.RequestLimit
+            && LocalHosting.LimitOf(GroupPorts.Step(host.Control!, "set-port", "moon", 1721, true)) == LocalHosting.RequestLimit
+            && LocalHosting.LimitOf(GroupPorts.Step(host.Control!, "add-regions", null, null, true)) == LocalHosting.LongLimit, "ports steps carry their own limit");
         Require(GroupPorts.Step(host.Control!, "set-gate", "gaia").ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-gate", "--region", "gaia" }), "set-gate plan argv never applies");
         Require(GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, @"D:\bot\profile.json").ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-gate", "--region", "gaia", "--bot-profile", @"D:\bot\profile.json", "--apply" }), "set-gate apply argv");
         Require(GroupPorts.Step(host.Control!, "set-port", "moon", 1721, true).ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-port", "--region", "moon", "--port", "1721", "--apply" }), "set-port argv");
+        Require(GroupPorts.Step(host.Control!, "add-gateway").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway" }), "add-gateway plan argv never applies");
+        Require(GroupPorts.Step(host.Control!, "add-gateway", null, null, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway", "--apply" }), "add-gateway apply argv");
+        Require(GroupPorts.Step(host.Control!, "add-regions", null, null, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-regions", "--apply" }), "add-regions apply argv");
+        var gatewayPlan = GroupPorts.ParsePlan(0, "{\"ok\": true, \"accepted\": false, \"plan\": {\"region\": \"gateway\", \"already\": false, "
+            + "\"steps\": [\"Add the region gateway (Gateway) on port 1771.\"], \"problems\": [], \"warnings\": []}}");
+        Require(gatewayPlan.Ok && !gatewayPlan.Accepted && !gatewayPlan.Already && gatewayPlan.Steps.Count == 1, "add-gateway plan parsed");
         foreach (var unsafeStep in new Action[] { () => GroupPorts.Step(host.Control!, "setup"), () => GroupPorts.Step(host.Control!, "set-gate"),
-                () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"),
+                () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"), () => GroupPorts.Step(host.Control!, "add-regions", "gaia"),
                 () => GroupPorts.Step(host.Control!, "ports", null, null, true), () => GroupPorts.Step(host.Control!, "set-port", "moon"),
                 () => GroupPorts.Step(host.Control!, "set-port", "moon", 80), () => GroupPorts.Step(host.Control!, "set-gate", "gaia", 1721),
-                () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config") })
+                () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config"), () => GroupPorts.Step(host.Control!, "add-gateway", "gaia"),
+                () => GroupPorts.Step(host.Control!, "add-gateway", null, null, true, @"D:\bot\profile.json") })
             try { unsafeStep(); throw new Exception("unsafe ports step accepted"); } catch (ArgumentException) { assertions++; }
         var doors = GroupPorts.ParseReport(0, "noise\n{\"ok\": true, \"gate\": \"north\", \"public_host\": \"play.example\", \"public_ports\": [1713, 1714, 1717], \"problems\": [], \"host_service\": \"reloads\", " +
             "\"ports\": [{\"port\": 1714, \"use\": \"game\", \"region\": \"north\", \"name\": \"North\\u0007 America\", \"public\": true, \"gate\": true, \"listening\": true}, " +
@@ -271,6 +320,18 @@ static class LocalHostingTests {
             && PlayerActivity.Describe(activity).StartsWith("Recording: gaia. Off: europe."), "player activity parse");
         Require(PlayerActivity.Describe(PlayerActivity.Parse(0, "{\"ok\": true, \"recording\": [], \"off\": [\"gaia\"], \"text\": \"\"}")).Contains("PLAYER_ACTIVITY 1"), "player activity off hint");
         Require(!PlayerActivity.Parse(1, "{\"ok\": false, \"refused\": \"player activity covers the whole group\"}").Ok && !PlayerActivity.Parse(1, "").Ok, "player activity refusal");
+        // Player records window (PlayerRecords, shard_group.py records): summary, one player, search, export.
+        Require(PlayerRecords.Step(host.Control!).ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "records" }), "records argv");
+        Require(PlayerRecords.Step(host.Control!, ckey: " Bob Smith ").ArgumentList.TakeLast(2).SequenceEqual(new[] { "--ckey", "Bob Smith" }), "records ckey argv");
+        Require(PlayerRecords.Step(host.Control!, search: "10.0.0.1").ArgumentList.TakeLast(2).SequenceEqual(new[] { "--search", "10.0.0.1" }), "records search argv");
+        try { PlayerRecords.Step(host.Control!, ckey: "a", search: "b"); throw new Exception("two record requests accepted"); } catch (ArgumentException) { assertions++; }
+        try { PlayerRecords.Step(host.Control!, ckey: "--export"); throw new Exception("a flag accepted as a key"); } catch (ArgumentException) { assertions++; }
+        try { PlayerRecords.Step(host.Control!, export: "records.json"); throw new Exception("a relative export path accepted"); } catch (ArgumentException) { assertions++; }
+        var records = PlayerRecords.Parse(0, "noise\n{\"ok\": true, \"db\": \"D:/x/coordinator.sqlite\", \"text\": \"2 players have records\\ngaia: old notes copied\\u0007\"}");
+        Require(records.Ok && records.Text == "2 players have records" + Environment.NewLine + "gaia: old notes copied" && records.File == null, "records parse");
+        var exported = PlayerRecords.Parse(0, "{\"ok\": true, \"exported\": 12, \"file\": \"D:/x/records.json\", \"text\": \"Exported 12 records\"}");
+        Require(exported.Ok && exported.Exported == 12 && exported.File == "D:/x/records.json", "records export parse");
+        Require(!PlayerRecords.Parse(1, "{\"ok\": false, \"refused\": \"give a player key\"}").Ok && !PlayerRecords.Parse(1, "").Ok, "records refusal");
         // AI characters window (AgentRuns, shard_group.py agents): status, stop one run, restart one watcher.
         Require(AgentRuns.Step(host.Control!).ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "agents" }), "agents argv");
         Require(AgentRuns.Step(host.Control!, stopRun: 156612).ArgumentList.TakeLast(2).SequenceEqual(new[] { "--stop-run", "156612" }), "agents stop argv");
@@ -298,6 +359,9 @@ static class LocalHostingTests {
         Require(deployStep.FileName.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase) && deployStep.CreateNoWindow && deployStep.RedirectStandardOutput && deployStep.RedirectStandardInput &&
             deployStep.ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy }), "deploy step changed");
         Require(LocalHosting.GroupScriptStep(host.Control!, "restart-host").ArgumentList.Last() == restartHost, "restart-host step changed");
+        Require(LocalHosting.GroupScriptStep(host.Control!, "start-host").ArgumentList.SequenceEqual(new[] { "/d", "/c", restartHost, "start" })
+            && LocalHosting.LimitOf(LocalHosting.GroupScriptStep(host.Control!, "start-host")) == LocalHosting.RequestLimit
+            && LocalHosting.LimitOf(LocalHosting.GroupScriptStep(host.Control!, "deploy")) == LocalHosting.DeployLimit, "start-host step and script limits");
         Require(LocalHosting.GroupScriptStep(host.Control!, "deploy", resume: true).ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy, "continue" }), "deploy continue step changed");
         try { LocalHosting.GroupScriptStep(host.Control!, "restart-host", resume: true); throw new Exception("restart-host continue accepted"); } catch (ArgumentException) { assertions++; }
         Require(LocalHosting.GroupScriptStep(host.Control!, "deploy", true, ["gaia", "mars"]).ArgumentList.SequenceEqual(new[] { "/d", "/c", deploy, "continue", "gaia", "mars" })
@@ -340,9 +404,27 @@ static class LocalHostingTests {
         Require(HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true) && HostSettings.UpdateWhenEmpty(host.Control!.Group!)
             && HostSettings.FollowsRemote(host.Control!.Group!) && !HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true), "update when empty follows origin/master once");
         Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2, "update when empty kept other settings");
+        // Daily maintenance: off for a group that is not the live one, on at 03:00 for the live group that follows a remote.
+        Require(HostSettings.DailyMaintenance(host.Control!.Group!) is { Enabled: false, Time: "03:00", WarningMinutes: 10, Persistent: true }, "maintenance off for a test group");
+        HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "04:30", 15);
+        Require(HostSettings.DailyMaintenance(host.Control!.Group!) is { Enabled: true, Time: "04:30", WarningMinutes: 15 }
+            && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.UpdateWhenEmpty(host.Control!.Group!), "maintenance saved, other settings kept");
+        Reject(() => HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "4:30", 15), "a time that is not HH:MM");
+        Reject(() => HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "24:00", 15), "an hour past 23");
+        Reject(() => HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "03:00", 61), "a countdown over an hour");
+        using (var daily = JsonDocument.Parse("{\"enabled\": true, \"persistent\": true, \"next\": \"2026-11-23 03:00\", \"running\": false, "
+                + "\"last\": {\"day\": \"2026-11-22\", \"phase\": \"done with problems\", \"revision\": \"" + new string('b', 40) + "\", "
+                + "\"result\": {\"problems\": {\"moon\": \"handover failed (the old world plays on): low memory\"}}}}"))
+            Require(LocalHosting.DescribeMaintenance(daily.RootElement) == "Daily maintenance next at 2026-11-23 03:00. Last run 2026-11-22 onto bbbbbbbb: "
+                + "done with problems: moon (handover failed (the old world plays on): low memory).", "maintenance status line");
+        using (var tdm = JsonDocument.Parse("{\"enabled\": false, \"persistent\": false}"))
+            Require(LocalHosting.DescribeMaintenance(tdm.RootElement).Contains("between rounds"), "TDM groups do not use daily maintenance");
+        Require(LocalHosting.ParseGroup("maintenance", 0, "{\"accepted\": true, \"action\": \"maintenance\", \"pid\": 5, \"ok\": true}").Message.StartsWith("Daily maintenance started"),
+            "run maintenance now answer");
         // Start region: the mainland unless start_region names another; never a kind nobody can start in.
         File.WriteAllText(groupConfig, "{\"mainland\": \"northamerica\", \"shutdown_warning_seconds\": 60, \"regions\": [{\"id\": \"northamerica\", \"name\": \"North America\", \"kind\": \"SURFACE\"}, "
-            + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}]}");
+            + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}, "
+            + "{\"id\": \"gateway\", \"name\": \"Gateway\", \"kind\": \"GATEWAY\"}]}");
         var startRegion = HostSettings.StartRegion(host.Control!.Group!);
         Require(startRegion.Mainland == "northamerica" && startRegion.Current == "northamerica"
             && startRegion.Choices.Select(choice => choice.Id + "=" + choice.Name).SequenceEqual(new[] { "northamerica=North America", "gaia=Gaia" }), "start region choices");
@@ -352,6 +434,19 @@ static class LocalHostingTests {
         Reject(() => HostSettings.SetStartRegion(host.Control!.Group!, "atlantis"), "an unknown start region");
         HostSettings.SetStartRegion(host.Control!.Group!, "northamerica");
         Require(!File.ReadAllText(groupConfig).Contains("start_region") && HostSettings.StartRegion(host.Control!.Group!).Current == "northamerica", "start region back on the mainland");
+        // Travel starts: every land but the gateway is listed; unticked ones are kept down (keep_down), other settings kept.
+        Require(HostSettings.TravelStarts(host.Control!.Group!).Select(region => region.Id + "=" + region.KeptDown).SequenceEqual(new[] {
+            "northamerica=False", "gaia=False", "orbit=False", "tutorial=False" }), "travel starts list every land but the gateway");
+        HostSettings.SetKeptDown(host.Control!.Group!, new[] { "gaia", "gateway" });
+        Require(HostSettings.TravelStarts(host.Control!.Group!).Where(region => region.KeptDown).Select(region => region.Id).SequenceEqual(new[] { "gaia" })
+            && !File.ReadAllText(groupConfig).Contains("\"keep_down\": false") && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "gaia kept down, the gateway never");
+        HostSettings.SetKeptDown(host.Control!.Group!, Array.Empty<string>());
+        Require(!File.ReadAllText(groupConfig).Contains("keep_down"), "nothing kept down");
+        // Ready lands: on with 15 minutes by default; saved values read back, other settings kept.
+        Require(HostSettings.Readiness(host.Control!.Group!) == (true, 15), "ready lands on, 15 minutes by default");
+        HostSettings.SetReadiness(host.Control!.Group!, false, 30);
+        Require(HostSettings.Readiness(host.Control!.Group!) == (false, 30) && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "ready lands saved");
+        Reject(() => HostSettings.SetReadiness(host.Control!.Group!, true, 1441), "cold storage over a day");
         File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, shutdown_warning_seconds = 300, update_when_empty = true, fetch = "origin", regions = new object[] {
             new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
         var places = HostSettings.Locations(host.Control!.Group!);
@@ -532,6 +627,54 @@ static class LocalHostingTests {
             == "problem=3 problems; working=3 working; behind=5 out of date; running=1 running; asleep=2 asleep; stopped=1 stopped; unknown=1 unknown; players=6 players online",
             "board summary: " + string.Join("; ", HostBoard.Summary(board).Select(count => count.Text)));
         Require(HostBoard.Coordinator(boardStatus) == false && HostBoard.Coordinator("{\"regions\": {}, \"ok\": true}") == null, "coordinator flag");
+        // Every problem carries a next step in plain words and the buttons that address it (BoardAdvice).
+        Require(board.SelectMany(card => card.Problems).All(problem => problem.NextStep.Length > 20 && problem.Text.Length > 0), "a problem without a next step");
+        Require(Row("moon").Problems.Select(problem => problem.Kind).SequenceEqual(["action", "watchdog"])
+            && Row("moon").Problems[0].Fixes.Select(fix => fix.Action).SequenceEqual(["update"]) && Row("moon").Problems[0].NextStep.Contains("Update again")
+            && Row("moon").Problems[1].Fixes.Select(fix => fix.Action).SequenceEqual(["start", RegionFix.OpenLog]), "moon fixes");
+        Require(Row("orbit").Problems is [{ Kind: "build", Severity: ProblemSeverity.Waiting } lockProblem, { Kind: "travel" } agentProblem, { Kind: "region" } regionProblem]
+            && lockProblem.Fixes[0].Action == "stage" && agentProblem.Fixes is [{ Action: RegionFix.RestartHost, Group: true }]
+            && regionProblem.Fixes.Select(fix => fix.Action).SequenceEqual(["config-apply", "restart"]), "orbit fixes");
+        Require(Row("lost").Problems is [{ Kind: "status" } statusProblem] && statusProblem.Fixes[0].Action == RegionFix.CheckStatus, "status fix");
+        RegionCard Problem(string entry) => HostBoard.Card("north", "North America", false, JsonDocument.Parse(entry).RootElement, 0);
+        // Val's board (2026-11-22): the auto handover a running build cannot guard needs one Save, update and restart.
+        var guard = Problem("{\"state\": \"asleep\", \"operation\": {\"action\": \"auto-handover\", \"phase\": \"failed\", \"updated\": 1763823000, "
+            + "\"error\": \"the running build cannot guard an empty handover; automatic update deferred\"}}");
+        Require(guard.Problem == "Auto handover failed: the running build cannot guard an empty handover; automatic update deferred."
+            && guard.Problems is [{ Kind: "handover", Severity: ProblemSeverity.NeedsYou, Stamp: "1763823000" } guardProblem]
+            && guardProblem.Fixes is [{ Action: "deploy", Label: "Save, update and restart" }] && guardProblem.NextStep.Contains("Save, update and restart"), "guard handover: " + guard.Describe());
+        // A deferral the host retries by itself is waiting, not an error, and is not counted as a problem.
+        var deferred = Problem("{\"state\": \"awake\", \"operation\": {\"action\": \"auto-handover\", \"phase\": \"failed\", \"error\": \"the world has not saved since the last player; automatic update deferred\"}}");
+        Require(deferred.Problems is [{ Severity: ProblemSeverity.Waiting }] && HostBoard.Summary([deferred]).All(count => count.Kind != "problem"), "deferred handover counted");
+        var refused = Problem("{\"state\": \"awake\", \"world\": {\"ready\": 0, \"error\": \"World save refused: the saved world did not load; it is kept as it was until it can be loaded.\"}}");
+        Require(refused.Problems is [{ Kind: "world" } worldProblem] && worldProblem.Fixes[0].Action == RegionFix.OpenLog
+            && worldProblem.NextStep.StartsWith("The save is kept as it was"), "save refused advice");
+        Require(Problem("{\"state\": \"stopped\", \"operation\": {\"action\": \"start\", \"phase\": \"failed\", \"error\": \"the scheduled task is not Ready\"}}").Problems
+            is [{ Fixes: [{ Action: "start" }, { Action: RegionFix.OpenLog }] }], "retry start");
+        Require(Problem("{\"state\": \"stopped\", \"operation\": {\"action\": \"update-unsaved\", \"phase\": \"failed\", \"error\": \"x\"}}").Problems
+            is [{ Fixes: [{ Action: RegionFix.OpenLog }] }], "a forceful action is never offered again from a problem");
+        Require(Problem("{\"state\": \"weird\"}").Problems is [{ Kind: "unknown" }], "unknown state advice");
+        Require(HostBoard.Server("civ13.dmb", "{\"state\": \"awake\", \"listening\": true, \"operation\": {\"action\": \"handover\", \"phase\": \"failed\", \"error\": \"boom\"}, \"ok\": true}", 0)
+            is { Problems: [{ Fixes: [{ Action: "update" }, { Action: RegionFix.OpenLog }] }] }, "the single server's handover fix is its update");
+        Require(BoardAdvice.MessageStep("Group status unavailable: did not answer within 60 s").Contains("Windows process check") && BoardAdvice.MessageStep("x").Contains("Check status"), "message steps");
+        // Dismissing hides a problem in this launcher only; the same failure again, or a new one, shows again.
+        var guardOne = guard.Problems[0];
+        var statusOne = Row("lost").Problems[0];
+        var dismissDir = Path.Combine(dir, "dismissed");
+        Directory.CreateDirectory(dismissDir);
+        var dismissed = new DismissedProblems(dismissDir);
+        dismissed.Dismiss([guardOne.Key(guard.Id)]);
+        Require(dismissed.IsDismissed(guard, guardOne) && new DismissedProblems(dismissDir).IsDismissed(guard, guardOne), "dismissal kept");
+        Require(HostBoard.Summary([guard], dismissed.Shown).All(count => count.Kind != "problem") && dismissed.Hidden([guard]) == 1, "a dismissed problem still counted");
+        var again = guard with { Problems = [guardOne with { Stamp = "1763829999" }] };
+        Require(!dismissed.IsDismissed(again, again.Problems[0]), "the same failure happening again stayed hidden");
+        Require(!dismissed.Prune([guard with { Problems = [statusOne] }]) && dismissed.Count == 1, "a region whose status failed forgot its dismissal");
+        Require(dismissed.Prune([again]) && dismissed.Count == 0 && new DismissedProblems(dismissDir).Count == 0, "a gone problem kept its dismissal");
+        dismissed.Dismiss([guardOne.Key(guard.Id)]);
+        dismissed.Restore([guardOne.Key(guard.Id)]);
+        Require(dismissed.Count == 0, "restore");
+        File.WriteAllText(Path.Combine(dismissDir, DismissedProblems.FileName), "{not json");
+        Require(new DismissedProblems(dismissDir).Count == 0, "a broken dismissal file");
         // Before any update check has answered, nothing claims to be up to date.
         Require(HostBoard.Regions(boardStatus, null).All(card => card.Build != RegionBuild.Current && !card.Mainland), "unchecked builds claimed current");
         Require(HostBoard.Regions("{\"ok\": false, \"refused\": \"x\"}", null).Count == 0 && HostBoard.Regions("Traceback", null).Count == 0, "board from a refusal");

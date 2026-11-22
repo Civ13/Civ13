@@ -71,7 +71,7 @@ class StationWaterTest(unittest.TestCase):
         quench = read("code/modules/1713/quench_tub.dm")
         self.assertIn("water_per_use = 10", quench)
         self.assertIn('return material_name == "iron" || material_name == "steel"', quench)
-        self.assertIn("/obj/structure/anvil/forge_stack_recipe(", quench)
+        self.assertIn("/obj/structure/anvil/finish_forged_piece(", quench)
         self.assertIn("quench_tub,", read("config/crafting/material_recipes_global.txt"))
         self.assertIn('"/obj/structure/quench_tub" = "iron_smithing"', read("code/modules/research_tree/research_node.dm"))
         dme = read("civ13.dme")

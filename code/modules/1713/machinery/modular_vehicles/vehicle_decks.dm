@@ -173,7 +173,10 @@
 		return FALSE
 	vehicle_deck_busy = TRUE
 	visible_message(SPAN_NOTICE("[src] starts climbing onto \the [F]."), SPAN_NOTICE("You start climbing [from_inside ? ((locate(/obj/structure/vehicle_stairs) in F.loc) ? "the stairs" : "out through the hatch") : "onto the roof"]..."))
-	var/done = do_after(src, from_inside ? VEHICLE_DECK_DOWN_TIME : VEHICLE_DECK_CLIMB_TIME, F)
+	var/climb_time = from_inside ? VEHICLE_DECK_DOWN_TIME : VEHICLE_DECK_CLIMB_TIME
+	var/climb_motion = body_motion_climb(TRUE, climb_time)
+	var/done = do_after(src, climb_time, F)
+	body_motion_stop(climb_motion)
 	vehicle_deck_busy = FALSE
 	if (!done)
 		return FALSE
@@ -296,7 +299,9 @@
 		return FALSE
 	vehicle_deck_busy = TRUE
 	to_chat(src, SPAN_NOTICE("You start climbing down..."))
+	var/climb_motion = body_motion_climb(FALSE, VEHICLE_DECK_DOWN_TIME)
 	var/done = do_after(src, VEHICLE_DECK_DOWN_TIME, F)
+	body_motion_stop(climb_motion)
 	vehicle_deck_busy = FALSE
 	if (!done || vehicle_deck != F)
 		return FALSE
@@ -400,8 +405,9 @@
 	if (wrecked || !isturf(loc))
 		return FALSE
 	var/list/L = layout()
-	// A locomotive has a roof over its cab only (train_locomotives.dm).
-	if (L && L["body"] && seg_index != L["cab"] && seg_index != L["cab2"])
+	// A locomotive has a roof over its cab only (train_locomotives.dm); a
+	// tram over every section people ride in (train_electric.dm).
+	if (L && L["body"] && seg_index != L["cab"] && seg_index != L["cab2"] && segment_layout()["solid"])
 		return FALSE
 	return L && L["roof"]
 
@@ -416,7 +422,8 @@
 	var/list/segs = L["segments"]
 	var/row = seg_index <= 1 ? "f" : (seg_index >= segs.len ? "b" : "m")
 	if (L["body"])
-		row = (L["cab2"] && seg_index == L["cab2"]) ? "b" : "" // the rear cab's roof faces the other way
+		// The rear cab's roof faces the other way; a section between the cabs has its own.
+		row = (L["cab2"] && seg_index == L["cab2"]) ? "b" : (seg_index == L["cab"] ? "" : "m")
 	var/list/states = train_roof_states()
 	var/list/made = list()
 	for (var/i in 1 to 3)
@@ -459,6 +466,9 @@ var/global/list/train_roof_segments = list()
 		var/obj/roof/R = locate(/obj/roof) in H.loc
 		if (R)
 			H.vehicle_deck_thrown(back_dir, "You hit \the [R] overhead and are knocked off!")
+		else
+			// A live overhead line (train_electric.dm).
+			train_catenary_strike(H, back_dir)
 
 /mob/living/human/var/tmp/list/train_roofs_shown = null
 

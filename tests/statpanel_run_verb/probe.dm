@@ -36,6 +36,14 @@
 	set name = "Open Wiki"
 	set category = "Help!"
 
+/obj/run_verb_probe/verb/dont_panic()
+	set name = "Don't Panic"
+	set category = "Help!"
+
+/obj/run_verb_probe/verb/unlisted_button()
+	set name = "Unlisted Button"
+	set category = null
+
 // The in-game atlas, as in code/game/mob/crafting_atlas.dm.
 /mob/verb/crafting_atlas()
 	set name = "Crafting Atlas"
@@ -46,9 +54,9 @@
 	var/obj/run_verb_probe/P = new
 	P.mob = new /mob
 	var/list/result = list()
-	for (var/name in list("Crafting Atlas", "Open Web Crafting Atlas", "Open Wiki"))
+	for (var/name in list("Crafting Atlas", "Open Web Crafting Atlas", "Open Wiki", "Don't Panic", "Unknown Button", "unknown_button", "Unlisted Button"))
 		P.last_command = ""
-		P.run_verb(name)
-		result[name] = P.last_command
+		var/accepted = P.run_verb(name)
+		result[name] = list("accepted" = !!accepted, "command" = P.last_command)
 	text2file(json_encode(result), "result.json")
 	shutdown()

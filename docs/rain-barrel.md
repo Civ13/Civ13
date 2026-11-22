@@ -5,13 +5,15 @@ collector any more. A new empty barrel starts with its lid off; using a barrel
 in hand toggles the lid.
 
 Set an open barrel down outdoors with no roof over its tile. A continuous minute
-of rain or monsoon adds 10 units of water. A continuous minute of clear Night,
-Dark Night or Early Morning weather at above freezing and at most 30 C adds
-2 units of dew. Collection stops when the barrel is full. Snow, sandstorms,
+of rain or monsoon adds 10 units of water. A continuous minute with dew on the
+ground (`weather_dew_at()`, [weather-fog.md](weather-fog.md): a clear, calm
+night or morning with the air above freezing and near its dew point) adds
+2 units of dew, or 3 in thick fog, at most 30 C. Before the air grid exists,
+any clear Night, Dark Night or Early Morning above freezing gives 2. Collection stops when the barrel is full. Snow, sandstorms,
 blizzards, heat waves, radiation, indoor or roofed placements, closed lids and
 carried barrels produce nothing. Jerrycans and fuel tanks never collect. Rain
 mixes into whatever the open barrel already holds. These are explicit game
-rules, not a humidity simulation.
+rules on top of the air grid's humidity.
 
 Every barrel registers with the object loop when created, restored or opened;
 the first tick drops closed barrels and jerrycans/fuel tanks again. The lid and

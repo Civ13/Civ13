@@ -8,7 +8,17 @@ const shaPattern = /^[a-f0-9]{40}$/;
 const idPattern = /^[a-z0-9][a-z0-9-]{0,79}$/;
 const hash = x => createHash('sha256').update(JSON.stringify(x)).digest('hex');
 function requireValue(ok, message) { if (!ok) throw new Error(message); }
-export function changelogLine(body) {
+// "No announcement" filler such as `none (Help text refresh only).`, `n/a`,
+// `Not player-facing` or `Internal only` means the author wanted no post. The
+// publisher treats it as blank; the PR check asks for a truly blank field.
+const fillerHead = /^(?:none|nil|nothing|n\/?a|not applicable|no changelog(?: entry| needed)?|no changes?|skip(?:ped)?|internal|docs?|documentation|tests?|test data|ci|tooling|build(?: fix)?|refactor(?:ing)?|maintenance|dev(?:eloper)?)(?: changes?)?(?: only)?(?=$|\s*[.,;:!?(\[\-\u2013\u2014])/u;
+const fillerPhrase = /^(?:no|not|non)[\s-]+(?:a[\s-]+)?(?:player|user)[\s-]+(?:facing|visible)\b/u;
+export function isNoChangeFiller(entry) {
+  const text = String(entry ?? '').normalize('NFKC').toLowerCase()
+    .replace(/^[\s`*_()[\]{}:]+|[\s`*_()[\]{}:.!?]+$/g, '').trim();
+  return text === '' || /^[-\u2013\u2014]+$/u.test(text) || fillerHead.test(text) || fillerPhrase.test(text);
+}
+export function changelogLine(body, { rejectFiller = false } = {}) {
   if (body == null) return null;
   requireValue(typeof body === 'string' && body.length <= 65536, 'Invalid PR body');
   // Examples inside comments or fenced code are not opt-ins.
@@ -30,13 +40,16 @@ export function changelogLine(body) {
   }
   requireValue(entries.length <= 1, 'Use only one Changelog: line');
   if (!entries[0]) return null;
+  if (isNoChangeFiller(entries[0])) {
+    requireValue(!rejectFiller, 'Changelog filler such as "none (...)" or "n/a" is not announcement text; leave the Changelog: line blank when nothing changes for players');
+    return null;
+  }
   // A template marker is not announcement copy, even if prose follows on
   // later lines. Do not silently publish the marker or guess at that prose.
   const marker = entries[0].normalize('NFKC').toLowerCase()
     .replace(/^[\s`*_[\]{}:]+|[\s`*_[\]{}:.!?]+$/g, '').trim();
   const placeholders = new Set(['required', 'optional', 'todo', 'to do', 'tbd',
-    'to be determined', 'fixme', 'pending', 'placeholder', 'example', 'none',
-    'n/a', 'not applicable', 'no changelog', 'your changelog here',
+    'to be determined', 'fixme', 'pending', 'placeholder', 'example', 'your changelog here',
     'changelog text here', 'player-facing text here']);
   // A flattened second label must not turn a template marker into copy.
   const nestedMarker = marker.split(/\s+player changelog\s*:/u)[0]
@@ -116,17 +129,31 @@ export async function run(env, event, deps = {}) {
   const repo = await api('');
   const branch = repo.default_branch;
   let commit, name, m;
-  const mergedPR = env.GITHUB_EVENT_NAME === 'pull_request_target';
+  // A push to the default branch replaces pull_request_target, which GitHub
+  // blocks by default on public repositories. The push runs master's own code.
+  const mergedPR = env.GITHUB_EVENT_NAME === 'push';
   const dry = env.GITHUB_EVENT_NAME === 'workflow_dispatch' && event.inputs?.dry_run !== 'false';
   if (mergedPR) {
-    const pr = event.pull_request;
-    requireValue(event.action === 'closed' && pr?.merged === true && pr.base?.ref === branch && pr.base?.repo?.full_name === env.GITHUB_REPOSITORY, 'Not a merged default-branch PR');
-    requireValue(Number.isSafeInteger(pr.number) && pr.number > 0 && event.number === pr.number, 'Invalid PR number');
+    const after = event.after;
+    requireValue(event.ref === 'refs/heads/' + branch && !event.deleted && shaPattern.test(after) && (!env.GITHUB_SHA || env.GITHUB_SHA === after), 'Not a default-branch push');
+    const sleep = deps.sleep ?? (ms => new Promise(resolve => setTimeout(resolve, ms)));
+    let matches = [];
+    // The commit-to-PR index can trail the push by a few seconds.
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (attempt) await sleep(10000);
+      const pulls = await api('commits/' + after + '/pulls');
+      requireValue(Array.isArray(pulls), 'Invalid associated pull request list');
+      matches = pulls.filter(p => p?.merged_at && p.merge_commit_sha === after && p.base?.ref === branch && p.base?.repo?.full_name === env.GITHUB_REPOSITORY);
+      if (matches.length) break;
+    }
+    if (!matches.length) { console.log('Push is not a merged PR; nothing to publish.'); return; }
+    requireValue(matches.length === 1, 'Push matches more than one merged PR');
+    requireValue(Number.isSafeInteger(matches[0].number) && matches[0].number > 0, 'Invalid PR number');
+    const pr = await api('pulls/' + matches[0].number);
+    requireValue(pr.number === matches[0].number && pr.merged === true && pr.base?.ref === branch && pr.base?.repo?.full_name === env.GITHUB_REPOSITORY && pr.merge_commit_sha === after, 'PR merge confirmation mismatch');
     const entry = changelogLine(pr.body);
     if (!entry) { console.log('No changelog line; nothing to publish.'); return; }
-    const current = await api('pulls/' + pr.number);
-    requireValue(current.merged === true && current.base?.ref === branch && current.base?.repo?.full_name === env.GITHUB_REPOSITORY && current.merge_commit_sha === pr.merge_commit_sha, 'PR merge confirmation mismatch');
-    commit = pr.merge_commit_sha; name = 'pr-' + pr.number;
+    commit = after; name = 'pr-' + pr.number;
     m = { schema: 1, id: name, commit, heading: '', entries: [entry], skip: '' };
   } else if (env.GITHUB_EVENT_NAME === 'workflow_dispatch') {
     requireValue(env.GITHUB_REF === 'refs/heads/' + branch, 'Dispatch must run on default branch');

@@ -60,7 +60,7 @@ class PresenterSourceContracts(unittest.TestCase):
         self.assertIn('A == context.body', SOURCE)
 
     def test_capture_suspension_precedes_retirement_and_preserves_world_masks(self):
-        start = LIFECYCLE.index('if(V.eligible() && ((persistence_active_operation && persistence_active_operation.kind != "save") || V.mutations.len))')
+        start = LIFECYCLE.index('if(((persistence_active_operation && persistence_active_operation.kind != "save") || V.mutations.len) && V.eligible())')
         end = LIFECYCLE.index('var/key = V.presentation_key()', start)
         suspended = LIFECYCLE[start:end]
         self.assertIn('root_tree_presenter.invalidate()', suspended)

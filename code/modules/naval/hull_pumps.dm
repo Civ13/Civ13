@@ -43,11 +43,11 @@
 	. = 0
 	if (!cellar_pumps.len)
 		return
-	var/lift = 0
+	// Each lifts the water of the compartment it stands in (hull_compartments.dm).
 	for (var/obj/structure/cellar_pump/P in pumps())
-		lift += P.bilge_step(src, seconds)
-	if (lift > 0)
-		. = remove_water(lift)
+		var/lift = P.bilge_step(src, seconds)
+		if (lift > 0)
+			. += remove_water(lift, get_turf(P))
 
 // What this pump can lift in a step of seconds aboard a hull, having burned
 // what that costs it.
@@ -70,7 +70,7 @@
 		release_power()
 		set_running(FALSE)
 		return 0
-	if (L.water < 1)
+	if (L.water_at(get_turf(src)) < 1)
 		// Idle on the float switch: draws only to keep the battery up.
 		if (battery < initial(battery) && draw_cable_power())
 			battery = min(initial(battery), battery + BILGE_SUMP_CHARGE * seconds / 60)
@@ -99,8 +99,8 @@
 		return "you are too far from it"
 	if (QDELETED(L) || !L.deck_holds(get_turf(src)))
 		return "it is not aboard a hull"
-	if (L.water < 0.01)
-		return "her bilge is dry"
+	if (L.water_at(get_turf(src)) < 0.01)
+		return L.water < 0.01 ? "her bilge is dry" : "its compartment is dry"
 	return null
 
 // H works the handle until the bilge is dry or they stop. Returns the
@@ -129,14 +129,14 @@
 			break
 		if (QDELETED(src) || bilge_refusal(H, L))
 			break
-		. += L.remove_water(BILGE_LEVER_STROKE)
+		. += L.remove_water(BILGE_LEVER_STROKE, get_turf(src))
 		playsound(get_turf(src), 'sound/effects/slosh.ogg', 25, TRUE)
 	if (QDELETED(src))
 		return
 	busy = FALSE
 	update_icon()
 	if (. && !QDELETED(L))
-		to_chat(H, SPAN_NOTICE("You pump [round(., 0.1)] bucketful\s over the side. [L.water < 0.01 ? "The pump sucks air: her bilge is dry." : "Her bilge is [hull_depth_name(L.depth())]."]"))
+		to_chat(H, SPAN_NOTICE("You pump [round(., 0.1)] bucketful\s over the side. [L.water_at(get_turf(src)) < 0.01 ? "The pump sucks air: [L.water < 0.01 ? "her bilge" : "its compartment"] is dry." : "Her bilge is [hull_depth_name(L.depth())]."]"))
 
 /obj/structure/cellar_pump/lever/attack_hand(mob/living/user)
 	var/datum/hull_ledger/L = istype(user) ? hull_ledger_at(get_turf(src)) : null

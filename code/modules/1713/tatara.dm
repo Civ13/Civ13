@@ -188,6 +188,8 @@
 	if (!do_after(H, 50, src) || QDELETED(src) || burning || burnt_out)
 		return
 	burning = TRUE
+	note_field_work(H, "smelting", iron_sand) // natural_science_work.dm
+	accolade_meet_mob(H, "smelter")
 	burn_left = TATARA_BURN_TIME
 	burn_ticks = 0
 	blown_ticks = 0
@@ -324,8 +326,8 @@
 		to_chat(H, SPAN_NOTICE("You sort out [tama] chunk\s of tamahagane and [wrought] bar\s of soft iron; the rest is slag."))
 	else
 		S.use(batches * FOLD_TAMAHAGANE)
-		spawn_stack(/obj/item/stack/material/steel, loc, batches * FOLD_STEEL)
-		to_chat(H, SPAN_NOTICE("You heat, fold and weld the tamahagane over and over into [batches * FOLD_STEEL] sheet\s of steel."))
+		spawn_stack(/obj/item/stack/material/steel/fine, loc, batches * FOLD_STEEL)
+		to_chat(H, SPAN_NOTICE("You heat, fold and weld the tamahagane over and over into [batches * FOLD_STEEL] sheet\s of fine steel."))
 
 #undef TATARA_LIMIT
 #undef TATARA_MIN_SAND
@@ -502,45 +504,73 @@ var/global/list/kanna_channel_stock = list()
 	if (hamon)
 		to_chat(user, SPAN_NOTICE("A misty hamon line runs along its clay-hardened edge."))
 
-// Clay in the smith's other hand, or on the anvil's tile.
+// Clay in the smith's other hand, or on the anvil's tile: a clay lump stack
+// or a plain unfired lump.
+/proc/is_hardening_clay(obj/item/I)
+	if (istype(I, /obj/item/stack/material/clay))
+		var/obj/item/stack/material/clay/C = I
+		return C.amount > 0
+	return I && I.type == /obj/item/weapon/clay
+
 /obj/structure/anvil/proc/hardening_clay(mob/living/human/H)
-	var/obj/item/stack/material/clay/C = H.get_inactive_hand()
-	if (istype(C) && C.amount > 0)
-		return C
-	for (var/obj/item/stack/material/clay/S in get_turf(src))
-		if (S.amount > 0)
-			return S
+	var/obj/item/I = H.get_inactive_hand()
+	if (is_hardening_clay(I))
+		return I
+	I = H.get_active_hand()
+	if (is_hardening_clay(I))
+		return I
+	for (var/obj/item/O in get_turf(src))
+		if (is_hardening_clay(O))
+			return O
 	return null
 
+// Why no quench tub beside this anvil can take a blade right now.
+/obj/structure/anvil/proc/clay_tub_problem()
+	for (var/obj/structure/quench_tub/Q in range(1, src))
+		if (!Q.anchored)
+			return "\The [Q] beside the anvil is loose: fasten it with a hammer or wrench before quenching in it."
+		return "\The [Q] beside the anvil is dry. Fill it with a bucket, pipe water in, or set it beside running water."
+	return "Clay hardening needs a watered quench tub set beside the anvil."
+
+// Called for each piece forged on this anvil (quench_tub.dm), before the
+// plain quench. A smith who set out to clay-harden (clay to hand, or the
+// craft known with a tub beside the anvil) is told what is missing.
 /obj/structure/anvil/proc/clay_harden(obj/item/weapon/material/W, mob/living/human/H)
-	if (!is_japanese_blade(W) || W.get_material_name() != "steel" || W.crafting_quality >= CLAY_HARDENED_QUALITY)
+	if (!istype(H) || !is_japanese_blade(W))
 		return FALSE
-	if (!crafting_node_allowed(H, "japanese_swordsmithing"))
-		return FALSE
+	var/obj/item/C = hardening_clay(H)
 	var/obj/structure/quench_tub/Q = quench_tub()
-	var/obj/item/stack/material/clay/C = hardening_clay(H)
-	if (!Q || !C || !Q.station_take_water(null))
+	var/knows = crafting_node_allowed(H, "japanese_swordsmithing")
+	if (W.get_material_name() != "steel")
+		if (C && knows)
+			to_chat(H, SPAN_WARNING("Only steel takes a hamon: \the [W] is [W.get_material_name()], so it gets no clay hardening."))
 		return FALSE
-	C.use(1)
+	if (W.crafting_quality >= CLAY_HARDENED_QUALITY)
+		return FALSE
+	if (!knows)
+		if (C)
+			crafting_node_allowed_or_warn(H, "japanese_swordsmithing")
+		return FALSE
+	if (!Q)
+		if (C)
+			to_chat(H, SPAN_WARNING("[clay_tub_problem()] \The [W] gets no hamon."))
+		return FALSE
+	if (!C)
+		to_chat(H, SPAN_NOTICE("Hold clay in your other hand or leave it on the anvil to clay-harden \the [W] and give it a hamon."))
+		return FALSE
+	if (!Q.station_take_water(H))
+		return FALSE
+	if (istype(C, /obj/item/stack))
+		var/obj/item/stack/S = C
+		S.use(1)
+	else
+		qdel(C)
 	W.crafting_quality = CLAY_HARDENED_QUALITY
 	W.hamon = TRUE
 	W.update_force()
+	Q.update_icon()
 	playsound(Q, 'sound/effects/watersplash.ogg', 30, TRUE)
 	to_chat(H, SPAN_NOTICE("You coat \the [W] in clay, thin at the edge and thick at the spine, and quench it. A hamon line blooms along the edge."))
 	return TRUE
-
-/obj/structure/anvil/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name, picked = null)
-	if (material_name != "steel" || !istype(H))
-		return ..()
-	var/turf/T = get_turf(src)
-	var/list/before = list()
-	for (var/obj/item/weapon/material/W in T)
-		before += W
-	. = ..()
-	if (!T)
-		return
-	for (var/obj/item/weapon/material/W in T)
-		if (!(W in before))
-			clay_harden(W, H)
 
 #undef CLAY_HARDENED_QUALITY

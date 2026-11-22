@@ -25,6 +25,8 @@
 	var/last_hit_zone = FALSE
 	var/force_down //determines if the affecting mob will be pinned to the ground
 	var/dancing //determines if assailant and affecting keep looking at each other. Basically a wrestling position
+	var/grabbed_zone = null // the body part taken hold of (grab_hand_hold.dm)
+	var/tmp/obj/item/hand_hold/hand_partner = null // the held person's half of a hand hold
 
 	layer = 21
 	abstract = TRUE
@@ -44,6 +46,11 @@
 	if (affecting.anchored || !assailant.Adjacent(victim))
 		qdel(src)
 		return
+	if (isliving(affecting))
+		var/mob/living/sleeper = affecting
+		if (sleeper.offline_sleep_refuses(user))
+			qdel(src)
+			return
 
 	affecting.grabbed_by += src
 
@@ -94,6 +101,10 @@
 		assailant.client.screen -= hud
 		assailant.client.screen += hud
 
+	if (hand_partner && !hand_hold_intact())
+		qdel(src)
+		return PROCESS_KILL
+
 	if (assailant.pulling == affecting)
 		assailant.stop_pulling()
 
@@ -122,12 +133,18 @@
 				hud.icon_state = "reinforce1"
 		else
 			hud.icon_state = "!reinforce"
+		// A hand can be gripped firmly, but no further.
+		if (hand_partner && state >= GRAB_AGGRESSIVE)
+			hud.icon_state = "!reinforce"
 
 	if (state >= GRAB_AGGRESSIVE)
-		affecting.drop_l_hand()
-		affecting.drop_r_hand()
-		affecting.canmove = FALSE
-		if (ishuman(affecting))
+		// A firm grip on a hand leaves their other hand free, and they can still
+		// move, but only to tiles beside the grabber (hand_hold_leash_blocks).
+		if (!hand_partner)
+			affecting.drop_l_hand()
+			affecting.drop_r_hand()
+			affecting.canmove = FALSE
+		if (ishuman(affecting) && !hand_partner)
 			handle_eye_mouth_covering(affecting, assailant, assailant.targeted_organ)
 
 		if (force_down)
@@ -230,7 +247,7 @@
 		return
 	if (!assailant.canClick())
 		return
-	if (world.time < (last_action + UPGRADE_COOLDOWN))
+	if (world.time < (last_action + grab_upgrade_cooldown()))
 		return
 	if (!assailant.canmove || assailant.lying)
 		qdel(src)
@@ -241,18 +258,13 @@
 
 	last_action = world.time
 
-	if (state < GRAB_AGGRESSIVE)
-		if (!allow_upgrade)
-			return
-		if (!affecting.lying)
-			assailant.visible_message("<span class='warning'>[assailant] has grabbed [affecting] aggressively (now hands)!</span>")
-		else
-			assailant.visible_message("<span class='warning'>[assailant] pins [affecting] down to the ground (now hands)!</span>")
-			apply_pinning(affecting, assailant)
+	if (hand_partner)
+		hand_hold_tighten()
+		return
 
-		state = GRAB_AGGRESSIVE
-		icon_state = "grabbed1"
-		hud.icon_state = "reinforce1"
+	if (state < GRAB_AGGRESSIVE)
+		if (!take_firm_hold())
+			return
 	else if (state < GRAB_NECK)
 		assailant.visible_message("<span class='warning'>[assailant] has reinforced \his grip on [affecting] (now neck)!</span>")
 		state = GRAB_NECK
@@ -281,11 +293,40 @@
 			C.losebreath += 3.5 // This wasn't ACTUALLY strangling anything (value was 1), in fact if you use a doctor's book, the assailant/affecting will always have 1 unit of oxygen damage, this is because you recover 1 unit per tick, and it tries to deal 1 unit of oxygen loss per tick. I've quick-fixed it by changing it to 1 --> 3.5, but needs refactoring.
 	adjust_position()
 
+// Passive to aggressive (hands); a lying victim is pinned. FALSE if this grab
+// cannot be upgraded.
+/obj/item/weapon/grab/proc/take_firm_hold()
+	if (!allow_upgrade || state >= GRAB_AGGRESSIVE)
+		return FALSE
+	if (!affecting.lying)
+		assailant.visible_message("<span class='warning'>[assailant] has grabbed [affecting] aggressively (now hands)!</span>")
+	else
+		assailant.visible_message("<span class='warning'>[assailant] pins [affecting] down to the ground (now hands)!</span>")
+		apply_pinning(affecting, assailant)
+
+	state = GRAB_AGGRESSIVE
+	icon_state = "grabbed1"
+	hud.icon_state = "reinforce1"
+	return TRUE
+
+// How long a grabber waits between tightening steps: 4 seconds between
+// equals, quicker against a weaker victim and slower against a stronger one.
+/obj/item/weapon/grab/proc/grab_upgrade_cooldown()
+	var/ratio = physical_contest_ratio(assailant, affecting, 0.7, 0.3)
+	// Grappling schools tighten holds faster (martial_moves.dm).
+	ratio *= martial_grapple_edge(assailant, affecting)
+	return round(UPGRADE_COOLDOWN / ratio)
+
 //This is used to make sure the victim hasn't managed to yackety sax away before using the grab.
 /obj/item/weapon/grab/proc/confirm()
 	if (!assailant || !affecting)
 		qdel(src)
 		return FALSE
+	if (isliving(affecting))
+		var/mob/living/sleeper = affecting
+		if (sleeper.offline_sleep_protected())
+			qdel(src)
+			return FALSE
 
 	if (affecting)
 		if (!isturf(assailant.loc) || ( !isturf(affecting.loc) || assailant.loc != affecting.loc && get_dist(assailant, affecting) > 1) )
@@ -299,6 +340,15 @@
 		return
 	if (world.time < (last_action + 20))
 		return
+
+	// Restrain stance: grab intent walks through the arrest (combat_restrain.dm).
+	if (M == affecting && assailant.a_intent == I_GRAB && ishuman(assailant) && ishuman(affecting))
+		var/mob/living/human/A = assailant
+		if (A.restrain_flow_ready())
+			var/previous_action = last_action
+			last_action = world.time
+			A.restrain_step(src, previous_action)
+			return
 
 	last_action = world.time
 	reset_kill_state() //using special grab moves will interrupt choking them
@@ -340,6 +390,8 @@
 			devour(affecting, assailant)
 
 /obj/item/weapon/grab/dropped()
+	if (hand_partner && !destroying && assailant && affecting)
+		assailant.visible_message(SPAN_NOTICE("[assailant] lets go of [affecting]'s hand."), SPAN_NOTICE("You let go of [affecting]'s hand."))
 	if (ismob(loc))
 		var/mob/M = loc
 		M.mouth_covered = FALSE
@@ -362,6 +414,8 @@
 	var/destroying = FALSE
 
 /obj/item/weapon/grab/Destroy()
+	if (hand_partner)
+		hand_hold_release()
 
 	// I don't even think this works since its loc is already == null but whatever - Kachnov
 	if (loc)

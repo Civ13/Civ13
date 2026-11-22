@@ -24,7 +24,7 @@ var/global/list/gem_pocket_weights = list(
 // Mined rock: one independent gem roll per wall, like flint nodules, so the
 // ore table is unchanged.
 /turf/proc/mining_gem_pocket(mob/living/human/H)
-	if (!prob(GEM_POCKET_CHANCE))
+	if (!prob(GEM_POCKET_CHANCE * continent_ore_factor("gems", src))) // continent_resources.dm
 		return null
 	var/gem_type = pickweight(gem_pocket_weights)
 	var/obj/item/stack/ore/gem/G = new gem_type(src)

@@ -30,17 +30,17 @@
 /datum/world_z_budget/building_admitted(target_z)
 	if (!map || !map.building_levels)
 		return FALSE
-	// A dig-down map's cave (dug_underground.dm) is one more added level beside
-	// the building levels, wherever it lies among them. Its two full planes must
-	// fit the measured profile whether or not the cave is dug yet.
-	var/cave = dug_underground_supported() ? 1 : 0
-	if (target_z > building_base_maxz() + min(map.building_levels, NEW_Z_ROOF_CEILING) + cave)
+	// The underground levels (dug_underground.dm) are added levels beside the
+	// building levels, wherever they lie among them. A restore cannot tell
+	// them apart until their cells load, so every one the map may add counts,
+	// and as unformed rock none of them is charged cells.
+	var/caves = underground_added_limit()
+	if (target_z > building_base_maxz() + min(map.building_levels, initial(roof_limit)) + caves)
 		return FALSE
-	if (cave && !dug_underground_fits())
+	if (caves && !dug_underground_fits())
 		return FALSE
 	var/pending = (instance_reserve - instance_used) + (safehouse_reserve - safehouse_used)
-	// A standing map's open-air levels: every full plane but the unformed cave
-	// (a restore cannot see the cave yet, so it is counted on a map that has one).
-	if (map.building_level_standing && building_base_maxz() == 1 && !pending && world.maxx * world.maxy * (target_z - cave) <= NEW_Z_STANDING_MEASURED_CELLS)
+	// A standing map's open-air levels: every full plane but the unformed underground.
+	if (map.building_level_standing && building_base_maxz() == 1 && !pending && world.maxx * world.maxy * (target_z - caves) <= NEW_Z_STANDING_MEASURED_CELLS)
 		return TRUE
-	return world.maxx * world.maxy * (target_z + pending) <= NEW_Z_BUILDING_MEASURED_CELLS
+	return world.maxx * world.maxy * (target_z + pending - caves) <= NEW_Z_BUILDING_MEASURED_CELLS

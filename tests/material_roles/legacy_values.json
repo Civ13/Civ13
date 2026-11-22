@@ -46,6 +46,12 @@
   "weight": "17",
   "integrity": "150"
  },
+ "/material/cannabis": {
+  "hardness": "10"
+ },
+ "/material/cannabis_fresh": {
+  "hardness": "10"
+ },
  "/material/carpet": {
   "hardness": "12"
  },
@@ -248,6 +254,11 @@
  },
  "/material/rope": {
   "hardness": "10"
+ },
+ "/material/rubber": {
+  "hardness": "20",
+  "weight": "8",
+  "integrity": "25"
  },
  "/material/sandstone": {
   "hardness": "45",

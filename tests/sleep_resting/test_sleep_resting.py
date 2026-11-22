@@ -28,7 +28,8 @@ FIELDS = ('stat','paralysis','stunned','weakened','resting','sleeping','status_f
 def capacity(source):
     # Bound to the proc before its enclosing file's trailing #undef directives.
     source = source.split('\n#undef UNBUCKLED',1)[0]
-    env = dict(FLAGS, FAKEDEATH=FAKEDEATH, PARTIALLY_BUCKLED=1, FULLY_BUCKLED=2)
+    # Nobody here is held for a trip (travel_hold.dm).
+    env = dict(FLAGS, FAKEDEATH=FAKEDEATH, PARTIALLY_BUCKLED=1, FULLY_BUCKLED=2, travel_held=lambda: False)
     return A.project(source,'/mob/proc/incapacitated','src,incapacitation_flags',env,method=True)
 
 
@@ -83,12 +84,12 @@ class Harness:
         self.env=dict(FLAGS, world=self.world, sleep=sleep, isnull=lambda v:v is None,
             istype=lambda value,kind:isinstance(value,kind), MINING_CONTEXT_TYPE=type('Mining',(),{}),
             LEASE_TYPE=type('Lease',(),{}), new_progressbar=bar, qdel=lambda v:setattr(v,'deleted',True),
-            MINUTES=600, list=lambda *v:v, typed_iter=typed_iter, get_turf=lambda mob:mob.loc,
+            MINUTES=600, HYGIENE_LEVEL_DIRTY=75, list=lambda *v:v, typed_iter=typed_iter, get_turf=lambda mob:mob.loc,
             to_chat=lambda user,message:self.messages.append(message), SPAN_RED=lambda s:s,
             SPAN_NOTICE=lambda s:s, SPAN_WARNING=lambda s:s, WWalert=lambda *a:None,
             WWinput=lambda *a:actor.answer, usr=actor, map=SimpleNamespace(ID='ordinary'),
             MAP_VOYAGE='voyage', persistence_sleep_transfer_blocked=lambda:False,
-            persistence_bed_return_enabled=lambda:False)
+            persistence_bed_return_enabled=lambda:False, offline_sleep_protection_map_allowed=lambda:True)
         source=(ROOT/'code/_helpers/mobs.dm').read_text(encoding='utf-8-sig')
         pattern=r'#ifdef CIV13_GAMEPLAY_BRIDGE\n(/proc/do_after[^\n]+)\n#else\n(/proc/do_after[^\n]+)\n#endif'
         source,count=re.subn(pattern,lambda m:m[1] if bridge else m[2],source)
@@ -106,6 +107,7 @@ class Harness:
         selected='/proc/do_after()\n'+'\n'.join(lines)+'\n\treturn .\n'
         args='user,delay,target=None,needhand=True,progress=True,incapacitation_flags=DEFAULT,can_move=False,check_for_repeats=True,mining_context=None'
         if bridge: args+=',gameplay_context=None'
+        args+=',ship_craft=None'
         self.env['DEFAULT']=DEFAULT
         self.core=A.project(selected,'/proc/do_after',args,self.env)
         def do_after(*args,**kwargs):
@@ -234,7 +236,7 @@ class RestingSleep(unittest.TestCase):
             with self.subTest(reason=reason):
                 actor=Actor(True)
                 if reason=='fleas':actor.wear_suit.fleas=True
-                elif reason=='hygiene':actor.hygiene=80
+                elif reason=='hygiene':actor.hygiene=74
                 elif reason=='bed':actor.loc.beds=[]
                 else:actor.sleeping=1
                 h=Harness(actor);self.assertFalse(h.run());self.assertEqual(h.wait_calls,[])

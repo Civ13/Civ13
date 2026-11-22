@@ -140,7 +140,7 @@ var/flood_runtime_error = FALSE
 
 	// Saved water comes back, and a loaded save replaces the live water.
 	var/list/state = F.snapshot()
-	flood_check(state.len == 10 && state[1] == 2 && state[8] == 0, "snapshot holds every reach, then no hollows, then the foul load")
+	flood_check(state.len == 12 && state[1] == 2 && state[8] == 0, "snapshot holds every reach, then no hollows, then the foul and bed mercury loads")
 	var/datum/river_flood/G = river_flood_parse(flood_probe_text(), 6, 3, 1)
 	flood_check(G.restore(state) && abs(G.storage[1] - F.storage[1]) < 0.01 && abs(G.snow[2] - F.snow[2]) < 0.01 && abs(G.peak[1] - F.peak[1]) < 0.01, "restore round trip")
 	flood_check(G.restore(list(2, 10, 10, 0, 0)) && G.peak[1] == G.stage[1], "saves without flood marks still load")

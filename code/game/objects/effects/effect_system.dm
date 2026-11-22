@@ -23,7 +23,7 @@ would spawn and follow the beaker, even if it is carried or thrown.
 	return ..()
 
 /proc/retire_effect_lifetime(obj/effect/E, list/lifetime)
-	if (E && !QDELETED(E) && E.effect_lifetime == lifetime)
+	if (!QDELETED(E) && E.effect_lifetime == lifetime)
 		qdel(E)
 
 /obj/effect/Destroy()
@@ -123,12 +123,12 @@ steam.start() -- spawns the effect
 					direction = pick(alldirs)
 				for (var/j=0, j<pick(1,2,3), j++)
 					sleep(5)
-					if (!steam || QDELETED(steam) || !steam.loc || steam.effect_lifetime != effect_activation || system_lifetime != activation)
+					if (QDELETED(steam) || !steam.loc || steam.effect_lifetime != effect_activation || system_lifetime != activation)
 						break
 					step(steam,direction)
 				// Hold reference until qdel to prevent OpenDream GC calling del() directly
 				sleep(20)
-				if (steam && !QDELETED(steam) && steam.effect_lifetime == effect_activation)
+				if (!QDELETED(steam) && steam.effect_lifetime == effect_activation)
 					qdel(steam)
 
 /////////////////////////////////////////////
@@ -193,12 +193,12 @@ steam.start() -- spawns the effect
 					direction = pick(alldirs)
 				for (var/j=0, j<pick(1,2,3), j++)
 					sleep(5)
-					if (!sparks || QDELETED(sparks) || !sparks.loc || sparks.effect_lifetime != effect_activation || system_lifetime != activation)
+					if (QDELETED(sparks) || !sparks.loc || sparks.effect_lifetime != effect_activation || system_lifetime != activation)
 						break
 					step(sparks,direction)
 				// Hold reference here - nested spawn() would let it escape scope before GC can be stopped
 				sleep(20)
-				if (sparks && !QDELETED(sparks) && sparks.effect_lifetime == effect_activation)
+				if (!QDELETED(sparks) && sparks.effect_lifetime == effect_activation)
 					qdel(sparks)
 				if (system_lifetime == activation && !QDELETED(src))
 					total_sparks--
@@ -405,6 +405,7 @@ steam.start() -- spawns the effect
 
 /datum/effect/effect/system/smoke_spread/start()
 	var/list/activation = system_lifetime
+	var/list/splashed_keys = list() // shared by this wave's particles
 	var/i = FALSE
 	for (i=0, i<number, i++)
 		if (total_smoke > 20)
@@ -415,6 +416,9 @@ steam.start() -- spawns the effect
 			if (holder)
 				location = get_turf(holder)
 			var/obj/effect/effect/smoke/smoke = PoolOrNew(smoke_type, location)
+			if (istype(smoke, /obj/effect/effect/smoke/chem))
+				var/obj/effect/effect/smoke/chem/chem_smoke = smoke
+				chem_smoke.initial_splash(splashed_keys)
 			var/list/effect_activation = smoke.effect_lifetime
 			total_smoke++
 			var/src_direction = direction
@@ -425,13 +429,13 @@ steam.start() -- spawns the effect
 					src_direction = pick(alldirs)
 			for (var/j=0, j<pick(0,1,1,1,2,2,2,3), j++)
 				sleep(10)
-				if (!smoke || QDELETED(smoke) || !smoke.loc || smoke.effect_lifetime != effect_activation || system_lifetime != activation)
+				if (QDELETED(smoke) || !smoke.loc || smoke.effect_lifetime != effect_activation || system_lifetime != activation)
 					break
 				step(smoke,src_direction)
 			// Hold reference here - nested spawn() would let it escape scope before GC can be stopped
 			var/ttl = smoke ? smoke.time_to_live*0.75+rand(10,30) : 10
 			sleep(ttl)
-			if (smoke && !QDELETED(smoke) && smoke.effect_lifetime == effect_activation)
+			if (!QDELETED(smoke) && smoke.effect_lifetime == effect_activation)
 				qdel(smoke)
 			if (system_lifetime == activation && !QDELETED(src))
 				total_smoke--

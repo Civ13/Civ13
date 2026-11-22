@@ -40,9 +40,30 @@
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	armor = list(melee = 50, arrow = 50, gun = 12, energy = 15, bomb = 40, bio = 20, rad = 0)
 	value = 20
-	slowdown = 0.4
+	slowdown = 0.75
 	health = 50
 
+
+// Proof armor: a thick steel breastplate shot at the forge to prove it turns
+// a pistol or musket ball at range. Heavy, torso only, plate family at steel
+// (armor_families.dm); the gun value is its own. Both looks share stats.
+// Sprites (proof_cuirass, proof_do) drawn by Fable.
+/obj/item/clothing/suit/armor/proof_cuirass
+	name = "proof cuirass"
+	desc = "A thick steel breastplate, proved at the forge against a pistol shot. It turns many musket balls, but it is heavy."
+	icon_state = "proof_cuirass"
+	item_state = "proof_cuirass"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 85, arrow = 91, gun = 30, energy = 15, bomb = 45, bio = 20, rad = 0)
+	value = 45
+	slowdown = 1.0
+	health = 70
+
+/obj/item/clothing/suit/armor/proof_cuirass/japanese
+	name = "proof do"
+	desc = "A thick steel cuirass in the japanese style, proved against a matchlock shot. It turns many musket balls, but it is heavy."
+	icon_state = "proof_do"
+	item_state = "proof_do"
 
 /* Colonial Uniforms*/
 

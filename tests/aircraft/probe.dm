@@ -101,8 +101,19 @@ var/aircraft_runtime_error = FALSE
 			return FALSE
 	return TRUE
 
-/proc/aircraft_ground_shown(obj/structure/vehicleparts/axis/aircraft/A, turf/T)
-	return A.ground_shown(T)
+// TRUE when no tile within r of centre draws a turf through vis_contents, even
+// one holder deep: the crew see the ground through the open-air view instead,
+// and a turf in vis_contents is resent to every client in sight.
+/proc/aircraft_no_turf_views(turf/centre, r)
+	for (var/turf/T in range(r, centre))
+		for (var/atom/V in T.vis_contents)
+			if (isturf(V))
+				return FALSE
+			var/atom/movable/M = V
+			for (var/atom/W in M.vis_contents)
+				if (isturf(W))
+					return FALSE
+	return TRUE
 
 // A height grid for the fixture's ground (z1): every row is fill, except the
 // rows given as "y" = level character.
@@ -122,11 +133,11 @@ var/aircraft_runtime_error = FALSE
 	return E.fueltank.reagents.get_reagent_amount(E.fuels[1])
 
 /proc/aircraft_visuals_gone(obj/structure/vehicleparts/axis/aircraft/A, list/old_turfs)
-	if (A.shadows || A.ground_view || A.ground_view_far || A.ground_view_anchor)
+	if (A.shadows)
 		return FALSE
 	for (var/turf/T in old_turfs)
 		for (var/atom/V in T.vis_contents)
-			if (istype(V, /obj/effect/aircraft_shadow) || istype(V, /obj/effect/aircraft_ground_view))
+			if (istype(V, /obj/effect/aircraft_shadow))
 				return FALSE
 	return TRUE
 
@@ -173,22 +184,9 @@ var/aircraft_runtime_error = FALSE
 	aircraft_check(A in airborne_aircraft, "the aircraft is listed as airborne")
 	aircraft_check(aircraft_shadows_below(A, 1), "each frame casts a shadow on the ground below it")
 	var/obj/structure/vehicleparts/frame/nose = A.corners[2]
-	aircraft_check(aircraft_ground_shown(A, locate(nose.x, nose.y, 1)) && aircraft_ground_shown(A, locate(nose.x - 3, nose.y - 6, 1)), "the open air shows the ground below and around the aircraft")
-	aircraft_check(A.ground_view_anchor && A.ground_view_anchor.z == 2 && (A.ground_view in A.ground_view_anchor.vis_contents) && (A.ground_view_far in A.ground_view_anchor.vis_contents) && !A.ground_view.loc && !A.ground_view_far.loc, "the ground view is drawn through the open air, not placed on the map")
 	var/turf/centre = A.footprint_centre()
-	aircraft_check(centre && centre.x == nose.x - 1 && (centre.y == nose.y + 1 || centre.y == nose.y + 2), "the ground view is centred on the airframe, not its corner")
-	var/turf/near_tile = locate(centre.x, centre.y + 7, 1)
-	var/turf/far_tile = locate(centre.x, centre.y + 9, 1)
-	aircraft_check((near_tile in A.ground_view.vis_contents) && (far_tile in A.ground_view_far.vis_contents) && !aircraft_ground_shown(A, locate(centre.x, centre.y + 11, 1)), "the ground shows in full to seven tiles, faintly to ten, and not beyond")
-	var/list/far_haze = A.ground_view_far.color
-	var/list/near_haze = A.ground_view.color
-	aircraft_check(istype(A.ground_view_far, /obj/effect/aircraft_ground_view/far) && islist(far_haze) && far_haze[16] < near_haze[16], "the outer ring is fainter than the inner view")
-	var/obj/covers/roof_floor = new /obj/covers/wood(locate(nose.x + 3, nose.y - 2, 2))
-	A.update_flight_visuals()
-	aircraft_check(!aircraft_ground_shown(A, locate(nose.x + 3, nose.y - 2, 1)) && aircraft_ground_shown(A, locate(nose.x + 4, nose.y - 2, 1)), "a floor on the upper level hides the ground under it")
-	// Off the map at once: the fixture has no garbage collector to clear it later.
-	roof_floor.loc = null
-	qdel(roof_floor)
+	aircraft_check(centre && centre.x == nose.x - 1 && (centre.y == nose.y + 1 || centre.y == nose.y + 2), "the footprint centre is the middle of the airframe, not its corner")
+	aircraft_check(aircraft_no_turf_views(centre, 11), "no ground turf is drawn through vis_contents around the aircraft")
 	aircraft_check(A.altitude == 2 && A.target_altitude == 6 && A.clearance() == 2, "the wheels leave the ground two levels up, climbing on toward six")
 	aircraft_check(A.shadows[nose]:pixel_x == 6, "low flight close to the ground casts a close shadow")
 
@@ -299,9 +297,8 @@ var/aircraft_runtime_error = FALSE
 	var/list/shadowed = list()
 	for (var/obj/effect/aircraft_shadow/S in A.shadow_turfs)
 		shadowed += A.shadow_turfs[S]
-	shadowed += A.ground_view_anchor
 	aircraft_check(A.descend(M) && !A.airborne() && aircraft_frames_z(A, 1) && M.z == 1, "a slow descent over the runway lands with the passenger")
-	aircraft_check(shadowed.len == 13 && aircraft_visuals_gone(A, shadowed), "a landed aircraft leaves no shadow or ground view behind ([shadowed.len] [aircraft_visuals_gone(A, shadowed)])")
+	aircraft_check(shadowed.len == 12 && aircraft_visuals_gone(A, shadowed), "a landed aircraft leaves no shadow behind ([shadowed.len] [aircraft_visuals_gone(A, shadowed)])")
 	aircraft_check(!(A in airborne_aircraft) && A.currentspeed == 1 && A.vehicle_m_delay == A.speedlist[1], "a landed aircraft leaves the airborne list and slows to first gear's taxi pace")
 	aircraft_check(!A.descend(M), "descending on the ground is refused")
 
@@ -748,6 +745,7 @@ var/aircraft_runtime_error = FALSE
 #include "crossing.dm"
 #include "building_impact.dm"
 #include "huey_cases.dm"
+#include "bailout.dm"
 
 /proc/aircraft_run()
 	try
@@ -759,6 +757,7 @@ var/aircraft_runtime_error = FALSE
 		aircraft_checks()
 		aircraft_building_impact_checks()
 		aircraft_crossing_checks()
+		aircraft_bailout_checks()
 	catch(var/exception/e)
 		aircraft_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = aircraft_failures, "runtime_error" = aircraft_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

@@ -14,6 +14,7 @@
 	var/chance = FLINT_NODULE_CHANCE
 	if (istype(src, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert"))
 		chance = FLINT_NODULE_CHANCE_SANDY
+	chance *= underground_ore_factor("flint", src) // underground_ores.dm
 	if (!prob(chance))
 		return 0
 	var/count = rand(1, 3)

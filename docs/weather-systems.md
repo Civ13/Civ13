@@ -35,7 +35,9 @@ Everything that asks about the weather asks for a tile:
 | `weather_look_at(atom)` | what is falling: `""`, `rain1` to `rain3`, `monsoon`, `snow1`, `snow2`, `snow_storm`, `sandstorm` |
 | `weather_intensity_at(atom)` | 0 in clear weather, 1 to 3 otherwise |
 | `weather_heat_at(atom)` | TRUE under a heat system |
-| `weather_wind_at(atom)` | wind strength 0 to 4, raised under a storm |
+| `weather_precip_at(atom)` | the kind: rain, drizzle, sleet, freezing rain, snow or hail ([weather-precip.md](weather-precip.md)) |
+| `weather_fog_level(atom)` | `""`, `"mist"` or `"fog"`; also `weather_fog_at`, `weather_dew_at`, `weather_frost_at` ([weather-fog.md](weather-fog.md)) |
+| `weather_wind_at(atom)` | wind strength 0 to 4 from the local wind ([weather-wind.md](weather-wind.md)), raised under a storm |
 | `weather_anywhere()` | cheap gate: any storm or pinned zone weather at all |
 
 Do not read `area.weather` or `area.icon_state` for gameplay: an area is a
@@ -47,7 +49,9 @@ extreme. `climate_weather_state(climate, class, intensity)` then says what
 that is in the tile's climate and the current season, so one storm rains on
 temperate ground, snows on tundra and raises sand over dry desert. That table
 is the one zone weather has always used; the Farmer's Almanac test reads it.
-Roofed areas are always `WEATHER_NONE`.
+Roofed areas are always `WEATHER_NONE`. What the weather does to the air
+temperature is in [climate-normals.md](climate-normals.md), and the air grid
+of temperature, humidity, pressure and cloud is in [weather-air.md](weather-air.md).
 
 ## Rolls and events
 
@@ -55,7 +59,7 @@ The weather process still rolls the season's pool through
 `change_weather_somehow()` and the per-map policy in
 [weather-policy.md](weather-policy.md). A wet or extreme result now calls
 `weather_roll()`, which sends one storm across the map instead of changing
-every zone. Wide maps are rolled more often and hold more storms at once
+every zone. The storm forms on a low's front ([weather-fronts.md](weather-fronts.md)). Wide maps are rolled more often and hold more storms at once
 (`weather_system_capacity()`: one per 40,000 tiles, at most 6).
 
 The scripted blizzard, sandstorm and heat wave timers are gone, along with
@@ -149,9 +153,12 @@ Players read it three ways:
 - A **weather vane** (wood, Primitive Construction) points into the wind when
   it stands out of doors. Examined, it gives the wind and whether the sky
   upwind is dark, but not how soon.
-- A **barometer** (iron, Optics & Instruments), used in the hand, says
-  whether the needle is steady, falling, falling steadily or dropping fast,
-  and in how many minutes the weather breaks or passes.
+- A **barometer** (iron, Optics & Instruments), used in the hand, reads the
+  pressure in hPa and whether it is steady, rising or falling, and about how
+  many minutes (to five) until the weather breaks or passes. The rain gauge,
+  hygrometer, anemometer and weather station are in
+  [weather-instruments.md](weather-instruments.md); the station forecasts
+  half an hour ahead.
 - The **Farmer's Almanac** has an Outlook line with the same forecast, and
   its Sky line now reads the weather over the reader's own tile.
 
@@ -161,9 +168,11 @@ rough or raging. The sprites are drawn by
 
 ## Admin tools
 
-- **Weather Map** (Admin tab): a live map of a level with every system, its
+- **Admin Map** (Admin tab): a live map of a level with every system, its
   course, the wind and the players. Click a spot to send a storm, a severe
   storm or a heat wave there; click a system to end it; or clear the sky.
+  Clicking a player's marker shows the weather and air over them. It is the
+  former Weather Map and Player Map in one window, with a switch per layer.
 - **Randomly Change the Weather** (Debug): one roll of the season's pool.
 
 ## Tests
@@ -178,8 +187,20 @@ areas and checks the per-tile answers, rolls, called-down events, pinned zone
 weather, wind veering and retirement. It has no client, so it does not check
 what is drawn.
 
+## Ingress geometry foundation
+
+`weather_upwind_distance()` computes the backward offset to the nearest map
+edge beyond the storm's bounding oval. It preserves current cardinal spawn
+coordinates and accepts diagonal vectors for future use. Storms and sailing use
+the same wind-from heading parser, which accepts all eight compass headings and
+falls back to West. Storms use the opposite direction as a grid step (both axes
+step on a diagonal), not a normalized speed vector. Gameplay and the admin wind
+selector now choose all eight headings ([weather-wind.md](weather-wind.md)), and
+storms and centres drift along a unit vector so a diagonal wind is no faster.
+The weather probe includes cardinal parity and diagonal near-corner boundary
+checks.
+
 ## Not yet done
 
-Moisture gained over water and lost over high ground, wind in eight
-directions, lightning that starts fires (and poles that draw it away), and
-rip tides.
+Moisture gained over water and lost over high ground, lightning that starts fires (and poles that draw it
+away), and rip tides.

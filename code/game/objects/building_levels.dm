@@ -1,7 +1,7 @@
 // Ceilings with an available upper plane have two faces of one slab. Coordinates
 // and an ID, rather than cross-level references, survive per-level saves.
 #define BUILDING_MAX_Z 32
-#define BUILDING_EXTRA_LEVELS 12
+#define BUILDING_EXTRA_LEVELS 15
 #define BUILDING_MAX_LEVEL_CELLS 2000000
 
 var/building_allocating_z = 0
@@ -160,10 +160,9 @@ var/building_compiled_maxz = 0
 /obj/roof/persistence_runtime_var(key)
 	return key == "roof_overlay" || key == "sagging" || ..()
 
-// Building levels stack over the surface; a dug cave level is never one.
+// Building levels stack over the surface; an added underground level is never one.
 /proc/building_upper_z(z)
-	var/dug = dug_underground_z()
-	return dug && z == dug ? 0 : multiz_level_above(z)
+	return underground_added(z) ? 0 : multiz_level_above(z)
 
 /obj/roof/proc/building_floor()
 	if (!building_pair_id || building_floor_z != building_upper_z(z))
@@ -255,6 +254,8 @@ var/global/building_assume_founded = FALSE
 		return max(2, building_brace_reach(A))
 	if (istype(A, /obj/covers))
 		return max(1, building_brace_reach(A))
+	if (building_is_window_support(A))
+		return 1
 	return 0
 
 // What support A stands on: list(storey, strength). Ground is storey 0 and
@@ -377,7 +378,9 @@ var/global/building_assume_founded = FALSE
 		building_assume_founded = FALSE
 		if (founded && founded[1] > BUILDING_UNFOUNDED_STOREYS)
 			return "This roof would cover the [building_storey_name(founded[1])] storey, but the ground-floor walls or pillars stand on soft ground, which holds only two storeys. Supports on rock or on a stone, brick or concrete floor hold more. Lay that floor first, then build the wall or pillar on it."
-		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete walls and pillars six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor."
+		if (!building_open_turf(T))
+			return "Nothing holds a roof up here. [building_support_hint(T)]"
+		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete walls and pillars six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor. [building_support_hint(T)]"
 	var/h = info[1]
 	var/near = FALSE
 	var/uncarried = FALSE
@@ -426,7 +429,7 @@ var/global/building_assume_founded = FALSE
 
 // TRUE when the map lets its building levels grow above z.
 /proc/building_stack_room(z)
-	return map && map.building_levels && z >= building_base_maxz() && z != dug_underground_z() && building_levels_built() < map.building_levels
+	return map && map.building_levels && z >= building_base_maxz() && !underground_added(z) && building_levels_built() < map.building_levels
 
 // A roof adds the next level when it is on the top ground level, as before, or
 // on the highest building level of a map that permits more of them.
@@ -435,7 +438,7 @@ var/global/building_assume_founded = FALSE
 		return FALSE
 	// Nothing lies above z (the cave is never "above"), so z is the top ground
 	// level or the highest building level.
-	return z == multiz_top_z() || (z > building_base_maxz() && z != dug_underground_z() && building_stack_room(z))
+	return z == multiz_top_z() || (z > building_base_maxz() && !underground_added(z) && building_stack_room(z))
 
 // Why a roof on T would get no walkable floor above it, or null when it will.
 // Shown before and after building so players know where their building stops.
@@ -623,7 +626,8 @@ var/global/building_assume_founded = FALSE
 	return WWinput(user, question, "Remove storey floor", "Stop", list("Remove", "Stop")) == "Remove"
 
 // Whatever was built on a floor that is gone falls: walls (and the floors'
-// other fixed covers) and the pillars and doors that held roofs up.
+// other fixed covers), the pillars and doors that held roofs up, and fittings
+// such as railings (falls_with_floor).
 /proc/building_floor_lost(turf/T)
 	for (var/obj/covers/C in T)
 		if (QDELETED(C) || !C.wall)
@@ -631,6 +635,6 @@ var/global/building_assume_founded = FALSE
 		C.amount = 0 // the fall's rubble is its salvage
 		C.building_fall(C.material, C.building_wall_salvage())
 	for (var/obj/structure/S in T)
-		if (QDELETED(S) || !S.building_support_tier())
+		if (QDELETED(S) || !(S.building_support_tier() || S.falls_with_floor()))
 			continue
 		S.building_fall(S.structure_impact_material(), null)

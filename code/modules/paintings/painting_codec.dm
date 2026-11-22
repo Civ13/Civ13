@@ -14,8 +14,7 @@
 // (easel, canvas sizes, framing), first ported to Civ13 in 2020; the editor,
 // storage and rendering here are new.
 
-#define PAINT_MAX_COLOURS 16
-#define PAINT_MAX_SIDE 128
+// Painting size and palette: code/__defines/paintings.dm
 #define PAINT_PART_LENGTH 1000 // characters per upload part
 #define PAINT_MAX_PARTS 40
 #define PAINT_TITLE_LENGTH 40

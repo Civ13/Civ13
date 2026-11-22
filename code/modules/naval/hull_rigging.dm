@@ -42,7 +42,7 @@
 	var/tmp/handling = FALSE
 
 /obj/structure/vehicleparts/movement/sail/persistence_runtime_var(key)
-	return key == "handling" || ..()
+	return key == "handling" || key == "tree_climber" || ..()
 
 // TRUE for a mast standing free on a deck with a sail rigged.
 /obj/structure/vehicleparts/movement/sail/proc/handled_here()
@@ -61,9 +61,12 @@
 	..()
 	if (sails && sails_on && canvas == SAIL_FURLED && !axis)
 		icon_state = base_icon
+	// A mast with a crow's nest has the same states with the nest drawn on.
+	icon = crows_nest ? 'icons/obj/vehicles/ship_mast_nest.dmi' : initial(icon)
 
 /obj/structure/vehicleparts/movement/sail/examine(mob/user, distance = -1)
 	. = ..()
+	aloft_examine(user) // hull_masts.dm
 	if (handled_here())
 		to_chat(user, SPAN_NOTICE("Her sail is [canvas_name()][torn ? " and <b>torn</b>: [SAIL_MEND_CLOTH] pieces of cloth used on the mast mend it" : ""]. Click the mast to set, reef or furl it."))
 
@@ -87,12 +90,21 @@
 
 // A wait that a step of the hull under the worker does not spoil: the hull
 // carries worker and work together, so the wait starts again.
-/proc/hull_wait(mob/living/H, time, atom/target)
+// climb: 1 pulls the body up, -1 down, for each attempt (body_motion.dm).
+/proc/hull_wait(mob/living/H, time, atom/target, climb = 0)
 	for (var/tries = 1, tries <= 20, tries++)
 		var/off_x = H.x - target.x
 		var/off_y = H.y - target.y
 		var/began = world.time
-		if (do_after(H, time, target))
+		var/climb_motion = 0
+		if (climb && ishuman(H))
+			var/mob/living/human/climber = H
+			climb_motion = climber.body_motion_climb(climb > 0, time)
+		var/done = do_after(H, time, target)
+		if (climb_motion)
+			var/mob/living/human/climber = H
+			climber.body_motion_stop(climb_motion)
+		if (done)
 			return TRUE
 		if (QDELETED(H) || QDELETED(target) || world.time <= began || H.x - target.x != off_x || H.y - target.y != off_y || H.stat || H.lying)
 			return FALSE
@@ -127,6 +139,8 @@
 		C.sail_trim()
 
 /obj/structure/vehicleparts/movement/sail/attack_hand(mob/living/human/H)
+	if (mast_grab_climb(H)) // grab intent climbs her (hull_masts.dm)
+		return
 	if (!istype(H) || !handled_here() || !hull_ledger_at(get_turf(src)))
 		return ..()
 	var/list/choices = list()
@@ -149,6 +163,8 @@
 
 // Cloth on a torn sail mends it.
 /obj/structure/vehicleparts/movement/sail/attackby(obj/item/I, mob/living/human/H)
+	if (fit_crows_nest(I, H)) // wood builds a crow's nest (hull_masts.dm)
+		return TRUE
 	if (torn && handled_here() && istype(I, /obj/item/stack/material/cloth) && istype(H))
 		var/obj/item/stack/material/cloth/S = I
 		if (S.amount < SAIL_MEND_CLOTH)

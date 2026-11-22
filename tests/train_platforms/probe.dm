@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 262
+	maxx = 356
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -19,6 +19,12 @@
 /mob/living/human/platform_rider/New()
 	return
 /mob/living/human/platform_rider/update_icons()
+	return
+// A rider made without a species cannot take burns; the fixture counts them.
+/mob/living/human/platform_rider/var/probe_burn = 0
+/mob/living/human/platform_rider/adjustBurnLoss(var/amount)
+	probe_burn += amount
+/mob/living/human/platform_rider/Weaken(amount)
 	return
 
 var/global/list/platform_probe_checks = list()
@@ -502,7 +508,7 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("heavy/body_art", E.icon_state == "loco_steam_1c" && cab.icon_state == "loco_steam_3c" && heavy_parts_placed(E) && platform_parts_placed(body))
 	platform_check("heavy/solid_and_cab", boiler.density && bunker.density && !cab.density && E.control_spot() == cab)
 	platform_check("heavy/cab_roof_only", cab.roofed() && cab.roof_images && cab.roof_images.len == 3 && !boiler.roofed())
-	platform_check("heavy/one_piece", findtext(boiler.dismantle_problem(), "one piece") && rail_warehouse_too_long(E) && rail_warehouse_too_long(bunker))
+	platform_check("heavy/one_piece", findtext(boiler.dismantle_problem(), "one piece") && rail_warehouse_unit(bunker).len == 4 && rail_warehouse_unit(bunker)[1] == E && rail_warehouse_whole_length(E) == 4)
 	var/mob/living/human/platform_rider/driver = new(platform_turf(61, 10))
 	// The fire is fed at the firebox door in the middle of the cab, not from
 	// the fireman's side where the driver stands here.
@@ -1259,7 +1265,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/stand = E.station_controls("driver")
 	var/list/door = E.station_controls("fire")
 	var/list/side = E.station_controls("fireman")
-	platform_check("cab/each_station_has_its_controls", stand.len == 5 && ("Throttle up" in stand) && ("Brake" in stand) && ("Sand the rails" in stand) && !("Light the fire" in stand) && door.len == 1 && door[1] == "Light the fire" && side.len == 1 && side[1] == "Injector off")
+	platform_check("cab/each_station_has_its_controls", stand.len == 8 && ("Sound the whistle" in stand) && ("Ring the bell" in stand) && ("Light the headlamp" in stand) && ("Throttle up" in stand) && ("Brake" in stand) && ("Sand the rails" in stand) && !("Light the fire" in stand) && door.len == 1 && door[1] == "Light the fire" && side.len == 1 && side[1] == "Injector off")
 	E.work_control("Light the fire", driver)
 	var/not_lit = !E.on
 	E.work_control("Light the fire", stoker)
@@ -1302,7 +1308,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/diesel = train_car_layout("loco_diesel")
 	var/list/steam = train_car_layout("loco_steam")
 	var/list/armored = train_car_layout("loco_armored")
-	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 7 && !diesel["stations"] && steam["stations"] && armored["stations"])
+	platform_check("cab/small_engines_have_one_place", !small.has_stations() && small.cab_station(guest) == "all" && small.at_firebox(guest) && all.len == 10 && ("Sound the whistle" in all) && !diesel["stations"] && steam["stations"] && armored["stations"])
 
 // Crashes (train_crashes.dm): a running train that hits something at speed
 // derails its leading cars, breaks couplings, throws riders and spills cargo.
@@ -2268,6 +2274,1047 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/signals = train_hand_signals()
 	platform_check("conductor/hand_signals", crew == 2 && signals.len == 5 && flags.show_signal(guard, "Right away") == 2 && flags.show_signal(guard, "Danger") == 2 && !flags.show_signal(guard, "Wave") && !flags.show_signal(walker, "Stop") && ("signal_flags" in states))
 
+// Signals and single-line working (train_signals.dm), on column 266.
+/proc/platform_signals_run()
+	for (var/ty in 2 to 25)
+		platform_track(266, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/A = platform_car("loco_diesel", 266, 12, NORTH)
+	if (!istype(A))
+		platform_check("signals/semaphore", FALSE)
+		return
+	var/mob/living/human/platform_rider/driver = new(platform_turf(266, 12))
+	var/mob/living/human/platform_rider/signalman = new(platform_turf(268, 17))
+
+	// A semaphore is worked by hand at the post and speaks to one direction.
+	var/obj/structure/train_lineside/signal/S = new(platform_turf(268, 18))
+	S.set_dir(NORTH)
+	var/obj/structure/train_lineside/signal/far = new(platform_turf(263, 18))
+	far.set_dir(NORTH)
+	var/starts = !S.clear && S.icon_state == "signal_danger"
+	S.attack_hand(signalman)
+	var/cleared = S.clear && S.icon_state == "signal_clear"
+	S.attack_hand(signalman)
+	var/obj/item/weapon/wrench/wrench = new(signalman.loc)
+	S.attackby(wrench, signalman)
+	var/turned = S.dir == EAST
+	S.set_dir(NORTH)
+	platform_check("signals/semaphore", starts && cleared && !S.clear && turned && S.ahead_of(A, NORTH) == 6 && S.ahead_of(A, SOUTH) == -6 && isnull(far.ahead_of(A, NORTH)) && (S in train_lineside) && ("signal_danger" in states) && ("signal_clear" in states))
+	qdel(far)
+
+	// A single line: two instruments wired as a pair hold one token.
+	var/obj/item/train_signal_wire/wire = new(signalman.loc)
+	var/obj/structure/train_token_instrument/I1 = new(platform_turf(262, 4))
+	var/obj/structure/train_token_instrument/I2 = new(platform_turf(262, 22))
+	var/unwired = isnull(I1.draw_token(null)) && isnull(wire.run_to(driver))
+	wire.run_to(I1)
+	wire.run_to(I2)
+	var/paired = I1.section && I1.section == I2.section && I1.partner() == I2 && I2.partner() == I1
+	var/obj/item/train_token/token = I1.draw_token(signalman)
+	var/one_only = istype(token) && token.section == I1.section && train_token_out(I1.section) == token && isnull(I2.draw_token(signalman)) && findtext(token.name, "single line")
+	var/obj/item/train_token/stray = new(signalman.loc)
+	stray.section = "elsewhere"
+	var/wrong = !I2.restore_token(stray, null) && !QDELETED(stray)
+	qdel(stray)
+	platform_check("signals/token_instruments", unwired && paired && one_only && wrong && ("token_instrument" in states) && ("train_token" in states) && ("signal_wire" in states))
+
+	// The cab reads what it comes up to; a signal passed at danger and a
+	// section entered without its token are marked.
+	var/obj/structure/train_lineside/board/B = new(platform_turf(264, 16))
+	B.set_dir(NORTH)
+	wire.run_to(B)
+	var/obj/structure/train_lineside/signal/back = new(platform_turf(268, 22))
+	back.set_dir(SOUTH)
+	A.reverser = 1
+	A.refresh_consist()
+	A.lineside_seen = null
+	var/crew = A.cab_crew()
+	var/first = A.lineside_watch()
+	var/list/read = A.lineside_seen
+	var/sighted = !first && read && read.len == 2 && (S in read) && (B in read) && !(back in read) && findtext(S.sighting(A), "danger") && findtext(B.sighting(A), "not on the engine")
+	var/rolled = platform_step(A, 7)
+	var/second = A.lineside_watch()
+	platform_check("signals/passed_at_danger", (driver in crew) && sighted && rolled == 7 && second == 2 && S.passed == 1 && B.passed == 1 && !back.passed && isnull(A.lineside_seen) && B.section == I1.section && ("section_board" in states))
+
+	// With a clear signal and the token on the engine nothing is marked.
+	var/obj/structure/train_lineside/signal/S2 = new(platform_turf(264, 24))
+	S2.set_dir(NORTH)
+	S2.set_clear(TRUE)
+	var/obj/structure/train_lineside/board/B2 = new(platform_turf(268, 23))
+	B2.set_dir(NORTH)
+	wire.run_to(B2)
+	var/without = !A.carries_token(I1.section)
+	token.loc = driver
+	var/third = A.lineside_watch()
+	read = A.lineside_seen
+	var/sighted_clear = !third && read && read.len == 2 && findtext(S2.sighting(A), "clear") && findtext(B2.sighting(A), "is on the engine")
+	rolled = platform_step(A, 6)
+	var/fourth = A.lineside_watch()
+	platform_check("signals/clear_road", without && A.carries_token(I1.section) && sighted_clear && rolled == 6 && fourth == 2 && !S2.passed && !B2.passed && S.passed == 1)
+	var/restored = I2.restore_token(token, null) && isnull(train_token_out(I1.section))
+	var/obj/item/train_token/again = I2.draw_token(null)
+	platform_check("signals/token_returns", restored && istype(again) && again.section == I2.section && isnull(I1.draw_token(null)))
+
+	// The lever frame works signals and switches by wire, interlocked.
+	var/obj/structure/train_lever_frame/frame = new(platform_turf(262, 12))
+	var/obj/structure/train_lever/lever = new(platform_turf(262, 14))
+	var/obj/structure/rails/split/switcher/points = new(platform_turf(262, 15))
+	var/needs_frame = findtext(wire.run_to(lever), "lever frame") && !lever.worked_by
+	wire.run_from = null
+	needs_frame = needs_frame && findtext(wire.run_to(S), "lever frame") && !S.worked_by
+	wire.run_to(frame)
+	wire.run_to(S)
+	wire.run_to(back)
+	wire.run_to(lever)
+	var/obj/structure/train_lineside/signal/remote = new(platform_turf(200, 2))
+	var/too_far = findtext(wire.run_to(remote), "too far") && !remote.worked_by
+	qdel(remote)
+	var/list/worked = frame.worked()
+	var/wired = frame.frame_id && S.worked_by == frame.frame_id && lever.worked_by == frame.frame_id && worked.len == 3 && train_frame_by_id(frame.frame_id, S) == frame
+	S.attack_hand(signalman)
+	lever.attack_hand(signalman)
+	var/not_by_hand = !S.clear && lever.switched == "forward"
+	var/pulled = frame.pull(S, signalman) && S.clear
+	// A clear signal locks the switch near it and the signal that faces it.
+	var/locked = !frame.pull(lever, signalman) && lever.switched == "forward" && !frame.pull(back, signalman) && !back.clear && train_signals_oppose(S, back) && train_signals_oppose(back, S) && !train_signals_oppose(S, S2)
+	var/restored_lever = frame.pull(S, signalman) && !S.clear
+	var/thrown = frame.pull(lever, signalman) && lever.switched == "split" && points.switched == "split" && findtext(frame.lever_label(lever), "branch")
+	var/opposing = frame.pull(back, signalman) && back.clear && !frame.pull(S, signalman) && !S.clear
+	wire.run_to(S)
+	worked = frame.worked()
+	var/unwired_again = !S.worked_by && worked.len == 2 && !frame.pull(S, signalman)
+	S.attack_hand(signalman)
+	platform_check("signals/lever_frame", needs_frame && too_far && wired && not_by_hand && pulled && locked && restored_lever && thrown && opposing && unwired_again && S.clear && ("lever_frame" in states))
+
+// Leaving the rails (train_derail.dm): north up column 274, then east along
+// y = 20.
+/proc/platform_derail_run()
+	for (var/ty in 2 to 20)
+		platform_track(274, ty, NORTH)
+	for (var/tx in 275 to 282)
+		platform_track(tx, 20, EAST)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/A = platform_car("loco_steam", 274, 8, NORTH)
+	if (!istype(A))
+		platform_check("derail/speed_is_what_matters", FALSE)
+		return
+	var/list/body = platform_segments(A.connected)
+	var/mob/living/simple_animal/train_probe_dummy/driver = new(A.loc)
+	var/driver_health = driver.health
+
+	// Slow round a curve is safe, and so is fast along the straight.
+	A.rail_speed = 2.9
+	var/slow = !A.curve_check(A, EAST, get_step(A, SOUTH))
+	A.rail_speed = 5
+	var/straight = !A.curve_check(A, NORTH, get_step(A, SOUTH))
+	A.rail_speed = 0
+	platform_check("derail/speed_is_what_matters", slow && straight && !A.derailed && !A.overrun_check() && !A.engine_disabled())
+
+	// Driven flat out into the curve, the engine leaves the rails there.
+	A.fuel = 200
+	A.on = TRUE
+	A.throttle = 3
+	A.drive()
+	var/top = 0
+	var/limit = 400
+	while (A.driving && limit > 0)
+		top = max(top, A.rail_speed)
+		sleep(1)
+		limit--
+	var/off = 0
+	for (var/obj/structure/trains/platform/P in body)
+		if (P.derailed)
+			off++
+	platform_check("derail/too_fast_round_the_curve", !A.driving && top > 3 && A.derailed && A.loc == platform_turf(275, 20) && A.dir == EAST && off == body.len && body.len >= 2 && !A.on && A.throttle == 0 && !A.broken_down && A.health == initial(A.health) && driver.health < driver_health && ("derailed" in states))
+
+	// It stands there: the engine is dead and the train does not step.
+	A.on = TRUE
+	A.throttle = 3
+	A.refresh_consist()
+	platform_check("derail/derailed_train_stands", A.engine_disabled() && A.cruise_speed() == 0 && train_consist_obstacle(A, get_step(A, EAST), EAST) && platform_step(A, 1) == 0 && A.loc == platform_turf(275, 20))
+	A.on = FALSE
+	A.throttle = 0
+
+	// A heavy engine is too much for a jack: it takes a braced, fired crane.
+	var/mob/living/human/platform_rider/hand = new(platform_turf(276, 19))
+	var/obj/item/train_jack/jack = new(hand.loc)
+	var/obj/structure/trains/platform/hood = body[1]
+	var/too_heavy = findtext(A.rerail_problem(), "crane car") && findtext(hood.rerail_problem(), "crane car") && !A.rerail() && A.service_use(jack, hand) && A.derailed
+	var/obj/structure/trains/platform/crane_car = platform_car("crane_car", 274, 16, NORTH)
+	var/list/crane_segs = platform_segments(crane_car)
+	var/obj/structure/workshop_machine/shear_legs/crane/steam/rail/crane = locate() in platform_turf(274, 15)
+	var/list/front = crane_car ? train_platform_tiles(crane_car.loc, crane_car.dir) : list(null)
+	var/obj/structure/railway_gun_brace/lever = locate() in front[1]
+	var/unbraced = crane && lever && findtext(A.rerail_problem(), "crane car")
+	for (var/obj/structure/trains/platform/P in crane_segs)
+		P.last_moved = -1000
+	if (lever)
+		lever.set_braced(TRUE)
+	var/unfired = crane && isnull(crane.rail_problem()) && isnull(train_breakdown_crane(A))
+	if (crane)
+		crane.fuel = 5
+	var/ready = crane && train_breakdown_crane(A) == crane && isnull(A.rerail_problem())
+	var/lifted = hood.rerail()
+	off = 0
+	for (var/obj/structure/trains/platform/P in body)
+		if (P.derailed)
+			off++
+	platform_check("derail/heavy_engine_needs_a_crane", too_heavy && unbraced && unfired && ready && lifted && !A.derailed && !off && !A.engine_disabled() && crane.fuel == 4 && findtext(A.rerail_problem(), "stands on the rails"))
+
+	// A car comes off by its leading half and is jacked back a section at a time.
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 274, 10, NORTH)
+	var/list/segs = platform_segments(flat)
+	var/obj/structure/trains/platform/second = segs.len >= 2 ? segs[2] : null
+	var/obj/structure/trains/platform/third = segs.len >= 3 ? segs[3] : null
+	var/came_off = train_unit_come_off(segs) && flat.derailed && second && second.derailed && third && !third.derailed && !flat.come_off() && !flat.wrecked && flat.health == initial(flat.health)
+	var/blocked = train_consist_obstacle(flat, get_step(flat, NORTH), NORTH) ? TRUE : FALSE
+	var/obj/structure/rails/under = second ? (locate(/obj/structure/rails) in second.loc) : null
+	var/turf/rail_tile = under ? under.loc : null
+	if (under)
+		under.loc = null
+	var/no_rail = second && findtext(second.rerail_problem(), "no rail") && !second.rerail()
+	if (under)
+		under.loc = rail_tile
+	var/jacked = third.service_use(jack, hand) && isnull(flat.rerail_problem()) && flat.rerail() && second.rerail() && !flat.derailed && !second.derailed && !flat.rerail()
+	platform_check("derail/car_jacked_back_on", segs.len == 4 && came_off && blocked && no_rail && jacked && !train_consist_obstacle(flat, get_step(flat, NORTH), NORTH) && ("rerail_jack" in states))
+
+	// Off the end of the rails at speed; a buffer stop or a crawl is no derailment.
+	A.reverser = 1
+	A.refresh_consist()
+	var/obj/structure/rails/ahead = locate(/obj/structure/rails) in get_step(A, EAST)
+	var/turf/ahead_tile = ahead ? ahead.loc : null
+	A.rail_speed = 2.5
+	var/rails_ahead = ahead && !A.overrun_check()
+	if (ahead)
+		ahead.loc = null
+	A.rail_speed = 1.5
+	var/crawl = !A.overrun_check()
+	A.rail_speed = 2.5
+	var/obj/structure/rails/end/stop = new(A.loc)
+	var/buffered = !A.overrun_check() && !A.derailed
+	stop.loc = null
+	var/ran_off = A.overrun_check() && A.derailed && A.rail_speed == 0
+	if (ahead)
+		ahead.loc = ahead_tile
+	platform_check("derail/off_the_end", rails_ahead && crawl && buffered && ran_off && A.engine_disabled())
+
+// Stations and warnings (train_stations.dm), on column 290.
+// A heavy locomotive goes into the rail warehouse whole and comes out as it
+// went in (docs/trains.md#heavy-locomotives).
+/proc/platform_big_warehouse_run()
+	for (var/y in 2 to 25)
+		platform_track(298, y, NORTH)
+	var/obj/structure/rail_warehouse/W = new(platform_turf(296, 13))
+	W.dir = EAST
+	var/obj/structure/trains/locomotive/heavy_diesel/mainline/E = platform_car("loco_dieselmain", 298, 19, NORTH)
+	var/list/body = istype(E) ? platform_segments(E.connected) : list()
+	var/obj/structure/trains/platform/last = body.len ? body[body.len] : null
+	var/obj/structure/trains/transport/flatbed/F = new(platform_turf(298, 13))
+	F.dir = NORTH
+	last.connected = F
+	E.fuel = 321
+	E.sand = 7
+	E.mileage = 1234
+	E.front_coupling = 40
+	last.rear_auto = TRUE
+	var/obj/item/stack/material/iron/cab_load = new(platform_turf(297, 19))
+	var/list/unit = rail_warehouse_unit(last)
+	platform_check("bigstore/engine_is_one_unit", body.len == 5 && unit.len == 6 && unit[1] == E && unit[6] == last && W.rear_units().len == 1)
+	F.derailed = TRUE
+	platform_check("bigstore/refuses_derailed", findtext(W.store_problem(list(F)), "rails"))
+	F.derailed = FALSE
+	platform_check("bigstore/whole_train_stored", W.put_away(null, null, TRUE) == 2 && W.stored_units().len == 2 && !isturf(E.loc) && !isturf(last.loc) && !isturf(cab_load.loc))
+	var/parts_left = 0
+	for (var/x in 297 to 299)
+		for (var/y in 13 to 19)
+			for (var/obj/structure/train_part/P in platform_turf(x, y))
+				parts_left++
+	platform_check("bigstore/nothing_left_on_the_map", !parts_left && !E.body_parts && !E.coupler_f)
+	var/obj/structure/rail_stored_unit/engine_unit = null
+	var/obj/structure/rail_stored_unit/wagon_unit = null
+	for (var/obj/structure/rail_stored_unit/U in W.stored_units())
+		if (U.unit_length == 6)
+			engine_unit = U
+		else
+			wagon_unit = U
+	platform_check("bigstore/engine_rolls_out", engine_unit && !W.retrieve_problem(engine_unit, W.retrieve_place(engine_unit)) && W.retrieve_unit(engine_unit) == E && E.loc == platform_turf(298, 19) && last.loc == platform_turf(298, 14) && E.dir == NORTH)
+	platform_check("bigstore/engine_whole_again", heavy_parts_placed(E) && platform_parts_placed(body) && E.rear_cab() == last && last.car_engine() == E && E.coupler_f && last.coupler_r)
+	platform_check("bigstore/state_kept", E.fuel == 321 && E.sand == 7 && E.mileage == 1234 && E.front_coupling == 40 && last.rear_auto && cab_load.loc == platform_turf(297, 19))
+	platform_check("bigstore/wagon_couples_behind", wagon_unit && W.retrieve_unit(wagon_unit) == F && last.connected == F && F.loc == platform_turf(298, 13))
+	// A car with no coupling on its drawbar rolls out but is not hitched.
+	platform_check("bigstore/wagon_stored_again", W.put_away(null, list(F), FALSE) == 1 && !last.connected)
+	F.front_coupling = -1
+	var/obj/structure/rail_stored_unit/loose = W.stored_units()[1]
+	platform_check("bigstore/no_coupling_no_hitch", W.retrieve_unit(loose) == F && F.loc == platform_turf(298, 13) && !last.connected)
+
+// Track works (docs/trains.md#track-works): a buffer stop at the end of a
+// line, and a level crossing with gates worked by hand and from a frame.
+/proc/platform_trackworks_run()
+	for (var/ty in 2 to 21)
+		platform_track(304, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("trackworks/art", ("buffer_stop" in states) && ("crossing_boards" in states) && ("crossing_gate_shut" in states) && ("crossing_gate_open" in states))
+
+	// The crossing: boards on the rails, a gate on the road either side.
+	var/obj/structure/train_crossing_boards/boards = new(platform_turf(304, 6))
+	var/obj/structure/train_lineside/gate/G1 = new(platform_turf(302, 6))
+	G1.set_dir(EAST)
+	var/obj/structure/train_lineside/gate/G2 = new(platform_turf(306, 6))
+	G2.set_dir(WEST)
+	var/obj/structure/train_lineside/gate/elsewhere = new(platform_turf(302, 16))
+	elsewhere.set_dir(EAST)
+	var/mob/living/human/platform_rider/keeper = new(platform_turf(302, 5))
+	var/obj/item/weapon/wrench/wrench = new(keeper.loc)
+	boards.attackby(wrench, keeper)
+	platform_check("trackworks/crossing_built", !boards.density && boards.dir != initial(boards.dir) && !G1.density && !G1.shut && G1.crossing_gates().len == 2 && (G2 in G1.crossing_gates()) && elsewhere.crossing_gates().len == 1 && (G1 in train_lineside))
+	platform_check("trackworks/gates_speak_both_ways", G1.speaks_to(NORTH) && G1.speaks_to(SOUTH) && !G1.speaks_to(EAST) && G2.speaks_to(NORTH) && G1.ahead_of(platform_turf(304, 2), NORTH) == 4)
+	var/shut_moved = G1.set_shut(TRUE)
+	platform_check("trackworks/gates_swing_together", shut_moved && G1.shut && G2.shut && G1.density && G2.density && G2.icon_state == "crossing_gate_shut" && !elsewhere.shut && !G1.set_shut(TRUE))
+	G2.set_shut(FALSE)
+	var/obj/structure/closet/crate/large/cart = new(platform_turf(306, 6))
+	cart.density = TRUE
+	var/blocked = G1.shut_problem()
+	qdel(cart)
+	platform_check("trackworks/gates_do_not_shut_on_a_cart", !G1.shut && !G1.density && findtext(blocked, "in the way") && !G1.shut_problem())
+	// One line to the cab for the crossing, and one mark when it is run
+	// over with the gates open.
+	var/list/lines = list()
+	for (var/obj/structure/train_lineside/gate/G in list(G1, G2))
+		var/line = G.sighting(null)
+		if (line)
+			lines += line
+		G.passed_by(null)
+	G1.set_shut(TRUE)
+	var/list/shut_lines = list()
+	for (var/obj/structure/train_lineside/gate/G in list(G1, G2))
+		var/line = G.sighting(null)
+		if (line)
+			shut_lines += line
+		G.passed_by(null)
+	platform_check("trackworks/cab_is_told", lines.len == 1 && findtext(lines[1], "open to the road") && shut_lines.len == 1 && findtext(shut_lines[1], "shut to the road") && G1.passed + G2.passed == 1)
+	G1.set_shut(FALSE)
+
+	// From a lever frame: one lever for the crossing, locked with the signal
+	// that reads over it.
+	var/obj/structure/train_lever_frame/F = new(platform_turf(302, 8))
+	var/obj/structure/train_lineside/signal/S = new(platform_turf(306, 3))
+	S.set_dir(NORTH)
+	var/obj/item/train_signal_wire/wire = new(keeper.loc)
+	wire.run_to(F)
+	var/joined = wire.run_to(G1)
+	wire.run_to(S)
+	var/list/now = F.worked()
+	// The signal reads over the gates ahead of it, not over those behind.
+	S.set_dir(SOUTH)
+	var/behind = !train_signal_over_gate(S, G1)
+	S.set_dir(NORTH)
+	platform_check("trackworks/frame_takes_the_gates", findtext(joined, "One lever") && now.len == 2 && (G1 in now) && !(G2 in now) && G2.crossing_frame() == F && findtext(F.lever_label(G1), "crossing gates") && train_signal_over_gate(S, G1) && train_signal_over_gate(S, G2) && behind)
+	G2.attack_hand(keeper)
+	var/held = findtext(F.locked_by(S), "open to the road") && !F.pull(S, null) && !S.clear && !G2.shut
+	platform_check("trackworks/signal_waits_for_the_gates", held)
+	var/shut_by_lever = F.pull(G1, null) && G1.shut && G2.shut
+	var/cleared = F.pull(S, null) && S.clear
+	var/locked = findtext(F.locked_by(G1), "clear over the crossing") && !F.pull(G1, null) && G1.shut
+	var/restored = F.pull(S, null) && !S.clear && F.pull(G1, null) && !G1.shut && !G2.shut
+	platform_check("trackworks/gates_locked_under_a_clear_signal", shut_by_lever && cleared && locked && restored)
+	var/off = wire.run_to(G2)
+	platform_check("trackworks/gates_come_off_the_frame", findtext(off, "by hand again") && !G1.crossing_frame() && F.worked().len == 1)
+
+	// The buffer stop: a train brought up to it stops against it.
+	var/obj/structure/train_buffer_stop/stop = new(platform_turf(304, 21))
+	stop.set_dir(NORTH)
+	var/obj/structure/trains/locomotive/A = platform_car("loco_steam", 304, 5, NORTH)
+	if (!istype(A))
+		platform_check("trackworks/buffer_stop_holds", FALSE)
+		return
+	// What is built into the line stays there under the train on its way,
+	// and shut gates two tiles out are clear of its sides.
+	var/obj/structure/rail_ash_pit/pit = new(platform_turf(304, 8))
+	var/obj/structure/train_lineside/signal/near = new(platform_turf(305, 9))
+	near.set_dir(SOUTH)
+	var/obj/structure/trains/platform/behind_cab = A.connected
+	var/turf/freight_from = istype(behind_cab) ? get_step(behind_cab, EAST) : null
+	var/obj/item/weapon/wrench/freight = new(freight_from)
+	G1.set_shut(TRUE)
+	var/soft = stop.hold(0.4) && !stop.hits
+	var/hard = stop.hold(1) && stop.hits == 1 && !stop.hold(1.3)
+	stop.hits = 0
+	platform_check("trackworks/buffer_stop_limits", soft && hard && stop.density)
+	var/mob/living/simple_animal/train_probe_dummy/driver = new(A.loc)
+	A.fuel = 200
+	A.on = TRUE
+	A.throttle = 1
+	A.drive()
+	var/limit = 1500
+	while (A.driving && A.automovement && limit > 0)
+		sleep(1)
+		limit--
+	A.throttle = 0
+	platform_check("trackworks/fixtures_stay_under_a_train", istype(behind_cab) && A.loc == platform_turf(304, 20) && boards.loc == platform_turf(304, 6) && pit.loc == platform_turf(304, 8) && near.loc == platform_turf(305, 9) && G1.loc == platform_turf(302, 6) && G2.loc == platform_turf(306, 6) && G1.shut && G2.density && freight.loc == get_step(behind_cab, EAST) && freight.loc != freight_from && train_track_fixture(boards) && train_track_fixture(G1) && !train_platform_carries(pit) && train_platform_carries(freight))
+	G1.set_shut(FALSE)
+	platform_check("trackworks/buffer_stop_holds", A.loc == platform_turf(304, 20) && !QDELETED(stop) && !A.derailed && A.health == initial(A.health) && !QDELETED(driver))
+	limit = 100
+	while (A.driving && limit > 0)
+		sleep(1)
+		limit--
+	// At speed it is smashed, and the train with it; the rails stay.
+	A.rail_speed = 6
+	var/struck = A.rail_hit(platform_turf(304, 21), NORTH, 1.6)
+	var/scrap = 0
+	for (var/obj/item/stack/material/M in platform_turf(304, 21))
+		scrap++
+	platform_check("trackworks/buffer_stop_smashed", struck && QDELETED(stop) && scrap == 1 && (locate(/obj/structure/rails) in platform_turf(304, 21)) && A.loc == platform_turf(304, 20))
+	A.rail_speed = 0
+
+// Step 15: the turntable. A bridge of rails over a pit turns an engine to
+// face the other way, or onto a road that leaves the pit at a right angle.
+/proc/platform_turntable_run()
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	platform_check("turntable/art", ("turntable_deck" in states) && ("turntable_girders" in states) && ("turntable_pivot" in states) && ("pit" in icon_states('icons/obj/vehicles/train_turntable.dmi')) && ("pit" in icon_states('icons/obj/vehicles/train_turntable_large.dmi')))
+	for (var/ty in 2 to 7)
+		platform_track(312, ty, NORTH)
+	for (var/tx in 315 to 320)
+		platform_track(tx, 10, EAST)
+	var/obj/structure/train_turntable/T = new(platform_turf(312, 10))
+
+	// The pit holds no track of its own: the lines stop at its edge.
+	var/obj/structure/rails/stray = platform_track(313, 9, NORTH)
+	var/in_pit = T.lay_problem()
+	qdel(stray)
+	var/unlaid = !T.laid && findtext(T.turn_problem(), "not laid")
+	var/laid = T.lay()
+	var/obj/structure/rails/turntable/end = locate(/obj/structure/rails/turntable) in platform_turf(312, 8)
+	platform_check("turntable/bridge_laid", findtext(in_pit, "Take up the track") && unlaid && laid && T.laid && T.bridge_rails().len == 5 && T.bridge_whole() && end && (end.dir == NORTH) && !(locate(/obj/structure/rails) in platform_turf(310, 10)) && T.overlays.len == 1)
+	platform_check("turntable/bridge_is_fixed_track", end && !track_plain_rail(end) && !track_piece_bendable(end) && !end.pry_apart() && !QDELETED(end) && end.table() == T && train_track_fixture(T) && !train_platform_carries(T))
+
+	// An engine runs on from the south and stands whole on the bridge.
+	var/obj/structure/trains/locomotive/E = platform_car("loco_steam", 312, 7, NORTH)
+	if (!istype(E))
+		platform_check("turntable/engine_on", FALSE)
+		return
+	E.fuel = 100
+	E.on = TRUE
+	E.refresh_consist()
+	var/stepped = platform_step(E, 5)
+	E.automovement = FALSE
+	var/list/body = platform_segments(E.connected)
+	var/obj/structure/trains/platform/last = body[body.len]
+	var/mob/living/human/platform_rider/driver = new(platform_turf(311, 10))
+	var/obj/item/weapon/wrench/spanner = new(platform_turf(313, 10))
+	platform_check("turntable/engine_on", stepped == 5 && E.loc == platform_turf(312, 12) && last.loc == platform_turf(312, 9) && T.units().len == 4 && !T.turn_problem() && T.turn_time() > 40)
+
+	// Nobody stands in the pit, and a train turns whole or not at all.
+	var/mob/living/human/platform_rider/idler = new(platform_turf(310, 8))
+	var/stood = T.turn_problem()
+	idler.loc = platform_turf(309, 11)
+	var/obj/structure/trains/locomotive/coal/wagon = new(platform_turf(312, 7))
+	wagon.dir = NORTH
+	last.connected = wagon
+	var/coupled = T.turn_problem()
+	last.connected = null
+	qdel(wagon)
+	E.automovement = TRUE
+	var/moving = T.turn_problem()
+	E.automovement = FALSE
+	platform_check("turntable/pit_clear_and_train_whole", findtext(stood, "standing in the pit") && findtext(coupled, "not on the table") && findtext(moving, "Stop") && !T.swing(45) && !T.turn_problem())
+
+	// A quarter to the right: the engine faces east, its load with it.
+	var/quarter = T.swing(-90)
+	end = locate(/obj/structure/rails/turntable) in platform_turf(314, 10)
+	platform_check("turntable/quarter_turn", quarter && E.loc == platform_turf(314, 10) && E.dir == EAST && last.loc == platform_turf(311, 10) && last.dir == EAST && !T.upright() && T.bridge_rails().len == 5 && end && end.dir == EAST && !(locate(/obj/structure/rails) in platform_turf(312, 8)))
+	platform_check("turntable/load_turns_with_it", heavy_parts_placed(E) && platform_parts_placed(body) && driver.loc == platform_turf(312, 11) && spanner.loc == platform_turf(312, 9))
+
+	// It runs off onto the road that leaves the pit to the east.
+	var/off = platform_step(E, 4)
+	E.automovement = FALSE
+	platform_check("turntable/runs_off_onto_the_road", off == 4 && E.loc == platform_turf(318, 10) && last.loc == platform_turf(315, 10) && !T.units().len && driver.loc == platform_turf(316, 11))
+
+	// Empty, it comes round by hand: slower alone than with a second pusher.
+	var/alone = T.hands().len
+	var/mob/living/human/platform_rider/mate = new(platform_turf(309, 9))
+	var/light = T.turn_time()
+	var/list/pair = T.hands()
+	var/far = T.work(driver, 90)
+	var/pushed = T.work(idler, 90)
+	platform_check("turntable/pushed_by_hand", alone == 1 && pair.len == 2 && (mate in pair) && light == 20 && !far && pushed && T.upright() && !T.busy && (locate(/obj/structure/rails/turntable) in platform_turf(312, 12)) && !(locate(/obj/structure/rails) in platform_turf(314, 10)))
+	var/list/gap = last.rail_target(WEST)
+	platform_check("turntable/road_ends_at_the_pit", !gap)
+
+	// Brought back, the engine backs on and is turned right round, then a
+	// quarter more to leave by the road it came in on, facing the other way.
+	T.swing(-90)
+	E.reverser = -1
+	var/backed = 0
+	for (var/i in 1 to 4)
+		E.automovement = TRUE
+		if (E.process_rail_reverse())
+			backed++
+	E.automovement = FALSE
+	E.reverser = 1
+	var/on_again = backed == 4 && E.loc == platform_turf(314, 10) && !T.turn_problem()
+	var/round = T.swing(180)
+	platform_check("turntable/turned_right_round", on_again && round && E.loc == platform_turf(310, 10) && E.dir == WEST && last.loc == platform_turf(313, 10) && !T.upright() && heavy_parts_placed(E) && platform_parts_placed(body) && driver.loc == platform_turf(312, 9))
+	var/south = T.swing(90)
+	var/away = platform_step(E, 3)
+	E.automovement = FALSE
+	platform_check("turntable/leaves_facing_back", south && E.dir == SOUTH && away == 3 && E.loc == platform_turf(312, 5) && last.loc == platform_turf(312, 8) && heavy_parts_placed(E) && !E.derailed && E.health == initial(E.health))
+
+	// The large table: eleven tiles of bridge. It is taken up with nothing
+	// on it, and goes with its pivot.
+	var/obj/structure/train_turntable/large/edge = new(platform_turf(world.maxx - 2, 19))
+	var/near_edge = edge.lay_problem()
+	qdel(edge)
+	var/obj/structure/train_turntable/large/big = new(platform_turf(316, 19))
+	big.set_dir(EAST)
+	var/big_laid = big.lay() && big.bridge_rails().len == 11 && !big.upright() && (locate(/obj/structure/rails/turntable) in platform_turf(321, 19)) && !big.turn_problem()
+	var/big_turned = big.swing(90) && big.upright() && (locate(/obj/structure/rails/turntable) in platform_turf(316, 24))
+	platform_check("turntable/large_table", findtext(near_edge, "too near the edge") && big_laid && big_turned)
+	var/busy_table = T.take_up_problem()
+	var/taken = big.take_up() && !big.laid && !big.bridge_rails().len && !big.overlays.len
+	big.lay()
+	qdel(big)
+	platform_check("turntable/taken_up", findtext(busy_table, "off the table") && taken && !(locate(/obj/structure/rails/turntable) in platform_turf(316, 24)) && !(locate(/obj/structure/rails/turntable) in platform_turf(316, 19)))
+
+// Step 15: track wear. Traffic wears the rails, worn track brings the line
+// speed down, and a platelayer packs it or puts in new sleepers.
+/proc/platform_trackwear_run()
+	for (var/ty in 13 to 25)
+		platform_track(320, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/rails/R = locate(/obj/structure/rails) in platform_turf(320, 24)
+	var/sound = R && !R.wear && !R.wear_state() && !R.line_speed() && findtext(R.wear_text(), "good order")
+	R.take_traffic(10, 3)
+	var/slow = R.wear
+	R.take_traffic(10, 6)
+	var/fast = R.wear - slow
+	R.wear = 30
+	R.take_traffic(10, 3)
+	var/rough = R.wear - 30
+	R.take_traffic(8000, 3)
+	platform_check("trackwear/traffic_wears_the_rails", sound && abs(slow - 0.1) < 0.001 && abs(fast - 0.15) < 0.001 && abs(rough - 0.15) < 0.001 && R.wear == 100)
+	R.wear = 49
+	R.show_wear()
+	var/no_mark = R.wear_state() == 1 && !R.line_speed() && !R.wear_image && !R.overlays.len
+	R.wear = 49.95
+	R.take_traffic(10, 3)
+	var/worn = R.wear_state() == 2 && R.line_speed() == 5 && R.wear_image && R.wear_image.icon_state == "track_worn" && R.overlays.len == 1
+	R.wear = 80
+	R.show_wear()
+	platform_check("trackwear/worn_track_shows_and_slows", ("track_worn" in states) && ("track_bad" in states) && no_mark && worn && R.wear_state() == 3 && R.line_speed() == 2 && R.wear_image.icon_state == "track_bad" && R.overlays.len == 1 && findtext(R.wear_text(), "new sleepers"))
+
+	// The platelayer: a hammer packs rough and worn track, and bad track
+	// wants a new set of sleepers.
+	var/mob/living/human/platform_rider/ganger = new(platform_turf(321, 24))
+	var/obj/item/weapon/hammer/hammer = new(ganger.loc)
+	var/obj/item/stack/rail_sleepers/sleepers = new(ganger.loc)
+	sleepers.amount = 2
+	R.attackby(hammer, ganger)
+	var/too_far_gone = R.wear == 80
+	R.attackby(sleepers, ganger)
+	var/relaid = R.wear == 0 && sleepers.amount == 1 && !R.wear_image && !R.overlays.len
+	R.attackby(sleepers, ganger)
+	var/not_wasted = sleepers.amount == 1
+	R.wear = 60
+	R.show_wear()
+	R.attackby(hammer, ganger)
+	var/packed = R.wear == 30 && !R.wear_image
+	R.attackby(hammer, ganger)
+	platform_check("trackwear/platelayer_keeps_it_up", too_far_gone && relaid && not_wasted && packed && R.wear == 0 && !R.track_maintain(hammer, ganger))
+
+	// In the cab: told as the track gets worse, and off the rails when worn
+	// track is taken faster than its line speed.
+	var/obj/structure/trains/locomotive/E = platform_car("loco_steam", 320, 17, NORTH)
+	if (!istype(E))
+		platform_check("trackwear/cab_is_told", FALSE)
+		return
+	E.fuel = 100
+	E.on = TRUE
+	E.refresh_consist()
+	var/obj/structure/rails/under = locate(/obj/structure/rails) in E.loc
+	E.rail_speed = 6
+	var/clean = !E.meet_track() && under.wear > 0 && under.wear < 1 && !E.track_told
+	under.wear = 30
+	var/told_rough = !E.meet_track() && E.track_told == 1
+	under.wear = 60
+	E.rail_speed = 5
+	var/told_worn = !E.meet_track() && E.track_told == 2 && !E.derailed
+	under.wear = 85
+	E.rail_speed = 2
+	var/told_bad = !E.meet_track() && E.track_told == 3 && !E.derailed
+	platform_check("trackwear/cab_is_told", clean && told_rough && told_worn && told_bad)
+	under.attackby(hammer, ganger)
+	var/train_in_the_way = under.wear > 85
+	E.rail_speed = 2.5
+	var/off = E.meet_track()
+	platform_check("trackwear/too_fast_leaves_the_rails", train_in_the_way && off && E.derailed && E.rail_speed == 0)
+
+	// From the drive loop: a train run over a stretch leaves wear behind it.
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(320, 19))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	L.throttle = 1
+	L.drive()
+	var/limit = 300
+	while (L.driving && L.y < 23 && limit > 0)
+		sleep(1)
+		limit--
+	L.throttle = 0
+	var/obj/structure/rails/passed = locate(/obj/structure/rails) in platform_turf(320, 21)
+	platform_check("trackwear/driving_wears_the_line", L.y >= 21 && passed && passed.wear > 0)
+
+// Freight handling (train_goods.dm): columns 326 and 330.
+/proc/platform_goods_run()
+	for (var/tx in list(326, 330))
+		for (var/ty in 2 to 25)
+			platform_track(tx, ty, NORTH)
+	var/list/depot_sheet = icon_states('icons/obj/vehicles/rail_water.dmi')
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+
+	// The loading stage: one kind heaped on it, run down the chute into a wagon.
+	var/obj/structure/trains/platform/wagon = platform_car("open_wagon", 326, 12, NORTH)
+	var/obj/structure/trains/platform/store = wagon.bulk_store()
+	var/obj/structure/rail_depot/loading_stage/stage = new(platform_turf(328, 9))
+	var/obj/item/stack/ore/coal/C = new(platform_turf(329, 8))
+	C.amount = 40
+	var/obj/item/stack/ore/iron/I = new(platform_turf(329, 8))
+	I.amount = 30
+	var/bare = stage.icon_state == "loading_stage_empty" && !stage.fill_takers() && !stage.take_off(50, platform_turf(329, 8))
+	var/heaped = stage.load_bulk(C) == 40 && stage.bulk_amount == 40 && stage.icon_state == "loading_stage_coal" && !stage.load_bulk(I) && I.amount == 30
+	var/list/near = stage.takers()
+	var/ran = near.len == 1 && near[1] == store && stage.fill_takers() == 40 && store.bulk_amount == 40 && store.bulk_path == "/obj/item/stack/ore/coal" && stage.bulk_amount == 0 && isnull(stage.bulk_path) && stage.icon_state == "loading_stage_empty"
+	platform_check("goods/loading_stage_fills_a_wagon", bare && heaped && ran && train_track_fixture(stage) && ("loading_stage_empty" in depot_sheet) && ("loading_stage_coal" in depot_sheet) && ("loading_stage_ore" in depot_sheet) && ("loading_stage_sand" in depot_sheet))
+
+	// A wagon of another kind takes nothing, a full one only what it has room
+	// for, and a shovel takes the heap back off.
+	var/other = stage.load_bulk(I) == 30 && stage.icon_state == "loading_stage_ore" && stage.fill_takers() == 0 && stage.bulk_amount == 30 && store.bulk_amount == 40
+	var/turf/side = platform_turf(329, 8)
+	var/off = stage.take_off(50, side) == 30 && stage.bulk_amount == 0 && isnull(stage.bulk_path)
+	var/dug = 0
+	for (var/obj/item/stack/ore/iron/S in side)
+		dug += S.amount
+		qdel(S)
+	var/obj/item/stack/ore/coal/more = new(side)
+	more.amount = 50
+	stage.load_bulk(more)
+	store.bulk_amount = wagon.bulk_max() - 20
+	var/mob/living/human/platform_rider/hand = new(platform_turf(329, 9))
+	stage.attack_hand(hand)
+	platform_check("goods/loading_stage_one_kind_and_no_overfill", other && off && dug == 30 && store.bulk_amount == wagon.bulk_max() && stage.bulk_amount == 30 && stage.icon_state == "loading_stage_coal")
+	stage.bulk_amount = 2990
+	var/obj/item/stack/ore/coal/last = new(side)
+	last.amount = 40
+	platform_check("goods/loading_stage_holds_so_much", stage.load_bulk(last) == 10 && last.amount == 30 && stage.bulk_amount == 3000 && !stage.load_bulk(last))
+	qdel(last)
+
+	// The goods crane: a load swings onto a car's deck, and off it again.
+	var/obj/structure/trains/platform/flat = platform_car("flatbed", 330, 12, NORTH)
+	var/obj/structure/workshop_machine/shear_legs/crane/goods/crane = new(platform_turf(332, 11))
+	var/obj/structure/closet/crate/load = new(platform_turf(333, 11))
+	var/list/choices = crane.haul_choices(load)
+	var/turf/aboard = null
+	var/turf/beside = null
+	for (var/label in choices)
+		if (findtext(label, "Swing it onto"))
+			aboard = choices[label]
+		if (findtext(label, "beside the track"))
+			beside = choices[label]
+	var/obj/structure/trains/platform/landed = train_deck_at(aboard)
+	var/on_car = aboard && landed && flat && landed.car_id == flat.car_id && get_dist(aboard, crane) <= 3 && crane.sling_reach() == 3
+	var/on_ground = beside && !train_deck_at(beside) && !(locate(/obj/structure/rails) in beside) && beside != load.loc
+	platform_check("goods/crane_swings_a_load_onto_a_car", on_car && on_ground && ("goods_crane" in states) && ("goods_crane_haul" in states))
+	if (aboard)
+		load.forceMove(aboard)
+	choices = crane.haul_choices(load)
+	var/turf/down = null
+	var/again = FALSE
+	for (var/label in choices)
+		if (findtext(label, "beside the track"))
+			down = choices[label]
+		if (findtext(label, "Swing it onto"))
+			again = TRUE
+	platform_check("goods/crane_sets_a_load_down", aboard && down && !train_deck_at(down) && !(locate(/obj/structure/rails) in down) && get_dist(down, crane) <= 3 && !again)
+
+	// The livestock ramp: it wants a car at its head and the door open.
+	var/obj/structure/trains/platform/stock = platform_car("stock_car", 326, 25, NORTH)
+	var/obj/structure/train_livestock_ramp/ramp = new(platform_turf(328, 22))
+	ramp.set_dir(WEST)
+	var/obj/structure/train_livestock_ramp/lone = new(platform_turf(328, 15))
+	lone.set_dir(WEST)
+	var/obj/structure/train_part/edge/gate = null
+	for (var/obj/structure/train_part/edge/G in platform_turf(327, 22))
+		if (G.is_door())
+			gate = G
+	var/mob/living/simple_animal/train_probe_dummy/cow = new(platform_turf(329, 22))
+	var/mob/living/simple_animal/train_probe_dummy/calf = new(platform_turf(329, 23))
+	var/mob/living/simple_animal/train_probe_dummy/stray = new(platform_turf(332, 22))
+	var/mob/living/human/platform_rider/drover = new(platform_turf(329, 21))
+	var/shut = gate && gate.density && findtext(ramp.ramp_problem(), "in the way") && !ramp.drive_aboard()
+	if (gate)
+		gate.set_open(TRUE)
+	platform_check("goods/ramp_wants_a_car_and_an_open_door", stock && shut && isnull(ramp.ramp_problem()) && ramp.car() && findtext(lone.ramp_problem(), "No car") && train_track_fixture(ramp) && ("livestock_ramp" in states))
+	qdel(lone)
+
+	// Penned animals go aboard, nearest first; people and strays stay.
+	var/went = ramp.work(drover, TRUE)
+	var/obj/structure/trains/platform/under_cow = train_deck_at(cow.loc)
+	var/obj/structure/trains/platform/under_calf = train_deck_at(calf.loc)
+	platform_check("goods/ramp_drives_animals_aboard", went == 2 && cow.loc == platform_turf(327, 22) && under_cow && under_calf && under_cow.car_id == stock.car_id && under_calf.car_id == stock.car_id && stray.loc == platform_turf(332, 22) && drover.loc == platform_turf(329, 21) && !ramp.drive_aboard() && train_livestock(cow) && !train_livestock(drover))
+	var/came = ramp.drive_off()
+	platform_check("goods/ramp_drives_animals_off", came == 2 && !train_deck_at(cow.loc) && !train_deck_at(calf.loc) && cow.loc != ramp.loc && calf.loc != ramp.loc && get_dist(cow, ramp) <= 3 && get_dist(calf, ramp) <= 3 && cow.x >= 328 && calf.x >= 328 && !ramp.drive_off())
+	cow.stat = DEAD
+	platform_check("goods/ramp_leaves_the_dead", !train_livestock(cow) && ramp.drive_aboard() == 1 && !train_deck_at(cow.loc) && train_deck_at(calf.loc))
+	qdel(cow)
+	qdel(calf)
+	qdel(stray)
+
+	// Destination cards: one to a car, read on examine and in the guard's journal.
+	var/list/segs = wagon.car_segments()
+	var/obj/structure/trains/platform/tail = segs[segs.len]
+	var/obj/item/weapon/wrench/tool = new(side)
+	var/blank = isnull(wagon.card_text()) && findtext(wagon.card_line(), "holder is empty") && !wagon.card_use(tool, hand)
+	var/carded = tail.set_card("Port Town, coal") && wagon.card_text() == "Port Town, coal" && tail.card_text() == "Port Town, coal" && !wagon.set_card("Port Town, coal") && findtext(tail.card_line(), "reads: Port Town, coal")
+	var/listed = FALSE
+	for (var/line in train_list_lines(wagon))
+		if (findtext(line, "carded \"Port Town, coal\""))
+			listed = TRUE
+	var/long = wagon.set_card("A very long destination that runs right off the edge of any card") && length(wagon.card_text()) <= 40
+	var/wiped = wagon.set_card("") && isnull(tail.card_text()) && isnull(flat.card_text())
+	platform_check("goods/destination_cards", blank && carded && listed && long && wiped)
+
+// Early rails (train_early.dm): columns 338 and 341.
+/proc/platform_early_run()
+	for (var/ty in 2 to 25)
+		platform_track(338, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+
+	// The hand car: a rider on it pumps the beam and it rolls.
+	var/obj/structure/trains/transport/handcar/H = new(platform_turf(338, 4))
+	H.dir = NORTH
+	var/mob/living/human/platform_rider/pumper = new(platform_turf(338, 4))
+	var/mob/living/human/platform_rider/mate = new(platform_turf(337, 4))
+	pumper.dir = NORTH
+	var/afoot = findtext(H.pump_problem(mate), "Climb onto") && !H.pump(mate, NORTH) && isnull(H.pump_problem(pumper))
+	var/stroke = H.pump(pumper, NORTH)
+	var/list/motion = H.train_motion()
+	var/off = stroke && motion && abs(H.roll_speed - 0.8) < 0.01 && H.travel_way(motion) == NORTH && H.pump_way == NORTH && !H.pump(pumper, NORTH) && abs(H.roll_speed - 0.8) < 0.01
+	var/rolled = H.roll_step() > 0
+	platform_check("early/hand_car_is_pumped_along", afoot && off && rolled && H.y == 5 && pumper.loc == H.loc && H.roll_speed < 0.8 && ("handcar" in states))
+
+	// One rider keeps it to a steady speed, two go faster, and pumping
+	// against the roll stops it.
+	for (var/i in 1 to 6)
+		H.pumped["\ref[pumper]"] = world.time - 20
+		H.pump(pumper, EAST)
+	var/alone = abs(H.roll_speed - 1.5) < 0.01 && H.pump_crew() == 1
+	mate.loc = H.loc
+	for (var/i in 1 to 4)
+		H.pumped["\ref[mate]"] = world.time - 10
+		H.pump(mate, NORTH)
+	var/paired = H.pump_crew() == 2 && abs(H.roll_speed - 2.25) < 0.01
+	var/strokes = 0
+	while (H.roll_speed > 0 && strokes < 10)
+		H.pumped["\ref[pumper]"] = world.time - 20
+		H.pump(pumper, SOUTH)
+		strokes++
+	platform_check("early/hand_car_speed_and_braking", alone && paired && strokes == 2 && H.roll_speed == 0 && isnull(H.train_motion()) && H.pump_way == SOUTH)
+
+	// It will not move braked or overloaded.
+	H.set_handbrake(TRUE)
+	var/braked = findtext(H.pump_problem(pumper), "handbrake")
+	H.set_handbrake(FALSE)
+	H.train_weight = 5
+	var/heavy = findtext(H.pump_problem(pumper), "too heavy")
+	H.train_weight = initial(H.train_weight)
+	platform_check("early/hand_car_limits", braked && heavy && isnull(H.pump_problem(pumper)) && H.y == 5)
+	mate.loc = platform_turf(336, 3)
+	pumper.loc = platform_turf(336, 4)
+
+	// A horse harnessed to the end of a string of wagons draws it.
+	// The fixture boots without the global lists the observers count in.
+	if (!GLOB.event_sources_count)
+		GLOB.event_sources_count = list()
+	if (!GLOB.event_listen_count)
+		GLOB.event_listen_count = list()
+	var/obj/structure/trains/storage/chaldron/C1 = new(platform_turf(338, 14))
+	var/obj/structure/trains/storage/chaldron/C2 = new(platform_turf(338, 13))
+	var/obj/structure/trains/storage/chaldron/C3 = new(platform_turf(338, 12))
+	C1.dir = NORTH
+	C2.dir = NORTH
+	C3.dir = NORTH
+	C1.connected = C2
+	C2.connected = C3
+	var/mob/living/simple_animal/horse/horse = new(platform_turf(338, 15))
+	var/mob/living/simple_animal/train_probe_dummy/sheep = new(platform_turf(337, 14))
+	var/mob/living/simple_animal/horse/far_horse = new(platform_turf(341, 20))
+	var/refused = findtext(C1.harness_refusal(sheep), "Only a horse") && findtext(C2.harness_refusal(horse), "one end") && findtext(C1.harness_refusal(far_horse), "next to") && !C1.harness(sheep)
+	C1.train_weight = 20
+	var/overweight = findtext(C1.harness_refusal(horse), "too heavy")
+	C1.train_weight = initial(C1.train_weight)
+	var/in_traces = isnull(C1.harness_refusal(horse)) && C1.harness(horse) && C1.draft_animal == horse && horse.hitched_train == C1 && horse.hitch_drag() > 0 && findtext(C1.draft_line(), "harnessed") && isnull(C2.draft_line()) && findtext(C3.harness_refusal(far_horse), "already draws")
+	platform_check("early/horse_is_harnessed_to_an_end", refused && overweight && in_traces && train_draft_load(horse) == 8 && ("chaldron" in states))
+	qdel(sheep)
+	horse.forceMove(platform_turf(338, 16))
+	var/one = C1.y == 15 && C2.y == 14 && C3.y == 13
+	horse.forceMove(platform_turf(338, 17))
+	horse.forceMove(platform_turf(338, 18))
+	platform_check("early/train_follows_the_horse", one && C1.y == 17 && C2.y == 16 && C3.y == 15 && C1.draft_animal == horse && !C1.roll_speed && !C1.automovement)
+
+	// From the other end it draws the train back the way it came.
+	C1.unharness()
+	horse.forceMove(platform_turf(338, 14))
+	var/turned = !horse.hitched_train && !horse.hitch_drag() && C3.harness(horse) && C3.draft_animal == horse
+	horse.forceMove(platform_turf(338, 13))
+	platform_check("early/horse_draws_from_either_end", turned && C3.y == 14 && C2.y == 15 && C1.y == 16 && C3.train_head() == C3)
+
+	// A brake left on, or a horse that wanders off, lets the traces go.
+	C2.set_handbrake(TRUE)
+	horse.forceMove(platform_turf(338, 12))
+	var/held = !C3.draft_animal && !horse.hitched_train && C3.y == 14
+	C2.set_handbrake(FALSE)
+	var/again = C3.harness(horse) == FALSE && C3.draw() == FALSE
+	horse.forceMove(platform_turf(338, 13))
+	again = !again ? FALSE : C3.harness(horse)
+	horse.forceMove(platform_turf(341, 10))
+	platform_check("early/traces_come_loose", held && again && !C3.draft_animal && !horse.hitched_train && C3.y == 14)
+	qdel(horse)
+	qdel(far_horse)
+
+	// Wooden rails: laid like iron ones, and an engine wears them fast.
+	var/obj/structure/rail_bed/B = track_place_bed(platform_turf(341, 5), NORTH)
+	var/obj/item/stack/rail_lengths/wooden/timber = new(platform_turf(342, 5))
+	B.lay_rails(timber, pumper)
+	var/laid = B.railed && B.wooden && B.color == WOODEN_RAIL_COLOR
+	var/obj/structure/rails/W = B.spike()
+	var/obj/structure/rails/iron = locate() in platform_turf(338, 20)
+	var/wooden = istype(W) && W.wooden && W.color == WOODEN_RAIL_COLOR && W.name == "wagonway" && iron && !iron.wooden && isnull(iron.color)
+	W.take_traffic(10, 1)
+	var/before = iron.wear
+	iron.take_traffic(10, 1)
+	platform_check("early/wooden_rails_wear_under_an_engine", laid && wooden && abs(W.wear - 0.8) < 0.001 && abs(iron.wear - before - 0.1) < 0.001)
+	var/obj/structure/rail_bed/back = W.pry_apart()
+	var/loose = istype(back) && back.wooden && back.railed
+	var/obj/item/stack/rail_lengths/lifted = back ? back.pry() : null
+	platform_check("early/wooden_rails_come_up_as_wood", loose && istype(lifted, /obj/item/stack/rail_lengths/wooden) && lifted.color == WOODEN_RAIL_COLOR && back && !back.railed && !back.wooden)
+
+/obj/structure/engine/train_probe_engine
+	maxpower = 200
+	on = TRUE
+	anchored = TRUE
+/obj/structure/engine/train_probe_engine/New()
+	return
+
+/proc/platform_electric_run()
+	for (var/ty in 2 to 25)
+		platform_track(350, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	// A small grid: an engine on a cable, and a transformer on that cable.
+	release_cable_autolink()
+	var/obj/structure/cable/C = new(platform_turf(354, 8))
+	var/obj/structure/engine/train_probe_engine/G = new(platform_turf(354, 8))
+	C.connections |= G
+	G.connections |= C
+	var/obj/structure/power_point/transformer/T = new(platform_turf(354, 8))
+	T.anchored = TRUE
+	T.attach_cable()
+
+	// Masts stand two tiles from the rails and turn their arm to the track.
+	var/obj/structure/train_catenary/M1 = new(platform_turf(352, 6))
+	var/obj/structure/train_catenary/M2 = new(platform_turf(352, 15))
+	var/obj/structure/train_catenary/stray = new(platform_turf(353, 22))
+	var/refused = !stray.put_up() && !stray.anchored && !(stray in train_catenary)
+	var/up = M1.put_up() && M2.put_up() && M1.dir == WEST && M1.wire_turf() == platform_turf(350, 6)
+	var/hung = M1.covers(platform_turf(350, 2)) && M1.covers(platform_turf(350, 10)) && !M1.covers(platform_turf(350, 11)) && M1.covers(platform_turf(351, 6)) && !M1.covers(platform_turf(352, 6))
+	var/along = train_catenary_over(platform_turf(350, 19)) == M2 && !train_catenary_over(platform_turf(350, 20))
+	var/art = ("catenary_mast" in states) && ("catenary_arm" in states) && ("catenary_hanger" in states) && ("catenary_wire" in states)
+	platform_check("electric/masts_hang_the_wire", refused && up && hung && along && art && M1.wire_images && M1.wire_images.len == 11 && !stray.wire_images)
+
+	// Masts whose wires meet are one line, live when one is fed from the grid.
+	var/datum/catenary_net/N = M1.network()
+	var/one_line = N && M2.network() == N && N.masts.len == 2
+	var/list/fed = N.feeders()
+	var/live = N.energise() && M1.line_live()
+	var/idle_draw = C.currentflow
+	// A mast restored from a save joins its line again.
+	train_catenary -= M1
+	M1.net = null
+	M1.after_load()
+	platform_check("electric/line_is_fed_from_the_grid", one_line && M1.power_point == T && !M2.power_point && fed.len == 1 && fed[1] == M1 && live && idle_draw == 1 && (M1 in train_catenary) && M1.network() == M2.network() && findtext(M1.line_text(M1.network()), "The wire is live"))
+	N = M1.network()
+
+	// The electric locomotive: a cab at each end, a hood between, no fuel.
+	var/obj/structure/trains/locomotive/electric/E = platform_car("loco_electric", 350, 9, NORTH)
+	if (!istype(E))
+		platform_check("electric/locomotive_builds", FALSE)
+		return
+	var/list/body = platform_segments(E.connected)
+	var/obj/structure/trains/platform/hood = body[1]
+	var/obj/structure/trains/platform/rear = E.rear_cab()
+	var/loco_art = ("loco_electric_1c" in states) && ("loco_electric_4r" in states) && ("roof_loco_electric_l" in states) && ("roof_loco_electric_bc" in states)
+	platform_check("electric/locomotive_builds", body.len == 3 && !E.density && hood.density && rear && rear.seg_index == 4 && !rear.density && loco_art && E.roof_images && E.roof_images.len == 3 && rear.roof_images && rear.roof_images.len == 3 && !hood.roof_images && E.car_load_weight() + 3 * hood.car_load_weight() == 5 && !E.max_fuel && E.works_in_multiple() && E.has_deadman())
+
+	// Pantograph up: it draws from the grid through the line, by its throttle.
+	var/mob/living/human/platform_rider/driver = new(platform_turf(350, 9))
+	var/ready = isnull(E.start_problem())
+	E.on = TRUE
+	E.started(driver)
+	var/standing = E.line_live && C.currentflow == 6
+	E.throttle = 3
+	var/pulling = E.steam_factor() == 1 && C.currentflow == 156 && N.demand() == 155
+	E.refresh_consist()
+	platform_check("electric/draws_from_the_grid_by_its_throttle", ready && standing && pulling && E.cruise_speed() > 0 && findtext(E.state_text(), "taking"))
+
+	// It burns nothing as it runs, and passes from one mast's wire to the next.
+	var/ran = platform_step(E, 3)
+	platform_check("electric/runs_without_fuel", ran == 3 && E.y == 12 && E.fuel == 1 && E.on && E.line_check(TRUE) && train_catenary_over(E.loc) == M2 && E.fuel_per_tile(3, 10) == 0)
+
+	// Off the end of the wire it has no power and lets go of the grid.
+	ran = platform_step(E, 8)
+	var/lost = !E.line_check(TRUE) && E.steam_factor() == 0 && E.cruise_speed() == 0 && E.on
+	platform_check("electric/coasts_off_the_wire", ran == 8 && E.y == 20 && lost && C.currentflow == 1 && findtext(E.start_problem(), "no overhead line") && findtext(E.no_power_text(), "overhead line"))
+	E.on = FALSE
+	E.throttle = 0
+	E.stopped(driver)
+
+	// The tram: a platform at each end, a saloon with seats between, a roof
+	// over every section.
+	var/obj/structure/trains/locomotive/electric/tram/TR = platform_car("loco_tram", 350, 9, NORTH)
+	if (!istype(TR))
+		platform_check("electric/tram_builds", FALSE)
+		return
+	body = platform_segments(TR.connected)
+	var/roofs = TR.roof_images ? 1 : 0
+	var/seats = 0
+	var/windows = 0
+	var/walk_in = !TR.density
+	for (var/obj/structure/trains/platform/P in body)
+		if (P.roof_images && P.roof_images.len == 3)
+			roofs++
+		if (P.density)
+			walk_in = FALSE
+		for (var/turf/S in train_platform_tiles(P.loc, P.dir))
+			for (var/obj/structure/bed/chair/chair in S)
+				seats++
+		for (var/obj/structure/train_part/edge/W in P.deck_parts)
+			if (W.style == "window")
+				windows++
+	var/tram_art = ("loco_tram_2c" in states) && ("roof_loco_tram_ml" in states) && ("roof_loco_tram_bc" in states) && ("roof_loco_tram_c" in states)
+	rear = TR.rear_cab()
+	platform_check("electric/tram_builds", body.len == 3 && walk_in && roofs == 4 && seats == 4 && windows == 4 && tram_art && rear && rear.seg_index == 4 && TR.haul == 10 && TR.max_train_speed == 2 && TR.line_draw == 40)
+
+	// A grid that cannot carry the engine at full throttle refuses it, keeps
+	// the line live and takes it at a lower notch.
+	G.maxpower = 30
+	driver.loc = platform_turf(350, 9)
+	TR.on = TRUE
+	TR.started(driver)
+	var/idling = TR.line_live
+	TR.throttle = 3
+	var/too_much = TR.steam_factor() == 0 && N.live && C.currentflow == 1
+	TR.throttle = 1
+	platform_check("electric/overloaded_grid_refuses_the_engine", idling && too_much && TR.steam_factor() == 1 && C.currentflow > 15 && C.currentflow < 18)
+
+	// With the generator stopped the wire is dead.
+	G.on = FALSE
+	var/dead = !M1.line_live() && !TR.line_check(TRUE) && findtext(TR.start_problem(), "dead") && findtext(M1.line_text(N), "The wire is dead")
+	var/mob/living/human/platform_rider/rider = new(platform_turf(350, 8))
+	var/safe = !train_catenary_strike(rider, SOUTH)
+	platform_check("electric/dead_line", dead && safe)
+
+	// Somebody on a car roof under a live wire is struck; off the wire not.
+	G.on = TRUE
+	G.maxpower = 200
+	var/struck = train_catenary_strike(rider, SOUTH)
+	rider.loc = platform_turf(350, 22)
+	platform_check("electric/live_wire_strikes_a_roof_rider", struck && rider.probe_burn == 40 && !train_catenary_strike(rider, SOUTH) && rider.probe_burn == 40)
+
+	// A mast taken down takes its wire with it and lets go of the grid.
+	TR.on = FALSE
+	TR.throttle = 0
+	TR.stopped(driver)
+	M2.take_down()
+	var/datum/catenary_net/alone = M1.network()
+	var/down = !M2.anchored && !M2.wire_images && !train_catenary_over(platform_turf(350, 15)) && alone.masts.len == 1
+	qdel(M1)
+	platform_check("electric/mast_comes_down", down && !(M1 in train_catenary) && !(M1 in T.served) && !(M1 in C.connections) && !train_catenary_over(platform_turf(350, 6)))
+
+/proc/platform_stations_run()
+	for (var/ty in 2 to 25)
+		platform_track(290, ty, NORTH)
+	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
+	var/obj/structure/trains/locomotive/A = platform_car("loco_diesel", 290, 12, NORTH)
+	if (!istype(A))
+		platform_check("stations/name_board", FALSE)
+		return
+	var/list/body = platform_segments(A.connected)
+	var/obj/structure/trains/platform/rear = body[body.len]
+	var/mob/living/human/platform_rider/driver = new(A.loc)
+	var/mob/living/human/platform_rider/rider = new(rear.loc)
+
+	// A name board speaks to trains both ways, and to everybody aboard.
+	var/obj/structure/train_lineside/station/board = new(platform_turf(292, 18))
+	board.set_dir(SOUTH)
+	var/blank = !board.station && isnull(board.sighting(A))
+	var/named = board.set_station("Port Town") && board.station == "Port Town" && findtext(board.name, "Port Town") && !board.set_station("Port Town")
+	A.reverser = 1
+	A.refresh_consist()
+	A.lineside_seen = null
+	A.lineside_watch()
+	var/list/read = A.lineside_seen
+	var/list/riders = A.train_riders()
+	platform_check("stations/name_board", blank && named && board.speaks_to(NORTH) && board.speaks_to(SOUTH) && read && (board in read) && riders.len == 2 && (driver in riders) && (rider in riders) && ("station_board" in states))
+
+	// The driver has the whistle, the bell and the headlamp.
+	var/list/stand = A.station_controls(A.cab_station(driver))
+	var/has = ("Sound the horn" in stand) && ("Ring the bell" in stand) && ("Light the headlamp" in stand) && A.whistle_name() == "horn"
+	A.on = FALSE
+	var/silent = isnull(A.sound_whistle(driver))
+	A.on = TRUE
+	var/blown = A.sound_whistle(driver) == 0 && A.sound_bell(driver)
+	A.work_control("Light the headlamp", driver)
+	stand = A.station_controls(A.cab_station(driver))
+	var/lit = A.headlamp && ("Put out the headlamp" in stand) && findtext(A.control_summary(), "Headlamp lit")
+	A.work_control("Put out the headlamp", driver)
+	platform_check("stations/whistle_bell_and_headlamp", has && silent && blown && lit && !A.headlamp)
+
+	// In the dark a train with no light ahead runs blind, at half speed.
+	var/was = time_of_day
+	A.refresh_consist()
+	var/by_day = A.lead_factor == 1 && !A.running_blind && !train_is_dark()
+	time_of_day = "Night"
+	A.refresh_consist()
+	var/blind = train_is_dark() && A.lead_factor == 0.5 && A.running_blind && findtext(A.control_summary(), "Running blind")
+	A.set_headlamp(TRUE)
+	A.refresh_consist()
+	var/lamp_lit = A.lead_factor == 1 && !A.running_blind && A.lamp_range == 5
+	var/stepped = platform_step(A, 1) == 1 && A.light_range == 5
+	A.set_headlamp(FALSE)
+	var/obj/item/train_lamp/lamp = new(A.loc)
+	lamp.set_shade("red")
+	A.refresh_consist()
+	var/red_is_no_light = A.lead_factor == 0.5 && A.lamp_range == 2
+	lamp.set_shade("white")
+	A.refresh_consist()
+	var/white_lights_the_way = A.lead_factor == 1 && !A.running_blind
+	time_of_day = was
+	A.refresh_consist()
+	platform_check("stations/running_blind_at_night", by_day && blind && lamp_lit && stepped && red_is_no_light && white_lights_the_way && A.lead_factor == 1)
+
+	// The hand lamp turns through its colours; red on the last car is the tail lamp.
+	lamp.set_shade(null)
+	var/list/shown = list()
+	for (var/i in 1 to 4)
+		lamp.attack_self(driver)
+		shown += lamp.shade ? lamp.shade : "out"
+	var/turns = jointext(shown, ",") == "white,red,green,out" && lamp.icon_state == "hand_lamp" && (lamp in train_lamps)
+	var/list/cars = train_consist_list(A.train_head())
+	var/none = findtext(train_tail_lamp_text(cars), "No tail lamp")
+	lamp.set_shade("red")
+	var/wrong_end = lamp.icon_state == "hand_lamp_red" && findtext(train_tail_lamp_text(cars), "No tail lamp") && train_lamp_on(A, "red") == lamp
+	lamp.loc = get_step(rear, EAST)
+	var/list/lines = train_list_lines(A)
+	platform_check("stations/hand_lamp_and_tail_lamp", turns && none && wrong_end && findtext(train_tail_lamp_text(cars), "Tail lamp showing") && isnull(train_lamp_on(A, "red")) && lines.len && findtext(lines[1], "Tail lamp showing") && ("hand_lamp" in states) && ("hand_lamp_white" in states) && ("hand_lamp_red" in states) && ("hand_lamp_green" in states))
+
 // How many of a type stand on a car's deck.
 /proc/platform_fitted(list/segs, kind)
 	. = 0
@@ -2443,6 +3490,16 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_crane_run()
 		platform_diesel_run()
 		platform_conductor_run()
+		platform_signals_run()
+		platform_derail_run()
+		platform_stations_run()
+		platform_big_warehouse_run()
+		platform_trackworks_run()
+		platform_turntable_run()
+		platform_trackwear_run()
+		platform_goods_run()
+		platform_early_run()
+		platform_electric_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

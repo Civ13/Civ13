@@ -40,6 +40,37 @@ class ShutdownNoticeSources(unittest.TestCase):
         self.assertIn('warn_seconds = warn_seconds)', read('code/modules/persistence/admin.dm'))
         self.assertIn('planned_shutdown_status_text()', read('code/game/mob/mob.dm'))
 
+    def test_host_shutdown_completion_does_not_promise_restart(self):
+        transaction = read('code/modules/persistence/restart_transaction.dm')
+        completion = transaction.split('diagnostic_phase = "final_validation"', 1)[1]
+        host_shutdown = completion.split('else if(shutdown)', 1)[1].split('else if(stay_down)', 1)[0]
+        self.assertIn('else if(prewarned)', host_shutdown)
+        fresh, maintenance = host_shutdown.split('else if(prewarned)', 1)
+        maintenance, neutral = maintenance.split('\n\t\t\telse\n', 1)
+        self.assertIn('restarting into a fresh nonpersistent round', fresh)
+        self.assertIn('The server is restarting; reconnect', maintenance)
+        self.assertIn('The server is shutting down. Your progress has been saved.', neutral)
+        self.assertNotIn('restarting', neutral)
+        self.assertNotIn('reconnect', neutral)
+        self.assertIn('write_stop_marker("host")', neutral)
+
+    def test_round_save_and_shutdown_notices_name_their_region(self):
+        webhooks = read('code/modules/webhooks/webhooks.dm')
+        helper = webhooks[webhooks.index('/proc/webhook_add_region('):]
+        helper = helper[:helper.index('\n/proc/', 1)]
+        self.assertIn('shard_group.enabled', helper)
+        self.assertIn('query["region"] = shard_group.region', helper)
+        self.assertIn('query["region_name"] = copytext(shard_group.name, 1, 81)', helper)
+        for proc in ('/proc/webhook_send_round_start(', '/proc/webhook_send_world_save('):
+            body = webhooks[webhooks.index(proc):]
+            body = body[:body.index('\n/proc/', 1)]
+            self.assertIn('webhook_add_region(query)', body, proc)
+        notice = read('code/modules/persistence/shutdown_notice.dm')
+        body = notice[notice.index('/proc/planned_shutdown_webhook('):]
+        self.assertLess(body.index('webhook_add_region(query)'), body.index('webhook_send("shutdown_notice", query)'))
+        # The standalone countdown probe compiles shutdown_notice.dm alone, so it stubs the helper.
+        self.assertIn('/proc/webhook_add_region(list/query) return query', read('tests/shutdown_notice/probe.dm'))
+
 
 if __name__ == '__main__':
     unittest.main()

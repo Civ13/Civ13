@@ -64,6 +64,13 @@ var/global/aqueduct_last_flow = -600
 /obj/structure/aqueduct/New()
 	..()
 	aqueduct_revision++
+	if (!restoring)
+		aqueduct_update_around(get_turf(src))
+
+// Junctions follow the neighbours, which a load places one by one: join up
+// once the level is in.
+/obj/structure/aqueduct/after_load()
+	..()
 	aqueduct_update_around(get_turf(src))
 
 /obj/structure/aqueduct/on_runtime_spawn()

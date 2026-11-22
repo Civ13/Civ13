@@ -21,7 +21,9 @@ var/global/list/faction_halls = list() // every faction hall, designated or not
 
 // Tier -> list(name, member limit, earliest ordinal age, indoors,
 // list(material kind = list(stack type, amount, label))).
-var/global/list/faction_hall_tiers = list(
+var/global/list/faction_hall_tiers = faction_hall_tiers_table()
+/proc/faction_hall_tiers_table()
+	return list(
 	list("council fire", 15, 0, FALSE, list(
 		"wood" = list(/obj/item/stack/material/wood, 40, "wood"),
 		"stone" = list(/obj/item/stack/material/stone, 40, "stone"))),
@@ -69,7 +71,7 @@ var/global/list/faction_hall_tiers = list(
 /obj/map_metadata/proc/faction_infrastructure_limit(faction)
 	var/tier = faction_hall_tier(faction)
 	var/limit = tier ? faction_hall_tiers[tier][2] : FACTION_HALL_BASE_LIMIT
-	return limit + faction_colony_count(faction) * FACTION_HALL_COLONY_BONUS
+	return limit + faction_colony_count(faction) * FACTION_HALL_COLONY_BONUS + province_rank_member_bonus(faction) // province_ranks.dm
 
 // --- The hall ----------------------------------------------------------------
 
@@ -186,6 +188,7 @@ var/global/list/faction_hall_tiers = list(
 		return ..()
 	if (faction)
 		examine(user)
+		province_ledger_show(user, src) // province_ranks.dm: a seat's Province ledger
 		return
 	var/block = designate_block(user)
 	if (block)

@@ -40,16 +40,4 @@
 		return
 	return ..()
 
-// The big bathtub has its own procs that never reach the shower ones above.
-/obj/structure/shower/bathtub/big/attack_hand(mob/living/M)
-	if (!on && barren_world())
-		to_chat(M, SPAN_WARNING("Nothing comes out of \the [src]. There is no ground water here."))
-		return
-	return ..()
-
-/obj/structure/shower/bathtub/big/process()
-	if (on && barren_world())
-		on = FALSE
-		update_icon()
-		return
-	return ..()
+// Bathtubs check the same in their own fill and process (bathtubs.dm).

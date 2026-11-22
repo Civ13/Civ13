@@ -24,7 +24,7 @@ def strings(text):
 def catalog(source):
     source = source.split('/proc/action_keybinding_yielding()')[0]
     rows = re.findall(r'^\t\t"(\w+)" = list\("([^"]+)", "([^"]+)", list\(([^)]*)\), list\(([^)]*)\)\)', source, re.M)
-    if len(rows) != 21:
+    if len(rows) != 22:
         raise AssertionError('Catalog grammar or action count changed; review skin capacity')
     return {key: (label, command, strings(normal), strings(hotkey)) for key, label, command, normal, hotkey in rows}
 
@@ -102,7 +102,7 @@ class Keybindings(unittest.TestCase):
         entries = catalog(read(SOURCE))
         for mode, rows in skin(read('interface/skin.dmf')).items():
             managed = {row['id']: row for row in rows if row['id'].startswith('action_')}
-            self.assertEqual(len(managed), 42)
+            self.assertEqual(len(managed), 44)
             for action, (_, command, normal, hotkey) in entries.items():
                 defaults = normal if mode == 'macro' else hotkey
                 for index in range(2):
@@ -199,7 +199,7 @@ class Keybindings(unittest.TestCase):
         entries = catalog(source)
         body = source.split('/proc/action_keybinding_yielding()')[1].split('/proc/')[0]
         yielding = strings(body)
-        self.assertEqual(yielding, ['storage', 'storage_back', 'storage_belt', 'storage_clothing', 'resist', 'craft'])
+        self.assertEqual(yielding, ['storage', 'storage_back', 'storage_belt', 'storage_clothing', 'resist', 'craft', 'sprint'])
         for action in yielding:
             self.assertIn(action, entries)
         self.assertEqual(entries['storage_belt'][1], 'open-belt-storage')

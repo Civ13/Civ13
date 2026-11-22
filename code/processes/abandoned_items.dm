@@ -119,27 +119,27 @@ var/global/abandoned_item_cursor = 1
 	// or scheduler slot is meaningful in this runtime.
 	reset_abandonment()
 	register_abandoned_item()
+	arcane_enchant_loaded() // arcane_enchant.dm
 
 /obj/item/proc/abandonment_protected()
 	if (anchored || nodrop || abstract || contents.len || pulledby || throwing)
 		return TRUE
 	var/atom/container = loc
-	var/protected = FALSE
 	for (var/depth = 1, depth <= 64, depth++)
 		if (!container || container.gcDestroyed)
 			return TRUE // nullspace/pending deletion is never a disposal target
 		if (ismob(container))
 			return TRUE // direct, nested and equipped inventories, including corpses
 		if (isturf(container))
-			return protected
+			return FALSE
 		if (istype(container, /obj/item/weapon/storage))
-			protected = TRUE
+			return TRUE
 		else if (istype(src, /obj/item/ammo_casing) && (istype(container, /obj/item/ammo_magazine) || istype(container, /obj/item/weapon/gun)))
-			protected = TRUE // Native ammunition storage/chambers preserve spent cases.
+			return TRUE // Native ammunition storage/chambers preserve spent cases.
 		else if (istype(container, /obj/structure/closet))
 			var/obj/structure/closet/C = container
 			if (!C.opened)
-				protected = TRUE
+				return TRUE
 		// Arbitrary objects and fake containers do not confer storage.
 		container = container.loc
 	return TRUE // pathological containment depth: conservative, bounded traversal

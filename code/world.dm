@@ -134,7 +134,9 @@ var/world_is_open = TRUE
 	// Build the shared research-tree node registry (faction-agnostic).
 	build_research_tree()
 	// The admin Spawn picker's type list, built here so its first opening does not stall.
-	build_spawn_catalog()
+	// The gateway hosts no play and starts as fast as it can: there it is built on first use.
+	if (!region_gateway_here())
+		build_spawn_catalog()
 	processScheduler = new
 	// SStimer: addtimer() callbacks such as full-auto fire.
 	Master.start_timer_loop()
@@ -416,49 +418,44 @@ var/world_topic_spam_protect_time = world.timeofday
 		"character_unconfirmed" = !!(map && map_storage && persistence_bed_return_enabled() && (!persistence_player_restore_ready || map_storage.player_restoration_blocked()))
 	)
 
+// Short player-facing labels (Hub listing and stat panel). The world line is
+// empty while the world simply runs; the joining line says only whether and
+// when a player can join. Wording reviewed by Fable (2026-11-22).
 /proc/player_world_activity(list/state)
-	if(state["recovery_hold"]) return "World recovery needs administrator attention."
-	if(state["moving"]) return "The world is moving to the updated server."
-	if(state["standby"]) return "Standby server is waiting for the world to move over."
-	if(state["kind"] == "save")
-		if(state["phase"] == "admitted") return "Preparing a world save."
-		if(state["phase"] == "candidate_validation") return "Validating the world save."
-		if(state["phase"] == "write_marker") return "Finishing the world save."
-		return "Saving the world."
-	if(state["kind"] == "load")
-		if(state["phase"] == "preflight" || state["phase"] == "allocate_levels") return "Validating and preparing the saved world."
-		if(state["phase"] == "metadata") return "Restoring world state."
-		if(state["phase"] == "players") return "Restoring player readiness."
-		return "Loading the saved world."
-	if(state["startup_pending"] || state["restart_hold"]) return "Preparing world recovery."
+	if(state["recovery_hold"]) return "Maintenance"
+	if(state["moving"] || state["standby"]) return "Updating"
+	if(state["kind"] == "save") return "Saving"
+	if(state["kind"] == "load") return "Loading"
+	if(state["startup_pending"] || state["restart_hold"]) return "Maintenance"
 	if(state["restart_busy"])
-		if(state["restart_phase"] == "notice") return "Maintenance is scheduled."
-		if(state["restart_phase"] == "post_save_validation" || state["restart_phase"] == "final_validation") return "Validating the saved world."
-		if(state["restart_phase"] == "intent_publication") return "Preparing the saved world for restart."
-		if(state["restart_phase"] == "shutdown") return "Server shutdown is in progress."
-		return "World maintenance is in progress."
-	if(state["lifecycle_busy"]) return "Preparing a save and shutdown."
-	if(state["maintenance_pending"]) return "Maintenance requested, shutdown is not yet confirmed."
-	if(state["persistence_busy"]) return "World work is in progress."
-	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting."
-	return "Server is running."
+		if(state["restart_phase"] == "notice") return "Restart soon"
+		return "Restarting"
+	if(state["lifecycle_busy"] || state["maintenance_pending"]) return "Shutting down"
+	if(state["persistence_busy"]) return "Busy"
+	if(!state["ticker_known"] || !state["map_known"]) return "Starting"
+	return ""
 
 /proc/player_join_status(list/state)
-	if(state["recovery_hold"]) return "World recovery needs administrator attention."
-	if(state["moving"] || state["standby"]) return "The world is moving to the updated server - reconnect in a few minutes."
-	if(state["kind"] == "load") return "World is loading - please wait before joining."
-	if(state["kind"] == "save") return "World is saving - joining may be delayed."
-	if(state["startup_pending"] || state["restart_hold"]) return "World recovery is pending - please wait."
-	if(state["restart_busy"]) return "Maintenance may affect joining - please wait."
-	if(state["persistence_busy"] || state["lifecycle_busy"]) return "World work is in progress - joining may be delayed."
-	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting - please wait."
-	if(state["round_state"] < GAME_STATE_PLAYING) return "Round has not started - please wait."
-	if(state["round_state"] != GAME_STATE_PLAYING) return "Round has finished - wait for the next round."
-	if(!state["players_can_join"]) return "Joining is temporarily unavailable."
-	if(state["entry_status"] == "unknown") return "Joining status is unavailable."
-	if(state["entry_status"] == "locked") return "Joining is locked by an administrator."
-	if(state["character_unconfirmed"]) return "Character recovery is not confirmed - joining may be delayed."
-	return "Round is open - account, character and role checks still apply."
+	if(state["recovery_hold"]) return "Paused"
+	if(state["moving"] || state["standby"]) return "Reopens shortly"
+	if(state["kind"] == "load") return "Opens soon"
+	if(state["kind"] == "save") return "Open"
+	if(state["startup_pending"] || state["restart_hold"]) return "Opens soon"
+	if(state["restart_busy"])
+		if(state["restart_phase"] == "notice") return "Open"
+		return "After restart"
+	if(state["persistence_busy"] || state["lifecycle_busy"]) return "Open"
+	if(!state["ticker_known"] || !state["map_known"]) return "Opens soon"
+	if(state["round_state"] < GAME_STATE_PLAYING) return "Opens at round start"
+	if(state["round_state"] != GAME_STATE_PLAYING) return "Next round soon"
+	if(!state["players_can_join"]) return "Closed for now"
+	if(state["entry_status"] == "unknown") return "Unknown"
+	if(state["entry_status"] == "locked") return "Closed by staff"
+	if(state["character_unconfirmed"]) return "Open (characters loading)"
+	return "Open"
+
+// The BYOND hub keeps about this many characters of a listing's status.
+#define HUB_STATUS_MAX_LENGTH 255
 
 /world/proc/update_status()
 
@@ -467,11 +464,29 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/s = ""
 
-	var/server_title = hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)
-	if (!server_title)
-		server_title = hub_status_text(customserver_name())
-	s += "<center><b>[server_title]</b></center><br>"
+	// The BYOND hub keeps only about the first 255 characters of a status, so the
+	// short title and the live lines come first; links and the banner go last.
+	s += "<b>[hub_status_text(customserver_name())]</b><br>"
 
+	// The gateway is the group's hub entry: it shows the lands, not its own empty map.
+	if (region_gateway_here())
+		s += region_gateway_hub_status()
+	else if (map)
+		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
+	var/list/player_status = player_status_observation()
+	var/world_activity = player_world_activity(player_status)
+	if (world_activity)
+		s += "<b>World:</b> [hub_status_text(world_activity)]<br>"
+	s += "<b>Joining:</b> [hub_status_text(player_join_status(player_status))]<br>"
+
+	// we can't execute code in config settings, so this is a workaround.
+	var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
+	if (map && !region_gateway_here())
+		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
+	if (hub_body)
+		s += hub_body
+	if (copytext(s, -4) != "<br>")
+		s += "<br>"
 	var/list/community_links = list()
 	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
 	var/website_link = hub_status_link(config.websiteurl, "Website")
@@ -479,25 +494,21 @@ var/world_topic_spam_protect_time = world.timeofday
 		community_links += discord_link
 	if (website_link)
 		community_links += website_link
-	if (community_links.len)
-		s += "[jointext(community_links, " | ")]<br>"
+	// Anything the hub would cut mid-tag is left out rather than shown broken.
+	var/links_line = community_links.len ? "[jointext(community_links, " | ")]<br>" : ""
+	if (links_line && length(s) + length(links_line) <= HUB_STATUS_MAX_LENGTH)
+		s += links_line
 
-	if (config.hub_banner_url)
-		s += "<img src=\"[config.hub_banner_url]\"><br>"
-	if (map)
-		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
-	var/list/player_status = player_status_observation()
-	s += "<b>World:</b> [hub_status_text(player_world_activity(player_status))]<br>"
-	s += "<b>Joining:</b> [hub_status_text(player_join_status(player_status))]<br>"
+	var/banner_line = config.hub_banner_url ? "<img src=\"[config.hub_banner_url]\"><br>" : ""
+	if (banner_line && length(s) + length(banner_line) <= HUB_STATUS_MAX_LENGTH)
+		s += banner_line
 
-	// we can't execute code in config settings, so this is a workaround.
-	var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
-	if (map)
-		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
-	if (hub_body)
-		s += hub_body
-
+	// The hub adds its own line break after the status.
+	if (copytext(s, -4) == "<br>")
+		s = copytext(s, 1, -4)
 	status = s
+
+#undef HUB_STATUS_MAX_LENGTH
 
 /proc/get_packaged_server_status_data()
 	. = ""
@@ -545,17 +556,22 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(current_player_status != last_player_status)
 			world.update_status()
 			last_player_status = current_player_status
-		var/F = file("serverdata.txt")
-		if (fexists("serverdata.txt"))
-			fdel(F)
-		F << get_packaged_server_status_data()
+		// A standby loads in the region's own folder while the region still runs there:
+		// its empty roster must not replace the live world's heartbeat, or the bot's
+		// player counts flicker between the two until the handover opens the port.
+		if (!persistence_restart || !persistence_restart.standby)
+			var/F = file("serverdata.txt")
+			if (fexists("serverdata.txt"))
+				fdel(F)
+			F << get_packaged_server_status_data()
 		sleep (100)
 
 var/global/nextsave = 0
 var/global/persistence_reboot_scheduled = FALSE
-// Automatic saves never run during active play (Val, 2026-11-05). They wait
-// until no one but the host is online; admins can still save by hand, and
-// players can vote for a save (see persistence_save_vote_block_reason()).
+// Automatic saves wait until no one but the host is online (Val, 2026-11-05);
+// admins can still save by hand, and players can vote for a save (see
+// persistence_save_vote_block_reason()). The one exception is the four-hour
+// checkpoint (occupied_checkpoint.dm, Val 2026-11-21).
 var/global/persistence_played_since_save = FALSE
 var/global/persistence_empty_since = 0
 var/global/persistence_reboot_due = FALSE
@@ -580,9 +596,11 @@ var/global/persistence_reboot_due = FALSE
 				if (!nextsave)
 					nextsave = world.realtime + 216000
 				if (persistence_active_players())
-					// Hold every automatic save while people are playing.
+					// Hold every automatic save while people are playing, except
+					// the checkpoint that keeps the last save under four hours old.
 					persistence_played_since_save = TRUE
 					persistence_empty_since = 0
+					persistence_occupied_checkpoint()
 				else
 					// The empty timer restarts while any save runs. Pulling the
 					// schedule in during a save started a second save as soon as

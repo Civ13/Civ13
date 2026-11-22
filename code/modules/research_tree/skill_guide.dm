@@ -4,7 +4,9 @@
 // Opened from IC > Skills Guide; the Status and Scholarship tabs point at it.
 
 // skill => list(what it does, what raises it). Magic is left out on purpose.
-var/global/list/skill_guide_rows = list(
+var/global/list/skill_guide_rows = skill_guide_rows_table()
+/proc/skill_guide_rows_table()
+	return list(
 	"strength" = list("Melee damage, mining and woodcutting speed.", "Mining, woodcutting, melee fights and exercise equipment."),
 	"crafting" = list("Which recipes and workbenches you can use, crafting speed and the quality of weapons you make.", "Making anything. Things you have not made before teach far more than repeats."),
 	"dexterity" = list("Dodging melee attacks and movement speed.", "Melee fights, dodging and exercise equipment."),
@@ -19,13 +21,16 @@ var/global/list/skill_guide_rows = list(
 	"farming" = list("Ploughing speed, checking a plant's water, and seeds and crops per harvest.", "Planting, ploughing and harvesting."),
 	"hunting" = list("Meat and fat from butchering.", "Butchering dead animals."),
 	"swimming" = list("How well you cross deep and rough water.", "Swimming. New kinds of water teach more."),
+	"unarmed" = list("Damage with your fists.", "Landing punches in real fights, and conditioning your hands on a makiwara post, a gravel pail or bare rock."),
 	"philosophy" = list("Founding a religion and writing language books and holy books.", "Studying a chapter you had not studied before, tutoring someone through one, writing or copying a chapter and comparing notes."))
 
 // discipline => what raises it, beyond bench work on its own subjects.
-var/global/list/discipline_guide_rows = list(
+var/global/list/discipline_guide_rows = discipline_guide_rows_table()
+/proc/discipline_guide_rows_table()
+	return list(
 	"mathematics" = "Half of everything you learn in any other discipline also goes here. Mastering Philosophy adds to it.",
 	"engineering" = "Research, study and writing of building, tool and machine subjects, prototypes, and mastering Crafting.",
-	"natural_science" = "Finding rocks and ores you have not recorded, its practice tool, research on its first subjects (metals, alloys and chemistry), and mastering Swimming.",
+	"natural_science" = "Recording rocks, ores, weather and waters you have not recorded, its practice tool, mining, smelting and firing clay or glass written into a book, syntheses at a reaction bench, research on its subjects (metals, alloys and chemistry), and mastering Swimming.",
 	"medicine" = "Research, study and writing of medical subjects, surgery written into a book, and mastering Medical.",
 	"agriculture" = "Research, study and writing of farming subjects, foraging and butchering written into a book, and mastering Farming or Hunting.",
 	"military" = "Research, study and writing of weapon subjects, shooting written into a book, and mastering a weapon skill.")

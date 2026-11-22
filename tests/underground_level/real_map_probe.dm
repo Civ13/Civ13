@@ -77,8 +77,9 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 	var/awake = 0
 	var/area/caves = dug_underground_area()
 	for(var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
-		if(T.type == /turf/sky/building)
-			if(T.loc != caves) strays++
+		// Unformed rock: the native fill, or a compiled level's own unformed type.
+		if(istype(T, /turf/sky/building))
+			if(T.loc != caves && T.type == /turf/sky/building) strays++
 			if(!building_cell_asleep(T)) awake++
 		else
 			formed++
@@ -92,9 +93,12 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 
 /datum/underground_real_probe/proc/surface_spot()
 	for(var/tries = 1, tries <= 200000, tries++)
-		var/turf/T = locate(rand(30, world.maxx - 60), rand(30, world.maxy - 30), DUG_SURFACE_Z)
+		var/turf/T = locate(rand(30, world.maxx - 60), rand(30, world.maxy - 30), underground_surface_z())
 		if(!istype(T, /turf/floor) || T.density || istype(T, /turf/floor/beach/water)) continue
-		if(dug_underground_rock(T) == /turf/wall/rockwall) continue
+		if(underground_above(T) || dug_underground_rock(T) == /turf/wall/rockwall) continue
+		if(locate(/obj/structure/multiz) in T) continue
+		var/turf/U = locate(T.x, T.y, underground_level_z())
+		if(!dug_underground_unformed(U) && (U.density || !istype(U, /turf/floor))) continue
 		return T
 	return null
 
@@ -104,11 +108,13 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 	var/started = world.timeofday
 	wait_for("cave_ready", 6000, "The cave and standing levels were never added")
 	result["levels_ready_s"] = (world.timeofday - started) / 10
-	var/z = dug_underground_z()
-	if(!check(z == building_base_maxz() + 1, "write: the cave is the first added level ([z])")) return
-	check(multiz_level_below(DUG_SURFACE_Z) == z && multiz_level_above(z) == DUG_SURFACE_Z, "write: the cave lies under the surface")
+	var/z = underground_level_z()
+	var/compiled = map.underground_compiled_z
+	if(!check(compiled ? z == compiled : z == building_base_maxz() + 1, "write: the cave is the compiled level or the first added level ([z])")) return
+	check(multiz_level_below(underground_surface_z()) == z && multiz_level_above(z) == underground_surface_z(), "write: the cave lies under the surface")
 	var/list/fresh = census(z, "fresh")
-	check(fresh["formed"] == 1 && !fresh["unformed_outside_caves"] && !fresh["unformed_awake"], "write: a fresh cave is unformed rock in the cave area, asleep, with only its marker formed")
+	if(!compiled)
+		check(fresh["formed"] == 1 && !fresh["unformed_outside_caves"] && !fresh["unformed_awake"], "write: a fresh cave is unformed rock in the cave area, asleep, with only its marker formed")
 	mark("dig")
 	var/turf/surface = surface_spot()
 	if(!check(surface, "write: found diggable ground")) return
@@ -118,6 +124,7 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 	var/turf/head = below
 	for(var/i = 1 to 24)
 		var/turf/next = dug_underground_form(get_step(head, EAST))
+		if(!next) break
 		if(next.density && !istype(next, /turf/wall/rockwall/bedrock))
 			next = next.ChangeTurf(/turf/floor/dirt)
 		head = locate(next.x, next.y, next.z)
@@ -125,12 +132,48 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 	result["tunnel_end"] = "[head.x],[head.y]"
 	var/exposed = 0
 	for(var/turf/T in block(locate(1, 1, z), locate(world.maxx, world.maxy, z)))
-		if(T.type == /turf/sky/building || T.density) continue
+		if(istype(T, /turf/sky/building) || T.density) continue
 		for(var/d in alldirs)
 			if(dug_underground_unformed(get_step(T, d))) exposed++
 		TICK_CHECK
 	check(!exposed, "write: no open cell touches unformed rock ([exposed])")
 	check(dug["open"] >= 1 && dug["lit_open"] == dug["open"], "write: open cells are lit ([dug["lit_open"]] of [dug["open"]])")
+	// --deep N: shafts down to depth N, each with a short tunnel, the way a
+	// player digs on from the deepest level.
+	var/deep = text2num(world.params["deep"])
+	if(deep > 1)
+		mark("deep")
+		var/list/deep_rows = list()
+		var/turf/shaft = below
+		for(var/depth = 2 to deep)
+			var/started_dig = world.timeofday
+			if(!check(underground_create(depth), "write: depth [depth] is admitted ([world_z_budget.last_error])")) break
+			var/dz = underground_z_at(depth)
+			check(dz == world.maxz && underground_depth_of(dz) == depth && multiz_level_below(underground_z_at(depth - 1)) == dz, "write: depth [depth] lies under depth [depth - 1]")
+			var/create_s = (world.timeofday - started_dig) / 10
+			// Find a spot near the shaft that is open rock below.
+			var/turf/next_below
+			for(var/r = 0, r <= 12 && !next_below, r++)
+				for(var/turf/C in range(r, shaft))
+					if(get_dist(C, shaft) != r || C.density || C.x < 3 || C.y < 3 || C.x > world.maxx - 30 || C.y > world.maxy - 3) continue
+					next_below = dug_underground_open_below(null, C, TRUE, depth)
+					if(next_below)
+						shaft = C
+						break
+			if(!check(next_below && !next_below.density, "write: digging down opens a cell on depth [depth]")) break
+			var/turf/dhead = next_below
+			for(var/i = 1 to 12)
+				var/turf/dnext = dug_underground_form(get_step(dhead, EAST))
+				if(!dnext) break
+				if(dnext.density && !istype(dnext, /turf/wall/rockwall/bedrock))
+					dnext = dnext.ChangeTurf(/turf/floor/dirt)
+				dhead = locate(dnext.x, dnext.y, dnext.z)
+			var/list/row = census(dz, "deep[depth]")
+			row["create_s"] = create_s
+			deep_rows["[depth]"] = row["formed"]
+			check(row["lit_open"] == row["open"] && !row["unformed_awake"], "write: depth [depth] open cells lit, unformed asleep")
+			shaft = next_below
+		result["deep"] = deep_rows
 	// --storeys N: grow the open-air levels a roof would add, up to N built.
 	var/storeys = text2num(world.params["storeys"])
 	if(storeys)
@@ -155,8 +198,21 @@ var/global/datum/underground_real_probe/underground_real_probe = new
 	result["startup_status"] = persistence_startup_recovery_status
 	if(!check(isnull(persistence_startup_recovery_status), "read: startup restored the save ([map_storage.last_error])")) return
 	start_round()
-	var/z = dug_underground_z()
+	var/z = underground_level_z()
 	if(!check(z, "read: the restored world has its cave")) return
+	var/deep = text2num(world.params["deep"])
+	if(deep > 1)
+		check(underground_levels().len == deep, "read: all [deep] underground levels came back ([underground_levels().len])")
+		var/list/expect_deep = list()
+		for(var/pair in splittext(world.params["deep_formed"], "-"))
+			var/list/kv = splittext(pair, ".")
+			if(kv.len == 2) expect_deep[kv[1]] = text2num(kv[2])
+		for(var/depth = 2 to deep)
+			var/dz = underground_z_at(depth)
+			if(!check(dz && multiz_level_below(underground_z_at(depth - 1)) == dz, "read: depth [depth] lies under depth [depth - 1]")) continue
+			var/list/row = census(dz, "restored_deep[depth]")
+			check(row["formed"] == expect_deep["[depth]"], "read: depth [depth] formed cells came back ([row["formed"]] of [expect_deep["[depth]"]])")
+			check(!row["unformed_outside_caves"] && !row["unformed_awake"] && row["lit_open"] == row["open"], "read: depth [depth] unformed asleep in the cave area, open cells lit")
 	var/list/restored = census(z, "restored")
 	if(world.params["maxz"])
 		check(world.maxz == text2num(world.params["maxz"]), "read: every added level came back ([world.maxz] of [world.params["maxz"]])")

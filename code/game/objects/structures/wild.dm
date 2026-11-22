@@ -175,7 +175,7 @@ var/list/seed_list_jungle
 	var/area/caribbean/A = get_area(get_turf(src))
 	if (!A)
 		return
-	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE && map.ID != MAP_NOMADS_AMERICAS_NORTH && map.ID != MAP_NOMADS_AMERICAS_SOUTH && map.ID != MAP_NOMADS_ASIA)
+	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE && map.ID != MAP_NOMADS_AMERICAS_NORTH && map.ID != MAP_NOMADS_AMERICAS_SOUTH && map.ID != MAP_NOMADS_ASIA && map.ID != MAP_NOMADS_EARTH_EUROPE && map.ID != MAP_NOMADS_EARTH_MEDITERRANEAN && map.ID != MAP_NOMADS_EARTH_AFRICA && map.ID != MAP_NOMADS_EARTH_ASIA && map.ID != MAP_NOMADS_EARTH_OCEANIA && map.ID != MAP_NOMADS_EARTH_GREENLAND && map.ID != MAP_NOMADS_EARTH_ANTARCTICA)
 		return pick_seed_by_biome()
 	else
 		return pick_seed_by_biome(A.climate)
@@ -229,10 +229,10 @@ var/list/seed_list_jungle
 		timed_chop = TRUE
 		user.visible_message(SPAN_DANGER("[user] begins to chop down \the [src]!"), SPAN_DANGER("You begin to chop down \the [src]!"))
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
-		var/datum/resource_work_animation/work_animation = user.prepare_resource_work_animation(HT, src, 30*HT.chopping_speed)
+		var/datum/resource_work_animation/work_animation = user.prepare_resource_work_animation(HT, src, work_delay(user, CHOP_TREE_TIME, WORK_CHOP, HT))
 		var/completed
 		try
-			completed = do_after(user, 30*HT.chopping_speed, user.loc)
+			completed = do_after(user, work_delay(user, CHOP_TREE_TIME, WORK_CHOP, HT), user.loc)
 		catch (var/exception/chopping_error)
 			if (work_animation)
 				work_animation.stop()
@@ -241,11 +241,15 @@ var/list/seed_list_jungle
 			work_animation.stop()
 		if (completed)
 			health = 0
+			var/turf/fell_at = get_turf(src)
+			var/was_tree = istype(src, /obj/structure/wild/tree)
 			try_destroy()
 			HT.apply_wear(0.25, WEAR_WORK)
 			if (istype(user, /mob/living/human))
 				var/mob/living/human/H = user
 				H.adaptStat("strength", 1)
+				if (was_tree && QDELETED(src))
+					H.arcane_felled_tree(fell_at)
 			return
 	else
 		switch(W.damtype)
@@ -300,6 +304,12 @@ var/list/seed_list_jungle
 	fit_trunk_bounds()
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
+	if (resin_tap_attackby(src, W, user)) // resin.dm
+		return
+	if (lacquer_tap_attackby(src, W, user)) // lacquer.dm
+		return
+	if (sap_tap_attackby(src, W, user)) // syrups.dm
+		return
 	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
@@ -893,7 +903,7 @@ var/list/seed_list_jungle
 	if (is_tool(W, TOOL_SHOVEL))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		user.visible_message(SPAN_NOTICE("[user] starts digging out \the [src]."), SPAN_NOTICE("You start digging out \the [src]."))
-		if (do_after(user, 50, src))
+		if (do_after(user, work_delay(user, 50, WORK_DIG, W), src))
 			if (QDELETED(src))
 				return TRUE
 			user.visible_message(SPAN_NOTICE("[user] digs out \the [src] and pulls up some wood from its roots."), SPAN_NOTICE("You dig out \the [src] and pull up some wood from its roots."))
@@ -1295,6 +1305,8 @@ var/list/seed_list_jungle
 		qdel(src)
 
 /obj/structure/wild/jungle/attackby(obj/item/W as obj, mob/user as mob)
+	if (rubber_tap_attackby(src, W, user)) // rubber_tapping.dm
+		return
 	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
@@ -1391,6 +1403,8 @@ var/list/seed_list_jungle
 	icon_state = "cinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
+	if (silk_pick_attack_hand(src, user)) // silk.dm
+		return
 	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
 		var/mob/living/human/H = user
 		if (H.gorillaman)

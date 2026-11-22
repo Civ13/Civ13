@@ -17,7 +17,7 @@
 
 // Battery capacity and costs, in battery units (one unit = one second of floodlights).
 #define SUB_BATTERY_MAX 5400
-#define SUB_BATTERY_PER_TILE 2
+// Battery per tile: code/__defines/_submarine_definitions.dm
 #define SUB_BATTERY_FLOODLIGHTS_PER_SECOND 1
 #define SUB_BATTERY_PING 30
 #define SUB_BATTERY_CHARGE_PER_SECOND 45
@@ -41,6 +41,20 @@
 /obj/structure/vehicleparts/axis/ship/submarine/persistence_runtime_var(key)
 	return (key in list("battery_warned", "floodlight_source")) || ..(key)
 
+// How many of a fitting stand in her hull sections.
+/obj/structure/vehicleparts/axis/ship/submarine/proc/fitting_count(fitting_type)
+	. = 0
+	for (var/obj/structure/vehicleparts/frame/F in frames())
+		for (var/obj/O in get_turf(F))
+			if (istype(O, fitting_type))
+				.++
+
+// The cells under her deck hold half a bank; each battery bank adds a bank.
+// So the pen's boats, with one bank each, hold SUB_BATTERY_MAX, and a boat
+// drawn with more banks dives longer (sub_draught.dm).
+/obj/structure/vehicleparts/axis/ship/submarine/proc/battery_capacity()
+	return SUB_BATTERY_MAX * (1 + fitting_count(/obj/structure/vehicleparts/sub_fitting/battery)) / 2
+
 // Draws from the battery; TRUE when it held enough.
 /obj/structure/vehicleparts/axis/ship/submarine/proc/battery_draw(amount)
 	if (amount <= 0)
@@ -60,7 +74,7 @@
 	if (seconds <= 0)
 		return
 	if (!submerged)
-		battery = min(SUB_BATTERY_MAX, battery + SUB_BATTERY_CHARGE_PER_SECOND * seconds)
+		battery = min(battery_capacity(), battery + SUB_BATTERY_CHARGE_PER_SECOND * seconds)
 		battery_warned = FALSE
 		return
 	if (floodlights && battery > 0)
@@ -164,7 +178,7 @@
 // ---- Reports and repairs ----
 
 /obj/structure/vehicleparts/axis/ship/submarine/proc/systems_report()
-	return "Battery [round(100 * battery / SUB_BATTERY_MAX)]%[submerged ? "" : ", charging"]. Floodlights [floodlights ? "on" : "off"]. Hull rated for [sea_zone_name(hull_rating)]; [hull_leaks ? "[hull_leaks] leak\s" : "no leaks"]. [craft_of_axis(src).magnetic_text()]"
+	return "Battery [round(100 * battery / battery_capacity())]%[submerged ? "" : ", charging"]. Floodlights [floodlights ? "on" : "off"]. Hull rated for [sea_zone_name(hull_rating)]; [hull_leaks ? "[hull_leaks] leak\s" : "no leaks"]. [craft_of_axis(src).magnetic_text()]"
 
 /obj/item/sub_hull_plating
 	name = "deep hull plating"

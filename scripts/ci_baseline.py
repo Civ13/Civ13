@@ -41,13 +41,34 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'npc_cover_direction': {'files': ('tests/npc_cover/test_direction_projection.py',),
+        'paths': ('tests/npc_cover/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',)},
+    'bottle_alcohol_power': {'files': ('tests/bottle_alcohol_power/test_alcohol_power.py',),
+        'paths': ('tests/bottle_alcohol_power/', 'code/modules/reagents/reagent_containers/food/drinks/bottle.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'flour_dough': {'files': ('tests/flour_dough/test_dough.py',),
+        'paths': ('tests/flour_dough/', 'code/modules/reagents/reagent_containers/food/condiment.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'getline2_contract': {'files': ('tests/getline2/test_getline2.py',),
+        'paths': ('tests/getline2/',),
+        'shared_paths': ('code/_helpers/unsorted.dm', 'tests/save_movement/source_adapter.py')},
+    # Stdlib-only: civ13.dme compiles in its own order and Dream Maker's sorted one.
+    'dme_order': {'files': ('tests/dme_order/test_define_order.py',), 'paths': ('tests/dme_order/',),
+        'shared_paths': ('civ13.dme',)},
     'object_interval_dispatch': {'files': ('tests/process_time/test_dispatch_source.py',),
         'paths': ('tests/process_time/', 'code/processes/obj.dm', 'code/processes/_process.dm')},
+    'abandonment_protection': {'files': ('tests/abandoned_items/test_protection.py',),
+        'paths': ('tests/abandoned_items/test_protection.py',), 'shared_paths': (
+            'code/processes/abandoned_items.dm', 'tests/save_movement/source_adapter.py')},
     'astar_current_score': {'files': ('tests/astar_current_score/test_score.py',),
         'paths': ('tests/astar_current_score/', 'code/pathfinding.dm')},
     'bag_valve_mask': {'files': ('tests/bag_valve_mask/test_bag_valve_mask.py',), 'paths': (
         'tests/bag_valve_mask/',), 'shared_paths': (
         'code/game/objects/items/stacks/medical.dm',)},
+    # Stdlib-only source projection: directional flooding order and callback traces.
+    'flooding_directions': {'files': ('tests/flooding_directions/test_directions.py',),
+        'paths': ('tests/flooding_directions/', 'code/modules/submarine/flooding_controller.dm')},
     'gas_skin_burns': {'files': ('tests/gas_skin_burns/test_gas_skin_burns.py',), 'paths': (
         'tests/gas_skin_burns/',), 'shared_paths': (
         'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Gases.dm',)},
@@ -96,8 +117,24 @@ SUITES = {
     'frog_breeding_count': {'files': ('tests/frog_breeding_count/test_source.py',),
         'paths': ('tests/frog_breeding_count/',),
         'shared_paths': ('tests/save_movement/source_adapter.py', 'code/game/mob/living/simple_animal/friendly/lizard.dm')},
+    'chemsmoke_initial_splash': {'files': ('tests/chemsmoke_initial_splash/test_initial_splash.py',),
+        'paths': ('tests/chemsmoke_initial_splash/', 'tests/save_movement/source_adapter.py', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/effect_system.dm')},
+    'bayonet_mouth': {'files': ('tests/bayonet_mouth/test_sources.py',),
+        'paths': ('tests/bayonet_mouth/', 'code/modules/projectiles/gun.dm')},
+    'suit_patch_wait': {'files': ('tests/suit_patch_wait/test_sources.py',),
+        'paths': ('tests/suit_patch_wait/', 'code/modules/space/pressure_suits.dm')},
+    'boltaction_jam': {'files': ('tests/boltaction_jam/test_sources.py',),
+        'paths': ('tests/boltaction_jam/', 'code/modules/1713/weapons/guns/bolt-action.dm')},
+    'bone_setting_race': {'files': ('tests/bone_setting_race/test_sources.py',),
+        'paths': ('tests/bone_setting_race/', 'code/modules/surgery/bones.dm', 'code/modules/organs/organ_external.dm')},
+    'leech_wait': {'files': ('tests/leech_wait/test_sources.py',),
+        'paths': ('tests/leech_wait/', 'code/game/mob/living/simple_animal/friendly/leech.dm')},
+    'sheep_lambs': {'files': ('tests/sheep_lambs/test_sources.py',),
+        'paths': ('tests/sheep_lambs/', 'code/game/mob/living/simple_animal/friendly/farm_animals.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
+    'scheduled_task_guard': {'files': ('tests/scheduled_task_guard/test_guard.py',), 'paths': ('tests/scheduled_task_guard/', 'code/processes/scheduler.dm', 'code/__defines/qdel.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'cleanables_scheduler': {'files': ('tests/cleanables_scheduler/test_resume.py',),
         'paths': ('tests/cleanables_scheduler/', 'code/processes/cleanables.dm'),
         'shared_paths': ('code/processes/_process.dm', 'code/processes/___defines.dm', 'code/_macros.dm')},
@@ -118,9 +155,6 @@ SUITES = {
             'code/game/objects/structures/animalspawner/bearcave.dm', 'code/global.dm',
             'code/modules/ecology/ecology_spawning.dm', 'code/processes/mob.dm',
             'code/game/mob/living/simple_animal/simple_animal.dm')},
-    'casing_scheduler': {'files': ('tests/casing_scheduler/test_casing_scheduler.py',),
-        'paths': ('tests/casing_scheduler/', 'code/processes/casings.dm'),
-        'shared_paths': ('code/processes/___defines.dm', 'code/_macros.dm')},
     'gladiator_stat_record': {'files': ('tests/gladiator_stat_record/test_record.py',),
         'paths': ('tests/gladiator_stat_record/', 'code/game/objects/structures/gladiator_control.dm')},
     'cooling_fan': {'files': ('tests/cooling_fan/test_fan_desc.py', 'tests/cooling_fan/test_appliance_dismantling.py'),
@@ -139,6 +173,9 @@ SUITES = {
                          'scripts/check-recipes.py')},
     'atgm_retrieve': {'files': ('tests/atgm_retrieve/test_retrieve.py',),
         'paths': ('tests/atgm_retrieve/', 'code/modules/1713/weapons/guns/mg/stationary/mg.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'flare_snuff': {'files': ('tests/flare_snuff/test_snuff.py',),
+        'paths': ('tests/flare_snuff/', 'code/game/objects/items/devices/flashlight.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'dumpster_rummage': {'files': ('tests/dumpster_rummage/test_rummage.py',),
         'paths': ('tests/dumpster_rummage/', 'code/game/objects/structures/crates_lockers/crates.dm'),
@@ -167,6 +204,13 @@ SUITES = {
         'paths': ('tests/appearance_genders/', 'code/modules/nano/modules/appearance_changer.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/species/species.dm',
                          'tgui/src/interfaces/Standard.tsx')},
+    'reaction_priority_empty': {'files': ('tests/reaction_priority/test_priority.py',),
+        'paths': ('tests/reaction_priority/',), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Holder.dm', 'tests/save_movement/source_adapter.py')},
+    'reagent_metabolism_empty': {'files': ('tests/reagent_metabolism/test_empty.py',),
+        'paths': ('tests/reagent_metabolism/',), 'shared_paths': (
+            'code/modules/reagents/Chemistry-Metabolism.dm',
+            'code/modules/reagents/Chemistry-Holder.dm', 'tests/save_movement/source_adapter.py')},
     'chem_dispenser_refill': {'files': ('tests/chem_dispenser_refill/test_refill.py',),
         'paths': ('tests/chem_dispenser_refill/',),
         'shared_paths': ('code/modules/reagents/Chemistry-Machinery.dm',)},
@@ -249,6 +293,10 @@ SUITES = {
     'open_air_view': {'files': ('tests/open_air_view/test_sources.py',), 'paths': ('tests/open_air_view/', 'code/modules/multiz/open_air_view.dm', 'code/modules/multiz/look_up.dm', 'code/processes/open_air_view.dm'), 'shared_paths': ('code/game/objects/building_levels.dm', 'code/modules/multiz/building_lighting.dm', 'code/game/mob/mob_movement.dm', 'code/_onclick/hud/updown_buttons.dm')},
     'burial': {'files': ('tests/burial/test_burial.py',), 'paths': ('tests/burial/', 'code/modules/1713/burial.dm', 'code/game/objects/structures/religious.dm'), 'shared_paths': ('code/game/mob/living/carbon/human/human_life.dm', 'code/game/mob/living/carbon/resist.dm')},
     'underground_excavation': {'files': ('tests/underground_excavation/test_underground_excavation.py',), 'paths': ('tests/underground_excavation/', 'code/modules/1713/underground_excavation.dm'), 'shared_paths': ('code/modules/multiz/structures.dm', 'code/modules/multiz/hole_ladder.dm', 'code/modules/1713/flood_cellars.dm')},
+    'work_speed': {'files': ('tests/work_speed/test_work_speed.py',), 'paths': ('tests/work_speed/', 'code/modules/materials/work_speed.dm', 'code/__defines/tools.dm', 'code/modules/1713/earthworking_tools.dm'), 'shared_paths': ('code/game/turfs/floor_attackby.dm', 'code/modules/1713/trench.dm', 'code/modules/1713/tools.dm', 'code/modules/1713/sewers.dm', 'code/modules/1713/underground_excavation.dm', 'code/modules/1713/dug_wells.dm', 'code/modules/1713/road_tamping.dm', 'code/modules/1713/stone_age_storage.dm', 'code/modules/1713/placer.dm', 'code/modules/1713/open_cave_roof.dm', 'code/modules/1713/mountain_seams.dm', 'code/modules/provinces/province_rich.dm', 'code/game/objects/structures/wild.dm', 'code/game/objects/covers_types/cover_roads.dm', 'code/modules/multiz/dug_underground.dm')},
+    'earthworking': {'files': ('tests/earthworking/test_sources.py',), 'paths': ('tests/earthworking/', 'code/modules/1713/earthworking_heavy.dm', 'tests/sprites/create_earthworking_tools.py', 'icons/obj/earthworking_tools.dmi', 'icons/mob/items/lefthand_earthworking.dmi', 'icons/mob/items/righthand_earthworking.dmi'), 'shared_paths': ('code/modules/1713/earthworks.dm', 'code/modules/1713/road_tamping.dm', 'config/crafting/material_recipes_global.txt')},
+    'open_cave_roof': {'files': ('tests/open_cave_roof/test_open_cave_roof.py',), 'paths': ('tests/open_cave_roof/', 'code/modules/1713/open_cave_roof.dm', 'docs/open-cave-roof.md'), 'shared_paths': ('code/game/turfs/floor_attackby.dm',)},
+    'mine_floor_registry': {'files': ('tests/mine_floor_registry/test_mine_floor_registry.py',), 'paths': ('tests/mine_floor_registry/', 'code/modules/multiz/mine_floor_registry.dm', 'code/__defines/mine_registry.dm')},
     'pit_climbing': {'files': ('tests/pit_climbing/test_pit_climbing.py',), 'paths': ('tests/pit_climbing/', 'code/modules/multiz/pit_climbing.dm', 'code/modules/multiz/hole_ladder.dm'), 'shared_paths': ('code/modules/multiz/dug_underground.dm', 'code/modules/1713/tools.dm', 'code/game/turfs/floor_attackby.dm')},
     'physical_interaction': {'files': ('tests/physical_interaction/test_touch.py',),
         'paths': ('tests/physical_interaction/',),
@@ -286,6 +334,14 @@ SUITES = {
     'stethoscope_examination': {'files': ('tests/stethoscope/test_examination.py',),
         'paths': ('tests/stethoscope/', 'code/game/objects/items/clothing/under/accessories/stethoscope.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'prosthesis_attachment': {'files': ('tests/prosthesis/test_attachment.py',),
+        'paths': ('tests/prosthesis/', 'code/modules/surgery/prosthesis.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'sword_sheaths': {'files': ('tests/sword_sheaths/test_unlock.py',),
+        # material_recipes_global.txt and research_node.dm already select every suite.
+        'paths': ('tests/sword_sheaths/', 'code/modules/research_tree/book_research.dm',
+                  'code/modules/research_tree/research_bench.dm',
+                  'code/game/objects/structures/blacksmithing/blacksmithing_recipes.dm')},
     'katana_sheath': {'files': ('tests/katana_sheath/test_sheath.py',),
         'paths': ('tests/katana_sheath/', 'code/game/objects/items/clothing/under/accessories/sheaths.dm',
                   'code/game/objects/items/clothing/under/accessories/storage.dm',
@@ -302,19 +358,27 @@ SUITES = {
     'handloading': {'files': ('tests/handloading/test_coverage.py',),
         'paths': ('tests/handloading/', 'docs/firearm-coverage.json', 'code/modules/projectiles/handloading.dm',
                   'code/modules/projectiles/_ammo_casing.dm')},
+    # Self-loading guns and cased shells drop brass; the native probe is tests/casing_ejection/run.py.
+    'casing_ejection': {'files': ('tests/casing_ejection/test_sources.py',),
+        'paths': ('tests/casing_ejection/', 'code/modules/projectiles/guns/projectile.dm',
+                  'code/modules/1713/siege/piece.dm', 'code/__defines/gun.dm',
+                  'code/game/objects/items/item_heaps.dm', 'code/modules/projectiles/ammunition.dm',
+                  'code/game/objects/items.dm')},
     'septim_appearance': {'files': ('tests/septim_appearance/test_appearance.py',),
         'paths': ('tests/septim_appearance/', 'code/game/objects/items/stacks/money.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Offline fixture composition only; this suite does not launch BYOND.
     'fixture_source_projection': {'files': ('tests/fixture_source_projection/test_projection.py',),
-        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py') +
+        'paths': ('tests/fixture_source_projection/', 'scripts/fixture_source_projection.py',
+                  'tests/processing_list_removal/', 'scripts/processing_list_projection.py') +
             tuple(f'tests/{name}/run.py' for name in (
                 'faction_membership', 'faction_recruitment', 'research_persistence')),
         'shared_paths': (
+            'code/__defines/subsystem.dm',
             'tests/faction_membership/probe.dm', 'tests/faction_recruitment/probe.dm',
             'tests/research_persistence/probe.dm', 'code/game/mob/groups/faction_membership.dm',
             'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/faction_rename.dm',
-            'code/game/mob/groups/factions.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/game/mob/groups/factions.dm', 'code/game/objects/structures/stool_bed_chair_nest/bed.dm', 'code/modules/research_tree/research_faction.dm',
             'code/modules/research_tree/_research_tree_defines.dm',
             'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
     'paper_bin_appearance': {'files': ('tests/paper_bin_appearance/test_appearance.py',),
@@ -323,6 +387,11 @@ SUITES = {
     'fridge_wrench': {'files': ('tests/fridge_wrench/test_fridge_wrench.py',),
         'paths': ('tests/fridge_wrench/', 'code/game/objects/structures/crates_lockers/closets/fridge.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'earmuff_muffling': {'files': ('tests/earmuff_muffling/test_earmuff_muffling.py',),
+        'paths': ('tests/earmuff_muffling/',),
+        'shared_paths': ('code/game/mob/living/life.dm',
+                         'code/game/mob/living/carbon/human/human_life.dm',
+                         'tests/save_movement/source_adapter.py')},
     'flashbang_audio': {'files': ('tests/flashbang_audio/test_audio.py',),
         'paths': ('tests/flashbang_audio/', 'code/game/objects/items/weapons/grenades/flashbang.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -342,7 +411,8 @@ SUITES = {
         'paths': ('tests/outhouse_occupancy/', 'code/game/objects/structures/watercloset.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'large_bathtub_washing': {'files': ('tests/large_bathtub_washing/test_washing.py',),
-        'paths': ('tests/large_bathtub_washing/', 'code/game/objects/structures/watercloset.dm'),
+        'paths': ('tests/large_bathtub_washing/', 'code/game/objects/structures/watercloset.dm',
+                  'code/modules/1713/bathtubs.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'fixture_global_initialization': {'files': ('tests/fixture_global_initialization/test_global_initialization.py',),
         'paths': ('tests/fixture_global_initialization/', 'scripts/fixture_global_initialization.py'),
@@ -418,6 +488,9 @@ SUITES = {
         'code/game/mob/living/simple_animal/simple_animal.dm', 'code/game/mob/living/simple_animal/hostile/zombie.dm')},
     'glass_jar': {'files': ('tests/glass_jar/test_capture.py',), 'paths': (
         'tests/glass_jar/', 'code/game/objects/items/glassjar.dm', 'tests/save_movement/source_adapter.py')},
+    'physical_data_lan': {'files': ('tests/physical_data_lan/test_lan.py',), 'paths': (
+        'tests/physical_data_lan/', 'code/modules/1713/physical_data_lan.dm',
+        'code/modules/1713/modern_terminal.dm', 'tests/save_movement/source_adapter.py')},
     'bodybag_label': {'files': ('tests/bodybag/test_label.py',), 'paths': (
         'tests/bodybag/', 'code/game/objects/items/bodybag.dm', 'tests/save_movement/source_adapter.py')},
     'card_dealing': {'files': ('tests/card_dealing/test_prompt.py',),
@@ -429,6 +502,10 @@ SUITES = {
     'tape_markings': {'files': ('tests/tape_markings/test_overlays.py',),
         'paths': ('tests/tape_markings/',), 'shared_paths': (
             'code/game/objects/items/weapons/policetape.dm',
+            'tests/save_movement/source_adapter.py')},
+    'effect_lifetime_guards': {'files': ('tests/pool_effects/test_lifetime_guards.py',),
+        'paths': ('tests/pool_effects/test_lifetime_guards.py',), 'shared_paths': (
+            'code/game/objects/effects/effect_system.dm', 'code/__defines/qdel.dm',
             'tests/save_movement/source_adapter.py')},
     'smokables': {'files': ('tests/smokables/test_burn_state.py',),
         'paths': ('tests/smokables/',), 'shared_paths': (
@@ -448,14 +525,18 @@ SUITES = {
     'lava_animal_remains': {'files': ('tests/lava_animal_remains/test_callback.py',),
         'paths': ('tests/lava_animal_remains/',), 'shared_paths': (
             'code/modules/1713/natural_disasters.dm',)},
+    'fallout_area_lookup': {'files': ('tests/fallout_area_lookup/test_fallout_scan.py',),
+        'paths': ('tests/fallout_area_lookup/',), 'shared_paths': (
+            'code/modules/1713/radiation.dm', 'tests/save_movement/source_adapter.py')},
     # Weather system icons are the existing sheet tiled by tools/weather/make_chunks.py.
-    'weather_systems': {'files': ('tests/weather_systems/test_icons.py',),
+    'weather_systems': {'files': ('tests/weather_systems/test_icons.py', 'tests/weather_systems/test_strength_offsets.py'),
         'paths': ('tests/weather_systems/', 'tools/weather/'),
         'shared_paths': ('icons/effects/weather.dmi', 'icons/effects/weather_chunks.dmi',
-                         'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm')},
-    'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py'),
+                         'icons/effects/weather_roof.dmi', 'code/modules/1713/weather.dm',
+                         'code/modules/1713/weather_systems.dm', 'tests/save_movement/source_adapter.py')},
+    'river_flow': {'files': ('tests/river_flow/test_generation.py', 'tests/river_flow/test_flood.py', 'tests/river_flow/test_carryable_guard.py'),
         'paths': ('tests/river_flow/', 'scripts/river_flow.py', 'scripts/river_flood.py', 'scripts/map_coast.py', 'maps/nomads/', 'maps/heights/'),
-        'shared_paths': ('code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm', 'code/modules/1713/flood_hollows.dm',
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/__defines/qdel.dm', 'code/modules/1713/river_flow.dm', 'code/modules/1713/river_flood.dm', 'code/modules/1713/flood_effects.dm', 'code/modules/1713/flood_ground.dm', 'code/modules/1713/flood_hollows.dm',
                          'code/modules/1713/road_tamping.dm', 'code/modules/1713/barriers/sandbag.dm',
                          'code/game/objects/farming.dm', 'code/game/objects/structures/watercloset.dm',
                          'code/modules/1713/rain_gear.dm', 'code/game/mob/mob_movement.dm',
@@ -469,6 +550,7 @@ SUITES = {
     'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
         'paths': ('tests/cleaning_rag/',), 'shared_paths': (
             'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
+            'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
     'lipstick_application': {'files': ('tests/lipstick_application/test_completion.py',),
         'paths': ('tests/lipstick_application/',), 'shared_paths': (
@@ -477,6 +559,9 @@ SUITES = {
     'projectile_location': {'files': ('tests/projectile_location/test_location.py',),
         'paths': ('tests/projectile_location/',), 'shared_paths': (
             'code/modules/projectiles/projectile.dm', 'code/_helpers/vector.dm')},
+    'projectile_repeat_body': {'files': ('tests/projectile_repeat_body/test_repeat_body.py',),
+        'paths': ('tests/projectile_repeat_body/',), 'shared_paths': (
+            'code/modules/projectiles/projectile.dm',)},
     'centre_tile': {'files': ('tests/centre_tile/test_sources.py',),
         'paths': ('tests/centre_tile/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/subtile_movement.dm',
@@ -506,6 +591,11 @@ SUITES = {
             'code/modules/1713/barriers/snow_walls.dm',
             'code/game/objects/covers.dm',
             'code/modules/multiz/open_space.dm')},
+    'vehicle_offset': {'files': ('tests/vehicle_offset/test_sources.py',),
+        'paths': ('tests/vehicle_offset/',), 'shared_paths': (
+            'civ13.dme', 'code/modules/craft/vehicle_offset.dm',
+            'code/modules/craft/vehicle_offset_ride.dm', 'code/modules/craft/vehicle_offset_frame.dm',
+            'code/modules/craft/vehicle_offset_ship.dm', 'tests/save_movement/source_adapter.py')},
     'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
         'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
@@ -515,6 +605,74 @@ SUITES = {
             'code/game/objects/structures/tree_climbing.dm',
             'code/modules/projectiles/projectile.dm',
             'code/game/mob/living/carbon/human/human.dm')},
+    # Hand conditioning and the unarmed skill: recipes, research, punch hooks, skill lists.
+    'hand_conditioning': {'files': ('tests/hand_conditioning/test_sources.py',),
+        'paths': ('tests/hand_conditioning/', 'code/modules/1713/martial_arts/hand_conditioning.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/carbon/human/punch_injury.dm',
+                         'code/game/mob/living/carbon/human/human_defines.dm')},
+    # Martial schools: era coverage, research nodes, rank defines, travel hooks.
+    'martial_schools': {'files': ('tests/martial_schools/test_sources.py',),
+        'paths': ('tests/martial_schools/', 'code/modules/1713/martial_arts/martial_schools.dm',
+                  'code/modules/1713/martial_arts/martial_training.dm', 'code/__defines/martial.dm'),
+        'shared_paths': ('code/modules/research_tree/research_node.dm',
+                         'code/modules/persistence/region_travel.dm')},
+    # Whole-body motion: transform-only channel, posture handshake, hit recoil hooks, config.
+    'body_motion': {'files': ('tests/body_motion/test_sources.py',),
+        'paths': ('tests/body_motion/', 'code/game/mob/living/carbon/human/body_motion.dm', 'code/__defines/body_motion.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/update_icons.dm',
+                         'code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/datums/configuration.dm',
+                         'civ13.dme',
+                         'code/game/mob/living/carbon/human/emotes/emote.dm',
+                         'code/game/objects/buckling.dm',
+                         'code/game/mob/animations.dm',
+                         'code/modules/projectiles/gun.dm',
+                         'code/game/mob/living/carbon/carbon.dm',
+                         'code/game/objects/items.dm',
+                         'code/game/objects/items/stacks/medical.dm',
+                         'code/game/atoms.dm',
+                         'code/game/turfs/floor_attackby.dm',
+                         'code/modules/1713/fishing_grounds.dm',
+                         'code/game/mob/combat_reactions.dm',
+                         'code/game/mob/combat_stance.dm',
+                         'code/game/mob/mob_movement.dm',
+                         'code/modules/1713/swimming.dm',
+                         'code/game/mob/living/carbon/human/human_helpers.dm',
+                         'code/game/objects/structures/tree_climbing.dm',
+                         'code/modules/multiz/edge_climbing.dm',
+                         'code/modules/multiz/pit_climbing.dm',
+                         'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm',
+                         'code/modules/naval/hull_masts.dm',
+                         'code/modules/naval/hull_rigging.dm',
+                         'code/game/objects/items/weapons/material/swords.dm',
+                         'code/game/objects/items/weapons/material/material_weapons.dm',
+                         'code/game/objects/items/weapons/material/twohanded.dm')},
+    # Bare-knuckle hand injuries: punch and animal hooks, wrap materials.
+    'punch_injury': {'files': ('tests/punch_injury/test_sources.py',),
+        'paths': ('tests/punch_injury/', 'code/game/mob/living/carbon/human/punch_injury.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/simple_animal/simple_animal.dm')},
+    # Combat stances: melee paths ask the stance, doll/hotkey/HUD wiring, agent tools.
+    'combat_stance': {'files': ('tests/combat_stance/test_sources.py',),
+        'paths': ('tests/combat_stance/', 'code/game/mob/combat_stance.dm', 'code/game/mob/combat_reactions.dm',
+                  'code/game/mob/combat_restrain.dm', 'code/__defines/combat_stance.dm'),
+        'shared_paths': ('code/_onclick/item_attack.dm',
+                         'code/game/mob/living/carbon/human/human_attackhand.dm',
+                         'code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/game/mob/living/carbon/human/inventory.dm',
+                         'code/_onclick/hud/base_screen_objects.dm',
+                         'code/game/mob/living/carbon/human/examine.dm',
+                         'code/modules/agent_control/agent_stance.dm',
+                         'tools/agent-control/autopilot.py',
+                         'tools/agent-control/catalog.py',
+                         'code/game/mob/grab.dm',
+                         'code/__defines/martial.dm',
+                         'icons/mob/screen/1713Style.dmi',
+                         'icons/mob/screen/ConsoleStyle.dmi',
+                         'icons/mob/screen/FoFStyle.dmi',
+                         'icons/mob/screen/litewebStyle.dmi')},
     # Training gear and the obstacle course: recipes, gates, hooks, saved fields and art.
     'active_training': {'files': ('tests/active_training/test_sources.py',),
         'paths': ('tests/active_training/', 'code/modules/1713/active_training.dm',
@@ -541,6 +699,13 @@ SUITES = {
             'code/modules/admin/admin_verbs.dm',
             'scripts/shard-group/shard_group.py')},
     # Send Player to Region: admins and the launcher send players or a ship to another region.
+    'island_access': {'files': ('tests/island_access/test_source.py',),
+        'paths': ('tests/island_access/', 'code/modules/naval/island_access.dm'),
+        'shared_paths': ('civ13.dme', 'code/modules/naval/island_claim.dm', 'code/modules/naval/ship_crossing.dm',
+            'code/modules/naval/ship_voyage.dm', 'code/modules/persistence/region_travel.dm',
+            'code/modules/persistence/region_travel_gear.dm', 'code/modules/persistence/region_admin_send.dm',
+            'code/modules/persistence/travel_hold.dm', 'code/modules/persistence/offline_sleep_protection.dm',
+            'code/game/mob/groups/factions.dm', 'code/game/mob/groups/colony_charter.dm')},
     'region_admin_send': {'files': ('tests/region_admin_send/test_sources.py',),
         'paths': ('tests/region_admin_send/', 'code/modules/persistence/region_admin_send.dm',
                   'code/modules/admin/send_player_to_region.dm',
@@ -589,7 +754,7 @@ SUITES = {
     'sledgehammer': {'files': ('tests/sledgehammer/test_two_hands.py',),
         'paths': ('tests/sledgehammer/',), 'shared_paths': (
             'code/game/objects/items/weapons/sledgehammer.dm', 'tests/save_movement/source_adapter.py')},
-    'serving_tray': {'files': ('tests/serving_tray/test_targeting.py',),
+    'serving_tray': {'files': ('tests/serving_tray/test_targeting.py', 'tests/serving_tray/test_feedback.py'),
         'paths': ('tests/serving_tray/',), 'shared_paths': (
             'code/game/objects/items/weapons/trays.dm', 'tests/save_movement/source_adapter.py')},
     'mop_cleaning': {'files': ('tests/mop_cleaning/test_completion.py',),
@@ -604,7 +769,7 @@ SUITES = {
     'newspaper_reading': {'files': ('tests/newspaper_reading/test_reading.py',),
         'paths': ('tests/newspaper_reading/',), 'shared_paths': (
             'code/modules/1713/newspaper.dm', 'tests/save_movement/source_adapter.py')},
-    'football_tackle': {'files': ('tests/football_tackle/test_target.py',),
+    'football_tackle': {'files': ('tests/football_tackle/test_target.py', 'tests/football_tackle/test_catch.py'),
         'paths': ('tests/football_tackle/',), 'shared_paths': (
             'code/modules/1713/football.dm', 'tests/save_movement/source_adapter.py')},
     # Every piano, violin, shamisen and trumpet note resolves to a real .ogg
@@ -665,9 +830,6 @@ SUITES = {
         'paths': ('tests/cane_stance/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_organs.dm',
             'code/modules/1713/cane.dm', 'code/game/objects/items/weapons/material/misc.dm')},
-    'wrestling_actions': {'files': ('tests/wrestling_actions/test_actions.py',),
-        'paths': ('tests/wrestling_actions/',), 'shared_paths': (
-            'code/modules/1713/martial_arts/wrestling.dm',)},
     'radio_frequency': {'files': ('tests/radio_frequency/test_frequency.py',),
         'paths': ('tests/radio_frequency/',), 'shared_paths': (
             'code/modules/1713/radio.dm', 'tests/save_movement/source_adapter.py')},
@@ -716,7 +878,11 @@ SUITES = {
             'code/modules/projectiles/projectile/cannon.dm', 'civ13.dme')},
     'dog_process': {'files': ('tests/dog_process/test_dog_process.py',),
         'paths': ('tests/dog_process/', 'code/processes/dog.dm')},
-    'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py',),
+    # Execution devices recheck occupancy after the placement wait (issue #6499).
+    'punishment_race': {'files': ('tests/punishment_race/test_occupancy.py',),
+        'paths': ('tests/punishment_race/',), 'shared_paths': (
+            'code/modules/1713/punishment.dm',)},
+    'cattle_plough': {'files': ('tests/cattle_plough/test_plough.py', 'tests/cattle_plough/test_detach_race.py'),
         'paths': ('tests/cattle_plough/',), 'shared_paths': (
             'code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
     # Cotton is only food for ruminants: production predicate and call sites.
@@ -835,6 +1001,10 @@ SUITES = {
         'paths': ('tests/human_bed_healing/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
+    # Wildlife plant classification against a frozen pre-change predicate.
+    'wild_browse': {'files': ('tests/wild_browse/test_browse.py',),
+        'paths': ('tests/wild_browse/',), 'shared_paths': (
+            'code/modules/ecology/wild_feeding.dm', 'tests/save_movement/source_adapter.py')},
     # Narrow-cone direction equivalence against fake engine geometry.
     'vision_cone_direction': {'files': ('tests/vision_cone_direction/test_direction.py',),
         'paths': ('tests/vision_cone_direction/',), 'shared_paths': (
@@ -877,6 +1047,9 @@ SUITES = {
         'paths': ('tests/showcase_rooms/', 'maps/zones/showcase/',
                   'code/modules/admin/showcase_rooms.dm', 'scripts/build_showcase_dme.py'),
         'shared_paths': ('civ13.dme', 'code/modules/admin/admin_verbs.dm')},
+    # The vote window updates in place instead of reloading every second; source checks, no BYOND runtime.
+    'vote_window': {'files': ('tests/vote_window/test_vote_window.py',),
+        'paths': ('tests/vote_window/',), 'shared_paths': ('code/datums/vote.dm',)},
     # TDM servers vote only between team battle epochs; source projection, no BYOND runtime.
     'tdm_map_vote': {'files': ('tests/tdm_map_vote/test_tdm_epochs.py',),
         'paths': ('tests/tdm_map_vote/',), 'shared_paths': ('code/processes/mapswap.dm',)},
@@ -919,7 +1092,7 @@ SUITES = {
             'icons/obj/guns/', 'icons/mob/items/lefthand_guns.dmi',
             'icons/mob/items/righthand_guns.dmi', 'icons/mob/back.dmi', 'civ13.dme')},
     # Ploughed field sprite selection and load restore projected from production DM.
-    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py',),
+    'ploughed_field_icon': {'files': ('tests/ploughed_field_icon/test_ploughed_field_icon.py', 'tests/ploughed_field_icon/test_floor_overlay_cache.py'),
         'paths': ('tests/ploughed_field_icon/',), 'shared_paths': (
             'code/game/turfs/flooring/flooring_premade.dm',
             'code/game/turfs/flooring/flooring.dm',
@@ -962,6 +1135,26 @@ SUITES = {
         # Rebuilding both maps' currents and flood reaches from 1M-cell maps takes
         # about 50 s locally and longer on hosted runners.
         'timeout': 180},
+    # The ocean regions: generated maps current, sizes, insets, metadata registered
+    # and open water at both ends of every sea link, parsed from the DMMs; no BYOND runtime.
+    'ocean_maps': {'files': ('tests/ocean_maps/test_ocean_maps.py', 'tests/ocean_maps/test_reef_fixture.py'),
+        'timeout': 180,
+        'paths': ('tests/ocean_maps/', 'tools/ocean_maps/', 'tools/world_links/',
+                  'code/modules/naval/ocean_regions.dm', 'code/modules/persistence/world_links.dm',
+                  'code/modules/naval/ship_edge_crossing.dm', 'code/modules/naval/ship_crossing.dm',
+                  'code/modules/naval/built_hull.dm', 'code/modules/persistence/region_travel.dm',
+                  'code/modules/persistence/shard_group.dm', 'scripts/shard-group/shard_group.py',
+                  'tools/transfer_storage/agent.py',
+                  'maps/nomads/nomads_ocean_atlantic.dmm', 'maps/nomads/nomads_ocean_pacific.dmm',
+                  'maps/nomads/nomads_ocean_indian.dmm', 'maps/nomads/nomads_ocean_arctic.dmm',
+                  'maps/nomads/nomads_ocean_southern.dmm'), 'shared_paths': (
+            'code/__defines/maps.dm', 'code/modules/persistence/durable_nomads.dm',
+            'code/modules/1713/jobs/nomads.dm', 'scripts/nomads-lifecycle/supervisor.py',
+            'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
+            'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
+            'maps/nomads/nomads_earth_asia.dmm', 'maps/nomads/nomads_earth_oceania.dmm',
+            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
+            'maps/nomads/nomads_gaia.dmm')},
     # Walking between lands over shared map edges: links answered on the facing
     # edge with dry ground on both stretches, parsed from the DMMs; no BYOND runtime.
     'edge_crossings': {'files': ('tests/edge_crossings/test_edge_crossings.py',), 'timeout': 120,
@@ -971,17 +1164,38 @@ SUITES = {
                   'code/game/objects/map_metadata/nomads/nomads_asia.dm',
                   'code/game/objects/map_metadata/nomads/nomads_desert.dm',
                   'code/game/objects/map_metadata/nomads/nomads_jungle.dm',
-                  'code/game/objects/map_metadata/nomads/nomads_americas.dm'), 'shared_paths': (
+                  'code/game/objects/map_metadata/nomads/nomads_americas.dm',
+                  'code/game/objects/map_metadata/nomads/nomads_earth.dm',
+                  'code/modules/persistence/world_links.dm', 'code/modules/naval/sea_lanes.dm',
+                  'tools/world_links/'), 'shared_paths': (
             'code/modules/naval/ship_crossing.dm', 'code/modules/naval/built_hull.dm', 'code/modules/craft/under_way.dm',
             'maps/nomads/nomads_europe.dmm', 'maps/nomads/nomads_asia.dmm',
             'maps/nomads/nomads_desert.dmm', 'maps/nomads/nomads_jungle.dmm',
-            'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm')},
+            'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
+            'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
+            'maps/nomads/nomads_earth_asia.dmm', 'maps/nomads/nomads_earth_oceania.dmm',
+            'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm', 'maps/nomads/nomads_earth_antarctica.dmm',
+            'maps/nomads/nomads_gaia.dmm')},
     # Draft lands of the rest of the Earth (maps/earth_drafts): DMM parse, sizes,
     # file digests and that no build or region list names them; no BYOND runtime.
     'earth_maps': {'files': ('tests/earth_maps/test_earth_maps.py',), 'timeout': 120,
-        'paths': ('tests/earth_maps/', 'maps/earth_drafts/', 'tests/americas_maps/build.py'), 'shared_paths': (
+        'paths': ('tests/earth_maps/', 'maps/earth_drafts/', 'tests/americas_maps/build.py',
+                  'maps/nomads/nomads_earth_europe.dmm', 'maps/nomads/nomads_earth_africa.dmm',
+                  'maps/nomads/nomads_earth_asia.dmm', 'maps/heights/nomads_earth_asia.txt',
+                  'maps/heights/nomads_earth_asia.flow.txt', 'maps/heights/nomads_earth_asia.flood.txt',
+                  'maps/nomads/nomads_earth_oceania.dmm', 'maps/nomads/nomads_earth_greenland.dmm', 'maps/nomads/nomads_earth_mediterranean.dmm',
+                  'maps/nomads/nomads_earth_antarctica.dmm', 'maps/heights/nomads_earth_oceania.txt',
+                  'maps/heights/nomads_earth_greenland.txt', 'maps/heights/nomads_earth_mediterranean.txt', 'maps/heights/nomads_earth_antarctica.txt',
+                  'maps/heights/nomads_earth_europe.txt', 'maps/heights/nomads_earth_europe.flow.txt',
+                  'maps/heights/nomads_earth_europe.flood.txt', 'maps/heights/nomads_earth_africa.txt',
+                  'maps/heights/nomads_earth_africa.flow.txt', 'maps/heights/nomads_earth_africa.flood.txt',
+                  'code/game/objects/map_metadata/nomads/nomads_earth.dm',
+                  'scripts/shard-group/earth_continents.example.json', 'docs/earth-continents.md'), 'shared_paths': (
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm',
-            'scripts/shard-group/americas.example.json', 'code/processes/mapswap.dm', 'civ13.dme')},
+            'scripts/shard-group/americas.example.json', 'code/processes/mapswap.dm', 'civ13.dme',
+            'code/game/objects/map_metadata/nomads/nomads_asia.dm', 'code/modules/naval/sea_lanes.dm',
+            'code/__defines/maps.dm', 'code/modules/persistence/durable_nomads.dm',
+            'code/modules/1713/jobs/nomads.dm')},
     # Generated inactive Extraction party safehouse template: DMM parse, airlock
     # topology, room routes, account markers and descriptor; no BYOND runtime.
     'safehouse_map': {'files': ('tests/safehouse_map/test_layout.py',),
@@ -1096,6 +1310,21 @@ SUITES = {
     'craft_guards': {'files': ('tests/craft_guards/test_craft_guards.py',),
         'paths': ('tests/craft_guards/', 'code/game/objects/items/stacks/craft_guards.dm'),
         'shared_paths': ('code/modules/1713/dug_wells.dm',)},
+    'reused_floor_styles': {'files': ('tests/floor_styles/test_reused_floor_styles.py',),
+        'paths': ('tests/floor_styles/test_reused_floor_styles.py',
+                  'code/game/objects/covers_types/cover_floortypes.dm',
+                  'icons/turf/floors.dmi', 'icons/turf/flooring/wood.dmi',
+                  'icons/turf/flooring/decals.dmi'), 'shared_paths': ()},
+    'iron_floors': {'files': ('tests/iron_floors/test_iron_floors.py',),
+        'paths': ('tests/iron_floors/', 'code/modules/1713/iron_floors.dm',
+                  'icons/turf/flooring/iron.dmi'), 'shared_paths': ()},
+    'extra_floors': {'files': ('tests/extra_floors/test_extra_floors.py',),
+        'paths': ('tests/extra_floors/', 'code/modules/1713/extra_floors.dm',
+                  'icons/turf/flooring/extra_floors.dmi', 'icons/obj/pelt_rugs.dmi'), 'shared_paths': ()},
+    'terracotta_floors': {'files': ('tests/terracotta_floors/test_terracotta_floors.py',),
+        'paths': ('tests/terracotta_floors/', 'code/modules/1713/terracotta_floors.dm',
+                  'icons/turf/flooring/terracotta.dmi'),
+        'shared_paths': ('code/game/objects/covers_types/cover_floortypes.dm',)},
     'recipe_skill_needs': {'files': ('tests/recipe_skill_needs/test_recipe_skill_needs.py',),
         'paths': ('tests/recipe_skill_needs/', 'code/game/objects/items/stacks/stack_makeable.dm'),
         'shared_paths': ('code/game/objects/items/stacks/recipe_skill_needs.dm',)},
@@ -1246,17 +1475,24 @@ SUITES = {
     'tactical_map': {'files': ('tests/tactical_map/test_tactical_map.py',),
         'paths': ('tests/tactical_map/',), 'shared_paths': (
             'code/modules/1713/tactical_map.dm', 'code/game/jobs/job_controller.dm')},
-    # Admin player map wiring, staff guards and the client script run in Node
-    # (skipped without it); native_probe.py is developer evidence only.
-    'admin_player_map': {'files': ('tests/admin_player_map/test_admin_player_map.py',),
-        'paths': ('tests/admin_player_map/',), 'shared_paths': (
-            'code/modules/admin/verbs/player_map.dm', 'code/modules/1713/tactical_map.dm',
-            'code/modules/admin/admin_verbs.dm')},
+    # Admin map (players, weather and air in one window): wiring, staff guards
+    # and the client script run in Node (skipped without it); native_probe.py
+    # is developer evidence only.
+    'admin_map': {'files': ('tests/admin_map/test_admin_map.py',),
+        'paths': ('tests/admin_map/',), 'shared_paths': (
+            'code/modules/admin/verbs/admin_map.dm', 'code/modules/1713/tactical_map.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/player_panel_pages.dm')},
+    # Admin player list and per-player panel: wiring, rank guards, escaping and
+    # the list script run in Node (skipped without it); native_probe.py is
+    # developer evidence only.
+    'admin_player_panel': {'files': ('tests/admin_player_panel/test_admin_player_panel.py',),
+        'paths': ('tests/admin_player_panel/', 'code/modules/admin/player_panel_pages.dm'), 'shared_paths': (
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/topic.dm', 'code/modules/admin/admin.dm')},
     # Admin Hide Ghost / View As Player wiring and guards; offline only.
     'admin_spectate': {'files': ('tests/admin_spectate/test_admin_spectate.py',),
         'paths': ('tests/admin_spectate/',), 'shared_paths': (
             'code/modules/admin/verbs/admin_spectate.dm', 'code/modules/admin/admin_verbs.dm',
-            'code/modules/admin/verbs/player_map.dm', 'code/game/mob/observer/ghost/ghost.dm',
+            'code/modules/admin/verbs/admin_map.dm', 'code/game/mob/observer/ghost/ghost.dm',
             'code/game/mob/observer/ghost/login.dm')},
     # Research bench intent routing, timed maintenance and slot cleanup; offline only.
     'research_bench': {'files': ('tests/research_bench/test_maintenance.py',),
@@ -1333,10 +1569,50 @@ SUITES = {
             'code/modules/1713/mountain_seams.dm', 'code/_helpers/resource_stock.dm',
             'code/game/objects/map_metadata/nomads/nomads_americas.dm',
             'maps/nomads/nomads_americas_north.dmm', 'maps/nomads/nomads_americas_south.dmm')},
+    # Provinces that follow the land: committed files, generator, DM reader.
+    'provinces': {'files': ('tests/provinces/test_source.py',),
+        'paths': ('tests/provinces/', 'maps/provinces/'), 'shared_paths': (
+            'scripts/provinces.py', 'scripts/terrain_heights.py', 'code/modules/provinces/provinces.dm',
+            'code/modules/provinces/province_stake.dm', 'code/modules/provinces/province_holding.dm',
+            'code/game/mob/groups/recruitment_station.dm', 'code/game/mob/groups/faction_start.dm',
+            'code/game/mob/groups/factions.dm',
+            'maps/nomads/nomads_gaia.dmm', 'maps/nomads/nomads_americas_north.dmm',
+            'maps/nomads/nomads_americas_south.dmm', 'maps/nomads/nomads_europe.dmm',
+            'maps/nomads/nomads_asia.dmm', 'maps/nomads/nomads_desert.dmm', 'maps/nomads/nomads_jungle.dmm')},
     # Snares, deadfalls, fish weirs and pit traps: source contracts only.
     'stone_age_traps': {'files': ('tests/stone_age_traps/test_source.py',),
         'paths': ('tests/stone_age_traps/',), 'shared_paths': (
             'code/modules/1713/stone_age_traps.dm', 'icons/obj/stone_age_traps.dmi')},
+    # Stdlib-only: ship's draughts cost the hand recipes and weigh like the
+    # ledger; every part a vehicle editor offers is described.
+    'ship_draught': {'files': ('tests/ship_draught/test_draught_sources.py', 'tests/ship_draught/test_design_checks.py'),
+        'paths': ('tests/ship_draught/',), 'shared_paths': (
+            'code/modules/naval/ship_draught.dm', 'code/modules/naval/hull_load.dm',
+            'code/modules/naval/ship_designer.dm', 'scripts/build_ship_designer_icons.py',
+            'code/modules/naval/sub_draught.dm', 'code/modules/naval/draught_part_help.dm',
+            'code/modules/naval/draught_checks.dm', 'code/modules/craft/design_checks.dm',
+            'code/modules/craft/vehicle_checks.dm', 'code/__defines/design_checks.dm',
+            'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm',
+            'code/modules/space/station_plan.dm', 'code/modules/space/station_plan_checks.dm',
+            'code/modules/space/station_designer.dm', 'scripts/build_station_designer_icons.py',
+            'icons/station_designer/')},
+    # Stdlib-only: train sheets' stock cars cost their kits, every part is
+    # described and the rail works is wired. The native probe is probe.dm.
+    'train_draught': {'files': ('tests/train_draught/test_train_sheet.py', 'tests/train_draught/test_designer_pictures.py'),
+        'paths': ('tests/train_draught/',), 'shared_paths': (
+            'code/modules/1713/train_draught.dm', 'code/modules/1713/train_draught_checks.dm',
+            'code/modules/1713/train_works.dm', 'code/modules/1713/train_designer.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/research_tree/research_node.dm',
+            'config/crafting/material_recipes_global.txt', 'icons/obj/vehicles/train_platforms.dmi',
+            'docs/train-sheets.md', 'scripts/build_train_designer_icons.py', 'icons/train_designer/')},
+    # Stdlib-only: every part the house planner offers is described and costs
+    # its recipe, and the window's page is sound. The native probe is run.py.
+    'house_plans': {'files': ('tests/house_plans/test_sources.py',),
+        'paths': ('tests/house_plans/',), 'shared_paths': (
+            'code/game/objects/house_plan.dm', 'code/game/objects/house_plan_checks.dm',
+            'code/game/objects/house_designer.dm', 'code/__defines/house_plans.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
+            'code/modules/paintings/design_codes.dm', 'config/crafting/material_recipes_global.txt')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (
@@ -1380,7 +1656,7 @@ SUITES = {
     'name_change': {'files': ('tests/name_change/test_source.py',),
         'paths': ('tests/name_change/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/name_change.dm', 'code/game/mob/groups/faction_papers.dm',
-            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/admin.dm',
+            'code/game/mob/living/carbon/human/nomads_adoption.dm', 'code/modules/admin/player_panel_pages.dm',
             'code/game/objects/structures/key_doors/fitted_locks.dm', 'code/modules/1713/stone_age_traps.dm',
             'code/modules/craft/craft_register.dm', 'code/modules/persistence/region_travel.dm')},
     # Census, citizenship papers, passes and border doors (the native probe is tests/faction_papers/probe.dm).
@@ -1443,7 +1719,8 @@ SUITES = {
     'siege_engines': {'files': ('tests/siege_engines/test_source.py',),
         'paths': ('tests/siege_engines/',), 'shared_paths': (
             'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
-            'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
+            'code/modules/1713/siege/portcullis_runs.dm', 'code/game/objects/controls.dm',
+            'icons/obj/doors/material_doors.dmi', 'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
             'tests/sprites/create_siege_engines.py')},
     # Horse breaking, breeding and shoeing: source contracts (native probe tests/horse_breeding/probe.dm).
     'horse_breeding': {'files': ('tests/horse_breeding/test_source.py',),
@@ -1688,10 +1965,50 @@ SUITES = {
         'paths': ('tests/bone_armor/',), 'shared_paths': (
             'config/crafting/', 'code/modules/1713/apparel_stoneage.dm', 'code/__defines/maps.dm')},
 
+    # Lifetime accolades: catalog, hooks, once-per-account claims, window guard; source checks only.
+    'accolades': {'files': ('tests/accolades/test_accolades.py',),
+        'paths': ('tests/accolades/',), 'shared_paths': (
+            'code/modules/accolades/', 'code/processes/accolades.dm', 'docs/accolades.md',
+            'code/modules/client/player_tutorial.dm', 'code/modules/naval/ship_voyage.dm',
+            'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_travel.dm',
+            'code/modules/research_tree/character_knowledge.dm', 'code/modules/research_tree/research_faction.dm',
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/accolades_admin.dm',
+            'code/game/objects/items/cartography_notes.dm', 'code/modules/research_tree/book_research.dm',
+            'code/modules/1713/book.dm', 'code/game/objects/items/stacks/stack.dm',
+            'code/game/objects/structures/blacksmithing/refining.dm', 'code/modules/1713/tatara.dm',
+            'code/modules/research_tree/field_work.dm', 'code/modules/1713/domestication.dm',
+            'code/modules/1713/complex_animal/_backend.dm', 'code/game/mob/living/simple_animal/simple_animal.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft.dm',
+            'code/modules/1713/machinery/modular_vehicles/aircraft/helicopter.dm',
+            'code/game/mob/groups/faction_creation.dm', 'code/modules/provinces/province_siege.dm',
+            'code/modules/nomad_raids/nomad_visit.dm')},
+
+    # Character slot owner keys (docs/character-slots.md); source checks only.
+    'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py',
+        'tests/character_slots/test_structuring.py',
+        'tests/character_slots/test_account_summary.py'),
+        'paths': ('tests/character_slots/',), 'shared_paths': (
+            'docs/character-slots.md', 'code/modules/persistence/player_reclaim.dm',
+            'code/modules/persistence/bed_return.dm', 'code/modules/persistence/region_home.dm',
+            'code/modules/persistence/region_travel.dm', 'code/modules/persistence/region_event.dm',
+            'code/modules/persistence/party_train.dm', 'code/modules/research_tree/death_legacy.dm',
+            'code/game/objects/map_metadata/nomads/nomads_start.dm', 'code/modules/accolades/accolades.dm',
+            'code/modules/karma/karma_give.dm', 'code/modules/divine/magic_whitelist.dm',
+            'code/modules/player_activity/player_activity.dm', 'code/modules/admin/verbs/research_knowledge.dm',
+            'code/game/mob/groups/nation.dm', 'tools/transfer_storage/region.py',
+            'code/modules/accolades/character_slots.dm', 'code/game/mob/new_player/login.dm',
+            'code/modules/admin/accolades_admin.dm', 'code/game/mob/groups/faction_membership.dm',
+            'code/game/mob/groups/faction_creation.dm', 'code/game/mob/groups/faction_justice.dm',
+            'code/modules/provinces/province_holding.dm', 'code/modules/provinces/province_blocs.dm',
+            'code/modules/admin/province_blocs_admin.dm', 'tools/transfer_storage/records.py',
+            'scripts/shard-group/shard_group.py')},
+
     # Razor grooming guard, hygiene-gated razor recipes and hair regrowth pace; source checks only.
     'razor_grooming': {'files': ('tests/razor_grooming/test_razor.py', 'tests/razor_grooming/test_hair_growth.py'),
         'paths': ('tests/razor_grooming/',), 'shared_paths': (
             'code/game/objects/items/weapons/material/misc.dm',
+            'code/game/objects/items/weapons/material/kitchen.dm',
+            'code/game/objects/items/weapons/material/haircut_window.dm',
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm',
@@ -1728,9 +2045,22 @@ SUITES = {
                          'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/region_travel.dm',
                          'tests/save_movement/source_adapter.py')},
 
+    'ecology_visibility': {'files': ('tests/ecology_spawning/test_visibility.py',),
+        'paths': ('tests/ecology_spawning/test_visibility.py',),
+        'shared_paths': ('code/modules/ecology/ecology_spawning.dm', 'tests/save_movement/source_adapter.py')},
+
+    'hostile_patrol_waypoints': {'files': ('tests/hostile_patrol/test_waypoint_selection.py',),
+        'paths': ('tests/hostile_patrol/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/humans/human.dm',
+                         'tests/save_movement/source_adapter.py')},
+    'satellite_station_selection': {'files': ('tests/satellite_station/test_station_selection.py',),
+        'paths': ('tests/satellite_station/',), 'shared_paths': (
+            'code/modules/space/satellites.dm', 'tests/save_movement/source_adapter.py')},
+
     # Offline ownership, continuation and source controls; the one Git process
     # runs only against a freshly created synthetic test repository. No BYOND run.
     'wildlife_offline': {'files': (
+        'tests/animal_combat/test_predator_feeding.py',
         'tests/ecology_spawning/test_mob_guard.py',
         'tests/human_subtile/test_insect_cadence_candidate.py',
         'tests/human_subtile/test_insect_idle_slot.py',
@@ -1793,6 +2123,14 @@ SUITES = {
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'stone_molds': {'files': ('tests/stone_molds/test_source.py',), 'paths': (
         'tests/stone_molds/',), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'legacy_computer_panels': {'files': (
+        'tests/legacy_program_session/test_authority.py',
+        'tests/legacy_computer_mail/test_defensive_rendering.py',
+        'tests/legacy_deepnet_orders/test_seller_authority.py',
+        'tests/legacy_nile_orders/test_seller_authority.py'), 'paths': (
+        'tests/legacy_program_session/', 'tests/legacy_computer_mail/',
+        'tests/legacy_deepnet_orders/', 'tests/legacy_nile_orders/',
+        'code/modules/1713/computers/'), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Stdlib-only order checks: prompt paths re-check before paying (lagged repeat clicks).
     'repeat_click_payment': {'files': ('tests/repeat_click_payment/test_source.py',), 'paths': (
         'tests/repeat_click_payment/',), 'shared_paths': ('tests/save_movement/source_adapter.py',
@@ -1819,7 +2157,8 @@ SUITES = {
                                   'tests/paper_documents/test_editor.py',
                                   'tests/paper_documents/test_study.py',
                                   'tests/paper_documents/test_stamps.py',
-                                  'tests/paper_documents/test_forms.py'),
+                                  'tests/paper_documents/test_forms.py',
+                                  'tests/paper_documents/test_bundle_actions.py'),
         'paths': ('tests/paper_documents/',)},
     # Stdlib-only human Destroy layers and admission with inert effect boundaries.
     'rider_deletion': {'files': ('tests/rider_deletion/test_destroy.py',),
@@ -1850,13 +2189,23 @@ SUITES = {
             'code/modules/multiz/structures.dm', 'tests/save_movement/source_adapter.py')},
     # Stdlib + reviewed source projection with inert recipients and event queue.
     # No native fixture, process, network or live message transport is imported.
+    'flamethrower_fire_guard': {'files': ('tests/flamethrower_fire/test_incapacitated.py',),
+        'paths': ('tests/flamethrower_fire/',), 'shared_paths': (
+            'code/modules/1713/weapons/flamethrower.dm', 'tests/save_movement/source_adapter.py')},
+    'skullisland_grace_transfer': {'files': ('tests/skullisland_grace/test_grace_transfer.py',),
+        'paths': ('tests/skullisland_grace/',), 'shared_paths': (
+            'code/game/objects/map_metadata/skullisland.dm', 'tests/save_movement/source_adapter.py')},
+    'wired_pole_traversal': {'files': ('tests/telephone/test_pole_traversal.py',),
+        'paths': ('tests/telephone/test_pole_traversal.py',), 'shared_paths': (
+            'code/modules/1713/telegraph.dm', 'tests/save_movement/source_adapter.py')},
     'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
         'paths': ('tests/telephone/',), 'shared_paths': (
             'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},
 
     # Stdlib + reviewed source projection only; frozen DM is offline data.
     # No native runner, engine process, socket or network boundary is imported.
-    'defibrillator_charge': {'files': ('tests/defibrillator/test_charge_revalidation.py',),
+    'defibrillator_charge': {'files': ('tests/defibrillator/test_charge_revalidation.py',
+                                     'tests/defibrillator/test_revival_outcome.py'),
         'paths': ('tests/defibrillator/',), 'shared_paths': (
             'code/game/objects/items/weapons/defib.dm', 'tests/save_movement/source_adapter.py')},
     'vehicle_hud': {'files': ('tests/vehicle_hud/test_driver_axis.py',),
@@ -1917,8 +2266,10 @@ SUITES = {
             'tests/animal_harvest/action_admission_probe.dm')},
     # Offline injected transport and temporary wiki fixtures. Shared production
     # inputs remain shared so they do not suppress other suites' fallback.
-    'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py',),
-        'paths': (), 'shared_paths': (
+    # test_wiki_answers reads the guide copies shipped under UI/player-help-wiki
+    # and the question set; both belong to this suite alone.
+    'help_wiki_guides': {'files': ('tests/player_help/test_wiki_guides.py', 'tests/player_help/test_wiki_answers.py'),
+        'paths': ('UI/player-help-wiki/', 'tests/player_help/wiki_eval/'), 'shared_paths': (
             'code/game/mob/living/carbon/human/shit_piss.dm',
             'code/game/mob/living/carbon/human/emotes/emote.dm',
             'code/modules/reagents/reagent_containers/glass.dm',
@@ -2022,6 +2373,9 @@ SUITES = {
             'code/game/objects/items/stacks/civ_recipes.dm',
             'code/modules/research_tree/research_node.dm',
             'code/modules/reagents/laboratory.dm', 'config/crafting/')},
+    'sound_listener_dispatch': {'files': ('tests/sound_listener_dispatch/test_dispatch.py',),
+        'paths': ('tests/sound_listener_dispatch/',),
+        'shared_paths': ('code/game/sound.dm',)},
     'device_hearing': {'files': ('tests/device_hearing/test_contract.py',),
         'paths': ('tests/device_hearing/',),
         'shared_paths': ('code/game/mob/hear_say.dm',)},
@@ -2220,7 +2574,9 @@ SUITES = {
         'shared_paths': ('code/game/gameticker.dm', 'code/modules/persistence/functions.dm',
             'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/carbon/human/nomads_spawn.dm',
-            'code/game/mob/living/carbon/human/human_life.dm')},
+            'code/game/mob/living/carbon/human/human_life.dm',
+            'code/game/objects/structures.dm', 'code/modules/chat/chat.dm',
+            'code/modules/client/client_procs.dm')},
     # Fishing grounds source contracts; the native probe beside them runs
     # through tests/ecology_spawning/run_linux.py.
     'fishing_grounds': {'files': ('tests/fishing_grounds/test_source.py',), 'paths': (
@@ -2258,6 +2614,9 @@ SUITES = {
         'tests/power_cranes/', 'code/modules/1713/power_cranes.dm', 'code/modules/1713/lifting_machines.dm',
         'config/craft_needs.json', 'icons/obj/power_cranes.dmi', 'tests/sprites/create_power_cranes.py')},
     # Source contracts only; this suite does not run DM.
+    'road_garden': {'files': ('tests/road_garden/test_contract.py',), 'paths': ('tests/road_garden/',),
+        'shared_paths': ('code/game/objects/covers_types/cover_roads.dm',
+                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm')},
     'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
         'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
         'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
@@ -2273,6 +2632,9 @@ SUITES = {
     'lifting_machines': {'files': ('tests/lifting_machines/test_contract.py',), 'paths': (
         'tests/lifting_machines/', 'code/modules/1713/lifting_machines.dm',
         'icons/obj/lifting_machines.dmi', 'tests/sprites/create_lifting.py')},
+    'ramps': {'files': ('tests/ramps/test_contract.py',), 'paths': (
+        'tests/ramps/', 'code/modules/multiz/ramps.dm', 'code/__defines/ramps.dm',
+        'icons/obj/ramps.dmi', 'tests/sprites/create_ramps.py')},
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
@@ -2282,6 +2644,9 @@ SUITES = {
     'charcoal_clamp': {'files': ('tests/charcoal_clamp/test_contract.py',), 'paths': (
         'tests/charcoal_clamp/', 'code/modules/1713/charcoal_clamp.dm',
         'icons/obj/charcoal_clamp.dmi', 'tests/sprites/create_charcoal_clamp.py')},
+    'steelmaking': {'files': ('tests/steelmaking/test_contract.py',), 'paths': (
+        'tests/steelmaking/', 'code/modules/1713/steel_grades.dm', 'code/modules/1713/carburizing.dm',
+        'code/modules/1713/crucible_steel.dm', 'code/modules/1713/steel_works.dm', 'docs/steelmaking.md')},
     'tatara': {'files': ('tests/tatara/test_contract.py',), 'paths': (
         'tests/tatara/', 'code/modules/1713/tatara.dm', 'docs/tatara.md',
         'icons/obj/tatara.dmi', 'tests/sprites/create_tatara.py', 'tests/sprites/create_tachi.py')},
@@ -2370,20 +2735,26 @@ SUITES = {
                               'tests/save_policy/test_save_validator_boot.py',
                               'tests/save_policy/test_private_scratch_savefiles.py',
                               'tests/save_policy/test_stack_recipes_unsaved.py',
-                              'tests/save_policy/test_action_locks_unsaved.py'), 'paths': (
+                              'tests/save_policy/test_action_locks_unsaved.py',
+                              'tests/save_policy/test_occupied_checkpoint.py'), 'paths': (
         'tests/save_policy/', 'code/world.dm', 'code/datums/vote.dm',
         'code/modules/research_tree/scholar_practice.dm', 'code/game/objects/structures/tree_climbing.dm',
         'code/game/mob/living/carbon/human/resuscitation.dm',
         'code/modules/persistence/functions.dm', 'code/modules/persistence/saving.dm',
+        'code/modules/persistence/occupied_checkpoint.dm',
         'code/modules/persistence/save_validator.dm', 'code/modules/persistence/stream/',
         'code/modules/persistence/train_body_graph.dm', 'code/modules/persistence/derived_assets.dm')},
     # Offline source contracts for the disabled per-use divine approval foundation.
-    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py'), 'paths': (
-        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm')},
+    'divine_approval': {'files': ('tests/divine_approval/test_contract.py', 'tests/divine_approval/test_divine_book.py', 'tests/divine_approval/test_journal.py', 'tests/divine_approval/test_mundane_gear.py', 'tests/divine_approval/test_ritual.py', 'tests/divine_approval/test_covenant.py', 'tests/divine_approval/test_magic_whitelist.py', 'tests/divine_approval/test_arcane_materials.py', 'tests/divine_approval/test_arcane_enchant.py', 'tests/divine_approval/test_arcane_altars.py', 'tests/divine_approval/test_arcane_bless.py', 'tests/divine_approval/test_arcane_spirits.py', 'tests/divine_approval/test_arcane_apostate.py', 'tests/divine_approval/test_arcane_ward.py', 'tests/divine_approval/test_arcane_devotion.py', 'tests/divine_approval/test_arcane_rites.py', 'tests/divine_approval/test_arcane_unbind.py', 'tests/divine_approval/test_arcane_veil.py', 'tests/divine_approval/test_heteromorph.py'), 'paths': (
+        'tests/divine_approval/', 'code/modules/divine/', 'code/modules/admin/verbs/divine_book.dm', 'code/modules/admin/verbs/divine_patron.dm', 'code/modules/admin/verbs/divine_repositories.dm', 'code/modules/admin/verbs/magic_whitelist.dm', 'code/modules/magic/', 'config/magic_law_balance.json'), 'shared_paths': ('civ13.dme', 'code/modules/1713/book.dm', 'code/game/objects/items.dm', 'code/game/objects/items/stacks/stack.dm', 'code/modules/1713/coin_mint.dm', 'code/modules/1713/weather_lightning.dm', 'code/game/objects/structures/wild.dm', 'code/game/turfs/floor_attackby.dm')},
     # Offline source contracts for the fireman carry (grab on a downed human).
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
         'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
+    'immunity_empty_decay': {'files': ('tests/disease_immunity/test_decay_projection.py',),
+        'paths': ('tests/disease_immunity/before_decay.dm.txt',),
+        'shared_paths': ('code/game/mob/living/carbon/human/immunity.dm',
+                         'tests/save_movement/source_adapter.py')},
     'injury_recovery': {'files': ('tests/injury_recovery/test_source.py',
         'tests/disease_immunity/test_source.py', 'tests/illness_pain_body_heat/test_source.py',
         'tests/sleep_pain_hold/test_source.py'),
@@ -2396,9 +2767,50 @@ SUITES = {
             'code/game/mob/living/carbon/human/severe_disease.dm',
             'code/game/mob/living/carbon/human/immunity.dm',
             'code/game/mob/living/carbon/human/human_life.dm')},
+    # Two-handed weapons need an attached, empty offhand to wield.
+    'twohanded_wield': {'files': ('tests/twohanded_wield/test_offhand.py',), 'paths': (
+        'tests/twohanded_wield/', 'code/game/objects/items/weapons/material/twohanded.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/inventory.dm',
+            'code/modules/organs/organ_external.dm')},
+    # A finished CPR round is credited before the post-wait recheck.
+    'cpr_cycle_credit': {'files': ('tests/cpr_cycle_credit/test_credit_order.py',), 'paths': (
+        'tests/cpr_cycle_credit/',),
+        'shared_paths': ('code/game/mob/living/carbon/human/resuscitation.dm',)},
+    # Emptying a magazine rechecks the player still holds it after the prompt.
+    'magazine_empty': {'files': ('tests/magazine_empty/test_held_recheck.py',), 'paths': (
+        'tests/magazine_empty/',),
+        'shared_paths': ('code/modules/projectiles/ammunition.dm',)},
+    # Flying drones break and are wrecked when damage empties their health.
+    'drone_destruction': {'files': ('tests/drone_destruction/test_flying_destroy.py',), 'paths': (
+        'tests/drone_destruction/', 'code/game/objects/items/devices/drone.dm')},
+    # Raising a lowered sterile mask restores its face coverage.
+    'sterile_mask_toggle': {'files': ('tests/sterile_mask_toggle/test_toggle_coverage.py',), 'paths': (
+        'tests/sterile_mask_toggle/', 'code/game/objects/items/clothing/masks/medical.dm')},
+    # Camel pack withdrawal rechecks range after the menu.
+    'camel_pack_range': {'files': ('tests/camel_pack_range/test_withdraw_range.py',), 'paths': (
+        'tests/camel_pack_range/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
+    'powder_loading_container': {'files': ('tests/powder_loading_container/test_powder_loading_container.py',),
+        'paths': ('tests/powder_loading_container/',),
+        'shared_paths': ('code/modules/projectiles/ammo_crafting.dm',)},
+    'tanning_drum_idle_power': {'files': ('tests/tanning_drum_idle_power/test_tanning_drum_idle_power.py',),
+        'paths': ('tests/tanning_drum_idle_power/',),
+        'shared_paths': ('code/modules/1713/factory_tanning.dm',)},
+    'exact_reagent_transfer': {'files': ('tests/exact_reagent_transfer/test_exact_reagent_transfer.py',),
+        'paths': ('tests/exact_reagent_transfer/',),
+        'shared_paths': ('code/modules/1713/factory_pipes.dm', 'code/modules/reagents/Chemistry-Holder.dm',
+                         'code/modules/reagents/reagent_containers/glass.dm', 'code/modules/1713/light_fuel.dm')},
+    # Force-feeding rechecks reach and mouth coverage after its wait.
+    'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
+        'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
+        'shared_paths': ('code/game/mob/mob_helpers.dm',
+            'code/modules/reagents/reagent_containers/food/snacks.dm',
+            'code/game/objects/items/weapons/material/kitchen.dm')},
     # Offline source contracts for field treatment and artery repair.
-    'medical_care': {'files': ('tests/medical_care/test_source.py',), 'paths': (
+    'medical_care': {'files': ('tests/medical_care/test_source.py',
+        'tests/medical_care/test_splints.py'), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
+        'code/game/mob/living/carbon/human/stripping.dm',
         'code/modules/surgery/other.dm', 'code/modules/surgery/limb_reattach.dm',
         'code/modules/1713/doctor_handbook.dm'),
         'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
@@ -2511,6 +2923,10 @@ SUITES = {
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
         'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+    # Signal-smoke choices must not overwrite a grenade activated by another dialog.
+    'signal_smoke_selection': {'files': ('tests/signal_smoke_selection/test_source.py',),
+        'paths': ('tests/signal_smoke_selection/',),
+        'shared_paths': ('code/game/objects/items/weapons/grenades/smokebomb.dm',)},
     # Spray bottle acceptance, feedback and reagent logging (#4269, #4270).
     'spray': {'files': ('tests/spray/test_source.py',),
         'paths': ('tests/spray/', 'code/modules/reagents/reagent_containers/spray.dm')},
@@ -2524,9 +2940,10 @@ SUITES = {
                   'code/game/mob/living/living.dm', 'code/_onclick/click.dm',
                   'code/game/objects/items/weapons/legcuffs.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
-    # Trap disarm recheck and punji animal capture/release (#4248, #4249).
+    # Trap disarm recheck, punji animal capture/release and release unanchoring (#4248, #4249, #6223).
     'traps': {'files': ('tests/traps/test_source.py',),
-        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm')},
+        'paths': ('tests/traps/', 'code/game/objects/items/weapons/traps.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     # Gavel block forwards non-hammer items, so storage bags collect it (#4515).
     'gavel_block': {'files': ('tests/gavel_block/test_source.py',),
         'paths': ('tests/gavel_block/', 'code/game/objects/items/courtitems.dm')},
@@ -2547,6 +2964,8 @@ SUITES = {
         'paths': ('tests/log_wall_building/', 'code/game/objects/covers_types/log_wall_building.dm',
                   'code/game/objects/covers_types/cover_walltypes.dm', 'code/game/objects/building_insulation.dm',
                   'icons/obj/log_wall_build.dmi', 'tests/sprites/create_log_wall_build.py')},
+    'fire_smoke_breathing': {'files': ('tests/fire_smoke/test_breathing.py',),
+        'paths': ('tests/fire_smoke/', 'code/modules/1713/fire_smoke.dm')},
     'firefighting': {'files': ('tests/firefighting/test_firefighting.py',),
         'paths': ('tests/firefighting/', 'code/modules/1713/firefighting.dm', 'code/modules/1713/firefighting_water.dm', 'code/modules/1713/firefighting_hook.dm', 'code/modules/1713/firefighting_pump.dm', 'code/game/objects/items/weapons/tools.dm',
                   'code/modules/1713/oil_fires.dm', 'icons/obj/firefighting.dmi',
@@ -2561,6 +2980,8 @@ SUITES = {
     'death_legacy': {'files': ('tests/death_legacy/test_death_legacy.py',),
         'paths': ('tests/death_legacy/', 'code/modules/research_tree/death_legacy.dm', 'code/game/mob/living/carbon/human/death.dm',
                   'code/game/mob/groups/faction_start.dm', 'code/modules/persistence/bed_return.dm')},
+    'familiarity': {'files': ('tests/familiarity/test_familiarity.py',),
+        'paths': ('tests/familiarity/', 'code/modules/research_tree/familiarity.dm')},
     'knowledge_spread': {'files': ('tests/knowledge_spread/test_knowledge_spread.py',),
         'paths': ('tests/knowledge_spread/', 'code/modules/research_tree/knowledge_spread.dm', 'code/modules/research_tree/tech_tree_view.dm',
                   'code/modules/research_tree/book_interface.dm', 'code/modules/research_tree/book_research.dm', 'code/modules/research_tree/era_loss.dm',
@@ -2584,23 +3005,73 @@ SUITES = {
                   'code/modules/1713/light_fuel.dm')},
     'preserves': {'files': ('tests/preserves/test_preserves.py',),
         'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi')},
+    'drug_preparations': {'files': ('tests/drug_preparations/test_drug_preparations.py',),
+        'paths': ('tests/drug_preparations/', 'code/modules/1713/drug_preparations.dm', 'tests/sprites/create_drugs.py')},
+    'drug_refining': {'files': ('tests/drug_refining/test_drug_refining.py',),
+        'paths': ('tests/drug_refining/', 'code/modules/reagents/drug_refining.dm')},
+    'faction_substances': {'files': ('tests/faction_substances/test_source.py',),
+        'paths': ('tests/faction_substances/', 'code/game/mob/groups/faction_substances.dm')},
+    'drug_classes': {'files': ('tests/drug_classes/test_drug_classes.py',),
+        'paths': ('tests/drug_classes/', 'code/modules/reagents/drug_classes.dm')},
+    'drug_crops': {'files': ('tests/drug_crops/test_drug_crops.py',),
+        'paths': ('tests/drug_crops/',)},
     'coffee': {'files': ('tests/coffee/test_coffee.py',),
         'paths': ('tests/coffee/', 'code/modules/1713/coffee.dm', 'tests/sprites/create_coffee.py')},
+    'butter': {'files': ('tests/butter/test_butter.py',),
+        'paths': ('tests/butter/', 'code/modules/1713/butter.dm', 'tests/sprites/create_butter.py')},
+    'syrups': {'files': ('tests/syrups/test_syrups.py',),
+        'paths': ('tests/syrups/', 'code/modules/1713/syrups.dm')},
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),
         'paths': ('tests/weather_sound/', 'code/game/mob/living/life.dm',
                   'code/game/mob/observer/ghost/ghost.dm', 'code/game/area/areas.dm')},
     # Ghost animal noises preference: animals heard only nearby by choice.
+    'spirit_wait': {'files': ('tests/spirit_wait/test_spirit_wait.py',),
+        'paths': ('tests/spirit_wait/', 'code/game/mob/observer/ghost/spirit_wait.dm'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/mob.dm',
+            'code/game/mob/living/carbon/human/death.dm', 'code/modules/divine/arcane_spirits.dm',
+            'code/modules/admin/verbs/random_verbs.dm')},
+    # Divine Sight: how gods observe (hidden mechanic).
+    'divine_sight': {'files': ('tests/divine_sight/test_divine_sight.py',),
+        'paths': ('tests/divine_sight/', 'code/modules/divine/divine_sight.dm',
+            'code/modules/divine/divine_sight_panel.dm', 'icons/mob/divine_presence.dmi'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/modules/admin/admin_verbs.dm')},
+    # Observing as a spirit on persistent worlds: limited sight, local hearing, haunting.
+    'spirit_observe': {'files': ('tests/spirit_observe/test_spirit_observe.py', 'tests/spirit_observe/test_spirit_hud.py'),
+        'paths': ('tests/spirit_observe/', 'code/game/mob/observer/ghost/spirit_observe.dm',
+            'icons/effects/spirit_sight.dmi', 'code/game/mob/observer/ghost/spirit_hud.dm',
+            'icons/mob/screen/spirit_hud.dmi'),
+        'shared_paths': ('code/game/mob/observer/ghost/ghost.dm', 'code/game/mob/observer/ghost/login.dm',
+            'code/_onclick/ghost.dm', 'code/game/mob/hear_say.dm', 'code/game/mob/living/say.dm',
+            'code/game/mob/emote.dm',
+            'code/game/mob/mob.dm', 'code/game/mob/mob_movement.dm', 'code/modules/multiz/movement.dm',
+            'code/modules/1713/radio.dm', 'code/modules/1713/cmss13_afterlife.dm',
+            'code/game/mob/new_player/new_player.dm')},
     'ghost_animal_noises': {'files': ('tests/ghost_animal_noises/test_ghost_animal_noises.py',),
         'paths': ('tests/ghost_animal_noises/', 'code/game/mob/emote.dm'),
         'shared_paths': ('code/game/mob/observer/ghost/ghost.dm',
             'code/modules/client/preferencesSQLite/preference_setup/global/setting_datums.dm',
             'code/modules/client/preferencesSQLite/preferences.dm')},
+    # False bottoms: hidden compartments the storage grid, window and searches skip.
+    'false_bottom': {'files': ('tests/false_bottom/test_source.py',),
+        'paths': ('tests/false_bottom/', 'code/modules/storage_window/false_bottom.dm'),
+        'shared_paths': ('code/game/objects/items/weapons/storage/storage.dm',
+            'code/modules/storage_window/storage_window.dm',
+            'code/modules/persistence/region_travel_gear.dm')},
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
+    'surgery_amputation_log': {'files': ('tests/surgery_amputation_log/test_source.py',),
+        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm')},
+    # A properly sleeping, logged-off character is safe off Gaia.
+    'offline_sleep_protection': {'files': ('tests/offline_sleep_protection/test_source.py',),
+        'paths': ('tests/offline_sleep_protection/', 'code/modules/persistence/offline_sleep_protection.dm',
+            'code/game/mob/living/carbon/human/human_damage.dm', 'code/game/mob/living/living.dm',
+            'code/game/mob/grab.dm', 'code/game/objects/buckling.dm', 'code/game/mob/living/logout.dm',
+            'code/game/mob/living/carbon/human/stripping.dm', 'code/game/objects/items/stacks/craft_guards.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
-    'origins': {'files': ('tests/origins/test_origins.py', 'tests/origins/test_travel.py'),
+    'origins': {'files': ('tests/origins/test_origins.py', 'tests/origins/test_travel.py', 'tests/origins/test_peoples.py'),
         'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm',
-            'code/modules/admin/verbs/origin_languages.dm',
+            'code/game/mob/living/carbon/human/peoples.dm', 'code/game/mob/living/carbon/human/peoples_split.dm', 'code/game/mob/living/carbon/human/peoples_blend.dm', 'code/modules/admin/verbs/peoples_admin.dm',
+            'config/people_names_blocked.txt', 'code/modules/admin/verbs/origin_languages.dm',
             'code/modules/persistence/region_travel_tongues.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/nomads_spawn.dm',
             'code/modules/persistence/region_travel.dm',
@@ -2629,6 +3100,16 @@ SUITES = {
             'code/modules/paperwork/written_languages.dm', 'code/_helpers/global_lists.dm',
             'code/game/mob/language/earth.dm',
             'code/modules/persistence/world_time_stamps.dm')},
+    # Integrated circuits: bounded execution, plain port values, checked editor input.
+    'wiremod': {'files': ('tests/wiremod/test_wiremod_core.py',),
+        'paths': ('tests/wiremod/', 'code/modules/wiremod/', 'code/__defines/wiremod.dm',
+                  'tgui/src/interfaces/IntegratedCircuit/', 'tgui/src/interfaces/WiremodCircuit.tsx'),
+        'shared_paths': ('civ13.dme', 'tgui/src/interfaces/index.tsx', 'tgui/src/types.ts',
+            'tgui/THIRD_PARTY.md', 'UI/tgui/civ13-tgui.css')},
+    'chat_translation': {'files': ('tests/chat_translation/test_markers.py', 'tests/chat_translation/test_edge_service.py'),
+        'paths': ('tests/chat_translation/', 'code/game/mob/hear_say.dm', 'interface/chat/chat.html',
+                  'code/modules/persistence/region_ooc.dm', 'docs/chat-translation.md',
+                  'code/modules/chat/chat_translate.dm', 'tools/edge-translator/')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

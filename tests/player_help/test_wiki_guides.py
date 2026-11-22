@@ -108,7 +108,9 @@ class WikiGuideTests(unittest.TestCase):
         self.assertIn('"matching_wiki_chunks": 0', prompt)
         self.assertIn('does not prove', prompt)
         no_wiki = {}
-        no_wiki_corpus = bridge.gameplay_knowledge(ROOT, wiki_status=no_wiki)
+        # Neither a checkout nor the copies shipped with the game.
+        with mock.patch.object(bridge, 'WIKI_BUNDLE', 'UI/no-such-bundle'):
+            no_wiki_corpus = bridge.gameplay_knowledge(ROOT, wiki_status=no_wiki)
         self.assertFalse(no_wiki['configured'])
         prompt = self.prompt(no_wiki_corpus, no_wiki, 'qzxv unknown')
         self.assertIn('"configured": false', prompt)
@@ -138,21 +140,21 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '6b1b1c0df449cc9cf6dc865d5953df7ccd70f05a')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, 'c8c608376d828cb0dec21f56a19f3d6631aadab9')
         cases = {
             'Chemistry': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8',
                           'chemistry reaction bench',
                           'The installed mixture stays inert, avoiding competing automatic reactions.',
                           'How do I use a laboratory reaction bench?'),
-            'Medical': ('2e6344de888ecbff65a2433e7ea512b4deef6e9c8fdb717d94050237a38d7376',
+            'Medical': ('e9d31ac5d931999048f179a4b98884d7642a75ad5f38ab27ac7b1e9ec63482dc',
                         'medical severe illness treatment penicillin',
                         'Continuous appropriate treatment pauses deterioration and cures the illness after three minutes.',
                         'How do I treat severe illness?'),
-            'Construction': ('15c4e063bd9826fa9c4410f0000c747706f2d702401a53c994a211edde991293',
+            'Construction': ('6de3dc86ffcdb60ef2711137bdb3ab7301423b78b12c44d1a6b2c3f0e4ba1973',
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),
-            'Trains': ('fdfc149841f0ef717de53abd3e2101306d14afe82c4dfe4ce108cbf16cc42759',
+            'Trains': ('e72e935bc4971533a1e0ddf4d075f0d8dca523aacf4f8a3fe44fcee1278ab35b',
                        'train trains railway track locomotive station switcher rails wagon',
                        'A split switcher moves the vehicle one tile sideways without changing its heading.',
                        'How does a train switcher work?'),
@@ -273,10 +275,16 @@ class WikiGuideTests(unittest.TestCase):
             bridge.gameplay_knowledge(ROOT, self.wiki, wiki_status=status)
         self.assertEqual(status['changed_guides'], 1)
 
-    def test_legacy_missing_still_fails_closed(self):
-        (self.wiki / 'src/Starter_Guide.md').unlink()
-        with self.assertRaises(FileNotFoundError):
-            bridge.gameplay_knowledge(ROOT, self.wiki)
+    def test_bundled_guides_answer_without_a_checkout(self):
+        # Every pinned guide ships with the game, so a missing or stale wiki
+        # checkout on the host cannot drop one from Help.
+        for wiki_root in (None, self.wiki):
+            status = {}
+            corpus = bridge.gameplay_knowledge(ROOT, wiki_root, wiki_status=status)
+            self.assertTrue(status['configured'])
+            self.assertEqual(status['verified_guides'], len(bridge.WIKI_REVIEWED_GUIDES))
+            self.assertEqual((status['missing_guides'], status['changed_guides']), (0, 0))
+            self.assertTrue(any('Guide_to_Fishing' in row['topic'] for row in corpus))
 
 
 if __name__ == '__main__':

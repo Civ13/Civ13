@@ -44,7 +44,7 @@
 		ticker.current_state = GAME_STATE_PLAYING
 		cave_assert(dug_underground_supported() && building_standing_wanted(), "a dig-down map still wants its standing level")
 		cave_assert(rules.underground_admitted(base + 1) && rules.building_admitted(base + 1), "either level may come first")
-		cave_assert(rules.building_admitted(base + 11) && !rules.building_admitted(base + 12), "ten building levels and the cave are the cap")
+		cave_assert(rules.building_admitted(base + 14) && !rules.building_admitted(base + 15), "ten building levels and four underground levels are the cap")
 		var/cave
 		var/air
 		#ifdef CAVE_PROBE_CAVE_FIRST
@@ -113,8 +113,46 @@
 		cave_assert(multiz_level_above(air) == second && multiz_level_below(second) == air, "the second storey stands on the first, over the cave")
 		cave_assert(multiz_level_below(world.maxz) == world.maxz - 1 && !multiz_level_above(world.maxz), "upper storeys stack plainly")
 		cave_assert(!building_grows_from(world.maxz) && world_z_budget.error(world.maxz + 1, "roof"), "the map's cap stops growth")
-		cave_assert(!rules.building_admitted(world.maxz + 1) && !rules.underground_admitted(world.maxz + 1), "nothing more is admitted")
 		cave_assert(multiz_top_z() == base, "the surface is still the top ground level")
+		// Deeper levels (docs/underground-level.md): three more under the cave,
+		// each appended above the open air but lying under the one before.
+		cave_assert(underground_depth_limit() == 4 && underground_depth_of(cave) == 1 && !underground_depth_of(air), "the cave is depth one of four")
+		cave_assert(!underground_create(3) && underground_dig_error(3), "a level is dug only under the deepest one")
+		var/list/deep = list(cave)
+		for (var/depth = 2 to 4)
+			cave_assert(rules.underground_admitted(world.maxz + 1) && !building_grows_from(world.maxz), "depth [depth] is admitted, no more storeys")
+			cave_assert(!world_z_budget.error(world.maxz + 1, "underground"), "depth [depth] fits the level ceiling")
+			cave_assert(underground_create(depth) && world.maxz == base + 10 + depth, "depth [depth] is dug")
+			var/z = world.maxz
+			deep += z
+			cave_assert(underground_depth_of(z) == depth && underground_z_at(depth) == z && underground_added(z), "depth [depth] is recognised")
+			cave_assert(multiz_level_below(deep[depth - 1]) == z && multiz_level_above(z) == deep[depth - 1] && !multiz_level_below(z), "depth [depth] lies under depth [depth - 1]")
+			cave_assert(istype(locate(1, 1, z), /turf/wall/rockwall/bedrock) && dug_underground_unformed(locate(5, 5, z)), "depth [depth] starts unformed")
+			cave_assert(map_storage.sparse_level_kind(z) == "building", "depth [depth] saves sparsely")
+			cave_assert(!building_upper_z(z) && !building_stack_room(z) && !building_level_lazy(z), "depth [depth] is never a building level")
+		cave_assert(building_levels_built() == 10 && underground_added_count() == 4, "ten storeys, four underground levels")
+		cave_assert(!rules.underground_admitted(world.maxz + 1) && underground_dig_error(5) && !rules.building_admitted(world.maxz + 1), "nothing more is admitted")
+		cave_assert(multiz_top_z() == base && underground_surface_z() == base && multiz_level_above(air) == second, "the surface and the storeys keep their places")
+		// The deep levels form from their own seed and feel only sea and lava.
+		var/turf/deep_cell = dug_underground_form(locate(3, 3, deep[2]))
+		cave_assert(!istype(deep_cell, /turf/floor/dirt/underground/wet) && !underground_above_cell(deep_cell), "a lake does not wet the second level")
+		cave_assert(dug_underground_cell(3, 4, base, 2) == /turf/wall/rockwall, "the sea floor reaches every depth")
+		var/turf/deep_open = dug_underground_form(locate(6, 6, deep[3])).ChangeTurf(/turf/floor/dirt)
+		for (var/d in alldirs)
+			cave_assert(!dug_underground_unformed(get_step(deep_open, d)), "an opened deep cell forms its neighbours ([d])")
+		cave_assert(dug_underground_unformed(locate(6, 6, deep[4])) && dug_underground_unformed(locate(6, 6, deep[2])), "other depths stay unformed")
+		cave_assert(underground_breach_scan(deep[2]) == 0, "only the cave takes water from above")
+		cave_assert(level_report_name(deep[2]) == "underground 2 (added)", "the level report names the depth")
+		// Each depth has its own ore table (underground_ores.dm).
+		cave_assert(underground_ore_factor("gold", locate(3, 3, base)) == 1 && underground_ore_factor("gold", locate(3, 3, cave)) == 1, "the surface and the cave keep today's ores")
+		cave_assert(underground_ore_factor("coal", locate(3, 3, deep[2])) == 2 && underground_ore_factor("gold", locate(3, 3, deep[3])) == 2.5 && underground_ore_factor("diamond", locate(3, 3, deep[4])) == 4, "each depth has its own riches")
+		cave_assert(underground_ore_factor("flint", locate(3, 3, deep[3])) == 0 && underground_ore_factor("bauxite", locate(3, 3, deep[4])) == 0.25 && underground_ore_factor("unknown", locate(3, 3, deep[4])) == 1, "shallow ores thin out with depth")
+		cave_assert(continent_ore_factor("gold", locate(3, 3, deep[4])) == 3 * continent_ore_factor("gold", locate(3, 3, base)), "the depth multiplies the land's own rate")
+		cave_assert(underground_surface_over(locate(3, 3, deep[4])) == locate(3, 3, base) && !underground_surface_over(locate(3, 3, base)), "a deep cell finds the land above")
+		// A restore cannot see its underground yet: it counts every level the map may add.
+		cave_assert(rules.free_planes(world.maxz, "restore") == 4 && rules.free_planes(world.maxz, "roof") == 4 && rules.ground_planes() == rules.base_z + 4, "a restore counts the whole underground")
+		underground_levels_refresh()
+		cave_assert(underground_depth_of(deep[4]) == 4 && multiz_level_below(deep[3]) == deep[4], "the levels are found again from their markers")
 		var/list/report = level_report_counts(cave)
 		cave_assert(level_report_name(cave) == "cave (added)" && level_report_name(air) == "open air" && level_report_name(base) == "ground" && report[1] > 1 && report[2] >= 1, "the level report counts the dug cave")
 		text2file("PASS: cave with building levels", "result.txt")

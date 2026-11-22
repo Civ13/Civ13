@@ -99,6 +99,7 @@
 		return FALSE
 	sleeping = 66
 	inducedSSD = TRUE
+	offline_sleep_protection_lifted = FALSE
 	if (s_active)
 		s_active.close(src)
 	sleep_update()
@@ -127,7 +128,7 @@
 			to_chat(src, SPAN_RED("You toss and turn but your skin is crawling and you can not sleep."))
 			return
 
-	if (hygiene <= 80)
+	if (hygiene < HYGIENE_LEVEL_DIRTY) // the same "filthy" line as mood and self-examine
 		to_chat(src, SPAN_RED("You toss and turn but you are too filthy to sleep."))
 		return
 
@@ -157,6 +158,8 @@
 	var/sleep_message = "Are you sure you want to sleep for a while? This takes two minutes. Your body stays here and can be harmed, but you get hungry much more slowly."
 	if (persistence_bed_return_enabled())
 		sleep_message = "Sleep here and assign this bed for saved-character returns? You can have only one bed, so any bed assigned to you before is released. This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
+	if (offline_sleep_protection_map_allowed())
+		sleep_message += " If you belong to a faction and this bed is in a province your faction holds, logging off once you are asleep keeps your body safe here: nobody can harm, rob or move it until you come back."
 	if (WWinput(src, sleep_message, "Sleep", "Yes", list("Yes","No")) == "Yes")
 		to_chat(src, SPAN_NOTICE("You will start sleeping in two minutes."))
 		if (do_after(src, 2 MINUTES, src, FALSE, incapacitation_flags = (INCAPACITATION_DEFAULT & ~INCAPACITATION_DISABLED) | INCAPACITATION_DISABLED_NO_REST))
@@ -543,6 +546,7 @@
 				life_water_refresh()
 				return
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning in the floodwater!</font>"))
+			body_motion_struggle()
 			life_water_refresh()
 			adjustOxyLoss(10)
 			return
@@ -598,6 +602,7 @@
 				life_water_refresh()
 				return
 			to_chat(src, SPAN_WARNING("<font size='2'>You are drowning!</font>"))
+			body_motion_struggle()
 			life_water_refresh()
 			adjustOxyLoss(10)
 			return

@@ -202,12 +202,18 @@ var/global/mountain_seam_marked = FALSE
 			ore_type = null
 			if (H)
 				to_chat(H, SPAN_NOTICE("The seam is worked back to bare rock; give it time."))
+	// The continent's own rate (continent_resources.dm): a scarce ore sometimes gives only stone.
+	var/amount = 0
+	if (ore_type)
+		var/list/row = mountain_seam_ores()[ore_type]
+		amount = continent_seam_amount(ore_type, rand(row[3], row[4]), T)
+		if (amount < 1)
+			ore_type = null
 	var/obj/item/stack/material/stone/S = new /obj/item/stack/material/stone(T)
 	if (ore_type)
 		S.amount = rand(4, 6)
-		var/list/row = mountain_seam_ores()[ore_type]
 		var/obj/item/stack/ore/O = new ore_type(T)
-		O.amount = rand(row[3], row[4])
+		O.amount = min(amount, O.max_amount)
 		O.update_icon()
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You work some [initial(O.name)] loose from the seam."))
@@ -228,7 +234,7 @@ var/global/mountain_seam_marked = FALSE
 	mountain_seam_busy[tile_key] = TRUE
 	mountain_seam_busy[worker_key] = TRUE
 	. = FALSE
-	var/time = MOUNTAIN_SEAM_WORK / H.getStatCoeff("strength") / max(0.1, P.usespeed)
+	var/time = work_delay_per_speed(H, MOUNTAIN_SEAM_WORK, WORK_MINE, P)
 	H.visible_message(SPAN_NOTICE("[H] starts to work the old mountain floor with \the [P]."), SPAN_NOTICE("You start to work the old mountain floor with \the [P]."))
 	playsound(T, 'sound/effects/pickaxe.ogg', 100, TRUE)
 	var/datum/resource_work_animation/work_animation = H.prepare_resource_work_animation(P, T, time)

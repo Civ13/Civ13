@@ -101,8 +101,8 @@ class UpDownButtons(unittest.TestCase):
         self.assertIn('set name = "go-down"', hud)
         self.assertEqual(hud.count('press_updown('), 4)  # proc, two keys, the tile
         keys = (ROOT / 'code/modules/client/action_keybindings.dm').read_text()
-        self.assertIn('"floor_up" = list("Go up a level (ladder, stairs, ledge)", "go-up", list(), list())', keys)
-        self.assertIn('"floor_down" = list("Go down a level (ladder, edge, tree)", "go-down", list(), list())', keys)
+        self.assertIn('"floor_up" = list("Go up a level (ladder, stairs, ledge, surface)", "go-up", list(), list())', keys)
+        self.assertIn('"floor_down" = list("Go down a level (ladder, edge, tree, dive)", "go-down", list(), list())', keys)
         floors = (ROOT / 'code/modules/multiz/floor_buttons.dm').read_text()
         # The offer looks at the ground only; the press goes through the same
         # checked climbs as the verbs.
@@ -111,6 +111,13 @@ class UpDownButtons(unittest.TestCase):
         for climb in ('climb_ledge(d)', 'climb_down_edge(d)', 'climb_stairs(stairs)', 'L.attack_hand(src)',
                       'start_vehicle_deck_down()', 'start_climb_down()'):
             self.assertIn(climb, floors)
+        # In the sea the buttons Dive and Surface through the verbs' own procs.
+        self.assertIn('var/sea = sea_updown_offer(direction)', floors)
+        self.assertIn('return surface_from_seabed()', floors)
+        self.assertIn('return free_dive()', floors)
+        diving = (ROOT / 'code/modules/1713/machinery/modular_vehicles/ships/free_diving.dm').read_text()
+        self.assertIn('\tsurface_from_seabed()\n', diving)  # the Surface verb
+        self.assertIn('free_dive_target(T)', diving)
         dme = (ROOT / 'civ13.dme').read_text()
         self.assertIn('updown_buttons.dm', dme)
         self.assertIn('floor_buttons.dm', dme)
@@ -125,7 +132,7 @@ class UpDownButtons(unittest.TestCase):
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text(encoding='utf-8-sig')
         produce = stack.split('/obj/item/stack/proc/produce_recipe(', 1)[1].split('\n/obj/item/stack/proc/', 1)[0]
         first = produce.index('stairs_down_spot(user, recipe.result_type, stairs_why)')
-        wait = produce.index('do_after(user, buildtime)')
+        wait = produce.index('do_after(user, buildtime, ship_craft = ship_craft)')
         second = produce.index('stairs_down_spot(user, recipe.result_type, stairs_why)', wait)
         self.assertLess(first, wait)
         self.assertLess(second, produce.index('new recipe.result_type(build_loc)'))

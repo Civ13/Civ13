@@ -41,6 +41,7 @@
 #define TRAIN_WASHOUT_TIME 300
 #define TRAIN_OVERHAUL_DUE 5000 // tiles an engine works between overhauls
 #define TRAIN_OVERHAUL_PARTS 10 // iron or steel for the new parts
+#define TRAIN_INCONEL_PARTS 5 // Inconel for heat-proof new parts (alloy_steels.dm)
 #define TRAIN_OVERHAUL_TIME 600
 
 /obj/structure/trains
@@ -51,6 +52,7 @@
 /obj/structure/trains/locomotive
 	var/tmp/consist_hot = 0 // weight of the cars with a hot box
 	var/mileage = 0 // tiles worked since the last overhaul
+	var/inconel_parts = FALSE // overhauled with Inconel: wears half as fast
 
 /obj/structure/trains/locomotive/coal
 	var/clinker = 0 // percent
@@ -161,6 +163,9 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 /obj/structure/trains/proc/service_use(obj/item/W, mob/living/user)
 	if (!istype(user) || !W || !isturf(loc))
 		return FALSE
+	// Rerailing (train_derail.dm).
+	if (istype(W, /obj/item/train_jack))
+		return jack_use(W, user)
 	var/oil = train_oil_in(W)
 	if (oil)
 		if (train_rolling())
@@ -218,6 +223,9 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 	return ..()
 
 /obj/structure/trains/attackby(obj/item/W as obj, mob/user as mob)
+	// A pen writes the destination card (train_goods.dm).
+	if (card_use(W, user))
+		return TRUE
 	if (service_use(W, user))
 		return TRUE
 	return ..()
@@ -266,7 +274,7 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 	if (tiles <= 0)
 		return
 	var/before = mileage
-	mileage += tiles
+	mileage += inconel_parts ? tiles / 2 : tiles
 	if (before < TRAIN_OVERHAUL_DUE && mileage >= TRAIN_OVERHAUL_DUE && isturf(loc))
 		visible_message(SPAN_WARNING("\The [src] knocks and blows at every stroke. It is due for an overhaul."))
 
@@ -292,11 +300,14 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 				return W
 	return null
 
-/proc/train_overhaul_parts(obj/item/stack/material/M)
+/proc/train_overhaul_parts(obj/item/stack/M)
+	if (istype(M, /obj/item/stack/inconel))
+		return M.amount >= TRAIN_INCONEL_PARTS
 	return (istype(M, /obj/item/stack/material/iron) || istype(M, /obj/item/stack/material/steel)) && M.amount >= TRAIN_OVERHAUL_PARTS
 
-/obj/structure/trains/locomotive/proc/overhaul()
+/obj/structure/trains/locomotive/proc/overhaul(inconel = FALSE)
 	mileage = 0
+	inconel_parts = inconel
 	train_weights_changed()
 
 // A fitter with a wrench, and iron or steel for the parts in the other hand.
@@ -310,15 +321,16 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 	if (!engine_shed())
 		to_chat(user, SPAN_WARNING("An overhaul is shed work. Stand \the [src] in the bay of a rail warehouse."))
 		return FALSE
-	var/obj/item/stack/material/parts = user.get_inactive_hand()
+	var/obj/item/stack/parts = user.get_inactive_hand()
 	if (!train_overhaul_parts(parts))
-		to_chat(user, SPAN_WARNING("The new parts take [TRAIN_OVERHAUL_PARTS] iron or steel. Hold it in your other hand."))
+		to_chat(user, SPAN_WARNING("The new parts take [TRAIN_OVERHAUL_PARTS] iron or steel, or [TRAIN_INCONEL_PARTS] Inconel for parts that wear half as fast. Hold it in your other hand."))
 		return FALSE
 	user.visible_message("[user] starts stripping down \the [src] for an overhaul...", "You start on the overhaul: rods off, valves out, bearings and rings to be made new...")
 	if (!do_after(user, TRAIN_OVERHAUL_TIME, src) || train_rolling() || on || !engine_shed() || user.get_inactive_hand() != parts || !train_overhaul_parts(parts))
 		return FALSE
-	parts.use(TRAIN_OVERHAUL_PARTS)
-	overhaul()
+	var/inconel = istype(parts, /obj/item/stack/inconel)
+	parts.use(inconel ? TRAIN_INCONEL_PARTS : TRAIN_OVERHAUL_PARTS)
+	overhaul(inconel)
 	playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
 	user.visible_message("[user] finishes the overhaul of \the [src].", "You put \the [src] back together. It runs like new.")
 	return TRUE
@@ -500,11 +512,9 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 
 // It lies along the track it is dug under.
 /obj/structure/rail_ash_pit/update_icon()
-	if (isturf(loc))
-		for (var/obj/structure/rails/R in loc)
-			if (R.dir in cardinal)
-				dir = R.dir
-			break
+	var/along = isturf(loc) ? rail_dir_at(loc) : null
+	if (along)
+		dir = along
 	icon_state = ash >= TRAIN_ASH_PIT_MAX ? "ash_pit_full" : (ash > 0 ? "ash_pit_ash" : "ash_pit")
 
 /obj/structure/rail_ash_pit/examine(mob/user)
@@ -563,4 +573,5 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 #undef TRAIN_WASHOUT_TIME
 #undef TRAIN_OVERHAUL_DUE
 #undef TRAIN_OVERHAUL_PARTS
+#undef TRAIN_INCONEL_PARTS
 #undef TRAIN_OVERHAUL_TIME

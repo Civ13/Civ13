@@ -345,12 +345,14 @@
 	if(iscovered())
 		return
 	if (A)
-		if (!istype(A, /mob) && !istype(A,/obj/structure/vehicleparts/axis) && !istype(A, /obj/structure/vehicle) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
+		// Only things sink: never a tile's lighting overlay (moved onto a new
+		// turf when a ship's deck turns back into sea), which left the water
+		// behind her black.
+		if (isobj(A) && !istype(A,/obj/structure/vehicleparts/axis) && !istype(A, /obj/structure/vehicle) && !istype(A, /obj/structure/fishing_cage) && !istype(A, /obj/covers) && !istype(A, /obj/structure/barricade) && !istype(A, /obj/effect/sailing_effect))
 			spawn(60)
-				if (isobj(A))
-					var/obj/O = A
-					if (!(O.sinkable))
-						return
+				var/obj/O = A
+				if (QDELETED(O) || !O.sinkable)
+					return
 				var/turf/TF = A.loc
 				if (istype(TF,/turf/floor/beach/water/deep) && !TF.iscovered())
 					qdel(A)

@@ -7,11 +7,68 @@
 ## The drive
 
 A prime mover (`/obj/structure/workshop_machine/mover`) drives the fastened
-workshop machines and hoists within one tile of it. There is no network, no
+workshop machines and hoists within one tile of it, and through transmission
+parts (below) the machines beside those parts. There is no network object, no
 process and no list of movers: a machine calls `driven_time(base)` when it
-starts a step, which asks `mechanical_drive_factor(src)` for the lowest time
-share among the turning movers next to it. A mover answers from what stands
-around it at that moment and updates its own icon when asked or examined.
+starts a step, which asks `mechanical_drive_factor(src)`. That walks
+`mechanical_drive_load(src)` from what stands around the machine at that moment
+(bounded at 64 movers and parts) and returns
+`1 - (1 - best) * min(1, strength / draw)`: the best share among the turning
+movers joined to it, closing on hand time when the machines on that drive draw
+more than the movers' summed strength. Movers update their own icon when asked
+or examined.
+
+Strength (`current_capacity()`): treadwheel 1, horse gin 2, mill wheel 3 (4 on
+a mill race), windmill 1/2/3 in light/moderate/strong wind. Draw
+(`/obj/structure/var/drive_draw`, set in `transmission.dm`): 1 for the
+potter's wheel, mason's saw, cement mixer, shear legs and cranes, wire bench,
+drill press, hand pump and hydraulic monitor; 2 for the trip hammer, rolling
+mill, stone crusher, water stamp mill and blast furnace. A caller that draws
+nothing itself (a lift turf) counts as 1.
+
+## Transmission
+
+`code/modules/1713/transmission.dm`, sprites `icons/obj/transmission.dmi`
+(drawn by `tests/sprites/create_transmission.py`). Parts join when they stand
+within one tile of each other, diagonals included.
+
+| Part | Cost | Research | What it does |
+| --- | --- | --- | --- |
+| Wooden line shaft | 4 wood, bearing | Watermills | carries drive; a run with any wooden length turns at most 8 lengths |
+| Shaft clutch | 5 wood, gear, bearing | Watermills | a length that carries only while thrown in; by hand or as a cord actuator (`mechanisms.dm`) |
+| Gear box | 8 wood, 2 gears, shaft | Watermills | also joins the gear box directly above or below |
+| Iron line shaft | 3 iron, bearing | Machined Tools | an all-iron run turns up to 16 lengths |
+| Rope drive wheel | 4 iron, bearing, 2 rope | Machined Tools | rope on it ties it to a free wheel within 7 tiles on the level; drive passes between them |
+
+## Hopper machines
+
+`code/modules/1713/hopper_machines.dm`, sprites `icons/obj/hopper_machines.dmi`
+(drawn by `tests/sprites/create_hopper_machines.py`). A hopper machine
+(`/obj/structure/workshop_machine/hopper`, draw 2) holds up to 20 feed as
+saved counts (`hopper`, kind -> count) and joins `processing_objects` while it
+has feed. It asks the drive only when a step is due (`next_step`): a step takes
+`60 s * share * 2` (a minute at half hand time), and an undriven or blocked
+machine looks again after a minute. It stops at 20 products on its tile.
+Taking it apart gives the feed back.
+
+| Machine | Cost | Research | Feed | Step |
+| --- | --- | --- | --- | --- |
+| Millstones | 12 stone, gear, shaft | Watermills | wheat, oats, barley, rice (single items or from a sack) | 2 grain to flour or rice |
+| Sash saw | 10 wood, gear, shaft, 2 iron | Watermills | plain log stacks | 1 log to 2 planks and a bark |
+
+## Counterweight drum, cam drum and steam engine
+
+`code/modules/1713/contraptions.dm`, sprites `icons/obj/contraptions.dmi`
+(drawn by `tests/sprites/create_contraptions.py`).
+
+| Part | Cost | Research | Share / strength | Notes |
+| --- | --- | --- | --- | --- |
+| Counterweight drum (mover) | 10 wood, gear, shaft, 2 rope | Watermills | 0.6 / 1 | crank (help intent, 10 s) stores 5 minutes of fall, up to 15; other intents or a cord brake and release it (`set_released`); the fall is worked out from `released_at` when asked |
+| Cam drum (`/obj/structure/mechanism`) | 6 wood, gear, shaft | Watermills | draw 1 | click to set running; on the object loop, pulls its next cord every `20 s * share` while driven, rechecks every 10 s otherwise |
+| Stationary steam engine (mover) | 16 iron, gear, shaft, 2 bearings | Steam Power | 0.35 / 6 | fuel in minutes (`steam_hammer_fuel_rates`, up to 60), burned lazily by `burn()` when asked |
+
+A run that is too long binds: only the movers right beside the machine still
+drive it, and the parts' examine says why.
 
 Driven today: potter's wheel, mason's saw, cement mixer, shear legs and the
 treadwheel crane. A step never takes less than half a second.
@@ -91,3 +148,26 @@ coil types owned by `materials/wire_materials.dm`): one unit makes a 25 m
 coil in 2.5 seconds, where the hand recipe makes 10 m in 3.5. The wait goes
 through `driven_time()`, so a prime mover next to the bench speeds it. Each
 unit is taken only after its own wait succeeds.
+
+## Fulling stocks, bark stamps, hopper gates and belts
+
+Two more hopper machines (`hopper_machines.dm`, Watermills, draw 2):
+
+| Machine | Cost | Feed | Product per unit |
+| --- | --- | --- | --- |
+| Fulling stocks | 10 wood, shaft | wool pile (2 a step) | 1 wool cloth |
+| Bark stamps | 8 wood, shaft, 2 iron | bark (2 a step) | 2 tanbark (`/obj/item/stack/bark/crushed`, each soaks out 10 tannin like whole bark) |
+
+Every hopper machine:
+
+- has a gate (`gate_shut`, saved) that a cord works. A lever thrown over opens it and thrown back shuts it, and a pull cord toggles it. A shut gate makes the step treat the drive as absent.
+- takes feed from factory belts and arms (`factory_accepts`/`factory_insert`), and offers its products to arms (`factory_offer`, any item of `product_types()` on its tile).
+- moves each new product onto a fastened belt beside it that points away from it (`outgoing_belt()`), so the output pile never forms.
+
+The flood-defence sluice gate (`flood_defences.dm`) is a cord actuator too: thrown over draws it up, thrown back lowers it.
+
+## Driven bellows, driven Archimedes screw and power loom
+
+- **Bellows** (`clay_lime_fire.dm`, draw 1): `bellows_blowing()` on a furnace is also TRUE while a fastened bellows within a tile is driven (`driven()`), so every bloomery, blast furnace or kiln firing started beside driven bellows takes the bellows blast with nobody pumping. Nothing ticks; the drive is asked when a firing starts.
+- **Archimedes screw** (`flood_defences.dm`, draw 1): on the object loop. With water in its hollow and a drive, it lifts one load every `work_time * share * 2`. Otherwise it looks again in 30 s, checking the hollow before the drive search.
+- **Power loom** (hopper machine, 12 iron, gear, shaft, bearing, Textile Mills): weaves 4 a step, with a hopper of 40. Cotton and retted fibre become cloth, and silk thread becomes silk.

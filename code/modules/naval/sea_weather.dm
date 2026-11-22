@@ -13,6 +13,8 @@
 #define SEA_MURK_WET 10
 #define SEA_MURK_SMOG 20
 #define SEA_MURK_EXTREME 25
+#define SEA_MURK_MIST 15
+#define SEA_MURK_FOG 25
 #define SEA_LOOKOUT_FLOOR 5
 #define SEA_DARK_NIGHT_RANGE 10
 
@@ -30,6 +32,12 @@
 				. += SEA_MURK_SMOG
 			if (WEATHER_EXTREME)
 				. += SEA_MURK_EXTREME
+		// Fog and mist (weather_fog.dm) on top of whatever falls.
+		switch (weather_fog_level(T))
+			if ("fog")
+				. += SEA_MURK_FOG
+			if ("mist")
+				. += SEA_MURK_MIST
 	var/datum/chart/sea/S = sea_charts["[T.z]"]
 	if (S && S.hazards.len)
 		var/list/at = S.chart_position(T)
@@ -55,6 +63,9 @@
 				return "smog"
 			if (WEATHER_EXTREME)
 				return "a storm"
+		var/fog = weather_fog_level(T)
+		if (fog)
+			return fog
 	return null
 
 /proc/sea_night()
@@ -63,7 +74,8 @@
 // How far her lookout sees where she lies.
 /datum/craft/proc/lookout_range()
 	var/base = token ? token.sensor_range : CHART_SENSOR_RANGE
-	return max(min(base, SEA_LOOKOUT_FLOOR), base - sea_murk_at(centre()))
+	// Someone aloft sees further through murk (hull_masts.dm).
+	return max(min(base, SEA_LOOKOUT_FLOOR), base - sea_murk_at(centre())) + aloft_reach()
 
 // TRUE when her lookout can make out the other ship.
 /datum/craft/proc/sights(datum/craft/other)
@@ -75,4 +87,4 @@
 	var/reach = max(min(base, SEA_LOOKOUT_FLOOR), base - max(sea_murk_at(here), sea_murk_at(there)))
 	if (other.running_dark && sea_night())
 		reach = min(reach, SEA_DARK_NIGHT_RANGE)
-	return get_dist(here, there) <= reach
+	return get_dist(here, there) <= reach + aloft_reach()

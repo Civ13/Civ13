@@ -10,7 +10,10 @@ It does not crosspost announcement messages to following servers.
 The optional field must contain actual announcement text on the same line.
 Placeholders such as `required`, `TODO`, `TBD`, and template instructions fail
 validation and publication, including when followed by real prose on later lines.
-Leave it blank for no post. PR description edits rerun the changelog contract
+Leave it blank for no post. When a PR is not player-facing, the field stays
+empty: no-change filler such as `none (Help text refresh only).`, `none.`, `n/a`,
+`Not player-facing`, `Internal only` or `Build fix` fails the PR check, and the
+publisher treats it as blank so it is never posted. PR description edits rerun the changelog contract
 check, which validates the event description through the same parser as the
 publisher. Comments and fenced examples do not opt in. Validation cannot decide
 whether text describes a meaningful player change; review still establishes that.
@@ -29,9 +32,13 @@ control characters and text over 1500 UTF-16 units fail closed. Use only concise
 player-facing text, with no heading, PR/CI details or deployment/update-status
 wording. The field is reviewed with the PR; it is not generated from commits.
 
-The merge event freezes the description for retries. The publisher confirms the
-PR's merge SHA and default-branch ancestry through GitHub before sending. It runs
-only trusted base-branch code, never a fork/PR head. Receipt IDs are `pr-NUMBER`;
+The publisher runs on the push a merge makes to master, not on
+`pull_request_target` (blocked by default on public repositories from
+2026-12-02). It finds the merged PR whose merge SHA is the pushed commit, then
+refetches that PR and confirms its merge SHA and default-branch ancestry before
+sending. Pushes without a merged PR post nothing. It runs only master's own
+code, never a fork/PR head. The description is read when the run starts, so
+edit it before merging; a rerun after an edit is refused by the receipt check. Receipt IDs are `pr-NUMBER`;
 do not use this reserved prefix for manual manifests. Reruns suppress confirmed
 deliveries and block uncertain deliveries rather than risk duplicate posts.
 Do not also announce the same change through the older manifest route.
@@ -40,8 +47,8 @@ Both publishers retain up to 100 waiting runs in the shared concurrency queue.
 If the queue fills, GitHub cancels additional runs; it does not replace an older
 waiting run. Check cancelled **Discord PR changelog** runs after large merge
 bursts. Once the queue has room, use **Re-run all jobs** on the original cancelled
-run (or `gh run rerun RUN_ID --repo Civ13/Civ13`). This preserves the original
-merge-event description and uses the same `pr-NUMBER` receipt. Reconcile a pending
+run (or `gh run rerun RUN_ID --repo Civ13/Civ13`). This reuses the original
+push event and the same `pr-NUMBER` receipt. Reconcile a pending
 receipt as described below before rerunning; never copy the announcement into a
 new manifest or delete receipts to work around a failed run.
 

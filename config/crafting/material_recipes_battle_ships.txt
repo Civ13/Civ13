@@ -305,26 +305,26 @@ RECIPE: /material/leather/,leather gloves,/obj/item/clothing/gloves/thick/leathe
 
 //*****************| LEATHER ARMOR |***************************
 
-RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,leather armor,/obj/item/clothing/suit/armor/medieval/leather,6,130,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,leather helmet,/obj/item/clothing/head/helmet/leather,3,90,0,1,armor,0,16,21,8,null
 
-RECIPE: /material/leather/,hatchigane headband,/obj/item/clothing/head/helmet/hatchigane,3,90,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,hatchigane headband,/obj/item/clothing/head/helmet/hatchigane,3,90,0,1,armor,0,16,21,8,null
 
-RECIPE: /material/leather/,leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard,7,90,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,red leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,90,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,blue leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,90,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,black leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,90,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard,7,90,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,red leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/red,7,90,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,blue leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/blue,7,90,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,black leather samurai helmet,/obj/item/clothing/head/helmet/samurai/guard/black,7,90,0,1,armor,0,16,21,8,null
 
-RECIPE: /material/leather/,leather samurai armor,/obj/item/clothing/suit/armor/samurai,10,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,red leather samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,blue leather samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,130,0,1,armor,0,16,21,3,null
-RECIPE: /material/leather/,black leather samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,130,0,1,armor,0,16,21,3,null
+RECIPE: /material/leather/,leather samurai armor,/obj/item/clothing/suit/armor/samurai,10,130,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,red leather samurai armor,/obj/item/clothing/suit/armor/samurai/red,10,130,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,blue leather samurai armor,/obj/item/clothing/suit/armor/samurai/blue,10,130,0,1,armor,0,16,21,8,null
+RECIPE: /material/leather/,black leather samurai armor,/obj/item/clothing/suit/armor/samurai/black,10,130,0,1,armor,0,16,21,8,null
 
-RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,16,22,2,null
+RECIPE: /material/leather/,khepresh war crown,/obj/item/clothing/head/helmet/khepresh,3,90,0,1,armor,0,16,22,8,null
 
-RECIPE: /material/leather/,leather skullcap helmet,/obj/item/clothing/head/helmet/leather_skullcap,3,100,0,1,armor,0,27,27,3,null
+RECIPE: /material/leather/,leather skullcap helmet,/obj/item/clothing/head/helmet/leather_skullcap,3,100,0,1,armor,0,27,27,8,null
 
-RECIPE: /material/leather/,steppe leather armor,/obj/item/clothing/suit/armor/medieval/steppe_leather,5,140,0,1,armor,0,33,28,3,null
+RECIPE: /material/leather/,steppe leather armor,/obj/item/clothing/suit/armor/medieval/steppe_leather,5,140,0,1,armor,0,33,28,8,null
 RECIPE: /material/leather/,leather roundcap,/obj/item/clothing/head/roundcap,2,100,0,1,hats & masks,65,0,0,4,null
 
 RECIPE: /material/leather/,leather infantry cap,/obj/item/clothing/head/helmet/leather_infantry,3,90,0,1,armor,0,88,92,4,null
@@ -418,9 +418,9 @@ RECIPE: /material/woolcloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4
 RECIPE: /material/woolcloth/,steppe shaman hat,/obj/item/clothing/head/steppe_shaman,4,70,0,1,hats,0,0,33,3,null
 RECIPE: /material/woolcloth/,nun hood,/obj/item/clothing/head/nun_hood,4,65,0,1,hats,0,0,35,8,null
 RECIPE: /material/woolcloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,hats,0,0,35,8,null
-RECIPE: /material/woolcloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/woolcloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
+RECIPE: /material/woolcloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/woolcloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/woolcloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,8,null
 RECIPE: /material/woolcloth/,custom hennin,/obj/item/clothing/head/custom_hennin,2,40,0,1,hats,0,0,38,3,null
 RECIPE: /material/woolcloth/,artisan hat,/obj/item/clothing/head/artisan,2,55,0,1,hats,0,0,52,3,null
 RECIPE: /material/woolcloth/,red beret,/obj/item/clothing/head/red_sailorberet,2,55,0,1,hats,0,0,62,8,null
@@ -645,13 +645,14 @@ RECIPE: /material/cloth/,pimp coat,/obj/item/clothing/suit/pimpsuit,6,109,0,1,ja
 
 //*****************| CLOTH ARMOR |***************************
 
-RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,3,null
+RECIPE: /material/cloth/,linothorax armor,/obj/item/clothing/suit/armor/ancient/linen,8,100,0,1,armor,0,20,23,8,null
+RECIPE: /material/cloth/,padded jack,/obj/item/clothing/accessory/armor/padded_jack,5,80,0,1,armor,0,20,23,8,null
 
-RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,green arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab3,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,blue arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab4,5,75,0,1,armor,0,0,38,3,null
-RECIPE: /material/cloth/,emirate turban,/obj/item/clothing/head/helmet/medieval/emirate,7,90,0,1,armor,0,0,38,3,null
+RECIPE: /material/cloth/,purple arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab,5,75,0,1,armor,0,0,38,8,null
+RECIPE: /material/cloth/,red arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab2,5,75,0,1,armor,0,0,38,8,null
+RECIPE: /material/cloth/,green arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab3,5,75,0,1,armor,0,0,38,8,null
+RECIPE: /material/cloth/,blue arabic turban helmet,/obj/item/clothing/head/helmet/medieval/nomads/arab4,5,75,0,1,armor,0,0,38,8,null
+RECIPE: /material/cloth/,emirate turban,/obj/item/clothing/head/helmet/medieval/emirate,7,90,0,1,armor,0,0,38,8,null
 
 //*****************| CLOTH HATS |***************************
 
@@ -668,9 +669,9 @@ RECIPE: /material/cloth/,deshret crown,/obj/item/clothing/head/deshret,5,65,0,1,
 RECIPE: /material/cloth/,straw hat,/obj/item/clothing/head/strawhat,3,55,0,1,hats,0,0,18,8,null
 RECIPE: /material/cloth/,pschent crown,/obj/item/clothing/head/pschent,5,65,0,1,hats,0,0,24,1,null
 RECIPE: /material/cloth/,ainu bandana,/obj/item/clothing/head/ainu_bandana,4,70,0,1,hats,0,0,28,5,null
-RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/cloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,2,null
-RECIPE: /material/cloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,2,null
+RECIPE: /material/cloth/,brown padded head-cap,/obj/item/clothing/head/helmet/brown_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/cloth/,grey padded head-cap,/obj/item/clothing/head/helmet/grey_eisenbruck,4,55,0,1,hats,0,32,42,8,null
+RECIPE: /material/cloth/,ratty old padded head-cap,/obj/item/clothing/head/helmet/aged_eisenbruck,4,55,0,1,hats,0,32,42,8,null
 RECIPE: /material/cloth/,hooded cape,/obj/item/clothing/head/hooded_cape,6,100,0,1,hats,0,0,35,3,null
 RECIPE: /material/cloth/,count hat,/obj/item/clothing/head/count_hat,5,130,0,1,hats,0,0,35,8,null
 RECIPE: /material/cloth/,colored turban,/obj/item/clothing/head/turban,2,55,0,1,hats,0,0,38,8,null
@@ -1084,7 +1085,7 @@ RECIPE: /material/lizardpelt/,shirtless lizard scale pants,/obj/item/clothing/un
 //*********************| GATORPELT |****************************
 
 RECIPE: /material/gatorpelt/,alligator pelt headcover,/obj/item/clothing/head/gatorpelt,3,150,0,1,none,0,0,0,8,null
-RECIPE: /material/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,2,null
+RECIPE: /material/gatorpelt/,alligator scale armor,/obj/item/clothing/suit/armor/ancient/gator_scale_armor,9,100,0,1,none,0,18,18,8,null
 RECIPE: /material/gatorpelt/,alligator scale belt,/obj/item/weapon/storage/belt/gator_belt,3,80,0,1,none,0,0,98,7,null
 RECIPE: /material/gatorpelt/,alligator scale biker jacket,/obj/item/clothing/suit/storage/coat/ww2/biker/gator_jacket,6,110,0,1,none,150,0,175,8,null
 RECIPE: /material/gatorpelt/,alligator scale wallet,/obj/item/clothing/accessory/storage/coinpouch/gator_wallet,2,60,0,1,storage,87,0,0,8,null
@@ -1634,7 +1635,7 @@ RECIPE: /material/copper/,cable connector,/obj/item/connector,1,35,0,1,electrica
 
 //*****************| COPPER ARMOR, CLOTHING & ACCESSORIES |***************************
 
-RECIPE: /material/copper/,aztec harness,/obj/item/clothing/suit/armor/ancient/aztec_harness,4,80,0,1,armor,0,19,0,3,null
+RECIPE: /material/copper/,aztec harness,/obj/item/clothing/suit/armor/ancient/aztec_harness,4,80,0,1,armor,0,19,0,8,null
 RECIPE: /material/copper/,copper arm bangles,/obj/item/clothing/accessory/armband/armbangle/copper,2,95,0,1,none,0,0,0,8,null
 
 //********************************************************
@@ -1770,9 +1771,9 @@ RECIPE: /material/bronze/,shears,/obj/item/weapon/shears,2,40,0,1,tools,0,0,0,8,
 
 //*********************| BRONZE ARMOR |*************************
 
-RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,1,bronze
+RECIPE: /material/bronze/,bronze phrigian helmet,/obj/item/clothing/head/helmet/phrigian,4,100,0,1,armor,21,16,0,8,bronze
 RECIPE: /material/bronze/,bronze montefortino helmet,/obj/item/clothing/head/helmet/montefortino,4,100,0,1,armor,21,16,0,1,bronze
-RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,2,bronze
+RECIPE: /material/bronze/,bronze chestplate,/obj/item/clothing/suit/armor/medieval/bronze_chestplate,6,165,0,1,armor,24,21,0,8,bronze
 RECIPE: /material/bronze/,bronze dragoon helmet,/obj/item/clothing/head/helmet/napoleonic/dragoon,7,100,0,1,armor,0,88,92,3,null
 
 //*********************| BRONZE HEALTHCARE |*************************

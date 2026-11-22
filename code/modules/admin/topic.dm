@@ -413,19 +413,28 @@
 		usr.client.warn(href_list["warn"])
 
 	else if (href_list["boot2"])
+		var/client/kick_actor = usr.client
+		if (!check_rights(R_MOD | R_ADMIN))
+			return
 		var/mob/M = locate(href_list["boot2"])
-		if (ismob(M))
-			if (!check_if_greater_rights_than(M.client))
-				return
-			var/reason = sanitize(input("Please enter reason"))
-			if (!reason)
-				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server.</span>")
-			else
-				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>")
-			log_admin("[key_name(usr)] booted [key_name(M)].")
-			message_admins(SPAN_NOTICE("[key_name_admin(usr)] booted [key_name_admin(M)]."), key_name_admin(usr))
-			//M.client = null
-			qdel(M.client)
+		if (!ismob(M) || !M.client)
+			return
+		var/client/kick_target = M.client
+		if (kick_target.mob != M || !check_if_greater_rights_than(kick_target))
+			return
+		var/reason = sanitize(input(usr, "Please enter reason"))
+		// The prompt sleeps. Do not act on a new client, a new holder, or stale rights.
+		if (!kick_actor || usr?.client != kick_actor || owner != kick_actor || kick_actor.holder != src || !check_rights(R_MOD | R_ADMIN))
+			return
+		if (QDELETED(M) || !kick_target || M.client != kick_target || kick_target.mob != M || !check_if_greater_rights_than(kick_target))
+			return
+		if (!reason)
+			to_chat(M, "<span class = 'userdanger'>You have been kicked from the server.</span>")
+		else
+			to_chat(M, "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>")
+		log_admin("[key_name(usr)] booted [key_name(M)].")
+		message_admins(SPAN_NOTICE("[key_name_admin(usr)] booted [key_name_admin(M)]."), key_name_admin(usr))
+		qdel(kick_target)
 
 	else if (href_list["mute"])
 		if (!check_rights(R_MOD,0) && !check_rights(R_ADMIN))  return
@@ -474,6 +483,9 @@
 	else if (href_list["adminplayeropts"])
 		var/mob/M = locate(href_list["adminplayeropts"])
 		show_player_panel(M)
+
+	else if (href_list["player_list"])
+		player_panel_new()
 
 	else if (href_list["adminplayerobservejump"])
 		if (!check_rights(R_MENTOR|R_MOD|R_ADMIN))	return
@@ -551,6 +563,8 @@
 		to_chat(owner, "Name = <b>[M.name]</b>; Real_name = [M.real_name]; Mind_name = [M.mind?"[M.mind.name]":""]; Key = <b>[M.key]</b>;")
 		to_chat(owner, "Location = [location_description];")
 		to_chat(owner, "[special_role_description]")
+		if (check_rights(R_ADMIN, FALSE) && karma_mob_ckey(M))
+			to_chat(owner, "Karma (hidden):[karma_staff_badge(karma_mob_ckey(M))]")
 		to_chat(owner, "(<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a>) (<A HREF='?src=\ref[src];adminplayeropts=\ref[M]'>PP</A>) (<A HREF='?_src_=vars;Vars=\ref[M]'>VV</A>) (<A HREF='?src=\ref[src];subtlemessage=\ref[M]'>SM</A>) ([admin_jump_link(M, src)]) (<A HREF='?src=\ref[src];secretsadmin=check_antagonist'>CA</A>)")
 
 	else if (href_list["adminspawncookie"]) // Why the fuck do we even need it?
@@ -616,6 +630,13 @@
 		var/mob/M = locate(href_list["divine_reply"])
 		if (ismob(M))
 			usr.client.divine_answer_prayer(M)
+
+	else if (href_list["divine_invite"])
+		if (!check_rights(R_ADMIN))
+			return
+		var/mob/M = locate(href_list["divine_invite"])
+		if (ismob(M))
+			usr.client.divine_invite_follower(M)
 
 	else if (href_list["create_object"])
 		if (!check_rights(R_SPAWN))	return
@@ -829,11 +850,22 @@
 		notes_add(key,add,usr)
 		show_player_info(key)
 
+	if (href_list["watchlist_add"])
+		var/key = ckey(href_list["watchlist_add"])
+		var/reason = sanitize(input("Why watch [key]? Staff on every region see this when they log in.") as null|text)
+		if (!key || !reason) return
+		watchlist_add(key, reason, usr)
+		show_player_info(key)
+
+	if (href_list["watchlist_remove"])
+		var/key = ckey(href_list["watchlist_remove"])
+		if (alert(usr, "Remove [key] from the watchlist on every region?", "Watchlist", "Yes", "No") != "Yes") return
+		watchlist_remove(key, usr)
+		show_player_info(key)
+
 	if (href_list["remove_player_info"])
 		var/key = href_list["remove_player_info"]
-		var/index = text2num(href_list["remove_index"])
-
-		notes_del(key, index)
+		notes_del(key, href_list["remove_id"], usr)
 		show_player_info(key)
 
 	if (href_list["notes"])

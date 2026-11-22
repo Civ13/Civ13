@@ -300,6 +300,21 @@
             font-style: italic;
         }
 
+        /* Names on OOC, LOOC and examine lines: bold, never italic. */
+        em {
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        /* Plain chat text (Tabs... > Text): no italics and no underlines, for
+           small windows and low display scaling where both smear. Links keep
+           their colour. */
+        body.chat-plain #messages,
+        body.chat-plain #messages * {
+            font-style: normal !important;
+            text-decoration: none !important;
+        }
+
         /* Game Messages */
 
         .attack {
@@ -701,6 +716,71 @@
             white-space: nowrap;
         }
 
+        .chat-translation {
+            display: block;
+            margin: 1px 0 2px 12px;
+            padding-left: 6px;
+            border-left: 2px solid #7fb48f;
+            color: #b9dcc3;
+        }
+
+        .chat-translation .chat-translation-label {
+            color: #7fb48f;
+            font-size: 0.85em;
+            margin-right: 4px;
+        }
+
+        .chat-translate-setup {
+            display: block;
+            margin: 1px 0 2px 12px;
+            color: #a68b7d;
+            font-size: 0.9em;
+        }
+
+        .chat-translate-offer {
+            margin-left: 6px;
+            font-size: 0.85em;
+            color: #a68b7d;
+        }
+
+        .chat-translate-offer button {
+            background: none;
+            border: none;
+            color: #7fb48f;
+            font: inherit;
+            padding: 0;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .chat-translate-setup button {
+            background-color: #a68b7d;
+            color: #1c1c1c;
+            border: 1px solid #271a0c;
+            font: inherit;
+            padding: 0 6px;
+            cursor: pointer;
+        }
+
+        .translate-config {
+            margin-bottom: 8px;
+            padding: 6px;
+            border: 1px solid #392611;
+            background-color: #392611;
+        }
+
+        .translate-config label {
+            display: block;
+            margin: 2px 0;
+        }
+
+        .translate-config select {
+            background-color: #a68b7d;
+            color: #1c1c1c;
+            border: 1px solid #271a0c;
+            font: inherit;
+        }
+
         #chat-settings button {
             background-color: #a68b7d;
             color: #1c1c1c;
@@ -717,7 +797,7 @@
 <body style="background-color: #392611; color: #e1e1d7;">
     <div id="chat-tabs">
         <div id="chat-tab-list"></div>
-        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows">Tabs...</button>
+        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows, turn plain text on or off, and set up chat translation">Tabs...</button>
     </div>
     <div id="chat-settings">
         <h3>Chat tabs</h3>
@@ -725,6 +805,18 @@
         <div id="chat-settings-list"></div>
         <button id="chat-tab-add" type="button">Add tab</button>
         <button id="chat-tab-reset" type="button">Reset to default</button>
+        <h3>Text</h3>
+        <div class="translate-config">
+            <label><input id="chat-plain-on" type="checkbox"> Plain chat text (no italics or underlines)</label>
+            <p class="hint">Easier to read in a small window or at low display scaling. Links stay coloured.</p>
+        </div>
+        <h3>Translation</h3>
+        <div class="translate-config">
+            <label><input id="chat-translate-on" type="checkbox"> Translate chat into my language</label>
+            <label>My language <select id="chat-translate-lang"></select></label>
+            <p class="hint" id="chat-translate-status"></p>
+            <button id="chat-translate-setup" type="button" hidden>Set up language detection</button>
+        </div>
         <button id="chat-settings-close" type="button">Done</button>
     </div>
     <div id="chat-container">
@@ -1154,7 +1246,7 @@
                 if (!child.classList.contains('message') || child.classList.contains('connection-notice')) continue;
                 const type = child.getAttribute('data-chat-type') || 'other';
                 if ((perType[type] || 0) >= HISTORY_MAX_PER_TYPE) continue;
-                const html = child.innerHTML;
+                const html = untranslatedHtml(child);
                 if (chars + html.length > HISTORY_MAX_CHARS) break;
                 chars += html.length;
                 perType[type] = (perType[type] || 0) + 1;
@@ -1368,6 +1460,7 @@
                 const chatType = classifyMessage(messageDiv);
                 noteMessageType(messageDiv, chatType);
                 messagesContainer.appendChild(messageDiv);
+                queueTranslation(messageDiv, chatType);
                 lastLine = messageDiv;
                 lastLineHtml = messageHtml;
 
@@ -1382,6 +1475,450 @@
                 console.error("Chat Fatal Error:", err);
             }
         }
+
+        // Chat translation (docs/chat-translation.md). On at first only for
+        // desktops not in English (Val, 2026-11-22); anyone can turn it on or
+        // off. When on, words players typed (speech,
+        // emotes, OOC and LOOC, marked chat-tr by the server) in another
+        // language are translated into the reader's language (English unless
+        // they pick another); game messages are never translated. When the game server offers translation
+        // (setTranslateServer), the line's text goes back to that server, which
+        // already sent it; otherwise the browser's built-in Translator and
+        // LanguageDetector are used and nothing leaves this computer. The
+        // original stays on screen and restored history is never translated.
+        // v1 saved "on" whenever the language was changed, so only its
+        // language choice is kept; v2 is saved only when the player changes it.
+        const TRANSLATE_KEY = 'civ13-chat-translate-v2';
+        const TRANSLATE_OLD_KEY = 'civ13-chat-translate-v1';
+        const TRANSLATE_LANGS = [
+            ['en', 'English'], ['es', 'Spanish'], ['pt', 'Portuguese'], ['fr', 'French'], ['de', 'German'],
+            ['it', 'Italian'], ['nl', 'Dutch'], ['pl', 'Polish'], ['ru', 'Russian'], ['uk', 'Ukrainian'],
+            ['tr', 'Turkish'], ['sv', 'Swedish'], ['fi', 'Finnish'], ['cs', 'Czech'], ['ro', 'Romanian'],
+            ['el', 'Greek'], ['ar', 'Arabic'], ['hi', 'Hindi'], ['id', 'Indonesian'], ['vi', 'Vietnamese'],
+            ['th', 'Thai'], ['zh', 'Chinese'], ['ja', 'Japanese'], ['ko', 'Korean']
+        ];
+        const TRANSLATE_MAX_CHARS = 500;
+        const TRANSLATE_MIN_LETTERS = 3; // shorter lines are too short to tell the language
+        const TRANSLATE_MAX_QUEUE = 20;
+        const TRANSLATE_TIMEOUT_MS = 8000;
+        const TRANSLATE_MIN_CONFIDENCE = 0.6;
+        const translateApi = typeof self !== 'undefined' && 'Translator' in self;
+        const detectApi = typeof self !== 'undefined' && 'LanguageDetector' in self;
+        let translatePrefs = loadTranslatePrefs();
+        let translateGeneration = 0;
+        let translateBusy = false;
+        let languageDetector = null;
+        let detectorState = '';
+        const translateQueue = [];
+        const translators = {};
+        const pairStates = {};
+        const pairPrompted = {};
+        let unsupportedPair = '';
+        const SERVER_TRANSLATE_TIMEOUT_MS = 20000;
+        let serverTranslate = false;
+        let serverTranslateSeq = 0;
+        const serverTranslatePending = {};
+
+        function offeredLang(code) {
+            const base = String(code || '').toLowerCase().split(/[-_]/)[0];
+            return TRANSLATE_LANGS.some(function (l) { return l[0] === base; }) ? base : '';
+        }
+
+        // The first offered language in this computer's language list
+        // (the Windows display language in Dream Seeker's WebView2), or ''.
+        function desktopLang() {
+            try {
+                const list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language];
+                for (let i = 0; i < list.length; i++) {
+                    const lang = offeredLang(list[i]);
+                    if (lang) return lang;
+                }
+            } catch (e) { /* none */ }
+            return '';
+        }
+
+        // A saved choice always wins. Without one (Val, 2026-11-22), a player
+        // whose desktop is not in English starts with translation on, into
+        // their desktop language; English desktops start with it off.
+        function loadTranslatePrefs() {
+            const prefs = { enabled: false, lang: 'en' };
+            try {
+                const store = chatStorage();
+                const raw = store && store.getItem(TRANSLATE_KEY);
+                if (raw) {
+                    const saved = JSON.parse(raw);
+                    if (saved && typeof saved.enabled === 'boolean') prefs.enabled = saved.enabled;
+                    if (saved && offeredLang(saved.lang) === saved.lang) prefs.lang = saved.lang;
+                    return prefs;
+                }
+                const old = store && store.getItem(TRANSLATE_OLD_KEY);
+                const saved = old ? JSON.parse(old) : null;
+                const oldLang = saved && offeredLang(saved.lang) === saved.lang ? saved.lang : '';
+                prefs.lang = (oldLang && oldLang !== 'en') ? oldLang : (desktopLang() || 'en');
+            } catch (e) {
+                prefs.lang = desktopLang() || 'en';
+            }
+            prefs.enabled = prefs.lang !== 'en';
+            return prefs;
+        }
+
+        function saveTranslatePrefs() {
+            try {
+                const store = chatStorage();
+                if (store) store.setItem(TRANSLATE_KEY, JSON.stringify(translatePrefs));
+            } catch (e) { /* this computer only; nothing else to do */ }
+        }
+
+        function langName(code) {
+            const base = String(code || '').split('-')[0];
+            for (let i = 0; i < TRANSLATE_LANGS.length; i++) if (TRANSLATE_LANGS[i][0] === base) return TRANSLATE_LANGS[i][1];
+            return base || 'another language';
+        }
+
+        // Saved history keeps the original lines only.
+        const TRANSLATE_EXTRAS = '.chat-translation, .chat-translate-setup, .chat-translate-offer';
+        function untranslatedHtml(div) {
+            if (!div.querySelector(TRANSLATE_EXTRAS)) return div.innerHTML;
+            const copy = div.cloneNode(true);
+            copy.querySelectorAll(TRANSLATE_EXTRAS).forEach(function (el) { el.remove(); });
+            return copy.innerHTML;
+        }
+
+        // The server marks the words a player typed that this reader
+        // understood (chat-tr) and speech they did not understand (chat-notr,
+        // never translated). Only marked words are translated; unmarked lines
+        // are game messages, such as "Ada makes a trench.", and stay as they are.
+        function translationSource(div, type) {
+            if (div.querySelector('.chat-notr')) return '';
+            const parts = [];
+            div.querySelectorAll('.chat-tr').forEach(function (el) { parts.push(el.textContent); });
+            return parts.join(' ').trim();
+        }
+
+        function withTimeout(promise, ms) {
+            return Promise.race([promise, new Promise(function (_, reject) { setTimeout(function () { reject(new Error('timeout')); }, ms); })]);
+        }
+
+        // Common English chat words (chat_translate_english_words on the
+        // server). A plain-letter line where a quarter of the words are on
+        // this list reads as English.
+        const ENGLISH_WORDS = new Set(('the a an and or but is are was were be been am i you he she it we they me him her us them ' +
+            'my your his its our their this that these those to of in on at for with from by up down out into ' +
+            'what where when why how who which do does did dont have has had can cant will would should could not no ' +
+            'yes yeah ok okay hi hey hello thanks thank please lol go come get got need want know just here there now ' +
+            'im whats lets some all any one if so too very').split(' '));
+        function looksEnglish(text) {
+            if (/[^\x00-\x7f]/.test(text)) return false;
+            const words = text.toLowerCase().match(/[a-z']+/g) || [];
+            let common = 0;
+            words.forEach(function (w) { if (ENGLISH_WORDS.has(w.replace(/'/g, ''))) common++; });
+            return words.length > 0 && common * 4 >= words.length;
+        }
+
+        function queueTranslation(div, type) {
+            if (!(translateApi || serverTranslate)) return;
+            const text = translationSource(div, type);
+            if (!text || text.length > TRANSLATE_MAX_CHARS) return;
+            // Letters outside the Latin script carry more each (你好 is a whole greeting).
+            const letters = (text.match(/[A-Za-zÀ-￿]/g) || []).length + (text.match(/[Ͱ-￿]/g) || []).length;
+            if (letters < TRANSLATE_MIN_LETTERS) return;
+            if (!translatePrefs.enabled) {
+                offerTranslation(div, text);
+                return;
+            }
+            enqueueTranslation({ div: div, text: text, gen: translateGeneration });
+        }
+
+        function enqueueTranslation(job) {
+            // Under a burst, drop the oldest waiting automatic line rather than
+            // fall behind. Lines the reader asked for go first and are kept.
+            if (translateQueue.length >= TRANSLATE_MAX_QUEUE) {
+                let drop = translateQueue.findIndex(function (j) { return !j.manual; });
+                if (drop < 0) drop = translateQueue.length - 1;
+                finishOffer(translateQueue.splice(drop, 1)[0]);
+            }
+            if (job.manual) translateQueue.splice(translateQueue.filter(function (j) { return j.manual; }).length, 0, job);
+            else translateQueue.push(job);
+            pumpTranslations();
+        }
+
+        // With automatic translation off, a line that may be in another
+        // language gets a small Translate button; nothing is sent until the
+        // reader presses it (Val, 2026-11-22).
+        function offerTranslation(div, text) {
+            if (translatePrefs.lang === 'en' && looksEnglish(text)) return;
+            const box = document.createElement('span');
+            box.className = 'chat-translate-offer';
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = 'Translate';
+            button.title = 'Translate this line into ' + langName(translatePrefs.lang);
+            button.addEventListener('click', function () {
+                box.textContent = 'Translating...';
+                enqueueTranslation({ div: div, text: text, gen: translateGeneration, manual: true, offer: box });
+            });
+            box.appendChild(button);
+            const badge = div.lastElementChild;
+            if (badge && badge.classList.contains('chat-repeat')) div.insertBefore(box, badge);
+            else div.appendChild(box);
+        }
+
+        // A pressed Translate button that found nothing says so.
+        function finishOffer(job) {
+            if (!job.offer || !job.offer.isConnected) return;
+            if (job.div.querySelector('.chat-translation, .chat-translate-setup')) job.offer.remove();
+            else job.offer.textContent = 'No translation available.';
+        }
+
+        async function getDetector(userAsked) {
+            if (languageDetector) return languageDetector;
+            if (!detectApi) return null;
+            try {
+                if (!detectorState) detectorState = await LanguageDetector.availability();
+                if (detectorState === 'available' || (userAsked && (detectorState === 'downloadable' || detectorState === 'downloading'))) {
+                    languageDetector = await LanguageDetector.create();
+                    detectorState = 'available';
+                }
+            } catch (e) {
+                detectorState = 'unavailable';
+            }
+            updateTranslateStatus();
+            return languageDetector;
+        }
+
+        async function detectLanguage(text) {
+            const detector = await getDetector(false);
+            if (!detector) return '';
+            const results = await withTimeout(detector.detect(text), TRANSLATE_TIMEOUT_MS);
+            const best = results && results[0];
+            if (!best || best.detectedLanguage === 'und' || best.confidence < TRANSLATE_MIN_CONFIDENCE) return '';
+            return String(best.detectedLanguage).split('-')[0];
+        }
+
+        async function pairAvailability(source, target) {
+            const key = source + '>' + target;
+            if (pairStates[key] !== 'available') {
+                try {
+                    pairStates[key] = await Translator.availability({ sourceLanguage: source, targetLanguage: target });
+                } catch (e) {
+                    pairStates[key] = 'unavailable';
+                }
+            }
+            return pairStates[key];
+        }
+
+        async function getTranslator(source, target, monitor) {
+            const key = source + '>' + target;
+            if (!translators[key]) {
+                const options = { sourceLanguage: source, targetLanguage: target };
+                if (monitor) options.monitor = monitor;
+                translators[key] = Translator.create(options).catch(function (e) { delete translators[key]; throw e; });
+            }
+            return translators[key];
+        }
+
+        function stillWanted(job) {
+            return job.gen === translateGeneration && job.div.isConnected && (translatePrefs.enabled || job.manual);
+        }
+
+        function showTranslation(div, source, text) {
+            div.querySelectorAll(TRANSLATE_EXTRAS).forEach(function (el) { el.remove(); });
+            const box = document.createElement('span');
+            box.className = 'chat-translation';
+            const label = document.createElement('span');
+            label.className = 'chat-translation-label';
+            label.textContent = 'Translated from ' + langName(source) + ':';
+            box.appendChild(label);
+            box.appendChild(document.createTextNode(text));
+            const badge = div.lastElementChild;
+            if (badge && badge.classList.contains('chat-repeat')) div.insertBefore(box, badge);
+            else div.appendChild(box);
+            if (div === messagesContainer.lastElementChild) scrollToTail();
+        }
+
+        // A language pack is downloaded only when the reader presses the button,
+        // never because a message arrived. Offer each pair once per session.
+        function showSetup(job, source, target) {
+            const key = source + '>' + target;
+            if (pairPrompted[key]) return;
+            pairPrompted[key] = true;
+            const box = document.createElement('span');
+            box.className = 'chat-translate-setup';
+            box.appendChild(document.createTextNode('This line is in ' + langName(source) + '. '));
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = 'Download ' + langName(source) + ' to ' + langName(target) + ' translation';
+            button.addEventListener('click', async function () {
+                button.disabled = true;
+                button.textContent = 'Downloading...';
+                try {
+                    const translator = await getTranslator(source, target, function (m) {
+                        m.addEventListener('downloadprogress', function (e) {
+                            button.textContent = 'Downloading... ' + Math.round((e.loaded || 0) * 100) + '%';
+                        });
+                    });
+                    pairStates[key] = 'available';
+                    const out = await withTimeout(translator.translate(job.text), TRANSLATE_TIMEOUT_MS);
+                    if (job.div.isConnected && out && out.trim() && out.trim() !== job.text) showTranslation(job.div, source, out.trim());
+                    else box.remove();
+                } catch (e) {
+                    button.textContent = 'Could not download this translation.';
+                }
+            });
+            box.appendChild(button);
+            job.div.appendChild(box);
+        }
+
+        // The server answers every request with receiveTranslation(id, source,
+        // text); text is empty when the line needs no translation or the
+        // server could not translate it, so the next line is not held up.
+        function chatSendTranslate(id, lang, text) {
+            window.location.href = 'byond://?chat_translate=' + id + '&lang=' + encodeURIComponent(lang) + '&text=' + encodeURIComponent(text);
+        }
+
+        function receiveTranslation(id, source, text) {
+            const pending = serverTranslatePending[id];
+            if (!pending) return;
+            delete serverTranslatePending[id];
+            pending({ source: String(source || ''), text: String(text || '').trim() });
+        }
+
+        function setTranslateServer(on) {
+            serverTranslate = String(on) === '1';
+            updateTranslateStatus();
+        }
+
+        async function serverTranslateJob(job) {
+            const target = translatePrefs.lang;
+            const id = ++serverTranslateSeq;
+            const answer = new Promise(function (resolve) { serverTranslatePending[id] = resolve; });
+            window.chatSendTranslate(id, target, job.text);
+            let out;
+            try {
+                out = await withTimeout(answer, SERVER_TRANSLATE_TIMEOUT_MS);
+            } finally {
+                delete serverTranslatePending[id];
+            }
+            if (stillWanted(job) && target === translatePrefs.lang && out.text && out.source !== target && out.text !== job.text) showTranslation(job.div, out.source, out.text);
+        }
+
+        async function translateJob(job) {
+            if (serverTranslate) return serverTranslateJob(job);
+            const target = translatePrefs.lang;
+            const source = await detectLanguage(job.text);
+            if (!source || source === target || !stillWanted(job)) return;
+            const state = await pairAvailability(source, target);
+            if (!stillWanted(job)) return;
+            if (state === 'available') {
+                const translator = await getTranslator(source, target);
+                const out = await withTimeout(translator.translate(job.text), TRANSLATE_TIMEOUT_MS);
+                if (stillWanted(job) && out && out.trim() && out.trim() !== job.text) showTranslation(job.div, source, out.trim());
+            } else if (state === 'downloadable' || state === 'downloading') {
+                showSetup(job, source, target);
+            } else if (!unsupportedPair) {
+                // The browser has the translator but not this language pair.
+                unsupportedPair = langName(source) + ' to ' + langName(target);
+                updateTranslateStatus();
+            }
+        }
+
+        async function pumpTranslations() {
+            if (translateBusy) return;
+            translateBusy = true;
+            try {
+                while (translateQueue.length) {
+                    const job = translateQueue.shift();
+                    if (!stillWanted(job)) { finishOffer(job); continue; }
+                    try {
+                        await translateJob(job);
+                    } catch (e) {
+                        // A slow or failed line keeps its original text.
+                    }
+                    finishOffer(job);
+                }
+            } finally {
+                translateBusy = false;
+            }
+        }
+
+        function updateTranslateStatus() {
+            const status = document.getElementById('chat-translate-status');
+            const setup = document.getElementById('chat-translate-setup');
+            if (!status) return;
+            setup.hidden = true;
+            if (!translatePrefs.enabled) {
+                status.textContent = 'Off. Tick the box to translate what other players type in another language.';
+            } else if (serverTranslate) {
+                status.textContent = 'Lines in other languages appear in ' + langName(translatePrefs.lang) + ' under the original. The game server translates them.';
+            } else if (!translateApi || !detectApi) {
+                status.textContent = 'This game window cannot translate chat yet. Chat is shown as written.';
+            } else if (detectorState === 'downloadable' || detectorState === 'downloading') {
+                status.textContent = 'Language detection needs a one-time download before chat can be translated.';
+                setup.hidden = false;
+            } else if (detectorState === 'unavailable') {
+                status.textContent = 'Language detection is not available here, so chat is shown as written.';
+            } else if (unsupportedPair) {
+                status.textContent = 'This game window cannot translate ' + unsupportedPair + ' yet, so those lines are shown as written. Other languages are still translated when they can be.';
+            } else {
+                status.textContent = 'Lines in other languages appear in ' + langName(translatePrefs.lang) + ' under the original. Translation happens on this computer only.';
+            }
+        }
+
+        function setupTranslationSettings() {
+            const on = document.getElementById('chat-translate-on');
+            const select = document.getElementById('chat-translate-lang');
+            TRANSLATE_LANGS.forEach(function (entry) {
+                const option = document.createElement('option');
+                option.value = entry[0];
+                option.textContent = entry[1];
+                select.appendChild(option);
+            });
+            on.checked = translatePrefs.enabled;
+            select.value = translatePrefs.lang;
+            function changed() {
+                translatePrefs = { enabled: on.checked, lang: select.value };
+                translateGeneration++;
+                translateQueue.length = 0;
+                saveTranslatePrefs();
+                updateTranslateStatus();
+            }
+            on.addEventListener('change', changed);
+            select.addEventListener('change', changed);
+            document.getElementById('chat-translate-setup').addEventListener('click', function () {
+                getDetector(true);
+            });
+            if (translateApi && translatePrefs.enabled) getDetector(false);
+            updateTranslateStatus();
+        }
+        setupTranslationSettings();
+
+        // Plain chat text: a saved switch that drops italics and underlines
+        // from every chat line (body.chat-plain). Off unless the player turns
+        // it on; saved on this computer like the tabs.
+        const PLAIN_KEY = 'civ13-chat-plain-v1';
+        function setupPlainText() {
+            const box = document.getElementById('chat-plain-on');
+            let plain = false;
+            try {
+                const store = chatStorage();
+                plain = !!store && store.getItem(PLAIN_KEY) === '1';
+            } catch (e) { /* off */ }
+            function apply() {
+                document.body.classList.toggle('chat-plain', plain);
+                box.checked = plain;
+            }
+            box.addEventListener('change', function () {
+                plain = box.checked;
+                try {
+                    const store = chatStorage();
+                    if (store) store.setItem(PLAIN_KEY, plain ? '1' : '0');
+                } catch (e) { /* this computer only; nothing else to do */ }
+                apply();
+                if (followingTail) scrollToTail();
+            });
+            apply();
+        }
+        setupPlainText();
 
         /**
          * Clears all messages from the chat.
@@ -1475,6 +2012,9 @@
         }
 
         window.chatSendPing = chatSendPing;
+        window.chatSendTranslate = chatSendTranslate;
+        window.receiveTranslation = receiveTranslation;
+        window.setTranslateServer = setTranslateServer;
         window.chatSendReady = chatSendReady;
         window.chatPong = heardFromServer;
         window.startChatHeartbeat = startHeartbeat;

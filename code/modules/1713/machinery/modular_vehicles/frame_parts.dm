@@ -1,7 +1,9 @@
 
 //types of walls/borders
 //format: type of wall, opacity, density, armor, current health, can open/close, is open?, doesn't get colored
-var/global/list/vehicle_walls = list( \
+var/global/list/vehicle_walls = vehicle_walls_table()
+/proc/vehicle_walls_table()
+	return list( \
 	"" = list("",FALSE,FALSE,0,40,FALSE,FALSE), \
 	"c_wall" = list("c_window",FALSE,TRUE,20,50,FALSE,FALSE), \
 	"c_window" = list("c_wall",TRUE,TRUE,10,40,FALSE,FALSE), \
@@ -267,6 +269,8 @@ var/global/list/vehicle_walls = list( \
 
 /obj/structure/vehicleparts/frame/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!I || !H)
+		return
+	if (fit_composite_panel(I, H)) // composite_armour.dm
 		return
 	if (istype (I, /obj/item/stack/material/steel))
 		var/obj/item/stack/material/steel/S = I

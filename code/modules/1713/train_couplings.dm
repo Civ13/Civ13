@@ -32,6 +32,7 @@
 
 /obj/structure/trains/Destroy()
 	clear_couplers()
+	unharness()
 	return ..()
 
 // Whether this section has a car end there. A car of several sections has
@@ -216,6 +217,12 @@
 	var/plough = plough_text()
 	if (plough)
 		to_chat(user, plough)
+	// The destination card (train_goods.dm).
+	to_chat(user, card_line())
+	// A horse or an ox in the traces (train_early.dm).
+	var/draft = draft_line()
+	if (draft)
+		to_chat(user, draft)
 
 // Explosions strain the couplings of the cars they catch.
 /obj/structure/trains/ex_act(severity)

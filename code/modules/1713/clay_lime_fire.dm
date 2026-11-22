@@ -8,6 +8,7 @@
 // wheel works in a third of the time. tests/clay_lime_fire keeps them equal.
 var/global/list/potters_wheel_wares = list(
 	/obj/item/weapon/clay/verysmallclaypot = list(1, 20),
+	/obj/item/weapon/clay/crucible = list(1, 30),
 	/obj/item/weapon/clay/smallclaypot = list(1, 30),
 	/obj/item/weapon/clay/claypot = list(2, 50),
 	/obj/item/weapon/clay/bigclaypot = list(3, 60),
@@ -279,14 +280,29 @@ var/global/list/brick_bench_batches = list(
 
 /obj/structure/workshop_machine/bellows
 	name = "bellows"
-	desc = "Leather forge bellows on a timber stand. Pump them with an empty hand beside a bloomery, blast furnace or kiln: for a minute and a half, a firing started there takes a quarter less time and fuel."
+	desc = "Leather forge bellows on a timber stand. Pump them with an empty hand beside a bloomery, blast furnace or kiln: for a minute and a half, a firing started there takes a quarter less time and fuel. Set beside a treadwheel, horse gin, mill wheel or windmill, or on a line shaft, they blow on their own for as long as they are driven."
 	icon_state = "bellows"
+	drive_draw = 1
 
 /obj/structure/furnace
 	var/tmp/bellows_until = 0 // world.time the air blast lasts to
 
 /obj/structure/furnace/proc/bellows_blowing()
-	return world.time < bellows_until
+	if (world.time < bellows_until)
+		return TRUE
+	for (var/obj/structure/workshop_machine/bellows/B in range(1, src))
+		if (B.driven())
+			return TRUE
+	return FALSE
+
+// TRUE while a prime mover works the bellows (mechanical_power.dm).
+/obj/structure/workshop_machine/bellows/proc/driven()
+	return anchored && isturf(loc) && mechanical_drive_factor(src) < 1
+
+/obj/structure/workshop_machine/bellows/examine(mob/user, distance)
+	..(user, distance)
+	if (driven())
+		to_chat(user, SPAN_NOTICE("A drive works them: every firing started beside them runs hotter."))
 
 // refining.dm starts every bloomery, blast furnace and kiln firing here.
 /obj/structure/furnace/start_smelt()

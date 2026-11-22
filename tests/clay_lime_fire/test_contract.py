@@ -75,7 +75,7 @@ class ClayLimeFire(unittest.TestCase):
     def test_wheel_wares_match_the_hand_recipes(self):
         rows = recipe_rows()
         wares = table('potters_wheel_wares')
-        self.assertEqual(len(wares), 17)  # + storage jar, zeer pot, wash basin
+        self.assertEqual(len(wares), 18)  # + storage jar, zeer pot, wash basin, steel crucible
         for path, (clay, time) in wares.items():
             row = rows[path][0]
             self.assertEqual(row[0], '/material/clay/', path)
@@ -84,7 +84,8 @@ class ClayLimeFire(unittest.TestCase):
     def test_every_clay_vessel_recipe_is_on_the_wheel(self):
         vessels = {p for p, r in recipe_rows().items()
                    if r[0][0] == '/material/clay/' and p.startswith('/obj/item/weapon/clay/')
-                   and '/mold' not in p and 'bricks' not in p and '/roofing' not in p}
+                   and '/mold' not in p and 'bricks' not in p and '/roofing' not in p
+                   and '/floortiles' not in p}  # pressed flat like bricks, not thrown
         self.assertEqual(vessels, set(table('potters_wheel_wares')))
 
     def test_bench_batches_never_cost_more_than_hand_bricks(self):

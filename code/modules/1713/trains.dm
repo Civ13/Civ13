@@ -14,52 +14,57 @@
 	var/switched = "forward"
 	var/turn_dir = null
 	var/sw_direction = "forward"
-	New()
-		..()
-		spawn(5)
+
+// Every rail laid or removed bumps rail_network_serial (rail_network.dm). The
+// icon waits a moment so a map's neighbouring switchers exist first.
+/obj/structure/rails/New()
+	..()
+	rail_network_serial++
+	spawn(5)
+		if (!QDELETED(src))
 			update_icon()
+
+// Bumped once the rail has left its tile, so nothing caches it still there.
+/obj/structure/rails/Destroy()
+	. = ..()
+	rail_network_serial++
+
+// The directions this piece of track leads to from its tile. Laying track
+// (track_laying.dm) and train routing (rail_target) read the shape from here.
+/obj/structure/rails/proc/exits()
+	return list(dir, OPPOSITE_DIR(dir))
+
+// Whether a train may enter this tile heading that way: a leg points back.
+/obj/structure/rails/proc/accepts(heading)
+	return (OPPOSITE_DIR(heading) in exits())
+
+// A plain tile beside a switcher draws the branch leaving it. Only the
+// switcher's hand and facing matter, not how it is set, so this is worked out
+// when the tile or a switcher beside it is laid, turned or taken up.
 /obj/structure/rails/regular/update_icon()
 	..()
-	if (dir == NORTH || dir == SOUTH)
-		for (var/obj/structure/rails/R in get_step(src, WEST))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == SOUTH)
-					icon_state = "rails_split1"
-					dir = R.dir
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == NORTH)
-					icon_state = "rails_split1"
-					dir = R.dir
-		for (var/obj/structure/rails/R in get_step(src, EAST))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == NORTH)
-					icon_state = "rails_split2"
-					dir = R.dir
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == SOUTH)
-					icon_state = "rails_split2"
-					dir = R.dir
-	else if (dir == EAST || dir == WEST)
-		for (var/obj/structure/rails/R in get_step(src, SOUTH))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == EAST)
-					icon_state = "rails_split2"
-					dir = OPPOSITE_DIR(R.dir)
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == WEST)
-					icon_state = "rails_split2"
-					dir = OPPOSITE_DIR(R.dir)
-		for (var/obj/structure/rails/R in get_step(src, NORTH))
-			if (R.icon_state == "rails_split_f_left" || R.icon_state == "rails_split_s_left")
-				if (R.dir == WEST)
-					icon_state = "rails_split1"
-					dir = OPPOSITE_DIR(R.dir)
-			if (R.icon_state == "rails_split_f_right" || R.icon_state == "rails_split_s_right")
-				if (R.dir == EAST)
-					icon_state = "rails_split1"
-					dir = OPPOSITE_DIR(R.dir)
-	spawn(10)
-		update_icon()
+	icon_state = initial(icon_state)
+	var/vertical = (dir == NORTH || dir == SOUTH)
+	if (!vertical && dir != EAST && dir != WEST)
+		return
+	// side: the neighbour's tile; then which switcher facing on that side,
+	// for a left and a right hand, gives which half of the branch.
+	for (var/side in (vertical ? list(WEST, EAST) : list(SOUTH, NORTH)))
+		for (var/obj/structure/rails/split/switcher/S in get_step(src, side))
+			if (QDELETED(S))
+				continue
+			var/half = (side == WEST || side == NORTH) ? 1 : 2
+			var/left_facing = vertical ? (side == WEST ? SOUTH : NORTH) : (side == SOUTH ? EAST : WEST)
+			var/want = (S.sw_direction == "right") ? OPPOSITE_DIR(left_facing) : left_facing
+			if (S.dir == want)
+				icon_state = "rails_split[half]"
+				set_dir(vertical ? S.dir : OPPOSITE_DIR(S.dir))
+
+// A loaded rail is restored before its neighbours have their saved facing, so
+// it draws the branch again once the whole level is back.
+/obj/structure/rails/regular/after_load()
+	..()
+	update_icon()
 
 /obj/structure/rails/regular/horizontal/New()
 	..()
@@ -94,6 +99,10 @@
 		return
 	turn_dir = turn(dir, sw_direction == "right" ? -90 : 90)
 
+// A turn faces dir and leads back the way it faces and off to turn_dir.
+/obj/structure/rails/turn/exits()
+	return turn_dir ? list(OPPOSITE_DIR(dir), turn_dir) : list()
+
 /obj/structure/rails/split/switcher
 	icon_state = "rails_split_f_left"
 	name = "rail switcher"
@@ -114,58 +123,76 @@
 	else
 		icon_state = "rails_split_s_[sw_direction]"
 
+// A switcher also takes a car coming off the branch beside it.
+/obj/structure/rails/split/switcher/accepts(heading)
+	return ..() || get_step(src, OPPOSITE_DIR(heading)) == branch_turf()
+
+// The tile beside the switcher that its split route shifts a car onto.
+/obj/structure/rails/split/switcher/proc/branch_turf()
+	return get_step(src, turn(dir, sw_direction == "right" ? -90 : 90))
+
+// Plain track beside a switcher draws its branch (regular/update_icon), so it
+// is redrawn whenever a switcher comes, turns or goes.
+/obj/structure/rails/split/switcher/proc/redraw_neighbours()
+	for (var/d in cardinal)
+		for (var/obj/structure/rails/regular/R in get_step(src, d))
+			R.update_icon()
+
+/obj/structure/rails/split/switcher/New()
+	..()
+	spawn(5)
+		if (!QDELETED(src))
+			redraw_neighbours()
+
+/obj/structure/rails/split/switcher/set_dir(new_dir)
+	. = ..()
+	if (isturf(loc))
+		redraw_neighbours()
+
+/obj/structure/rails/split/switcher/Destroy()
+	var/turf/T = loc
+	. = ..()
+	if (isturf(T))
+		for (var/d in cardinal)
+			for (var/obj/structure/rails/regular/R in get_step(T, d))
+				R.update_icon()
+
 /obj/structure/rails/rotate
 	name = "rotating rail"
 	desc = "A rotating platform that allows wagons to switch direction."
 	icon_state = "rails_rotate"
+
+// A rotator takes a wagon from any side.
+/obj/structure/rails/rotate/exits()
+	return cardinal.Copy()
+
+// Turns the platform and the wagons on it by angle (90 is a quarter to the left).
+/obj/structure/rails/rotate/proc/rotate_platform(mob/user, angle)
+	if (!istype(user, /mob/living/human))
+		return FALSE
+	set_dir(turn(dir, angle))
+	for (var/obj/structure/trains/TR in loc)
+		TR.dir = dir
+	playsound(loc, 'sound/effects/lever.ogg', 100, TRUE)
+	to_chat(user, "You rotate the platform to the [dir2text(dir)].")
+	return TRUE
 
 /obj/structure/rails/rotate/verb/rotate_left()
 	set name = "Rotate Left"
 	set category = null
 	set desc = "Rotate the platform"
 	set src in oview(1)
-
-	if (!istype(usr, /mob/living/human))
-		return
-
-	set_dir(turn(dir, -90))
-	for (var/obj/structure/trains/TR in loc)
-		TR.dir = dir
-	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	to_chat(usr, "You rotate the platform to the left.")
-	return
+	rotate_platform(usr, 90)
 
 /obj/structure/rails/rotate/verb/rotate_right()
 	set name = "Rotate Right"
 	set category = null
 	set desc = "Rotate the platform"
 	set src in oview(1)
-
-	if (!istype(usr, /mob/living/human))
-		return
-
-	set_dir(turn(dir, 90))
-	for (var/obj/structure/trains/TR in loc)
-		TR.dir = dir
-	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	to_chat(usr, "You rotate the platform to the right.")
-	return
+	rotate_platform(usr, -90)
 
 /obj/structure/rails/rotate/attack_hand(mob/living/user as mob)
-	switch(dir)
-		if (1)
-			dir = 8
-		if (2)
-			dir = 4
-		if (4)
-			dir = 1
-		if (8)
-			dir = 2
-	for (var/obj/structure/trains/TR in loc)
-		TR.dir = dir
-	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-	to_chat(user, "You rotate the platform to the [dir2text(dir)].")
-	return
+	rotate_platform(user, 90)
 /////////////////////////////////////////////////////////////////////////////////
 /obj/structure/train_lever
 	name = "rail switch lever"
@@ -185,26 +212,37 @@
 	else
 		icon_state = "lever_pulled"
 
+// Sets the switches this lever works. TRUE when it moved.
+/obj/structure/train_lever/proc/throw_switch(state)
+	if (switched == state)
+		return FALSE
+	switched = state
+	for (var/obj/structure/rails/split/switcher/S in range(2,src))
+		S.switched = state
+		S.update_icon()
+	update_icon()
+	playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
+	return TRUE
+
 /obj/structure/train_lever/attack_hand(mob/living/user as mob)
 	if (istype(user, /mob/living))
+		// Worked by rodding from a signal box (train_signals.dm).
+		if (worked_by && train_frame_by_id(worked_by, src))
+			to_chat(user, "\The [src] is worked by rodding from a signal box; it does not move by hand.")
+			return
 		if (switched == "forward")
-			switched = "split"
-			for (var/obj/structure/rails/split/switcher/S in range(2,src))
-				S.switched = "split"
-				S.update_icon()
+			throw_switch("split")
 			visible_message("<span class = 'notice'>[user] moves the lever into the splitting position!</span>", "<span class = 'notice'>You move the lever into the splitting position!</span>")
-			update_icon()
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			return
 		else
-			switched = "forward"
-			for (var/obj/structure/rails/split/switcher/S in range(2,src))
-				S.switched = "forward"
-				S.update_icon()
+			throw_switch("forward")
 			visible_message("<span class = 'notice'>[user] moves the lever into the forward position!</span>", "<span class = 'notice'>You move the lever into the forward position!</span>")
-			update_icon()
-			playsound(loc, 'sound/effects/lever.ogg',100, TRUE)
-			return
+
+/obj/structure/train_lever/attackby(obj/item/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/train_signal_wire))
+		var/obj/item/train_signal_wire/wire = W
+		wire.use_on(src, user)
+		return
+	return ..()
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -462,6 +500,19 @@
 // car's Move() does not drag its follower as well.
 var/global/train_solo_move = FALSE
 
+// The rail that routes a car standing on T: a switcher or a curve outranks
+// the plain rail some maps lay under it.
+/proc/rail_routing_at(turf/T)
+	if (!T)
+		return null
+	var/obj/structure/rails/found = null
+	for (var/obj/structure/rails/R in T)
+		if (istype(R, /obj/structure/rails/split/switcher))
+			return R
+		if (!found || istype(R, /obj/structure/rails/turn))
+			found = R
+	return found
+
 // Where a car standing here goes next when it rolls towards mdir:
 // list(target turf, facing after the step), or null at the end of the track.
 /obj/structure/trains/proc/rail_target(mdir)
@@ -469,29 +520,22 @@ var/global/train_solo_move = FALSE
 	if (!get_turf(src) || !tgtt)
 		return null
 	var/fdir = mdir
-	var/obj/structure/rails/RT = null
-	for (var/obj/structure/rails/RTT in loc)
-		RT = RTT
-	if (RT && istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split" && RT.dir == mdir && rail_canmove(mdir))
-		if (RT.sw_direction == "left")
-			tgtt = get_step(RT, turn(RT.dir, 90))
-		else if (RT.sw_direction == "right")
-			tgtt = get_step(RT, turn(RT.dir, -90))
-	else if (RT && istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
-		if (RT.turn_dir == mdir)
-			fdir = RT.dir
-		else if (RT.turn_dir == OPPOSITE_DIR(mdir))
-			fdir = OPPOSITE_DIR(RT.dir)
-		else if (RT.dir == mdir)
-			fdir = RT.turn_dir
-		else if (RT.dir == OPPOSITE_DIR(mdir))
-			fdir = OPPOSITE_DIR(RT.turn_dir)
+	var/obj/structure/rails/RT = rail_routing_at(get_turf(src))
+	if (istype(RT, /obj/structure/rails/split/switcher) && RT.switched == "split" && RT.dir == mdir)
+		// The split route shifts the car onto the parallel track beside;
+		// with no rail there it runs straight on.
+		var/obj/structure/rails/split/switcher/SW = RT
+		var/turf/branch = SW.branch_turf()
+		if (rail_at(branch))
+			return list(branch, fdir)
+	else if (istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
+		var/list/legs = RT.exits()
+		// A car that came in along one leg leaves by the other; one that
+		// stopped on the curve while its train backed already heads out along
+		// a leg, and runs straight on.
+		if (!(mdir in legs) && (OPPOSITE_DIR(mdir) in legs))
+			fdir = (legs[1] == OPPOSITE_DIR(mdir)) ? legs[2] : legs[1]
 		tgtt = get_step(RT, fdir)
-		// A car that stopped on the curve while its train backed already heads
-		// out along one of the curve's legs: it runs straight on.
-		if (fdir != mdir && !rail_canmove(fdir) && rail_canmove(mdir))
-			fdir = mdir
-			tgtt = get_step(RT, mdir)
 	if (!rail_canmove(fdir))
 		return null
 	return list(tgtt, fdir)
@@ -532,6 +576,18 @@ var/global/train_solo_move = FALSE
 		// Deck and body tiles are the clearance check's business (train_consist_obstacle):
 		// on a curve the leading car's own side tile lies on the track ahead.
 		if (O.density && !istype(O, /obj/structure/trains) && !istype(O, /obj/structure/rails) && !istype(O, /obj/structure/train_part))
+			// A buffer stop takes a train up to a hard blow and stands
+			// (train_trackworks.dm); a harder one wrecks both.
+			if (istype(O, /obj/structure/train_buffer_stop))
+				var/obj/structure/train_buffer_stop/stop = O
+				automovement = FALSE
+				if (stop.hold(impact))
+					visible_message("<span class = 'warning'>\The [src] [impact < 0.5 ? "comes to rest against" : "runs hard into"] \the [stop], which holds.</span>")
+					return TRUE
+				if (!train_crash(stop, impact, fdir))
+					visible_message("<span class = 'warning'>\The [src] hits \the [stop]!</span>")
+				stop.smash()
+				return TRUE
 			// A wall, door or pillar on the line takes the train's weight
 			// (structure_impact.dm); one that gives way does not stop it.
 			if (impact >= 0.5 && is_structure_impact_part(O))
@@ -614,7 +670,7 @@ var/global/train_solo_move = FALSE
 		automovement = FALSE
 		set_light(0)
 		return FALSE
-	set_light(2)
+	set_light(lamp_range)
 	return TRUE
 
 // What this car weighs with its load, for the locomotive's pull.
@@ -624,21 +680,14 @@ var/global/train_solo_move = FALSE
 		w += 0.1
 	return w
 
+// Whether this car may roll onto the next tile towards mdir: a rail there
+// must lead back the way the car comes (accepts()).
 /obj/structure/trains/proc/rail_canmove(mdir=dir)
 	var/turf/tgtt = get_step(src,mdir)
 	if (!tgtt)
 		return FALSE
 	for (var/obj/structure/rails/R in tgtt)
-		if (mdir == 1 || mdir == 2)
-			if (R.dir == 1 || R.dir == 2)
-				return TRUE
-			if (R.turn_dir == 1 || R.turn_dir == 2)
-				return TRUE
-		else if (mdir == 4 || mdir == 8)
-			if (R.dir == 4 || R.dir == 4)
-				return TRUE
-			if (R.turn_dir == 4 || R.turn_dir == 8)
-				return TRUE
+		if (R.accepts(mdir))
 			return TRUE
 	return FALSE
 //////////////////////////////////////////////////////////////////////////
@@ -902,6 +951,8 @@ var/global/train_solo_move = FALSE
 	if (station == "all" || station == "driver")
 		choices += list("Throttle up", "Throttle down", "Brake", "Sand the rails")
 		choices += (reverser > 0) ? "Reverser to backward" : "Reverser to forward"
+		// Warnings and the headlamp (train_stations.dm).
+		choices += list("Sound the [whistle_name()]", "Ring the bell", headlamp ? "Put out the headlamp" : "Light the headlamp")
 	if (station == "all" || station == "fireman")
 		choices += extra_controls()
 	return choices
@@ -939,7 +990,7 @@ var/global/train_solo_move = FALSE
 				to_chat(user, "[start_text] first.")
 				return
 			if (steam_factor() <= 0)
-				to_chat(user, "<span class = 'warning'>There is not enough steam yet. Wait for the pressure to rise.</span>")
+				to_chat(user, "<span class = 'warning'>[no_power_text()]</span>")
 				return
 			throttle = min(LOCO_NOTCHES, throttle + 1)
 			braking = FALSE
@@ -954,6 +1005,15 @@ var/global/train_solo_move = FALSE
 		if ("Sand the rails")
 			if (!sand_rails(user))
 				return
+		if ("Sound the whistle", "Sound the horn")
+			sound_whistle(user)
+			return
+		if ("Ring the bell")
+			sound_bell(user)
+			return
+		if ("Light the headlamp", "Put out the headlamp")
+			set_headlamp(!headlamp, user)
+			return
 		if ("Reverser to backward", "Reverser to forward")
 			if (rail_speed > 0)
 				to_chat(user, "<span class = 'warning'>Stop the train before you move the reverser.</span>")
@@ -970,7 +1030,7 @@ var/global/train_solo_move = FALSE
 /obj/structure/trains/locomotive/proc/control_summary()
 	var/where = reverser > 0 ? "forward" : "backward"
 	var/pinned = train_handbrakes()
-	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", engine brake on" : ""][pinned ? ", [pinned] handbrake\s on in the train" : ""]. [speed_text()]. [sand_text()]"
+	return "[state_text()] Throttle notch [throttle] of [LOCO_NOTCHES], reverser [where][braking ? ", engine brake on" : ""][pinned ? ", [pinned] handbrake\s on in the train" : ""]. [speed_text()].[night_text()] [sand_text()]"
 
 /obj/structure/trains/locomotive/proc/state_text()
 	return "Engine [on ? "running" : "stopped"]."
@@ -999,6 +1059,14 @@ var/global/train_solo_move = FALSE
 	return 1
 
 /obj/structure/trains/locomotive/proc/boiler_tick()
+	return
+
+// What the driver is told when steam_factor() gives nothing to pull with.
+/obj/structure/trains/locomotive/proc/no_power_text()
+	return "There is not enough steam yet. Wait for the pressure to rise."
+
+// The drive loop has ended and the train stands (train_electric.dm).
+/obj/structure/trains/locomotive/proc/drive_ended()
 	return
 
 /obj/structure/trains/locomotive/proc/steam_use(notch, weight, tiles = 1)
@@ -1077,7 +1145,8 @@ var/global/train_solo_move = FALSE
 	drive_head = train_head()
 	var/list/cars = train_consist_list(drive_head)
 	drive_tail = cars.len ? cars[cars.len] : src
-	lead_factor = leading_factor(cars)
+	// In the dark with no light ahead it runs blind (train_stations.dm).
+	lead_factor = leading_factor(cars) * night_factor()
 	linked = linked_units(cars)
 	consist_weight = 0
 	consist_power = 0
@@ -1123,7 +1192,7 @@ var/global/train_solo_move = FALSE
 	return throttle / LOCO_NOTCHES
 
 /obj/structure/trains/locomotive/proc/engine_disabled()
-	return broken_down
+	return broken_down || derailed
 
 // 0 when the engine pulls its rated load or more; below 1 it is overloaded.
 /obj/structure/trains/locomotive/proc/pull_ratio()
@@ -1147,6 +1216,9 @@ var/global/train_solo_move = FALSE
 	automovement = TRUE
 	deadman_missed = 0
 	refresh_consist()
+	// Signals and section boards right ahead (train_signals.dm).
+	lineside_seen = null
+	lineside_watch()
 	playsound(loc, 'sound/machines/train/moving.ogg', 100, TRUE)
 	spawn(0)
 		var/steps = 0
@@ -1157,6 +1229,8 @@ var/global/train_solo_move = FALSE
 				since = 0
 				// Nobody in the cab (train_diesel.dm).
 				deadman_watch()
+				// Signals and section boards (train_signals.dm).
+				lineside_watch()
 			boiler_tick()
 			var/target = cruise_speed()
 			var/heft = max(1, consist_weight / 6)
@@ -1184,16 +1258,29 @@ var/global/train_solo_move = FALSE
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
+			var/obj/structure/trains/lead = (train_way() > 0) ? drive_head : drive_tail
+			if (!lead || QDELETED(lead))
+				lead = src
+			var/lead_dir = lead.dir
+			var/turf/lead_from = lead.loc
 			var/moved = (train_way() > 0) ? process_rail_forward() : process_rail_reverse()
 			if (QDELETED(src))
 				return
 			if (!moved)
+				// Off the end of the rails at speed (train_derail.dm).
+				overrun_check()
 				throttle = 0
+				break
+			// Too fast round a curve or through a switch (train_derail.dm).
+			if (curve_check(lead, lead_dir, lead_from))
 				break
 			steps++
 			since++
 			// Snow on the line (train_snow.dm).
 			meet_snow()
+			// Wear on the track, and worn track taken too fast (train_trackwear.dm).
+			if (meet_track())
+				break
 			if (sanding > 0)
 				sanding--
 			if (steps % 8 == 0)
@@ -1212,6 +1299,7 @@ var/global/train_solo_move = FALSE
 		driving = FALSE
 		automovement = FALSE
 		set_light(0)
+		drive_ended()
 
 // Forward: the front car of the train leads. When that is not this engine,
 // the engine pushes it, burning its own fuel.
@@ -1284,7 +1372,7 @@ var/global/train_solo_move = FALSE
 	if (!.)
 		automovement = FALSE
 	else
-		set_light(2)
+		set_light(lamp_range)
 
 // Fuel used for one tile: idling costs little, a full throttle on a heavy
 // train costs most. About a hundred tiles a firebox at full load.
@@ -1566,23 +1654,9 @@ var/global/train_solo_move = FALSE
 /obj/structure/rails/wide
 	name = "rails"
 	desc = "Rails used by trains."
-	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "middle" //Thanks жендос#0897 for the icons!
-	anchored = TRUE
-	density = FALSE
-	opacity = FALSE
-	not_movable = TRUE
-	not_disassemblable = FALSE
-	layer = 2.5
 
 /obj/structure/rails/corner
 	name = "rails"
 	desc = "Rails used by trains."
-	icon = 'icons/obj/vehicles/trains.dmi'
 	icon_state = "corner" //Thanks жендос#0897 for the icons!
-	anchored = TRUE
-	density = FALSE
-	opacity = FALSE
-	not_movable = TRUE
-	not_disassemblable = FALSE
-	layer = 2.5

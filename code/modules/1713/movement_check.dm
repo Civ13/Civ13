@@ -149,6 +149,8 @@
 	return run_delay_maximum / 1.09
 
 /mob/living/human/proc/movement_check_intent_mult()
+	if (is_sprinting())
+		return 1 / SPRINT_SPEED_MULT
 	switch (m_intent)
 		if ("walk")
 			return 1.5
@@ -264,7 +266,7 @@
 	else if (speed > 1.001)
 		faster += "- your traits: about [round((1 - 1 / speed) * 100)]% faster"
 	total /= max(0.1, speed)
-	. += "Moving at a [m_intent == "proning" ? "crawl" : m_intent] on flat ground, a step takes about [movement_check_number(total / 10)] s (unhindered: [movement_check_number(base_step / 10)] s)."
+	. += "Moving at a [m_intent == "proning" ? "crawl" : sprint_mode_name()] on flat ground, a step takes about [movement_check_number(total / 10)] s (unhindered: [movement_check_number(base_step / 10)] s)."
 	if (slower.len)
 		. += "<b>Slowing you:</b>"
 		. += slower

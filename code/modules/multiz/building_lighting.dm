@@ -10,7 +10,7 @@
 #define BUILDING_WAKE_RANGE 7
 
 /proc/building_level_lazy(z)
-	return z > building_base_maxz() && !dug_underground_forming && z != dug_underground_z()
+	return z > building_base_maxz() && !dug_underground_forming && !underground_added(z)
 
 // A cell of an added level that nothing has woken or replaced: it skipped its
 // constructor during allocation, so it holds its compiled defaults, is not in
@@ -34,11 +34,21 @@ var/global/list/building_levels_with_ground = list()
 		if (T.z == center.z)
 			T.building_wake()
 
+// A deck a vessel carries here lights this cell (craft/glide.dm); it drew
+// black for whoever climbed up to it. Only cells reached unlit call this. The
+// open air beside her is woken by the level-view scan of whoever looks at it.
+/turf/sky/building/craft_deck_arrived()
+	if (created_lighting_corners_and_overlays && !building_allocating_z && building_level_lazy(z))
+		building_wake()
+
+// A registered cell that still has no lighting (linked unwoken from the level
+// above, or left unlit by a restore) gets its lighting here too; it drew black.
 /turf/sky/building/proc/building_wake()
-	if (!turf_registry_add(src))
+	if (turf_registry_add(src))
+		turfs += src
+		calculate_window_coeff()
+	else if (lighting_overlay || !created_lighting_corners_and_overlays)
 		return
-	turfs += src
-	calculate_window_coeff()
 	if (map && map.zlevels_without_lighting.Find(z))
 		return
 	for (var/i = 1 to 4)
@@ -53,4 +63,10 @@ var/global/list/building_levels_with_ground = list()
 		building_wake_cells(src)
 	if (!ispath(path, /turf/sky/building))
 		building_levels_with_ground["[z]"] = TRUE
+	if (ispath(path, /turf/wall/rockwall/bedrock) && x == 1 && y == 1)
+		// A load placing an underground level's marker: from here on its
+		// cells are rock, not open air to wake.
+		. = ..()
+		underground_levels_refresh()
+		return
 	return ..()

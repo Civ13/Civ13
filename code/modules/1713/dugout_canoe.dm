@@ -101,26 +101,38 @@
 	storagecapacity = 1
 	vehicle_m_delay = 14
 	health = 80
-	not_disassemblable = TRUE
+	not_disassemblable = TRUE // The raft's hammer rule; a canoe is taken apart by canoe_work().
 	var/paddle_delay = 8
+	var/open_sea = FALSE                 // TRUE for a craft that may cross deep salt water.
+	var/rough_wind = DUGOUT_ROUGH_WIND   // Salt water in wind this strong is refused.
+	var/seat_spacing = DUGOUT_SEAT_SPACING
+	var/seat_lift = DUGOUT_SEAT_LIFT
+	var/booms_fitted = FALSE             // Outrigger booms and float laid on, not yet lashed (naval/outrigger_canoe.dm).
 
 /obj/structure/vehicle/raft/dugout/proc/paddling()
 	return driver && (istype(driver.l_hand, /obj/item/weapon/paddle) || istype(driver.r_hand, /obj/item/weapon/paddle))
 
-/obj/structure/vehicle/raft/dugout/processmove(m_dir = null)
-	vehicle_m_delay = paddling() ? paddle_delay : initial(vehicle_m_delay)
-	return ..()
+// Tenths of a second her next tile takes, heading m_dir (the raft's
+// processmove asks, naval/small_boat_upkeep.dm).
+/obj/structure/vehicle/raft/dugout/step_delay(m_dir)
+	return (paddling() ? paddle_delay : initial(vehicle_m_delay)) + wear_delay()
+
+/obj/structure/vehicle/raft/dugout/can_travel_open_sea()
+	return open_sea
 
 /obj/structure/vehicle/raft/dugout/do_vehicle_check()
 	if (!driver)
 		return FALSE
+	if (booms_fitted)
+		to_chat(driver, SPAN_WARNING("The booms and float are loose on \the [src]. Lash them with rope first."))
+		return FALSE
 	var/turf/DT = get_step(src, driver.dir)
 	if (istype(DT, /turf/floor/beach/water))
 		var/turf/floor/beach/water/W = DT
-		if (W.salty && istype(W, /turf/floor/beach/water/deep))
+		if (!can_travel_open_sea() && W.salty && istype(W, /turf/floor/beach/water/deep))
 			to_chat(driver, SPAN_WARNING("The open sea is too much for a canoe. Keep to the shallows."))
 			return FALSE
-		if (W.salty && weather_wind_at(W) >= DUGOUT_ROUGH_WIND)
+		if (W.salty && weather_wind_at(W) >= rough_wind)
 			to_chat(driver, SPAN_WARNING("The waves are too rough for a canoe. Wait for the wind to drop."))
 			return FALSE
 	return ..()
@@ -128,8 +140,28 @@
 // The two paddlers sit one behind the other along the hull, not on one spot.
 /obj/structure/vehicle/raft/dugout/update_icon()
 	..()
-	icon_state = "dugout"
+	dress_hull()
 	seat_paddlers()
+
+// The hull's own look. An outrigger's sheet is three tiles square with the
+// hull in the middle, so it is drawn a tile down and left of where it stands.
+/obj/structure/vehicle/raft/dugout/proc/dress_hull()
+	if (booms_fitted)
+		icon = OUTRIGGER_ICON
+		icon_state = "outrigger_fitted"
+		pixel_w = -32
+		pixel_z = -32
+	else
+		icon = initial(icon)
+		icon_state = initial(icon_state)
+		pixel_w = initial(pixel_w)
+		pixel_z = initial(pixel_z)
+
+// Fitting an outrigger, and taking the canoe apart (naval/outrigger_canoe.dm).
+/obj/structure/vehicle/raft/dugout/attackby(obj/item/O as obj, mob/user as mob)
+	if (canoe_work(O, user))
+		return TRUE
+	return ..()
 
 // A turn on the spot swings the hull at once, so the seats swing with it:
 // the next tile step (update_icon) may be most of a tile away.
@@ -144,13 +176,13 @@
 	for (var/mob/living/M in ontop)
 		if (M.loc == loc)
 			aboard += M
-	var/offset = aboard.len > 1 ? DUGOUT_SEAT_SPACING : 0
+	var/offset = aboard.len > 1 ? seat_spacing : 0
 	for (var/mob/living/M in aboard)
 		switch (dir)
 			if (NORTH, SOUTH)
 				M.pixel_x = 0
 				M.pixel_y = (dir == NORTH ? offset : -offset)
 			else
-				M.pixel_y = DUGOUT_SEAT_LIFT
+				M.pixel_y = seat_lift
 				M.pixel_x = (dir == EAST ? offset : -offset)
 		offset = -offset

@@ -44,7 +44,14 @@ export type PromptData = { message?: string; choices?: string[] };
 // Admin Spawn picker: the server searches its cached type list; results are the best matches.
 export type SpawnMenuEntry = { path?: string; name?: string; kind?: string };
 export type SpawnMenuData = { query?: string; kind?: string; results?: SpawnMenuEntry[]; matches?: number; limit?: number; types?: number; max_amount?: number; last?: string };
-export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[] };
+// A family is a root language and the daughters that grew out of it on this world; links say how much two members follow of each other.
+export type LanguageFamilyMember = { name?: string; parent?: string; nation?: string; era?: string; depth?: number; known?: Flag; learning?: Flag; mother?: Flag };
+export type LanguageFamily = { root?: string; members?: LanguageFamilyMember[]; links?: { a?: string; b?: string; percent?: number }[] };
+export type KnownLanguagesData = { current_default?: string; languages?: { name?: string; prefix?: string; description?: string; is_default?: Flag }[]; families?: LanguageFamily[]; people?: PeopleFamily | null };
+// The viewer's own people: where it came from (lineage, root first, ending with their own people), the peoples related to it,
+// and the peoples they were raised among or welcomed by. formed is 0 for an old people; year is the calendar year or 0.
+export type PeopleRow = { name?: string; language?: string; formed?: Flag; year?: number; nation?: string; homeland?: string; parents?: string[]; relation?: string };
+export type PeopleFamily = { name?: string; language?: string; land?: string; lineage?: PeopleRow[]; kin?: PeopleRow[]; raised_among?: string[]; welcomed_by?: string[] };
 // Character setup: appearance, traits and personal settings.
 export type SetupTrait = { name?: string; cost?: number; desc?: string; note?: string; block?: string; taken?: Flag; conflicts?: string[] };
 export type SetupColor = { name?: string; hex?: string };
@@ -62,11 +69,22 @@ export type CharacterSetupData = {
     spent?: number; earned?: number; chosen?: string[]; invalid?: string[]; error?: string | null;
     categories?: { id?: string; title?: string; note?: string; pick_one?: Flag; traits?: SetupTrait[] }[];
   };
+  // chart: the birth sign. choice is "random" or a sign id; current is the living character's own sign.
+  chart?: {
+    choice?: string; verified?: Flag; current?: string;
+    signs?: { id?: string; name?: string; season?: string; calling?: string; strengths?: string; weaknesses?: string; image?: string }[];
+  };
   settings?: {
     ui_style?: string; ui_styles?: string[]; cursor?: string; cursors?: string[]; client_fps?: number; fps_choices?: number[]; tutorial?: string;
     tap_step?: Flag; hover_text?: number; hover_text_scale?: string; hud_scale?: string; scales?: string[]; hud_editing?: Flag;
     toggles?: { key?: string; label?: string; on?: Flag; on_label?: string; off_label?: string }[];
   };
+};
+// Haircut: eligible styles as rows of the shared style sheet, and the figure they are drawn on.
+export type HaircutStyle = { name?: string; length?: number; row?: number; tint?: Flag };
+export type HaircutData = {
+  sheet?: string; body?: string; self?: Flag; name?: string; hair?: string; beard?: string; hair_color?: string; beard_color?: string;
+  hair_styles?: HaircutStyle[]; beard_styles?: HaircutStyle[]; seconds?: number;
 };
 // The storage window: hands, worn bags and pockets, storages nearby, the queue of moves.
 export type StorageItem = { id?: string; name?: string; size?: string; size_class?: number; cost?: number; image?: string; count?: number; queued?: Flag; moving?: Flag };
@@ -79,4 +97,21 @@ export type StorageGroup = {
 export type StorageWindowData = {
   hands_id?: string; hands?: { side?: string; active?: Flag; item?: StorageItem }[]; you?: StorageGroup[]; near?: StorageGroup[];
   queue?: { name?: string; image?: string; to?: string; time?: number; done?: number }[]; more_images?: Flag;
+};
+// The modular computer. shell picks the look ("cli" today; "desktop" and "mobile" later) and every shell reads this one snapshot.
+// index fields are the values the server expects back; files is present while the Files program is the active one.
+export type ComputerModule = { index?: number; slot?: string; slot_label?: string; name?: string; detail?: string; icon?: string };
+export type ComputerProgram = { id?: string; name?: string; desc?: string; available?: Flag; reason?: string };
+export type ComputerFile = { index?: number; name?: string; size_kb?: number };
+export type ComputerStore = { name?: string; used_kb?: number; capacity_kb?: number };
+export type ComputerFiles = {
+  drive?: ComputerStore | null; list?: ComputerFile[]; open?: { index?: number; name?: string; body?: string } | null;
+  disk?: (ComputerStore & { list?: ComputerFile[] }) | null; printer?: { paper?: number } | null; max_chars?: number; max_name?: number;
+};
+export type ComputerData = {
+  name?: string; shell?: string; os_name?: string; os_version?: string; boot_lines?: string[]; powered?: Flag; case_open?: Flag; status?: string;
+  // tab: optional; the tab a newly opened window starts on (terminal or hardware).
+  tab?: string;
+  hardware?: ComputerModule[]; empty_slots?: { slot?: string; slot_label?: string }[];
+  programs?: ComputerProgram[]; active?: string; files?: ComputerFiles | null;
 };

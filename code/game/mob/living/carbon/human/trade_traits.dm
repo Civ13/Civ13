@@ -14,6 +14,10 @@
 // everyday crafting; Carpentry is most of what people make, so a Carpenter's
 // boost is small. An all-rounder is about even or a little slower with any
 // trade; only someone who mostly works one trade comes out ahead.
+//
+// Labour trades (Val, 2026-11-19): Navvy, Miner and Woodcutter shorten the
+// matching work_delay() kind (materials/work_speed.dm). Digging and felling
+// are everyday work, so their boost is small; mining is rarer.
 // ============================================================
 
 var/global/list/trade_traits = list(
@@ -21,7 +25,10 @@ var/global/list/trade_traits = list(
 	"Gunsmith" = "gunsmith",
 	"Smith" = "smith",
 	"Tailor" = "tailor",
-	"Carpenter" = "carpenter")
+	"Carpenter" = "carpenter",
+	"Navvy" = "navvy",
+	"Miner" = "miner",
+	"Woodcutter" = "woodcutter")
 
 // Wait time for a trade's own work.
 var/global/list/trade_focus_time = list(
@@ -29,14 +36,20 @@ var/global/list/trade_focus_time = list(
 	"gunsmith" = 0.7,
 	"smith" = 0.75,
 	"tailor" = 0.75,
-	"carpenter" = 0.92)
+	"carpenter" = 0.92,
+	"navvy" = 0.8,
+	"miner" = 0.75,
+	"woodcutter" = 0.8)
 
 var/global/list/trade_work_names = list(
 	"mechanic" = "vehicle, aircraft, engine and submarine work",
 	"gunsmith" = "gunsmithing, black powder guns and fletching",
 	"smith" = "anvil and metal workbench work",
 	"tailor" = "dressmaking and crafting from cloth, hides and leather",
-	"carpenter" = "crafting from wood and stone, and woodworking")
+	"carpenter" = "crafting from wood and stone, and woodworking",
+	"navvy" = "digging, trenching and raising or lowering ground",
+	"miner" = "mining of rock, seams and cave roofs",
+	"woodcutter" = "tree felling")
 
 #define TRADE_OTHER_TIME 1.1
 #define TRADE_LOCK (7 * 24 * 36000)
@@ -72,7 +85,7 @@ var/global/list/trade_work_names = list(
 
 // Which trade crafting from this stack belongs to, by its material.
 /obj/item/stack/proc/stack_trade()
-	if (istype(src, /obj/item/stack/material/wood) || istype(src, /obj/item/stack/material/woodplank) || istype(src, /obj/item/stack/material/bamboo) || istype(src, /obj/item/stack/material/wood_piece) || istype(src, /obj/item/stack/material/crude_plank) || istype(src, /obj/item/stack/material/stone) || istype(src, /obj/item/stack/material/sandstone) || istype(src, /obj/item/stack/material/stonebrick) || istype(src, /obj/item/stack/material/marble) || istype(src, /obj/item/stack/material/marblebrick))
+	if (istype(src, /obj/item/stack/material/wood) || istype(src, /obj/item/stack/material/woodplank) || istype(src, /obj/item/stack/material/bamboo) || istype(src, /obj/item/stack/material/wood_piece) || istype(src, /obj/item/stack/material/crude_plank) || istype(src, /obj/item/stack/material/stone) || istype(src, /obj/item/stack/material/sandstone) || istype(src, /obj/item/stack/material/stonebrick) || istype(src, /obj/item/stack/material/marble) || istype(src, /obj/item/stack/material/marblebrick) || istype(src, /obj/item/stack/material/terracotta))
 		return "carpenter"
 	if (istype(src, /obj/item/stack/material/cloth) || istype(src, /obj/item/stack/material/cotton) || istype(src, /obj/item/stack/material/rettedfabric) || istype(src, /obj/item/stack/material/wool) || istype(src, /obj/item/stack/material/woolcloth) || istype(src, /obj/item/stack/material/rags) || istype(src, /obj/item/stack/material/leather) || istype(src, /obj/item/stack/material/pelt) || istype(src, /obj/item/stack/material/rawhide) || istype(src, /obj/item/stack/material/hairlesshide) || istype(src, /obj/item/stack/material/wethide) || istype(src, /obj/item/stack/material/dryhide) || istype(src, /obj/item/stack/material/kevlar) || istype(src, /obj/item/stack/material/preparedkevlar) || istype(src, /obj/item/stack/material/rawkevlar))
 		return "tailor"

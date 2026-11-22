@@ -274,17 +274,24 @@ note dizziness decrements automatically in the mob's Life() proc.
 	clear_strike()
 	strike = image(tool.icon, target, tool.icon_state, target.layer + 1)
 	strike.transform *= 0.75
+	// The worker's body leans into the strike (body_motion.dm, transform
+	// only); the tool image then travels half as far so it doesn't over-swing.
+	var/reach = 16
+	if (ishuman(actor))
+		var/mob/living/human/H = actor
+		if (H.body_motion_work(target))
+			reach = 8
 	var/direction = get_dir(actor, target)
 	if (direction & NORTH)
-		strike.pixel_y = -16
+		strike.pixel_y = -reach
 	else if (direction & SOUTH)
-		strike.pixel_y = 16
+		strike.pixel_y = reach
 	if (direction & EAST)
-		strike.pixel_x = -16
+		strike.pixel_x = -reach
 	else if (direction & WEST)
-		strike.pixel_x = 16
+		strike.pixel_x = reach
 	if (!direction)
-		strike.pixel_z = 16
+		strike.pixel_z = reach
 	// Seal the producer appearance before any per-client animation starts.
 	strike_appearance = strike.appearance
 	for (var/mob/M in viewers(target))

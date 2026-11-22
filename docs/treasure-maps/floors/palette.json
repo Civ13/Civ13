@@ -1,0 +1,207 @@
+{
+  "entries": {
+    "black_marble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Ornate black marble",
+      "line": 448,
+      "path": "/obj/covers/ornatemarblefloor/black",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "ornate_black_marble"
+    },
+    "carved_slab": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Carved stone slabs",
+      "line": 282,
+      "path": "/obj/covers/stone/slab/decorative",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "decorative_stone_slab"
+    },
+    "checker": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Marble checker",
+      "line": 414,
+      "path": "/obj/covers/marble_checkerboard",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "marble_checkerboard"
+    },
+    "cobble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Weathered cobble",
+      "line": 627,
+      "path": "/turf/floor/plating/cobblestone",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "cobble_horizontal"
+    },
+    "dark_cobble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Dark cobble",
+      "line": 639,
+      "path": "/turf/floor/plating/cobblestone/dark",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "cobble_horizontal_dark"
+    },
+    "marble_grid": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Marble grid",
+      "line": 432,
+      "path": "/obj/covers/marble_grid",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "marble_grid"
+    },
+    "marble_rosette": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Ornate marble",
+      "line": 326,
+      "path": "/obj/covers/ornatemarblefloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "ornate_marble"
+    },
+    "old_stone": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Mossy old stone",
+      "line": 633,
+      "path": "/turf/floor/plating/stone_old",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "stone_old"
+    },
+    "pink_checker": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Pink marble checker",
+      "line": 521,
+      "path": "/obj/covers/marble_checkerboard/pink",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "pink_marble_checkerboard"
+    },
+    "red_inlay": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Red sandstone inlay",
+      "line": 592,
+      "path": "/obj/covers/sandstone/tile/decorative/red",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "red_sandstone_decorative_tile"
+    },
+    "red_slab": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Red sandstone",
+      "line": 580,
+      "path": "/obj/covers/sandstone/slab/red",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "red_sandstone_slab"
+    },
+    "roman_setts": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Roman setts",
+      "line": 268,
+      "path": "/obj/covers/romanroad",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "roman_road"
+    },
+    "running_cobble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Running cobble",
+      "line": 645,
+      "path": "/turf/floor/plating/cobblestone/vertical",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "cobble_vertical"
+    },
+    "sand_brick": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Sandstone bricks",
+      "line": 572,
+      "path": "/obj/covers/sandstone/brick",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "sandstone_brick"
+    },
+    "sand_inlay": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Sandstone inlay",
+      "line": 588,
+      "path": "/obj/covers/sandstone/tile/decorative",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "sandstone_decorative_tile"
+    },
+    "sand_slab": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Sandstone slabs",
+      "line": 576,
+      "path": "/obj/covers/sandstone/slab",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "sandstone_slab"
+    },
+    "sandstone": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Sandstone paving",
+      "line": 550,
+      "path": "/obj/covers/sandstone",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "sandstone_floor"
+    },
+    "slate": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Slate flags",
+      "line": 533,
+      "path": "/obj/covers/slatefloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "slatefloor"
+    },
+    "stone_brick": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Stone bricks",
+      "line": 296,
+      "path": "/obj/covers/stonebrickfloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "stone_bricks"
+    },
+    "white_marble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "White marble",
+      "line": 312,
+      "path": "/obj/covers/marblefloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "marble"
+    }
+  },
+  "pinned_commit": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "used": [
+    "black_marble",
+    "carved_slab",
+    "checker",
+    "cobble",
+    "dark_cobble",
+    "marble_grid",
+    "marble_rosette",
+    "old_stone",
+    "pink_checker",
+    "red_inlay",
+    "red_slab",
+    "roman_setts",
+    "running_cobble",
+    "sand_brick",
+    "sand_inlay",
+    "sand_slab",
+    "sandstone",
+    "slate",
+    "stone_brick",
+    "white_marble"
+  ]
+}

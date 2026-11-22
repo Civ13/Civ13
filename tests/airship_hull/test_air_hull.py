@@ -36,7 +36,8 @@ class Deck(unittest.TestCase):
         self.assertIn('C && !C.anchored', lay)
         survey = extract(SOURCE, '/proc/air_hull_survey')
         self.assertIn('found.len > AIR_HULL_MAX_TILES', survey)
-        self.assertIn('#define AIR_HULL_MAX_TILES 60\n', SOURCE)
+        self.assertIn('#define AIR_HULL_MAX_TILES AIR_DRAUGHT_MAX_DECK\n', SOURCE)
+        self.assertIn('#define AIR_DRAUGHT_MAX_DECK 60', (ROOT / 'code/__defines/naval.dm').read_text(encoding='utf-8'))
 
     def test_floors_move_before_what_stands_on_them(self):
         move = extract(BUILT, '/datum/craft_body/built/move_to')
@@ -125,7 +126,9 @@ class HighFlight(unittest.TestCase):
     def test_views_and_wreck_reach_the_first_solid_level(self):
         views = extract(SOURCE, '/datum/craft/air/proc/update_views')
         self.assertIn('air_hull_solid_below(locate(min_x, min_y, B.z))', views)
-        self.assertIn('var/turf/G = air_hull_solid_below(air)', views)
+        # The crew see the ground through the open-air view; no ground turf
+        # goes in vis_contents (it was washed out and resent every tick).
+        self.assertNotIn('ground_view', SOURCE)
         crash = extract(SOURCE, '/datum/craft/air/proc/crash')
         self.assertIn('var/turf/G = air_hull_solid_below(D)', crash)
         self.assertIn('15 * (levels - 1)', crash)
@@ -272,11 +275,39 @@ class Wiring(unittest.TestCase):
                      'RECIPE: /material/steel/,airship bomb hatch,/obj/structure/airship_bomb_hatch,6,100,1,1,vehicle parts,126,0,0,8,null'):
             self.assertIn(line, recipes)
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text()
-        for path in ('airship_planks', 'airship_planks/aluminium', 'airship_planks/steel', 'airship_gas_cell', 'airship_helm_kit'):
-            self.assertIn('"/obj/item/' + path + '" = "powered_flight"', research)
-        self.assertIn('"/obj/structure/airship_bomb_hatch" = "powered_flight"', research)
+        for path in ('airship_planks', 'airship_gas_cell', 'airship_helm_kit', 'weapon/reagent_containers/gas_vessel'):
+            self.assertIn('"/obj/item/' + path + '" = "lighter_than_air_flight"', research)
+        for path in ('/obj/item/airship_planks/aluminium', '/obj/item/airship_planks/steel',
+                     '/obj/structure/airship_bomb_hatch', '/obj/structure/car_workshop/hangar',
+                     '/obj/item/weapon/aircraft_bomb', '/obj/item/gas_hose',
+                     '/obj/structure/gas_works/hydrogen_generator', '/obj/structure/gas_works/helium_separator'):
+            self.assertIn(f'"{path}" = "powered_flight"', research)
+            self.assertNotIn(f'"{path}" = "lighter_than_air_flight"', research)
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8-sig')
         self.assertLess(dme.index('naval\\built_hull.dm"'), dme.index('naval\\air_hull.dm"'))
+
+    def test_wooden_airship_and_hydrogen_route_do_not_need_the_1943_capstone(self):
+        research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text()
+        self.assertIn('"lighter_than_air_flight", "Lighter-than-Air Flight", "Industrial", 235, 4, '
+                      'RESEARCH_MODE_ANALYSIS, list("wagons_ships","utilities"), 5)', research)
+        self.assertIn('"powered_flight", "Powered Flight", "Industrial", 270, 5, '
+                      'RESEARCH_MODE_PROTOTYPE, list("combustion"), 6,', research)
+        self.assertIn('"/obj/structure/gas_works/water_gas_retort" = "utilities"', research)
+        self.assertIn('RECIPE: /material/leather/,gasbag,/obj/item/weapon/reagent_containers/gas_vessel,',
+                      (ROOT / 'config/crafting/material_recipes_global.txt').read_text())
+        self.assertIn('make("hydrogen", 2)', extract(GAS, '/obj/structure/gas_works/water_gas_retort/work'))
+        self.assertIn('gas_fill_vessel(user, V, reagents, src)', extract(GAS, '/obj/structure/gas_works/attackby'))
+        self.assertIn('from = W.reagents', extract(GAS, '/obj/structure/airship_gas_cell/attackby'))
+
+    def test_powered_flight_retains_craft_access_without_a_reverse_grant(self):
+        base = ROOT / 'code/modules/research_tree'
+        personal = extract((base / 'character_knowledge.dm').read_text(), '/mob/living/human/proc/knows_recipe_node')
+        faction = extract((base / 'research_faction.dm').read_text(), '/obj/map_metadata/proc/is_node_done')
+        self.assertIn('stat != DEAD', personal)
+        self.assertIn('node_id == "lighter_than_air_flight" && ("powered_flight" in known_recipe_nodes)', personal)
+        self.assertIn('node_id == "lighter_than_air_flight" && is_node_done(faction, "powered_flight")', faction)
+        for source in (personal, faction):
+            self.assertNotIn('node_id == "powered_flight"', source)
 
     def test_sprites_are_current(self):
         hashes = {'icons/obj/vehicles/airship_hull.dmi': HULL_SHA, 'icons/obj/vehicles/airship_gas_cell.dmi': CELL_SHA}

@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-18: wild animal feeding and death tally -->
+Grazing no longer turns grass to dirt: turf/floor grazed_until (tmp) holds it
+for 20 minutes (docs/wild-animal-feeding.md). Seed eaters forage pasture and
+grazers/seed eaters browse wild plants (wild_browse_plant). simple_animal
+death() feeds wildlife_deaths; note_harm() marks starvation/predator causes.
+Hourly "Wildlife:" game-log line. Test: tests/animal_combat/feeding.dm.
+
 <!-- 2026-11-12: moving weather systems -->
 Random weather is moving systems (docs/weather-systems.md), not one global value.
 Ask weather_at / weather_look_at / weather_intensity_at / weather_heat_at for a
@@ -116,8 +123,9 @@ Dead/static crops stop growth at entry and pending-wait wake; water death keeps 
 `code/processes/abandoned_items.dm` owns the opt-in waste registry and 256-candidate
 sweep every 30 seconds. Warning/removal use 12/24 elapsed server hours, independent
 of seasons. Do not opt useful item parents into decay without gameplay review.
-Custom persistence serializes tmp vars: override `persistence_runtime_var` for
-runtime fields and preserve both export/import exclusions. Native storage and
+Custom persistence skips tmp vars (since 2026-11-18); override
+`persistence_runtime_var` for other runtime fields and preserve both
+export/import exclusions. Native storage and
 inventory transitions reset exposure; Destroy/Del release registry slots.
 `tests/abandoned_items/run.py` compiles production sources with normal startup
 and maps disabled, checks nested native save restoration and repeated disposal,
@@ -169,8 +177,8 @@ Batch checkpoints use sleep(0) while budget remains; exhausted budget waits for
 the next tick. Cheap discovery checks budget/ownership every 64 entries, while
 each mutation checks individually. One constructor or discovery block can
 overshoot before the next checkpoint.
-Season worker fields are explicitly excluded by persistence_runtime_var because
-custom saves enumerate tmp fields. Asia flooding uses season_transition_complete
+Season worker fields are explicitly excluded by persistence_runtime_var; custom
+saves enumerated tmp fields until 2026-11-18. Asia flooding uses season_transition_complete
 inside the same lock. Isolated tests do not establish full-server latency.
 
 <!-- 2026-10-12: native population readiness -->

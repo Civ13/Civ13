@@ -226,6 +226,8 @@
 	if (!user || !istype(user))
 		return FALSE
 	door_panic_release(user)
+	if (!state && arcane_ward_refuses(user)) // arcane_ward.dm
+		return FALSE
 	if (smart_lock_fitted && locked)
 		return !door_hand_locked(user)
 	if (door_barred() || door_braced_against(user))
@@ -389,6 +391,39 @@
 	opacity = FALSE
 	breachable = FALSE
 
+// Jail doors take fitted locks like other doors: any lock when built without a
+// key, or a padlock on a hasp beside the door's own keyed lock. Keys and picks
+// go to whichever lock they can work; the bars' own tools still dismantle it.
+/obj/structure/simple_door/key_door/custom/jail/proc/jail_lock_attackby(obj/item/W, mob/user)
+	var/is_key = istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain)
+	if (is_key && custom_code && !(door_lock && door_lock.matching_key(W)))
+		return FALSE
+	if (istype(W, /obj/item/weapon/lockpick) && locked && !(door_lock && door_lock.blocks()))
+		return FALSE
+	if (is_key && !door_lock && !custom_code)
+		to_chat(user, SPAN_WARNING("\The [src] has no lock of its own. Fit one to it first."))
+		return TRUE
+	return door_fitting_attackby(W, user)
+
+// The bars come apart with their own tools; only a fitted closer takes the
+// door's usual tool work first.
+/obj/structure/simple_door/key_door/custom/jail/door_tool_work(obj/item/W, mob/living/human/user)
+	if (!door_closer)
+		return FALSE
+	return ..()
+
+/obj/structure/simple_door/key_door/custom/jail/proc/jail_dismantle()
+	var/turf/T = get_turf(src)
+	for (var/i = TRUE, i <= buildstackamount, i++)
+		new buildstack(T)
+	if (door_lock)
+		lock_to_item(door_lock, T)
+		door_lock = null
+	door_bar_parts_returned(T)
+	fire_door_parts_returned(T)
+	door_feature_parts_returned(T)
+	qdel(src)
+
 /obj/structure/simple_door/key_door/custom/jail/proc/jail_key_interact(obj/item/weapon/W, mob/user)
 	if (istype(W, /obj/item/weapon/key))
 		if (W.code == custom_code)
@@ -420,6 +455,8 @@
 	return FALSE
 
 /obj/structure/simple_door/key_door/custom/jail/woodjail/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (jail_lock_attackby(W, user))
+		return TRUE
 	if (istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain))
 		if (jail_key_interact(W, user))
 			return
@@ -432,9 +469,7 @@
 			to_chat(user, "<span class='notice'>You start disassembling the [src]...</span>")
 			playsound(loc, 'sound/items/Screwdriver.ogg', 50, TRUE)
 			if (do_after(user, 30, target = src))
-				for (var/i = TRUE, i <= buildstackamount, i++)
-					new buildstack(get_turf(src))
-				qdel(src)
+				jail_dismantle()
 				return
 	else if (istype(W, /obj/item/weapon/lockpick))
 		if (src.locked == 1)
@@ -462,6 +497,8 @@
 	return TRUE // for key_doors
 
 /obj/structure/simple_door/key_door/custom/jail/steeljail/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (jail_lock_attackby(W, user))
+		return TRUE
 	if (istype(W, /obj/item/weapon/key) || istype(W, /obj/item/weapon/storage/belt/keychain))
 		if (jail_key_interact(W, user))
 			return
@@ -474,9 +511,7 @@
 			to_chat(user, "<span class='notice'>You start disassembling the [src]...</span>")
 			playsound(loc, 'sound/effects/extinguish.ogg', 50, TRUE)
 			if (do_after(user, 30, target = src))
-				for (var/i = TRUE, i <= buildstackamount, i++)
-					new buildstack(get_turf(src))
-				qdel(src)
+				jail_dismantle()
 				return
 	else if (istype(W, /obj/item/weapon/lockpick))
 		if (src.locked == 1)

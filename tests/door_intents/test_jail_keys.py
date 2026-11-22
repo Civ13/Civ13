@@ -60,6 +60,10 @@ def helper(source):
 def dispatch(source, door, item, user):
     """Project the callers' key branch and its return/fallthrough contract."""
     lines = [line.strip() for line in body(source, PARENT + door.kind + '/attackby').splitlines() if line.strip()]
+    # Fitted locks come first (tests/door_locks probes them); a keyed jail door
+    # with no fitted lock passes its keys on to the branch projected here.
+    assert lines[:2] == ['if (jail_lock_attackby(W, user))', 'return TRUE']
+    lines = lines[2:]
     assert lines[:3] == [f'if (istype(W, {KEY}) || istype(W, {CHAIN}))',
                          'if (jail_key_interact(W, user))', 'return']
     assert lines[-1] == 'return TRUE // for key_doors'

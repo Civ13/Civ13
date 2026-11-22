@@ -18,7 +18,7 @@ var/list/vocal_emotes = list(
 	"gasp",
 	"burp")
 
-/mob/living/human/emote(var/act,var/m_type=1,var/message = null)
+/mob/living/human/emote(var/act,var/m_type=1,var/message = null,var/typed = FALSE)
 
 	if (!vocal_emotes.Find(act) && world.time < next_emote["normal"])
 		return
@@ -141,8 +141,9 @@ var/list/vocal_emotes = list(
 				if (!(message))
 					return
 				// Show it: a bare return here hid every Me emote (the verb and
-				// "coughs up blood!"-style body messages alike).
-				return custom_emote(m_type, message)
+				// "coughs up blood!"-style body messages alike). Only the Me
+				// verb's words are typed, for chat translation.
+				return custom_emote(m_type, message, null, typed)
 
 			if ("salute")
 				if (!buckled)
@@ -821,3 +822,4 @@ var/list/vocal_emotes = list(
 				custom_emote(m_type,message,"userdanger_yellow")
 			else
 				custom_emote(m_type,message)
+			body_motion_emote(act)

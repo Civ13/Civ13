@@ -279,23 +279,20 @@ class PlayerStatusSources(unittest.TestCase):
 
     def test_phases_and_hold_take_precedence_without_percentages(self):
         cases = [
-            ({'kind':'save','phase':'admitted'}, 'Preparing a world save.'),
-            ({'kind':'save','phase':'capture'}, 'Saving the world.'),
-            ({'kind':'save','phase':'candidate_validation'}, 'Validating the world save.'),
-            ({'kind':'save','phase':'write_marker'}, 'Finishing the world save.'),
-            ({'kind':'load','phase':'preflight'}, 'Validating and preparing the saved world.'),
-            ({'kind':'load','phase':'allocate_levels'}, 'Validating and preparing the saved world.'),
-            ({'kind':'load','phase':'restore'}, 'Loading the saved world.'),
-            ({'kind':'load','phase':'metadata'}, 'Restoring world state.'),
-            ({'kind':'load','phase':'players'}, 'Restoring player readiness.'),
-            ({'startup_pending':True}, 'Preparing world recovery.'),
-            ({'restart_busy':True,'restart_phase':'post_save_validation'}, 'Validating the saved world.'),
-            ({'restart_busy':True,'restart_phase':'intent_publication'}, 'Preparing the saved world for restart.'),
-            ({'restart_busy':True,'restart_phase':'shutdown'}, 'Server shutdown is in progress.'),
-            ({'maintenance_pending':True}, 'Maintenance requested, shutdown is not yet confirmed.'),
-            ({'recovery_hold':True,'kind':'load'}, 'World recovery needs administrator attention.'),
-            ({'moving':True,'restart_busy':True,'restart_phase':'handover_wait'}, 'The world is moving to the updated server.'),
-            ({'standby':True,'restart_hold':True}, 'Standby server is waiting for the world to move over.'),
+            ({'kind':'save','phase':'admitted'}, 'Saving'),
+            ({'kind':'save','phase':'capture'}, 'Saving'),
+            ({'kind':'load','phase':'preflight'}, 'Loading'),
+            ({'kind':'load','phase':'players'}, 'Loading'),
+            ({'startup_pending':True}, 'Maintenance'),
+            ({'restart_busy':True,'restart_phase':'post_save_validation'}, 'Restarting'),
+            ({'restart_busy':True,'restart_phase':'shutdown'}, 'Restarting'),
+            ({'maintenance_pending':True}, 'Shutting down'),
+            ({'lifecycle_busy':True}, 'Shutting down'),
+            ({'persistence_busy':True}, 'Busy'),
+            ({'ticker_known':False}, 'Starting'),
+            ({'recovery_hold':True,'kind':'load'}, 'Maintenance'),
+            ({'moving':True,'restart_busy':True,'restart_phase':'handover_wait'}, 'Updating'),
+            ({'standby':True,'restart_hold':True}, 'Updating'),
         ]
         for change, expected in cases:
             with self.subTest(change=change):
@@ -303,30 +300,35 @@ class PlayerStatusSources(unittest.TestCase):
                 self.assertEqual(value, expected)
                 self.assertNotIn('%', value)
                 self.assertNotIn(';', value)
+        # A world that simply runs says nothing.
+        self.assertEqual(self.activity(self.ready), '')
 
     def test_join_text_distinguishes_holds_and_global_gates(self):
         cases = [
-            ({'recovery_hold':True}, 'World recovery needs administrator attention.'),
-            ({'kind':'load'}, 'World is loading - please wait before joining.'),
-            ({'kind':'save'}, 'World is saving - joining may be delayed.'),
-            ({'startup_pending':True}, 'World recovery is pending - please wait.'),
-            ({'restart_busy':True}, 'Maintenance may affect joining - please wait.'),
-            ({'ticker_known':False}, 'Server is starting - please wait.'),
-            ({'round_state':1}, 'Round has not started - please wait.'),
-            ({'round_state':4}, 'Round has finished - wait for the next round.'),
-            ({'players_can_join':False}, 'Joining is temporarily unavailable.'),
-            ({'entry_status':'unknown'}, 'Joining status is unavailable.'),
-            ({'entry_status':'locked'}, 'Joining is locked by an administrator.'),
-            ({'character_unconfirmed':True}, 'Character recovery is not confirmed - joining may be delayed.'),
-            ({'moving':True,'restart_busy':True}, 'The world is moving to the updated server - reconnect in a few minutes.'),
-            ({'standby':True,'restart_hold':True}, 'The world is moving to the updated server - reconnect in a few minutes.'),
+            ({'recovery_hold':True}, 'Paused'),
+            ({'kind':'load'}, 'Opens soon'),
+            ({'kind':'save'}, 'Open'),
+            ({'startup_pending':True}, 'Opens soon'),
+            ({'restart_busy':True,'restart_phase':'shutdown'}, 'After restart'),
+            ({'ticker_known':False}, 'Opens soon'),
+            ({'round_state':1}, 'Opens at round start'),
+            ({'round_state':4}, 'Next round soon'),
+            ({'players_can_join':False}, 'Closed for now'),
+            ({'entry_status':'unknown'}, 'Unknown'),
+            ({'entry_status':'locked'}, 'Closed by staff'),
+            ({'character_unconfirmed':True}, 'Open (characters loading)'),
+            ({'moving':True,'restart_busy':True}, 'Reopens shortly'),
+            ({'standby':True,'restart_hold':True}, 'Reopens shortly'),
         ]
         for change, expected in cases:
             with self.subTest(change=change):
                 value = self.join(self.ready | change)
                 self.assertEqual(value, expected)
                 self.assertNotIn(';', value)
-        self.assertIn('checks still apply', self.join(self.ready))
+        self.assertEqual(self.join(self.ready), 'Open')
+        for value in (self.join(self.ready), self.activity(self.ready)):
+            self.assertNotIn('checks', value)
+            self.assertNotIn('running', value)
 
     def test_maintenance_notice_allows_distinct_reclaim_and_fresh_paths(self):
         restart = (SOURCE_ROOT / 'code/modules/persistence/restart_transaction.dm').read_text(encoding='utf-8')
@@ -346,9 +348,9 @@ class PlayerStatusSources(unittest.TestCase):
         self.assertNotIn('persistence_restart.busy', unready)
         self.assertNotIn('persistence_restart.busy', reclaim_path)
         self.assertEqual(self.activity(self.ready | {'restart_busy':True, 'restart_phase':'notice'}),
-                         'Maintenance is scheduled.')
+                         'Restart soon')
         self.assertEqual(self.join(self.ready | {'restart_busy':True, 'restart_phase':'notice'}),
-                         'Maintenance may affect joining - please wait.')
+                         'Open')
 
     def test_public_labels_never_echo_error_or_phase_data(self):
         private = self.ready | {'kind':'load', 'phase':'private/path:12 secret 99,99',
@@ -375,6 +377,7 @@ class PlayerStatusSources(unittest.TestCase):
 
     def test_status_surfaces_share_fixed_labels_and_preserve_legacy_order(self):
         self.assertIn('player_world_activity(player_status)', self.panel)
+        self.assertIn('if(world_activity) add_stat("<b>World activity:</b>", world_activity)', self.panel)
         self.assertIn('player_join_status(player_status)', self.panel)
         packaged = self.world.split('/proc/get_packaged_server_status_data()\n', 1)[1].split('\n/proc/', 1)[0]
         self.assertIn('"<b>Server Status</b>: Online"', packaged)
@@ -386,11 +389,17 @@ class PlayerStatusSources(unittest.TestCase):
         self.assertEqual(indexes, sorted(indexes))
         self.assertLess(packaged.index('allow_vote_restart='), packaged.index('<b>World activity</b>'))
         self.assertLess(packaged.index('<b>World activity</b>'), packaged.index('<b>Joining</b>'))
-        self.assertIn('hub_status_text(player_world_activity(player_status))', self.world)
+        self.assertIn('var/world_activity = player_world_activity(player_status)', self.world)
+        self.assertIn('s += "<b>World:</b> [hub_status_text(world_activity)]<br>"', self.world)
         loop = self.world.split('/proc/start_serverdata_loop()\n', 1)[1].split('\nvar/global/', 1)[0]
         self.assertIn('world.update_status()', loop)
         self.assertIn('if(current_player_status != last_player_status)', loop)
         self.assertIn('sleep (100)', loop)
+        # A standby shares the region's folder; only the live world writes its heartbeat.
+        guard = 'if (!persistence_restart || !persistence_restart.standby)'
+        self.assertIn(guard, loop)
+        self.assertLess(loop.index(guard), loop.index('F << get_packaged_server_status_data()'))
+        self.assertLess(loop.index('F << get_packaged_server_status_data()'), loop.index('sleep (100)'))
 
     def test_failed_player_readiness_blocks_success_and_announcement(self):
         load = self.functions.split('/datum/controller/gameticker/proc/loadmap(', 1)[1].split('\n/map_storage/proc/capture_round_state', 1)[0]

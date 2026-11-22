@@ -20,18 +20,11 @@
 /obj/map_metadata/proc/book_research_enabled()
 	return recipe_knowledge_enabled() && book_research
 
-#define BOOK_RESEARCH_REACH 1
-// Work while the bench runs (chat feedback, 2026-11-17): the scholar leading
-// the work counts while within this many tiles and in sight of the bench, at
-// full pace beside it and BOOK_RESEARCH_AWAY_RATE further off, so they can
-// craft, cook or build nearby. Their writing tool may rest on the bench.
-#define BOOK_RESEARCH_NEAR 3
-#define BOOK_RESEARCH_AWAY_RATE 0.75
+// Book research: code/__defines/research.dm
 // Taking a sample apart at a bench: the first kinds of thing per subject are
 // worth this share of it; later kinds the usual sample share.
 #define BOOK_SAMPLE_FIRST_KINDS 2
 #define BOOK_SAMPLE_FIRST_FRACTION 0.2
-#define BOOK_STUDY_TIME(tier) (600 + 300 * max(0, tier))
 
 /obj/item/weapon/book
 	var/research_chapters = ""
@@ -66,7 +59,9 @@
 	research_chapters = jointext(chapters, ";")
 	// The chapter is in its writer's language (book_language.dm).
 	record_chapter_language(node_id, writer, language)
+	record_chapter_author(node_id, writer) // accolades.dm: Teacher
 	clear_research_progress(node_id)
+	clear_research_bill(node_id)
 	map?.book_research_node_finished(get_research_node(node_id), !discovered)
 	return TRUE
 
@@ -125,6 +120,9 @@
 	if (entry[1] < N.cost_ticks)
 		return FALSE
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && !entry[2])
+		return FALSE
+	// Late capstones also need their bill of materials (era_bills.dm).
+	if (!bill_complete(node_id))
 		return FALSE
 	add_research_chapter(node_id, TRUE, writer)
 	return TRUE
@@ -382,7 +380,7 @@
 		var/sample = FALSE
 		if (assigned_node)
 			for (var/stype in get_node_recipe_paths(assigned_node))
-				if (istype(W, stype))
+				if (istype(W, stype) && research_sample_node(W) == assigned_node)
 					sample = TRUE
 					break
 		if (!sample)
@@ -395,6 +393,9 @@
 	var/datum/research_node/N = get_research_node(assigned_node)
 	if (!N || B.has_research_chapter(assigned_node))
 		return
+	// Anyone may deliver toward a capstone's bill (era_bills.dm).
+	if (take_bill_delivery(W, user, B, N))
+		return
 	if (!user.knows_research_prereqs(assigned_node))
 		to_chat(user, SPAN_WARNING("You don't know enough to work on <b>[N.name]</b> yet."))
 		return
@@ -404,6 +405,9 @@
 	if (N.mode == RESEARCH_MODE_PROTOTYPE && N.prototype_type && istype(W, N.prototype_type))
 		if (node_needs_demonstration(assigned_node))
 			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs a working demonstration: [demonstration_text(assigned_node)]. Record it with Record a Demonstration on paper or in a book."))
+			return
+		if (capstone_bill_replaces_prototype(assigned_node))
+			to_chat(user, SPAN_WARNING("<b>[N.name]</b> needs its bill of materials delivered to the bench instead: [bill_left_text(B.bill_left(assigned_node))]."))
 			return
 		if (bench_tier() < N.min_bench_tier)
 			to_chat(user, SPAN_WARNING("This prototype belongs to a later era than your civilization has reached."))
@@ -419,7 +423,7 @@
 		book_refresh_ui()
 		return
 	for (var/stype in get_node_recipe_paths(assigned_node))
-		if (!istype(W, stype))
+		if (!istype(W, stype) || research_sample_node(W) != assigned_node)
 			continue
 		if (!studied_samples)
 			studied_samples = list()
@@ -578,6 +582,7 @@
 		else
 			H.gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
 		H.philosophy_from_study(node_id)
+		accolade_learned_from(H, source, node_id)
 		to_chat(H, SPAN_NOTICE("You have learned <b>[N.name]</b>. [source] can be used again."))
 		tutorial_event_for(H, "research")
 		return TRUE
@@ -601,7 +606,7 @@
 	for (var/node_id in progress)
 		var/datum/research_node/N = get_research_node(node_id)
 		var/list/entry = progress[node_id]
-		to_chat(user, "An unfinished chapter on [N.name] ([round(entry[1] / N.cost_ticks * 100)]%).")
+		to_chat(user, "An unfinished chapter on [N.name] ([round(entry[1] / N.cost_ticks * 100)]%).[bill_status_text(src, node_id)]")
 
 /obj/structure/research_bench/proc/book_ui_data(mob/living/human/H, list/data)
 	var/obj/item/weapon/book/B = placed_book()
@@ -642,6 +647,7 @@
 	var/text = "Written into the book: [round((ticks / AN.cost_ticks) * 100)]% ([ticks]/[AN.cost_ticks]). Work only goes on while someone who knows the groundwork stays within [BOOK_RESEARCH_NEAR] tiles and in sight of the bench, with a pencil, pen or writing slate in hand or resting on the bench."
 	if (AN.mode == RESEARCH_MODE_PROTOTYPE)
 		text += " It also needs [lowertext(copytext(prototype_need_label(AN), 1, 2))][copytext(prototype_need_label(AN), 2)][B && B.research_prototype_installed(assigned_node) ? " (recorded)" : ""]."
+	text += bill_status_text(B, assigned_node)
 	if (!H.knows_research_prereqs(assigned_node))
 		text += " You don't know its groundwork yet."
 	if (!H.meets_scholar_requirement(assigned_node))
@@ -751,6 +757,7 @@
 		to_chat(H, SPAN_WARNING("You couldn't finish the copy."))
 		return FALSE
 	to_chat(H, SPAN_NOTICE("You finish copying the chapter on <b>[N.name]</b> into [dest]."))
+	accolade_meet_mob(H, "copyist")
 	book_refresh_ui()
 	return TRUE
 

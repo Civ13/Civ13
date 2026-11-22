@@ -48,7 +48,8 @@
 // corner from the lowest turf index that touches it, which is the south-west
 // master; use that turf whenever it exists so the choice is deterministic.
 /datum/lighting_corner/proc/first_master()
-	for (var/i in list(3, 2, 4, 1))
+	var/static/list/master_order = list(3, 2, 4, 1)
+	for (var/i in master_order)
 		var/turf/T = master_turf(i)
 		if (T)
 			return T
@@ -120,6 +121,7 @@
 			continue
 		if (T.lighting_overlay || T.omit_reserved_lighting_overlay())
 			active = TRUE
+			break
 
 // God that was a mess, now to do the rest of the corner code! Hooray!
 /datum/lighting_corner/proc/update_lumcount(var/delta_r, var/delta_g, var/delta_b)
@@ -132,14 +134,15 @@
 		var/turf/T = master_turf(i)
 		if (!T)
 			continue
-		if (T.lighting_overlay)
+		var/atom/movable/lighting_overlay/overlay = T.lighting_overlay
+		if (overlay)
 			#ifdef LIGHTING_INSTANT_UPDATES
-			T.lighting_overlay.update_overlay()
+			overlay.update_overlay()
 			#else
-			if (!T.lighting_overlay.needs_update)
+			if (!overlay.needs_update)
 				#if CIV13_ROOT_TREE_PRESENTATION
 				root_tree_light_changed(T)
 				#endif
-				T.lighting_overlay.needs_update = TRUE
-				lighting_update_overlays += T.lighting_overlay
+				overlay.needs_update = TRUE
+				lighting_update_overlays += overlay
 			#endif

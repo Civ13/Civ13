@@ -11,46 +11,29 @@ import source_adapter
 SOURCE = (ROOT / 'code/game/objects/structures/watercloset.dm').read_text(encoding='utf-8')
 
 
+TUBS = (ROOT / 'code/modules/1713/bathtubs.dm').read_text(encoding='utf-8')
+
+
 class LargeBathtubWashing(unittest.TestCase):
-    def test_processing_preserves_tile_order_and_type_gates(self):
-        events = []
-        # DM's istype() infers each declared variable's type; Python cannot.
-        source = SOURCE.replace('istype(AM) && AM.simulated', 'is_movable(AM) && AM.simulated')
-        source = source.replace('istype(L))\n\t\t\t\tprocess_heat(L)',
-                                'is_living(L))\n\t\t\t\tprocess_heat(L)')
-        helper = source_adapter.project(source, '/obj/structure/shower/bathtub/big/proc/wash_location',
-            'location, wash, process_heat', {
-                'is_movable': lambda obj: obj.movable,
-                'is_living': lambda obj: obj.living,
-            })
-        tiles = {}
-        for coords, name in (((1, 1, 1), 'base'), ((2, 1, 1), 'east'),
-                             ((1, 2, 1), 'north'), ((2, 2, 1), 'northeast')):
-            tiles[coords] = [SimpleNamespace(name=name + '-living', movable=True, living=True, simulated=True),
-                             SimpleNamespace(name=name + '-item', movable=True, living=False, simulated=True),
-                             SimpleNamespace(name=name + '-unsimulated', movable=True, living=True, simulated=False),
-                             SimpleNamespace(name=name + '-other', movable=False, living=False, simulated=True)]
-        def wash(obj):
-            events.append(('wash', obj.name))
-        def heat(obj):
-            events.append(('heat', obj.name))
-        def wash_location(location):
-            helper(location, wash, heat)
-        reagents = SimpleNamespace(get_free_space=lambda: 12,
-            add_reagent=lambda kind, amount: events.append(('reagent', kind, amount)))
-        run = source_adapter.project(source, '/obj/structure/shower/bathtub/big/process',
-            'on, loc, x, y, z, wash_location, wash_floor, reagents',
-            {'locate': lambda x, y, z: tiles[(x, y, z)]})
-        floor = lambda: events.append(('floor',))
-        run(False, tiles[(1, 1, 1)], 1, 1, 1, wash_location, floor, reagents)
-        self.assertEqual(events, [])
-        run(True, tiles[(1, 1, 1)], 1, 1, 1, wash_location, floor, reagents)
-        expected = []
-        for name in ('base', 'east', 'north', 'northeast'):
-            expected.extend((('wash', name + '-living'), ('heat', name + '-living'),
-                             ('wash', name + '-item')))
-        expected.extend((('floor',), ('reagent', 'water', 12)))
-        self.assertEqual(events, expected)
+    """Bathing itself is checked natively by tests/bathtubs/probe.dm."""
+
+    def test_public_tub_covers_its_four_tiles(self):
+        turfs = source_adapter.extract(TUBS, '/obj/structure/shower/bathtub/big/tub_turfs')
+        self.assertIn('for (var/dx in 0 to 1)', turfs)
+        self.assertIn('for (var/dy in 0 to 1)', turfs)
+        self.assertIn('locate(x + dx, y + dy, z)', turfs)
+
+    def test_one_tub_procedure_for_both_sizes(self):
+        # The old per-size click and wash loops are gone; both sizes share one.
+        self.assertNotIn('/obj/structure/shower/bathtub/big/attack_hand', SOURCE)
+        self.assertNotIn('/obj/structure/shower/bathtub/big/process', SOURCE)
+        self.assertNotIn('wash_location', SOURCE)
+        process = source_adapter.extract(TUBS, '/obj/structure/shower/bathtub/process')
+        self.assertIn('for (var/turf/T in tub_turfs())', process)
+        self.assertNotIn('wash(', process)
+        soak = source_adapter.extract(TUBS, '/obj/structure/shower/bathtub/proc/soak')
+        self.assertIn('do_after(user, TUB_SOAK_TIME, M', soak)
+        self.assertIn('wash(H)', soak)
 
 
 class BathtubMistLifecycle(unittest.TestCase):

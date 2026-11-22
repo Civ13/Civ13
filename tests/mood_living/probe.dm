@@ -215,22 +215,33 @@ var/ml_runtime_error = FALSE
 	H.w_uniform = clothes
 	season = "WINTER"
 	weather_area.climate = "temperate"
-	ml_check(get_temp(H) < -20 && !H.mood_dressed_for_weather(), "plain clothes are not enough in a temperate winter ([get_temp(H)] [H.get_cold_protection(get_temp(H) + 273.15)])")
+	ml_check(get_temp(H) < 10 && !H.mood_dressed_for_weather(), "plain clothes are not enough in a temperate winter ([get_temp(H)] [H.get_cold_protection(get_temp(H) + 273.15)])")
 	H.wear_suit = coat
 	ml_check(H.mood_dressed_for_weather(), "a coat over them is")
 	H.cold_wetness = 1
 	ml_check(!H.mood_dressed_for_weather(), "soaked layers do not count as warm")
 	H.cold_wetness = 0
+	// Ordinary layers stop helping below -33 C: a tundra blizzard is that cold.
 	weather_area.climate = "tundra"
-	ml_check(!H.mood_dressed_for_weather(), "the tundra takes more than a coat")
+	var/ml_old_weather = weather_area.weather
+	var/ml_old_look = weather_area.icon_state
+	weather_area.weather = WEATHER_EXTREME
+	weather_area.icon_state = "snow_storm"
+	ml_check(get_temp(H) < -33 && !H.mood_dressed_for_weather(), "a tundra blizzard takes more than a coat ([get_temp(H)])")
 	H.head = hat
 	ml_check(H.mood_dressed_for_weather(), "a coat and a warm hat suit the tundra")
+	weather_area.weather = ml_old_weather
+	weather_area.icon_state = ml_old_look
 	weather_area.climate = "desert"
+	season = "SUMMER"
+	var/ml_old_time = time_of_day
+	time_of_day = "Afternoon"
 	ml_check(get_temp(H) >= 27 && !H.mood_dressed_for_weather(), "a coat does not suit the desert")
 	H.wear_suit = null
 	ml_check(!H.mood_dressed_for_weather(), "hot ground wants something on your feet")
 	H.shoes = boots
 	ml_check(H.mood_dressed_for_weather(), "light clothes and shoes suit the heat")
+	time_of_day = ml_old_time
 	H.w_uniform = null
 	H.head = null
 	H.shoes = null

@@ -303,7 +303,7 @@ var/global/list/ecology_species_table = null
 		var/turf/body = get_turf(C.mob)
 		if (eye && eye.z == T.z && get_dist(eye, T) <= margin)
 			return TRUE
-		if (body && body.z == T.z && get_dist(body, T) <= margin)
+		if (body && body != eye && body.z == T.z && get_dist(body, T) <= margin)
 			return TRUE
 	return FALSE
 
@@ -540,6 +540,7 @@ var/global/list/ecology_species_table = null
 		last_report = "paused for a world save"
 		return 0
 	sample_activity()
+	wildlife_deaths.tick()
 	if (world.time - started_at < ECOLOGY_WARMUP)
 		last_report = "warming up activity history"
 		return 0
@@ -710,8 +711,10 @@ var/global/ecology_world_unwatched = FALSE
 			var/list/z_cells = ecology_observer_cells[z]
 			if (!z_cells)
 				continue
-			for (var/x = max(0, cx - 1), x <= min(columns - 1, cx + 1), x++)
-				for (var/y = max(0, cy - 1), y <= min(rows - 1, cy + 1), y++)
+			var/max_x = min(columns - 1, cx + 1)
+			var/max_y = min(rows - 1, cy + 1)
+			for (var/x = max(0, cx - 1), x <= max_x, x++)
+				for (var/y = max(0, cy - 1), y <= max_y, y++)
 					var/list/cell = z_cells[x * rows + y + 1]
 					if (!cell)
 						continue
@@ -780,6 +783,7 @@ var/global/ecology_world_unwatched = FALSE
 	to_chat(src, SPAN_NOTICE("Ecology spawning is on. Spawned so far: [ecology_spawner.spawned_total]. Last cycle: [ecology_spawner.last_report]."))
 	if (flora_regrowth && flora_regrowth.enabled)
 		to_chat(src, SPAN_NOTICE("Flora regrowth: [flora_regrowth.last_report]."))
+	to_chat(src, SPAN_NOTICE("Wildlife deaths: [wildlife_deaths.summary()] this hour so far. Last hourly report: [wildlife_deaths.last_report]."))
 
 #undef ECOLOGY_CELL_SIZE
 #undef ECOLOGY_CYCLE

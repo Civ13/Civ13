@@ -118,11 +118,13 @@ var/global/magic_whitelist_path = null
 	if (client)
 		return client.ckey
 	if (istext(persistence_owner_ckey) && length(persistence_owner_ckey))
-		return ckey(persistence_owner_ckey)
+		return ckey(owner_key_account(persistence_owner_ckey))
 	return ckey
 
 /mob/living/human/proc/magic_allowed()
 	if (!magic_whitelist_applies())
+		return TRUE
+	if (divine_is_own_god()) // repository_nations.dm: a god playing their own follower
 		return TRUE
 	return magic_whitelisted(magic_key())
 

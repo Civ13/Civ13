@@ -71,6 +71,18 @@ def project_flashbang(source, outdoors, enclosed):
 
 
 class FlashbangAudioTests(unittest.TestCase):
+    def test_close_high_damage_roll_still_deafens(self):
+        # Issue #6748: the 14% high-damage roll skipped the temporary deafness.
+        source = SOURCE.read_text(encoding='utf-8-sig').replace('\r\n', '\n')
+        start = source.index('\t\tif ((get_dist(M, T) <= 2 || loc == M.loc || loc == M))')
+        close = source[start:source.index('\t\telse if (get_dist(M, T) <= 5)', start)]
+        unprotected = close[close.index('\t\t\telse\n'):]
+        roll = unprotected.index('\t\t\t\tif ((prob(14)')
+        # At the roll's own indentation, so it runs after either outcome.
+        deaf = unprotected.index('\n\t\t\t\tM.ear_deaf = max(M.ear_deaf,15)')
+        self.assertLess(roll, deaf)
+        self.assertEqual(unprotected.count('M.ear_deaf ='), 1)
+
     def test_frozen_original_reproduces_victim_dependent_sound_count(self):
         # The Windows checkout may expand the Git blob's LF to CRLF.
         data = ORIGINAL.read_bytes().replace(b'\r\n', b'\n')

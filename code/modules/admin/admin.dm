@@ -30,125 +30,7 @@ proc/admin_notice(var/message, var/rights)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////Panels
 
-/datum/admins/proc/show_player_panel(var/mob/M in mob_list)
-	set category = null
-	set name = "Show Player Panel"
-	set desc = "Edit player (respawn, ban, heal, etc)"
-
-	if (!M)
-		to_chat(usr, "You seem to be selecting a mob that doesn't exist anymore.")
-		return
-
-	if (!istype(src,/datum/admins))
-		src = usr.client.holder
-	if (!istype(src,/datum/admins))
-		to_chat(usr, "Error: you are not an admin!")
-		return
-
-	var/body = "<html>[common_browser_style]<head><title>Options for [M.key]</title></head>"
-	body += "<body>Options panel for <b>[M]</b>"
-	if (M.client)
-		body += " played by <b>[M.client]</b> "
-		body += "\[<A href='?src=\ref[src];editrights=show'>[M.client.holder ? M.client.holder.rank : "Player"]</A>\]"
-
-	if (istype(M, /mob/new_player))
-		body += " <b>Hasn't Entered Game</b> "
-	else
-		body += " \[<A href='?src=\ref[src];revive=\ref[M]'>Heal</A>\] "
-
-	body += {"
-		<br><br>\[
-		<a href='?_src_=vars;Vars=\ref[M]'>VV</a> -
-		<a href='?src=\ref[src];traitor=\ref[M]'>TP</a> -
-		<a href='?src=\ref[usr];priv_msg=\ref[M]'>PM</a> -
-		<a href='?src=\ref[src];subtlemessage=\ref[M]'>SM</a> -
-		[admin_jump_link(M, src)]\] <br>
-		<b>Mob type</b> = [M.type]<br><br>
-		[M.name_history_admin_html()]
-		<A href='?src=\ref[src];boot2=\ref[M]'>Kick</A> |
-		<A href='?_src_=holder;warn=[M.ckey]'>Warn</A> |
-		<A href='?src=\ref[src];notes=show;mob=\ref[M]'>Notes</A> |
-		<A href='?_src_=holder;CentCom=[M.ckey]'>CentCom Ban DB</A>
-	"}
-
-// <A href='?src=\ref[src];newban=\ref[M]'>Ban</A> |
-// <A href='?src=\ref[src];jobban2=\ref[M]'>Jobban</A> |
-
-	if (M.client)
-	//	body += "| <A HREF='?src=\ref[src];sendtoprison=\ref[M]'>Prison</A> | "
-		var/muted = M.client.prefs.muted
-		body += {"<br><b>Mute: </b>
-			\[<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_IC]'><font color='[(muted & MUTE_IC)?"red":"blue"]'>IC</font></a> |
-			<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_OOC]'><font color='[(muted & MUTE_OOC)?"red":"blue"]'>OOC</font></a> |
-			<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_PRAY]'><font color='[(muted & MUTE_PRAY)?"red":"blue"]'>PRAY</font></a> |
-			<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_ADMINHELP]'><font color='[(muted & MUTE_ADMINHELP)?"red":"blue"]'>ADMINHELP</font></a> |
-			<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_DEADCHAT]'><font color='[(muted & MUTE_DEADCHAT)?"red":"blue"]'>DEADCHAT</font></a>\]
-			(<A href='?src=\ref[src];mute=\ref[M];mute_type=[MUTE_ALL]'><font color='[(muted & MUTE_ALL)?"red":"blue"]'>toggle all</font></a>)
-		"}
-
-	body += {"<br><br>
-		<A href='?src=\ref[src];jumpto=\ref[M]'><b>Jump to</b></A> |
-		<A href='?src=\ref[src];getmob=\ref[M]'>Get</A> |
-		<A href='?src=\ref[src];sendmob=\ref[M]'>Send To</A>
-		<br><br>
-		[check_rights(R_ADMIN|R_MOD,0) ? "<A href='?src=\ref[src];traitor=\ref[M]'>Traitor panel</A> | " : "" ]
-		<A href='?src=\ref[src];narrateto=\ref[M]'>Narrate to</A> |
-		<A href='?src=\ref[src];subtlemessage=\ref[M]'>Subtle message</A>
-	"}
-
-	if (M.client)
-		if (!istype(M, /mob/new_player))
-
-			body += {"<br><br>
-				<b>Rudimentary transformation:</b><font size=2><br>These transformations only create a new mob type and copy stuff over. They do not take into account MMIs and similar mob-specific things. The buttons in 'Transformations' are preferred, when possible.</font><br>
-				<A href='?src=\ref[src];simplemake=observer;mob=\ref[M]'>Observer</A> |
-				\[ Default: <A href='?src=\ref[src];simplemake=human;mob=\ref[M]'>Human</A> |
-				<A href='?src=\ref[src];simplemake=monkey;mob=\ref[M]'>Monkey</A> |
-				<A href='?src=\ref[src];simplemake=cat;mob=\ref[M]'>Cat</A> |
-				<A href='?src=\ref[src];simplemake=parrot;mob=\ref[M]'>Parrot</A> |
-				<A href='?src=\ref[src];simplemake=chicken;mob=\ref[M]'>Chicken</A> |
-				<A href='?src=\ref[src];simplemake=turkey;mob=\ref[M]'>Turkey</A> |
-				<A href='?src=\ref[src];simplemake=cow;mob=\ref[M]'>Cow</A> |
-				<A href='?src=\ref[src];simplemake=bull;mob=\ref[M]'>Bull</A> |
-				<A href='?src=\ref[src];simplemake=nouse;mob=\ref[M]'>Mouse</A> |
-				<A href='?src=\ref[src];simplemake=bear;mob=\ref[M]'>Bear</A> |
-				<A href='?src=\ref[src];simplemake=velociraptor;mob=\ref[M]'>Velociraptor</A> ]
-				<br>"}
-			body += {"<br><br>
-				<b>Body type transformation:</b><font size=2><br>These transformations will keep the user as "human" but change the body type.</font><br>
-				<A href='?src=\ref[src];simplemake=default;mob=\ref[M]'>Default</A> |
-				<A href='?src=\ref[src];simplemake=gorilla;mob=\ref[M]'>Gorilla</A> |
-				<A href='?src=\ref[src];simplemake=wolfman;mob=\ref[M]'>Werewolf</A> |
-				<A href='?src=\ref[src];simplemake=ant;mob=\ref[M]'>Ant</A> |
-				<A href='?src=\ref[src];simplemake=orc;mob=\ref[M]'>Orc</A> |
-				<A href='?src=\ref[src];simplemake=droid;mob=\ref[M]'>Droid</A> |
-				<br>"}
-	body += {"<br><br>
-			<b>Other actions:</b>
-			<br>
-			<A href='?src=\ref[src];forcespeech=\ref[M]'>Forcesay</A>
-			"}
-
-	// language toggles
-	body += "<br><br><b>Languages:</b><br>"
-	var/f = TRUE
-	for (var/k in all_languages)
-		var/datum/language/L = all_languages[k]
-		if (!(L.flags & INNATE))
-			if (!f) body += " | "
-			else f = FALSE
-			if (L in M.languages)
-				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[html_encode(k)]' style='color:#006600'>[k]</a>"
-			else
-				body += "<a href='?src=\ref[src];toglang=\ref[M];lang=[html_encode(k)]' style='color:#ff0000'>[k]</a>"
-
-	body += {"<br>
-		</body></html>
-	"}
-
-	usr << browse(body, "window=adminplayeropts;size=550x515")
-
-
+// The player list and one player's panel are in player_panel_pages.dm.
 
 /datum/player_info/var/author // admin who authored the information
 /datum/player_info/var/rank //rank of admin who made the notes
@@ -167,15 +49,12 @@ proc/admin_notice(var/message, var/rights)
 	PlayerNotesPage(1)
 
 /datum/admins/proc/PlayerNotesPage(page)
-	var/dat = "<b>Player notes</b><HR>"
-	var/savefile/S=new("data/player_notes.sav")
-	var/list/note_keys
-	S >> note_keys
-	if (!note_keys)
+	var/dat = "<b>Player notes</b> (every region)<HR>"
+	var/list/note_keys = shared_records.ckeys_with(list("note", "warning"))
+	if (!note_keys.len)
 		dat += "No notes found."
 	else
 		dat += "<table>"
-		note_keys = sortList(note_keys)
 
 		// Display the notes on the current page
 		var/number_pages = note_keys.len / PLAYER_NOTES_ENTRIES_PER_PAGE
@@ -208,12 +87,10 @@ proc/admin_notice(var/message, var/rights)
 /proc/get_player_notes_file_dir()
 	return "data/player_saves/"
 
+// Notes and warnings come from every region (shared_player_records.dm).
 /datum/admins/proc/player_has_info(var/key as text)
-	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")
-	var/list/infos
-	info >> infos
-	if (!infos || !infos.len) return FALSE
-	else return TRUE
+	var/list/summary = shared_records.summary(key)
+	return (summary["notes"] + summary["warnings"]) > 0
 
 /datum/admins/proc/show_player_info(var/key as text)
 	set category = "Admin"
@@ -223,6 +100,7 @@ proc/admin_notice(var/message, var/rights)
 	if (!istype(src,/datum/admins))
 		to_chat(usr, "Error: you are not an admin!")
 		return
+	key = ckey(key)
 	var/dat = "<html>[common_browser_style]<head><title>Info on [key]</title></head>"
 	dat += "<body>"
 
@@ -232,28 +110,33 @@ proc/admin_notice(var/message, var/rights)
 			p_age = C.player_age
 			break
 	dat +="<span style='color:#000000; font-weight: bold'>Player age: [p_age]</span><br>"
+	dat +="<span style='color:#000000; font-weight: bold'>Playtime (alive and awake, every region): [shared_records.playtime_hours(key)] hours</span><br><br>"
 
-	var/savefile/info = new("[get_player_notes_file_dir()][copytext(key, TRUE, 2)]/[key]/info.sav")
-	var/list/infos
-	info >> infos
-	if (!infos)
+	var/list/watches = watchlist_for(key)
+	if (watches.len)
+		for (var/list/W in watches)
+			var/list/watch_body = W["body"]
+			dat += "<b>Watchlist:</b> <font color=#aa0000>[islist(watch_body) ? watch_body["text"] : ""]</font> <i>by [length(W["author"]) ? W["author"] : "Adminbot"] on [shared_records.time_text(W["at"])] ([W["region"]])</i><br>"
+		dat += "<A href='?src=\ref[src];watchlist_remove=[key]'>Remove from watchlist</A><br><br>"
+	else
+		dat += "<A href='?src=\ref[src];watchlist_add=[key]'>Add to watchlist</A><br><br>"
+
+	var/list/infos = notes_for(key)
+	if (!infos.len)
 		dat += "No information found on the given key.<br>"
 	else
-		var/update_file = FALSE
-		var/i = FALSE
-		for (var/datum/player_info/I in infos)
-			i += 1
-			if (!I.timestamp)
-				I.timestamp = "Pre-4/3/2012"
-				update_file = TRUE
-			if (!I.rank)
-				I.rank = "N/A"
-				update_file = TRUE
-			dat += "<font color=#008800>[I.content]</font> <i>by [I.author] ([I.rank])</i> on <i><font color=blue>[I.timestamp]</i></font> "
-			if (I.author == usr.key || I.author == "Adminbot" || ishost(usr))
-				dat += "<A href='?src=\ref[src];remove_player_info=[key];remove_index=[i]'>Remove</A>"
+		for (var/list/I in infos)
+			var/list/body = I["body"]
+			// Stored sanitized (topic.dm, warn.dm), like the old notes.
+			var/text = islist(body) ? body["text"] : ""
+			var/when = (islist(body) && istext(body["legacy_date"])) ? body["legacy_date"] : shared_records.time_text(I["at"])
+			var/label = I["kind"] == "warning" ? "<b>Warning:</b> " : ""
+			var/author = length(I["author"]) ? I["author"] : "Adminbot"
+			var/rank = length(I["rank"]) ? I["rank"] : "N/A"
+			dat += "[label]<font color=#008800>[text]</font> <i>by [author] ([html_encode(rank)])</i> on <i><font color=blue>[html_encode(when)]</font></i> <i>([I["region"]])</i> "
+			if (notes_can_remove(I, usr))
+				dat += "<A href='?src=\ref[src];remove_player_info=[key];remove_id=[I["id"]]'>Remove</A>"
 			dat += "<br><br>"
-		if (update_file) info << infos
 
 	dat += "<br>"
 	dat += "<A href='?src=\ref[src];add_player_info=[key]'>Add Comment</A><br>"
@@ -1013,6 +896,7 @@ proc/admin_notice(var/message, var/rights)
 
 	message_admins("[key_name(usr)] manually reloaded bans.", key_name(usr))
 	load_bans()
+	shared_records.refresh(TRUE)
 
 /client/proc/start_forcelife()
 	set name = "Start Forcelife"
@@ -1189,28 +1073,11 @@ proc/admin_notice(var/message, var/rights)
 				O.do_spawn()
 			return
 
+// Bans live in the shared player records (quickBan.dm), which drop expired
+// bans when read. This copies the old SQL/bans.txt in once.
 /proc/load_bans()
-	var/removed = 0
-	var/kept = 0
-	var/checkingfile = "SQL/bans.txt"
-	if (fexists(checkingfile))
-		var/details = file2text(checkingfile)
-		var/list/details_lines = splittext(details, "|||\n")
-		if (details_lines.len)
-			for(var/i=details_lines.len,i>=1,i--)
-				if (findtext(details_lines[i], ";"))
-					var/list/details2 = splittext(details_lines[i], ";")
-					if (text2num(details2[7])<=world.realtime)
-						details_lines -= details_lines[i]
-						removed++
-		fdel(checkingfile)
-		if (details_lines.len)
-			for(var/L in details_lines)
-				if (L && L != "")
-					text2file("[L]|||", checkingfile)
-					kept++
-
-	world.log << "Finished cleaning ban list. [removed] bans removed, [kept] bans kept."
+	var/copied = quickBan_migrate_legacy()
+	world.log << "Bans: [copied] old bans and connections copied to the shared player records."
 	return TRUE
 
 //Radiation/Pollution stuff

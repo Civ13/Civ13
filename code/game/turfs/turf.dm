@@ -1,11 +1,4 @@
-var/list/exterior_turfs = list(/turf/floor/grass,
-							/turf/floor/dirt,
-							/turf/floor/beach/sand,
-							/turf/floor/plating/concrete,
-							)
 
-var/list/interior_areas = list(/area/caribbean/houses,
-							)
 
 /turf
 	// Temporary reservation while coupled vehicle parts are being transformed.
@@ -412,7 +405,7 @@ var/const/enterloopsanity = 100
 					playsound(src, footstepsound, fsvol, TRUE)
 					switch (H.m_intent)
 						if ("run")
-							H.next_footstep_sound_at_movement_tick = movementMachine.ticks + (movementMachine.interval*40*(0.3/movementMachine.interval))
+							H.next_footstep_sound_at_movement_tick = movementMachine.ticks + (movementMachine.interval*(H.is_sprinting() ? 30 : 40)*(0.3/movementMachine.interval))
 						if ("walk")
 							H.next_footstep_sound_at_movement_tick = movementMachine.ticks + (movementMachine.interval*53*(0.3/movementMachine.interval))
 		if (wet)

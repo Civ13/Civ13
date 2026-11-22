@@ -22,7 +22,8 @@ REGIONS = [
         'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 1, 'clients': 7},
         'operation': {'action': 'start', 'phase': 'done', 'error': None},
         'stage': {'phase': 'ready', 'pending': True}, 'transfer_agent': True,
-        'region_view': {'epoch': {'ordinal': 3}}}, 3),
+        'region_view': {'epoch': {'ordinal': 3}, 'calendar': {
+            'clock': '06:40 AM', 'phase': 'Early Morning', 'season': 'WINTER', 'zone': -2, 'season_left': 37}}}, 3),
     ('railyard', 'Rail Yard', 1715, 1815, {
         'state': 'asleep', 'listening': True, 'busy': False,
         'operation': {'action': 'update', 'phase': 'compiled', 'error': None},
@@ -39,7 +40,8 @@ REGIONS = [
         'state': 'awake', 'listening': True, 'busy': True, 'world': {'ready': 1, 'clients': 1},
         'operation': {'action': 'handover', 'phase': 'loading the standby', 'error': None},
         'stage': {'phase': 'ready', 'pending': True}, 'standby': {'port': 1728, 'listening': True},
-        'transfer_agent': True}, 3),
+        'transfer_agent': True, 'region_view': {'calendar': {
+            'clock': '09:40 PM', 'phase': 'Night', 'season': 'SUMMER', 'zone': 13, 'season_left': 212}}}, 3),
     ('barracks', 'Barracks', 1719, 1819, {
         'state': 'stopped', 'listening': False, 'busy': False,
         'operation': {'action': 'update', 'phase': 'failed',
@@ -50,11 +52,32 @@ REGIONS = [
         'operation': {'action': 'start', 'phase': 'done', 'error': None},
         'stage': {'phase': 'failed', 'error': 'compile.lock is held by another build'},
         'transfer_agent': True, 'region_view': {'epoch': {'ordinal': 3}}}, 3),
+    ('europe', 'Europe', 1722, 1822, {
+        'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 1, 'clients': 0},
+        'operation': {'action': 'start', 'phase': 'done', 'error': None}, 'stage': {'phase': 'current'},
+        'transfer_agent': True, 'region_view': {'epoch': {'ordinal': 3}, 'calendar': {
+            'clock': '09:40 AM', 'phase': 'Morning', 'season': 'WINTER', 'zone': 1, 'season_left': 37}}}, 0),
     ('island', 'Island', 1721, 1821, {
         'state': 'cold', 'listening': False, 'busy': False,
         'operation': {'action': 'stop', 'phase': 'done', 'error': None}, 'stage': {'phase': 'current'},
         'transfer_agent': False}, 0),
-]
+    # Val's board (2026-11-22): a refused save, a deferred handover that is only waiting, and several asleep lands
+    # whose running build cannot guard an automatic handover (drawn as one shared banner).
+    ('moonbase', 'Moon', 1723, 1823, {
+        'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 0, 'clients': 0,
+            'error': 'World save refused: the saved world did not load; it is kept as it was until it can be loaded.'},
+        'watchdog': {'restarts': [1, 2], 'last_event': 'crash'}, 'transfer_agent': True}, 27),
+    ('greenland', 'Greenland', 1747, 1847, {
+        'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 1, 'clients': 0},
+        'operation': {'action': 'auto-handover', 'phase': 'failed', 'updated': 1763823000,
+                      'error': 'the world has not saved since the last player; automatic update deferred'},
+        'stage': {'phase': 'ready', 'pending': True}, 'transfer_agent': True}, 3),
+] + [(rid, name, port, port + 100, {
+        'state': 'asleep', 'listening': True, 'busy': False,
+        'operation': {'action': 'auto-handover', 'phase': 'failed', 'updated': 1763823000,
+                      'error': 'the running build cannot guard an empty handover; automatic update deferred'},
+        'stage': {'phase': 'ready', 'pending': True}, 'transfer_agent': True}, 3)
+    for rid, name, port in (('africa', 'Africa', 1741), ('asia', 'Asia', 1743), ('oceania', 'Oceania', 1742))]
 
 
 def check(component, behind, running=False):

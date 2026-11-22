@@ -74,6 +74,42 @@ Tests: `tests/fishing_grounds/`.
   after 20 minutes, also across a save, and goes when the ice thaws. Sprite
   `ice_hole` in `icons/obj/fishing_gear.dmi`
   (`tests/sprites/create_fishing_gear.py`).
+- **Breaking ice** (`code/modules/1713/ice_breaking.dm`): on harm intent a
+  pickaxe (12 s), hatchet or crowbar (15 s) or chisel (25 s) breaks a whole ice
+  tile into open water, scaled by `work_delay()` as mining; a crowbar breaks on
+  any intent since it cannot cut a hole. Bare hands on harm intent break only
+  thin ice (15 s); tools break thin ice in half the time. Nobody may stand on
+  the tile. It opens deep beside deep water of its kind, shallow otherwise, and
+  any fishing hole on it goes. Ice is thin while newly refrozen, or while the
+  air over it is above 1 C. Each broken tile gets one hidden
+  `/obj/structure/broken_ice` marker that checks its tile every 5 minutes (15
+  in a thaw): after 30 minutes at -2 C or colder, with no boat or person in it,
+  the water skins over as "thin ice"; 60 more freezing minutes make it ordinary
+  ice and the marker goes. Thin ice above 1 C melts back. The counts are saved;
+  a marker whose tile something else changed deletes itself. Rafts, canoes and
+  small boats crunch through thin ice and stop at thick ice. A built ship stops
+  at any ice unless a hull tile beside the ice tile carries belt armour
+  (`hull_armour_at()`), which breaks thin ice ahead of her; airships ignore ice.
+  Probe checks are in `tests/fishing_grounds/probe.dm`.
+- **Ice that forms and melts** (`code/modules/1713/ice_dynamics.dm`, persistent
+  maps except the Ice Age map): one looping timer walks `water_turf_list`
+  750 tiles every 5 s (a sweep of 100,000 tiles in about 11 minutes), taking
+  the air once per area per sweep. Open water freezes from the shore or old
+  ice beside it (20% plus 20% per such side, at most 85%, a sweep): still
+  shallow water at -2 C, the shallow sea at -6, deep water at -8, the deep sea
+  at -15, and 4 C colder where a current runs (`river_current_direction()`).
+  Swamps, floods, surf and jungle rivers never freeze. New ice is thin with a
+  marker, and deep water freezes to `ice/deep` or `ice/salty/deep` so it melts
+  deep again. Ice with no marker melts from its edges above 1 C. Tiles changed
+  in a sweep are no edge until the next, so ice moves about a tile a sweep.
+  Water a boat used in the last 30 minutes, or with a boat or person in it,
+  stays open. A condiment holding 5u of salt scattered on ice breaks it up and
+  on water keeps it open for 2 hours, unless the air is -12 C or colder. Thin
+  ice gives way under vehicles, dragged structures, ridden animals and people
+  dragging something or carrying a heavy item. Cost on a 500x200 water sheet
+  (`tests/fishing_grounds/ice_front_perf_probe.dm`, run with
+  `run_linux.py ... 900`): a step averages 1.5% of a tick in a thaw, 5% in hard
+  frost and 3% while half the sheet melts.
 - **Flood strandings:** a tile of ankle-deep floodwater over outdoor land that
   somebody can see has a 2% chance each river minute to leave a fish on it
   (`fish_flood_stranding()`, asked by the flood's item pass). The fish come out

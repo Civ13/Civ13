@@ -126,6 +126,8 @@
 
 	if (!C || !user)
 		return FALSE
+	if (province_rich_attackby(src, C, user)) // province_rich.dm
+		return TRUE
 	if (istype(src, /turf/floor/grass) && istype(C, /obj/item/weapon/flint))
 		var/obj/item/weapon/flint/F = C
 		if (F.sharpened)
@@ -158,6 +160,9 @@
 					user.visible_message(SPAN_NOTICE("[user] fills \the [RG] with water."), SPAN_NOTICE("You fill \the [RG] with water."))
 					playsound(user, 'sound/effects/watersplash.ogg', 100, TRUE)
 					user.setClickCooldown(5)
+					if (ishuman(user) && watertype == "water")
+						var/mob/living/human/drawer = user
+						drawer.arcane_drew_water(RG)
 				return
 		if (istype(C, /obj/item/clothing) && !busy)
 			var/obj/item/clothing/CL = C
@@ -254,7 +259,7 @@
 					H.shoveling = TRUE
 					user.visible_message(SPAN_NOTICE("[user] starts to shovel snow into a pile."), SPAN_NOTICE("You start to shovel snow into a pile."))
 					playsound(src,'sound/effects/shovelling.ogg',100,1)
-					if (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+					if (!do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))
 						H.shoveling = FALSE
 						return
 					if (!T || T.snow_units(generated_source) <= 0)
@@ -277,7 +282,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel dirt into a pile.</span>", "<span class = 'notice'>You start to shovel dirt into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))
+						if (do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))
 							if (!T || T.available_dirt <= 0)
 								H.shoveling = FALSE
 								return
@@ -285,7 +290,7 @@
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_dirt -= 1
-							new /obj/item/weapon/barrier(T)
+							earth_pile_out(T, user, "dirt") // a wheelbarrow beside you takes it (earthworking_tools.dm)
 						else
 							H.shoveling = FALSE
 					else
@@ -295,7 +300,7 @@
 						H.shoveling = TRUE
 						user.visible_message("<span class = 'notice'>[user] starts to shovel sand into a pile.</span>", "<span class = 'notice'>You start to shovel sand into a pile.</span>")
 						playsound(src,'sound/effects/shovelling.ogg',100,1)
-						if (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))
+						if (do_after(user, work_delay(H, 27, WORK_SHIFT, SH)))
 							if (!T || T.available_sand <= 0)
 								H.shoveling = FALSE
 								return
@@ -303,7 +308,7 @@
 							H.shoveling = FALSE
 							H.adaptStat("strength", 1)
 							T.available_sand -= 1
-							new /obj/item/stack/ore/glass(T)
+							earth_pile_out(T, user, "sand")
 						else
 							H.shoveling = FALSE
 				else
@@ -313,7 +318,7 @@
 			if (radiation > 0 && (istype(src, /turf/floor/dirt) || istype(src, /turf/floor/grass)))
 				user.visible_message("<span class = 'notice'>[user] starts to clean the irradiated soil.</span>", "<span class = 'notice'>You start to clean the irradiated soil.</span>")
 				playsound(src,'sound/effects/shovelling.ogg',100,1)
-				if (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))
+				if (do_after(user, work_delay(H, 100, WORK_DIG, SH)))
 					user.visible_message("<span class = 'notice'>[user] finishes cleaning the irradiated soil.</span>", "<span class = 'notice'>You finish cleaning the irradiated soil.</span>")
 					H.adaptStat("strength", 1)
 					radiation *= 0.1
@@ -356,6 +361,8 @@
 		var/mob/living/human/H = user
 		if (istype(T, /turf/floor/dirt/underground) && istype(H))
 			start_pickaxe_mining(H, C)
+			return
+		if (open_cave_roof_attempt(H, C)) // open_cave_roof.dm
 			return
 
 	else if (istype(C, /obj/item/weapon/reagent_containers/glass/extraction_kit))
@@ -557,11 +564,11 @@
 					to_chat(user, SPAN_WARNING("You can't make a dirt road here."))
 					return
 				to_chat(user, SPAN_NOTICE("You start making a dirt road..."))
-				if (do_after(user, 50/PL.usespeed, user.loc))
-					if (!T || T.weather_snow > 0)
+				if (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))
+					if (!T || T.weather_snow > 0 || (locate(/obj/covers) in T))
 						return
 					to_chat(user, SPAN_NOTICE("You finish the dirt road."))
-					var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)
+					var/obj/covers/roads/dirt/DR = new /obj/covers/roads/dirt/worked(T)
 					if (user.dir == NORTH || user.dir == SOUTH)
 						DR.vertical = TRUE
 						DR.dir = 1
@@ -582,14 +589,14 @@
 				to_chat(user, SPAN_DANGER("Jungle terrain is too poor to be farmed. Find a flood plain."))
 				return
 			else if (istype(T, /turf/floor/grass) && !istype(T, /turf/floor/grass/jungle))
-				if (do_after(user, 50/PL.usespeed, user.loc))
+				if (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))
 					if (!T || T.weather_snow > 0)
 						return
 					ChangeTurf(/turf/floor/dirt)
 					return
 			else if (istype(T, /turf/floor/dirt) && !(istype(T, /turf/floor/dirt/ploughed)) && !(istype(T, /turf/floor/dirt/dust)))
 				var/mob/living/human/H = user
-				if (do_after(user, (70/H.getStatCoeff("farming"))/PL.usespeed, user.loc))
+				if (do_after(user, work_delay(H, 70, WORK_TILL, PL), user.loc))
 					if (!T || T.weather_snow > 0)
 						return
 					if (istype(T, /turf/floor/dirt/flooded))
@@ -693,7 +700,7 @@
 			src.mining_in_progress = TRUE
 			user.visible_message(SPAN_NOTICE("[user] starts to break the rocky floor with \the [C.name]."), SPAN_NOTICE("You start to break the rocky floor with \the [C.name]."))
 			playsound(src,'sound/effects/pickaxe.ogg',100,1)
-			var/timera = 320/(H.getStatCoeff("strength"))
+			var/timera = work_delay(H, 320, WORK_MINE, C)
 			if (do_after(user, timera))
 				mining_proc(H)
 				src.mining_in_progress = FALSE // Reset the variable to FALSE after finishing the breaking process.
@@ -826,8 +833,8 @@
 		if (valid(actor, wall))
 			actor.visible_message("<span class = 'notice'>[actor] starts to break the rock with \the [tool.name].</span>", "<span class = 'notice'>You start to break the rock with \the [tool.name].</span>")
 			playsound(wall, 'sound/effects/pickaxe.ogg', 100, 1)
-			work_animation = actor.prepare_resource_work_animation(tool, wall, 240 / actor.getStatCoeff("strength") / tool:usespeed)
-			var/completed = do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)
+			work_animation = actor.prepare_resource_work_animation(tool, wall, work_delay(actor, 120, WORK_MINE, tool))
+			var/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)
 			if (work_animation)
 				work_animation.stop()
 				work_animation = null
@@ -877,8 +884,8 @@
 	var/turf/T = get_turf(src)
 	var/area/area_above = null
 	var/dug_z = dug_underground_z()
-	if (dug_z && z == dug_z)
-		area_above = get_area(locate(x, y, multiz_level_above(z)))
+	if (underground_added(z))
+		area_above = get_area(locate(x, y, underground_surface_z()))
 	else if (z==1 && world.maxz>=2 && !dug_z)
 		area_above = get_area(get_turf(locate(x,y,z+1)))
 	// Independent ore rolls use the old table's marginal rates, not its conditional
@@ -898,8 +905,22 @@
 	var/diamond_chance = legacy_remaining * 0.01
 	legacy_remaining -= diamond_chance
 	var/bauxite_chance = mining_bauxite_chance(area_above) // Aluminium ore, from the Industrial age (aluminium.dm).
+	// Each continent's own resources (continent_resources.dm).
+	var/copper_chance = 12 * continent_ore_factor("copper", src)
+	var/tin_chance = 8 * continent_ore_factor("tin", src)
+	iron_chance *= continent_ore_factor("iron", src)
+	zinc_chance *= continent_ore_factor("zinc", src)
+	var/coal_chance = 2 * fuel_chance * continent_ore_factor("coal", src)
+	var/saltpeter_chance = fuel_chance * continent_ore_factor("saltpeter", src)
+	var/sulphur_chance = fuel_chance * continent_ore_factor("sulphur", src)
+	var/lead_chance = fuel_chance * continent_ore_factor("lead", src)
+	uranium_chance *= continent_ore_factor("uranium", src)
+	silver_chance *= continent_ore_factor("silver", src)
+	gold_chance *= continent_ore_factor("gold", src)
+	diamond_chance *= continent_ore_factor("diamond", src)
+	bauxite_chance *= continent_ore_factor("bauxite", src)
 	var/no_ore_chance = 100
-	for (var/chance in list(12, 8, iron_chance, zinc_chance, 2 * fuel_chance, fuel_chance, fuel_chance, fuel_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
+	for (var/chance in list(copper_chance, tin_chance, iron_chance, zinc_chance, coal_chance, saltpeter_chance, sulphur_chance, lead_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
 		no_ore_chance *= 1 - chance / 100
 	var/found_ore = FALSE
 	if (H)
@@ -909,8 +930,10 @@
 	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
 	mining_cinnabar(H) // Independent of the ore rolls; see mercury.dm.
 	mining_lode(H) // Independent of the ore rolls; see lode.dm.
+	if (mining_alloy_ores(H)) // Nickel and cobalt, independent of the ore rolls; see alloy_steels.dm.
+		found_ore = TRUE
 	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
-	if (prob(12))
+	if (prob(copper_chance))
 		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
 		mineral.amount = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -920,7 +943,7 @@
 			var/ore_colour = M ? M.icon_colour : "#b87333"
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[ore_colour]><b>copper</font></b> ore!"))
 		found_ore = TRUE
-	if (prob(8))
+	if (prob(tin_chance))
 		var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
 		mineral.amount = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -947,7 +970,7 @@
 			var/material/M = get_material_by_name("zinc")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>calamine</font></b> (zinc ore)!"))
 		found_ore = TRUE
-	if (prob(2 * fuel_chance) && fuel_chance)
+	if (prob(coal_chance))
 		var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
 		mineral.amount = rand(24,32)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -955,7 +978,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(fuel_chance) && fuel_chance)
+	if (prob(saltpeter_chance))
 		var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -963,7 +986,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(fuel_chance) && fuel_chance)
+	if (prob(sulphur_chance))
 		var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -972,7 +995,7 @@
 			if (H)
 				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(fuel_chance) && fuel_chance)
+	if (prob(lead_chance))
 		var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1021,6 +1044,7 @@
 		found_ore = TRUE
 	// Every ore find shares one rubble batch, rather than minting stone per ore.
 	if (found_ore)
+		note_field_work(H, "mining") // Natural Science field work (natural_science_work.dm).
 		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
 		bonusstone.amount = rand(8,12)
 		if (H)
@@ -1176,6 +1200,7 @@
 						H.adaptStat("strength", 1)
 						T.available_sand -= 1
 						new /obj/item/stack/ore/glass(T)
+						H.arcane_dug_sand(T) // arcane_materials.dm: storm glass
 					else
 						H.shoveling = FALSE
 			else
@@ -1265,7 +1290,11 @@
 			to_chat(H, SPAN_WARNING("It's probably not a good idea to drink saltwater."))
 			return
 		to_chat(H, SPAN_NOTICE("You start drinking some water from the ground..."))
-		if (!do_after(H,50,src))
+		var/kneel = H.body_motion_kneel(src, 50, BODY_MOTION_FULL)
+		var/drank = do_after(H,50,src)
+		if (kneel)
+			H.body_motion_stop(kneel, 3)
+		if (!drank)
 			return
 		var/watertype = "water"
 		if (radiation > 0)

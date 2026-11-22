@@ -2,7 +2,7 @@
 // Storage and drawing live in painting_codec.dm, the editor in
 // painting_editor.dm and the admin list in painting_admin.dm.
 
-#define PAINTING_REGION_CAP 300 // finished wall paintings per world; small ones count a quarter
+// Paintings per world: code/__defines/paintings.dm
 #define PAINT_GRIND_TIME 30
 #define PAINT_PIXELS_PER_USE 256 // painted pixels one use of a pigment covers
 #define PAINT_LOCKET_LEFT 12 // the locket's 8x8 window in icons/mob/paintings.dmi, SOUTH

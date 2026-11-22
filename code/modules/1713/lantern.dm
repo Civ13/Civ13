@@ -12,7 +12,7 @@
 	unlimited = FALSE
 	uses_batteries = FALSE
 	// Rendered oil burns twice as long as the same measure of raw lard.
-	refuel_reagents = list("petroleum" = 240, "olive_oil" = 240, "fat_oil" = 240, "cornoil" = 240, "sunflower_oil" = 240, "linseed_oil" = 240, "lard" = 120)
+	refuel_reagents = list("petroleum" = 240, "olive_oil" = 240, "fat_oil" = 240, "cornoil" = 240, "sunflower_oil" = 240, "linseed_oil" = 240, "turpentine" = 240, "lard" = 120)
 	empty_message = "is out of oil"
 	open_flame = TRUE
 
@@ -147,7 +147,7 @@
 	fuel = 600 // 10 mins: one piece of animal fat
 	max_fuel = 1200
 	uses_batteries = FALSE
-	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "lard" = 60)
+	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "resin" = 180, "turpentine" = 120, "lard" = 60)
 	empty_message = "has burnt down"
 	open_flame = TRUE
 	// The handle the torch was wrapped around; it is left when the torch burns out.
@@ -185,7 +185,7 @@
 	anchored = FALSE
 	flammable = TRUE
 	uses_batteries = FALSE
-	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "lard" = 60)
+	refuel_reagents = list("fat_oil" = 120, "olive_oil" = 120, "cornoil" = 120, "sunflower_oil" = 120, "linseed_oil" = 120, "petroleum" = 120, "resin" = 180, "turpentine" = 120, "lard" = 60)
 	empty_message = "is out of oil"
 	open_flame = TRUE
 	// What the pole was built from; dismantling returns a handle and some of it.
@@ -344,27 +344,18 @@
 	secondary_action = TRUE
 
 /obj/item/flashlight/japflashlight/secondary_attack_self(mob/living/human/user)
-
-	intensity +=1
+	intensity += 1
 	if (intensity > 3)
 		intensity = 1
-
 	switch (intensity)
 		if (1)
-			light_range = 3
 			brightness_on = 3
-			intensity = 1
 			to_chat(user, "<span class='notice'>You <b>reduce</b> the intensity of your flashlight.</span>")
-			return
 		if (2)
-			light_range = 2
 			brightness_on = 2
-			intensity = 2
 			to_chat(user, "<span class='notice'>You <b>reduce further</b> the intensity of your flashlight.</span>")
-			return
 		if (3)
-			light_range = 5
 			brightness_on = 5
-			intensity = 3
 			to_chat(user, "<span class='notice'>You switch back the intensity to <b>normal</b> on your flashlight.</span>")
-			return
+	// Apply the new range now if lit; an unlit flashlight keeps emitting nothing.
+	update_icon()

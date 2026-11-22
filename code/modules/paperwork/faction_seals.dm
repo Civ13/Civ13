@@ -17,8 +17,8 @@
 // impression with no record (a printed copy, or a look-alike stamp) checks as
 // unproven. The game never enforces what a sealed paper says: players do.
 //
-// Signatures are already recorded by the pen (the document's "signature"
-// sections hold the signer's real name); Check Seals lists them too.
+// Check Seals also lists readable signature text recorded by pens. A signature
+// is a visible mark, not proof of the writer's identity.
 //
 // Nothing here sleeps except the prompts in attack_self, which recheck after.
 
@@ -296,23 +296,29 @@ var/global/list/faction_seal_items = list() // every faction seal matrix
 		return "[head]: <b>does not match</b> the register, which lists that seal for [html_encode(row[1])]."
 	if (row[3] && (!isnum(tick) || tick > row[3]))
 		return "[head]: <b>void</b>, the seal was revoked on [faction_seal_date(row[4])]."
-	return "[head]: <b>genuine</b>."
+	return "[head]: <b>impression matches the current register</b>; does not authenticate the current contents."
 
-/proc/faction_seal_signatures(obj/item/weapon/paper/P)
-	var/list/names = list()
-	var/list/record = P.document_record
-	if (!islist(record) || !islist(record["sections"]))
-		return names
-	for (var/list/section in record["sections"])
-		if (islist(section) && section["kind"] == "signature" && istext(section["value"]) && length(section["value"]))
-			names += section["value"]
-	return names
+/proc/faction_seal_can_inspect(obj/item/weapon/paper/P, mob/reader)
+	// Inspect a held sheet or one exposed on the ground, not the contents of
+	// a nearby inventory or a closed container.
+	return P && !P.gc_destroyed && reader && !reader.stat && reader.client && reader.client.mob == reader && (P.loc == reader || (isturf(P.loc) && P.Adjacent(reader)))
 
-/proc/faction_seal_check_text(obj/item/weapon/paper/P)
+/proc/faction_seal_signature_lines(obj/item/weapon/paper/P, mob/reader)
+	var/list/lines = list()
+	if (!faction_seal_can_inspect(P, reader))
+		return lines
+	var/datum/paper_document_reader/request = new(P, reader, "paper", null)
+	var/list/projection = request.project(reader)
+	if (!projection || projection["error"])
+		return lines
+	for (var/list/section in projection["sections"])
+		if (section["kind"] == "signature" && length(section["text"]))
+			lines += "Signature text (identity not verified): [html_encode(section["text"])]"
+	return lines
+
+/proc/faction_seal_check_text(obj/item/weapon/paper/P, mob/reader = null)
 	var/list/lines = list("<b>[html_encode(P.name)]</b>")
-	var/list/names = faction_seal_signatures(P)
-	for (var/signer in names)
-		lines += "Signed: [html_encode(signer)]"
+	lines += faction_seal_signature_lines(P, reader)
 	var/recorded = 0
 	if (islist(P.seal_records))
 		for (var/entry in P.seal_records)
@@ -331,9 +337,9 @@ var/global/list/faction_seal_items = list() // every faction seal matrix
 	set name = "Check Seals"
 	set category = "Object"
 	set src in view(1)
-	if (!usr || usr.stat || !Adjacent(usr) && loc != usr)
+	if (!faction_seal_can_inspect(src, usr))
 		return
-	to_chat(usr, faction_seal_check_text(src))
+	to_chat(usr, faction_seal_check_text(src, usr))
 
 #undef FACTION_SEAL_OFFICE_MAX
 #undef FACTION_SEALS_PER_FACTION

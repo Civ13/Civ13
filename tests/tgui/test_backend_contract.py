@@ -112,6 +112,14 @@ class BackendContract(unittest.TestCase):
         self.assertIn('if (!state || status == STATUS_CLOSE)', show)
         self.assertIn('plain_page = TRUE\n\tset_initial_data(latest_data)\n\topen()', DM)
         self.assertIn('if (href_list["type"])\n\t\t\treturn', DM)
+        # The window's own title bar: BYOND's bar comes back before any plain page
+        # or fallback, and the close button closes through the checked Topic.
+        self.assertLess(show.index('restore_title_bar()'), show.index('plain_page = TRUE'))
+        topic = DM.split('/datum/nanoui/tgui/Topic(href, href_list)', 1)[1]
+        self.assertLess(topic.index('href_list["generation"]'), topic.index('message_type == "close"'))
+        self.assertIn('if (message_type == "fallback")\n\t\trestore_title_bar()\n\t\tshow_plain_page()', topic)
+        self.assertIn('config["title_bar"] = own_title_bar() ? 1 : 0', DM)
+        self.assertIn('return !plain_page && user && user.client && user.client.is_preference_enabled(/datum/client_preference/tgui_title_bar)', DM)
         # Only these windows keep a page of their own, or end in the game's own dialog or list.
         pages, endings = set(), set()
         for path in (ROOT / 'code').rglob('*.dm'):
@@ -167,7 +175,7 @@ class BackendContract(unittest.TestCase):
             templates.update(re.findall(r'open_tgui\(user, ui_key, "([^"]+)"', source))
             templates.update(re.findall(r'(?m)^\t+(?:var/)?template = "([^"]+\.tmpl)"', source))
             self.assertNotRegex(source, r'ui = new\(user, src, ui_key, "[^"\n]+\.tmpl"')
-        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'character_setup.tmpl', 'chem_disp.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'known_languages.tmpl', 'panel.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'spawn_menu.tmpl', 'storage_window.tmpl', 'tech_tree.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl'})
+        self.assertEqual(templates, {'appearance_changer.tmpl', 'book_reader.tmpl', 'character_flavor.tmpl', 'character_notes.tmpl', 'character_setup.tmpl', 'chem_disp.tmpl', 'computer.tmpl', 'crafting_atlas.tmpl', 'crafting_window.tmpl', 'crew_log.tmpl', 'faction_creation.tmpl', 'faction_list.tmpl', 'faction_symbol.tmpl', 'haircut.tmpl', 'known_languages.tmpl', 'panel.tmpl', 'photo_viewer.tmpl', 'recruitment_station.tmpl', 'religion_list.tmpl', 'research_bench.tmpl', 'research_book.tmpl', 'ship_stocks.tmpl', 'spawn_menu.tmpl', 'storage_window.tmpl', 'tech_tree.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl', 'wiremod_circuit.tmpl'})
 
     def test_plain_owners_open_through_one_helper(self):
         helper = DM.split('/datum/proc/open_tgui(', 1)[1].split('\n/', 1)[0]
@@ -205,7 +213,10 @@ class BackendContract(unittest.TestCase):
     def test_recovery_without_bootstrap_and_close_ownership(self):
         self.assertIn("document.getElementById('tgui-loading').textContent=", DM)
         external = (ROOT / "code/modules/nano/nanoexternal.dm").read_text()
-        self.assertIn("istype(ui, /datum/nanoui/tgui) && ui.user != mob", external)
+        native_close = external.split('/client/verb/nanoclose', 1)[1].split('///', 1)[0]
+        guard = 'if (!mob || ui.user != mob || ui.user.client != src || !(ui in mob.open_uis))'
+        self.assertLess(native_close.index(guard), native_close.index('ui.close()'))
+        self.assertLess(native_close.index(guard), native_close.index('Topic(href,'))
         self.assertNotIn('"manage"', DM)
 
     def test_recruitment_actions_reach_the_existing_topic(self):

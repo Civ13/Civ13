@@ -7,11 +7,15 @@ turned into the Americas form by `americas_form` below. Antarctica is drawn
 looking down on the pole: a point is (longitude east, latitude) and lands
 (90 + latitude) degrees from the centre of the map, Greenwich at the top.
 
-These are drafts: no map metadata, no region id, not in any region group.
+A land whose design names 'metadata' is a playable region (Europe, the
+Mediterranean, Africa and the rest;
+docs/earth-continents.md); the rest are drafts: no map metadata, no region
+id, not in any region group.
 """
 import math
 
 from europe import EUROPE
+from mediterranean import MEDITERRANEAN
 from africa import AFRICA
 from asia import ASIA
 from oceania import OCEANIA
@@ -49,10 +53,12 @@ def americas_form(spec):
     out['biomes'] = [(kind,) + pt((lon, lat)) + (rx, ry) for kind, lon, lat, rx, ry in spec['biomes']]
     out['starts'] = [pt(p) for p in spec.get('starts', [])]
     out['trails'] = []
-    out['metadata'] = None  # drafts carry no map metadata
+    out['metadata'] = spec.get('metadata')  # None on a draft
     return out
 
 
-DRAFTS = {'europe': EUROPE, 'africa': AFRICA, 'asia': ASIA, 'oceania': OCEANIA, 'antarctica': ANTARCTICA,
+DRAFTS = {'europe': EUROPE, 'mediterranean': MEDITERRANEAN, 'africa': AFRICA, 'asia': ASIA, 'oceania': OCEANIA, 'antarctica': ANTARCTICA,
           'greenland': GREENLAND}
 MAPS = {name: americas_form(spec) for name, spec in DRAFTS.items()}
+# Lands made into regions; the others stay drafts.
+PLAYABLE = tuple(sorted(name for name, spec in DRAFTS.items() if spec.get('metadata')))

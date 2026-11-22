@@ -25,9 +25,20 @@ class Actor(projection.Record):
 class Furnace(projection.Record):
     def __init__(self):
         super().__init__(fuel=0, iron=0, recorded=[])
+        self.fuel_rates = self._fuel_rates
+        self.fuel_refusal = self._fuel_refusal
 
     def record_wood_fuel(self, item, amount):
         self.recorded.append((item, amount))
+
+    # Mirrors of the bloomery hooks in code/modules/1713/steel_grades.dm.
+    def _fuel_rates(self):
+        return projection.solid_fuel_globals()['bloomery_fuel_rates']
+
+    def _fuel_refusal(self, item):
+        if item.type == '/obj/item/stack/ore/coal':
+            return "Raw coal's sulphur would ruin the iron."
+        return None
 
 
 def transact(kind, amount=2, source=SOURCE):
@@ -53,13 +64,11 @@ class FurnaceManual(unittest.TestCase):
         self.assertNotIn('accept_manual_stack', '\n'.join(line for _, line in p.proc('/obj/structure/furnace/kiln/attackby')))
 
     def test_fuel_values_and_credits_consume_once(self):
+        # Bloomery fuel counts a charcoal as 2 and a log as 1 (steel_grades.dm).
         fuels = {
             '/obj/item/stack/material/wood': 2,
             '/obj/item/stack/material/bamboo': 2,
-            '/obj/item/stack/material/leaf': 2.5,
-            '/obj/item/stack/dung': 3,
-            '/obj/item/stack/ore/charcoal': 5,
-            '/obj/item/stack/ore/coal': 6,
+            '/obj/item/stack/ore/charcoal': 4,
             '/obj/item/stack/material/woodplank': 2,
         }
         for kind, credit in fuels.items():
@@ -70,6 +79,14 @@ class FurnaceManual(unittest.TestCase):
                 self.assertEqual(actor.removed, [item])
                 self.assertTrue(item.gcDestroyed)
                 self.assertIsNone(item.loc)  # The attackby's live-item guard rejects a repeat.
+
+    def test_coal_leaves_and_dung_are_refused(self):
+        for kind in ('/obj/item/stack/ore/coal', '/obj/item/stack/material/leaf', '/obj/item/stack/dung'):
+            with self.subTest(kind=kind):
+                furnace, actor, item = transact(kind)
+                self.assertEqual((furnace.fuel, furnace.recorded), (0, []))
+                self.assertEqual(actor.removed, [])
+                self.assertFalse(item.gcDestroyed)
 
     def test_ore_and_unknown_stack(self):
         furnace, actor, ore = transact('/obj/item/stack/ore/iron', 3)
@@ -114,6 +131,9 @@ def tool_action(handler, kind, completed, anchored=True, source=SOURCE):
     # Mirror of /obj/proc/timed_toggle_anchor (code/_helpers/tools.dm): wait, then toggle on success.
     furnace.timed_toggle_anchor = lambda actor: bool(furnace.wait()) and (setattr(furnace, 'anchored', not furnace.anchored) or True)
     furnace.parent = lambda: events.append('parent')
+    furnace.accept_crucible = lambda item, actor: False  # crucible_steel.dm: not a crucible
+    furnace.accept_aging_steel = lambda item, actor: False  # alloy_steels.dm: not unaged maraging steel
+    furnace.accept_alumina = lambda item, actor: False  # composite_armour.dm: not alumina
     furnace.handle_structure_tool = lambda item, actor: p.run(
         '/obj/structure/furnace/proc/handle_structure_tool', furnace, I=item, H=actor)
     actor = projection.Record(type='/mob/living/human', a_intent='help')

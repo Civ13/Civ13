@@ -17,8 +17,8 @@
 // There is no timer: water comes aboard only on a move, so a craft left
 // alone stays as she was. The water is not saved; she loads dry.
 //
-// The hooks chain on procs that code/game/objects/structures/transports.dm
-// and code/modules/1713/dugout_canoe.dm define, so those files stay as they are.
+// The raft's move check in transports.dm calls swamped_refusal() directly so
+// the swamping and water admission rules share one guard.
 // ============================================================
 
 // Bucketfuls that swamp her, and that one go with a bucket takes out.
@@ -92,18 +92,17 @@
 	return bilge - was
 
 // A swamped craft refuses to move, and tells whoever takes her paddle once.
+// Thick ice ahead stops her too, and thin ice breaks under her bow
+// (ice_breaking.dm); every small craft's move check asks here first.
 /obj/structure/vehicle/proc/swamped_refusal()
+	if (!small_craft_ice_ok(small_craft_ahead()))
+		return TRUE
 	if (!swamped())
 		return FALSE
 	if (driver && swamp_told != driver)
 		swamp_told = driver
 		to_chat(driver, SPAN_WARNING("\The [src] is swamped. Bail her with an empty bucket."))
 	return TRUE
-
-/obj/structure/vehicle/raft/do_vehicle_check()
-	if (swamped_refusal())
-		return FALSE
-	return ..()
 
 /obj/structure/vehicle/boat/do_vehicle_check()
 	if (swamped_refusal())
@@ -115,8 +114,10 @@
 /obj/structure/vehicle/raft/do_move(m_dir = null, interval = null)
 	var/turf/was = loc
 	. = ..()
-	if (loc != was && prob(leak_chance()))
-		ship_water()
+	if (loc != was)
+		boat_wear() // naval/small_boat_upkeep.dm
+		if (prob(leak_chance()))
+			ship_water()
 
 /obj/structure/vehicle/boat/do_move(m_dir = null, interval = null)
 	var/turf/was = loc
@@ -207,6 +208,8 @@
 	if (!takes_water() || !W || !ishuman(user))
 		return FALSE
 	var/mob/living/human/H = user
+	if (take_rollers(W, user)) // naval/boat_hauling.dm
+		return TRUE
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/bucket))
 		var/obj/item/weapon/reagent_containers/glass/bucket/B = W
 		if (bilge > 0 && !(B.reagents && B.reagents.total_volume > 0))
@@ -226,6 +229,8 @@
 	return FALSE
 
 /obj/structure/vehicle/raft/attackby(obj/item/O as obj, mob/user as mob)
+	if (ishuman(user) && O && upkeep_work(O, user)) // naval/small_boat_upkeep.dm
+		return TRUE
 	if (small_craft_attackby(O, user))
 		return TRUE
 	return ..()
@@ -253,6 +258,9 @@
 		. += " She is swamped: bail her with an empty bucket."
 	else if (bilge >= 1)
 		. += " There is water in her: [round(bilge)] bucketful\s of the [SMALL_CRAFT_SWAMPED] that would swamp her."
+	var/haul = haul_text() // naval/boat_hauling.dm
+	if (haul)
+		. += " [haul]"
 	return trim(.)
 
 /obj/structure/vehicle/raft/examine(mob/user, distance)
@@ -260,6 +268,9 @@
 	var/text = small_craft_text()
 	if (text)
 		to_chat(user, SPAN_WARNING(text))
+	text = upkeep_text() // naval/small_boat_upkeep.dm
+	if (text)
+		to_chat(user, SPAN_NOTICE(text))
 
 /obj/structure/vehicle/boat/examine(mob/user, distance)
 	. = ..()

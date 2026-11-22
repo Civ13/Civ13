@@ -8,7 +8,7 @@ reschedules itself without yielding stalls the server.
 
 The run fails on a failure that known_failures.txt does not list, on a listed
 entry that no longer fails, and on a stall (no completion within --timeout).
-It also builds each drifting type twice and fails on a scalar field that the
+It also builds each atom type four times and fails on a scalar field that the
 restore constructor sets differently each time (the saver omits defaults, so
 such a field changes on every load) unless known_drift.txt lists it.
 Prints the evidence directory.
@@ -118,8 +118,13 @@ def main():
         if not compiler_matches(text, build.returncode, args.expected_byond_version):
             print(text, flush=True)
             raise RuntimeError('Pinned production-source compilation failed')
+        # The repository copies keep a leading dot so they stay out of sight;
+        # the daemon copies drop it. Linux DreamDaemon cannot create the
+        # dynamic resource cache beside a dot-named .dmb, so every runtime
+        # icon operation (each human's body icons) failed with "failed to add
+        # new icon cache entry".
         for suffix in ('.dmb', '.rsc'):
-            shutil.copy2(generated[suffix], output / generated[suffix].name)
+            shutil.copy2(generated[suffix], output / generated[suffix].name.lstrip('.'))
         for rel in subprocess.check_output(['git', 'ls-files', 'config/names'], cwd=root, text=True).splitlines():
             destination = output / rel
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -127,7 +132,7 @@ def main():
         (output / 'data').mkdir(exist_ok=True)
         if args.range:
             (output / 'construction_range.txt').write_text(f'{args.range[0]} {args.range[1]}', encoding='utf-8')
-        command = [str(daemon), str(output / generated['.dmb'].name)]
+        command = [str(daemon), str(output / generated['.dmb'].name.lstrip('.'))]
         if os.name == 'nt':
             command += ['-invisible', '-close']
         process = subprocess.Popen(command + ['-trusted', '-log', 'runtime.log'], cwd=output,

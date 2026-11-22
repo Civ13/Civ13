@@ -45,10 +45,17 @@
 		blackout_click_trace("click_clock")
 		return
 	next_click = world.time + 1
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_hold_input(src))
+		return
 	/*if (client.buildmode)  //unused now
 		build_click(src, client.buildmode, params, A)
 		return*/
 	var/list/modifiers = params2list(params)
+	// Travellers leaving, their things and their ship are not to be touched;
+	// they can still be looked at (travel_hold.dm).
+	if (travel_holds && !(modifiers["shift"] && !modifiers["ctrl"] && !modifiers["alt"] && !modifiers["middle"]) && travel_hold_refuses(src, A))
+		return
 	var/icon_x = text2num(modifiers["icon-x"])
 	var/icon_y = text2num(modifiers["icon-y"])
 	if (modifiers["shift"] && modifiers["ctrl"])
@@ -205,12 +212,14 @@
 		RestrainedClickOn(A)
 		return
 	blackout_click_trace("dispatch")
+	magic_touch_hook(src, A) // repository.dm: a readied tie catches this touch; the click goes on as usual
 	if (in_throw_mode)
 		if (isturf(A) || isturf(A.loc))
 			throw_item(A)
 			return
 		throw_mode_off()
 	var/obj/item/W = get_active_hand() //trying to resolve an item in hand
+	note_familiar_click(src, W, A) // research familiarity (familiarity.dm)
 	if (W && W == A) // Handle attack_self (using item in hand)
 		W.attack_self(src, icon_x, icon_y)
 		if (hand)
@@ -310,6 +319,9 @@
 	next_move = max(world.time + timeout, next_move)
 
 /mob/proc/canClick()
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_held())
+		return FALSE
 	if (config.no_click_cooldown || next_move <= world.time)
 		return TRUE
 	return FALSE
@@ -489,6 +501,7 @@
 	scrambling = TRUE
 	if (ishuman(src))
 		var/mob/living/human/crawling_human = src
+		crawling_human.body_motion_crawl(9*slowness)
 		try
 			if (crawling_human.human_subtile_crawl_move(F, 9*slowness, "scramble"))
 				visible_message("<span class = 'red'><b>[src]</b> crawls with difficulty!</span>")
@@ -536,6 +549,7 @@
 	var/prone_delay = get_prone_delay()
 	if (ishuman(src))
 		var/mob/living/human/crawling_human = src
+		crawling_human.body_motion_crawl(prone_delay)
 		try
 			if (crawling_human.human_subtile_crawl_move(F, prone_delay, "prone"))
 				scrambling = FALSE

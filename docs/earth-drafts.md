@@ -2,7 +2,10 @@
 
 Six generated lands that fill in the rest of the world around the two
 [Americas regions](americas-regions.md): Europe, Africa, Asia, Oceania,
-Antarctica and Greenland. They are drawn the same way as the Americas maps,
+Antarctica and Greenland. All six have since been made into regions
+([earth-continents.md](earth-continents.md)); their maps moved to
+`maps/nomads/`. What follows about drafts describes how they started, and
+applies to any new land drawn the same way. They are drawn the same way as the Americas maps,
 from hand-placed outlines, mountain chains, rivers, lakes and climate centres,
 and nothing is copied from another map.
 
@@ -18,12 +21,12 @@ a starting point if any of them is later made into a region.
 
 | Land | Map | Tiles | Frame (longitude east, latitude) |
 | --- | --- | --- | --- |
-| Europe | `maps/earth_drafts/earth_europe.dmm` | 1160 x 903 | -25 to 60, 72 to 31 |
-| Africa | `maps/earth_drafts/earth_africa.dmm` | 976 x 1070 | -19 to 52, 38 to -36 |
-| Asia | `maps/earth_drafts/earth_asia.dmm` | 1226 x 854 | 30 to 190, 78 to 0 |
-| Oceania | `maps/earth_drafts/earth_oceania.dmm` | 1212 x 864 | 94 to 180, 9 to -48 |
-| Antarctica | `maps/earth_drafts/earth_antarctica.dmm` | 1024 x 1024 | polar view, 36 degrees from the pole to the frame edge |
-| Greenland | `maps/earth_drafts/earth_greenland.dmm` | 760 x 816 | -76 to -10, 84 to 58.5 |
+| Europe (now a region) | `maps/nomads/nomads_earth_europe.dmm` | 1160 x 903 | -25 to 60, 72 to 31 |
+| Africa (now a region) | `maps/nomads/nomads_earth_africa.dmm` | 976 x 1070 | -19 to 52, 38 to -36 |
+| Asia (now a region) | `maps/nomads/nomads_earth_asia.dmm` | 1226 x 854 | 30 to 190, 78 to 0 |
+| Oceania (now a region) | `maps/nomads/nomads_earth_oceania.dmm` | 1212 x 864 | 94 to 180, 9 to -48 |
+| Antarctica (now a region) | `maps/nomads/nomads_earth_antarctica.dmm` | 1024 x 1024 | polar view, 36 degrees from the pole to the frame edge |
+| Greenland (now a region) | `maps/nomads/nomads_earth_greenland.dmm` | 760 x 816 | -76 to -10, 84 to 58.5 |
 
 Each is one level and no larger than the cell count the Americas regions were
 measured at. Neighbouring frames overlap on purpose (the inner sea is on both
@@ -50,8 +53,9 @@ with each land's pixel box.
 
 ## Making a draft playable
 
-That is new work, not a switch: give the land a `/obj/map_metadata/nomads`
-type and put it in the design as `metadata`, move the map beside the other
+That is new work, not a switch (Europe and Africa show the whole of it, see
+[earth-continents.md](earth-continents.md)): give the land a `/obj/map_metadata/nomads`
+type and put it in the design as `metadata` (and `heights`), move the map beside the other
 Nomads maps, generate its height, current and flood files as
 `build.write_sidecars` does for the Americas, decide its edge crossings, add
 it to a region group, and measure start, save and reload memory in BYOND at the

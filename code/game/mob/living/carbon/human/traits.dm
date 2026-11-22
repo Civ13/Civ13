@@ -16,7 +16,12 @@
 		traits_dirty = FALSE
 	if (tt in trait_cache)
 		return TRUE
-var/global/list/trait_list = list(
+var/global/list/trait_list = trait_list_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/trait_list_table()
+	return list(
 //	"Lactose Intolerance" = list(-1,list(),"You have the inability to digest dairy products and will get sick when you ingest them. (Get food poisoning from anytype of milk product)"),
 //	"Skilled Archer" = list(3,list("Skilled Fighter"),"You are better at fighting with ranged weapons and running away. (Start with better Dexterity, and bow skills)"),
 //	"Skilled Fighter" = list(3,list("Skilled Archer"),"You are better at fighting with your fists and melee weapons. (Start with better Strength, and sword skills)"),
@@ -92,11 +97,14 @@ var/global/list/trait_list = list(
 	"Physician" = list(0,list("Engineer","Strategist","Naturalist","Agronomist"),"Field of study. Medicine research x1.4 and its scholarship grows 25% faster. Other disciplines except Basic Mathematics: research x0.9, scholarship grows 25% slower, their chapters take 15% longer to study. Can also be taken or dropped in play from the Scholarship tab."),
 	"Autistic" = list(0,list(),"You study your special interest with deep, sustained focus: its chapters take 20% less time. Changing subjects takes settling in: the first chapter after you switch to a different discipline takes 35% longer. Your interest is your field of study, or one you choose from the Scholarship tab."),
 	"ADHD" = list(0,list(),"You take in new material in fast bursts: the first minute of a reading sitting goes 30% faster, and the first five minutes at a research bench 20% faster. Long unbroken sessions wear on you: reading slows by 20% after three minutes, and bench work by 10% after twenty."),
-	"Mechanic" = list(0,list("Gunsmith","Smith","Tailor","Carpenter"),"Trade. Your vehicle, aircraft, engine and submarine work takes 40% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
-	"Gunsmith" = list(0,list("Mechanic","Smith","Tailor","Carpenter"),"Trade. Your gunsmithing, black powder gun assembly and fletching takes 30% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
-	"Smith" = list(0,list("Mechanic","Gunsmith","Tailor","Carpenter"),"Trade. Your anvil and metal workbench work takes 25% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
-	"Tailor" = list(0,list("Mechanic","Gunsmith","Smith","Carpenter"),"Trade. Your dressmaking and crafting from cloth, hides and leather takes 25% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
-	"Carpenter" = list(0,list("Mechanic","Gunsmith","Smith","Tailor"),"Trade. Your crafting from wood and stone, and woodworking takes 8% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Mechanic" = list(0,list("Gunsmith","Smith","Tailor","Carpenter","Navvy","Miner","Woodcutter"),"Trade. Your vehicle, aircraft, engine and submarine work takes 40% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Gunsmith" = list(0,list("Mechanic","Smith","Tailor","Carpenter","Navvy","Miner","Woodcutter"),"Trade. Your gunsmithing, black powder gun assembly and fletching takes 30% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Smith" = list(0,list("Mechanic","Gunsmith","Tailor","Carpenter","Navvy","Miner","Woodcutter"),"Trade. Your anvil and metal workbench work takes 25% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Tailor" = list(0,list("Mechanic","Gunsmith","Smith","Carpenter","Navvy","Miner","Woodcutter"),"Trade. Your dressmaking and crafting from cloth, hides and leather takes 25% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Carpenter" = list(0,list("Mechanic","Gunsmith","Smith","Tailor","Navvy","Miner","Woodcutter"),"Trade. Your crafting from wood and stone, and woodworking takes 8% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Navvy" = list(0,list("Mechanic","Gunsmith","Smith","Tailor","Carpenter","Miner","Woodcutter"),"Trade. Your digging, trenching and raising or lowering ground takes 20% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Miner" = list(0,list("Mechanic","Gunsmith","Smith","Tailor","Carpenter","Navvy","Woodcutter"),"Trade. Your mining of rock, seams and cave roofs takes 25% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
+	"Woodcutter" = list(0,list("Mechanic","Gunsmith","Smith","Tailor","Carpenter","Navvy","Miner"),"Trade. Your tree felling takes 20% less time. Work of the other trades takes 10% longer. Crafting skill and recipes are not affected. Can also be taken or dropped in play with Choose trade."),
 
 )
 

@@ -16,9 +16,16 @@ way (a rigged mast or a running engine) and have at least 2 crew aboard and
 awake.
 Everything the crossing would refuse at landfall refuses her at the tiller
 instead (`sea_crossing_load`): something that cannot cross, too much loose
-cargo, or a record over the crossing budget (40000 bytes, carried in the first
-crew member's payload). That budget is the cap on hull size and load until
-voyage records are sent in chunks; the voyage menu shows how full she is.
+cargo, or a record over the crossing budget (`SEA_CROSSING_RECORD_MAX`,
+192 KB, carried in the first crew member's payload); the voyage menu shows
+how full she is. The tile caps bind long before the budget does: a 200-tile
+steel battleship with a 96-tile hold, eight loaded turrets over full shell
+racks, a belted side and 390 items in crates packs to about 25 KB
+(`tests/naval_carrier/passage_probe.dm`), so records are never split. Her
+turrets cross with the shells in their breeches, her shell racks with their
+shells, and her belt armour as part of her hull (deck entry `"a"`), not as
+cargo. Packing that hull costs about 140 ms each time the tiller measures her
+and once as she crosses.
 
 The chart shown is her owner's: the captain's faction (`faction:<name>` from
 the character's civilization), or the captain alone (`crew:<ckey>`). The world
@@ -128,6 +135,37 @@ When her time is up she looks at the course on the chart:
 A voyage is not saved: a world restarted mid-voyage finds her lying off the
 coast where she set out.
 
+### Holding her course once word is sent ahead (#6258)
+
+Waking a land, or plotting a course that may open one, is a commitment
+(`crossing_hold` on the tiller, `code/modules/naval/ship_crossing.dm`). Before
+the request can yield she is held: `plotting` while the world chart is asked
+for a course, `asking` while the host doorman is asked to wake the land
+(`shard_group.ask_wake()`), `committed` once the doorman took the wake or gave
+no reply (it may be waking), and `departing` while her crew leave. While held:
+
+- Nothing else sends her anywhere: another **Leave these waters**, another
+  voyage, a stale prompt from before and **Turn back** are refused in server
+  code, and the tiller shows where she is bound and how long the hold lasts.
+- A retry to the same land sends no second word: it waits on the first wake.
+- A definite refusal before the doorman took the wake lets her go at once. The
+  wake's own deadline (its eta plus a minute) ends a committed hold; a single
+  failed poll does not. A voyage still holds its land after that and asks
+  again on its next look; a land that answers late is crossed to then.
+- Every step after a yield checks that the hold and voyage are still hers; a
+  stale continuation neither moves her nor clears a newer hold. An admin's
+  send overrides the hold.
+- A course the chart never answered is sailed unconfirmed and asked again
+  under way with the same voyage id, which the directory answers with the same
+  course; she never plots a second.
+
+Crew who set out on the voyage and logged out at sea still make the crossing
+with her; anyone else aboard without a player is named, so her crew can put
+them ashore (live report 2026-11-19).
+
+Tests: `tests/naval_carrier/voyage_hold_probe.dm` (stubbed doorman, polls,
+transfer agent and departures; nothing is woken).
+
 ## Settle, claim or abandon
 
 A land opened for a ship is undecided until its crew choose
@@ -150,6 +188,63 @@ land. Until a land is settled or claimed, a
 death there always sends the character home to the mainland: a bed there
 does not keep the home. A land world reads its chart about once a minute to
 know.
+
+### Claimed lands
+
+A faction's claim on a land across the sea can never be taken by another
+faction while the faction lives there (`code/modules/naval/island_claim.dm`):
+
+- The claim on the world chart is the colony's title. If the charter is
+  destroyed the colony still stands: arrivals still join it, it still counts
+  in the land samples, and its own leader (or a leader who travelled from the
+  faction's land) can plant the charter again. Nobody else can claim the land
+  meanwhile.
+- A claim lapses when the land has had fewer than 3 residents for 14 days in
+  a row: members on the colony's roster with a fastened bed of their own
+  there. Members are told when the count drops, and when it recovers. On a
+  lapse the charter comes down and the land goes back to `SETTLED`, open to
+  any faction's claim (op `unclaim`).
+- These lands have no provinces, so the colony's recruitment stations always
+  work ([provinces](provinces.md)). Examining the charter shows the claim's
+  standing.
+
+The check runs with the land's chart refresh (`land_stages_refresh_due`).
+State: `map.faction_recruitment["island_claim"] = list(parent, short since)`.
+
+### Island borders
+
+A faction decides who may land on its claimed island
+(`code/modules/naval/island_access.dm`). Its leader, and officers holding the
+papers power, set the border from any land with **Faction > Faction Island**:
+
+| Border | Who may land |
+| --- | --- |
+| Open to visitors | anyone |
+| Members and guests (the default) | members, the guests the faction names (each named while standing beside the officer, up to 50) and holders of a visitor pass |
+| Members only | members alone, whatever passes say: the border is closed |
+
+A member is anyone who travels as the faction (`colony_faction_id`): its own
+members and its colonies' members. **Grant Island Visitor Pass** (a verb on the
+faction's recruitment station) gives someone beside the station a pass for 1
+hour to 7 days, or takes it back. The world directory keeps the border and the
+passes (`chart_access` in `world_chart.py`; chart ops `access` and `pass`, sent
+from any land for the tile the faction claims) and sends them with the chart
+(`access`), so every land knows them.
+
+- The voyage menu lists the island only to a captain it admits, and the tiller
+  refuses a voyage, or a landfall, while anyone aboard may not land.
+- Every trail, crossing and flight out of any land refuses them too
+  (`region_gate/depart_party`). An admin's send is never stopped.
+- On the island, whoever is ashore without leave (the border closed, a pass ran
+  out, a member was expelled) is told to go and after 10 minutes is put ashore
+  in the start land. Restrained captives stay where they are held.
+- The faction's own members are protected while they sleep offline in a bed
+  there ([offline sleep protection](../code/modules/persistence/offline_sleep_protection.dm)).
+- Giving the claim up, or its lapse, drops the border with it: the land is
+  open to every ship again.
+
+Tests: `python3 -B tests/transfer_storage/test_world_chart.py` (borders, passes,
+requests from another land).
 
 Tests: `tests/naval_carrier/voyage_probe.dm` (see `tests/naval_carrier/README.md`),
 `python3 -B tests/transfer_storage/test_world_chart.py` (courses, land choices),

@@ -1,0 +1,199 @@
+{
+  "entries": {
+    "carved_slab": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Carved stone slabs",
+      "line": 282,
+      "path": "/obj/covers/stone/slab/decorative",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "decorative_stone_slab"
+    },
+    "cobble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Weathered cobble",
+      "line": 627,
+      "path": "/turf/floor/plating/cobblestone",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "cobble_horizontal"
+    },
+    "dark_cobble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Dark cobble",
+      "line": 639,
+      "path": "/turf/floor/plating/cobblestone/dark",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "cobble_horizontal_dark"
+    },
+    "marble_grid": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Marble grid",
+      "line": 432,
+      "path": "/obj/covers/marble_grid",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "marble_grid"
+    },
+    "marble_rosette": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Ornate marble",
+      "line": 326,
+      "path": "/obj/covers/ornatemarblefloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "ornate_marble"
+    },
+    "old_stone": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Mossy old stone",
+      "line": 633,
+      "path": "/turf/floor/plating/stone_old",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "stone_old"
+    },
+    "roman_setts": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Roman setts",
+      "line": 268,
+      "path": "/obj/covers/romanroad",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "roman_road"
+    },
+    "running_cobble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "turf",
+      "label": "Running cobble",
+      "line": 645,
+      "path": "/turf/floor/plating/cobblestone/vertical",
+      "source": "code/game/turfs/floor_types.dm",
+      "state": "cobble_vertical"
+    },
+    "sand_brick": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Sandstone bricks",
+      "line": 572,
+      "path": "/obj/covers/sandstone/brick",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "sandstone_brick"
+    },
+    "sand_inlay": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Sandstone inlay",
+      "line": 588,
+      "path": "/obj/covers/sandstone/tile/decorative",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "sandstone_decorative_tile"
+    },
+    "sand_slab": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Sandstone slabs",
+      "line": 576,
+      "path": "/obj/covers/sandstone/slab",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "sandstone_slab"
+    },
+    "slate": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Slate flags",
+      "line": 533,
+      "path": "/obj/covers/slatefloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "slatefloor"
+    },
+    "stone_brick": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "Stone bricks",
+      "line": 296,
+      "path": "/obj/covers/stonebrickfloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "stone_bricks"
+    },
+    "white_marble": {
+      "icon": "icons/turf/floors.dmi",
+      "kind": "floor cover",
+      "label": "White marble",
+      "line": 312,
+      "path": "/obj/covers/marblefloor",
+      "source": "code/game/objects/covers_types/cover_floortypes.dm",
+      "state": "marble"
+    }
+  },
+  "pinned_commit": "a7ef0b472b2b5cc07a6f1dd6852a7a5bfa1b9521",
+  "room_families": {
+    "Arrival guardroom": "gray cobblestone",
+    "Collapsed watchpost": "weathered gray stone",
+    "Processional hall": "gold sandstone",
+    "Reliquary vault": "pale marble",
+    "Scribe workshop": "cut gray stone",
+    "Supply storeroom": "rough gray masonry"
+  },
+  "room_recipes": {
+    "Arrival guardroom": [
+      "dark_cobble",
+      "running_cobble",
+      "running_cobble",
+      "cobble",
+      "cobble"
+    ],
+    "Collapsed watchpost": [
+      "dark_cobble",
+      "old_stone",
+      "old_stone",
+      "dark_cobble",
+      "running_cobble"
+    ],
+    "Processional hall": [
+      "sand_brick",
+      "sand_slab",
+      "sand_slab",
+      "sand_slab",
+      "sand_inlay"
+    ],
+    "Reliquary vault": [
+      "marble_grid",
+      "white_marble",
+      "white_marble",
+      "white_marble",
+      "marble_rosette"
+    ],
+    "Scribe workshop": [
+      "stone_brick",
+      "slate",
+      "slate",
+      "slate",
+      "carved_slab"
+    ],
+    "Supply storeroom": [
+      "dark_cobble",
+      "roman_setts",
+      "roman_setts",
+      "cobble",
+      "cobble"
+    ]
+  },
+  "used": [
+    "carved_slab",
+    "cobble",
+    "dark_cobble",
+    "marble_grid",
+    "marble_rosette",
+    "old_stone",
+    "roman_setts",
+    "running_cobble",
+    "sand_brick",
+    "sand_inlay",
+    "sand_slab",
+    "slate",
+    "stone_brick",
+    "white_marble"
+  ]
+}

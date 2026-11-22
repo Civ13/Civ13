@@ -24,7 +24,7 @@ Released under Civ13 AGPL-3.0.
 import math
 import sys
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageChops
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from trainkit import (Canvas, EDGE, HEADING, directions, mix, noise, ramp_at,  # noqa: E402
@@ -36,6 +36,8 @@ GUN = ROOT / 'icons/obj/vehicles/railway_gun.dmi'
 WATER = ROOT / 'icons/obj/vehicles/rail_water.dmi'
 PLOUGH = ROOT / 'icons/obj/vehicles/train_plough.dmi'
 LOADS = ROOT / 'icons/obj/vehicles/train_loads.dmi'
+PIT = ROOT / 'icons/obj/vehicles/train_turntable.dmi'
+PIT_LARGE = ROOT / 'icons/obj/vehicles/train_turntable_large.dmi'
 RAILS = ROOT / 'icons/obj/vehicles/trains.dmi'
 
 # ramps: lit, face, shade, outline
@@ -1010,6 +1012,321 @@ def signal_flags():
     return [c.image()]
 
 
+def semaphore(clear):
+    """A semaphore signal from the side: a white post, a red arm and its lamp."""
+    c = Canvas(32, 32)
+    c.shade(11, 29, 24, 30, 60)
+    c.bevel(13, 27, 20, 29, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.rect(15, 5, 18, 27, STEEL_O)
+    c.rect(16, 6, 17, 20, CREAM[0])
+    c.rect(17, 6, 17, 20, CREAM[2])
+    c.rect(16, 21, 17, 26, BLACK[2])
+    c.rect(17, 21, 17, 26, BLACK[4])
+    c.rect(16, 3, 17, 4, RED[1])
+    c.put(16, 2, RED[0])
+    lamp = GREEN if clear else RED
+    c.disc(21.0, 9.5, 2.6, [WHITE, lamp[0], lamp[1], lamp[2]], outline=DARK)
+    c.rect(18, 9, 19, 10, STEEL[3])
+    if clear:
+        # the arm dropped: line clear
+        for i in range(12):
+            x, y = 15 - i, 8 + i
+            c.rect(x - 1, y - 2, x + 1, y + 2, RED[3])
+        for i in range(12):
+            x, y = 15 - i, 8 + i
+            tone = CREAM[0] if i in (7, 8) else RED[1]
+            c.rect(x, y - 1, x, y + 1, tone)
+            c.put(x, y - 1, CREAM[1] if i in (7, 8) else RED[0])
+    else:
+        # the arm level: danger
+        c.rect(2, 6, 15, 11, RED[3])
+        c.rect(3, 7, 15, 10, RED[1])
+        c.rect(3, 7, 15, 7, RED[0])
+        c.rect(3, 10, 15, 10, RED[2])
+        c.rect(6, 7, 7, 10, CREAM[0])
+    c.rect(15, 7, 18, 10, STEEL_O)
+    c.put(16, 8, STEEL[0])
+    c.put(17, 9, STEEL[2])
+    return [c.image()]
+
+
+def lever_frame():
+    """A signal box lever frame: five long levers in an iron frame."""
+    c = Canvas(32, 32)
+    c.shade(3, 28, 29, 30, 60)
+    c.bevel(1, 21, 30, 28, STEEL[1], STEEL[3], STEEL[4], outline=STEEL_O)
+    c.rect(2, 23, 29, 23, STEEL[4])
+    grips = (RED, RED, BLUE, BLACK, YELLOW)
+    for i, ramp in enumerate(grips):
+        x = 4 + i * 6
+        pulled = i in (1, 3)
+        lean = 1 if pulled else 0
+        top = 11 if pulled else 6
+        for off, col in ((0, STEEL[1]), (1, STEEL[4])):
+            c.line(x + off, 21, x + off + lean, top, col)
+        c.rect(x + lean - 1, top - 3, x + lean + 2, top + 1, mix(ramp[2], DARK, 0.5))
+        c.rect(x + lean, top - 2, x + lean + 1, top, ramp[1])
+        c.put(x + lean, top - 2, ramp[0])
+        c.rect(x - 1, 20, x + 2, 22, STEEL_O)
+        c.put(x, 21, STEEL[0])
+        c.rect(x, 25, x + 1, 26, BRASS[1])
+    return [c.image()]
+
+
+def token_instrument():
+    """A token instrument: a cast iron cabinet with a needle, a bell and a slot."""
+    c = Canvas(32, 32)
+    c.shade(8, 28, 25, 30, 60)
+    c.bevel(8, 7, 23, 28, MAROON[0], MAROON[1], MAROON[2], outline=MAROON[3])
+    c.rect(9, 18, 22, 18, MAROON[3])
+    c.disc(15.5, 4.5, 2.8, [WHITE, BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.rect(15, 7, 16, 7, BRASS[3])
+    c.disc(15.5, 12.5, 4.2, [CREAM[0], CREAM[0], CREAM[1], CREAM[2]], outline=DARK)
+    c.line(15, 13, 13, 10, RED[2])
+    c.put(15, 13, DARK)
+    c.rect(11, 21, 20, 23, BRASS[4])
+    c.rect(12, 22, 19, 22, DARK)
+    c.rect(11, 20, 20, 20, BRASS[1])
+    c.disc(15.5, 25.5, 1.4, [BRASS[0], BRASS[2]], outline=BRASS[4])
+    return [c.image()]
+
+
+def train_token():
+    """A single-line tablet: a brass disc with a hole and a notch."""
+    c = Canvas(32, 32)
+    c.shade(10, 22, 23, 24, 60)
+    c.disc(15.5, 15.5, 6.6, [BRASS[0], BRASS[1], BRASS[2], BRASS[3]], outline=BRASS[4])
+    c.ring(15.5, 15.5, 4.6, BRASS[3], width=0.8)
+    c.disc(15.5, 15.5, 1.6, [DARK], outline=BRASS[4])
+    c.rect(15, 9, 16, 10, BRASS[4])
+    c.put(12, 12, WHITE)
+    c.put(13, 11, WHITE)
+    return [c.image()]
+
+
+def section_board():
+    """A lineside board on a post: a black tablet ring on white."""
+    c = Canvas(32, 32)
+    c.shade(11, 29, 22, 30, 60)
+    c.rect(14, 16, 17, 29, WALNUT[3])
+    c.rect(15, 16, 16, 28, WALNUT[1])
+    c.rect(15, 16, 15, 28, WALNUT[0])
+    c.bevel(6, 4, 25, 16, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+    c.ring(15.5, 10.0, 3.6, DARK, width=1.2)
+    c.rect(8, 6, 9, 14, BLACK[3])
+    c.rect(22, 6, 23, 14, BLACK[3])
+    return [c.image()]
+
+
+def signal_wire():
+    """A coil of iron signal wire with a loose end."""
+    c = Canvas(32, 32)
+    c.shade(8, 23, 25, 25, 60)
+    for r, col in ((8.2, STEEL_O), (7.4, STEEL[1]), (6.4, STEEL[3]), (5.4, STEEL[2]), (4.4, STEEL[4])):
+        c.ring(15.5, 15.5, r, col, width=1.0)
+    c.line(22, 19, 27, 24, STEEL[2])
+    c.line(22, 20, 26, 24, STEEL[4])
+    c.put(10, 10, STEEL[0])
+    c.put(11, 9, STEEL[0])
+    c.rect(14, 22, 17, 24, WALNUT[3])
+    c.rect(15, 22, 16, 23, WALNUT[1])
+    return [c.image()]
+
+
+def buffer_stop(c):
+    """A buffer stop at the end of a line that runs north: two raking rails
+    bolted to the track, a red beam across them and a buffer over each rail."""
+    c.shade(5, 9, 30, 13, 70)
+    for x in (6, 26):
+        c.rect(x - 1, 11, x + 3, 30, STEEL_O)
+        c.bands(x, 12, x + 2, 29, [STEEL[1], STEEL[2], STEEL[4]], along=True)
+        for y in (16, 22, 28):
+            c.rivet(x + 1, y, STEEL[0], STEEL_O)
+    # the cross brace between the raking rails
+    c.rect(9, 19, 25, 22, WALNUT[3])
+    c.rect(9, 20, 25, 21, WALNUT[1])
+    c.rect(9, 20, 25, 20, WALNUT[0])
+    # the beam, red with a white band
+    c.bevel(2, 3, 31, 9, RED[0], RED[1], RED[2], outline=RED[3])
+    c.rect(13, 4, 20, 8, CREAM[0])
+    c.rect(13, 8, 20, 8, CREAM[2])
+    # the buffers face the train
+    for x in (7.5, 27.5):
+        c.rect(int(x), 10, int(x) + 1, 12, STEEL[4])
+        c.disc(x, 13.5, 2.6, [STEEL[0], STEEL[1], STEEL[3]], outline=STEEL_O)
+
+
+def crossing_boards(c):
+    """Boards between and beside the rails of a line that runs north."""
+    for x0, x1, seed in ((0, 4, 71), (10, 24, 72), (30, 31, 73)):
+        c.rect(x0, 0, x1, 31, OLD_SEAM)
+        for x in range(x0, x1 + 1):
+            tone = OLD_PLANK[(x * 7 + seed) % len(OLD_PLANK)]
+            for y in range(32):
+                c.put(x, y, OLD_SEAM if (x - x0) % 5 == 4 and x != x1 else (mix(tone, DARK, 0.18) if noise(x, y // 3, seed) > 0.82 else tone))
+    for y in (3, 15, 28):
+        for x in (2, 12, 17, 22):
+            c.put(x, y, STEEL[4])
+
+
+def crossing_gate(c, shut):
+    """A crossing gate beside rails that lie to the north: shut, it lies
+    across the road along the top of its tile; open, it is swung back along
+    the left edge of the road."""
+    c.shade(2, 4, 6, 8, 70)
+    if shut:
+        c.shade(4, 7, 31, 8, 60)
+        c.bevel(3, 2, 31, 6, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+        for x in (10, 18, 26):
+            c.rect(x, 3, x, 5, CREAM[3])
+        c.disc(17.0, 4.0, 3.4, [(255, 190, 170), RED[0], RED[1], RED[2]], outline=DARK)
+        c.bevel(28, 1, 31, 7, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+    else:
+        c.shade(5, 4, 6, 31, 60)
+        c.bevel(1, 3, 5, 31, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+        for y in (10, 18, 26):
+            c.rect(2, y, 4, y, CREAM[3])
+        c.disc(3.0, 17.0, 3.4, [(255, 190, 170), RED[0], RED[1], RED[2]], outline=DARK)
+    # the hinge post
+    c.bevel(0, 0, 5, 6, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+    c.put(2, 3, BRASS[0])
+
+
+def turntable_deck(c):
+    """The plank deck of a turntable bridge under rails that run north."""
+    c.rect(0, 0, 31, 31, OLD_SEAM)
+    for y in range(32):
+        tone = OLD_PLANK[(y // 4 * 3 + 1) % len(OLD_PLANK)]
+        for x in range(0, 32):
+            c.put(x, y, OLD_SEAM if y % 4 == 3 else (mix(tone, DARK, 0.2) if noise(x // 3, y, 91) > 0.84 else tone))
+
+
+def turntable_girders(c):
+    """The riveted plate girders along each side of the bridge, drawn over
+    the rails that run north."""
+    for x0 in (0, 30):
+        c.rect(x0, 0, x0 + 1, 31, STEEL[3])
+        c.rect(x0 + (1 if x0 else 0), 0, x0 + (1 if x0 else 0), 31, STEEL_O)
+        c.rect(x0 + (0 if x0 else 1), 0, x0 + (0 if x0 else 1), 31, STEEL[1])
+        for y in (3, 11, 19, 27):
+            c.put(x0 + (0 if x0 else 1), y, STEEL[0])
+
+
+def turntable_pivot():
+    """The pivot of a turntable, seen between the rails: a cast bearing ring
+    bolted down, with a brass cap."""
+    c = Canvas(32, 32)
+    c.disc(16.5, 16.5, 6.4, [STEEL[2], STEEL[3], STEEL[4]], outline=STEEL_O)
+    c.ring(16.5, 16.5, 4.2, STEEL[1], width=1.0)
+    for x, y in ((13, 13), (20, 13), (13, 20), (20, 20)):
+        c.put(x, y, STEEL[0])
+    c.disc(16.5, 16.5, 2.2, [BRASS[0], BRASS[1], BRASS[3]], outline=DARK)
+    return [c.image()]
+
+
+def track_wear(bad):
+    """What worn track shows between the rails, the same whichever way the
+    line runs: weeds in the ballast and dark, sunk patches; in a bad way,
+    more of both and the splintered ends of split sleepers."""
+    c = Canvas(32, 32)
+    tufts = ((13, 13), (20, 17), (15, 21)) + (((21, 12), (12, 18), (18, 22), (17, 14)) if bad else ())
+    for x, y in ((14, 16), (19, 20)) + (((12, 12), (21, 15), (16, 19)) if bad else ()):
+        c.rect(x, y, x + 2, y + 1, DARK, a=110)
+        c.put(x + 1, y, DARK, a=160)
+    if bad:
+        for x0, y0 in ((11, 15), (19, 13), (14, 22)):
+            for i, col in enumerate((WALNUT[3], WALNUT[1], WALNUT[0], WALNUT[1])):
+                c.put(x0 + i, y0 + (i % 2), col)
+            c.put(x0 + 4, y0 + 1, OXIDE[1])
+    for x, y in tufts:
+        c.put(x, y, GREEN[3])
+        c.put(x, y - 1, GREEN[1])
+        c.put(x - 1, y, GREEN[2])
+        c.put(x + 1, y - 1, GREEN[0])
+    return [c.image()]
+
+
+def turntable_pit(size):
+    """The pit of a turntable from above: a brick wall round a gravel floor
+    that falls into shadow under the upper-left wall, with the ring rail the
+    ends of the bridge run on."""
+    im = Image.new('RGBA', (size, size))
+    px = im.load()
+    mid = (size - 1) / 2.0
+    R = size / 2.0 - 1.0
+    for y in range(size):
+        for x in range(size):
+            dx, dy = x - mid, y - mid
+            d = math.hypot(dx, dy)
+            if d > R:
+                continue
+            ang = math.atan2(dy, dx)
+            if d > R - 1.0:
+                col = DARK
+            elif d > R - 5.0:
+                # the coping: bricks laid round the rim
+                course = int((ang + math.pi) * R / 6.0)
+                tone = BRICK[(course * 5 + int(d)) % 2]
+                edge = ((ang + math.pi) * R / 6.0) % 1.0 < 0.16
+                col = BRICK[3] if edge else (BRICK[0] if d > R - 2.2 else tone)
+            elif d > R - 6.0:
+                col = DARK
+            else:
+                # the floor, darker where the wall shades it
+                lit = (dx + dy) / (R * 1.42)
+                depth = max(0.0, (d - (R - 20.0)) / 14.0) * max(0.0, -lit)
+                tone = ROCK[2] if noise(x // 2, y // 2, 113) > 0.5 else ROCK[1]
+                if noise(x, y, 127) > 0.9:
+                    tone = ROCK[0]
+                col = mix(mix(tone, ROCK[3], 0.35), DARK, min(0.6, 0.15 + depth * 0.5))
+                ring = R - 11.0
+                if abs(d - ring) < 1.3:
+                    col = STEEL[1] if abs(d - ring) < 0.6 else STEEL[4]
+                elif abs(d - ring) < 2.4 and int((ang + math.pi) * ring / 5.0) % 2 == 0:
+                    col = WALNUT[3]
+            px[x, y] = col + (255,)
+    return [im]
+
+
+def station_board():
+    """A station name board: a long white board on two posts."""
+    c = Canvas(32, 32)
+    c.shade(3, 29, 29, 30, 60)
+    for x in (5, 25):
+        c.rect(x - 1, 14, x + 2, 29, WALNUT[3])
+        c.rect(x, 14, x + 1, 28, WALNUT[1])
+        c.rect(x, 14, x, 28, WALNUT[0])
+    c.bevel(1, 5, 30, 15, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+    c.frame(3, 7, 28, 13, BLACK[3])
+    # a row of painted letters, too small to read
+    for i, w in enumerate((2, 1, 2, 2, 1, 2, 1)):
+        x = 6 + i * 3
+        c.rect(x, 9, x + w - 1, 11, BLACK[4])
+        if i % 2:
+            c.put(x, 10, CREAM[0])
+    return [c.image()]
+
+
+def hand_lamp(shade):
+    """A railway hand lamp: a tin body, a bull's-eye lens and a wire handle."""
+    c = Canvas(32, 32)
+    c.shade(9, 26, 23, 28, 60)
+    c.ring(15.5, 8.0, 4.4, STEEL[3], width=1.0)
+    c.clear(10, 9, 21, 14)
+    c.bevel(12, 9, 19, 11, BLACK[0], BLACK[1], BLACK[3], outline=BLACK[4])
+    c.bevel(10, 12, 21, 25, BLACK[0], BLACK[2], BLACK[3], outline=BLACK[4])
+    c.rect(11, 25, 20, 26, BLACK[4])
+    c.rect(14, 7, 17, 8, BLACK[2])
+    lens = {'white': (WHITE, (255, 244, 190), (236, 200, 110), (150, 110, 40)),
+            'red': ((255, 190, 170), RED[0], RED[1], RED[2]),
+            'green': ((200, 255, 200), (112, 214, 96), (52, 160, 60), (26, 96, 36))}.get(shade, (GLASS[1], GLASS[2], GLASS[3], GLASS[3]))
+    c.disc(15.5, 18.0, 4.2, list(lens), outline=DARK)
+    if shade:
+        c.ring(15.5, 18.0, 6.2, lens[1], width=0.8)
+        c.put(14, 16, WHITE)
+    return [c.image()]
+
+
 def guard_journal():
     """The guard's journal: a black cloth-bound book with a pencil in its loop."""
     c = Canvas(32, 32)
@@ -1068,6 +1385,167 @@ def coal_stage(fill):
     c.line(45, 49, 49, 40, TAN[1])
     c.bevel(43, 48, 47, 52, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
     return [c.image()]
+
+
+def bulk_pile(c, cx, cy, r, seed, ramp):
+    """A heap of bulk in the four tones of ramp, lit from the upper left."""
+    for y in range(int(cy - r - 1), int(cy + r + 2)):
+        for x in range(int(cx - r - 1), int(cx + r + 2)):
+            d = math.hypot(x - cx, (y - cy) * 1.15) + noise(x, y, seed) * 2.2
+            if d > r:
+                continue
+            n = noise(x // 2, y // 2, seed + 1)
+            lit = (cx - x) + (cy - y)
+            tone = ramp[0] if (n > 0.8 and lit > -2) else (ramp[1] if n > 0.45 else (ramp[2] if n > 0.15 else ramp[3]))
+            c.put(x, y, ramp[3] if d > r - 1.2 else tone)
+
+
+def loading_stage(tone):
+    """A loading stage, 64 x 64 and centred on its tile: a timber deck on
+    trestle legs with kerb boards, an iron chute over its north edge and a
+    heap of coal, ore or sand. tone None is swept bare."""
+    c = Canvas(64, 64)
+    c.shade(12, 14, 57, 59, 70)
+    for x, y in ((7, 9), (52, 9), (7, 52), (52, 52)):
+        c.bevel(x, y, x + 4, y + 4, WALNUT[1], WALNUT[2], WALNUT[3], outline=DARK)
+    c.rect(8, 10, 55, 55, OLD_SEAM)
+    planks(c, 9, 11, 54, 54, tones=OLD_PLANK, seam=OLD_SEAM, seed=66)
+    # kerb boards down both sides and along the back
+    for x0, y0, x1, y1 in ((8, 10, 10, 55), (53, 10, 55, 55), (8, 53, 55, 55)):
+        c.bevel(x0, y0, x1, y1, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    # the front kerb, broken by the mouth of the chute
+    for x0, x1 in ((8, 23), (40, 55)):
+        c.bevel(x0, 10, x1, 12, WALNUT[0], WALNUT[1], WALNUT[2], outline=WALNUT[3])
+    ramp = (HEAPS.get(tone) or SAND) if tone else None
+    if ramp:
+        c.speckle(11, 13, 52, 52, ramp[2], 0.2, seed=67)
+        bulk_pile(c, 31, 33, 17, 68, ramp)
+        bulk_pile(c, 29, 28, 8, 69, ramp)
+    # the chute: a plate trough with raised sides, running out over the rails
+    c.rect(23, 0, 40, 14, STEEL_O)
+    c.bands(24, 0, 39, 13, [STEEL[1]] + [STEEL[3]] * 14 + [STEEL[4]], along=True)
+    c.rect(24, 0, 25, 13, STEEL[1])
+    c.rect(38, 0, 39, 13, STEEL[4])
+    for y in (2, 7, 12):
+        c.put(24, y, STEEL[0])
+        c.put(39, y, STEEL[2])
+    if ramp:
+        for y in range(1, 14):
+            for x in range(27, 37):
+                if noise(x, y, 70) > 0.55:
+                    c.put(x, y, ramp[1] if noise(x, y, 71) > 0.5 else ramp[3])
+    return [c.image()]
+
+
+def goods_crane(hauling):
+    """A hand crane for a goods yard from above: an iron post on a bolted
+    base, a winding drum with a crank handle either side, and a timber jib
+    with an iron strap reaching north to its sheave and hook."""
+    c = Canvas(32, 32)
+    c.shade(9, 17, 25, 30, 60)
+    c.disc(15.5, 21.5, 7.2, [STEEL[2], STEEL[3], STEEL[4]], outline=STEEL_O, flat=True)
+    for x, y in ((11, 17), (20, 17), (11, 26), (20, 26)):
+        c.put(x, y, STEEL[0])
+    # the jib
+    c.shade(15, 3, 19, 20, 50)
+    c.bevel(13, 2, 18, 21, TAN[0], TAN[1], TAN[2], outline=DARK)
+    for y in (6, 12, 18):
+        c.rect(13, y, 18, y, STEEL[3])
+    c.disc(15.5, 3.5, 2.4, [STEEL[0], STEEL[2], STEEL[4]], outline=STEEL_O)
+    c.rect(15, 5, 16, 19, DARK)
+    if hauling:
+        c.rect(14, 0, 17, 2, RED[1])
+        c.put(15, 1, RED[0])
+    else:
+        c.put(15, 1, STEEL[1])
+        c.put(16, 1, STEEL[3])
+        c.put(16, 0, STEEL[3])
+    # the drum and its cranks
+    c.bevel(10, 19, 21, 24, BLACK[0], BLACK[2], BLACK[4], outline=DARK)
+    for y in (20, 22):
+        c.rect(11, y, 20, y, BLACK[1])
+    for x0, x1 in ((6, 9), (22, 25)):
+        c.rect(x0, 21, x1, 22, STEEL_O)
+        c.rect(x0, 21, x1, 21, STEEL[1])
+    c.rect(5, 19 if hauling else 23, 6, 21 if hauling else 25, WALNUT[1])
+    c.rect(25, 23 if hauling else 19, 26, 25 if hauling else 21, WALNUT[1])
+    return [c.image()]
+
+
+def livestock_ramp(c):
+    """A livestock ramp whose head is to the north: cleated planks rising to
+    the car door, with a post-and-rail fence down each side."""
+    c.shade(5, 29, 28, 31, 70)
+    c.rect(5, 0, 26, 31, OLD_SEAM)
+    for y in range(32):
+        rise = 1.0 - y / 31.0
+        for x in range(6, 26):
+            tone = OLD_PLANK[(x // 5 * 3 + 2) % len(OLD_PLANK)]
+            col = OLD_SEAM if x % 5 == 0 else mix(tone, CREAM[1], 0.22 * rise)
+            c.put(x, y, mix(col, DARK, 0.16) if noise(x, y // 2, 97) > 0.86 else col)
+    for y in (3, 9, 15, 21, 27):
+        c.rect(6, y, 25, y, WALNUT[0])
+        c.rect(6, y + 1, 25, y + 1, WALNUT[3])
+    for x0 in (2, 27):
+        c.rect(x0, 0, x0 + 2, 31, DARK)
+        c.rect(x0 + 1, 0, x0 + 1, 31, WALNUT[1])
+        for y in (0, 10, 20, 29):
+            c.bevel(x0, y, x0 + 2, y + 2, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+
+
+def handcar(c):
+    """A hand car heading north: a plank deck on four flanged wheels, with a
+    pump pillar in the middle and a walking beam across it, a handle at each
+    end."""
+    c.shade(6, 6, 27, 30, 70)
+    # wheels showing past the deck edge
+    for x0 in (3, 26):
+        for y0 in (6, 21):
+            c.bevel(x0, y0, x0 + 2, y0 + 5, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    c.rect(5, 3, 26, 28, PLANK_SEAM)
+    planks(c, 6, 4, 25, 27, tones=PLANK, seam=PLANK_SEAM, seed=171)
+    c.rect(5, 3, 26, 3, STEEL[3])
+    c.rect(5, 28, 26, 28, STEEL[4])
+    for x in (6, 25):
+        for y in (5, 15, 26):
+            c.put(x, y, STEEL[1])
+    # the pillar and its frame
+    c.bevel(12, 11, 19, 20, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    c.rect(14, 13, 17, 18, BLACK[3])
+    # the walking beam, lying across the car
+    c.shade(4, 16, 28, 18, 50)
+    c.bevel(3, 14, 28, 16, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.disc(15.5, 15.0, 2.2, [BRASS[0], BRASS[1], BRASS[3]], outline=DARK)
+    # the handles: a wooden bar across each end of the beam
+    for x0 in (1, 28):
+        c.bevel(x0, 10, x0 + 2, 20, TAN[0], TAN[1], TAN[3], outline=DARK)
+
+
+def chaldron(c):
+    """A chaldron wagon heading north: a timber body with sloping sides seen
+    from above, iron-strapped, on four wooden wheels."""
+    c.shade(5, 5, 28, 30, 70)
+    for x0 in (2, 27):
+        for y0 in (6, 20):
+            c.bevel(x0, y0, x0 + 2, y0 + 6, WALNUT[1], WALNUT[2], WALNUT[3], outline=DARK)
+    # the rim
+    c.bevel(4, 2, 27, 29, WALNUT[0], WALNUT[1], WALNUT[3], outline=DARK)
+    # the sloping sides, darker towards the floor
+    for i, tone in enumerate((OLD_PLANK[0], OLD_PLANK[1], OLD_PLANK[2], OLD_PLANK[4])):
+        c.rect(6 + i, 4 + i, 25 - i, 27 - i, tone)
+    c.rect(10, 8, 21, 23, OLD_SEAM)
+    planks(c, 11, 9, 20, 22, tones=tuple(mix(t, DARK, 0.35) for t in OLD_PLANK), seam=DARK, seed=173)
+    # corner seams of the slope
+    for i in range(4):
+        for x, y in ((6 + i, 4 + i), (25 - i, 4 + i), (6 + i, 27 - i), (25 - i, 27 - i)):
+            c.put(x, y, OLD_SEAM)
+    # iron straps over the rim
+    for y in (9, 22):
+        c.rect(4, y, 9, y, STEEL[3])
+        c.rect(22, y, 27, y, STEEL[3])
+    # the draw bar
+    c.rect(14, 0, 17, 2, STEEL_O)
+    c.rect(15, 0, 16, 1, STEEL[2])
 
 
 def sand_bin(full):
@@ -1540,6 +2018,55 @@ def wreck():
     for i in range(26):
         x, y = int(noise(i, 1, 63) * 30) + 1, int(noise(i, 2, 63) * 30) + 1
         c.put(x, y, (40, 36, 30) if i % 3 else (120, 112, 100))
+    return [c.image()]
+
+
+def derailed():
+    """Laid over the deck of a car that is off the rails: it leans, and its
+    boards have sprung."""
+    c = Canvas(32, 32)
+    # the deck leans away from the light: darker towards the low side
+    for y in range(32):
+        for x in range(32):
+            a = int(max(0, x + (y - 16) * 0.35 - 6) * 5.2)
+            if a > 0:
+                c.put(x, y, (10, 8, 6), min(a, 130))
+    c.rect(0, 0, 1, 31, (255, 244, 214), 70)
+    # sprung boards: lifted ends catch the light and throw a shadow
+    for x0, y0, n in ((5, 6, 9), (15, 13, 11), (8, 22, 8), (20, 27, 7)):
+        c.line(x0, y0, x0 + n, y0 - 2, PLANK[0])
+        c.line(x0, y0 + 1, x0 + n, y0 - 1, PLANK_SEAM)
+        c.line(x0 + 1, y0 + 2, x0 + n, y0, (10, 8, 6), 120)
+        c.put(x0 + n, y0 - 2, WHITE, 180)
+    # ballast thrown up onto the deck
+    for i in range(14):
+        x, y = int(noise(i, 1, 77) * 28) + 2, int(noise(i, 2, 77) * 28) + 2
+        c.put(x, y, (ASH[0], ASH[1], ASH[2])[i % 3])
+        c.put(x + 1, y + 1, ASH[3], 200)
+    return [c.image()]
+
+
+def rerail_jack():
+    """A screw jack: a foot plate, a tapered body, the screw and a ratchet bar."""
+    c = Canvas(32, 32)
+    c.shade(7, 27, 26, 29, 60)
+    c.bevel(8, 24, 23, 27, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    for y in range(12, 24):
+        half = 3 + (y - 12) // 3
+        c.rect(15 - half, y, 16 + half, y, STEEL_O)
+        c.rect(16 - half, y, 15 + half, y, RED[1])
+        c.put(16 - half, y, RED[0])
+        c.put(15 + half, y, RED[2])
+    c.rect(14, 5, 17, 12, STEEL_O)
+    c.rect(15, 5, 16, 11, STEEL[1])
+    for y in (6, 8, 10):
+        c.rect(15, y, 16, y, STEEL[4])
+    c.bevel(11, 2, 20, 5, STEEL[0], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.line(17, 14, 27, 9, STEEL_O)
+    c.line(17, 13, 27, 8, STEEL[1])
+    c.disc(27.5, 8.0, 1.6, [WALNUT[0], WALNUT[1]], outline=WALNUT[3])
+    c.rect(14, 13, 17, 15, BRASS[2])
+    c.put(14, 13, BRASS[0])
     return [c.image()]
 
 
@@ -2302,9 +2829,10 @@ def span(m, a, b):
     return (min(m(a), m(b)), max(m(a), m(b)))
 
 
-def diesel_cab_end(c, m):
+def diesel_cab_end(c, m, ramp=None):
     """One cab of the main-line diesel. m maps a row counted from this end of
     the engine to a row of the drawing, so the same cab is drawn at both ends."""
+    ramp = ramp or DMAROON
     # nose: marker lights either side of the headcode panel
     y0, y1 = span(m, 4, 9)
     c.bevel(10, y0, 85, y1, YELLOW[0], YELLOW[1], YELLOW[2], outline=YELLOW[3])
@@ -2312,13 +2840,13 @@ def diesel_cab_end(c, m):
         c.disc(x, (y0 + y1) / 2.0, 2.4, [WHITE, FIRE[0], (220, 200, 120)], outline=STEEL_O)
     y0, y1 = span(m, 5, 8)
     c.rect(44, y0, 51, y1, YELLOW[3])
-    c.rect(45, y0 + 1, 50, y1 - 1, DMAROON[2])
+    c.rect(45, y0 + 1, 50, y1 - 1, ramp[2])
     for x in (16, 79):
         c.put(x, m(6), RED[0])
         c.put(x, m(7), RED[2])
     # floor, desk and two seats
     y0, y1 = span(m, 10, 31)
-    c.rect(10, y0, 85, y1, DMAROON[4])
+    c.rect(10, y0, 85, y1, ramp[4])
     y0, y1 = span(m, 13, 29)
     for y in range(y0, y1 + 1):
         for x in range(13, 83):
@@ -2339,8 +2867,8 @@ def diesel_cab_end(c, m):
         c.bevel(x0, y0, x0 + 9, y1, (150, 96, 60), (112, 68, 42), (78, 46, 28), outline=(40, 22, 14))
     # windscreen
     y0, y1 = span(m, 10, 12)
-    c.rect(10, y0, 85, y1, DMAROON[4])
-    c.bands(11, m(11), 84, m(11), [DMAROON[1]], along=False)
+    c.rect(10, y0, 85, y1, ramp[4])
+    c.bands(11, m(11), 84, m(11), [ramp[1]], along=False)
     for x0, x1 in ((15, 44), (51, 80)):
         c.rect(x0, y0, x1, y1, GLASS[3])
         c.bands(x0 + 1, m(11), x1 - 1, m(11), [GLASS[0]], along=False)
@@ -2349,13 +2877,13 @@ def diesel_cab_end(c, m):
     # side walls with their drop windows
     for x0 in (10, 83):
         y0, y1 = span(m, 10, 31)
-        c.rect(x0, y0, x0 + 2, y1, DMAROON[4])
-        c.rect(x0 + 1, y0 + 1, x0 + 1, y1 - 1, DMAROON[1])
+        c.rect(x0, y0, x0 + 2, y1, ramp[4])
+        c.rect(x0 + 1, y0 + 1, x0 + 1, y1 - 1, ramp[1])
         glass_run(c, *span(m, 15, 25), x0=x0, x1=x0 + 2)
     # back wall, with a door onto each walkway
     y0, y1 = span(m, 30, 31)
-    c.rect(10, y0, 85, y1, DMAROON[4])
-    c.rect(11, m(30), 84, m(30), DMAROON[1])
+    c.rect(10, y0, 85, y1, ramp[4])
+    c.rect(11, m(30), 84, m(30), ramp[1])
     for x0 in (14, 75):
         c.rect(x0, y0, x0 + 6, y1, STEEL[4])
         c.rect(x0 + 1, m(30), x0 + 5, m(30), STEEL[2])
@@ -2410,14 +2938,15 @@ def loco_dieselmain(c, with_roof=False):
         c.put(x, y, YELLOW[0])
 
 
-def roof_loco_dieselmain(c, m=lambda y: y):
-    prof = [DMAROON[4], DMAROON[3], DMAROON[1], DMAROON[0], DMAROON[1], DMAROON[2], DMAROON[2], DMAROON[3],
-            DMAROON[4]]
+def roof_loco_dieselmain(c, m=lambda y: y, ramp=None):
+    ramp = ramp or DMAROON
+    prof = [ramp[4], ramp[3], ramp[1], ramp[0], ramp[1], ramp[2], ramp[2], ramp[3],
+            ramp[4]]
     y0, y1 = span(m, 9, 31)
     c.bands(9, y0, 86, y1, across(prof, 78), along=True)
-    c.frame(9, y0, 86, y1, DMAROON[4])
+    c.frame(9, y0, 86, y1, ramp[4])
     c.rect(10, m(10), 85, m(10), CREAM[1])
-    c.rect(10, m(30), 85, m(30), DMAROON[3])
+    c.rect(10, m(30), 85, m(30), ramp[3])
     # twin horns, a ventilator and the aerial
     for x in (36, 44):
         y0, y1 = span(m, 13, 20)
@@ -2425,15 +2954,229 @@ def roof_loco_dieselmain(c, m=lambda y: y):
         c.cyl(x, y0, x + 2, y1, BRASS, along=True)
         c.rect(x, m(13), x + 2, m(13), BRASS[4])
     y0, y1 = span(m, 14, 24)
-    hatch(c, 54, y0, 66, y1, ramp=(DMAROON[1], DMAROON[2], DMAROON[3], DMAROON[4]), handle=False)
+    hatch(c, 54, y0, 66, y1, ramp=(ramp[1], ramp[2], ramp[3], ramp[4]), handle=False)
     for y in (17, 20):
-        c.rect(57, m(y), 63, m(y), DMAROON[4])
+        c.rect(57, m(y), 63, m(y), ramp[4])
     c.put(22, m(20), STEEL[0])
     c.put(72, m(26), RED[0])
 
 
 def roof_loco_dieselmain_rear(c):
     roof_loco_dieselmain(c, lambda y: 31 - y)
+
+
+# ---------------------------------------------------------------------------
+# Electric traction: the box-cab electric, the tram and the overhead line
+
+def pantograph(c, cy):
+    """A pantograph seen from above: four roof insulators, the folding frame
+    and the collector head lying across the track."""
+    c.shade(30, cy - 5, 70, cy + 11, 50)
+    c.frame(37, cy - 7, 59, cy + 8, STEEL[3])
+    for x in (37, 59):
+        for y in (cy - 7, cy + 8):
+            c.disc(x + 0.5, y + 0.5, 2.0, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    for x, y in ((38, cy - 6), (58, cy - 6)):
+        c.line(x, y, 48, cy, STEEL[1])
+    for x, y in ((38, cy + 7), (58, cy + 7)):
+        c.line(x, y, 48, cy + 1, STEEL[1])
+    c.bevel(26, cy - 1, 69, cy + 2, COPPER[0], COPPER[1], COPPER[3], outline=DARK)
+    for x in (24, 70):
+        c.rect(x, cy, x + 1, cy + 1, STEEL[2])
+    c.disc(47.5, cy + 0.5, 1.6, [STEEL[0], STEEL[2]], flat=True)
+
+
+def loco_electric(c, with_roof=False):
+    """A box-cab electric, 96 x 128: a cab at each end, the same from either
+    way, and an equipment hood between them that carries two pantographs."""
+    for y in (38, 50, 77, 89):
+        wheel(c, 6, y - 4, y + 4, True)
+        wheel(c, 87, y - 4, y + 4, False)
+    for y0 in (33, 72):
+        for x in (5, 90):
+            c.rect(x, y0, x, y0 + 22, STEEL[3])
+            c.put(x, y0 + 11, YELLOW[0])
+    # frame and walkways
+    c.rect(8, 3, 87, 124, DARK)
+    tread(c, 9, 4, 86, 123, face=STEEL[3], lit=STEEL[2], dark=STEEL[4], seams=False)
+    for x in (9, 86):
+        c.rect(x, 33, x, 94, YELLOW[1])
+        for y in range(34, 94, 8):
+            c.put(x, y, YELLOW[0])
+            c.put(x, y + 1, YELLOW[3])
+    beam(c, 0, 3, ramp=YELLOW, hazard=True)
+    beam(c, 124, 127, ramp=YELLOW, hazard=True)
+    diesel_cab_end(c, lambda y: y, ramp=GREEN)
+    diesel_cab_end(c, lambda y: 127 - y, ramp=GREEN)
+    # the equipment hood, a cream band along each shoulder
+    c.shade(74, 34, 77, 94, 80)
+    hood(c, 22, 32, 73, 95, GREEN)
+    for x in (26, 69):
+        c.rect(x, 33, x, 94, CREAM[1])
+    # the bus bar between the pantographs and the resistor grilles under it
+    c.rect(47, 46, 48, 82, COPPER[2])
+    c.frame(30, 58, 65, 69, GREEN[4])
+    for y in range(59, 69):
+        c.rect(31, y, 64, y, GREEN[4] if y % 2 else STEEL[2])
+    c.rect(47, 59, 48, 68, COPPER[0])
+    pantograph(c, 44)
+    pantograph(c, 83)
+    for x, y in ((24, 34), (71, 34), (24, 93), (71, 93)):
+        c.put(x, y, YELLOW[0])
+
+
+def roof_loco_electric(c):
+    roof_loco_dieselmain(c, ramp=GREEN)
+
+
+def roof_loco_electric_rear(c):
+    roof_loco_dieselmain(c, lambda y: 31 - y, ramp=GREEN)
+
+
+def tram_end(c, m):
+    """One driving platform of the tram; m maps a row counted from this end
+    to a row of the drawing, as in diesel_cab_end()."""
+    # the fender and the dash with its one big lamp
+    y0, y1 = span(m, 0, 3)
+    c.bevel(16, y0, 79, y1, STEEL[1], STEEL[2], STEEL[4], outline=STEEL_O)
+    c.rect(44, y0, 51, y1, STEEL_O)
+    c.rect(45, y0 + 1, 50, y1 - 1, STEEL[3])
+    y0, y1 = span(m, 4, 7)
+    c.bevel(12, y0, 83, y1, DMAROON[0], DMAROON[1], DMAROON[3], outline=DMAROON[4])
+    c.rect(13, m(5), 82, m(5), CREAM[1])
+    c.disc(47.5, (y0 + y1) / 2.0, 2.2, [WHITE, FIRE[0], (220, 200, 120)], outline=STEEL_O)
+    # the platform floor
+    y0, y1 = span(m, 8, 29)
+    c.rect(12, y0, 83, y1, PLANK_SEAM)
+    planks(c, 13, y0, 82, y1, seed=181)
+    # the dash sides, open behind them for the steps
+    for x0 in (12, 81):
+        a, b = span(m, 8, 13)
+        c.rect(x0, a, x0 + 2, b, DMAROON[4])
+        c.rect(x0 + 1, a, x0 + 1, b, DMAROON[1])
+    for x0 in (7, 84):
+        a, b = span(m, 15, 28)
+        c.rect(x0, a, x0 + 4, b, DARK)
+        tread(c, x0 + 1, a + 1, x0 + 3, b - 1, face=STEEL[3], lit=STEEL[2], dark=STEEL[4], seams=False)
+    # the controller with its brass handle, and the handbrake wheel
+    a, b = span(m, 10, 15)
+    c.shade(37, a + 1, 46, b + 2, 60)
+    c.bevel(36, a, 44, b, BLACK[1], BLACK[2], BLACK[4], outline=DARK)
+    c.disc(40.5, (a + b) / 2.0, 1.8, [BRASS[0], BRASS[1], BRASS[3]], outline=BRASS[4])
+    c.line(41, m(12), 45, m(14), BRASS[0])
+    c.shade(55, a + 1, 62, b + 2, 50)
+    c.ring(57.5, (a + b) / 2.0, 3.2, BRASS[1])
+    c.ring(57.5, (a + b) / 2.0, 3.2, BRASS[4], a=90, width=0.6)
+    c.disc(57.5, (a + b) / 2.0, 1.2, [STEEL[0], STEEL[2]], flat=True)
+    # the bulkhead and the saloon door
+    y0, y1 = span(m, 30, 31)
+    c.rect(0, y0, 95, y1, DMAROON[4])
+    c.rect(1, m(30), 94, m(30), DMAROON[1])
+    c.rect(41, y0, 54, y1, STEEL[4])
+    c.rect(42, m(30), 53, m(30), STEEL[2])
+
+
+def loco_tram(c, with_roof=False):
+    """A town tram, 96 x 128: a driving platform at each end and a saloon
+    with a slatted floor between them. Its sides are the car's window edges."""
+    c.rect(11, 3, 84, 124, DARK)
+    c.rect(0, 30, 95, 97, DARK)
+    tram_end(c, lambda y: y)
+    tram_end(c, lambda y: 127 - y)
+    c.rect(0, 32, 95, 95, DMAROON[4])
+    c.rect(4, 32, 91, 95, PLANK_SEAM)
+    planks(c, 4, 32, 91, 95, seed=183)
+    # brass treads inside the two doors and a worn strip down the aisle
+    for y in (32, 95):
+        c.rect(41, y, 54, y, BRASS[1])
+    c.rect(43, 33, 52, 94, PLANK[0], 46)
+
+
+TRAM_ROOF = [(70, 66, 60), (150, 146, 134), (206, 202, 188), (226, 222, 208), (204, 200, 186),
+             (170, 166, 154), (130, 126, 116), (92, 88, 82), (58, 54, 50)]
+
+
+def roof_loco_tram(c, m=lambda y: y):
+    """The canopy over a driving platform, with the destination board."""
+    y0, y1 = span(m, 2, 31)
+    c.bands(8, y0, 87, y1, across(TRAM_ROOF, 80), along=True)
+    c.frame(8, y0, 87, y1, DMAROON[4])
+    for x, y in ((8, 2), (9, 2), (8, 3), (87, 2), (86, 2), (87, 3)):
+        c.clear(x, m(y), x, m(y))
+    for x, y in ((9, 3), (86, 3)):
+        c.put(x, m(y), DMAROON[4])
+    c.rect(9, m(31), 86, m(31), DMAROON[3])
+    a, b = span(m, 5, 9)
+    c.bevel(33, a, 62, b, CREAM[0], CREAM[1], CREAM[2], outline=DARK)
+    for x in range(37, 60, 3):
+        c.put(x, (a + b) // 2, DARK)
+
+
+def roof_loco_tram_rear(c):
+    roof_loco_tram(c, lambda y: 31 - y)
+
+
+def roof_loco_tram_mid(c):
+    """The saloon roof, one section: a walkway down the middle and a bow
+    collector across it."""
+    c.bands(0, 0, 95, 31, across(TRAM_ROOF), along=True)
+    for x in (0, 95):
+        c.rect(x, 0, x, 31, DMAROON[4])
+    for x in (1, 94):
+        c.rect(x, 0, x, 31, DMAROON[2])
+    c.shade(0, 31, 95, 31, 50)
+    walkway(c, 42, 53, 0, 31)
+    c.shade(29, 12, 69, 21, 50)
+    for x in (38, 57):
+        c.disc(x + 0.5, 18.5, 2.0, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    c.line(39, 18, 47, 11, STEEL[1])
+    c.line(57, 18, 48, 11, STEEL[1])
+    c.bevel(27, 8, 68, 11, COPPER[0], COPPER[1], COPPER[3], outline=DARK)
+    for x in (25, 69):
+        c.rect(x, 9, x + 1, 10, STEEL[2])
+
+
+def catenary_arm_run(c, y0, y1):
+    c.rect(14, y0, 17, y1, STEEL_O)
+    c.rect(15, y0, 16, y1, STEEL[1])
+    c.rect(15, y0, 15, y1, STEEL[0])
+
+
+def catenary_mast(c):
+    """An overhead line mast seen from above, its arm reaching north."""
+    c.shade(11, 13, 23, 25, 70)
+    c.bevel(9, 11, 22, 24, (176, 174, 166), (140, 138, 132), (98, 96, 92), outline=(52, 50, 48))
+    catenary_arm_run(c, 0, 14)
+    c.bevel(11, 13, 20, 22, STEEL[0], STEEL[1], STEEL[3], outline=STEEL_O)
+    c.line(12, 14, 19, 21, STEEL[3])
+    c.line(19, 14, 12, 21, STEEL[3])
+    c.put(15, 17, STEEL[0])
+    c.put(16, 18, STEEL[4])
+
+
+def catenary_arm(c):
+    catenary_arm_run(c, 0, 31)
+    c.line(13, 31, 15, 20, STEEL[3])
+    c.rect(13, 12, 18, 13, STEEL[3])
+
+
+def catenary_hanger(c):
+    """The end of the arm over the rails: two insulators and the wire clamp."""
+    catenary_arm_run(c, 20, 31)
+    c.disc(15.5, 24.5, 2.2, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    c.disc(15.5, 19.5, 2.2, [CREAM[0], CREAM[1], CREAM[3]], outline=DARK)
+    c.rect(14, 14, 17, 17, STEEL_O)
+    c.rect(15, 15, 16, 16, BRASS[1])
+
+
+def catenary_wire(c):
+    """One tile of contact wire, running east-west for an arm that reaches
+    north, with a dropper clamp from the carrying wire above it."""
+    c.rect(0, 15, 31, 15, COPPER[1])
+    c.rect(0, 16, 31, 16, COPPER[3])
+    for x in (7, 23):
+        c.rect(x, 14, x + 1, 17, STEEL_O)
+        c.put(x, 15, STEEL[1])
 
 
 def loco_armored(c, with_roof=False):
@@ -2565,7 +3308,7 @@ def row_offset(c, seg, rows=4):
 LOCOS = {'steam': (loco_steam, roof_loco_steam), 'diesel': (loco_diesel, roof_loco_diesel),
          'armored': (loco_armored, roof_loco_armored)}
 # name -> (sections, the section under the cab roof); the others are 4 long
-LOCO_ROWS = {'mainline': (6, 5), 'diesel': (4, 0), 'dieselmain': (6, 0)}
+LOCO_ROWS = {'mainline': (6, 5), 'diesel': (4, 0), 'dieselmain': (6, 0), 'electric': (4, 0), 'tram': (4, 0)}
 
 
 def loco_rows(name):
@@ -2576,7 +3319,9 @@ def loco_states():
     out = {}
     for name, (body, roof) in list(LOCOS.items()) + [('tender', (loco_tender, None)),
                                                      ('mainline', (loco_mainline, roof_loco_steam)),
-                                                     ('dieselmain', (loco_dieselmain, roof_loco_dieselmain))]:
+                                                     ('dieselmain', (loco_dieselmain, roof_loco_dieselmain)),
+                                                     ('electric', (loco_electric, roof_loco_electric)),
+                                                     ('tram', (loco_tram, roof_loco_tram))]:
         rows = loco_rows(name)[0]
         imgs = directions(body, w=96, h=rows * 32, order=HEADING)
         for seg in range(rows):
@@ -2591,6 +3336,12 @@ def loco_states():
     rimgs = directions(roof_loco_dieselmain_rear, w=96, h=32, order=HEADING)
     for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
         out['roof_loco_dieselmain_b%s' % cn] = slice_car(rimgs, 1, 0, col)
+    # electric traction: the rear cabs, and the tram's saloon sections
+    for state, draw in (('roof_loco_electric_b', roof_loco_electric_rear), ('roof_loco_tram_b', roof_loco_tram_rear),
+                        ('roof_loco_tram_m', roof_loco_tram_mid)):
+        rimgs = directions(draw, w=96, h=32, order=HEADING)
+        for col, cn in ((-1, 'l'), (0, 'c'), (1, 'r')):
+            out[state + cn] = slice_car(rimgs, 1, 0, col)
     return out
 
 
@@ -2769,6 +3520,9 @@ def water_states():
     out['coal_stage_empty'] = coal_stage(0)
     out['coal_stage'] = coal_stage(1)
     out['coal_stage_full'] = coal_stage(2)
+    out['loading_stage_empty'] = loading_stage(None)
+    for tone in ('coal', 'ore', 'sand'):
+        out['loading_stage_' + tone] = loading_stage(tone)
     out['sand_bin_empty'] = sand_bin(False)
     out['sand_bin'] = sand_bin(True)
     return out
@@ -2785,6 +3539,8 @@ def platform_states():
     states['brace_up'] = lever(False)
     states['brace_down'] = lever(True)
     states['wreck'] = wreck()
+    states['derailed'] = derailed()
+    states['rerail_jack'] = rerail_jack()
     states['loco_armor'] = directions(loco_armor, order=HEADING)
     states.update(end_states())
     states['outrigger'] = directions(outrigger, order=EDGE)
@@ -2806,6 +3562,35 @@ def platform_states():
     states['ticket_punched'] = ticket(True)
     states['signal_flags'] = signal_flags()
     states['guard_journal'] = guard_journal()
+    states['signal_danger'] = semaphore(False)
+    states['signal_clear'] = semaphore(True)
+    states['lever_frame'] = lever_frame()
+    states['token_instrument'] = token_instrument()
+    states['train_token'] = train_token()
+    states['section_board'] = section_board()
+    states['signal_wire'] = signal_wire()
+    states['station_board'] = station_board()
+    states['buffer_stop'] = directions(buffer_stop, order=HEADING)
+    states['crossing_boards'] = directions(crossing_boards, order=HEADING)
+    states['crossing_gate_shut'] = directions(lambda c: crossing_gate(c, True), order=HEADING)
+    states['crossing_gate_open'] = directions(lambda c: crossing_gate(c, False), order=HEADING)
+    states['turntable_deck'] = directions(turntable_deck, order=HEADING)
+    states['turntable_girders'] = directions(turntable_girders, order=HEADING)
+    states['turntable_pivot'] = turntable_pivot()
+    states['goods_crane'] = goods_crane(False)
+    states['goods_crane_haul'] = goods_crane(True)
+    states['livestock_ramp'] = directions(livestock_ramp, order=HEADING)
+    states['handcar'] = directions(handcar, order=HEADING)
+    states['chaldron'] = directions(chaldron, order=HEADING)
+    for name, draw in (('catenary_mast', catenary_mast), ('catenary_arm', catenary_arm),
+                       ('catenary_hanger', catenary_hanger), ('catenary_wire', catenary_wire)):
+        states[name] = directions(draw, order=HEADING)
+    states['track_worn'] = track_wear(False)
+    states['track_bad'] = track_wear(True)
+    states['hand_lamp'] = hand_lamp(None)
+    states['hand_lamp_white'] = hand_lamp('white')
+    states['hand_lamp_red'] = hand_lamp('red')
+    states['hand_lamp_green'] = hand_lamp('green')
     states['plough_item'] = plough_item()
     states['tank_valve'] = tank_valve()
     states['ice_bunker'] = cold_chest('bunker', False)
@@ -2944,8 +3729,9 @@ def render_loco(states, name, heading, roof=True):
             im.alpha_composite(states['loco_%s_%d%s' % (name, seg + 1, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
             if roof and seg == cab:
                 im.alpha_composite(states['roof_loco_%s_%s' % (name, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
-            if roof and name == 'dieselmain' and seg == rows - 1:
-                im.alpha_composite(states['roof_loco_dieselmain_b%s' % cn][DIR_INDEX[heading]], (x * 32, y * 32))
+            row = 'b' if seg == rows - 1 else 'm'
+            if roof and seg != cab and 'roof_loco_%s_%s%s' % (name, row, cn) in states:
+                im.alpha_composite(states['roof_loco_%s_%s%s' % (name, row, cn)][DIR_INDEX[heading]], (x * 32, y * 32))
     return im
 
 
@@ -3097,6 +3883,75 @@ def write_previews(out, states, gun):
         im.alpha_composite(states[name][0], (8 + i * 40, 8))
     big(im, 6).save(out / 'conductor.png')
 
+    # signals and single-line working
+    names = ('signal_danger', 'signal_clear', 'lever_frame', 'token_instrument', 'train_token', 'section_board', 'signal_wire')
+    im = ground(8 + len(names) * 40, 48, seed=17)
+    for i, name in enumerate(names):
+        im.alpha_composite(states[name][0], (8 + i * 40, 8))
+    big(im, 6).save(out / 'signals.png')
+
+    # stations and lamps
+    names = ('station_board', 'hand_lamp', 'hand_lamp_white', 'hand_lamp_red', 'hand_lamp_green')
+    im = ground(8 + len(names) * 40, 48, seed=23)
+    for i, name in enumerate(names):
+        im.alpha_composite(states[name][0], (8 + i * 40, 8))
+    big(im, 6).save(out / 'stations.png')
+
+    # track works: a line ending at a buffer stop, and a level crossing with
+    # its gates open to the road, then shut across it
+    rail = read_dmi(RAILS)['rails']
+    im = ground(3 * 112 + 16, 5 * 32 + 16, seed=29)
+    for y in range(1, 5):
+        im.alpha_composite(rail[DIR_INDEX['N']], (40, 8 + y * 32))
+    im.alpha_composite(states['buffer_stop'][DIR_INDEX['N']], (40, 8 + 32))
+    for k, name in enumerate(('crossing_gate_open', 'crossing_gate_shut')):
+        x0 = 112 + k * 112 + 8
+        for x in range(3):
+            im.alpha_composite(rail[DIR_INDEX['E']], (x0 + x * 32, 8 + 2 * 32))
+        im.alpha_composite(states['crossing_boards'][DIR_INDEX['E']], (x0 + 32, 8 + 2 * 32))
+        # two tiles from the rails, clear of the sides of wide cars
+        im.alpha_composite(states[name][DIR_INDEX['S']], (x0 + 32, 8))
+        im.alpha_composite(states[name][DIR_INDEX['N']], (x0 + 32, 8 + 4 * 32))
+    big(im, 5).save(out / 'trackworks.png')
+
+    # a small turntable: the bridge lying north and south with a road
+    # leading off, then turned a quarter away from it
+    pit = turntable_pit(160)[0]
+    im = ground(2 * 7 * 32 + 24, 7 * 32 + 16, seed=37)
+    for k, heading in enumerate(('N', 'E')):
+        x0 = 8 + k * (7 * 32 + 8)
+        im.alpha_composite(pit, (x0 + 32, 8))
+        for y in range(2):
+            im.alpha_composite(rail[DIR_INDEX['N']], (x0 + 3 * 32, 8 + (5 + y) * 32))
+        for i in range(5):
+            at = (x0 + 3 * 32, 8 + i * 32) if heading == 'N' else (x0 + (1 + i) * 32, 8 + 2 * 32)
+            im.alpha_composite(states['turntable_deck'][DIR_INDEX[heading]], at)
+            im.alpha_composite(rail[DIR_INDEX[heading]], at)
+            im.alpha_composite(states['turntable_girders'][DIR_INDEX[heading]], at)
+        im.alpha_composite(states['turntable_pivot'][0], (x0 + 3 * 32, 8 + 2 * 32))
+    big(im, 4).save(out / 'turntable.png')
+
+    # track wear: a line in good order, worn, and in a bad way
+    im = ground(3 * 48 + 16, 3 * 32 + 16, seed=41)
+    for k, name in enumerate((None, 'track_worn', 'track_bad')):
+        for y in range(3):
+            at = (16 + k * 48, 8 + y * 32)
+            im.alpha_composite(rail[DIR_INDEX['N']], at)
+            if name:
+                im.alpha_composite(states[name][0], at)
+    big(im, 6).save(out / 'trackwear.png')
+
+    # off the rails: a derailed boxcar, the same car rerailed, and the jack
+    im = ground(2 * 104 + 8 + 56, 8 * 32 + 16, seed=19)
+    for i, off in enumerate((True, False)):
+        car = render_car(states, 'boxcar', 'N', roof=False)
+        if off:
+            for seg in range(4):
+                car.alpha_composite(states['derailed'][0], (32, seg * 32))
+        im.alpha_composite(car, (8 + i * 104, 8))
+    im.alpha_composite(states['rerail_jack'][0], (2 * 104 + 16, 24))
+    big(im, 3).save(out / 'derailed.png')
+
     # couplings: made, free, broken and taken off, on a train heading east
     def with_couplers(kind, front, rear, part='coupler'):
         car = render_car(states, kind, 'E')
@@ -3146,6 +4001,74 @@ def write_previews(out, states, gun):
     im.alpha_composite(water['coal_stage_full'][0], (16 + 64, 80))
     im.alpha_composite(water['sand_bin'][0], (16 + 160, 80))
     big(im, 3).save(out / 'depot.png')
+
+    # the goods yard: a loading stage empty and filled over an open wagon, the
+    # goods crane at rest and hauling, and a livestock ramp against a stock car
+    wagon = render_car(states, 'hopper', 'E')
+    stock = render_car(states, 'stock_car', 'E')
+    im = ground(wagon.width + stock.width + 96, 96 + 96 + 128, seed=23)
+    lay_track(im, y_tile=6)
+    for i, name in enumerate(('loading_stage_empty', 'loading_stage_coal', 'loading_stage_ore', 'loading_stage_sand')):
+        im.alpha_composite(water[name][0], (8 + i * 72, 8))
+    im.alpha_composite(states['goods_crane'][0], (8 + 4 * 72 + 16, 24))
+    im.alpha_composite(states['goods_crane_haul'][0], (8 + 4 * 72 + 64, 24))
+    im.alpha_composite(wagon, (16, 160))
+    im.alpha_composite(water['loading_stage_coal'][0], (16 + 64, 96))
+    im.alpha_composite(stock, (16 + wagon.width + 32, 160))
+    im.alpha_composite(states['livestock_ramp'][DIR_INDEX['N']], (16 + wagon.width + 32 + 128, 256))
+    big(im, 3).save(out / 'goods.png')
+
+    # early rails: a hand car on iron track, a string of chaldron wagons on a
+    # wooden wagonway (the game tints the same rails), and both from the end
+    im = ground(9 * 32, 5 * 32, seed=29)
+    lay_track(im, y_tile=1)
+    strip = Image.new('RGBA', (im.width, 32), (0, 0, 0, 0))
+    for x in range(0, im.width, 32):
+        strip.alpha_composite(read_dmi(RAILS)['rails'][DIR_INDEX['E']], (x, 0))
+    tint = Image.new('RGBA', strip.size, (0xb9, 0x82, 0x4a, 255))
+    wood = ImageChops.multiply(strip, tint)
+    im.alpha_composite(wood, (0, 3 * 32))
+    im.alpha_composite(states['handcar'][DIR_INDEX['E']], (2 * 32, 32))
+    im.alpha_composite(states['handcar'][DIR_INDEX['N']], (6 * 32, 32))
+    for i in range(3):
+        im.alpha_composite(states['chaldron'][DIR_INDEX['E']], ((1 + i) * 32, 3 * 32))
+    im.alpha_composite(states['chaldron'][DIR_INDEX['N']], (6 * 32, 3 * 32))
+    big(im, 4).save(out / 'early-rails.png')
+
+    # electric traction: a tram and an electric locomotive heading east under
+    # the wire of two masts, then both heading north with their roofs off and
+    # on (the tram's sides are the window edges of its saloon)
+    def tram(heading, roof):
+        car = render_loco(states, 'tram', heading, roof=roof)
+        if not roof:
+            left, right = LEFT_OF[heading], OPPOSITE[LEFT_OF[heading]]
+            for seg in (1, 2):
+                for col in (L, R):
+                    x, y = tile_pos(heading, seg, col, 4)
+                    car.alpha_composite(states['edge_window'][DIR_INDEX[left if col == L else right]], (x * 32, y * 32))
+        return car
+    im = ground(18 * 32, 11 * 32, seed=31)
+    lay_track(im, y_tile=3)
+    im.alpha_composite(tram('E', True), (1 * 32, 2 * 32))
+    im.alpha_composite(render_loco(states, 'electric', 'E'), (10 * 32, 2 * 32))
+    for mx in (4, 13):
+        for k in range(-4, 5):
+            im.alpha_composite(states['catenary_wire'][DIR_INDEX['S']], ((mx + k) * 32, 3 * 32))
+    for mx in (4, 13):
+        im.alpha_composite(states['catenary_mast'][DIR_INDEX['S']], (mx * 32, 1 * 32))
+        im.alpha_composite(states['catenary_arm'][DIR_INDEX['S']], (mx * 32, 2 * 32))
+        im.alpha_composite(states['catenary_hanger'][DIR_INDEX['S']], (mx * 32, 3 * 32))
+    for i, car in enumerate((render_loco(states, 'electric', 'N', roof=False), render_loco(states, 'electric', 'N'),
+                             tram('N', False), tram('N', True))):
+        im.alpha_composite(car, (16 + i * 112, 6 * 32 + 16))
+    # the mast from the other side, its arm reaching north over a second track
+    for k in range(15, 18):
+        im.alpha_composite(read_dmi(RAILS)['rails'][DIR_INDEX['E']], (k * 32, 7 * 32))
+        im.alpha_composite(states['catenary_wire'][DIR_INDEX['N']], (k * 32, 7 * 32))
+    im.alpha_composite(states['catenary_mast'][DIR_INDEX['N']], (16 * 32, 9 * 32))
+    im.alpha_composite(states['catenary_arm'][DIR_INDEX['N']], (16 * 32, 8 * 32))
+    im.alpha_composite(states['catenary_hanger'][DIR_INDEX['N']], (16 * 32, 7 * 32))
+    big(im, 3).save(out / 'electric.png')
 
     # the snowplough: on the front of an engine heading east and north, and
     # the plough standing on the ground
@@ -3336,20 +4259,25 @@ def main(argv):
     water = water_states()
     plough = plough_states()
     loads = load_states()
+    pit = {'pit': turntable_pit(160)}
+    pit_large = {'pit': turntable_pit(352)}
     if '--check' in argv:
         bad = [str(p.relative_to(ROOT)) for p, s, size, cols in ((PLATFORMS, states, (32, 32), 16), (GUN, gun, (96, 96), 2),
-                                                                 (WATER, water, (64, 64), 4), (PLOUGH, plough, (96, 96), 4), (LOADS, loads, (96, 96), 4))
+                                                                 (WATER, water, (64, 64), 4), (PLOUGH, plough, (96, 96), 4), (LOADS, loads, (96, 96), 4),
+                                                                 (PIT, pit, (160, 160), 1), (PIT_LARGE, pit_large, (352, 352), 1))
                if not same(p, s, size, cols)]
         if bad:
             print('out of date: ' + ', '.join(bad))
             return 1
-        print('train sheets match (%d + %d + %d + %d + %d states)' % (len(states), len(gun), len(water), len(plough), len(loads)))
+        print('train sheets match (%d + %d + %d + %d + %d + 2 states)' % (len(states), len(gun), len(water), len(plough), len(loads)))
         return 0
     write_dmi(PLATFORMS, states, cols=16)
     write_dmi(GUN, gun, size=(96, 96), cols=2)
     write_dmi(WATER, water, size=(64, 64), cols=4)
     write_dmi(PLOUGH, plough, size=(96, 96), cols=4)
     write_dmi(LOADS, loads, size=(96, 96), cols=4)
+    write_dmi(PIT, pit, size=(160, 160), cols=1)
+    write_dmi(PIT_LARGE, pit_large, size=(352, 352), cols=1)
     print('wrote %d platform states and the railway gun' % len(states))
     if '--preview' in argv:
         write_previews(Path(argv[argv.index('--preview') + 1]), states, gun)

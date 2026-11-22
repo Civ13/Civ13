@@ -1,9 +1,13 @@
 # Packed multi-depth mining: implementation and acceptance plan
 
-Status: **design only; no playable feature or runtime foundation is implemented**.
-Reviewed against master `853ba40e6a8ad1bc36fd35621d30a5399d043895` on
-2026-11-13. The proposed first playable version is opt-in, bounded, resident
-and persistent. Unloading and slot reuse are later work.
+Status: **Phase 1 (registry schema and validator) is implemented; no playable
+feature, allocation or save wiring exists**. Reviewed against master
+`853ba40e6a8ad1bc36fd35621d30a5399d043895` on 2026-11-13. Since 2026-11-21 every map with an
+underground stacks four whole unformed-rock levels under its surface, each
+added on first dig and saved sparsely ([underground-level.md](underground-level.md#deeper-levels));
+the packed rectangles below remain a separate option for many small mines. The proposed first
+playable version is opt-in, bounded, resident and persistent. Unloading and
+slot reuse are later work.
 
 ## Decision and evidence
 
@@ -74,6 +78,40 @@ counts, string lengths and decoded payload sizes before allocating lists.
 Runtime indexes, leases, busy flags, callbacks and live references are rebuilt
 and explicitly excluded through the custom save policy (DM `tmp` alone is
 insufficient). Keep local entity references distinct from inter-floor links.
+
+### Phase 1: registry schema version 1
+
+[mine_floor_registry.dm](../code/modules/multiz/mine_floor_registry.dm) holds
+the uninstantiated types and pure decoder; shared limits are in
+[mine_registry.dm](../code/__defines/mine_registry.dm). Nothing creates a
+registry, saves one or calls the decoder yet. Shafts and occupants are not in
+version 1; a registry that carries them is refused as an unknown field.
+
+- Header: `schema`, `lineage`, `generation` (committed world save generation),
+  `next_mine_id`, `limits` (`mines`, `depth`, `floors`, `side`, `border`, each
+  at most its hard cap), then `mines`, `floors` and `placements`.
+- Mine: `id` (issued from the counter, below `next_mine_id`), `deepest`
+  (0 for an issued mine with no floor yet) and `created`.
+- Floor: `mine`, `depth`, `width`, `height`, `generator`, `seed`, `created`.
+  Every depth 1..`deepest` has exactly one floor.
+- Placement: `mine`, `depth`, `z`, `x1`, `y1`, `x2`, `y2`, `border`,
+  `generation`. The rectangle includes the border, fits the caller's planes,
+  avoids caller-reserved rectangles and every other placement.
+
+`mine_registry_from_json(text, lineage, maxx, maxy, maxz, reserved)` returns a
+`/datum/mine_registry` or the reason it refused. It checks the text length and
+the schema version first, refuses unknown or missing fields, non-integer,
+negative or oversized numbers (integers stay at or below 2^24 - 1 so BYOND
+holds them exactly), duplicates, wrong lineage and record counts above the
+header limits before walking them. `to_json()` writes one canonical order, so a
+round trip is byte-identical. `floor_state()` answers `new` only for the next
+depth of an issued mine; a committed depth with no record is `corrupt`, never a
+request to generate. `issue_mine_id()` never reuses an id.
+
+Tests: `python3 tests/ecology_spawning/run_linux.py . tests/mine_floor_registry/probe.dm`
+(native, production sources and 35 negative fixtures from
+`tests/mine_floor_registry/make_fixtures.py`) and the offline
+`mine_floor_registry` suite, which also checks Phase 1 stays unwired.
 
 ## Allocation and spatial containment
 

@@ -350,9 +350,10 @@
 	return human_subtile_enabled && human_subtile_ready(direction)
 
 /mob/living/human/proc/human_subtile_ready(direction)
+	var/static/list/valid_directions = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
 	if (persistence_save_in_progress && pulling && subtile_pull_ownership.owners[pulling])
 		return FALSE
-	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_ride_unlinked() && (!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())
+	return !subtile_pull_ownership.owners[src] && human_subtile_shape() && (direction in valid_directions) && !stat && canmove && !transforming && !lying && !prone && !crouching && !restrained() && (!pinned || !pinned.len) && human_subtile_ride_unlinked() && (!human_subtile_trench_crossing(direction) || human_subtile_climb_ready())
 
 // Climbing into or out of a trench (or onto a bridge or frame over one) waits
 // inside turf Enter/Exit. A sleeping Enter/Exit fails the native pixel Move at
@@ -622,7 +623,8 @@
 // Crawling has its own legacy wait and admission. Let that paid path recover
 // an owned offset without making unconscious/restrained/linked bodies eligible.
 /mob/living/human/proc/human_subtile_posture_ready(direction)
-	return !subtile_pull_ownership.owners[src] && human_subtile_offset_owned && (step_x || step_y) && human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked()
+	var/static/list/valid_directions = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
+	return !subtile_pull_ownership.owners[src] && human_subtile_offset_owned && (step_x || step_y) && human_subtile_shape() && (direction in valid_directions) && (prone || lying) && !stat && !transforming && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked()
 
 /mob/living/human/proc/human_subtile_posture_authority(client/owner)
 	return client == owner && (!owner || (owner.mob == src && owner.canmove))
@@ -644,7 +646,8 @@
 	return owner && client == owner && owner.mob == src && owner.canmove
 
 /mob/living/human/proc/human_subtile_crawl_ready(direction)
-	return human_subtile_shape() && (direction in list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned) && !human_subtile_trench_crossing(direction)
+	var/static/list/valid_directions = list(NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST)
+	return human_subtile_shape() && (direction in valid_directions) && (prone || lying) && !stat && !transforming && !crouching && !paralysis && !stunned && !sleeping && !(status_flags & FAKEDEATH) && !restrained() && weakened <= 10 && has_limbs && (!pinned || !pinned.len) && human_subtile_unlinked() && !pulling && ((!step_x && !step_y) || human_subtile_offset_owned) && !human_subtile_trench_crossing(direction)
 
 /mob/living/human/proc/human_subtile_crawl_move(turf/n, duration, posture)
 	// From the anchor tile: a body between tiles overlaps n, so get_dir(src, n) is 0.
@@ -773,6 +776,13 @@
 #define PULL_ROPE_BREAK 16
 #define PULL_ROPE_LAG 1
 #define PULL_WALK_MIN 5
+// Walking away from a pulled thing that sits diagonally or off the grid, the
+// gap can pass a whole tile before the body has wholly left its last tile. So
+// once the gap reaches PULL_TRAIL_HOLD px, the thing is dragged in pixels
+// toward that tile (up to PULL_TRAIL_STEP px per pulse), keeping the gap at
+// PULL_TRAIL_HOLD instead of letting the hold break.
+#define PULL_TRAIL_HOLD 30
+#define PULL_TRAIL_STEP 8
 // Free movement pulls two ways. Walking on, the pulled thing waits until the
 // body has wholly left the tile it last stood on (its centre tile, see
 // human_subtile_anchor), then moves into that tile, lined up on it and gliding
@@ -819,6 +829,12 @@
 			moved = human_subtile_pull_into(M, trail)
 			if (moved)
 				human_pull_trail = null
+		// Falling behind first (it sat diagonally or off the grid): it keeps
+		// coming in pixels toward the tile the body left.
+		if (!moved && human_subtile_pull_trail_chase(M, trail))
+			moved = TRUE
+			if (M.loc == trail && !M.step_x && !M.step_y)
+				human_pull_trail = null
 		if (pulling == M && bounds_dist(src, M) >= 32)
 			to_chat(src, SPAN_WARNING("You lose your hold on \the [M]."))
 			stop_pulling()
@@ -826,7 +842,8 @@
 	// In a steady walk the next tile comes within about one tile's time, so
 	// the pixel drag holds off and the tile follow above keeps its one-tile
 	// spacing. Small moves, or a fresh start after a pause, drag in pixels.
-	if (human_pull_tile_at >= 0 && world.time - human_pull_tile_at <= max(PULL_WALK_MIN, human_pull_tile_pace * 3 / 2))
+	// It still drags once the gap nears a tile, so the hold never breaks.
+	if (human_pull_tile_at >= 0 && world.time - human_pull_tile_at <= max(PULL_WALK_MIN, human_pull_tile_pace * 3 / 2) && bounds_dist(src, M) < PULL_TRAIL_HOLD)
 		return FALSE
 	if (M.bound_x || M.bound_y || M.bound_width != 32 || M.bound_height != 32)
 		return FALSE
@@ -901,6 +918,40 @@
 		stop_pulling()
 	return moved
 
+// Drags a pulled thing that has fallen PULL_TRAIL_HOLD px behind the body
+// toward the tile the body last stood on, lined up on it, just far enough to
+// hold the gap there. Blocked on one axis, it slides along the other.
+/mob/living/human/proc/human_subtile_pull_trail_chase(atom/movable/M, turf/trail)
+	if (M.bound_x || M.bound_y || M.bound_width != 32 || M.bound_height != 32)
+		return FALSE
+	var/slack = bounds_dist(src, M)
+	if (slack <= PULL_TRAIL_HOLD)
+		return FALSE
+	var/ux = trail.x * 32 - (M.x * 32 + M.step_x)
+	var/uy = trail.y * 32 - (M.y * 32 + M.step_y)
+	if (!ux && !uy)
+		return FALSE
+	// Toward the tile, not the body, so it never cuts in front of the body;
+	// the Chebyshev gap shrinks by the larger axis share of the move.
+	var/span = max(abs(ux), abs(uy))
+	var/pull = min(PULL_TRAIL_STEP, span, slack - PULL_TRAIL_HOLD)
+	var/dx = round(ux * pull / span, 1)
+	var/dy = round(uy * pull / span, 1)
+	if (!dx && !dy)
+		return FALSE
+	if (glide_size > 0)
+		M.glide_size = glide_size
+	if (human_subtile_pull_shift(M, dx, dy))
+		return TRUE
+	if (dx && dy)
+		return human_subtile_pull_shift(M, dx, 0) || human_subtile_pull_shift(M, 0, dy)
+	// Caught on a corner: slip sideways toward the tile's line.
+	if (dx && uy)
+		return human_subtile_pull_shift(M, 0, min(PULL_ROPE_STEP, abs(uy)) * ((uy > 0) ? 1 : -1))
+	if (dy && ux)
+		return human_subtile_pull_shift(M, min(PULL_ROPE_STEP, abs(ux)) * ((ux > 0) ? 1 : -1), 0)
+	return FALSE
+
 // Moves a pulled thing into a whole tile, as a tile pull does.
 /mob/living/human/proc/human_subtile_pull_into(atom/movable/M, turf/target)
 	if (target.density)
@@ -974,6 +1025,8 @@
 #undef PULL_ROPE_BREAK
 #undef PULL_ROPE_LAG
 #undef PULL_WALK_MIN
+#undef PULL_TRAIL_HOLD
+#undef PULL_TRAIL_STEP
 
 // Walking through someone (help intent), drift 2px per pulse away from them,
 // or to your right when dead centre, until at least 2px apart. Walls still

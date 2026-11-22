@@ -62,6 +62,11 @@ def connect(path):
     db.execute('PRAGMA journal_mode=WAL')
     db.executescript(SCHEMA)
     db.execute("INSERT OR IGNORE INTO meta VALUES ('schema', ?)", (str(SCHEMA_VERSION),))
+    if 'alive_minutes' not in {row[1] for row in db.execute('PRAGMA table_info(daily)')}:
+        # Playtime (shared player records): minutes connected with the character
+        # alive and awake. Days whose events are still kept are counted again.
+        db.execute('ALTER TABLE daily ADD COLUMN alive_minutes REAL NOT NULL DEFAULT 0')
+        rebuild_daily(db, [row['day'] for row in db.execute('SELECT DISTINCT day FROM event ORDER BY day')])
     db.commit()
     return db
 
@@ -184,19 +189,24 @@ def rebuild_daily(db, days):
         totals = {}
         for row in rows:
             data = json.loads(row['data'])
-            entry = totals.setdefault((row['account'], row['region']), [0, 0.0, 0.0, 0, 0])
+            entry = totals.setdefault((row['account'], row['region']), [0, 0.0, 0.0, 0, 0, 0.0])
             if row['e'] == 'join':
                 entry[0] += 1
             elif row['e'] == 'hb':
                 entry[1] += HEARTBEAT_MINUTES
                 if data.get('act'):
                     entry[2] += HEARTBEAT_MINUTES
+                # Playtime counts only while connected, alive and awake ("asleep"
+                # covers sleeping and unconscious characters).
+                if data.get('st') == 'alive':
+                    entry[5] += HEARTBEAT_MINUTES
             elif row['e'] == 'death':
                 entry[3] += 1
             elif row['e'] == 'depart':
                 entry[4] += 1
-        for (account, region), (joins, minutes, active, deaths, departs) in totals.items():
-            db.execute('INSERT INTO daily VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (day, account, region, joins, minutes, active, deaths, departs))
+        for (account, region), (joins, minutes, active, deaths, departs, alive) in totals.items():
+            db.execute('INSERT INTO daily (day, account, region, joins, minutes, active_minutes, deaths, departs, alive_minutes) '
+                       'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (day, account, region, joins, minutes, active, deaths, departs, alive))
 
 
 def prune(db, now):

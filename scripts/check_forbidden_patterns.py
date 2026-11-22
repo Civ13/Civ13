@@ -33,6 +33,14 @@ PATTERNS = {
     'wwinput_untyped_result': ('WWinput() with no type or choices argument is an alert that '
                                'returns TRUE; its result is not a choice (issue #3748)',
                                'dm', None),
+    'hard_del': ('del() on a datum, atom or mob scans every reference in the world (18 ms per '
+                 'datum, 67 ms per mob on Gaia); use qdel() and let the collector queue it. '
+                 'del() stays for savefiles, clients, the world and the collector itself',
+                 'dm', re.compile(r'(?<![\w.])del\s*\(')),
+    'unpruned_global_list': ('A global list gains src here but no code ever removes from it, so every '
+                             'deleted instance stays referenced (a leak and a forced delete 30 s later); '
+                             'remove src in Destroy()',
+                             'dm', None),
     'merge_marker': ('Unresolved merge conflict marker', 'any',
                      re.compile(r'^(<<<<<<< |>>>>>>> )')),
 }
@@ -151,8 +159,47 @@ def wwinput_matches(text):
     return hits
 
 
-def regex_matches(text, regex, kind):
-    source = code_lines(text) if kind == 'dm' else enumerate(text.splitlines(), 1)
+# A global list declared in code/ (var/global/list/x, var/list/x at top level, GLOBAL_LIST_*).
+GLOBAL_LIST_DECL = re.compile(r'^var/(?:global/)?list/(\w+)\b', re.M)
+GLOBAL_LIST_MACRO = re.compile(r'GLOBAL_LIST_(?:INIT|EMPTY)\((\w+)')
+_LIST_NAME = r'(?<![\w./])(?:GLOB\.|global\.)?(\w+)'
+LIST_ADD_SRC = re.compile(_LIST_NAME + r'\s*(?:\+=|\|=)\s*src\b')
+LIST_PRUNES = (
+    re.compile(_LIST_NAME + r'\s*-='),
+    re.compile(_LIST_NAME + r'\.(?:Remove|Cut)\('),
+    re.compile(_LIST_NAME + r'\s*=\s*(?:list\(|null\b|new\b)'),
+)
+
+
+def unpruned_global_lists(texts, lines=None):
+    """Names of global lists that gain src somewhere and are never removed from anywhere.
+
+    A name-level heuristic across all of code/: any -=, Remove(), Cut() or
+    reassignment of a same-named list counts as pruning. It does not prove the
+    removal runs in Destroy(); it catches a registry nobody ever prunes.
+    """
+    declared, added, pruned = set(), set(), set()
+    texts = list(texts)
+    for index, text in enumerate(texts):
+        declared.update(GLOBAL_LIST_DECL.findall(text))
+        declared.update(GLOBAL_LIST_MACRO.findall(text))
+        for _, line in (lines[index] if lines is not None else code_lines(text)):
+            added.update(LIST_ADD_SRC.findall(line))
+            for pattern in LIST_PRUNES:
+                pruned.update(pattern.findall(line))
+    return (added & declared) - pruned
+
+
+def unpruned_matches(text, names, lines=None):
+    return [(number, line.strip()) for number, line in (lines if lines is not None else code_lines(text))
+            if 'src' in line and any(name in names for name in LIST_ADD_SRC.findall(line))]
+
+
+def regex_matches(text, regex, kind, lines=None):
+    if kind == 'dm':
+        source = lines if lines is not None else code_lines(text)
+    else:
+        source = enumerate(text.splitlines(), 1)
     return [(number, line.strip()) for number, line in source if regex.search(line)]
 
 
@@ -172,7 +219,10 @@ def files_for(kind, root=ROOT):
 def scan(root=ROOT):
     """Return {pattern: {relative path: [(line, text), ...]}} for every hit."""
     hits = {name: {} for name in PATTERNS}
-    cache = {}
+    cache = {path: path.read_text(encoding='utf-8', errors='replace') for path in files_for('dm', root)}
+    # Comment-stripped lines of each .dm file, computed once and shared by every pattern.
+    dm_lines = {path: list(code_lines(text)) for path, text in cache.items()}
+    unpruned = unpruned_global_lists(list(cache.values()), list(dm_lines.values()))
     for name, (_, kind, regex) in PATTERNS.items():
         for path in files_for(kind, root):
             if path not in cache:
@@ -180,8 +230,10 @@ def scan(root=ROOT):
             text = cache[path]
             if name == 'wwinput_untyped_result':
                 found = wwinput_matches(text)
+            elif name == 'unpruned_global_list':
+                found = unpruned_matches(text, unpruned, dm_lines.get(path))
             else:
-                found = regex_matches(text, regex, 'dm' if path.suffix in ('.dm', '.dme') else 'any')
+                found = regex_matches(text, regex, 'dm' if path.suffix in ('.dm', '.dme') else 'any', dm_lines.get(path))
             if found:
                 hits[name][path.relative_to(root).as_posix()] = found
     return hits

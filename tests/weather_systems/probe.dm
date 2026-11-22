@@ -51,6 +51,7 @@ var/ws_runtime_error = FALSE
 	weather_sample_time = -1
 
 /proc/ws_checks()
+	ws_ingress_checks()
 	season = "SPRING"
 	time_of_day = "Midday"
 	map.valid_weather_types = list(WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME)
@@ -121,7 +122,7 @@ var/ws_runtime_error = FALSE
 	S.severe = TRUE
 	weather_sample_time = -1
 	ws_check(weather_at(ice) == WEATHER_EXTREME && weather_look_at(ice) == "snow_storm", "a severe core over tundra is a blizzard")
-	ws_check(get_temp(ice) == -82, "blizzard temperature under the core")
+	ws_check(get_temp(ice) == round(climate_air_temperature(ice, get_area(ice)) - 10), "a blizzard is 10 C colder than the season ([get_temp(ice)])")
 	ws_check(local_precipitation(ice) == "snow", "ground snow sees the storm's snow")
 	var/list/chunk = weather_chunk_state(round(119 / 4), round(59 / 4), 1)
 	ws_check(islist(chunk) && chunk[1] == "snow_storm" && chunk[2] == 255, "drawn chunk under the core is a full blizzard")
@@ -194,6 +195,9 @@ var/ws_runtime_error = FALSE
 	if (H)
 		H.origin_x = 60
 		H.origin_y = 60
+		// Fixed size: a heat wave can be 120 tiles wide, which reaches the sand.
+		H.radius_x = 80
+		H.radius_y = 80
 		H.origin_time = world.time
 		H.born = world.time - 6000
 		weather_sample_time = -1
@@ -203,7 +207,7 @@ var/ws_runtime_error = FALSE
 	ws_check(!weather_heat_at(field), "no heat once it has gone")
 
 	// Wind veers, never reverses.
-	var/static/list/opposite = list("North" = "South", "South" = "North", "East" = "West", "West" = "East")
+	var/static/list/opposite = list("North" = "South", "South" = "North", "East" = "West", "West" = "East", "Northeast" = "Southwest", "Southwest" = "Northeast", "Southeast" = "Northwest", "Northwest" = "Southeast")
 	var/reversed = FALSE
 	var/turned = FALSE
 	var/direction = "North"
@@ -214,7 +218,7 @@ var/ws_runtime_error = FALSE
 		if (next != direction)
 			turned = TRUE
 		direction = next
-	ws_check(!reversed && turned, "wind veers by quarter turns and never reverses")
+	ws_check(!reversed && turned, "wind veers by eighth turns and never reverses")
 
 	// A storm comes round to a new wind without jumping.
 	S = weather_system_spawn(WEATHER_SYSTEM_STORM, FALSE, 100, 60)
@@ -242,9 +246,14 @@ var/ws_runtime_error = FALSE
 	var/obj/structure/weather_vane/shut_in = new(indoors)
 	ws_check(vane.icon_state == "weather_vane_west" && (vane in weather_vanes), "a weather vane points into the wind")
 	map.winddirection = "North"
+	// The local wind (weather_wind.dm) comes round over a few ticks; settle it at once.
+	if (weather_air)
+		weather_air.settle(TRUE)
 	weather_vanes_turn()
 	ws_check(vane.icon_state == "weather_vane_north" && shut_in.icon_state == "weather_vane_east", "the vane swings with the wind, but not under a roof")
 	map.winddirection = "West"
+	if (weather_air)
+		weather_air.settle(TRUE)
 	weather_vanes_turn()
 	// A little before the forecast time it is still dry; at it, raining.
 	ws_age(S, eta - 300)
@@ -270,3 +279,27 @@ var/ws_runtime_error = FALSE
 	ws_check(!weather_vanes.len, "removed vanes are forgotten")
 	weather_systems_clear()
 	ws_check(length(weather_system_report()) == 0, "report is empty with a clear sky")
+
+// Pure ingress geometry: no diagonal wind is selected by gameplay yet.
+/proc/ws_ingress_checks()
+	var/list/winds = list(list(1, 0), list(-1, 0), list(0, 1), list(0, -1))
+	var/list/expected = list(90, 170, 80, 80)
+	for (var/i = 1, i <= winds.len, i++)
+		var/list/W = winds[i]
+		ws_check(weather_upwind_distance(W[1], W[2], 60, 60, 30, 20, 200, 120) == expected[i], "cardinal ingress [i] unchanged")
+	var/diagonal = 1 / sqrt(2)
+	for (var/sx in list(-1, 1))
+		for (var/sy in list(-1, 1))
+			for (var/aim_x in list(1, 60, 199))
+				for (var/aim_y in list(1, 60, 119))
+					var/wx = sx * diagonal
+					var/wy = sy * diagonal
+					var/back = weather_upwind_distance(wx, wy, aim_x, aim_y, 30, 20, 200, 120)
+					var/x = aim_x - wx * back
+					var/y = aim_y - wy * back
+					ws_check(x + 30 <= 0.001 || x - 30 >= 199.999 || y + 20 <= 0.001 || y - 20 >= 119.999, "diagonal ingress outside a boundary")
+					// A shorter offset must leave the bounding box overlapping the map.
+					x = aim_x - wx * (back - 0.1)
+					y = aim_y - wy * (back - 0.1)
+					ws_check(x + 30 > 0 && x - 30 < 200 && y + 20 > 0 && y - 20 < 120, "diagonal ingress does not overshoot the nearest exit")
+	ws_check(weather_upwind_distance(0, 0, 60, 60, 30, 20, 200, 120) == 0, "zero vector has no ingress offset")

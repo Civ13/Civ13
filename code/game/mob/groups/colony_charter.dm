@@ -84,7 +84,8 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 		var/name = copytext(parent, length(prefix) + 1)
 		return (name in custom_civs) ? name : null
 	var/name = colony_named_for(parent)
-	return name && colony_charter_of(name) ? name : null
+	// A colony on its claimed land stands without its charter (island_claim.dm).
+	return name && (colony_charter_of(name) || island_claim_holds(parent)) ? name : null
 
 // Standing colonies for the land sample: parent, local name, age in whole
 // hours and living members (characters that belong to an account).
@@ -93,7 +94,7 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	var/list/colonies = faction_colonies()
 	for (var/name in colonies)
 		var/list/row = colonies[name]
-		if (!islist(row) || !(name in custom_civs) || !colony_charter_of(name) || report.len >= 50)
+		if (!islist(row) || !(name in custom_civs) || !(colony_charter_of(name) || island_claim_holds(row[1])) || report.len >= 50)
 			continue
 		var/members = 0
 		for (var/mob/living/human/H in human_mob_list)
@@ -150,13 +151,18 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 /obj/structure/colony_charter/examine(mob/user)
 	..()
 	if (!faction)
-		to_chat(user, "No charter hangs on it yet. A faction's leader who has travelled here from their own land can plant one.")
+		to_chat(user, "No charter hangs on it yet. A faction's leader who has travelled here from their own land can plant one.[expedition_land_key() ? " Planted on a land across the sea, it claims the island as the faction's own: only those the faction lets land can sail here (Faction > Faction Island)." : ""]")
 		return
 	var/list/row = map ? map.faction_colonies()[faction] : null
 	if (islist(row))
 		to_chat(user, "It holds the charter of [faction], a colony from [copytext(row[1], 5, findtext(row[1], ":", 5))].")
 	else
 		to_chat(user, "It holds the charter of [faction].")
+	var/claim = islist(row) ? island_claim_text(row[1]) : null
+	if (claim)
+		to_chat(user, claim)
+		// The claimed island's border (island_access.dm).
+		to_chat(user, island_access_status_text(row[1]))
 
 // Why user cannot plant a charter here now, or null.
 /obj/structure/colony_charter/proc/plant_block(mob/living/human/user)
@@ -166,6 +172,11 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 		return "A charter already hangs here."
 	if (!isturf(loc) || user.stat || get_dist(user, src) > 1)
 		return "You must stand beside the charter post."
+	// The leader of the colony holding this land's claim plants its charter again (island_claim.dm).
+	var/claimed = island_claim_leader_parent(user)
+	if (claimed)
+		var/own = map.colony_named_for(claimed)
+		return own && map.colony_charter_of(own) ? "[own]'s charter already stands in this land." : null
 	var/origin = user.colony_origin
 	if (!colony_parent_valid(origin) || !user.colony_origin_leader)
 		return "Only a faction's leader who travelled here from their faction's land can plant a colony."
@@ -201,7 +212,7 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	if (block)
 		to_chat(user, SPAN_WARNING(block))
 		return
-	var/name = party_train_party_name(user.colony_origin)
+	var/name = party_train_party_name(island_claim_leader_parent(user) || user.colony_origin)
 	var/answer = WWinput(user, "Plant the charter of [name] here, founding a colony of your faction in this land? Members of [name] who arrive here will join it.", "Colony Charter", "Cancel", list("Plant the charter", "Cancel"))
 	if (answer != "Plant the charter")
 		return
@@ -212,11 +223,12 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	plant(user)
 
 /obj/structure/colony_charter/proc/plant(mob/living/human/user)
-	var/origin = user.colony_origin
+	var/origin = island_claim_leader_parent(user) || user.colony_origin
 	var/name = map.colony_named_for(origin)
 	if (name)
-		// The colony lost its charter; a leader of the parent sets it up again.
-		user.enroll_in_faction(name)
+		// The colony lost its charter; a leader of the parent, or its own, sets it up again.
+		if (user.civilization != name)
+			user.enroll_in_faction(name)
 	else
 		name = party_train_party_name(origin)
 		map.colony_found(user, name, origin)
@@ -224,7 +236,7 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	update_icon()
 	map.recruitment_audit(name, "[user.real_name] planted the colony charter at [x],[y].", faction_roster_account(user) || "")
 	// On a land across the sea the charter is the faction's claim to it.
-	if (expedition_land_key())
+	if (expedition_land_key() && !island_claim_holds(origin))
 		expedition_land_ask("claim", user.ckey, origin)
 	log_game("Colony: [key_name(user)] planted the charter of [name] ([origin]) at [x],[y],[z].")
 	to_chat(user, "<big>The charter of <b>[name]</b> now stands in this land.</big>")

@@ -34,6 +34,9 @@
 // that leads there, as fractions of its length counted west to east or south
 // to north. One edge may lead to several lands (Asia's west edge: Europe in
 // the north, the Desert in the south).
+// A map sets this only for a world outside the earth group (fixtures, the Moon's
+// colonies); the earth group's links come from world_links (world_links.dm),
+// by this world's region id. Read them through region_edge_links().
 /obj/map_metadata/var/list/edge_crossings = null
 // The level the crossings are walked on: the surface.
 /obj/map_metadata/var/edge_crossing_z = 1
@@ -46,6 +49,18 @@
 
 // "side|id" = the positions of dry ground along that stretch of the border row.
 var/global/list/region_edge_spans = list()
+
+// The edges of this world that lead on, or null: the map's own, else this
+// region's entry in the world links table.
+/proc/region_edge_links()
+	if (!map)
+		return null
+	if (map.edge_crossings)
+		return map.edge_crossings
+	if (!shard_group || !shard_group.enabled || !istext(shard_group.region))
+		return null
+	var/list/links = world_links[shard_group.region]
+	return length(links) ? links : null
 
 /proc/region_edge_dir(side)
 	switch (side)
@@ -93,9 +108,10 @@ var/global/list/region_edge_spans = list()
 // The region ids a side leads to.
 /proc/region_edge_destinations(side)
 	. = list()
-	if (!map || !map.edge_crossings)
+	var/list/links = region_edge_links()
+	if (!links)
 		return
-	var/entry = map.edge_crossings[side]
+	var/entry = links[side]
 	if (istext(entry))
 		. += entry
 	else if (islist(entry))
@@ -105,10 +121,11 @@ var/global/list/region_edge_spans = list()
 
 // list(first, last) positions of the stretch of a side that leads to id, or null.
 /proc/region_edge_bounds(side, id)
-	if (!map || !map.edge_crossings || !istext(id))
+	var/list/links = region_edge_links()
+	if (!links || !istext(id))
 		return null
 	var/length = region_edge_length(side)
-	var/entry = map.edge_crossings[side]
+	var/entry = links[side]
 	if (istext(entry))
 		return entry == id ? list(1, length) : null
 	if (!islist(entry))
@@ -152,14 +169,18 @@ var/global/list/region_edge_spans = list()
 
 // The side whose crossing T lies on, or null.
 /proc/region_edge_side(turf/T)
-	if (!map || !length(map.edge_crossings) || !istype(T) || T.z != map.edge_crossing_z)
+	var/list/links = region_edge_links()
+	if (!links || !istype(T))
 		return null
+	// A tunnel out to the edge underground leads on too (region_edge_deep.dm).
+	if (T.z != map.edge_crossing_z)
+		return region_edge_deep_side(T)
 	var/side = null
 	if (T.y == 1) side = "south"
 	else if (T.y == world.maxy) side = "north"
 	else if (T.x == 1) side = "west"
 	else if (T.x == world.maxx) side = "east"
-	if (!side || !map.edge_crossings[side] || !region_edge_ground(T))
+	if (!side || !links[side] || !region_edge_ground(T))
 		return null
 	if (!region_edge_destination(side, region_edge_along(side, T)))
 		return null
@@ -282,10 +303,10 @@ var/global/list/region_edge_spans = list()
 
 // Called after a human's own step. Asks, and sends them on a yes.
 /mob/living/human/proc/region_edge_check()
-	if (region_edge_asking || !map || !map.edge_crossings)
+	if (region_edge_asking || !region_edge_links())
 		return
 	var/turf/T = loc
-	if (!isturf(T) || (T.y != 1 && T.x != 1 && T.y != world.maxy && T.x != world.maxx))
+	if (!isturf(T) || ((T.y != 1 && T.x != 1 && T.y != world.maxy && T.x != world.maxx) && !region_edge_deep_on_rim(T)))
 		return
 	var/side = region_edge_side(T)
 	if (!side)
@@ -300,19 +321,23 @@ var/global/list/region_edge_spans = list()
 
 // A rider carried onto the edge by what they ride (a bicycle) is asked too.
 /mob/living/human/proc/region_edge_ride()
-	if (map && map.edge_crossings)
+	if (region_edge_links())
 		region_edge_check()
 
 // Asks and waits on its own; the step that led here is not held up.
 /mob/living/human/proc/region_edge_cross(side, turf/T)
 	set waitfor = FALSE
-	var/id = region_edge_destination(side, region_edge_along(side, T))
+	var/depth = region_edge_deep_depth(T)
+	var/id = depth ? region_edge_deep_destination(side, region_edge_along(side, T)) : region_edge_destination(side, region_edge_along(side, T))
 	if (!id)
 		region_edge_asking = FALSE
 		return
 	var/obj/structure/region_gate/land_edge/gate = new(T)
 	gate.destination = id
 	gate.crossing = list(side, region_edge_fraction(side, id, T), id)
+	// Underground the crossing carries its depth (region_edge_deep.dm).
+	if (depth)
+		gate.crossing = list(side, region_edge_deep_fraction(side, id, region_edge_along(side, T)), id, depth)
 	// The mount is recorded now and leaves only if its rider did.
 	var/mob/living/simple_animal/steed = riding_mob
 	gate.mount = region_edge_mount_record(src)
@@ -510,12 +535,12 @@ var/global/list/region_edge_spans = list()
 		return FALSE
 	if (!isnull(P["led"]) && !region_edge_mount_valid(P["led"], TRUE))
 		return FALSE
-	return islist(E) && E.len == 3 && !!region_edge_dir(E[1]) && isnum(E[2]) && E[2] >= 0 && E[2] <= 1 && istext(E[3])
+	return islist(E) && (E.len == 3 || (E.len == 4 && isnum(E[4]) && E[4] >= 1 && E[4] <= 8 && E[4] == round(E[4]))) && !!region_edge_dir(E[1]) && isnum(E[2]) && E[2] >= 0 && E[2] <= 1 && istext(E[3])
 
 // Where a walker who crossed an edge comes out: the matching place on the
 // facing edge here, a few steps in. Null when this land has no such edge.
 /proc/region_edge_arrival_turf(list/P, incoming)
-	if (!islist(P) || !islist(P["edge"]) || !map || !length(map.edge_crossings))
+	if (!islist(P) || !islist(P["edge"]) || !region_edge_links())
 		return null
 	var/list/E = P["edge"]
 	// Turned back at the far side: they stand where they left.
@@ -523,6 +548,11 @@ var/global/list/region_edge_spans = list()
 	var/id = incoming ? P["from"] : E[3]
 	if (!side || !istext(id))
 		return null
+	// Walked over underground: out into the tunnel at that depth, else on the surface.
+	if (E.len == 4)
+		var/turf/deep = region_edge_deep_arrival(side, id, E[2], E[4])
+		if (deep)
+			return deep
 	var/list/dry = region_edge_dry(side, id)
 	if (!dry)
 		return null

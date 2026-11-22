@@ -107,6 +107,14 @@
 		return
 	to_chat(usr, jointext(H.origin_language_report(), "<br>"))
 
+/client/proc/cmd_admin_check_language_drift()
+	set category = "Admin"
+	set name = "Check Language Drift"
+	set desc = "Show how far each nation's native speakers have drifted from other speakers of their language."
+	if (!check_rights(R_ADMIN))
+		return
+	to_chat(usr, jointext(language_drift_report(), "<br>"))
+
 /client/proc/cmd_admin_set_origin(mob/living/human/H as mob in human_mob_list)
 	set category = "Admin"
 	set name = "Set Origin"
@@ -115,13 +123,9 @@
 		return
 	if (!istype(H) || QDELETED(H))
 		return
-	var/list/peoples = list()
-	for (var/origin_type in typesof(/datum/origin) - /datum/origin)
-		var/datum/origin/candidate = origin_type
-		var/datum/origin/O = origin_by_id(initial(candidate.id))
-		if (O)
-			peoples["[O.name] ([O.language])"] = O
-	var/picked = input(usr, "Which people does [H.real_name] belong to?", "Set Origin") as null|anything in peoples
+	// Roots and peoples that formed in play (peoples.dm).
+	var/list/peoples = all_people_choices()
+	var/picked = input(usr, "Which people does [H.real_name] belong to?", "Set Origin") as null|anything in sortList(peoples)
 	if (!picked || !istype(H) || QDELETED(H))
 		return
 	var/datum/origin/O = peoples[picked]
@@ -164,3 +168,118 @@
 	log_admin("[key_name(usr)] set [key_name(H)]'s [L.name] to [round(H.language_score(L))]%.")
 	message_admins("[key_name_admin(usr)] set [key_name_admin(H)]'s [L.name] to [round(H.language_score(L))]%.")
 	to_chat(usr, jointext(H.origin_language_report(), "<br>"))
+
+// ------------------------------------------------------------
+// Language splits (code/game/mob/language/daughter.dm)
+// ------------------------------------------------------------
+
+/client/proc/cmd_admin_force_language_split()
+	set category = "Admin"
+	set name = "Force Language Split"
+	set desc = "Make a nation's speech community ready to split now, whatever its drift, and optionally name the new language."
+	if (!check_rights(R_ADMIN))
+		return
+	ensure_daughter_languages()
+	var/list/nations = list()
+	for (var/mob/living/human/H in living_mob_list)
+		if (H.civilization != "none")
+			nations |= H.civilization
+	var/nation = input(usr, "Which nation?", "Force Language Split") as null|anything in sortList(nations)
+	if (!nation)
+		return
+	var/list/choices = list()
+	for (var/lname in all_languages)
+		var/datum/language/L = all_languages[lname]
+		if (language_learnable(L) && language_community_natives(nation, L))
+			choices["[L.name] ([language_community_natives(nation, L)] natives, [round(language_drift(language_community_key(nation, L)))]% drift)"] = L
+	var/picked = input(usr, "Which of their languages?", "Force Language Split") as null|anything in sortList(choices)
+	if (!picked)
+		return
+	var/datum/language/L = choices[picked]
+	var/datum/language/root = language_root(L)
+	if (!root || language_daughter_count(root) >= LANGUAGE_DAUGHTERS_PER_ROOT)
+		to_chat(usr, SPAN_WARNING("[root ? root.name : L.name] already has [LANGUAGE_DAUGHTERS_PER_ROOT] daughter languages on this world."))
+		return
+	var/key = language_community_key(nation, L)
+	var/list/pending = language_lineage_part("pending")
+	pending[key] = language_real_minute()
+	var/wanted = input(usr, "Name it now? Leave empty to let the nation's leader name it.", "Force Language Split") as text|null
+	if (wanted && length(trim(wanted)))
+		var/problem = language_name_problem(wanted)
+		if (problem)
+			to_chat(usr, SPAN_WARNING("[problem] It is ready to split; the leader can name it."))
+		else
+			var/datum/language/D = split_language(key, language_clean_name(wanted))
+			if (D)
+				log_admin("[key_name(usr)] split [nation]'s [L.name] into [D.name].")
+				message_admins("[key_name_admin(usr)] split [nation]'s [L.name] into [D.name].")
+				return
+	log_admin("[key_name(usr)] made [nation]'s [L.name] ready to split.")
+	message_admins("[key_name_admin(usr)] made [nation]'s [L.name] ready to split.")
+	language_split_ready_notice(nation, L)
+
+/proc/admin_daughter_language_choices()
+	ensure_daughter_languages()
+	var/list/choices = list()
+	var/list/records = language_lineage_part("daughters")
+	for (var/name in records)
+		var/list/record = records[name]
+		if (is_daughter_language(all_languages[name]) && islist(record))
+			choices["[name] (from [record["parent"]], [record["nation"]][record["imported"] ? ", arrived with travellers" : ""])"] = name
+	return choices
+
+/client/proc/cmd_admin_merge_language()
+	set category = "Admin"
+	set name = "Merge Language Back"
+	set desc = "Undo a language split: everyone who has the daughter language gets it as its parent instead."
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/choices = admin_daughter_language_choices()
+	if (!choices.len)
+		to_chat(usr, SPAN_WARNING("This world has no daughter languages."))
+		return
+	var/picked = input(usr, "Which language should be merged back into its parent?", "Merge Language Back") as null|anything in sortList(choices)
+	if (!picked)
+		return
+	var/name = choices[picked]
+	var/list/children = daughter_language_children(name)
+	if (children.len)
+		to_chat(usr, SPAN_WARNING("[name] has daughter languages of its own ([jointext(children, ", ")]). Merge those first."))
+		return
+	if (alert(usr, "Merge [name] back into its parent? Everyone who has it keeps the better score in the parent. This cannot be undone.", "Merge Language Back", "Merge", "Cancel") != "Merge" || !check_rights(R_ADMIN))
+		return
+	var/count = merge_daughter_language(name)
+	if (isnull(count))
+		to_chat(usr, SPAN_WARNING("[name] could not be merged."))
+		return
+	log_admin("[key_name(usr)] merged the language [name] back into its parent ([count] character\s).")
+	message_admins("[key_name_admin(usr)] merged the language [name] back into its parent ([count] character\s).")
+
+/client/proc/cmd_admin_rename_language()
+	set category = "Admin"
+	set name = "Rename Language"
+	set desc = "Rename a daughter language for everyone in this world."
+	if (!check_rights(R_ADMIN))
+		return
+	var/list/choices = admin_daughter_language_choices()
+	if (!choices.len)
+		to_chat(usr, SPAN_WARNING("This world has no daughter languages."))
+		return
+	var/picked = input(usr, "Which language should be renamed?", "Rename Language") as null|anything in sortList(choices)
+	if (!picked)
+		return
+	var/old = choices[picked]
+	var/wanted = input(usr, "New name for [old] (3 to 24 letters). Travellers already in other lands keep the old name there.", "Rename Language", old) as text|null
+	if (!wanted || !check_rights(R_ADMIN))
+		return
+	var/problem = language_name_problem(wanted)
+	if (problem)
+		to_chat(usr, SPAN_WARNING(problem))
+		return
+	var/new_name = language_clean_name(wanted)
+	var/count = rename_daughter_language(old, new_name)
+	if (isnull(count))
+		to_chat(usr, SPAN_WARNING("[old] could not be renamed."))
+		return
+	log_admin("[key_name(usr)] renamed the language [old] to [new_name] ([count] character\s).")
+	message_admins("[key_name_admin(usr)] renamed the language [old] to [new_name] ([count] character\s).")

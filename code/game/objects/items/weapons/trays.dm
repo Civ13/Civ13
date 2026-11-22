@@ -49,16 +49,8 @@
 			M.take_organ_damage(3)
 		else
 			M.take_organ_damage(5)
-		if (prob(50))
-			playsound(M, 'sound/items/trayhit1.ogg', 50, TRUE)
-			for (var/mob/O in viewers(M, null))
-				O.show_message(text("<span class='danger'>[] slams [] with the tray!</span>", user, M), TRUE)
-			return
-		else
-			playsound(M, 'sound/items/trayhit2.ogg', 50, TRUE)  //we applied the damage, we played the sound, we showed the appropriate messages. Time to return and stop the proc
-			for (var/mob/O in viewers(M, null))
-				O.show_message(text("<span class='danger'>[] slams [] with the tray!</span>", user, M), TRUE)
-			return
+		play_hit_feedback(M, user)
+		return
 
 
 	var/protected = FALSE
@@ -80,14 +72,7 @@
 			if (istype(location, /turf))	 //Addin' blood! At least on the floor and item :v
 				location.add_blood(H)
 
-		if (prob(50))
-			playsound(M, 'sound/items/trayhit1.ogg', 50, TRUE)
-			for (var/mob/O in viewers(M, null))
-				O.show_message(text("<span class='danger'>[] slams [] with the tray!</span>", user, M), TRUE)
-		else
-			playsound(M, 'sound/items/trayhit2.ogg', 50, TRUE)  //sound playin'
-			for (var/mob/O in viewers(M, null))
-				O.show_message(text("<span class='danger'>[] slams [] with the tray!</span>", user, M), TRUE)
+		play_hit_feedback(M, user)
 		if (prob(10))
 			M.Stun(rand(1,3))
 			M.take_organ_damage(3)
@@ -104,14 +89,7 @@
 			if (istype(location, /turf))
 				location.add_blood(H)
 
-		if (prob(50))
-			playsound(M, 'sound/items/trayhit1.ogg', 50, TRUE)
-			for (var/mob/O in viewers(M, null))
-				O.show_message(text("<span class='danger'>[] slams [] in the face with the tray!</span>", user, M), TRUE)
-		else
-			playsound(M, 'sound/items/trayhit2.ogg', 50, TRUE)  //sound playin' again
-			for (var/mob/O in viewers(M, null))
-				O.show_message(text("<span class='danger'>[] slams [] in the face with the tray!</span>", user, M), TRUE)
+		play_hit_feedback(M, user, TRUE)
 		if (prob(30))
 			M.Stun(rand(2,4))
 			M.take_organ_damage(4)
@@ -122,6 +100,17 @@
 				M.Weaken(2)
 				return
 			return
+
+/obj/item/weapon/tray/proc/play_hit_feedback(mob/living/human/target, mob/living/human/user, face_hit = FALSE)
+	if (prob(50))
+		playsound(target, 'sound/items/trayhit1.ogg', 50, TRUE)
+	else
+		playsound(target, 'sound/items/trayhit2.ogg', 50, TRUE)
+	for (var/mob/O in viewers(target, null))
+		if (face_hit)
+			O.show_message(text("<span class='danger'>[] slams [] in the face with the tray!</span>", user, target), TRUE)
+		else
+			O.show_message(text("<span class='danger'>[] slams [] with the tray!</span>", user, target), TRUE)
 
 /obj/item/weapon/tray/var/cooldown = FALSE	//shield bash cooldown. based on world.time
 
@@ -141,17 +130,19 @@
 =																			=
 ===============~~~~~================================~~~~~====================
 */
+/obj/item/weapon/tray/proc/carry_weight(obj/item/I)
+	if (I.w_class == 1.0)
+		return 1
+	else if (I.w_class == 2.0)
+		return 3
+	return 5
+
 /obj/item/weapon/tray/proc/calc_carry()
 	// calculate the weight of the items on the tray
 	var/val = FALSE // value to return
 
 	for (var/obj/item/I in carrying)
-		if (I.w_class == 1.0)
-			val ++
-		else if (I.w_class == 2.0)
-			val += 3
-		else
-			val += 5
+		val += carry_weight(I)
 
 	return val
 
@@ -162,13 +153,7 @@
 
 	for (var/obj/item/I in loc)
 		if ( I != src && !I.anchored && !istype(I, /obj/item/clothing/under) && !istype(I, /obj/item/clothing/suit) && !istype(I, /obj/item/projectile) )
-			var/add = FALSE
-			if (I.w_class == 1.0)
-				add = TRUE
-			else if (I.w_class == 2.0)
-				add = 3
-			else
-				add = 5
+			var/add = carry_weight(I)
 			if (calc_carry() + add >= max_carry)
 				break
 

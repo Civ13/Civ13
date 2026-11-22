@@ -163,8 +163,9 @@ GLOBAL_DATUM_INIT(has_discord_embeddable_links, /regex, regex("(https?://\[^\\s|
 	var/longest = abs(w)
 	var/shortest = abs(h)
 	if(!(longest > shortest))
-		longest = abs(h)
-		shortest = abs(w)
+		var/previous_longest = longest
+		longest = shortest
+		shortest = previous_longest
 		if(h < 0) dy2 = -1
 		else if (h > 0) dy2 = 1
 		dx2 = 0
@@ -448,12 +449,6 @@ proc/get_mob_with_client_list()
 	return A*/
 
 //Quick type checks for some tools
-var/global/list/common_tools = list(
-/obj/item/weapon/wrench,
-/obj/item/weapon/hammer,
-/obj/item/weapon/wirecutters,
-///obj/item/multitool,
-/obj/item/weapon/crowbar)
 
 /proc/iswirecutter(O)
 	if (is_tool(O, TOOL_WIRECUTTER))
@@ -516,6 +511,8 @@ proc/is_hot(obj/item/W as obj)
 
 //check if mob is lying down on something we can operate him on.
 /proc/can_operate(mob/living/human/M)
+	if (istype(M) && M.offline_sleep_protected())
+		return FALSE
 	var/M_turf = get_turf(M)
 	for (var/obj/structure/optable/O in M_turf)
 		return TRUE

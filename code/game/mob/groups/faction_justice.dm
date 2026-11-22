@@ -150,23 +150,38 @@
 		justice_log(faction, "[judge] pardoned [name].")
 	return name
 
-// Lines for examining someone: warrants and outlawry against them anywhere.
+// Every roster account of the person behind account: a court mark on one of
+// a player's characters marks their kin too (docs/character-slots.md).
+/proc/justice_kin_accounts(account)
+	. = list(account)
+	var/person = owner_key_account(account)
+	if (!person)
+		return
+	for (var/slot = 1 to character_slots_max)
+		var/key = owner_key_for(person, slot)
+		if (key)
+			. |= key
+
+// Lines for examining someone: warrants and outlawry against them, or their
+// kin, anywhere.
 /proc/justice_examine_lines(mob/living/human/H)
 	var/list/lines = list()
 	if (!map || !istype(H))
 		return lines
-	var/account = faction_roster_account(H)
-	if (!account)
+	var/own = faction_roster_account(H)
+	if (!own)
 		return lines
 	var/list/S = map.justice_state()
-	for (var/faction in S)
-		var/list/R = S[faction]
-		if (!islist(R))
-			continue
-		if (islist(R["outlaws"]) && islist(R["outlaws"][account]))
-			lines += "[H.real_name] is an outlaw of [faction]."
-		else if (islist(R["warrants"]) && islist(R["warrants"][account]))
-			lines += "[faction] has a warrant out for [H.real_name]."
+	for (var/account in justice_kin_accounts(own))
+		var/kin = account != own
+		for (var/faction in S)
+			var/list/R = S[faction]
+			if (!islist(R))
+				continue
+			if (islist(R["outlaws"]) && islist(R["outlaws"][account]))
+				lines += kin ? "[H.real_name] is kin to [R["outlaws"][account][1]], an outlaw of [faction]." : "[H.real_name] is an outlaw of [faction]."
+			else if (islist(R["warrants"]) && islist(R["warrants"][account]))
+				lines += kin ? "[faction] has a warrant out for [R["warrants"][account][1]], kin to [H.real_name]." : "[faction] has a warrant out for [H.real_name]."
 	return lines
 
 /mob/living/human/examine(mob/user)
@@ -245,6 +260,7 @@
 				lines += "[++i]. [law]"
 			if (!i)
 				lines += "[faction] has written no laws."
+			lines += map.substance_rule_lines(faction) // faction_substances.dm
 			to_chat(src, SPAN_NOTICE(jointext(lines, "<br>")))
 		if ("Read warrants, outlaws and fines")
 			var/list/lines = list("<b>Justice of [faction]</b>") + justice_list_text(faction, R, "warrants") + justice_list_text(faction, R, "outlaws") + justice_list_text(faction, R, "fines")
@@ -363,6 +379,7 @@
 	put_in_hands(P)
 	to_chat(src, SPAN_NOTICE("You write out the judgment. Seal it to make it official.[sentence == "Jail" ? " Shut [A.real_name] behind a door and set its Cell Timer." : ""]"))
 	log_game("[key_name(src)] tried [key_name(A)] for [faction] on '[charge]': [line].")
+	accolade_judged(A) // accolades.dm: Magistrate
 
 /mob/living/human/proc/justice_issue_warrant(faction)
 	var/list/people = justice_people(7)

@@ -32,6 +32,7 @@ of the ship it builds (`keel`, `frames`, `hull`, `deck`, `below`, `fittings`).
 | --- | --- | --- | --- | --- |
 | sailing schooner | wagons_ships | 14 x 5, one deck | 16 | 180 wood, 20 cloth, 4 rope |
 | motor freighter | combustion | 20 x 7, deck + hold | 20 | 214 steel, 20 cable, 10 glass |
+| light cruiser | naval_mines | 20 x 7, deck + hold | 26 | 578 steel, 20 cable, 10 glass |
 
 Players hit the post or any part of the hull with a material stack. After
 `SLIPWAY_PIECE_TIME` the stack pays what the next piece still needs; a piece is
@@ -63,12 +64,30 @@ bunkers, and the berth is free for the next keel.
 ## The ships
 
 - **Sailing schooner** (`/datum/vessel/schooner`): one wooden deck, two masts
-  (`/obj/structure/vessel_mast`) and the wheel at the stern. `fuel_burn()` is
-  zero, so she sails without fuel, and `top_speed` is half ahead.
+  and the wheel at the stern, 62 tiles. Right after `place()` the launch turns
+  her into a player-built hull (`code/modules/naval/slipway_hull.dm`,
+  `vessel_to_built_hull()`): the deck turfs go back to water, each cell gets a
+  ship floor (`/obj/covers/repairedfloor/ship`), each mast becomes a rigged
+  `/obj/structure/vehicleparts/movement/sail/premade` and the wheel a
+  `/obj/structure/hull_tiller` commissioned under her name, bow as launched.
+  From then on she sails like any built hull (pixel sailing near players,
+  ledger, rigging, anchors); her two sails make half ahead on a reach. A
+  schooner restored as a turf-built vessel from an older save is converted the
+  same way 5 seconds after the load (`/datum/vessel/proc/restored()`), keeping
+  her crew register and everything on her deck. A vessel whose cells were not
+  over open water (a flooded trench) is left as she is.
 - **Motor freighter** (`/datum/vessel/freighter`): a steel deck with a
-  wheelhouse at the stern and a ladder down to the hold. Below the waterline
-  are the cargo hold and, behind a bulkhead with a blast door, the engine room
-  with the bunker filling point (400 units of diesel or petroleum). Two flooded
-  compartments sink her.
-
-Both use the vessel helm, chart, anchor, hops and saved state like the carrier.
+  wheelhouse at the stern and a ladder down to the hold; below the waterline
+  the cargo hold and, behind a bulkhead with a blast door, the engine room.
+  The launch converts her the same way: steel floors
+  (`/obj/covers/steelplating`) and the wheelhouse as built metal walls on
+  deck, and her hold as a built hull's hold (`naval/hull_hold.dm`, 82 tiles
+  hollowed out of the rock, the bulkhead the rock left between hold and engine
+  room). The bunker filling point becomes a 9000cc diesel engine with a fuel
+  barrel (250 units of diesel), which makes full ahead. An old freighter's
+  bunker fuel goes into the barrel when she is converted after a load.
+- **Light cruiser** (`/datum/vessel/freighter/cruiser`): the freighter's hull,
+  hold and engine room, with a ship's gun turret fore and aft on deck over a
+  shell rack in her hold (the barbette, `naval/ship_turret.dm`) and 34 belt
+  armour plates along both sides (`naval/hull_armour.dm`). She launches and
+  converts exactly as the freighter does; the racks come empty.

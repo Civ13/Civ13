@@ -27,7 +27,7 @@
 	return !!agent_character_for(src)
 
 /mob/living/human/proc/knows_recipe_node(node_id)
-	return valid_recipe_node_id(node_id) && stat != DEAD && (recipe_knowledge_exempt() || (islist(known_recipe_nodes) && (node_id in known_recipe_nodes)))
+	return valid_recipe_node_id(node_id) && stat != DEAD && (recipe_knowledge_exempt() || (islist(known_recipe_nodes) && ((node_id in known_recipe_nodes) || (node_id == "lighter_than_air_flight" && ("powered_flight" in known_recipe_nodes)))))
 
 /mob/living/human/proc/can_learn_recipe_node(node_id)
 	if (stat != CONSCIOUS || !valid_recipe_node_id(node_id) || !map || !map.recipe_knowledge_enabled())
@@ -48,6 +48,7 @@
 	refresh_recipe_knowledge_menus()
 	if (is_new)
 		player_activity.node_learned(src, node_id)
+		accolade_check_knowledge()
 	return TRUE
 
 /mob/living/human/proc/initialize_recipe_knowledge()

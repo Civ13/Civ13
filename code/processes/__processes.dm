@@ -21,7 +21,6 @@ var/datum/process_list/processes = new
 	var/process/mouse_nests/mouse_nests = null
 	var/process/soil_recovery/soil_recovery = null
 	var/process/cleanables/cleanables = null
-	var/process/casings/casings = null
 	var/process/self_cleaning/self_cleaning = null
 
 	// SSGame members

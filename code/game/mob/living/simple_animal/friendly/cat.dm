@@ -193,7 +193,8 @@
 	gender = NEUTER
 
 /mob/living/simple_animal/pet/cat/kitten/New()
-	gender = pick(MALE, FEMALE)
+	if (!persistence_saved_atom_construction) // a load restores the saved sex
+		gender = pick(MALE, FEMALE)
 	..()
 
 /mob/living/simple_animal/pet/cat/salem

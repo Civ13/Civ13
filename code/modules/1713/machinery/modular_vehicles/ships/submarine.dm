@@ -135,6 +135,8 @@ var/global/list/submarine_stripe_paints = list(
 		return reason
 	var/turf/here = boat_turf()
 	var/target = diving ? multiz_level_below(here.z) : multiz_level_above(here.z)
+	// Square on her tiles first: the level change moves whole tiles.
+	vehicle_offset_settle()
 	if (!shift_level(target))
 		return "The ballast tanks jam. Try again."
 	submerged = diving
@@ -414,6 +416,7 @@ var/global/list/ship_axes = list()
 	options += "Name the boat"
 	if (!B.submerged)
 		options += "Paint the stripes"
+	options += "Draw her lines"
 	options += "Cancel"
 	var/choice = WWinput(user, "[B] is [B.submerged ? "submerged" : "on the surface"].", name, "Cancel", options)
 	if (QDELETED(src) || QDELETED(B) || !Adjacent(user) || boat() != B)
@@ -440,6 +443,8 @@ var/global/list/ship_axes = list()
 			B.order_name(user, src)
 		if ("Paint the stripes")
 			B.order_paint(user, src)
+		if ("Draw her lines")
+			B.draw_lines(user, src)
 
 // ---- Hull ----
 
@@ -485,6 +490,12 @@ var/global/list/ship_axes = list()
 		var/image/stripe = image(icon = icon, icon_state = "[hull_tile]_stripe", dir = dir)
 		stripe.color = boat.stripe_color
 		roof.overlays += stripe
+	// A lock-out hatch is drawn over whichever side section the plan made one
+	// (the same pixels as the hatches drawn into the Scout and the Explorer).
+	var/hatch = hatch_art()
+	if (hatch)
+		overlays += image(icon = icon, icon_state = "[hatch]_deck", dir = dir)
+		roof.overlays += image(icon = icon, icon_state = "[hatch]_roof", dir = dir)
 	var/list/sides = list(list(w_front, dir), list(w_back, turn(dir, 180)), list(w_left, turn(dir, 90)), list(w_right, turn(dir, -90)))
 	for (var/list/side in sides)
 		var/list/wall = side[1]
@@ -496,6 +507,17 @@ var/global/list/ship_axes = list()
 				state = wall[7] ? "sub_door_open" : "sub_door_closed"
 		if (state)
 			overlays += image(icon = icon, icon_state = state, layer = 2.99, dir = side[2])
+
+// The hatch art laid over this section, or null: "sub_hatch_<column>" for a
+// hatch in a side column (1 or 3 of the layout table).
+/obj/structure/vehicleparts/frame/ship/steel/submarine/proc/hatch_art()
+	return null
+
+/obj/structure/vehicleparts/frame/ship/steel/submarine/hatch/hatch_art()
+	var/list/parts = splittext(hull_tile, "_")
+	if (parts.len == 3 && (parts[2] == "1" || parts[2] == "3"))
+		return "sub_hatch_[parts[2]]"
+	return null
 
 // Whether one of the hull stripes crosses this section's roof.
 /obj/structure/vehicleparts/frame/ship/steel/submarine/proc/has_stripe()
@@ -631,7 +653,9 @@ var/global/list/ship_axes = list()
 // runs on a diesel engine. The stern quarters are sealed tank spaces.
 #define SUB_HULL /obj/structure/vehicleparts/frame/ship/steel/submarine
 #define SUB_HATCH /obj/structure/vehicleparts/frame/ship/steel/submarine/hatch
-var/global/list/submarine_layouts = list(
+var/global/list/submarine_layouts = submarine_layouts_table()
+/proc/submarine_layouts_table()
+	return list(
 	// Scout: helm under the glass bow, the lock-out chambers amidships and
 	// the engine room behind a watertight door.
 	"scout" = list(
@@ -690,6 +714,12 @@ var/global/list/submarine_layouts = list(
 	speedlist = alist(1=18,2=14,3=11)
 
 /obj/structure/vehicleparts/axis/ship/submarine/proc/hull_layout()
+	if (sheet_code)
+		var/datum/sub_draught/D = sheet()
+		if (D)
+			. = D.layout()
+			qdel(D)
+			return
 	return submarine_layouts[hull_class] || submarine_layouts["scout"]
 
 // The side of the square of water the boat turns in: its length.
@@ -734,7 +764,7 @@ var/global/list/submarine_layouts = list(
 				var/obj/structure/vehicleparts/frame/ship/steel/submarine/F = O
 				F.axis = A
 				F.name = A.name
-				F.hull_tile = "[A.hull_class]_[C[1]]_[C[2]]"
+				F.hull_tile = A.sheet_code ? submarine_art_tile(square, text2num(C[1]), text2num(C[2])) : "[A.hull_class]_[C[1]]_[C[2]]"
 				F.set_hull_walls(entry[2])
 				A.components += F
 			if (istype(O, /obj/structure/engine))

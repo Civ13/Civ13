@@ -139,7 +139,7 @@ class InjuryContextTests(unittest.TestCase):
         self.assertIn('"body" = C ? C.mob : null', enqueue)
         self.assertIn('bind_body(C, C.mob)', poll)
         self.assertIn('C.mob != entry["body"]', poll)
-        self.assertLess(poll.index('C.mob != entry["body"]'), poll.index('render_answer('))
+        self.assertLess(poll.index('C.mob != entry["body"]'), poll.index('show_window(C)'))
         self.assertNotIn('attack_log', source)
 
 

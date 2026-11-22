@@ -61,14 +61,15 @@
 		return
 	if (!affects_dead && M.stat == DEAD)
 		return
-	if (overdose && (dose > overdose) && (location != CHEM_TOUCH))
-		overdose(M, alien)
 	var/removed = metabolism
 	if (ingest_met && (location == CHEM_INGEST))
 		removed = ingest_met
 	else if (touch_met && (location == CHEM_TOUCH))
 		removed = touch_met
 	removed = min(removed, volume)
+	// Overdose handlers get the amount metabolized this tick, including a final partial dose (#6295).
+	if (overdose && (dose > overdose_limit(M)) && (location != CHEM_TOUCH))
+		overdose(M, alien, removed)
 	max_dose = max(volume, max_dose)
 	dose = min(dose + removed, max_dose)
 	if (removed >= (metabolism * 0.1) || removed >= 0.1) // If there's too little chemical, don't affect the mob, just remove it
@@ -96,7 +97,7 @@
 		affect_ingest(M, alien, removed)
 	return
 
-/datum/reagent/proc/overdose(var/mob/living/human/M, var/alien) // Overdose effect. Doesn't happen instantly.
+/datum/reagent/proc/overdose(var/mob/living/human/M, var/alien, var/removed) // Overdose effect. Doesn't happen instantly. removed is this tick's metabolized amount.
 	M.adjustToxLoss(REM)
 	return
 

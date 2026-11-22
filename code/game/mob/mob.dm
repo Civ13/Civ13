@@ -147,6 +147,10 @@
 	return incapacitated(INCAPACITATION_DISABLED)
 
 /mob/proc/incapacitated(var/incapacitation_flags = INCAPACITATION_DEFAULT)
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_held())
+		return TRUE
+
 	if ((incapacitation_flags & (INCAPACITATION_DISABLED|INCAPACITATION_DISABLED_NO_REST)) && (stat || paralysis || stunned || weakened || sleeping || (status_flags & FAKEDEATH)))
 		return TRUE
 
@@ -267,6 +271,8 @@
 	set name = "Activate Held Object"
 	set category = null
 	set src = usr
+	if (travel_hold_input(src))
+		return
 	if (ishuman(src))
 		var/mob/living/human/H = src
 		//ball possession, kick
@@ -422,6 +428,9 @@
 		to_chat(src, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
+	if (spirit_wait_blocks()) // spirit_wait.dm
+		return
+
 	show_browse(src, null, "window=memory")
 
 	to_chat(src, "You can respawn now, enjoy your new life!")
@@ -476,6 +485,10 @@
 
 	if (is_admin && stat == DEAD)
 		is_admin = FALSE
+
+	if (!is_admin && is_spirit_observer()) // spirit_observe.dm
+		to_chat(usr, SPAN_WARNING("A spirit can't watch from afar. Use Haunt or Jump to Mob instead."))
+		return
 
 	var/list/names = list()
 	var/list/namecounts = list()
@@ -574,6 +587,10 @@
 
 		if (tree_melee_refused(src, AM))
 			return
+		if (isliving(AM))
+			var/mob/living/sleeper = AM
+			if (sleeper.offline_sleep_refuses(src))
+				return
 
 		if (!can_pull_mobs || !can_pull_size)
 			to_chat(src, "<span class='warning'>It won't budge!</span>")
@@ -598,6 +615,8 @@
 
 	else if (isobj(AM))
 		var/obj/I = AM
+		if (I.magic_repo_id && I.magic_repo_move_refused(src)) // repository_wards.dm
+			return
 		if(!istype(I, /obj/structure/cannon/modern/voyage))
 			if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
 				to_chat(src, "<span class='warning'>It won't budge!</span>")
@@ -912,7 +931,7 @@
 		density = initial(density)
 
 	for (var/obj/item/weapon/grab/G in grabbed_by)
-		if (G.state >= GRAB_AGGRESSIVE)
+		if (G.state >= GRAB_AGGRESSIVE && !G.hand_partner)
 			canmove = FALSE
 			break
 
@@ -1022,6 +1041,8 @@ mob/proc/yank_out_object()
 		return
 	if (!selection || !S || !U)
 		return
+	if (!(selection in get_visible_implants(0))) // pulled out while we were getting a grip
+		return
 
 	if (self)
 		visible_message(SPAN_WARNING("<b>[src] rips [selection] out of their body.</b></span>"))
@@ -1042,7 +1063,10 @@ mob/proc/yank_out_object()
 				if (O == selection)
 					affected = organ
 
+		if (!affected) // already pulled out by someone else
+			return
 		affected.implants -= selection
+		LAZYREMOVE(affected.embedded_items, selection)
 		H.shock_stage+=20
 		affected.take_damage((selection.w_class * 3), FALSE, FALSE, TRUE, "Embedded object extraction")
 

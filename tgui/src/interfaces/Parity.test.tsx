@@ -109,12 +109,14 @@ describe('standard screen parity', () => {
       'character_notes.tmpl',
       'character_setup.tmpl',
       'chem_disp.tmpl',
+      'computer.tmpl',
       'crafting_atlas.tmpl',
       'crafting_window.tmpl',
       'crew_log.tmpl',
       'faction_creation.tmpl',
       'faction_list.tmpl',
       'faction_symbol.tmpl',
+      'haircut.tmpl',
       'known_languages.tmpl',
       'panel.tmpl',
       'paper_editor.tmpl',
@@ -133,6 +135,7 @@ describe('standard screen parity', () => {
       'vending_machine_gulag.tmpl',
       'vending_machine_taotd.tmpl',
       'warehouse_book.tmpl',
+      'wiremod_circuit.tmpl',
     ]);
   });
   it('keeps chemistry command payloads, vessel state, and amount controls', () => {

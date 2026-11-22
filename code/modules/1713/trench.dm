@@ -1,4 +1,3 @@
-var/list/global/floor_cache = list()
 
 /turf
 	var/previous_turf = /turf/floor/dirt
@@ -104,6 +103,9 @@ var/list/global/floor_cache = list()
 	..()
 
 /turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
+	// A hole in a built hull sailing the canal (hull_ledger.dm).
+	if (hull_patch_attack(C, user, src))
+		return TRUE
 	if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
 		if (choice == "Yes" && !QDELETED(C) && C.loc == user)
@@ -380,31 +382,6 @@ var/list/global/floor_cache = list()
 				return TRUE
 	return ..()
 
-/turf/floor/dirt/attackby(obj/item/C as obj, mob/user as mob)
-	if (is_tool(C, TOOL_SHOVEL) && user.a_intent == I_HARM)
-		var/mob/living/human/HU = user
-		if (map && !research_node_known(HU, "field_defenses"))
-			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
-			return
-		var/obj/item/weapon/material/shovel/trench/S = C
-		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
-			return
-		trench_stage++
-		switch(trench_stage)
-			if(1)
-				//icon_state = ""
-				visible_message("<span class = 'notice'>[user] digs.</span>")
-				to_chat(user, ("<span class = 'notice'>You need to dig this tile one more time to make a trench.</span>"))
-				return
-			if(2)
-				visible_message("<span class = 'notice'>[user] makes a trench.</span>")
-				var/turf/floor/trench/T = new /turf/floor/trench
-				T.previous_turf = src
-				ChangeTurf(T)
-		return
-	..()
-
 /turf/floor/beach/sand
 	map_storage_saved_vars = "icon_state;name;trench_stage"
 	var/trench_stage = 0
@@ -414,9 +391,8 @@ var/list/global/floor_cache = list()
 		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
 			return
-		var/obj/item/weapon/material/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*10, src))
+		if (!do_after(user, work_delay(user, 30, WORK_DIG, C), src))
 			return
 		if (istype(src, /turf/floor/beach/sand))
 			trench_stage++
@@ -440,9 +416,8 @@ var/list/global/floor_cache = list()
 		if (map && !research_node_known(HU, "field_defenses"))
 			to_chat(user, SPAN_WARNING("Your people haven't researched Field Defenses yet."))
 			return
-		var/obj/item/weapon/material/shovel/trench/S = C
 		visible_message("<span class = 'notice'>[user] starts to dig a trench.</span>")
-		if (!do_after(user, (10 - S.dig_speed)*5, src))
+		if (!do_after(user, work_delay(user, 15, WORK_DIG, C), src))
 			return
 		if (istype(src,/turf/floor/dirt))
 			trench_stage++
@@ -466,25 +441,11 @@ var/list/global/floor_cache = list()
 	if (is_tool(C, TOOL_SHOVEL) && weather_snow > 0 && user.a_intent != I_HARM)
 		return ..() // Shovel generated snow into piles first; harm intent still removes the grass layer.
 	if (is_tool(C, TOOL_SHOVEL))
-		var/obj/item/weapon/material/shovel/trench/S = C
 		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
-		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed)))) //Think a DEFINE for the number being divided over S.dig_speed could be helpful, keeping it this for now
+		if (!do_after(user, work_delay(H, 58, WORK_DIG, C)))
 			return
 		if (weather_snow > 0 && user.a_intent != I_HARM)
 			return // Snow fell during the wait; the next click shovels it.
-		user.visible_message(SPAN_NOTICE("[user] removes the grass layer."), SPAN_NOTICE("[user] removes the grass layer."), "You hear something being removed.")
-		H.adaptStat("strength", 1)
-		var/area/A = get_area(src)
-		if (A.climate == "jungle" || A.climate == "savanna")
-			ChangeTurf(/turf/floor/dirt/jungledirt)
-		else
-			ChangeTurf(/turf/floor/dirt)
-		return
-	else if (is_tool(C, TOOL_SHOVEL))
-		var/obj/item/weapon/material/shovel/S = C
-		user.visible_message(SPAN_NOTICE("[user] starts to remove the grass layer."), SPAN_NOTICE("[user] starts to remove the grass layer."), "You hear something being uprooted.")
-		if (!do_after(user, (100/(H.getStatCoeff("strength"))/S.usespeed)))
-			return
 		user.visible_message(SPAN_NOTICE("[user] removes the grass layer."), SPAN_NOTICE("[user] removes the grass layer."), "You hear something being removed.")
 		H.adaptStat("strength", 1)
 		var/area/A = get_area(src)
@@ -498,9 +459,8 @@ var/list/global/floor_cache = list()
 /turf/floor/winter/attackby(obj/item/C as obj, mob/user as mob)
 	var/mob/living/human/H = user
 	if (is_tool(C, TOOL_SHOVEL))
-		var/obj/item/weapon/material/shovel/trench/S = C
 		user.visible_message(SPAN_NOTICE("[user] starts to remove the snow layer."), SPAN_NOTICE("[user] starts to remove the snow layer."), "You hear something digging into the ground.")
-		if (!do_after(user, (100/(H.getStatCoeff("strength"))/(12/S.dig_speed))))
+		if (!do_after(user, work_delay(H, 58, WORK_DIG, C)))
 			return
 		user.visible_message(SPAN_NOTICE("[user] removes the snow layer."), SPAN_NOTICE("[user] removes the snow layer."), "You hear something being removed.")
 		H.adaptStat("strength", 1)

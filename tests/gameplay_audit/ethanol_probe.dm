@@ -81,6 +81,13 @@ var/probe_failed = FALSE
 	N.put(/datum/reagent/carbon, 5)
 	probe_assert(!N.remove_reagent("ethanol", 2, TRUE), "no alcohol reports failure")
 	probe_assert(N.amount_of("carbon") == 5, "no alcohol leaves others")
+	// exact = TRUE takes only the pure ethanol entry, as list-walking
+	// transfers credit it (#6870); the beer before it is left alone.
+	var/datum/reagents/X = new()
+	X.put(/datum/reagent/ethanol/beer, 10)
+	X.put(/datum/reagent/ethanol, 10)
+	probe_assert(X.remove_reagent("ethanol", 4, TRUE, exact = TRUE), "exact removal reports success")
+	probe_assert(X.amount_of("beer") == 10 && X.amount_of("ethanol") == 6, "exact removal spares beer ([X.amount_of("beer")], [X.amount_of("ethanol")])")
 	// Other ids keep their old behaviour.
 	N.remove_reagent("carbon", 2)
 	probe_assert(N.amount_of("carbon") == 3 && N.reactions == 1, "plain removal")

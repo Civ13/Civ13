@@ -69,3 +69,33 @@ either a field-care question or a reported state puts the medical record first.
 `agent_preflight.py wiki-pins` also lists guide and game-mode pages that are not
 pinned yet. The Factory Automation guide from civ13-wiki#138 is not pinned until
 that PR merges; add it with aliases during the re-pin.
+
+<!-- 2026-11-22: guides ship with the game; answers scored against the wiki -->
+The live worker had verified 3 of 67 pinned guides because the host's wiki
+checkout sat on an old branch, and 47 guide, region and mode pages were never
+pinned. Every pinned page now ships as a copy under `UI/player-help-wiki/`;
+`wiki-pins --write` refreshes the hashes and the copies together and
+`test_wiki_answers.py` fails when they differ. `wiki_root` is only a fallback.
+Excerpts are cut at headings (`wiki_chunks`), carry their heading trail and a
+section link, and are ranked by rarity-weighted matches on headings (x4), the
+guide's keyword list (x2) and text. A new guide needs a pin with keywords in
+`WIKI_REVIEWED_GUIDES`; pages in `WIKI_UNPINNED` are left out on purpose.
+`tests/player_help/wiki_eval/` holds the question set: `run.py` scores evidence
+offline and, with `--ollama-url`, real answers. Keep hidden mechanics out:
+`WIKI_HIDDEN_LINE` drops such lines and `public_wording()` rewords the internal
+server name in excerpts and answers.
+
+<!-- 2026-11-22: help window is the whole interface; follow-up retrieval -->
+`render_window()` in player_help.dm draws the window from server state (turns,
+`player_help_pending`, `player_help_notice`, `player_help_draft`); every refusal
+goes through `refuse()` into the window, never only to chat, and the verb opens
+the window instead of an input dialog. Model text reaches HTML only through
+`answer_markup()`. Avoid `[` in the window's inline script (DM interpolates it)
+and send questions with `encodeURIComponent` to a `byond://?` link. The native
+fixture's `show_browse` keeps each stand-in client's last window as
+`probe_window`. In the bridge the newest question leads retrieval, earlier
+questions count half and the last answer's heading/keyword matches a quarter;
+the three rarest question words each keep their best guide excerpt, and at most
+two excerpts of one guide section lead. `wiki_eval` entries may carry `turns`
+for follow-up questions. Default pacing is a 10 second cooldown and 5 questions
+per 2 minutes.

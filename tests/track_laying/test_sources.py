@@ -28,8 +28,9 @@ class TrackLayingSourceTests(unittest.TestCase):
 
     def test_parts_need_the_rail_research(self):
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
-        for path in ('/obj/item/stack/rail_lengths', '/obj/item/stack/rail_sleepers'):
-            self.assertIn('"%s" = "rail_steam"' % path, nodes)
+        self.assertIn('"/obj/item/stack/rail_lengths" = "rail_steam"', nodes)
+        # Sleepers come earlier, with the wooden wagonway (train_early.dm).
+        self.assertIn('"/obj/item/stack/rail_sleepers" = "wagons_ships"', nodes)
         self.assertNotIn('"/obj/structure/rails/regular" = "rail_steam"', nodes)
 
     def test_unfinished_track_is_not_rail(self):
@@ -39,8 +40,25 @@ class TrackLayingSourceTests(unittest.TestCase):
 
     def test_hammer_no_longer_turns_rails_into_wood(self):
         body = LAYING[LAYING.index('/obj/structure/rails/attackby('):]
-        hammer = body.index('istype(W, /obj/item/weapon/hammer)')
+        hammer = body.index('is_tool(W, TOOL_HAMMER)')
         self.assertLess(hammer, body.index('return ..()'))
+
+    def test_rails_redraw_on_events_not_a_timer(self):
+        trains = (ROOT / 'code/modules/1713/trains.dm').read_text(encoding='utf-8')
+        start = trains.index('/obj/structure/rails/regular/update_icon()')
+        body = trains[start:trains.index('\n/obj/structure/rails/regular/horizontal', start)]
+        self.assertNotIn('spawn(', body)
+        self.assertIn('redraw_neighbours()', trains[trains.index('/obj/structure/rails/split/switcher/set_dir('):])
+        # One definition of each, so the include order cannot matter.
+        self.assertEqual(trains.count('\n/obj/structure/rails/New()'), 1)
+        net = (ROOT / 'code/modules/1713/rail_network.dm').read_text(encoding='utf-8')
+        self.assertNotIn('/obj/structure/rails/New()', net)
+
+    def test_track_shape_comes_from_the_rails(self):
+        self.assertIn('return R.exits()', LAYING)
+        trains = (ROOT / 'code/modules/1713/trains.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/structure/rails/turn/exits()', trains)
+        self.assertIn('/obj/structure/rails/rotate/exits()', trains)
 
     def test_native_fixture_preparation(self):
         generated = run.sources()

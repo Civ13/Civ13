@@ -67,7 +67,11 @@ class AdminSpectateTests(unittest.TestCase):
         self.assertIn('G.admin_hidden_from(usr)', fit)
         ghost = read('code/game/mob/observer/ghost/ghost.dm')
         self.assertNotIn('getfitmobs()', ghost)
-        self.assertEqual(ghost.count('ghost_follow_targets()'), 4)
+        # Follow (Haunt) and Jump to Mob list through observer_targets(), which
+        # gives non-spirits ghost_follow_targets() (spirit_observe.dm).
+        self.assertEqual(ghost.count('observer_targets'), 4)
+        spirit = (ROOT / 'code/game/mob/observer/ghost/spirit_observe.dm').read_text(encoding='utf-8')
+        self.assertEqual(spirit.count('return ghost_follow_targets()'), 2)
         self.assertIn('user.client.holder', proc_body(self.text, '/mob/observer/ghost/proc/admin_hidden_from('))
 
     def test_camera_mirror_and_shield(self):
@@ -91,11 +95,12 @@ class AdminSpectateTests(unittest.TestCase):
         life = proc_body(read('code/game/mob/observer/ghost/ghost.dm'), '/mob/observer/ghost/Life()')
         self.assertLess(life.index('client.admin_player_view'), life.index('client.images.Remove'))
 
-    def test_player_map_view_button(self):
-        text = read('code/modules/admin/verbs/player_map.dm')
-        self.assertIn("btn('View',function(){go('apm=view&m='", text)
-        topic = proc_body(text, '/datum/admin_player_map_controller/Topic(')
-        self.assertLess(topic.index('admin_player_map_allowed(C)'), topic.index('admin_start_player_view'))
+    def test_admin_map_view_button(self):
+        text = read('code/modules/admin/verbs/admin_map.dm')
+        self.assertIn("btn('View',function(){go('am=view&m='", text)
+        topic = proc_body(text, '/datum/admin_map_controller/Topic(')
+        self.assertLess(topic.index('admin_map_allowed(C)'), topic.index('admin_start_player_view'))
+        self.assertLess(topic.index('admin_map_sees_players(C)'), topic.index('admin_start_player_view'))
 
 
 if __name__ == '__main__':

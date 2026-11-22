@@ -932,16 +932,16 @@ var/global/list/vehicle_axes = list()
 
 /obj/item/sail
 	name = "small cloth sail"
-	desc = "A small cloth sail. Will fit a minor boat."
-	icon = 'icons/obj/vehicles/vehicleparts.dmi'
-	icon_state = "sailing0"
+	desc = "A small sail rolled on its spars. Used on an outrigger canoe, it steps a mast."
+	icon = 'icons/obj/vehicles/raft.dmi'
+	icon_state = "sail"
 	anchored = FALSE
 	flammable = TRUE
 	w_class = ITEM_SIZE_LARGE
 
 /obj/item/sail/wool
 	name = "small wool sail"
-	desc = "A small cloth sail. Will fit a minor boat."
+	desc = "A small wool sail rolled on its spars. Used on an outrigger canoe, it steps a mast."
 
 /obj/item/tank_system
 	name = "Tank System"

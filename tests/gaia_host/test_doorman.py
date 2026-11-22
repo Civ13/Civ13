@@ -33,7 +33,7 @@ class Machine(base.FakeMachine):
     def byond_pager_running(self):
         return self.pager
 
-    def terminate(self, pid):
+    def terminate(self, pid, expect=None):
         self.calls.append(['terminate', pid])
         self.up = False
         self.suspended = 0
@@ -199,6 +199,111 @@ class DoormanTests(base.GaiaHostTests):
         # 1803 itself froze first but is the one being woken; 1801 is the longest-asleep other world.
         self.assertEqual((old.cold_state, newer.cold_state), ({'evicted': 'memory for waking port 1803'}, None))
         self.assertIsNone(wanted.state)
+
+    # -- lands kept ready for players next door (Val, 2026-11-22) -------------
+    def lands(self):
+        test = self
+
+        class Land:
+            def __init__(self, port, region, neighbours, exempt=False):
+                self.config = dict(gaia_host.FREEZE_DEFAULTS, port=port)
+                self.region, self.neighbours, self.exempt = region, neighbours, exempt
+                self.awake, self.players, self.frozen_state, self.cold_state = False, 0, None, None
+                self.lock = test.root / ('no-lock-%d' % port)
+                self.started, self.kept_down = [], False
+                self.log = lambda values: None
+
+            def readiness(self):
+                return {'group': 'earth', 'region': self.region, 'neighbours': self.neighbours,
+                        'exempt': self.exempt, 'cold_after_minutes': 15}
+
+            def frozen(self):
+                return self.frozen_state
+
+            def cold(self):
+                return self.cold_state
+
+            def keep_down(self):
+                return self.kept_down
+
+            def byond_signed_in(self):
+                return True
+
+            def evict(self, reason):
+                self.cold_state, self.frozen_state = {'evicted': reason}, None
+                return {'evicted': True}
+
+            def start_cold(self, reason):
+                self.started.append(reason)
+                self.cold_state = None
+                return {'accepted': True}
+
+        class Ports(Machine):
+            def listening(self, port):
+                land = lands.get(port)
+                return bool(land and (land.awake or land.frozen_state))
+
+        lands = {}
+        machine = Ports()
+        gaia = Land(1801, 'gaia', ['atlantic'])
+        atlantic = Land(1802, 'atlantic', ['gaia', 'europe'], exempt=True)
+        europe = Land(1803, 'europe', ['atlantic', 'asia'])
+        asia = Land(1804, 'asia', ['europe'])
+        for land in (gaia, atlantic, europe, asia):
+            lands[land.config['port']] = land
+        door = doorman.Doorman(list(lands.values()), machine, clock=lambda: self.clock[0], wall=lambda: self.clock[0])
+        for land in lands.values():
+            door.instances[land.config['port']].status = {'players': 0}
+        return door, machine, gaia, atlantic, europe, asia
+
+    def test_a_land_next_to_players_is_started_ahead_from_cold_storage(self):
+        door, machine, gaia, atlantic, europe, asia = self.lands()
+        europe.awake = True
+        door.instances[1803].status = {'players': 2}
+        asia.cold_state = atlantic.cold_state = {'evicted': 'earlier'}
+        # One start at a time: the always-ready Atlantic first (lowest port), Asia on a later pass.
+        self.assertEqual(door.keep_ready(self.clock[0]), {1802: 'started ahead'})
+        self.assertEqual((len(atlantic.started), asia.started), (1, []))
+        atlantic.awake = True
+        door.instances[1802].waking_since = None
+        self.assertEqual(door.keep_ready(self.clock[0]), {1804: 'started ahead'})
+        self.assertEqual(asia.started, ['ready: next to players in europe'])
+        # A land kept down is never started ahead.
+        asia.cold_state, asia.started, asia.kept_down = {'evicted': 'again'}, [], True
+        door.instances[1804].next_ready_start = 0
+        self.assertEqual(door.keep_ready(self.clock[0]), {})
+
+    def test_a_land_with_nobody_next_door_goes_to_cold_storage_after_15_minutes(self):
+        door, machine, gaia, atlantic, europe, asia = self.lands()
+        for land in (atlantic, europe, asia):
+            land.frozen_state = {'pid': 1, 'frozen_at': 1}
+        start = self.clock[0]
+        self.assertEqual(door.keep_ready(start), {})
+        self.assertEqual(door.keep_ready(start + 14 * 60), {})
+        # Players arrive in Gaia: the Atlantic is next door (and always ready anyway), Europe and Asia are not.
+        gaia.awake = True
+        door.instances[1801].status = {'players': 1}
+        self.assertEqual(door.keep_ready(start + 15 * 60), {1803: 'cold storage', 1804: 'cold storage'})
+        self.assertEqual(europe.cold_state, {'evicted': 'cold storage: no players next door for 15 minutes'})
+        self.assertIsNotNone(atlantic.frozen_state, 'the oceans around the mainland stay ready')
+        # A player next door resets the wait: Europe stays suspended while Asia has players.
+        europe.cold_state, europe.frozen_state = None, {'pid': 2, 'frozen_at': 2}
+        asia.awake, asia.cold_state = True, None
+        door.instances[1804].status = {'players': 1}
+        self.assertEqual(door.keep_ready(start + 16 * 60), {})
+        self.assertEqual(door.keep_ready(start + 40 * 60), {})
+        self.assertIsNone(europe.cold_state)
+        # Asia empties: Europe waits another full 15 minutes before cold storage.
+        door.instances[1804].status = {'players': 0}
+        self.assertEqual(door.keep_ready(start + 41 * 60), {})
+        self.assertEqual(door.keep_ready(start + 55 * 60), {})
+        self.assertEqual(door.keep_ready(start + 56 * 60), {1803: 'cold storage'})
+
+    def test_lands_outside_the_world_links_are_left_alone(self):
+        self.running()
+        self.host.freeze()
+        self.assertEqual(self.door.keep_ready(self.clock[0] + 3600), {})
+        self.assertIsNotNone(self.host.frozen())
 
     def test_routed_instances_are_marked_for_the_launcher(self):
         self.running()
@@ -366,6 +471,95 @@ class DoormanTests(base.GaiaHostTests):
         self.assertEqual(self.ask('wake=1&port=1715'), {'schema': 1, 'ok': False, 'error': 'unknown port'})
         for bad in ('status=1', 'wake=1', 'host_status=1&extra=2', 'host_status', '%%%'):
             self.assertIsNone(self.ask(bad), bad)
+
+    # -- a traveller's wake starts a stopped world (Val, 2026-11-22) ----------
+    def stopped_with_save(self):
+        self.give_token()
+        self.saved_at(50)
+        self.machine.up = False
+
+    def test_a_travellers_wake_starts_a_stopped_world_once(self):
+        self.stopped_with_save()
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['startable']), ('stopped', True))
+        # The launcher's Join (a remote caller) never starts it, even when it asks to.
+        self.assertEqual(self.ask('wake=1&port=1714&start=1')['state'], 'stopped')
+        self.assertEqual(self.ask('wake=1&port=1714', address='127.0.0.1')['state'], 'stopped')
+        self.assertEqual(self.machine.detached, [])
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['state'], reply['eta'], reply['preparing']), (True, 'waking', 600, True))
+        self.assertEqual(self.machine.detached[-1][-2], 'start')
+        # Another traveller (or the same one again) waits on that start: no second one.
+        self.clock[0] += 60
+        again = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((again['ok'], again['state'], again['preparing']), (True, 'waking', True))
+        self.assertEqual(len(self.machine.detached), 1)
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['preparing'], entry['wake_estimate']), ('waking', True, 600))
+        # It comes up and answers: awake, and nothing more is prepared.
+        self.host.lock.unlink()
+        self.machine.up = True
+        self.door.step()
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual(entry['state'], 'awake')
+        self.assertNotIn('preparing', entry)
+
+    def test_a_start_already_running_is_only_waited_on(self):
+        self.stopped_with_save()
+        self.host.request('start')  # the launcher's Start, still compiling
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'waking')
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['state'], reply['preparing'], reply['eta']), (True, 'waking', True, 600))
+        self.assertEqual(len(self.machine.detached), 1)
+
+    def test_a_world_kept_down_or_given_up_on_is_never_started(self):
+        self.stopped_with_save()
+        self.host.config['keep_down'] = True
+        self.assertFalse(self.ask('host_status=1')['instances'][0]['startable'])
+        self.assertEqual(self.ask('wake=1&port=1714&start=1', address='127.0.0.1'),
+                         {'schema': 1, 'ok': False, 'error': 'kept down', 'reason': 'kept down', 'port': 1714})
+        self.host.config['keep_down'] = False
+        self.host.write_json(self.host.watchdog_file, {'gave_up': 5})
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['error']), (False, 'not startable'))
+        self.host.watchdog_file.unlink()
+        self.host.lock.write_text('other')
+        self.host.record(action='update', phase='compiling')
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['reason']), (False, 'busy: update'))
+        self.assertEqual(self.machine.detached, [])
+
+    def test_a_travel_start_needs_memory_and_the_byond_pager(self):
+        self.stopped_with_save()
+        self.machine.free_mb = 2000
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['error'], reply['need_mb']), (False, 'low memory', 2560))
+        self.machine.free_mb = 8192
+        self.machine.pager = False
+        self.assertEqual(self.ask('wake=1&port=1714&start=1', address='127.0.0.1')['error'], 'byond signed out')
+        self.assertEqual(self.machine.detached, [])
+
+    def test_a_failed_travel_start_reads_stopped_again_with_its_reason(self):
+        self.stopped_with_save()
+        self.assertTrue(self.ask('wake=1&port=1714&start=1', address='127.0.0.1')['ok'])
+        self.host.lock.unlink()
+        self.host.record(phase='failed', error='region.dme did not compile')
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual(entry['state'], 'stopped')
+        self.clock[0] += 5  # within the wake spacing: not started again, and told why
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['reason']), (False, 'region.dme did not compile'))
+        self.assertEqual(len(self.machine.detached), 1)
+        self.clock[0] += doorman.WAKE_SPACING
+        self.assertTrue(self.ask('wake=1&port=1714&start=1', address='127.0.0.1')['ok'])
+        self.assertEqual(len(self.machine.detached), 2)
+
+    def test_a_refused_travel_start_is_reported(self):
+        self.stopped_with_save()
+        self.machine.task_is_ready = False
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['error'], reply['reason']), (False, 'not startable', 'the scheduled task is not Ready'))
+        self.assertEqual(self.machine.detached, [])
 
     def test_requests_are_rate_limited_per_address(self):
         self.give_token()

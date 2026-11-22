@@ -11,6 +11,95 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-22: Launcher and host audit -->
+Launcher 1.5.41 (audit): a flag or count that started in a world is read with `Flag`/`Count` in LocalHosting.cs, never
+`Bool`/`GetInt32` (DM writes TRUE as 1, and a float count threw). Group config writes go through
+`HostSettings.WriteGroup` (retries while the host has the file open). `GroupPorts.Step` carries its own limit. Host side:
+see "A lock dies with its holder" in scripts/gaia-host/README.md; group status asks regions in parallel and reports a
+region it cannot read as `state: unknown` with `error`, which the board shows as "Status unavailable".
+
+Launcher 1.5.42: deploy.bat and restart-host.bat run through `LocalHosting.RunStreamed` with a limit
+(`GroupScriptLimit`: 3 h for a deploy, above deploy.bat's own 90 + 60 min waits; 2 min for restart-host) and the
+Host tab shows "Cancel running script" while one runs. Both end the script tree only: no world is stopped, and a
+build or handover already requested carries on. `ProcessSafety.EndScript` ends what a cut-short step started but
+spares handed-over work (a `--worker` process or a world, which can still be the step's own child); `RunCaptured`
+uses it too. After a cut-short script the launcher runs `restart-host.bat start`, so the host service is never
+left ended between its stop and its start. Run any new long script the same way.
+
+<!-- 2026-11-22: Send hold and follow -->
+Launcher 1.5.40: Val asked (2026-11-22) why Send was greyed out in **Players…**, and that Send freeze the chosen
+players at once until their data is secured. The world now holds them on a real `send_players`, checks them again and
+answers with the rows of that second check, releasing anyone who fails (region_admin_send.dm); roster rows carry `held`.
+PlayersDialog explains Check (dry run) and Send in its intro, shows a hint line under the buttons saying why Send is
+off (a disabled button shows no tooltip), and after a "started" answer follows the send: RegionPlayers.RunPlayers every
+3 s off the UI thread while `running`, up to 15 minutes (the world's own hold lapse) or until the dialog closes.
+RegionPlayers.DescribeFollow builds that text and NewRecent picks the transfer lines newer than the last listing; held
+players show as "(frozen for a send)". Keep the wording in RegionPlayers so LocalHostingTests can pin it.
+
+<!-- 2026-11-22: Actionable board problems -->
+Launcher 1.5.39: every region-board problem is a RegionProblem with a plain "Next:" step and fix buttons from
+BoardAdvice (HostBoard.cs); add advice there for any new problem text. Fixes run through RunFix in LauncherWindow with the
+same questions and HostGate locks as the buttons below the board. Waiting problems (deferred auto handovers) are amber
+and not counted. Dismiss is launcher-local (DismissedProblems, `dismissed-problems.json`, keyed by region, problem and
+operation time) and is forgotten once a region answers without the problem. Problem text wraps; 3+ regions sharing a
+problem collapse into one banner. Fable 5.2 owns RegionBoardView's layout.
+
+<!-- 2026-11-22: Ready lands -->
+Launcher 1.5.38 renames the menu item to **Travel and ready lands…** and adds the group's `ready_neighbours` checkbox and
+`cold_after_minutes` (HostSettings.Readiness/SetReadiness), read by the host service at each check.
+
+<!-- 2026-11-22: Travel starts -->
+Launcher 1.5.37 adds **All regions > More > Travel starts…** (HostSettings.TravelStarts/SetKeptDown): one tick per
+land (the gateway is left out); an unticked land gets `"keep_down": true` in the group config, so a traveller is turned
+back instead of starting it. The doorman and shard_group.py read it at each request, so saving restarts nothing.
+
+<!-- 2026-11-21: Translator tab (Edge chat translator) -->
+Val asked (2026-11-21) that the Edge chat translator (tools/edge-translator, docs/chat-translation.md) run as part of the
+launcher. Like Player Help it belongs to the host service: with `"chat_translator": {}` in the group config
+(optional `port` 55581, `node`, `npm`, `edge`, `profile`), `supervise` copies the service into
+`<root>/chat-translator/app`, runs `npm ci --ignore-scripts` when its lock changes, starts it and restarts it, and every
+region's merged config gets `CHAT_TRANSLATE_URL http://127.0.0.1:<port>` (a host line wins). Launcher 1.5.36 adds the
+**Translator** tab (Gui/TranslatorPage.cs, LocalTranslator.cs): status from `translator-status` (running, answering
+/health, counts), Start/Stop (`translator-start`/`translator-stop`, a stop marker the host service honours; stop ends only a
+verified Node process tree), and the service log.
+
+<!-- 2026-11-21: region clocks on the host board -->
+Launcher 1.5.35: the region board shows a LOCAL TIME column (sun/moon glyph, clock, season, UTC zone) for regions on
+the shared world calendar (docs/world-calendar.md). Data path: `world_calendar_status()` in DM -> shard_group
+describe `calendar` -> `shard_group.py` `calendar_view` (validated) -> `region_view.calendar` -> `RegionClock.From`.
+Off-calendar rows leave the slot blank; at narrow widths DETAILS shrinks first, then the zone and season drop.
+
+<!-- 2026-11-21: up to 24 regions and missing Earth regions -->
+Launcher 1.5.34: every list of regions reads up to `LocalHosting.MaxRegions` (32, the same as shard_group.py MAX_REGIONS
+and shard_group.dm SHARD_MAX_REGIONS) instead of 16, and Ports and front door gains "Add missing Earth regions"
+(`shard_group.py add-regions`): it plans, confirms, then adds the Earth lands and seas the group lacks
+(EARTH_REGIONS: the Mediterranean and the five oceans on the live host) and sets them up stopped.
+
+<!-- 2026-11-21: process safety and the experimental WMI check -->
+After WMI broke on 2026-11-19 (tasklist hung, Gaia stayed down), Val approved the criticality plan (2026-11-21).
+Launcher 1.5.33: `LocalHosting.RunCaptured` reads both streams asynchronously and enforces a per-step limit
+(`WithLimit`; status 30 s, stop/kill/unlock/freeze/thaw/help 2 min, start/restart 10 min for the pager wait,
+everything else 30 min), ending the step's tree and throwing `StepTimedOut` (an IOException), so a hung host
+script no longer freezes the board. ProcessSafety.cs lists, inspects and ends processes through the kernel
+(never tasklist, taskkill or WMI) and only ends a verified target; the bot's Force stop uses it, and
+`--bot start` falls back to a direct `CreateProcess` when WMI's `Win32_Process.Create` fails or takes over 20 s.
+All regions > More > **Windows process check (experimental)…** (WmiHealth.cs, Gui/WmiHealthDialog.cs) checks
+WMI read-only and offers the five repairs, each elevated only on a click; its checkbox (`experimental.json`
+`wmi_health_check`, off by default) turns on a 10-minute watch that warns on the board. `Civ13.exe --wmi check`
+prints the same check. `tests/gaia_host/test_gaia_host.py` ProcessToolGuardTests fails on new process-tool
+calls in host scripts and the launcher (WmiHealth.cs and BotCommand.cs are allowed).
+
+<!-- 2026-11-19: Player records window -->
+Val asked (2026-11-19) that admin notes and similar systems be visible on every region. All regions > More >
+**Player records…** (Gui/PlayerRecordsDialog.cs, PlayerRecords.cs, launcher 1.5.31) runs `shard_group.py records`
+[`--ckey K` | `--search T` | `--export F.json`], a read-only look at the shared player records in
+`<group root>/coordinator.sqlite` (tools/transfer_storage/records.py report/export): a summary, one player's records,
+a search (key, text or IP), each region's copy of its old notes/bans/memos files and its uncollected journal.
+Staff add and remove records in game only. Admin tooling: no changelog line or wiki page.
+A player lookup (`--ckey`) starts with that account's lifetime points and character slots
+(records.py account_summary, docs/character-slots.md); `shard_group.py accounts --ckey K` answers the
+summary alone as JSON (`points`, `spent`, `balance`, `claimed`, `slots`).
+
 <!-- 2026-11-17: Civilizationbot log level -->
 Val asked (2026-11-17) for the bot's logger level in the launcher, info by default instead of debug. The
 Civilizationbot tab's **Log level** list (Gui/BotPage.cs, launcher 1.5.30) and `Civ13.exe --bot log-level [LEVEL]`
@@ -200,3 +289,13 @@ and `set-port --region ID --port N` (scripts/shard-group/group_ports.py). The di
 (no `--apply`), shows it for one confirmation, then applies and follows `<root>/port-change.json` through `ports`
 every 3 s. It passes `--bot-profile` from host.json's bot and restarts a running bot itself when the change ends
 with `bot.restart`. Keep the wording plain: the dialog says "front door", never "gate" or "relay".
+
+<!-- 2026-11-22: Daily maintenance -->
+Val asked (2026-11-22) that every server shut down, update and restart on the same build at a set time
+of day. All regions > More > **Daily maintenance…** (HostSettings.DailyMaintenance/SetDailyMaintenance)
+writes the group config's `maintenance` {enabled, time, warning_minutes}; the host service starts the run
+(scripts/shard-group/daily_maintenance.py), so it works while the launcher is closed. **Run daily
+maintenance now** runs `shard_group.py maintenance` (it only starts the detached run). The group status
+line ends with LocalHosting.DescribeMaintenance (next start, a run under way, the last run's problems);
+keep its wording in step with daily_maintenance.py phases. HostSettings mirrors check_settings' default
+(on only for a live, saving group that fetches); change both together. Launcher 1.5.43.

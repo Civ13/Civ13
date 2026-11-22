@@ -85,6 +85,8 @@
 			decaytimer += 50 //to be readjusted according to gameplay, since freezers don't require power
 		else if (istype(loc, /obj/item/weapon/storage/internal))
 			decaytimer += storage_food_decay_step(loc) // a jar or pit keeps food longer (stone_age_storage.dm)
+		else if (istype(loc, /obj/item/weapon/reagent_containers/glass/crock))
+			decaytimer += crock_food_decay_step(src, loc) // potted food keeps in a closed crock (butter.dm)
 		else if (isturf(loc) || istype(loc, /obj/structure/cutting_board)) // Exposed board food ages like loose food.
 			decaytimer += 600
 		else // Closed cans already returned above; opened cans age like ordinary storage.

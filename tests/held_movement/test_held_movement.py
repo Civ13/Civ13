@@ -89,7 +89,18 @@ class Sources(unittest.TestCase):
         chain = body.index('begin_held_movement(M)')
         self.assertLess(chain, body.index('M.client.movement_busy = FALSE'))
         self.assertIn('return', body[chain:body.index('M.client.movement_busy = FALSE')])
-        self.assertIn('do_movement_continued(M, started)', proc_body(MACHINE, '/movementMachine/proc/do_movement('))
+        self.assertIn('do_movement_continued(M, started, C)', proc_body(MACHINE, '/movementMachine/proc/do_movement('))
+
+    def test_body_change_mid_step_releases_the_client(self):
+        # A client that changed body during a held step was left busy and out
+        # of the scan, so held keys moved one tile per press until reconnect.
+        body = proc_body(MACHINE, '/movementMachine/proc/do_movement_continued(')
+        release = body.index('if (C && (!M || M.client != C))')
+        self.assertLess(release, body.index('M.client.movement_busy = FALSE'))
+        self.assertIn('release_movement_client(C)', body[release:body.index('M.client.movement_busy = FALSE')])
+        helper = proc_body(MACHINE, '/movementMachine/proc/release_movement_client(')
+        self.assertIn('C.movement_busy = FALSE', helper)
+        self.assertIn('movementMachine_clients |= C', helper)
 
     def test_scan_and_chain_share_one_direction_rule(self):
         loop = proc_body(MACHINE, '/movementMachine/proc/process(')

@@ -103,10 +103,10 @@ def prepare(root, output, control=None):
     generated['bed_return.dm'], bed_before, bed_after = adapt_bed((root / 'code/modules/persistence/bed_return.dm').read_text(), base)
     if control == 'omit-claim-consume':
         generated['player_reclaim.dm'] = base.replace_once(generated['player_reclaim.dm'],
-            '\t\tpersistence_restored_bodies.Remove(C.ckey)\n', '\t\t// Generated omission: retained first-return claim.\n', 'claim consumption omission')
+            '\t\tpersistence_restored_bodies.Remove(owner)\n', '\t\t// Generated omission: retained first-return claim.\n', 'claim consumption omission')
     elif control == 'omit-reservation':
         generated['player_reclaim.dm'] = base.replace_once(generated['player_reclaim.dm'],
-            'persistence_player_claims[C.ckey] || character_recovery_unready()', 'character_recovery_unready()', 'reservation omission')
+            'persistence_player_claims[owner] || character_recovery_unready()', 'character_recovery_unready()', 'reservation omission')
     generated['list_macro.dm'] = '\n'.join(re.findall(r'^#define islist\(A\) .+$', (root / 'code/_macros.dm').read_text(), re.M)) + '\n'
     if len(generated['list_macro.dm'].splitlines()) != 1:
         raise ValueError('Expected one islist macro')

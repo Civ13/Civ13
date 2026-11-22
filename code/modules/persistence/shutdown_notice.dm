@@ -70,6 +70,7 @@ var/global/planned_shutdown_serial = 0 // bumped by every new countdown and by a
 	if(!webhook_enabled()) return
 	var/list/query = list("event" = event, "kind" = kind, "seconds" = seconds, "round" = istext(game_id) ? game_id : "")
 	if(istext(reason) && length(reason)) query["reason"] = copytext(reason, 1, 201)
+	webhook_add_region(query)
 	try
 		webhook_send("shutdown_notice", query)
 	catch

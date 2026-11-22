@@ -191,24 +191,24 @@
 			if (C)
 				if (C.heat_protection)
 					sum |= C.heat_protection
-			if (sum & HEAD)
-				exposed_bp -= "head"
-			if (sum & UPPER_TORSO)
-				exposed_bp -= "chest"
-			if (sum & LOWER_TORSO)
-				exposed_bp -= "groin"
-			if (sum & LEGS)
-				exposed_bp -= "l_leg"
-				exposed_bp -= "r_leg"
-			if (sum & FEET)
-				exposed_bp -= "l_foot"
-				exposed_bp -= "r_foot"
-			if (sum & ARMS)
-				exposed_bp -= "l_arm"
-				exposed_bp -= "r_arm"
-			if (sum & HANDS)
-				exposed_bp -= "l_hand"
-				exposed_bp -= "r_hand"
+		if (sum & HEAD)
+			exposed_bp -= "head"
+		if (sum & UPPER_TORSO)
+			exposed_bp -= "chest"
+		if (sum & LOWER_TORSO)
+			exposed_bp -= "groin"
+		if (sum & LEGS)
+			exposed_bp -= "l_leg"
+			exposed_bp -= "r_leg"
+		if (sum & FEET)
+			exposed_bp -= "l_foot"
+			exposed_bp -= "r_foot"
+		if (sum & ARMS)
+			exposed_bp -= "l_arm"
+			exposed_bp -= "r_arm"
+		if (sum & HANDS)
+			exposed_bp -= "l_hand"
+			exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
 			H.adjustBurnLossByPart(0.2*dmod, i)
@@ -261,24 +261,24 @@
 			if (C)
 				if (C.cold_protection)
 					sum |= C.get_cold_coverage()
-			if (sum & HEAD)
-				exposed_bp -= "head"
-			if (sum & UPPER_TORSO)
-				exposed_bp -= "chest"
-			if (sum & LOWER_TORSO)
-				exposed_bp -= "groin"
-			if (sum & LEGS)
-				exposed_bp -= "l_leg"
-				exposed_bp -= "r_leg"
-			if (sum & FEET)
-				exposed_bp -= "l_foot"
-				exposed_bp -= "r_foot"
-			if (sum & ARMS)
-				exposed_bp -= "l_arm"
-				exposed_bp -= "r_arm"
-			if (sum & HANDS)
-				exposed_bp -= "l_hand"
-				exposed_bp -= "r_hand"
+		if (sum & HEAD)
+			exposed_bp -= "head"
+		if (sum & UPPER_TORSO)
+			exposed_bp -= "chest"
+		if (sum & LOWER_TORSO)
+			exposed_bp -= "groin"
+		if (sum & LEGS)
+			exposed_bp -= "l_leg"
+			exposed_bp -= "r_leg"
+		if (sum & FEET)
+			exposed_bp -= "l_foot"
+			exposed_bp -= "r_foot"
+		if (sum & ARMS)
+			exposed_bp -= "l_arm"
+			exposed_bp -= "r_arm"
+		if (sum & HANDS)
+			exposed_bp -= "l_hand"
+			exposed_bp -= "r_hand"
 
 		for (var/i in exposed_bp)
 			H.adjustBurnLossByPart(0.1*dmod, i)

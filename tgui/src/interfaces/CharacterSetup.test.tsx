@@ -91,4 +91,33 @@ describe('character setup', () => {
     fireEvent.click(screen.getByRole('tab', { name: /Traits/ }));
     expect(screen.getByText('No trait matches.')).toBeTruthy();
   });
+  it('lets a verified player choose a sign or leave it to the stars', () => {
+    const ui = open({ ...sample, tab: 'chart' });
+    fireEvent.click(within(screen.getByRole('group', { name: 'Signs' })).getAllByText('Choose')[1]);
+    expect(ui.act).toHaveBeenLastCalledWith('birth_chart', { value: 'owl' });
+    fireEvent.click(screen.getByText('Leave it to the stars'));
+    expect(ui.act).toHaveBeenLastCalledWith('birth_chart', { value: 'random' });
+    expect(screen.queryByText('Verify Discord')).toBeNull();
+  });
+
+  it('offers verification instead of a choice to an unverified player', () => {
+    const ui = open({ ...sample, tab: 'chart', chart: { ...sample.chart, verified: 0 } });
+    for (const button of within(screen.getByRole('group', { name: 'Signs' })).getAllByText('Choose')) fireEvent.click(button);
+    expect(ui.act).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText('Verify Discord'));
+    expect(ui.act).toHaveBeenLastCalledWith('verify_discord', { value: 1 });
+  });
+
+  it('shows a living character its own sign', () => {
+    open({ ...sample, tab: 'chart', locked: 1, chart: { ...sample.chart, current: 'owl' } }, false);
+    expect(screen.getByText(/born under The Owl/)).toBeTruthy();
+    expect(screen.queryByText('Leave it to the stars')).toBeNull();
+  });
+  it('shows a sign glyph only from a plain resource name', () => {
+    const signs = [{ id: 'ox', name: 'The Ox', image: 'birth_sign_ox.png' }, { id: 'owl', name: 'The Owl', image: 'http://example.com/x.png' }];
+    const { container } = render(<CharacterSetup template="character_setup.tmpl" interactive act={vi.fn()} data={{ ...sample, tab: 'chart', chart: { ...sample.chart, signs } }} />);
+    const images = container.querySelectorAll('img.setup-chart-glyph');
+    expect(images.length).toBe(1);
+    expect(images[0].getAttribute('src')).toBe('birth_sign_ox.png');
+  });
 });

@@ -209,7 +209,9 @@ var/global/persistence_saved_atom_construction = 0
 // Latest completed save: generation and persistence_save_stamp() (last_save_status.dm).
 var/global/list/persistence_last_save = null
 
-// Custom persistence iterates vars, including tmp. Runtime fields require explicit exclusion.
+// Custom persistence iterates vars, tmp ones included, so a field declared
+// var/tmp is excluded here: it is process-local, as every author who declares
+// it expects. Other runtime fields require explicit exclusion in overrides.
 // Omit only known process-local state, on export and historical import, without
 // mutating the live value. Unknown object links still require integrity validation;
 // never drop a relationship merely because it points to another z-level.
@@ -217,7 +219,29 @@ var/global/list/persistence_last_save = null
 	// Weak handles cache native references from this process, never durable IDs.
 	// Pending timers belong to this process too: a saved /datum/timedevent
 	// comes back without its callback and stops the load.
-	return key == "persistence_export_frame" || key == "weak_reference" || key == "active_timers"
+	return key == "persistence_export_frame" || key == "weak_reference" || key == "active_timers" || persistence_declared_tmp(src, key)
+
+// Engine built-ins that BYOND marks tmp. The saver and loader handle these
+// themselves (position, appearance, bounds), so their treatment is unchanged.
+var/global/list/persistence_builtin_tmp_vars = persistence_builtin_tmp_vars_table()
+/proc/persistence_builtin_tmp_vars_table()
+	return list(
+	"animate_movement" = TRUE, "loc" = TRUE, "x" = TRUE, "y" = TRUE, "z" = TRUE,
+	"locs" = TRUE, "bound_x" = TRUE, "bound_y" = TRUE, "bound_width" = TRUE,
+	"bound_height" = TRUE, "vis_locs" = TRUE, "pixloc" = TRUE, "visibility" = TRUE,
+	"verbs" = TRUE, "override" = TRUE, "group" = TRUE, "type" = TRUE,
+	"parent_type" = TRUE, "vars" = TRUE, "key" = TRUE, "ckey" = TRUE, "client" = TRUE,
+	"mouse_drag_pointer" = TRUE, "mouse_drop_pointer" = TRUE, "mouse_opacity" = TRUE,
+	"mouse_over_pointer" = TRUE, "particles" = TRUE, "pixel_step_size" = TRUE)
+
+// TRUE for a field declared var/tmp in game code. issaved() answers from the
+// declaration, so the answer depends only on the type and key and is cached
+// with the rest of persistence_runtime_var. A field the type no longer has
+// (an old save's removed var) is not tmp.
+/proc/persistence_declared_tmp(datum/D, key)
+	if (persistence_builtin_tmp_vars[key] || !(key in D.vars))
+		return FALSE
+	return !issaved(D.vars[key])
 
 // Durable links which may point at a movable on another level. Only top-level
 // fields named here use the cross-level codec; every other field keeps the
@@ -1456,6 +1480,7 @@ var/global/world_save_notice_started = null
 		map.apply_persistence_age_floor()
 		storage.restore_round_state(src, saved_round)
 		storage.restore_zone_spawns()
+		storage.restore_dug_levels_after_load()
 		load_phase_started = persistence_load_phase_log("metadata, durable world and round state", load_phase_started)
 		if(attempt_owned)
 			phase = "release"
@@ -1588,7 +1613,18 @@ var/global/world_save_notice_started = null
 // Dug cave levels (multiz/dug_underground.dm) rebuild their lighting after a
 // load; isolated fixtures keep this inert stub.
 /map_storage/proc/restore_dug_levels()
-	return
+	// Called by name so this works whatever order civ13.dme lists the files in.
+	if (hascall(src, "restore_dug_underground"))
+		call(src, "restore_dug_underground")()
+
+// After the saved zones are committed (restore_zone_spawns), so a cave area the
+// rebuild constructs registers as a new zone instead of a surprise staged area.
+// A failed rebuild leaves the cave unlit but never refuses the loaded world.
+/map_storage/proc/restore_dug_levels_after_load()
+	try
+		restore_dug_levels()
+	catch(var/exception/cave_error)
+		world.log << "Dug underground lighting was not rebuilt: [cave_error]"
 
 // Effect ids one save may list (transfer_bridge.dm keeps new effects to half,
 // leaving room for a load's replay).

@@ -16,14 +16,20 @@ POLICY = '/obj/structure/fishing_cage/persistence_runtime_var'
 WATER = '/turf/floor/beach/water'
 CAGE = '/obj/structure/fishing_cage'
 BUOY = '/obj/structure/buoy'
+OBJ = '/obj'
 
 
-def project_entry(source, constructing=False):
+def project_entry(source, constructing=False, parent=lambda: None, checks=None):
     body = adapter.extract(source, ENTRY).replace('..()', 'parent()')
     body = body.replace('var/obj/structure/fishing_cage/FC = O', 'FC = O')
     for path in (WATER, CAGE, BUOY):
         body = body.replace(path, repr(path))
-    env = {'parent': lambda: None, 'istype': lambda value, kind: kind in value.kinds,
+    def istype(value, kind):
+        if checks is not None:
+            checks.append(kind)
+        return kind in getattr(value, 'kinds', ())
+
+    env = {'parent': parent, 'istype': istype, 'isobj': lambda value: istype(value, OBJ),
            'persistence_saved_atom_construction': constructing}
     return adapter.project(ENTRY + '(atom/movable/O)\n' + body + '\n', ENTRY, 'src,O', env)
 
@@ -43,7 +49,7 @@ def project_policy(source):
 
 
 class Cage:
-    kinds = {CAGE}
+    kinds = {OBJ, CAGE}
 
     def __init__(self, loc, found=None, restoring=False):
         self.loc, self.found, self.restoring = loc, found, restoring
@@ -118,6 +124,46 @@ class CageRestoreTests(unittest.TestCase):
             self.assertEqual(cage.found, 'fish type')
             self.assertFalse(cage.generating)
             self.assertEqual(cage.timers, 0)
+
+    def test_nonobject_guard_preserves_callbacks_and_models_type_checks(self):
+        guard = '\tif (!isobj(O))\n\t\treturn\n'
+        self.assertEqual(self.source.count(guard), 1)
+        original = self.source.replace(guard, '', 1)
+        mutant = self.source.replace('if (!isobj(O))', 'if (isobj(O))', 1)
+
+        def run(source, kind, water=True, constructing=False, restoring=False, found=None, generating=False):
+            trace, checks = [], []
+            loc = self.water if water else self.land
+            if kind == 'null':
+                value = None
+            elif kind == 'mob':
+                value = SimpleNamespace(kinds={'/mob'})
+            elif kind == 'object':
+                value = SimpleNamespace(kinds={OBJ})
+            elif kind == 'buoy':
+                value = SimpleNamespace(kinds={OBJ, BUOY}, update_icon=lambda: trace.append('icon'))
+            else:
+                value = Cage(loc, found=found, restoring=restoring)
+                value.generating = generating
+                update, generate = value.update_icon, value.generate_fish
+                value.update_icon = lambda: (trace.append('icon'), update())
+                value.generate_fish = lambda: (trace.append('generate'), generate())
+                if kind == 'subtype':
+                    value.kinds = {OBJ, CAGE, '/obj/structure/fishing_cage/subtype'}
+            result = project_entry(source, constructing, lambda: trace.append('parent'), checks)(loc, value)
+            return trace, result, len(checks), getattr(value, 'timers', None)
+
+        cases = [('null', {}), ('mob', {}), ('object', {}), ('buoy', {}),
+                 ('cage', {}), ('subtype', {}), ('cage', {'water': False}),
+                 ('cage', {'constructing': True}), ('cage', {'restoring': True}),
+                 ('cage', {'found': 'fish'}), ('cage', {'generating': True})]
+        for kind, options in cases:
+            with self.subTest(kind=kind, options=options):
+                before, after = run(original, kind, **options), run(self.source, kind, **options)
+                self.assertEqual((before[0], before[1], before[3]), (after[0], after[1], after[3]))
+                self.assertEqual(after[2] - before[2], -1 if kind in ('null', 'mob') else 1)
+                self.assertEqual(after[0][0], 'parent')
+        self.assertNotEqual(run(mutant, 'cage')[0], run(original, 'cage')[0])
 
     def test_fresh_entry_still_starts_generation(self):
         cage = Cage(self.water)

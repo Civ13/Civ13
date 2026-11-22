@@ -88,7 +88,7 @@
 
 // Lands owner's chart shows that a ship can make for:
 // "label" = list(x, y, tiles).
-/proc/voyage_destinations(owner, list/origin)
+/proc/voyage_destinations(owner, list/origin, mob/living/human/captain = null)
 	. = list()
 	var/list/tiles = world_chart["tiles"]
 	if (!islist(tiles) || !owner || !origin)
@@ -110,8 +110,12 @@
 			continue
 		if (!voyage_seen(owner, x, y) && !(found["state"] in list("SETTLED", "CLAIMED")))
 			continue
+		// A faction's island shows only to a captain it lets land (island_access.dm).
+		var/island = island_access_claimant_at(key)
+		if (island && captain && !island_access_admits(captain, island))
+			continue
 		var/tiles_away = voyage_distance(origin, x, y)
-		.["[capitalize(world_chart_tile_label(template))] at [x],[y]: [tiles_away] tile\s, about [tiles_away] minute\s[found["region"] ? " (a land already opened)" : (found["parked"] ? " (laid up: its harbour is made ready as she sails)" : "")]"] = list(x, y, tiles_away)
+		.["[capitalize(world_chart_tile_label(template))] at [x],[y]: [tiles_away] tile\s, about [tiles_away] minute\s[island ? " ([island_access_member(captain, island) ? "your faction's island" : "[party_train_party_name(island)]'s island"])" : ""][found["region"] ? " (a land already opened)" : (found["parked"] ? " (laid up: its harbour is made ready as she sails)" : "")]"] = list(x, y, tiles_away)
 
 // The chart tile a scouting voyage turns round at, toward dir.
 /proc/voyage_scout_target(list/origin, dir)
@@ -162,7 +166,8 @@
 
 /obj/structure/hull_tiller/proc/voyage_menu(mob/living/human/H)
 	// Known lands across the sea (sea_lanes.dm) need no chart and one sailor.
-	var/list/known = sea_lane_destinations()
+	// Over the map edges the continents are reached by sailing off them (ship_edge_crossing.dm).
+	var/list/known = sea_edge_travel_on() ? list() : sea_lane_destinations()
 	var/reason = voyage_refusal(H, length(known) ? 1 : VOYAGE_MIN_CREW)
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
@@ -180,7 +185,7 @@
 	var/list/lands = list()
 	var/list/scouting = list()
 	if (origin && owner)
-		lands = voyage_destinations(owner, origin)
+		lands = voyage_destinations(owner, origin, H)
 		scouting = list("Scout the unknown water to the north" = NORTH, "Scout the unknown water to the east" = EAST,
 			"Scout the unknown water to the south" = SOUTH, "Scout the unknown water to the west" = WEST)
 	var/load = sea_crossing_load(src)
@@ -220,13 +225,18 @@
 	var/list/land = lands[choice]
 	if (!islist(land))
 		return
-	reason = landfall_rest_refusal()
+	reason = landfall_rest_refusal() || voyage_island_refusal(land[1], land[2])
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
 	if (WWinput(H, "Set out for [choice]? Everyone aboard sails with her; whoever stays ashore is left behind.", craft.name, "No", list("Yes", "No")) != "Yes" || get_dist(H, src) > 1 || !craft)
 		return
 	if (!provisions_menu(H, land[3]))
+		return
+	// Her crew may have changed while the prompts were open.
+	reason = voyage_island_refusal(land[1], land[2])
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
 		return
 	// Sailing on from a land nobody settled or claimed, the captain may give it up (land_choices.dm).
 	var/abandon = abandon_choice(H)
@@ -237,26 +247,85 @@
 // directory for the land at once, so it can be opened while she sails. A
 // "lane" voyage (sea_lanes.dm) sails for the region id x, already open.
 /obj/structure/hull_tiller/proc/set_out(mob/living/human/H, kind, x, y, owner, tiles_time, label)
+	// Her crew's prompts slept: another of them may have sent her somewhere meanwhile.
+	var/reason = voyage ? "She is already on a voyage." : crossing_hold_refusal()
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+		return FALSE
 	var/id = "[ckey(shard_group.region) || "world"]-[num2text(world.realtime, 20)]-[rand(1000, 9999)]"
+	var/unconfirmed = FALSE
 	if (kind == "course")
-		var/list/answer = transfer_bridge.request("/chart/request", list("op" = "course", "x" = x, "y" = y, "owner" = owner, "admin" = H.ckey, "voyage" = id))
-		if (!answer || !answer["ok"])
-			to_chat(H, SPAN_WARNING("No word can be sent across the sea right now[answer && istext(answer["error"]) ? ": [html_encode(answer["error"])]" : ""]. She stays."))
+		// The directory may open a land for this course: nothing else sends her
+		// anywhere while it is asked.
+		var/list/hold = crossing_hold_take("plotting", null, id)
+		var/list/answer = transfer_bridge.request("/chart/request", voyage_course_body(x, y, owner, H.ckey, id))
+		if (!crossing_hold_is(hold))
 			return FALSE
+		crossing_hold_release(hold)
+		if (voyage)
+			return FALSE
+		if (islist(answer) && !answer["ok"])
+			to_chat(H, SPAN_WARNING("No word can be sent across the sea right now[istext(answer["error"]) ? ": [html_encode(answer["error"])]" : ""]. She stays."))
+			return FALSE
+		// No answer: the directory may have the course. She sails on it, asks
+		// after it again under way with the same voyage, and never plots another.
+		unconfirmed = !islist(answer)
 	var/tile = voyage_tile_time() // read before she stops: engines sail faster
 	var/crew = length(voyage_crew())
 	craft.set_speed(VESSEL_SPEED_STOP)
 	craft.set_anchor(TRUE)
 	voyage = list("id" = id, "kind" = kind, "x" = x, "y" = y, "owner" = owner, "label" = label, "by" = H.ckey, "tile" = tile, "tiles" = tiles_time,
 		"ends" = world.time + tiles_time * tile, "minute" = world.time + tile, "said" = null,
-		"rations" = crew * tiles_time, "stores" = length(voyage_rations()), "events" = list(), "asked" = world.time + 300)
+		"rations" = crew * tiles_time, "stores" = length(voyage_rations()), "events" = list(), "asked" = world.time + 300,
+		"crew" = voyage_crew_accounts(), "course_body" = kind == "course" ? voyage_course_body(x, y, owner, H.ckey, id) : null, "unconfirmed" = unconfirmed)
+	if (unconfirmed)
+		log_game("Voyage: no answer to the [craft.name]'s course (voyage [id]); she sails on it and asks again under way.")
 	log_game("Voyage: [key_name(H)] set the [craft.name] on a [kind] voyage to [kind == "lane" ? "the region [x]" : "chart tile [x],[y]"] for [owner || H.ckey] (voyage [id], [crew] crew, [voyage["stores"]]/[voyage["rations"]] rations).")
 	var/minutes = round(tiles_time * tile / 600, 1)
 	craft.crew_message(SPAN_NOTICE("[H] at the tiller: the [craft.name] sets out for [label]. About [max(1, minutes)] minute\s at sea. Stay aboard: whoever leaves her is left behind."))
 	voyage_sea_show() // Her crew see the sea go by (voyage_sea.dm).
 	addtimer(CALLBACK(src, PROC_REF(voyage_tick), voyage), VOYAGE_TICK)
 	player_activity.voyage(H, kind)
+	accolade_meet_mob(H, "sailor")
 	return TRUE
+
+// Why she cannot sail for the land at chart tile (x, y), or null: a faction's
+// island takes only those it lets land, and all aboard sail (island_access.dm).
+/obj/structure/hull_tiller/proc/voyage_island_refusal(x, y)
+	var/island = island_access_claimant_at("[x],[y]")
+	if (!island)
+		return null
+	var/datum/craft_body/built/B = body()
+	if (!B)
+		return null
+	for (var/mob/living/human/M in B.aboard())
+		var/reason = island_access_refusal(M, island)
+		if (reason)
+			return "She cannot sail there: [reason]. Put them ashore first."
+	return null
+
+/proc/voyage_course_body(x, y, owner, by, id)
+	return list("op" = "course", "x" = x, "y" = y, "owner" = owner, "admin" = by, "voyage" = id)
+
+// The accounts of her crew aboard and awake: who sailed with her.
+/obj/structure/hull_tiller/proc/voyage_crew_accounts()
+	. = list()
+	for (var/mob/living/human/H in voyage_crew())
+		if (H.client && !IsGuestKey(H.client.key))
+			. |= H.client.ckey
+
+// A course the directory never answered is asked again, with the same voyage:
+// the directory gives back the course it has, or plots it now, never a second.
+/obj/structure/hull_tiller/proc/voyage_confirm_course(list/mine, list/course)
+	if (!mine["unconfirmed"])
+		return
+	if (islist(course))
+		mine["unconfirmed"] = FALSE
+		return
+	var/list/answer = transfer_bridge.request("/chart/request", mine["course_body"])
+	if (islist(answer) && answer["ok"])
+		mine["unconfirmed"] = FALSE
+		world_chart_refresh()
 
 /obj/structure/hull_tiller/proc/voyage_status_text()
 	if (!voyage)
@@ -267,16 +336,38 @@
 	return (voyage["kind"] in list("course", "lane")) ? "The [craft.name] stands off [voyage["label"]]. The coast is not yet in sight." : "The [craft.name] is coming back from [voyage["label"]]."
 
 /obj/structure/hull_tiller/proc/voyage_status_menu(mob/living/human/H)
+	// Bound for a land that was asked to wake: she holds her course for it.
+	var/held = crossing_hold_text()
+	if (held)
+		WWinput(H, held, craft.name, "Cancel", list("Cancel"))
+		return
 	var/choice = WWinput(H, voyage_status_text(), craft.name, "Cancel", list("Turn back", "Cancel"))
 	if (choice != "Turn back" || !voyage || get_dist(H, src) > 1)
 		return
+	var/reason = voyage_turn_back(H)
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+
+// H turns her back. Null when she turned, else why not. Once word was sent
+// ahead for her (ship_crossing.dm) she holds her course instead.
+/obj/structure/hull_tiller/proc/voyage_turn_back(mob/living/human/H)
+	if (!voyage || !craft)
+		return "She is not on a voyage."
 	if (craft.helm_access(H) != CRAFT_HELM_FREE)
-		to_chat(H, SPAN_WARNING("Only her crew can turn her back."))
-		return
+		return "Only her crew can turn her back."
+	var/held = crossing_hold_text()
+	if (held)
+		return "She cannot turn back now. [held]"
 	log_game("Voyage: [key_name(H)] turned the [craft.name] back (voyage [voyage["id"]]).")
 	end_voyage(SPAN_NOTICE("[H] at the tiller: the [craft.name] turns back. She lies off the coast where she set out."))
+	return null
 
+// Ends her voyage. What she was bound for on it ends too, unless a crossing is
+// still at work on it.
 /obj/structure/hull_tiller/proc/end_voyage(text)
+	var/list/hold = crossing_hold
+	if (hold && !hold["busy"] && islist(voyage) && hold["voyage"] == voyage["id"])
+		crossing_hold_release(hold)
 	voyage = null
 	voyage_sea_stop()
 	if (craft && text)
@@ -319,6 +410,9 @@
 	world_chart_refresh()
 	var/list/courses = world_chart["courses"]
 	var/list/course = islist(courses) ? courses[mine["id"]] : null
+	voyage_confirm_course(mine, course)
+	if (voyage != mine)
+		return TRUE
 	if (!islist(course) || course["state"] != "REFUSED")
 		return FALSE
 	log_game("Voyage: the [craft.name]'s course was refused under way: [course["reason"]] (voyage [mine["id"]]).")
@@ -343,6 +437,9 @@
 	var/list/courses = world_chart["courses"]
 	var/list/course = islist(courses) ? courses[mine["id"]] : null
 	var/overdue = world.time > mine["ends"] + VOYAGE_WAIT_MAX
+	voyage_confirm_course(mine, course)
+	if (voyage != mine)
+		return TRUE
 	if (islist(course) && course["state"] == "REFUSED")
 		log_game("Voyage: the [craft.name]'s course was refused: [course["reason"]] (voyage [mine["id"]]).")
 		end_voyage(SPAN_WARNING("The [craft.name] turns back: [course["reason"]]."))
@@ -379,7 +476,7 @@
 	var/list/peer = shard_group.peers[id]
 	var/overdue = world.time > mine["ends"] + VOYAGE_WAIT_MAX
 	var/problem = null
-	if (!peer || peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
+	if (!peer || shard_group.peer_closed(id) || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 		problem = "The coast is not yet in sight."
 	else
 		voyage_eat(mine) // what she ate at sea stays behind

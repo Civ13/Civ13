@@ -115,6 +115,7 @@
 	unregister_corpse_decay()
 	human_mob_list -= src
 	human_clients_mob_list -= src
+	faction_hud_users -= src
 	for (var/organ in organs)
 		qdel(organ)
 	return ..()
@@ -159,7 +160,7 @@ var/list/coefflist = list()
 			client.add_stat("<b>Attack Intent:</b>", a_intent)
 			if (death_weakness_left > 0)
 				client.add_stat("<b>Shaken by death:</b>", "half damage to people for [max(1, round(death_weakness_left / 60))] more min")
-			client.add_stat("<b>Move Mode:</b>", m_intent)
+			client.add_stat("<b>Move Mode:</b>", sprint_mode_name())
 			client.add_stat("<b>Wetness:</b>", get_wetness_description())
 			if (stats["stamina"] && stats["stamina"][2] > 0)
 				client.add_stat("<b>Stamina:</b> ", "[round((getStat("stamina")/stats["stamina"][2]) * 100)]%")
@@ -263,6 +264,8 @@ var/list/coefflist = list()
 	return .
 
 /mob/living/human/ex_act(severity)
+	if (offline_sleep_protected())
+		return
 	if (!blinded)
 		if (HUDtech.Find("flash"))
 			flick("flash", HUDtech["flash"])
@@ -358,6 +361,8 @@ var/list/coefflist = list()
 
 /mob/living/human/show_inv(mob/user as mob)
 	if (user.incapacitated()  || !user.Adjacent(src))
+		return
+	if (offline_sleep_refuses(user))
 		return
 
 	var/obj/item/clothing/under/suit = null
@@ -1275,7 +1280,7 @@ var/list/coefflist = list()
 			look_amount = max(AL)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
 	// Up a tree the eye looks out over the canopy (tree_climbing.dm).
 	if (climbed_tree)
-		look_amount = max(look_amount, 8)
+		look_amount = max(look_amount, istype(climbed_tree, /obj/structure/vehicleparts/movement/sail) ? mast_look_amount(climbed_tree) : 8)
 	// On top of a vehicle the eye looks out over walls (vehicle_decks.dm).
 	if (vehicle_deck)
 		look_amount = max(look_amount, 6)
@@ -1425,7 +1430,7 @@ var/list/coefflist = list()
 	if (loc != old_location)
 		reset_corpse_decay_age()
 		// Walking onto a map edge the land carries on beyond (region_edge.dm).
-		if (map && map.edge_crossings)
+		if (region_edge_links())
 			region_edge_check()
 	if (human_subtile_pulse)
 		return .

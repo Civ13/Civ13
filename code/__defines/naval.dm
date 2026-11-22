@@ -73,3 +73,89 @@
 #define CRAFT_OAR_THRUST 4
 #define OAR_STAMINA_PER_STEP 20
 #define OAR_MIN_STAMINA 10
+
+// Hull classes, seam wear, fouling and bilge depth (hull_ledger.dm)
+#define HULL_CLASS_SMALL 1
+#define HULL_CLASS_BOAT 2
+#define HULL_CLASS_SHIP 3
+#define HULL_SEAMS_FAIR (1 / 3)
+#define HULL_SEAMS_WORKING 0.6
+#define HULL_SEAMS_OPEN 0.9
+// How foul her bottom is where its name changes (hull_fouling.dm).
+#define HULL_FOUL_SLIMED 0.1
+#define HULL_FOUL_WEEDY 0.4
+#define HULL_FOUL_FOUL 0.75
+// How deep the bilge is, for messages: the share of her capacity each begins at.
+#define HULL_DEPTH_DRY 0
+#define HULL_DEPTH_DAMP 1
+#define HULL_DEPTH_ANKLE 2
+#define HULL_DEPTH_KNEE 3
+#define HULL_DEPTH_AWASH 4
+#define HULL_DEPTH_LISTING 5
+#define HULL_DEPTH_FULL 6
+// Wood a patch over a hole takes (hull_ledger.dm, berth.dm).
+#define HULL_PATCH_PLANKS 2
+
+// Outrigger canoes (naval/outrigger_canoe.dm). The sheet is 96x96 with the
+// hull on the middle tile (tests/sprites/create_small_boats.py).
+#define OUTRIGGER_ICON 'icons/obj/vehicles/outrigger.dmi'
+#define OUTRIGGER_BOOM_WOOD 4   // Wood for the two booms and the float.
+#define OUTRIGGER_LASH_ROPE 3   // Rope that lashes them on.
+#define OUTRIGGER_MIN_ENGINE 100
+#define OUTRIGGER_MAX_ENGINE 400
+#define OUTRIGGER_MAX_TANK 150
+
+// Hauling small boats over land (naval/boat_hauling.dm): what a boat adds to
+// each step of whoever drags her.
+#define BOAT_HAUL_LIGHT 1
+#define BOAT_HAUL_HEAVY 2
+#define BOAT_DRAG_EASY 0.75   // Afloat, on rollers, or with hands enough.
+#define BOAT_DRAG_LIGHT 2
+#define BOAT_DRAG_HEAVY 6
+
+// Small boat upkeep (naval/small_boat_upkeep.dm). Wear and soak run 0 to 100.
+#define BOAT_WEAR_FRESH 0.05     // Per tile travelled on fresh water; salt doubles it.
+#define BOAT_LASH_SLACK 50       // Lashings this worn slow her.
+#define BOAT_LASH_LOOSE 75       // And this worn let water in.
+#define BOAT_SOAK_HEAVY 50
+#define BOAT_SOAK_LOGGED 80
+#define BOAT_DRESSING_TILES 600  // Tiles a dressing of fat or tar lasts.
+#define BOAT_DRY_PER_MINUTE 10   // Soak a hull loses for each minute ashore.
+#define BOAT_RAFT_NEW_WEAR 40    // A new raft is bound with bark and vines, not rope.
+
+// Ship's draughts (naval/ship_draught.dm): the sheet is this many tiles each
+// way, and a draught keeps to the built hull's limits (craft/built_body.dm).
+#define SHIP_DRAUGHT_SIDE 40
+#define SHIP_DRAUGHT_MAX_TILES 200
+#define SHIP_DRAUGHT_MAX_DECK 300
+#define DESIGN_CODE_SHIP_MAX 8000 // her main deck and every other deck
+
+// Submarine sheets (naval/sub_draught.dm): a submarine is three hull sections
+// across and this many long; the longest turns in the largest vehicle square
+// (VEHICLE_MAX_TURNING_SQUARE).
+#define SUB_DRAUGHT_BEAM 3
+#define SUB_DRAUGHT_MIN_LENGTH 4
+#define SUB_DRAUGHT_MAX_LENGTH 7
+#define DESIGN_CODE_SUB_MAX 800
+
+// Vehicle sheets (craft/vehicle_draught.dm): a hand-built land vehicle is
+// this many tiles each way (VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE at most).
+#define VEHICLE_DRAUGHT_MIN 2
+#define VEHICLE_DRAUGHT_MAX 5
+#define DESIGN_CODE_CAR_MAX 700
+
+// Airship sheets (naval/air_draught.dm): a crewed airship's deck fits a
+// rectangle this many tiles each way, with no more deck tiles than her gas
+// cells can hold up (naval/air_hull.dm).
+#define AIR_DRAUGHT_MIN 2
+#define AIR_DRAUGHT_MAX 12
+#define AIR_DRAUGHT_MAX_DECK 60
+#define AIR_DRAUGHT_CELL_GAS 60 // units of gas that fill one cell
+#define DESIGN_CODE_AIR_MAX 2400
+
+// Train sheets (1713/train_draught.dm): a train of stock and drawn cars from
+// the front. Kept to the cars a sheet can show and the longest train the
+// line is meant to run.
+#define TRAIN_DRAUGHT_MAX_CARS 16
+#define TRAIN_DRAUGHT_MAX_TILES 120
+#define DESIGN_CODE_TRAIN_MAX 3600

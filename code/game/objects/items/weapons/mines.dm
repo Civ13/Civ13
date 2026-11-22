@@ -19,6 +19,8 @@
 	
 	// failsafe to stop a horrible mine bug - kachnov
 	var/nextCanExplode = -1
+	// Bumped each time the mine is armed, so a disarm attempt only acts on the arming it began on (#6705).
+	var/tmp/arm_generation = 0
 
 //Arming
 /obj/item/mine/attack_self(mob/living/user as mob)
@@ -33,6 +35,7 @@
 			return
 		nextCanExplode = world.time + 5
 		user.visible_message("<span class = 'notice'>\The [user] finishes deploying \the [src].</span>")
+		arm_generation++
 		anchored = TRUE
 		layer = TURF_LAYER + 0.01
 		icon_state = "mine_armed"
@@ -52,39 +55,31 @@
 			var/mob/living/human/H = user
 			if (is_tool(W, TOOL_WIRECUTTER))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
-				if (!do_after(user,60))
+				var/generation = arm_generation
+				var/turf/start = loc
+				if (!do_after(user,60,src))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
 					return
+				if (!disarm_attempt_valid(generation, start))
+					return // moved, re-armed or already disarmed meanwhile
 				if (prob(min(98*H.getStatCoeff("dexterity"),100)))
 					user.visible_message("<span class = 'notice'>\The [user] finishes disarming \the [src]!</span>")
-					anchored = FALSE
-					icon_state = "mine"
-					layer = initial(layer)
-					if (map.campaign)
-						var/obj/map_metadata/campaign/CM = map
-						if (istype(src, (/obj/item/mine/at)))
-							CM.at_mines_placed--
-						else
-							CM.ap_mines_placed--
+					finish_disarm()
 					return
 				else
 					Bumped(user)
 			else if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with the [W].</span>")
-				if (!do_after(user,120))
+				var/generation = arm_generation
+				var/turf/start = loc
+				if (!do_after(user,120,src))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
 					return
+				if (!disarm_attempt_valid(generation, start))
+					return // moved, re-armed or already disarmed meanwhile
 				if (prob(min(50*H.getStatCoeff("dexterity"),75)))
 					user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!!</span>")
-					anchored = FALSE
-					icon_state = "mine"
-					layer = initial(layer)
-					if (map.campaign)
-						var/obj/map_metadata/campaign/CM = map
-						if (istype(src, (/obj/item/mine/at)))
-							CM.at_mines_placed--
-						else
-							CM.ap_mines_placed--
+					finish_disarm()
 					return
 				else
 					Bumped(user)
@@ -98,20 +93,16 @@
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with their bare hands!</span>")
-			if (!do_after(user,100))
+			var/generation = arm_generation
+			var/turf/start = loc
+			if (!do_after(user,100,src))
 				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
 				return
+			if (!disarm_attempt_valid(generation, start))
+				return // moved, re-armed or already disarmed meanwhile
 			if (prob(min(15*H.getStatCoeff("dexterity"),35)))
 				user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!</span>")
-				anchored = FALSE
-				icon_state = "mine"
-				layer = initial(layer)
-				if (map.campaign)
-					var/obj/map_metadata/campaign/CM = map
-					if (istype(src, (/obj/item/mine/at)))
-						CM.at_mines_placed--
-					else
-						CM.ap_mines_placed--
+				finish_disarm()
 				return
 			else
 				Bumped(user)
@@ -119,6 +110,20 @@
 			Bumped(user)
 	else
 		..()
+
+/obj/item/mine/proc/finish_disarm()
+	anchored = FALSE
+	icon_state = "mine"
+	layer = initial(layer)
+	if (map.campaign)
+		var/obj/map_metadata/campaign/CM = map
+		if (istype(src, (/obj/item/mine/at)))
+			CM.at_mines_placed--
+		else
+			CM.ap_mines_placed--
+
+/obj/item/mine/proc/disarm_attempt_valid(generation, turf/start)
+	return !QDELETED(src) && anchored && arm_generation == generation && loc == start
 
 /obj/item/mine/kick_act(mob/user as mob)
 	if (anchored)
@@ -281,9 +286,13 @@
 			var/mob/living/human/H = user
 			if (is_tool(W, TOOL_WIRECUTTER))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
-				if (!do_after(user,60))
+				var/generation = arm_generation
+				var/turf/start = loc
+				if (!do_after(user,60,src))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
 					return
+				if (!disarm_attempt_valid(generation, start))
+					return // moved, re-armed or already disarmed meanwhile
 				if (prob(min(95*H.getStatCoeff("dexterity"),100)))
 					user.visible_message("<span class = 'notice'>\The [user] finishes disarming \the [src]!</span>")
 					if (origin)
@@ -294,9 +303,13 @@
 					Bumped(user)
 			else if (is_tool(W, TOOL_KNIFE) || istype(W, /obj/item/weapon/attachment/bayonet))
 				user.visible_message("<span class = 'notice'>\The [user] starts to disarm \the [src] with \the [W].</span>")
-				if (!do_after(user,80))
+				var/generation = arm_generation
+				var/turf/start = loc
+				if (!do_after(user,80,src))
 					user.visible_message("<span class = 'notice'>\The [user] decides not to disarm \the [src].</span>")
 					return
+				if (!disarm_attempt_valid(generation, start))
+					return // moved, re-armed or already disarmed meanwhile
 				if (prob(min(85*H.getStatCoeff("dexterity"),90)))
 					user.visible_message("<span class = 'notice'>\The [user] finishes disarming \the [src]!</span>")
 					if (origin)
@@ -315,9 +328,13 @@
 		if (ishuman(user))
 			var/mob/living/human/H = user
 			user.visible_message("<span class = 'notice'>\The [user] starts to dig around \the [src] with their bare hands!</span>")
-			if (!do_after(user,100))
+			var/generation = arm_generation
+			var/turf/start = loc
+			if (!do_after(user,100,src))
 				user.visible_message("<span class = 'notice'>\The [user] decides not to dig up \the [src].</span>")
 				return
+			if (!disarm_attempt_valid(generation, start))
+				return // moved, re-armed or already disarmed meanwhile
 			if (prob(min(60*H.getStatCoeff("dexterity"),85)))
 				user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!</span>")
 				if (origin)

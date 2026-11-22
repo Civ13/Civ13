@@ -11,3 +11,9 @@ inventory a second time.
 
 `--negative-control argless-product` removes the constructor guard and must fail
 with the import error Gaia hit on 2026-11-05.
+
+A market stall in the same world lists a single item and a stack through
+`add_product`, holds an unpaid purchase until money is deposited, and keeps its
+listings, prices and stocked item across the save/load.
+`--negative-control pending-payment` stops the stall remembering the waiting
+purchase and must fail.

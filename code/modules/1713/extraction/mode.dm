@@ -177,17 +177,26 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	New()
 		..()
 		extraction_raid_markers |= src
+	Destroy()
+		extraction_raid_markers -= src
+		return ..()
 
 /obj/effect/extraction_loot_marker
 	New()
 		..()
 		extraction_loot_markers |= src
+	Destroy()
+		extraction_loot_markers -= src
+		return ..()
 
 /obj/effect/extraction_npc_marker
 	icon = null
 	New()
 		..()
 		extraction_npc_markers |= src
+	Destroy()
+		extraction_npc_markers -= src
+		return ..()
 
 /obj/effect/extraction_exit
 	name = "extraction point"
@@ -289,6 +298,9 @@ var/global/obj/structure/simple_door/key_door/extraction_room/extraction_room_do
 	New()
 		..()
 		extraction_secure_crates |= src
+	Destroy()
+		extraction_secure_crates -= src
+		return ..()
 	proc/authorized(mob/living/human/H)
 		var/obj/map_metadata/extraction_survival/M = map
 		if (!istype(M) || !M.owned(H) || H.stat != CONSCIOUS || !Adjacent(H)) return FALSE

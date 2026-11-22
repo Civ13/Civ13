@@ -2,6 +2,9 @@
 
 	if (!slot_to_strip || !user.IsAdvancedToolUser())
 		return
+	if (offline_sleep_refuses(user))
+		show_browse(user, null, text("window=mob[name]"))
+		return
 
 	if (user.incapacitated()  || !user.Adjacent(src))
 		show_browse(user, null, text("window=mob[name]"))
@@ -96,7 +99,7 @@
 
 	if (can_reach_splints)
 		var/removed_splint
-		for (var/organ in list("l_leg","r_leg","l_arm","r_arm"))
+		for (var/organ in splintable_organs)
 			var/obj/item/organ/external/o = get_organ(organ)
 			if (o && o.status & ORGAN_SPLINTED)
 				var/obj/item/W = new /obj/item/stack/medical/splint(get_turf(src), TRUE)

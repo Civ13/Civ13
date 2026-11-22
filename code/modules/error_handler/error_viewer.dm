@@ -26,17 +26,23 @@ GLOBAL_DATUM_INIT(error_cache, /datum/error_viewer/error_cache, new)
 
 /datum/error_viewer/Topic(href, href_list)
 	if(href_list["viewruntime"])
+		var/client/user = usr ? usr.client : null
+		if (!check_rights(R_DEBUG, FALSE, user))
+			return
 		var/datum/error_viewer/error_viewer = locate(href_list["viewruntime"])
 		if(!istype(error_viewer))
 			to_chat(usr, "<span class='warning'>That runtime viewer no longer exists.</span>")
 			return
 
 		if(href_list["viewruntime_backto"])
-			error_viewer.show_to(usr.client, locate(href_list["viewruntime_backto"]), href_list["viewruntime_linear"])
+			error_viewer.show_to(user, locate(href_list["viewruntime_backto"]), href_list["viewruntime_linear"])
 		else
-			error_viewer.show_to(usr.client, null, href_list["viewruntime_linear"])
+			error_viewer.show_to(user, null, href_list["viewruntime_linear"])
 
 /datum/error_viewer/proc/browse_to(client/user, html)
+	// Enforce the same debugger right for every viewer page and refresh.
+	if (!check_rights(R_DEBUG, FALSE, user))
+		return
 	var/datum/browser/browser = new(user.mob, "error_viewer", null, 600, 400)
 	browser.set_content(html)
 	browser.add_head_content({"

@@ -28,6 +28,9 @@
 		movementsound()
 
 /obj/structure/vehicleparts/axis/ship/movementloop()
+	// With someone near she sails by pixels (craft/vehicle_offset_ship.dm).
+	if (ship_offset_movementloop())
+		return TRUE
 	if (moving && !movement_processes)
 		get_weight()
 		movement_processes++
@@ -277,9 +280,9 @@
 					continue
 			// Naval mines stay where they were laid (naval/naval_mines.dm);
 			// the craft sets them off after the move.
-			if (M.craft_left_behind())
+			if (!M.craft_cargo())
 				continue
-			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item)) && !(M in transporting))
+			if ((istype(M, /mob/living) || istype(M, /obj/structure) || istype(M, /obj/item) || istype(M, /obj/machinery)) && !(M in transporting))
 				if (istype(M, /obj/structure/vehicleparts/frame))
 					var/obj/structure/vehicleparts/frame/other = M
 					if (other.axis != src)
@@ -289,6 +292,9 @@
 					if (other.axis && other.axis != src)
 						continue
 				transporting += M
+	// Her tile step under the pixel offset moves only what the offset carries.
+	if (offset_committing)
+		return vehicle_offset_filter_transporting()
 	return transporting.len
 
 

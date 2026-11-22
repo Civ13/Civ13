@@ -6,6 +6,7 @@ var/list/said = list()
 var/list/failures = list()
 /proc/webhook_enabled() return TRUE
 /proc/webhook_send(method, list/query) sent += "[method]:[query["event"]]:[query["kind"]]:[query["seconds"]]"
+/proc/webhook_add_region(list/query) return query
 /proc/to_chat(target, message) said += message
 /proc/check_rights() return TRUE
 /proc/WWinput() return "Yes"

@@ -5,7 +5,7 @@
 // without heights, skip all of this.
 //
 // Heights are fixed map data, so the terrain answer for one eye position never
-// changes. It is computed once per eye position (tile, half-tile offset,
+// changes. It is computed once per eye position (tile, sampled eye offset,
 // posture, view radius) and kept in a small shared cache, then each target is
 // one list read. The sweep walks rings outward from the eye: each cell's
 // sight-line floor comes from the two cells of the previous ring that the ray
@@ -20,8 +20,7 @@
 #define LOS_EYE_CLIMBED 7
 // Standing on top of a vehicle (vehicle_decks.dm): over a wall, under a tree.
 #define LOS_EYE_DECK 3.5
-// The eye moves in steps of this many pixels inside a tile (half a tile).
-// Each step refreshes the viewer, so a walker refreshes twice per tile.
+// One half-tile per axis gives four quadrants for a 32-pixel tile.
 #define LOS_EYE_OFFSET_QUANTUM 16
 // Bare ground counts as seen when this far above it is.
 #define LOS_GROUND_TOP 0.25
@@ -62,16 +61,20 @@ var/global/los_eye_offsets_paused = FALSE
 		los_eye_offsets_paused = TRUE
 	return !los_eye_offsets_paused
 
-// Quantized eye offset in pixels (-16, 0 or 16 inside the tile) for one step
-// offset.
+// Physical quadrant index per axis. Signed offsets also cover riders drawn
+// beyond their anchor turf.
+/proc/los_eye_quadrant(step)
+	return round(step / LOS_EYE_OFFSET_QUANTUM)
+
+// Keep the established sight origin at alignment; quadrant admission limits
+// when this sampled position may change, not where the eye starts at rest.
 /proc/los_eye_quantized(step)
 	return round(step / LOS_EYE_OFFSET_QUANTUM + 0.5) * LOS_EYE_OFFSET_QUANTUM
 
 // The presented eye offset moves only when the body does. world.cpu chooses
-// the eye of a body that has just moved (tile centre while busy, half-tile
-// steps otherwise), but a body standing still keeps the eye it had. The CPU
-// share swings across the pause thresholds many times a second on a busy
-// server; reading it on every refresh moved a still viewer's eye between the
+// the eye of a body that has just moved (tile centre while busy, the sampled
+// offset at a quadrant crossing otherwise). A body standing still keeps its
+// eye. The CPU share swings across the pause thresholds many times a second; reading it on every refresh moved a still viewer's eye between the
 // tile centre and its offset, redrawing hills and walls at random.
 /proc/los_eye_context(mob/M)
 	if (!M || !M.client)
@@ -105,6 +108,8 @@ var/global/los_eye_offsets_paused = FALSE
 /datum/los_context/var/atom/eye_loc
 /datum/los_context/var/eye_step_x = 0
 /datum/los_context/var/eye_step_y = 0
+/datum/los_context/var/eye_quadrant_x
+/datum/los_context/var/eye_quadrant_y
 
 /datum/los_context/proc/settle_eye()
 	if (!body)
@@ -112,6 +117,16 @@ var/global/los_eye_offsets_paused = FALSE
 	var/atom/where = body.loc
 	if (where == eye_loc && body.step_x == eye_step_x && body.step_y == eye_step_y)
 		return
+	var/qx = los_eye_quadrant(body.step_x)
+	var/qy = los_eye_quadrant(body.step_y)
+	eye_step_x = body.step_x
+	eye_step_y = body.step_y
+	// Recheck load only on a physical quadrant or turf transition. A small
+	// pulse must not move the displayed eye solely because load recovered.
+	if (where == eye_loc && qx == eye_quadrant_x && qy == eye_quadrant_y)
+		return
+	eye_quadrant_x = qx
+	eye_quadrant_y = qy
 	if (los_eye_offsets_allowed())
 		eye_qx = los_eye_quantized(body.step_x)
 		eye_qy = los_eye_quantized(body.step_y)
@@ -121,8 +136,6 @@ var/global/los_eye_offsets_paused = FALSE
 		eye_qx = 0
 		eye_qy = 0
 	eye_loc = where
-	eye_step_x = body.step_x
-	eye_step_y = body.step_y
 
 /proc/los_eye_bucket(mob/M)
 	if (!M)

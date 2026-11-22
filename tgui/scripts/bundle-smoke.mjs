@@ -15,12 +15,18 @@ const console = new VirtualConsole(); console.on('jsdomError', error => errors.p
 const dom = new JSDOM('<!doctype html><body data-ref="[0x123]" data-window="main[0x456]" data-generation="2"><div id="root"></div><p id="tgui-loading">Loading...</p></body>', { runScripts: 'outside-only', url: 'http://127.0.0.1/', virtualConsole: console });
 const w = dom.window, messages = [];
 Object.defineProperty(w.navigator, 'userAgent', { value: 'Chrome/130.0 (JSDOM fixture)' });
+w.fetch = (...args) => globalThis.fetch(...args);
 w.cef_to_byond = url => {
   const params = new URL(url).searchParams;
   messages.push({ type: params.get('type'), payload: params.has('payload') ? JSON.parse(params.get('payload')) : undefined });
 };
 w.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui-bootstrap.js', import.meta.url), 'utf8'));
 const settle = () => new Promise(resolve => setTimeout(resolve, 40));
+const waitFor = async (predicate, message) => {
+  const deadline = Date.now() + 2000;
+  while (!predicate() && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 10));
+  assert.ok(predicate(), message);
+};
 const update = async (template, data, status = 2) => { w.receiveUpdateData(JSON.stringify({ config: { template, title: 'Civ13', status, ref: '[0x123]', window: 'main[0x456]', generation: 2 }, data })); await settle(); };
 const click = text => {
   const el = [...w.document.querySelectorAll('.Button,button')].find(el => el.textContent === text);
@@ -35,7 +41,7 @@ const clickRow = text => {
 };
 try {
   w.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
-  await settle(); assert.equal(messages[0]?.type, 'ready');
+  await waitFor(() => messages[0]?.type === 'ready', 'Production bundle did not signal ready');
   assert.notEqual(w.document.getElementById('tgui-loading').style.display, 'none');
   await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', id: 'water' }] });
   assert.equal(messages[1]?.type, 'ack');
@@ -45,9 +51,27 @@ try {
   click('Water'); assert.equal(messages.at(-1).type, 'act/dispense'); assert.equal(messages.at(-1).payload.value, 'water');
   await update('chem_disp.tmpl', { amount: 5, chemicals: [{ title: 'Water', id: 'water' }] }, 1);
   const before = messages.length; click('Water'); assert.equal(messages.length, before);
-  for (const template of ['appearance_changer.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl', 'faction_symbol.tmpl', 'faction_creation.tmpl', 'research_bench.tmpl']) {
+  for (const template of ['appearance_changer.tmpl', 'vending_machine.tmpl', 'vending_machine2.tmpl', 'vending_machine_gulag.tmpl', 'vending_machine_taotd.tmpl', 'warehouse_book.tmpl', 'faction_symbol.tmpl', 'faction_creation.tmpl', 'research_bench.tmpl', 'wiremod_circuit.tmpl']) {
     await update(template, {}); assert.ok(!messages.some(message => message.type === 'fallback'), `Render failed: ${template}`);
   }
+  await update('wiremod_circuit.tmpl', {
+    on: 1, display_name: 'Integrated circuit', grid_mode: 1, screen_x: 0, screen_y: 0,
+    stored_designs: { '/obj/item/circuit_component/operator/arithmetic': true },
+    component_catalog: [{
+      type: '/obj/item/circuit_component/operator/arithmetic',
+      name: 'Arithmetic',
+      description: 'Performs arithmetic.',
+      category: 'Math',
+      input_ports: [],
+      output_ports: [],
+    }],
+    components: [],
+  });
+  const wiremodButtons = w.document.querySelectorAll('.wiremod-window__buttons .Button');
+  assert.ok(wiremodButtons.length >= 2, 'Original circuit editor toolbar did not render');
+  wiremodButtons[1].dispatchEvent(new w.MouseEvent('click', { bubbles: true }));
+  await waitFor(() => w.document.body.textContent.includes('Component Menu'), 'Original component menu did not open');
+  await waitFor(() => w.document.body.textContent.includes('Arithmetic'), 'Civ13 core catalog did not load');
   await update('warehouse_book.tmpl', { items: [{ name: '&lt;img src=x onerror=alert(1)&gt;', amount: 1 }] });
   assert.ok(w.document.body.textContent.includes('<img src=x onerror=alert(1)>'));
   assert.equal(w.document.querySelectorAll('img').length, 0);
@@ -144,7 +168,7 @@ try {
   assert.ok(![...w.document.querySelectorAll('.Button,button')].some(el => /classic/i.test(el.textContent)));
   assert.ok(!messages.some(message => message.type === 'fallback'));
   assert.deepEqual(errors, []);
-  process.stdout.write("PASS: production bundle and 19 retained routes, retained photo/Notes/flavor fixtures, inert text/snapshot replacement, handshake/action/text/image/fallback contracts\n");
+  process.stdout.write("PASS: production bundle and 20 retained routes, retained photo/Notes/flavor fixtures, inert text/snapshot replacement, handshake/action/text/image/fallback contracts\n");
 } finally { w.close(); }
 
 // Preserve this reviewed reader recovery in its own fresh root.
@@ -156,7 +180,7 @@ try {
   rw.cef_to_byond = url => sent.push(new URL(url).searchParams.get('type'));
   rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui-bootstrap.js', import.meta.url), 'utf8'));
   rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
-  await settle();
+  await waitFor(() => sent.includes('ready'), 'Production flavor bundle did not signal ready');
   rw.receiveUpdateData(JSON.stringify({ config: { template: 'character_flavor.tmpl', status: 1, ref: '[0x123]', window: 'main[0x456]', generation: 2 }, data: { name: 'Fictional subject', text: 'PARTIAL\n<b>unsupported</b>' } }));
   await settle();
   assert.equal(sent.filter(type => type === 'fallback').length, 1);
@@ -175,7 +199,7 @@ try {
   rw.cef_to_byond = url => sent.push(new URL(url).searchParams.get('type'));
   rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui-bootstrap.js', import.meta.url), 'utf8'));
   rw.eval(readFileSync(new URL('../../UI/tgui/civ13-tgui.js', import.meta.url), 'utf8'));
-  await settle();
+  await waitFor(() => sent.includes('ready'), 'Production notes bundle did not signal ready');
   rw.receiveUpdateData(JSON.stringify({ config: { template: 'character_notes.tmpl', status: 1, ref: '[0x123]', window: 'main[0x456]', generation: 2 }, data: { character: [], sections: [], memory: [{ text: '<b>UNSAFE_PARTIAL</b>', bold: 0, italic: 0 }], discoveries: [] } }));
   await settle();
   assert.equal(sent.filter(type => type === 'fallback').length, 1);

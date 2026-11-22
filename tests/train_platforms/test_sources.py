@@ -204,7 +204,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         crashes = (ROOT / 'code/modules/1713/train_crashes.dm').read_text(encoding='utf-8')
         hit = TRAINS[TRAINS.index('/obj/structure/trains/proc/rail_hit('):TRAINS.index('/obj/structure/trains/proc/car_load_weight()')]
         # Another train, a solid object and a blocked deck all end in train_crash().
-        self.assertEqual(hit.count('train_crash('), 4)
+        self.assertEqual(hit.count('train_crash('), 5)
         self.assertLess(hit.index('if (train_crash(TF, impact, fdir))'), hit.index('hits \\the [TF]!'))
         self.assertIn('tail.train_crash(clearance, impact, fdir)', TRAINS)
         # Only a running train crashes, and never into its own cars.
@@ -296,6 +296,11 @@ class TrainPlatformSourceTests(unittest.TestCase):
         # Stored units are nested contents of the post, so world saves carry them.
         self.assertIn('var/obj/structure/rail_stored_unit/U = new(src)', WAREHOUSE)
         self.assertNotIn('should_save = FALSE', WAREHOUSE)
+        # A heavy locomotive is stored whole and rebuilt when it rolls out.
+        self.assertNotIn('too long to put away', WAREHOUSE)
+        self.assertIn('E.clear_body()', WAREHOUSE)
+        self.assertIn('engine.build_body()', WAREHOUSE)
+        self.assertIn('coupled.coupling_at(coupled.reversed) > 0 && front.coupling_at(TRUE) > 0', WAREHOUSE)
         # A stored platform segment has no deck until it rolls out again.
         layout = SOURCE[SOURCE.index('/obj/structure/trains/platform/proc/apply_layout()'):]
         self.assertLess(layout.index('if (!isturf(loc))'), layout.index('deck_parts = list()'))
@@ -540,7 +545,9 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('/obj/structure/workshop_machine/shear_legs/proc/sling_reach()\n\treturn 1', lifting)
         self.assertEqual(lifting.count('get_dist(src, dropping) > sling_reach()'), 2)
         self.assertIn(rail + '/sling_reach()\n\treturn reach', crane)
-        self.assertIn('if (P.car_id == mine.car_id || P.density)', crane)
+        goods = (ROOT / 'code/modules/1713/train_goods.dm').read_text(encoding='utf-8')
+        self.assertIn('return train_crane_swings(src, load, choices, mine.car_id)', crane)
+        self.assertIn('if ((own_car && P.car_id == own_car) || P.density || (on && on.car_id == P.car_id))', goods)
         self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', crane))
         self.assertIn('RECIPE: /material/iron/,crane car kit,/obj/structure/train_car_kit/crane_car,40,', RECIPES)
         self.assertIn('RECIPE: /material/iron/,rail crane,%s,20,' % rail, RECIPES)
@@ -607,6 +614,313 @@ class TrainPlatformSourceTests(unittest.TestCase):
             self.assertIn(state, states)
         self.assertIn('ticket', states)
         self.assertIn('ticket_punched', states)
+
+    def test_signals_frames_and_tokens(self):
+        signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_signals.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the cab reads the line when it starts and each time the train is counted
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward()')]
+        self.assertEqual(drive.count('lineside_watch()'), 2)
+        self.assertLess(drive.index('lineside_seen = null'), drive.index('spawn(0)'))
+        self.assertLess(drive.index('deadman_watch()'), drive.rindex('lineside_watch()'))
+        # a wired signal or switch does not move by hand
+        self.assertIn('if (worked_by && train_frame_by_id(worked_by, src))', signals)
+        lever = TRAINS[TRAINS.index('/obj/structure/train_lever/attack_hand('):]
+        self.assertLess(lever.index('train_frame_by_id(worked_by, src)'), lever.index('throw_switch("split")'))
+        # a signal always goes back to danger; the token is one object
+        self.assertIn('\t\tif (S.clear)\n\t\t\treturn null // a signal always goes back to danger\n', signals)
+        self.assertIn('\tif (train_token_out(section))\n', signals)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, signals)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for path, recipe, state in (
+                ('/obj/structure/train_lineside/signal', '/material/iron/,semaphore signal,/obj/structure/train_lineside/signal,4,', 'signal_danger'),
+                ('/obj/structure/train_lever_frame', '/material/iron/,lever frame,/obj/structure/train_lever_frame,10,', 'lever_frame'),
+                ('/obj/structure/train_token_instrument', '/material/iron/,token instrument,/obj/structure/train_token_instrument,8,', 'token_instrument'),
+                ('/obj/item/train_signal_wire', '/material/iron/,coil of signal wire,/obj/item/train_signal_wire,2,', 'signal_wire'),
+                ('/obj/structure/train_lineside/board', '/material/wood/,section board,/obj/structure/train_lineside/board,3,', 'section_board')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+            self.assertIn('icon_state = "%s"' % state, signals)
+            self.assertIn(state, states)
+        self.assertIn('signal_clear', states)
+        self.assertIn('train_token', states)
+
+    def test_trains_leave_the_rails_and_are_rerailed(self):
+        derail = (ROOT / 'code/modules/1713/train_derail.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_derail.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        self.assertIn('#define TRAIN_CURVE_SPEED 3 ', derail)
+        self.assertIn('#define TRAIN_OVERRUN_SPEED 2 ', derail)
+        # the first notch of the fastest engine is under the curve limit
+        fastest = min(float(v) for v in re.findall(r'max_train_speed = ([0-9.]+)', LOCOS + TRAINS))
+        self.assertLess(10 / fastest / 3, 3)
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward()')]
+        self.assertLess(drive.index('overrun_check()'), drive.index('if (curve_check(lead, lead_dir, lead_from))'))
+        self.assertIn('\treturn broken_down || derailed\n', TRAINS)
+        self.assertIn('if (P.wrecked || P.braced || P.derailed)', PLATFORMS)
+        servicing = (ROOT / 'code/modules/1713/train_servicing.dm').read_text(encoding='utf-8')
+        self.assertIn('\tif (istype(W, /obj/item/train_jack))\n\t\treturn jack_use(W, user)\n', servicing)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, derail)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        self.assertIn('RECIPE: /material/iron/,rerailing jack,/obj/item/train_jack,6,', RECIPES)
+        self.assertIn('"/obj/item/train_jack" = "rail_steam"', NODES)
+        self.assertIn('derailed', states)
+        self.assertIn('rerail_jack', states)
+
+    def test_turntable_is_a_pivot_with_bridge_rails(self):
+        table = (ROOT / 'code/modules/1713/train_turntable.dm').read_text(encoding='utf-8')
+        platforms = (ROOT / 'code/modules/1713/train_platforms.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_turntable.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the bridge is rails to a train, but not track a player bends or lifts
+        self.assertIn('/obj/structure/rails/turntable\n', table)
+        self.assertIn('/obj/structure/rails/turntable/pry_apart()\n\treturn null', table)
+        # it turns only what is whole on the bridge, with the pit clear
+        swing = table[table.index('/obj/structure/train_turntable/proc/swing(angle)'):]
+        swing = swing[:swing.index('/obj/structure/train_turntable/proc/in_reach(')]
+        self.assertIn('turn_problem()', swing)
+        self.assertLess(swing.index('cargo[AM] = rotated(T, angle)'), swing.index('TR.train_shift(places[TR], FALSE)'))
+        self.assertIn('P.place_parts(P.loc, P.dir)', swing)
+        self.assertIn('E.place_body()', swing)
+        self.assertIn('which is not on the table', table)
+        self.assertIn('is standing in the pit', table)
+        # the pivot and its pit are never deck cargo
+        self.assertIn('istype(AM, /obj/structure/train_turntable)', platforms)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, table)
+        for name in ('TURNTABLE_TIME', 'TURNTABLE_WEIGHT_TIME', 'TURNTABLE_TIME_MAX'):
+            self.assertIn('#undef ' + name, table)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for state in ('turntable_deck', 'turntable_girders', 'turntable_pivot'):
+            self.assertIn('"%s"' % state, table)
+            self.assertIn(state, states)
+        for sheet, size in (('train_turntable.dmi', 160), ('train_turntable_large.dmi', 352)):
+            text = dmi_description(ROOT / 'icons/obj/vehicles' / sheet)
+            self.assertIn('state = "pit"', text)
+            self.assertIn('width = %d' % size, text)
+            self.assertIn("'icons/obj/vehicles/%s'" % sheet, table)
+        for path, recipe in (
+                ('/obj/structure/train_turntable', '/material/iron/,turntable,/obj/structure/train_turntable,20,'),
+                ('/obj/structure/train_turntable/large', '/material/iron/,large turntable,/obj/structure/train_turntable/large,40,')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+
+    def test_track_wear_is_a_count_on_the_rail(self):
+        wear = (ROOT / 'code/modules/1713/train_trackwear.dm').read_text(encoding='utf-8')
+        laying = (ROOT / 'code/modules/1713/track_laying.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_trackwear.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the drive loop asks once a step, after the snow
+        drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
+        self.assertLess(drive.index('meet_snow()'), drive.index('if (meet_track())'))
+        self.assertEqual(TRAINS.count('meet_track()'), 1)
+        # platelaying is asked first by the rails' own attackby, not overridden
+        attack = laying[laying.index('/obj/structure/rails/attackby(obj/item/W, mob/user)'):]
+        self.assertLess(attack.index('if (track_maintain(W, user))'), attack.index('is_tool(W, TOOL_HAMMER)'))
+        self.assertNotIn('/obj/structure/rails/attackby', wear)
+        # nothing decays on a timer, and the limits match the documented ones
+        for word in ('spawn(', 'sleep(', 'while (', 'process(', 'world.time'):
+            self.assertNotIn(word, wear)
+        for name, value in (('TRACK_WEAR_RATE', '0.01'), ('TRACK_ROUGH', '25'), ('TRACK_WORN', '50'), ('TRACK_BAD', '80'),
+                            ('TRACK_WORN_SPEED', '5'), ('TRACK_BAD_SPEED', '2'), ('TRACK_PACK', '30')):
+            self.assertRegex(wear, r'#define %s %s\b' % (name, re.escape(value)))
+            self.assertIn('#undef ' + name, wear)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for state in ('track_worn', 'track_bad'):
+            self.assertIn('"%s"' % state, wear)
+            self.assertIn(state, states)
+
+    def test_freight_handling_is_worked_by_players(self):
+        goods = (ROOT / 'code/modules/1713/train_goods.dm').read_text(encoding='utf-8')
+        crane = (ROOT / 'code/modules/1713/train_crane.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_goods.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the pen is asked first by the train's own attackby, not overridden
+        servicing = (ROOT / 'code/modules/1713/train_servicing.dm').read_text(encoding='utf-8')
+        self.assertIn('card_use(', servicing)
+        self.assertNotIn('/obj/structure/trains/attackby', goods)
+        self.assertIn('card_line()', (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8'))
+        self.assertIn('car.card_text()', (ROOT / 'code/modules/1713/train_conductor.dm').read_text(encoding='utf-8'))
+        # both cranes share one set of swings
+        self.assertIn('train_crane_swings(src, load, ..(), null)', goods)
+        self.assertIn('train_crane_swings(src, load, choices, mine.car_id)', crane)
+        # yard fixtures stay put under a train
+        self.assertIn('/obj/structure/train_livestock_ramp', PLATFORMS)
+        # nothing runs on a timer and nothing is bought or sold
+        for word in ('spawn(', 'sleep(', 'while (true', 'process(', 'world.time', 'money', 'coin'):
+            self.assertNotIn(word, goods.split('// Nothing here buys or sells', 1)[1])
+        for name, value in (('LOADING_STAGE_MAX', '3000'), ('LOADING_STAGE_TIME', '40'), ('LIVESTOCK_RAMP_REACH', '3'),
+                            ('LIVESTOCK_RAMP_TIME', '40'), ('TRAIN_CARD_LENGTH', '40')):
+            self.assertRegex(goods, r'#define %s %s\b' % (name, re.escape(value)))
+            self.assertIn('#undef ' + name, goods)
+        recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
+        nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
+        for path in ('/obj/structure/rail_depot/loading_stage', '/obj/structure/workshop_machine/shear_legs/crane/goods',
+                     '/obj/structure/train_livestock_ramp'):
+            self.assertIn(',%s,' % path, recipes)
+            self.assertIn('"%s" = "rail_steam"' % path, nodes)
+        yard = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        depot = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/rail_water.dmi')))
+        self.assertLessEqual({'goods_crane', 'goods_crane_haul', 'livestock_ramp'}, yard)
+        self.assertLessEqual({'loading_stage_empty', 'loading_stage_coal', 'loading_stage_ore', 'loading_stage_sand'}, depot)
+
+    def test_early_rails_hand_car_animals_and_wooden_track(self):
+        early = (ROOT / 'code/modules/1713/train_early.dm').read_text(encoding='utf-8')
+        laying = (ROOT / 'code/modules/1713/track_laying.dm').read_text(encoding='utf-8')
+        wear = (ROOT / 'code/modules/1713/train_trackwear.dm').read_text(encoding='utf-8')
+        hitch = (ROOT / 'code/game/objects/structures/cart_hitch.dm').read_text(encoding='utf-8')
+        couplings = (ROOT / 'code/modules/1713/train_couplings.dm').read_text(encoding='utf-8')
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_early.dm"', dme)
+        # the tint is shared by two files, so it is a define of its own
+        self.assertIn('#include "code\\__defines\\trains.dm"', dme)
+        self.assertIn('#define WOODEN_RAIL_COLOR', (ROOT / 'code/__defines/trains.dm').read_text(encoding='utf-8'))
+        self.assertNotIn('#define WOODEN_RAIL_COLOR', early)
+        # the hand car rolls free like any car: no loop of its own
+        self.assertIn('return start_rolling(min(limit, max(speed, 0.3) + push), way)', early)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep) ?\(', early))
+        # a harness follows the animal through the moved event and is not saved
+        self.assertIn('GLOB.moved_event.register(A, src, /obj/structure/trains/proc/draft_moved)', early)
+        self.assertIn('GLOB.moved_event.unregister(A, src, /obj/structure/trains/proc/draft_moved)', early)
+        self.assertIn('var/tmp/mob/living/simple_animal/draft_animal', early)
+        self.assertIn('var/tmp/obj/structure/trains/hitched_train', early)
+        self.assertIn('key == "hitched_train"', hitch)
+        self.assertIn('return hitched_train.draft_drag(src)', hitch)
+        self.assertIn('car.player_harness(user, src)', hitch)
+        # the train's own Destroy and examine ask; nothing is overridden twice
+        self.assertIn('\tclear_couplers()\n\tunharness()\n', couplings)
+        self.assertIn('var/draft = draft_line()', couplings)
+        for proc in ('/obj/structure/trains/Destroy', '/obj/structure/trains/examine', '/obj/structure/rails/after_load',
+                     '/obj/structure/rails/examine', '/mob/living/simple_animal/MouseDrop_T'):
+            self.assertNotIn(proc + '(', early)
+        # wooden rails go down, come up and wear through the existing track code
+        self.assertIn('wooden = wood\n\tplace_rails()', laying)
+        self.assertIn('R.set_wooden(w)', laying)
+        self.assertIn('bent.set_wooden(was_wooden)', laying)
+        self.assertIn('B.wooden = wooden', laying)
+        self.assertIn('if (wooden)\n\t\tamount *= TRACK_WOODEN_WEAR', wear)
+        self.assertIn('set_wooden(wooden)\n\tshow_wear()', wear)
+        for name in ('HANDCAR_PUMP_TIME', 'HANDCAR_CREW_TIME', 'HANDCAR_PUSH', 'HANDCAR_SPEED', 'HANDCAR_CREW_SPEED',
+                     'HANDCAR_LOAD', 'TRAIN_DRAFT_LOAD', 'TRAIN_DRAFT_SLACK', 'TRAIN_HARNESS_TIME'):
+            self.assertIn('#define ' + name, early)
+            self.assertIn('#undef ' + name, early)
+        for path, node in (('/obj/structure/trains/transport/handcar', 'rail_steam'),
+                           ('/obj/structure/trains/storage/chaldron', 'wagons_ships'),
+                           ('/obj/item/stack/rail_lengths/wooden', 'wagons_ships'),
+                           ('/obj/item/stack/rail_sleepers', 'wagons_ships')):
+            self.assertIn(',%s,' % path, RECIPES)
+            self.assertIn('"%s" = "%s"' % (path, node), NODES)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        self.assertLessEqual({'handcar', 'chaldron'}, states)
+
+    def test_track_works_buffer_stops_and_crossings(self):
+        works = (ROOT / 'code/modules/1713/train_trackworks.dm').read_text(encoding='utf-8')
+        signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_trackworks.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the stop is asked before the ordinary crash on a solid object
+        hit = TRAINS[TRAINS.index('/obj/structure/trains/proc/rail_hit('):]
+        hit = hit[:hit.index('/obj/structure/trains/proc/process_rail_movement(')]
+        self.assertLess(hit.index('if (stop.hold(impact))'), hit.index('is_structure_impact_part(O)'))
+        self.assertLess(hit.index('if (stop.hold(impact))'), hit.index('stop.smash()'))
+        # gates are lineside posts: cabs read them, frames lock them
+        self.assertIn('/obj/structure/train_lineside/gate/speaks_to(heading)', works)
+        self.assertIn('for (var/obj/structure/train_lineside/gate/G in train_lineside)', signals)
+        self.assertIn('if (!G.shut && train_signal_over_gate(S, G))', signals)
+        self.assertIn('if (S.clear && train_signal_over_gate(S, G))', signals)
+        self.assertIn('if (crossing_frame())', works)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, works)
+        for name in ('TRAIN_BUFFER_HOLD', 'TRAIN_GATE_TIME', 'TRAIN_GATE_REACH'):
+            self.assertIn('#undef ' + name, works)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for path, recipe, state in (
+                ('/obj/structure/train_buffer_stop', '/material/iron/,buffer stop,/obj/structure/train_buffer_stop,4,', 'buffer_stop'),
+                ('/obj/structure/train_crossing_boards', '/material/wood/,crossing boards,/obj/structure/train_crossing_boards,2,', 'crossing_boards'),
+                ('/obj/structure/train_lineside/gate', '/material/wood/,crossing gate,/obj/structure/train_lineside/gate,4,', 'crossing_gate_open')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+            self.assertIn('icon_state = "%s"' % state, works)
+            self.assertIn(state, states)
+        self.assertIn('crossing_gate_shut', states)
+
+    def test_stations_whistles_and_lamps(self):
+        stations = (ROOT / 'code/modules/1713/train_stations.dm').read_text(encoding='utf-8')
+        signals = (ROOT / 'code/modules/1713/train_signals.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_stations.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the night rule is counted with the train, not every step
+        self.assertEqual(TRAINS.count('night_factor()'), 1)
+        self.assertIn('\tlead_factor = leading_factor(cars) * night_factor()\n', TRAINS)
+        self.assertEqual(TRAINS.count('set_light(lamp_range)'), 2)
+        self.assertNotIn('set_light(2)', TRAINS)
+        self.assertIn('if ("Sound the whistle", "Sound the horn")', TRAINS)
+        # a name board speaks both ways
+        self.assertIn('if (!S.speaks_to(heading) || !isturf(S.loc))', signals)
+        conductor = (ROOT / 'code/modules/1713/train_conductor.dm').read_text(encoding='utf-8')
+        self.assertIn('heading += train_tail_lamp_text(cars)', conductor)
+        for word in ('spawn(', 'sleep(', 'while (', 'process('):
+            self.assertNotIn(word, stations)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for path, recipe, state in (
+                ('/obj/item/train_lamp', '/material/iron/,hand lamp,/obj/item/train_lamp,2,', 'hand_lamp'),
+                ('/obj/structure/train_lineside/station', '/material/wood/,station name board,/obj/structure/train_lineside/station,4,', 'station_board')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "rail_steam"' % path, NODES)
+            self.assertIn('icon_state = "%s"' % state, stations)
+            self.assertIn(state, states)
+        for shade in ('white', 'red', 'green'):
+            self.assertIn('hand_lamp_' + shade, states)
+
+    def test_electric_traction_draws_from_the_grid(self):
+        electric = (ROOT / 'code/modules/1713/train_electric.dm').read_text(encoding='utf-8')
+        platforms = (ROOT / 'code/modules/1713/train_platforms.dm').read_text(encoding='utf-8')
+        decks = (ROOT / 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm').read_text(encoding='utf-8')
+        self.assertIn('#include "code\\modules\\1713\\train_electric.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
+        # the layouts join the others through one call, not a second layout proc
+        self.assertIn('\t\ttrain_locomotive_layouts(layouts)\n\t\ttrain_electric_layouts(layouts)\n', platforms)
+        for kind, cab2 in (('electric', 4), ('tram', 4)):
+            self.assertIn('"body" = "%s", "cab" = 1, "cab2" = %d, "roof" = "loco_%s"' % (kind, cab2, kind), electric)
+        # no fuel: the engine never burns, never stalls dry, and asks the line instead
+        self.assertIn('\tmax_fuel = 0\n\tfuel = 1\n', electric)
+        self.assertIn('/obj/structure/trains/locomotive/electric/fuel_per_tile(notch, weight)\n\treturn 0\n', electric)
+        self.assertIn('/obj/structure/trains/locomotive/electric/steam_factor()\n\treturn line_check() ? 1 : 0\n', electric)
+        # the base engine asks through hooks; nothing of it is overridden from this file
+        self.assertIn("<span class = 'warning'>[no_power_text()]</span>", TRAINS)
+        self.assertIn('\t\tset_light(0)\n\t\tdrive_ended()\n', TRAINS)
+        for proc in ('/obj/structure/trains/locomotive/work_control', '/obj/structure/trains/locomotive/drive(',
+                     '/obj/structure/trains/locomotive/refresh_consist', '/obj/structure/trains/platform/'):
+            self.assertNotIn(proc, electric)
+        # the line is a consumer of the cable grid: no loop, no timer of its own
+        self.assertIn('if (M.draw_cable_power())', electric)
+        self.assertIsNone(re.search(r'(?<!\w)(spawn|addtimer|sleep|while) ?\(', electric.replace('while (pending.len)', '')))
+        self.assertIn('power_point_moved()', electric)
+        # a line that cannot carry one more engine refuses that engine only
+        self.assertIn('\tdrawing -= L\n\tdrawn_at -= L\n\tenergise()\n\treturn FALSE\n', electric)
+        # every section of the tram that people ride in has a roof of its own
+        self.assertIn('seg_index != L["cab2"] && segment_layout()["solid"])', decks)
+        self.assertIn('(seg_index == L["cab"] ? "" : "m")', decks)
+        self.assertIn('train_catenary_strike(H, back_dir)', decks)
+        # file-local defines are undefined again
+        for name in re.findall(r'(?m)^#define (\w+)', electric):
+            self.assertIn('#undef ' + name, electric)
+        for path, recipe in (
+                ('/obj/structure/train_catenary', '/material/steel/,overhead line mast,/obj/structure/train_catenary,4,'),
+                ('/obj/structure/train_car_kit/loco_electric', '/material/steel/,electric locomotive kit,/obj/structure/train_car_kit/loco_electric,55,'),
+                ('/obj/structure/train_car_kit/loco_tram', '/material/steel/,tram kit,/obj/structure/train_car_kit/loco_tram,30,')):
+            self.assertIn('RECIPE: ' + recipe, RECIPES)
+            self.assertIn('"%s" = "electricity"' % path, NODES)
+        states = set(re.findall(r'state = "([^"]+)"', dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')))
+        for kind in ('electric', 'tram'):
+            for seg in '1234':
+                for col in 'lcr':
+                    self.assertIn('loco_%s_%s%s' % (kind, seg, col), states)
+            for col in 'lcr':
+                self.assertIn('roof_loco_%s_%s' % (kind, col), states)
+                self.assertIn('roof_loco_%s_b%s' % (kind, col), states)
+        for col in 'lcr':
+            self.assertIn('roof_loco_tram_m' + col, states)
+        for state in ('catenary_mast', 'catenary_arm', 'catenary_hanger', 'catenary_wire'):
+            self.assertIn(state, states)
+            self.assertIn('"%s"' % state, electric)
 
     def test_native_fixture_preparation(self):
         generated = run.sources()

@@ -126,7 +126,7 @@ var/global/item_pile_flush_pending = FALSE
 // loose_pile_max above 0 turns it on; amount is the count and the name shows
 // it. Code that used to qdel() one piece calls loose_pile_use() instead.
 
-#define LOOSE_PILE_MAX 25
+// Loose pile size: code/__defines/item_piles.dm
 
 /obj/item/var/loose_pile_max = 0
 

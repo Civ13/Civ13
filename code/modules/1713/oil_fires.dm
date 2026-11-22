@@ -11,7 +11,29 @@
 	not_movable = TRUE
 	not_disassemblable = TRUE
 
+// TRUE when this spring gives oil on this land (continent_resources.dm). A
+// spring that does not runs dry and stays dry.
+/obj/structure/oil_spring/proc/flows()
+	if (continent_land_oil_at(get_turf(src)))
+		return TRUE
+	if (counter > 0)
+		counter = 0
+		update_icon()
+	return FALSE
+
+/obj/structure/oil_spring/initialize()
+	. = ..()
+	flows()
+
+/obj/structure/oil_spring/examine(mob/user, distance = -1)
+	. = ..()
+	if (!flows())
+		to_chat(user, SPAN_NOTICE("It has run dry for good. [continent_land_oil_text()]"))
+
 /obj/structure/oil_spring/attackby(obj/item/O as obj, mob/living/user as mob)
+	if (!flows())
+		to_chat(user, SPAN_WARNING("\The [src] has run dry for good. [continent_land_oil_text()]"))
+		return
 	if (counter <= 0)
 		to_chat(user, "<span class='warning'>\The [src] is dry!</span>")
 		if (counter < 0)
@@ -61,7 +83,7 @@
 		icon_state = "oil_spring0"
 
 /obj/structure/oil_spring/proc/refill()
-	if (refill_pending || !isturf(loc))
+	if (refill_pending || !isturf(loc) || !flows())
 		return
 	if (world.time >= timeout)
 		if (counter < 1)

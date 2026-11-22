@@ -5,9 +5,11 @@
 // - wine, cider, beer or mead sours into vinegar, 6 units at a time
 // - up to 4 fruits or vegetables packed inside, with 5 vinegar and 2 salt for
 //   each, become pickles after 3 working spells. Pickles never spoil.
+// - cooked meat or fish packed inside, sealed with 5 butter or lard for each,
+//   is potted after 3 working spells (butter.dm).
 // Alt-click an open crock (or use its verb) to take food back out.
 //
-// Jam: 10 fruit juice with 5 sugar or 5 honey sets into 10 jam. A preserve
+// Jam: 10 fruit juice with 5 sugar, 5 honey or 5 maple syrup sets into 10 jam. A preserve
 // jar holds 20; spread 5 on a slice of bread to make jellied toast.
 
 #define CROCK_WORK_TIME 1200
@@ -82,7 +84,10 @@
 	crock_schedule()
 
 /obj/item/weapon/reagent_containers/glass/crock/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/grown))
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/butter))
+		press_butter(W, user)
+		return TRUE
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks))
 		pack_food(W, user)
 		return TRUE
 	return ..()
@@ -103,8 +108,8 @@
 	if (!is_open_container())
 		to_chat(user, SPAN_WARNING("Take the lid off \the [src] first."))
 		return FALSE
-	if (!crock_can_pickle(S))
-		to_chat(user, SPAN_WARNING("\The [S] will not keep in brine."))
+	if (!crock_can_pickle(S) && !crock_can_pot(S) && !S.potted)
+		to_chat(user, SPAN_WARNING(istype(S, /obj/item/weapon/reagent_containers/food/snacks/grown) ? "\The [S] will not keep in brine." : "\The [S] will not keep under fat. Only cooked, unspoiled meat or fish can be potted."))
 		return FALSE
 	if (crock_food().len >= CROCK_MAX_FOOD)
 		to_chat(user, SPAN_WARNING("\The [src] is packed full."))
@@ -112,7 +117,10 @@
 	if (user)
 		user.remove_from_mob(S)
 	S.forceMove(src)
-	pickle_progress = 0
+	if (istype(S, /obj/item/weapon/reagent_containers/food/snacks/grown))
+		pickle_progress = 0
+	else if (!S.potted)
+		pot_progress = 0
 	to_chat(user, SPAN_NOTICE("You pack \the [S] into \the [src]."))
 	return TRUE
 
@@ -144,6 +152,7 @@
 	user.put_in_hands(I)
 	if (!crock_food().len)
 		pickle_progress = 0
+		pot_progress = 0
 	to_chat(user, SPAN_NOTICE("You take \the [I] out of \the [src]."))
 	return TRUE
 
@@ -163,7 +172,8 @@
 		if (reagents.get_reagent_amount(id) > 0)
 			return TRUE
 	var/list/food = unpickled_food()
-	return has_brine_for(food.len)
+	var/list/to_pot = unpotted_food()
+	return has_brine_for(food.len) || has_seal_for(to_pot.len)
 
 /obj/item/weapon/reagent_containers/glass/crock/proc/crock_schedule()
 	if (crock_working || QDELETED(src) || !crock_has_work())
@@ -199,6 +209,8 @@
 			reagents.remove_reagent("sodiumchloride", PICKLE_SALT * food.len)
 			for (var/obj/item/weapon/reagent_containers/food/snacks/S in food)
 				pickle_food(S)
+	if (crock_pot_work())
+		. = TRUE
 	crock_schedule()
 
 /proc/pickle_food(obj/item/weapon/reagent_containers/food/snacks/S)
@@ -262,8 +274,13 @@
 	var/turf/T = get_turf(B)
 	var/held = (B.loc == user)
 	reagents.remove_reagent("jam", JAM_PER_TOAST)
-	qdel(B)
 	var/obj/item/weapon/reagent_containers/food/snacks/jelliedtoast/J = new(T)
+	// The toast keeps whatever was in the slice (bread left after bites, anything
+	// added with a dropper) on top of its own jam layer (#6283).
+	if (B.reagents && B.reagents.total_volume > 0)
+		J.reagents.maximum_volume = max(J.reagents.maximum_volume, J.reagents.total_volume + B.reagents.total_volume)
+		B.reagents.trans_to_holder(J.reagents, B.reagents.total_volume)
+	qdel(B)
 	if (held)
 		user.put_in_hands(J)
 	to_chat(user, SPAN_NOTICE("You spread jam on the bread."))
@@ -330,6 +347,27 @@
 /datum/chemical_reaction/jam/orange_honey
 	id = "jam_orange_honey"
 	required_reagents = list("orangejuice" = 10, "honey" = 5)
+
+// Maple syrup sets jam as sugar and honey do (syrups.dm).
+/datum/chemical_reaction/jam/berry_maple
+	id = "jam_berry_maple"
+	required_reagents = list("berryjuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/grape_maple
+	id = "jam_grape_maple"
+	required_reagents = list("grapejuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/apple_maple
+	id = "jam_apple_maple"
+	required_reagents = list("applejuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/apricot_maple
+	id = "jam_apricot_maple"
+	required_reagents = list("apricotjuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/orange_maple
+	id = "jam_orange_maple"
+	required_reagents = list("orangejuice" = 10, "maple_syrup" = 5)
 
 #undef CROCK_WORK_TIME
 #undef CROCK_SOUR_STEP

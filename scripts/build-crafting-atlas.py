@@ -123,9 +123,9 @@ def needs_handle(title):
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
-        if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/training_course')):
-            modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/training_course/hurdle/steel')
-            skill=105 if modern else 0 if typepath == '/obj/item/weapon/lifting_weight' else 30
+        if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/treadwheel', '/obj/item/weapon/skipping_rope')):
+            modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/treadwheel/treadmill')
+            skill=105 if modern else 0 if typepath in ('/obj/item/weapon/lifting_weight', '/obj/item/weapon/skipping_rope') else 30
             if skill:conditions+=f' Crafting skill {skill}.'
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
         if typepath.startswith(('/obj/structure/telecom', '/obj/item/tv_camera')) or typepath == '/obj/item/weapon/telephone/landline':
@@ -181,7 +181,7 @@ for p,s in files.items():
                 ingredients.append(('/obj/item/weapon/material/handle',1))
                 tool_notes+=' Uses up one wood handle held or worn; its wood sets durability and speed.'
             if b == '/obj/item/weapon/material/handle':
-                tool_notes+={'wood handle':' Tools built on it: the usual durability and speed.','plank handle':' Tools built on it last 50% longer and work 25% faster.','reinforced handle':' Tools built on it last 50% longer but work 18% slower.'}.get(n,'')
+                tool_notes+={'wood handle':' Tools built on it: the usual durability and speed.','plank handle':' Tools built on it last 35% longer and work 35% faster.','reinforced handle':' Tools built on it last 50% longer at the usual speed.','plastic handle':' Tools built on it last 40% longer and work 40% faster.'}.get(n,'')
             need=craft_needs.get(canon(b))
             if need:
                 ingredients+=[(stack,amount) for stack,amount in need['inputs'].items()]
@@ -297,7 +297,7 @@ if assembly:
     # Preserve stateful prerequisites as separate graph nodes. Loading flint does
     # not change the mechanism sprite in production, but does change eligibility.
     if 'has_flint = TRUE' in assembly and 'if (!F.sharpened)' in assembly:
-        add('Load sharpened flint into mechanism','Flintlock assembly',[(mechanism,1),('/obj/item/weapon/flint/sharpened',1)],[(loaded,1)],assembly_path,assembly[:assembly.index('/obj/item/blackpowder_part/mechanism/assemble')].count('\n')+1,'Sharpened flint required; gunsmithing research; era 3-4; 20 ticks; held active input, nearby/held target, action rechecks.', 'has_flint = TRUE after consuming sharpened flint')
+        add('Load sharpened flint into mechanism','Flintlock assembly',[(mechanism,1),('/obj/item/weapon/flint/sharpened',1)],[(loaded,1)],assembly_path,assembly[:assembly.index('/obj/item/blackpowder_part/mechanism/assemble')].count('\n')+1,'Sharpened flint required; gunsmithing research; era 3-4 (later eras too on persistent worlds); 20 ticks; held active input, nearby/held target, action rechecks.', 'has_flint = TRUE after consuming sharpened flint')
     else:
         issues.append(dict(file=assembly_path,line=1,reason='Flint-loading source contract changed; inspect assembly callback',raw='mechanism assembly'))
     for match in re.finditer(r'^(/obj/item/blackpowder_part/stock/[^\s(]+)\s*\n((?:\t[^\n]*\n|\n)*)',assembly,re.M):
@@ -309,7 +309,7 @@ if assembly:
         partial=stock+'#barrel_attached'
         sprite_variants[partial]=dict(type=stock,state=state[1],name=label(stock)+' stock with barrel')
         line=assembly[:match.start()].count('\n')+1
-        gate='Gunsmithing research; era 3-4; held active input and nearby/held target; matching barrel and loaded mechanism required; production action rechecks; pistol 20 ticks, musket 30 ticks per attachment.'
+        gate='Gunsmithing research; era 3-4 (later eras too on persistent worlds); held active input and nearby/held target; matching barrel and loaded mechanism required; production action rechecks; pistol 20 ticks, musket 30 ticks per attachment.'
         add('Attach '+label(stock)+' barrel','Flintlock assembly',[(stock,1),(barrel[1],1)],[(partial,1)],assembly_path,line,gate,body)
         add('Finish Flintlock '+label(stock)+' assembly','Flintlock assembly',[(partial,1),(loaded,1)],[(gun[1],1)],assembly_path,line,gate+' Optional component route; legacy direct anvil route remains separate.',body)
     rock_path='code/game/objects/structures/rocks.dm'

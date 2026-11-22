@@ -305,10 +305,6 @@ var/list/charge_sounds_rurobbers = list(
 	'sound/effects/emotes/robber2.ogg',
 	'sound/effects/emotes/robber3.ogg',
 	'sound/effects/emotes/robber4.ogg',)
-var/list/charge_sounds_gra = list(
-	'sound/effects/emotes/charge_replicant1.ogg',
-	'sound/effects/emotes/charge_replicant2.ogg',
-	'sound/effects/emotes/charge_replicant3.ogg',)
 var/list/charge_sounds_grove = list(
 	'sound/effects/emotes/grove1.ogg',
 	'sound/effects/emotes/grove2.ogg',
@@ -381,7 +377,7 @@ var/list/charge_sounds_generic_female = list(
 	for (var/P in player_list)
 		var/mob/M = P
 
-		if (istype(source) && isnewplayer(M))
+		if (isnewplayer(M) && istype(source))
 			continue
 
 		if (!M || !M.client)

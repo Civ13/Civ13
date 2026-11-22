@@ -11,6 +11,8 @@
 
 // Instant: one ratchet and a message to the user.
 /obj/proc/toggle_anchor(mob/user)
+	if (magic_repo_id && magic_repo_unfasten_refused(user)) // repository_wards.dm
+		return FALSE
 	playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 	to_chat(user, anchored ? SPAN_NOTICE("You unfasten \the [src] from the floor.") : SPAN_NOTICE("You secure \the [src] to the floor."))
 	anchored = !anchored
@@ -21,6 +23,8 @@
 // wait is interrupted or someone else toggled it meanwhile. `label` replaces
 // "\the [src]" in the messages.
 /obj/proc/timed_toggle_anchor(mob/user, delay = 50, label = null)
+	if (magic_repo_id && magic_repo_unfasten_refused(user)) // repository_wards.dm
+		return FALSE
 	if (!label)
 		label = "\the [src]"
 	var/was_anchored = anchored

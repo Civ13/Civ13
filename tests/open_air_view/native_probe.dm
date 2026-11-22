@@ -33,6 +33,11 @@ var/list/open_air_probe_log = list()
 /proc/open_air_probe_view(turf/sky/building/T)
 	return istype(T) ? T.open_air_view : null
 
+// TRUE when A is shown on the open-air cell above it by its proxy.
+/proc/open_air_probe_shown(atom/movable/A, turf/cell)
+	var/obj/effect/open_air_proxy/P = A ? A.open_air_proxy : null
+	return P && P.loc == cell && (A in P.vis_contents) && P.shows == A
+
 /proc/open_air_probe_turf_shown(atom/A, depth = 0)
 	if (depth > 8)
 		return FALSE
@@ -77,24 +82,33 @@ var/list/open_air_probe_log = list()
 	var/obj/structure/walker = new /obj/structure(locate(5, 4, 1))
 	open_air_view_link_around(3, 6, 6, 3, 3)
 	var/obj/effect/open_air_view/S = open_air_probe_view(locate(5, 4, 2))
-	open_air_probe_check(S && (walker in S.vis_contents), "walker_shown")
+	open_air_probe_check(S && open_air_probe_shown(walker, locate(5, 4, 2)) && !(walker in S.vis_contents), "walker_shown")
+	var/obj/effect/open_air_proxy/WP = walker.open_air_proxy
+	walker.glide_size = 4
 	walker.forceMove(ground)
-	open_air_probe_check(!(walker in S.vis_contents) && (walker in W.vis_contents), "walker_follows_moves")
+	open_air_probe_check(walker.open_air_proxy == WP && WP.loc == middle && WP.glide_size == 4 && !(walker in W.vis_contents), "walker_follows_moves")
+	// A step within the tile moves the proxy by the same offset.
+	walker.step_x = 6
+	walker.Move(ground, 0, 6, 0)
+	open_air_probe_check(WP.loc == middle && WP.step_x == walker.step_x, "proxy_follows_steps")
+	walker.step_x = 0
+	open_air_probe_check(WP.color && WP.layer > 1.959 && WP.layer < 1.99 && (WP.appearance_flags & KEEP_TOGETHER), "proxy_shaded_under_floors")
 	// Something overlapping two tiles (a body between steps) is in both turfs'
 	// contents but is shown once, by the view of its loc.
 	var/obj/structure/straddler = new /obj/structure(locate(5, 4, 1))
 	straddler.step_y = 20
 	open_air_view_link_around(3, 6, 6, 3, 3)
-	open_air_probe_check((straddler in locate(5, 5, 1)) && (straddler in S.vis_contents) && !(straddler in W.vis_contents), "straddler_shown_once")
+	open_air_probe_check((straddler in locate(5, 5, 1)) && open_air_probe_shown(straddler, locate(5, 4, 2)), "straddler_shown_once")
 	qdel(straddler)
 	// Something put down without Move() shows at the next resync; something
 	// deleted goes at once.
 	var/obj/item/rods = new /obj/item(ground)
-	open_air_probe_check(!(rods in W.vis_contents), "new_item_waits_for_sync")
+	open_air_probe_check(!rods.open_air_proxy, "new_item_waits_for_sync")
 	open_air_view_link_around(3, 6, 6, 3, 3)
-	open_air_probe_check(rods in W.vis_contents, "new_item_after_sync")
+	open_air_probe_check(open_air_probe_shown(rods, middle), "new_item_after_sync")
+	var/obj/effect/open_air_proxy/RP = rods.open_air_proxy
 	qdel(rods)
-	open_air_probe_check(!(rods in W.vis_contents), "deleted_item_goes")
+	open_air_probe_check(!rods.open_air_proxy && (QDELETED(RP) || !RP.loc), "deleted_item_goes")
 	// A changed turf look is copied at the next resync.
 	ground.icon_state = "dirt"
 	open_air_view_link_around(3, 6, 6, 3, 3)
@@ -102,8 +116,11 @@ var/list/open_air_probe_log = list()
 	// Open air under a floor on the middle level: floors over open air show.
 	var/obj/covers/C = locate() in locate(8, 8, 2)
 	var/obj/effect/open_air_view/OF = open_air_probe_view(locate(8, 8, 3))
-	open_air_probe_check(OF && (C in OF.vis_contents), "floor_below_shown")
+	open_air_probe_check(OF && open_air_probe_shown(C, locate(8, 8, 3)), "floor_below_shown")
+	// Clicks on a proxy act on the open-air cell; Examine reads the real thing.
+	open_air_probe_check(C.open_air_proxy.name == C.name && C.open_air_proxy.mouse_opacity && !C.open_air_proxy.should_save, "proxy_named_and_unsaved")
 	qdel(walker)
+	open_air_probe_check(QDELETED(WP) || !WP.loc, "proxy_goes_with_its_thing")
 	open_air_probe_check(!length(ground.vis_contents), "ground_holds_nothing")
 	open_air_probe_check(V.color && W.color && V.mouse_opacity == 0 && (V.appearance_flags & KEEP_TOGETHER), "views_are_shaded")
 	open_air_probe_check(!V.loc && !W.loc, "views_are_not_map_atoms")
@@ -164,6 +181,31 @@ var/list/open_air_probe_log = list()
 	for (var/obj/effect/open_air_view/X in middle.vis_contents)
 		count++
 	open_air_probe_check(count == 1, "no_stacking")
+	// A view whose cell got the sky sprite back, or lost its vis_contents,
+	// repairs itself on the next scan instead of showing the sky.
+	var/turf/sky/building/healed = locate(5, 6, 3)
+	var/obj/effect/open_air_view/HV = open_air_probe_view(healed)
+	healed.icon = initial(healed.icon)
+	healed.vis_contents.Cut()
+	open_air_view_link_around(3, 6, 6, 3, 3)
+	open_air_probe_check(HV && open_air_probe_view(healed) == HV && !healed.icon && (HV in healed.vis_contents), "view_repairs_itself")
+	// A level being added elsewhere does not stop the scan here; one being
+	// added under this level does.
+	var/turf/sky/building/fresh = locate(11, 2, 3)
+	open_air_probe_check(!open_air_probe_view(fresh), "fresh_cell_unlinked")
+	building_allocating_z = 2
+	open_air_probe_check(!open_air_view_busy(), "allocation_not_global")
+	open_air_probe_check(!open_air_view_link_around(3, 11, 2, 0, 0) && !open_air_probe_view(fresh), "allocating_below_skips")
+	building_allocating_z = 5
+	open_air_view_link_around(3, 11, 2, 0, 0)
+	open_air_probe_check(open_air_probe_view(fresh), "other_allocation_links")
+	building_allocating_z = 0
+	// A viewer moving east is linked further east than one standing still.
+	var/turf/sky/building/ahead = locate(11, 11, 3)
+	open_air_view_link_around(3, 6, 11, 3, 0)
+	open_air_probe_check(!open_air_probe_view(ahead), "lead_not_without_movement")
+	open_air_view_link_around(3, 6, 11, 3, 0, 2, 0)
+	open_air_probe_check(open_air_probe_view(ahead) && !open_air_probe_view(locate(1, 11, 3)), "lead_links_ahead_only")
 	// Lighting is never shown second-hand; everything else counts as the cell.
 	var/atom/movable/lighting_overlay/L = /atom/movable/lighting_overlay
 	open_air_probe_check(initial(L.vis_flags) == VIS_HIDE, "lighting_hidden")

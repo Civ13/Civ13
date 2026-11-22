@@ -13,21 +13,25 @@ build, config and map_saves, so regions never share a save or a lock:
     python shard_group.py --config group.json adopt --region ID --from PATH
     python shard_group.py --config group.json check-update [--region ID]
     python shard_group.py --config group.json help-status|help-start|help-stop
+    python shard_group.py --config group.json translator-status|translator-start|translator-stop  # Edge chat translator
     python shard_group.py --config group.json config-apply [--region ID]  # overlays + config.local.txt, no compile
     python shard_group.py --config group.json config-migrate  # whole overlay config.txt -> config.local.txt
     python shard_group.py --config group.json expedition-land --region ID --template T.json [--key X,Y]
     python shard_group.py --config group.json expedition-archive --region ID
     python shard_group.py --config group.json expedition-status
     python shard_group.py --config group.json activity                      # player activity report (launcher)
+    python shard_group.py --config group.json records [--ckey K | --search T | --export F]  # shared player records
     python shard_group.py --config group.json ports                         # every port, who holds it, clashes
     python shard_group.py --config group.json set-gate --region ID [--apply]  # make ID the front door (group_ports.py)
     python shard_group.py --config group.json set-port --region ID --port N [--apply]
+    python shard_group.py --config group.json add-gateway [--region ID] [--apply]  # an always-up world for the front door
 
 Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
 `gaia_host.py [--config gaia.json] --group group.json serve`, which also keeps
 the group's transfer agents and coordinator running, and (when the group
-config has "player_help") one "Ask for help" bridge per region.
+config has "player_help") one "Ask for help" bridge per region, and (with
+"chat_translator") the Edge chat translator, whose address every region's config gets.
 
 Each region is driven by the same host logic as scripts/gaia-host/gaia_host.py
 (one detached worker per action, progress in operation.json, save-and-stop
@@ -39,6 +43,7 @@ the group config. setup never touches the source checkout's own files.
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import contextlib
 import filecmp
 import hashlib
@@ -56,12 +61,16 @@ import subprocess
 import sys
 import threading
 import time
+import traceback
+import urllib.request
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'gaia-host'))
 import gaia_host  # noqa: E402
 from byond_topic import frame_query  # noqa: E402
 from gaia_host import Host, Platform, Refused  # noqa: E402
+import process_safety  # noqa: E402
+from process_safety import Unverified  # noqa: E402
 sys.path.insert(0, str(HERE))
 import expedition_slots  # noqa: E402
 import fresh_world  # noqa: E402
@@ -69,14 +78,16 @@ import group_fresh_world  # noqa: E402
 import agent_runs  # noqa: E402
 import group_ports  # noqa: E402
 import underground_migration  # noqa: E402
+import daily_maintenance  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
-                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open',
+                 'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'expedition-grow', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
-                 'migrate-underground')
+                 'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status',
+                 'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
 SEND_LANDINGS = ('shore', 'coords', 'arrival')
@@ -86,10 +97,16 @@ COORDS = re.compile(r'^\d{1,5},\d{1,5},\d{1,5}$')
 # source region's SQL folder, read by every region like admins.txt. Keep the header in step.
 MAGIC_WHITELIST_HEADER = '# Magic whitelist: one player key per line. Shared by every region of the group.\n'
 # Kinds nobody can start in: worlds that reset, transit/orbit, battles, events,
-# expedition slots and practice rooms (the mainland's own rules).
-START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL')
+# expedition slots, practice rooms and the gateway (the mainland's own rules).
+START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL', 'GATEWAY')
 HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
 HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
+# Chat translator (tools/edge-translator): the host service runs one for the whole group.
+TRANSLATOR_PORT = 55581
+TRANSLATOR_SOURCE = 'tools/edge-translator'
+TRANSLATOR_FILES = ('edge_translator.js', 'detect.js', 'package.json', 'package-lock.json')
+TRANSLATOR_INSTALL_SECONDS = 600  # npm ci of the pinned playwright-core
+TRANSLATOR_STARTING_SECONDS = 120  # Edge may take this long to open before /health answers
 # code/modules/persistence/functions.dm epoch_names, in order: a map's ordinal_age indexes it from 0.
 EPOCH_NAMES = ('5000 B.C.', '313 B.C.', '1013', '1713', '1873', '1903', '1943', '1969', '2013', '2026')
 STAGED_OUTPUTS = ('region.dmb', 'region.rsc')  # what a staged compile hands to the running worktree
@@ -100,6 +117,16 @@ STANDBY_PORT_OFFSET = 10  # the standby's loopback control port unless the regio
 STANDBY_LOG = 'logs/world.standby.log'
 SWITCH_SECONDS = 120  # how long the old world may take to close its port after it is released
 OPEN_SECONDS = 180  # how long the loaded standby is asked to take the region port
+# A world answers a request only at its next yield, and a large land can run longer than the
+# 15 s reply time first: Earth Europe's standby_load and the Oceania and Antarctica
+# handover_release timed out that way (2026-11-18). How long such a request is checked and resent.
+ASK_SECONDS = 180
+# A handover that fails after the old world let go used to leave the loaded standby running on
+# its standby port. The region was then down with a second world still holding its save, the
+# host service's restart met that world, and every later handover was refused because the
+# standby port was in use. The old world saved before it let go, so the standby is ended and
+# the host service starts the region from that save.
+STANDBY_ENDED = 'the loaded standby was ended, and the host service starts the region again from the save'
 STAGE_LOCK_HOURS = 3  # a stage lock older than this belongs to a worker that died
 DEFAULT_UPDATE_CHECK_MINUTES = 5  # how often an empty or sleeping region fetches to look for an update
 DEFAULT_MIN_FREE_DISK_MB = 2048  # stage and handover refuse below this much free disk (min_free_disk_mb)
@@ -131,8 +158,24 @@ GENERATED = ('config/shard_region.json', 'config/lifecycle-token.txt', 'config/l
 # saves, and sends players back when they leave (code/modules/1713/tutorial_region.dm).
 # EXPEDITION is a slot that holds one generated land at a time, reached only by
 # ship (expedition_slots.py, docs/expedition-slots.md).
+# GATEWAY is the always-up world on the front door's port: it hosts no play, never
+# saves or sleeps, restarts on its own port to update (never a standby handover) and
+# sends every player on to their land through the relay (code/modules/persistence/region_gateway.dm).
 KINDS = ('SURFACE', 'OCEANIC', 'UNDERGROUND', 'RAILYARD', 'RAID', 'ORBIT', 'OTHER', 'BARRACKS', 'BATTLE', 'EVENT', 'TUTORIAL',
-         'EXPEDITION')
+         'EXPEDITION', 'GATEWAY')
+# Kinds whose world never saves: an ordinary round with SKIP_PERSISTENCE_SAVING (region_mode_config).
+UNSAVED_KINDS = ('EVENT', 'TUTORIAL', 'GATEWAY')
+# Kinds that stay up for players even while the lands are down (Val, 2026-11-21: the
+# tutorial stays current and available): never asleep, back at once after a crash, and
+# updated by a plain restart on their own port while empty, never a standby handover.
+ALWAYS_UP_KINDS = ('GATEWAY', 'TUTORIAL')
+GATEWAY_MAP = 'maps/special/gateway.dmm'
+# Val (2026-11-21): the gateway never stages a build and always stays on its port. The host
+# service never stages, updates or restarts it, and a group-wide restart or update leaves it
+# running; a person updates it only by naming it (restart --region ID).
+GATEWAY_PINNED = 'the gateway never stages a build and stays on its port; restart it by name (--region) to update it'
+# Group-wide actions that would close a running world's port or build beside it.
+GATEWAY_SKIPPED_ACTIONS = ('restart', 'force-restart', 'update', 'stage', 'handover', 'update-unsaved', 'update-handover')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -146,7 +189,42 @@ TRANSFER_PORT_OFFSET = 10  # a transfer agent the group does not place sits this
 FRONT_FOLDER = 'front-door'
 FRONT_FILES = ('admins.txt', 'magic_whitelist.txt')
 FRONT_CONFIG_KEYS = ('WEBHOOK_CAN_FIRE', 'WEBHOOK_ADDRESS', 'WEBHOOK_KEY')
-MAX_REGIONS = 16
+# Regions other than expedition slots. Slots come and go with ships' lands and
+# factions' islands, and are never capped for the host (Val, 2026-11-22): the
+# whole group may grow to MAX_REGIONS, a ceiling only the free ports set.
+MAX_CORE_REGIONS = 32
+MAX_REGIONS = 512
+# The Earth regions a group that hosts Earth may be missing (add-regions): the lands of
+# docs/earth-continents.md and the seas of docs/ocean-regions.md, with the ports the
+# live host keeps for them (another free port when one is taken).
+EARTH_REGIONS = (
+    ('europe', 'Europe', 'SURFACE', 'maps/nomads/nomads_earth_europe.dmm', 1740),
+    ('africa', 'Africa', 'SURFACE', 'maps/nomads/nomads_earth_africa.dmm', 1741),
+    ('oceania', 'Oceania', 'SURFACE', 'maps/nomads/nomads_earth_oceania.dmm', 1742),
+    ('asia', 'Asia', 'SURFACE', 'maps/nomads/nomads_earth_asia.dmm', 1743),
+    ('northamerica', 'North America', 'SURFACE', 'maps/nomads/nomads_americas_north.dmm', 1744),
+    ('southamerica', 'South America', 'SURFACE', 'maps/nomads/nomads_americas_south.dmm', 1746),
+    ('greenland', 'Greenland', 'SURFACE', 'maps/nomads/nomads_earth_greenland.dmm', 1747),
+    ('antarctica', 'Antarctica', 'SURFACE', 'maps/nomads/nomads_earth_antarctica.dmm', 1748),
+    ('mediterranean', 'Mediterranean', 'SURFACE', 'maps/nomads/nomads_earth_mediterranean.dmm', 1749),
+    ('atlantic', 'Atlantic Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_atlantic.dmm', 1750),
+    ('pacific', 'Pacific Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_pacific.dmm', 1751),
+    ('indian', 'Indian Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_indian.dmm', 1752),
+    ('arctic', 'Arctic Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_arctic.dmm', 1753),
+    ('southern', 'Southern Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_southern.dmm', 1754),
+)
+EARTH_MAINLAND_MAP = 'maps/nomads/nomads_gaia.dmm'
+# The slots that hold lands across the sea (docs/expedition-slots.md): ships' voyages
+# open them, and a faction's claimed island lives in one. add-regions adds the ones a
+# group hosting Earth is missing, by id (they share one placeholder map), with the
+# ports the plan gave them. A free slot stays stopped until a ship needs it.
+EXPEDITION_SLOT_MAP = 'maps/expedition/slot.dmm'
+EXPEDITION_SLOTS = (
+    ('far1', 'Far Land 1', 1811, 1831),
+    ('far2', 'Far Land 2', 1812, 1832),
+    ('far3', 'Far Land 3', 1813, 1833),
+    ('far4', 'Far Land 4', 1814, 1834),
+)
 
 
 def unused_backup_path(path):
@@ -160,6 +238,44 @@ def unused_backup_path(path):
     return candidate
 
 
+WORLD_LINKS_TABLE = HERE.parents[1] / 'tools' / 'world_links' / 'world_links.json'
+_NEIGHBOURS = {}
+
+
+def world_neighbours(table=None):
+    """{region id: set of region ids next to it} from the world links table (map edges walked or
+    sailed over, and the islands set inside an ocean), both ways round, or {} when it cannot be
+    read. Cached until the file changes."""
+    path = Path(table or WORLD_LINKS_TABLE)
+    try:
+        stamp = path.stat().st_mtime_ns
+    except OSError:
+        return {}
+    cached = _NEIGHBOURS.get(str(path))
+    if cached and cached[0] == stamp:
+        return cached[1]
+    try:
+        data = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return {}
+    out = {}
+    def join(a, b):
+        if isinstance(a, str) and isinstance(b, str) and a != b:
+            out.setdefault(a, set()).add(b)
+            out.setdefault(b, set()).add(a)
+    for rid in list((data.get('lands') or {})) + list((data.get('oceans') or {})):
+        out.setdefault(rid, set())
+    for link in data.get('links') or []:
+        ends = [link.get(side) for side in ('a', 'b')]
+        if all(isinstance(end, list) and end for end in ends):
+            join(ends[0][0], ends[1][0])
+    for oid, ocean in (data.get('oceans') or {}).items():
+        for inset in (ocean or {}).get('insets') or []:
+            join(oid, (inset or {}).get('land'))
+    _NEIGHBOURS[str(path)] = (stamp, out)
+    return out
+
+
 def load_group(path):
     group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
     if isinstance(group, dict) and fill_ports(group):
@@ -169,7 +285,7 @@ def load_group(path):
         shutil.copy2(path, unused_backup_path(path))
         temporary = path.with_name(path.name + '.tmp')
         temporary.write_text(json.dumps(group, indent=2) + '\n', encoding='utf-8')
-        os.replace(temporary, path)
+        gaia_host.replace_file(temporary, path)
     return check_group(group, path)
 
 
@@ -243,7 +359,9 @@ def check_group(group, path):
         raise ValueError('public_host must be a plain host name or IPv4 address')
     regions = group.get('regions')
     if type(regions) is not list or not 1 <= len(regions) <= MAX_REGIONS:
-        raise ValueError('a group has 1 to %d regions' % MAX_REGIONS)
+        raise ValueError('a group has 1 to %d regions besides its expedition slots, and %d in all' % (MAX_CORE_REGIONS, MAX_REGIONS))
+    if sum(1 for r in regions if type(r) is dict and r.get('kind') != 'EXPEDITION') > MAX_CORE_REGIONS:
+        raise ValueError('a group has 1 to %d regions besides its expedition slots, and %d in all' % (MAX_CORE_REGIONS, MAX_REGIONS))
     ids, ports = set(), set()
     for region in regions:
         if type(region) is not dict or not ID.match(str(region.get('id', ''))) or region['id'] in ids:
@@ -259,6 +377,8 @@ def check_group(group, path):
             raise ValueError('port %d is reserved for the live server (set "live": true for the live group)' % port)
         if region.get('public') is not None and type(region['public']) is not bool:
             raise ValueError('region %s public must be true or false' % region['id'])
+        if region.get('keep_down') is not None and type(region['keep_down']) is not bool:
+            raise ValueError('region %s keep_down must be true or false' % region['id'])
         if region.get('overlay') is not None and (type(region['overlay']) is not str or not region['overlay']):
             raise ValueError('region %s overlay must be a folder path' % region['id'])
         if type(region.get('map')) is not str or not region['map'].endswith('.dmm'):
@@ -310,6 +430,13 @@ def check_group(group, path):
         raise ValueError('a group has at most one TUTORIAL region')
     if any(r['id'] == mainland for r in tutorials):
         raise ValueError('the mainland cannot be a TUTORIAL region')
+    gateways = [r for r in regions if r['kind'] == 'GATEWAY']
+    if len(gateways) > 1:
+        raise ValueError('a group has at most one GATEWAY region')
+    if any(r['id'] == mainland for r in gateways):
+        raise ValueError('the mainland cannot be a GATEWAY region')
+    if gateways and not group.get('relay_port'):
+        raise ValueError('a GATEWAY region sends players on through the routing relay; set relay_port')
     # Where new characters start (and fallen ones whose bed does not keep their
     # home): the mainland unless the host names another region. The mainland
     # stays the era source, bot link and land-stage reference either way.
@@ -325,6 +452,17 @@ def check_group(group, path):
         value = group.setdefault(key, default)
         if type(value) is not int or not low <= value <= high:
             raise ValueError('%s must be a whole number from %d to %d' % (key, low, high))
+    # Val (2026-11-22): a land next to one with players stays ready to wake in seconds (suspended in
+    # memory, started ahead from cold storage); one with nobody next door goes to cold storage after
+    # cold_after_minutes. Only regions in the world links table take part (RegionHost.readiness).
+    if type(group.setdefault('ready_neighbours', True)) is not bool:
+        raise ValueError('ready_neighbours must be true or false')
+    cold_after = group.setdefault('cold_after_minutes', 15)
+    if type(cold_after) is not int or not 0 <= cold_after <= 1440:
+        raise ValueError('cold_after_minutes must be a whole number from 0 (never) to 1440')
+    # Ships sail over linked map edges (docs/ocean-regions.md); off until the oceans run.
+    if type(group.setdefault('edge_travel_oceans', False)) is not bool:
+        raise ValueError('edge_travel_oceans must be true or false')
     # Routing relay (scripts/gaia-host/relay.py): one public port for every region.
     # Players join the gate region directly; it (or any region sending a traveller)
     # writes a route for the player's address and links them to relay_port.
@@ -425,8 +563,26 @@ def check_group(group, path):
         chosen = settings.setdefault('regions', [r['id'] for r in regions])
         if type(chosen) is not list or not chosen or len(set(map(str, chosen))) != len(chosen) or any(c not in ids for c in chosen):
             raise ValueError('player_help regions must be distinct region ids of the group')
+    # Chat translator: the host service keeps tools/edge-translator running and every
+    # region's config gets CHAT_TRANSLATE_URL (code/modules/chat/chat_translate.dm).
+    settings = group.get('chat_translator')
+    if settings is not None:
+        if type(settings) is not dict:
+            raise ValueError('chat_translator must be an object')
+        port = settings.setdefault('port', TRANSLATOR_PORT)
+        if type(port) is not int or not 1024 <= port <= 65535:
+            raise ValueError('chat_translator port must be 1024-65535')
+        for key in ('node', 'npm', 'edge', 'profile'):
+            if key in settings and (type(settings[key]) is not str or not settings[key]):
+                raise ValueError('chat_translator %s must be a non-empty string' % key)
+        settings.setdefault('node', 'node')
+        settings.setdefault('npm', 'npm.cmd' if os.name == 'nt' else 'npm')
+    # Daily maintenance (daily_maintenance.py): every region onto one build at a set time of day.
+    daily_maintenance.check_settings(group)
     resolve_standby_ports(group)
     group['_path'] = str(Path(path).resolve())
+    # While a maintenance run stands, every reader builds the one commit it pinned.
+    daily_maintenance.apply_pin(group)
     return group
 
 
@@ -681,7 +837,11 @@ class RegionPlatform(Platform):
         path = Path(self.config['repository'])
         (path / 'logs').mkdir(exist_ok=True)
         self.start_agent()
-        argv = [self.config['daemon'], dmb, str(port), '-trusted', '-close', '-invisible', '-log', STANDBY_LOG,
+        # -invisible would keep the world off the BYOND hub for good, even after the handover
+        # opens the region's port, so a public region's standby launches -public and stays
+        # hidden through world.visibility until then (Gaia, 2026-11-18).
+        argv = [self.config['daemon'], dmb, str(port), '-trusted', '-close',
+                '-public' if self.config['public'] else '-invisible', '-log', STANDBY_LOG,
                 '-params', 'standby=%d' % port]
         return detach(scoped(argv, self.config), path, None)
 
@@ -714,7 +874,10 @@ class RegionPlatform(Platform):
             if not refresh or (record.get('code') == code and self.listener_pids(port) in ([], [record.get('pid')])):
                 return False
             for pid in self.listener_pids(port):
-                self.terminate(pid)
+                try:
+                    self.terminate(pid, expect=process_safety.python_expect())
+                except Unverified:
+                    return False  # not an agent: never end it; the port stays taken until a person frees it
             if self.listening(port):
                 return False  # the next pass tries again
         path = Path(self.config['repository'])
@@ -738,18 +901,23 @@ class RegionHost(Host):
         self.stage_lock = self.state_dir / 'stage.lock'
         self.stage_file = self.state_dir / 'stage.json'
         self.staged_file = self.state_dir / 'staged.json'
+        self.failed_handover_file = self.state_dir / 'failed-handover.json'
         # update-offline: install the build into the stopped region as soon as its stage is ready.
         self.install_marker = self.state_dir / 'install-after-stage'
         self.next_install_attempt = 0.0  # update_while_empty: when to try a refused handover again
+        self.unsaved_install = None  # update_unsaved_while_empty: the staged build last restarted onto
 
     def shutdown_warning(self):
         """The group config's current shutdown_warning_seconds (the launcher's Players' warning),
         read at each action so a change applies without a setup; the region's own config if
         the group config cannot be read."""
         try:
-            return load_group(self.config['group_config'])['shutdown_warning_seconds']
+            group = load_group(self.config['group_config'])
         except (OSError, ValueError, KeyError):
             return super().shutdown_warning()
+        # Players the daily maintenance already counted down get a short reminder only.
+        reminder = daily_maintenance.handover_warning(group, self.config['region'])
+        return group['shutdown_warning_seconds'] if reminder is None else reminder
 
     def status(self):
         report = super().status()
@@ -757,7 +925,9 @@ class RegionHost(Host):
         if stage and not self.stage_failure_superseded(stage):
             report['stage'] = dict(stage, pending=self.update_pending())
         report['build'] = self.live_dmb_name()
-        if self.lock.exists() and (self.read_state() or {}).get('action') == 'handover':
+        if self.keep_down():
+            report['keep_down'] = True  # travellers never start it (group config keep_down)
+        if self.lock.exists() and (self.read_state() or {}).get('action') in ('handover', 'auto-handover'):
             port = self.standby_port()
             report['standby'] = {'port': port, 'listening': self.platform.listening(port)}
         return report
@@ -783,6 +953,55 @@ class RegionHost(Host):
         state.update(values, updated=int(self.platform.now()))
         self.write_json(self.stage_file, state)
 
+    def stale_stage_lock(self):
+        """(why, operation) when the stage lock is held by nobody, else None (no lock, or its
+        worker runs)."""
+        try:
+            operation = self.stage_lock.read_text().strip()
+            held_since = self.stage_lock.stat().st_mtime
+        except OSError:
+            return None
+        if self.booted_since(held_since):
+            return 'the machine restarted', operation
+        stage = self.read_json(self.stage_file) or {}
+        worker = stage.get('worker')
+        if operation and stage.get('operation') == operation and isinstance(worker, dict) and type(worker.get('pid')) is int:
+            # Before the age check: a stage that waited hours for its compile slot still runs.
+            alive = getattr(self.platform, 'worker_alive', None)
+            return ('its worker ended', operation) if alive and not alive(worker['pid'], worker.get('started')) else None
+        if time.time() - held_since > STAGE_LOCK_HOURS * 3600:
+            return 'it ran for more than %d hours' % STAGE_LOCK_HOURS, operation
+        if not operation or stage.get('operation') != operation:
+            return None  # being taken right now
+        if stage.get('phase') == 'accepted' and time.time() - held_since > gaia_host.WORKER_START_SECONDS:
+            return 'its worker never started', operation
+        return None
+
+    def stage_running(self):
+        """Whether a stage holds its lock. A stage whose worker is gone (the machine restarted
+        or the worker was ended mid-build) used to keep "a build is already being staged" for
+        STAGE_LOCK_HOURS, and Save, update and restart waited on it; the stage is recorded as
+        failed and its lock released, so the next one builds. As Host.busy: the record is
+        settled while the stale lock still keeps a new stage out, and only then is the lock
+        taken away, if it is still that one."""
+        if not self.stage_lock.exists():
+            return False
+        stale = self.stale_stage_lock()
+        if not stale:
+            return True
+        reason, operation = stale
+        try:
+            stage = self.read_json(self.stage_file) or {}
+            if stage.get('operation') == operation and stage.get('phase') not in ('ready', 'current', 'failed'):
+                self.stage_record(phase='failed', error='the build was interrupted (%s) and did not finish' % reason)
+            gaia_host.remove_file(self.urgent_marker())
+        except OSError:
+            return True  # not settled: the lock stays, and the next look tries again
+        if not gaia_host.release_lock(self.stage_lock, operation):
+            return self.stage_lock.exists()
+        print('stale stage lock removed for %s (%s)' % (self.config['region'], reason), file=sys.stderr, flush=True)  # as Host.busy
+        return False
+
     def stage_failure_superseded(self, stage):
         """A failed stage is out of date once the region has a newer, intact build.
 
@@ -790,7 +1009,7 @@ class RegionHost(Host):
         compile.lock sharing violation fixed in #4701) stayed on the region's status line
         through every later update, kill and unlock, as if something still held its files.
         """
-        if stage.get('phase') != 'failed' or self.stage_lock.exists() or not self.built_revision():
+        if stage.get('phase') != 'failed' or self.stage_running() or not self.built_revision():
             return False
         try:
             return self.build_file().stat().st_mtime_ns > self.stage_file.stat().st_mtime_ns
@@ -800,9 +1019,9 @@ class RegionHost(Host):
     def clear_failed_stage(self):
         """Forget a failed stage record unless a stage is running; True when one was removed."""
         stage = self.read_json(self.stage_file)
-        if not stage or stage.get('phase') != 'failed' or self.stage_lock.exists():
+        if not stage or stage.get('phase') != 'failed' or self.stage_running():
             return False
-        self.stage_file.unlink(missing_ok=True)
+        gaia_host.remove_file(self.stage_file)
         return True
 
     def unlock(self, force=False):
@@ -811,23 +1030,29 @@ class RegionHost(Host):
             answer['stage_cleared'] = True
         return answer
 
-    def request_stage(self):
+    def request_stage(self, urgent=False):
+        """Build the latest revision beside the running world. urgent: a person is waiting on
+        it (Save, update and restart, the in-game button, Build update), so it takes the group's
+        next compile ahead of the host service's background stages; a stage already queued in
+        the background is moved up the same way."""
         if not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
+        if self.holds_its_port():
+            raise Refused(GATEWAY_PINNED)
         self.check_disk('staging checks out and compiles a whole build')
         self.state_dir.mkdir(parents=True, exist_ok=True)
-        try:
-            if self.platform.now() - self.stage_lock.stat().st_mtime > STAGE_LOCK_HOURS * 3600:
-                self.stage_lock.unlink()
-        except OSError:
-            pass
+        self.stage_running()  # releases a lock whose worker is gone
         try:
             descriptor = os.open(self.stage_lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except FileExistsError:
+            if urgent:
+                self.mark_stage_urgent()
             raise Refused('a build is already being staged')
         operation = secrets.token_hex(16)
         with os.fdopen(descriptor, 'w') as handle:
             handle.write(operation)
+        if urgent:
+            self.mark_stage_urgent()
         self.write_json(self.stage_file, {'operation': operation, 'phase': 'accepted', 'error': None,
                                           'updated': int(self.platform.now())})
         self.platform.detach([sys.executable, '-I', '-B', str(self.script), '--config', self.config['_path'],
@@ -861,9 +1086,55 @@ class RegionHost(Host):
 
     @contextlib.contextmanager
     def compile_slot(self, wait_seconds=7200):
-        """One staged compile per group at a time, so a deploy never compiles every region at once."""
-        with self.group_slot('compile.lock', 'compile', self.stage_record, wait_seconds):
+        """One staged compile per group at a time, so a deploy never compiles every region at once.
+        A background stage lets a person's stage of another region go first."""
+        def yield_to_urgent():
+            return not self.urgent_marker().exists() and self.urgent_stage_waiting()
+        with self.group_slot('compile.lock', 'compile', self.stage_record, wait_seconds, yield_to=yield_to_urgent):
             yield
+
+    # Val (2026-11-18): Save, update and restart sat a long time before anything happened. The
+    # host service stages every region on each master commit, one compile at a time (about two
+    # to three minutes each), so the region a person was updating queued behind up to a dozen
+    # background builds. A stage a person waits on now marks itself in .staging/urgent, and
+    # background stages wait while one is queued.
+    def urgent_dir(self):
+        return self.repo.parent / '.staging' / 'urgent'
+
+    def urgent_marker(self):
+        return self.urgent_dir() / self.config['region']
+
+    def mark_stage_urgent(self):
+        marker = self.urgent_marker()
+        try:
+            marker.parent.mkdir(parents=True, exist_ok=True)
+            marker.write_text(str(self.stage_lock), encoding='utf-8')
+        except OSError:
+            pass  # only the order of the queue depends on it
+
+    def urgent_stage_waiting(self):
+        """Whether another region has a stage a person is waiting on. A marker whose stage has
+        ended (its stage.lock is gone) is stale and removed."""
+        try:
+            entries = list(self.urgent_dir().iterdir())
+        except OSError:
+            return False
+        waiting = False
+        for entry in entries:
+            if entry.name == self.config['region']:
+                continue
+            try:
+                lock = Path(entry.read_text(encoding='utf-8').strip())
+            except OSError:
+                continue  # being written or removed right now
+            if lock.name == 'stage.lock' and lock.exists():
+                waiting = True
+                continue
+            try:
+                entry.unlink()
+            except OSError:
+                pass
+        return waiting
 
     @contextlib.contextmanager
     def handover_slot(self, wait_seconds=7200):
@@ -872,12 +1143,20 @@ class RegionHost(Host):
             yield
 
     @contextlib.contextmanager
-    def group_slot(self, name, what, record, wait_seconds):
+    def group_slot(self, name, what, record, wait_seconds, yield_to=None):
+        """Hold one of the group's slots (a lock file in .staging). yield_to: while it returns
+        True this waiter lets others take the slot first; that wait does not count against
+        wait_seconds, since the stages it waits for end on their own."""
         lock = self.repo.parent / '.staging' / name
         lock.parent.mkdir(parents=True, exist_ok=True)
         deadline = self.platform.now() + wait_seconds
         empty_since = None
         while True:
+            if yield_to is not None and yield_to():
+                record(phase='waiting for a requested build of another region')
+                self.platform.sleep(10)
+                deadline = max(deadline, self.platform.now() + wait_seconds)
+                continue
             try:
                 descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 break
@@ -893,7 +1172,7 @@ class RegionHost(Host):
                     continue  # released while we looked
                 if holder:
                     empty_since = None
-                    stale = not self.platform.alive(holder)
+                    stale = not self.platform.alive(holder) or self.slot_from_before_boot(lock)
                 else:
                     # The holder writes its pid just after creating the file (and Windows
                     # refuses reading a file another process has open), so an empty lock
@@ -927,6 +1206,14 @@ class RegionHost(Host):
 
     SLOT_CLAIM_SECONDS = 60
 
+    def slot_from_before_boot(self, lock):
+        """A slot taken before the machine last started: its holder is gone, whatever process
+        has its pid now (waiters sat out the whole wait on a reused pid)."""
+        try:
+            return self.booted_since(lock.stat().st_mtime)
+        except OSError:
+            return False
+
     def slot_holder(self, lock):
         """The pid written in a group slot lock: 0 when it is empty or unreadable,
         None when it is gone."""
@@ -945,7 +1232,8 @@ class RegionHost(Host):
             return
         ready = False
         try:
-            self.stage_record(phase='checking for updates', error=None, install=None)
+            self.stage_record(phase='checking for updates', error=None, install=None,
+                              worker={'pid': os.getpid(), 'started': int(time.time())})
             latest = self.latest_revision()
             if not HEX40.match(latest):
                 raise RuntimeError('could not read the latest revision')
@@ -960,6 +1248,23 @@ class RegionHost(Host):
             region = next(r for r in group['regions'] if r['id'] == self.config['region'])
             path = self.stage_dir()
             with self.compile_slot():
+                # The slot can take a while to come round, and master often moves meanwhile
+                # (deploy.bat pulls before it stages, so a stage the host service queued earlier
+                # would otherwise build the revision of its queueing and hand over onto that).
+                # Build what the group revision names now; this reads the local refs only.
+                try:
+                    newest = self.git_text(['rev-parse', group['revision']], group['repository'])
+                except RuntimeError:
+                    newest = latest
+                if HEX40.match(newest or '') and newest != latest:
+                    latest = newest
+                    if self.built_revision() == latest:
+                        self.stage_record(phase='current', revision=latest)
+                        return
+                    if self.staged_revision() == latest:
+                        self.stage_record(phase='ready', revision=latest)
+                        ready = True
+                        return
                 if not (path / '.git').exists():
                     if path.exists() and any(path.iterdir()):
                         raise RuntimeError('%s exists and is not a staging worktree' % path)
@@ -969,7 +1274,7 @@ class RegionHost(Host):
                     if code != 0:
                         raise RuntimeError('staging worktree failed: ' + out.strip()[-300:])
                 self.stage_record(phase='preparing', revision=latest)
-                self.staged_file.unlink(missing_ok=True)
+                gaia_host.remove_file(self.staged_file)
                 prepare_tree(group, region, path, latest, self.platform, self.config['git'])
                 self.stage_record(phase='compiling')
                 before = dmb_mtime(path / 'region.dmb')
@@ -986,8 +1291,9 @@ class RegionHost(Host):
             self.stage_record(phase='failed', error=str(error)[:500])
         finally:
             install = self.install_marker.exists()
-            self.install_marker.unlink(missing_ok=True)
-            self.stage_lock.unlink(missing_ok=True)
+            gaia_host.remove_file(self.install_marker)
+            self.urgent_marker().unlink(missing_ok=True)
+            gaia_host.remove_file(self.stage_lock)
             if install and ready:
                 self.install_after_stage()
 
@@ -1008,11 +1314,113 @@ class RegionHost(Host):
     def update_when_empty(self):
         return self.update_settings()[0]
 
+    def region_kind(self):
+        """This region's kind from the group config (read at each check), or None."""
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError, KeyError):
+            return None
+        return next((r['kind'] for r in group['regions'] if r['id'] == self.config['region']), None)
+
+    def is_gateway(self):
+        return self.region_kind() == 'GATEWAY'
+
+    def always_up(self):
+        return self.region_kind() in ALWAYS_UP_KINDS
+
+    def may_sleep(self):
+        # The gateway is every player's way in and the group's hub entry: a frozen world
+        # stops answering the hub and holds each join until it thaws, so it stays awake.
+        # The tutorial stays awake too, so it opens at once even while the lands are down.
+        # The mainland never sleeps either (Val, 2026-11-21): it is where new players start
+        # and the land everyone else's trails lead back to.
+        return not self.always_up() and not self.protects_mainland_uptime()
+
+    def protects_mainland_uptime(self):
+        try:
+            return load_group(self.config['group_config'])['mainland'] == self.config['region']
+        except (OSError, ValueError, KeyError):
+            return True  # a missing policy must not turn an automatic update into a restart
+
+    def automatic_start_action(self):
+        # The gateway is every player's way in: a watchdog start brings it back on the build it
+        # has instead of compiling first; updates reach it by its empty-world restart.
+        if self.protects_mainland_uptime() or self.always_up():
+            return 'start-current'
+        return super().automatic_start_action()
+
+    def keep_down(self):
+        """The region's keep_down in the group config (read at each check): a person kept it
+        down on purpose, so a traveller bound for it is turned back instead of starting it."""
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError, KeyError):
+            return True  # an unreadable policy must not start a world
+        return next((bool(r.get('keep_down')) for r in group['regions'] if r['id'] == self.config['region']), True)
+
+    def readiness(self):
+        """How this region takes part in keeping lands ready (doorman.Doorman.keep_ready), or None
+        when it does not: the group turned it off, or the region is not in the world links table.
+        exempt: never put in cold storage and always kept ready (the mainland, the always-up kinds
+        and the oceans around the mainland)."""
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError, KeyError):
+            return None
+        if not group.get('ready_neighbours', True):
+            return None
+        region_id = self.config['region']
+        region = next((r for r in group['regions'] if r['id'] == region_id), None)
+        links = world_neighbours()
+        if region is None or region_id not in links:
+            return None
+        ids = {r['id'] for r in group['regions']}
+        mainland = group['mainland']
+        exempt = (region_id == mainland or region['kind'] in ALWAYS_UP_KINDS
+                  or (region['kind'] == 'OCEANIC' and mainland in links.get(region_id, ())))
+        return {'group': group['group'], 'region': region_id, 'neighbours': sorted(links[region_id] & ids),
+                'exempt': exempt, 'cold_after_minutes': group.get('cold_after_minutes', 15)}
+
+    def travel_start_refusal(self):
+        if not (self.repo / '.git').exists():
+            return 'not set up'
+        if fresh_world.pending(self).exists():
+            return 'fresh-world archive needs recovery'
+        if self.holds_its_port():
+            return 'the gateway is started by the host service only'
+        return super().travel_start_refusal()
+
+    def idle_update_action(self):
+        if self.holds_its_port():
+            return None
+        if not self.protects_mainland_uptime():
+            return super().idle_update_action()
+        try:
+            return ('auto-handover' if load_group(self.config['group_config'])['persistent']
+                    and not self.failed_staged_handover() else None)
+        except (OSError, ValueError, KeyError):
+            return None
+
+    def install_staged_while_down(self):
+        if self.protects_mainland_uptime():
+            return False
+        return super().install_staged_while_down()
+
+    def failed_staged_handover(self):
+        last = self.read_state()
+        staged = self.staged_revision()
+        rejected = self.read_json(self.failed_handover_file) or {}
+        return bool(staged and (rejected.get('revision') == staged or
+                    (last.get('action') in ('handover', 'auto-handover', 'update-handover') and last.get('phase') == 'failed'
+                     and not last.get('retryable') and last.get('revision') == staged)))
+
     def stage_if_behind(self):
         """Stage the latest revision when the region's build is behind it; at most once per
         update_check_minutes (each check fetches). True when a stage was started."""
+        if self.holds_its_port():
+            return False
         now = self.platform.now()
-        if now < self.next_update_check or self.stage_lock.exists():
+        if now < self.next_update_check or self.stage_running():
             return False
         self.next_update_check = now + self.update_settings()[1] * 60
         try:
@@ -1041,16 +1449,23 @@ class RegionHost(Host):
         the region's port. A save the new code cannot read (such as a timer it no longer
         knows) fails that load and the old world plays on, so no unattended update can leave
         a region down on a broken load."""
+        if self.holds_its_port():
+            return None
+        try:
+            if not load_group(self.config['group_config'])['persistent']:
+                # A TDM world in pregame reports no round yet, which reads as saving; it has
+                # no save to hand over (update_unsaved_while_empty covers these groups).
+                return None
+        except (OSError, ValueError, KeyError):
+            return None
         if self.update_pending():
             now = self.platform.now()
             if now < self.next_install_attempt:
                 return None
-            last = self.read_state()
-            if (last.get('action') == 'handover' and last.get('phase') == 'failed'
-                    and last.get('revision') == self.staged_revision()):
+            if self.failed_staged_handover():
                 return None  # this build already failed to take over (its load or save failed); a person looks
             try:
-                self.log(dict(self.request('handover'), reason='installing the update while the world is empty'))
+                self.log(dict(self.request('auto-handover'), reason='installing the update while the world is empty'))
             except Refused as refusal:
                 # Low memory, a busy world, ...: try again after the next check interval, never
                 # by a plain restart, which would load the save on the new build unchecked.
@@ -1058,9 +1473,92 @@ class RegionHost(Host):
                 self.log({'empty_handover_refused': str(refusal)})
                 return None
             return 30
-        if self.stage_lock.exists():
+        if self.stage_running():
             return 30  # an update is building: restart onto it once it is ready, rather than sleep
         return 30 if self.stage_if_behind() else None
+
+    # Val (2026-11-18): civ13.com's TDM servers update between rounds whenever they can. The
+    # battle world takes the update with its next map at the end of each round
+    # (battle_mapswap.py); a world that never saves and is empty (the barracks while everyone
+    # is in the battle) has no save to load, so it restarts onto an update built beside it.
+    def holds_its_port(self):
+        """The gateway never stages a build (Val, 2026-11-21: it must always stay on its port):
+        the host service never stages, updates or restarts it, and group-wide actions leave
+        it running. It takes new code only when a person names it (restart --region ID)."""
+        return self.region_kind() == 'GATEWAY'
+
+    def update_unsaved_while_empty(self):
+        """An awake, empty region of a group that does not save (TDM): restart onto a ready
+        update, or build the latest revision beside it. The next wait, or None."""
+        if self.holds_its_port():
+            return None
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError):
+            return None
+        region = next((r for r in group['regions'] if r['id'] == self.config['region']), None)
+        always_up = bool(region) and region['kind'] in ALWAYS_UP_KINDS
+        if (group['persistent'] and not always_up) or not region or region['kind'] == 'BATTLE' or self.protects_mainland_uptime():
+            return None  # saving groups hand over instead; a battle updates when its round ends
+        if not self.battle_moved_on(group):
+            # Val (2026-11-18): a restart per merge pinged Discord every few minutes. The
+            # barracks follows the battle instead: once per round, after the battle took an update.
+            return None
+        if self.update_pending():
+            now = self.platform.now()
+            if now < self.next_install_attempt or self.battle_ending(group):
+                return None
+            staged = self.staged_revision()
+            last = self.read_state()
+            if (self.unsaved_install == staged and last.get('action') == 'restart'
+                    and last.get('phase') == 'failed'):
+                return None  # this build already failed to start; a person looks
+            try:
+                self.log(dict(self.request('restart'), reason='installing the update while the world is empty'))
+            except Refused as refusal:
+                self.next_install_attempt = now + self.update_settings()[1] * 60
+                self.log({'empty_restart_refused': str(refusal)})
+                return None
+            self.unsaved_install = staged
+            return 30
+        if self.stage_running():
+            return 30
+        return 30 if self.stage_if_behind() else None
+
+    def battle_moved_on(self, group):
+        """Whether the group's battle world runs a revision this region's build lacks (it took
+        an update at the end of its last round). True for a group without a battle world."""
+        battles = [r for r in group['regions'] if r['kind'] == 'BATTLE']
+        if not battles:
+            return True
+        built = self.built_revision()
+        try:
+            battle = self.git_text(['rev-parse', 'HEAD'], region_dir(group, battles[0]['id']))
+        except (RuntimeError, OSError):
+            return False
+        if not HEX40.match(battle or '') or battle == built:
+            return False
+        if not built:
+            return True
+        code, _ = self.platform.run([self.config['git'], 'merge-base', '--is-ancestor', battle, built],
+                                    cwd=self.repo, timeout=60)
+        return code != 0
+
+    @staticmethod
+    def battle_ending(group):
+        """Whether a battle world of the group is between rounds (its next map is building),
+        when its players are on their way back here: a restart now would drop them."""
+        for region in group['regions']:
+            if region['kind'] != 'BATTLE':
+                continue
+            try:
+                state = json.loads((region_dir(group, region['id']) / 'data' / 'shard-host' / 'rotation.json')
+                                   .read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                continue
+            if isinstance(state, dict) and state.get('state') == 'building':
+                return True
+        return False
 
     def keep_sleeper_current(self):
         """An asleep or cold region: build the latest revision, so it is ready for a handover
@@ -1080,12 +1578,12 @@ class RegionHost(Host):
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.install_marker.write_text('update\n', encoding='utf-8')
         try:
-            return dict(self.request_stage(), state='asleep')
+            return dict(self.request_stage(urgent=True), state='asleep')
         except Refused as refusal:
             if 'already being staged' in str(refusal):
                 # The running stage installs it when it finishes (it reads the marker last).
                 return {'accepted': True, 'action': 'stage', 'state': 'asleep', 'already_staging': True}
-            self.install_marker.unlink(missing_ok=True)
+            gaia_host.remove_file(self.install_marker)
             raise
 
     def install_into_sleeper(self, close_seconds=60):
@@ -1134,7 +1632,7 @@ class RegionHost(Host):
         if fresh_world.pending(self).exists():
             raise Refused('interrupted fresh-world archive: manual recovery required before any host action')
         # Checked before the lock: taking it would create the folder setup needs empty.
-        if action in ('start', 'restart', 'update', 'handover', 'update-unsaved', 'update-handover') and not (self.repo / '.git').exists():
+        if action in ('start', 'start-current', 'restart', 'update', 'handover', 'auto-handover', 'update-unsaved', 'update-handover') and not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
         if action == 'update' and self.frozen():
             # Host.request would wake it first, only to refuse it as running.
@@ -1142,6 +1640,25 @@ class RegionHost(Host):
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
+
+    def remember_failed_handover(self):
+        # Called under the action lock, before replacing or after writing operation state.
+        last = self.read_state()
+        if (last.get('action') in ('handover', 'auto-handover', 'update-handover') and last.get('phase') == 'failed'
+                and not last.get('retryable') and last.get('revision') == self.staged_revision()
+                and last.get('revision')):
+            self.write_json(self.failed_handover_file, {'revision': last['revision']})
+
+    def before_action_accepted(self, action):
+        self.remember_failed_handover()
+
+    def action_failed(self, action):
+        self.remember_failed_handover()
+
+    def action_succeeded(self, action):
+        if action in ('handover', 'update-handover'):
+            # Keep the rejection through an early failure; only a completed retry clears it.
+            gaia_host.remove_file(self.failed_handover_file)
 
     def watch_step(self, idle_since):
         if fresh_world.pending(self).exists() or (self.lock.exists() and self.read_state().get('action') == 'fresh-world'):
@@ -1161,8 +1678,10 @@ class RegionHost(Host):
     def precheck(self, action):
         # start compiles a missing or stale build itself (Host.do_refresh), so a
         # region with no build yet is not refused.
-        if action == 'handover':
+        if action in ('handover', 'auto-handover'):
             return self.precheck_handover()
+        if action == 'start-current' and not self.built_revision():
+            raise Refused('the current region build is missing or changed; manual recovery is required')
         if action == 'update-handover':
             # The build is made by the action itself; the handover checks run once it is ready.
             if self.frozen():
@@ -1190,13 +1709,13 @@ class RegionHost(Host):
             self.record(revision=latest)
             return
         try:
-            self.request_stage()
+            self.request_stage(urgent=True)
         except Refused as refusal:
             if 'already being staged' not in str(refusal):
                 raise RuntimeError('%s; the world was left running' % refusal)
         self.record(phase='building the update beside the running world', revision=latest)
         deadline = self.platform.now() + self.BUILD_WAIT_SECONDS
-        while self.stage_lock.exists():
+        while self.stage_running():
             if self.platform.now() > deadline:
                 raise RuntimeError('the update took too long to build; the world was left running')
             self.platform.sleep(10)
@@ -1304,6 +1823,8 @@ class RegionHost(Host):
             raise Refused('the world does not answer lifecycle status')
         if world.get('busy') or not world.get('ready'):
             raise Refused('the world is busy or not ready, so it cannot save now')
+        if self.always_up():
+            return  # it restarts on its own port (do_handover): no standby, no second world in memory
         if self.platform.listening(self.standby_port()):
             raise Refused('port %d (the standby port) is in use' % self.standby_port())
         free = self.platform.free_memory_mb()
@@ -1321,12 +1842,39 @@ class RegionHost(Host):
             raise Refused('only %d MB free on the disk; %s, so it needs %d MB (min_free_disk_mb)'
                           % (free, why, need))
 
-    def do_handover(self, operation):
+    def do_start_current(self, operation):
+        if not self.built_revision():
+            raise RuntimeError('the current region build is missing or changed')
+        self.do_start(operation)
+
+    def startup_revision(self):
+        if self.read_state().get('action') == 'start-current':
+            return self.built_revision() or ''
+        return super().startup_revision()
+
+    def do_auto_handover(self, operation):
+        self.do_handover(operation, automatic=True)
+
+    def do_handover(self, operation, automatic=False):
         group = load_group(self.config['group_config'])
         region = next(r for r in group['regions'] if r['id'] == self.config['region'])
         revision = self.staged_revision()
         if not revision or not self.update_pending():
             raise RuntimeError('no staged build newer than the running one')
+        if region['kind'] in ALWAYS_UP_KINDS:
+            # The hub lists a world by the port its DreamDaemon was started on; a standby
+            # that takes the port over with world.OpenPort is not listed again. The gateway
+            # and the tutorial keep nothing, so they restart on their own port onto the
+            # staged build instead.
+            if automatic and (self.world() or {}).get('clients'):
+                raise RuntimeError('players are in the %s; automatic update deferred' % region['kind'].lower())
+            self.record(phase='restarting the %s on its own port' % region['kind'].lower(), revision=revision)
+            with self.handover_slot():
+                self.do_stop(operation)
+                self.do_update(operation)
+                self.do_start(operation)
+            self.record(phase='restarted onto the staged build', revision=revision, staged=True)
+            return
         port, spare_port, token = self.config['port'], self.standby_port(), self.token()
         before = self.world()
         if not token or not before:
@@ -1336,6 +1884,9 @@ class RegionHost(Host):
             raise RuntimeError('the world gave no valid session')
         if self.platform.listening(spare_port):
             raise RuntimeError('port %d (the standby port) is in use' % spare_port)
+        if automatic and not guards_empty_handover(before):
+            self.record(revision=revision)
+            raise RuntimeError('the running build cannot guard an empty handover; automatic update deferred')
         if 'handover' not in before:
             # The running build predates handovers (its status has no handover field), so it
             # cannot freeze and save for a standby: the first update onto a build that can is
@@ -1348,9 +1899,18 @@ class RegionHost(Host):
             self.record(phase='restarted onto the staged build', revision=revision, staged=True, legacy=True)
             return
         with self.handover_slot():
-            self.handover_work(operation, group, region, revision, port, spare_port, token, before, session)
+            if automatic:
+                before = self.world()
+                if not before or before.get('busy') or not before.get('ready') or before.get('clients') != 0:
+                    raise RuntimeError('the world is not confirmed empty and ready; automatic update deferred')
+                if not self.saved_since_last_client():
+                    raise RuntimeError('the world has not saved since the last player; automatic update deferred')
+                session = before.get('session', '')
+                if not gaia_host.HEX32.match(session or '') or not guards_empty_handover(before):
+                    raise RuntimeError('the world no longer supports a safe handover')
+            self.handover_work(operation, group, region, revision, port, spare_port, token, before, session, automatic)
 
-    def handover_work(self, operation, group, region, revision, port, spare_port, token, before, session):
+    def handover_work(self, operation, group, region, revision, port, spare_port, token, before, session, automatic=False):
         if self.platform.listening(spare_port):
             raise RuntimeError('port %d (the standby port) is in use' % spare_port)
         spare = self.spare_dmb_name()
@@ -1360,7 +1920,7 @@ class RegionHost(Host):
             target = self.repo / (spare[:-4] + name[-4:])  # region.b.dmb, region.b.rsc
             temporary = self.repo / (target.name + '.staged')
             shutil.copy2(source / name, temporary)
-            os.replace(temporary, target)
+            gaia_host.replace_file(temporary, target)
         self.record(phase='booting the standby')
         standby_pid = self.platform.start_standby(spare, spare_port)
         # A standby prepares the whole map before it waits, so a large land
@@ -1381,12 +1941,21 @@ class RegionHost(Host):
         generation = None
         backup = None
         try:
+            if automatic:
+                before = self.world()
+                if (not before or before.get('busy') or not before.get('ready') or before.get('clients') != 0
+                        or before.get('session') != session or not guards_empty_handover(before)
+                        or not self.saved_since_last_client()):
+                    self.record(retryable=True)
+                    raise RuntimeError('the world is no longer confirmed empty and ready; automatic update deferred')
             warning = self.shutdown_warning()
             if before.get('clients') and warning and before.get('shutdown_warning'):
                 self.record(phase='warning players (%d s), then saving' % warning, clients=before.get('clients'))
             else:
                 self.record(phase='saving', clients=before.get('clients'))
             fields = gaia_host.warning_fields(before, warning)
+            if automatic:
+                fields = {**(fields or {}), 'only_if_empty': '1'}
             answer = (self.platform.query(port, token, 'handover_save', operation, session, extra=fields) if fields
                       else self.platform.query(port, token, 'handover_save', operation, session))
             if answer.get('operation') != operation:
@@ -1405,7 +1974,9 @@ class RegionHost(Host):
             # load added to the pause). Both only read map_saves; the switch waits for it.
             backup = self.start_backup(saves, backups, operation)
             self.record(phase='loading the standby', generation=generation, backup=str(backups / operation))
-            answer = self.platform.query(spare_port, token, 'standby_load', operation, standby_session)
+            answer = self.ask_world(spare_port, token, 'standby_load', operation, standby_session,
+                                    taken=lambda s: s.get('operation') == operation,
+                                    untaken=lambda s: s.get('standby') == 'waiting')
             if answer.get('operation') != operation:
                 raise RuntimeError('the standby world did not accept the load: %s' % (answer.get('error') or 'no operation in its reply'))
             self.wait_world(spare_port, token, lambda s: s.get('ready') and not s.get('restart_hold'),
@@ -1413,6 +1984,8 @@ class RegionHost(Host):
                             standby=True)
             self.finish_backup(backup)
         except Exception as error:
+            if automatic and isinstance(error, gaia_host.LifecycleRefused) and error.code == 'handover_players_arrived':
+                self.record(retryable=True)
             if backup is not None:
                 backup.join()  # never leave a copy running into the next handover
             # The old world is still running: stop the standby and release the freeze.
@@ -1430,7 +2003,21 @@ class RegionHost(Host):
             self.stop_standby(spare_port, standby_pid)
             raise
         self.record(phase='switching')
-        self.platform.query(port, token, 'handover_release', operation, session)
+        try:
+            self.ask_world(port, token, 'handover_release', operation, session,
+                           taken=lambda s: s.get('handover') == 'released', untaken=lambda s: s.get('handover') == 'saved',
+                           gone_is_taken=True)
+        except Exception as error:
+            if automatic and isinstance(error, gaia_host.LifecycleRefused) and error.code == 'handover_players_arrived':
+                self.record(retryable=True)
+            # Not released: the old world stays the region, so the loaded standby must not keep
+            # its port (the next handover would be refused with the standby port in use).
+            self.stop_standby(spare_port, standby_pid)
+            try:
+                self.platform.query(port, token, 'handover_cancel', operation, session)
+            except (OSError, RuntimeError, ValueError):
+                pass
+            raise
         # world.OpenPort on a port another process still holds fails and closes the standby's
         # own port (measured on 516.1688), so the old world's port must be free first.
         deadline = self.platform.now() + SWITCH_SECONDS
@@ -1439,11 +2026,12 @@ class RegionHost(Host):
             if self.platform.now() > deadline:
                 pid = self.platform.server_pid(port)
                 if pid and not killed:
-                    self.platform.kill_tree(pid)
+                    self.platform.kill_tree(pid, expect=self.world_expect())
                     killed = True
                     deadline = self.platform.now() + 30
                     continue
-                raise RuntimeError('the old world kept port %d; the loaded standby still answers on port %d' % (port, spare_port))
+                self.stop_standby(spare_port, standby_pid)
+                raise RuntimeError('the old world kept port %d; %s' % (port, STANDBY_ENDED))
             self.platform.sleep(2)
         # The region is offline from here until the standby opens its port, so keep trying for
         # a while. Each try uses the session the standby reports now: on 2026-11-08 every
@@ -1464,18 +2052,25 @@ class RegionHost(Host):
                 self.platform.query(spare_port, token, 'standby_open', operation, standby_session, extra={'port': str(port)})
                 break
             except (OSError, RuntimeError, ValueError) as error:
+                if self.platform.listening(port):
+                    # The old world left this port, so whatever serves it now is the standby: it
+                    # switched and only its reply was lost. It is the region, never to be ended.
+                    self.record(open_reply_lost=str(error)[:200])
+                    break
                 if self.platform.now() > deadline:
-                    raise RuntimeError('the new world did not open port %d (%s); it still answers on port %d' % (port, error, spare_port))
+                    self.stop_standby(spare_port, standby_pid)
+                    raise RuntimeError('the new world did not open port %d (%s); %s' % (port, error, STANDBY_ENDED))
                 self.platform.sleep(3)
         deadline = self.platform.now() + 60
         while not self.platform.listening(port):
             if self.platform.now() > deadline:
-                raise RuntimeError('the new world did not open port %d; it still answers on port %d' % (port, spare_port))
+                self.stop_standby(spare_port, standby_pid)
+                raise RuntimeError('the new world did not open port %d; %s' % (port, STANDBY_ENDED))
             self.platform.sleep(2)
         self.stop_if_killed(operation)  # a forced stop now must not leave running.json for the watchdog
         self.mark_running()
-        self.freeze_file.unlink(missing_ok=True)
-        self.cold_file.unlink(missing_ok=True)
+        gaia_host.remove_file(self.freeze_file)
+        gaia_host.remove_file(self.cold_file)
         self.clear_watchdog_holds()
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
         self.record_build(revision, spare)
@@ -1487,6 +2082,35 @@ class RegionHost(Host):
         except (OSError, RuntimeError) as error:
             self.record(checkout_warning=str(error)[:300])
         self.record(phase='handed over', revision=revision, generation=generation, build=spare, staged=True)
+
+    def ask_world(self, port, token, action, operation, session, taken, untaken, gone_is_taken=False):
+        """Send a handover request that a busy world may answer late. A request that gets no
+        reply in time (OSError: a timeout or reset, not a refusal) is checked through status:
+        taken(status) means the world took it, untaken(status) that it did not, so it is sent
+        again. A refusal raises at once. Returns the reply or the status that showed it taken."""
+        deadline = self.platform.now() + ASK_SECONDS
+        while True:
+            try:
+                return self.platform.query(port, token, action, operation, session)
+            except OSError as error:
+                self.record(phase='%s got no reply in time (%s); checking the world' % (action, error))
+                last = error
+            while True:
+                if self.platform.now() > deadline:
+                    raise RuntimeError('%s: the world did not answer (%s)' % (action, last))
+                self.platform.sleep(5)
+                if not self.platform.listening(port):
+                    if gone_is_taken:
+                        return {'ok': True}
+                    continue
+                try:
+                    status = self.platform.query(port, token)
+                except (OSError, RuntimeError, ValueError):
+                    continue  # still busy
+                if taken(status):
+                    return status
+                if untaken(status):
+                    break  # send it again
 
     def wait_world(self, port, token, done, timeout, what, standby=False):
         """Poll a world's lifecycle status until done(status) is true; its status.
@@ -1517,13 +2141,13 @@ class RegionHost(Host):
     def kill(self, reason='forced stop', keep_running=False):
         """A forced stop during a handover also ends its standby, so the update cannot bring
         back a region a person stopped; the handover sees killed.json and gives up."""
-        handing_over = self.lock.exists() and self.read_state().get('action') in ('handover', 'update-handover')
+        handing_over = self.lock.exists() and self.read_state().get('action') in ('handover', 'auto-handover', 'update-handover')
         if handing_over:
             self.note_kill_during_action(reason)
             standby = self.stop_standby(self.standby_port())
             if not (self.frozen() or self.platform.server_pid(self.config['port'])):
                 if not keep_running:
-                    self.running_file.unlink(missing_ok=True)
+                    gaia_host.remove_file(self.running_file)
                 return {'killed': True, 'pid': standby, 'reason': reason, 'released_locks': [], 'standby': standby}
         return super().kill(reason, keep_running)
 
@@ -1561,9 +2185,9 @@ class RegionHost(Host):
         pid = self.platform.server_pid(port) or pid
         if pid:
             try:
-                self.platform.kill_tree(pid)
-            except OSError:  # already gone
-                pass
+                self.platform.kill_tree(pid, expect=self.world_expect())
+            except (OSError, Unverified) as error:  # already gone, or not a world: left running
+                self.log({'standby_not_ended': str(error)[:300], 'port': port})
         return pid
 
     def latest_revision(self):
@@ -1589,6 +2213,26 @@ class RegionHost(Host):
         available = self.git_text(['rev-parse', group['revision']], group['repository'])
         answer = self.update_answer(self.git_text(['rev-parse', 'HEAD'], self.repo), available, group['repository'])
         return dict(answer, region=self.config['region'])
+
+    def do_refresh(self, operation):
+        """A restart of an always-up region (the gateway, the tutorial) installs the build
+        staged beside it, even when the group has moved on since: compiling the newer
+        revision with the world stopped kept the TDM front door shut for 35 seconds
+        (2026-11-21). The newer revision is staged beside it next and installed by the
+        next empty restart. Other regions, or one with nothing staged, refresh as before."""
+        staged = self.staged_revision() if self.always_up() else None
+        if staged and self.update_pending():
+            group = load_group(self.config['group_config'])
+            region = next(r for r in group['regions'] if r['id'] == self.config['region'])
+            self.record(phase='installing the staged build', revision=staged)
+            prepare_tree(group, region, self.repo, staged, self.platform, self.config['git'])
+            if self.platform.listening(self.config['port']):
+                raise RuntimeError('the region started during the update; not installing')
+            if self.install_staged(staged):
+                self.record_build(staged, DMB_SLOTS[0])
+                self.record(phase='compiled', revision=staged, map=region['map'], staged=True)
+                return
+        return super().do_refresh(operation)
 
     def do_update(self, operation):
         """Check out the group's revision in this region's worktree and compile region.dme."""
@@ -1651,9 +2295,12 @@ def compile_reported(out):
     return bool(re.search(r'\d+ errors?\b', out or ''))
 
 
-def prepare_tree(group, region, path, revision, platform, git):
+def prepare_tree(group, region, path, revision, platform, git, live=False):
     """Check a region's worktree (or its staging worktree) out at revision and write
-    everything its compile needs: overlays, the persistent config, rust_g and region.dme."""
+    everything its compile needs: overlays, the persistent config, rust_g and region.dme.
+
+    live: the world is still running from this worktree (a TDM battle taking an update
+    between rounds), so rust_g, which it has loaded, is replaced only when it changed."""
     # --force: the region's config/config.txt override below is rewritten every update.
     code, out = platform.run([git, 'checkout', '--force', '--detach', revision], cwd=path, timeout=600)
     if code != 0:
@@ -1662,7 +2309,13 @@ def prepare_tree(group, region, path, revision, platform, git):
     (path / 'config').mkdir(exist_ok=True)
     region_mode_config(group, region, path / 'config' / 'config.txt')
     if group.get('rust_g'):
-        shutil.copyfile(group['rust_g'], path / Path(group['rust_g']).name)
+        target = path / Path(group['rust_g']).name
+        if not live:
+            shutil.copyfile(group['rust_g'], target)
+        elif not target.is_file() or target.read_bytes() != Path(group['rust_g']).read_bytes():
+            # A new file under the name: the running world keeps the one it mapped.
+            shutil.copyfile(group['rust_g'], target.with_name(target.name + '.new'))
+            gaia_host.replace_file(target.with_name(target.name + '.new'), target)
     include = place_map(group, region, path)
     dme = (path / 'civ13.dme').read_text(encoding='utf-8')
     (path / 'region.dme').write_text(selected_map_dme(dme, include), encoding='utf-8', newline='')
@@ -1709,9 +2362,13 @@ def apply_overlays(group, region, path):
     front = front_dir(group) / 'config.local.txt'
     if region['id'] == front_region(group) and front.is_file():
         local.append(front)
-    if local:
+    translator = translator_config_line(group)
+    if local or translator:
         config = path / 'config' / 'config.txt'
         text = config.read_text(encoding='utf-8') if config.exists() else ''
+        # The group's translator first, so a host's own CHAT_TRANSLATE_URL line (or #CHAT_TRANSLATE_URL) wins.
+        if translator:
+            text = merge_config(text, translator)
         for item in local:
             try:
                 text = merge_config(text, item.read_text(encoding='utf-8-sig'))
@@ -1957,9 +2614,9 @@ def fetch_remote(group, platform=None):
 
 
 def region_mode_config(group, region, path):
-    """Set a region's round mode after its overlays: a tutorial region never saves,
-    even in a persistent group; the others follow the group."""
-    if region['kind'] == 'TUTORIAL':
+    """Set a region's round mode after its overlays: a tutorial or gateway region never
+    saves, even in a persistent group; the others follow the group."""
+    if region['kind'] in ('TUTORIAL', 'GATEWAY'):
         tutorial_config(path)
     elif group['persistent']:
         persistent_config(path, saving=not region.get('reset_minutes'))
@@ -2081,7 +2738,7 @@ def setup(group, platform=None, region_id=None):
         if region_id is not None and region['id'] != region_id and not (path / '.git').exists():
             continue  # another region not set up yet: left for a full setup
         if not (path / '.git').exists():
-            if path.exists() and any(path.iterdir()):
+            if path.exists() and any(path.iterdir()) and not set_aside_agent_leftovers(path):
                 raise Refused('%s exists and is not a region worktree' % path)
             code, out = platform.run([git, 'worktree', 'add', '--detach', str(path), revision], cwd=repository, timeout=600)
             if code != 0:
@@ -2098,6 +2755,28 @@ def setup(group, platform=None, region_id=None):
     return result
 
 
+def set_aside_agent_leftovers(path):
+    """True when path held only what a transfer agent started before setup leaves behind
+    (data/shard-host with its settings, log and records) and it was moved aside to
+    <name>.agent-leftovers-<time>, so setup can make the worktree. Nothing is deleted."""
+    path = Path(path)
+    entries = [p for p in path.rglob('*')]
+    files = [p for p in entries if p.is_file()]
+    state = path / 'data' / 'shard-host'
+    if not files or any(state not in f.parents for f in files):
+        return False
+    if any(f.suffix not in ('.json', '.log', '.pid', '.tmp') for f in files):
+        return False
+    stamp = time.strftime('%Y%m%d-%H%M%S', time.gmtime())
+    target = path.with_name('%s.agent-leftovers-%s' % (path.name, stamp))
+    number = 1
+    while target.exists():
+        number += 1
+        target = path.with_name('%s.agent-leftovers-%s-%d' % (path.name, stamp, number))
+    path.rename(target)
+    return True
+
+
 def write_region_files(group, region, path):
     """Write everything setup generates for one region: its shard_region.json, tokens,
     transfer agent settings and host config. Safe to repeat; existing tokens are kept."""
@@ -2106,8 +2785,9 @@ def write_region_files(group, region, path):
     config.mkdir(exist_ok=True)
     settings = {'group': group['group'], 'region': region['id'], 'regions': directory(group), 'mainland': group['mainland'],
                 'start_region': group['start_region'],
-                'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in ('EVENT', 'TUTORIAL') else 0,
+                'save_minutes': group['save_minutes'] if group['persistent'] and not region['reset_minutes'] and region['kind'] not in UNSAVED_KINDS else 0,
                 'travel_save_seconds': group['travel_save_seconds'], 'reset_minutes': region['reset_minutes'],
+                'edge_travel_oceans': group['edge_travel_oceans'],
                 # The host service's doorman on this machine; regions ask it which peers
                 # sleep (a direct poll would wake them) and to wake one for a traveller.
                 'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
@@ -2186,7 +2866,16 @@ def write_json_atomic(path, value):
     """Write value as JSON through a temporary file, so a reader never sees half a file."""
     temporary = path.with_name(path.name + '.tmp')
     temporary.write_text(json.dumps(value, indent=1) + '\n', encoding='utf-8')
-    os.replace(temporary, path)
+    gaia_host.replace_file(temporary, path)
+
+
+def guards_empty_handover(status):
+    """True when a world's lifecycle status advertises the empty-handover guard.
+
+    DM's json_encode writes TRUE as 1, so a live world reports 1 rather than JSON
+    true; testing `is True` deferred every automatic handover (2026-11-22)."""
+    value = (status or {}).get('handover_empty_guard')
+    return value is True or (type(value) is int and value == 1)
 
 
 def enrol(group, region_id):
@@ -2286,18 +2975,160 @@ def write_operator_agent(group, path):
     return True
 
 
+def add_gateway(group, region_id=None, apply=False, platform=None):
+    """The first half of putting a gateway world on the front door's port.
+
+    Adds a GATEWAY region (maps/special/gateway.dmm, ports chosen like any omitted
+    port) to the group file, sets it up and starts it on that port while the current
+    front door keeps playing (with the front door stopped it is only set up). The second half is `set-gate --region <id> --apply`, which
+    swaps the two worlds' ports: the gateway takes the public port (1714 on the live
+    host) and stays on it, and the old front door moves behind the relay on the
+    gateway's port. Without apply, only the plan. A group that already has a gateway
+    gets only the next step."""
+    platform = platform or Platform()
+    if not group.get('relay_port'):
+        raise Refused('a gateway sends players on through the routing relay, and this group has none (relay_port)')
+    gate = group.get('gate')
+    existing = next((r for r in group['regions'] if r['kind'] == 'GATEWAY'), None)
+    if existing:
+        done = gate == existing['id']
+        steps = ['%s is already the gateway%s.' % (existing['name'], ' and the front door' if done else
+                 '; make it the front door (set-gate --region %s --apply)' % existing['id'])]
+        return {'plan': {'region': existing['id'], 'already': True, 'gate': gate, 'steps': steps, 'problems': [], 'warnings': []},
+                'accepted': False, 'next': None if done else 'set-gate --region %s --apply' % existing['id']}
+    region_id = region_id or 'gateway'
+    if not ID.match(region_id) or any(r['id'] == region_id for r in group['regions']):
+        raise Refused('%s is not a free region id' % region_id)
+    path = Path(group['_path'])
+    raw = json.loads(path.read_text(encoding='utf-8-sig'))
+    raw['regions'].append({'id': region_id, 'name': 'Gateway', 'kind': 'GATEWAY', 'map': GATEWAY_MAP, 'public': True})
+    planned = json.loads(json.dumps(raw))
+    fill_ports(planned, platform.listening)
+    try:
+        check_group(json.loads(json.dumps(planned)), path)
+    except ValueError as error:
+        raise Refused(str(error))
+    entry = planned['regions'][-1]
+    front = next((r for r in group['regions'] if r['id'] == gate), None)
+    # With the front door stopped (the whole group down for maintenance) nothing has to
+    # keep playing, so the gateway is only set up; set-gate then just swaps the ports.
+    offline = bool(front) and not platform.listening(front['port'])
+    steps = ['Add the region %s (Gateway) on port %d%s; it never saves, never sleeps and hosts no play.'
+             % (region_id, entry['port'], ', travel agent %d' % entry['transfer_port'] if entry.get('transfer_port') else ''),
+             'Set it up there without starting it: %s is stopped, so the next start brings both up.' % front['name']
+             if offline else
+             'Set it up and start it there (the first start compiles it); %s keeps playing on port %d meanwhile.'
+             % (front['name'], front['port']) if front else 'Set it up and start it there.',
+             'Then run set-gate --region %s --apply: the gateway takes port %s for good and %s moves to port %d behind '
+             'the relay (it is saved and started again once).' % (region_id, front['port'] if front else '?',
+                                                                  front['name'] if front else 'the front door', entry['port'])]
+    plan = {'region': region_id, 'port': entry['port'], 'transfer_port': entry.get('transfer_port'), 'gate': gate,
+            'offline': offline, 'already': False, 'steps': steps, 'problems': [], 'warnings': []}
+    if not apply:
+        return {'plan': plan, 'accepted': False}
+    shutil.copy2(path, unused_backup_path(path))
+    write_json_atomic(path, planned)
+    group = load_group(str(path))
+    result = {'plan': plan, 'accepted': True, 'setup': setup(group, platform, region_id)}
+    if offline:
+        result['start'] = None
+    else:
+        (region, host), = hosts(group, region_id, platform)
+        result['start'] = host.request('start')
+    result['next'] = 'set-gate --region %s --apply' % region_id
+    return result
+
+
+def add_regions(group, apply=False, platform=None):
+    """Add the Earth regions this group is missing (EARTH_REGIONS), and the slots for
+    lands across the sea (EXPEDITION_SLOTS), to the group file.
+
+    Only a group that hosts Earth (Gaia, or one of the Earth lands) is offered them; a
+    region is missing when neither its id nor its map is in the group. Each is added
+    stopped and set up, so the launcher lists it and the host starts it when wanted.
+    Without apply, only the plan. Running regions keep playing; they learn the new
+    peers on their next start."""
+    platform = platform or Platform()
+    maps = {r['map'] for r in group['regions']}
+    ids = {r['id'] for r in group['regions']}
+    if EARTH_MAINLAND_MAP not in maps and not maps & {entry[3] for entry in EARTH_REGIONS}:
+        raise Refused('this group does not host Earth (no Gaia or Earth land in it)')
+    missing = [entry + (None,) for entry in EARTH_REGIONS if entry[0] not in ids and entry[3] not in maps]
+    missing += [(region_id, name, 'EXPEDITION', EXPEDITION_SLOT_MAP, port, transfer)
+                for region_id, name, port, transfer in EXPEDITION_SLOTS if region_id not in ids]
+    path = Path(group['_path'])
+    raw = json.loads(path.read_text(encoding='utf-8-sig'))
+    taken = {r.get(key) for r in raw['regions'] for key in ('port', 'transfer_port', 'standby_port')}
+    taken |= {raw.get(key) for key in ('relay_port', 'relay_control_port', 'doorman_port')}
+    for region_id, name, kind, map_path, port, transfer in missing:
+        entry = {'id': region_id, 'name': name, 'kind': kind, 'map': map_path}
+        if port not in taken and not platform.listening(port):
+            entry['port'] = port
+            taken.add(port)
+        if transfer and transfer not in taken and not platform.listening(transfer):
+            entry['transfer_port'] = transfer
+            taken.add(transfer)
+        raw['regions'].append(entry)
+    planned = json.loads(json.dumps(raw))
+    problems = []
+    if missing:
+        fill_ports(planned, platform.listening)
+        try:
+            check_group(json.loads(json.dumps(planned)), path)
+        except ValueError as error:
+            problems.append(str(error))
+    added = planned['regions'][len(planned['regions']) - len(missing):] if missing else []
+    steps = ['Add %s (%s) on port %d%s.' % (r['name'], r['id'], r['port'],
+             ', travel agent %d' % r['transfer_port'] if r.get('transfer_port') else '') for r in added]
+    if added:
+        steps.append('Set each one up without starting it; start it from its region row when wanted.')
+    plan = {'regions': [{'id': r['id'], 'name': r['name'], 'kind': r['kind'], 'port': r['port'],
+                         'transfer_port': r.get('transfer_port')} for r in added],
+            'already': not missing, 'steps': steps or ['Every Earth region is already in the group.'],
+            'problems': problems, 'warnings': []}
+    if not apply or not missing:
+        return {'plan': plan, 'accepted': False}
+    if problems:
+        raise Refused(problems[0])
+    shutil.copy2(path, unused_backup_path(path))
+    write_json_atomic(path, planned)
+    group = load_group(str(path))
+    done = {}
+    for r in added:
+        try:
+            done[r['id']] = setup(group, platform, r['id'])
+        except Refused as error:
+            done[r['id']] = {'refused': str(error)}
+    return {'plan': plan, 'accepted': True, 'setup': done}
+
+
 def relay_settings(group):
     """The shard_region.json keys a region needs to send players through the relay."""
     return {'relay': '%s:%d' % (group['public_host'], group['relay_port']),
             'relay_control': '127.0.0.1:%d' % group['relay_control_port'], 'gate': group['gate']}
 
 
-def relay_pid(group):
+def recorded_pid(path):
+    """The pid a helper's pid file names while that helper can still be running, or None.
+
+    A pid file outlives its process across a restart of the machine, and Windows soon gives
+    the pid to something else: the relay, the coordinator and the other helpers then counted
+    as running and were never started again. A file written before the machine last booted
+    names nothing that runs now."""
+    path = Path(path)
     try:
-        pid = int((Path(group['root']) / 'relay.pid').read_text(encoding='utf-8').strip())
+        pid = int(path.read_text(encoding='utf-8').strip())
+        written = path.stat().st_mtime
     except (OSError, ValueError):
         return None
-    return pid if process_alive(pid) else None
+    if pid <= 0 or not process_alive(pid):
+        return None
+    boot = Platform().boot_time()
+    return None if boot is not None and boot > written + 60 else pid
+
+
+def relay_pid(group):
+    return recorded_pid(Path(group['root']) / 'relay.pid')
 
 
 def ensure_relay(group, start=detach):
@@ -2361,7 +3192,7 @@ def update_offline(group, only=None, platform=None):
                 # The running stage installs it when it finishes (it reads the marker last).
                 accepted[name] = {'accepted': True, 'action': 'stage', 'state': state, 'already_staging': True}
                 continue
-            host.install_marker.unlink(missing_ok=True)
+            gaia_host.remove_file(host.install_marker)
             skipped[name] = str(refusal)
     return {'accepted': accepted, 'skipped': skipped}
 
@@ -2394,11 +3225,7 @@ def process_alive(pid):
 
 def coordinator_pid(group):
     """The running coordinator's pid, or None."""
-    try:
-        pid = int((Path(group['root']) / 'coordinator.pid').read_text(encoding='utf-8').strip())
-    except (OSError, ValueError):
-        return None
-    return pid if process_alive(pid) else None
+    return recorded_pid(Path(group['root']) / 'coordinator.pid')
 
 
 def coordinator_never_established(database):
@@ -2450,7 +3277,15 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
                            and record.get('mainland', group['mainland']) == group['mainland']
                            and record.get('start_region', group['mainland']) == group['start_region']):
             return False
-        (terminate or Platform().terminate)(pid)
+        try:
+            # coordinator.pid can outlive its coordinator (a reboot) and name a reused pid.
+            born = (root / 'coordinator.pid').stat().st_mtime
+        except OSError:
+            born = None
+        try:
+            (terminate or Platform().terminate)(pid, expect=process_safety.python_expect(born_before=born))
+        except Unverified:
+            pass  # not the coordinator: the pid file was stale, so leave that process alone and start one
     database = root / 'coordinator.sqlite'
     argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
             '--mainland', group['mainland'], '--start-region', group['start_region']]
@@ -2537,18 +3372,14 @@ def help_spool(group, region_id):
 def help_pid(group, region_id, now=time.time):
     """The region's running bridge, or None. The bridge's worker.lock names its pid; a
     bridge we started recently may still be loading its corpus before it takes the lock."""
-    try:
-        pid = int((help_spool(group, region_id) / 'worker.lock' / 'pid').read_text(encoding='ascii').strip())
-        if pid > 0 and process_alive(pid):
-            return pid
-    except (OSError, ValueError):
-        pass
+    pid = recorded_pid(help_spool(group, region_id) / 'worker.lock' / 'pid')
+    if pid:
+        return pid
     started = help_dir(group) / ('%s.pid' % region_id)
     try:
-        pid = int(started.read_text(encoding='utf-8').strip())
-        if pid > 0 and now() - started.stat().st_mtime < HELP_STARTING_SECONDS and process_alive(pid):
-            return pid
-    except (OSError, ValueError):
+        if now() - started.stat().st_mtime < HELP_STARTING_SECONDS:
+            return recorded_pid(started)
+    except OSError:
         pass
     return None
 
@@ -2681,12 +3512,179 @@ def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.mon
         sleep(1)
         running = {r: pid for r, pid in running.items() if process_alive(pid)}
     kill = kill or Platform().kill_tree
+    refused = {}
     for one, pid in running.items():
-        kill(pid)
+        # A pid file can outlive its bridge (a reboot, a crash) and name a reused pid: end only
+        # a Python process that is older than the file that names it.
+        try:
+            kill(pid, expect=process_safety.python_expect(born_before=help_pid_written(group, one, pid)))
+        except Unverified as error:
+            refused[one] = str(error)
         clear_help_lock(group, one)
     for one in ids:
         (help_dir(group) / ('%s.pid' % one)).unlink(missing_ok=True)
-    return {'stopped': stopped, 'forced': sorted(running)}
+    result = {'stopped': stopped, 'forced': sorted(r for r in running if r not in refused)}
+    if refused:
+        result['not_ended'] = refused
+    return result
+
+
+def help_pid_written(group, region_id, pid):
+    """When the newest pid file naming pid for this region's bridge was written, or None."""
+    times = []
+    for path in (help_spool(group, region_id) / 'worker.lock' / 'pid', help_dir(group) / ('%s.pid' % region_id)):
+        try:
+            if int(path.read_text(encoding='utf-8').strip()) == pid:
+                times.append(path.stat().st_mtime)
+        except (OSError, ValueError):
+            pass
+    return max(times) if times else None
+
+
+# -- chat translator ---------------------------------------------------------------
+# One Edge translator service (tools/edge-translator) per group, kept running by the host
+# service like the Player Help bridges. It runs from its own copy under <root>/chat-translator
+# (app/, with node_modules from npm ci), so region updates never pull files from under it,
+# and keeps Edge's language packs in <root>/chat-translator/edge-profile.
+
+def translator_dir(group):
+    return Path(group['root']) / 'chat-translator'
+
+
+def translator_stop_file(group):
+    """While this exists the host service leaves the translator stopped (translator-stop)."""
+    return translator_dir(group) / 'stopped'
+
+
+def translator_config_line(group):
+    """The CHAT_TRANSLATE_URL line every region's config gets, or None without chat_translator."""
+    settings = group.get('chat_translator')
+    if not settings:
+        return None
+    return 'CHAT_TRANSLATE_URL http://127.0.0.1:%d' % settings['port']
+
+
+def translator_pid(group, now=time.time):
+    return recorded_pid(translator_dir(group) / 'service.pid')
+
+
+def translator_health(group, timeout=2):
+    """The service's /health answer, or None when it does not answer."""
+    settings = group.get('chat_translator')
+    if not settings:
+        return None
+    try:
+        with urllib.request.urlopen('http://127.0.0.1:%d/health' % settings['port'], timeout=timeout) as reply:
+            answer = json.loads(reply.read(65536).decode('utf-8'))
+        return answer if type(answer) is dict and answer.get('ok') is True else None
+    except (OSError, ValueError):
+        return None
+
+
+def translator_source(group):
+    """Where the service's files come from: the group repository's checkout."""
+    return Path(group['repository']) / TRANSLATOR_SOURCE
+
+
+def install_translator(group, run=None):
+    """Copy the service's files into <root>/chat-translator/app and npm ci there when the
+    lock file changed or node_modules is missing. Returns the app folder."""
+    settings = group['chat_translator']
+    source, app = translator_source(group), translator_dir(group) / 'app'
+    app.mkdir(parents=True, exist_ok=True)
+    changed = False
+    for name in TRANSLATOR_FILES:
+        item = source / name
+        if not item.is_file():
+            raise OSError('%s is missing (update the group repository)' % item)
+        target = app / name
+        if not target.is_file() or not filecmp.cmp(item, target, shallow=False):
+            shutil.copyfile(item, target)
+            changed = changed or name in ('package.json', 'package-lock.json')
+    if changed or not (app / 'node_modules' / 'playwright-core' / 'package.json').is_file():
+        run = run or (lambda argv, cwd: subprocess.run(argv, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True,
+                                                       timeout=TRANSLATOR_INSTALL_SECONDS).returncode)
+        if run([settings['npm'], 'ci', '--ignore-scripts', '--no-audit', '--no-fund'], app) != 0:
+            raise OSError('npm ci failed in %s' % app)
+    return app
+
+
+def translator_argv(group, app):
+    settings = group['chat_translator']
+    argv = [settings['node'], str(app / 'edge_translator.js'), '--port', str(settings['port']),
+            '--profile', settings.get('profile') or str(translator_dir(group) / 'edge-profile')]
+    if settings.get('edge'):
+        argv += ['--edge', settings['edge']]
+    return argv
+
+
+def ensure_translator(group, start=detach, install=None, now=time.time):
+    """Start the translator when it is configured, not stopped on request and not running.
+    Returns True when it was started."""
+    if not group.get('chat_translator') or translator_stop_file(group).exists() or translator_pid(group, now):
+        return False
+    folder = translator_dir(group)
+    folder.mkdir(parents=True, exist_ok=True)
+    app = (install or install_translator)(group)
+    pid = start(translator_argv(group, app), app, folder / 'service.log')
+    (folder / 'service.pid').write_text('%d\n' % pid, encoding='utf-8')
+    return True
+
+
+def translator_status(group, now=time.time):
+    settings = group.get('chat_translator')
+    if not settings:
+        return {'configured': False}
+    pid = translator_pid(group, now)
+    health = translator_health(group) if pid else None
+    entry = {'configured': True, 'running': pid is not None, 'pid': pid, 'port': settings['port'],
+             'stopped': translator_stop_file(group).exists(), 'answering': health is not None,
+             'url': 'http://127.0.0.1:%d' % settings['port'], 'log': str(translator_dir(group) / 'service.log')}
+    started = translator_dir(group) / 'service.pid'
+    try:
+        entry['started_seconds_ago'] = max(0, int(now() - started.stat().st_mtime)) if pid else None
+    except OSError:
+        entry['started_seconds_ago'] = None
+    if health:
+        entry['stats'] = {key: health[key] for key in ('translated', 'skipped', 'failed', 'busy', 'waiting') if type(health.get(key)) is int}
+    return entry
+
+
+def translator_settings(group):
+    if not group.get('chat_translator'):
+        raise Refused('chat_translator is not configured for this group')
+    return group['chat_translator']
+
+
+def translator_start(group, start=detach, install=None):
+    translator_settings(group)
+    translator_dir(group).mkdir(parents=True, exist_ok=True)
+    translator_stop_file(group).unlink(missing_ok=True)
+    return {'started': ensure_translator(group, start, install)}
+
+
+def translator_stop(group, kill=None):
+    """Stop the service and keep it stopped until translator-start. Worlds answer chat
+    lines untranslated meanwhile (their calls fail and pause)."""
+    translator_settings(group)
+    folder = translator_dir(group)
+    folder.mkdir(parents=True, exist_ok=True)
+    translator_stop_file(group).write_text('stopped on request\n', encoding='utf-8')
+    pid = translator_pid(group)
+    result = {'stopped': pid is not None}
+    if pid:
+        pid_file = folder / 'service.pid'
+        try:
+            born = pid_file.stat().st_mtime
+        except OSError:
+            born = None
+        # Node and the Edge it started; only a Node process older than its pid file.
+        try:
+            (kill or Platform().kill_tree)(pid, expect=process_safety.node_expect(born_before=born))
+        except Unverified as error:
+            result['not_ended'] = str(error)
+        pid_file.unlink(missing_ok=True)
+    return result
 
 
 # -- outside save validator ---------------------------------------------------------
@@ -2817,7 +3815,7 @@ def finish_validator(group, state):
     else:
         temporary = saves / 'validated.json.validator'
         temporary.write_text(json.dumps(record), encoding='utf-8')
-        os.replace(temporary, saves / 'validated.json')
+        gaia_host.replace_file(temporary, saves / 'validated.json')
         outcome = 'validated'
     shutil.rmtree(folder, ignore_errors=True)
     return outcome
@@ -2872,12 +3870,67 @@ def ensure_save_validation(group, start=None, free_mb=None, now=time.time, alive
     return {}
 
 
+def next_expedition_slot(group):
+    """The next slot to add: far<N>, one past the highest far number in the group."""
+    numbers = [int(r['id'][3:]) for r in group['regions'] if re.match(r'^far[0-9]{1,4}$', r['id'])]
+    number = max(numbers, default=0) + 1
+    return 'far%d' % number, 'Far Land %d' % number
+
+
+def add_expedition_slot(group, platform=None):
+    """Add one expedition slot to the group file, with ports nobody uses, and set it up
+    stopped (setup --region). The coordinator is restarted with it on the next host pass
+    (ensure_coordinator compares its slot list). Returns what was done."""
+    platform = platform or Platform()
+    path = Path(group['_path'])
+    raw = json.loads(path.read_text(encoding='utf-8-sig'))
+    region_id, name = next_expedition_slot(raw)
+    raw['regions'].append({'id': region_id, 'name': name, 'kind': 'EXPEDITION', 'map': EXPEDITION_SLOT_MAP})
+    fill_ports(raw, platform.listening)
+    check_group(json.loads(json.dumps(raw)), path)
+    shutil.copy2(path, unused_backup_path(path))
+    write_json_atomic(path, raw)
+    group = load_group(str(path))
+    done = setup(group, platform, region_id)
+    added = next(r for r in raw['regions'] if r['id'] == region_id)
+    return {'region': region_id, 'port': added['port'], 'transfer_port': added.get('transfer_port'), 'setup': done}
+
+
+def grow_expeditions(group, platform=None):
+    """The coordinator asked for one more slot (<expeditions>/grow/request.json): every
+    slot held a land and none was idle enough to lay up. Adds it and drops the wish.
+    Never touches a running world. Returns what was done, or None with no wish."""
+    wish = expedition_slots.slots_dir(group) / 'grow' / 'request.json'
+    if not wish.exists():
+        return None
+    lock = wish.with_name('growing.lock')
+    try:
+        lock.touch(exist_ok=False)
+    except FileExistsError:
+        return {'busy': True}
+    try:
+        result = add_expedition_slot(group, platform)
+        wish.unlink(missing_ok=True)
+        return result
+    finally:
+        lock.unlink(missing_ok=True)
+
+
 def serve_expeditions(group, start=detach, platform=None):
     """Open the lands ships' courses asked for in the group's EXPEDITION slots
-    and start each once built (expedition_slots.serve)."""
+    and start each once built (expedition_slots.serve). Asked for one more slot,
+    the host adds it in a worker (expedition-grow)."""
     if not any(r['kind'] == 'EXPEDITION' for r in group['regions']):
         return {}
     folder = expedition_slots.slots_dir(group)
+    grow = folder / 'grow'
+    lock = grow / 'growing.lock'
+    if (grow / 'request.json').exists() and not group_busy(group):
+        if lock.exists() and time.time() - lock.stat().st_mtime > 3600:
+            lock.unlink(missing_ok=True)  # a worker that died long ago
+        if not lock.exists():
+            start([sys.executable, '-I', '-B', str(Path(__file__).resolve()), '--config', group['_path'], 'expedition-grow'],
+                  folder, folder / 'grow.log')
 
     def launch(region_id):
         folder.mkdir(parents=True, exist_ok=True)
@@ -2981,6 +4034,12 @@ def supervise(group, start=detach):
         started['player_help'] = helped
     if help_errors:
         started['player_help_errors'] = help_errors
+    # The chat translator: a side job too, so one that cannot start keeps nothing else down.
+    try:
+        if ensure_translator(group, start):
+            started['chat_translator'] = True
+    except (OSError, subprocess.SubprocessError) as error:
+        started['chat_translator_error'] = str(error)[:300]
     # Lands that ships' courses asked for (expedition_slots.serve): a side job too.
     try:
         opened = serve_expeditions(group, start)
@@ -2996,6 +4055,13 @@ def supervise(group, start=detach):
             started['player_activity'] = read
     except (OSError, ValueError, KeyError, sqlite3.Error) as error:
         started['player_activity_error'] = str(error)[:300]
+    # Daily maintenance (daily_maintenance.py): today's run starts at its time; a side job too.
+    try:
+        day = daily_maintenance.ensure(_THIS, group, start)
+        if day:
+            started['maintenance'] = day
+    except (OSError, ValueError, KeyError) as error:
+        started['maintenance_error'] = str(error)[:300]
     # The validator is a side job: its failure must not keep the helpers down.
     try:
         started.update(ensure_save_validation(group, start))
@@ -3011,6 +4077,11 @@ def supervise(group, start=detach):
     # Helpers that run old code are restarted, but never in the middle of an action.
     refresh = not group_busy(group)
     for region in group['regions']:
+        # A region added to the group file but not set up yet has no worktree or token
+        # to run an agent from: starting one crashed and left a state folder behind that
+        # made its setup refuse (far2-far4, 2026-11-22). Its setup starts it later.
+        if not (region_dir(group, region['id']) / '.git').exists():
+            continue
         # One region that cannot start its agent must not keep the others down.
         try:
             if RegionPlatform(region_config(group, region)).start_agent(refresh):
@@ -3025,35 +4096,85 @@ def supervise(group, start=detach):
     return started
 
 
+CALENDAR_PHASES = ('Early Morning', 'Morning', 'Midday', 'Afternoon', 'Evening', 'Night')
+CALENDAR_SEASONS = ('SPRING', 'SUMMER', 'FALL', 'WINTER', 'Wet Season', 'Dry Season')
+
+
+def calendar_view(calendar):
+    """A region's world calendar answer (world_calendar.dm), checked, or None."""
+    if not isinstance(calendar, dict):
+        return None
+    clock, phase, season, zone = (calendar.get(key) for key in ('clock', 'phase', 'season', 'zone'))
+    if not (isinstance(clock, str) and re.fullmatch(r'\d\d:\d\d [AP]M', clock) and phase in CALENDAR_PHASES
+            and season in CALENDAR_SEASONS and type(zone) is int and -12 <= zone <= 14):
+        return None
+    view = {'clock': clock, 'phase': phase, 'season': season, 'zone': zone}
+    left = calendar.get('season_left')
+    if type(left) is int and 0 <= left <= 1440:
+        view['season_left'] = left
+    return view
+
+
+def region_status(group, region, host, view=region_view, platform=None):
+    """One region's entry of the group status."""
+    entry = host.status()
+    entry.update(kind=region['kind'], name=region['name'], built=(region_dir(group, region['id']) / 'region.dmb').exists())
+    # A frozen world cannot answer; asking it would only queue a connection.
+    if entry.get('listening') and entry.get('state') == 'awake':
+        seen = view(region['port'])
+        # A world that answers for another group or id is not this region.
+        if not seen or seen.get('group') != group['group'] or seen.get('region') != region['id']:
+            entry['region_view'] = {'error': 'no matching shard_region answer'}
+        else:
+            entry['region_view'] = {'players': seen.get('players'), 'map': seen.get('map'), 'peers': seen.get('peers') or {}}
+            # A TDM pair: what the battle is doing (pregame, playing, finished, rotating, ...).
+            if type(seen.get('battle_phase')) is str:
+                entry['region_view']['battle_phase'] = seen['battle_phase'][:16]
+            # The land's transfer agent is on hold: nobody can arrive until it is cleared.
+            if seen.get('transfers_held'):
+                entry['region_view']['transfers_held'] = True
+            # Characters kept here while their players are at an event region.
+            if type(seen.get('event_away')) is int and seen['event_away'] >= 0:
+                entry['region_view']['event_away'] = seen['event_away']
+            # The world calendar: local clock, phase, season and time zone.
+            calendar = calendar_view(seen.get('calendar'))
+            if calendar:
+                entry['region_view']['calendar'] = calendar
+            age = seen.get('ordinal_age')
+            if type(age) is int and 0 <= age < len(EPOCH_NAMES):
+                entry['region_view']['epoch'] = {'ordinal': age, 'name': EPOCH_NAMES[age]}
+    if group['transfers']:
+        entry['transfer_agent'] = (platform or RegionPlatform(region_config(group, region))).listening(region['transfer_port'])
+    return entry
+
+
 def group_status(group, only=None, view=region_view, platform=None):
-    report = {}
-    for region, host in hosts(group, only, platform):
-        entry = host.status()
-        entry.update(kind=region['kind'], name=region['name'], built=(region_dir(group, region['id']) / 'region.dmb').exists())
-        # A frozen world cannot answer; asking it would only queue a connection.
-        if entry.get('listening') and entry.get('state') == 'awake':
-            seen = view(region['port'])
-            # A world that answers for another group or id is not this region.
-            if not seen or seen.get('group') != group['group'] or seen.get('region') != region['id']:
-                entry['region_view'] = {'error': 'no matching shard_region answer'}
-            else:
-                entry['region_view'] = {'players': seen.get('players'), 'map': seen.get('map'), 'peers': seen.get('peers') or {}}
-                # A TDM pair: what the battle is doing (pregame, playing, finished, rotating, ...).
-                if type(seen.get('battle_phase')) is str:
-                    entry['region_view']['battle_phase'] = seen['battle_phase'][:16]
-                # The land's transfer agent is on hold: nobody can arrive until it is cleared.
-                if seen.get('transfers_held'):
-                    entry['region_view']['transfers_held'] = True
-                # Characters kept here while their players are at an event region.
-                if type(seen.get('event_away')) is int and seen['event_away'] >= 0:
-                    entry['region_view']['event_away'] = seen['event_away']
-                age = seen.get('ordinal_age')
-                if type(age) is int and 0 <= age < len(EPOCH_NAMES):
-                    entry['region_view']['epoch'] = {'ordinal': age, 'name': EPOCH_NAMES[age]}
-        if group['transfers']:
-            entry['transfer_agent'] = (platform or RegionPlatform(region_config(group, region))).listening(region['transfer_port'])
-        report[region['id']] = entry
+    """Every region's status.
+
+    The regions are asked side by side: each world gets up to 15 seconds to answer its
+    status and 10 for its region view, so two worlds that did not answer (saving, loading,
+    hung) made the whole status take longer than the launcher waits for it, and the board
+    showed "did not answer" for every region. One region whose status cannot be read is
+    reported with its error and the rest are still shown."""
+    def one(pair):
+        region, host = pair
+        try:
+            return region_status(group, region, host, view, platform)
+        except (OSError, RuntimeError, ValueError) as error:
+            return {'port': region['port'], 'state': 'unknown', 'busy': False, 'kind': region['kind'], 'name': region['name'],
+                    'error': 'its status could not be read: %s' % str(error)[:300]}
+    pairs = hosts(group, only, platform)
+    if platform is None and len(pairs) > 1:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(16, len(pairs))) as pool:
+            entries = list(pool.map(one, pairs))
+    else:
+        entries = [one(pair) for pair in pairs]
+    report = {region['id']: entry for (region, _host), entry in zip(pairs, entries)}
     result = {'group': group['group'], 'regions': report, 'mainland': group['mainland'], 'start_region': group['start_region']}
+    try:
+        result['maintenance'] = daily_maintenance.status(_THIS, group)
+    except (OSError, ValueError, KeyError) as error:
+        result['maintenance'] = {'error': str(error)[:300]}
     if group['transfers']:
         result['coordinator'] = coordinator_pid(group) is not None
         # Land stages and readiness (docs/land-stages.md), read-only from the
@@ -3062,6 +4183,71 @@ def group_status(group, only=None, view=region_view, platform=None):
             if region_id in report:
                 report[region_id]['land'] = land
     return result
+
+
+def group_account(group, ckey):
+    """One account's lifetime points and character slots (docs/character-slots.md),
+    read from the coordinator's shared player records. Read-only: staff grant,
+    remove and lock in game (Admin > Player Accolades)."""
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.transfer_storage import records
+    ckey = records.canonical_ckey(ckey or '')
+    if not ckey:
+        raise Refused('give a player key with --ckey')
+    path = Path(group['root']) / 'coordinator.sqlite'
+    if not path.exists():
+        return {'db': str(path), 'ckey': ckey, 'text': 'No coordinator database yet: accounts are kept once the group runs.'}
+    db = sqlite3.connect('file:%s?mode=ro' % path.as_posix(), uri=True)
+    try:
+        if not db.execute("SELECT name FROM sqlite_master WHERE name = 'player_record'").fetchone():
+            return {'db': str(path), 'ckey': ckey, 'text': 'The coordinator has no player records yet.'}
+        account = records.account_summary(db, ckey)
+    finally:
+        db.close()
+    return dict(account, db=str(path), ckey=ckey, text='%s\n%s' % (ckey, account['text']))
+
+
+def group_records(group, ckey=None, search=None, export=None, now=None):
+    """The launcher's Player records window (records.py): read-only look at the shared
+    player records (notes, warnings, bans, watchlist, memos) in the coordinator
+    database, each region's copy of its old files, and an export to one JSON file."""
+    now = time.time() if now is None else now
+    if str(TRANSFER_TOOLS.parents[1]) not in sys.path:
+        sys.path.insert(0, str(TRANSFER_TOOLS.parents[1]))
+    from tools.transfer_storage import records
+    if ckey is not None:
+        ckey = records.canonical_ckey(ckey)
+        if not ckey:
+            raise Refused('give a player key')
+    if search is not None and not 1 <= len(search.strip()) <= 64:
+        raise Refused('search for 1 to 64 characters')
+    regions = records.region_status({region['id']: str(region_dir(group, region['id'])) for region in group['regions']})
+    path = Path(group['root']) / 'coordinator.sqlite'
+    if not path.exists():
+        text = 'No coordinator database yet: records stay in each region until the group runs.'
+        return {'db': str(path), 'regions': regions, 'text': text}
+    db = sqlite3.connect('file:%s?mode=ro' % path.as_posix(), uri=True)
+    try:
+        if not db.execute("SELECT name FROM sqlite_master WHERE name = 'player_record'").fetchone():
+            return {'db': str(path), 'regions': regions,
+                    'text': 'The coordinator has no player records yet: restart it on the current tools to start collecting.'}
+        if export:
+            count = records.export(db, export, now)
+            return {'db': str(path), 'regions': regions, 'exported': count, 'file': str(export),
+                    'text': 'Exported %d records to %s.' % (count, export)}
+        result = records.report(db, now, ckey=ckey, search=search.strip() if search else None)
+    finally:
+        db.close()
+    lines = [result['text'], '']
+    for region in sorted(regions):
+        entry = regions[region]
+        copied = [name for name, done in entry['migrated'].items() if done]
+        lines.append('%s: old %s copied; %d records waiting for the coordinator%s' % (
+            region, ', '.join(copied) if copied else 'files not yet', entry['waiting'],
+            ', %d refused' % entry['refused'] if entry['refused'] else ''))
+    result['text'] = '\n'.join(lines)
+    return dict(result, db=str(path), regions=regions)
 
 
 def group_lands(group):
@@ -3228,7 +4414,7 @@ def magic_whitelist(group, add=None, remove=None):
         path.parent.mkdir(parents=True, exist_ok=True)
         temp = path.with_name(path.name + '.tmp')
         temp.write_text(MAGIC_WHITELIST_HEADER + ''.join(k + '\n' for k in sorted(keys)), encoding='utf-8')
-        os.replace(temp, path)
+        gaia_host.replace_file(temp, path)
     return {'file': str(path), 'keys': sorted(keys), 'added': changed['added'], 'removed': changed['removed']}
 
 
@@ -3268,8 +4454,13 @@ def main(argv=None):
     parser.add_argument('--port', type=int, help='set-port: the game port')
     parser.add_argument('--transfer-port', type=int, help='set-port: the transfer agent port')
     parser.add_argument('--standby-port', type=int, help='set-port: the handover standby port')
-    parser.add_argument('--apply', action='store_true', help='set-gate, set-port: carry the plan out (without it, only the plan)')
+    parser.add_argument('--apply', action='store_true', help='set-gate, set-port, add-gateway, add-regions: carry the plan out (without it, only the plan)')
     parser.add_argument('--bot-profile', help='set-gate: the bot profile.json to repoint (default: the group\'s bot_profile)')
+    parser.add_argument('--ckey', help='records: every record about one player key; accounts: the player key to look up')
+    parser.add_argument('--search', help='records: records whose key or text holds this')
+    parser.add_argument('--export', help='records: write every record to this JSON file')
+    parser.add_argument('--scheduled', action='store_true', help=argparse.SUPPRESS)  # maintenance: the host service's daily run
+    parser.add_argument('--run', action='store_true', help=argparse.SUPPRESS)  # maintenance: the detached run of Run maintenance now
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     parser.add_argument('--ports-worker', metavar='OPERATION', help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
@@ -3328,6 +4519,11 @@ def main(argv=None):
             result = help_start(group, region_id=args.region)
         elif args.action == 'help-stop':
             result = help_stop(group, region_id=args.region)
+        elif args.action in ('translator-status', 'translator-start', 'translator-stop'):
+            if args.region:
+                raise Refused('the chat translator serves the whole group; leave out --region')
+            result = {'translator-status': translator_status, 'translator-start': translator_start,
+                      'translator-stop': translator_stop}[args.action](group)
         elif args.action == 'adopt':
             if not args.region or not args.source:
                 parser.error('adopt needs --region and --from')
@@ -3338,6 +4534,17 @@ def main(argv=None):
             result = group_epoch(group, args.epoch)
         elif args.action == 'update-offline':
             result = update_offline(group, args.region)
+        elif args.action in ('maintenance', 'maintenance-status'):
+            # Daily maintenance (daily_maintenance.py): the whole group or nothing.
+            if args.region:
+                raise Refused('daily maintenance moves the whole group onto one build; leave out --region')
+            if args.action == 'maintenance-status':
+                result = daily_maintenance.status(this, group)
+            elif args.scheduled or args.run:
+                # The detached run itself (the host service's daily start, or Run maintenance now).
+                result = daily_maintenance.run(this, group, scheduled=args.scheduled)
+            else:
+                result = daily_maintenance.request(this, group, lambda argv, cwd, log: detach(argv + ['--run'], cwd, log))
         elif args.action == 'players':
             result = region_players(group, args.region)
         elif args.action == 'send-players':
@@ -3364,6 +4571,14 @@ def main(argv=None):
             if args.region:
                 raise Refused('player activity covers the whole group; leave out --region')
             result = player_activity_report(group)
+        elif args.action == 'accounts':
+            if args.region:
+                raise Refused('accounts are shared by the whole group; leave out --region')
+            result = group_account(group, args.ckey)
+        elif args.action == 'records':
+            if args.region:
+                raise Refused('player records are shared by the whole group; leave out --region')
+            result = group_records(group, args.ckey, args.search, args.export)
         elif args.action == 'ports':
             result = group_ports.report(this, group)
         elif args.action in ('set-gate', 'set-port'):
@@ -3375,6 +4590,12 @@ def main(argv=None):
                 plan = group_ports.plan_port(this, group, args.region, args.port, args.transfer_port, args.standby_port,
                                              bot_profile=args.bot_profile)
             result = group_ports.apply(this, group, plan) if args.apply else {'plan': plan, 'applied': False}
+        elif args.action == 'add-gateway':
+            result = add_gateway(group, args.region, args.apply)
+        elif args.action == 'add-regions':
+            if args.region:
+                raise Refused('add-regions adds every missing Earth region; leave out --region')
+            result = add_regions(group, args.apply)
         elif args.action == 'config-migrate':
             result = migrate_config(group)
         elif args.action == 'expedition-land':
@@ -3395,6 +4616,8 @@ def main(argv=None):
             (region, host), = hosts(group, args.region)
             expedition_slots.expedition_region(group, args.region)
             result = expedition_slots.open_land(group, host, args.region, update_offline)
+        elif args.action == 'expedition-grow':
+            result = grow_expeditions(group) or {'grown': False}
         elif args.action == 'expedition-status':
             result = {'slots': expedition_slots.status(group), 'parked': expedition_slots.parked(group)}
         elif args.action == 'config-apply':
@@ -3426,6 +4649,9 @@ def main(argv=None):
             accepted, refused = {}, {}
             waited = False
             for region, host in hosts(group, args.region):
+                if args.region is None and region.get('kind') == 'GATEWAY' and args.action in GATEWAY_SKIPPED_ACTIONS:
+                    refused[region['id']] = GATEWAY_PINNED  # it stays on its port (Val, 2026-11-21)
+                    continue
                 try:
                     if args.action == 'start' and not waited and host.config['start_requires_byond_pager']                             and not host.platform.listening(host.config['port']):
                         # start.bat after a reboot: the pager starts and signs in once for every region
@@ -3433,12 +4659,16 @@ def main(argv=None):
                         host.wait_for_byond()
                     if args.action == 'force-restart':
                         accepted[region['id']] = host.force_restart()
-                    elif args.action == 'stage':
-                        accepted[region['id']] = host.request_stage()
+                    elif args.action == 'stage':  # deploy.bat and the launcher's Build update: a person waits
+                        accepted[region['id']] = host.request_stage(urgent=True)
                     else:
                         accepted[region['id']] = host.request(args.action)
                 except Refused as refusal:
                     refused[region['id']] = str(refusal)
+                except (OSError, RuntimeError, ValueError) as error:
+                    # One region that cannot take the action must not hide what the others
+                    # answered (the launcher showed "the group script gave no answer").
+                    refused[region['id']] = '%s failed: %s' % (args.action, str(error)[:300])
             result = {'accepted': accepted, 'refused': refused}
             if args.action in ('start', 'restart', 'force-restart') and accepted:
                 result['coordinator_started'] = ensure_coordinator(group)
@@ -3447,6 +4677,11 @@ def main(argv=None):
                 return 1
     except Refused as refusal:
         print(json.dumps({'ok': False, 'refused': str(refusal)}))
+        return 1
+    except (OSError, RuntimeError, ValueError) as error:
+        # Callers read one JSON line; a bare traceback reached them as "no answer".
+        traceback.print_exc()
+        print(json.dumps({'ok': False, 'refused': '%s failed: %s: %s' % (args.action, type(error).__name__, str(error)[:300])}))
         return 1
     print(json.dumps(dict(result, ok=True)))
     return 0

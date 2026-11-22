@@ -34,10 +34,12 @@ var/global/FREQP = rand(81,100)
 var/global/FREQM = rand(101,120)
 
 /obj/item/weapon/radio/proc/check_freq(var/obj/original)
-	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist)
+	// A crystal unit (gem_science.dm) also holds a receiver to its second frequency.
+	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist) || radio_crystal_matches(original, freq, multifreq, multifreqlist)
 
 /obj/structure/radio/proc/check_freq(var/obj/original)
-	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist)
+	// A crystal unit (gem_science.dm) also holds a receiver to its second frequency.
+	return radio_transmitter_frequency_matches(original, freq, multifreq, multifreqlist) || radio_crystal_matches(original, freq, multifreq, multifreqlist)
 
 // Local transmitters match their own channels against the receiver's frequency.
 /proc/radio_transmitter_frequency_matches(var/obj/original, source_freq, source_multifreq, list/source_multifreqlist)
@@ -245,6 +247,8 @@ var/global/FREQM = rand(101,120)
 					hearer.hear_radio(msg, verbage, speaker.default_language, speaker, radio, R)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
+		if (O.is_spirit_observer())
+			continue
 		O.hear_radio(msg, verbage, speaker.default_language, speaker, R, R)
 	// other lands, through a keyed relay station (radio_relay.dm)
 	civ_relay_outbound(R:freq, speaker, msg, verbage)
@@ -289,6 +293,8 @@ var/global/FREQM = rand(101,120)
 					hearer.hear_radio_broadcast(msg, radio)
 	// let observers hear it
 	for (var/mob/observer/O in mob_list)
+		if (O.is_spirit_observer())
+			continue
 		O.hear_radio_broadcast(msg, null)
 
 /mob/proc/hear_radio_broadcast(var/message, var/obj/origin = null, var/obj/destination = null)

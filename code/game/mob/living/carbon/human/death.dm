@@ -499,6 +499,7 @@
 					else
 						client.next_normal_respawn = world.realtime
 						to_chat(client, RESPAWN_MESSAGE)
+		spirit_bind(src) // spirit_wait.dm: persistent worlds only
 
 
 	. = ..(gibbed)//,species.death_message)

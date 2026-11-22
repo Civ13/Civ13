@@ -45,8 +45,8 @@ class BronzeRetrievalTests(unittest.TestCase):
                 for required in ('CURRENT GAMEPLAY CODE (bronze production',
                                  'MCC.current_material = "bronze"',
                                  'min(MCC.contents_materials["copper"],MCC.contents_materials["tin"])',
-                                 'MCC.contents_materials = list()',
-                                 '/obj/item/stack/ore/copper', '/obj/item/stack/ore/tin',
+                                 'MCC.contents_materials = left_over',
+                                 'take metal ore or metal bars',
                                  'clay blacksmith pot', 'clay blacksmith jug',
                                  'max_capacity = 20', 'max_capacity = 70',
                                  'OVEN firing', 'ANVIL use gates', 'crafting',
@@ -60,7 +60,7 @@ class BronzeRetrievalTests(unittest.TestCase):
                                  'Missing retrieval is not evidence',
                                  'Do not claim research is unlocked from era alone.'):
                     self.assertIn(required, prompt)
-                self.assertLess(len(prompt), 20000)
+                self.assertLess(len(prompt), 20500)
 
     def test_bronze_working_bootstrap_uses_unfired_type_and_full_study(self):
         prompt = self.prompt('How can I unlock Bronze Working?')

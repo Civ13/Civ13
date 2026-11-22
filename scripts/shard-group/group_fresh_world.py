@@ -5,7 +5,7 @@ refuses. Every region must be saved and stopped. The command holds every region'
 action lock, pauses the transfer helpers (the supervisor skips them while the group
 journal exists), stops the agents and the coordinator, and moves, never deletes:
 
-- each region's map_saves, map_backups and map_rollback (every saved body goes with them);
+- each region's map saves and region-local pending bed notices;
 - each region's transfers.sqlite (in-flight travellers and account homes);
 - the group's coordinator.sqlite (account homes and decided transfers);
 - each region's separate extraction/vehicle-key/safehouse stores under data/
@@ -24,7 +24,7 @@ import os
 from pathlib import Path
 import secrets
 
-from gaia_host import Refused
+from gaia_host import Refused, replace_file
 import fresh_world
 
 STORE_SUFFIXES = ('', '-wal', '-shm', '-journal')
@@ -46,7 +46,7 @@ def store_files(path):
 def write_json(path, value):
     temporary = path.with_name(path.name + '.tmp')
     temporary.write_text(json.dumps(value, indent=2), encoding='utf-8')
-    os.replace(temporary, path)
+    replace_file(temporary, path)
 
 
 def stop_helpers(group, pairs, coordinator_pid, terminate):
@@ -113,7 +113,8 @@ def request(group, pairs, confirmation, coordinator_pid, terminate):
         for region, host in pairs:
             target = archive / region['id']
             target.mkdir()
-            moves = [host.repo / name for name in fresh_world.WORLD_PATHS if (host.repo / name).exists()]
+            moves = [host.repo / name for name in fresh_world.WORLD_PATHS + fresh_world.WORLD_DATA_PATHS
+                     if (host.repo / name).exists()]
             moves += store_files(host.state_dir / 'transfers.sqlite')
             moves += [host.repo / 'data' / name for name in fresh_world.SEPARATE_DOMAINS if (host.repo / 'data' / name).exists()]
             if fresh_world.cold_stopped(host):  # a cold region's wake records belong to the old world

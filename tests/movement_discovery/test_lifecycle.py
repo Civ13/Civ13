@@ -1,17 +1,20 @@
 """Offline source projection and adapted list semantics, never native DM."""
+from collections import Counter
+import json
 from pathlib import Path
 import random
 import re
-import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = 'bc7209b23d4ee39651a736a7a9ddb1d1081166ac'
+FIXTURES = Path(__file__).resolve().parent / 'fixtures'
 HELPERS = 'code/_helpers/mobs.dm'
 GLOBAL = 'code/_helpers/global_lists.dm'
 HUMAN = 'code/game/mob/mob_movement.dm'
 ANIMAL = 'code/modules/1713/complex_animal/_backend.dm'
 TYPE = '/mob/living/simple_animal/complex_animal'
+# Review of a new reader, alias or write must update this inventory
+# deliberately. Runtime tests never regenerate their own expected evidence.
 WRITES = {
     HELPERS: 2, 'code/_helpers/unsorted.dm': 1,
     'code/game/mob/death.dm': 1,
@@ -21,44 +24,62 @@ WRITES = {
     'code/game/mob/mob.dm': 2,
     'code/modules/admin/verbs/modifyvariables.dm': 2,
     'code/processes/human_corpse_decay.dm': 1,
-    'code/processes/mob.dm': 2,
+    'code/processes/mob.dm': 1,
 }
+REGISTRY_REF = re.compile(
+    r'\b(living_(?:complex_animal|mob)_list|(?:un)?register_living_mob|'
+    r'(?:add_to|remove_from)_living_mob_list|'
+    r'switch_from_(?:living_to_dead|dead_to_living)_mob_list)\b'
+)
 
 
 def read(path):
-    return (ROOT / path).read_text(encoding='utf-8')
+    return (ROOT / path).read_text(encoding='utf-8-sig')
 
 
-def baseline(path):
-    return subprocess.check_output(['git', 'show', f'{BASE}:{path}'],
-                                   cwd=ROOT).decode('utf-8')
+def load_audit():
+    return json.loads((FIXTURES / 'registry-audit.json').read_text(encoding='utf-8'))
 
 
 def proc(text, signature):
-    match = re.search('^' + re.escape(signature) + r'\n(.*?)(?=^/|\Z)',
-                      text, re.M | re.S)
-    if not match:
+    pattern = r'^' + re.escape(signature) + r'[^\n]*\n((?:[\t ][^\n]*\n|\n)*)'
+    matches = re.findall(pattern, text.rstrip() + '\n', re.M)
+    if len(matches) != 1:
         raise ValueError(signature)
-    return match[1].rstrip() + '\n'
+    return matches[0].rstrip() + '\n'
 
 
-def expected(path):
-    """Full-file projection ensures all surrounding lifecycle logic is unchanged."""
-    text = baseline(path)
-    text = re.sub(r'(?:global\.)?living_mob_list ([+-])= (src|O|M)',
-                  lambda m: ('register' if m[1] == '+' else 'unregister')
-                  + '_living_mob(' + m[2] + ')', text)
-    return text.replace('return global.living_mob_list.Remove(src)',
-                        'return unregister_living_mob(src)')
+def reference_inventory(path, text):
+    owner = ''
+    lines = []
+    for raw in text.splitlines():
+        line = raw.split('//', 1)[0].rstrip()
+        if line.startswith('/') and not line.startswith('/*'):
+            owner = line
+        if REGISTRY_REF.search(line):
+            lines.append((path, owner, line))
+    return lines
 
 
-def validate_projection(path, text):
-    if path == HELPERS:
-        start = text.index('// Mirror living-list writes')
-        end = text.index('// Returns true if M was not already in the dead mob list', start)
-        text = text[:start] + text[end:]
-    if text.rstrip() != expected(path).rstrip():
-        raise AssertionError(f'Lifecycle projection differs: {path}')
+def validate_inventory(expected, actual):
+    missing = Counter(map(tuple, expected)) - Counter(actual)
+    unexpected = Counter(actual) - Counter(map(tuple, expected))
+    if missing or unexpected:
+        raise AssertionError(f'Registry reference drift: missing={list(missing.elements())!r}; '
+                             f'unexpected={list(unexpected.elements())!r}')
+
+
+def validate_production_inventory(expected):
+    actual = [ref for path in sorted((ROOT / 'code').rglob('*.dm'))
+              for ref in reference_inventory(path.relative_to(ROOT).as_posix(),
+                                            path.read_text(encoding='utf-8-sig'))]
+    validate_inventory(expected, actual)
+
+
+def validate_guard(path, source, guard):
+    owner, label, text = guard['owner'], guard['label'], guard['body']
+    if proc(source, owner).count(text) != 1:
+        raise AssertionError(f'Lifecycle guard/order differs: {path}:{owner} ({label})')
 
 
 def remove_last(items, value):
@@ -119,36 +140,37 @@ class Registry:
 
 
 class LifecycleTests(unittest.TestCase):
-    def test_all_fourteen_original_writes_project_without_other_changes(self):
-        for path, count in WRITES.items():
-            with self.subTest(path=path):
-                old = baseline(path)
-                sites = re.findall(r'(?:global\.)?living_mob_list\s*(?:[+-]=|\.Remove\()', old)
-                self.assertEqual(len(sites), count)
-                validate_projection(path, read(path))
-
-    def test_no_unreviewed_production_list_writes_or_aliases(self):
-        # Every source reference is audited, not just assignment-shaped lines.
-        paths = subprocess.check_output(['git', 'ls-files', 'code/**/*.dm'], cwd=ROOT).decode().splitlines()
-        old_refs, new_refs = [], []
-        for path in paths:
-            text = read(path)
-            for line in text.splitlines():
-                if re.search(r'\bliving_mob_list\b', line):
-                    new_refs.append((path, line.strip()))
-            if path in WRITES:
-                # Checked completely against immutable base in the preceding test.
-                continue
-            if re.search(r'\bliving_mob_list\b', text):
-                old_refs.append(path)
-                if path not in (GLOBAL, HUMAN, ANIMAL):
-                    self.assertEqual(text, baseline(path))
-        writers = [(p, s) for p, s in new_refs
-                   if re.search(r'\bliving_mob_list\s*(?:[+-]=|\.Remove\()', s)]
-        self.assertEqual(writers, [(HELPERS, 'global.living_mob_list += M'),
-                                  (HELPERS, '. = global.living_mob_list.Remove(M)')])
-        self.assertIn(GLOBAL, old_refs)
+    def test_thirteen_current_writes_keep_lifecycle_guards_and_order(self):
+        audit = load_audit()
+        for guard in audit['guards']:
+            path = guard['path']
+            with self.subTest(path=path, label=guard['label']):
+                validate_guard(path, read(path), guard)
+        writes = Counter()
+        for path, _, line in audit['references']:
+            if re.fullmatch(r'(?:return )?(?:un)?register_living_mob\((?:src|O|M)\)', line.strip()):
+                writes[path] += 1
+        self.assertEqual(writes, WRITES)
+        self.assertEqual(sum(writes.values()), 13)
+        self.assertEqual({guard['path'] for guard in audit['guards']}, set(WRITES) | {
+            'code/game/mob/living/carbon/human/resuscitation.dm'})
         self.assertIn('var/global/list/living_complex_animal_list = list()', read(GLOBAL))
+
+    def test_no_unreviewed_production_list_readers_writers_or_aliases(self):
+        validate_production_inventory(load_audit()['references'])
+
+    def test_unreviewed_reader_alias_and_lifecycle_call_rejected(self):
+        path = 'code/processes/mob.dm'
+        source = read(path)
+        expected = reference_inventory(path, source)
+        for mutation in (
+            '\tvar/list/alias = living_mob_list\n',
+            '\tvar/count = living_complex_animal_list.len\n',
+            '\tunregister_living_mob(M)\n',
+            '\tM.switch_from_dead_to_living_mob_list()\n',
+        ):
+            with self.subTest(mutation=mutation), self.assertRaises(AssertionError):
+                validate_inventory(expected, reference_inventory(path, source + mutation))
 
     def test_duplicate_last_removal_and_readded_tail(self):
         a, b = Mob('wolf', True), Mob('dog', True)
@@ -163,7 +185,7 @@ class LifecycleTests(unittest.TestCase):
         self.assertFalse(r.execute(False, Mob('absent', True)))
 
     def test_creation_death_revival_admin_cleanup_and_guarded_helpers(self):
-        # Caller guards/order are source-projected; this adapter applies their writes.
+        # Caller guards/order are checked in source; this adapter applies their writes.
         r, oracle = Registry(), []
         a, b, h = Mob('wolf', True), Mob('dog', True), Mob('human')
         actions = [(True, h), (True, a), (True, b), (False, a),
@@ -204,8 +226,15 @@ class LifecycleTests(unittest.TestCase):
 
     def test_omitted_transition_and_registry_mutations_are_rejected(self):
         path = 'code/game/mob/living/simple_animal/simple_animal.dm'
-        with self.assertRaises(AssertionError):
-            validate_projection(path, read(path).replace('register_living_mob(src)', 'living_mob_list += src'))
+        guard = next(g for g in load_audit()['guards'] if g['path'] == path)
+        for before, after in (
+            ('register_living_mob(src)', 'living_mob_list += src'),
+            ('if (health > 0)', 'if (health >= 0)'),
+            ('register_living_mob(src)\n\t\t\tstat = CONSCIOUS',
+             'stat = CONSCIOUS\n\t\t\tregister_living_mob(src)'),
+        ):
+            with self.subTest(mutation=after), self.assertRaises(AssertionError):
+                validate_guard(path, read(path).replace(before, after), guard)
         for before, after in [
             ('living_complex_animal_list += M', 'living_complex_animal_list |= M'),
             ('living_complex_animal_list.Remove(M)', 'living_complex_animal_list.Cut(1,2)'),

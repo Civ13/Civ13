@@ -1,12 +1,16 @@
 """Africa, with the desert peninsula to its east. Longitudes count east."""
 
 AFRICA = {
-    'path': 'maps/earth_drafts/earth_africa.dmm',
+    'path': 'maps/nomads/nomads_earth_africa.dmm',
+    # A playable region (docs/earth-continents.md): the map carries this
+    # metadata and has height, current and flood files beside the other maps.
+    'metadata': '/obj/map_metadata/nomads/earth_africa',
+    'heights': 'maps/heights/nomads_earth_africa',
     'seed': 1324,
-    'size': (976, 1070),
+    'size': (976, 969),
     'design_width': 800,
     'lon': (-19.0, 52.0),
-    'lat': (38.0, -36.0),
+    'lat': (31.0, -36.0),
     'ice': (90.0, -90.0),
     'dry_biomes': ('desert',),
     'pond_depth': 40.0,
@@ -215,7 +219,7 @@ AFRICA = {
         ('swamp', 17.5, -0.8, 1.3, 1.6),
     ],
     'starts': [
-        (-6, 33.5), (3, 36.2), (10, 35.5), (31, 30.2), (32.8, 25.5), (-14, 14), (-4, 12.5), (6, 9), (14, 11.5),
+        (-7, 30.5), (2, 30.5), (12, 30.5), (31, 30.2), (32.8, 25.5), (-14, 14), (-4, 12.5), (6, 9), (14, 11.5),
         (32.5, 14.5), (38.5, 9), (36.8, -1.5), (33, 1.2), (22, 2), (15.5, -5), (30, -15), (28, -26), (19, -33),
         (35, -22), (47, -19), (38.5, -6.5), (-9, 7),
     ],

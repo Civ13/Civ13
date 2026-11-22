@@ -26,12 +26,15 @@ public static class GroupPorts {
     // Kinds nobody lives in, so none can be the front door (group_ports.py GATE_REFUSED_KINDS).
     private static readonly string[] NoGateKinds = ["RAID", "EVENT", "TUTORIAL", "EXPEDITION"];
 
-    // action: "ports" (read only), "set-gate" (region) or "set-port" (region and port). apply: carry the plan out;
-    // without it the script only answers with the plan. botProfile: the bot profile.json to repoint with the gate.
+    // action: "ports" (read only), "set-gate" (region), "set-port" (region and port), "add-gateway" or "add-regions"
+    // (nothing else).
+    // apply: carry the plan out; without it the script only answers with the plan. botProfile: the bot profile.json
+    // to repoint with the gate.
     public static ProcessStartInfo Step(HostControl control, string action, string? region = null, int? port = null, bool apply = false, string? botProfile = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
-        if (action is not ("ports" or "set-gate" or "set-port")) throw new ArgumentException("Unsupported ports action.", nameof(action));
-        if ((action == "ports") != (region == null) || (region != null && !RegionId.IsMatch(region))) throw new ArgumentException("Not a region id.", nameof(region));
+        if (action is not ("ports" or "set-gate" or "set-port" or "add-gateway" or "add-regions")) throw new ArgumentException("Unsupported ports action.", nameof(action));
+        if ((action is "ports" or "add-gateway" or "add-regions") != (region == null) || (region != null && !RegionId.IsMatch(region))) throw new ArgumentException("Not a region id.", nameof(region));
+        if (action is "add-gateway" or "add-regions" && botProfile != null) throw new ArgumentException(action + " moves no bot.", nameof(botProfile));
         if ((action == "set-port") != (port != null) || port is < 1024 or > 65535) throw new ArgumentException("A port is a whole number from 1024 to 65535.", nameof(port));
         if (action == "ports" && (apply || botProfile != null)) throw new ArgumentException("ports only lists.", nameof(apply));
         if (botProfile != null && (botProfile.Length == 0 || botProfile.StartsWith('-') || botProfile.Any(char.IsControl)))
@@ -43,7 +46,10 @@ public static class GroupPorts {
         if (port is { } number) { step.ArgumentList.Add("--port"); step.ArgumentList.Add(number.ToString(CultureInfo.InvariantCulture)); }
         if (botProfile != null) { step.ArgumentList.Add("--bot-profile"); step.ArgumentList.Add(botProfile); }
         if (apply) step.ArgumentList.Add("--apply");
-        return step;
+        // A list or a plan answers in seconds and --apply hands its work to a detached worker; without a limit
+        // of their own these ran under the 30 minute one, so a hung script held the Ports window that long.
+        // Adding regions sets their folders up first (checkouts), which keeps the long limit.
+        return action is "add-gateway" or "add-regions" ? step : step.WithLimit(LocalHosting.RequestLimit);
     }
 
     // The regions that can be the front door, in the group's order, with their game ports.
@@ -53,7 +59,7 @@ public static class GroupPorts {
         if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("regions", out var list) || list.ValueKind != JsonValueKind.Array)
             throw new InvalidDataException("The group config lists no regions.");
         var choices = new List<Choice>();
-        foreach (var region in list.EnumerateArray().Take(16)) {
+        foreach (var region in list.EnumerateArray().Take(LocalHosting.MaxRegions)) {
             if (region.ValueKind != JsonValueKind.Object || Str(region, "id") is not { } id || !RegionId.IsMatch(id)) continue;
             if (NoGateKinds.Contains(Str(region, "kind") ?? "")) continue;
             choices.Add(new Choice(id, Clean(Str(region, "name") ?? id, 64), Int(region, "port") ?? 0));
@@ -104,6 +110,21 @@ public static class GroupPorts {
 
     public static Plan RunGate(HostControl control, string region, bool apply, string? botProfile = null, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
         var (exit, output) = (run ?? LocalHosting.RunCaptured)(Step(control, "set-gate", region, null, apply, botProfile));
+        return ParsePlan(exit, output);
+    }
+
+    // A gateway world (shard_group.py add-gateway): an always-up world that takes the front door's port for good and
+    // sends every player on to their land, so the hub listing never follows a game world's restarts. Applying adds,
+    // sets up and starts it beside the current front door; "Make this the front door" on it then swaps the ports.
+    public static Plan RunAddGateway(HostControl control, bool apply, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
+        var (exit, output) = (run ?? LocalHosting.RunCaptured)(Step(control, "add-gateway", null, null, apply));
+        return ParsePlan(exit, output);
+    }
+
+    // The Earth regions the group is missing (shard_group.py add-regions): the lands and seas a ship or walker can
+    // reach over a map edge. Applying adds each one to the group file and sets it up, stopped; the Host tab then lists it.
+    public static Plan RunAddRegions(HostControl control, bool apply, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
+        var (exit, output) = (run ?? LocalHosting.RunCaptured)(Step(control, "add-regions", null, null, apply));
         return ParsePlan(exit, output);
     }
 

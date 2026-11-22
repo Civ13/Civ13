@@ -121,17 +121,11 @@ var/global/region_ooc_next_poll = 0
 				C << sound('sound/machines/ping.ogg')
 	return msg
 
-// TRUE when this world's ban list holds an active ban of that type for the key.
+// TRUE when the shared ban records hold an active ban of that type for the key.
 /proc/region_ooc_ckey_banned(ckey, ban_type = "OOC")
-	if (!istext(ckey) || !fexists("SQL/bans.txt"))
+	if (!istext(ckey) || !length(ckey))
 		return FALSE
-	for (var/line in splittext(file2text("SQL/bans.txt"), "|||\n"))
-		if (!findtext(line, ";"))
-			continue
-		var/list/fields = splittext(line, ";")
-		if (fields.len >= 9 && fields[9] == ckey && fields[1] == ban_type && fields[2] == "nil" && text2num(fields[7]) > world.realtime)
-			return TRUE
-	return FALSE
+	return quickBan_find_ban(ckey, null, null, ban_type) ? TRUE : FALSE
 
 /proc/region_ooc_region_name(id)
 	var/list/peer = shard_group.peers[id]
@@ -181,7 +175,7 @@ var/global/region_ooc_next_poll = 0
 			display_name = target.holder ? "[fakekey]/([name])" : fakekey
 		else if (length(rank))
 			display_name = "<span class = 'ping'>[rank]</span> [name]"
-		to_chat(target, "<span class='ooc'><span class='[style]'>" + create_text_tag("ooc", "OOC:", target) + " <small>\[[region_name]\]</small> <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></span>")
+		to_chat(target, "<span class='ooc'><span class='[style]'>" + create_text_tag("ooc", "OOC:", target) + " <small>\[[region_name]\]</small> <EM>[display_name]:</EM> <span class='message chat-tr'>[msg]</span></span></span>")
 	return TRUE
 
 // The mainland posts a line from a region without its own webhook, in the

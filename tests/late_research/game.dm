@@ -240,6 +240,8 @@ var/late_wait_result = TRUE
 	soldier.loc = locate(3,2,1)
 	var/datum/research_node/AN = get_research_node("automatic_weapons")
 	second.add_research_work("automatic_weapons", AN.cost_ticks - 5)
+	for (var/key in node_bill("automatic_weapons")) // its era bill is paid (era_bills.dm)
+		second.deliver_bill("automatic_weapons", key, 1000)
 	late_check(bench.credit_field_work() && second.has_research_chapter("automatic_weapons") && !second.has_field_work("automatic_weapons_range") && second.has_field_work("cartridge_ammo_range"), "field work finishes a nearly done chapter and is then forgotten for that subject only")
 	late_check(!second.record_field_work("automatic_weapons_range"), "a finished chapter takes no more field work")
 	// A dark bench does no bookkeeping at all.
@@ -250,7 +252,22 @@ var/late_wait_result = TRUE
 	for(var/node_id in capstone_demonstrations)
 		var/datum/research_node/N = get_research_node(node_id)
 		late_check(N && N.mode == RESEARCH_MODE_PROTOTYPE && node_needs_demonstration(node_id) && findtext(prototype_need_label(N), "demonstration"), "[node_id] is a capstone that needs a demonstration")
-	late_check(!node_needs_demonstration("mechanized_war") && findtext(prototype_need_label(get_research_node("mechanized_war")), "used on the bench"), "other capstones keep their prototype")
+	late_check(!node_needs_demonstration("printing_currency") && findtext(prototype_need_label(get_research_node("printing_currency")), "used on the bench"), "other capstones keep their prototype")
+	late_check(!node_needs_demonstration("mechanized_war") && findtext(prototype_need_label(get_research_node("mechanized_war")), "bill of materials"), "the World War II capstones take a bill instead of a prototype")
+	// No demonstration may need something its own subject (or a later one)
+	// unlocks, unless an experimental build covers it (Val, 2026-11-18).
+	// Proven failing first: dropping the kit list fails steam_power and electricity.
+	for (var/node_id in capstone_demonstrations)
+		var/list/D = capstone_demonstrations[node_id]
+		var/list/needs = D.len >= 4 ? D[4] : null
+		late_check(islist(needs) && needs.len, "[node_id] lists what its demonstration needs built")
+		var/list/earlier = late_research_ancestors(node_id)
+		for (var/needed in needs)
+			var/req = get_recipe_node_req("[needed]")
+			// An experimental build is allowed whatever subject normally gates it.
+			var/ok = !req || (req in earlier) || (needed in D[3])
+			late_check(ok, "[node_id]'s demonstration can get [needed] (needs [req ? req : "nothing"]) before [node_id] is learned")
+	late_check(findtext(prototype_need_label(get_research_node("steam_power")), "experimental steam engine"), "the steam power demonstration says how to build the engine")
 	map.book_research = FALSE
 	late_check(!node_needs_demonstration("steam_power"), "only book-research worlds need demonstrations")
 	map.book_research = TRUE
@@ -308,11 +325,90 @@ var/late_wait_result = TRUE
 	draft.loc = bench
 	bench.assigned_node = "steam_power"
 	watcher.r_hand = sheet
-	late_check(bench.take_demonstration_notes(sheet, watcher) && draft.has_research_chapter("steam_power") && QDELETED(sheet), "the notes used on the bench finish the studied chapter")
+	late_check(bench.take_demonstration_notes(sheet, watcher) && !draft.has_research_chapter("steam_power") && draft.research_prototype_installed("steam_power") && QDELETED(sheet), "the notes used on the bench are recorded while the bill is unpaid")
+	late_pay_bill(bench, watcher, draft, "steam_power")
+	late_check(draft.has_research_chapter("steam_power"), "paying the bill finishes the studied and demonstrated chapter")
 	// Recording straight into a book.
 	var/obj/item/weapon/book/journal = new(watcher)
 	late_check(commit_demonstration(watcher, journal, "electricity") && journal.research_prototype_installed("electricity") && !journal.has_research_chapter("electricity"), "a book takes the demonstration straight away and waits for the study")
 	late_check(!demonstration_carrier_ok(journal, "electricity"), "a book holds one demonstration of a subject")
+	qdel(bench)
+
+// Delivers node_id's whole bill to bench as stacks held by H.
+/proc/late_pay_bill(obj/structure/research_bench/bench, mob/living/human/H, obj/item/weapon/book/B, node_id)
+	var/list/bill = node_bill(node_id)
+	var/datum/research_node/N = get_research_node(node_id)
+	for (var/key in bill)
+		var/list/M = bill_materials()[key]
+		var/stype = M[2]
+		var/obj/item/stack/S = new stype(H)
+		S.amount = bill[key]
+		bench.take_bill_delivery(S, H, B, N)
+
+// Era bills for late capstones (era_bills.dm).
+/proc/late_test_era_bills()
+	var/list/bills = capstone_bills()
+	for (var/node_id in bills)
+		var/datum/research_node/N = get_research_node(node_id)
+		late_check(N && N.era_tier >= 4 && (N.mode == RESEARCH_MODE_PROTOTYPE || N.era_tier >= 7), "[node_id] is an Industrial or later capstone, or a big late subject, with a bill")
+		var/list/earlier = late_research_ancestors(node_id)
+		var/list/bill = bills[node_id]
+		for (var/key in bill)
+			var/list/M = bill_materials()[key]
+			late_check(islist(M) && ispath(M[2], /obj/item/stack) && isnum(bill[key]) && bill[key] > 0, "[node_id] bills a real stack of [key]")
+			var/req = M ? get_recipe_node_req("[M[2]]") : null
+			var/datum/research_node/RQ = req ? get_research_node(req) : null
+			late_check(!req || (req in earlier) || (RQ && RQ.era_tier < N.era_tier), "[node_id]'s [key] comes from an earlier subject (needs [req ? req : "nothing"])")
+	late_check(!node_has_bill("printing_currency") && !node_has_bill("gunpowder") && !node_has_bill("iron_smithing"), "Medieval and Imperial capstones have no bill")
+	late_check(!capstone_bill_replaces_prototype("steam_power") && capstone_bill_replaces_prototype("powered_flight") && capstone_bill_replaces_prototype("mechanized_war"), "only the capstones without a demonstration take the bill as their prototype")
+	for (var/cid in research_nodes)
+		var/datum/research_node/C = research_nodes[cid]
+		if (C && C.mode == RESEARCH_MODE_PROTOTYPE && C.era_tier >= 4)
+			late_check(node_has_bill(C.id), "every capstone from Steam Power on has a bill: [C.id]")
+	late_check(!capstone_bill_replaces_prototype("electricity") && !capstone_bill_replaces_prototype("rocketry"), "a demonstrated capstone or an ordinary subject keeps its other needs")
+	// An ordinary late subject waits for its bill too.
+	var/datum/research_node/RK = get_research_node("rocketry")
+	var/obj/item/weapon/book/rk = new(locate(1,1,1))
+	late_check(!rk.add_research_work("rocketry", RK.cost_ticks) && !rk.has_research_chapter("rocketry"), "full study alone does not finish Rocketry")
+	for (var/key in node_bill("rocketry"))
+		rk.deliver_bill("rocketry", key, 1000)
+	late_check(rk.add_research_work("rocketry", 0) && rk.has_research_chapter("rocketry"), "with its bill paid, the studied subject is finished")
+	map.book_research = FALSE
+	var/obj/item/weapon/book/plain = new(locate(1,1,1))
+	late_check(!node_bill("steam_power") && plain.bill_complete("steam_power"), "bills apply only on book-research worlds")
+	map.book_research = TRUE
+	// The saved record keeps only sane entries, capped at the bill.
+	plain.research_bills = "steam_power=coal:12,gold:5,iron:abc,copper:999;bogus=coal:3;mechanized_war"
+	var/list/M = plain.research_bill_map()
+	late_check(M.len == 1 && M["steam_power"]["coal"] == 12 && M["steam_power"]["copper"] == 10 && !("gold" in M["steam_power"]) && !("iron" in M["steam_power"]), "a damaged bill record is cleaned, never trusted")
+	plain.research_bills = ""
+	late_check(plain.deliver_bill("steam_power", "coal", 25) == 25 && plain.deliver_bill("steam_power", "coal", 50) == 35 && plain.deliver_bill("steam_power", "coal", 5) == 0, "a bill takes only what it still needs")
+	late_check(plain.bill_left("steam_power")["iron"] == 40 && !("coal" in plain.bill_left("steam_power")), "what is left is counted per material")
+	late_check(!plain.monk_copy_source_allowed() && !plain.monk_copy_blank(), "a book with deliveries is not a blank or a copy source")
+	// World War II: the old part is refused, the bill stands in for it.
+	var/datum/research_node/MW = get_research_node("mechanized_war")
+	var/mob/living/human/late_fixture/smith = new(locate(5,5,1))
+	smith.teach("field_artillery")
+	smith.teach("combustion")
+	smith.teach("steelmaking")
+	var/obj/item/weapon/book/war = new(locate(1,1,1))
+	war.add_research_work("mechanized_war", MW.cost_ticks)
+	late_check(!war.has_research_chapter("mechanized_war"), "full study alone does not finish Mechanized Warfare")
+	var/obj/structure/research_bench/late_fixture/bench = new(locate(6,6,1))
+	bench.tier = 8
+	war.loc = bench
+	bench.assigned_node = "mechanized_war"
+	var/obj/item/stack/ammopart/casing/tank/casing = new(smith)
+	smith.r_hand = casing
+	bench.attackby(casing, smith)
+	late_check(!QDELETED(casing) && !war.research_prototype_installed("mechanized_war"), "a tank shell casing no longer counts as its prototype")
+	var/obj/item/stack/material/steel/steel = new(smith)
+	steel.amount = 50
+	late_check(bench.take_bill_delivery(steel, smith, war, MW) && QDELETED(steel) && war.bill_delivered("mechanized_war", "steel") == 50, "anyone at the bench can deliver toward the bill")
+	var/obj/item/stack/material/wood/wood = new(smith)
+	late_check(!bench.take_bill_delivery(wood, smith, war, MW), "something off the bill is not taken for it")
+	late_pay_bill(bench, smith, war, "mechanized_war")
+	late_check(war.has_research_chapter("mechanized_war") && !length(war.research_bills), "the paid bill finishes the chapter and clears its record")
 	qdel(bench)
 
 // Prototypes and field study (subject_prototypes.dm).
@@ -452,10 +548,12 @@ var/late_wait_result = TRUE
 			continue
 		for(var/list/D in subject_deeds[node_id])
 			total += D[4]
+			var/list/groundwork = late_research_ancestors(node_id)
 			for(var/path in D[2])
-				// Every deed must be something the groundwork teaches, or anyone can make.
+				// Every deed must be something the groundwork (or its own
+				// groundwork, which a scholar of it must know) teaches, or anyone can make.
 				var/req = recipe_node_requirements[path]
-				if(!ispath(text2path(path)) || (req && !(req in N.prereqs)))
+				if(!ispath(text2path(path)) || (req && !(req in groundwork)))
 					sound = FALSE
 					world.log << "bad deed path [path] for [node_id] (taught by [req])"
 		if(abs(total - 0.5) > 0.001)
@@ -464,7 +562,10 @@ var/late_wait_result = TRUE
 		for(var/id in node_field_experiments(node_id))
 			if(findtext(id, "practice_") == 1)
 				sound = FALSE
-	late_check(sound && subject_deeds.len == 56, "every subject of era tiers 0 to 4 has deeds its groundwork teaches, worth half the chapter, and no counter")
+				world.log << "[node_id] still has a practice counter [id]"
+	if(subject_deeds.len != 57)
+		world.log << "subject_deeds has [subject_deeds.len] subjects"
+	late_check(sound && subject_deeds.len == 57, "every subject of era tiers 0 to 4 has deeds its groundwork teaches, worth half the chapter, and no counter")
 	var/list/coop = node_field_experiments("cooperage")
 	late_check(coop.len == 3 && ("deed_cooperage_handles" in coop), "Cooperage asks for three deeds")
 	var/mob/living/human/late_fixture/cooper = new(locate(4,6,1))
@@ -1020,6 +1121,29 @@ var/late_wait_result = TRUE
 	expedition_land_info = list()
 	late_check(!find_double_here(), "and the usual amount at home")
 	late_check(!find_sky_visible(null) && find_sky_kind() == "sky:[lowertext(season)]", "the night sky is one find a season")
+// Natural Science from mining, smelting and firing, and weather and water finds.
+/proc/late_test_natural_science_work()
+	var/mob/living/human/late_fixture/smith = new(locate(1,3,1))
+	smith.name = "Agricola"
+	var/obj/structure/furnace/F = new(locate(2,3,1))
+	F.iron = 30
+	late_check(F.smelt_charge() == 30 && note_smelting(smith, F) && smith.field_work_amount("smelting") == 30, "iron ore in a lit bloomery counts as smelting")
+	var/obj/structure/furnace/lime_kiln/L = new(locate(3,3,1))
+	late_check(!L.smelt_charge() && !note_smelting(smith, L), "lime burning is not smelting")
+	var/obj/structure/oven/O = new(locate(4,3,1))
+	new /obj/item/stack/ore/glass(O)
+	late_check(note_firing(smith, O) && smith.field_work_amount("firing") == 1, "glass sand in a lit oven counts as firing")
+	late_check(!note_firing(smith, O) && smith.field_work_amount("firing") == 1, "lighting it again counts the same sand nothing more")
+	var/before = smith.field_work_amount("mining")
+	late_check(note_field_work(smith, "mining") && smith.field_work_amount("mining") == before + 1, "an ore vein counts as mining")
+	for (var/id in list("alloys_smelting", "steelmaking_smelting", "early_cells_mining", "glassworking_firing", "combustion_reactions"))
+		var/list/E = field_experiments[id]
+		late_check(islist(E) && node_discipline(E[1]) == "natural_science" && (id in node_field_experiments(E[1])), "[id] is field work for a Natural Science subject")
+	late_check(isnull(find_water(locate(5,5,1))) && isnull(find_weather(null)), "dry ground and nobody are no water or weather find")
+	var/list/places = find_place_targets(smith)
+	for (var/list/P in places)
+		late_check(P[2] in scholar_disciplines, "a place find belongs to a discipline")
+
 // Reaching a milestone in a body skill teaches its scholarship (learning_by_doing.dm).
 /proc/late_test_skill_mastery()
 	var/mob/living/human/late_fixture/hand = new(locate(1,1,1))
@@ -1166,6 +1290,7 @@ var/late_wait_result = TRUE
 		late_test_field_work()
 		late_test_practice_work()
 		late_test_demonstrations()
+		late_test_era_bills()
 		late_test_subject_prototypes()
 		late_test_learning_by_doing()
 		late_test_trial_and_error()
@@ -1173,6 +1298,7 @@ var/late_wait_result = TRUE
 		late_test_trade_learning()
 		late_test_compare_notes()
 		late_test_naturalist_finds()
+		late_test_natural_science_work()
 		late_test_subject_deeds()
 		late_test_skill_mastery()
 		late_test_teams()
@@ -1185,3 +1311,18 @@ var/late_wait_result = TRUE
 	var/list/params = islist(world.params) ? world.params : params2list(world.params)
 	text2file(json_encode(list("failures" = late_failures, "commit" = params["tested_commit"], "byond_build" = world.byond_build)), "result.json")
 	shutdown()
+
+// Every subject node_id builds on, directly or through its groundwork.
+/proc/late_research_ancestors(node_id)
+	var/list/found = list()
+	var/list/queue = list(node_id)
+	while (queue.len)
+		var/datum/research_node/N = get_research_node(queue[1])
+		queue.Cut(1, 2)
+		if (!N)
+			continue
+		for (var/req in N.prereqs)
+			if (!(req in found))
+				found += req
+				queue += req
+	return found

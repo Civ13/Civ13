@@ -86,6 +86,10 @@
 		return "wood"
 	if (istype(I, /obj/item/stack/material/steel))
 		return "steel"
+	if (istype(I, /obj/item/stack/material/iron))
+		return "iron"
+	if (istype(I, /obj/item/stack/material/woodplank))
+		return "planks"
 	if (istype(I, /obj/item/stack/material/aluminium))
 		return "aluminium"
 	if (istype(I, /obj/item/stack/material/glass))
@@ -111,6 +115,64 @@
 	paid[key] = (paid[key] || 0) + take
 	var/list/left = D.still_needed(done, paid)
 	return list(take, !left.len)
+
+// What the first done pieces of the plan cost, with what is paid towards the
+// next one: material -> amount.
+/datum/piece_plan/proc/spent(done, list/paid)
+	. = list()
+	var/left = done
+	for (var/list/stage in stages)
+		var/n = min(left, stage["pieces"])
+		left -= n
+		var/list/cost = stage["cost"]
+		for (var/key in cost)
+			if (n)
+				.[key] = (.[key] || 0) + cost[key] * n
+	for (var/key in paid)
+		if (paid[key] > 0)
+			.[key] = (.[key] || 0) + paid[key]
+
+// The stack a material key pays as, or null.
+/proc/piece_material_stack(key)
+	switch (key)
+		if ("wood")
+			return /obj/item/stack/material/wood
+		if ("steel")
+			return /obj/item/stack/material/steel
+		if ("iron")
+			return /obj/item/stack/material/iron
+		if ("planks")
+			return /obj/item/stack/material/woodplank
+		if ("aluminium")
+			return /obj/item/stack/material/aluminium
+		if ("glass")
+			return /obj/item/stack/material/glass
+		if ("rope")
+			return /obj/item/stack/material/rope
+		if ("cable")
+			return /obj/item/stack/cable_coil
+		if ("cloth")
+			return /obj/item/stack/material/cloth
+	return null
+
+// Puts the materials in cost (material -> amount) back on T as stacks, when
+// a project is given up. Returns the amount given back of each.
+/proc/piece_refund(list/cost, turf/T)
+	. = list()
+	if (!T || !cost)
+		return
+	for (var/key in cost)
+		var/path = piece_material_stack(key)
+		var/amount = round(cost[key])
+		if (!path || amount <= 0)
+			continue
+		var/obj/item/stack/S = path
+		var/most = max(1, initial(S.max_amount))
+		.[key] = amount
+		while (amount > 0)
+			var/n = min(amount, most)
+			new path(T, n)
+			amount -= n
 
 // Splits list L into n consecutive shares, as even as they come.
 /proc/piece_split(list/L, n)

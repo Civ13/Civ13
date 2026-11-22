@@ -134,6 +134,13 @@ var/global/track_probe_runtime_error = FALSE
 	R = B.spike()
 	track_probe_check("respike/curve", istype(R, /obj/structure/rails/turn) && track_probe_dirs(9, 3) == "south+west")
 
+	// Worn track keeps its wear through pulling the spikes and spiking again.
+	var/obj/structure/rails/WR = track_probe_finish(28, 9, NORTH)
+	WR.wear = 85
+	var/obj/structure/rail_bed/WB = WR.pry_apart()
+	var/obj/structure/rails/WS = WB.spike()
+	track_probe_check("wear/kept_through_respike", WS && WS.wear == 85 && WS.wear_state() == 3)
+
 	// Nothing comes apart under a wagon.
 	R = track_probe_finish(31, 2, NORTH)
 	new /obj/structure/trains(track_probe_turf(31, 2))
@@ -151,6 +158,67 @@ var/global/track_probe_runtime_error = FALSE
 	SL.set_dir(EAST)
 	track_probe_lay(2, 11, EAST)
 	track_probe_check("switch/side_parallel", track_probe_dirs(2, 11) == "east+west" && track_probe_dirs(2, 10) == "east+west")
+
+	// Plain track beside a switcher draws its branch when the switcher is
+	// laid or turned, and goes back to plain track when it is taken up.
+	var/obj/structure/rails/PR = track_make_rail(track_probe_turf(12, 8), NORTH, FALSE)
+	var/obj/structure/rails/split/switcher/SN = new(track_probe_turf(11, 8))
+	SN.set_dir(SOUTH)
+	track_probe_check("switch/neighbour_branch_icon", PR.icon_state == "rails_split1")
+	qdel(SN)
+	track_probe_check("switch/neighbour_icon_reverts", PR.icon_state == "rails")
+
+	// A level restores a switcher's facing without set_dir(); the plain rail
+	// beside it draws the branch again after the load.
+	var/obj/structure/rails/LR = track_make_rail(track_probe_turf(15, 8), NORTH, FALSE)
+	var/obj/structure/rails/split/switcher/LS = new(track_probe_turf(14, 8))
+	LS.set_dir(NORTH)
+	var/plain_before = (LR.icon_state == "rails")
+	LS.vars["dir"] = SOUTH
+	LR.after_load()
+	track_probe_check("switch/neighbour_icon_after_load", plain_before && LR.icon_state == "rails_split1")
+
+	// A switcher set to split only shifts a car onto a rail beside it.
+	track_make_rail(track_probe_turf(21, 8), EAST, FALSE)
+	var/obj/structure/rails/split/switcher/SS = new(track_probe_turf(20, 8))
+	SS.set_dir(EAST)
+	SS.switched = "split"
+	var/obj/structure/trains/SC = new(track_probe_turf(20, 8))
+	var/list/route = SC.rail_target(EAST)
+	track_probe_check("switch/split_without_branch_runs_on", route && route[1] == track_probe_turf(21, 8))
+	track_make_rail(track_probe_turf(20, 9), EAST, FALSE)
+	route = SC.rail_target(EAST)
+	track_probe_check("switch/split_onto_branch", route && route[1] == track_probe_turf(20, 9))
+
+	// A curve sends a car round it, and one already heading out along a leg
+	// runs straight on even with track off the curve's other side.
+	var/obj/structure/rails/turn/TC = track_make_rail(track_probe_turf(25, 8), NORTH, TRUE)
+	track_make_rail(track_probe_turf(24, 8), EAST, FALSE)
+	track_make_rail(track_probe_turf(25, 9), NORTH, FALSE)
+	var/obj/structure/trains/CC = new(track_probe_turf(25, 8))
+	route = CC.rail_target(NORTH)
+	track_probe_check("curve/round", TC.turn_dir == WEST && route && route[1] == track_probe_turf(24, 8) && route[2] == WEST)
+	route = CC.rail_target(WEST)
+	track_probe_check("curve/leg_runs_on", route && route[1] == track_probe_turf(24, 8) && route[2] == WEST)
+
+	// A car only rolls onto a rail that leads back the way it comes; a
+	// switcher also takes it off its branch, a rotator from any side.
+	track_make_rail(track_probe_turf(33, 8), NORTH, FALSE)
+	var/obj/structure/trains/EC = new(track_probe_turf(32, 8))
+	track_probe_check("enter/refuses_crossways", !EC.rail_canmove(EAST))
+	track_make_rail(track_probe_turf(31, 8), EAST, FALSE)
+	track_probe_check("enter/along", EC.rail_canmove(WEST))
+	var/obj/structure/rails/split/switcher/ES = new(track_probe_turf(36, 8))
+	ES.set_dir(EAST)
+	var/obj/structure/trains/BC = new(track_probe_turf(36, 9))
+	var/obj/structure/trains/FC = new(track_probe_turf(36, 7))
+	track_probe_check("enter/switcher_from_branch", BC.rail_canmove(SOUTH) && !FC.rail_canmove(NORTH))
+	new /obj/structure/rails/rotate(track_probe_turf(38, 8))
+	var/obj/structure/trains/RC = new(track_probe_turf(38, 9))
+	track_probe_check("enter/rotator_any_side", RC.rail_canmove(SOUTH))
+	// One rule for straight track: plain rail lying along the heading.
+	track_probe_check("straight/along", rail_straight_along(track_probe_turf(33, 8), SOUTH) && !rail_straight_along(track_probe_turf(33, 8), EAST))
+	track_probe_check("straight/not_switch", !rail_straight_along(track_probe_turf(36, 8), EAST) && !rail_straight_along(track_probe_turf(35, 8), EAST))
 
 	// Track cannot be laid twice or on water.
 	track_probe_check("lay/occupied", track_lay_problem(track_probe_turf(5, 2)))

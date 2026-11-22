@@ -38,7 +38,7 @@
 			var/mob/living/human/H = target_mob
 			var/dam_zone = pick("l_leg", "r_leg")
 			var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
-			H.apply_damage(5, TOX, affecting, H.run_armor_check(affecting, "melee"), sharp=1, edge=1)
+			H.apply_damage(5, TOX, affecting, H.run_armor_check(affecting, HIT_PIERCE), sharp=1, edge=1)
 		else if (isliving(target_mob))
 			var/mob/living/L = target_mob
 			L.adjustBruteLoss(damage)

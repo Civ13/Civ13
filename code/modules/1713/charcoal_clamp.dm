@@ -110,8 +110,11 @@
 	wood_charge = 0
 	burn_epoch++
 	if (lumps > 0)
-		var/obj/item/stack/ore/charcoal/C = new(get_turf(src))
-		C.amount = lumps
+		// The yield goes to the constructor so a merge into a pile on the turf keeps all of it.
+		var/obj/item/stack/ore/charcoal/C = new(get_turf(src), lumps)
+		if (!QDELETED(C))
+			C.update_icon()
+			C.update_strings()
 	update_icon()
 	visible_message(SPAN_NOTICE("\The [src] burns down. Its earth cover cracks open on [lumps] lump\s of charcoal."))
 
@@ -125,9 +128,11 @@
 		return
 	var/turf/T = get_turf(src)
 	if (wood_charge > 0)
-		var/obj/item/stack/material/wood/W = new(T)
-		W.amount = wood_charge
+		var/obj/item/stack/material/wood/W = new(T, wood_charge)
 		wood_charge = 0
+		if (!QDELETED(W))
+			W.update_icon()
+			W.update_strings()
 	visible_message(SPAN_NOTICE("[H] digs out \the [src]."))
 	qdel(src)
 

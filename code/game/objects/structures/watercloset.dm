@@ -325,7 +325,7 @@
 
 //BATHTUB FRAMEWORK V1//
 /obj/structure/shower/bathtub
-	name = "Wooden bathtub"
+	name = "wooden bathtub"
 	desc = "A crude wooden bathtub. It stinks."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
@@ -371,15 +371,8 @@
 	overlays += top
 	overlays += image('icons/obj/bathtub.dmi', src, "full_bathtub_overlay_2", MOB_LAYER - 1, dir)
 
-/obj/structure/shower/bathtub/attack_hand(var/mob/living/user)
-	if (!isliving(user))
-		return
-	if (user.buckled && user.buckled == src)
-		unbuckle_mob()
-	else
-		..()
 /obj/structure/shower/bathtub/wooden
-	name = "Wooden bathtub"
+	name = "wooden bathtub"
 	desc = "A crude wooden bathtub. It stinks."
 	icon = 'icons/obj/bathtub.dmi'
 	icon_state = "w_bathtub"
@@ -420,6 +413,7 @@
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "w_bathtub_b"
 	cleanliness = 80
+	can_buckle = FALSE // four bathers stand in it, one to a tile (bathtubs.dm)
 
 /obj/structure/shower/bathtub/big/add_water_overlays()
 	var/image/top = image('icons/obj/bathtub_big.dmi', src, "full_bathtub_overlay_2_2_b", MOB_LAYER + 1, dir)
@@ -470,7 +464,7 @@
 			// LATE COLDWAR  AGE
 /obj/structure/shower/bathtub/big/steel
 	name = "steel public bathtub"
-	desc = "A modern bronze bathtub, comfortable, clean and cool."
+	desc = "A modern steel bathtub, comfortable, clean and cool."
 	icon = 'icons/obj/bathtub_big.dmi'
 	icon_state = "st_bathtub_b"
 	cleanliness = 250
@@ -929,7 +923,7 @@
 					break
 		if (!plumbed)
 			return TRUE
-	return (sewers && sewer_fouls_near(src)) || well_river_seepage() || latrine_fouls_near(src)
+	return (sewers && sewer_fouls_near(src)) || well_river_seepage() || latrine_fouls_near(src) || fracking_fouls_near(src)
 
 /obj/structure/sink/AltClick(var/mob/living/user)
 	var/H = user.get_active_hand()
@@ -1064,54 +1058,6 @@
 					mosquito_proc()
 	else
 		return
-
-/obj/structure/shower/bathtub/big/attack_hand(var/mob/living/M)
-	var/turf/t1
-	var/turf/t2
-	var/turf/t3
-	on = !on
-	update_icon()
-	if (on)
-		if (M.loc == loc)
-			wash(M)
-			process_heat(M)
-		t1 = get_turf(locate(x+1, y, z))
-		t2 = get_turf(locate(x, y+1, z))
-		t3 = get_turf(locate(x+1, y+1, z))
-		for (var/mob/living/human/P in t1.contents)
-			wash(P)
-			process_heat(P)
-		for (var/mob/living/human/P in t2.contents)
-			wash(P)
-			process_heat(P)
-		for (var/mob/living/human/P in t3.contents)
-			wash(P)
-			process_heat(P)
-		for (var/atom/movable/G in loc)
-			G.clean_blood()
-
-/obj/structure/shower/bathtub/big/process()
-	if (!on) return
-
-	var/turf/t1 = locate(x+1,y,z)
-	var/turf/t2 = locate(x, y+1, z)
-	var/turf/t3 = locate(x+1, y+1, z)
-
-	wash_location(loc)
-	wash_location(t1)
-	wash_location(t2)
-	wash_location(t3)
-	wash_floor()
-	reagents.add_reagent("water", reagents.get_free_space())
-
-/obj/structure/shower/bathtub/big/proc/wash_location(atom/location)
-	for (var/thing in location)
-		var/atom/movable/AM = thing
-		var/mob/living/L = thing
-		if (istype(AM) && AM.simulated)
-			wash(AM)
-			if (istype(L))
-				process_heat(L)
 
 //////////////////Fountains////////////////
 

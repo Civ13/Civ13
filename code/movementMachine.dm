@@ -107,14 +107,24 @@ var/movementMachine/movementMachine = null
 /movementMachine/proc/do_movement(var/mob/M, movedir, diag)
 	set waitfor = FALSE
 	if (M && M.client)
+		var/client/C = M.client
 		var/started = world.time
-		M.client.movement_busy = TRUE
-		M.client.Move(get_step(M, movedir), movedir, diag, M.held_fine_step())
+		C.movement_busy = TRUE
+		C.Move(get_step(M, movedir), movedir, diag, M.held_fine_step())
 		// remove this client from movementMachine_clients until it needs to be in it again. This makes the amount of loops to be done the absolute minimum
-		movementMachine_clients -= M.client
-		do_movement_continued(M, started)
+		movementMachine_clients -= C
+		do_movement_continued(M, started, C)
 
-/movementMachine/proc/do_movement_continued(var/mob/M, started = null)
+// The client leaves the scan while its step runs. If it changes body or the
+// body is gone before the step ends (ghosting, a respawn, an admin swap), it
+// must still come back: a client left busy moves one tile per key press for
+// the rest of its connection.
+/movementMachine/proc/release_movement_client(client/C)
+	if (C && !isDeleted(C))
+		C.movement_busy = FALSE
+		movementMachine_clients |= C
+
+/movementMachine/proc/do_movement_continued(var/mob/M, started = null, client/C = null)
 	set waitfor = FALSE
 	var/movtoset = 0
 	if (M && M.client)
@@ -123,6 +133,9 @@ var/movementMachine/movementMachine = null
 			sleep(movtoset - world.time)
 		else
 			sleep(3)
+	if (C && (!M || M.client != C))
+		release_movement_client(C)
+		return
 	if (M && M.client)
 		// A held key continues smooth movement in the tick its step ends, from
 		// that step's exact deadline. Waiting for the next scan here left the

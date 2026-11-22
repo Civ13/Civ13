@@ -293,11 +293,9 @@
 
 // It lies along the track it is dug under.
 /obj/structure/rail_drop_pit/update_icon()
-	if (isturf(loc))
-		for (var/obj/structure/rails/R in loc)
-			if (R.dir in cardinal)
-				dir = R.dir
-			break
+	var/along = isturf(loc) ? rail_dir_at(loc) : null
+	if (along)
+		dir = along
 	icon_state = bulk_amount > 0 ? "drop_pit_[train_bulk_tone(bulk_path)]" : "drop_pit"
 
 /obj/structure/rail_drop_pit/proc/room_for(path)

@@ -17,10 +17,13 @@ import tempfile
 import uuid
 
 HELPERS = 'code/game/objects/structures/vending/vending_product.dm'
+SALES = 'code/game/objects/structures/vending/vending_sales.dm'
 # Each control removes one part of the fix and must fail its own assertion.
 CONTROLS = {
-    'argless-product': ('\tif (!path)\n\t\treturn\n', '',
+    'argless-product': (HELPERS, '\tif (!path)\n\t\treturn\n', '',
                         'FAIL: production whole-world import succeeds'),
+    'pending-payment': (SALES, '\tpending_amount = inp\n', '',
+                        'FAIL: the waiting purchase is remembered'),
 }
 
 
@@ -62,12 +65,12 @@ def main():
         source = (root / 'civ13.dme').read_text(encoding='utf-8')
         replacements = [('code\\world.dm', '_world.dm'), ('code\\controllers\\mc\\globals.dm', '_globals.dm')]
         if args.negative_control:
-            old, new, _ = CONTROLS[args.negative_control]
-            helpers = (root / HELPERS).read_text(encoding='utf-8')
+            target, old, new, _ = CONTROLS[args.negative_control]
+            helpers = (root / target).read_text(encoding='utf-8')
             if helpers.count(old) != 1:
                 raise RuntimeError('Negative-control target missing or ambiguous')
             generated['_helpers.dm'].write_text(helpers.replace(old, new, 1), encoding='utf-8')
-            replacements.append((HELPERS.replace('/', '\\'), '_helpers.dm'))
+            replacements.append((target.replace('/', '\\'), '_helpers.dm'))
         for original, suffix in replacements:
             if source.count(original) != 1:
                 raise RuntimeError(f'Include {original} missing from civ13.dme')
@@ -100,7 +103,7 @@ def main():
         print(log, flush=True)
         result = (output / 'vending_result.txt').read_text(encoding='utf-8')
         print(result, flush=True)
-        expected = CONTROLS[args.negative_control][2] if args.negative_control else 'PASS:'
+        expected = CONTROLS[args.negative_control][3] if args.negative_control else 'PASS:'
         if runtime.returncode or not result.startswith(expected) or any(x in log.lower() for x in ('runtime error:', '## error:', 'bug:')):
             raise RuntimeError('Vending load probe failed')
         if args.negative_control:

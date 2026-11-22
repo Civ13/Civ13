@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net.Sockets;
@@ -25,6 +26,8 @@ public sealed record ControlAnswer(bool Ok, string Message, bool Busy);
 public static class LocalHosting {
     public const string MenuKey = "H";
     public const string FileName = "host.json";
+    // shard_group.py MAX_REGIONS: the most regions a group holds, so every list of them reads them all.
+    public const int MaxRegions = 512;
     public static string Menu => MenuKey + ": Host local DreamDaemon server";
 
     public static HostProfile? Load(string root) {
@@ -129,17 +132,112 @@ public static class LocalHosting {
         ];
     }
 
+    // How long a captured step may run before it (and everything it started) is ended. Status reads are
+    // short so a hung host script never freezes the board; requests that hand their work to a detached
+    // worker answer in seconds; builds, deploys and git work keep the long limit (criticality plan,
+    // scripts/gaia-host/README.md, Process safety).
+    public static readonly TimeSpan StatusLimit = TimeSpan.FromSeconds(30);
+    public static readonly TimeSpan RequestLimit = TimeSpan.FromMinutes(2);
+    // A start after a reboot waits up to byond_pager_wait_seconds (5 min) for the BYOND pager to sign in.
+    public static readonly TimeSpan StartLimit = TimeSpan.FromMinutes(10);
+    public static readonly TimeSpan LongLimit = TimeSpan.FromMinutes(30);
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<ProcessStartInfo, object> Limits = new();
+
+    // Gives a step its own limit; RunCaptured (and every hook that wraps it) honours it.
+    public static ProcessStartInfo WithLimit(this ProcessStartInfo step, TimeSpan limit) {
+        Limits.AddOrUpdate(step, limit);
+        return step;
+    }
+
+    public static TimeSpan LimitOf(ProcessStartInfo step) => Limits.TryGetValue(step, out var limit) ? (TimeSpan)limit : LongLimit;
+
+    // A captured step that ran past its limit and was ended with everything it started.
+    public sealed class StepTimedOut(string message) : IOException(message);
+
     // Runs a step to completion, returning its exit code and combined output.
     // Captured steps get an empty, closed stdin rather than the launcher's console input: Python's subprocess
     // duplicates an inherited console handle and fails with WinError 50 ("The request is not supported").
+    // Both streams are read asynchronously, so the limit holds even while a hung child keeps its pipes open
+    // (reading stdout to the end first made the old 15 minute timeout unreachable).
     public static (int Exit, string Output) RunCaptured(ProcessStartInfo step) {
+        var limit = LimitOf(step);
         using var process = Process.Start(step) ?? throw new IOException("Could not start " + Path.GetFileName(step.FileName) + ".");
         if (step.RedirectStandardInput) process.StandardInput.Close();
-        var error = process.StandardError.ReadToEndAsync();
-        var output = process.StandardOutput.ReadToEnd();
-        if (!process.WaitForExit(TimeSpan.FromMinutes(15))) { process.Kill(true); throw new IOException(Path.GetFileName(step.FileName) + " timed out."); }
-        return (process.ExitCode, output + error.Result);
+        var output = step.RedirectStandardOutput ? process.StandardOutput.ReadToEndAsync() : Task.FromResult("");
+        var error = step.RedirectStandardError ? process.StandardError.ReadToEndAsync() : Task.FromResult("");
+        if (!process.WaitForExit(limit)) {
+            // Everything the step started is ended, except work it already handed to a detached worker.
+            ProcessSafety.EndScript(process);
+            process.WaitForExit(5000);
+            throw new StepTimedOut($"{Path.GetFileName(step.FileName)} did not answer within {Describe(limit)} and was ended.");
+        }
+        // The process has exited; a grandchild that inherited its pipes must not hold the answer back.
+        Task.WaitAll([output, error], TimeSpan.FromSeconds(10));
+        string Text(Task<string> read) => read.IsCompletedSuccessfully ? read.Result : "";
+        return (process.ExitCode, Text(output) + Text(error));
     }
+
+    private static string Describe(TimeSpan limit) => limit.TotalHours >= 1 && limit.TotalMinutes % 60 == 0 ? $"{limit.TotalHours:0} h"
+        : limit.TotalMinutes >= 1 ? $"{limit.TotalMinutes:0} min" : $"{limit.TotalSeconds:0} s";
+
+    // A streamed step the operator cancelled; it was ended with everything it started.
+    public sealed class StepCancelled(string message) : IOException(message);
+
+    // deploy.bat waits on its own clocks (wait_group.py: 90 min for the builds, 60 min for the handovers), so a
+    // deploy that is still going after three hours is hung; restart-host.bat is a few schtasks calls.
+    public static readonly TimeSpan DeployLimit = TimeSpan.FromHours(3);
+    public static TimeSpan GroupScriptLimit(string script) => script == "deploy" ? DeployLimit : RequestLimit;
+
+    // Runs a step to completion, handing each line of either stream to `line` as it arrives; returns its exit
+    // code. Past its limit, or when `cancel` fires, the step is ended with everything it started and this throws
+    // StepTimedOut or StepCancelled, so a hung script can never hold the Host tab for good.
+    public static int RunStreamed(ProcessStartInfo step, Action<string> line, CancellationToken cancel = default) {
+        var limit = LimitOf(step);
+        using var process = Process.Start(step) ?? throw new IOException("Could not start " + Path.GetFileName(step.FileName) + ".");
+        if (step.RedirectStandardInput) process.StandardInput.Close();
+        // A null line is that stream's end; both are waited for (bounded) so the last lines are never dropped.
+        using var drained = new CountdownEvent((step.RedirectStandardOutput ? 1 : 0) + (step.RedirectStandardError ? 1 : 0) + 1);
+        void Line(object _, DataReceivedEventArgs e) {
+            if (e.Data == null) { try { drained.Signal(); } catch (Exception x) when (x is ObjectDisposedException or InvalidOperationException) { } }
+            else if (e.Data.Length > 0) line(e.Data);
+        }
+        process.OutputDataReceived += Line;
+        process.ErrorDataReceived += Line;
+        if (step.RedirectStandardOutput) process.BeginOutputReadLine();
+        if (step.RedirectStandardError) process.BeginErrorReadLine();
+        using var exited = new ManualResetEventSlim();
+        process.EnableRaisingEvents = true;
+        process.Exited += (_, _) => { try { exited.Set(); } catch (ObjectDisposedException) { } };
+        if (process.HasExited) exited.Set();
+        var watch = Stopwatch.StartNew();
+        var ended = 0;
+        try { ended = WaitHandle.WaitAny([exited.WaitHandle, cancel.WaitHandle], limit) == 0 ? 0 : cancel.IsCancellationRequested ? 2 : 1; }
+        catch (ObjectDisposedException) { ended = 2; }
+        if (ended != 0) {
+            // Everything the script started is ended, except work it already handed to a detached worker.
+            ProcessSafety.EndScript(process);
+            process.WaitForExit(5000);
+            var name = Path.GetFileName(step.FileName);
+            throw ended == 2 ? new StepCancelled($"{name} was cancelled after {Describe(Whole(watch.Elapsed))} and ended.")
+                : new StepTimedOut($"{name} did not finish within {Describe(limit)} and was ended.");
+        }
+        // Drain the last lines, but never wait long on a grandchild that kept the pipes open.
+        drained.Signal();
+        drained.Wait(TimeSpan.FromSeconds(10));
+        return process.ExitCode;
+    }
+
+    private static TimeSpan Whole(TimeSpan elapsed) => elapsed.TotalMinutes >= 1 ? TimeSpan.FromMinutes(Math.Floor(elapsed.TotalMinutes)) : TimeSpan.FromSeconds(Math.Floor(elapsed.TotalSeconds));
+
+    // The limit for a host or group action: status reads, quick requests, or long work.
+    public static TimeSpan ActionLimit(string action) => action switch {
+        "status" or "help-status" or "translator-status" or "ports" or "maintenance-status" => StatusLimit,
+        // Run maintenance now only starts the detached run (daily_maintenance.py); it answers at once.
+        "maintenance" => RequestLimit,
+        "start" or "restart" or "force-restart" => StartLimit,
+        "stop" or "kill" or "unlock" or "force-unlock" or "freeze" or "thaw" or "help-start" or "help-stop" or "translator-stop" => RequestLimit,
+        _ => LongLimit,
+    };
 
     // kill is a forced stop without a save; force-restart kills if running, then starts from the last completed save.
     // unlock removes stale BYOND lock files from a stopped server's save; force-unlock even if it looks running.
@@ -152,7 +250,7 @@ public static class LocalHosting {
         var step = new ProcessStartInfo(control.Python) { UseShellExecute = false, CreateNoWindow = true,
             WorkingDirectory = Path.GetDirectoryName(control.Script)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "-I", "-B", control.Script, "--config", control.Config, action }) step.ArgumentList.Add(argument);
-        return step;
+        return step.WithLimit(ActionLimit(action));
     }
 
     public static ControlAnswer RunControl(HostControl control, string action, Func<ProcessStartInfo, (int Exit, string Output)>? run = null) {
@@ -193,7 +291,8 @@ public static class LocalHosting {
     // freeze/thaw: sleep an empty, saved region now, or wake it; setup: create or refresh a region's worktree and
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
-        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved"];
+        "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved",
+        "translator-status", "translator-start", "translator-stop", "maintenance", "maintenance-status"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
@@ -221,16 +320,19 @@ public static class LocalHosting {
         if (confirmRegion != null) { step.ArgumentList.Add("--confirm-region"); step.ArgumentList.Add(confirmRegion); }
         if (confirmGroup != null) { step.ArgumentList.Add("--confirm-group"); step.ArgumentList.Add(confirmGroup); }
         if (epoch is { } ordinal) { step.ArgumentList.Add("--epoch"); step.ArgumentList.Add(ordinal.ToString(CultureInfo.InvariantCulture)); }
-        return step;
+        return step.WithLimit(ActionLimit(action));
     }
 
     // deploy.bat (resume: "deploy.bat continue", which carries on from waiting for the save; regions: only
-    // those region ids, none for every region) or restart-host.bat, run by cmd.exe with its output read line by line.
+    // those region ids, none for every region), restart-host.bat, or "restart-host.bat start" (start-host: bring the
+    // host service back after a script was cut short), run by cmd.exe with its output read line by line.
     public static ProcessStartInfo GroupScriptStep(HostControl control, string script, bool resume = false, IReadOnlyList<string>? regions = null) {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         var path = script switch {
             "deploy" => group.Deploy,
             "restart-host" => group.RestartHost,
+            // restart-host.bat start: only starts the host service task (a no-op while it runs).
+            "start-host" => group.RestartHost,
             _ => throw new ArgumentException("Unsupported group script.", nameof(script)),
         };
         if ((resume || regions is { Count: > 0 }) && script != "deploy") throw new ArgumentException("Only deploy can continue or choose regions.", nameof(script));
@@ -239,8 +341,9 @@ public static class LocalHosting {
             WorkingDirectory = Path.GetDirectoryName(path)!, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (var argument in new[] { "/d", "/c", path }) step.ArgumentList.Add(argument);
         if (resume) step.ArgumentList.Add("continue");
+        if (script == "start-host") step.ArgumentList.Add("start");
         foreach (var region in regions ?? []) step.ArgumentList.Add(region);
-        return step;
+        return step.WithLimit(GroupScriptLimit(script));
     }
 
     // Port and TransferPort are the region's game and travel agent ports from the group config (0 when absent).
@@ -254,7 +357,7 @@ public static class LocalHosting {
         if (json.ValueKind != JsonValueKind.Object || !json.TryGetProperty("regions", out var list) || list.ValueKind != JsonValueKind.Array)
             throw new InvalidDataException("The group config lists no regions.");
         var found = new List<(string Id, string Name, int Port, int TransferPort)>();
-        foreach (var region in list.EnumerateArray().Take(16)) {
+        foreach (var region in list.EnumerateArray().Take(MaxRegions)) {
             if (region.ValueKind != JsonValueKind.Object || Str(region, "id") is not { } id || !RegionId.IsMatch(id)) continue;
             found.Add((id, Clean(Str(region, "name") ?? id), OptionalPort(region, "port"), OptionalPort(region, "transfer_port")));
         }
@@ -304,7 +407,7 @@ public static class LocalHosting {
         try {
             using var document = JsonDocument.Parse(line);
             if (!document.RootElement.TryGetProperty("regions", out var regions) || regions.ValueKind != JsonValueKind.Object) return found;
-            foreach (var region in regions.EnumerateObject().Take(16)) {
+            foreach (var region in regions.EnumerateObject().Take(MaxRegions)) {
                 var entry = region.Value;
                 if (entry.ValueKind != JsonValueKind.Object || !RegionId.IsMatch(region.Name) || !Bool(entry, "listening") || Bool(entry, "busy")) continue;
                 string? error = null;
@@ -336,14 +439,14 @@ public static class LocalHosting {
                 var busy = false;
                 var regions = new List<string>();
                 if (json.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Object) {
-                    foreach (var region in list.EnumerateObject().Take(16)) {
+                    foreach (var region in list.EnumerateObject().Take(MaxRegions)) {
                         if (region.Value.ValueKind != JsonValueKind.Object) continue;
                         var entry = region.Value;
                         busy |= Bool(entry, "busy");
                         var text = Clean(Str(entry, "name") ?? region.Name) + ": " + Lower(Str(entry, "state") ?? "unknown");
                         if (entry.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object
-                                && world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number)
-                            text += $", {clients.GetInt32()} players";
+                                && world.TryGetProperty("clients", out var clients) && Count(clients) is { } online)
+                            text += $", {online} players";
                         if (entry.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
                                 && Str(operation, "action") is { } last && Str(operation, "phase") is { } phase) {
                             text += $", last {Lower(last)} ({Words(phase)})";
@@ -357,12 +460,20 @@ public static class LocalHosting {
                 // Present only when the group has travel (transfer ports): the coordinator moves characters between regions.
                 if (json.TryGetProperty("coordinator", out var coordinator) && coordinator.ValueKind is JsonValueKind.True or JsonValueKind.False)
                     summary += coordinator.GetBoolean() ? " Travel coordinator running." : " Travel coordinator is not running (a start or restart starts it).";
+                if (json.TryGetProperty("maintenance", out var maintenance) && maintenance.ValueKind == JsonValueKind.Object
+                        && DescribeMaintenance(maintenance) is { Length: > 0 } daily)
+                    summary += " " + daily;
                 return new ControlAnswer(true, summary, busy);
             }
+            if (action == "maintenance-status")
+                return new ControlAnswer(true, DescribeMaintenance(json) is { Length: > 0 } daily ? daily : "Daily maintenance: no status yet.", false);
+            if (action == "maintenance")
+                return new ControlAnswer(true, "Daily maintenance started: building one revision beside every region, then warning the players " +
+                    "and handing each running region over to it. The gateway stays on its port. Its progress shows on the status line.", true);
             if (action is "unlock" or "force-unlock") {
                 var lines = new List<string>();
                 if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)
-                    foreach (var region in done.EnumerateObject().Take(16))
+                    foreach (var region in done.EnumerateObject().Take(MaxRegions))
                         if (region.Value.ValueKind == JsonValueKind.Object) lines.Add(Clean(region.Name) + ": " + DescribeUnlock(region.Value));
                 if (refused != null) lines.Add("Refused: " + refused + ".");
                 return new ControlAnswer(lines.Count > 0, lines.Count == 0 ? "The group script did not check any region." : string.Join(" ", lines), false);
@@ -371,7 +482,7 @@ public static class LocalHosting {
                 // {"done": {id: {"copied": [paths], "running": bool}}, "refused": {id: reason}}
                 var lines = new List<string>();
                 if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)
-                    foreach (var region in done.EnumerateObject().Take(16)) {
+                    foreach (var region in done.EnumerateObject().Take(MaxRegions)) {
                         if (region.Value.ValueKind != JsonValueKind.Object) continue;
                         var count = region.Value.TryGetProperty("copied", out var copied) && copied.ValueKind == JsonValueKind.Array ? copied.GetArrayLength() : 0;
                         lines.Add(Clean(region.Name) + ": " + (count == 0 ? "already current" : count == 1 ? "1 file written" : $"{count} files written")
@@ -383,7 +494,7 @@ public static class LocalHosting {
             if (action is "freeze" or "thaw") {
                 // {"done": {id: {"frozen": true, ...} | {"thawed": true, ...}}, "refused": {id: reason}}
                 var done = json.TryGetProperty("done", out var doneJson) && doneJson.ValueKind == JsonValueKind.Object
-                    ? doneJson.EnumerateObject().Take(16).Select(entry => Clean(entry.Name)).ToList() : [];
+                    ? doneJson.EnumerateObject().Take(MaxRegions).Select(entry => Clean(entry.Name)).ToList() : [];
                 if (done.Count == 0) return new ControlAnswer(false, refused != null ? "Refused: " + refused : "The group script did not " + action + " any region.", false);
                 var text = (action == "freeze" ? "Asleep now (a join or travel wakes it): " : "Woken: ") + string.Join(", ", done) + ".";
                 return new ControlAnswer(true, refused != null ? text + " Refused: " + refused + "." : text, false);
@@ -394,7 +505,7 @@ public static class LocalHosting {
                     && index >= 0 && index < EpochNames.Length ? EpochNames[index] : "the chosen epoch";
                 var lines = new List<string>();
                 if (json.TryGetProperty("regions", out var done) && done.ValueKind == JsonValueKind.Object)
-                    foreach (var region in done.EnumerateObject().Take(16)) {
+                    foreach (var region in done.EnumerateObject().Take(MaxRegions)) {
                         var state = region.Value.ValueKind == JsonValueKind.String ? Short(region.Value.GetString()!) : "no answer";
                         lines.Add(Clean(region.Name) + ": " + (state == "set" ? "now " + name : state == "current" ? "already at " + name + " or later" : state));
                     }
@@ -405,13 +516,13 @@ public static class LocalHosting {
                 // {"accepted": {id: {"state": "stopped" | "cold" | "asleep", "already_staging"?}}, "skipped": {id: why}}
                 var lines = new List<string>();
                 if (json.TryGetProperty("accepted", out var chosen) && chosen.ValueKind == JsonValueKind.Object)
-                    foreach (var region in chosen.EnumerateObject().Take(16)) {
+                    foreach (var region in chosen.EnumerateObject().Take(MaxRegions)) {
                         var state = region.Value.ValueKind == JsonValueKind.Object && Str(region.Value, "state") is { } known ? Lower(known) : "stopped";
                         lines.Add(Clean(region.Name) + (state == "asleep" ? " (asleep: installs while it sleeps)" : " (" + state + ": installs once built)"));
                     }
                 var left = new List<string>();
                 if (json.TryGetProperty("skipped", out var skipped) && skipped.ValueKind == JsonValueKind.Object)
-                    foreach (var region in skipped.EnumerateObject().Take(16))
+                    foreach (var region in skipped.EnumerateObject().Take(MaxRegions))
                         left.Add(Clean(region.Name) + " (" + (region.Value.ValueKind == JsonValueKind.String ? Short(region.Value.GetString()!) : "skipped") + ")");
                 var text = lines.Count == 0 ? "No region needed updating while stopped or asleep."
                     : "Building the latest update, one region at a time, for " + string.Join(", ", lines) + ".";
@@ -421,7 +532,7 @@ public static class LocalHosting {
             if (action == "setup") {
                 // {"revision", "created": [ids], "regions": [ids], "region", "running": [ids], "enrolled": [...]}
                 var created = json.TryGetProperty("created", out var made) && made.ValueKind == JsonValueKind.Array
-                    ? made.EnumerateArray().Take(16).Where(item => item.ValueKind == JsonValueKind.String).Select(item => Clean(item.GetString()!)).ToList() : [];
+                    ? made.EnumerateArray().Take(MaxRegions).Where(item => item.ValueKind == JsonValueKind.String).Select(item => Clean(item.GetString()!)).ToList() : [];
                 var which = Str(json, "region") is { } one ? Clean(one) : "every region";
                 var text = created.Count > 0 ? "Set up " + string.Join(", ", created) + "." : "Refreshed the config of " + which + ".";
                 if (json.TryGetProperty("enrolled", out var enrolled) && enrolled.ValueKind == JsonValueKind.Array && enrolled.GetArrayLength() > 0)
@@ -482,6 +593,35 @@ public static class LocalHosting {
         return text;
     }
 
+    // The group status's "maintenance" (scripts/shard-group/daily_maintenance.py status): the daily time and next start,
+    // a run under way, or how the last run ended. Empty when there is nothing to say.
+    public static string DescribeMaintenance(JsonElement maintenance) {
+        if (maintenance.ValueKind != JsonValueKind.Object) return "";
+        if (!Bool(maintenance, "persistent")) return "Daily maintenance: not used (this group updates between rounds).";
+        var text = Bool(maintenance, "enabled") && Str(maintenance, "next") is { } next && DailyStamp(next) is { } when
+            ? "Daily maintenance next at " + when + "." : "Daily maintenance off.";
+        if (!maintenance.TryGetProperty("last", out var last) || last.ValueKind != JsonValueKind.Object) return text;
+        var phase = Str(last, "phase") is { } known ? Words(known) : "";
+        var revision = Str(last, "revision") is { Length: 40 } full && full.All(Uri.IsHexDigit) ? " onto " + full[..8] : "";
+        var day = Str(last, "day") is { } stamp && DailyStamp(stamp + " 00:00") is { } valid ? valid[..10] : "";
+        if (Bool(maintenance, "running")) return text + " Running now" + revision + (phase.Length > 0 ? " (" + phase + ")" : "") + ".";
+        if (phase.Length == 0) return text;
+        text += " Last run" + (day.Length > 0 ? " " + day : "") + revision + ": " + phase;
+        if (Str(last, "error") is { Length: > 0 } error) text += ": " + Short(error);
+        else if (last.TryGetProperty("result", out var result) && result.ValueKind == JsonValueKind.Object
+                && result.TryGetProperty("problems", out var problems) && problems.ValueKind == JsonValueKind.Object) {
+            var names = problems.EnumerateObject().Take(MaxRegions)
+                .Select(entry => Clean(entry.Name) + " (" + (entry.Value.ValueKind == JsonValueKind.String ? Short(entry.Value.GetString()!) : "see the log") + ")").ToList();
+            if (names.Count > 0) text += ": " + string.Join(", ", names);
+        }
+        return text + ".";
+    }
+
+    // "YYYY-MM-DD HH:MM" from the host's own clock, checked before it is shown.
+    private static string? DailyStamp(string text) =>
+        DateTime.TryParseExact(text, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var at)
+            ? at.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) : null;
+
     // Lowercase letters, apostrophes and single spaces only (64 at most), for a phase name shown in a line.
     private static string Words(string text) {
         var kept = new string(text.Take(64).Select(c => char.IsAsciiLetterLower(c) || c == '\'' ? c : ' ').ToArray());
@@ -522,6 +662,7 @@ public static class LocalHosting {
                 parts.Add(AwayText(away));
         }
         if (Str(entry, "kind") == "EVENT") parts.Insert(0, "event region");
+        if (Str(entry, "kind") == "GATEWAY") parts.Insert(0, "gateway");
         if (LandText(entry) is { } land) parts.Add(land);
         return parts.Count == 0 ? text : text + ", " + string.Join(", ", parts);
     }
@@ -606,8 +747,9 @@ public static class LocalHosting {
             _ => Bool(status, "listening") ? "Server port is open." : "Server is not running.",
         } };
         if (status.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object) {
-            parts.Add(Bool(world, "ready") ? "World ready." : "World not ready.");
-            if (world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number) parts.Add($"{clients.GetInt32()} players.");
+            // The world's own answer is passed through, and DM writes TRUE as 1: a ready world read "World not ready."
+            parts.Add(Flag(world, "ready") ? "World ready." : "World not ready.");
+            if (world.TryGetProperty("clients", out var clients) && Count(clients) is { } online) parts.Add($"{online} players.");
             if (Str(world, "error") is { Length: > 0 } error) parts.Add("Error: " + error + ".");
         }
         if (status.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
@@ -622,10 +764,10 @@ public static class LocalHosting {
         // A region host (Civ13 scripts/shard-group) also lists every region of its group.
         var regions = new List<string>();
         if (status.TryGetProperty("regions", out var list) && list.ValueKind == JsonValueKind.Array) {
-            foreach (var region in list.EnumerateArray().Take(16)) {
+            foreach (var region in list.EnumerateArray().Take(MaxRegions)) {
                 if (region.ValueKind != JsonValueKind.Object || Str(region, "name") is not { } name || Str(region, "state") is not { } state) continue;
                 var clean = Clean(name);
-                var players = region.TryGetProperty("players", out var count) && count.ValueKind == JsonValueKind.Number ? $", {count.GetInt32()} players" : "";
+                var players = region.TryGetProperty("players", out var count) && Count(count) is { } online ? $", {online} players" : "";
                 regions.Add($"{clean}: {Lower(state)}{players}");
             }
         }
@@ -636,6 +778,14 @@ public static class LocalHosting {
         json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
     private static bool Bool(JsonElement json, string name) =>
         json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.True;
+    // A flag that started in a world (DM's json_encode has no booleans, so TRUE arrives as 1).
+    private static bool Flag(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var value) && (value.ValueKind == JsonValueKind.True
+            || (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number != 0));
+    // A whole number, or null (2.5 is no count): GetInt32 throws on 2.0e0 or 2.5, and that took the whole status line with it.
+    private static int? Count(JsonElement value) =>
+        value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number >= 0 && number <= int.MaxValue
+            && number == Math.Floor(number) ? (int)number : null;
 
     // Starts whatever is not already listening; returns one line per component for the console.
     public static IReadOnlyList<string> Run(HostProfile host, string byondBin, Func<int, bool> listening, Action<ProcessStartInfo> start,

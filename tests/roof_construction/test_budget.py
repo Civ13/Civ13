@@ -21,7 +21,7 @@ def arithmetic(source=None):
     source = source.replace('(purpose == "safehouse" ? added : 0)',
                             '(added if purpose == "safehouse" else 0)')
     env = dict(NEW_Z_CELL_CEILING=ceiling, NEW_Z_ROOF_CEILING=10,
-               BUILDING_MAX_Z=32, BUILDING_EXTRA_LEVELS=12,
+               BUILDING_MAX_Z=32, BUILDING_EXTRA_LEVELS=15,
                isnum=lambda x: isinstance(x, (int, float)), round=round,
                list=lambda *x: list(x),
                divide=lambda a, b: struct.unpack('f', struct.pack('f', a / b))[0])
@@ -64,7 +64,7 @@ class BudgetTests(unittest.TestCase):
         self.assertIsNotNone(error(700000, 1, 1, 1, 2, cell_limit=1399999))
         self.assertIsNotNone(error(700000, 1, 1, 1, 2, instance_reserve=1))
         self.assertIsNotNone(error(10, 10, 1, 1, 3, 'roof'))
-        self.assertIsNotNone(error(10, 10, 1, 1, 14))
+        self.assertIsNotNone(error(10, 10, 1, 1, 17))
         self.assertIsNotNone(error(10, 10, 1, 1, 33))
         self.assertIsNotNone(error(10, 10, 1, 1, 2, cell_limit=11500001))
         self.assertIsNotNone(error(10, 10, 1, 1, 2, 'instance'))

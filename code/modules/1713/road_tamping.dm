@@ -88,10 +88,8 @@
 	if (problem)
 		to_chat(user, SPAN_WARNING(problem))
 		return FALSE
-	var/delay = TAMPING_TIME
+	var/delay = work_delay(user, TAMPING_TIME, WORK_DIG, src)
 	var/mob/living/human/H = user
-	if (istype(H))
-		delay /= max(0.5, H.getStatCoeff("strength"))
 	user.visible_message(SPAN_NOTICE("[user] starts pounding the dirt flat."), SPAN_NOTICE("You start pounding the dirt flat."), "You hear dull thudding.")
 	playsound(T, 'sound/effects/shovelling.ogg', 60, TRUE)
 	if (!do_after(user, delay, T))
@@ -131,7 +129,7 @@
 		return ..() // Shovels clear snow first, as on other ground.
 	user.visible_message(SPAN_NOTICE("[user] starts breaking up the tamped earth."), SPAN_NOTICE("You start breaking up the tamped earth."), "You hear digging.")
 	playsound(src, 'sound/effects/shovelling.ogg', 85, TRUE)
-	if (!do_after(user, TAMPING_TIME, src))
+	if (!do_after(user, work_delay(user, TAMPING_TIME, WORK_DIG, C), src))
 		return TRUE
 	if (!istype(src, /turf/floor/tamped_earth))
 		return TRUE
@@ -199,15 +197,13 @@
 // on pile_at (the user's tile), so the next blow keeps cutting.
 /proc/terrain_grade_work(turf/T, mob/user, direction, obj/item/tool, turf/pile_at = null)
 	var/problem = terrain_grade_problem(T, direction)
-	if (!problem && direction > 0 && !(locate(/obj/item/weapon/barrier) in T))
-		problem = "Put a pile of dirt on the spot to build it up."
+	if (!problem && direction > 0 && !(locate(/obj/item/weapon/barrier) in T) && !wheelbarrow_for(user, "dirt", FALSE))
+		problem = "Put a pile of dirt on the spot, or bring a loaded wheelbarrow, to build it up."
 	if (problem)
 		to_chat(user, SPAN_WARNING(problem))
 		return FALSE
-	var/delay = GRADING_TIME
+	var/delay = work_delay(user, GRADING_TIME, WORK_DIG, tool)
 	var/mob/living/human/H = user
-	if (istype(H))
-		delay /= max(0.5, H.getStatCoeff("strength"))
 	if (direction > 0)
 		user.visible_message(SPAN_NOTICE("[user] starts ramming dirt into the ground to build it up."), SPAN_NOTICE("You start ramming the dirt pile into the ground to build it up."), "You hear dull thudding.")
 	else if (istype(tool, /obj/item/weapon/stone_rammer))
@@ -219,12 +215,15 @@
 		return FALSE
 	problem = terrain_grade_problem(T, direction)
 	var/obj/item/weapon/barrier/pile = direction > 0 ? locate(/obj/item/weapon/barrier) in T : null
-	if (!problem && direction > 0 && !pile)
+	var/obj/structure/wheelbarrow/barrow = direction > 0 && !pile ? wheelbarrow_for(user, "dirt", FALSE) : null
+	if (!problem && direction > 0 && !pile && !barrow)
 		problem = "The dirt pile is gone."
 	if (problem)
 		to_chat(user, SPAN_WARNING(problem))
 		return FALSE
-	terrain_grade_finish(T, direction, tool, pile_at, pile)
+	if (barrow)
+		barrow.give_load("dirt")
+	terrain_grade_finish(T, direction, tool, pile_at, pile, user)
 	if (direction > 0)
 		user.visible_message(SPAN_NOTICE("[user] rams the dirt in, building the ground up."), SPAN_NOTICE("You ram the dirt in and build the ground up a level."))
 	else if (istype(tool, /obj/item/weapon/stone_rammer))
@@ -236,7 +235,8 @@
 	return TRUE
 
 // Applies one level of grading after the work is done. Returns the new turf.
-/proc/terrain_grade_finish(turf/T, direction, obj/item/tool, turf/pile_at = null, obj/item/weapon/barrier/pile = null)
+// user, when given, sends cut earth into a wheelbarrow at their side.
+/proc/terrain_grade_finish(turf/T, direction, obj/item/tool, turf/pile_at = null, obj/item/weapon/barrier/pile = null, mob/user = null)
 	var/grade = T.terrain_grade + direction
 	if (direction > 0)
 		qdel(pile)
@@ -245,11 +245,11 @@
 	else if (istype(tool, /obj/item/weapon/stone_rammer))
 		if (!istype(T, /turf/floor/tamped_earth))
 			T = T.ChangeTurf(/turf/floor/tamped_earth)
-		new /obj/item/weapon/barrier(pile_at && !pile_at.density ? pile_at : T)
+		earth_pile_out(pile_at && !pile_at.density ? pile_at : T, user)
 	else
 		if (!istype(T, /turf/floor/dirt) || istype(T, /turf/floor/dirt/winter))
 			T = T.ChangeTurf(/turf/floor/dirt)
-		new /obj/item/weapon/barrier(T)
+		earth_pile_out(T, user)
 	T.terrain_grade = grade
 	T.terrain_grade_apply()
 	return T

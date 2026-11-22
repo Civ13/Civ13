@@ -1,0 +1,3004 @@
+{
+  "schema": "civ13-stock-corridor-review/1",
+  "maps": [
+    {
+      "seed": "ruins-06",
+      "dims": [
+        53,
+        27
+      ],
+      "states": {
+        "closed_doors_1x1": {
+          "out_bound": 89,
+          "return": 89,
+          "rooms_reachable": 8,
+          "approaches_reachable": 1
+        },
+        "closed_doors_3x3": {
+          "out_bound": 91,
+          "return": 91,
+          "rooms_reachable": 8,
+          "approaches_reachable": 0
+        },
+        "open_doors_1x1": {
+          "out_bound": 89,
+          "return": 89,
+          "rooms_reachable": 8,
+          "approaches_reachable": 1
+        },
+        "open_doors_3x3": {
+          "out_bound": 91,
+          "return": 91,
+          "rooms_reachable": 8,
+          "approaches_reachable": 0
+        }
+      },
+      "removed_jamb_and_leaf_rejected": false,
+      "dmm_sha256": "d7a71a53b4b8f80c0f940aada6065871573dbeb52abcbbfac9d66933809d05da",
+      "manifest_sha256": "51a7d45572ddf0bf753bb791818c671936f1f5c1ce860a9445f0ae97b5de27fc",
+      "door_apron_steps": null,
+      "corridors": [
+        {
+          "door": null,
+          "ends": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "sand_brick",
+              "x": 6,
+              "y": 11
+            },
+            {
+              "style": "sand_slab",
+              "x": 6,
+              "y": 12
+            },
+            {
+              "style": "sand_slab",
+              "x": 6,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 6,
+              "y": 14
+            },
+            {
+              "style": "dark_cobble",
+              "x": 6,
+              "y": 15
+            },
+            {
+              "style": "sand_brick",
+              "x": 7,
+              "y": 11
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 14
+            },
+            {
+              "style": "dark_cobble",
+              "x": 7,
+              "y": 15
+            },
+            {
+              "style": "sand_brick",
+              "x": 8,
+              "y": 11
+            },
+            {
+              "style": "sand_slab",
+              "x": 8,
+              "y": 12
+            },
+            {
+              "style": "sand_slab",
+              "x": 8,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 8,
+              "y": 14
+            },
+            {
+              "style": "dark_cobble",
+              "x": 8,
+              "y": 15
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "floor": [
+            {
+              "style": "sand_brick",
+              "x": 12,
+              "y": 6
+            },
+            {
+              "style": "sand_brick",
+              "x": 12,
+              "y": 7
+            },
+            {
+              "style": "sand_brick",
+              "x": 12,
+              "y": 8
+            },
+            {
+              "style": "sand_slab",
+              "x": 13,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 7
+            },
+            {
+              "style": "sand_slab",
+              "x": 13,
+              "y": 8
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 7
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 8
+            },
+            {
+              "style": "dark_cobble",
+              "x": 15,
+              "y": 6
+            },
+            {
+              "style": "dark_cobble",
+              "x": 15,
+              "y": 7
+            },
+            {
+              "style": "dark_cobble",
+              "x": 15,
+              "y": 8
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 21
+            },
+            {
+              "style": "sand_slab",
+              "x": 15,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 15,
+              "y": 20
+            },
+            {
+              "style": "sand_slab",
+              "x": 15,
+              "y": 21
+            },
+            {
+              "style": "sand_brick",
+              "x": 16,
+              "y": 19
+            },
+            {
+              "style": "sand_brick",
+              "x": 16,
+              "y": 20
+            },
+            {
+              "style": "sand_brick",
+              "x": 16,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 6
+            },
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 7
+            },
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 8
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 7
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 8
+            },
+            {
+              "style": "slate",
+              "x": 27,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 7
+            },
+            {
+              "style": "slate",
+              "x": 27,
+              "y": 8
+            },
+            {
+              "style": "stone_brick",
+              "x": 28,
+              "y": 6
+            },
+            {
+              "style": "stone_brick",
+              "x": 28,
+              "y": 7
+            },
+            {
+              "style": "stone_brick",
+              "x": 28,
+              "y": 8
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "sand_brick",
+              "x": 24,
+              "y": 19
+            },
+            {
+              "style": "sand_brick",
+              "x": 24,
+              "y": 20
+            },
+            {
+              "style": "sand_brick",
+              "x": 24,
+              "y": 21
+            },
+            {
+              "style": "sand_slab",
+              "x": 25,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 25,
+              "y": 20
+            },
+            {
+              "style": "sand_slab",
+              "x": 25,
+              "y": 21
+            },
+            {
+              "style": "sand_slab",
+              "x": 26,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 20
+            },
+            {
+              "style": "sand_slab",
+              "x": 26,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 21
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "floor": [
+            {
+              "style": "stone_brick",
+              "x": 38,
+              "y": 6
+            },
+            {
+              "style": "stone_brick",
+              "x": 38,
+              "y": 7
+            },
+            {
+              "style": "stone_brick",
+              "x": 38,
+              "y": 8
+            },
+            {
+              "style": "slate",
+              "x": 39,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 7
+            },
+            {
+              "style": "slate",
+              "x": 39,
+              "y": 8
+            },
+            {
+              "style": "white_marble",
+              "x": 40,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 40,
+              "y": 7
+            },
+            {
+              "style": "white_marble",
+              "x": 40,
+              "y": 8
+            },
+            {
+              "style": "marble_grid",
+              "x": 41,
+              "y": 6
+            },
+            {
+              "style": "marble_grid",
+              "x": 41,
+              "y": 7
+            },
+            {
+              "style": "marble_grid",
+              "x": 41,
+              "y": 8
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 40,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 40,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 40,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 41,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 41,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 41,
+              "y": 21
+            },
+            {
+              "style": "dark_cobble",
+              "x": 42,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 42,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 42,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        }
+      ]
+    },
+    {
+      "seed": "ruins-02",
+      "dims": [
+        40,
+        40
+      ],
+      "states": {
+        "closed_doors_1x1": {
+          "out_bound": 61,
+          "return": 61,
+          "rooms_reachable": 8,
+          "approaches_reachable": 1
+        },
+        "closed_doors_3x3": {
+          "out_bound": 65,
+          "return": 65,
+          "rooms_reachable": 8,
+          "approaches_reachable": 0
+        },
+        "open_doors_1x1": {
+          "out_bound": 61,
+          "return": 61,
+          "rooms_reachable": 9,
+          "approaches_reachable": 2
+        },
+        "open_doors_3x3": {
+          "out_bound": 65,
+          "return": 65,
+          "rooms_reachable": 8,
+          "approaches_reachable": 0
+        }
+      },
+      "removed_jamb_and_leaf_rejected": true,
+      "dmm_sha256": "aa0fc1251527efb0eec7df137dabba0485335b54a51e55ef74c049747a9769c2",
+      "manifest_sha256": "8597640970ff19f1edbae64fcf3de8fb5073a1ac025837c265e858370e37ea58",
+      "door_apron_steps": {
+        "closed": null,
+        "open": 2
+      },
+      "corridors": [
+        {
+          "door": {
+            "approaches": [
+              [
+                7,
+                12
+              ],
+              [
+                7,
+                14
+              ]
+            ],
+            "axis": "north-south",
+            "center": [
+              7,
+              13
+            ],
+            "closed_state": true,
+            "jambs": [
+              [
+                8,
+                13
+              ],
+              [
+                6,
+                13
+              ]
+            ],
+            "sill": "running_cobble",
+            "stock_type": "/obj/structure/simple_door/wood"
+          },
+          "ends": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 6,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 6,
+              "y": 14
+            },
+            {
+              "style": "slate",
+              "x": 6,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 6,
+              "y": 16
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 7,
+              "y": 16
+            },
+            {
+              "style": "dark_cobble",
+              "x": 8,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 8,
+              "y": 14
+            },
+            {
+              "style": "slate",
+              "x": 8,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 8,
+              "y": 16
+            }
+          ],
+          "program": "optional framed door"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "stone_brick",
+              "x": 6,
+              "y": 24
+            },
+            {
+              "style": "slate",
+              "x": 6,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 6,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 6,
+              "y": 27
+            },
+            {
+              "style": "running_cobble",
+              "x": 6,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 6,
+              "y": 29
+            },
+            {
+              "style": "stone_brick",
+              "x": 7,
+              "y": 24
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 27
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 7,
+              "y": 29
+            },
+            {
+              "style": "stone_brick",
+              "x": 8,
+              "y": 24
+            },
+            {
+              "style": "slate",
+              "x": 8,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 8,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 8,
+              "y": 27
+            },
+            {
+              "style": "running_cobble",
+              "x": 8,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 8,
+              "y": 29
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "stone_brick",
+              "x": 11,
+              "y": 19
+            },
+            {
+              "style": "stone_brick",
+              "x": 11,
+              "y": 20
+            },
+            {
+              "style": "stone_brick",
+              "x": 11,
+              "y": 21
+            },
+            {
+              "style": "slate",
+              "x": 12,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 12,
+              "y": 20
+            },
+            {
+              "style": "slate",
+              "x": 12,
+              "y": 21
+            },
+            {
+              "style": "slate",
+              "x": 13,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 20
+            },
+            {
+              "style": "slate",
+              "x": 13,
+              "y": 21
+            },
+            {
+              "style": "slate",
+              "x": 14,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 20
+            },
+            {
+              "style": "slate",
+              "x": 14,
+              "y": 21
+            },
+            {
+              "style": "stone_brick",
+              "x": 15,
+              "y": 19
+            },
+            {
+              "style": "stone_brick",
+              "x": 15,
+              "y": 20
+            },
+            {
+              "style": "stone_brick",
+              "x": 15,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 19,
+              "y": 11
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 13
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 14
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 19,
+              "y": 16
+            },
+            {
+              "style": "dark_cobble",
+              "x": 20,
+              "y": 11
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 20,
+              "y": 16
+            },
+            {
+              "style": "dark_cobble",
+              "x": 21,
+              "y": 11
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 13
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 14
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 21,
+              "y": 16
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              0
+            ],
+            [
+              3,
+              0
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 24,
+              "y": 6
+            },
+            {
+              "style": "dark_cobble",
+              "x": 24,
+              "y": 7
+            },
+            {
+              "style": "dark_cobble",
+              "x": 24,
+              "y": 8
+            },
+            {
+              "style": "running_cobble",
+              "x": 25,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 25,
+              "y": 7
+            },
+            {
+              "style": "running_cobble",
+              "x": 25,
+              "y": 8
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 7
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 8
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 7
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 8
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 6
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 7
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 8
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              1
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "stone_brick",
+              "x": 19,
+              "y": 24
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 19,
+              "y": 28
+            },
+            {
+              "style": "stone_brick",
+              "x": 20,
+              "y": 24
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 20,
+              "y": 28
+            },
+            {
+              "style": "stone_brick",
+              "x": 21,
+              "y": 24
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 21,
+              "y": 28
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 34
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 34
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "marble_grid",
+              "x": 32,
+              "y": 25
+            },
+            {
+              "style": "white_marble",
+              "x": 32,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 32,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 32,
+              "y": 28
+            },
+            {
+              "style": "marble_grid",
+              "x": 33,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 33,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 33,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 33,
+              "y": 28
+            },
+            {
+              "style": "marble_grid",
+              "x": 34,
+              "y": 25
+            },
+            {
+              "style": "white_marble",
+              "x": 34,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 34,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 34,
+              "y": 28
+            }
+          ],
+          "program": "open approach and sill"
+        }
+      ]
+    },
+    {
+      "seed": "ruins-18",
+      "dims": [
+        39,
+        40
+      ],
+      "states": {
+        "closed_doors_1x1": {
+          "out_bound": 50,
+          "return": 50,
+          "rooms_reachable": 7,
+          "approaches_reachable": 2
+        },
+        "closed_doors_3x3": {
+          "out_bound": 52,
+          "return": 52,
+          "rooms_reachable": 7,
+          "approaches_reachable": 0
+        },
+        "open_doors_1x1": {
+          "out_bound": 50,
+          "return": 50,
+          "rooms_reachable": 7,
+          "approaches_reachable": 2
+        },
+        "open_doors_3x3": {
+          "out_bound": 52,
+          "return": 52,
+          "rooms_reachable": 7,
+          "approaches_reachable": 0
+        }
+      },
+      "removed_jamb_and_leaf_rejected": true,
+      "dmm_sha256": "df37becb28e5eecdcd786ad775d57793eb9cf1835beb8feab12d812636d5d743",
+      "manifest_sha256": "b5b339ea0d74a22ea41fb575b3d972f1b81fb201c2ec6b5db2cdb5adf2692d48",
+      "door_apron_steps": {
+        "closed": 44,
+        "open": 2
+      },
+      "corridors": [
+        {
+          "door": {
+            "approaches": [
+              [
+                7,
+                12
+              ],
+              [
+                7,
+                14
+              ]
+            ],
+            "axis": "north-south",
+            "center": [
+              7,
+              13
+            ],
+            "closed_state": true,
+            "jambs": [
+              [
+                8,
+                13
+              ],
+              [
+                6,
+                13
+              ]
+            ],
+            "sill": "running_cobble",
+            "stock_type": "/obj/structure/simple_door/wood"
+          },
+          "ends": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "marble_grid",
+              "x": 6,
+              "y": 12
+            },
+            {
+              "style": "white_marble",
+              "x": 6,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 6,
+              "y": 15
+            },
+            {
+              "style": "dark_cobble",
+              "x": 6,
+              "y": 16
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 7,
+              "y": 15
+            },
+            {
+              "style": "dark_cobble",
+              "x": 7,
+              "y": 16
+            },
+            {
+              "style": "marble_grid",
+              "x": 8,
+              "y": 12
+            },
+            {
+              "style": "white_marble",
+              "x": 8,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 8,
+              "y": 15
+            },
+            {
+              "style": "dark_cobble",
+              "x": 8,
+              "y": 16
+            }
+          ],
+          "program": "optional framed door"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "floor": [
+            {
+              "style": "marble_grid",
+              "x": 11,
+              "y": 6
+            },
+            {
+              "style": "marble_grid",
+              "x": 11,
+              "y": 7
+            },
+            {
+              "style": "marble_grid",
+              "x": 11,
+              "y": 8
+            },
+            {
+              "style": "white_marble",
+              "x": 12,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 12,
+              "y": 7
+            },
+            {
+              "style": "white_marble",
+              "x": 12,
+              "y": 8
+            },
+            {
+              "style": "white_marble",
+              "x": 13,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 7
+            },
+            {
+              "style": "white_marble",
+              "x": 13,
+              "y": 8
+            },
+            {
+              "style": "sand_slab",
+              "x": 14,
+              "y": 6
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 7
+            },
+            {
+              "style": "sand_slab",
+              "x": 14,
+              "y": 8
+            },
+            {
+              "style": "sand_brick",
+              "x": 15,
+              "y": 6
+            },
+            {
+              "style": "sand_brick",
+              "x": 15,
+              "y": 7
+            },
+            {
+              "style": "sand_brick",
+              "x": 15,
+              "y": 8
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 21
+            },
+            {
+              "style": "slate",
+              "x": 14,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 20
+            },
+            {
+              "style": "slate",
+              "x": 14,
+              "y": 21
+            },
+            {
+              "style": "stone_brick",
+              "x": 15,
+              "y": 19
+            },
+            {
+              "style": "stone_brick",
+              "x": 15,
+              "y": 20
+            },
+            {
+              "style": "stone_brick",
+              "x": 15,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 34
+            },
+            {
+              "style": "dark_cobble",
+              "x": 15,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 15,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 15,
+              "y": 34
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "sand_brick",
+              "x": 19,
+              "y": 12
+            },
+            {
+              "style": "sand_slab",
+              "x": 19,
+              "y": 13
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 14
+            },
+            {
+              "style": "stone_brick",
+              "x": 19,
+              "y": 15
+            },
+            {
+              "style": "sand_brick",
+              "x": 20,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 14
+            },
+            {
+              "style": "stone_brick",
+              "x": 20,
+              "y": 15
+            },
+            {
+              "style": "sand_brick",
+              "x": 21,
+              "y": 12
+            },
+            {
+              "style": "sand_slab",
+              "x": 21,
+              "y": 13
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 14
+            },
+            {
+              "style": "stone_brick",
+              "x": 21,
+              "y": 15
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "stone_brick",
+              "x": 19,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 26
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 27
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 19,
+              "y": 29
+            },
+            {
+              "style": "stone_brick",
+              "x": 20,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 27
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 20,
+              "y": 29
+            },
+            {
+              "style": "stone_brick",
+              "x": 21,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 26
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 27
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 21,
+              "y": 29
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 25,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 28,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 28,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 28,
+              "y": 34
+            },
+            {
+              "style": "dark_cobble",
+              "x": 29,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 29,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 29,
+              "y": 34
+            }
+          ],
+          "program": "open approach and sill"
+        }
+      ]
+    },
+    {
+      "seed": "ruins-12",
+      "dims": [
+        53,
+        40
+      ],
+      "states": {
+        "closed_doors_1x1": {
+          "out_bound": 52,
+          "return": 52,
+          "rooms_reachable": 8,
+          "approaches_reachable": 2
+        },
+        "closed_doors_3x3": {
+          "out_bound": 52,
+          "return": 52,
+          "rooms_reachable": 8,
+          "approaches_reachable": 0
+        },
+        "open_doors_1x1": {
+          "out_bound": 52,
+          "return": 52,
+          "rooms_reachable": 9,
+          "approaches_reachable": 2
+        },
+        "open_doors_3x3": {
+          "out_bound": 52,
+          "return": 52,
+          "rooms_reachable": 8,
+          "approaches_reachable": 0
+        }
+      },
+      "removed_jamb_and_leaf_rejected": true,
+      "dmm_sha256": "1f0009e4d67ca075e73f060fecc7605b51f55da2dce9fceb2dc3c9aa94a1289e",
+      "manifest_sha256": "2b3ac203a407801ffc924b1f37b00c413206e836f80b1825ef8ab1cdec262eeb",
+      "door_apron_steps": {
+        "closed": null,
+        "open": 2
+      },
+      "corridors": [
+        {
+          "door": null,
+          "ends": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 12,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 13,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 14,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 15,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 15,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 15,
+              "y": 21
+            },
+            {
+              "style": "dark_cobble",
+              "x": 16,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 16,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 16,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": {
+            "approaches": [
+              [
+                20,
+                11
+              ],
+              [
+                20,
+                13
+              ]
+            ],
+            "axis": "north-south",
+            "center": [
+              20,
+              12
+            ],
+            "closed_state": true,
+            "jambs": [
+              [
+                21,
+                12
+              ],
+              [
+                19,
+                12
+              ]
+            ],
+            "sill": "running_cobble",
+            "stock_type": "/obj/structure/simple_door/wood"
+          },
+          "ends": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "stone_brick",
+              "x": 19,
+              "y": 11
+            },
+            {
+              "style": "slate",
+              "x": 19,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 15
+            },
+            {
+              "style": "dark_cobble",
+              "x": 19,
+              "y": 16
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 11
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 15
+            },
+            {
+              "style": "dark_cobble",
+              "x": 20,
+              "y": 16
+            },
+            {
+              "style": "stone_brick",
+              "x": 21,
+              "y": 11
+            },
+            {
+              "style": "slate",
+              "x": 21,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 15
+            },
+            {
+              "style": "dark_cobble",
+              "x": 21,
+              "y": 16
+            }
+          ],
+          "program": "optional framed door"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 19,
+              "y": 24
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 19,
+              "y": 26
+            },
+            {
+              "style": "sand_slab",
+              "x": 19,
+              "y": 27
+            },
+            {
+              "style": "sand_brick",
+              "x": 19,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 20,
+              "y": 24
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 20,
+              "y": 27
+            },
+            {
+              "style": "sand_brick",
+              "x": 20,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 21,
+              "y": 24
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 21,
+              "y": 26
+            },
+            {
+              "style": "sand_slab",
+              "x": 21,
+              "y": 27
+            },
+            {
+              "style": "sand_brick",
+              "x": 21,
+              "y": 28
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 24,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 24,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 24,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 25,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 25,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 25,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 21
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "sand_brick",
+              "x": 25,
+              "y": 32
+            },
+            {
+              "style": "sand_brick",
+              "x": 25,
+              "y": 33
+            },
+            {
+              "style": "sand_brick",
+              "x": 25,
+              "y": 34
+            },
+            {
+              "style": "sand_slab",
+              "x": 26,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 26,
+              "y": 33
+            },
+            {
+              "style": "sand_slab",
+              "x": 26,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 27,
+              "y": 34
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 28,
+              "y": 34
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              1
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 32,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 32,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 32,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 32,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 33,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 33,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 33,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 33,
+              "y": 28
+            },
+            {
+              "style": "dark_cobble",
+              "x": 34,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 34,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 34,
+              "y": 27
+            },
+            {
+              "style": "dark_cobble",
+              "x": 34,
+              "y": 28
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 19
+            },
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 20
+            },
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 21
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 20
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 21
+            },
+            {
+              "style": "slate",
+              "x": 40,
+              "y": 19
+            },
+            {
+              "style": "running_cobble",
+              "x": 40,
+              "y": 20
+            },
+            {
+              "style": "slate",
+              "x": 40,
+              "y": 21
+            },
+            {
+              "style": "stone_brick",
+              "x": 41,
+              "y": 19
+            },
+            {
+              "style": "stone_brick",
+              "x": 41,
+              "y": 20
+            },
+            {
+              "style": "stone_brick",
+              "x": 41,
+              "y": 21
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 32
+            },
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 33
+            },
+            {
+              "style": "dark_cobble",
+              "x": 38,
+              "y": 34
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 33
+            },
+            {
+              "style": "running_cobble",
+              "x": 39,
+              "y": 34
+            },
+            {
+              "style": "white_marble",
+              "x": 40,
+              "y": 32
+            },
+            {
+              "style": "running_cobble",
+              "x": 40,
+              "y": 33
+            },
+            {
+              "style": "white_marble",
+              "x": 40,
+              "y": 34
+            },
+            {
+              "style": "marble_grid",
+              "x": 41,
+              "y": 32
+            },
+            {
+              "style": "marble_grid",
+              "x": 41,
+              "y": 33
+            },
+            {
+              "style": "marble_grid",
+              "x": 41,
+              "y": 34
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              3,
+              0
+            ],
+            [
+              3,
+              1
+            ]
+          ],
+          "floor": [
+            {
+              "style": "sand_brick",
+              "x": 45,
+              "y": 12
+            },
+            {
+              "style": "sand_slab",
+              "x": 45,
+              "y": 13
+            },
+            {
+              "style": "sand_slab",
+              "x": 45,
+              "y": 14
+            },
+            {
+              "style": "slate",
+              "x": 45,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 45,
+              "y": 16
+            },
+            {
+              "style": "sand_brick",
+              "x": 46,
+              "y": 12
+            },
+            {
+              "style": "running_cobble",
+              "x": 46,
+              "y": 13
+            },
+            {
+              "style": "running_cobble",
+              "x": 46,
+              "y": 14
+            },
+            {
+              "style": "running_cobble",
+              "x": 46,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 46,
+              "y": 16
+            },
+            {
+              "style": "sand_brick",
+              "x": 47,
+              "y": 12
+            },
+            {
+              "style": "sand_slab",
+              "x": 47,
+              "y": 13
+            },
+            {
+              "style": "sand_slab",
+              "x": 47,
+              "y": 14
+            },
+            {
+              "style": "slate",
+              "x": 47,
+              "y": 15
+            },
+            {
+              "style": "stone_brick",
+              "x": 47,
+              "y": 16
+            }
+          ],
+          "program": "open approach and sill"
+        },
+        {
+          "door": null,
+          "ends": [
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "floor": [
+            {
+              "style": "stone_brick",
+              "x": 45,
+              "y": 24
+            },
+            {
+              "style": "slate",
+              "x": 45,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 45,
+              "y": 26
+            },
+            {
+              "style": "white_marble",
+              "x": 45,
+              "y": 27
+            },
+            {
+              "style": "marble_grid",
+              "x": 45,
+              "y": 28
+            },
+            {
+              "style": "stone_brick",
+              "x": 46,
+              "y": 24
+            },
+            {
+              "style": "running_cobble",
+              "x": 46,
+              "y": 25
+            },
+            {
+              "style": "running_cobble",
+              "x": 46,
+              "y": 26
+            },
+            {
+              "style": "running_cobble",
+              "x": 46,
+              "y": 27
+            },
+            {
+              "style": "marble_grid",
+              "x": 46,
+              "y": 28
+            },
+            {
+              "style": "stone_brick",
+              "x": 47,
+              "y": 24
+            },
+            {
+              "style": "slate",
+              "x": 47,
+              "y": 25
+            },
+            {
+              "style": "slate",
+              "x": 47,
+              "y": 26
+            },
+            {
+              "style": "white_marble",
+              "x": 47,
+              "y": 27
+            },
+            {
+              "style": "marble_grid",
+              "x": 47,
+              "y": 28
+            }
+          ],
+          "program": "open approach and sill"
+        }
+      ]
+    }
+  ]
+}

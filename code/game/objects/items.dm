@@ -101,6 +101,7 @@
 /obj/item/Destroy()
 	if (extraction_surface_source?.service) extraction_surface_source.service.observe_disposal(src)
 	unregister_abandoned_item()
+	arcane_enchant_forget() // arcane_enchant.dm
 	actions = list()
 	if (ismob(loc))
 		var/mob/m = loc
@@ -159,7 +160,10 @@
 		if (5.0)
 			size = "huge"
 	var/decay_notice = abandonment_notice()
-	return ..(user, distance, "", "It is a [size] item.[decay_notice]")
+	. = ..(user, distance, "", "It is a [size] item.[decay_notice]")
+	arcane_examine(user)
+	substance_examine(user) // faction_substances.dm
+	heap_examine(user) // item_heaps.dm
 
 /obj/item/attack_hand(mob/user as mob)
 	if (extraction_surface_source)
@@ -169,6 +173,7 @@
 		return
 	if (isturf(loc) && anchored) return
 	if (!user) return
+	if (magic_repo_id && magic_repo_move_refused(user)) return // repository_wards.dm
 	if (istype(user, /mob/living/human))
 		var/mob/living/human/HM = user
 		if (HM.werewolf && HM.body_build.name != "Default") return
@@ -177,6 +182,7 @@
 		return
 	if (do_after(user,equiptimer, src, can_move = equiptimer))
 		if (src in range(1,user))
+			var/turf/stoop_from = isturf(loc) ? loc : null
 			if (hasorgans(user))
 				var/mob/living/human/H = user
 				var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
@@ -202,6 +208,9 @@
 					return
 			user.put_in_active_hand(src)
 			pickup(user)
+			if (stoop_from && loc == user && ishuman(user))
+				var/mob/living/human/stooper = user
+				stooper.body_motion_stoop(stoop_from)
 		else
 			if (!isturf(src.loc))
 				if (hasorgans(user))
@@ -293,6 +302,7 @@
 
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
+	heap_split_one() // item_heaps.dm: take one item, leave the rest
 	clear_throw_launch()
 	throw_flight_token = null
 	reset_abandonment()

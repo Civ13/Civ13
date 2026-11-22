@@ -1,7 +1,8 @@
 name: Discord PR changelog
+# Runs on the push a PR merge makes to master. pull_request_target is blocked
+# by default on public repositories from 2026-12-02 and is not needed here.
 on:
-  pull_request_target:
-    types: [closed]
+  push:
     branches: [master]
 permissions:
   contents: read
@@ -11,7 +12,7 @@ concurrency:
   queue: max
 jobs:
   publish:
-    if: github.repository == 'Civ13/Civ13' && github.event.pull_request.merged == true
+    if: github.repository == 'Civ13/Civ13'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: discord-changelog
@@ -19,7 +20,7 @@ jobs:
       contents: write
       pull-requests: read
     steps:
-      # Never check out or execute the PR head with this token/webhook.
+      # Master's own pushed commit; never a PR head.
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ github.sha }}

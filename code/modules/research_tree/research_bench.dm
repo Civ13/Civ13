@@ -797,7 +797,7 @@ var/global/list/research_benches = list()
 	// sample has to be looted / traded / found. Studying it advances the CURRENT
 	// subject only, and each distinct item TYPE teaches something just once.
 	for (var/stype in get_node_recipe_paths(assigned_node))
-		if (!istype(W, stype))
+		if (!istype(W, stype) || research_sample_node(W) != assigned_node)
 			continue
 		if (!map.can_manage_faction_research(user, faction))
 			to_chat(user, SPAN_WARNING("Only your faction's research staff may study samples here."))

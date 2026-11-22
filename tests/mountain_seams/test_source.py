@@ -19,6 +19,7 @@ SOURCE = ROOT / 'code/modules/1713/mountain_seams.dm'
 METADATA = ROOT / 'code/game/objects/map_metadata/nomads/nomads_americas.dm'
 ASIA_METADATA = ROOT / 'code/game/objects/map_metadata/nomads/nomads_asia.dm'
 ASIA_MAP = ROOT / 'maps/nomads/nomads_asia.dmm'
+EARTH_METADATA = ROOT / 'code/game/objects/map_metadata/nomads/nomads_earth.dm'
 DME = ROOT / 'civ13.dme'
 MAPS = {
     'NOMADS_AMERICAS_NORTH': ROOT / 'maps/nomads/nomads_americas_north.dmm',
@@ -149,9 +150,11 @@ class SourceContract(unittest.TestCase):
         meta = METADATA.read_text(encoding='utf-8')
         self.assertEqual(meta.count('mountain_seams = TRUE'), 2)
         self.assertEqual(ASIA_METADATA.read_text(encoding='utf-8').count('\tmountain_seams = TRUE\n'), 1)
+        # The seven Earth-shaped lands are one-level mountain maps too.
+        self.assertEqual(EARTH_METADATA.read_text(encoding='utf-8').count('\tmountain_seams = TRUE\n'), 7)
         self.assertIn('/obj/map_metadata/var/mountain_seams = FALSE', source())
         others = [p for p in (ROOT / 'code').rglob('*.dm')
-                  if p not in (SOURCE, METADATA, ASIA_METADATA) and 'mountain_seams = TRUE' in p.read_text(encoding='utf-8', errors='replace')]
+                  if p not in (SOURCE, METADATA, ASIA_METADATA, EARTH_METADATA) and 'mountain_seams = TRUE' in p.read_text(encoding='utf-8', errors='replace')]
         self.assertEqual(others, [])
 
     def test_ground_rule(self):

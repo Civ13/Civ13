@@ -54,13 +54,19 @@
 /obj/structure/vehicleparts/frame/proc/wall_weight(list/wall, steel_only = FALSE)
 	if (!islist(wall) || wall.len < 4 || !wall[1] || wall[1] == "none")
 		return 0
-	var/weight = max(0, wall[4]) * VEHICLE_WALL_WEIGHT
+	// A composite panel's armour is not part of the steel body: it weighs
+	// COMPOSITE_PANEL_WEIGHT of steel and is left out of the reference
+	// (composite_armour.dm).
+	var/panel = composite_bonus_on(wall)
+	var/weight = max(0, wall[4] - panel) * VEHICLE_WALL_WEIGHT
 	// A hull material weighs its walls from their steel armour (vehicle_hulls.dm).
 	var/list/stats = vehicle_hull_stats(hull_material)
 	if (stats)
 		weight /= stats[2]
 		if (!steel_only)
 			weight *= stats[1]
+	if (!steel_only)
+		weight += panel * VEHICLE_WALL_WEIGHT * COMPOSITE_PANEL_WEIGHT
 	return weight
 
 // TRUE for things standing on a frame that count as cargo rather than

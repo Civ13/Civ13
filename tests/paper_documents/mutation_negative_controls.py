@@ -11,7 +11,7 @@ controls=[
  ('section-sequence','model',' || next["next_section"] < current["next_section"]','',1,'test_invalid_candidate_or_identity_fails_without_partial_legacy_write'),
  ('physical-snapshot','model','!legacy || json_encode(legacy) != edit["legacy_json"]','!legacy',1,'test_canonical_inplace_change_legacy_drift_and_deletion_reject'),
  ('classified-erasure','paper','\t\tnext["sections"] = list()\n','',1,'test_erasure_clears_all_languages_without_minting_new_document_or_reusing_ids'),
- ('editor-after-prompt','paper','if (!t || usr != writer || !paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen))','if (!t)',1,'test_topic_guard_dominates_prompt_and_commit_and_chemistry_reports_success_only'),
+ ('editor-after-prompt','paper','if (!raw || usr != writer || !paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen))','if (!raw)',1,'test_topic_guard_dominates_prompt_and_commit_and_chemistry_reports_success_only'),
  ('control-session','view','actor.client != expected_client || expected_client.mob != actor || ','',1,'test_legacy_guard_rejects_classification_logout_transfer_state_and_tool_change'),
  ('actual-active-pen','view',' || actor.get_active_hand() != pen','',1,'test_legacy_guard_rejects_classification_logout_transfer_state_and_tool_change'),
  ('closed-envelope','view','E.opened && ','',1,'test_legacy_guard_validates_container_page_and_open_envelope'),

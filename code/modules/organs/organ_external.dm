@@ -13,6 +13,8 @@
 
 /obj/item/organ/external
 	name = "external"
+	// Objects stuck in this organ by a hit, as opposed to surgical cavity implants (#6300).
+	var/tmp/list/embedded_items
 	min_broken_damage = 70
 	max_damage = 0
 	dir = SOUTH
@@ -236,6 +238,8 @@
 				qdel(W)
 				break
 			parent.update_damages()
+	if (istype(owner))
+		owner.refresh_held_items()
 
 
 /****************************************************
@@ -251,6 +255,8 @@
 
 
 /obj/item/organ/external/take_damage(brute, burn, sharp, edge, used_weapon = null, silent = 0)
+	if (owner && owner.offline_sleep_protected())
+		return 0
 	brute = round(brute * species.brute_mod, 0.1)
 	burn = round(burn * species.burn_mod, 0.1)
 	if((brute <= 0) && (burn <= 0))
@@ -798,6 +804,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 	if (cannot_amputate || !owner)
 		return
+	if (owner.offline_sleep_protected())
+		return
 
 	switch(disintegrate)
 		if (DROPLIMB_EDGE)
@@ -853,6 +861,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 			if(disintegrate != DROPLIMB_BURN)
 				stump.sever_artery()
 			stump.update_damages()
+	if (istype(victim))
+		victim.refresh_held_items()
 	spawn(1)
 		victim.updatehealth()
 		victim.UpdateDamageIcon()
@@ -1058,9 +1068,14 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 // Pressure from a hand is live state; it never saves.
 /obj/item/organ/external/persistence_runtime_var(key)
-	if (key == "applied_pressure")
+	if (key == "applied_pressure" || key == "bone_set_on_fracture")
 		return TRUE
 	return ..()
+
+// Set when bone setting begins on a broken bone (surgery/bones.dm), so a
+// fracture that heals during the operation is not broken again.
+/obj/item/organ/external
+	var/tmp/bone_set_on_fracture = FALSE
 
 // lasts: Life ticks a makeshift (rope, twine) tourniquet holds before slipping
 // loose; 0 for a proper one.
@@ -1147,6 +1162,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 		else
 			owner.visible_message("<span class='danger'>\The [W] sticks in the wound!</span>")
 	implants += W
+	LAZYDISTINCTADD(embedded_items, W)
 	owner.embedded_flag = TRUE
 	owner.verbs += /mob/proc/yank_out_object
 	W.add_blood(owner)
@@ -1154,6 +1170,15 @@ Note that amputating the affected organ does in fact remove the infection from t
 		var/mob/living/H = W.loc
 		H.drop_from_inventory(W)
 	W.loc = owner
+
+// Objects stuck in a human's organs can be seen and yanked out like mob-level ones;
+// surgical cavity implants stay hidden (#6300).
+/mob/living/human/get_visible_implants(var/class = FALSE)
+	. = ..()
+	for (var/obj/item/organ/external/organ in organs)
+		for (var/obj/item/O in organ.embedded_items)
+			if (O.loc == src && (O in organ.implants) && O.w_class > class)
+				. |= O
 
 /obj/item/organ/external/removed(var/mob/living/user, var/ignore_children = FALSE)
 

@@ -300,7 +300,7 @@ var/global/list/recruitment_combat_skills = list("rifle", "pistol", "swords", "b
 /mob/living/human/proc/recruitment_account()
 	if (!client || client.mob != src || IsGuestKey(client.key) || !client.ckey)
 		return null
-	if (persistence_owner_ckey && persistence_owner_ckey != client.ckey)
+	if (persistence_owner_ckey && persistence_owner_ckey != client.owner_key())
 		return null
 	return client.ckey
 
@@ -536,6 +536,7 @@ var/global/list/recruitment_combat_skills = list("rifle", "pistol", "swords", "b
 	faction_rename_assoc_key(S["policies"], old_name, new_name)
 	faction_rename_assoc_key(S["audit"], old_name, new_name)
 	faction_roster_rename(old_name, new_name)
+	province_rename_faction(old_name, new_name) // province_siege.dm
 	var/list/apps = S["applications"]
 	for (var/id in apps)
 		var/list/A = apps[id]

@@ -39,6 +39,10 @@
 		if (chat)
 			chat.on_ready()
 		return
+	// A chat line the page wants translated (code/modules/chat/chat_translate.dm).
+	if (href_list["chat_translate"])
+		chat_translator.handle_topic(src, href_list)
+		return
 
 	if (!usr || usr != mob)	//stops us calling Topic for somebody else's client. Also helps prevent usr=null
 		return
@@ -64,37 +68,6 @@
 		cmd_admin_pm_todiscord(pm_sender,txtinput)
 		return
 
-	// see quickBan.dm
-	if (href_list["quickBan_removeBan"])
-		var/UID = href_list["quickBan_removeBan_UID"]
-		if (UID)
-			var/confirm = input("Are you sure you want to remove the ban with the UID '[UID]' ?") in list("Yes", "No")
-			if (confirm == "Yes")
-				var/client/callers = locate(href_list["caller"])
-				var/ckey = href_list["quickBan_removeBan_ckey"]
-				var/cID = href_list["quickBan_removeBan_cID"]
-				var/ip = href_list["quickBan_removeBan_ip"]
-
-				var/bans_file = null
-
-				if (fexists("SQL/bans.txt"))
-					bans_file = "SQL/bans.txt"
-				if (bans_file)
-					var/details = file2text(bans_file)
-					var/list/details_lines = splittext(details, "|||\n")
-					if (details_lines.len)
-						for(var/i=1,i<=details_lines.len,i++)
-							var/list/details2 = splittext(details_lines[i], ";")
-							if (details2.len>=11 && details2[3] == UID)
-								details_lines -= details_lines[i]
-								fdel(bans_file)
-								for(var/L in details_lines)
-									text2file("[L]|||", bans_file)
-					log_admin("[key_name(callers)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.")
-					message_admins("[key_name(callers)] removed a ban for '[UID]/[ckey]/[cID]/[ip]'.", key_name(callers))
-					for (var/client/C in clients)
-						if (C.ckey == ckey)
-							to_chat(C, "<span class = 'good'>href_list["Your ban has been lifted."]</span>")
 	//Logs all hrefs
 	if (config && config.log_hrefs && href_logfile)
 		href_logfile << "<small>[time2text(world.timeofday,"hh:mm")] [src] (usr:[usr])</small> || [hsrc ? "[hsrc] " : ""][href]<br>"
@@ -160,6 +133,9 @@
 			del(src)
 			return
 
+	// Once an empty-world cutover has been released, retry on the new world.
+	if(!nomads_lifecycle.admit_client())
+		return null
 	clients += src
 	directory[ckey] = src
 
@@ -261,15 +237,10 @@
 	if (holder)
 		add_admin_verbs()
 		admin_memo_show()
+	watchlist_login(src)
 	agent_control.update_handover_verbs(src)
 
-	// Forcibly enable hardware-accelerated graphics, as we need them for the lighting overlays.
-	// (but turn them off first, since sometimes BYOND doesn't turn them on properly otherwise)
-	spawn(5) // And wait a half-second, since it sounds like you can do this too fast.
-		if (src)
-			winset(src, null, "command=\".configure graphics-hwmode off\"")
-			sleep(1) // wait a bit more, possibly fixes hardware mode not re-activating right
-			winset(src, null, "command=\".configure graphics-hwmode on\"")
+	ensure_hardware_graphics()
 	
 	send_resources()
 
@@ -305,6 +276,26 @@
 		sleep(1)
 
 	movementMachine_clients += src
+
+// Hardware graphics are needed for the lighting overlays. Region travel
+// relinks the same Dream Seeker to another world, and every world used to turn
+// hardware mode off and on again at connect: after a few trips the renderer
+// came back as a blank black window (Val, 2026-11-22). Leave it alone when it is
+// already on; turn it on when it is off, and only kick it off and on again
+// when the client says plainly that turning it on did not take.
+/client/proc/ensure_hardware_graphics()
+	set waitfor = FALSE
+	sleep(5) // let the skin finish loading first
+	if (!src || winget(src, null, "hwmode") == "true")
+		return
+	winset(src, null, "command=\".configure graphics-hwmode on\"")
+	sleep(5)
+	if (!src || winget(src, null, "hwmode") != "false")
+		return
+	winset(src, null, "command=\".configure graphics-hwmode off\"")
+	sleep(1)
+	if (src)
+		winset(src, null, "command=\".configure graphics-hwmode on\"")
 
 /client/MouseEntered(atom/object, location, control, params)
 	UpdateMouseScreenLoc(params)
@@ -386,6 +377,8 @@
 	var/sql_ip = sql_sanitize_text(public_address())
 	if (sql_ip == null)
 		sql_ip = "HOST"
+	// Shared across regions for alt lookups and IP/computer id bans.
+	shared_records.note_connection(ckey, sql_ip, computer_id)
 	var/F = file("SQL/playerlogs.txt")
 	var/full_logs = file2text(F)
 	var/list/full_logs_split = splittext(full_logs, "|\n")

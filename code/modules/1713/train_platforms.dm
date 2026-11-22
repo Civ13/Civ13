@@ -10,10 +10,8 @@
 // They are never saved: a segment rebuilds them from its car kind, its place
 // in the car and its saved door state (open_doors).
 
-#define TRAIN_CAR_LENGTH 4 // the four-wheel stock and the heavy locomotives
-#define TRAIN_LONG_CAR_LENGTH 8 // bogie stock
-#define TRAIN_LEFT -1
-#define TRAIN_RIGHT 1
+// TRAIN_CAR_LENGTH, TRAIN_LONG_CAR_LENGTH, TRAIN_LEFT and TRAIN_RIGHT are in
+// code/__defines/trains.dm: the train sheets (train_draught.dm) use them too.
 
 // The load of every platform segment in the train taking the current step,
 // planned before any of them moves so that a tight curve, where one car's
@@ -126,6 +124,10 @@ var/global/train_step_plain = FALSE
 // where side is TRAIN_LEFT, 0 or TRAIN_RIGHT and edge is "out", "in" (side
 // tiles only), "front" or "back".
 /proc/train_car_layout(kind)
+	// A car drawn on a train sheet carries its whole layout in its kind
+	// (train_draught.dm).
+	if (copytext(kind, 1, 3) == "c:")
+		return train_custom_layout(kind)
 	var/static/list/layouts = null
 	if (!layouts)
 		layouts = list()
@@ -394,6 +396,7 @@ var/global/train_step_plain = FALSE
 				list("edges" = list()),
 				list("edges" = rails)))
 		train_locomotive_layouts(layouts)
+		train_electric_layouts(layouts)
 	return layouts[kind]
 
 // How many tiles long a car of this kind is.
@@ -431,7 +434,23 @@ var/global/train_step_plain = FALSE
 		return FALSE
 	if (istype(AM, /obj/structure/wild) || istype(AM, /obj/structure/sign) || istype(AM, /obj/structure/lamp))
 		return FALSE
+	if (train_track_fixture(AM))
+		return FALSE
 	return TRUE
+
+// What is built into the line or stands beside it stays where it is when a
+// deck passes over or along it: pits and boards between the rails, posts,
+// gates, levers and the yard's coal, sand and water.
+/proc/train_track_fixture(atom/movable/AM)
+	if (istype(AM, /obj/structure/rail_ash_pit) || istype(AM, /obj/structure/rail_drop_pit) || istype(AM, /obj/structure/train_crossing_boards))
+		return TRUE
+	if (istype(AM, /obj/structure/train_lineside) || istype(AM, /obj/structure/train_buffer_stop) || istype(AM, /obj/structure/train_lever))
+		return TRUE
+	if (istype(AM, /obj/structure/train_lever_frame) || istype(AM, /obj/structure/train_token_instrument) || istype(AM, /obj/structure/train_turntable) || istype(AM, /obj/structure/train_livestock_ramp))
+		return TRUE
+	if (istype(AM, /obj/structure/rail_depot) || istype(AM, /obj/structure/rail_water))
+		return TRUE
+	return FALSE
 
 /////////////////////////////////////////////////////////////////////////////
 // Segments
@@ -562,6 +581,8 @@ var/global/train_step_plain = FALSE
 	overlays.Cut()
 	if (wrecked)
 		overlays += image(icon, "wreck", layer = layer + 0.01)
+	else if (derailed)
+		overlays += image(icon, "derailed", layer = layer + 0.01)
 	if (!isturf(loc))
 		return
 	// A bulk load shows as a heap on every section (train_freight.dm).
@@ -704,6 +725,8 @@ var/global/train_step_plain = FALSE
 	to_chat(user, "This is section [seg_index] of [car_length()]. A crowbar takes an empty, uncoupled car apart into a kit.")
 	if (wrecked)
 		to_chat(user, SPAN_WARNING("It is off the rails. Weld it back together before the train can move."))
+	else if (derailed && !unit_engine())
+		to_chat(user, SPAN_WARNING("It is off the rails. Lift it back on with a rerailing jack before the train can move."))
 	else if (health < initial(health))
 		to_chat(user, "It is damaged ([round(100 * health / initial(health))]%). A welding tool repairs it.")
 	if (braced)
@@ -995,7 +1018,7 @@ var/global/train_step_plain = FALSE
 	if (!has_platform)
 		return null
 	for (var/obj/structure/trains/platform/P in cars)
-		if (P.wrecked || P.braced)
+		if (P.wrecked || P.braced || P.derailed)
 			return P
 	var/turf/next_loc = target
 	var/next_dir = heading
@@ -1123,12 +1146,7 @@ var/global/train_step_plain = FALSE
 	if (!turfs)
 		return "There is no room for the car here."
 	for (var/turf/T in turfs)
-		var/straight = FALSE
-		for (var/obj/structure/rails/R in T)
-			if (R.type == /obj/structure/rails/regular || R.type == /obj/structure/rails/regular/horizontal || R.type == /obj/structure/rails)
-				if (R.dir == heading || R.dir == OPPOSITE_DIR(heading))
-					straight = TRUE
-		if (!straight)
+		if (!rail_straight_along(T, heading))
 			return "The car needs [car_length()] tiles of straight track running the way you face, starting under the kit."
 		for (var/obj/structure/trains/TR in T)
 			return "\The [TR] is in the way."

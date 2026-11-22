@@ -56,6 +56,8 @@
 			return
 
 /obj/covers/ex_act(severity)
+	// A ship's belt armour takes the worst of a blast (naval/hull_armour.dm).
+	severity = hull_armour_soften(src, severity)
 	switch(severity)
 		if (1.0)
 			Destroy(src)
@@ -251,6 +253,10 @@
 				to_chat(user, "You removed \the [src] from the floor.")
 				qdel(src)
 				return
+		// A wall that holds nothing up comes down (building_dismantle.dm).
+		else if (wall_dismantle_tool(W, user))
+			wall_dismantle(W, user)
+			return
 	if (wall)
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		if (istype(W, /obj/item/weapon/poster/religious))

@@ -319,6 +319,8 @@
 
 /obj/item/stack/cable_coil/cut/New()
 	..()
+	if(restoring) // a load restores the saved length and offsets
+		return
 	if(!amount)
 		amount = rand(1,2)
 	pixel_x = rand(-2,2)

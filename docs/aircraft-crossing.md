@@ -46,3 +46,24 @@ all she is lost and admins are told; the crew arrive on the ground.
 The crew make their home in the land they fly to, as with any trip between
 regions. A world restarted mid-flight does not replay the flight; the plane
 was not saved after she left.
+
+## Over the map edges
+
+Where the host has switched on edge travel (the group option
+`edge_travel_oceans`), there is no destination menu: Fly to another land only
+says to fly on over the edge. A plane that flies into the edge of the map
+(`do_vehicle_check`) sets off by itself to whatever her heading meets beyond
+it, by the world links table (`aircraft_edge.dm`, `air_edge_route()`).
+
+- A land that shares the edge is one leg of flying.
+- Oceans have no air level, so a plane flying into one is carried straight
+  across it in the same heading: to Gaia or Greenland if her line crosses the
+  island's box in the Atlantic, else to the far edge and on to what lies
+  beyond. Each 100 tiles of ocean is a leg; a leg burns the same 20 seconds of
+  cruise fuel a tile of the old layout did.
+- With nothing to land on that way (north over the Arctic, round the Southern
+  Ocean), or too little fuel, she is stopped at the edge as before and stalls
+  if she does not turn.
+- She is packed and flown as in "Setting off", and built in from the arrival
+  edge at the place along it her line reaches (the payload's `along`).
+

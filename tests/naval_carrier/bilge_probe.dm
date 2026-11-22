@@ -944,6 +944,247 @@ var/naval_runtime_error = FALSE
 	qdel(L)
 	naval_check(plank.overlays.len == bare, "and it goes with her ledger")
 
+// Watertight compartments (hull_compartments.dm): a steel ship of 4 x 16
+// tiles parted by two lines of bulkheads, each with a watertight door.
+/proc/compartment_checks()
+	for (var/x = 40, x <= 43, x++)
+		for (var/y = 18, y <= 33, y++)
+			steel_lay(x, y)
+	for (var/y in list(23, 28))
+		for (var/x = 40, x <= 43, x++)
+			if (x == 42)
+				new /obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight(locate(x, y, 2))
+			else
+				new /obj/structure/hull_bulkhead(locate(x, y, 2))
+	var/obj/structure/hull_tiller/tiller = new(locate(40, 18, 2))
+	naval_check(isnull(tiller.commission("Liner", NORTH)) && tiller.craft, "a ship with bulkheads is commissioned")
+	var/datum/hull_ledger/L = tiller.craft.ledger
+	naval_check(L.tiles == 64 && L.seep_tiles == 0, "she is 64 tiles of steel")
+	naval_check(L.bays_split() && L.bay_water.len == 3, "two lines of bulkheads part her into three compartments ([L.bay_water.len])")
+	var/sizes = 0
+	for (var/n in L.bay_size)
+		sizes += n
+	naval_check(sizes == 64, "every tile of her is in one of them")
+	var/turf/aft = locate(41, 20, 2)
+	var/turf/mid = locate(41, 25, 2)
+	var/turf/fore = locate(41, 31, 2)
+	var/aft_bay = L.bay_at(aft)
+	var/mid_bay = L.bay_at(mid)
+	var/fore_bay = L.bay_at(fore)
+	naval_check(aft_bay && mid_bay && fore_bay && aft_bay != mid_bay && mid_bay != fore_bay && aft_bay != fore_bay, "aft, amidships and forward lie in different compartments")
+	naval_check(L.bay_at(locate(42, 23, 2)) == mid_bay && L.bay_size[aft_bay] == 20 && L.bay_size[mid_bay] == 20 && L.bay_size[fore_bay] == 24, "a bulkhead's own tile holds water with the compartment beside it")
+	naval_check(L.bay_name(fore_bay) == "forward compartment" && L.bay_name(aft_bay) == "after compartment", "they are named from her bow")
+	// A hole aft floods the after compartment only, to its brim.
+	qdel(locate(/obj/covers/steelplating) in aft)
+	naval_check(L.holes == 1 && L.hole_at(aft), "a plate shot away aft is a hole")
+	L.crewed = TRUE
+	L.step_ledger(600)
+	naval_check(near(L.bay_water[aft_bay], 80) && L.bay_water[mid_bay] == 0 && L.bay_water[fore_bay] == 0 && near(L.water, 80), "ten minutes on, the after compartment is full and the others are dry ([json_encode(L.bay_water)])")
+	naval_check(L.flooded_tiles() == 20 && !L.founders() && !L.sink_left && !L.grounded, "with a quarter of her flooded she floats on")
+	naval_check(L.bays_told["[L.bay_first[aft_bay]]"], "her crew was told the after compartment flooded")
+	var/status = L.status_text()
+	naval_check(findtext(status, "into 3 compartments") && findtext(status, "after compartment <b>flooded</b>") && findtext(status, "forward compartment dry"), "the tiller reads each compartment ([status])")
+	// Pumping and bailing take from the compartment they are in.
+	naval_check(L.remove_water(2, mid) == 0, "a pump amidships lifts nothing: its compartment is dry")
+	naval_check(L.remove_water(2, locate(40, 21, 2)) == 2 && near(L.bay_water[aft_bay], 78) && near(L.water, 78), "a bailer aft lifts the after compartment's water")
+	naval_check(L.water_at(aft) == L.bay_water[aft_bay] && L.water_at(fore) == 0, "the water where each stands is its compartment's")
+	// Opening the door between them lets the water even out.
+	var/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight/D = locate() in locate(42, 23, 2)
+	L.bays_split()
+	D.door_closed()
+	naval_check(L.bays_dirty, "a watertight door that moves has her compartments walked again")
+	D.state = TRUE
+	D.density = FALSE
+	naval_check(L.bays_split() && L.bay_water.len == 2 && near(L.water, 78) && L.bay_at(aft) == L.bay_at(mid) && near(L.water_at(mid), 78), "open, the door joins two compartments and keeps their water ([json_encode(L.bay_water)])")
+	D.state = FALSE
+	D.density = TRUE
+	hull_compartments_changed(get_turf(D))
+	naval_check(L.bays_split() && L.bay_water.len == 3, "shut, it parts them again")
+	aft_bay = L.bay_at(aft)
+	mid_bay = L.bay_at(mid)
+	naval_check(near(L.bay_water[aft_bay], 39) && near(L.bay_water[mid_bay], 39) && near(L.water, 78), "the water that ran through stays on both sides ([json_encode(L.bay_water)])")
+	// Saved and read back.
+	var/list/saved = L.to_list()
+	naval_check(islist(saved["bays"]) && length(saved["bays"]) == 3, "her record keeps each compartment's water")
+	L.water = 0
+	L.bays_sync()
+	L.from_list(saved)
+	naval_check(L.bays_split() && near(L.bay_water[L.bay_at(aft)], 39) && near(L.bay_water[L.bay_at(mid)], 39) && L.bay_water[L.bay_at(fore)] == 0 && near(L.water, 78), "read back, each compartment has its own water again ([json_encode(L.bay_water)])")
+	// A shut door holds: the open hole fills the after compartment and only it.
+	L.step_ledger(600)
+	naval_check(near(L.bay_water[L.bay_at(aft)], 80) && near(L.bay_water[L.bay_at(mid)], 39), "the shut door holds the sea aft")
+	// A second hole amidships floods more than half of her: she founders.
+	qdel(locate(/obj/covers/steelplating) in mid)
+	L.step_ledger(600)
+	naval_check(L.flooded_tiles() == 40 && L.founders() && L.sink_left == HULL_SINK_WARNINGS, "two compartments flooded, 40 of her 64 tiles, and she founders ([L.flooded_tiles()])")
+	naval_check(L.water < L.capacity() * 0.98, "though she is far from full ([L.water] of [L.capacity()])")
+	L.remove_water(10, mid)
+	naval_check(!L.sink_tick() && L.sink_left == 0, "pumping the second compartment below its brim stops the count")
+	// Hauled out dry: the compartments follow the bilge.
+	L.water = 0
+	L.bays_sync()
+	var/dry = 0
+	for (var/w in L.bay_water)
+		dry += w
+	naval_check(dry == 0, "a bilge emptied outright empties every compartment")
+	L.crewed = FALSE
+	tiller.craft.set_speed(VESSEL_SPEED_STOP)
+
+// The source tile order survives a turn but is no longer fresh survey order.
+/proc/compartment_crossing_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(25, 53, 27, 57, "Bay crossing", TRUE)
+	var/datum/craft_body/built/body = tiller.body()
+	var/datum/hull_ledger/L = tiller.craft.ledger
+	new /obj/structure/hull_bulkhead(locate(25, 55, 2))
+	new /obj/structure/hull_bulkhead(locate(27, 55, 2))
+	new /obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight(locate(26, 55, 2))
+	var/one_index = L.bay_cell_index(locate(25, 54, 2))
+	var/two_index = L.bay_cell_index(locate(27, 57, 2))
+	var/door_index = L.bay_cell_index(locate(26, 55, 2))
+	naval_check(L.bays_split() && L.bay_water.len == 2, "crossing fixture has two compartments")
+	naval_check(body.turn_to(WEST), "crossing fixture turns before packing")
+	var/list/one = body.offsets[one_index]
+	var/list/two = body.offsets[two_index]
+	var/list/door = body.offsets[door_index]
+	var/list/dry_packed = sea_crossing_pack(tiller)
+	var/list/dry_record = islist(dry_packed) ? dry_packed["record"] : null
+	naval_check(dry_record && sea_crossing_record_ok(json_decode(json_encode(dry_record))), "dry split hull packs, crosses the wire and passes validation")
+	L.add_water(2.5, L.capacity(), locate(body.px + one[1], body.py + one[2], body.z))
+	var/turf/two_at = locate(body.px + two[1], body.py + two[2], body.z)
+	var/full_side = L.bay_capacity(L.bay_at(two_at))
+	var/second_volume = full_side - 0.75
+	L.add_water(second_volume, L.capacity(), two_at)
+	var/list/packed = sea_crossing_pack(tiller)
+	var/list/R = islist(packed) ? json_decode(json_encode(packed["record"])) : null
+	naval_check(R && sea_crossing_record_ok(R), "wet split hull passes crossing validation after JSON")
+	if (!R)
+		return
+	var/list/wire_ledger = R["ledger"]
+	var/list/bays = wire_ledger["bays"]
+	if (!islist(bays) || bays.len != 2)
+		naval_check(FALSE, "wire ledger has both bays")
+		return
+	var/list/legacy = R.Copy()
+	var/list/scalars = wire_ledger.Copy()
+	scalars -= "bays"
+	scalars -= "bay_order_heading"
+	legacy["ledger"] = scalars
+	naval_check(sea_crossing_record_ok(legacy), "legacy scalar crossing ledger is still accepted")
+	var/list/bad = R.Copy()
+	var/list/bad_ledger = scalars.Copy()
+	bad["ledger"] = bad_ledger
+	bad_ledger["bays"] = list(0, 0)
+	naval_check(!sea_crossing_record_ok(bad), "positional bay array is refused")
+	bad_ledger["bays"] = list("1" = 0, "01" = 0)
+	naval_check(!sea_crossing_record_ok(bad), "noncanonical bay index is refused")
+	bad_ledger["bays"] = list("1" = 0, "16" = 0)
+	naval_check(!sea_crossing_record_ok(bad), "bay index beyond the fifteen tiles is refused")
+	bad_ledger["bays"] = list("1" = 0, "2" = -1)
+	naval_check(!sea_crossing_record_ok(bad), "negative bay water is refused")
+	bad_ledger["bays"] = list("1" = 0, "2" = L.capacity() + 1)
+	naval_check(!sea_crossing_record_ok(bad), "bay water beyond the hull capacity is refused")
+	bad_ledger["bays"] = list("1" = 0, "2" = list("water" = 1))
+	naval_check(!sea_crossing_record_ok(bad), "nested bay water is refused")
+	bad_ledger["bays"] = bays
+	bad_ledger["bay_order_heading"] = NORTHEAST
+	naval_check(!sea_crossing_record_ok(bad), "invalid bay order heading is refused")
+	bad_ledger -= "bays"
+	bad_ledger -= "bay_order_heading"
+	bad_ledger["water"] = list("1" = 0, "2" = 0)
+	naval_check(!sea_crossing_record_ok(bad), "other ledger fields must still be scalar")
+	var/turf/arrival = locate(39, 57, 2)
+	var/obj/structure/hull_tiller/rebuilt = sea_crossing_build(R, arrival)
+	naval_check(rebuilt && rebuilt.craft && rebuilt.craft.ledger, "the divided hull is rebuilt at an anchorage")
+	if (!rebuilt || !rebuilt.craft || !rebuilt.craft.ledger)
+		return
+	var/list/survey = built_hull_survey(arrival, rebuilt.craft)
+	var/differs = FALSE
+	var/list/tiles = R["tiles"]
+	for (var/i = 1, i <= tiles.len, i++)
+		var/list/tile = tiles[i]
+		if (survey[i] != locate(arrival.x + tile[1], arrival.y + tile[2], arrival.z))
+			differs = TRUE
+			break
+	naval_check(differs, "the new survey really does give different indices")
+	var/datum/hull_ledger/arrived = rebuilt.craft.ledger
+	var/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight/rebuilt_door = locate() in locate(arrival.x + door[1], arrival.y + door[2], arrival.z)
+	naval_check(rebuilt_door && !rebuilt_door.state && rebuilt_door.density && arrived.bays_split(), "the shut door still divides the hull after crossing")
+	var/first_water = arrived.water_at(locate(arrival.x + one[1], arrival.y + one[2], arrival.z))
+	var/second_water = arrived.water_at(locate(arrival.x + two[1], arrival.y + two[2], arrival.z))
+	naval_check(near(first_water, 2.5) && near(second_water, second_volume) && near(arrived.water, 2.5 + second_volume), "unequal water crosses in the same physical compartments ([first_water], [second_water], total [arrived.water])")
+	naval_check(near(arrived.bay_capacity(arrived.bay_at(locate(arrival.x + two[1], arrival.y + two[2], arrival.z))), full_side), "turning does not shift a divider tile to the other bay or shrink its brim")
+	sea_crossing_strip(rebuilt)
+	qdel(rebuilt)
+	sea_crossing_strip(tiller)
+	qdel(tiller)
+
+// A floor lifted from her edge to clear an obstacle (player report: a plank
+// hull that would not pass a trench after a corner plank was taken up). The
+// hole stays part of her shape until a refit cuts it away, and the refusal says
+// so; a hole inside her outline must still be patched first.
+/proc/edge_hole_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(30, 20, 33, 24, "Scow")
+	var/datum/craft/C = tiller.craft
+	var/datum/craft_body/built/B = C.body
+	var/datum/hull_ledger/L = C.ledger
+	var/turf/trench = locate(34, 24, 2)
+	trench.ChangeTurf(/turf/floor/trench)
+	var/turf/O = B.origin()
+	naval_check(!B.can_move_to(O.x + 1, O.y, NORTH) && findtext(B.last_refusal, "trench") && !findtext(B.last_refusal, "lifted"), "a trench off her corner stops a step east ([B.last_refusal])")
+	var/turf/corner = locate(33, 24, 2)
+	qdel(locate(/obj/covers) in corner)
+	naval_check(L.holes == 1 && L.edge_hole_at(corner) && L.inner_holes() == 0, "the corner plank taken up is a hole on her edge")
+	naval_check(!B.can_move_to(O.x + 1, O.y, NORTH) && findtext(B.last_refusal, "trench") && findtext(B.last_refusal, "floor lifted at 33,24") && findtext(B.last_refusal, "refit"), "until she is refitted the hole is still hers, and the refusal says so ([B.last_refusal])")
+	var/turf/inner = locate(31, 22, 2)
+	qdel(locate(/obj/covers) in inner)
+	naval_check(L.holes == 2 && !L.edge_hole_at(inner) && L.inner_holes() == 1, "a plank taken up inside her is a hole in her bottom")
+	naval_check(findtext(tiller.commission(), "Patch the hole"), "a hole inside her outline must be patched before a refit")
+	hull_lay(31, 22)
+	L.survey()
+	var/why = tiller.commission()
+	naval_check(isnull(why) && B.tile_count() == 19 && L.holes == 0 && !B.contains(corner), "a refit cuts the lifted corner away ([why])")
+	O = B.origin()
+	naval_check(B.can_move_to(O.x + 1, O.y, NORTH), "and she can now step east past the trench ([B.last_refusal])")
+	tiller.decommission()
+	qdel(tiller)
+
+// A canal of flooded trench dug in from the sea (canals.dm), with ground one
+// step higher from x 18 inland.
+/datum/terrain_heights/bilge_canal/at(x, y, z)
+	return x <= 18 ? 1 : 0
+
+// Built hulls sail flooded-trench canals and keep to their levels: every tile
+// of her keeps the rule a boat keeps, and a pound lock lets a tile through only
+// at the level of the water it opens to.
+/proc/canal_hull_checks()
+	map.terrain_height_file = "probe"
+	map.terrain_heights_cache = new /datum/terrain_heights/bilge_canal
+	for (var/x = 17, x <= 20, x++)
+		var/turf/T = locate(x, 40, 2)
+		T.ChangeTurf(/turf/floor/trench/flooded)
+	var/obj/structure/hull_tiller/tiller = bilge_hull(22, 40, 23, 40, "Barge")
+	var/datum/craft_body/built/B = tiller.craft.body
+	var/turf/O = B.origin()
+	naval_check(B.can_move_to(O.x - 2, O.y, B.dir) && B.move_to(O.x - 2, O.y, B.dir), "she sails off the sea into a flooded trench ([B.last_refusal])")
+	O = B.origin()
+	naval_check(O.x == 20 && B.can_move_to(O.x - 1, O.y, B.dir) && B.move_to(O.x - 1, O.y, B.dir), "and along the level canal ([B.last_refusal])")
+	O = B.origin()
+	naval_check(!B.can_move_to(O.x - 1, O.y, B.dir) && findtext(B.last_refusal, "step in the canal at 18,40"), "no tile of hers climbs a step in the canal ([B.last_refusal])")
+	var/obj/structure/canal_lock/K = new(locate(18, 40, 2))
+	naval_check(!K.high && K.chamber_level == 0 && B.can_move_to(O.x - 1, O.y, B.dir), "a lock standing low lets her bow into it ([B.last_refusal])")
+	K.set_high(TRUE)
+	naval_check(!B.can_move_to(O.x - 1, O.y, B.dir) && findtext(B.last_refusal, "step in the canal"), "a lock standing high does not")
+	var/turf/hole = locate(19, 40, 2)
+	qdel(locate(/obj/covers) in hole)
+	var/obj/item/stack/material/wood/timber = new(locate(20, 40, 2))
+	timber.amount = 5
+	naval_check(tiller.craft.ledger.hole_at(hole) && istype(hull_patch_lay(tiller.craft, timber, hole), /obj/covers/repairedfloor/ship/patch) && !tiller.craft.ledger.hole_at(hole), "a hole over the canal is patched like one over the sea")
+	tiller.decommission()
+	qdel(tiller)
+	qdel(K)
+	map.terrain_height_file = null
+	map.terrain_heights_cache = null
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -956,6 +1197,10 @@ var/naval_runtime_error = FALSE
 		watch_checks()
 		fouling_checks()
 		awash_checks()
+		compartment_checks()
+		compartment_crossing_checks()
+		edge_hole_checks()
+		canal_hull_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

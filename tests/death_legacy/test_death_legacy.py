@@ -28,7 +28,19 @@ class DeathLegacyTests(unittest.TestCase):
     def test_a_bed_remembers_when_it_was_claimed(self):
         bed = read('code/modules/persistence/bed_return.dm')
         self.assertLess(bed.index('bed.persistence_bed_assigned_at = death_legacy_now()'),
-                        bed.index('bed.persistence_bed_owner_ckey = client.ckey'))
+                        bed.index('bed.persistence_bed_owner_ckey = owner'))
+
+    def test_a_bed_start_costs_double(self):
+        legacy = read('code/modules/research_tree/death_legacy.dm')
+        self.assertIn('#define DEATH_LEGACY_BED_EXTRA 1', legacy)
+        self.assertIn('var/bed_extra = by_station ? 0 : DEATH_LEGACY_BED_EXTRA * province_rank_bed_extra(account, get_turf(H))', legacy)
+        self.assertIn('var/charged = record["returns"] + bed_extra', legacy)
+        ranks = read('code/modules/provinces/province_ranks.dm')
+        # Inside a Town 1.5 times, inside a City 1.25 times, else double.
+        self.assertIn('return rank >= 4 ? 0.3219 : 0.585 // log2(1.25), log2(1.5)', ranks)
+        self.assertIn('death_legacy_loss(record["cause"], charged)', legacy)
+        # The loss doubles with each charged return (2 ** returns).
+        self.assertIn('var/times = 2 ** clamp(returns, 0, 6)', legacy)
 
     def test_the_record_is_saved_checked_and_loaded(self):
         self.assertIn('round_state["death_legacy"] = death_legacy', read('code/modules/persistence/saving.dm'))

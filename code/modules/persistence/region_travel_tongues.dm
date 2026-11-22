@@ -5,7 +5,12 @@
 //
 // The record rides in the travel payload as "tongues":
 // {"known": {"Latin": 100, "Old Norse": 41.5}, "default": "Latin",
-//  "origin": "latins", "land": "North America", "day": 20772, "today": {...}}
+//  "origin": "latins", "land": "North America", "day": 20772, "today": {...},
+//  "native": "Vulgar", "daughters": {"Vulgar": {daughter record}}}
+// A daughter language (daughter.dm) travels with its record, so a land that
+// has never heard it learns it on arrival. A people that formed in play
+// (peoples.dm) travels the same way: "peoples" = {id: record} for the
+// traveller's people and every formed people it grew from.
 
 #define REGION_TRAVEL_LAND_NAME_MAX 40
 
@@ -24,6 +29,9 @@
 			known[L.name] = score
 	if(!known.len) return null
 	var/list/T = list("known" = known)
+	var/list/daughters = region_travel_daughter_records(known)
+	if(daughters.len) T["daughters"] = daughters
+	if(istext(native_tongue) && (native_tongue in known)) T["native"] = native_tongue
 	var/datum/language/speaking = canonical_language(default_language)
 	if(speaking && (speaking.name in known) && knows_language(speaking))
 		T["default"] = speaking.name
@@ -31,6 +39,8 @@
 		T["origin"] = origin_id
 		if(istext(origin_land) && length(origin_land))
 			T["land"] = copytext(origin_land, 1, REGION_TRAVEL_LAND_NAME_MAX + 1)
+		var/list/peoples = region_travel_people_records(origin_id)
+		if(peoples.len) T["peoples"] = peoples
 	if(isnum(language_gain_day) && language_gain_day > 0 && islist(language_gain_today))
 		var/list/today = list()
 		for(var/bucket in language_gain_today)
@@ -40,6 +50,63 @@
 			T["day"] = language_gain_day
 			T["today"] = today
 	return T
+
+// The records of every daughter in known, with their daughter ancestors.
+/proc/region_travel_daughter_records(list/known)
+	var/list/records = language_lineage_part("daughters")
+	var/list/result = list()
+	var/list/todo = list()
+	for(var/lname in known)
+		todo += lname
+	while(todo.len)
+		var/lname = todo[todo.len]
+		todo.len--
+		if((lname in result) || !is_daughter_language(all_languages[lname]) || !islist(records[lname])) continue
+		var/list/record = records[lname]
+		result[lname] = record.Copy()
+		if(is_daughter_language(all_languages[record["parent"]])) todo += record["parent"]
+	return result
+
+// The record of a formed people and of every formed people it grew from.
+/proc/region_travel_people_records(id)
+	var/list/records = people_records()
+	var/list/result = list()
+	var/list/todo = list(id)
+	while(todo.len)
+		var/pid = todo[todo.len]
+		todo.len--
+		if((pid in result) || !islist(records[pid])) continue
+		var/list/record = records[pid]
+		result[pid] = record.Copy()
+		if(islist(record["parents"])) todo += record["parents"]
+	return result
+
+// Formed peoples this land has not heard of are recorded as imported.
+/proc/region_travel_import_peoples(list/peoples)
+	if(!islist(peoples)) return
+	var/list/records = people_records()
+	for(var/pid in peoples)
+		if(islist(records[pid]) || origin_by_id(pid)) continue
+		var/list/record = peoples[pid]
+		record = record.Copy()
+		record["imported"] = TRUE
+		records[pid] = record
+
+/proc/region_travel_daughter_record_valid(lname, list/record, list/daughters)
+	if(!istext(lname) || length(lname) > 24 || !islist(record)) return FALSE
+	for(var/key in record)
+		if(!(key in list("parent", "root", "nation", "era", "kin", "key", "syllables", "imported"))) return FALSE
+	if(!istext(record["parent"]) || !istext(record["root"]) || !istext(record["nation"]) || !isnum(record["era"]) || !isnum(record["kin"])) return FALSE
+	var/datum/language/root = all_languages[record["root"]]
+	if(!language_learnable(root) || is_daughter_language(root)) return FALSE
+	if(record["parent"] != record["root"] && !(record["parent"] in daughters) && !is_daughter_language(all_languages[record["parent"]])) return FALSE
+	var/list/syllables = record["syllables"]
+	if(!isnull(syllables))
+		if(!islist(syllables) || syllables.len > 400) return FALSE
+		for(var/s in syllables)
+			if(!istext(s) || length(s) > 24) return FALSE
+	var/datum/language/here = all_languages[lname]
+	return !here || is_daughter_language(here)
 
 // "Latin", "lesson:Latin" or "study:Latin", for a language in the record.
 /proc/region_travel_gain_bucket_valid(bucket, list/known)
@@ -55,17 +122,29 @@
 /proc/region_travel_tongues_valid(value)
 	if(!islist(value)) return FALSE
 	for(var/key in value)
-		if(!(key in list("known", "default", "origin", "land", "day", "today"))) return FALSE
+		if(!(key in list("known", "default", "origin", "land", "day", "today", "native", "daughters", "peoples"))) return FALSE
+	var/list/peoples = value["peoples"]
+	if(!isnull(peoples))
+		if(!islist(peoples) || !peoples.len || peoples.len > 64) return FALSE
+		for(var/pid in peoples)
+			if(!people_record_valid(pid, peoples[pid])) return FALSE
+	var/list/daughters = value["daughters"]
+	if(!isnull(daughters))
+		if(!islist(daughters) || !daughters.len || daughters.len > LANGUAGE_DAUGHTERS_PER_ROOT * 64) return FALSE
+		for(var/lname in daughters)
+			if(!region_travel_daughter_record_valid(lname, daughters[lname], daughters)) return FALSE
 	var/list/known = value["known"]
-	if(!islist(known) || !known.len || known.len > length(all_languages)) return FALSE
+	if(!islist(known) || !known.len || known.len > length(all_languages) + length(daughters)) return FALSE
 	for(var/lname in known)
-		if(!istext(lname) || !language_learnable(all_languages[lname])) return FALSE
+		if(!istext(lname)) return FALSE
+		if(!language_learnable(all_languages[lname]) && !(islist(daughters) && (lname in daughters))) return FALSE
 		var/score = known[lname]
 		if(!isnum(score) || score <= 0 || score > 100) return FALSE
 	if(!isnull(value["default"]))
 		var/chosen = value["default"]
 		if(!istext(chosen) || !(chosen in known) || known[chosen] < LANGUAGE_BROKEN) return FALSE
-	if(!isnull(value["origin"]) && (!istext(value["origin"]) || !origin_by_id(value["origin"]))) return FALSE
+	if(!isnull(value["native"]) && (!istext(value["native"]) || !(value["native"] in known))) return FALSE
+	if(!isnull(value["origin"]) && (!istext(value["origin"]) || (!origin_by_id(value["origin"]) && !(islist(peoples) && (value["origin"] in peoples))))) return FALSE
 	if(!isnull(value["land"]))
 		if(isnull(value["origin"]) || !istext(value["land"]) || !length(value["land"]) || length(value["land"]) > REGION_TRAVEL_LAND_NAME_MAX) return FALSE
 	if(isnull(value["day"]) != isnull(value["today"])) return FALSE
@@ -82,6 +161,8 @@
 /mob/living/human/proc/region_travel_restore_tongues(list/T)
 	if(!islist(T) || !islist(T["known"])) return FALSE
 	var/list/known = T["known"]
+	region_travel_import_daughters(T["daughters"])
+	region_travel_import_peoples(T["peoples"])
 	for(var/datum/language/held in languages.Copy())
 		if(language_learnable(held))
 			languages -= held
@@ -95,6 +176,7 @@
 			languages += L
 	origin_id = T["origin"]
 	origin_land = T["land"]
+	native_tongue = istext(T["native"]) && language_learnable(all_languages[T["native"]]) ? T["native"] : null
 	var/datum/language/speaking = istext(T["default"]) ? all_languages[T["default"]] : null
 	if(speaking && (speaking in languages))
 		default_language = speaking
@@ -113,6 +195,26 @@
 		language_gain_today = today.Copy()
 	region_travel_tongue_notes()
 	return TRUE
+
+// Daughters this land has not heard of are recorded as imported: they are
+// saved with the world but never count towards its own daughters.
+/proc/region_travel_import_daughters(list/daughters)
+	if(!islist(daughters)) return
+	ensure_daughter_languages()
+	var/list/records = language_lineage_part("daughters")
+	var/progress = TRUE
+	while(progress)
+		progress = FALSE
+		for(var/lname in daughters)
+			if(all_languages[lname]) continue
+			var/list/record = daughters[lname]
+			record = record.Copy()
+			record["imported"] = TRUE
+			records[lname] = record
+			if(register_daughter_language(lname, record))
+				progress = TRUE
+			else
+				records -= lname
 
 // The Known Languages and Origin notes live on the mind, which a body only
 // has once its player takes it, so they are written again at the claim.

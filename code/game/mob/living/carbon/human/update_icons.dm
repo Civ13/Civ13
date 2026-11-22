@@ -5,7 +5,6 @@
 	icon_key is [species.race_key][g][husk][fat][hulk][skeleton][s_tone]
 */
 var/global/list/human_icon_cache = list()
-var/global/list/tail_icon_cache = list() //key is [species.race_key][r_skin][g_skin][b_skin]
 var/global/list/light_overlay_cache = list()
 
 	///////////////////////
@@ -221,8 +220,25 @@ Please contact me on #coderbus IRC. ~Carn x
 		M.Translate(0, 16*(size_multiplier-1))
 	return M
 
+// Whole-body motion (body_motion.dm) owns transform while a motion runs: a
+// direct write here would cut it off, so a running motion is left to end on
+// the same posture, or re-aimed at a changed one. A turn into or out of lying
+// plays the eased fall or stand-up where a player can see it.
 /mob/living/human/proc/update_posture_transform()
-	transform = posture_transform()
+	var/matrix/rest = posture_transform()
+	var/turned = body_motion_turned()
+	var/was_turned = body_motion_drawn_turned
+	body_motion_drawn_turned = turned
+	if (!isnull(was_turned) && turned != was_turned && body_motion_can_play(BODY_MOTION_PRIORITY_POSTURE))
+		body_motion_posture_change(rest, turned)
+		return
+	if (world.time < body_motion_until)
+		if (body_motion_matrix_same(body_motion_rest, rest))
+			return
+		body_motion_claim(body_motion_priority, 1, rest)
+		animate(src, transform = rest, time = 1, flags = ANIMATION_PARALLEL, tag = BODY_MOTION_TAG)
+		return
+	transform = rest
 
 // Facing changes (examine, point, tables) keep a prone body east/west and
 // redraw its turn at once instead of waiting for the next icon update.
@@ -1699,6 +1715,29 @@ var/global/list/human_face_icon_cache = list()
 	overlays_standing[BANDAGES_LAYER] = DD
 	if (update_icons)   update_icons()
 //Human Overlays Indexes/////////
+// The figure the Haircut window draws styles on, as one picture: the top row is
+// everything under the hair, the bottom row what sits over it, each facing
+// south, east, north and west. Hair, headwear, masks and held things are left
+// out. Reads the drawn overlays; changes nothing on the body.
+/mob/living/human/proc/grooming_body_sheet()
+	var/list/dirs = grooming_sheet_dirs()
+	var/icon/sheet = grooming_blank_sheet(32 * dirs.len, 64)
+	var/list/over_layers = list(EARS_LAYER, BANDAGES_LAYER, SHOULDER_LAYER)
+	for (var/d = 1 to dirs.len)
+		var/x = (d - 1) * 32 + 1
+		if (stand_icon)
+			sheet.Blend(icon(stand_icon, dir = dirs[d]), ICON_OVERLAY, x, 33)
+		for (var/layer = 1 to overlays_standing.len)
+			var/image/I = overlays_standing[layer]
+			if (!istype(I))
+				continue
+			if (layer < HAIR_LAYER)
+				sheet.Blend(getFlatIcon(I, dirs[d], always_use_defdir = TRUE), ICON_OVERLAY, x, 33)
+			else if (layer in over_layers)
+				sheet.Blend(getFlatIcon(I, dirs[d], always_use_defdir = TRUE), ICON_OVERLAY, x, 1)
+	return sheet
+
+
 #undef MUTATIONS_LAYER
 #undef DAMAGE_LAYER
 #undef SURGERY_LEVEL

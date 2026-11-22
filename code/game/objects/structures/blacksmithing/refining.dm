@@ -13,6 +13,7 @@
 	var/fuel = 0
 	var/iron = 0
 	var/smelt_time = 250 // deciseconds per smelt
+	var/tmp/blown_firing = FALSE // the firing under way started under a bellows blast
 	not_movable = TRUE
 	not_disassemblable = FALSE
 
@@ -26,7 +27,11 @@
 
 // Manual bloomery and blast-furnace stacks share the same payment and credits.
 /obj/structure/furnace/proc/accept_manual_stack(var/obj/item/I, var/mob/living/human/H)
-	var/furnace_fuel = solid_fuel_value(I, furnace_fuel_rates)
+	var/refusal = fuel_refusal(I)
+	if (refusal)
+		to_chat(H, SPAN_WARNING(refusal))
+		return
+	var/furnace_fuel = solid_fuel_value(I, fuel_rates())
 	if (furnace_fuel)
 		record_wood_fuel(I, furnace_fuel)
 		fuel += furnace_fuel
@@ -120,17 +125,22 @@
 		..()
 
 /obj/structure/furnace/attack_hand(var/mob/living/human/H)
-	if (!on && fuel > 1)
+	if (!on && has_firing_fuel())
 		visible_message("<span class = 'notice'>[H] turns the [name] on.</span>")
+		note_smelting(H, src)
 		start_smelt()
-	else
-		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! Fill it with wood or coal.</span>")
+		accolade_meet_mob(H, "smelter")
+	else if (!on && firing_refusal())
+		to_chat(H, SPAN_WARNING(firing_refusal()))
+	else if (!on)
+		to_chat(H, "<span class = 'warning'>The [name] doesn't have enough fuel! This firing needs [firing_fuel_cost()] and it holds [round(fuel, 0.1)]. Fill it with charcoal or wood.</span>")
 
 
 // One 25 second smelt; factory_machines.dm starts it from automation too.
 /obj/structure/furnace/proc/start_smelt()
 	on = TRUE
-	burn_structure_fuel(2)
+	blown_firing = bellows_blowing()
+	burn_structure_fuel(firing_fuel_cost())
 	update_icon()
 	spawn (smelt_time)
 		if (QDELETED(src))
@@ -142,7 +152,12 @@
 
 /obj/structure/furnace/process()
 	if (iron > 0)
-		spawn_stack(/obj/item/stack/ore/iron_sponge, src.loc, iron)
+		// A hard blast lets the bloom soak up carbon: some comes out steely.
+		var/steely = blown_firing ? steely_bloom_count(iron) : 0
+		if (iron - steely > 0)
+			spawn_stack(/obj/item/stack/ore/iron_sponge, src.loc, iron - steely)
+		if (steely > 0)
+			spawn_stack(/obj/item/stack/ore/iron_sponge/steely, src.loc, steely)
 		iron = 0
 		return
 /obj/structure/furnace/verb/empty()
@@ -230,6 +245,13 @@
 				to_chat(H, "<span class = 'warning'>\The [name] is full.</span>")
 				return
 
+		if (accept_crucible(I, H))
+			return
+		if (accept_aging_steel(I, H)) // alloy_steels.dm
+			return
+		if (accept_alumina(I, H)) // composite_armour.dm
+			return
+
 		else if (istype(I, /obj/item/weapon/material))
 			var/obj/item/weapon/material/MT = I
 			if (MT.get_material_name() == "wood")
@@ -246,6 +268,9 @@
 				return
 
 /obj/structure/furnace/kiln/process()
+	fire_crucibles()
+	age_steel() // alloy_steels.dm
+	fire_alumina() // composite_armour.dm
 	for (var/obj/item/weapon/clay/mold/MCC in contents)
 		if (MCC.fired && MCC.capacity == 0 && MCC.max_capacity > 0 && MCC.contents_materials.len)
 			if (("copper" in MCC.contents_materials) && ("tin" in MCC.contents_materials))

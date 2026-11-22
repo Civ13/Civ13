@@ -17,13 +17,34 @@ operator can also give a slot a land by hand.
 `map` is the placeholder a free slot compiles: open sea over bedrock, 32 x 32.
 A slot cannot be the mainland or the relay gate, and no region may be called
 `expeditions` (the slots keep their lands in that folder of the group root).
-The plan proposes four slots, `far1` to `far4`; the group limit is 16 regions.
+The plan proposes four slots, `far1` to `far4`; the group limit is 32 regions.
+
+### Slots are never capped
+
+How many lands, faction islands among them, exist or run at once is never
+capped for the host (Val, 2026-11-22). Parked lands wait on disk without a
+slot, and slots grow with demand: when a ship needs a world, every slot holds a
+land and none has stood empty long enough to lay up, the coordinator writes
+`<root>/expeditions/grow/request.json` and tells the crew a harbour is being
+built. The host service's next pass starts `shard_group.py expedition-grow`,
+which adds the next slot (`far5`, `far6`, ...) to the group file with ports
+nobody uses (never the gateway's), sets it up stopped and drops the wish; the
+coordinator is restarted with it on the pass after, and the ship sets out
+again. A stopped slot costs disk (its worktree), not memory; each running land
+is its own small 32-bit world that sleeps when empty. Expedition slots do not
+count toward the group's 32 other regions; the whole group may hold 512, a
+ceiling only the free ports set. The launcher (1.5.44) lists every region.
 
 ### Adding slots to a running group
 
+A group that hosts Earth gets the four slots with the missing Earth regions:
+`shard_group.py --config group.json add-regions` (the plan) and `--apply`, or
+the launcher's **Add missing Earth regions** (front door dialog). Each slot is
+added stopped and set up, on the ports below. By hand:
+
 1. Add the slots to the group config (`far1` to `far4`: ports 1811-1814,
    transfer ports 1831-1834; each standby port defaults to its port + 10).
-   Check `status` first: the group takes at most 16 regions.
+   Check `status` first: the group takes at most 32 regions.
 2. `setup.bat far1` (and so on) for each: it checks out and compiles the
    placeholder and enrols the slot's agent while the other worlds keep running.
    Do not start the slots: a free slot stays stopped until a ship needs it.

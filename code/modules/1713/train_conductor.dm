@@ -122,7 +122,7 @@
 		if (id != last)
 			last = id
 			vehicles++
-			entry = list("name" = car.name, "weight" = 0, "brake" = FALSE, "axle" = "oiled", "wrecked" = FALSE, "locked" = 0, "engine" = null)
+			entry = list("name" = car.name, "weight" = 0, "brake" = FALSE, "axle" = "oiled", "wrecked" = FALSE, "locked" = 0, "engine" = null, "card" = car.card_text())
 			entries += list(entry)
 		var/car_weight = car.car_load_weight()
 		weight += car_weight
@@ -166,6 +166,9 @@
 				notes += "axle boxes dry"
 		if (E["locked"])
 			notes += "[E["locked"]] door\s locked"
+		// The destination card (train_goods.dm).
+		if (E["card"])
+			notes += "carded \"[E["card"]]\""
 		lines += "[n]. [E["name"]], weight [round(E["weight"], 0.1)][notes.len ? ": [jointext(notes, ", ")]" : ""]"
 	var/heading = "[vehicles] vehicle\s, [cars.len] tile\s long, weight [round(weight, 0.1)]."
 	if (pull > 0)
@@ -174,6 +177,8 @@
 		heading += " It has no working engine."
 	if (braked)
 		heading += " [braked] handbrake\s on."
+	// The tail lamp (train_stations.dm).
+	heading += train_tail_lamp_text(cars)
 	lines.Insert(1, heading)
 	return lines
 
