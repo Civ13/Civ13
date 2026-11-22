@@ -12,6 +12,9 @@ Two scores, both over tests/player_help/wiki_eval/questions.json:
 
     python3 tests/player_help/wiki_eval/run.py
     python3 tests/player_help/wiki_eval/run.py --ollama-url http://host:11434 --model NAME --output answers.json
+    python3 tests/player_help/wiki_eval/run.py --list
+
+README.md beside this file explains the question format and how to add one.
 
 --bridge and --game-root score another checkout's bridge and corpus, and
 --wiki-root an external wiki checkout, so an old deployment can be compared.
@@ -64,6 +67,23 @@ def score_answer(entry, answer):
     return {'facts': sum(facts), 'of': len(facts), 'hidden': hidden, 'pass': all(facts) and not hidden}
 
 
+def question_list(questions):
+    """The question set as Markdown, grouped by guide, for a person to read."""
+    lines, pages = ['# Ask for Help test questions', ''], {}
+    for entry in questions:
+        pages.setdefault(entry['page'], []).append(entry)
+    for page in sorted(pages, key=lambda name: (name is None, name or '')):
+        lines += ['## ' + (page[:-3].split('/')[-1].replace('_', ' ') if page else 'Must refuse (hidden topics)'), '']
+        for entry in pages[page]:
+            lines += ['- **%s**' % entry['question'],
+                      '  - Expected: %s' % entry['expected']]
+            if page:
+                lines.append('  - Source: `%s`, section "%s"' % (page, entry['section']))
+            lines.append('  - Id: `%s`' % entry['id'])
+        lines.append('')
+    return '\n'.join(lines).rstrip()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--bridge', type=Path, default=ROOT / 'scripts/player_help_bridge.py')
@@ -78,7 +98,12 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--verbose', action='store_true')
     parser.add_argument('--rescore', type=Path, help='score the answers saved in an earlier --output file again')
+    parser.add_argument('--list', action='store_true', help='print the question set as Markdown and exit')
     args = parser.parse_args()
+
+    if args.list:
+        print(question_list(json.loads(QUESTIONS.read_text(encoding='utf-8'))))
+        return 0
 
     if args.rescore:
         expected = {entry['id']: entry for entry in json.loads(QUESTIONS.read_text(encoding='utf-8'))}
