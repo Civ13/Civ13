@@ -284,6 +284,8 @@
 /proc/storage_window_access(mob/user, obj/item/weapon/storage/S)
 	if (istype(S, /obj/structure/closet))
 		return closet_window_access(user, S)
+	if (!S || !S.storage_contents_accessible())
+		return FALSE
 	var/obj/structure/storage_container/C = storage_window_owner_structure(S)
 	if (istype(C) && !C.storage_access_allowed(user))
 		return FALSE

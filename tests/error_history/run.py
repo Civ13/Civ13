@@ -19,8 +19,9 @@ def prepare(root, evidence, historical=False):
     # Test-only identity stamp distinguishes native ref-ID reuse from liveness.
     viewer = viewer.replace(constructor, constructor + '\thistory_probe_serial = ++entry_serial\n')
     browse_start = viewer.index('/datum/error_viewer/proc/browse_to(')
+    browser_creation = viewer.index("\tvar/datum/browser/browser = new(", browse_start)
     browse_end = viewer.index('/datum/error_viewer/proc/build_header(', browse_start)
-    viewer = viewer[:browse_start] + '/datum/error_viewer/proc/browse_to(client/user, html)\n\tlast_html = html\n\n' + viewer[browse_end:]
+    viewer = viewer[:browser_creation] + '\tlast_html = html\n\n' + viewer[browse_end:]
     if historical:
         start = viewer.index('/datum/error_viewer/error_cache/proc/log_error')
         end = viewer.index('/datum/error_viewer/error_cache/proc/retire_error', start)
@@ -102,7 +103,7 @@ def main():
         'native memberships and source backrefs bounded and consistent',
         'old source metadata retains no retired entries',
     ]
-    if result['checks'] != (22 if args.historical else 24):
+    if result['checks'] != (23 if args.historical else 25):
         raise SystemExit(f'Incomplete fixture: {result}')
     if args.historical:
         if labels != expected or result['failures'] != len(expected):

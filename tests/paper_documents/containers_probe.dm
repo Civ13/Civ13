@@ -40,8 +40,16 @@ var/containers_probe_runtime = FALSE
 	var/obj/item/weapon/paper/B = new(T)
 	var/obj/item/weapon/storage/envelope/E = new(T)
 	containers_probe_check(paper_document_envelope_open(E), "a new envelope starts open")
+	containers_probe_check(storage_window_access(null, E), "an open envelope permits storage access")
 	E.opened = FALSE
 	containers_probe_check(!paper_document_envelope_open(E), "a closed envelope refuses")
+	containers_probe_check(!storage_window_access(null, E), "closed envelope does not permit storage access")
+	containers_probe_check(!E.can_be_inserted(A, TRUE), "closed envelope refuses ordinary insertion")
+	E.knifed = TRUE
+	E.opened = TRUE
+	containers_probe_check(storage_window_access(null, E), "a cut-open envelope restores access")
+	E.opened = FALSE
+	E.knifed = FALSE
 	containers_probe_check(!paper_document_envelope_open(A), "a paper is not an envelope")
 	var/obj/item/weapon/paper_bundle/bundle = new(T)
 	A.loc = bundle

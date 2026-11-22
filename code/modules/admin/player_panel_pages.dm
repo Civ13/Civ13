@@ -336,7 +336,8 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 
 	// Moderation.
 	body += "<div class='card'><h2>Moderation</h2><div class='btns'>"
-	body += "<a class='danger' href='?src=\ref[src];boot2=\ref[M]'>Kick</a>"
+	if (rights & (R_MOD | R_ADMIN))
+		body += "<a class='danger' href='?src=\ref[src];boot2=\ref[M]'>Kick</a>"
 	body += "<a href='?_src_=holder;warn=[M.ckey]'>Warn</a>"
 	body += "<a href='?src=\ref[src];notes=show;mob=\ref[M]'>Notes</a>"
 	body += "</div>"
