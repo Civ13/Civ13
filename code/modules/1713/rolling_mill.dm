@@ -14,6 +14,18 @@ var/global/list/rolling_mill_products = list(
 	"hull armour plate" = list(/obj/item/stack/material/steel, 10, /obj/item/hull_plate, 1, 200),
 )
 
+// The stock a stack counts as at the mill. Preset-count stacks (mapped or
+// job-issued) are ordinary iron and steel; special steel grades stay distinct.
+/proc/rolling_mill_stock_type(obj/item/I)
+	if (!I)
+		return null
+	switch (I.type)
+		if (/obj/item/stack/material/iron/twentyfive)
+			return /obj/item/stack/material/iron
+		if (/obj/item/stack/material/steel/twentyfive)
+			return /obj/item/stack/material/steel
+	return I.type
+
 /obj/structure/workshop_machine/rolling_mill
 	name = "rolling mill"
 	desc = "Two heavy iron rolls in a pair of housings. Fasten it next to a turning treadwheel, horse gin, mill wheel or windmill, then use iron or steel on it to roll rails, or steel to roll hull armour plate, from less metal than forging them takes. It keeps rolling until the metal runs out or you step away."
@@ -38,7 +50,7 @@ var/global/list/rolling_mill_products = list(
 	var/list/choices = list()
 	for (var/label in rolling_mill_products)
 		var/list/row = rolling_mill_products[label]
-		if (S.type == row[1] && crafting_recipe_allowed(H, "[row[3]]"))
+		if (rolling_mill_stock_type(S) == row[1] && crafting_recipe_allowed(H, "[row[3]]"))
 			choices += label
 	return choices
 
@@ -47,7 +59,7 @@ var/global/list/rolling_mill_products = list(
 		return FALSE
 	for (var/label in rolling_mill_products)
 		var/list/row = rolling_mill_products[label]
-		if (I.type == row[1])
+		if (rolling_mill_stock_type(I) == row[1])
 			return TRUE
 	return FALSE
 
@@ -85,7 +97,7 @@ var/global/list/rolling_mill_products = list(
 // Roll the stack in hand into product on the mill's tile. Returns the pieces made.
 /obj/structure/workshop_machine/rolling_mill/proc/roll_stock(mob/living/human/H, obj/item/stack/S, label)
 	var/list/row = rolling_mill_products[label]
-	if (busy || !row || !worker_ready(H, S) || S.type != row[1] || !rolling())
+	if (busy || !row || !worker_ready(H, S) || rolling_mill_stock_type(S) != row[1] || !rolling())
 		return 0
 	if (S.amount < row[2])
 		to_chat(H, SPAN_WARNING("You need [row[2]] of \the [S] for that."))

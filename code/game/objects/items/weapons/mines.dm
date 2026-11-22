@@ -64,15 +64,7 @@
 					return // moved, re-armed or already disarmed meanwhile
 				if (prob(min(98*H.getStatCoeff("dexterity"),100)))
 					user.visible_message("<span class = 'notice'>\The [user] finishes disarming \the [src]!</span>")
-					anchored = FALSE
-					icon_state = "mine"
-					layer = initial(layer)
-					if (map.campaign)
-						var/obj/map_metadata/campaign/CM = map
-						if (istype(src, (/obj/item/mine/at)))
-							CM.at_mines_placed--
-						else
-							CM.ap_mines_placed--
+					finish_disarm()
 					return
 				else
 					Bumped(user)
@@ -87,15 +79,7 @@
 					return // moved, re-armed or already disarmed meanwhile
 				if (prob(min(50*H.getStatCoeff("dexterity"),75)))
 					user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!!</span>")
-					anchored = FALSE
-					icon_state = "mine"
-					layer = initial(layer)
-					if (map.campaign)
-						var/obj/map_metadata/campaign/CM = map
-						if (istype(src, (/obj/item/mine/at)))
-							CM.at_mines_placed--
-						else
-							CM.ap_mines_placed--
+					finish_disarm()
 					return
 				else
 					Bumped(user)
@@ -118,15 +102,7 @@
 				return // moved, re-armed or already disarmed meanwhile
 			if (prob(min(15*H.getStatCoeff("dexterity"),35)))
 				user.visible_message("<span class = 'notice'>\The [user] finishes digging up \the [src], disarming it!</span>")
-				anchored = FALSE
-				icon_state = "mine"
-				layer = initial(layer)
-				if (map.campaign)
-					var/obj/map_metadata/campaign/CM = map
-					if (istype(src, (/obj/item/mine/at)))
-						CM.at_mines_placed--
-					else
-						CM.ap_mines_placed--
+				finish_disarm()
 				return
 			else
 				Bumped(user)
@@ -134,6 +110,17 @@
 			Bumped(user)
 	else
 		..()
+
+/obj/item/mine/proc/finish_disarm()
+	anchored = FALSE
+	icon_state = "mine"
+	layer = initial(layer)
+	if (map.campaign)
+		var/obj/map_metadata/campaign/CM = map
+		if (istype(src, (/obj/item/mine/at)))
+			CM.at_mines_placed--
+		else
+			CM.ap_mines_placed--
 
 /obj/item/mine/proc/disarm_attempt_valid(generation, turf/start)
 	return !QDELETED(src) && anchored && arm_generation == generation && loc == start

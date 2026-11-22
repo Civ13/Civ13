@@ -51,6 +51,7 @@ var/global/list/persistence_world_time_stamps = persistence_world_time_stamps_ta
 	"latex_tapped_at" = list(/obj/structure/wild/jungle),
 	"resin_tapped_at" = list(/obj/structure/wild/tree/live_tree/pine),
 	"lacquer_tapped_at" = list(/obj/structure/wild/tree/live_tree),
+	"sap_tapped_at" = list(/obj/structure/wild/tree/live_tree),
 	"announcement_cooldown" = list(/mob/living/human),
 	"soap_cooldown" = list(/mob/living/human),
 	"last_flu_sneeze" = list(/mob/living/human),

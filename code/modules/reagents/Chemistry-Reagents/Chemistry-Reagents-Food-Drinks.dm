@@ -77,6 +77,58 @@
 	nutriment_factor = 10
 	color = "#eb9605"
 
+// Syrups (syrups.dm): sap and sugar boiled down in a small pot.
+/datum/reagent/nutriment/syrup
+	name = "Syrup"
+	id = "syrup"
+	description = "A thick, sweet syrup."
+	taste_description = "sweetness"
+	nutriment_factor = 8
+	reagent_state = LIQUID
+	color = "#B5651D"
+
+/datum/reagent/nutriment/syrup/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
+	..()
+	if (istype(M))
+		M.adjust_mood(removed * 0.5, "something sweet")
+
+/datum/reagent/nutriment/syrup/maple
+	name = "Maple syrup"
+	id = "maple_syrup"
+	description = "Tree sap boiled down to a rich amber syrup. Boiled again on its own, it sets into maple sugar."
+	taste_description = "rich, woody sweetness"
+	color = "#9E4F0E"
+
+/datum/reagent/nutriment/syrup/simple
+	name = "Simple syrup"
+	id = "sugar_syrup"
+	description = "Sugar boiled with water. Mixed with fruit juice it makes a fruit syrup; boiled again on its own, clean sugar crystallises out and leaves molasses."
+	taste_description = "plain sweetness"
+	color = "#F2E6C2"
+
+/datum/reagent/nutriment/syrup/fruit
+	name = "Fruit syrup"
+	id = "fruit_syrup"
+	description = "Fruit juice sweetened with syrup. It keeps well and is drunk neat or poured over food."
+	taste_description = "sweet fruit"
+	nutriment_factor = 6
+	color = "#B0204A"
+
+/datum/reagent/nutriment/syrup/molasses
+	name = "Molasses"
+	id = "molasses"
+	description = "Thick black treacle left behind when sugar is crystallised out of syrup. With water and yeast it ferments into rum."
+	taste_description = "dark, bitter sweetness"
+	nutriment_factor = 5
+	color = "#2B1405"
+
+/datum/reagent/drink/tree_sap
+	name = "Tree sap"
+	id = "tree_sap"
+	description = "Thin, faintly sweet sap from a broadleaf tree in its spring run. Boil it down in a pot for syrup."
+	taste_description = "faintly sweet water"
+	color = "#E8E4D0"
+
 /datum/reagent/nutriment/flour
 	name = "flour"
 	id = "flour"
