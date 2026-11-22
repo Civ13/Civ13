@@ -917,6 +917,11 @@ var/global/list/ship_draught_decks = list(
 		to_chat(user, air.summary_text())
 		qdel(air)
 		return
+	var/datum/train_draught/train = train_draught()
+	if (train)
+		to_chat(user, train.summary_text())
+		qdel(train)
+		return
 	var/datum/station_plan/station = station_plan()
 	if (station)
 		to_chat(user, station.summary_text())
@@ -955,6 +960,11 @@ var/global/list/ship_draught_decks = list(
 		air_sheet_menu(H, air)
 		qdel(air)
 		return
+	var/datum/train_draught/train = train_draught()
+	if (train)
+		train_sheet_menu(H, train)
+		qdel(train)
+		return
 	var/datum/station_plan/station = station_plan()
 	if (station)
 		station_sheet_menu(H, station)
@@ -974,8 +984,9 @@ var/global/list/ship_draught_decks = list(
 		options.Insert(3, "Draw a submarine on the sheet")
 		options.Insert(4, "Draw a vehicle on the sheet")
 		options.Insert(5, "Draw an airship on the sheet")
+		options.Insert(6, "Draw a train on the sheet")
 		if (map && map.ordinal_age >= ORBIT_MIN_AGE)
-			options.Insert(6, "Draw a space station on the sheet")
+			options.Insert(7, "Draw a space station on the sheet")
 	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank. Hold a pen or pencil to draw a ship on it.", name, "Cancel", options)
 	if (choice == "Draw on the sheet")
 		open_designer(H)
@@ -987,6 +998,8 @@ var/global/list/ship_draught_decks = list(
 		open_vehicle_designer(H)
 	else if (choice == "Draw an airship on the sheet" && !draught_code)
 		open_air_designer(H)
+	else if (choice == "Draw a train on the sheet" && !draught_code)
+		open_train_designer(H)
 	else if (choice == "Draw a space station on the sheet" && !draught_code)
 		open_station_designer(H)
 	else if (choice == "Copy her design code" && D)

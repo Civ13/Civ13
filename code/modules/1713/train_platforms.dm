@@ -10,10 +10,8 @@
 // They are never saved: a segment rebuilds them from its car kind, its place
 // in the car and its saved door state (open_doors).
 
-#define TRAIN_CAR_LENGTH 4 // the four-wheel stock and the heavy locomotives
-#define TRAIN_LONG_CAR_LENGTH 8 // bogie stock
-#define TRAIN_LEFT -1
-#define TRAIN_RIGHT 1
+// TRAIN_CAR_LENGTH, TRAIN_LONG_CAR_LENGTH, TRAIN_LEFT and TRAIN_RIGHT are in
+// code/__defines/trains.dm: the train sheets (train_draught.dm) use them too.
 
 // The load of every platform segment in the train taking the current step,
 // planned before any of them moves so that a tight curve, where one car's
@@ -126,6 +124,10 @@ var/global/train_step_plain = FALSE
 // where side is TRAIN_LEFT, 0 or TRAIN_RIGHT and edge is "out", "in" (side
 // tiles only), "front" or "back".
 /proc/train_car_layout(kind)
+	// A car drawn on a train sheet carries its whole layout in its kind
+	// (train_draught.dm).
+	if (copytext(kind, 1, 3) == "c:")
+		return train_custom_layout(kind)
 	var/static/list/layouts = null
 	if (!layouts)
 		layouts = list()

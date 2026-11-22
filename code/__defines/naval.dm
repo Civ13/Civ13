@@ -152,3 +152,10 @@
 #define AIR_DRAUGHT_MAX_DECK 60
 #define AIR_DRAUGHT_CELL_GAS 60 // units of gas that fill one cell
 #define DESIGN_CODE_AIR_MAX 2400
+
+// Train sheets (1713/train_draught.dm): a train of stock and drawn cars from
+// the front. Kept to the cars a sheet can show and the longest train the
+// line is meant to run.
+#define TRAIN_DRAUGHT_MAX_CARS 16
+#define TRAIN_DRAUGHT_MAX_TILES 120
+#define DESIGN_CODE_TRAIN_MAX 3600
