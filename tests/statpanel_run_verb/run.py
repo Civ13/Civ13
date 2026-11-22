@@ -59,9 +59,10 @@ def run(byond_bin, proc_source):
 
 
 EXPECTED = {
-    'Crafting Atlas': "command='Crafting-Atlas'",
-    'Open Web Crafting Atlas': "command='Open-Web-Crafting-Atlas'",
-    'Open Wiki': "command='Open-Wiki'",
+    'Crafting Atlas': 'command=Crafting-Atlas',
+    'Open Web Crafting Atlas': 'command=Open-Web-Crafting-Atlas',
+    'Open Wiki': 'command=Open-Wiki',
+    "Don't Panic": 'command=Don%27t-Panic',
     'Unknown Button': '',
     'unknown_button': '',
     'Unlisted Button': '',

@@ -34,8 +34,10 @@
 		catch
 			continue
 		if (registered_name == verb_name)
+			// list2params escapes names such as "Write God's Book", whose quote
+			// would end a hand-quoted command='...' value.
 			var/cmd_name = replacetext(registered_name, " ", "-")
-			winset(src, null, "command='[cmd_name]'")
+			winset(src, null, list2params(list("command" = cmd_name)))
 			return TRUE
 
 	return FALSE
