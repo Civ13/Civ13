@@ -233,19 +233,18 @@
 											H.emote("painscream")
 							//mouth armor? no? you're honestly safe
 							if (user.targeted_organ == "mouth")
-								if (H.wear_mask)
-									if (istype(H.wear_mask, /obj/item/clothing/mask/samurai) || istype(H.wear_mask, /obj/item/clothing/mask/stone) || istype(H.wear_mask, /obj/item/clothing/mask/wooden))
-										visible_message("<span class = 'danger'>[user]'s bayonet bounces off [H]'s [H.wear_suit]!</span>")
-										return
+								var/obj/item/hard_mask = bayonet_mouth_guard(H)
+								if (hard_mask)
+									visible_message("<span class = 'danger'>[user]'s bayonet bounces off [H]'s [hard_mask]!</span>")
+									return
+								if (prob(95))
+									visible_message("<span class = 'danger'>[user]'s bayonet narrowly misses [H]!</span>")
 								else
-									if (prob(95))
-										visible_message("<span class = 'danger'>[user]'s bayonet narrowly misses [H]!</span>")
-									else
-										visible_message("<span class = 'danger'>[user] impales [H] with their gun's bayonet!</span>")
-										playsound(get_turf(src), a.attack_sound, rand(90,100))
-										H.apply_damage(a.mounted_dmg, BRUTE, def_zone)
-										if (L.stat == CONSCIOUS && prob(50))
-											H.emote("painscream")
+									visible_message("<span class = 'danger'>[user] impales [H] with their gun's bayonet!</span>")
+									playsound(get_turf(src), a.attack_sound, rand(90,100))
+									H.apply_damage(a.mounted_dmg, BRUTE, def_zone)
+									if (L.stat == CONSCIOUS && prob(50))
+										H.emote("painscream")
 							//your limbs are still only a 25% chance to hit, which makes the chest the best option. if they're armored then you're simply better off shooting them.
 							else
 								if (user.targeted_organ != "chest" && user.targeted_organ != "groin" && user.targeted_organ != "head")
@@ -263,6 +262,13 @@
 					L.apply_damage(a.mounted_dmg, BRUTE, def_zone)
 		else
 			..() //Pistolwhipping - now help intent only (or when the gun is empty)
+
+// Only hard masks turn a mounted bayonet aimed at the mouth; others take the normal roll.
+/obj/item/weapon/gun/proc/bayonet_mouth_guard(mob/living/human/H)
+	var/obj/item/mask = H.wear_mask
+	if (istype(mask, /obj/item/clothing/mask/samurai) || istype(mask, /obj/item/clothing/mask/stone) || istype(mask, /obj/item/clothing/mask/wooden))
+		return mask
+	return null
 
 // only update our in-hands icon if we aren't using a scope (invisible)
 /obj/item/weapon/gun/update_held_icon()
