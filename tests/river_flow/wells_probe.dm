@@ -230,6 +230,11 @@ var/sewer_runtime_error = FALSE
 	var/obj/structure/sink/left = OW2.well_break_lining(FALSE)
 	sewer_check(QDELETED(OW2) && left && left.type == /obj/structure/sink/puddle && !(locate(/obj/item/stack/material/stone) in low), "an old spring well leaves its puddle, and a blast leaves no stone")
 	qdel(left)
+	var/obj/structure/sink/well/OW3 = new /obj/structure/sink/well(low)
+	OW3.dry = TRUE
+	var/obj/structure/sink/dried = OW3.well_break_lining(FALSE)
+	sewer_check(istype(dried, /obj/structure/sink/puddle) && dried.dry, "a season-dried spring well leaves a dry puddle (#6764)")
+	qdel(dried)
 	var/obj/structure/sink/well/timber/TW2 = new /obj/structure/sink/well/timber(low)
 	TW2.dug_depth = 3
 	var/obj/structure/well_fitting/windlass/WL2 = new /obj/structure/well_fitting/windlass(low)
