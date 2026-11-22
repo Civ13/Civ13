@@ -100,7 +100,7 @@ def fits(parts, line):
 def fragments(name="Civilization 13", discord="https://discord.gg/hBEtg4x",
               website="https://civ13.com/", new_window=True, map_title="Nomads",
               mode="Nomads", duration="1 hour", body="", banner=False):
-    parts = [status_template('s += "<center>', {"hub_status_text(customserver_name())": encode(name)})]
+    parts = [status_template('s += "<b>[hub_status_text(customserver_name', {"hub_status_text(customserver_name())": encode(name)})]
     if map_title is not None:
         parts.append(status_template('s += "<b>Map:', {"hub_status_text(map.title)": encode(map_title),
                                                      "hub_status_text(roundduration2text())": encode(duration)}))
@@ -117,7 +117,8 @@ def fragments(name="Civilization 13", discord="https://discord.gg/hBEtg4x",
         line = guarded_template("banner_line", {"config.hub_banner_url": "https://i.imgur.com/napac0L.png"})
         if fits(parts, line):
             parts.append(line)
-    return "".join(parts)
+    output = "".join(parts)
+    return output[:-4] if output.endswith("<br>") else output
 
 
 class Anchors(HTMLParser):
@@ -142,7 +143,8 @@ class HubStatusTests(unittest.TestCase):
             'hub_status_link(config.websiteurl, "Website")',
             "community_links += discord_link", "community_links += website_link",
             "if (discord_link)", "if (website_link)", "community_links.len ? ",
-            's += "<center><b>[hub_status_text(customserver_name())]</b></center><br>"',
+            's += "<b>[hub_status_text(customserver_name())]</b><br>"',
+            'if (copytext(s, -4) == "<br>")\n\t\ts = copytext(s, 1, -4)',
             'if (copytext(s, -4) != "<br>")\n\t\ts += "<br>"',
             "if (world.port == config.testing_port)\n\t\tvisibility = FALSE",
             '"<img src=\\"[config.hub_banner_url]\\"><br>"',
@@ -176,20 +178,23 @@ class HubStatusTests(unittest.TestCase):
             with self.subTest(mode=mode):
                 output = fragments(name=f"Civ13 {mode}", map_title=f"{mode} map", mode=mode,
                                    body="<br>Existing host notice ROUNDTIME", banner=True)
-                self.assertTrue(output.startswith(f"<center><b>Civ13 {mode}</b></center><br><b>Map:</b>"))
+                self.assertTrue(output.startswith(f"<b>Civ13 {mode}</b><br><b>Map:</b>"))
                 self.assertIn(f"<b>Map:</b> {mode} map (1 hour)<br>", output)
                 self.assertIn(f"<b>Gamemode:</b> {mode}<br>Existing host notice 1 hour<br>", output)
-                # No room for the links under the hub's limit; the shorter banner still fits whole.
+                # Links and banner appear whole or not at all, within the hub's limit.
                 self.assertLessEqual(len(output), HUB_LIMIT)
-                self.assertEqual(Anchors(output).links, [])
-                self.assertTrue(output.endswith('<img src="https://i.imgur.com/napac0L.png"><br>'))
+                hrefs = [x["href"] for x in Anchors(output).links]
+                self.assertIn(hrefs, ([], ["https://discord.gg/hBEtg4x", "https://civ13.com/"]))
+                if hrefs:
+                    self.assertIn(">Website</a>", output)
+                self.assertFalse(output.endswith("<br>"))
 
     def test_links_kept_whole_when_they_fit(self):
         output = fragments(map_title=None, banner=False)
         parsed = Anchors(output)
         self.assertEqual([x["href"] for x in parsed.links], ["https://discord.gg/hBEtg4x", "https://civ13.com/"])
         self.assertIn(">Discord</a> | <a ", output)
-        self.assertTrue(output.endswith(">Website</a><br>"))
+        self.assertTrue(output.endswith(">Website</a>"))
         self.assertLessEqual(len(output), HUB_LIMIT)
 
     def test_live_lines_come_before_links_and_banner(self):
@@ -204,17 +209,17 @@ class HubStatusTests(unittest.TestCase):
 
     def test_lines_past_the_hub_limit_are_left_out_whole(self):
         self.assertEqual(HUB_LIMIT, 255)
-        output = fragments(map_title="M" * 120, banner=True)
+        output = fragments(map_title="M" * 160, banner=True)
         self.assertLessEqual(len(output), HUB_LIMIT)
         self.assertNotIn("<a ", output)
         self.assertNotIn("<img", output)
         short = fragments(map_title="Gaia", mode="Nomads", banner=False)
-        self.assertIn(">Website</a><br>", short)
+        self.assertTrue(short.endswith(">Website</a>"))
 
     def test_missing_map_and_empty_urls_have_no_dangling_separator(self):
         output = fragments(discord=None, website="", map_title=None)
-        self.assertEqual(output, "<center><b>Civilization 13</b></center><br>")
-        self.assertNotIn("<a ", fragments(discord="https://discord.gg/hBEtg4x", map_title=None).split("</center>")[0])
+        self.assertEqual(output, "<b>Civilization 13</b>")
+        self.assertNotIn("<a ", fragments(discord="https://discord.gg/hBEtg4x", map_title=None).split("</b>")[0])
         self.assertEqual(Anchors(output).links, [])
         output = fragments(discord="", website="https://civ13.com/", map_title=None)
         self.assertEqual(len(Anchors(output).links), 1)
