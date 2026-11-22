@@ -38,14 +38,7 @@
 				if (istype(target, /mob/living/human))
 					var/mob/living/human/victim = target
 
-					var/obj/item/safe_thing = null
-					if (victim.wear_mask)
-						if (victim.wear_mask.body_parts_covered & EYES)
-							safe_thing = victim.wear_mask
-					if (victim.head)
-						if (victim.head.body_parts_covered & EYES)
-							safe_thing = victim.head
-
+					var/obj/item/safe_thing = eye_shield(victim)
 					if (safe_thing)
 						trans = reagents.trans_to_obj(safe_thing, amount_per_transfer_from_this)
 						user.visible_message(SPAN_WARNING("[user] tries to squirt something into [target]'s eyes, but fails!"), SPAN_WARNING("You fail the squirt and waste [trans] units of the solution."), "You hear the squeezing and squirting of liquid.")
@@ -102,3 +95,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// Droppers. END
 ////////////////////////////////////////////////////////////////////////////////
+
+// The worn item that keeps a dropper out of the eyes, outermost first.
+/obj/item/weapon/reagent_containers/dropper/proc/eye_shield(mob/living/human/victim)
+	for (var/obj/item/I in list(victim.head, victim.wear_mask, victim.eyes))
+		if (I.body_parts_covered & EYES)
+			return I
+	return null
