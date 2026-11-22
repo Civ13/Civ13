@@ -34,7 +34,7 @@ class OfflineSleepProtection(unittest.TestCase):
     def test_condition(self):
         body = proc(self.mod, "/mob/living/human/offline_sleep_protected()")
         # Only the Sleep verb's completed wait sets inducedSSD; a client ends it.
-        self.assertIn("if (!inducedSSD || client || stat == DEAD", body)
+        self.assertIn("if (!inducedSSD || client || offline_sleep_protection_lifted || stat == DEAD", body)
         self.assertIn("offline_sleep_protection_map_allowed()", body)
         self.assertIn("for (var/obj/structure/bed/B in loc)", body)
         self.assertIn("B.anchored && B.buckle_lying", body)
