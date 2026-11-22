@@ -793,8 +793,9 @@
 
 /proc/monkeysoftmail_body_html(value)
 	var/encoded = monkeysoftmail_text_html(value)
-	encoded = replacetext(encoded, "\r\n", "\n")
-	encoded = replacetext(encoded, "\r", "\n")
+	var/carriage_return = ascii2text(13)
+	encoded = replacetext(encoded, "[carriage_return]\n", "\n")
+	encoded = replacetext(encoded, carriage_return, "\n")
 	return replacetext(encoded, "\n", "<br>")
 
 /datum/program/monkeysoftmail/do_html(mob/living/human/user)
