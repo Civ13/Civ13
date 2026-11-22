@@ -12,7 +12,8 @@
 // A launch complex office (orbit_project.dm) given a plan builds that
 // station instead of the starter layout: the plan rides with the first
 // member who flies up and the station is founded from it on a free plane.
-// "Draw her plan" at an orbit console draws a station on a blank sheet.
+// "Draw her plan" at an orbit console draws a station on a blank sheet, and
+// the station designer (station_designer.dm) is the window a plan is drawn in.
 //
 // A plan travels as a design code (design_codes.dm):
 //   C13STATION/1/<name>/<col,row,piece>;...
@@ -298,20 +299,6 @@
 		design_code_show(H, "Station plan: [D.name]", draught_code, "Paste it into any ship's draught to draw the same station.")
 	else if (choice == "Paste a design code")
 		paste_any_code(H)
-
-// Until the drawing window is fitted, a blank sheet takes one of the
-// ready-made plans.
-/obj/item/ship_draught/proc/open_station_designer(mob/living/human/H)
-	var/list/names = list()
-	for (var/datum/station_plan/D in station_plan_examples())
-		names[D.name] = D
-	var/choice = WWinput(H, "Which station do you draw?", name, "Cancel", names + "Cancel")
-	var/datum/station_plan/pick = names[choice]
-	if (pick && H.get_active_hand() == src)
-		take_station(pick)
-		to_chat(H, SPAN_NOTICE("You draw the [pick.name] on the sheet."))
-	for (var/key in names)
-		qdel(names[key])
 
 // ---- Drawing a station ----
 

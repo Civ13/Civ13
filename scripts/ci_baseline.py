@@ -1561,7 +1561,10 @@ SUITES = {
             'code/modules/naval/sub_draught.dm', 'code/modules/naval/draught_part_help.dm',
             'code/modules/naval/draught_checks.dm', 'code/modules/craft/design_checks.dm',
             'code/modules/craft/vehicle_checks.dm', 'code/__defines/design_checks.dm',
-            'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm')},
+            'config/crafting/material_recipes_global.txt', 'code/modules/1713/structures.dm',
+            'code/modules/space/station_plan.dm', 'code/modules/space/station_plan_checks.dm',
+            'code/modules/space/station_designer.dm', 'scripts/build_station_designer_icons.py',
+            'icons/station_designer/')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (

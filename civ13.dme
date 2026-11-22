@@ -2049,6 +2049,7 @@
 #include "code\modules\space\spacecraft.dm"
 #include "code\modules\space\station_plan.dm"
 #include "code\modules\space\station_plan_checks.dm"
+#include "code\modules\space\station_designer.dm"
 #include "code\modules\space\surface_hazards.dm"
 #include "code\modules\space\surface_mining.dm"
 #include "code\modules\space\surface_rovers.dm"
