@@ -304,6 +304,10 @@ SPRITES = {
     'piece_V': {'layers': [('icons/obj/windows.dmi', 'windowmetal_frame', None)]},
     # /obj/structure/simple_door/key_door/anyone/fire_door/steel
     'piece_I': {'layers': [('icons/obj/doors/fire_doors.dmi', 'firedoor_steel', None)], 'turns': True},
+    # /obj/structure/hull_bulkhead (the internal bulkhead of a submarine)
+    'piece_WB': {'layers': [('icons/turf/wall_masks.dmi', 'sub0', None)]},
+    # /obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight
+    'piece_WT': {'layers': [('icons/obj/doors/fire_doors.dmi', 'firedoor_steel', None)], 'turns': True},
 }
 
 _sheets = {}

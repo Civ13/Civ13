@@ -2432,6 +2432,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/fusible_link" = "steelmaking",
 		"/obj/item/fire_seals" = "steelmaking",
 		"/obj/item/panic_bar" = "factories",
+		// watertight compartments for built hulls (hull_compartments.dm)
+		"/obj/structure/hull_bulkhead" = "steelmaking",
+		"/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight" = "steelmaking",
 		"/obj/item/fitted_lock/padlock" = "iron_smithing",
 		"/obj/item/weapon/key/blank" = "iron_smithing",
 		"/obj/item/weapon/key/skeleton" = "iron_smithing",

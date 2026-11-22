@@ -71,6 +71,38 @@ blast damage. Two steel used on it with a welding tool in the other hand
 hole off (`hull_breach_shut()`). Floors that go while she is decommissioned,
 crossing or sinking leave no breach.
 
+## Watertight compartments
+
+`code/modules/naval/hull_compartments.dm`. A built hull keeps one bilge until
+her builders part her with watertight bulkheads (draught piece `WB`,
+`/obj/structure/hull_bulkhead`, 8 steel) and watertight doors (`WT`, a steel
+fire door with seals, 20 steel). A bulkhead, or a watertight door that is
+shut, on a tile of her main deck or of her hold below it divides her; the
+tiles that join each other round it are one compartment with its own water.
+A dividing tile holds water with the first compartment beside it, so every
+tile is in one and the compartments' brims add up to hers. An open
+watertight door joins the compartments on either side and their water evens
+out by depth; shut, it parts them again and each side keeps what it had.
+
+- A hole floods the compartment it opens into, up to that compartment's brim;
+  a hole the ledger cannot place (a count read back before her floors) and
+  water from her seams, her patches and her load come in along her length.
+- Pumps and bailers lift the water of the compartment they stand in, and a
+  sump pump's float switch reads that compartment.
+- She founders when she is full, as before, or when compartments holding
+  more than half her tiles are flooded (98% of their brim). Her crew hears
+  when a compartment floods and when it is pumped below awash; the tiller
+  names each compartment from the bow.
+- Compartments are her tiles by their place in her offsets, which a step or
+  a turn never reorders. The ledger's `water` stays their sum, so weight,
+  depth and the awash film work as before, and a write of `water` outright
+  (hauled out, drained in dock) is shared out again by what each held. Her
+  record saves each compartment's water by the first of her tiles in it.
+- The ship draught check warns when the bulkheads do not part her or one
+  compartment holds more than half of her, and notes a ship with none.
+
+A hull with no bulkhead behaves exactly as she always did.
+
 ## Seams and caulking
 
 `code/modules/naval/hull_caulking.dm`. The ledger carries `seams`, the wear of
