@@ -92,7 +92,11 @@
 	return bilge - was
 
 // A swamped craft refuses to move, and tells whoever takes her paddle once.
+// Thick ice ahead stops her too, and thin ice breaks under her bow
+// (ice_breaking.dm); every small craft's move check asks here first.
 /obj/structure/vehicle/proc/swamped_refusal()
+	if (!small_craft_ice_ok(small_craft_ahead()))
+		return TRUE
 	if (!swamped())
 		return FALSE
 	if (driver && swamp_told != driver)
