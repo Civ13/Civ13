@@ -26,7 +26,9 @@
 	ID = MAP_GATEWAY
 	title = "Gateway"
 	description = "The way in: every player is sent on to their land."
-	lobby_icon = "icons/lobby/football.png"
+	// The gateway fronts the group, so players see the start region's art (Gaia's volcano).
+	lobby_icon = 'icons/lobby/gaia_volcano.dmi'
+	lobby_icon_wide = 'icons/lobby/gaia_volcano_wide.dmi'
 	no_winner = "The gateway never closes."
 	faction_organization = list(CIVILIAN)
 	roundend_condition_sides = list(list(CIVILIAN) = /area/caribbean/gateway)
