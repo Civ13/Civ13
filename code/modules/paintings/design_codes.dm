@@ -68,6 +68,8 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a vehicle sheet"
 		if ("AIR")
 			return "an airship sheet"
+		if ("STATION")
+			return "a space station plan"
 	return null
 
 // Why a pasted code was refused, for the player.

@@ -3,7 +3,8 @@
 // ------------------------------------------------------------
 // Each kind is a design code prefix with its own datum, reader and rules: a
 // ship (ship_draught.dm), a submarine (sub_draught.dm) or a land
-// vehicle or plane (craft/vehicle_draught.dm) or an airship (air_draught.dm). A new kind of
+// vehicle or plane (craft/vehicle_draught.dm), an airship (air_draught.dm) or a space
+// station (space/station_plan.dm). A new kind of
 // planner (a spaceship, a rocket, a station) is one more row here with its
 // own reader, a take proc on the sheet and its own window.
 //
@@ -23,6 +24,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 		"SUB" = list("name" = "submarine", "max" = DESIGN_CODE_SUB_MAX, "read" = /proc/sub_draught_from_code, "take" = "take_sub"),
 		"CAR" = list("name" = "vehicle", "max" = DESIGN_CODE_CAR_MAX, "read" = /proc/vehicle_draught_from_code, "take" = "take_vehicle"),
 		"AIR" = list("name" = "airship", "max" = DESIGN_CODE_AIR_MAX, "read" = /proc/air_draught_from_code, "take" = "take_air"),
+		"STATION" = list("name" = "space station", "max" = DESIGN_CODE_STATION_MAX, "read" = /proc/station_plan_from_code, "take" = "take_station"),
 	)
 
 // The longest code any kind of sheet accepts.

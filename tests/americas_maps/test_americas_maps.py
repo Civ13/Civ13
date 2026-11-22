@@ -339,7 +339,7 @@ class AmericasMapsTest(unittest.TestCase):
         self.assertIn('if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."', edge)
         # A rider takes the mount: recorded before the ask, removed only once the rider left,
         # validated on arrival, and never carried without an edge crossing.
-        self.assertIn('"voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))', travel)
+        self.assertIn('"voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"', travel)
         self.assertIn('if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return', edge)
         self.assertIn('if (took_mount && QDELETED(src) && !QDELETED(steed))', edge)
         self.assertIn('return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)', edge)
