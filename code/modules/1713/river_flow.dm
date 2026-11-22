@@ -71,7 +71,7 @@ var/global/river_scan_index = 1
 var/global/list/river_moved = list()
 
 /proc/river_carryable(atom/movable/A)
-	if (!A || QDELETED(A) || A.anchored)
+	if (QDELETED(A) || A.anchored)
 		return FALSE
 	if (istype(A, /obj/item))
 		return TRUE
