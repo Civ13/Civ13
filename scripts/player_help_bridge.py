@@ -101,7 +101,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'ac6b4e22b974556e8da66ff3828386a10d671ee1'
+WIKI_REVIEWED_REVISION = '7e8017ff8d6378a84ec1c0ff1237b94a678adb9d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -202,7 +202,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_the_Moon.md': ('c8da8a4e6c6b3679092d43b9c7546cf511252081294beb7293c7c13c1ef056bf', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
     'guides/Guide_to_Crafting.md': ('90d7753c5350238fadf4dc48aa21978e82946111c8a665c7970bd35c953561bf', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
-    'Starter_Guide.md': ('dd6160e914cb4c332a03f24d27c4f608920b54870ad96cbd91b827f5021f0255', 'starter guide beginner basics first steps controls interface intents'),
+    'Starter_Guide.md': ('3ea06e291a7eab64c32938437523c7dd326a310dd193698b5024a9d17da48857', 'starter guide beginner basics first steps controls interface intents'),
     'Music.md': ('049a85fd6517277b3abffa464c88c43dbda8d3060307b13491cd595a7a541c1d', 'music instrument instruments song songs play sheet notes piano'),
     'Paper_Templates.md': ('27495905153f4d0ac91d18dc9daccfa4cc533144234766ee8e800c47adcc9408', 'paper templates template forms document documents'),
     'rules/Rules.md': ('167e92e5b1d2b9f601f73fe29cd4348728fbaa8c4b33da17245dc7918663ff11', 'rules rule allowed banned ban griefing grief metagaming roleplay rp ooc ick ock behaviour conduct'),
