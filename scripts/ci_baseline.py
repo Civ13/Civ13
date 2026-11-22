@@ -114,6 +114,8 @@ SUITES = {
     'frog_breeding_count': {'files': ('tests/frog_breeding_count/test_source.py',),
         'paths': ('tests/frog_breeding_count/',),
         'shared_paths': ('tests/save_movement/source_adapter.py', 'code/game/mob/living/simple_animal/friendly/lizard.dm')},
+    'chemsmoke_initial_splash': {'files': ('tests/chemsmoke_initial_splash/test_initial_splash.py',),
+        'paths': ('tests/chemsmoke_initial_splash/', 'tests/save_movement/source_adapter.py', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/effect_system.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'cleanables_scheduler': {'files': ('tests/cleanables_scheduler/test_resume.py',),
