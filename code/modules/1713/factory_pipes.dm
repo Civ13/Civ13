@@ -139,7 +139,8 @@ var/global/fluid_step_serial = 0
 						continue
 					var/data = R.get_data(id)
 					var/is_toxin = istype(reagent, /datum/reagent/toxin)
-					R.remove_reagent(id, amount)
+					// Debit the entry being credited, not every alcohol (#6870).
+					R.remove_reagent(id, amount, exact = TRUE)
 					var/taken = D.fluid_receive(id, amount, data)
 					if (taken > 0 && is_toxin)
 						fluid_carry_toxin_origin(S, R, D)
