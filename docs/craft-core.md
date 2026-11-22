@@ -840,6 +840,13 @@ and reuses the unused `modern_ship` state in `icons/obj/cannon.dmi`.
   breech. Nothing links turret and rack, so a hop or a turn needs no fix-up
   and nothing extra is saved.
 - Bomb racks do not feed it.
+- Turrets answer the boatswain's call (`broadside_gun_ok()` in
+  `1713/siege/naval_broadside.dm`), unlike the fixed naval guns and tanks.
+- Gate (turret_probe.dm): a 200-tile steel battleship with 96 tiles of hold,
+  eight loaded turrets and a belted side fires all eight and steps in the
+  same tick in about 14-15 ms, of which the broadside is about 1 ms; the step
+  alone is 13-14 ms. That is inside one 40 ms tick but over the plan's 8 ms
+  step budget, the same as any hull near the 300-tile deck cap (Upper decks).
 
 ## Belt armour
 
