@@ -44,6 +44,7 @@
 	sleep(-1)
 	if (!reload_verified_access_list("whitelist"))
 		admin_notice("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", R_DEBUG)
+	watch_verified_access_lists() // picks up verifications made while the world runs
 
 	admin_notice("<span class='danger'>Initializing factionlist...</span>", R_DEBUG)
 	sleep(-1)
