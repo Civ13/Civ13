@@ -377,7 +377,7 @@ var/list/charge_sounds_generic_female = list(
 	for (var/P in player_list)
 		var/mob/M = P
 
-		if (istype(source) && isnewplayer(M))
+		if (isnewplayer(M) && istype(source))
 			continue
 
 		if (!M || !M.client)
