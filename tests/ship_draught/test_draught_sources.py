@@ -38,7 +38,7 @@ def recipe_costs():
 def table(name, source=None):
     block = (source or SOURCE).split('/proc/%s()\n\tvar/static/list/table\n\tif (!table)\n\t\ttable = list(' % name if '/proc/%s()\n' % name in (source or SOURCE) else 'var/global/list/%s = list(' % name, 1)[1].split('\n)\n', 1)[0]
     rows = {}
-    for key, path, cost in re.findall(r'"(\w)" = list\("name" = "[^"]+", "path" = (/[\w/]+), "cost" = list\(([^)]*)\)', block):
+    for key, path, cost in re.findall(r'"(\w+)" = list\("name" = "[^"]+", "path" = (/[\w/]+), "cost" = list\(([^)]*)\)', block):
         rows[key] = (path, dict((m, int(n)) for m, n in re.findall(r'"(\w+)" = (\d+)', cost)))
     return rows
 
@@ -61,7 +61,7 @@ class DraughtSources(unittest.TestCase):
         # scripts/build_ship_designer_icons.py cuts them from the game's DMIs.
         designer = (ROOT / 'code/modules/naval/ship_designer.dm').read_text(encoding='utf-8')
         sent = dict(re.findall(r'"shipd_(\w+)\.png" = \'icons/ship_designer/(\w+)\.png\'', designer))
-        turning = set(re.findall(r'"(\w)" = list\([^\n]*"turns" = TRUE', SOURCE))
+        turning = set(re.findall(r'"(\w+)" = list\([^\n]*"turns" = TRUE', SOURCE))
         wanted = ['floor_%s' % key for key in table('ship_draught_floors')]
         for key in table('ship_draught_pieces'):
             wanted += ['piece_%s_%d' % (key, facing) for facing in (1, 2, 4, 8)] if key in turning else ['piece_%s' % key]

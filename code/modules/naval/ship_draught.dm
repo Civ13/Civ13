@@ -97,6 +97,10 @@
 	// holds deck up to 3 tiles away, a plank wall only beside it.
 	"S" = list("name" = "deck pillar", "path" = /obj/structure/roof_support, "cost" = list("wood" = 2), "load" = 0.5, "decks" = TRUE, "carries" = 3),
 	"X" = list("name" = "ladder", "path" = /obj/structure/multiz/ladder/up/placed, "cost" = list("wood" = 4), "load" = 0.1, "decks" = TRUE, "ladder" = TRUE),
+	// Watertight compartments (hull_compartments.dm): a bulkhead, and a door
+	// in one. Two letters each: every single capital is taken.
+	"WT" = list("name" = "watertight door", "path" = /obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight, "cost" = list("steel" = 20), "load" = 0.5, "turns" = TRUE, "decks" = TRUE),
+	"WB" = list("name" = "watertight bulkhead", "path" = /obj/structure/hull_bulkhead, "cost" = list("steel" = 8), "load" = 0.5, "decks" = TRUE, "carries" = 1),
 )
 	return table
 

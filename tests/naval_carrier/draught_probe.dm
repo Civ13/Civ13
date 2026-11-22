@@ -772,6 +772,40 @@ var/naval_runtime_error = FALSE
 	naval_check(findtext(html, "\"HELP\":") && findtext(html, "Holds 40 tiles"), "the ship window carries the part descriptions")
 	qdel(pad)
 
+	// Watertight compartments (hull_compartments.dm): a 4x20 ship.
+	var/datum/ship_draught/W = draught_box(4, 20, "Liner")
+	W.set_piece(0, 0, "P")
+	var/datum/design_report/WR = W.check_design()
+	naval_check(draught_report_has(WR, DESIGN_NOTE, "no watertight bulkheads"), "a ship with no bulkheads is told one hole floods all of her")
+	qdel(WR)
+	// Half a bulkhead parts nothing.
+	W.set_piece(0, 7, "WB")
+	W.set_piece(1, 7, "WT", NORTH)
+	WR = W.check_design()
+	var/datum/design_finding/loose = draught_report_has(WR, DESIGN_WARNING, "do not part her")
+	naval_check(loose && ("0,7" in loose.cells) && ("1,7" in loose.cells) && loose.part == "WB", "a bulkhead short of her sides is warned of on its tiles")
+	qdel(WR)
+	// Right across her: two compartments, the bigger more than half of her.
+	W.set_piece(2, 7, "WB")
+	W.set_piece(3, 7, "WB")
+	WR = W.check_design()
+	naval_check(draught_report_has(WR, DESIGN_WARNING, "One compartment holds 48 of her 80 tiles"), "a compartment over half of her is warned of ([jointext(WR.texts(DESIGN_WARNING), " | ")])")
+	qdel(WR)
+	// A second bulkhead in her hold: three compartments, none over half.
+	for (var/x = 0, x < 4, x++)
+		W.set_deck(-1, x, 13, TRUE)
+	W.set_deck(-1, 0, 12, TRUE)
+	for (var/x = 0, x < 4, x++)
+		W.set_deck_piece(-1, x, 13, x == 2 ? "WT" : "WB")
+	WR = W.check_design()
+	naval_check(draught_report_has(WR, DESIGN_NOTE, "into 3 compartments") && !draught_report_has(WR, DESIGN_WARNING, "One compartment"), "a bulkhead in her hold parts her too ([jointext(WR.texts(DESIGN_NOTE), " | ")])")
+	qdel(WR)
+	var/datum/ship_draught/again = ship_draught_from_code(W.to_code())
+	naval_check(again && again.piece_count("WB") == 6 && again.piece_count("WT") == 2 && again.deck_cell(-1, 2, 13) && again.deck_cell(-1, 2, 13)[1] == "WT", "a draught with bulkheads reads back from its code")
+	naval_check(findtext(design_part_help_text("ship", "WB"), "compartments") && findtext(design_part_help_text("ship", "WT"), "flood together"), "the bulkhead and its door are described")
+	qdel(again)
+	qdel(W)
+
 	// Submarines: no banks warn, a second wheel is an error on its cells.
 	var/datum/sub_draught/S = new(5)
 	S.set_fitting(2, 1, "W")

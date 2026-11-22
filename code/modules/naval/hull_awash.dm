@@ -45,12 +45,12 @@ var/global/image/hull_awash_image = null
 				break
 	return awash_planks.len
 
-/datum/hull_ledger/add_water(amount, cap = null)
+/datum/hull_ledger/add_water(amount, cap = null, turf/at = null)
 	. = ..()
 	if (deck_awash() != (awash_planks.len > 0))
 		show_awash()
 
-/datum/hull_ledger/remove_water(amount)
+/datum/hull_ledger/remove_water(amount, turf/at = null)
 	. = ..()
 	if (deck_awash() != (awash_planks.len > 0))
 		show_awash()

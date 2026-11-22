@@ -231,6 +231,18 @@ Deck awash (`code/modules/naval/hull_awash.dm`): no film on a dry or knee-deep
 deck; awash, every plank carries it once; a step never doubles it; bailing
 below awash and deleting the ledger both clear it.
 
+Compartments (`code/modules/naval/hull_compartments.dm`): a 4x16 steel ship
+with two lines of bulkheads, each with a watertight door, has three
+compartments that hold all 64 tiles, named from her bow; a hole aft fills only
+the after compartment to its brim and she floats on; the tiller reads each
+compartment; a pump amidships lifts nothing and a bailer aft lifts aft water;
+a door that moves marks her compartments for a new walk; an open door joins
+two and keeps the water, a shut one parts them with the water on both sides;
+the record saves and reads back each compartment; a shut door holds the sea;
+two flooded compartments (40 of 64 tiles) make her founder far from full, and
+pumping one below its brim stops the count; a bilge emptied outright empties
+every compartment.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)

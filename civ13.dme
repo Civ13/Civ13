@@ -1829,6 +1829,7 @@
 #include "code\modules\naval\hull_drives.dm"
 #include "code\modules\naval\hull_ledger.dm"
 #include "code\modules\naval\hull_caulking.dm"
+#include "code\modules\naval\hull_compartments.dm"
 #include "code\modules\naval\hull_pumps.dm"
 #include "code\modules\naval\hull_load.dm"
 #include "code\modules\naval\hull_weight.dm"

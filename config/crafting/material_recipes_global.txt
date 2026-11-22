@@ -2208,6 +2208,8 @@ RECIPE: /material/steel/,electric sewage pump,/obj/structure/sewer_pump/electric
 RECIPE: /material/steel/,sump pump,/obj/structure/cellar_pump/sump,4,120,1,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,large reinforced large steel double doors,/obj/structure/simple_door/key_door/anyone/doubledoor/steel,10,250,1,1,construction,62,0,0,8,null
 RECIPE: /material/steel/,steel fire door,/obj/structure/simple_door/key_door/anyone/fire_door/steel,15,250,1,1,construction,62,0,0,8,null
+RECIPE: /material/steel/,watertight door,/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight,20,300,1,1,construction,62,0,0,8,null
+RECIPE: /material/steel/,watertight bulkhead,/obj/structure/hull_bulkhead,8,200,1,1,construction,62,0,0,8,null
 RECIPE: /material/steel/,panic bar,/obj/item/panic_bar,3,60,0,1,construction,75,0,0,8,null
 RECIPE: /material/steel/,hydraulic door closer,/obj/item/door_fitting/hydraulic,4,120,0,1,construction,0,0,0,8,null
 RECIPE: /material/steel/,tumbler lock,/obj/item/fitted_lock/tumbler,3,100,0,1,construction,0,0,0,8,null

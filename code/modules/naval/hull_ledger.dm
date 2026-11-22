@@ -178,6 +178,8 @@ var/global/hull_ledger_timer_off = FALSE
 	// Breaches in her hold let the sea in too (hull_breach.dm).
 	holes += hold_breaches()
 	water = min(water, capacity())
+	// Her bulkheads are walked again at the next look (hull_compartments.dm).
+	bays_dirty = TRUE
 
 /datum/hull_ledger/proc/hull_class()
 	if (tiles <= HULL_SMALL_MAX_TILES)
@@ -299,14 +301,20 @@ var/global/hull_ledger_timer_off = FALSE
 		return B.contains(locate(T.x, T.y, B.z))
 	return FALSE
 
-// Takes water in. Her crew hears of it when the bilge is a step deeper.
-/datum/hull_ledger/proc/add_water(amount, cap = null)
+// Takes water in, at turf at when it comes in at one place (a hole, a
+// bucket emptied), or along her whole length. Her crew hears of it when the
+// bilge is a step deeper.
+/datum/hull_ledger/proc/add_water(amount, cap = null, turf/at = null)
 	if (amount <= 0)
 		return
 	if (isnull(cap))
 		cap = limit()
-	// Water already past the cap (a hole since patched) stays until bailed.
-	water = max(water, min(cap, water + amount))
+	if (bays_split())
+		// Parted by bulkheads, each compartment fills on its own (hull_compartments.dm).
+		bays_add(amount, cap, at)
+	else
+		// Water already past the cap (a hole since patched) stays until bailed.
+		water = max(water, min(cap, water + amount))
 	var/now = depth()
 	if (now > depth_told && craft)
 		switch (now)
@@ -320,10 +328,14 @@ var/global/hull_ledger_timer_off = FALSE
 				craft.crew_message(SPAN_DANGER("<b>The [craft.name] lists!</b> She is three quarters full and will make slow ahead at best. Patch her holes and bail, or get off her."))
 	depth_told = max(depth_told, now)
 
-// Takes water out. Returns what came out.
-/datum/hull_ledger/proc/remove_water(amount)
-	. = min(water, max(0, amount))
-	water -= .
+// Takes water out, from the compartment of turf at when it is pumped or
+// bailed there. Returns what came out.
+/datum/hull_ledger/proc/remove_water(amount, turf/at = null)
+	if (bays_split())
+		. = bays_remove(amount, at)
+	else
+		. = min(water, max(0, amount))
+		water -= .
 	if (water < 0.01)
 		water = 0
 	depth_told = min(depth_told, depth())
@@ -336,6 +348,8 @@ var/global/hull_ledger_timer_off = FALSE
 	if (lies_dry())
 		water = 0
 		return
+	// Doors open and shut between steps: walk her compartments again.
+	bays_dirty = TRUE
 	var/rate = seep_rate()
 	if (rate > 0)
 		add_water(rate * (under_way() ? 1 : HULL_SEEP_AT_REST) * seconds / 60)
@@ -344,7 +358,8 @@ var/global/hull_ledger_timer_off = FALSE
 	if (patches > 0)
 		add_water(patches * HULL_PATCH_PER_MINUTE * seconds / 60)
 	if (holes > 0)
-		add_water(holes * HULL_HOLE_PER_MINUTE * seconds / 60, capacity())
+		// Each hole floods the compartment it opens into (hull_compartments.dm).
+		flood_holes(holes * HULL_HOLE_PER_MINUTE * seconds / 60)
 	// What the wind does to her sails (hull_rigging.dm).
 	step_rigging(seconds)
 	// What her load lets over the side (hull_load.dm).
@@ -372,6 +387,7 @@ var/global/hull_ledger_timer_off = FALSE
 		. += " <b>[holes] hole\s in her hull let[holes == 1 ? "s" : ""] the sea in:</b> use wood on the open water of a hole, hammer in the other hand, to patch it."
 	if (patches > 0)
 		. += " [patches] patch[patches == 1 ? "" : "es"] weep[patches == 1 ? "s" : ""] a little."
+	. += bays_text()
 	. += " [capitalize(hold_text())]"
 	if (!under_way())
 		survey_load()
@@ -392,7 +408,10 @@ var/global/hull_ledger_timer_off = FALSE
 
 // The ledger as plain numbers for a saved field, and back.
 /datum/hull_ledger/proc/to_list()
-	return list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0, "seams" = round(seams, 0.001), "old_anchor" = old_anchor ? 1 : 0)
+	. = list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0, "seams" = round(seams, 0.001), "old_anchor" = old_anchor ? 1 : 0)
+	var/list/bays = bays_to_list()
+	if (bays)
+		.["bays"] = bays
 
 /datum/hull_ledger/proc/from_list(list/state)
 	if (!islist(state))
@@ -411,6 +430,7 @@ var/global/hull_ledger_timer_off = FALSE
 		seams = clamp(state["seams"], 0, 1)
 	seams_told = seams >= HULL_SEAMS_OPEN ? 2 : (seams >= HULL_SEAMS_WORKING ? 1 : 0)
 	depth_told = depth()
+	bays_from_list(state["bays"])
 
 // ---- The craft's side ----
 
@@ -550,7 +570,8 @@ var/global/hull_ledger_timer_off = FALSE
 /datum/hull_ledger/proc/check_founder()
 	if (sinking || !craft || !craft.body || !craft.body.placed())
 		return
-	var/full = water >= capacity() - 0.01
+	// Full, or flooded through more than half her compartments (hull_compartments.dm).
+	var/full = founders()
 	if (grounded)
 		if (over_deep())
 			// Pushed or carried off the shallows still full of water.
@@ -588,7 +609,7 @@ var/global/hull_ledger_timer_off = FALSE
 		return FALSE
 	if (persistence_save_in_progress)
 		return FALSE
-	if (water < capacity() * 0.98 || !over_deep())
+	if (!founders(0.98) || !over_deep())
 		stop_sinking()
 		craft.crew_message(SPAN_NOTICE("<b>The [craft.name] holds.</b> Her crew is ahead of the water, for now."))
 		return FALSE
@@ -709,8 +730,8 @@ var/global/hull_ledger_timer_off = FALSE
 		return "you are in no state to bail"
 	if (W.reagents && W.reagents.total_volume > 0)
 		return "empty the bucket first"
-	if (C.ledger.water < 1)
-		return "her bilge is dry"
+	if (C.ledger.water_at(plank) < 1)
+		return C.ledger.water < 1 ? "her bilge is dry" : "this compartment is dry"
 	return null
 
 // H bails with bucket W until the bilge is dry or they stop. Returns the
@@ -739,7 +760,7 @@ var/global/hull_ledger_timer_off = FALSE
 			break
 		if (QDELETED(L) || QDELETED(W) || QDELETED(P) || H.get_active_hand() != W || hull_bail_refusal(H, W, P))
 			break
-		. += L.remove_water(1)
+		. += L.remove_water(1, get_turf(P))
 		playsound(get_turf(H), 'sound/effects/slosh.ogg', 25, TRUE)
 	if (!QDELETED(L))
 		L.bailers -= H
@@ -753,7 +774,7 @@ var/global/hull_ledger_timer_off = FALSE
 		var/obj/item/weapon/reagent_containers/glass/bucket/B = W
 		var/turf/plank = get_turf(src)
 		var/datum/craft/C = plank ? craft_at(plank) : null
-		if (C && C.ledger && C.ledger.water >= 1 && !(B.reagents && B.reagents.total_volume > 0) && C.body.contains(get_turf(user)))
+		if (C && C.ledger && C.ledger.water_at(plank) >= 1 && !(B.reagents && B.reagents.total_volume > 0) && C.body.contains(get_turf(user)))
 			hull_bail(user, B, src)
 			return TRUE
 	return ..()
