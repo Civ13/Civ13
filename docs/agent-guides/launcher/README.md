@@ -11,6 +11,11 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-22: Travel starts -->
+Launcher 1.5.37 adds **All regions > More > Travel starts…** (HostSettings.TravelStarts/SetKeptDown): one tick per
+land (the gateway is left out); an unticked land gets `"keep_down": true` in the group config, so a traveller is turned
+back instead of starting it. The doorman and shard_group.py read it at each request, so saving restarts nothing.
+
 <!-- 2026-11-21: Translator tab (Edge chat translator) -->
 Val asked (2026-11-21) that the Edge chat translator (tools/edge-translator, docs/chat-translation.md) run as part of the
 launcher. Like Player Help it belongs to the host service: with `"chat_translator": {}` in the group config

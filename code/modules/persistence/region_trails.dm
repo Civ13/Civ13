@@ -207,11 +207,10 @@ var/global/list/region_trail_next_request = list()
 	if(!choice || QDELETED(src) || !check_rights(R_ADMIN, TRUE, admin)) return
 	if(approve(choices[choice], admin.ckey))
 		message_admins("[key_name_admin(admin)] approved the trail at [x],[y],[z] to [html_encode(destination_name())].")
-		// A trail never starts a stopped land: say so now rather than when a
-		// traveller is turned back.
-		var/list/peer = shard_group.peers[destination]
-		if(peer && peer["state"] == "STOPPED")
-			to_chat(admin, SPAN_WARNING("[destination_name()] is stopped right now, so travellers are turned back at this trail until its server is started from the host or launcher."))
+		// A trail starts a stopped land unless it is kept down: say so now rather
+		// than when a traveller is turned back.
+		if(shard_group.peer_closed(destination))
+			to_chat(admin, SPAN_WARNING("[destination_name()] is stopped and kept down right now, so travellers are turned back at this trail until its server is started from the host or launcher."))
 
 // Opens the trail toward a known peer. Returns TRUE when it did.
 /obj/structure/region_gate/trail_marker/proc/approve(id, by)
@@ -292,9 +291,8 @@ var/global/list/region_trail_next_request = list()
 		to_chat(M, SPAN_WARNING("That land cannot be reached by a trail."))
 		return
 	message_admins("[key_name_admin(M)] placed a trail at [T.x],[T.y],[T.z] to [html_encode(marker.destination_name())].")
-	var/list/peer = shard_group.peers[id]
-	if(peer && peer["state"] == "STOPPED")
-		to_chat(M, SPAN_WARNING("[marker.destination_name()] is stopped right now, so travellers are turned back at this trail until its server is started from the host or launcher."))
+	if(shard_group.peer_closed(id))
+		to_chat(M, SPAN_WARNING("[marker.destination_name()] is stopped and kept down right now, so travellers are turned back at this trail until its server is started from the host or launcher."))
 	if(WWinput(M, "The trail to [marker.destination_name()] is open. Travellers from [marker.destination_name()] arrive at this trail once that land has a trail leading back here. Go there now to place it?", "Place Trail", "Stay", list("Go there", "Stay")) == "Go there" && M.client)
 		shard_group.send_player(M.client, id)
 

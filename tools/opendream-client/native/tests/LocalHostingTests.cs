@@ -386,6 +386,14 @@ static class LocalHostingTests {
         Reject(() => HostSettings.SetStartRegion(host.Control!.Group!, "atlantis"), "an unknown start region");
         HostSettings.SetStartRegion(host.Control!.Group!, "northamerica");
         Require(!File.ReadAllText(groupConfig).Contains("start_region") && HostSettings.StartRegion(host.Control!.Group!).Current == "northamerica", "start region back on the mainland");
+        // Travel starts: every land but the gateway is listed; unticked ones are kept down (keep_down), other settings kept.
+        Require(HostSettings.TravelStarts(host.Control!.Group!).Select(region => region.Id + "=" + region.KeptDown).SequenceEqual(new[] {
+            "northamerica=False", "gaia=False", "orbit=False", "tutorial=False" }), "travel starts list every land but the gateway");
+        HostSettings.SetKeptDown(host.Control!.Group!, new[] { "gaia", "gateway" });
+        Require(HostSettings.TravelStarts(host.Control!.Group!).Where(region => region.KeptDown).Select(region => region.Id).SequenceEqual(new[] { "gaia" })
+            && !File.ReadAllText(groupConfig).Contains("\"keep_down\": false") && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "gaia kept down, the gateway never");
+        HostSettings.SetKeptDown(host.Control!.Group!, Array.Empty<string>());
+        Require(!File.ReadAllText(groupConfig).Contains("keep_down"), "nothing kept down");
         File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, shutdown_warning_seconds = 300, update_when_empty = true, fetch = "origin", regions = new object[] {
             new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
         var places = HostSettings.Locations(host.Control!.Group!);

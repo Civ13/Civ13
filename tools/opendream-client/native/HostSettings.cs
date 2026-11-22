@@ -106,6 +106,40 @@ public static class HostSettings {
         File.Move(temporary, group.Config, true);
     }
 
+    // Travel starts: a traveller bound for a land that is not running starts it, the way one bound for a sleeping
+    // land wakes it (Val, 2026-11-22). A region kept down (its group config entry's keep_down) is never started that
+    // way; the doorman and shard_group.py read it at each request, so a change applies at once. The gateway is left
+    // out: travellers never go there, and the host service alone starts it.
+    public sealed record TravelStart(string Id, string Name, bool KeptDown);
+
+    public static IReadOnlyList<TravelStart> TravelStarts(HostGroup group) {
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root || root["regions"] is not JsonArray regions)
+            throw new InvalidDataException("The group config lists no regions.");
+        var list = new List<TravelStart>();
+        foreach (var node in regions) {
+            if (node is not JsonObject region || Text(region["id"]) is not { } id || !RegionId.IsMatch(id)) continue;
+            if (Text(region["kind"]) == "GATEWAY") continue;
+            var kept = region["keep_down"] is JsonValue value && value.TryGetValue<bool>(out var on) && on;
+            list.Add(new TravelStart(id, Text(region["name"]) is { Length: > 0 } name ? name : id, kept));
+        }
+        return list;
+    }
+
+    // Rewrites the group config with keep_down set on the named regions and removed from the rest, keeping every
+    // other setting.
+    public static void SetKeptDown(HostGroup group, IReadOnlyCollection<string> keptDown) {
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root || root["regions"] is not JsonArray regions)
+            throw new InvalidDataException(group.Config + " lists no regions.");
+        foreach (var node in regions) {
+            if (node is not JsonObject region || Text(region["id"]) is not { } id) continue;
+            if (keptDown.Contains(id) && Text(region["kind"]) != "GATEWAY") region["keep_down"] = true;
+            else region.Remove("keep_down");
+        }
+        var temporary = group.Config + ".tmp";
+        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        File.Move(temporary, group.Config, true);
+    }
+
     private static string? Text(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
 
     public static readonly string[] Offered = [LocalConfig, "config/host.txt"];

@@ -142,32 +142,49 @@ class RegionWakeTests(unittest.TestCase):
 
     def test_a_trail_to_a_stopped_region_says_it_is_stopped(self):
         # 2026-11-13: an approved trail to a stopped Europe said "Nobody seems
-        # to be coming back", which read as a broken trail. A stopped land is
-        # never started by a trail, so the traveller hears it is closed.
+        # to be coming back", which read as a broken trail. Since 2026-11-22 a
+        # traveller starts a stopped land (Val); only one kept down on purpose
+        # stays closed, and the traveller hears it is closed.
         body = proc(TRAVEL, GATE + '/proc/closed_reason')
-        stopped = body.index('peer["state"] == "STOPPED"')
+        stopped = body.index('shard_group.peer_closed(destination)')
         self.assertLess(stopped, body.index('Nobody seems to be coming back'))
         self.assertIn('is closed for now: its land is not running', body)
         wake = proc(GROUP, '/datum/shard_group/proc/wake_peer')
         self.assertIn('ask_wake(id)', wake)
         ask = proc(GROUP, '/datum/shard_group/proc/ask_wake')
-        stopped = ask.index('peer["state"] == "STOPPED"')
+        stopped = ask.index('if(peer_closed(id))')
         refused = ask.index('"result" = "refused"', stopped)
         self.assertLess(stopped, refused)
         self.assertLess(refused, ask.index('if(!peer_wakeable(id))'))
         self.assertLess(refused, ask.index('ask_doorman('))
-        self.assertNotIn('"STOPPED"', proc(GROUP, '/datum/shard_group/proc/peer_wakeable'))
+        # A stopped land is wakeable only when the doorman says it may be started.
+        self.assertIn('peer["state"] == "STOPPED" && peer["startable"]', proc(GROUP, '/datum/shard_group/proc/peer_wakeable'))
+        self.assertIn('&start=1', ask)
+        closed = proc(GROUP, '/datum/shard_group/proc/peer_closed')
+        self.assertIn('peer["state"] == "STOPPED" && !peer_wakeable(id)', closed)
+        sleeping = proc(GROUP, '/datum/shard_group/proc/record_sleeping')
+        self.assertIn('peer["startable"] = entry["startable"] ? TRUE : FALSE', sleeping)
+
+    def test_travellers_hear_a_land_is_being_prepared(self):
+        notice = proc(GROUP, '/datum/shard_group/proc/wake_notice')
+        self.assertIn('the land is being prepared for you', notice)
+        ask = proc(GROUP, '/datum/shard_group/proc/ask_wake')
+        self.assertIn('peer["preparing"] = reply["preparing"] ? TRUE : FALSE', ask)
+        self.assertLess(ask.index('peer["preparing"] = reply'), ask.index('"result" = "accepted"'))
+        # A start that failed reads stopped again, so travellers stop waiting.
+        self.assertIn('peer_start_ended(id)', proc(GROUP, '/datum/shard_group/proc/await_peer'))
+        self.assertIn('could not be made ready', proc(GROUP, '/datum/shard_group/proc/wake_peer'))
 
     def test_admins_hear_when_a_stopped_land_turns_travellers_back(self):
         travel = proc(TRAVEL, GATE + '/proc/travel')
         refused = travel.index('to_chat(H, SPAN_WARNING(reason))')
         self.assertLess(refused, travel.index('alert_stopped_destination(H)'))
         alert = proc(TRAVEL, GATE + '/proc/alert_stopped_destination')
-        self.assertIn('peer["state"] != "STOPPED"', alert)
+        self.assertIn('!shard_group.peer_closed(destination)', alert)
         self.assertLess(alert.index('world.time < region_stopped_alerted[destination]'), alert.index('message_admins('))
         trails = read('code/modules/persistence/region_trails.dm')
         approve = proc(trails, '/obj/structure/region_gate/trail_marker/proc/admin_approve')
-        self.assertIn('peer["state"] == "STOPPED"', approve)
+        self.assertIn('shard_group.peer_closed(destination)', approve)
 
     def test_travel_wakes_the_destination_then_checks_again(self):
         body = proc(TRAVEL, GATE + '/proc/travel')
@@ -192,7 +209,8 @@ class RegionWakeTests(unittest.TestCase):
         ask = proc(GROUP, '/datum/shard_group/proc/ask_wake')
         wake = proc(GROUP, '/datum/shard_group/proc/wake_peer')
         await_peer = proc(GROUP, '/datum/shard_group/proc/await_peer')
-        self.assertIn('Clamp(reply["eta"], 0, 900)', ask)
+        self.assertIn('var/eta_cap = peer["preparing"] ? 1800 : 900', ask)
+        self.assertIn('Clamp(reply["eta"], 0, eta_cap)', ask)
         self.assertIn('var/list/asked = ask_wake(id)', wake)
         self.assertIn('var/eta = asked["eta"]', wake)
         self.assertIn('await_peer(id, world.time + (eta + 60) * 10)', wake)

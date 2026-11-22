@@ -778,10 +778,10 @@ var/global/list/region_travel_carry_types = list(
 	// Lands across the sea are reached only by ship (expedition_land.dm).
 	if(peer && peer["kind"] == "EXPEDITION" && !ship_crossing())
 		return "That land lies across the sea. Only a ship can reach it."
-	// A sleeping region is woken when someone sets off (travel()). A stopped
-	// one stays down until the host starts it again, so the traveller is told
-	// so plainly and the admins hear someone is waiting at the trail.
-	if(peer && peer["state"] == "STOPPED")
+	// A sleeping region is woken when someone sets off (travel()), and a stopped
+	// one is started (Val, 2026-11-22). One kept down on purpose stays down, so the
+	// traveller is told so plainly and the admins hear someone is waiting at the trail.
+	if(shard_group.peer_closed(destination))
 		return "[destination_name()] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back."
 	// A land whose transfer agent is on hold would refuse the traveller.
 	if(shard_group.peer_transfers_held(destination))
@@ -830,7 +830,8 @@ var/global/list/region_travel_carry_types = list(
 	if(reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
-	// A sleeping destination is woken first; the wait can be minutes, so check again after.
+	// A sleeping or stopped destination is woken or prepared first; the wait can be
+	// minutes, so check again after.
 	if(shard_group.peers[destination]["state"] != "UP")
 		reason = shard_group.wake_peer(destination, H)
 		if(!reason)
@@ -850,20 +851,20 @@ var/global/list/region_travel_carry_types = list(
 		to_chat(H, SPAN_WARNING(result))
 		player_activity.travel_refused(H, destination, result)
 
-// A player turned back because the destination's server is stopped: tell the
-// admins once per land every REGION_STOPPED_ALERT_COOLDOWN, since only the host
-// can start it again (a trail never starts a stopped land).
+// A player turned back because the destination's server is stopped and kept
+// down: tell the admins once per land every REGION_STOPPED_ALERT_COOLDOWN, since
+// only the host can start it again (a trail starts only a land not kept down).
 #define REGION_STOPPED_ALERT_COOLDOWN 6000
 var/global/list/region_stopped_alerted = list()
 
 /obj/structure/region_gate/proc/alert_stopped_destination(mob/living/human/H)
 	if(!destination || !shard_group.enabled) return FALSE
 	var/list/peer = shard_group.peers[destination]
-	if(!peer || peer["state"] != "STOPPED") return FALSE
+	if(!peer || !shard_group.peer_closed(destination)) return FALSE
 	if(world.time < region_stopped_alerted[destination]) return FALSE
 	region_stopped_alerted[destination] = world.time + REGION_STOPPED_ALERT_COOLDOWN
 	log_game("Region travel: [key_name(H)] was turned back at [x],[y],[z]: [destination] is stopped.")
-	message_admins("[key_name_admin(H)] tried the trail at [x],[y],[z] to [html_encode(destination_name())], but that land is stopped. Start it from the host or launcher if players should reach it.")
+	message_admins("[key_name_admin(H)] tried the trail at [x],[y],[z] to [html_encode(destination_name())], but that land is stopped and kept down. Start it from the host or launcher if players should reach it.")
 	return TRUE
 
 #undef REGION_STOPPED_ALERT_COOLDOWN

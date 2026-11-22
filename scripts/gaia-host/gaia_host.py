@@ -92,6 +92,9 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # map_saves holds a save newer than the last player; after a reboot the
                    # doorman starts the world from that save on the next wake request.
                    'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
+                   # serve: how long a stopped world a traveller asked for takes to be prepared
+                   # (pulled, compiled if its build is behind, and loaded from its save)
+                   'travel_start_estimate_seconds': 600,
                    # Sleep on disk: an idle, saved world is shut down instead of kept frozen in
                    # memory, and starts from its save on the next wake. For worlds seldom
                    # visited (expedition lands, shard_group.py), which then cost no memory.
@@ -966,6 +969,44 @@ class Host:
     def automatic_start_action(self):
         """Action used for automatic recovery; manual start remains separate."""
         return 'start'
+
+    # Val (2026-11-22): a traveller bound for a land that is not running starts it, as one
+    # bound for a sleeping land wakes it, unless it is already being prepared or was kept
+    # down on purpose. The doorman asks these; only a region of this host may ask (loopback).
+    TRAVEL_START_ACTIONS = ('start', 'start-current')
+
+    def starting(self):
+        """True while a start action holds the action lock: the world is being prepared."""
+        return self.lock.exists() and self.read_state().get('action') in self.TRAVEL_START_ACTIONS
+
+    def keep_down(self):
+        """True when a person kept this world down on purpose, so a traveller never starts it."""
+        return bool(self.config.get('keep_down'))
+
+    def travel_start_refusal(self):
+        """Why a traveller must not start this stopped world, or None. Cheap: no save check,
+        no BYOND sign-in check (the start action itself checks those)."""
+        if self.keep_down():
+            return 'kept down'
+        if (self.read_json(self.watchdog_file) or {}).get('gave_up'):
+            return 'crashed too often; a person must start it'
+        if self.lock.exists() and not self.starting():
+            return 'busy: %s' % (self.read_state().get('action') or 'another action')
+        return None
+
+    def start_for_travel(self, reason):
+        """Start a stopped world for a traveller through the ordinary automatic start (the
+        region's build is brought current first, one compile at a time on the host). Returns
+        the accepted action, or {'already_starting': True} when one is running already."""
+        if self.starting():
+            return {'already_starting': True, 'reason': reason}
+        refusal = self.travel_start_refusal()
+        if refusal:
+            raise Refused(refusal)
+        if self.platform.listening(self.config['port']) or self.frozen() or self.cold():
+            raise Refused('the server is not stopped')
+        accepted = self.request(self.automatic_start_action())
+        return dict(accepted, travel_start=True, reason=reason)
 
     def write_json(self, path, value):
         self.state_dir.mkdir(parents=True, exist_ok=True)

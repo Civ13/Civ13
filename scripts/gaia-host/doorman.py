@@ -10,6 +10,11 @@ Topic framing as a game port. The launcher asks it two things:
                             world in a region group, its shard_region answer)
     ?wake=1&port=1714       thaw that instance now (refused while the machine has
                             less than wake_min_free_mb of physical memory free)
+    ?wake=1&port=1714&start=1
+                            the same, and a stopped instance is started (prepared)
+                            for a traveller: only from this machine (a region of the
+                            group), never while it is kept down (keep_down), busy
+                            with another action or given up on by the watchdog
 
 so browsing reads the cache and never wakes a frozen world; only joining does.
 The same two queries also answer plain HTTP (`GET /?host_status=1`): a DM world
@@ -137,6 +142,8 @@ class Instance:
         self.status_at = None
         self.waking_since = None
         self.waking_limit = WAKING_SECONDS
+        self.preparing_since = None   # a traveller's wake started this stopped world then
+        self.start_refusal = None     # why the last such start was refused
         self.idle_since = None
         self.next_watch = 0.0
         self.next_refresh = 0.0
@@ -192,6 +199,7 @@ class Doorman:
                                'map_gamemode': str(reply.get('map_gamemode') or '')[:80]}
             instance.status_at = self.wall()
             instance.waking_since = None
+            instance.preparing_since = None
         # Regions of a group used to poll each other with world.Export, which
         # blocks the asking world for the round trip. The doorman asks once and
         # every region reads its peers from host_status instead (2026-11-07).
@@ -211,9 +219,18 @@ class Doorman:
         now = self.clock()
         if instance.waking_since is not None and now - instance.waking_since > instance.waking_limit:
             instance.waking_since = None
+            instance.preparing_since = None
+        if (instance.preparing_since is not None and not self.preparing(instance)
+                and not self.platform.listening(instance.port)):
+            # The start a traveller asked for ended without the world (a failed compile, a
+            # broken save): stopped again, so waiting travellers are told at once.
+            failed = instance.host.read_state() or {}
+            instance.start_refusal = str(failed.get('error') or 'the start failed')[:200]
+            instance.waking_since = None
+            instance.preparing_since = None
         if instance.host.frozen() or instance.host.cold():
             return 'waking' if instance.waking_since is not None else 'asleep'
-        if instance.waking_since is not None:
+        if instance.waking_since is not None or self.preparing(instance):
             return 'waking'
         return 'awake' if self.platform.listening(instance.port) else 'stopped'
 
@@ -222,6 +239,11 @@ class Doorman:
             entry = {'port': instance.port, 'state': self.state(instance), 'wake_estimate': self.estimate(instance),
                      # asleep after a power-down: a wake starts it from its save, which takes minutes
                      'cold': instance.host.cold() is not None}
+            if self.preparing(instance):
+                entry['preparing'] = True  # a start is running: pulled, compiled if behind, then loaded
+            elif entry['state'] == 'stopped':
+                # Whether a traveller's wake may start it (Val, 2026-11-22); the regions show it.
+                entry['startable'] = self.travel_refusal(instance) is None
             if instance.host.config.get('routed'):
                 # Behind the routing relay: players join through the gate world, never this port.
                 entry['routed'] = True
@@ -232,17 +254,46 @@ class Doorman:
                     entry['region'] = dict(instance.region)
             return entry
 
+    def preparing(self, instance):
+        """True while a start action runs for a world that is not up yet."""
+        starting = getattr(instance.host, 'starting', None)
+        return bool(starting and starting()) and not self.platform.listening(instance.port)
+
+    def travel_refusal(self, instance):
+        """Why a traveller may not start this stopped world, or None."""
+        refusal = getattr(instance.host, 'travel_start_refusal', None)
+        return refusal() if refusal else 'this host cannot start it'
+
+    def stopped(self, instance):
+        host = instance.host
+        return not host.frozen() and not host.cold() and not self.platform.listening(instance.port)
+
     def estimate(self, instance):
         config = instance.host.config
+        if instance.preparing_since is not None:  # a traveller's start: it may compile first
+            return config.get('travel_start_estimate_seconds', 600)
         cold = instance.host.cold() is not None or (instance.waking_limit > WAKING_SECONDS and instance.waking_since is not None)
         return config['cold_start_estimate_seconds'] if cold else config['wake_estimate_seconds']
 
-    def wake(self, instance, reason):
+    def wake(self, instance, reason, start=False):
         """Thaw a frozen instance, or start a cold one from its last save, and mark
-        it waking until its status answers."""
+        it waking until its status answers. start: a stopped one is started too (for a
+        traveller); one already starting is only marked waking, so it is prepared once."""
         with self.lock:
             host = instance.host
-            if host.frozen():
+            if start and self.stopped(instance):
+                try:
+                    host.log(host.start_for_travel(reason))
+                except Exception as refusal:  # gaia_host.Refused; that module may be __main__
+                    if 'Refused' not in [kind.__name__ for kind in type(refusal).__mro__]:
+                        raise
+                    instance.start_refusal = str(refusal)[:200]
+                    host.log({'travel_start_refused': instance.start_refusal, 'port': instance.port})
+                    return False
+                instance.start_refusal = None
+                instance.preparing_since = self.clock()
+                limit = host.config.get('travel_start_estimate_seconds', 600) + host.config['cold_start_estimate_seconds']
+            elif host.frozen():
                 host.log(host.thaw(reason))
                 limit = WAKING_SECONDS
             elif host.cold():
@@ -262,15 +313,16 @@ class Doorman:
             instance.next_refresh = 0.0
             return True
 
-    def low_memory(self, instance):
+    def low_memory(self, instance, start=False):
         """(free_mb, need_mb) when a frozen instance must not be woken for lack of memory.
 
         An awake instance needs nothing, and an unknown free amount does not block.
+        start: a stopped instance about to be started for a traveller needs what a cold start does.
         """
         host = instance.host
         if host.frozen():
             need = host.config['wake_min_free_mb']
-        elif host.cold():
+        elif host.cold() or start:
             need = host.config['cold_start_min_free_mb']  # loading a save peaks far above a thaw
         else:
             return None
@@ -337,18 +389,28 @@ class Doorman:
             return None
         if values.get('host_status') == ['1'] and len(values) == 1:
             return {'schema': SCHEMA, 'instances': [self.describe(self.instances[port]) for port in sorted(self.instances)]}
-        if values.get('wake') == ['1'] and len(values) == 2 and len(values.get('port', [])) == 1:
+        wake_keys = set(values) in ({'wake', 'port'}, {'wake', 'port', 'start'})
+        if values.get('wake') == ['1'] and wake_keys and len(values.get('port', [])) == 1 \
+                and values.get('start', ['1']) == ['1']:
             port = values['port'][0]
             instance = self.instances.get(int(port)) if port.isdigit() and len(port) <= 5 else None
             if instance is None:
                 return {'schema': SCHEMA, 'ok': False, 'error': 'unknown port'}
-            if instance.host.cold() and not instance.host.byond_signed_in():
+            # Only a region on this machine may start a stopped world (for a traveller); a
+            # remote caller (the launcher's Join) only wakes a sleeping one, as before.
+            start = 'start' in values and is_loopback(address) and self.stopped(instance)
+            if start and not self.preparing(instance):
+                refusal = self.travel_refusal(instance)
+                if refusal is not None:
+                    return {'schema': SCHEMA, 'ok': False, 'error': 'kept down' if refusal == 'kept down' else 'not startable',
+                            'reason': refusal, 'port': instance.port}
+            if (instance.host.cold() or (start and not self.preparing(instance))) and not instance.host.byond_signed_in():
                 instance.host.log({'wake_refused': 'byond signed out', 'port': instance.port})
                 return {'schema': SCHEMA, 'ok': False, 'error': 'byond signed out', 'port': instance.port}
-            low = self.low_memory(instance)
+            low = self.low_memory(instance, start=start and not self.preparing(instance))
             # Make room by stopping the longest-asleep other world before refusing.
             if low is not None and self.free_memory_for(instance, low[1]):
-                low = self.low_memory(instance)
+                low = self.low_memory(instance, start=start and not self.preparing(instance))
             if low is not None:
                 instance.host.log({'wake_refused': 'low memory', 'port': instance.port, 'free_mb': low[0], 'need_mb': low[1]})
                 return {'schema': SCHEMA, 'ok': False, 'error': 'low memory', 'port': instance.port,
@@ -356,13 +418,27 @@ class Doorman:
             with self.lock:
                 last = self.wakes.get((address, instance.port))
                 spaced = last is None or now - last >= WAKE_SPACING
-                if spaced and (instance.host.frozen() or instance.host.cold()):
+                if spaced and (instance.host.frozen() or instance.host.cold() or start):
                     self.wakes[(address, instance.port)] = now
-            if spaced:
-                self.wake(instance, 'doorman wake request')
+            # A world already being prepared is never asked again: one start, one compile.
+            if start and self.preparing(instance):
+                with self.lock:
+                    if instance.waking_since is None:
+                        instance.waking_since = self.clock()
+                        instance.waking_limit = (instance.host.config.get('travel_start_estimate_seconds', 600)
+                                                 + instance.host.config['cold_start_estimate_seconds'])
+                    instance.preparing_since = instance.preparing_since or self.clock()
+            elif spaced:
+                self.wake(instance, 'doorman wake request' + (' (travel start)' if start else ''), start=start)
             entry = self.describe(instance)
-            return {'schema': SCHEMA, 'ok': True, 'port': instance.port, 'state': entry['state'],
-                    'eta': entry['wake_estimate'] if entry['state'] in ('asleep', 'waking') else 0}
+            if start and entry['state'] == 'stopped':
+                return {'schema': SCHEMA, 'ok': False, 'error': 'not startable',
+                        'reason': instance.start_refusal or 'the start was refused', 'port': instance.port}
+            reply = {'schema': SCHEMA, 'ok': True, 'port': instance.port, 'state': entry['state'],
+                     'eta': entry['wake_estimate'] if entry['state'] in ('asleep', 'waking') else 0}
+            if instance.preparing_since is not None and entry['state'] == 'waking':
+                reply['preparing'] = True
+            return reply
         return None
 
     def serve_connection(self, connection, address):

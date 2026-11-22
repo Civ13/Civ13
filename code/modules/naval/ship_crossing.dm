@@ -82,7 +82,7 @@
 		// A free slot answers as plain "A New Land"; one holding a land names it.
 		else if (peer["state"] == "UP" && peer["map"] == "A New Land")
 			continue
-		if (peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
+		if (shard_group.peer_closed(id) || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 			continue
 		.["[peer["name"]]"] = id
 
