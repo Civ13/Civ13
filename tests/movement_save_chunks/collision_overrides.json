@@ -758,6 +758,16 @@
       ]
     },
     {
+      "path": "code/modules/persistence/offline_sleep_protection.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/mob/living/human/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "b4020489a5baea6c8f9d67582ba1dfc5a912db7f8412c5f1e0ac298d62bc34a4"
+        }
+      ]
+    },
+    {
       "path": "code/modules/persistence/region_event.dm",
       "declarations": [
         {

@@ -31,10 +31,6 @@
 	return ..()
 
 /obj/structure/attackby(var/obj/item/O as obj, mob/user as mob, icon_x, icon_y)
-	if (istype(src, /obj/structure/bed))
-		var/obj/structure/bed/sleeper_bed = src
-		if (sleeper_bed.offline_sleeper_refuses(user))
-			return
 	if (istype(O, /obj/item/weapon/wrench) && !not_movable)
 		if (powersource)
 			to_chat(user, SPAN_NOTICE("Remove the cables first."))

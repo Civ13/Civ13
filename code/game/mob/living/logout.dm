@@ -16,6 +16,4 @@
 	human_clients_mob_list -= src
 	. = ..()
 	// A sleeper who logged off properly lets go of every hold (offline_sleep_protection.dm).
-	spawn(1)
-		if (src && !client)
-			offline_sleep_release_holds()
+	addtimer(CALLBACK(src, PROC_REF(offline_sleep_release_holds)), 1)

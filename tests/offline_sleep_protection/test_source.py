@@ -89,12 +89,16 @@ class OfflineSleepProtection(unittest.TestCase):
         self.assertIn("offline_sleep_refuses(user)", proc(buckling, "/obj/proc/user_unbuckle_mob("))
 
     def test_bed_cannot_be_taken_apart_under_sleeper(self):
-        self.assertIn("offline_sleeper_refuses(user)", proc(read("code/game/objects/structures.dm"), "/obj/structure/attackby("))
-        self.assertIn("offline_sleeper_refuses(user)", proc(read("code/game/objects/structures/stool_bed_chair_nest/bed.dm"), "/obj/structure/bed/attackby("))
+        wait = proc(read("code/game/objects/items/stacks/craft_guards.dm"), "/proc/do_ship_fixture_after(")
+        self.assertLess(wait.index("sleeper_bed.offline_sleeper_refuses(user)"), wait.index("do_after("))
+        # The wrench and hammer branches both wait through it before acting.
+        structure = proc(read("code/game/objects/structures.dm"), "/obj/structure/attackby(")
+        self.assertIn("do_ship_fixture_after(user, 15, src)", structure)
+        self.assertIn("do_ship_fixture_after(user, 25, src)", structure)
 
     def test_holds_released_on_logout(self):
         logout = proc(read("code/game/mob/living/logout.dm"), "/mob/living/human/Logout()")
-        self.assertIn("offline_sleep_release_holds()", logout)
+        self.assertIn("addtimer(CALLBACK(src, PROC_REF(offline_sleep_release_holds)), 1)", logout)
         release = proc(self.mod, "/mob/living/human/proc/offline_sleep_release_holds()")
         self.assertIn("pulledby.stop_pulling()", release)
         self.assertIn("qdel(G)", release)
