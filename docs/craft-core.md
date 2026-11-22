@@ -841,6 +841,22 @@ and reuses the unused `modern_ship` state in `icons/obj/cannon.dmi`.
   and nothing extra is saved.
 - Bomb racks do not feed it.
 
+## Belt armour
+
+`code/modules/naval/hull_armour.dm` adds the belt armour plate
+(`/obj/structure/hull_armour`, 15 steel, Naval Mines research), set on a tile
+of a ship's deck.
+
+- `/obj/covers/ex_act()` asks `hull_armour_soften()` first: a floor on a
+  plated tile, or a hold floor right under one, takes every blast one step
+  lighter (severity + 1; 4 is nothing), so a direct hit does not hole her.
+  The direct hit spends the plate (it is deleted there and then); lighter
+  blasts leave it. A plate's own `ex_act()` does nothing, so the order the
+  blast visits a tile's contents does not matter.
+- Each plate weighs 1 (`hull_load()`), so belting a ship slows her.
+- `craft.armour_belt()` counts plated tiles among her edge tiles for the
+  tiller (`armour_text()`). A wrench unbolts a plate for 10 steel.
+
 ## Hull weight
 
 `code/modules/naval/hull_weight.dm` weighs a built hull's own floors with the
