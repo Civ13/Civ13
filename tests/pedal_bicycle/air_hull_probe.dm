@@ -767,10 +767,20 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	ox.reagents.add_reagent("oxygen", 10)
 	tank.attackby(ox, B)
 	expect(ox.reagents.get_reagent_amount("oxygen") == 15 && !ox.reagents.get_reagent_amount("hydrogen"), "oxygen bag holds [ox.reagents.total_volume]")
+	// A second person gives the oxygen: at 40 oxygen loss the brain is short
+	// of blood and B can faint (organs/brain.dm, 15% a tick), which ended B's
+	// own two-second do_after in about half the runs.
+	var/mob/living/human/air_hull_actor/nurse = new(g)
+	nurse.a_intent = I_HELP
 	B.adjustOxyLoss(40)
 	var/before = B.getOxyLoss()
-	ox.attack(B, B)
+	ox.attack(B, nurse)
 	expect(B.getOxyLoss() < before && ox.reagents.get_reagent_amount("oxygen") == 5, "oxygen eased nothing: [before] -> [B.getOxyLoss()]")
+	// B may have fainted while waiting; wake it so the steps below can't be cut short.
+	B.adjustOxyLoss(-B.getOxyLoss())
+	B.SetParalysis(0)
+	B.SetSleeping(0)
+	B.stat = CONSCIOUS
 	// A gas holder's hose tops the cell up.
 	var/obj/structure/gas_holder/holder = new(sky(g, 5, 0, g.z))
 	holder.reagents.add_reagent("hydrogen", 100)
@@ -796,7 +806,7 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	retort.attackby(fuel, B)
 	gas_works_step()
 	expect(retort.reagents.get_reagent_amount("hydrogen") == 2 && retort.fuel == 14, "retort made [retort.reagents.get_reagent_amount("hydrogen")] hydrogen, fuel [retort.fuel]")
-	for(var/atom/movable/A in list(gen, tank, holder, comp, retort, G, B))
+	for(var/atom/movable/A in list(gen, tank, holder, comp, retort, G, B, nurse))
 		qdel(A)
 
 /datum/air_hull_probe/proc/run_probe()
