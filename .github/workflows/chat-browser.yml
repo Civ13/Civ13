@@ -59,6 +59,7 @@ jobs:
           node tests/chat/chat-history.browser.test.js
           node tests/chat/chat-repeat.browser.test.js
           node tests/chat/chat-translate.browser.test.js
+          node tests/chat/chat-plain.browser.test.js
       - name: Retain browser verdict and cleanup evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
