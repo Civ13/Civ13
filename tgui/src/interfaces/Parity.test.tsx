@@ -109,6 +109,7 @@ describe('standard screen parity', () => {
       'character_notes.tmpl',
       'character_setup.tmpl',
       'chem_disp.tmpl',
+      'computer.tmpl',
       'crafting_atlas.tmpl',
       'crafting_window.tmpl',
       'crew_log.tmpl',

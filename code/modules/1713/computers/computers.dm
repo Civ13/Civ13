@@ -23,7 +23,7 @@
 /obj/structure/computer/New()
 	..()
 	boot(operatingsystem)
-	program_checker()
+	program_checker(TRUE)
 
 /obj/structure/computer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/stack/cable_coil))
@@ -90,6 +90,7 @@
 						to_chat(H, "This program is already installed on this machine.")
 						return
 				programs += NP
+				start_program_checker()
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
 				to_chat(H, "You load \the [NP.name] into this machine.")
 				return
@@ -146,14 +147,30 @@
 	else
 		icon_state = "ibm_off"
 
-/obj/structure/computer/proc/program_checker()
+// Only programs that poll (mail) keep a computer's one-minute check running.
+// Subtypes add their programs after New(), so the first pass from New() always
+// waits a minute; installing a polling program from a disk starts it again.
+/obj/structure/computer/var/tmp/program_checker_running = FALSE
+
+/obj/structure/computer/proc/program_checker(first = FALSE)
+	program_checker_running = TRUE
+	var/polls = FALSE
 	for(var/datum/program/P in programs)
 		if (P.does_checks)
+			polls = TRUE
 			P.does_checks_proc()
+	if (!polls && !first)
+		program_checker_running = FALSE
+		return
 	spawn(600) // 1 minute
-		if (src)
+		if (src && !QDELETED(src))
 			program_checker()
 			return
+		program_checker_running = FALSE
+
+/obj/structure/computer/proc/start_program_checker()
+	if (!program_checker_running)
+		program_checker()
 
 /obj/structure/computer/nopower
 	name = "desktop computer"

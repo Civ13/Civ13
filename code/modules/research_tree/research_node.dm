@@ -342,7 +342,10 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("automation", "Automation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("assembly_line","electricity"), 7))
 	// Prototype: an early electronic device (gated on assembly_line, era5, well
 	// before this node's era8 -- assembly_line is baseline-granted by then).
-	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity"), 8, /obj/item/camera/coldwar))
+	// Electronic Computing (1969): transistor minicomputers with a command-line
+	// OS, tape drives, diskettes and line printers (modular computers plan).
+	register_research_node(new /datum/research_node("electronic_computing", "Electronic Computing", "Industrial", 380, 6, RESEARCH_MODE_ANALYSIS, list("automation","electricity"), 7))
+	register_research_node(new /datum/research_node("digital_computing", "Digital Computing", "Industrial", 510, 7, RESEARCH_MODE_PROTOTYPE, list("automation","electricity","electronic_computing"), 8, /obj/item/camera/coldwar))
 	// Capstone into the Digital Age (2026). Prototype: a mobile phone (gated on
 	// digital_computing, era8, so it is always buildable before this node).
 	register_research_node(new /datum/research_node("additive_manufacturing", "3D Printing", "Industrial", 420, 8, RESEARCH_MODE_ANALYSIS, list("digital_computing"), 9))
@@ -1017,6 +1020,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/mine_sweep/magnetic" = "magnetic_mines",
 		"/obj/structure/mine_sweep/oropesa" = "naval_mines",
 		"/obj/structure/torpedo_tube" = "naval_mines",
+		"/obj/structure/cannon/modern/ship_turret" = "naval_mines",
+		"/obj/structure/hull_armour" = "naval_mines",
 		"/obj/item/naval_torpedo" = "naval_mines",
 		"/obj/item/naval_torpedo/magnetic" = "magnetic_mines",
 		"/obj/item/weapon/aircraft_bomb" = "powered_flight",
@@ -1431,6 +1436,17 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/analyser" = "digital_computing",
 		"/obj/item/weapon/telephone/mobile" = "digital_computing",
 		"/obj/item/integrated_circuit" = "digital_computing",
+		"/obj/item/computer_module/processor/microprocessor" = "digital_computing",
+		"/obj/item/computer_module/storage/hard_drive" = "digital_computing",
+		"/obj/item/computer_module/processor/multicore" = "consumer_electronics",
+		"/obj/item/computer_module/storage/solid_state" = "consumer_electronics",
+		// --- electronic_computing (7) ---
+		"/obj/structure/modular_computer" = "electronic_computing",
+		"/obj/item/computer_module/processor" = "electronic_computing",
+		"/obj/item/computer_module/storage" = "electronic_computing",
+		"/obj/item/computer_module/media_reader" = "electronic_computing",
+		"/obj/item/computer_module/disk" = "electronic_computing",
+		"/obj/item/computer_module/printer" = "electronic_computing",
 		"/obj/item/circuit_shell/compact_remote" = "digital_computing",
 		"/obj/item/circuit_shell/mechanism_port" = "digital_computing",
 		"/obj/item/weapon/radio/walkietalkie/headset" = "digital_computing",

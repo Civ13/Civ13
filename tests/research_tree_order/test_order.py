@@ -78,7 +78,7 @@ class TreeShape(unittest.TestCase):
             "early_cells", "galvanic_cells", "electricity",
             "primitive_construction", "stone_masonry", "carts", "wagons_ships",
             "powered_flight", "aviation_rocketry",
-            "workshops", "factories", "assembly_line", "automation", "digital_computing",
+            "workshops", "factories", "assembly_line", "automation", "electronic_computing", "digital_computing",
             "digital_networks", "consumer_electronics"}
         for node_id, node in self.nodes.items():
             if node["category"] not in MILITARY:

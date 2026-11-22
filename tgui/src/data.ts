@@ -98,3 +98,20 @@ export type StorageWindowData = {
   hands_id?: string; hands?: { side?: string; active?: Flag; item?: StorageItem }[]; you?: StorageGroup[]; near?: StorageGroup[];
   queue?: { name?: string; image?: string; to?: string; time?: number; done?: number }[]; more_images?: Flag;
 };
+// The modular computer. shell picks the look ("cli" today; "desktop" and "mobile" later) and every shell reads this one snapshot.
+// index fields are the values the server expects back; files is present while the Files program is the active one.
+export type ComputerModule = { index?: number; slot?: string; slot_label?: string; name?: string; detail?: string; icon?: string };
+export type ComputerProgram = { id?: string; name?: string; desc?: string; available?: Flag; reason?: string };
+export type ComputerFile = { index?: number; name?: string; size_kb?: number };
+export type ComputerStore = { name?: string; used_kb?: number; capacity_kb?: number };
+export type ComputerFiles = {
+  drive?: ComputerStore | null; list?: ComputerFile[]; open?: { index?: number; name?: string; body?: string } | null;
+  disk?: (ComputerStore & { list?: ComputerFile[] }) | null; printer?: { paper?: number } | null; max_chars?: number; max_name?: number;
+};
+export type ComputerData = {
+  name?: string; shell?: string; os_name?: string; os_version?: string; boot_lines?: string[]; powered?: Flag; case_open?: Flag; status?: string;
+  // tab: optional; the tab a newly opened window starts on (terminal or hardware).
+  tab?: string;
+  hardware?: ComputerModule[]; empty_slots?: { slot?: string; slot_label?: string }[];
+  programs?: ComputerProgram[]; active?: string; files?: ComputerFiles | null;
+};
