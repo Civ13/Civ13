@@ -228,9 +228,15 @@ var/handle_ci_retired = 0
 	// The handle's wood carries into a recipe-crafted tool: a plank handle
 	// lasts longer and works faster than a wood one, the same as fitting a
 	// head by hand.
-	handle_ci_expect(tool_handle_effect_text("woodplank") == "lasts 35% longer and works 35% faster than with a wood handle" && tool_handle_effect_text("iron") == "lasts 50% longer than with a wood handle" && tool_handle_effect_text("wood") == "works the same as with a wood handle", "handle effect text matches the Atlas notes", list("woodplank"=tool_handle_effect_text("woodplank"),"iron"=tool_handle_effect_text("iron"),"wood"=tool_handle_effect_text("wood")))
+	handle_ci_expect(tool_handle_effect_text("woodplank") == "lasts 35% longer and works 35% faster than with a wood handle" && tool_handle_effect_text("iron") == "lasts 50% longer than with a wood handle" && tool_handle_effect_text("wood") == "works the same as with a wood handle" && tool_handle_effect_text("plastic") == "lasts 40% longer and works 40% faster than with a wood handle", "handle effect text matches the Atlas notes", list("woodplank"=tool_handle_effect_text("woodplank"),"iron"=tool_handle_effect_text("iron"),"wood"=tool_handle_effect_text("wood"),"plastic"=tool_handle_effect_text("plastic")))
+	// Plastic sits above plank in both stats and between plank and iron in
+	// durability; iron stays the most durable handle.
+	var/list/plastic_effects = tool_handle_effects("plastic")
+	var/list/plank_effects = tool_handle_effects("woodplank")
+	var/list/iron_effects = tool_handle_effects("iron")
+	handle_ci_expect(plastic_effects[1] > plank_effects[1] && plastic_effects[1] < iron_effects[1] && plastic_effects[2] > plank_effects[2] && plastic_effects[2] > iron_effects[2], "plastic handle ranks between plank and iron in durability and is fastest")
 	var/list/handle_tools = list()
-	for (var/handle_wood in list("wood", "woodplank"))
+	for (var/handle_wood in list("wood", "woodplank", "plastic"))
 		C = new("stone pickaxe", slot_back)
 		C.handle.set_material(handle_wood)
 		C.craft()
@@ -246,6 +252,9 @@ var/handle_ci_retired = 0
 	var/obj/item/weapon/material/pickaxe/plank_pick = handle_tools["woodplank"]
 	if (wood_pick && plank_pick)
 		handle_ci_expect(plank_pick.maxhealth == round(wood_pick.maxhealth * 1.35) && plank_pick.usespeed > wood_pick.usespeed && plank_pick.health == plank_pick.maxhealth, "plank handle makes a sturdier, faster stone pickaxe", list("wood_max"=wood_pick.maxhealth,"plank_max"=plank_pick.maxhealth,"wood_speed"=wood_pick.usespeed,"plank_speed"=plank_pick.usespeed))
+	var/obj/item/weapon/material/pickaxe/plastic_pick = handle_tools["plastic"]
+	if (wood_pick && plastic_pick)
+		handle_ci_expect(plastic_pick.maxhealth == round(wood_pick.maxhealth * 1.4) && plastic_pick.usespeed > wood_pick.usespeed && plastic_pick.health == plastic_pick.maxhealth, "plastic handle makes a sturdier, faster stone pickaxe", list("wood_max"=wood_pick.maxhealth,"plastic_max"=plastic_pick.maxhealth,"wood_speed"=wood_pick.usespeed,"plastic_speed"=plastic_pick.usespeed))
 	// The completed stone hatchet goes to the current active hand only when
 	// the last input stack has actually vacated that hand.
 	C = new("stone hatchet", slot_back)
