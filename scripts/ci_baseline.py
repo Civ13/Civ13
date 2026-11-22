@@ -2724,6 +2724,10 @@ SUITES = {
     # Raising a lowered sterile mask restores its face coverage.
     'sterile_mask_toggle': {'files': ('tests/sterile_mask_toggle/test_toggle_coverage.py',), 'paths': (
         'tests/sterile_mask_toggle/', 'code/game/objects/items/clothing/masks/medical.dm')},
+    # Camel pack withdrawal rechecks range after the menu.
+    'camel_pack_range': {'files': ('tests/camel_pack_range/test_withdraw_range.py',), 'paths': (
+        'tests/camel_pack_range/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/friendly/farm_animals.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),

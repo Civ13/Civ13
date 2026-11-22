@@ -1123,7 +1123,10 @@
 		for (var/obj/item/IT in packed_items)
 			choicelist += IT.name
 		var/choice1 = WWinput(usr, "What do you want to remove from the camel's pack?", "Camel Pack", "Cancel", choicelist)
-		if (choice1 == "Cancel")
+		if (!choice1 || choice1 == "Cancel")
+			return
+		// The menu waits on the player: the camel must still be within the verb's range.
+		if (!usr || usr.stat || QDELETED(src) || usr.z != z || get_dist(src, usr) > 2)
 			return
 		else
 			for (var/obj/item/ITS in packed_items)
