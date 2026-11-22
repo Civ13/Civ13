@@ -415,17 +415,21 @@ var/berth_runtime_error = FALSE
 	var/list/I = tiller.breakup_inventory()
 	berth_check(findtext(I["refusal"], "aboard"), "with someone aboard she is not broken up ([I["refusal"]])")
 	qdel(sailor)
+	var/obj/covers/worn = locate(/obj/covers) in locate(8, 20, 1)
+	worn.health = worn.maxhealth / 2
 	I = tiller.breakup_inventory()
 	berth_check(!I["refusal"] && (chest in I["parts"]) && (tiller in I["parts"]) && (coil in I["loose"]) && (block in I["loose"]), "her chest and tiller are parts, the rope and the block are cargo")
 	var/list/cost = I["cost"]
-	var/list/back = berth_breakup_reclaim(cost)
-	berth_check(cost["wood"] >= 45 && back["wood"] == round(cost["wood"] * 0.75), "three quarters of her wood comes back ([back["wood"]] of [cost["wood"]])")
+	var/list/back = berth_breakup_reclaim(I["worth"])
+	berth_check(cost["wood"] >= 45 && back["wood"] == cost["wood"] - 1, "all her wood comes back but half a damaged plank's ([back["wood"]] of [cost["wood"]])")
 	var/floors = 0
 	for (var/atom/movable/M in I["parts"])
 		if (istype(M, /obj/covers))
 			floors++
 	berth_check(floors == 15 && I["time"] == floors * 15 + (length(I["parts"]) - floors) * 25, "she takes half her build time: 1.5 s a floor, 2.5 s a fitting ([I["time"]])")
-	berth_check(isnull(berth_breakup_part_cost(block)) && !length(berth_breakup_part_cost(new /obj/covers/repairedfloor/ship/patch(locate(30, 2, 1)))), "a stranger's structure is not hers, and a patch gives nothing back")
+	var/obj/covers/repairedfloor/ship/patch/spare_patch = new(locate(30, 2, 1))
+	berth_check(isnull(berth_breakup_part_cost(block)) && breakup_part_condition(spare_patch) == 0.5, "a stranger's structure is not hers, and a patch is worth half a plank")
+	qdel(spare_patch)
 	var/turf/drop = get_turf(post)
 	var/wood_before = 0
 	for (var/obj/item/stack/material/wood/W in drop)

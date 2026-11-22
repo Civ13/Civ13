@@ -1571,6 +1571,7 @@
 #include "code\modules\craft\under_way.dm"
 #include "code\modules\craft\vehicle_aboard.dm"
 #include "code\modules\craft\vehicle_assembly.dm"
+#include "code\modules\craft\vehicle_breakdown.dm"
 #include "code\modules\craft\vehicle_checks.dm"
 #include "code\modules\craft\vehicle_designer.dm"
 #include "code\modules\craft\vehicle_draught.dm"
