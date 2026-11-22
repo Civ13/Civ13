@@ -34,6 +34,7 @@
 	GLOB.dir_set_event = new /decl/observ/dir_set
 	GLOB.name_set_event = new /decl/observ/name_set
 	GLOB.stat_set_event = new /decl/observ/stat_set
+	GLOB.nanomanager = new /datum/nanomanager
 	map = new /obj/map_metadata/vending_fixture
 	map.ID = MAP_NOMADS_CONTINENTAL
 	map.persistence = TRUE
@@ -49,7 +50,31 @@
 	var/datum/data/vending_product/record = new(rack, stocked.type, "fixture planks", 1, 7, null, null, null, stocked)
 	rack.product_records += record
 	var/obj/structure/vending/vending_fixture/vendor = new(locate(4,2,1))
+	// A market stall stocked the way a seller lists goods: one item and a stack.
+	var/obj/structure/vending/sales/market_stall/stall = new(locate(5,3,1))
+	var/obj/item/weapon/key = new /obj/item/weapon/hammer(locate(5,3,1))
+	var/obj/item/stack/material/wood/planks = new(locate(5,3,1))
+	planks.amount = 6
 	sleep(10)
+	vending_check(stall.invisibility == 0, "market stall becomes visible after its colours load")
+	vending_check(stall.add_product(key, 4, null), "market stall lists a single item")
+	vending_check(stall.add_product(planks, 2, null), "market stall lists a stack")
+	vending_check(stall.product_records.len == 2 && key.loc == stall, "market stall holds both listings ([stall.product_records.len])")
+	var/datum/data/vending_product/stack_row = stall.product_records[2]
+	vending_check(stack_row.amount == 6 && stack_row.price == 2 && stack_row.is_stack, "stack listing keeps its count and price")
+	// Pressing Buy before paying waits; the next deposit completes the sale.
+	vending_check(!stall.complete_purchase(stack_row, null, 3), "an unpaid purchase waits for money")
+	vending_check(stall.currently_vending == stack_row && stall.pending_amount == 3, "the waiting purchase is remembered")
+	stall.moneyin = 6
+	vending_check(stall.finish_pending_purchase(null), "a deposit completes the waiting purchase")
+	sleep(10)
+	var/sold = 0
+	for (var/obj/item/stack/material/wood/W in locate(5,3,1))
+		sold += W.amount
+	vending_check(sold == 3 && stack_row.amount == 3 && stall.moneyin == 0 && !stall.currently_vending, "buyer receives 3 planks ([sold], [stack_row.amount] left, [stall.moneyin] in)")
+	for (var/obj/item/stack/material/wood/W in locate(5,3,1))
+		qdel(W)
+	sleep(1)
 	vending_check(rack.product_records.len == 1 && vendor.product_records.len == 1, "fixture inventories are built ([rack.product_records.len], [vendor.product_records.len])")
 	vending_check(map_storage.Save_World(), "production whole-world export succeeds")
 	vending_check(map_storage.validate_world_save(), "production preflight accepts the save: [map_storage.last_error]")
@@ -64,5 +89,11 @@
 	vending_check(record.product_name == "fixture planks" && record.price == 7 && record.product_path == /obj/item/stack/material/wood && record.vending_machine == rack, "rack record fields are restored")
 	vending_check(record.product_image, "rack record has a listing image after load")
 	vending_check(vendor.product_records.len == 1, "vendor inventory is not built a second time on load ([vendor.product_records.len])")
+	stall = locate(/obj/structure/vending/sales/market_stall) in locate(5,3,1)
+	vending_check(stall && stall.product_records.len == 2, "market stall keeps its listings after load")
+	stack_row = stall.product_records[2]
+	var/datum/data/vending_product/item_row = stall.product_records[1]
+	vending_check(stack_row.amount == 3 && stack_row.price == 2 && item_row.price == 4 && item_row.product_item.len == 1 && item_row.vending_machine == stall, "market stall listings keep stock, prices and the stocked item")
+	vending_check(stall.invisibility == 0, "loaded market stall is visible")
 	text2file("PASS: vending product records survive save/load without duplicates", "vending_result.txt")
 	del(world)
