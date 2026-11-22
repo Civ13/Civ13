@@ -355,6 +355,13 @@
 	value = 2
 	flammable = TRUE
 
+/obj/item/stack/material/rope/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/rope/update_icon()
+	icon_state = "rope[pile_suffix(amount, list(2, 8, 20))]"
+
 /obj/item/stack/material/hemp
 	name = "Hemp"
 	icon_state = "hemp"
@@ -546,6 +553,7 @@
 		rope.anchored = FALSE
 		if (H.put_in_any_hand_if_possible(rope, prioritize_active_hand = TRUE))
 			--amount
+			update_icon()
 			visible_message("<span class = 'warning'>[H] takes a coil of rope from the pile of rope.</span>")
 			if (amount < 1)
 				qdel(src)
