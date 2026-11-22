@@ -900,9 +900,16 @@ var/global/list/region_stopped_alerted = list()
 	. = list("departed" = departed, "stayed" = stayed)
 	var/reason = closed_reason()
 	var/list/ready = list()
+	// A faction's claimed island takes only those it lets land (island_access.dm).
+	var/island = !reason && island_access_checks() && island_access_destination(destination)
+	if(island)
+		world_chart_refresh()
 	for(var/mob/living/human/H in members)
+		var/border = island ? island_access_departure_refusal(destination, H) : null
 		if(reason)
 			stayed[H] = reason
+		else if(border)
+			stayed[H] = border + "."
 		else if(QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H))
 			stayed[H] = "You are too far from the trail."
 		else if(!H.persistence_owner_ckey)

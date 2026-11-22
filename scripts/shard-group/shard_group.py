@@ -210,6 +210,17 @@ EARTH_REGIONS = (
     ('southern', 'Southern Ocean', 'OCEANIC', 'maps/nomads/nomads_ocean_southern.dmm', 1754),
 )
 EARTH_MAINLAND_MAP = 'maps/nomads/nomads_gaia.dmm'
+# The slots that hold lands across the sea (docs/expedition-slots.md): ships' voyages
+# open them, and a faction's claimed island lives in one. add-regions adds the ones a
+# group hosting Earth is missing, by id (they share one placeholder map), with the
+# ports the plan gave them. A free slot stays stopped until a ship needs it.
+EXPEDITION_SLOT_MAP = 'maps/expedition/slot.dmm'
+EXPEDITION_SLOTS = (
+    ('far1', 'Far Land 1', 1811, 1831),
+    ('far2', 'Far Land 2', 1812, 1832),
+    ('far3', 'Far Land 3', 1813, 1833),
+    ('far4', 'Far Land 4', 1814, 1834),
+)
 
 
 def unused_backup_path(path):
@@ -3001,7 +3012,8 @@ def add_gateway(group, region_id=None, apply=False, platform=None):
 
 
 def add_regions(group, apply=False, platform=None):
-    """Add the Earth regions this group is missing (EARTH_REGIONS) to the group file.
+    """Add the Earth regions this group is missing (EARTH_REGIONS), and the slots for
+    lands across the sea (EXPEDITION_SLOTS), to the group file.
 
     Only a group that hosts Earth (Gaia, or one of the Earth lands) is offered them; a
     region is missing when neither its id nor its map is in the group. Each is added
@@ -3013,16 +3025,21 @@ def add_regions(group, apply=False, platform=None):
     ids = {r['id'] for r in group['regions']}
     if EARTH_MAINLAND_MAP not in maps and not maps & {entry[3] for entry in EARTH_REGIONS}:
         raise Refused('this group does not host Earth (no Gaia or Earth land in it)')
-    missing = [entry for entry in EARTH_REGIONS if entry[0] not in ids and entry[3] not in maps]
+    missing = [entry + (None,) for entry in EARTH_REGIONS if entry[0] not in ids and entry[3] not in maps]
+    missing += [(region_id, name, 'EXPEDITION', EXPEDITION_SLOT_MAP, port, transfer)
+                for region_id, name, port, transfer in EXPEDITION_SLOTS if region_id not in ids]
     path = Path(group['_path'])
     raw = json.loads(path.read_text(encoding='utf-8-sig'))
     taken = {r.get(key) for r in raw['regions'] for key in ('port', 'transfer_port', 'standby_port')}
     taken |= {raw.get(key) for key in ('relay_port', 'relay_control_port', 'doorman_port')}
-    for region_id, name, kind, map_path, port in missing:
+    for region_id, name, kind, map_path, port, transfer in missing:
         entry = {'id': region_id, 'name': name, 'kind': kind, 'map': map_path}
         if port not in taken and not platform.listening(port):
             entry['port'] = port
             taken.add(port)
+        if transfer and transfer not in taken and not platform.listening(transfer):
+            entry['transfer_port'] = transfer
+            taken.add(transfer)
         raw['regions'].append(entry)
     planned = json.loads(json.dumps(raw))
     problems = []

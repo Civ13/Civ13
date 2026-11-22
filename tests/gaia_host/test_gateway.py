@@ -293,6 +293,12 @@ class GatewayTests(unittest.TestCase):
         again = shard_group.add_regions(shard_group.load_group(self.path), platform=self.machine)
         self.assertTrue(again['plan']['already'])
         self.assertFalse(again['plan']['regions'])
+        # The four slots for lands across the sea come too, stopped, on their usual ports.
+        slots = {r: written[r] for r in ('far1', 'far2', 'far3', 'far4')}
+        self.assertEqual({'EXPEDITION'}, {r['kind'] for r in slots.values()})
+        self.assertEqual({shard_group.EXPEDITION_SLOT_MAP}, {r['map'] for r in slots.values()})
+        self.assertEqual([1811, 1812, 1813, 1814], [slots[r]['port'] for r in sorted(slots)])
+        self.assertEqual([1831, 1832, 1833, 1834], [slots[r]['transfer_port'] for r in sorted(slots)])
 
     def test_add_regions_only_for_earth(self):
         with self.assertRaisesRegex(shard_group.Refused, 'does not host Earth'):
