@@ -116,17 +116,31 @@ export async function run(env, event, deps = {}) {
   const repo = await api('');
   const branch = repo.default_branch;
   let commit, name, m;
-  const mergedPR = env.GITHUB_EVENT_NAME === 'pull_request_target';
+  // A push to the default branch replaces pull_request_target, which GitHub
+  // blocks by default on public repositories. The push runs master's own code.
+  const mergedPR = env.GITHUB_EVENT_NAME === 'push';
   const dry = env.GITHUB_EVENT_NAME === 'workflow_dispatch' && event.inputs?.dry_run !== 'false';
   if (mergedPR) {
-    const pr = event.pull_request;
-    requireValue(event.action === 'closed' && pr?.merged === true && pr.base?.ref === branch && pr.base?.repo?.full_name === env.GITHUB_REPOSITORY, 'Not a merged default-branch PR');
-    requireValue(Number.isSafeInteger(pr.number) && pr.number > 0 && event.number === pr.number, 'Invalid PR number');
+    const after = event.after;
+    requireValue(event.ref === 'refs/heads/' + branch && !event.deleted && shaPattern.test(after) && (!env.GITHUB_SHA || env.GITHUB_SHA === after), 'Not a default-branch push');
+    const sleep = deps.sleep ?? (ms => new Promise(resolve => setTimeout(resolve, ms)));
+    let matches = [];
+    // The commit-to-PR index can trail the push by a few seconds.
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (attempt) await sleep(10000);
+      const pulls = await api('commits/' + after + '/pulls');
+      requireValue(Array.isArray(pulls), 'Invalid associated pull request list');
+      matches = pulls.filter(p => p?.merged_at && p.merge_commit_sha === after && p.base?.ref === branch && p.base?.repo?.full_name === env.GITHUB_REPOSITORY);
+      if (matches.length) break;
+    }
+    if (!matches.length) { console.log('Push is not a merged PR; nothing to publish.'); return; }
+    requireValue(matches.length === 1, 'Push matches more than one merged PR');
+    requireValue(Number.isSafeInteger(matches[0].number) && matches[0].number > 0, 'Invalid PR number');
+    const pr = await api('pulls/' + matches[0].number);
+    requireValue(pr.number === matches[0].number && pr.merged === true && pr.base?.ref === branch && pr.base?.repo?.full_name === env.GITHUB_REPOSITORY && pr.merge_commit_sha === after, 'PR merge confirmation mismatch');
     const entry = changelogLine(pr.body);
     if (!entry) { console.log('No changelog line; nothing to publish.'); return; }
-    const current = await api('pulls/' + pr.number);
-    requireValue(current.merged === true && current.base?.ref === branch && current.base?.repo?.full_name === env.GITHUB_REPOSITORY && current.merge_commit_sha === pr.merge_commit_sha, 'PR merge confirmation mismatch');
-    commit = pr.merge_commit_sha; name = 'pr-' + pr.number;
+    commit = after; name = 'pr-' + pr.number;
     m = { schema: 1, id: name, commit, heading: '', entries: [entry], skip: '' };
   } else if (env.GITHUB_EVENT_NAME === 'workflow_dispatch') {
     requireValue(env.GITHUB_REF === 'refs/heads/' + branch, 'Dispatch must run on default branch');
