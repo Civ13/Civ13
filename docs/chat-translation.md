@@ -4,10 +4,11 @@
 
 Val approved the feature and changed two choices from the proposal below: all
 chat is translated automatically, and the reader's language defaults to
-English. Val, 2026-11-22: **Translate chat into my language** is now off by
-default and each player turns it on under **Tabs... > Translation** (saved on
-that computer only, key `civ13-chat-translate-v2`; the old v1 setting keeps
-only its language). Only words players typed are translated: unmarked game
+English. Val, 2026-11-22: until a player saves a choice under **Tabs... >
+Translation** (key `civ13-chat-translate-v2`, that computer only), the first
+offered language in `navigator.languages` (the Windows display language in
+WebView2) decides: English means off, any other offered language means on into
+that language. The old v1 setting keeps only its language (non-English means on). Only words players typed are translated: unmarked game
 messages are never sent ("Thibault Sommer makes a trench." had come back as
 "trench coat"), lines with fewer than 3 letters are skipped, and the service's
 detector needs a clear winner with at least two hints in lines of three or

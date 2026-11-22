@@ -14,3 +14,13 @@ two walled rooms joined by a doorway, checks `code/modules/1713/fire_smoke.dm`:
 - no runtime errors.
 
 It needs the pinned compiler (`bash scripts/cloud_byond_setup.sh`).
+
+The offline source projection for the thin-smoke breathing guard can be run on
+this Windows host with:
+
+```
+C:\Users\valza\AppData\Local\Programs\Python\Python313\python.exe -B -m unittest discover -s tests/fire_smoke -p test_breathing.py -v
+```
+
+It models the breathing helper boundary, including thickness changes after a
+callback; it does not execute DM, the native fixture, or measure runtime speed.

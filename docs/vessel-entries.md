@@ -11,7 +11,7 @@ Every opening is one of three kinds:
 - **Breach**: made by damage and open both ways until repaired.
 
 An opening below the waterline floods a chamber first. No opening moves a
-player who is held while being sent to another region (`region_send_held()`,
+player who is held while being sent to another region (`travel_held()`,
 docs/region-admin-send.md).
 
 ## Phase 1: the submarine lock-out hatch
@@ -36,14 +36,35 @@ Using a lock-out hatch from inside a submerged boat opens a menu:
 across a save. Probe: `tests/submarine/probe.dm` ("Hatch security and the
 escape trunk").
 
+## Phase 2: breaches and breakable glass
+
+`code/modules/1713/machinery/modular_vehicles/vehicle_breaches.dm`
+
+- A modular vehicle wall shot or blown down to no health is a **breach**: a
+  hole people pass through both ways. Before this a wrecked wall kept
+  blocking, because passage only checked for an empty or open wall.
+  `try_destroy()` in `frame.dm` calls `breach_wall()`; the frame keeps the
+  wall it was in `breached_walls`. Wrecked doors hang open, as before.
+  Submarine pressure hulls stay shut (`breach_passable()`), since their
+  damage is the leak count.
+- **Welding shut:** steel in one hand, a welding tool in the other, use the
+  steel on the frame: 2 sheets, 8 seconds (mechanic skill speeds it). The
+  wall comes back as it was, at 20 health.
+- **Glass** (windows, windshields, glazed doors, not armour or a
+  submarine's pressure glass): on harm intent, hit it with anything of force
+  5 or more. From inside the vehicle it takes 1.5 seconds, so every bus and
+  car window is an emergency window; from outside it takes 5 seconds. The
+  smashed pane is a breach. Inside, with more than one pane, you pick the side.
+
+Trains need nothing here: their cars are open platforms that riders already
+walk between and step off.
+
 ## Later phases
 
-2. Breaches and breakable glass on modular vehicles (bus and train
-   emergency windows).
 3. Submarine torpedo tubes, with a slow one-at-a-time diver lock-out.
 4. Ship gun ports, scuttles and cargo hatches.
 5. Tank belly hatch, bus emergency door release, train end doors.
 6. Aircraft bailout and canopy jettison, ship lifeboat stations.
 
-Each needs Val's answers to the open decisions in the plan and new art from
+Val approved all phases on the recommended answers (2026-11-22); new art comes from
 Fable 5.2 where it adds sprites.

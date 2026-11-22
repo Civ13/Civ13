@@ -47,7 +47,7 @@ A **research bench** costs 8 soft wood. Benches belong to nobody: anyone can use
 1. Put a book on the bench, click a subject in the bench window and press **Research this here**. The research is written into that book. Take the book away and the unfinished work goes with it.
 2. Stay near the bench. It makes progress while someone who knows every prerequisite of the subject is within three tiles and in sight of it, with a writing tool (see [The scholar's trade](#the-scholars-trade)). Beside the bench the work runs at full pace; two or three tiles off it runs at three quarters, so you can craft, cook or build close by while it goes on.
    - To keep both hands free, click the bench with your pencil, pen or writing slate to rest it there. Right-click the bench and choose **Take Writing Tool** to pick it up again.
-3. Speed it up by using **samples** on the bench: existing examples of things the subject unlocks. The first two kinds of sample you take apart for a chapter are worth the most, a fifth of the chapter each. Capstones also need their **prototype** before the chapter is finished, or from Steam Power on a [demonstration](#demonstrations), and some late capstones a [bill of materials](#bills-of-materials).
+3. Speed it up by using **samples** on the bench: existing examples of things the subject unlocks. The first two kinds of sample you take apart for a chapter are worth the most, a fifth of the chapter each. Capstones also need their **prototype** before the chapter is finished, or from Steam Power on a [demonstration](#demonstrations), and from Steam Power on a [bill of materials](#bills-of-materials).
 4. When the research is done, the chapter is written into the book. **It teaches nobody**, not even the researcher. Whoever wants it still has to study it.
 
 The first time anyone finishes a capstone chapter, the whole world moves into the next age. Two ages have a peaceful capstone as well as a military one: the Printing Press opens the same age as Gunpowder, and Powered Flight opens the same age as Mechanized Warfare. Either one is enough.
@@ -167,13 +167,23 @@ The machine usually needs the very chapter it proves. If you carry a book holdin
 
 ### Bills of materials
 
-Some late capstones also need a **bill of materials**: a large stock of materials delivered to the bench while the subject's book is on it. The chapter is finished only once its study, its demonstration or prototype and its bill are all in the book.
+Every capstone from Steam Power on, and the biggest late subjects, also need a **bill of materials**: a large stock of materials delivered to the bench while the subject's book is on it. The chapter is finished only once its study, its demonstration or prototype and its bill are all in the book.
 
 | Subject | Bill |
 | --- | --- |
 | Steam Power | 60 coal, 40 iron ingots, 10 copper ingots |
+| Electricity | 80 copper ingots, 30 zinc ingots, 20 lead ingots, 20 rubber sheets |
 | Powered Flight | 120 steel sheets, 40 rubber sheets, 30 brass ingots, 40 cloth (in place of a prototype) |
 | Mechanized Warfare | 200 steel sheets, 40 rubber sheets, 40 lead ingots, 30 sulphur, 30 saltpeter (in place of a prototype) |
+| Automatic Weapons | 60 steel sheets, 30 lead ingots, 20 brass ingots |
+| Aviation & Rocketry | 80 steel sheets, 30 aluminium ingots, 20 rubber sheets |
+| Missiles | 60 steel sheets, 40 sulphur, 40 saltpeter |
+| Nuclear Power | 30 uranium ore, 120 lead ingots, 150 steel sheets, 100 concrete |
+| Composite Armour | 100 steel sheets, 60 aluminium ingots, 20 rubber sheets |
+| Digital Computing | 250 copper ingots, 100 aluminium ingots, 60 gold ingots, 60 silver ingots, 60 electronics, 15 gems |
+| Rocketry | 100 aluminium ingots, 80 steel sheets, 40 sulphur, 40 copper ingots |
+| Orbital Flight | 200 aluminium ingots, 40 gold ingots, 30 silver ingots, 60 electronics |
+| Digital Networks | 350 copper ingots, 150 aluminium ingots, 80 gold ingots, 80 silver ingots, 100 electronics, 25 gems |
 
 - Use a stack of a listed material on the bench. The bench takes only what is still owed, and the research window lists what is left.
 - Anyone can deliver, whatever their faction and whether or not they know the subject. Buying, trading and mining abroad all count the same.

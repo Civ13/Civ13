@@ -152,7 +152,11 @@ var/global/list/craft_glide_holder = null
 	// Her own floors and roofs only change tiles with her: nothing listens for
 	// them arriving or leaving, so they skip the Entered, Exited and Crossed
 	// callbacks that make up most of a step's cost (craft_quiet_carry()).
+	// Read before the move: the move's level-view refresh may light D alone.
+	var/dark = !D.lighting_overlay
 	if (craft_quiet_move(M, D))
+		if (dark)
+			craft_deck_arrived(M, D)
 		if (time > 0 && M.loc == D)
 			craft_glide(M, dx, dy, time)
 		return
@@ -164,8 +168,20 @@ var/global/list/craft_glide_holder = null
 		craft_glide_holder = was_holder
 		throw e
 	craft_glide_holder = was_holder
+	if (dark)
+		craft_deck_arrived(M, D)
 	if (time > 0 && M.loc == D)
 		craft_glide(M, dx, dy, time)
+
+// A floor or ladder she carries onto a tile of an added building level wakes
+// it (building_lighting.dm): her upper deck sails onto open air that nobody
+// has lit, and an unlit tile draws black for whoever climbs up to it.
+/proc/craft_deck_arrived(atom/movable/M, turf/D)
+	if (M.loc == D && (istype(M, /obj/covers) || istype(M, /obj/structure/multiz)))
+		D.craft_deck_arrived()
+
+/turf/proc/craft_deck_arrived()
+	return
 
 // TRUE when a craft may carry this thing by setting its place alone. Only
 // structure that never blocks sight or passage and has no Entered, Exited or

@@ -107,9 +107,10 @@
 				continue
 			if (fire_smoke_at(T) < thickness - 1)
 				add_fire_smoke(T, 1)
-	// Breathing it.
-	for (var/mob/living/human/H in here)
-		fire_smoke_breathe(H, thickness)
+	// Thin smoke cannot affect breathing; retain per-human checks once started.
+	if (!(thickness < 2))
+		for (var/mob/living/human/H in here)
+			fire_smoke_breathe(H, thickness)
 	// Clearing: fast in the open, slowly indoors once nothing feeds it.
 	if (!door_turf_indoors(here))
 		set_thickness(thickness - 2)

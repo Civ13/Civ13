@@ -327,15 +327,16 @@ var/global/list/open_air_proxies = list()
 /turf/sky/building/proc/open_air_view_refresh(depth = 1, wake = TRUE)
 	var/below_z = multiz_level_below(z)
 	var/turf/below = below_z ? locate(x, y, below_z) : null
-	if (!below || depth > OPEN_AIR_VIEW_DEPTH || istype(src, /turf/sky/building/unformed) || open_air_view_floored())
-		open_air_view_clear()
-		return
 	// The client only draws a cell that is lit or within see_in_dark, and an
 	// asleep cell of an added level has no lighting of its own yet. A cell first
 	// linked from the level above (wake FALSE) is woken once a viewer on its own
-	// level scans it; until then it showed black there.
-	if (wake && !lighting_overlay)
+	// level scans it; until then it showed black there. A floored cell in sight
+	// is woken too: a deck that arrived without lighting drew black.
+	if (wake && !lighting_overlay && depth <= OPEN_AIR_VIEW_DEPTH && !istype(src, /turf/sky/building/unformed))
 		building_wake()
+	if (!below || depth > OPEN_AIR_VIEW_DEPTH || istype(src, /turf/sky/building/unformed) || open_air_view_floored())
+		open_air_view_clear()
+		return
 	if (!open_air_view)
 		var/obj/effect/open_air_view/V = new
 		V.loc = null

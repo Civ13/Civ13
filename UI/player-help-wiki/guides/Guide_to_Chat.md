@@ -43,21 +43,26 @@ Chat written in another language is translated for you. The translation
 appears under the original line, starting with **Translated from Spanish:**
 (or whichever language it came from). The original line always stays.
 
-Translation is off by default, so chat is shown as written. When you turn it
-on, what other players type in another language (speech, emotes, radio, OOC
-and LOOC) is translated into your language. Game messages are never
-translated, and very short lines are left as they are.
+Translation starts on if your computer is set to a language other than
+English, and chat is translated into that language. If your computer is set to
+English, translation starts off and chat is shown as written. Once you tick or
+untick the box yourself, your choice is kept.
 
-To turn it on:
+When translation is on, what other players type in another language (speech,
+emotes, radio, OOC and LOOC) is translated into your language. Game messages
+are never translated, and very short lines are left as they are.
 
-1. Click **Tabs...** at the right end of the tab row.
-2. Under **Translation**, tick **Translate chat into my language**.
-3. Choose your language in the **My language** list, then click **Done**.
+To turn translation on or off, or to change your language:
+
+1. Click **Tabs...** at the right end of the chat tab row.
+2. Under **Translation**, tick or untick **Translate chat into my language**.
+3. If translation is on, choose your language in the **My language** list.
+4. Click **Done**.
 
 You can choose English, Spanish, Portuguese, French, German, Italian, Dutch,
 Polish, Russian, Ukrainian, Turkish, Swedish, Finnish, Czech, Romanian,
 Greek, Arabic, Hindi, Indonesian, Vietnamese, Thai, Chinese, Japanese or
-Korean. To turn it off again, untick the box.
+Korean.
 
 - Only speech your character understands is translated. Speech in
   an in-game language your character does not know stays garbled; translation
