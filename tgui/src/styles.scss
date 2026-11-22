@@ -565,3 +565,31 @@ button.rs-row-main { cursor: pointer; }
 .spawn-search { flex: 1 1 260px; min-width: 0; padding: 5px 7px; font: inherit; color: inherit; background: var(--civ-inset); border: 1px solid var(--civ-line); }
 .spawn-amount { color: var(--civ-dim); } .spawn-amount input { width: 44px; padding: 3px 5px; font: inherit; color: inherit; background: var(--civ-inset); border: 1px solid var(--civ-line); }
 .spawn-path { font-size: 12px; color: var(--civ-dim); overflow-wrap: anywhere; }
+// The modular computer (Computer.tsx). Each shell sets its own look on .computer-<shell>;
+// the command-line shell is green type on black with a 15px floor.
+.computer-cli { --term: #6dfc86; --term-dim: #46c862; --term-bg: #040704; min-height: 400px; padding: 10px 12px; background: var(--term-bg); color: var(--term); border: 2px solid #1d3a22; border-radius: 6px; font: 15px/1.45 Consolas, 'Lucida Console', 'Courier New', monospace; overflow-wrap: anywhere; }
+.computer-cli p { margin: 6px 0; line-height: 1.45; }
+.computer-cli .computer-dim { color: var(--term-dim); }
+.computer-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed var(--term-dim); }
+.computer-title { font-weight: bold; }
+.computer-cmd { margin: 2px 6px 2px 0; padding: 2px 8px; background: transparent; color: var(--term); border: 1px solid var(--term); border-radius: 0; font: inherit; cursor: pointer; }
+.computer-cmd:hover:not(:disabled), .computer-cmd[aria-current] { background: var(--term); color: var(--term-bg); }
+.computer-cmd:disabled { border-style: dashed; border-color: var(--term-dim); color: var(--term-dim); text-decoration: line-through; cursor: default; }
+.computer-cli button:focus-visible, .computer-cli input:focus-visible, .computer-cli textarea:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.computer-log { margin-bottom: 8px; white-space: pre-wrap; }
+.computer-programs { margin: 6px 0; padding: 0; list-style: none; }
+.computer-help { margin: 6px 0; padding: 4px 8px; border-left: 2px solid var(--term-dim); }
+.computer-prompt { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; }
+.computer-prompt > span:first-child { margin-right: 4px; }
+.computer-status { min-height: 1.45em; }
+.computer-table { width: 100%; margin: 4px 0 8px; border-collapse: collapse; }
+.computer-table th, .computer-table td { padding: 3px 8px 3px 0; text-align: left; vertical-align: middle; font-weight: normal; border-bottom: 1px dotted #1d3a22; }
+.computer-table thead th { color: var(--term-dim); border-bottom: 1px dashed var(--term-dim); }
+.computer-table .computer-num { text-align: right; padding-right: 16px; white-space: nowrap; }
+.computer-cli input, .computer-text { background: var(--term-bg); color: var(--term); border: 1px solid var(--term-dim); border-radius: 0; font: inherit; padding: 2px 6px; caret-color: var(--term); }
+.computer-cli input::placeholder { color: var(--term-dim); opacity: 1; }
+.computer-field { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.computer-field input { flex: 0 1 320px; }
+.computer-text { display: block; width: 100%; min-height: 150px; resize: vertical; line-height: 1.4; }
+.computer-typed { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.computer-typed input { flex: 1 1 auto; border-width: 0 0 1px; }

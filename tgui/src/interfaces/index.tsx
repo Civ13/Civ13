@@ -24,6 +24,7 @@ import { StorageWindow } from './StorageWindow';
 import { SpawnMenu } from './SpawnMenu';
 import { WiremodCircuit } from './WiremodCircuit';
 import { Haircut } from './Haircut';
+import { Computer } from './Computer';
 export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'appearance_changer.tmpl': Appearance,
   'chem_disp.tmpl': Chemistry,
@@ -57,4 +58,5 @@ export const interfaces: Record<string, ComponentType<ScreenProps>> = {
   'spawn_menu.tmpl': SpawnMenu,
   'wiremod_circuit.tmpl': WiremodCircuit,
   'haircut.tmpl': Haircut,
+  'computer.tmpl': Computer,
 };
