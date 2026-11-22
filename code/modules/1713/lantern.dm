@@ -344,27 +344,18 @@
 	secondary_action = TRUE
 
 /obj/item/flashlight/japflashlight/secondary_attack_self(mob/living/human/user)
-
-	intensity +=1
+	intensity += 1
 	if (intensity > 3)
 		intensity = 1
-
 	switch (intensity)
 		if (1)
-			light_range = 3
 			brightness_on = 3
-			intensity = 1
 			to_chat(user, "<span class='notice'>You <b>reduce</b> the intensity of your flashlight.</span>")
-			return
 		if (2)
-			light_range = 2
 			brightness_on = 2
-			intensity = 2
 			to_chat(user, "<span class='notice'>You <b>reduce further</b> the intensity of your flashlight.</span>")
-			return
 		if (3)
-			light_range = 5
 			brightness_on = 5
-			intensity = 3
 			to_chat(user, "<span class='notice'>You switch back the intensity to <b>normal</b> on your flashlight.</span>")
-			return
+	// Apply the new range now if lit; an unlit flashlight keeps emitting nothing.
+	update_icon()
