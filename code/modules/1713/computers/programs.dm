@@ -941,12 +941,25 @@
 		mainmenu += "<a href='?src=\ref[src];deepnet=2'>Buy</a>&nbsp;<a href='?src=\ref[src];deepnet=3'>Sell</a>&nbsp;<a href='?src=\ref[src];deepnet=4'>Account</a><br>"
 	..()
 
+// Seller-side actions must resolve the live order against the requesting
+// character's account, not against the buttons shown by an earlier render.
+/datum/program/deepnet/proc/active_seller_order(id, mob/living/human/actor)
+	if (!map || !istext(id) || !istype(actor) || QDELETED(actor) || actor != usr || actor != user || !origin || QDELETED(origin) || actor != origin.user || actor.stat || actor.lying || !actor.can_use_hands() || actor.z != origin.z || get_dist(actor, origin) > 1)
+		return null
+	var/account = deepnet_account(actor)
+	var/list/order = map.globalmarketplace[id]
+	if (!islist(order) || order.len < 7 || order[1] != account || order[5] != "deepnet" || order[6] != id || order[7] != 1)
+		return null
+	var/obj/item/I = order[2]
+	return istype(I) && !QDELETED(I) ? order : null
+
+/datum/program/deepnet/proc/deepnet_account(mob/living/human/actor)
+	return actor.original_job_title == "Legitimate Business" ? actor.real_name : actor.civilization
+
 /datum/program/deepnet/Topic(href, href_list, hsrc)
 	..()
 	mainbody = ""
-	var/u_account = user.civilization
-	if (user.original_job_title == "Legitimate Business")
-		u_account = user.real_name
+	var/u_account = deepnet_account(user)
 	if (href_list["deepnet"])
 		if (findtext(href_list["deepnet"],"b"))
 			var/tcode = replacetext(href_list["deepnet"],"b","")
@@ -983,28 +996,39 @@
 					do_html(user)
 					return
 
-		if (findtext(href_list["deepnet"],"ch"))
-			var/tcode = replacetext(href_list["deepnet"],"ch","")
-			var/cost = (map.globalmarketplace[tcode][4])
-			var/newprice = player_input(user, "What shall the new price be, in dollars?", "DEEPNET", cost/4, "num", null, TRUE)
-			if (!isnum(newprice))
+		if (findtext(href_list["deepnet"],"ch") == 1)
+			var/tcode = copytext(href_list["deepnet"], 3)
+			var/mob/living/human/actor = usr
+			var/obj/map_metadata/order_map = map
+			var/obj/structure/computer/order_computer = origin
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
 				return
-			if (newprice <= 0)
+			var/cost = order[4]
+			var/newprice = player_input(actor, "What shall the new price be, in dollars?", "DEEPNET", cost/4, "num", null, TRUE)
+			if (!isnum(newprice) || newprice <= 0 || map != order_map || origin != order_computer || active_seller_order(tcode, actor) != order)
 				return
-			map.globalmarketplace[tcode][4] = newprice*4
+			order[4] = newprice*4
 			mainbody += "You update the listing's price."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
-		if (findtext(href_list["deepnet"],"cn"))
-			var/tcode = replacetext(href_list["deepnet"],"cn","")
-			var/obj/BO = map.globalmarketplace[tcode][2]
-			BO.forceMove(get_turf(origin))
-			map.globalmarketplace[tcode][7] = 0
-			map.globalmarketplace -= map.globalmarketplace[tcode]
+		if (findtext(href_list["deepnet"],"cn") == 1)
+			var/tcode = copytext(href_list["deepnet"], 3)
+			var/mob/living/human/actor = usr
+			var/list/order = active_seller_order(tcode, actor)
+			if (!order)
+				return
+			var/turf/site = get_turf(origin)
+			if (!site)
+				return
+			var/obj/item/BO = order[2]
+			order[7] = 0
+			map.globalmarketplace -= tcode
+			BO.forceMove(site)
 			mainbody += "You cancel your sell order and get your items back."
 			sleep(0.5)
-			do_html(user)
+			do_html(actor)
 			return
 		switch(href_list["deepnet"])
 			if ("2") //buy
@@ -1050,7 +1074,7 @@
 							else
 								//owner, object, amount, price, sale/buy, id number, fulfilled
 								var/idx = rand(1,999999)
-								map.globalmarketplace += list("[idx]" = list(user.civilization,M,1,price*4,"deepnet","[idx]",1))
+								map.globalmarketplace += list("[idx]" = list(u_account,M,1,price*4,"deepnet","[idx]",1))
 								user.drop_from_inventory(M)
 								M.forceMove(locate(0,0,0))
 								mainbody += "You place \the [M] for sale in the <b>DEEPNET</b>."
@@ -1062,7 +1086,7 @@
 				if (href_list["deepnet"] == "7") //change
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == u_account)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
@@ -1074,7 +1098,7 @@
 				if (href_list["deepnet"] == "8") //cancel
 					var/list/currlist = list()
 					for (var/i in map.globalmarketplace)
-						if (map.globalmarketplace[i][1] == u_account)
+						if (active_seller_order(i, user))
 							currlist += list(list(map.globalmarketplace[i][6],"[istype(map.globalmarketplace[i][2],/obj/item/stack) ? "[map.globalmarketplace[i][3]] of " : ""] <b>[map.globalmarketplace[i][2]]</b>, for [map.globalmarketplace[i][4]/4] dollars (<i>by [map.globalmarketplace[i][1]]</i>)"))
 					if (isemptylist(currlist))
 						mainbody += "You have no orders on the market!"
