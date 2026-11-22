@@ -464,8 +464,8 @@ thirty wood in its stock, lists the slipway in its survey and files a draught. A
 hull is offered for breaking up at the post (and one in the boathouse slip at
 the boathouse); she is refused afloat, with someone aboard, registered to a
 party the player is not in (her listed captain may) or, unregistered, to an
-unverified player. Broken up, three quarters of her wood is stacked by the
-post, her chest's contents, loose rope and a stranger's block are set down
+unverified player. Broken up, all her wood but half of one damaged plank's is
+stacked by the post, her chest's contents, loose rope and a stranger's block are set down
 there whole, and her floors, chest and tiller are gone.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300

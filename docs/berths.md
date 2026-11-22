@@ -172,9 +172,11 @@ player answers Yes (default No).
   roofs and ladder heads. Everything else aboard (cargo, a chest's contents,
   engines and machines the draught tables do not know, bodies) is moved whole
   to the berth's tile.
-- Back: three quarters of the parts' hand cost, rounded down per material
-  (`berth_breakup_reclaim()`), stacked on the berth's tile. A patch gives
-  nothing. The reclaim is always below the build cost.
+- Back: each part's hand cost times its condition (`breakup_part_condition()`:
+  health over max health where the part keeps them, 0.5 for a patched plank
+  or a broken vehicle frame, else 1), summed and rounded down per material
+  (`berth_breakup_reclaim()`), stacked on the berth's tile. A sound ship
+  gives back all she cost and never more.
 - Time: half of the slipway's build time, 1.5 s a floor and 2.5 s a fitting,
   through `yard_time()`. Work goes in 5 s steps; several people can work at
   once and the work done is kept on her tiller (`breakup_done`, not saved).
