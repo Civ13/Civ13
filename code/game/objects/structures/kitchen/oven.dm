@@ -141,6 +141,7 @@
 					visible_message("<span class = 'notice'>\The [I] finishes boiling.</span>")
 					// Brew before the salt step below, which boils the water away.
 					coffee_brew_notice(I.reagents, src, I.reagents.brew_coffee())
+					syrup_boil_notice(I.reagents, src, I.reagents.boil_syrups()) // syrups.dm
 					if (I.reagents.get_reagent_amount("sodiumchloride")>0 && I.reagents.get_reagent_amount("water")>0)
 						var/obj/item/weapon/reagent_containers/food/condiment/saltpile/empty/NSP = new /obj/item/weapon/reagent_containers/food/condiment/saltpile/empty(get_turf(src))
 						NSP.reagents.add_reagent("sodiumchloride",I.reagents.get_reagent_amount("sodiumchloride"))

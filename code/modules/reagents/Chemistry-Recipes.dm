@@ -1283,6 +1283,36 @@ datum/admins/proc/print_chemical_reactions()
 	required_reagents = list("lemonjuice" = 1, "sugar" = 1, "water" = 1)
 	result_amount = 3
 
+// Simple syrup already carries its water (syrups.dm).
+/datum/chemical_reaction/lemonade/syrup
+	id = "lemonade_syrup"
+	required_reagents = list("lemonjuice" = 1, "sugar_syrup" = 2)
+	result_amount = 3
+
+// Fruit syrup: fruit juice sweetened with simple syrup (syrups.dm).
+/datum/chemical_reaction/fruit_syrup
+	name = "Fruit syrup"
+	id = "fruit_syrup"
+	result = "fruit_syrup"
+	required_reagents = list("berryjuice" = 5, "sugar_syrup" = 10)
+	result_amount = 15
+
+/datum/chemical_reaction/fruit_syrup/grape
+	id = "fruit_syrup_grape"
+	required_reagents = list("grapejuice" = 5, "sugar_syrup" = 10)
+
+/datum/chemical_reaction/fruit_syrup/apple
+	id = "fruit_syrup_apple"
+	required_reagents = list("applejuice" = 5, "sugar_syrup" = 10)
+
+/datum/chemical_reaction/fruit_syrup/apricot
+	id = "fruit_syrup_apricot"
+	required_reagents = list("apricotjuice" = 5, "sugar_syrup" = 10)
+
+/datum/chemical_reaction/fruit_syrup/orange
+	id = "fruit_syrup_orange"
+	required_reagents = list("orangejuice" = 5, "sugar_syrup" = 10)
+
 /datum/chemical_reaction/milkshake
 	name = "Milkshake"
 	id = "milkshake"
@@ -1311,6 +1341,12 @@ datum/admins/proc/print_chemical_reactions()
 	result = "rum"
 	required_reagents = list("sugar" = 3, "water" = 1)
 	catalysts = list("enzyme" = 5)
+	result_amount = 1
+
+// Molasses ferments into rum more readily than raw sugar (syrups.dm).
+/datum/chemical_reaction/rum/molasses
+	id = "rum_molasses"
+	required_reagents = list("molasses" = 1, "water" = 1)
 	result_amount = 1
 
 /datum/chemical_reaction/gin

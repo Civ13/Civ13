@@ -7,7 +7,7 @@
 //   each, become pickles after 3 working spells. Pickles never spoil.
 // Alt-click an open crock (or use its verb) to take food back out.
 //
-// Jam: 10 fruit juice with 5 sugar or 5 honey sets into 10 jam. A preserve
+// Jam: 10 fruit juice with 5 sugar, 5 honey or 5 maple syrup sets into 10 jam. A preserve
 // jar holds 20; spread 5 on a slice of bread to make jellied toast.
 
 #define CROCK_WORK_TIME 1200
@@ -335,6 +335,27 @@
 /datum/chemical_reaction/jam/orange_honey
 	id = "jam_orange_honey"
 	required_reagents = list("orangejuice" = 10, "honey" = 5)
+
+// Maple syrup sets jam as sugar and honey do (syrups.dm).
+/datum/chemical_reaction/jam/berry_maple
+	id = "jam_berry_maple"
+	required_reagents = list("berryjuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/grape_maple
+	id = "jam_grape_maple"
+	required_reagents = list("grapejuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/apple_maple
+	id = "jam_apple_maple"
+	required_reagents = list("applejuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/apricot_maple
+	id = "jam_apricot_maple"
+	required_reagents = list("apricotjuice" = 10, "maple_syrup" = 5)
+
+/datum/chemical_reaction/jam/orange_maple
+	id = "jam_orange_maple"
+	required_reagents = list("orangejuice" = 10, "maple_syrup" = 5)
 
 #undef CROCK_WORK_TIME
 #undef CROCK_SOUR_STEP
