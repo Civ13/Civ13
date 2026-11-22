@@ -185,14 +185,15 @@
 	var/players = population["players"]
 	var/unknown = population["unknown"]
 	. = ""
-	if(title)
-		. += "<b>Mainland:</b> [hub_status_text(title)]<br>"
 	if(!unknown)
 		. += "<b>Players across regions:</b> [players]<br>"
 	else if(unknown == length(shard_group.peers))
 		. += "<b>Players across regions:</b> unavailable<br>"
 	else
 		. += "<b>Players across regions:</b> at least [players] ([unknown] [unknown == 1 ? "region" : "regions"] unconfirmed)<br>"
+	// After the total: the hub keeps only the start of a status (world.dm).
+	if(title)
+		. += "<b>Mainland:</b> [hub_status_text(title)]<br>"
 
 // The peers' player counts change without anyone logging in here.
 /proc/region_gateway_status_loop()

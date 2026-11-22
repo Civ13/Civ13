@@ -83,16 +83,17 @@ def status_template(prefix, values):
 def fragments(name="Civilization 13", discord="https://discord.gg/hBEtg4x",
               website="https://civ13.com/", new_window=True, map_title="Nomads",
               mode="Nomads", duration="1 hour", body="", banner=False):
-    title = link(discord, name, new_window) or encode(name)
-    parts = [status_template('s += "<center>', {"server_title": title})]
-    links = [item for item in (link(discord, "Discord", new_window), link(website, "Website")) if item]
-    if links:
-        parts.append(status_template('s += "[jointext', {'jointext(community_links, " | ")': " | ".join(links)}))
+    parts = [status_template('s += "<center>', {"hub_status_text(customserver_name())": encode(name)})]
     if map_title is not None:
         parts.append(status_template('s += "<b>Map:', {"hub_status_text(map.title)": encode(map_title),
                                                      "hub_status_text(roundduration2text())": encode(duration)}))
         parts.append(status_template('s += "<b>Gamemode:', {"hub_status_text(map.gamemode)": encode(mode)}))
     parts.append(body.replace("ROUNDTIME", duration.lower().capitalize()))
+    if not "".join(parts).endswith("<br>"):
+        parts.append("<br>")
+    links = [item for item in (link(discord, "Discord", new_window), link(website, "Website")) if item]
+    if links:
+        parts.append(status_template('s += "[jointext', {'jointext(community_links, " | ")': " | ".join(links)}))
     if banner:
         parts.append(status_template('s += "<img', {"config.hub_banner_url": "https://i.imgur.com/napac0L.png"}))
     return "".join(parts)
@@ -120,8 +121,8 @@ class HubStatusTests(unittest.TestCase):
             'hub_status_link(config.websiteurl, "Website")',
             "community_links += discord_link", "community_links += website_link",
             "if (discord_link)", "if (website_link)", "if (community_links.len)",
-            "hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)",
-            "server_title = hub_status_text(customserver_name())",
+            's += "<center><b>[hub_status_text(customserver_name())]</b></center><br>"',
+            'if (copytext(s, -4) != "<br>")\n\t\ts += "<br>"',
             "if (world.port == config.testing_port)\n\t\tvisibility = FALSE",
             's += "<img src=\\"[config.hub_banner_url]\\"><br>"',
             'var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))',
@@ -154,25 +155,29 @@ class HubStatusTests(unittest.TestCase):
                                    body="<br>Existing host notice ROUNDTIME", banner=True)
                 parsed = Anchors(output)
                 self.assertEqual([x["href"] for x in parsed.links],
-                                 ["https://discord.gg/hBEtg4x", "https://discord.gg/hBEtg4x", "https://civ13.com/"])
-                self.assertIn(f">Civ13 {mode}</a></b>", output)
+                                 ["https://discord.gg/hBEtg4x", "https://civ13.com/"])
+                self.assertTrue(output.startswith(f"<center><b>Civ13 {mode}</b></center><br><b>Map:</b>"))
                 self.assertIn(f"<b>Map:</b> {mode} map (1 hour)<br>", output)
                 self.assertIn(f"<b>Gamemode:</b> {mode}<br>Existing host notice 1 hour", output)
                 self.assertIn('<img src="https://i.imgur.com/napac0L.png">', output)
                 self.assertIn(">Discord</a> | <a ", output)
-                self.assertIn(">Website</a><br>", output)
+                self.assertIn("Existing host notice 1 hour<br><a ", output)
+                self.assertIn(">Website</a><br><img ", output)
 
-    def test_banner_is_the_last_status_line(self):
-        # The hub cuts a status at its image; the readable lines must come first.
+    def test_live_lines_come_before_links_and_banner(self):
+        # The hub keeps only the start of a status; the live lines come first.
         banner = STATUS.index('s += "<img')
+        links = STATUS.index("var/list/community_links")
         for line in ('region_gateway_hub_status()', '<b>Map:</b>', '<b>World:</b>',
                      '<b>Joining:</b>', '<b>Gamemode:</b>', 's += hub_body'):
-            self.assertLess(STATUS.index(line), banner, line)
+            self.assertLess(STATUS.index(line), links, line)
+        self.assertLess(links, banner)
         self.assertLess(banner, STATUS.index("status = s"))
 
     def test_missing_map_and_empty_urls_have_no_dangling_separator(self):
         output = fragments(discord=None, website="", map_title=None)
         self.assertEqual(output, "<center><b>Civilization 13</b></center><br>")
+        self.assertNotIn("<a ", fragments(discord="https://discord.gg/hBEtg4x", map_title=None).split("</center>")[0])
         self.assertEqual(Anchors(output).links, [])
         output = fragments(discord="", website="https://civ13.com/", map_title=None)
         self.assertEqual(len(Anchors(output).links), 1)
@@ -215,7 +220,7 @@ class HubStatusTests(unittest.TestCase):
 
     def test_new_window_option_remains_discord_only(self):
         parsed = Anchors(fragments(new_window=True))
-        self.assertEqual([item.get("target") for item in parsed.links], ["_blank", "_blank", None])
+        self.assertEqual([item.get("target") for item in parsed.links], ["_blank", None])
         self.assertTrue(all("target" not in item for item in Anchors(fragments(new_window=False)).links))
 
     def test_query_and_fragment_authority_boundaries(self):
@@ -228,7 +233,7 @@ class HubStatusTests(unittest.TestCase):
                 parsed = Anchors(link(url, "Website"))
                 self.assertEqual([item["href"] for item in parsed.links], [url])
                 listing = Anchors(fragments(discord=url, website=url, map_title=None))
-                self.assertEqual([item["href"] for item in listing.links], [url, url, url])
+                self.assertEqual([item["href"] for item in listing.links], [url, url])
 
 
 if __name__ == "__main__":

@@ -469,20 +469,9 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/s = ""
 
-	var/server_title = hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)
-	if (!server_title)
-		server_title = hub_status_text(customserver_name())
-	s += "<center><b>[server_title]</b></center><br>"
-
-	var/list/community_links = list()
-	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
-	var/website_link = hub_status_link(config.websiteurl, "Website")
-	if (discord_link)
-		community_links += discord_link
-	if (website_link)
-		community_links += website_link
-	if (community_links.len)
-		s += "[jointext(community_links, " | ")]<br>"
+	// The BYOND hub keeps only about the first 255 characters of a status, so the
+	// short title and the live lines come first; links and the banner go last.
+	s += "<center><b>[hub_status_text(customserver_name())]</b></center><br>"
 
 	// The gateway is the group's hub entry: it shows the lands, not its own empty map.
 	if (region_gateway_here())
@@ -499,8 +488,18 @@ var/world_topic_spam_protect_time = world.timeofday
 		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
 	if (hub_body)
 		s += hub_body
-	// The BYOND hub cuts a listing's status at an image, so the banner goes last
-	// and never hides the map, players or joining lines above it.
+	if (copytext(s, -4) != "<br>")
+		s += "<br>"
+	var/list/community_links = list()
+	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
+	var/website_link = hub_status_link(config.websiteurl, "Website")
+	if (discord_link)
+		community_links += discord_link
+	if (website_link)
+		community_links += website_link
+	if (community_links.len)
+		s += "[jointext(community_links, " | ")]<br>"
+
 	if (config.hub_banner_url)
 		s += "<img src=\"[config.hub_banner_url]\"><br>"
 
