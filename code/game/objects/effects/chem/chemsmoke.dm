@@ -123,10 +123,20 @@
 	if (!istype(AM, /obj/effect/effect/smoke/chem) && !istype(AM, /obj/item/weapon/reagent_containers))
 		reagents.splash(AM, splash_amount, copy = TRUE)
 
-/obj/effect/effect/smoke/chem/proc/initial_splash()
+// Creation does not call Crossed, so atoms already inside a new cloud get its
+// contact dose here. A wave of particles shares splashed_keys so each atom is
+// dosed once per wave rather than once per overlapping particle.
+/obj/effect/effect/smoke/chem/proc/initial_splash(list/splashed_keys = null)
+	if (!reagents || !reagents.total_volume)
+		return
 	for (var/turf/T in view(1, src))
 		for (var/atom/movable/AM in T)
 			if (!istype(AM, /obj/effect/effect/smoke/chem) && !istype(AM, /obj/item/weapon/reagent_containers))
+				if (splashed_keys)
+					var/key = "\ref[AM]"
+					if (splashed_keys[key])
+						continue
+					splashed_keys[key] = TRUE
 				reagents.splash(AM, splash_amount, copy = TRUE)
 
 // Fades out the smoke smoothly using it's alpha variable.

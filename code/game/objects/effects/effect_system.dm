@@ -405,6 +405,7 @@ steam.start() -- spawns the effect
 
 /datum/effect/effect/system/smoke_spread/start()
 	var/list/activation = system_lifetime
+	var/list/splashed_keys = list() // shared by this wave's particles
 	var/i = FALSE
 	for (i=0, i<number, i++)
 		if (total_smoke > 20)
@@ -415,6 +416,9 @@ steam.start() -- spawns the effect
 			if (holder)
 				location = get_turf(holder)
 			var/obj/effect/effect/smoke/smoke = PoolOrNew(smoke_type, location)
+			if (istype(smoke, /obj/effect/effect/smoke/chem))
+				var/obj/effect/effect/smoke/chem/chem_smoke = smoke
+				chem_smoke.initial_splash(splashed_keys)
 			var/list/effect_activation = smoke.effect_lifetime
 			total_smoke++
 			var/src_direction = direction
