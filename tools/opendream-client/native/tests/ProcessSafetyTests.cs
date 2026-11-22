@@ -70,6 +70,31 @@ static class ProcessSafetyTests {
             Require(LocalHosting.RunStreamed(Shell("sleep 20 & echo hi"), Keep) == 0 && watch.Elapsed < TimeSpan.FromSeconds(15), "a finished streamed step answers: " + watch.Elapsed);
         }
 
+        if (OperatingSystem.IsWindows()) {
+            // The same streamed checks against a real cmd.exe tree, as deploy.bat runs (ping stands in for a hung step).
+            ProcessStartInfo Cmd(string script) {
+                var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "cmd.exe")) { UseShellExecute = false, CreateNoWindow = true,
+                    RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
+                foreach (var argument in new[] { "/d", "/c", script }) step.ArgumentList.Add(argument);
+                return step;
+            }
+            var seen = new List<string>();
+            void Keep(string text) { lock (seen) seen.Add(text.Trim()); }
+            Require(LocalHosting.RunStreamed(Cmd("echo out& echo err 1>&2& exit /b 3"), Keep) == 3, "cmd: a streamed step returns its exit code");
+            lock (seen) Require(seen.Contains("out") && seen.Contains("err"), "cmd: both streams are streamed: " + string.Join("|", seen));
+            var clock = Stopwatch.StartNew();
+            try { LocalHosting.RunStreamed(Cmd("echo started& ping -n 30 127.0.0.1 >nul").WithLimit(TimeSpan.FromSeconds(2)), Keep); throw new Exception("a hung cmd step was not ended"); }
+            catch (LocalHosting.StepTimedOut e) { Require(e.Message.Contains("did not finish within 2 s"), "cmd timeout message: " + e.Message); }
+            Require(clock.Elapsed < TimeSpan.FromSeconds(15), "cmd: the streamed limit holds: " + clock.Elapsed);
+            lock (seen) Require(seen.Contains("started"), "cmd: lines before the limit were kept");
+            clock.Restart();
+            using (var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(1))) {
+                try { LocalHosting.RunStreamed(Cmd("ping -n 30 127.0.0.1 >nul"), Keep, cancel.Token); throw new Exception("a cancelled cmd step was not ended"); }
+                catch (LocalHosting.StepCancelled e) { Require(e.Message.Contains("was cancelled"), "cmd cancel message: " + e.Message); }
+            }
+            Require(clock.Elapsed < TimeSpan.FromSeconds(15), "cmd: cancel ends the step at once: " + clock.Elapsed);
+        }
+
         // The experimental WMI check: parsing, classification, the setting and the elevated step shape.
         var (state, pid) = WmiHealth.ParseService("SERVICE_NAME: winmgmt\r\n        TYPE               : 30  WIN32\r\n        STATE              : 3  STOP_PENDING\r\n" +
             "        PID                : 2468\r\n");
