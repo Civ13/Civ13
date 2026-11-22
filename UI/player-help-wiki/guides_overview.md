@@ -8,6 +8,7 @@ New to the game? Go to [Start Here](topics/Start_Here.md).
 ## [Start Here](topics/Start_Here.md)
 
 - [How to Play](New_Player_Guide.md)
+- [Frequently Asked Questions](FAQ.md)
 - [Rules](rules/Rules.md)
 - [Starter Guide](Starter_Guide.md)
 - [Your First Day](guides/Guide_to_Your_First_Day.md)

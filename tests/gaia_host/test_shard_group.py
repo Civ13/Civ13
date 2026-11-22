@@ -4080,3 +4080,15 @@ class LiveStatusEncodingTests(unittest.TestCase):
             with mock.patch.object(gaia_host.os, 'replace', denied), mock.patch.object(gaia_host.time, 'sleep'):
                 with self.assertRaises(PermissionError):
                     shard_group.write_json_atomic(path, {'phase': 'failed'})
+
+    def test_a_later_completed_save_clears_a_retryable_save_failure(self):
+        # Europe kept "World save failed" on the launcher after a later save worked.
+        root = Path(__file__).resolve().parents[2] / 'code/modules/persistence'
+        transaction = (root / 'restart_transaction.dm').read_text(encoding='utf-8')
+        lifecycle = (root / 'nomads_lifecycle.dm').read_text(encoding='utf-8')
+        failed = transaction.split('save_failure_retryable = !exists()', 1)[1].split('\n', 2)[1]
+        self.assertIn('save_failure_generation = trim(file2text("map_saves/save_complete.txt"))', failed)
+        snapshot = lifecycle.split('/datum/nomads_lifecycle_control/proc/snapshot(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('generation != persistence_restart.save_failure_generation', snapshot)
+        self.assertLess(snapshot.index('if(!error) error = map_storage.last_error'),
+                        snapshot.index('generation != persistence_restart.save_failure_generation'))

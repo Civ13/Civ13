@@ -85,7 +85,12 @@ var/global/datum/nomads_lifecycle_control/nomads_lifecycle = new
 	if(!error) error = last_error
 	if(!error) error = persistence_restart.last_error
 	if(!error) error = map_storage.last_error
-	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation ? operation : standby_operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = trim(file2text("map_saves/save_complete.txt")), "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "handover_empty_guard" = TRUE, "port" = world.port, "debug" = agent_diagnostic_state(), "shutdown_warning" = TRUE, "shutdown_in" = planned_shutdown_remaining(), "planned_notice" = TRUE)
+	var/generation = trim(file2text("map_saves/save_complete.txt"))
+	// A retryable save failure stops being news once a later save completes:
+	// the launcher kept showing Europe's 11:09 failure after its 15:33 save worked.
+	if(retryable && error && persistence_restart.save_failure_generation && generation != persistence_restart.save_failure_generation)
+		error = null
+	return list("ok" = ok, "revision" = read_revision(), "session" = boot_session(), "map" = map ? map.ID : null, "persistence_mode" = map && ticker ? !!persistence_round_active() : null, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz, "ready" = ready ? TRUE : FALSE, "busy" = locked ? TRUE : FALSE, "operation" = operation ? operation : standby_operation, "maintenance_operation" = maintenance_announcing ? null : maintenance_operation, "error" = error, "generation" = generation, "clients" = clients.len, "restart_hold" = persistence_restart.startup_hold, "restart_import_complete" = persistence_restart.import_complete, "restart_intent" = persistence_restart.exists(), "standby" = standby_state(), "handover" = persistence_restart.handover_state, "handover_empty_guard" = TRUE, "port" = world.port, "debug" = agent_diagnostic_state(), "shutdown_warning" = TRUE, "shutdown_in" = planned_shutdown_remaining(), "planned_notice" = TRUE)
 
 // planned_notice: the players' countdown before the daily maintenance hands this world over to the
 // day's build (kind "update"). It only counts down; the host's handover_save follows when it ends,

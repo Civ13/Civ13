@@ -116,6 +116,9 @@ var/global/list/persistence_freeze_notified = list()
 	// The last attempt failed but left no intent and the server running, so a
 	// new save/restart may be accepted despite last_error.
 	var/save_failure_retryable = FALSE
+	// The completed generation when that failure happened: a later save that
+	// completes changes it, and the stale failure is no longer reported.
+	var/save_failure_generation
 	var/intent_path = "map_saves/restart_intent.json"
 	var/lifecycle_operation
 	var/lifecycle_session
@@ -307,6 +310,7 @@ var/global/list/persistence_freeze_notified = list()
 	// A new attempt owns the outcome; an earlier failure's message is stale.
 	last_error = null
 	save_failure_retryable = FALSE
+	save_failure_generation = null
 	map_storage.last_error = null
 	lifecycle_operation = (shutdown || handover) ? operation : null
 	lifecycle_session = (shutdown || handover) ? session : null
@@ -403,6 +407,7 @@ var/global/list/persistence_freeze_notified = list()
 				cleanup = " Intent cleanup FAILED: [cleanup_error]. Further saves are blocked until the intent is resolved."
 		report("[e].[cleanup]")
 		save_failure_retryable = !exists()
+		save_failure_generation = trim(file2text("map_saves/save_complete.txt"))
 	busy = FALSE
 	diagnostic_phase = "failed"
 	expected_generation = null
