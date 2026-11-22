@@ -904,8 +904,21 @@ var/global/list/region_stopped_alerted = list()
 	var/island = !reason && island_access_checks() && island_access_destination(destination)
 	if(island)
 		world_chart_refresh()
+	// A ship is carried by one member of the escrow party. If the refreshed
+	// border turns anyone back, nobody in that crew can leave without her.
+	var/ship_border = island && ship_crossing()
+	if(ship_border)
+		var/crew_border = null
+		for(var/mob/living/human/H in members)
+			crew_border = island_access_departure_refusal(destination, H)
+			if(crew_border)
+				break
+		if(crew_border)
+			for(var/mob/living/human/H in members)
+				stayed[H] = crew_border + "."
+			return
 	for(var/mob/living/human/H in members)
-		var/border = island ? island_access_departure_refusal(destination, H) : null
+		var/border = island && !ship_border ? island_access_departure_refusal(destination, H) : null
 		if(reason)
 			stayed[H] = reason
 		else if(border)

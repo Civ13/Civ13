@@ -2777,6 +2777,10 @@ SUITES = {
     'tanning_drum_idle_power': {'files': ('tests/tanning_drum_idle_power/test_tanning_drum_idle_power.py',),
         'paths': ('tests/tanning_drum_idle_power/',),
         'shared_paths': ('code/modules/1713/factory_tanning.dm',)},
+    'exact_reagent_transfer': {'files': ('tests/exact_reagent_transfer/test_exact_reagent_transfer.py',),
+        'paths': ('tests/exact_reagent_transfer/',),
+        'shared_paths': ('code/modules/1713/factory_pipes.dm', 'code/modules/reagents/Chemistry-Holder.dm',
+                         'code/modules/reagents/reagent_containers/glass.dm', 'code/modules/1713/light_fuel.dm')},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),

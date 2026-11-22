@@ -202,7 +202,7 @@ class StoneBoilingSource(unittest.TestCase):
         self.assertIn('del_reagent(current.id)', clear)
         transfer = holder.split('/proc/trans_to_holder(', 1)[1].split('/proc/trans_to(', 1)[0]
         self.assertIn('target.add_reagent(current.id, amount_to_transfer * multiplier, current.get_data(), safety = TRUE)', transfer)
-        self.assertIn('remove_reagent(current.id, amount_to_transfer, TRUE)', transfer)
+        self.assertIn('remove_reagent(current.id, amount_to_transfer, TRUE, exact = TRUE)', transfer)
 
     def test_campfire_fire_generation_contract(self):
         campfire_timer_contract(self.oven)

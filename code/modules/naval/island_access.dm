@@ -152,12 +152,18 @@
 /proc/island_access_keeper(mob/living/human/H)
 	return istype(H) && map && H.civilization && H.civilization != "none" && map.faction_power(H, H.civilization, "papers")
 
-// Sends a border change for claimant to the world directory. TRUE when it was taken.
-/proc/island_access_ask(op, claimant, by, list/data)
+// The identity of this particular claim, not just its owner and coordinates.
+/proc/island_access_incarnation(claimant)
+	var/list/incarnations = world_chart["claim_incarnations"]
+	return islist(incarnations) ? incarnations[claimant] : null
+
+// Queues a change only for the claim shown when the officer opened the menu.
+/proc/island_access_ask(op, claimant, by, list/data, incarnation)
 	var/list/claims = islist(world_chart["claims"]) ? world_chart["claims"] : list()
 	var/key = claims[claimant]
-	if (!istext(key) || !transfer_bridge || !transfer_bridge.enabled())
+	if (!istext(key) || !istext(incarnation) || incarnation != island_access_incarnation(claimant) || !transfer_bridge || !transfer_bridge.enabled())
 		return FALSE
+	data["incarnation"] = incarnation
 	var/list/xy = splittext(key, ",")
 	if (length(xy) != 2)
 		return FALSE
@@ -231,6 +237,7 @@
 	island_access_menu(claimant)
 
 /mob/living/human/proc/island_access_menu(claimant)
+	var/incarnation = island_access_incarnation(claimant)
 	var/list/choices = list("Open to visitors" = "OPEN", "Members and guests" = "GUESTS", "Members only (close the border)" = "MEMBERS",
 		"Name a guest beside you", "Remove a guest", "Done")
 	var/choice = WWinput(src, "Who may land on your faction's island? Visitor passes are granted at your recruitment stations.", "Faction Island", "Done", choices)
@@ -277,7 +284,7 @@
 		action_text = "remove [island_guest_label(account)] as a guest"
 	if (!change || !island_access_keeper(src) || island_access_claim_of(src) != claimant)
 		return
-	if (!island_access_ask("access", claimant, faction_roster_account(src), change))
+	if (!island_access_ask("access", claimant, faction_roster_account(src), change, incarnation))
 		to_chat(src, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
 		return
 	map.recruitment_audit(civilization, "[real_name] asked the world directory to [action_text].", faction_roster_account(src) || "")
@@ -300,6 +307,7 @@
 	if (!claimant)
 		to_chat(H, SPAN_WARNING("[faction] claims no island across the sea yet. Its leader claims one with a colony charter on a land across the sea."))
 		return
+	var/incarnation = island_access_incarnation(claimant)
 	var/list/near = list()
 	for (var/mob/living/human/M in range(1, src))
 		if (M != H && M.stat != DEAD && faction_roster_account(M) && !island_access_member(M, claimant))
@@ -319,7 +327,7 @@
 	if (isnull(lengths[how]) || get_dist(M, src) > 1 || get_dist(H, src) > 1 || !island_access_keeper(H) || island_access_claim_of(H) != claimant)
 		return
 	var/account = faction_roster_account(M)
-	if (!island_access_ask("pass", claimant, faction_roster_account(H), list("account" = account, "hours" = lengths[how])))
+	if (!island_access_ask("pass", claimant, faction_roster_account(H), list("account" = account, "hours" = lengths[how]), incarnation))
 		to_chat(H, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
 		return
 	island_guest_names()[account] = M.real_name

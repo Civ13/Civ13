@@ -195,10 +195,12 @@
 		return add_reagent(id, get_reagent_amount(id)*(mult-1.0))
 	return FALSE
 
-/datum/reagents/proc/remove_reagent(var/id, var/amount, var/safety = FALSE)
+// exact: take only the entry with this id. Callers walking reagent_list and
+// crediting current.id pass it, so "ethanol" does not drain beer instead (#6870).
+/datum/reagents/proc/remove_reagent(var/id, var/amount, var/safety = FALSE, var/exact = FALSE)
 	if (!isnum(amount))
 		return FALSE
-	if (id == "ethanol")
+	if (id == "ethanol" && !exact)
 		// "ethanol" means every alcohol (get_reagent_amount sums them), so draw
 		// the amount from each alcohol in turn. Returning after the first entry
 		// left ethanol unspent whenever another reagent had been added first.
@@ -323,7 +325,7 @@
 	var/part = amount / total_volume
 	for (var/datum/reagent/current in reagent_list)
 		var/amount_to_remove = current.volume * part
-		remove_reagent(current.id, amount_to_remove, TRUE)
+		remove_reagent(current.id, amount_to_remove, TRUE, exact = TRUE)
 	update_total()
 	handle_reactions()
 	return amount
@@ -342,7 +344,7 @@
 			carried_toxin = TRUE
 		target.add_reagent(current.id, amount_to_transfer * multiplier, current.get_data(), safety = TRUE) // We don't react until everything is in place
 		if (!copy)
-			remove_reagent(current.id, amount_to_transfer, TRUE)
+			remove_reagent(current.id, amount_to_transfer, TRUE, exact = TRUE)
 	// Carry the food toxin origin along so a later swallow can say where it came from.
 	if (carried_toxin && isobj(my_atom) && isobj(target.my_atom) && my_atom != target.my_atom)
 		var/cause = food_toxin_cause(my_atom, TRUE)
