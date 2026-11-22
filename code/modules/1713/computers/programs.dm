@@ -789,6 +789,16 @@
 		"mail_msg" = "Message",
 	)
 
+// Mail is stored as text; escape at each HTML boundary, not on save.
+/proc/monkeysoftmail_text_html(value)
+	return html_encode("[value]")
+
+/proc/monkeysoftmail_body_html(value)
+	var/encoded = monkeysoftmail_text_html(value)
+	encoded = replacetext(encoded, "\r\n", "\n")
+	encoded = replacetext(encoded, "\r", "\n")
+	return replacetext(encoded, "\n", "<br>")
+
 /datum/program/monkeysoftmail/do_html(mob/living/human/user)
 	if (mainmenu == "---")
 		mainmenu = "<h2><font color=#60AFFE>MONKEYSOFT</font> E-MAIL CLIENT</h2><br>"
@@ -824,9 +834,9 @@
 					if (istype(email_list[i], /datum/email))
 						var/datum/email/em = email_list[i]
 						if (em.read)
-							mainbody += "<a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+							mainbody += "<a href='?src=\ref[src];mail=[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</a><br>"
 						else
-							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</b></a><br>"
 	..()
 
 /datum/program/monkeysoftmail/Topic(href, href_list, hsrc)
@@ -856,7 +866,7 @@
 		cname = "mail@[mdomain]"
 	if (tmp_comp_vars["mail_snd"]=="Sender")
 		tmp_comp_vars["mail_snd"] = cname
-	mainbody = "<b>Logged in as <i>[cname]</i></b><br>"
+	mainbody = "<b>Logged in as <i>[monkeysoftmail_text_html(cname)]</i></b><br>"
 	if (href_list["mail"])
 		if (map && href_list["mail"]=="99999")
 			var/list/email_list = map.emails[cname]
@@ -865,15 +875,15 @@
 					if (istype(email_list[i], /datum/email))
 						var/datum/email/em = email_list[i]
 						if (em.read)
-							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</a><br>"
+							mainbody += "<a href='?src=\ref[src];mail=c[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</a><br>"
 						else
-							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[em.date] ([em.sender]): [em.subject]</b></a><br>"
+							mainbody += "<b><i>(NEW)</i> <a href='?src=\ref[src];mail=c[i]'>[monkeysoftmail_text_html(em.date)] ([monkeysoftmail_text_html(em.sender)]): [monkeysoftmail_text_html(em.subject)]</b></a><br>"
 
 		else
 			var/tcode = text2num(replacetext(href_list["mail"],"c",""))
 			var/datum/email/chosen = map.emails[cname][tcode]
 			chosen.read = TRUE
-			mainbody += "---<br>From: <i>[chosen.sender]</i><br>To: <i>[chosen.receiver]</i><br><i>Received at [chosen.date]</i><br>---<br><b>[chosen.subject]</b><br>[chosen.message]<br>"
+			mainbody += "---<br>From: <i>[monkeysoftmail_text_html(chosen.sender)]</i><br>To: <i>[monkeysoftmail_text_html(chosen.receiver)]</i><br><i>Received at [monkeysoftmail_text_html(chosen.date)]</i><br>---<br><b>[monkeysoftmail_text_html(chosen.subject)]</b><br>[monkeysoftmail_body_html(chosen.message)]<br>"
 			mainbody += "<a href='?src=\ref[src];replymail=[tcode]'>Reply</a><br>"
 
 	if (href_list["sendmail"])
@@ -888,9 +898,9 @@
 				tmp_comp_vars["mail_snd"] = WWinput(user, "Send from which e-mail account?","e-mail",tmp_comp_vars["mail_snd"],list(cname))
 
 //		mainbody += "From: <a href='?src=\ref[src];sendmail=5'>[tmp_comp_vars["mail_snd"]]</a><br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "From: [tmp_comp_vars["mail_snd"]]<br>To: <a href='?src=\ref[src];sendmail=2'>[tmp_comp_vars["mail_rec"]]</a><br>"
-		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[tmp_comp_vars["mail_subj"]]</a><br><br>"
-		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
+		mainbody += "From: [monkeysoftmail_text_html(tmp_comp_vars["mail_snd"])]<br>To: <a href='?src=\ref[src];sendmail=2'>[monkeysoftmail_text_html(tmp_comp_vars["mail_rec"])]</a><br>"
+		mainbody += "Subject: <a href='?src=\ref[src];sendmail=3'>[monkeysoftmail_text_html(tmp_comp_vars["mail_subj"])]</a><br><br>"
+		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[monkeysoftmail_body_html(tmp_comp_vars["mail_msg"])]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 	if (href_list["mail_send"])
 		var/datum/email/eml = new/datum/email
@@ -908,10 +918,10 @@
 		tmp_comp_vars["mail_subj"] = "RE:[chosen.subject]"
 		tmp_comp_vars["mail_snd"] = chosen.receiver
 		tmp_comp_vars["mail_rec"] = chosen.sender
-		tmp_comp_vars["mail_msg"] = "___________________<br>[chosen.message]"
-		mainbody += "From: [chosen.receiver]<br>To: [chosen.sender]<br>"
-		mainbody += "Subject: RE:[chosen.subject]<br><br>"
-		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[tmp_comp_vars["mail_msg"]]</a><br>"
+		tmp_comp_vars["mail_msg"] = "___________________\n[chosen.message]"
+		mainbody += "From: [monkeysoftmail_text_html(chosen.receiver)]<br>To: [monkeysoftmail_text_html(chosen.sender)]<br>"
+		mainbody += "Subject: RE:[monkeysoftmail_text_html(chosen.subject)]<br><br>"
+		mainbody += "Message: <a href='?src=\ref[src];sendmail=4'>[monkeysoftmail_body_html(tmp_comp_vars["mail_msg"])]</a><br>"
 		mainbody += "<a href='?src=\ref[src];mail_send=1'>Send</a><br>"
 
 	sleep(0.5)
