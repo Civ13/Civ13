@@ -125,8 +125,17 @@
 	if (S.integrity >= SUIT_INTEGRITY_MAX)
 		to_chat(user, SPAN_NOTICE("\The [S] has nothing to patch."))
 		return FALSE
+	// A worn suit moves with its wearer, so wait on the wearer, not the suit.
+	var/atom/wait_target = S
+	var/mob/living/human/wearer = S.loc
+	if (istype(wearer) && wearer.wear_suit == S)
+		wait_target = wearer
+	else
+		wearer = null
 	to_chat(user, SPAN_NOTICE("You start patching \the [S]..."))
-	if (!do_after(user, 30, S) || QDELETED(src) || QDELETED(S))
+	if (!do_after(user, 30, wait_target) || QDELETED(src) || QDELETED(S))
+		return FALSE
+	if (wearer && (QDELETED(wearer) || S.loc != wearer || wearer.wear_suit != S || !user.Adjacent(wearer)))
 		return FALSE
 	S.integrity = min(SUIT_INTEGRITY_MAX, S.integrity + SUIT_PATCH_INTEGRITY)
 	user.visible_message(SPAN_NOTICE("[user] patches \the [S]."))
