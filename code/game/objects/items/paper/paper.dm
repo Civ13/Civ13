@@ -1,4 +1,4 @@
-// large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
+// large amount of fields creates a heavy load on the server, see updateinfolinks() and legacy_field_offset()
 #define MAX_FIELDS 50
 
 /*
@@ -343,49 +343,24 @@
 					H.lip_style = null
 					H.update_body()
 
-/obj/item/weapon/paper/proc/addtofield(var/id, var/text, var/links = FALSE)
-	var/locid = 0
-	var/laststart = TRUE
-	var/textindex = TRUE
-	while (locid < MAX_FIELDS) // I know this can cause infinite loops and fuck up the whole server, but the if (istart==0) should be safe as fuck
-		var/istart = FALSE
-		if (links)
-			istart = findtext(info_links, "<span class=\"paper_field\">", laststart)
-		else
-			istart = findtext(info, "<span class=\"paper_field\">", laststart)
-
-		if (istart==0)
-			return // No field found with matching id
-
-		laststart = istart+1
-		locid++
-		if (locid == id)
-			var/iend = TRUE
-			if (links)
-				iend = findtext(info_links, "</span>", istart)
-			else
-				iend = findtext(info, "</span>", istart)
-
-			//textindex = istart+26
-			textindex = iend
-			break
-
-	if (links)
-		var/before = copytext(info_links, TRUE, textindex)
-		var/after = copytext(info_links, textindex)
-		info_links = before + text + after
-	else
-		var/before = copytext(info, TRUE, textindex)
-		var/after = copytext(info, textindex)
-		info = before + text + after
-		paper_authoring_notify(src, "physical")
-		updateinfolinks()
+/obj/item/weapon/paper/proc/legacy_field_offset(field_text, id)
+	if (!isnum(id) || id != round(id) || id < 1 || id > MAX_FIELDS)
+		return 0
+	var/start = 0
+	for (var/index = 1, index <= id, index++)
+		start = findtext(field_text, "<span class=\"paper_field\">", start + 1)
+		if (!start)
+			return 0
+	return findtext(field_text, "</span>", start)
 
 /obj/item/weapon/paper/proc/updateinfolinks()
 	info_links = info
 	var/i = FALSE
 	for (i=1,i<=fields,i++)
-		addtofield(i, "<font face=\"[deffont]\"><A href='?src=\ref[src];write=[i]'>write</A></font>", TRUE)
+		var/text_index = legacy_field_offset(info_links, i)
+		if (text_index)
+			var/link = "<font face=\"[deffont]\"><A href='?src=\ref[src];write=[i]'>write</A></font>"
+			info_links = copytext(info_links, 1, text_index) + link + copytext(info_links, text_index)
 	info_links = info_links + "<font face=\"[deffont]\"><A href='?src=\ref[src];write=end'>write</A></font>"
 
 
@@ -422,7 +397,7 @@
 		return P.get_signature(user)
 	return (user && user.real_name) ? user.real_name : "Anonymous"
 
-/obj/item/weapon/paper/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob, var/iscrayon = FALSE)
+/obj/item/weapon/paper/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob, var/iscrayon = FALSE, var/count_fields = TRUE)
 
 	t = replacetext(t, "\[center\]", "<center>")
 	t = replacetext(t, "\[/center\]", "</center>")
@@ -480,16 +455,21 @@
 
 //	t = replacetext(t, "#", "") // Junk converted to nothing!
 
-//Count the fields
-	var/laststart = 1
-	while (fields < MAX_FIELDS)
-		var/i = findtext(t, "<span class=\"paper_field\">", laststart)	//</span>
-		if (i==0)
-			break
-		laststart = i+1
-		fields++
-
+	if (count_fields)
+		var/new_fields = legacy_new_fields(t, MAX_FIELDS - fields)
+		if (new_fields)
+			fields += new_fields
 	return t
+
+/obj/item/weapon/paper/proc/legacy_new_fields(text, limit)
+	var/count = 0
+	var/start = 0
+	while (count < limit)
+		start = findtext(text, "<span class=\"paper_field\">", start + 1)
+		if (!start)
+			break
+		count++
+	return count
 
 /obj/item/weapon/paper/proc/burnpaper(obj/item/weapon/flame/P, mob/user)
 	var/class = "warning"
@@ -528,63 +508,58 @@
 		if (!paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen))
 			return
 		var/id = href_list["write"]
-		//var/t = strip_html_simple(input(usr, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
+		var/append_at_end = id == "end"
+		var/field_id = append_at_end ? null : text2num(id)
+		var/field_offset = 0
+		if (!append_at_end)
+			if ("[field_id]" != id || field_id > fields)
+				return
+			field_offset = legacy_field_offset(info, field_id)
+			if (!field_offset)
+				return
 
 		if (free_space <= 0)
-			to_chat(usr, SPAN_INFO("There isn't enough space left on \the [src] to write anything."))
+			to_chat(writer, SPAN_INFO("There isn't enough space left on \the [src] to write anything."))
 			return
 
-		var/t =  sanitize(input("Enter what you want to write:", "Write", null, null) as message, free_space, extra = FALSE)
-
-		if (!t || usr != writer || !paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen))
+		var/expected_info = info
+		var/expected_fields = fields
+		var/expected_space = free_space
+		var/atom/expected_loc = loc
+		var/raw = input(writer, "Enter what you want to write:", "Write", null, null) as null|message
+		if (!raw || usr != writer || !paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen))
 			return
-
-		var/obj/item/i = usr.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
-		var/iscrayon = FALSE
-		if (!istype(i, /obj/item/weapon/pen))
+		// Preserve the original classic route's range policy.
+		if (loc != writer && !Adjacent(writer) && !((istype(loc, /obj/item/weapon/clipboard) || istype(loc, /obj/item/weapon/folder)) && (loc.loc == writer || loc.Adjacent(writer))))
 			return
-
-		if (istype(i, /obj/item/weapon/pen/crayon))
-			iscrayon = TRUE
-
-
-		// if paper is not in usr, then it must be near them, or in a clipboard or folder, which must be in or near usr
-		if (loc != usr && !Adjacent(usr) && !((istype(loc, /obj/item/weapon/clipboard) || istype(loc, /obj/item/weapon/folder)) && (loc.loc == usr || loc.Adjacent(usr)) ) )
+		if (loc != expected_loc || info != expected_info || fields != expected_fields || free_space != expected_space)
+			to_chat(writer, SPAN_INFO("The paper changed while you were writing. Open it again to continue."))
 			return
-/*
-		t = checkhtml(t)
-
-		// check for exploits
-		for (var/bad in paper_blacklist)
-			if (findtext(t,bad))
-				to_chat(usr, "<span class = 'notice'>You think to yourself, \"Hm.. this is only paper...\"</span>")
-				log_admin("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].")
-				message_admins("PAPER: [usr] ([usr.ckey]) tried to use forbidden word in [src]: [bad].", usr.ckey)
-				return
-*/
-
-		var last_fields_value = fields
-
-		//t = html_encode(t)
+		var/t = sanitize(raw, free_space, extra = FALSE)
+		if (!t)
+			return
 		t = replacetext(t, "\n", "<BR>")
-		t = parsepencode(t, i, usr, iscrayon) // Encode everything from pencode to html
-
-
-		if (fields > MAX_FIELDS)//large amount of fields creates a heavy load on the server, see updateinfolinks() and addtofield()
-			to_chat(usr, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
-			fields = last_fields_value
+		t = parsepencode(t, writing_pen, writer, istype(writing_pen, /obj/item/weapon/pen/crayon), FALSE)
+		var/cost = length(strip_html_properly(t))
+		var/new_fields = legacy_new_fields(t, MAX_FIELDS - fields + 1)
+		if (cost > free_space)
+			to_chat(writer, SPAN_INFO("There isn't enough space left on \the [src] for that text."))
+			return
+		if (fields + new_fields > MAX_FIELDS)
+			to_chat(writer, SPAN_WARNING("Too many fields. Sorry, You cannot do this."))
 			return
 
-		if (id!="end")
-			addtofield(text2num(id), t) // He wants to edit a field, let him.
+		// Commit text, field count and capacity together before any listeners run.
+		if (append_at_end)
+			info += t
 		else
-			info += t // Oh, he wants to edit to the end of the file, let him.
-			updateinfolinks()
+			info = copytext(info, 1, field_offset) + t + copytext(info, field_offset)
+		fields += new_fields
+		free_space -= cost
+		updateinfolinks()
+		paper_authoring_notify(src, "physical")
 		playsound(src,'sound/effects/pen.ogg',40,1)
-		update_space(t)
-
 		show_document(usr, FALSE, "editor") // Project the legacy editor refresh.
-
 		update_icon()
 
 
