@@ -265,6 +265,18 @@ is past the 300-tile deck cap and refused; with half its roofs taken down
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/upper_deck_probe.dm 300
 
+## Upper deck lighting at sea (`deck_lighting_probe.dm`)
+
+The level over the sea is added at runtime, as on Gaia, so its open air has no
+lighting until something wakes it, and an unlit tile draws black. A roofed hull
+with a ladder up sails thirty tiles east, past every cell her building woke:
+each tile of her upper deck and the ladder top must be lit when she arrives
+(they drew pitch black for a sailor who climbed up after a voyage). The open air
+past her side is woken by a sailor's level-view scan, and the scan also lights
+a floor set down in sight without a lighting update.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/deck_lighting_probe.dm 300
+
 ## A second deck above (`second_deck_probe.dm`)
 
 Four levels: a hull roofed over, and nine tiles of that upper deck roofed again,

@@ -97,7 +97,11 @@ class OpenAirView(unittest.TestCase):
     def test_existing_views_repair_and_wake(self):
         refresh = proc('/turf/sky/building/proc/open_air_view_refresh(depth = 1, wake = TRUE)')
         # A cell first linked from above is woken by a viewer on its own level.
-        self.assertLess(refresh.index('if (wake && !lighting_overlay)'), refresh.index('if (!open_air_view)'))
+        # A floored cell in sight is woken too, before the floored return: a
+        # deck a vessel sailed onto an asleep cell drew black.
+        wake_at = refresh.index('if (wake && !lighting_overlay && depth <= OPEN_AIR_VIEW_DEPTH')
+        self.assertLess(wake_at, refresh.index('open_air_view_floored())'))
+        self.assertLess(wake_at, refresh.index('if (!open_air_view)'))
         for line in ('if (icon)\n\t\t\ticon = null', 'if (!(open_air_view in vis_contents))'):
             self.assertIn(line, refresh)
         wake = (ROOT / 'code/modules/multiz/building_lighting.dm').read_text(encoding='utf-8-sig')
