@@ -138,16 +138,16 @@ var/global/list/region_travel_carry_types = list(
 
 // Every item the character wears or holds, as list(slot name = item), or a
 // text reason when something cannot travel.
-/mob/living/human/proc/region_travel_items()
+/mob/living/human/proc/region_travel_items(list/leave_behind = null)
 	var/list/items = list()
 	var/list/refused = list()
 	var/list/known = list()
 	for(var/slot_name in region_travel_slots)
 		var/obj/item/I = get_equipped_item(region_travel_slots[slot_name])
-		if(!I) continue
-		if(!region_travel_worn_kind(I))
+		if(!I || (length(leave_behind) && (I in leave_behind))) continue
+		if(!region_travel_worn_kind(I, leave_behind))
 			// A bag is named with what in it has to come out first.
-			var/list/inside = istype(I, /obj/item/weapon/storage) ? region_travel_bag_blockers(I) : null
+			var/list/inside = istype(I, /obj/item/weapon/storage) ? region_travel_bag_blockers(I, leave_behind) : null
 			refused += length(inside) ? "[I.name] (take out [english_list(inside)])" : I.name
 			known += I
 			continue
@@ -157,7 +157,7 @@ var/global/list/region_travel_carry_types = list(
 		known += items[slot_name]
 	for(var/obj/item/I in src)
 		if(istype(I, /obj/item/organ) || istype(I, /obj/item/weapon/grab)) continue
-		if(!(I in known) && !(I.name in refused))
+		if(!(I in known) && !(I.name in refused) && !(length(leave_behind) && (I in leave_behind)))
 			refused += I.name
 	if(refused.len)
 		return "Leave these behind first: [english_list(refused)]."
@@ -165,7 +165,7 @@ var/global/list/region_travel_carry_types = list(
 		return "You carry too much to travel."
 	return items
 
-/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE, list/extra = null)
+/mob/living/human/proc/region_travel_payload(list/items, party = null, raid = FALSE, list/extra = null, list/leave_behind = null)
 	var/list/look = list()
 	for(var/name in region_travel_look_vars)
 		look[name] = vars[name]
@@ -179,7 +179,7 @@ var/global/list/region_travel_carry_types = list(
 	var/list/carried = list()
 	for(var/slot_name in items)
 		var/obj/item/I = items[slot_name]
-		var/kind = region_travel_worn_kind(I)
+		var/kind = region_travel_worn_kind(I, leave_behind)
 		if(kind == "type")
 			carried += list(list(slot_name, "[I.type]", 1))
 		else if(copytext(kind, 1, 6) == "node:" || copytext(kind, 1, 12) == "compendium:" || copytext(kind, 1, 6) == "gear:" || copytext(kind, 1, 7) == "round:" || copytext(kind, 1, 5) == "bag:" || copytext(kind, 1, 6) == "item:")
@@ -894,6 +894,20 @@ var/global/list/region_stopped_alerted = list()
 // The transfer agent keeps one transfer in flight per land, so travellers sent
 // one after another would wait on each other ("The trail is busy").
 // Returns list("departed" = list(H), "stayed" = list(H = reason)).
+// Special departures can plan belongings that stay without touching them,
+// and apply world changes only when the transfer agent has recorded the trip.
+/obj/structure/region_gate/proc/departure_leave_behind(mob/living/human/H)
+	return null
+
+/obj/structure/region_gate/proc/departure_in_place()
+	return FALSE
+
+/obj/structure/region_gate/proc/departure_refused(mob/living/human/H)
+	return null
+
+/obj/structure/region_gate/proc/departure_before_finish(mob/living/human/H, list/leave_behind, turf/origin)
+	return
+
 /obj/structure/region_gate/proc/depart_party(list/members)
 	var/list/departed = list()
 	var/list/stayed = list()
@@ -932,11 +946,16 @@ var/global/list/region_stopped_alerted = list()
 	var/list/packed = list()
 	var/total = 0
 	for(var/mob/living/human/H in ready)
-		var/list/items = H.region_travel_items()
+		var/refused = departure_refused(H)
+		if(refused)
+			stayed[H] = refused
+			continue
+		var/list/leave_behind = departure_leave_behind(H)
+		var/list/items = H.region_travel_items(leave_behind)
 		if(istext(items))
 			stayed[H] = items
 			continue
-		var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
+		var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H), leave_behind)
 		if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX))
 			stayed[H] = "You carry too much to travel."
 			continue
@@ -952,26 +971,39 @@ var/global/list/region_stopped_alerted = list()
 			continue
 		total += size
 		payloads += payload
-		packed[H] = list(payload, items, H.client)
+		packed[H] = list(payload, items, H.client, leave_behind)
 	if(!payloads.len) return
 	// Hold the bodies and their items while the agent records the escrow, so
-	// nothing can change.
+	// nothing can change. An involuntary departure must not move or let go of
+	// anything on a refusal, so it is held right where the traveller stands.
 	busy = TRUE
 	var/turf/start = get_turf(src)
-	for(var/mob/living/human/H in packed)
-		H.forceMove(src)
+	var/in_place = departure_in_place()
+	var/datum/travel_hold/hold
+	if(in_place)
+		var/list/guarded = list()
+		for(var/mob/living/human/H in packed)
+			guarded |= travel_hold_belongings(H)
+		hold = travel_hold_begin(packed, destination_name(), guarded, preserve_pull = TRUE)
+	else
+		for(var/mob/living/human/H in packed)
+			H.forceMove(src)
 	var/list/result = transfer_bridge.begin_escrow(destination, payloads, TRUE)
 	busy = FALSE
 	if(!result)
 		for(var/mob/living/human/H in packed)
-			H.forceMove(start)
+			if(!in_place)
+				H.forceMove(start)
 			stayed[H] = "The trail is busy. Try again in a moment."
+		if(hold) travel_hold_end(hold)
 		return
-	// Recorded: remove the travellers now, without sleeping.
+	// Recorded: settle belongings and remove the travellers without sleeping.
 	for(var/mob/living/human/H in packed)
 		var/list/P = packed[H]
+		departure_before_finish(H, P[4], start)
 		depart_finish(H, P[1], P[2], P[3])
 		departed += H
+	if(hold) travel_hold_end(hold)
 	shard_group.request_save_soon()
 
 // Removes a traveller whose escrow is recorded. Never sleeps.

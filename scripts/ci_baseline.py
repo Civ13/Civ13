@@ -696,6 +696,13 @@ SUITES = {
             'code/modules/admin/admin_verbs.dm',
             'scripts/shard-group/shard_group.py')},
     # Send Player to Region: admins and the launcher send players or a ship to another region.
+    'island_access': {'files': ('tests/island_access/test_source.py',),
+        'paths': ('tests/island_access/', 'code/modules/naval/island_access.dm'),
+        'shared_paths': ('civ13.dme', 'code/modules/naval/island_claim.dm', 'code/modules/naval/ship_crossing.dm',
+            'code/modules/naval/ship_voyage.dm', 'code/modules/persistence/region_travel.dm',
+            'code/modules/persistence/region_travel_gear.dm', 'code/modules/persistence/region_admin_send.dm',
+            'code/modules/persistence/travel_hold.dm', 'code/modules/persistence/offline_sleep_protection.dm',
+            'code/game/mob/groups/factions.dm', 'code/game/mob/groups/colony_charter.dm')},
     'region_admin_send': {'files': ('tests/region_admin_send/test_sources.py',),
         'paths': ('tests/region_admin_send/', 'code/modules/persistence/region_admin_send.dm',
                   'code/modules/admin/send_player_to_region.dm',

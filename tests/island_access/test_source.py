@@ -76,6 +76,66 @@ class IslandAccess(unittest.TestCase):
         self.assertIn("gate.destination = shard_group.start_region", exile)
         self.assertIn("#define ISLAND_EXILE_GRACE 6000", self.mod)
 
+    def test_exile_eligibility_is_checked_again_after_destination_poll(self):
+        gate_refusal = proc(self.mod, "/obj/structure/region_gate/island_exile/departure_refused(")
+        self.assertIn("H.loc != loc", gate_refusal)
+        self.assertIn("!island_access_exile_needed(H, exile_claimant)", gate_refusal)
+        eligibility = proc(self.mod, "/proc/island_access_exile_needed(")
+        self.assertIn("H.persistence_owner_ckey != H.client.owner_key()", eligibility)
+        self.assertIn("H.restrained() || H.travel_held()", eligibility)
+        self.assertIn("island_claim_holds(claimant) && !island_access_admits(H, claimant)", eligibility)
+        party = proc(read("code/modules/persistence/region_travel.dm"), "/obj/structure/region_gate/proc/depart_party(")
+        self.assertLess(party.index("shard_group.poll_peer(destination)"), party.index("departure_refused(H)"))
+        self.assertLess(party.index("departure_refused(H)"), party.index("departure_leave_behind(H)"))
+
+    def test_failed_exile_keeps_body_and_belongings_in_place(self):
+        exile = proc(self.mod, "/proc/island_access_exile(")
+        self.assertIn("gate.depart(H)", exile)
+        for mutation in ("leave_behind", "drop_from_inventory", "forceMove", "stop_pulling", "unbuckle_mob", "record_persistence_owner"):
+            self.assertNotIn(mutation, exile)
+        self.assertIn("return TRUE", proc(self.mod, "/obj/structure/region_gate/island_exile/departure_in_place()"))
+        travel = read("code/modules/persistence/region_travel.dm")
+        party = proc(travel, "/obj/structure/region_gate/proc/depart_party(")
+        self.assertIn("else\n\t\tfor(var/mob/living/human/H in packed)\n\t\t\tH.forceMove(src)", party)
+        refused = party.split("if(!result)", 1)[1].split("// Recorded:", 1)[0]
+        self.assertIn("if(!in_place)\n\t\t\t\tH.forceMove(start)", refused)
+        self.assertIn("travel_hold_end(hold)", refused)
+        self.assertNotIn("depart_finish", refused)
+        self.assertIn("hold = travel_hold_begin(packed, destination_name(), guarded, preserve_pull = TRUE)", party)
+        hold_add = proc(read("code/modules/persistence/travel_hold.dm"), "/proc/travel_hold_add(")
+        self.assertIn("if (!preserve_pull && M && !(M in hold.travellers))\n\t\tM.stop_pulling()", hold_add)
+
+    def test_excluded_belongings_are_not_packed_or_dropped_early(self):
+        plan = proc(self.mod, "/obj/structure/region_gate/island_exile/departure_leave_behind(")
+        self.assertIn("return region_admin_send_left_behind(H)", plan)
+        self.assertNotIn("region_admin_send_leave_behind(H)", plan)
+        travel = read("code/modules/persistence/region_travel.dm")
+        items = proc(travel, "/mob/living/human/proc/region_travel_items(")
+        self.assertIn("if(!I || (length(leave_behind) && (I in leave_behind))) continue", items)
+        payload = proc(travel, "/mob/living/human/proc/region_travel_payload(")
+        self.assertIn("region_travel_worn_kind(I, leave_behind)", payload)
+        gear = read("code/modules/persistence/region_travel_gear.dm")
+        worn = proc(gear, "/proc/region_travel_worn_kind(")
+        self.assertLess(worn.index("return region_travel_bag_kind(I, leave_behind)"), worn.index("return region_travel_generic_kind(I)"))
+        bag = proc(gear, "/proc/region_travel_bag_kind(")
+        self.assertIn("if(A != compartment && (A in leave_behind)) shown_count--", bag)
+        self.assertIn("if(length(leave_behind) && (I in leave_behind)) continue", bag)
+
+    def test_success_settles_only_the_planned_items_before_body_removal(self):
+        travel = read("code/modules/persistence/region_travel.dm")
+        party = proc(travel, "/obj/structure/region_gate/proc/depart_party(")
+        self.assertIn("packed[H] = list(payload, items, H.client, leave_behind)", party)
+        committed = party.split("// Recorded:", 1)[1]
+        self.assertLess(committed.index("departure_before_finish(H, P[4], start)"), committed.index("depart_finish(H, P[1], P[2], P[3])"))
+        self.assertLess(committed.index("depart_finish(H, P[1], P[2], P[3])"), committed.index("travel_hold_end(hold)"))
+        settle = proc(self.mod, "/obj/structure/region_gate/island_exile/departure_before_finish(")
+        self.assertIn("H.stop_pulling()", settle)
+        self.assertIn("H.buckled.unbuckle_mob()", settle)
+        self.assertIn("for (var/atom/movable/A in leave_behind)", settle)
+        self.assertIn("S.loc == H", settle)
+        self.assertIn("S.remove_from_storage(A, origin)", settle)
+        self.assertIn("H.drop_from_inventory(A, origin)", settle)
+
     def test_members_sleep_safe_on_their_island(self):
         owned = proc(read("code/modules/persistence/offline_sleep_protection.dm"), "/mob/living/human/proc/offline_sleep_province_owned()")
         self.assertIn("var/island = island_claim_parent()", owned)

@@ -331,6 +331,7 @@
 
 /obj/structure/region_gate/island_exile
 	name = "island border"
+	var/exile_claimant
 	desc = "Someone without leave is being put ashore elsewhere."
 	invisibility = 101
 	icon = null
@@ -342,6 +343,38 @@
 
 /obj/structure/region_gate/island_exile/island_access_checks()
 	return FALSE
+
+/obj/structure/region_gate/island_exile/departure_in_place()
+	return TRUE
+
+/obj/structure/region_gate/island_exile/departure_refused(mob/living/human/H)
+	// The destination poll can sleep. A warning, pass, restraint or location
+	// that changes in the meantime invalidates the original request.
+	if (QDELETED(H) || H.loc != loc || !island_access_exile_needed(H, exile_claimant) || destination != shard_group.start_region)
+		return "The island border no longer needs to put you ashore."
+	return null
+
+/obj/structure/region_gate/island_exile/departure_leave_behind(mob/living/human/H)
+	if (istext(H.region_travel_items()))
+		return region_admin_send_left_behind(H)
+	return null
+
+/obj/structure/region_gate/island_exile/departure_before_finish(mob/living/human/H, list/leave_behind, turf/origin)
+	H.stop_pulling()
+	if (H.buckled)
+		H.buckled.unbuckle_mob()
+	for (var/atom/movable/A in leave_behind)
+		if (QDELETED(A))
+			continue
+		var/obj/item/weapon/storage/S = A.loc
+		if (istype(S) && S.loc == H && istype(A, /obj/item))
+			S.remove_from_storage(A, origin)
+		else if (A.loc == H && istype(A, /obj/item))
+			H.drop_from_inventory(A, origin)
+		else
+			continue
+		if (!QDELETED(A) && A.loc != origin)
+			A.forceMove(origin)
 
 /obj/structure/region_gate/island_exile/attack_hand(mob/living/human/user)
 	return
@@ -375,23 +408,25 @@
 			continue
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(island_access_exile), H, claimant), 1)
 
+/proc/island_access_exile_needed(mob/living/human/H, claimant)
+	if (QDELETED(H) || !H.client || H.stat == DEAD || IsGuestKey(H.client.key) || !H.persistence_owner_ckey || H.persistence_owner_ckey != H.client.owner_key())
+		return FALSE
+	if (!isturf(H.loc) || H.restrained() || H.travel_held() || !H.island_unwelcome_since || world.time - H.island_unwelcome_since < ISLAND_EXILE_GRACE)
+		return FALSE
+	return shard_group && shard_group.start_region && shard_group.start_region != shard_group.region && island_claim_holds(claimant) && !island_access_admits(H, claimant)
+
 /proc/island_access_exile(mob/living/human/H, claimant)
 	set waitfor = FALSE
-	if (QDELETED(H) || !isturf(H.loc) || island_access_admits(H, claimant))
+	if (!island_access_exile_needed(H, claimant))
 		return
-	H.stop_pulling()
-	if (H.buckled)
-		H.buckled.unbuckle_mob()
-	region_admin_send_leave_behind(H) // what cannot travel stays on the island
-	if (H.client)
-		H.record_persistence_owner()
 	var/obj/structure/region_gate/island_exile/gate = new(get_turf(H))
+	gate.exile_claimant = claimant
 	gate.destination = shard_group.start_region
 	var/result = gate.depart(H)
 	qdel(gate)
 	if (result == "departed")
 		log_game("Island access: [H.persistence_owner_ckey] was put ashore in [shard_group.start_region] from [claimant]'s island.")
-	else if (!QDELETED(H))
+	else if (island_access_exile_needed(H, claimant))
 		H.island_unwelcome_since = world.time - ISLAND_EXILE_GRACE + 600 // try again in a minute
 		to_chat(H, SPAN_WARNING("You cannot be put ashore elsewhere yet ([result]). Leave the island."))
 
