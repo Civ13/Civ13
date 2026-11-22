@@ -145,6 +145,8 @@
 /obj/structure/vehicleparts/frame/proc/breach_attackby(obj/item/I, mob/living/human/H)
 	if (!istype(H) || !I || H.travel_held() || !(Adjacent(H) || get_turf(H) == get_turf(src)))
 		return FALSE
+	if (canopy_refit(I, H))
+		return TRUE
 	if (istype(I, /obj/item/stack/material/steel) && breached_walls)
 		var/obj/item/W = H.get_inactive_hand()
 		if (!W || !is_tool(W, TOOL_WELDER))
