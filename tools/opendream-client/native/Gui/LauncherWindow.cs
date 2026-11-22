@@ -289,6 +289,7 @@ internal sealed partial class LauncherWindow : Form {
                 ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
                 ("Start region…", () => { ShowStartRegion(); return Task.CompletedTask; }, null),
+                ("Travel starts…", () => { ShowTravelStarts(); return Task.CompletedTask; }, null),
                 ("Front door and ports…", () => {
                     // Which region players join first, and every port of the group (GroupPorts, shard_group.py set-gate / ports).
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
@@ -1307,6 +1308,50 @@ internal sealed partial class LauncherWindow : Form {
             HostLine("Start region set to " + picked.Name + ": new players start there from the host service's next check.");
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
             HostLine("Could not save the start region: " + e.Message);
+        }
+    }
+
+    // Travel starts (group config keep_down per region): a traveller bound for a land that is not running starts it,
+    // unless it is kept down here. Saved at once; the host reads it at each traveller's request, so no world restarts.
+    private void ShowTravelStarts() {
+        if (host?.Control?.Group is not { } group) return;
+        IReadOnlyList<HostSettings.TravelStart> regions;
+        try { regions = HostSettings.TravelStarts(group); }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not read " + group.Config + ": " + e.Message);
+            return;
+        }
+        using var dialog = new Form { Text = "Travel starts", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+            StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
+        var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
+            Text = "When a player travels to a land that is not running, the host starts it for them (building it first if it is " +
+                "behind, one build at a time) and tells them it is being prepared. Untick a land to keep it down: travellers " +
+                "to it are turned back until you start it yourself. Sleeping lands still wake as before." });
+        var list = new CheckedListBox { CheckOnClick = true, Width = 300, IntegralHeight = false };
+        foreach (var region in regions)
+            list.Items.Add(region.Name, !region.KeptDown);
+        list.Height = Math.Max(1, Math.Min(regions.Count, 16)) * list.ItemHeight + 8;
+        layout.Controls.Add(list);
+        var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
+        var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK };
+        var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
+        buttons.Controls.Add(save);
+        buttons.Controls.Add(cancel);
+        layout.Controls.Add(buttons);
+        dialog.Controls.Add(layout);
+        dialog.AcceptButton = save;
+        dialog.CancelButton = cancel;
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        var kept = regions.Where((region, index) => !list.GetItemChecked(index)).Select(region => region.Id).ToList();
+        if (kept.SequenceEqual(regions.Where(region => region.KeptDown).Select(region => region.Id))) return;
+        try {
+            HostSettings.SetKeptDown(group, kept);
+            HostLine(kept.Count == 0 ? "Travel starts on for every land: travellers start any land that is not running."
+                : "Travel starts: " + string.Join(", ", regions.Where(region => kept.Contains(region.Id)).Select(region => region.Name))
+                    + " kept down - travellers are turned back until you start " + (kept.Count == 1 ? "it" : "them") + ".");
+        } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+            HostLine("Could not save travel starts: " + e.Message);
         }
     }
 

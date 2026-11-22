@@ -71,7 +71,7 @@ var/global/list/air_crossing_planes = list()
 		if (id == shard_group.region || !continent_flight(id))
 			continue
 		var/list/peer = shard_group.peers[id]
-		if (!islist(peer) || peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
+		if (!islist(peer) || shard_group.peer_closed(id) || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 			continue
 		var/tiles = continent_distance(shard_group.region, id)
 		.["[peer["name"]], to the [continent_bearing(shard_group.region, id)]: [tiles] tile\s of flying"] = list(id, tiles)

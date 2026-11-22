@@ -313,6 +313,8 @@ def check_group(group, path):
             raise ValueError('port %d is reserved for the live server (set "live": true for the live group)' % port)
         if region.get('public') is not None and type(region['public']) is not bool:
             raise ValueError('region %s public must be true or false' % region['id'])
+        if region.get('keep_down') is not None and type(region['keep_down']) is not bool:
+            raise ValueError('region %s keep_down must be true or false' % region['id'])
         if region.get('overlay') is not None and (type(region['overlay']) is not str or not region['overlay']):
             raise ValueError('region %s overlay must be a folder path' % region['id'])
         if type(region.get('map')) is not str or not region['map'].endswith('.dmm'):
@@ -844,6 +846,8 @@ class RegionHost(Host):
         if stage and not self.stage_failure_superseded(stage):
             report['stage'] = dict(stage, pending=self.update_pending())
         report['build'] = self.live_dmb_name()
+        if self.keep_down():
+            report['keep_down'] = True  # travellers never start it (group config keep_down)
         if self.lock.exists() and (self.read_state() or {}).get('action') in ('handover', 'auto-handover'):
             port = self.standby_port()
             report['standby'] = {'port': port, 'listening': self.platform.listening(port)}
@@ -1211,6 +1215,24 @@ class RegionHost(Host):
         if self.protects_mainland_uptime() or self.always_up():
             return 'start-current'
         return super().automatic_start_action()
+
+    def keep_down(self):
+        """The region's keep_down in the group config (read at each check): a person kept it
+        down on purpose, so a traveller bound for it is turned back instead of starting it."""
+        try:
+            group = load_group(self.config['group_config'])
+        except (OSError, ValueError, KeyError):
+            return True  # an unreadable policy must not start a world
+        return next((bool(r.get('keep_down')) for r in group['regions'] if r['id'] == self.config['region']), True)
+
+    def travel_start_refusal(self):
+        if not (self.repo / '.git').exists():
+            return 'not set up'
+        if fresh_world.pending(self).exists():
+            return 'fresh-world archive needs recovery'
+        if self.holds_its_port():
+            return 'the gateway is started by the host service only'
+        return super().travel_start_refusal()
 
     def idle_update_action(self):
         if self.holds_its_port():

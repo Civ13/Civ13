@@ -367,6 +367,95 @@ class DoormanTests(base.GaiaHostTests):
         for bad in ('status=1', 'wake=1', 'host_status=1&extra=2', 'host_status', '%%%'):
             self.assertIsNone(self.ask(bad), bad)
 
+    # -- a traveller's wake starts a stopped world (Val, 2026-11-22) ----------
+    def stopped_with_save(self):
+        self.give_token()
+        self.saved_at(50)
+        self.machine.up = False
+
+    def test_a_travellers_wake_starts_a_stopped_world_once(self):
+        self.stopped_with_save()
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['startable']), ('stopped', True))
+        # The launcher's Join (a remote caller) never starts it, even when it asks to.
+        self.assertEqual(self.ask('wake=1&port=1714&start=1')['state'], 'stopped')
+        self.assertEqual(self.ask('wake=1&port=1714', address='127.0.0.1')['state'], 'stopped')
+        self.assertEqual(self.machine.detached, [])
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['state'], reply['eta'], reply['preparing']), (True, 'waking', 600, True))
+        self.assertEqual(self.machine.detached[-1][-2], 'start')
+        # Another traveller (or the same one again) waits on that start: no second one.
+        self.clock[0] += 60
+        again = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((again['ok'], again['state'], again['preparing']), (True, 'waking', True))
+        self.assertEqual(len(self.machine.detached), 1)
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual((entry['state'], entry['preparing'], entry['wake_estimate']), ('waking', True, 600))
+        # It comes up and answers: awake, and nothing more is prepared.
+        self.host.lock.unlink()
+        self.machine.up = True
+        self.door.step()
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual(entry['state'], 'awake')
+        self.assertNotIn('preparing', entry)
+
+    def test_a_start_already_running_is_only_waited_on(self):
+        self.stopped_with_save()
+        self.host.request('start')  # the launcher's Start, still compiling
+        self.assertEqual(self.ask('host_status=1')['instances'][0]['state'], 'waking')
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['state'], reply['preparing'], reply['eta']), (True, 'waking', True, 600))
+        self.assertEqual(len(self.machine.detached), 1)
+
+    def test_a_world_kept_down_or_given_up_on_is_never_started(self):
+        self.stopped_with_save()
+        self.host.config['keep_down'] = True
+        self.assertFalse(self.ask('host_status=1')['instances'][0]['startable'])
+        self.assertEqual(self.ask('wake=1&port=1714&start=1', address='127.0.0.1'),
+                         {'schema': 1, 'ok': False, 'error': 'kept down', 'reason': 'kept down', 'port': 1714})
+        self.host.config['keep_down'] = False
+        self.host.write_json(self.host.watchdog_file, {'gave_up': 5})
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['error']), (False, 'not startable'))
+        self.host.watchdog_file.unlink()
+        self.host.lock.write_text('other')
+        self.host.record(action='update', phase='compiling')
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['reason']), (False, 'busy: update'))
+        self.assertEqual(self.machine.detached, [])
+
+    def test_a_travel_start_needs_memory_and_the_byond_pager(self):
+        self.stopped_with_save()
+        self.machine.free_mb = 2000
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['error'], reply['need_mb']), (False, 'low memory', 2560))
+        self.machine.free_mb = 8192
+        self.machine.pager = False
+        self.assertEqual(self.ask('wake=1&port=1714&start=1', address='127.0.0.1')['error'], 'byond signed out')
+        self.assertEqual(self.machine.detached, [])
+
+    def test_a_failed_travel_start_reads_stopped_again_with_its_reason(self):
+        self.stopped_with_save()
+        self.assertTrue(self.ask('wake=1&port=1714&start=1', address='127.0.0.1')['ok'])
+        self.host.lock.unlink()
+        self.host.record(phase='failed', error='region.dme did not compile')
+        entry = self.ask('host_status=1')['instances'][0]
+        self.assertEqual(entry['state'], 'stopped')
+        self.clock[0] += 5  # within the wake spacing: not started again, and told why
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['reason']), (False, 'region.dme did not compile'))
+        self.assertEqual(len(self.machine.detached), 1)
+        self.clock[0] += doorman.WAKE_SPACING
+        self.assertTrue(self.ask('wake=1&port=1714&start=1', address='127.0.0.1')['ok'])
+        self.assertEqual(len(self.machine.detached), 2)
+
+    def test_a_refused_travel_start_is_reported(self):
+        self.stopped_with_save()
+        self.machine.task_is_ready = False
+        reply = self.ask('wake=1&port=1714&start=1', address='127.0.0.1')
+        self.assertEqual((reply['ok'], reply['error'], reply['reason']), (False, 'not startable', 'the scheduled task is not Ready'))
+        self.assertEqual(self.machine.detached, [])
+
     def test_requests_are_rate_limited_per_address(self):
         self.give_token()
         for _ in range(doorman.REQUESTS_PER_MINUTE):

@@ -101,6 +101,21 @@ ports. It speaks BYOND Topic framing and answers only:
   off; a direct connection to the game port still thaws it). One wake per
   address and port every 30 seconds; all requests are limited to 40 per address per minute and 16 open
   connections.
+- `?wake=1&port=1714&start=1` (only from this machine, which is how a region of
+  the group asks for a traveller): the same, and a **stopped** instance is
+  started for the traveller with its ordinary automatic start (`start` brings
+  the build current first, one compile at a time on the host;
+  `start-current` for the mainland and always-up kinds). Val, 2026-11-22. It
+  reads `waking` with `preparing: true` while that start runs and its
+  `wake_estimate` is `travel_start_estimate_seconds` (600). A start already
+  running (the launcher's, or another traveller's) is only waited on, so many
+  travellers cost one start. Refused, and nothing started, when the region is
+  kept down (`keep_down` in the group config: `error: "kept down"`), busy with
+  another action, given up on by the watchdog, not set up, the gateway, short
+  of `cold_start_min_free_mb` or BYOND is signed out (`error: "not startable"`
+  with a `reason`). A start that fails reads `stopped` again at once. A remote
+  caller (the launcher's Join) never starts a stopped world. `host_status`
+  marks a stopped instance a traveller may start with `startable: true`.
 
 ### Watchdog
 

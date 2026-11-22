@@ -538,6 +538,14 @@ other revision compiles as before. `auto_stage_minutes` (group key, 0 = off)
 runs `stage` on that interval; with `revision: origin/master` and `fetch:
 origin`, merged changes then reach each region the next time it is empty.
 
+**Travel starts** (Val, 2026-11-22): a traveller bound for a region that is
+not running (trail, map edge, ship, plane, admin send) starts it through the
+doorman (`wake=1&port=N&start=1`) and hears it is being prepared, the way one
+bound for a sleeping region wakes it; one already being prepared is only waited
+on. `keep_down` (region key, `true` or absent) keeps a region down on purpose:
+travellers are turned back there and the admins are told. `status` shows
+`keep_down: true` for it. The launcher sets it in **Travel starts…**.
+
 **Update when empty** (`update_when_empty`, group key, default `true`): the host
 service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
 As soon as an awake region that saves is empty and has saved since its last

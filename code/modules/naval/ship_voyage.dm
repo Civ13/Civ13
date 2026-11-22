@@ -452,7 +452,7 @@
 	var/list/peer = shard_group.peers[id]
 	var/overdue = world.time > mine["ends"] + VOYAGE_WAIT_MAX
 	var/problem = null
-	if (!peer || peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
+	if (!peer || shard_group.peer_closed(id) || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 		problem = "The coast is not yet in sight."
 	else
 		voyage_eat(mine) // what she ate at sea stays behind

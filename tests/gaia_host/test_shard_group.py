@@ -962,6 +962,29 @@ class ShardGroupTests(unittest.TestCase):
         self.assertLess(commands.index(['DreamMaker', 'region.dme']), commands.index(['start', config['task'], 'region.dmb']))
         self.assertEqual(json.loads((Path(config['state_dir']) / 'build.json').read_text())['revision'], REVISION)
 
+    def test_a_traveller_starts_a_stopped_region_unless_it_is_kept_down(self):
+        # Val (2026-11-22): travel to a land that is not up prepares it, unless a person kept it down.
+        self.refuse_config('keep_down must be true or false', region_keep_down='yes')
+        group = self.write_group()
+        host = self.host(group, 'deep')
+        self.assertEqual(host.travel_start_refusal(), 'not set up')
+        shard_group.setup(group, self.machine)
+        host = self.host(group, 'deep')
+        self.assertIsNone(host.travel_start_refusal())
+        self.assertNotIn('keep_down', host.status())
+        accepted = host.start_for_travel('test')
+        self.assertEqual((accepted['action'], accepted['travel_start']), ('start', True))
+        self.assertTrue(host.starting())
+        self.assertEqual(host.start_for_travel('again'), {'already_starting': True, 'reason': 'again'})
+        host.lock.unlink()
+        self.group['regions'][1]['keep_down'] = True
+        self.write_group()
+        self.assertEqual(host.travel_start_refusal(), 'kept down')
+        self.assertTrue(host.status()['keep_down'])
+        with self.assertRaisesRegex(shard_group.Refused, 'kept down'):
+            host.start_for_travel('test')
+        self.assertFalse(host.lock.exists())
+
     def test_start_skips_the_compile_when_the_build_is_current(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
