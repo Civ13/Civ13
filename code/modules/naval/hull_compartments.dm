@@ -35,6 +35,8 @@
 	var/tmp/list/bay_size = list()
 	// The first of her tiles in each compartment: its key in the record.
 	var/tmp/list/bay_first = list()
+	// Heading when the divider attachment order was first established.
+	var/tmp/bay_order_heading = null
 	// Set when a bulkhead or a watertight door changes, so the next look
 	// maps her compartments again.
 	var/tmp/bays_dirty = TRUE
@@ -197,6 +199,8 @@
 		bay_water = list(water)
 		bays_told = list()
 		return
+	if (!bay_order_heading)
+		bay_order_heading = B.dir
 	// Open tiles that join each other make a compartment.
 	var/count = 0
 	for (var/i = 1, i <= n, i++)
@@ -220,12 +224,18 @@
 				queue += k
 	// A dividing tile holds water with the first compartment beside it, so
 	// every tile of her is in one and the brims add up to hers.
+	// Keep the same side of a dividing tile on a turned hull. Otherwise
+	// remapping can change bay capacity and clip water restored at arrival.
+	var/angle = craft_turn_angle(bay_order_heading, B.dir)
+	var/list/attachment_order = list()
+	for (var/d in cardinal)
+		attachment_order += turn(d, angle)
 	for (var/pass = 1, pass <= 2, pass++)
 		for (var/i = 1, i <= n, i++)
 			if (cell_bay[i])
 				continue
 			var/list/O = B.offsets[i]
-			for (var/d in cardinal)
+			for (var/d in attachment_order)
 				var/k = index["[O[1] + (d == EAST ? 1 : (d == WEST ? -1 : 0))],[O[2] + (d == NORTH ? 1 : (d == SOUTH ? -1 : 0))]"]
 				if (k && cell_bay[k])
 					cell_bay[i] = cell_bay[k]

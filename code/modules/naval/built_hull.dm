@@ -43,7 +43,7 @@
 
 // Surveys the floors around the tiller and makes (or remakes) the craft.
 // Returns null when done, else the reason.
-/obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null)
+/obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null, list/crossing_offsets = null)
 	var/turf/T = get_turf(src)
 	// A refit would survey a holed tile out of her hull: patch her first.
 	// At a berth a floor lifted for a refit is meant to go (berth_refit.dm).
@@ -52,6 +52,18 @@
 	var/survey = built_hull_survey(T, craft)
 	if (istext(survey))
 		return survey
+	if (crossing_offsets)
+		// Keep the packet's bay indices only for the exact surveyed hull.
+		var/list/surveyed = survey
+		if (crossing_offsets.len != surveyed.len)
+			return "Her crossing record does not match the surveyed hull."
+		var/list/ordered = list()
+		for (var/list/O in crossing_offsets)
+			var/turf/cell = locate(T.x + O[1], T.y + O[2], T.z)
+			if (!(cell in surveyed) || (cell in ordered))
+				return "Her crossing record does not match the surveyed hull."
+			ordered += cell
+		survey = ordered
 	var/datum/craft_body/built/B = body()
 	// A berth may ask more of her (berth_build.dm).
 	var/obj/structure/berth = istype(T, /turf/floor/beach/water) ? null : berth_ground_at(T)

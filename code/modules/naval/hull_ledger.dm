@@ -198,6 +198,9 @@ var/global/hull_ledger_timer_off = FALSE
 
 // Bucketfuls she holds when full, and the most the bilge takes now.
 /datum/hull_ledger/proc/capacity()
+	return hull_bilge_capacity(tiles)
+
+/proc/hull_bilge_capacity(tiles)
 	return tiles * HULL_BILGE_PER_TILE
 
 // What her seams and patches fill her to. Holes fill her to the brim.
@@ -412,6 +415,7 @@ var/global/hull_ledger_timer_off = FALSE
 	var/list/bays = bays_to_list()
 	if (bays)
 		.["bays"] = bays
+		.["bay_order_heading"] = bay_order_heading
 
 /datum/hull_ledger/proc/from_list(list/state)
 	if (!islist(state))
@@ -430,6 +434,8 @@ var/global/hull_ledger_timer_off = FALSE
 		seams = clamp(state["seams"], 0, 1)
 	seams_told = seams >= HULL_SEAMS_OPEN ? 2 : (seams >= HULL_SEAMS_WORKING ? 1 : 0)
 	depth_told = depth()
+	if (state["bay_order_heading"] in cardinal)
+		bay_order_heading = state["bay_order_heading"]
 	bays_from_list(state["bays"])
 
 // ---- The craft's side ----

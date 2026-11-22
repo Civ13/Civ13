@@ -243,6 +243,11 @@ two flooded compartments (40 of 64 tiles) make her founder far from full, and
 pumping one below its brim stops the count; a bilge emptied outright empties
 every compartment.
 
+Crossings: a steel hull with two compartments turns before it packs. The dry
+record and the wet record pass JSON validation; the rebuilt hull keeps its
+shut door and unequal water in the same physical bays, including a nearly
+full one. Legacy scalar ledgers still pass and malformed bay tables do not.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
