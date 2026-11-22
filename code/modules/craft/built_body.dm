@@ -250,6 +250,20 @@
 			return "[M.name] in the way at [D.x],[D.y]"
 	return null
 
+// A floor lifted from her hull leaves a hole that is still part of her shape
+// until a refit cuts it away. When the tile refused is where that hole would
+// go, the refusal says so: otherwise a crew that lifted a plank to clear an
+// obstacle is told only of the obstacle. index is the offset's place in
+// offsets (turned_offsets() keeps the order).
+/datum/craft_body/built/proc/lifted_floor_hint(index)
+	if (!craft || !craft.ledger || index < 1 || index > offsets.len)
+		return ""
+	var/list/O = offsets[index]
+	var/turf/S = locate(px + O[1], py + O[2], z)
+	if (!S || !craft.ledger.hole_at(S))
+		return ""
+	return ". The floor lifted at [S.x],[S.y] is still part of her hull: drop anchor and refit the hull at the tiller to cut it away"
+
 // Plans a move that puts the box corner at (x, y) with the bow to heading.
 // Returns list(new px, new py, new offsets, destination turfs in offset
 // order), or null with last_refusal set. Writes nothing.
@@ -271,7 +285,9 @@
 		last_refusal = overhang
 		return null
 	var/list/dest = list()
+	var/index = 0
 	for (var/list/O in turned)
+		index++
 		var/turf/D = locate(nx + O[1], ny + O[2], z)
 		if (!D)
 			last_refusal = "the edge of the world"
@@ -279,7 +295,7 @@
 		if (!mine_set[D])
 			var/why = tile_refusal(D)
 			if (why)
-				last_refusal = why
+				last_refusal = why + lifted_floor_hint(index)
 				return null
 		dest += D
 	// Her upper deck must find open air above the tiles she moves to.
