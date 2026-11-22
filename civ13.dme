@@ -480,6 +480,7 @@
 #include "code\game\objects\building_defences.dm"
 #include "code\game\objects\building_dismantle.dm"
 #include "code\game\objects\building_services.dm"
+#include "code\game\objects\building_support_hints.dm"
 #include "code\game\objects\building_insulation.dm"
 #include "code\game\objects\storey_chimney.dm"
 #include "code\game\objects\tile_occupancy.dm"
