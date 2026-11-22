@@ -96,7 +96,8 @@
 		var/list/previous_stats = statpanel_data
 		statpanel_data = list()
 		var/list/player_status = player_status_observation()
-		add_stat("<b>World activity:</b>", player_world_activity(player_status))
+		var/world_activity = player_world_activity(player_status)
+		if(world_activity) add_stat("<b>World activity:</b>", world_activity)
 		add_stat("<b>Joining:</b>", player_join_status(player_status))
 		var/last_save = persistence_last_save_text()
 		if(last_save) add_stat("<b>Last save:</b>", last_save)

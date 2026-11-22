@@ -418,49 +418,41 @@ var/world_topic_spam_protect_time = world.timeofday
 		"character_unconfirmed" = !!(map && map_storage && persistence_bed_return_enabled() && (!persistence_player_restore_ready || map_storage.player_restoration_blocked()))
 	)
 
+// Short player-facing labels (Hub listing and stat panel). The world line is
+// empty while the world simply runs; the joining line says only whether and
+// when a player can join. Wording reviewed by Fable (2026-11-22).
 /proc/player_world_activity(list/state)
-	if(state["recovery_hold"]) return "World recovery needs administrator attention."
-	if(state["moving"]) return "The world is moving to the updated server."
-	if(state["standby"]) return "Standby server is waiting for the world to move over."
-	if(state["kind"] == "save")
-		if(state["phase"] == "admitted") return "Preparing a world save."
-		if(state["phase"] == "candidate_validation") return "Validating the world save."
-		if(state["phase"] == "write_marker") return "Finishing the world save."
-		return "Saving the world."
-	if(state["kind"] == "load")
-		if(state["phase"] == "preflight" || state["phase"] == "allocate_levels") return "Validating and preparing the saved world."
-		if(state["phase"] == "metadata") return "Restoring world state."
-		if(state["phase"] == "players") return "Restoring player readiness."
-		return "Loading the saved world."
-	if(state["startup_pending"] || state["restart_hold"]) return "Preparing world recovery."
+	if(state["recovery_hold"]) return "Maintenance"
+	if(state["moving"] || state["standby"]) return "Updating"
+	if(state["kind"] == "save") return "Saving"
+	if(state["kind"] == "load") return "Loading"
+	if(state["startup_pending"] || state["restart_hold"]) return "Maintenance"
 	if(state["restart_busy"])
-		if(state["restart_phase"] == "notice") return "Maintenance is scheduled."
-		if(state["restart_phase"] == "post_save_validation" || state["restart_phase"] == "final_validation") return "Validating the saved world."
-		if(state["restart_phase"] == "intent_publication") return "Preparing the saved world for restart."
-		if(state["restart_phase"] == "shutdown") return "Server shutdown is in progress."
-		return "World maintenance is in progress."
-	if(state["lifecycle_busy"]) return "Preparing a save and shutdown."
-	if(state["maintenance_pending"]) return "Maintenance requested, shutdown is not yet confirmed."
-	if(state["persistence_busy"]) return "World work is in progress."
-	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting."
-	return "Server is running."
+		if(state["restart_phase"] == "notice") return "Restart soon"
+		return "Restarting"
+	if(state["lifecycle_busy"] || state["maintenance_pending"]) return "Shutting down"
+	if(state["persistence_busy"]) return "Busy"
+	if(!state["ticker_known"] || !state["map_known"]) return "Starting"
+	return ""
 
 /proc/player_join_status(list/state)
-	if(state["recovery_hold"]) return "World recovery needs administrator attention."
-	if(state["moving"] || state["standby"]) return "The world is moving to the updated server - reconnect in a few minutes."
-	if(state["kind"] == "load") return "World is loading - please wait before joining."
-	if(state["kind"] == "save") return "World is saving - joining may be delayed."
-	if(state["startup_pending"] || state["restart_hold"]) return "World recovery is pending - please wait."
-	if(state["restart_busy"]) return "Maintenance may affect joining - please wait."
-	if(state["persistence_busy"] || state["lifecycle_busy"]) return "World work is in progress - joining may be delayed."
-	if(!state["ticker_known"] || !state["map_known"]) return "Server is starting - please wait."
-	if(state["round_state"] < GAME_STATE_PLAYING) return "Round has not started - please wait."
-	if(state["round_state"] != GAME_STATE_PLAYING) return "Round has finished - wait for the next round."
-	if(!state["players_can_join"]) return "Joining is temporarily unavailable."
-	if(state["entry_status"] == "unknown") return "Joining status is unavailable."
-	if(state["entry_status"] == "locked") return "Joining is locked by an administrator."
-	if(state["character_unconfirmed"]) return "Character recovery is not confirmed - joining may be delayed."
-	return "Round is open - account, character and role checks still apply."
+	if(state["recovery_hold"]) return "Paused"
+	if(state["moving"] || state["standby"]) return "Reopens shortly"
+	if(state["kind"] == "load") return "Opens soon"
+	if(state["kind"] == "save") return "Open"
+	if(state["startup_pending"] || state["restart_hold"]) return "Opens soon"
+	if(state["restart_busy"])
+		if(state["restart_phase"] == "notice") return "Open"
+		return "After restart"
+	if(state["persistence_busy"] || state["lifecycle_busy"]) return "Open"
+	if(!state["ticker_known"] || !state["map_known"]) return "Opens soon"
+	if(state["round_state"] < GAME_STATE_PLAYING) return "Opens at round start"
+	if(state["round_state"] != GAME_STATE_PLAYING) return "Next round soon"
+	if(!state["players_can_join"]) return "Closed for now"
+	if(state["entry_status"] == "unknown") return "Unknown"
+	if(state["entry_status"] == "locked") return "Closed by staff"
+	if(state["character_unconfirmed"]) return "Open (characters loading)"
+	return "Open"
 
 // The BYOND hub keeps about this many characters of a listing's status.
 #define HUB_STATUS_MAX_LENGTH 255
@@ -482,7 +474,9 @@ var/world_topic_spam_protect_time = world.timeofday
 	else if (map)
 		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 	var/list/player_status = player_status_observation()
-	s += "<b>World:</b> [hub_status_text(player_world_activity(player_status))]<br>"
+	var/world_activity = player_world_activity(player_status)
+	if (world_activity)
+		s += "<b>World:</b> [hub_status_text(world_activity)]<br>"
 	s += "<b>Joining:</b> [hub_status_text(player_join_status(player_status))]<br>"
 
 	// we can't execute code in config settings, so this is a workaround.
