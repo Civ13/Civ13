@@ -1,0 +1,47 @@
+/datum/reagents/proc/process_reactions()
+	if (!my_atom) // No reactions in temporary holders
+		return FALSE
+	if (!my_atom.loc) //No reactions inside GC'd containers
+		return FALSE
+	if (my_atom.flags & NOREACT) // No reactions here
+		return FALSE
+
+	var/reaction_occured
+	var/list/effect_reactions = list()
+	var/list/eligible_reactions = list()
+	for (var/i in TRUE to PROCESS_REACTION_ITER)
+		reaction_occured = FALSE
+
+		//need to rebuild this to account for chain reactions
+		for (var/datum/reagent/R in reagent_list)
+			eligible_reactions |= chemical_reactions_list[R.id]
+
+		var/list/highest_priority_reactions = list()
+		var/max_priority = -1
+
+		// First, identify all reactions that can actually happen and find the highest priority tier available
+		for (var/datum/chemical_reaction/C in eligible_reactions)
+			if (C.can_happen(src))
+				if (C.priority > max_priority)
+					max_priority = C.priority
+					highest_priority_reactions = list(C)
+				else if (C.priority == max_priority)
+					highest_priority_reactions |= C
+
+		// Process only the reactions from the highest priority tier found
+		if (highest_priority_reactions.len)
+			for (var/datum/chemical_reaction/C in highest_priority_reactions)
+				if (C.process(src))
+					effect_reactions |= C
+					reaction_occured = TRUE
+
+		eligible_reactions.Cut()
+
+		if (!reaction_occured)
+			break
+
+	for (var/datum/chemical_reaction/C in effect_reactions)
+		C.post_reaction(src)
+
+	update_total()
+	return reaction_occured
