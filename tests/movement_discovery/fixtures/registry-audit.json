@@ -334,7 +334,7 @@
       "path": "code/processes/mob.dm",
       "owner": "/process/mob/fire()",
       "label": "deleted-cleanup-after-null-filter",
-      "body": "\t\tvar/mob/M = current\n\t\tif (!M || !isliving(M))\n\t\t\tcontinue\n\n\t\tif (isDeleted(M))\n\t\t\tcatchBadType(M)\n\t\t\tmob_list -= M\n\t\t\tunregister_living_mob(M)\n"
+      "body": "\t\tvar/mob/M = current\n\t\tif (!isliving(M))\n\t\t\tcontinue\n\n\t\tif (isDeleted(M))\n\t\t\tcatchBadType(M)\n\t\t\tmob_list -= M\n\t\t\tunregister_living_mob(M)\n"
     }
   ]
 }

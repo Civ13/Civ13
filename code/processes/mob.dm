@@ -12,7 +12,7 @@
 	for (current in current_list)
 
 		var/mob/M = current
-		if (!M || !isliving(M))
+		if (!isliving(M))
 			continue
 
 		if (isDeleted(M))
