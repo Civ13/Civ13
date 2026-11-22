@@ -944,6 +944,8 @@ Your leader, and officers who issue papers, choose the island's border from any 
 
 **Visitor passes:** your leader or an officer who issues papers right-clicks one of your faction's recruitment stations and chooses **Grant Island Visitor Pass**. It goes to someone standing beside the station, for 1 hour to 7 days, and can be taken back the same way. A pass only works while the border admits guests.
 
+Border and pass changes reach every land within a minute or two. Each officer's change is applied on its own, so two officers working at once do not undo each other. The station tells you once the pass is recorded, or if it was refused.
+
 Nobody else can sail for the island. Your chart only lists it for people it admits, and a ship will not set out, or make landfall, with anyone aboard who may not land. Every other way there refuses them too. Anyone who is on the island without leave, because the border closed, a pass ran out or they left the faction, is warned and has **10 minutes** to go. After that they are put ashore on the mainland. Captives held in restraints stay where they are.
 
 Members who properly go to **Sleep** in their own bed on the island, and then log off, cannot be harmed while they are away, just as in a province their faction holds. If your faction gives the claim up, or it lapses, the border goes with it and any ship can reach the land again.
