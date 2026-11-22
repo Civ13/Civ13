@@ -1,36 +1,25 @@
-// Modular aircraft, phase 2: what an airborne aircraft shows of the ground, the
-// shadow it casts on the ground, and what becomes of one saved in flight.
+// Modular aircraft, phase 2: the shadow an airborne aircraft casts on the
+// ground, and what becomes of one saved in flight.
 //
-// None of these visuals are map atoms. The shadows and the ground view live in
-// nullspace and are drawn through turf vis_contents, which the saver does not
-// record, so a save never captures them.
+// The shadows are not map atoms: they live in nullspace and are drawn through
+// turf vis_contents, which the saver does not record, so a save never captures
+// them. The crew see the ground through the open-air view every upper level has
+// (code/modules/multiz/open_air_view.dm); an older view here put the ground
+// turfs themselves in vis_contents, drew a whiter haze over that view and kept
+// resending the turfs to every client in sight.
 
-// How many tiles of ground around the airframe's centre the open air shows in
-// full, and how far beyond that a fainter ring reaches. The client view is 21x15
-// tiles and the pilot sits inside the footprint, so the ring reaches the screen
-// edges with a soft edge instead of a black cut-off.
-#define AIRCRAFT_GROUND_VIEW_RANGE 7
-#define AIRCRAFT_GROUND_VIEW_FAR 10
-// The haze matrices: the far ring keeps the same tint at less than half the
-// opacity. (alpha is folded into a colour matrix, so the ring has its own.)
-#define AIRCRAFT_GROUND_VIEW_HAZE list(0.8,0,0,0, 0,0.8,0,0, 0,0,0.8,0, 0,0,0,1, 0.08,0.1,0.14,0)
-#define AIRCRAFT_GROUND_VIEW_HAZE_FAR list(0.8,0,0,0, 0,0.8,0,0, 0,0,0.8,0, 0,0,0,0.43, 0.08,0.1,0.14,0)
 // Shadow offset in pixels: the shadow falls farther from the airframe the
 // higher it flies above the ground under it.
 #define AIRCRAFT_SHADOW_OFFSET_MIN 4
 #define AIRCRAFT_SHADOW_OFFSET_MAX 20
 
 /obj/structure/vehicleparts/axis/aircraft
-	var/tmp/obj/effect/aircraft_ground_view/ground_view
-	// The fainter outer ring, sharing ground_view_anchor.
-	var/tmp/obj/effect/aircraft_ground_view/ground_view_far
-	var/tmp/turf/ground_view_anchor
 	// frame -> its shadow; shadow -> the ground turf showing it
 	var/tmp/list/shadows
 	var/tmp/list/shadow_turfs
 
 /obj/structure/vehicleparts/axis/aircraft/persistence_runtime_var(key)
-	return (key in list("ground_view", "ground_view_far", "ground_view_anchor", "shadows", "shadow_turfs")) || ..(key)
+	return (key in list("shadows", "shadow_turfs")) || ..(key)
 
 // A dark silhouette of one frame, drawn on the ground below it.
 /obj/effect/aircraft_shadow
@@ -57,27 +46,12 @@
 	pixel_x = offset
 	pixel_y = -offset
 
-// The ground below, shown through the open air around an airborne aircraft.
-/obj/effect/aircraft_ground_view
-	name = "the ground below"
-	mouse_opacity = 0
-	anchored = TRUE
-	appearance_flags = KEEP_TOGETHER
-	plane = FLOOR_PLANE
-	layer = TURF_LAYER + 0.01
-	// Distance haze.
-	color = AIRCRAFT_GROUND_VIEW_HAZE
-
-// The faint outer ring of the ground view.
-/obj/effect/aircraft_ground_view/far
-	color = AIRCRAFT_GROUND_VIEW_HAZE_FAR
-
 /obj/structure/vehicleparts/axis/aircraft/proc/ground_z()
 	var/z = flight_z()
 	return z ? multiz_level_below(z) : 0
 
-// The tile at the middle of the airframe (the frames' bounding box), which the
-// ground view is centred on; the axis itself sits in a corner frame.
+// The tile at the middle of the airframe (the frames' bounding box); the axis
+// itself sits in a corner frame.
 /obj/structure/vehicleparts/axis/aircraft/proc/footprint_centre()
 	var/list/F = frames()
 	if (!F.len)
@@ -94,72 +68,6 @@
 		max_y = max(max_y, FR.y)
 		z = FR.z
 	return locate(round((min_x + max_x) / 2), round((min_y + max_y) / 2), z)
-
-// Ground turfs under open air around centre: those within the full range,
-// those in the fainter ring beyond it, and the bottom-left corner of the
-// whole block, where vis_contents lays the grid out from.
-/obj/structure/vehicleparts/axis/aircraft/proc/visible_ground(turf/centre, ground)
-	var/list/near = list()
-	var/list/far = list()
-	var/min_x = world.maxx + 1
-	var/min_y = world.maxy + 1
-	for (var/turf/air in block(locate(max(1, centre.x - AIRCRAFT_GROUND_VIEW_FAR), max(1, centre.y - AIRCRAFT_GROUND_VIEW_FAR), centre.z), locate(min(world.maxx, centre.x + AIRCRAFT_GROUND_VIEW_FAR), min(world.maxy, centre.y + AIRCRAFT_GROUND_VIEW_FAR), centre.z)))
-		if (!istype(air, /turf/sky/building) || (locate(/obj/covers) in air))
-			continue
-		var/turf/below = locate(air.x, air.y, ground)
-		if (!below)
-			continue
-		if (max(abs(air.x - centre.x), abs(air.y - centre.y)) <= AIRCRAFT_GROUND_VIEW_RANGE)
-			near += below
-		else
-			far += below
-		min_x = min(min_x, below.x)
-		min_y = min(min_y, below.y)
-	if (!near.len && !far.len)
-		return null
-	return list(near, far, locate(min_x, min_y, centre.z))
-
-/obj/structure/vehicleparts/axis/aircraft/proc/update_ground_view()
-	var/turf/centre = footprint_centre()
-	var/ground = ground_z()
-	var/list/seen = (airborne() && centre && ground) ? visible_ground(centre, ground) : null
-	if (!seen)
-		clear_ground_view()
-		return
-	if (!ground_view)
-		ground_view = new
-		ground_view.loc = null
-	if (!ground_view_far)
-		ground_view_far = new /obj/effect/aircraft_ground_view/far
-		ground_view_far.loc = null
-	var/turf/anchor = seen[3]
-	if (ground_view_anchor != anchor)
-		if (ground_view_anchor)
-			ground_view_anchor.vis_contents -= ground_view
-			ground_view_anchor.vis_contents -= ground_view_far
-		ground_view_anchor = anchor
-		anchor.vis_contents += ground_view_far
-		anchor.vis_contents += ground_view
-	ground_view.vis_contents = seen[1]
-	ground_view_far.vis_contents = seen[2]
-
-// Whether the ground turf T is shown through the open air, in full or faint.
-/obj/structure/vehicleparts/axis/aircraft/proc/ground_shown(turf/T)
-	return (ground_view && (T in ground_view.vis_contents)) || (ground_view_far && (T in ground_view_far.vis_contents))
-
-/obj/structure/vehicleparts/axis/aircraft/proc/clear_ground_view()
-	if (ground_view_anchor)
-		ground_view_anchor.vis_contents -= ground_view
-		ground_view_anchor.vis_contents -= ground_view_far
-	ground_view_anchor = null
-	if (ground_view)
-		ground_view.vis_contents = list()
-		qdel(ground_view)
-	if (ground_view_far)
-		ground_view_far.vis_contents = list()
-		qdel(ground_view_far)
-	ground_view = null
-	ground_view_far = null
 
 /obj/structure/vehicleparts/axis/aircraft/proc/update_shadows()
 	var/ground = ground_z()
@@ -219,7 +127,6 @@
 
 /obj/structure/vehicleparts/axis/aircraft/proc/update_flight_visuals()
 	update_shadows()
-	update_ground_view()
 
 /obj/structure/vehicleparts/axis/aircraft/do_matrix(var/olddir = 0, var/newdir = 0, var/tdir = "none", var/mob/user = null)
 	. = ..()
@@ -270,7 +177,3 @@
 
 #undef AIRCRAFT_SHADOW_OFFSET_MAX
 #undef AIRCRAFT_SHADOW_OFFSET_MIN
-#undef AIRCRAFT_GROUND_VIEW_HAZE_FAR
-#undef AIRCRAFT_GROUND_VIEW_HAZE
-#undef AIRCRAFT_GROUND_VIEW_FAR
-#undef AIRCRAFT_GROUND_VIEW_RANGE

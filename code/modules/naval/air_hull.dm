@@ -22,9 +22,6 @@
 #define AIR_HULL_MAX_TILES AIR_DRAUGHT_MAX_DECK
 // Tiles of deck, or people aboard, one gas cell holds up.
 #define AIR_HULL_CELL_LIFT 12
-// Ground shown around her in full, and a fainter ring beyond.
-#define AIR_HULL_VIEW_RANGE 7
-#define AIR_HULL_VIEW_FAR 10
 #define AIR_HULL_LAY_TIME 20
 #define AIR_HULL_CELL_TIME 30
 // Lift a gas cell loses for each hole.
@@ -538,9 +535,6 @@ var/global/list/air_hull_crafts = list()
 
 /datum/craft/air
 	name = "airship"
-	var/tmp/obj/effect/aircraft_ground_view/ground_view
-	var/tmp/obj/effect/aircraft_ground_view/ground_view_far
-	var/tmp/turf/ground_view_anchor
 	var/tmp/obj/effect/air_hull_shadow/shadow
 	var/tmp/turf/shadow_anchor
 
@@ -605,8 +599,6 @@ var/global/list/air_hull_crafts = list()
 	var/list/box = B.box(B.offsets)
 	var/min_x = B.px + box[1]
 	var/min_y = B.py + box[2]
-	var/max_x = B.px + box[3]
-	var/max_y = B.py + box[4]
 	// Her shadow, laid out from the corner of her box on the ground.
 	if (!shadow)
 		shadow = new
@@ -619,45 +611,6 @@ var/global/list/air_hull_crafts = list()
 		if (corner)
 			corner.vis_contents += shadow
 	shadow.vis_contents = deck
-	// The ground around her, seen through the open air.
-	var/list/near = list()
-	var/list/far = list()
-	var/vx = world.maxx + 1
-	var/vy = world.maxy + 1
-	for (var/turf/air in block(locate(max(1, min_x - AIR_HULL_VIEW_FAR), max(1, min_y - AIR_HULL_VIEW_FAR), B.z), locate(min(world.maxx, max_x + AIR_HULL_VIEW_FAR), min(world.maxy, max_y + AIR_HULL_VIEW_FAR), B.z)))
-		if (!istype(air, /turf/sky/building) || (locate(/obj/covers) in air))
-			continue
-		var/turf/G = air_hull_solid_below(air)
-		if (!G)
-			continue
-		var/dx = max(0, min_x - air.x, air.x - max_x)
-		var/dy = max(0, min_y - air.y, air.y - max_y)
-		if (max(dx, dy) <= AIR_HULL_VIEW_RANGE)
-			near += G
-		else
-			far += G
-		vx = min(vx, G.x)
-		vy = min(vy, G.y)
-	var/turf/anchor = (near.len || far.len) ? locate(vx, vy, B.z) : null
-	// Never anchored on her own deck: the shadow already draws the deck.
-	if (anchor && B.contains(anchor))
-		anchor = null
-	if (!ground_view)
-		ground_view = new
-		ground_view.loc = null
-	if (!ground_view_far)
-		ground_view_far = new /obj/effect/aircraft_ground_view/far
-		ground_view_far.loc = null
-	if (ground_view_anchor != anchor)
-		if (ground_view_anchor)
-			ground_view_anchor.vis_contents -= ground_view
-			ground_view_anchor.vis_contents -= ground_view_far
-		ground_view_anchor = anchor
-		if (anchor)
-			anchor.vis_contents += ground_view_far
-			anchor.vis_contents += ground_view
-	ground_view.vis_contents = anchor ? near : list()
-	ground_view_far.vis_contents = anchor ? far : list()
 
 /datum/craft/air/proc/clear_views()
 	if (shadow_anchor && shadow)
@@ -667,18 +620,6 @@ var/global/list/air_hull_crafts = list()
 		shadow.vis_contents = list()
 		qdel(shadow)
 	shadow = null
-	if (ground_view_anchor)
-		ground_view_anchor.vis_contents -= ground_view
-		ground_view_anchor.vis_contents -= ground_view_far
-	ground_view_anchor = null
-	if (ground_view)
-		ground_view.vis_contents = list()
-		qdel(ground_view)
-	if (ground_view_far)
-		ground_view_far.vis_contents = list()
-		qdel(ground_view_far)
-	ground_view = null
-	ground_view_far = null
 
 // ---- Seeing, dropping and shooting through open air ----
 
@@ -1356,8 +1297,6 @@ var/global/list/air_hull_crafts = list()
 
 #undef AIR_HULL_MAX_TILES
 #undef AIR_HULL_CELL_LIFT
-#undef AIR_HULL_VIEW_RANGE
-#undef AIR_HULL_VIEW_FAR
 #undef AIR_HULL_LAY_TIME
 #undef AIR_HULL_CELL_TIME
 #undef AIR_HULL_HOLE_LIFT

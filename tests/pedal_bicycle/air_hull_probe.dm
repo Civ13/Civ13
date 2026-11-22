@@ -128,7 +128,6 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 	expect(istype(C) && istype(body) && body.tile_count() == 12, "airship body: [body ? body.tile_count() : "none"] tiles")
 	expect(C in air_hull_crafts, "not listed as an airship")
 	expect(C.shadow && C.shadow_anchor == locate(start.x + 1, start.y, start.z), "no shadow on the ground at her corner")
-	expect(C.ground_view && C.ground_view.vis_contents.len > 100, "no ground view for the crew")
 	// Twelve tiles and one person need two cells.
 	expect(body.lift_refusal(), "one cell lifted thirteen")
 	expect(!body.can_move_to(body.origin().x + 1, body.origin().y, EAST), "moved with too little lift")
@@ -358,13 +357,8 @@ var/global/datum/air_hull_probe/air_hull_probe = new
 		return
 	var/datum/craft_body/built/air/body = C.body
 	expect(body.z == high_z && body.tile_count() == 6, "high body: z [body.z], [body.tile_count()] tiles")
-	// Her shadow and the crew's view reach the ground through the open level.
+	// Her shadow reaches the ground through the open level.
 	expect(C.shadow_anchor && C.shadow_anchor.z == start.z, "high shadow on z [C.shadow_anchor ? C.shadow_anchor.z : 0], not the ground")
-	var/ground_seen = 0
-	for(var/turf/V in C.ground_view.vis_contents)
-		if(V.z == start.z)
-			ground_seen++
-	expect(ground_seen > 50, "the crew sees [ground_seen] ground tiles from two levels up")
 	// A floor in between is what she sees and drops onto there.
 	var/turf/roof_under = sky(start, 3, 1, sky_z)
 	new /obj/covers/repairedfloor(roof_under)
