@@ -127,6 +127,12 @@ COURSE_UNDER_WAY_SECONDS = 2 * 3600  # a land with a course this fresh has a shi
 SLOT_PARK = 'park'
 SLOT_DISCARD = 'discard'
 CLEARING = 'a harbour is being cleared for a new land. Set out for it again in about ten minutes.'
+# Val (2026-11-22): how many lands, faction islands among them, can exist or run
+# at once is never capped for the host. With every slot taken and no idle land to
+# lay up, the coordinator asks the host for one more slot (<expeditions>/grow/).
+SLOT_GROW = 'grow'
+GROW_WISH = 'request.json'
+GROWING = 'a new harbour is being built for that land. Set out for it again in a few minutes.'
 
 _VOYAGE = re.compile(r'^[a-z0-9_\-]{1,80}$')
 _OWNER = re.compile(r'^(admin|faction:[a-z0-9_\-]{1,40}|crew:[a-z0-9_\-]{1,40})$')
@@ -548,6 +554,18 @@ class WorldChart:
             return slot
         return None
 
+    def request_slot(self, now):
+        """Asks the host for one more slot (<expeditions>/grow/request.json):
+        every slot is taken and no land is idle enough to lay up. The host adds
+        it, set up and stopped, and the coordinator is restarted with it. True
+        when the wish stands (now or already)."""
+        if not self.expeditions:
+            return False
+        wish = self.expeditions / SLOT_GROW / GROW_WISH
+        if not wish.exists():
+            _write_json(wish, {'at': now, 'slots': len(self.slots)})
+        return True
+
     def refresh_parks(self, now):
         """A parking the host carried out takes the land off its slot; one it
         called off (somebody was there) or never did is forgotten. True when
@@ -603,7 +621,10 @@ class WorldChart:
         slot = next((s for s in self.slots if self.slot_free(s)), None)
         if not slot:
             # A land being archived or parked frees its slot soon; else the stalest empty land is parked.
-            return None, (CLEARING if self.clearing() or self.make_room(now) else NO_SLOT)
+            # With nothing to lay up, the host is asked for one more slot: lands are never capped.
+            if self.clearing() or self.make_room(now):
+                return None, CLEARING
+            return None, (GROWING if self.request_slot(now) else NO_SLOT)
         parked = self.parked(x, y)
         _write_json(self.expeditions / SLOT_WANTED / (slot + '.json'),
                     {'region': slot, 'key': '%d,%d' % (x, y), 'template': tile['template'], 'voyage': voyage, 'at': now,
