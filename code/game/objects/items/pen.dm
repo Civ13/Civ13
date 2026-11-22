@@ -25,12 +25,13 @@
 
 /obj/item/weapon/pen/New()
 	..()
-	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil) && !istype(src, /obj/item/weapon/pen/crayon))
-		icon_state = "pennew" // from feather to modern black-point plastic pen.
-	name_as_quill()
+	update_era_appearance()
 
 /obj/item/weapon/pen/update_icon()
 	..()
+	update_era_appearance()
+
+/obj/item/weapon/pen/proc/update_era_appearance()
 	if (map && map.ordinal_age >= 4 && !istype(src, /obj/item/weapon/pen/pencil) && !istype(src, /obj/item/weapon/pen/crayon))
 		icon_state = "pennew" // from feather to modern black-point plastic pen.
 	name_as_quill()

@@ -2912,6 +2912,8 @@ SUITES = {
         'paths': ('tests/log_wall_building/', 'code/game/objects/covers_types/log_wall_building.dm',
                   'code/game/objects/covers_types/cover_walltypes.dm', 'code/game/objects/building_insulation.dm',
                   'icons/obj/log_wall_build.dmi', 'tests/sprites/create_log_wall_build.py')},
+    'fire_smoke_breathing': {'files': ('tests/fire_smoke/test_breathing.py',),
+        'paths': ('tests/fire_smoke/', 'code/modules/1713/fire_smoke.dm')},
     'firefighting': {'files': ('tests/firefighting/test_firefighting.py',),
         'paths': ('tests/firefighting/', 'code/modules/1713/firefighting.dm', 'code/modules/1713/firefighting_water.dm', 'code/modules/1713/firefighting_hook.dm', 'code/modules/1713/firefighting_pump.dm', 'code/game/objects/items/weapons/tools.dm',
                   'code/modules/1713/oil_fires.dm', 'icons/obj/firefighting.dmi',
