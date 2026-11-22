@@ -102,7 +102,7 @@ class WornGearTests(unittest.TestCase):
         self.assertIn('return ispath(parent_path, /obj/structure/vehicle) && ispath(part_path, /obj/structure/engine)',
                       proc(GENERIC, '/proc/region_travel_generic_part_root'))
         for field in ('"loc"', '"contents"', '"type"', '"vars"', '"key"', '"ckey"', '"screen_loc"'):
-            self.assertIn(field, GENERIC.split('var/global/list/region_travel_generic_skip')[1].split(')')[0])
+            self.assertIn(field, proc(GENERIC, '/proc/region_travel_generic_skip_table').split('return list(', 1)[1].split(')', 1)[0])
         denied = proc(GENERIC, '/proc/region_travel_generic_type_ok').split('for(var/denied in list(', 1)[1].split('))', 1)[0]
         for path in ('/obj/item/weapon/grab', '/obj/item/hand_hold', '/obj/item/organ'):
             self.assertIn(path, denied)

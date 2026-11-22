@@ -176,11 +176,11 @@ class RegionWakeTests(unittest.TestCase):
         self.assertLess(wake, body.index('H.record_persistence_owner()'))
 
     def test_departure_needs_an_awake_destination(self):
-        body = proc(TRAVEL, GATE + '/proc/depart')
+        body = proc(TRAVEL, GATE + '/proc/depart_party')
         self.assertLess(body.index('shard_group.poll_peer(destination)'), body.index('begin_escrow'))
 
     def test_departure_rechecks_the_trail_after_the_poll(self):
-        body = proc(TRAVEL, GATE + '/proc/depart')
+        body = proc(TRAVEL, GATE + '/proc/depart_party')
         expected = body.index('var/expected = destination')
         poll = body.index('shard_group.poll_peer(destination)')
         recheck = body.index('destination != expected || closed_reason()', poll)

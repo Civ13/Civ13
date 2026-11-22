@@ -57,6 +57,9 @@ var/naval_runtime_error = FALSE
 	R.update_icon()
 	return R
 
+/proc/probe_ms(t)
+	return (world.tick_usage - t) * world.tick_lag
+
 /proc/naval_checks()
 	naval_fixture()
 	naval_research_done = TRUE
@@ -130,6 +133,87 @@ var/naval_runtime_error = FALSE
 	for (var/obj/covers/F in get_turf(R))
 		hold_floor = F
 	naval_check(hold_floor && hull_armour_at(get_turf(R)) == plate2 && hull_armour_soften(hold_floor, 2) == 3, "the hold floor under a plated tile is covered by the belt")
+
+
+
+	// ---- A breach in her hold ----
+	var/turf/HT = null
+	for (var/turf/L in B.lower_cells())
+		if (!hull_armour_at(L) && !(locate(/obj/structure/shellrack) in L))
+			HT = L
+	var/obj/covers/hold_plate = HT ? hull_hold_cover(HT) : null
+	var/holes_was = C.ledger.holes
+	var/hold_was = B.lower_tile_count()
+	naval_check(hold_plate && !istype(hold_plate, /obj/covers/steelplating/hold/breach), "a whole hold floor to blow out")
+	hold_plate.ex_act(1)
+	var/obj/covers/steelplating/hold/breach/BR = locate() in HT
+	naval_check((QDELETED(hold_plate) || hold_plate.loc != HT) && BR && BR.hold_origin && C.ledger.holes == holes_was + 1, "a blast through her hold floor leaves a breach and holes her ([C.ledger.holes], old floor at [hold_plate.loc])")
+	naval_check(B.lower_tile_count() == hold_was && C.ledger.hold_breaches() == 1, "the breach is still part of her hold")
+	C.ledger.survey()
+	naval_check(C.ledger.holes == holes_was + 1, "a survey still counts the breach as a hole ([C.ledger.holes])")
+	BR.ex_act(1)
+	naval_check(!QDELETED(BR) && C.ledger.holes == holes_was + 1, "another blast opens it no wider")
+	O = B.origin()
+	naval_check(B.move_to(O.x, O.y + 1, NORTH) && BR.y == HT.y + 1 && B.lower_tile_count() == hold_was, "the breach sails with her hold ([B.last_refusal])")
+	var/obj/covers/shut = hull_breach_shut(BR)
+	naval_check(shut && !istype(shut, /obj/covers/steelplating/hold/breach) && shut.hold_origin && QDELETED(BR) && C.ledger.holes == holes_was, "welded shut, the breach is a whole hold floor again and the hole is gone ([C.ledger.holes])")
+	naval_check(C.ledger.hold_breaches() == 0 && B.lower_tile_count() == hold_was, "her hold is whole")
+
+	// ---- The gate: a full broadside and a step in the same tick ----
+	// A 200-tile steel battleship with a hold, eight turrets on their
+	// magazines and her sides belted.
+	for (var/x = 40, x <= 49, x++)
+		for (var/y = 20, y <= 39, y++)
+			var/obj/covers/steelplating/SP = new(locate(x, y, 2))
+			SP.updateturf()
+			if (x >= 41 && x <= 48 && y >= 24 && y <= 35)
+				hull_hold_lay(locate(x, y, 1))
+	var/list/turrets = list()
+	for (var/y in list(24, 28, 32, 35))
+		for (var/x in list(41, 48))
+			var/obj/structure/cannon/modern/ship_turret/T = new(locate(x, y, 2))
+			T.face_dir(x == 41 ? WEST : EAST)
+			probe_rack(locate(x, y, 1), 2)
+			turrets += T
+	for (var/y = 20, y <= 39, y++)
+		new /obj/structure/hull_armour(locate(40, y, 2))
+		new /obj/structure/hull_armour(locate(49, y, 2))
+	var/obj/structure/hull_tiller/bb = new(locate(45, 20, 2))
+	naval_check(isnull(bb.commission("Dreadnought", NORTH)) && bb.craft, "a 200-tile battleship is commissioned")
+	var/datum/craft_body/built/BB = bb.craft.body
+	naval_check(BB.tile_count() == 200 && BB.lower_tile_count() == 96, "she has 200 tiles of hull and 96 of hold ([BB.tile_count()], [BB.lower_tile_count()])")
+	var/loaded = 0
+	for (var/obj/structure/cannon/modern/ship_turret/T in turrets)
+		if (T.take_from_magazine())
+			loaded++
+	naval_check(loaded == 8, "all eight turrets hoist a shell ([loaded])")
+	var/list/sides = broadside_guns(get_turf(bb))
+	naval_check(length(sides["[EAST]"]) == 4 && length(sides["[WEST]"]) == 4, "the boatswain's call finds her turrets, four to a side")
+	var/worst = 0
+	var/step_only = 0
+	for (var/i = 1, i <= 2, i++)
+		sleep(1)
+		for (var/obj/structure/cannon/modern/ship_turret/T in turrets)
+			if (!T.loaded.len)
+				T.take_from_magazine()
+		var/turf/BO = BB.origin()
+		var/t = world.tick_usage
+		var/shots = 0
+		for (var/obj/structure/cannon/modern/ship_turret/T in turrets)
+			if (broadside_fire_gun(T))
+				shots++
+		var/ok = BB.can_move_to(BO.x, BO.y + 1, NORTH) && BB.move_to(BO.x, BO.y + 1, NORTH)
+		var/ms = probe_ms(t)
+		naval_check(ok && shots == 8, "broadside [i]: eight turrets fire and she steps in the same tick ([shots], [BB.last_refusal])")
+		worst = max(worst, ms)
+		sleep(1)
+		BO = BB.origin()
+		t = world.tick_usage
+		BB.can_move_to(BO.x, BO.y + 1, NORTH)
+		BB.move_to(BO.x, BO.y + 1, NORTH)
+		step_only = max(step_only, probe_ms(t))
+	world.log << "TIMING: a broadside of eight turrets and a step of a 200-tile battleship with 96 tiles of hold: worst [worst] ms; the step alone [step_only] ms"
+	naval_check(worst < 40, "a full broadside and a step stay inside one tick ([worst] ms)")
 
 	// ---- Off a ship ----
 	var/obj/structure/cannon/modern/ship_turret/fort = new(locate(10, 10, 2))

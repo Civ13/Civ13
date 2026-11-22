@@ -59,6 +59,18 @@ they put the bucket away. A step of the hull does not stop them.
 - Full over mostly shallow water she is grounded: no speed, no turn. She floats
   again when no hole is open and she is bailed below awash.
 
+## Breaches below the waterline
+
+`hull_breach.dm`: a floor of her hold that goes (`/obj/covers/Destroy()` with
+`hold_origin` set) leaves a `/obj/covers/steelplating/hold/breach` with the
+same `hold_origin`, so the tile stays part of her hold and sails with it. Each
+breach is a hole: `hull_hold_breach()` adds one at once, and `survey()` adds
+`hold_breaches()` to the holes it counts on her deck. A breach takes no more
+blast damage. Two steel used on it with a welding tool in the other hand
+(`hull_breach_weld()`, 5 seconds) lays a whole hold floor again and takes the
+hole off (`hull_breach_shut()`). Floors that go while she is decommissioned,
+crossing or sinking leave no breach.
+
 ## Seams and caulking
 
 `code/modules/naval/hull_caulking.dm`. The ledger carries `seams`, the wear of

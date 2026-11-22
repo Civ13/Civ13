@@ -34,7 +34,7 @@ class RegionRaidTests(unittest.TestCase):
         payload = proc(TRAVEL, '/mob/living/human/proc/region_travel_payload')
         # Every trip, raids included, records the land it left from.
         self.assertIn('\tP["from"] = shard_group.region\n', payload)
-        depart = proc(TRAVEL, '/obj/structure/region_gate/proc/depart')
+        depart = proc(TRAVEL, '/obj/structure/region_gate/proc/depart_party')
         self.assertIn('H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))', depart)
         self.assertIn('region_raid_note_origin(H, P)', proc(TRAVEL, '/proc/region_travel_build'))
 
@@ -73,8 +73,8 @@ class RegionRaidTests(unittest.TestCase):
                      'land_stage(shard_group.region) == "OPEN"', '!region_home_living_body(account) && !region_home_bed(account)'):
             self.assertIn(need, stranded)
         admit = proc(HOME, '/proc/region_home_admit')
-        self.assertIn('wait && !grant && region_home_stranded(C.ckey) && region_home_ask(C.ckey, "release")', admit)
-        self.assertLess(admit.index('region_home_stranded(C.ckey)'), admit.index('lobby.colony_start_grant = grant'))
+        self.assertIn('wait && !grant && region_home_stranded(C.owner_key()) && region_home_ask(C.owner_key(), "release")', admit)
+        self.assertLess(admit.index('region_home_stranded(C.owner_key())'), admit.index('lobby.colony_start_grant = grant'))
 
 
 if __name__ == '__main__':

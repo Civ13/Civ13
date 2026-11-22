@@ -178,13 +178,13 @@ class RepeatClickPayment(unittest.TestCase):
 
     def test_computer_payments_recheck(self):
         source = read('code/modules/1713/computers/programs.dm')
-        bail = proc('code/modules/1713/computers/programs.dm', '/datum/program/bail/Topic')
+        bail = proc('code/modules/1713/computers/programs.dm', '/datum/program/bail/program_action')
         self.assert_order(bail, 'Who do you wish to pay the bail for?', 'if (QDELETED(U) || U.bail_price <= 0)',
                           'M.use(U.bail_price/5)', 'U.bail_price = 0')
-        repair = proc('code/modules/1713/computers/programs.dm', '/datum/program/swiftfix/Topic')
+        repair = proc('code/modules/1713/computers/programs.dm', '/datum/program/swiftfix/program_action')
         self.assert_order(repair, 'Are you sure?', '!M.use(100/5)', 'switch(user.civilization)')
         self.assertNotIn('M.amount-=', bail + repair)
-        self.assertIn('/datum/program/bail/Topic', source)
+        self.assertIn('/datum/program/bail/program_action', source)
 
 
     def test_export_radios_pay_once(self):
@@ -275,7 +275,7 @@ class RepeatClickPayment(unittest.TestCase):
 
     def test_market_programs_and_vendor(self):
         programs = read('code/modules/1713/computers/programs.dm')
-        bank = proc('code/modules/1713/computers/programs.dm', '/datum/program/junglebank/Topic')
+        bank = proc('code/modules/1713/computers/programs.dm', '/datum/program/junglebank/program_action')
         self.assert_order(bank, 'map.globalmarketplace[tcode][7] != 1', 'map.marketplaceaccounts[user.name] -= cost')
         self.assert_order(bank, 'Are you sure you want to sell', 'map.globalmarketplace[tcode][2] != user',
                           'map.marketplaceaccounts[user.name] += cost')
