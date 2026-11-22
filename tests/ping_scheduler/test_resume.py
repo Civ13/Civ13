@@ -43,6 +43,10 @@ def translate(source):
         "PROCESS_TICK_CHECK": "if ctx.budget(): return EARLY",
         "if (!C)": "if not C:",
         'if (!hascall(C, ".update_ping"))': "if not C.verb:",
+        "var/next_check = client_ckey_check[C.ckey]": "next_check = ctx.deadlines.get(C.key)",
+        "if (!next_check)": "if not next_check:",
+        "if (world.time < next_check)": "if ctx.time < next_check:",
+        "if (world.time <= next_check)": "if ctx.time <= next_check:",
         "if (!client_ckey_check[C.ckey])": "if not ctx.deadlines.get(C.key):",
         "client_ckey_check[C.ckey] = world.time+100": "ctx.deadlines[C.key] = ctx.time + 100",
         "if (world.time < client_ckey_check[C.ckey])": "if ctx.time < ctx.deadlines[C.key]:",
@@ -150,6 +154,48 @@ class PingTests(unittest.TestCase):
     def setUp(self):
         self.source = (ROOT / "code/processes/ping_track.dm").read_text()
         self.clients = [Client(key, ping) for key, ping in zip("abc", (10, 30, 50))]
+
+    def test_cooldown_lookup_matches_original_and_reads_once(self):
+        cached = "\tvar/next_check = client_ckey_check[C.ckey]\n\tif (!next_check)\n"
+        self.assertEqual(self.source.count(cached), 1)
+        original = self.source.replace(cached, "\tif (!client_ckey_check[C.ckey])\n", 1)
+        original = original.replace("if (world.time < next_check)",
+                                    "if (world.time < client_ckey_check[C.ckey])", 1)
+
+        class CountedDeadlines(dict):
+            def __init__(self, values):
+                super().__init__(values)
+                self.reads = 0
+
+            def get(self, key, default=None):
+                self.reads += 1
+                return super().get(key, default)
+
+            def __getitem__(self, key):
+                self.reads += 1
+                return super().__getitem__(key)
+
+        def run(source, deadline, verb=True, disconnect=False):
+            client = Client("sample", 17, verb)
+            t = Trace(source, [client])
+            t.deadlines = CountedDeadlines({} if deadline is None else {client.key: deadline})
+            t.disconnect_on_query = disconnect
+            t.track(t, client)
+            return (dict(t.deadlines), t.queries, t.total, t.checked), t.deadlines.reads
+
+        for deadline, verb, disconnect in [(None, True, False), (0, True, False),
+                                            (201, True, False), (200, True, False),
+                                            (199, True, False), (-1, True, False),
+                                            (1, False, False), (1, True, True)]:
+            with self.subTest(deadline=deadline, verb=verb, disconnect=disconnect):
+                before, before_reads = run(original, deadline, verb, disconnect)
+                after, after_reads = run(self.source, deadline, verb, disconnect)
+                self.assertEqual(after, before)
+                self.assertEqual(after_reads, 1 if verb else 0)
+                self.assertEqual(before_reads, 2 if verb and deadline else (1 if verb else 0))
+
+        mutant = self.source.replace("if (world.time < next_check)", "if (world.time <= next_check)", 1)
+        self.assertNotEqual(run(original, 200)[0], run(mutant, 200)[0])
 
     def test_partial_sum_count_survive_and_only_completed_average_is_published(self):
         t = Trace(self.source, self.clients)
