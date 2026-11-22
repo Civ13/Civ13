@@ -220,6 +220,11 @@
 				fitting.anchored = TRUE
 				fitting.dir = dir
 				.++
+		for (var/obj/structure/torpedo_tube/tube in get_turf(F))
+			if (!tube.anchored)
+				tube.anchored = TRUE
+				tube.dir = dir
+				.++
 
 /obj/structure/vehicleparts/axis/ship/submarine/take_apart_refusal(mob/living/human/H)
 	if (submerged)
@@ -238,5 +243,7 @@
 			battery.anchored = FALSE
 		for (var/obj/structure/vehicleparts/sub_fitting/air/loose/air in get_turf(F))
 			air.anchored = FALSE
+		for (var/obj/structure/torpedo_tube/tube in get_turf(F))
+			tube.anchored = FALSE
 
 #undef SUBMARINE_ASSEMBLY_BEAM

@@ -41,6 +41,8 @@ SPRITES = {
     'fit_L': {'layers': [('icons/obj/closet.dmi', 'closed', None)], 'outline': True},
     # /obj/structure/bed/wood (wood tint on the bed overlay)
     'fit_B': {'layers': [('icons/obj/bed_chair.dmi', 'bed', WOOD)], 'outline': True},
+    # /obj/structure/torpedo_tube
+    'fit_T': {'layers': [('icons/obj/naval_gear.dmi', 'torpedo_tube', None)], 'outline': True},
 }
 
 

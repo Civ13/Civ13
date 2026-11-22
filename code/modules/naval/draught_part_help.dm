@@ -74,4 +74,5 @@
 		"A" = list("what" = "An air bank.", "use" = "Each bank adds half a Scout's reserve of air for the crew on a dive.", "how" = "Fit one or more in any section but the engine room."),
 		"L" = list("what" = "A locker.", "use" = "Stows gear, diving suits and stores aboard.", "how" = "Fit lockers where crew can reach them."),
 		"B" = list("what" = "A berth.", "use" = "Somewhere for crew to sleep on a long patrol.", "how" = "Fit berths in the after rooms, away from the controls."),
+		"T" = list("what" = "A torpedo tube.", "use" = "Fires a torpedo along her heading, from periscope depth when she is submerged. An empty tube is also a slow way out for one diver at a time.", "how" = "Fit it in a section of her bow row. Load it by hand; open its outer door from inside to let a diver back in."),
 	)

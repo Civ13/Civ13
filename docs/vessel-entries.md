@@ -59,9 +59,27 @@ escape trunk").
 Trains need nothing here: their cars are open platforms that riders already
 walk between and step off.
 
+## Phase 3: submarine torpedo tubes
+
+`code/modules/naval/sub_torpedo_tubes.dm` (hooks in `torpedoes.dm`)
+
+- The ordinary torpedo tube (25 steel) can stand in a submarine's bow
+  row. Submarine sheets have it as fitting **T**; a tube anywhere else on a
+  sheet is an error. Hand assembly bolts it down with the other fittings.
+- A tube in a submarine fires along her heading, whichever way it was
+  trained. Submerged she fires from periscope depth: the torpedo runs on the
+  surface above her bow, or along the sea layer when something floats
+  there, where it can strike another submerged boat.
+- **Diver lock-out:** from inside a submerged boat the tube's menu offers
+  Fire, Lock out through the tube (a sealed diver, 20 seconds, empty tube
+  only, out onto the seabed ahead of her bow) and Open / Shut the outer door
+  for divers. A diver can come back in only through an open outer door and an
+  empty tube: 20 seconds with bank air, 40 seconds pumped by hand. The door
+  shuts behind them. At a shut door a diver hammers for the crew.
+- The tube cannot fire or be loaded while a diver is in it.
+
 ## Later phases
 
-3. Submarine torpedo tubes, with a slow one-at-a-time diver lock-out.
 4. Ship gun ports, scuttles and cargo hatches.
 5. Tank belly hatch, bus emergency door release, train end doors.
 6. Aircraft bailout and canopy jettison, ship lifeboat stations.

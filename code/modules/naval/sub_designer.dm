@@ -36,6 +36,7 @@ var/global/list/sub_designer_sprites = list(
 	"A" = 'icons/sub_designer/fit_A.png',
 	"L" = 'icons/sub_designer/fit_L.png',
 	"B" = 'icons/sub_designer/fit_B.png',
+	"T" = 'icons/sub_designer/fit_T.png',
 )
 
 // One drawer at one sheet. The window talks to this datum, not the sheet.

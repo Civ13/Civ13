@@ -1897,6 +1897,7 @@
 #include "code\modules\naval\slipway_hull.dm"
 #include "code\modules\naval\sub_designer.dm"
 #include "code\modules\naval\sub_draught.dm"
+#include "code\modules\naval\sub_torpedo_tubes.dm"
 #include "code\modules\naval\torpedoes.dm"
 #include "code\modules\naval\vessel.dm"
 #include "code\modules\projectiles\__projectiles.dm"
