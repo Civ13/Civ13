@@ -254,6 +254,8 @@ var/global/building_assume_founded = FALSE
 		return max(2, building_brace_reach(A))
 	if (istype(A, /obj/covers))
 		return max(1, building_brace_reach(A))
+	if (building_is_window_support(A))
+		return 1
 	return 0
 
 // What support A stands on: list(storey, strength). Ground is storey 0 and
@@ -376,7 +378,9 @@ var/global/building_assume_founded = FALSE
 		building_assume_founded = FALSE
 		if (founded && founded[1] > BUILDING_UNFOUNDED_STOREYS)
 			return "This roof would cover the [building_storey_name(founded[1])] storey, but the ground-floor walls or pillars stand on soft ground, which holds only two storeys. Supports on rock or on a stone, brick or concrete floor hold more. Lay that floor first, then build the wall or pillar on it."
-		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete walls and pillars six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor."
+		if (!building_open_turf(T))
+			return "Nothing holds a roof up here. [building_support_hint(T)]"
+		return "This roof needs grounded walls or pillars of a sufficient tier. Wood supports two storeys, stone four, concrete walls and pillars six and metal eight. Above two storeys the ground-floor supports must stand on rock or on a stone, brick or concrete floor. [building_support_hint(T)]"
 	var/h = info[1]
 	var/near = FALSE
 	var/uncarried = FALSE
