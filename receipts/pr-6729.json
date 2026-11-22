@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "digest": "60adaa2c7f50057da489d1d139608d6da258943e28d1cd4dbcd4f8b8d0b8ce00",
+  "commit": "05c980d6533dd1e5ed70b0cefe7bd67b16d65955",
+  "messages": [
+    {
+      "state": "pending",
+      "chunk": 0,
+      "contentHash": "085c62fd857e1da7ce77c119610b844616895cce84a42e6420643ec3c42dcfad"
+    }
+  ],
+  "skip": ""
+}
