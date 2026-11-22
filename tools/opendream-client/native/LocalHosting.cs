@@ -388,8 +388,8 @@ public static class LocalHosting {
                         busy |= Bool(entry, "busy");
                         var text = Clean(Str(entry, "name") ?? region.Name) + ": " + Lower(Str(entry, "state") ?? "unknown");
                         if (entry.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object
-                                && world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number)
-                            text += $", {clients.GetInt32()} players";
+                                && world.TryGetProperty("clients", out var clients) && Count(clients) is { } online)
+                            text += $", {online} players";
                         if (entry.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
                                 && Str(operation, "action") is { } last && Str(operation, "phase") is { } phase) {
                             text += $", last {Lower(last)} ({Words(phase)})";
@@ -653,8 +653,9 @@ public static class LocalHosting {
             _ => Bool(status, "listening") ? "Server port is open." : "Server is not running.",
         } };
         if (status.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object) {
-            parts.Add(Bool(world, "ready") ? "World ready." : "World not ready.");
-            if (world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number) parts.Add($"{clients.GetInt32()} players.");
+            // The world's own answer is passed through, and DM writes TRUE as 1: a ready world read "World not ready."
+            parts.Add(Flag(world, "ready") ? "World ready." : "World not ready.");
+            if (world.TryGetProperty("clients", out var clients) && Count(clients) is { } online) parts.Add($"{online} players.");
             if (Str(world, "error") is { Length: > 0 } error) parts.Add("Error: " + error + ".");
         }
         if (status.TryGetProperty("operation", out var operation) && operation.ValueKind == JsonValueKind.Object
@@ -672,7 +673,7 @@ public static class LocalHosting {
             foreach (var region in list.EnumerateArray().Take(MaxRegions)) {
                 if (region.ValueKind != JsonValueKind.Object || Str(region, "name") is not { } name || Str(region, "state") is not { } state) continue;
                 var clean = Clean(name);
-                var players = region.TryGetProperty("players", out var count) && count.ValueKind == JsonValueKind.Number ? $", {count.GetInt32()} players" : "";
+                var players = region.TryGetProperty("players", out var count) && Count(count) is { } online ? $", {online} players" : "";
                 regions.Add($"{clean}: {Lower(state)}{players}");
             }
         }
@@ -683,6 +684,13 @@ public static class LocalHosting {
         json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
     private static bool Bool(JsonElement json, string name) =>
         json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.True;
+    // A flag that started in a world (DM's json_encode has no booleans, so TRUE arrives as 1).
+    private static bool Flag(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var value) && (value.ValueKind == JsonValueKind.True
+            || (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number != 0));
+    // A whole number, or null: GetInt32 throws on 2.0e0 or 2.5, and that took the whole status line with it.
+    private static int? Count(JsonElement value) =>
+        value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number >= 0 && number <= int.MaxValue ? (int)number : null;
 
     // Starts whatever is not already listening; returns one line per component for the console.
     public static IReadOnlyList<string> Run(HostProfile host, string byondBin, Func<int, bool> listening, Action<ProcessStartInfo> start,

@@ -1,12 +1,15 @@
 """Offline tests for scripts/gaia-host/gaia_host.py with a fake machine."""
 import hashlib
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
 import sys
 import tempfile
+import time
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('gaia_host', ROOT / 'scripts/gaia-host/gaia_host.py')
@@ -802,6 +805,151 @@ class NoConsoleWindowTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class StaleLockTests(GaiaHostTests):
+    """action.lock is released when the worker that held it is gone. It used to stay for
+    ever after a restart of the machine or a killed worker: every action was refused as
+    "another action is still running" and the watchdog left the busy region down."""
+
+    def accepted(self, action='start'):
+        write_save(self.repo / 'map_saves')
+        self.give_token()
+        return self.accept(action)
+
+    def test_a_lock_whose_worker_ended_is_released_and_the_action_reported(self):
+        operation = self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        asked = []
+        self.machine.worker_alive = lambda pid, started: asked.append((pid, started)) or False
+        status = self.host.status()
+        self.assertEqual(asked, [(999, 5)])
+        self.assertFalse(status['busy'])
+        self.assertFalse(self.host.lock.exists())
+        self.assertEqual(status['operation']['phase'], 'failed', status)
+        self.assertEqual(status['operation']['operation'], operation)
+        self.assertIn('start was interrupted (its worker ended)', status['operation']['error'])
+        self.accept('start')  # and the region takes actions again
+
+    def test_a_lock_whose_worker_runs_is_kept(self):
+        self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: True
+        self.assertTrue(self.host.status()['busy'])
+        with self.assertRaisesRegex(gaia_host.Refused, 'another action is still running: start'):
+            self.host.request('start')
+        self.assertEqual(self.host.read_state()['phase'], 'compiling')
+
+    def test_a_lock_from_before_the_machine_restarted_is_released(self):
+        self.accepted()
+        self.host.record(phase='saving', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: True  # the pid is another process now
+        self.machine.boot_time = lambda: time.time() + 3600
+        self.assertFalse(self.host.status()['busy'])
+        self.assertIn('the machine restarted', self.host.read_state()['error'])
+
+    def test_an_accepted_action_whose_worker_never_started_is_released(self):
+        self.accepted()
+        self.assertTrue(self.host.status()['busy'], 'a worker gets time to start')
+        long_ago = time.time() - gaia_host.WORKER_START_SECONDS - 5
+        os.utime(self.host.lock, (long_ago, long_ago))
+        self.assertFalse(self.host.status()['busy'])
+        self.assertIn('its worker never started', self.host.read_state()['error'])
+
+    def test_a_lock_another_caller_holds_without_a_worker_is_left_alone(self):
+        # The group fresh world holds every region's lock in its own process, with no record.
+        self.host.state_dir.mkdir(parents=True)
+        self.host.lock.write_text('f' * 32)
+        long_ago = time.time() - 3600
+        os.utime(self.host.lock, (long_ago, long_ago))
+        self.machine.worker_alive = lambda pid, started: False
+        self.assertTrue(self.host.status()['busy'])
+        self.assertTrue(self.host.lock.exists())
+
+    def test_the_watchdog_restarts_a_region_whose_action_died(self):
+        self.accepted()
+        self.host.record(phase='starting', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: False
+        self.host.mark_running()
+        self.machine.detached.clear()
+        for _ in range(40):  # the port stays closed past the watchdog's patience
+            self.host.watch_step(None)
+            self.machine.clock += 30
+            if self.machine.detached:
+                break
+        self.assertTrue(self.machine.detached, 'the watchdog started it again')
+
+    def test_a_request_that_cannot_start_its_worker_leaves_no_lock(self):
+        write_save(self.repo / 'map_saves')
+        self.give_token()
+        def no_worker(argv):
+            raise OSError('could not start the worker')
+        self.machine.detach = no_worker
+        with self.assertRaises(OSError):
+            self.host.request('start')
+        self.assertFalse(self.host.lock.exists())
+
+    def test_the_worker_records_itself(self):
+        operation = self.accepted()
+        seen = []
+        with mock.patch.object(self.host, 'do_refresh', lambda op: seen.append(self.host.read_state().get('worker'))), \
+                mock.patch.object(self.host, 'do_start', lambda op: None):
+            self.host.work('start', operation)
+        self.assertEqual(seen[0]['pid'], os.getpid())
+        self.assertFalse(self.host.lock.exists())
+
+    def test_a_status_file_the_launcher_holds_open_does_not_fail_the_action(self):
+        # Windows refuses replacing a file another process is reading (WinError 5).
+        operation = self.accepted()
+        real, denied = os.replace, []
+        def replace(source, target):
+            if str(target).endswith('operation.json') and len(denied) < 3:
+                denied.append(target)
+                raise PermissionError(13, 'Access is denied')
+            return real(source, target)
+        with mock.patch.object(gaia_host.os, 'replace', replace), mock.patch.object(gaia_host.time, 'sleep', lambda s: None), \
+                mock.patch.object(self.host, 'do_refresh', lambda op: None), mock.patch.object(self.host, 'do_start', lambda op: None):
+            self.host.work('start', operation)
+        self.assertEqual(len(denied), 3)
+        self.assertEqual(self.host.read_state()['phase'], 'done')
+        self.assertEqual(list(self.host.state_dir.glob('*.tmp')), [])
+
+    def test_a_worker_that_cannot_write_its_result_still_releases_the_lock(self):
+        operation = self.accepted()
+        def denied(source, target):
+            raise PermissionError(13, 'Access is denied')
+        logged = []
+        self.host.log = logged.append
+        with mock.patch.object(gaia_host.os, 'replace', denied), mock.patch.object(gaia_host.time, 'sleep', lambda s: None), \
+                mock.patch.object(self.host, 'do_refresh', lambda op: None), mock.patch.object(self.host, 'do_start', lambda op: None):
+            self.host.work('start', operation)
+        self.assertFalse(self.host.lock.exists())
+        self.assertTrue(any('worker_report_failed' in entry for entry in logged), logged)
+
+    def test_a_record_keeps_the_action_when_one_read_of_the_state_fails(self):
+        operation = self.accepted()
+        real, failed = Path.read_text, []
+        def read_text(path, *args, **kwargs):
+            if path.name == 'operation.json' and not failed:
+                failed.append(path)
+                raise PermissionError(13, 'Access is denied')
+            return real(path, *args, **kwargs)
+        with mock.patch.object(Path, 'read_text', read_text), mock.patch.object(gaia_host.time, 'sleep', lambda s: None):
+            self.host.record(phase='saving')
+        state = self.host.read_state()
+        self.assertEqual((state['action'], state['operation'], state['phase']), ('start', operation, 'saving'))
+
+    def test_the_command_line_answers_json_when_an_action_raises(self):
+        self.config.pop('_path')
+        path = self.root / 'gaia-host.json'
+        path.write_text(json.dumps(self.config))
+        with mock.patch.object(gaia_host.Host, 'kill', side_effect=PermissionError(13, 'Access is denied')), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out, mock.patch('sys.stderr', new_callable=io.StringIO):
+            code = gaia_host.main(['--config', str(path), 'kill'])
+        answer = json.loads(out.getvalue().strip().splitlines()[-1])
+        self.assertEqual(code, 1)
+        self.assertFalse(answer['ok'])
+        self.assertIn('kill failed: PermissionError', answer['refused'])
 
 
 class ForcedStopTests(GaiaHostTests):

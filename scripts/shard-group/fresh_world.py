@@ -131,6 +131,7 @@ def work(host, operation):
     if not host.lock.exists() or host.lock.read_text().strip() != operation:
         return
     try:
+        host.note_worker()  # so a lock this worker never releases is seen as stale (Host.stale_lock)
         check(host)  # Recheck after the detached worker starts, before changing anything.
         archive = host.state_dir / 'fresh-world-archives' / operation
         archive.mkdir(parents=True, exist_ok=False)

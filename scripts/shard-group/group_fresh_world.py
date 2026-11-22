@@ -24,7 +24,7 @@ import os
 from pathlib import Path
 import secrets
 
-from gaia_host import Refused
+from gaia_host import Refused, replace_file
 import fresh_world
 
 STORE_SUFFIXES = ('', '-wal', '-shm', '-journal')
@@ -46,7 +46,7 @@ def store_files(path):
 def write_json(path, value):
     temporary = path.with_name(path.name + '.tmp')
     temporary.write_text(json.dumps(value, indent=2), encoding='utf-8')
-    os.replace(temporary, path)
+    replace_file(temporary, path)
 
 
 def stop_helpers(group, pairs, coordinator_pid, terminate):

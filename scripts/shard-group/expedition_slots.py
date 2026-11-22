@@ -27,7 +27,7 @@ import shutil
 import sys
 import time
 
-from gaia_host import Refused
+from gaia_host import Refused, replace_file
 import fresh_world
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -100,7 +100,7 @@ def write_wish(group, folder, region_id, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(path.name + '.tmp')
     temporary.write_text(json.dumps(value, indent=1, sort_keys=True) + '\n', encoding='utf-8')
-    os.replace(temporary, path)
+    replace_file(temporary, path)
 
 
 def forget_build(host):
@@ -127,7 +127,7 @@ def write_slot(group, record):
     record['history'] = record.get('history', [])[-HISTORY_KEPT:]
     temporary = path.with_name(path.name + '.tmp')
     temporary.write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
-    os.replace(temporary, path)
+    replace_file(temporary, path)
 
 
 def saved_world(path):

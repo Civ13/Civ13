@@ -32,10 +32,24 @@ public static class HostSettings {
         if (seconds is < 0 or > MaxShutdownWarningSeconds) throw new InvalidDataException("The players' warning must be 0 to 3600 seconds.");
         if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
         root["shutdown_warning_seconds"] = seconds;
+        WriteGroup(group, root);
+    }
+    // The group config is replaced whole, and the host service and every host script read it: Windows refuses
+    // the replace while one of them has it open, which lost the setting with an access-denied error. Tried again
+    // for a second, as gaia_host.py replace_file does for the status files.
+    internal static void WriteGroup(HostGroup group, JsonObject root) {
         var temporary = group.Config + ".tmp";
         File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        File.Move(temporary, group.Config, true);
+        ReplaceFile(temporary, group.Config);
     }
+
+    internal static void ReplaceFile(string temporary, string path, int attempts = 20) {
+        for (var attempt = 1; ; attempt++) {
+            try { File.Move(temporary, path, true); return; }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < attempts && File.Exists(temporary)) { Thread.Sleep(50); }
+        }
+    }
+
     // Update when empty: a region whose last player left and which has saved since builds the latest
     // revision beside itself and attempts a standby handover (the group config's update_when_empty, on unless
     // set false; shard_group.py RegionHost reads it at each check). New commits are only seen when the
@@ -61,9 +75,7 @@ public static class HostSettings {
             root["revision"] = "origin/master";
             followed = true;
         }
-        var temporary = group.Config + ".tmp";
-        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        File.Move(temporary, group.Config, true);
+        WriteGroup(group, root);
         return followed;
     }
 
@@ -101,9 +113,7 @@ public static class HostSettings {
         if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
         if (id == mainland) root.Remove("start_region");
         else root["start_region"] = id;
-        var temporary = group.Config + ".tmp";
-        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        File.Move(temporary, group.Config, true);
+        WriteGroup(group, root);
     }
 
     // Travel starts: a traveller bound for a land that is not running starts it, the way one bound for a sleeping
@@ -135,9 +145,7 @@ public static class HostSettings {
             if (keptDown.Contains(id) && Text(region["kind"]) != "GATEWAY") region["keep_down"] = true;
             else region.Remove("keep_down");
         }
-        var temporary = group.Config + ".tmp";
-        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        File.Move(temporary, group.Config, true);
+        WriteGroup(group, root);
     }
 
     // Ready lands (group config ready_neighbours, default on, and cold_after_minutes, default 15; Val, 2026-11-22): a land
@@ -160,9 +168,7 @@ public static class HostSettings {
         if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
         root["ready_neighbours"] = on;
         root["cold_after_minutes"] = coldAfterMinutes;
-        var temporary = group.Config + ".tmp";
-        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        File.Move(temporary, group.Config, true);
+        WriteGroup(group, root);
     }
 
     private static string? Text(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
@@ -377,6 +383,6 @@ public static class HostSettings {
         var temporary = path + ".saving";
         File.WriteAllText(temporary, text, new UTF8Encoding(false));
         if (File.Exists(path)) File.Copy(path, path + ".previous", true);
-        File.Move(temporary, path, true);
+        ReplaceFile(temporary, path);
     }
 }

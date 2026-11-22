@@ -117,6 +117,9 @@ def change_running(sg, group):
     if not journal or journal.get('phase') not in RUNNING_PHASES:
         return None
     if type(journal.get('pid')) is int:
+        boot = sg.Platform().boot_time()
+        if boot is not None and type(journal.get('started')) is int and boot > journal['started'] + 60:
+            return None  # from before the machine restarted: its pid is someone else's now
         return journal if sg.process_alive(journal['pid']) else None
     # Accepted a moment ago: its worker has not written its pid yet.
     started = journal.get('started')

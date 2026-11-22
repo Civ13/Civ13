@@ -46,7 +46,10 @@ public static class GroupPorts {
         if (port is { } number) { step.ArgumentList.Add("--port"); step.ArgumentList.Add(number.ToString(CultureInfo.InvariantCulture)); }
         if (botProfile != null) { step.ArgumentList.Add("--bot-profile"); step.ArgumentList.Add(botProfile); }
         if (apply) step.ArgumentList.Add("--apply");
-        return step;
+        // A list or a plan answers in seconds and --apply hands its work to a detached worker; without a limit
+        // of their own these ran under the 30 minute one, so a hung script held the Ports window that long.
+        // Adding regions sets their folders up first (checkouts), which keeps the long limit.
+        return action is "add-gateway" or "add-regions" ? step : step.WithLimit(LocalHosting.RequestLimit);
     }
 
     // The regions that can be the front door, in the group's order, with their game ports.
