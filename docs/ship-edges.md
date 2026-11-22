@@ -68,6 +68,10 @@ Code: `code/modules/naval/hull_gangway.dm`.
   plank across up to 3 tiles of open water to a pier, the shore or another
   ship (`hull_gangplank_plan`). She must be stopped. A ship lying right
   alongside needs no plank.
+- A gangway on her upper deck (on open air, `building_open_turf()`) runs the
+  plank over open air instead, to a quay or pier floor on that level, so she
+  can be boarded from a level up. The gangway's ship is found with
+  `craft_holding()`, which knows her decks above and her hold.
 - Gangplank tiles are `/obj/covers/repairedfloor/rope/boarding/gangplank`:
   boarding-line floors, so `hull_floor_in` ignores them and she never becomes
   a jetty. They are not saved.
