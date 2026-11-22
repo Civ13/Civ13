@@ -329,7 +329,7 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
 	if (!ishuman(user) || !B || !B.submerged)
 		return ..()
-	if (!Adjacent(user) || user.region_send_held())
+	if (!Adjacent(user) || user.travel_held())
 		return
 	var/turf/here = get_turf(user)
 	if (here && here.iscovered())
@@ -422,7 +422,7 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	if (!do_after(user, SEABED_LOCKOUT_TIME, src))
 		return FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
-	if (QDELETED(src) || !B || !B.submerged || user.region_send_held() || escape_refusal())
+	if (QDELETED(src) || !B || !B.submerged || user.travel_held() || escape_refusal())
 		return FALSE
 	var/turf/up = escape_surface()
 	if (outer_dogged)
@@ -450,7 +450,7 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 		return FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = boat()
 	var/turf/exit = lockout_exit()
-	if (QDELETED(src) || !B || !B.submerged || !exit || !user.can_walk_seabed() || user.region_send_held())
+	if (QDELETED(src) || !B || !B.submerged || !exit || !user.can_walk_seabed() || user.travel_held())
 		return FALSE
 	if (outer_dogged)
 		set_dogged(FALSE)
@@ -474,7 +474,7 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	if (!do_after(user, blow ? SEABED_LOCKOUT_TIME : SEABED_HAND_PUMP_TIME, src))
 		return FALSE
 	B = boat()
-	if (QDELETED(src) || !B || !B.submerged || !Adjacent(user) || user.region_send_held() || lock_in_refusal())
+	if (QDELETED(src) || !B || !B.submerged || !Adjacent(user) || user.travel_held() || lock_in_refusal())
 		return FALSE
 	if (blow)
 		B.blow_chamber()
