@@ -1,8 +1,8 @@
 // ============================================================
 // Research Tree - era bills (Val, 2026-11-22)
 // ------------------------------------------------------------
-// On book-research worlds the late era capstones also need a bill of
-// materials, delivered to the bench while their book is on it. The bills lean
+// On book-research worlds the late era capstones, and the biggest late
+// subjects, also need a bill of materials, delivered to the bench while their book is on it. The bills lean
 // on the resources only some continents hold in quantity (continent_resources.dm,
 // rubber_tapping.dm), so sourcing them is the hard part. Anyone may deliver:
 // there is no faction, membership or signature check, and any faction can do
@@ -17,13 +17,27 @@
 // ============================================================
 
 // node id => list(material key => amount). Starting sizes, to tune from play.
+// Every era capstone from Steam Power on, then the biggest late subjects with
+// smaller bills, so finishing an era is hard and not only entering it.
 /proc/capstone_bills()
 	var/static/list/bills
 	if (!bills)
 		bills = list(
+			// Capstones
 			"steam_power" = list("coal" = 60, "iron" = 40, "copper" = 10),
+			"electricity" = list("copper" = 80, "zinc" = 30, "lead" = 20, "rubber" = 20),
 			"powered_flight" = list("steel" = 120, "rubber" = 40, "brass" = 30, "cloth" = 40),
-			"mechanized_war" = list("steel" = 200, "rubber" = 40, "lead" = 40, "sulphur" = 30, "saltpeter" = 30))
+			"mechanized_war" = list("steel" = 200, "rubber" = 40, "lead" = 40, "sulphur" = 30, "saltpeter" = 30),
+			"nuclear_power" = list("uranium" = 30, "lead" = 120, "steel" = 150, "concrete" = 100),
+			"digital_computing" = list("copper" = 250, "aluminium" = 100, "gold" = 60, "silver" = 60, "electronics" = 60, "gems" = 15),
+			"digital_networks" = list("copper" = 350, "aluminium" = 150, "gold" = 80, "silver" = 80, "electronics" = 100, "gems" = 25),
+			// Big late subjects
+			"automatic_weapons" = list("steel" = 60, "lead" = 30, "brass" = 20),
+			"aviation_rocketry" = list("steel" = 80, "aluminium" = 30, "rubber" = 20),
+			"missiles" = list("steel" = 60, "sulphur" = 40, "saltpeter" = 40),
+			"composite_armour" = list("steel" = 100, "aluminium" = 60, "rubber" = 20),
+			"rocketry" = list("aluminium" = 100, "steel" = 80, "sulphur" = 40, "copper" = 40),
+			"orbital_flight" = list("aluminium" = 200, "gold" = 40, "silver" = 30, "electronics" = 60))
 	return bills
 
 // material key => list(what to call it, the stack type it takes)
@@ -40,7 +54,15 @@
 			"cloth" = list("cloth", /obj/item/stack/material/cloth),
 			"lead" = list("lead ingots", /obj/item/stack/material/lead),
 			"sulphur" = list("sulphur", /obj/item/stack/ore/sulphur),
-			"saltpeter" = list("saltpeter", /obj/item/stack/ore/saltpeter))
+			"saltpeter" = list("saltpeter", /obj/item/stack/ore/saltpeter),
+			"zinc" = list("zinc ingots", /obj/item/stack/material/zinc),
+			"uranium" = list("uranium ore", /obj/item/stack/ore/uranium),
+			"concrete" = list("concrete", /obj/item/stack/material/concrete),
+			"aluminium" = list("aluminium ingots", /obj/item/stack/material/aluminium),
+			"gold" = list("gold ingots", /obj/item/stack/material/gold),
+			"silver" = list("silver ingots", /obj/item/stack/material/silver),
+			"electronics" = list("electronics", /obj/item/stack/material/electronics),
+			"gems" = list("gems", /obj/item/stack/ore/gem))
 	return materials
 
 // The bill node_id needs here, or null.
