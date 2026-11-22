@@ -2721,6 +2721,9 @@ SUITES = {
     # Flying drones break and are wrecked when damage empties their health.
     'drone_destruction': {'files': ('tests/drone_destruction/test_flying_destroy.py',), 'paths': (
         'tests/drone_destruction/', 'code/game/objects/items/devices/drone.dm')},
+    # Raising a lowered sterile mask restores its face coverage.
+    'sterile_mask_toggle': {'files': ('tests/sterile_mask_toggle/test_toggle_coverage.py',), 'paths': (
+        'tests/sterile_mask_toggle/', 'code/game/objects/items/clothing/masks/medical.dm')},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
