@@ -16,7 +16,7 @@
 
 #define PEOPLE_NAME_MIN 3
 #define PEOPLE_NAME_MAX 24
-#define PEOPLE_RECORD_KEYS list("name", "root", "parents", "language", "homeland", "nation", "year", "imported")
+#define PEOPLE_RECORD_KEYS list("name", "root", "parents", "language", "homeland", "nation", "year", "imported", "meaning")
 
 /datum/origin
 	var/root_id = null			// the root people a world people keeps its name style and dress from
@@ -26,6 +26,7 @@
 	var/formed_year = 0			// world calendar year it formed (world peoples)
 	var/world_record = FALSE	// TRUE for a people that formed in play
 	var/imported = FALSE		// arrived with a traveller from another land
+	var/meaning = null			// what a world people's name means, if it was chosen from suggestions
 	// Kept open for peoples of other worlds (for example heteromorphic races on
 	// Yggdrasil): a root people there would set its own world and body plan.
 	var/world_name = "Earth"
@@ -106,6 +107,7 @@ var/global/list/world_peoples_cache = null
 	O.formed_year = isnum(record["year"]) ? record["year"] : 0
 	O.world_record = TRUE
 	O.imported = record["imported"] ? TRUE : FALSE
+	O.meaning = istext(record["meaning"]) ? record["meaning"] : null
 	O.world_name = root.world_name
 	O.body_plan = root.body_plan
 	world_peoples_cache[id] = O
@@ -132,7 +134,7 @@ var/global/list/world_peoples_cache = null
 		for (var/parent in parents)
 			if (!istext(parent) || parent == id)
 				return FALSE
-	for (var/key in list("homeland", "nation"))
+	for (var/key in list("homeland", "nation", "meaning"))
 		if (!isnull(record[key]) && (!istext(record[key]) || length(record[key]) > 40))
 			return FALSE
 	if (!isnull(record["year"]) && !isnum(record["year"]))
@@ -174,7 +176,7 @@ var/global/list/world_peoples_cache = null
 	return id
 
 // Records a new people and returns it, or null. parents are origin ids.
-/proc/found_people(name, list/parents, language_name, homeland = null, nation = null, imported = FALSE)
+/proc/found_people(name, list/parents, language_name, homeland = null, nation = null, imported = FALSE, meaning = null)
 	origin_by_id(null)
 	var/list/parent_origins = list()
 	for (var/pid in parents)
@@ -197,6 +199,8 @@ var/global/list/world_peoples_cache = null
 		record["nation"] = copytext(nation, 1, 41)
 	if (imported)
 		record["imported"] = TRUE
+	if (istext(meaning) && length(meaning))
+		record["meaning"] = copytext(meaning, 1, 41)
 	var/id = people_free_id(name)
 	if (!people_record_valid(id, record))
 		return null

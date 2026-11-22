@@ -197,8 +197,32 @@ var/peoples_runtime_error = FALSE
 		people_split_check(year)
 		peoples_check(!(fen_key in pending), "a nation with too few members does not split")
 		peoples_check(isnull(split_people(pact_key, "Germans")) && (pact_key in pending), "a blocked name does not split")
-		var/datum/origin/iron = split_people(pact_key, "Ironvale Folk")
+
+		// Name suggestions.
+		var/mob/living/human/elder = pact[2]
+		elder.real_name = "Aldric Stone"
+		elder.age = 70
+		peoples_check(people_pending_tongue(pact_key) == "Latin", "suggestions come from the tongue the people will speak")
+		var/list/offered = people_name_suggestions(pact_key)
+		var/all_free = offered.len >= 3
+		for (var/word in offered)
+			if (people_name_problem(word) || length(word) < 4 || length(word) > 12)
+				all_free = FALSE
+		peoples_check(all_free, "three suggestions, each a name that passes the name check")
+		var/list/meanings = list()
+		for (var/word in offered)
+			meanings += offered[word]
+		peoples_check(("the children of Aldric" in meanings) && ("the people of the homeland" in meanings), "suggestions carry a place, a trait and an elder")
+		var/list/again = people_name_suggestions(pact_key)
+		peoples_check(jointext(again, ",") == jointext(offered, ","), "the same meanings give the same words")
+		var/list/others = people_name_suggestions(pact_key, 1)
+		peoples_check(others.len && jointext(others, ",") != jointext(offered, ","), "asking again gives other words")
+		peoples_check(people_word_letters("'Ana-x") == "anax" && isnull(people_word("No Such Tongue", "the free")), "words use plain letters of a real tongue")
+		var/first_word = offered[1]
+		var/datum/origin/iron = split_people(pact_key, first_word, offered[first_word])
 		peoples_check(istype(iron) && iron.nation == "Iron Pact" && iron.parents[1] == "hearthlanders" && iron.language == "Latin", "naming makes the new people")
+		peoples_check(iron.meaning == offered[first_word] && findtext(jointext(world_peoples_report(), "\n"), iron.meaning), "the chosen meaning is kept and shown to admins")
+		peoples_check(!rename_world_people(iron.id, "Ironvale Folk") && isnull(world_people(iron.id).meaning), "an admin rename drops the old meaning")
 		var/moved = 0
 		for (var/mob/living/human/H in pact)
 			if (H.origin_id == iron.id)
