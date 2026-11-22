@@ -16,6 +16,7 @@ const MAX_CHARS = 500;
 const MAX_BODY = 8192;
 const MAX_WAITING = 40;
 const TRANSLATE_TIMEOUT_MS = 15000;
+const FIRST_LINE_WAIT_MS = 9000; // under TRANSLATE_TIMEOUT_MS, with room for one stale call
 
 const PAGE = `<!doctype html><meta charset="utf-8"><title>Civ13 translator</title>
 <button id="go">translate</button>
@@ -30,15 +31,40 @@ const PAGE = `<!doctype html><meta charset="utf-8"><title>Civ13 translator</titl
     const key = p.s + '>' + p.t;
     if (translators[key] || creating[key]) return;
     creating[key] = Translator.create({ sourceLanguage: p.s, targetLanguage: p.t })
-      .then(tr => { translators[key] = tr; }).catch(() => {}).finally(() => { delete creating[key]; });
+      .then(tr => { translators[key] = tr; lastUsed[key] = Date.now(); }).catch(() => {}).finally(() => { delete creating[key]; });
   });
-  // A translator that fails once is dropped and made again for the next line.
+  // Edge unloads a translator it has not used for a while, and the old object
+  // then hangs instead of failing (Gaia, 2026-11-22: "hola" waited the full
+  // 15 s). So every call has its own deadline; a translator that fails or
+  // hangs is dropped and reported stale so the service makes it again, and
+  // pairs used in the last half hour are kept warm.
+  const lastUsed = {};
+  const CALL_MS = 5000, KEEP_WARM_MS = 45000, IDLE_MS = 30 * 60000;
+  function drop(key) {
+    const tr = translators[key];
+    delete translators[key];
+    delete lastUsed[key];
+    try { if (tr && tr.destroy) tr.destroy(); } catch (e) {}
+  }
+  function within(promise, ms) {
+    return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))]);
+  }
   window.translateWith = async (s, t, text) => {
     const key = s + '>' + t;
     const tr = translators[key];
-    if (!tr) return null;
-    try { return await tr.translate(text); } catch (e) { delete translators[key]; return null; }
+    if (!tr) return { pending: true };
+    try {
+      const out = await within(tr.translate(text), CALL_MS);
+      lastUsed[key] = Date.now();
+      return { text: out };
+    } catch (e) { drop(key); return { stale: true }; }
   };
+  setInterval(() => {
+    for (const key of Object.keys(translators)) {
+      if (Date.now() - (lastUsed[key] || 0) > IDLE_MS) { drop(key); continue; }
+      within(translators[key].translate('ok'), CALL_MS).catch(() => drop(key));
+    }
+  }, KEEP_WARM_MS);
   window.hasTranslator = () => typeof Translator !== 'undefined';
 </script>`;
 
@@ -104,16 +130,26 @@ class EdgeBackend {
     const state = await this.state(source, target);
     if (state === 'unavailable') return null;
     await this.prepare(source, target);
-    // Making a translator from a pack already on disk can take a few seconds,
-    // so the first line of each pair waits up to 6 s; while a pack is still
-    // downloading later lines wait only briefly. ("downloadable" is reported
-    // even for packs on disk.)
+    // Making a translator from a pack already on disk takes a few seconds, so
+    // the first line of each pair (and the first after Edge dropped it) waits
+    // up to 9 s; while a pack is still downloading later lines wait only
+    // briefly. ("downloadable" is reported even for packs on disk.)
     const key = source + '>' + target;
-    const tries = this.tried[key] ? 5 : 60;
+    let deadline = Date.now() + (this.tried[key] ? 500 : FIRST_LINE_WAIT_MS);
     this.tried[key] = true;
-    for (let i = 0; i < tries; i++) {
+    let remade = false;
+    while (Date.now() < deadline) {
       const out = await this.page.evaluate(([s, t, x]) => window.translateWith(s, t, x), [source, target, text]);
-      if (out !== null) return out;
+      if (out && typeof out.text === 'string') return out.text;
+      if (out && out.stale && !remade) {
+        // Edge dropped this pair: make it again now and give this line the
+        // first-line wait, rather than answering empty for the next minute.
+        remade = true;
+        delete this.pending[key];
+        await this.prepare(source, target);
+        deadline = Date.now() + FIRST_LINE_WAIT_MS;
+        continue;
+      }
       await new Promise(r => setTimeout(r, 100));
     }
     return null; // still downloading; later lines will get it

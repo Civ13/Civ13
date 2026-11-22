@@ -4,7 +4,8 @@
 const assert = require('assert');
 const http = require('http');
 const { detect } = require('../detect');
-const { createService } = require('../edge_translator');
+const { createService, PAGE } = require('../edge_translator');
+const vm = require('vm');
 
 const cases = [
   ['hola amigo, vendo hierro junto al rio', 'es'], ['¿dónde está el barco?', 'es'],
@@ -12,6 +13,10 @@ const cases = [
   ['danke für das Eisen, wo ist der Fluss', 'de'], ['obrigado, não tenho pão', 'pt'], ['ciao, dove sono le barche', 'it'],
   ['dzień dobry, gdzie jest łódź', 'pl'], ['merhaba, tekne nerede değil', 'tr'], ['hej, tack för hjälpen', 'sv'],
   ['こんにちは', 'ja'], ['你好朋友', 'zh'], ['안녕하세요', 'ko'], ['γεια σου', 'el'], ['مرحبا', 'ar'], ['नमस्ते', 'hi'], ['สวัสดี', 'th'],
+  // Short greetings, the most common foreign OOC lines (Gaia playtest 2026-11-22).
+  ['hola', 'es'], ['hola!', 'es'], ['buenos dias', 'es'], ['guten morgen', 'de'], ['gute nacht', 'de'],
+  ['wie geht es dir', 'de'], ['bonsoir', 'fr'], ['au revoir', 'fr'], ['buongiorno', 'it'], ['bom dia', 'pt'],
+  ['goedemorgen', 'nl'], ['dobranoc', 'pl'], ['gunaydin', 'tr'], ['god morgon', 'sv'], ['good morning', 'en'],
   ['xin chào, cảm ơn bạn', 'vi'], ['the storm is coming, get inside', 'en'], ['!!! 123', 'und'], ['', 'und'],
 ];
 for (const [text, want] of cases) assert.strictEqual(detect(text), want, text);
@@ -60,5 +65,32 @@ function post(port, body) {
   assert.ok(calls[calls.length - 1].length <= 'es>en:'.length + 500, 'text capped at 500 characters');
   assert.strictEqual(long.status, 200);
   await new Promise(r => server.close(r));
+
+  // The hidden Edge page: a translator that fails is dropped and reported
+  // stale so the service makes it again (Gaia 2026-11-22: a stale translator
+  // hung instead of failing).
+  const script = PAGE.slice(PAGE.indexOf('<script>') + 8, PAGE.lastIndexOf('</script>'));
+  let click = null;
+  let mode = 'ok';
+  const timers = [];
+  const win = { Translator: { availability: async () => 'available', create: async () => ({
+    translate: async x => { if (mode === 'fail') throw new Error('gone'); return 'EN:' + x; }, destroy() {} }) } };
+  const sandbox = { window: win, Translator: win.Translator, setTimeout, Date, Promise, Object,
+    setInterval: (f, ms) => { timers.push(f); return 1; },
+    document: { getElementById: () => ({ addEventListener: (_, f) => { click = f; } }) } };
+  vm.runInNewContext(script, sandbox);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(await win.translateWith('es', 'en', 'hola'))), { pending: true });
+  win.__pair = { s: 'es', t: 'en' };
+  click();
+  await new Promise(r => setTimeout(r, 10));
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(await win.translateWith('es', 'en', 'hola'))), { text: 'EN:hola' });
+  assert.strictEqual(timers.length, 1, 'keep-warm timer');
+  mode = 'fail';
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(await win.translateWith('es', 'en', 'hola'))), { stale: true });
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(await win.translateWith('es', 'en', 'hola'))), { pending: true }, 'dropped after failing');
+  mode = 'ok';
+  click();
+  await new Promise(r => setTimeout(r, 10));
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(await win.translateWith('es', 'en', 'hola'))), { text: 'EN:hola' }, 'made again');
   console.log('edge translator: all checks passed');
 })().catch(e => { console.error(e); process.exit(1); });
