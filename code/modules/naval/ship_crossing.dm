@@ -248,6 +248,10 @@
 /proc/sea_crossing_rail_ok(path)
 	return ispath(path, /obj/structure/railing/built)
 
+// Her belt armour is part of her hull, not cargo (hull_armour.dm).
+/proc/sea_crossing_armour_ok(path)
+	return ispath(path, /obj/structure/hull_armour)
+
 /proc/sea_crossing_helm_ok(path)
 	return ispath(path, /obj/structure/hull_tiller)
 
@@ -401,6 +405,9 @@
 		if (sea_crossing_rail_ok(M.type))
 			entries += list(list("r", "[M.type]", M.dir))
 			continue
+		if (sea_crossing_armour_ok(M.type))
+			entries += list(list("a", "[M.type]"))
+			continue
 		// A ladder between her deck and hold is built again in pairs.
 		if (sea_crossing_ladder_ok(M.type))
 			entries += list(list("l", "[M.type]", M.dir))
@@ -472,8 +479,10 @@ var/global/list/sea_crossing_marked = list()
 // Measures what crossing would carry now, without moving anything: the
 // refusal text, or the share of the record budget she fills, 0 to 100. A
 // voyage asks before she sails (ship_voyage.dm), so a ship too big or too
-// laden is told at the tiller, not at landfall minutes later. Until voyage
-// records are sent in chunks this budget is the hull size cap.
+// laden is told at the tiller, not at landfall minutes later. The tile caps
+// bind long before this budget does: a 200-tile battleship with a full hold,
+// turrets, racks and crates fills about an eighth of it
+// (tests/naval_carrier/passage_probe.dm), so a record never needs splitting.
 /proc/sea_crossing_load(obj/structure/hull_tiller/tiller)
 	var/list/packed = sea_crossing_pack(tiller)
 	if (istext(packed))
@@ -598,6 +607,9 @@ var/global/list/sea_crossing_marked = list()
 						return null
 				if ("r")
 					if (E.len != 3 || !sea_crossing_rail_ok(text2path(E[2])) || !(E[3] in cardinal))
+						return null
+				if ("a")
+					if (E.len != 2 || !sea_crossing_armour_ok(text2path(E[2])))
 						return null
 				if ("k")
 					if (E.len != 4 || !sea_crossing_closet_ok(text2path(E[2])) || !(E[3] in alldirs + list(0)) || !islist(E[4]) || length(E[4]) > SEA_CROSSING_CHEST_ITEMS_MAX)
@@ -828,6 +840,8 @@ var/global/list/sea_crossing_marked = list()
 			var/obj/structure/railing/R = new path(T)
 			R.set_dir(E[3])
 			return R
+		if ("a")
+			return new path(T)
 		if ("k")
 			var/obj/structure/closet/K = new path(T)
 			K.dir = E[3]
