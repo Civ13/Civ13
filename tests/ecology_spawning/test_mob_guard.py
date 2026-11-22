@@ -79,9 +79,9 @@ class MobGuardTests(unittest.TestCase):
     def test_guards_and_callback_boundary(self):
         self.assertIn('#define isDeleted(D) (!D || D:gcDestroyed)', MACROS)
         self.assertIn('#define isliving(A) istype(A, /mob/living)', MACROS)
-        segment = SOURCE[SOURCE.index('\t\tif (!M || !isliving(M))'):SOURCE.index('\t\ttry')]
+        segment = SOURCE[SOURCE.index('\t\tif (!isliving(M))'):SOURCE.index('\t\ttry')]
         self.assertEqual(segment.strip().splitlines(), [
-            'if (!M || !isliving(M))', '\t\t\tcontinue', '', '\t\tif (isDeleted(M))',
+            'if (!isliving(M))', '\t\t\tcontinue', '', '\t\tif (isDeleted(M))',
             '\t\t\tcatchBadType(M)', '\t\t\tmob_list -= M',
             '\t\t\tunregister_living_mob(M)', '\t\t\tcontinue',
         ])
@@ -98,8 +98,20 @@ class MobGuardTests(unittest.TestCase):
             with self.subTest(kind=kind, deleted=deleted, phase=phase):
                 self.assertEqual(run(before, kind, deleted, phase), run(SOURCE, kind, deleted, phase))
 
+    def test_simplified_living_guard_matches_previous_traces(self):
+        before = SOURCE.replace('if (!isliving(M))', 'if (!M || !isliving(M))', 1)
+        self.assertNotEqual(before, SOURCE)
+        for kind, deleted, phase in [
+            ('null', False, 'active'), ('other', False, 'active'),
+            ('living', True, 'active'), ('living', False, 'active'),
+            ('living', False, 'frozen'), ('living', False, 'resting'),
+            ('human', False, 'active'), ('human', False, 'retire'),
+        ]:
+            with self.subTest(kind=kind, deleted=deleted, phase=phase):
+                self.assertEqual(run(before, kind, deleted, phase), run(SOURCE, kind, deleted, phase))
+
     def test_missing_outer_guard_changes_null_cleanup(self):
-        bad = SOURCE.replace('if (!M || !isliving(M))', 'if (!isliving(M) && M)', 1)
+        bad = SOURCE.replace('if (!isliving(M))', 'if (!isliving(M) && M)', 1)
         self.assertNotEqual(run(SOURCE, 'null'), run(bad, 'null'))
 
     def test_post_life_guard_is_needed(self):

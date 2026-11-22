@@ -1027,10 +1027,11 @@
 		overpopulationCountdown--
 		return
 
-	if (!pregnant && sheep_count.len < 58)
+	// Lambs neither conceive nor sire until they mature.
+	if (!pregnant && !lamb && sheep_count.len < 58)
 		var/nearbyObjects = range(1,src) //3x3 area around animal
 		for(var/mob/living/simple_animal/sheep/M in nearbyObjects)
-			if (M.stat == CONSCIOUS && !istype(M, /mob/living/simple_animal/sheep/female))
+			if (M.stat == CONSCIOUS && !M.lamb && !istype(M, /mob/living/simple_animal/sheep/female))
 				pregnant = TRUE
 				birthCountdown = 600 // life ticks once per 2 seconds, 300 == 10 minutes
 				break

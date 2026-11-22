@@ -17,12 +17,12 @@
 	for (current in current_list)
 		var/datum/scheduled_task/scheduled_task = current
 		try
-			if (scheduled_task && !QDELETED(scheduled_task) && world.time > scheduled_task.trigger_time)
+			if (!QDELETED(scheduled_task) && world.time > scheduled_task.trigger_time)
 				unschedule(scheduled_task)
 				scheduled_task.pre_process()
-				if (scheduled_task && !QDELETED(scheduled_task))
+				if (!QDELETED(scheduled_task))
 					scheduled_task.process()
-				if (scheduled_task && !QDELETED(scheduled_task))
+				if (!QDELETED(scheduled_task))
 					scheduled_task.post_process()
 		catch(var/exception/e)
 			catchException(e, current)
