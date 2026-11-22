@@ -100,6 +100,18 @@ class RollingMill(unittest.TestCase):
                               capture_output=True, text=True)
         self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
 
+    def test_preset_stacks_count_as_plain_stock(self):
+        # #6784; behaviour in tests/rolling_mill/stock_probe.dm (run_linux.py).
+        stock = proc_body('/proc/rolling_mill_stock_type(')
+        self.assertIn('/obj/item/stack/material/iron/twentyfive', stock)
+        self.assertIn('/obj/item/stack/material/steel/twentyfive', stock)
+        self.assertNotIn('maraging', stock)
+        for header in (MILL + '/proc/roll_choices(', MILL + '/proc/takes(', MILL + '/proc/roll_stock('):
+            body = proc_body(header)
+            self.assertIn('rolling_mill_stock_type(', body)
+            self.assertNotIn('.type == row[1]', body)
+            self.assertNotIn('.type != row[1]', body)
+
 
 if __name__ == '__main__':
     unittest.main()
