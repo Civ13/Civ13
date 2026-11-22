@@ -140,7 +140,7 @@
 		return !already
 	if (istype(A, /obj/structure/sink))
 		var/obj/structure/sink/S = A
-		if (already || S.dry || S.volume <= 0)
+		if (already || S.heat_dried() || S.volume <= 0)
 			return FALSE
 		soak_blanket(user, S)
 		S.volume = max(0, S.volume - FIRE_BLANKET_SOAK_WATER)
