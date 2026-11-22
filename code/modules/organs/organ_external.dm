@@ -1064,9 +1064,14 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 // Pressure from a hand is live state; it never saves.
 /obj/item/organ/external/persistence_runtime_var(key)
-	if (key == "applied_pressure")
+	if (key == "applied_pressure" || key == "bone_set_on_fracture")
 		return TRUE
 	return ..()
+
+// Set when bone setting begins on a broken bone (surgery/bones.dm), so a
+// fracture that heals during the operation is not broken again.
+/obj/item/organ/external
+	var/tmp/bone_set_on_fracture = FALSE
 
 // lasts: Life ticks a makeshift (rope, twine) tourniquet holds before slipping
 // loose; 0 for a proper one.

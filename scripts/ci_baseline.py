@@ -122,6 +122,8 @@ SUITES = {
         'paths': ('tests/suit_patch_wait/', 'code/modules/space/pressure_suits.dm')},
     'boltaction_jam': {'files': ('tests/boltaction_jam/test_sources.py',),
         'paths': ('tests/boltaction_jam/', 'code/modules/1713/weapons/guns/bolt-action.dm')},
+    'bone_setting_race': {'files': ('tests/bone_setting_race/test_sources.py',),
+        'paths': ('tests/bone_setting_race/', 'code/modules/surgery/bones.dm', 'code/modules/organs/organ_external.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'cleanables_scheduler': {'files': ('tests/cleanables_scheduler/test_resume.py',),
