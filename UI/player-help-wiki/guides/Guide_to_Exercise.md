@@ -1,6 +1,6 @@
 # Exercise & Training
 
-Your **strength**, **dexterity** and **stamina** skills normally grow slowly as you work, fight and travel. Training equipment lets you train them on purpose, in short sets with rest in between. See [Character & Skills](Guide_to_Character.md#skills) for what each skill does.
+Your **strength**, **dexterity** and **stamina** skills normally grow slowly as you work, fight and travel. Training equipment lets you train them on purpose. Start once and you keep training, set after set, until you stop or run out of stamina. See [Character & Skills](Guide_to_Character.md#skills) for what each skill does.
 
 ## Lifting weights
 
@@ -19,10 +19,10 @@ Limits are in the same units as your Stats panel, before mood bonuses. The stone
 To train:
 
 1. Hold the weight. The two-handed ones need your other hand empty.
-2. Use it in your hand to lift it. Each lift takes about two seconds, and you must stand still for it.
-3. Lift it **six times** for a set. Strength is paid when the set is done.
+2. Use it in your hand once to start lifting. You keep lifting by yourself, about two seconds a lift, while you stand still.
+3. Every **six lifts** make a set. Strength is paid when each set is done.
 
-Take your time between lifts, but a rest of more than half a minute, or putting the weight down, starts the set over.
+To stop, use the weight in your hand again, move, switch hands, put it down or use **Stop Exercise**. A set you stop part way through earns nothing.
 
 **Pick the right weight.** Examine a weight to see how it suits you. One that is too heavy slips from your hands. One that has become too light teaches only a quarter as much, so move up through the sizes as you grow. Once your strength reaches a weight's limit it can teach you nothing more.
 
@@ -33,10 +33,10 @@ Take your time between lifts, but a rest of more than half a minute, or putting 
 A **skipping rope** is made from 2 rope in the **sports** section of the crafting menu. It needs Basic Toolmaking and no crafting skill.
 
 1. Hold the rope with your other hand empty.
-2. Use it in your hand to skip. Each skip takes about two seconds, and you must stand still for it.
-3. Skip **six times** for a set. The set pays dexterity and a little stamina, up to **1.25**.
+2. Use it in your hand once to start skipping. You keep skipping by yourself, about two seconds a skip, while you stand still.
+3. Every **six skips** make a set. Each set pays dexterity and a little stamina, up to **1.25**.
 
-As with weights, a rest of more than half a minute, or putting the rope down, starts the set over.
+You stop the same way as with weights.
 
 ## Tread wheels and treadmills
 
@@ -61,9 +61,9 @@ If you stop for more than five seconds, the set starts over. To get off, press a
 
 ## Floor exercises
 
-No equipment? Use **Floor Exercise** in the IC tab and choose **Push-ups** (strength) or **Sit-ups** (stamina). A set is **three repetitions of 8 seconds**. Stay still on dry ground until it finishes.
+No equipment? Use **Floor Exercise** in the IC tab and choose **Push-ups** (strength) or **Sit-ups** (stamina). You keep going on dry ground, **three repetitions of 8 seconds** to a set, until you move, run out of stamina, use **Floor Exercise** again or use **Stop Exercise**.
 
-Floor exercises train more slowly than equipment and stop at **1.0**. Past that you need weights, a skipping rope or a tread wheel. They use the same fatigue as equipment, and you cannot do them while you have an unfinished set on a piece of equipment.
+Floor exercises train more slowly than equipment and stop at **1.0**. Past that you need weights, a skipping rope or a tread wheel. They use the same fatigue as equipment, and you cannot do them while you are training with a piece of equipment.
 
 ## Hardening your hands
 
@@ -141,13 +141,15 @@ It takes many hours of practice to become a Master. The first time you become a 
 - **Hard-Hand Striking** also turns hardened hands into extra damage.
 - **Grappling schools** (Grappling, Judo, Brazilian Jiu-Jitsu, and in part Pankration, Military Combatives, Krav Maga and Mixed Martial Arts) tighten their holds faster and break free of holds more easily.
 
-## Fatigue and rest
+## Stamina, fatigue and rest
 
-- Each completed set adds **2 fatigue**, up to a maximum of 6. At 6 you are too tired to gain anything.
+- Lifting, skipping and floor exercises use up your **stamina** while you keep at them, faster than it comes back. A rested character can keep going for about four minutes before they run out and stop. You need about a fifth of your stamina to start again.
+- Each completed set adds **2 fatigue**, up to a maximum of 6. At 6 your sets teach nothing, but you keep training, and your sets pay again once you have recovered a little.
 - Each set also makes you a little hungrier and thirstier, and you cannot gain while very hungry or thirsty.
 - One fatigue point recovers per minute.
 - The more fatigued you are, the less each set teaches you. Gains are also halved once a skill reaches 1.0.
 - You must be conscious, standing and able to use your hands, and a skill below 0.1 is too low to train.
-- Use **Stop Exercise** in the IC tab to abandon a set. An abandoned set earns nothing.
+- Use **Stop Exercise** in the IC tab to stop. A set you stop part way through earns nothing.
+- Hunger, thirst or reaching your gear's training limit also stop you.
 
-A good routine is one set, a short break while you do something else, then another set.
+Start a session, keep at it until you run out of stamina, then rest or do something else while your stamina and fatigue recover.
