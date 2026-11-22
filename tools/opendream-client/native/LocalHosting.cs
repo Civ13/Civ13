@@ -176,7 +176,50 @@ public static class LocalHosting {
         return (process.ExitCode, Text(output) + Text(error));
     }
 
-    private static string Describe(TimeSpan limit) => limit.TotalMinutes >= 1 ? $"{limit.TotalMinutes:0} min" : $"{limit.TotalSeconds:0} s";
+    private static string Describe(TimeSpan limit) => limit.TotalHours >= 1 && limit.TotalMinutes % 60 == 0 ? $"{limit.TotalHours:0} h"
+        : limit.TotalMinutes >= 1 ? $"{limit.TotalMinutes:0} min" : $"{limit.TotalSeconds:0} s";
+
+    // A streamed step the operator cancelled; it was ended with everything it started.
+    public sealed class StepCancelled(string message) : IOException(message);
+
+    // deploy.bat waits on its own clocks (wait_group.py: 90 min for the builds, 60 min for the handovers), so a
+    // deploy that is still going after three hours is hung; restart-host.bat is a few schtasks calls.
+    public static readonly TimeSpan DeployLimit = TimeSpan.FromHours(3);
+    public static TimeSpan GroupScriptLimit(string script) => script == "deploy" ? DeployLimit : RequestLimit;
+
+    // Runs a step to completion, handing each line of either stream to `line` as it arrives; returns its exit
+    // code. Past its limit, or when `cancel` fires, the step is ended with everything it started and this throws
+    // StepTimedOut or StepCancelled, so a hung script can never hold the Host tab for good.
+    public static int RunStreamed(ProcessStartInfo step, Action<string> line, CancellationToken cancel = default) {
+        var limit = LimitOf(step);
+        using var process = Process.Start(step) ?? throw new IOException("Could not start " + Path.GetFileName(step.FileName) + ".");
+        if (step.RedirectStandardInput) process.StandardInput.Close();
+        void Line(object _, DataReceivedEventArgs e) { if (e.Data is { Length: > 0 } text) line(text); }
+        process.OutputDataReceived += Line;
+        process.ErrorDataReceived += Line;
+        if (step.RedirectStandardOutput) process.BeginOutputReadLine();
+        if (step.RedirectStandardError) process.BeginErrorReadLine();
+        using var exited = new ManualResetEventSlim();
+        process.EnableRaisingEvents = true;
+        process.Exited += (_, _) => { try { exited.Set(); } catch (ObjectDisposedException) { } };
+        if (process.HasExited) exited.Set();
+        var watch = Stopwatch.StartNew();
+        var ended = 0;
+        try { ended = WaitHandle.WaitAny([exited.WaitHandle, cancel.WaitHandle], limit) == 0 ? 0 : cancel.IsCancellationRequested ? 2 : 1; }
+        catch (ObjectDisposedException) { ended = 2; }
+        if (ended != 0) {
+            try { process.Kill(true); } catch (Exception e) when (e is InvalidOperationException or Win32Exception or NotSupportedException) { }
+            process.WaitForExit(5000);
+            var name = Path.GetFileName(step.FileName);
+            throw ended == 2 ? new StepCancelled($"{name} was cancelled after {Describe(Whole(watch.Elapsed))} and ended.")
+                : new StepTimedOut($"{name} did not finish within {Describe(limit)} and was ended.");
+        }
+        // Drain the last lines, but never wait on a grandchild that kept the pipes open.
+        process.WaitForExit(TimeSpan.FromSeconds(10));
+        return process.ExitCode;
+    }
+
+    private static TimeSpan Whole(TimeSpan elapsed) => elapsed.TotalMinutes >= 1 ? TimeSpan.FromMinutes(Math.Floor(elapsed.TotalMinutes)) : TimeSpan.FromSeconds(Math.Floor(elapsed.TotalSeconds));
 
     // The limit for a host or group action: status reads, quick requests, or long work.
     public static TimeSpan ActionLimit(string action) => action switch {
@@ -286,7 +329,7 @@ public static class LocalHosting {
         foreach (var argument in new[] { "/d", "/c", path }) step.ArgumentList.Add(argument);
         if (resume) step.ArgumentList.Add("continue");
         foreach (var region in regions ?? []) step.ArgumentList.Add(region);
-        return step;
+        return step.WithLimit(GroupScriptLimit(script));
     }
 
     // Port and TransferPort are the region's game and travel agent ports from the group config (0 when absent).

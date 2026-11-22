@@ -29,6 +29,8 @@ static class ProcessSafetyTests {
         var control = new HostControl("python.exe", Path.Combine(root, "gaia_host.py"), Path.Combine(root, "gaia.json"));
         Require(LocalHosting.LimitOf(LocalHosting.ControlStep(control, "status")) == LocalHosting.StatusLimit, "a status step carries its limit");
         Require(LocalHosting.LimitOf(new ProcessStartInfo("x")) == LocalHosting.LongLimit, "an unlabelled step keeps the long limit");
+        Require(LocalHosting.GroupScriptLimit("deploy") == LocalHosting.DeployLimit && LocalHosting.DeployLimit > TimeSpan.FromSeconds(5400 + 3600)
+            && LocalHosting.GroupScriptLimit("restart-host") == LocalHosting.RequestLimit, "group script limits cover deploy.bat's own waits");
 
         if (!OperatingSystem.IsWindows() && File.Exists("/bin/sh")) {
             ProcessStartInfo Shell(string script) {
@@ -46,6 +48,26 @@ static class ProcessSafetyTests {
             var (exit, output) = LocalHosting.RunCaptured(Shell("sleep 2 & echo hi").WithLimit(TimeSpan.FromSeconds(30)));
             Require(exit == 0 && output.Contains("hi") && watch.Elapsed < TimeSpan.FromSeconds(15), "a finished step answers: " + output);
             Require(LocalHosting.RunCaptured(Shell("echo out; echo err >&2; exit 3")) is (3, var both) && both.Contains("out") && both.Contains("err"), "exit and both streams");
+
+            // Streamed steps (deploy.bat, restart-host.bat): lines arrive, a hung one is ended by its limit or by Cancel.
+            var lines = new List<string>();
+            void Keep(string text) { lock (lines) lines.Add(text); }
+            Require(LocalHosting.RunStreamed(Shell("echo out; echo err >&2; exit 3"), Keep) == 3, "a streamed step returns its exit code");
+            lock (lines) Require(lines.Contains("out") && lines.Contains("err"), "both streams are streamed: " + string.Join("|", lines));
+            watch.Restart();
+            try { LocalHosting.RunStreamed(Shell("echo started; sleep 30").WithLimit(TimeSpan.FromSeconds(1)), Keep); throw new Exception("a hung streamed step was not ended"); }
+            catch (LocalHosting.StepTimedOut e) { Require(e.Message.Contains("did not finish within 1 s"), "streamed timeout message: " + e.Message); }
+            Require(watch.Elapsed < TimeSpan.FromSeconds(10), "the streamed limit holds: " + watch.Elapsed);
+            lock (lines) Require(lines.Contains("started"), "lines before the limit were kept");
+            watch.Restart();
+            using (var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(1))) {
+                try { LocalHosting.RunStreamed(Shell("sleep 30"), Keep, cancel.Token); throw new Exception("a cancelled step was not ended"); }
+                catch (LocalHosting.StepCancelled e) { Require(e.Message.Contains("was cancelled"), "cancel message: " + e.Message); }
+            }
+            Require(watch.Elapsed < TimeSpan.FromSeconds(10), "cancel ends the step at once: " + watch.Elapsed);
+            watch.Restart();
+            // A grandchild keeping the pipes open must not hold a finished script.
+            Require(LocalHosting.RunStreamed(Shell("sleep 20 & echo hi"), Keep) == 0 && watch.Elapsed < TimeSpan.FromSeconds(15), "a finished streamed step answers: " + watch.Elapsed);
         }
 
         // The experimental WMI check: parsing, classification, the setting and the elevated step shape.
