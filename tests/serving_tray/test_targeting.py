@@ -31,5 +31,33 @@ class ServingTrayTargetTest(unittest.TestCase):
                 self.assertTrue(uses_body_branch(organ))
 
 
+class ServingTrayLoadTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        source = (ROOT / 'code/game/objects/items/weapons/trays.dm').read_text(encoding='utf-8-sig')
+        cls.weight = staticmethod(adapter.project(source, '/obj/item/weapon/tray/proc/carry_weight', 'I', {}))
+        cls.total = staticmethod(adapter.project(
+            source, '/obj/item/weapon/tray/proc/calc_carry', 'carrying',
+            {'typed_iter': lambda items, kind: items, 'carry_weight': cls.weight}))
+        pickup = adapter.extract(source, '/obj/item/weapon/tray/pickup')
+        assert pickup.index('var/add = carry_weight(I)') < pickup.index('if (calc_carry() + add >= max_carry)')
+        assert pickup.index('if (calc_carry() + add >= max_carry)') < pickup.index('I.loc = src')
+        condition = next(line for line in pickup.splitlines() if 'if (calc_carry() + add' in line)
+        probe = '/test/proc/stop()\n\t' + condition.strip() + '\n\t\treturn TRUE\n\treturn FALSE\n'
+        cls.stop = staticmethod(adapter.project(probe, '/test/proc/stop', 'calc_carry, add, max_carry', {}))
+
+    def test_item_sizes_and_total_load(self):
+        for size, expected in ((0, 5), (1, 1), (1.5, 5), (2, 3), (3, 5)):
+            with self.subTest(size=size):
+                self.assertEqual(self.weight(SimpleNamespace(w_class=size)), expected)
+        self.assertEqual(self.total([]), 0)
+        self.assertEqual(self.total([SimpleNamespace(w_class=size) for size in (1, 2, 3)]), 9)
+
+    def test_pickup_stops_at_capacity_before_moving_item(self):
+        for current, added, expected in ((6, 3, False), (7, 3, True), (9, 5, True)):
+            with self.subTest(current=current, added=added):
+                self.assertEqual(self.stop(lambda: current, added, 10), expected)
+
+
 if __name__ == '__main__':
     unittest.main()
