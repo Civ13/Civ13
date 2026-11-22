@@ -349,6 +349,7 @@
 #include "code\game\mob\living\carbon\human\origins.dm"
 #include "code\game\mob\living\carbon\human\peoples.dm"
 #include "code\game\mob\living\carbon\human\peoples_blend.dm"
+#include "code\game\mob\living\carbon\human\peoples_names.dm"
 #include "code\game\mob\living\carbon\human\peoples_split.dm"
 #include "code\game\mob\living\carbon\human\resuscitation.dm"
 #include "code\game\mob\living\carbon\human\say.dm"

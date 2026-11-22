@@ -219,17 +219,17 @@
 	var/blend = people_blend_pair(people_community_parts(key)[2])
 	var/datum/origin/parent = blend ? null : origin_by_id(people_community_parts(key)[2])
 	var/question = blend ? "A people of both the [people_pending_label(key)] has grown in your nation. What are they called?" : "Your nation's [parent ? parent.name : "people"] have become a people of their own. What are they called?"
-	var/wanted = player_input(src, "[question] (3 to 24 letters, a name of this world. The name cannot be changed later.)", "Name Our People", null, "text", null, TRUE)
-	if (isnull(wanted))
+	var/list/chosen = choose_people_name(key, question)
+	if (!chosen)
 		return
-	var/problem = people_name_problem(wanted)
+	var/problem = people_name_problem(chosen[1])
 	if (problem)
 		to_chat(src, SPAN_WARNING(problem))
 		return
 	if (!(key in language_lineage_part("people_pending")) || !map.is_faction_leader(src, civilization))
 		to_chat(src, SPAN_WARNING("Your nation has no new people to name."))
 		return
-	var/datum/origin/N = blend ? blend_people(key, people_clean_name(wanted)) : split_people(key, people_clean_name(wanted))
+	var/datum/origin/N = blend ? blend_people(key, chosen[1], chosen[2]) : split_people(key, chosen[1], chosen[2])
 	if (!N)
 		to_chat(src, SPAN_WARNING("The people could not be named. Please adminhelp this."))
 		return
@@ -240,7 +240,7 @@
 
 // The split itself: the living members of the nation who belong to the
 // parent people join the new one. Returns it, or null.
-/proc/split_people(key, name)
+/proc/split_people(key, name, meaning = null)
 	var/list/pending = language_lineage_part("people_pending")
 	var/list/parts = people_community_parts(key)
 	if (!(key in pending) || !parts || people_name_problem(name))
@@ -251,20 +251,11 @@
 		return null
 	// Their mother tongue is what most of them speak natively now, which may be
 	// a daughter language their nation named (language/daughter.dm).
-	var/list/tongues = list()
 	var/list/members = list()
 	for (var/mob/living/human/H in human_mob_list)
-		if (H.stat == DEAD || H.civilization != nation || H.origin_id != parent.id)
-			continue
-		members += H
-		var/datum/language/L = H.mother_tongue()
-		if (L)
-			tongues[L.name] = (tongues[L.name] || 0) + 1
-	var/tongue = parent.language
-	for (var/lname in tongues)
-		if (tongues[lname] > (tongues[tongue] || 0))
-			tongue = lname
-	var/datum/origin/N = found_people(name, list(parent.id), tongue, land_display_name(map), nation)
+		if (H.stat != DEAD && H.civilization == nation && H.origin_id == parent.id)
+			members += H
+	var/datum/origin/N = found_people(name, list(parent.id), people_split_tongue(nation, parent), land_display_name(map), nation, meaning = meaning)
 	if (!N)
 		return null
 	pending -= key
@@ -277,7 +268,7 @@
 		H.origin_id = N.id
 		H.add_note("Origin", H.origin_summary())
 		if (H.client)
-			to_chat(H, SPAN_NOTICE("<b>Your people are the [N.name] now.</b> You grew from the [parent.name], and those born among you from now on are [N.name] too."))
+			to_chat(H, SPAN_NOTICE("<b>Your people are the [N.name] now[N.meaning ? ", [N.meaning]" : ""].</b> You grew from the [parent.name], and those born among you from now on are [N.name] too."))
 	return N
 
 // For admins (Check Peoples): every community's isolation and any waiting split.

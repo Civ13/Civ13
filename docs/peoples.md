@@ -111,8 +111,8 @@ visits, a shared settlement). At each new calendar year:
 At 180 years apart (`PEOPLE_SPLIT_YEARS`, about a month of real time), with at
 least 5 living members (`PEOPLE_SPLIT_MIN`) who are at least half of the
 nation, the community is ready. The nation's Discord-verified leader names it
-with **Name Our People** (IC tab, offered at login too). The name passes the
-blocklist. The living members of that nation and people join the new people,
+with **Name Our People** (IC tab, offered at login too), picking one of the
+suggested names (see Naming below). The living members of that nation and people join the new people,
 whose mother tongue is the one most of them speak natively, which may be a
 daughter language. Nobody else changes.
 
@@ -130,6 +130,26 @@ parents are both peoples and its mother tongue is the larger group's. Nobody's
 own people changes: the blend is the default for newcomers born among that
 nation (`community_blend_people()`), who may still pick a people living there.
 A nation blends the same two peoples once.
+
+## Naming
+
+Code: `peoples_names.dm`. A leader never types a people's name; they pick one
+of three suggestions, each a word of the tongue the new people will speak
+(`people_pending_tongue()`), built from two or three of that language's
+syllables and seeded by what the name means:
+
+- **Place:** the climate most of the nation stands in, such as "the people of
+  the frost".
+- **Trait:** one of eight, chosen by the community, such as "the steadfast".
+- **Elder:** "the children of" the eldest living member's first name.
+
+The same meaning always gives the same word in the same tongue. **Suggest
+other names** gives new words for the same meanings, up to 5 times. Every
+suggestion passes `people_name_problem()`, so the blocklist and taken names
+still apply. The chosen meaning is kept in the record (`"meaning"`), told to
+the members, and shown in **Check Peoples**. Admins still type names:
+**Found People**, **Force People Split** and **Rename People** (a rename drops
+the old meaning).
 
 ## Belonging
 

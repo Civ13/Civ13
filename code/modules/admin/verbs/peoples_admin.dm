@@ -16,6 +16,7 @@
 		if (H.origin_id == id)
 			summaries[H] = H.origin_summary()
 	record["name"] = people_clean_name(new_name)
+	record -= "meaning" // the old name's meaning does not carry over
 	if (world_peoples_cache)
 		world_peoples_cache -= id
 	for (var/mob/living/human/H in summaries)
@@ -71,7 +72,7 @@
 		for (var/pid in O.parents)
 			var/datum/origin/P = origin_by_id(pid)
 			parent_names += P ? P.name : pid
-		lines += "<b>[O.name]</b>: from [parent_names.len ? jointext(parent_names, " and ") : "?"], speaking [O.language], formed in year [O.formed_year][O.homeland ? " at [O.homeland]" : ""][O.nation ? " among the [O.nation]" : ""][O.imported ? ", arrived with a traveller" : ""]. [people_members(id)] living."
+		lines += "<b>[O.name]</b>[O.meaning ? " ([O.meaning])" : ""]: from [parent_names.len ? jointext(parent_names, " and ") : "?"], speaking [O.language], formed in year [O.formed_year][O.homeland ? " at [O.homeland]" : ""][O.nation ? " among the [O.nation]" : ""][O.imported ? ", arrived with a traveller" : ""]. [people_members(id)] living."
 	return lines
 
 /proc/world_people_choices()

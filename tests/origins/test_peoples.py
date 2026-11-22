@@ -94,9 +94,28 @@ class Splits(unittest.TestCase):
         verb = proc(SPLIT, '/mob/living/human/proc/name_our_people()\n')
         self.assertLess(verb.index('map.is_faction_leader(src, civilization)'), verb.index('split_people('))
         self.assertLess(verb.index('account_verified(nation_account())'), verb.index('split_people('))
-        self.assertIn('people_name_problem(wanted)', verb)
+        self.assertIn('choose_people_name(key, question)', verb)
+        self.assertIn('people_name_problem(chosen[1])', verb)
+        self.assertNotIn('"text"', verb, 'leaders pick from suggestions, never type a name')
         login = (ROOT / 'code/modules/research_tree/knowledge_spread.dm').read_text()
         self.assertIn('settle_people_record()\n\toffer_pending_people_naming()', login)
+
+
+class NameSuggestions(unittest.TestCase):
+    NAMES = (ROOT / 'code/game/mob/living/carbon/human/peoples_names.dm').read_text()
+
+    def test_every_suggestion_passes_the_name_check(self):
+        self.assertIn('!people_name_problem(word)', proc(self.NAMES, '/proc/people_name_suggestions'))
+
+    def test_suggestions_use_the_peoples_own_tongue(self):
+        suggest = proc(self.NAMES, '/proc/people_name_suggestions')
+        self.assertIn('people_pending_tongue(key)', suggest)
+        self.assertIn('L.syllables', proc(self.NAMES, '/proc/people_word'))
+
+    def test_admins_can_still_type_a_name(self):
+        admin = (ROOT / 'code/modules/admin/verbs/peoples_admin.dm').read_text()
+        self.assertIn('as text|null', proc(admin, '/client/proc/cmd_admin_force_people_split'))
+        self.assertIn('as text|null', proc(admin, '/client/proc/cmd_admin_rename_people'))
 
 
 class BlendAndBelong(unittest.TestCase):

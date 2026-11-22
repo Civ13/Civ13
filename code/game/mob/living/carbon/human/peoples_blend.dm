@@ -101,22 +101,20 @@
 	return FALSE
 
 // Names a waiting blend: a people of both, with the larger group's tongue.
-/proc/blend_people(key, name)
+/proc/blend_people(key, name, meaning = null)
 	var/list/pending = language_lineage_part("people_pending")
 	var/list/parts = people_community_parts(key)
 	var/list/pair = parts ? people_blend_pair(parts[2]) : null
 	if (!(key in pending) || !pair || people_name_problem(name))
 		return null
 	var/nation = parts[1]
-	var/list/result = people_nation_mix(nation)
-	var/list/mix = result[1]
-	var/larger = (mix[pair[2]] || 0) > (mix[pair[1]] || 0) ? pair[2] : pair[1]
+	var/larger = people_blend_larger(nation, pair)
 	var/smaller = larger == pair[1] ? pair[2] : pair[1]
 	var/datum/origin/L = origin_by_id(larger)
 	var/datum/origin/S = origin_by_id(smaller)
 	if (!L || !S)
 		return null
-	var/datum/origin/N = found_people(name, list(larger, smaller), L.language, land_display_name(map), nation)
+	var/datum/origin/N = found_people(name, list(larger, smaller), L.language, land_display_name(map), nation, meaning = meaning)
 	if (!N)
 		return null
 	pending -= key

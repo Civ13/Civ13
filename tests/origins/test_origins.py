@@ -131,6 +131,7 @@ class PeoplesAreNeverATarget(unittest.TestCase):
         'code/game/mob/living/carbon/human/origins.dm',
         'code/game/mob/living/carbon/human/peoples.dm',
         'code/game/mob/living/carbon/human/peoples_split.dm',
+        'code/game/mob/living/carbon/human/peoples_names.dm',
         'code/game/mob/living/carbon/human/peoples_blend.dm',
         'code/modules/admin/verbs/peoples_admin.dm',
         'code/game/mob/language/proficiency.dm',
