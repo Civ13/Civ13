@@ -5,7 +5,7 @@ holds chat-notr. Speech this listener did not understand (scrambled, starred,
 nonverbal unseen, animal noises) must be marked chat-notr; understood speech,
 device speech, typed emotes and OOC/LOOC bodies are chat-tr. Unmarked lines are
 game messages and are never translated (2026-11-22: "Thibault Sommer makes a
-trench." came back as "trench coat"). Translation is off until turned on.
+trench." came back as "trench coat"). Translation starts on only for non-English desktops.
 """
 from pathlib import Path
 import unittest
@@ -77,12 +77,18 @@ class SpeechMarkers(unittest.TestCase):
 
 
 class ClientContract(unittest.TestCase):
-    def test_defaults_off_and_english(self):
-        # Val, 2026-11-22: players turn translation on themselves. v1 saved
-        # "on" with every language change, so only its language is kept.
-        self.assertIn("const prefs = { enabled: false, lang: 'en' };", CHAT)
+    def test_defaults_follow_the_desktop(self):
+        # Val, 2026-11-22: off for English desktops, on into the desktop's
+        # language otherwise; a saved v2 choice always wins. v1 saved "on"
+        # with every language change, so only its language is kept.
+        load = section(CHAT, 'function loadTranslatePrefs() {', '\n        }\n')
+        self.assertIn("const prefs = { enabled: false, lang: 'en' };", load)
         self.assertIn("const TRANSLATE_KEY = 'civ13-chat-translate-v2';", CHAT)
-        self.assertIn("if (raw && saved && typeof saved.enabled === 'boolean') prefs.enabled = saved.enabled;", CHAT)
+        saved = load.index("if (saved && typeof saved.enabled === 'boolean') prefs.enabled = saved.enabled;")
+        self.assertLess(saved, load.index('return prefs;'))
+        self.assertLess(load.index('return prefs;'), load.index('desktopLang()'))
+        self.assertIn("prefs.enabled = prefs.lang !== 'en';", load)
+        self.assertIn('navigator.languages', section(CHAT, 'function desktopLang() {', '\n        }\n'))
 
     def test_client_honours_markers(self):
         body = section(CHAT, 'function translationSource(div, type) {', '\n        }\n')
