@@ -49,6 +49,8 @@ REQUESTS_PER_MINUTE = 40     # per address, all requests
 MAX_CONNECTIONS = 16
 SUPERVISE_SECONDS = 30       # how often helper processes (transfer agents, coordinators) are checked
 EVICT_SECONDS = 60           # at most one low-memory eviction per this many seconds, so freed memory shows
+READY_SECONDS = 30           # how often lands next to players are checked (keep_ready)
+READY_RETRY_SECONDS = 600    # after a refused or failed start ahead, wait this long before trying that land again
 
 
 def frame(text):
@@ -143,6 +145,9 @@ class Instance:
         self.waking_since = None
         self.waking_limit = WAKING_SECONDS
         self.preparing_since = None   # a traveller's wake started this stopped world then
+        self.unwanted_since = None    # keep_ready: since when no land next to it has had players
+        self.next_ready_start = 0.0   # keep_ready: no start ahead before this clock time
+        self.wanted_by = None         # keep_ready: the occupied land it is kept ready for
         self.start_refusal = None     # why the last such start was refused
         self.idle_since = None
         self.next_watch = 0.0
@@ -169,6 +174,7 @@ class Doorman:
         self.supervisors = list(supervisors)
         self.next_supervise = 0.0
         self.next_evict = 0.0
+        self.next_ready = 0.0
         for host in hosts:
             if host.config['port'] in self.instances:
                 raise ValueError('two configs use port %d' % host.config['port'])
@@ -241,6 +247,9 @@ class Doorman:
                      'cold': instance.host.cold() is not None}
             if self.preparing(instance):
                 entry['preparing'] = True  # a start is running: pulled, compiled if behind, then loaded
+                # What the start is doing now (checking for updates, compiling, starting...), so a
+                # waiting player hears whether the land is being built or loading.
+                entry['phase'] = str((instance.host.read_state() or {}).get('phase') or '')[:40]
             elif entry['state'] == 'stopped':
                 # Whether a traveller's wake may start it (Val, 2026-11-22); the regions show it.
                 entry['startable'] = self.travel_refusal(instance) is None
@@ -344,8 +353,9 @@ class Doorman:
                     continue
                 state = instance.host.frozen()
                 if state:
-                    frozen.append((state.get('frozen_at') or 0, instance.port, instance))
-            for _, _, instance in sorted(frozen, key=lambda item: item[:2]):
+                    # A land kept ready for players next door goes last (keep_ready).
+                    frozen.append((instance.wanted_by is not None, state.get('frozen_at') or 0, instance.port, instance))
+            for *_, instance in sorted(frozen, key=lambda item: item[:3]):
                 try:
                     instance.host.log(instance.host.evict(reason))
                 except Exception as refusal:  # Refused, or the process could not be stopped
@@ -512,6 +522,79 @@ class Doorman:
                 self.instances = kept
             print(json.dumps({'group_reloaded': sorted(fresh), 'instances': sorted(self.instances), 'time': int(self.wall())}), flush=True)
 
+    # -- lands kept ready for players next door ---------------------------------
+    # Val (2026-11-22): travel between lands took too long. A land next to one with players stays
+    # suspended in memory, so a traveller wakes it in seconds, and one in cold storage is started
+    # ahead, one at a time, then freezes in memory once idle. A stopped land is left alone: a person
+    # stopped it, and a traveller still starts it on demand (wake&start=1). A land with
+    # nobody next door for cold_after_minutes goes to cold storage (it saved before it froze), so
+    # its memory is free. The mainland, the always-up kinds and the oceans around the mainland are
+    # always kept ready and never put in cold storage.
+    def readiness(self, instance):
+        policy = getattr(instance.host, 'readiness', None)
+        if policy is None:
+            return None
+        try:
+            return policy()
+        except Exception as error:  # one region's broken config must not stop the others
+            instance.host.log({'readiness_error': str(error)[:200]})
+            return None
+
+    def occupied(self, instance):
+        return (self.platform.listening(instance.port) and not instance.host.frozen()
+                and isinstance(instance.status, dict) and (instance.status.get('players') or 0) > 0)
+
+    def keep_ready(self, now):
+        """One pass: returns what it did ({port: action}), for the log and tests."""
+        done = {}
+        policies = {instance.port: self.readiness(instance) for instance in list(self.instances.values())}
+        occupied = {}
+        for instance in self.instances.values():
+            policy = policies[instance.port]
+            if policy and self.occupied(instance):
+                occupied.setdefault(policy['group'], set()).add(policy['region'])
+        starting = any(self.preparing(i) or (i.waking_since is not None and i.host.lock.exists())
+                       for i in self.instances.values())
+        for instance in sorted(self.instances.values(), key=lambda i: i.port):
+            policy = policies[instance.port]
+            if not policy:
+                instance.wanted_by = instance.unwanted_since = None
+                continue
+            here = occupied.get(policy['group'], set())
+            near = sorted(set(policy['neighbours']) & here)
+            if policy['exempt'] or policy['region'] in here or near:
+                instance.unwanted_since = None
+                instance.wanted_by = near[0] if near else policy['region']
+                host = instance.host
+                if host.cold() is None or starting or now < instance.next_ready_start:
+                    continue
+                if host.keep_down() if hasattr(host, 'keep_down') else False:
+                    continue
+                if not host.byond_signed_in() or self.low_memory(instance) is not None:
+                    instance.next_ready_start = now + READY_SECONDS * 4
+                    continue
+                reason = 'ready: next to players in %s' % instance.wanted_by if near else 'ready: always kept ready'
+                if self.wake(instance, reason):
+                    starting = True
+                    done[instance.port] = 'started ahead'
+                instance.next_ready_start = now + READY_RETRY_SECONDS
+                continue
+            instance.wanted_by = None
+            if instance.unwanted_since is None:
+                instance.unwanted_since = now
+            minutes = policy['cold_after_minutes']
+            if not minutes or now - instance.unwanted_since < minutes * 60 or not instance.host.frozen():
+                continue
+            try:
+                instance.host.log(instance.host.evict('cold storage: no players next door for %d minutes' % minutes))
+            except Exception as refusal:  # Refused (busy, never saved): try again on a later pass
+                if 'Refused' not in [kind.__name__ for kind in type(refusal).__mro__]:
+                    raise
+                continue
+            instance.waking_since = None
+            done[instance.port] = 'cold storage'
+        return done
+
     # -- the watch loop for every instance -----------------------------------
     def step(self):
         """One pass over every instance; returns seconds until the next pass."""
@@ -536,6 +619,15 @@ class Doorman:
             free = self.platform.free_memory_mb()
             if free is not None and free < limit and self.evict_one('low memory: %d MB free' % free) is not None:
                 print(json.dumps({'evicted_for_memory': free, 'time': int(self.wall())}), flush=True)
+        if now >= self.next_ready:
+            self.next_ready = now + READY_SECONDS
+            try:
+                done = self.keep_ready(now)
+            except Exception as error:  # keep serving the worlds whatever goes wrong here
+                done = None
+                print(json.dumps({'keep_ready_error': str(error)[:300], 'time': int(self.wall())}), flush=True)
+            if done:
+                print(json.dumps({'keep_ready': done, 'time': int(self.wall())}), flush=True)
         for instance in self.instances.values():
             host = instance.host
             frozen = host.frozen() is not None
