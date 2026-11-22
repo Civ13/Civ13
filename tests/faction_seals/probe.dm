@@ -85,7 +85,7 @@ var/seal_runtime_error = FALSE
 	var/obj/item/weapon/paper/P = seal_probe_stamp(H, S)
 	seal_check(P && islist(P.seal_records) && P.seal_records.len == 1, "a seal impression is recorded on the paper")
 	seal_check(P && ("seal-court" in P.stamped), "the impression is drawn like any stamp")
-	seal_check(P && findtext(faction_seal_verdict(P.seal_records[1]), "<b>genuine</b>"), "a seal in force checks as genuine")
+	seal_check(P && findtext(faction_seal_verdict(P.seal_records[1]), "<b>impression matches the current register</b>; does not authenticate the current contents"), "a seal in force verifies only the impression")
 
 	var/obj/item/weapon/stamp/faction_seal/blank = new(locate(10, 10, 1))
 	var/obj/item/weapon/paper/B = seal_probe_stamp(H, blank)
@@ -94,7 +94,7 @@ var/seal_runtime_error = FALSE
 
 	seal_check(map.faction_seal_revoke("Eagles", serial), "the leader can revoke a seal")
 	seal_check(!map.faction_seal_revoke("Eagles", serial), "a revoked seal cannot be revoked again")
-	seal_check(findtext(faction_seal_verdict(P.seal_records[1]), "<b>genuine</b>"), "papers sealed before the revocation stay good")
+	seal_check(findtext(faction_seal_verdict(P.seal_records[1]), "<b>impression matches the current register</b>"), "papers sealed before the revocation stay good")
 	var/obj/item/weapon/paper/late = seal_probe_stamp(H, S)
 	seal_check(late && findtext(faction_seal_verdict(late.seal_records[1]), "<b>void</b>"), "a revoked seal's new impressions are void")
 
