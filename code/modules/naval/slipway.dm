@@ -374,6 +374,13 @@ var/global/list/slipway_designs = null
 		if (refusal)
 			to_chat(H, SPAN_WARNING(refusal))
 			return
+		// A misclick in the menu must not commit the berth to the wrong ship.
+		if (WWinput(H, "Lay the keel of a [S.name] on the berth? Her bow runs [dir2text(dir)] from the post. She takes [S.total_pieces()] pieces: [piece_cost_text(S.total_cost())] in all.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
+			return
+		refusal = keel_refusal(S, H)
+		if (refusal)
+			to_chat(H, SPAN_WARNING(refusal))
+			return
 		lay_keel(S)
 		log_game("[key_name(H)] laid the keel of a [S.name] at [x],[y],[z].")
 		to_chat(H, SPAN_NOTICE("The berth is marked out for a [S.name]. [status_text()] Bring the materials to the post or to any part of the hull."))
