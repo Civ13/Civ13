@@ -820,10 +820,9 @@ var/global/list/persistence_removed_fields_logged = list()
 	transfer_loaded(transfer_round_state)
 	visited_loaded(transfer_round_state)
 	death_legacy_loaded(transfer_round_state)
-	try
-		restore_dug_levels()
-	catch(var/exception/cave_error)
-		world.log << "Dug underground lighting was not rebuilt: [cave_error]"
+	// Dug cave levels are rebuilt by restore_dug_levels_after_load() once the saved
+	// zones are committed: the cave area it may construct here would be an
+	// unrequested staged area and refuse the whole save (Orbit, 2026-11-22).
 	log_startup_progress("Finished loading.")
 	return TRUE
 

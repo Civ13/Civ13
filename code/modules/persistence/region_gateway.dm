@@ -177,7 +177,8 @@
 	return list("players" = players, "unknown" = unknown)
 
 // BYOND's built-in count is for the listed world itself. Use its status text
-// for the region-wide population and say when the sum is only a lower bound.
+// for the region-wide population: the known sum as a plain number, or no line
+// while no region has reported yet.
 /proc/region_gateway_hub_status()
 	var/list/mainland = shard_group.peers[shard_group.mainland]
 	var/title = islist(mainland) && istext(mainland["map"]) ? mainland["map"] : null
@@ -185,12 +186,8 @@
 	var/players = population["players"]
 	var/unknown = population["unknown"]
 	. = ""
-	if(!unknown)
+	if(!unknown || unknown < length(shard_group.peers))
 		. += "<b>Players across regions:</b> [players]<br>"
-	else if(unknown == length(shard_group.peers))
-		. += "<b>Players across regions:</b> unavailable<br>"
-	else
-		. += "<b>Players across regions:</b> at least [players] ([unknown] [unknown == 1 ? "region" : "regions"] unconfirmed)<br>"
 	// After the total: the hub keeps only the start of a status (world.dm).
 	if(title)
 		. += "<b>Mainland:</b> [hub_status_text(title)]<br>"

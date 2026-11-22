@@ -2595,7 +2595,7 @@ class HandoverTests(unittest.TestCase):
                         me.write_save(Path(host.config['repository']) / 'map_saves', intent=True)
                 busy = world['handover'] in ('saving', 'saved')
                 return {'ok': True, 'ready': not busy, 'busy': busy, 'session': me.SESSION, 'clients': 3,
-                        'handover': world['handover'], 'handover_empty_guard': True, 'error': save_error if world['handover'] == 'saving' else None}
+                        'handover': world['handover'], 'handover_empty_guard': 1, 'error': save_error if world['handover'] == 'saving' else None}
             if port == me.STANDBY:
                 if action == 'standby_load':
                     standby.update(standby='loading', operation=operation)
@@ -3883,3 +3883,38 @@ class ChatTranslatorTests(unittest.TestCase):
         with self.assertRaises(shard_group.Refused):
             shard_group.translator_stop(group)
         self.assertIn('translator-status', shard_group.GROUP_ACTIONS)
+
+
+class LiveStatusEncodingTests(unittest.TestCase):
+    def test_empty_handover_guard_accepts_dm_true(self):
+        # DM's json_encode writes TRUE as 1; live worlds never send JSON true.
+        self.assertTrue(shard_group.guards_empty_handover({'handover_empty_guard': 1}))
+        self.assertTrue(shard_group.guards_empty_handover({'handover_empty_guard': True}))
+        for value in (None, 0, False, 1.5, '1', 2):
+            self.assertFalse(shard_group.guards_empty_handover({'handover_empty_guard': value}), value)
+        self.assertFalse(shard_group.guards_empty_handover(None))
+
+    def test_status_write_retries_a_denied_replace(self):
+        # Windows refuses replacing a file another process is reading (WinError 5).
+        gaia_host = sys.modules['gaia_host']
+        real = os.replace
+        calls = []
+
+        def flaky(source, target):
+            calls.append(target)
+            if len(calls) < 3:
+                raise PermissionError(5, 'Access is denied')
+            real(source, target)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'stage.json'
+            path.write_text('{}', encoding='utf-8')
+            with mock.patch.object(gaia_host.os, 'replace', flaky), mock.patch.object(gaia_host.time, 'sleep'):
+                shard_group.write_json_atomic(path, {'phase': 'done'})
+            self.assertEqual(json.loads(path.read_text(encoding='utf-8')), {'phase': 'done'})
+            self.assertEqual(len(calls), 3)
+
+            def denied(source, target):
+                raise PermissionError(5, 'Access is denied')
+            with mock.patch.object(gaia_host.os, 'replace', denied), mock.patch.object(gaia_host.time, 'sleep'):
+                with self.assertRaises(PermissionError):
+                    shard_group.write_json_atomic(path, {'phase': 'failed'})

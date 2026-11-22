@@ -1480,6 +1480,7 @@ var/global/world_save_notice_started = null
 		map.apply_persistence_age_floor()
 		storage.restore_round_state(src, saved_round)
 		storage.restore_zone_spawns()
+		storage.restore_dug_levels_after_load()
 		load_phase_started = persistence_load_phase_log("metadata, durable world and round state", load_phase_started)
 		if(attempt_owned)
 			phase = "release"
@@ -1615,6 +1616,15 @@ var/global/world_save_notice_started = null
 	// Called by name so this works whatever order civ13.dme lists the files in.
 	if (hascall(src, "restore_dug_underground"))
 		call(src, "restore_dug_underground")()
+
+// After the saved zones are committed (restore_zone_spawns), so a cave area the
+// rebuild constructs registers as a new zone instead of a surprise staged area.
+// A failed rebuild leaves the cave unlit but never refuses the loaded world.
+/map_storage/proc/restore_dug_levels_after_load()
+	try
+		restore_dug_levels()
+	catch(var/exception/cave_error)
+		world.log << "Dug underground lighting was not rebuilt: [cave_error]"
 
 // Effect ids one save may list (transfer_bridge.dm keeps new effects to half,
 // leaving room for a load's replay).

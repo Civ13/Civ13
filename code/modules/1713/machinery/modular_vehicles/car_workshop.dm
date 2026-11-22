@@ -225,6 +225,9 @@ var/global/list/car_workshop_prototypes = list()
 	options += extras
 	var/list/projects = project_options(H)
 	options += projects
+	// Breaking a vehicle in the bay down for parts (craft/vehicle_breakdown.dm).
+	var/list/breakdowns = breakdown_options()
+	options += breakdowns
 	options["Unload inputs"] = "unload"
 	options["Service vehicle keys"] = "keys"
 	var/text = menu_text()
@@ -240,6 +243,9 @@ var/global/list/car_workshop_prototypes = list()
 		return
 	if (choice in projects)
 		project_action(H, projects[choice])
+		return
+	if (choice in breakdowns)
+		breakdown_action(H, breakdowns[choice])
 		return
 	if (choice == "Unload inputs")
 		unload()
