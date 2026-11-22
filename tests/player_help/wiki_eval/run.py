@@ -28,7 +28,8 @@ import time
 ROOT = Path(__file__).resolve().parents[3]
 QUESTIONS = Path(__file__).with_name('questions.json')
 # Names the public Help must never use, whatever the question.
-HIDDEN = re.compile(r'\bPersistence\b|\bmana\b|\bspells?\b|\bincantation|\bmagic(?:al)? (?:shrine|circle|ward|pact)', re.I)
+# A refusal may repeat the player's own words ("the guides do not cover spells").
+HIDDEN = re.compile(r'\bPersistence\b|\bmana\b|\bwands?\b|\bincantation|\bshrine', re.I)
 GAME_CONTEXT = {'map': 'Gaia', 'map_id': 'GAIA', 'gamemode': 'Civilizations', 'era': '5000 B.C.',
                 'era_ordinal': 0, 'civilizations': True}
 
@@ -76,8 +77,15 @@ def main():
     parser.add_argument('--only', help='comma-separated question ids')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--verbose', action='store_true')
+    parser.add_argument('--rescore', type=Path, help='score the answers saved in an earlier --output file again')
     args = parser.parse_args()
 
+    if args.rescore:
+        expected = {entry['id']: entry for entry in json.loads(QUESTIONS.read_text(encoding='utf-8'))}
+        rows = [score_answer(expected[row['id']], row.get('answer', '')) for row in json.loads(args.rescore.read_text(encoding='utf-8'))['rows']]
+        print(json.dumps({'questions': len(rows), 'answers_pass': sum(row['pass'] for row in rows), 'facts': sum(row['facts'] for row in rows),
+                          'facts_of': sum(row['of'] for row in rows), 'hidden_leaks': sum(row['hidden'] for row in rows)}))
+        return 0
     bridge = load_bridge(args.bridge)
     corpus, status = build_corpus(bridge, args.game_root, args.wiki_root)
     questions = json.loads(QUESTIONS.read_text(encoding='utf-8'))
