@@ -96,6 +96,26 @@ class ClientContract(unittest.TestCase):
         # No whole-line fallback: unmarked game messages are never sent.
         self.assertNotIn('div.textContent', body)
 
+    def test_translate_button_when_off(self):
+        # Val, 2026-11-22: with automatic translation off, a line that may be
+        # in another language offers a Translate button and sends nothing
+        # until it is pressed.
+        queue = section(CHAT, 'function queueTranslation(', '\n        }\n')
+        self.assertLess(queue.index('if (letters < TRANSLATE_MIN_LETTERS) return;'), queue.index('offerTranslation(div, text);'))
+        offer = section(CHAT, 'function offerTranslation(div, text) {', '\n        }\n')
+        self.assertIn("if (translatePrefs.lang === 'en' && looksEnglish(text)) return;", offer)
+        self.assertEqual(offer.count('enqueueTranslation('), 1)
+        self.assertLess(offer.index("addEventListener('click'"), offer.index('enqueueTranslation('))
+        self.assertIn('(translatePrefs.enabled || job.manual)', section(CHAT, 'function stillWanted(job) {', '\n        }\n'))
+        self.assertIn('.chat-translate-offer', section(CHAT, 'const TRANSLATE_EXTRAS', ';'))
+
+    def test_english_words_match_the_server(self):
+        import re
+        window = section(CHAT, 'const ENGLISH_WORDS = new Set((', ").split(' '));")
+        window = set(' '.join(re.findall(r"'([^']*)'", window)).split())
+        server = set(re.findall(r'"([a-z]+)"', section(SERVER, 'proc/chat_translate_english_words_table()', '\n\n')))
+        self.assertEqual(window, server)
+
     def test_too_short_lines_skipped(self):
         self.assertIn('const TRANSLATE_MIN_LETTERS = 3;', CHAT)
         self.assertIn('if (letters < TRANSLATE_MIN_LETTERS) return;', section(CHAT, 'function queueTranslation(', '\n        }\n'))
