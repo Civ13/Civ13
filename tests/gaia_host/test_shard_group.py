@@ -335,6 +335,33 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(2, len(adds))
         self.assertTrue(all(cwd == str(self.base / 'repo') for c, cwd in self.machine.calls if c[1:3] == ['worktree', 'add']))
 
+    def test_setup_sets_aside_an_early_agents_leftovers_but_nothing_else(self):
+        # A host pass started an agent for a region still being added; it crashed and
+        # left only its state folder (far2-far4, 2026-11-22). Setup moves that aside.
+        group = self.write_group()
+        state = self.base / 'regions' / 'deep' / 'data' / 'shard-host'
+        state.mkdir(parents=True)
+        (state / 'agent.json').write_text('{}')
+        (state / 'agent.log').write_text('token file missing\n')
+        result = shard_group.setup(group, self.machine)
+        self.assertIn('deep', result['created'])
+        aside = [p for p in (self.base / 'regions').iterdir() if p.name.startswith('deep.agent-leftovers-')]
+        self.assertEqual(1, len(aside))
+        self.assertTrue((aside[0] / 'data' / 'shard-host' / 'agent.log').exists(), 'nothing is deleted')
+        # Anything else in the folder still refuses.
+        other = self.base / 'regions' / 'gaia2'
+        other.mkdir()
+        (other / 'map_saves').mkdir()
+        (other / 'map_saves' / 'level1.sav').write_text('x')
+        self.assertFalse(shard_group.set_aside_agent_leftovers(other))
+        self.assertTrue((other / 'map_saves' / 'level1.sav').exists())
+
+    def test_the_host_starts_no_agent_for_a_region_not_set_up(self):
+        source = (Path(__file__).resolve().parents[2] / 'scripts' / 'shard-group' / 'shard_group.py').read_text()
+        loop = source[source.index("    for region in group['regions']:\n        # A region added to the group file but not set up yet"):]
+        loop = loop[:loop.index('start_agent(refresh)')]
+        self.assertIn("if not (region_dir(group, region['id']) / '.git').exists():\n            continue", loop)
+
     def test_relay_is_off_by_default_and_validated(self):
         group = self.write_group()
         self.assertEqual(0, group['relay_port'])

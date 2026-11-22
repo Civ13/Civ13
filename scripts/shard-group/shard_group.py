@@ -2732,7 +2732,7 @@ def setup(group, platform=None, region_id=None):
         if region_id is not None and region['id'] != region_id and not (path / '.git').exists():
             continue  # another region not set up yet: left for a full setup
         if not (path / '.git').exists():
-            if path.exists() and any(path.iterdir()):
+            if path.exists() and any(path.iterdir()) and not set_aside_agent_leftovers(path):
                 raise Refused('%s exists and is not a region worktree' % path)
             code, out = platform.run([git, 'worktree', 'add', '--detach', str(path), revision], cwd=repository, timeout=600)
             if code != 0:
@@ -2747,6 +2747,28 @@ def setup(group, platform=None, region_id=None):
         if group['relay_port']:
             result['relay_ports'] = relay_add_ports(group)
     return result
+
+
+def set_aside_agent_leftovers(path):
+    """True when path held only what a transfer agent started before setup leaves behind
+    (data/shard-host with its settings, log and records) and it was moved aside to
+    <name>.agent-leftovers-<time>, so setup can make the worktree. Nothing is deleted."""
+    path = Path(path)
+    entries = [p for p in path.rglob('*')]
+    files = [p for p in entries if p.is_file()]
+    state = path / 'data' / 'shard-host'
+    if not files or any(state not in f.parents for f in files):
+        return False
+    if any(f.suffix not in ('.json', '.log', '.pid', '.tmp') for f in files):
+        return False
+    stamp = time.strftime('%Y%m%d-%H%M%S', time.gmtime())
+    target = path.with_name('%s.agent-leftovers-%s' % (path.name, stamp))
+    number = 1
+    while target.exists():
+        number += 1
+        target = path.with_name('%s.agent-leftovers-%s-%d' % (path.name, stamp, number))
+    path.rename(target)
+    return True
 
 
 def write_region_files(group, region, path):
@@ -3994,6 +4016,11 @@ def supervise(group, start=detach):
     # Helpers that run old code are restarted, but never in the middle of an action.
     refresh = not group_busy(group)
     for region in group['regions']:
+        # A region added to the group file but not set up yet has no worktree or token
+        # to run an agent from: starting one crashed and left a state folder behind that
+        # made its setup refuse (far2-far4, 2026-11-22). Its setup starts it later.
+        if not (region_dir(group, region['id']) / '.git').exists():
+            continue
         # One region that cannot start its agent must not keep the others down.
         try:
             if RegionPlatform(region_config(group, region)).start_agent(refresh):
