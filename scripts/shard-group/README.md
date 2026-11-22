@@ -546,6 +546,24 @@ on. `keep_down` (region key, `true` or absent) keeps a region down on purpose:
 travellers are turned back there and the admins are told. `status` shows
 `keep_down: true` for it. The launcher sets it in **Travel starts…**.
 
+**Ready lands** (Val, 2026-11-22; `ready_neighbours`, group key, default `true`;
+`cold_after_minutes`, default 15, 0 = never): for every region in
+`tools/world_links/world_links.json`, the host service's doorman checks every 30
+seconds which regions have players. A region next to one with players (a map
+edge walked or sailed over, or an island inset in an ocean) stays suspended in
+memory, so a traveller wakes it in seconds; one in cold storage is started
+ahead, one at a time and only with `cold_start_min_free_mb` free. A stopped or
+`keep_down` region is never started ahead. A frozen region with nobody next
+door for `cold_after_minutes` goes to cold storage (it saved before it froze),
+freeing its memory; its next wake loads that save. The mainland, the
+always-up kinds and the oceans next to the mainland (the Atlantic around Gaia)
+are always kept ready and never go to cold storage. Low-memory eviction takes
+regions nobody is next to first. 15 minutes matches `freeze_idle_minutes`: a
+cold start loads the save (minutes, `cold_start_estimate_seconds` 300) while a
+thaw takes seconds, so a shorter wait would put a land in cold storage while a
+player who just logged out of the land next door may still return. Regions
+outside the table (TDM, nomads groups) are left alone.
+
 **Update when empty** (`update_when_empty`, group key, default `true`): the host
 service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
 As soon as an awake region that saves is empty and has saved since its last

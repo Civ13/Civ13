@@ -144,7 +144,10 @@
 		to_chat(C, SPAN_WARNING("The way to [html_encode(peer["name"])] cannot be found from here. Reconnect through [html_encode(gate_address())] and try again."))
 		return FALSE
 	if(wake && peer["state"] != "UP")
-		poll_peer(id)
+		// A land the doorman can wake or start is asked through it: a direct poll of one
+		// in cold storage or stopped fails and read it as down, which turned the player away.
+		if(!peer_wakeable(id))
+			poll_peer(id)
 		if(peer["state"] != "UP")
 			var/why = wake_peer(id, C.mob)
 			if(why)

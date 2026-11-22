@@ -289,7 +289,7 @@ internal sealed partial class LauncherWindow : Form {
                 ("Players' warning…", () => { ShowShutdownWarning(); return Task.CompletedTask; }, null),
                 ("Update when empty…", () => { ShowUpdateWhenEmpty(); return Task.CompletedTask; }, null),
                 ("Start region…", () => { ShowStartRegion(); return Task.CompletedTask; }, null),
-                ("Travel starts…", () => { ShowTravelStarts(); return Task.CompletedTask; }, null),
+                ("Travel and ready lands…", () => { ShowTravelStarts(); return Task.CompletedTask; }, null),
                 ("Front door and ports…", () => {
                     // Which region players join first, and every port of the group (GroupPorts, shard_group.py set-gate / ports).
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
@@ -1316,12 +1316,13 @@ internal sealed partial class LauncherWindow : Form {
     private void ShowTravelStarts() {
         if (host?.Control?.Group is not { } group) return;
         IReadOnlyList<HostSettings.TravelStart> regions;
-        try { regions = HostSettings.TravelStarts(group); }
+        (bool On, int ColdAfterMinutes) ready;
+        try { regions = HostSettings.TravelStarts(group); ready = HostSettings.Readiness(group); }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
             HostLine("Could not read " + group.Config + ": " + e.Message);
             return;
         }
-        using var dialog = new Form { Text = "Travel starts", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
+        using var dialog = new Form { Text = "Travel and ready lands", FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false,
             StartPosition = FormStartPosition.CenterParent, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, Padding = new Padding(12) };
         var layout = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, WrapContents = false };
         layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 0, 0, 8),
@@ -1333,6 +1334,21 @@ internal sealed partial class LauncherWindow : Form {
             list.Items.Add(region.Name, !region.KeptDown);
         list.Height = Math.Max(1, Math.Min(regions.Count, 16)) * list.ItemHeight + 8;
         layout.Controls.Add(list);
+        // Ready lands: suspended next to players, cold storage when nobody is next door (ready_neighbours, cold_after_minutes).
+        var keepReady = new CheckBox { AutoSize = true, Checked = ready.On, Margin = new Padding(0, 10, 0, 0),
+            Text = "Keep lands next to players ready to wake in seconds" };
+        layout.Controls.Add(keepReady);
+        layout.Controls.Add(new Label { AutoSize = true, MaximumSize = new Size(460, 0), Margin = new Padding(0, 2, 0, 6),
+            Text = "A land next to one with players stays suspended in memory, and one in cold storage is started ahead. " +
+                "Gaia and the oceans around it are always kept ready. Kept-down lands are never started ahead." });
+        var coldRow = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Margin = new Padding(0) };
+        coldRow.Controls.Add(new Label { AutoSize = true, Text = "Cold storage after", Margin = new Padding(0, 6, 4, 0) });
+        var coldAfter = new NumericUpDown { Minimum = 0, Maximum = HostSettings.MaxColdAfterMinutes, Value = ready.ColdAfterMinutes, Width = 70 };
+        coldRow.Controls.Add(coldAfter);
+        coldRow.Controls.Add(new Label { AutoSize = true, Text = "minutes with nobody next door (0 = never)", Margin = new Padding(4, 6, 0, 0) });
+        layout.Controls.Add(coldRow);
+        keepReady.CheckedChanged += (_, _) => coldRow.Enabled = keepReady.Checked;
+        coldRow.Enabled = keepReady.Checked;
         var buttons = new FlowLayoutPanel { AutoSize = true, Margin = new Padding(0, 10, 0, 0) };
         var save = new Button { Text = "Save", AutoSize = true, DialogResult = DialogResult.OK };
         var cancel = new Button { Text = "Cancel", AutoSize = true, DialogResult = DialogResult.Cancel };
@@ -1343,6 +1359,16 @@ internal sealed partial class LauncherWindow : Form {
         dialog.AcceptButton = save;
         dialog.CancelButton = cancel;
         if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        var minutes = (int)coldAfter.Value;
+        if (keepReady.Checked != ready.On || minutes != ready.ColdAfterMinutes) {
+            try {
+                HostSettings.SetReadiness(group, keepReady.Checked, minutes);
+                HostLine(!keepReady.Checked ? "Ready lands off: lands sleep and wake on their own timers again."
+                    : "Ready lands on: lands next to players stay ready" + (minutes == 0 ? "; none go to cold storage." : ", and lands with nobody next door go to cold storage after " + minutes + " minutes."));
+            } catch (Exception e) when (e is IOException or UnauthorizedAccessException or System.Text.Json.JsonException or InvalidDataException) {
+                HostLine("Could not save ready lands: " + e.Message);
+            }
+        }
         var kept = regions.Where((region, index) => !list.GetItemChecked(index)).Select(region => region.Id).ToList();
         if (kept.SequenceEqual(regions.Where(region => region.KeptDown).Select(region => region.Id))) return;
         try {
