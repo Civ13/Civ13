@@ -51,6 +51,17 @@ class IslandAccess(unittest.TestCase):
         self.assertIn('island_access_ask("pass"', verb)
         self.assertIn('island_access_ask("access"', proc(self.mod, "/mob/living/human/proc/island_access_menu("))
 
+    def test_officers_send_only_the_selected_border_edit(self):
+        menu = proc(self.mod, "/mob/living/human/proc/island_access_menu(")
+        self.assertIn('change = list("mode" = mode)', menu)
+        self.assertIn('change = list("add_guest" = account)', menu)
+        self.assertIn('change = list("remove_guest" = account)', menu)
+        self.assertNotIn('"people" =', menu)
+        send = 'island_access_ask("access", claimant, faction_roster_account(src), change, incarnation)'
+        self.assertIn(send, menu)
+        self.assertLess(menu.rindex("island_access_claim_of(src) != claimant"), menu.index(send))
+        self.assertIn("Request queued", menu)
+
     def test_every_way_there_is_guarded(self):
         travel = read("code/modules/persistence/region_travel.dm")
         party = proc(travel, "/obj/structure/region_gate/proc/depart_party(")
@@ -65,6 +76,40 @@ class IslandAccess(unittest.TestCase):
         # An admin's send is never stopped, nor is the island's own put-ashore gate.
         self.assertIn("return FALSE", proc(self.mod, "/obj/structure/region_gate/admin_send/island_access_checks()"))
         self.assertIn("return FALSE", proc(self.mod, "/obj/structure/region_gate/island_exile/island_access_checks()"))
+
+    def test_ship_border_refusal_stops_the_whole_crew_before_escrow(self):
+        travel = read("code/modules/persistence/region_travel.dm")
+        party = proc(travel, "/obj/structure/region_gate/proc/depart_party(")
+        batch = (
+            "var/ship_border = island && ship_crossing()\n"
+            "\tif(ship_border)\n"
+            "\t\tvar/crew_border = null\n"
+            "\t\tfor(var/mob/living/human/H in members)\n"
+            "\t\t\tcrew_border = island_access_departure_refusal(destination, H)\n"
+            "\t\t\tif(crew_border)\n"
+            "\t\t\t\tbreak\n"
+            "\t\tif(crew_border)\n"
+            "\t\t\tfor(var/mob/living/human/H in members)\n"
+            '\t\t\t\tstayed[H] = crew_border + "."\n'
+            "\t\t\treturn"
+        )
+        self.assertIn(batch, party)
+        self.assertLess(party.index("world_chart_refresh()"), party.index(batch))
+        self.assertLess(party.index(batch), party.index("ready += H"))
+        self.assertLess(party.index(batch), party.index("transfer_bridge.begin_escrow"))
+        # Only ships have this cohort rule; other gates still decide per traveller.
+        self.assertIn(
+            "island && !ship_border ? island_access_departure_refusal(destination, H) : null",
+            party,
+        )
+
+    def test_ship_refreshes_border_before_committing_crew_and_hull(self):
+        crossing = proc(read("code/modules/naval/ship_crossing.dm"), "/obj/structure/hull_tiller/proc/cross_away(")
+        refresh = "if (!admin_crossing && island_access_destination(id))\n\t\tworld_chart_refresh()"
+        self.assertIn(refresh, crossing)
+        self.assertLess(crossing.index(refresh), crossing.index("crossing_continues(hold, voyage)"))
+        self.assertLess(crossing.index(refresh), crossing.index("island_access_departure_refusal(id, H)"))
+        self.assertLess(crossing.index("island_access_departure_refusal(id, H)"), crossing.index("sea_crossing_strip("))
 
     def test_pass_messages_and_audit_wait_for_the_matching_directory_result(self):
         queue = proc(self.mod, "/proc/island_access_ask(")

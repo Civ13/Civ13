@@ -419,8 +419,11 @@ class Coordinator(TrainCustody):
             data = request.get('data')
             if type(data) is not dict or self.chart.claims().get(owner) != '%d,%d' % (x, y):
                 return False
+            incarnation = self.chart.claim_incarnation(owner)
+            if not incarnation or data.get('incarnation') != incarnation:
+                return False
             if op == 'access':
-                return self.chart.set_access(owner, data.get('mode'), data.get('people'), admin)
+                return self.chart.change_access(owner, {k: v for k, v in data.items() if k != 'incarnation'}, admin)
             return self.chart.grant_pass(owner, data.get('account'), data.get('hours'), admin)
         if op == 'summon':
             # Somebody whose character is on a parked land came back: only they can wake it.

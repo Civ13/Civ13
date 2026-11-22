@@ -105,20 +105,35 @@ def _chart_request_row(row):
     return request
 
 
+ISLAND_ACCESS_MODES = ('OPEN', 'GUESTS', 'MEMBERS')
+
+
+def island_access_change_valid(data):
+    """An access edit changes exactly one field or one named guest."""
+    if type(data) is not dict or len(data) != 1:
+        return False
+    field, value = next(iter(data.items()))
+    if field == 'mode':
+        return value in ISLAND_ACCESS_MODES
+    return field in ('add_guest', 'remove_guest') and account_key_valid(value)
+
+
 def _island_access_data(op, data):
     """The checked fields of an island 'access' or 'pass' request (island_access.dm)."""
     if type(data) is not dict:
         raise TransferError('bad island access')
+    incarnation = data.get('incarnation')
+    if not isinstance(incarnation, str) or not re.fullmatch(r'[0-9a-f]{32}', incarnation):
+        raise TransferError('missing or invalid island claim incarnation')
     if op == 'access':
-        mode, people = data.get('mode'), data.get('people')
-        if mode not in ('OPEN', 'GUESTS', 'MEMBERS') or type(people) is not list or len(people) > 50 \
-                or not all(account_key_valid(p) for p in people):
+        change = {k: v for k, v in data.items() if k != 'incarnation'}
+        if not island_access_change_valid(change):
             raise TransferError('bad island access')
-        return {'mode': mode, 'people': people}
+        return dict(change, incarnation=incarnation)
     account, hours = data.get('account'), data.get('hours')
     if not account_key_valid(account) or type(hours) is not int or not 0 <= hours <= 168:
         raise TransferError('bad visitor pass')
-    return {'account': account, 'hours': hours}
+    return {'account': account, 'hours': hours, 'incarnation': incarnation}
 
 class TransferError(Exception):
     """A request that the current state refuses. Nothing was changed."""
@@ -1160,7 +1175,7 @@ class RegionStore(TrainLeaseQueue):
         land (its home is 'land:x,y') and asks for it to be restored. 'access'
         and 'pass' come from a faction's leader or officers, in any land, for
         the island it claims at x, y (owner is the faction): data holds the
-        new mode and people, or a visitor pass's account and hours. admin is
+        new mode, one guest edit, or a visitor pass's account and hours. admin is
         the account asking."""
         if op not in ('reroll', 'reveal', 'scout', 'course', 'settle', 'claim', 'unclaim', 'abandon', 'summon', 'access', 'pass'):
             raise TransferError('unknown chart request')

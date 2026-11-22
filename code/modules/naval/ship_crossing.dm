@@ -1276,7 +1276,10 @@ var/global/list/sea_crossing_marked = list()
 // The rest of a crossing, once the land answers: she is packed and her crew
 // go. Null when she left, else why not.
 /obj/structure/hull_tiller/proc/cross_away(id, voyage, list/hold, list/sea_edge = null)
-	// The wake slept: whatever changed meanwhile is asked again before she is touched.
+	// Refresh the border before checking crew or touching the ship. The chart
+	// request can also wait, so the hold must still belong to this crossing.
+	if (!admin_crossing && island_access_destination(id))
+		world_chart_refresh()
 	if (!crossing_continues(hold, voyage))
 		return "The crossing was called off."
 	var/reason = crossing_refusal()
