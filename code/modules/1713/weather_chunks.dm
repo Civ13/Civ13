@@ -99,14 +99,15 @@ var/global/list/weather_chunk_images = list() // image key = image
 	if (!place)
 		return null
 	var/shadow = round(190 * min(1, strength / WEATHER_BAND_STEADY))
-	var/list/state = isnull(rain_mask) ? null : weather_storm_state(place.climate, max(strength, WEATHER_BAND_LIGHT), severe)
+	var/turf/middle = locate(min(x + 2, world.maxx), min(y + 2, world.maxy), z)
+	var/list/state = isnull(rain_mask) ? null : weather_precip_adjust(weather_storm_state(place.climate, max(strength, WEATHER_BAND_LIGHT), severe), middle, strength)
 	// Zone weather already draws itself on the area.
 	if (!state || (place.weather == state[2] && place.weather_intensity >= state[3]))
 		return list(null, 0, shadow, shadow_mask, null)
 	var/alpha = 255
 	if (strength < WEATHER_BAND_STEADY)
 		alpha = round(70 + 185 * max(0, strength - WEATHER_BAND_LIGHT) / (WEATHER_BAND_STEADY - WEATHER_BAND_LIGHT))
-	return list(state[1], alpha, shadow, shadow_mask, rain_mask)
+	return list(weather_precip_draw_look(state), alpha, shadow, shadow_mask, rain_mask)
 
 // The cloud shadow slides the way the wind carries the storms.
 /proc/weather_shadow_look()

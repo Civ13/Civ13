@@ -231,6 +231,18 @@ Deck awash (`code/modules/naval/hull_awash.dm`): no film on a dry or knee-deep
 deck; awash, every plank carries it once; a step never doubles it; bailing
 below awash and deleting the ledger both clear it.
 
+Compartments (`code/modules/naval/hull_compartments.dm`): a 4x16 steel ship
+with two lines of bulkheads, each with a watertight door, has three
+compartments that hold all 64 tiles, named from her bow; a hole aft fills only
+the after compartment to its brim and she floats on; the tiller reads each
+compartment; a pump amidships lifts nothing and a bailer aft lifts aft water;
+a door that moves marks her compartments for a new walk; an open door joins
+two and keeps the water, a shut one parts them with the water on both sides;
+the record saves and reads back each compartment; a shut door holds the sea;
+two flooded compartments (40 of 64 tiles) make her founder far from full, and
+pumping one below its brim stops the count; a bilge emptied outright empties
+every compartment.
+
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
@@ -242,11 +254,25 @@ water is not hers. A step east carries a sailor and a pail on the upper deck,
 leaves no floor behind or doubled, keeps every roof paired with its floor and
 the ladder joined, and carries the indoor areas under her roofs. A floor or
 something solid in the air ahead stops her with the reason; coming about swings
-the upper deck whole; crossing the sea is refused. A 200-tile hull roofed over
+the upper deck whole; crossing the sea is no longer refused (`cargo_probe.dm` packs and rebuilds one). A 200-tile hull roofed over
 is past the 300-tile deck cap and refused; with half its roofs taken down
 (which takes their floors) it steps four times, and the step time is logged.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/upper_deck_probe.dm 300
+
+## A second deck above (`second_deck_probe.dm`)
+
+Four levels: a hull roofed over, and nine tiles of that upper deck roofed again,
+with a ladder up to the second deck. The tiller reads out the second deck; a
+sailor and a pail up there are aboard and ride a step east, every roof keeping
+its floor; a floor or something solid two levels up stops her with the reason,
+while air over her upper deck's open tiles at that height does not; coming
+about swings the second deck whole; her lines draw it and pass the design
+checks; sinking brings the pail down to the water. A draught with a second deck
+above is built on the slipway (refused where a floor is in the way two levels
+up), with a ladder between the decks above, and launches with both.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/second_deck_probe.dm 300
 
 ## Sea chart and harbours (`chart_probe.dm`)
 
@@ -298,6 +324,30 @@ limit, a job given up, a spot that was built over and a destroyed depot. No
 client connects, so the depot's menus are not exercised.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/depot_jobs_probe.dm 300
+
+## Sites at sea in the oceans (`ocean_sites_probe.dm`)
+
+An ocean world (`code/modules/naval/ocean_sites.dm`) on a 600 x 300 fixture:
+the same sites rolled on every start, clear of the edges; an islet raised
+when a ship comes near and gone after she leaves, rising the same again; a
+bunk kept as home, a mooring post and a world save each keeping it; a reef of
+shallows richer in fish than open sea; a wreck with salvage; a named sea mark;
+a ship nobody has been aboard for a week foundering while a crewed one does not;
+and a ship off the Arctic's west edge coming out at its east edge.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ocean_sites_probe.dm 300
+
+## Strait booms (`strait_boom_probe.dm`)
+
+A narrows on an open-water fixture (`code/modules/naval/strait_boom.dm`): a
+winch laying a nine-tile boom to the far shore and refusing one with no shore
+in reach; a raised boom stopping a hull; a lowered boom letting her over it
+and staying put and down under her; ramming refused at half ahead and, at full
+ahead, breaking the three segments across her bow and holing her; mending
+only the broken segments; a cut segment; the named straits; and a winch taking
+its boom with it.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/strait_boom_probe.dm 300
 
 ## The open sea (`open_sea_probe.dm`)
 
@@ -385,6 +435,30 @@ A harbour sector keeps standing, passing and drifting hazards out by their whole
 Not covered: hazards met by a real ship on passage in a running world (the timer), and how any of it reads in a client.
 
 
+## Berths (`berth_probe.dm`)
+
+Berth upkeep (`code/modules/naval/berth.dm`, docs/berths.md): a wooden hull
+lying wholly in a boathouse slip over deep water is held by the boathouse, can
+be caulked right down to tight and scraped, and her patches planked over with
+one wood or plated with one steel sheet; the same hull out at sea is told to
+find the shallows or a berth. The boathouse survey lists her work with costs.
+A dugout stored in the boathouse dries three times as fast. A slipway hauls a
+hull lying off its ways up onto dry ground with enough hands at the post,
+refuses her under way or with the ways blocked, holds her dry (no bilge, no
+wear, no fouling) and launches her again. A drydock of three gates across a
+trench basin lets a hull sail in, is pumped dry only with its gates shut, stays
+dry behind them, holds the hull dry with all her floors, floods again and lets
+her out; a basin touching the sea past its gates is refused. A hull laid down from
+nothing on a slipway berth is commissioned bow to the water, refitted there and
+launched; one laid on the dry dock floor floats when the dock floods; floors on
+plain ground or joined off the berth are refused. On the slipway berth a draught
+with one tile moved and a mast added marks three tiles (lift, add, change);
+done by hand and refitted, she matches it and the marks are gone. A yard office by the slipway cuts work
+to two thirds of the time within its reach, fits three schooner pieces from
+thirty wood in its stock, lists the slipway in its survey and files a draught.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
+
 ## The boathouse (`boathouse_probe.dm`)
 
 ```powershell
@@ -410,6 +484,23 @@ The fixture is sand ashore (x 1-10) and deep sea beyond, with the boathouse at 1
 - **Records:** unknown types, a repeated tile and an overfull stack are refused; a crew payload with her decodes, one with a bad ship does not, and a long payload without a ship is refused.
 - **Leaving:** stripped, nothing of her is left and the water is open sea again; planks floating beside her stay.
 - **Arriving:** an anchorage is found off a chosen edge (past the sand to deep water); she is built named, at anchor, 12 tiles bow east, with the mast rigged, the crate holding exactly 20 planks and the crowbar where it lay; she is not built twice on the same water; a crew member of her voyage comes aboard, and another voyage's carrier builds her own ship.
+
+## Ships as cargo carriers (`cargo_probe.dm`)
+
+```powershell
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/naval_carrier/cargo_probe.dm
+```
+
+- **One rule:** ghosts and flick overlays are never cargo (`craft_cargo()`), a laid mine stays where it was laid, and crates, machines and animals are cargo.
+- **Sailing:** a 12-tile hull with a two-tile hold and a ladder down steps one tile east carrying a crate, a raft, a shopping cart, a microscope, a goat and a crowbar on deck and a cask and planks in the hold; the ghost and the flick overlay on deck stay behind; the ladder stays paired.
+- **Packing:** with a hold she packs; the record holds both hold tiles, the raft, cart, microscope and both ladder ends; a hold tile under no deck tile and a ladder entry that is no ladder are refused; a loaded raft keeps her in port.
+- **Leaving:** stripped, nothing is left on the water or in the hold and the rock closes where the hold was.
+- **Arriving:** an anchorage with rock under her hold is found; she is built with her two hold tiles, the ladder paired, the planks and the cask (still holding its water) in the hold and the raft, cart, microscope and goat on deck; she sails on with her hold. Over dirt she is built without a hold, the hold's cargo is stowed on the deck above, and no ladder is left leading to nothing.
+- **Engines:** a 5000cc diesel with its barrel of 200 diesel no longer keeps a hull in port; the record holds an engine entry, a tank offset past one tile is refused, and she is rebuilt with the same engine (size, power, name), stopped, coupled to its barrel with the diesel, and fitted as a drive. `slipway_probe.dm` also packs the freighter with her 82-tile hold and diesel.
+- **Whole cargo:** a raft, dugout, outrigger, shopping cart, carriage, microscope and washing machine each round-trip as a deck cargo record.
+- **Upper decks:** a 3 x 3 hull roofed over (nine upper floors, a ladder up, a pail and a crate on the upper deck, a motor canoe on deck) packs with nine upper deck tiles, roofs as roofs and faces as faces; an upper tile over no deck tile and a roof entry that is no roof are refused; a floor over a roof on her upper deck packs as her second deck above, and a second deck tile over no upper tile or with no upper deck is refused. Stripped, nothing is left on any deck. Built again under open air, every roof has its upper floor, her second deck is on its roof again, the pail, crate and crowbar are up there, the ladder is paired, the canoe has her outboard stopped and her tank with its diesel, and she sails on. Under a stray floor in the air, that tile's roof stays a roof and its pail is stowed on deck.
+- **Cars:** a workshop SMC Falcon with 30 fuel, parked on a 7 x 7 hull: something loose on it or a running engine keeps her in port; stopped, she packs with one vehicle record, no part of the car among her deck cargo and every part still saveable; a car offset far off her deck is refused. Stripped, nothing of it is left; built again, it is parked where it stood with its plate, key, every part and its fuel, stopped and saveable, and she sails on with it. A ship is never anchored against another hull's floor.
+- **Outboards:** a frame-built motorboat with a 500cc engine and 100 gasoline round-trips with the engine inside her, stopped, coupled to her tank and driving her axis; an engine shut in a crate is still refused.
 
 ## Voyages on the world chart (`voyage_probe.dm`)
 

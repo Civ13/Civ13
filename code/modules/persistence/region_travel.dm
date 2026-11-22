@@ -19,6 +19,9 @@
 #define REGION_TRAVEL_PAYLOAD_MAX 131072
 // A crossing ship's record rides with one crew member (naval/ship_crossing.dm).
 #define REGION_TRAVEL_SHIP_PAYLOAD_MAX 393216
+// One party's payloads together, as sent: under the transfer agent's 1 MiB
+// request limit (tools/transfer_storage/agent.py), with room for the rest.
+#define REGION_TRAVEL_PARTY_MAX 1000000
 #define REGION_TRAVEL_ITEMS_MAX 40
 
 var/global/list/region_gates = list()
@@ -234,6 +237,17 @@ var/global/list/region_travel_carry_types = list(
 	var/list/tongues = region_travel_tongues()
 	if(tongues)
 		P["tongues"] = tongues
+	// The sign they were born under travels too (birth_charts.dm).
+	if(birth_chart_valid(birth_chart))
+		P["chart"] = birth_chart
+	// The martial school, its ranks and hardened hands travel too (martial_schools.dm).
+	var/list/martial = martial_travel_record()
+	if(martial)
+		P["martial"] = martial
+	// Accolade progress (accolades.dm): time played, seasons, time in the faction.
+	var/list/progress = accolade_progress_clean(accolade_progress)
+	if(progress.len)
+		P["accolades"] = progress
 	// Wounds travel as overall damage, so a trip never heals (raid exits let
 	// hurt raiders leave; other gates still ask for full health).
 	var/brute = clamp(round(getBruteLoss()), 0, 200)
@@ -262,7 +276,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon", "station_plan"))
 			P[key] = extra[key]
 		// Where an admin chose to land them (region_admin_send.dm).
 		else if(key == "admin_send")
@@ -295,6 +309,8 @@ var/global/list/region_travel_carry_types = list(
 		return null
 	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
 	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
+	if(("chart" in P) && !birth_chart_valid(P["chart"])) return null
+	if(("martial" in P) && !martial_travel_valid(P["martial"])) return null
 	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
 	if(("trade_lock" in P) && !isnum(P["trade_lock"])) return null
 	if(("study_interest" in P) && !(P["study_interest"] in scholar_disciplines)) return null
@@ -332,10 +348,13 @@ var/global/list/region_travel_carry_types = list(
 	// A solo party is only ever its own player's.
 	if(istext(P["party"]) && findtext(P["party"], "ckey:") == 1 && P["party"] != "ckey:[owner]") return null
 	if(!isnull(P["from"]) && (!istext(P["from"]) || length(P["from"]) > 32)) return null
+	// A station plan rides to orbit with a launch complex trip (space/station_plan.dm).
+	if(!isnull(P["station_plan"]) && (!istext(P["station_plan"]) || length(P["station_plan"]) > DESIGN_CODE_STATION_MAX)) return null
 	if(!isnull(P["faction"]) && !colony_parent_valid(P["faction"])) return null
 	if(!isnull(P["faction_leader"]) && P["faction_leader"] != 1) return null
 	if(!space_flight_payload_ok(P)) return null
 	if(!sea_crossing_payload_ok(P)) return null
+	if(!sea_edge_payload_ok(P)) return null
 	if(!air_crossing_payload_ok(P)) return null
 	if(!region_edge_payload_ok(P)) return null
 	if(!region_admin_send_payload_ok(P)) return null
@@ -458,6 +477,7 @@ var/global/list/region_travel_carry_types = list(
 		log_game("Region travel: [P["owner"]]'s character [H.real_name] [incoming ? "arrived" : "came back"] at [at.x],[at.y],[at.z].")
 		if(!replayed)
 			player_activity.arrive(P, incoming)
+			accolade_note_land(accolade_account_ckey(P["owner"]))
 		region_travel_offer(H)
 
 // Replays a departure the loaded save does not hold yet: the account's body
@@ -511,6 +531,13 @@ var/global/list/region_travel_carry_types = list(
 	if(islist(P["traits"]))
 		H.traits = P["traits"].Copy()
 		H.traits_dirty = TRUE
+	if(birth_chart_valid(P["chart"]))
+		H.birth_chart = P["chart"]
+	if(islist(P["martial"]))
+		H.martial_travel_restore(P["martial"])
+	var/list/progress = accolade_progress_clean(P["accolades"])
+	if(progress.len)
+		H.accolade_progress = progress
 	if(isnum(P["study_field_lock"]))
 		H.study_field_lock = P["study_field_lock"]
 	if(isnum(P["trade_lock"]))
@@ -648,7 +675,7 @@ var/global/list/region_travel_carry_types = list(
 // Hands a waiting body to its player if they are already in the lobby.
 /proc/region_travel_offer(mob/living/human/H)
 	for(var/client/C in clients)
-		if(C.ckey == H.persistence_owner_ckey && istype(C.mob, /mob/new_player))
+		if(C.owner_key() == H.persistence_owner_ckey && istype(C.mob, /mob/new_player))
 			var/mob/new_player/lobby = C.mob
 			spawn(0) // the claim may wait for the home world decision
 				region_travel_claim(lobby)
@@ -658,11 +685,11 @@ var/global/list/region_travel_carry_types = list(
 	if(!lobby || !lobby.client || lobby.client.mob != lobby || IsGuestKey(lobby.client.key)) return FALSE
 	var/client/C = lobby.client
 	if(C.quickBan_isbanned("Playing") || C.quickBan_isbanned("Server")) return FALSE
-	var/mob/living/human/H = region_travel_waiting_body(C.ckey)
+	var/mob/living/human/H = region_travel_waiting_body(C.owner_key())
 	if(!H) return FALSE
 	// The arrival was recorded as this land becoming the home; wait for the
 	// coordinator's next pass to decide it.
-	if(!region_home_admit(lobby, wait) || lobby.client != C || C.mob != lobby || H != region_travel_waiting_body(C.ckey)) return FALSE
+	if(!region_home_admit(lobby, wait) || lobby.client != C || C.mob != lobby || H != region_travel_waiting_body(C.owner_key())) return FALSE
 	lobby.spawning = TRUE
 	lobby.close_spawn_windows()
 	H.region_arrival_pending = FALSE
@@ -673,6 +700,7 @@ var/global/list/region_travel_carry_types = list(
 		return FALSE
 	H.record_persistence_owner()
 	H.region_travel_tongue_notes()
+	H.note_birth_chart()
 	region_admin_send_claimed(H)
 	to_chat(H, SPAN_NOTICE("You arrive in [shard_group.enabled ? shard_group.name : "a new land"]."))
 	qdel(lobby)
@@ -752,10 +780,10 @@ var/global/list/region_travel_carry_types = list(
 	// Lands across the sea are reached only by ship (expedition_land.dm).
 	if(peer && peer["kind"] == "EXPEDITION" && !ship_crossing())
 		return "That land lies across the sea. Only a ship can reach it."
-	// A sleeping region is woken when someone sets off (travel()). A stopped
-	// one stays down until the host starts it again, so the traveller is told
-	// so plainly and the admins hear someone is waiting at the trail.
-	if(peer && peer["state"] == "STOPPED")
+	// A sleeping region is woken when someone sets off (travel()), and a stopped
+	// one is started (Val, 2026-11-22). One kept down on purpose stays down, so the
+	// traveller is told so plainly and the admins hear someone is waiting at the trail.
+	if(shard_group.peer_closed(destination))
 		return "[destination_name()] is closed for now: its land is not running, so the trail cannot take anyone there. It opens again once the land is back."
 	// A land whose transfer agent is on hold would refuse the traveller.
 	if(shard_group.peer_transfers_held(destination))
@@ -804,7 +832,8 @@ var/global/list/region_travel_carry_types = list(
 	if(reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
-	// A sleeping destination is woken first; the wait can be minutes, so check again after.
+	// A sleeping or stopped destination is woken or prepared first; the wait can be
+	// minutes, so check again after.
 	if(shard_group.peers[destination]["state"] != "UP")
 		reason = shard_group.wake_peer(destination, H)
 		if(!reason)
@@ -824,20 +853,20 @@ var/global/list/region_travel_carry_types = list(
 		to_chat(H, SPAN_WARNING(result))
 		player_activity.travel_refused(H, destination, result)
 
-// A player turned back because the destination's server is stopped: tell the
-// admins once per land every REGION_STOPPED_ALERT_COOLDOWN, since only the host
-// can start it again (a trail never starts a stopped land).
+// A player turned back because the destination's server is stopped and kept
+// down: tell the admins once per land every REGION_STOPPED_ALERT_COOLDOWN, since
+// only the host can start it again (a trail starts only a land not kept down).
 #define REGION_STOPPED_ALERT_COOLDOWN 6000
 var/global/list/region_stopped_alerted = list()
 
 /obj/structure/region_gate/proc/alert_stopped_destination(mob/living/human/H)
 	if(!destination || !shard_group.enabled) return FALSE
 	var/list/peer = shard_group.peers[destination]
-	if(!peer || peer["state"] != "STOPPED") return FALSE
+	if(!peer || !shard_group.peer_closed(destination)) return FALSE
 	if(world.time < region_stopped_alerted[destination]) return FALSE
 	region_stopped_alerted[destination] = world.time + REGION_STOPPED_ALERT_COOLDOWN
 	log_game("Region travel: [key_name(H)] was turned back at [x],[y],[z]: [destination] is stopped.")
-	message_admins("[key_name_admin(H)] tried the trail at [x],[y],[z] to [html_encode(destination_name())], but that land is stopped. Start it from the host or launcher if players should reach it.")
+	message_admins("[key_name_admin(H)] tried the trail at [x],[y],[z] to [html_encode(destination_name())], but that land is stopped and kept down. Start it from the host or launcher if players should reach it.")
 	return TRUE
 
 #undef REGION_STOPPED_ALERT_COOLDOWN
@@ -846,35 +875,90 @@ var/global/list/region_stopped_alerted = list()
 // Players reach this through travel(); a host agent can call it for a test
 // character that has persistence_owner_ckey set.
 /obj/structure/region_gate/proc/depart(mob/living/human/H)
+	var/list/out = depart_party(list(H))
+	var/list/stayed = out["stayed"]
+	return length(out["departed"]) ? "departed" : (stayed[H] || "The trail is busy. Try again in a moment.")
+
+// Sends several characters as one transfer: one escrow carries them all, so
+// a ship's crew (naval/ship_crossing.dm) leave together and arrive together.
+// The transfer agent keeps one transfer in flight per land, so travellers sent
+// one after another would wait on each other ("The trail is busy").
+// Returns list("departed" = list(H), "stayed" = list(H = reason)).
+/obj/structure/region_gate/proc/depart_party(list/members)
+	var/list/departed = list()
+	var/list/stayed = list()
+	. = list("departed" = departed, "stayed" = stayed)
 	var/reason = closed_reason()
-	if(reason) return reason
-	if(!istype(H) || QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H)) return "You are too far from the trail."
-	if(!H.persistence_owner_ckey) return "Only players with a BYOND account can travel."
-	// The traveller is sent to the destination at once, so it must be awake (travel() wakes it).
+	var/list/ready = list()
+	for(var/mob/living/human/H in members)
+		if(reason)
+			stayed[H] = reason
+		else if(QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H))
+			stayed[H] = "You are too far from the trail."
+		else if(!H.persistence_owner_ckey)
+			stayed[H] = "Only players with a BYOND account can travel."
+		else
+			ready += H
+	if(!ready.len) return
+	// The travellers are sent to the destination at once, so it must be awake (travel() wakes it).
 	var/expected = destination
 	if(shard_group.peers[destination]["state"] != "UP" && !shard_group.poll_peer(destination))
-		return "[destination_name()] is asleep. Use the trail to wake it."
+		for(var/mob/living/human/H in ready)
+			stayed[H] = "[destination_name()] is asleep. Use the trail to wake it."
+		return
 	// The poll can wait; an admin may have repointed or closed the trail meanwhile.
 	if(QDELETED(src) || destination != expected || closed_reason())
-		return "The trail changed. Try again."
-	var/list/items = H.region_travel_items()
-	if(istext(items)) return items
-	var/client/C = H.client
-	var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
-	if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX)) return "You carry too much to travel."
-	// The destination decodes with the same rules; never escrow what it would drop.
-	if(!region_travel_decode(payload)) return "Something about you cannot make the journey. Ask an admin."
-	// Hold the body and its items while the agent records the escrow, so
-	// neither can change.
+		for(var/mob/living/human/H in ready)
+			stayed[H] = "The trail changed. Try again."
+		return
+	var/list/payloads = list()
+	var/list/packed = list()
+	var/total = 0
+	for(var/mob/living/human/H in ready)
+		var/list/items = H.region_travel_items()
+		if(istext(items))
+			stayed[H] = items
+			continue
+		var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))
+		if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX))
+			stayed[H] = "You carry too much to travel."
+			continue
+		// The destination decodes with the same rules; never escrow what it would drop.
+		if(!region_travel_decode(payload))
+			stayed[H] = "Something about you cannot make the journey. Ask an admin."
+			continue
+		// One request carries the whole party, each payload escaped as a JSON
+		// string: whoever would take it past the agent's limit stays.
+		var/size = length(json_encode(payload))
+		if(total + size > REGION_TRAVEL_PARTY_MAX)
+			stayed[H] = "Too much is already going with this party. Travel again in a moment."
+			continue
+		total += size
+		payloads += payload
+		packed[H] = list(payload, items, H.client)
+	if(!payloads.len) return
+	// Hold the bodies and their items while the agent records the escrow, so
+	// nothing can change.
 	busy = TRUE
 	var/turf/start = get_turf(src)
-	H.forceMove(src)
-	var/list/result = transfer_bridge.begin_escrow(destination, list(payload), TRUE)
+	for(var/mob/living/human/H in packed)
+		H.forceMove(src)
+	var/list/result = transfer_bridge.begin_escrow(destination, payloads, TRUE)
 	busy = FALSE
 	if(!result)
-		H.forceMove(start)
-		return "The trail is busy. Try again in a moment."
-	// Recorded: remove the traveller now, without sleeping.
+		for(var/mob/living/human/H in packed)
+			H.forceMove(start)
+			stayed[H] = "The trail is busy. Try again in a moment."
+		return
+	// Recorded: remove the travellers now, without sleeping.
+	for(var/mob/living/human/H in packed)
+		var/list/P = packed[H]
+		depart_finish(H, P[1], P[2], P[3])
+		departed += H
+	shard_group.request_save_soon()
+
+// Removes a traveller whose escrow is recorded. Never sleeps.
+/obj/structure/region_gate/proc/depart_finish(mob/living/human/H, payload, list/items, client/C)
 	log_game("Region travel: [H.persistence_owner_ckey]'s character [H.real_name] left for [destination].")
 	player_activity.depart(H, destination, payload)
 	// Delete everything the traveller holds now, not only what was listed: the
@@ -896,10 +980,8 @@ var/global/list/region_stopped_alerted = list()
 	if(!C)
 		agent_note_departure(H, destination, destination_name())
 	qdel(H)
-	shard_group.request_save_soon()
 	spawn(0)
 		region_home_note(account, "depart", destination)
-	return "departed"
 
 // An admin ghost can follow a trail: their client goes to that land's server,
 // nothing travels with them. Others' ghosts do nothing here.
@@ -919,6 +1001,7 @@ var/global/list/region_stopped_alerted = list()
 
 #undef REGION_TRAVEL_PAYLOAD_MAX
 #undef REGION_TRAVEL_SHIP_PAYLOAD_MAX
+#undef REGION_TRAVEL_PARTY_MAX
 #undef REGION_TRAVEL_ITEMS_MAX
 
 // ---------------------------------------------------------------- wounds

@@ -21,6 +21,10 @@ var/delete_failure = FALSE
 var/native_calls = 0
 var/ordinary_calls = 0
 var/activate_during_reboot_yield = FALSE
+var/datum/fixture_restart_activity/player_activity = new
+/datum/fixture_restart_activity
+	proc/world_stopping()
+		return
 var/datum/fixture_restart_scheduler/processScheduler = new
 /datum/fixture_restart_scheduler/proc/stop()
 	ordinary_calls++

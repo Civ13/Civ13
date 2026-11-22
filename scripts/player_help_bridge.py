@@ -70,36 +70,38 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'b4985faeb1d501b95881af1ef435fd341091a55b'
+WIKI_REVIEWED_REVISION = '506d510927dc19725c63e951c23d47686fa946a2'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('68f043ddc232b3d7c6043122a858695c3478f66e35c4ea0e2c5d74f032de44cf', 'character skills traits languages'),
-    'guides/Guide_to_Peoples_and_Languages.md': ('1e10b1f26c4e2f6d2659b32f0e6b045bb04b2129516382a37479574b9f107bcc', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
+    'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
+    'guides/Guide_to_Peoples_and_Languages.md': ('ec8abe24ffa48f2ac1f8a9d4ced3389392fcc46760acc24ddd7bf6195bcc096f', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
-    'guides/Guide_to_Combat.md': ('de84bad88a540fa643d5cdbd2bf83fddff72206d534158a000aed6e68b4ec937', 'combat fight fighting intent aim shoot melee grenade cover'),
-    'guides/Guide_to_Communications.md': ('2bbf705f1e66f3ee37d2d70f46ffa9420587a9b7ae0d718f3e09d4ab9b7881e6', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('4d2aa9e774f96ba59561cfc7ff0406fa8a69751863b91fb842a39735abed4867', 'construction build building walls roof floor'),
+    'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
+    'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
+    'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
+    'guides/Guide_to_Construction.md': ('d8eebb02435d4409fec74214d14ea239ab4f5a331b8ba6c7d506e5b2c99dc68f', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('24b870c09bbebbf103a2d14ba1a5c149d11b55ae5603d48838ea357896f8f16b', 'cooking cook food meal ingredients'),
-    'guides/Guide_to_Exercise.md': ('78978bc3f36321ef3ec2faac33df4f26aca6a519962b88fa5d8a474db8b01f19', 'exercise training strength weights running fatigue'),
+    'guides/Guide_to_Exercise.md': ('d808fc78abe7a897305f07cc48b23256d4db61c4261ae43c17509502cd218404', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill'),
-    'guides/Guide_to_Farming.md': ('0fd2e652e8b00706b9661fa6fd5b608ca4eebcfc3dbba48044fbf2ce0bfa2dee', 'farming farm plant crops soil water'),
+    'guides/Guide_to_Farming.md': ('8e2d1884c524309769717c81b96c00b5e90a0ea9e861d5e518e1bb38ae357721', 'farming farm plant crops soil water frost mulch cloche'),
     'guides/Guide_to_Fishing.md': ('1b0cb495916de8649525deabdd27273a00a9b188129619e850412cd2d351d50d', 'fishing fish rod bait'),
-    'guides/Guide_to_Hygiene.md': ('b3095af166adac2c4ec9245086e9d0e3755ff1ce1261398650e8ae1f6a7e7168', 'hygiene clean washing soap detergent laundry'),
+    'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
-    'guides/Guide_to_Medical.md': ('2e6344de888ecbff65a2433e7ea512b4deef6e9c8fdb717d94050237a38d7376', 'medical heal injury wound surgery'),
+    'guides/Guide_to_Medical.md': ('e9d31ac5d931999048f179a4b98884d7642a75ad5f38ab27ac7b1e9ec63482dc', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
-    'guides/Guide_to_Power.md': ('2cba37d02346964588303f5470f9252424d20bef190e114e3e41a1b86c1e1e41', 'power battery batteries electricity generator'),
+    'guides/Guide_to_Power.md': ('aae521a52b291a3fac7b5054dce39aff5ef0f9ef634f08a22ba434d2827e6110', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('0763963aa0eab5a2e8430c66c9ae9e1f3347f99ca1f19bdb7e2f4cf120d1aacc', 'ranching livestock animal breeding'),
     'guides/Guide_to_Beekeeping.md': ('b977db7511ce86997466d4f929d03099d7f7f8e03c7336356534f5d6c5e7c8f6', 'bees bee beekeeping hive hives honey honeycomb beeswax wax candle swarm sting stings smoker extractor pollination mead sealing veil'),
     'guides/Guide_to_Mice.md': ('f458302a6b440e2d63417b553f75446470dcf256920a0f216f03ad5263fd3584', 'mice mouse nest nests rats pests vermin mousetrap poison bait fleas plague cats wildcat'),
     'guides/Guide_to_Religion.md': ('8f2cba3283be55c895860478ffd6969b9ee7ad70ec90ecde479cd0ef622e9943', 'religion worship clergy shrine'),
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
-    'guides/Guide_to_Resource_Extraction.md': ('3fed9e0a89200bdf645d669b2a53078d4bc20dd90de43155d2e0d6761135aca2', 'resource extraction gathering oil petroleum well fracturing'),
-    'guides/Guide_to_Survival.md': ('9a9624b8100b78c30e2dba394b9276a1b7c72eab5f875b03c80ca3294c0b9d2c', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
+    'guides/Guide_to_Resource_Extraction.md': ('041b3303d0be5737e6ab566e041aa0e28675845cc4a2015964a7e91a33d01332', 'resource extraction gathering oil petroleum well fracturing'),
+    'guides/Guide_to_Survival.md': ('e0067091fe648cf478f320375128dcee2380d7848c714ce4f3b0aef8be48ed2f', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('b900c1641222035e9a4940539ddf14501ec5d9133da22414333f7ca0c97578a6', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Weather.md': ('d3ae91b93e0899ebf0c128df972df17ce914d4288a5ad185f827624aad45d18a', 'weather climate forecast pressure hpa low lows high highs front fronts barometer hygrometer anemometer rain gauge weather station beaufort dew point sleet hail freezing rain rain shadow sea breeze land breeze'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('ac2a6dab9b5aac3051a30f35809e9ddf770387219996f75df90aa90d438847a6', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Gunsmithing.md': ('b05247d6fdd526757f19572e3eb039cf1dc79948aacd9c0adf14173f5c7095c9', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket'),
@@ -113,29 +115,30 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('0dc7e09b3dd43288d92da9dae8f2cea145e3817ce05afd76d1f0b243d30efc7c', 'civilizations nomads gaia faction'),
+    'gamemodes/Civilizations_and_Nomads.md': ('599f9a125e78d13a92872e72247a7d0cbc1f7b5a84d60ae27a6750fb96e03cc5', 'civilizations nomads gaia faction nation government monarchy republic democracy revolt'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('cf96d4338fb29ef4972cacf958629f845b68453a5bde35b3a6b5902a174c51f4', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('56a33c3e86b252b58df3c72ee3a7c44ca1dc49567b9408e226394b55c68041d9', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
+    'guides/Guide_to_Boats.md': ('9b39cae4a10386c62022c65e979dcb179b80ddb5bba060f627155299b1d3cb3c', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Aircraft.md': ('b578eaf2954fafd9d885ccde3785a4eeb956626ecdd17b55357951dcbf83f7e9', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
-    'guides/Guide_to_Books_and_Scholars.md': ('97aba8d94d018e9027719fca8ae49e3ceace6daeb4c13bd0f49141e525939a0c', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('5cc29d092608a6c4a3d40a53e14f539ea272ef55d71420e6f54531d4c804e70e', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
-    'guides/Guide_to_Paperwork.md': ('22f7fa453bd84ee5ec8e1182466e22ca34543bcb5dac3815f31540694058066f', 'paper paperwork writing write pen book sign signature stamp'),
+    'guides/Guide_to_Books_and_Scholars.md': ('c288a8b4afc0ab812e509f96365a2bbe4255c3064c324339338d27c2776581c2', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
+    'guides/Guide_to_Your_First_Day.md': ('33b925515e5be65875070174bfeaf0d0f51c6a2da161090107f31663937ef25d', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
+    'guides/Guide_to_Paperwork.md': ('c9f94ed47900119d56fe52c9d95c38f7d08386e0dd2a780e85a45a8dfc7752e9', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('c25a6eeb304bb3f8a5a3dd7e479da15a15fb34ecbb8d2127d9179881aefd7efe', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9015932974df193a9f59fb59c359040e7a38e541ad13e104ae2cacf8f33e08fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
-    'maps/The_Americas.md': ('ae4ac35c20a759093e372e1758ba0021c24361ae71d6485a004f201a3da4daef', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
-    'maps/Gaia.md': ('a7e8f9402268eeac0012f5fbaf3647afbc4e07b0be5951b8f0d9c223e3997290', 'gaia map world underground'),
-    'maps/Nomads_Maps.md': ('9f71c98987cd40fc8b7d31a694d2984331fd23e84eb2c8248db595cd08ae18ab', 'nomads maps map terrain biome biomes'),
+    'maps/The_Americas.md': ('8f926f8eb3d365684968b7e32d7c5de5322d30ad85e166fa7315d5a6db401e5a', 'americas america north south isthmus mainland persistent persistence map world hills tamping grading rammer'),
+    'regions/Regions.md': ('bfd6704a336cad7458062de572ccabf9f7f3630e9fd82018b4d173913d56f343', 'regions region lands land worlds world europe africa asia oceania greenland antarctica continents travel climate peoples'),
+    'maps/Gaia.md': ('2e973629f07a33edbbad6695d26e01faa9a4e33120763bfd91701ea412349769', 'gaia map world underground'),
+    'maps/Nomads_Maps.md': ('679cef92412118192e9790a2020227e15e5c2dea317bcd13b5a6cfd06ed367e0', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('9f24388939799c86a0c28017d695994257a70175480e0b6836907e6e4e68b963', 'guides overview list of guides index'),
+    'guides_overview.md': ('55604bcbd33e31a0e5dfdf1199a2c2e2a7f1edc6725eee2cb3654ad11bc6ca3f', 'guides overview list of guides index'),
 }
 WIKI_LEGACY_GUIDES = ('guides/Guide_to_Crafting.md', 'guides/Guide_to_Metallurgy.md', 'Starter_Guide.md')
 
@@ -769,7 +772,7 @@ TOXIN_SOURCE_SECTIONS = (
      '6617bf5ecc8f8d3a5530534b2b3042724af964338892879bfcab05c174215291'),
     ('code/modules/reagents/Chemistry-Reagents.dm',
      '/datum/reagent/proc/remove_self(', '/datum/reagent/proc/initialize_data(',
-     'e4d3922f5e5644a9ff438a80f730e0b815ed2c557b710aea8a642a12e0cd8884'),
+     '39e947ba77325601a80d32541632960d9fc0e58c96da1451af274db60108c1a5'),
     ('code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Toxins.dm',
      '/datum/reagent/toxin\n', '/datum/reagent/toxin/plasticide',
      '0921962fae15315afdb99ba93e1b3409d6e691c3ff95a16abeb4cc69e62046df'),
@@ -891,15 +894,17 @@ def gameplay_knowledge(root, wiki_root=None, wiki_status=None):
                         '!is_open_container()', 'collection_seconds >= 60',
                         'reagents.add_reagent("water", min(rate, reagents.maximum_volume - reagents.total_volume))',
                         'findtext(falling, "rain") || falling == "monsoon"',
-                        'weather_at(T) == WEATHER_NONE', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
+                        'weather_at(T) != WEATHER_NONE', 'weather_dew_at(T)', 'return 10', 'return 2', '(locate(/obj/roof) in T)')
             if any(marker not in excerpt for marker in expected):
                 raise ValueError('Reviewed rain barrel behavior changed')
             excerpt += ('\nReviewed guidance: There is no separate dew or rain collector; an ordinary '
                         'wood or steel barrel does the job. A new empty barrel starts with its lid off. '
                         'Examine it before using it in hand: using it in hand toggles the lid, so doing '
                         'that to an open barrel closes it. Set the open barrel down outdoors with no roof '
-                        'over its tile. Rain adds 10 units of water per minute; a clear, above-freezing '
-                        'night or early morning adds 2 units of dew per minute, until the barrel is full. '
+                        'over its tile. Rain adds 10 units of water per minute. On a clear, calm, '
+                        'above-freezing night or early morning, when dew settles, it adds 2 units of dew '
+                        'per minute, or 3 in thick fog, until the barrel is full. A windy or cloudy night '
+                        'brings no dew. '
                         'A closed, carried or roofed barrel collects nothing, and jerrycans and fuel tanks '
                         'never do. Rain mixes into whatever the open barrel already holds. Unavailable '
                         'weather does not guarantee water.')

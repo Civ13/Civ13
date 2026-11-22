@@ -278,13 +278,14 @@ and examine, like tiles behind a wall.
   pass instead of one ray per target. Hidden ground with at most two hidden
   neighbours is shown, which removes specks from one-level dips.
 - Heights only change by grading, so the answer is cached per eye position
-  (tile, half-tile offset, posture, view radius; 96 entries) and shared by all
+  (tile, sampled eye offset, posture, view radius; 96 entries) and shared by all
   players. Grading (`terrain_heights/set_level`) clears the cache and refreshes
   nearby viewers. Flat ground and levels without heights skip all of it.
-- The eye follows the player's pixel offset in half-tile steps, both for this
-  and for walls and trees, so a walker's view refreshes twice per tile instead
-  of once. These extra steps pause while `world.cpu` is above 85 and resume
-  below 60, and only for a player who moves: a player standing still keeps
+- The displayed eye samples its half-tile offset when entering a different
+  16-by-16 pixel quadrant. Movement within a quadrant does not resample it;
+  crossing to another tile still refreshes the view. Sub-tile resampling pauses
+  above `world.cpu` 85 and resumes below 60, and only for a player who moves:
+  a player standing still keeps
   the same eye whatever the server load. Hover and examine use the exact offset.
 
 A fresh answer for a 19x19 field costs about 2.3 ms on the pinned DreamDaemon

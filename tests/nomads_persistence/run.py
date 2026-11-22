@@ -126,7 +126,7 @@ def main():
         (output/'config/config.txt').write_text('# Isolated synthetic fixture\n')
         deadline = time.monotonic()+900
         results = []
-        for case in (range(1, 39) if args.spatial else [0]):
+        for case in (range(1, 45) if args.spatial else [0]):
             if {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (compiler, daemon)} != runtime_hashes:
                 raise RuntimeError('Native runtime changed during the fixture')
             folder = output

@@ -1,0 +1,38 @@
+{
+  "_comment": "Balance numbers for magic repositories (code/modules/divine/repository_tiers.dm). Hidden mechanic: never quote these in changelogs, the wiki or player guides. Days are real days; minutes are channelling minutes, which keepers can split across sittings.",
+  "tiers": [
+    {"name": "personal", "keepers": 1, "ceiling": 100, "skill": 5, "full_days": 0, "vigil": 1, "verified": false, "channel_minutes": 30, "seed": 10},
+    {"name": "shrine", "keepers": 2, "ceiling": 400, "skill": 20, "full_days": 7, "vigil": 2, "verified": false, "channel_minutes": 120, "seed": 50},
+    {"name": "settlement", "keepers": 3, "ceiling": 1500, "skill": 40, "full_days": 7, "vigil": 3, "verified": true, "channel_minutes": 360, "seed": 200},
+    {"name": "provincial", "keepers": 5, "ceiling": 5000, "skill": 60, "full_days": 14, "vigil": 5, "verified": true, "channel_minutes": 720, "seed": 750},
+    {"name": "national", "keepers": 8, "ceiling": 15000, "skill": 80, "full_days": 14, "vigil": 8, "verified": true, "channel_minutes": 1440, "seed": 2500}
+  ],
+  "full_fraction": 0.75,
+  "neglect": {"low_fraction": 0.1, "low_days": 7, "empty_days": 30},
+  "rite_range": 3,
+  "keeper_grace_days": 7,
+  "reach": {"personal_radius": 3, "shrine_radius": 7, "warning_fraction": 0.25},
+  "seat_range": 40,
+  "forms": [
+    ["/obj/item/canvas/woven/tapestry", 2],
+    ["/obj/structure/painting_frame", 2],
+    ["/obj/structure/table", 3],
+    ["/obj/structure/writing_desk", 4],
+    ["/obj/structure/bed/chair/throne", 4],
+    ["/obj/structure/religious/totem_pole", 4],
+    ["/obj/structure/religious/statue", 5]
+  ],
+  "sizes": [
+    ["/obj/item/clothing/accessory", 1.0],
+    ["/obj/item/clothing/mask/necklace", 1.0],
+    ["/obj/item/canvas/woven/tapestry", 0.75],
+    ["/obj/item/canvas/woven/tapestry/wide", 1.0],
+    ["/obj/structure/painting_frame", 0.75],
+    ["/obj/structure/table", 0.5],
+    ["/obj/structure/writing_desk", 0.75],
+    ["/obj/structure/bed/chair/throne", 1.0],
+    ["/obj/structure/religious/totem_pole", 0.75],
+    ["/obj/structure/religious/statue", 0.75],
+    ["/obj/structure/religious/statue/king", 1.0]
+  ]
+}

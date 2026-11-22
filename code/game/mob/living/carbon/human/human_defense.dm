@@ -536,20 +536,20 @@ bullet_act
 		if (gear && istype(gear ,/obj/item/clothing))
 			var/obj/item/clothing/C = gear
 			if (istype(C) && C.body_parts_covered & def_zone.body_part)
-				protection += C.armor[type]
+				protection += C.armor_value(type)
 				if (C.accessories.len)
 					for (var/obj/item/clothing/accessory/AC in C.accessories)
 						if (AC.body_parts_covered & def_zone.body_part)
-							protection += AC.armor[type]
+							protection += AC.armor_value(type)
 							if (istype(AC, /obj/item/clothing/accessory/armor/coldwar/plates))
 								var/obj/item/clothing/accessory/armor/coldwar/plates/ACP = AC
 								for (var/obj/item/weapon/armorplates/plt in ACP.hold)
-									if (type == "melee" || type == "arrow" || type == "gun")
+									if (type == "melee" || is_melee_hit_kind(type) || type == "arrow" || type == "gun")
 										protection += plt.protection
 				if(istype(C, /obj/item/clothing/suit/storage))
 					var/obj/item/clothing/suit/storage/S = C
 					for (var/obj/item/weapon/armorplates/P in S.pockets)
-						if (type == "melee" || type == "arrow" || type == "gun")
+						if (type == "melee" || is_melee_hit_kind(type) || type == "arrow" || type == "gun")
 							protection += P.protection
 
 	return protection
@@ -613,7 +613,11 @@ bullet_act
 	for (var/obj/item/shield in list(l_hand, r_hand, wear_suit))
 		if (!shield) continue
 		. = shield.handle_shield(src, damage, damage_source, attacker, def_zone, attack_text)
-		if (.) return
+		if (.)
+			// A parried blow may be answered at once (combat_reactions.dm).
+			if (isliving(attacker) && istype(damage_source, /obj/item) && !istype(damage_source, /obj/item/projectile))
+				combat_reaction_try(attacker, COMBAT_TRIGGER_AFTER_PARRY, def_zone, damage_source)
+			return
 	return FALSE
 
 /mob/living/human/resolve_item_attack(obj/item/I, mob/living/user, var/target_zone)
@@ -622,6 +626,10 @@ bullet_act
 
 	if (user == src) // Attacking yourself can't miss
 		return target_zone
+
+	// A stop-hit or other "before" reaction spoils the swing (combat_reactions.dm).
+	if (combat_reaction_try(user, COMBAT_TRIGGER_INCOMING, target_zone, I))
+		return null
 
 	var/hit_zone = get_zone_with_miss_chance(target_zone, src)
 
@@ -694,11 +702,17 @@ bullet_act
 		user.visible_message("<span class = 'danger'>[user] has [I.attack_verb.len? pick(I.attack_verb) : "attacked"] \himself in the [affecting.name] with \the [I.name]!</span>", "<span class = 'danger'>You have [I.attack_verb.len? pick(I.attack_verb) : "attacked"] yourself in the [affecting.name] with \the [I.name]!</span>")
 	receive_damage()
 	instadeath_check()
-	var/blocked = run_armor_check(hit_zone, "melee", I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
+	var/blocked = run_armor_check(hit_zone, I.get_hit_kind(), I.armor_penetration, "Your armor has protected your [affecting.name].", "Your armor has softened the blow to your [affecting.name].", damage_source = I)
 	// Only the player's own conscious action is currently proven perceivable.
 	var/track_self_injury = user == src && client && client.mob == src && stat == CONSCIOUS && sleeping <= 0
 	var/previous_self_damage = track_self_injury ? getBruteLoss() + getBurnLoss() : 0
 	standard_weapon_hit_effects(I, user, effective_force, blocked, hit_zone)
+	if (effective_force && blocked < 2)
+		body_motion_recoil(user, (body_motion_blunt(I) && get_dir(user, src) & (EAST|WEST)) ? 1 : 0)
+	armor_bruise(I, effective_force, blocked, hit_zone)
+	armor_gap_message(I, user, blocked, hit_zone)
+	if (user != src)
+		combat_reaction_try(user, COMBAT_TRIGGER_AFTER_HIT, hit_zone, I)
 	if (track_self_injury && getBruteLoss() + getBurnLoss() > previous_self_damage && player_help_service)
 		player_help_service.record_observed_injury(client, src, "self_weapon_hit")
 	if (!map.civilizations && !map.nomads && !map.is_RP && ishuman(src) && ishuman(user))
@@ -723,7 +737,7 @@ bullet_act
 						done = TRUE
 				if (!done)
 					Huser.awards["kills"]+=list(list(Hsrc.name,min(effective_force,100),0))
-	I.on_weapon_contact(src, user)
+	I.on_weapon_contact(src, user, hit_zone)
 	return blocked
 
 /mob/living/human/standard_weapon_hit_effects(obj/item/I, mob/living/user, var/effective_force, var/blocked, var/hit_zone)
@@ -935,7 +949,7 @@ bullet_act
 				visible_message("<b><span class = 'red'>[src] has been hit in the [hit_area] by [O].</span></b>")
 		else
 			visible_message("<span class = 'red'>[src] has been hit in the [hit_area] by [O].</span>")
-		var/armor = run_armor_check(affecting, "melee", O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM) //I guess "melee" is the best fit here
+		var/armor = run_armor_check(affecting, O.get_hit_kind(), O.armor_penetration, "Your armor has protected your [hit_area].", "Your armor has softened hit to your [hit_area].", damage_source = AM)
 
 		if(armor < 100)
 			var/sharp = O.sharp
@@ -1073,16 +1087,15 @@ bullet_act
 	if(user == src)//Can't kick yourself dummy.
 		return
 
-	var/hit_zone = user.targeted_organ
-	if (user.targeted_organ == "random")
-		hit_zone = pick("l_foot","r_foot","l_leg","r_leg","chest","groin","l_arm","r_arm","l_hand","r_hand","eyes","mouth","head")
+	var/hit_zone = user.resolve_attack_zone(src, null, COMBAT_ATTACK_KICK)
+	note_struck_by(user, hit_zone, "r_leg")
 	var/too_high_message = "You can't reach that high."
 	var/obj/item/organ/external/affecting = get_organ(hit_zone)
 	if(!affecting || affecting.is_stump())
 		to_chat(user, SPAN_DANGER("They are missing that limb!"))
 		return
 
-	var/armour = run_armor_check(hit_zone, "melee")
+	var/armour = run_armor_check(hit_zone, HIT_BLUNT)
 	switch(hit_zone)
 		if("chest")//If we aim for the chest we kick them in the direction we're facing.
 			if(lying)

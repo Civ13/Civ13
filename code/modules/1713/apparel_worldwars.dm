@@ -1792,9 +1792,13 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	value = 50
 	slowdown = 0.8
 
+// The Dayfield body shield (1917): steel plates sewn between layers of
+// resin-hardened cloth or silk (resin_laminate.dm). Made at the armor assembly
+// workbench. The light one stops shrapnel and pistol rounds; the heavy one is
+// rated against rifle fire but is a burden to wear.
 /obj/item/clothing/accessory/armor/modern/british
 	name = "Dayfield body-armor"
-	desc = "British-made wearable armor made of steel sheets."
+	desc = "A Dayfield body shield: steel plates sewn between layers of resin-hardened cloth. It stops shrapnel and pistol rounds."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "modern_dayfield"
 	item_state = "modern_dayfield"
@@ -1803,7 +1807,30 @@ obj/item/clothing/accessory/storage/webbing/ww1/ww2/stormgroup/Scout
 	value = 50
 	slowdown = 0.8
 
+/obj/item/clothing/accessory/armor/modern/british/heavy
+	name = "heavy Dayfield body-armor"
+	desc = "A heavy Dayfield body shield with thick steel plates between its resin-hardened layers. It can stop a rifle bullet, but it is very heavy."
+	icon_state = "modern_dayfield_heavy"
+	item_state = "modern_dayfield_heavy"
+	armor = list(melee = 75, arrow = 95, gun = 65, energy = 15, bomb = 50, bio = 20, rad = 15)
+	value = 80
+	slowdown = 1.6
+
 ///////////////other////////////////
+
+// A body shield of cloth layers hardened with pine resin (resin.dm), the
+// lightest WW1 protection: it stops shrapnel and spent pistol rounds, not
+// rifle fire. Made at the armor assembly workbench. Sprite drawn by Fable.
+/obj/item/clothing/accessory/armor/modern/resin_shield
+	name = "resin body shield"
+	desc = "Layers of cloth hardened with resin and stitched into a vest. It stops shrapnel and pistol rounds, but not a rifle bullet."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "resin_shield"
+	item_state = "resin_shield"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+	armor = list(melee = 30, arrow = 40, gun = 25, energy = 10, bomb = 30, bio = 10, rad = 0)
+	value = 30
+	slowdown = 0.4
 
 /obj/item/clothing/accessory/armor/modern/lightplate
 	name = "Light breastplate body-armor"

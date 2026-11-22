@@ -40,6 +40,8 @@
 	user.do_attack_animation(target)
 
 	if (do_after(user, 50, target) && in_range(user, target))
+		var/turf/planted_turf = get_turf(target)
+		if (!planted_turf) return FALSE
 		if (!commit_planting(user)) return FALSE
 		target = target
 
@@ -56,7 +58,10 @@
 		target.overlays += image_overlay
 		to_chat(user, "Bomb has been planted. Timer counting down from [timer].")
 		spawn(timer*10)
-			explode(get_turf(target))
+			// Follow a moving target while it has a turf. If it is gone, keep
+			// the original planting site and let the same fuse run out.
+			var/turf/current_turf = get_turf(target)
+			explode(current_turf ? current_turf : planted_turf)
 
 // Planting intentionally hides an active charge in nullspace. Reject before
 // inventory changes during a save, and recheck after drop callbacks.

@@ -220,7 +220,7 @@ var/global/datum/player_activity/player_activity = new
 	if(H.client)
 		var/account = account_key(H.client)
 		if(account) return account
-	return istext(H.persistence_owner_ckey) && length(H.persistence_owner_ckey) ? H.persistence_owner_ckey : null
+	return istext(H.persistence_owner_ckey) && length(H.persistence_owner_ckey) ? owner_key_account(H.persistence_owner_ckey) : null
 
 // Best guess at what killed a human, from the body at death.
 // Returns list(cause, killer account or null).

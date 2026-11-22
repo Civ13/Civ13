@@ -96,9 +96,18 @@ class Air(unittest.TestCase):
 
     def test_flight_visuals_are_never_saved(self):
         runtime = extract(SOURCE, BASE + '/persistence_runtime_var')
-        for key in ('aloft', 'changing_height', 'shadow', 'shadow_turf', 'ground_view', 'ground_view_far', 'ground_view_anchor'):
+        for key in ('aloft', 'changing_height', 'shadow', 'shadow_turf'):
             self.assertIn('"' + key + '"', runtime)
             self.assertRegex(SOURCE, r'var/(tmp/)?[\w/]*\b' + key + r'\b')
+
+    def test_rider_sees_the_ground_through_the_open_air_view(self):
+        # The ground below is the open-air view's (open_air_view.dm); a second
+        # view of ground turfs in vis_contents drew over it washed out and kept
+        # resending those turfs to every client in sight.
+        for path in (SOURCE, (ROOT / 'code/modules/1713/machinery/modular_vehicles/aircraft/aircraft_view.dm').read_text(),
+                     (ROOT / 'code/modules/naval/air_hull.dm').read_text()):
+            self.assertNotIn('ground_view', path)
+            self.assertNotIn('aircraft_ground_view', path)
 
 
 class ArtAndWiring(unittest.TestCase):

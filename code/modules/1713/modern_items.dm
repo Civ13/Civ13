@@ -702,7 +702,9 @@
 			C.reagents.remove_reagent("petroleum",barrelamt)
 			volume += barrelamt
 			H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of petroleum from \the [W] into \the [src].")
-			desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
+			bakelizer_desc()
+			return
+		else if (bakelizer_fill(C, H)) // resin_laminate.dm: draw off liquid resins
 			return
 		else
 			to_chat(H, SPAN_NOTICE("This [W] has no crude petroleum in it!"))
@@ -760,12 +762,12 @@
 		if (powersource)
 			powersource.update_power(-powerneeded,1,src)
 		update_icon()
-		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
+		bakelizer_desc()
 		return
 	else
 		volume-=5
-		plastic+=1
-		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and [plastic] plastic sheets inside."
+		bakelizer_make() // resin_laminate.dm: plastic or the chosen resin
+		bakelizer_desc()
 		spawn(600) // 1 minute
 			refine()
 		return
@@ -774,19 +776,23 @@
 	set name = "Remove Plastic"
 	set src in range(1)
 
+	var/ejected = bakelizer_eject_nylon(usr) // resin_laminate.dm
+	ejected = bakelizer_eject_photopolymer(usr) || ejected // resin_printer.dm
+	if (ejected && !plastic)
+		return
 	if (!plastic)
 		to_chat(usr, "Theres no finished plastic in the [src].")
-		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and 0 plastic sheets inside."
+		bakelizer_desc()
 		return
 	else if (plastic <= 0)
 		plastic = 0
-		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and 0 plastic sheets inside."
+		bakelizer_desc()
 		return
 	else if (plastic > 0)
 		var/obj/item/stack/material/plastic/P = new/obj/item/stack/material/plastic(get_turf(src))
 		P.amount = plastic
 		plastic = 0
-		desc = "A machine used to transform petroleum into plastics. Has [volume] petroleum and 0 plastic sheets inside."
+		bakelizer_desc()
 		return
 /obj/structure/bakelizer/update_icon()
 	if (active)

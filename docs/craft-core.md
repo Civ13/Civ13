@@ -127,15 +127,38 @@ each hull tile whose roof stands on that tile, or the top of a ladder whose foot
 does. Nothing about it is saved and no field links one deck to the other, so a
 loaded world finds the upper deck the same way. `plan()` refuses a move when the
 open air ahead of the upper deck holds a floor, a ladder or anything solid, and
-when her hull and upper deck together pass `BUILT_HULL_MAX_DECK_TILES` (300).
+when her hull and upper deck together pass `BUILT_HULL_MAX_DECK_TILES` (300). A mast
+(`/obj/structure/vehicleparts/movement/sail`) on a tile with no upper deck
+over it stands up through the level above too: `mast_tile_refusal()` stops her
+when a floor, a bridge or anything solid is there.
 `move_to()` carries the lower deck first, then the upper floors and ladder tops,
 then whoever stands up there, so nobody reaches open air without a floor. A
 roof makes the tile under it indoors, so the areas of her tiles sail with her
 and the sea's areas close in behind. Measured in
-`tests/naval_carrier/upper_deck_probe.dm`, a step at the cap with ten sailors
-and ten buckets aboard takes about 16 ms (a bare 200-tile hull about 10 ms).
-A hull with an upper deck cannot cross the sea or set out on a voyage yet, since
-only her own deck packs for the crossing.
+`tests/naval_carrier/upper_deck_probe.dm`, a sailing step at the cap (asking
+`can_move_to()` and then moving, as the sailing loop does) with ten sailors and
+ten buckets aboard takes about 12 ms, and a bare 200-tile hull about 7.5 ms.
+
+Three things keep a step cheap. Her own floors and roofs (`craft_quiet_carry()`:
+a cover that is not a wall, not dense and not opaque, or a roof) are carried by
+`craft_quiet_move()` in `glide.dm`, which sets their place and keeps the save
+gate, the sight caches and the level views, but skips the Entered, Exited and
+Crossed callbacks that nothing listens to for them; anything else aboard still
+goes by `forceMove()`. `can_move_to()` keeps its plan for the `move_to()` that
+follows in the same tick (`plan_memo`, keyed on her place, the target and
+`world.time`), so a step is planned once. And a step without a turn keeps her
+offsets list and its box (`offset_box`) instead of rebuilding them.
+A hull with an upper deck crosses the sea and sets out on voyages with it
+([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
+
+A roof built on her upper deck makes a second deck above, its floor one
+building level higher again. `top_cells()` finds it the same way from her upper
+deck tiles, `plan()` checks the air ahead of it like the upper deck's and counts
+it toward the deck cap, and `move_to()` carries it after the upper deck. A roof
+on the upper deck makes the tiles under it indoors, and those areas sail with
+her too (`built_hull_areas_before()`). It crosses the sea with her as
+`record["top"]` ([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
+Measured in `tests/naval_carrier/second_deck_probe.dm`.
 
 ### Holds
 
@@ -151,8 +174,8 @@ the tiles it left their ground back. Each hold floor keeps the turf type it
 hollowed (`hold_origin`, text, saved with it). `plan()` refuses a move when
 the ground ahead of the hold is anything else or holds something solid, and
 counts the hold in `BUILT_HULL_MAX_DECK_TILES`. `carries()` answers for all
-her decks, so an engine in the hold drives her. An airship has no hold, and a
-hull with a hold cannot cross the sea yet.
+her decks, so an engine in the hold drives her. An airship has no hold. A
+hull with a hold crosses the sea with it ([ship-crossing.md](ship-crossing.md#holds-and-cargo)).
 
 ### Airships
 
@@ -489,6 +512,25 @@ wrecks they reach are built when they arrive. No live region runs it yet;
   in it. A crew takes a contract with a registered ship lying in the home
   waters and can give it up.
 
+## Cargo
+
+`craft/craft_cargo.dm`: every carrier asks one question of each thing on its
+tiles, `M.craft_cargo()`: built hulls and airships at every step (deck, upper
+deck and hold), turf-built vessels at every hop and turn, spacecraft, frame
+ships and modular vehicles as they gather what they move, a sinking or
+wrecked hull, the carrier's elevators, and a ship packed for a crossing.
+Anything that stands in the world is cargo by default: floors, structures,
+crates and chests with what they hold, machines (`/obj/machinery`, which frame
+ships and vehicles now carry too), items, carts and small boats, animals and
+people. It answers FALSE for what only draws something or is not really there:
+lighting, flick animations and speech bubbles (`/atom/movable/overlay`,
+`/obj/chat_text`), aiming marks, stack badges, HUD objects, map metadata, a
+vessel's wake, ghosts and admin observers, lobby players, `dview` and agent
+proxies. A thing that must stay where it was laid answers through
+`craft_left_behind()` (naval mines, boathouse piles), which the default calls.
+A new type that should never ride overrides `craft_cargo()`; one that should
+ride needs nothing. Probe: `tests/naval_carrier/cargo_probe.dm`.
+
 ## Ships between worlds
 
 A built hull at the map edge can cross to another world of the group (a land
@@ -781,9 +823,75 @@ frames is fitted.
 - Boats, ships and aircraft opt out (`uses_load_factor()`); the engine stall
   limit in `check_engine()` is unchanged.
 
+## Gun turrets
+
+`code/modules/naval/ship_turret.dm` adds the ship's gun turret
+(`/obj/structure/cannon/modern/ship_turret`, 60 steel, Naval Mines research):
+a one-tile breech-loader that fires the field shells (`/obj/item/cannon_ball/shell`)
+and reuses the unused `modern_ship` state in `icons/obj/cannon.dmi`.
+
+- Its barbette is found by position: `magazine()` looks for a shell rack on
+  the tile right under it, one or two levels down (`multiz_level_below()`).
+  On a ship every tile on the way down must be one of her own decks
+  (`craft_holding()` and `body.carries()`), so a rack in the rock beside her
+  hold does not count. Ashore any rack dug under it does.
+- A loader beside it Alt-clicks it (or uses Hoist a Shell): after five
+  seconds `take_from_magazine()` moves one shell from the rack into the
+  breech. Nothing links turret and rack, so a hop or a turn needs no fix-up
+  and nothing extra is saved.
+- Bomb racks do not feed it.
+- Turrets answer the boatswain's call (`broadside_gun_ok()` in
+  `1713/siege/naval_broadside.dm`), unlike the fixed naval guns and tanks.
+- Gate (turret_probe.dm): a 200-tile steel battleship with 96 tiles of hold,
+  eight loaded turrets and a belted side fires all eight and steps in the
+  same tick in about 14-15 ms, of which the broadside is about 1 ms; the step
+  alone is 13-14 ms. That is inside one 40 ms tick but over the plan's 8 ms
+  step budget, the same as any hull near the 300-tile deck cap (Upper decks).
+
+## Belt armour
+
+`code/modules/naval/hull_armour.dm` adds the belt armour plate
+(`/obj/structure/hull_armour`, 15 steel, Naval Mines research), set on a tile
+of a ship's deck.
+
+- `/obj/covers/ex_act()` asks `hull_armour_soften()` first: a floor on a
+  plated tile, or a hold floor right under one, takes every blast one step
+  lighter (severity + 1; 4 is nothing), so a direct hit does not hole her.
+  The direct hit spends the plate (it is deleted there and then); lighter
+  blasts leave it. A plate's own `ex_act()` does nothing, so the order the
+  blast visits a tile's contents does not matter.
+- Each plate weighs 1 (`hull_load()`), so belting a ship slows her.
+- `craft.armour_belt()` counts plated tiles among her edge tiles for the
+  tiller (`armour_text()`). A wrench unbolts a plate for 10 steel.
+
+## Hull weight
+
+`code/modules/naval/hull_weight.dm` weighs a built hull's own floors with the
+same material table the land vehicles use (`vehicle_hull_stats()` in
+`modular_vehicles/vehicle_hulls.dm`), so there is one weight table, not two.
+A plank tile is the measure of 1; every other floor weighs its material's
+weight against plank (`hull_material_weight()`): steel, iron, stone or
+concrete about 1.67, aluminium about 0.92.
+
+- `fit_drives()` already walks `body.aboard()` before each hop; it hands the
+  same list to `count_structure()`, which counts one floor per turf, deck,
+  upper deck and hold alike, and stores `structure_weight` as the weight past
+  one plank per tile of her hull. `craft.mass()` adds it before water, load
+  and fouling, so speed is still push over mass (`max_speed()`).
+- Airships keep their own lift table (`air_weight`, air_hull.dm) and opt out
+  (`weighs_floors()`).
+- The ship designer's estimate (`/datum/ship_draught/mass()`) counts the same
+  weights from the draught: plank or steel deck cells, and every extra deck
+  tile at its level's floor (the hold is plated with steel).
+- Turning: `turn_time()` is the path warning (5 seconds) for a hull up to ten
+  tiles long, half a second more for each tile past that, at most 30 seconds.
+  Turf-built template vessels keep their fixed turn.
+
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/turret_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/passage_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300

@@ -2,7 +2,10 @@
 
 Status: **Phase 1 (registry schema and validator) is implemented; no playable
 feature, allocation or save wiring exists**. Reviewed against master
-`853ba40e6a8ad1bc36fd35621d30a5399d043895` on 2026-11-13. The proposed first
+`853ba40e6a8ad1bc36fd35621d30a5399d043895` on 2026-11-13. Since 2026-11-21 every map with an
+underground stacks four whole unformed-rock levels under its surface, each
+added on first dig and saved sparsely ([underground-level.md](underground-level.md#deeper-levels));
+the packed rectangles below remain a separate option for many small mines. The proposed first
 playable version is opt-in, bounded, resident and persistent. Unloading and
 slot reuse are later work.
 

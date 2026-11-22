@@ -47,7 +47,8 @@ var/global/death_legacy_test_hours = 0
 /proc/death_legacy_account(mob/living/human/H)
 	if (!istype(H))
 		return null
-	var/account = H.client ? H.client.ckey : (H.ckey || H.persistence_owner_ckey)
+	// The owner key: each character slot keeps its own record (player_reclaim.dm).
+	var/account = H.client ? H.client.owner_key() : (H.persistence_owner_ckey || H.ckey)
 	return istext(account) && length(account) && copytext(account, 1, 6) != "guest" ? account : null
 
 /proc/death_legacy_near(list/record, turf/T)
@@ -162,6 +163,8 @@ var/global/death_legacy_test_hours = 0
 	record["z"] = T.z
 	record["cause"] = cause[1]
 	record["name"] = "[H.real_name]"
+	if (istext(H.origin_id) && length(H.origin_id) <= 40)
+		record["people"] = H.origin_id // the next character returning here keeps it (peoples.dm)
 	record["nodes"] = clean_recipe_node_ids(H.known_recipe_nodes)
 	record["scholarship"] = clean_scholarship(H.scholarship)
 	record["reading"] = clean_study_progress(H.study_progress)
@@ -193,7 +196,7 @@ var/global/death_legacy_test_hours = 0
 /mob/new_player/proc/death_legacy_preview(list/factions, wilds)
 	if (!client || !death_legacy_enabled())
 		return ""
-	var/account = client.ckey
+	var/account = client.owner_key()
 	var/list/record = death_legacy_record(account)
 	if (!record)
 		return ""
@@ -220,7 +223,7 @@ var/global/death_legacy_test_hours = 0
 /proc/death_legacy_return(mob/living/human/H)
 	if (!istype(H) || !H.client || IsGuestKey(H.client.key))
 		return FALSE
-	return death_legacy_apply(H, H.client.ckey)
+	return death_legacy_apply(H, H.client.owner_key())
 
 /proc/death_legacy_apply(mob/living/human/H, account)
 	if (!death_legacy_enabled() || !istype(H) || !account)
@@ -265,6 +268,8 @@ var/global/death_legacy_test_hours = 0
 				kept += value > STAT_NORMAL ? round(value - (value - STAT_NORMAL) * fraction, 0.01) : value
 			H.stats[stat] = kept
 	H.refresh_recipe_knowledge_menus()
+	if (istext(record["people"]))
+		H.legacy_people = record["people"] // read once by choose_origin (origins.dm)
 	to_chat(H, "<big><font color='#3d9e3d'><b>You remember what [record["name"]] knew.</b></font></big>")
 	to_chat(H, SPAN_NOTICE("Lost with that death: [death_legacy_loss_text(record["cause"], charged)][by_station ? "" : ", [round(2 ** bed_extra, 0.01)] times for starting at a bed instead of your faction's station"]. Another return within a day costs double."))
 	death_legacies[account] = list("at" = record["at"], "weak" = 0, "kept" = 0, "returns" = record["returns"] + 1, "used" = death_legacy_now())

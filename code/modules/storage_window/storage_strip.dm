@@ -174,11 +174,13 @@
 /proc/storage_strip_take_wait(mob/user, obj/item/I)
 	var/obj/item/weapon/storage/S = I.loc
 	var/mob/living/human/H = user
+	if (istype(S) && !S.storage_contents_accessible())
+		return FALSE
 	if (!istype(S) || !istype(H) || !H.client)
 		return TRUE
 	if (!do_after(H, storage_strip_take_time(H, I), I))
 		return FALSE
-	return I.loc == S
+	return I.loc == S && S.storage_contents_accessible()
 
 // Deciseconds to take a thing out of its bag into a hand.
 /proc/storage_strip_take_time(mob/living/human/H, obj/item/I)

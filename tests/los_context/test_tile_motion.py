@@ -129,6 +129,57 @@ class TileMotion(unittest.TestCase):
         self.assertEqual([c.captures for c in s.clients],[2,0,0,0])
         self.assertEqual(s.context.movement_bucket,'32,0')
 
+    def test_production_eye_samples_only_after_quadrant_or_turf_change(self):
+        # Execute the production settle body with inert loc, CPU and body
+        # boundaries. This counts eye changes, not native rendering or time.
+        from math import floor
+        env=dict(round=floor,LOS_EYE_OFFSET_QUANTUM=16)
+        for name in ('los_eye_quadrant','los_eye_quantized'):
+            env[name]=A.project(TERRAIN,'/proc/'+name,'step',env)
+        start=TERRAIN.index('/datum/los_context/proc/settle_eye()')
+        end=TERRAIN.index('/proc/los_eye_bucket',start)
+        fragment=TERRAIN[start:end]
+        fields=('body','eye_loc','eye_step_x','eye_step_y','eye_quadrant_x',
+                'eye_quadrant_y','eye_qx','eye_qy')
+        for field in fields:
+            fragment=re.sub(r'(?<![.\w])'+field+r'\b', 'V.'+field, fragment)
+
+        def trace(source,positions):
+            busy=False
+            sample_count=0
+            def admit():
+                nonlocal sample_count
+                sample_count+=1
+                return not busy
+            settle=A.project(source,'/datum/los_context/proc/settle_eye','V',
+                             dict(env,los_eye_offsets_allowed=admit))
+            body=N(loc=None,step_x=0,step_y=0)
+            viewer=N(body=body,eye_loc=None,eye_step_x=0,eye_step_y=0,
+                     eye_quadrant_x=None,eye_quadrant_y=None,eye_qx=0,eye_qy=0)
+            states=[]
+            for loc,sx,sy,busy in positions:
+                body.loc,body.step_x,body.step_y=loc,sx,sy
+                settle(viewer)
+                states.append((viewer.eye_qx,viewer.eye_qy,sample_count))
+            return states
+
+        a,b=Tile(3),Tile(4)
+        aligned=trace(fragment,[(a,0,0,False),(a,15,15,False)])
+        self.assertEqual(aligned,[(0,0,1),(0,0,1)])
+        sweep=[(a,x,-10,False) for x in range(-16,16)]
+        guard="if (where == V.eye_loc && qx == V.eye_quadrant_x && qy == V.eye_quadrant_y)"
+        self.assertEqual(fragment.count(guard),1)
+        old=fragment.replace(guard,'if (FALSE)',1)
+        before,after=trace(old,sweep),trace(fragment,sweep)
+        def changed_states(trace):
+            return sum(x[:2]!=y[:2] for x,y in zip(trace,trace[1:]))
+        self.assertEqual((changed_states(before),changed_states(after)),(2,1))
+        self.assertEqual((before[-1][2],after[-1][2]),(32,2))
+        path=[(a,10,-10,False),(b,10,-10,True),(b,11,-10,False),
+              (b,11,-10,False),(b,-10,-10,False)]
+        self.assertEqual(trace(fragment,path),
+                         [(16,-16,1),(0,0,2),(0,0,2),(0,0,2),(-16,-16,3)])
+
     def test_dirty_unchanged_turf_recovers_before_return_without_neighbor_refresh(self):
         s=self.scene();old=s.actor.loc
         s.owner.los_dirty=True

@@ -11,3 +11,10 @@
 // Orbital flight (orbital_flight.dm)
 // The epoch (map.ordinal_age) orbit opens in: 1969, as the Moon.
 #define ORBIT_MIN_AGE 7
+
+// Space station plans (space/station_plan.dm): modules on a square grid of
+// this many slots each way, one module pitch (HABITAT_MODULE_SPACING) apart,
+// with the middle slot on the middle of the station's plane.
+#define STATION_PLAN_SIDE 7
+#define STATION_PLAN_MAX_MODULES 12
+#define DESIGN_CODE_STATION_MAX 400

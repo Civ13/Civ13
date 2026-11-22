@@ -13,7 +13,8 @@ client/
 	var/list/hidden_mobs = list()
 
 atom/proc/InCone(atom/center = usr, dir = NORTH)
-	if (get_dist(center, src) == FALSE || src == center) return FALSE
+	var/distance = get_dist(center, src)
+	if (distance == FALSE || src == center) return FALSE
 	var/d = get_dir(center, src)
 	if (global_hud.fov.icon_state == "combat") //300 degrees
 		if (!d || d == dir) return TRUE
@@ -54,28 +55,28 @@ atom/proc/InCone(atom/center = usr, dir = NORTH)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center, src) >= dx)
+				if (distance >= dx)
 					return FALSE
 			if (EAST)
 				if (x < center.x)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center, src) >= dx)
+				if (distance >= dx)
 					return FALSE
 			if (NORTH)
 				if (y < center.y)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center, src) >= dy)
+				if (distance >= dy)
 					return FALSE
 			if (SOUTH)
 				if (y > center.y)
 					return TRUE
 				if (d == center.dir)
 					return FALSE
-				if (get_dist(center,src) >= dy)
+				if (distance >= dy)
 					return FALSE
 
 		return TRUE
@@ -99,7 +100,6 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 	return
 
 /mob/living/human/update_vision_cone()
-	var/delay = 10
 	if (client && HUDtech["fov"] && !config.disable_fov)
 //delete these lines when activating "normal" update vision cone
 //		rest_cone_act()
@@ -107,11 +107,10 @@ proc/cone(atom/center = usr, dir = NORTH, list/list = oview(center))
 
 		var/obj/screen/fov/fov = HUDtech["fov"]
 		var/image/I = null
-		for (I in client.hidden_atoms)
-			I.override = FALSE
-			spawn(delay)
-				qdel(I)
-			delay += 10
+		// The last cone's images go at once: the new ones are added this same
+		// tick, so nothing flickers. Left among the client images (they used to be
+		// qdel'd one second apart each), they piled up on every step and turn.
+		client.images -= client.hidden_atoms
 		rest_cone_act()
 		client.hidden_atoms = list()
 		client.hidden_mobs = list()

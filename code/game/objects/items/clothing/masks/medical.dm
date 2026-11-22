@@ -55,6 +55,7 @@
 		return
 	else
 		if (toggled)
+			body_parts_covered = initial(body_parts_covered)
 			item_state = "sterile"
 			icon_state = "sterile"
 			item_state_slots["slot_mask"] = "sterile"

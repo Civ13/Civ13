@@ -186,6 +186,11 @@
 		to_chat(owner, SPAN_WARNING("That faction already exists. Choose another name."))
 		return FALSE
 
+	var/kin_faction = map.faction_kin_leads_elsewhere(owner, draft_name)
+	if (kin_faction)
+		to_chat(owner, SPAN_WARNING("Another of your characters leads [kin_faction]. One player holds one leadership seat."))
+		return FALSE
+
 	var/newname = draft_name
 	owner.civilization = newname
 	// The founder is the first member on the roster (faction_roster.dm).
@@ -219,5 +224,6 @@
 	owner.grant_faction_symbol_editor()
 	to_chat(owner, "<big>You are now the leader of the <b>[newname]</b> faction.</big>")
 	player_activity.faction_event(owner, "faction_found", newname)
+	owner.accolade_founded(newname)
 	GLOB.nanomanager.close_user_uis(owner, src)
 	return TRUE

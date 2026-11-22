@@ -313,6 +313,16 @@ class GroupPortsTests(unittest.TestCase):
         self.assertEqual([('start', 'gaia')], actions, 'only the new front door is brought up')
         self.assertEqual(['moon'], journal['restart_needed'])
 
+    def test_a_stopped_group_only_changes_ports(self):
+        # Every world is down for maintenance: the gate moves and nothing is launched.
+        self.machine.up = set()
+        plan = group_ports.plan_gate(shard_group, self.load(), 'gaia', self.machine)
+        self.assertFalse(plan['regions']['gaia']['start'])
+        journal = self.run_plan(plan)
+        self.assertEqual('done', journal['phase'], journal)
+        self.assertEqual([], self.machine.detached, 'nothing is started')
+        self.assertEqual('gaia', self.load()['gate'])
+
     def test_a_failed_stop_starts_the_stopped_world_again_and_changes_nothing(self):
         self.machine.up = {1720, 1721}
         before = self.path.read_text()

@@ -51,6 +51,17 @@ static class LocalHostingTests {
             Require(HostBoard.Card("gaia", "Gaia", true, awayCard.RootElement, 0).Notes.Contains("1 player away at an event"), "event away count on the board card");
         using (var heldCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"transfers_held\":true}}"))
             Require(HostBoard.Card("gaia", "Gaia", true, heldCard.RootElement, 0).Problem?.Contains("Travel in is on hold") == true, "a held transfer agent is a problem on the board card");
+        using (var clockCard = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"calendar\":{\"clock\":\"06:40 AM\",\"phase\":\"Early Morning\",\"season\":\"WINTER\",\"zone\":-2,\"season_left\":37}}}")) {
+            var card = HostBoard.Card("gaia", "Gaia", true, clockCard.RootElement, 0);
+            Require(card.Clock is { Time: "06:40 AM", Phase: "Early Morning", SeasonText: "Winter", Zone: -2, SeasonLeft: 37, Daylight: true }, "the world calendar on the board card");
+            Require(card.Clock!.ZoneText == "UTC\u22122" && card.Describe().Contains("06:40 AM early morning, winter (37 min left), UTC-2"), "the clock line reads: " + card.Describe());
+        }
+        foreach (var badClock in new[] { "{\"clock\":\"6:40\",\"phase\":\"Night\",\"season\":\"FALL\",\"zone\":0}", "{\"clock\":\"06:40 AM\",\"phase\":\"Dusk\",\"season\":\"FALL\",\"zone\":0}",
+                "{\"clock\":\"06:40 AM\",\"phase\":\"Night\",\"season\":\"FALL\",\"zone\":20}", "{\"clock\":\"06:40 AM\",\"phase\":\"Night\",\"season\":\"monsoon\",\"zone\":0}" })
+            using (var bad = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"calendar\":" + badClock + "}}"))
+                Require(HostBoard.Card("gaia", "Gaia", true, bad.RootElement, 0).Clock == null, "a bad calendar shows no clock: " + badClock);
+        using (var noClock = JsonDocument.Parse("{\"state\":\"awake\",\"region_view\":{\"players\":0}}"))
+            Require(HostBoard.Card("gaia", "Gaia", true, noClock.RootElement, 0).Clock == null && new RegionClock("12:00 PM", "Night", "SUMMER", 0, null).ZoneText == "UTC", "no calendar, no clock; UTC+0 reads UTC");
         using (var down = JsonDocument.Parse("{\"port\":1714,\"listening\":false,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
             Require(LocalHosting.RegionDetails(down.RootElement).Contains("watchdog could not restart it"), "refusal on a stopped region");
         using (var up = JsonDocument.Parse("{\"port\":1714,\"listening\":true,\"watchdog\":{\"last_refusal\":\"the save still has BYOND lock files\"}}"))
@@ -229,11 +240,21 @@ static class LocalHostingTests {
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-gate", "--region", "gaia", "--bot-profile", @"D:\bot\profile.json", "--apply" }), "set-gate apply argv");
         Require(GroupPorts.Step(host.Control!, "set-port", "moon", 1721, true).ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-port", "--region", "moon", "--port", "1721", "--apply" }), "set-port argv");
+        Require(GroupPorts.Step(host.Control!, "add-gateway").ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway" }), "add-gateway plan argv never applies");
+        Require(GroupPorts.Step(host.Control!, "add-gateway", null, null, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-gateway", "--apply" }), "add-gateway apply argv");
+        Require(GroupPorts.Step(host.Control!, "add-regions", null, null, true).ArgumentList.SequenceEqual(
+            new[] { "-I", "-B", shard, "--config", groupConfig, "add-regions", "--apply" }), "add-regions apply argv");
+        var gatewayPlan = GroupPorts.ParsePlan(0, "{\"ok\": true, \"accepted\": false, \"plan\": {\"region\": \"gateway\", \"already\": false, "
+            + "\"steps\": [\"Add the region gateway (Gateway) on port 1771.\"], \"problems\": [], \"warnings\": []}}");
+        Require(gatewayPlan.Ok && !gatewayPlan.Accepted && !gatewayPlan.Already && gatewayPlan.Steps.Count == 1, "add-gateway plan parsed");
         foreach (var unsafeStep in new Action[] { () => GroupPorts.Step(host.Control!, "setup"), () => GroupPorts.Step(host.Control!, "set-gate"),
-                () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"),
+                () => GroupPorts.Step(host.Control!, "set-gate", "--apply"), () => GroupPorts.Step(host.Control!, "ports", "gaia"), () => GroupPorts.Step(host.Control!, "add-regions", "gaia"),
                 () => GroupPorts.Step(host.Control!, "ports", null, null, true), () => GroupPorts.Step(host.Control!, "set-port", "moon"),
                 () => GroupPorts.Step(host.Control!, "set-port", "moon", 80), () => GroupPorts.Step(host.Control!, "set-gate", "gaia", 1721),
-                () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config") })
+                () => GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, "--config"), () => GroupPorts.Step(host.Control!, "add-gateway", "gaia"),
+                () => GroupPorts.Step(host.Control!, "add-gateway", null, null, true, @"D:\bot\profile.json") })
             try { unsafeStep(); throw new Exception("unsafe ports step accepted"); } catch (ArgumentException) { assertions++; }
         var doors = GroupPorts.ParseReport(0, "noise\n{\"ok\": true, \"gate\": \"north\", \"public_host\": \"play.example\", \"public_ports\": [1713, 1714, 1717], \"problems\": [], \"host_service\": \"reloads\", " +
             "\"ports\": [{\"port\": 1714, \"use\": \"game\", \"region\": \"north\", \"name\": \"North\\u0007 America\", \"public\": true, \"gate\": true, \"listening\": true}, " +
@@ -354,7 +375,8 @@ static class LocalHostingTests {
         Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2, "update when empty kept other settings");
         // Start region: the mainland unless start_region names another; never a kind nobody can start in.
         File.WriteAllText(groupConfig, "{\"mainland\": \"northamerica\", \"shutdown_warning_seconds\": 60, \"regions\": [{\"id\": \"northamerica\", \"name\": \"North America\", \"kind\": \"SURFACE\"}, "
-            + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}]}");
+            + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}, "
+            + "{\"id\": \"gateway\", \"name\": \"Gateway\", \"kind\": \"GATEWAY\"}]}");
         var startRegion = HostSettings.StartRegion(host.Control!.Group!);
         Require(startRegion.Mainland == "northamerica" && startRegion.Current == "northamerica"
             && startRegion.Choices.Select(choice => choice.Id + "=" + choice.Name).SequenceEqual(new[] { "northamerica=North America", "gaia=Gaia" }), "start region choices");
@@ -364,6 +386,19 @@ static class LocalHostingTests {
         Reject(() => HostSettings.SetStartRegion(host.Control!.Group!, "atlantis"), "an unknown start region");
         HostSettings.SetStartRegion(host.Control!.Group!, "northamerica");
         Require(!File.ReadAllText(groupConfig).Contains("start_region") && HostSettings.StartRegion(host.Control!.Group!).Current == "northamerica", "start region back on the mainland");
+        // Travel starts: every land but the gateway is listed; unticked ones are kept down (keep_down), other settings kept.
+        Require(HostSettings.TravelStarts(host.Control!.Group!).Select(region => region.Id + "=" + region.KeptDown).SequenceEqual(new[] {
+            "northamerica=False", "gaia=False", "orbit=False", "tutorial=False" }), "travel starts list every land but the gateway");
+        HostSettings.SetKeptDown(host.Control!.Group!, new[] { "gaia", "gateway" });
+        Require(HostSettings.TravelStarts(host.Control!.Group!).Where(region => region.KeptDown).Select(region => region.Id).SequenceEqual(new[] { "gaia" })
+            && !File.ReadAllText(groupConfig).Contains("\"keep_down\": false") && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "gaia kept down, the gateway never");
+        HostSettings.SetKeptDown(host.Control!.Group!, Array.Empty<string>());
+        Require(!File.ReadAllText(groupConfig).Contains("keep_down"), "nothing kept down");
+        // Ready lands: on with 15 minutes by default; saved values read back, other settings kept.
+        Require(HostSettings.Readiness(host.Control!.Group!) == (true, 15), "ready lands on, 15 minutes by default");
+        HostSettings.SetReadiness(host.Control!.Group!, false, 30);
+        Require(HostSettings.Readiness(host.Control!.Group!) == (false, 30) && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 60, "ready lands saved");
+        Reject(() => HostSettings.SetReadiness(host.Control!.Group!, true, 1441), "cold storage over a day");
         File.WriteAllText(groupConfig, JsonSerializer.Serialize(new { overlay = sharedOverlay, shutdown_warning_seconds = 300, update_when_empty = true, fetch = "origin", regions = new object[] {
             new { id = "gaia", name = "Gaia", overlay = gaiaOverlay }, new { id = "mars", name = "Mars" }, new { id = "moon", overlay = "relative" } } }));
         var places = HostSettings.Locations(host.Control!.Group!);

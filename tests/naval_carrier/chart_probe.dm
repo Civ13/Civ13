@@ -345,6 +345,20 @@ var/naval_runtime_error = FALSE
 	naval_check(!lark.grapple && !gull.grapple && !(locate(/obj/covers) in gap2), "a line destroyed parts the ships")
 	lark.grapple_ready_at = 0
 	naval_check(lark.order_grapple(gull), "grappled once more")
+	// ---- Grapnels thrown by hand (naval/hull_grapnel.dm) ----
+	var/turf/lark_deck = locate(60, 5, 2)
+	var/turf/gull_deck = locate(60, 8, 2)
+	naval_check(findtext(grapnel_refusal(locate(1, 1, 2), gull_deck), "from a ship's deck") && findtext(grapnel_refusal(lark_deck, locate(62, 5, 2)), "another ship's deck") && isnull(grapnel_refusal(lark_deck, gull_deck)), "a grapnel is thrown from her deck at another ship ([grapnel_refusal(lark_deck, gull_deck)])")
+	var/datum/craft_grapple/held = lark.grapple
+	naval_check(held.cut_time() == 50, "lines with no hooks cut in five seconds")
+	var/obj/item/weapon/grapnel/hook1 = new(lark_deck)
+	var/obj/item/weapon/grapnel/hook2 = new(gull_deck)
+	naval_check(isnull(grapnel_catch(hook1, lark, gull)) && held.hooks.len == 1 && isnull(hook1.loc) && held.cut_time() == 80, "a grapnel adds to her lines and makes them slower to cut")
+	naval_check(isnull(grapnel_catch(hook2, gull, lark)) && held.hooks.len == 2 && held.cut_time() == 110 && lark.grapple == held, "the caught ship's own grapnel holds the same lines")
+	var/turf/lines_home = held.home
+	held.release(lark)
+	naval_check(!lark.grapple && lines_home && hook1.loc == lines_home && hook2.loc == lines_home && lark.grapple_ready_at > world.time, "cast off, the grapnels come back to her deck")
+	naval_check(!lark.order_grapple(gull) && isnull(grapnel_catch(hook1, lark, gull)) && lark.grapple && lark.grapple.thrower == lark && lark.grapple.lines.len == 2 && lark.grapple.hooks.len == 1, "a grapnel throws her lines while the helm's are still being coiled")
 	// ---- A dark ship by night ----
 	var/hour_was = time_of_day
 	naval_check(get_dist(C.centre(), gull.centre()) > 10 && C.sights(gull), "by day the Wren sees the Gull [get_dist(C.centre(), gull.centre())] tiles off")

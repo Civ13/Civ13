@@ -123,9 +123,9 @@ def needs_handle(title):
 records=[]; issues=[]; occurrence=[]
 def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
     for typepath,_ in outputs:
-        if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/training_course')):
-            modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/training_course/hurdle/steel')
-            skill=105 if modern else 0 if typepath == '/obj/item/weapon/lifting_weight' else 30
+        if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/treadwheel', '/obj/item/weapon/skipping_rope')):
+            modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/treadwheel/treadmill')
+            skill=105 if modern else 0 if typepath in ('/obj/item/weapon/lifting_weight', '/obj/item/weapon/skipping_rope') else 30
             if skill:conditions+=f' Crafting skill {skill}.'
             if modern:conditions+=' Minimum era Modern (ordinal 8).'
         if typepath.startswith(('/obj/structure/telecom', '/obj/item/tv_camera')) or typepath == '/obj/item/weapon/telephone/landline':
@@ -181,7 +181,7 @@ for p,s in files.items():
                 ingredients.append(('/obj/item/weapon/material/handle',1))
                 tool_notes+=' Uses up one wood handle held or worn; its wood sets durability and speed.'
             if b == '/obj/item/weapon/material/handle':
-                tool_notes+={'wood handle':' Tools built on it: the usual durability and speed.','plank handle':' Tools built on it last 50% longer and work 25% faster.','reinforced handle':' Tools built on it last 50% longer but work 18% slower.'}.get(n,'')
+                tool_notes+={'wood handle':' Tools built on it: the usual durability and speed.','plank handle':' Tools built on it last 35% longer and work 35% faster.','reinforced handle':' Tools built on it last 50% longer at the usual speed.','plastic handle':' Tools built on it last 40% longer and work 40% faster.'}.get(n,'')
             need=craft_needs.get(canon(b))
             if need:
                 ingredients+=[(stack,amount) for stack,amount in need['inputs'].items()]

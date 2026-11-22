@@ -455,7 +455,10 @@
 		left.volume = min(volume, left.volume)
 		left.update_icon()
 	else
+		// The spring under an old well keeps the season's dryness.
 		left = new /obj/structure/sink/puddle(T)
+		left.dry = dry
+		left.update_icon()
 	qdel(src)
 	return left
 

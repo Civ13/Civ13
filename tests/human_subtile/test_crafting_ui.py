@@ -93,11 +93,12 @@ def restore_crafting_projection(path, source):
         # the lode ore roll (tests/lode), the nickel and cobalt roll
         # (tests/steelmaking), one rubble batch for every ore find
         # (tests/mining_yields), each continent's ore rates (tests/provinces) and
-        # an ore vein counted as Natural Science field work (tests/late_research).
+        # an ore vein counted as Natural Science field work (tests/late_research)
+        # and deeper underground levels reading the surface area (tests/building_levels --cave).
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != 'c3b7e79300529ce4df45f1659124ee9ae3cd79da99e7f303e7dc91011a8cd509':
+        if hashlib.sha256(mining.encode()).hexdigest() != 'a41a5ead391314515740881abe6d5479499de0c690ee7e34a65d95c1f1a209b4':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
@@ -105,17 +106,28 @@ def restore_crafting_projection(path, source):
         # image around the same wait, with release cleanup and unchanged reward.
         wait = 'do_after(actor, 240 / actor.getStatCoeff("strength") / tool:usespeed, wall, needhand = FALSE, mining_context = src)'
         edits = (
+            # Packed-road garden provenance: reverse only the reviewed post-wait
+            # cover check and the new output type; leave the frozen comparison intact.
+            ('if (!T || T.weather_snow > 0 || (locate(/obj/covers) in T))\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat',
+             'if (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat'),
+            ('var/obj/covers/roads/dirt/DR = new /obj/covers/roads/dirt/worked(T)',
+             'var/obj/covers/roads/dirt/DR = new/obj/covers/roads/dirt(T)'),
             # Labour speed (code/modules/materials/work_speed.dm, tests/work_speed):
             # digging, tilling and mining waits come from work_delay.
             ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat',
              '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tto_chat'),
             ('\t\t\t\tif (do_after(user, work_delay(user, 50, WORK_TILL, PL), user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf',
              '\t\t\t\tif (do_after(user, 50/PL.usespeed, user.loc))\n\t\t\t\t\tif (!T || T.weather_snow > 0)\n\t\t\t\t\t\treturn\n\t\t\t\t\tChangeTurf'),
-            ('\t\t\t\t\tif (!do_after(user, work_delay(H, 40, WORK_DIG, SH)))',
+            # Dug earth goes into a wheelbarrow beside the digger (earthworking_tools.dm).
+            ('\t\t\t\t\t\t\tearth_pile_out(T, user, "dirt") // a wheelbarrow beside you takes it (earthworking_tools.dm)',
+             '\t\t\t\t\t\t\tnew /obj/item/weapon/barrier(T)'),
+            ('\t\t\t\t\t\t\tearth_pile_out(T, user, "sand")',
+             '\t\t\t\t\t\t\tnew /obj/item/stack/ore/glass(T)'),
+            ('\t\t\t\t\tif (!do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))',
              '\t\t\t\t\tif (!do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
-            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 40, WORK_DIG, SH)))',
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 40, WORK_SHIFT, SH)))',
              '\t\t\t\t\t\tif (do_after(user, (60/(H.getStatCoeff("strength"))/SH.usespeed)))'),
-            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 27, WORK_DIG, SH)))',
+            ('\t\t\t\t\t\tif (do_after(user, work_delay(H, 27, WORK_SHIFT, SH)))',
              '\t\t\t\t\t\tif (do_after(user, (40/(H.getStatCoeff("strength"))/SH.usespeed)))'),
             ('\t\t\t\tif (do_after(user, work_delay(H, 100, WORK_DIG, SH)))',
              '\t\t\t\tif (do_after(user, (150/(H.getStatCoeff("strength"))/SH.usespeed)))'),
@@ -184,6 +196,13 @@ def restore_crafting_projection(path, source):
             ('\t\t\tif (H.shoveling)\n\t\t\t\treturn ..()\n', '\t\t\tif (H.shoveling)\n\t\t\t\t..()\n'),
             # Opening dug-out rock to the sky (tests/open_cave_roof).
             ('\t\tif (open_cave_roof_attempt(H, C)) // open_cave_roof.dm\n\t\t\treturn\n', ''),
+            # Hidden material virtue on water drawn at dawn (tests/divine_approval/test_arcane_materials.py).
+            ('\t\t\t\t\tif (ishuman(user) && watertype == "water")\n\t\t\t\t\t\tvar/mob/living/human/drawer = user\n\t\t\t\t\t\tdrawer.arcane_drew_water(RG)\n', ''),
+            # Hidden storm glass from sand dug near a lightning strike (tests/divine_approval/test_arcane_ward.py).
+            ('\t\t\t\t\t\tH.arcane_dug_sand(T) // arcane_materials.dm: storm glass\n', ''),
+            # Body motion (tests/body_motion): kneeling while drinking from the ground.
+            ('\t\tvar/kneel = H.body_motion_kneel(src, 50, BODY_MOTION_FULL)\n\t\tvar/drank = do_after(H,50,src)\n\t\tif (kneel)\n\t\t\tH.body_motion_stop(kneel, 3)\n\t\tif (!drank)\n',
+             '\t\tif (!do_after(H,50,src))\n'),
         )
     else:
         edits = ()

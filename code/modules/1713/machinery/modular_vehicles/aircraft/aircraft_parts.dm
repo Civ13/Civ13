@@ -175,7 +175,9 @@
 
 // A 3-wide, 4-long light plane, built facing south from the bottom-left of a
 // 4x4 square. Row 1 is the nose.
-var/global/list/aircraft_light_plane_layout = list(
+var/global/list/aircraft_light_plane_layout = aircraft_light_plane_layout_table()
+/proc/aircraft_light_plane_layout_table()
+	return list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
@@ -275,7 +277,9 @@ var/global/list/aircraft_light_plane_layout = list(
 	name = "cabin seat"
 	anchored = TRUE
 
-var/global/list/aircraft_cabin_plane_layout = list(
+var/global/list/aircraft_cabin_plane_layout = aircraft_cabin_plane_layout_table()
+/proc/aircraft_cabin_plane_layout_table()
+	return list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
@@ -304,7 +308,9 @@ var/global/list/aircraft_cabin_plane_layout = list(
 	takeoff_roll = 6
 	rough_takeoff_roll = 12
 
-var/global/list/aircraft_trainer_layout = list(
+var/global/list/aircraft_trainer_layout = aircraft_trainer_layout_table()
+/proc/aircraft_trainer_layout_table()
+	return list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
@@ -331,7 +337,9 @@ var/global/list/aircraft_trainer_layout = list(
 	name = "cargo bay"
 	desc = "A floored bay in the plane's fuselage. Whatever is put on it flies with the plane."
 
-var/global/list/aircraft_cargo_plane_layout = list(
+var/global/list/aircraft_cargo_plane_layout = aircraft_cargo_plane_layout_table()
+/proc/aircraft_cargo_plane_layout_table()
+	return list(
 	"1,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/right, /obj/structure/vehicleparts/movement),
 	"2,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/center, /obj/structure/engine/internal/gasoline/premade/v6/aircraft, /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank/fueledgasoline),
 	"3,1" = list(/obj/structure/vehicleparts/frame/car/aircraft/nose/left, /obj/structure/vehicleparts/movement),
@@ -357,6 +365,7 @@ var/global/list/aircraft_cargo_plane_layout = list(
 		"Cargo plane" = /obj/structure/vehicleparts/axis/aircraft/cargo_plane,
 		"Twin-engine plane" = /obj/structure/vehicleparts/axis/aircraft/twin_plane,
 		"Airliner" = /obj/structure/vehicleparts/axis/aircraft/airliner,
+		"Helicopter" = /obj/structure/vehicleparts/axis/aircraft/helicopter/huey,
 		)
 	return models
 
@@ -374,6 +383,8 @@ var/global/list/aircraft_cargo_plane_layout = list(
 			return aircraft_twin_plane_layout
 		if ("Airliner")
 			return aircraft_airliner_layout()
+		if ("Helicopter")
+			return aircraft_huey_layout
 	return null
 
 /proc/aircraft_model_size(model)
@@ -386,6 +397,8 @@ var/global/list/aircraft_cargo_plane_layout = list(
 			return 5
 		if ("Airliner")
 			return 6
+		if ("Helicopter")
+			return 7
 	return 4
 
 // How many sections wide a hangar model is: its wingspan.

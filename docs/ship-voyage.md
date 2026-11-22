@@ -16,9 +16,16 @@ way (a rigged mast or a running engine) and have at least 2 crew aboard and
 awake.
 Everything the crossing would refuse at landfall refuses her at the tiller
 instead (`sea_crossing_load`): something that cannot cross, too much loose
-cargo, or a record over the crossing budget (40000 bytes, carried in the first
-crew member's payload). That budget is the cap on hull size and load until
-voyage records are sent in chunks; the voyage menu shows how full she is.
+cargo, or a record over the crossing budget (`SEA_CROSSING_RECORD_MAX`,
+192 KB, carried in the first crew member's payload); the voyage menu shows
+how full she is. The tile caps bind long before the budget does: a 200-tile
+steel battleship with a 96-tile hold, eight loaded turrets over full shell
+racks, a belted side and 390 items in crates packs to about 25 KB
+(`tests/naval_carrier/passage_probe.dm`), so records are never split. Her
+turrets cross with the shells in their breeches, her shell racks with their
+shells, and her belt armour as part of her hull (deck entry `"a"`), not as
+cargo. Packing that hull costs about 140 ms each time the tiller measures her
+and once as she crosses.
 
 The chart shown is her owner's: the captain's faction (`faction:<name>` from
 the character's civilization), or the captain alone (`crew:<ckey>`). The world

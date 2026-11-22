@@ -65,12 +65,36 @@
 		list("name" = "Wheelhouse and fittings", "pieces" = 1, "cost" = list("steel" = 10, "glass" = 10), "part" = "fittings", "verb" = "wheelhouse fit-out"),
 	)
 
+// A steel warship (naval/ship_turret.dm, naval/hull_armour.dm): the
+// freighter's hull with a gun turret fore and aft over a shell rack in her
+// hold, and belt armour along both sides.
+/datum/slipway_design/cruiser
+	name = "light cruiser"
+	vessel_type = /datum/vessel/freighter/cruiser
+	node = "naval_mines"
+	blurb = "a steel warship, 20 tiles long and 7 wide, with a gun turret fore and aft fed from shell racks in her hold, belt armour along both sides and a diesel engine below; she burns diesel or petroleum"
+	keel_icon = 'icons/turf/floors.dmi'
+	keel_state = "steel_grid"
+	rib_icon = 'icons/turf/floors.dmi'
+	rib_state = "catwalk_plated"
+	stages = list(
+		list("name" = "Keel", "pieces" = 2, "cost" = list("steel" = 10), "part" = "keel", "verb" = "keel section"),
+		list("name" = "Frames", "pieces" = 4, "cost" = list("steel" = 10), "part" = "frames", "verb" = "set of frames"),
+		list("name" = "Hull plating", "pieces" = 6, "cost" = list("steel" = 12), "part" = "hull", "verb" = "run of hull plates"),
+		list("name" = "Hold, magazines and bulkheads", "pieces" = 2, "cost" = list("steel" = 12), "part" = "below", "verb" = "bulkhead"),
+		list("name" = "Deck", "pieces" = 4, "cost" = list("steel" = 8), "part" = "deck", "verb" = "run of deck plating"),
+		list("name" = "Belt armour", "pieces" = 4, "cost" = list("steel" = 60), "part" = "hull", "verb" = "run of belt armour"),
+		list("name" = "Engine", "pieces" = 1, "cost" = list("steel" = 20, "cable" = 20), "part" = "below", "verb" = "engine"),
+		list("name" = "Gun turrets", "pieces" = 2, "cost" = list("steel" = 60), "part" = "fittings", "verb" = "gun turret"),
+		list("name" = "Wheelhouse and fittings", "pieces" = 1, "cost" = list("steel" = 10, "glass" = 10), "part" = "fittings", "verb" = "wheelhouse fit-out"),
+	)
+
 var/global/list/slipway_designs = null
 
 /proc/slipway_design_list()
 	if (!slipway_designs)
 		slipway_designs = list()
-		for (var/path in list(/datum/slipway_design/schooner, /datum/slipway_design/freighter))
+		for (var/path in list(/datum/slipway_design/schooner, /datum/slipway_design/freighter, /datum/slipway_design/cruiser))
 			var/datum/slipway_design/D = new path
 			slipway_designs[D.name] = D
 	return slipway_designs
@@ -94,7 +118,7 @@ var/global/list/slipway_designs = null
 	var/tmp/list/frames = list()
 
 /obj/structure/slipway/persistence_runtime_var(key)
-	return (key in list("busy", "frames")) || ..(key)
+	return (key in list("busy", "frames", "draught_cache", "working")) || ..(key)
 
 /obj/structure/slipway/after_load()
 	..()
@@ -106,6 +130,8 @@ var/global/list/slipway_designs = null
 	return ..()
 
 /obj/structure/slipway/proc/get_design()
+	if (draught_code)
+		return draught_plan()
 	return design ? slipway_design_list()[design] : null
 
 // A fresh unplaced vessel of the design, for geometry and fit checks.
@@ -244,13 +270,18 @@ var/global/list/slipway_designs = null
 	if (result[2])
 		pieces_done++
 		paid = list()
-		update_frames()
+		if (draught_code)
+			draught_place(D, pieces_done)
+		else
+			update_frames()
 	return result[1]
 
 // A player brings materials to the berth (the post or any part of the hull).
 /obj/structure/slipway/proc/add_piece(mob/living/human/H, obj/item/I, atom/target)
 	if (busy || !istype(H) || !istype(I, /obj/item/stack))
 		return FALSE
+	if (draught_code)
+		return add_draught_piece(H, I, target)
 	var/datum/slipway_design/D = get_design()
 	if (!D)
 		to_chat(H, SPAN_WARNING("No keel has been laid here. Use the slipway post to lay one."))
@@ -267,7 +298,7 @@ var/global/list/slipway_designs = null
 	var/list/stage = D.stages[next[1]]
 	busy = TRUE
 	to_chat(H, SPAN_NOTICE("You start work on the [stage["verb"]]..."))
-	if (!do_after(H, SLIPWAY_PIECE_TIME, target || src) || QDELETED(src) || QDELETED(I) || design != D.name || pieces_done != next_index_of(next))
+	if (!do_after(H, yard_time(src, SLIPWAY_PIECE_TIME), target || src) || QDELETED(src) || QDELETED(I) || design != D.name || pieces_done != next_index_of(next))
 		busy = FALSE
 		return TRUE
 	var/before = pieces_done
@@ -296,6 +327,12 @@ var/global/list/slipway_designs = null
 	if (istype(W, /obj/item/stack) && design)
 		add_piece(user, W)
 		return
+	if (istype(W, /obj/item/ship_draught) && !design)
+		if (hauled_hull())
+			to_chat(user, SPAN_WARNING("A ship is hauled out on the berth: launch her again first."))
+			return
+		offer_draught(user, W)
+		return
 	return ..()
 
 /obj/structure/slipway/attack_hand(mob/living/human/H)
@@ -311,9 +348,16 @@ var/global/list/slipway_designs = null
 		if (finished())
 			options["Launch the [D.name]"] = "launch"
 		options["Abandon the [D.name]"] = "abandon"
+	// Pieces fitted from a yard office's stock (yard_office.dm).
+	yard_options(options)
+	// A hull hauled out on the berth, or one lying off it (slipway_haul.dm).
+	if (haul_options(options))
+		for (var/label in options.Copy())
+			if (!(options[label] in list("relaunch", "survey")))
+				options -= label
 	var/text = status_text()
 	if (!D)
-		var/list/lines = list(text, "The berth runs [dir2text(dir)] from the post; turn it with a wrench before a keel is laid.")
+		var/list/lines = list(text, "The berth runs [dir2text(dir)] from the post; turn it with a wrench before a keel is laid. Use a ship's draught on the post to build a ship of your own design.")
 		for (var/name in slipway_design_list())
 			var/datum/slipway_design/S = slipway_design_list()[name]
 			lines += "A [S.name] is [S.blurb]. She takes [S.total_pieces()] pieces: [piece_cost_text(S.total_cost())] in all."
@@ -322,6 +366,8 @@ var/global/list/slipway_designs = null
 	if (!(choice in options) || busy || !Adjacent(H))
 		return
 	var/action = options[choice]
+	if (haul_action(H, action) || yard_action(H, action))
+		return
 	if (istype(action, /datum/slipway_design))
 		var/datum/slipway_design/S = action
 		var/refusal = keel_refusal(S, H)
@@ -340,19 +386,29 @@ var/global/list/slipway_designs = null
 		else
 			to_chat(H, SPAN_WARNING(result))
 	else if (action == "abandon")
-		if (WWinput(H, "Break up the [D.name]? Everything fitted so far is lost.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
+		if (WWinput(H, draught_code ? "Give up building the [D.name]? Her draught comes off the post; what is built stays where it stands, and what was paid towards the next piece is put back by the post." : "Break up the [D.name]? Everything fitted so far is taken apart and its materials stacked by the post.", name, "No", list("Yes", "No")) != "Yes" || busy || !Adjacent(H))
 			return
 		log_game("[key_name(H)] abandoned a [D.name] ([pieces_done] pieces) at [x],[y],[z].")
-		abandon()
-		to_chat(H, SPAN_NOTICE("The berth is cleared."))
+		var/list/back = abandon()
+		to_chat(H, SPAN_NOTICE("The berth is cleared.[back.len ? " [capitalize(piece_cost_text(back))] [back.len == 1 && back[back[1]] == 1 ? "is" : "are"] stacked by the post." : ""]"))
 
 /obj/structure/slipway/proc/lay_keel(datum/slipway_design/D)
+	draught_code = ""
 	design = D.name
 	pieces_done = 0
 	paid = list()
 	update_frames()
 
+// Gives up the ship on the berth. The materials of a ship built to a plan
+// are stacked by the post again; a draught's floors and fittings stand where
+// they are, and only what was paid towards the next piece comes back.
+// Returns what was given back (material -> amount).
 /obj/structure/slipway/proc/abandon()
+	var/datum/slipway_design/D = get_design()
+	. = list()
+	if (D)
+		. = piece_refund(draught_code ? paid : D.spent(pieces_done, paid), get_turf(src))
+	draught_code = ""
 	design = null
 	pieces_done = 0
 	paid = list()
@@ -401,6 +457,8 @@ var/global/list/slipway_designs = null
 
 // Launches the finished ship. Returns the vessel, or the reason she stayed.
 /obj/structure/slipway/proc/launch()
+	if (draught_code)
+		return launch_draught()
 	var/list/place = list()
 	var/problem = launch_problem(place)
 	if (problem)
@@ -498,6 +556,9 @@ var/global/list/slipway_designs = null
 // cells from stern to bow, a share per piece fitted.
 /obj/structure/slipway/proc/update_frames()
 	clear_frames()
+	if (draught_code)
+		draught_frames()
+		return
 	var/datum/slipway_design/D = get_design()
 	if (!D || !isturf(loc))
 		return
@@ -706,6 +767,63 @@ var/global/list/slipway_designs = null
 	)
 	deck.legend = list(
 		"D" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
+		"H" = list("turf" = /turf/wall/sub_hull/freighter),
+		"f" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
+		"W" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/vessel_helm)),
+		"O" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/simple_door/key_door/anyone/ship)),
+		"L" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/multiz/ladder)),
+	)
+	levels += deck
+
+// The light cruiser: the freighter's hull and engine room, a gun turret fore
+// and aft over a shell rack in her hold (the barbette, naval/ship_turret.dm)
+// and belt armour plates along both sides of her deck.
+/datum/vessel/freighter/cruiser
+	name = "light cruiser"
+	magnetic_base = 160
+
+/datum/vessel/freighter/cruiser/New()
+	..()
+	levels = list()
+	var/datum/vessel_level/hold = new
+	hold.dz = -1
+	hold.allowed = list(/turf/wall/rockwall, /turf/floor/beach/water/deep)
+	hold.rows = list(
+		".HHHHHHHHHHHHHHHHH..",
+		"HHeeeeBhhhhhhhhhhhH.",
+		"HeeTeeBhhhhhhhhhhhhH",
+		"Heeeee1LhhRhhhhRhhhH",
+		"HeeeeeBhhhhhhhhhhhhH",
+		"HHeeeeBhhhhhhhhhhhH.",
+		".HHHHHHHHHHHHHHHHH..",
+	)
+	hold.legend = list(
+		"H" = list("turf" = /turf/wall/sub_hull/freighter/hold),
+		"B" = list("turf" = /turf/wall/sub_bulkhead/freighter),
+		"e" = list("turf" = /turf/floor/sub_deck/freighter/engine_room),
+		"h" = list("turf" = /turf/floor/sub_deck/freighter),
+		"1" = list("turf" = /turf/floor/sub_deck/freighter/engine_room, "spawn" = list(/obj/structure/simple_door/blast)),
+		"L" = list("turf" = /turf/floor/sub_deck/freighter, "spawn" = list(/obj/structure/multiz/ladder/up)),
+		"T" = list("turf" = /turf/floor/sub_deck/freighter/engine_room, "spawn" = list(/obj/structure/vessel_bunker)),
+		"R" = list("turf" = /turf/floor/sub_deck/freighter, "spawn" = list(/obj/structure/shellrack)),
+	)
+	levels += hold
+	var/datum/vessel_level/deck = new
+	deck.dz = 0
+	deck.allowed = list(/turf/floor/beach/water/deep)
+	deck.rows = list(
+		".AAAAAAAAAAAAAAAAA..",
+		"DDDDDDDDDDDDDDDDDDD.",
+		"DHHHHDDDDDDDDDDDDDDD",
+		"DHWfODDLDDGDDDDGDDDD",
+		"DHHHHDDDDDDDDDDDDDDD",
+		"DDDDDDDDDDDDDDDDDDD.",
+		".AAAAAAAAAAAAAAAAA..",
+	)
+	deck.legend = list(
+		"D" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
+		"A" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/hull_armour)),
+		"G" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/cannon/modern/ship_turret)),
 		"H" = list("turf" = /turf/wall/sub_hull/freighter),
 		"f" = list("turf" = /turf/floor/plating/carrier_deck/freighter),
 		"W" = list("turf" = /turf/floor/plating/carrier_deck/freighter, "spawn" = list(/obj/structure/vessel_helm)),

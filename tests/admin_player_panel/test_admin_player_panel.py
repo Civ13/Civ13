@@ -1,0 +1,137 @@
+"""Offline checks for the admin player panel (no compiler, world or network).
+
+Checks the wiring, what each rank may see and that player text is escaped,
+then runs the list's client script in Node with a stub DOM: the search box and
+the state chips hide rows, and a column header sorts them both ways.
+native_probe.py is the headless DreamDaemon evidence for the pages themselves.
+"""
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import unittest
+
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE = ROOT / 'code/modules/admin/player_panel_pages.dm'
+
+
+def read(path):
+    return (ROOT / path).read_text(encoding='utf-8-sig')
+
+
+def body(text, header):
+    start = text.index(header)
+    end = text.find('\n/', start)
+    return text[start:end if end >= 0 else len(text)]
+
+
+def client_script():
+    text = body(SOURCE.read_text(encoding='utf-8-sig'), '/proc/admin_player_list_script()')
+    start = text.index('return @{"') + len('return @{"')
+    return text[start:text.index('"}', start)]
+
+
+STUB = r'''
+function node(attrs,cells){var n={attrs:attrs||{},style:{},className:'',value:'',textContent:'',children:[],
+ getAttribute:function(k){return k in this.attrs?this.attrs[k]:null;},
+ appendChild:function(c){var i=this.children.indexOf(c);if(i>=0)this.children.splice(i,1);this.children.push(c);return c;},
+ focus:function(){}};
+ if(cells)for(var i=0;i<cells.length;i++){var c=node(cells[i][1]?{'data-v':cells[i][1]}:{});c.textContent=cells[i][0];n.children.push(c);}
+ Object.defineProperty(n,'innerHTML',{set:function(){html++;}});return n;}
+var html=0,nodes={q:node(),n:node(),rows:node(),chips:node()};
+var document={getElementById:function(id){return nodes[id];}};
+'''
+
+
+class AdminPlayerPanelTests(unittest.TestCase):
+    def test_wiring(self):
+        self.assertIn('#include "code\\modules\\admin\\player_panel_pages.dm"', read('civ13.dme'))
+        verbs = read('code/modules/admin/admin_verbs.dm')
+        self.assertIn('/client/proc/player_panel,', verbs)
+        self.assertNotIn('player_panel_new,', verbs)  # one list, one verb
+        self.assertIn('holder.player_panel_new()', body(verbs, '/client/proc/player_panel()'))
+        topic = read('code/modules/admin/topic.dm')
+        # Every link goes through the holder's Topic, which checks the caller first.
+        self.assertLess(topic.index('usr.client != owner || !check_rights(0)'), topic.index('href_list["player_list"]'))
+        self.assertLess(topic.index('usr.client != owner || !check_rights(0)'), topic.index('href_list["adminplayeropts"]'))
+        text = SOURCE.read_text(encoding='utf-8-sig')
+        self.assertEqual(text.count('/datum/admins/proc/show_player_panel('), 1)
+        self.assertNotIn('show_player_panel(', read('code/modules/admin/admin.dm'))
+
+    def test_kick_requires_moderation_rights_and_same_target_after_prompt(self):
+        topic = read('code/modules/admin/topic.dm')
+        kick = topic.split('else if (href_list["boot2"])', 1)[1].split('else if (href_list["mute"])', 1)[0]
+        before, after = kick.split('sanitize(input(usr, "Please enter reason"))', 1)
+        for stage in (before, after):
+            self.assertIn('check_rights(R_MOD | R_ADMIN)', stage)
+            self.assertIn('check_if_greater_rights_than(kick_target)', stage)
+            self.assertIn('kick_target.mob != M', stage)
+        self.assertIn('var/client/kick_target = M.client', before)
+        for condition in ('owner != kick_actor', 'kick_actor.holder != src', 'M.client != kick_target'):
+            self.assertLess(after.index(condition), after.index('qdel(kick_target)'))
+        panel = body(read('code/modules/admin/player_panel_pages.dm'), '/datum/admins/proc/player_options_html(')
+        self.assertRegex(panel, r'if \(rights & \(R_MOD \| R_ADMIN\)\)\n\t\tbody \+= .*boot2=')
+
+    def test_ranks_and_escaping(self):
+        text = SOURCE.read_text(encoding='utf-8-sig')
+        listing = body(text, '/datum/admins/proc/player_list_html(')
+        self.assertIn('var/staff = rights & (R_ADMIN|R_MOD)', listing)
+        for staff_only in ('M.lastKnownIP', '_src_=vars', 'notes=show'):
+            line = next(row for row in listing.splitlines() if staff_only in row)
+            position = listing.index(line)
+            guard = max(listing.rfind('if (staff)', 0, position), listing.rfind('(staff &&', 0, position + len(line)))
+            self.assertGreater(guard, 0, staff_only)
+        self.assertLess(listing.index('if (staff)'), listing.index('shared_records.summary(M.ckey)'))
+        panel = body(text, '/datum/admins/proc/player_options_html(')
+        self.assertIn('if (karma_key && (rights & R_ADMIN))', panel)
+        # Text a player chose never reaches a page unescaped.
+        for source in (listing, panel):
+            for raw in ('[M.name]', '[M.real_name]', '[M.key]'):
+                for row in source.splitlines():
+                    if raw in row and 'html_encode(' not in row and '!=' not in row:
+                        self.fail(row.strip())
+
+    def test_script_has_no_interpolation_or_html_writes(self):
+        script = client_script()
+        self.assertNotIn('innerHTML', script)
+        self.assertNotIn('[', script.replace('r[i]', '').replace('c[i]', '').replace('a[i]', '').replace('children[c]', '').replace('children[i]', '').replace('a=[]', ''))
+        self.assertGreater(len(script), 500)
+
+    @unittest.skipUnless(shutil.which('node'), 'node not installed')
+    def test_script_filters_and_sorts(self):
+        people = [('alive', 'ann red farmer', 'Ann', 1), ('dead dc flag', 'bob blue smith', 'Bob', 3),
+                  ('ghost', 'cid', 'Cid', 4), ('alive flag', 'dee red hunter', 'Dee', 1)]
+        setup = ['var P=%s;' % json.dumps(people),
+                 'for(var i=0;i<P.length;i++)nodes.rows.children.push(node({"data-s":P[i][0],"data-q":P[i][1]},[["",String(P[i][3])],[P[i][2]]]));',
+                 'var F0=["all","alive","dead","ghost","dc","flag"];for(i=0;i<F0.length;i++)nodes.chips.children.push(node({"data-f":F0[i]}));']
+        probe = [
+            'function shown(){return nodes.rows.children.filter(function(r){return r.style.display!="none";}).map(function(r){return r.children[1].textContent;});}',
+            'var out={};out.start=shown();out.count=nodes.n.textContent;',
+            'chip("alive");out.alive=shown();out.on=nodes.chips.children.filter(function(c){return c.className=="chip on";}).length;',
+            'chip("flag");out.flag=shown();chip("dc");out.dc=shown();',
+            'chip("all");nodes.q.value="RED";nodes.q.onkeyup();out.red=shown();out.redCount=nodes.n.textContent;',
+            'chip("flag");out.redFlag=shown();nodes.q.value="";chip("all");',
+            'sortBy(1);sortBy(1);out.desc=shown();sortBy(0);out.byState=shown();sortBy(1);out.asc=shown();',
+            'out.html=html;console.log(JSON.stringify(out));',
+        ]
+        out = subprocess.run(['node', '-e', STUB + '\n'.join(setup) + client_script() + '\n'.join(probe)],
+                             capture_output=True, text=True, timeout=60)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        result = json.loads(out.stdout.strip().splitlines()[-1])
+        self.assertEqual(result['start'], ['Ann', 'Bob', 'Cid', 'Dee'])
+        self.assertEqual(result['count'], '4 shown')
+        self.assertEqual(result['alive'], ['Ann', 'Dee'])
+        self.assertEqual(result['on'], 1)
+        self.assertEqual(result['flag'], ['Bob', 'Dee'])
+        self.assertEqual(result['dc'], ['Bob'])
+        self.assertEqual(result['red'], ['Ann', 'Dee'])
+        self.assertEqual(result['redCount'], '2 shown')
+        self.assertEqual(result['redFlag'], ['Dee'])
+        self.assertEqual(result['desc'], ['Dee', 'Cid', 'Bob', 'Ann'])
+        self.assertEqual(result['byState'][-2:], ['Bob', 'Cid'])
+        self.assertEqual(result['asc'], ['Ann', 'Bob', 'Cid', 'Dee'])
+        self.assertEqual(result['html'], 0)
+
+
+if __name__ == '__main__':
+    unittest.main()

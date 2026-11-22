@@ -200,6 +200,7 @@ var/global/orbit_failures = 0
 		orbit_artillery_checks()
 		orbit_defence_checks()
 		orbit_asteroid_checks()
+		orbit_plan_checks()
 	catch (var/exception/E)
 		world.log << "ORBIT EXCEPTION: [E.name] [E.file]:[E.line]"
 		orbit_failures++
@@ -2112,3 +2113,129 @@ var/global/orbit_failures = 0
 	shard_group.peers = real_peers
 	shard_group.region = real_region
 	shard_group.enabled = real_enabled
+
+// Station plans (space/station_plan.dm): the sheet, its checks, the office
+// building a plan, and the station founded from it.
+/proc/orbit_plan_relative(datum/station_plan/D)
+	var/list/C = splittext(D.piece_cells("C")[1], ",")
+	. = list()
+	for (var/at in D.cells)
+		var/list/xy = splittext(at, ",")
+		. += "[text2num(xy[1]) - text2num(C[1])],[text2num(xy[2]) - text2num(C[2])],[D.cells[at]]"
+	. = sortList(.)
+
+/proc/orbit_plan_checks()
+	map.ordinal_age = 7
+	var/list/examples = station_plan_examples()
+	var/fine = 0
+	for (var/datum/station_plan/D in examples)
+		if (!length(D.problems()))
+			fine++
+		var/datum/station_plan/again = station_plan_from_code(D.to_code())
+		orbit_check("plan [D.name] survives its code", again && again.to_code() == D.to_code() ? 1 : 0, 1)
+	orbit_check("every ready-made plan can be launched", fine, length(examples))
+	var/datum/station_plan/starter = examples[1]
+	var/list/C = starter.costs()
+	orbit_check("a plan the size of the starter costs what it does", "[C["steel"]],[C["glass"]],[C["copper"]],[C["electronics"]]", "180,40,40,60")
+	var/datum/station_plan/big = examples[3]
+	orbit_check("a bigger plan pays for its extra modules", big.costs()["steel"], 180 + (big.module_count() - 3) * 60)
+	orbit_check("bad codes are refused", isnull(station_plan_from_code("C13STATION/1/x/9,9,C")) && isnull(station_plan_from_code("C13STATION/1/x/4,4,Z")) && isnull(station_plan_from_code("C13STATION/1/x/4,4,C;4,4,Q")) ? 1 : 0, 1)
+	var/datum/station_plan/P = station_plan_from_rows("bad", list("CQ", "K."))
+	orbit_check("a plan with its parts is fine", length(P.problems()), 0)
+	P.set_piece(4, 2, "C")
+	orbit_check("two command modules are refused", findtext(jointext(P.problems(), " "), "command modules") ? 1 : 0, 1)
+	P.set_piece(4, 2, null)
+	P.set_piece(7, 7, "S")
+	orbit_check("a loose module is refused", findtext(jointext(P.problems(), " "), "does not dock") ? 1 : 0, 1)
+	P.set_piece(7, 7, null)
+	var/list/K = splittext(P.piece_cells("K")[1], ",")
+	P.set_piece(text2num(K[1]), text2num(K[2]) + 2, "S")
+	P.set_piece(text2num(K[1]), text2num(K[2]) + 1, "S")
+	orbit_check("a module on the keel is refused", findtext(jointext(P.problems(), " "), "dock to exactly one") || findtext(jointext(P.problems(), " "), "in its way") ? 1 : 0, 1)
+	var/datum/station_plan/nokeel = station_plan_from_rows("bad", list("CQ"))
+	orbit_check("no keel airlock is refused", findtext(jointext(nokeel.problems(), " "), "keel airlock") ? 1 : 0, 1)
+	var/datum/design_report/R = big.check_design()
+	orbit_check("a big plan notes its extra steel", findtext(jointext(R.texts(DESIGN_NOTE), " "), "60 more steel") ? 1 : 0, 1)
+	qdel(R)
+	orbit_check("every plan part is described", length(design_part_help_for("station_plan")) >= length(station_plan_pieces()) + 1 ? 1 : 0, 1)
+
+	// The station designer (space/station_designer.dm): its page, pictures and answer.
+	orbit_check("the designer page takes one block of data", length(splittext(station_designer_page(), "@@DATA@@")), 2)
+	var/pictured = 0
+	for (var/key in station_plan_pieces())
+		if (station_designer_sprites()["mod_[key]"])
+			pictured++
+	orbit_check("every module has a picture in the designer", pictured, length(station_plan_pieces()))
+	var/list/window = json_decode(json_encode(station_designer_data(null, starter)))
+	orbit_check("the designer is given the grid, the modules and the part book", "[window["SIDE"]],[length(window["PIECES"])],[length(window["EXAMPLES"])],[length(window["HELP"]) >= length(window["PIECES"]) + 1 ? 1 : 0]", "[STATION_PLAN_SIDE],[length(station_plan_pieces())],[length(examples)],1")
+	orbit_check("the designer opens on the sheet's own plan", length(window["START"][2]), starter.module_count())
+	var/list/answer = json_decode(json_encode(station_designer_answer(starter)))
+	var/list/drawn_keel = answer["keel"]
+	orbit_check("the designer draws the keel out from the keel airlock", "[length(drawn_keel)],[drawn_keel[1][3]],[drawn_keel[2][3]],[drawn_keel[5][3]]", "5,truss,wing,thruster")
+	var/list/keel_first = splittext(starter.keel_slots()[1], ",")
+	orbit_check("the drawn keel lies on the plan's keel slots", "[drawn_keel[1][1]],[drawn_keel[1][2]]", "[keel_first[1]],[keel_first[2]]")
+	orbit_check("the designer's figures are the plan's", "[answer["count"]],[answer["steel"]],[answer["bunks"]],[length(answer["checks"])]", "[starter.module_count()],[starter.costs()["steel"]],[starter.bunks()],[length(starter.check_design().data())]")
+	answer = station_designer_answer(nokeel)
+	orbit_check("no keel airlock, no keel drawn", length(answer["keel"]), 0)
+	var/datum/station_plan/edge = station_plan_from_code("C13STATION/1/edge/1,1,C;1,2,K")
+	orbit_check("a keel running off the sheet is drawn only on it", length(station_designer_keel(edge)), 4)
+	qdel(edge)
+
+	// The office takes the plan's materials and sends it up with the crew.
+	var/obj/structure/region_gate/launch_complex/office = new(locate(3, 3, 1))
+	office.party = "civ:gaia:Plan"
+	office.plan_code = big.to_code()
+	orbit_check("the office asks for the plan's steel", findtext(office.progress_text(), "steel 0/[big.costs()["steel"]]") ? 1 : 0, 1)
+	var/list/extra = office.travel_extra(null)
+	orbit_check("the plan rides with the crew", islist(extra) && extra["station_plan"] == big.to_code() ? 1 : 0, 1)
+	office.plan_code = ""
+	orbit_check("without a plan it asks for the starter's", findtext(office.progress_text(), "steel 0/180") ? 1 : 0, 1)
+	var/obj/item/ship_draught/sheet = new(locate(3, 4, 1))
+	sheet.take_station(big)
+	orbit_check("a sheet carries the plan", sheet.station_plan_kind() ? 1 : 0, 1)
+	office.party = null
+	orbit_check("a plan waits for the project", findtext(office.plan_refusal(null, big), "Start the station project") ? 1 : 0, 1)
+	qdel(sheet)
+	qdel(office)
+
+	// Founded from the plan on a free plane.
+	world.maxx = 56
+	world.maxy = 56
+	for (var/p in 2 to 5)
+		orbit_release_plane(p)
+	for (var/p in 2 to 4)
+		orbit_claim_plane("keep")
+	for (var/turf/T in block(locate(1, 1, 5), locate(world.maxx, world.maxy, 5)))
+		for (var/obj/O in T)
+			if (!istype(O, /obj/effect))
+				qdel(O)
+		if (!istype(T, /turf/floor/space/orbit))
+			T.ChangeTurf(/turf/floor/space/orbit, FALSE, FALSE)
+	var/party = "civ:gaia:Planned"
+	var/turf/at = party_train_arrival_turf(list("party" = party, "from" = "gaia", "station_plan" = big.to_code()))
+	orbit_check("a plan founds the station", at ? at.z : 0, 5)
+	var/list/kinds = list()
+	var/sealed = 0
+	for (var/obj/structure/habitat_core/M in orbit_station_modules(5))
+		kinds += M.kind
+		if (!M.breaches())
+			sealed++
+	orbit_check("every module of the plan is built", length(kinds), big.module_count())
+	orbit_check("and sealed", sealed, big.module_count())
+	orbit_check("her command module and keel", (locate(/obj/structure/orbit_console) in orange(2, at)) && orbit_find_on(/obj/structure/orbit_thruster, 5) && orbit_find_on(/obj/structure/civ_generator/fuel_cell, 5) ? 1 : 0, 1)
+	orbit_check("plan station: nothing outside is out of reach", orbit_unreachable_hardware(5), 0)
+	var/wings = 0
+	for (var/obj/structure/civ_generator/solar/wing/W in world)
+		if (W.z != 5)
+			continue
+		W.settle_generation()
+		if (W.output_power > 0)
+			wings++
+	orbit_check("plan station: both wings generating", wings, 2)
+	var/obj/structure/life_support/heater/heater = orbit_find_on(/obj/structure/life_support/heater, 5)
+	var/obj/structure/life_support/scrubber/scrubber = orbit_find_on(/obj/structure/life_support/scrubber, 5)
+	orbit_check("plan station: life support on the grid", heater && heater.has_power() && scrubber && scrubber.has_power() ? 1 : 0, 1)
+	var/survey = station_plan_survey(5)
+	var/datum/station_plan/drawn = istext(survey) ? null : survey
+	orbit_check("her plan drawn at the console matches", drawn ? jointext(orbit_plan_relative(drawn), " ") : survey, jointext(orbit_plan_relative(big), " "))
+	orbit_check("later members board at her hatch", party_train_arrival_turf(list("party" = party, "from" = "gaia", "station_plan" = big.to_code())) == at ? 1 : 0, 1)

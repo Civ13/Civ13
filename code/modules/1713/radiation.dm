@@ -320,10 +320,10 @@
 				G.rad_act(severity /3)
 	if(phase == 26)
 		for(var/atom/T)
-			var/area/A = get_area(T)
 			if (T.z == event_z && (istype(T, /mob/living) || istype(T, /obj)))
 				var/cseverity=severity/3
 				if (ismob(T))
+					var/area/A = get_area(T)
 					if (A.location == 0)
 						cseverity = severity/100
 					else

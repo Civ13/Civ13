@@ -1011,15 +1011,8 @@
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_a]</b> civilization.")
 
-	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	// Starting stats come from the sign they are born under (birth_charts.dm).
+	H.apply_birth_chart()
 
 
 	return TRUE
@@ -1046,15 +1039,8 @@
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_b]</b> civilization.")
 
-	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	// Starting stats come from the sign they are born under (birth_charts.dm).
+	H.apply_birth_chart()
 
 
 	return TRUE
@@ -1083,15 +1069,8 @@
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_c]</b> civilization.")
 
-	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	// Starting stats come from the sign they are born under (birth_charts.dm).
+	H.apply_birth_chart()
 
 
 	return TRUE
@@ -1117,15 +1096,8 @@
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_d]</b> civilization.")
 
-	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	// Starting stats come from the sign they are born under (birth_charts.dm).
+	H.apply_birth_chart()
 
 
 	return TRUE
@@ -1151,15 +1123,8 @@
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_e]</b> civilization.")
 
-	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	// Starting stats come from the sign they are born under (birth_charts.dm).
+	H.apply_birth_chart()
 
 
 	return TRUE
@@ -1183,15 +1148,8 @@
 	H.add_note("Role", "You are a <b>citizen</b>. Stick with your fellow tribesmen, build your village, and honor the Gods!")
 	H.add_note("Civilization", "You are a member of the <b>[civname_f]</b> civilization.")
 
-	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	// Starting stats come from the sign they are born under (birth_charts.dm).
+	H.apply_birth_chart()
 
 
 	return TRUE
@@ -1202,7 +1160,7 @@
 	rank_abbreviation = ""
 	can_be_female = TRUE
 	spawn_location = "JoinLateCiv"
-	allowed_maps = list(MAP_TESTING, MAP_NOMADS, MAP_JUNGLE_OF_THE_CHADS, MAP_PEPELSIBIRSK, MAP_NOMADS_AFRICA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ANTARCTICA, MAP_NOMADS_EARTH_ASIA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_EARTH_GREENLAND, MAP_NOMADS_EARTH_OCEANIA, MAP_NOMADS_CONTINENTAL, MAP_NOMADS_DESERT, MAP_NOMADS_DIVIDE, MAP_NOMADS_EUROPE, MAP_NOMADS_EXTENDED, MAP_NOMADS_FROZEN_WASTELAND, MAP_NOMADS_GAIA, MAP_NOMADS_ICE_AGE, MAP_NOMADS_ISLAND, MAP_NOMADS_JUNGLE, MAP_NOMADS_KARAFUTO, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_MOUNTAIN, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_NORTH_AMERICA, MAP_NOMADS_OCEANIA, MAP_NOMADS_PANGEA, MAP_NOMADS_PERSISTENCE_BETA, MAP_NOMADS_STRANDED, MAP_NOMADS_UK, MAP_NOMADS_WASTELAND, MAP_NOMADS_WASTELAND_2, MAP_NOMADS_WASTELAND_3, MAP_COLONIA)
+	allowed_maps = list(MAP_TESTING, MAP_NOMADS, MAP_JUNGLE_OF_THE_CHADS, MAP_PEPELSIBIRSK, MAP_NOMADS_AFRICA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ANTARCTICA, MAP_NOMADS_EARTH_ASIA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_EARTH_MEDITERRANEAN, MAP_NOMADS_EARTH_GREENLAND, MAP_NOMADS_EARTH_OCEANIA, MAP_NOMADS_CONTINENTAL, MAP_NOMADS_DESERT, MAP_NOMADS_DIVIDE, MAP_NOMADS_EUROPE, MAP_NOMADS_EXTENDED, MAP_NOMADS_FROZEN_WASTELAND, MAP_NOMADS_GAIA, MAP_NOMADS_ICE_AGE, MAP_NOMADS_ISLAND, MAP_NOMADS_JUNGLE, MAP_NOMADS_KARAFUTO, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_MOUNTAIN, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_NORTH_AMERICA, MAP_NOMADS_OCEAN_ATLANTIC, MAP_NOMADS_OCEAN_PACIFIC, MAP_NOMADS_OCEAN_INDIAN, MAP_NOMADS_OCEAN_ARCTIC, MAP_NOMADS_OCEAN_SOUTHERN, MAP_NOMADS_OCEANIA, MAP_NOMADS_PANGEA, MAP_NOMADS_PERSISTENCE_BETA, MAP_NOMADS_STRANDED, MAP_NOMADS_UK, MAP_NOMADS_WASTELAND, MAP_NOMADS_WASTELAND_2, MAP_NOMADS_WASTELAND_3, MAP_COLONIA)
 
 	is_nomad = TRUE
 
@@ -1217,15 +1175,8 @@
 
 	H.add_note("Role", "You are a <b>Nomad</b>. Form a tribe and survive!")
 
-	H.setStat("strength", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("crafting", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("rifle", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("dexterity", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("swords", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("pistol", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("bows", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("medical", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
-	H.setStat("philosophy", pick(STAT_NORMAL, STAT_MEDIUM_LOW, STAT_MEDIUM_HIGH))
+	// Starting stats come from the sign they are born under (birth_charts.dm).
+	H.apply_birth_chart()
 
 
 	return TRUE

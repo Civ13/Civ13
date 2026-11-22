@@ -37,6 +37,24 @@
 /obj/item/stack/material/steel/proc/grade_name()
 	return null
 
+// A graded stack is drawn as its own sheet in steelmaking.dmi.
+/obj/item/stack/material/steel/proc/grade_sheet()
+	return null
+
+/obj/item/stack/material/steel/blister/grade_sheet()
+	return "sheet-blister"
+
+/obj/item/stack/material/steel/fine/grade_sheet()
+	return "sheet-fine"
+
+/obj/item/stack/material/steel/blister/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
+
+/obj/item/stack/material/steel/fine/update_icon()
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = grade_sheet()
+
 /obj/item/stack/material/steel/blister/grade_name()
 	return "blister"
 
@@ -87,6 +105,13 @@
 /proc/grade_forged_armor(obj/item/clothing/C, obj/item/stack/material/stock)
 	if (!istype(C) || !istype(stock) || !C.armor)
 		return FALSE
+	// Family armor takes its tier from the metal (armor_families.dm).
+	if (C.armor_family)
+		var/tier = armor_tier_for_stock(stock)
+		if (tier)
+			C.armor_tier = tier
+		C.armor_blow_grade = stock.armor_blunt_grade
+		C.armor_arrow_grade = stock.armor_pierce_grade
 	if (stock.armor_blunt_grade == 1 && stock.armor_pierce_grade == 1)
 		return FALSE
 	for (var/key in list("melee", "arrow", "gun"))
@@ -105,7 +130,12 @@
 
 /obj/item/stack/ore/iron_sponge/steely
 	name = "steely bloom"
+	icon = 'icons/obj/steelmaking.dmi'
+	icon_state = "steely_bloom"
 	desc = "A lump of bloomery iron that soaked up carbon from the charcoal under a hard blast. Sorted on an anvil, it gives blister steel."
+
+/obj/item/stack/ore/iron_sponge/steely/update_icon()
+	icon_state = "steely_bloom"
 
 /obj/item/stack/ore/iron_sponge/steely/New()
 	. = ..()

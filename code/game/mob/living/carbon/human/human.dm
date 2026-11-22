@@ -1276,7 +1276,7 @@ var/list/coefflist = list()
 			look_amount = max(AL)//look_amount is set to the maximum zoom_amt of gun's attachments, maybe could be written different instead of a for loop
 	// Up a tree the eye looks out over the canopy (tree_climbing.dm).
 	if (climbed_tree)
-		look_amount = max(look_amount, 8)
+		look_amount = max(look_amount, istype(climbed_tree, /obj/structure/vehicleparts/movement/sail) ? mast_look_amount(climbed_tree) : 8)
 	// On top of a vehicle the eye looks out over walls (vehicle_decks.dm).
 	if (vehicle_deck)
 		look_amount = max(look_amount, 6)
@@ -1426,7 +1426,7 @@ var/list/coefflist = list()
 	if (loc != old_location)
 		reset_corpse_decay_age()
 		// Walking onto a map edge the land carries on beyond (region_edge.dm).
-		if (map && map.edge_crossings)
+		if (region_edge_links())
 			region_edge_check()
 	if (human_subtile_pulse)
 		return .

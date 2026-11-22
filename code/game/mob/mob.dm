@@ -422,6 +422,9 @@
 		to_chat(src, SPAN_NOTICE("<b>You must be dead to use this!</b>"))
 		return
 
+	if (spirit_wait_blocks()) // spirit_wait.dm
+		return
+
 	show_browse(src, null, "window=memory")
 
 	to_chat(src, "You can respawn now, enjoy your new life!")
@@ -476,6 +479,10 @@
 
 	if (is_admin && stat == DEAD)
 		is_admin = FALSE
+
+	if (!is_admin && is_spirit_observer()) // spirit_observe.dm
+		to_chat(usr, SPAN_WARNING("A spirit can't watch from afar. Use Haunt or Jump to Mob instead."))
+		return
 
 	var/list/names = list()
 	var/list/namecounts = list()
@@ -598,6 +605,8 @@
 
 	else if (isobj(AM))
 		var/obj/I = AM
+		if (I.magic_repo_id && I.magic_repo_move_refused(src)) // repository_wards.dm
+			return
 		if(!istype(I, /obj/structure/cannon/modern/voyage))
 			if (!can_pull_size || can_pull_size < I.w_class || istype(I, /obj/item/football))
 				to_chat(src, "<span class='warning'>It won't budge!</span>")
@@ -1022,6 +1031,8 @@ mob/proc/yank_out_object()
 		return
 	if (!selection || !S || !U)
 		return
+	if (!(selection in get_visible_implants(0))) // pulled out while we were getting a grip
+		return
 
 	if (self)
 		visible_message(SPAN_WARNING("<b>[src] rips [selection] out of their body.</b></span>"))
@@ -1042,7 +1053,10 @@ mob/proc/yank_out_object()
 				if (O == selection)
 					affected = organ
 
+		if (!affected) // already pulled out by someone else
+			return
 		affected.implants -= selection
+		LAZYREMOVE(affected.embedded_items, selection)
 		H.shock_stage+=20
 		affected.take_damage((selection.w_class * 3), FALSE, FALSE, TRUE, "Embedded object extraction")
 

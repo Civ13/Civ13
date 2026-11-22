@@ -44,6 +44,7 @@
 	sleep(-1)
 	if (!reload_verified_access_list("whitelist"))
 		admin_notice("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", R_DEBUG)
+	watch_verified_access_lists() // picks up verifications made while the world runs
 
 	admin_notice("<span class='danger'>Initializing factionlist...</span>", R_DEBUG)
 	sleep(-1)
@@ -73,6 +74,9 @@
 	sleep(-1)
 
 	var/all_craft_lists = flist("config/crafting/")
+	// The gateway hosts no play, so nobody crafts there: it skips the recipes to start sooner.
+	if (region_gateway_here())
+		all_craft_lists = list()
 
 	for (var/i in all_craft_lists)
 		// This directory also contains non-recipe configuration such as joinery.

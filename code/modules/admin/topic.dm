@@ -413,19 +413,28 @@
 		usr.client.warn(href_list["warn"])
 
 	else if (href_list["boot2"])
+		var/client/kick_actor = usr.client
+		if (!check_rights(R_MOD | R_ADMIN))
+			return
 		var/mob/M = locate(href_list["boot2"])
-		if (ismob(M))
-			if (!check_if_greater_rights_than(M.client))
-				return
-			var/reason = sanitize(input("Please enter reason"))
-			if (!reason)
-				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server.</span>")
-			else
-				to_chat(M, "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>")
-			log_admin("[key_name(usr)] booted [key_name(M)].")
-			message_admins(SPAN_NOTICE("[key_name_admin(usr)] booted [key_name_admin(M)]."), key_name_admin(usr))
-			//M.client = null
-			qdel(M.client)
+		if (!ismob(M) || !M.client)
+			return
+		var/client/kick_target = M.client
+		if (kick_target.mob != M || !check_if_greater_rights_than(kick_target))
+			return
+		var/reason = sanitize(input(usr, "Please enter reason"))
+		// The prompt sleeps. Do not act on a new client, a new holder, or stale rights.
+		if (!kick_actor || usr?.client != kick_actor || owner != kick_actor || kick_actor.holder != src || !check_rights(R_MOD | R_ADMIN))
+			return
+		if (QDELETED(M) || !kick_target || M.client != kick_target || kick_target.mob != M || !check_if_greater_rights_than(kick_target))
+			return
+		if (!reason)
+			to_chat(M, "<span class = 'userdanger'>You have been kicked from the server.</span>")
+		else
+			to_chat(M, "<span class = 'userdanger'>You have been kicked from the server. ([reason])</span>")
+		log_admin("[key_name(usr)] booted [key_name(M)].")
+		message_admins(SPAN_NOTICE("[key_name_admin(usr)] booted [key_name_admin(M)]."), key_name_admin(usr))
+		qdel(kick_target)
 
 	else if (href_list["mute"])
 		if (!check_rights(R_MOD,0) && !check_rights(R_ADMIN))  return
@@ -474,6 +483,9 @@
 	else if (href_list["adminplayeropts"])
 		var/mob/M = locate(href_list["adminplayeropts"])
 		show_player_panel(M)
+
+	else if (href_list["player_list"])
+		player_panel_new()
 
 	else if (href_list["adminplayerobservejump"])
 		if (!check_rights(R_MENTOR|R_MOD|R_ADMIN))	return
@@ -618,6 +630,13 @@
 		var/mob/M = locate(href_list["divine_reply"])
 		if (ismob(M))
 			usr.client.divine_answer_prayer(M)
+
+	else if (href_list["divine_invite"])
+		if (!check_rights(R_ADMIN))
+			return
+		var/mob/M = locate(href_list["divine_invite"])
+		if (ismob(M))
+			usr.client.divine_invite_follower(M)
 
 	else if (href_list["create_object"])
 		if (!check_rights(R_SPAWN))	return

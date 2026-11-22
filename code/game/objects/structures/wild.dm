@@ -175,7 +175,7 @@ var/list/seed_list_jungle
 	var/area/caribbean/A = get_area(get_turf(src))
 	if (!A)
 		return
-	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE && map.ID != MAP_NOMADS_AMERICAS_NORTH && map.ID != MAP_NOMADS_AMERICAS_SOUTH && map.ID != MAP_NOMADS_ASIA && map.ID != MAP_NOMADS_EARTH_EUROPE && map.ID != MAP_NOMADS_EARTH_AFRICA && map.ID != MAP_NOMADS_EARTH_ASIA && map.ID != MAP_NOMADS_EARTH_OCEANIA && map.ID != MAP_NOMADS_EARTH_GREENLAND && map.ID != MAP_NOMADS_EARTH_ANTARCTICA)
+	if (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_NOMADS_GAIA && map.ID != MAP_NOMADS_EUROPE && map.ID != MAP_NOMADS_AMERICAS_NORTH && map.ID != MAP_NOMADS_AMERICAS_SOUTH && map.ID != MAP_NOMADS_ASIA && map.ID != MAP_NOMADS_EARTH_EUROPE && map.ID != MAP_NOMADS_EARTH_MEDITERRANEAN && map.ID != MAP_NOMADS_EARTH_AFRICA && map.ID != MAP_NOMADS_EARTH_ASIA && map.ID != MAP_NOMADS_EARTH_OCEANIA && map.ID != MAP_NOMADS_EARTH_GREENLAND && map.ID != MAP_NOMADS_EARTH_ANTARCTICA)
 		return pick_seed_by_biome()
 	else
 		return pick_seed_by_biome(A.climate)
@@ -241,11 +241,15 @@ var/list/seed_list_jungle
 			work_animation.stop()
 		if (completed)
 			health = 0
+			var/turf/fell_at = get_turf(src)
+			var/was_tree = istype(src, /obj/structure/wild/tree)
 			try_destroy()
 			HT.apply_wear(0.25, WEAR_WORK)
 			if (istype(user, /mob/living/human))
 				var/mob/living/human/H = user
 				H.adaptStat("strength", 1)
+				if (was_tree && QDELETED(src))
+					H.arcane_felled_tree(fell_at)
 			return
 	else
 		switch(W.damtype)
@@ -300,6 +304,10 @@ var/list/seed_list_jungle
 	fit_trunk_bounds()
 
 /obj/structure/wild/tree/attackby(obj/item/W as obj, mob/user as mob)
+	if (resin_tap_attackby(src, W, user)) // resin.dm
+		return
+	if (lacquer_tap_attackby(src, W, user)) // lacquer.dm
+		return
 	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
@@ -1393,6 +1401,8 @@ var/list/seed_list_jungle
 	icon_state = "cinchona[healthamount]"
 
 /obj/structure/wild/attack_hand(mob/user as mob)
+	if (silk_pick_attack_hand(src, user)) // silk.dm
+		return
 	if (user.a_intent == I_GRAB && ishuman(user) && edible && leaves >= 1)
 		var/mob/living/human/H = user
 		if (H.gorillaman)

@@ -150,7 +150,7 @@ var/global/list/weather_vanes = list()
 /obj/structure/weather_vane/proc/turn_to_wind()
 	if (!map || sheltered())
 		return
-	var/look = "weather_vane_[lowertext(map.winddirection)]"
+	var/look = "weather_vane_[lowertext(dir2text(weather_wind_dir_at(src)))]"
 	if (icon_state != look)
 		icon_state = look
 
@@ -161,7 +161,7 @@ var/global/list/weather_vanes = list()
 	if (sheltered())
 		to_chat(user, "It hangs still. A weather vane is no use under a roof.")
 		return
-	to_chat(user, "The wind is from the <b>[lowertext(map.winddirection)]</b>: [weather_wind_word(weather_wind_at(src))].")
+	to_chat(user, "The wind is from the <b>[weather_wind_heading(weather_wind_dir_at(src))]</b>: [weather_wind_word(weather_wind_at(src))].")
 	var/list/forecast = weather_forecast(src)
 	if (forecast["now"] >= WEATHER_BAND_LIGHT)
 		return
@@ -210,7 +210,7 @@ var/global/list/weather_vanes = list()
 	return "The column is steady: no change in the next quarter of an hour."
 
 /obj/item/weapon/barometer/attack_self(mob/user)
-	to_chat(user, SPAN_NOTICE("You tap the glass of \the [src]. [barometer_reading(user)]"))
+	to_chat(user, SPAN_NOTICE("You tap the glass of \the [src]. [barometer_hpa_reading(user)]"))
 
 /obj/item/weapon/barometer/examine(mob/user)
 	..()

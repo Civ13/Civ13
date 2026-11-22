@@ -37,7 +37,7 @@ public static class HostSettings {
         File.Move(temporary, group.Config, true);
     }
     // Update when empty: a region whose last player left and which has saved since builds the latest
-    // revision beside itself and restarts onto it (the group config's update_when_empty, on unless
+    // revision beside itself and attempts a standby handover (the group config's update_when_empty, on unless
     // set false; shard_group.py RegionHost reads it at each check). New commits are only seen when the
     // group fetches its remote, so turning it on also points a group that does not at origin/master.
     public static bool UpdateWhenEmpty(HostGroup group) {
@@ -72,7 +72,7 @@ public static class HostSettings {
     // running worlds pick it up within a minute). The mainland stays the era source and bot link either way.
     public sealed record StartChoice(string Id, string Name);
     // Kinds nobody can start in, as shard_group.py START_REGION_REFUSED_KINDS.
-    private static readonly string[] NoStartKinds = ["RAID", "ORBIT", "BATTLE", "EVENT", "EXPEDITION", "TUTORIAL"];
+    private static readonly string[] NoStartKinds = ["RAID", "ORBIT", "BATTLE", "EVENT", "EXPEDITION", "TUTORIAL", "GATEWAY"];
 
     // The mainland, the current start region (the mainland unless start_region names another) and every region
     // a new character may start in, in the group's order.
@@ -106,6 +106,65 @@ public static class HostSettings {
         File.Move(temporary, group.Config, true);
     }
 
+    // Travel starts: a traveller bound for a land that is not running starts it, the way one bound for a sleeping
+    // land wakes it (Val, 2026-11-22). A region kept down (its group config entry's keep_down) is never started that
+    // way; the doorman and shard_group.py read it at each request, so a change applies at once. The gateway is left
+    // out: travellers never go there, and the host service alone starts it.
+    public sealed record TravelStart(string Id, string Name, bool KeptDown);
+
+    public static IReadOnlyList<TravelStart> TravelStarts(HostGroup group) {
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root || root["regions"] is not JsonArray regions)
+            throw new InvalidDataException("The group config lists no regions.");
+        var list = new List<TravelStart>();
+        foreach (var node in regions) {
+            if (node is not JsonObject region || Text(region["id"]) is not { } id || !RegionId.IsMatch(id)) continue;
+            if (Text(region["kind"]) == "GATEWAY") continue;
+            var kept = region["keep_down"] is JsonValue value && value.TryGetValue<bool>(out var on) && on;
+            list.Add(new TravelStart(id, Text(region["name"]) is { Length: > 0 } name ? name : id, kept));
+        }
+        return list;
+    }
+
+    // Rewrites the group config with keep_down set on the named regions and removed from the rest, keeping every
+    // other setting.
+    public static void SetKeptDown(HostGroup group, IReadOnlyCollection<string> keptDown) {
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root || root["regions"] is not JsonArray regions)
+            throw new InvalidDataException(group.Config + " lists no regions.");
+        foreach (var node in regions) {
+            if (node is not JsonObject region || Text(region["id"]) is not { } id) continue;
+            if (keptDown.Contains(id) && Text(region["kind"]) != "GATEWAY") region["keep_down"] = true;
+            else region.Remove("keep_down");
+        }
+        var temporary = group.Config + ".tmp";
+        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        File.Move(temporary, group.Config, true);
+    }
+
+    // Ready lands (group config ready_neighbours, default on, and cold_after_minutes, default 15; Val, 2026-11-22): a land
+    // next to one with players stays suspended in memory and is started ahead from cold storage, so a traveller wakes it in
+    // seconds; a land with nobody next door goes to cold storage after cold_after_minutes (0 = never). Gaia and the oceans
+    // around it are always kept ready. The host service reads both at each check.
+    public const int DefaultColdAfterMinutes = 15;
+    public const int MaxColdAfterMinutes = 1440;
+
+    public static (bool On, int ColdAfterMinutes) Readiness(HostGroup group) {
+        var root = JsonNode.Parse(File.ReadAllText(group.Config));
+        var on = root?["ready_neighbours"] is not JsonValue flag || !flag.TryGetValue<bool>(out var value) || value;
+        var minutes = root?["cold_after_minutes"] is JsonValue number && number.TryGetValue<int>(out var read)
+            && read is >= 0 and <= MaxColdAfterMinutes ? read : DefaultColdAfterMinutes;
+        return (on, minutes);
+    }
+
+    public static void SetReadiness(HostGroup group, bool on, int coldAfterMinutes) {
+        if (coldAfterMinutes is < 0 or > MaxColdAfterMinutes) throw new InvalidDataException("Cold storage must be 0 to 1440 minutes.");
+        if (JsonNode.Parse(File.ReadAllText(group.Config)) is not JsonObject root) throw new InvalidDataException(group.Config + " is not a JSON object.");
+        root["ready_neighbours"] = on;
+        root["cold_after_minutes"] = coldAfterMinutes;
+        var temporary = group.Config + ".tmp";
+        File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
+        File.Move(temporary, group.Config, true);
+    }
+
     private static string? Text(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) ? text : null;
 
     public static readonly string[] Offered = [LocalConfig, "config/host.txt"];
@@ -125,7 +184,7 @@ public static class HostSettings {
         var found = new List<Location>();
         if (Overlay(json) is { } shared) found.Add(new Location("Every region (shared)", shared, null));
         if (json.TryGetProperty("regions", out var regions) && regions.ValueKind == JsonValueKind.Array)
-            foreach (var region in regions.EnumerateArray().Take(16)) {
+            foreach (var region in regions.EnumerateArray().Take(LocalHosting.MaxRegions)) {
                 if (region.ValueKind != JsonValueKind.Object || !region.TryGetProperty("id", out var idJson) || idJson.ValueKind != JsonValueKind.String) continue;
                 var id = idJson.GetString()!;
                 if (!RegionId.IsMatch(id) || Overlay(region) is not { } folder) continue;

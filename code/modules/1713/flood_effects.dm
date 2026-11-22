@@ -293,8 +293,9 @@ var/global/flood_draw_revision = 0
 		return
 	var/list/drawn = list()
 	for (var/y in y0 + 1 to y1 - 1)
+		var/row_offset = (y - y0) * w
 		for (var/x in x0 + 1 to x1 - 1)
-			var/band = bands[(y - y0) * w + (x - x0) + 1]
+			var/band = bands[row_offset + (x - x0) + 1]
 			if (!band)
 				continue
 			var/turf/T = locate(x, y, centre.z)

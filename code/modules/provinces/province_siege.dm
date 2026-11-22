@@ -15,10 +15,12 @@
 //   with the first window at least SIEGE_NOTICE_HOURS later. It needs
 //   SIEGE_DEPOSIT silver in its strongbox: kept if the attackers show up,
 //   spent if nobody comes. A province below Town rank on Gaia cannot be
-//   besieged.
+//   besieged. Between two nations a siege also needs war in force
+//   (province_treaties.dm); peace calls it off with the deposit kept.
 // - In the window the attackers capture the seat by standing within
 //   SIEGE_SEAT_RANGE tiles of it for 10 / 15 / 20 / 30 minutes (Camp to City;
 //   10 unranked). The count pauses while a connected defender stands there.
+//   Allied nations at the seat count on their ally's side.
 // - Success suspends one rank's benefits for 7 days and makes the province
 //   immune to sieges for 3. At Camp or below, or on the same rival's second
 //   success within 14 days, it also starts the holder's loss warning. A failed
@@ -206,6 +208,9 @@ var/global/province_siege_timer = null
 		return "Nobody holds the [P.names[c]]: lead it in stake to take it."
 	if (holder == group)
 		return "Your own side holds the [P.names[c]]."
+	var/treaty = province_treaty_siege_block(group, holder) // province_treaties.dm
+	if (treaty)
+		return treaty
 	var/list/row = province_siege_row(c)
 	if (islist(row["siege"]))
 		return "A siege is already declared on the [P.names[c]]."
@@ -219,9 +224,14 @@ var/global/province_siege_timer = null
 	if (province_faction_age_days(faction) < SIEGE_FACTION_DAYS)
 		return "[faction] must be [SIEGE_FACTION_DAYS] days old to declare a siege."
 	var/players = 0
+	var/list/people = list() // each player counts once, whichever of their characters (kin) is a member
 	for (var/account in map.faction_roster(faction))
+		var/person = owner_key_account(account)
+		if (!person || people[person])
+			continue
 		var/list/A = province_activity_of(account)
 		if (A[1] >= SIEGE_PLAY_MINUTES)
+			people[person] = TRUE
 			players++
 	if (players < SIEGE_ACCOUNTS)
 		return "[faction] needs [SIEGE_ACCOUNTS] members who have played [SIEGE_PLAY_MINUTES / 60] hours on this land (it has [players])."
@@ -356,6 +366,9 @@ var/global/province_siege_timer = null
 	if (!holder || holder == siege["group"])
 		province_siege_end(c, row, "The siege on the [name] is over.", "The siege on the [name] is over: the province changed hands.")
 		return
+	if (province_treaty_siege_block(siege["group"], holder)) // peace, a pact or an alliance: called off, deposit kept
+		province_siege_end(c, row, "The siege on the [name] is off: your nations are no longer at war.", "Your siege on the [name] is off: your nations are no longer at war. The deposit is kept.")
+		return
 	var/due = world.realtime >= siege["declared"] + SIEGE_NOTICE_HOURS * 36000
 	var/open = due && province_in_window(c)
 	if (!open)
@@ -365,6 +378,7 @@ var/global/province_siege_timer = null
 		if (siege["shown"])
 			var/list/cooldown = row["cooldown"]
 			cooldown[siege["group"]] = world.realtime + SIEGE_COOLDOWN_DAYS * 864000
+			accolade_siege_held(province_seat(c, holder), holder)
 			province_siege_end(c, row, "The siege on the [name] failed: the seat held.", "Your siege on the [name] failed. Your side can declare here again in [SIEGE_COOLDOWN_DAYS] days.")
 		else
 			var/obj/structure/closet/crate/faction_strongbox/B = map.faction_strongbox(siege["faction"])
@@ -384,11 +398,11 @@ var/global/province_siege_timer = null
 	for (var/mob/living/human/H in range(SIEGE_SEAT_RANGE, seat))
 		if (!H.client || H.stat == DEAD || !H.civilization || H.civilization == "none")
 			continue
-		var/group = province_group_of(H.civilization)
-		if (group == siege["group"])
-			attackers++
-		else if (group == holder)
-			defenders++
+		switch (province_siege_side(province_group_of(H.civilization), siege["group"], holder)) // allies join in (province_treaties.dm)
+			if ("attack")
+				attackers++
+			if ("defend")
+				defenders++
 	if (!attackers)
 		return
 	siege["shown"] = TRUE
@@ -416,6 +430,7 @@ var/global/province_siege_timer = null
 			H[3] = now
 	province_siege_end(c, row, "[siege["faction"]] has taken the seat of the [name]. Its rank's benefits are suspended for [SIEGE_SUSPEND_DAYS] days[warning ? ", and your hold is slipping: recover it or lose the province" : ""].", "Your side has taken the seat of the [name]. Its holder's rank is suspended for [SIEGE_SUSPEND_DAYS] days[warning ? " and its hold is slipping" : ""].")
 	log_game("Provinces: [siege["faction"]] won a siege on province [c].")
+	province_siege_report(siege["faction"], holder) // province_treaties.dm: counts toward imposing vassalage
 
 /proc/province_siege_text(c)
 	var/list/row = province_siege_row(c)

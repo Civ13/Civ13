@@ -341,6 +341,8 @@
 /obj/item/weapon/grenade/dynamite/activate(mob/user as mob)
 	if (active)
 		return
+	if (state < 1) // an empty casing has no charge to set off (#6337)
+		return
 
 	if (user)
 		msg_admin_attack("[user.name] ([user.ckey]) primed \a [src] (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", user.ckey)
@@ -589,6 +591,7 @@
 	throw_range = 12
 	spread_range = 6
 	secondary_action = FALSE
+	var/detonated = FALSE
 
 /obj/item/weapon/grenade/modern/impact/attack_self(mob/user as mob)
 	if (!active)
@@ -612,10 +615,26 @@
 
 /obj/item/weapon/grenade/modern/impact/throw_impact(atom/hit_atom)
 	if (active)
-		prime()
+		impact_detonate()
 	else
 		..()
 	return
+
+// An impact fuse has no timer, so a severe blast sets the grenade off directly,
+// armed or not; impact_detonate() keeps repeated blasts and throws to one
+// detonation (#6298).
+/obj/item/weapon/grenade/modern/impact/ex_act(severity)
+	if (severity == 1.0)
+		impact_detonate()
+		return
+	return ..()
+
+/obj/item/weapon/grenade/modern/impact/proc/impact_detonate()
+	if (detonated)
+		return FALSE
+	detonated = TRUE
+	prime()
+	return TRUE
 
 /obj/item/weapon/grenade/modern/impact/oto35
 	name = "OTO Mod. 35"
@@ -626,7 +645,7 @@
 /obj/item/weapon/grenade/modern/impact/oto35/throw_impact(atom/hit_atom)
 	if (active)
 		if (prob(90))
-			prime()
+			impact_detonate()
 	else
 		..()
 	return
@@ -895,6 +914,9 @@
 	secondary_action = TRUE
 
 /obj/item/weapon/grenade/antitank/n75/secondary_attack_self(mob/living/human/user)
+	return place_as_antitank_mine(user)
+
+/obj/item/weapon/grenade/antitank/proc/place_as_antitank_mine(mob/living/human/user)
 	if (secondary_action)
 		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
 		if (inp == "Yes")
@@ -920,21 +942,7 @@
 	secondary_action = TRUE
 
 /obj/item/weapon/grenade/antitank/type99/secondary_attack_self(mob/living/human/user)
-	if (secondary_action)
-		var/inp = WWinput(user, "Are you sure you want to place an anti-tank mine here?", "Mining", "No", list("Yes","No"))
-		if (inp == "Yes")
-			to_chat(user, "Placing the mine...")
-			if (do_after(user, 60, src))
-				// A lagged repeat click can reach here after the first one already
-				// placed this grenade; only a grenade still in hand becomes a mine.
-				if (!QDELETED(src) && loc == user)
-					to_chat(user, "You successfully place the mine here using \the [src].")
-					var/obj/item/mine/at/armed/BT = new /obj/item/mine/at/armed(get_turf(user))
-					BT.origin = src.type
-					firer = user
-					qdel(src)
-		else
-			return
+	return place_as_antitank_mine(user)
 
 /obj/item/weapon/grenade/antitank/prime()
 	set waitfor = 0

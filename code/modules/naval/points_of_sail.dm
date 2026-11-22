@@ -10,20 +10,14 @@
 // reach, a run or a beat; close-hauled and broad reaches are for headings
 // and winds that sit between them.
 //
-// The wind is the map's (weather_systems.dm). Ocean currents, when they
+// The wind is the local wind where she sails (weather_wind.dm); with no
+// place given, the map's. Ocean currents, when they
 // come, add to the water a ship sails through and belong beside this.
 // ============================================================
 
 // The direction the wind blows from.
 /proc/wind_from_dir()
-	switch (map ? map.winddirection : "West")
-		if ("North")
-			return NORTH
-		if ("South")
-			return SOUTH
-		if ("East")
-			return EAST
-	return WEST
+	return weather_wind_from_dir(map?.winddirection)
 
 // The angle from the bow to where the wind blows from, to the nearest point
 // of sail: SAIL_POINT_BEATING (into the wind) to SAIL_POINT_RUNNING (dead
@@ -88,4 +82,4 @@
 // A sail step at this place and heading: the wind's strength there (a storm
 // overhead brings a gale) and how it stands to the bow.
 /proc/sail_step_time(atom/A, heading)
-	return sail_step_delay(weather_wind_at(A)) * sail_delay_factor(heading)
+	return sail_step_delay(weather_wind_at(A)) * sail_delay_factor(heading, weather_wind_dir_at(A))

@@ -109,5 +109,17 @@
   "/obj/item/naval_torpedo/magnetic",
   "/obj/structure/naval_mine/torpedo",
   "/obj/structure/boathouse",
-  "/obj/effect/boathouse_pile"
+  "/obj/effect/boathouse_pile",
+  "/obj/structure/railing/built/gunwale",
+  "/obj/structure/railing/built/gunwale/bulwark",
+  "/obj/structure/railing/built/gunwale/gangway",
+  "/obj/structure/railing/built/gunwale/bulwark/gangway",
+  "/obj/structure/vehicleparts/movement/sail/bowsprit",
+  "/obj/structure/vehicleparts/movement/sail/crows_nest",
+  "/obj/structure/figurehead",
+  "/obj/item/weapon/grapnel",
+  "/obj/item/clothing/suit/armor/proof_cuirass",
+  "/obj/item/clothing/suit/armor/proof_cuirass/japanese",
+  "/obj/item/clothing/accessory/armor/modern/resin_shield",
+  "/obj/item/clothing/accessory/armor/modern/british/heavy"
 ]

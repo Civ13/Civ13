@@ -189,9 +189,13 @@
 		body.glide_time = 0
 		if (moved)
 			sail_paid(sail_tiles())
+			strait_notice() // naval/strait_boom.dm
 			return TRUE
 	if (hop)
 		last_refusal = body.last_refusal
+	// At full speed she breaks through a raised boom (naval/strait_boom.dm).
+	if (boom_ram())
+		return FALSE
 	sail_refused()
 	return FALSE
 
@@ -215,7 +219,10 @@
 	crew_message(SPAN_WARNING("<b>All stop!</b> [capitalize(last_refusal)]."))
 	// The edge of these waters is where voyages to other lands begin (ship_voyage.dm).
 	if (last_refusal == "the edge of the world" && istype(body, /datum/craft_body/built) && shard_group && shard_group.enabled)
-		crew_message(SPAN_NOTICE("To sail on to another land, use the tiller or steering oar and choose <b>Set out on a voyage</b>."))
+		if (sea_edge_travel_on())
+			crew_message(SPAN_NOTICE("To sail on over the edge, use the tiller or steering oar and choose <b>Sail over the horizon</b>."))
+		else
+			crew_message(SPAN_NOTICE("To sail on to another land, use the tiller or steering oar and choose <b>Set out on a voyage</b>."))
 	speed = VESSEL_SPEED_STOP
 	stop_sailing()
 	show_drives()
@@ -237,8 +244,15 @@
 		return FALSE
 	mark_path(box[1], box[2], heading)
 	turning_to = heading
-	addtimer(CALLBACK(src, PROC_REF(finish_turn)), VESSEL_PATH_WARNING)
+	addtimer(CALLBACK(src, PROC_REF(finish_turn)), turn_time())
 	return TRUE
+
+// How long she takes to come about once the order is given: the warning for
+// a hull up to ten tiles long, half a second more for every tile past that,
+// at most half a minute.
+/datum/craft/proc/turn_time()
+	var/length = body ? body.length_tiles() : 0
+	return clamp(VESSEL_PATH_WARNING + max(0, length - 10) * 5, VESSEL_PATH_WARNING, 300)
 
 // Where a turn puts the box corner: list(x, y). Bodies turn about their own
 // pivot, so the body is asked.

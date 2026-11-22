@@ -134,7 +134,9 @@ var/world_is_open = TRUE
 	// Build the shared research-tree node registry (faction-agnostic).
 	build_research_tree()
 	// The admin Spawn picker's type list, built here so its first opening does not stall.
-	build_spawn_catalog()
+	// The gateway hosts no play and starts as fast as it can: there it is built on first use.
+	if (!region_gateway_here())
+		build_spawn_catalog()
 	processScheduler = new
 	// SStimer: addtimer() callbacks such as full-auto fire.
 	Master.start_timer_loop()
@@ -460,6 +462,9 @@ var/world_topic_spam_protect_time = world.timeofday
 	if(state["character_unconfirmed"]) return "Character recovery is not confirmed - joining may be delayed."
 	return "Round is open - account, character and role checks still apply."
 
+// The BYOND hub keeps about this many characters of a listing's status.
+#define HUB_STATUS_MAX_LENGTH 255
+
 /world/proc/update_status()
 
 	if (world.port == config.testing_port)
@@ -467,24 +472,14 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	var/s = ""
 
-	var/server_title = hub_status_link(config.discordurl, customserver_name(), config.open_hub_discord_in_new_window)
-	if (!server_title)
-		server_title = hub_status_text(customserver_name())
-	s += "<center><b>[server_title]</b></center><br>"
+	// The BYOND hub keeps only about the first 255 characters of a status, so the
+	// short title and the live lines come first; links and the banner go last.
+	s += "<center><b>[hub_status_text(customserver_name())]</b></center><br>"
 
-	var/list/community_links = list()
-	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
-	var/website_link = hub_status_link(config.websiteurl, "Website")
-	if (discord_link)
-		community_links += discord_link
-	if (website_link)
-		community_links += website_link
-	if (community_links.len)
-		s += "[jointext(community_links, " | ")]<br>"
-
-	if (config.hub_banner_url)
-		s += "<img src=\"[config.hub_banner_url]\"><br>"
-	if (map)
+	// The gateway is the group's hub entry: it shows the lands, not its own empty map.
+	if (region_gateway_here())
+		s += region_gateway_hub_status()
+	else if (map)
 		s += "<b>Map:</b> [hub_status_text(map.title)] ([hub_status_text(roundduration2text())])<br>"
 	var/list/player_status = player_status_observation()
 	s += "<b>World:</b> [hub_status_text(player_world_activity(player_status))]<br>"
@@ -492,12 +487,31 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	// we can't execute code in config settings, so this is a workaround.
 	var/hub_body = replacetext(config.hub_body, "ROUNDTIME", capitalize(lowertext(roundduration2text())))
-	if (map)
+	if (map && !region_gateway_here())
 		s += "<b>Gamemode:</b> [hub_status_text(map.gamemode)]"
 	if (hub_body)
 		s += hub_body
+	if (copytext(s, -4) != "<br>")
+		s += "<br>"
+	var/list/community_links = list()
+	var/discord_link = hub_status_link(config.discordurl, "Discord", config.open_hub_discord_in_new_window)
+	var/website_link = hub_status_link(config.websiteurl, "Website")
+	if (discord_link)
+		community_links += discord_link
+	if (website_link)
+		community_links += website_link
+	// Anything the hub would cut mid-tag is left out rather than shown broken.
+	var/links_line = community_links.len ? "[jointext(community_links, " | ")]<br>" : ""
+	if (links_line && length(s) + length(links_line) <= HUB_STATUS_MAX_LENGTH)
+		s += links_line
+
+	var/banner_line = config.hub_banner_url ? "<img src=\"[config.hub_banner_url]\"><br>" : ""
+	if (banner_line && length(s) + length(banner_line) <= HUB_STATUS_MAX_LENGTH)
+		s += banner_line
 
 	status = s
+
+#undef HUB_STATUS_MAX_LENGTH
 
 /proc/get_packaged_server_status_data()
 	. = ""
@@ -545,17 +559,22 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(current_player_status != last_player_status)
 			world.update_status()
 			last_player_status = current_player_status
-		var/F = file("serverdata.txt")
-		if (fexists("serverdata.txt"))
-			fdel(F)
-		F << get_packaged_server_status_data()
+		// A standby loads in the region's own folder while the region still runs there:
+		// its empty roster must not replace the live world's heartbeat, or the bot's
+		// player counts flicker between the two until the handover opens the port.
+		if (!persistence_restart || !persistence_restart.standby)
+			var/F = file("serverdata.txt")
+			if (fexists("serverdata.txt"))
+				fdel(F)
+			F << get_packaged_server_status_data()
 		sleep (100)
 
 var/global/nextsave = 0
 var/global/persistence_reboot_scheduled = FALSE
-// Automatic saves never run during active play (Val, 2026-11-05). They wait
-// until no one but the host is online; admins can still save by hand, and
-// players can vote for a save (see persistence_save_vote_block_reason()).
+// Automatic saves wait until no one but the host is online (Val, 2026-11-05);
+// admins can still save by hand, and players can vote for a save (see
+// persistence_save_vote_block_reason()). The one exception is the four-hour
+// checkpoint (occupied_checkpoint.dm, Val 2026-11-21).
 var/global/persistence_played_since_save = FALSE
 var/global/persistence_empty_since = 0
 var/global/persistence_reboot_due = FALSE
@@ -580,9 +599,11 @@ var/global/persistence_reboot_due = FALSE
 				if (!nextsave)
 					nextsave = world.realtime + 216000
 				if (persistence_active_players())
-					// Hold every automatic save while people are playing.
+					// Hold every automatic save while people are playing, except
+					// the checkpoint that keeps the last save under four hours old.
 					persistence_played_since_save = TRUE
 					persistence_empty_since = 0
+					persistence_occupied_checkpoint()
 				else
 					// The empty timer restarts while any save runs. Pulling the
 					// schedule in during a save started a second save as soon as

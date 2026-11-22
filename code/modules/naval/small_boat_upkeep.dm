@@ -122,7 +122,7 @@
 		return
 	var/minutes = (world.time - ashore_since) / 600
 	if (soaks() && soak > 0)
-		soak = max(0, soak - BOAT_DRY_PER_MINUTE * minutes)
+		soak = max(0, soak - BOAT_DRY_PER_MINUTE * minutes * dry_factor())
 	ashore_since = world.time
 
 // ---- Work ----

@@ -190,6 +190,16 @@ var/dive_runtime_error = FALSE
 	dive_check(!H.scuba_ready(), "an empty set breathes nothing")
 	H.handle_drowning()
 	dive_check(H.free_diving && H.swim_breath == 9, "with the set empty the diver holds their breath ([H.free_diving] [H.swim_breath])")
+	// Holding their breath adds no nitrogen in open water (#6750), but the shelf still releases it.
+	H.loc = open
+	H.nitrogen_load = 60
+	H.swim_breath = -1
+	H.handle_drowning()
+	dive_check(H.free_diving && H.nitrogen_load == 60, "a breath-holding diver in open water gains no nitrogen ([H.nitrogen_load])")
+	H.loc = shelf
+	H.handle_drowning()
+	dive_check(H.nitrogen_load == 59, "a breath-holding diver on the shelf still releases nitrogen ([H.nitrogen_load])")
+	H.nitrogen_load = 0
 	H.free_diving = FALSE
 	H.loc = shelf_top
 	// Fins: faster swimming, clumsy on land.

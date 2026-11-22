@@ -60,10 +60,12 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
-from supervisor import byond_text_md5, query  # noqa: E402
+from supervisor import LifecycleRefused, byond_text_md5, query  # noqa: E402
 import player_changelog  # noqa: E402
+import process_safety  # noqa: E402
+from process_safety import Unverified  # noqa: E402,F401
 
-# Console programs (git, dm.exe, schtasks, tasklist) run by the windowless host
+# Console programs (git, dm.exe, schtasks, netstat) run by the windowless host
 # service would each flash a console window on Windows.
 NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 # Long-lived children (DreamDaemon, workers, agents) get a hidden console of their own rather than
@@ -72,7 +74,7 @@ NO_WINDOW = 0x08000000 if os.name == 'nt' else 0  # CREATE_NO_WINDOW
 DETACH_FLAGS = NO_WINDOW | 0x00000200 if os.name == 'nt' else 0  # | CREATE_NEW_PROCESS_GROUP
 
 ACTIONS = ('status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'watch', 'serve', 'check-update',
-           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover', 'update-unsaved', 'update-handover')
+           'kill', 'force-restart', 'stage', 'unlock', 'force-unlock', 'handover', 'auto-handover', 'start-current', 'update-unsaved', 'update-handover')
 # quick or long-running; no detached worker (stage starts its own, beside the action lock)
 DIRECT = ('freeze', 'thaw', 'watch', 'serve', 'check-update', 'kill', 'force-restart', 'stage', 'unlock', 'force-unlock')
 BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the running worlds
@@ -90,6 +92,9 @@ FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake
                    # map_saves holds a save newer than the last player; after a reboot the
                    # doorman starts the world from that save on the next wake request.
                    'freeze_requires_save': True, 'cold_start_estimate_seconds': 300,
+                   # serve: how long a stopped world a traveller asked for takes to be prepared
+                   # (pulled, compiled if its build is behind, and loaded from its save)
+                   'travel_start_estimate_seconds': 600,
                    # Sleep on disk: an idle, saved world is shut down instead of kept frozen in
                    # memory, and starts from its save on the next wake. For worlds seldom
                    # visited (expedition lands, shard_group.py), which then cost no memory.
@@ -258,10 +263,33 @@ def parse_proc_net(text, ipv6=False):
     return rows
 
 
+TIMED_OUT = 124  # Platform.run's exit code for a program it ended at its timeout (as coreutils timeout)
+
+
+def end_owned_tree(process):
+    """End a child this host started (a Popen) and everything it started, after a timeout."""
+    try:
+        kids = process_safety.descendants(process.pid, (process_safety.identity(process.pid) or {}).get('created'))
+    except (OSError, ValueError):
+        kids = []
+    try:
+        process.kill()
+    except OSError:
+        pass
+    for kid in kids:
+        try:
+            process_safety.end(kid)
+        except (OSError, RuntimeError):
+            pass
+
+
 class Platform:
     """Everything that touches the machine, so tests can replace it."""
 
     def run(self, argv, cwd=None, timeout=1800, low_priority=False):
+        """(exit code, last 4000 characters of output). Never raises for a hung program: past
+        timeout it and everything it started are ended and the answer is (TIMED_OUT, ...), so a
+        caller treats it like any failed command (a hung tasklist kept Gaia down, 2026-11-19)."""
         # stdin is DEVNULL so Windows never duplicates an inherited console handle: a host started by the
         # launcher gets the launcher's console input, and duplicating it fails with WinError 50.
         extra = {}
@@ -269,9 +297,19 @@ class Platform:
             extra['creationflags'] = NO_WINDOW | BELOW_NORMAL_PRIORITY
         elif low_priority:
             extra['preexec_fn'] = lambda: os.nice(10)
-        result = subprocess.run(argv, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=timeout,
-                                **dict({'creationflags': NO_WINDOW}, **extra))
-        return result.returncode, (result.stdout + result.stderr)[-4000:]
+        process = subprocess.Popen(argv, cwd=cwd, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   text=True, **dict({'creationflags': NO_WINDOW}, **extra))
+        try:
+            out, err = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            end_owned_tree(process)
+            try:
+                out, err = process.communicate(timeout=5)
+            except (subprocess.SubprocessError, OSError, ValueError):
+                out, err = '', ''
+            note = '%s timed out after %s s and was ended' % (Path(str(argv[0])).name, timeout)
+            return TIMED_OUT, ((out or '') + (err or '') + '\n' + note)[-4000:]
+        return process.returncode, ((out or '') + (err or ''))[-4000:]
 
     def listening(self, port):
         # On Windows a loopback connect to a closed port is retried for about 2 s before it is
@@ -304,25 +342,12 @@ class Platform:
         raise Refused('a standby world needs a region host (scripts/shard-group)')
 
     def byond_pager_running(self):
-        """True/False whether byond.exe runs in this logon session; None off Windows or unknown."""
+        """True/False whether byond.exe runs in this logon session; None off Windows or unknown.
+        Asks the kernel directly (process_safety), never tasklist: a broken WMI provider made
+        tasklist hang and every Gaia start crash on the timeout (2026-11-19)."""
         if os.name != 'nt':
             return None
-        try:
-            session = ctypes.c_ulong()
-            if not ctypes.windll.kernel32.ProcessIdToSessionId(os.getpid(), ctypes.byref(session)):
-                return None
-        except (OSError, AttributeError):
-            return None
-        try:
-            code, out = self.run(['tasklist', '/FI', 'IMAGENAME eq byond.exe', '/FI', 'SESSION eq %d' % session.value,
-                                  '/FO', 'CSV', '/NH'], timeout=30)
-        except (subprocess.SubprocessError, OSError):
-            # A broken WMI provider makes tasklist hang ("Provider load failure"); the
-            # timeout crashed every Gaia start until a reboot (2026-11-19). Unknown, not absent.
-            return None
-        if code != 0:
-            return None
-        return '"byond.exe"' in out.lower()
+        return process_safety.running_in_session('byond.exe')
 
     def task_ready(self, name):
         code, out = self.run(['schtasks', '/Query', '/TN', name, '/FO', 'LIST'], timeout=60)
@@ -472,27 +497,15 @@ class Platform:
         finally:
             ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
 
-    def terminate(self, pid):
-        if os.name != 'nt':
-            os.kill(pid, 9)  # SIGKILL also ends a stopped process
-            return
-        handle = self._open(pid, 0x0001)  # PROCESS_TERMINATE
-        if not handle:
-            raise RuntimeError('cannot open the server process (WinError %d)' % ctypes.GetLastError())
-        try:
-            if not ctypes.windll.kernel32.TerminateProcess(ctypes.c_void_p(handle), 1):
-                raise RuntimeError('TerminateProcess failed (WinError %d)' % ctypes.GetLastError())
-        finally:
-            ctypes.windll.kernel32.CloseHandle(ctypes.c_void_p(handle))
+    def terminate(self, pid, expect=None):
+        """End one process. With expect (process_safety.Expect) it is checked first, on the
+        handle that then ends it, and an unverified process is left running (Unverified)."""
+        process_safety.end(pid, expect, tree=False)
 
-    def kill_tree(self, pid):
-        """End a process and everything it started (a stream save helper, a shell() child)."""
-        if os.name != 'nt':
-            os.kill(pid, 9)
-            return
-        code, out = self.run(['taskkill', '/F', '/T', '/PID', str(pid)], timeout=60)
-        if code != 0 and self.alive(pid):
-            self.terminate(pid)
+    def kill_tree(self, pid, expect=None):
+        """End a process and everything it started (a stream save helper, a shell() child), after
+        checking it against expect. Never taskkill: it goes through the same tools WMI breaks."""
+        process_safety.end(pid, expect, tree=os.name == 'nt')
 
     def resume(self, pid):
         if os.name != 'nt':
@@ -750,6 +763,7 @@ class Host:
         self.killed_file.unlink(missing_ok=True)  # left by a worker that never finished
         try:
             self.precheck(action)
+            self.before_action_accepted(action)
         except BaseException:
             self.lock.unlink()
             raise
@@ -759,9 +773,18 @@ class Host:
                               '--worker', action, operation])
         return {'accepted': True, 'action': action, 'operation': operation}
 
+    def before_action_accepted(self, action):
+        """Hook called with the action lock held, before replacing the previous state."""
+
+    def action_succeeded(self, action):
+        """Hook called with the action lock held after a worker succeeds."""
+
+    def action_failed(self, action):
+        """Hook called with the action lock held after a worker fails."""
+
     def precheck(self, action):
         listening = self.platform.listening(self.config['port'])
-        if action == 'start':
+        if action in ('start', 'start-current'):
             if listening:
                 raise Refused('the server is already running')
             self.recover_interrupted_save()
@@ -939,9 +962,51 @@ class Host:
                 self.log({'stale_lock_removed': self.read_state().get('action')})
         except OSError:
             pass
-        accepted = self.request('start')
+        accepted = self.request(self.automatic_start_action())
         self.cold_file.unlink(missing_ok=True)
         return dict(accepted, cold_start=True, reason=reason)
+
+    def automatic_start_action(self):
+        """Action used for automatic recovery; manual start remains separate."""
+        return 'start'
+
+    # Val (2026-11-22): a traveller bound for a land that is not running starts it, as one
+    # bound for a sleeping land wakes it, unless it is already being prepared or was kept
+    # down on purpose. The doorman asks these; only a region of this host may ask (loopback).
+    TRAVEL_START_ACTIONS = ('start', 'start-current')
+
+    def starting(self):
+        """True while a start action holds the action lock: the world is being prepared."""
+        return self.lock.exists() and self.read_state().get('action') in self.TRAVEL_START_ACTIONS
+
+    def keep_down(self):
+        """True when a person kept this world down on purpose, so a traveller never starts it."""
+        return bool(self.config.get('keep_down'))
+
+    def travel_start_refusal(self):
+        """Why a traveller must not start this stopped world, or None. Cheap: no save check,
+        no BYOND sign-in check (the start action itself checks those)."""
+        if self.keep_down():
+            return 'kept down'
+        if (self.read_json(self.watchdog_file) or {}).get('gave_up'):
+            return 'crashed too often; a person must start it'
+        if self.lock.exists() and not self.starting():
+            return 'busy: %s' % (self.read_state().get('action') or 'another action')
+        return None
+
+    def start_for_travel(self, reason):
+        """Start a stopped world for a traveller through the ordinary automatic start (the
+        region's build is brought current first, one compile at a time on the host). Returns
+        the accepted action, or {'already_starting': True} when one is running already."""
+        if self.starting():
+            return {'already_starting': True, 'reason': reason}
+        refusal = self.travel_start_refusal()
+        if refusal:
+            raise Refused(refusal)
+        if self.platform.listening(self.config['port']) or self.frozen() or self.cold():
+            raise Refused('the server is not stopped')
+        accepted = self.request(self.automatic_start_action())
+        return dict(accepted, travel_start=True, reason=reason)
 
     def write_json(self, path, value):
         self.state_dir.mkdir(parents=True, exist_ok=True)
@@ -987,7 +1052,10 @@ class Host:
             raise Refused('only a server that saved before freezing can be stopped while asleep')
         if self.lock.exists():
             raise Refused('another action is still running: %s' % self.read_state().get('action'))
-        self.platform.terminate(state['pid'])
+        try:
+            self.platform.terminate(state['pid'], expect=self.world_expect(born_before=state.get('frozen_at')))
+        except Unverified as error:
+            raise Refused('the frozen world was not stopped: %s' % error)
         self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state['pid'],
                                          'detected_at': int(self.platform.now()), 'evicted': reason})
         self.freeze_file.unlink(missing_ok=True)
@@ -1024,7 +1092,13 @@ class Host:
             result['was_asleep_on_save' if was_cold else 'already_stopped'] = True
             return result
         self.note_kill_during_action(reason)
-        self.platform.kill_tree(pid)
+        try:
+            self.platform.kill_tree(pid, expect=self.world_expect())
+        except Unverified as error:
+            # Fail closed: never end a process that is not shown to be this world's DreamDaemon.
+            self.killed_file.unlink(missing_ok=True)
+            raise Refused('nothing was ended on port %d: %s. If that is a hung world, end it by hand '
+                          '(Task Manager, Details) and try again' % (self.config['port'], error))
         released = self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
@@ -1033,6 +1107,10 @@ class Host:
         if not self.lock.exists():
             self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
         return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
+
+    def world_expect(self, born_before=None):
+        """What a process must be before this host ends it as its world."""
+        return process_safety.world_expect(self.config, born_before)
 
     def note_kill_during_action(self, reason):
         """Tell the action holding the lock, if any, that a forced stop ended its world."""
@@ -1048,7 +1126,10 @@ class Host:
     def end_after_forced_stop(self):
         pid = self.platform.server_pid(self.config['port'])
         if pid:
-            self.platform.kill_tree(pid)
+            try:
+                self.platform.kill_tree(pid, expect=self.world_expect())
+            except Unverified as error:
+                self.log({'forced_stop_refused': str(error)[:300]})
             self.release_save_locks(pid)
         self.freeze_file.unlink(missing_ok=True)
         self.cold_file.unlink(missing_ok=True)
@@ -1222,10 +1303,17 @@ class Host:
         if self.update_pending() and not self.update_when_empty():
             # Empty and saved: the moment to swap in a staged build without kicking anyone.
             try:
-                self.log(dict(self.request('restart'), reason='installing the staged build while the world is empty'))
+                action = self.idle_update_action()
+                if action:
+                    self.log(dict(self.request(action), reason='installing the staged build while the world is empty'))
+                    return None, 30
             except Refused as refusal:
                 self.log({'staged_install_refused': str(refusal)})
-            return None, 30
+                return None, 30
+        if not self.may_sleep():
+            # Stays awake (the mainland, a gateway, the tutorial): an idle update above still
+            # goes in, but the world is never frozen.
+            return idle_since, 30
         try:
             self.log(self.freeze())
             # Only a world with a save can start again from it; one never played stays frozen.
@@ -1327,7 +1415,7 @@ class Host:
             self.log({'watchdog': kind, 'detail': detail, 'cold': 'low memory: %d MB free' % free})
             return 30
         try:
-            accepted = self.request('start')
+            accepted = self.request(self.automatic_start_action())
         except SignedOut as refusal:
             # The pager is starting or signing in (after a reboot it often comes up after this
             # service): keep the world due and try again soon, without a new crash grace.
@@ -1521,6 +1609,10 @@ class Host:
     def update_while_empty(self):
         return None
 
+    def may_sleep(self):
+        """Whether an empty world may freeze (RegionHost: never the gateway)."""
+        return True
+
     def update_unsaved_while_empty(self):
         return None
 
@@ -1559,6 +1651,9 @@ class Host:
             return False
         return True
 
+    def idle_update_action(self):
+        return 'restart'
+
     def watch(self):
         idle_since = None
         while True:
@@ -1583,8 +1678,10 @@ class Host:
             # A server only ever runs a build of the latest pull (Val, 2026-11-05):
             # start and restart pull and recompile first unless the last build is
             # already of the fetched revision.
-            steps = {'start': [self.do_refresh, self.do_start], 'stop': [self.do_stop], 'update': [self.do_update],
-                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover]}.get(action) \
+            steps = {'start': [self.do_refresh, self.do_start], 'start-current': [self.do_start_current],
+                     'stop': [self.do_stop], 'update': [self.do_update],
+                     'restart': [self.do_stop, self.do_refresh, self.do_start], 'handover': [self.do_handover],
+                     'auto-handover': [self.do_auto_handover]}.get(action) \
                 or self.extra_steps(action)
             for step in steps:
                 if self.killed_during(operation):
@@ -1596,6 +1693,7 @@ class Host:
                 self.end_after_forced_stop()
                 raise RuntimeError('the world it started was stopped again')
             self.record(phase='done', error=None)
+            self.action_succeeded(action)
         except Exception as error:  # the state file is the only place a detached worker can report
             reason = self.killed_during(operation)
             if reason:
@@ -1605,16 +1703,26 @@ class Host:
                             error='%s during %s: %s' % (reason, action, str(error)[:300]))
             else:
                 self.record(phase='failed', error=str(error)[:500])
+                self.action_failed(action)
         finally:
             self.killed_file.unlink(missing_ok=True)
             self.lock.unlink(missing_ok=True)
+
+    def do_start_current(self, operation):
+        raise RuntimeError('starting an existing build requires a region host')
+
+    def do_auto_handover(self, operation):
+        raise RuntimeError('automatic handover requires a region host')
+
+    def startup_revision(self):
+        code, out = self.platform.run([self.config['git'], 'rev-parse', 'HEAD'], cwd=self.repo, timeout=60)
+        return out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
 
     def do_start(self, operation):
         self.record(phase='checking save')
         self.recover_interrupted_save()
         generation = check_save(self.repo / 'map_saves')
-        code, out = self.platform.run([self.config['git'], 'rev-parse', 'HEAD'], cwd=self.repo, timeout=60)
-        revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
+        revision = self.startup_revision()
         if not HEX40.match(revision):
             raise RuntimeError('could not read the git revision')
         (self.repo / 'config' / 'lifecycle-revision.txt').write_text(revision + '\n', encoding='utf-8')
@@ -1661,7 +1769,7 @@ class Host:
             if not pid:
                 raise RuntimeError('the world answers but its process was not found')
             self.running_file.unlink(missing_ok=True)  # it is going down on purpose
-            self.platform.kill_tree(pid)
+            self.platform.kill_tree(pid, expect=self.world_expect())
             self.release_save_locks(pid)
             self.record(phase='stopped', saved=False)
             return
@@ -1707,7 +1815,8 @@ class Host:
         before the save, or None when it could not be found (then the port alone decides,
         closed on several polls in a row). True when the process is known to have ended."""
         port = self.config['port']
-        deadline = self.platform.now() + self.config['save_timeout_seconds']
+        listened_by = self.platform.now()  # pid listened before this call, so it is older than now
+        deadline = listened_by + self.config['save_timeout_seconds']
         closed_since = None
         misses = 0
         while True:
@@ -1725,7 +1834,7 @@ class Host:
                 closed_since = now if closed_since is None else closed_since
                 self.record(phase='waiting for the server to exit')
                 if now - closed_since >= STOP_LINGER_SECONDS:
-                    self.platform.kill_tree(pid)
+                    self.platform.kill_tree(pid, expect=self.world_expect(born_before=listened_by))
                     self.log({'stop': 'the world closed its port after saving but did not exit; ended it', 'pid': pid})
                     self.release_save_locks(pid)
                     return not self.platform.alive(pid)
@@ -1752,6 +1861,8 @@ class Host:
         if code != 0 or '0 errors' not in out:
             raise RuntimeError('compile failed: ' + out.strip()[-300:])
         code, out = self.platform.run([git, 'rev-parse', 'HEAD'], cwd=repo, timeout=60)
+        if code != 0:
+            raise RuntimeError('git rev-parse failed after the compile: ' + out.strip()[-200:])
         revision = out.strip()[-40:]
         self.record_build(revision)
         self.record(phase='compiled', revision=revision)

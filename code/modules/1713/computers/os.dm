@@ -24,38 +24,46 @@
 			</body>
 			</html>
 			"}
-	show_browse(usr, os,"window=opsys;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+	show_browse(user, os,"window=opsys;border=1;can_close=1;can_resize=0;can_minimize=0;titlebar=1;size=800x600")
+// An OS window selects one operator and at most one installed program.
+/obj/structure/computer/var/tmp/datum/program/active_console_program
+/obj/structure/computer/var/tmp/console_session_generation = 0
+
+/obj/structure/computer/proc/console_operator_ready(mob/living/human/H)
+	if (!istype(H) || QDELETED(H) || QDELETED(src) || !active || H.stat || H.lying || H.restrained() || !H.can_use_hands())
+		return FALSE
+	if (H.z != z || get_dist(src, H) > 1)
+		return FALSE
+	// Registered agent characters use the existing server-owned browser bridge.
+	if (!(H.client?.mob == H) && !agent_character_for(H))
+		return FALSE
+	return !powerneeded || draw_cable_power()
+
 /obj/structure/computer/interact(var/mob/m)
-	if (user && user != m && user.client && get_dist(src, user) <= 1)
+	if (!console_operator_ready(m))
 		return
-	
+	// A fresh physical interaction can take over a console whose browser closed.
 	user = m
+	active_console_program = null
+	console_session_generation++
+	boot(operatingsystem)
 	do_html(user)
 
 /obj/structure/computer/Topic(href, href_list, hsrc)
-
-	var/mob/living/human/user = usr
-
-	if (!user || user.lying || !ishuman(user))
+	var/mob/living/human/H = usr
+	if (H != user || !console_operator_ready(H))
 		return
-
-	user.face_atom(src)
-
-	if (get_dist(src, user) > 1)
-		to_chat(user, "<span class = 'danger'>Get next to \the [src] to use it.</span>")
-		return FALSE
-
-	if (!user.can_use_hands())
-		to_chat(user, "<span class = 'danger'>You have no hands to use this with.</span>")
-		return FALSE
+	H.face_atom(src)
 	var/datum/program/loadedprogram
 	if (href_list["program"])
 		var/keyn = text2num(href_list["program"])
-		if (keyn && keyn >= 1 && keyn <= programs.len && programs[keyn] && istype(programs[keyn], /datum/program))
+		if (isnum(keyn) && keyn == round(keyn) && keyn >= 1 && keyn <= programs.len && programs[keyn] && istype(programs[keyn], /datum/program))
 			loadedprogram = programs[keyn]
+			active_console_program = loadedprogram
+			console_session_generation++
 			loadedprogram.origin = src
-			loadedprogram.user = user
-			loadedprogram.do_html(user)
+			loadedprogram.user = H
+			loadedprogram.do_html(H)
 			return
 
 	var/action = href_list["action"]
@@ -74,7 +82,8 @@
 		display+=href_list["value"]
 
 	sleep(0.5)
-	do_html(user)
+	if (H == user && console_operator_ready(H))
+		do_html(H)
 
 /obj/structure/computer/proc/boot(operatingsystem = "none")
 	if (operatingsystem == "unga OS 94" || operatingsystem == "unga OS 94 Law Enforcement Edition")

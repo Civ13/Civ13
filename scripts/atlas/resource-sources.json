@@ -113,7 +113,8 @@
     "code/modules/reagents/reagent_containers/spray.dm",
     "code/modules/reagents/reagent_containers/syringe.dm",
     "code/modules/1713/stone_crushing.dm",
-    "code/modules/1713/tatara.dm"
+    "code/modules/1713/tatara.dm",
+    "code/modules/1713/particle_board.dm"
   ],
   "plant_harvest_mappings": [
     {
@@ -142,6 +143,21 @@
         "max_water": "55"
       },
       "output": "/obj/item/stack/material/tobacco_green",
+      "status": "static declared harvest; inherited overrides and map reachability not executed"
+    },
+    {
+      "source": "/obj/structure/farming/plant/cannabis",
+      "file": "code/game/objects/farming.dm",
+      "line": 487,
+      "properties": {
+        "name": "\"cannabis plant\"",
+        "plant": "\"cannabis\"",
+        "stack": "\"material/cannabis_fresh\"",
+        "biomes": "list(\"temperate\", \"sea\", \"semiarid\", \"savanna\")",
+        "seasons": "list(\"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\", \"Dry Season\")",
+        "max_water": "60"
+      },
+      "output": "/obj/item/stack/material/cannabis_fresh",
       "status": "static declared harvest; inherited overrides and map reachability not executed"
     },
     {
@@ -12448,6 +12464,86 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Harvest khat",
+      "file": "code/modules/1713/drug_preparations.dm",
+      "line": 164,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/farming/seeds/khat"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/food/snacks/grown/khat",
+        "/obj/item/stack/farming/seeds/khat"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"semiarid\", \"savanna\"); seasons: inherited.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Lance poppies for opium",
+      "file": "code/modules/1713/drug_preparations.dm",
+      "line": 228,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/structure/farming/plant/poppy"
+      ],
+      "outputs": [
+        "/obj/item/weapon/reagent_containers/pill/opium"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Grow an opium poppy until it is ready to harvest.",
+        "On help intent, score the green pods with a knife.",
+        "Wait about five minutes for the latex to dry, then pick it off by hand as raw opium. Each poppy takes three lancings and can still be harvested afterwards."
+      ],
+      "conditions": "Ready poppy required; well-fed plants give two balls per lancing.",
+      "map_notes": "Availability follows the opium poppy crop.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Harvest cannabis",
+      "file": "code/game/objects/farming.dm",
+      "line": 487,
+      "source_commit": "d3b3ab657d6bd34e50ca61d1084b44ca077300e1",
+      "inputs": [
+        "/obj/item/stack/farming/seeds/cannabis"
+      ],
+      "outputs": [
+        "/obj/item/stack/material/cannabis_fresh",
+        "/obj/item/stack/farming/seeds/cannabis"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/hatchet",
+        "/obj/item/weapon/attachment/bayonet",
+        "/obj/item/weapon/material/kitchen/utensil/knife",
+        "/obj/item/weapon/material/scythe"
+      ],
+      "steps": [
+        "Use one seed portion on an empty ploughed plot. Herbs are planted using an herb portion.",
+        "Water and feed the crop, then wait until it is ready.",
+        "Use a hatchet, knife, bayonet or scythe on the ready crop. Collect its produce and, except for herbs, two returned seeds."
+      ],
+      "conditions": "Live harvest stage required. Crop is removed on harvest; yield varies with nutrition. Dead crops produce nothing.",
+      "map_notes": "Seed/crop placement is not guaranteed. Outdoor growth uses the climate and season rules of the selected map. Declared crop biomes: list(\"temperate\", \"sea\", \"semiarid\", \"savanna\"); seasons: list(\"SUMMER\", \"SPRING\", \"FALL\", \"Wet Season\", \"Dry Season\").",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Harvest hemp",
       "file": "code/game/objects/farming.dm",
       "line": 429,
@@ -16713,6 +16809,533 @@
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
     },
     {
+      "name": "Tap a pine for resin",
+      "file": "code/modules/1713/resin.dm",
+      "line": 119,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [],
+      "outputs": [
+        "resin"
+      ],
+      "tools": [
+        "/obj/structure/wild/tree/live_tree/pine",
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Hold a knife in one hand and use an open container on a living pine.",
+        "The container catches 10 units of resin. The pine weeps again after 20 minutes."
+      ],
+      "conditions": "Any living pine on any land.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cook resin into lumps",
+      "file": "code/modules/1713/resin.dm",
+      "line": 151,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "resin"
+      ],
+      "outputs": [
+        "/material/resin",
+        "turpentine"
+      ],
+      "tools": [
+        "/obj/structure/brazier"
+      ],
+      "steps": [
+        "In help intent, use a container holding at least 10 units of resin on a lit brazier, hearth or stove.",
+        "The resin sets into one resin lump and leaves 2 units of turpentine in the container."
+      ],
+      "conditions": "Needs a lit fire and 10 resin per lump.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Pick mulberry leaves",
+      "file": "code/modules/1713/silk.dm",
+      "line": 55,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [],
+      "outputs": [
+        "/obj/item/stack/material/leaf/mulberry",
+        "/obj/item/silkworm_eggs"
+      ],
+      "tools": [
+        "/obj/structure/wild/tree/live_tree"
+      ],
+      "steps": [
+        "In grab intent, use an empty hand on a living broadleaf tree where mulberries grow.",
+        "You pick 2 mulberry leaves; about one picking in four also finds a clutch of silkworm eggs."
+      ],
+      "conditions": "Mulberries grow in Asia on the continents; lands that are not continents keep theirs.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Raise silkworms",
+      "file": "code/modules/1713/silk.dm",
+      "line": 257,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "/obj/item/silkworm_eggs",
+        "/obj/item/stack/material/leaf/mulberry"
+      ],
+      "outputs": [
+        "/obj/item/stack/silk_cocoons"
+      ],
+      "tools": [
+        "/obj/structure/silkworm_tray"
+      ],
+      "steps": [
+        "Put a clutch of silkworm eggs and 6 mulberry leaves in a silkworm tray.",
+        "After 10 minutes the tray gives 6 silk cocoons and keeps the eggs for the next batch."
+      ],
+      "conditions": "Needs a silkworm tray, eggs and 6 mulberry leaves per batch.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Reel silk cocoons",
+      "file": "code/modules/1713/silk.dm",
+      "line": 51,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "/obj/item/stack/silk_cocoons",
+        "water"
+      ],
+      "outputs": [
+        "/obj/item/stack/silk_thread"
+      ],
+      "tools": [],
+      "steps": [
+        "Heat an open container holding at least 10 units of water over a fire in grab intent.",
+        "Use the hot container on silk cocoons to reel up to 5 of them into silk thread."
+      ],
+      "conditions": "Needs hot water.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Weave silk cloth",
+      "file": "code/modules/1713/production.dm",
+      "line": 335,
+      "source_commit": "7e961ccc714eb571892d686b0b2e163026ab054f",
+      "inputs": [
+        "/obj/item/stack/silk_thread"
+      ],
+      "outputs": [
+        "/material/silk"
+      ],
+      "tools": [
+        "/obj/structure/loom"
+      ],
+      "steps": [
+        "Use silk thread on an anchored loom.",
+        "Each silk thread weaves into one silk cloth."
+      ],
+      "conditions": "Needs an anchored loom.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Tar cloth into canvas",
+      "file": "code/modules/1713/treated_cloth.dm",
+      "line": 167,
+      "source_commit": "208295e9adc66151c81528736434c5a350f097f7",
+      "inputs": [
+        "/material/cloth",
+        "pitch"
+      ],
+      "outputs": [
+        "/material/tarred_canvas"
+      ],
+      "tools": [],
+      "steps": [
+        "Outside harm intent, use an open container holding pitch on plain cloth.",
+        "Each sheet soaks up 5 units of pitch, up to five sheets at a time."
+      ],
+      "conditions": "Needs 5 pitch per sheet.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Oil cloth into oilcloth",
+      "file": "code/modules/1713/treated_cloth.dm",
+      "line": 167,
+      "source_commit": "208295e9adc66151c81528736434c5a350f097f7",
+      "inputs": [
+        "/material/cloth",
+        "linseed_oil"
+      ],
+      "outputs": [
+        "/material/oilcloth"
+      ],
+      "tools": [],
+      "steps": [
+        "Outside harm intent, use an open container holding linseed, olive, sunflower or corn oil on plain cloth.",
+        "Each sheet soaks up 5 units of oil, up to five sheets at a time."
+      ],
+      "conditions": "Needs 5 oil per sheet.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Rubberise cloth with latex",
+      "file": "code/modules/1713/treated_cloth.dm",
+      "line": 272,
+      "source_commit": "c714c60456ec18db9a99bcf04f1a3cda1e3dfa9f",
+      "inputs": [
+        "/material/cloth",
+        "latex",
+        "/obj/item/stack/ore/sulphur"
+      ],
+      "outputs": [
+        "/material/rubberised_cloth"
+      ],
+      "tools": [],
+      "steps": [
+        "Outside harm intent, hold sulphur in your other hand and use an open container holding latex on plain cloth.",
+        "Each sheet soaks up 5 units of latex, up to five sheets at a time, and the batch uses one sulphur."
+      ],
+      "conditions": "Needs 5 latex per sheet and one sulphur per batch.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Wax cloth with beeswax",
+      "file": "code/modules/1713/treated_cloth.dm",
+      "line": 199,
+      "source_commit": "208295e9adc66151c81528736434c5a350f097f7",
+      "inputs": [
+        "/material/cloth",
+        "/obj/item/weapon/beeswax"
+      ],
+      "outputs": [
+        "/material/waxed_cloth"
+      ],
+      "tools": [],
+      "steps": [
+        "Outside harm intent, use a cake of beeswax on plain cloth, or the cloth on the cake.",
+        "The cake waxes up to three sheets and is used up."
+      ],
+      "conditions": "Needs one cake of beeswax per three sheets.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cook phenolic resin in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 84,
+      "source_commit": "2f00b7dc33ff312a21fa4f011c9b6209496af83e",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "phenolic_resin"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "Set a powered bakelizer to phenolic resin with its Change Setting verb and fill it with petroleum.",
+        "Every 5 petroleum makes 10 units of phenolic resin; use an empty container on the bakelizer to draw it off."
+      ],
+      "conditions": "Needs a powered bakelizer.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press resin laminate",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 208,
+      "source_commit": "2f00b7dc33ff312a21fa4f011c9b6209496af83e",
+      "inputs": [
+        "/material/cloth",
+        "phenolic_resin"
+      ],
+      "outputs": [
+        "/material/resin_laminate"
+      ],
+      "tools": [
+        "/obj/structure/hot_press"
+      ],
+      "steps": [
+        "Pour 10 units of phenolic resin (or pine resin) into a hot press.",
+        "Use 4 sheets of cloth on it for 2 sheets of laminate, or 4 silk for 3; pine resin gives half."
+      ],
+      "conditions": "Needs a hot press, 10 resin and 4 cloth or silk.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Sweep sawdust from a saw mill",
+      "file": "code/modules/1713/particle_board.dm",
+      "line": 120,
+      "source_commit": "3ef6b184fe9f5d3fb7abc1f679ee5af5b8d5102a",
+      "inputs": [
+        "/material/wood"
+      ],
+      "outputs": [
+        "/obj/item/stack/sawdust"
+      ],
+      "tools": [
+        "/obj/structure/sawmill/large",
+        "/obj/structure/sawmill/powered"
+      ],
+      "steps": [
+        "Cut logs into planks on a large or powered saw mill.",
+        "One pile of sawdust is left beside the mill for every two logs cut."
+      ],
+      "conditions": "Needs a large or powered saw mill; the primitive mill leaves none.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Press particle board",
+      "file": "code/modules/1713/particle_board.dm",
+      "line": 226,
+      "source_commit": "3ef6b184fe9f5d3fb7abc1f679ee5af5b8d5102a",
+      "inputs": [
+        "/obj/item/stack/sawdust",
+        "phenolic_resin"
+      ],
+      "outputs": [
+        "/material/particle_board"
+      ],
+      "tools": [
+        "/obj/structure/hot_press"
+      ],
+      "steps": [
+        "Pour 10 units of phenolic resin (or pine resin) into a hot press.",
+        "Use 4 piles of sawdust on it for 3 sheets of particle board; pine resin gives 2."
+      ],
+      "conditions": "Needs a hot press, 10 resin and 4 piles of sawdust.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Spin nylon thread in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 97,
+      "source_commit": "386ee2eb20fd130d8661adc5fab2862f853328fa",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "/obj/item/stack/nylon_thread"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "From WW2, set a powered bakelizer to nylon thread with its Change Setting verb and fill it with petroleum.",
+        "Every 5 petroleum spins 2 skeins; take them out with the Remove verb."
+      ],
+      "conditions": "Needs a powered bakelizer in WW2 or later.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Weave nylon cloth",
+      "file": "code/modules/1713/production.dm",
+      "line": 338,
+      "source_commit": "386ee2eb20fd130d8661adc5fab2862f853328fa",
+      "inputs": [
+        "/obj/item/stack/nylon_thread"
+      ],
+      "outputs": [
+        "/material/nylon"
+      ],
+      "tools": [
+        "/obj/structure/loom"
+      ],
+      "steps": [
+        "Use nylon thread on an anchored loom.",
+        "Each skein weaves into one nylon cloth."
+      ],
+      "conditions": "Needs an anchored loom.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Cook epoxy in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 99,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "epoxy"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "From the Cold War, set a powered bakelizer to epoxy and fill it with petroleum.",
+        "Every 5 petroleum makes 10 units of epoxy; draw it off with an empty container."
+      ],
+      "conditions": "Needs a powered bakelizer in the Cold War or later.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Weave glass cloth",
+      "file": "code/modules/1713/production.dm",
+      "line": 341,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "/material/glass"
+      ],
+      "outputs": [
+        "/material/glass_cloth"
+      ],
+      "tools": [
+        "/obj/structure/loom"
+      ],
+      "steps": [
+        "Use glass sheets on an anchored loom.",
+        "Each glass sheet weaves into one glass cloth."
+      ],
+      "conditions": "Needs an anchored loom.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Lay up fiberglass",
+      "file": "code/modules/1713/fiberglass.dm",
+      "line": 188,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "/material/glass_cloth",
+        "epoxy"
+      ],
+      "outputs": [
+        "/material/fiberglass"
+      ],
+      "tools": [
+        "/obj/structure/layup_table"
+      ],
+      "steps": [
+        "Pour 10 units of epoxy into a layup table.",
+        "Use 3 glass cloth on it for 2 sheets of fiberglass."
+      ],
+      "conditions": "Needs a layup table and 10 epoxy.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Bond aramid laminate",
+      "file": "code/modules/1713/fiberglass.dm",
+      "line": 188,
+      "source_commit": "46bae918a40efebaf96349c7a7b29e7c0717b7ff",
+      "inputs": [
+        "/material/kevlar",
+        "epoxy"
+      ],
+      "outputs": [
+        "/material/aramid_laminate"
+      ],
+      "tools": [
+        "/obj/structure/layup_table"
+      ],
+      "steps": [
+        "Pour 10 units of epoxy into a layup table.",
+        "Use 3 Kevlar sheets on it for 2 sheets of aramid laminate."
+      ],
+      "conditions": "Needs a layup table and 10 epoxy.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Fill photopolymer bottles in a bakelizer",
+      "file": "code/modules/1713/resin_laminate.dm",
+      "line": 101,
+      "source_commit": "96364203cee2bef286a9fbec6555f710f30beb91",
+      "inputs": [
+        "petroleum"
+      ],
+      "outputs": [
+        "/obj/item/stack/photopolymer"
+      ],
+      "tools": [
+        "/obj/structure/bakelizer"
+      ],
+      "steps": [
+        "In the Digital Age, set a powered bakelizer to photopolymer resin and fill it with petroleum.",
+        "Every 5 petroleum fills 2 bottles; take them out with the Remove verb and load them into a resin 3D printer."
+      ],
+      "conditions": "Needs a powered bakelizer in the Digital Age.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Tap lacquer trees",
+      "file": "code/modules/1713/lacquer.dm",
+      "line": 82,
+      "source_commit": "bb8b197492378589907523daf8babe8d9f3c4fbd",
+      "inputs": [],
+      "outputs": [
+        "lacquer"
+      ],
+      "tools": [
+        "/obj/item/weapon/material/kitchen/utensil/knife"
+      ],
+      "steps": [
+        "Outside harm intent, use an open container on a living broadleaf tree in Earth Asia or on a land that is not a continent, with a knife in the other hand.",
+        "The container catches 5 units of lacquer; the tree bleeds again after about 20 minutes."
+      ],
+      "conditions": "Needs a knife and room for 5 units.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Mix spirit varnish",
+      "file": "code/modules/1713/lacquer.dm",
+      "line": 57,
+      "source_commit": "bb8b197492378589907523daf8babe8d9f3c4fbd",
+      "inputs": [
+        "resin",
+        "ethanol"
+      ],
+      "outputs": [
+        "spirit_varnish"
+      ],
+      "tools": [],
+      "steps": [
+        "Mix resin with distilled ethanol in any container.",
+        "2 resin and 1 ethanol make 3 spirit varnish."
+      ],
+      "conditions": "Needs liquid resin and ethanol.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
       "name": "Dry tobacco leaves",
       "file": "code/modules/materials/material_sheets.dm",
       "line": 547,
@@ -16728,6 +17351,29 @@
       ],
       "steps": [
         "Harvest fresh tobacco leaves from a tobacco plant.",
+        "Hang them on a drying rack and wait for them to dry."
+      ],
+      "conditions": "Drying takes time and the rack holds a limited number of items.",
+      "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
+      "era": "No additional era restriction established by this procedure.",
+      "status": "source-reviewed conditional route; gameplay/map reachability unverified"
+    },
+    {
+      "name": "Dry cannabis tops",
+      "file": "code/modules/materials/material_sheets.dm",
+      "line": 481,
+      "source_commit": "0301cd5f7ad8b348116d05771f1fbba8bce9f27e",
+      "inputs": [
+        "/obj/item/stack/material/cannabis_fresh"
+      ],
+      "outputs": [
+        "/material/cannabis"
+      ],
+      "tools": [
+        "drying rack"
+      ],
+      "steps": [
+        "Harvest fresh cannabis tops from a cannabis plant.",
         "Hang them on a drying rack and wait for them to dry."
       ],
       "conditions": "Drying takes time and the rack holds a limited number of items.",

@@ -162,7 +162,8 @@
 
 /obj/structure/hull_tiller/proc/voyage_menu(mob/living/human/H)
 	// Known lands across the sea (sea_lanes.dm) need no chart and one sailor.
-	var/list/known = sea_lane_destinations()
+	// Over the map edges the continents are reached by sailing off them (ship_edge_crossing.dm).
+	var/list/known = sea_edge_travel_on() ? list() : sea_lane_destinations()
 	var/reason = voyage_refusal(H, length(known) ? 1 : VOYAGE_MIN_CREW)
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
@@ -276,6 +277,7 @@
 	voyage_sea_show() // Her crew see the sea go by (voyage_sea.dm).
 	addtimer(CALLBACK(src, PROC_REF(voyage_tick), voyage), VOYAGE_TICK)
 	player_activity.voyage(H, kind)
+	accolade_meet_mob(H, "sailor")
 	return TRUE
 
 /proc/voyage_course_body(x, y, owner, by, id)
@@ -450,7 +452,7 @@
 	var/list/peer = shard_group.peers[id]
 	var/overdue = world.time > mine["ends"] + VOYAGE_WAIT_MAX
 	var/problem = null
-	if (!peer || peer["state"] == "STOPPED" || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
+	if (!peer || shard_group.peer_closed(id) || !(peer["state"] == "UP" || shard_group.peer_wakeable(id)))
 		problem = "The coast is not yet in sight."
 	else
 		voyage_eat(mine) // what she ate at sea stays behind

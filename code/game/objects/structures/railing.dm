@@ -60,7 +60,7 @@
 	. = ..()
 	if (health < maxhealth)
 		switch(health / maxhealth)
-			if (0.0 to 0.5)
+			if (0.0 to 0.25)
 				to_chat(user, "<span class='warning'>It looks severely damaged!</span>")
 			if (0.25 to 0.5)
 				to_chat(user, "<span class='warning'>It looks damaged!</span>")
@@ -72,13 +72,13 @@
 	if (health <= 0)
 		visible_message("<span class='warning'>\The [src] breaks down!</span>")
 		playsound(loc, 'sound/effects/grillehit.ogg', 50, TRUE)
-		qdel(src)
-		if (map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13) //disabled due to abuse in gulag rounds
+		var/turf/T = get_turf(src)
+		if (T && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13) //disabled due to abuse in gulag rounds
 			if (flammable == TRUE)
-				new /obj/item/stack/material/wood(get_turf(usr))
+				new /obj/item/stack/material/wood(T)
 			else
-				new /obj/item/stack/rods(get_turf(usr))
-			qdel(src)
+				new /obj/item/stack/rods(T)
+		qdel(src)
 
 /obj/structure/railing/proc/NeighborsCheck(var/UpdateNeighbors = TRUE)
 	check = FALSE
@@ -185,11 +185,11 @@
 				return
 			user.visible_message("<span class='notice'>\The [user] dismantles \the [src].</span>", "<span class='notice'>You dismantle \the [src].</span>")
 			if (flammable == TRUE)
-				new /obj/item/stack/material/wood(get_turf(usr))
-				new /obj/item/stack/material/wood(get_turf(usr))
+				new /obj/item/stack/material/wood(get_turf(src))
+				new /obj/item/stack/material/wood(get_turf(src))
 			else
-				new /obj/item/stack/rods(get_turf(usr))
-				new /obj/item/stack/rods(get_turf(usr))
+				new /obj/item/stack/rods(get_turf(src))
+				new /obj/item/stack/rods(get_turf(src))
 			qdel(src)
 			return
 

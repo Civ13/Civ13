@@ -1,0 +1,187 @@
+"""Language drift: pacing numbers and the source boundaries that keep drift
+cheap, saved with the world and limited to heard speech. Offline only."""
+import re
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def read(path):
+    return (ROOT / path).read_text(encoding='utf-8', errors='replace')
+
+
+D = {k: float(v) for k, v in re.findall(r'#define (LANGUAGE_\w+) ([\d.]+)', read('code/__defines/species_languages.dm'))}
+DRIFT = read('code/game/mob/language/drift.dm')
+
+
+def proc(name):
+    body = DRIFT[DRIFT.index(name):]
+    nxt = re.search(r'\n(?=/|#|var/)', body[len(name):])
+    return body[:len(name) + nxt.start()] if nxt else body
+
+
+def step(use, contact):
+    if contact >= D['LANGUAGE_DRIFT_CONTACT_LINES']:
+        return -D['LANGUAGE_DRIFT_CONTACT_LOSS']
+    return D['LANGUAGE_DRIFT_GAIN'] if use >= D['LANGUAGE_DRIFT_MIN_LINES'] else 0
+
+
+class Pacing(unittest.TestCase):
+    def test_splits_are_rare_and_need_long_isolation(self):
+        ticks = D['LANGUAGE_SPLIT_DRIFT'] / D['LANGUAGE_DRIFT_GAIN']
+        hours = ticks * D['LANGUAGE_DRIFT_TICK'] / 36000
+        self.assertTrue(100 <= hours <= 200, hours)
+        self.assertGreaterEqual(D['LANGUAGE_SPLIT_HOLD'] / 1440, 7)
+
+    def test_a_listener_can_fill_a_tick_alone_but_not_flood_it(self):
+        per_tick = D['LANGUAGE_DRIFT_TICK'] / D['LANGUAGE_DRIFT_HEAR_COOLDOWN']
+        self.assertGreater(per_tick, D['LANGUAGE_DRIFT_MIN_LINES'])
+        self.assertLessEqual(per_tick, 100)
+
+    def test_any_real_contact_reverses_drift(self):
+        self.assertEqual(step(40, 0), D['LANGUAGE_DRIFT_GAIN'])
+        self.assertEqual(step(40, D['LANGUAGE_DRIFT_CONTACT_LINES'] - 1), D['LANGUAGE_DRIFT_GAIN'])
+        self.assertLess(step(80, D['LANGUAGE_DRIFT_CONTACT_LINES']), 0)
+        self.assertEqual(step(D['LANGUAGE_DRIFT_MIN_LINES'] - 1, 0), 0)
+        # One contact tick undoes many isolated ones.
+        self.assertGreaterEqual(D['LANGUAGE_DRIFT_CONTACT_LOSS'] / D['LANGUAGE_DRIFT_GAIN'], 10)
+        body = proc('/proc/language_drift_step(')
+        self.assertIn('contact >= LANGUAGE_DRIFT_CONTACT_LINES', body)
+        self.assertLess(body.index('LANGUAGE_DRIFT_CONTACT_LINES'), body.index('LANGUAGE_DRIFT_MIN_LINES'))
+
+    def test_split_needs_a_real_community(self):
+        self.assertGreaterEqual(D['LANGUAGE_SPLIT_MIN_NATIVES'], 3)
+        self.assertTrue(D['LANGUAGE_BROKEN'] < D['LANGUAGE_SPLIT_DRIFT'] < 100)
+
+
+class Boundaries(unittest.TestCase):
+    def test_only_heard_speech_feeds_drift_once_per_line(self):
+        hear = read('code/game/mob/hear_say.dm')
+        self.assertEqual(hear.count('language_drift_heard('), 1)
+        self.assertLess(hear.index('H.language_exposure(language, speaker)'), hear.index('H.language_drift_heard(language, speaker)'))
+
+    def test_heard_line_is_cheap_and_gated(self):
+        body = proc('/mob/living/human/proc/language_drift_heard(')
+        first = body.split('\n')[1]
+        self.assertIn('civilization == "none"', first)
+        self.assertIn('world.time < next_language_drift_heard', first)
+        self.assertIn('S.civilization != civilization', body)
+        self.assertIn('canonical_language(L) == native', body)
+        self.assertNotIn('for (', body)
+
+    def test_quiet_communities_do_not_change_and_lines_reset(self):
+        body = proc('/proc/language_drift_tick(')
+        self.assertIn('if (step < 0)\n\t\t\theld -= key', body)
+        self.assertIn('language_drift_use = list()', body)
+        self.assertIn('language_drift_contact = list()', body)
+
+    def test_drift_is_clamped_and_saved_in_the_world_field(self):
+        body = proc('/proc/set_language_drift(')
+        self.assertIn('clamp(', body)
+        self.assertIn('drift -= key', body)
+        table = proc('/proc/language_drift_table(')
+        self.assertIn('map.language_lineage_state', table)
+        self.assertIn('state["daughters"]', table)
+        contract = read('code/modules/persistence/durable_contract.dm')
+        self.assertIn('"language_lineage_state"', contract)
+        self.assertIn('if(version <= 5) schema -= "language_lineage_state"', contract)
+
+    def test_community_keys_round_trip_nation_names_with_bars(self):
+        self.assertIn('findlasttext(key, "|")', proc('/proc/language_community_parts('))
+
+    def test_admin_view_is_registered_and_guarded(self):
+        admin = read('code/modules/admin/verbs/origin_languages.dm')
+        body = admin[admin.index('/client/proc/cmd_admin_check_language_drift('):]
+        body = body[:body.index('\n/client/proc/', 10)]
+        self.assertIn('check_rights(R_ADMIN)', body)
+        self.assertIn('language_drift_report()', body)
+        self.assertIn('/client/proc/cmd_admin_check_language_drift,', read('code/modules/admin/admin_verbs.dm'))
+
+    def test_included_in_order(self):
+        dme = read('civ13.dme')
+        self.assertIn('#include "code\\game\\mob\\language\\drift.dm"\n#include "code\\game\\mob\\language\\earth.dm"', dme)
+
+
+DAUGHTER = read('code/game/mob/language/daughter.dm')
+
+
+class Daughters(unittest.TestCase):
+    def test_daughter_type_is_never_made_at_boot(self):
+        self.assertIn('typesof(/datum/language)-/datum/language-/datum/language/daughter', read('code/_helpers/global_lists.dm'))
+
+    def test_identity_checks_tell_daughters_apart_by_name(self):
+        lang = read('code/game/mob/language/language.dm')
+        self.assertIn('if (language_same(known, L))', lang)
+        self.assertIn('if (is_daughter_language(L))', lang)
+        self.assertNotIn('L.type in m_int', lang)
+        self.assertNotIn('R.type in m_int', lang)
+        hear = read('code/game/mob/hear_say.dm')
+        self.assertNotIn('mutual_intelligibility.Find(reference.type)', hear)
+        self.assertIn('language_kinship(L, reference)', hear)
+
+    def test_splits_follow_isolation_not_research(self):
+        self.assertIn('language_split_check()', proc('/proc/language_drift_tick('))
+        for path in ('code/modules/research_tree/book_research.dm', 'code/modules/research_tree/research_faction.dm'):
+            self.assertNotIn('language_split_check', read(path))
+            self.assertNotIn('language_era_advanced', read(path))
+        check = DAUGHTER[DAUGHTER.index('/proc/language_split_check()'):]
+        check = check[:check.index('\n/proc/')]
+        self.assertIn('language_real_minute() - held[key] < LANGUAGE_SPLIT_HOLD', check)
+        self.assertNotIn('ordinal_age', check)
+
+    def test_naming_is_verified_and_leader_only(self):
+        body = DAUGHTER[DAUGHTER.index('/mob/living/human/proc/name_our_language()'):]
+        body = body[:body.index('\n/proc/')]
+        self.assertIn('account_verified(nation_account())', body)
+        self.assertGreaterEqual(body.count('map.is_faction_leader(src, civilization)'), 2)
+
+    def test_cap_and_kinship_numbers(self):
+        self.assertTrue(1 <= D['LANGUAGE_DAUGHTERS_PER_ROOT'] <= 3)
+        self.assertTrue(D['LANGUAGE_DAUGHTER_KIN_MIN'] < D['LANGUAGE_DAUGHTER_KIN'] < 100)
+        self.assertIn('!record["imported"]', DAUGHTER)
+
+    def test_daughters_write_in_their_roots_script(self):
+        self.assertIn('language_same(language_root(known), L)', read('code/modules/paperwork/written_languages.dm'))
+
+    def test_travel_carries_daughter_records(self):
+        tongues = read('code/modules/persistence/region_travel_tongues.dm')
+        self.assertIn('"native", "daughters"', tongues)
+        self.assertIn('region_travel_import_daughters(T["daughters"])', tongues)
+
+    def test_native_probe_is_kept(self):
+        probe = read('tests/language_drift/probe.dm')
+        for label in ('naming makes the daughter', 'a root has at most its share of daughters',
+                      'a saved daughter restores with its key, sounds and kinship', 'and where it is not'):
+            self.assertIn(label, probe)
+
+
+class AdminUndo(unittest.TestCase):
+    ADMIN = read('code/modules/admin/verbs/origin_languages.dm')
+    UNDO = read('code/game/mob/language/daughter_admin.dm')
+
+    def test_merge_and_rename_verbs_are_registered_and_guarded(self):
+        registry = read('code/modules/admin/admin_verbs.dm')
+        for verb in ('cmd_admin_merge_language', 'cmd_admin_rename_language'):
+            self.assertIn('/client/proc/%s,' % verb, registry)
+            body = self.ADMIN[self.ADMIN.index('/client/proc/%s(' % verb):]
+            self.assertIn('check_rights(R_ADMIN)', body.split('\n/client/proc/')[0])
+
+    def test_merge_refuses_a_language_with_daughters(self):
+        body = self.UNDO[self.UNDO.index('/proc/merge_daughter_language('):]
+        self.assertIn('daughter_language_children(name).len', body.split('\n/proc/')[0])
+
+    def test_rename_moves_every_name_keyed_store(self):
+        body = self.UNDO[self.UNDO.index('/proc/rename_daughter_language('):]
+        for needle in ('records[new_name] = record', 'L.mutual_intelligibility[new_name]', 'rename_language_community_keys(language_drift_table(), old, new_name)',
+                       'H.partial_languages[new_name]', 'H.native_tongue = new_name', 'H.rename_language_buckets(old, new_name)', 'C.parent_name = new_name'):
+            self.assertIn(needle, body)
+
+    def test_native_probe_covers_undo(self):
+        probe = read('tests/language_drift/probe.dm')
+        self.assertIn('its speakers speak the parent again', probe)
+        self.assertIn('speakers keep their scores, mother tongue and today', probe)
+
+
+if __name__ == '__main__':
+    unittest.main()

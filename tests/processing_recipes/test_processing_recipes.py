@@ -25,6 +25,9 @@ FROZEN = {
         (None, '/obj/item/stack/farming/seeds/flax', 'linseed_oil', 2, 0, 0, False),
         (None, GROWN + 'olives', 'olive_oil', 6, 0, 0, False),
         (None, '/obj/item/weapon/reagent_containers/food/snacks/roasted_coffee', 'coffee_grounds', 3, 0, 0, False),
+        (None, '/obj/item/stack/material/poppy', 'poppy_straw', 3, 0, 0, False),
+        (None, '/obj/item/stack/material/coca', 'coca_leaf', 3, 0, 0, False),
+        (None, '/obj/item/stack/material/cannabis', 'thc', 3, 0, 0, False),
     ],
     'flint knapping': [
         ('Sharp flake', '/obj/item/weapon/flint', None, 1, 40, 10, False),

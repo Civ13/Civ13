@@ -1,5 +1,5 @@
 """Hand-placed 32px weather instruments: the weather vane (a wooden post with
-a swinging arrow, one state for each of the four winds) and the barometer (a
+a swinging arrow, one state for each of the eight winds) and the barometer (a
 brass dial in a wooden case). Every pixel is placed by this script from a
 fixed palette (Pillow only); no external or generated artwork.
 
@@ -20,6 +20,10 @@ RED = [(214, 82, 60), (158, 48, 38)]
 BRASS = [(246, 214, 120), (212, 168, 72), (160, 116, 44), (104, 72, 28)]
 DIAL = [(250, 246, 232), (222, 214, 192)]
 STONE = [(150, 148, 140), (112, 110, 104)]
+
+
+# Quartering winds: the step (x, y) from the spindle toward the arrow's head.
+DIAGONALS = {'Northeast': (1, -1), 'Southeast': (1, 1), 'Southwest': (-1, 1), 'Northwest': (-1, -1)}
 
 
 def blank():
@@ -71,7 +75,27 @@ def vane(wind):
         put(image, 16, y, IRON[1])
     put(image, 16, 3, IRON[0])
     # The arrow, on the spindle at y 7.
-    if wind in ('East', 'West'):
+    if wind in DIAGONALS:
+        # A quartering wind: the arrow lies on a true diagonal through the
+        # spindle, red head into the wind and the feathers opposite.
+        sx, sy = DIAGONALS[wind]
+        # The low end stops a pixel short so it clears the fixed cross.
+        head, tail = (6, 5) if sy < 0 else (5, 6)
+        for i in range(1 - tail, head):
+            put(image, 16 + sx * i, 7 + sy * i, IRON[0])
+        tx, ty = 16 + sx * head, 7 + sy * head
+        for a in range(5):
+            for b in range(5 - a):
+                # a steps back along the row, b along the column, from the tip.
+                lit = b <= a if sy < 0 else a <= b
+                put(image, tx - sx * a, ty - sy * b, RED[0] if lit else RED[1])
+        # Two feathers either side of the shaft, notched at the end.
+        for i in range(tail - 3, tail + 1):
+            x, y = 16 - sx * i, 7 - sy * i
+            for step in range(1, 2 + (i > tail - 2)):
+                put(image, x + sx * step, y, IRON[1])
+                put(image, x, y + sy * step, IRON[1])
+    elif wind in ('East', 'West'):
         head = 1 if wind == 'East' else -1
         for x in range(6, 27):
             put(image, x, 7, IRON[0])
@@ -135,6 +159,8 @@ def barometer():
 def states():
     st = {}
     for wind in ('North', 'East', 'South', 'West'):
+        st['weather_vane_' + wind.lower()] = [vane(wind)]
+    for wind in DIAGONALS:
         st['weather_vane_' + wind.lower()] = [vane(wind)]
     st['barometer'] = [barometer()]
     return st

@@ -59,6 +59,50 @@ they put the bucket away. A step of the hull does not stop them.
 - Full over mostly shallow water she is grounded: no speed, no turn. She floats
   again when no hole is open and she is bailed below awash.
 
+## Breaches below the waterline
+
+`hull_breach.dm`: a floor of her hold that goes (`/obj/covers/Destroy()` with
+`hold_origin` set) leaves a `/obj/covers/steelplating/hold/breach` with the
+same `hold_origin`, so the tile stays part of her hold and sails with it. Each
+breach is a hole: `hull_hold_breach()` adds one at once, and `survey()` adds
+`hold_breaches()` to the holes it counts on her deck. A breach takes no more
+blast damage. Two steel used on it with a welding tool in the other hand
+(`hull_breach_weld()`, 5 seconds) lays a whole hold floor again and takes the
+hole off (`hull_breach_shut()`). Floors that go while she is decommissioned,
+crossing or sinking leave no breach.
+
+## Watertight compartments
+
+`code/modules/naval/hull_compartments.dm`. A built hull keeps one bilge until
+her builders part her with watertight bulkheads (draught piece `WB`,
+`/obj/structure/hull_bulkhead`, 8 steel) and watertight doors (`WT`, a steel
+fire door with seals, 20 steel). A bulkhead, or a watertight door that is
+shut, on a tile of her main deck or of her hold below it divides her; the
+tiles that join each other round it are one compartment with its own water.
+A dividing tile holds water with the first compartment beside it, so every
+tile is in one and the compartments' brims add up to hers. An open
+watertight door joins the compartments on either side and their water evens
+out by depth; shut, it parts them again and each side keeps what it had.
+
+- A hole floods the compartment it opens into, up to that compartment's brim;
+  a hole the ledger cannot place (a count read back before her floors) and
+  water from her seams, her patches and her load come in along her length.
+- Pumps and bailers lift the water of the compartment they stand in, and a
+  sump pump's float switch reads that compartment.
+- She founders when she is full, as before, or when compartments holding
+  more than half her tiles are flooded (98% of their brim). Her crew hears
+  when a compartment floods and when it is pumped below awash; the tiller
+  names each compartment from the bow.
+- Compartments are her tiles by their place in her offsets, which a step or
+  a turn never reorders. The ledger's `water` stays their sum, so weight,
+  depth and the awash film work as before, and a write of `water` outright
+  (hauled out, drained in dock) is shared out again by what each held. Her
+  record saves each compartment's water by the first of her tiles in it.
+- The ship draught check warns when the bulkheads do not part her or one
+  compartment holds more than half of her, and notes a ship with none.
+
+A hull with no bulkhead behaves exactly as she always did.
+
 ## Seams and caulking
 
 `code/modules/naval/hull_caulking.dm`. The ledger carries `seams`, the wear of
@@ -74,7 +118,8 @@ four hours take her from tight to open. Her crew is told when they work loose
   hammer in the other hand, while she lies still and is not awash. One twist
   takes four seconds and tightens three tiles of hull.
 - On deep water caulking stops at sound (one third). Lying mostly over shallow
-  water she is caulked down to tight.
+  water, or lying wholly in a berth such as a boathouse slip (docs/berths.md),
+  she is caulked down to tight. Scraping and copper need the same.
 - Small craft and plated hulls have no seams: nothing wears and nothing can be
   caulked. `seams` is saved with the rest of the ledger.
 

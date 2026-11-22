@@ -251,6 +251,9 @@ var/global/probe_cpu = 0
 	probe_cpu = 10
 	V.settle_eye()
 	cases["still_after_load_keeps_eye"] = V.eye_qx == 0 && V.eye_qy == 0
+	B.step_x = -12
+	V.settle_eye()
+	cases["same_quadrant_after_load_keeps_eye"] = V.eye_qx == 0 && V.eye_qy == 0
 	B.step_x = 10
 	V.settle_eye()
 	cases["moved_after_load_uses_offset"] = V.eye_qx == 16 && V.eye_qy == -16

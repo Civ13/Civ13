@@ -94,6 +94,8 @@
 	..()
 
 /obj/item/stack/material/attackby(var/obj/item/W, var/mob/user)
+	if (cloth_treat_attackby(src, W, user)) // treated_cloth.dm
+		return TRUE
 	if (istype(W, /obj/item/stack/rods))
 		material.build_rod_product(user, W, src)
 		update_icon()
@@ -353,13 +355,19 @@
 	value = 2
 	flammable = TRUE
 
+/obj/item/stack/material/rope/New()
+	update_icon()
+	return ..()
+
+/obj/item/stack/material/rope/update_icon()
+	icon_state = "rope[pile_suffix(amount, list(2, 8, 20))]"
+
 /obj/item/stack/material/hemp
 	name = "Hemp"
 	icon_state = "hemp"
 	default_type = "hemp"
 	value = 2
 	flammable = TRUE
-	is_contraband = TRUE
 
 /obj/item/stack/material/flax
 	name = "Flax"
@@ -479,9 +487,32 @@
 			icon_suffix = "_3"
 	icon_state = "tobacco[icon_suffix]"
 
+/obj/item/stack/material/cannabis_fresh
+	name = "fresh cannabis tops"
+	desc = "Sticky green flowering tops. Dry them on a rack before smoking."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "cannabis_fresh"
+	default_type = "cannabis_fresh"
+	value = 2
+	w_class = ITEM_SIZE_TINY
+	flammable = TRUE
+	dried_type = /obj/item/stack/material/cannabis
+	dry_size = 9
+
+/obj/item/stack/material/cannabis
+	name = "dried cannabis"
+	desc = "Dried cannabis flower, ready to roll or smoke in a pipe."
+	icon = 'icons/obj/drugs.dmi'
+	icon_state = "cannabis"
+	default_type = "cannabis"
+	value = 4
+	w_class = ITEM_SIZE_TINY
+	flammable = TRUE
+	is_contraband = TRUE
+
 /obj/item/stack/material/coca
 	name = "coca leaves"
-	desc = "Can be made into cocaine."
+	desc = "Leaves of the coca shrub, chewed or brewed as a mild stimulant. Refined, they make cocaine."
 	icon_state = "coca"
 	default_type = "coca"
 	value = 2
@@ -522,6 +553,7 @@
 		rope.anchored = FALSE
 		if (H.put_in_any_hand_if_possible(rope, prioritize_active_hand = TRUE))
 			--amount
+			update_icon()
 			visible_message("<span class = 'warning'>[H] takes a coil of rope from the pile of rope.</span>")
 			if (amount < 1)
 				qdel(src)

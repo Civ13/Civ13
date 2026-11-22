@@ -8,7 +8,6 @@
 // most drawbacks slow how fast a skill is learned rather than capping it.
 // ============================================================
 
-var/global/list/playstyle_trait_names = list("Recluse Scholar", "Menacing", "Hardened Fighter", "Quartermaster", "Green Thumb", "Tinkerer", "Wanderer", "Rallying Voice")
 var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machinegun", "swords", "throwing")
 
 #define PLAYSTYLE_FAST_SKILL 1.5
@@ -70,6 +69,9 @@ var/global/list/playstyle_combat_stats = list("rifle", "pistol", "bows", "machin
 			. *= PLAYSTYLE_FAST_SKILL
 		else if (statname == "hunting" || (statname in playstyle_combat_stats))
 			. *= PLAYSTYLE_SLOW_SKILL
+	// The birth sign's calling only where no trait already changes this stat (birth_charts.dm).
+	if (. == 1)
+		. *= birth_chart_gain_mult(statname)
 
 // Multiplier on scholarship gained in a discipline.
 /mob/living/human/proc/trait_scholarship_gain_mult(discipline)

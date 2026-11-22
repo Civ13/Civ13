@@ -42,7 +42,7 @@ python3 scripts/provinces.py --map maps/nomads/nomads_gaia.dmm --z 2 \
 | Map | Surface z |
 | --- | --- |
 | nomads_gaia, nomads_desert, nomads_jungle | 2 |
-| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_africa, nomads_earth_asia, nomads_earth_oceania, nomads_earth_greenland, nomads_earth_antarctica | 1 |
+| nomads_americas_north, nomads_americas_south, nomads_europe, nomads_asia, nomads_earth_europe, nomads_earth_mediterranean, nomads_earth_africa, nomads_earth_asia, nomads_earth_oceania, nomads_earth_greenland, nomads_earth_antarctica | 1 |
 
 How the tool works:
 
@@ -204,6 +204,31 @@ Code: `code/modules/provinces/province_siege.dm`.
   seconds only while a siege is declared and restarts after a reboot from
   the activity count. A faction rename carries all province state over.
 
+## Treaties
+
+Code: `code/modules/provinces/province_treaties.dm`. Nation treaties
+(`docs/nation-government.md`, "Treaties") change contests between nations only;
+a faction outside a nation keeps the rules above, and defence windows are
+unchanged.
+
+- **No contest between friends.** A nation allied to the holder, or bound to
+  it by a non-aggression pact, is never its rival: its stake cannot take the
+  province, however large.
+- **Sieges need war.** A nation can declare a siege on another nation's
+  province only while the two are at war. If peace, a pact or an alliance is
+  made while a siege is declared, the siege is called off with no cooldown and
+  the deposit kept. A nation can still besiege a plain faction, and a plain
+  faction a nation, as before.
+- **Allies at the seat.** Members of a nation allied to the holder count as
+  defenders at the seat; allies of the attacker count as attackers unless they
+  are also allied to the holder, when they defend.
+- **Vassals.** An overlord and its vassal count as allies in all of the above.
+  A siege won by one nation against another at war is reported to the
+  coordinator; 2 within 14 days let the winner impose vassalage. Tribute
+  (weekly, a tenth of each vassal member faction's strongbox, at most 100
+  silver) moves real coin to an overlord member faction's strongbox in the same
+  world; state is `faction_recruitment["vassal_tribute"]`.
+
 ## Continent resources
 
 Code: `code/modules/provinces/continent_resources.dm`. Each continent is rich
@@ -298,10 +323,11 @@ Code: `code/modules/provinces/province_rich.dm`.
 | nomads_asia | North-west Jungle (saltpeter); Central Sands (silver) |
 | nomads_desert | North-east Sands (sulphur); South-west Sands (sulphur) |
 | nomads_americas_south | West Jungle (gold); East Jungle (silver); North-east Jungle (bauxite) |
-| nomads_earth_europe | North Lowlands (coal); North-east Lowlands (zinc); South-east Riverlands (coal) |
-| nomads_earth_africa | North Sands (sulphur); East Jungle (tin); East Riverlands (sulphur) |
-| nomads_earth_asia | West Lowlands (saltpeter); North-west Riverlands (silver); South Jungle (saltpeter) |
-| nomads_earth_oceania | South Sands (bauxite); Central Riverlands (uranium); North-west Coast (bauxite) |
+| nomads_earth_europe | North Lowlands (coal); East Riverlands (zinc); South-east Plains (coal) |
+| nomads_earth_mediterranean | East Riverlands (copper); North-west Riverlands (silver); South-west Sands (lead) |
+| nomads_earth_africa | North-east Sands (sulphur); East Jungle (tin); Central Jungle (sulphur) |
+| nomads_earth_asia | Central Riverlands (saltpeter); North-west Lowlands (silver); South Riverlands (saltpeter) |
+| nomads_earth_oceania | Central Plains (bauxite); Central Lowlands (uranium); North-west Jungle (bauxite) |
 | nomads_earth_greenland | South Lowlands (zinc); North-west Coast (lead); North-east Lowlands (gold) |
 | nomads_earth_antarctica | Central Coast (coal); South-east Plains (coal); North Lowlands (coal) |
 

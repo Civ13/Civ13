@@ -29,7 +29,7 @@
 
 /obj/item/weapon/material/twohanded/update_held_icon()
 	var/mob/living/M = loc
-	if(istype(M) && !issmall(M) && ((M.r_hand == src && !M.l_hand) || (M.l_hand == src && !M.r_hand)))
+	if(istype(M) && !issmall(M) && has_free_offhand(M))
 		wielded = 1
 		force = force_wielded
 		name = "[base_name] (wielded)"
@@ -40,6 +40,20 @@
 		name = "[base_name]"
 	update_icon()
 	..()
+
+// A missing or stumped hand is not a free hand: wielding needs the other hand's item slot empty and its organ present.
+/obj/item/weapon/material/twohanded/proc/has_free_offhand(mob/living/M)
+	var/offhand_slot
+	if(M.r_hand == src && !M.l_hand)
+		offhand_slot = slot_l_hand
+	else if(M.l_hand == src && !M.r_hand)
+		offhand_slot = slot_r_hand
+	else
+		return FALSE
+	if(ishuman(M))
+		var/mob/living/human/H = M
+		return H.has_organ_for_slot(offhand_slot)
+	return TRUE
 
 /obj/item/weapon/material/twohanded/update_force()
 	base_name = name
@@ -61,6 +75,9 @@
 /obj/item/weapon/material/twohanded/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if(wielded && default_parry_check(user, attacker, damage_source) && prob(15))
 		user.visible_message("<font color='#E55300'>\The [user] parries [attack_text] with \the [src]!</font>")
+		if (ishuman(user))
+			var/mob/living/human/parrier = user
+			parrier.body_motion_parry(attacker)
 		playsound(user.loc, 'sound/weapons/punchmiss.ogg', 50, 1)
 		if (istype(damage_source, /obj/item/weapon/melee) || is_tool(damage_source, TOOL_HATCHET))
 			apply_wear(5, WEAR_BLOW)

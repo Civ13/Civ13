@@ -257,6 +257,39 @@ class AuditSkip(unittest.TestCase):
 
 
 class LifecycleContracts(unittest.TestCase):
+    def test_mutation_suspension_guard_and_eligibility_short_circuit(self):
+        # Project the source guard; these Python cases do not execute BYOND.
+        reconcile = fragment(LIFECYCLE.read_text(), '/client/proc/reconcile_geometric_los(')
+        guard = next(line.strip()[3:-1] for line in reconcile.splitlines()
+                     if line.strip().startswith('if(') and 'V.eligible()' in line)
+        def check(expression, eligible, operation, mutations):
+            calls = []
+            class Context:
+                def eligible(self):
+                    calls.append('eligible')
+                    return eligible
+            context = Context()
+            context.mutations = N(len=mutations)
+            expr = expression.replace('&&', ' and ').replace('||', ' or ')
+            return bool(eval(expr, {'V': context, 'persistence_active_operation': operation})), calls
+
+        for eligible in (False, True):
+            for kind in (None, 'save', 'load'):
+                for mutations in (0, 1):
+                    operation = N(kind=kind) if kind else None
+                    suspended, calls = check(guard, eligible, operation, mutations)
+                    active = kind == 'load' or mutations > 0
+                    self.assertEqual(suspended, eligible and active)
+                    self.assertEqual(len(calls), int(active))
+        # A reversed mutation condition must be detected by the same oracle.
+        mutant = guard.replace('V.mutations.len', 'not V.mutations.len')
+        self.assertNotEqual(mutant, guard)
+        self.assertNotEqual(check(mutant, True, None, 0)[0], False)
+        denial = reconcile[reconcile.index('if(' + guard + ')'):reconcile.index('var/key = V.presentation_key()')]
+        for effect in ('root_tree_presenter.invalidate()', 'los_dirty = TRUE',
+                       'los_height_sight_revoke(mob)', 'return'):
+            self.assertIn(effect, denial)
+
     def test_skip_is_bounded_by_publication_and_policy(self):
         reconcile = fragment(LIFECYCLE.read_text(), '/client/proc/reconcile_geometric_los(')
         early_return = reconcile.index('world.time < los_next_audit')

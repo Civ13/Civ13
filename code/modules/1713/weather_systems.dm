@@ -52,15 +52,17 @@ var/global/weather_storm_count = 0
 
 // 0 outside the oval, rising to the system's power over its outer 40%.
 /datum/weather_system/proc/strength_at(x, y)
-	var/dx = (x - centre_x()) / radius_x
+	var/offset_x = x - centre_x()
+	var/dx = offset_x / radius_x
 	if (dx >= 1.1 || dx <= -1.1)
 		return 0
-	var/dy = (y - centre_y()) / radius_y
+	var/offset_y = y - centre_y()
+	var/dy = offset_y / radius_y
 	var/reach = dx * dx + dy * dy
 	if (reach >= 1.21)
 		return 0
 	// A ragged edge, fixed to the system so it travels with it.
-	var/d = sqrt(reach) + 0.08 * sin((x - centre_x()) * 9 + (y - centre_y()) * 5 + wobble)
+	var/d = sqrt(reach) + 0.08 * sin(offset_x * 9 + offset_y * 5 + wobble)
 	if (d >= 1)
 		return 0
 	return power() * min(1, (1 - d) * 2.5)
@@ -114,17 +116,31 @@ var/global/weather_storm_count = 0
 
 // ---- wind ---------------------------------------------------
 
-// The way the wind carries things, as a unit step. winddirection names where
-// the wind blows from (a ship sailing north into a "North" wind is slowest).
+// The compass heading the wind blows from, shared by storms and sailing.
+// Saved winds and current selection use the cardinal headings. The parser
+// also accepts diagonal headings without changing which winds are selected.
+/proc/weather_wind_from_dir(direction)
+	if (istext(direction))
+		var/heading = text2dir(direction)
+		if (heading)
+			return heading
+	return WEST
+
+// The opposite heading, as a grid step, not a normalized speed vector.
+// For example, a "North" wind carries a storm south.
 /proc/weather_wind_vector()
-	switch (map ? map.winddirection : "West")
-		if ("North")
-			return list(0, -1)
-		if ("South")
-			return list(0, 1)
-		if ("East")
-			return list(-1, 0)
-	return list(1, 0)
+	var/from_dir = weather_wind_from_dir(map?.winddirection)
+	var/wind_x = 0
+	var/wind_y = 0
+	if (from_dir & WEST)
+		wind_x = 1
+	else if (from_dir & EAST)
+		wind_x = -1
+	if (from_dir & SOUTH)
+		wind_y = 1
+	else if (from_dir & NORTH)
+		wind_y = -1
+	return list(wind_x, wind_y)
 
 // Distance backwards along a nonzero wind vector until the whole bounding
 // oval is outside one map edge. Choosing the nearer exit avoids overshooting
@@ -147,13 +163,21 @@ var/global/weather_storm_count = 0
 		return back_x
 	return min(back_x, back_y)
 
+// The map's wind as a unit vector, so a diagonal wind carries storms no
+// faster than a straight one.
+/proc/weather_wind_unit()
+	var/list/v = weather_wind_vector()
+	if (v[1] && v[2])
+		return list(v[1] * 0.7071, v[2] * 0.7071)
+	return v
+
 // Tiles a decisecond: a tile every 8 seconds in a calm, every 2.5 in a gale.
 /proc/weather_wind_speed()
 	return 0.0125 + 0.007 * (map ? map.windspeedvar : 1)
 
-// The next wind direction: it holds or veers a quarter turn, never reverses.
+// The next wind direction: it holds or veers an eighth of a turn, never reverses.
 /proc/weather_veer(direction)
-	var/static/list/compass = list("North", "East", "South", "West")
+	var/static/list/compass = list("North", "Northeast", "East", "Southeast", "South", "Southwest", "West", "Northwest")
 	var/at = compass.Find(direction)
 	if (!at)
 		return pick(compass)
@@ -165,10 +189,14 @@ var/global/weather_storm_count = 0
 		at = 1
 	return compass[at]
 
-// Wind strength 0 to 4 at a tile: the map's wind, and a gale under a storm.
+// Wind strength 0 to 4 at a tile: the local wind (weather_wind.dm), and a
+// gale under a storm. Before the air grid exists it is the map's wind.
 /proc/weather_wind_at(atom/A)
 	. = map ? map.windspeedvar : 1
 	var/turf/T = get_turf(A)
+	if (T && weather_air)
+		var/list/v = weather_wind_vector_at(T)
+		. = weather_wind_strength(sqrt(v[1] * v[1] + v[2] * v[2]))
 	if (!T || !weather_storm_count)
 		return
 	var/strength = weather_storm_strength(T.x, T.y)
@@ -202,7 +230,7 @@ var/global/weather_storm_count = 0
 		aim_x = rand(round(world.maxx * 0.1), max(1, round(world.maxx * 0.9)))
 	if (isnull(aim_y))
 		aim_y = rand(round(world.maxy * 0.1), max(1, round(world.maxy * 0.9)))
-	var/list/wind = weather_wind_vector()
+	var/list/wind = weather_wind_unit()
 	var/speed = weather_wind_speed()
 	S.vel_x = wind[1] * speed
 	S.vel_y = wind[2] * speed
@@ -245,16 +273,23 @@ var/global/weather_storm_count = 0
 			storms++
 	if (storms >= weather_system_capacity())
 		return
-	weather_system_spawn(WEATHER_SYSTEM_STORM, result == WEATHER_EXTREME)
+	// Regions that share their storms draw them from the shared seed instead (weather_shared.dm).
+	if (weather_shared_storms_on())
+		return
+	// The storm forms on a low's front (weather_fronts.dm).
+	weather_front_storm(result == WEATHER_EXTREME)
 
 // ---- the weather on a tile ---------------------------------
 
 var/global/weather_storm_severe = FALSE
 
-// The strongest storm over a place, 0 to 1. Sets weather_storm_severe.
+// The strongest storm over a place, 0 to 1, with more on windward hills and
+// less in their rain shadow (weather_precip.dm). Sets weather_storm_severe
+// and weather_storm_convective.
 /proc/weather_storm_strength(x, y)
 	. = 0
 	weather_storm_severe = FALSE
+	weather_storm_convective = FALSE
 	for (var/datum/weather_system/S in weather_systems)
 		if (S.kind != WEATHER_SYSTEM_STORM)
 			continue
@@ -262,8 +297,11 @@ var/global/weather_storm_severe = FALSE
 		if (strength > .)
 			. = strength
 			weather_storm_severe = S.severe
+			weather_storm_convective = S.convective
 		else if (strength && strength == . && S.severe)
 			weather_storm_severe = TRUE
+	if (.)
+		. = min(1, . * weather_orographic_at(x, y))
 
 // TRUE under a mass of hot dry air: more thirst, thirstier crops, no dew.
 /proc/weather_heat_at(atom/A)
@@ -310,6 +348,7 @@ var/global/weather_sample_time = -1
 var/global/weather_sample_class = WEATHER_NONE
 var/global/weather_sample_look = ""
 var/global/weather_sample_intensity = 0
+var/global/weather_sample_kind = null // weather_precip.dm: what falls, when a storm settles it
 var/global/weather_sample_zone_class = null
 var/global/weather_sample_zone_look = null
 
@@ -324,6 +363,7 @@ var/global/weather_sample_zone_look = null
 	weather_sample_class = WEATHER_NONE
 	weather_sample_look = ""
 	weather_sample_intensity = 0
+	weather_sample_kind = null
 	if (!istype(place))
 		return
 	weather_sample_zone_class = place.weather
@@ -339,7 +379,7 @@ var/global/weather_sample_zone_look = null
 	if (!weather_storm_count || place.location != AREA_OUTSIDE || !istype(place, /area/caribbean))
 		return
 	var/strength = weather_storm_strength(T.x, T.y)
-	var/list/state = weather_storm_state(place.climate, strength, weather_storm_severe)
+	var/list/state = weather_precip_adjust(weather_storm_state(place.climate, strength, weather_storm_severe), T, strength)
 	if (!state)
 		return
 	// The worse of the two wins.
@@ -350,6 +390,8 @@ var/global/weather_sample_zone_look = null
 	weather_sample_look = state[1]
 	weather_sample_class = state[2]
 	weather_sample_intensity = state[3]
+	if (state.len >= 4)
+		weather_sample_kind = state[4]
 
 // WEATHER_NONE, WEATHER_WET, WEATHER_EXTREME or WEATHER_SMOG on this tile.
 // Roofed areas are always WEATHER_NONE, as they were as zones.
@@ -377,11 +419,15 @@ var/global/weather_sample_zone_look = null
 
 /proc/weather_systems_step()
 	weather_vanes_turn()
-	var/list/wind = weather_wind_vector()
+	weather_instruments_step() // weather_instruments.dm
+	var/list/wind = weather_wind_unit()
 	var/speed = weather_wind_speed()
 	for (var/datum/weather_system/S in weather_systems.Copy())
 		if (S.spent())
 			weather_system_end(S)
+			continue
+		// A shared storm keeps the course every region gives it (weather_shared.dm).
+		if (S.shared_key)
 			continue
 		// Come round to the wind a little at a time.
 		var/new_x = S.vel_x * 0.85 + wind[1] * speed * 0.15
@@ -389,6 +435,7 @@ var/global/weather_sample_zone_look = null
 		if (abs(new_x - S.vel_x) > 0.0002 || abs(new_y - S.vel_y) > 0.0002)
 			S.set_course(new_x, new_y)
 	weather_systems_tell()
+	weather_air_step()
 
 /proc/weather_bearing(dx, dy)
 	if (abs(dx) > abs(dy) * 2)

@@ -93,6 +93,8 @@
 #define HULL_DEPTH_AWASH 4
 #define HULL_DEPTH_LISTING 5
 #define HULL_DEPTH_FULL 6
+// Wood a patch over a hole takes (hull_ledger.dm, berth.dm).
+#define HULL_PATCH_PLANKS 2
 
 // Outrigger canoes (naval/outrigger_canoe.dm). The sheet is 96x96 with the
 // hull on the middle tile (tests/sprites/create_small_boats.py).
@@ -120,3 +122,33 @@
 #define BOAT_DRESSING_TILES 600  // Tiles a dressing of fat or tar lasts.
 #define BOAT_DRY_PER_MINUTE 10   // Soak a hull loses for each minute ashore.
 #define BOAT_RAFT_NEW_WEAR 40    // A new raft is bound with bark and vines, not rope.
+
+// Ship's draughts (naval/ship_draught.dm): the sheet is this many tiles each
+// way, and a draught keeps to the built hull's limits (craft/built_body.dm).
+#define SHIP_DRAUGHT_SIDE 40
+#define SHIP_DRAUGHT_MAX_TILES 200
+#define SHIP_DRAUGHT_MAX_DECK 300
+#define DESIGN_CODE_SHIP_MAX 8000 // her main deck and every other deck
+
+// Submarine sheets (naval/sub_draught.dm): a submarine is three hull sections
+// across and this many long; the longest turns in the largest vehicle square
+// (VEHICLE_MAX_TURNING_SQUARE).
+#define SUB_DRAUGHT_BEAM 3
+#define SUB_DRAUGHT_MIN_LENGTH 4
+#define SUB_DRAUGHT_MAX_LENGTH 7
+#define DESIGN_CODE_SUB_MAX 800
+
+// Vehicle sheets (craft/vehicle_draught.dm): a hand-built land vehicle is
+// this many tiles each way (VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE at most).
+#define VEHICLE_DRAUGHT_MIN 2
+#define VEHICLE_DRAUGHT_MAX 5
+#define DESIGN_CODE_CAR_MAX 700
+
+// Airship sheets (naval/air_draught.dm): a crewed airship's deck fits a
+// rectangle this many tiles each way, with no more deck tiles than her gas
+// cells can hold up (naval/air_hull.dm).
+#define AIR_DRAUGHT_MIN 2
+#define AIR_DRAUGHT_MAX 12
+#define AIR_DRAUGHT_MAX_DECK 60
+#define AIR_DRAUGHT_CELL_GAS 60 // units of gas that fill one cell
+#define DESIGN_CODE_AIR_MAX 2400

@@ -86,8 +86,10 @@ def colony_valid(c):
             and 0 <= c['age_hours'] <= 1_000_000 and type(c.get('members')) is int and 0 <= c['members'] <= 1000)
 
 def account_key_valid(ckey):
-    """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters."""
-    return isinstance(ckey, str) and 0 < len(ckey) <= 32 and all(c.isdigit() or ('a' <= c <= 'z') or c == '@' for c in ckey)
+    """A BYOND ckey: lowercase letters, digits and @, 1 to 32 characters. A character
+    slot key is "@<slot><ckey>" (docs/character-slots.md), so it may run two longer."""
+    limit = 34 if isinstance(ckey, str) and ckey.startswith('@') else 32
+    return isinstance(ckey, str) and 0 < len(ckey) <= limit and all(c.isdigit() or ('a' <= c <= 'z') or c == '@' for c in ckey)
 
 
 class TransferError(Exception):
@@ -810,15 +812,7 @@ class RegionStore(TrainLeaseQueue):
         if op in ('colony', 'colony_used') and not faction_id_valid(faction):
             raise TransferError('bad faction id')
         with self._tx():
-            locked = self.db.execute('SELECT 1 FROM train_home_lock WHERE ckey = ?', (ckey,)).fetchone() or self.db.execute('SELECT 1 FROM train_home_wait WHERE ckey = ?', (ckey,)).fetchone()
-            for (request,) in self.db.execute("SELECT request FROM train_lease WHERE state IN ('pending','granted','cancel_pending','sealed')"):
-                if ckey in json.loads(request)['accounts']:
-                    locked = True
-            for (manifest,) in self.db.execute('SELECT manifest FROM active'):
-                train = _train_payload(json.loads(manifest).get('items', []))
-                if train and ckey in train['accounts']:
-                    locked = True
-            if locked:
+            if self._account_train_locked(ckey):
                 if op == 'claim':
                     return {'verdict': 'PENDING', 'home': self.home_of(ckey)}
                 raise TransferError('account is leased to a physical train')
@@ -849,6 +843,38 @@ class RegionStore(TrainLeaseQueue):
             self.db.execute('INSERT INTO account_request(ckey, op, region, homes_epoch, home_rev, faction) VALUES (?, ?, ?, ?, ?, ?)',
                             (ckey, op, target, self._meta('homes_epoch'), int(self._meta('homes_rev')), faction or ''))
         return {'verdict': 'PENDING', 'home': home}
+
+    def _account_train_locked(self, ckey):
+        if (self.db.execute('SELECT 1 FROM train_home_lock WHERE ckey = ?', (ckey,)).fetchone()
+                or self.db.execute('SELECT 1 FROM train_home_wait WHERE ckey = ?', (ckey,)).fetchone()):
+            return True
+        for (request,) in self.db.execute(
+                "SELECT request FROM train_lease WHERE state IN ('pending','granted','cancel_pending','sealed')"):
+            if ckey in json.loads(request)['accounts']:
+                return True
+        for (manifest,) in self.db.execute('SELECT manifest FROM active'):
+            train = _train_payload(json.loads(manifest).get('items', []))
+            if train and ckey in train['accounts']:
+                return True
+        return False
+
+    def lobby_account_status(self, ckey):
+        """Read-only barriers from this store, not authority to admit or route."""
+        if not account_key_valid(ckey):
+            raise TransferError('bad account key')
+        self._require_open()
+        if self._account_train_locked(ckey):
+            state = 'PENDING'
+        elif self.travelling_here(ckey) or any(ckey in character_owners(manifest) for (manifest,) in
+                                              self.db.execute('SELECT manifest FROM active')):
+            # Even returning/finalizing custody blocks a lobby handoff.
+            state = 'TRAVELLING'
+        elif self.db.execute('SELECT 1 FROM account_request WHERE ckey = ?', (ckey,)).fetchone():
+            state = 'PENDING'
+        else:
+            state = 'CLEAR'
+        return {'group': self.group, 'region': self.region, 'epoch': self._meta('homes_epoch'),
+                'rev': int(self._meta('homes_rev')), 'state': state}
 
     def travelling_here(self, ckey):
         """The land a character of ckey is travelling here from, or None. Known
@@ -1045,10 +1071,12 @@ class RegionStore(TrainLeaseQueue):
         if type(body) is not dict:
             raise TransferError('bad nation request')
         request = {k: body[k] for k in ('op', 'actor', 'faction', 'name', 'with', 'nation', 'applicant', 'yes',
-                                        'candidate', 'to', 'tier') if k in body}
+                                        'candidate', 'to', 'tier', 'issuer', 'type', 'person', 'pname', 'pfaction',
+                                        'religion', 'age', 'role', 'motion', 'choice', 'citizens',
+                                        'wealth', 'sname', 'act', 'reason', 'office', 'other', 'treaty') if k in body}
         if not nation_request_valid(request):
             raise TransferError('bad nation request')
-        if not request['faction'].startswith('civ:%s:' % self.region):
+        if request['op'] != 'staff' and not request['faction'].startswith('civ:%s:' % self.region):
             raise TransferError('a world asks only for its own factions')
         with self._tx():
             if self.db.execute('SELECT COUNT(*) FROM nation_request').fetchone()[0] >= MAX_NATION_REQUESTS:

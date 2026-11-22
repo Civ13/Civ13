@@ -1,6 +1,7 @@
 """Production transaction/erasure/legacy guard projections; not native DM."""
 import copy,importlib.util,json,re,unittest
 from pathlib import Path
+from types import SimpleNamespace
 spec=importlib.util.spec_from_file_location('mutation_view_fixture',Path(__file__).with_name('test_views.py'))
 views=importlib.util.module_from_spec(spec);spec.loader.exec_module(views)
 vm=views.vm
@@ -192,19 +193,61 @@ class Mutations(unittest.TestCase):
      self.assertTrue(self.allowed());folder.gc_destroyed=True;self.assertFalse(self.allowed());folder.gc_destroyed=False
      folder.loc=turf;self.assertTrue(self.allowed());folder.near=False;self.assertFalse(self.allowed())
  def test_topic_guard_dominates_prompt_and_commit_and_chemistry_reports_success_only(self):
-  # Existing unindented /* comments interrupt the strict procedure-body parser;
-  # bound this source contract by the next real top-level procedure instead.
   start='/obj/item/weapon/paper/Topic(href, href_list)';end='/obj/item/weapon/paper/attackby('
   self.assertEqual(PAPER.count(start),1);self.assertEqual(PAPER.count(end),1)
   topic=PAPER.split(start,1)[1].split(end,1)[0];call='paper_document_legacy_edit_allowed(src, writer, writer_client, writing_pen)'
   self.assertEqual(topic.count(call),2)
-  for marker in ('var/t =  sanitize(input(','t = parsepencode('):self.assertIn(marker,topic)
-  prompt=topic.index('var/t =  sanitize(input(');first=topic.index(call);second=topic.index(call,first+len(call))
+  for marker in ('var/raw = input(writer,','t = parsepencode('):self.assertIn(marker,topic)
+  prompt=topic.index('var/raw = input(writer,');first=topic.index(call);second=topic.index(call,first+len(call))
   self.assertLess(first,prompt);self.assertLess(prompt,second);self.assertLess(second,topic.index('t = parsepencode('))
   self.assertIn('usr != writer',topic)
   self.assertEqual(CHEM.count('if (paperaffected.clearpaper())'),2)
   commit=vm.body(vm.SOURCE,'/proc/paper_document_commit_edit')
   for forbidden in ('sleep(', 'input(', 'spawn(', 'get_signature(', 'to_chat(', 'browse('):self.assertNotIn(forbidden,commit)
+
+ def test_classic_write_validates_target_and_commits_legacy_state_together(self):
+  topic=vm.body(PAPER,'/obj/item/weapon/paper/Topic')
+  field_lookup=topic.index('field_offset = legacy_field_offset(info, field_id)')
+  field_guard=topic.index('if (!field_offset)')
+  prompt=topic.index('var/raw = input(writer,')
+  fresh=topic.index('if (loc != expected_loc || info != expected_info || fields != expected_fields || free_space != expected_space)')
+  staged=topic.index('t = parsepencode(t, writing_pen, writer, istype(writing_pen, /obj/item/weapon/pen/crayon), FALSE)')
+  capacity=topic.index('if (cost > free_space)')
+  field_cap=topic.index('if (fields + new_fields > MAX_FIELDS)')
+  append=topic.index('info += t')
+  insert=topic.index('info = copytext(info, 1, field_offset) + t + copytext(info, field_offset)')
+  fields=topic.index('fields += new_fields')
+  charge=topic.index('free_space -= cost')
+  refresh=topic.index('updateinfolinks()')
+  notify=topic.index('paper_authoring_notify(src, "physical")')
+  positions=[field_lookup,field_guard,prompt,fresh,staged,capacity,field_cap,append,insert,fields,charge,refresh,notify]
+  self.assertEqual(positions,sorted(positions))
+  self.assertIn('legacy_new_fields(t, MAX_FIELDS - fields + 1)',topic)
+  self.assertNotIn('update_space(',topic)
+  self.assertNotIn('addtofield(',topic)
+  self.assertEqual(topic.count('free_space -= '),1)
+
+ def test_legacy_field_lookup_and_new_field_count_are_bounded(self):
+  # Execute the complete pure DM helpers with BYOND's one-based text offset
+  # and the production max-field constant, not a model of the Topic route.
+  maximum=int(re.search(r'#define MAX_FIELDS (\d+)',PAPER)[1])
+  vm.ALLOWED |= {'findtext'}
+  env=dict(findtext=lambda text,needle,start:(text or '').lower().find(needle.lower(),start-1)+1,
+           isnum=lambda value:isinstance(value,(int,float)),round=int,range=range,MAX_FIELDS=maximum)
+  translated=PAPER.replace('"</span>"','"<\\x2fspan>"')
+  offset=vm.project(translated,'/obj/item/weapon/paper/proc/legacy_field_offset','field_text,id',env)
+  count=vm.project(PAPER,'/obj/item/weapon/paper/proc/legacy_new_fields','text,limit',env)
+  opener='<span class="paper_field">';first=opener+'A</span>';second=opener+'B</span>'
+  self.assertEqual(offset(first+second,1),len(opener)+2)
+  self.assertEqual(offset(first+second,2),len(first)+len(opener)+2)
+  self.assertEqual(offset(first+opener,2),0)
+  self.assertEqual(offset(first,2),0)
+  self.assertEqual(offset(first,maximum+1),0)
+  for value in (None,'1',0,1.5,-1):
+   self.assertEqual(offset(first,value),0)
+  self.assertEqual(count(first+second,maximum),2)
+  self.assertEqual(count(first+second,1),1)
+  self.assertEqual(count(first+second,0),0)
 
  def rename(self,value,edit=None):return self.env['paper_document_set_name'](self.paper,value,edit)
  def crumple(self):return self.env['paper_document_crumple'](self.paper)
@@ -316,5 +359,101 @@ class Mutations(unittest.TestCase):
   self.env['stars']=damaged;self.assertFalse(self.crumple())
   self.assertEqual(self.paper.info,before['legacy']['info']);self.assertEqual(self.paper.free_space,space)
   self.assertEqual(self.paper.document_record['sections'][0]['text'],'concurrent callback seam')
+
+ENVELOPE_SOURCE = (vm.ROOT / 'code/game/objects/structures/mail.dm').read_text(encoding='utf-8')
+ENVELOPE_PATH = '/obj/item/weapon/storage/envelope'
+
+
+class EnvelopeAddress(unittest.TestCase):
+    def setUp(self):
+        # Expose only implicit DM member access and Adjacent to the existing
+        # audited projection helper; execute the entire production predicate.
+        fields = r'(?<![\w.])(gc_destroyed|opened|loc|addressee|sender|Adjacent)\b'
+        body = vm.body(ENVELOPE_SOURCE, ENVELOPE_PATH + '/proc/addressing_current')
+        translated = ENVELOPE_SOURCE.replace(body, re.sub(fields, r'self.\1', body), 1)
+        vm.ALLOWED |= {'agent_character_for'}
+        vm.METHODS |= {'incapacitated'}
+        env = {
+            'agent_character_for': lambda writer: writer.agent,
+            'isturf': lambda target: getattr(target, 'turf', False),
+        }
+        self.current = vm.project(
+            translated, ENVELOPE_PATH + '/proc/addressing_current',
+            'self,writer,writer_client,writer_agent,pen,expected_loc,expected_addressee,expected_sender', env,
+        )
+        self.writer = SimpleNamespace(gc_destroyed=False, incapacitated=lambda: False, agent=None)
+        self.client = SimpleNamespace(mob=self.writer)
+        self.writer.client = self.client
+        self.pen = SimpleNamespace(gc_destroyed=False, loc=self.writer)
+        self.writer.get_active_hand = lambda: self.pen
+        self.envelope = SimpleNamespace(
+            gc_destroyed=False, opened=False, loc=self.writer, sender=None, addressee=None, Adjacent=lambda writer: True,
+        )
+
+    def check_current(self, expected_loc, addressee=None, sender=None, client='original', agent=None):
+        if client == 'original':
+            client = self.client
+        return self.current(self.envelope, self.writer, client, agent, self.pen, expected_loc, addressee, sender)
+
+    def test_addressing_admits_held_or_adjacent_ground_envelopes(self):
+        self.assertTrue(self.check_current(self.writer))
+        self.envelope.loc = ground = SimpleNamespace(turf=True)
+        self.assertTrue(self.check_current(ground))
+        self.assertFalse(self.check_current(self.writer))
+        self.envelope.Adjacent = lambda writer: False
+        self.assertFalse(self.check_current(ground))
+
+    def test_addressing_preserves_registered_agent_prompt_route(self):
+        self.writer.client = None
+        self.writer.agent = agent = object()
+        self.assertTrue(self.check_current(self.writer, client=None, agent=agent))
+        self.assertFalse(self.check_current(self.writer, client=None))
+        self.writer.agent = object()
+        self.assertFalse(self.check_current(self.writer, client=None, agent=agent))
+
+    def test_addressing_requires_current_actor_tool_and_unmodified_label_state(self):
+        for target, name, value in (
+            (self.writer, 'gc_destroyed', True),
+            (self.writer, 'incapacitated', lambda: True),
+            (self.writer, 'client', None),
+            (self.client, 'mob', None),
+            (self.pen, 'loc', None),
+            (self.pen, 'gc_destroyed', True),
+            (self.writer, 'get_active_hand', lambda: None),
+            (self.envelope, 'gc_destroyed', True),
+            (self.envelope, 'opened', True),
+            (self.envelope, 'addressee', 'Someone'),
+            (self.envelope, 'sender', 'Anyone'),
+        ):
+            with self.subTest(field=name):
+                previous = getattr(target, name)
+                setattr(target, name, value)
+                self.assertFalse(self.check_current(self.writer))
+                setattr(target, name, previous)
+        self.envelope.sender = 'Existing partial label'
+        self.assertTrue(self.check_current(self.writer, sender=self.envelope.sender))
+        self.envelope.addressee = 'Existing recipient'
+        self.assertFalse(self.check_current(self.writer, self.envelope.addressee, self.envelope.sender))
+
+    def test_each_prompt_leaves_both_fields_unmodified_until_final_commit(self):
+        attack = vm.body(ENVELOPE_SOURCE, ENVELOPE_PATH + '/attackby')
+        address = attack.split('if(istype(W, /obj/item/weapon/pen))', 1)[1].split('if(istype(W, /obj/item/weapon/stamp/mail))', 1)[0]
+        guard = 'addressing_current(user, writer_client, writer_agent, pen, expected_loc, expected_addressee, expected_sender)'
+        self.assertEqual(address.count(guard), 3)
+        self.assertEqual(address.count('addressee = write_to'), 1)
+        self.assertEqual(address.count('sender = write_from'), 1)
+        markers = [
+            'if (!' + guard,
+            'var/write_to = sanitize(player_input(user,',
+            'if (!write_to || !' + guard,
+            'var/write_from = sanitize(player_input(user,',
+            'if (!write_from || !' + guard,
+            'addressee = write_to',
+            'sender = write_from',
+            'desc += ',
+        ]
+        positions = [address.index(marker) for marker in markers]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(address.count('null, "text", null, TRUE), 128)'), 2)
 
 if __name__=='__main__':unittest.main()

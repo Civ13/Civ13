@@ -36,7 +36,8 @@ class Deck(unittest.TestCase):
         self.assertIn('C && !C.anchored', lay)
         survey = extract(SOURCE, '/proc/air_hull_survey')
         self.assertIn('found.len > AIR_HULL_MAX_TILES', survey)
-        self.assertIn('#define AIR_HULL_MAX_TILES 60\n', SOURCE)
+        self.assertIn('#define AIR_HULL_MAX_TILES AIR_DRAUGHT_MAX_DECK\n', SOURCE)
+        self.assertIn('#define AIR_DRAUGHT_MAX_DECK 60', (ROOT / 'code/__defines/naval.dm').read_text(encoding='utf-8'))
 
     def test_floors_move_before_what_stands_on_them(self):
         move = extract(BUILT, '/datum/craft_body/built/move_to')
@@ -125,7 +126,9 @@ class HighFlight(unittest.TestCase):
     def test_views_and_wreck_reach_the_first_solid_level(self):
         views = extract(SOURCE, '/datum/craft/air/proc/update_views')
         self.assertIn('air_hull_solid_below(locate(min_x, min_y, B.z))', views)
-        self.assertIn('var/turf/G = air_hull_solid_below(air)', views)
+        # The crew see the ground through the open-air view; no ground turf
+        # goes in vis_contents (it was washed out and resent every tick).
+        self.assertNotIn('ground_view', SOURCE)
         crash = extract(SOURCE, '/datum/craft/air/proc/crash')
         self.assertIn('var/turf/G = air_hull_solid_below(D)', crash)
         self.assertIn('15 * (levels - 1)', crash)

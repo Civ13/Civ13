@@ -50,9 +50,11 @@ try {
     if (args.SequenceEqual(new[] { "--hosting-only" })) {
         LocalHostingTests.Run(root);
         LocalBotTests.Run(root);
+        ProcessSafetyTests.Run(root);
         BotRepairTests.Run(root);
         Console.WriteLine("PASS bot command: " + await BotCommandTests.Run(root) + " assertions; --bot parsing, detached start, start/stop/restart sequences.");
         LocalHelpTests.Run(root);
+        LocalTranslatorTests.Run(root);
         StartMenuShortcutTests.Run(root);
         return 0;
     }
@@ -76,9 +78,11 @@ try {
     assertions += await TopicPacingTests.Run(root);
     assertions += LocalHostingTests.Run(root);
     assertions += LocalBotTests.Run(root);
+    assertions += ProcessSafetyTests.Run(root);
     assertions += BotRepairTests.Run(root);
     assertions += await BotCommandTests.Run(root);
     assertions += LocalHelpTests.Run(root);
+    assertions += LocalTranslatorTests.Run(root);
     assertions += StartMenuShortcutTests.Run(root);
     assertions += DiscordPresenceTests.Run(root);
     assertions += await DiscordSignInTests.Run(root);

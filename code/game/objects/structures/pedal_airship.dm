@@ -13,9 +13,6 @@
 #define PEDAL_AIRSHIP_SINK_TIME 20
 // How far (in tiles) a forced descent looks for clear ground.
 #define PEDAL_AIRSHIP_SET_DOWN_SEARCH 6
-// Ground shown through the open air around it: in full, and a fainter ring.
-#define PEDAL_AIRSHIP_VIEW_RANGE 7
-#define PEDAL_AIRSHIP_VIEW_FAR 10
 
 var/global/list/aloft_pedal_airships = list()
 
@@ -50,12 +47,9 @@ var/global/list/aloft_pedal_airships = list()
 	var/tmp/changing_height = FALSE
 	var/tmp/obj/effect/aircraft_shadow/shadow
 	var/tmp/turf/shadow_turf
-	var/tmp/obj/effect/aircraft_ground_view/ground_view
-	var/tmp/obj/effect/aircraft_ground_view/ground_view_far
-	var/tmp/turf/ground_view_anchor
 
 /obj/structure/vehicle/bicycle/airship/persistence_runtime_var(key)
-	return (key in list("aloft", "changing_height", "shadow", "shadow_turf", "ground_view", "ground_view_far", "ground_view_anchor")) || ..()
+	return (key in list("aloft", "changing_height", "shadow", "shadow_turf")) || ..()
 
 /obj/structure/vehicle/bicycle/airship/mount_hint()
 	return "Use the tiller's secondary action to rise, the tiller to pedal, and click the airship to get off once it is back on the ground."
@@ -278,9 +272,11 @@ var/global/list/aloft_pedal_airships = list()
 	set_aloft(FALSE)
 	clear_flight_visuals()
 
-// What the rider sees of the ground and what the ground sees of the airship.
-// Like the planes' (aircraft_view.dm), these live in nullspace and are drawn
-// through turf vis_contents, which saves never record.
+// The airship's shadow on the ground. Like the planes' (aircraft_view.dm), it
+// lives in nullspace and is drawn through turf vis_contents, which saves never
+// record. The rider sees the ground through the open-air view every upper level
+// has (open_air_view.dm); a second view of ground turfs drew over it washed out
+// and kept resending those turfs.
 /obj/structure/vehicle/bicycle/airship/proc/update_flight_visuals()
 	var/turf/here = get_turf(src)
 	var/turf/below = aloft ? ground_turf() : null
@@ -305,39 +301,6 @@ var/global/list/aloft_pedal_airships = list()
 			shadow_turf.vis_contents -= shadow
 		shadow_turf = below
 		below.vis_contents += shadow
-	var/list/near = list()
-	var/list/far = list()
-	var/min_x = world.maxx + 1
-	var/min_y = world.maxy + 1
-	for (var/turf/air in block(locate(max(1, here.x - PEDAL_AIRSHIP_VIEW_FAR), max(1, here.y - PEDAL_AIRSHIP_VIEW_FAR), here.z), locate(min(world.maxx, here.x + PEDAL_AIRSHIP_VIEW_FAR), min(world.maxy, here.y + PEDAL_AIRSHIP_VIEW_FAR), here.z)))
-		if (!istype(air, /turf/sky/building) || (locate(/obj/covers) in air))
-			continue
-		var/turf/G = locate(air.x, air.y, below.z)
-		if (!G)
-			continue
-		if (max(abs(air.x - here.x), abs(air.y - here.y)) <= PEDAL_AIRSHIP_VIEW_RANGE)
-			near += G
-		else
-			far += G
-		min_x = min(min_x, G.x)
-		min_y = min(min_y, G.y)
-	if (!ground_view)
-		ground_view = new
-		ground_view.loc = null
-	if (!ground_view_far)
-		ground_view_far = new /obj/effect/aircraft_ground_view/far
-		ground_view_far.loc = null
-	var/turf/anchor = locate(min_x, min_y, here.z)
-	if (ground_view_anchor != anchor)
-		if (ground_view_anchor)
-			ground_view_anchor.vis_contents -= ground_view
-			ground_view_anchor.vis_contents -= ground_view_far
-		ground_view_anchor = anchor
-		if (anchor)
-			anchor.vis_contents += ground_view_far
-			anchor.vis_contents += ground_view
-	ground_view.vis_contents = near
-	ground_view_far.vis_contents = far
 
 /obj/structure/vehicle/bicycle/airship/proc/clear_flight_visuals()
 	if (shadow_turf)
@@ -346,21 +309,7 @@ var/global/list/aloft_pedal_airships = list()
 	if (shadow)
 		qdel(shadow)
 	shadow = null
-	if (ground_view_anchor)
-		ground_view_anchor.vis_contents -= ground_view
-		ground_view_anchor.vis_contents -= ground_view_far
-	ground_view_anchor = null
-	if (ground_view)
-		ground_view.vis_contents = list()
-		qdel(ground_view)
-	if (ground_view_far)
-		ground_view_far.vis_contents = list()
-		qdel(ground_view_far)
-	ground_view = null
-	ground_view_far = null
 
-#undef PEDAL_AIRSHIP_VIEW_FAR
-#undef PEDAL_AIRSHIP_VIEW_RANGE
 #undef PEDAL_AIRSHIP_SET_DOWN_SEARCH
 #undef PEDAL_AIRSHIP_SINK_TIME
 #undef PEDAL_AIRSHIP_RISE_TIME

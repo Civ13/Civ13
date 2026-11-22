@@ -245,8 +245,9 @@
 		else if (find_trait("Dwarfism"))
 			food_m *= 0.8
 		food_m *= trait_food_mult()
-		food_m *= home_rest_hunger_mult()
-		water_m *= home_rest_hunger_mult()
+		var/rest_hunger_mult = home_rest_hunger_mult()
+		food_m *= rest_hunger_mult
+		water_m *= rest_hunger_mult
 		if (orc)
 			food_m *= 1.5
 		if (goblin)
@@ -309,14 +310,8 @@
 		if (CONSCIOUS)
 			adjustOxyLoss(-5)
 
-//drug addictions
-	for(var/ad in addictions)
-		if (addictions[ad]>0)
-			var/ind = addictions[ad]
-			process_addictions(ad,ind)
-			addictions[ad] -= 0.05
-		if (addictions[ad] < 0)
-			addictions[ad] = 0
+//drug addictions, tolerance, mixing and lasting harm (drug_classes.dm)
+	handle_drugs()
 
 //death
 	if (getBrainLoss() > 60)
@@ -324,6 +319,7 @@
 
 	handle_disease()
 	handle_survival_hints()
+	handle_familiarity() // familiarity.dm
 
 	//shitcode to fix the movement bug because byond hates me
 	if (grab_list.len)
@@ -525,11 +521,12 @@
 		eye_blurry = 1
 
 /mob/living/human/handle_chemical_smoke(var/datum/gas_mixture/environment)
-	if (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT))
-		return
-	if (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
+	if (blocks_chemical_smoke())
 		return
 	..()
+
+/mob/living/human/proc/blocks_chemical_smoke()
+	return (wear_mask && (wear_mask.item_flags & BLOCK_GAS_SMOKE_EFFECT)) || (head && (head.item_flags & BLOCK_GAS_SMOKE_EFFECT))
 
 /mob/living/human/handle_environment()
 
@@ -545,6 +542,9 @@
 	var/outside_c = outside_temperature_c(exposure_turf)
 	if (!isnull(outside_c))
 		loc_temp = outside_c
+	else
+		// Wind chill, humid heat and the sun out of doors (feels_like.dm).
+		loc_temp = feels_like_temperature(loc_temp)
 	outside_exposure_step(exposure_turf)
 	seabed_exposure_step(exposure_turf)
 	cold_wetness = min(1, max(0, cold_wetness))
@@ -567,11 +567,12 @@
 
 	loc_temp = canopy_shelter_temperature(exposure_turf, loc_temp)
 	loc_temp = umbrella_shade_temperature(loc_temp)
-	for (var/obj/structure/bed/bedroll/BRL in src.loc)
-		if (BRL.used == TRUE && BRL.buckled_mob == src)
-			if (loc_temp < 22)
-				loc_temp = 22
-				break
+	if (loc_temp < 22)
+		for (var/obj/structure/bed/bedroll/BRL in src.loc)
+			if (BRL.used == TRUE && BRL.buckled_mob == src)
+				if (loc_temp < 22)
+					loc_temp = 22
+					break
 
 	var/pain_held = sleep_pain_hold()
 	if (!pain_held && loc_temp > 18 && istype(wear_suit, /obj/item/clothing/suit/storage/coat) && map && (map.civilizations || map.ID == MAP_GULAG13 || map.ID == MAP_COLONY) && mob_area.location == AREA_INSIDE)
@@ -689,7 +690,9 @@
 			// First layer blocks 80% of a body's weighted heat loss; an
 			// overlapping layer adds 16%. Exposed parts still lose heat.
 			protection += 0.8 * get_thermal_protection(coverage & ~covered)
-			protection += 0.16 * get_thermal_protection(coverage & covered)
+			var/overlap = coverage & covered
+			if (overlap)
+				protection += 0.16 * get_thermal_protection(overlap)
 			covered |= coverage
 	return min(0.9, protection) * (1 - 0.5 * cold_wetness)
 
@@ -779,6 +782,7 @@
 			silent = FALSE
 			return TRUE
 
+		arcane_critical_check(health <= config.health_threshold_crit) // arcane_enchant.dm
 		//UNCONSCIOUS. NO-ONE IS HOME
 		if ((getOxyLoss() > (species.total_health/2)) || (health <= config.health_threshold_crit))
 			Paralyse(3)
@@ -1459,10 +1463,10 @@
 		return
 	else
 		switch(drug)
-			if ("cocaine")
-				if (ingested.has_reagent("cocaine"))
+			if ("stimulant")
+				if (drug_class_active("stimulant"))
 					return
-				adjust_mood(-((value/100)*0.26), "craving cocaine")
+				adjust_mood(-((value/100)*0.26), "craving stimulants")
 				switch (value)
 					if (0 to 24)
 						return
@@ -1503,8 +1507,8 @@
 						if (prob(12))
 							make_dizzy(6)
 						return
-			if ("opium")
-				if (ingested.has_reagent("opium"))
+			if ("opioid")
+				if (drug_class_active("opioid"))
 					return
 				adjust_mood(-((value/100)*0.32), "craving opium")
 				switch (value)
@@ -1556,23 +1560,46 @@
 							apply_effect(17, AGONY, FALSE)
 							apply_effect(10, DROWSY, FALSE)
 						return
-			if ("tobacco")
-				if (ingested.has_reagent("nicotine"))
+			if ("nicotine")
+				if (drug_class_active("nicotine"))
 					return
 				adjust_mood(-((value/100)*0.14), "craving tobacco")
 				switch (value)
 					if (0 to 21)
 						return
 					if (21 to 44)
+						if (prob(3))
+							to_chat(src, "You could do with a smoke.")
 						return
 					if (44 to 72)
+						if (prob(4))
+							to_chat(src, "You feel irritable and can't settle without a smoke.")
+						if (prob(3))
+							make_jittery(10)
 						return
-					if (72 to 87)
+					if (72 to 100)
+						if (prob(5))
+							to_chat(src, "You badly want a smoke. Your hands won't keep still.")
+						if (prob(5))
+							make_jittery(20)
 						return
-					if (87 to 100)
-						return
+			if ("cannabis")
+				if (drug_class_active("cannabis"))
+					return
+				adjust_mood(-((value/100)*0.10), "missing cannabis")
+				if (value >= 40 && prob(3))
+					to_chat(src, "You feel restless and low.")
+				return
+			if ("caffeine")
+				if (drug_class_active("caffeine"))
+					return
+				if (value >= 30)
+					adjust_mood(-((value/100)*0.08), "missing coffee")
+					if (prob(3))
+						custom_pain("Your head aches for want of coffee.", 0)
+				return
 			if ("alcohol")
-				if (ingested.has_reagent("wine") || ingested.has_reagent("rum") || ingested.has_reagent("beer") || ingested.has_reagent("vodka") || ingested.has_reagent("sake") || ingested.has_reagent("ale"))
+				if (drug_class_active("alcohol"))
 					return
 				adjust_mood(-((value/100)*0.20), "craving alcohol")
 				switch (value)

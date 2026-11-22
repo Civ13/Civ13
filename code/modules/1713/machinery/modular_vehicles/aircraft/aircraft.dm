@@ -81,7 +81,6 @@ var/global/list/airborne_aircraft = list()
 /obj/structure/vehicleparts/axis/aircraft/Destroy()
 	airborne_aircraft -= src
 	clear_shadows()
-	clear_ground_view()
 	return ..()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/pilot_message(text)
@@ -375,6 +374,7 @@ var/global/list/airborne_aircraft = list()
 		// Roll out at first gear's pace, ready to taxi.
 		vehicle_m_delay = get_speed()
 		visible_message(SPAN_NOTICE(runway ? "\The [src] touches down on the runway." : "\The [src] touches down smoothly on the level ground."))
+		accolade_meet_mob(driver || user, "aviator")
 		if (on_arresting_wires())
 			currentspeed = 0
 			moving = FALSE
@@ -522,6 +522,11 @@ var/global/list/airborne_aircraft = list()
 		var/turf/T = get_step(F.loc, m_dir)
 		// The black ring wall of a bounded flight level is an edge too, at both heights.
 		if (!T || istype(T, /turf/wall/indestructable/black))
+			// Over a linked edge she flies on to the land her heading meets (aircraft_edge.dm).
+			if (!edge_blocked && air_edge_travel_on())
+				if (!air_edge_fly_on(m_dir))
+					edge_blocked = TRUE
+				return FALSE
 			if (!edge_blocked)
 				pilot_message(SPAN_WARNING(length(air_crossing_destinations()) ? "You are at the edge of the land. Use Fly to another land on the control column, or turn back before you stall." : "You are at the edge of the world. Turn back or you will stall."))
 			edge_blocked = TRUE

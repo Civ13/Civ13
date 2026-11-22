@@ -177,7 +177,7 @@
 		stats[statname][1] *= (1 + round(multiplier/150, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/150, increase_multiple))
 
-	else if (list("throwing", "hunting", "swimming").Find(statname))
+	else if (list("throwing", "hunting", "swimming", "unarmed").Find(statname))
 		stats[statname][1] *= (1 + round(multiplier/200, increase_multiple))
 		stats[statname][2] *= (1 + round(multiplier/200, increase_multiple))
 

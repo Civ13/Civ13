@@ -92,9 +92,13 @@
 	return TRUE
 
 // Nitrogen builds in open water and leaves again on the shelf.
-/mob/living/human/proc/scuba_nitrogen_step(turf/T)
+// Only breathing compressed air in open water adds nitrogen; a held breath
+// adds none, while the shelf still releases the load.
+/mob/living/human/proc/scuba_nitrogen_step(turf/T, breathing = TRUE)
 	var/before = nitrogen_load
 	if (sea_zone_of(T) >= SEA_ZONE_OPEN)
+		if (!breathing)
+			return
 		nitrogen_load = min(SCUBA_NITROGEN_MAX, nitrogen_load + SCUBA_NITROGEN_OPEN)
 		if (before < SCUBA_BENDS_SAFE && nitrogen_load >= SCUBA_BENDS_SAFE)
 			to_chat(src, SPAN_WARNING("You have been down long enough to need a safety stop: come up slowly, or rest on the shelf first."))

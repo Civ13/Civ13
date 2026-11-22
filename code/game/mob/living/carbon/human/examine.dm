@@ -112,6 +112,10 @@
 	else if (blood_DNA)
 		msg += "<span class='warning'>[T.He] [T.has] [(hand_blood_color != "#030303") ? "blood" : "oil"]-stained hands!</span>\n"
 
+	var/stance_line = combat_stance_examine_line(T)
+	if (stance_line)
+		msg += "[stance_line]\n"
+
 	//handcuffed?
 	if (handcuffed)
 		msg += "<span class='warning'>[T.He] [T.is] \icon[getFlatIcon(handcuffed)] handcuffed!</span>\n"
@@ -267,6 +271,8 @@
 	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
 	if (O && O.get_teeth() < O.max_teeth)
 		msg += "<span class='warning'>[O.get_teeth() <= 0 ? "All" : "[O.max_teeth - O.get_teeth()]"] of [T.his] teeth are missing!</span>\n"
+
+	msg += drug_examine_text(T)
 
 	if (print_flavor_text()) msg += "[print_flavor_text()]\n"
 
@@ -442,6 +448,8 @@
 				msg += "<br><i>[T.He] [T.is] a citizen of [html_encode(nation)].</i>"
 	if (find_trait("Menacing") && user != src && stat != DEAD)
 		msg += "<br><span class='warning'>[T.He] [T.has] a dangerous look about [T.him].</span>"
+	msg += arcane_apostate_examine(user) // arcane_apostate.dm
+	msg += heteromorph_examine(user) // heteromorph.dm
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"
 

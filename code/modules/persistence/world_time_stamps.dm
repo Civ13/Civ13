@@ -11,13 +11,19 @@
 // A default of 0 or -1 means "ready" for a cooldown, and "since round start"
 // for an age stamp. tests/world_time_stamps fails when a new stamp on a saved
 // type appears without an entry here or a reviewed exception there.
-var/global/list/persistence_world_time_stamps = list(
+var/global/list/persistence_world_time_stamps = persistence_world_time_stamps_table()
+
+// Built in a proc: the engine puts every initialised global into one proc
+// with a size limit, and this list is large.
+/proc/persistence_world_time_stamps_table()
+	return list(
 	"last_bumped" = list(/atom),
 	"next_attack_hand" = list(/obj/structure/simple_door),
 	"next_fill" = list(/obj/structure/sea_office),
 	"ram_tick" = list(/obj/structure/vehicleparts/axis),
 	"bellows_until" = list(/obj/structure/furnace),
 	"pumped_until" = list(/obj/structure/fluid_pump/hand),
+	"divine_manifest_until" = list(/mob/observer/ghost),
 	"next_job_fill" = list(/obj/structure/berth/quay/depot),
 	"last_moved" = list(/obj/structure/trains/platform),
 	"next_use" = list(/obj/structure/train_brake_wheel),
@@ -30,6 +36,8 @@ var/global/list/persistence_world_time_stamps = list(
 	"next_gracewall_message" = list(/mob),
 	"next_language_learn" = list(/mob),
 	"next_language_practice" = list(/mob/living/human),
+	"next_language_drift_heard" = list(/mob/living/human),
+	"next_people_contact_heard" = list(/mob/living/human),
 	"next_mud_message" = list(/mob),
 	"next_pain_time" = list(/mob),
 	"next_slope_message" = list(/mob),
@@ -40,6 +48,8 @@ var/global/list/persistence_world_time_stamps = list(
 	"last_special" = list(/mob/living),
 	"next_weather_scan" = list(/mob/living),
 	"latex_tapped_at" = list(/obj/structure/wild/jungle),
+	"resin_tapped_at" = list(/obj/structure/wild/tree/live_tree/pine),
+	"lacquer_tapped_at" = list(/obj/structure/wild/tree/live_tree),
 	"announcement_cooldown" = list(/mob/living/human),
 	"soap_cooldown" = list(/mob/living/human),
 	"last_flu_sneeze" = list(/mob/living/human),

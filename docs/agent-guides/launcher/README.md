@@ -11,6 +11,51 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-22: Ready lands -->
+Launcher 1.5.38 renames the menu item to **Travel and ready lands…** and adds the group's `ready_neighbours` checkbox and
+`cold_after_minutes` (HostSettings.Readiness/SetReadiness), read by the host service at each check.
+
+<!-- 2026-11-22: Travel starts -->
+Launcher 1.5.37 adds **All regions > More > Travel starts…** (HostSettings.TravelStarts/SetKeptDown): one tick per
+land (the gateway is left out); an unticked land gets `"keep_down": true` in the group config, so a traveller is turned
+back instead of starting it. The doorman and shard_group.py read it at each request, so saving restarts nothing.
+
+<!-- 2026-11-21: Translator tab (Edge chat translator) -->
+Val asked (2026-11-21) that the Edge chat translator (tools/edge-translator, docs/chat-translation.md) run as part of the
+launcher. Like Player Help it belongs to the host service: with `"chat_translator": {}` in the group config
+(optional `port` 55581, `node`, `npm`, `edge`, `profile`), `supervise` copies the service into
+`<root>/chat-translator/app`, runs `npm ci --ignore-scripts` when its lock changes, starts it and restarts it, and every
+region's merged config gets `CHAT_TRANSLATE_URL http://127.0.0.1:<port>` (a host line wins). Launcher 1.5.36 adds the
+**Translator** tab (Gui/TranslatorPage.cs, LocalTranslator.cs): status from `translator-status` (running, answering
+/health, counts), Start/Stop (`translator-start`/`translator-stop`, a stop marker the host service honours; stop ends only a
+verified Node process tree), and the service log.
+
+<!-- 2026-11-21: region clocks on the host board -->
+Launcher 1.5.35: the region board shows a LOCAL TIME column (sun/moon glyph, clock, season, UTC zone) for regions on
+the shared world calendar (docs/world-calendar.md). Data path: `world_calendar_status()` in DM -> shard_group
+describe `calendar` -> `shard_group.py` `calendar_view` (validated) -> `region_view.calendar` -> `RegionClock.From`.
+Off-calendar rows leave the slot blank; at narrow widths DETAILS shrinks first, then the zone and season drop.
+
+<!-- 2026-11-21: up to 24 regions and missing Earth regions -->
+Launcher 1.5.34: every list of regions reads up to `LocalHosting.MaxRegions` (32, the same as shard_group.py MAX_REGIONS
+and shard_group.dm SHARD_MAX_REGIONS) instead of 16, and Ports and front door gains "Add missing Earth regions"
+(`shard_group.py add-regions`): it plans, confirms, then adds the Earth lands and seas the group lacks
+(EARTH_REGIONS: the Mediterranean and the five oceans on the live host) and sets them up stopped.
+
+<!-- 2026-11-21: process safety and the experimental WMI check -->
+After WMI broke on 2026-11-19 (tasklist hung, Gaia stayed down), Val approved the criticality plan (2026-11-21).
+Launcher 1.5.33: `LocalHosting.RunCaptured` reads both streams asynchronously and enforces a per-step limit
+(`WithLimit`; status 30 s, stop/kill/unlock/freeze/thaw/help 2 min, start/restart 10 min for the pager wait,
+everything else 30 min), ending the step's tree and throwing `StepTimedOut` (an IOException), so a hung host
+script no longer freezes the board. ProcessSafety.cs lists, inspects and ends processes through the kernel
+(never tasklist, taskkill or WMI) and only ends a verified target; the bot's Force stop uses it, and
+`--bot start` falls back to a direct `CreateProcess` when WMI's `Win32_Process.Create` fails or takes over 20 s.
+All regions > More > **Windows process check (experimental)…** (WmiHealth.cs, Gui/WmiHealthDialog.cs) checks
+WMI read-only and offers the five repairs, each elevated only on a click; its checkbox (`experimental.json`
+`wmi_health_check`, off by default) turns on a 10-minute watch that warns on the board. `Civ13.exe --wmi check`
+prints the same check. `tests/gaia_host/test_gaia_host.py` ProcessToolGuardTests fails on new process-tool
+calls in host scripts and the launcher (WmiHealth.cs and BotCommand.cs are allowed).
+
 <!-- 2026-11-19: Player records window -->
 Val asked (2026-11-19) that admin notes and similar systems be visible on every region. All regions > More >
 **Player records…** (Gui/PlayerRecordsDialog.cs, PlayerRecords.cs, launcher 1.5.31) runs `shard_group.py records`
@@ -18,6 +63,9 @@ Val asked (2026-11-19) that admin notes and similar systems be visible on every 
 `<group root>/coordinator.sqlite` (tools/transfer_storage/records.py report/export): a summary, one player's records,
 a search (key, text or IP), each region's copy of its old notes/bans/memos files and its uncollected journal.
 Staff add and remove records in game only. Admin tooling: no changelog line or wiki page.
+A player lookup (`--ckey`) starts with that account's lifetime points and character slots
+(records.py account_summary, docs/character-slots.md); `shard_group.py accounts --ckey K` answers the
+summary alone as JSON (`points`, `spent`, `balance`, `claimed`, `slots`).
 
 <!-- 2026-11-17: Civilizationbot log level -->
 Val asked (2026-11-17) for the bot's logger level in the launcher, info by default instead of debug. The

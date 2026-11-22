@@ -2,11 +2,11 @@
 // script and the unit tests read these, so a window's sample data lives in one
 // place. Names and text are invented for previews. Node runs this file as it is,
 // so it uses only type syntax that can be erased.
-import type { AppearanceData, CharacterSetupData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
+import type { AppearanceData, CharacterSetupData, ComputerData, HaircutData, ChemistryData, CrewLogData, KnownLanguagesData, PanelData, PromptData, ReligionListData, ShipStocksData, SpawnMenuData, StorageWindowData, VendingData, WarehouseData } from './data.ts';
 import type { Data } from './types.ts';
 // Windows with a declared snapshot type; their fixtures are checked against it.
 type Typed = {
-  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
+  'appearance_changer.tmpl': AppearanceData; 'character_setup.tmpl': CharacterSetupData; 'chem_disp.tmpl': ChemistryData; 'computer.tmpl': ComputerData; 'haircut.tmpl': HaircutData; 'crew_log.tmpl': CrewLogData; 'known_languages.tmpl': KnownLanguagesData;
   'panel.tmpl': PanelData; 'prompt.tmpl': PromptData; 'religion_list.tmpl': ReligionListData; 'ship_stocks.tmpl': ShipStocksData; 'spawn_menu.tmpl': SpawnMenuData; 'storage_window.tmpl': StorageWindowData; 'warehouse_book.tmpl': WarehouseData;
   'vending_machine.tmpl': VendingData; 'vending_machine2.tmpl': VendingData; 'vending_machine_gulag.tmpl': VendingData; 'vending_machine_taotd.tmpl': VendingData;
 };
@@ -15,8 +15,8 @@ export const screens: Fixture[] = [];
 // Window sizes as the game opens them (width, height).
 const sizes = {
   'appearance_changer.tmpl': [800, 450], 'book_reader.tmpl': [625, 650], 'character_flavor.tmpl': [500, 200], 'character_notes.tmpl': [625, 650], 'character_setup.tmpl': [860, 720],
-  'chem_disp.tmpl': [390, 655], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
-  'faction_creation.tmpl': [620, 900], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
+  'chem_disp.tmpl': [390, 655], 'computer.tmpl': [640, 480], 'crafting_atlas.tmpl': [1000, 700], 'crafting_window.tmpl': [940, 680], 'crew_log.tmpl': [500, 520],
+  'faction_creation.tmpl': [620, 900], 'haircut.tmpl': [800, 660], 'faction_list.tmpl': [420, 520], 'faction_symbol.tmpl': [620, 760], 'known_languages.tmpl': [600, 480],
   'paper_editor.tmpl': [625, 650], 'panel.tmpl': [380, 420], 'photo_viewer.tmpl': [360, 400], 'prompt.tmpl': [420, 240], 'recruitment_station.tmpl': [520, 640],
   'religion_list.tmpl': [450, 450], 'research_bench.tmpl': [900, 680], 'research_book.tmpl': [620, 660], 'ship_stocks.tmpl': [500, 520], 'spawn_menu.tmpl': [640, 640], 'storage_window.tmpl': [760, 600], 'tech_tree.tmpl': [900, 680],
   'vending_machine.tmpl': [540, 600], 'vending_machine2.tmpl': [540, 600], 'vending_machine_gulag.tmpl': [540, 600], 'vending_machine_taotd.tmpl': [540, 600],
@@ -61,6 +61,25 @@ add('ship-stocks', 'ship_stocks.tmpl', { stocks: ([['Treasury', 1240, 'reales'],
 add('crew-log', 'crew_log.tmpl', { crew: [['Anne Hale', 'Captain'], ['Tom Reed', 'Boatswain'], ['Will Marsh', 'Sailor'], ['Edda Stone', 'Surgeon']].map(([name, job]) => ({ name, job })) });
 add('faction-list', 'faction_list.tmpl', { factions: [{ name: 'Dawnward Guild', motto: 'Build together', flavour: 'A fictional fellowship.', members: 4, symbol: '', renamed: '' }, { name: 'Ash Company', members: 1, symbol: '' }] });
 add('known-languages', 'known_languages.tmpl', { current_default: 'Common', languages: [{ name: 'Common', prefix: ',0', description: 'Spoken nearly everywhere.', is_default: 1 }, { name: 'Old Tongue', prefix: ',o', description: 'A scholarly language.' }] });
+// A speaker whose people's language split off: the family block under the list.
+add('known-languages-family', 'known_languages.tmpl', { current_default: 'Dawnish', languages: [
+  { name: 'Dawnish', prefix: ',da', description: 'Mother tongue. A language that grew out of Old Tongue among the Dawnward Guild (Medieval Age).', is_default: 1 },
+  { name: 'Old Tongue', prefix: ',o', description: 'Fluent. A scholarly language.' },
+  { name: 'Ashen', prefix: 'not yet speakable', description: 'Broken, 22%. Keep listening to people who speak it.' }],
+  families: [{ root: 'Old Tongue', members: [
+    { name: 'Old Tongue', depth: 0, known: 1 },
+    { name: 'Dawnish', parent: 'Old Tongue', nation: 'Dawnward Guild', era: 'Medieval Age', depth: 1, known: 1, mother: 1 },
+    { name: 'Ashen', parent: 'Old Tongue', nation: 'Ash Company', era: 'Imperial Age', depth: 1, learning: 1 }],
+  links: [{ a: 'Old Tongue', b: 'Dawnish', percent: 80 }, { a: 'Old Tongue', b: 'Ashen', percent: 70 }, { a: 'Dawnish', b: 'Ashen', percent: 60 }] }],
+}, 'Known languages');
+// A speaker of a formed people: the "Your people" block with its lineage, kin and upbringing.
+add('known-languages-people', 'known_languages.tmpl', { current_default: 'Latin', languages: [{ name: 'Latin', prefix: ',l', description: 'Mother tongue. The speech of the Hearthlanders.', is_default: 1 }],
+  people: { name: 'Saltmarsh Kin', language: 'Latin', land: 'the Saltmarsh', lineage: [
+    { name: 'Hearthlanders', language: 'Latin', formed: 0, year: 0, nation: '', homeland: '', parents: [] },
+    { name: 'Saltmarsh Kin', language: 'Latin', formed: 1, year: 58800, nation: 'Iron Pact', homeland: 'the Saltmarsh', parents: ['Hearthlanders'] }],
+  kin: [{ name: 'Tidewater Folk', language: 'Latin', formed: 1, year: 58790, nation: '', homeland: 'the Tidewater', parents: ['Hearthlanders'], relation: 'shares your roots' }],
+  raised_among: ['Fjordfolk'], welcomed_by: [] },
+}, 'Known languages');
 add('panel', 'panel.tmpl', { sections: [
   { title: 'Lock', rows: [{ label: 'Dial', value: 35, buttons: [{ label: '-', action: 'decrement' }, { label: '+', action: 'increment' }] }, { label: 'Door', value: 'Open', tone: 'good' }], buttons: [{ label: 'Close the safe', action: 'open' }] },
   { title: 'Contents', items: [{ name: 'Ledger', detail: 'A bound book of accounts.', buttons: [{ label: 'Read', action: 'read', id: 'a' }, { label: 'Take', action: 'retrieve', id: 'a' }] }, { name: 'Silver coins', buttons: [{ label: 'Take', action: 'retrieve', id: 'b' }] }], empty: 'It is empty.' },
@@ -152,6 +171,13 @@ const setup: CharacterSetupData = {
       { id: 'senses', title: 'Senses and speech', traits: [trait('Deaf', -3, 'You cannot hear at all.', { taken: 1 }), trait('Stutter', -1, 'You have a permanent stutter.')] },
     ],
   },
+  chart: {
+    choice: 'random', verified: 1,
+    signs: [
+      { id: 'ox', name: 'The Ox', season: 'Early spring', calling: 'Ploughman, hauler and builder', strengths: 'Strength +10, Farming +5, Stamina +5', weaknesses: 'Dexterity -10, Philosophy -5, Swimming -5' },
+      { id: 'owl', name: 'The Owl', season: 'Early winter', calling: 'Scholar, researcher and teacher', strengths: 'Philosophy +10, Medical +5, Crafting +5', weaknesses: 'Strength -10, Stamina -5, Swords -5' },
+    ],
+  },
   settings: {
     ui_style: 'ConsoleStyle', ui_styles: ['ConsoleStyle', '1713Style', 'NewStyle'], cursor: 'Default', cursors: ['Default', 'Red Crosshair', 'Green Crosshair', 'White Crosshair'],
     client_fps: 60, fps_choices: [30, 60, 100, 120, 144], tutorial: 'in progress (3 of 9 steps done)',
@@ -160,7 +186,17 @@ const setup: CharacterSetupData = {
 };
 add('character-setup', 'character_setup.tmpl', setup, 'Character Setup');
 add('character-setup-traits', 'character_setup.tmpl', { ...setup, tab: 'traits' }, 'Character Setup');
+add('character-setup-chart', 'character_setup.tmpl', { ...setup, tab: 'chart' }, 'Character Setup');
 add('character-setup-settings', 'character_setup.tmpl', { ...setup, tab: 'settings' }, 'Character Setup');
+// Haircut: a long-haired, bearded character choosing among shorter styles.
+const cuts = (names: string[], lengths: number[], first: number) => names.map((name, i) => ({ name, length: lengths[i], row: first + i, tint: 1 }));
+const haircut: HaircutData = {
+  sheet: 'civ13_haircut_styles.png', body: 'haircut_sample.png', self: 1, name: 'Tomas Reed', hair: 'Shoulder-length Hair', beard: 'Full Beard', hair_color: '#603818', beard_color: '#603818', seconds: 8,
+  hair_styles: cuts(['Bald', 'Skinhead', 'Buzzcut', 'Short Hair', 'Cut Hair', 'Crewcut', 'Quiff', 'Bowl', 'Parted', 'Mohawk', 'Bedhead', 'Combover', 'Fade', 'Undercut', 'Half-banged Hair', 'Spiky', 'Dreadlocks', 'Shoulder-length Hair'], [0, 0, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 3, 3], 0),
+  beard_styles: cuts(['Shaved', '3 O\'clock Shadow', 'Goatee', 'Chinstrap', 'Mutton Chops', 'Medium Beard', 'Full Beard'], [0, 1, 1, 1, 2, 2, 3], 40),
+};
+add('haircut', 'haircut.tmpl', haircut, 'Haircut');
+add('haircut-barber', 'haircut.tmpl', { ...haircut, self: 0, beard_styles: [] }, 'Haircut');
 // Storage window: your things on the left, a basket, a chest and the floor on the right, one move running.
 const stor = (id: string, name: string, size_class: number, extra: Data = {}) => ({ id, name, size_class, size: ['', 'tiny', 'small', 'normal', 'large', 'bulky'][size_class], cost: [0, 1, 2, 4, 8, 16][size_class], image: '', ...extra });
 const storage: StorageWindowData = {
@@ -217,3 +253,26 @@ add('circuit-editor', 'wiremod_circuit.tmpl', {
   global_basic_types: ['number', 'boolean', 'string', 'any', 'entity'], variables: [{ name: 'last roll', datatype: 'number', color: 'green', is_list: 0 }],
   examined_name: null, examined_desc: null, examined_notices: [], examined_rel_x: 0, examined_rel_y: 0,
 }, 'integrated circuit');
+const computer: ComputerData = {
+  name: 'minicomputer', shell: 'cli', os_name: 'Unga OS', os_version: '1969 edition', powered: 1, case_open: 0, status: '',
+  boot_lines: ['UNGA OS 1969 EDITION', 'MEMORY CHECK OK', 'TAPE DRIVE READY', '1 PROGRAM LOADED'],
+  hardware: [
+    { index: 1, slot: 'cpu', slot_label: 'Processor', name: 'transistor logic board', detail: 'tier 1', icon: 'cpu_chip' },
+    { index: 2, slot: 'drive', slot_label: 'Storage', name: 'tape drive', detail: '16 KB', icon: 'tape_drive' },
+    { index: 3, slot: 'media', slot_label: 'Media', name: 'diskette reader', detail: 'data diskette inside', icon: 'disk_reader' },
+  ],
+  empty_slots: [{ slot: 'expansion', slot_label: 'Expansion' }],
+  programs: [{ id: 'files', name: 'Files', desc: 'Write, read, print and copy text files.', available: 1, reason: '' },
+    { id: 'ledger', name: 'Ledger', desc: 'Keep accounts in columns.', available: 0, reason: 'Needs a tier 2 processor.' }],
+  active: '', files: null,
+};
+const computerFiles: ComputerData['files'] = {
+  drive: { name: 'tape drive', used_kb: 1.2, capacity_kb: 16 },
+  list: [{ index: 1, name: 'NOTES', size_kb: 0.4 }, { index: 2, name: 'HARBOUR LOG', size_kb: 0.8 }],
+  open: null, disk: { name: 'data diskette', used_kb: 0.4, capacity_kb: 4, list: [{ index: 1, name: 'MAP', size_kb: 0.4 }] },
+  printer: { paper: 12 }, max_chars: 4000, max_name: 24,
+};
+add('computer', 'computer.tmpl', computer, 'Minicomputer');
+add('computer-files', 'computer.tmpl', { ...computer, active: 'files', status: 'Saved NOTES.', files: computerFiles }, 'Minicomputer');
+add('computer-editor', 'computer.tmpl', { ...computer, active: 'files', files: { ...computerFiles, open: { index: 1, name: 'NOTES', body: 'Grain count, east store: 41 sacks.\nAsk Mira about the second tape.' } } }, 'Minicomputer');
+add('computer-hardware', 'computer.tmpl', { ...computer, tab: 'hardware', case_open: 1 }, 'Minicomputer');

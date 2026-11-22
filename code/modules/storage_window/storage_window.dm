@@ -284,6 +284,8 @@
 /proc/storage_window_access(mob/user, obj/item/weapon/storage/S)
 	if (istype(S, /obj/structure/closet))
 		return closet_window_access(user, S)
+	if (!S || !S.storage_contents_accessible())
+		return FALSE
 	var/obj/structure/storage_container/C = storage_window_owner_structure(S)
 	if (istype(C) && !C.storage_access_allowed(user))
 		return FALSE
@@ -437,7 +439,7 @@
 				G["space"] = S.max_storage_space
 				G["slots"] = S.storage_slots
 				G["max_size"] = S.max_w_class
-			G["total"] = S.contents.len
+			G["total"] = S.shown_contents_count()
 			if (unseen.len)
 				G["unseen"] = unseen
 			if (search_holder == S && search_item)

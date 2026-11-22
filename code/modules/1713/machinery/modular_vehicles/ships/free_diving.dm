@@ -150,7 +150,7 @@
 		swim_train(T, sea_zone_of(T) >= SEA_ZONE_OPEN ? FREE_DIVE_OPEN_TRAIN : 1)
 		return
 	if (nitrogen_load > 0)
-		scuba_nitrogen_step(T)
+		scuba_nitrogen_step(T, FALSE)
 	if (swim_breath < 0)
 		swim_breath = swim_breath_max()
 	swim_breath = max(0, swim_breath - 1)

@@ -24,10 +24,18 @@
 		user.visible_message("[user] is beginning to set the bone in [target]'s [affected.name] in place with \the [tool]." , \
 			"You are beginning to set the bone in [target]'s [affected.name] in place with \the [tool].")
 		target.custom_pain("The pain in your [affected.name] is going to make you pass out!",110)
+		affected.bone_set_on_fracture = !!(affected.status & ORGAN_BROKEN)
 		..()
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
+		var/started_on_fracture = affected.bone_set_on_fracture
+		affected.bone_set_on_fracture = FALSE
+		if (!(affected.status & ORGAN_BROKEN) && started_on_fracture)
+			// The break knit while the bone was being set; leave it whole.
+			user.visible_message("<span class = 'notice'>[user] finds the bone in [target]'s [affected.name] has already knit.</span>", \
+				"<span class = 'notice'>The bone in [target]'s [affected.name] has already knit; you leave it in place.</span>")
+			return
 		if (affected.status & ORGAN_BROKEN)
 			user.visible_message("<span class = 'notice'>[user] sets the bone in [target]'s [affected.name] in place with \the [tool].</span>", \
 				"<span class = 'notice'>You set the bone in [target]'s [affected.name] in place with \the [tool].</span>")

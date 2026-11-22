@@ -667,5 +667,6 @@
 	playsound(user, user.gender == MALE ? 'sound/effects/jump_male.ogg' : 'sound/effects/jump_female.ogg', 25)
 	user.visible_message("[user] jumps.")
 	user.stats["stamina"][1] = max(user.stats["stamina"][1] - rand(20,40), 0)
+	user.body_motion_jump()
 	user.throw_at(target, 5, 0.5, user)
 	user.setClickCooldown(22)

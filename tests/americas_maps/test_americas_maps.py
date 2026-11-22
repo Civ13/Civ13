@@ -306,11 +306,12 @@ class AmericasMapsTest(unittest.TestCase):
                 self.assertIn(map_id + ',', jobs)
 
     def test_edges_lead_to_each_other(self):
-        metadata = (ROOT / 'code/game/objects/map_metadata/nomads/nomads_americas.dm').read_text(encoding='utf-8')
+        # The links live in the world links table (tools/world_links/world_links.json).
+        links = (ROOT / 'code/modules/persistence/world_links.dm').read_text(encoding='utf-8')
         for name, spec in MAPS.items():
             with self.subTest(name):
-                block = metadata.split(spec['metadata'] + '\n')[1].split('\n\n')[0]
-                self.assertIn(f'edge_crossings = list("{spec["edge"]}" = "{spec["neighbour"]}")', block)
+                region = name + 'america'
+                self.assertIn(f'"{region}" = list("{spec["edge"]}" = list("{spec["neighbour"]}" = list(0, 1)))', links)
         group = (ROOT / 'scripts/shard-group/americas.example.json').read_text(encoding='utf-8')
         self.assertIn('"id": "northamerica"', group)
         self.assertIn('"id": "southamerica"', group)
@@ -338,7 +339,7 @@ class AmericasMapsTest(unittest.TestCase):
         self.assertIn('if (H.buckled || H.driver || H.driver_vehicle) return "You cannot drive across yet. Get down and walk on."', edge)
         # A rider takes the mount: recorded before the ask, removed only once the rider left,
         # validated on arrival, and never carried without an edge crossing.
-        self.assertIn('"voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"))', travel)
+        self.assertIn('"voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon"', travel)
         self.assertIn('if ((H.riding || H.riding_mob) && !region_edge_mount_record(H)) return', edge)
         self.assertIn('if (took_mount && QDELETED(src) && !QDELETED(steed))', edge)
         self.assertIn('return ispath(path, /mob/living/simple_animal) && initial(A.can_ride)', edge)

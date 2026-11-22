@@ -283,6 +283,16 @@
       ]
     },
     {
+      "path": "code/game/objects/structures/railing_built.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/railing/built/CheckExit(atom/movable/O, target, exit_direction = null)",
+          "sha256_body": "d80e389296e75c0f67947bf8ecf6be89eecde4c0f0a3797dc89e7ad24c1fd4a5"
+        }
+      ]
+    },
+    {
       "path": "code/game/objects/structures/stool_bed_chair_nest/bed.dm",
       "declarations": [
         {
@@ -669,6 +679,16 @@
           "owner": "/obj/structure/multiz",
           "declaration": "CanPass(obj/mover, turf/source, height, airflow)",
           "sha256_body": "470503e160a46dd6e2f484f090868cd4d5c12e54f9cc79f48fa8ddf69ca09e70"
+        }
+      ]
+    },
+    {
+      "path": "code/modules/naval/ocean_regions.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/turf/floor/beach/water/deep/saltwater/breakers/CanPass(atom/movable/mover)",
+          "sha256_body": "9a221c654f5a9bff1487717bd8bf5229bc9dba81e25a7e5be9532d5fe4e810d4"
         }
       ]
     },

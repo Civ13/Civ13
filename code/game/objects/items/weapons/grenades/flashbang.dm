@@ -55,7 +55,8 @@
 					M.ear_damage += rand(1, 10)
 				else
 					M.ear_damage += rand(0, 5)
-					M.ear_deaf = max(M.ear_deaf,15)
+				// Both rolls deafen; the high roll only adds more damage.
+				M.ear_deaf = max(M.ear_deaf,15)
 
 		else if (get_dist(M, T) <= 5)
 			if (!ear_safety)

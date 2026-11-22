@@ -37,6 +37,7 @@ NOMADS_MAPS = {
     'NOMADS_EARTH_ANTARCTICA': 'nomads_earth_antarctica.dmm',
     'NOMADS_EARTH_ASIA': 'nomads_earth_asia.dmm',
     'NOMADS_EARTH_GREENLAND': 'nomads_earth_greenland.dmm',
+    'NOMADS_EARTH_MEDITERRANEAN': 'nomads_earth_mediterranean.dmm',
     'NOMADS_EARTH_OCEANIA': 'nomads_earth_oceania.dmm',
     'NOMADS_EARTH_EUROPE': 'nomads_earth_europe.dmm',
     'NOMADS_ICE_AGE': 'nomads_ice_age.dmm',
@@ -47,6 +48,11 @@ NOMADS_MAPS = {
     'NOMADS_MOUNTAIN': 'nomads_mountain.dmm',
     'NOMADS_NEW_WORLD': 'nomads_new_world.dmm',
     'NOMADS_NORTH_AMERICA': 'nomads_north_america.dmm',
+    'NOMADS_OCEAN_ATLANTIC': 'nomads_ocean_atlantic.dmm',
+    'NOMADS_OCEAN_PACIFIC': 'nomads_ocean_pacific.dmm',
+    'NOMADS_OCEAN_INDIAN': 'nomads_ocean_indian.dmm',
+    'NOMADS_OCEAN_ARCTIC': 'nomads_ocean_arctic.dmm',
+    'NOMADS_OCEAN_SOUTHERN': 'nomads_ocean_southern.dmm',
     'NOMADS_OCEANIA': 'nomads_oceania.dmm',
     'NOMADS_PANGEA': 'nomads_pangea.dmm',
     'NOMADS_PERSISTENCE_BETA': 'nomads_persistence_beta.dmm',
@@ -496,6 +502,14 @@ def publish_ready(root, *, revision, expected_map, host, generation, session, st
     return state
 
 
+class LifecycleRefused(RuntimeError):
+    """A well-formed response explicitly refused the requested lifecycle action."""
+
+    def __init__(self, code):
+        self.code = code
+        super().__init__('Lifecycle request rejected: %s' % code)
+
+
 def query(port, token, action='status', operation=None, session=None, expected_persistence=None, extra=None):
     values = {'nomads_lifecycle': '1', 'token': token, 'action': action}
     if extra:  # action-specific fields, such as the port a standby world opens
@@ -531,7 +545,9 @@ def query(port, token, action='status', operation=None, session=None, expected_p
         if not isinstance(result, dict) or not result.get('ok'):
             # The world's reason (port_not_opened, invalid_session_or_operation, ...) goes in the
             # message so a refused step says why.
-            raise RuntimeError('Lifecycle request rejected: %s' % result.get('error') if isinstance(result, dict) else 'Lifecycle request rejected')
+            if isinstance(result, dict):
+                raise LifecycleRefused(result.get('error'))
+            raise RuntimeError('Lifecycle request rejected')
         return result
 
 

@@ -221,6 +221,7 @@ Ccomp's first proc.
 									   there won't be an autopsy.
 									*/
 	G.can_reenter_corpse = TRUE
+	spirit_release(G.ckey) // spirit_wait.dm
 
 	G:show_message(text("<span class = 'notice'><b>You may now respawn.  You should roleplay as if you learned nothing about the round during your time with the dead.</b></span>"), TRUE)
 	log_admin("[key_name(usr)] allowed [key_name(G)] to bypass the respawn limit")

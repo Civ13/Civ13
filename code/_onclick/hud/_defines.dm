@@ -71,6 +71,7 @@
 
 
 #define ui_tactic "EAST-7:28,1:5" // "9,1"
+#define ui_combat_stance "EAST-7:28,2:5" // "9,2", above the tactic button
 #define ui_equip "WEST+6:16,2:5" // "7,2"
 // Replace with modern intent changes
 #define ui_intent "EAST-4:44,1:5" // "12:16,1" 

@@ -20,7 +20,7 @@
 // ============================================================
 
 // The freighter's engine: big enough for full ahead with a hold full of cargo.
-#define SLIPWAY_ENGINE_CC 5000
+#define SLIPWAY_ENGINE_CC 9000
 
 // TRUE for a vessel this file can turn into a built hull: a deck at the sea's
 // surface and at most a hold on the level below, afloat on open water.
@@ -131,6 +131,8 @@
 		E.fueltank = tank
 		if (fuel > 0)
 			tank.reagents.add_reagent("diesel", min(fuel, tank.volume))
+	// She comes off the ways with her sides closed (hull_sides.dm).
+	hull_rail_sides_free(deck)
 	var/obj/structure/hull_tiller/tiller = new(helm_at)
 	var/problem = tiller.commission(hull_name, heading)
 	if (problem)

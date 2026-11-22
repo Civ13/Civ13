@@ -5,15 +5,6 @@
 // bantypes
 var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban", "OOC Ban")
 
-/datum/quickBan_handler
-/datum/quickBan_handler/Topic(href,href_list[])
-	..()
-	if (href_list["quickBan_removeBan"])
-		var/client/callers = locate(href_list["caller"])
-		quickBan_remove_uid(href_list["quickBan_removeBan_UID"], callers ? callers.key : "Unknown", callers ? callers.mob : null)
-
-var/datum/quickBan_handler/quickBan_handler = null
-
 /* admin procedures */
 // Alt lookups read every region's connections (shared_player_records.dm),
 // then this region's own log for anything the snapshot does not have yet.
@@ -342,7 +333,8 @@ var/datum/quickBan_handler/quickBan_handler = null
 	if (!islist(ban))
 		return FALSE
 	var/list/target = list("id" = ban["id"], "kind" = "ban", "ckey" = ban["ckey"])
-	if (!shared_records.revoke(target, user ? user.ckey : ckey(unbanner), (user && user.client && user.client.holder) ? user.client.holder.rank : "Discord", "lifted by [unbanner]"))
+	var/client/actor = user?.client
+	if (!shared_records.revoke(target, actor ? actor.ckey : ckey(unbanner), actor?.holder ? actor.holder.rank : "Discord", "lifted by [unbanner]"))
 		return FALSE
 	log_admin("[unbanner] removed a ban for '[ban["uid"]]/[ban["ckey"]]/[ban["cid"]]/[ban["ip"]]'.")
 	message_admins("[unbanner] removed a ban for '[ban["uid"]]/[ban["ckey"]]/[ban["cid"]]/[ban["ip"]]'.", unbanner)
@@ -351,14 +343,6 @@ var/datum/quickBan_handler/quickBan_handler = null
 			to_chat(C, "<span class = 'good'>Your ban has been lifted.</span>")
 	return TRUE
 
-/proc/quickBan_remove_uid(UID, unbanner, mob/user = null)
-	if (!UID)
-		return FALSE
-	for (var/list/ban in shared_records.active_bans_matching(null, "any"))
-		if (ban["uid"] == UID)
-			return quickBan_lift(ban, unbanner, user)
-	return FALSE
-
 // Lifts every active ban on ckey (Discord unban).
 /proc/quickBan_lift_ckey(ckey, unbanner)
 	. = 0
@@ -366,12 +350,18 @@ var/datum/quickBan_handler/quickBan_handler = null
 		if (quickBan_lift(ban, unbanner))
 			.++
 
+// Match the Unban verb's staff categories in admin_verbs.dm.
+/client/proc/can_quickBan_unban()
+	return holder && (holder.rights & (R_MOD | R_TRIALADMIN))
+
 /client/proc/quickBan_unban()
 	set category = "Bans"
 	set name = "Unban"
-	if (!holder)
+	if (!can_quickBan_unban())
 		return
 	var/wanted = ckey(input(src, "Whose bans? (ckey; leave blank for every active ban)") as null|text)
+	if (!can_quickBan_unban())
+		return
 	var/list/choices = list()
 	for (var/list/ban in (wanted ? shared_records.active_bans(wanted, "any") : shared_records.active_bans_matching(null, "any")))
 		var/until = ban["until"] == "0" ? "never ends" : "ends [shared_records.time_text(ban["until"])]"
@@ -380,9 +370,12 @@ var/datum/quickBan_handler/quickBan_handler = null
 		to_chat(src, "<span class = 'notice'>No active bans found.</span>")
 		return
 	var/choice = input(src, "Which ban do you want to lift on every region?") as null|anything in choices
-	if (!choice || alert(src, "Lift this ban on every region?\n[choice]", "Unban", "Yes", "No") != "Yes")
+	if (!choice || !can_quickBan_unban() || alert(src, "Lift this ban on every region?\n[choice]", "Unban", "Yes", "No") != "Yes")
 		return
-	quickBan_lift(choices[choice], key, mob)
+	// Staff access can change while a prompt is open. Attribute the write to this client.
+	if (!can_quickBan_unban())
+		return
+	quickBan_lift(choices[choice], src.key, src.mob)
 
 /* old ban lists */
 // Copies this region's SQL/bans.txt (still active bans) and SQL/playerlogs.txt

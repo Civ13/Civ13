@@ -2,8 +2,11 @@
 
 Catches the failures that most often sent agent PRs through extra CI rounds:
 byte-pinned source files, stale generated crafting files, offline suites that
-were not run locally, and stale player-help wiki guide pins. Starts no BYOND
-process and needs no network. It does not replace the hosted compiler or CI.
+were not run locally, and stale player-help wiki guide pins. Needs no network.
+`compile` (also run by `all` when a compiler is found) builds the game with a
+little extra global data, because the engine puts every initialised global into
+one proc with a size limit and test probes add globals of their own. It does
+not replace the hosted compiler or CI.
 
     python3 scripts/agent_preflight.py pins            # who pins the files you changed
     python3 scripts/agent_preflight.py generated       # atlas + recipe audit drift
@@ -12,7 +15,8 @@ process and needs no network. It does not replace the hosted compiler or CI.
     python3 scripts/agent_preflight.py suites --affected
     python3 scripts/agent_preflight.py patterns [--write]  # forbidden-pattern ratchet
     python3 scripts/agent_preflight.py wiki-pins --wiki-root ../civ13-wiki [--write]
-    python3 scripts/agent_preflight.py all             # pins + generated + patterns + suites
+    python3 scripts/agent_preflight.py compile         # full compile plus global-init headroom
+    python3 scripts/agent_preflight.py all             # pins + generated + patterns + suites + compile
 """
 import argparse
 import hashlib
@@ -234,6 +238,65 @@ def patterns(args):
     return subprocess.run(command, cwd=ROOT).returncode
 
 
+# Extra initialised globals the compile check adds: probes declare their own
+# globals, so a branch that only just fits breaks every probe build in CI.
+HEADROOM_ENTRIES = 1000
+
+
+def find_compiler():
+    """The pinned DreamMaker (or dm.exe) if one is installed, else None."""
+    names = ('dm.exe',) if os.name == 'nt' else ('DreamMaker',)
+    dirs = [os.environ.get('BYOND_BIN')]
+    version = json.loads((ROOT / 'tools/byond/version.json').read_text())['version']
+    home = os.environ.get('BYOND_HOME') or str(Path.home() / f'byond-{version}')
+    dirs.append(str(Path(home) / 'byond' / 'bin'))
+    for folder in dirs:
+        for name in names:
+            if folder and (Path(folder) / name).is_file():
+                return Path(folder) / name
+    for name in names:
+        found = shutil.which(name)
+        if found:
+            return Path(found)
+    return None
+
+
+def compile_check(args):
+    """Compile civ13.dme plus HEADROOM_ENTRIES extra global list entries."""
+    compiler = find_compiler()
+    if not compiler:
+        print('compile: skipped, no DreamMaker found (bash scripts/cloud_byond_setup.sh installs the pin)')
+        return 0
+    prefix = 'zz_preflight_headroom'
+    entries = ','.join(f'"k{i}" = {i}' for i in range(HEADROOM_ENTRIES))
+    created = [ROOT / f'{prefix}{ext}' for ext in ('.dme', '.dm', '.dmb', '.rsc', '.int', '.lk', '.dyn.rsc')]
+    try:
+        (ROOT / f'{prefix}.dm').write_text(f'var/global/list/{prefix} = list({entries})\n')
+        dme = (ROOT / 'civ13.dme').read_text(encoding='latin-1')
+        (ROOT / f'{prefix}.dme').write_text(dme + f'\n#include "{prefix}.dm"\n', encoding='latin-1')
+        env = dict(os.environ)
+        env['LD_LIBRARY_PATH'] = str(compiler.parent) + os.pathsep + env.get('LD_LIBRARY_PATH', '')
+        run = subprocess.run([str(compiler), '-max_errors', '0', f'{prefix}.dme'], cwd=ROOT, env=env,
+                             capture_output=True, text=True, errors='replace')
+        output = run.stdout + run.stderr
+        problems = [line for line in output.splitlines() if re.search(r':\s?(error|warning):', line)]
+        for line in problems[:40]:
+            print(line)
+        if any('Procedure is too large' in line for line in problems):
+            print(f'compile: FAILED - the global initialiser has no room for {HEADROOM_ENTRIES} more entries. '
+                  'Build large global lists in a proc (var/global/list/x = x_table()) instead of inline.')
+            return 1
+        if run.returncode != 0 or '0 errors, 0 warnings' not in output:
+            print('compile: FAILED')
+            return 1
+        print(f'compile: passed (0 errors, 0 warnings, room for {HEADROOM_ENTRIES} more global entries)')
+        return 0
+    finally:
+        for path in created:
+            if path.exists():
+                path.unlink()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--base', default='origin/master', help='Comparison ref (default origin/master)')
@@ -250,7 +313,8 @@ def main():
     p.add_argument('--write', action='store_true')
     p = sub.add_parser('patterns', help='Forbidden source patterns (spawn, in world, untyped WWinput results)')
     p.add_argument('--write', action='store_true', help='Record lowered counts in the baseline')
-    p = sub.add_parser('all', help='pins, generated, patterns and all suites')
+    sub.add_parser('compile', help='Compile with global-initialiser headroom (skipped without a compiler)')
+    p = sub.add_parser('all', help='pins, generated, patterns, all suites and compile')
     p.add_argument('--write', action='store_true')
     args = parser.parse_args()
     if args.command == 'all':
@@ -261,9 +325,11 @@ def main():
         print()
         status = patterns(args) or status
         print()
-        return suites(args) or status
+        status = suites(args) or status
+        print()
+        return compile_check(args) or status
     return {'pins': pins, 'generated': generated, 'patterns': patterns, 'suites': suites,
-            'wiki-pins': wiki_pins}[args.command](args)
+            'wiki-pins': wiki_pins, 'compile': compile_check}[args.command](args)
 
 
 if __name__ == '__main__':

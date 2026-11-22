@@ -46,12 +46,18 @@
 /obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null)
 	var/turf/T = get_turf(src)
 	// A refit would survey a holed tile out of her hull: patch her first.
-	if (craft && craft.ledger && craft.ledger.holes > 0)
+	// At a berth a floor lifted for a refit is meant to go (berth_refit.dm).
+	if (craft && craft.ledger && craft.ledger.holes > 0 && !craft_berth(craft))
 		return "Patch the [craft.ledger.holes == 1 ? "hole" : "holes"] in her hull before she is surveyed again."
 	var/survey = built_hull_survey(T, craft)
 	if (istext(survey))
 		return survey
 	var/datum/craft_body/built/B = body()
+	// A berth may ask more of her (berth_build.dm).
+	var/obj/structure/berth = istype(T, /turf/floor/beach/water) ? null : berth_ground_at(T)
+	var/berth_why = berth ? berth.berth_commission_refusal(survey, heading || (B ? B.dir : NORTH)) : null
+	if (berth_why)
+		return berth_why
 	if (!B)
 		B = new /datum/craft_body/built
 		craft = new /datum/craft(B)
@@ -129,7 +135,10 @@
 	var/list/speeds = list("all stop", "slow ahead", "half ahead", "full ahead")
 	var/upper = B.upper_tile_count()
 	var/hold = B.lower_tile_count()
-	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? "[hold ? "," : " and"] [upper] of upper deck" : ""][hold ? " and [hold] of hold" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""]"
+	var/top = upper ? B.top_tile_count() : 0
+	var/list/open = open_sides()
+	var/open_text = open.len ? " [open.len] side\s of her deck are open: rail them before she can be refitted." : ""
+	return "[capitalize(craft.name)]: [B.tile_count()] tiles of hull[upper ? "[hold ? "," : " and"] [upper] of upper deck[top ? " with [top] of second deck above" : ""]" : ""][hold ? " and [hold] of hold" : ""], [speeds[craft.speed + 1]], bow to the [dir2text(B.dir)], anchor [craft.anchored ? "down" : "up"][craft.running_dark ? ", running dark" : ""][craft.grapple ? ", held by grappling lines" : ""]. [craft.drives_text()] [craft.magnetic_text()][craft.armour_text()][craft.ledger ? " [craft.ledger.status_text()]" : ""][open_text]"
 
 /obj/structure/hull_tiller/examine(mob/user)
 	..()
@@ -155,7 +164,10 @@
 	if (voyage || crossing_hold_current())
 		voyage_status_menu(H)
 		return
-	var/list/options = list("Sea chart", "Ship's papers", "Hail a ship", "Make for a berth")
+	var/list/options = list("Sea chart", "Ship's papers", "Draw her lines", "Hail a ship", "Make for a berth")
+	// Open sides on her deck (hull_sides.dm).
+	if (length(open_sides()))
+		options += "Rail her sides"
 	// Who stands at which station (hull_watch.dm).
 	if (craft.ledger)
 		options.Insert(4, "Muster the watch")
@@ -163,8 +175,11 @@
 		options.Insert(2, "Open sea chart")
 	// Off the edge of the map she can cross to a land across the sea (ship_crossing.dm).
 	var/datum/craft_body/built/edge_body = craft.body
-	if (istype(edge_body) && edge_body.at_map_edge() && length(sea_crossing_destinations()))
+	if (istype(edge_body) && edge_body.at_map_edge() && !sea_edge_travel_on() && length(sea_crossing_destinations()))
 		options.Insert(2, "Leave these waters")
+	// Off a linked edge of the earth group she sails on over it (ship_edge_crossing.dm).
+	if (istype(edge_body) && edge_body.at_map_edge() && edge_body.sea_edge_link())
+		options.Insert(2, "Sail over the horizon")
 	// Off a mainland's edge she can set out across the world chart (ship_voyage.dm).
 	if (istype(edge_body) && edge_body.at_map_edge() && shard_group && shard_group.enabled)
 		options.Insert(2, "Set out on a voyage")
@@ -175,6 +190,8 @@
 	var/own_claim = expedition_personal_claim_option(expedition_personal_claimant(H))
 	if (own_claim)
 		options.Insert(2, own_claim)
+	// A refit to a draught at a berth (berth_refit.dm).
+	options += refit_options(H)
 	var/best = craft.max_speed()
 	if (best >= VESSEL_SPEED_FULL)
 		options += "Full ahead"
@@ -184,6 +201,11 @@
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
 	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
 		return
+	if (choice in list("Make for a berth", "Full ahead", "Half ahead", "Slow ahead", "Head north", "Head east", "Head south", "Head west", "Leave these waters", "Sail over the horizon", "Set out on a voyage", "Refit the hull"))
+		var/plank = craft.gangplank_refusal()
+		if (plank)
+			to_chat(H, SPAN_WARNING(plank))
+			return
 	if (choice == "Sea chart")
 		to_chat(H, craft.sea_chart_text())
 		return
@@ -208,11 +230,22 @@
 		if (CRAFT_HELM_FORCE)
 			if (!craft.force_helm(H, src) || !craft)
 				return
+	if (choice == "Draw her lines")
+		draw_lines(H)
+		return
+	if (refit_action(H, choice))
+		return
+	if (choice == "Rail her sides")
+		rail_sides(H)
+		return
 	if (choice == "Leave these waters")
 		crossing_menu(H)
 		return
 	if (choice == "Set out on a voyage")
 		voyage_menu(H)
+		return
+	if (choice == "Sail over the horizon")
+		sea_edge_menu(H)
 		return
 	if (choice == "Settle this land")
 		settle_menu(H)
@@ -257,11 +290,18 @@
 			if (!craft.anchored)
 				to_chat(H, SPAN_WARNING("Drop anchor before refitting."))
 				return
+			var/list/refit_survey = built_hull_survey(get_turf(src), craft)
+			var/sides = istext(refit_survey) ? null : hull_sides_refusal(refit_survey)
+			if (sides)
+				to_chat(H, SPAN_WARNING(sides))
+				return
 			var/problem = commission()
 			if (problem)
 				to_chat(H, SPAN_WARNING(problem))
 				return
 			to_chat(H, SPAN_NOTICE("The hull is surveyed again. [status_text()]"))
+			if (refit_code)
+				report_refit(H, mark_refit(), FALSE)
 			return
 		if ("Strike the hull")
 			if (WWinput(H, "Strike the [craft.name]? Her floors stay where they are, but she is no longer a ship and her papers are lost.", name, "No", list("Yes", "No")) != "Yes" || !craft || get_dist(H, src) > 1)
@@ -278,6 +318,11 @@
 		to_chat(H, SPAN_WARNING(survey))
 		return
 	var/list/found = survey
+	var/sides = hull_sides_refusal(found)
+	if (sides)
+		if (WWinput(H, sides, name, "Cancel", list("Rail her sides", "Cancel")) == "Rail her sides" && !craft && get_dist(H, src) <= 1)
+			rail_sides(H)
+		return
 	var/list/headings = list("Bow to the north" = NORTH, "Bow to the east" = EAST, "Bow to the south" = SOUTH, "Bow to the west" = WEST)
 	var/choice = WWinput(H, "The hull around this tiller is [found.len] tiles of floor. Commission her? Choose where her bow points.", name, "Cancel", headings + list("Cancel"))
 	if (isnull(headings[choice]) || craft || get_dist(H, src) > 1)

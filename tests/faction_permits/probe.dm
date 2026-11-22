@@ -80,7 +80,7 @@ var/permit_p_runtime_error = FALSE
 	stall.result_type = /obj/structure/vending/sales/market_stall
 	var/datum/stack_recipe/knife = new
 	knife.title = "knife"
-	knife.result_type = /obj/item/weapon/paper
+	knife.result_type = /obj/item/weapon/material/kitchen/utensil/knife // paper now needs water to make
 
 	permit_p_check(!permit_missing(O, inside, "build") && !craft_guard_refusal(O, wall, CRAFT_GUARD_START), "permits are off by default")
 	map.permit_set_required("Eagles", "build", TRUE)

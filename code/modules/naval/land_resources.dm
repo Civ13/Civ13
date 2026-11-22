@@ -56,7 +56,9 @@
 	return kinds
 
 // Ore kind -> list(stack type, least, most). Flint is loose nodules instead.
-var/global/list/expedition_lode_types = list(
+var/global/list/expedition_lode_types = expedition_lode_types_table()
+/proc/expedition_lode_types_table()
+	return list(
 	"iron" = list(/obj/item/stack/ore/iron, 12, 24),
 	"copper" = list(/obj/item/stack/ore/copper, 12, 24),
 	"tin" = list(/obj/item/stack/ore/tin, 12, 24),

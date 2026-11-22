@@ -4,7 +4,7 @@
 	if (!client && !agent_character_for(src))
 		return
 
-	if (speaker && !speaker.client && isghost(src) && is_preference_enabled(/datum/client_preference/ghost_ears) && !(speaker in view(src)))
+	if (speaker && !speaker.client && isghost(src) && ghost_hears_everywhere() && !(speaker in view(src)))
 			//Does the speaker have a client?  It's either random stuff that observers won't care about (Experiment 97B says, 'EHEHEHEHEHEHEHE')
 			//Or someone snoring.  So we make it where they won't hear it.
 		return
@@ -21,6 +21,9 @@
 
 	//make sure the air can transmit speech - hearer's side
 	original_message = message
+	// Chat translation (docs/chat-translation.md) only reads speech this
+	// listener fully understood; garbled speech is marked as untranslatable.
+	var/understood = TRUE
 
 	if (sleeping || stat == TRUE)
 		hear_sleep(message)
@@ -30,10 +33,12 @@
 	if (language && (language.flags & NONVERBAL))
 		if (!speaker || ((sdisabilities & BLIND) || blinded || find_trait("Blind")) || !(speaker in view(src)))
 			message = stars(message)
+			understood = FALSE
 
 	if (!(language && (language.flags & INNATE))) // skip understanding checks for INNATE languages
 		// A speaker hears their own words as they came out, gaps and all.
 		if (speaker != src && !say_understands(speaker,language))
+			understood = FALSE
 			if (istype(speaker,/mob/living/simple_animal))
 				var/mob/living/simple_animal/S = speaker
 				if (S && S.speak.len)
@@ -64,6 +69,11 @@
 						speaker_name = "<font color='yellow'>[speaker_name] (GUNNER)</font>"
 					for (var/obj/structure/bed/chair/loader/D in speaker.loc)
 						speaker_name = "<font color='yellow'>[speaker_name] (LOADER)</font>"
+	// Capitalize here when a language formats it: format_message() would
+	// otherwise only see the marker's tag.
+	if (language && !animal)
+		message = capitalize(message)
+	message = understood ? "<span class='chat-tr'>[message]</span>" : "<span class='chat-notr'>[message]</span>"
 	if (italics)
 		message = "<i>[message]</i>"
 	alt_name = speaker_name
@@ -85,10 +95,10 @@
 	if (isghost(src))
 		if (italics && is_preference_enabled(/datum/client_preference/ghost_radio))
 			return
-		if (speaker_name != speaker.real_name && speaker.real_name)
+		if (speaker_name != speaker.real_name && speaker.real_name && !is_spirit_observer())
 			speaker_name = "[speaker.real_name] ([speaker_name])"
 		track = "([ghost_follow_link(speaker, src)]) "
-		if (is_preference_enabled(/datum/client_preference/ghost_ears) && (speaker in view(src)))
+		if (ghost_hears_everywhere() && (speaker in view(src)))
 			message = "<b>[message]</b>"
 
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
@@ -114,6 +124,8 @@
 	if (language && ishuman(src) && speaker)
 		var/mob/living/human/H = src
 		H.language_exposure(language, speaker)
+		H.language_drift_heard(language, speaker)
+		H.people_heard(speaker)
 
 
 /mob/proc/on_hear_say(var/message, var/mob/speaker = null, var/message2 = "")
@@ -393,14 +405,12 @@
 	. = 0
 	var/best_language = null
 	for (var/datum/language/L in languages)
-		if (L.mutual_intelligibility.Find(reference.type))
-			var/_new = L.mutual_intelligibility[reference.type]
-			if (_new > .)
-				. = _new
-				best_language = L
+		var/_new = language_kinship(L, reference)
+		if (_new > .)
+			. = _new
+			best_language = L
 	for (var/datum/language/L in languages)
 		if (L != best_language)
-			if (L.mutual_intelligibility.Find(reference.type))
-				. += L.mutual_intelligibility[reference.type]/5
+			. += language_kinship(L, reference)/5
 	. = round(.)
 	return .

@@ -329,6 +329,9 @@ button.rs-row-main { cursor: pointer; }
 .kit-pill-progress { color: #f8d2a4; background: #43301a; border-color: #d98f3d; }
 .kit-pill-muted { color: var(--civ-muted); }
 .kit-card { padding: 8px 10px; margin-bottom: 8px; background: #2a231b; border: 1px solid var(--civ-line-soft); border-radius: 4px; }
+.lang-tree, .lang-links { list-style: none; margin: 6px 0 0; padding: 0; }
+.lang-tree li { padding: 2px 0; } .lang-branch, .lang-origin { color: var(--civ-dim); } .lang-origin { font-size: 13px; }
+.lang-links { padding-top: 6px; border-top: 1px solid var(--civ-line-soft); font-size: 13px; color: var(--civ-muted); } .lang-links li { padding: 1px 0; } .lang-links strong { color: var(--civ-text); font-weight: normal; }
 .kit-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; }
 .kit-card-actions { flex: none; }
 .kit-quote { margin: 6px 0; padding: 4px 9px; font-style: italic; background: var(--civ-inset); border-left: 3px solid var(--civ-line); }
@@ -415,6 +418,41 @@ button.rs-row-main { cursor: pointer; }
 .setup-trait-desc { flex: 1 1 auto; margin: 6px 0; font-size: 13px; line-height: 1.45; }
 .setup-replaces { color: var(--civ-warn); }
 .setup-trait-foot { display: flex; justify-content: flex-end; margin-top: 4px; } .setup-trait-foot .Button { margin: 0; }
+.setup-chart-random, .setup-chart-verify { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; }
+.setup-chart-glyph { width: 48px; height: 48px; image-rendering: pixelated; flex: none; }
+.setup-chart-up, .setup-chart-down { margin: 2px 0; font-size: 12.5px; } .setup-chart-up { color: var(--civ-good); } .setup-chart-down { color: var(--civ-bad-text); }
+
+// Haircut: the figure on the left, style tiles on the right, one action bar.
+.cut { display: flex; flex-direction: column; gap: 8px; height: calc(100vh - 80px); min-height: 440px; }
+.cut canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.cut-lead { margin: 0; color: var(--civ-dim); }
+.cut-columns { display: flex; gap: 10px; flex: 1 1 0; min-height: 0; }
+.cut-side { flex: 0 0 216px; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px; background: var(--civ-panel); border: 1px solid var(--civ-line); border-radius: 4px; }
+.cut-stage { flex: none; }
+.cut-changes { width: 100%; margin: 2px 0 0; padding-top: 6px; border-top: 1px solid var(--civ-line-soft); font-size: 12.5px; }
+.cut-changes dt { margin-top: 6px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--civ-dim); }
+.cut-changes dd { margin: 2px 0 0; } .cut-changes s, .cut-same { color: var(--civ-dim); } .cut-changes b { color: var(--civ-highlight); }
+.cut-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.cut-foot { margin-top: auto; text-align: center; }
+.cut-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.cut-panel { display: flex; flex-direction: column; min-height: 0; background: var(--civ-panel); border: 1px solid var(--civ-line); }
+.cut-panel-hair { flex: 3 1 0; } .cut-panel-beard { flex: 2 1 0; }
+.cut-head { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-bottom: 2px solid var(--civ-accent); }
+.cut-head h2 { margin: 0 auto 0 0; font-size: 15px; }
+.cut-find { width: 130px; }
+.cut-tiles { flex: 1 1 0; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 4px; padding: 6px; overflow-y: scroll; background: var(--civ-inset); }
+.cut-tile { position: relative; width: 84px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 3px 2px 4px; font: 11px/1.15 Verdana, sans-serif; color: var(--civ-text); background: var(--civ-chip); border: 2px solid transparent; border-radius: 4px; cursor: pointer; }
+.cut-tile:hover { background: var(--civ-raised); }
+.cut-tile:focus-visible { outline: 2px solid var(--civ-highlight); outline-offset: 1px; }
+.cut-tile:disabled { cursor: default; opacity: .6; }
+.cut-tile-on { border-color: var(--civ-highlight); background: var(--civ-raised); }
+.cut-thumb { width: 72px; height: 60px; background: var(--civ-inset); border-radius: 3px; }
+.cut-now { position: absolute; top: 2px; left: 2px; padding: 0 5px; font-size: 10px; font-weight: bold; color: var(--civ-bg); background: var(--civ-accent); border-radius: 8px; }
+.cut-name { display: flex; align-items: center; min-height: 26px; text-align: center; overflow-wrap: anywhere; }
+.cut-actions { display: flex; align-items: center; gap: 6px; padding-top: 8px; border-top: 1px solid var(--civ-line); }
+.cut-actions .kit-hint { flex: 1 1 0; } .cut-actions .Button { margin: 0; padding: 3px 14px; }
+.cut-actions .cut-cancel { background: var(--civ-chip); color: var(--civ-text); }
+.cut-actions .cut-go:not(.Button--disabled) { background: var(--civ-accent); color: var(--civ-bg); font-weight: bold; }
 
 /* Storage window: "You" on the left, "Nearby" on the right, the transfer queue along the bottom. */
 .stor { display: flex; flex-direction: column; gap: 8px; height: calc(100vh - 74px); min-height: 380px; position: relative; }
@@ -527,3 +565,31 @@ button.rs-row-main { cursor: pointer; }
 .spawn-search { flex: 1 1 260px; min-width: 0; padding: 5px 7px; font: inherit; color: inherit; background: var(--civ-inset); border: 1px solid var(--civ-line); }
 .spawn-amount { color: var(--civ-dim); } .spawn-amount input { width: 44px; padding: 3px 5px; font: inherit; color: inherit; background: var(--civ-inset); border: 1px solid var(--civ-line); }
 .spawn-path { font-size: 12px; color: var(--civ-dim); overflow-wrap: anywhere; }
+// The modular computer (Computer.tsx). Each shell sets its own look on .computer-<shell>;
+// the command-line shell is green type on black with a 15px floor.
+.computer-cli { --term: #6dfc86; --term-dim: #46c862; --term-bg: #040704; min-height: 400px; padding: 10px 12px; background: var(--term-bg); color: var(--term); border: 2px solid #1d3a22; border-radius: 6px; font: 15px/1.45 Consolas, 'Lucida Console', 'Courier New', monospace; overflow-wrap: anywhere; }
+.computer-cli p { margin: 6px 0; line-height: 1.45; }
+.computer-cli .computer-dim { color: var(--term-dim); }
+.computer-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed var(--term-dim); }
+.computer-title { font-weight: bold; }
+.computer-cmd { margin: 2px 6px 2px 0; padding: 2px 8px; background: transparent; color: var(--term); border: 1px solid var(--term); border-radius: 0; font: inherit; cursor: pointer; }
+.computer-cmd:hover:not(:disabled), .computer-cmd[aria-current] { background: var(--term); color: var(--term-bg); }
+.computer-cmd:disabled { border-style: dashed; border-color: var(--term-dim); color: var(--term-dim); text-decoration: line-through; cursor: default; }
+.computer-cli button:focus-visible, .computer-cli input:focus-visible, .computer-cli textarea:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.computer-log { margin-bottom: 8px; white-space: pre-wrap; }
+.computer-programs { margin: 6px 0; padding: 0; list-style: none; }
+.computer-help { margin: 6px 0; padding: 4px 8px; border-left: 2px solid var(--term-dim); }
+.computer-prompt { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; }
+.computer-prompt > span:first-child { margin-right: 4px; }
+.computer-status { min-height: 1.45em; }
+.computer-table { width: 100%; margin: 4px 0 8px; border-collapse: collapse; }
+.computer-table th, .computer-table td { padding: 3px 8px 3px 0; text-align: left; vertical-align: middle; font-weight: normal; border-bottom: 1px dotted #1d3a22; }
+.computer-table thead th { color: var(--term-dim); border-bottom: 1px dashed var(--term-dim); }
+.computer-table .computer-num { text-align: right; padding-right: 16px; white-space: nowrap; }
+.computer-cli input, .computer-text { background: var(--term-bg); color: var(--term); border: 1px solid var(--term-dim); border-radius: 0; font: inherit; padding: 2px 6px; caret-color: var(--term); }
+.computer-cli input::placeholder { color: var(--term-dim); opacity: 1; }
+.computer-field { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.computer-field input { flex: 0 1 320px; }
+.computer-text { display: block; width: 100%; min-height: 150px; resize: vertical; line-height: 1.4; }
+.computer-typed { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.computer-typed input { flex: 1 1 auto; border-width: 0 0 1px; }

@@ -20,13 +20,11 @@
 	if (printing_sheets > 0)
 		to_chat(user, SPAN_NOTICE("It is loaded with [printing_sheets] sheet\s of printing paper."))
 
-/obj/structure/printingpress/Destroy()
-	var/turf/place = get_turf(src)
+/obj/structure/printingpress/proc/refund_printing_sheets(turf/place)
 	if (place)
 		for (var/i = 1, i <= printing_sheets, i++)
 			new /obj/item/weapon/paper(place)
 	printing_sheets = 0
-	return ..()
 
 // Ordinary writable books print whole. Holy books, legacy skill scrolls,
 // language books and recipe manuals keep their own press handling.
@@ -99,9 +97,9 @@
 	if (!press_prints_whole_book(original) || !istype(stock) || original == stock)
 		return "Both documents must be ordinary books."
 	if (!stock.monk_copy_blank())
-		return "The copy must be a blank book."
+		return "The copy must be a blank book. Use Unload Printing Press to recover the books."
 	if (!original.dat && !length(original.page_list()) && !length(original.research_chapter_list()))
-		return "There is nothing written in [original] to print."
+		return "There is nothing written in [original] to print. Use Unload Printing Press to recover the books."
 	var/needed = length(original.research_chapter_list())
 	if (printing_sheets < needed)
 		return "Printing [original] needs [needed] sheet\s of printing paper, one per chapter; [src] has [printing_sheets]. Load blank paper or parchment first."
@@ -112,6 +110,8 @@
 		return FALSE
 	var/obj/item/weapon/book/original = base[1]
 	var/obj/item/weapon/book/stock = copy[1]
+	if (!press_retains_document(original) || !press_retains_document(stock))
+		return FALSE
 	var/problem = whole_book_print_problem(original, stock)
 	if (problem)
 		to_chat(H, SPAN_WARNING(problem))
@@ -135,6 +135,8 @@
 		return FALSE
 	var/obj/item/weapon/book/original = base[1]
 	var/obj/item/weapon/book/stock = copy[1]
+	if (!press_retains_document(original) || !press_retains_document(stock))
+		return FALSE
 	var/problem = whole_book_print_problem(original, stock)
 	if (problem)
 		if (user)

@@ -593,6 +593,12 @@
 		move_delay = world.time + 5
 		return mob.buckled.relaymove(mob, direct)
 
+	// In a tread wheel or on a treadmill, the facing key strides in place and
+	// any other steps off (training_course.dm).
+	if (istype(mob.buckled, /obj/structure/treadwheel))
+		move_delay = world.time + mob.movement_delay()
+		return mob.buckled.relaymove(mob, direct)
+
 	if (!mob.canmove)
 		return
 
@@ -774,6 +780,8 @@
 			if (!H.crab)
 				if (istype(F, /turf/floor/beach/water))
 					move_delay += H.water_step_delay(F)
+					if (H.swim_skill_applies(F) && !H.buckled)
+						H.body_motion_swim_stroke()
 				else
 					move_delay += F.move_delay
 			if (istype(F, /turf/floor/trench/flooded))
@@ -1060,6 +1068,9 @@
 		if (!isnull(subtile_deadline) && (mob != input_actor || !input_actor || input_actor.client != src))
 			return FALSE
 		mob.last_movement = world.time
+		if (ishuman(mob))
+			var/mob/living/human/strider = mob
+			strider.body_motion_stride()
 		if (!isnull(subtile_deadline))
 			move_delay = subtile_deadline
 			return .
@@ -1119,8 +1130,11 @@
 
 	switch(mob.incorporeal_move)
 		if (1)
-			mob.forceMove(get_step(mob, direct))
+			var/turf/step = get_step(mob, direct)
 			mob.dir = direct
+			if (!mob.incorporeal_step_allowed(step)) // spirit_observe.dm: walls stop spirits
+				return
+			mob.forceMove(step)
 		if (2)
 			if (prob(50))
 				var/locx

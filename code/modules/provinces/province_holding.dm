@@ -4,7 +4,8 @@
 // - A side that leads an unheld province for 72 hours in a row takes it.
 // - A holder keeps it until a rival out-stakes it (6+ points from 4+ people,
 //   35% of the stake and 1.25 times the holder, more for a ranked settlement,
-//   province_ranks.dm) for 72 hours in a row.
+//   province_ranks.dm) for 72 hours in a row. A nation allied to the holder
+//   or bound to it by a pact is never a rival (province_treaties.dm).
 // - A holder that falls below 6 points from 4 people is warned and loses the
 //   province after 48 hours (up to 72 for a ranked settlement) unless it recovers. A destroyed bed or hall is a
 //   fall like any other, so it has the same 48 hours to be rebuilt.
@@ -66,6 +67,21 @@
 			count++
 	return count
 
+// Why a group cannot take another province of this land, or null. The cap
+// counts the group's whole bloc (province_blocs.dm): factions staff marked as
+// one bloc and factions led by the same player share it, and a bloc never
+// holds more than half of a land's provinces.
+/proc/province_cap_refusal(group)
+	if (province_claims_frozen(group))
+		return "staff froze its claims"
+	var/held = province_bloc_holdings(group)
+	if (held >= PROVINCE_CAP_PER_LAND)
+		return "its bloc already holds [held] provinces of this land"
+	var/datum/province_map/P = map.province_map()
+	if (P && (held + 1) * 2 > length(P.names))
+		return "its bloc would hold more than half of this land"
+	return null
+
 // TRUE when the group's stake meets the minimum to lead or keep a province.
 /proc/province_stake_enough(list/G)
 	return islist(G) && G[1] >= 6 && G[2] >= 4
@@ -78,7 +94,7 @@
 	var/best = null
 	var/best_stake = 0
 	for (var/group in groups)
-		if (group == holder)
+		if (group == holder || province_groups_friendly(group, holder)) // allies and pact partners never contest (province_treaties.dm)
 			continue
 		var/list/G = groups[group]
 		if (!province_stake_enough(G) || G[1] < 0.35 * S["total"] || G[1] < margin * holder_stake)
@@ -143,7 +159,7 @@
 			continue
 		if (now - row[5] < PROVINCE_GAIN_HOURS * 36000 || !window)
 			continue
-		if (province_holdings_count(contender) >= PROVINCE_CAP_PER_LAND)
+		if (province_cap_refusal(contender))
 			continue
 		if (holder)
 			province_tell_leaders(holder, "[province_group_name(contender)] has taken the [name] from you.")

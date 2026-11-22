@@ -24,10 +24,15 @@ EXTRA_SAVED_TYPES = {'/datum/wound'}
 REVIEWED = {
     'civilization': 'regex hit on a comparison, not an assignment',
     'next_sprint_collision': 'declared var/tmp on humans (sprint.dm), so never saved',
+    'body_motion_until': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_started': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_watch_checked': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'body_motion_stroke_next': 'declared var/tmp on humans (body_motion.dm), so never saved',
     'faction_text': 'regex hit on a comparison, not an assignment',
     'original_job_title': 'regex hit on a comparison, not an assignment',
     'move_delay': 'assigned on client, not on the saved gun',
     'last_action': 'grabs are never saved (should_save = FALSE)',
+    'last_preview': 'declared var/tmp on the ship\'s draught (ship_designer.dm): a summary rate limit, never saved',
     'stopped_until': 'football map mode is not persistent',
     'round_deadline': 'extraction raid instances are not persistent',
     'next_checkpoint': 'extraction raid instances are not persistent',
@@ -40,8 +45,19 @@ REVIEWED = {
     'flee_ticket': 'a flee_ticket parameter list, not a saved mob var',
     'data': 'reagent message throttles share the generic data field with blood and dose data',
     'lob_launch_time': 'projectiles are never saved (should_save = 0 in projectile.dm)',
+    'combat_reason_time': 'declared var/tmp on mobs (combat_stance.dm), so never saved',
+    'last_struck_time': 'declared var/tmp on mobs (combat_stance.dm), so never saved',
+    'next_combat_reaction': 'declared var/tmp on mobs (combat_reactions.dm), so never saved',
+    'next_martial_reflex': 'declared var/tmp on mobs (combat_reactions.dm), so never saved',
     'held_since': 'capture clock of a Broadside TDM tiller; the Broadside map is not persistent',
     'crossing_hold': 'declared var/tmp/list on hull tillers (ship_crossing.dm), so never saved',
+    'familiar_last_use': 'declared var/tmp/list on humans (familiarity.dm), so never saved',
+    'next_familiar_click': 'declared var/tmp on humans (familiarity.dm), so never saved',
+    'frost_nipped_at': 'declared var/tmp on crops (crop_frost.dm), so never saved',
+    'next_feels_like_message': 'declared var/tmp on humans (feels_like.dm), so never saved',
+    'spirit_hud_ends': 'declared var/tmp on ghosts (spirit_hud.dm), so never saved',
+    'heteromorph_started': 'declared var/tmp on heteromorph forms (heteromorph_form.dm); saves return every form to human first',
+    'heteromorph_breath_ready': 'declared var/tmp on heteromorph forms (heteromorph_breath.dm); saves return every form to human first',
 }
 
 # An optional [key] catches stamps kept in a keyed list, such as next_emote["normal"].
@@ -53,7 +69,7 @@ def dm_files():
 
 
 def registry():
-    body = REGISTRY[REGISTRY.index('persistence_world_time_stamps = list('):]
+    body = REGISTRY[REGISTRY.index('/proc/persistence_world_time_stamps_table()'):]
     body = body[:body.index('\n)\n')]
     entries = {}
     for name, owners in re.findall(r'^\t"(\w+)" = list\(([^)]*)\)', body, re.M):

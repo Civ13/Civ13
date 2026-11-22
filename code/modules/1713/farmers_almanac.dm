@@ -6,7 +6,9 @@
 // (climate_normals.dm); tests/farmers_almanac checks it stays aligned.
 
 // climate = list(season = list(wet-weather icon, storm icon))
-var/global/list/farmers_almanac_climates = list(
+var/global/list/farmers_almanac_climates = farmers_almanac_climates_table()
+/proc/farmers_almanac_climates_table()
+	return list(
 	"tundra" = list(
 		"WINTER" = list("snow2", "snow_storm"),
 		"SPRING" = list("snow2", "snow_storm"),
@@ -24,7 +26,7 @@ var/global/list/farmers_almanac_climates = list(
 	"temperate" = list(
 		"WINTER" = list("snow2", "snow_storm"),
 		"SPRING" = list("rain2", "rain2"),
-		"SUMMER" = list("", ""),
+		"SUMMER" = list("rain2", "rain2"),
 		"FALL" = list("rain2", "rain2"),
 		"Wet Season" = list("snow2", "snow_storm"),
 		"Dry Season" = list("rain2", "rain2")),
@@ -84,7 +86,7 @@ var/global/list/farmers_almanac_seed_cache = null
 // Mirrors the map list in /obj/structure/farming/plant/growth(): elsewhere
 // crops ignore climate and season entirely.
 /proc/farmers_almanac_climate_matters()
-	return map && (map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ASIA, MAP_NOMADS_EARTH_OCEANIA, MAP_NOMADS_EARTH_GREENLAND, MAP_NOMADS_EARTH_ANTARCTICA))
+	return map && (map.ID in list(MAP_NOMADS_CONTINENTAL, MAP_NOMADS_PANGEA, MAP_NOMADS_NEW_WORLD, MAP_NOMADS_MEDITERRANEAN, MAP_NOMADS_EUROPE, MAP_NOMADS_GAIA, MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH, MAP_NOMADS_ASIA, MAP_NOMADS_EARTH_EUROPE, MAP_NOMADS_EARTH_MEDITERRANEAN, MAP_NOMADS_EARTH_AFRICA, MAP_NOMADS_EARTH_ASIA, MAP_NOMADS_EARTH_OCEANIA, MAP_NOMADS_EARTH_GREENLAND, MAP_NOMADS_EARTH_ANTARCTICA))
 
 // Same eligibility as crop growth: the climate must suit the crop, and the
 // season must too unless the climate is tropical. Saplings always need both.

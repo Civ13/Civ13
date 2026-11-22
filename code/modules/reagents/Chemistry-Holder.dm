@@ -109,6 +109,10 @@
 		for (var/datum/reagent/R in reagent_list)
 			eligible_reactions |= chemical_reactions_list[R.id]
 
+		// No candidates means no priority work or reactions in this pass.
+		if (!eligible_reactions.len)
+			break
+
 		var/list/highest_priority_reactions = list()
 		var/max_priority = -1
 

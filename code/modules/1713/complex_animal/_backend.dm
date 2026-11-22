@@ -43,6 +43,7 @@
 			else
 				faction = H.faction_text
 			tamed = TRUE
+			accolade_meet_mob(H, "herder")
 			if (findtext(name, "Wild"))
 				name = replacetext(name,"Wild", "[H]'s")
 		return

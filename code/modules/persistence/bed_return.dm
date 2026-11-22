@@ -5,6 +5,62 @@
 // Scalar ownership avoids a spatial reference from a character to another level.
 /obj/structure/bed/var/persistence_bed_owner_ckey
 
+// One unread notice per owner per region; this is not part of the character
+// save or custody ledger. The marker survives ordinary world restarts.
+/proc/persistence_bed_notice_path(owner)
+	if (!istext(owner) || !length(owner) || length(owner) > 64 || !persistence_owner_valid(owner) || IsGuestKey(owner_key_account(owner)))
+		return null
+	return "data/persistence-bed-notices/bed-[owner].pending"
+
+/obj/structure/bed/proc/persistence_bed_notice_recipient(mob/user)
+	var/client/actor = user?.client
+	var/owner = persistence_bed_owner_ckey
+	if (!persistence_bed_return_enabled() || !actor || actor.mob != user || !actor.ckey || IsGuestKey(actor.key) || actor.owner_key() == owner)
+		return null
+	return persistence_bed_notice_path(owner) ? owner : null
+
+/proc/persistence_queue_bed_notice(owner, actor_name)
+	var/path = persistence_bed_notice_path(owner)
+	if (!path || fexists(path))
+		return
+	// Store the hour at dismantle time, not at delivery. UTC avoids ambiguous
+	// clock changes, and using text preserves the hour across restarts.
+	var/hour_utc = time2text(world.realtime, "YYYY-MM-DD hh:00", 0)
+	var/list/details = list()
+	details["hour_utc"] = hour_utc
+	details["actor_name"] = actor_name
+	if (!text2file(json_encode(details), path))
+		log_world("Could not queue a registered bed destruction notice.")
+
+/proc/persistence_bed_notice_message(record)
+	var/who = "Another player"
+	var/when_text = ""
+	// A legacy "1" marker has neither detail. Invalid data still tells the
+	// owner that their bed was lost, without guessing who or when.
+	if (istext(record) && length(record))
+		try
+			var/list/details = json_decode(record)
+			if (islist(details))
+				var/hour_utc = details["hour_utc"]
+				var/actor_name = details["actor_name"]
+				if (istext(actor_name) && length(actor_name))
+					who = html_encode(actor_name)
+				if (istext(hour_utc) && length(hour_utc))
+					when_text = " during the hour starting " + html_encode(hour_utc) + " UTC"
+		catch
+			return "Another player destroyed your assigned bed in this region."
+	return who + " destroyed your assigned bed in this region" + when_text + "."
+
+/proc/persistence_deliver_bed_notice(client/recipient)
+	if (!persistence_bed_return_enabled() || !recipient || !recipient.key || IsGuestKey(recipient.key))
+		return
+	var/path = persistence_bed_notice_path(recipient.owner_key())
+	if (!path || !fexists(path))
+		return
+	to_chat(recipient, SPAN_WARNING(persistence_bed_notice_message(file2text(path))))
+	if (!fdel(path))
+		log_world("Could not clear a registered bed destruction notice.")
+
 // Tiles around a restored body searched for a safe return when its own is unsafe.
 #define PERSISTENCE_RETURN_SEARCH_RANGE 7
 
@@ -44,7 +100,7 @@
 /obj/structure/bed/examine(mob/user, distance = -1)
 	. = ..()
 	if(!persistence_bed_owner_ckey || !persistence_bed_return_enabled() || !user || !user.client) return
-	if(persistence_bed_owner_ckey == user.client.ckey)
+	if(persistence_bed_owner_ckey == user.client.owner_key())
 		to_chat(user, SPAN_NOTICE("This is your assigned bed."))
 	else
 		to_chat(user, SPAN_WARNING("This bed is assigned to someone else."))
@@ -54,7 +110,7 @@
 	if(!client) return FALSE
 	var/found = FALSE
 	for(var/obj/structure/bed/B in get_turf(src))
-		if(!B.assigned_to_other(client.ckey)) return FALSE
+		if(!B.assigned_to_other(client.owner_key())) return FALSE
 		found = TRUE
 	return found
 
@@ -64,7 +120,7 @@
 	var/turf/T = get_turf(src)
 	var/where = null
 	for(var/obj/structure/bed/B in world)
-		if(B.persistence_bed_owner_ckey != client.ckey) continue
+		if(B.persistence_bed_owner_ckey != client.owner_key()) continue
 		if(get_turf(B) != T) return "elsewhere"
 		where = "here"
 	return where
@@ -75,7 +131,7 @@
 	var/obj/structure/bed/free
 	for(var/obj/structure/bed/B in loc)
 		if(!B.valid_sleep_bed(src)) continue
-		if(B.persistence_bed_owner_ckey == client.ckey) return B
+		if(B.persistence_bed_owner_ckey == client.owner_key()) return B
 		if(!B.persistence_bed_owner_ckey && !free) free = B
 	return free
 
@@ -88,7 +144,7 @@
 	var/obj/structure/bed/bed = saved_sleep_bed()
 	if(!bed)
 		for(var/obj/structure/bed/B in loc)
-			if(B.assigned_to_other(client.ckey)) return "This bed is assigned to someone else. Sleep in an unassigned bed or your own."
+			if(B.assigned_to_other(client.owner_key())) return "This bed is assigned to someone else. Sleep in an unassigned bed or your own."
 			if(B.sleep_occupant(src)) return "Someone else is lying in this bed."
 			if(!B.anchored || !B.buckle_lying) return "This bed is not fastened to the floor. Use a stationary bed."
 		return "This bed is not on solid, dry floor. Use a bed on solid ground."
@@ -101,10 +157,12 @@
 	if(!bed) return FALSE
 	// No prompt/wait or inventory drop between admission and scalar claim changes.
 	for(var/obj/structure/bed/B in world)
-		if(B != bed && B.persistence_bed_owner_ckey == client.ckey) B.persistence_bed_owner_ckey = null
-	if(bed.persistence_bed_owner_ckey != client.ckey) bed.persistence_bed_assigned_at = death_legacy_now()
-	bed.persistence_bed_owner_ckey = client.ckey
+		if(B != bed && B.persistence_bed_owner_ckey == client.owner_key()) B.persistence_bed_owner_ckey = null
+	var/owner = client.owner_key()
+	if(bed.persistence_bed_owner_ckey != owner) bed.persistence_bed_assigned_at = death_legacy_now()
+	bed.persistence_bed_owner_ckey = owner
 	record_persistence_owner()
+	accolade_meet_mob(src, "settled")
 	lastx = x
 	lasty = y
 	lastz = z
@@ -212,15 +270,16 @@
 	if(!lobby || !lobby.client || lobby.client.mob != lobby) return FALSE
 	if(reclaim_saved_player(lobby)) return FALSE
 	if(!lobby.client || lobby.client.mob != lobby) return FALSE
-	if(character_return_pending(lobby.client.ckey))
+	if(character_return_pending(lobby.client.owner_key()))
 		to_chat(lobby, SPAN_WARNING("Your existing character or world recovery is not ready. No new character was created. Retry Join after recovery; ask an administrator if the hold persists."))
 		note_character_return_hold(lobby)
 		return FALSE
 	return TRUE
 
 /map_storage/proc/note_character_return_hold(mob/new_player/lobby)
-	var/reason = character_return_hold_reason(lobby.ckey)
-	log_game("Join held for [lobby.ckey]: [reason]")
+	var/owner = lobby.client ? lobby.client.owner_key() : lobby.ckey
+	var/reason = character_return_hold_reason(owner)
+	log_game("Join held for [owner]: [reason]")
 	message_admins("Join held for [key_name(lobby)]: [reason]")
 
 // Why character_return_pending holds this account, for the log and admins.

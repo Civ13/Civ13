@@ -24,6 +24,65 @@
 	icon_state = "d_road"
 	roadtype = "d_road"
 
+// Separate provenance: authored and legacy dirt roads keep their old behavior.
+/obj/covers/roads/dirt/worked
+	name = "packed dirt road"
+	desc = "A dirt road packed flat by a plough. Use a plough on Help intent to reclaim it as a garden, or a shovel to remove the road."
+
+/obj/covers/roads/dirt/worked/attackby(obj/O as obj, mob/living/human/user as mob)
+	if (!istype(O, /obj/item/weapon/plough) || !istype(user) || user.a_intent != I_HELP)
+		return ..()
+	var/obj/item/weapon/plough/tool = O
+	var/turf/floor/ground = loc
+	var/problem = garden_reclaim_problem(ground, user, tool)
+	if (problem)
+		to_chat(user, SPAN_WARNING(problem))
+		return TRUE
+	to_chat(user, SPAN_NOTICE("You start loosening the packed dirt for a garden."))
+	var/duration = ground.type == /turf/floor/grass ? 120 : 70
+	if (!do_after(user, work_delay(user, duration, WORK_TILL, tool), src))
+		return TRUE
+	problem = garden_reclaim_problem(ground, user, tool)
+	if (problem)
+		to_chat(user, SPAN_WARNING(problem))
+		return TRUE
+	var/turf/floor/dirt/old_soil = ground
+	var/old_nutrition = istype(old_soil) ? old_soil.soil_nutrition : null
+	var/old_dirt = istype(old_soil) ? old_soil.available_dirt : null
+	var/recovery_delay = null
+	if (istype(old_soil) && old_soil.soil_recovery_deadline)
+		recovery_delay = max(1, old_soil.soil_recovery_deadline - world.time)
+	// ChangeTurf preserves terrain grade and pollution. Restore soil stocks rather
+	// than let a road-to-garden loop refill exhausted ground.
+	var/turf/floor/dirt/ploughed/garden = ground.ChangeTurf(/turf/floor/dirt/ploughed)
+	if (!istype(garden))
+		return TRUE
+	if (!isnull(old_nutrition))
+		garden.soil_nutrition = old_nutrition
+		garden.soil_recovery_schedule(recovery_delay)
+	if (!isnull(old_dirt))
+		garden.available_dirt = old_dirt
+	amount = 0
+	qdel(src)
+	user.adaptStat("farming", 2)
+	to_chat(user, SPAN_NOTICE("You reclaim the old road as a ploughed garden. Plant and water it like any other plot."))
+	return TRUE
+
+/obj/covers/roads/dirt/worked/proc/garden_reclaim_problem(turf/floor/ground, mob/living/human/user, obj/item/weapon/plough/tool)
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		return "Wait until the world finishes saving or loading."
+	if (QDELETED(src) || !istype(ground) || loc != ground || !istype(user) || user.incapacitated() || user.restrained() || user.a_intent != I_HELP || !user.Adjacent(src) || QDELETED(tool) || tool.loc != user || user.get_active_hand() != tool)
+		return "Stay beside the road with the plough in your active hand and use Help intent."
+	// Do not broaden the farmable terrain roster (sand, jungle, wetlands, caves, ship decks).
+	if (ground.density || !(ground.type in list(/turf/floor/grass, /turf/floor/dirt, /turf/floor/dirt/fertile, /turf/floor/dirt/medium_fertile, /turf/floor/dirt/infertile)) || (ground.flooring && ground.flooring.type != ground.initial_flooring))
+		return "You can only reclaim a road laid over ordinary grass or bare soil."
+	if (ground.weather_snow > 0 || ground.water_level > 0 || origin_water_level > 0 || flood_depth_at(ground) > 0)
+		return "Clear the snow or water before reclaiming this road."
+	for (var/obj/blocker in ground)
+		if (blocker != src && (blocker.density || istype(blocker, /obj/covers) || istype(blocker, /obj/structure) || istype(blocker, /obj/roof)))
+			return "Clear what is built or growing on the road before reclaiming it."
+	return null
+
 /obj/covers/roads/roman
 	name = "roman road"
 	icon_state = "r_road"
@@ -172,7 +231,7 @@
 	if (is_tool(O, TOOL_SHOVEL))
 		playsound(src, 'sound/effects/shovelling.ogg', 85, 1)
 		to_chat(user, SPAN_NOTICE("You begin filling over in the earth of \the [src]."))
-		if (do_after(user, work_delay(user, 30, WORK_DIG, O), src))
+		if (do_after(user, work_delay(user, 30, WORK_SHIFT, O), src))
 			to_chat(user, SPAN_NOTICE("You finish filling over \the [src]."))
 			qdel(src)
 

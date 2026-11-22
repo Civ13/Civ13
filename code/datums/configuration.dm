@@ -1,4 +1,3 @@
-var/list/gamemode_cache = list()
 
 /datum/configuration
 
@@ -94,6 +93,7 @@ var/list/gamemode_cache = list()
 	var/defib_braindamage_timer = 2 // How long until someone will get brain damage when defibbed, in minutes. The closer to the end of the above timer, the more brain damage they get.
 
 	var/no_click_cooldown = FALSE
+	var/body_motion = BODY_MOTION_FULL // whole-body motion level (body_motion.dm)
 
 	var/use_recursive_explosions //Defines whether the server uses recursive or circular explosions.
 
@@ -176,6 +176,9 @@ var/list/gamemode_cache = list()
 	// Player activity recorder (code/modules/player_activity). Off by default.
 	var/player_activity = FALSE
 	var/webhook_game_ready_server = null
+	// Server-side chat translation (code/modules/chat/chat_translate.dm): the
+	// host's Edge translator service (tools/edge-translator). Off unless set.
+	var/chat_translate_url = null
 
 	// In-game bug reports (code/modules/bug_reports). The token is deliberately not kept here.
 	var/bug_report_github_repo = "Civ13/Civ13"
@@ -326,6 +329,15 @@ var/list/gamemode_cache = list()
 
 				if ("no_click_cooldown")
 					config.no_click_cooldown = TRUE
+
+				if ("body_motion")
+					switch (lowertext(trim("[value]")))
+						if ("off", "0")
+							config.body_motion = BODY_MOTION_OFF
+						if ("reduced", "1")
+							config.body_motion = BODY_MOTION_REDUCED
+						else
+							config.body_motion = BODY_MOTION_FULL
 
 				if ("allow_vote_restart")
 					config.allow_vote_restart = TRUE
@@ -555,6 +567,8 @@ var/list/gamemode_cache = list()
 					config.webhook_key = value
 				if ("voice_token_url")
 					config.voice_token_url = value
+				if ("chat_translate_url")
+					config.chat_translate_url = value
 
 				if ("bug_report_github_repo")
 					config.bug_report_github_repo = value

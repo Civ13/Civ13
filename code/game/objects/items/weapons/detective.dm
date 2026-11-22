@@ -120,6 +120,10 @@
 				M.IgniteMob()
 			else if (reagents.total_volume)
 				if (user.targeted_organ == "mouth")
+					var/mob/living/human/H = M
+					if (istype(H) && H.blocks_chemical_smoke())
+						to_chat(user, "<span class='warning'>[H]'s protective gear blocks inhalation.</span>")
+						return
 					user.do_attack_animation(src)
 					user.visible_message(
 						"<span class='danger'>\The [user] smothers [target] with [src]!</span>",

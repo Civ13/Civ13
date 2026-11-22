@@ -312,7 +312,7 @@
 /obj/structure/fire_pump/reel/proc/supplies()
 	var/list/found = list()
 	for (var/obj/structure/sink/S in range(FIRE_REEL_SUPPLY_RANGE, src))
-		if (istype(S, /obj/structure/sink/puddle) || S.dry || S.volume <= 0)
+		if (istype(S, /obj/structure/sink/puddle) || S.heat_dried() || S.volume <= 0)
 			continue
 		found += S
 	return found

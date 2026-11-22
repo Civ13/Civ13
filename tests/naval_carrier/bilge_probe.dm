@@ -944,6 +944,92 @@ var/naval_runtime_error = FALSE
 	qdel(L)
 	naval_check(plank.overlays.len == bare, "and it goes with her ledger")
 
+// Watertight compartments (hull_compartments.dm): a steel ship of 4 x 16
+// tiles parted by two lines of bulkheads, each with a watertight door.
+/proc/compartment_checks()
+	for (var/x = 40, x <= 43, x++)
+		for (var/y = 18, y <= 33, y++)
+			steel_lay(x, y)
+	for (var/y in list(23, 28))
+		for (var/x = 40, x <= 43, x++)
+			if (x == 42)
+				new /obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight(locate(x, y, 2))
+			else
+				new /obj/structure/hull_bulkhead(locate(x, y, 2))
+	var/obj/structure/hull_tiller/tiller = new(locate(40, 18, 2))
+	naval_check(isnull(tiller.commission("Liner", NORTH)) && tiller.craft, "a ship with bulkheads is commissioned")
+	var/datum/hull_ledger/L = tiller.craft.ledger
+	naval_check(L.tiles == 64 && L.seep_tiles == 0, "she is 64 tiles of steel")
+	naval_check(L.bays_split() && L.bay_water.len == 3, "two lines of bulkheads part her into three compartments ([L.bay_water.len])")
+	var/sizes = 0
+	for (var/n in L.bay_size)
+		sizes += n
+	naval_check(sizes == 64, "every tile of her is in one of them")
+	var/turf/aft = locate(41, 20, 2)
+	var/turf/mid = locate(41, 25, 2)
+	var/turf/fore = locate(41, 31, 2)
+	var/aft_bay = L.bay_at(aft)
+	var/mid_bay = L.bay_at(mid)
+	var/fore_bay = L.bay_at(fore)
+	naval_check(aft_bay && mid_bay && fore_bay && aft_bay != mid_bay && mid_bay != fore_bay && aft_bay != fore_bay, "aft, amidships and forward lie in different compartments")
+	naval_check(L.bay_at(locate(42, 23, 2)) == mid_bay && L.bay_size[aft_bay] == 20 && L.bay_size[mid_bay] == 20 && L.bay_size[fore_bay] == 24, "a bulkhead's own tile holds water with the compartment beside it")
+	naval_check(L.bay_name(fore_bay) == "forward compartment" && L.bay_name(aft_bay) == "after compartment", "they are named from her bow")
+	// A hole aft floods the after compartment only, to its brim.
+	qdel(locate(/obj/covers/steelplating) in aft)
+	naval_check(L.holes == 1 && L.hole_at(aft), "a plate shot away aft is a hole")
+	L.crewed = TRUE
+	L.step_ledger(600)
+	naval_check(near(L.bay_water[aft_bay], 80) && L.bay_water[mid_bay] == 0 && L.bay_water[fore_bay] == 0 && near(L.water, 80), "ten minutes on, the after compartment is full and the others are dry ([json_encode(L.bay_water)])")
+	naval_check(L.flooded_tiles() == 20 && !L.founders() && !L.sink_left && !L.grounded, "with a quarter of her flooded she floats on")
+	naval_check(L.bays_told["[L.bay_first[aft_bay]]"], "her crew was told the after compartment flooded")
+	var/status = L.status_text()
+	naval_check(findtext(status, "into 3 compartments") && findtext(status, "after compartment <b>flooded</b>") && findtext(status, "forward compartment dry"), "the tiller reads each compartment ([status])")
+	// Pumping and bailing take from the compartment they are in.
+	naval_check(L.remove_water(2, mid) == 0, "a pump amidships lifts nothing: its compartment is dry")
+	naval_check(L.remove_water(2, locate(40, 21, 2)) == 2 && near(L.bay_water[aft_bay], 78) && near(L.water, 78), "a bailer aft lifts the after compartment's water")
+	naval_check(L.water_at(aft) == L.bay_water[aft_bay] && L.water_at(fore) == 0, "the water where each stands is its compartment's")
+	// Opening the door between them lets the water even out.
+	var/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight/D = locate() in locate(42, 23, 2)
+	L.bays_split()
+	D.door_closed()
+	naval_check(L.bays_dirty, "a watertight door that moves has her compartments walked again")
+	D.state = TRUE
+	D.density = FALSE
+	naval_check(L.bays_split() && L.bay_water.len == 2 && near(L.water, 78) && L.bay_at(aft) == L.bay_at(mid) && near(L.water_at(mid), 78), "open, the door joins two compartments and keeps their water ([json_encode(L.bay_water)])")
+	D.state = FALSE
+	D.density = TRUE
+	hull_compartments_changed(get_turf(D))
+	naval_check(L.bays_split() && L.bay_water.len == 3, "shut, it parts them again")
+	aft_bay = L.bay_at(aft)
+	mid_bay = L.bay_at(mid)
+	naval_check(near(L.bay_water[aft_bay], 39) && near(L.bay_water[mid_bay], 39) && near(L.water, 78), "the water that ran through stays on both sides ([json_encode(L.bay_water)])")
+	// Saved and read back.
+	var/list/saved = L.to_list()
+	naval_check(islist(saved["bays"]) && length(saved["bays"]) == 3, "her record keeps each compartment's water")
+	L.water = 0
+	L.bays_sync()
+	L.from_list(saved)
+	naval_check(L.bays_split() && near(L.bay_water[L.bay_at(aft)], 39) && near(L.bay_water[L.bay_at(mid)], 39) && L.bay_water[L.bay_at(fore)] == 0 && near(L.water, 78), "read back, each compartment has its own water again ([json_encode(L.bay_water)])")
+	// A shut door holds: the open hole fills the after compartment and only it.
+	L.step_ledger(600)
+	naval_check(near(L.bay_water[L.bay_at(aft)], 80) && near(L.bay_water[L.bay_at(mid)], 39), "the shut door holds the sea aft")
+	// A second hole amidships floods more than half of her: she founders.
+	qdel(locate(/obj/covers/steelplating) in mid)
+	L.step_ledger(600)
+	naval_check(L.flooded_tiles() == 40 && L.founders() && L.sink_left == HULL_SINK_WARNINGS, "two compartments flooded, 40 of her 64 tiles, and she founders ([L.flooded_tiles()])")
+	naval_check(L.water < L.capacity() * 0.98, "though she is far from full ([L.water] of [L.capacity()])")
+	L.remove_water(10, mid)
+	naval_check(!L.sink_tick() && L.sink_left == 0, "pumping the second compartment below its brim stops the count")
+	// Hauled out dry: the compartments follow the bilge.
+	L.water = 0
+	L.bays_sync()
+	var/dry = 0
+	for (var/w in L.bay_water)
+		dry += w
+	naval_check(dry == 0, "a bilge emptied outright empties every compartment")
+	L.crewed = FALSE
+	tiller.craft.set_speed(VESSEL_SPEED_STOP)
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -956,6 +1042,7 @@ var/naval_runtime_error = FALSE
 		watch_checks()
 		fouling_checks()
 		awash_checks()
+		compartment_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

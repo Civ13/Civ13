@@ -1,9 +1,11 @@
 /datum/hud_data
 
 	var/list/equip_slots = list() // Checked by mob_can_equip().
-	var/list/ProcessHUD = list("health","nutrition","body temperature",/*"pressure"*/,"toxin",/*"oxygen"*/,"fire", "throw","pull",
+	// tmp: the code decides which HUD controls exist. A saved copy restored an
+	// old character with the old list, so a newly added button never appeared.
+	var/tmp/list/ProcessHUD = list("health","nutrition","body temperature",/*"pressure"*/,"toxin",/*"oxygen"*/,"fire", "throw","pull",
 	"resist","drop","m_intent","equip","intent","help","harm","grab","disarm","damage zone", /*"internal"*/,"swap hand",
-	"toggle gun mode","allow movement","allow item use","allow radio use","toggle inventory", "mode", "secondary attack", "mood", "tactic", "fixeye", "random damage zone", "needs", "craft", "go up", "go down", "tap step")
+	"toggle gun mode","allow movement","allow item use","allow radio use","toggle inventory", "mode", "secondary attack", "mood", "tactic", "fixeye", "combat stance", "random damage zone", "needs", "craft", "go up", "go down", "tap step")
 	var/icon			  // If set, overrides ui_style.
 	//var/has_a_intent = TRUE  // Set to draw intent box.
 	//var/has_m_intent = TRUE  // Set to draw move intent box.

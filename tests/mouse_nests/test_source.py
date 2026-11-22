@@ -84,7 +84,7 @@ class NestsAreTheSource(unittest.TestCase):
     def test_emitted_mice_are_not_saved(self):
         nests = read("code/modules/ecology/mouse_nests.dm")
         self.assertIn("should_save = FALSE // the nest's population already counts this mouse", nests)
-        self.assertIn('return key == "out_mice" || ..()', nests)
+        self.assertIn('return key == "out_mice" || key == "scan_traps" || key == "scan_baits" || ..()', nests)
 
     def test_nest_sprites_exist(self):
         data = (ROOT / "icons/obj/mouse_nests.dmi").read_bytes()
@@ -93,6 +93,106 @@ class NestsAreTheSource(unittest.TestCase):
         meta = zlib.decompress(data[start:start - len(b"Description\x00\x00") + length]).decode()
         for state in ("burrow", "nest_light", "nest_used", "nest_overrun"):
             self.assertIn(f'state = "{state}"', meta)
+
+
+
+class CrowdingProjection(unittest.TestCase):
+    """Project the non-yielding DM site guard into a bounded offline model."""
+
+    @staticmethod
+    def project(source):
+        body = block(source, "/proc/mouse_nest_site_error(turf/T)").splitlines()[1:]
+        translations = {
+            "if (!mouse_nest_floor_ok(T))": "if not T.floor:",
+            'return "floor"': 'return "floor"',
+            "if (turf_is_above_ground(T))": "if T.upstairs:",
+            'return "upstairs"': 'return "upstairs"',
+            "if (locate(/obj/structure/mouse_nest) in T)": "if T.has_nest:",
+            'return "nest"': 'return "nest"',
+            "for (var/atom/movable/A in T)": "for A in T.contents:",
+            "if (A.density)": "if A.density:",
+            'return "blocked"': 'return "blocked"',
+            "var/near = 0": "near = 0",
+            "for (var/obj/structure/mouse_nest/N in mouse_nest_list)": "for N in nests:",
+            "if (N.z == T.z && get_dist(N, T) <= MOUSE_NEST_CROWD_RANGE)": "if N.z == T.z and distance(N, T) <= 15:",
+            "near++": "near += 1",
+            "if (near >= MOUSE_NEST_CROWD)": "if near >= 3:",
+            "if (near > MOUSE_NEST_CROWD)": "if near > 3:",
+            'return "crowded"': 'return "crowded"',
+            "if (ecology_visible_to_players(T, 7))": "if visible(T):",
+            'return "seen"': 'return "seen"',
+            "return null": "return None",
+        }
+        lines = ["def run(T, nests, distance, visible):"]
+        for line in body:
+            code = line.strip().split(" //", 1)[0]
+            if not code or code.startswith("//"):
+                continue
+            if code not in translations:
+                raise AssertionError(f"unrecognized site guard: {code}")
+            lines.append("    " * (len(line) - len(line.lstrip("\t"))) + translations[code])
+        namespace = {}
+        exec("\n".join(lines), namespace)
+        return namespace["run"]
+
+    def test_site_guard_matches_full_count_and_skips_remaining_work(self):
+        from types import SimpleNamespace as Obj
+        source = read("code/modules/ecology/mouse_nests.dm")
+        self.assertIn("#define MOUSE_NEST_CROWD 3", source)
+        self.assertIn("#define MOUSE_NEST_CROWD_RANGE 15", source)
+        run = self.project(source)
+        def target(**values):
+            defaults = dict(floor=True, upstairs=False, has_nest=False,
+                            contents=[], z=1, seen=False)
+            defaults.update(values)
+            return Obj(**defaults)
+        def nest(z=1, distance=1):
+            return Obj(z=z, distance=distance)
+        def reference(T, nests):
+            if not T.floor: return "floor"
+            if T.upstairs: return "upstairs"
+            if T.has_nest: return "nest"
+            if any(A.density for A in T.contents): return "blocked"
+            near = sum(N.z == T.z and N.distance <= 15 for N in nests)
+            if near >= 3: return "crowded"
+            return "seen" if T.seen else None
+        cases = [
+            (target(), []), (target(), [nest(), nest()]),
+            (target(), [nest(), nest(), nest()]),
+            (target(), [nest(), nest(), nest(), nest()]),
+            (target(), [nest(), nest(), nest(z=2), nest(distance=16)]),
+            (target(seen=True), [nest(), nest()]),
+            (target(seen=True), [nest(), nest(), nest()]),
+            (target(floor=False, upstairs=True, has_nest=True), [nest()] * 4),
+            (target(upstairs=True, has_nest=True), [nest()] * 4),
+            (target(has_nest=True, contents=[Obj(density=True)]), [nest()] * 4),
+            (target(contents=[Obj(density=True)]), [nest()] * 4),
+        ]
+        def invoke(fn, T, nests):
+            calls = []
+            def distance(N, unused):
+                calls.append("distance")
+                return N.distance
+            def visible(unused):
+                calls.append("visible")
+                return T.seen
+            return fn(T, nests, distance, visible), calls
+        for T, nests in cases:
+            actual, calls = invoke(run, T, nests)
+            self.assertEqual(actual, reference(T, nests))
+            if actual in {"floor", "upstairs", "nest", "blocked"}:
+                self.assertEqual(calls, [])
+            elif actual == "crowded":
+                self.assertNotIn("visible", calls)
+            else:
+                self.assertEqual(calls[-1], "visible")
+        self.assertEqual(invoke(run, target(), [nest()] * 4)[1], ["distance"] * 3)
+        mutant = source.replace("if (near >= MOUSE_NEST_CROWD)",
+                                "if (near > MOUSE_NEST_CROWD)", 1)
+        self.assertNotEqual(mutant, source)
+        mutant_run = self.project(mutant)
+        T, nests = target(), [nest()] * 3
+        self.assertNotEqual(invoke(mutant_run, T, nests)[0], reference(T, nests))
 
 
 if __name__ == "__main__":

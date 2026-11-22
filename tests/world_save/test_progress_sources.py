@@ -391,6 +391,11 @@ class PlayerStatusSources(unittest.TestCase):
         self.assertIn('world.update_status()', loop)
         self.assertIn('if(current_player_status != last_player_status)', loop)
         self.assertIn('sleep (100)', loop)
+        # A standby shares the region's folder; only the live world writes its heartbeat.
+        guard = 'if (!persistence_restart || !persistence_restart.standby)'
+        self.assertIn(guard, loop)
+        self.assertLess(loop.index(guard), loop.index('F << get_packaged_server_status_data()'))
+        self.assertLess(loop.index('F << get_packaged_server_status_data()'), loop.index('sleep (100)'))
 
     def test_failed_player_readiness_blocks_success_and_announcement(self):
         load = self.functions.split('/datum/controller/gameticker/proc/loadmap(', 1)[1].split('\n/map_storage/proc/capture_round_state', 1)[0]

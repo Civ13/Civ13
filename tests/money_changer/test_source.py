@@ -49,7 +49,7 @@ class MoneyChangerSource(unittest.TestCase):
         self.assertIn('"op" = "currency"', nation)
         self.assertIn('"Vote on a common money"', nation)
         nations = read('tools/transfer_storage/nations.py')
-        self.assertIn("'currency')", nations.split('NATION_OPS = ', 1)[1].split('\n', 1)[0])
+        self.assertIn("'currency'", nations.split('NATION_OPS = ', 1)[1].split('\n', 1)[0])
         self.assertIn('nation_currency', nations)
 
 

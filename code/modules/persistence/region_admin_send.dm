@@ -92,7 +92,7 @@ var/global/region_admin_send_running = FALSE
 	if(kind) return kind
 	if(!transfer_bridge.ready()) return "The transfer agent is not ready here, so nobody can travel."
 	if(!(id in transfer_bridge.peers)) return "The transfer agent here has no route to [peer["name"]]."
-	if(peer["state"] == "STOPPED") return "[peer["name"]] is stopped. Start it from the launcher or host first."
+	if(shard_group.peer_closed(id)) return "[peer["name"]] is stopped and cannot be started for travellers now (kept down, or busy with a host action). Start it from the launcher or host first."
 	if(shard_group.peer_transfers_held(id)) return "[peer["name"]]'s transfer agent is on hold, so it would refuse the arrival and the character would wait in limbo. An operator must clear the hold first."
 	if(peer["state"] != "UP" && !(wake && shard_group.peer_wakeable(id))) return "[peer["name"]] is not answering ([lowertext(peer["state"] || "unknown")])."
 	if(persistence_save_active()) return "This world is saving. Try again in a moment."
@@ -104,7 +104,7 @@ var/global/region_admin_send_running = FALSE
 /proc/region_admin_send_kind_refusal(list/peer)
 	switch(peer["kind"])
 		if("EVENT") return "[peer["name"]] is an event region: use Event Transfer, which keeps their characters here."
-		if("BARRACKS", "BATTLE", "TUTORIAL") return "[peer["name"]] never keeps a character, so nobody can be sent there."
+		if("BARRACKS", "BATTLE", "TUTORIAL", "GATEWAY") return "[peer["name"]] never keeps a character, so nobody can be sent there."
 		if("EXPEDITION")
 			if(peer["state"] == "UP" && peer["map"] == "A New Land") return "[peer["name"]] is a free slot with no land in it yet."
 	return null
@@ -274,7 +274,7 @@ var/global/region_admin_send_running = FALSE
 				var/list/items = H.region_travel_items()
 				if(islist(items))
 					var/recorded = H.persistence_owner_ckey
-					if(H.client && !recorded) H.persistence_owner_ckey = H.client.ckey
+					if(H.client && !recorded) H.persistence_owner_ckey = H.client.owner_key()
 					var/payload = H.region_travel_payload(items, null, FALSE, list("admin_send" = landing))
 					H.persistence_owner_ckey = recorded
 					if(length(payload) > (findtext(payload, "\"ship\":") ? 393216 : 131072) || !region_travel_decode(payload))

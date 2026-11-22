@@ -152,6 +152,11 @@
 		chance += 25
 	return clamp(chance, 5, 80)
 
+// Compressions keep blood moving, so the clock stands still while a completed round lasted.
+/mob/living/human/proc/credit_cpr_cycle()
+	if (revival_clock)
+		revival_clock = min(world.time, revival_clock + CPR_REVIVAL_CYCLE)
+
 /mob/living/human/proc/try_cpr_revival(mob/living/human/rescuer)
 	var/reason = resuscitation_blocker()
 	if (reason)
@@ -168,12 +173,12 @@
 	cpr_revival_busy = FALSE
 	if (!finished || stat != DEAD)
 		return FALSE
+	// Credit the finished round before rechecking, so it cannot run out the clock by itself.
+	credit_cpr_cycle()
 	reason = resuscitation_blocker()
 	if (reason)
 		to_chat(rescuer, SPAN_WARNING(reason))
 		return FALSE
-	// Compressions keep blood moving, so the clock stands still while they last.
-	revival_clock = min(world.time, revival_clock + CPR_REVIVAL_CYCLE)
 	if (rescuer.revival_mouth_free() && revival_mouth_free())
 		adjustOxyLoss(-(min(getOxyLoss(), 10)))
 	if (prob(5 / max(rescuer.getStatCoeff("medical"), 0.1)))

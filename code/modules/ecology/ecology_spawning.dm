@@ -303,7 +303,7 @@ var/global/list/ecology_species_table = null
 		var/turf/body = get_turf(C.mob)
 		if (eye && eye.z == T.z && get_dist(eye, T) <= margin)
 			return TRUE
-		if (body && body.z == T.z && get_dist(body, T) <= margin)
+		if (body && body != eye && body.z == T.z && get_dist(body, T) <= margin)
 			return TRUE
 	return FALSE
 

@@ -35,3 +35,18 @@ recipe for it.
 
 The faction's papers record keeps `"require" = list("build", "trade")`; permits are rows of kind
 `"build"` or `"trade"` in the same register.
+
+## Substance rules
+
+The faction leader can set each class of drug (opiates, stimulants, tobacco, cannabis, alcohol) to
+allowed, licensed or banned on the faction's registered land, from Faction Papers. Everything is
+allowed until a rule is set. The game only shows the rule:
+
+- examining an item on that land says whether it is banned there or needs a **substance licence**;
+- "Read the laws" in Faction Justice lists the rules after the written laws;
+- police dogs on that land bark at what it bans. Off faction land they keep the old contraband list.
+
+Arrest, trial, fines and confiscation use the faction's justice as usual. A substance licence is a
+faction paper issued like a trading licence. The record keeps
+`"substances" = list(class = "licensed" or "banned")`; `code/game/mob/groups/faction_substances.dm`
+has the code.

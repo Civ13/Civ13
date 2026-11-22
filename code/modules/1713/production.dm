@@ -332,6 +332,15 @@
 	if (istype(W, /obj/item/stack/material/wool))
 		produce(W, H, /obj/item/stack/material/woolcloth)
 		return
+	if (istype(W, /obj/item/stack/silk_thread)) // silk.dm
+		produce(W, H, /obj/item/stack/material/silk)
+		return
+	if (istype(W, /obj/item/stack/nylon_thread)) // nylon.dm
+		produce(W, H, /obj/item/stack/material/nylon)
+		return
+	if (istype(W, /obj/item/stack/material/glass) && W.type == /obj/item/stack/material/glass) // fiberglass.dm
+		produce(W, H, /obj/item/stack/material/glass_cloth)
+		return
 	if (is_tool(W, TOOL_WRENCH))
 		wrench_action(H)
 		return
@@ -1800,7 +1809,17 @@
 	not_movable = FALSE
 	not_disassemblable = TRUE
 
+/obj/structure/printingpress/persistence_runtime_var(key)
+	return key == "copying" || ..()
+
+/obj/structure/printingpress/after_load()
+	..()
+	copying = FALSE
+	icon_state = "printingpress0"
+
 /obj/structure/printingpress/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (copying)
+		return
 	if(istype(W, /obj/item/weapon/book/node_book))
 		return print_recipe_manual(W, user)
 	if(istype(W, /obj/item/weapon/book/node_compendium))
@@ -1818,51 +1837,8 @@
 			return
 	if (istype(W, /obj/item/weapon/paper))
 		return insert_copy_paper(W, user)
-	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/cartography_map))
-		var/tolist = list("Cancel")
-		if (isemptylist(copy) && isemptylist(base))
-			tolist = list("Original","Copy","Cancel")
-		else if (isemptylist(copy) && !isemptylist(base))
-			tolist = list("Copy","Cancel")
-		else if (!isemptylist(copy) && isemptylist(base))
-			tolist = list("Original","Cancel")
-		else
-			tolist = list("Cancel")
-		var/input = WWinput(user, "Add to original or copy?", "Printing Press", "Cancel", tolist)
-		// A lagged repeat click must not add the same book to the press twice.
-		if (input == "Cancel" || QDELETED(W) || W.loc != user)
-			return
-		else if (input == "Original")
-			if (istype(W, /obj/item/weapon/cartography_map))
-				var/obj/item/weapon/cartography_map/M = W
-				if (!M.map_has_content())
-					to_chat(user, SPAN_WARNING("There is nothing on [M] to print."))
-					return
-			if (istype(W, /obj/item/weapon/book/language_book))
-				var/obj/item/weapon/book/language_book/LB = W
-				if (!LB.written)
-					to_chat(user, "<span class = 'warning'>You can't copy a language book with nothing in it!</span>")
-					return
-			base += W
-			user.drop_from_inventory(W)
-			W.forceMove(locate(0,0,0))
-			return
-
-		else if (input == "Copy")
-			if (istype(W, /obj/item/weapon/cartography_map))
-				var/obj/item/weapon/cartography_map/M = W
-				if (!M.map_copy_blank())
-					to_chat(user, SPAN_WARNING("The copy must be a blank map."))
-					return
-			if (istype(W, /obj/item/weapon/book/language_book))
-				var/obj/item/weapon/book/language_book/LB = W
-				if (LB.written)
-					to_chat(user, "<span class = 'warning'>You can't copy over a written language book!</span>")
-					return
-			copy += W
-			user.drop_from_inventory(W)
-			W.forceMove(locate(0,0,0))
-			return
+	if (istype(W, /obj/item/weapon/book) || istype(W, /obj/item/weapon/cartography_map))
+		return insert_press_book_or_map(W, user)
 
 	if (is_tool(W, TOOL_WRENCH))
 		toggle_anchor(user)
@@ -1879,36 +1855,83 @@
 	else
 		..()
 
-/obj/structure/printingpress/attack_hand(var/mob/living/human/H)
-	if (copying)
-		return
+/obj/structure/printingpress/proc/insert_press_book_or_map(obj/item/weapon/document, mob/living/user)
+	var/client/session = user ? user.client : null
+	if (copying || !paper_document_copy_actor_valid(user, session, src) || QDELETED(document) || document.loc != user || user.get_active_hand() != document || !islist(base) || !islist(copy))
+		return FALSE
+	var/list/choices = list("Cancel")
+	if (!base.len)
+		choices += "Original"
+	if (!copy.len)
+		choices += "Copy"
+	if (choices.len == 1)
+		to_chat(user, SPAN_WARNING("Both slots are full. Use Unload Printing Press to clear them."))
+		return FALSE
+	var/choice = WWinput(user, "Add to original or copy?", "Printing Press", "Cancel", choices)
+	if (!(choice in choices) || choice == "Cancel" || QDELETED(src) || copying || !paper_document_copy_actor_valid(user, session, src) || QDELETED(document) || document.loc != user || user.get_active_hand() != document || !islist(base) || !islist(copy))
+		return FALSE
+	var/list/slot = choice == "Original" ? base : copy
+	if (slot.len)
+		to_chat(user, SPAN_WARNING("That slot is already occupied."))
+		return FALSE
+	if (istype(document, /obj/item/weapon/cartography_map))
+		var/obj/item/weapon/cartography_map/M = document
+		if (choice == "Original" ? !M.map_has_content() : !M.map_copy_blank())
+			to_chat(user, SPAN_WARNING(choice == "Original" ? "There is nothing on [M] to print." : "The copy must be a blank map."))
+			return FALSE
+	if (istype(document, /obj/item/weapon/book/language_book))
+		var/obj/item/weapon/book/language_book/LB = document
+		if (choice == "Original" ? !LB.written : LB.written)
+			to_chat(user, SPAN_WARNING(choice == "Original" ? "You can't copy an empty language book." : "You can't copy over a written language book."))
+			return FALSE
+	if (choice == "Copy" && press_prints_whole_book(document))
+		var/obj/item/weapon/book/B = document
+		if (!B.monk_copy_blank())
+			to_chat(user, SPAN_WARNING("The copy must be a blank book."))
+			return FALSE
 
+	// Reserve before inventory callbacks, which can destroy the machine.
+	slot += document
+	copying = TRUE
+	var/transferred = user.transfer_held_item_to(document, src)
+	if (QDELETED(src))
+		return FALSE
+	copying = FALSE
+	if (!transferred || QDELETED(document) || document.loc != src || !paper_document_copy_actor_valid(user, session, src) || slot != (choice == "Original" ? base : copy) || slot.len != 1 || slot[1] != document)
+		slot -= document
+		if (!QDELETED(document) && document.loc == src)
+			document.forceMove(get_turf(src))
+		return FALSE
+	return TRUE
+
+/obj/structure/printingpress/verb/unload_printing_press()
+	set name = "Unload Printing Press"
+	set category = null
+	set src in oview(1)
+	if (!isliving(usr) || copying || !paper_document_copy_actor_valid(usr, usr.client, src))
+		return
+	eject_press_documents(get_turf(src), usr)
+
+/obj/structure/printingpress/proc/press_retains_document(obj/item/D)
+	return !QDELETED(D) && (D.loc == src || isnull(D.loc))
+
+/obj/structure/printingpress/attack_hand(var/mob/living/human/H)
+	var/client/session = H ? H.client : null
+	if (copying || !paper_document_copy_actor_valid(H, session, src))
+		return
 	if (isemptylist(base) && isemptylist(copy))
 		to_chat(H, "There is nothing inside the press.")
 		return
-
-	if (isemptylist(copy))
-		for(var/obj/item/weapon/B in base)
-			to_chat(H, "You remove \the [B].")
-			B.loc = get_turf(src)
-			base -= B
-		return
-
-	if (isemptylist(base))
-		for(var/obj/item/weapon/C in copy)
-			to_chat(H, "You remove \the [C].")
-			C.loc = get_turf(src)
-			copy -= C
+	if (isemptylist(base) || isemptylist(copy))
+		eject_press_documents(get_turf(src), H)
 		return
 	if (!isemptylist(base) && !isemptylist(copy))
+		if (base.len != 1 || copy.len != 1 || !press_retains_document(base[1]) || !press_retains_document(copy[1]) || base[1] == copy[1])
+			to_chat(H, SPAN_WARNING("The press can't use these slots. Use Unload Printing Press to recover the documents."))
+			return
 		if (base[1].type != copy[1].type)
 			to_chat(H, "Both documents must be of the same type.")
-			for(var/obj/item/weapon/C in copy)
-				C.loc = get_turf(src)
-				copy -= C
-			for(var/obj/item/weapon/B in base)
-				B.loc = get_turf(src)
-				base -= B
+			eject_press_documents(get_turf(src), H)
 			return
 		else
 			if (istype(base[1], /obj/item/weapon/paper))
@@ -1917,16 +1940,20 @@
 				return print_map(H)
 			if (press_prints_whole_book(base[1]))
 				return print_whole_book(H)
-			var/spawntimer = 90
-			if (istype(base[1], /obj/item/weapon/book))
-				spawntimer = 250
-			else if (istype(base[1], /obj/item/weapon/paper))
-				spawntimer = 90
+			// All remaining eligible inputs are legacy book variants.
+			if (!istype(base[1], /obj/item/weapon/book))
+				return
+			var/spawntimer = 250
+			var/obj/item/weapon/original = base[1]
+			var/obj/item/weapon/stock = copy[1]
 			copying = TRUE
 			visible_message("Copying \the [base[1]]...")
 			icon_state = "printingpress1"
-			if (do_after(H, machine_work_time(src, spawntimer), src))
-				if (!isemptylist(base) && !isemptylist(copy))
+			var/done = do_after(H, machine_work_time(src, spawntimer), src)
+			if (QDELETED(src))
+				return
+			if (done && paper_document_copy_actor_valid(H, session, src))
+				if (length(base) == 1 && length(copy) == 1 && base[1] == original && copy[1] == stock && press_retains_document(original) && press_retains_document(stock))
 					visible_message("The printing press finishes copying.")
 					icon_state = "printingpress0"
 					for(var/obj/item/weapon/B in base)
@@ -1934,7 +1961,7 @@
 						base -= B
 						if (istype(B, /obj/item/weapon/book) && !istype(B, /obj/item/weapon/book/holybook) && !istype(B, /obj/item/weapon/book/research) && !istype(B, /obj/item/weapon/book/language_book))
 							var/obj/item/weapon/book/NC = B
-							var/obj/item/weapon/book/NB = new/obj/item/weapon/book(src.loc)
+							var/obj/item/weapon/book/NB = new/obj/item/weapon/book(get_turf(src))
 							NB.dat = NC.dat
 							NB.due_date = NC.due_date
 							NB.author = NC.author
@@ -1942,7 +1969,7 @@
 							NB.title = NC.title
 						else if (istype(B, /obj/item/weapon/book/holybook))
 							var/obj/item/weapon/book/holybook/NC = B
-							var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(src.loc)
+							var/obj/item/weapon/book/holybook/NB = new/obj/item/weapon/book/holybook(get_turf(src))
 							NB.author = NC.author
 							NB.title = NC.title
 							NB.name = NC.name
@@ -1951,18 +1978,18 @@
 							NB.religion_type = NC.religion_type
 						else if (istype(B, /obj/item/weapon/book/research))
 							var/obj/item/weapon/book/research/NC = B
-							var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(src.loc)
+							var/obj/item/weapon/book/research/NB = new/obj/item/weapon/book/research(get_turf(src))
 							NB.author = NC.author
 							NB.title = NC.title
 							NB.name = NC.name
 							NB.desc = NC.desc
-							NB.completed = NC.completed = 0
-							NB.k_class = NC.k_class = "none"
-							NB.k_level = NC.k_level = 0
-							NB.styleb = NC.styleb = "scroll"
+							NB.completed = 0
+							NB.k_class = "none"
+							NB.k_level = 0
+							NB.styleb = "scroll"
 						else if (istype(B, /obj/item/weapon/book/language_book))
 							var/obj/item/weapon/book/language_book/NC = B
-							var/obj/item/weapon/book/language_book/NB = new/obj/item/weapon/book/language_book(src.loc)
+							var/obj/item/weapon/book/language_book/NB = new/obj/item/weapon/book/language_book(get_turf(src))
 							NB.written = TRUE
 							NB.lang1 = NC.lang1
 							NB.lang2 = NC.lang2
@@ -1981,10 +2008,9 @@
 						qdel(C)
 					copying = FALSE
 					return
-			else
-				copying = FALSE
-				icon_state = "printingpress0"
-				return
+			copying = FALSE
+			icon_state = "printingpress0"
+			return
 	return
 
 ////////////////////////////////////////////////////////////////////////
@@ -2296,6 +2322,7 @@
 		return
 	var/list/allow_types = list(/obj/item/weapon/reagent_containers/food, /obj/item/stack/material/leaf, /obj/item/stack/farming/seeds,
 		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/tobacco_green, /obj/item/stack/material/coca,
+		/obj/item/stack/material/cannabis_fresh, /obj/item/stack/material/cannabis,
 		/obj/item/stack/material/flax, /obj/item/stack/material/hemp, /obj/item/stack/material/rettedfabric,
 		/obj/item/stack/dung
 	)
@@ -2340,7 +2367,7 @@
 		if (istype(W, /obj/item/stack/farming/seeds))
 			add(W, H, W.amount/10) //divides (using /) by tenths from each plant input of 1, 0.10 gain per seed, 10 seeds = 1 unit. 100 seeds = 10
 			continue
-		if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco_green) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca))
+		if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco_green) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca) || istype(W, /obj/item/stack/material/cannabis_fresh) || istype(W, /obj/item/stack/material/cannabis))
 			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
 			continue
 		if (istype(W, /obj/item/stack/material/flax) || istype(W, /obj/item/stack/material/hemp) || istype(W, /obj/item/stack/material/rettedfabric))
@@ -2559,6 +2586,7 @@
 			icon_state = "sawmill_power"
 		else
 			icon_state = "primitive_sawmill"
+		sawmill_sawdust(current_material) // particle_board.dm
 		qdel(current_material)
 		var/obj/item/stack/this_production = new current_work.type(null, current_work.amount, FALSE) //deleting and creating for sterilization effect (we need really new object)
 		current_user.put_in_active_hand(this_production)

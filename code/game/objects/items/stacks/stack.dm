@@ -135,6 +135,7 @@
 	if (_amount)
 		var/obj/item/stack/S = new type(src.loc, _amount, FALSE)
 		S.color = color
+		arcane_copy_virtue(src, S)
 		if (prob(_amount/amount * 100))
 			transfer_fingerprints_to(S)
 			if (blood_DNA)
@@ -1630,6 +1631,9 @@
 		return
 	// One floor and one wall per tile (tile_occupancy.dm).
 	var/tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
+	// One railing along each side of a tile (railing_built.dm).
+	if (!tile_refusal)
+		tile_refusal = railing_build_refusal(get_turf(build_loc), recipe.result_type, user)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
 		secondary_refund(H)
@@ -1866,6 +1870,8 @@
 				return
 	// The tile may have gained a floor or wall during the wait.
 	tile_refusal = tile_build_refusal(get_turf(build_loc), recipe.result_type)
+	if (!tile_refusal)
+		tile_refusal = railing_build_refusal(get_turf(build_loc), recipe.result_type, user)
 	if (tile_refusal)
 		to_chat(user, SPAN_WARNING(tile_refusal))
 		if (ship_craft)
@@ -1965,11 +1971,14 @@
 		if (istype(O, /obj/item/tailoring_project))
 			var/obj/item/tailoring_project/project = O
 			project.fabric_kind = tailoring_fabric_kind_of(src) || project.fabric_kind
+		// Coated cloth sheds rain in what is sewn from it (treated_cloth.dm).
+		coated_cloth_crafted(src, O)
 		// Alloys: a smith who knows it forges longer-lasting metal (node_effects.dm).
 		apply_crafting_node_effects(user, O)
 		// Practice: making it counts as field work for the next node (practice_work.dm).
 		note_craft_practice(user, "[recipe.result_type]")
 		player_activity.crafted(H, recipe.result_type)
+		H.accolade_crafted(recipe.result_type)
 		// Built only through a demonstration kit: a crude experimental machine (demonstrations.dm).
 		mark_experimental_build(H, O, "[recipe.result_type]")
 

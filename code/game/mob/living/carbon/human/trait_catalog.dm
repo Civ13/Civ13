@@ -4,7 +4,9 @@
 
 // Categories in display order. pick_one: its traits exclude one another, so
 // the picker offers them as one choice and swaps instead of refusing.
-var/global/list/trait_categories = list(
+var/global/list/trait_categories = trait_categories_table()
+/proc/trait_categories_table()
+	return list(
 	list("id" = "playstyle", "title" = "Playstyle", "note" = "A way of playing. Each has its own strength and its own price.", "pick_one" = TRUE),
 	list("id" = "study", "title" = "Field of study", "note" = "Optional. Faster research in one discipline, a little slower in the others. Basic Mathematics is never affected.", "pick_one" = TRUE),
 	list("id" = "trade", "title" = "Trade", "note" = "Optional. Your own kind of hands-on work goes faster, other trades a little slower. Can be held with a field of study.", "pick_one" = TRUE),
@@ -16,7 +18,9 @@ var/global/list/trait_categories = list(
 	list("id" = "other", "title" = "Other", "note" = "", "pick_one" = FALSE))
 
 // Names may be listed before their trait exists; only traits in trait_list are shown.
-var/global/list/trait_category_members = list(
+var/global/list/trait_category_members = trait_category_members_table()
+/proc/trait_category_members_table()
+	return list(
 	"playstyle" = list("Recluse Scholar", "Menacing", "Hardened Fighter", "Quartermaster", "Green Thumb", "Tinkerer", "Wanderer", "Rallying Voice"),
 	"study" = list("Engineer", "Strategist", "Naturalist", "Agronomist", "Physician"),
 	"trade" = list("Mechanic", "Gunsmith", "Smith", "Tailor", "Carpenter", "Navvy", "Miner", "Woodcutter"),

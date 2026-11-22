@@ -121,12 +121,11 @@
 	if (T)
 		T.available_dirt = 0
 
-// TRUE when T lies on a level under the ground: the dug cave level, or a cave.
+// TRUE when T lies on a level under the ground: an added underground level, or a cave.
 /proc/tunnel_level_turf(turf/T)
 	if (!T)
 		return FALSE
-	var/dug = dug_underground_z()
-	if (dug && T.z == dug)
+	if (underground_added(T.z))
 		return TRUE
 	return istype(T.loc, /area/caribbean/void/caves)
 
@@ -171,7 +170,7 @@
 	if (problem)
 		to_chat(H, SPAN_WARNING(problem))
 		return TRUE
-	var/delay = work_delay_per_speed(H, BACKFILL_TIME, WORK_DIG, tool)
+	var/delay = work_delay_per_speed(H, BACKFILL_TIME, WORK_SHIFT, tool)
 	H.shoveling = TRUE
 	H.visible_message(SPAN_NOTICE("[H] starts packing earth into the tunnel."), SPAN_NOTICE("You start packing earth into the tunnel."), "You hear digging.")
 	playsound(T, 'sound/effects/shovelling.ogg', 100, TRUE)

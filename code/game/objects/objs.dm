@@ -40,6 +40,12 @@
 
 /obj/examine(mob/user,distance=-1)
 	..(user,distance)
+	if (magic_repo_id)
+		magic_repo_examine(user) // repository.dm; only its keepers learn anything
+	if (arcane_altar_deity)
+		arcane_altar_examine(user) // arcane_altars.dm; only its god's magic users learn anything
+	if (arcane_ward_charges)
+		arcane_ward_examine(user) // arcane_ward.dm
 	return distance == -1 || (get_dist(src, user) <= distance)
 
 // Shared touch admission for structures and stationary guns. Keep caller-specific

@@ -1,16 +1,29 @@
 """Hand-placed 32px art for the training gear: lifting stones, bronze hand
-weights, the iron barbell, and the obstacle course (start post with a pennant,
-finish post with a wreath, log hurdle, balance log and steel hurdle). Every
-pixel is placed by this script from fixed palettes (Pillow only); no external
-or generated artwork. Light falls from the upper left.
+weights, the iron barbell, the skipping rope, the stationary running gear (a
+wooden tread wheel on a timber frame and a motor treadmill, each with a still
+state and a four-frame `_turning` / `_running` state in four directions) and
+the older obstacle course (start post with a pennant, finish post with a
+wreath, log hurdle, balance log and steel hurdle), kept for existing objects.
+Every pixel is placed by this script from fixed palettes (Pillow only); no
+external or generated artwork. Light falls from the upper left.
+
+The tread wheel and treadmill are drawn to sit under a person standing on the
+tile centre: east and west show the wheel side on (rim, spokes, hub) and the
+belt running across the tile, north and south show the slatted drum end on
+between its posts and the belt running up the tile. The handrail and console
+are at the end the gear faces. The moving states turn the wheel, or run the
+belt stripes, backward under the walker. `treadmill_front` repeats the hood,
+uprights, handrail and console of the south-facing treadmill, pixel for pixel,
+to be laid over a runner who faces south and so stands behind them.
 
 Run with Pillow to reproduce
-  icons/obj/training.dmi                      item icons and course structures
+  icons/obj/training.dmi                      item icons and structures
   icons/mob/items/lefthand_training.dmi       held, four directions, with a
   icons/mob/items/righthand_training.dmi      raised `_lift` state for each
 
 `--check` verifies the three committed sheets byte for byte, `--preview <png>`
-writes a review sheet. Released under Civ13 AGPL-3.0.
+writes a review sheet, `--in-use <png>` writes a sheet of a plain body standing
+on the gear and holding the rope. Released under Civ13 AGPL-3.0.
 """
 import io
 import math
@@ -43,6 +56,8 @@ IRON = [(214, 218, 224), (168, 174, 182), (124, 130, 140), (88, 92, 102), (56, 6
 RED = [(232, 96, 76), (198, 56, 50), (150, 38, 42)]
 CLOTH = [(246, 242, 230), (214, 208, 194), (172, 164, 152)]
 LEAF = [(132, 178, 84), (92, 142, 62), (60, 104, 48)]
+RUBBER = [(92, 94, 100), (60, 62, 68), (42, 44, 50)]
+LAMP = [(120, 232, 110), (232, 96, 76), (96, 44, 44)]
 
 
 class Frame:
@@ -405,6 +420,228 @@ def steel_hurdle_v():
     return f.outline().under(ground_shadow(16, 27.4, 6.5, 1.3))
 
 
+# --- the tread wheel ------------------------------------------------------
+# Frames are S, N, E, W. `step` is the animation frame, 0 to 3; `way` is +1
+# when the walker faces east or south and -1 for west or north.
+
+def treadwheel_side(step, way):
+    """The wheel side on: rim, tread boards, six spokes and the hub on its
+    axle, carried by an A frame on a sill."""
+    f = Frame()
+    cx, cy, big = 16.0, 17.0, 13.5
+    for i in range(13):                                           # the A frame behind the wheel
+        y = 17 + i
+        for x in (15 - i * 11 // 12, 16 + i * 11 // 12):
+            f.put(x, y, WOOD[4])
+            f.put(x + (-1 if x < 16 else 1), y, WOOD[5] if x > 16 else WOOD[3])
+    f.rect(2, 29, 29, 30, WOOD[3])                                # the sill
+    f.rect(2, 29, 29, 29, WOOD[1])
+    f.pts(WOOD[5], (2, 30), (29, 30))
+    turn = way * step * 15.0
+    for y in range(32):
+        for x in range(32):
+            dx, dy = x + 0.5 - cx, y + 0.5 - cy
+            r = math.hypot(dx, dy)
+            if r > big:
+                continue
+            a = math.degrees(math.atan2(dy, dx)) - turn
+            lit = (dx * 0.55 + dy * 0.8) / big
+            near = (a + 30.0) % 60.0 - 30.0                       # degrees from the nearest spoke
+            across = abs(r * math.sin(math.radians(near)))
+            if r >= 11.4:                                         # the rim, jointed between the spokes
+                tone = 0 if lit < -0.6 else 1 if lit < -0.15 else 2 if lit < 0.35 else 3 if lit < 0.7 else 4
+                if abs(r * math.sin(math.radians(a % 60.0 - 30.0))) < 0.55:
+                    tone = 5
+                f.put(x, y, WOOD[tone])
+            elif r >= 10.0:                                       # tread boards on the inside of the rim
+                f.put(x, y, WOOD[(1, 3, 5, 3)[int((a % 60.0) // 15.0)]])
+            elif r <= 2.7:
+                f.put(x, y, IRON[1] if r < 1.0 else WOOD[1] if lit < -0.05 else WOOD[3])
+            elif across <= 0.85:
+                f.put(x, y, WOOD[2] if lit < 0.1 else WOOD[3])
+    f.pts(IRON[3], (16, 17))
+    return f.outline().under(ground_shadow(16, 30.6, 14.5, 1.3))
+
+
+def treadwheel_end(step, way):
+    """The wheel end on: the boarded drum between two posts, its boards
+    drawing together toward the top and the bottom as they go round."""
+    f = Frame()
+    cy, big = 17.0, 13.5
+    for x0 in (3, 26):                                            # posts, feet and axle
+        for y in range(11, 30):
+            f.put(x0, y, WOOD[1]); f.put(x0 + 1, y, WOOD[3]); f.put(x0 + 2, y, WOOD[5])
+        f.rect(x0, 11, x0 + 2, 11, WOOD[0])
+        f.rect(x0 - 2, 29, x0 + 4, 30, WOOD[3])
+        f.rect(x0 - 2, 29, x0 + 4, 29, WOOD[1])
+        f.rect(x0, 15, x0 + 2, 18, WOOD[2])
+        f.pts(IRON[1], (x0 + 1, 16)); f.pts(IRON[3], (x0 + 1, 17))
+    f.rect(6, 16, 25, 16, IRON[1])
+    f.rect(6, 17, 25, 17, IRON[3])
+    for y in range(4, 30):
+        up = (y + 0.5 - cy) / big
+        deg = math.degrees(math.asin(max(-1.0, min(1.0, up))))
+        part = (deg / 20.0 - way * step / 4.0) % 1.0
+        inset = 1 if y in (4, 29) else 0
+        for x in range(9 + inset, 23 - inset):
+            if x in (9, 10, 21, 22):                              # the two rims
+                tone = (0 if up < -0.5 else 1 if up < 0.3 else 2) + (0, 1, 2, 3)[(9, 10, 21, 22).index(x)]
+                f.put(x, y, WOOD[min(5, tone)])
+            elif part < 0.5:
+                tone = 0 if up < -0.55 else 1 if up < -0.1 else 2 if up < 0.5 else 3
+                if x > 17:
+                    tone += 1
+                f.put(x, y, WOOD[tone])
+            else:
+                f.put(x, y, WOOD[5] if part < 0.75 or up > 0.4 else WOOD[4])
+    return f.outline().under(ground_shadow(16, 30.8, 14.5, 1.2))
+
+
+def treadwheel(step):
+    return [treadwheel_end(step, 1), treadwheel_end(step, -1), treadwheel_side(step, 1), treadwheel_side(step, -1)]
+
+
+# --- the motor treadmill --------------------------------------------------
+
+def treadmill_side(step, lit):
+    """Facing east: the belt runs across the tile to a motor hood, with the
+    handrail and console standing over the hood."""
+    f = Frame()
+    f.rect(2, 23, 24, 23, IRON[1])                                # far rail
+    f.rect(2, 30, 24, 30, IRON[3])                                # near rail
+    f.rect(2, 24, 2, 29, IRON[2])                                 # tail roller
+    for y in range(24, 30):
+        for x in range(3, 24):
+            stripe = (x + step) % 4 == 0
+            f.put(x, y, RUBBER[0] if stripe and y < 29 else RUBBER[2] if y == 29 else RUBBER[1])
+    f.rect(24, 21, 29, 30, IRON[2])                               # motor hood
+    f.rect(24, 21, 29, 21, IRON[0])
+    f.rect(24, 22, 24, 29, IRON[1])
+    f.rect(29, 23, 29, 30, IRON[3])
+    f.rect(25, 30, 29, 30, IRON[4])
+    f.pts(IRON[4], (26, 25), (27, 25), (26, 27), (27, 27))        # vents
+    for y in range(10, 21):                                       # upright
+        f.put(26, y, IRON[1]); f.put(27, y, IRON[3])
+    f.rect(20, 12, 25, 12, IRON[1])                               # handrail back toward the runner
+    f.rect(19, 12, 21, 12, RUBBER[1])
+    f.rect(23, 6, 29, 9, IRON[4])                                 # console
+    f.rect(23, 6, 29, 6, IRON[1])
+    f.pts(IRON[2], (23, 7), (23, 8), (23, 9))
+    f.pts(LAMP[0] if lit else LAMP[2], (25, 8))
+    f.pts(LAMP[1] if lit and step % 2 == 0 else LAMP[2], (27, 8))
+    return f.outline().under(ground_shadow(16, 30.9, 14.5, 1.1))
+
+
+def treadmill_south_front(f, step, lit):
+    """What stands between a south-facing runner and the viewer: the hood, the
+    uprights, the bar with its grips and the console on the bar's end."""
+    f.rect(8, 27, 23, 30, IRON[2])                                # hood
+    f.rect(8, 27, 23, 27, IRON[0])
+    f.rect(8, 30, 23, 30, IRON[4])
+    f.pts(IRON[4], (13, 29), (14, 29), (17, 29), (18, 29))
+    for x0 in (6, 24):
+        for y in range(15, 30):
+            f.put(x0, y, IRON[1]); f.put(x0 + 1, y, IRON[3])
+    f.rect(6, 15, 25, 15, IRON[1])
+    f.rect(6, 16, 25, 16, IRON[3])
+    f.rect(4, 14, 5, 14, RUBBER[1]); f.rect(26, 14, 27, 14, RUBBER[1])       # grips
+    f.rect(4, 15, 5, 15, RUBBER[2]); f.rect(26, 15, 27, 15, RUBBER[2])
+    f.rect(20, 11, 27, 14, IRON[4])                               # console on the rail's end
+    f.rect(20, 11, 27, 11, IRON[1])
+    f.pts(LAMP[0] if lit else LAMP[2], (25, 13))
+    f.pts(LAMP[1] if lit and step % 2 == 0 else LAMP[2], (26, 13))
+
+
+TREADMILL_LAMPS = ((25, 13), (26, 13))
+
+
+def treadmill_front():
+    """The overlay drawn above a runner on a south-facing treadmill. Every
+    pixel matches the south frames of `treadmill` and `treadmill_running`,
+    except that the edge of the bar is drawn where it crosses the moving belt.
+    The two lamps are left open so the lit ones underneath show through."""
+    whole = treadmill_end(0, False, False)
+    front = Frame()
+    treadmill_south_front(front, 0, False)
+    solid = set(front.px)
+    front.outline()
+    f = Frame()
+    for p, c in front.px.items():
+        if p in TREADMILL_LAMPS:
+            continue
+        on_belt = 10 <= p[0] <= 21 and 3 <= p[1] <= 26
+        f.px[p] = c if p in solid or on_belt else whole.px[p]
+    return f
+
+
+def treadmill_end(step, lit, north):
+    """The belt running up the tile. Facing north the hood, rail and console
+    stand at the top; facing south they stand at the bottom."""
+    f = Frame()
+    if north:
+        y0, y1 = 12, 29
+    else:
+        y0, y1 = 3, 26
+    for y in range(y0, y1 + 1):
+        f.put(8, y, IRON[0]); f.put(9, y, IRON[2])                # side rails
+        f.put(22, y, IRON[2]); f.put(23, y, IRON[4])
+        for x in range(10, 22):
+            stripe = (y - step if north else y + step) % 4 == 0
+            f.put(x, y, RUBBER[0] if stripe and x < 20 else RUBBER[2] if x == 21 else RUBBER[1])
+    if north:
+        f.rect(8, 30, 23, 30, IRON[3])                            # tail roller
+        f.rect(8, 9, 23, 11, IRON[2])                             # hood
+        f.rect(8, 9, 23, 9, IRON[0])
+        f.rect(8, 11, 23, 11, IRON[3])
+        f.pts(IRON[4], (13, 10), (14, 10), (17, 10), (18, 10))
+        for x0 in (7, 23):                                        # uprights and the bar between them
+            for y in range(3, 10):
+                f.put(x0, y, IRON[1]); f.put(x0 + 1, y, IRON[3])
+        f.rect(7, 3, 24, 3, IRON[1])
+        f.rect(7, 4, 24, 4, IRON[3])
+        f.rect(11, 1, 20, 4, IRON[4])                             # console
+        f.rect(11, 1, 20, 1, IRON[1])
+        f.pts(LAMP[0] if lit else LAMP[2], (12, 2))
+        f.pts(LAMP[1] if lit and step % 2 == 0 else LAMP[2], (19, 2))
+    else:
+        f.rect(8, 2, 23, 2, IRON[2])                              # tail roller
+        treadmill_south_front(f, step, lit)
+    return f.outline().under(ground_shadow(16, 30.9, 10.5, 1.1))
+
+
+def treadmill(step, lit):
+    east = treadmill_side(step, lit)
+    return [treadmill_end(step, lit, False), treadmill_end(step, lit, True), east, east.flip()]
+
+
+# --- the skipping rope ----------------------------------------------------
+
+def handle(f, x0, y0):
+    """A turned wooden handle lying along the tile, the rope leaving its right end."""
+    for i, x in enumerate(range(x0, x0 + 8)):
+        waist = i in (2, 6)
+        f.put(x, y0, WOOD[1] if waist else WOOD[0])
+        f.put(x, y0 + 1, WOOD[3] if waist else WOOD[2])
+        f.put(x, y0 + 2, WOOD[5] if waist else WOOD[4])
+    f.pts(WOOD[1], (x0 - 1, y0 + 1))                              # the knob
+
+
+def skipping_rope():
+    f = Frame()
+    for (cx, cy, rx, ry) in ((15.0, 20.5, 8.2, 5.2), (17.5, 19.5, 7.4, 4.6)):   # two turns of the coil
+        for i in range(360):
+            a = math.radians(i)
+            x, y = int(cx + rx * math.cos(a)), int(cy + ry * math.sin(a))
+            f.put(x, y, ROPE[1] if (x + y) % 3 == 0 or math.sin(a) > 0.5 else ROPE[0])
+    handle(f, 4, 8)
+    handle(f, 15, 11)
+    f.pts(ROPE[0], (12, 9), (13, 10), (13, 11), (13, 12), (12, 13), (11, 14))
+    f.pts(ROPE[1], (13, 13))
+    f.pts(ROPE[0], (23, 12), (24, 13), (25, 14))
+    f.pts(ROPE[1], (25, 15), (25, 16))
+    return f.outline().under(ground_shadow(16.5, 25.6, 9.5, 1.6))
+
+
 # --- held in the hands ----------------------------------------------------
 # Frames are S, N, E, W. The left hand's column for each facing:
 HAND = (21, 9, 16, 13)
@@ -484,6 +721,40 @@ def bar_frame(d, y):
     return f.outline()
 
 
+def rope_in_hand(x, d):
+    """Both handles in one fist, the rope hanging in a loop beside the leg."""
+    f = Frame()
+    f.pts(WOOD[0], (x, 16)); f.pts(WOOD[2], (x, 17), (x, 18)); f.pts(WOOD[4], (x, 19))
+    f.pts(WOOD[1], (x + 1, 16)); f.pts(WOOD[3], (x + 1, 17), (x + 1, 18)); f.pts(WOOD[5], (x + 1, 19))
+    for y in range(20, 27):
+        f.put(x, y, ROPE[0] if y % 3 else ROPE[1])
+        f.put(x + 1, y, ROPE[1])
+    f.pts(ROPE[1], (x, 27), (x + 1, 27))
+    return f.outline()
+
+
+def rope_swung(d):
+    """Mid skip: a handle in each hand and the rope passing over the head."""
+    f = Frame()
+    if d < 2:
+        for i in range(0, 901):                                   # one half placed, the other mirrored
+            a = math.radians(180 + i / 10.0)
+            x, y = int(16.0 + 10.0 * math.cos(a)), int(17.0 + 16.0 * math.sin(a))
+            if x < 16 and y < 17:
+                f.put(x, y, ROPE[1] if (x + y) % 4 == 0 else ROPE[0])
+                f.put(31 - x, y, ROPE[1] if (x + y) % 4 == 1 else ROPE[0])
+        for x in (6, 25):
+            f.pts(WOOD[0], (x, 16)); f.pts(WOOD[2], (x, 17)); f.pts(WOOD[4], (x, 18))
+        return f.outline()
+    for y in range(1, 16):                                        # seen from the side it leans back over the head
+        t = (15 - y) / 14.0
+        x = int(round(16 - 8.0 * t ** 0.8))
+        f.put(x, y, ROPE[1] if y % 4 == 0 else ROPE[0])
+    f.pts(WOOD[0], (16, 16)); f.pts(WOOD[2], (16, 17)); f.pts(WOOD[4], (16, 18))
+    f.outline()
+    return f if d == 2 else f.flip()
+
+
 HELD = {
     'lifting_stone_small': held_one(small_in_hand),
     'lifting_stone_small_lift': held_one(small_lifted),
@@ -495,6 +766,8 @@ HELD = {
     'hand_weights_lift': held_one(weight_lifted),
     'barbell': held_both(lambda d: bar_frame(d, 19)),
     'barbell_lift': held_both(lambda d: bar_frame(d, 4)),
+    'skipping_rope': held_one(rope_in_hand),
+    'skipping_rope_lift': held_both(rope_swung),
 }
 
 # name -> (dirs, frames, delay, [frames in DMI order: every direction of frame 1, then frame 2 ...])
@@ -509,6 +782,12 @@ OBJ = {
     'log_hurdle': (4, 1, None, [log_hurdle_h(), log_hurdle_h(), log_hurdle_v(), log_hurdle_v()]),
     'balance_log': (4, 1, None, [balance_log_h(), balance_log_h(), balance_log_v(), balance_log_v()]),
     'steel_hurdle': (4, 1, None, [steel_hurdle_h(), steel_hurdle_h(), steel_hurdle_v(), steel_hurdle_v()]),
+    'treadwheel': (4, 1, None, treadwheel(0)),
+    'treadwheel_turning': (4, 4, 1, [fr for step in range(4) for fr in treadwheel(step)]),
+    'treadmill': (4, 1, None, treadmill(0, False)),
+    'treadmill_running': (4, 4, 1, [fr for step in range(4) for fr in treadmill(step, True)]),
+    'skipping_rope': (1, 1, None, [skipping_rope()]),
+    'treadmill_front': (1, 1, None, [treadmill_front()]),
 }
 
 
@@ -548,6 +827,15 @@ def check_drawing():
             solid = [p for p, c in fr.px.items() if c[3] == 255]
             if not solid:
                 problems.append('%s: empty frame' % name)
+    front = OBJ['treadmill_front'][3][0]
+    for name in ('treadmill', 'treadmill_running'):
+        dirs, count, _, frs = OBJ[name]
+        for step in range(count):
+            south = frs[step * dirs]
+            for p, c in front.px.items():
+                on_belt = 10 <= p[0] <= 21 and 3 <= p[1] <= 26
+                if south.px.get(p) != c and not (on_belt and c == OUT + (255,)):
+                    problems.append('treadmill_front: pixel %s does not match %s frame %d' % (p, name, step + 1))
     for name, (left, right) in HELD.items():
         for fr in left + right:
             if not fr.px:
@@ -582,9 +870,10 @@ def old_state(path, name):
 
 
 def write_preview(path, scale=6):
-    """Row 1: the two borrowed icons this replaces. Rows 2-3: every new icon on
-    grass and on dirt. Rows 4-5: each weight carried and lifted, facing south,
-    north, east and west."""
+    """First the two borrowed icons the weights replaced, then every icon on
+    grass and again on dirt (a four-direction state shows south and east, a
+    moving state adds its second frame), then each held thing carried and
+    raised, facing south, north, east and west."""
     grass, dirt, back = (86, 128, 62, 255), (134, 102, 70, 255), (30, 32, 36, 255)
     cell = 32 * scale
     tiles = []
@@ -593,9 +882,15 @@ def write_preview(path, scale=6):
         if dirs == 4:
             tiles.append(frs[2])
         if count > 1:
-            tiles.append(frs[1])
-    width = max(len(tiles) * cell, 20 * 32 * 3)
-    sheet = Image.new('RGBA', (width, cell * 3 + 16 + 2 * (32 * 3 + 4) + 8), back)
+            tiles.append(frs[dirs])
+            if dirs == 4:
+                tiles.append(frs[dirs + 2])
+    per_row = 14
+    icon_rows = (len(tiles) + per_row - 1) // per_row
+    names = [n for n in HELD if not n.endswith('_lift')]
+    width = max(per_row * cell, len(names) * 4 * 96)
+    y0 = (1 + 2 * icon_rows) * (cell + 4) + 8
+    sheet = Image.new('RGBA', (width, y0 + 2 * 100 + 4), back)
     for i, (p, s) in enumerate((('icons/obj/materials.dmi', 'sheet-stone'), ('icons/obj/flags.dmi', 'flagpole_blank'))):
         tile = Image.new('RGBA', (32, 32), grass)
         tile.alpha_composite(old_state(p, s))
@@ -604,9 +899,8 @@ def write_preview(path, scale=6):
         for i, fr in enumerate(tiles):
             tile = Image.new('RGBA', (32, 32), ground)
             tile.alpha_composite(fr.image())
-            sheet.alpha_composite(tile.resize((cell, cell), Image.NEAREST), (i * cell, (r + 1) * (cell + 4)))
-    y0 = 3 * (cell + 4) + 8
-    names = [n for n in HELD if not n.endswith('_lift')]
+            sheet.alpha_composite(tile.resize((cell, cell), Image.NEAREST),
+                                  ((i % per_row) * cell, (1 + r * icon_rows + i // per_row) * (cell + 4)))
     for r, suffix in enumerate(('', '_lift')):
         for i, name in enumerate(names):
             for d in range(4):
@@ -614,6 +908,43 @@ def write_preview(path, scale=6):
                 tile.alpha_composite(base_body(d))
                 tile.alpha_composite(HELD[name + suffix][0][d].image())
                 sheet.alpha_composite(tile.resize((96, 96), Image.NEAREST), ((i * 4 + d) * 96, y0 + r * 100))
+    sheet.convert('RGB').save(path)
+
+
+def write_in_use(path, scale=5):
+    """A plain body on the tread wheel and the treadmill and with the rope,
+    facing south, north, east and west (the south-facing treadmill with its
+    `treadmill_front` overlay). Each row shows the still state and the
+    third frame of the moving state (the rope: carried and swung, each hand),
+    large and then at game size."""
+    grass, back = (86, 128, 62, 255), (30, 32, 36, 255)
+    rows = []
+    for still, moving in (('treadwheel', 'treadwheel_turning'), ('treadmill', 'treadmill_running')):
+        row = []
+        for name, first in ((still, 0), (moving, 8)):
+            for d in range(4):
+                tile = Image.new('RGBA', (32, 32), grass)
+                tile.alpha_composite(OBJ[name][3][first + d].image())
+                tile.alpha_composite(base_body(d))
+                if d == 0 and still == 'treadmill':               # the rail goes back over a south-facing runner
+                    tile.alpha_composite(OBJ['treadmill_front'][3][0].image())
+                row.append(tile)
+        rows.append(row)
+    for side in (0, 1):
+        row = []
+        for name in ('skipping_rope', 'skipping_rope_lift'):
+            for d in range(4):
+                tile = Image.new('RGBA', (32, 32), grass)
+                tile.alpha_composite(base_body(d))
+                tile.alpha_composite(HELD[name][side][d].image())
+                row.append(tile)
+        rows.append(row)
+    cell = 32 * scale
+    sheet = Image.new('RGBA', (8 * (cell + 4) + 8 * 34 + 12, len(rows) * (cell + 4)), back)
+    for r, row in enumerate(rows):
+        for i, tile in enumerate(row):
+            sheet.alpha_composite(tile.resize((cell, cell), Image.NEAREST), (i * (cell + 4), r * (cell + 4)))
+            sheet.alpha_composite(tile, (8 * (cell + 4) + 12 + i * 34, r * (cell + 4) + cell // 2 - 16))
     sheet.convert('RGB').save(path)
 
 
@@ -637,6 +968,8 @@ def main():
         path.write_bytes(dmi_bytes(states(key)))
     if '--preview' in args[:-1]:
         write_preview(args[args.index('--preview') + 1])
+    if '--in-use' in args[:-1]:
+        write_in_use(args[args.index('--in-use') + 1])
     return 0
 
 

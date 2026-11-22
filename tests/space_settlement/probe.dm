@@ -360,6 +360,8 @@ var/space_runtime_error = FALSE
 /mob/living/human/space_probe_crew/New(newloc)
 	loc = newloc
 	human_mob_list |= src
+	// A travel payload reads the body's species (human_damage.dm).
+	species = new /datum/species/human
 /mob/living/human/space_probe_crew/adjustOxyLoss(amount)
 	oxyloss += amount
 

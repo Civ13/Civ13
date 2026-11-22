@@ -11,6 +11,9 @@
 //   mine - iron pickaxe, usespeed 2
 //   chop - iron hatchet, chopping_speed 1.7 (lower is faster)
 //   till - plain hoe, usespeed 1
+//   shift - iron shovel again, for moving loose earth (piles, backfill); a
+//           tool's shifting_mult scales it, so a mattock breaks ground well
+//           but is poor at shovelling
 // A better tool, a stronger worker or a matching trade shortens the wait; a
 // bone shovel, a weak worker or bare hands lengthen it.
 
@@ -18,20 +21,23 @@ var/global/list/work_reference_tool_speed = list(
 	WORK_DIG = 1.5,
 	WORK_MINE = 2,
 	WORK_CHOP = 1.7,
-	WORK_TILL = 1)
+	WORK_TILL = 1,
+	WORK_SHIFT = 1.5)
 
 // The stats each kind of work draws on, by weight (weights add up to 1).
 var/global/list/work_stat_weights = list(
 	WORK_DIG = list("strength" = 0.7, "stamina" = 0.3),
 	WORK_MINE = list("strength" = 0.8, "stamina" = 0.2),
 	WORK_CHOP = list("strength" = 0.7, "dexterity" = 0.3),
-	WORK_TILL = list("farming" = 0.6, "strength" = 0.4))
+	WORK_TILL = list("farming" = 0.6, "strength" = 0.4),
+	WORK_SHIFT = list("strength" = 0.7, "stamina" = 0.3))
 
 // The trade (trade_traits.dm) whose own work each kind is.
 var/global/list/work_trade_kind = list(
 	WORK_DIG = "navvy",
 	WORK_MINE = "miner",
-	WORK_CHOP = "woodcutter")
+	WORK_CHOP = "woodcutter",
+	WORK_SHIFT = "navvy")
 
 // How much faster this tool works than the reference tool: 1 for the
 // reference tool or no tool.
@@ -49,6 +55,8 @@ var/global/list/work_trade_kind = list(
 	var/speed = tool.vars["usespeed"]
 	if (!isnum(speed) || speed <= 0)
 		return 1
+	if (kind == WORK_SHIFT && ("shifting_mult" in tool.vars) && isnum(tool.vars["shifting_mult"]))
+		speed *= tool.vars["shifting_mult"]
 	return speed / reference
 
 // How much faster this worker's stats make the work: 1 for an average
@@ -76,7 +84,7 @@ var/global/list/work_trade_kind = list(
 // The do_after wait for labour of this kind with this tool, from a base wait
 // for an average worker with the reference tool.
 /proc/work_delay(mob/user, base, kind, obj/item/tool)
-	var/mult = work_trade_factor(user, kind) / (work_tool_factor(tool, kind) * work_stat_factor(user, kind))
+	var/mult = work_trade_factor(user, kind) / (work_tool_factor(tool, kind) * work_stat_factor(user, kind) * arcane_bless_speed(tool))
 	mult = max(WORK_MIN_MULT, min(WORK_MAX_MULT, mult))
 	return max(1, round(base * mult, 1))
 

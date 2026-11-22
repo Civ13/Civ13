@@ -1,4 +1,3 @@
-var/list/global/floor_cache = list()
 
 /turf
 	var/previous_turf = /turf/floor/dirt

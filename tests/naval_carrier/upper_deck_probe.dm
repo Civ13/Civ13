@@ -123,6 +123,11 @@ var/naval_runtime_error = FALSE
 	var/datum/craft_body/built/B = C.body
 	naval_check(B.upper_z() == 3 && B.upper_tile_count() == 15, "her upper deck is fifteen tiles ([B.upper_tile_count()])")
 	naval_check(findtext(tiller.status_text(), "15 tiles of hull and 15 of upper deck"), "the tiller reads out both decks ([tiller.status_text()])")
+	// ---- Weight (naval/hull_weight.dm) ----
+	C.fit_drives()
+	naval_check(C.structure_weight == 15 && C.mass() == 30, "her upper deck weighs like a second deck of planks: mass [C.mass()] for 15 tiles of hull")
+	naval_check(C.turn_time() == VESSEL_PATH_WARNING, "a hull five tiles long comes about after the usual warning ([C.turn_time()])")
+	naval_check(abs(hull_material_weight("wood") - 1) < 0.001 && abs(hull_material_weight("steel") - 1.67) < 0.001 && abs(hull_material_weight("aluminium") - 0.92) < 0.001, "floors weigh by the vehicles' hull table against planks ([hull_material_weight("wood")], [hull_material_weight("steel")], [hull_material_weight("aluminium")])")
 	naval_check(istype(get_area(locate(33, 11, 2)), /area/caribbean/roofed) && !istype(get_area(locate(35, 11, 2)), /area/caribbean/roofed), "under her roofs is indoors and the sea beside her is not")
 
 	// A floor that belongs to nobody aboard is not her deck.
@@ -164,11 +169,41 @@ var/naval_runtime_error = FALSE
 	naval_check(foot.target == head && head.x == foot.x && head.y == foot.y, "the ladder swung whole")
 
 	// ---- Crossing the sea ----
-	naval_check(findtext(tiller.crossing_refusal(null), "upper deck"), "she may not cross the sea with an upper deck yet")
+	var/sea_refusal = tiller.crossing_refusal(null)
+	naval_check(!sea_refusal || !findtext(sea_refusal, "upper deck"), "her upper deck no longer keeps her from crossing the sea (cargo_probe.dm)")
 
 	tiller.decommission()
 	qdel(tiller)
 	qdel(bea)
+
+	// ---- A mast under a bridge ----
+	for (var/x = 50, x <= 52, x++)
+		for (var/y = 10, y <= 12, y++)
+			hull_lay(x, y)
+	var/obj/structure/vehicleparts/movement/sail/mast = new(locate(51, 11, 2))
+	var/obj/structure/hull_tiller/sloop_tiller = new(locate(50, 11, 2))
+	naval_check(isnull(sloop_tiller.commission("Wren", EAST)) && sloop_tiller.craft, "a sloop with a mast and no deck above is commissioned")
+	var/datum/craft_body/built/SB = sloop_tiller.craft.body
+	var/turf/SO = SB.origin()
+	var/obj/covers/repairedfloor/low_bridge = new(locate(52, 11, 3))
+	naval_check(!SB.move_to(SO.x + 1, SO.y, EAST) && findtext(SB.last_refusal, "over her mast") && mast.x == 51, "a floor on the level above stops her mast, with the reason ([SB.last_refusal])")
+	var/obj/covers/repairedfloor/beside = new(locate(53, 12, 3))
+	qdel(low_bridge)
+	naval_check(SB.move_to(SO.x + 1, SO.y, EAST) && mast.x == 52, "a floor over her plain deck lets her pass; only her mast needs the air clear ([SB.last_refusal])")
+	qdel(beside)
+	sloop_tiller.decommission()
+	qdel(sloop_tiller)
+
+	// ---- A steel deck weighs more ----
+	for (var/x = 52, x <= 55, x++)
+		var/obj/covers/steelplating/plate = new(locate(x, 45, 2))
+		plate.updateturf()
+	var/obj/structure/hull_tiller/cutter = new(locate(52, 45, 2))
+	naval_check(isnull(cutter.commission("Iron", EAST)), "a steel-plated hull is commissioned")
+	cutter.craft.fit_drives()
+	naval_check(abs(cutter.craft.structure_weight - 2.7) < 0.01 && abs(cutter.craft.mass() - 6.7) < 0.01, "four steel tiles weigh 6.7 tiles of plank hull ([cutter.craft.mass()])")
+	cutter.decommission()
+	qdel(cutter)
 
 	// ---- The cap on her decks, and the timing at it ----
 	for (var/x = 40, x <= 49, x++)
@@ -192,6 +227,8 @@ var/naval_runtime_error = FALSE
 			for (var/obj/roof/R in locate(x, y, 2))
 				qdel(R)
 	naval_check(BB.upper_tile_count() == 100 && deck_floors(locate(47, 30, 3)) == 0, "taking down half her roofs takes their floors too ([BB.upper_tile_count()])")
+	big.craft.fit_drives()
+	naval_check(big.craft.mass() == 300 && big.craft.turn_time() == VESSEL_PATH_WARNING + 50, "200 tiles of hull and 100 of upper deck weigh 300, and twenty tiles long she takes ten seconds to come about ([big.craft.mass()], [big.craft.turn_time()])")
 	for (var/i = 1, i <= 10, i++)
 		new /obj/item/weapon/reagent_containers/glass/bucket(locate(40 + (i % 5), 30, 3))
 		new /mob/living/human/naval_probe(locate(40 + (i % 5), 25, 3))
@@ -200,8 +237,9 @@ var/naval_runtime_error = FALSE
 	for (var/i = 1, i <= 4, i++)
 		sleep(1)
 		BO = BB.origin()
+		// As the sailing loop does it: ask, then move.
 		var/t = world.tick_usage
-		var/ok = BB.move_to(BO.x, BO.y + 1, NORTH)
+		var/ok = BB.can_move_to(BO.x, BO.y + 1, NORTH) && BB.move_to(BO.x, BO.y + 1, NORTH)
 		var/ms = deck_ms(t)
 		naval_check(ok, "step [i] at the cap of 300 deck tiles ([BB.last_refusal])")
 		worst = max(worst, ms)
@@ -209,6 +247,22 @@ var/naval_runtime_error = FALSE
 	world.log << "TIMING: a step of 200 tiles of hull with 100 of upper deck: worst [worst] ms, mean [total / 4] ms"
 	naval_check(worst < 100, "a step at the cap stays well inside a tick ([worst] ms)")
 	naval_check(deck_paired(BB) == 100 && BB.upper_tile_count() == 100, "after four steps every roof still has its floor")
+	// The same hull bare: everyone off the upper deck, every roof down, so
+	// 200 tiles of hull alone.
+	for (var/atom/movable/up in BB.aboard())
+		if (up.z == 3 && !istype(up, /obj/covers))
+			qdel(up)
+	for (var/obj/roof/R in world)
+		if (BB.contains(get_turf(R)))
+			qdel(R)
+	var/bare = 0
+	for (var/i = 1, i <= 2, i++)
+		sleep(1)
+		BO = BB.origin()
+		var/t = world.tick_usage
+		naval_check(BB.can_move_to(BO.x, BO.y + 1, NORTH) && BB.move_to(BO.x, BO.y + 1, NORTH), "bare step [i] ([BB.last_refusal])")
+		bare = max(bare, deck_ms(t))
+	world.log << "TIMING: a step of the same hull bare (200 tiles): worst [bare] ms"
 
 /proc/naval_run()
 	try

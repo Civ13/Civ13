@@ -61,6 +61,10 @@
 	aircraft_check(air_crossing_flight_z() == 2, "planes arrive on the open-air level")
 	var/turf/pivot = air_crossing_anchorage(plane)
 	aircraft_check(pivot && pivot.z == 2 && pivot.y == 9, "flying north, she comes in over the south edge ([pivot ? "[pivot.x],[pivot.y]" : "none"])")
+	var/list/along_plane = plane.Copy()
+	along_plane["along"] = 1
+	var/turf/along_pivot = air_crossing_anchorage(along_plane)
+	aircraft_check(along_pivot && along_pivot.y == 9 && along_pivot.x == 12, "flown off an edge, she comes in at the place along it her line reaches, kept off the corner ([along_pivot ? "[along_pivot.x],[along_pivot.y]" : "none"])")
 	var/obj/structure/vehicleparts/axis/aircraft/B = air_crossing_build(plane, pivot, "gaia-1-2")
 	aircraft_check(istype(B) && B.airborne() && B.flight_state == AIRCRAFT_CRUISE && aircraft_frames_z(B, 2), "she is built flying on the open-air level")
 	aircraft_check(B && air_crossing_find("gaia-1-2") == B && B.air_crossing_hold > world.time, "and holds steady for her crew")
@@ -71,6 +75,38 @@
 	B.air_crossing_resume(3, null)
 	aircraft_check(B.moving && B.currentspeed >= B.stall_gear && BE.on, "she flies on with her engine running")
 	qdel(B)
+
+	// ---- Over linked edges (aircraft_edge.dm) ----
+	var/list/R = air_edge_route("europe", "east", 0.5)
+	aircraft_check(islist(R) && R[1] == "asia" && R[2] == "west" && R[3] == 0.5 && R[4] == 1, "off Europe's east edge she flies straight into Asia, one leg ([islist(R) ? jointext(R, ",") : R])")
+	R = air_edge_route("northamerica", "east", 0.64)
+	aircraft_check(islist(R) && R[1] == "gaia" && R[2] == "west" && R[4] == 3, "off North America's east edge in line with Gaia she is carried over the Atlantic to Gaia's west edge ([islist(R) ? jointext(R, ",") : R])")
+	R = air_edge_route("northamerica", "east", 0.1)
+	aircraft_check(islist(R) && R[1] == "africa" && R[2] == "west" && R[4] == 6 && abs(R[3] - 0.1 / 0.42) < 0.01, "further south she crosses the whole Atlantic to Africa ([islist(R) ? jointext(R, ",") : R])")
+	R = air_edge_route("gaia", "east", 0.5)
+	aircraft_check(islist(R) && R[1] == "europe" && R[2] == "west" && R[4] == 4, "off Gaia's east edge she flies on to Europe ([islist(R) ? jointext(R, ",") : R])")
+	R = air_edge_route("europe", "north", 0.5)
+	aircraft_check(istext(R) && findtext(R, "sea"), "north over the Arctic there is nothing to land on ([R])")
+	R = air_edge_route("far1", "north", 0.5)
+	aircraft_check(istext(R), "a land off the table has nothing beyond its edges ([R])")
+	var/list/edge_plane = plane.Copy()
+	edge_plane["along"] = 0.25
+	aircraft_check(air_crossing_plane_ok(edge_plane), "an edge flight's place along the arrival edge travels with her")
+	edge_plane["along"] = 2
+	aircraft_check(!air_crossing_plane_ok(edge_plane), "a place along that is off the edge is refused")
+	shard_group.edge_travel_oceans = TRUE
+	shard_group.region = "far1"
+	var/obj/structure/vehicleparts/axis/aircraft/EP = build_light_plane(locate(6, 1, 2))
+	var/obj/structure/engine/internal/EPE = EP.engine
+	EPE.fueltank.reagents.add_reagent(EPE.fuels[1], 100, safety = TRUE)
+	EPE.on = TRUE
+	EP.set_flight_state(AIRCRAFT_CRUISE)
+	EP.moving = TRUE
+	EP.currentspeed = EP.speeds
+	aircraft_check(!EP.do_vehicle_check() && EP.edge_blocked && !EP.air_crossing_asking, "with edge travel on, an edge with nothing beyond still stops her")
+	qdel(EP)
+	shard_group.edge_travel_oceans = FALSE
+	shard_group.region = "gaia"
 	shard_group.peers -= list("northamerica", "europe", "southamerica")
 	shard_group.region = old_region
 	shard_group.enabled = old_enabled
