@@ -301,6 +301,10 @@ class WorldChart:
         # One claim per faction, one faction per land.
         db.execute('''CREATE TABLE IF NOT EXISTS chart_claim(
             faction TEXT PRIMARY KEY, x INTEGER NOT NULL, y INTEGER NOT NULL, by TEXT, at INTEGER NOT NULL)''')
+        # A new lifetime is distinct even when the same faction reclaims the
+        # same tile in the same second. Keep the old claims' identities stable.
+        if 'incarnation' not in {row[1] for row in db.execute('PRAGMA table_info(chart_claim)')}:
+            db.execute('ALTER TABLE chart_claim ADD COLUMN incarnation TEXT')
         # Who a faction lets land on its claimed island: a mode, the accounts it
         # names and visitor passes (account -> when it runs out, unix seconds).
         db.execute('''CREATE TABLE IF NOT EXISTS chart_access(
@@ -308,6 +312,8 @@ class WorldChart:
             by TEXT, at INTEGER NOT NULL)''')
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('seed', ?)", (secrets.token_hex(8),))
         db.execute("INSERT OR IGNORE INTO chart_meta VALUES ('rev', '0')")
+        if db.execute('UPDATE chart_claim SET incarnation = lower(hex(randomblob(16))) WHERE incarnation IS NULL').rowcount:
+            self._bump()  # Publish the migrated identities to existing region replicas.
         if mainland and not db.execute('SELECT 1 FROM chart_pin LIMIT 1').fetchone():
             db.execute('INSERT INTO chart_pin VALUES (?, ?, ?)', (mainland, CHART_WIDTH // 2, CHART_HEIGHT // 2))
 
@@ -458,6 +464,9 @@ class WorldChart:
                 'SELECT DISTINCT owner FROM chart_seen ORDER BY owner')}
             answer['courses'] = self.courses()
             answer['claims'] = self.claims()
+            answer['claim_incarnations'] = {
+                f: token for f, token in self.db.execute(
+                    "SELECT faction, incarnation FROM chart_claim WHERE faction LIKE 'civ:%'")}
             answer['access'] = self.access()
         return answer
 
@@ -734,6 +743,10 @@ class WorldChart:
     def claims(self):
         return {f: '%d,%d' % (x, y) for f, x, y in self.db.execute('SELECT faction, x, y FROM chart_claim ORDER BY faction')}
 
+    def claim_incarnation(self, faction):
+        row = self.db.execute('SELECT incarnation FROM chart_claim WHERE faction = ?', (faction,)).fetchone()
+        return row[0] if row else None
+
     # -- island access (island_access.dm) --------------------------------------
     # A faction's claimed island takes only those its leader or officers let
     # land. Worlds check the rows before anyone sets out for the island, and
@@ -830,7 +843,8 @@ class WorldChart:
         if self.db.execute('SELECT 1 FROM chart_claim WHERE faction = ? OR (x = ? AND y = ?)', (faction, x, y)).fetchone():
             return False
         now = int(time.time() if now is None else now)
-        self.db.execute('INSERT INTO chart_claim VALUES (?, ?, ?, ?, ?)', (faction, x, y, by, now))
+        self.db.execute('INSERT INTO chart_claim(faction, x, y, by, at, incarnation) VALUES (?, ?, ?, ?, ?, ?)',
+                        (faction, x, y, by, now, secrets.token_hex(16)))
         self.db.execute("UPDATE chart_tile SET state = 'CLAIMED', by = ? WHERE region = ?", (by, region))
         self._bump()
         return True
