@@ -369,8 +369,8 @@ the hub after its updates. The gateway is started on its port and stays there:
   own forwarding clients. The total comes from the existing polls, without
   waking regions. Confirmed asleep, cold or stopped regions contribute zero;
   unchecked, unreachable, waking, invalid or expired observations make the
-  count partial. The Hub description labels a partial count as "at least", or
-  "unavailable" when no region is confirmed. The `status` topic supplies the
+  count partial. The Hub description shows the known sum as a plain number, and
+  leaves the line out while no region is confirmed. The `status` topic supplies the
   known sum in `group_players` and the number of unconfirmed regions in
   `group_players_unknown_regions`; `players` still counts local clients only.
   BYOND's built-in listing count is for the gateway world itself, not the sum
