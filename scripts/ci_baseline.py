@@ -500,6 +500,10 @@ SUITES = {
         'paths': ('tests/tape_markings/',), 'shared_paths': (
             'code/game/objects/items/weapons/policetape.dm',
             'tests/save_movement/source_adapter.py')},
+    'effect_lifetime_guards': {'files': ('tests/pool_effects/test_lifetime_guards.py',),
+        'paths': ('tests/pool_effects/test_lifetime_guards.py',), 'shared_paths': (
+            'code/game/objects/effects/effect_system.dm', 'code/__defines/qdel.dm',
+            'tests/save_movement/source_adapter.py')},
     'smokables': {'files': ('tests/smokables/test_burn_state.py',),
         'paths': ('tests/smokables/',), 'shared_paths': (
             'code/game/objects/items/weapons/cigs_lighters.dm',
