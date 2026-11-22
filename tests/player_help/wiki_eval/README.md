@@ -59,6 +59,9 @@ right; a fail can also be a correct answer worded in a way no pattern expected.
   targets and runs of spaces, which the bridge removes.
 - `answer`: case-insensitive regular expressions, one per key fact. All must
   match the model's answer.
+- `turns` (optional): earlier exchanges, each `{"question": ..., "answer": ...}`,
+  for a follow-up question. They are sent as the game sends a conversation, so
+  the entry checks that "it" or "there" still finds the right guide.
 - Hidden-topic checks have `"page": null`, no evidence and `"hidden": true`.
   The model must answer them without naming any hidden topic.
 

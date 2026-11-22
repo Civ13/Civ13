@@ -33,7 +33,7 @@ response metadata validation and verbatim escaped plaintext. Offline tests do no
 prove a worker was installed or a native Help dialog was opened.
 
 `run.py` also executes `render-cases.json` through the actual production
-`render_answer()` and Markdown helpers. Cases cover the reported winter-help
+`answer_markup()` and Markdown helpers. Cases cover the reported winter-help
 bullet/bold answer, headings, numbered/indented lists, paragraphs and CRLF,
 code-span/fence precedence, unmatched input, raw HTML, encoded injection,
 unsafe/obfuscated link schemes and image suppression. `render-results.json`
@@ -91,11 +91,13 @@ and uses isolated disk files. Native assertions check the closed port and refusa
 to reopen it. The external supervisor separately rejects non-loopback connections.
 
 Client ownership and absence of a duplicate mob verb are source-checked. The
-production verb/helper bodies run relocated to a mob proxy with injected
-connected/input/submit boundaries. The submit adapter calls actual server enqueue;
+production verb, window and action-handler bodies run relocated to a mob proxy
+with an injected connected-client list; the fixture keeps the last window each
+proxy was shown. Questions go through the real action handler and server enqueue;
 same-account proxy reuse checks admission, not real login or body transfers. The probe
-checks prompt-first unavailable handling, cancellation without allowance,
-ready request publication and failure cleanup. Native input/browser delivery
+checks that the window opens while the helper is unavailable without spending
+allowance, that refusals and failures appear in the window with the question
+kept, ready request publication and failure cleanup. Native browser delivery
 and client timeout notification, login/reconnect and body transfers remain
 unverified by this isolated fixture.
 No remote endpoint, deployed bridge or model knowledge is tested. Game compilation
@@ -115,7 +117,7 @@ doubled-child counter and must fail that boundary assertion.
 Rate-limit probes exercise production account reservations, cooldown, burst and
 long-window quotas, account-state capacity, global quota/queue saturation,
 disconnect retention, timeout, response failure and write-failure cleanup.
-Repeat with `--negative-control rate-limit`, `prompt-first` and `disconnect` to
+Repeat with `--negative-control rate-limit`, `window-first` and `disconnect` to
 remove those guards in generated source. Each must fail its named assertion
 without runtime errors. `--output <new-directory>` preserves logs and source
 hashes. These probes never connect to the retained game or an external LLM.

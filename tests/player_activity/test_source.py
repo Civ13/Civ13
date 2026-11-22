@@ -151,7 +151,7 @@ class FeatureWiring(unittest.TestCase):
         expected = {
             'code/game/mob/crafting_atlas.dm': 'player_activity.feature_used(src, "atlas")',
             'code/modules/1713/movement_check.dm': 'player_activity.feature_used(src, "check_movement")',
-            'code/game/mob/player_help.dm': 'player_activity.feature_used(src, "player_help")',
+            'code/game/mob/player_help.dm': 'player_activity.feature_used(C, "player_help")',
             'code/game/objects/items/stacks/crafting_window.dm': 'player_activity.feature_used(src, "crafting_within_reach")',
             'code/modules/1713/click_route.dm': 'player_activity.feature_used(src, "click_route")',
             'code/game/objects/structures/tree_climbing.dm': 'player_activity.feature_used(src, "tree_climb")',

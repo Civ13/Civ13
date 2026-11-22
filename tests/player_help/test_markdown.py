@@ -13,9 +13,9 @@ class MarkdownOracleTests(unittest.TestCase):
         self.assertGreaterEqual(len(cases), 16)
         for case in cases:
             self.assertLessEqual(len(case['markdown']), 4000)
-            self.assertEqual(case['expected_links'][-2:], [
-                'https://civ13.github.io/civ13-wiki/',
-                'https://civ13.github.io/Civ13/crafting/'])
+            # Cases cover answer markup only; the window adds its own wiki and atlas links.
+            self.assertIsInstance(case['expected_links'], list)
+            self.assertNotIn('https://civ13.github.io/Civ13/crafting/', case['expected_links'])
 
     def test_footer_does_not_allow_answer_link(self):
         case = dict(name='footer', contains=[], absent=[],

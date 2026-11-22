@@ -15,10 +15,7 @@
       "* **",
       "<pre"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "headings and numbered nested lists",
@@ -35,10 +32,7 @@
       "<ol",
       "<style"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "line endings and paragraphs",
@@ -49,10 +43,7 @@
     "absent": [
       "\r"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "fenced code is inert",
@@ -66,10 +57,7 @@
       "class=",
       "style="
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "unclosed tilde fence",
@@ -80,10 +68,7 @@
     "absent": [
       "<b>"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "inline code precedence",
@@ -96,10 +81,7 @@
       "<img>",
       "<b>literal</b>"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "raw HTML and attributes",
@@ -115,10 +97,7 @@
       "<img ",
       "<a href='byond"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "safe links and balanced destination",
@@ -130,9 +109,7 @@
     "absent": [],
     "expected_links": [
       "https://example.org/roof_(floor)?x=1&y=2",
-      "http://example.org/",
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
+      "http://example.org/"
     ]
   },
   {
@@ -147,10 +124,7 @@
     "absent": [
       "<a href=\""
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "obfuscated schemes stay text",
@@ -163,10 +137,7 @@
     "absent": [
       "<a href=\""
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ],
+    "expected_links": [],
     "contains_text": [
       "\"onmouseover=evil"
     ]
@@ -181,10 +152,7 @@
       "<img",
       "<a href=\""
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "unmatched markers and link",
@@ -197,10 +165,7 @@
       "<a href=\"",
       "<i>"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "escapes and item identifiers",
@@ -209,10 +174,7 @@
       "*literal* crude_twine <b>bold</b> <i>italic</i> <b><i>both</i></b>"
     ],
     "absent": [],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "code spacing",
@@ -223,10 +185,7 @@
       "`unclosed"
     ],
     "absent": [],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "heading must be delimited",
@@ -238,10 +197,7 @@
       "<h1>",
       "<h6>"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "entity text cannot become HTML",
@@ -254,10 +210,7 @@
       "<script>",
       "<img"
     ],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   },
   {
     "name": "backslash text at line ends",
@@ -266,9 +219,6 @@
       "paired\\<br>next<br>final\\</p>"
     ],
     "absent": [],
-    "expected_links": [
-      "https://civ13.github.io/civ13-wiki/",
-      "https://civ13.github.io/Civ13/crafting/"
-    ]
+    "expected_links": []
   }
 ]

@@ -43,9 +43,9 @@ class WikiAnswerTests(unittest.TestCase):
         cls.worker.close()
         cls.temp.cleanup()
 
-    def evidence(self, question, account):
-        reply = self.worker.answer({'id': '1', 'account': '%032x' % account, 'question': question,
-                                    'game_context': wiki_eval.GAME_CONTEXT})
+    def evidence(self, question, account, entry=None):
+        reply = self.worker.answer(wiki_eval.conversation({'id': '1', 'account': '%032x' % account, 'question': question,
+                                                           'game_context': wiki_eval.GAME_CONTEXT}, entry or {}))
         self.assertEqual(reply['status'], 'ok')
         return wiki_eval.plain(self.prompts[-1]), reply
 
@@ -76,7 +76,7 @@ class WikiAnswerTests(unittest.TestCase):
             if not entry['evidence']:
                 continue
             with self.subTest(question=entry['id']):
-                evidence, _ = self.evidence(entry['question'], index + 1)
+                evidence, _ = self.evidence(entry['question'], index + 1, entry)
                 for marker in entry['evidence']:
                     self.assertTrue(any(option in evidence for option in options(marker)), options(marker)[0])
                 self.assertIn('https://civ13.github.io/civ13-wiki/' + entry['page'].removesuffix('.md') + '.html', evidence)
