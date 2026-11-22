@@ -175,6 +175,8 @@ var/global/hull_ledger_timer_off = FALSE
 			patches++
 		else if (!tight)
 			seep_tiles++
+	// Breaches in her hold let the sea in too (hull_breach.dm).
+	holes += hold_breaches()
 	water = min(water, capacity())
 
 /datum/hull_ledger/proc/hull_class()
@@ -469,6 +471,9 @@ var/global/hull_ledger_timer_off = FALSE
 		var/datum/craft/C = T ? craft_at(T) : null
 		if (C && C.ledger)
 			C.ledger.plank_lost(src, T)
+	// A floor of her hold blown out is a breach below the waterline (hull_breach.dm).
+	if (hold_origin)
+		hull_hold_breach(src)
 	return ..()
 
 /obj/covers/repairedfloor/ship/patch

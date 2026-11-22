@@ -37,6 +37,14 @@ class EventRegionSeams(unittest.TestCase):
         verb = PANEL.split('/datum/admins/proc/event_transfer()', 1)[1].split('\n/', 1)[0]
         self.assertIn('if(!check_rights(R_ADMIN)) return', verb)
 
+    def test_manual_event_release_rechecks_actor_after_final_prompt(self):
+        release = PANEL.split('/proc/region_event_release_panel(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('var/client/release_actor = requester?.client', release)
+        gate = 'requester?.client != release_actor || !check_rights(R_ADMIN, TRUE, requester)'
+        modes = release.index('var/mode = region_event_mode_choice(requester)')
+        self.assertIn(gate, release[:modes])
+        self.assertIn(gate, release[modes:release.index('S.release(mode)')])
+
     def test_stashed_characters_do_not_live(self):
         # Needs, wounds and carried food stay as they were while away.
         self.assertIn('!(ishuman(M) && event_stash_holds(M))', MOB)

@@ -331,6 +331,41 @@ var/naval_runtime_error = FALSE
 			refit_engine = E
 	naval_check(RB && RB.lower_tile_count() == 82 && refit_engine && refit_engine.fueltank.reagents.get_reagent_amount("diesel") == 100, "she becomes a built hull with her hold, and her fuel is in the barrel")
 
+	// The light cruiser: the freighter's hull with turrets over magazines and a belted side.
+	var/datum/slipway_design/cruiser = slipway_design_list()["light cruiser"]
+	naval_check(cruiser && cruiser.node == "naval_mines" && cruiser.total_pieces() == 26, "the light cruiser needs Naval Mines and takes 26 pieces ([cruiser ? cruiser.total_pieces() : 0])")
+	var/datum/vessel/freighter/cruiser/warship = new
+	naval_check(warship.place(45, 48, 2, EAST), "a light cruiser is laid down ([warship.last_refusal])")
+	var/obj/structure/hull_tiller/CT = vessel_to_built_hull(warship)
+	var/datum/craft_body/built/CB = CT ? CT.craft.body : null
+	naval_check(CB && CB.tile_count() == 132 && CB.lower_tile_count() == 82, "she becomes a built hull of 132 tiles with 82 of hold ([CB ? CB.tile_count() : 0])")
+	if (!CB)
+		return
+	var/turrets = 0
+	var/fed = 0
+	var/plates = 0
+	var/obj/structure/engine/internal/diesel/CE = null
+	for (var/atom/movable/M in CB.aboard())
+		if (istype(M, /obj/structure/cannon/modern/ship_turret))
+			var/obj/structure/cannon/modern/ship_turret/G = M
+			turrets++
+			if (G.magazine())
+				fed++
+		else if (istype(M, /obj/structure/hull_armour))
+			plates++
+		else if (istype(M, /obj/structure/engine/internal/diesel))
+			CE = M
+	var/list/belt = CT.craft.armour_belt()
+	naval_check(turrets == 2 && fed == 2, "both turrets stand over a shell rack in her hold ([turrets], [fed])")
+	naval_check(plates == 34 && belt[1] == 34, "34 belt plates line her sides ([plates], [belt[1]] of [belt[2]])")
+	naval_check(CE, "her engine stands in the engine room")
+	if (CE)
+		CE.fueltank.reagents.add_reagent("diesel", 200)
+		CE.on = TRUE
+		CT.craft.fit_drives()
+		naval_check(CT.craft.max_speed() == VESSEL_SPEED_FULL, "with her engine running she makes full ahead ([CT.craft.thrust()] for [CT.craft.mass()])")
+		CE.on = FALSE
+
 /proc/naval_run()
 	try
 		naval_checks()

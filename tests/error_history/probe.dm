@@ -1,5 +1,6 @@
 #define TRUE 1
 #define FALSE 0
+#define R_DEBUG (1<<9)
 #define USE_CUSTOM_ERROR_HANDLER
 #define GLOBAL_DATUM_INIT(key, path, value)
 #define GLOBAL_VAR_INIT(key, value)
@@ -11,6 +12,7 @@ var/list/dd_messages = list()
 var/checks = 0
 var/failures = 0
 var/last_html = ""
+var/test_debugger = TRUE
 var/last_chat = ""
 var/retired_entries = 0
 var/cleared_entries = 0
@@ -30,6 +32,11 @@ var/entry_serial = 0
 	return
 /datum/browser/proc/open()
 	return
+// The probe has no connected client. Simulate debugger authorization but keep
+// the production navigation and browser-boundary guards under test.
+/proc/check_rights(rights, show_msg, user)
+	return rights == R_DEBUG && test_debugger
+
 /proc/to_chat(user, text)
 	last_chat = text
 /datum/error_viewer/error_entry/Del()
@@ -135,7 +142,12 @@ var/entry_serial = 0
 	check(memberships == ERROR_HISTORY_LIMIT && backrefs == ERROR_HISTORY_LIMIT, "native memberships and source backrefs bounded and consistent")
 	check(!S.errors.len, "old source metadata retains no retired entries")
 	last = C.errors[C.errors.len]
+	test_debugger = FALSE
+	last_html = ""
 	C.show_to(null, null, TRUE)
+	check(!last_html, "browser output requires debugger authorization")
+	test_debugger = TRUE
+	C.Topic(null, list("viewruntime" = "\ref[C]", "viewruntime_linear" = "1"))
 	check(findtext(last_html, "linear<hr>") && findtext(last_html, "Recent history:"), "linear viewer states recent history policy")
 	check(findtext(last_html, first.make_link(null, C, TRUE)) < findtext(last_html, last.make_link(null, C, TRUE)), "linear viewer preserves entry ordering")
 	S.show_to(null)

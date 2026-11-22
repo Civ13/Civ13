@@ -32,6 +32,7 @@ of the ship it builds (`keel`, `frames`, `hull`, `deck`, `below`, `fittings`).
 | --- | --- | --- | --- | --- |
 | sailing schooner | wagons_ships | 14 x 5, one deck | 16 | 180 wood, 20 cloth, 4 rope |
 | motor freighter | combustion | 20 x 7, deck + hold | 20 | 214 steel, 20 cable, 10 glass |
+| light cruiser | naval_mines | 20 x 7, deck + hold | 26 | 578 steel, 20 cable, 10 glass |
 
 Players hit the post or any part of the hull with a material stack. After
 `SLIPWAY_PIECE_TIME` the stack pays what the next piece still needs; a piece is
@@ -85,3 +86,8 @@ bunkers, and the berth is free for the next keel.
   room). The bunker filling point becomes a 9000cc diesel engine with a fuel
   barrel (250 units of diesel), which makes full ahead. An old freighter's
   bunker fuel goes into the barrel when she is converted after a load.
+- **Light cruiser** (`/datum/vessel/freighter/cruiser`): the freighter's hull,
+  hold and engine room, with a ship's gun turret fore and aft on deck over a
+  shell rack in her hold (the barbette, `naval/ship_turret.dm`) and 34 belt
+  armour plates along both sides (`naval/hull_armour.dm`). She launches and
+  converts exactly as the freighter does; the racks come empty.

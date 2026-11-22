@@ -157,6 +157,7 @@
 		if (do_after(user, 15, src))
 			to_chat(user, "You close the envelope.")
 			opened = FALSE
+			close_all()
 			icon_state = "envelope_closed"
 			return TRUE
 	if(!opened && user.a_intent == I_HARM)
@@ -196,8 +197,11 @@
 	add_fingerprint(user)
 	return TRUE
 
-/obj/item/weapon/storage/envelope/accepts_inventory_drag(obj/item/W, mob/user)
+/obj/item/weapon/storage/envelope/storage_contents_accessible()
 	return opened
+
+/obj/item/weapon/storage/envelope/accepts_inventory_drag(obj/item/W, mob/user)
+	return storage_contents_accessible()
 
 /obj/item/weapon/storage/envelope/attackby(obj/item/W as obj, mob/user as mob)
 	if(!opened)

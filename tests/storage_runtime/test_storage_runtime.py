@@ -11,7 +11,7 @@ A = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(A)
 A.FIELDS += ('boxes','storage_start','storage_continue','storage_end','closer','contents',
              'is_seeing','storage_slots','use_sound','loc','hide_from','show_to','orient2hud','s_active',
-             'stored_start','stored_continue','stored_end','ensure_storage_controls')
+             'stored_start','stored_continue','stored_end','ensure_storage_controls','storage_contents_accessible')
 STORAGE = (ROOT/'code/game/objects/items/weapons/storage/storage.dm').read_text(encoding='utf8')
 PERSISTENCE = (ROOT/'code/modules/persistence/functions.dm').read_text(encoding='utf8')
 SAVING = (ROOT/'code/modules/persistence/saving.dm').read_text(encoding='utf8')
@@ -69,6 +69,7 @@ def install_storage(source=STORAGE):
     source=source.replace('new /obj/screen/storage(  )','new_screen()')
     source=source.replace('new /obj/screen/close(  )','new_screen()')
     source=source.replace('new /obj //','new_obj() //').replace('new /obj\n','new_obj()\n')
+    FakeBag.storage_contents_accessible = A.project(source,'/obj/item/weapon/storage/proc/storage_contents_accessible','src',env,method=True)
     for name in ('hide_from','close','show_to','ensure_storage_controls','open'):
         fn=A.project(source,'/obj/item/weapon/storage/proc/'+name,'src' if name=='ensure_storage_controls' else 'src,user',env,method=True)
         setattr(FakeBag,name,fn)
@@ -114,6 +115,7 @@ class StorageRuntime(unittest.TestCase):
         StoredItem.get_storage_cost = A.project(STORAGE, '/obj/item/proc/get_storage_cost', 'src',
                                                 dict(constants), method=True)
         class Bag:
+            storage_contents_accessible = A.project(STORAGE, '/obj/item/weapon/storage/proc/storage_contents_accessible', 'src', {}, method=True)
             def __init__(self, limit, items):
                 self.loc=None; self.storage_slots=None; self.contents=Contents(items)
                 self.can_hold=Contents(); self.cant_hold=Contents()

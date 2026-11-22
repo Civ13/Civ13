@@ -58,6 +58,20 @@ class AdminPlayerPanelTests(unittest.TestCase):
         self.assertEqual(text.count('/datum/admins/proc/show_player_panel('), 1)
         self.assertNotIn('show_player_panel(', read('code/modules/admin/admin.dm'))
 
+    def test_kick_requires_moderation_rights_and_same_target_after_prompt(self):
+        topic = read('code/modules/admin/topic.dm')
+        kick = topic.split('else if (href_list["boot2"])', 1)[1].split('else if (href_list["mute"])', 1)[0]
+        before, after = kick.split('sanitize(input(usr, "Please enter reason"))', 1)
+        for stage in (before, after):
+            self.assertIn('check_rights(R_MOD | R_ADMIN)', stage)
+            self.assertIn('check_if_greater_rights_than(kick_target)', stage)
+            self.assertIn('kick_target.mob != M', stage)
+        self.assertIn('var/client/kick_target = M.client', before)
+        for condition in ('owner != kick_actor', 'kick_actor.holder != src', 'M.client != kick_target'):
+            self.assertLess(after.index(condition), after.index('qdel(kick_target)'))
+        panel = body(read('code/modules/admin/player_panel_pages.dm'), '/datum/admins/proc/player_options_html(')
+        self.assertRegex(panel, r'if \(rights & \(R_MOD \| R_ADMIN\)\)\n\t\tbody \+= .*boot2=')
+
     def test_ranks_and_escaping(self):
         text = SOURCE.read_text(encoding='utf-8-sig')
         listing = body(text, '/datum/admins/proc/player_list_html(')

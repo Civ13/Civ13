@@ -79,6 +79,7 @@
 						to_chat(H, "This program is already installed on this machine.")
 						return
 				programs += NP
+				start_program_checker()
 				playsound(get_turf(src), 'sound/machines/computer/floppydisk.ogg', 100, TRUE)
 				to_chat(H, "You load \the [NP.name] into this machine.")
 			return
