@@ -61,7 +61,23 @@ REGIONS = [
         'state': 'cold', 'listening': False, 'busy': False,
         'operation': {'action': 'stop', 'phase': 'done', 'error': None}, 'stage': {'phase': 'current'},
         'transfer_agent': False}, 0),
-]
+    # Val's board (2026-11-22): a refused save, a deferred handover that is only waiting, and several asleep lands
+    # whose running build cannot guard an automatic handover (drawn as one shared banner).
+    ('moonbase', 'Moon', 1723, 1823, {
+        'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 0, 'clients': 0,
+            'error': 'World save refused: the saved world did not load; it is kept as it was until it can be loaded.'},
+        'watchdog': {'restarts': [1, 2], 'last_event': 'crash'}, 'transfer_agent': True}, 27),
+    ('greenland', 'Greenland', 1747, 1847, {
+        'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 1, 'clients': 0},
+        'operation': {'action': 'auto-handover', 'phase': 'failed', 'updated': 1763823000,
+                      'error': 'the world has not saved since the last player; automatic update deferred'},
+        'stage': {'phase': 'ready', 'pending': True}, 'transfer_agent': True}, 3),
+] + [(rid, name, port, port + 100, {
+        'state': 'asleep', 'listening': True, 'busy': False,
+        'operation': {'action': 'auto-handover', 'phase': 'failed', 'updated': 1763823000,
+                      'error': 'the running build cannot guard an empty handover; automatic update deferred'},
+        'stage': {'phase': 'ready', 'pending': True}, 'transfer_agent': True}, 3)
+    for rid, name, port in (('africa', 'Africa', 1741), ('asia', 'Asia', 1743), ('oceania', 'Oceania', 1742))]
 
 
 def check(component, behind, running=False):

@@ -579,6 +579,54 @@ static class LocalHostingTests {
             == "problem=3 problems; working=3 working; behind=5 out of date; running=1 running; asleep=2 asleep; stopped=1 stopped; unknown=1 unknown; players=6 players online",
             "board summary: " + string.Join("; ", HostBoard.Summary(board).Select(count => count.Text)));
         Require(HostBoard.Coordinator(boardStatus) == false && HostBoard.Coordinator("{\"regions\": {}, \"ok\": true}") == null, "coordinator flag");
+        // Every problem carries a next step in plain words and the buttons that address it (BoardAdvice).
+        Require(board.SelectMany(card => card.Problems).All(problem => problem.NextStep.Length > 20 && problem.Text.Length > 0), "a problem without a next step");
+        Require(Row("moon").Problems.Select(problem => problem.Kind).SequenceEqual(["action", "watchdog"])
+            && Row("moon").Problems[0].Fixes.Select(fix => fix.Action).SequenceEqual(["update"]) && Row("moon").Problems[0].NextStep.Contains("Update again")
+            && Row("moon").Problems[1].Fixes.Select(fix => fix.Action).SequenceEqual(["start", RegionFix.OpenLog]), "moon fixes");
+        Require(Row("orbit").Problems is [{ Kind: "build", Severity: ProblemSeverity.Waiting } lockProblem, { Kind: "travel" } agentProblem, { Kind: "region" } regionProblem]
+            && lockProblem.Fixes[0].Action == "stage" && agentProblem.Fixes is [{ Action: RegionFix.RestartHost, Group: true }]
+            && regionProblem.Fixes.Select(fix => fix.Action).SequenceEqual(["config-apply", "restart"]), "orbit fixes");
+        Require(Row("lost").Problems is [{ Kind: "status" } statusProblem] && statusProblem.Fixes[0].Action == RegionFix.CheckStatus, "status fix");
+        RegionCard Problem(string entry) => HostBoard.Card("north", "North America", false, JsonDocument.Parse(entry).RootElement, 0);
+        // Val's board (2026-11-22): the auto handover a running build cannot guard needs one Save, update and restart.
+        var guard = Problem("{\"state\": \"asleep\", \"operation\": {\"action\": \"auto-handover\", \"phase\": \"failed\", \"updated\": 1763823000, "
+            + "\"error\": \"the running build cannot guard an empty handover; automatic update deferred\"}}");
+        Require(guard.Problem == "Auto handover failed: the running build cannot guard an empty handover; automatic update deferred."
+            && guard.Problems is [{ Kind: "handover", Severity: ProblemSeverity.NeedsYou, Stamp: "1763823000" } guardProblem]
+            && guardProblem.Fixes is [{ Action: "deploy", Label: "Save, update and restart" }] && guardProblem.NextStep.Contains("Save, update and restart"), "guard handover: " + guard.Describe());
+        // A deferral the host retries by itself is waiting, not an error, and is not counted as a problem.
+        var deferred = Problem("{\"state\": \"awake\", \"operation\": {\"action\": \"auto-handover\", \"phase\": \"failed\", \"error\": \"the world has not saved since the last player; automatic update deferred\"}}");
+        Require(deferred.Problems is [{ Severity: ProblemSeverity.Waiting }] && HostBoard.Summary([deferred]).All(count => count.Kind != "problem"), "deferred handover counted");
+        var refused = Problem("{\"state\": \"awake\", \"world\": {\"ready\": 0, \"error\": \"World save refused: the saved world did not load; it is kept as it was until it can be loaded.\"}}");
+        Require(refused.Problems is [{ Kind: "world" } worldProblem] && worldProblem.Fixes[0].Action == RegionFix.OpenLog
+            && worldProblem.NextStep.StartsWith("The save is kept as it was"), "save refused advice");
+        Require(Problem("{\"state\": \"stopped\", \"operation\": {\"action\": \"start\", \"phase\": \"failed\", \"error\": \"the scheduled task is not Ready\"}}").Problems
+            is [{ Fixes: [{ Action: "start" }, { Action: RegionFix.OpenLog }] }], "retry start");
+        Require(Problem("{\"state\": \"stopped\", \"operation\": {\"action\": \"update-unsaved\", \"phase\": \"failed\", \"error\": \"x\"}}").Problems
+            is [{ Fixes: [{ Action: RegionFix.OpenLog }] }], "a forceful action is never offered again from a problem");
+        Require(Problem("{\"state\": \"weird\"}").Problems is [{ Kind: "unknown" }], "unknown state advice");
+        Require(HostBoard.Server("civ13.dmb", "{\"state\": \"awake\", \"listening\": true, \"operation\": {\"action\": \"handover\", \"phase\": \"failed\", \"error\": \"boom\"}, \"ok\": true}", 0)
+            is { Problems: [{ Fixes: [{ Action: "update" }, { Action: RegionFix.OpenLog }] }] }, "the single server's handover fix is its update");
+        Require(BoardAdvice.MessageStep("Group status unavailable: did not answer within 60 s").Contains("Windows process check") && BoardAdvice.MessageStep("x").Contains("Check status"), "message steps");
+        // Dismissing hides a problem in this launcher only; the same failure again, or a new one, shows again.
+        var guardOne = guard.Problems[0];
+        var statusOne = Row("lost").Problems[0];
+        var dismissDir = Path.Combine(dir, "dismissed");
+        Directory.CreateDirectory(dismissDir);
+        var dismissed = new DismissedProblems(dismissDir);
+        dismissed.Dismiss([guardOne.Key(guard.Id)]);
+        Require(dismissed.IsDismissed(guard, guardOne) && new DismissedProblems(dismissDir).IsDismissed(guard, guardOne), "dismissal kept");
+        Require(HostBoard.Summary([guard], dismissed.Shown).All(count => count.Kind != "problem") && dismissed.Hidden([guard]) == 1, "a dismissed problem still counted");
+        var again = guard with { Problems = [guardOne with { Stamp = "1763829999" }] };
+        Require(!dismissed.IsDismissed(again, again.Problems[0]), "the same failure happening again stayed hidden");
+        Require(!dismissed.Prune([guard with { Problems = [statusOne] }]) && dismissed.Count == 1, "a region whose status failed forgot its dismissal");
+        Require(dismissed.Prune([again]) && dismissed.Count == 0 && new DismissedProblems(dismissDir).Count == 0, "a gone problem kept its dismissal");
+        dismissed.Dismiss([guardOne.Key(guard.Id)]);
+        dismissed.Restore([guardOne.Key(guard.Id)]);
+        Require(dismissed.Count == 0, "restore");
+        File.WriteAllText(Path.Combine(dismissDir, DismissedProblems.FileName), "{not json");
+        Require(new DismissedProblems(dismissDir).Count == 0, "a broken dismissal file");
         // Before any update check has answered, nothing claims to be up to date.
         Require(HostBoard.Regions(boardStatus, null).All(card => card.Build != RegionBuild.Current && !card.Mainland), "unchecked builds claimed current");
         Require(HostBoard.Regions("{\"ok\": false, \"refused\": \"x\"}", null).Count == 0 && HostBoard.Regions("Traceback", null).Count == 0, "board from a refusal");

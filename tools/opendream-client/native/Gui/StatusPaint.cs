@@ -19,6 +19,9 @@ internal static class StatusPaint {
     public static readonly Color SelectedEdge = Color.FromArgb(64, 120, 216);
     public static readonly Color Hover = Color.FromArgb(243, 246, 250);
     public static readonly Color ProblemBack = Color.FromArgb(255, 245, 244);
+    // The board's fix buttons: a plain outline, and the text of one that cannot be used now.
+    public static readonly Color ButtonEdge = Color.FromArgb(190, 197, 207);
+    public static readonly Color Disabled = Color.FromArgb(150, 157, 168);
 
     public static Color Fore(Tone tone) => tone switch {
         Tone.Good => Color.FromArgb(22, 101, 46),

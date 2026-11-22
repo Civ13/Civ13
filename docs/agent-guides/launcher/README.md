@@ -11,6 +11,14 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-22: Actionable board problems -->
+Launcher 1.5.39: every region-board problem is a RegionProblem with a plain "Next:" step and fix buttons from
+BoardAdvice (HostBoard.cs); add advice there for any new problem text. Fixes run through RunFix in LauncherWindow with the
+same questions and HostGate locks as the buttons below the board. Waiting problems (deferred auto handovers) are amber
+and not counted. Dismiss is launcher-local (DismissedProblems, `dismissed-problems.json`, keyed by region, problem and
+operation time) and is forgotten once a region answers without the problem. Problem text wraps; 3+ regions sharing a
+problem collapse into one banner. Fable 5.2 owns RegionBoardView's layout.
+
 <!-- 2026-11-22: Ready lands -->
 Launcher 1.5.38 renames the menu item to **Travel and ready lands…** and adds the group's `ready_neighbours` checkbox and
 `cold_after_minutes` (HostSettings.Readiness/SetReadiness), read by the host service at each check.
