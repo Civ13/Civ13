@@ -2043,8 +2043,8 @@
 			// The prompt sleeps: only sell a stock this user still owns, so two
 			// answers cannot both pay out.
 			if (!program_actor_ready(user, session_generation))
-			return
-		if (choice1 != "Yes" || !map.globalmarketplace[tcode] || map.globalmarketplace[tcode][7] != 0 || map.globalmarketplace[tcode][2] != user)
+				return
+			if (choice1 != "Yes" || !map.globalmarketplace[tcode] || map.globalmarketplace[tcode][7] != 0 || map.globalmarketplace[tcode][2] != user)
 				sleep(0.5)
 				do_html(user)
 				return
