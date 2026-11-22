@@ -92,6 +92,8 @@ internal sealed partial class LauncherWindow : Form {
     private System.Windows.Forms.Timer? hostPoll, hostIdlePoll;
     private bool hostControlBusy;
     private bool groupScriptRunning;
+    private CancellationTokenSource? groupScriptCancel;
+    private Button? hostScriptCancel;
     // Busy is tracked per region, so one region's start or save never locks the others' buttons.
     // busyRegions: regions the last status says run an action or a handover. actingRegions: regions a
     // launcher request is being sent for right now. actingAll: an every-region request is being sent.
@@ -340,6 +342,10 @@ internal sealed partial class LauncherWindow : Form {
                 ("Clear lock files", () => GroupAction("unlock", "Clear lock files"), HostGate.All),
                 ("Force clear lock files", () => GroupAction("force-unlock", "Force clear lock files"), HostGate.All),
                 ("Fresh world (all regions)…", GroupFreshWorld, HostGate.AllIdle)));
+            // Shown only while deploy.bat or restart-host.bat runs; never gated, so a hung script can always be ended.
+            hostScriptCancel = new Button { Text = "Cancel running script", AutoSize = true, Margin = new Padding(0, 3, 6, 3), Visible = false };
+            hostScriptCancel.Click += (_, _) => CancelGroupScript();
+            all.Controls.Add(hostScriptCancel);
         }
         var server = Row(group != null ? "This server" : "Server");
         hostStart = new Button { Text = "Start server", AutoSize = true, Enabled = false, Margin = new Padding(0, 3, 6, 3) };
@@ -1563,24 +1569,57 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     // Runs deploy.bat or restart-host.bat, streaming each line to the Host tab; returns its exit code and output.
+    // The script has a time limit (LocalHosting.GroupScriptLimit) and the Cancel button ends it, so a script
+    // that hangs never locks the Host tab until the launcher is closed.
     private async Task<(int Exit, string Output)> RunGroupScript(HostControl control, string script, bool resume, IReadOnlyList<string>? regions = null) {
         var output = new System.Text.StringBuilder();
-        var exit = await Task.Run(() => {
-            using var process = Process.Start(LocalHosting.GroupScriptStep(control, script, resume, regions)) ?? throw new IOException("Could not start cmd.exe.");
-            process.StandardInput.Close();
-            void Line(object _, DataReceivedEventArgs e) {
-                if (e.Data is not { Length: > 0 } text) return;
+        using var cancel = new CancellationTokenSource();
+        groupScriptCancel = cancel;
+        ShowGroupScriptCancel();
+        try {
+            var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, script, resume, regions), text => {
                 lock (output) output.AppendLine(text);
-                BeginInvoke(() => HostLine(text));
+                try { BeginInvoke(() => HostLine(text)); } catch (InvalidOperationException) { } // the window closed
+            }, cancel.Token));
+            lock (output) return (exit, output.ToString());
+        } catch (IOException e) when (e is LocalHosting.StepTimedOut or LocalHosting.StepCancelled) {
+            // Both scripts end the host service task before they start it again (deploy.bat in its last step).
+            // Cut short between the two, the service would stay down until the next logon: start it, which
+            // does nothing while it runs. This step has its own limit and is not tied to the cancelled one.
+            var service = "";
+            try {
+                var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, "start-host"), _ => { }));
+                if (exit != 0) service = $" The host service could not be started again (exit {exit}): use Restart host service.";
+            } catch (Exception x) when (x is Win32Exception or IOException or InvalidOperationException) {
+                service = " The host service could not be started again (" + x.Message + "): use Restart host service.";
             }
-            process.OutputDataReceived += Line;
-            process.ErrorDataReceived += Line;
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            process.WaitForExit();
-            return process.ExitCode;
-        });
-        lock (output) return (exit, output.ToString());
+            // Ending the script ends neither a world nor work it already handed to a worker.
+            throw new IOException(e.Message + " No world was stopped by this. A build or handover it already asked for carries on: " +
+                "wait for the board to settle, then run the action again." + service, e);
+        } finally {
+            groupScriptCancel = null;
+            ShowGroupScriptCancel();
+        }
+    }
+
+    // The Cancel button shows only while deploy.bat or restart-host.bat runs.
+    private void ShowGroupScriptCancel() {
+        if (hostScriptCancel == null) return;
+        hostScriptCancel.Visible = groupScriptCancel != null;
+        hostScriptCancel.Enabled = groupScriptCancel != null;
+    }
+
+    private void CancelGroupScript() {
+        if (groupScriptCancel is not { } cancel) return;
+        if (MessageBox.Show(this,
+                "Cancel the running script? It is ended where it stands. No world is stopped by this, and a build or handover it already asked for " +
+                "carries on. Use this for a script that hangs; a normal update can sit quietly for many minutes while it builds.",
+                "Civ13 Launcher", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes) return;
+        // It may have finished while the question was open.
+        if (!ReferenceEquals(groupScriptCancel, cancel)) return;
+        hostScriptCancel!.Enabled = false;
+        HostLine("Cancelling the running script...");
+        try { cancel.Cancel(); } catch (ObjectDisposedException) { }
     }
 
     // Enables each host action by what it acts on, from the last status and the requests being sent now.

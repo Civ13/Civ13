@@ -29,6 +29,11 @@ static class ProcessSafetyTests {
         var control = new HostControl("python.exe", Path.Combine(root, "gaia_host.py"), Path.Combine(root, "gaia.json"));
         Require(LocalHosting.LimitOf(LocalHosting.ControlStep(control, "status")) == LocalHosting.StatusLimit, "a status step carries its limit");
         Require(LocalHosting.LimitOf(new ProcessStartInfo("x")) == LocalHosting.LongLimit, "an unlabelled step keeps the long limit");
+        Require(ProcessSafety.HandedOverLine(@"C:\Py\python.exe -I -B D:\x\shard_group.py --config g.json --worker stage op1") && ProcessSafety.HandedOverLine("py x.py --worker")
+            && !ProcessSafety.HandedOverLine(@"C:\Py\python.exe -I -B wait_group.py --config g.json --until staged") && !ProcessSafety.HandedOverLine("git pull --workers=2")
+            && !ProcessSafety.HandedOverLine(@"cmd.exe /d /c D:\host\deploy.bat gaia"), "handed-over work is told from a script's own steps");
+        Require(LocalHosting.GroupScriptLimit("deploy") == LocalHosting.DeployLimit && LocalHosting.DeployLimit > TimeSpan.FromSeconds(5400 + 3600)
+            && LocalHosting.GroupScriptLimit("restart-host") == LocalHosting.RequestLimit, "group script limits cover deploy.bat's own waits");
 
         if (!OperatingSystem.IsWindows() && File.Exists("/bin/sh")) {
             ProcessStartInfo Shell(string script) {
@@ -46,6 +51,68 @@ static class ProcessSafetyTests {
             var (exit, output) = LocalHosting.RunCaptured(Shell("sleep 2 & echo hi").WithLimit(TimeSpan.FromSeconds(30)));
             Require(exit == 0 && output.Contains("hi") && watch.Elapsed < TimeSpan.FromSeconds(15), "a finished step answers: " + output);
             Require(LocalHosting.RunCaptured(Shell("echo out; echo err >&2; exit 3")) is (3, var both) && both.Contains("out") && both.Contains("err"), "exit and both streams");
+
+            // Streamed steps (deploy.bat, restart-host.bat): lines arrive, a hung one is ended by its limit or by Cancel.
+            var lines = new List<string>();
+            void Keep(string text) { lock (lines) lines.Add(text); }
+            Require(LocalHosting.RunStreamed(Shell("echo out; echo err >&2; exit 3"), Keep) == 3, "a streamed step returns its exit code");
+            lock (lines) Require(lines.Contains("out") && lines.Contains("err"), "both streams are streamed: " + string.Join("|", lines));
+            watch.Restart();
+            try { LocalHosting.RunStreamed(Shell("echo started; sleep 30").WithLimit(TimeSpan.FromSeconds(1)), Keep); throw new Exception("a hung streamed step was not ended"); }
+            catch (LocalHosting.StepTimedOut e) { Require(e.Message.Contains("did not finish within 1 s"), "streamed timeout message: " + e.Message); }
+            Require(watch.Elapsed < TimeSpan.FromSeconds(10), "the streamed limit holds: " + watch.Elapsed);
+            lock (lines) Require(lines.Contains("started"), "lines before the limit were kept");
+            watch.Restart();
+            using (var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(1))) {
+                try { LocalHosting.RunStreamed(Shell("sleep 30"), Keep, cancel.Token); throw new Exception("a cancelled step was not ended"); }
+                catch (LocalHosting.StepCancelled e) { Require(e.Message.Contains("was cancelled"), "cancel message: " + e.Message); }
+            }
+            Require(watch.Elapsed < TimeSpan.FromSeconds(10), "cancel ends the step at once: " + watch.Elapsed);
+            watch.Restart();
+            // A grandchild keeping the pipes open must not hold a finished script.
+            Require(LocalHosting.RunStreamed(Shell("sleep 20 & echo hi"), Keep) == 0 && watch.Elapsed < TimeSpan.FromSeconds(15), "a finished streamed step answers: " + watch.Elapsed);
+        }
+
+        if (OperatingSystem.IsWindows()) {
+            // The same streamed checks against a real cmd.exe tree, as deploy.bat runs (ping stands in for a hung step).
+            ProcessStartInfo Cmd(string script) {
+                var step = new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, "cmd.exe")) { UseShellExecute = false, CreateNoWindow = true,
+                    RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true };
+                foreach (var argument in new[] { "/d", "/c", script }) step.ArgumentList.Add(argument);
+                return step;
+            }
+            var seen = new List<string>();
+            void Keep(string text) { lock (seen) seen.Add(text.Trim()); }
+            Require(LocalHosting.RunStreamed(Cmd("echo out& echo err 1>&2& exit /b 3"), Keep) == 3, "cmd: a streamed step returns its exit code");
+            lock (seen) Require(seen.Contains("out") && seen.Contains("err"), "cmd: both streams are streamed: " + string.Join("|", seen));
+            var clock = Stopwatch.StartNew();
+            try { LocalHosting.RunStreamed(Cmd("echo started& ping -n 30 127.0.0.1 >nul").WithLimit(TimeSpan.FromSeconds(2)), Keep); throw new Exception("a hung cmd step was not ended"); }
+            catch (LocalHosting.StepTimedOut e) { Require(e.Message.Contains("did not finish within 2 s"), "cmd timeout message: " + e.Message); }
+            Require(clock.Elapsed < TimeSpan.FromSeconds(15), "cmd: the streamed limit holds: " + clock.Elapsed);
+            lock (seen) Require(seen.Contains("started"), "cmd: lines before the limit were kept");
+            clock.Restart();
+            using (var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(1))) {
+                try { LocalHosting.RunStreamed(Cmd("ping -n 30 127.0.0.1 >nul"), Keep, cancel.Token); throw new Exception("a cancelled cmd step was not ended"); }
+                catch (LocalHosting.StepCancelled e) { Require(e.Message.Contains("was cancelled"), "cmd cancel message: " + e.Message); }
+            }
+            Require(clock.Elapsed < TimeSpan.FromSeconds(15), "cmd: cancel ends the step at once: " + clock.Elapsed);
+
+            // Ending a script ends what it started (the ping to .77) but spares work it handed to a "--worker" child
+            // (the cmd pinging .78), which may still be the script's own child when the script is cut short.
+            IReadOnlyList<int> Pinging(string address) => ProcessSafety.ByName("PING").Where(id => ProcessSafety.CommandLine(id)?.Contains(address) == true).ToList();
+            try {
+                try {
+                    LocalHosting.RunStreamed(Cmd("start /b cmd /d /c echo --worker ^>nul ^& ping -n 40 127.0.0.78 ^>nul & ping -n 40 127.0.0.77 >nul")
+                        .WithLimit(TimeSpan.FromSeconds(3)), Keep);
+                    throw new Exception("a script with a worker was not ended");
+                } catch (LocalHosting.StepTimedOut) { assertions++; }
+                Thread.Sleep(1500);
+                Require(Pinging("127.0.0.77").Count == 0, "what the script itself started is ended with it");
+                Require(Pinging("127.0.0.78").Count == 1, "a handed-over worker and what it started outlive the script");
+            } finally {
+                foreach (var id in Pinging("127.0.0.78").Concat(Pinging("127.0.0.77")))
+                    try { using var left = Process.GetProcessById(id); left.Kill(); } catch (Exception e) when (e is ArgumentException or InvalidOperationException or System.ComponentModel.Win32Exception) { }
+            }
         }
 
         // The experimental WMI check: parsing, classification, the setting and the elevated step shape.
