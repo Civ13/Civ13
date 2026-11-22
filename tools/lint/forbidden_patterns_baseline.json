@@ -18,7 +18,7 @@
       "code/game/jobs/job_controller.dm": 9,
       "code/game/mob/animations.dm": 4,
       "code/game/mob/death.dm": 5,
-      "code/game/mob/emote.dm": 2,
+      "code/game/mob/emote.dm": 1,
       "code/game/mob/groups/factions.dm": 3,
       "code/game/mob/groups/religions.dm": 5,
       "code/game/mob/living/carbon/carbon.dm": 1,

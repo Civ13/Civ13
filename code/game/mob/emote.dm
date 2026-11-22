@@ -66,29 +66,37 @@
 
 		if (m_type & TRUE)
 			var/list/see = get_mobs_or_objects_in_view(7,src) | viewers(get_turf(src), null)
+			var/list/seen_objs = list()
 			for (var/I in see)
 				if (isobj(I))
-					spawn(0)
-						if (I) //It's possible that it could be deleted in the meantime.
-							var/obj/O = I
-							O.see_emote(src, message, TRUE)
+					seen_objs += I
 				else if (ismob(I))
 					var/mob/M = I
 					M.show_message(chat_message, TRUE)
 					M.show_chat_overlay(src, message, "#FFC0CB")
+			emote_notify_objects(seen_objs, message, TRUE)
 
 		else if (m_type & 2)
 			var/list/hear = get_mobs_or_objects_in_view(7,src)
+			var/list/seen_objs = list()
 			for (var/I in hear)
 				if (isobj(I))
-					spawn(0)
-						if (I) //It's possible that it could be deleted in the meantime.
-							var/obj/O = I
-							O.see_emote(src, message, 2)
+					seen_objs += I
 				else if (ismob(I))
 					var/mob/M = I
 					M.show_message(chat_message, 2)
 					M.show_chat_overlay(src, message, "#FFC0CB")
+			emote_notify_objects(seen_objs, message, 2)
+
+// One deferred pass over the objects that saw or heard an emote, rather than
+// one spawned proc per object: a crowded view queued thousands of them.
+/mob/proc/emote_notify_objects(list/objs, message, m_type)
+	if (!length(objs))
+		return
+	spawn(0)
+		for (var/obj/O in objs)
+			if (!QDELETED(O)) //It's possible that it could be deleted in the meantime.
+				O.see_emote(src, message, m_type)
 
 /mob/proc/emote_dead(var/message)
 
