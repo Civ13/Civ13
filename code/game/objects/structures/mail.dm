@@ -199,6 +199,23 @@
 /obj/item/weapon/storage/envelope/accepts_inventory_drag(obj/item/W, mob/user)
 	return opened
 
+// Addressing requires the same active pen, actor and reachable physical envelope
+// before and after each prompt. A complete address is not editable.
+/obj/item/weapon/storage/envelope/proc/addressing_current(mob/writer, client/writer_client, datum/agent_character/writer_agent, obj/item/weapon/pen/pen, atom/expected_loc, expected_addressee, expected_sender)
+	if (gc_destroyed || opened || !writer || writer.gc_destroyed || writer.incapacitated())
+		return FALSE
+	if (writer.client != writer_client)
+		return FALSE
+	if (writer_client && writer_client.mob != writer)
+		return FALSE
+	if (!writer_client && (!writer_agent || agent_character_for(writer) != writer_agent))
+		return FALSE
+	if (!pen || pen.gc_destroyed || pen.loc != writer || writer.get_active_hand() != pen)
+		return FALSE
+	if (loc != expected_loc || addressee != expected_addressee || sender != expected_sender || (addressee && sender))
+		return FALSE
+	return loc == writer || (isturf(loc) && Adjacent(writer))
+
 /obj/item/weapon/storage/envelope/attackby(obj/item/W as obj, mob/user as mob)
 	if(!opened)
 		if(is_tool(W, TOOL_KNIFE))
@@ -212,17 +229,24 @@
 			if(addressee && sender)
 				to_chat(usr, "<span class='warning'>The addressee and sender fields are already filled!</span>")
 				return TRUE
-			else
-				var/write_to = sanitize(player_input(user, "TO: Who is the addressee?", "Addressee", null, "text", null, FALSE), 128)
-				addressee = write_to
-				var/write_from = sanitize(player_input(user, "FROM: Who is the sender?", "Sender", null, "text", null, FALSE), 128)
-				sender = write_from
-				if (!addressee || !sender)
-					desc = desc
-					to_chat(usr, "<span class='warning'>You need to fill both fields at the same time!</span>")
-				else
-					desc += "<br>= = = = =<br><u><b>TO:</b></u> [addressee]<br>- - - - -<br><u><b>FROM:</b></u> [sender]<br>= = = = ="
+			var/client/writer_client = user?.client
+			var/datum/agent_character/writer_agent = writer_client ? null : agent_character_for(user)
+			var/obj/item/weapon/pen/pen = W
+			var/atom/expected_loc = loc
+			var/expected_addressee = addressee
+			var/expected_sender = sender
+			if (!addressing_current(user, writer_client, writer_agent, pen, expected_loc, expected_addressee, expected_sender))
 				return TRUE
+			var/write_to = sanitize(player_input(user, "TO: Who is the addressee?", "Addressee", null, "text", null, TRUE), 128)
+			if (!write_to || !addressing_current(user, writer_client, writer_agent, pen, expected_loc, expected_addressee, expected_sender))
+				return TRUE
+			var/write_from = sanitize(player_input(user, "FROM: Who is the sender?", "Sender", null, "text", null, TRUE), 128)
+			if (!write_from || !addressing_current(user, writer_client, writer_agent, pen, expected_loc, expected_addressee, expected_sender))
+				return TRUE
+			addressee = write_to
+			sender = write_from
+			desc += "<br>= = = = =<br><u><b>TO:</b></u> [addressee]<br>- - - - -<br><u><b>FROM:</b></u> [sender]<br>= = = = ="
+			return TRUE
 		if(istype(W, /obj/item/weapon/stamp/mail))
 			if(sealed)
 				to_chat(usr, "<span class='warning'>There is a wax seal already!</span>")
