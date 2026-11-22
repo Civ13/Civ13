@@ -46,9 +46,12 @@
 /obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null, list/crossing_offsets = null)
 	var/turf/T = get_turf(src)
 	// A refit would survey a holed tile out of her hull: patch her first.
-	// At a berth a floor lifted for a refit is meant to go (berth_refit.dm).
+	// A floor lifted from her edge is cut away from her shape, and at a
+	// berth a floor lifted for a refit is meant to go (berth_refit.dm).
 	if (craft && craft.ledger && craft.ledger.holes > 0 && !craft_berth(craft))
-		return "Patch the [craft.ledger.holes == 1 ? "hole" : "holes"] in her hull before she is surveyed again."
+		var/inner = craft.ledger.inner_holes()
+		if (inner > 0)
+			return "Patch the [inner == 1 ? "hole" : "holes"] in her hull before she is surveyed again. A floor lifted from her edge is cut away by a refit, but not one inside her."
 	var/survey = built_hull_survey(T, craft)
 	if (istext(survey))
 		return survey

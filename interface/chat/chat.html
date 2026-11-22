@@ -766,7 +766,7 @@
 <body style="background-color: #392611; color: #e1e1d7;">
     <div id="chat-tabs">
         <div id="chat-tab-list"></div>
-        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows, and your translation language">Tabs...</button>
+        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows, and turn chat translation on or off">Tabs...</button>
     </div>
     <div id="chat-settings">
         <h3>Chat tabs</h3>
@@ -1440,14 +1440,19 @@
             }
         }
 
-        // Chat translation (docs/chat-translation.md). Every new line in
-        // another language is translated into the reader's language (English
-        // unless they pick another). When the game server offers translation
+        // Chat translation (docs/chat-translation.md). Off until the reader
+        // turns it on (Val, 2026-11-22). Then words players typed (speech,
+        // emotes, OOC and LOOC, marked chat-tr by the server) in another
+        // language are translated into the reader's language (English unless
+        // they pick another); game messages are never translated. When the game server offers translation
         // (setTranslateServer), the line's text goes back to that server, which
         // already sent it; otherwise the browser's built-in Translator and
         // LanguageDetector are used and nothing leaves this computer. The
         // original stays on screen and restored history is never translated.
-        const TRANSLATE_KEY = 'civ13-chat-translate-v1';
+        // v2 starts everyone with translation off; v1 saved "on" whenever the
+        // language was changed, so only its language choice is kept.
+        const TRANSLATE_KEY = 'civ13-chat-translate-v2';
+        const TRANSLATE_OLD_KEY = 'civ13-chat-translate-v1';
         const TRANSLATE_LANGS = [
             ['en', 'English'], ['es', 'Spanish'], ['pt', 'Portuguese'], ['fr', 'French'], ['de', 'German'],
             ['it', 'Italian'], ['nl', 'Dutch'], ['pl', 'Polish'], ['ru', 'Russian'], ['uk', 'Ukrainian'],
@@ -1456,6 +1461,7 @@
             ['th', 'Thai'], ['zh', 'Chinese'], ['ja', 'Japanese'], ['ko', 'Korean']
         ];
         const TRANSLATE_MAX_CHARS = 500;
+        const TRANSLATE_MIN_LETTERS = 3; // shorter lines are too short to tell the language
         const TRANSLATE_MAX_QUEUE = 20;
         const TRANSLATE_TIMEOUT_MS = 8000;
         const TRANSLATE_MIN_CONFIDENCE = 0.6;
@@ -1477,15 +1483,14 @@
         const serverTranslatePending = {};
 
         function loadTranslatePrefs() {
-            const prefs = { enabled: true, lang: 'en' };
+            const prefs = { enabled: false, lang: 'en' };
             try {
                 const store = chatStorage();
                 const raw = store && store.getItem(TRANSLATE_KEY);
-                if (raw) {
-                    const saved = JSON.parse(raw);
-                    if (saved && typeof saved.enabled === 'boolean') prefs.enabled = saved.enabled;
-                    if (saved && TRANSLATE_LANGS.some(function (l) { return l[0] === saved.lang; })) prefs.lang = saved.lang;
-                }
+                const old = !raw && store && store.getItem(TRANSLATE_OLD_KEY);
+                const saved = raw ? JSON.parse(raw) : (old ? JSON.parse(old) : null);
+                if (raw && saved && typeof saved.enabled === 'boolean') prefs.enabled = saved.enabled;
+                if (saved && TRANSLATE_LANGS.some(function (l) { return l[0] === saved.lang; })) prefs.lang = saved.lang;
             } catch (e) { /* defaults */ }
             return prefs;
         }
@@ -1511,19 +1516,15 @@
             return copy.innerHTML;
         }
 
-        // The server marks the spoken part of speech this reader understood
-        // (chat-tr) and speech they did not understand (chat-notr, never
-        // translated). Other lines, such as emotes and game messages, are
-        // translated whole.
+        // The server marks the words a player typed that this reader
+        // understood (chat-tr) and speech they did not understand (chat-notr,
+        // never translated). Only marked words are translated; unmarked lines
+        // are game messages, such as "Ada makes a trench.", and stay as they are.
         function translationSource(div, type) {
             if (div.querySelector('.chat-notr')) return '';
-            const marked = div.querySelectorAll('.chat-tr');
-            if (marked.length) {
-                const parts = [];
-                marked.forEach(function (el) { parts.push(el.textContent); });
-                return parts.join(' ').trim();
-            }
-            return (div.textContent || '').trim();
+            const parts = [];
+            div.querySelectorAll('.chat-tr').forEach(function (el) { parts.push(el.textContent); });
+            return parts.join(' ').trim();
         }
 
         function withTimeout(promise, ms) {
@@ -1533,7 +1534,10 @@
         function queueTranslation(div, type) {
             if (!translatePrefs.enabled || !(translateApi || serverTranslate)) return;
             const text = translationSource(div, type);
-            if (!text || text.length > TRANSLATE_MAX_CHARS || !/[A-Za-zÀ-￿]/.test(text)) return;
+            if (!text || text.length > TRANSLATE_MAX_CHARS) return;
+            // Letters outside the Latin script carry more each (你好 is a whole greeting).
+            const letters = (text.match(/[A-Za-zÀ-￿]/g) || []).length + (text.match(/[Ͱ-￿]/g) || []).length;
+            if (letters < TRANSLATE_MIN_LETTERS) return;
             // Under a burst, drop the oldest waiting line rather than fall behind.
             if (translateQueue.length >= TRANSLATE_MAX_QUEUE) translateQueue.shift();
             translateQueue.push({ div: div, text: text, gen: translateGeneration });
@@ -1717,7 +1721,7 @@
             if (!status) return;
             setup.hidden = true;
             if (!translatePrefs.enabled) {
-                status.textContent = 'Off. Chat is shown as written.';
+                status.textContent = 'Off. Tick the box to translate what other players type in another language.';
             } else if (serverTranslate) {
                 status.textContent = 'Lines in other languages appear in ' + langName(translatePrefs.lang) + ' under the original. The game server translates them.';
             } else if (!translateApi || !detectApi) {

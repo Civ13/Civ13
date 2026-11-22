@@ -305,7 +305,8 @@
 	for (var/obj/covers/C in range(1, src))
 		if (C.wall == TRUE && !C.seasonal_construction_ruined())
 			return TRUE
-	return FALSE
+	// Whatever the roof builder accepted (braced walls, windows, vaults) holds it.
+	return building_supported_height(get_turf(src)) > 0
 
 // How long a sagging roof gives people to prop it up or get out.
 #define ROOF_SAG_TIME 600
