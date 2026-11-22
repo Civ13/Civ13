@@ -154,9 +154,37 @@ boat in the slip, and every stored small boat. `caulk_wanted()` and
 A raft or dugout stored in a boathouse dries out three times as fast as one on
 the shore (`dry_factor()`, used by `dry_out()` in `small_boat_upkeep.dm`).
 
+## Breaking a ship up for parts
+
+`code/modules/naval/berth_breakup.dm`. Every berth's menu (the slipway post
+with a hull hauled out, the dock gate, the boathouse) offers "Break up the
+<name> for parts" for each built hull it holds. A dialog says what comes back,
+what happens to her cargo and how long it takes; nothing starts until the
+player answers Yes (default No).
+
+- Who: a registered hull only by a member of the owning party or her listed
+  captain (`breakup_refusal()`); an unregistered one by any Discord-verified
+  player (`verified_discord_id()`).
+- Refused while she is under way, grappled, bound on a voyage, has anyone
+  alive aboard, or carries a vehicle.
+- Parts (`berth_breakup_part_cost()`): floors, walls, the draught's fittings
+  (`ship_draught_pieces()` and their kin as a survey draws them), gunwales,
+  roofs and ladder heads. Everything else aboard (cargo, a chest's contents,
+  engines and machines the draught tables do not know, bodies) is moved whole
+  to the berth's tile.
+- Back: three quarters of the parts' hand cost, rounded down per material
+  (`berth_breakup_reclaim()`), stacked on the berth's tile. A patch gives
+  nothing. The reclaim is always below the build cost.
+- Time: half of the slipway's build time, 1.5 s a floor and 2.5 s a fitting,
+  through `yard_time()`. Work goes in 5 s steps; several people can work at
+  once and the work done is kept on her tiller (`breakup_done`, not saved).
+- `break_up()` decommissions her, moves the loose things, deletes fittings
+  then floors and roofs, and closes her hold back to the ground it was cut
+  from, like `sea_crossing_strip()`.
+
 ## Tests
 
-`tests/naval_carrier/berth_probe.dm` (114 checks):
+`tests/naval_carrier/berth_probe.dm` (142 checks):
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/berth_probe.dm 300
 

@@ -1806,6 +1806,7 @@
 #include "code\modules\multiz\standing_building_level.dm"
 #include "code\modules\multiz\mine_floor_registry.dm"
 #include "code\modules\naval\berth.dm"
+#include "code\modules\naval\berth_breakup.dm"
 #include "code\modules\naval\berth_build.dm"
 #include "code\modules\naval\berth_refit.dm"
 #include "code\modules\naval\boathouse.dm"

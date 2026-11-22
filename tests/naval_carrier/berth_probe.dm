@@ -374,6 +374,77 @@ var/berth_runtime_error = FALSE
 	for (var/obj/structure/canal_lock/dock_gate/G in gate.all_gates())
 		G.set_shut(FALSE)
 
+// Breaking a ship up for parts (code/modules/naval/berth_breakup.dm).
+/proc/berth_breakup_checks()
+	var/obj/structure/boathouse/house = locate() in locate(10, 5, 1)
+	var/list/options = list()
+	house.breakup_options(options, house.breakup_hulls())
+	berth_check(istype(options["Break up the Wren for parts"], /datum/craft), "the boathouse offers to break up the Wren in its slip")
+	var/obj/structure/slipway/post = locate() in locate(3, 20, 1)
+	var/datum/craft/tern = post.hull_off_ways()
+	berth_check(tern && tern.name == "Tern", "the Tern lies off the ways again")
+	if (!tern)
+		return
+	var/obj/structure/hull_tiller/tiller = berth_breakup_tiller(tern)
+	berth_check(istype(tiller) && tiller.craft == tern, "her tiller is found from her body")
+	berth_check(findtext(tiller.breakup_refusal(null), "berth"), "afloat off the ways she is not broken up ([tiller.breakup_refusal(null)])")
+	var/mob/living/human/berth_probe/hauler = new(locate(3, 21, 1))
+	berth_check(isnull(post.haul_out(tern)) && post.hauled_hull() == tern, "she is hauled out again")
+	qdel(hauler)
+	options = list()
+	post.haul_options(options)
+	berth_check(options["Break up the Tern for parts"] == tern, "the post offers to break her up")
+	berth_check(isnull(tiller.breakup_refusal(null)), "hauled out she can be broken up ([tiller.breakup_refusal(null)])")
+	// Who may.
+	var/mob/living/human/berth_probe/stranger = new(locate(2, 21, 1))
+	berth_check(findtext(tiller.breakup_refusal(stranger), "Discord"), "registered to nobody, only a verified player may break her up ([tiller.breakup_refusal(stranger)])")
+	tern.register = new /datum/craft_register
+	tern.register.party = "Probe Company"
+	berth_check(findtext(tiller.breakup_refusal(stranger), "registered to"), "registered, a stranger may not ([tiller.breakup_refusal(stranger)])")
+	stranger.real_name = "Probe Captain"
+	tern.register.crew["Probe Captain"] = CRAFT_ROLE_CAPTAIN
+	berth_check(isnull(tiller.breakup_refusal(stranger)), "her listed captain may ([tiller.breakup_refusal(stranger)])")
+	tern.register = null
+	qdel(stranger)
+	// What she carries.
+	var/obj/structure/closet/crate/empty/chest = new(locate(6, 20, 1))
+	var/obj/item/stack/material/iron/ingot = new(chest, 3)
+	var/obj/item/stack/material/rope/coil = new(locate(7, 21, 1), 2)
+	var/obj/structure/boathouse_probe_block/block = new(locate(8, 19, 1))
+	var/mob/living/human/berth_probe/sailor = new(locate(5, 20, 1))
+	var/list/I = tiller.breakup_inventory()
+	berth_check(findtext(I["refusal"], "aboard"), "with someone aboard she is not broken up ([I["refusal"]])")
+	qdel(sailor)
+	I = tiller.breakup_inventory()
+	berth_check(!I["refusal"] && (chest in I["parts"]) && (tiller in I["parts"]) && (coil in I["loose"]) && (block in I["loose"]), "her chest and tiller are parts, the rope and the block are cargo")
+	var/list/cost = I["cost"]
+	var/list/back = berth_breakup_reclaim(cost)
+	berth_check(cost["wood"] >= 45 && back["wood"] == round(cost["wood"] * 0.75), "three quarters of her wood comes back ([back["wood"]] of [cost["wood"]])")
+	var/floors = 0
+	for (var/atom/movable/M in I["parts"])
+		if (istype(M, /obj/covers))
+			floors++
+	berth_check(floors == 15 && I["time"] == floors * 15 + (length(I["parts"]) - floors) * 25, "she takes half her build time: 1.5 s a floor, 2.5 s a fitting ([I["time"]])")
+	berth_check(isnull(berth_breakup_part_cost(block)) && !length(berth_breakup_part_cost(new /obj/covers/repairedfloor/ship/patch(locate(30, 2, 1)))), "a stranger's structure is not hers, and a patch gives nothing back")
+	var/turf/drop = get_turf(post)
+	var/wood_before = 0
+	for (var/obj/item/stack/material/wood/W in drop)
+		wood_before += W.amount
+	var/result = tiller.break_up(drop)
+	berth_check(islist(result) && result["wood"] == back["wood"], "she is broken up ([islist(result) ? piece_cost_text(result) : result])")
+	var/wood_after = 0
+	for (var/obj/item/stack/material/wood/W in drop)
+		wood_after += W.amount
+	berth_check(wood_after - wood_before == back["wood"], "the wood is stacked by the post ([wood_after - wood_before])")
+	berth_check(QDELETED(tiller) && QDELETED(chest) && !craft_at(locate(4, 20, 1)) && !(locate(/obj/covers) in locate(6, 21, 1)), "her floors, chest and tiller are gone")
+	berth_check(ingot.loc == drop && coil.loc == drop && block.loc == drop, "the chest's iron, the rope and the block are set down by the post")
+	berth_check(isnull(post.hauled_hull()), "the berth is empty")
+	qdel(ingot)
+	qdel(coil)
+	qdel(block)
+	for (var/obj/item/stack/material/wood/W in drop)
+		qdel(W)
+
 /proc/berth_yard_checks()
 	// A yard office by the slipway at 3,20.
 	var/obj/structure/slipway/post = locate() in locate(3, 20, 1)
@@ -425,6 +496,7 @@ var/berth_runtime_error = FALSE
 		berth_haul_checks()
 		berth_dock_checks()
 		berth_build_checks()
+		berth_breakup_checks()
 		berth_yard_checks()
 		berth_sprite_checks()
 	catch(var/exception/e)
