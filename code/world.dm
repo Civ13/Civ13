@@ -466,7 +466,7 @@ var/world_topic_spam_protect_time = world.timeofday
 
 	// The BYOND hub keeps only about the first 255 characters of a status, so the
 	// short title and the live lines come first; links and the banner go last.
-	s += "<center><b>[hub_status_text(customserver_name())]</b></center><br>"
+	s += "<b>[hub_status_text(customserver_name())]</b><br>"
 
 	// The gateway is the group's hub entry: it shows the lands, not its own empty map.
 	if (region_gateway_here())
@@ -503,6 +503,9 @@ var/world_topic_spam_protect_time = world.timeofday
 	if (banner_line && length(s) + length(banner_line) <= HUB_STATUS_MAX_LENGTH)
 		s += banner_line
 
+	// The hub adds its own line break after the status.
+	if (copytext(s, -4) == "<br>")
+		s = copytext(s, 1, -4)
 	status = s
 
 #undef HUB_STATUS_MAX_LENGTH

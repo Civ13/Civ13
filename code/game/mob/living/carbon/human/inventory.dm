@@ -7,7 +7,7 @@ This saves us from having to call add_fingerprint() any time something is put in
 	set name = "quick-equip"
 	set hidden = TRUE
 
-	if (!istype(src))
+	if (!istype(src) || region_admin_send_held_input(src))
 		return
 
 	if (src.using_look())

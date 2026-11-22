@@ -12,11 +12,21 @@ save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
 <!-- 2026-11-22: Launcher and host audit -->
-Launcher 1.5.40 (audit): a flag or count that started in a world is read with `Flag`/`Count` in LocalHosting.cs, never
+Launcher 1.5.41 (audit): a flag or count that started in a world is read with `Flag`/`Count` in LocalHosting.cs, never
 `Bool`/`GetInt32` (DM writes TRUE as 1, and a float count threw). Group config writes go through
 `HostSettings.WriteGroup` (retries while the host has the file open). `GroupPorts.Step` carries its own limit. Host side:
 see "A lock dies with its holder" in scripts/gaia-host/README.md; group status asks regions in parallel and reports a
 region it cannot read as `state: unknown` with `error`, which the board shows as "Status unavailable".
+
+<!-- 2026-11-22: Send hold and follow -->
+Launcher 1.5.40: Val asked (2026-11-22) why Send was greyed out in **Players…**, and that Send freeze the chosen
+players at once until their data is secured. The world now holds them on a real `send_players`, checks them again and
+answers with the rows of that second check, releasing anyone who fails (region_admin_send.dm); roster rows carry `held`.
+PlayersDialog explains Check (dry run) and Send in its intro, shows a hint line under the buttons saying why Send is
+off (a disabled button shows no tooltip), and after a "started" answer follows the send: RegionPlayers.RunPlayers every
+3 s off the UI thread while `running`, up to 15 minutes (the world's own hold lapse) or until the dialog closes.
+RegionPlayers.DescribeFollow builds that text and NewRecent picks the transfer lines newer than the last listing; held
+players show as "(frozen for a send)". Keep the wording in RegionPlayers so LocalHostingTests can pin it.
 
 <!-- 2026-11-22: Actionable board problems -->
 Launcher 1.5.39: every region-board problem is a RegionProblem with a plain "Next:" step and fix buttons from

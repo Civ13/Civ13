@@ -32,6 +32,10 @@ var/naval_runtime_error = FALSE
 	naval_runtime_error = TRUE
 	world.log << "runtime error [e] [e.file]:[e.line]"
 
+/obj/structure/works_probe_fixture
+	name = "probe fixture"
+	anchored = TRUE
+
 /proc/works_fixture()
 	for (var/x = 1, x <= world.maxx, x++)
 		for (var/y = 1, y <= world.maxy, y++)
@@ -96,6 +100,28 @@ var/naval_runtime_error = FALSE
 		else
 			naval_check(FALSE, "its lines can be drawn ([drawn])")
 	naval_check(findtext(W.sheet_refusal(null, car), "clear"), "the built car fills the bay")
+	// ---- Breaking it down for parts (craft/vehicle_breakdown.dm) ----
+	if (istype(A))
+		naval_check(A in W.breakdown_targets(), "the press offers to break down the car in its bay")
+		var/list/back_cost = W.breakdown_cost(A)
+		naval_check(islist(back_cost) && back_cost["steel"] == costs["steel"] && back_cost["wheels"] == 4, "it is costed as its sheet ([json_encode(back_cost)])")
+		var/mob/living/human/naval_probe/stranger = new(locate(2, 2, 1))
+		naval_check(findtext(W.breakdown_refusal(stranger, A), "key"), "without its key it is not broken down ([W.breakdown_refusal(stranger, A)])")
+		qdel(stranger)
+		var/turf/frame_tile = null
+		for (var/turf/T in vehicle_breakdown_tiles(A))
+			frame_tile = T
+		var/obj/item/stack/material/rope/coil = new(frame_tile, 2)
+		var/obj/structure/works_probe_fixture/fixture = new(frame_tile)
+		var/list/I = W.breakdown_inventory(A)
+		naval_check((coil in I["loose"]) && !(fixture in I["parts"]) && (A.engine in I["parts"]), "its engine is a part, loose rope is cargo, a stranger's fixture is neither")
+		var/steel_was = W.stock["steel"]
+		var/list/got = W.break_down(A)
+		naval_check(islist(got) && W.stock["steel"] == steel_was + costs["steel"] && W.stock["wheels"] == 4, "an unworn car goes back into stock whole (steel [W.stock["steel"]], wheels [W.stock["wheels"]])")
+		naval_check(QDELETED(A) && !(locate(/obj/structure/vehicleparts) in frame_tile), "the car is gone")
+		naval_check(coil.loc == get_turf(W) && fixture.loc == frame_tile, "the rope is set down by the press, the fixture stays")
+		qdel(coil)
+		qdel(fixture)
 	works_clear_bay(W, 5)
 
 	works_fill(W)

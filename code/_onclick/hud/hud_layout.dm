@@ -732,6 +732,9 @@ var/global/list/hud_icon_px_cache = list()
 	return ..()
 
 /client/MouseDrop(src_object, over_object, src_location, over_location, src_control, over_control, params)
+	// Held still while an admin sends them to another land (region_admin_send.dm).
+	if (region_admin_send_held_input(mob))
+		return
 	var/mob/living/human/H = hud_edit_human()
 	if (H)
 		var/obj/screen/S = H.hud_layout_target(src_object)

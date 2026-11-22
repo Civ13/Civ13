@@ -31,8 +31,13 @@ Source: `code/modules/persistence/region_admin_send.dm`.
    they ride, a cart they pull, or anything the travel record cannot carry) or Refused with the
    reason (dead, inside something, a record too big, the destination stopped or unreachable).
    It also says when an offline character's player is online here in another body.
-5. Confirm. Players leave one at a time, three seconds apart, and every check runs again as each
-   one goes. A save here is waited out (up to two minutes) rather than refusing the rest of the
+5. Confirm. Everyone chosen (with a ship, everyone aboard her) is held still at once: they can
+   look around and chat, but cannot move, click, use, drop or equip anything, and any action in
+   progress stops. The checks then run again while they are held, and anyone who no longer passes
+   is let go at once (the admin sees why; the player is told the send was called off). Players
+   leave one at a time, three seconds apart, and every check runs again as each one goes. A hold
+   ends when the transfer agent has recorded that player's trip and they leave, when their send
+   fails, or when the whole send ends; a hold never renewed lapses by itself after 15 minutes. A save here is waited out (up to two minutes) rather than refusing the rest of the
    group. Only one transfer runs per world at a time; an error part way releases it and says so.
 
 Anything the record cannot carry (for example a creature in a bag) is left on the player's tile
@@ -73,13 +78,16 @@ bot's admin channel). "Recent transfers" in the verb lists the last 20 notes in 
 ship, the regions they can go to and the latest transfer notes.
 
 `shard_group.py --config GROUP send-players --region ID --players a,b --to ID [--landing shore|coords|arrival] [--at X,Y,Z] [--ship] [--send]`
-answers with the world's dry run. Only `--send` sends; the world then answers `started` and the
-outcome appears in group admin chat and in the next `players` answer. Both use the region's
+answers with the world's dry run. Only `--send` sends: the world holds the players still, runs the
+checks again, and answers with that second check's rows and `started` (or a refusal, having let
+everyone go). The outcome appears in group admin chat and in the next `players` answer, whose
+rows say `held` while a player is held for a send. Both use the region's
 loopback lifecycle token (`config/lifecycle-token.txt`), like `epoch`.
 
 The launcher's Host server tab has **Players…** in the selected region's More menu: tick
 players, choose the region and landing, **Check (dry run)**, then **Send**. Send stays off until
-a dry run for the exact same choice has at least one player ready.
+a dry run for the exact same choice has at least one player ready. After Send the dialog follows
+the transfer until it ends, showing the second check and the latest transfer notes.
 
 ## Limits
 

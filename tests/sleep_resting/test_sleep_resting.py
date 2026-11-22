@@ -28,7 +28,8 @@ FIELDS = ('stat','paralysis','stunned','weakened','resting','sleeping','status_f
 def capacity(source):
     # Bound to the proc before its enclosing file's trailing #undef directives.
     source = source.split('\n#undef UNBUCKLED',1)[0]
-    env = dict(FLAGS, FAKEDEATH=FAKEDEATH, PARTIALLY_BUCKLED=1, FULLY_BUCKLED=2)
+    # Nobody here is held for a region send (region_admin_send.dm).
+    env = dict(FLAGS, FAKEDEATH=FAKEDEATH, PARTIALLY_BUCKLED=1, FULLY_BUCKLED=2, region_send_held=lambda: False)
     return A.project(source,'/mob/proc/incapacitated','src,incapacitation_flags',env,method=True)
 
 

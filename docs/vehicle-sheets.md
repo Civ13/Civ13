@@ -77,6 +77,34 @@ a 7x7 square) from `aircraft_huey_layout`.
 
 Test: `tests/vehicle_papers/sheet_works_probe.dm`.
 
+## Breaking a vehicle down
+
+`code/modules/craft/vehicle_breakdown.dm`: every press offers "Break down the
+<name> for parts" for each vehicle lying wholly in the square northeast of it
+(`breakdown_bay_side()`: the larger of its biggest model and
+`VEHICLE_DRAUGHT_MAX`; `AIR_DRAUGHT_MAX` at the airship yard, which also takes
+airships by their helm). A Yes/No dialog (default No) says what goes back
+and how long it takes.
+
+- Cost (`breakdown_cost()`): a press model by `costs(name)`, any other land
+  vehicle or plane by `sheet_costs()` of its survey, an airship by her sheet's
+  `costs()`. A vehicle that cannot be surveyed is refused.
+- Back: that cost times the average condition of its parts
+  (`breakup_part_condition()` in `naval/berth_breakup.dm`), rounded down, into
+  the press's stock.
+- Parts (`vehicle_breakdown_axis_part()`): the axis's components and the
+  anchored vehicle parts, engines, seats, turrets, tanks, holds, boots and
+  lamps on its frames; for an airship, her deck, gas cells, helm, engine,
+  tanks and bomb hatches. Loose things, boot and hold contents and bodies are
+  set down by the press. Other anchored things on the tiles (cables) stay.
+- Who: a keyed vehicle needs its key in hand; an airship registered to a
+  party needs a member or her captain; otherwise a Discord-verified player.
+  It must be stopped, engine off, nobody alive aboard.
+- Time: half the press's assembly time (`trade_time()`, mechanic).
+
+Tests: `tests/vehicle_papers/sheet_works_probe.dm` (car),
+`tests/airship_sheets/probe.dm` (airship).
+
 ## The window
 
 `code/modules/craft/vehicle_designer.dm`: "Draw a vehicle on the sheet" on a

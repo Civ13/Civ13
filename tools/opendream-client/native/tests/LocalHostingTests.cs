@@ -215,15 +215,33 @@ static class LocalHostingTests {
                 (["ann"], "northamerica", "shore", null), (["ann"], "--to", "shore", null), (["ann"], "gaia", "sky", null), (["ann"], "gaia", "coords", null),
                 (["ann"], "gaia", "shore", "1,2,3"), (["ann"], "gaia", "coords", "1,2"), (["ann"], "gaia", "coords", "1,2,3;x") })
             try { RegionPlayers.SendStep(host.Control!, "northamerica", keys, to, landing, at, false, false); throw new Exception("unsafe send accepted: " + string.Join(",", keys) + " " + to + " " + landing + " " + at); } catch (ArgumentException) { assertions++; }
-        var roster = RegionPlayers.ParseRoster(0, "noise\n{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"name\": \"Ann\\u0007 Smith\", \"playing\": 1, \"at\": [5, 6, 1], \"aboard\": \"Gnome 2\"}, {\"ckey\": \"<b>\"}], " +
+        var roster = RegionPlayers.ParseRoster(0, "noise\n{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"name\": \"Ann\\u0007 Smith\", \"playing\": 1, \"at\": [5, 6, 1], \"aboard\": \"Gnome 2\", \"held\": 1}, {\"ckey\": \"<b>\"}], " +
             "\"destinations\": {\"Gaia (up)\": \"gaia\", \"Bad\": \"--x\"}, \"recent\": [{\"time\": 1, \"text\": \"host sent ann\"}], \"running\": false}");
-        Require(roster.Ok && roster.Players.Count == 1 && roster.Players[0] is { Ckey: "ann", Name: "Ann Smith", Playing: true, Aboard: "Gnome 2", At: "5,6,1" }
+        Require(roster.Ok && roster.Players.Count == 1 && roster.Players[0] is { Ckey: "ann", Name: "Ann Smith", Playing: true, Aboard: "Gnome 2", At: "5,6,1", Held: true }
             && roster.Destinations.Count == 1 && roster.Destinations[0].Id == "gaia" && roster.Recent.SequenceEqual(["host sent ann"]), "roster parse");
         Require(!RegionPlayers.ParseRoster(1, "{\"ok\": false, \"refused\": \"gaia is asleep\"}").Ok, "roster refusal");
         var dry = RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"dry_run\", \"rows\": [{\"ckey\": \"ann\", \"name\": \"Ann\", \"ok\": 1, \"warnings\": [\"they leave the horse behind\"]}, " +
             "{\"ckey\": \"bob\", \"name\": \"Bob\", \"ok\": 0, \"reason\": \"They are dead.\"}]}");
         Require(dry.Ok && dry.Ready == 1 && !dry.Started && RegionPlayers.Describe(dry).Contains("Refused: bob (Bob): They are dead.") && RegionPlayers.Describe(dry).Contains("Nothing has moved yet"), "dry run parse");
+        Require(RegionPlayers.Describe(dry).Contains("Ready: ann (Ann): they leave the horse behind") && !RegionPlayers.Describe(dry).Contains("Sending"), "dry run rows say Ready");
         Require(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"started\", \"rows\": []}").Started, "started parse");
+        // A real send answers with its own second check; held players show as frozen in the roster.
+        foreach (var held in new[] { "0", "false" })
+            Require(RegionPlayers.ParseRoster(0, "{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"held\": " + held + "}, {\"ckey\": \"bob\"}]}").Players is [{ Held: false }, { Held: false }], "not held parse");
+        var sent = RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"started\", \"rows\": [{\"ckey\": \"ann\", \"name\": \"Ann\", \"ok\": 1}, {\"ckey\": \"bob\", \"name\": \"Bob\", \"ok\": 0, \"reason\": \"They are dead.\"}]}");
+        Require(sent.Started && sent.Ready == 1 && RegionPlayers.Describe(sent).Contains("Sending: ann (Ann)") && RegionPlayers.Describe(sent).Contains("Refused: bob (Bob): They are dead.")
+            && RegionPlayers.Describe(sent).Contains("Sending 1 now, one at a time. They are frozen until they leave; anyone not ready was released.") && !RegionPlayers.Describe(sent).Contains("Ready:"), "started describe");
+        Require(RegionPlayers.Describe(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"refused:nobody can be sent now\", \"rows\": []}")).Contains("Not sent: nobody can be sent now. Anyone frozen for it was released."), "recheck refusal");
+        Require(RegionPlayers.NewRecent(["a", "b"], ["b", "b", "c"]).SequenceEqual(["b", "c"]) && RegionPlayers.NewRecent([], []).Count == 0, "new recent lines");
+        var during = RegionPlayers.ParseRoster(0, "{\"ok\": true, \"players\": [{\"ckey\": \"ann\", \"held\": 1}, {\"ckey\": \"bob\"}], \"recent\": [{\"time\": 1, \"text\": \"old\"}], \"running\": 1}");
+        var following = RegionPlayers.DescribeFollow(sent, during, ["old"], 6, RegionPlayers.FollowState.Running);
+        Require(during.Running && following.Contains("Sending... (6s)") && following.Contains("Frozen now: ann.") && following.Contains("No outcome yet.") && !following.Contains("old"), "follow running");
+        Require(RegionPlayers.DescribeFollow(sent, new RegionPlayers.Roster(false, "Refused: asleep", [], [], [], false), ["old"], 9, RegionPlayers.FollowState.Running).Contains("did not answer the last look (Refused: asleep)"), "follow missed look");
+        var after = RegionPlayers.ParseRoster(0, "{\"ok\": true, \"players\": [{\"ckey\": \"bob\"}], \"recent\": [{\"time\": 1, \"text\": \"old\"}, {\"time\": 2, \"text\": \"sent ann to gaia\"}], \"running\": 0}");
+        var ended = RegionPlayers.DescribeFollow(sent, after, ["old"], 12, RegionPlayers.FollowState.Ended);
+        Require(!after.Running && ended.Contains("The send has ended (12s).") && ended.Contains("None of the players sent are in this region now.") && ended.Contains("sent ann to gaia") && !ended.Contains("No outcome yet"), "follow ended");
+        Require(RegionPlayers.DescribeFollow(sent, during, ["old"], 12, RegionPlayers.FollowState.Ended).Contains("Still here: ann. The lines below say why."), "follow ended with one left");
+        Require(RegionPlayers.DescribeFollow(sent, during, ["old"], 900, RegionPlayers.FollowState.TimedOut).Contains("Stopped following after 15 minutes."), "follow timed out");
         Require(RegionPlayers.Describe(RegionPlayers.ParseSend(0, "{\"ok\": true, \"send\": \"refused:another transfer is running\", \"rows\": []}")).Contains("Not sent: another transfer is running."), "refused send");
         // Magic whitelist dialog (MagicWhitelist, shard_group.py magic-whitelist): one shared list for the group.
         Require(MagicWhitelist.Step(host.Control!).ArgumentList.SequenceEqual(

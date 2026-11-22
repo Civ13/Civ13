@@ -132,6 +132,16 @@ var/naval_runtime_error = FALSE
 		if (istype(drawn))
 			drawn.set_crew(scout.crew)
 		naval_check(istype(drawn) && drawn.to_code() == scout.to_code(), "her lines are drawn back tile for tile ([istype(drawn) ? drawn.to_code() : drawn])")
+		// Broken down for parts (craft/vehicle_breakdown.dm).
+		naval_check(helm in Y.breakdown_targets(), "the yard offers to break her down")
+		var/list/air_cost = Y.breakdown_cost(helm)
+		naval_check(islist(air_cost) && air_cost["cloth"] == 8 * 20, "she is costed from her sheet (cloth [islist(air_cost) ? air_cost["cloth"] : air_cost])")
+		var/obj/item/stack/material/rope/coil = new(locate(Y.x + 1, Y.y + 3, 1), 2)
+		var/cloth_was = Y.stock["cloth"]
+		var/list/got = Y.break_down(helm)
+		naval_check(islist(got) && Y.stock["cloth"] == cloth_was + 160, "all her cloth goes back into stock ([Y.stock["cloth"]])")
+		naval_check(QDELETED(helm) && !(locate(/obj/structure/airship_gas_cell) in locate(Y.x + 1, Y.y + 3, 1)) && !(locate(/obj/covers/airship_deck) in locate(Y.x + 1, Y.y + 3, 1)), "her helm, cells and deck are gone")
+		naval_check(coil.loc == get_turf(Y), "loose rope aboard is set down by the yard")
 
 /proc/naval_run()
 	try

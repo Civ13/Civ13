@@ -10,9 +10,11 @@
 // - Who may: a registered ship only by a member of the party she is
 //   registered to, or her listed captain. A ship registered to nobody may be
 //   broken up by any player with a Discord-verified account.
-// - What comes back: three quarters of what her floors, fittings and
-//   gunwales cost to build by hand (the ship's draught tables), rounded down,
-//   stacked by the berth. Planks over a patched hole come back as nothing.
+// - What comes back: everything her floors, fittings and gunwales cost to
+//   build by hand (the ship's draught tables), less for damaged parts: each
+//   part gives back its cost times its condition (breakup_part_condition),
+//   and a patched plank counts as half worn. Totals are rounded down and
+//   stacked by the berth, so a ship never gives back more than she cost.
 // - Everything aboard that is not part of her (cargo, chests' contents,
 //   engines, machines, cannons the draught does not know) is set down by the
 //   berth whole: nothing is lost with her.
@@ -27,7 +29,7 @@
 #define BREAKUP_FLOOR_TIME 15  // half of SLIPWAY_FLOOR_TIME, ticks per floor
 #define BREAKUP_FIT_TIME 25    // half of SLIPWAY_FIT_TIME, ticks per fitting
 #define BREAKUP_STEP 50        // ticks of work between progress checks
-#define BREAKUP_RECLAIM 0.75   // share of the build cost that comes back
+#define BREAKUP_PATCH_CONDITION 0.5 // a patched plank is worth half a sound one
 
 /obj/structure/hull_tiller
 	var/tmp/breakup_done = 0           // ticks of breaking-up work done on her
@@ -40,8 +42,6 @@
 	var/list/pieces = ship_draught_pieces()
 	if (istype(M, /obj/covers))
 		var/obj/covers/C = M
-		if (istype(C, /obj/covers/repairedfloor/ship/patch))
-			return list()
 		if (C.wall)
 			return pieces["W"]["cost"]
 		if (istype(C, /obj/covers/steelplating) || istype(C, /obj/covers/metal))
@@ -93,7 +93,7 @@
 // "loose" = atoms set down whole, "cost" = what her parts cost to build,
 // "time" = ticks of work, "refusal" = why not, or null).
 /obj/structure/hull_tiller/proc/breakup_inventory()
-	. = list("parts" = list(), "loose" = list(), "cost" = list(), "time" = 0, "refusal" = null)
+	. = list("parts" = list(), "loose" = list(), "cost" = list(), "worth" = list(), "time" = 0, "refusal" = null)
 	for (var/turf/T in breakup_turfs())
 		for (var/atom/movable/M in T)
 			if (M.loc != T || QDELETED(M) || !M.simulated)
@@ -114,13 +114,35 @@
 				continue
 			.["parts"] += M
 			ship_draught_add_cost(.["cost"], cost)
+			var/condition = breakup_part_condition(M)
+			for (var/key in cost)
+				.["worth"][key] = (.["worth"][key] || 0) + cost[key] * condition
 			.["time"] += istype(M, /obj/covers) ? BREAKUP_FLOOR_TIME : (istype(M, /obj/roof) ? 0 : BREAKUP_FIT_TIME)
 
-// What comes back from parts that cost cost to build.
-/proc/berth_breakup_reclaim(list/cost)
+// How sound part M is, from 0 (wrecked) to 1 (as built): its health
+// against its most where it keeps them, half for a patched plank or a broken
+// vehicle frame, else 1.
+/proc/breakup_part_condition(atom/movable/M)
+	if (istype(M, /obj/covers/repairedfloor/ship/patch))
+		return BREAKUP_PATCH_CONDITION
+	if (istype(M, /obj/structure/vehicleparts/frame))
+		var/obj/structure/vehicleparts/frame/F = M
+		if (F.broken)
+			return BREAKUP_PATCH_CONDITION
+	for (var/most in list("maxhealth", "max_health", "initial_health"))
+		if ((most in M.vars) && ("health" in M.vars))
+			var/top = M.vars[most]
+			var/now = M.vars["health"]
+			if (isnum(top) && top > 0 && isnum(now))
+				return clamp(now / top, 0, 1)
+	return 1
+
+// What comes back for parts worth worth (material = amount, fractions
+// allowed): each total rounded down.
+/proc/berth_breakup_reclaim(list/worth)
 	. = list()
-	for (var/key in cost)
-		var/n = round(cost[key] * BREAKUP_RECLAIM)
+	for (var/key in worth)
+		var/n = round(worth[key])
 		if (n > 0)
 			.[key] = n
 
@@ -183,7 +205,7 @@
 	for (var/turf/L in origin)
 		L.ChangeTurf(hull_hold_origin_path(origin[L]))
 	wall_bulk_placement = old_bulk
-	. = piece_refund(berth_breakup_reclaim(I["cost"]), drop)
+	. = piece_refund(berth_breakup_reclaim(I["worth"]), drop)
 	log_game("Berth breakup: the [hull_name] at [x],[y],[z] was broken up ([length(I["parts"])] parts, [length(I["loose"])] things set down); back: [piece_cost_text(.)].")
 	qdel(src)
 
@@ -223,11 +245,11 @@
 	if (I["refusal"])
 		to_chat(H, SPAN_WARNING(I["refusal"]))
 		return
-	var/list/back = berth_breakup_reclaim(I["cost"])
+	var/list/back = berth_breakup_reclaim(I["worth"])
 	var/left = max(0, yard_time(src, I["time"] - T.breakup_done))
 	var/list/lines = list("Break up the [C.name] for parts? She is taken apart for good and cannot be put back together.")
 	if (back.len)
-		lines += "You get back [piece_cost_text(back)], stacked by \the [src]: three quarters of what her parts cost to build, with nothing for patched planks."
+		lines += "You get back [piece_cost_text(back)], stacked by \the [src]: everything her parts cost to build, less for any that are damaged or patched."
 	else
 		lines += "You get nothing back for her parts."
 	lines += "Her cargo and everything else aboard that is not part of her is set down whole by \the [src]; none of it is lost."
@@ -297,4 +319,4 @@
 #undef BREAKUP_FLOOR_TIME
 #undef BREAKUP_FIT_TIME
 #undef BREAKUP_STEP
-#undef BREAKUP_RECLAIM
+#undef BREAKUP_PATCH_CONDITION
