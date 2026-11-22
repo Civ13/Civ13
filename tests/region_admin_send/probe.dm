@@ -143,6 +143,30 @@ var/region_admin_send_probe_checks = 0
 	region_admin_send_probe_assert(host["send"] == "dry_run" && length(host["rows"]) == 2, "host_dry_run")
 	host = region_admin_send_host(list("ckeys" = "alice", "to" = "gaia", "landing" = "shore", "dry_run" = "0"))
 	region_admin_send_probe_assert(host["send"] == "refused:nobody can be sent now" && !region_admin_send_running, "host_send_refused")
+	// Send held them, checked again, and let go of them when the check refused.
+	region_admin_send_probe_assert(!H.region_send_held() && !H.region_send_hold_until && !H.incapacitated(), "refused_send_releases")
+
+	// Held still for a send: no clicks, steps or actions until released.
+	region_admin_send_hold(H, "Gaia")
+	region_admin_send_probe_assert(H.region_send_held() && H.region_send_hold_to == "Gaia", "send_holds")
+	region_admin_send_probe_assert(H.incapacitated() && H.incapacitated(INCAPACITATION_RESTRAINED) && !H.canClick() && region_admin_send_held_input(H), "held_cannot_act")
+	region_admin_send_probe_assert(isnull(region_admin_send_refusal(H)), "held_can_still_go")
+	region_admin_send_probe_assert(H.persistence_runtime_var("region_send_hold_until") && H.persistence_runtime_var("region_send_hold_to"), "hold_not_saved")
+	region_admin_send_release(H)
+	region_admin_send_probe_assert(!H.region_send_held() && !H.incapacitated() && !region_admin_send_held_input(H), "release_frees")
+	// A hold that is never renewed lapses by itself.
+	region_admin_send_hold(H, "Gaia")
+	H.region_send_hold_until = world.time - 1
+	region_admin_send_probe_assert(!H.region_send_held() && !H.incapacitated(), "hold_lapses")
+	// The end of every send lets everyone still held go.
+	region_admin_send_hold(H, "Gaia")
+	region_admin_send_hold(nobody, "Gaia")
+	region_admin_send_release_all()
+	region_admin_send_probe_assert(!H.region_send_held() && !nobody.region_send_held() && !nobody.region_send_hold_until, "release_all")
+	// Hold and check: everyone refused is let go at once, with the refusal in its row.
+	var/list/checked = region_admin_send_hold_and_check(list(H, nobody), "gaia", shore, FALSE)
+	var/list/checked_rows = checked["rows"]
+	region_admin_send_probe_assert(checked_rows.len == 2 && !length(checked["ready"]) && !H.region_send_held() && !nobody.region_send_held(), "hold_and_check_releases_refused")
 	host = region_admin_send_host(list("ckeys" = "alice", "to" = "gaia", "landing" = "coords", "dry_run" = "1"))
 	region_admin_send_probe_assert(findtext(host["send"], "refused:") == 1, "host_bad_landing")
 

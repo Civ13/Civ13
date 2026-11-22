@@ -11,6 +11,16 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-22: Send hold and follow -->
+Launcher 1.5.40: Val asked (2026-11-22) why Send was greyed out in **Players…**, and that Send freeze the chosen
+players at once until their data is secured. The world now holds them on a real `send_players`, checks them again and
+answers with the rows of that second check, releasing anyone who fails (region_admin_send.dm); roster rows carry `held`.
+PlayersDialog explains Check (dry run) and Send in its intro, shows a hint line under the buttons saying why Send is
+off (a disabled button shows no tooltip), and after a "started" answer follows the send: RegionPlayers.RunPlayers every
+3 s off the UI thread while `running`, up to 15 minutes (the world's own hold lapse) or until the dialog closes.
+RegionPlayers.DescribeFollow builds that text and NewRecent picks the transfer lines newer than the last listing; held
+players show as "(frozen for a send)". Keep the wording in RegionPlayers so LocalHostingTests can pin it.
+
 <!-- 2026-11-22: Actionable board problems -->
 Launcher 1.5.39: every region-board problem is a RegionProblem with a plain "Next:" step and fix buttons from
 BoardAdvice (HostBoard.cs); add advice there for any new problem text. Fixes run through RunFix in LauncherWindow with the

@@ -163,6 +163,39 @@ class RegionAdminSendSeams(unittest.TestCase):
         self.assertIn('!other.region_arrival_pending) return null', waiting)
         self.assertIn('this body waits for an admin', SEND)
 
+    def test_send_holds_players_still_until_they_leave(self):
+        # Val (2026-11-22): pressing Send freezes the chosen players, checks
+        # them again while frozen, and keeps them frozen until they leave.
+        host = body(SEND, '/proc/region_admin_send_host(list/input)')
+        self.assertLess(host.index('region_admin_send_running'), host.index('region_admin_send_hold_and_check('))
+        self.assertNotIn('region_admin_send_preflight(bodies, input["to"], landing, ship)\n\tresult["rows"] += rows', host)
+        check = body(SEND, '/proc/region_admin_send_hold_and_check(list/bodies, id, list/landing, ship)')
+        self.assertLess(check.index('region_admin_send_hold(M, where)'), check.index('region_admin_send_preflight('))
+        self.assertIn('region_admin_send_release(M)', check)
+        run = body(SEND, '/proc/region_admin_send_run(list/bodies, id, list/landing, ship, by, mob/requester)')
+        self.assertLess(run.index('region_admin_send_running = FALSE'), run.index('region_admin_send_release_all()'))
+        each = body(SEND, '/proc/region_admin_send_each(list/bodies, id, list/landing, ship, by)')
+        self.assertIn('region_admin_send_release(H)', each)
+        verb = body(PANEL, '/datum/admins/proc/send_player_to_region()')
+        self.assertLess(verb.index('region_admin_send_hold_and_check('), verb.index('region_admin_send_run('))
+        # Every way a player acts checks the hold.
+        hooks = {
+            'code/modules/persistence/restart_transaction.dm': '/client/Click(atom/object, location, control, params)',
+            'code/game/mob/mob_movement.dm': '/client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)',
+            'code/_onclick/click.dm': '/mob/proc/ClickOn(var/atom/A, var/params)',
+            'code/_onclick/hud/hud_layout.dm': '/client/MouseDrop(src_object, over_object, src_location, over_location, src_control, over_control, params)',
+            'code/game/mob/living/carbon/human/inventory.dm': '/mob/living/human/verb/quick_equip()',
+        }
+        for path, header in hooks.items():
+            self.assertIn('region_admin_send_held_input(', body(read(path), header), path)
+        movement = read('code/game/mob/mob_movement.dm')
+        for header in ('/client/verb/attack_self()', '/client/verb/toggle_throw_mode()', '/client/verb/drop_item()'):
+            self.assertIn('region_admin_send_held_input(mob)', body(movement, header), header)
+        mob = read('code/game/mob/mob.dm')
+        self.assertIn('region_send_held()', body(mob, '/mob/proc/incapacitated(var/incapacitation_flags = INCAPACITATION_DEFAULT)'))
+        self.assertIn('region_admin_send_held_input(src)', body(mob, '/mob/verb/mode()'))
+        self.assertIn('region_send_held()', body(read('code/_onclick/click.dm'), '/mob/proc/canClick()'))
+
 
 if __name__ == '__main__':
     unittest.main()
