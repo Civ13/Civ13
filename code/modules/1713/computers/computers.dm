@@ -107,6 +107,9 @@
 	if (active)
 		active = FALSE
 		powered = FALSE
+		active_console_program = null
+		console_session_generation++
+		user = null
 		if (powersource)
 			powersource.update_power(-powerneeded,1,src)
 		to_chat(H, "You power off the [src].")
@@ -128,8 +131,7 @@
 		return
 /obj/structure/computer/attack_hand(var/mob/living/human/H)
 	if(src.active)
-		boot(operatingsystem)
-		do_html(H)
+		interact(H)
 	else
 		to_chat(H, "<span class = 'notice'>You need to turn the [src] on first!</span>")
 /obj/structure/computer/proc/power_on()
