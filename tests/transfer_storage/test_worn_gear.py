@@ -33,8 +33,8 @@ class WornGearTests(unittest.TestCase):
         self.assertLess(dme.index('region_travel.dm"'), dme.index('region_travel_gear.dm"'))
 
     def test_only_the_travellers_own_slots_use_the_worn_kinds(self):
-        self.assertIn('if(!region_travel_worn_kind(I))', proc(TRAVEL, '/mob/living/human/proc/region_travel_items'))
-        self.assertIn('var/kind = region_travel_worn_kind(I)', proc(TRAVEL, '/mob/living/human/proc/region_travel_payload'))
+        self.assertIn('if(!region_travel_worn_kind(I, leave_behind))', proc(TRAVEL, '/mob/living/human/proc/region_travel_items'))
+        self.assertIn('var/kind = region_travel_worn_kind(I, leave_behind)', proc(TRAVEL, '/mob/living/human/proc/region_travel_payload'))
         # The shared codec that freight, landers and holds build from knows none of them.
         for name in ('/proc/region_travel_item_kind', '/proc/region_travel_item_path', '/proc/region_travel_make_item'):
             body = proc(TRAVEL, name)
