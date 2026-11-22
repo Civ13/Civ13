@@ -85,7 +85,10 @@ class TrainingGearSources(unittest.TestCase):
             self.assertNotIn('SKIP_SET_WINDOW', text)
         self.assertNotIn('Exercise Step', CORE + GEAR + COURSE)
         defines = read('code/__defines/training.dm')
-        self.assertIn('#define TRAINING_STAMINA_DRAIN 0.014', defines)
+        self.assertIn('#define TRAINING_STAMINA_DRAIN 0.004', defines)
+        # Natural recovery pauses while a session spends stamina.
+        life = read('code/game/mob/living/carbon/human/human_life.dm')
+        self.assertIn('if (!training_in_progress())\n\t\tdiet_recover_stamina()\n\t\twanderer_recover_stamina()\n\t\thome_recover_stamina()', life)
         self.assertIn('#include "code\\__defines\\training.dm"', DME)
         self.assertIn('return stats["stamina"][2] * TRAINING_STAMINA_DRAIN * duration / 10', CORE)
         # Stop Exercise ends every kind of session, not only equipment sets.

@@ -157,7 +157,7 @@ var/training_probe_overlap = null
 	H.stats["stamina"][1] = 15
 	training_probe_waits = 1000
 	small.attack_self(H)
-	training_probe_assert(!H.exercise_equipment && !small.lifting && training_probe_waits < 1000 && training_probe_waits > 980 && !H.training_has_stamina(20), "out_of_breath_ends_session")
+	training_probe_assert(!H.exercise_equipment && !small.lifting && training_probe_waits < 1000 && training_probe_waits > 900 && !H.training_has_stamina(20), "out_of_breath_ends_session")
 	training_probe_waits = 1000
 	small.attack_self(H)
 	training_probe_assert(training_probe_waits == 1000 && !H.exercise_equipment, "winded_cannot_start")
