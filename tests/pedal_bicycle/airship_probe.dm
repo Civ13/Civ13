@@ -114,7 +114,15 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 	expect(R.getBruteLoss() == 0, "rider hurt rising")
 	expect(V in aloft_pedal_airships, "not listed aloft")
 	expect(V.shadow_turf == start && (V.shadow in start.vis_contents), "no shadow below")
-	expect(V.ground_view && V.ground_view.vis_contents.len > 100, "no ground view")
+	var/turf_views = 0
+	for(var/turf/T in range(11, V.loc))
+		for(var/atom/movable/D in T.vis_contents)
+			if(isturf(D))
+				turf_views++
+			for(var/atom/W in D.vis_contents)
+				if(isturf(W))
+					turf_views++
+	expect(!turf_views, "[turf_views] ground turfs drawn through vis_contents; the open-air view shows the ground")
 	sleep(10)
 	expect(V.z == sky_z && R.z == sky_z, "fell while hovering")
 	// Fly east.
@@ -170,7 +178,7 @@ var/global/datum/pedal_airship_probe/pedal_airship_probe = new
 	tiller.secondary_attack_self(R)
 	expect(!V.aloft && V.loc == under && R.loc == under && V.driver == R, "did not sink to the ground: aloft [V.aloft] z [V.z]")
 	expect(R.getBruteLoss() == 0 && V.health >= 100, "landing did damage")
-	expect(!(V in aloft_pedal_airships) && !V.shadow_turf && !V.ground_view, "flight visuals left behind after landing")
+	expect(!(V in aloft_pedal_airships) && !V.shadow_turf && !V.shadow, "flight visuals left behind after landing")
 	V.attack_hand(R)
 	sleep(15)
 	expect(!V.driver && !R.buckled && tiller.loc == V && !V.overlays.len, "did not get off on the ground")

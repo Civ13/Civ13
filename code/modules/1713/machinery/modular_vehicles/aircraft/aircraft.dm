@@ -81,7 +81,6 @@ var/global/list/airborne_aircraft = list()
 /obj/structure/vehicleparts/axis/aircraft/Destroy()
 	airborne_aircraft -= src
 	clear_shadows()
-	clear_ground_view()
 	return ..()
 
 /obj/structure/vehicleparts/axis/aircraft/proc/pilot_message(text)
