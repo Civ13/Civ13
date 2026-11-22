@@ -683,6 +683,31 @@
       ]
     },
     {
+      "path": "code/modules/naval/hull_ports.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/railing/built/gunwale/gun_port/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "f8ab109096ae485c9d0a4d0325e4de3af9fa4f829db4ba0de60dfc1bea4d126b"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/railing/built/gunwale/bulwark/gun_port/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)",
+          "sha256_body": "a962bb7f7ea3aa516ed3e6d5d395ada3cf26fd5fa6f0d2479a9a2c0a9b6d3108"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/railing/built/gunwale/gun_port/CheckExit(atom/movable/O, target, exit_direction = null)",
+          "sha256_body": "79473af49337a4dfb8084ea9ab860afac5e4a1d0f11acfb98d476e76aba3fae4"
+        },
+        {
+          "owner": "",
+          "declaration": "/obj/structure/railing/built/gunwale/bulwark/gun_port/CheckExit(atom/movable/O, target, exit_direction = null)",
+          "sha256_body": "9fea139e58f4a0395c1f8079a00eee96737ddc75b0330086218254296fb8032d"
+        }
+      ]
+    },
+    {
       "path": "code/modules/naval/ocean_regions.dm",
       "declarations": [
         {
