@@ -164,7 +164,7 @@
 
 /client/verb/attack_self()
 	set hidden = TRUE
-	if (mob && isliving(mob) && !region_admin_send_held_input(mob))
+	if (mob && isliving(mob) && !travel_hold_input(mob))
 		var/mob/living/L = mob
 		L.mode()
 	return
@@ -172,7 +172,7 @@
 
 /client/verb/toggle_throw_mode()
 	set hidden = TRUE
-	if (!istype(mob, /mob/living/human) || region_admin_send_held_input(mob))
+	if (!istype(mob, /mob/living/human) || travel_hold_input(mob))
 		return
 	if (!mob.stat && isturf(mob.loc) && !mob.restrained())
 		mob:toggle_throw_mode()
@@ -182,7 +182,7 @@
 
 /client/verb/drop_item()
 	set hidden = TRUE
-	if (mob.stat == CONSCIOUS && isturf(mob.loc) && !region_admin_send_held_input(mob))
+	if (mob.stat == CONSCIOUS && isturf(mob.loc) && !travel_hold_input(mob))
 		var/obj/item/held = mob.get_active_hand()
 		if (held && held.player_drop_refused(mob))
 			return
@@ -388,8 +388,11 @@
 	// This mob's level is being saved (restart_transaction.dm).
 	if (persistence_frozen_levels.len && persistence_input_frozen(src))
 		return
-	// Being sent to another land (region_admin_send.dm).
-	if (region_admin_send_held_input(mob))
+	// Leaving for another land (travel_hold.dm).
+	if (travel_hold_input(mob))
+		return
+	// Nobody boards a ship or craft whose crew are leaving (travel_hold.dm).
+	if (travel_holds && mob && travel_hold_bars_step(mob, get_step(mob, direct)))
 		return
 
 	// these checks occur once in the movement process, but they currently have to be rewritten here due to initial movements

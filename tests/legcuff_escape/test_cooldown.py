@@ -29,8 +29,8 @@ class ResistProjection:
         can_click = adapter.extract(click, '/mob/proc/canClick').replace('next_move', 'actor.next_move')
         self.can_click = adapter.project(fixture(can_click), '/fixture/run', '', {
             'actor': self.actor, 'world': self.world, 'config': self.config,
-            # Nobody here is held for a region send (region_admin_send.dm).
-            'region_send_held': lambda: False,
+            # Nobody here is held for a trip (travel_hold.dm).
+            'travel_held': lambda: False,
         })
         cooldown = adapter.extract(click, '/mob/proc/setClickCooldown').replace('next_move', 'actor.next_move')
         set_cooldown = adapter.project('/fixture/set(timeout)\n' + cooldown + '\n',

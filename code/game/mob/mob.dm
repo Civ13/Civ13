@@ -147,8 +147,8 @@
 	return incapacitated(INCAPACITATION_DISABLED)
 
 /mob/proc/incapacitated(var/incapacitation_flags = INCAPACITATION_DEFAULT)
-	// Held still while an admin sends them to another land (region_admin_send.dm).
-	if (region_send_held())
+	// Held still while they leave for another land (travel_hold.dm).
+	if (travel_held())
 		return TRUE
 
 	if ((incapacitation_flags & (INCAPACITATION_DISABLED|INCAPACITATION_DISABLED_NO_REST)) && (stat || paralysis || stunned || weakened || sleeping || (status_flags & FAKEDEATH)))
@@ -271,7 +271,7 @@
 	set name = "Activate Held Object"
 	set category = null
 	set src = usr
-	if (region_admin_send_held_input(src))
+	if (travel_hold_input(src))
 		return
 	if (ishuman(src))
 		var/mob/living/human/H = src

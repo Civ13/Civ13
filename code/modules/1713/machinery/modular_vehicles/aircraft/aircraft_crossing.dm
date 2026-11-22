@@ -199,6 +199,24 @@ var/global/list/air_crossing_planes = list()
 		return "That land is not known here."
 	if (shard_group.peer_transfers_held(id))
 		return "No aircraft can land there for now: that land is closed to arrivals. Ask an admin."
+	// Everyone aboard is held still and she is guarded until she leaves or
+	// stays (travel_hold.dm).
+	var/list/aboard = list(pilot)
+	var/list/decks = list()
+	for (var/mob/living/human/H in transporting)
+		aboard |= H
+	for (var/obj/O in components)
+		var/turf/T = get_turf(O)
+		if (T && !(T in decks))
+			decks += T
+	var/datum/travel_hold/held = travel_hold_begin(aboard, peer["name"], components.Copy(), decks)
+	. = air_cross_on(id, tiles, pilot, need, fuel)
+	travel_hold_end(held)
+
+// The rest of air_cross(), with everyone aboard held still.
+/obj/structure/vehicleparts/axis/aircraft/proc/air_cross_on(id, tiles, mob/living/human/pilot, need, fuel)
+	var/list/peer = shard_group.peers[id]
+	var/reason
 	if (peer["state"] != "UP")
 		var/woke = shard_group.wake_peer(id, pilot)
 		if (woke)

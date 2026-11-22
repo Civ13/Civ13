@@ -1780,6 +1780,7 @@
 #include "code\modules\persistence\region_gateway.dm"
 #include "code\modules\persistence\region_trails.dm"
 #include "code\modules\persistence\region_admin_send.dm"
+#include "code\modules\persistence\travel_hold.dm"
 #include "code\modules\persistence\land_stage.dm"
 #include "code\modules\persistence\party_freight.dm"
 #include "code\modules\persistence\party_train.dm"

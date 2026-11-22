@@ -168,17 +168,19 @@ class RegionAdminSendSeams(unittest.TestCase):
         # them again while frozen, and keeps them frozen until they leave.
         host = body(SEND, '/proc/region_admin_send_host(list/input)')
         self.assertLess(host.index('region_admin_send_running'), host.index('region_admin_send_hold_and_check('))
-        self.assertNotIn('region_admin_send_preflight(bodies, input["to"], landing, ship)\n\tresult["rows"] += rows', host)
         check = body(SEND, '/proc/region_admin_send_hold_and_check(list/bodies, id, list/landing, ship)')
-        self.assertLess(check.index('region_admin_send_hold(M, where)'), check.index('region_admin_send_preflight('))
-        self.assertIn('region_admin_send_release(M)', check)
+        self.assertLess(check.index('travel_hold_begin('), check.index('region_admin_send_preflight('))
+        self.assertIn('travel_hold_release(region_admin_send_hold, M)', check)
         run = body(SEND, '/proc/region_admin_send_run(list/bodies, id, list/landing, ship, by, mob/requester)')
-        self.assertLess(run.index('region_admin_send_running = FALSE'), run.index('region_admin_send_release_all()'))
+        self.assertLess(run.index('region_admin_send_running = FALSE'), run.index('travel_hold_end(region_admin_send_hold)'))
         each = body(SEND, '/proc/region_admin_send_each(list/bodies, id, list/landing, ship, by)')
-        self.assertIn('region_admin_send_release(H)', each)
+        self.assertIn('travel_hold_release(region_admin_send_hold, H)', each)
+        self.assertIn('travel_hold_renew(region_admin_send_hold)', each)
+        self.assertIn('"held" = istype(H) && H.travel_held()', SEND)
         verb = body(PANEL, '/datum/admins/proc/send_player_to_region()')
         self.assertLess(verb.index('region_admin_send_hold_and_check('), verb.index('region_admin_send_run('))
-        # Every way a player acts checks the hold.
+
+    def test_every_way_of_acting_checks_the_hold(self):
         hooks = {
             'code/modules/persistence/restart_transaction.dm': '/client/Click(atom/object, location, control, params)',
             'code/game/mob/mob_movement.dm': '/client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)',
@@ -187,15 +189,42 @@ class RegionAdminSendSeams(unittest.TestCase):
             'code/game/mob/living/carbon/human/inventory.dm': '/mob/living/human/verb/quick_equip()',
         }
         for path, header in hooks.items():
-            self.assertIn('region_admin_send_held_input(', body(read(path), header), path)
+            self.assertIn('travel_hold_input(', body(read(path), header), path)
         movement = read('code/game/mob/mob_movement.dm')
         for header in ('/client/verb/attack_self()', '/client/verb/toggle_throw_mode()', '/client/verb/drop_item()'):
-            self.assertIn('region_admin_send_held_input(mob)', body(movement, header), header)
+            self.assertIn('travel_hold_input(mob)', body(movement, header), header)
+        self.assertIn('travel_hold_bars_step(mob, get_step(mob, direct))', body(movement, '/client/Move(n, direct, ordinal = FALSE, fine_step = FALSE)'))
+        click = body(read('code/_onclick/click.dm'), '/mob/proc/ClickOn(var/atom/A, var/params)')
+        self.assertIn('travel_hold_refuses(src, A)', click)
+        drop = body(read('code/_onclick/hud/hud_layout.dm'), '/client/MouseDrop(src_object, over_object, src_location, over_location, src_control, over_control, params)')
+        self.assertIn('travel_hold_refuses(mob, src_object)', drop)
+        self.assertIn('travel_hold_refuses(mob, over_object)', drop)
         mob = read('code/game/mob/mob.dm')
-        self.assertIn('region_send_held()', body(mob, '/mob/proc/incapacitated(var/incapacitation_flags = INCAPACITATION_DEFAULT)'))
-        self.assertIn('region_admin_send_held_input(src)', body(mob, '/mob/verb/mode()'))
-        self.assertIn('region_send_held()', body(read('code/_onclick/click.dm'), '/mob/proc/canClick()'))
+        self.assertIn('travel_held()', body(mob, '/mob/proc/incapacitated(var/incapacitation_flags = INCAPACITATION_DEFAULT)'))
+        self.assertIn('travel_hold_input(src)', body(mob, '/mob/verb/mode()'))
+        self.assertIn('travel_held()', body(read('code/_onclick/click.dm'), '/mob/proc/canClick()'))
+        self.assertIn('#include "code\\modules\\persistence\\travel_hold.dm"', DME)
 
+    def test_every_trip_holds_its_travellers(self):
+        # Val (2026-11-22): trails, land edges, voyages, flights and landers too,
+        # with everyone going together and their vessel guarded.
+        travel = body(TRAVEL, '/obj/structure/region_gate/proc/travel(mob/living/human/H)')
+        self.assertLess(travel.index('player_alert('), travel.index('travel_hold_begin(list(H), destination_name(), travel_hold_belongings(H))'))
+        self.assertLess(travel.index('travel_confirmed(H)'), travel.index('travel_hold_end(hold)'))
+        cross = body(SHIP, '/obj/structure/hull_tiller/proc/cross(id, mob/living/human/notify = null, voyage = null, list/sea_edge = null)')
+        self.assertLess(cross.index('crossing_travel_hold('), cross.index('cross_on('))
+        self.assertLess(cross.index('cross_on('), cross.index('travel_hold_end(held)'))
+        self.assertIn('travel_hold_begin(aboard, where, list(src), decks)', body(SHIP, '/obj/structure/hull_tiller/proc/crossing_travel_hold(where)'))
+        air = read('code/modules/1713/machinery/modular_vehicles/aircraft/aircraft_crossing.dm')
+        flight = body(air, '/obj/structure/vehicleparts/axis/aircraft/proc/air_cross(id, tiles, mob/living/human/pilot)')
+        self.assertLess(flight.index('travel_hold_begin(aboard'), flight.index('air_cross_on('))
+        self.assertLess(flight.index('air_cross_on('), flight.index('travel_hold_end(held)'))
+        lander = read('code/modules/space/lander.dm')
+        for header, inner in (('/obj/structure/crewed_lander/proc/launch(obj/structure/region_gate/trail_marker/launch_pad/pad, lx = null, ly = null, mob/living/human/notify = null)', 'launch_on('),
+                              ('/obj/structure/landed_lander/proc/deorbit(mob/living/human/notify = null)', 'deorbit_on(')):
+            proc = body(lander, header)
+            self.assertLess(proc.index('travel_hold_begin(crew()'), proc.index(inner))
+            self.assertLess(proc.index(inner), proc.index('travel_hold_end(held)'))
 
 if __name__ == '__main__':
     unittest.main()

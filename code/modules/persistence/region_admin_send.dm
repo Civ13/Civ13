@@ -22,10 +22,6 @@
 #define ADMIN_SEND_ARRIVAL "arrival"
 // Deciseconds between two players of one send, so the agent records one trip at a time.
 #define ADMIN_SEND_GAP 30
-// How long a hold lasts without being renewed (deciseconds): longer than a
-// cold land takes to start (travel_start_estimate_seconds), so a hold never
-// lapses while its send is still on its way, and never outlives a send that died.
-#define ADMIN_SEND_HOLD 9000
 // Lines tried along each coast when looking for a shore.
 #define ADMIN_SEND_SHORE_LINES 48
 #define ADMIN_SEND_RECENT_MAX 20
@@ -33,13 +29,12 @@
 // Who sent this character here, until its player takes it (audit only).
 /mob/living/human/var/tmp/region_admin_sent = null
 
-// Held still for a send (world.time it lapses), and the land they are sent to.
-/mob/living/human/var/tmp/region_send_hold_until = 0
-/mob/living/human/var/tmp/region_send_hold_to = null
-/mob/living/human/var/tmp/region_send_hold_told = 0
-
+// The travel hold's fields (travel_hold.dm) are never saved either.
 /mob/living/human/persistence_runtime_var(key)
-	return key == "region_admin_sent" || key == "region_send_hold_until" || key == "region_send_hold_to" || key == "region_send_hold_told" || ..()
+	return key == "region_admin_sent" || key == "travel_hold" || key == "travel_hold_told" || ..()
+
+// The hold of the send running now (travel_hold.dm).
+var/global/datum/travel_hold/region_admin_send_hold = null
 
 // Recent outcomes, newest last, for the host's players answer and the verb.
 var/global/list/region_admin_send_recent = list()
@@ -329,48 +324,9 @@ var/global/region_admin_send_running = FALSE
 
 // ---------------------------------------------------------------- holding still
 
-// Someone being sent cannot act from the moment the admin presses Send until
-// they leave: no moving, clicking, using or dropping anything, so what the
-// checks saw is what travels. They can still look around and chat. The hold
-// ends when the transfer agent has recorded the trip (the character is then
-// safe in its journal and leaves this land), or as soon as the send fails or
-// is called off, and it lapses by itself after ADMIN_SEND_HOLD if never renewed.
-
-/mob/proc/region_send_held()
-	return FALSE
-
-/mob/living/human/region_send_held()
-	return region_send_hold_until && world.time < region_send_hold_until
-
-// Holds H still (or renews the hold) for a send to where.
-/proc/region_admin_send_hold(mob/living/human/H, where)
-	if(!istype(H) || QDELETED(H)) return
-	var/was = H.region_send_held()
-	H.region_send_hold_until = world.time + ADMIN_SEND_HOLD
-	H.region_send_hold_to = where
-	if(was) return
-	H.region_send_hold_told = world.time
-	H.stop_pulling()
-	if(H.client)
-		to_chat(H, SPAN_WARNING("<b>An admin is sending you to [where].</b> Stay put: you can look around and chat, but you cannot move or act until you leave."))
-
-// Ends H's hold when they were not sent after all (the admins hear why).
-/proc/region_admin_send_release(mob/living/human/H)
-	if(!istype(H) || QDELETED(H) || !H.region_send_hold_until) return
-	var/was = H.region_send_held()
-	H.region_send_hold_until = 0
-	H.region_send_hold_to = null
-	if(was && H.client)
-		to_chat(H, SPAN_NOTICE("The send was called off, so you stay here. You can move and act again."))
-
-// A held player's click, step or action is refused, with a reminder now and then.
-/proc/region_admin_send_held_input(mob/M)
-	if(!M || !M.region_send_held()) return FALSE
-	var/mob/living/human/H = M
-	if(world.time >= H.region_send_hold_told + 50)
-		H.region_send_hold_told = world.time
-		to_chat(H, SPAN_WARNING("You are being sent to [H.region_send_hold_to]. Stay put until you leave."))
-	return TRUE
+// Pressing Send holds everyone it would move still (travel_hold.dm) until they
+// leave, then checks them again. The hold ends once the transfer agent has
+// recorded each one's trip, or as soon as their send fails or the run ends.
 
 // Everyone a send moves with H: H, and with their ship everyone aboard her.
 /proc/region_admin_send_party(mob/living/human/H, ship)
@@ -389,10 +345,18 @@ var/global/region_admin_send_running = FALSE
 // "ready" = bodies still held for the send).
 /proc/region_admin_send_hold_and_check(list/bodies, id, list/landing, ship)
 	var/list/peer = shard_group.peers[id]
-	var/where = peer ? peer["name"] : id
+	var/list/everyone = list()
 	for(var/mob/living/human/H in bodies)
-		for(var/mob/living/human/M in region_admin_send_party(H, ship))
-			region_admin_send_hold(M, where)
+		everyone |= region_admin_send_party(H, ship)
+	// What they ride or pull stays guarded until they go.
+	var/list/guarded = list()
+	for(var/mob/living/human/H in everyone)
+		guarded |= travel_hold_belongings(H)
+	travel_hold_end(region_admin_send_hold)
+	region_admin_send_hold = travel_hold_begin(everyone, peer ? peer["name"] : id, guarded, null, TRUE)
+	// A ship is guarded whole: nobody else boards her or reaches aboard.
+	for(var/mob/living/human/H in bodies)
+		region_admin_send_guard_ship(H, ship)
 	var/list/rows = region_admin_send_preflight(bodies, id, landing, ship)
 	var/list/ready = list()
 	for(var/i = 1 to rows.len)
@@ -403,8 +367,21 @@ var/global/region_admin_send_running = FALSE
 			continue
 		if(!istype(H)) continue
 		for(var/mob/living/human/M in region_admin_send_party(H, ship))
-			region_admin_send_release(M)
+			travel_hold_release(region_admin_send_hold, M)
+	if(!ready.len)
+		travel_hold_end(region_admin_send_hold)
+		region_admin_send_hold = null
 	return list("rows" = rows, "ready" = ready)
+
+// Adds the decks of the ship H is aboard to the send's guarded ground.
+/proc/region_admin_send_guard_ship(mob/living/human/H, ship)
+	var/obj/structure/hull_tiller/tiller = ship ? region_admin_send_tiller(H) : null
+	var/datum/craft_body/built/B = tiller ? tiller.craft.body : null
+	if(!istype(B) || !region_admin_send_hold) return
+	if(!region_admin_send_hold.ground) region_admin_send_hold.ground = list()
+	for(var/turf/T in B.cells())
+		region_admin_send_hold.ground[T] = TRUE
+	region_admin_send_hold.guarded |= tiller
 
 // ---------------------------------------------------------------- sending
 
@@ -589,14 +566,10 @@ var/global/region_admin_send_running = FALSE
 		log_game("Region admin send: stopped part way: [e.name] ([e.file]:[e.line]).")
 		region_admin_send_tell("[by]'s region transfer stopped part way: [e.name]. Check who was sent before trying again.")
 	region_admin_send_running = FALSE
-	region_admin_send_release_all()
+	// Everyone still here can act again.
+	travel_hold_end(region_admin_send_hold)
+	region_admin_send_hold = null
 	return TRUE
-
-// Lets everyone still held for a send go (only one send runs at a time).
-/proc/region_admin_send_release_all()
-	for(var/mob/living/human/H in human_mob_list)
-		if(H.region_send_hold_until)
-			region_admin_send_release(H)
 
 // Waits out a save here (a departure asks for one soon after), up to two minutes.
 /proc/region_admin_send_wait_for_save()
@@ -612,10 +585,7 @@ var/global/region_admin_send_running = FALSE
 	var/first = TRUE
 	for(var/mob/living/human/H in bodies)
 		// Waiting on earlier players and saves can be long: everyone still to go stays held.
-		for(var/mob/living/human/later in bodies)
-			if(!QDELETED(later) && later.region_send_hold_until)
-				for(var/mob/living/human/M in region_admin_send_party(later, ship))
-					region_admin_send_hold(M, where)
+		travel_hold_renew(region_admin_send_hold)
 		if(!first) sleep(ADMIN_SEND_GAP)
 		first = FALSE
 		region_admin_send_wait_for_save()
@@ -635,14 +605,14 @@ var/global/region_admin_send_running = FALSE
 				region_admin_send_tell("[by] could not send the [ship_name] to [where]: [result]")
 			// Anyone still here (she did not sail, or they had to stay) can act again.
 			for(var/mob/living/human/M in region_admin_send_party(H, TRUE) | list(H))
-				region_admin_send_release(M)
+				travel_hold_release(region_admin_send_hold, M)
 			continue
 		result = region_admin_send_one(H, id, landing)
 		if(result == "departed")
 			region_admin_send_tell("[by] sent [account]'s character [name] to [where] ([region_admin_send_landing_name(landing["landing"])]). Waiting for [where] to confirm the arrival.")
 		else
 			region_admin_send_tell("[by] could not send [account]'s character [name] to [where]: [result]")
-			region_admin_send_release(H)
+			travel_hold_release(region_admin_send_hold, H)
 
 // ---------------------------------------------------------------- arriving
 
@@ -769,7 +739,7 @@ var/global/region_admin_send_running = FALSE
 	for(var/client/C in clients)
 		var/mob/living/human/H = C.mob
 		var/turf/T = get_turf(C.mob)
-		var/list/row = list("ckey" = C.ckey, "name" = istype(H) ? H.real_name : null, "playing" = istype(H) && H.stat != DEAD)
+		var/list/row = list("ckey" = C.ckey, "name" = istype(H) ? H.real_name : null, "playing" = istype(H) && H.stat != DEAD, "held" = istype(H) && H.travel_held())
 		if(T) row["at"] = list(T.x, T.y, T.z)
 		var/obj/structure/hull_tiller/tiller = istype(H) ? region_admin_send_tiller(H) : null
 		if(tiller) row["aboard"] = tiller.craft.name
@@ -830,6 +800,5 @@ var/global/region_admin_send_running = FALSE
 	region_admin_send_run(bodies, id, landing, ship, "host", null)
 
 #undef ADMIN_SEND_GAP
-#undef ADMIN_SEND_HOLD
 #undef ADMIN_SEND_SHORE_LINES
 #undef ADMIN_SEND_RECENT_MAX
