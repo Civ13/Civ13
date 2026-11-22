@@ -1,5 +1,5 @@
-// Offline sleep protection: a character who used Sleep on a bed and waited out
-// its two minutes, then logged off, cannot be harmed, stripped, moved or
+// Offline sleep protection: a faction member who used Sleep on a bed in a
+// province their faction or nation holds, waited out its two minutes, then logged off, cannot be harmed, stripped, moved or
 // operated on until the player comes back. Durable Gaia is excluded: sleepers
 // there stay as vulnerable as before. Protection is a live check, not a flag,
 // so it ends by itself the moment a client returns to the body, if the body
@@ -23,12 +23,25 @@
 /mob/living/human/offline_sleep_protected()
 	if (!inducedSSD || client || offline_sleep_protection_lifted || stat == DEAD || gc_destroyed || gcDestroyed)
 		return FALSE
-	if (!isturf(loc) || !offline_sleep_protection_map_allowed())
+	if (!isturf(loc) || !offline_sleep_protection_map_allowed() || !offline_sleep_province_owned())
 		return FALSE
 	for (var/obj/structure/bed/B in loc)
 		if (B.anchored && B.buckle_lying)
 			return TRUE
 	return FALSE
+
+// Val (2026-11-22): only a faction member sleeping in a province their own
+// faction (or its nation) holds is protected. Lands without provinces, unheld
+// provinces and the factionless never qualify.
+/mob/living/human/proc/offline_sleep_province_owned()
+	if (!civilization || civilization == "none" || !map)
+		return FALSE
+	var/datum/province_map/P = map.province_map()
+	if (!P)
+		return FALSE
+	var/c = P.char_at(x, y)
+	var/holder = c ? province_holder_of(c) : null
+	return holder && holder == province_group_of(civilization)
 
 // TRUE (and tells the actor why) when someone else tries to act on a protected sleeper.
 /mob/living/proc/offline_sleep_refuses(mob/user)

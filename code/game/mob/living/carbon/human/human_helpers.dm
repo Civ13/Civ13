@@ -159,7 +159,7 @@
 	if (persistence_bed_return_enabled())
 		sleep_message = "Sleep here and assign this bed for saved-character returns? You can have only one bed, so any bed assigned to you before is released. This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
 	if (offline_sleep_protection_map_allowed())
-		sleep_message += " Once you are asleep, logging off keeps your body safe in this bed: nobody can harm, rob or move it until you come back."
+		sleep_message += " If you belong to a faction and this bed is in a province your faction holds, logging off once you are asleep keeps your body safe here: nobody can harm, rob or move it until you come back."
 	if (WWinput(src, sleep_message, "Sleep", "Yes", list("Yes","No")) == "Yes")
 		to_chat(src, SPAN_NOTICE("You will start sleeping in two minutes."))
 		if (do_after(src, 2 MINUTES, src, FALSE, incapacitation_flags = (INCAPACITATION_DEFAULT & ~INCAPACITATION_DISABLED) | INCAPACITATION_DISABLED_NO_REST))

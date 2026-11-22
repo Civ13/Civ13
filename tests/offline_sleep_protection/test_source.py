@@ -36,6 +36,11 @@ class OfflineSleepProtection(unittest.TestCase):
         # Only the Sleep verb's completed wait sets inducedSSD; a client ends it.
         self.assertIn("if (!inducedSSD || client || offline_sleep_protection_lifted || stat == DEAD", body)
         self.assertIn("offline_sleep_protection_map_allowed()", body)
+        self.assertIn("offline_sleep_province_owned()", body)
+        owned = proc(self.mod, "/mob/living/human/proc/offline_sleep_province_owned()")
+        self.assertIn('if (!civilization || civilization == "none" || !map)', owned)
+        self.assertIn("var/holder = c ? province_holder_of(c) : null", owned)
+        self.assertIn("return holder && holder == province_group_of(civilization)", owned)
         self.assertIn("for (var/obj/structure/bed/B in loc)", body)
         self.assertIn("B.anchored && B.buckle_lying", body)
         gaia = proc(self.mod, "/proc/offline_sleep_protection_map_allowed()")
