@@ -363,6 +363,9 @@
 	accuracy = 1
 
 /obj/item/weapon/gun/projectile/boltaction/singleshot/special_check(mob/user)
+	if (gun_safety && safetyon) // single-shots with a safety, like the Barrett, honour it (#6697)
+		to_chat(user, "<span class='warning'>You can't fire \the [src] while the safety is on!</span>")
+		return FALSE
 	if (bolt_open)
 		to_chat(user, "<span class='warning'>You can't fire [src] while the breech is open!</span>")
 		return FALSE
