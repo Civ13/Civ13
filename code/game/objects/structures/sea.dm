@@ -1,5 +1,7 @@
 /turf/floor/Entered(atom/movable/O)
 	..()
+	if (!isobj(O))
+		return
 	if (istype(O, /obj/structure/buoy) || istype(O, /obj/structure/fishing_cage))
 		var/obj/structure/S = O
 		S.update_icon()
