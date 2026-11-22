@@ -300,6 +300,39 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual([1811, 1812, 1813, 1814], [slots[r]['port'] for r in sorted(slots)])
         self.assertEqual([1831, 1832, 1833, 1834], [slots[r]['transfer_port'] for r in sorted(slots)])
 
+    def test_the_host_adds_a_slot_whenever_the_coordinator_asks(self):
+        # Val (2026-11-22): how many lands and faction islands exist or run is never capped.
+        self.group['transfers'] = True
+        self.group['regions'][1].update(id='far1', name='Far Land 1', kind='EXPEDITION', map=shard_group.EXPEDITION_SLOT_MAP)
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        self.assertIsNone(shard_group.grow_expeditions(group, self.machine), 'nothing asked, nothing added')
+        wish = shard_group.expedition_slots.slots_dir(group) / 'grow' / 'request.json'
+        wish.parent.mkdir(parents=True)
+        wish.write_text('{"at": 1, "slots": 1}')
+        launched = []
+        shard_group.serve_expeditions(group, start=lambda argv, cwd, log: launched.append(argv), platform=self.machine)
+        self.assertIn('expedition-grow', launched[0], 'the host pass hands it to a worker')
+        answer = shard_group.grow_expeditions(group, self.machine)
+        self.assertEqual('far2', answer['region'])
+        self.assertFalse(wish.exists())
+        written = {r['id']: r for r in json.loads(self.path.read_text())['regions']}
+        self.assertEqual(('EXPEDITION', shard_group.EXPEDITION_SLOT_MAP), (written['far2']['kind'], written['far2']['map']))
+        ports = [p for r in written.values() for p in (r.get('port'), r.get('transfer_port')) if p]
+        self.assertEqual(len(ports), len(set(ports)), 'its ports are its own')
+        self.assertNotIn(1714, (written['far2']['port'], written['far2'].get('transfer_port')))
+        self.assertTrue((self.base / 'regions' / 'far2' / '.git').exists())
+        self.assertFalse(self.machine.detached, 'nothing is started')
+        self.assertEqual(('far3', 'Far Land 3'), shard_group.next_expedition_slot(shard_group.load_group(self.path)))
+
+    def test_slots_do_not_count_against_the_region_cap(self):
+        core = [{'id': 'r%d' % n, 'name': 'R%d' % n, 'kind': 'SURFACE', 'port': 1800 + n, 'map': 'maps/a.dmm'} for n in range(32)]
+        slots = [{'id': 'far%d' % n, 'name': 'Far %d' % n, 'kind': 'EXPEDITION', 'port': 2000 + n, 'map': shard_group.EXPEDITION_SLOT_MAP}
+                 for n in range(1, 41)]
+        self.group['regions'] = core + slots
+        self.group['mainland'] = 'r0'
+        self.write_group()
+
     def test_add_regions_only_for_earth(self):
         with self.assertRaisesRegex(shard_group.Refused, 'does not host Earth'):
             shard_group.add_regions(self.write_group(), platform=self.machine)

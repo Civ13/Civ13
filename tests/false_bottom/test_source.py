@@ -65,7 +65,12 @@ class FalseBottomSource(unittest.TestCase):
     def test_region_travel_drops_empty_compartment_and_blocks_full_one(self):
         blockers = body(TRAVEL, '/proc/region_travel_bag_blockers(')
         self.assertIn('istype(A, /obj/false_bottom) && !length(A.contents)', blockers)
-        self.assertIn('B.shown_contents_count() > REGION_TRAVEL_BAG_ITEMS_MAX', TRAVEL)
+        bag = body(TRAVEL, '/proc/region_travel_bag_kind(')
+        self.assertIn('var/shown_count = B.shown_contents_count()', bag)
+        self.assertIn('var/atom/compartment = B.false_bottom()', bag)
+        self.assertIn('if(A != compartment && (A in leave_behind)) shown_count--', bag)
+        self.assertLess(bag.index('shown_count > REGION_TRAVEL_BAG_ITEMS_MAX'), bag.index('var/list/held'))
+        self.assertIn('length(region_travel_bag_blockers(B, leave_behind))', bag)
 
 
 if __name__ == '__main__':

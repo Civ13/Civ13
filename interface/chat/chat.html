@@ -737,6 +737,22 @@
             font-size: 0.9em;
         }
 
+        .chat-translate-offer {
+            margin-left: 6px;
+            font-size: 0.85em;
+            color: #a68b7d;
+        }
+
+        .chat-translate-offer button {
+            background: none;
+            border: none;
+            color: #7fb48f;
+            font: inherit;
+            padding: 0;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
         .chat-translate-setup button {
             background-color: #a68b7d;
             color: #1c1c1c;
@@ -1560,10 +1576,11 @@
         }
 
         // Saved history keeps the original lines only.
+        const TRANSLATE_EXTRAS = '.chat-translation, .chat-translate-setup, .chat-translate-offer';
         function untranslatedHtml(div) {
-            if (!div.querySelector('.chat-translation, .chat-translate-setup')) return div.innerHTML;
+            if (!div.querySelector(TRANSLATE_EXTRAS)) return div.innerHTML;
             const copy = div.cloneNode(true);
-            copy.querySelectorAll('.chat-translation, .chat-translate-setup').forEach(function (el) { el.remove(); });
+            copy.querySelectorAll(TRANSLATE_EXTRAS).forEach(function (el) { el.remove(); });
             return copy.innerHTML;
         }
 
@@ -1582,17 +1599,75 @@
             return Promise.race([promise, new Promise(function (_, reject) { setTimeout(function () { reject(new Error('timeout')); }, ms); })]);
         }
 
+        // Common English chat words (chat_translate_english_words on the
+        // server). A plain-letter line where a quarter of the words are on
+        // this list reads as English.
+        const ENGLISH_WORDS = new Set(('the a an and or but is are was were be been am i you he she it we they me him her us them ' +
+            'my your his its our their this that these those to of in on at for with from by up down out into ' +
+            'what where when why how who which do does did dont have has had can cant will would should could not no ' +
+            'yes yeah ok okay hi hey hello thanks thank please lol go come get got need want know just here there now ' +
+            'im whats lets some all any one if so too very').split(' '));
+        function looksEnglish(text) {
+            if (/[^\x00-\x7f]/.test(text)) return false;
+            const words = text.toLowerCase().match(/[a-z']+/g) || [];
+            let common = 0;
+            words.forEach(function (w) { if (ENGLISH_WORDS.has(w.replace(/'/g, ''))) common++; });
+            return words.length > 0 && common * 4 >= words.length;
+        }
+
         function queueTranslation(div, type) {
-            if (!translatePrefs.enabled || !(translateApi || serverTranslate)) return;
+            if (!(translateApi || serverTranslate)) return;
             const text = translationSource(div, type);
             if (!text || text.length > TRANSLATE_MAX_CHARS) return;
             // Letters outside the Latin script carry more each (你好 is a whole greeting).
             const letters = (text.match(/[A-Za-zÀ-￿]/g) || []).length + (text.match(/[Ͱ-￿]/g) || []).length;
             if (letters < TRANSLATE_MIN_LETTERS) return;
-            // Under a burst, drop the oldest waiting line rather than fall behind.
-            if (translateQueue.length >= TRANSLATE_MAX_QUEUE) translateQueue.shift();
-            translateQueue.push({ div: div, text: text, gen: translateGeneration });
+            if (!translatePrefs.enabled) {
+                offerTranslation(div, text);
+                return;
+            }
+            enqueueTranslation({ div: div, text: text, gen: translateGeneration });
+        }
+
+        function enqueueTranslation(job) {
+            // Under a burst, drop the oldest waiting automatic line rather than
+            // fall behind. Lines the reader asked for go first and are kept.
+            if (translateQueue.length >= TRANSLATE_MAX_QUEUE) {
+                let drop = translateQueue.findIndex(function (j) { return !j.manual; });
+                if (drop < 0) drop = translateQueue.length - 1;
+                finishOffer(translateQueue.splice(drop, 1)[0]);
+            }
+            if (job.manual) translateQueue.splice(translateQueue.filter(function (j) { return j.manual; }).length, 0, job);
+            else translateQueue.push(job);
             pumpTranslations();
+        }
+
+        // With automatic translation off, a line that may be in another
+        // language gets a small Translate button; nothing is sent until the
+        // reader presses it (Val, 2026-11-22).
+        function offerTranslation(div, text) {
+            if (translatePrefs.lang === 'en' && looksEnglish(text)) return;
+            const box = document.createElement('span');
+            box.className = 'chat-translate-offer';
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.textContent = 'Translate';
+            button.title = 'Translate this line into ' + langName(translatePrefs.lang);
+            button.addEventListener('click', function () {
+                box.textContent = 'Translating...';
+                enqueueTranslation({ div: div, text: text, gen: translateGeneration, manual: true, offer: box });
+            });
+            box.appendChild(button);
+            const badge = div.lastElementChild;
+            if (badge && badge.classList.contains('chat-repeat')) div.insertBefore(box, badge);
+            else div.appendChild(box);
+        }
+
+        // A pressed Translate button that found nothing says so.
+        function finishOffer(job) {
+            if (!job.offer || !job.offer.isConnected) return;
+            if (job.div.querySelector('.chat-translation, .chat-translate-setup')) job.offer.remove();
+            else job.offer.textContent = 'No translation available.';
         }
 
         async function getDetector(userAsked) {
@@ -1643,12 +1718,11 @@
         }
 
         function stillWanted(job) {
-            return job.gen === translateGeneration && job.div.isConnected && translatePrefs.enabled;
+            return job.gen === translateGeneration && job.div.isConnected && (translatePrefs.enabled || job.manual);
         }
 
         function showTranslation(div, source, text) {
-            const old = div.querySelector('.chat-translation, .chat-translate-setup');
-            if (old) old.remove();
+            div.querySelectorAll(TRANSLATE_EXTRAS).forEach(function (el) { el.remove(); });
             const box = document.createElement('span');
             box.className = 'chat-translation';
             const label = document.createElement('span');
@@ -1754,12 +1828,13 @@
             try {
                 while (translateQueue.length) {
                     const job = translateQueue.shift();
-                    if (!stillWanted(job)) continue;
+                    if (!stillWanted(job)) { finishOffer(job); continue; }
                     try {
                         await translateJob(job);
                     } catch (e) {
                         // A slow or failed line keeps its original text.
                     }
+                    finishOffer(job);
                 }
             } finally {
                 translateBusy = false;
