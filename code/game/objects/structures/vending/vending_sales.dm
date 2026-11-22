@@ -18,6 +18,8 @@
 	var/max_products = 5
 	var/sound_type = 'sound/machines/vending_drop.ogg'
 	var/vendor_style = "modern"
+	var/tmp/mob/pending_buyer = null // who is paying for currently_vending
+	var/tmp/pending_amount = 0
 
 /obj/structure/vending/ex_act(severity)
 	return
@@ -36,6 +38,7 @@
 			else
 				to_chat(user, "You put \the [W] in the [src].")
 			qdel(W)
+			finish_pending_purchase(user)
 			return
 		else
 			if (!istype(W, /obj/item/stack/money/fiat))
@@ -51,6 +54,7 @@
 			else
 				to_chat(user, "You put \the [W] in the [src].")
 			qdel(W)
+			finish_pending_purchase(user)
 			return
 	else if (is_tool(W, TOOL_WRENCH))
 		if (owner != "Global" && find_company_member(user,owner))
@@ -78,39 +82,61 @@
 						stock(W, R, user)
 						return TRUE
 			//if it isn't in the list yet
-			if (product_records.len >= max_products)
-				var/datum/data/vending_product/free = null
-				for (var/datum/data/vending_product/R in product_records)
-					if (R.amount <= 0)
-						free=R
-				if (!free)
-					to_chat(user, "<span class='notice'>This [src] has too many different products already!</span>")
-					return FALSE
-				else
-					product_records -= free
-			user.unEquip(W)
-			var/atom/drop_loc = W.loc
-			var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
-			var/inputp = player_input(user, "What price do you want to set for \the [W]?", "Product Price", null, "num", null, FALSE)
-			// The prompt sleeps with the item on the floor; stock it only if it is
-			// still there, not after someone picked it up or it was stocked already.
-			if (QDELETED(W) || W.loc != drop_loc)
+			if (!product_slot_free())
+				to_chat(user, "<span class='notice'>This [src] has too many different products already!</span>")
 				return FALSE
-			if (!inputp)
-				inputp = 0
-			if (inputp < 0)
-				inputp = 0
-			product.price = inputp
-			if (istype(W, /obj/item/stack))
-				var/obj/item/stack/S = W
-				product.amount = S.amount
-				qdel(W)
-			else
-				if (W)
-					W.forceMove(src)
-			product_records.Add(product)
-			update_icon()
+			// Ask the price while the item is still in hand, then stock it only if the
+			// seller still holds it and still stands at the stall.
+			var/inputp = player_input(user, "What price do you want to set for \the [W]?", "Product Price", null, "num", null, FALSE)
+			if (QDELETED(src) || QDELETED(W) || W.loc != user || !in_range(src, user))
+				return FALSE
+			return add_product(W, inputp, user)
+
+// A free product row, reusing an emptied one when the stall is full.
+/obj/structure/vending/sales/proc/product_slot_free()
+	if (product_records.len < max_products)
+		return TRUE
+	for (var/datum/data/vending_product/R in product_records)
+		if (R.amount <= 0)
 			return TRUE
+	return FALSE
+
+// Lists a new product: the item moves into the stall (a stack becomes a count).
+/obj/structure/vending/sales/proc/add_product(obj/item/W, price, mob/user)
+	if (product_records.len >= max_products)
+		var/datum/data/vending_product/free = null
+		for (var/datum/data/vending_product/R in product_records)
+			if (R.amount <= 0)
+				free = R
+		if (!free)
+			if (user)
+				to_chat(user, "<span class='notice'>This [src] has too many different products already!</span>")
+			return FALSE
+		product_records -= free
+		qdel(free)
+	if (user && !user.unEquip(W))
+		return FALSE
+	if (!isnum(price) || price < 0)
+		price = 0
+	// The record consumes a stack, so read its size first.
+	var/stack_amount = 0
+	if (istype(W, /obj/item/stack))
+		var/obj/item/stack/S = W
+		stack_amount = S.amount
+	var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
+	product.price = price
+	if (stack_amount)
+		product.amount = stack_amount
+		if (!QDELETED(W))
+			qdel(W)
+	else if (!QDELETED(W) && W.loc != src)
+		W.forceMove(src)
+	product_records.Add(product)
+	if (user)
+		to_chat(user, "<span class='notice'>You put \the [product.product_name] up for sale at [price].</span>")
+	update_icon()
+	GLOB.nanomanager.update_uis(src)
+	return TRUE
 
 /** Management menu for owners to change the vendor name, adjust prices, remove stock, or change accepted currency. */
 /obj/structure/vending/sales/verb/Manage()
@@ -340,83 +366,12 @@
 					vend(R, user, inp)
 
 				else
-					var/mob/living/human/H = user
-					var/salestax = 0
-					if (map.ID != MAP_KANDAHAR)
-						if (H.civilization != "none")
-							salestax = (map.custom_civs[H.civilization][9]/100)*R.price
-					var/price_with_tax = R.price+salestax
-					currently_vending = R
-					if (moneyin < price_with_tax*inp)
-						status_message = "Please insert money to pay for the item."
-						status_error = FALSE
-					else
-						moneyin -= price_with_tax*inp
-						// The buyer pays price + sales tax once: the company keeps the
-						// price and the buyer's faction treasury gets the tax.
-						if (owner != "Global")
-							if (accepted_currency == "standard")
-								map.custom_company_value[owner] += R.price*inp
-								if (map.custom_civs[H.civilization])
-									map.custom_civs[H.civilization][5] += salestax*inp
-							else
-								if (!map.custom_company_fiat_value[owner])
-									map.custom_company_fiat_value[owner] = list()
-								if (!map.custom_company_fiat_value[owner][accepted_currency])
-									map.custom_company_fiat_value[owner][accepted_currency] = 0
-								map.custom_company_fiat_value[owner][accepted_currency] += R.price*inp
-								if (salestax > 0 && map.custom_civs[H.civilization])
-									var/list/civ = map.custom_civs[H.civilization]
-									if (civ.len < 11)
-										civ.len = 11
-									if (!istype(civ[11], /list))
-										civ[11] = list()
-									civ[11][accepted_currency] = (civ[11][accepted_currency] || 0) + salestax*inp
-						if (accepted_currency != "standard")
-							if (moneyin > 0)
-								new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
-						else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
-							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
-							D.amount = round(moneyin/D.value)
-							if (D.amount == 0)
-								qdel(D)
-						else if (map.ID == MAP_GULAG13)
-							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
-							D.amount = round(moneyin/D.value)
-							if (D.amount == 0)
-								qdel(D)
-						else if (map.ID == MAP_PEPELSIBIRSK)
-							var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
-							D.amount = round(moneyin/D.value)
-							if (D.amount == 0)
-								qdel(D)
-						else if (map.ID == MAP_KANDAHAR)
-							var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
-							D.amount = round(moneyin/D.value)
-							if (D.amount == 0)
-								qdel(D)
-						else
-							if (moneyin > 0 && moneyin <= 3)
-								var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-								NM.amount = moneyin/NM.value
-								if (NM.amount <= 0)
-									qdel(NM)
-							else if (moneyin > 3 && moneyin <= 40)
-								var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-								NM.amount = moneyin/NM.value
-								if (NM.amount <= 0)
-									qdel(NM)
-							else
-								var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-								NM.amount = moneyin/NM.value
-								if (NM.amount <= 0)
-									qdel(NM)
-						moneyin = 0
-						vend(R, user, inp)
-						GLOB.nanomanager.update_uis(src)
+					complete_purchase(R, user, inp)
 
 		else if (action == "cancelpurchase")
 			currently_vending = null
+			pending_buyer = null
+			pending_amount = 0
 
 		else if (action == "remove_money")
 			if (accepted_currency != "standard")
@@ -455,6 +410,109 @@
 		playsound(user.loc, 'sound/machines/button.ogg', 100, TRUE)
 		GLOB.nanomanager.update_uis(src)
 
+
+// A buyer who pressed Buy before depositing enough finishes the purchase by
+// depositing the rest.
+/obj/structure/vending/sales/proc/finish_pending_purchase(mob/user)
+	if (!currently_vending || pending_buyer != user || !vend_ready)
+		GLOB.nanomanager.update_uis(src)
+		return FALSE
+	var/datum/data/vending_product/R = currently_vending
+	if (!(R in product_records) || R.amount < pending_amount || pending_amount < 1)
+		currently_vending = null
+		pending_buyer = null
+		pending_amount = 0
+		GLOB.nanomanager.update_uis(src)
+		return FALSE
+	. = complete_purchase(R, user, pending_amount)
+	GLOB.nanomanager.update_uis(src)
+
+// Charges a buyer for inp of product R from the money already deposited and
+// hands the goods over. Without enough money the purchase waits, and the next
+// deposit from the same buyer completes it.
+/obj/structure/vending/sales/proc/complete_purchase(datum/data/vending_product/R, mob/user, inp)
+	var/mob/living/human/H = ishuman(user) ? user : null
+	var/list/civ_entry = null
+	if (H && H.civilization && H.civilization != "none" && map.custom_civs)
+		civ_entry = map.custom_civs[H.civilization]
+	var/salestax = 0
+	if (map.ID != MAP_KANDAHAR && islist(civ_entry) && civ_entry.len >= 9 && isnum(civ_entry[9]))
+		salestax = (civ_entry[9]/100)*R.price
+	var/price_with_tax = R.price+salestax
+	currently_vending = R
+	pending_buyer = user
+	pending_amount = inp
+	if (moneyin < price_with_tax*inp)
+		status_message = "Please insert [price_with_tax*inp] to pay for the item."
+		status_error = FALSE
+		return FALSE
+	else
+		moneyin -= price_with_tax*inp
+		// The buyer pays price + sales tax once: the company keeps the
+		// price and the buyer's faction treasury gets the tax.
+		if (owner != "Global")
+			if (accepted_currency == "standard")
+				map.custom_company_value[owner] += R.price*inp
+				if (islist(civ_entry))
+					civ_entry[5] += salestax*inp
+			else
+				if (!map.custom_company_fiat_value[owner])
+					map.custom_company_fiat_value[owner] = list()
+				if (!map.custom_company_fiat_value[owner][accepted_currency])
+					map.custom_company_fiat_value[owner][accepted_currency] = 0
+				map.custom_company_fiat_value[owner][accepted_currency] += R.price*inp
+				if (salestax > 0 && islist(civ_entry))
+					var/list/civ = civ_entry
+					if (civ.len < 11)
+						civ.len = 11
+					if (!istype(civ[11], /list))
+						civ[11] = list()
+					civ[11][accepted_currency] = (civ[11][accepted_currency] || 0) + salestax*inp
+		if (accepted_currency != "standard")
+			if (moneyin > 0)
+				new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
+		else if (map.ID == MAP_THE_ART_OF_THE_DEAL)
+			var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
+			D.amount = round(moneyin/D.value)
+			if (D.amount == 0)
+				qdel(D)
+		else if (map.ID == MAP_GULAG13)
+			var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+			D.amount = round(moneyin/D.value)
+			if (D.amount == 0)
+				qdel(D)
+		else if (map.ID == MAP_PEPELSIBIRSK)
+			var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
+			D.amount = round(moneyin/D.value)
+			if (D.amount == 0)
+				qdel(D)
+		else if (map.ID == MAP_KANDAHAR)
+			var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
+			D.amount = round(moneyin/D.value)
+			if (D.amount == 0)
+				qdel(D)
+		else
+			if (moneyin > 0 && moneyin <= 3)
+				var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
+				NM.amount = moneyin/NM.value
+				if (NM.amount <= 0)
+					qdel(NM)
+			else if (moneyin > 3 && moneyin <= 40)
+				var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
+				NM.amount = moneyin/NM.value
+				if (NM.amount <= 0)
+					qdel(NM)
+			else
+				var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
+				NM.amount = moneyin/NM.value
+				if (NM.amount <= 0)
+					qdel(NM)
+		moneyin = 0
+		pending_buyer = null
+		pending_amount = 0
+		vend(R, user, inp)
+		GLOB.nanomanager.update_uis(src)
+	return TRUE
 
 //VENDING MACHINES
 /obj/structure/vending/sales/food
@@ -677,6 +735,15 @@
 	prices = list()
 
 ////MARKET STALL AND VENDORS CUSTOM OBJECTS////
+// The owning company's colour; a company missing from the colour list (one
+// dissolved, or not loaded yet) falls back to the global colours instead of
+// a runtime that would leave the stall invisible.
+/obj/structure/vending/sales/proc/company_color(index)
+	var/list/colors = map && map.custom_company_colors ? map.custom_company_colors[owner] : null
+	if (!islist(colors) || colors.len < index)
+		return index == 1 ? "#000000" : "#FFFFFF"
+	return colors[index]
+
 /obj/structure/vending/sales/market_stall
 	name = "market stall"
 	desc = "A market stall selling an assortment of goods."
@@ -690,17 +757,17 @@
 	invisibility = 101
 	spawn(3)
 		overlay_primary = image(icon = icon, icon_state = "[icon_state]_overlay_primary")
-		overlay_primary.color = map.custom_company_colors[owner][1]
+		overlay_primary.color = company_color(1)
 		overlay_secondary = image(icon = icon, icon_state = "[icon_state]_overlay_secondary")
-		overlay_secondary.color = map.custom_company_colors[owner][2]
+		overlay_secondary.color = company_color(2)
 		update_icon()
 		invisibility = 0
 
 /obj/structure/vending/sales/market_stall/update_icon()
 	overlays.Cut()
 	if (overlay_primary && overlay_secondary)
-		overlay_primary.color = map.custom_company_colors[owner][1]
-		overlay_secondary.color = map.custom_company_colors[owner][2]
+		overlay_primary.color = company_color(1)
+		overlay_secondary.color = company_color(2)
 		overlays += overlay_primary
 		overlays += overlay_secondary
 	var/ct1 = 0
@@ -729,17 +796,17 @@
 	invisibility = 101
 	spawn(3)
 		overlay_primary = image(icon = icon, icon_state = "[icon_state]_overlay_primary")
-		overlay_primary.color = map.custom_company_colors[owner][1]
+		overlay_primary.color = company_color(1)
 		overlay_secondary = image(icon = icon, icon_state = "[icon_state]_overlay_secondary")
-		overlay_secondary.color = map.custom_company_colors[owner][2]
+		overlay_secondary.color = company_color(2)
 		update_icon()
 		invisibility = 0
 
 /obj/structure/vending/sales/vending/update_icon()
 	overlays.Cut()
 	if (overlay_primary && overlay_secondary)
-		overlay_primary.color = map.custom_company_colors[owner][1]
-		overlay_secondary.color = map.custom_company_colors[owner][2]
+		overlay_primary.color = company_color(1)
+		overlay_secondary.color = company_color(2)
 		overlays += overlay_primary
 		overlays += overlay_secondary
 		overlays += image(icon = icon, icon_state = "[icon_state]_base")
