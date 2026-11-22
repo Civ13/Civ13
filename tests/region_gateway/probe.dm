@@ -110,13 +110,33 @@ var/global/gateway_probe_runtime_error = FALSE
 	tutorial["state"] = "UP"
 	gateway_probe_check("practice/offered", findtext(region_gateway_practice_link(), "gateway_practice=1") && tutorial_region_peer() == "tutorial" && practice_room_available())
 
-	// The hub entry describes the lands behind it.
-	shard_group.peers["gaia"]["map"] = "Gaia"
-	shard_group.peers["gaia"]["players"] = 3
-	shard_group.peers["northamerica"]["players"] = 2
-	gateway_probe_check("players/across_lands", region_gateway_players() == 5)
+	// Unchecked peers are not a confirmed zero at startup.
+	gateway_probe_check("hub/unchecked", findtext(region_gateway_hub_status(), "unavailable"))
+	shard_group.record("gaia", list("group" = "earth", "region" = "gaia", "map" = "Gaia", "players" = 3), world.time)
+	shard_group.record("northamerica", list("group" = "earth", "region" = "northamerica", "players" = 2), world.time)
+	shard_group.record("tutorial", list("group" = "earth", "region" = "tutorial", "players" = 1), world.time)
+	var/list/population = region_gateway_population()
+	gateway_probe_check("players/across_regions", population["players"] == 6 && population["unknown"] == 0)
 	var/hub = region_gateway_hub_status()
-	gateway_probe_check("hub/mainland_and_players", findtext(hub, "Mainland:") && findtext(hub, "Gaia") && findtext(hub, "5 across the lands"))
+	gateway_probe_check("hub/mainland_and_players", findtext(hub, "Mainland:") && findtext(hub, "Gaia") && findtext(hub, "Players across regions:</b> 6<br>"))
+
+	shard_group.record_sleeping("tutorial", list("state" = "asleep"), world.time)
+	gateway_probe_check("players/sleeping_zero", region_gateway_population()["players"] == 5 && region_gateway_population()["unknown"] == 0)
+	shard_group.record_sleeping("northamerica", list("state" = "stopped"), world.time)
+	gateway_probe_check("players/stopped_zero", region_gateway_population()["players"] == 3 && region_gateway_population()["unknown"] == 0)
+	shard_group.record_sleeping("tutorial", list("state" = "waking"), world.time)
+	gateway_probe_check("hub/partial_waking", findtext(region_gateway_hub_status(), "at least 3 (1 region unconfirmed)"))
+	shard_group.record("northamerica", list("group" = "other", "region" = "northamerica", "players" = 50), world.time)
+	gateway_probe_check("hub/partial_mismatch", findtext(region_gateway_hub_status(), "at least 3 (2 regions unconfirmed)"))
+	shard_group.record("gaia", list("group" = "earth", "region" = "gaia", "players" = 99), world.time - (4 MINUTES))
+	gateway_probe_check("hub/stale_unavailable", region_gateway_population()["players"] == 0 && findtext(region_gateway_hub_status(), "unavailable"))
+	shard_group.record("gaia", list("group" = "earth", "region" = "gaia", "players" = -5), world.time)
+	shard_group.record("northamerica", list("group" = "earth", "region" = "northamerica", "players" = 0.5), world.time)
+	gateway_probe_check("players/invalid_ignored", region_gateway_population()["unknown"] == 3)
+	shard_group.record("gaia", list("group" = "earth", "region" = "gaia", "players" = 0), world.time)
+	shard_group.record_sleeping("northamerica", list("state" = "asleep", "cold" = TRUE), world.time)
+	shard_group.record_sleeping("tutorial", list("state" = "stopped"), world.time)
+	gateway_probe_check("hub/confirmed_zero", findtext(region_gateway_hub_status(), "Players across regions:</b> 0<br>"))
 
 	// Seen from a land: no Join link, no trail, nobody sent there.
 	gateway_probe_check("config/land_view", shard_group.configure(gateway_probe_group("gaia")) && !region_gateway_here())

@@ -55,7 +55,9 @@
 	// A gateway (region_gateway.dm) is empty by design; say who plays behind it.
 	if(region_gateway_here())
 		.["gateway"] = TRUE
-		.["group_players"] = region_gateway_players()
+		var/list/population = region_gateway_population()
+		.["group_players"] = population["players"]
+		.["group_players_unknown_regions"] = population["unknown"]
 	//.["revision"] = GLOB.revdata.commit
 	//.["revision_date"] = GLOB.revdata.date
 	// Whether the BYOND hub lists this world right now (hub.dm, configuration.dm).
