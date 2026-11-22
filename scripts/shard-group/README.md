@@ -564,6 +564,27 @@ thaw takes seconds, so a shorter wait would put a land in cold storage while a
 player who just logged out of the land next door may still return. Regions
 outside the table (TDM, nomads groups) are left alone.
 
+**Daily maintenance** (`maintenance`, group key; `daily_maintenance.py`): once a
+day every region moves onto one build together. `{"enabled": true, "time":
+"03:00", "warning_minutes": 10, "late_minutes": 90}`; `time` is the host's local
+time (the quietest hours on the Earth host were 1-5 AM Eastern). It is on by
+default only for the live group (`live: true`) that saves and fetches a remote,
+and off for TDM groups, which update between rounds. The host service starts one
+detached run per day at the time (`maintenance --scheduled`), or up to
+`late_minutes` later if the host was off or busy. The run resolves the group
+revision once and pins it in `<root>/.maintenance/pin.json`, so every stage and
+handover (and any empty-region update meanwhile) builds that commit. It stages
+every region that is not on it; if any build fails, no region is touched. It then
+sends every occupied running region the same countdown (lifecycle
+`planned_notice`, `warning_minutes`), hands each running region over in turn
+(a busy one is asked again later, so it never holds the others), and installs
+the build into asleep, cold and stopped regions without waking them
+(`update_offline`). An admin's **Cancel Planned Restart** keeps that region on
+its build for the day. The gateway is never staged or moved. The result per
+region is in `<root>/.maintenance/state.json`, `maintenance-status` and the
+group status; the launcher's **Daily maintenance...** sets it and **Run daily
+maintenance now** starts a run at once.
+
 **Update when empty** (`update_when_empty`, group key, default `true`): the host
 service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
 As soon as an awake region that saves is empty and has saved since its last

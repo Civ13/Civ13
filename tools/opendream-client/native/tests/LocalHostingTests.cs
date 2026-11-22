@@ -404,6 +404,23 @@ static class LocalHostingTests {
         Require(HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true) && HostSettings.UpdateWhenEmpty(host.Control!.Group!)
             && HostSettings.FollowsRemote(host.Control!.Group!) && !HostSettings.SetUpdateWhenEmpty(host.Control!.Group!, true), "update when empty follows origin/master once");
         Require(HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.Locations(host.Control!.Group!).Count == 2, "update when empty kept other settings");
+        // Daily maintenance: off for a group that is not the live one, on at 03:00 for the live group that follows a remote.
+        Require(HostSettings.DailyMaintenance(host.Control!.Group!) is { Enabled: false, Time: "03:00", WarningMinutes: 10, Persistent: true }, "maintenance off for a test group");
+        HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "04:30", 15);
+        Require(HostSettings.DailyMaintenance(host.Control!.Group!) is { Enabled: true, Time: "04:30", WarningMinutes: 15 }
+            && HostSettings.ShutdownWarningSeconds(host.Control!.Group!) == 300 && HostSettings.UpdateWhenEmpty(host.Control!.Group!), "maintenance saved, other settings kept");
+        Reject(() => HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "4:30", 15), "a time that is not HH:MM");
+        Reject(() => HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "24:00", 15), "an hour past 23");
+        Reject(() => HostSettings.SetDailyMaintenance(host.Control!.Group!, true, "03:00", 61), "a countdown over an hour");
+        using (var daily = JsonDocument.Parse("{\"enabled\": true, \"persistent\": true, \"next\": \"2026-11-23 03:00\", \"running\": false, "
+                + "\"last\": {\"day\": \"2026-11-22\", \"phase\": \"done with problems\", \"revision\": \"" + new string('b', 40) + "\", "
+                + "\"result\": {\"problems\": {\"moon\": \"handover failed (the old world plays on): low memory\"}}}}"))
+            Require(LocalHosting.DescribeMaintenance(daily.RootElement) == "Daily maintenance next at 2026-11-23 03:00. Last run 2026-11-22 onto bbbbbbbb: "
+                + "done with problems: moon (handover failed (the old world plays on): low memory).", "maintenance status line");
+        using (var tdm = JsonDocument.Parse("{\"enabled\": false, \"persistent\": false}"))
+            Require(LocalHosting.DescribeMaintenance(tdm.RootElement).Contains("between rounds"), "TDM groups do not use daily maintenance");
+        Require(LocalHosting.ParseGroup("maintenance", 0, "{\"accepted\": true, \"action\": \"maintenance\", \"pid\": 5, \"ok\": true}").Message.StartsWith("Daily maintenance started"),
+            "run maintenance now answer");
         // Start region: the mainland unless start_region names another; never a kind nobody can start in.
         File.WriteAllText(groupConfig, "{\"mainland\": \"northamerica\", \"shutdown_warning_seconds\": 60, \"regions\": [{\"id\": \"northamerica\", \"name\": \"North America\", \"kind\": \"SURFACE\"}, "
             + "{\"id\": \"gaia\", \"name\": \"Gaia\", \"kind\": \"SURFACE\"}, {\"id\": \"orbit\", \"name\": \"Orbit\", \"kind\": \"ORBIT\"}, {\"id\": \"tutorial\", \"kind\": \"TUTORIAL\"}, "

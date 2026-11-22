@@ -78,6 +78,7 @@ import group_fresh_world  # noqa: E402
 import agent_runs  # noqa: E402
 import group_ports  # noqa: E402
 import underground_migration  # noqa: E402
+import daily_maintenance  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
@@ -85,7 +86,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
-                 'translator-status', 'translator-start', 'translator-stop',
+                 'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status',
                  'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
@@ -559,8 +560,12 @@ def check_group(group, path):
                 raise ValueError('chat_translator %s must be a non-empty string' % key)
         settings.setdefault('node', 'node')
         settings.setdefault('npm', 'npm.cmd' if os.name == 'nt' else 'npm')
+    # Daily maintenance (daily_maintenance.py): every region onto one build at a set time of day.
+    daily_maintenance.check_settings(group)
     resolve_standby_ports(group)
     group['_path'] = str(Path(path).resolve())
+    # While a maintenance run stands, every reader builds the one commit it pinned.
+    daily_maintenance.apply_pin(group)
     return group
 
 
@@ -890,9 +895,12 @@ class RegionHost(Host):
         read at each action so a change applies without a setup; the region's own config if
         the group config cannot be read."""
         try:
-            return load_group(self.config['group_config'])['shutdown_warning_seconds']
+            group = load_group(self.config['group_config'])
         except (OSError, ValueError, KeyError):
             return super().shutdown_warning()
+        # Players the daily maintenance already counted down get a short reminder only.
+        reminder = daily_maintenance.handover_warning(group, self.config['region'])
+        return group['shutdown_warning_seconds'] if reminder is None else reminder
 
     def status(self):
         report = super().status()
@@ -3947,6 +3955,13 @@ def supervise(group, start=detach):
             started['player_activity'] = read
     except (OSError, ValueError, KeyError, sqlite3.Error) as error:
         started['player_activity_error'] = str(error)[:300]
+    # Daily maintenance (daily_maintenance.py): today's run starts at its time; a side job too.
+    try:
+        day = daily_maintenance.ensure(_THIS, group, start)
+        if day:
+            started['maintenance'] = day
+    except (OSError, ValueError, KeyError) as error:
+        started['maintenance_error'] = str(error)[:300]
     # The validator is a side job: its failure must not keep the helpers down.
     try:
         started.update(ensure_save_validation(group, start))
@@ -4051,6 +4066,10 @@ def group_status(group, only=None, view=region_view, platform=None):
         entries = [one(pair) for pair in pairs]
     report = {region['id']: entry for (region, _host), entry in zip(pairs, entries)}
     result = {'group': group['group'], 'regions': report, 'mainland': group['mainland'], 'start_region': group['start_region']}
+    try:
+        result['maintenance'] = daily_maintenance.status(_THIS, group)
+    except (OSError, ValueError, KeyError) as error:
+        result['maintenance'] = {'error': str(error)[:300]}
     if group['transfers']:
         result['coordinator'] = coordinator_pid(group) is not None
         # Land stages and readiness (docs/land-stages.md), read-only from the
@@ -4335,6 +4354,8 @@ def main(argv=None):
     parser.add_argument('--ckey', help='records: every record about one player key; accounts: the player key to look up')
     parser.add_argument('--search', help='records: records whose key or text holds this')
     parser.add_argument('--export', help='records: write every record to this JSON file')
+    parser.add_argument('--scheduled', action='store_true', help=argparse.SUPPRESS)  # maintenance: the host service's daily run
+    parser.add_argument('--run', action='store_true', help=argparse.SUPPRESS)  # maintenance: the detached run of Run maintenance now
     parser.add_argument('--worker', nargs=2, metavar=('ACTION', 'OPERATION'), help=argparse.SUPPRESS)
     parser.add_argument('--ports-worker', metavar='OPERATION', help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
@@ -4408,6 +4429,17 @@ def main(argv=None):
             result = group_epoch(group, args.epoch)
         elif args.action == 'update-offline':
             result = update_offline(group, args.region)
+        elif args.action in ('maintenance', 'maintenance-status'):
+            # Daily maintenance (daily_maintenance.py): the whole group or nothing.
+            if args.region:
+                raise Refused('daily maintenance moves the whole group onto one build; leave out --region')
+            if args.action == 'maintenance-status':
+                result = daily_maintenance.status(this, group)
+            elif args.scheduled or args.run:
+                # The detached run itself (the host service's daily start, or Run maintenance now).
+                result = daily_maintenance.run(this, group, scheduled=args.scheduled)
+            else:
+                result = daily_maintenance.request(this, group, lambda argv, cwd, log: detach(argv + ['--run'], cwd, log))
         elif args.action == 'players':
             result = region_players(group, args.region)
         elif args.action == 'send-players':
