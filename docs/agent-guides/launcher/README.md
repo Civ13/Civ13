@@ -11,6 +11,13 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-22: Launcher and host audit -->
+Launcher 1.5.41 (audit): a flag or count that started in a world is read with `Flag`/`Count` in LocalHosting.cs, never
+`Bool`/`GetInt32` (DM writes TRUE as 1, and a float count threw). Group config writes go through
+`HostSettings.WriteGroup` (retries while the host has the file open). `GroupPorts.Step` carries its own limit. Host side:
+see "A lock dies with its holder" in scripts/gaia-host/README.md; group status asks regions in parallel and reports a
+region it cannot read as `state: unknown` with `error`, which the board shows as "Status unavailable".
+
 <!-- 2026-11-22: Send hold and follow -->
 Launcher 1.5.40: Val asked (2026-11-22) why Send was greyed out in **Players…**, and that Send freeze the chosen
 players at once until their data is secured. The world now holds them on a real `send_players`, checks them again and

@@ -278,8 +278,24 @@ and every Gaia start crashed on the timeout, so these rules hold:
   cannot redirect it. An unverified process is left running: Force stop answers
   "nothing was ended" and names the process to end by hand.
 
+- **A lock dies with its holder.** `action.lock` and a region's `stage.lock`
+  are held by a detached worker, which records its pid and start time
+  (`worker` in `operation.json` and `stage.json`). A lock whose worker is gone
+  (it ended, never started within two minutes, or the machine restarted since
+  the lock was taken) is released the next time status, a request or the host
+  service looks, and its action is recorded as failed with "was interrupted".
+  A helper's pid file (relay, coordinator, help bridge, translator) and a group
+  slot (`compile.lock`, `handover.lock`) written before the machine last booted
+  name nothing that runs now. Before this a restart or a killed worker left a
+  region saying "another action is still running" until someone deleted the
+  file, and a reused pid kept the relay or coordinator from being started.
+- **Status files survive a reader.** Windows refuses replacing or deleting a
+  file another process has open, and the launcher and host service read these
+  every few seconds, so every status write and marker removal goes through
+  `replace_file` or `remove_file`, which try again for a second.
+
 `tests/gaia_host/test_gaia_host.py` (`ProcessToolGuardTests`) fails when host
-scripts shell out to those tools again.
+scripts shell out to those tools again; `StaleLockTests` covers the locks.
 
 ## Routing relay (`relay.py`)
 

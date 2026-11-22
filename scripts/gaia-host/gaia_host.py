@@ -57,6 +57,7 @@ import struct
 import subprocess
 import sys
 import time
+import traceback
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'nomads-lifecycle'))
@@ -82,6 +83,8 @@ BELOW_NORMAL_PRIORITY = 0x00004000  # Windows: staged compiles yield to the runn
 # default only other addresses wake a frozen server.
 # Trimming hands a frozen server's memory to the pagefile, but paging ~2 GB back
 # in slows the wake past the launcher's patience, so it is opt-in.
+# A detached worker records itself within seconds; an accepted action with none after this long has no worker.
+WORKER_START_SECONDS = 120
 FREEZE_DEFAULTS = {'freeze_idle_minutes': 15, 'freeze_trim_memory': False, 'wake_ignore': ['127.0.0.1', '::1'],
                    'wake_poll_seconds': 0.2,
                    # serve: the doorman port the launcher asks before touching a game port
@@ -455,6 +458,16 @@ class Platform:
         """Remote addresses with an established connection to the port."""
         return [row[1] for row in self.tcp_rows() if row[0] == port and row[2] == 'ESTABLISHED']
 
+    def worker_alive(self, pid, started=None):
+        """Whether pid still is the Python worker that recorded itself at `started`.
+
+        A pid alone is not enough: Windows hands a dead worker's pid to the next process
+        that starts. A process that cannot be inspected counts as the worker."""
+        if not self.alive(pid):
+            return False
+        identity = process_safety.identity(pid)
+        return identity is None or process_safety.python_expect(born_before=started).problem(identity) is None
+
     def alive(self, pid):
         if os.name == 'nt':
             kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
@@ -539,6 +552,52 @@ def replace_file(source, target, attempts=20, delay=0.05):
             if attempt == attempts - 1:
                 raise
             time.sleep(delay)
+
+
+def remove_file(path, attempts=20, delay=0.05, quiet=False):
+    """Delete a file if it exists, retried while Windows refuses it with access denied
+    (another process is reading it this instant). quiet: answer False instead of raising
+    when it could not be removed."""
+    for attempt in range(attempts):
+        try:
+            Path(path).unlink(missing_ok=True)
+            return True
+        except PermissionError:
+            if attempt == attempts - 1:
+                if quiet:
+                    return False
+                raise
+            time.sleep(delay)
+        except OSError:
+            if quiet:
+                return False
+            raise
+
+
+def release_lock(lock, expected):
+    """Remove a lock file only if it still holds `expected`; True when it was removed.
+
+    Reading it and then deleting it could delete a lock someone else took in between. The
+    file is renamed aside first, which only one caller wins, and looked at there; a lock
+    that turns out to be another one is put back without replacing anything."""
+    lock = Path(lock)
+    aside = lock.with_name('%s.%d.released' % (lock.name, os.getpid()))
+    try:
+        os.rename(lock, aside)
+    except OSError:
+        return False
+    try:
+        if aside.read_text().strip() == expected:
+            return True
+        try:
+            os.link(aside, lock)  # never replaces a lock taken meanwhile
+        except OSError:
+            pass
+        return False
+    except OSError:
+        return False
+    finally:
+        remove_file(aside, quiet=True)
 
 
 def sha256(path):
@@ -698,12 +757,31 @@ class Host:
     # -- state -------------------------------------------------------------
     def record(self, **values):
         self.state_dir.mkdir(parents=True, exist_ok=True)
-        state = self.read_state()
+        state = self.read_state_settled()
         state.update(values, updated=int(self.platform.now()))
-        temporary = self.state_file.with_suffix('.tmp')
+        # A name of its own: a forced stop and the worker it interrupts both record.
+        temporary = self.state_file.with_name('operation.%d.tmp' % os.getpid())
         temporary.write_text(json.dumps(state, indent=1, sort_keys=True), encoding='utf-8')
-        os.replace(temporary, self.state_file)
+        try:
+            replace_file(temporary, self.state_file)
+        except OSError:
+            remove_file(temporary)
+            raise
         return state
+
+    def read_state_settled(self):
+        """read_state for a writer: an unreadable file is read again before it counts as
+        empty, since the launcher holding it open for an instant must not make the next
+        record drop the action, operation and worker it carries."""
+        for attempt in range(10):
+            try:
+                value = json.loads(self.state_file.read_text(encoding='utf-8'))
+                return value if isinstance(value, dict) else {}
+            except (FileNotFoundError, ValueError):
+                return {}  # writes replace the file whole, so bad JSON will not get better
+            except OSError:
+                time.sleep(0.05)
+        return {}
 
     def read_json(self, path):
         try:
@@ -714,9 +792,71 @@ class Host:
 
     def read_state(self):
         try:
-            return json.loads(self.state_file.read_text(encoding='utf-8'))
+            value = json.loads(self.state_file.read_text(encoding='utf-8'))
         except (OSError, ValueError):
             return {}
+        return value if isinstance(value, dict) else {}
+
+    # -- the action lock -----------------------------------------------------
+    # action.lock is held from an accepted request until its detached worker ends. Nothing
+    # removed it when that worker never ended properly (the machine lost power or restarted
+    # mid-action, the worker was killed or could not start): the region then said "another
+    # action is still running" to every request, and the watchdog, which leaves a busy
+    # region alone, never restarted it. Only a cold start cleared a lock from before a
+    # reboot. So the worker records itself, and a lock whose worker is gone is released.
+    def note_worker(self):
+        self.record(worker={'pid': os.getpid(), 'started': int(time.time())})
+
+    def stale_lock(self):
+        """(why, operation) when the action lock is held by nobody, else None (no lock, or
+        its worker runs)."""
+        try:
+            operation = self.lock.read_text().strip()
+            held_since = self.lock.stat().st_mtime
+        except OSError:
+            return None
+        if self.booted_since(held_since):
+            return 'the machine restarted', operation
+        state = self.read_state()
+        if not operation or state.get('operation') != operation:
+            return None  # being taken right now, or held by a caller that works in its own process
+        worker = state.get('worker')
+        if isinstance(worker, dict) and type(worker.get('pid')) is int:
+            alive = getattr(self.platform, 'worker_alive', None)
+            return ('its worker ended', operation) if alive and not alive(worker['pid'], worker.get('started')) else None
+        if state.get('phase') == 'accepted' and time.time() - held_since > WORKER_START_SECONDS:
+            return 'its worker never started', operation
+        return None
+
+    def busy(self):
+        """Whether an action holds the lock. A lock nobody holds any more is released, and
+        the action it belonged to is recorded as failed.
+
+        Status, requests and the host service can all get here at once, so the order
+        matters: the failure is recorded while the stale lock still keeps new requests out
+        (afterwards it could land on the next action's record), and the lock is then taken
+        away by rename, which only one caller wins, and only removed once it is seen to be
+        the stale one. A lock a new request took in between is put back."""
+        if not self.lock.exists():
+            return False
+        stale = self.stale_lock()
+        if not stale:
+            return True
+        reason, operation = stale
+        try:
+            state = self.read_state()
+            if state.get('operation') == operation and state.get('phase') not in ('done', 'failed', 'killed'):
+                self.record(phase='failed', error='%s was interrupted (%s) and did not finish; check the region and run it again'
+                            % (state.get('action') or 'the last action', reason))
+        except OSError:
+            return True  # not settled: the lock stays, and the next look tries again
+        if not release_lock(self.lock, operation):
+            return self.lock.exists()  # released or taken by someone else this instant
+        remove_file(self.killed_file, quiet=True)
+        # stderr and plain words: a status call answers one JSON object on stdout, and the
+        # launcher reads the last JSON line of both streams as that answer.
+        print('stale action lock removed (%s): %s' % (reason, self.read_state().get('action')), file=sys.stderr, flush=True)
+        return False
 
     def token(self):
         path = self.repo / 'config' / 'lifecycle-token.txt'
@@ -740,16 +880,17 @@ class Host:
         frozen = self.frozen()
         if frozen:  # a frozen world cannot answer, and probing it only queues a connection
             return {'port': self.config['port'], 'listening': True, 'state': 'asleep', 'frozen': frozen,
-                    'operation': self.read_state() or None, 'busy': self.lock.exists(),
+                    'operation': self.read_state() or None, 'busy': self.busy(),
                     'lifecycle_token': self.token() is not None}
         listening = self.platform.listening(self.config['port'])
         world = self.world() if listening else None
         cold = None if listening else self.cold()
         # awake: running; asleep: frozen in memory; cold: down, starts from its save
         # when woken; stopped: down on purpose, wakes are refused.
+        busy = self.busy()  # before the state is read: releasing a dead action's lock records it as failed
         report = {'port': self.config['port'], 'listening': listening,
                   'state': 'awake' if listening else ('cold' if cold else 'stopped'),
-                  'operation': self.read_state() or None, 'busy': self.lock.exists(),
+                  'operation': self.read_state() or None, 'busy': busy,
                   'lifecycle_token': self.token() is not None}
         if cold:
             report['cold'] = cold
@@ -769,6 +910,7 @@ class Host:
         self.state_dir.mkdir(parents=True, exist_ok=True)
         if action in ('stop', 'restart', 'update') and self.frozen():
             self.thaw('before ' + action)
+        self.busy()  # releases a lock whose worker is gone
         try:
             descriptor = os.open(self.lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except FileExistsError:
@@ -776,17 +918,19 @@ class Host:
         operation = secrets.token_hex(16)
         with os.fdopen(descriptor, 'w') as handle:
             handle.write(operation)
-        self.killed_file.unlink(missing_ok=True)  # left by a worker that never finished
         try:
+            remove_file(self.killed_file)  # left by a worker that never finished
             self.precheck(action)
             self.before_action_accepted(action)
+            # One write, not unlink-then-write: no fields left over from the previous action.
+            self.write_json(self.state_file, {'action': action, 'operation': operation, 'phase': 'accepted',
+                                              'error': None, 'updated': int(self.platform.now())})
+            self.platform.detach([sys.executable, '-I', '-B', str(self.script), '--config', self.config['_path'],
+                                  '--worker', action, operation])
         except BaseException:
-            self.lock.unlink()
+            # Nothing was handed to a worker, so nothing would ever release the lock.
+            remove_file(self.lock, quiet=True)
             raise
-        self.state_file.unlink(missing_ok=True)
-        self.record(action=action, operation=operation, phase='accepted', error=None)
-        self.platform.detach([sys.executable, '-I', '-B', str(self.script), '--config', self.config['_path'],
-                              '--worker', action, operation])
         return {'accepted': True, 'action': action, 'operation': operation}
 
     def before_action_accepted(self, action):
@@ -888,7 +1032,7 @@ class Host:
             self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state.get('pid'),
                                              'detected_at': int(self.platform.now())})
             self.log({'cold': 'the frozen server is gone; it will start from its last save when woken'})
-        self.freeze_file.unlink(missing_ok=True)
+        remove_file(self.freeze_file)
         return None
 
     def cold(self):
@@ -900,7 +1044,7 @@ class Host:
         if not isinstance(state, dict):
             return None
         if self.platform.listening(self.config['port']):
-            self.cold_file.unlink(missing_ok=True)
+            remove_file(self.cold_file)
             return None
         return state
 
@@ -979,7 +1123,7 @@ class Host:
         except OSError:
             pass
         accepted = self.request(self.automatic_start_action())
-        self.cold_file.unlink(missing_ok=True)
+        remove_file(self.cold_file)
         return dict(accepted, cold_start=True, reason=reason)
 
     def automatic_start_action(self):
@@ -1074,7 +1218,7 @@ class Host:
             raise Refused('the frozen world was not stopped: %s' % error)
         self.write_json(self.cold_file, {'frozen_at': state.get('frozen_at'), 'pid': state['pid'],
                                          'detected_at': int(self.platform.now()), 'evicted': reason})
-        self.freeze_file.unlink(missing_ok=True)
+        remove_file(self.freeze_file)
         return {'evicted': True, 'pid': state['pid'], 'reason': reason}
 
     def kill(self, reason='forced stop', keep_running=False):
@@ -1098,10 +1242,10 @@ class Host:
             # so forget the sleep records and replace a finished action's result.
             self.note_kill_during_action(reason)  # a start still booting must not come up
             was_cold = bool(self.cold())
-            self.freeze_file.unlink(missing_ok=True)
-            self.cold_file.unlink(missing_ok=True)
+            remove_file(self.freeze_file)
+            remove_file(self.cold_file)
             if not keep_running:
-                self.running_file.unlink(missing_ok=True)
+                remove_file(self.running_file)
             if not self.lock.exists():
                 self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
             result = {'killed': True, 'pid': None, 'reason': reason, 'released_locks': []}
@@ -1112,14 +1256,14 @@ class Host:
             self.platform.kill_tree(pid, expect=self.world_expect())
         except Unverified as error:
             # Fail closed: never end a process that is not shown to be this world's DreamDaemon.
-            self.killed_file.unlink(missing_ok=True)
+            remove_file(self.killed_file)
             raise Refused('nothing was ended on port %d: %s. If that is a hung world, end it by hand '
                           '(Task Manager, Details) and try again' % (self.config['port'], error))
         released = self.release_save_locks(pid)
-        self.freeze_file.unlink(missing_ok=True)
-        self.cold_file.unlink(missing_ok=True)
+        remove_file(self.freeze_file)
+        remove_file(self.cold_file)
         if not keep_running:  # stopped on purpose: the watchdog leaves it down
-            self.running_file.unlink(missing_ok=True)
+            remove_file(self.running_file)
         if not self.lock.exists():
             self.record(action='kill', operation=None, phase='killed', error=None, reason=reason)
         return {'killed': True, 'pid': pid, 'reason': reason, 'released_locks': released}
@@ -1147,9 +1291,9 @@ class Host:
             except Unverified as error:
                 self.log({'forced_stop_refused': str(error)[:300]})
             self.release_save_locks(pid)
-        self.freeze_file.unlink(missing_ok=True)
-        self.cold_file.unlink(missing_ok=True)
-        self.running_file.unlink(missing_ok=True)
+        remove_file(self.freeze_file)
+        remove_file(self.cold_file)
+        remove_file(self.running_file)
 
     def killed_during(self, operation):
         """The reason of a forced stop that came during this operation, or None."""
@@ -1218,7 +1362,7 @@ class Host:
         if self.frozen() or self.platform.listening(self.config['port']):
             killed = self.kill('forced restart')
         deadline = self.platform.now() + lock_wait_seconds
-        while self.lock.exists():
+        while self.busy():
             if self.platform.now() > deadline:
                 raise Refused('the stopped server still has an action running: %s' % self.read_state().get('action'))
             self.platform.sleep(2)
@@ -1247,7 +1391,7 @@ class Host:
         self.platform.suspend(pid, self.config['freeze_trim_memory'])
         state = {'pid': pid, 'frozen_at': int(self.platform.now())}
         self.write_json(self.freeze_file, state)
-        self.cold_file.unlink(missing_ok=True)
+        remove_file(self.cold_file)
         return dict(state, frozen=True)
 
     def thaw(self, reason='requested'):
@@ -1259,7 +1403,7 @@ class Host:
                 return self.start_cold(reason)
             raise Refused('the server is not frozen or cold')
         self.platform.resume(state['pid'])
-        self.freeze_file.unlink(missing_ok=True)
+        remove_file(self.freeze_file)
         return {'thawed': True, 'pid': state['pid'], 'reason': reason,
                 'frozen_seconds': int(self.platform.now()) - state.get('frozen_at', 0)}
 
@@ -1278,7 +1422,7 @@ class Host:
                 self.log(self.thaw('player connection'))
             return None, self.config['wake_poll_seconds']
         self.serve_world()
-        if self.lock.exists():
+        if self.busy():
             self.forget_answers()
             self.down_since = None
             return None, 30
@@ -1353,7 +1497,7 @@ class Host:
             self.write_json(self.watchdog_file, watchdog)
 
     def mark_running(self):
-        self.stop_marker.unlink(missing_ok=True)  # left from an earlier in-game stop
+        remove_file(self.stop_marker)  # left from an earlier in-game stop
         self.write_json(self.running_file, {'since': int(self.platform.now())})
 
     def check_crash(self):
@@ -1364,8 +1508,8 @@ class Host:
         if self.stop_marker.exists():
             # An admin saved and shut the world down in game: a stop, so leave it down.
             marker = self.read_json(self.stop_marker) or {}
-            self.running_file.unlink(missing_ok=True)
-            self.stop_marker.unlink(missing_ok=True)
+            remove_file(self.running_file)
+            remove_file(self.stop_marker)
             self.down_since = None
             self.log({'stopped_in_game': True, 'by': marker.get('by'), 'generation': marker.get('generation')})
             return 30
@@ -1410,7 +1554,7 @@ class Host:
         if len(recent) >= self.config['watchdog_max_restarts']:
             record['gave_up'] = now
             self.write_json(self.watchdog_file, record)
-            self.running_file.unlink(missing_ok=True)
+            remove_file(self.running_file)
             # A hung world is left as it is, for a person to look at (force-restart.bat).
             self.log({'watchdog_gave_up': kind, 'detail': detail, 'restarts_last_hour': len(recent)})
             return 30
@@ -1504,7 +1648,7 @@ class Host:
         if self.platform.listening(port) or self.platform.server_pid(port):
             # keep_running: if the update below fails, the watchdog brings the world back from its save.
             self.kill('update without saving', keep_running=True)
-            self.killed_file.unlink(missing_ok=True)  # this action's own stop, not a person's
+            remove_file(self.killed_file)  # this action's own stop, not a person's
         deadline = self.platform.now() + close_seconds
         while self.platform.listening(port):
             if self.platform.now() > deadline:
@@ -1533,7 +1677,7 @@ class Host:
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_suffix('.tmp')
         temporary.write_text(json.dumps(value, sort_keys=True), encoding='utf-8')
-        os.replace(temporary, path)
+        replace_file(temporary, path)
 
     def set_update_when_empty(self, enabled):
         raise Refused('update when empty needs a region group (scripts/shard-group)')
@@ -1691,6 +1835,7 @@ class Host:
         except OSError:
             return
         try:
+            self.note_worker()
             # A server only ever runs a build of the latest pull (Val, 2026-11-05):
             # start and restart pull and recompile first unless the last build is
             # already of the fetched revision.
@@ -1711,18 +1856,22 @@ class Host:
             self.record(phase='done', error=None)
             self.action_succeeded(action)
         except Exception as error:  # the state file is the only place a detached worker can report
-            reason = self.killed_during(operation)
-            if reason:
-                # A forced stop ended the world under this action: report the stop, which
-                # is what a person did, not the refused connection that followed it.
-                self.record(phase='killed', reason=reason,
-                            error='%s during %s: %s' % (reason, action, str(error)[:300]))
-            else:
-                self.record(phase='failed', error=str(error)[:500])
-                self.action_failed(action)
+            try:
+                reason = self.killed_during(operation)
+                if reason:
+                    # A forced stop ended the world under this action: report the stop, which
+                    # is what a person did, not the refused connection that followed it.
+                    self.record(phase='killed', reason=reason,
+                                error='%s during %s: %s' % (reason, action, str(error)[:300]))
+                else:
+                    self.record(phase='failed', error=str(error)[:500])
+                    self.action_failed(action)
+            except OSError as failure:  # the report could not be written; the lock is released all the same
+                self.log({'worker_report_failed': str(failure)[:300], 'action': action, 'error': str(error)[:300]})
         finally:
-            self.killed_file.unlink(missing_ok=True)
-            self.lock.unlink(missing_ok=True)
+            # Each on its own: a file the launcher holds open must not keep the lock.
+            remove_file(self.killed_file, quiet=True)
+            remove_file(self.lock, quiet=True)
 
     def do_start_current(self, operation):
         raise RuntimeError('starting an existing build requires a region host')
@@ -1784,7 +1933,7 @@ class Host:
             # nothing to save and refuses save_shutdown: end it, as stopping it means.
             if not pid:
                 raise RuntimeError('the world answers but its process was not found')
-            self.running_file.unlink(missing_ok=True)  # it is going down on purpose
+            remove_file(self.running_file)  # it is going down on purpose
             self.platform.kill_tree(pid, expect=self.world_expect())
             self.release_save_locks(pid)
             self.record(phase='stopped', saved=False)
@@ -1799,7 +1948,7 @@ class Host:
                   else self.platform.query(port, token, 'save_shutdown', operation, session))
         if answer.get('operation') != operation:
             raise RuntimeError('the world did not accept the save')
-        self.running_file.unlink(missing_ok=True)  # it is going down on purpose
+        remove_file(self.running_file)  # it is going down on purpose
         exited = self.wait_for_exit(pid)
         self.record(phase='backing up')
         saves = self.repo / 'map_saves'
@@ -1947,7 +2096,7 @@ class Host:
                     record[key + '_minute'] = (record[key] - BYOND_EPOCH) // 60
             temporary = path.with_suffix('.tmp')
             temporary.write_text(json.dumps(record), encoding='utf-8')
-            os.replace(temporary, path)
+            replace_file(temporary, path)
         except (OSError, ValueError, RuntimeError, subprocess.SubprocessError):
             pass
 
@@ -2045,7 +2194,7 @@ class GroupWatch:
             temporary = target.with_name(target.name + '.tmp')
             temporary.write_text(json.dumps({'pid': os.getpid(), 'signature': signature, 'config': self.path,
                                              'loaded_at': int(time.time())}) + '\n', encoding='utf-8')
-            os.replace(temporary, target)
+            replace_file(temporary, target)
         except OSError:
             pass  # the record only tells a port change we caught up; serving goes on without it
 
@@ -2192,6 +2341,11 @@ def main(argv=None):
             result = host.request(args.action)
     except Refused as refusal:
         print(json.dumps({'ok': False, 'refused': str(refusal)}))
+        return 1
+    except (OSError, RuntimeError, ValueError) as error:
+        # Callers read one JSON line; a bare traceback reached them as "no answer".
+        traceback.print_exc()
+        print(json.dumps({'ok': False, 'refused': '%s failed: %s: %s' % (args.action, type(error).__name__, str(error)[:300])}))
         return 1
     print(json.dumps(dict(result, ok=True)))
     return 0

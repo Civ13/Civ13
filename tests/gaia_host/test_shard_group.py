@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from unittest import mock
 
@@ -405,6 +406,71 @@ class ShardGroupTests(unittest.TestCase):
             answers[1721]['event_away'] = bad
             status = shard_group.group_status(group, 'deep', view=answers.get, platform=self.machine)
             self.assertNotIn('event_away', status['regions']['deep']['region_view'], bad)
+
+    def test_status_reports_a_region_it_cannot_read_and_still_shows_the_rest(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        real = shard_group.RegionHost.status
+
+        def status(host):
+            if host.config['region'] == 'deep':
+                raise PermissionError(13, 'Access is denied')
+            return real(host)
+        with mock.patch.object(shard_group.RegionHost, 'status', status):
+            report = shard_group.group_status(group, platform=self.machine)
+        self.assertEqual(report['regions']['deep']['state'], 'unknown')
+        self.assertIn('could not be read', report['regions']['deep']['error'])
+        self.assertEqual(report['regions']['gaia']['state'], 'stopped')
+
+    def test_status_asks_the_regions_side_by_side(self):
+        # Two worlds that take their whole reply time must not add up past the launcher's wait.
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        gate = threading.Barrier(len(group['regions']), timeout=10)
+
+        def status(host):
+            gate.wait()  # only passes when every region is asked at once
+            return {'port': host.config['port'], 'listening': False, 'state': 'stopped', 'busy': False}
+        with mock.patch.object(shard_group.RegionHost, 'status', status), \
+                mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine):
+            report = shard_group.group_status(group)
+        self.assertEqual(sorted(report['regions']), sorted(r['id'] for r in group['regions']))
+
+    def test_a_pid_file_from_before_the_machine_restarted_names_nothing(self):
+        # relay.pid and coordinator.pid outlive a restart, and Windows reuses the pid: the
+        # helper counted as running and was never started again.
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        root = self.base / 'regions'
+        root.mkdir(parents=True, exist_ok=True)
+        for name in ('relay.pid', 'coordinator.pid'):
+            (root / name).write_text('5151\n')
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: True):
+            self.assertEqual((shard_group.relay_pid(group), shard_group.coordinator_pid(group)), (5151, 5151))
+            with mock.patch.object(shard_group.Platform, 'boot_time', lambda self: time.time() + 3600):
+                self.assertEqual((shard_group.relay_pid(group), shard_group.coordinator_pid(group)), (None, None))
+                started = []
+                self.assertTrue(shard_group.ensure_relay(group, lambda argv, cwd, log: started.append(argv) or 6262))
+        self.assertEqual(len(started), 1)
+
+    def test_the_command_line_answers_for_every_region_when_one_raises(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        real = shard_group.RegionHost.request
+
+        def request(host, action):
+            if host.config['region'] == 'deep':
+                raise PermissionError(13, 'Access is denied')
+            return {'accepted': True, 'action': action, 'operation': 'x'}
+        with mock.patch.object(shard_group.RegionHost, 'request', request), \
+                mock.patch.object(shard_group, 'RegionPlatform', return_value=self.machine), \
+                mock.patch.object(shard_group, 'ensure_coordinator', lambda group: False), \
+                mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+            code = shard_group.main(['--config', str(self.path), 'stop'])
+        result = json.loads(out.getvalue().strip().splitlines()[-1])
+        self.assertEqual(code, 0, result)
+        self.assertIn('gaia', result['accepted'])
+        self.assertIn('stop failed', result['refused']['deep'])
 
     def test_status_shows_the_world_calendar(self):
         group = self.write_group()
@@ -1934,6 +2000,64 @@ class StagedBuildTests(unittest.TestCase):
     def compiles(self, cwd):
         return sum(1 for argv, where in self.machine.calls if argv[-1] == 'region.dme' and where == str(cwd))
 
+    def test_a_stage_whose_worker_ended_does_not_block_the_next_build(self):
+        # A stage worker killed mid-compile (or by a restart of the machine) kept "a build is
+        # already being staged" for three hours, and Save, update and restart waited on it.
+        group, host = self.built()
+        self.machine.up = {1720}
+        first = host.request_stage()
+        host.stage_record(phase='compiling', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: True
+        with self.assertRaisesRegex(shard_group.Refused, 'already being staged'):
+            host.request_stage()
+        self.machine.worker_alive = lambda pid, started: False
+        self.assertFalse(host.stage_running())
+        stage = host.read_json(host.stage_file)
+        self.assertEqual(stage['phase'], 'failed')
+        self.assertIn('interrupted (its worker ended)', stage['error'])
+        second = host.request_stage()
+        self.assertNotEqual(first['operation'], second['operation'])
+        host.work('stage', second['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
+
+    def test_a_stage_that_waited_hours_for_its_slot_keeps_its_lock_while_its_worker_runs(self):
+        group, host = self.built()
+        self.machine.up = {1720}
+        host.request_stage()
+        host.stage_record(phase='waiting for another region\'s compile', worker={'pid': 999, 'started': 5})
+        old = time.time() - shard_group.STAGE_LOCK_HOURS * 3600 - 60
+        os.utime(host.stage_lock, (old, old))
+        self.machine.worker_alive = lambda pid, started: True
+        self.assertTrue(host.stage_running())
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'waiting for another region\'s compile')
+
+    def test_a_stage_from_before_the_machine_restarted_is_released(self):
+        group, host = self.built()
+        self.machine.up = {1720}
+        host.request_stage()
+        self.machine.boot_time = lambda: time.time() + 3600
+        self.assertTrue(host.request_stage()['accepted'])
+
+    def test_the_stage_worker_records_itself(self):
+        group, host = self.built()
+        self.machine.up = {1720}
+        host.work('stage', host.request_stage()['operation'])
+        self.assertEqual(host.read_json(host.stage_file)['worker']['pid'], os.getpid())
+
+    def test_a_group_slot_held_since_before_a_restart_is_taken_over(self):
+        # compile.lock named a pid that another process has now: waiters sat out two hours.
+        group, host = self.built()
+        slot = self.base / 'regions' / '.staging' / 'compile.lock'
+        slot.parent.mkdir(parents=True, exist_ok=True)
+        slot.write_text('4141')
+        self.machine.pids.add(4141)
+        self.machine.boot_time = lambda: time.time() + 3600
+        waits = []
+        self.machine.sleep = lambda seconds: waits.append(seconds) or (_ for _ in ()).throw(AssertionError('it waited'))
+        with host.compile_slot():
+            self.assertEqual(slot.read_text(), str(os.getpid()))
+        self.assertEqual(waits, [])
+
     def test_stage_compiles_beside_the_running_region_and_update_installs_it(self):
         group, host = self.built()
         live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'
@@ -2958,6 +3082,44 @@ class HandoverTests(unittest.TestCase):
         self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
         self.assertEqual(len([1 for _, action, _ in self.actions if action == 'standby_open']), 1, 'the retry reached the world')
         self.assertEqual(len(refused), 1)
+        self.assertIn(self.LIVE, self.machine.up)
+
+    def test_a_standby_that_never_opens_the_region_is_ended(self):
+        # It stayed on its standby port with the save loaded: the region was down, the host
+        # service's restart met a second world, and later handovers found the port in use.
+        group, host = self.staged()
+        query = self.machine.query
+
+        def refusing(port, token, action='status', operation=None, session=None, extra=None):
+            if action == 'standby_open':
+                raise RuntimeError('Lifecycle request rejected: port_not_opened')
+            return query(port, token, action, operation, session, extra)
+        self.machine.query = refusing
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual(state['phase'], 'failed', state)
+        self.assertIn('did not open port 1720', state['error'])
+        self.assertIn('the loaded standby was ended', state['error'])
+        self.assertIn((['kill_tree', 200], None), self.machine.calls)
+        self.assertNotIn(self.STANDBY, self.machine.up)
+        self.assertFalse(host.lock.exists())
+
+    def test_a_standby_that_switched_but_whose_reply_was_lost_is_not_ended(self):
+        # Its pid is the region now: ending it would take the region down.
+        group, host = self.staged()
+        query = self.machine.query
+
+        def lost(port, token, action='status', operation=None, session=None, extra=None):
+            if action == 'standby_open':
+                query(port, token, action, operation, session, extra)  # it opens the region's port
+                self.machine.up.discard(self.STANDBY)
+                raise OSError('timed out')
+            return query(port, token, action, operation, session, extra)
+        self.machine.query = lost
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertNotIn((['kill_tree', 200], None), self.machine.calls)
         self.assertIn(self.LIVE, self.machine.up)
 
     def test_standby_open_uses_the_session_the_loaded_standby_reports(self):

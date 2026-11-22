@@ -165,6 +165,13 @@ static class LocalHostingTests {
         Require(!status.Busy && status.Message == "Server is not running. Last action: update (failed): compile failed.", "failure line: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": true, \"clients\": 2}, \"regions\": [{\"id\": \"gaia\", \"name\": \"Gaia\", \"state\": \"awake\", \"players\": 2}, {\"id\": \"deep\", \"name\": \"The Deep\", \"state\": \"asleep\", \"players\": null}, 7]}");
         Require(status.Message == "Server port is open. World ready. 2 players.\nRegions: Gaia: awake, 2 players; The Deep: asleep.", "region line: " + status.Message);
+        // A region host passes the world's own answer through, and DM writes TRUE as 1: a ready world read "World not ready."
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 1, \"clients\": 3}}");
+        Require(status.Message == "Server port is open. World ready. 3 players.", "a DM true (1) is ready: " + status.Message);
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 0, \"clients\": 2.0e0}, \"regions\": [{\"name\": \"Gaia\", \"state\": \"awake\", \"players\": 1.0e0}]}");
+        Require(status.Ok && status.Message == "Server port is open. World not ready. 2 players.\nRegions: Gaia: awake, 1 players.", "a count written as 2.0e0 must not throw: " + status.Message);
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 1, \"clients\": 2.5}}");
+        Require(status.Message == "Server port is open. World ready.", "2.5 is not a player count: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": false, \"state\": \"cold\", \"busy\": false}");
         Require(status.Message.StartsWith("Server is asleep (stopped"), "cold line: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"regions\": [{\"name\": \"\u0915\u0940" + string.Concat(Enumerable.Repeat("\u5317", 70)) + " <@&1>\", \"state\": \"awake\"}]}");
@@ -252,6 +259,9 @@ static class LocalHostingTests {
         Require(!MagicWhitelist.Parse(1, "{\"ok\": false, \"refused\": \"give up to 20 player keys\"}").Ok && !MagicWhitelist.Parse(1, "").Ok, "magic whitelist refusal");
         // Front door and ports dialog (GroupPorts, shard_group.py ports / set-gate / set-port).
         Require(GroupPorts.Step(host.Control!, "ports").ArgumentList.SequenceEqual(new[] { "-I", "-B", shard, "--config", groupConfig, "ports" }), "ports argv");
+        Require(LocalHosting.LimitOf(GroupPorts.Step(host.Control!, "ports")) == LocalHosting.RequestLimit
+            && LocalHosting.LimitOf(GroupPorts.Step(host.Control!, "set-port", "moon", 1721, true)) == LocalHosting.RequestLimit
+            && LocalHosting.LimitOf(GroupPorts.Step(host.Control!, "add-regions", null, null, true)) == LocalHosting.LongLimit, "ports steps carry their own limit");
         Require(GroupPorts.Step(host.Control!, "set-gate", "gaia").ArgumentList.SequenceEqual(
             new[] { "-I", "-B", shard, "--config", groupConfig, "set-gate", "--region", "gaia" }), "set-gate plan argv never applies");
         Require(GroupPorts.Step(host.Control!, "set-gate", "gaia", null, true, @"D:\bot\profile.json").ArgumentList.SequenceEqual(
