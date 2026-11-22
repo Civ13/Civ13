@@ -387,11 +387,14 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(instance.answer(dict(request, id='2'))['status'], 'rate_limited')
         self.assertEqual(len(calls), 1)
         self.assertNotIn('a' * 32, json.dumps(calls))
-        for timestamp in (130, 160):
+        # Defaults: a 10 second cooldown and five questions in two minutes.
+        now[0] = 105
+        self.assertEqual(instance.answer(request)['retry_seconds'], 5)
+        for timestamp in (115, 130, 145, 160):
             now[0] = timestamp
             self.assertEqual(instance.answer(request)['status'], 'ok')
-        now[0] = 190
-        self.assertEqual(instance.answer(request)['retry_seconds'], 30)
+        now[0] = 175
+        self.assertEqual(instance.answer(request)['retry_seconds'], 45)
         now[0] = 220
         self.assertEqual(instance.answer(request)['status'], 'ok')
 

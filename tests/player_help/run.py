@@ -68,6 +68,12 @@ var/list/probe_clients = list()
 /mob/probe_client
     var/mob/mob
     var/datum/probe_chat/chat
+    var/probe_window
+    var/probe_windows = 0
+/datum/probe_activity
+    proc/feature_used(target, feature)
+    proc/help_outcome(target, outcome)
+var/datum/probe_activity/player_activity = new
 /mob/probe_help
     parent_type = /mob/probe_client
 /proc/IsGuestKey(key)
@@ -87,20 +93,6 @@ var/list/probe_clients = list()
     var/datum/job/original_job
     var/original_job_title = "Sailor"
     var/sleeping = 0
-    var/probe_connected = TRUE
-    var/probe_prompts = 0
-    var/probe_submits = 0
-    var/probe_question
-    var/probe_result
-    var/probe_disconnect_on_prompt = FALSE
-    proc/probe_submit(question)
-        probe_submits++
-        probe_result = player_help_service.enqueue(md5("injected authenticated client"), question, null)
-/mob/probe_help/player_help_prompt()
-    probe_prompts++
-    if (probe_disconnect_on_prompt)
-        probe_connected = FALSE
-    return probe_question
 /datum/player_help_service/probe_limits
     var/clock = 1000
     limit_time()
@@ -122,17 +114,21 @@ var/list/probe_clients = list()
 /proc/get_area(mob/M)
     return M.loc
 // Production helpers the service calls (weather_systems.dm, agent_windows.dm,
-// player_tutorial.dm, agent_prompts.dm). Weather here is the fixture area's.
+// player_tutorial.dm, player_activity.dm). Weather here is the fixture area's.
+// show_browse keeps the last window a stand-in client was shown, so the probes
+// read what a player would see after each action.
 // The verb runs on /mob/probe_client, the fixture stand-in for /client.
 /proc/weather_at(atom/A)
     var/area/Ar = get_area(A)
     return Ar ? Ar.weather : WEATHER_NONE
 /proc/show_browse(target, html, options)
     target << browse(html, options)
+    var/mob/probe_client/shown = target
+    if (istype(shown))
+        shown.probe_window = html
+        shown.probe_windows++
 /mob/probe_client/proc/tutorial_event(id)
     return
-/proc/player_input(target, message, title, default, kind = "text", list/choices = null, can_cancel = FALSE)
-    return input(target, message, title, default) as null|text
 /mob/living/human
     var/mob/probe_client/probe_client
     var/obj/item/l_hand
@@ -218,27 +214,32 @@ var/failures = 0
     var/datum/player_help_service/H = player_help_service
     H.root = "spool/"
     var/mob/probe_help/asker = new
+    probe_clients += asker
     asker.ask_player_help()
-    check(asker.probe_prompts == 1 && !asker.probe_submits && !H.accounts.len, "unavailable service still prompts and cancellation consumes no allowance")
-    asker.probe_question = "How do I play?"
-    asker.ask_player_help()
-    check(asker.probe_prompts == 2 && asker.probe_submits == 1, "actual verb submits only after prompt")
-    check(findtext(asker.probe_result, "unavailable"), "verb submission returns unavailable after prompt")
+    check(asker.probe_windows == 1 && asker.player_help_action_token && !H.accounts.len, "window opens while the helper is unavailable and spends no allowance")
+    check(findtext(asker.probe_window, "What do you need help with?") && findtext(asker.probe_window, "not answering right now"), "empty window explains itself and says the helper is not answering")
+    check(findtext(asker.probe_window, "name='token' value='[asker.player_help_action_token]'") && findtext(asker.probe_window, "Do not enter personal information"), "window carries its action token and the data notice")
+    H.handle_action(asker, list("action" = "ask", "token" = asker.player_help_action_token, "question" = "How do I play?"))
+    check(asker.probe_windows == 2 && !H.pending.len && !H.accounts.len && !asker.player_help_pending, "question to an unavailable helper spends no allowance")
+    check(findtext(asker.probe_window, "unavailable right now") && findtext(asker.probe_window, "value=\\"How do I play?\\""), "unavailable refusal is shown in the window with the question kept")
     var/datum/player_help_service/probe_limits/L = new
     var/account = md5("same authenticated account across reconnect")
     check(L.reserve(account) == 1, "first account admission")
     check(findtext(L.reserve(account), "pending"), "one outstanding across reconnect")
     L.clear_slot(1)
     check(findtext(L.reserve(account), "wait"), "rapid repeats retain account cooldown")
-    L.clock += 300
+    L.clock += 50
+    check(findtext(L.reserve(account), "wait"), "cooldown still running after five seconds")
+    L.clock += 100
     check(L.reserve(account) == 1, "cooldown expiry")
     L.clear_slot(1)
-    L.clock += 300
-    check(L.reserve(account) == 1, "third burst admission")
-    L.clear_slot(1)
-    L.clock += 300
+    for(var/i=3,i<=5,i++)
+        L.clock += 150
+        check(L.reserve(account) == 1, "burst admission [i] of 5")
+        L.clear_slot(1)
+    L.clock += 150
     check(findtext(L.reserve(account), "wait"), "burst quota after cooldown")
-    L.clock += 300
+    L.clock += 600
     check(L.reserve(account) == 1, "burst expiry")
     L.clear_slot(1)
     L.accounts = list()
@@ -285,19 +286,25 @@ var/failures = 0
     check(findtext(B.enqueue(account, "Question", null), "unavailable") && !B.accounts.len, "unavailable submission spends no allowance")
     B.online = TRUE
     player_help_service = B
+    B.probe_account = md5("injected authenticated client")
     asker.ask_player_help()
-    check(asker.probe_result == TRUE && B.pending.len == 1, "actual verb prompt submission publishes ready backend request")
-    asker.ask_player_help()
-    check(findtext(asker.probe_result, "pending") && B.pending.len == 1, "repeated adapter submission retains pending account")
+    B.handle_action(asker, list("action" = "ask", "token" = asker.player_help_action_token, "question" = "How do I play?"))
+    check(B.pending.len == 1 && asker.player_help_pending == "How do I play?", "window question publishes ready backend request")
+    check(findtext(asker.probe_window, "Looking through the guides") && findtext(asker.probe_window, " disabled>Waiting</button>"), "window shows the question waiting with the box locked")
+    B.handle_action(asker, list("action" = "ask", "token" = asker.player_help_action_token, "question" = "Again?"))
+    check(findtext(asker.probe_window, "still pending") && B.pending.len == 1 && asker.player_help_pending == "How do I play?", "repeated submission retains pending account")
     var/mob/probe_help/reconnected = new
-    reconnected.probe_question = "Second question"
+    probe_clients += reconnected
     reconnected.ask_player_help()
-    check(findtext(reconnected.probe_result, "pending") && B.pending.len == 1, "second adapter with same account cannot duplicate dispatch")
+    B.handle_action(reconnected, list("action" = "ask", "token" = reconnected.player_help_action_token, "question" = "Second question"))
+    check(findtext(reconnected.probe_window, "still pending") && B.pending.len == 1 && !reconnected.player_help_pending, "second client with same account cannot duplicate dispatch")
     var/mob/probe_help/leaving = new
-    leaving.probe_question = "Disconnected during input"
-    leaving.probe_disconnect_on_prompt = TRUE
-    leaving.ask_player_help()
-    check(leaving.probe_prompts == 1 && !leaving.probe_submits, "disconnect during prompt cannot submit")
+    leaving.player_help_action_token = "left"
+    B.handle_action(leaving, list("action" = "ask", "token" = "left", "question" = "Disconnected"))
+    check(B.pending.len == 1 && !leaving.probe_windows, "disconnected client cannot submit")
+    B.probe_account = null
+    probe_clients -= asker
+    probe_clients -= reconnected
     B.clear_slot(1)
     B.accounts = list()
     B.global_times = list()
@@ -377,7 +384,7 @@ var/failures = 0
     text2file("not json", "spool/bad.json")
     check(isnull(H.read_json("spool/bad.json", 100)), "malformed")
     check(isnull(H.read_json("spool/bad.json", 2)), "oversized")
-    var/rendered = H.render_answer("<script>alert('x')</script>")
+    var/rendered = H.answer_markup("<script>alert('x')</script>")
     check(!findtext(rendered, "<script>"), "escaped HTML")
     check(findtext(rendered, "&lt;script&gt;"), "text retained")
     check(H.response_format(list("answer"="legacy")) == "markdown-basic-v1", "old worker response compatibility")
@@ -388,14 +395,14 @@ var/failures = 0
     check(isnull(H.response_format(list("render_protocol"=null,"answer_format"=null))), "null metadata rejected")
     check(isnull(H.response_format(list("render_protocol"=2,"answer_format"="plain-v1"))), "unknown protocol rejected")
     check(isnull(H.response_format(list("render_protocol"=1,"answer_format"="html"))), "unknown format rejected")
-    var/plain_rendered = H.render_answer("**literal** <script>x</script>", "plain-v1")
+    var/plain_rendered = H.answer_markup("**literal** <script>x</script>", "plain-v1")
     check(findtext(plain_rendered, "**literal** &lt;script&gt;x&lt;/script&gt;"), "plain is escaped verbatim")
     check(!findtext(plain_rendered, "<b>literal</b>"), "plain is not reparsed")
-    check(findtext(H.render_answer(null, "plain-v1"), "usable response"), "plain rejects null")
+    check(findtext(H.answer_markup(null, "plain-v1"), "usable response"), "plain rejects null")
     var/list/render_cases = json_decode(file2text("render-cases.json"))
     var/list/render_results = list()
     for (var/list/render_case in render_cases)
-        var/html = H.render_answer(render_case["markdown"])
+        var/html = H.answer_markup(render_case["markdown"])
         for (var/expected in render_case["contains"])
             check(findtextEx(html, expected), "Markdown required text: [render_case["name"]]")
         for (var/forbidden in render_case["absent"])
@@ -405,8 +412,8 @@ var/failures = 0
     var/oversized_answer = ""
     for (var/i = 1, i <= 4001, i++)
         oversized_answer += "x"
-    check(findtext(H.render_answer(oversized_answer), "usable response"), "renderer enforces answer bound")
-    check(findtext(H.render_answer(oversized_answer, "plain-v1"), "usable response"), "plain enforces answer bound")
+    check(findtext(H.answer_markup(oversized_answer), "usable response"), "renderer enforces answer bound")
+    check(findtext(H.answer_markup(oversized_answer, "plain-v1"), "usable response"), "plain enforces answer bound")
     text2file(json_encode(list("id"="old", "status"="ok", "answer"="old answer")), "spool/1.response.json")
     check(isnull(H.matching_response(1, "new")), "wrong response identity rejected")
     check(islist(H.matching_response(1, "old")), "matching response accepted")
@@ -439,7 +446,7 @@ def main():
     parser.add_argument('--expected-byond-version', choices=('516.1681', '516.1688'), default='516.1688')
     parser.add_argument('--output', type=Path, help='Retain isolated sources, logs and hashes in a new directory')
     parser.add_argument('--prepare-only', action='store_true', help='Write the exact isolated fixture without launching any process; requires --output')
-    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'prompt-first', 'disconnect', 'conversation-generation', 'conversation-action'])
+    parser.add_argument('--negative-control', choices=['escaping', 'heartbeat', 'identity', 'player-context', 'inventory-budget', 'rate-limit', 'window-first', 'disconnect', 'conversation-generation', 'conversation-action'])
     args = parser.parse_args()
     if args.prepare_only and not args.output:
         parser.error('--prepare-only requires --output')
@@ -458,16 +465,17 @@ def main():
         production = production.replace('client/', 'mob/probe_client/').replace('/client\n', '/mob/probe_client\n')
         production = production.replace(' in clients)', ' in probe_clients)')
         production = production.replace('H.client', 'H.probe_client')
-        production = production.replace('if (question && (src in probe_clients) && generation == player_help_generation)', 'if (question && probe_connected && generation == player_help_generation)')
-        production = production.replace('player_help_service.submit(src, question)', 'probe_submit(question)')
         if args.negative_control == 'conversation-generation':
             production = production.replace(' || C.player_help_generation != entry["generation"]', '')
         elif args.negative_control == 'conversation-action':
             production = production.replace('token == C.player_help_action_token', 'TRUE')
         elif args.negative_control == 'rate-limit':
             production = production.replace('if (retry)', 'if (FALSE && retry)')
-        elif args.negative_control == 'prompt-first':
-            production = production.replace('var/question = player_help_prompt()', 'if (!player_help_service.available())\n\t\treturn\n\tvar/question = player_help_prompt()')
+        elif args.negative_control == 'window-first':
+            target = '\texpire_conversations()\n\tbind_body(C, C.mob)\n\tshow_window(C)'
+            if production.count(target) != 1:
+                raise SystemExit('Window control target changed')
+            production = production.replace(target, '\tif (!available())\n\t\treturn\n' + target)
         elif args.negative_control == 'disconnect':
             condition = 'if (C && (!(C in probe_clients) || C.player_help_generation != entry["generation"] || C.mob != entry["body"]))'
             if production.count(condition) != 1:
@@ -516,7 +524,7 @@ def main():
             'control': args.negative_control, 'compiler_exit': built.returncode,
             'daemon_exit': ran.returncode, 'production_sha256': hashlib.sha256((ROOT / 'code/game/mob/player_help.dm').read_bytes()).hexdigest(),
             'generated_sha256': hashlib.sha256(production.encode()).hexdigest(),
-            'scope': 'Actual verb with injected client/input boundary; actual queue/admission/poll with isolated storage, no live client or LLM'
+            'scope': 'Actual verb and window actions with an injected client boundary; actual queue/admission/poll with isolated storage, no live client or LLM'
         }, indent=2))
         if ran.returncode:
             raise SystemExit('Native daemon exited unexpectedly')
@@ -526,7 +534,7 @@ def main():
                         'player-context': 'asking player condition',
                         'inventory-budget': 'combined entry and child inspection budget reaches exactly 64',
                         'rate-limit': 'rapid repeats retain account cooldown',
-                        'prompt-first': 'unavailable service still prompts and cancellation consumes no allowance',
+                        'window-first': 'window opens while the helper is unavailable and spends no allowance',
                         'disconnect': 'disconnect does not release pending account',
                         'conversation-generation': 'reset invalidates stale completion and releases slot',
                         'conversation-action': 'copied action token cannot select another client'}[args.negative_control]

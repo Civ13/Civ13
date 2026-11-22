@@ -61,6 +61,13 @@ def plain(text):
     return text.replace('\\n', '\n').replace('\\"', '"').replace('\\u2019', "'")
 
 
+def conversation(request, entry):
+    """A follow-up question carries the earlier exchanges, as the game sends them."""
+    if entry.get('turns'):
+        request['conversation'] = {'version': 1, 'turns': entry['turns']}
+    return request
+
+
 def score_answer(entry, answer):
     facts = [bool(re.search(pattern, answer, re.I)) for pattern in entry['answer']]
     hidden = bool(HIDDEN.search(answer))
@@ -75,8 +82,10 @@ def question_list(questions):
     for page in sorted(pages, key=lambda name: (name is None, name or '')):
         lines += ['## ' + (page[:-3].split('/')[-1].replace('_', ' ') if page else 'Must refuse (hidden topics)'), '']
         for entry in pages[page]:
-            lines += ['- **%s**' % entry['question'],
-                      '  - Expected: %s' % entry['expected']]
+            lines += ['- **%s**' % entry['question']]
+            if entry.get('turns'):
+                lines.append('  - Follow-up to: %s' % ' / '.join(turn['question'] for turn in entry['turns']))
+            lines.append('  - Expected: %s' % entry['expected'])
             if page:
                 lines.append('  - Source: `%s`, section "%s"' % (page, entry['section']))
             lines.append('  - Id: `%s`' % entry['id'])
@@ -137,8 +146,8 @@ def main():
         worker = bridge.Bridge(Path(spool) / 'spool', config, corpus, transport)
         try:
             for index, entry in enumerate(questions):
-                request = {'id': str(index + 1), 'account': '%032x' % (index + 1),
-                           'question': entry['question'], 'game_context': GAME_CONTEXT}
+                request = conversation({'id': str(index + 1), 'account': '%032x' % (index + 1),
+                                        'question': entry['question'], 'game_context': GAME_CONTEXT}, entry)
                 before, started = len(prompts), time.monotonic()
                 reply = worker.answer(request)
                 if reply.get('status') not in ('ok', 'unavailable'):
