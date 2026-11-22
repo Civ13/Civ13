@@ -51,6 +51,17 @@ class IslandAccess(unittest.TestCase):
         self.assertIn('island_access_ask("pass"', verb)
         self.assertIn('island_access_ask("access"', proc(self.mod, "/mob/living/human/proc/island_access_menu("))
 
+    def test_officers_send_only_the_selected_border_edit(self):
+        menu = proc(self.mod, "/mob/living/human/proc/island_access_menu(")
+        self.assertIn('change = list("mode" = mode)', menu)
+        self.assertIn('change = list("add_guest" = account)', menu)
+        self.assertIn('change = list("remove_guest" = account)', menu)
+        self.assertNotIn('"people" =', menu)
+        send = 'island_access_ask("access", claimant, faction_roster_account(src), change, incarnation)'
+        self.assertIn(send, menu)
+        self.assertLess(menu.rindex("island_access_claim_of(src) != claimant"), menu.index(send))
+        self.assertIn("Request queued", menu)
+
     def test_every_way_there_is_guarded(self):
         travel = read("code/modules/persistence/region_travel.dm")
         party = proc(travel, "/obj/structure/region_gate/proc/depart_party(")

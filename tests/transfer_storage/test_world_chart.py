@@ -313,15 +313,16 @@ class LandChoiceTests(unittest.TestCase):
 
     def test_a_claimed_island_keeps_who_may_land_until_the_claim_ends(self):
         faction = 'civ:gaia:Rome Empire'
-        self.assertFalse(self.c.set_access(faction, 'OPEN', []), 'no claim, no border')
+        self.assertFalse(self.c.change_access(faction, {'mode': 'OPEN'}), 'no claim, no border')
         self.assertTrue(self.c.claim('far1', faction, 'val'))
         self.assertEqual({faction: {'mode': 'GUESTS', 'people': [], 'passes': {}}}, self.c.access(), 'members and guests by default')
         rev = self.c.rev()
-        self.assertTrue(self.c.set_access(faction, 'MEMBERS', ['kim', 'ana'], 'val', now=2000))
+        self.assertTrue(self.c.change_access(faction, {'mode': 'MEMBERS'}, 'val', now=2000))
         self.assertGreater(self.c.rev(), rev, 'worlds hear of the change')
-        self.assertFalse(self.c.set_access(faction, 'EVERYONE', []))
-        self.assertFalse(self.c.set_access(faction, 'OPEN', ['Not A Key']))
-        self.assertFalse(self.c.set_access(faction, 'OPEN', ['p%d' % i for i in range(wc.ACCESS_PEOPLE_MAX + 1)]))
+        self.assertTrue(self.c.change_access(faction, {'add_guest': 'kim'}, 'val', now=2000))
+        self.assertTrue(self.c.change_access(faction, {'add_guest': 'ana'}, 'val', now=2000))
+        self.assertFalse(self.c.change_access(faction, {'mode': 'EVERYONE'}))
+        self.assertFalse(self.c.change_access(faction, {'add_guest': 'Not A Key'}))
         self.assertTrue(self.c.grant_pass(faction, 'bob', 24, 'val', now=2000))
         self.assertFalse(self.c.grant_pass(faction, 'bob', wc.ACCESS_PASS_HOURS_MAX + 1, 'val', now=2000))
         self.assertEqual({'mode': 'MEMBERS', 'people': ['ana', 'kim'], 'passes': {'bob': 2000 + 24 * 3600}},
@@ -331,11 +332,29 @@ class LandChoiceTests(unittest.TestCase):
         self.assertEqual({}, self.c.access(now=2101)[faction]['passes'], 'a pass taken back')
         self.assertIn(faction, self.c.snapshot()['access'])
         # A player's own land has no border to keep.
-        self.assertFalse(self.c.set_access('crew:val', 'OPEN', []))
+        self.assertFalse(self.c.change_access('crew:val', {'mode': 'OPEN'}))
         self.assertTrue(self.c.unclaim('far1', faction, 'val'))
         self.assertEqual({}, self.c.access())
         self.assertTrue(self.c.claim('far1', faction, 'val'))
         self.assertEqual('GUESTS', self.c.access()[faction]['mode'], 'a new claim starts from the default')
+
+    def test_guest_cap_and_idempotent_delta_edits(self):
+        faction = 'civ:gaia:Rome Empire'
+        self.assertTrue(self.c.claim('far1', faction, 'val'))
+        for i in range(wc.ACCESS_PEOPLE_MAX):
+            self.assertTrue(self.c.change_access(faction, {'add_guest': 'p%d' % i}))
+        rev = self.c.rev()
+        self.assertFalse(self.c.change_access(faction, {'add_guest': 'extra'}))
+        self.assertTrue(self.c.change_access(faction, {'add_guest': 'p0'}))
+        self.assertTrue(self.c.change_access(faction, {'remove_guest': 'absent'}))
+        self.assertTrue(self.c.change_access(faction, {'mode': 'GUESTS'}))
+        self.assertEqual(rev, self.c.rev())
+        self.assertTrue(self.c.change_access(faction, {'remove_guest': 'p0'}))
+        self.assertTrue(self.c.change_access(faction, {'add_guest': 'extra'}))
+        people = self.c.access()[faction]['people']
+        self.assertEqual(wc.ACCESS_PEOPLE_MAX, len(people))
+        self.assertIn('extra', people)
+        self.assertNotIn('p0', people)
 
     def test_a_player_claims_one_land_and_their_faction_another(self):
         self.assertFalse(self.c.claim('far1', 'crew:Bad Key'))
@@ -745,34 +764,57 @@ class ChartAgentTests(unittest.TestCase):
         token = self.chart('alpha')['chart']['claim_incarnations'][faction]
         self.assertEqual(token, self.chart('beta')['chart']['claim_incarnations'][faction])
         # From the faction's own land, not the island's: the leader keeps the border from anywhere.
-        answer = call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
-                      {'op': 'access', 'x': x, 'y': y, 'admin': 'val', 'owner': faction, 'data': {'incarnation': token, 'mode': 'OPEN', 'people': ['kim']}})
-        self.assertTrue(answer.get('ok'), answer)
+        def edit(shard, officer, data):
+            return call(self.urls[shard], TOKENS[shard], '/chart/request',
+                        {'op': 'access', 'x': x, 'y': y, 'admin': officer, 'owner': faction, 'data': dict(data, incarnation=token) if type(data) is dict else data})
+
+        # These officers submit without seeing each other's edits. Neither
+        # guest addition replaces the other, nor can it overwrite a mode edit.
+        for shard, officer, data in (('alpha', 'val', {'mode': 'MEMBERS'}),
+                                     ('alpha', 'ana', {'add_guest': 'lee'}),
+                                     ('beta', 'kim', {'add_guest': 'kim'})):
+            answer = edit(shard, officer, data)
+            self.assertTrue(answer.get('ok'), answer)
         call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
              {'op': 'pass', 'x': x, 'y': y, 'admin': 'val', 'owner': faction, 'data': {'incarnation': token, 'account': 'bob', 'hours': 6}})
         # Another faction's island is out of reach, and so is a tile the faction does not claim.
         call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
-             {'op': 'access', 'x': x, 'y': y, 'admin': 'kim', 'owner': 'civ:alpha:Carthage', 'data': {'incarnation': token, 'mode': 'MEMBERS', 'people': []}})
+             {'op': 'access', 'x': x, 'y': y, 'admin': 'kim', 'owner': 'civ:alpha:Carthage', 'data': {'incarnation': token, 'mode': 'MEMBERS'}})
         call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
-             {'op': 'access', 'x': (x + 1) % wc.CHART_WIDTH, 'y': y, 'admin': 'val', 'owner': faction, 'data': {'incarnation': token, 'mode': 'MEMBERS', 'people': []}})
+             {'op': 'access', 'x': (x + 1) % wc.CHART_WIDTH, 'y': y, 'admin': 'val', 'owner': faction, 'data': {'incarnation': token, 'mode': 'MEMBERS'}})
         self.coordinator.homes_once()
         access = self.chart('beta')['chart']['access']
         self.assertEqual(['civ:alpha:Rome Empire'], list(access))
-        self.assertEqual('OPEN', access[faction]['mode'])
-        self.assertEqual(['kim'], access[faction]['people'])
+        self.assertEqual('MEMBERS', access[faction]['mode'])
+        self.assertEqual(['kim', 'lee'], access[faction]['people'])
         self.assertEqual(['bob'], list(access[faction]['passes']))
-        for data in ({'mode': 'OPEN', 'people': []}, {'incarnation': token, 'mode': 'OPEN'},
-                     {'incarnation': token, 'mode': 'open', 'people': []},
-                     {'incarnation': token, 'mode': 'OPEN', 'people': ['Not A Key']}, 'OPEN'):
-            self.assertFalse(call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
-                                  {'op': 'access', 'x': x, 'y': y, 'admin': 'val', 'owner': faction, 'data': data}).get('ok'), data)
+
+        for shard, officer, data in (('alpha', 'ana', {'remove_guest': 'lee'}),
+                                     ('beta', 'kim', {'add_guest': 'jo'}),
+                                     ('beta', 'val', {'mode': 'OPEN'})):
+            answer = edit(shard, officer, data)
+            self.assertTrue(answer.get('ok'), answer)
+        self.coordinator.homes_once()
+        access = self.chart('alpha')['chart']['access'][faction]
+        self.assertEqual('OPEN', access['mode'])
+        self.assertEqual(['jo', 'kim'], access['people'])
+        self.assertEqual(['bob'], list(access['passes']))
+
+        legacy = {'mode': 'OPEN', 'people': ['kim']}
+        for data in (legacy, {'mode': 'open'}, {'add_guest': 'Not A Key'}, {'remove_guest': None},
+                     {'mode': 'OPEN', 'add_guest': 'kim'}, {}, 'OPEN'):
+            self.assertFalse(edit('alpha', 'val', data).get('ok'), data)
+        # A pre-upgrade queued snapshot may have passed the old agent's schema.
+        self.assertFalse(self.coordinator.chart_request(
+            {'op': 'access', 'x': x, 'y': y, 'admin': 'val', 'owner': faction, 'data': dict(legacy, incarnation=token)}, 'alpha'))
+        self.assertEqual(['jo', 'kim'], chart_.access()[faction]['people'])
         for data in ({'account': 'bob', 'hours': 1}, {'incarnation': token, 'account': 'bob', 'hours': 169},
                      {'incarnation': token, 'account': 'bob'}, {'incarnation': token, 'account': 'Bob!', 'hours': 1}):
             self.assertFalse(call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
                                   {'op': 'pass', 'x': x, 'y': y, 'admin': 'val', 'owner': faction, 'data': data}).get('ok'), data)
         self.assertFalse(call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
                               {'op': 'access', 'x': x, 'y': y, 'admin': 'val', 'owner': 'crew:val',
-                               'data': {'incarnation': token, 'mode': 'OPEN', 'people': []}}).get('ok'), "a player's own land has no border")
+                                'data': {'incarnation': token, 'mode': 'OPEN'}}).get('ok'), "a player's own land has no border")
 
     def test_queued_border_and_pass_do_not_apply_to_reclaimed_island(self):
         chart_ = self.coordinator.chart
@@ -784,7 +826,7 @@ class ChartAgentTests(unittest.TestCase):
         self.assertTrue(chart_.claim('beta', faction, 'val', now=2000))
         self.coordinator.homes_once()
         old = self.chart('alpha')['chart']['claim_incarnations'][faction]
-        for op, data in [('access', {'mode': 'OPEN', 'people': ['kim']}),
+        for op, data in [('access', {'mode': 'OPEN'}),
                          ('pass', {'account': 'bob', 'hours': 1})]:
             result = call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
                           {'op': op, 'x': x, 'y': y, 'admin': 'val', 'owner': faction,
