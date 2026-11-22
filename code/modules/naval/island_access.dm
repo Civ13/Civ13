@@ -158,6 +158,7 @@
 	return islist(incarnations) ? incarnations[claimant] : null
 
 // Queues a change only for the claim shown when the officer opened the menu.
+// The request ID confirms queueing, not a decision.
 /proc/island_access_ask(op, claimant, by, list/data, incarnation)
 	var/list/claims = islist(world_chart["claims"]) ? world_chart["claims"] : list()
 	var/key = claims[claimant]
@@ -171,8 +172,11 @@
 		"admin" = by || "world", "owner" = claimant, "data" = data))
 	if (!answer || !answer["ok"])
 		return FALSE
+	var/list/receipt = answer["result"]
+	if (!islist(receipt) || !isnum(receipt["id"]) || receipt["id"] < 1)
+		return FALSE
 	log_game("Island access: [by || "the world"] asked to [op] [claimant]'s island border: [json_encode(data)].")
-	return TRUE
+	return receipt["id"]
 
 // Names this world knows for guest accounts, so the list reads as people.
 /proc/island_guest_names()
@@ -292,6 +296,18 @@
 
 // ---------------------------------------------------------------- visitor passes
 
+// The coordinator replies separately. Never treat queueing, timeout, or an
+// older agent that cannot report the result as a successful grant or revocation.
+/proc/island_pass_wait_for_result(request_id, actor)
+	var/deadline = world.time + 600
+	while (world.time < deadline && transfer_bridge && transfer_bridge.enabled())
+		var/list/answer = transfer_bridge.request("/chart/pass-result", list("id" = request_id, "actor" = actor))
+		var/list/result = answer && answer["ok"] ? answer["result"] : null
+		if (islist(result) && (result["status"] in list("applied", "refused", "unknown")))
+			return result["status"]
+		sleep(50)
+	return "unknown"
+
 /obj/structure/recruitment_station/verb/grant_island_pass()
 	set name = "Grant Island Visitor Pass"
 	set category = null
@@ -327,18 +343,45 @@
 	if (isnull(lengths[how]) || get_dist(M, src) > 1 || get_dist(H, src) > 1 || !island_access_keeper(H) || island_access_claim_of(H) != claimant)
 		return
 	var/account = faction_roster_account(M)
-	if (!island_access_ask("pass", claimant, faction_roster_account(H), list("account" = account, "hours" = lengths[how]), incarnation))
-		to_chat(H, SPAN_WARNING("No word can be sent to the world directory right now. Try again in a minute."))
+	var/actor = faction_roster_account(H)
+	if (!account || !actor)
 		return
-	island_guest_names()[account] = M.real_name
-	if (lengths[how])
-		map.recruitment_audit(faction, "[H.real_name] granted [M.real_name] a visitor pass to the island for [how].", faction_roster_account(H) || "")
-		to_chat(H, SPAN_NOTICE("You grant [M] a visitor pass to [faction]'s island for [how]."))
-		to_chat(M, SPAN_NOTICE("[H] grants you a visitor pass to [faction]'s island for [how]. While its border admits guests, a ship can take you there."))
+	var/guest_name = M.real_name
+	var/issuer_name = H.real_name
+	var/issuer_faction = faction
+	var/requested_hours = lengths[how]
+	var/request_id = island_access_ask("pass", claimant, actor, list("account" = account, "hours" = requested_hours), incarnation)
+	if (!request_id)
+		if (!QDELETED(H) && H.client && faction_roster_account(H) == actor)
+			to_chat(H, SPAN_WARNING("The visitor pass request could not be confirmed. Check Faction Island before trying again."))
+		return
+	if (!QDELETED(H) && H.client && faction_roster_account(H) == actor)
+		to_chat(H, SPAN_NOTICE("Visitor pass request queued. Waiting for the world directory's decision."))
+	var/status = island_pass_wait_for_result(request_id, actor)
+	var/notify_issuer = !QDELETED(H) && H.client && faction_roster_account(H) == actor
+	if (status != "applied")
+		if (notify_issuer)
+			if (status == "refused")
+				to_chat(H, SPAN_WARNING("The world directory refused the visitor pass change."))
+			else
+				to_chat(H, SPAN_WARNING("No decision was confirmed. Check Faction Island before relying on the visitor pass change."))
+		return
+	island_guest_names()[account] = guest_name
+	var/notify_guest = !QDELETED(M) && M.client && faction_roster_account(M) == account
+	if (requested_hours)
+		if (map)
+			map.recruitment_audit(issuer_faction, "[issuer_name] granted [guest_name] a visitor pass to the island for [how].", actor)
+		if (notify_issuer)
+			to_chat(H, SPAN_NOTICE("The world directory recorded your [how] visitor pass for [html_encode(guest_name)]."))
+		if (notify_guest)
+			to_chat(M, SPAN_NOTICE("The world directory recorded a [how] visitor pass for you to [html_encode(issuer_faction)]'s island. Passes apply when its border admits guests."))
 	else
-		map.recruitment_audit(faction, "[H.real_name] took back [M.real_name]'s visitor pass to the island.", faction_roster_account(H) || "")
-		to_chat(H, SPAN_NOTICE("You take back [M]'s visitor pass."))
-		to_chat(M, SPAN_WARNING("[H] takes back your visitor pass to [faction]'s island."))
+		if (map)
+			map.recruitment_audit(issuer_faction, "[issuer_name] took back [guest_name]'s visitor pass to the island.", actor)
+		if (notify_issuer)
+			to_chat(H, SPAN_NOTICE("The world directory recorded the revocation of [html_encode(guest_name)]'s visitor pass."))
+		if (notify_guest)
+			to_chat(M, SPAN_WARNING("The world directory recorded the revocation of your visitor pass to [html_encode(issuer_faction)]'s island."))
 
 // ---------------------------------------------------------------- on the island
 

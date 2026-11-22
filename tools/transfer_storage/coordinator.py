@@ -195,6 +195,8 @@ class Coordinator(TrainCustody):
             source TEXT NOT NULL, ckey TEXT NOT NULL, region TEXT NOT NULL, PRIMARY KEY (source, ckey))''')
         self.db.execute('''CREATE TABLE IF NOT EXISTS decided(
             store TEXT NOT NULL, id INTEGER NOT NULL, PRIMARY KEY(store, id))''')
+        self.db.execute('''CREATE TABLE IF NOT EXISTS chart_pass_result(
+            store TEXT NOT NULL, id INTEGER NOT NULL, applied INTEGER NOT NULL, PRIMARY KEY(store, id))''')
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('epoch', ?)", (secrets.token_hex(8),))
         self.db.execute("INSERT OR IGNORE INTO ledger VALUES ('rev', '0')")
 
@@ -664,7 +666,7 @@ class Coordinator(TrainCustody):
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
                 land_done[name] = ids
                 self.record_land_sample(name, a.get('land_sample'))
-            chart_done = {}
+            chart_done, chart_pass_results = {}, {}
             for name, a in asked.items():
                 store = 'chart:' + str(a.get('store') or '')
                 requests = [r for r in a.get('chart_requests') or [] if type(r) is dict and isinstance(r.get('id'), int)]
@@ -672,11 +674,18 @@ class Coordinator(TrainCustody):
                 old = {i for (i,) in self.db.execute('SELECT id FROM decided WHERE store = ?', (store,))}
                 for i in old - set(ids):
                     self.db.execute('DELETE FROM decided WHERE store = ? AND id = ?', (store, i))
+                    self.db.execute('DELETE FROM chart_pass_result WHERE store = ? AND id = ?', (store, i))
                 for r in requests:
                     if r['id'] not in old:
-                        self.chart_request(r, name)
+                        applied = self.chart_request(r, name)
                         self.db.execute('INSERT OR IGNORE INTO decided VALUES (?, ?)', (store, r['id']))
+                        # Commit the decision alongside its pass mutation. A lost /homes
+                        # reply can resend the decision without changing the pass again.
+                        if r.get('op') == 'pass':
+                            self.db.execute('INSERT INTO chart_pass_result VALUES (?, ?, ?)', (store, r['id'], bool(applied)))
                 chart_done[name] = ids
+                chart_pass_results[name] = [{'id': i, 'applied': bool(applied)} for i, applied in self.db.execute(
+                    'SELECT id, applied FROM chart_pass_result WHERE store = ? ORDER BY id', (store,))]
             # Nation requests, each region's in its own order. An outcome is
             # kept until the agent drops the request, so a lost answer is
             # sent again rather than decided twice.
@@ -718,6 +727,7 @@ class Coordinator(TrainCustody):
                     'train_decisions': lease_decisions.get(name, []),
                     'lands': lands, 'land_done': land_done.get(name, []),
                     'chart_done': chart_done.get(name, []),
+                    'chart_pass_results': chart_pass_results.get(name, []),
                     'nations': nations, 'nation_results': nation_results.get(name, []),
                     'colony_grants': [{'ckey': c, 'faction': f} for c, f in self.db.execute(
                         'SELECT ckey, faction FROM colony_grant WHERE region = ? ORDER BY ckey', (name,))],

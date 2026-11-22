@@ -111,6 +111,23 @@ class IslandAccess(unittest.TestCase):
         self.assertLess(crossing.index(refresh), crossing.index("island_access_departure_refusal(id, H)"))
         self.assertLess(crossing.index("island_access_departure_refusal(id, H)"), crossing.index("sea_crossing_strip("))
 
+    def test_pass_messages_and_audit_wait_for_the_matching_directory_result(self):
+        queue = proc(self.mod, "/proc/island_access_ask(")
+        self.assertIn('return receipt["id"]', queue)
+        wait = proc(self.mod, "/proc/island_pass_wait_for_result(")
+        self.assertIn('"/chart/pass-result", list("id" = request_id, "actor" = actor)', wait)
+        self.assertIn('return "unknown"', wait)
+        verb = proc(self.mod, "/obj/structure/recruitment_station/verb/grant_island_pass()")
+        before, after = verb.split('\n\tisland_guest_names()[account] = guest_name')
+        self.assertIn('Visitor pass request queued.', before)
+        self.assertIn('var/status = island_pass_wait_for_result(request_id, actor)', before)
+        self.assertIn('if (status != "applied")', before)
+        self.assertTrue(before.rstrip().endswith('return'))
+        self.assertNotIn('map.recruitment_audit', before)
+        self.assertNotIn('to_chat(M,', before)
+        self.assertEqual(2, after.count('map.recruitment_audit'))
+        self.assertEqual(2, after.count('to_chat(M,'))
+
     def test_the_island_puts_visitors_without_leave_ashore(self):
         claim = proc(read("code/modules/naval/island_claim.dm"), "/proc/island_claim_check()")
         self.assertIn("island_access_sweep(parent)", claim)

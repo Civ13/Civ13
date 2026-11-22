@@ -8,6 +8,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from unittest.mock import patch
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, ROOT)
@@ -639,6 +640,83 @@ class ChartAgentTests(unittest.TestCase):
         answer = call(self.urls[region], TOKENS[region], '/chart')
         self.assertTrue(answer.get('ok'), answer)
         return answer['result']
+
+    def test_visitor_pass_receipt_distinguishes_queue_refusal_grant_and_revoke(self):
+        directory = self.coordinator.chart
+        x, y = first_land(directory)
+        owner = 'civ:alpha:Rome'
+        directory.reveal('crew:val', x, y)
+        directory.db.execute("UPDATE chart_tile SET state='LANDED', region='beta' WHERE x=? AND y=?", (x, y))
+        self.assertTrue(directory.claim('beta', owner, 'val'))
+
+        def queue(hours, account='visitor'):
+            answer = call(self.urls['alpha'], TOKENS['alpha'], '/chart/request',
+                          {'op': 'pass', 'owner': owner, 'x': x, 'y': y, 'admin': 'val',
+                           'data': {'account': account, 'hours': hours,
+                                    'incarnation': directory.claim_incarnation(owner)}})
+            self.assertTrue(answer['ok'], answer)
+            return answer['result']['id']
+
+        def status(request_id, actor='val'):
+            answer = call(self.urls['alpha'], TOKENS['alpha'], '/chart/pass-result', {'id': request_id, 'actor': actor})
+            self.assertTrue(answer['ok'], answer)
+            return answer['result']['status']
+
+        grant = queue(6)
+        self.assertEqual('pending', status(grant))
+        self.assertEqual('unknown', status(grant, 'visitor'))
+        self.assertNotIn('visitor', directory.access()[owner]['passes'])
+        real_call = call
+
+        def lost_homes(url, token, path, body=None, timeout=5):
+            if url == self.urls['alpha'] and path == '/homes':
+                raise OSError('simulated reply loss before the agent receives it')
+            return real_call(url, token, path, body, timeout)
+
+        with patch('tools.transfer_storage.coordinator.call', side_effect=lost_homes):
+            self.coordinator.homes_once()
+        self.assertEqual('pending', status(grant))
+        expiry = directory.access()[owner]['passes']['visitor']
+        self.coordinator.close()
+        self.coordinator = Coordinator(self.db, 'g', 'alpha')
+        directory = self.coordinator.chart
+        with patch.object(directory, 'grant_pass', side_effect=AssertionError('decided pass replayed')):
+            self.coordinator.homes_once()
+        self.assertEqual('applied', status(grant))
+        self.assertEqual('unknown', status(grant, 'visitor'))
+        self.assertEqual(expiry, directory.access()[owner]['passes']['visitor'])
+        self.assertEqual(expiry, self.chart('alpha')['chart']['access'][owner]['passes']['visitor'])
+        self.coordinator.homes_once()
+        self.assertEqual([], list(self.coordinator.db.execute('SELECT id FROM chart_pass_result')))
+        origin_copy = RegionStore(os.path.join(self.tmp.name, 'alpha.sqlite'), 'alpha', 'g')
+        try:
+            self.assertEqual({'status': 'applied'}, origin_copy.chart_pass_result(grant, 'val'))
+        finally:
+            origin_copy.close()
+
+        for i in range(wc.ACCESS_PASSES_MAX - 1):
+            self.assertTrue(directory.grant_pass(owner, f'guest{i}', 1, 'val'))
+        refused = queue(6, 'extra')
+        self.assertEqual('pending', status(refused))
+        self.coordinator.homes_once()
+        self.assertEqual('refused', status(refused))
+        self.assertNotIn('extra', directory.access()[owner]['passes'])
+
+        revoke = queue(0)
+        self.assertEqual('pending', status(revoke))
+        self.coordinator.homes_once()
+        self.assertEqual('applied', status(revoke))
+        self.assertNotIn('visitor', directory.access()[owner]['passes'])
+        self.assertEqual('refused', status(refused), 'each receipt remains specific to its request')
+
+    def test_legacy_chart_ack_is_not_a_visitor_pass_success(self):
+        store = self.stores['alpha']
+        answer = store.request_chart('pass', 0, 0, 'val', 'civ:alpha:Rome', data={'account': 'visitor', 'hours': 1, 'incarnation': '0' * 32})
+        request_id = answer['id']
+        self.assertEqual({'status': 'pending'}, store.chart_pass_result(request_id, 'val'))
+        homes = store.account_requests()
+        store.apply_homes(homes['epoch'], homes['rev'], [], [], chart_done=[request_id])
+        self.assertEqual({'status': 'unknown'}, store.chart_pass_result(request_id, 'val'))
 
     def test_every_agent_gets_the_chart_and_admin_requests_wait_for_the_pass(self):
         seen = self.chart('beta')['chart']

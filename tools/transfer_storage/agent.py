@@ -98,7 +98,7 @@ def _routes(store, radio):
                                                  body.get('lands'), body.get('land_done'), body.get('chart'),
                                                  body.get('chart_done'), body.get('colony_grants'),
                                                  body.get('nations'), body.get('nation_results'), body.get('start_region'),
-                                                 body.get('travelling')),
+                                                 body.get('travelling'), body.get('chart_pass_results')),
         # Land stages (docs/land-stages.md): DM reads /lands, admins queue /land/set.
         '/lands': lambda body: store.lands(),
         '/land/sample': lambda body: store.land_sample(body.get('players'), body.get('living'), body.get('colonies')),
@@ -113,6 +113,7 @@ def _routes(store, radio):
         '/chart': lambda body: store.chart(),
         '/chart/request': lambda body: store.request_chart(body.get('op'), body.get('x'), body.get('y'), body.get('admin'),
                                                            body.get('owner'), body.get('voyage'), body.get('data')),
+        '/chart/pass-result': lambda body: store.chart_pass_result(body.get('id'), body.get('actor')),
     }
 
 
