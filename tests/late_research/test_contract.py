@@ -558,5 +558,33 @@ class SkillMastery(unittest.TestCase):
         self.assertIn("skill_mastery = clean_skill_mastery(skill_mastery)", imp)
         self.assertIn("skill_mastery = list()", imp)
 
+
+class EraBills(unittest.TestCase):
+    """Late capstones need a bill of scarce materials on book-research worlds."""
+    def setUp(self):
+        self.src = read("code/modules/research_tree/era_bills.dm")
+        self.book = read("code/modules/research_tree/book_research.dm")
+    def test_included_after_demonstrations(self):
+        dme = read("civ13.dme")
+        self.assertLess(dme.index("research_tree\\demonstrations.dm\""), dme.index("research_tree\\era_bills.dm\""))
+    def test_tables_are_lazy_and_book_worlds_only(self):
+        self.assertNotIn("var/global", self.src)
+        self.assertIn("map.book_research_enabled()", proc(self.src, "/proc/node_bill"))
+    def test_no_faction_check_on_delivery(self):
+        take = proc(self.src, "/obj/structure/research_bench/proc/take_bill_delivery")
+        for word in ("civilization", "faction", "knows_research_prereqs"):
+            self.assertNotIn(word, take)
+        self.assertLess(self.book.index("take_bill_delivery(W, user, B, N)"), self.book.index("if (!user.knows_research_prereqs(assigned_node))"))
+    def test_the_chapter_waits_for_the_bill_and_clears_it(self):
+        work = proc(self.book, "/obj/item/weapon/book/proc/add_research_work")
+        self.assertLess(work.index("bill_complete(node_id)"), work.index("add_research_chapter("))
+        self.assertIn("clear_research_bill(node_id)", proc(self.book, "/obj/item/weapon/book/proc/add_research_chapter"))
+    def test_both_windows_list_the_bill(self):
+        ui = read("code/modules/research_tree/book_interface.dm")
+        self.assertEqual(ui.count("bill_rows("), 2)
+    def test_copies_never_carry_deliveries(self):
+        self.assertEqual(read("code/modules/1713/book.dm").count("!length(research_bills)"), 2)
+
+
 if __name__ == "__main__":
     unittest.main()
