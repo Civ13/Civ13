@@ -181,15 +181,21 @@
 
 // How a handle of this material changes a tool against a plain wood handle:
 // list(durability multiplier, work speed multiplier). Tougher wood lasts
-// longer; lighter wood swings faster.
+// longer; lighter wood swings faster. A sawn plank handle gives +35% to both;
+// a reinforced (iron) handle lasts longest (+50%) at the usual speed.
 /proc/tool_handle_effects(handle_material_name)
+	switch (handle_material_name)
+		if ("woodplank")
+			return list(1.35, 1.35)
+		if ("iron")
+			return list(1.5, 1)
 	var/material/wood = get_material_by_name("wood")
 	var/material/M = get_material_by_name(handle_material_name)
 	if (!wood || !M)
 		return list(1, 1)
 	return list(max(0.5, min(1.5, M.integrity / wood.integrity)), max(0.75, min(1.25, wood.weight / max(1, M.weight))))
 
-// "lasts 50% longer and works 25% faster than with a wood handle", for examine
+// "lasts 35% longer and works 35% faster than with a wood handle", for examine
 // text and the Crafting window.
 /proc/tool_handle_effect_text(handle_material_name)
 	var/list/effects = tool_handle_effects(handle_material_name)

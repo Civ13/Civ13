@@ -228,7 +228,7 @@ var/handle_ci_retired = 0
 	// The handle's wood carries into a recipe-crafted tool: a plank handle
 	// lasts longer and works faster than a wood one, the same as fitting a
 	// head by hand.
-	handle_ci_expect(tool_handle_effect_text("woodplank") == "lasts 50% longer and works 25% faster than with a wood handle" && tool_handle_effect_text("iron") == "lasts 50% longer and works 18% slower than with a wood handle" && tool_handle_effect_text("wood") == "works the same as with a wood handle", "handle effect text matches the Atlas notes", list("woodplank"=tool_handle_effect_text("woodplank"),"iron"=tool_handle_effect_text("iron"),"wood"=tool_handle_effect_text("wood")))
+	handle_ci_expect(tool_handle_effect_text("woodplank") == "lasts 35% longer and works 35% faster than with a wood handle" && tool_handle_effect_text("iron") == "lasts 50% longer than with a wood handle" && tool_handle_effect_text("wood") == "works the same as with a wood handle", "handle effect text matches the Atlas notes", list("woodplank"=tool_handle_effect_text("woodplank"),"iron"=tool_handle_effect_text("iron"),"wood"=tool_handle_effect_text("wood")))
 	var/list/handle_tools = list()
 	for (var/handle_wood in list("wood", "woodplank"))
 		C = new("stone pickaxe", slot_back)
@@ -245,7 +245,7 @@ var/handle_ci_retired = 0
 	var/obj/item/weapon/material/pickaxe/wood_pick = handle_tools["wood"]
 	var/obj/item/weapon/material/pickaxe/plank_pick = handle_tools["woodplank"]
 	if (wood_pick && plank_pick)
-		handle_ci_expect(plank_pick.maxhealth == round(wood_pick.maxhealth * 1.5) && plank_pick.usespeed > wood_pick.usespeed && plank_pick.health == plank_pick.maxhealth, "plank handle makes a sturdier, faster stone pickaxe", list("wood_max"=wood_pick.maxhealth,"plank_max"=plank_pick.maxhealth,"wood_speed"=wood_pick.usespeed,"plank_speed"=plank_pick.usespeed))
+		handle_ci_expect(plank_pick.maxhealth == round(wood_pick.maxhealth * 1.35) && plank_pick.usespeed > wood_pick.usespeed && plank_pick.health == plank_pick.maxhealth, "plank handle makes a sturdier, faster stone pickaxe", list("wood_max"=wood_pick.maxhealth,"plank_max"=plank_pick.maxhealth,"wood_speed"=wood_pick.usespeed,"plank_speed"=plank_pick.usespeed))
 	// The completed stone hatchet goes to the current active hand only when
 	// the last input stack has actually vacated that hand.
 	C = new("stone hatchet", slot_back)
