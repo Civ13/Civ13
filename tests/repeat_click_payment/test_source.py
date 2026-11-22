@@ -287,13 +287,21 @@ class RepeatClickPayment(unittest.TestCase):
 
     def test_mines_shells_and_printing_press(self):
         grenades = read('code/game/objects/items/weapons/grenades/grenade.dm')
-        self.assertEqual(grenades.count('if (!QDELETED(src) && loc == user)'), 3)
+        self.assertEqual(grenades.count('if (!QDELETED(src) && loc == user)'), 2)
         for declaration in ('/obj/item/weapon/grenade/secondary_attack_self',
-                            '/obj/item/weapon/grenade/antitank/n75/secondary_attack_self',
-                            '/obj/item/weapon/grenade/antitank/type99/secondary_attack_self'):
+                            '/obj/item/weapon/grenade/antitank/proc/place_as_antitank_mine'):
             with self.subTest(declaration=declaration):
                 body = proc('code/game/objects/items/weapons/grenades/grenade.dm', declaration)
                 self.assert_order(body, 'if (do_after(user,', 'if (!QDELETED(src) && loc == user)', 'BT = new', 'qdel(src)')
+        for subtype in ('n75', 'type99'):
+            body = proc('code/game/objects/items/weapons/grenades/grenade.dm',
+                        f'/obj/item/weapon/grenade/antitank/{subtype}/secondary_attack_self')
+            self.assertIn('return place_as_antitank_mine(user)', body)
+        placement = proc('code/game/objects/items/weapons/grenades/grenade.dm',
+                         '/obj/item/weapon/grenade/antitank/proc/place_as_antitank_mine')
+        self.assert_order(placement, 'if (secondary_action)', 'WWinput(', 'if (inp == "Yes")',
+                          'if (do_after(user, 60, src))', 'if (!QDELETED(src) && loc == user)',
+                          'BT = new', 'BT.origin = src.type', 'firer = user', 'qdel(src)')
         shells = proc('code/modules/projectiles/ammo_crafting.dm', '/obj/item/stack/ammopart/casing/tank/attack_self')
         self.assert_order(shells, 'if (crafting_shells)', 'crafting_shells = TRUE', 'Which type of shell',
                           'if (QDELETED(src) || loc != user)', 'new/obj/item/cannon_ball/shell/tank', 'crafting_shells = FALSE\n\t\tto_chat', 'qdel(src)')

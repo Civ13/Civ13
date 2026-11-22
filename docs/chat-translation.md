@@ -53,7 +53,9 @@ talks to it.
 - English lines for English readers (plain ASCII where at least a quarter of
   the words are common English words) never leave the world. Otherwise one
   `POST /translate {"text","target"}` call serves every reader of the same
-  text and language, and the result is cached in memory (1000 entries).
+  text and language. Translations and confirmed same-language replies are
+  cached in memory (1000 entries). Other empty replies leave that line
+  unchanged without preventing translation of an identical later line.
   Limits: 500 characters, 40 distinct texts waiting (oldest dropped), 40
   requests per window per minute, 20 s per call, five minutes off after three
   failed calls in a row. Nothing is logged or written to disk.
