@@ -233,6 +233,21 @@ To fill up at the trackside:
 
 The locomotive doesn't have to be at the front. Hitched in behind wagons it **pushes** them, and in the middle of a train it drives the wagons on both sides of it.
 
+### Building a whole train at a rail works
+
+Instead of assembling every car from its own kit, you can draw the whole train on paper and have a **rail works** build it in one go, coupled and furnished.
+
+![The train designer: the train as a strip of cars at the top, stock cars to add on the left, the plan of a drawn car in the middle, and the part description and checks on the right](../images/civ13-train-designer.png)
+
+1. **Draw the train.** Hold a blank **ship's draught** and a pen or pencil, use the draught and choose **Draw a train on the sheet**. Add cars from the front: any locomotive, tender or car that has a kit, or a **drawn car** of your own. A drawn car is three tiles wide and four or eight long: pick its floor and roof, put a wall, window, door, railing or other side along each outer edge, close its ends, and stand a fitting on any tile (seats, berths, booths, tables, a stove, sink or fridge, cabinets, crates, a brake wheel, an ice bunker and cold lockers). Click any part to read what it is, what it is for and how it is made. The checks list what would stop the train being built or make it run badly, and **Save to the sheet** keeps it. A train can have up to 16 cars and 120 tiles.
+2. **Build the rail works** (30 iron; **Rail & Steam**) facing the track, with **one tile between it and the rails**, like a rail warehouse office.
+3. **Stock it** with iron, steel, wood, glass and cloth. Each stock car costs what its kit costs; a drawn car costs its frame (12 iron, or 22 for an eight-tile car) plus every floor, roof, side and fitting drawn on it.
+4. **Use the train sheet on the works** and choose which way along the track the train should head. Its front car is built on the rail tile in front of the works and the rest of the train behind it, so you need that much **straight track** with a **clear tile either side** all along it. The works also needs the research for every car on the sheet.
+
+The train comes out coupled up, with its engines cold and empty: fuel and water them before driving. A drawn car behaves like any other car: it can be taken apart into a kit, stored in a rail warehouse and put back together.
+
+To copy a train, stand it on the track in front of the works, hold a blank sheet of paper and use the works: **Draw the train on the track** draws it onto the sheet. Train sheets also share as design codes, like ship's draughts.
+
 ## Couplings
 
 Every wagon, car and engine has a **coupling** at each end. You can see it on the end of the car: a hook with its link hanging free, or a brass screw drawn tight between two hitched cars.
