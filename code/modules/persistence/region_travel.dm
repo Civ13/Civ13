@@ -889,11 +889,6 @@ var/global/list/region_stopped_alerted = list()
 	var/list/stayed = out["stayed"]
 	return length(out["departed"]) ? "departed" : (stayed[H] || "The trail is busy. Try again in a moment.")
 
-// Sends several characters as one transfer: one escrow carries them all, so
-// a ship's crew (naval/ship_crossing.dm) leave together and arrive together.
-// The transfer agent keeps one transfer in flight per land, so travellers sent
-// one after another would wait on each other ("The trail is busy").
-// Returns list("departed" = list(H), "stayed" = list(H = reason)).
 // Special departures can plan belongings that stay without touching them,
 // and apply world changes only when the transfer agent has recorded the trip.
 /obj/structure/region_gate/proc/departure_leave_behind(mob/living/human/H)
@@ -908,6 +903,11 @@ var/global/list/region_stopped_alerted = list()
 /obj/structure/region_gate/proc/departure_before_finish(mob/living/human/H, list/leave_behind, turf/origin)
 	return
 
+// Sends several characters as one transfer: one escrow carries them all, so
+// a ship's crew (naval/ship_crossing.dm) leave together and arrive together.
+// The transfer agent keeps one transfer in flight per land, so travellers sent
+// one after another would wait on each other ("The trail is busy").
+// Returns list("departed" = list(H), "stayed" = list(H = reason)).
 /obj/structure/region_gate/proc/depart_party(list/members)
 	var/list/departed = list()
 	var/list/stayed = list()
