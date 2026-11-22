@@ -44,6 +44,14 @@ var/probe_runtime_error = FALSE
 	text2file(json_encode(list("checks" = probe_checks, "failures" = probe_failures, "runtime_error" = probe_runtime_error)), "result.json")
 	del(world)
 
+// Floor exercise waits succeed this many times, then fail as if the athlete moved.
+var/floor_probe_waits = 0
+/mob/living/human/floor_exercise_wait(duration)
+	if (floor_probe_waits <= 0)
+		return FALSE
+	floor_probe_waits--
+	return TRUE
+
 /proc/probe_human(x, y, name)
 	var/mob/living/human/H = new(locate(x, y, 1))
 	H.name = name
@@ -302,7 +310,26 @@ var/probe_runtime_error = FALSE
 	probe_check(athlete.floor_exercise_ready("push-ups") && athlete.floor_exercise_ready("sit-ups"), "a fresh athlete can exercise on the floor")
 	probe_check(floor_exercise_skill("push-ups") == "strength" && floor_exercise_skill("sit-ups") == "stamina", "push-ups train strength and sit-ups stamina")
 	athlete.exercise_fatigue = 6
-	probe_check(!athlete.floor_exercise_ready("sit-ups"), "fatigue blocks floor exercise")
+	athlete.exercise_rest_epoch = world.time
+	probe_check(athlete.floor_exercise_ready("sit-ups"), "fatigue pauses floor exercise gains instead of refusing a session")
+	// Continuous session (Val, 2026-11-22): one choice keeps going set after
+	// set, draining stamina, until the athlete moves or runs out of breath.
+	athlete.exercise_fatigue = 0
+	athlete.exercise_rest_epoch = world.time
+	floor_probe_waits = 7
+	var/strength_before = athlete.stats["strength"][1]
+	var/breath = athlete.stats["stamina"][1]
+	athlete.do_floor_exercise("push-ups")
+	probe_check(!athlete.floor_exercise_busy && athlete.exercise_fatigue == 4 && athlete.stats["strength"][1] > strength_before && athlete.stats["stamina"][1] < breath, "floor exercise keeps going set after set and drains stamina")
+	athlete.exercise_fatigue = 0
+	athlete.stats["stamina"] = list(10, 40)
+	floor_probe_waits = 20
+	athlete.do_floor_exercise("push-ups")
+	probe_check(!athlete.floor_exercise_busy && floor_probe_waits == 18 && athlete.stats["stamina"][1] < athlete.training_stamina_cost(80), "floor exercise stops when stamina runs out")
+	athlete.stats["stamina"] = list(5, 40)
+	floor_probe_waits = 20
+	athlete.do_floor_exercise("push-ups")
+	probe_check(floor_probe_waits == 20, "a winded athlete cannot start floor exercise")
 	probe_check(athlete.persistence_runtime_var("floor_exercise_busy"), "an exercise in progress is not saved")
 
 	// Lockbox

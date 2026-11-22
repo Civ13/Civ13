@@ -1,11 +1,10 @@
 // Lifting weights: stones in three sizes, bronze hand weights and the Modern
-// barbell. Held in the hand and lifted one repetition per use; six lifts make
-// a set. A weight that is too heavy slips, one that is too light teaches
+// barbell. Held in the hand; one use starts a session of lifts that runs until
+// the lifter stops or tires, and six lifts make a set. A weight that is too heavy slips, one that is too light teaches
 // little, and hauling a heavy one about is a workout of its own.
 #define LIFT_SET_REPS 6
 #define LIFT_HEAVE_TIME 8
 #define LIFT_HOLD_TIME 12
-#define LIFT_SET_WINDOW 300
 #define CARRY_SET_TILES 40
 
 /obj/item/weapon/lifting_weight
@@ -34,6 +33,8 @@
 	var/tmp/reps = 0
 	var/tmp/lifting = FALSE
 	var/tmp/carry_tiles = 0
+	// Set when a session has told the lifter they are worn out.
+	var/tmp/winded = FALSE
 
 /obj/item/weapon/lifting_weight/heavy
 	name = "heavy lifting stone"
@@ -97,7 +98,7 @@
 	carry_trains = TRUE
 
 /obj/item/weapon/lifting_weight/persistence_runtime_var(key)
-	return (key in list("reps", "lifting", "carry_tiles")) || ..()
+	return (key in list("reps", "lifting", "carry_tiles", "winded")) || ..()
 
 // How the weight sits against the holder's strength: -1 too heavy, 0 right, 1 too light.
 /obj/item/weapon/lifting_weight/proc/heft_for(mob/living/human/H)
@@ -113,7 +114,7 @@
 	var/mob/living/human/H = user
 	if (!istype(H))
 		return
-	to_chat(H, "Hold it and use it in your hand to lift it; six lifts make a set.[carry_trains ? " Carrying it about also trains strength and stamina." : ""]")
+	to_chat(H, "Hold it and use it in your hand to start lifting; you keep lifting until you stop or tire, and six lifts make a set.[carry_trains ? " Carrying it about also trains strength and stamina." : ""]")
 	if (H.stats["strength"][1] >= skill_cap)
 		to_chat(H, "<span class='notice'>You have grown past anything this can teach you.</span>")
 		return
@@ -167,12 +168,20 @@
 	if (!istype(H) || !in_hand_of(H))
 		return
 	if (lifting)
+		// Using it again ends the session after the lift in hand.
+		if (H.exercise_equipment == src)
+			H.cancel_exercise()
+		to_chat(H, "<span class='notice'>You finish this lift and set \the [src] down.</span>")
 		return
 	var/refusal = lift_refusal(H)
+	if (!refusal)
+		refusal = H.exercise_need_refusal()
+	if (!refusal && !H.training_has_stamina(LIFT_HEAVE_TIME + LIFT_HOLD_TIME, TRUE))
+		refusal = "You are too out of breath to train. Rest a little first."
 	if (refusal)
 		to_chat(H, "<span class='warning'>[refusal]</span>")
 		return
-	lift(H)
+	train(H)
 
 /obj/item/weapon/lifting_weight/proc/lift_wait(mob/living/human/H, duration)
 	return do_after(H, duration, H, TRUE, FALSE)
@@ -182,52 +191,81 @@
 	var/short = lift_need - H.stats["strength"][1]
 	return short > 0 ? clamp(short * 3, 15, 90) : 0
 
-/obj/item/weapon/lifting_weight/proc/lift(mob/living/human/H)
-	if (H.exercise_equipment != src)
-		reps = 0
-		to_chat(H, "<span class='notice'>You plant your feet and take hold of \the [src]. Lift it [LIFT_SET_REPS] times for a set.</span>")
-	H.hold_exercise(src, LIFT_SET_WINDOW)
+// One use starts a session: lift after lift, a set every LIFT_SET_REPS, until
+// the lifter stops, moves, lets go or runs out of breath.
+/obj/item/weapon/lifting_weight/proc/train(mob/living/human/H)
+	H.cancel_exercise()
+	H.exercise_equipment = src
+	var/token = ++H.exercise_token
+	reps = 0
+	winded = FALSE
 	lifting = TRUE
+	H.visible_message("<span class='notice'>[H] plants their feet and starts lifting \the [src].</span>", "<span class='notice'>You plant your feet and start lifting \the [src]; every [LIFT_SET_REPS] lifts make a set. You will keep going until you tire. Use it again, move or use Stop Exercise to stop.</span>")
+	var/stop_reason = null
+	while (isnull(stop_reason))
+		stop_reason = lift(H, token)
+	lifting = FALSE
+	lift_state(FALSE)
+	reps = 0
+	if (H.exercise_token == token)
+		H.exercise_equipment = null
+		H.exercise_token++
+	if (stop_reason)
+		to_chat(H, "<span class='warning'>[stop_reason]</span>")
+
+// One lift of a session: null to carry on, or why it ended ("" when the
+// player ended it and has already been told).
+/obj/item/weapon/lifting_weight/proc/lift(mob/living/human/H, token)
+	if (H.exercise_token != token || QDELETED(H))
+		return ""
+	if (!in_hand_of(H))
+		return "You stop lifting."
+	var/refusal = lift_refusal(H)
+	if (refusal)
+		return refusal
+	var/duration = LIFT_HEAVE_TIME + LIFT_HOLD_TIME
+	if (!H.training_has_stamina(duration))
+		return "You are out of breath and set \the [src] down."
 	var/turf/start = H.loc
-	var/ok = lift_wait(H, LIFT_HEAVE_TIME) && in_hand_of(H) && H.loc == start
+	var/ok = lift_wait(H, LIFT_HEAVE_TIME) && H.exercise_token == token && in_hand_of(H) && H.loc == start
 	if (ok && prob(fumble_chance(H)))
 		lifting = FALSE
 		H.visible_message("<span class='warning'>[H] strains at \the [src] and it slips from their hands.</span>", "<span class='warning'>\The [src] is too heavy for you yet. It slips from your hands.</span>")
 		H.drop_from_inventory(src)
-		return FALSE
+		return ""
 	if (ok)
 		lift_state(TRUE)
-		ok = lift_wait(H, LIFT_HOLD_TIME) && in_hand_of(H) && H.loc == start
+		ok = lift_wait(H, LIFT_HOLD_TIME) && H.exercise_token == token && in_hand_of(H) && H.loc == start
 	lift_state(FALSE)
-	lifting = FALSE
-	if (!ok || H.exercise_equipment != src)
-		if (in_hand_of(H))
-			to_chat(H, "<span class='warning'>You lose the lift. Hold still and try that one again.</span>")
-		return FALSE
-	reps++
-	if (reps < LIFT_SET_REPS)
-		if (prob(30))
-			H.visible_message("<span class='notice'>[H] grunts and heaves \the [src] overhead.</span>", "<span class='notice'>You grunt and heave \the [src] overhead. [reps]/[LIFT_SET_REPS].</span>")
-		else
-			to_chat(H, "<span class='notice'>Up and down. [reps]/[LIFT_SET_REPS].</span>")
-		return TRUE
-	finish_set(H)
-	return TRUE
-
-/obj/item/weapon/lifting_weight/proc/finish_set(mob/living/human/H)
-	H.exercise_equipment = null
-	H.exercise_token++
+	if (H.exercise_token != token)
+		return ""
+	if (!ok)
+		return in_hand_of(H) ? "You lose the lift and stop." : "You stop lifting."
+	H.training_spend_stamina(duration)
+	if (++reps < LIFT_SET_REPS)
+		if (prob(10))
+			H.visible_message("<span class='notice'>[H] grunts and heaves \the [src] overhead.</span>")
+		return null
 	reps = 0
-	var/refusal = H.exercise_refusal()
+	return finish_set(H)
+
+// A finished set pays strength unless the lifter is worn out; null to carry on.
+/obj/item/weapon/lifting_weight/proc/finish_set(mob/living/human/H)
+	var/refusal = H.exercise_need_refusal()
 	if (refusal)
-		to_chat(H, "<span class='warning'>Set done, but it taught you nothing. [refusal]</span>")
-		return
+		return "Set done, but it taught you nothing. [refusal]"
+	if (H.exercise_fatigued())
+		if (!winded)
+			winded = TRUE
+			to_chat(H, "<span class='warning'>You are worn out: your sets teach nothing until you recover a little (about a minute). You keep lifting.</span>")
+		return null
+	winded = FALSE
 	var/light = heft_for(H) > 0
 	if (!H.exercise_reward("strength", reward_rate, skill_cap, light ? 0.25 : 1))
-		to_chat(H, "<span class='notice'>Set done. You have grown past anything \the [src] can teach you.</span>")
-		return
+		return "You have grown past anything \the [src] can teach you."
 	H.exercise_spend(2)
-	H.visible_message("<span class='notice'>[H] sets \the [src] down, breathing hard.</span>", "<span class='notice'>Set done. [light ? "\The [src] is light for you now and taught you little. " : ""]Fatigue: [H.exercise_fatigue]/6.</span>")
+	to_chat(H, "<span class='notice'>Set done. [light ? "\The [src] is light for you now and taught you little. " : ""]Fatigue: [H.exercise_fatigue]/6.</span>")
+	return null
 
 // Called for each tile a human walks onto with a weight in hand (turf/Entered).
 /mob/living/human/proc/exercise_carry_step()
@@ -255,5 +293,4 @@
 #undef LIFT_SET_REPS
 #undef LIFT_HEAVE_TIME
 #undef LIFT_HOLD_TIME
-#undef LIFT_SET_WINDOW
 #undef CARRY_SET_TILES

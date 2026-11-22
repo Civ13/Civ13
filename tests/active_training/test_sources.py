@@ -68,15 +68,28 @@ class TrainingGearSources(unittest.TestCase):
         self.assertIn('if (result_type == /obj/item/weapon/lifting_weight || result_type == /obj/item/weapon/skipping_rope)\n\t\treturn 0\n\treturn 30', CORE)
         self.assertIn('map.ordinal_age >= 8', CORE)
 
-    def test_no_waiting_timers_pay_skills(self):
-        """Lifts and skips are started by hand and strides by the movement keys; nothing loops by itself."""
+    def test_sessions_run_continuously_until_stopped(self):
+        """One use starts a session (Val, 2026-11-22): it repeats lift by lift and
+        skip by skip, draining stamina, and only the player, the stamina pool or a
+        real refusal ends it. Nothing trains on a timer by itself."""
         self.assertIn('#define LIFT_HEAVE_TIME 8', GEAR)
         self.assertIn('#define LIFT_HOLD_TIME 12', GEAR)
         self.assertIn('#define SKIP_TIME 20', COURSE)
+        self.assertIn('while (isnull(stop_reason))\n\t\tstop_reason = lift(H, token)', GEAR)
+        self.assertIn('while (isnull(stop_reason))\n\t\tstop_reason = skip(H, token)', COURSE)
+        self.assertIn('H.training_spend_stamina(duration)', GEAR)
+        self.assertIn('H.training_spend_stamina(SKIP_TIME)', COURSE)
         for text in (GEAR, COURSE):
-            self.assertNotIn('while (', text)
             self.assertNotIn('spawn(', text)
+            self.assertNotIn('LIFT_SET_WINDOW', text)
+            self.assertNotIn('SKIP_SET_WINDOW', text)
         self.assertNotIn('Exercise Step', CORE + GEAR + COURSE)
+        defines = read('code/__defines/training.dm')
+        self.assertIn('#define TRAINING_STAMINA_DRAIN 0.014', defines)
+        self.assertIn('#include "code\\__defines\\training.dm"', DME)
+        self.assertIn('return stats["stamina"][2] * TRAINING_STAMINA_DRAIN * duration / 10', CORE)
+        # Stop Exercise ends every kind of session, not only equipment sets.
+        self.assertIn('return exercise_equipment || floor_exercise_busy || scholar_practising', CORE)
 
     def test_walking_with_a_weight_reaches_the_carry_hook(self):
         turf = read('code/game/turfs/turf.dm')
@@ -96,9 +109,9 @@ class TrainingGearSources(unittest.TestCase):
                     'survival_workload', 'exercise_token'):
             self.assertIn('"%s"' % key, body)
         self.assertNotIn('"exercise_fatigue"', body)
-        self.assertIn('return (key in list("reps", "lifting", "carry_tiles")) || ..()', GEAR)
+        self.assertIn('return (key in list("reps", "lifting", "carry_tiles", "winded")) || ..()', GEAR)
         self.assertIn('return (key in list("strides", "run_strides", "last_stride")) || ..()', COURSE)
-        self.assertIn('return (key in list("skips", "skipping")) || ..()', COURSE)
+        self.assertIn('return (key in list("skips", "skipping", "winded")) || ..()', COURSE)
 
     def test_old_fixtures_convert_after_load(self):
         self.assertIn('/obj/structure/exercise/after_load()\n\t. = ..()\n\taddtimer(CALLBACK(src, PROC_REF(replace_legacy)), 10)', CORE)

@@ -1,11 +1,12 @@
 // Scholar profession: practice (book research).
 //
 // Scholars can train a discipline by hand with its practice tool: use it in
-// hand for a short session. Practice is a complement to research, study and
-// tutoring, not a replacement: each session gives a little skill, less as the
-// character nears SCHOLAR_PRACTICE_CAP, and nothing past it. Sessions cost
-// stamina and need light; a writing desk shortens them and a master nearby
-// doubles the gain, as with research.
+// hand once and keep practising until you stop, move, put it away or tire.
+// Practice is a complement to research, study and tutoring, not a
+// replacement: SCHOLAR_PRACTICE_GAIN per SCHOLAR_PRACTICE_TIME of practice,
+// less as the character nears SCHOLAR_PRACTICE_CAP, and nothing past it.
+// Practice drains stamina as it goes (TRAINING_STAMINA_DRAIN) and needs
+// light; a writing desk speeds it up and a master nearby doubles the gain.
 //
 //   Basic Mathematics  writing slate (sums), abacus (faster)
 //   Engineering        model kit, drafting set (faster)
@@ -65,8 +66,9 @@
 		gain *= SCHOLAR_APPRENTICE_GAIN_MULT
 	return min(round(gain, 0.01), SCHOLAR_PRACTICE_CAP - level)
 
-// Why the character can't practise discipline right now, or null.
-/mob/living/human/proc/scholar_practice_problem(discipline)
+// Why the character can't practise discipline right now, or null. Starting
+// needs more breath than carrying on.
+/mob/living/human/proc/scholar_practice_problem(discipline, starting = FALSE)
 	if (!map || !map.book_research_enabled())
 		return "There's nothing to practise for here."
 	if (!(discipline in scholar_disciplines))
@@ -78,57 +80,82 @@
 	var/turf/T = get_turf(src)
 	if (!T || T.get_lumcount() < SCHOLAR_MIN_LIGHT)
 		return "It's too dark to practise."
-	if (stats["stamina"][1] < SCHOLAR_PRACTICE_STAMINA)
-		return "You are too tired to practise now."
+	if (!training_has_stamina(SCHOLAR_PRACTICE_TICK, starting))
+		return starting ? "You are too tired to practise now." : "You are too tired to keep practising."
 	return null
 
-// Session length, shortened at a writing desk.
+// Practice that teaches SCHOLAR_PRACTICE_GAIN, shortened at a writing desk.
 /mob/living/human/proc/scholar_practice_time()
 	return round(SCHOLAR_PRACTICE_TIME / scholar_desk_rate())
 
-// Finishes a practice session: pays stamina and adds the skill. Returns the
-// skill gained (0 if the session no longer counts).
-/mob/living/human/proc/scholar_practice_commit(discipline, rate = 1)
-	if (scholar_practice_problem(discipline))
+// Pays `duration` deciseconds of practice (a whole SCHOLAR_PRACTICE_TIME by
+// default): its stamina and its share of a session's skill. Returns the skill
+// gained (0 if the practice no longer counts).
+/mob/living/human/proc/scholar_practice_commit(discipline, rate = 1, duration = null)
+	if (isnull(duration))
+		duration = scholar_practice_time()
+	if (scholar_practice_problem(discipline) || !training_has_stamina(duration))
 		return 0
-	var/gain = scholar_practice_gain(discipline, rate)
+	var/level = scholar_level(discipline)
+	var/gain = min(scholar_practice_gain(discipline, rate) * duration / max(1, scholar_practice_time()), SCHOLAR_PRACTICE_CAP - level)
 	if (gain <= 0)
 		return 0
-	stats["stamina"][1] -= SCHOLAR_PRACTICE_STAMINA
+	training_spend_stamina(duration)
 	if (!islist(scholarship))
 		scholarship = list()
-	scholarship[discipline] = min(SCHOLAR_MAX_LEVEL, round(scholar_level(discipline) + gain, 0.01))
+	scholarship[discipline] = min(SCHOLAR_MAX_LEVEL, round(level + gain, 0.0001))
 	return gain
 
-// A practice session with tool in hand. TRUE if it ran.
+/mob/living/human/proc/scholar_practice_wait(obj/item/tool, duration)
+	return do_after(src, duration, tool, TRUE, FALSE)
+
+// Use a practice tool in hand: practise continuously, one SCHOLAR_PRACTICE_TICK
+// at a time, until the player uses it again, moves, swaps or puts it away,
+// uses Stop Exercise, runs out of stamina or light, or reaches the cap.
+// TRUE if the tool was handled.
 /mob/living/human/proc/practise_scholarship(obj/item/tool)
 	var/discipline = scholar_practice_discipline(tool)
 	if (!discipline)
 		return FALSE
-	var/problem = scholar_practice_problem(discipline)
+	if (scholar_practising)
+		cancel_exercise()
+		to_chat(src, SPAN_NOTICE("You finish the thought and put your practice aside."))
+		return TRUE
+	var/problem = scholar_practice_problem(discipline, TRUE)
+	if (!problem && exercise_equipment)
+		problem = "Finish what you are doing or use Stop Exercise first."
 	if (problem)
 		to_chat(src, SPAN_WARNING(problem))
 		return TRUE
-	if (scholar_practising)
-		to_chat(src, SPAN_WARNING("You are already practising."))
-		return TRUE
 	var/activity = scholar_practice_activity(discipline)
-	visible_message(SPAN_NOTICE("[src] starts [activity] with \the [tool]."), SPAN_NOTICE("You start [activity] with \the [tool]."))
+	var/rate = scholar_practice_tool_rate(tool)
+	var/start_level = scholar_level(discipline)
+	visible_message(SPAN_NOTICE("[src] starts [activity] with \the [tool]."), SPAN_NOTICE("You start [activity] with \the [tool]. You will keep at it until you tire. Use it again, move or use Stop Exercise to stop."))
 	scholar_practising = TRUE
-	var/done = do_after(src, scholar_practice_time(), tool)
+	var/token = ++exercise_token
+	var/stop_reason = null
+	while (isnull(stop_reason))
+		var/done = scholar_practice_wait(tool, SCHOLAR_PRACTICE_TICK)
+		if (token != exercise_token || QDELETED(src))
+			stop_reason = ""
+		else if (!done || QDELETED(tool) || !(tool in list(l_hand, r_hand)))
+			stop_reason = "You stop practising."
+		else
+			stop_reason = scholar_practice_problem(discipline)
+			if (!stop_reason && scholar_practice_commit(discipline, rate, SCHOLAR_PRACTICE_TICK) <= 0)
+				stop_reason = "You couldn't keep your mind on it."
 	scholar_practising = FALSE
-	if (!done || QDELETED(tool) || !(tool in list(l_hand, r_hand)))
-		to_chat(src, SPAN_WARNING("You stop practising."))
-		return TRUE
-	var/gain = scholar_practice_commit(discipline, scholar_practice_tool_rate(tool))
-	if (gain <= 0)
-		to_chat(src, SPAN_WARNING("You couldn't keep your mind on it."))
-		return TRUE
+	if (token == exercise_token)
+		exercise_token++
+	if (stop_reason)
+		to_chat(src, SPAN_WARNING(stop_reason))
 	var/level = scholar_level(discipline)
+	if (level <= start_level)
+		return TRUE
 	if (level >= SCHOLAR_PRACTICE_CAP)
-		to_chat(src, SPAN_NOTICE("You finish practising. Your [scholar_disciplines[discipline]] is now [round(level)], as far as practice alone can take it."))
+		to_chat(src, SPAN_NOTICE("Your [scholar_disciplines[discipline]] is now [round(level)], as far as practice alone can take it."))
 	else
-		to_chat(src, SPAN_NOTICE("You finish practising. Your [scholar_disciplines[discipline]] is now [round(level, 0.1)]."))
+		to_chat(src, SPAN_NOTICE("Your [scholar_disciplines[discipline]] is now [round(level, 0.1)] (+[round(level - start_level, 0.01)])."))
 	return TRUE
 
 /mob/living/human/var/tmp/scholar_practising = FALSE

@@ -502,6 +502,14 @@ var/knowledge_failures = 0
 	knowledge_check(H.scholar_title() == "Master of Basic Mathematics", "the most skilled are Masters")
 	qdel(H)
 
+// Practice tool waits succeed this many times, then fail as if the player moved.
+var/knowledge_practice_waits = 0
+/mob/living/human/knowledge_fixture/scholar_practice_wait(obj/item/tool, duration)
+	if (knowledge_practice_waits <= 0)
+		return FALSE
+	knowledge_practice_waits--
+	return TRUE
+
 // Practice (Val, 2026-11-11): practice tools train a discipline a little per
 // session, more with an instrument or beside a master, never past the cap.
 /proc/check_scholar_practice()
@@ -520,17 +528,39 @@ var/knowledge_failures = 0
 	for (var/path in list("/obj/item/weapon/scholar_practice/model_kit", "/obj/item/weapon/scholar_practice/specimen_box", "/obj/item/weapon/scholar_practice/study_bones", "/obj/item/weapon/scholar_practice/seed_tray", "/obj/item/weapon/scholar_practice/war_game"))
 		knowledge_check(get_recipe_node_req(path) == "basic_tools", "[path] is made from the Stone Age")
 	knowledge_check(!H.scholar_practice_problem("mathematics"), "a rested character in the light can practise")
+	var/session_cost = H.training_stamina_cost(H.scholar_practice_time())
 	var/gained = H.scholar_practice_commit("mathematics", scholar_practice_tool_rate(tools[1]))
 	knowledge_check(gained == SCHOLAR_PRACTICE_GAIN && H.scholar_level("mathematics") == SCHOLAR_PRACTICE_GAIN, "a slate session teaches Basic Mathematics")
-	knowledge_check(H.stats["stamina"][1] == 100 - SCHOLAR_PRACTICE_STAMINA, "practice costs stamina")
+	knowledge_check(session_cost > 0 && abs(H.stats["stamina"][1] - (100 - session_cost)) < 0.001, "practice costs stamina")
 	knowledge_check(H.scholar_level("engineering") == 0, "practice trains only its own discipline")
 	knowledge_check(scholar_practice_tool_rate(tools[2]) > scholar_practice_tool_rate(tools[1]), "an abacus teaches more than a slate")
 	H.scholarship = list("medicine" = SCHOLAR_PRACTICE_CAP - 2)
 	knowledge_check(H.scholar_practice_gain("medicine") < SCHOLAR_PRACTICE_GAIN, "practice teaches less near its cap")
 	H.scholarship = list("medicine" = SCHOLAR_PRACTICE_CAP)
 	knowledge_check(H.scholar_practice_problem("medicine") && !H.scholar_practice_commit("medicine") && H.scholar_level("medicine") == SCHOLAR_PRACTICE_CAP, "practice stops at its cap")
-	H.stats["stamina"][1] = SCHOLAR_PRACTICE_STAMINA - 1
+	H.stats["stamina"][1] = H.training_stamina_cost(SCHOLAR_PRACTICE_TICK) / 2
 	knowledge_check(H.scholar_practice_problem("agriculture") && !H.scholar_practice_commit("agriculture"), "a tired character can't practise")
+	// Continuous practice (Val, 2026-11-22): one use keeps practising, tick by
+	// tick, until the player moves (here: the fourth wait fails) or tires.
+	H.stats["stamina"][1] = 100
+	H.scholarship = list()
+	var/obj/item/weapon/abacus/abacus = tools[2]
+	H.put_in_active_hand(abacus)
+	knowledge_practice_waits = 3
+	H.practise_scholarship(abacus)
+	var/expected = H.scholar_practice_gain("mathematics", SCHOLAR_PRACTICE_INSTRUMENT_RATE) * 3 * SCHOLAR_PRACTICE_TICK / H.scholar_practice_time()
+	knowledge_check(!H.scholar_practising && abs(H.scholar_level("mathematics") - expected) < 0.001, "continuous practice pays each tick until the player stops")
+	knowledge_check(abs(H.stats["stamina"][1] - (100 - H.training_stamina_cost(3 * SCHOLAR_PRACTICE_TICK))) < 0.001, "continuous practice drains stamina as it goes")
+	H.stats["stamina"][1] = H.training_stamina_cost(SCHOLAR_PRACTICE_TICK) * 2.5 + H.stats["stamina"][2] * TRAINING_STAMINA_START
+	var/before_practice = H.scholar_level("mathematics")
+	knowledge_practice_waits = 1000
+	H.practise_scholarship(abacus)
+	knowledge_check(!H.scholar_practising && knowledge_practice_waits < 1000 && H.scholar_level("mathematics") > before_practice && !H.training_has_stamina(SCHOLAR_PRACTICE_TICK), "continuous practice ends when stamina runs out")
+	H.stats["stamina"][1] = H.stats["stamina"][2] * TRAINING_STAMINA_START / 2
+	knowledge_practice_waits = 1000
+	H.practise_scholarship(abacus)
+	knowledge_check(knowledge_practice_waits == 1000, "a winded character can't start practising")
+	H.drop_from_inventory(abacus)
 	// A save taken mid-session must not lock the restored character out of
 	// practice for good (Gaia, 2026-11-13: "You are already practising").
 	H.scholar_practising = TRUE

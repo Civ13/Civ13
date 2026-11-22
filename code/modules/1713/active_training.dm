@@ -1,7 +1,8 @@
-// Training by doing: shared fatigue, rewards and crafting gates for the lifting
-// weights (training_gear.dm), the tread wheel, treadmill and skipping rope
-// (training_course.dm) and the floor exercises (cmss13_field.dm). Nothing here
-// trains a character who is only waiting.
+// Training by doing: shared fatigue, rewards, stamina and crafting gates for the
+// lifting weights (training_gear.dm), the tread wheel, treadmill and skipping
+// rope (training_course.dm), the floor exercises (cmss13_field.dm) and the
+// scholar practice tools (scholar_practice.dm). Weights, rope, floor exercises
+// and practice tools run continuously once started (TRAINING_STAMINA_DRAIN).
 #define EXERCISE_SET_WINDOW 300
 
 /proc/exercise_time()
@@ -76,14 +77,49 @@
 	cancel_exercise()
 	to_chat(src, "<span class='notice'>You have rested too long; your set starts over.</span>")
 
+// Any training session in progress: a weight, rope or wheel set, floor
+// exercises or a practice tool.
+/mob/living/human/proc/training_in_progress()
+	return exercise_equipment || floor_exercise_busy || scholar_practising
+
 /mob/living/human/verb/stop_exercise()
 	set name = "Stop Exercise"
 	set category = "IC"
-	if (!exercise_equipment)
-		to_chat(src, "You are not in the middle of a set.")
+	if (!training_in_progress())
+		to_chat(src, "You are not training.")
 		return
+	// Continuous sessions watch exercise_token and end at their next step.
 	cancel_exercise()
-	to_chat(src, "You stop your exercise.")
+	to_chat(src, "You stop training.")
+
+// Continuous training: the stamina `duration` deciseconds of it costs.
+/mob/living/human/proc/training_stamina_cost(duration)
+	return stats["stamina"][2] * TRAINING_STAMINA_DRAIN * duration / 10
+
+// Whether there is breath left for `duration` more deciseconds, or, when
+// starting, enough to begin a session at all.
+/mob/living/human/proc/training_has_stamina(duration, starting = FALSE)
+	var/needed = training_stamina_cost(duration)
+	if (starting)
+		needed = max(needed, stats["stamina"][2] * TRAINING_STAMINA_START)
+	return stats["stamina"][1] >= needed
+
+/mob/living/human/proc/training_spend_stamina(duration)
+	stats["stamina"][1] = max(0, stats["stamina"][1] - training_stamina_cost(duration))
+
+// Whether a finished set can pay: hunger, thirst and the skill cap end a
+// session, but fatigue only pauses the gains while the session goes on, so a
+// long session earns what resting between sets by hand would.
+/mob/living/human/proc/exercise_fatigued()
+	recover_exercise()
+	return exercise_fatigue >= 6
+
+/mob/living/human/proc/exercise_need_refusal()
+	if (nutrition < 50)
+		return "You are too hungry to keep training."
+	if (water < 50)
+		return "You are too thirsty to keep training."
+	return null
 
 // Whether the body can gain from training now, with the reason when it cannot.
 /mob/living/human/proc/exercise_refusal()

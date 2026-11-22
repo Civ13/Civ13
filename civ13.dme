@@ -79,6 +79,7 @@
 #include "code\__defines\time.dm"
 #include "code\__defines\time_of_day.dm"
 #include "code\__defines\trains.dm"
+#include "code\__defines\training.dm"
 #include "code\__defines\tools.dm"
 #include "code\__defines\topic.dm"
 #include "code\__defines\turfs.dm"
