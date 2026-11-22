@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'fa4418b0c42d57f27a5d96ed3aba85600862a182'
+WIKI_REVIEWED_REVISION = 'e9b857855c8c3d9d3254463fcaa160689157daa8'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -128,7 +128,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('c288a8b4afc0ab812e509f96365a2bbe4255c3064c324339338d27c2776581c2', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
     'guides/Guide_to_Your_First_Day.md': ('33b925515e5be65875070174bfeaf0d0f51c6a2da161090107f31663937ef25d', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
-    'guides/Guide_to_Paperwork.md': ('22f7fa453bd84ee5ec8e1182466e22ca34543bcb5dac3815f31540694058066f', 'paper paperwork writing write pen book sign signature stamp'),
+    'guides/Guide_to_Paperwork.md': ('c9f94ed47900119d56fe52c9d95c38f7d08386e0dd2a780e85a45a8dfc7752e9', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('c25a6eeb304bb3f8a5a3dd7e479da15a15fb34ecbb8d2127d9179881aefd7efe', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
     'Miscellaneous_Crafting.md': ('9015932974df193a9f59fb59c359040e7a38e541ad13e104ae2cacf8f33e08fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
