@@ -157,7 +157,7 @@
   "evidence": ["A **hard freeze**, at about -4 C or colder, kills a crop whatever its stage"], "answer": ["hard freeze|-4|minus 4|minus four", "kill|die|dead"]},
  {"id": "research-bench-cost", "question": "What does a research bench cost to build?", "page": "guides/Guide_to_Research.md", "section": "Research benches",
   "expected": "8 planks in the default recipe.",
-  "evidence": ["**Building one:** costs 8 planks in the default global recipe."], "answer": ["8 (x |wood(en)? )?planks|eight planks"]},
+  "evidence": ["**Building one:** costs 8 planks in the default global recipe."], "answer": ["8 (x |finished |wood(en)? )?planks|eight planks"]},
  {"id": "gunpowder-recipe", "question": "Which chemicals do I mix to make gunpowder?", "page": "guides/Guide_to_Chemistry.md", "section": "Chemical Reactions List",
   "expected": "1 unit of sulfur, 1 unit of charcoal (or carbon) and 1 unit of potassium.",
   "evidence": ["1u. sulfur 1u. charcoal 1u. potassium"], "answer": ["sulfur|sulphur", "charcoal|carbon", "potassium"]},
