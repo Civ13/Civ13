@@ -929,47 +929,52 @@ class RegionHost(Host):
         self.write_json(self.stage_file, state)
 
     def stale_stage_lock(self):
-        """Why the stage lock is held by nobody, or None (no lock, or its worker runs)."""
+        """(why, operation) when the stage lock is held by nobody, else None (no lock, or its
+        worker runs)."""
         try:
             operation = self.stage_lock.read_text().strip()
             held_since = self.stage_lock.stat().st_mtime
         except OSError:
             return None
         if self.booted_since(held_since):
-            return 'the machine restarted'
-        if time.time() - held_since > STAGE_LOCK_HOURS * 3600:
-            return 'it ran for more than %d hours' % STAGE_LOCK_HOURS
+            return 'the machine restarted', operation
         stage = self.read_json(self.stage_file) or {}
+        worker = stage.get('worker')
+        if operation and stage.get('operation') == operation and isinstance(worker, dict) and type(worker.get('pid')) is int:
+            # Before the age check: a stage that waited hours for its compile slot still runs.
+            alive = getattr(self.platform, 'worker_alive', None)
+            return ('its worker ended', operation) if alive and not alive(worker['pid'], worker.get('started')) else None
+        if time.time() - held_since > STAGE_LOCK_HOURS * 3600:
+            return 'it ran for more than %d hours' % STAGE_LOCK_HOURS, operation
         if not operation or stage.get('operation') != operation:
             return None  # being taken right now
-        worker = stage.get('worker')
-        if isinstance(worker, dict) and type(worker.get('pid')) is int:
-            alive = getattr(self.platform, 'worker_alive', None)
-            return 'its worker ended' if alive and not alive(worker['pid'], worker.get('started')) else None
         if stage.get('phase') == 'accepted' and time.time() - held_since > gaia_host.WORKER_START_SECONDS:
-            return 'its worker never started'
+            return 'its worker never started', operation
         return None
 
     def stage_running(self):
         """Whether a stage holds its lock. A stage whose worker is gone (the machine restarted
         or the worker was ended mid-build) used to keep "a build is already being staged" for
-        STAGE_LOCK_HOURS, and Save, update and restart waited on it; its lock is released here
-        and the stage recorded as failed, so the next one builds."""
+        STAGE_LOCK_HOURS, and Save, update and restart waited on it; the stage is recorded as
+        failed and its lock released, so the next one builds. As Host.busy: the record is
+        settled while the stale lock still keeps a new stage out, and only then is the lock
+        taken away, if it is still that one."""
         if not self.stage_lock.exists():
             return False
-        reason = self.stale_stage_lock()
-        if not reason:
+        stale = self.stale_stage_lock()
+        if not stale:
             return True
-        if not gaia_host.remove_file(self.stage_lock, quiet=True):
-            return True
+        reason, operation = stale
         try:
-            gaia_host.remove_file(self.urgent_marker(), quiet=True)
             stage = self.read_json(self.stage_file) or {}
-            if stage.get('phase') not in ('ready', 'current', 'failed'):
+            if stage.get('operation') == operation and stage.get('phase') not in ('ready', 'current', 'failed'):
                 self.stage_record(phase='failed', error='the build was interrupted (%s) and did not finish' % reason)
-            self.log({'stale_stage_lock_removed': reason})
+            gaia_host.remove_file(self.urgent_marker())
         except OSError:
-            pass
+            return True  # not settled: the lock stays, and the next look tries again
+        if not gaia_host.release_lock(self.stage_lock, operation):
+            return self.stage_lock.exists()
+        print('stale stage lock removed for %s (%s)' % (self.config['region'], reason), file=sys.stderr, flush=True)  # as Host.busy
         return False
 
     def stage_failure_superseded(self, stage):
@@ -2022,6 +2027,11 @@ class RegionHost(Host):
                 self.platform.query(spare_port, token, 'standby_open', operation, standby_session, extra={'port': str(port)})
                 break
             except (OSError, RuntimeError, ValueError) as error:
+                if self.platform.listening(port):
+                    # The old world left this port, so whatever serves it now is the standby: it
+                    # switched and only its reply was lost. It is the region, never to be ended.
+                    self.record(open_reply_lost=str(error)[:200])
+                    break
                 if self.platform.now() > deadline:
                     self.stop_standby(spare_port, standby_pid)
                     raise RuntimeError('the new world did not open port %d (%s); %s' % (port, error, STANDBY_ENDED))

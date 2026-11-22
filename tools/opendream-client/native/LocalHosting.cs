@@ -688,9 +688,10 @@ public static class LocalHosting {
     private static bool Flag(JsonElement json, string name) =>
         json.TryGetProperty(name, out var value) && (value.ValueKind == JsonValueKind.True
             || (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number != 0));
-    // A whole number, or null: GetInt32 throws on 2.0e0 or 2.5, and that took the whole status line with it.
+    // A whole number, or null (2.5 is no count): GetInt32 throws on 2.0e0 or 2.5, and that took the whole status line with it.
     private static int? Count(JsonElement value) =>
-        value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number >= 0 && number <= int.MaxValue ? (int)number : null;
+        value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) && number >= 0 && number <= int.MaxValue
+            && number == Math.Floor(number) ? (int)number : null;
 
     // Starts whatever is not already listening; returns one line per component for the console.
     public static IReadOnlyList<string> Run(HostProfile host, string byondBin, Func<int, bool> listening, Action<ProcessStartInfo> start,

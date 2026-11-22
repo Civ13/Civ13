@@ -38,15 +38,25 @@ public static class HostSettings {
     // the replace while one of them has it open, which lost the setting with an access-denied error. Tried again
     // for a second, as gaia_host.py replace_file does for the status files.
     internal static void WriteGroup(HostGroup group, JsonObject root) {
+        // Taken right after the caller's read: a retry must never install that read over a newer file.
+        var read = File.GetLastWriteTimeUtc(group.Config);
         var temporary = group.Config + ".tmp";
         File.WriteAllText(temporary, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n");
-        ReplaceFile(temporary, group.Config);
+        ReplaceFile(temporary, group.Config, () => File.GetLastWriteTimeUtc(group.Config) == read);
     }
 
-    internal static void ReplaceFile(string temporary, string path, int attempts = 20) {
+    // unchanged: asked before each further attempt; false means someone else (a port change, another setting)
+    // wrote the file while this write waited, so it is given up instead of undoing theirs.
+    internal static void ReplaceFile(string temporary, string path, Func<bool>? unchanged = null, int attempts = 20) {
         for (var attempt = 1; ; attempt++) {
             try { File.Move(temporary, path, true); return; }
-            catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < attempts && File.Exists(temporary)) { Thread.Sleep(50); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < attempts && File.Exists(temporary)) {
+                Thread.Sleep(50);
+                if (unchanged != null && !unchanged()) {
+                    try { File.Delete(temporary); } catch (Exception inner) when (inner is IOException or UnauthorizedAccessException) { }
+                    throw new IOException(Path.GetFileName(path) + " was changed by something else while saving. Nothing was saved; try again.");
+                }
+            }
         }
     }
 

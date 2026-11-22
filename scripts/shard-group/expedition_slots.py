@@ -23,6 +23,7 @@ See docs/expedition-slots.md.
 import json
 import os
 from pathlib import Path
+import secrets
 import shutil
 import sys
 import time
@@ -98,7 +99,7 @@ def read_wish(group, folder, region_id):
 def write_wish(group, folder, region_id, value):
     path = wish_file(group, folder, region_id)
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + '.tmp')
+    temporary = path.with_name('%s.%d.%s.tmp' % (path.name, os.getpid(), secrets.token_hex(4)))  # one per writer
     temporary.write_text(json.dumps(value, indent=1, sort_keys=True) + '\n', encoding='utf-8')
     replace_file(temporary, path)
 
@@ -125,7 +126,7 @@ def write_slot(group, record):
     path = slot_file(group, record['region'])
     path.parent.mkdir(parents=True, exist_ok=True)
     record['history'] = record.get('history', [])[-HISTORY_KEPT:]
-    temporary = path.with_name(path.name + '.tmp')
+    temporary = path.with_name('%s.%d.%s.tmp' % (path.name, os.getpid(), secrets.token_hex(4)))  # one per writer
     temporary.write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
     replace_file(temporary, path)
 

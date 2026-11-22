@@ -170,6 +170,8 @@ static class LocalHostingTests {
         Require(status.Message == "Server port is open. World ready. 3 players.", "a DM true (1) is ready: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 0, \"clients\": 2.0e0}, \"regions\": [{\"name\": \"Gaia\", \"state\": \"awake\", \"players\": 1.0e0}]}");
         Require(status.Ok && status.Message == "Server port is open. World not ready. 2 players.\nRegions: Gaia: awake, 1 players.", "a count written as 2.0e0 must not throw: " + status.Message);
+        status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": true, \"state\": \"awake\", \"busy\": false, \"world\": {\"ready\": 1, \"clients\": 2.5}}");
+        Require(status.Message == "Server port is open. World ready.", "2.5 is not a player count: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"listening\": false, \"state\": \"cold\", \"busy\": false}");
         Require(status.Message.StartsWith("Server is asleep (stopped"), "cold line: " + status.Message);
         status = LocalHosting.ParseControl("status", 0, "{\"ok\": true, \"regions\": [{\"name\": \"\u0915\u0940" + string.Concat(Enumerable.Repeat("\u5317", 70)) + " <@&1>\", \"state\": \"awake\"}]}");

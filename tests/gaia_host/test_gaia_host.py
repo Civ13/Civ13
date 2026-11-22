@@ -879,6 +879,39 @@ class StaleLockTests(GaiaHostTests):
                 break
         self.assertTrue(self.machine.detached, 'the watchdog started it again')
 
+    def test_releasing_a_stale_lock_never_removes_one_taken_meanwhile(self):
+        # Two status calls and a request at once: the slower call decided on the old lock.
+        self.host.state_dir.mkdir(parents=True)
+        self.host.lock.write_text('new-operation')
+        self.assertFalse(gaia_host.release_lock(self.host.lock, 'old-operation'))
+        self.assertEqual(self.host.lock.read_text(), 'new-operation')
+        self.assertTrue(gaia_host.release_lock(self.host.lock, 'new-operation'))
+        self.assertFalse(self.host.lock.exists())
+        self.assertEqual([p.name for p in self.host.state_dir.iterdir()], [])
+
+    def test_the_failure_is_recorded_before_the_lock_is_released(self):
+        self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: False
+        seen = []
+        real = gaia_host.release_lock
+        def release(lock, expected):
+            seen.append(self.host.read_state()['phase'])
+            return real(lock, expected)
+        with mock.patch.object(gaia_host, 'release_lock', release):
+            self.assertFalse(self.host.busy())
+        self.assertEqual(seen, ['failed'])
+
+    def test_a_status_answers_one_json_object_while_it_releases_a_lock(self):
+        self.accepted()
+        self.host.record(phase='compiling', worker={'pid': 999, 'started': 5})
+        self.machine.worker_alive = lambda pid, started: False
+        with mock.patch('sys.stdout', new_callable=io.StringIO) as out, mock.patch('sys.stderr', new_callable=io.StringIO) as err:
+            self.assertFalse(self.host.status()['busy'])
+        self.assertEqual(out.getvalue(), '')
+        self.assertIn('stale action lock removed', err.getvalue())
+        self.assertNotIn('{', err.getvalue(), 'the launcher reads the last JSON line of both streams')
+
     def test_a_request_that_cannot_start_its_worker_leaves_no_lock(self):
         write_save(self.repo / 'map_saves')
         self.give_token()

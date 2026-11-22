@@ -2020,6 +2020,17 @@ class StagedBuildTests(unittest.TestCase):
         host.work('stage', second['operation'])
         self.assertEqual(host.read_json(host.stage_file)['phase'], 'ready')
 
+    def test_a_stage_that_waited_hours_for_its_slot_keeps_its_lock_while_its_worker_runs(self):
+        group, host = self.built()
+        self.machine.up = {1720}
+        host.request_stage()
+        host.stage_record(phase='waiting for another region\'s compile', worker={'pid': 999, 'started': 5})
+        old = time.time() - shard_group.STAGE_LOCK_HOURS * 3600 - 60
+        os.utime(host.stage_lock, (old, old))
+        self.machine.worker_alive = lambda pid, started: True
+        self.assertTrue(host.stage_running())
+        self.assertEqual(host.read_json(host.stage_file)['phase'], 'waiting for another region\'s compile')
+
     def test_a_stage_from_before_the_machine_restarted_is_released(self):
         group, host = self.built()
         self.machine.up = {1720}
@@ -3092,6 +3103,24 @@ class HandoverTests(unittest.TestCase):
         self.assertIn((['kill_tree', 200], None), self.machine.calls)
         self.assertNotIn(self.STANDBY, self.machine.up)
         self.assertFalse(host.lock.exists())
+
+    def test_a_standby_that_switched_but_whose_reply_was_lost_is_not_ended(self):
+        # Its pid is the region now: ending it would take the region down.
+        group, host = self.staged()
+        query = self.machine.query
+
+        def lost(port, token, action='status', operation=None, session=None, extra=None):
+            if action == 'standby_open':
+                query(port, token, action, operation, session, extra)  # it opens the region's port
+                self.machine.up.discard(self.STANDBY)
+                raise OSError('timed out')
+            return query(port, token, action, operation, session, extra)
+        self.machine.query = lost
+        host.work('handover', host.request('handover')['operation'])
+        state = host.read_state()
+        self.assertEqual((state['phase'], state.get('error')), ('done', None), state)
+        self.assertNotIn((['kill_tree', 200], None), self.machine.calls)
+        self.assertIn(self.LIVE, self.machine.up)
 
     def test_standby_open_uses_the_session_the_loaded_standby_reports(self):
         # Live Gaia, 2026-11-08: standby_open with the session read before the load was

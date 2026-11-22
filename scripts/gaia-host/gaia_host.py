@@ -574,6 +574,32 @@ def remove_file(path, attempts=20, delay=0.05, quiet=False):
             raise
 
 
+def release_lock(lock, expected):
+    """Remove a lock file only if it still holds `expected`; True when it was removed.
+
+    Reading it and then deleting it could delete a lock someone else took in between. The
+    file is renamed aside first, which only one caller wins, and looked at there; a lock
+    that turns out to be another one is put back without replacing anything."""
+    lock = Path(lock)
+    aside = lock.with_name('%s.%d.released' % (lock.name, os.getpid()))
+    try:
+        os.rename(lock, aside)
+    except OSError:
+        return False
+    try:
+        if aside.read_text().strip() == expected:
+            return True
+        try:
+            os.link(aside, lock)  # never replaces a lock taken meanwhile
+        except OSError:
+            pass
+        return False
+    except OSError:
+        return False
+    finally:
+        remove_file(aside, quiet=True)
+
+
 def sha256(path):
     digest = hashlib.sha256()
     with open(path, 'rb') as handle:
@@ -782,48 +808,54 @@ class Host:
         self.record(worker={'pid': os.getpid(), 'started': int(time.time())})
 
     def stale_lock(self):
-        """Why the action lock is held by nobody, or None (no lock, or its worker runs)."""
+        """(why, operation) when the action lock is held by nobody, else None (no lock, or
+        its worker runs)."""
         try:
             operation = self.lock.read_text().strip()
             held_since = self.lock.stat().st_mtime
         except OSError:
             return None
         if self.booted_since(held_since):
-            return 'the machine restarted'
+            return 'the machine restarted', operation
         state = self.read_state()
         if not operation or state.get('operation') != operation:
             return None  # being taken right now, or held by a caller that works in its own process
         worker = state.get('worker')
         if isinstance(worker, dict) and type(worker.get('pid')) is int:
             alive = getattr(self.platform, 'worker_alive', None)
-            return 'its worker ended' if alive and not alive(worker['pid'], worker.get('started')) else None
+            return ('its worker ended', operation) if alive and not alive(worker['pid'], worker.get('started')) else None
         if state.get('phase') == 'accepted' and time.time() - held_since > WORKER_START_SECONDS:
-            return 'its worker never started'
+            return 'its worker never started', operation
         return None
 
     def busy(self):
         """Whether an action holds the lock. A lock nobody holds any more is released, and
-        the action it belonged to is recorded as failed."""
+        the action it belonged to is recorded as failed.
+
+        Status, requests and the host service can all get here at once, so the order
+        matters: the failure is recorded while the stale lock still keeps new requests out
+        (afterwards it could land on the next action's record), and the lock is then taken
+        away by rename, which only one caller wins, and only removed once it is seen to be
+        the stale one. A lock a new request took in between is put back."""
         if not self.lock.exists():
             return False
-        reason = self.stale_lock()
-        if not reason:
+        stale = self.stale_lock()
+        if not stale:
             return True
-        state = self.read_state()
-        action = state.get('action') or 'the last action'
+        reason, operation = stale
         try:
-            operation = self.lock.read_text().strip()
-            self.lock.unlink()
-        except OSError:
-            return self.lock.exists()  # released or taken by someone else this instant
-        remove_file(self.killed_file, quiet=True)
-        try:
+            state = self.read_state()
             if state.get('operation') == operation and state.get('phase') not in ('done', 'failed', 'killed'):
                 self.record(phase='failed', error='%s was interrupted (%s) and did not finish; check the region and run it again'
-                            % (action, reason))
-            self.log({'stale_lock_removed': action, 'reason': reason})
+                            % (state.get('action') or 'the last action', reason))
         except OSError:
-            pass
+            return True  # not settled: the lock stays, and the next look tries again
+        if not release_lock(self.lock, operation):
+            return self.lock.exists()  # released or taken by someone else this instant
+        remove_file(self.killed_file, quiet=True)
+        # stderr and plain words: a status call answers one JSON object on stdout, and the
+        # launcher reads the last JSON line of both streams as that answer.
+        print('stale action lock removed (%s): %s' % (reason, self.read_state().get('action')), file=sys.stderr, flush=True)
         return False
 
     def token(self):
