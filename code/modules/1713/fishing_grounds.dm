@@ -443,6 +443,10 @@ var/global/list/fishing_grounds_published = null
 	if (ishuman(user) && fishing_tool_profile(C))
 		fish_cast(C, user)
 		return
+	// Salt keeps water and ice open (ice_dynamics.dm).
+	if (ishuman(user) && ice_salt_ok(C))
+		ice_salt(src, C, user)
+		return
 	..()
 
 // An axe, pick or chisel on ice cuts a fishing hole (ice_fishing.dm), or on
@@ -454,6 +458,9 @@ var/global/list/fishing_grounds_published = null
 	// A crowbar cannot cut a hole, but it breaks the ice (ice_breaking.dm).
 	if (ishuman(user) && ice_break_tool_delay(C))
 		ice_break(src, C, user)
+		return
+	if (ishuman(user) && ice_salt_ok(C))
+		ice_salt(src, C, user)
 		return
 	..()
 

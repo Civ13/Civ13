@@ -7,8 +7,9 @@
 // other intent cuts an ice-fishing hole (ice_fishing.dm) as before. A crowbar
 // cannot cut a fishing hole, so it breaks ice on any intent.
 //
-// Ice is thin while it is newly frozen over, and while the air over it is
-// above freezing and it is rotting. Small boats and rafts crunch through thin
+// Ice is thin while it is newly frozen over, while it is salted, and while
+// the air over it is above freezing and it is rotting. Ice also forms and
+// melts with the weather (ice_dynamics.dm). Small boats and rafts crunch through thin
 // ice but stop at thick ice; a built ship stops at any ice unless belt armour
 // (hull_armour.dm) stands at her bow, which breaks thin ice ahead of her.
 //
@@ -20,8 +21,6 @@
 
 #define ICE_BREAK_CHECK (5 MINUTES)
 #define ICE_BREAK_CHECK_MINUTES 5
-#define ICE_FREEZE_TEMP -2   // air at or below this freezes open water
-#define ICE_MELT_TEMP 1      // air above this melts thin ice and rots thick ice
 #define ICE_SKIN_MINUTES 30  // freezing minutes for open water to skin over
 #define ICE_THICKEN_MINUTES 60 // more freezing minutes for thin ice to bear like any other
 #define ICE_HAND_TIME 150    // bare hands, thin ice only
@@ -45,7 +44,7 @@
 	if (!istype(T, /turf/floor/beach/water/ice))
 		return FALSE
 	var/obj/structure/broken_ice/B = locate() in T
-	if (B && B.thin)
+	if (B && (B.thin || B.salted()))
 		return TRUE
 	return get_temp(T) > ICE_MELT_TEMP
 
@@ -53,6 +52,11 @@
 // lies beside it, shallow otherwise.
 /proc/ice_open_water_type(turf/floor/beach/water/ice/T)
 	var/salty = istype(T, /turf/floor/beach/water/ice/salty)
+	// Ice that froze over deep water remembers it (ice_dynamics.dm).
+	if (istype(T, /turf/floor/beach/water/ice/salty/deep))
+		return /turf/floor/beach/water/deep/saltwater
+	if (istype(T, /turf/floor/beach/water/ice/deep))
+		return /turf/floor/beach/water/deep
 	for (var/dir in cardinal)
 		var/turf/N = get_step(T, dir)
 		if (!istype(N, /turf/floor/beach/water/deep) || istype(N, /turf/floor/beach/water/deep/saltwater/underwater))
@@ -162,6 +166,7 @@
 	var/shallow = TRUE        // broken out as shallow water: refreezing keeps it shallow
 	var/thin = FALSE          // TRUE once the water has skinned over as thin ice
 	var/cold_minutes = 0      // freezing minutes counted towards the next stage
+	var/salted_until = 0      // real minutes (trap_now_minutes) salt keeps the tile open, ice_dynamics.dm
 
 /obj/structure/broken_ice/New()
 	..()
@@ -188,6 +193,10 @@
 	thin = FALSE
 	cold_minutes = 0
 	broken_ice_register(src)
+
+// TRUE while salt on the tile still works.
+/obj/structure/broken_ice/proc/salted(now = trap_now_minutes())
+	return salted_until > now
 
 // ---- One pass over every broken tile ----
 // The markers wait in one register and one timer looks at them all, so the
@@ -220,7 +229,7 @@ var/global/broken_ice_pass_due = FALSE
 
 // The air over the tile.
 /obj/structure/broken_ice/proc/air_temp()
-	return get_temp(loc)
+	return ice_dynamics_on() ? ice_area_temp(loc) : get_temp(loc)
 
 // Nothing in the water that freezing would trap.
 /obj/structure/broken_ice/proc/water_clear()
@@ -234,40 +243,58 @@ var/global/broken_ice_pass_due = FALSE
 			return FALSE
 	return TRUE
 
-// One look at the tile: freeze, thicken, melt or wait.
+// One look at the tile: freeze, thicken, melt or wait. Salt keeps ice
+// rotting and water open while the air is above ICE_SALT_LIMIT.
 /obj/structure/broken_ice/proc/freeze_check()
 	if (QDELETED(src))
 		return FALSE
 	var/turf/T = loc
+	if (!isturf(T))
+		qdel(src)
+		return TRUE
 	var/iced = istype(T, /turf/floor/beach/water/ice)
-	// Something else changed the tile (a season, a builder): nothing to track.
-	if (!isturf(T) || (thin ? !iced : (iced || !is_liquid_water(T))))
-		qdel(src)
-		return TRUE
+	var/salt = salted()
 	var/temp = air_temp()
-	if (!thin)
-		if (temp > ICE_FREEZE_TEMP)
-			cold_minutes = 0
+	if (iced)
+		if (salt && temp > ICE_SALT_LIMIT)
+			thaw("The salted ice softens and breaks up into slush and open water.")
 			return TRUE
-		cold_minutes += ICE_BREAK_CHECK_MINUTES
-		if (cold_minutes >= ICE_SKIN_MINUTES && water_clear())
-			freeze_over()
+		// Only salt kept a marker on thick ice, and it has worn off; or
+		// something else froze open water: nothing left to track.
+		if (!thin)
+			qdel(src)
+			return TRUE
+		if (temp > ICE_MELT_TEMP)
+			thaw()
+			return TRUE
+		if (temp <= ICE_FREEZE_TEMP)
+			cold_minutes += ICE_BREAK_CHECK_MINUTES
+		if (cold_minutes >= ICE_THICKEN_MINUTES)
+			T.name = initial(T.name)
+			qdel(src)
 		return TRUE
-	if (temp > ICE_MELT_TEMP)
-		thaw_thin()
-		return TRUE
-	if (temp <= ICE_FREEZE_TEMP)
-		cold_minutes += ICE_BREAK_CHECK_MINUTES
-	if (cold_minutes >= ICE_THICKEN_MINUTES)
-		T.name = initial(T.name)
+	if (!is_liquid_water(T))
 		qdel(src)
 		return TRUE
+	if (thin)
+		thin = FALSE // something else melted it
+		cold_minutes = 0
+	if (temp > ICE_FREEZE_TEMP || (salt && temp > ICE_SALT_LIMIT))
+		cold_minutes = 0
+		// In a thaw where the weather moves the ice (ice_dynamics.dm), the
+		// open water is the front's again and freezes from its edges.
+		if (!salt && temp > ICE_MELT_TEMP && ice_dynamics_on())
+			qdel(src)
+		return TRUE
+	cold_minutes += ICE_BREAK_CHECK_MINUTES
+	if (cold_minutes >= ICE_SKIN_MINUTES && water_clear())
+		freeze_over()
 	return TRUE
 
 // The open water skins over as thin ice.
 /obj/structure/broken_ice/proc/freeze_over()
 	var/turf/T = loc
-	var/turf/I = T.ChangeTurf(salty ? /turf/floor/beach/water/ice/salty : /turf/floor/beach/water/ice)
+	var/turf/I = T.ChangeTurf(ice_type_for(salty, shallow))
 	if (!I)
 		return FALSE
 	thin = TRUE
@@ -276,8 +303,8 @@ var/global/broken_ice_pass_due = FALSE
 	I.visible_message(SPAN_NOTICE("The open water skins over with thin ice."))
 	return TRUE
 
-// Thin ice melts back to open water in a thaw.
-/obj/structure/broken_ice/proc/thaw_thin()
+// The ice melts back to open water: thin ice in a thaw, or salted ice.
+/obj/structure/broken_ice/proc/thaw(message = "The thin ice melts back into open water.")
 	var/turf/floor/beach/water/ice/T = loc
 	if (!istype(T))
 		return FALSE
@@ -293,7 +320,7 @@ var/global/broken_ice_pass_due = FALSE
 		return FALSE
 	thin = FALSE
 	cold_minutes = 0
-	W.visible_message(SPAN_NOTICE("The thin ice melts back into open water."))
+	W.visible_message(SPAN_NOTICE(message))
 	return TRUE
 
 // ---- Boats ----
@@ -311,6 +338,8 @@ var/global/broken_ice_pass_due = FALSE
 // breaks under her bow; thick ice stops her.
 /obj/structure/vehicle/proc/small_craft_ice_ok(turf/T)
 	if (!istype(T, /turf/floor/beach/water/ice))
+		if (is_liquid_water(T))
+			ice_keep_open(T) // a used channel stays open (ice_dynamics.dm)
 		return TRUE
 	if (ice_is_thin(T) && !ice_break_refusal(T, null))
 		ice_break_turf(T)
@@ -345,11 +374,10 @@ var/global/broken_ice_pass_due = FALSE
 	for (var/turf/D in dest)
 		if (!old_set[D] && istype(D, /turf/floor/beach/water/ice))
 			ice_break_turf(D)
+		ice_keep_open(D) // her own water stays open while she uses it (ice_dynamics.dm)
 
 #undef ICE_BREAK_CHECK
 #undef ICE_BREAK_CHECK_MINUTES
-#undef ICE_FREEZE_TEMP
-#undef ICE_MELT_TEMP
 #undef ICE_SKIN_MINUTES
 #undef ICE_THICKEN_MINUTES
 #undef ICE_HAND_TIME
