@@ -73,13 +73,14 @@ class CharcoalClamp(unittest.TestCase):
         self.assertIn('round(wood_charge / CHARCOAL_CLAMP_LOGS_PER_LUMP)', proc_body('/obj/structure/charcoal_clamp/proc/charcoal_yield('))
         finish = proc_body('/obj/structure/charcoal_clamp/proc/finish_burn(')
         self.assertLess(finish.index('charcoal_yield()'), finish.index('wood_charge = 0'))
-        self.assertIn('new(get_turf(src))', finish)
+        self.assertIn('new(get_turf(src), lumps)', finish)
+        self.assertNotIn('C.amount = lumps', finish)
 
     def test_dig_out_refuses_while_burning_and_returns_logs(self):
         dig = proc_body('/obj/structure/charcoal_clamp/proc/dig_out(')
         self.assertLess(dig.index('if (burning)'), dig.index('do_after'))
-        self.assertIn('/obj/item/stack/material/wood/W = new(T)', dig)
-        self.assertIn('W.amount = wood_charge', dig)
+        self.assertIn('/obj/item/stack/material/wood/W = new(T, wood_charge)', dig)
+        self.assertNotIn('W.amount = wood_charge', dig)
 
     def test_burn_survives_save_and_load(self):
         self.assertRegex(SOURCE, r'var/burn_left = 0')
