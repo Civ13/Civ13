@@ -259,8 +259,9 @@ class SharedRecordsSource(unittest.TestCase):
         ban = open(os.path.join(ROOT, 'code/modules/admin/verbs/quickBan.dm'), encoding='utf-8').read()
         self.assertIn('shared_records.add(record_ckey, "ban"', ban)
         self.assertNotIn('text2file', ban.split('/proc/quickBan_migrate_legacy()')[0])  # bans.txt is only read, once
-        for path, call_text in (('code/modules/client/client_procs.dm', 'quickBan_remove_uid(UID'),
-                                ('code/modules/client/client_procs.dm', 'shared_records.note_connection(ckey, sql_ip, computer_id)'),
+        self.assertIn('shared_records.revoke(target', ban)
+        self.assertIn('actor ? actor.ckey : ckey(unbanner)', ban)
+        for path, call_text in (('code/modules/client/client_procs.dm', 'shared_records.note_connection(ckey, sql_ip, computer_id)'),
                                 ('code/_helpers/_logging.dm', 'quickBan_lift_ckey(banned, banner)'),
                                 ('code/modules/persistence/region_ooc.dm', 'quickBan_find_ban(ckey, null, null, ban_type)'),
                                 ('code/modules/admin/admin.dm', 'quickBan_migrate_legacy()'),
@@ -268,6 +269,29 @@ class SharedRecordsSource(unittest.TestCase):
             source = open(os.path.join(ROOT, path), encoding='utf-8').read()
             self.assertIn(call_text, source, path)
             self.assertNotIn('fdel(bans_file)', source, path)
+
+    def test_ban_revocation_cannot_be_dispatched_from_client_topic(self):
+        for path in ('code/modules/client/client_procs.dm', 'code/modules/admin/verbs/quickBan.dm'):
+            with open(os.path.join(ROOT, path), encoding='utf-8') as source_file:
+                source = source_file.read()
+            for name in ('quickBan_removeBan', 'quickBan_remove_uid', 'quickBan_handler'):
+                self.assertNotIn(name, source, path)
+
+    def test_unban_verb_rechecks_current_staff_rights_across_prompts(self):
+        path = os.path.join(ROOT, 'code/modules/admin/verbs/quickBan.dm')
+        with open(path, encoding='utf-8') as source_file:
+            source = source_file.read()
+        self.assertIn('return holder && (holder.rights & (R_MOD | R_TRIALADMIN))', source)
+        verb = source.split('/client/proc/quickBan_unban()', 1)[1].split('/* old ban lists */', 1)[0]
+        first_prompt = verb.index('var/wanted = ckey(input(src,')
+        list_bans = verb.index('shared_records.active_bans(')
+        confirmation = verb.index('alert(src,')
+        lift = verb.index('quickBan_lift(choices[choice], src.key, src.mob)')
+        gate = 'if (!can_quickBan_unban())'
+        self.assertIn(gate, verb[:first_prompt])
+        self.assertIn(gate, verb[first_prompt:list_bans])
+        self.assertIn('if (!choice || !can_quickBan_unban() || alert(src,', verb)
+        self.assertIn(gate, verb[confirmation:lift])
 
     def test_watchlist_and_memos_use_the_shared_records(self):
         client = open(os.path.join(ROOT, 'code/modules/client/client_procs.dm'), encoding='utf-8').read()

@@ -823,6 +823,47 @@ frames is fitted.
 - Boats, ships and aircraft opt out (`uses_load_factor()`); the engine stall
   limit in `check_engine()` is unchanged.
 
+## Gun turrets
+
+`code/modules/naval/ship_turret.dm` adds the ship's gun turret
+(`/obj/structure/cannon/modern/ship_turret`, 60 steel, Naval Mines research):
+a one-tile breech-loader that fires the field shells (`/obj/item/cannon_ball/shell`)
+and reuses the unused `modern_ship` state in `icons/obj/cannon.dmi`.
+
+- Its barbette is found by position: `magazine()` looks for a shell rack on
+  the tile right under it, one or two levels down (`multiz_level_below()`).
+  On a ship every tile on the way down must be one of her own decks
+  (`craft_holding()` and `body.carries()`), so a rack in the rock beside her
+  hold does not count. Ashore any rack dug under it does.
+- A loader beside it Alt-clicks it (or uses Hoist a Shell): after five
+  seconds `take_from_magazine()` moves one shell from the rack into the
+  breech. Nothing links turret and rack, so a hop or a turn needs no fix-up
+  and nothing extra is saved.
+- Bomb racks do not feed it.
+- Turrets answer the boatswain's call (`broadside_gun_ok()` in
+  `1713/siege/naval_broadside.dm`), unlike the fixed naval guns and tanks.
+- Gate (turret_probe.dm): a 200-tile steel battleship with 96 tiles of hold,
+  eight loaded turrets and a belted side fires all eight and steps in the
+  same tick in about 14-15 ms, of which the broadside is about 1 ms; the step
+  alone is 13-14 ms. That is inside one 40 ms tick but over the plan's 8 ms
+  step budget, the same as any hull near the 300-tile deck cap (Upper decks).
+
+## Belt armour
+
+`code/modules/naval/hull_armour.dm` adds the belt armour plate
+(`/obj/structure/hull_armour`, 15 steel, Naval Mines research), set on a tile
+of a ship's deck.
+
+- `/obj/covers/ex_act()` asks `hull_armour_soften()` first: a floor on a
+  plated tile, or a hold floor right under one, takes every blast one step
+  lighter (severity + 1; 4 is nothing), so a direct hit does not hole her.
+  The direct hit spends the plate (it is deleted there and then); lighter
+  blasts leave it. A plate's own `ex_act()` does nothing, so the order the
+  blast visits a tile's contents does not matter.
+- Each plate weighs 1 (`hull_load()`), so belting a ship slows her.
+- `craft.armour_belt()` counts plated tiles among her edge tiles for the
+  tiller (`armour_text()`). A wrench unbolts a plate for 10 steel.
+
 ## Hull weight
 
 `code/modules/naval/hull_weight.dm` weighs a built hull's own floors with the
@@ -849,6 +890,7 @@ concrete about 1.67, aluminium about 0.92.
 ## Tests
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/craft_probe.dm 300
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/turret_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/spacecraft_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/orbit_world/sites_probe.dm 300
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/papers_probe.dm 300

@@ -130,17 +130,19 @@
 =																			=
 ===============~~~~~================================~~~~~====================
 */
+/obj/item/weapon/tray/proc/carry_weight(obj/item/I)
+	if (I.w_class == 1.0)
+		return 1
+	else if (I.w_class == 2.0)
+		return 3
+	return 5
+
 /obj/item/weapon/tray/proc/calc_carry()
 	// calculate the weight of the items on the tray
 	var/val = FALSE // value to return
 
 	for (var/obj/item/I in carrying)
-		if (I.w_class == 1.0)
-			val ++
-		else if (I.w_class == 2.0)
-			val += 3
-		else
-			val += 5
+		val += carry_weight(I)
 
 	return val
 
@@ -151,13 +153,7 @@
 
 	for (var/obj/item/I in loc)
 		if ( I != src && !I.anchored && !istype(I, /obj/item/clothing/under) && !istype(I, /obj/item/clothing/suit) && !istype(I, /obj/item/projectile) )
-			var/add = FALSE
-			if (I.w_class == 1.0)
-				add = TRUE
-			else if (I.w_class == 2.0)
-				add = 3
-			else
-				add = 5
+			var/add = carry_weight(I)
 			if (calc_carry() + add >= max_carry)
 				break
 
