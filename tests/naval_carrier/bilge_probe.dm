@@ -1030,6 +1030,94 @@ var/naval_runtime_error = FALSE
 	L.crewed = FALSE
 	tiller.craft.set_speed(VESSEL_SPEED_STOP)
 
+// The source tile order survives a turn but is no longer fresh survey order.
+/proc/compartment_crossing_checks()
+	var/obj/structure/hull_tiller/tiller = bilge_hull(25, 53, 27, 57, "Bay crossing", TRUE)
+	var/datum/craft_body/built/body = tiller.body()
+	var/datum/hull_ledger/L = tiller.craft.ledger
+	new /obj/structure/hull_bulkhead(locate(25, 55, 2))
+	new /obj/structure/hull_bulkhead(locate(27, 55, 2))
+	new /obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight(locate(26, 55, 2))
+	var/one_index = L.bay_cell_index(locate(25, 54, 2))
+	var/two_index = L.bay_cell_index(locate(27, 57, 2))
+	var/door_index = L.bay_cell_index(locate(26, 55, 2))
+	naval_check(L.bays_split() && L.bay_water.len == 2, "crossing fixture has two compartments")
+	naval_check(body.turn_to(WEST), "crossing fixture turns before packing")
+	var/list/one = body.offsets[one_index]
+	var/list/two = body.offsets[two_index]
+	var/list/door = body.offsets[door_index]
+	var/list/dry_packed = sea_crossing_pack(tiller)
+	var/list/dry_record = islist(dry_packed) ? dry_packed["record"] : null
+	naval_check(dry_record && sea_crossing_record_ok(json_decode(json_encode(dry_record))), "dry split hull packs, crosses the wire and passes validation")
+	L.add_water(2.5, L.capacity(), locate(body.px + one[1], body.py + one[2], body.z))
+	var/turf/two_at = locate(body.px + two[1], body.py + two[2], body.z)
+	var/full_side = L.bay_capacity(L.bay_at(two_at))
+	var/second_volume = full_side - 0.75
+	L.add_water(second_volume, L.capacity(), two_at)
+	var/list/packed = sea_crossing_pack(tiller)
+	var/list/R = islist(packed) ? json_decode(json_encode(packed["record"])) : null
+	naval_check(R && sea_crossing_record_ok(R), "wet split hull passes crossing validation after JSON")
+	if (!R)
+		return
+	var/list/wire_ledger = R["ledger"]
+	var/list/bays = wire_ledger["bays"]
+	if (!islist(bays) || bays.len != 2)
+		naval_check(FALSE, "wire ledger has both bays")
+		return
+	var/list/legacy = R.Copy()
+	var/list/scalars = wire_ledger.Copy()
+	scalars -= "bays"
+	scalars -= "bay_order_heading"
+	legacy["ledger"] = scalars
+	naval_check(sea_crossing_record_ok(legacy), "legacy scalar crossing ledger is still accepted")
+	var/list/bad = R.Copy()
+	var/list/bad_ledger = scalars.Copy()
+	bad["ledger"] = bad_ledger
+	bad_ledger["bays"] = list(0, 0)
+	naval_check(!sea_crossing_record_ok(bad), "positional bay array is refused")
+	bad_ledger["bays"] = list("1" = 0, "01" = 0)
+	naval_check(!sea_crossing_record_ok(bad), "noncanonical bay index is refused")
+	bad_ledger["bays"] = list("1" = 0, "16" = 0)
+	naval_check(!sea_crossing_record_ok(bad), "bay index beyond the fifteen tiles is refused")
+	bad_ledger["bays"] = list("1" = 0, "2" = -1)
+	naval_check(!sea_crossing_record_ok(bad), "negative bay water is refused")
+	bad_ledger["bays"] = list("1" = 0, "2" = L.capacity() + 1)
+	naval_check(!sea_crossing_record_ok(bad), "bay water beyond the hull capacity is refused")
+	bad_ledger["bays"] = list("1" = 0, "2" = list("water" = 1))
+	naval_check(!sea_crossing_record_ok(bad), "nested bay water is refused")
+	bad_ledger["bays"] = bays
+	bad_ledger["bay_order_heading"] = NORTHEAST
+	naval_check(!sea_crossing_record_ok(bad), "invalid bay order heading is refused")
+	bad_ledger -= "bays"
+	bad_ledger -= "bay_order_heading"
+	bad_ledger["water"] = list("1" = 0, "2" = 0)
+	naval_check(!sea_crossing_record_ok(bad), "other ledger fields must still be scalar")
+	var/turf/arrival = locate(39, 57, 2)
+	var/obj/structure/hull_tiller/rebuilt = sea_crossing_build(R, arrival)
+	naval_check(rebuilt && rebuilt.craft && rebuilt.craft.ledger, "the divided hull is rebuilt at an anchorage")
+	if (!rebuilt || !rebuilt.craft || !rebuilt.craft.ledger)
+		return
+	var/list/survey = built_hull_survey(arrival, rebuilt.craft)
+	var/differs = FALSE
+	var/list/tiles = R["tiles"]
+	for (var/i = 1, i <= tiles.len, i++)
+		var/list/tile = tiles[i]
+		if (survey[i] != locate(arrival.x + tile[1], arrival.y + tile[2], arrival.z))
+			differs = TRUE
+			break
+	naval_check(differs, "the new survey really does give different indices")
+	var/datum/hull_ledger/arrived = rebuilt.craft.ledger
+	var/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight/rebuilt_door = locate() in locate(arrival.x + door[1], arrival.y + door[2], arrival.z)
+	naval_check(rebuilt_door && !rebuilt_door.state && rebuilt_door.density && arrived.bays_split(), "the shut door still divides the hull after crossing")
+	var/first_water = arrived.water_at(locate(arrival.x + one[1], arrival.y + one[2], arrival.z))
+	var/second_water = arrived.water_at(locate(arrival.x + two[1], arrival.y + two[2], arrival.z))
+	naval_check(near(first_water, 2.5) && near(second_water, second_volume) && near(arrived.water, 2.5 + second_volume), "unequal water crosses in the same physical compartments ([first_water], [second_water], total [arrived.water])")
+	naval_check(near(arrived.bay_capacity(arrived.bay_at(locate(arrival.x + two[1], arrival.y + two[2], arrival.z))), full_side), "turning does not shift a divider tile to the other bay or shrink its brim")
+	sea_crossing_strip(rebuilt)
+	qdel(rebuilt)
+	sea_crossing_strip(tiller)
+	qdel(tiller)
+
 /proc/naval_run()
 	try
 		naval_checks()
@@ -1043,6 +1131,7 @@ var/naval_runtime_error = FALSE
 		fouling_checks()
 		awash_checks()
 		compartment_checks()
+		compartment_crossing_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

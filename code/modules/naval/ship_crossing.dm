@@ -495,13 +495,6 @@ var/global/list/sea_crossing_marked = list()
 		return FALSE
 	if (!istext(R["papers"]) || length(R["papers"]) > 4000)
 		return FALSE
-	if (!isnull(R["ledger"]))
-		var/list/ledger = R["ledger"]
-		if (!islist(ledger) || ledger.len > 16)
-			return FALSE
-		for (var/key in ledger)
-			if (!istext(key) || !isnum(ledger[key]))
-				return FALSE
 	if (!isnull(R["helm"]) && (!istext(R["helm"]) || !sea_crossing_helm_ok(text2path(R["helm"]))))
 		return FALSE
 	var/list/from = R["from"]
@@ -513,6 +506,8 @@ var/global/list/sea_crossing_marked = list()
 			return FALSE
 	var/list/tiles = R["tiles"]
 	if (!islist(tiles) || !tiles.len || tiles.len > BUILT_HULL_MAX_TILES)
+		return FALSE
+	if (!isnull(R["ledger"]) && !sea_crossing_ledger_ok(R["ledger"], tiles.len))
 		return FALSE
 	// counts: items, animals and structures, and whether her pivot is there.
 	var/list/counts = list(0, 0, FALSE)
@@ -562,6 +557,35 @@ var/global/list/sea_crossing_marked = list()
 	var/items = counts[1]
 	var/cargo = counts[2]
 	return has_pivot && items <= SEA_CROSSING_ITEMS_MAX && cargo <= SEA_CROSSING_CARGO_MAX
+
+// Version 1 ledgers used only scalar fields. The only nested field is the
+// compartment water map, keyed by a one-based index in the wire deck order.
+/proc/sea_crossing_ledger_ok(list/ledger, tile_count)
+	if (!islist(ledger) || ledger.len > 16)
+		return FALSE
+	var/capacity = hull_bilge_capacity(tile_count)
+	for (var/key in ledger)
+		if (!istext(key))
+			return FALSE
+		if (key != "bays")
+			if (!isnum(ledger[key]))
+				return FALSE
+			continue
+		if (!isnull(ledger["bay_order_heading"]) && !(ledger["bay_order_heading"] in cardinal))
+			return FALSE
+		var/list/bays = ledger[key]
+		if (!islist(bays) || bays.len < 2 || bays.len > tile_count)
+			return FALSE
+		for (var/bay in bays)
+			if (!istext(bay) || length(bay) > length("[tile_count]"))
+				return FALSE
+			var/index = text2num(bay)
+			if (!isnum(index) || isnan(index) || isinf(index) || index < 1 || index > tile_count || index != round(index) || bay != "[index]")
+				return FALSE
+			var/amount = bays[bay]
+			if (!isnum(amount) || isnan(amount) || isinf(amount) || amount < 0 || amount > capacity)
+				return FALSE
+	return TRUE
 
 // The tile keys of a record's deck, hold or upper deck tiles ("x,y" = TRUE),
 // or null when any tile is not well formed. counts gathers items, animals and
@@ -764,7 +788,20 @@ var/global/list/sea_crossing_marked = list()
 	if (!sea_crossing_helm_ok(helm))
 		helm = /obj/structure/hull_tiller
 	var/obj/structure/hull_tiller/tiller = new helm(pivot)
-	var/problem = tiller.commission(R["name"], R["dir"])
+	var/list/ledger = R["ledger"]
+	// After a turn, a fresh survey can discover the same tiles in a different
+	// order. Bay keys refer to the source ship's order, not survey order.
+	var/list/bay_offsets = (islist(ledger) && islist(ledger["bays"])) ? offsets : null
+	var/problem = tiller.commission(R["name"], R["dir"], bay_offsets)
+	if (problem && bay_offsets)
+		// A hull that surveys differently still arrives; only her compartment
+		// water map is dropped, so the bilge keeps its total but evens out.
+		log_game("Sea crossing: the [R["name"]] at [pivot.x],[pivot.y],[pivot.z] kept no compartment water map: [problem].")
+		problem = tiller.commission(R["name"], R["dir"])
+		if (!problem)
+			ledger = ledger.Copy()
+			ledger -= "bays"
+			ledger -= "bay_order_heading"
 	if (problem)
 		log_game("Sea crossing: the [R["name"]] could not be commissioned at [pivot.x],[pivot.y],[pivot.z]: [problem].")
 		qdel(tiller)
@@ -786,8 +823,8 @@ var/global/list/sea_crossing_marked = list()
 		tiller.craft.register = craft_register_restore(R["papers"])
 	tiller.craft.fit_drives()
 	// She arrives as she left: wet, worn and foul, or dry, tight and clean.
-	if (islist(R["ledger"]) && tiller.craft.ledger)
-		tiller.craft.ledger.from_list(R["ledger"])
+	if (islist(ledger) && tiller.craft.ledger)
+		tiller.craft.ledger.from_list(ledger)
 	return tiller
 
 // Ground under her deck that can take her hold as she is built: rock or
