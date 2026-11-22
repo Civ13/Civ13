@@ -42,7 +42,7 @@ The small sail is in the cloth (or wool) crafting menu, not in vehicle parts. En
 
 ## Where to build
 
-- Boats only move onto **water**: shallow or deep water, swamp water and flooded trenches. Ice and dry land stop them.
+- Boats only move onto **water**: shallow or deep water, swamp water and flooded trenches. Dry land and thick ice stop them. Rafts, canoes and small boats crunch through **thin ice** and open it. Break a channel through thick ice with picks or axes on harm intent, and keep using it so it stays open (see [Breaking and melting ice](Guide_to_Survival.md#breaking-and-melting-ice)).
 - You **can't craft while standing in deep water**, so build at the shoreline or in the shallows, facing open water.
 - **Rivers flow** on North America, South America, Gaia, Europe, Jungle and Asia. Every few seconds the current carries loose items and swimmers one tile downstream, but not boats or anyone aboard one. Animal carcasses stay where they fell, so you can butcher a kill in the shallows. Lakes and ponds are still. Faint streaks slide along flowing water to show which way it runs, and examining the water tells you too.
 - **The sea has currents** on North America, South America, Gaia, Europe and Asia. A belt of water a few tiles off the coast flows along the shore. See [Sea currents and swimming](#sea-currents-and-swimming).
@@ -280,7 +280,7 @@ A modular ship glides smoothly over the water with everyone and everything aboar
 
 ### Hazards
 
-- A ship stops when its bow meets land, ice, another ship or a solid obstacle it can't break.
+- A ship stops when its bow meets land, ice, another ship or a solid obstacle it can't break. A ship with **belt armour** on the hull tile next to the ice breaks thin ice ahead of her, as icebreakers do. Thick ice still stops her.
 - A ship weighing **400 or more** smashes through most solid objects in its path. At **800 or more** it runs over anyone in the way, and lighter ships still hit them hard. Keep swimmers clear of the bow.
 - Explosions can break or destroy masts. A ship with a broken mast, or a mast without a sail, won't sail.
 - A ship that cannot sail can be **towed** by another modular ship: line her up behind the towing ship, facing the same way and within 2 tiles, and use a **rope** on her. See [Towing](Guide_to_Tanks.md#towing).

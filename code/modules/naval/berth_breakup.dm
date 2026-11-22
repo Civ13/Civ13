@@ -57,6 +57,8 @@
 		if (M.type == pieces[key]["path"])
 			return pieces[key]["cost"]
 	// Close kin of a piece, as a survey draws them (ship_draught_piece_on).
+	if (hull_gun_port(M))
+		return istype(M, /obj/structure/railing/built/gunwale/bulwark) ? list("steel" = 4) : list("wood" = 4)
 	if (istype(M, /obj/structure/railing/built/gunwale))
 		return istype(M, /obj/structure/railing/built/gunwale/bulwark) ? list("steel" = 2) : list("wood" = 2)
 	if (istype(M, /obj/structure/hull_tiller))

@@ -124,6 +124,21 @@ Older footwear counts too. Fur, wool and winter boots are warm and help in snow.
 
 **Ice.** Running on frozen water can make you slip and fall. Walking never does. Boots with a good grip halve the chance, and hobnails or crampons stop it entirely.
 
+## Breaking and melting ice
+
+**Breaking ice.** On harm intent, a pickaxe breaks a tile of ice into open water in about 12 seconds. A hatchet or crowbar takes about 15 seconds and a chisel about 25. Strong workers and miners are quicker. A crowbar breaks ice on any intent. Bare hands on harm intent only get through **thin ice**, and tools break thin ice in half the time. Stand on the next tile or the shore, not on the ice you are breaking. On any other intent an axe, pick or chisel cuts an ice-fishing hole instead (see [Fishing](Guide_to_Fishing.md#ice-fishing)).
+
+**Thin ice.** Ice is thin when it has newly frozen over, when it has been salted, or when the air above it is above freezing and it is rotting. Examining ice tells you whether it is thin. Thin ice gives way under carts, vehicles, ridden animals and anyone dragging something or carrying something heavy. If the water under it is deep, you will have to swim.
+
+**Freezing and thawing.** On Gaia and the other regions, ice comes and goes with the weather:
+
+- In hard frost, open water freezes out from the shore or from ice already there, about a tile every ten minutes. Still, shallow water freezes first, at about -2 C. The shallow sea needs about -6 C, deep water -8 C and the deep sea -15 C. Rivers with a current need about 4 C more cold.
+- New ice is thin. It bears like any other ice after about an hour of frost.
+- In a thaw, ice melts back from its edges, and thin ice melts quickly.
+- A tile you broke open skins over with thin ice again after about half an hour of frost.
+
+**Keeping water open.** Scatter a handful of salt from a salt pile or salt shaker on ice to break it up into open water. Scatter it on open water to keep that water from freezing for about two hours. Salt does nothing when the air is -12 C or colder. A channel boats keep using stays open, and so does water with a boat or a person in it.
+
 **Cold, wet feet.** When you are already cold, standing in water or mud chills your feet unless your footwear is waterproof, and snow freezes bare or open-toed feet.
 
 **Hills.** Running down a steep slope can trip you. Hobnails and crampons make that much less likely; snowshoes and pattens make it more likely.

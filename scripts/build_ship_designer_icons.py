@@ -282,6 +282,12 @@ SPRITES = {
     'piece_C': {'layers': [('icons/obj/storage.dmi', 'wood_crate', None)], 'outline': True},
     # /obj/structure/railing/built/gunwale/gangway: the gate in her gunwale.
     'piece_Y': {'layers': [('icons/obj/ship_edges.dmi', 'gunwale_gate', None)], 'turns': True},
+    # /obj/structure/railing/built/gunwale/gun_port and its steel kind
+    # (hull_ports.dm): a gate in her side the height of a deck.
+    'piece_GP': {'layers': [('icons/obj/vessel_openings.dmi', 'gunport_wood_gate', None)], 'turns': True},
+    'piece_GS': {'layers': [('icons/obj/vessel_openings.dmi', 'gunport_steel_gate', None)], 'turns': True},
+    # /obj/structure/cargo_hatch, battened down
+    'piece_CH': {'layers': [('icons/obj/vessel_openings.dmi', 'cargo_hatch', None)]},
     # /obj/structure/multiz/ladder/up/placed (the foot of a stood-up ladder)
     'piece_X': {'layers': [('icons/obj/stairs.dmi', 'ladderup_wood', None)], 'outline': True},
     # /obj/structure/roof_support (a deck pillar)

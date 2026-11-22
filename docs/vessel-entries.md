@@ -78,9 +78,31 @@ walk between and step off.
   shuts behind them. At a shut door a diver hammers for the crew.
 - The tube cannot fire or be loaded while a diver is in it.
 
+## Phase 4: gun ports, barred gates and cargo hatches
+
+`code/modules/naval/hull_ports.dm` (sprites `icons/obj/vessel_openings.dmi`,
+made by `tests/sprites/create_vessel_openings.py`)
+
+- **Gun ports:** a wooden gun port (4 wood, Cannons) or steel gun port
+  (4 steel, Steelmaking) is a gate in her side the height of a deck. Ship
+  sheets have them as **GP** and **GS** under Sides; like a gangway, each
+  must stand on her edge facing out, and closes that side instead of a
+  gunwale. Shut, a port is a wall: shots do not pass and nobody climbs
+  over it. Open, guns fire through it and anyone comes through it, crew or
+  boarders from a boat or the water.
+- **Water:** an open port on a deck that is awash ships 4 bucketfuls a
+  minute into its compartment until it is shut.
+- **Barring:** every gate in her side (gangways and gun ports) can be barred
+  and unbarred from aboard ("Bar or Unbar"), only while shut. From outside a
+  barred gate does not open: a boarder can only hammer on it for the crew to
+  hear, or break it down.
+- **Cargo hatch** (6 wood, Cooperage; sheet piece **CH** under Between decks,
+  which must be drawn over her hold): open, crates dragged onto it are
+  lowered into the hold, and someone standing on it climbs down. Shut, it is
+  deck.
+
 ## Later phases
 
-4. Ship gun ports, scuttles and cargo hatches.
 5. Tank belly hatch, bus emergency door release, train end doors.
 6. Aircraft bailout and canopy jettison, ship lifeboat stations.
 

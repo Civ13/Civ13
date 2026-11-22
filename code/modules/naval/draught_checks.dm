@@ -164,6 +164,28 @@
 			inboard += key
 	if (inboard.len)
 		R.error("[inboard.len] gangway\s face[inboard.len == 1 ? "s" : ""] her own deck: a gangway stands on her edge, facing out over the side.", inboard, "Y")
+	// Gun ports stand in her side the same way (hull_ports.dm).
+	for (var/port in list("GP", "GS"))
+		var/list/in_ports = list()
+		for (var/key in D.piece_cells(port))
+			var/list/C = D.cells[key]
+			if (D.cells[ship_draught_step_key(key, C[3])])
+				in_ports += key
+		if (in_ports.len)
+			R.error("[in_ports.len] gun port\s face[in_ports.len == 1 ? "s" : ""] her own deck: a gun port stands on her edge, facing out over the side.", in_ports, port)
+
+// A cargo hatch opens into her hold (hull_ports.dm).
+/datum/design_check/ship/cargo_hatches
+	order = 46
+
+/datum/design_check/ship/cargo_hatches/ship_check(datum/ship_draught/D, datum/design_report/R)
+	var/list/over_nothing = list()
+	for (var/key in D.piece_cells("CH"))
+		var/list/xy = splittext(key, ",")
+		if (!D.deck_cell(-1, text2num(xy[1]), text2num(xy[2])))
+			over_nothing += key
+	if (over_nothing.len)
+		R.error("[over_nothing.len] cargo hatch[over_nothing.len == 1 ? "" : "es"] [over_nothing.len == 1 ? "has" : "have"] no hold under [over_nothing.len == 1 ? "it" : "them"]: draw her hold under each hatch.", over_nothing, "CH")
 
 // A bowsprit carries her jib from her bow: nothing of hers ahead of it
 // (hull_bow.dm).

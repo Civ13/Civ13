@@ -251,6 +251,20 @@ full one. Legacy scalar ledgers still pass and malformed bay tables do not.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/bilge_probe.dm 300
 
+## Gun ports and cargo hatches (`ports_probe.dm`)
+
+`code/modules/naval/hull_ports.dm`: a shut gun port stops shots and climbers
+and an open one lets them through; an open port cannot be barred; the crew
+count as aboard and a swimmer alongside does not; a barred port is hammered
+on from outside, once per cooldown; a gangway bars the same way and a plain
+gunwale does not; an open port on an awash deck ships water and a dry or shut
+one does not; a cargo hatch over a hold lowers a crate into it only while open,
+and one over rock lowers nothing. On the sheet a gun port on her edge closes
+that side, one facing inboard is refused, and a cargo hatch needs her hold
+drawn under it.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/ports_probe.dm 300
+
 ## Upper decks on built hulls (`upper_deck_probe.dm`)
 
 A roofed-over built hull (`code/modules/craft/built_body.dm`): fifteen roofs
