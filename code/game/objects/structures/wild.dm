@@ -308,6 +308,8 @@ var/list/seed_list_jungle
 		return
 	if (lacquer_tap_attackby(src, W, user)) // lacquer.dm
 		return
+	if (sap_tap_attackby(src, W, user)) // syrups.dm
+		return
 	if (is_tool(W, TOOL_KNIFE))
 		user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 		health -= 10
