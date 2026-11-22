@@ -93,7 +93,7 @@
 #define FLOOR_EXERCISE_CAP 100
 #define FLOOR_EXERCISE_RATE 0.003
 #define FLOOR_EXERCISE_REPS 3
-#define FLOOR_EXERCISE_REP_TIME 80
+#define FLOOR_EXERCISE_REP_TIME 40
 
 /mob/living/human/var/tmp/floor_exercise_busy = FALSE
 
@@ -174,12 +174,9 @@
 			continue
 		winded = FALSE
 		var/list/values = stats[skill]
-		var/rate = FLOOR_EXERCISE_RATE * (1 - exercise_fatigue / 8) * (values[2] >= 50 ? 0.5 : 1)
-		var/steps = max(1, round(rate * 1000 + 0.00001))
-		adaptStat(skill, (steps + 0.001) * 0.15)
-		values[1] = min(FLOOR_EXERCISE_CAP, values[1])
-		values[2] = min(FLOOR_EXERCISE_CAP, values[2])
-		exercise_fatigue = min(6, exercise_fatigue + 2)
+		var/rate = FLOOR_EXERCISE_RATE * TRAINING_SET_SCALE * (1 - exercise_fatigue / 8) * (values[2] >= 50 ? 0.5 : 1)
+		exercise_pay_steps(skill, rate * 1000, FLOOR_EXERCISE_CAP)
+		exercise_fatigue = min(6, exercise_fatigue + TRAINING_SET_FATIGUE)
 		sets++
 		to_chat(src, "<span class='notice'>Set of [kind] complete. Fatigue: [exercise_fatigue]/6.</span>")
 	floor_exercise_busy = FALSE

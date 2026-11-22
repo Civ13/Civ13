@@ -327,10 +327,11 @@
 			grab_list = list()
 	..()
 
-	// recover stamina
-	diet_recover_stamina()
-	wanderer_recover_stamina()
-	home_recover_stamina()
+	// recover stamina, except while a training session is spending it (Val, 2026-11-22)
+	if (!training_in_progress())
+		diet_recover_stamina()
+		wanderer_recover_stamina()
+		home_recover_stamina()
 
 	// recover juice (mana) - ~0.5 per second at standard 2ds Life() ticks
 	if (juice < max_juice)

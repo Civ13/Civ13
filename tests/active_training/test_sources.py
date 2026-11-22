@@ -85,7 +85,16 @@ class TrainingGearSources(unittest.TestCase):
             self.assertNotIn('SKIP_SET_WINDOW', text)
         self.assertNotIn('Exercise Step', CORE + GEAR + COURSE)
         defines = read('code/__defines/training.dm')
-        self.assertIn('#define TRAINING_STAMINA_DRAIN 0.014', defines)
+        self.assertIn('#define TRAINING_STAMINA_DRAIN 0.004', defines)
+        # Short, frequent sets with proportionally smaller gains (Val, 2026-11-22).
+        self.assertIn('#define TRAINING_SET_SCALE 0.5', defines)
+        self.assertIn('#define TRAINING_SET_FATIGUE 1', defines)
+        self.assertIn('#define LIFT_SET_REPS 3', GEAR)
+        self.assertIn('#define SKIP_SET_REPS 3', COURSE)
+        self.assertIn('exercise_pay_steps(skill, paid * 1000, cap)', CORE)
+        # Natural recovery pauses while a session spends stamina.
+        life = read('code/game/mob/living/carbon/human/human_life.dm')
+        self.assertIn('if (!training_in_progress())\n\t\tdiet_recover_stamina()\n\t\twanderer_recover_stamina()\n\t\thome_recover_stamina()', life)
         self.assertIn('#include "code\\__defines\\training.dm"', DME)
         self.assertIn('return stats["stamina"][2] * TRAINING_STAMINA_DRAIN * duration / 10', CORE)
         # Stop Exercise ends every kind of session, not only equipment sets.
