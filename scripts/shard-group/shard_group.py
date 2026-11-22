@@ -161,6 +161,12 @@ UNSAVED_KINDS = ('EVENT', 'TUTORIAL', 'GATEWAY')
 # updated by a plain restart on their own port while empty, never a standby handover.
 ALWAYS_UP_KINDS = ('GATEWAY', 'TUTORIAL')
 GATEWAY_MAP = 'maps/special/gateway.dmm'
+# Val (2026-11-21): the gateway never stages a build and always stays on its port. The host
+# service never stages, updates or restarts it, and a group-wide restart or update leaves it
+# running; a person updates it only by naming it (restart --region ID).
+GATEWAY_PINNED = 'the gateway never stages a build and stays on its port; restart it by name (--region) to update it'
+# Group-wide actions that would close a running world's port or build beside it.
+GATEWAY_SKIPPED_ACTIONS = ('restart', 'force-restart', 'update', 'stage', 'handover', 'update-unsaved', 'update-handover')
 ID = re.compile(r'^[a-z0-9_-]{1,32}$')
 HOST = re.compile(r'^[A-Za-z0-9.-]{1,64}$')
 HEX40 = re.compile(r'^[0-9a-f]{40}$')
@@ -899,6 +905,8 @@ class RegionHost(Host):
         the background is moved up the same way."""
         if not (self.repo / '.git').exists():
             raise Refused('the region is not set up; run setup first')
+        if self.holds_its_port():
+            raise Refused(GATEWAY_PINNED)
         self.check_disk('staging checks out and compiles a whole build')
         self.state_dir.mkdir(parents=True, exist_ok=True)
         try:
@@ -1205,6 +1213,8 @@ class RegionHost(Host):
         return super().automatic_start_action()
 
     def idle_update_action(self):
+        if self.holds_its_port():
+            return None
         if not self.protects_mainland_uptime():
             return super().idle_update_action()
         try:
@@ -1229,6 +1239,8 @@ class RegionHost(Host):
     def stage_if_behind(self):
         """Stage the latest revision when the region's build is behind it; at most once per
         update_check_minutes (each check fetches). True when a stage was started."""
+        if self.holds_its_port():
+            return False
         now = self.platform.now()
         if now < self.next_update_check or self.stage_lock.exists():
             return False
@@ -1259,6 +1271,8 @@ class RegionHost(Host):
         the region's port. A save the new code cannot read (such as a timer it no longer
         knows) fails that load and the old world plays on, so no unattended update can leave
         a region down on a broken load."""
+        if self.holds_its_port():
+            return None
         try:
             if not load_group(self.config['group_config'])['persistent']:
                 # A TDM world in pregame reports no round yet, which reads as saving; it has
@@ -1289,9 +1303,17 @@ class RegionHost(Host):
     # battle world takes the update with its next map at the end of each round
     # (battle_mapswap.py); a world that never saves and is empty (the barracks while everyone
     # is in the battle) has no save to load, so it restarts onto an update built beside it.
+    def holds_its_port(self):
+        """The gateway never stages a build (Val, 2026-11-21: it must always stay on its port):
+        the host service never stages, updates or restarts it, and group-wide actions leave
+        it running. It takes new code only when a person names it (restart --region ID)."""
+        return self.region_kind() == 'GATEWAY'
+
     def update_unsaved_while_empty(self):
         """An awake, empty region of a group that does not save (TDM): restart onto a ready
         update, or build the latest revision beside it. The next wait, or None."""
+        if self.holds_its_port():
+            return None
         try:
             group = load_group(self.config['group_config'])
         except (OSError, ValueError):
@@ -4295,6 +4317,9 @@ def main(argv=None):
             accepted, refused = {}, {}
             waited = False
             for region, host in hosts(group, args.region):
+                if args.region is None and region.get('kind') == 'GATEWAY' and args.action in GATEWAY_SKIPPED_ACTIONS:
+                    refused[region['id']] = GATEWAY_PINNED  # it stays on its port (Val, 2026-11-21)
+                    continue
                 try:
                     if args.action == 'start' and not waited and host.config['start_requires_byond_pager']                             and not host.platform.listening(host.config['port']):
                         # start.bat after a reboot: the pager starts and signs in once for every region

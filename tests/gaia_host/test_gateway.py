@@ -1,9 +1,11 @@
 """Offline tests for the GATEWAY region kind in scripts/shard-group (shard_group.py, group_ports.py):
 an always-up world on the front door's port that hosts no play and sends players on."""
+import io
 import json
 from pathlib import Path
 import sys
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import test_shard_group as base  # noqa: E402
@@ -113,8 +115,8 @@ class GatewayTests(unittest.TestCase):
             idle, _ = host.watch_step(idle)
         self.assertFalse(host.frozen(), 'an idle mainland is never frozen')
 
-    def test_update_restarts_on_its_own_port_without_a_standby(self):
-        group = self.gateway_group()
+    def test_tutorial_update_restarts_on_its_own_port_without_a_standby(self):
+        group = self.tutorial_group()
         shard_group.setup(group, self.machine)
         host = self.host(group, 'door')
         host.log = lambda values: None
@@ -142,7 +144,8 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual('start', commands[-1][0])
         self.assertIn(1721, self.machine.up)
 
-    def test_an_empty_gateway_restarts_onto_an_update_in_a_saving_group(self):
+    def test_an_empty_gateway_never_stages_or_restarts_itself(self):
+        # Val (2026-11-21): the gateway must always stay on its port; it never updates itself.
         group = self.gateway_group()
         shard_group.setup(group, self.machine)
         host = self.host(group, 'door')
@@ -150,16 +153,21 @@ class GatewayTests(unittest.TestCase):
         host.work('update', host.request('update')['operation'])
         self.machine.revision = NEWER
         self.machine.up = {1721}
-        host.work('stage', host.request_stage()['operation'])
-        self.assertTrue(group['persistent'])
-        self.assertEqual(30, host.update_unsaved_while_empty())
-        self.assertEqual('restart', host.read_state()['action'])
+        self.assertFalse(host.stage_if_behind(), 'no background build for the gateway')
+        self.assertFalse(host.stage_lock.exists())
+        for urgent in (False, True):
+            with self.assertRaisesRegex(shard_group.Refused, 'never stages'):
+                host.request_stage(urgent=urgent)
+        self.assertIsNone(host.update_unsaved_while_empty())
+        self.assertIsNone(host.update_while_empty())
+        self.assertIsNone(host.idle_update_action())
+        self.assertNotEqual('restart', (host.read_state() or {}).get('action'))
         self.assertIsNone(self.host(group, 'gaia').update_unsaved_while_empty(), 'saving lands still hand over')
 
     def test_an_empty_restart_installs_the_staged_build_without_compiling(self):
         # The TDM front door was shut for 35 seconds while a restart compiled a revision
-        # newer than the staged build (2026-11-21): the gateway installs what is staged.
-        group = self.gateway_group()
+        # newer than the staged build (2026-11-21): an always-up world installs what is staged.
+        group = self.tutorial_group()
         shard_group.setup(group, self.machine)
         host = self.host(group, 'door')
         host.log = lambda values: None
@@ -185,6 +193,36 @@ class GatewayTests(unittest.TestCase):
         commands = [argv for argv, _ in self.machine.calls]
         self.assertFalse([argv for argv in commands if argv[0] == 'DreamMaker'], 'no compile with the port closed')
         self.assertEqual('start', commands[-1][0])
+
+    def test_group_wide_restart_and_update_leave_the_gateway_running(self):
+        group = self.gateway_group()
+        shard_group.setup(group, self.machine)
+        requested = []
+
+        def request(host, action):
+            requested.append((host.config['region'], action))
+            return {'accepted': True, 'action': action}
+
+        def request_stage(host, urgent=False):
+            requested.append((host.config['region'], 'stage'))
+            return {'accepted': True, 'action': 'stage'}
+
+        def run(*argv):
+            requested.clear()
+            out = io.StringIO()
+            with mock.patch.object(shard_group.RegionHost, 'request', request), \
+                    mock.patch.object(shard_group.RegionHost, 'request_stage', request_stage), \
+                    mock.patch.object(shard_group, 'ensure_coordinator', return_value=False), \
+                    mock.patch('sys.stdout', out):
+                shard_group.main(['--config', str(self.path)] + list(argv))
+            return json.loads(out.getvalue())
+
+        for action in ('restart', 'handover', 'stage', 'update'):
+            result = run(action)
+            self.assertIn('never stages', result['refused']['door'], action)
+            self.assertEqual([('gaia', action)], requested, action)
+        run('restart', '--region', 'door')
+        self.assertEqual([('door', 'restart')], requested, 'naming the gateway still restarts it')
 
     def test_add_gateway_plans_then_adds_sets_up_and_starts_it(self):
         self.group['relay_port'] = 1740
