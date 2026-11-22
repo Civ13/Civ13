@@ -11,7 +11,8 @@
 // - amber: a floor or fitting to change for another;
 // - amber, faint: a fitting to turn to face another way.
 //
-// Only her main deck is compared. The work is done by hand, as any work on a
+// Only her main deck is chalked; her hold is dug out from the tiller
+// (berth_refit_hold.dm). The work is done by hand, as any work on a
 // hull, at what it costs by hand: lay floors and fittings, dismantle what is
 // marked red, turn what is marked to turn. "Check the refit" at the tiller
 // marks her again as she stands and lists what is left; "Refit the hull"
@@ -25,6 +26,7 @@
 /obj/structure/hull_tiller
 	var/tmp/refit_code = ""          // the draught she is being refitted to
 	var/tmp/list/refit_marks = list()
+	var/tmp/refit_hold_left = 0       // hold floors and ladders the refit still wants dug out
 
 // A mark on a hull being refitted.
 /obj/structure/berth_refit_mark
@@ -70,9 +72,9 @@
 	var/list/piece = ship_draught_piece_on(T, src)
 	return list(floor, piece ? piece[1] : null, piece ? piece[2] : NORTH)
 
-// The draught D laid over her: turf = list(floor, piece, dir as it stands).
-// Text when it cannot be laid over her.
-/obj/structure/hull_tiller/proc/refit_target(datum/ship_draught/D)
+// Where each tile of draught D falls when it is laid over her, with its
+// tiller on hers and its bow her way: "x,y" = turf. Text when it cannot be laid.
+/obj/structure/hull_tiller/proc/refit_turfs(datum/ship_draught/D)
 	var/datum/craft_body/built/B = body()
 	if (!istype(B) || !B.placed())
 		return "She is not commissioned."
@@ -88,16 +90,27 @@
 	if (isnull(hx))
 		return "The [D.name] on the draught has no tiller or steering oar to lay on hers."
 	var/turf/helm = get_turf(src)
-	var/angle = craft_turn_angle(NORTH, B.dir)
 	. = list()
 	for (var/key in D.cells)
-		var/list/C = D.cells[key]
 		var/list/xy = splittext(key, ",")
 		var/list/R = slipway_draught_turn(text2num(xy[1]) - hx, text2num(xy[2]) - hy, B.dir)
 		var/turf/T = locate(helm.x + R[1], helm.y + R[2], helm.z)
 		if (!T)
 			return "The [D.name] would run off the edge of the world."
-		.[T] = list(C[1], C[2], (C[3] in cardinal) ? turn(C[3], angle) : NORTH)
+		.[key] = T
+
+// The draught D laid over her: turf = list(floor, piece, dir as it stands).
+// Text when it cannot be laid over her.
+/obj/structure/hull_tiller/proc/refit_target(datum/ship_draught/D)
+	var/list/at = refit_turfs(D)
+	if (istext(at))
+		return at
+	var/datum/craft_body/built/B = body()
+	var/angle = craft_turn_angle(NORTH, B.dir)
+	. = list()
+	for (var/key in at)
+		var/list/C = D.cells[key]
+		.[at[key]] = list(C[1], C[2], (C[3] in cardinal) ? turn(C[3], angle) : NORTH)
 
 // Every tile where she and the draught differ: turf = list(kind, what).
 /obj/structure/hull_tiller/proc/refit_diff(list/target)
@@ -159,16 +172,20 @@
 		refit_code = ""
 		return "The draught cannot be read."
 	var/target = refit_target(D)
-	qdel(D)
 	if (istext(target))
+		qdel(D)
 		return target
+	// Her hold is dug out from the tiller (berth_refit_hold.dm).
+	var/list/hold_work = refit_hold_work(D)
+	refit_hold_left = islist(hold_work) ? hold_work.len : 0
+	qdel(D)
 	var/list/diff = refit_diff(target)
 	for (var/turf/T in diff)
 		var/list/E = diff[T]
 		var/obj/structure/berth_refit_mark/M = new(T)
 		M.set_kind(E[1], E[2])
 		refit_marks += M
-	if (!diff.len)
+	if (!diff.len && !refit_hold_left)
 		refit_code = ""
 	return diff
 
@@ -197,6 +214,8 @@
 	if (istype(H.get_active_hand(), /obj/item/ship_draught))
 		. += "Mark out a refit"
 	if (refit_code)
+		if (refit_hold_left)
+			. += "Dig out the hold"
 		. += list("Check the refit", "Clear the refit marks")
 
 // TRUE when choice was a refit action.
@@ -217,8 +236,12 @@
 		if ("Check the refit")
 			report_refit(H, mark_refit(), FALSE)
 			return TRUE
+		if ("Dig out the hold")
+			dig_out_hold(H)
+			return TRUE
 		if ("Clear the refit marks")
 			refit_code = ""
+			refit_hold_left = 0
 			clear_refit_marks()
 			to_chat(H, SPAN_NOTICE("The refit marks are rubbed out."))
 			return TRUE
@@ -230,9 +253,14 @@
 		to_chat(H, SPAN_WARNING(result))
 		return
 	var/list/diff = result
-	if (!diff.len)
+	if (!diff.len && !refit_hold_left)
 		to_chat(H, SPAN_NOTICE("She matches her draught: there is nothing to refit."))
 		return
 	if (first)
-		log_game("[key_name(H)] marked out a refit of the [craft.name] at [x],[y],[z] ([diff.len] tiles).")
-	to_chat(H, SPAN_NOTICE("[first ? "The refit is chalked on her" : "The refit still wants"]: [berth_refit_summary(diff)]. Do the work by hand, then use Refit the hull here once her floors are done."))
+		log_game("[key_name(H)] marked out a refit of the [craft.name] at [x],[y],[z] ([diff.len] tiles, [refit_hold_left] in her hold).")
+	var/list/parts = list()
+	if (diff.len)
+		parts += berth_refit_summary(diff)
+	if (refit_hold_left)
+		parts += "[refit_hold_left] piece\s of hold to dig out (use Dig out the hold here)"
+	to_chat(H, SPAN_NOTICE("[first ? "The refit is chalked on her" : "The refit still wants"]: [english_list(parts)]. Do the work by hand, then use Refit the hull here once her floors are done."))

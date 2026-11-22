@@ -45,7 +45,8 @@ def source_checks():
         failures.append('major cave-in must centre on the tile, not usr')
     emote = read('code/game/mob/living/carbon/human/emotes/emote.dm')
     me = emote[emote.index('\t\t\tif ("me")'):emote.index('\t\t\tif ("salute")')]
-    if 'return custom_emote(m_type, message)' not in me:
+    # The typed flag marks the Me verb's words for chat translation.
+    if not re.search(r'return custom_emote\(m_type, message(, null, typed)?\)', me):
         failures.append('the Me emote must show its message')
     wheel = read('code/modules/1713/machinery/modular_vehicles/movement.dm')
     drop = wheel[wheel.index('\tMouseDrop(var/obj/structure/vehicleparts/frame/VP)'):wheel.index('\tattackby(var/obj/item/I')]

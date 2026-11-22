@@ -22,6 +22,9 @@
 	return 0
 
 /proc/ice_hole_cut(turf/floor/beach/water/ice/T, obj/item/W, mob/living/human/H)
+	if (H.a_intent == I_HARM)
+		ice_break(T, W, H) // harm intent breaks the whole tile (ice_breaking.dm)
+		return null
 	if (locate(/obj/structure/ice_hole) in T)
 		to_chat(H, SPAN_WARNING("There is already a hole here."))
 		return null
@@ -107,6 +110,9 @@
 		to_chat(user, "Now and then something moves in the dark water.")
 
 /obj/structure/ice_hole/attackby(obj/item/W, mob/user)
+	if (ishuman(user) && user.a_intent == I_HARM && ice_break_tool_delay(W) && istype(loc, /turf/floor/beach/water/ice))
+		ice_break(loc, W, user) // ice_breaking.dm
+		return
 	if (ishuman(user) && ice_hole_tool_delay(W))
 		cut_block(W, user)
 		return

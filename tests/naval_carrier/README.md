@@ -168,8 +168,9 @@ hull has no seams; a struck hull leaves no ledger.
 Holes and foundering: a floor shot away is a hole and a wall knocked down is
 not; a hole lets in 25 bucketfuls a minute while she is awake and takes her past
 awash; three quarters full she lists and makes slow ahead at best; a patch takes
-two pieces of wood and a hammer, closes the hole and weeps; a holed hull cannot
-be refitted; full on deep water she founders, a crew that gets ahead of the
+two pieces of wood and a hammer, closes the hole and weeps; a hull holed inside
+her outline cannot be refitted, while a plank lifted from her edge is named in
+the refusal of a step it blocks and a refit cuts it away so she passes; full on deep water she founders, a crew that gets ahead of the
 water stops the count, and four half minutes later her floors, tiller and
 fittings are lost while her crew, loose things and chests are left in the
 water; full in the shallows she settles on the bottom, neither sails nor turns,
@@ -290,6 +291,21 @@ above is built on the slipway (refused where a floor is in the way two levels
 up), with a ladder between the decks above, and launches with both.
 
     python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/second_deck_probe.dm 300
+
+## A hold dug in a refit, and boarding from a level up (`hold_refit_probe.dm`)
+
+A hull hauled out on a slipway is refitted to her own lines with two hold tiles
+and a ladder added: her deck matches, but the refit stays open with three pieces
+of hold to dig and the tiller offers "Dig out the hold"; floors come before the
+ladder, which is refused until its floor is down; the rock is hollowed, she
+carries the new hold and not the rock beside it, the ladder joins deck and hold,
+and the refit then closes. No hold is dug under a tile that is not her deck, and
+a crate in the new hold is aboard her. A gangway on the upper deck of a roofed
+hull at sea runs its plank two tiles over open air to a quay floor a level up,
+holds her while it is out, and lets her go when taken in; a gangway on her main
+deck still runs over water to a pier.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/naval_carrier/hold_refit_probe.dm 300
 
 ## Sea chart and harbours (`chart_probe.dm`)
 

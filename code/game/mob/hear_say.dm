@@ -180,6 +180,7 @@
 
 	var/track = null
 
+	var/as_spoken = message // chat translation reads only words heard as spoken
 	var/list/comprehended = comprehend_device_speech(message, language, speaker)
 	if (isnull(comprehended))
 		return
@@ -207,6 +208,7 @@
 	if (findtext(message,"reploc") || findtext(message," reploc"))
 		message = reploc(message, speaker)
 
+	message = chat_translate_mark(message, comprehended[1] == as_spoken)
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			to_chat(src, "<span class='warning'>You feel the radio vibrate but can hear nothing from it!</span>")
@@ -260,6 +262,7 @@
 
 	var/track = null
 
+	var/as_spoken = message // chat translation reads only words heard as spoken
 	var/list/comprehended = comprehend_device_speech(message, language, speaker)
 	if (isnull(comprehended))
 		return
@@ -275,6 +278,7 @@
 	if (dd_hasprefix(message, " "))
 		message = copytext(message, 2)
 
+	message = chat_translate_mark(message, comprehended[1] == as_spoken)
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			to_chat(src, "<span class='warning'>You feel the telephone vibrate but can hear nothing from it!</span>")
@@ -308,6 +312,7 @@
 
 	var/track = null
 
+	var/as_spoken = message // chat translation reads only words heard as spoken
 	var/list/comprehended = comprehend_device_speech(message, language, speaker)
 	if (isnull(comprehended))
 		return
@@ -324,6 +329,7 @@
 		message = copytext(message, 2)
 
 	message = replacetext(message,";","")
+	message = chat_translate_mark(message, comprehended[1] == as_spoken)
 	if ((sdisabilities & DEAF) || ear_deaf || find_trait("Deaf"))
 		if (prob(20))
 			to_chat(src, "<span class='warning'>You feel the voicepipe vibrate but can hear nothing from it!</span>")

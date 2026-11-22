@@ -70,7 +70,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '8cd66ed8b2263e15277ab43794b3dd5c029960e6'
+WIKI_REVIEWED_REVISION = '9ddc62791d548afd4dd4b5e7ff325d1ff90995a5'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -79,7 +79,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
     'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('d8eebb02435d4409fec74214d14ea239ab4f5a331b8ba6c7d506e5b2c99dc68f', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('0d1d364e6e4ea6d3664f9f0840e84fdc8dcd8ef6d3b05feb1475129556d65df6', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('cc66fa9ecc45d02fb09be49981d4f9a5992b583aaa9d8f7029a4a3851f30f96c', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('d808fc78abe7a897305f07cc48b23256d4db61c4261ae43c17509502cd218404', 'exercise training strength weights running fatigue'),
@@ -121,7 +121,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('7a7a693f8f1d50fe32737f46b09b6fdfc143c33f16c7e3969d9e2dee64208d7a', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('5c503693bca6224877567df3699d993a01f192b3768ad3e20a11fdae44779e45', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('07180ee59517de08f1eac31fc7b2c18e67a17fd66612986102c8eb263f0ebaa1', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),

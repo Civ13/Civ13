@@ -122,6 +122,30 @@ class FishingGrounds(unittest.TestCase):
         self.assertIn('return key == "check_epoch" || key == "cutting" || ..()', ice)
         self.assertTrue((ROOT / 'icons/obj/fishing_gear.dmi').is_file())
 
+    def test_broken_ice_refreezes_and_stops_boats(self):
+        dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
+        self.assertEqual(dme.count('#include "code\\modules\\1713\\ice_breaking.dm"'), 1)
+        ice = (ROOT / 'code/modules/1713/ice_breaking.dm').read_text(encoding='utf-8')
+        # Only broken tiles are watched: nothing walks the world's ice.
+        self.assertNotIn('in world', ice)
+        self.assertNotIn('spawn(', ice)
+        self.assertNotIn('addtimer(CALLBACK(src', ice)
+        self.assertEqual(ice.count('addtimer('), 2)
+        self.assertIn('var/global/list/broken_ice_marks\n', ice)
+        # Harm intent on an ice tile or hole breaks it; a crowbar breaks on any intent.
+        fishing = (ROOT / 'code/modules/1713/ice_fishing.dm').read_text(encoding='utf-8')
+        self.assertIn('\tif (H.a_intent == I_HARM)\n\t\tice_break(T, W, H)', fishing)
+        self.assertIn('user.a_intent == I_HARM && ice_break_tool_delay(W)', fishing)
+        self.assertIn('\tif (ishuman(user) && ice_break_tool_delay(C))\n\t\tice_break(src, C, user)\n', self.source)
+        # Small boats and rafts ask about ice in the refusal every move check calls first.
+        leaks = (ROOT / 'code/modules/naval/small_craft_leaks.dm').read_text(encoding='utf-8')
+        self.assertIn('/obj/structure/vehicle/proc/swamped_refusal()\n\tif (!small_craft_ice_ok(small_craft_ahead()))\n\t\treturn TRUE\n', leaks)
+        # A built ship plans around ice and breaks the thin ice it was cleared for.
+        built = (ROOT / 'code/modules/craft/built_body.dm').read_text(encoding='utf-8')
+        self.assertIn('why = ice_refusal(D, mine_set)', built)
+        self.assertLess(built.index('break_ice_ahead(P[4], old)'), built.index('var/list/cargo = list()'))
+        self.assertIn('/datum/craft_body/built/air/ice_refusal(turf/D, list/mine_set)\n\treturn null', ice)
+
     def test_new_species_are_raw_fish_with_their_own_sheet(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\fish_species.dm"'), 1)

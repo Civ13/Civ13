@@ -68,7 +68,7 @@ const settle = page => page.waitForTimeout(150);
   const errors = [];
   try {
     context = await chromium.launchPersistentContext(path.join(dir, 'profile'), {
-      executablePath: chrome, headless: true, viewport: { width: 560, height: 460 }, timeout: 15000,
+      executablePath: chrome, headless: true, viewport: { width: 560, height: 460 }, timeout: 15000, locale: 'en-US',
       args: ['--disable-background-networking', '--disable-extensions', '--disable-sync', '--host-resolver-rules=MAP * ~NOTFOUND'],
     });
     await context.route('**/*', route => {
@@ -78,6 +78,13 @@ const settle = page => page.waitForTimeout(150);
     const page = context.pages()[0] || await context.newPage();
     page.on('pageerror', error => errors.push(error.message));
     await page.addInitScript(fakeApis);
+    // A stand-in desktop language list, set through localStorage before a load.
+    await page.addInitScript(() => {
+      try {
+        const fake = localStorage.getItem('__test_langs');
+        if (fake) Object.defineProperty(navigator, 'languages', { get: () => JSON.parse(fake) });
+      } catch (e) { /* none */ }
+    });
     const load = async () => {
       await page.goto(pathToFileURL(fixture).href, { waitUntil: 'load', timeout: 15000 });
       await page.waitForFunction(() => window.__chatTestReady === true, null, { timeout: 15000 });
@@ -90,16 +97,53 @@ const settle = page => page.waitForTimeout(150);
       return { text: m.textContent, tr: t ? t.textContent : null, setup: !!m.querySelector('.chat-translate-setup') };
     }));
 
-    // Defaults: on, English.
-    check(await page.evaluate(() => document.getElementById('chat-translate-on').checked), 'translation is on by default');
+    // Defaults on an English desktop: off, English (Val, 2026-11-22).
+    check(!(await page.evaluate(() => document.getElementById('chat-translate-on').checked)), 'translation is off by default on an English desktop');
     check(await page.evaluate(() => document.getElementById('chat-translate-lang').value) === 'en', 'default language is English');
+    await page.evaluate(m => window.receiveMessage(m), say("<span class='ooc'>OOC: <EM>Lucia:</EM> <span class='message chat-tr'>hola amigo</span></span>"));
+    await settle(page);
+    check((await page.evaluate(() => window.__tr.detected.length)) === 0, 'nothing is translated until it is turned on');
+
+    // A desktop in another language starts on, into that language; the
+    // first offered language in the list wins, and regions are ignored.
+    const firstRun = async langs => {
+      await page.evaluate(l => { localStorage.clear(); localStorage.setItem('__test_langs', JSON.stringify(l)); }, langs);
+      await load();
+      return page.evaluate(() => ({ on: document.getElementById('chat-translate-on').checked, lang: document.getElementById('chat-translate-lang').value }));
+    };
+    let first = await firstRun(['pt-BR', 'en-US']);
+    check(first.on && first.lang === 'pt', 'Portuguese desktop starts on, into Portuguese: ' + JSON.stringify(first));
+    first = await firstRun(['xx-YY', 'fr']);
+    check(first.on && first.lang === 'fr', 'unoffered languages are skipped: ' + JSON.stringify(first));
+    first = await firstRun(['en-GB', 'de-DE']);
+    check(!first.on && first.lang === 'en', 'English first means off: ' + JSON.stringify(first));
+    // A saved choice always wins over the desktop.
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem('__test_langs', JSON.stringify(['de-DE'])); localStorage.setItem('civ13-chat-translate-v2', JSON.stringify({ enabled: false, lang: 'de' })); });
+    await load();
+    check(!(await page.evaluate(() => document.getElementById('chat-translate-on').checked)), 'a saved "off" stays off on a German desktop');
+    // An old v1 setting keeps its language; a non-English one turns it on.
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem('civ13-chat-translate-v1', JSON.stringify({ enabled: false, lang: 'de' })); });
+    await load();
+    check(await page.evaluate(() => document.getElementById('chat-translate-lang').value) === 'de', 'old saved language is kept');
+    check(await page.evaluate(() => document.getElementById('chat-translate-on').checked), 'old non-English language starts on');
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem('civ13-chat-translate-v1', JSON.stringify({ enabled: true, lang: 'en' })); });
+    await load();
+    check(!(await page.evaluate(() => document.getElementById('chat-translate-on').checked)), 'old English setting on an English desktop starts off');
+    await page.evaluate(() => localStorage.clear());
+    await load();
+    await page.evaluate(() => { const on = document.getElementById('chat-translate-on'); on.checked = true; on.dispatchEvent(new Event('change')); });
+    check(JSON.parse(await page.evaluate(() => localStorage.getItem('civ13-chat-translate-v2'))).enabled === true, 'turning it on is saved');
+    await load();
+    check(await page.evaluate(() => document.getElementById('chat-translate-on').checked), 'turned on stays on after reload');
 
     await page.evaluate(msgs => msgs.forEach(m => window.receiveMessage(m)), [
       say("<span class='ooc'><span class='ooc'>OOC: <EM>Lucia:</EM> <span class='message chat-tr'>hola amigo</span></span></span>"),
       say("<span class='say'><span class='name'>Ada</span> says, \"<span class='chat-tr'>Vendo hierro en el rio</span>\"</span>"),
       say("<span class='say'><span class='name'>Bo</span> says, \"<span class='chat-notr'>hola amigo hierro</span>\"</span>"),
       say("<span class='ooc'>OOC: <EM>Cy:</EM> <span class='message chat-tr'>the storm is coming</span></span>"),
-      say("<span class='emote'><b>Lucia</b> dice hola a todos</span>"),
+      say("<span class='emote'><b>Lucia</b> <span class='chat-tr'>dice hola a todos</span></span>"),
+      say("<span class='notice'>Thibault Sommer makes a trench.</span>"),
+      say("<span class='ooc'>OOC: <EM>Cy:</EM> <span class='message chat-tr'>ok</span></span>"),
     ]);
     await settle(page);
     let lines = await translations();
@@ -108,8 +152,10 @@ const settle = page => page.waitForTimeout(150);
     check(lines[1].tr === 'Translated from Spanish:selling iron at the river', 'understood Spanish speech translated');
     check(lines[2].tr === null && !lines[2].setup, 'garbled (chat-notr) speech is never translated');
     check(lines[3].tr === null, 'English line is left alone');
-    check(lines[4].tr && lines[4].tr.indexOf('Translated from Spanish') === 0, 'unmarked emote translated whole');
+    check(lines[4].tr && lines[4].tr.indexOf('Translated from Spanish') === 0, 'typed emote words translated');
+    check(lines[5].tr === null && lines[6].tr === null, 'game messages and too-short lines are left alone');
     const sent = await page.evaluate(() => window.__tr.detected);
+    check(!sent.some(s => s.indexOf('trench') !== -1 || s === 'ok'), 'unmarked game messages and too-short lines never reach the detector');
     check(sent.indexOf('hola amigo') !== -1 && !sent.some(s => s.indexOf('Lucia:') !== -1), 'only the marked body is sent to the translator, not the name');
     check(!sent.some(s => s.indexOf('hola amigo hierro') !== -1), 'garbled text never reaches the detector');
     check(lines[0].text.indexOf('hola amigo') !== -1, 'original text stays on screen');
@@ -118,16 +164,16 @@ const settle = page => page.waitForTimeout(150);
     await page.evaluate(m => window.receiveMessage(m), say("<span class='ooc'>OOC: <EM>Hans:</EM> <span class='message chat-tr'>Danke fur das Eisen</span></span>"));
     await settle(page);
     lines = await translations();
-    check(lines[5].setup && lines[5].tr === null, 'a downloadable pair shows a download button');
+    check(lines[7].setup && lines[7].tr === null, 'a downloadable pair shows a download button');
     check((await page.evaluate(() => window.__tr.created)).indexOf('de>en') === -1, 'no download starts without a click');
     await page.evaluate(m => window.receiveMessage(m), say("<span class='ooc'>OOC: <EM>Hans:</EM> <span class='message chat-tr'>Eisen am Fluss</span></span>"));
     await settle(page);
     lines = await translations();
-    check(!lines[6].setup, 'each pair is offered once');
+    check(!lines[8].setup, 'each pair is offered once');
     await page.click('.chat-translate-setup button');
     await settle(page);
     lines = await translations();
-    check(lines[5].tr === 'Translated from German:thanks for the iron', 'clicking downloads and translates that line: ' + lines[5].tr);
+    check(lines[7].tr === 'Translated from German:thanks for the iron', 'clicking downloads and translates that line: ' + lines[5].tr);
 
     // History keeps originals only and is never translated on restore.
     await page.evaluate(() => { window.setChatIdentity('alice'); });
@@ -153,7 +199,7 @@ const settle = page => page.waitForTimeout(150);
       const on = document.getElementById('chat-translate-on'); on.checked = true; on.dispatchEvent(new Event('change'));
       const sel = document.getElementById('chat-translate-lang'); sel.value = 'de'; sel.dispatchEvent(new Event('change'));
     });
-    check(JSON.parse(await page.evaluate(() => localStorage.getItem('civ13-chat-translate-v1'))).lang === 'de', 'language choice saved on this computer');
+    check(JSON.parse(await page.evaluate(() => localStorage.getItem('civ13-chat-translate-v2'))).lang === 'de', 'language choice saved on this computer');
     await page.evaluate(m => window.receiveMessage(m), say("<span class='ooc'>OOC: <EM>Cy:</EM> <span class='message chat-tr'>the storm is coming</span></span>"));
     await settle(page);
     const last = (await translations()).pop();
