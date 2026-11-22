@@ -63,21 +63,26 @@
 		return FALSE
 	var/fighting = disease && builds_disease_immunity(disease_type) ? disease_type : null
 
-	var/list/faded = list()
-	for (var/kind in disease_resistance)
-		if (kind == fighting)
-			continue
-		disease_resistance[kind] = max(0, disease_resistance[kind] - IMMUNITY_DECAY)
-		if (disease_resistance[kind] <= 0)
-			faded += kind
-	disease_resistance -= faded
+	// Empty ordinary lists have nothing to decay or remove. Keep unusual
+	// non-list values on the original path.
+	var/list/faded
+	if (!islist(disease_resistance) || disease_resistance.len)
+		faded = list()
+		for (var/kind in disease_resistance)
+			if (kind == fighting)
+				continue
+			disease_resistance[kind] = max(0, disease_resistance[kind] - IMMUNITY_DECAY)
+			if (disease_resistance[kind] <= 0)
+				faded += kind
+		disease_resistance -= faded
 
-	faded = list()
-	for (var/id in poison_exposure)
-		poison_exposure[id] = max(0, poison_exposure[id] - POISON_TOLERANCE_DECAY)
-		if (poison_exposure[id] <= 0)
-			faded += id
-	poison_exposure -= faded
+	if (!islist(poison_exposure) || poison_exposure.len)
+		faded = list()
+		for (var/id in poison_exposure)
+			poison_exposure[id] = max(0, poison_exposure[id] - POISON_TOLERANCE_DECAY)
+			if (poison_exposure[id] <= 0)
+				faded += id
+		poison_exposure -= faded
 
 	if (!fighting)
 		disease_resist_checked = "none"

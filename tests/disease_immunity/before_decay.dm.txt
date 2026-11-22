@@ -1,0 +1,47 @@
+/mob/living/human/proc/handle_immunity()
+	if (inducedSSD || (status_flags & GODMODE))
+		return FALSE
+	var/fighting = disease && builds_disease_immunity(disease_type) ? disease_type : null
+
+	var/list/faded = list()
+	for (var/kind in disease_resistance)
+		if (kind == fighting)
+			continue
+		disease_resistance[kind] = max(0, disease_resistance[kind] - IMMUNITY_DECAY)
+		if (disease_resistance[kind] <= 0)
+			faded += kind
+	disease_resistance -= faded
+
+	faded = list()
+	for (var/id in poison_exposure)
+		poison_exposure[id] = max(0, poison_exposure[id] - POISON_TOLERANCE_DECAY)
+		if (poison_exposure[id] <= 0)
+			faded += id
+	poison_exposure -= faded
+
+	if (!fighting)
+		disease_resist_checked = "none"
+		return FALSE
+
+	var/resistance = disease_resistance_to(fighting)
+	if (disease_resist_checked != fighting)
+		// First tick of a new infection, however it was caught.
+		disease_resist_checked = fighting
+		if (resists_disease(fighting))
+			clear_disease()
+			to_chat(src, SPAN_NOTICE("You feel a passing chill, but your body has fought this illness before and shakes it off."))
+			return TRUE
+
+	var/gain = disease_treatment > 0 ? IMMUNITY_GAIN_TREATED : IMMUNITY_GAIN_UNTREATED
+	if (resting_in_bed())
+		gain *= 2 // Bed rest lets the body fight twice as hard.
+	var/updated = min(IMMUNITY_FULL, round(resistance + gain, 0.001))
+	disease_resistance[fighting] = updated
+	if (resistance < IMMUNITY_PROTECTS && updated >= IMMUNITY_PROTECTS)
+		to_chat(src, SPAN_NOTICE("Your body is starting to fight off the illness."))
+	if (updated >= IMMUNITY_FULL)
+		clear_disease()
+		bodytemperature = min(bodytemperature, species.body_temperature)
+		to_chat(src, "<big><font color='#3d9e3d'><b>Your body has fought off the illness.</b> You feel much better, and it won't take hold again for a while.</font></big>")
+		return TRUE
+	return FALSE

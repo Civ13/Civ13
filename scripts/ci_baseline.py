@@ -2707,6 +2707,10 @@ SUITES = {
     'fireman_carry': {'files': ('tests/fireman_carry/test_source.py',), 'paths': (
         'tests/fireman_carry/', 'code/game/mob/grab_carry.dm'),
         'shared_paths': ('code/game/mob/grab.dm', 'code/game/mob/mob_movement.dm')},
+    'immunity_empty_decay': {'files': ('tests/disease_immunity/test_decay_projection.py',),
+        'paths': ('tests/disease_immunity/before_decay.dm.txt',),
+        'shared_paths': ('code/game/mob/living/carbon/human/immunity.dm',
+                         'tests/save_movement/source_adapter.py')},
     'injury_recovery': {'files': ('tests/injury_recovery/test_source.py',
         'tests/disease_immunity/test_source.py', 'tests/illness_pain_body_heat/test_source.py',
         'tests/sleep_pain_hold/test_source.py'),
