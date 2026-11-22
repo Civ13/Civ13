@@ -19,7 +19,8 @@ for (const marker of ['timeout-minutes: 10', 'timeout-minutes: 5', 'timeout-minu
   'node tests/chat/chat-connection.browser.test.js',
   'node tests/chat/chat-history.browser.test.js',
   'node tests/chat/chat-repeat.browser.test.js',
-  'node tests/chat/chat-translate.browser.test.js']) {
+  'node tests/chat/chat-translate.browser.test.js',
+  'node tests/chat/chat-plain.browser.test.js']) {
   assert.ok(workflow.includes(marker), marker);
 }
 assert.ok(!/DreamDaemon|DreamMaker|workflow_dispatch|schedule:/.test(workflow), 'no native/manual/scheduled execution');

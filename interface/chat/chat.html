@@ -300,6 +300,21 @@
             font-style: italic;
         }
 
+        /* Names on OOC, LOOC and examine lines: bold, never italic. */
+        em {
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        /* Plain chat text (Tabs... > Text): no italics and no underlines, for
+           small windows and low display scaling where both smear. Links keep
+           their colour. */
+        body.chat-plain #messages,
+        body.chat-plain #messages * {
+            font-style: normal !important;
+            text-decoration: none !important;
+        }
+
         /* Game Messages */
 
         .attack {
@@ -766,7 +781,7 @@
 <body style="background-color: #392611; color: #e1e1d7;">
     <div id="chat-tabs">
         <div id="chat-tab-list"></div>
-        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows, and turn chat translation on or off">Tabs...</button>
+        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows, turn plain text on or off, and set up chat translation">Tabs...</button>
     </div>
     <div id="chat-settings">
         <h3>Chat tabs</h3>
@@ -774,6 +789,11 @@
         <div id="chat-settings-list"></div>
         <button id="chat-tab-add" type="button">Add tab</button>
         <button id="chat-tab-reset" type="button">Reset to default</button>
+        <h3>Text</h3>
+        <div class="translate-config">
+            <label><input id="chat-plain-on" type="checkbox"> Plain chat text (no italics or underlines)</label>
+            <p class="hint">Easier to read in a small window or at low display scaling. Links stay coloured.</p>
+        </div>
         <h3>Translation</h3>
         <div class="translate-config">
             <label><input id="chat-translate-on" type="checkbox"> Translate chat into my language</label>
@@ -1796,6 +1816,34 @@
             updateTranslateStatus();
         }
         setupTranslationSettings();
+
+        // Plain chat text: a saved switch that drops italics and underlines
+        // from every chat line (body.chat-plain). Off unless the player turns
+        // it on; saved on this computer like the tabs.
+        const PLAIN_KEY = 'civ13-chat-plain-v1';
+        function setupPlainText() {
+            const box = document.getElementById('chat-plain-on');
+            let plain = false;
+            try {
+                const store = chatStorage();
+                plain = !!store && store.getItem(PLAIN_KEY) === '1';
+            } catch (e) { /* off */ }
+            function apply() {
+                document.body.classList.toggle('chat-plain', plain);
+                box.checked = plain;
+            }
+            box.addEventListener('change', function () {
+                plain = box.checked;
+                try {
+                    const store = chatStorage();
+                    if (store) store.setItem(PLAIN_KEY, plain ? '1' : '0');
+                } catch (e) { /* this computer only; nothing else to do */ }
+                apply();
+                if (followingTail) scrollToTail();
+            });
+            apply();
+        }
+        setupPlainText();
 
         /**
          * Clears all messages from the chat.
