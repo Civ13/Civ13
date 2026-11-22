@@ -231,6 +231,9 @@
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] amputates [target]'s [affected.name] at the [affected.amputation_point] with \the [tool].</span>", \
 		"<span class = 'notice'>You amputate [target]'s [affected.name] with \the [tool].</span>")
+		// Amputations leave no other trace for admins, so record who cut what.
+		var/offline_note = target.client ? "" : " (victim offline)"
+		admin_attack_log(user, target, "amputated the [affected.name] with \the [tool][offline_note]", "had the [affected.name] amputated with \the [tool]", "amputated the [affected.name][offline_note] with \the [tool] from")
 		affected.droplimb(1,DROPLIMB_EDGE)
 		affected.nationality = target.nationality // For Warlords and Tadojsville head-collecting mechanic
 
