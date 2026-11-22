@@ -203,7 +203,7 @@ Once you have joined a faction in character, your new characters can start with 
 
 #### Recruitment stations
 
-On maps that allow custom factions, a faction can take members through a **recruitment station** instead of recruiting each person by hand. Craft one from **10 planks** (in the **economy & production** category) and place it. The leader then clicks it and chooses **Designate for my faction**, and the station takes the faction's colours. Only the leader can release it again.
+On maps that allow custom factions, a faction can take members through a **recruitment station** instead of recruiting each person by hand. Craft one from **10 planks** (in the **economy & production** category) and place it. The leader then clicks it and chooses **Designate for my faction**, and the station takes the faction's colours. Only the leader can release it again. A faction can have at most **3** designated stations; to designate another, the leader must release one first.
 
 * **Joining:** click a station to see the faction's rules and whether you meet them. Depending on the rules you can **Join** straight away or **Apply** with a short introduction. You can **Withdraw** an application at any time. If it is approved, come back to a station and **Confirm and join**. You must not be in another faction to apply.
 * **Reviewing:** the leader and members with the **Recruitment** permission can approve, reject or revoke applications at any station of their faction, or from anywhere with **Recruitment Applications** on the **Faction tab**. They can give a reason, which the applicant sees. Applicants and reviewers are told about new decisions when they log in.
