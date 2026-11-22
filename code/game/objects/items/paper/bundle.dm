@@ -101,20 +101,27 @@
 	else
 		return
 
+	var/mutation_controls = ""
+	if (can_change_held_bundle(user))
+		mutation_controls = "<A href='?src=\ref[src];remove=\ref[W]'>Remove [(istype(W, /obj/item/weapon/paper)) ? "paper" : "photo"]</A>"
+		if (istype(user.get_active_hand(), /obj/item/weapon/paper))
+			mutation_controls += " | <A href='?src=\ref[src];insert_before=\ref[W]'>Insert before</A>"
+			mutation_controls += " | <A href='?src=\ref[src];insert_after=\ref[W]'>Insert after</A>"
+
 	// first
 	if (page == TRUE)
 		dat+= "<DIV STYLE='float:left; text-align:left; width:33.33333%'><A href='?src=\ref[src];prev_page=1'>Front</A></DIV>"
-		dat+= "<DIV STYLE='float:left; text-align:center; width:33.33333%'><A href='?src=\ref[src];remove=1'>Remove [(istype(W, /obj/item/weapon/paper)) ? "paper" : "photo"]</A></DIV>"
+		dat+= "<DIV STYLE='float:left; text-align:center; width:33.33333%'>[mutation_controls]</DIV>"
 		dat+= "<DIV STYLE='float:left; text-align:right; width:33.33333%'><A href='?src=\ref[src];next_page=1'>Next Page</A></DIV><BR><HR>"
 	// last
 	else if (page == pages.len)
 		dat+= "<DIV STYLE='float:left; text-align:left; width:33.33333%'><A href='?src=\ref[src];prev_page=1'>Previous Page</A></DIV>"
-		dat+= "<DIV STYLE='float:left; text-align:center; width:33.33333%'><A href='?src=\ref[src];remove=1'>Remove [(istype(W, /obj/item/weapon/paper)) ? "paper" : "photo"]</A></DIV>"
+		dat+= "<DIV STYLE='float:left; text-align:center; width:33.33333%'>[mutation_controls]</DIV>"
 		dat+= "<DIV STYLE='float;left; text-align:right; with:33.33333%'><A href='?src=\ref[src];next_page=1'>Back</A></DIV><BR><HR>"
 	// middle pages
 	else
 		dat+= "<DIV STYLE='float:left; text-align:left; width:33.33333%'><A href='?src=\ref[src];prev_page=1'>Previous Page</A></DIV>"
-		dat+= "<DIV STYLE='float:left; text-align:center; width:33.33333%'><A href='?src=\ref[src];remove=1'>Remove [(istype(W, /obj/item/weapon/paper)) ? "paper" : "photo"]</A></DIV>"
+		dat+= "<DIV STYLE='float:left; text-align:center; width:33.33333%'>[mutation_controls]</DIV>"
 		dat+= "<DIV STYLE='float:left; text-align:right; width:33.33333%'><A href='?src=\ref[src];next_page=1'>Next Page</A></DIV><BR><HR>"
 
 	if (istype(pages[page], /obj/item/weapon/paper))
@@ -133,46 +140,81 @@
 	update_icon()
 	return
 
+/obj/item/weapon/paper_bundle/proc/can_change_held_bundle(mob/living/human/user)
+	return istype(user) && !QDELETED(user) && !QDELETED(src) && (user.client?.mob == user || agent_character_for(user)) && !user.stat && !user.restrained() && !user.incapacitated() && user.can_use_hands() && loc == user && user.item_is_in_hands(src) && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
+
+/obj/item/weapon/paper_bundle/proc/held_bundle_page()
+	if (!isnum(page) || page < 1 || page > pages.len || page != round(page))
+		return null
+	var/obj/item/weapon/W = pages[page]
+	return !QDELETED(W) && W.loc == src ? W : null
+
+/obj/item/weapon/paper_bundle/proc/browser_insert_page(mob/living/human/user, obj/item/weapon/expected, after)
+	if (!can_change_held_bundle(user) || !expected || held_bundle_page() != expected)
+		return
+	var/obj/item/weapon/paper/sheet = user.get_active_hand()
+	if (!istype(sheet) || QDELETED(sheet) || (sheet in pages) || !user.transfer_held_item_to(sheet, src))
+		return
+	// Transfer verified before changing the page order.
+	pages.Insert(page + (after ? 1 : 0), sheet)
+	if (!after)
+		page++
+	paper_authoring_notify(sheet, "physical")
+	to_chat(user, SPAN_NOTICE("You add [sheet] to [src]."))
+
+/obj/item/weapon/paper_bundle/proc/browser_remove_page(mob/living/human/user, obj/item/weapon/expected)
+	if (!can_change_held_bundle(user) || !expected || held_bundle_page() != expected)
+		return
+	var/turf/site = get_turf(user)
+	if (!site)
+		return
+	user.put_in_hands(expected) // A full hand falls back to the floor.
+	if (expected.loc != user && expected.loc != site)
+		return
+	pages -= expected
+	page = max(1, min(page, pages.len))
+	if (istype(expected, /obj/item/weapon/paper))
+		paper_authoring_notify(expected, "physical")
+	to_chat(user, SPAN_NOTICE("You remove [expected] from the bundle."))
+	// Keep the historical one-page unclip, but never delete a refused move.
+	if (pages.len == 1 && contents.len == 1)
+		var/obj/item/weapon/remaining = held_bundle_page()
+		if (remaining)
+			user.put_in_hands(remaining)
+			if (remaining.loc == user || remaining.loc == site)
+				pages -= remaining
+				if (istype(remaining, /obj/item/weapon/paper))
+					paper_authoring_notify(remaining, "physical")
+	if (!contents.len && user.transfer_held_item_to(src, site))
+		qdel(src)
+	else if (pages.len)
+		update_icon()
+
 /obj/item/weapon/paper_bundle/Topic(href, href_list)
 	..()
-	if (src in usr.contents)
-		usr.set_using_object(src)
-		var/obj/item/weapon/in_hand = usr.get_active_hand()
-		if (href_list["next_page"])
-			if (in_hand && (istype(in_hand, /obj/item/weapon/paper)))
-				insert_sheet_at(usr, page+1, in_hand)
-			else if (page != pages.len)
+	var/mob/user = usr
+	if (!user)
+		return
+	if (src in user.contents)
+		user.set_using_object(src)
+		if (href_list["remove"])
+			browser_remove_page(user, locate(href_list["remove"]))
+		else if (href_list["insert_before"])
+			browser_insert_page(user, locate(href_list["insert_before"]), FALSE)
+		else if (href_list["insert_after"])
+			browser_insert_page(user, locate(href_list["insert_after"]), TRUE)
+		else if (href_list["next_page"])
+			if (page != pages.len)
 				page++
 				playsound(loc, "pageturn", 50, TRUE)
-		if (href_list["prev_page"])
-			if (in_hand && (istype(in_hand, /obj/item/weapon/paper)))
-				insert_sheet_at(usr, page, in_hand)
-			else if (page > 1)
+		else if (href_list["prev_page"])
+			if (page > 1)
 				page--
 				playsound(loc, "pageturn", 50, TRUE)
-		if (href_list["remove"])
-			var/obj/item/weapon/W = pages[page]
-			usr.put_in_hands(W)
-			pages.Remove(pages[page])
-
-			to_chat(usr, "<span class='notice'>You remove the [W.name] from the bundle.</span>")
-
-			if (pages.len <= 1)
-				var/obj/item/weapon/paper/P = src.contents[1]
-				usr.drop_from_inventory(src)
-				usr.put_in_hands(P)
-				qdel(src)
-
-				return
-
-			if (page > pages.len)
-				page = pages.len
-
-			update_icon()
 	else
-		to_chat(usr, "<span class='notice'>You need to hold it in hands!</span>")
-	if (istype(loc, /mob) || istype(loc.loc, /mob))
-		attack_self(usr)
+		to_chat(user, "<span class='notice'>You need to hold it in hands!</span>")
+	if (!QDELETED(src) && (istype(loc, /mob) || istype(loc?.loc, /mob)))
+		attack_self(user)
 		updateUsrDialog()
 
 /obj/item/weapon/paper_bundle/verb/rename()
@@ -192,15 +234,27 @@
 	set category = null
 	set src in usr
 
-	to_chat(usr, "<span class='notice'>You loosen the bundle.</span>")
-	for (var/obj/O in src)
-		O.loc = usr.loc
+	var/mob/living/human/user = usr
+	if (!can_change_held_bundle(user))
+		return
+	var/turf/site = get_turf(user)
+	if (!site)
+		return
+	for (var/obj/O in contents.Copy())
+		if (QDELETED(O) || O.loc != src || !O.forceMove(site) || O.loc != site)
+			break
+		pages -= O
 		O.layer = initial(O.layer)
-		O.add_fingerprint(usr)
-	usr.drop_from_inventory(src)
-	qdel(src)
-	return
-
+		O.add_fingerprint(user)
+		if (istype(O, /obj/item/weapon/paper))
+			paper_authoring_notify(O, "physical")
+	if (contents.len)
+		page = max(1, min(page, pages.len))
+		update_icon()
+		to_chat(user, SPAN_NOTICE("Some pages could not be moved and stay clipped."))
+	else if (user.transfer_held_item_to(src, site))
+		to_chat(user, SPAN_NOTICE("You loosen the bundle."))
+		qdel(src)
 
 /obj/item/weapon/paper_bundle/update_icon()
 	if (pages[1])
