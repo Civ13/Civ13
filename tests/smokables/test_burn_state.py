@@ -43,15 +43,30 @@ def burnout(on_mob):
     segment = [line for line in segment if 'to_chat(' not in line and 'if (!nomessage)' not in line]
     segment = [line.replace('var/mob/living/M = loc', 'var/M = mob') for line in segment]
     segment += ['\treturn list(lit, icon_state, item_state)']
-    proc = adapter.project('/test/proc/run()\n' + '\n'.join(segment) + '\n', '/test/proc/run',
-                           'loc, mob, lit, icon_state, item_state, icon_off',
-                           {'ismob': lambda loc: loc, 'list': lambda *values: list(values)})
     noop = lambda *args: None
     mob = SimpleNamespace(update_inv_wear_mask=noop, update_inv_l_hand=noop, update_inv_r_hand=noop)
+    proc = adapter.project('/test/proc/run()\n' + '\n'.join(segment) + '\n', '/test/proc/run',
+                           'loc, mob, lit, icon_state, item_state, icon_off',
+                           {'ismob': lambda loc: loc, 'list': lambda *values: list(values),
+                            'update_smokable_inventory': inventory_refresh()})
     return proc(on_mob, mob, True, 'on', 'on', 'off')
 
 
+def inventory_refresh():
+    body = adapter.extract(SOURCE, '/obj/item/clothing/mask/smokable/proc/update_smokable_inventory')
+    return adapter.project('/test/proc/run()\n' + body + '\n', '/test/proc/run', 'M', {})
+
+
 class SmokableTest(unittest.TestCase):
+    def test_inventory_refresh_preserves_order_and_arguments(self):
+        calls = []
+        mob = SimpleNamespace(
+            update_inv_wear_mask=lambda value: calls.append(('mask', value)),
+            update_inv_l_hand=lambda value: calls.append(('left', value)),
+            update_inv_r_hand=lambda value: calls.append(('right', value)))
+        inventory_refresh()(mob)
+        self.assertEqual(calls, [('mask', 0), ('left', 0), ('right', 1)])
+
     def test_ignition_requires_active_flame(self):
         for kind in ('flame', 'torch', 'flare', 'lantern'):
             with self.subTest(kind=kind):
