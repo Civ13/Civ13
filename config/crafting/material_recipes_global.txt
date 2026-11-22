@@ -502,6 +502,16 @@ RECIPE: /material/electronics/,smartphone,/obj/item/weapon/telephone/mobile/smar
 RECIPE: /material/electronics/,LED panel,/obj/structure/lamp/lamp_big/led,2,55,0,1,electrical,235,0,0,8,null
 RECIPE: /material/electronics/,smart hub,/obj/structure/smart_hub,6,80,1,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,smart speaker,/obj/structure/smart_speaker,2,40,1,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,minicomputer,/obj/structure/modular_computer,8,150,1,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,transistor logic board,/obj/item/computer_module/processor,3,80,0,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,tape drive,/obj/item/computer_module/storage,2,80,0,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,diskette drive,/obj/item/computer_module/media_reader,2,80,0,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,data diskette,/obj/item/computer_module/disk,1,40,0,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,line printer,/obj/item/computer_module/printer,4,100,0,1,none,160,0,0,8,null
+RECIPE: /material/electronics/,microprocessor,/obj/item/computer_module/processor/microprocessor,4,80,0,1,none,205,0,0,8,null
+RECIPE: /material/electronics/,hard drive,/obj/item/computer_module/storage/hard_drive,3,80,0,1,none,205,0,0,8,null
+RECIPE: /material/electronics/,multicore processor,/obj/item/computer_module/processor/multicore,5,80,0,1,none,235,0,0,8,null
+RECIPE: /material/electronics/,solid-state drive,/obj/item/computer_module/storage/solid_state,4,80,0,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,smart lock,/obj/item/weapon/smart_lock,2,40,0,1,none,235,0,0,8,null
 RECIPE: /material/electronics/,lithium-ion battery bank,/obj/structure/battery/lithium_ion,25,200,1,1,electrical,235,0,0,8,null
 RECIPE: /material/electronics/,drone controller,/obj/item/drone_controller,10,100,0,1,drones,0,235,0,8,null
