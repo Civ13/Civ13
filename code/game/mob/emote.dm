@@ -19,7 +19,10 @@
 /mob/living/simple_animal/wizard/makes_animal_noises()
 	return FALSE
 
-/mob/proc/custom_emote(var/m_type=1,var/message = null,var/span_class = null)
+// typed is TRUE when a player wrote the emote's words (the Me verb, the ^ say
+// prefix or the input box below). Only those words are marked chat-tr, so chat
+// translation (docs/chat-translation.md) never touches canned emotes.
+/mob/proc/custom_emote(var/m_type=1,var/message = null,var/span_class = null,var/typed = FALSE)
 
 	if (usr && stat || !use_me && usr == src)
 		if (usr.stat != DEAD && usr.stat != UNCONSCIOUS) // fixes spam when you die? - Kachnov
@@ -32,16 +35,20 @@
 	var/input
 	if (!message)
 		input = sanitize(player_input(src, "Choose an emote to display.", null, null, "text", null, TRUE))
+		typed = TRUE
 	else
 		input = message
 	if (input)
 		message = "<b>[src]</b> [input]"
 	else
 		return
+	// The chat line marks typed words; overlays and logs keep the plain text.
+	var/shown = typed ? "<b>[src]</b> <span class='chat-tr'>[input]</span>" : message
 
 	if (span_class)
 		message = "<span class = '[span_class]'>[message]</span>"
-	var/chat_message = CHAT_TYPED(CHAT_IC, message)
+		shown = "<span class = '[span_class]'>[shown]</span>"
+	var/chat_message = CHAT_TYPED(CHAT_IC, shown)
 
 	if (message)
 		if (client)
