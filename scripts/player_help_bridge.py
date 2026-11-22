@@ -111,7 +111,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '956f6bc47ccd0eb9b874da413474d65f1be632dd'
+WIKI_REVIEWED_REVISION = '7e8017ff8d6378a84ec1c0ff1237b94a678adb9d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -122,10 +122,10 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('0d1d364e6e4ea6d3664f9f0840e84fdc8dcd8ef6d3b05feb1475129556d65df6', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
-    'guides/Guide_to_Cooking.md': ('cc66fa9ecc45d02fb09be49981d4f9a5992b583aaa9d8f7029a4a3851f30f96c', 'cooking cook food meal ingredients'),
+    'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('d808fc78abe7a897305f07cc48b23256d4db61c4261ae43c17509502cd218404', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs'),
-    'guides/Guide_to_Farming.md': ('31862a1d6090f28b414558ecdd63b0088b8dfd701494cf26c53193c46c2b30b1', 'farming farm plant crops soil water frost mulch cloche'),
+    'guides/Guide_to_Farming.md': ('b74f967a070a3cdcb9c0cb08450a3e0ce73aeb148f78a9b67642bbb90b6a66b7', 'farming farm plant crops soil water frost mulch cloche'),
     'guides/Guide_to_Fishing.md': ('bf8032bff6af977f89793883b0c4565f2f87f4497d18dee75ea5efe816898375', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
@@ -168,7 +168,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('4e27d9e7eb3a73f4fd411abf0159662fd1912e85d622c773749527b5eb9a21d6', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('33b925515e5be65875070174bfeaf0d0f51c6a2da161090107f31663937ef25d', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
+    'guides/Guide_to_Your_First_Day.md': ('5a564c84c4bc5bfd3b5bed34bc987a72011bb46d8e66e6d9e28a68c845595a15', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('c9f94ed47900119d56fe52c9d95c38f7d08386e0dd2a780e85a45a8dfc7752e9', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('f5c43032ed26fac5c67b066093ee584f00a3bf0046a459c063bcf483cda44e22', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
@@ -212,7 +212,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_the_Moon.md': ('c8da8a4e6c6b3679092d43b9c7546cf511252081294beb7293c7c13c1ef056bf', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
     'guides/Guide_to_Crafting.md': ('90d7753c5350238fadf4dc48aa21978e82946111c8a665c7970bd35c953561bf', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
-    'Starter_Guide.md': ('c2f5a60bd8b6a8f462f81ebe03b70f8923bb3491672ca863c6bd0249689b0159', 'starter guide beginner basics first steps controls interface intents'),
+    'Starter_Guide.md': ('3ea06e291a7eab64c32938437523c7dd326a310dd193698b5024a9d17da48857', 'starter guide beginner basics first steps controls interface intents'),
     'Music.md': ('049a85fd6517277b3abffa464c88c43dbda8d3060307b13491cd595a7a541c1d', 'music instrument instruments song songs play sheet notes piano'),
     'Paper_Templates.md': ('27495905153f4d0ac91d18dc9daccfa4cc533144234766ee8e800c47adcc9408', 'paper templates template forms document documents'),
     'rules/Rules.md': ('167e92e5b1d2b9f601f73fe29cd4348728fbaa8c4b33da17245dc7918663ff11', 'rules rule allowed banned ban griefing grief metagaming roleplay rp ooc ick ock behaviour conduct'),

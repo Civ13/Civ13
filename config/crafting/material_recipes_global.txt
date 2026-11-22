@@ -2739,6 +2739,7 @@ RECIPE: /material/wood/soft/,pistol butt,/obj/item/blackpowder_part/stock/pistol
 RECIPE: /material/wood/soft/,musket stock,/obj/item/blackpowder_part/stock/musket,3,240,0,1,tools,0,80,0,4,null
 
 RECIPE: /material/wood/soft/,bucket,/obj/item/weapon/reagent_containers/glass/bucket,2,60,0,1,tools,0,0,0,8,null
+RECIPE: /material/wood/soft/,butter churn,/obj/item/weapon/reagent_containers/glass/butter_churn,3,80,0,1,kitchen,0,0,0,8,null
 RECIPE: /material/wood/,produce basket,/obj/item/weapon/storage/produce_basket,5,100,0,1,tools,0,0,0,8,null
 
 RECIPE: /material/wood/soft/,fishing cage,/obj/structure/fishing_cage,12,200,1,1,tools,12,0,12,8,null

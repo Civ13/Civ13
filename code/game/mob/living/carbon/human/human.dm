@@ -264,6 +264,8 @@ var/list/coefflist = list()
 	return .
 
 /mob/living/human/ex_act(severity)
+	if (offline_sleep_protected())
+		return
 	if (!blinded)
 		if (HUDtech.Find("flash"))
 			flick("flash", HUDtech["flash"])
@@ -359,6 +361,8 @@ var/list/coefflist = list()
 
 /mob/living/human/show_inv(mob/user as mob)
 	if (user.incapacitated()  || !user.Adjacent(src))
+		return
+	if (offline_sleep_refuses(user))
 		return
 
 	var/obj/item/clothing/under/suit = null

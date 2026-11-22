@@ -69,6 +69,7 @@ var/list/admin_verbs_admin = list(
 	/client/proc/province_blocs_admin,	//mark blocs, freeze claims, release provinces (code/modules/provinces/province_blocs.dm)
 	/client/proc/cmd_admin_divine_patron,	//speak as a god: initiate followers, teach invocations, answer prayers,
 	/client/proc/divine_sight,			//observe as a god: prayers, followers and bound spirits in one panel,
+	/client/proc/cmd_admin_lift_sleep_protection,	//remove a logged-off sleeper's protection on request (persistence/offline_sleep_protection.dm),
 	/client/proc/cmd_admin_magic_whitelist,	//who may follow a god and learn magic on persistent worlds (shared list),
 	/client/proc/invisimin,				//allows our mob to go invisible/visible,
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,

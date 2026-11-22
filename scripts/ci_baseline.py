@@ -2969,6 +2969,8 @@ SUITES = {
         'paths': ('tests/drug_crops/',)},
     'coffee': {'files': ('tests/coffee/test_coffee.py',),
         'paths': ('tests/coffee/', 'code/modules/1713/coffee.dm', 'tests/sprites/create_coffee.py')},
+    'butter': {'files': ('tests/butter/test_butter.py',),
+        'paths': ('tests/butter/', 'code/modules/1713/butter.dm', 'tests/sprites/create_butter.py')},
     'syrups': {'files': ('tests/syrups/test_syrups.py',),
         'paths': ('tests/syrups/', 'code/modules/1713/syrups.dm')},
     'weather_sound': {'files': ('tests/weather_sound/test_rain_loop.py',),
@@ -3011,6 +3013,12 @@ SUITES = {
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     'surgery_amputation_log': {'files': ('tests/surgery_amputation_log/test_source.py',),
         'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm')},
+    # A properly sleeping, logged-off character is safe off Gaia.
+    'offline_sleep_protection': {'files': ('tests/offline_sleep_protection/test_source.py',),
+        'paths': ('tests/offline_sleep_protection/', 'code/modules/persistence/offline_sleep_protection.dm',
+            'code/game/mob/living/carbon/human/human_damage.dm', 'code/game/mob/living/living.dm',
+            'code/game/mob/grab.dm', 'code/game/objects/buckling.dm', 'code/game/mob/living/logout.dm',
+            'code/game/mob/living/carbon/human/stripping.dm', 'code/game/objects/items/stacks/craft_guards.dm')},
     # Peoples of the Nomads lands: origin table against languages, names, colours.
     'origins': {'files': ('tests/origins/test_origins.py', 'tests/origins/test_travel.py', 'tests/origins/test_peoples.py'),
         'paths': ('tests/origins/', 'code/game/mob/living/carbon/human/origins.dm',
