@@ -4074,6 +4074,43 @@ class ChatTranslatorTests(unittest.TestCase):
         self.assertIn('translator-status', shard_group.GROUP_ACTIONS)
 
 
+class CheckoutLockTests(unittest.TestCase):
+    def worktree(self, tmp):
+        gitdir = Path(tmp) / 'repo.git' / 'worktrees' / 'africa'
+        gitdir.mkdir(parents=True)
+        tree = Path(tmp) / 'africa'
+        tree.mkdir()
+        (tree / '.git').write_text('gitdir: %s\n' % gitdir, encoding='utf-8')
+        return tree, gitdir / 'index.lock'
+
+    def test_a_leftover_lock_is_cleared_and_a_live_one_kept(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tree, lock = self.worktree(tmp)
+            self.assertEqual(shard_group.worktree_index_lock(tree), lock)
+            platform = mock.Mock()
+            platform.run.return_value = (0, '')
+            lock.write_text('', encoding='utf-8')
+            shard_group.checkout_revision(tree, 'abc', platform, 'git')
+            self.assertTrue(lock.exists())  # a checkout may be running there now
+            old = time.time() - shard_group.STALE_INDEX_LOCK_SECONDS - 60
+            os.utime(lock, (old, old))
+            shard_group.checkout_revision(tree, 'abc', platform, 'git')
+            self.assertFalse(lock.exists())
+
+    def test_a_checkout_ended_at_its_timeout_drops_its_lock(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tree, lock = self.worktree(tmp)
+
+            def hung(argv, cwd=None, timeout=None):
+                lock.write_text('', encoding='utf-8')  # what the ended git left
+                return shard_group.gaia_host.TIMED_OUT, 'git timed out'
+            platform = mock.Mock()
+            platform.run.side_effect = hung
+            code, _ = shard_group.checkout_revision(tree, 'abc', platform, 'git')
+            self.assertEqual(code, shard_group.gaia_host.TIMED_OUT)
+            self.assertFalse(lock.exists())
+
+
 class LiveStatusEncodingTests(unittest.TestCase):
     def test_empty_handover_guard_accepts_dm_true(self):
         # DM's json_encode writes TRUE as 1; live worlds never send JSON true.

@@ -609,6 +609,20 @@ var/global/list/persistence_removed_fields_logged = list()
 /map_storage/proc/Load_World()
 	return run_world_operation("load")
 
+// A saved level can be open in another process for a moment: the host copies
+// map_saves to its backup while a handover's standby loads it, and BYOND then
+// refuses the open with an exception that has no text (Orbit's standby,
+// 2026-11-22). Retry for up to ten seconds before giving up with a reason.
+/map_storage/proc/open_saved_level(z)
+	var/path = "map_saves/[z].sav"
+	for(var/attempt = 1, attempt <= 20, attempt++)
+		try
+			var/savefile/F = new(path)
+			if(F) return F
+		catch
+		sleep(5)
+	throw EXCEPTION("Could not open [path]; another process may hold it")
+
 /map_storage/proc/load_world_contents(datum/persistence_world_operation/operation)
 	if(!operation || !operation.enter_contents(src, "load")) return FALSE
 	var/datum/extraction_surface_service/surface_inventory
@@ -629,7 +643,7 @@ var/global/list/persistence_removed_fields_logged = list()
 	try
 		// Allocate all levels first so references to turfs on later levels stay valid.
 		for(var/z = 1, z <= world.maxz, z++)
-			var/savefile/F = new("map_saves/[z].sav")
+			var/savefile/F = open_saved_level(z)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			if(operation.human_direct_preflight_generation && F["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed after preflight")
 #endif
@@ -699,7 +713,7 @@ var/global/list/persistence_removed_fields_logged = list()
 			loaded_lists = list()
 			if(!fexists("map_saves/[B].sav"))
 				throw EXCEPTION("Missing saved level [B]")
-			var/savefile/savefile = new("map_saves/[B].sav")
+			var/savefile/savefile = open_saved_level(B)
 #ifdef CIV13_HUMAN_SPATIAL_EXPERIMENTAL
 			if(operation.human_direct_preflight_generation && savefile["/generation"] != operation.human_direct_preflight_generation) throw EXCEPTION("Human direct generation changed during import")
 #endif
