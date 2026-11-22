@@ -1834,6 +1834,7 @@
 #include "code\modules\naval\hull_weight.dm"
 #include "code\modules\naval\hull_masts.dm"
 #include "code\modules\naval\hull_anchors.dm"
+#include "code\modules\naval\hull_armour.dm"
 #include "code\modules\naval\hull_awash.dm"
 #include "code\modules\naval\hull_bow.dm"
 #include "code\modules\naval\hull_rigging.dm"

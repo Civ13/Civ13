@@ -3539,6 +3539,7 @@ RECIPE: /material/steel/,magnetic sweep reel,/obj/structure/mine_sweep/magnetic,
 RECIPE: /material/steel/,Oropesa sweep,/obj/structure/mine_sweep/oropesa,8,200,1,1,vehicle parts,0,0,0,8,null
 RECIPE: /material/steel/,torpedo tube,/obj/structure/torpedo_tube,25,300,1,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,ship's gun turret,/obj/structure/cannon/modern/ship_turret,60,600,1,1,weapons,0,0,0,8,null
+RECIPE: /material/steel/,belt armour plate,/obj/structure/hull_armour,15,200,1,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,torpedo,/obj/item/naval_torpedo,14,240,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,magnetic torpedo,/obj/item/naval_torpedo/magnetic,16,280,0,1,weapons,0,0,0,8,null
 RECIPE: /material/steel/,anti-tank guided missile system,/obj/item/weapon/foldable/atgm,30,600,0,1,weapons,0,0,0,8,null

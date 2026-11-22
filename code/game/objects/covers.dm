@@ -56,6 +56,8 @@
 			return
 
 /obj/covers/ex_act(severity)
+	// A ship's belt armour takes the worst of a blast (naval/hull_armour.dm).
+	severity = hull_armour_soften(src, severity)
 	switch(severity)
 		if (1.0)
 			Destroy(src)

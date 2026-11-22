@@ -840,6 +840,29 @@ and reuses the unused `modern_ship` state in `icons/obj/cannon.dmi`.
   breech. Nothing links turret and rack, so a hop or a turn needs no fix-up
   and nothing extra is saved.
 - Bomb racks do not feed it.
+- Turrets answer the boatswain's call (`broadside_gun_ok()` in
+  `1713/siege/naval_broadside.dm`), unlike the fixed naval guns and tanks.
+- Gate (turret_probe.dm): a 200-tile steel battleship with 96 tiles of hold,
+  eight loaded turrets and a belted side fires all eight and steps in the
+  same tick in about 14-15 ms, of which the broadside is about 1 ms; the step
+  alone is 13-14 ms. That is inside one 40 ms tick but over the plan's 8 ms
+  step budget, the same as any hull near the 300-tile deck cap (Upper decks).
+
+## Belt armour
+
+`code/modules/naval/hull_armour.dm` adds the belt armour plate
+(`/obj/structure/hull_armour`, 15 steel, Naval Mines research), set on a tile
+of a ship's deck.
+
+- `/obj/covers/ex_act()` asks `hull_armour_soften()` first: a floor on a
+  plated tile, or a hold floor right under one, takes every blast one step
+  lighter (severity + 1; 4 is nothing), so a direct hit does not hole her.
+  The direct hit spends the plate (it is deleted there and then); lighter
+  blasts leave it. A plate's own `ex_act()` does nothing, so the order the
+  blast visits a tile's contents does not matter.
+- Each plate weighs 1 (`hull_load()`), so belting a ship slows her.
+- `craft.armour_belt()` counts plated tiles among her edge tiles for the
+  tiller (`armour_text()`). A wrench unbolts a plate for 10 steel.
 
 ## Hull weight
 
