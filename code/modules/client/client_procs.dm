@@ -68,16 +68,6 @@
 		cmd_admin_pm_todiscord(pm_sender,txtinput)
 		return
 
-	// see quickBan.dm
-	if (href_list["quickBan_removeBan"])
-		var/UID = href_list["quickBan_removeBan_UID"]
-		if (UID)
-			var/confirm = input("Are you sure you want to remove the ban with the UID '[UID]' ?") in list("Yes", "No")
-			if (confirm == "Yes")
-				var/client/callers = locate(href_list["caller"])
-				if (!quickBan_remove_uid(UID, key_name(callers), usr))
-					to_chat(usr, "<span class = 'warning'>No active ban has the UID '[UID]'.</span>")
-
 	//Logs all hrefs
 	if (config && config.log_hrefs && href_logfile)
 		href_logfile << "<small>[time2text(world.timeofday,"hh:mm")] [src] (usr:[usr])</small> || [hsrc ? "[hsrc] " : ""][href]<br>"
