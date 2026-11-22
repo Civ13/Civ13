@@ -240,6 +240,8 @@ var/late_wait_result = TRUE
 	soldier.loc = locate(3,2,1)
 	var/datum/research_node/AN = get_research_node("automatic_weapons")
 	second.add_research_work("automatic_weapons", AN.cost_ticks - 5)
+	for (var/key in node_bill("automatic_weapons")) // its era bill is paid (era_bills.dm)
+		second.deliver_bill("automatic_weapons", key, 1000)
 	late_check(bench.credit_field_work() && second.has_research_chapter("automatic_weapons") && !second.has_field_work("automatic_weapons_range") && second.has_field_work("cartridge_ammo_range"), "field work finishes a nearly done chapter and is then forgotten for that subject only")
 	late_check(!second.record_field_work("automatic_weapons_range"), "a finished chapter takes no more field work")
 	// A dark bench does no bookkeeping at all.
@@ -348,16 +350,29 @@ var/late_wait_result = TRUE
 	var/list/bills = capstone_bills()
 	for (var/node_id in bills)
 		var/datum/research_node/N = get_research_node(node_id)
-		late_check(N && N.mode == RESEARCH_MODE_PROTOTYPE && N.era_tier >= 4, "[node_id] is an Industrial or later capstone with a bill")
+		late_check(N && N.era_tier >= 4 && (N.mode == RESEARCH_MODE_PROTOTYPE || N.era_tier >= 7), "[node_id] is an Industrial or later capstone, or a big late subject, with a bill")
 		var/list/earlier = late_research_ancestors(node_id)
 		var/list/bill = bills[node_id]
 		for (var/key in bill)
 			var/list/M = bill_materials()[key]
 			late_check(islist(M) && ispath(M[2], /obj/item/stack) && isnum(bill[key]) && bill[key] > 0, "[node_id] bills a real stack of [key]")
 			var/req = M ? get_recipe_node_req("[M[2]]") : null
-			late_check(!req || (req in earlier), "[node_id]'s [key] comes from an earlier subject (needs [req ? req : "nothing"])")
+			var/datum/research_node/RQ = req ? get_research_node(req) : null
+			late_check(!req || (req in earlier) || (RQ && RQ.era_tier < N.era_tier), "[node_id]'s [key] comes from an earlier subject (needs [req ? req : "nothing"])")
 	late_check(!node_has_bill("printing_currency") && !node_has_bill("gunpowder") && !node_has_bill("iron_smithing"), "Medieval and Imperial capstones have no bill")
 	late_check(!capstone_bill_replaces_prototype("steam_power") && capstone_bill_replaces_prototype("powered_flight") && capstone_bill_replaces_prototype("mechanized_war"), "only the capstones without a demonstration take the bill as their prototype")
+	for (var/cid in research_nodes)
+		var/datum/research_node/C = research_nodes[cid]
+		if (C && C.mode == RESEARCH_MODE_PROTOTYPE && C.era_tier >= 4)
+			late_check(node_has_bill(C.id), "every capstone from Steam Power on has a bill: [C.id]")
+	late_check(!capstone_bill_replaces_prototype("electricity") && !capstone_bill_replaces_prototype("rocketry"), "a demonstrated capstone or an ordinary subject keeps its other needs")
+	// An ordinary late subject waits for its bill too.
+	var/datum/research_node/RK = get_research_node("rocketry")
+	var/obj/item/weapon/book/rk = new(locate(1,1,1))
+	late_check(!rk.add_research_work("rocketry", RK.cost_ticks) && !rk.has_research_chapter("rocketry"), "full study alone does not finish Rocketry")
+	for (var/key in node_bill("rocketry"))
+		rk.deliver_bill("rocketry", key, 1000)
+	late_check(rk.add_research_work("rocketry", 0) && rk.has_research_chapter("rocketry"), "with its bill paid, the studied subject is finished")
 	map.book_research = FALSE
 	var/obj/item/weapon/book/plain = new(locate(1,1,1))
 	late_check(!node_bill("steam_power") && plain.bill_complete("steam_power"), "bills apply only on book-research worlds")
