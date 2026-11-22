@@ -127,7 +127,7 @@ class CombatStanceSources(unittest.TestCase):
         # create_HUDneed() only builds elements the species HUD lists, so a
         # style entry alone never puts the button on screen.
         self.assertRegex(read('code/game/mob/living/carbon/human/species/species_hud.dm'),
-                         r'var/list/ProcessHUD = list\([^)]*"combat stance"')
+                         r'var/tmp/list/ProcessHUD = list\([^)]*"combat stance"')
 
     def test_every_hud_sheet_has_the_stance_art(self):
         for sheet in ('1713Style', 'ConsoleStyle', 'FoFStyle', 'litewebStyle'):
