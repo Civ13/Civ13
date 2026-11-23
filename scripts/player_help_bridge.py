@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '74bbeab4481b145ea7d9d24ffb80aa20d4140b9d'
+WIKI_REVIEWED_REVISION = '06ce43a90aca913d4e728b0ef54135ec4083185d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -124,7 +124,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
     'guides/Guide_to_Combat.md': ('da7579531503a7301a3ad2a865fc2fd717e79e5a5711c35b830b5936b3a7d2af', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
-    'guides/Guide_to_Construction.md': ('6de3dc86ffcdb60ef2711137bdb3ab7301423b78b12c44d1a6b2c3f0e4ba1973', 'construction build building walls roof floor'),
+    'guides/Guide_to_Construction.md': ('d7c272bfb2723481b240c869da5fbd7de6447d68bf18d31352c7f00e1208788b', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('9bc778ebfcf154ac5b1b9c962a16272cd507e57ad06a052c39759238f6ab9057', 'exercise training strength weights running fatigue'),
