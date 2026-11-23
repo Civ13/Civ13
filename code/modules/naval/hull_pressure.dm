@@ -207,5 +207,21 @@
 			return TRUE
 	return FALSE
 
+// Sheltered crew can walk only inside one connected pocket of their own
+// hull. A recorded zero breath budget is exhausted air, not seawater.
+/proc/sunken_hull_pressure_same_shelter(turf/from, turf/destination)
+	if (!from || !destination || from.z != destination.z || !hull_depth_underwater(from) || !hull_depth_underwater(destination))
+		return FALSE
+	var/datum/hull_ledger/L = hull_ledger_at(from)
+	if (!L?.depth_disabled || !L.pressure_air || !L.deck_holds(destination))
+		return FALSE
+	var/list/room = L.pressure_room_air(from)
+	if (!room || room != L.pressure_room_air(destination))
+		return FALSE
+	for (var/key in room)
+		if (isnum(L.pressure_air[key]))
+			return TRUE
+	return FALSE
+
 #undef HULL_PRESSURE_CELL_BREATHS
 #undef HULL_PRESSURE_MIN_INTEGRITY

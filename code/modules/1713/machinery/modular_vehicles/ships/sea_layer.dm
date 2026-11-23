@@ -39,6 +39,10 @@
 	var/mob/M = mover
 	var/turf/from = get_turf(M)
 	var/stepping = from && from != src
+	// Crew in trapped air are walking inside the same sealed compartment,
+	// not swimming through its hull. Normal turf/object collision still applies.
+	if (stepping && iscovered() && from.iscovered() && sunken_hull_pressure_same_shelter(from, src))
+		return ..()
 	if (iscovered() && !submerged_built_hull_deck(src))
 		// Aboard a boat; never straight in from the open sea.
 		if (stepping && sea_layer_cell(from) && (!from.iscovered() || submerged_built_hull_deck(from)))

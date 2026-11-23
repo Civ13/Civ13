@@ -20,6 +20,7 @@ COMPARTMENTS = source("code/modules/naval/hull_compartments.dm")
 HELPERS = source("code/game/mob/living/carbon/human/human_helpers.dm")
 DIVES = source("code/modules/1713/machinery/modular_vehicles/ships/free_diving.dm")
 SEABED = source("code/modules/1713/machinery/modular_vehicles/ships/seabed.dm")
+SEA_LAYER = source("code/modules/1713/machinery/modular_vehicles/ships/sea_layer.dm")
 SCUBA = source("code/modules/1713/machinery/modular_vehicles/ships/scuba.dm")
 
 
@@ -75,6 +76,15 @@ class PressureSource(unittest.TestCase):
         drowning = proc(HELPERS, "/mob/living/human/proc/handle_drowning()")
         self.assertIn("on_sunken_deck && stat != DEAD && !seabed_diving_rating() && sunken_hull_pressure_breath(T, TRUE)", drowning)
         self.assertIn("var/exposed_seabed = on_sunken_deck || (sea_layer_cell(T) && !T.iscovered())", drowning)
+
+    def test_dry_walking_belongs_to_one_connected_hull_pocket(self):
+        sea_pass = proc(SEA_LAYER, "/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/CanPass(atom/movable/mover)")
+        self.assertIn("if (stepping && iscovered() && from.iscovered() && sunken_hull_pressure_same_shelter(from, src))\n\t\treturn ..()", sea_pass)
+        self.assertLess(sea_pass.index("sunken_hull_pressure_same_shelter"), sea_pass.index("M.can_walk_seabed()"))
+        same = proc(PRESSURE, "/proc/sunken_hull_pressure_same_shelter(turf/from, turf/destination)")
+        self.assertIn("!L.deck_holds(destination)", same)
+        self.assertIn("room != L.pressure_room_air(destination)", same)
+        self.assertIn("isnum(L.pressure_air[key])", same)
 
     def test_underwater_hold_counts_for_cold_depth_and_scuba_but_not_ascent_through_deck(self):
         hold = proc(SEABED, "/turf/floor/plating/ship_hold/outside_ambient_c()")

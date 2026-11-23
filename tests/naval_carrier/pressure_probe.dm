@@ -101,6 +101,22 @@
 	var/turf/B = locate(6, 5, 2)
 	pressure_probe_check(sunken_hull_pressure_sheltered(A) && sunken_hull_pressure_breath(A), "genuine sealed cabin protects and supplies a breath")
 	pressure_probe_check(!sunken_hull_pressure_sheltered(locate(3, 3, 2)), "submerged plain cover is not protection")
+	// Keep both fixture supports in place for the roofs but exercise an
+	// unobstructed floor, then prove a dense object still blocks that step.
+	var/obj/structure/roof_support/start_support = locate() in A
+	var/obj/structure/roof_support/landing_support = locate() in B
+	start_support.density = FALSE
+	landing_support.density = FALSE
+	var/turf/flooded = locate(6, 7, 2)
+	var/turf/door_tile = get_turf(D)
+	var/mob/living/human/walker = new(A)
+	var/mob/living/human/outsider = new(flooded)
+	pressure_probe_check(!walker.can_walk_seabed() && B.Enter(walker), "unsuited crew can step within their sealed pressure pocket")
+	landing_support.density = TRUE
+	pressure_probe_check(!B.Enter(walker), "a dense obstruction still blocks walking in the sealed pocket")
+	landing_support.density = FALSE
+	pressure_probe_check(!flooded.CanPass(walker, flooded) && !B.CanPass(outsider, B), "sealed-pocket movement does not give inside crew or outsiders permission to swim through flooded deck")
+	pressure_probe_check(!door_tile.Enter(walker), "same-hull movement cannot bypass the closed pressure door")
 	for (var/i = 1 to 32)
 		pressure_probe_check(sunken_hull_pressure_breath(i % 2 ? A : B, TRUE), "shared room granted breath [i]")
 	var/list/saved = L.pressure_to_list()
@@ -110,6 +126,7 @@
 	for (var/i = 33 to 60)
 		pressure_probe_check(sunken_hull_pressure_breath(i % 2 ? A : B, TRUE), "restored room granted remaining breath [i]")
 	pressure_probe_check(!sunken_hull_pressure_breath(A) && !sunken_hull_pressure_breath(B) && sunken_hull_pressure_sheltered(A), "room air is exhausted, but the intact room still blocks seawater")
+	pressure_probe_check(B.Enter(walker), "unsuited crew can still walk inside an intact but oxygen-exhausted pocket")
 	var/list/exhausted = L.pressure_to_list()
 	L.pressure_clear()
 	L.pressure_from_list(exhausted)
@@ -121,6 +138,7 @@
 	D.state = TRUE
 	D.door_opened()
 	pressure_probe_check(D.state && !sunken_hull_pressure_sheltered(A), "opening the original door vents the cabin")
+	pressure_probe_check(!B.Enter(walker), "unsuited crew lose dry walking access once the pocket vents")
 	D.state = FALSE
 	D.door_closed()
 	pressure_probe_check(!D.state && L.pressure_room_intact(A) && !sunken_hull_pressure_breath(A) && !sunken_hull_pressure_sheltered(A), "resealing repairs the shell but does not generate fresh air")
