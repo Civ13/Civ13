@@ -1212,6 +1212,22 @@ var/global/train_solo_move = FALSE
 		return 1
 	return (rail_speed / 4) * clamp(sqrt(max(1, consist_weight) / 4), 1, 2)
 
+// Speed changes by the second, not by the tile (docs/trains.md "Speed and
+// load"): a tile at walking pace takes far longer than one at full speed, so
+// a change per tile made a train snap up to speed in a few seconds and run
+// at one pace. The seconds one step at this speed takes.
+/proc/train_step_seconds(speed)
+	return clamp(1 / max(0.5, speed), 0.1, 2)
+
+// The speed after one step gaining accel (tiles per second, each second) over
+// the time that step itself takes: v' = v + accel / v', so a train creeps
+// away and builds up speed over many tiles.
+/proc/train_speed_gain(speed, accel)
+	speed = max(0, speed)
+	if (accel <= 0)
+		return speed
+	return (speed + sqrt(speed * speed + 4 * accel)) / 2
+
 /obj/structure/trains/locomotive/proc/drive()
 	if (driving)
 		return
@@ -1251,13 +1267,15 @@ var/global/train_solo_move = FALSE
 						visible_message("<span class = 'warning'>\The [src]'s wheels spin; [consist_braked > 0 ? "the handbrakes are holding the train" : "the train is too heavy to start"].</span>")
 						throttle = 0
 						break
-					rail_speed = min(target, max(rail_speed, 0.5) + 0.35 * min(2, pull_ratio()))
+					// Gathers way gradually, faster with pull to spare.
+					rail_speed = min(target, train_speed_gain(rail_speed, TRAIN_ACCEL * min(2, pull_ratio())))
 					braking = FALSE
 			else if (rail_speed > target)
 				// Rolling resistance by the train's heft, and the brakes by the
 				// share of its weight they hold (train_brakes.dm).
+				// Both are per second, so a train loses way gradually however fast it runs.
 				var/drag = (target > 0 ? 0.6 : 0.2) / heft + brake_decel()
-				rail_speed = max(target, rail_speed - drag)
+				rail_speed = max(target, rail_speed - drag * train_step_seconds(rail_speed))
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
