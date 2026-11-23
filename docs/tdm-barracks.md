@@ -25,6 +25,19 @@ everyone already uses, so players never hit a dead port while a map loads.
    links everyone back to the Barracks, and only then reboots, after waiting for
    the voted map to compile (see the shard-group README).
 4. **Return to Barracks** (OOC) leaves a battle early.
+5. While the battle world is empty and waiting for players (phase `pregame`,
+   no players), anyone in the Barracks can start a **battle map vote** (Val,
+   2026-11-23): **Vote Battle Map** in the Barracks tab, or the vote link in the
+   greeting, the Battle Status panel and the "battle forming" announcement. It
+   offers every map of the TDM epochs whose player need (the numbers in
+   `mapswap_epoch_maps()`, the same ones the round-end vote uses) the Barracks'
+   player count meets. The Barracks checks again that the battle is still empty
+   when the vote ends and sends the winner over the pair's link (`tdm_command`
+   topic, `config/tdm-token.txt`). The battle world takes it only while it is
+   still empty in pregame and nothing is being built, builds it like a
+   round-end winner (`battle_mapswap.py`), reports `rotating` (joins are held)
+   and reboots onto it. A reboot before any round began sends no results.
+   Code: `barracks_map_vote.dm` and `tdm_battle.barracks_map()`.
 
 Joining wakes a sleeping battle world through the doorman, and both worlds use
 the routing relay when the group has one (`shard_group.send_player`).
