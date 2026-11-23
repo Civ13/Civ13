@@ -1429,10 +1429,13 @@ var/list/seed_list_jungle
 			if (src && branches >= 1)
 				to_chat(user, SPAN_NOTICE("You break off a branch from \the [src]."))
 				tutorial_event_for(user, "branch")
+				var/obj/structure/branch/B
 				if (icon == 'icons/obj/flora/deadtrees.dmi' || icon == 'icons/obj/flora/deadtrees_winter.dmi' || findtext(icon_state, "dead"))
-					new /obj/structure/branch/cleared(get_turf(src))
+					B = new /obj/structure/branch/cleared(get_turf(src))
 				else
-					new /obj/structure/branch(get_turf(src))
+					B = new /obj/structure/branch(get_turf(src))
+				// Bare seasonal art also belongs to living broadleaf trees.
+				B.cutting_viable = (type == /obj/structure/wild/tree/live_tree || type == /obj/structure/wild/tree/live_tree/snow) && health > 0 && radiation < 15
 				branches--
 				grow_branch()
 				return
