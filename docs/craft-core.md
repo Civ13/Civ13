@@ -87,12 +87,11 @@ Modular vehicles and frame boats glide the same way: `axis.do_move()` calls
 person carried through the shared `glide_show()` for `vehicle_m_delay + 1`
 ticks, and `glide_rest()` gives the glides back when the vehicle stops.
 
-Turns swing round instead of snapping. After a built hull's `move_to()` with
-a turn, and after `axis.do_matrix()`, each thing carried goes through
-`glide_swing()` for `glide_turn_time()` (5 ticks): a thing that moved one tile
-glides there, and a thing that moved further, which the engine will not glide,
-is slid there by `glide_slide()` with a sine ease. Sprites take their new
-facing at once; only the travel is drawn. A spacecraft's thruster step
+Turns swing round instead of snapping (`craft/turn_swing.dm`, "Turning
+swings" below). A slide into a berth still goes through `glide_swing()`: a
+thing that moved one tile glides there, and a thing that moved further, which
+the engine will not glide, is slid there by `glide_slide()` with a sine ease.
+A spacecraft's thruster step
 (`thrust_one()`) sets `glide_time` on her turf body, whose `shift()` glides
 what she carries and slides her tiles with `glide_slide()`; her jumps between
 levels and slots are not glided.
@@ -105,6 +104,31 @@ place over that time. Template vessels (`datum/vessel`) still jump.
 `/obj/structure/hull_tiller` (`naval/built_hull.dm`) is the helm of a built
 hull: it commissions, refits and strikes the hull, steers her, keeps the
 papers and saves the hull as offsets from its own tile.
+
+### Turning swings
+
+A built hull's turn (`move_to()` with an angle) and a frame vehicle's turn
+(`axis.do_matrix()`) both finish on the server in one go. Before the moves,
+everything carried is held at a whole-tile glide (so the engine shows the
+moves at once) and its facing is kept. After them, `turn_swing_all()` finds
+the rigid turn that carried them (`turn_swing_fit()`: each thing votes for
+the pivot its own move implies; a thing that was not carried round does not
+count) and `turn_swing()` draws each thing back where it stood and carries it
+round the pivot on an arc of 30-degree keyframes (15 for a body 6 tiles or
+more across), the way a wide rail curve swings a train's cars round
+(`train_arcs.dm`). The first piece eases in and the last eases out
+(`turn_swing_piece()`). A thing whose facing changed and whose sprites are a
+top-down shape turned round (`turn_swing_turns()`: frames, floors, roofs) is
+drawn turned back to its old facing and turns as it goes; wheels, seats,
+furniture and creatures are carried round upright, and a rider's own view
+follows the arc. A turn takes
+`turn_swing_time(span)` tenths of a second, 5 to 10 by the body's size. Anything that did
+not fit the turn is slid as before. A one-object vehicle with `turn_swings`
+(boats, whose sprites are seen from above) turns in place the same way over
+0.3 s (`turn_swing_facing()`, from `vehicle.update_icon()`); side-view sprites
+such as rafts, motorcycles and carriages keep a plain change of facing. The
+probes read `turn_swing_last` (pivot, angle, things swung and turned).
+Appearance only: nothing here moves anything or owns a timer.
 
 ### Pushing her off by hand
 

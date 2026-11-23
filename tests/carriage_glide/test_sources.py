@@ -174,6 +174,11 @@ class Sources(unittest.TestCase):
         body=body[:-len(tail)]
         body=re.sub(r'(?m)^\t','',body)
         s=s[:start]+body+s[end:]
+        # A boat's change of facing is drawn turning (craft/turn_swing.dm).
+        swing=('\tif (driver)\n\t\tvar/was = dir\n\t\tdir = driver.dir\n\t\tbuckle_dir = dir\n'
+            '\t\tturn_swing_facing(was) // craft/turn_swing.dm\n')
+        self.assertEqual(s.count(swing),1)
+        s=s.replace(swing,'\tif (driver)\n\t\tdir = driver.dir\n\t\tbuckle_dir = dir\n')
         b=s.encode();self.assertEqual(hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest(),'a2916e33f2d5228ae2774344fc3c7966bf903781')
     def test_ci_is_explicit_source_only_and_preserves_mixed_file_fallback(self):
         s=(ROOT/'scripts/ci_baseline.py').read_text()

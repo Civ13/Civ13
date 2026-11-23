@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 440
+	maxx = 452
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -543,7 +543,7 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("heavy/body_art", E.icon_state == "loco_steam_1c" && cab.icon_state == "loco_steam_3c" && heavy_parts_placed(E) && platform_parts_placed(body))
 	platform_check("heavy/solid_and_cab", boiler.density && bunker.density && !cab.density && E.control_spot() == cab)
 	platform_check("heavy/cab_roof_only", cab.roofed() && cab.roof_images && cab.roof_images.len == 3 && !boiler.roofed())
-	platform_check("heavy/one_piece", findtext(boiler.dismantle_problem(), "one piece") && rail_warehouse_unit(bunker).len == 4 && rail_warehouse_unit(bunker)[1] == E && rail_warehouse_whole_length(E) == 4)
+	platform_check("heavy/one_piece", boiler.dismantle_problem() == E.pack_problem() && rail_warehouse_unit(bunker).len == 4 && rail_warehouse_unit(bunker)[1] == E && rail_warehouse_whole_length(E) == 4)
 	var/mob/living/human/platform_rider/driver = new(platform_turf(61, 10))
 	// The fire is fed at the firebox door in the middle of the cab, not from
 	// the fireman's side where the driver stands here.
@@ -1211,7 +1211,7 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/segs = platform_segments(tender)
 	var/obj/structure/trains/platform/last = segs.len == 4 ? segs[4] : null
 	var/list/states = icon_states('icons/obj/vehicles/train_platforms.dmi')
-	platform_check("tender/built_in_one_piece", last && tender.icon_state == "loco_tender_1c" && !tender.density && last.density && tender.tender_store() == tender && last.tender_store() == tender && tender.dismantle_problem() && tender.coupler_f && last.coupler_r && ("loco_tender_1l" in states) && ("loco_tender_4r" in states) && platform_parts_placed(segs))
+	platform_check("tender/built_in_one_piece", last && tender.icon_state == "loco_tender_1c" && !tender.density && last.density && tender.tender_store() == tender && last.tender_store() == tender && !tender.dismantle_problem() && tender.coupler_f && last.coupler_r && ("loco_tender_1l" in states) && ("loco_tender_4r" in states) && platform_parts_placed(segs))
 	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(150, 13))
 	L.dir = NORTH
 	L.fuel = 20
@@ -3509,6 +3509,58 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("assembly/nobody_shut_inside", freed && train_tile_walled(platform_turf(358, 19)) && train_tile_walled(platform_turf(357, 17)))
 	platform_check("assembly/cab_rider_stays", in_cab.loc == platform_turf(359, 15) && !train_tile_walled(in_cab.loc))
 
+// Crowbars: one-tile cars come apart into part of their cost, heavy engines
+// and tenders fold back into their kits.
+/proc/platform_dismantle_run()
+	for (var/ty in 2 to 25)
+		platform_track(444, ty, NORTH)
+		platform_track(448, ty, NORTH)
+	craftlist_lists["dismantle_probe"] = list(list("/material/iron/", "flatbed wagon", "/obj/structure/trains/transport/flatbed", "4", "250", "1"))
+	crafted_refund_stack_cache = list()
+	crafted_refund_units_cache = list()
+	var/obj/structure/trains/transport/flatbed/flat = new(platform_turf(444, 3))
+	var/obj/structure/trains/storage/closed/box = new(platform_turf(444, 4))
+	var/obj/structure/trains/locomotive/coal/loco = new(platform_turf(444, 7))
+	box.connected = flat
+	var/coupled = findtext(flat.wagon_dismantle_problem(), "Uncouple") && findtext(box.wagon_dismantle_problem(), "Uncouple")
+	box.connected = null
+	var/obj/item/stack/material/iron/bar = new(box.storage)
+	var/full = findtext(box.wagon_dismantle_problem(), "Empty")
+	qdel(bar)
+	var/mob/living/human/platform_rider/aboard = new(platform_turf(444, 3))
+	var/ridden_wagon = findtext(flat.wagon_dismantle_problem(), "is on")
+	qdel(aboard)
+	loco.on = TRUE
+	var/running = findtext(loco.wagon_dismantle_problem(), "Shut")
+	loco.on = FALSE
+	platform_check("dismantle/one_tile_refusals", coupled && full && ridden_wagon && running && !flat.wagon_dismantle_problem() && !box.wagon_dismantle_problem() && !loco.wagon_dismantle_problem())
+	var/turf/flat_at = flat.loc
+	var/obj/item/stack/material/iron/back = flat.take_apart()
+	platform_check("dismantle/one_tile_half_cost", QDELETED(flat) && istype(back) && back.loc == flat_at && back.amount == 2 && crafted_refund_units(/obj/structure/trains/transport/flatbed) == 4)
+	craftlist_lists -= "dismantle_probe"
+
+	var/obj/structure/trains/locomotive/coal/heavy/E = platform_car("loco_steam", 448, 20, NORTH)
+	var/obj/structure/trains/platform/F = platform_car("flatbed", 448, 16, NORTH)
+	var/list/F_segs = platform_segments(F)
+	var/obj/structure/trains/last = istype(E) ? train_unit_last(E) : null
+	last.connected = F
+	var/linked = findtext(E.pack_problem(), "Uncouple")
+	last.connected = null
+	var/mob/living/human/platform_rider/rider = new(platform_turf(447, 18))
+	var/ridden = findtext(E.pack_problem(), "Clear everything")
+	qdel(rider)
+	var/id = E.car_id
+	var/ready = !E.pack_problem()
+	var/obj/structure/train_car_kit/K = ready ? E.pack_into_kit() : null
+	var/left = 0
+	for (var/obj/structure/trains/TR in world)
+		if (TR.car_id == id && !QDELETED(TR) && TR.loc)
+			left++
+	platform_check("dismantle/heavy_engine_into_kit", linked && ridden && istype(K) && K.car_kind == "loco_steam" && !K.furnished && K.loc == platform_turf(448, 20) && left == 0 && !(locate(/obj/structure/train_part) in platform_turf(447, 19)) && F_segs.len == TRAIN_CAR_LENGTH)
+	var/obj/structure/trains/platform/T = platform_car("tender", 444, 20, NORTH)
+	var/tender_ready = istype(T) && !T.dismantle_problem()
+	var/obj/structure/train_car_kit/TK = tender_ready ? T.pack_car() : null
+	platform_check("dismantle/tender_into_kit", tender_ready && istype(TK) && TK.car_kind == "tender" && !(locate(/obj/structure/trains) in platform_turf(444, 18)) && K && !K.assembly_problem(NORTH))
 // Room to turn (train_bends.dm): bends closer together than a car is long
 // fold it onto itself, so track refuses them and trains stop short.
 /proc/platform_bend_line(x, east)
@@ -3796,6 +3848,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_early_run()
 		platform_electric_run()
 		platform_entomb_run()
+		platform_dismantle_run()
 		platform_bends_run()
 		platform_arcs_run()
 		platform_rail_plans_run()

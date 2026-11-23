@@ -166,6 +166,9 @@ var/global/list/train_axle_oils = list("fat_oil", "olive_oil", "cornoil", "lard"
 	// Rerailing (train_derail.dm).
 	if (istype(W, /obj/item/train_jack))
 		return jack_use(W, user)
+	// Taking it apart (train_dismantle.dm).
+	if (dismantle_use(W, user))
+		return TRUE
 	var/oil = train_oil_in(W)
 	if (oil)
 		if (train_rolling())

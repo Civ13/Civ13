@@ -11,6 +11,16 @@ The TDM server opens in the **Barracks**, a training base that is always running
 
 To leave a battle early, use **Return to Barracks** in the **OOC** tab. Turn on **Auto-join Battle** in the **Barracks** tab (or click the deployment gate) if you want to be sent to every new battle as it forms.
 
+## Choosing the battle map
+
+While the battle world is empty and no round is running, the players in the Barracks can pick its next map.
+
+1. Use **Vote Battle Map** in the **Barracks** tab, or click the vote link in the Barracks greeting, in **Battle Status** or in the "battle forming" announcement.
+2. The ballot lists only the maps that can start with the number of players in the Barracks, grouped by era. Use the era tabs or the search box to find a map, then click it to vote. You can change your vote until the timer runs out.
+3. When the vote ends, the battle world loads the winning map. Joining is paused while it loads, and the Barracks announces the new battle with a join link when it is ready.
+
+If someone joins the battle before the vote ends, or nobody votes, the battle keeps its map.
+
 ## Following the battle
 
 The **battle status board** in the war room, and **Battle Status** in the **Barracks** tab, show the live battle: the map, phase, round clock, players alive on each side, the win condition and the score. They also list recent battles.
