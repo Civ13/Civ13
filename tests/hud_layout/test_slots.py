@@ -134,12 +134,12 @@ class OwnSpot(unittest.TestCase):
     def test_stance_sits_beside_dodge_on_the_widescreen_view(self):
         for style in styles():
             if not style[4]:
-                continue  # NewStyle keeps its side columns
+                continue  # NewStyle keeps its side columns; ConsoleStyle has its own test
             tiles = placed(style, 21)
             stance, mode = tiles['combat stance'], tiles['mode']
             self.assertEqual(stance[1], mode[1], style[0])
             self.assertEqual(stance[0], mode[0] + 32, style[0])
-        self.assertEqual(sum(1 for s in styles() if s[4]), 4)
+        self.assertEqual(sorted(s[0] for s in styles() if s[4]), ['1713Style', 'FoFStyle', 'LiteWebStyle'])
 
     def test_wide_spots_keep_the_action_row_clear(self):
         for style in styles():
@@ -151,11 +151,26 @@ class OwnSpot(unittest.TestCase):
 
     def test_console_stance_is_next_to_the_body_part_selector(self):
         style = next(s for s in styles() if s[0] == 'ConsoleStyle')
-        for columns, rows_up in ((21, 0), (15, 2)):
+        # Fighting around the selector on both views: stance beside it, kick
+        # above the stance, dodge / parry and the tactic along that row.
+        for columns in (21, 15):
             tiles = placed(style, columns)
             stance, doll = tiles['combat stance'], tiles['damage zone']
-            self.assertEqual(stance[0] + 32, doll[0], columns)
-            self.assertEqual(stance[1], doll[1] + 32 + rows_up * 32, columns)
+            self.assertEqual((stance[0] + 32, stance[1]), (doll[0], doll[1]), columns)
+            kick, mode, tactic = tiles['secondary attack'], tiles['mode'], tiles['tactic']
+            self.assertEqual((kick[0], kick[1]), (stance[0], stance[1] + 32), columns)
+            self.assertEqual([tactic[0], mode[0]], [kick[0] - 64, kick[0] - 32], columns)
+
+    def test_console_movement_buttons_form_one_stack(self):
+        style = next(s for s in styles() if s[0] == 'ConsoleStyle')
+        for columns in (21, 15):
+            tiles = placed(style, columns)
+            stack = [tiles[n] for n in ('m_intent', 'tap step', 'go down', 'go up')]
+            # One column on the right edge, tile on tile, a gap above the eye.
+            self.assertEqual({box[0] for box in stack}, {columns * 32 - 32}, columns)
+            self.assertEqual([b[1] - a[1] for a, b in zip(stack, stack[1:])], [32, 32, 32], columns)
+            eye = tiles['fixeye']
+            self.assertGreaterEqual(stack[0][1] - (eye[1] + eye[3]), 4, columns)
 
     def test_tiles_are_filed_under_the_style_key(self):
         # The stance button renames itself for its hover text; filed under its
