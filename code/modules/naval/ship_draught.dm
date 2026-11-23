@@ -932,6 +932,11 @@ var/global/list/ship_draught_decks = list(
 		to_chat(user, "Waterworks plan: [water.name], [water.route.len] route tiles. Use the sheet to check or peg it.")
 		qdel(water)
 		return
+	var/datum/contraption_plan/contraption = contraption_plan()
+	if (contraption)
+		to_chat(user, "<b>[html_encode(contraption.name)]</b>: a contraption plan with [contraption.cells.len] part\s and [contraption.cords.len] cord\s.")
+		qdel(contraption)
+		return
 	var/datum/house_plan/house = house_plan()
 	if (house)
 		to_chat(user, house.summary_text())
@@ -990,6 +995,11 @@ var/global/list/ship_draught_decks = list(
 		waterworks_sheet_menu(H, water)
 		qdel(water)
 		return
+	var/datum/contraption_plan/contraption = contraption_plan()
+	if (contraption)
+		contraption_sheet_menu(H, contraption)
+		qdel(contraption)
+		return
 	var/datum/house_plan/house = house_plan()
 	if (house)
 		house_sheet_menu(H, house)
@@ -1011,6 +1021,7 @@ var/global/list/ship_draught_decks = list(
 		options.Insert(2, DRAUGHT_EXPORT_LABEL)
 	else
 		options.Insert(2, "Draw a house on the sheet")
+		options.Insert(3, "Draw a contraption on the sheet")
 		options.Insert(3, "Draw a submarine on the sheet")
 		options.Insert(4, "Draw a vehicle on the sheet")
 		options.Insert(5, "Draw a tank on the sheet")
@@ -1031,6 +1042,8 @@ var/global/list/ship_draught_decks = list(
 		open_waterworks_designer(H)
 	else if (choice == "Draw a house on the sheet" && !draught_code)
 		open_house_designer(H)
+	else if (choice == "Draw a contraption on the sheet" && !draught_code)
+		open_contraption_designer(H)
 	else if (choice == "Draw a submarine on the sheet" && !draught_code)
 		open_sub_designer(H)
 	else if (choice == "Draw a vehicle on the sheet" && !draught_code)

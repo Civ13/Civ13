@@ -85,6 +85,8 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a gun blueprint"
 		if ("HARBOR")
 			return "a harbor plan"
+		if ("MECH")
+			return "a contraption plan"
 		if ("RAIL")
 			return "a rail plan"
 		if ("WATER")

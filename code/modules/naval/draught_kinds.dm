@@ -36,6 +36,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 		"WATER" = list("name" = "waterworks", "title" = "Waterworks plan", "max" = DESIGN_CODE_WATER_MAX, "read" = /proc/waterworks_plan_from_code, "take" = "take_waterworks", "open" = "open_waterworks_designer", "window" = "waterworks_designer"),
 		"HOUSE" = list("name" = "house", "title" = "House plan", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house", "open" = "open_house_designer", "window" = "house_designer"),
 		"HARBOR" = list("name" = "harbor", "title" = "Harbor plan", "max" = 48, "read" = /proc/harbor_plan_from_code, "take" = "take_harbor", "open" = "open_harbor_designer", "window" = "harbor_designer"),
+		"MECH" = list("name" = "contraption", "title" = "Contraption plan", "max" = DESIGN_CODE_MECH_MAX, "read" = /proc/contraption_plan_from_code, "take" = "take_contraption", "open" = "open_contraption_designer", "window" = "contraption_designer"),
 		"RAIL" = list("name" = "railway", "title" = "Rail plan", "max" = DESIGN_CODE_RAIL_MAX, "read" = /proc/rail_plan_from_code, "take" = "take_rail", "open" = "open_rail_designer", "window" = "rail_designer"),
 		"TRAIN" = list("name" = "train", "title" = "Train sheet", "max" = DESIGN_CODE_TRAIN_MAX, "read" = /proc/train_draught_from_code, "take" = "take_train", "open" = "open_train_designer", "window" = "train_designer"),
 		"STATION" = list("name" = "space station", "title" = "Station plan", "max" = DESIGN_CODE_STATION_MAX, "read" = /proc/station_plan_from_code, "take" = "take_station", "open" = "open_station_designer", "window" = "station_designer", "age" = ORBIT_MIN_AGE),
@@ -68,14 +69,19 @@ var/global/list/draught_kinds = draught_kinds_list()
 	var/client/connection = H?.client
 	var/expected_code = draught_code
 	var/datum/admission = persistence_admission_identity
-	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station, harbor, house or waterworks design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13RAIL/..., C13HARBOR/..., C13HOUSE/... or C13WATER/...). It replaces what is drawn on this sheet.", draught_code_max())
+	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station, harbor, contraption, house or waterworks design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13RAIL/..., C13HARBOR/..., C13MECH/..., C13HOUSE/... or C13WATER/...). It replaces what is drawn on this sheet.", draught_code_max())
 	if (!typed || QDELETED(src) || QDELETED(H) || !(src in H.get_contents()) || (recheck && !recheck.Invoke()))
+		return null
+	// The prompt can outlive the browser, a holder change or a second sheet edit.
+	if (editor && (QDELETED(editor) || editor.sheet != src || !editor.can_edit(H)))
 		return null
 	var/kind = design_code_kind(typed)
 	// The prompt can outlive the holder, connection or another edit of the sheet.
 	if (kind == "HARBOR" || design_code_kind(expected_code) == "HARBOR" || design_code_kind(draught_code) == "HARBOR")
 		if (!harbor_can_draw(H, src) || H.client != connection || draught_code != expected_code || persistence_admission_changed(admission))
 			return null
+	if (kind == "MECH" && (!connection || H.client != connection || connection.mob != H || !ship_designer_can_draw(H, src) || (H.get_active_hand() != src && H.get_inactive_hand() != src) || draught_code != expected_code || persistence_admission_changed(admission)))
+		return null
 	var/list/K = draught_kinds[kind]
 	if (K && length(typed) > K["max"])
 		K = null
