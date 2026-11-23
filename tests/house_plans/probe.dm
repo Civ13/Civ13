@@ -411,6 +411,9 @@ var/global/house_probe_checks = 0
 		house_assert(QDELETED(lost_peg), "a peg over open air goes")
 		house_assert(!build_marker_place(sky, list("nonsense=thing"), "probe", "x", null), "a peg asks only for work it knows")
 
+		house_probe_clear()
+		waterworks_probe()
+
 		text2file(json_encode(dump), "designer.json")
 		world.log << "HOUSE CHECKS: [house_probe_checks]"
 		text2file("PASS: house plans", "result.txt")
@@ -418,3 +421,5 @@ var/global/house_probe_checks = 0
 		world.log << "HOUSE exception: [E] at [E.file]:[E.line]"
 		text2file("FAIL: [E.name]", "result.txt")
 	shutdown()
+
+#include "waterworks_probe.dm"

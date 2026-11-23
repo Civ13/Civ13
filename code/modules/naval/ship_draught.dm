@@ -927,10 +927,25 @@ var/global/list/ship_draught_decks = list(
 		to_chat(user, station.summary_text())
 		qdel(station)
 		return
+	var/datum/waterworks_plan/water = waterworks_plan()
+	if (water)
+		to_chat(user, "Waterworks plan: [water.name], [water.route.len] route tiles. Use the sheet to check or peg it.")
+		qdel(water)
+		return
+	var/datum/contraption_plan/contraption = contraption_plan()
+	if (contraption)
+		to_chat(user, "<b>[html_encode(contraption.name)]</b>: a contraption plan with [contraption.cells.len] part\s and [contraption.cords.len] cord\s.")
+		qdel(contraption)
+		return
 	var/datum/house_plan/house = house_plan()
 	if (house)
 		to_chat(user, house.summary_text())
 		qdel(house)
+		return
+	var/datum/harbor_plan/harbor = harbor_plan()
+	if (harbor)
+		to_chat(user, harbor.summary_text())
+		qdel(harbor)
 		return
 	var/datum/rail_plan/rail = rail_plan()
 	if (rail)
@@ -975,10 +990,25 @@ var/global/list/ship_draught_decks = list(
 		station_sheet_menu(H, station)
 		qdel(station)
 		return
+	var/datum/waterworks_plan/water = waterworks_plan()
+	if (water)
+		waterworks_sheet_menu(H, water)
+		qdel(water)
+		return
+	var/datum/contraption_plan/contraption = contraption_plan()
+	if (contraption)
+		contraption_sheet_menu(H, contraption)
+		qdel(contraption)
+		return
 	var/datum/house_plan/house = house_plan()
 	if (house)
 		house_sheet_menu(H, house)
 		qdel(house)
+		return
+	var/datum/harbor_plan/harbor = harbor_plan()
+	if (harbor)
+		harbor_sheet_menu(H, harbor)
+		qdel(harbor)
 		return
 	var/datum/rail_plan/rail = rail_plan()
 	if (rail)
@@ -991,6 +1021,7 @@ var/global/list/ship_draught_decks = list(
 		options.Insert(2, DRAUGHT_EXPORT_LABEL)
 	else
 		options.Insert(2, "Draw a house on the sheet")
+		options.Insert(3, "Draw a contraption on the sheet")
 		options.Insert(3, "Draw a submarine on the sheet")
 		options.Insert(4, "Draw a vehicle on the sheet")
 		options.Insert(5, "Draw a tank on the sheet")
@@ -998,13 +1029,21 @@ var/global/list/ship_draught_decks = list(
 		options.Insert(7, "Draw an airship on the sheet")
 		options.Insert(8, "Draw a train on the sheet")
 		options.Insert(9, "Draw a railway on the sheet")
+		options.Insert(10, "Draw a harbor on the sheet")
+		options.Insert(11, "Draw waterworks on the sheet")
 		if (map && map.ordinal_age >= ORBIT_MIN_AGE)
-			options.Insert(10, "Draw a space station on the sheet")
+			options.Insert(12, "Draw a space station on the sheet")
+	var/client/harbor_connection = H.client
+	var/datum/harbor_admission = persistence_admission_identity
 	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank. Hold a pen or pencil to draw a ship on it.", name, "Cancel", options)
 	if (choice == "Draw on the sheet")
 		open_designer(H)
+	else if (choice == "Draw waterworks on the sheet" && !draught_code)
+		open_waterworks_designer(H)
 	else if (choice == "Draw a house on the sheet" && !draught_code)
 		open_house_designer(H)
+	else if (choice == "Draw a contraption on the sheet" && !draught_code)
+		open_contraption_designer(H)
 	else if (choice == "Draw a submarine on the sheet" && !draught_code)
 		open_sub_designer(H)
 	else if (choice == "Draw a vehicle on the sheet" && !draught_code)
@@ -1019,6 +1058,8 @@ var/global/list/ship_draught_decks = list(
 		open_train_designer(H)
 	else if (choice == "Draw a railway on the sheet" && !draught_code)
 		open_rail_designer(H)
+	else if (choice == "Draw a harbor on the sheet" && !draught_code && H.client == harbor_connection && !persistence_admission_changed(harbor_admission))
+		open_harbor_designer(H)
 	else if (choice == "Draw a space station on the sheet" && !draught_code)
 		open_station_designer(H)
 	else if (choice == DRAUGHT_EXPORT_LABEL && D)

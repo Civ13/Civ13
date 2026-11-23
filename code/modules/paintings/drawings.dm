@@ -35,6 +35,10 @@ var/global/list/drawing_holders = list() // papers and books with drawings
 		drawing_holders |= A
 	else
 		drawing_holders -= A
+	// Removing an artwork must not leave its appearance hanging in a frame.
+	var/obj/structure/painting_frame/F = A?.loc
+	if (istype(F) && !QDELETED(F))
+		F.update_icon()
 
 // A checked drawing record, or null.
 /proc/drawing_valid(list/D)
@@ -81,6 +85,22 @@ var/global/list/drawing_holders = list() // papers and books with drawings
 		return ""
 	html += "</div><script>[painting_draw_script()][jointext(calls, "")]</script>"
 	return jointext(html, "")
+
+// The same artwork, reduced to the existing table-frame window. The
+// original drawing record and full-resolution pixels remain on its sheet.
+/proc/framed_sketch_thumbnail(obj/item/weapon/paper/P)
+	if (!istype(P) || QDELETED(P) || !length(P.drawings))
+		return null
+	for (var/list/D in P.drawings)
+		if (!drawing_valid(D))
+			continue
+		var/plain = painting_unpack(D["data"], D["w"] * D["h"])
+		var/list/palette = painting_palette_list(D["palette"])
+		if (painting_max_index(plain) >= palette.len)
+			continue
+		var/small = painting_shrink(plain, palette, D["w"], D["h"], 16, 16)
+		return painting_build_icon(small, 16, 16, 8, 6, 'icons/obj/paintings.dmi', "canvas_table")
+	return null
 
 // Books show their pictures beside the reader.
 /obj/item/weapon/book/proc/show_drawings(mob/user)

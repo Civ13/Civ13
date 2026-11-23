@@ -77,6 +77,44 @@ var/mechanisms_runtime = null
 	sleep(10)
 	return D
 
+// Paper checks run without touching the adjacent real lever and bell.
+/proc/mechanisms_contraption_plan_probe(obj/structure/mechanism/lever/lever, obj/structure/bell/bell)
+	var/datum/contraption_plan/D = contraption_plan_from_code("C13MECH/1/Winch_test/2,2,L;4,2,W;5,2,G;3,2,B/2,2,4,2;2,2,3,2")
+	mechanisms_assert(D && D.cells.len == 4 && D.cords.len == 2, "contraption_parse")
+	var/datum/contraption_plan/again = contraption_plan_from_code(D.to_code())
+	mechanisms_assert(again && again.to_code() == D.to_code(), "contraption_round_trip")
+	qdel(again)
+	mechanisms_assert(!contraption_plan_from_code("C13MECH/1/x/1.5,1,L/"), "contraption_bad_coordinate")
+	mechanisms_assert(!contraption_plan_from_code("C13MECH/1/x/1,1,L;2,1,G/1,1,2,1"), "contraption_wrong_target")
+	mechanisms_assert(!contraption_plan_from_code("C13MECH/1/x/1,1,L;1,1,B/"), "contraption_duplicate_tile")
+	mechanisms_assert(!contraption_plan_from_code("C13MECH/2/x/1,1,L/"), "contraption_wrong_version")
+	mechanisms_assert(!contraption_plan_from_code("C13MECH/1/<x>/1,1,L/"), "contraption_invalid_label")
+	var/before_ring = bell.next_ring
+	var/before_links = lever.links
+	var/before_throw = lever.thrown
+	var/list/over = D.forecast("2,2")
+	var/list/back = D.forecast("2,2", TRUE)
+	mechanisms_assert(over.len == 2 && findtext(jointext(over, " "), "raises") && findtext(jointext(back, " "), "no ring"), "contraption_forecast")
+	mechanisms_assert(bell.next_ring == before_ring && lever.links == before_links && lever.thrown == before_throw, "contraption_forecast_inert")
+	D.place("9,2", "B")
+	D.tie("2,2", "9,2")
+	var/datum/design_report/report = D.check_design()
+	mechanisms_assert(!report.blocked(), "contraption_seventh_tile")
+	qdel(report)
+	D.place("10,2", "B")
+	D.tie("2,2", "10,2")
+	report = D.check_design()
+	mechanisms_assert(report.count(DESIGN_ERROR) == 1, "contraption_eighth_tile")
+	qdel(report)
+	D.place("2,3", "B")
+	D.tie("2,2", "2,3")
+	report = D.check_design()
+	mechanisms_assert(report.count(DESIGN_ERROR) == 2, "contraption_fifth_cord")
+	qdel(report)
+	D.erase("2,2")
+	mechanisms_assert(!D.cords.len, "contraption_erase_cords")
+	qdel(D)
+
 /proc/mechanisms_probe_run()
 	config = new
 	config.webhook_can_fire = FALSE
@@ -100,6 +138,7 @@ var/mechanisms_runtime = null
 	var/obj/structure/rock_drop/drop = new(locate(10, 10, 1))
 	var/obj/structure/castle_trapdoor/trap = new(locate(12, 4, 1))
 	var/obj/structure/mechanism/lever/lever = new(locate(5, 4, 1))
+	mechanisms_contraption_plan_probe(lever, bell)
 
 	// What a cord can work.
 	mechanisms_assert(mechanism_actuatable(door) && mechanism_actuatable(bell) && mechanism_actuatable(drop) && mechanism_actuatable(trap), "actuatable_kinds")

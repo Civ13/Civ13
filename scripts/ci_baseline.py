@@ -1658,6 +1658,14 @@ SUITES = {
             'code/__defines/build_markers.dm', 'icons/obj/build_markers.dmi',
             'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
             'code/modules/paintings/design_codes.dm', 'config/crafting/material_recipes_global.txt')},
+    # Contraptions Planner source wiring; native design behavior is in the mechanisms probe.
+    'contraption_plans': {'files': ('tests/contraption_plans/test_sources.py',),
+        'paths': ('tests/contraption_plans/',), 'shared_paths': (
+            'code/__defines/contraption_plans.dm', 'code/modules/1713/contraption_plan.dm',
+            'code/modules/1713/contraption_designer.dm', 'code/modules/1713/mechanisms.dm',
+            'code/modules/1713/siege/siege_engines.dm', 'tests/mechanisms/probe.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
+            'code/modules/paintings/design_codes.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (
@@ -3060,6 +3068,10 @@ SUITES = {
             'code/modules/naval/air_designer.dm', 'code/modules/craft/vehicle_designer.dm',
             'code/modules/1713/train_designer.dm', 'code/modules/space/station_designer.dm',
             'code/game/objects/house_designer.dm')},
+    'harbor_planner': {'files': ('tests/harbor_planner/test_source.py',),
+        'paths': ('tests/harbor_planner/', 'code/modules/naval/harbor_planner.dm'),
+        'shared_paths': ('code/modules/naval/slipway.dm', 'code/modules/naval/boathouse.dm',
+                         'code/modules/naval/drydock.dm')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',
                   'code/modules/ecology/foraging.dm', 'icons/farming/plants.dmi', 'icons/farming/seeds.dmi',
@@ -3175,6 +3187,13 @@ SUITES = {
         'paths': ('tests/chat_translation/', 'code/game/mob/hear_say.dm', 'interface/chat/chat.html',
                   'code/modules/persistence/region_ooc.dm', 'docs/chat-translation.md',
                   'code/modules/chat/chat_translate.dm', 'tools/edge-translator/')},
+    'waterworks_planner': {'files': ('tests/house_plans/test_waterworks.py',),
+        'paths': ('tests/house_plans/waterworks_probe.dm', 'tests/house_plans/test_waterworks.py',
+                  'code/modules/1713/waterworks_plan.dm', 'code/modules/1713/waterworks_designer.dm',
+                  'code/__defines/waterworks_plans.dm'),
+        'shared_paths': ('code/modules/1713/aqueducts.dm', 'code/modules/1713/sewers.dm',
+            'code/game/objects/build_markers.dm', 'code/modules/naval/ship_draught.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/paintings/design_codes.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

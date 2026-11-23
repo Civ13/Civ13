@@ -12,6 +12,7 @@
 //                                         as for pictures, up to 16 colours)
 //   C13SHIP/1/<name>/<tiles>              ship's draughts (naval/ship_draught.dm)
 //   C13HOUSE/1/<name>/<tiles>/<notes>     house plans (game/objects/house_plan.dm)
+//   C13WATER/1/<name>/<mode>/<route>    waterworks plans (1713/waterworks_plan.dm)
 //   C13RAIL/1/<name>/<runs>/<curves>      rail plans (1713/rail_plan.dm)
 //   C13SUB, C13CAR, C13AIR, C13TRAIN, C13STATION  the other plans a ship's
 //                                         draught carries (naval/draught_kinds.dm,
@@ -82,8 +83,14 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a house plan"
 		if ("GUN")
 			return "a gun blueprint"
+		if ("HARBOR")
+			return "a harbor plan"
+		if ("MECH")
+			return "a contraption plan"
 		if ("RAIL")
 			return "a rail plan"
+		if ("WATER")
+			return "a waterworks plan"
 	return null
 
 // Why a pasted code was refused, for the player.

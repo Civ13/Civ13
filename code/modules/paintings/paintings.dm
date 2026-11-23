@@ -496,43 +496,92 @@
 	return FALSE
 
 /proc/painting_hang(mob/user, obj/item/canvas/C, atom/wall)
-	var/turf/T = get_turf(user)
+	var/mob/living/holder = user
+	return wall_frame_mount(holder, C, wall)
+
+/obj/item/ship_draught/afterattack(atom/target, mob/user, proximity_flag, params)
+	var/mob/living/holder = user
+	if (!proximity_flag || !istype(holder) || !painting_is_wall(target))
+		return ..()
+	if (loc != holder || !holder.item_is_in_hands(src))
+		return
+	var/datum/framed_plan_diagram/V = framed_plan_diagram()
+	if (!V)
+		to_chat(holder, SPAN_NOTICE("Only a sheet with a supported drawing can be framed."))
+		return
+	wall_frame_mount(holder, src, target, V)
+	qdel(V)
+
+// A loose sketch is art, but its accompanying writing is not exposed by
+// the frame. Recover the original sheet before editing or reading it.
+/obj/item/weapon/paper/afterattack(atom/target, mob/user, proximity_flag, params)
+	var/mob/living/holder = user
+	if (!proximity_flag || !istype(holder) || !length(drawings) || !painting_is_wall(target))
+		return ..()
+	wall_frame_mount(holder, src, target)
+
+/proc/painting_frame_occupies(turf/T, facing)
+	for (var/obj/structure/painting_frame/F in T)
+		if (!QDELETED(F) && F.dir == facing)
+			return TRUE
+	if (facing == NORTH)
+		for (var/obj/structure/painting_frame/F in get_step(T, WEST))
+			var/obj/item/canvas/C = F.held_canvas()
+			if (!QDELETED(F) && F.dir == NORTH && C && C.wide_hang)
+				return TRUE
+	return FALSE
+
+/proc/wall_frame_mount(mob/living/user, obj/item/original, atom/wall, datum/framed_plan_diagram/V)
+	if (!istype(user) || QDELETED(user) || QDELETED(original) || QDELETED(wall) || user.incapacitated() || original.loc != user || !user.item_is_in_hands(original) || !painting_is_wall(wall))
+		return FALSE
+	var/obj/item/canvas/C = istype(original, /obj/item/canvas) ? original : null
+	if (istype(C))
+		if (!C.finished || !(C.format in list("wall", "gallery")))
+			return FALSE
+	else if (istype(original, /obj/item/ship_draught))
+		if (!V || !V.layers.len)
+			return FALSE
+	else if (istype(original, /obj/item/weapon/paper))
+		if (!framed_sketch_thumbnail(original))
+			return FALSE
+	else
+		return FALSE
+	var/turf/T = user.loc
 	var/turf/W = get_turf(wall)
-	if (!T || !W || T == W)
+	if (!isturf(T) || T.density || !W)
 		return FALSE
 	var/dir = get_dir(T, W)
-	if (!(dir in cardinal))
+	if (!(dir in cardinal) || get_step(T, dir) != W || !wall.Adjacent(user))
 		to_chat(user, SPAN_WARNING("Stand straight in front of the wall to hang it."))
 		return FALSE
 	var/list/spots = list(T)
-	if (C.wide_hang)
+	if (C?.wide_hang)
 		// Two tiles wide, from the painter's tile to the east, on a wall to the north.
 		var/turf/E = get_step(T, EAST)
 		if (dir != NORTH || !E || !painting_is_wall_turf(get_step(E, NORTH)) || E.density)
-			to_chat(user, SPAN_WARNING("\The [C] hangs on a wall to your north, two tiles wide: the wall must run on to your right."))
+			to_chat(user, SPAN_WARNING("\The [original] hangs on a wall to your north, two tiles wide: the wall must run on to your right."))
 			return FALSE
 		spots += E
 	for (var/turf/spot in spots)
-		for (var/obj/structure/painting_frame/F in spot)
-			if (F.dir == dir)
-				to_chat(user, SPAN_WARNING("A painting already hangs there."))
-				return FALSE
+		if (painting_frame_occupies(spot, dir))
+			to_chat(user, SPAN_WARNING("A frame already hangs there."))
+			return FALSE
 		for (var/obj/structure/banner/B in spot)
 			if (B.banner_mount_dir == dir)
 				to_chat(user, SPAN_WARNING("A banner already hangs there."))
 				return FALSE
-	var/turf/west = get_step(T, WEST)
-	for (var/obj/structure/painting_frame/F in west)
-		var/obj/item/canvas/G = F.held_canvas()
-		if (F.dir == dir && G && G.wide_hang)
-			to_chat(user, SPAN_WARNING("A painting already hangs there."))
-			return FALSE
+		for (var/obj/structure/noticeboard/B in spot)
+			if (B.board_mount_dir == dir)
+				to_chat(user, SPAN_WARNING("A noticeboard already hangs there."))
+				return FALSE
 	var/obj/structure/painting_frame/F = new(T)
 	F.dir = dir
-	user.drop_from_inventory(C, F)
-	C.forceMove(F)
-	F.place()
-	user.visible_message(SPAN_NOTICE("[user] hangs [C.painting_name_text()] on the wall."), SPAN_NOTICE("You hang [C.painting_name_text()] on the wall."))
+	if (!user.transfer_held_item_to(original, F))
+		qdel(F)
+		return FALSE
+	F.place(V)
+	F.add_fingerprint(user)
+	user.visible_message(SPAN_NOTICE("[user] hangs \the [original] on the wall."), SPAN_NOTICE("You hang \the [original] on the wall."))
 	return TRUE
 
 /proc/painting_is_wall_turf(turf/T)
@@ -562,7 +611,13 @@
 /obj/structure/painting_frame/proc/held_canvas()
 	return locate(/obj/item/canvas) in contents
 
-/obj/structure/painting_frame/proc/place()
+/obj/structure/painting_frame/proc/held_plan()
+	return locate(/obj/item/ship_draught) in contents
+
+/obj/structure/painting_frame/proc/held_sketch()
+	return locate(/obj/item/weapon/paper) in contents
+
+/obj/structure/painting_frame/proc/place(datum/framed_plan_diagram/V)
 	pixel_x = 0
 	pixel_y = 0
 	switch (dir)
@@ -574,48 +629,97 @@
 			pixel_x = 32
 		if (WEST)
 			pixel_x = -32
-	update_icon()
+	update_icon(V)
 
 /obj/structure/painting_frame/after_load()
 	..()
 	place()
 
-/obj/structure/painting_frame/update_icon()
+/obj/structure/painting_frame/update_icon(datum/framed_plan_diagram/V)
 	overlays.Cut()
 	var/obj/item/canvas/C = held_canvas()
-	if (!C)
+	if (C)
+		name = C.title ? "\"[C.title]\"" : "painting"
+		overlays += C.framed_overlays()
 		return
-	name = C.title ? "\"[C.title]\"" : "painting"
-	overlays += C.framed_overlays()
+	var/obj/item/ship_draught/P = held_plan()
+	if (!P)
+		var/obj/item/weapon/paper/S = held_sketch()
+		if (S)
+			name = "framed sketch"
+			desc = "A sketch on paper in a wall frame. Examine it up close to see the drawings."
+			var/icon/art = framed_sketch_thumbnail(S)
+			if (art)
+				overlays += image(art)
+			overlays += image('icons/obj/paintings.dmi', "frame_table")
+		return
+	name = "framed plan"
+	desc = "A framed plan hanging on the wall. Examine it up close to see the full drawing."
+	var/rebuilt = !V
+	if (rebuilt)
+		V = P.framed_plan_diagram()
+	if (V)
+		overlays += image(V.thumbnail())
+		if (rebuilt)
+			qdel(V)
+	overlays += image('icons/obj/paintings.dmi', "frame_table")
 
 /obj/structure/painting_frame/examine(mob/user)
 	..()
+	show_framed_work(user)
+
+/obj/structure/painting_frame/attack_hand(mob/user)
+	show_framed_work(user)
+
+/obj/structure/painting_frame/proc/show_framed_work(mob/user)
+	if (QDELETED(src) || !user?.client)
+		return
 	var/obj/item/canvas/C = held_canvas()
 	if (C)
 		to_chat(user, "\"[C.title ? html_encode(C.title) : "Untitled"]\"[C.author_name ? ", painted by [html_encode(C.author_name)]" : ""].")
+		// Existing wall paintings retain their normal Examine range.
 		painting_show_full(user, C)
-
-/obj/structure/painting_frame/attack_hand(mob/user)
-	var/obj/item/canvas/C = held_canvas()
-	if (C)
-		painting_show_full(user, C)
+		return
+	if (!isobserver(user) && !Adjacent(user))
+		return
+	var/obj/item/ship_draught/P = held_plan()
+	var/datum/framed_plan_diagram/V = P?.framed_plan_diagram()
+	if (V)
+		show_browse(user, V.html(), "window=framed_plan;size=[V.window_size()]")
+		qdel(V)
+		return
+	var/obj/item/weapon/paper/S = held_sketch()
+	var/html = S ? drawings_html(S, user) : null
+	if (length(html))
+		show_browse(user, "<html><head><meta charset='utf-8'><title>Framed drawings</title></head><body style='background:#f4efe1'>[html]</body></html>", "window=framed_sketch;size=640x640")
 
 /obj/structure/painting_frame/attackby(obj/item/I, mob/user)
-	if (is_tool(I, TOOL_HAMMER))
-		var/obj/item/canvas/C = held_canvas()
-		user.visible_message(SPAN_NOTICE("[user] takes down \the [src]."), SPAN_NOTICE("You take down \the [src]."))
-		if (C)
-			user.put_in_hands(C)
-		qdel(src)
-		return
-	return ..()
+	if (!is_tool(I, TOOL_HAMMER))
+		return ..()
+	var/mob/living/holder = user
+	if (!istype(holder) || holder.incapacitated() || !Adjacent(holder) || QDELETED(I) || I.loc != holder || !holder.item_is_in_hands(I))
+		return TRUE
+	var/obj/item/original = held_canvas()
+	if (!original)
+		original = held_plan()
+	if (!original)
+		original = held_sketch()
+	if (original)
+		holder.put_in_hands(original)
+		if (QDELETED(original) || original.loc == src)
+			return TRUE
+	holder.visible_message(SPAN_NOTICE("[holder] takes down \the [src]."), SPAN_NOTICE("You take down \the [src]."))
+	qdel(src)
+	return TRUE
 
 /obj/structure/painting_frame/ex_act(severity)
 	qdel(src)
 
 /obj/structure/painting_frame/Destroy()
-	for (var/obj/item/canvas/C in contents)
-		C.forceMove(get_turf(src))
+	var/turf/T = get_turf(src)
+	if (T)
+		for (var/obj/item/O in contents)
+			O.forceMove(T)
 	return ..()
 
 /////////////////////////////// Lockets ///////////////////////////////

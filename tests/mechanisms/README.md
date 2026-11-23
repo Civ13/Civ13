@@ -39,6 +39,9 @@ hook in `cmss13_gear.dm`:
   its tile; a mechanism port pulls its cords on a circuit signal, waits 2 s
   between pulls, pulls nothing while carried, and sends a cord's pull into its
   circuit only when one is inserted;
+- contraption paper parses and round-trips typed plans, refuses duplicate or
+  invalid cells and wrong endpoints, reports excess reach/fanout and forecasts
+  a bell and winch without operating a live mechanism;
 - every new icon state is in `icons/obj/mechanisms.dmi`,
   `icons/obj/transmission.dmi`, `icons/obj/hopper_machines.dmi` and
   `icons/obj/contraptions.dmi`.

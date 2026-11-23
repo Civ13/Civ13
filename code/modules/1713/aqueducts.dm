@@ -111,7 +111,10 @@ var/global/aqueduct_last_flow = -600
 // The level of water this piece carries on, given water arriving at `level`,
 // or null if the water can't enter it.
 /obj/structure/aqueduct/proc/carry_level(level)
-	var/h = terrain_height_at(get_turf(src))
+	return aqueduct_route_level(get_turf(src), level, raised, underground)
+
+/proc/aqueduct_route_level(turf/T, level, raised, underground)
+	var/h = terrain_height_at(T)
 	if (underground)
 		return level
 	if (h > level)
@@ -265,7 +268,9 @@ var/global/aqueduct_last_flow = -600
 
 // The fresh water this intake draws from, or null.
 /obj/structure/aqueduct_intake/proc/water_turf()
-	var/turf/T = get_turf(src)
+	return aqueduct_bank_water(get_turf(src))
+
+/proc/aqueduct_bank_water(turf/T)
 	if (!T)
 		return null
 	for (var/d in cardinal)
