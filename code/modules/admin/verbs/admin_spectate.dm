@@ -314,9 +314,32 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 		current += add
 	return want
 
-// Ends the view. restore puts the admin's own screen, images and eye back when
-// they are still in the same ghost; a new mob's Login rebuilds them otherwise.
-/datum/admin_player_view/proc/stop(restore = TRUE)
+// Takes the mirrored player's screen and images off the admin's lists and puts
+// the admin's own back, with their ghost's plane masters even when the saved
+// screen lacks them. Without its plane masters the lighting plane is not
+// multiplied over the world and the view draws pitch black.
+/datum/admin_player_view/proc/put_back(list/screen, list/images)
+	screen -= mirrored_screen
+	images -= mirrored_images
+	for (var/atom/A in own_screen)
+		if (!QDELETED(A))
+			screen |= A
+	if (ghost && ghost.hud_used)
+		for (var/key in ghost.hud_used.plane_masters)
+			var/atom/P = ghost.hud_used.plane_masters[key]
+			if (P && !QDELETED(P))
+				screen |= P
+	for (var/I in own_images)
+		if (I)
+			images |= I
+
+// Ends the view. While the admin is still in the same ghost their own screen,
+// images, eye and sight always come back, also when they switch straight to
+// viewing someone else: the next view saves this screen as the admin's own, so
+// a view ended without it left the later one restoring a screen with no plane
+// masters, pitch black once the admin moved off. announce tells the admin and
+// drops the follow. A new mob's Login rebuilds everything when they left the ghost.
+/datum/admin_player_view/proc/stop(announce = TRUE)
 	if (!active)
 		return
 	active = FALSE
@@ -327,15 +350,7 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 	if (viewer && viewer.admin_player_view == src)
 		viewer.admin_player_view = null
 	if (viewer && !QDELETED(ghost) && viewer.mob == ghost)
-		viewer.screen -= mirrored_screen
-		viewer.images -= mirrored_images
-		if (restore)
-			for (var/atom/A in own_screen)
-				if (!QDELETED(A))
-					viewer.screen |= A
-			for (var/I in own_images)
-				if (I)
-					viewer.images |= I
+		put_back(viewer.screen, viewer.images)
 		viewer.eye = ghost
 		viewer.perspective = MOB_PERSPECTIVE
 		viewer.view = own_view
@@ -344,9 +359,10 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 		ghost.sight = own_sight
 		ghost.see_in_dark = own_see_in_dark
 		ghost.updateghostsight()
-		if (target && ghost.following == target)
-			ghost.stop_following()
-		to_chat(viewer, SPAN_NOTICE("You stopped viewing as [target ? target : "the player"]."))
+		if (announce)
+			if (target && ghost.following == target)
+				ghost.stop_following()
+			to_chat(viewer, SPAN_NOTICE("You stopped viewing as [target ? target : "the player"]."))
 	mirrored_screen = list()
 	mirrored_images = list()
 	own_screen = null
