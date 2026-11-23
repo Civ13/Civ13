@@ -6,6 +6,7 @@
 	w_class = ITEM_SIZE_NORMAL // fits in webbing unlike w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_ID|SLOT_BELT
 	desc = "A very large canteen for storing water."
+	isGlass = FALSE // a metal canteen does not shatter when thrown (#6911)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/canteen/full/New()
 	..()
