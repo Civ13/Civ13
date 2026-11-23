@@ -166,7 +166,7 @@
   "evidence": ["1u. gasoline 1u. cotton"], "answer": ["gasoline|petrol", "cotton"]},
  {"id": "steam-locomotive", "question": "What do I need to build a steam locomotive?", "page": "guides/Guide_to_Trains.md", "section": "What you can build",
   "expected": "18 iron. It burns coal or wood, and a coal tender takes 6 iron.",
-  "evidence": ["| Steam locomotive | 18 iron | The engine. Burns coal or wood. |"], "answer": ["18 (x |units of |pieces of )?iron|eighteen iron"]},
+  "evidence": [["| Steam locomotive | 18 iron | The engine. Burns coal or wood. |", "inputs: 18 x iron"]], "answer": ["18 (x |units of |pieces of )?iron|eighteen iron"]},
  {"id": "plane-taxi", "question": "How do I taxi my plane on the ground?", "page": "guides/Guide_to_Aircraft.md", "section": "Taxiing",
   "expected": "On the ground a plane drives like a car.",
   "evidence": ["On the ground a plane drives like a car."], "answer": ["like a car|drives?|taxi"]},
