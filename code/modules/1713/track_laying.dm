@@ -356,14 +356,24 @@
 		if (!railed)
 			to_chat(user, SPAN_WARNING("Put rails on the sleepers before spiking them."))
 			return TRUE
+		// Bends need room between them for a car to turn (train_bends.dm).
+		var/bend_problem = track_bend_problem(get_turf(src))
+		if (bend_problem)
+			to_chat(user, SPAN_WARNING(bend_problem))
+			return TRUE
 		to_chat(user, SPAN_NOTICE("You start driving spikes into \the [src]."))
 		playsound(loc, 'sound/effects/clang.ogg', 50, TRUE)
 		if (!do_after(user, TRACK_SPIKE_TIME, src) || QDELETED(src) || !railed)
 			return TRUE
 		var/turf/T = get_turf(src)
+		if (track_bend_problem(T))
+			return TRUE
 		spike()
 		playsound(T, 'sound/effects/clang.ogg', 50, TRUE)
 		user.visible_message(SPAN_NOTICE("[user] spikes the rails down."), SPAN_NOTICE("You spike the rails down. The track is ready for trains."))
+		var/bend_warning = track_bend_warning(T)
+		if (bend_warning)
+			to_chat(user, SPAN_NOTICE(bend_warning))
 		return TRUE
 	if (is_tool(W, TOOL_CROWBAR))
 		var/had_rails = railed

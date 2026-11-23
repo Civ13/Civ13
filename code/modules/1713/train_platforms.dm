@@ -76,25 +76,34 @@ var/global/train_step_plain = FALSE
 // One step of a train part or a load with its section. plain: the section is
 // unwatched, so the move is the bare change of place persistence_set_loc()
 // makes, without its line-of-sight calls, which reach nobody.
+// While a train drives, the move is drawn at its pace (train_glide.dm).
 /atom/movable/proc/train_shift(turf/dest, plain)
 	if (!plain || !(istype(src, /obj/structure) || istype(src, /obj/item)))
-		return persistence_set_loc(dest)
+		return train_glide_set_loc(dest)
 	var/atom/origin = loc
+	train_glide_before(src, dest)
 	loc = dest
+	train_glide_after(src, origin)
 	paper_authoring_notify(src, "relocated")
 	item_pile_moved(src, origin, dest)
 	return TRUE
 
 /obj/structure/train_part/train_shift(turf/dest, plain)
 	if (!plain)
-		return persistence_set_loc(dest)
+		return train_glide_set_loc(dest)
+	var/turf/origin = loc
+	train_glide_before(src, dest)
 	loc = dest
+	train_glide_after(src, origin)
 	return TRUE
 
 /obj/structure/trains/train_shift(turf/dest, plain)
 	if (!plain)
-		return persistence_set_loc(dest)
+		return train_glide_set_loc(dest)
+	var/turf/origin = loc
+	train_glide_before(src, dest)
 	loc = dest
+	train_glide_after(src, origin)
 	return TRUE
 
 /proc/train_platform_plan_from(obj/structure/trains/platform/first)
@@ -411,6 +420,8 @@ var/global/train_step_plain = FALSE
 /proc/train_platform_tiles(turf/T, heading)
 	if (!T)
 		return list(null, null, null)
+	// Across a wide curve the deck lies diagonally (train_arcs.dm).
+	heading = rail_arc_lay(T, heading)
 	return list(get_step(T, turn(heading, 90)), T, get_step(T, turn(heading, -90)))
 
 /proc/train_centre_of_other(turf/T, obj/structure/trains/self)
@@ -654,7 +665,7 @@ var/global/train_step_plain = FALSE
 	var/turf/oldloc = loc
 	// way: where the car heads; newdir: where it faces, the other way for a
 	// car coupled in back to front. Sides and deck slots go by its facing.
-	var/way = heading_for(newloc, fdir)
+	var/way = rail_arc_facing(newloc, heading_for(newloc, fdir))
 	var/newdir = reversed ? OPPOSITE_DIR(way) : way
 	var/list/old_tiles = train_platform_tiles(oldloc, dir)
 	var/list/new_tiles = train_platform_tiles(newloc, newdir)
@@ -669,11 +680,7 @@ var/global/train_step_plain = FALSE
 		moving_train = FALSE
 		return FALSE
 	last_moved = world.time
-	var/turning = 0
-	if (newdir == turn(dir, 90))
-		turning = 90
-	else if (newdir == turn(dir, -90))
-		turning = -90
+	var/turning = train_turning(oldloc, dir, newloc, newdir)
 	dir = newdir
 	for (var/atom/movable/AM in cargo)
 		if (AM.loc == old_tiles[cargo[AM]] && new_tiles[cargo[AM]] && AM.train_shift(new_tiles[cargo[AM]], plain))
@@ -693,6 +700,7 @@ var/global/train_step_plain = FALSE
 				if (aside)
 					AM.train_shift(aside, plain)
 	place_parts(newloc, newdir, plain)
+	train_arc_pose(src, deck_parts, newdir)
 	train_deck_clearance(cargo, OPPOSITE_DIR(way))
 	if (connected && !train_solo_move)
 		connected.Move(oldloc, way)
@@ -770,12 +778,16 @@ var/global/train_step_plain = FALSE
 	var/obj/structure/trains/locomotive/E = car_engine()
 	if (E)
 		return E.pack_problem()
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		return "Wait a moment and try again."
 	var/list/segs = car_segments()
 	var/obj/structure/trains/platform/front = null
 	var/obj/structure/trains/platform/back = null
 	for (var/obj/structure/trains/platform/P in segs)
 		if (P.automovement)
 			return "The car is moving."
+		if (P.draft_animal)
+			return "Take the harness off the car first."
 		if (P.seg_index == 1)
 			front = P
 		if (P.seg_index == car_length())

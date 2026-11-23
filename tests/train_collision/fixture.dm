@@ -57,6 +57,20 @@ var/datum/map_stub/map = new
 	return null
 /atom/movable/proc/persistence_set_loc(atom/destination)
 	return Move(destination)
+// Train glide (train_glide.dm) only changes how a step is drawn.
+/proc/train_bend_problem(list/cars, turf/target, heading)
+	return null
+/proc/rail_bend_at(turf/T)
+	return FALSE
+/proc/train_consist_list(obj/structure/trains/head)
+	return list(head)
+// Wide curves (train_arcs.dm) only add a kind of track and how it is drawn.
+/obj/structure/rails/arc
+/proc/train_arc_pose(obj/structure/centre, list/parts, heading)
+/proc/train_glide_before(atom/movable/AM, turf/dest)
+/proc/train_glide_after(atom/movable/AM, turf/from)
+/atom/movable/proc/train_glide_set_loc(turf/dest)
+	return persistence_set_loc(dest)
 /obj/item/proc/update_light()
 /mob/living
 	var/mob_size = 2

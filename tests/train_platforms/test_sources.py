@@ -227,7 +227,8 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('var/tmp/braking = FALSE', TRAINS)
         # The drive loop slows by the braked share, and handbrakes drag the pull.
         drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
-        self.assertIn('/ heft + brake_decel()', drive)
+        self.assertIn('rail_speed - stopping_decel(target, heft)', drive)
+        self.assertIn('/ max(1, heft) + brake_decel()', brakes)
         self.assertIn('return consist_power / max(1, drag_weight())', TRAINS)
         self.assertIn('if (car.handbrake || car.axle_seized)\n\t\t\tconsist_braked += car_weight', TRAINS)
         self.assertIn('return TRAIN_BRAKE_DECEL * min(1, held / max(1, weight))', brakes)
@@ -275,7 +276,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('\tvar/sand = TRAIN_SAND_MAX', adhesion)
         self.assertIn('\tvar/tmp/sanding = 0', adhesion)
         drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
-        self.assertLess(drive.index('if (wheels_slip())'), drive.index('rail_speed = min(target, max(rail_speed, 0.5)'))
+        self.assertLess(drive.index('if (wheels_slip())'), drive.index('rail_speed = min(target, train_speed_gain(rail_speed'))
         self.assertIn('choices += list("Throttle up", "Throttle down", "Brake", "Sand the rails")', TRAINS)
 
     def test_railway_gun_sheet(self):

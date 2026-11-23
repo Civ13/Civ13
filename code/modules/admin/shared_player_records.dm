@@ -29,11 +29,16 @@
 //   shared_records.find_connection(field, value, want) -> alt lookup by ckey, ip or cid
 //   shared_records.playtime_hours(ckey) -> hours connected with the character alive and awake
 //   shared_records.account_ckey(account) -> the ckey of a Discord account key (d:<id>), or null
+//
+// Every world also writes the active bans to its own SQL/bans.txt in the old
+// file's layout (write_bans_file), for the Discord bot, which reads that file
+// at the world it follows: the gateway in a group with one.
 #define SHARED_RECORDS_JOURNAL "data/player_records.json"
 #define SHARED_RECORDS_READ_INTERVAL 100 // deciseconds between snapshot reads
 #define SHARED_RECORDS_SEND_LIMIT 10 // records sent per tick
 #define SHARED_RECORDS_MAX_BODY 16000 // characters of JSON in one record body
 #define SHARED_RECORDS_UNIX_2000 946684800
+#define SHARED_RECORDS_BANS_FILE "SQL/bans.txt"
 
 var/global/datum/shared_records/shared_records = new
 
@@ -50,6 +55,8 @@ var/global/datum/shared_records/shared_records = new
 	var/serial = 0
 	var/hold_save = FALSE // TRUE while many records are added at once; the caller saves
 	var/migrated = FALSE
+	var/bans_file_dirty = TRUE // SQL/bans.txt needs rewriting
+	var/bans_file_text = null // what write_bans_file() last wrote
 
 // The folder the coordinator writes, beside the region folders.
 /datum/shared_records/proc/root()
@@ -188,6 +195,8 @@ var/global/datum/shared_records/shared_records = new
 		body["until"] = unix_value(body["until"]) // "0": never ends
 	if (kind == "revoke" && !id_valid(body["target"]))
 		return null
+	if (kind == "ban" || kind == "revoke")
+		bans_file_dirty = TRUE
 	if (isnull(id))
 		id = new_id(ckey, kind)
 	if (!id_valid(id))
@@ -253,6 +262,7 @@ var/global/datum/shared_records/shared_records = new
 		if (islist(decoded) && islist(decoded["bans"]))
 			bans_text = text
 			bans = decoded["bans"]
+			bans_file_dirty = TRUE
 	text = read_json("[root()]connections.json")
 	if (istext(text) && text != connections_text)
 		var/list/decoded = null
@@ -263,6 +273,8 @@ var/global/datum/shared_records/shared_records = new
 		if (islist(decoded) && islist(decoded["connections"]))
 			connections_text = text
 			connections = decoded["connections"]
+	if (bans_file_dirty)
+		write_bans_file()
 	var/list/pulled = islist(index["pulled"]) ? index["pulled"] : list()
 	var/pull = pulled[region()]
 	if (!unix_valid(pull) || !length(load_journal()))
@@ -433,6 +445,69 @@ var/global/datum/shared_records/shared_records = new
 			continue // a temporary ban ends on its own
 		. += list(ban)
 
+// -- SQL/bans.txt ---------------------------------------------------------------
+
+// The Discord bot reads SQL/bans.txt (ban checks, the Banished role, listbans).
+// Every world writes there the active bans of every region, one line each in
+// the old file's layout, whenever the list changes; the gateway's copy is the
+// one the bot follows. Bans are never read back from it. Nothing is written
+// until this region's old file has been copied into the shared records once
+// (quickBan_migrate_legacy, SQL/bans.migrated), so no old ban is lost.
+/datum/shared_records/proc/write_bans_file()
+	if (!fexists("SQL/bans.migrated"))
+		return FALSE
+	bans_file_dirty = FALSE
+	var/list/lines = list()
+	for (var/list/ban in active_bans_matching(null, "any"))
+		var/ban_ckey = ban["ckey"] == "@nockey" ? "nil" : ban["ckey"]
+		lines += "[jointext(list(bans_file_field(ban["type"]), bans_file_field(ban["info"]), bans_file_field(ban["uid"]),
+			bans_file_field(ban["reason"]), bans_file_field(ban["banned_by"]), bans_file_field(ban["ban_date"]),
+			bans_file_expiry(ban["until"]), bans_file_field(ban["expire_info"]), bans_file_field(ban_ckey),
+			bans_file_field(ban["cid"]), bans_file_field(ban["ip"])), ";")]|||\n"
+	var/text = jointext(lines, "")
+	if (text == bans_file_text && fexists(SHARED_RECORDS_BANS_FILE))
+		return TRUE
+	// A temporary file first, then copied over, so the bot never reads half a list.
+	var/temp = "[SHARED_RECORDS_BANS_FILE].tmp"
+	if (fexists(temp))
+		fdel(temp)
+	text2file(text, temp)
+	if (!fcopy(temp, SHARED_RECORDS_BANS_FILE))
+		bans_file_dirty = TRUE // try again at the next read
+		return FALSE
+	fdel(temp)
+	bans_file_text = text
+	return TRUE
+
+// One field of a line: the separators ";" and "|||" and line breaks cannot
+// appear inside it.
+/datum/shared_records/proc/bans_file_field(value)
+	if (isnull(value))
+		return "nil"
+	value = "[value]"
+	for (var/separator in list(";", "|", ascii2text(13), "\n"))
+		value = replacetext(value, separator, " ")
+	return value
+
+// A ban's end (unix seconds as a digit string) as the old file kept it:
+// deciseconds since 2000. "0" for a ban that never ends.
+/datum/shared_records/proc/bans_file_expiry(until)
+	until = unix_value(until)
+	if (!unix_after(until, "[SHARED_RECORDS_UNIX_2000]"))
+		return "0"
+	// Exact digit-string subtraction of 946684800 (9466 * 100000 + 84800).
+	var/high = text2num(copytext(until, 1, length(until) - 4)) - 9466
+	var/low = text2num(copytext(until, length(until) - 4)) - 84800
+	if (low < 0)
+		low += 100000
+		high -= 1
+	if (!high)
+		return "[num2text(low, 6)]0"
+	var/low_text = num2text(low, 6)
+	while (length(low_text) < 5)
+		low_text = "0[low_text]"
+	return "[num2text(high, 12)][low_text]0"
+
 // Every ckey with at least one active record of the given kinds, sorted.
 /datum/shared_records/proc/ckeys_with(list/kinds)
 	refresh()
@@ -523,3 +598,4 @@ var/global/datum/shared_records/shared_records = new
 #undef SHARED_RECORDS_SEND_LIMIT
 #undef SHARED_RECORDS_MAX_BODY
 #undef SHARED_RECORDS_UNIX_2000
+#undef SHARED_RECORDS_BANS_FILE

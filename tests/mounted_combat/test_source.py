@@ -22,6 +22,11 @@ class MountedCombatSource(unittest.TestCase):
         self.assertEqual(defense.count('prob(min(SH.get_block_chance(src),92))'), 2)
         self.assertNotIn('SH.base_block_chance', defense)
 
+    def test_shield_wall_checks_the_flanks_of_any_facing(self):
+        # Issue 6921: a diagonal facing has diagonal flanks, not cardinal ones.
+        self.assertIn('for (var/d in list(turn(user.dir, 90), turn(user.dir, -90)))', SRC)
+        self.assertNotIn('for (var/d in cardinal)', SRC.split('proc/shield_wall_bonus', 1)[1])
+
     def test_charge_state_is_not_saved(self):
         self.assertIn('"charge_steps", "charge_dir", "charge_last", "braced_until", "braced_at"', SRC)
 

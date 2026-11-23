@@ -87,11 +87,33 @@ Every change is sent to the server in parts, read as a design code and
 answered with the figures and the checks, so the window never disagrees with
 the sheet.
 
+## Pegging a plan out
+
+Val (2026-11-23): a plan can be marked out on the ground as build markers.
+`house_plan_pegs.dm` does it with builders' pegs (`docs/build-markers.md`).
+
+- Use the house plan and choose "Peg it out on the ground". The tile the
+  builder stands on takes the south-west corner of the drawing; north on the
+  sheet is north on the ground. Every tile of the ground floor with something
+  drawn on it gets a peg tagged with what to build there.
+- The sheet remembers the site (`peg_set`, `peg_x`, `peg_y`, `peg_z`, saved
+  with the sheet). For an upper storey the builder stands on that storey and
+  chooses "Peg out the storey I stand on": the storey lands over the first.
+  Tiles with no floor under them yet are skipped and counted, so the storey is
+  pegged again as the roof below is laid.
+- A peg asks only for what is not built: pegging a storey again after building
+  some of it, or after redrawing it, pulls that level's old pegs and lays the
+  rest. The sheet's menu says what the pegs still ask for.
+- "Pull up the pegs and forget the site" removes them and lets the plan be
+  pegged out somewhere else.
+- A note pinned to a tile rides on that tile's peg and keeps the peg standing
+  after the tile is built, until someone pulls it.
+
 ## Not done
 
 - The window has not been opened in a BYOND client.
-- Nothing is marked out on the ground from a plan, and a standing building
-  cannot yet be drawn onto a sheet.
+- Pegging a plan out has not been tried in a BYOND client.
+- A standing building cannot yet be drawn onto a sheet.
 - Cellars and underground levels are not planned.
 - Buttresses and corbels, which let a wall reach a tile further, are not on
   the palette.

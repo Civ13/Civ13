@@ -205,10 +205,18 @@ var/screens_runtime_error = FALSE
 	GLOB.nanomanager.close_user_uis(H, binder)
 	var/obj/structure/noticeboard/board = new(locate(9, 9, 1))
 	memo.loc = board
-	board.notices = 1
 	board.examine(H)
 	rows = agent_screen_rows(H)
-	screens_check(rows.len == 1 && findtext(rows[1]["data"], "memo") && ("write" in rows[1]["actions"]), "a notice board lists its pinned papers")
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "memo") && ("read" in rows[1]["actions"]) && !("write" in rows[1]["actions"]), "a notice board lists read-only pinned papers")
+	board.board_glass = TRUE
+	board.board_glass_closed = TRUE
+	board.noticeboard_refresh()
+	rows = agent_screen_rows(H)
+	screens_check(rows.len == 1 && findtext(rows[1]["data"], "Glass closed") && ("read" in rows[1]["actions"]), "closed glass leaves posted papers readable")
+	screen_try(C, list("screen" = 1, "act" = "remove", "value" = "\ref[memo]"))
+	screens_check(memo.loc == board, "closed glass refuses stale removal")
+	board.board_glass_closed = FALSE
+	board.noticeboard_refresh()
 	screen_try(C, list("screen" = 1, "act" = "remove", "value" = "\ref[memo]"))
 	rows = agent_screen_rows(H)
 	screens_check(memo.loc != board && findtext(rows[1]["data"], "Nothing is pinned here."), "removing a notice unpins it and the list refreshes")

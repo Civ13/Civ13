@@ -68,6 +68,24 @@ The plan cannot see the ground you will build on, so it treats bare ground as so
 
 **Notes of your own.** Pick the **Note** tool, click a tile and type up to 80 characters, for example where the hearth goes or whose room it is. A plan holds 12 notes. They show as a corner mark on the tile, are listed in the Notes panel and travel with the plan and its design code.
 
+### Pegging the plan out
+
+A saved plan can be marked out on the ground, so that you build from pegs and not from memory.
+
+<img src="../images/house_plan_pegs.png" alt="The ground floor of a two-storey house pegged out on grass: string round every tile, with tags for walls, windows, a door, stairs, a roof support and floors">
+
+1. Stand where the **south-west corner** of the drawing should go. North on the sheet is north on the ground.
+2. Use the house plan and choose **Peg it out on the ground**. After a few seconds every tile of the ground floor with something drawn on it has a peg, with string round the tile and a tag showing what to build there.
+3. Build. A tile's tag shows the piece first, then the floor, then the roof. A peg comes out by itself once everything it asks for stands on its tile. Any wall counts as the wall and any roofing as the roof, so you can build with what you have.
+4. For the next storey, lay the roof below it, climb up, stand on that storey and choose **Peg out the storey I stand on**. It lands exactly over the ground floor. Tiles with no floor under them yet get no peg, so peg the storey again as more of the roof below is laid.
+
+- Pegs block nothing. You walk over them, and a click on a pegged tile goes to the tile, so you build on it as usual.
+- **Shift-click** a peg to read what is still to build on its tile and any note pinned there. **Alt-click** it to pull up that peg, or every peg of the plan.
+- Using the sheet again shows how much the pegs still ask for. Pegging a storey a second time is safe: its old pegs are pulled and only what is not yet built is pegged again, which is also how you bring the pegs up to date after changing the drawing.
+- A tile with a note keeps its peg after it is built, until someone pulls it.
+- **Pull up the pegs and forget the site** removes every peg and lets you peg the same plan out somewhere else.
+- A plan that would run off the edge of the land is not pegged. Pegs on rock or water are counted in the message so you know to clear or move.
+
 ## Construction materials
 
 A few more details about particular materials.

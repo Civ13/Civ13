@@ -11,7 +11,7 @@
 //   the train's weight that is braked. Handbrakes left on drag while the
 //   engine pulls (pull_ratio()).
 
-#define TRAIN_BRAKE_DECEL 1.2 // tiles per second lost each step with the whole train braked
+#define TRAIN_BRAKE_DECEL 1.2 // tiles per second lost with the whole train braked: each second while an engine drives it, each tile while it rolls free
 #define TRAIN_BRAKE_DRAG 3 // a braked car pulls like this many times its weight more
 #define TRAIN_HANDBRAKE_TIME 20
 #define TRAIN_BRAKE_WHEEL_DELAY 10
@@ -49,6 +49,15 @@
 // Speed lost each step to the brakes, for the engine that drives the train.
 /obj/structure/trains/locomotive/proc/brake_decel()
 	return train_brake_decel(consist_braked + (braking ? consist_own : 0), consist_weight)
+
+// Speed the train loses each second (drive loop, trains.dm): rolling
+// resistance by its heft (heavier against a lower notch), and the brakes. With
+// the driver's brake on, a train always stops at least TRAIN_BRAKE_OVER_ACCEL
+// times as fast as it can gather way, however long it is.
+/obj/structure/trains/locomotive/proc/stopping_decel(target, heft)
+	. = (target > 0 ? 0.6 : 0.2) / max(1, heft) + brake_decel()
+	if (braking)
+		. = max(., TRAIN_BRAKE_OVER_ACCEL * TRAIN_ACCEL * min(2, pull_ratio()))
 
 // The weight the engine drags, braked cars counted heavier and a car with a
 // hot axle box (train_servicing.dm) twice.

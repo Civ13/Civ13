@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'npc_friendly_fire_line': {'files': ('tests/getline2/test_friendly_fire.py',),
+        'paths': ('tests/getline2/test_friendly_fire.py',), 'shared_paths': (
+            'code/game/mob/living/simple_animal/hostile/tactical_ai.dm',
+            'code/_helpers/unsorted.dm', 'tests/getline2/test_getline2.py',
+            'tests/save_movement/source_adapter.py')},
     'npc_cover_direction': {'files': ('tests/npc_cover/test_direction_projection.py',),
         'paths': ('tests/npc_cover/',),
         'shared_paths': ('code/game/mob/living/simple_animal/hostile/tactical_ai.dm',)},
@@ -60,9 +65,15 @@ SUITES = {
         'shared_paths': ('civ13.dme',)},
     'object_interval_dispatch': {'files': ('tests/process_time/test_dispatch_source.py',),
         'paths': ('tests/process_time/', 'code/processes/obj.dm', 'code/processes/_process.dm')},
-    'abandonment_protection': {'files': ('tests/abandoned_items/test_protection.py',),
-        'paths': ('tests/abandoned_items/test_protection.py',), 'shared_paths': (
-            'code/processes/abandoned_items.dm', 'tests/save_movement/source_adapter.py')},
+    'abandonment_protection': {'files': (
+        'tests/abandoned_items/test_protection.py', 'tests/abandoned_items/test_manure_ground_clock.py',
+        'tests/food_progression/test_fertilizer_no_decay.py'),
+        'paths': ('tests/abandoned_items/test_protection.py', 'tests/abandoned_items/test_manure_ground_clock.py',
+                  'tests/food_progression/test_fertilizer_no_decay.py'),
+        'shared_paths': ('code/processes/abandoned_items.dm', 'tests/save_movement/source_adapter.py',
+                         'code/game/mob/living/carbon/human/shit_piss.dm',
+                         'code/game/mob/living/simple_animal/simple_ai.dm', 'code/game/mob/living/simple_animal/simple_animal.dm',
+                         'code/modules/reagents/reagent_containers/food.dm')},
     'astar_current_score': {'files': ('tests/astar_current_score/test_score.py',),
         'paths': ('tests/astar_current_score/', 'code/pathfinding.dm')},
     'bag_valve_mask': {'files': ('tests/bag_valve_mask/test_bag_valve_mask.py',), 'paths': (
@@ -135,6 +146,8 @@ SUITES = {
         'paths': ('tests/sheep_lambs/', 'code/game/mob/living/simple_animal/friendly/farm_animals.dm')},
     'vomit_cooldown': {'files': ('tests/vomit_cooldown/test_source.py',), 'paths': ('tests/vomit_cooldown/',),
         'shared_paths': ('code/game/mob/living/carbon/carbon_defines.dm',)},
+    'meat_slicing': {'files': ('tests/meat_slicing/test_source.py',), 'paths': ('tests/meat_slicing/',),
+        'shared_paths': ('code/modules/reagents/reagent_containers/food/snacks/meat.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'scheduled_task_guard': {'files': ('tests/scheduled_task_guard/test_guard.py',), 'paths': ('tests/scheduled_task_guard/', 'code/processes/scheduler.dm', 'code/__defines/qdel.dm'),
@@ -551,9 +564,11 @@ SUITES = {
                          'scripts/terrain_heights.py', 'maps/heights/',
                          'maps/nomads/nomads_gaia.dmm', 'maps/nomads/nomads_europe.dmm',
                          'maps/nomads/nomads_jungle.dmm', 'maps/nomads/nomads_asia.dmm')},
-    'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
+    'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py', 'tests/cleaning_rag/test_ignition.py'),
         'paths': ('tests/cleaning_rag/',), 'shared_paths': (
-            'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
+            'code/game/objects/items/weapons/detective.dm', 'code/game/objects/items/weapons/cigs_lighters.dm',
+            'code/game/objects/items/devices/flashlight.dm', 'code/modules/1713/lantern.dm', 'code/_helpers/mobs.dm',
+            'code/_onclick/click.dm', 'code/_onclick/item_attack.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
     'lipstick_application': {'files': ('tests/lipstick_application/test_completion.py',),
@@ -1615,6 +1630,8 @@ SUITES = {
         'paths': ('tests/house_plans/',), 'shared_paths': (
             'code/game/objects/house_plan.dm', 'code/game/objects/house_plan_checks.dm',
             'code/game/objects/house_designer.dm', 'code/__defines/house_plans.dm',
+            'code/game/objects/house_plan_pegs.dm', 'code/game/objects/build_markers.dm',
+            'code/__defines/build_markers.dm', 'icons/obj/build_markers.dmi',
             'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
             'code/modules/paintings/design_codes.dm', 'config/crafting/material_recipes_global.txt')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
@@ -2804,6 +2821,15 @@ SUITES = {
         'paths': ('tests/exact_reagent_transfer/',),
         'shared_paths': ('code/modules/1713/factory_pipes.dm', 'code/modules/reagents/Chemistry-Holder.dm',
                          'code/modules/reagents/reagent_containers/glass.dm', 'code/modules/1713/light_fuel.dm')},
+    'canteen_not_glass': {'files': ('tests/canteen_not_glass/test_canteen_not_glass.py',),
+        'paths': ('tests/canteen_not_glass/',),
+        'shared_paths': ('code/modules/reagents/reagent_containers/food/drinks/canteen.dm',)},
+    'launcher_empty_switch': {'files': ('tests/launcher_empty_switch/test_launcher_empty_switch.py',),
+        'paths': ('tests/launcher_empty_switch/',),
+        'shared_paths': ('code/modules/projectiles/guns/projectile.dm',)},
+    'bearcave_aggro': {'files': ('tests/bearcave_aggro/test_bearcave_aggro.py',),
+        'paths': ('tests/bearcave_aggro/',),
+        'shared_paths': ('code/game/objects/structures/animalspawner/bearcave.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
@@ -3000,7 +3026,12 @@ SUITES = {
     'design_codes': {'files': ('tests/design_codes/test_design_codes.py',),
         'paths': ('tests/design_codes/', 'code/modules/paintings/design_codes.dm'), 'shared_paths': (
             'code/modules/paintings/', 'code/game/objects/structures/sign_flags.dm',
-            'code/modules/1713/structures.dm', 'code/modules/1713/dressmaking.dm')},
+            'code/modules/1713/structures.dm', 'code/modules/1713/dressmaking.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/__defines/naval.dm',
+            'code/modules/naval/ship_designer.dm', 'code/modules/naval/sub_designer.dm',
+            'code/modules/naval/air_designer.dm', 'code/modules/craft/vehicle_designer.dm',
+            'code/modules/1713/train_designer.dm', 'code/modules/space/station_designer.dm',
+            'code/game/objects/house_designer.dm')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',
                   'code/modules/ecology/foraging.dm', 'icons/farming/plants.dmi', 'icons/farming/seeds.dmi',

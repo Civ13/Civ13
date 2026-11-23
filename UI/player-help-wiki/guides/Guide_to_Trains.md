@@ -70,6 +70,7 @@ You never choose which way a tile points. It lines up with the track around it:
 - A line carries on straight. Keep laying tiles ahead of the last one.
 - For a corner, lay the line one tile past where it should turn, then lay the next tile to the side. The end of the line bends into a curve to meet it, even if it was already spiked.
 - A tile on its own runs the way you face while laying it.
+- **Leave room between bends.** Railway cars are long and take a corner one section at a time, so two corners close together would fold a car in half. The hammer won't spike down a corner fewer than **four tiles** from the next corner along the line. Under **eight tiles** you're warned: four-tile cars and engines manage it, but long bogie cars and main-line engines need eight. One-tile wagons and mine carts take any corner.
 - Tiles in the middle of a line never change, so a new line can run right alongside an old one. Build the main line first, then sidings and branches beside it.
 
 Use switchers for branches and a lever within two tiles of each switcher you want to control. A switcher set to split moves a wagon sideways onto the track beside it, so lay that track first; with nothing there the wagon carries straight on. Put a **rotator platform** at the end of a line or in a yard to turn wagons around. Click it to rotate it a quarter turn, or right-click it for **Rotate Left** and **Rotate Right**.
@@ -295,7 +296,7 @@ An **automatic coupler** is a steel knuckle that takes the place of the hook and
 
 - **Start the engine** or **Stop the engine**. On a steam locomotive these are **Light the fire** and **Drop the fire**. It needs fuel to start, and a steam locomotive needs water in its boiler.
 - **Injector on** or **Injector off**, on steam locomotives. See [Steam, water and the boiler](#steam-water-and-the-boiler).
-- **Throttle up** and **Throttle down** move between notches 0 and 3. Each notch is a third of the engine's top speed. The train gathers speed over a few tiles rather than jumping to it.
+- **Throttle up** and **Throttle down** move between notches 0 and 3. Each notch is a third of the engine's top speed. A train creeps away and gathers speed gradually: a light steam train takes about ten seconds to reach full speed, and a train at its engine's full load about twice as long.
 - **Brake** closes the throttle and puts the engine's own brake on. It holds the engine only, so a long train also needs its handbrakes (see [Brakes](#brakes)). Closing the throttle without braking lets the train coast.
 - **Sand the rails** drops sand under the wheels for the next few tiles so they grip (see [Wheel slip and sand](#wheel-slip-and-sand)).
 - **Reverser** sets forward or backward, and only works while the train is standing. Forward is always the way **that engine** faces, wherever it is in the train. Backing up moves the train with the far end leading. Set the levers for the way that end of the train will go.
@@ -309,7 +310,7 @@ Examine the locomotive to see its notch, reverser, speed, a steam locomotive's p
 - **Two engines** make a heavier train fast again. Hitch a second running locomotive anywhere in the train, at the front, in the middle or pushing at the back. It adds its pull and burns its own fuel. The engine whose throttle was opened first drives the train; the other's controls take over once it has stopped.
 - **What leads the train sets its top speed.** A locomotive running forward at the head gets full speed. A locomotive running backward gets three quarters. Wagons pushed ahead of the engine, forward or backing up, get half, unless a running locomotive is at their head.
 - **An engine at each end**, each facing out, lets a train run at full speed both ways without turning anything round. Drive from the engine that faces the way you want to go.
-- **Trains don't stop on the spot.** Braking takes a couple of tiles for an engine on its own, and many more with a long, heavy train behind it. Coasting takes longer still. Start braking well before a station or a junction.
+- **Trains don't stop on the spot.** A train loses speed gradually: an engine on its own brakes to a stand in a few tiles, a long, heavy train needs many more, and a coasting train rolls a long way. Start braking well before a station or a junction.
 
 ### Wheel slip and sand
 
@@ -348,6 +349,7 @@ A train stops by how much of its weight is braked. The driver's **Brake** grips 
 - **Every wagon and car has a handbrake.** Right-click the car and choose **Handbrake** to pin it down or let it off. It takes a couple of seconds, you must be next to the car, and it only works while the train is **standing**. Examining a car tells you when its handbrake is on.
 - **A brake wheel works on the move.** Click a brake wheel to wind the brake of the car it stands on hard on, and click again to wind it off. Its tell-tale shows red when the brake is on and green when it is off.
 - **The more weight is braked, the shorter the stop.** With every car braked, a train stops about as fast as an engine on its own.
+- **Braking always beats speeding up.** Even with only the engine's brake on, a train loses speed at least twice as fast as it can gather it, so it stops in well under the time it took to get up to speed.
 - **Let the brakes off before you leave.** A handbrake left on drags like several extra cars: the train is slow, and with enough of them on it won't start at all. The engine's controls list how many handbrakes are on in the train.
 - **Park with a handbrake on.** A train with any handbrake on cannot be pushed along the line by hand.
 
@@ -522,6 +524,7 @@ Speed puts a train on the ground without hitting anything.
 
 - **Curves and switches.** A train that takes a curve, or the branch of a switch, at more than about 110 km/h on the cab's speed readout leaves the rails. The first throttle notch of every engine is slow enough for any curve; small one-tile locomotives never get that fast. Shut off and brake well before the curve, because a heavy train takes a long way to slow down.
 - **Worn track.** Worn track taken at more than about 180 km/h, or track in a bad way at more than about 70 km/h, spreads under the train and puts its leading car off. See [Track wear and platelaying](#track-wear-and-platelaying).
+- **Bends too close together.** A train won't run onto corners that are closer together than its longest car is long: it stops short and the cab is told. Driven at them faster than a crawl (about 35 km/h), its leading cars leave the rails instead. Relay the line with longer straights between the corners.
 - **The end of the track.** Running off the end of the rails at more than about 70 km/h derails the leading car. So does a rail somebody has lifted out of the line. Creep up to the end of a siding, or build a buffer stop there.
 - **What comes off.** The leading car or engine, two of them at one and a half times the limit, three at twice. Riders are thrown about as in a mild crash. Nothing is smashed, but the train can't move until every derailed car is back on the rails. Examine a car to see whether it is off.
 - **Rerailing a car.** Make a **rerailing jack** (6 iron, **Rail & Steam**) and use it on each derailed section of the car in turn. If the rail under a section is gone, lay the track again first.

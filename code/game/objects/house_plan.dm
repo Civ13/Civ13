@@ -722,13 +722,30 @@
 	name = D ? "house plan ([D.name])" : initial(name)
 
 /obj/item/ship_draught/proc/house_sheet_menu(mob/living/human/H, datum/house_plan/D)
-	var/choice = WWinput(H, D.summary_text(), name, "Cancel", list("Draw on the sheet", "Copy its design code", "Paste a design code", "Cancel"))
+	var/pegged = peg_z && length(peg_set)
+	var/list/options = list("Draw on the sheet", pegged ? "Peg out the storey I stand on" : "Peg it out on the ground")
+	if (pegged)
+		options += "Pull up the pegs and forget the site"
+	options += list(DRAUGHT_EXPORT_LABEL, DRAUGHT_IMPORT_LABEL, "Cancel")
+	var/text = D.summary_text()
+	if (pegged)
+		text += "<br>[house_pegs_text()]"
+	var/choice = WWinput(H, text, name, "Cancel", options)
+	if (QDELETED(src) || loc != H)
+		return
 	if (choice == "Draw on the sheet")
 		open_house_designer(H)
-	else if (choice == "Copy its design code")
-		design_code_show(H, "House plan: [D.name]", draught_code, "Paste it into any ship's draught to draw the same house.")
-	else if (choice == "Paste a design code")
-		paste_any_code(H)
+	else if (choice == "Peg it out on the ground" || choice == "Peg out the storey I stand on")
+		var/datum/house_plan/now = house_plan()
+		if (now)
+			house_peg_menu(H, now)
+			qdel(now)
+	else if (choice == "Pull up the pegs and forget the site")
+		house_pegs_forget(H)
+	else if (choice == DRAUGHT_EXPORT_LABEL)
+		draught_export(H, D.name)
+	else if (choice == DRAUGHT_IMPORT_LABEL)
+		draught_import(H)
 
 #undef HOUSE_PLAN_NAME_MAX
 #undef HOUSE_PLAN_SOFT_STOREYS

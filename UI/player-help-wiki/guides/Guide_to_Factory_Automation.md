@@ -1,6 +1,6 @@
 # Factory Automation
 
-From the industrial eras on, a faction can build production lines that run without anyone standing at the machines. Belts carry loose items, powered arms move items between belts, crates and machines, fabricators turn parts into goods, and pipe networks move liquids between wells, refineries, tanks and reaction vessels.
+From the industrial eras on, a faction can build production lines that run without anyone standing at the machines. Belts carry loose items, powered arms move items between belts, crates and machines, fabricators turn parts into goods, and pipe networks move liquids and gases between wells, gas works, refineries, tanks and reaction vessels.
 
 Everything here is built from the crafting menu and needs research on your faction's [tech tree](Guide_to_Research.md). Most pieces need cable power; see [Power & Batteries](Guide_to_Power.md) for generators.
 
@@ -123,7 +123,7 @@ The **3D printer** (12 electronics) prints plastic goods. Wrench it down, cable 
 
 The **factory monitor** is a terminal that lists every arm, fabricator, belt drive and belt within seven tiles, with what each one is doing (running, waiting, unpowered) and how many items it moves or makes a minute. Use it to find the bottleneck in a line.
 
-The monitor also lists each pipe network within seven tiles once: how many pipes it has, how many of its pumps are running, whether liquid is flowing and how many units moved on the last pump cycle. A network you have just built or changed shows up after its next pump cycle. For one machine's details, use a pipe meter.
+The monitor also lists each pipe network within seven tiles once: how many pipes it has, how many of its pumps are running, whether anything is flowing and how many units moved on the last pump cycle. A network you have just built or changed shows up after its next pump cycle. For one machine's details, use a pipe meter.
 
 ## Stone crushing
 
@@ -147,13 +147,13 @@ Each hide costs **5 tannin**, plus **5 water** if the hide has not been washed y
 
 ## Pipe networks
 
-Pipes move liquids between machines. A pipe network does nothing until a **powered pump** on it is switched on, or a hand pump on it is being worked; then, every two seconds, machines that want a liquid pull it from machines that offer it.
+Pipes move liquids and gases between machines. There is no separate gas pipe: hydrogen, helium and oxygen travel through the same pipes, pumps and valves as water or oil. A pipe network does nothing until a **powered pump** on it is switched on, or a hand pump on it is being worked; then, every two seconds, machines that want a liquid or gas pull it from machines that offer it.
 
-- **Sources** offer liquid: oil wells, water intakes (set beside open water), refinery output, barrel stations set to drain and steel barrels fitted to a pipe.
-- **Holding tanks** store liquid. Hold a container and use **Set Tank Filter** to keep a tank to one reagent. Tanks never feed other tanks.
-- **Sinks** take liquid: refinery feed, engine fuel tanks, barrel stations set to fill, bottlers, reaction vessels, the automatic tablet press, water taps, piped showers and piped washing machines.
+- **Sources** offer liquid or gas: oil wells, water intakes (set beside open water), refinery output, barrel stations set to drain, steel barrels fitted to a pipe, and the hydrogen generator, electrolysis tank, water-gas retort and helium separator.
+- **Holding tanks** store liquid or gas, and a **gas holder** stores a large amount of one gas. Hold a container and use **Set Tank Filter** to keep a tank to one reagent. Tanks never feed other tanks.
+- **Sinks** take liquid or gas: gas compressors, refinery feed, engine fuel tanks, barrel stations set to fill, bottlers, reaction vessels, the automatic tablet press, water taps, piped showers and piped washing machines.
 - A **pipe valve** splits the network in two while closed. Click it to open or close it.
-- A **pipe meter** clamped on a pipe reports that network's pumps, what moved and each machine's state. Its dial lights while liquid is moving.
+- A **pipe meter** clamped on a pipe reports that network's pumps, what moved and each machine's state. Its dial lights while anything is moving.
 
 Contents of tanks and machines are held inert, so they do not react while stored.
 

@@ -75,6 +75,14 @@ You can write on a paper inside an open envelope you are holding, or on the open
 
 Filing cabinets and document drawers list their papers in alphabetical order. Use **Read** next to a paper to read it without taking it out.
 
+### Notice boards
+
+Craft a wooden notice board under paper & printing. Anyone standing beside a board can pin up to five papers, photographs or maps, read them, or take one down. Taking a notice down drops the original on the floor, so take it down if you want to edit it.
+
+To hang a board that sits on a floor tile, face a solid wall right beside it and use a hammer without harm intent. A wrench takes a hung board back down.
+
+Use one sheet of glass on a board to fit a glass cover. Notices stay readable through closed glass, but you must open it to pin or remove anything. Anyone can open or close a plain cover from the board's menu. To lock it, take the key out of a keyed fitted lock, fit the lock to the open cover, then use the matching key or keychain on the board to lock or unlock it. A hammer used with harm intent smashes the glass. The notices stay pinned and the board is open to everyone again until someone fits new glass.
+
 ### Classic editor
 
 Some special papers, and characters who cannot write any language, still use the classic paper editor. It accepts the full set of tags below.

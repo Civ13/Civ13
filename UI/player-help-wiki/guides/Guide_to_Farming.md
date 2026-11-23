@@ -172,6 +172,7 @@ Furnaces, factories, engines and spilled fuel pollute the ground nearby. On grim
 Many kinds of animals leave manure on the ground, which could be used to
 fertilize a field. This is one way to restore nutrition to your soil.
 You can use manure, fertilizer, dung or crushed shell to nourish it.
+Manure left lying on the ground rots away after about four hours, so gather it soon. Manure you carry or keep in storage does not rot, and neither do compost, dry dung or crushed shell.
 By fertilizing the soil, you will automatically fertilize all the soil in 3x3, around the soil that you have fertilized.
 
 Manure: 10 points of nutrition,

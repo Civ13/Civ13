@@ -761,7 +761,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/cutlet = new(src)
 			cutlet.name = "bear meat cutlet"
 			cutlet.desc = replacetext(desc, "slab", "cutlet")
-			prepare_meat_cutlet(cutlet)
+			prepare_meat_cutlet(cutlet, 3)
 		to_chat(user, "You cut the meat into thin strips.")
 		qdel(src)
 	else

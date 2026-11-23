@@ -26,6 +26,66 @@ Stopping the engine or closing the throttle lets the train coast; the brake
 stops it faster. Neither stops it on the spot, and the driver's brake holds
 the engine alone ([Brakes](#brakes)).
 
+## Smooth movement
+
+A train still moves a whole tile per step, but each step is drawn as one
+glide lasting until the next step, the way boats and ships sail
+(`code/modules/craft/glide.dm`). `code/modules/1713/train_glide.dm` holds the
+`glide_size` of every car, deck part, load and rider at the train's pace
+before it moves (`train_glide_begin()`/`train_glide_end()` around each step
+of `drive()` and a free roll); free-moving riders and loads swung two tiles
+round a curve are drawn back a tile and slid instead. Moves go through
+`train_glide_before()`/`train_glide_after()` in the car `Move()` and
+`train_shift()`; outside a step they do nothing. The train gives every glide
+back when it stops (`train_glide_rest()`). Checks: `glide/` in
+`tests/train_platforms`.
+
+## Bends
+
+A bend is one curved tile that each section of a car takes in turn, so a car
+with sections on two bends at once (an S-bend or a tight U-turn) would fold onto
+itself. `code/modules/1713/train_bends.dm`:
+
+- Laying track, the hammer will not spike rails down when the bend on that tile
+  or one beside it is fewer than `TRAIN_CAR_LENGTH` (4) tiles from the next
+  bend along the line (`track_bend_problem()`); under `TRAIN_LONG_CAR_LENGTH`
+  (8) the layer is warned that long bogie stock and main-line engines need more
+  (`track_bend_warning()`). The gap counts tiles from one curved tile to the next.
+- A train will not step onto a bend whose next bend is closer than its longest
+  car (`train_bend_problem()`, `train_longest_car()` by shared `car_id`), so
+  older or mapped track still stops it short. One-tile wagons take any bend.
+- Driven at such bends faster than 1 tile/s, the leading cars leave the rails
+  (`tight_bend_check()` from the drive loop, as with `overrun_check()`); a light
+  one-tile engine stalls instead, as elsewhere.
+
+Checks: `bends/` in `tests/train_platforms`.
+
+## Wide curves
+
+A platelayer with a hammer can ease a sharp corner into a wide curve of radius
+4 or 8 (right-click the corner, "Ease the Curve"). It lifts the corner and that
+many tiles of plain straight track on each side and relays them as one curve of
+the same number of tiles, so no rail is gained or lost. A crowbar relays a curve
+as the sharp corner again. `code/modules/1713/train_arcs.dm`:
+
+- `/obj/structure/rails/arc` tiles run from S to E as a short straight run, a
+  staircase and another run (`train_arc_path()`), each tile leading by
+  `leg_a`/`leg_b`. `rail_target()` routes them like any two-legged tile; they are
+  not bends for the spacing rule, since a car never folds across them.
+- Trains take a curve at up to `train_arc_speed()` tiles a second (4 on
+  radius 4, 6 on radius 8, against 3 on a sharp corner) before `curve_check()`
+  derails them.
+- On the staircase a deck lies diagonally (`rail_arc_lay()` in
+  `train_platform_tiles()`), so a car's tiles overlap no more than on a sharp
+  corner, and furniture aboard turns once over the curve (`train_turning()`).
+- The master tile draws Fable's art (`train_arc4.dmi`, `train_arc8.dmi`) turned
+  and mirrored onto the curve. Cars, deck parts and engine bodies on a curve are
+  drawn turned to the track and moved onto its circle (`train_arc_pose()`),
+  animated over the step's glide; they are drawn square again off it. Riders
+  and loose loads stay on their tiles.
+
+Checks: `arcs/` in `tests/train_platforms`.
+
 ## Speed and load
 
 Speeds are tiles per second. `max_train_speed` is a locomotive's step delay in
@@ -44,13 +104,20 @@ The lead engine refreshes the train's weight and pull every six tiles
 (`refresh_consist()`); nothing is stored per step, and all the driving state
 is `tmp`, so a saved train comes back standing with the throttle closed.
 
-Acceleration rises with spare pull. Coasting and engine braking each take a
-fixed amount of speed per tile (0.2, or 0.6 against a lower notch), divided by
-the train's weight over six, so a long heavy train rolls a long way.
+Speed changes by the second, not by the tile, so a train creeps away, gathers
+way over many tiles and loses it gradually. A train gains `TRAIN_ACCEL` (0.25
+tiles/s) each second times its pull ratio, up to twice that with pull to spare:
+`train_speed_gain()` solves v' = v + a / v' for the step being taken, so a light
+steam train reaches 5 tiles/s in about ten seconds and 25 tiles, and a train at
+its rated load takes twice as long. Coasting and engine braking take a fixed
+amount of speed each second (0.2, or 0.6 against a lower notch), divided by the
+train's weight over six, so a long heavy train rolls a long way; each step
+counts the seconds it takes (`train_step_seconds()`). Free-rolling cars
+(`train_rolling.dm`) still lose speed per tile.
 
 ## Brakes
 
-A train stops by the weight its brakes hold. Each step the drive loop takes
+A train stops by the weight its brakes hold. Each second the drive loop takes
 `brake_decel()` off the speed on top of the rolling resistance above: 1.2
 tiles per second times the braked share of the train's weight, where the
 braked weight is
@@ -58,6 +125,12 @@ braked weight is
 - the engine itself with all its sections (`consist_own`) while the driver's
   Brake is on, and
 - every car whose `handbrake` is on (`consist_braked`).
+
+With the driver's Brake on, the train always loses speed at least
+`TRAIN_BRAKE_OVER_ACCEL` (2) times as fast as it can gather it
+(`stopping_decel()`: twice `TRAIN_ACCEL` times its pull ratio), so even a long
+train held only by its engine stops in well under the time it took to get up
+to speed. Handbrakes and a brake van shorten the stop further.
 
 So a lone engine stops as before, while an engine with a long train behind it
 needs many more tiles unless cars are braked too. `refresh_consist()` adds

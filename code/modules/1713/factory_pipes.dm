@@ -258,7 +258,7 @@ var/global/fluid_step_serial = 0
 
 /obj/structure/fluid_pipe
 	name = "fluid pipe"
-	desc = "A steel pipe. It joins with pipes and machines on every side. A network only moves liquids while a powered pump is connected to it."
+	desc = "A steel pipe. It joins with pipes and machines on every side. Liquids and gases only flow through a network while a powered pump is connected to it."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "intact"
 	anchored = TRUE
@@ -399,12 +399,12 @@ var/global/fluid_step_serial = 0
 		icon_state = "intact"
 
 //////////////////////////////////////////////////////////////////////////////
-// Pump: a network moves liquids only while a powered pump is next to one of
+// Pump: a network moves liquids and gases only while a powered pump is next to one of
 // its pipes. Each running pump adds FLUID_PUMP_RATE units a step.
 
 /obj/structure/fluid_pump
 	name = "fluid pump"
-	desc = "An electric pump. Set next to a pipe and cabled, it moves liquids through that pipe network while switched on."
+	desc = "An electric pump. Set next to a pipe and cabled, it moves liquids and gases through that pipe network while switched on."
 	icon = 'icons/obj/machines/pipes.dmi'
 	icon_state = "compressor"
 	anchored = TRUE

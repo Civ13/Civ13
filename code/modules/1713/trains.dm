@@ -461,6 +461,8 @@
 		return FALSE
 	if (!fdir)
 		fdir = train_heading()
+	// On a wide curve a car faces the way the track runs (train_arcs.dm).
+	fdir = rail_arc_facing(newloc, fdir)
 	check_connections()
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
@@ -468,23 +470,28 @@
 	var/turf/oldloc = loc
 
 	moving_train = TRUE
+	// Drawn at the train's pace while it drives (train_glide.dm).
+	train_glide_before(src, newloc)
 	var/moved = ..(newloc)
 	if (!src)
 		return FALSE
 	if (!moved || loc == oldloc || !isturf(loc))
 		moving_train = FALSE
 		return FALSE
+	train_glide_after(src, oldloc)
 	dir = reversed ? OPPOSITE_DIR(fdir) : fdir
+	// Drawn round a wide curve (train_arcs.dm).
+	train_arc_pose(src, null, dir)
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
-			buckled_mob.persistence_set_loc(loc)
+			buckled_mob.train_glide_set_loc(loc)
 		else
 			buckled_mob = null
 	for (var/mob/living/L in oldloc)
-		L.persistence_set_loc(loc)
+		L.train_glide_set_loc(loc)
 	for (var/obj/O in oldloc)
 		if (O.anchored && (O in transporting))
-			O.persistence_set_loc(loc)
+			O.train_glide_set_loc(loc)
 	if (connected && !train_solo_move)
 		connected.Move(oldloc, fdir)
 
@@ -509,7 +516,7 @@ var/global/train_solo_move = FALSE
 	for (var/obj/structure/rails/R in T)
 		if (istype(R, /obj/structure/rails/split/switcher))
 			return R
-		if (!found || istype(R, /obj/structure/rails/turn))
+		if (!found || istype(R, /obj/structure/rails/turn) || istype(R, /obj/structure/rails/arc))
 			found = R
 	return found
 
@@ -528,6 +535,24 @@ var/global/train_solo_move = FALSE
 		var/turf/branch = SW.branch_turf()
 		if (rail_at(branch))
 			return list(branch, fdir)
+	else if (istype(RT, /obj/structure/rails/arc))
+		// On a wide curve a car faces the way the track mostly runs, not the
+		// way it last stepped, and leaves by the leg most nearly ahead
+		// (train_arcs.dm).
+		var/leave = 0
+		var/best = -2
+		for (var/d in RT.exits())
+			var/along = train_arc_dx(d) * train_arc_dx(mdir) + train_arc_dy(d) * train_arc_dy(mdir)
+			if (along > best)
+				best = along
+				leave = d
+		tgtt = get_step(RT, leave)
+		if (!leave || !tgtt)
+			return null
+		for (var/obj/structure/rails/R in tgtt)
+			if (R.accepts(leave))
+				return list(tgtt, rail_arc_facing(tgtt, leave))
+		return null
 	else if (istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
 		var/list/legs = RT.exits()
 		// A car that came in along one leg leaves by the other; one that
@@ -538,7 +563,7 @@ var/global/train_solo_move = FALSE
 		tgtt = get_step(RT, fdir)
 	if (!rail_canmove(fdir))
 		return null
-	return list(tgtt, fdir)
+	return list(tgtt, rail_arc_facing(tgtt, fdir))
 
 // How hard this car hits what is in front of it: 1 is the old fixed blow.
 // A locomotive scales it with its speed and the weight behind it.
@@ -656,6 +681,13 @@ var/global/train_solo_move = FALSE
 			L.burn_fuel()
 	//push (or hit) wtv is in front...
 	if (rail_hit(tgtt, fdir, impact))
+		return FALSE
+	// Bends too close together for the train's longest car (train_bends.dm).
+	var/tight = rail_bend_at(tgtt) ? train_bend_problem(train_consist_list(src), tgtt, fdir) : null
+	if (tight)
+		visible_message(SPAN_WARNING("\The [src] cannot take the bend. [tight]"))
+		automovement = FALSE
+		set_light(0)
 		return FALSE
 	// Platform cars need room for their decks (train_platforms.dm).
 	var/atom/clearance = train_consist_obstacle(src, tgtt, fdir)
@@ -1209,6 +1241,22 @@ var/global/train_solo_move = FALSE
 		return 1
 	return (rail_speed / 4) * clamp(sqrt(max(1, consist_weight) / 4), 1, 2)
 
+// Speed changes by the second, not by the tile (docs/trains.md "Speed and
+// load"): a tile at walking pace takes far longer than one at full speed, so
+// a change per tile made a train snap up to speed in a few seconds and run
+// at one pace. The seconds one step at this speed takes.
+/proc/train_step_seconds(speed)
+	return clamp(1 / max(0.5, speed), 0.1, 2)
+
+// The speed after one step gaining accel (tiles per second, each second) over
+// the time that step itself takes: v' = v + accel / v', so a train creeps
+// away and builds up speed over many tiles.
+/proc/train_speed_gain(speed, accel)
+	speed = max(0, speed)
+	if (accel <= 0)
+		return speed
+	return (speed + sqrt(speed * speed + 4 * accel)) / 2
+
 /obj/structure/trains/locomotive/proc/drive()
 	if (driving)
 		return
@@ -1248,13 +1296,14 @@ var/global/train_solo_move = FALSE
 						visible_message("<span class = 'warning'>\The [src]'s wheels spin; [consist_braked > 0 ? "the handbrakes are holding the train" : "the train is too heavy to start"].</span>")
 						throttle = 0
 						break
-					rail_speed = min(target, max(rail_speed, 0.5) + 0.35 * min(2, pull_ratio()))
+					// Gathers way gradually, faster with pull to spare.
+					rail_speed = min(target, train_speed_gain(rail_speed, TRAIN_ACCEL * min(2, pull_ratio())))
 					braking = FALSE
 			else if (rail_speed > target)
 				// Rolling resistance by the train's heft, and the brakes by the
 				// share of its weight they hold (train_brakes.dm).
-				var/drag = (target > 0 ? 0.6 : 0.2) / heft + brake_decel()
-				rail_speed = max(target, rail_speed - drag)
+				// Both are per second, so a train loses way gradually however fast it runs.
+				rail_speed = max(target, rail_speed - stopping_decel(target, heft) * train_step_seconds(rail_speed))
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
@@ -1263,12 +1312,17 @@ var/global/train_solo_move = FALSE
 				lead = src
 			var/lead_dir = lead.dir
 			var/turf/lead_from = lead.loc
+			// The whole train slides over the step instead of jumping (train_glide.dm).
+			train_glide_begin(src, clamp(10 / max(0.5, rail_speed), max_train_speed, 20))
 			var/moved = (train_way() > 0) ? process_rail_forward() : process_rail_reverse()
+			train_glide_end(src)
 			if (QDELETED(src))
 				return
 			if (!moved)
-				// Off the end of the rails at speed (train_derail.dm).
-				overrun_check()
+				// Off the end of the rails at speed (train_derail.dm), or into
+				// bends too tight for the train (train_bends.dm).
+				if (!overrun_check())
+					tight_bend_check()
 				throttle = 0
 				break
 			// Too fast round a curve or through a switch (train_derail.dm).
@@ -1297,6 +1351,7 @@ var/global/train_solo_move = FALSE
 		snow_factor = 1
 		braking = FALSE
 		driving = FALSE
+		train_glide_rest(src)
 		automovement = FALSE
 		set_light(0)
 		drive_ended()
@@ -1339,6 +1394,11 @@ var/global/train_solo_move = FALSE
 	// The rear car takes the blow, with the weight of the train behind it.
 	var/impact = collision_impact()
 	if (tail.rail_hit(tgtt, fdir, impact))
+		automovement = FALSE
+		return FALSE
+	var/tight = train_bend_problem(cars, tgtt, fdir)
+	if (tight)
+		tail.visible_message(SPAN_WARNING("\The [tail] cannot take the bend. [tight]"))
 		automovement = FALSE
 		return FALSE
 	var/list/rear_first = list()

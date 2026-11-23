@@ -7,3 +7,9 @@
 #define TRAIN_LONG_CAR_LENGTH 8 // bogie stock
 #define TRAIN_LEFT -1
 #define TRAIN_RIGHT 1
+
+// Driving (1713/trains.dm): tiles per second gained each second by a train
+// with just enough pull; one with pull to spare gains up to twice this.
+#define TRAIN_ACCEL 0.25
+// The driver's brake stops a train at least this many times as fast as it gathers way.
+#define TRAIN_BRAKE_OVER_ACCEL 2

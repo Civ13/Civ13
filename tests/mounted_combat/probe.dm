@@ -150,3 +150,19 @@ var/mc_runtime_error = FALSE
 	mc_check(SH4.shield_wall_bonus(S4) == 0, "a man behind the line isn't part of the wall")
 	S3.dir = SOUTH
 	mc_check(SH.shield_wall_bonus(S2) == 15, "a neighbour facing the other way doesn't help")
+	// A diagonal wall (issue 6921): facing northeast, the flanks are northwest
+	// and southeast; the men north and east stand ahead of the line.
+	var/mob/living/human/mc_fixture/DC = new(locate(11, 3, 1))
+	var/mob/living/human/mc_fixture/DN = new(locate(11, 4, 1))
+	var/mob/living/human/mc_fixture/DE = new(locate(12, 3, 1))
+	for (var/mob/living/human/mc_fixture/S in list(DC, DN, DE))
+		S.dir = NORTHEAST
+		mc_hold(S, new /obj/item/weapon/shield/roman)
+	var/obj/item/weapon/shield/DSH = DC.r_hand
+	mc_check(DSH.shield_wall_bonus(DC) == 0, "facing northeast, men ahead to the north and east aren't the wall ([DSH.shield_wall_bonus(DC)])")
+	var/mob/living/human/mc_fixture/DNW = new(locate(10, 4, 1))
+	var/mob/living/human/mc_fixture/DSE = new(locate(12, 2, 1))
+	for (var/mob/living/human/mc_fixture/S in list(DNW, DSE))
+		S.dir = NORTHEAST
+		mc_hold(S, new /obj/item/weapon/shield/roman)
+	mc_check(DSH.shield_wall_bonus(DC) == 30, "facing northeast, the northwest and southeast flanks make the wall ([DSH.shield_wall_bonus(DC)])")

@@ -1,4 +1,4 @@
-"""Offline source contracts: fertilizer (manure, compost) never rots away."""
+"""Offline source contracts: fertilizers stay out of ordinary food spoilage."""
 from pathlib import Path
 import re
 import unittest
@@ -15,7 +15,7 @@ def type_block(source, path):
 
 
 class FertilizerNoDecayTests(unittest.TestCase):
-    def test_fertilizer_types_have_no_decay(self):
+    def test_fertilizer_types_have_no_food_decay(self):
         for path in ("/obj/item/weapon/reagent_containers/food/snacks/poo/animal",
                      "/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer"):
             block = type_block(POO, path)
@@ -23,6 +23,20 @@ class FertilizerNoDecayTests(unittest.TestCase):
             self.assertRegex(block, r"\n\tdecay = 0\b", path)
         # Human poo is not fertilizer and still rots away.
         self.assertIn("decay = 20*600", type_block(POO, "/obj/item/weapon/reagent_containers/food/snacks/poo"))
+
+    def test_manure_only_opts_into_ground_decay_and_defers_qdel_during_save(self):
+        manure = "/obj/item/weapon/reagent_containers/food/snacks/poo/animal"
+        self.assertIn("abandonment_decay = TRUE", type_block(POO, manure))
+        for exempt in ("/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer", "/obj/item/stack/dung"):
+            self.assertNotIn("abandonment_decay", type_block(POO, exempt))
+        expiry = type_block(POO, manure + "/check_abandonment(now)")
+        self.assertLess(expiry.index("!isturf(loc)"), expiry.index("qdel(src)"))
+        self.assertLess(expiry.index("if (persistence_save_active())"), expiry.index("qdel(src)"))
+        self.assertIn("#define MANURE_GROUND_LIFETIME (4 * 60 * 60 * 10)", POO)
+        export = type_block(POO, manure + "/before_save()")
+        self.assertIn("update_manure_ground_age(world.time)", export)
+        self.assertNotIn("qdel(", export)
+        self.assertIn('key == "manure_ground_since"', type_block(POO, manure + "/persistence_runtime_var(key)"))
 
     def test_decay_loop_skips_any_fertilizer(self):
         new_proc = FOOD.split("/obj/item/weapon/reagent_containers/food/New()", 1)[1].split("\n/", 1)[0]

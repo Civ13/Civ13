@@ -125,7 +125,8 @@
 	// Base implementation for mobs that don't use the hostile stance system
 	return FALSE
 
-// Manure never decays, so an animal leaves no new pile while one already lies on or next to its tile.
+// Keep a cap on loose manure even before old piles decay: leave no new pile
+// while one already lies on or next to this animal's tile.
 /mob/living/simple_animal/proc/drop_manure()
 	if (mob_size < MOB_MEDIUM || !isturf(loc))
 		return null

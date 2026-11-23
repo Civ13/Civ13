@@ -42,6 +42,8 @@
 		return "Somebody is buckled to \the [src]."
 	if (transporting.len)
 		return "Unload \the [src] first."
+	for (var/mob/living/M in loc)
+		return "\The [M] is on \the [src]."
 	return null
 
 /obj/structure/trains/storage/wagon_dismantle_problem()

@@ -13,6 +13,9 @@ PLAN = (OBJECTS / 'house_plan.dm').read_text(encoding='utf-8')
 CHECKS = (OBJECTS / 'house_plan_checks.dm').read_text(encoding='utf-8')
 DESIGNER = (OBJECTS / 'house_designer.dm').read_text(encoding='utf-8')
 DEFINES = (ROOT / 'code/__defines/house_plans.dm').read_text(encoding='utf-8')
+PEGS = (OBJECTS / 'house_plan_pegs.dm').read_text(encoding='utf-8')
+MARKERS = (OBJECTS / 'build_markers.dm').read_text(encoding='utf-8')
+MARKER_DEFINES = (ROOT / 'code/__defines/build_markers.dm').read_text(encoding='utf-8')
 DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='replace')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8', errors='replace')
 
@@ -77,6 +80,59 @@ class HousePlanTables(unittest.TestCase):
         self.assertEqual(CHECKS.count('\tkind = "house_plan"'), 2)
 
 
+class BuildersPegs(unittest.TestCase):
+    def dmi_states(self):
+        import zlib
+        data = (ROOT / 'icons/obj/build_markers.dmi').read_bytes()
+        at = data.index(b'zTXtDescription\x00\x00') + len(b'zTXtDescription\x00\x00')
+        length = int.from_bytes(data[at - len(b'zTXtDescription\x00\x00') - 4:at - len(b'zTXtDescription\x00\x00')], 'big')
+        text = zlib.decompress(data[at:at + length - len(b'Description\x00\x00')]).decode('utf-8')
+        return re.findall(r'^state = "(\w+)"', text, re.M)
+
+    def test_included_and_defined(self):
+        self.assertIn('#include "code\\game\\objects\\build_markers.dm"', DME)
+        self.assertIn('#include "code\\game\\objects\\house_plan_pegs.dm"', DME)
+        self.assertIn('#include "code\\__defines\\build_markers.dm"', DME)
+        for define in ('BUILD_MARKER_WORLD_MAX', 'BUILD_MARKER_SWEEP', 'BUILD_MARKER_BATCH'):
+            self.assertEqual(len(re.findall(r'^#define %s \d+' % define, MARKER_DEFINES, re.M)), 1)
+            self.assertNotIn('#define ' + define, MARKERS + PEGS)
+
+    def test_every_kind_has_a_tag_and_a_rule(self):
+        kinds = dict(re.findall(r'^\t\t"(\w+)" = list\("name" = "[^"]+", "state" = "(\w+)"\),$', MARKERS, re.M))
+        self.assertEqual(set(kinds), {'wall', 'door', 'window', 'pillar', 'stairs', 'ladder', 'floor', 'roof'})
+        states = self.dmi_states()
+        built = MARKERS.split('/proc/build_marker_built(', 1)[1].split('\n/proc/', 1)[0]
+        for kind, state in kinds.items():
+            self.assertIn(state, states)
+            self.assertIn('if ("%s")' % kind, built)
+        for state in ('peg', 'note', 'rail'):
+            self.assertIn(state, states)
+
+    def test_every_plan_piece_is_a_kind_of_peg(self):
+        kinds = set(re.findall(r'^\t\t"(\w+)" = list\("name" = "[^"]+", "state"', MARKERS, re.M))
+        pieces = PLAN.split('/proc/house_plan_pieces()', 1)[1].split('\n\treturn table', 1)[0]
+        self.assertTrue(set(re.findall(r'"kind" = "(\w+)"', pieces)) <= kinds)
+        self.assertIn('. += "floor=[', PEGS)
+        self.assertIn('. += "roof=[', PEGS)
+
+    def test_a_peg_saves_as_text_and_keeps_no_global(self):
+        self.assertIn('map_storage_saved_vars = "icon_state;name;wants;set_id;set_name;note"', MARKERS)
+        self.assertNotIn('var/global', MARKERS + PEGS)
+        for field in ('peg_set', 'peg_x', 'peg_y', 'peg_z'):
+            self.assertEqual(len(re.findall(r'^\tvar/%s = ' % field, PEGS, re.M)), 1)
+
+    def test_a_peg_passes_clicks_to_its_tile(self):
+        click = MARKERS.split('/obj/effect/build_marker/Click(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('modifiers["shift"] || modifiers["alt"]', click)
+        self.assertIn('return T.Click(location, control, params)', click)
+        self.assertIn('density = FALSE', MARKERS)
+
+    def test_the_sheet_offers_pegging(self):
+        menu = PLAN.split('/obj/item/ship_draught/proc/house_sheet_menu(', 1)[1]
+        for option in ('"Peg it out on the ground"', '"Peg out the storey I stand on"', '"Pull up the pegs and forget the site"'):
+            self.assertIn(option, menu)
+
+
 class HousePlanSheet(unittest.TestCase):
     def test_included_and_defined(self):
         for name in ('house_plan', 'house_plan_checks', 'house_designer'):
@@ -88,7 +144,7 @@ class HousePlanSheet(unittest.TestCase):
 
     def test_the_sheet_reads_a_house_code(self):
         kinds = (ROOT / 'code/modules/naval/draught_kinds.dm').read_text(encoding='utf-8')
-        self.assertIn('"HOUSE" = list("name" = "house", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house")', kinds)
+        self.assertIn('"HOUSE" = list("name" = "house", "title" = "House plan", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house", "open" = "open_house_designer"', kinds)
         sheet = (ROOT / 'code/modules/naval/ship_draught.dm').read_text(encoding='utf-8')
         self.assertIn('"Draw a house on the sheet"', sheet)
         self.assertEqual(sheet.count('house_plan()'), 2)
@@ -96,7 +152,7 @@ class HousePlanSheet(unittest.TestCase):
         self.assertIn('if ("HOUSE")\n\t\t\treturn "a house plan"', codes)
 
     def test_file_local_defines_are_undefined(self):
-        for source in (PLAN, DESIGNER):
+        for source in (PLAN, DESIGNER, PEGS, MARKERS):
             for name in re.findall(r'^#define (\w+)', source, re.M):
                 self.assertIn('#undef ' + name, source)
 

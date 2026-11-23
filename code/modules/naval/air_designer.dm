@@ -38,7 +38,7 @@
 //   PICS      the pictures the server sends: "deck_p", "cell_c", "part_W"
 //             ... each as "aird_<name>.png" (air_designer_sprites())
 //   HELP      the part book: key -> list(what, use, how)
-// The window sends ?src=REF;air=preview|save;code=<C13AIR code>;name=<name>
+// The window sends ?src=REF;air=preview|save|export|import;code=<C13AIR code>;name=<name>
 // and the server answers with airStats(summary html), airChecks(json of
 // the report's data()) and airStatus(text).
 // ============================================================
@@ -199,7 +199,12 @@
 	if (!ship_designer_can_draw(H, sheet))
 		air_designer_status(H, "Hold the sheet and a pen or pencil to draw on it.")
 		return
-	var/save = href_list["air"] == "save"
+	// Import and Export work the same in every designer (naval/draught_kinds.dm).
+	if (href_list["air"] == "import")
+		sheet.draught_import_in_window(H, AIR_DESIGNER_WINDOW)
+		return
+	var/export = href_list["air"] == "export"
+	var/save = export || href_list["air"] == "save"
 	if (!save)
 		if (!isnull(last_preview) && world.time < last_preview + AIR_DESIGNER_PREVIEW_GAP)
 			return
@@ -217,6 +222,8 @@
 	if (save)
 		sheet.take_air(D)
 		air_designer_status(H, "Saved on the sheet.")
+		if (export)
+			sheet.draught_export(H, D.name)
 	qdel(D)
 
 // Raw string: no DM interpolation inside, and never a double quote followed
@@ -239,6 +246,7 @@ button:hover{border-color:#ffd985}
 button.on{background:#b48c4d;color:#211c16;border-color:#ffd985}
 button.go{flex:none;white-space:nowrap;background:#6b4d1f;border-color:#b48c4d;font-weight:bold;font-size:12px;padding:5px 14px}
 input,select{background:#1d1916;color:#e9dfc8;border:1px solid #806040;font-family:Verdana,sans-serif;font-size:11px;height:22px;box-sizing:border-box;padding:1px 3px}
+button.cd{flex:none;white-space:nowrap;margin-right:4px}
 .row{display:flex;align-items:center;margin-bottom:5px}
 .row label{flex:0 0 50px;color:#bfae96;font-size:11px}
 .hint{color:#b0a080;font-size:11px;line-height:1.35}
@@ -335,7 +343,8 @@ img.pic{image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;vertic
 <div class='ph'>Gas cells <span class='hint'>- one hangs over a tile of deck</span></div><div class='pal' id='pg'></div>
 <div class='ph'>Parts <span class='hint'>- one stands on a tile of deck</span></div><div class='pal' id='pp'></div>
 <div class='row' style='margin-top:4px'><button onclick='undo()' style='margin-right:3px'>Undo</button><button onclick='redo()' style='margin-right:8px'>Redo</button><span class='hint' style='white-space:nowrap'>Start from&nbsp;</span><select id='ex' style='flex:1 1 auto;min-width:0;margin-right:4px'><option value=''>-</option></select><button onclick='loadExample()'>Load</button></div>
-<div class='row' style='margin-bottom:0'><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
+<div class='row'><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
+<div class='row' style='margin-bottom:0'><button class='cd' onclick='exportCode()' title='Save the drawing on the sheet and show its design code to copy'>Export code</button><button class='cd' onclick='importCode()' title='Paste a design code; it replaces what is drawn on this sheet'>Import code</button></div>
 <div class='hint' style='margin-top:7px'>Click or drag over tiles to draw with the picked tool. Right-click takes a tile's part off, then its gas cell, then its deck. The small box in a tile's corner is the gas cell hung over it.</div>
 </div>
 
@@ -448,8 +457,11 @@ function refresh(){controls();draw();part();}
 function code(){var nm=$('nm').value.replace(/[\/;,]/g,' ').replace(/^\s+|\s+$/g,'').replace(/ /g,'_'),t=[],r,c,v;if(!nm)nm='airship';
 for(r=1;r<=L;r++)for(c=1;c<=W;c++){v=cells[key(c,r)];if(v[0])t.push(c+','+r+','+v[0]+','+(v[1]||'-')+','+(v[2]||'-'));}
 return 'C13AIR/1/'+nm+'/'+EN+'/'+CC+'/'+CREW+'/'+W+'/'+L+'/'+t.join(';');}
+// Export saves like Save and then shows the code; Import asks for one.
+function exportCode(){send('export');}
+function importCode(){if(timer){clearTimeout(timer);timer=null;}location.href='byond://?src='+REF+';air=import';}
 function send(save){if(timer){clearTimeout(timer);timer=null;}lastSent=new Date().getTime();if(save)status('Saving...');
-location.href='byond://?src='+REF+';air='+(save?'save':'preview')+';code='+encodeURIComponent(code())+';name='+encodeURIComponent($('nm').value);}
+location.href='byond://?src='+REF+';air='+(save=='export'?'export':save?'save':'preview')+';code='+encodeURIComponent(code())+';name='+encodeURIComponent($('nm').value);}
 // The server answers one summary per 0.3 s: wait out the gap, so the last
 // change is never the one it skips.
 function changed(){if(timer)clearTimeout(timer);var wait=Math.max(300,450-(new Date().getTime()-lastSent));timer=setTimeout(function(){timer=null;send(0);},wait);}

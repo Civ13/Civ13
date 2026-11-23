@@ -5,7 +5,7 @@
 /obj/structure/trains/var/tmp/train_transfer_busy = FALSE
 
 /obj/structure/trains/persistence_runtime_var(key)
-	if(key == "train_transfer_busy") return TRUE
+	if(key == "train_transfer_busy" || key == "train_glide_was" || key == "train_arc_posed") return TRUE
 	return ..()
 
 /proc/train_transfer_departure_problem(obj/structure/trains/head, turf/edge)

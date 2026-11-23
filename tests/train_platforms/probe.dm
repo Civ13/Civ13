@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 372
+	maxx = 452
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -137,6 +137,21 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("move/crate_rides", crate.loc == platform_turf(9, 11))
 	platform_check("move/rider_rides", rider.loc == platform_turf(11, 10))
 	platform_check("move/decks_follow", platform_parts_placed(segs))
+
+	// Glide (train_glide.dm): a driven step is drawn at the train's pace for
+	// the engine, the cars, their decks and everything aboard, and the train
+	// gives every glide back once it stops.
+	var/crate_glide = crate.glide_size
+	var/engine_glide = L.glide_size
+	var/obj/structure/train_part/deck_part = front.deck_parts[1]
+	var/pace = craft_glide_size(4)
+	train_glide_begin(L, 4)
+	var/glided = platform_step(L, 1) == 1
+	platform_check("glide/step_paced", glided && L.glide_size == pace && front.glide_size == pace && crate.glide_size == pace && deck_part.glide_size == pace && (!craft_glides_natively(rider) || rider.glide_size == pace))
+	train_glide_end(L)
+	platform_check("glide/held_between_steps", L.glide_size == pace && crate.glide_size == pace && !train_glide_record)
+	train_glide_rest(L)
+	platform_check("glide/given_back", L.glide_size == engine_glide && crate.glide_size == crate_glide && !L.train_glide_was.len)
 
 	// Round the corner and on to the end of the line.
 	var/steps = platform_step(L, 40)
@@ -406,6 +421,16 @@ var/global/platform_probe_runtime_error = FALSE
 	sleep(12)
 	platform_check("drive/throttle_moves", L.driving && L.y > start_y && W1.y == L.y - 1 && W2.y == L.y - 2)
 	platform_check("drive/speed_capped", L.rail_speed > 0 && L.rail_speed <= 10 / L.max_train_speed)
+	// Speed changes by the second: a train creeps away and takes many tiles
+	// to reach full speed, and loses way gradually.
+	var/creep = train_speed_gain(0, TRAIN_ACCEL)
+	var/v = 0
+	var/tiles_to_full = 0
+	while (v < 5 && tiles_to_full < 100)
+		v = train_speed_gain(v, TRAIN_ACCEL * 2)
+		tiles_to_full++
+	platform_check("drive/gathers_way_gradually", creep < 0.6 && tiles_to_full >= 20 && tiles_to_full <= 30 && abs(train_speed_gain(2, 1) - 2 - 1 * train_step_seconds(train_speed_gain(2, 1))) < 0.001)
+	platform_check("drive/loses_way_by_the_second", train_step_seconds(5) == 0.2 && train_step_seconds(1) == 1 && train_step_seconds(0) == 2)
 	L.throttle = 0
 	L.braking = TRUE
 	platform_check("drive/brake_stops", drive_wait(L) && L.rail_speed == 0 && !L.automovement)
@@ -417,17 +442,27 @@ var/global/platform_probe_runtime_error = FALSE
 	var/heavy_cruise = H.cruise_speed()
 	platform_check("load/heavy_slower", H.pull_ratio() < 1 && heavy_cruise < 10 / H.max_train_speed && heavy_cruise > 0)
 
-	// Braking distance grows with the train: both start at the same speed.
+	// Braking distance grows with the train: both start at the same speed,
+	// slow enough for the heavy one to stop on its stretch of track.
 	for (var/obj/structure/trains/locomotive/E in list(L, H))
 		E.throttle = 0
 		E.braking = TRUE
-		E.rail_speed = 2.5
+		E.rail_speed = 1.8
 	var/light_from = L.y
 	var/heavy_from = H.y
 	L.drive()
 	H.drive()
 	drive_wait(L)
 	drive_wait(H)
+	// Braking is always quicker than gathering way, light train or heavy.
+	var/brakes_beat_accel = TRUE
+	for (var/obj/structure/trains/locomotive/E in list(L, H))
+		E.refresh_consist()
+		E.braking = TRUE
+		if (E.stopping_decel(0, max(1, E.consist_weight / 6)) < 2 * TRAIN_ACCEL * min(2, E.pull_ratio()) - 0.001)
+			brakes_beat_accel = FALSE
+		E.braking = FALSE
+	platform_check("brake/stops_quicker_than_it_starts", brakes_beat_accel)
 	platform_check("brake/heavy_longer", (H.y - heavy_from) > (L.y - light_from) && L.y - light_from >= 1)
 
 	// Double heading: a second running engine in the train adds its pull.
@@ -1392,6 +1427,9 @@ var/global/platform_probe_runtime_error = FALSE
 	H.fuel = 200
 	H.on = TRUE
 	H.throttle = 3
+	// Already running at speed: a train gathers way over many more tiles
+	// than this stretch has (train_speed_gain()).
+	H.rail_speed = 4.5
 	H.drive()
 	var/top = 0
 	var/limit = 400
@@ -3475,37 +3513,40 @@ var/global/platform_probe_runtime_error = FALSE
 // and tenders fold back into their kits.
 /proc/platform_dismantle_run()
 	for (var/ty in 2 to 25)
-		platform_track(364, ty, NORTH)
-		platform_track(368, ty, NORTH)
+		platform_track(444, ty, NORTH)
+		platform_track(448, ty, NORTH)
 	craftlist_lists["dismantle_probe"] = list(list("/material/iron/", "flatbed wagon", "/obj/structure/trains/transport/flatbed", "4", "250", "1"))
 	crafted_refund_stack_cache = list()
 	crafted_refund_units_cache = list()
-	var/obj/structure/trains/transport/flatbed/flat = new(platform_turf(364, 3))
-	var/obj/structure/trains/storage/closed/box = new(platform_turf(364, 4))
-	var/obj/structure/trains/locomotive/coal/loco = new(platform_turf(364, 7))
+	var/obj/structure/trains/transport/flatbed/flat = new(platform_turf(444, 3))
+	var/obj/structure/trains/storage/closed/box = new(platform_turf(444, 4))
+	var/obj/structure/trains/locomotive/coal/loco = new(platform_turf(444, 7))
 	box.connected = flat
 	var/coupled = findtext(flat.wagon_dismantle_problem(), "Uncouple") && findtext(box.wagon_dismantle_problem(), "Uncouple")
 	box.connected = null
 	var/obj/item/stack/material/iron/bar = new(box.storage)
 	var/full = findtext(box.wagon_dismantle_problem(), "Empty")
 	qdel(bar)
+	var/mob/living/human/platform_rider/aboard = new(platform_turf(444, 3))
+	var/ridden_wagon = findtext(flat.wagon_dismantle_problem(), "is on")
+	qdel(aboard)
 	loco.on = TRUE
 	var/running = findtext(loco.wagon_dismantle_problem(), "Shut")
 	loco.on = FALSE
-	platform_check("dismantle/one_tile_refusals", coupled && full && running && !flat.wagon_dismantle_problem() && !box.wagon_dismantle_problem() && !loco.wagon_dismantle_problem())
+	platform_check("dismantle/one_tile_refusals", coupled && full && ridden_wagon && running && !flat.wagon_dismantle_problem() && !box.wagon_dismantle_problem() && !loco.wagon_dismantle_problem())
 	var/turf/flat_at = flat.loc
 	var/obj/item/stack/material/iron/back = flat.take_apart()
 	platform_check("dismantle/one_tile_half_cost", QDELETED(flat) && istype(back) && back.loc == flat_at && back.amount == 2 && crafted_refund_units(/obj/structure/trains/transport/flatbed) == 4)
 	craftlist_lists -= "dismantle_probe"
 
-	var/obj/structure/trains/locomotive/coal/heavy/E = platform_car("loco_steam", 368, 20, NORTH)
-	var/obj/structure/trains/platform/F = platform_car("flatbed", 368, 16, NORTH)
+	var/obj/structure/trains/locomotive/coal/heavy/E = platform_car("loco_steam", 448, 20, NORTH)
+	var/obj/structure/trains/platform/F = platform_car("flatbed", 448, 16, NORTH)
 	var/list/F_segs = platform_segments(F)
 	var/obj/structure/trains/last = istype(E) ? train_unit_last(E) : null
 	last.connected = F
 	var/linked = findtext(E.pack_problem(), "Uncouple")
 	last.connected = null
-	var/mob/living/human/platform_rider/rider = new(platform_turf(367, 18))
+	var/mob/living/human/platform_rider/rider = new(platform_turf(447, 18))
 	var/ridden = findtext(E.pack_problem(), "Clear everything")
 	qdel(rider)
 	var/id = E.car_id
@@ -3515,11 +3556,184 @@ var/global/platform_probe_runtime_error = FALSE
 	for (var/obj/structure/trains/TR in world)
 		if (TR.car_id == id && !QDELETED(TR) && TR.loc)
 			left++
-	platform_check("dismantle/heavy_engine_into_kit", linked && ridden && istype(K) && K.car_kind == "loco_steam" && !K.furnished && K.loc == platform_turf(368, 20) && left == 0 && !(locate(/obj/structure/train_part) in platform_turf(367, 19)) && F_segs.len == TRAIN_CAR_LENGTH)
-	var/obj/structure/trains/platform/T = platform_car("tender", 364, 20, NORTH)
+	platform_check("dismantle/heavy_engine_into_kit", linked && ridden && istype(K) && K.car_kind == "loco_steam" && !K.furnished && K.loc == platform_turf(448, 20) && left == 0 && !(locate(/obj/structure/train_part) in platform_turf(447, 19)) && F_segs.len == TRAIN_CAR_LENGTH)
+	var/obj/structure/trains/platform/T = platform_car("tender", 444, 20, NORTH)
 	var/tender_ready = istype(T) && !T.dismantle_problem()
 	var/obj/structure/train_car_kit/TK = tender_ready ? T.pack_car() : null
-	platform_check("dismantle/tender_into_kit", tender_ready && istype(TK) && TK.car_kind == "tender" && !(locate(/obj/structure/trains) in platform_turf(364, 18)) && K && !K.assembly_problem(NORTH))
+	platform_check("dismantle/tender_into_kit", tender_ready && istype(TK) && TK.car_kind == "tender" && !(locate(/obj/structure/trains) in platform_turf(444, 18)) && K && !K.assembly_problem(NORTH))
+// Room to turn (train_bends.dm): bends closer together than a car is long
+// fold it onto itself, so track refuses them and trains stop short.
+/proc/platform_bend_line(x, east)
+	for (var/ty in 2 to 10)
+		platform_track(x, ty, NORTH)
+	for (var/tx in x + 1 to x + east)
+		platform_track(tx, 10, EAST)
+	for (var/ty in 11 to 25)
+		platform_track(x + east, ty, NORTH)
+
+/proc/platform_bends_run()
+	// An S-bend with its bends two tiles apart, and one with them five apart.
+	platform_bend_line(366, 2)
+	platform_bend_line(371, 5)
+	var/tight = rail_bend_at(platform_turf(366, 10)) && rail_bend_at(platform_turf(368, 10)) && rail_bend_gap(platform_turf(366, 10), NORTH, 7) == 2
+	var/wide = rail_bend_at(platform_turf(371, 10)) && rail_bend_at(platform_turf(376, 10)) && rail_bend_gap(platform_turf(371, 10), NORTH, 7) == 5 && !rail_bend_gap(platform_turf(371, 10), NORTH, 4)
+	platform_check("bends/gap_measured", tight && wide && track_bend_spacing(platform_turf(367, 10)) == 2 && track_bend_spacing(platform_turf(372, 10)) == 5)
+	// Laying: two tiles apart is refused, five is allowed with a warning for
+	// long bogie stock, and a lone corner is fine.
+	platform_check("bends/laying_refuses_close_bends", track_bend_problem(platform_turf(367, 10)) && !track_bend_problem(platform_turf(372, 10)) && track_bend_warning(platform_turf(372, 10)) && !track_bend_problem(platform_turf(10, 20)) && !track_bend_warning(platform_turf(10, 20)))
+	// A four-tile car stops short of the tight bends; its engine stays on the rails.
+	var/obj/structure/trains/platform/front = platform_car("flatbed", 366, 6, NORTH)
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(366, 7))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	L.connected = front
+	var/stepped = platform_step(L, 10)
+	platform_check("bends/long_car_stops_short", stepped == 2 && L.loc == platform_turf(366, 9) && train_longest_car(train_consist_list(L)) == 4 && train_bend_problem(train_consist_list(L), platform_turf(366, 10), NORTH) && !L.derailed)
+	// One-tile wagons take the tight bends; the four-tile car takes the wider ones.
+	var/obj/structure/trains/locomotive/coal/S = new(platform_turf(366, 5))
+	S.dir = NORTH
+	S.fuel = 100
+	S.on = TRUE
+	qdel(L)
+	for (var/obj/structure/trains/platform/P in platform_segments(front))
+		qdel(P)
+	var/obj/structure/trains/W = new /obj/structure/trains/transport/flatbed(platform_turf(366, 4))
+	W.dir = NORTH
+	S.connected = W
+	platform_check("bends/short_wagons_take_tight_bends", platform_step(S, 12) == 12 && S.loc == platform_turf(368, 15) && W.loc == platform_turf(368, 14))
+	var/obj/structure/trains/platform/car = platform_car("flatbed", 371, 6, NORTH)
+	var/obj/structure/trains/locomotive/coal/E = new(platform_turf(371, 7))
+	E.dir = NORTH
+	E.fuel = 100
+	E.on = TRUE
+	E.connected = car
+	// Driven at the tight bends faster than a crawl, the train leaves the rails.
+	platform_bend_line(380, 2)
+	var/obj/structure/trains/platform/fast_car = platform_car("flatbed", 380, 6, NORTH)
+	var/obj/structure/trains/locomotive/coal/F = new(platform_turf(380, 7))
+	F.dir = NORTH
+	F.fuel = 100
+	F.on = TRUE
+	F.connected = fast_car
+	F.throttle = 3
+	F.rail_speed = 3.5
+	F.drive()
+	drive_wait(F)
+	// A light engine stalls rather than leave the rails; the car behind it comes off.
+	platform_check("bends/fast_into_tight_bends_derails", !F.driving && fast_car.derailed && F.y <= 9 && F.rail_speed == 0)
+	platform_check("bends/car_takes_wider_bends", platform_step(E, 18) == 18 && E.loc == platform_turf(376, 20) && platform_parts_placed(platform_segments(car)))
+
+// A corner at (x, y): track north from y 2, then east for east tiles.
+/proc/platform_arc_line(x, east, y = 10)
+	for (var/ty in 2 to y)
+		platform_track(x, ty, NORTH)
+	for (var/tx in x + 1 to x + east)
+		platform_track(tx, y, EAST)
+	return locate(/obj/structure/rails/turn) in platform_turf(x, y)
+
+/proc/platform_arcs_run()
+	// Easing a corner: radius 8 needs eight straight tiles each side.
+	var/obj/structure/rails/turn/short = platform_arc_line(432, 6)
+	platform_check("arcs/needs_straights", short && short.arc_problem(8) && !short.arc_problem(4))
+	// Too fast for the curve, the train leaves the rails; under its limit,
+	// which is above a sharp corner's, it does not.
+	train_arc_ease(short, 4)
+	var/obj/structure/trains/platform/fast_car = platform_car("flatbed", 432, 5, NORTH)
+	var/obj/structure/trains/locomotive/coal/F = new(platform_turf(432, 6))
+	F.dir = NORTH
+	F.fuel = 100
+	F.on = TRUE
+	F.connected = fast_car
+	var/calm = F.rail_speed
+	F.rail_speed = 3.8
+	var/under = !F.curve_check(F, EAST, platform_turf(432, 5)) && !fast_car.derailed
+	F.rail_speed = calm
+	F.throttle = 3
+	F.rail_speed = 6.5
+	F.drive()
+	drive_wait(F)
+	platform_check("arcs/too_fast_leaves_the_rails", under && fast_car.derailed && !F.driving)
+	var/obj/structure/rails/turn/C = platform_arc_line(402, 10)
+	var/obj/structure/trains/W0 = new /obj/structure/trains/transport/flatbed(platform_turf(402, 8))
+	var/blocked = C.arc_problem(4)
+	qdel(W0)
+	var/turf/S = train_arc_ease(C, 4)
+	var/arcs = 0
+	for (var/turf/T in block(platform_turf(400, 2), platform_turf(412, 12)))
+		if (train_arc_at(T))
+			arcs++
+	var/obj/structure/rails/arc/first = train_arc_at(platform_turf(402, 6))
+	var/obj/structure/rails/arc/last = train_arc_at(platform_turf(406, 10))
+	// The curve may be laid from either end; it is the same curve.
+	platform_check("arcs/eases_corner", blocked && (S == platform_turf(402, 6) || S == platform_turf(406, 10)) && arcs == 9 && first && last && !rail_at(platform_turf(402, 10)) && rail_at(platform_turf(402, 5)) && (SOUTH in first.exits()) && (EAST in last.exits()) && !rail_bend_at(platform_turf(403, 8)))
+	// A short engine and wagon run round it and out along the straight.
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(402, 4))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	var/obj/structure/trains/W = new /obj/structure/trains/transport/flatbed(platform_turf(402, 3))
+	W.dir = NORTH
+	L.connected = W
+	var/stepped = platform_step(L, 13)
+	platform_check("arcs/train_runs_round", stepped == 13 && L.loc == platform_turf(409, 10) && L.dir == EAST && W.loc == platform_turf(408, 10) && !L.train_arc_posed && !L.pixel_x && !L.pixel_y)
+	// Speed: a wide curve is taken faster than a sharp corner, not without limit.
+	platform_check("arcs/speed_limits", rail_arc_speed_at(platform_turf(403, 8)) == 4 && !rail_arc_speed_at(platform_turf(402, 5)) && train_arc_speed(8) == 6)
+	// Put back to a sharp corner with a crowbar.
+	qdel(L)
+	qdel(W)
+	var/obj/structure/rails/arc/A = train_arc_at(platform_turf(403, 8))
+	var/sharp_ok = !A.sharpen_problem()
+	train_arc_sharpen(A)
+	platform_check("arcs/sharpens_back", sharp_ok && rail_bend_at(platform_turf(402, 10)) && !train_arc_at(platform_turf(403, 8)) && !rail_at(platform_turf(403, 8)) && rail_at(platform_turf(402, 7)) && rail_at(platform_turf(406, 10)))
+	// A four-section car rounds a radius 8 curve: its deck lies across the
+	// staircase, it is drawn on the circle, and it comes out square.
+	var/obj/structure/rails/turn/C8 = platform_arc_line(414, 20, 20)
+	var/turf/S8 = train_arc_ease(C8, 8)
+	var/obj/structure/trains/platform/car = platform_car("flatbed", 414, 8, NORTH)
+	var/obj/structure/trains/locomotive/coal/E = new(platform_turf(414, 9))
+	E.dir = NORTH
+	E.fuel = 100
+	E.on = TRUE
+	E.connected = car
+	var/list/segs = platform_segments(car)
+	var/worst = 0
+	var/posed = FALSE
+	var/placed = TRUE
+	var/flips = 0
+	var/last_dir = E.dir
+	for (var/i in 1 to 24)
+		if (!platform_step(E, 1))
+			break
+		var/list/tiles = platform_car_tiles(segs)
+		var/list/seen = list()
+		var/twice = 0
+		for (var/turf/T in tiles)
+			if (T in seen)
+				twice++
+			seen += T
+		worst = max(worst, twice)
+		if (E.dir != last_dir)
+			flips++
+		last_dir = E.dir
+		if (!platform_parts_placed(segs))
+			placed = FALSE
+		for (var/obj/structure/trains/platform/P in segs)
+			if (P.train_arc_posed && (P.pixel_x || P.pixel_y || !(P.transform ~= matrix())))
+				posed = TRUE
+	var/square = TRUE
+	for (var/obj/structure/trains/platform/P in segs)
+		if (P.train_arc_posed || P.pixel_x || P.pixel_y || P.dir != EAST)
+			square = FALSE
+		for (var/obj/structure/train_part/part in P.deck_parts)
+			if (part.train_arc_posed || part.pixel_x || part.pixel_y)
+				square = FALSE
+	platform_check("arcs/car_deck_lies_across", placed && worst <= 2)
+	// It faces the way the track mostly runs, turning once, not at every step.
+	platform_check("arcs/car_drawn_on_circle", posed && flips == 1)
+	platform_check("arcs/car_comes_out_square", (S8 == platform_turf(414, 12) || S8 == platform_turf(422, 20)) && E.loc == platform_turf(427, 20) && square)
+	// Furniture aboard turns once over the whole curve, not at every step.
+	platform_check("arcs/turns_once", train_turning(platform_turf(414, 15), NORTH, platform_turf(415, 15), EAST) == 0 && train_turning(platform_turf(414, 5), NORTH, platform_turf(414, 6), NORTH) == 0)
 
 /world/New()
 	OpenPort("none")
@@ -3569,6 +3783,8 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_electric_run()
 		platform_entomb_run()
 		platform_dismantle_run()
+		platform_bends_run()
+		platform_arcs_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

@@ -85,7 +85,7 @@ level by level in the order of her hull tiles. `design_code_fields()` takes the
 version to read.
 
 `/obj/item/ship_draught` keeps its draught as `draught_code` (one saved text
-var). Use it in hand to copy its code or paste one in; examine shows the
+var). Use it in hand to export its code or import one; examine shows the
 summary.
 
 ## Drawing her lines
@@ -106,7 +106,7 @@ Probe: `tests/naval_carrier/draught_probe.dm`
 recipe (1 wood, paper & printing, Papermaking, beside the blank map). Hold it
 with a pen, pencil or pigment in either hand and choose **Draw on the sheet**.
 
-The window (1060x780, the brown and gold of Character Setup) is one page,
+The window (1180x780, the brown and gold of Character Setup) is one page,
 `ship_designer_page()`, and one block of JSON, so its palette is built from
 `ship_draught_floors` and `ship_draught_pieces`:
 
@@ -218,11 +218,32 @@ with her bow along the ways. The post is cleared.
 A ship's draught can carry more than one kind of plan. `draught_kinds`
 (`code/modules/naval/draught_kinds.dm`) lists each kind by its design code
 prefix with the proc that reads its code and the sheet proc that keeps it:
-`SHIP` (`ship_draught_from_code`, `take`) and `SUB`
-(`sub_draught_from_code`, `take_sub`). Pasting a code onto a sheet
-(`paste_any_code()`) goes through the table, so a later planner (a spaceship,
-a rocket, a satellite, a station) is one more row with its own datum and
-window. `S.draught()` still returns only a ship, so the slipway never sees a
+`SHIP`, `SUB`, `CAR` (vehicles, tanks and planes), `AIR`, `HOUSE`, `TRAIN` and
+`STATION`. Each row also names the export title, the sheet proc that opens its
+designer, that window's id and (for stations) the earliest age that may draw
+it. A later planner is one more row with its own datum and window.
+
+## Importing and exporting plans
+
+Every kind is exported and imported the same way:
+
+- The sheet menu offers `DRAUGHT_EXPORT_LABEL` ("Export its design code") and
+  `DRAUGHT_IMPORT_LABEL` ("Import a design code"), from
+  `code/__defines/naval.dm`. A blank sheet offers Import.
+- Every designer window has Export code and Import code beside Save. Export
+  saves the drawing as the window holds it and then shows the sheet's code
+  (`draught_export()`); the window sends its save with the action `export`.
+  Import sends `import`; `draught_import_in_window()` imports and reopens the
+  matching designer, closing the old window when the code is another kind.
+- `draught_import()` reads the pasted code with the row's reader, the same
+  proc the window saves through, so an imported plan obeys exactly the rules
+  of one drawn by hand (size, keys, slots, counts). It refuses a code longer
+  than its kind allows or a kind the age cannot draw, then shows the plan's
+  checks in chat (the window's Checks panel findings), logs the import for
+  staff (`design_code_log`) and keeps the shared paste cooldown.
+
+Codes only describe a plan: building one still needs the materials, research,
+site and workers, so imports are not gated behind Discord verification. `S.draught()` still returns only a ship, so the slipway never sees a
 submarine; it refuses a submarine sheet by name.
 
 ## Submarine sheets
