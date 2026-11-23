@@ -85,23 +85,11 @@
 		return
 	ui_interact(H)
 
-// The skill and coins the bench asks before a new gun is designed, by hand or
+// The skill the bench asks before a new gun is designed, by hand or
 // from a design code.
 /obj/structure/gunbench/proc/can_design(mob/living/human/H)
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
 		to_chat(H, "You don't have the skills to design a new gun! Use an existing blueprint.")
-		return FALSE
-	var/found = FALSE
-	if (istype(H.l_hand, /obj/item/stack/money))
-		var/obj/item/stack/money/M = H.l_hand
-		if (M.value*M.amount >= 5)
-			found = TRUE
-	else if (istype(H.r_hand, /obj/item/stack/money))
-		var/obj/item/stack/money/M = H.r_hand
-		if (M.value*M.amount >= 5)
-			found = TRUE
-	if (!found)
-		to_chat(H, "You don't have enough money to make a new blueprint! You need 10 gold or equivalent in one of your hands.")
 		return FALSE
 	return TRUE
 
@@ -288,7 +276,7 @@
 
 	var/list/sections = list(panel_section("Resources", rows = list(panel_row("Steel", steel_amt), panel_row("Wood", wood_amt))))
 	if (!current_gun)
-		sections += list(panel_section("New gun", notes = list("Have a blueprint's design code? Paste it and the bench works it through the same steps. It needs the same parts, steel, wood and coins as designing by hand."),
+		sections += list(panel_section("New gun", notes = list("Have a blueprint's design code? Paste it and the bench works it through the same steps. It needs the same parts, steel and wood as designing by hand."),
 			buttons = list(panel_button("Start New Gun", "start"), panel_button("Import a design code", "import_code"))))
 	else
 		var/list/parts = list()
@@ -650,30 +638,6 @@
 			current_gun.name = named
 		else
 			current_gun.name = "gun"
-
-		// Deduct money
-		var/foundm = FALSE
-		if (istype(H.l_hand, /obj/item/stack/money))
-			var/obj/item/stack/money/M = H.l_hand
-			if (M.value*M.amount >= 50)
-				foundm = TRUE
-				M.amount -= 50/M.value
-				if (M.amount <= 0)
-					qdel(M)
-		else if (istype(H.r_hand, /obj/item/stack/money))
-			var/obj/item/stack/money/M = H.r_hand
-			if (M.value*M.amount >= 50)
-				foundm = TRUE
-				M.amount -= 50/M.value
-				if (M.amount <= 0)
-					qdel(M)
-		if (!foundm)
-			to_chat(H, "<span class='warning'>You do not have enough money to finish the blueprint!</span>")
-			qdel(current_gun)
-			current_gun = null
-			using_wood = 0
-			using_steel = 0
-			return
 
 		// Create blueprint
 		var/obj/item/blueprint/gun/newgunbp = new/obj/item/blueprint/gun(loc)
