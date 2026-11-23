@@ -15,6 +15,7 @@
 //   C13SUB, C13CAR, C13AIR, C13TRAIN, C13STATION  the other plans a ship's
 //                                         draught carries (naval/draught_kinds.dm,
 //                                         which also exports and imports them all)
+//   C13GUN/1/<name>/<parts>/<caliber>/<look>  gun blueprints (1713/gunsmithing/gun_design_code.dm)
 //
 // A code only describes a design. Importing never skips the normal rules:
 // pictures still need the pigments, a canvas and room under the region cap,
@@ -78,6 +79,8 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a space station plan"
 		if ("HOUSE")
 			return "a house plan"
+		if ("GUN")
+			return "a gun blueprint"
 	return null
 
 // Why a pasted code was refused, for the player.

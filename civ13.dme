@@ -1424,6 +1424,7 @@
 #include "code\modules\1713\weapons\attachment.dm"
 #include "code\modules\1713\gunsmithing\firearm_components.dm"
 #include "code\modules\1713\gunsmithing\gun_configuration.dm"
+#include "code\modules\1713\gunsmithing\gun_design_code.dm"
 #include "code\modules\1713\weapons\flamethrower.dm"
 #include "code\modules\1713\weapons\football.dm"
 #include "code\modules\1713\weapons\air_support_jet.dm"

@@ -13,6 +13,8 @@
 	not_disassemblable = TRUE
 	var/obj/item/weapon/gun/projectile/custom/current_gun = null
 	var/obj/item/weapon/gun/projectile/rechambering_gun = null
+	var/tmp/obj/item/blueprint/gun/last_blueprint = null // the last one the bench drew (gun_design_code.dm)
+	var/tmp/importing = FALSE // working through a design code: no window between steps
 
 /obj/structure/gunbench/examine(mob/user)
 	..()
@@ -77,11 +79,18 @@
 
 /obj/structure/gunbench/proc/show_gunsmith_ui(mob/user)
 	var/mob/living/human/H = user
-	if (!istype(H))
+	if (!istype(H) || importing)
 		return
+	if (!can_design(H))
+		return
+	ui_interact(H)
+
+// The skill and coins the bench asks before a new gun is designed, by hand or
+// from a design code.
+/obj/structure/gunbench/proc/can_design(mob/living/human/H)
 	if (H.getStatCoeff("crafting") < 2.5 && map.civilizations)
 		to_chat(H, "You don't have the skills to design a new gun! Use an existing blueprint.")
-		return
+		return FALSE
 	var/found = FALSE
 	if (istype(H.l_hand, /obj/item/stack/money))
 		var/obj/item/stack/money/M = H.l_hand
@@ -93,8 +102,8 @@
 			found = TRUE
 	if (!found)
 		to_chat(H, "You don't have enough money to make a new blueprint! You need 10 gold or equivalent in one of your hands.")
-		return
-	ui_interact(H)
+		return FALSE
+	return TRUE
 
 // What the design asks for next: 1 to 4 are the part steps, then "caliber",
 // "appearance", "look" and "name". null when no gun is being designed.
@@ -224,10 +233,43 @@
 		if (feeding_type == "Internal Magazine (Removable)")
 			. = list("9x19 Parabellum","9x18 Makarov",".45 Colt")
 
+// A caliber's name on the bench -> list(caliber id, casing path), or null.
+/proc/custom_gun_caliber(label)
+	switch (label)
+		if ("shotgun")
+			return list("12gauge", /obj/item/ammo_casing/shotgun)
+		if ("7.92x57mm Mauser")
+			return list("a792x57", /obj/item/ammo_casing/a792x57)
+		if ("6.5x50mm small rifle", "6.5x50mm arisaka")
+			return list("a65x50", /obj/item/ammo_casing/a65x50)
+		if (".45 Colt")
+			return list("a45", /obj/item/ammo_casing/a45)
+		if ("9x19 Parabellum")
+			return list("a9x19", /obj/item/ammo_casing/a9x19)
+		if ("9x18 Makarov")
+			return list("a9x18", /obj/item/ammo_casing/a9x18)
+		if ("7.62x39mm intermediate rifle")
+			return list("a762x39", /obj/item/ammo_casing/a762x39)
+		if ("5.56x45mm intermediate rifle")
+			return list("a556x45", /obj/item/ammo_casing/a556x45)
+		if ("7.7x58mm arisaka")
+			return list("a77x58", /obj/item/ammo_casing/a77x58)
+		if ("7.62x54mmR")
+			return list("a762x54", /obj/item/ammo_casing/a762x54)
+		if ("8x53mm murata")
+			return list("a8x53", /obj/item/ammo_casing/a8x53)
+		if ("8x22mmB nambu")
+			return list("c8mmnambu", /obj/item/ammo_casing/c8mmnambu)
+		if ("9x22mm nambu")
+			return list("c9mm_jap_revolver", /obj/item/ammo_casing/c9mm_jap_revolver)
+		if ("7.62x38mmR")
+			return list("a762x38", /obj/item/ammo_casing/a762x38)
+	return null
+
 /obj/structure/gunbench/ui_actions(ui_key)
 	if (ui_key == "rechamber")
 		return list("do_rechamber", "cancel_rechamber")
-	return list("start", "cancel", "step1", "step2", "step3", "step4", "caliber", "appearance", "name")
+	return list("start", "cancel", "step1", "step2", "step3", "step4", "caliber", "appearance", "name", "import_code")
 
 /obj/structure/gunbench/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
 	if (ui_key == "rechamber")
@@ -246,7 +288,8 @@
 
 	var/list/sections = list(panel_section("Resources", rows = list(panel_row("Steel", steel_amt), panel_row("Wood", wood_amt))))
 	if (!current_gun)
-		sections += list(panel_section(null, buttons = list(panel_button("Start New Gun", "start"))))
+		sections += list(panel_section("New gun", notes = list("Have a blueprint's design code? Paste it and the bench works it through the same steps. It needs the same parts, steel, wood and coins as designing by hand."),
+			buttons = list(panel_button("Start New Gun", "start"), panel_button("Import a design code", "import_code"))))
 	else
 		var/list/parts = list()
 		var/list/chosen = list("Stock" = current_gun.stock_type, "Receiver" = current_gun.receiver_type, "Feeding System" = current_gun.feeding_type, "Barrel" = current_gun.barrel_type, "Caliber" = current_gun.caliber)
@@ -336,52 +379,10 @@
 	to_chat(H, "You start converting \the [P] into [choice]...")
 	playsound(loc, 'sound/effects/gunbench.ogg', 100, TRUE)
 	if (do_after(H, trade_time(H, 100, "gunsmith"), src))
-		switch (choice)
-			if ("7.92x57mm Mauser")
-				P.caliber = "a792x57"
-				P.ammo_type = /obj/item/ammo_casing/a792x57
-			if ("6.5x50mm small rifle")
-				P.caliber = "a65x50"
-				P.ammo_type = /obj/item/ammo_casing/a65x50
-			if (".45 Colt")
-				P.caliber = "a45"
-				P.ammo_type = /obj/item/ammo_casing/a45
-			if ("9x19 Parabellum")
-				P.caliber = "a9x19"
-				P.ammo_type = /obj/item/ammo_casing/a9x19
-			if ("9x18 Makarov")
-				P.caliber = "a9x18"
-				P.ammo_type = /obj/item/ammo_casing/a9x18
-			if ("7.62x39mm intermediate rifle")
-				P.caliber = "a762x39"
-				P.ammo_type = /obj/item/ammo_casing/a762x39
-			if ("5.56x45mm intermediate rifle")
-				P.caliber = "a556x45"
-				P.ammo_type = /obj/item/ammo_casing/a556x45
-			if ("7.7x58mm arisaka")
-				P.caliber = "a77x58"
-				P.ammo_type = /obj/item/ammo_casing/a77x58
-			if ("6.5x50mm arisaka")
-				P.caliber = "a65x50"
-				P.ammo_type = /obj/item/ammo_casing/a65x50
-			if ("7.62x54mmR")
-				P.caliber = "a762x54"
-				P.ammo_type = /obj/item/ammo_casing/a762x54
-			if ("8x53mm murata")
-				P.caliber = "a8x53"
-				P.ammo_type = /obj/item/ammo_casing/a8x53
-			if ("8x22mmB nambu")
-				P.caliber = "c8mmnambu"
-				P.ammo_type = /obj/item/ammo_casing/c8mmnambu
-			if ("9x22mm nambu")
-				P.caliber = "c9mm_jap_revolver"
-				P.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
-			if ("7.62x38mmR")
-				P.caliber = "a762x38"
-				P.ammo_type = /obj/item/ammo_casing/a762x38
-			if ("shotgun")
-				P.caliber = "12gauge"
-				P.ammo_type = /obj/item/ammo_casing/shotgun
+		var/list/cal = custom_gun_caliber(choice)
+		if (cal)
+			P.caliber = cal[1]
+			P.ammo_type = cal[2]
 		to_chat(H, "You successfully convert \the [P].")
 		if (!findtext(P.name,"(rechambered)"))
 			P.name = "[P.name] (rechambered)"
@@ -422,6 +423,12 @@
 		using_steel = 0
 		GLOB.nanomanager.close_user_uis(H, src, "main")
 		to_chat(H, "Canceled gun crafting.")
+		return
+
+	// A pasted blueprint code, worked through the steps below (gun_design_code.dm).
+	if (href_list["action"] == "import_code")
+		spawn (0)
+			import_design(H)
 		return
 
 	if (href_list["action"] == "start")
@@ -570,52 +577,11 @@
 		var/choice_caliber = href_list["cal"]
 		if (!choice_caliber || design_stage() != "caliber" || !(choice_caliber in design_options("caliber", band)))
 			return
-		switch (choice_caliber)
-			if ("shotgun")
-				current_gun.caliber = "12gauge"
-				current_gun.ammo_type = /obj/item/ammo_casing/shotgun
-			if ("7.92x57mm Mauser")
-				current_gun.caliber = "a792x57"
-				current_gun.ammo_type = /obj/item/ammo_casing/a792x57
-			if ("6.5x50mm small rifle")
-				current_gun.caliber = "a65x50"
-				current_gun.ammo_type = /obj/item/ammo_casing/a65x50
-			if (".45 Colt")
-				current_gun.caliber = "a45"
-				current_gun.ammo_type = /obj/item/ammo_casing/a45
-			if ("9x19 Parabellum")
-				current_gun.caliber = "a9x19"
-				current_gun.ammo_type = /obj/item/ammo_casing/a9x19
-			if ("9x18 Makarov")
-				current_gun.caliber = "a9x18"
-				current_gun.ammo_type = /obj/item/ammo_casing/a9x18
-			if ("7.62x39mm intermediate rifle")
-				current_gun.caliber = "a762x39"
-				current_gun.ammo_type = /obj/item/ammo_casing/a762x39
-			if ("5.56x45mm intermediate rifle")
-				current_gun.caliber = "a556x45"
-				current_gun.ammo_type = /obj/item/ammo_casing/a556x45
-			if ("7.7x58mm arisaka")
-				current_gun.caliber = "a77x58"
-				current_gun.ammo_type = /obj/item/ammo_casing/a77x58
-			if ("6.5x50mm arisaka")
-				current_gun.caliber = "a65x50"
-				current_gun.ammo_type = /obj/item/ammo_casing/a65x50
-			if ("7.62x54mmR")
-				current_gun.caliber = "a762x54"
-				current_gun.ammo_type = /obj/item/ammo_casing/a762x54
-			if ("8x53mm murata")
-				current_gun.caliber = "a8x53"
-				current_gun.ammo_type = /obj/item/ammo_casing/a8x53
-			if ("8x22mmB nambu")
-				current_gun.caliber = "c8mmnambu"
-				current_gun.ammo_type = /obj/item/ammo_casing/c8mmnambu
-			if ("9x22mm nambu")
-				current_gun.caliber = "c9mm_jap_revolver"
-				current_gun.ammo_type = /obj/item/ammo_casing/c9mm_jap_revolver
-			if ("7.62x38mmR")
-				current_gun.caliber = "a762x38"
-				current_gun.ammo_type = /obj/item/ammo_casing/a762x38
+		var/list/cal = custom_gun_caliber(choice_caliber)
+		if (!cal)
+			return
+		current_gun.caliber = cal[1]
+		current_gun.ammo_type = cal[2]
 		show_gunsmith_ui(H)
 		return
 
@@ -760,6 +726,7 @@
 		newgunbp.override_icon = current_gun.override_icon
 		newgunbp.cost_wood = using_wood
 		newgunbp.cost_steel = using_steel
+		last_blueprint = newgunbp
 
 		// Finish the gun
 		if (current_gun)
