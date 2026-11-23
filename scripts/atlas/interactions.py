@@ -117,6 +117,9 @@ def add_interactions(files, add, records, covered):
     seen = set()
 
     def route(name, kind, inputs, outputs, path, line, steps, conditions, tools=(), station=None, era=NO_ERA):
+        # The atlas check (scripts/atlas/check.mjs) rejects a recipe with no inputs.
+        if not inputs or not outputs:
+            raise ValueError(f'atlas route {name!r} needs inputs and outputs')
         key = (kind, tuple(inputs), tuple(outputs))
         if key in seen:
             return
@@ -163,7 +166,8 @@ def add_interactions(files, add, records, covered):
                'Each unfired tile comes out as one terracotta tile.'),
               'A fuelled oven or kiln is required.', ('/obj/structure/oven',), '/obj/structure/oven')
 
-    # Dentistry: unfired porcelain dentures fire into a set; teeth come from mouths.
+    # Dentistry: unfired porcelain dentures fire into a set; teeth come from a
+    # patient's mouth, so the patient is the route's input.
     dental = files.get(DENTISTRY)
     if dental is not None:
         require(dental, DENTISTRY, '/obj/item/weapon/clay/porcelain_dentures', 'result = /obj/item/dentures/porcelain',
@@ -173,7 +177,7 @@ def add_interactions(files, add, records, covered):
               DENTISTRY, line_of(dental, '/obj/item/weapon/clay/porcelain_dentures'),
               ('Put the unfired porcelain dentures in an oven or kiln, add fuel and light it.',),
               'A fuelled oven or kiln is required.', ('/obj/structure/oven',), '/obj/structure/oven')
-        route('Draw a tooth', 'Dentistry', [], [('/obj/item/stack/teeth', 1)],
+        route('Draw a tooth', 'Dentistry', [('/mob/living/human', 1)], [('/obj/item/stack/teeth', 1)],
               DENTISTRY, line_of(dental, '/datum/surgery_step/dental/extract/end_step('),
               ('On help intent, aim at the mouth and use dental forceps (or a hemostat or wirecutters) on someone.',
                'Each pull draws one tooth, a rotten one first. A hard blow to the mouth can also knock teeth out.'),
