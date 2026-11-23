@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'db4e7d6404304084ffaacddbf4266ee5c7934848'
+WIKI_REVIEWED_REVISION = '8a888dab271e80ff317deb00a96d6ce9dbd8d1fb'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -186,7 +186,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
     'guides_overview.md': ('0ec11b5b8d7c1b3df0bba6d8feffd3a150eed440a324c30d22c31d73f1992ef0', 'guides overview list of guides index'),
-    'guides/Guide_to_Accolades_and_Characters.md': ('ba470e71fc388556c68e2e5d002ba6701dbd616cab102ba7b699ad9e14ab31a1', 'accolades accolade achievements lifetime points extra second another character characters slot switch switching kin family relatives'),
+    'guides/Guide_to_Accolades_and_Characters.md': ('2cae04321313d4bd63d1966af63c18e07ed1ff287591195ae5e629ea130d392d', 'accolades accolade achievements lifetime points extra second another character characters slot switch switching kin family relatives'),
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
     'guides/Guide_to_Chat.md': ('88cdb4f258921f70eb5de9ce6e4337106ec948ad706c5c780bf46b7f66a6ef21', 'chat window tabs tab filter translate translation translated language ooc looc repeated messages history connection lost ghost ears'),
@@ -211,7 +211,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Pottery_and_Lime.md': ('a2011da6650c69805f700235d90f1e9ca64e448fc85e2de2d6f1d16bdaba5df3', 'pottery potter wheel brick bricks mould bench lime kiln quicklime bellows glassblowing glass mason saw line shaft gear box clutch steam engine hopper'),
     'guides/Guide_to_Quicksilver_Crafts.md': ('5c47dd936fed9b4fb97b0ab3f734844ec44dfb659731e6383afd22b5c19b6666', 'quicksilver mercury barometer thermometer mirror silvering felt hat'),
     'guides/Guide_to_Resins_and_Fabrics.md': ('30b69a95d41215329b5dccc68bbb43d4206ff72020ff10cde6355e36fc192066', 'resin resins pitch tar turpentine rubber latex silk silkworm fabric fabrics waxed cloth oilcloth laminate'),
-    'guides/Guide_to_Space_Stations.md': ('d6710be05cbf5b662bc71000639d19024930a0e81aa86e51e986b2ef2c88c26f', 'space station stations orbit orbital module rocket launch dock docking airlock spacesuit satellite'),
+    'guides/Guide_to_Space_Stations.md': ('b52ab031bdd3b5d86dd8a880c4943c2578dc6e9848d300eb2cd669b401fa7baf', 'space station stations orbit orbital module rocket launch dock docking airlock spacesuit satellite'),
     'guides/Guide_to_Tool_Materials.md': ('4f950f3024433fc970befecf51fe69cc1a7505f6975afec778d06607414666e6', 'tool tools material materials copper bronze iron steel pickaxe shovel hatchet sickle hoe wear durability machine parts lathe pipes cannon barrels sparks'),
     'guides/Guide_to_Trapping.md': ('cb69900d9bdc5cb81f6c47ab82fbf9320c7c86f89a0bc08441a67e4fb02bd4fc', 'trapping trap traps snare snares deadfall fish weir pit trap rabbit fox catch'),
     'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
