@@ -86,6 +86,29 @@ as the sharp corner again. `code/modules/1713/train_arcs.dm`:
 
 Checks: `arcs/` in `tests/train_platforms`.
 
+## Rail plans
+
+A ship's draught can carry a railway ("Draw a railway on the sheet"): track
+drawn tile by tile on a 40 by 40 sheet, north up, in the rail designer
+(`code/modules/1713/rail_designer.dm`). `code/modules/1713/rail_plan.dm`:
+
+- A tile is track or not; its shape follows from its neighbours as laid track
+  does. A sharp corner can be marked to be eased to radius 4 or 8.
+- Design checks of kind `rail_plan`: corners closer than `TRAIN_CAR_LENGTH`
+  are an error (laying refuses them), closer than `TRAIN_LONG_CAR_LENGTH` a
+  warning; a curve needs its radius in plain straight tiles each side and room
+  for its tiles; where track meets more than two ways a switch is laid by hand.
+- The plan travels as `C13RAIL/1/<name>/<x,y,count;...>/<x,y,radius;...>`
+  through the shared draught export and import (`draught_kinds.dm`); the window
+  saves through the same reader, `rail_plan_from_code()`.
+- "Peg it out on the ground" drives a builders' peg (`build_markers.dm`, kind
+  `rail`) into every tile of the line as first laid, the tile the builder
+  stands on taking the drawing's south-west corner; a corner to be eased
+  carries a note with its radius. A peg goes when finished track stands on it.
+
+Checks: `rail_plan/` in `tests/train_platforms`; `PlanCodesTest` in
+`tests/design_codes`.
+
 ## Speed and load
 
 Speeds are tiles per second. `max_train_speed` is a locomotive's step delay in
