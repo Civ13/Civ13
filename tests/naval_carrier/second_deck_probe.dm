@@ -150,9 +150,10 @@ var/naval_runtime_error = FALSE
 	// ---- Sinking ----
 	qdel(kit)
 	var/turf/pail_was = get_turf(pail)
-	C.ledger.sink()
-	naval_check(pail.z == 2 && pail.x == pail_was.x && pail.y == pail_was.y, "when she sinks the pail on her second deck comes down to the water ([pail.x],[pail.y],[pail.z])")
-	naval_check(!deck_floors(pail_was), "her second deck goes down with her")
+	var/foundered = C.ledger.sink()
+	// Foundering disables her; she keeps her decks and what stands on them.
+	naval_check(foundered && get_turf(pail) == pail_was, "when she founders the pail stays on her second deck ([pail.x],[pail.y],[pail.z])")
+	naval_check(deck_floors(pail_was), "her second deck stays with her")
 	qdel(tiller)
 
 	// ---- The slipway builds a second deck ----

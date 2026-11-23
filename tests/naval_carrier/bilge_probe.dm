@@ -342,6 +342,7 @@ var/naval_runtime_error = FALSE
 	naval_check(hull_ledgers.len == count - 1 && !(S in hull_ledgers), "a struck hull gives up her ledger")
 	qdel(steamer)
 	qdel(tiller)
+	qdel(cog_tiller) // a foundered hull now stays afloat with her ledger
 	naval_check(!hull_ledgers.len, "no ledger outlives its tiller")
 
 // Small craft (naval/small_craft_leaks.dm): a raft or canoe stove in below
