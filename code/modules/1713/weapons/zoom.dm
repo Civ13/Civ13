@@ -62,7 +62,7 @@ Parts of code courtesy of Super3222
 	max_zoom = ZOOM_CONSTANT*3
 	attachable = FALSE
 	value = 15
-	var/checking = FALSE
+	var/tmp/checking = FALSE // a range check in progress never survives a save (issue 6983)
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/proc/rangecheck(var/mob/living/human/H, var/atom/target)
 	if (checking)
@@ -93,7 +93,7 @@ Parts of code courtesy of Super3222
 	nothrow = TRUE
 	nodrop = TRUE
 	w_class = ITEM_SIZE_HUGE
-	var/checking = FALSE
+	var/tmp/checking = FALSE // a range check in progress never survives a save (issue 6983)
 
 /obj/item/weapon/attachment/scope/adjustable/binoculars/periscope/naval
 	name = "periscope"
@@ -125,7 +125,7 @@ Parts of code courtesy of Super3222
 	attachable = FALSE
 	value = 15
 	w_class = ITEM_SIZE_SMALL
-	var/checking = FALSE
+	var/tmp/checking = FALSE // a range check in progress never survives a save (issue 6983)
 	var/needs_instruments = FALSE
 
 	var/attack_direction = "NORTH"
