@@ -69,6 +69,9 @@
 	// The registry owner of the plane this capsule claimed, or null on the
 	// arrival plane. Plain text, as every registry field.
 	var/plane_owner = null
+	// A modular rocket's capsule record (rocket_reuse.dm), or null for a
+	// capsule that is spent on the way home.
+	var/list/recovery = null
 
 /obj/structure/landed_lander/capsule/ambient_c()
 	return ORBIT_VACUUM_C
@@ -77,9 +80,10 @@
 /obj/structure/landed_lander/capsule/hazards_pulse()
 	return
 
-// A capsule always keeps its retro-rockets for the flight home.
+// A capsule always keeps its retro-rockets for the flight home; a modular
+// rocket's capsule also needs a heat shield and parachutes (rocket_reuse.dm).
 /obj/structure/landed_lander/capsule/can_lift_off()
-	return TRUE
+	return !recovery || rocket_capsule_can_return(recovery)
 
 /obj/structure/landed_lander/capsule/lift_off_message()
 	return "\The [src] fires its retro-rockets and falls away toward the world below!"
@@ -179,6 +183,8 @@
 		D.lander_id = P["lander"]
 		if (space_flight_seats_ok(P["seats"]))
 			D.lift_seats = P["seats"]
+		if (islist(P["capsule"]))
+			D.recovery = P["capsule"]
 		D.deploy()
 		log_game("Orbital flight: capsule [D.lander_id] docked at port [port.port_id] of [port.owner()] ([B.x],[B.y],[B.z]).")
 		return B
@@ -199,6 +205,8 @@
 	C.plane_owner = owner
 	if (space_flight_seats_ok(P["seats"]))
 		C.lift_seats = P["seats"]
+	if (islist(P["capsule"]))
+		C.recovery = P["capsule"]
 	C.deploy()
 	log_game("Orbital flight: capsule [C.lander_id] arrived at [T.x],[T.y],[T.z][owner ? " on its own plane" : " on the arrival plane"].")
 	return T

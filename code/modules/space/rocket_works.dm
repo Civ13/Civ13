@@ -29,8 +29,6 @@
 #define ROCKET_MOUNT_TIME 40
 // A hold item weighs this much on the launch planner, in tonnes.
 #define ROCKET_ITEM_TONNES 0.25
-// Below this condition a section will not mount.
-#define ROCKET_SECTION_MIN_CONDITION 25
 
 // The stack type each stock key takes.
 /proc/rocket_works_stock_types()
@@ -686,6 +684,9 @@
 
 /obj/structure/crewed_lander/modular_rocket/flight_extras(list/flight)
 	flight["seats"] = max(1, seats)
+	var/list/capsule = capsule_record()
+	if (capsule)
+		flight["capsule"] = capsule
 
 // The crew are warned before they fly with no way home of their own.
 /obj/structure/crewed_lander/modular_rocket/orbit_launch_prompt(mob/living/human/H, obj/structure/region_gate/trail_marker/launch_pad/pad, region)
@@ -702,4 +703,3 @@
 #undef ROCKET_WORKS_BUILD_TIME
 #undef ROCKET_MOUNT_TIME
 #undef ROCKET_ITEM_TONNES
-#undef ROCKET_SECTION_MIN_CONDITION

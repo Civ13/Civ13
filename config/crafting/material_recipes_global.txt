@@ -526,6 +526,7 @@ RECIPE: /material/electronics/,crewed lander,/obj/structure/crewed_lander,60,400
 RECIPE: /material/steel/,lunar surface kit,/obj/item/lunar_kit,40,300,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,rocket works,/obj/structure/rocket_works,60,500,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/steel/,launch stand,/obj/structure/rocket_stand,40,300,1,1,spaceflight,235,0,0,8,null
+RECIPE: /material/steel/,engine overhaul kit,/obj/item/engine_overhaul_kit,30,60,0,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,station transceiver,/obj/structure/telecom/relay/station,20,200,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,reusable rocket,/obj/structure/crewed_lander/orbital_rocket/reusable,120,600,1,1,spaceflight,235,0,0,8,null
 RECIPE: /material/electronics/,cargo freighter,/obj/structure/crewed_lander/freighter,60,400,1,1,spaceflight,235,0,0,8,null
