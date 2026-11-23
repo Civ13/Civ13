@@ -95,6 +95,9 @@
 	if (!istype(W) || stock.stock_grade == 1)
 		return
 	W.forged_grade = stock.stock_grade
+	var/obj/item/weapon/material/hatchet/H = W
+	if ((istype(H) && H.component_wear) || istype(W, /obj/item/weapon/material/part/axehead/hatchet))
+		W.hatchet_stock_grade = stock.stock_grade
 	W.crafting_quality *= stock.stock_grade
 	W.update_force()
 

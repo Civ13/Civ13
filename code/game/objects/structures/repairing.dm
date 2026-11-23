@@ -50,7 +50,7 @@
 	noise = 'sound/effects/woodfile.ogg'
 
 /obj/structure/repair/attackby(obj/item/M as obj, mob/user as mob)
-	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9) || istype(M, itemtype10) || istype(M, itemtype11))
+	if(istype(M, itemtype1) || istype(M, itemtype2) || istype(M, itemtype3) || istype(M, itemtype4) || istype(M, itemtype5) || istype(M, itemtype6) || istype(M, itemtype7) || istype(M, itemtype8) || istype(M, itemtype9) || istype(M, itemtype10) || istype(M, itemtype11) || (istype(src, /obj/structure/repair/grindstone) && istype(M, /obj/item/weapon/material/part/axehead/hatchet)))
 		if (!user || !user.may_do_after)
 			return
 		if (!repair_ready(M, user))
@@ -80,7 +80,12 @@
 	return item_ready_for_repair(M, user, damageamount, actiontext)
 
 /proc/item_ready_for_repair(obj/item/M, mob/user, strain, actiontext)
-	if (M.health >= M.maxhealth)
+	var/obj/item/weapon/material/hatchet/H = M
+	var/full_condition = M.health >= M.maxhealth
+	if (istype(H) && H.component_wear && H.material)
+		H.init_hatchet_wear()
+		full_condition = H.hatchet_head_hp >= H.hatchet_head_max
+	if (full_condition)
 		to_chat(user, "<span class='notice'>\The [M] is in good condition and needs no work.</span>")
 		return FALSE
 	if (M.too_worn_to_repair(strain))
