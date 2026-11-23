@@ -145,9 +145,9 @@
 	if (!istype(user) || !isturf(user.loc))
 		return 0
 	var/bonus = 0
-	for (var/d in cardinal)
-		if (d == user.dir || d == reverse_direction(user.dir))
-			continue // a wall is shoulder to shoulder, not a file
+	// A wall is shoulder to shoulder, not a file: only the two flank tiles
+	// count, for a diagonal facing as well as a cardinal one.
+	for (var/d in list(turn(user.dir, 90), turn(user.dir, -90)))
 		var/turf/T = get_step(user, d)
 		if (!T)
 			continue
