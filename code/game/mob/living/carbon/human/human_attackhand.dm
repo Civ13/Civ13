@@ -35,6 +35,9 @@
 		if (H != src && check_shields(0, null, H, tgt, H.name))
 			H.do_attack_animation(src)
 			return FALSE
+	// Taking out your own dentures (dentistry.dm).
+	if (H == src && M.a_intent == I_HELP && tgt == "mouth" && take_out_dentures())
+		return TRUE
 	switch(M.a_intent)
 		if (I_HELP)
 			if (H != src && istype(H) && stat == DEAD && !on_fire)

@@ -3019,6 +3019,8 @@ SUITES = {
         'paths': ('tests/drug_crops/',)},
     'coffee': {'files': ('tests/coffee/test_coffee.py',),
         'paths': ('tests/coffee/', 'code/modules/1713/coffee.dm', 'tests/sprites/create_coffee.py')},
+    'dentistry': {'files': ('tests/dentistry/test_dentistry.py',),
+        'paths': ('tests/dentistry/', 'code/modules/1713/dentistry.dm', 'tests/sprites/create_dentistry.py')},
     'butter': {'files': ('tests/butter/test_butter.py',),
         'paths': ('tests/butter/', 'code/modules/1713/butter.dm', 'tests/sprites/create_butter.py')},
     'syrups': {'files': ('tests/syrups/test_syrups.py',),

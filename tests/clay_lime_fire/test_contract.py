@@ -85,7 +85,8 @@ class ClayLimeFire(unittest.TestCase):
         vessels = {p for p, r in recipe_rows().items()
                    if r[0][0] == '/material/clay/' and p.startswith('/obj/item/weapon/clay/')
                    and '/mold' not in p and 'bricks' not in p and '/roofing' not in p
-                   and '/floortiles' not in p}  # pressed flat like bricks, not thrown
+                   and '/floortiles' not in p  # pressed flat like bricks, not thrown
+                   and '/porcelain_dentures' not in p}  # modelled by hand, not thrown
         self.assertEqual(vessels, set(table('potters_wheel_wares')))
 
     def test_bench_batches_never_cost_more_than_hand_bricks(self):

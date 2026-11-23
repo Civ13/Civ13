@@ -26,6 +26,7 @@ REVIEWED = {
     'island_unwelcome_since': 'declared var/tmp on humans (island_access.dm), so never saved',
     'next_sprint_collision': 'declared var/tmp on humans (sprint.dm), so never saved',
     'body_motion_until': 'declared var/tmp on humans (body_motion.dm), so never saved',
+    'knocked_out_at': 'declared var/tmp on teeth stacks (dentistry.dm), so never saved',
     'body_motion_started': 'declared var/tmp on humans (body_motion.dm), so never saved',
     'body_motion_watch_checked': 'declared var/tmp on humans (body_motion.dm), so never saved',
     'body_motion_stroke_next': 'declared var/tmp on humans (body_motion.dm), so never saved',
