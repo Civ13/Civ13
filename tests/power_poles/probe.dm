@@ -132,8 +132,45 @@ var/global/pole_failures = 0
 		pole_check("destroyed: partner forgets it", (B in A.span_poles) ? 1 : 0, 0)
 		pole_check("destroyed: link dropped", (cb in ca.riser_links) ? 1 : 0, 0)
 		pole_check("destroyed: no refund coil on B's tile", (locate(/obj/item/stack/cable_coil) in locate(8, 2, 1)) ? 1 : 0, 0)
+		pole_battery_checks()
 	catch (var/exception/ex)
 		world.log << "POLE EXCEPTION: [ex.name] [ex.file]:[ex.line]"
 		pole_failures++
 	text2file("[pole_failures ? "FAIL" : "PASS"]: power poles failures=[pole_failures]", "result.txt")
 	shutdown()
+
+/proc/pole_battery_checks()
+	var/obj/structure/cable/A = new(locate(2, 6, 1))
+	var/obj/structure/cable/B = new(locate(8, 6, 1))
+	var/obj/structure/engine/pole_tester/E = pole_engine_on(A)
+	E.maxpower = 35
+	var/obj/structure/power_point/pole/P = new(A.loc)
+	var/obj/structure/power_point/pole/Q = new(B.loc)
+	P.anchored = TRUE
+	Q.anchored = TRUE
+	P.attach_cable()
+	Q.attach_cable()
+	var/obj/structure/pole_lamp/L = new(locate(8, 8, 1))
+	Q.serve_nearby()
+	var/obj/structure/battery/lithium_ion/S = new(B.loc)
+	S.anchored = TRUE
+	S.powersource = B
+	B.connections |= S
+	S.mode = "charge"
+	pole_check("disconnected pole grid cannot charge", B.reserve_battery_charge(40), 0)
+	pole_check("charging test links two overhead poles", P.link_span(Q) ? 1 : 0, 1)
+	pole_check("remote idle lamp has no prior reservation", B.currentflow, 0)
+	S.settle_tick()
+	pole_check("battery charges across span after reserving remote idle lamp", S.stored_energy, 25)
+	pole_check("remote lamp still gets all of its work power", L.draw_cable_power() ? 1 : 0, 1)
+	pole_check("same interval cannot reuse the debited generation", B.reserve_battery_charge(40), 0)
+	// Start a fresh generator budget for the lossy span check. Reserve only
+	// what is available after the real material-loss function and the lamp.
+	E.battery_charge_epoch = -1
+	A.cable_color = "iron"
+	var/delivered = cable_delivered(E.maxpower, cable_wire_loss("iron"))
+	pole_check("lossy cable reduces delivered capacity", delivered < E.maxpower, TRUE)
+	pole_check("span charging uses delivered headroom", B.reserve_battery_charge(40), max(0, delivered - L.powerneeded))
+	pole_check("charging does not de-power the existing lamp", L.draw_cable_power() ? 1 : 0, 1)
+	P.cut_spans(FALSE)
+	pole_check("cut span removes the charging path", B.reserve_battery_charge(40), 0)

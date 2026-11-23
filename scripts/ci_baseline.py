@@ -148,6 +148,8 @@ SUITES = {
         'shared_paths': ('code/game/mob/living/carbon/carbon_defines.dm',)},
     'meat_slicing': {'files': ('tests/meat_slicing/test_source.py',), 'paths': ('tests/meat_slicing/',),
         'shared_paths': ('code/modules/reagents/reagent_containers/food/snacks/meat.dm', 'code/modules/reagents/reagent_containers/food/snacks.dm')},
+    'wolf_cubs': {'files': ('tests/wolf_cubs/test_sources.py',), 'paths': ('tests/wolf_cubs/',),
+        'shared_paths': ('code/game/mob/living/simple_animal/hostile/wolf.dm',)},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'scheduled_task_guard': {'files': ('tests/scheduled_task_guard/test_guard.py',), 'paths': ('tests/scheduled_task_guard/', 'code/processes/scheduler.dm', 'code/__defines/qdel.dm'),

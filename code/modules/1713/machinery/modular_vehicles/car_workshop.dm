@@ -195,6 +195,7 @@ var/global/list/car_workshop_prototypes = list()
 	if (busy || QDELETED(O) || !allowed(H) || !Adjacent(H) || !O.Adjacent(H))
 		return
 	if (istype(O, /obj/structure/cable) && O.Adjacent(src) && isturf(O.loc))
+		power_point_forget_owner()
 		if (powersource)
 			powersource.update_power(0, 1, src)
 			powersource.connections -= src

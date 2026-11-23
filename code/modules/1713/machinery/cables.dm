@@ -193,6 +193,8 @@ By design, d1 is the smallest direction and d2 is the highest
 // A consumer reaches its cable when it stands on or next to it, or when a
 // power point on that cable serves it from further away (power_points.dm).
 /obj/var/tmp/obj/power_point = null
+// Renewed by a connected, live draw, never by component meters or rebuilds.
+/obj/var/tmp/grid_power_request_until = 0
 
 /obj/proc/power_point_serves(obj/O)
 	return FALSE
@@ -200,9 +202,9 @@ By design, d1 is the smallest direction and d2 is the highest
 /obj/proc/cable_reach(obj/structure/cable/C)
 	if (!C || !isturf(loc) || z != C.z)
 		return FALSE
-	if (get_dist(src, C) <= 1)
-		return TRUE
-	return power_point && power_point.powersource == C && power_point.power_point_serves(src)
+	if (power_point && power_point.powersource == C)
+		return power_point.power_point_serves(src)
+	return get_dist(src, C) <= 1
 
 // Scalar identities contain no cable references. Refresh from the live graph,
 // rather than retaining cached topology across disconnects or imports.
@@ -215,6 +217,9 @@ var/global/cable_identity_sequence = 0
 /obj/structure/cable/var/tmp/rebuild_time = -1
 // Engines that powered the last traversal, shared by every cable it reached.
 /obj/structure/cable/var/tmp/list/rebuild_engines = null
+// Local refusals and the shared component snapshot. Neither reserves power.
+/obj/structure/cable/var/tmp/list/grid_denials = null
+/obj/structure/cable/var/tmp/list/component_denials = null
 // Cables on the level above or below joined through a pair of cable risers
 // (cable_risers.dm). Runtime only: risers rebuild it from their positions.
 /obj/structure/cable/var/tmp/list/riser_links = null
@@ -225,13 +230,42 @@ var/global/cable_identity_sequence = 0
 	return grid_serial
 
 /obj/structure/cable/persistence_runtime_var(key)
-	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines", "riser_links", "grid_wire_loss"))
+	if (key in list("grid_serial", "component_id", "component_size", "rebuild_visits", "rebuild_time", "rebuild_engines", "riser_links", "grid_wire_loss", "grid_denials", "component_denials"))
 		return TRUE
 	return ..()
+
+// Track only recent renewals from real consumers, including reservations shed
+// by the allocator. The caller removes the reservation independently.
+/obj/structure/cable/proc/record_grid_denial(obj/consumer, amount)
+	if (amount <= 0 || consumer.grid_power_request_until <= world.time)
+		return
+	if (!grid_denials)
+		grid_denials = list()
+	grid_denials[consumer] = amount
+
+// Reads the published set without walking the grid or touching allocations.
+// Expired, disabled, disconnected or newly served requests stop counting even
+// when no generator next causes a rebuild.
+/obj/structure/cable/proc/grid_shortage(now, list/failed)
+	var/shed = 0
+	for (var/obj/consumer in component_denials)
+		var/obj/structure/cable/C = consumer.powersource
+		if (!C || !component_id || C.component_id != component_id || consumer.grid_power_request_until <= now)
+			continue
+		if (!(consumer in C.connections) || !consumer.cable_reach(C) || consumer.smart_power_cut() || C.power_consumers[consumer])
+			continue
+		var/amount = C.grid_denials ? C.grid_denials[consumer] : 0
+		if (amount <= 0)
+			continue
+		shed += amount
+		if (failed && failed.len < 6)
+			failed[consumer] = amount
+	return shed
 
 //needed as this can, unlike other placements, disconnect cables
 /obj/structure/cable/proc/disconnect()
 	var/list/previous = connections.Copy()
+	var/list/auto_retry = null
 	if (riser_links)
 		for (var/obj/structure/cable/linked in riser_links)
 			if (linked.riser_links)
@@ -240,6 +274,8 @@ var/global/cable_identity_sequence = 0
 		riser_links = null
 	connections.Cut()
 	power_consumers.Cut()
+	grid_denials = null
+	component_denials = null
 	powered = FALSE
 	powerflow = 0
 	currentflow = 0
@@ -254,6 +290,11 @@ var/global/cable_identity_sequence = 0
 				var/obj/item/connector/J = OB
 				J.forget_cable(src)
 			if (OB.powersource == src)
+				OB.grid_power_request_until = 0
+				if (OB.power_point)
+					if (!auto_retry)
+						auto_retry = list()
+					auto_retry += OB
 				if (istype(OB, /obj/structure/civ_generator))
 					var/obj/structure/civ_generator/G = OB
 					G.stop_generation()
@@ -264,12 +305,64 @@ var/global/cable_identity_sequence = 0
 				EN.connections -= src
 	for (var/obj/structure/cable/CB in previous)
 		CB.rebuild_supply()
+	for (var/obj/OB in auto_retry)
+		OB.power_point_moved()
+
+// One graph for delivery and storage. Ordinary cable links require local
+// contact. Risers and overhead spans use reciprocal runtime links.
+/obj/structure/cable/proc/enqueue_grid_neighbors(list/pending, list/discovered)
+	for (var/obj/structure/cable/N in connections)
+		if (discovered[N] || !isturf(N.loc) || N.z != z || get_dist(src, N) > 1 || !(src in N.connections))
+			continue
+		discovered[N] = TRUE
+		pending += N
+	for (var/obj/structure/cable/N in riser_links)
+		if (discovered[N] || !isturf(N.loc) || !N.riser_links || !(src in N.riser_links))
+			continue
+		discovered[N] = TRUE
+		pending += N
+
+// Emergency machines can voluntarily be designated priority at a meter.
+// This is an operator setting, not part of saved machine or cable state.
+/obj/var/tmp/grid_power_priority = FALSE
+
+// Keep all-or-nothing machine loads; never round an indivisible load to a
+// fractional grant. Under normal capacity this never walks allocations again.
+/obj/structure/cable/proc/shed_grid_reservations(list/cables, shortage, priority, obj/protected_load = null)
+	var/removed = 0
+	for (var/obj/structure/cable/C in cables)
+		for (var/obj/load in C.power_consumers.Copy())
+			if (load == protected_load || load.grid_power_priority != priority)
+				continue
+			var/amount = C.power_consumers[load]
+			C.power_consumers -= load
+			C.record_grid_denial(load, amount)
+			load.powered = FALSE
+			removed += amount
+			if (removed >= shortage)
+				return removed
+	return removed
+
+// Only preempt ordinary reservations when the priority load can really fit.
+// A failed oversized request must not needlessly shut down other machines.
+/obj/structure/cable/proc/can_preempt_ordinary_loads(list/cables, needed)
+	var/available = 0
+	for (var/obj/structure/cable/C in cables)
+		for (var/obj/load in C.power_consumers)
+			if (load.grid_power_priority)
+				continue
+			available += C.power_consumers[load]
+			if (available >= needed)
+				return TRUE
+	return FALSE
 
 // Capacity is instantaneous engine output, not accumulated energy. Visit each
 // cable and engine once, including when a network contains loops or branches.
 /obj/structure/cable/proc/rebuild_supply(obj/requester, request = 0)
 	if (requester && (request <= 0 || requester.powersource != src || !(requester in connections) || !requester.cable_reach(src)))
 		return FALSE
+	if (requester)
+		requester.grid_power_request_until = world.time + 50 // five seconds of retry grace
 	var/list/pending = list(src)
 	var/list/cables = list()
 	var/list/discovered = list()
@@ -300,11 +393,7 @@ var/global/cable_identity_sequence = 0
 			if (!isturf(OB.loc) || get_dist(CB, OB) > 1 || CB.z != OB.z)
 				continue
 			if (istype(OB, /obj/structure/cable))
-				var/obj/structure/cable/neighbor = OB
-				if (CB in neighbor.connections)
-					if (!discovered[neighbor])
-						discovered[neighbor] = TRUE
-						pending += neighbor
+				continue
 			else if (istype(OB, /obj/structure/engine))
 				var/obj/structure/engine/EN = OB
 				if (!(EN in engines) && (CB in EN.connections))
@@ -323,26 +412,47 @@ var/global/cable_identity_sequence = 0
 				if (!(B in batteries) && B.powersource == CB)
 					batteries += B
 					capacity += B.available_output()
-		// Riser pairs join cables on the same x and y of adjacent levels.
-		if (CB.riser_links)
-			for (var/obj/structure/cable/linked in CB.riser_links)
-				if (!discovered[linked] && isturf(linked.loc) && linked.riser_links && (CB in linked.riser_links))
-					discovered[linked] = TRUE
-					pending += linked
+		CB.enqueue_grid_neighbors(pending, discovered)
 	if (wire_loss > 0)
 		capacity = cable_delivered(capacity, wire_loss)
 	grid_wire_loss = wire_loss
+	// A source or connection can go away between draws. Reconcile the live
+	// reservations immediately: standard loads go before priority loads.
+	if (demand > capacity)
+		demand -= shed_grid_reservations(cables, demand - capacity, FALSE)
+		if (demand > capacity)
+			demand -= shed_grid_reservations(cables, demand - capacity, TRUE)
 	var/accepted = FALSE
 	if (requester)
 		var/reserved = power_consumers[requester]
+		var/shortage = request - (capacity - demand + reserved)
+		if (shortage > 0 && requester.grid_power_priority && request <= capacity && can_preempt_ordinary_loads(cables, shortage))
+			demand -= shed_grid_reservations(cables, shortage, FALSE, requester)
 		if (capacity > 0 && capacity - demand + reserved >= request)
 			power_consumers[requester] = request
+			if (grid_denials)
+				grid_denials -= requester
 			demand += request - reserved
 			accepted = TRUE
 		else
 			power_consumers -= requester
 			demand -= reserved
+			record_grid_denial(requester, request)
+	var/list/denials = null
 	for (var/obj/structure/cable/CB in cables)
+		if (!CB.grid_denials)
+			continue
+		for (var/obj/consumer in CB.grid_denials.Copy())
+			if (consumer.powersource != CB || !(consumer in CB.connections) || !consumer.cable_reach(CB) || consumer.grid_power_request_until <= world.time || CB.power_consumers[consumer])
+				CB.grid_denials -= consumer
+				continue
+			if (!denials)
+				denials = list()
+			denials[consumer] = TRUE
+		if (!CB.grid_denials.len)
+			CB.grid_denials = null
+	for (var/obj/structure/cable/CB in cables)
+		CB.component_denials = denials
 		CB.currentflow = demand
 		CB.powerflow = capacity
 		CB.powered = capacity > 0
@@ -360,6 +470,10 @@ var/global/cable_identity_sequence = 0
 			power_consumers[consumer] = powerval
 		else
 			power_consumers -= consumer
+			if (grid_denials)
+				grid_denials -= consumer
+			if (consumer.powersource == src)
+				consumer.grid_power_request_until = 0
 	return rebuild_supply()
 
 /obj/proc/draw_cable_power()
@@ -381,6 +495,7 @@ var/global/cable_identity_sequence = 0
 	// each walk the whole component every check. Anything else, including an
 	// overloaded or unpowered component, takes the full traversal.
 	if (powersource.power_consumers[src] == powerneeded && powersource.rebuild_time >= 0 && world.time - powersource.rebuild_time < 10 && powersource.powerflow > 0 && powersource.currentflow <= powersource.powerflow && powersource.reservation_engines_running())
+		grid_power_request_until = world.time + 50 // renew recent-demand telemetry on the fast path, too
 		return TRUE
 	// Validate capacity and publish the reservation atomically in one traversal.
 	return powersource.rebuild_supply(src, powerneeded)

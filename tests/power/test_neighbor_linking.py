@@ -58,9 +58,32 @@ class NeighborLinking(unittest.TestCase):
     def test_payment_and_machine_attachment_stay_in_callers(self):
         self.assertEqual(self.placement.count('amount -= 1'), 1)
         self.assertLess(self.placement.index('amount -= 1'), self.placement.index('link_end_neighbors'))
-        self.assertLess(self.machine.index('if (!powersource)'), self.machine.index('powersource.connections += src'))
-        self.assertLess(self.machine.index('powersource.connections += src'), self.machine.index('link_end_neighbors'))
+        self.assertLess(self.machine.index('if (!C)'), self.machine.index('powersource.connections |= src'))
+        self.assertLess(self.machine.index('powersource.connections |= src'), self.machine.index('link_end_neighbors'))
         self.assertIn('return C', self.placement)
+
+class PowerServiceContracts(unittest.TestCase):
+    def test_charging_and_delivery_use_one_reciprocal_topology(self):
+        cable = CABLE.read_text()
+        helper = body(CABLE, '/obj/structure/cable/proc/enqueue_grid_neighbors(')
+        batteries = CABLE.with_name("batteries.dm").read_text()
+        self.assertIn('!(src in N.connections)', helper)
+        self.assertIn('!(src in N.riser_links)', helper)
+        self.assertIn('CB.enqueue_grid_neighbors(pending, discovered)', cable.split('/proc/rebuild_supply(')[1])
+        self.assertIn('CB.enqueue_grid_neighbors(pending, discovered)', batteries)
+        self.assertIn('OB.cable_reach(CB) && !(OB in loads)', batteries)
+        self.assertIn('cable_delivered(available, wire_loss) - demand', batteries)
+        self.assertIn('cable_delivered(available - transfer, wire_loss) < demand', batteries)
+
+    def test_power_allocation_never_preempts_for_unsatisfiable_priority_request(self):
+        cable = CABLE.read_text()
+        supply = body(CABLE, '/obj/structure/cable/proc/rebuild_supply(')
+        self.assertIn('request <= capacity && can_preempt_ordinary_loads(cables, shortage)', supply)
+        self.assertIn('demand -= shed_grid_reservations(cables, shortage, FALSE, requester)', supply)
+        self.assertLess(supply.index('shed_grid_reservations(cables, demand - capacity, FALSE)'),
+                        supply.index('shed_grid_reservations(cables, demand - capacity, TRUE)'))
+        self.assertLess(supply.index('record_grid_denial(requester, request)'), supply.index('CB.currentflow = demand'))
+        self.assertIn('C.record_grid_denial(load, amount)', cable)
 
 class AccountingFixturePreparation(unittest.TestCase):
     def test_accounting_boundary_excludes_crafting_not_power(self):

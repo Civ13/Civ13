@@ -28,6 +28,8 @@
 	check_relatives(1,1)
 
 /obj/covers/Destroy()
+	if (power_point_barrier(src))
+		power_point_barrier_changed(get_turf(src))
 	unregister_seasonal_construction()
 	if (wall)
 		for (var/obj/roof/R in range(2, src))

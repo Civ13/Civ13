@@ -233,17 +233,17 @@
 	return only
 
 /obj/structure/cable/proc/battery_network()
-	var/list/pending = list(src)
-	var/list/cables = list()
-	while (pending.len)
-		var/obj/structure/cable/CB = pending[pending.len]
-		pending.len--
-		if ((CB in cables) || !isturf(CB.loc)) continue
-		cables += CB
-		for (var/obj/structure/cable/N in CB.connections)
-			if (isturf(N.loc) && CB.z == N.z && get_dist(CB, N) <= 1 && (CB in N.connections))
-				pending |= N
-	return cables
+	var/list/pending = list()
+	if (!isturf(loc))
+		return pending
+	pending += src
+	var/list/discovered = list()
+	discovered[src] = TRUE
+	var/index = 1
+	while (index <= pending.len)
+		var/obj/structure/cable/CB = pending[index++]
+		CB.enqueue_grid_neighbors(pending, discovered)
+	return pending
 
 /obj/structure/cable/proc/reserve_battery_charge(requested)
 	if (requested <= 0) return 0
@@ -253,10 +253,13 @@
 	var/list/loads = list()
 	var/available = 0
 	var/demand = 0
+	var/wire_loss = 0
 	for (var/obj/structure/cable/CB in battery_network())
+		if (cable_wire_materials[CB.cable_color])
+			wire_loss += cable_wire_loss(CB.cable_color)
 		for (var/obj/OB in CB.connections)
-			if (!isturf(OB.loc) || CB.z != OB.z || get_dist(CB, OB) > 1) continue
 			if (istype(OB, /obj/structure/engine))
+				if (!isturf(OB.loc) || CB.z != OB.z || get_dist(CB, OB) > 1) continue
 				var/obj/structure/engine/E = OB
 				if ((E in engines) || !(CB in E.connections) || !E.on || E.broken) continue
 				// Only single-port electrical generators can charge storage.
@@ -275,15 +278,20 @@
 					E.battery_charge_power = 0
 				available += max(0, E.maxpower - E.battery_charge_power)
 			else if (istype(OB, /obj/structure/civ_generator))
+				if (!isturf(OB.loc) || CB.z != OB.z || get_dist(CB, OB) > 1) continue
 				var/obj/structure/civ_generator/G = OB
 				if (!(G in generators) && G.powersource == CB)
 					generators += G
 					available += G.available_output()
-			else if (!istype(OB, /obj/structure/cable) && !istype(OB, /obj/structure/battery) && OB.powersource == CB && !(OB in loads))
+			else if (!istype(OB, /obj/structure/cable) && !istype(OB, /obj/structure/battery) && OB.powersource == CB && OB.powerneeded > 0 && OB.cable_reach(CB) && !(OB in loads))
 				loads += OB
 				// Conservative reservation includes idle consumers.
 				demand += max(0, OB.powerneeded)
-	var/transfer = min(requested, max(0, available - demand))
+	// Leave room for the connected load after wire losses, not just against
+	// raw generation. A storage reservation must not make a running grid shed.
+	var/transfer = min(requested, max(0, cable_delivered(available, wire_loss) - demand))
+	if (transfer > 0 && cable_delivered(available - transfer, wire_loss) < demand)
+		return 0 // guard fractional demand at the delivery rounding boundary
 	var/remaining = transfer
 	for (var/obj/structure/engine/E in engines)
 		var/draw = min(remaining, max(0, E.maxpower - E.battery_charge_power))
