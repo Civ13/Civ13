@@ -21,7 +21,7 @@ This applies to persistent worlds such as [North and South America](../maps/The_
 
 ## Getting started
 
-The world starts in 5000 B.C. and has no clock: it moves into a new age only when someone finishes a **capstone** chapter (the prototype nodes, such as Bronze Working), and every player is told when that happens.
+Each land starts in 5000 B.C. and has no clock: it moves into a new age only when someone there finishes a **capstone** chapter, or a copy of one is brought in and kept there (the prototype nodes, such as Bronze Working), and every player is told when that happens.
 
 1. **Found a faction.** The founder receives the **Stone Age master book**, which holds every Stone Age chapter, and a **writing slate**. Nobody knows those chapters yet.
 2. **Study the chapters you need.** Hold the book, use it and press **Study** beside a chapter. Each chapter needs its prerequisites first, but only those: you can skip every chapter that the ones you want do not build on. See [what needs what](Guide_to_Research.md#what-needs-what).
@@ -52,7 +52,7 @@ A **research bench** costs 8 soft wood. Benches belong to nobody: anyone can use
 3. Speed it up by using **samples** on the bench: existing examples of things the subject unlocks. The first two kinds of sample you take apart for a chapter are worth the most, a fifth of the chapter each. Capstones also need their **prototype** before the chapter is finished, or from Steam Power on a [demonstration](#demonstrations), and from Steam Power on a [bill of materials](#bills-of-materials).
 4. When the research is done, the chapter is written into the book. **It teaches nobody**, not even the researcher. Whoever wants it still has to study it.
 
-The first time anyone finishes a capstone chapter, the whole world moves into the next age. Two ages have a peaceful capstone as well as a military one: the Printing Press opens the same age as Gunpowder, and Powered Flight opens the same age as Mechanized Warfare. Either one is enough.
+The first time anyone finishes a capstone chapter, the land they are in moves into the next age. Other lands follow only when a copy of the capstone is carried there (see [Epochs](Guide_to_Epochs.md)). Two ages have a peaceful capstone as well as a military one: the Printing Press opens the same age as Gunpowder, and Powered Flight opens the same age as Mechanized Warfare. Either one is enough.
 
 ### Moving or taking down a bench
 
@@ -90,9 +90,11 @@ Later subjects have their own [field work](#field-work).
 
 ### Losing an age
 
-An age lasts only as long as its capstone is written down somewhere. Where an age has two capstones, either one keeps it. If every book, loose chapter page and recipe manual that holds the current age's capstone is destroyed, and no capstone of a later age survives either, the world falls back one age within about ten minutes, and every player is told. If the age before it has lost its capstone too, that one goes next, a little later. The Stone Age is never lost.
+Each land keeps an age only as long as its capstone is written down somewhere in that land. Where an age has two capstones, either one keeps it. If every book, loose chapter page and recipe manual in the land that holds the current age's capstone is destroyed or carried to another land, and no capstone of a later age is left there either, the land keeps its age for two hours. If no copy comes back in that time, the land falls back one age and everyone there is told. If the age before it has lost its capstone too, that one goes an hour later. The Stone Age is never lost.
 
-Nobody forgets anything when an age is lost. Anyone who still knows the lost capstone can **write it from memory** into a book, and the world returns to that age at once. A region connected to a mainland never falls below the mainland's age.
+Nobody forgets anything when an age is lost. Anyone who still knows the lost capstone can **write it from memory** into a book, and the land returns to that age at once.
+
+A capstone carried into a land that has not reached its age yet moves that land forward one age once it has stayed two hours, then one more each hour until the land reaches the book's age.
 
 ### How knowledge spreads
 
@@ -343,7 +345,7 @@ Books are still the only way to send knowledge to another land or to keep it aft
 ## Tips
 
 - Copy your important chapters. A raid on your library takes every chapter you only had once.
-- Keep spare copies of each capstone in different places. If the last one burns, the whole world loses that age until someone who knows it writes it down again.
+- Keep spare copies of each capstone in different places. If the last one in a land burns or leaves, that land loses the age until a copy comes back or someone who knows it writes it down again.
 - A scribe doesn't need to be a scholar: anyone can copy chapters at a bench.
 - Got a newcomer and no spare books? Have them stand by while you work, then let them try. A few pieces later they know the trade.
 - New to a discipline? Practise with its tool between study sessions, then rest while your stamina recovers.

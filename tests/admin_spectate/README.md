@@ -15,7 +15,11 @@ Admin-tab verbs:
   the player into a new body (death, ghosting) and ends when the admin moves
   their ghost, follows someone else, re-enters a body, loses staff rights,
   clicks the label at the top of the screen or uses **Stop Viewing Player**.
-  The player map panel has a View button for the same thing.
+  The player map panel has a View button for the same thing. Whenever a view
+  ends with the admin still in the same ghost, their own screen, images and
+  ghost plane masters come back, including when they switch straight to
+  viewing someone else (otherwise the next view saved a screen without plane
+  masters and moving off it drew the world pitch black).
 
 Tests:
 
@@ -23,8 +27,9 @@ Tests:
   guards, the click shield, the stop conditions, the hidden ghost reapplied on
   aghost and the player map button.
 - `probe.dm`: developer evidence in DreamDaemon with the shared Linux runner;
-  checks the hidden ghost, the follow-list filter, the mirror's list sync and
-  the view's failure paths.
+  checks the hidden ghost, the follow-list filter, the mirror's list sync, the
+  screen and plane masters put back after one or two views in a row, and the
+  view's failure paths.
 
 ```text
 python3 -I -B tests/admin_spectate/test_admin_spectate.py

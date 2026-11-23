@@ -23,7 +23,18 @@ The station transceiver is researched like the long-range radio relay (see [Comm
 3. Hand the office the materials: **180 steel, 40 glass, 40 copper and 60 electronics**. When the last of it is in, the station is ready on the pad.
 4. Members of the party use the office to fly up. The first member to arrive founds the station on a free part of orbit, and everyone after them arrives at the same hatch.
 
-Only your own party can board your station, unless you welcome visitors at a docking port (see below). You can also fly up without a station in a **two-stage rocket** (80 electronics, three seats) or, from 2026, a **reusable rocket** (see below). Rocket crews arrive in a small capsule with a few hours of air and one bunk. To come home, strap in on the capsule's tile and deorbit; the capsule is used up.
+Only your own party can board your station, unless you welcome visitors at a docking port (see below). You can also fly up in a rocket you design and build yourself (see [Rockets](Guide_to_Rockets.md)) or, from 2026, a **reusable rocket** (see below). Rocket crews arrive in a small capsule with a few hours of air and one bunk. To come home, strap in on the capsule's tile and deorbit. A capsule built with a heat shield and parachutes comes down near the crew to be repaired and flown again; any other capsule is used up. A rocket with cargo bays and no capsule can also carry heavy cargo up to your station.
+
+### Docking a rocket at a station
+
+Every station has at least one **docking airlock**: an airlock with a docking port on its outer hatch and a **berth**, the open space beyond the hatch, where one rocket at a time can dock.
+
+1. When you launch a rocket to orbit, choose where its capsule goes. You can pick any station's free docking port that welcomes your party, or open orbit (a capsule of your own, while orbit has room).
+2. You cannot launch to a station unless one of its ports is free. If the port is taken before you launch, choose another.
+3. The capsule docks with its deck against the outer hatch. Its crew walk aboard through the docking airlock. Pump the airlock as usual: the hatch between the airlock and a docked capsule stays sealed.
+4. To leave, strap in and deorbit as usual. The berth is then free again.
+
+Either side can **bar** a docking port. Stand beside it and use it. From inside the station, **Bar it from inside** stops anyone coming aboard from the berth. From a docked capsule, **Bar it from outside** stops anyone from the station coming into the capsule. Use the port again to unbar it.
 
 The way home from a station is the return hatch in its workshop, which flies party members back to their launch complex.
 
@@ -33,8 +44,8 @@ The station is built around a central **hub** with arms on each side, and a trus
 
 | Era | Modules | Outside |
 | --- | --- | --- |
-| 1969 | Workshop hub, quarters east, airlock south | Two fixed solar wings on a cross boom, a fuel cell, the reboost thruster with three burns |
-| 2013 | Node hub (with a deck hatch), workshop east, greenhouse west, quarters north, airlock south | Two tracking solar arrays, a radioisotope generator, a fuel cell, the thruster with six burns |
+| 1969 | Workshop hub, quarters east with a docking airlock beyond it, airlock south | Two fixed solar wings on a cross boom, a fuel cell, the reboost thruster with three burns |
+| 2013 | Node hub (with a deck hatch), workshop east with a docking airlock beyond it, greenhouse west, quarters north, airlock south | Two tracking solar arrays, a radioisotope generator, a fuel cell, the thruster with six burns |
 | 2026 | The 2013 station plus a second deck above the hub: another node with quarters and storage | As 2013 |
 
 The hub holds the heater, radiator and CO2 scrubber in its corners. The workshop holds a bench, the supply crate, the **orbit console** and the return hatch. The crate has hull patch kits, two pressure suits and helmets, two suit tanks, a suit patch kit, two safety tethers, cable, two sorbent cartridges, food and water. From 2013 it adds a node module kit, and from 2026 a sector beacon.
@@ -58,17 +69,19 @@ Instead of the starter station, you can launch a station you planned yourself. P
 | **Node** | A deck hatch for building decks above or below later. |
 | **Airlock** | A way out on EVA. |
 | **Keel airlock** | The airlock the keel runs out from. Every plan has exactly one. |
+| **Docking airlock** | An airlock with a docking port on its outer hatch, where rockets dock. Every plan needs at least one. |
 
 What a plan needs:
 
 - **One command module and one keel airlock.** The keel airlock must dock to just one module, at the end of an arm. The keel runs 12 tiles out from it, with the solar boom across it 9 tiles out, so keep the slots beyond it empty.
+- **At least one docking airlock.** It must dock to just one module. The slot beyond its outer hatch is its berth, where a rocket docks, so keep that slot empty and off the keel. The window draws each berth for you.
 - **Every module docked** to the rest, north, south, east or west.
 - **At most 12 modules.**
 - **The research** for every module's kit.
 
 The window tells you what is wrong with a plan, and warns you about modules more than two hatches from the command module's life support and about a station with no quarters. Each part is described when you pick it.
 
-A plan up to the size of the starter station for your era costs what the starter does: 180 steel, 40 glass, 40 copper and 60 electronics. That is 3 modules in 1969, 5 from 2013 and 8 from 2026. Each module beyond that costs 60 more steel.
+A plan up to the size of the starter station for your era costs what the starter does: 180 steel, 40 glass, 40 copper and 60 electronics. That is 4 modules in 1969, 6 from 2013 and 9 from 2026. Each module beyond that costs 60 more steel.
 
 To copy a station you already have, use a blank sheet of paper on its orbit console. The plan is drawn from its modules. Plans export and import as design codes, from the sheet menu or with **Export code** and **Import code** in the window (see [Sharing plans as design codes](Guide_to_Boats.md#sharing-plans-as-design-codes)).
 
@@ -97,7 +110,7 @@ A **safety tether** (1 steel) clips you to a handhold: use it beside one to clip
 
 ## Visiting other stations (from 2013)
 
-A **docking port** (30 steel) lets other parties visit. Set it up inside your station. Use it to choose who may dock: only your party, your guest list, or everyone. Owners can add up to ten parties that also have a docking port to the guest list.
+A **docking port** (30 steel) lets other parties visit. Set it up on your station. Built on an airlock's outer hatch, it also gives rockets a berth (from 1969, see [Docking a rocket at a station](#docking-a-rocket-at-a-station)). Use it to choose who may dock: only your party, your guest list, or everyone. Owners can add up to ten parties that also have a docking port to the guest list.
 
 - **Ferry.** At any docking port, choose **Ferry to another station** to cross to a station that welcomes your party. You arrive beside its port. To come home, use that port again and pick **Home: your station**. You land at your own port, or at your station's return hatch if you have no port.
 - **Parcels.** Holding an item at a port that welcomes you, choose **Leave a parcel** to leave it for that station's owners. Owners can leave parcels at their own port for any guest party. Each party collects its own parcels at that port.

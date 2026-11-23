@@ -98,6 +98,7 @@ class PlanCodesTest(unittest.TestCase):
         'code/modules/craft/vehicle_designer.dm': ('car', 'VEHICLE_DESIGNER_WINDOW'),
         'code/modules/1713/train_designer.dm': ('train', 'TRAIN_DESIGNER_WINDOW'),
         'code/modules/space/station_designer.dm': ('station', 'STATION_DESIGNER_WINDOW'),
+        'code/modules/space/rocket_designer.dm': ('rocket', 'ROCKET_DESIGNER_WINDOW'),
         'code/game/objects/house_designer.dm': ('house', 'HOUSE_DESIGNER_WINDOW'),
         'code/modules/1713/rail_designer.dm': ('rail', 'RAIL_DESIGNER_WINDOW'),
         'code/modules/naval/harbor_planner.dm': ('harbor', 'HARBOR_WINDOW'),
@@ -106,7 +107,7 @@ class PlanCodesTest(unittest.TestCase):
     }
     MENUS = ('code/modules/naval/ship_draught.dm', 'code/modules/naval/sub_draught.dm',
              'code/modules/naval/air_draught.dm', 'code/modules/craft/vehicle_draught.dm',
-             'code/modules/1713/train_draught.dm', 'code/modules/space/station_plan.dm',
+             'code/modules/1713/train_draught.dm', 'code/modules/space/station_plan.dm', 'code/modules/space/rocket_plan.dm',
              'code/game/objects/house_plan.dm', 'code/modules/1713/rail_plan.dm',
              'code/modules/naval/harbor_planner.dm', 'code/modules/1713/waterworks_plan.dm',
              'code/modules/1713/contraption_designer.dm')
@@ -114,7 +115,7 @@ class PlanCodesTest(unittest.TestCase):
     def test_every_kind_row_names_its_designer(self):
         kinds = read('code/modules/naval/draught_kinds.dm')
         rows = re.findall(r'^\t\t"(\w+)" = list\((.*)\),$', kinds, re.M)
-        self.assertEqual({k for k, _ in rows}, {'SHIP', 'SUB', 'CAR', 'AIR', 'HOUSE', 'TRAIN', 'STATION', 'RAIL', 'HARBOR', 'WATER', 'MECH'})
+        self.assertEqual({k for k, _ in rows}, {'SHIP', 'SUB', 'CAR', 'AIR', 'HOUSE', 'TRAIN', 'STATION', 'ROCKET', 'RAIL', 'HARBOR', 'WATER', 'MECH'})
         windows = {w: re.search(r'#define %s "(\w+)"' % w, read(p)).group(1) for p, (_, w) in self.DESIGNERS.items()}
         for kind, row in rows:
             with self.subTest(kind=kind):
@@ -123,6 +124,7 @@ class PlanCodesTest(unittest.TestCase):
                 window = re.search(r'"window" = "(\w+)"', row).group(1)
                 self.assertIn(window, windows.values())
         self.assertIn('"age" = ORBIT_MIN_AGE', dict(rows)['STATION'])
+        self.assertIn('"age" = ORBIT_MIN_AGE', dict(rows)['ROCKET'])
 
     def test_every_sheet_menu_uses_the_shared_labels(self):
         for path in self.MENUS:

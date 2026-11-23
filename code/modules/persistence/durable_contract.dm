@@ -9,7 +9,7 @@
 		"nullable_text" = list("current_winner", "current_loser"),
 		"nullable_scalar" = list("last_win_condition"),
 		"alist" = list("faction1_squads", "faction2_squads", "faction1_squad_leaders", "faction2_squad_leaders"),
-		"list" = list("last_crossing_block_status", "availablefactions", "faction_organization", "initial_faction_organization", "faction_distribution_coeffs", "roundend_condition_sides", "faction_targets", "awards", "scores", "warrants", "vehicle_registrations", "gun_registrations", "times_of_day", "custom_faction_nr", "custom_civs", "custom_religions", "custom_religion_nr", "custom_company", "custom_company_nr", "custom_company_value", "custom_company_fiat_value", "sales_registry", "custom_company_colors", "civa_research", "civb_research", "civc_research", "civd_research", "cive_research", "civf_research", "facl", "globalmarketplace", "marketplaceaccounts", "pending_warrants", "emails", "assign_precursors", "precursor_stocks", "berryeffects", "human", "faction_research", "faction_bench_cap_bonus", "faction_forge_progress", "faction_research_director", "faction_director_title", "faction_baseline_era", "faction_motto", "faction_flavour", "faction_symbol_grid", "faction_renames", "faction_recruitment", "river_flood_state", "fishing_grounds_state", "language_lineage_state"),
+		"list" = list("last_crossing_block_status", "availablefactions", "faction_organization", "initial_faction_organization", "faction_distribution_coeffs", "roundend_condition_sides", "faction_targets", "awards", "scores", "warrants", "vehicle_registrations", "gun_registrations", "times_of_day", "custom_faction_nr", "custom_civs", "custom_religions", "custom_religion_nr", "custom_company", "custom_company_nr", "custom_company_value", "custom_company_fiat_value", "sales_registry", "custom_company_colors", "civa_research", "civb_research", "civc_research", "civd_research", "cive_research", "civf_research", "facl", "globalmarketplace", "marketplaceaccounts", "pending_warrants", "emails", "assign_precursors", "precursor_stocks", "berryeffects", "human", "faction_research", "faction_bench_cap_bonus", "faction_forge_progress", "faction_research_director", "faction_director_title", "faction_baseline_era", "faction_motto", "faction_flavour", "faction_symbol_grid", "faction_renames", "faction_recruitment", "river_flood_state", "fishing_grounds_state", "language_lineage_state", "era_records_state"),
 		// These are offsets, never imported as raw old-runtime clock values.
 		"world_time_deadline" = list("next_win"),
 		"world_time_origin" = list("artillery_last"),
@@ -31,6 +31,7 @@
 // v4 adds river_flood_state (river_flood.dm).
 // v5 adds fishing_grounds_state (fishing_grounds.dm).
 // v6 adds language_lineage_state (language/drift.dm).
+// v7 adds era_records_state (research_tree/era_loss.dm).
 // Only those known additions have defaults. Never infer arbitrary missing fields.
 /proc/durable_metadata_map_read_schema(list/state)
 	if(!islist(state) || !(state["schema"] in list(1, 2)))
@@ -39,11 +40,12 @@
 	var/version = state["map_fields_version"]
 	if(!("map_fields_version" in state))
 		version = islist(fields) && !("faction_renames" in fields) ? 1 : 2
-	if(!(version in list(1, 2, 3, 4, 5, 6))) throw EXCEPTION("Unsupported durable map field version")
+	if(!(version in list(1, 2, 3, 4, 5, 6, 7))) throw EXCEPTION("Unsupported durable map field version")
 	var/list/schema = durable_metadata_map_schema()
 	// A future inventory change needs its own reviewed version/default policy.
-	if(schema.len != 136 || schema["faction_renames"] != "list" || schema["faction_recruitment"] != "list" || schema["river_flood_state"] != "list" || schema["fishing_grounds_state"] != "list" || schema["language_lineage_state"] != "list")
+	if(schema.len != 137 || schema["faction_renames"] != "list" || schema["faction_recruitment"] != "list" || schema["river_flood_state"] != "list" || schema["fishing_grounds_state"] != "list" || schema["language_lineage_state"] != "list" || schema["era_records_state"] != "list")
 		throw EXCEPTION("Unversioned durable map schema change")
+	if(version <= 6) schema -= "era_records_state"
 	if(version <= 5) schema -= "language_lineage_state"
 	if(version <= 4) schema -= "fishing_grounds_state"
 	if(version <= 3) schema -= "river_flood_state"
@@ -62,6 +64,7 @@
 	if(!("river_flood_state" in schema)) result["river_flood_state"] = list()
 	if(!("fishing_grounds_state" in schema)) result["fishing_grounds_state"] = list()
 	if(!("language_lineage_state" in schema)) result["language_lineage_state"] = list()
+	if(!("era_records_state" in schema)) result["era_records_state"] = list()
 	return result
 
 /proc/durable_metadata_scalar_valid(value, kind)

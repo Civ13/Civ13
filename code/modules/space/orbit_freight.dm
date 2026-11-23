@@ -297,6 +297,8 @@ var/global/list/orbit_freighters = list()
 				qdel(I)
 			qdel(F)
 			log_game("Cargo freighter: replayed [P["id"]]'s departure.")
+		// A modular rocket's heavy cargo launch flies the same payload (rocket_missions.dm).
+		rocket_cargo_replay_departure(P["id"])
 
 #undef ORBIT_FREIGHT_AGE
 #undef ORBIT_FREIGHT_PROPELLANT

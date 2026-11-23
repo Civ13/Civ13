@@ -4,7 +4,7 @@
 // Each kind is a design code prefix with its own datum, reader and rules: a
 // ship (ship_draught.dm), a submarine (sub_draught.dm) or a land
 // vehicle or plane (craft/vehicle_draught.dm), an airship (air_draught.dm), a train (1713/train_draught.dm), a railway (1713/rail_plan.dm), a space
-// station (space/station_plan.dm) or a house (game/objects/house_plan.dm). A new kind of
+// station (space/station_plan.dm), a rocket (space/rocket_plan.dm) or a house (game/objects/house_plan.dm). A new kind of
 // planner (a spaceship, a rocket, a station) is one more row here with its
 // own reader, a take proc on the sheet and its own window.
 //
@@ -40,6 +40,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 		"RAIL" = list("name" = "railway", "title" = "Rail plan", "max" = DESIGN_CODE_RAIL_MAX, "read" = /proc/rail_plan_from_code, "take" = "take_rail", "open" = "open_rail_designer", "window" = "rail_designer"),
 		"TRAIN" = list("name" = "train", "title" = "Train sheet", "max" = DESIGN_CODE_TRAIN_MAX, "read" = /proc/train_draught_from_code, "take" = "take_train", "open" = "open_train_designer", "window" = "train_designer"),
 		"STATION" = list("name" = "space station", "title" = "Station plan", "max" = DESIGN_CODE_STATION_MAX, "read" = /proc/station_plan_from_code, "take" = "take_station", "open" = "open_station_designer", "window" = "station_designer", "age" = ORBIT_MIN_AGE),
+		"ROCKET" = list("name" = "rocket", "title" = "Rocket sheet", "max" = DESIGN_CODE_ROCKET_MAX, "read" = /proc/rocket_plan_from_code, "take" = "take_rocket", "open" = "open_rocket_designer", "window" = "rocket_designer", "age" = ORBIT_MIN_AGE),
 	)
 
 // The longest code any kind of sheet accepts.
@@ -69,7 +70,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 	var/client/connection = H?.client
 	var/expected_code = draught_code
 	var/datum/admission = persistence_admission_identity
-	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station, harbor, contraption, house or waterworks design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13RAIL/..., C13HARBOR/..., C13MECH/..., C13HOUSE/... or C13WATER/...). It replaces what is drawn on this sheet.", draught_code_max())
+	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station, rocket, harbor, contraption, house or waterworks design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13ROCKET/..., C13RAIL/..., C13HARBOR/..., C13MECH/..., C13HOUSE/... or C13WATER/...). It replaces what is drawn on this sheet.", draught_code_max())
 	if (!typed || QDELETED(src) || QDELETED(H) || !(src in H.get_contents()) || (recheck && !recheck.Invoke()))
 		return null
 	var/kind = design_code_kind(typed)

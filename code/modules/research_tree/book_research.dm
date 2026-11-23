@@ -137,13 +137,29 @@
 	var/new_year = ordinal_age_year(N.era_tier)
 	if (new_year)
 		age = new_year
-	era_loss_missed = 0
+	era_records_settled()
 	if (rewritten)
 		log_game("Book research: [N.id] was written down again; the world returns to era [N.era_tier].")
-		to_chat(world, "<big><font color='#c98a1d'><b>[N.name]</b> is written down again, and the world returns to the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+		to_chat(world, "<big><font color='#c98a1d'><b>[N.name]</b> is written down again, and these lands return to the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
 	else
-		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends the world into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
+		to_chat(world, "<big><font color='#c98a1d'>The discovery of <b>[N.name]</b> sends these lands into the <b>[ordinal_age_name(N.era_tier)]</b>!</font></big>")
 	knowledge_era_advanced()
+
+// One era up, toward a later capstone that was carried into this land and
+// stayed there (check_era_records in era_loss.dm).
+/obj/map_metadata/proc/gain_era()
+	if (ordinal_age >= LATEST_ORDINAL_AGE)
+		return FALSE
+	var/gained = ordinal_age + 1
+	var/datum/research_node/cap = era_capstone_node(gained)
+	ordinal_age = gained
+	var/year = ordinal_age_year(gained)
+	if (year)
+		age = year
+	log_game("Book research: a later capstone has stayed in this land; it rises to era [gained].")
+	to_chat(world, "<big><font color='#c98a1d'>Written knowledge of <b>[cap ? cap.name : ordinal_age_name(gained)]</b> has taken root in these lands. They enter the <b>[ordinal_age_name(gained)]</b>!</font></big>")
+	knowledge_era_advanced()
+	return TRUE
 
 // ------------------------------------------------------------
 // Personal knowledge rules in book mode

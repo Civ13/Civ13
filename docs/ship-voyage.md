@@ -12,8 +12,8 @@ of the map edge of a region group world: the mainland, or a land across the
 sea (an onward voyage, from that land's own chart tile).
 She must meet the crossing rules ([ship crossing](ship-crossing.md): all stop,
 no grapple, the transfer agent reachable, no save running), be able to make
-way (a rigged mast or a running engine) and have at least 2 crew aboard and
-awake.
+way (a rigged mast or a running engine) and have somebody aboard and awake
+(one sailor is enough).
 Everything the crossing would refuse at landfall refuses her at the tiller
 instead (`sea_crossing_load`): something that cannot cross, too much loose
 cargo, or a record over the crossing budget (`SEA_CROSSING_RECORD_MAX`,

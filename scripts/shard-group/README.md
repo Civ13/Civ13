@@ -502,6 +502,13 @@ no region is changed. Every other running region is then told at once; a region
 asleep or stopped follows the mainland when it next runs. Epochs only move forward.
 `status` shows each running region's epoch under `region_view`.
 
+With book research (the default on persistent worlds) no region follows the
+mainland: each land keeps the era whose capstone is written down in it, and a
+capstone book carried between lands slowly moves its era with it
+(`code/modules/research_tree/era_loss.dm`, `docs/land-eras.md`). An epoch the host
+sets on such a land stays only while that land holds the capstone; without it the
+land falls back after the two-hour return window, one era an hour.
+
 ## Staged builds
 
 `stage [--region ID]` builds the next update while the regions keep running, so

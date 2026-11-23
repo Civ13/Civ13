@@ -153,6 +153,23 @@ class ControlTest(unittest.TestCase):
         self.assertEqual({'ok': True}, self.relay.handle('add_port=1&port=1714&token=' + TOKEN))
         self.assertEqual(logged, len(self.logged))
 
+    def test_the_gateway_names_only_a_group_port(self):
+        self.assertEqual({'ok': False}, self.relay.handle('gate=1&port=1740&token=' + TOKEN))
+        self.assertIsNone(self.relay.handle('gate=1&port=1714&token=' + 'cd' * 16))
+        self.assertIsNone(self.relay.gate_port)
+        self.assertEqual({'ok': True}, self.relay.handle('gate=1&port=1714&token=' + TOKEN))
+        self.assertEqual(1714, self.relay.gate_port)
+        self.assertEqual({'gate': 1714}, self.logged[-1])
+        logged = len(self.logged)
+        self.assertEqual({'ok': True}, self.relay.handle('gate=1&port=1714&token=' + TOKEN))
+        self.assertEqual(logged, len(self.logged), 'the minutely repeat is quiet')
+
+    def test_is_login_matches_only_a_whole_login_frame(self):
+        self.assertTrue(relay.is_login(bytes.fromhex('000100160402000014010000197da25ae8799806000000000000')))
+        self.assertFalse(relay.is_login(b'GET / HTTP/1.1\r\n'))
+        self.assertFalse(relay.is_login(b'\x00\x83\x00\x02ab'))
+        self.assertFalse(relay.is_login(b'\x00\x01'))
+
     def test_wrong_token_or_shape_is_dropped(self):
         self.assertIsNone(self.relay.handle('route=1&ip=203.0.113.5&ckey=alice&port=1716&token=' + 'cd' * 16))
         self.assertIsNone(self.relay.handle('route=1&ip=203.0.113.5&ckey=alice&port=1716'))
@@ -251,6 +268,21 @@ class PipeTest(unittest.TestCase):
     def test_unrouted_connection_is_closed(self):
         self.assertEqual(self.exchange(b'\x00\x01\x00\x04abcd'), b'')
         self.assertEqual(self.world.received, [])
+
+    def test_unrouted_login_goes_to_the_gateway_once_it_has_named_its_port(self):
+        # 2026-11-23: players who rejoined the relay port from BYOND's reconnect list
+        # had no route and got "Connection failed during handshake".
+        login = bytes.fromhex('000100160402000014010000235a022efa929706000000000000')
+        self.assertEqual(self.exchange(login), b'', 'no gateway named yet: dropped as before')
+        reply = json.loads(topic(self.control_port, 'gate=1&port=%d&token=%s' % (self.world.port, TOKEN)))
+        self.assertEqual(reply, {'ok': True})
+        self.assertEqual(self.exchange(login), b'world:' + login)
+        self.assertTrue(any(entry.get('unrouted_to_gate') == '127.0.0.1' for entry in self.logged))
+        # Scanners and stray bytes never reach the gateway.
+        for junk in (b'GET / HTTP/1.0\r\n\r\n', bytes.fromhex('030000130ee00000000000010008000b000000'), b'\r\n\r\n',
+                     b'\x00\x01\x00\x30short'):
+            self.assertEqual(self.exchange(junk), b'')
+        self.assertEqual(self.world.received, [login])
 
     def test_topic_frame_is_never_forwarded(self):
         self.relay.routes.set('127.0.0.1', 'alice', self.world.port)
