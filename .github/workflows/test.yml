@@ -1668,6 +1668,12 @@ jobs:
         run: |
           source "$PWD/BYOND/byond/bin/byondsetup"
           python3 tests/house_plans/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/house-plans"
+      - name: Verify gun blueprint codes at a real bench
+        if: needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/gun_blueprints') || inputs.persistence_integration_regressions == true
+        shell: bash
+        run: |
+          source "$PWD/BYOND/byond/bin/byondsetup"
+          python3 tests/gun_blueprints/run.py --byond-bin "$PWD/BYOND/byond/bin" --output "$RUNNER_TEMP/building-levels/gun-blueprints"
       - name: Upload linked building evidence
         if: always() && needs.changes.result == 'success' && (needs.changes.outputs.extensive == 'true' || contains(fromJSON(needs.changes.outputs.new_tests || '[]'), 'tests/building_levels') || inputs.persistence_integration_regressions == true)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
