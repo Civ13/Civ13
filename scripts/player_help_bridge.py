@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'abff97ba468696753ab195e7641aab8f80eaf78d'
+WIKI_REVIEWED_REVISION = '16dc0d75f1a92e7e8fb18776ae824de2a60d986d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -129,7 +129,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('9bc778ebfcf154ac5b1b9c962a16272cd507e57ad06a052c39759238f6ab9057', 'exercise training strength weights running fatigue'),
     'guides/Guide_to_Factory_Automation.md': ('15339c4ec92b80d6d2ef614fc995c2994ea8428f410eb7d277265ad463b84e2c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs'),
-    'guides/Guide_to_Farming.md': ('b36adddbb45f2d75c03a3604fd61f3035906069b83449a27d73c5d823edd9c99', 'farming farm plant crops soil water frost mulch cloche'),
+    'guides/Guide_to_Farming.md': ('9011ce042f01c538c5b16c352635c2d36d34fe716df9b86c455140c01f4bb0ad', 'farming farm plant crops soil water frost mulch cloche'),
     'guides/Guide_to_Fishing.md': ('bf8032bff6af977f89793883b0c4565f2f87f4497d18dee75ea5efe816898375', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
@@ -168,7 +168,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('ad3fd1eb2b109f8d1ab3aead23d2bfa189ff7e5a4880e5c0e6b66ada8c13f49e', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('ed69d036f8ec5f3319309b0e2d9aef011608626d9d35e2aa0553abac13e69bb3', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('0a42bcabcaf3efe8a77e6b0305714b8b0b72675101ab13cb533d4323e32024c5', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -213,7 +213,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Resins_and_Fabrics.md': ('30b69a95d41215329b5dccc68bbb43d4206ff72020ff10cde6355e36fc192066', 'resin resins pitch tar turpentine rubber latex silk silkworm fabric fabrics waxed cloth oilcloth laminate'),
     'guides/Guide_to_Space_Stations.md': ('1ebdae9ea1287f3d66e296e6894c85545b07dd06a831af82e19e1c8abfea4ab1', 'space station stations orbit orbital module rocket launch dock docking airlock spacesuit satellite'),
     'guides/Guide_to_Rockets.md': ('e3e66eecff3f412017c15c5d1c98d3b7d28c79878b9b29dbf9cdf4c12124287d', 'rocket rockets rocketry launch planner stage stages booster boosters capsule heat shield parachutes rocket works launch stand cargo bay probe lunar probe delta-v reuse wear inspect overhaul'),
-    'guides/Guide_to_Tool_Materials.md': ('4f950f3024433fc970befecf51fe69cc1a7505f6975afec778d06607414666e6', 'tool tools material materials copper bronze iron steel pickaxe shovel hatchet sickle hoe wear durability machine parts lathe pipes cannon barrels sparks'),
+    'guides/Guide_to_Tool_Materials.md': ('a9db37d2271c7bb2c6721c3fa7f1885c772e932454ba18de50bfe03307a5db27', 'tool tools material materials copper bronze iron steel pickaxe shovel hatchet sickle hoe wear durability machine parts lathe pipes cannon barrels sparks'),
     'guides/Guide_to_Trapping.md': ('cb69900d9bdc5cb81f6c47ab82fbf9320c7c86f89a0bc08441a67e4fb02bd4fc', 'trapping trap traps snare snares deadfall fish weir pit trap rabbit fox catch'),
     'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
     'guides/Guide_to_Tribal_Life.md': ('9850870389868ec34eba898d67ed6bf2be045873230a5ae3f9dadb0e2f9f7a2c', 'tribe tribal totem pole deeds burial mound cairn feast feasts barter music'),

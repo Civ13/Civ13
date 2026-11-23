@@ -83,6 +83,15 @@ A tool softer than what it cuts still works, but badly. You wait about four seco
 - Examine a tool to see whether it shows some wear, is worn or is nearly worn out. A worn-out tool breaks.
 - Nothing here applies when you strike on harm intent.
 
+## Hatchet heads and handles
+
+A work hatchet wears its head and its handle separately. Examine it to see the condition of each.
+
+- When the **handle** gives out, the head drops off with the wear it had left. Fit it to a new handle as you made the hatchet, or bind a flint head to a new branch.
+- When a **metal head** is worn out, it drops as a hatchet head that needs sharpening on a grindstone before you can fit a new handle. A flint or other brittle head shatters instead.
+- Sharpening a head restores it, but each sharpening wears a little off what it can hold.
+- Battle axes, hand axes and adzes still wear as one piece.
+
 ## Recipes that need a second material
 
 Some builds need a second material as well as the one you are holding. A raft needs 2 rope and a carriage needs 20. The second material can be in your other hand, worn on you or lying at your feet. It is only taken when the build finishes, so a cancelled build costs you nothing. The Crafting window lists what a recipe still needs.
