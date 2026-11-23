@@ -44,6 +44,47 @@ var/global/list/scholar_node_disciplines = list(
 	"weaving" = "agriculture",
 	"furriery" = "agriculture")
 
+// Subjects that also teach a related discipline. Player suggestion relayed by
+// Val 2026-11-23: Natural Science had too few subjects of its own to grow
+// from ("stone masonry, it's about stone, that's natural science"). Work on
+// these (research, study, finds, active work) also teaches
+// SCHOLAR_RELATED_SHARE of the gain in the related discipline, never its
+// Basic Mathematics share again. Nothing is gated by it: a subject still
+// needs only its own discipline, and the tree order is unchanged.
+var/global/list/scholar_node_related = list(
+	"pottery_storage" = "natural_science",
+	"herbalism" = "natural_science",
+	"stone_masonry" = "natural_science",
+	"resource_processing" = "natural_science",
+	"bronze_working" = "natural_science",
+	"brickmaking" = "natural_science",
+	"ore_dressing" = "natural_science",
+	"iron_smithing" = "natural_science",
+	"crucible_steel" = "natural_science",
+	"tatara_smelting" = "natural_science",
+	"apothecary" = "natural_science",
+	"irrigation" = "natural_science",
+	"amalgamation" = "natural_science",
+	"blast_furnaces" = "natural_science",
+	"pharmacology" = "natural_science",
+	"germ_theory" = "natural_science",
+	"open_hearth" = "natural_science",
+	"aluminium_refining" = "natural_science",
+	"soil_science" = "natural_science",
+	"crop_breeding" = "natural_science",
+	"planetary_survey" = "natural_science",
+	"off_world_mining" = "natural_science",
+	"local_resources" = "natural_science")
+
+// The related discipline node_id also teaches, or null.
+/proc/node_related_discipline(node_id)
+	var/related = scholar_node_related[node_id]
+	return (related && related != node_discipline(node_id)) ? related : null
+
+// TRUE when work on node_id counts toward discipline, as its own or related one.
+/proc/node_teaches_discipline(node_id, discipline)
+	return node_discipline(node_id) == discipline || node_related_discipline(node_id) == discipline
+
 /proc/node_discipline(node_id)
 	if (node_id in scholar_node_disciplines)
 		return scholar_node_disciplines[node_id]
@@ -79,11 +120,11 @@ var/global/list/scholar_entry_tiers = null
 	var/tier = scholar_entry_tiers[discipline]
 	return isnum(tier) ? tier : 0
 
-/proc/node_scholar_requirement(node_id)
+/proc/node_scholar_requirement(node_id, discipline = null)
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N)
 		return 0
-	var/steps = max(0, N.era_tier - scholar_entry_tier(node_discipline(node_id)))
+	var/steps = max(0, N.era_tier - scholar_entry_tier(discipline ? discipline : node_discipline(node_id)))
 	return min(SCHOLAR_MAX_LEVEL, steps * SCHOLAR_LEVEL_PER_TIER)
 
 /mob/living/human
@@ -111,6 +152,7 @@ var/global/list/scholar_entry_tiers = null
 		return
 	var/discipline = node_discipline(node_id)
 	var/req = node_scholar_requirement(node_id)
+	var/base_amount = amount
 	amount *= trait_scholarship_gain_mult(discipline)
 	if (!islist(scholarship))
 		scholarship = list()
@@ -123,6 +165,15 @@ var/global/list/scholar_entry_tiers = null
 		var/math = scholar_level("mathematics")
 		var/math_factor = clamp(1 - (math - req / 2) / (SCHOLAR_LEVEL_PER_TIER * 2), 0.1, 1)
 		scholarship["mathematics"] = min(SCHOLAR_MAX_LEVEL, round(math + amount * math_factor / 2, 0.01))
+	// A related discipline learns a share, judged against the subject's era
+	// in that discipline so old work teaches it less too.
+	var/related = node_related_discipline(node_id)
+	if (related)
+		var/related_level = scholar_level(related)
+		var/related_req = node_scholar_requirement(node_id, related)
+		var/related_factor = clamp(1 - (related_level - related_req) / (SCHOLAR_LEVEL_PER_TIER * 2), 0.1, 1)
+		var/related_amount = base_amount * SCHOLAR_RELATED_SHARE * trait_scholarship_gain_mult(related) * study_field_gain_mult(related)
+		scholarship[related] = min(SCHOLAR_MAX_LEVEL, round(related_level + related_amount * related_factor, 0.01))
 
 /proc/clean_scholarship(value)
 	var/list/result = list()
