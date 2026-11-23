@@ -77,3 +77,22 @@ with what each is missing.
 A steel crew orbiter falls short of orbit while a steel two-stage probe
 reaches it; the cargo hauler needs its boosters; six boosters on a crew
 rocket still fall short of the Moon.
+
+## Building
+
+Rockets are no longer a single recipe. With Orbital Flight researched, a
+rocket works (`code/modules/space/rocket_works.dm`) takes a rocket sheet
+and steel, aluminium, copper and electronics, and builds the sheet's
+sections one at a time in the sheet's frame, each onto a floor tile beside
+it. A launch stand placed beside a launch pad takes the same sheet and
+mounts the sections bottom-up, refusing any section out of order. Every
+`ROCKET_STOREY_SECTIONS` sections make a storey: storey 2 and up mount from
+the level above the stand (open sky over it), so upper sections are hauled
+up with shear legs or a tower crane (`hoist_only_types`). Where the world
+has fewer levels, the remaining storeys mount from the highest level.
+
+The finished stack is a modular rocket on the stand's tile. It takes the
+sheet's propellant and seats, shows the launch planner on examine, flies
+only to orbit for now, and refuses to launch until the orbit leg is reached
+with what is actually in its bays. A crew that cannot come home is warned
+before launch.

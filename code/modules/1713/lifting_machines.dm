@@ -23,6 +23,7 @@ var/global/list/hoist_only_types = list(
 	/obj/structure/factory_fabricator,
 	/obj/structure/tanning_drum,
 	/obj/structure/research_forge,
+	/obj/structure/rocket_section,
 )
 // Light enough to carry on a ladder although their parent type is listed.
 var/global/list/hoist_exempt_types = list(

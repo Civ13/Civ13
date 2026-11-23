@@ -19,3 +19,14 @@ codes are refused, that the sheet keeps the rocket, and that every piece has
 a part description.
 
     python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/probe.dm 300
+
+## `works_probe.dm`
+
+Building a rocket (`rocket_works.dm`): the works builds every section of a
+sheet from its stock and spends what the sheet costs; the stand mounts them
+in order, refuses the wrong, distant or worn section, mounts upper storeys
+only from the level above and raises the rocket's body there; the finished
+rocket takes the sheet's propellant and seats, carries the planner, flies
+only to orbit and takes its storeys and sections with it.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/works_probe.dm 300
