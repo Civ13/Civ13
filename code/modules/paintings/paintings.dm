@@ -517,6 +517,10 @@
 			if (F.dir == dir)
 				to_chat(user, SPAN_WARNING("A painting already hangs there."))
 				return FALSE
+		for (var/obj/structure/banner/B in spot)
+			if (B.banner_mount_dir == dir)
+				to_chat(user, SPAN_WARNING("A banner already hangs there."))
+				return FALSE
 	var/turf/west = get_step(T, WEST)
 	for (var/obj/structure/painting_frame/F in west)
 		var/obj/item/canvas/G = F.held_canvas()

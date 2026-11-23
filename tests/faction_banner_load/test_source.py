@@ -61,6 +61,17 @@ class FactionBannerLoadSource(unittest.TestCase):
         self.assertIn('B.board_mount_dir == facing', mount)
         self.assertIn('F.dir == NORTH && C && C.wide_hang', mount)
 
+    def test_other_wall_art_respects_a_hung_banner(self):
+        root = ROOT
+        painting = (root / 'code/modules/paintings/paintings.dm').read_text(encoding='utf-8')
+        hang = painting.split('/proc/painting_hang(', 1)[1].split('/proc/painting_is_wall_turf(', 1)[0]
+        self.assertIn('for (var/obj/structure/banner/B in spot)\n\t\t\tif (B.banner_mount_dir == dir)', hang)
+        self.assertLess(hang.index('banner_mount_dir == dir'), hang.index('new(T)'))
+        board = (root / 'code/game/objects/structures/noticeboard.dm').read_text(encoding='utf-8')
+        mount = board.split('/obj/structure/noticeboard/proc/noticeboard_mount(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('for (var/obj/structure/banner/B in T)\n\t\tif (B.banner_mount_dir == facing)', mount)
+        self.assertLess(mount.index('banner_mount_dir == facing'), mount.index('board_mount_dir = facing'))
+
 
 if __name__ == '__main__':
     unittest.main()
