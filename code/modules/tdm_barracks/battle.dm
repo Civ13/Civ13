@@ -16,6 +16,8 @@ var/global/datum/tdm_battle/tdm_battle = new
 	var/rotation_map = null
 	// The round ended without a map vote: the update is built for the map it has.
 	var/updating = FALSE
+	// The Barracks voted this empty world onto a new map (barracks_map()).
+	var/barracks_rotation = FALSE
 
 /datum/tdm_battle/proc/start()
 	if(running)
@@ -38,7 +40,7 @@ var/global/datum/tdm_battle/tdm_battle = new
 	running = FALSE
 
 /datum/tdm_battle/proc/phase()
-	if(returning)
+	if(returning || barracks_rotation)
 		return rotation_map ? "rotating" : "returning"
 	if(!ticker)
 		return "starting"
@@ -163,7 +165,11 @@ var/global/datum/tdm_battle/tdm_battle = new
 /datum/tdm_battle/proc/before_reboot()
 	if(returning)
 		return
-	send_results()
+	// A reboot before any round began (the Barracks map vote) has no results.
+	if(ticker && ticker.current_state >= GAME_STATE_PLAYING)
+		send_results()
+	else
+		results_sent = TRUE
 	returning = TRUE
 	tdm_link.report("status", status())
 	for(var/client/C in clients)
@@ -228,6 +234,34 @@ var/global/datum/tdm_battle/tdm_battle = new
 	else
 		shell("start \"\" /b python scripts\\shard-group\\battle_mapswap.py [winner] > data\\shard-host\\rotation.log 2>&1")
 	return TRUE
+
+// The Barracks map vote's winner (barracks_map_vote.dm). Only an empty world
+// waiting for players takes it: it builds the map like a round-end vote's
+// winner, then reboots onto it. The answer goes back to the Barracks.
+/datum/tdm_battle/proc/barracks_map(map_id)
+	if(!istext(map_id))
+		return list("ok" = 0, "reason" = "that is not a battle map")
+	map_id = uppertext(map_id)
+	if(!(map_id in tdm_battle_map_choices()))
+		return list("ok" = 0, "reason" = "that is not a battle map")
+	if(returning || barracks_rotation || rotation_map || updating)
+		return list("ok" = 0, "reason" = "the next map is already being prepared")
+	if(!ticker || ticker.current_state != GAME_STATE_PREGAME || length(clients))
+		return list("ok" = 0, "reason" = "a battle is forming")
+	if(map && uppertext(map.ID) == map_id)
+		return list("ok" = 1, "same" = 1)
+	if(!rotate(map_id))
+		return list("ok" = 0, "reason" = "the map could not be built")
+	barracks_rotation = TRUE
+	reboot_for_barracks_map()
+	return list("ok" = 1)
+
+/datum/tdm_battle/proc/reboot_for_barracks_map()
+	set waitfor = FALSE
+	sleep(1) // the Barracks has its answer first
+	log_game("TDM battle: the Barracks voted for [rotation_map]; rebooting onto it once it is built.")
+	tdm_link.report("status", status())
+	world.Reboot("Barracks battle map vote")
 
 /client/proc/tdm_return_to_barracks()
 	set name = "Return to Barracks"

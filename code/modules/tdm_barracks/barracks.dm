@@ -79,7 +79,7 @@ var/global/datum/tdm_barracks/tdm_barracks = new
 	last_phase = phase
 	switch(phase)
 		if("pregame")
-			announce("<big>A battle on <b>[html_encode(data["map"])]</b> is forming[isnum(data["pregame_seconds"]) ? " and starts in [tdm_clock(data["pregame_seconds"])]" : ""]. [join_link("Join the battle")]</big>")
+			announce("<big>A battle on <b>[html_encode(data["map"])]</b> is forming[isnum(data["pregame_seconds"]) ? " and starts in [tdm_clock(data["pregame_seconds"])]" : ""]. [join_link("Join the battle")]</big>[battle_idle() ? " Or [map_vote_link("vote on a different map")] while it is empty." : ""]")
 			send_auto_joiners()
 		if("playing")
 			if(previous == "pregame")
@@ -180,6 +180,8 @@ var/global/datum/tdm_barracks/tdm_barracks = new
 		show_board(C)
 	else if(href_list["tdm_status"])
 		show_status(C)
+	else if(href_list["tdm_map_vote"])
+		start_map_vote(C)
 	else if(href_list["tdm_auto"])
 		toggle_auto(C)
 		show_status(C)
@@ -216,6 +218,11 @@ var/global/datum/tdm_barracks/tdm_barracks = new
 	if(status_fresh())
 		lines += "<p><b>[html_encode(status["map"])]</b>[status["age"] ? " ([html_encode(status["age"])])" : ""][status["gamemode"] ? ", [html_encode(status["gamemode"])]" : ""]</p>"
 	lines += "<p>[phase_text()]. [joinable() ? join_link("Join the battle") : ""]</p>"
+	if(battle_idle())
+		if(vote.mode == "battle map")
+			lines += "<p class='note'>A battle map vote is running. [map_vote_link("Open the ballot")]</p>"
+		else
+			lines += "<p class='note'>The battle world is empty, so the Barracks can pick its map. [map_vote_link("Vote on the battle map")]</p>"
 	if(status_fresh())
 		if(istext(status["condition"]) && length(status["condition"]))
 			lines += "<p class='note'>[html_encode(status["condition"])]</p>"
@@ -346,7 +353,7 @@ var/global/datum/tdm_barracks/tdm_barracks = new
 		return
 	tdm_barracks.show_board(src)
 
-var/global/list/tdm_barracks_verbs = list(/client/proc/tdm_battle_status, /client/proc/tdm_join_battle, /client/proc/tdm_auto_join, /client/proc/tdm_my_record, /client/proc/tdm_leaderboard)
+var/global/list/tdm_barracks_verbs = list(/client/proc/tdm_battle_status, /client/proc/tdm_join_battle, /client/proc/tdm_auto_join, /client/proc/tdm_my_record, /client/proc/tdm_leaderboard, /client/proc/tdm_vote_battle_map)
 
 /mob/new_player/Login()
 	. = ..()
@@ -358,7 +365,7 @@ var/global/list/tdm_barracks_verbs = list(/client/proc/tdm_battle_status, /clien
 /datum/tdm_barracks/proc/greet(client/C)
 	if(!C)
 		return
-	to_chat(C, SPAN_NOTICE("<b>Welcome to the Barracks.</b> [summary_line()]. [joinable() ? join_link("Join the battle") + " or " : ""]practise here. <a href='byond://?src=\ref[src];tdm_status=1'>Battle status</a> - [stats_link("your record")]."))
+	to_chat(C, SPAN_NOTICE("<b>Welcome to the Barracks.</b> [summary_line()]. [joinable() ? join_link("Join the battle") + " or " : ""][battle_idle() ? map_vote_link("vote on its map") + " or " : ""]practise here. <a href='byond://?src=\ref[src];tdm_status=1'>Battle status</a> - [stats_link("your record")]."))
 
 #undef TDM_STATS_FILE
 #undef TDM_HISTORY_KEPT
