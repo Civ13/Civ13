@@ -136,7 +136,11 @@
 	if (!isliving(target))	return FALSE
 	if (isanimal(target))	return FALSE
 	var/mob/living/L = target
-	L.apply_effects(stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, agony, poisonous, blocked)
+	// Taser rounds already applied stun and agony through stun_effect_act(),
+	// scaled by electrical protection; never apply them unscaled again (issue 6977).
+	var/hit_stun = taser_effect ? 0 : stun
+	var/hit_agony = taser_effect ? 0 : agony
+	L.apply_effects(hit_stun, weaken, paralyze, irradiate, stutter, eyeblur, drowsy, hit_agony, poisonous, blocked)
 	return TRUE
 
 /obj/item/projectile/proc/on_impact(var/atom/A, play_sound = TRUE)
