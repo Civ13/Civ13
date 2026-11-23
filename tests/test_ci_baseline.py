@@ -811,7 +811,8 @@ class BaselinePolicyTests(unittest.TestCase):
     def test_character_traits_registration_and_shared_source_fallback(self):
         suite = ci.SUITES['character_traits']
         self.assertEqual(suite['files'], ('tests/character_traits/test_foundations.py',
-                                         'tests/character_traits/test_random.py'))
+                                         'tests/character_traits/test_random.py',
+                                         'tests/character_traits/test_birth_chart_wheel.py'))
         self.assertEqual(suite['paths'], ('tests/character_traits/',))
         self.assertFalse(suite.get('always', False))
         for path in (*suite['files'], 'tests/character_traits/README.md'):
@@ -838,6 +839,7 @@ class BaselinePolicyTests(unittest.TestCase):
         for path, imports, from_imports in (
             (suite['files'][0], {'re', 'unittest'}, {'pathlib'}),
             (suite['files'][1], {'random', 're', 'unittest'}, {'test_foundations'}),
+            (suite['files'][2], {'ast', 'math', 'operator', 're', 'unittest'}, {'pathlib'}),
         ):
             tree = ast.parse((ROOT / path).read_text())
             self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
@@ -852,7 +854,11 @@ class BaselinePolicyTests(unittest.TestCase):
             root = Path(temporary)
             for relative in ('scripts/ci_baseline.py', 'scripts/ci_skill_prose.py', 'scripts/byond_toolchain.py',
                              'tools/byond/version.json', *ci.SUITES[suite_name]['files'],
-                             *ci.SUITES[suite_name]['shared_paths']):
+                             *ci.SUITES[suite_name]['shared_paths'],
+                             'code/game/mob/living/carbon/human/birth_chart_wheel.dm',
+                             'code/game/mob/living/carbon/human/birth_charts.dm',
+                             'code/game/mob/new_player/new_player.dm',
+                             'code/modules/persistence/region_travel.dm'):
                 destination = root / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / relative, destination)
@@ -904,7 +910,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=21, failures=int(failing), errors=0, skipped=0))
+                        tests=26, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:
