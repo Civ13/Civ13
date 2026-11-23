@@ -74,6 +74,7 @@
       "code/game/mob/new_player/new_player.dm": 9,
       "code/game/mob/observer/ghost/logout.dm": 1,
       "code/game/mob/observer/ghost/spirit_wait.dm": 2,
+      "code/game/objects/build_markers.dm": 1,
       "code/game/objects/controls.dm": 18,
       "code/game/objects/covers.dm": 4,
       "code/game/objects/covers_types/cover_floortypes.dm": 1,

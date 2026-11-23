@@ -118,6 +118,35 @@ var/global/house_probe_checks = 0
 	. = jointext(R.texts(level), " | ")
 	qdel(R)
 
+// Builds what storey s of plan D draws, as a builder following its pegs
+// would: floors, every piece (stairs too) and, with roofs, the roofing.
+/proc/house_probe_follow(datum/house_plan/D, s, roofs = FALSE)
+	var/list/pieces = house_plan_pieces()
+	var/list/floors = house_plan_floors()
+	for (var/y = 1, y <= HOUSE_PLAN_SIDE, y++)
+		for (var/x = 1, x <= HOUSE_PLAN_SIDE, x++)
+			var/turf/T = house_probe_turf(s, x, y)
+			if (!house_probe_floor_under(T))
+				continue
+			if (roofs)
+				if (D.has_roof(s, x, y) && !building_construct_roof(T, /obj/roof/wood, null))
+					throw EXCEPTION("pegs: storey [s] tile [x],[y]: the roof would not build")
+				continue
+			var/key = D.floor_key(s, x, y)
+			if (key)
+				var/floor_type = floors[key]["type"]
+				new floor_type(T)
+			key = D.piece_key(s, x, y)
+			if (key)
+				var/piece_type = pieces[key]["type"]
+				new piece_type(T)
+	if (roofs)
+		sleep(3)
+
+/proc/house_probe_look(set_id)
+	for (var/obj/effect/build_marker/M in build_markers_of(set_id))
+		M.look()
+
 /world/New()
 	OpenPort("none")
 	sleep(1)
@@ -325,6 +354,62 @@ var/global/house_probe_checks = 0
 		var/obj/item/ship_draught/sheet = new(bench)
 		sheet.take_house(wide)
 		house_assert(sheet.house_plan_kind() && findtext(sheet.name, "house plan") && !sheet.station_plan() && !sheet.draught(), "a sheet holding a house is a house plan and nothing else")
+
+		// ---- Pegging a plan out (build_markers.dm, house_plan_pegs.dm) ----
+		house_probe_clear()
+		var/list/examples = house_plan_examples()
+		var/datum/house_plan/pegged = examples[2]
+		var/datum/house_plan/keep = examples[3]
+		house_assert(jointext(keep.tile_wants(1, 8, 8), ";") == "wall=stone wall;floor=stone floor;roof=clay tile roof", "a tile asks for its piece, its floor and its roof")
+		// Tile x,y of the sheet falls on house_probe_turf(): the sheet's 0,0 is at 1, HOUSE_PLAN_SIDE + 2.
+		var/list/laid = house_plan_peg_out(pegged, 1, 1, HOUSE_PLAN_SIDE + 2, 1, "probe")
+		house_assert(laid && laid["pegs"] == 42 && !laid["skipped"] && !laid["blocked"], "the ground floor takes a peg on each of its 42 tiles")
+		var/obj/effect/build_marker/door_peg = build_marker_at(house_probe_turf(1, 10, 12), "probe")
+		house_assert(door_peg && door_peg.icon_state == "door" && door_peg.name == "peg (door)" && door_peg.wants == "door=door;roof=wood roof" && door_peg.set_name == pegged.name, "the door's peg is tagged with the door and still asks for its roof")
+		house_assert(!door_peg.density && door_peg.anchored && !door_peg.opacity, "a peg stops nobody and hides nothing")
+		for (var/tag_kind in build_marker_kinds())
+			house_assert((build_marker_kinds()[tag_kind]["state"] in icon_states('icons/obj/build_markers.dmi')), "the [tag_kind] tag is drawn")
+		house_assert(("note" in icon_states('icons/obj/build_markers.dmi')) && ("peg" in icon_states('icons/obj/build_markers.dmi')), "the bare peg and the note tag are drawn")
+		laid = house_plan_peg_out(pegged, 1, 1, HOUSE_PLAN_SIDE + 2, 1, "probe")
+		house_assert(laid["pegs"] == 42 && length(build_markers_of("probe")) == 42, "pegging a storey again replaces its pegs")
+		house_assert(!house_plan_peg_out(pegged, 1, 10, HOUSE_PLAN_SIDE + 2, 1, "edge") && !length(build_markers_of("edge")), "a plan that runs off the land is not pegged")
+		house_assert(house_peg_level(1, 2) == 2 && house_peg_level(1, 1) == 1, "the storey above the ground is the level above")
+		laid = house_plan_peg_out(pegged, 2, 1, HOUSE_PLAN_SIDE + 2, 2, "probe")
+		house_assert(laid && !laid["pegs"] && laid["skipped"] == 42, "a storey with no floor under it yet takes no pegs")
+		house_probe_follow(pegged, 1)
+		house_probe_look("probe")
+		var/list/left = build_markers_left("probe")
+		house_assert(left.len == 1 && left["wood roof"] == 41 && length(build_markers_of("probe")) == 41, "with the walls up the pegs ask only for the roof: [json_encode(left)]")
+		house_assert(!build_marker_at(house_probe_turf(1, 8, 8), "probe"), "the stairs' peg went when the stairs and their floor were built")
+		var/obj/effect/build_marker/roof_peg = build_marker_at(house_probe_turf(1, 9, 9), "probe")
+		house_assert(roof_peg && roof_peg.icon_state == "roof" && roof_peg.name == "peg (wood roof)", "a tile's tag moves on to what is left")
+		house_probe_follow(pegged, 1, TRUE)
+		house_probe_look("probe")
+		house_assert(!length(build_markers_of("probe")), "every peg of the ground floor goes when it is built")
+		laid = house_plan_peg_out(pegged, 2, 1, HOUSE_PLAN_SIDE + 2, 2, "probe")
+		house_assert(laid["pegs"] == 41 && laid["skipped"] == 1, "the storey above is pegged on its floor, all but the stairwell: [json_encode(laid)]")
+		var/obj/effect/build_marker/note_peg = build_marker_at(house_probe_turf(2, 12, 8), "probe")
+		house_assert(note_peg && note_peg.note == "Beds upstairs" && note_peg.icon_state == "roof", "a note rides on its tile's peg")
+		house_probe_follow(pegged, 2)
+		house_probe_follow(pegged, 2, TRUE)
+		house_probe_look("probe")
+		house_assert(length(build_markers_of("probe")) == 1 && !QDELETED(note_peg) && note_peg.icon_state == "note" && !length(note_peg.wants), "with the house built only the note's peg stands")
+		var/obj/item/ship_draught/site = new(bench)
+		site.take_house(pegged)
+		site.peg_set = "probe"
+		site.peg_x = 1
+		site.peg_y = HOUSE_PLAN_SIDE + 2
+		site.peg_z = 1
+		house_assert(site.house_peg_storey(1) == 1 && site.house_peg_storey(2) == 2, "the sheet knows which storey of its site a level is")
+		house_assert(findtext(site.house_pegs_text(), "nothing its pegs ask for is left"), "the sheet says when its pegs are done")
+		house_assert(build_markers_pull("probe") == 1 && !length(build_marker_registry()), "pulling the pegs leaves none standing")
+		// A peg whose floor is gone goes too.
+		var/turf/sky = house_probe_turf(3, 3, 3)
+		var/obj/effect/build_marker/lost_peg = new(sky)
+		lost_peg.wants = "wall=timber wall"
+		lost_peg.look()
+		house_assert(QDELETED(lost_peg), "a peg over open air goes")
+		house_assert(!build_marker_place(sky, list("nonsense=thing"), "probe", "x", null), "a peg asks only for work it knows")
 
 		text2file(json_encode(dump), "designer.json")
 		world.log << "HOUSE CHECKS: [house_probe_checks]"
