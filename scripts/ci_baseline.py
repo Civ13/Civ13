@@ -2809,6 +2809,9 @@ SUITES = {
         'paths': ('tests/exact_reagent_transfer/',),
         'shared_paths': ('code/modules/1713/factory_pipes.dm', 'code/modules/reagents/Chemistry-Holder.dm',
                          'code/modules/reagents/reagent_containers/glass.dm', 'code/modules/1713/light_fuel.dm')},
+    'canteen_not_glass': {'files': ('tests/canteen_not_glass/test_canteen_not_glass.py',),
+        'paths': ('tests/canteen_not_glass/',),
+        'shared_paths': ('code/modules/reagents/reagent_containers/food/drinks/canteen.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),
