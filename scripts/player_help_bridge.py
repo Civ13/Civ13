@@ -112,7 +112,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'd50b453c984131241705d5fb6b600deb2f7a26df'
+WIKI_REVIEWED_REVISION = '1b3b2157c6426fc03834e3756b881787f581ecaa'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -165,7 +165,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('60468ff890363f7e167f7c71dd71ed48a674725efbc02b81306558fc58611426', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('4eac2e55a9315828c6b3bc266e702571d94cf5ed98c925e582e2868dcf69d345', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
+    'guides/Guide_to_Aircraft.md': ('3de5f099c0fe5c97456b1e58ed470d73f25f26f71a482f05e6f770fb1bbae43b', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
@@ -212,7 +212,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
     'guides/Guide_to_Tribal_Life.md': ('9850870389868ec34eba898d67ed6bf2be045873230a5ae3f9dadb0e2f9f7a2c', 'tribe tribal totem pole deeds burial mound cairn feast feasts barter music'),
     'guides/Guide_to_the_Moon.md': ('c8da8a4e6c6b3679092d43b9c7546cf511252081294beb7293c7c13c1ef056bf', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
-    'guides/Guide_to_Crafting.md': ('90d7753c5350238fadf4dc48aa21978e82946111c8a665c7970bd35c953561bf', 'crafting craft recipes workbench materials items make build vehicle designer'),
+    'guides/Guide_to_Crafting.md': ('7c17144a4a69776967210d60dfa3447473103b65437eaba142c04de96d026755', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
     'Starter_Guide.md': ('224ca2edfa9527b274ac3d7db18ba161bff39c4491b8828cf443cb23e504a0bc', 'starter guide beginner basics first steps controls interface intents'),
     'Music.md': ('049a85fd6517277b3abffa464c88c43dbda8d3060307b13491cd595a7a541c1d', 'music instrument instruments song songs play sheet notes piano'),
