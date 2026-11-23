@@ -217,6 +217,15 @@ class NoticeboardRemoveTest(unittest.TestCase):
         self.assertIn("painting_is_wall_turf(get_step(T, facing))", mount)
         self.assertIn("B.board_mount_dir == facing", mount)
 
+    def test_mapped_wall_offsets_count_as_mounted(self):
+        init = body(self.source, PREFIX + "initialize(")
+        mapper = init.split("!restoring && isturf(loc)", 1)[-1]
+        for offset, facing in (("pixel_y == 32", "NORTH"), ("pixel_y == -32", "SOUTH"),
+                               ("pixel_x == 32", "EAST"), ("pixel_x == -32", "WEST")):
+            self.assertIn(offset, mapper)
+            self.assertIn("board_mount_dir = " + facing, mapper)
+        self.assertIn("if (!board_mount_dir)", mapper)
+
 
 if __name__ == "__main__":
     unittest.main()

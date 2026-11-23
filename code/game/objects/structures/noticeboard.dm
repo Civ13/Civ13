@@ -22,6 +22,17 @@
 	// Preserve map-authored same-tile papers. Restores own their exact children;
 	// after_load only refreshes appearance and never calls this mapper path.
 	if (!restoring && isturf(loc))
+		// A mapped wall offset is a mount, so a wrench takes it down cleanly
+		// instead of unanchoring a board that still floats on the wall.
+		if (!board_mount_dir)
+			if (pixel_y == 32 && !pixel_x)
+				board_mount_dir = NORTH
+			else if (pixel_y == -32)
+				board_mount_dir = SOUTH
+			else if (pixel_x == 32 && !pixel_y)
+				board_mount_dir = EAST
+			else if (pixel_x == -32 && !pixel_y)
+				board_mount_dir = WEST
 		var/count = noticeboard_post_count()
 		for (var/obj/item/weapon/paper/P in loc)
 			if (count >= NOTICEBOARD_MAX_POSTS)
