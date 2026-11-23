@@ -109,6 +109,7 @@
 	roll_steps = 0
 	automovement = FALSE
 	set_light(0)
+	train_glide_rest(src)
 	return 0
 
 // One tile of a free roll. Returns the wait before the next, 0 when the
@@ -124,7 +125,9 @@
 	if (roll_speed <= TRAIN_ROLL_MIN)
 		return stop_rolling()
 	automovement = TRUE
+	train_glide_begin(src, clamp(10 / max(0.5, roll_speed), 1, 20))
 	var/moved = process_rail_movement(roll_impact(), TRUE)
+	train_glide_end(src)
 	automovement = FALSE
 	if (!moved || QDELETED(src))
 		return stop_rolling()

@@ -138,6 +138,21 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("move/rider_rides", rider.loc == platform_turf(11, 10))
 	platform_check("move/decks_follow", platform_parts_placed(segs))
 
+	// Glide (train_glide.dm): a driven step is drawn at the train's pace for
+	// the engine, the cars, their decks and everything aboard, and the train
+	// gives every glide back once it stops.
+	var/crate_glide = crate.glide_size
+	var/engine_glide = L.glide_size
+	var/obj/structure/train_part/deck_part = front.deck_parts[1]
+	var/pace = craft_glide_size(4)
+	train_glide_begin(L, 4)
+	var/glided = platform_step(L, 1) == 1
+	platform_check("glide/step_paced", glided && L.glide_size == pace && front.glide_size == pace && crate.glide_size == pace && deck_part.glide_size == pace && (!craft_glides_natively(rider) || rider.glide_size == pace))
+	train_glide_end(L)
+	platform_check("glide/held_between_steps", L.glide_size == pace && crate.glide_size == pace && !train_glide_record)
+	train_glide_rest(L)
+	platform_check("glide/given_back", L.glide_size == engine_glide && crate.glide_size == crate_glide && !L.train_glide_was.len)
+
 	// Round the corner and on to the end of the line.
 	var/steps = platform_step(L, 40)
 	platform_check("curve/reaches_end", L.loc == platform_turf(26, 20) && steps < 40)

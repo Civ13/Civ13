@@ -468,23 +468,26 @@
 	var/turf/oldloc = loc
 
 	moving_train = TRUE
+	// Drawn at the train's pace while it drives (train_glide.dm).
+	train_glide_before(src, newloc)
 	var/moved = ..(newloc)
 	if (!src)
 		return FALSE
 	if (!moved || loc == oldloc || !isturf(loc))
 		moving_train = FALSE
 		return FALSE
+	train_glide_after(src, oldloc)
 	dir = reversed ? OPPOSITE_DIR(fdir) : fdir
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
-			buckled_mob.persistence_set_loc(loc)
+			buckled_mob.train_glide_set_loc(loc)
 		else
 			buckled_mob = null
 	for (var/mob/living/L in oldloc)
-		L.persistence_set_loc(loc)
+		L.train_glide_set_loc(loc)
 	for (var/obj/O in oldloc)
 		if (O.anchored && (O in transporting))
-			O.persistence_set_loc(loc)
+			O.train_glide_set_loc(loc)
 	if (connected && !train_solo_move)
 		connected.Move(oldloc, fdir)
 
@@ -1263,7 +1266,10 @@ var/global/train_solo_move = FALSE
 				lead = src
 			var/lead_dir = lead.dir
 			var/turf/lead_from = lead.loc
+			// The whole train slides over the step instead of jumping (train_glide.dm).
+			train_glide_begin(src, clamp(10 / max(0.5, rail_speed), max_train_speed, 20))
 			var/moved = (train_way() > 0) ? process_rail_forward() : process_rail_reverse()
+			train_glide_end(src)
 			if (QDELETED(src))
 				return
 			if (!moved)
@@ -1297,6 +1303,7 @@ var/global/train_solo_move = FALSE
 		snow_factor = 1
 		braking = FALSE
 		driving = FALSE
+		train_glide_rest(src)
 		automovement = FALSE
 		set_light(0)
 		drive_ended()
