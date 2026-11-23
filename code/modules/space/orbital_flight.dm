@@ -53,8 +53,10 @@
 /obj/structure/crewed_lander/orbital_rocket/vehicle_refusal(destination)
 	if (!space_flight_orbit_ok(destination))
 		return "\The [src] only flies to orbit. Point the pad at an orbit to launch it."
-	if (space_flight_orbit_full(destination))
-		return "Every plane in [region_trail_name(destination)] is taken. Wait until one is freed."
+	// A rocket may still dock at a station's free port (orbit_docking.dm).
+	var/list/peer = shard_group && shard_group.peers[destination]
+	if (space_flight_orbit_full(destination) && !(islist(peer) && length(peer["docking_ports"])))
+		return "Every plane in [region_trail_name(destination)] is taken and no station has a free docking port. Wait until one is freed."
 	return null
 
 // ---------------------------------------------------------------- capsule
@@ -167,6 +169,21 @@
 	var/obj/structure/landed_lander/L = space_landed_lander(P["lander"])
 	if (L)
 		return get_turf(L)
+	// A flight bound for a station's port docks at its berth, the capsule's
+	// deck against the outer hatch (orbit_docking.dm). When the berth was
+	// taken meanwhile it flies a capsule of its own as below.
+	var/obj/structure/docking_port/port = orbit_docking_port_by_id(P["port"])
+	if (port && port.berth_free())
+		var/turf/B = port.berth_turf()
+		var/obj/structure/landed_lander/capsule/D = new(B)
+		D.lander_id = P["lander"]
+		if (space_flight_seats_ok(P["seats"]))
+			D.lift_seats = P["seats"]
+		D.deploy()
+		log_game("Orbital flight: capsule [D.lander_id] docked at port [port.port_id] of [port.owner()] ([B.x],[B.y],[B.z]).")
+		return B
+	if (istext(P["port"]))
+		log_game("Orbital flight: capsule [P["lander"]] found port [P["port"]] gone or taken and flew to open orbit.")
 	var/owner = "capsule:[P["lander"]]"
 	var/plane = orbit_claim_plane(owner)
 	var/turf/T = plane ? orbit_capsule_site(plane) : null

@@ -150,6 +150,16 @@ class StationDesigner(unittest.TestCase):
             self.assertIn('function %s(' % name, page)
             self.assertIn('.browser:%s"' % name, self.SOURCE)
 
+    def test_the_window_draws_each_docking_airlocks_berth(self):
+        # The server sends the berths that lie on the grid; the window draws them.
+        berths = self.SOURCE.split('/proc/station_designer_berths(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('D.berth_slots()', berths)
+        self.assertIn('D.in_grid(col, row)', berths)
+        self.assertIn('"berths" = station_designer_berths(D)', self.SOURCE)
+        page = self.SOURCE.split('/proc/station_designer_page()', 1)[1]
+        for needed in ('A.berths', "P:'a docking port'", 'leave this slot empty for rockets', 'at least one docking airlock'):
+            self.assertIn(needed, page)
+
     def test_what_the_window_sends_is_checked(self):
         topic = self.SOURCE.split('/datum/station_designer/Topic(', 1)[1].split('\n/proc/', 1)[0]
         for needed in ('H != drawer', 'station_designers()[H] != src', 'ship_designer_can_draw(H, sheet)', 'length(code) > DESIGN_CODE_STATION_MAX', 'station_plan_from_code(code)', 'station_plan_clean_name(href_list["name"])', 'sheet.take_station(D)'):

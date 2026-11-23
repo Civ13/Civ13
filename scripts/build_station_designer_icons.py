@@ -7,7 +7,8 @@ game. Like the airship designer's pictures (scripts/build_air_designer_icons.py,
 whose shape this script keeps), they are plain 32x32 PNGs, under
 icons/station_designer/, sent to the window with browse_rsc. Each is the
 first frame of an existing state, or existing states laid over one another
-the way the game lays them. Nothing is drawn here.
+the way the game lays them. The one thing drawn here is the docking
+airlock's collar (draw_collar), which the game has no sprite of its own for.
 
 A slot is built up in the window from three kinds of picture:
 
@@ -22,7 +23,9 @@ A slot is built up in the window from three kinds of picture:
 The greenhouse is its hydroponics tray with a ripe crop over it, raised six
 pixels as the tray's own update_icon() raises it. The keel airlock is an
 open hatch with the keel's truss seen through it, so it is not mistaken for
-a plain airlock.
+a plain airlock. The docking airlock is the shut hatch with its docking
+collar drawn round the wheel: a pale steel ring with four amber latches, the
+ring a rocket's capsule seats on at the berth beyond the hatch.
 
 keel_<what> are the things on the keel outside the keel airlock: its truss,
 a solar wing at each end of the boom and the reboost thruster at its aft
@@ -54,7 +57,8 @@ DOORS = 'icons/obj/doors/material_doors.dmi'
 # file name -> where its picture comes from: 'layers' is a list of
 # (dmi, state, facing, pixels raised), the first at the bottom; 'fit' scales
 # a bigger sprite's drawn part down to one tile; 'outline' puts the pale line
-# round what stands on the floor or hangs on the keel.
+# round what stands on the floor or hangs on the keel; 'collar' draws the
+# docking collar over the layers (draw_collar).
 SPRITES = {
     # ---- the module itself (habitat_modules.dm) ----
     # /turf/wall/habitat_shell
@@ -80,6 +84,8 @@ SPRITES = {
     'mod_A': {'layers': [(DOORS, 'blast', 2, 0)], 'outline': True},
     # K: /obj/structure/orbit_truss seen through the outer hatch, open
     'mod_K': {'layers': [(STRUCTURES, 'grille', 2, 0), (DOORS, 'blastopen', 2, 0)], 'outline': True},
+    # P: the outer hatch shut, with /obj/structure/docking_port's collar on it
+    'mod_P': {'layers': [(DOORS, 'blast', 2, 0)], 'collar': True, 'outline': True},
     # ---- the keel (orbit_found_station_plan) ----
     # /obj/structure/orbit_truss
     'keel_truss': {'layers': [(STRUCTURES, 'grille', 2, 0)], 'outline': True},
@@ -88,6 +94,38 @@ SPRITES = {
     # /obj/structure/orbit_thruster
     'keel_thruster': {'layers': [('icons/obj/decals_wider.dmi', 'rocket', 2, 0)], 'fit': True, 'outline': True},
 }
+
+
+# The docking collar's colours: the ring's steel, its lit and shaded edges
+# and the amber of its four latches (the window's own amber).
+COLLAR_STEEL = (168, 174, 180, 255)
+COLLAR_LIGHT = (214, 218, 222, 255)
+COLLAR_DARK = (24, 26, 30, 255)
+COLLAR_LATCH = (255, 217, 133, 255)
+COLLAR_LATCH_DARK = (140, 100, 40, 255)
+
+
+def draw_collar(img):
+    """Lays a docking collar over a hatch: a ring round its wheel, lit from
+    the north-west, with a latch at each quarter."""
+    out = img.copy()
+    px = out.load()
+    mid = (TILE - 1) / 2.0
+    for y in range(TILE):
+        for x in range(TILE):
+            far = ((x - mid) ** 2 + (y - mid) ** 2) ** 0.5
+            if 13.0 <= far < 14.0 or 9.0 <= far < 10.0:
+                px[x, y] = COLLAR_DARK
+            elif 10.0 <= far < 13.0:
+                lit = far >= 12.0 and (x - mid) + (y - mid) < 0
+                px[x, y] = COLLAR_LIGHT if lit else COLLAR_STEEL
+    # The latches: 4 wide and 5 long across the ring, north, south, west, east.
+    for x0, y0, wide, tall in ((14, 2, 4, 5), (14, 25, 4, 5), (2, 14, 5, 4), (25, 14, 5, 4)):
+        for y in range(y0, y0 + tall):
+            for x in range(x0, x0 + wide):
+                edge = x in (x0, x0 + wide - 1) or y in (y0, y0 + tall - 1)
+                px[x, y] = COLLAR_LATCH_DARK if edge else COLLAR_LATCH
+    return out
 
 
 def build(spec):
@@ -101,6 +139,8 @@ def build(spec):
         out = img if out is None else Image.alpha_composite(out, img)
     if spec.get('fit'):
         out = fit(out)
+    if spec.get('collar'):
+        out = draw_collar(out)
     if out.size != (TILE, TILE):
         raise SystemExit('a picture must be one %dx%d tile: give a bigger sprite "fit"' % (TILE, TILE))
     return outline(out) if spec.get('outline') else out

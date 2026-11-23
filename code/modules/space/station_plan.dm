@@ -7,7 +7,9 @@
 // the wall they share. The plan names one command module (the console, the
 // supply crate, the life support and the way home) and one keel airlock,
 // whose outer hatch opens on the keel of truss carrying her solar power,
-// fuel cell and reboost thruster.
+// fuel cell and reboost thruster. At least one docking airlock carries a
+// docking port on its outer hatch, with a berth beyond it where rockets dock
+// (orbit_docking.dm).
 //
 // A launch complex office (orbit_project.dm) given a plan builds that
 // station instead of the starter layout: the plan rides with the first
@@ -46,6 +48,7 @@
 		"N" = list("name" = "node module", "kind" = "node", "core" = /obj/structure/habitat_core/node, "kit" = /obj/item/habitat_kit/node),
 		"A" = list("name" = "airlock", "kind" = "airlock", "core" = /obj/structure/habitat_core/airlock, "kit" = /obj/item/habitat_kit/airlock),
 		"K" = list("name" = "keel airlock", "kind" = "airlock", "core" = /obj/structure/habitat_core/airlock, "kit" = /obj/item/habitat_kit/airlock),
+		"P" = list("name" = "docking airlock", "kind" = "airlock", "core" = /obj/structure/habitat_core/airlock, "kit" = /obj/item/habitat_kit/airlock),
 		)
 	return table
 
@@ -53,8 +56,8 @@
 // to that many costs what the starter does.
 /proc/station_plan_allowance()
 	if (!map || map.ordinal_age < 8)
-		return 3
-	return map.ordinal_age >= 9 ? 8 : 5
+		return 4
+	return map.ordinal_age >= 9 ? 9 : 6
 
 /datum/station_plan
 	var/name = "space station"
@@ -163,6 +166,38 @@
 	for (var/list/O in list(list(1, 0), list(2, -1), list(2, 0), list(2, 1), list(3, 0)))
 		. += "[col + fc * O[1] + fr * O[2]],[row + fr * O[1] + fc * O[2]]"
 
+// The way a docking airlock's outer hatch faces (away from the one module it
+// docks to), or 0 when it docks to none or more than one.
+/datum/station_plan/proc/outer_dir(at)
+	var/list/docked = neighbours(at)
+	if (docked.len != 1)
+		return 0
+	var/list/a = splittext(at, ",")
+	var/list/b = splittext(docked[1], ",")
+	var/dc = text2num(a[1]) - text2num(b[1])
+	var/dr = text2num(a[2]) - text2num(b[2])
+	if (dc > 0)
+		return EAST
+	if (dc < 0)
+		return WEST
+	return dr > 0 ? SOUTH : NORTH
+
+// The slot a rocket's capsule docks in beyond docking airlock at, or null.
+/datum/station_plan/proc/berth_slot(at)
+	var/dir = outer_dir(at)
+	if (!dir)
+		return null
+	var/list/a = splittext(at, ",")
+	return "[text2num(a[1]) + (dir == EAST ? 1 : (dir == WEST ? -1 : 0))],[text2num(a[2]) + (dir == SOUTH ? 1 : (dir == NORTH ? -1 : 0))]"
+
+// Every docking airlock's berth slot, as berth = airlock.
+/datum/station_plan/proc/berth_slots()
+	. = list()
+	for (var/at in piece_cells("P"))
+		var/berth = berth_slot(at)
+		if (berth)
+			.[berth] = at
+
 /datum/station_plan/proc/costs()
 	. = list("steel" = STATION_PLAN_BASE_STEEL + max(0, module_count() - station_plan_allowance()) * STATION_PLAN_EXTRA_STEEL, "glass" = 40, "copper" = 40, "electronics" = 60)
 
@@ -263,20 +298,20 @@
 	. = list()
 	// The 1969 starter: command module, quarters east, the keel south.
 	. += station_plan_from_rows("starter station", list(
-		".CQ",
-		".K.",
+		".CQP",
+		".K..",
 	))
 	// The 2013 starter's shape: a node hub with its arms.
 	. += station_plan_from_rows("hub station", list(
-		".Q.",
-		"GNC",
-		".K.",
+		".Q..",
+		"GNCP",
+		".K..",
 	))
 	// A long working station, two airlocks.
 	. += station_plan_from_rows("research station", list(
 		"QQSG",
-		"ACNW",
-		"..K.",
+		"ACNWP",
+		"..K..",
 	))
 
 // ---- The sheet ----
@@ -351,6 +386,14 @@
 			break
 		if (D.piece_cells("K").len)
 			break
+	// An airlock with a docking port on its outer hatch is a docking airlock.
+	for (var/at in D.piece_cells("A"))
+		var/list/xy = splittext(at, ",")
+		var/turf/centre = locate(command.x + (text2num(xy[1]) - left) * s, command.y - (text2num(xy[2]) - top) * s, z)
+		for (var/obj/structure/docking_port/P in range(HABITAT_MODULE_RADIUS, centre))
+			if (P.outward())
+				D.set_piece(text2num(xy[1]), text2num(xy[2]), "P")
+				break
 	return D
 
 /proc/station_plan_piece_of(obj/structure/habitat_core/C)
@@ -427,6 +470,13 @@
 		var/list/xy = splittext(at, ",")
 		var/turf/T = station_plan_turf(centre, text2num(xy[1]), text2num(xy[2]))
 		if (!T || habitat_module_refusal(T, null))
+			return null
+	// Each docking airlock's berth must lie in clear space.
+	var/list/berths = D.berth_slots()
+	for (var/berth in berths)
+		var/list/xy = splittext(berth, ",")
+		var/turf/B = station_plan_turf(centre, text2num(xy[1]), text2num(xy[2]))
+		if (!B || !orbit_capsule_site_clear(B.x, B.y, z))
 			return null
 	var/turf/aft = station_plan_offset(keel_lock, keel, STATION_KEEL_AFT)
 	if (!aft || aft.x < 3 || aft.y < 3 || aft.x > world.maxx - 2 || aft.y > world.maxy - 2)
@@ -506,6 +556,12 @@
 	new /obj/structure/orbit_console(locate(cx + 1, cy - 1, z))
 	var/obj/structure/region_gate/station_hatch/hatch = new(locate(cx, cy - 1, z))
 	hatch.party = party
+	// A docking port on each docking airlock's outer hatch.
+	for (var/at in D.piece_cells("P"))
+		var/obj/structure/habitat_core/P = cores[at]
+		var/dir = D.outer_dir(at)
+		if (P && dir)
+			orbit_station_docking_port(get_turf(P), dir)
 	log_game("Orbit station: [party] founded the [D.name] from a plan on plane [z] ([D.module_count()] modules).")
 	return hatch
 

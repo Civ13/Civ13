@@ -176,6 +176,8 @@
 	not_movable = TRUE
 	flammable = FALSE
 	var/propellant = 0
+	// The docking port a flight to orbit was pointed at while it launches (orbit_docking.dm).
+	var/tmp/launch_port = null
 	var/propellant_needed = LANDER_PROPELLANT
 	// Propellant kept for one ascent home on a sortie to a surface world.
 	var/ascent_propellant = LANDER_PROPELLANT / 2
@@ -517,9 +519,11 @@ var/global/list/space_cargo_stacks = list(
 	// A flight home lands at the mainland's usual arrival point, and a flight
 	// to orbit at its capsule (orbital_flight.dm).
 	var/orbital = space_flight_orbit_ok(region)
-	if (space_flight_return_ok(region) || orbital)
-		var/question = orbital ? "Launch everyone strapped in into orbit at [pad.destination_name()], with what they wear and carry? The capsule shelters you there for a few hours." : "Fly everyone strapped in home to [pad.destination_name()], with what they wear and carry?"
-		var/home = WWinput(H, question, "Launch", "Cancel", list("Launch", "Cancel"))
+	if (orbital)
+		orbit_launch_prompt(H, pad, region)
+		return
+	if (space_flight_return_ok(region))
+		var/home = WWinput(H, "Fly everyone strapped in home to [pad.destination_name()], with what they wear and carry?", "Launch", "Cancel", list("Launch", "Cancel"))
 		if (home != "Launch" || QDELETED(src) || !H.client || !in_range(src, H))
 			return
 		reason = launch_refusal(H)
@@ -560,7 +564,44 @@ var/global/list/space_cargo_stacks = list(
 	. = launch_on(pad, lx, ly, notify)
 	travel_hold_end(held)
 
+// A flight to orbit: dock at a free berth that welcomes the crew, or (while
+// a plane is free) fly a capsule of their own (orbital_flight.dm).
+/obj/structure/crewed_lander/proc/orbit_launch_prompt(mob/living/human/H, obj/structure/region_gate/trail_marker/launch_pad/pad, region)
+	var/party = party_train_party_of(H)
+	var/list/berths = orbit_docking_berth_choices(region, party)
+	var/open = "Open orbit: a capsule of your own"
+	var/list/options = list()
+	for (var/label in berths)
+		options += label
+	if (!space_flight_orbit_full(region))
+		options += open
+	if (!options.len)
+		to_chat(H, SPAN_WARNING("No station in [pad.destination_name()] has a free docking port for you, and every plane is taken."))
+		return
+	var/choice = player_input(H, "Where should the capsule go in [pad.destination_name()]? Everyone strapped in flies, with what they wear and carry. A capsule shelters you for a few hours; docked at a station port, its crew walk aboard through the hatch.", "Launch", null, "anything", options, TRUE)
+	if (!choice || QDELETED(src) || !H.client || !in_range(src, H))
+		return
+	var/reason = launch_refusal(H)
+	if (!reason && (find_pad() != pad || pad.destination != region))
+		reason = "The launch pad changed."
+	var/port = null
+	if (!reason && choice != open)
+		port = berths[choice]
+		// The berth must still be free when the rocket goes.
+		if (!orbit_docking_berth_listed(region, port, party_train_party_of(H)))
+			reason = "That docking port is no longer free. Choose another."
+	else if (!reason && space_flight_orbit_full(region))
+		reason = "Every plane in [pad.destination_name()] is taken; choose a free docking port."
+	if (!reason)
+		launch_port = port
+		reason = launch(pad, null, null, H)
+		if (!QDELETED(src))
+			launch_port = null
+	if (reason)
+		to_chat(H, SPAN_WARNING(reason))
+
 /obj/structure/crewed_lander/proc/launch_on(obj/structure/region_gate/trail_marker/launch_pad/pad, lx, ly, mob/living/human/notify)
+	var/port = launch_port
 	var/destination = pad.destination
 	var/homeward = space_flight_return_ok(destination)
 	var/orbital = space_flight_orbit_ok(destination)
@@ -586,6 +627,8 @@ var/global/list/space_cargo_stacks = list(
 		flight = list("lander" = lander_id, "return" = 1)
 	else if (orbital)
 		flight = list("lander" = lander_id, "orbit" = 1)
+		if (orbit_docking_valid_id(port))
+			flight["port"] = port
 		flight_extras(flight)
 	else
 		flight = list(
@@ -629,7 +672,7 @@ var/global/list/space_cargo_stacks = list(
 	if (homeward)
 		log_game("Crewed flight: [departed] crew left [x],[y],[z] for home at [pad.destination] (lander [flight["lander"]]).")
 	else if (orbital)
-		log_game("Crewed flight: [departed] crew left [x],[y],[z] for orbit at [pad.destination] (capsule [flight["lander"]]).")
+		log_game("Crewed flight: [departed] crew left [x],[y],[z] for orbit at [pad.destination] (capsule [flight["lander"]][flight["port"] ? ", docking at port [flight["port"]]" : ""]).")
 	else
 		log_game("Crewed flight: [departed] crew left [x],[y],[z] for [pad.destination] (lander [flight["lander"]], cell [cell[1]],[cell[2]], [surveyed ? "surveyed" : "unsurveyed"][flight["rough"] ? ", rough" : ""]).")
 	if (cargo_sent)
@@ -645,7 +688,10 @@ var/global/list/space_cargo_stacks = list(
 // TRUE when a travel payload's flight fields are absent or well formed.
 /proc/space_flight_payload_ok(list/P)
 	if (isnull(P["lander"]))
-		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["orbit"]) && isnull(P["cargo"]) && isnull(P["sortie"]) && isnull(P["seats"])
+		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["orbit"]) && isnull(P["cargo"]) && isnull(P["sortie"]) && isnull(P["seats"]) && isnull(P["port"])
+	// Only a flight to orbit docks at a station's port (orbit_docking.dm).
+	if (!isnull(P["port"]) && (isnull(P["orbit"]) || !orbit_docking_valid_id(P["port"])))
+		return FALSE
 	var/id = P["lander"]
 	if (!istext(id) || !length(id) || length(id) > 64)
 		return FALSE

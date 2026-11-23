@@ -25,7 +25,11 @@ python3 tests/orbit_flight/native_flight.py --byond-bin ~/byond-516.1688/byond/b
 - On the orbit world, both arrive at the return hatch of a station founded
   from the plan: five sealed modules, a console, and a layout surveyed at the
   console that matches the plan. Both ride the hatch home.
-- Back on the mainland, both wait at the office for their players.
+- Back on the mainland, both wait at the office for their players. Then a
+  third pilot sets off from the pad on a flight to orbit bound for a free
+  berth the orbit world advertises (`port` payload), and the orbit world
+  checks the capsule docked at the station's docking airlock, its deck
+  against the hatch and the airlock still sealed.
 
 Each side writes `result-<role>.json`. The runner fails on a failed or missing
 check and on any runtime error in space, orbit, travel, transfer or party

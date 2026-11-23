@@ -78,6 +78,30 @@
 	if (blocked.len)
 		R.error("Her keel runs 12 tiles out from the keel airlock with a solar boom across it; [blocked.len] module\s [blocked.len == 1 ? "stands" : "stand"] in its way.", blocked, "K")
 
+// At least one docking airlock, its berth left clear for rockets (Val, 2026-11-23).
+/datum/design_check/station_plan/docking
+	order = 45
+
+/datum/design_check/station_plan/docking/plan_check(datum/station_plan/D, datum/design_report/R)
+	var/list/at = D.piece_cells("P")
+	if (!at.len)
+		R.error("She has no docking airlock: rockets dock at the port on its outer hatch, and none can reach her without one. Place one at the end of an arm.", null, "P")
+		return
+	var/list/keel = D.keel_slots()
+	var/list/taken = list()
+	for (var/lock in at)
+		var/berth = D.berth_slot(lock)
+		if (!berth)
+			R.error("A docking airlock must dock to exactly one module: the slot beyond its outer hatch is its berth, where a rocket docks, and must stay empty.", list(lock), "P")
+			continue
+		if (D.cells[berth])
+			R.error("A rocket docks in the slot beyond this docking airlock's outer hatch; a module stands in its berth.", list(lock, berth), "P")
+		else if (berth in keel)
+			R.error("This docking airlock's berth lies across her keel; turn it another way.", list(lock, berth), "P")
+		else if (taken[berth])
+			R.error("Two docking airlocks share one berth; only one rocket fits there.", list(lock, taken[berth]), "P")
+		taken[berth] = lock
+
 // Air: the life support is in the command module, and air moves through open hatches.
 /datum/design_check/station_plan/air
 	order = 50
@@ -117,5 +141,6 @@
 		"N" = list("what" = "A node module with a deck hatch.", "use" = "A node module kit used on its open deck hatch builds a new deck above or below.", "how" = "Built with the station; a node module kit (70 steel, Orbital Flight) adds another."),
 		"A" = list("what" = "An airlock with an inner and an outer hatch.", "use" = "A way out on EVA. Pump it down before opening the outer hatch.", "how" = "Built with the station; an airlock module kit (50 steel, Sealed Habitats) adds another."),
 		"K" = list("what" = "The keel airlock: the airlock the keel runs out from.", "use" = "Outside it a keel of truss carries her solar wings, fuel cell, generators and the reboost thruster, 12 tiles out with a 7-tile boom.", "how" = "Every plan has exactly one, docked to one module at the end of an arm, with the slots beyond it left empty."),
+		"P" = list("what" = "A docking airlock: an airlock with a docking port on its outer hatch.", "use" = "Rockets from other worlds dock their capsule at its berth, the slot beyond the outer hatch, and the crew walk aboard. Either side can bar the port.", "how" = "Every plan needs at least one, docked to one module, with the slot beyond it left empty. A docking port (30 steel, Orbital Flight) fitted on any outer hatch adds another in orbit."),
 		"x" = list("what" = "The eraser.", "use" = "Clears a slot to open space.", "how" = "Click a slot. Undo brings it back."),
 	)
