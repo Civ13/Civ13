@@ -18,3 +18,39 @@
 #define STATION_PLAN_SIDE 7
 #define STATION_PLAN_MAX_MODULES 12
 #define DESIGN_CODE_STATION_MAX 400
+
+// Rocket plans (space/rocket_plan.dm): one stack of pieces from the pad up.
+#define ROCKET_PLAN_MAX_PIECES 20
+// Sections (pieces that take height in the stack) a rocket may have.
+#define ROCKET_PLAN_MAX_SECTIONS 16
+// Sections one storey of the launch stand holds; storeys above the first
+// mount from the levels above it.
+#define ROCKET_STOREY_SECTIONS 4
+#define DESIGN_CODE_ROCKET_MAX 120
+// Leg ids, in the order a mission flies them.
+#define ROCKET_LEG_LIFTOFF "liftoff"
+#define ROCKET_LEG_ORBIT "orbit"
+#define ROCKET_LEG_RETURN "return"
+#define ROCKET_LEG_TRANSFER "transfer"
+#define ROCKET_LEG_LANDING "landing"
+#define ROCKET_LEG_LUNAR_RETURN "lunar_return"
+
+// Rocket plan physics (space/rocket_plan.dm): game units, see docs/rocket-plans.md.
+#define ROCKET_G 9.81
+#define ROCKET_LIFTOFF_TWR 1.2
+#define ROCKET_UPPER_TWR 0.3
+#define ROCKET_DV_ORBIT 7.0
+#define ROCKET_DV_RETURN 0.1
+#define ROCKET_DV_TRANSFER 2.5
+#define ROCKET_DV_LANDING 1.8
+#define ROCKET_DV_LUNAR_RETURN 2.2
+#define ROCKET_CREW_MASS 0.1
+// A full cargo bay, in tonnes, and the hold items it takes.
+#define ROCKET_BAY_TONNES 5
+#define ROCKET_BAY_ITEMS 20
+#define ROCKET_BOOSTER_DRY 2.5
+#define ROCKET_BOOSTER_PROPELLANT 10
+#define ROCKET_BOOSTER_THRUST 800
+#define ROCKET_BOOSTER_VE 2.4
+// Propellant units (reagent) a tonne of propellant takes to load.
+#define ROCKET_UNITS_PER_TONNE 5

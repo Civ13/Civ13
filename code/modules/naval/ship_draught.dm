@@ -927,6 +927,11 @@ var/global/list/ship_draught_decks = list(
 		to_chat(user, station.summary_text())
 		qdel(station)
 		return
+	var/datum/rocket_plan/rocket = rocket_plan()
+	if (rocket)
+		to_chat(user, rocket.summary_text())
+		qdel(rocket)
+		return
 	var/datum/waterworks_plan/water = waterworks_plan()
 	if (water)
 		to_chat(user, "Waterworks plan: [water.name], [water.route.len] route tiles. Use the sheet to check or peg it.")
@@ -990,6 +995,11 @@ var/global/list/ship_draught_decks = list(
 		station_sheet_menu(H, station)
 		qdel(station)
 		return
+	var/datum/rocket_plan/rocket = rocket_plan()
+	if (rocket)
+		rocket_sheet_menu(H, rocket)
+		qdel(rocket)
+		return
 	var/datum/waterworks_plan/water = waterworks_plan()
 	if (water)
 		waterworks_sheet_menu(H, water)
@@ -1033,6 +1043,7 @@ var/global/list/ship_draught_decks = list(
 		options.Insert(11, "Draw waterworks on the sheet")
 		if (map && map.ordinal_age >= ORBIT_MIN_AGE)
 			options.Insert(12, "Draw a space station on the sheet")
+			options.Insert(13, "Draw a rocket on the sheet")
 	var/client/harbor_connection = H.client
 	var/datum/harbor_admission = persistence_admission_identity
 	var/choice = WWinput(H, D ? D.summary_text() : "The sheet is blank. Hold a pen or pencil to draw a ship on it.", name, "Cancel", options)
@@ -1062,6 +1073,8 @@ var/global/list/ship_draught_decks = list(
 		open_harbor_designer(H)
 	else if (choice == "Draw a space station on the sheet" && !draught_code)
 		open_station_designer(H)
+	else if (choice == "Draw a rocket on the sheet" && !draught_code && map && map.ordinal_age >= ORBIT_MIN_AGE)
+		open_rocket_designer(H)
 	else if (choice == DRAUGHT_EXPORT_LABEL && D)
 		draught_export(H, D.name)
 	else if (choice == DRAUGHT_IMPORT_LABEL)
