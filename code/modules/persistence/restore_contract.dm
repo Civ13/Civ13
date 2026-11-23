@@ -38,6 +38,15 @@
 	..()
 	restoring = FALSE
 
+// Looking into the distance hides the owner's HUD objects, worn items
+// included, for that client only. A save taken mid-look must not bring them
+// back hidden: nothing would ever show them again.
+/obj/persistence_restore_finished()
+	..()
+	if (scoped_invisible)
+		scoped_invisible = FALSE
+		invisibility = 0
+
 // Many constructors scatter an item with a random pixel offset. The saver
 // omits an offset still at its default, so without this a restored item that
 // sat centred would land at a fresh random offset on every load. Allowlisted
