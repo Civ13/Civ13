@@ -57,7 +57,7 @@ var/global/list/pipe_pressure_cache = list()
 	if (!M || pipe_material == "steel")
 		return
 	name = pipe_name(M)
-	desc = "A pipe of [M.display_name]. It joins with pipes and machines on every side. A network only moves liquids while a working pump is connected to it."
+	desc = "A pipe of [M.display_name]. It joins with pipes and machines on every side. Liquids and gases only flow through a network while a working pump is connected to it."
 	color = M.icon_colour
 	flammable = M.flammable
 
@@ -141,7 +141,7 @@ var/global/list/pipe_pressure_cache = list()
 
 /obj/structure/fluid_pump/hand
 	name = "hand pump"
-	desc = "A lift pump on a timber base. Work the handle and it moves liquids through the pipe network beside it for as long as you keep pumping. A turning treadwheel, horse gin, mill wheel or windmill next to it works it for you."
+	desc = "A lift pump on a timber base. Work the handle and it moves liquids and gases through the pipe network beside it for as long as you keep pumping. A turning treadwheel, horse gin, mill wheel or windmill next to it works it for you."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "pump_s"
 	powerneeded = 0
@@ -210,7 +210,7 @@ var/global/list/pipe_pressure_cache = list()
 
 /obj/structure/fluid_tank/cistern
 	name = "wooden cistern"
-	desc = "A great staved cask for a pipe network. It fills from sources and feeds the troughs, taps and machines that want what it holds. Hold a container and use Set Tank Filter to keep it to one liquid."
+	desc = "A great staved cask for a pipe network. It fills from sources and feeds the troughs, taps and machines that want what it holds. Hold a container and use Set Tank Filter to keep it to one liquid or gas."
 	icon_state = "beer_barrel"
 	flammable = TRUE
 
