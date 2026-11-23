@@ -175,7 +175,12 @@ body hits people standing beside the rails (`sweep_sides()`).
 
 Explosions wear the steam and diesel engines down to `broken_down`, and the
 armored one to `disabled`, instead of deleting them; a welding tool repairs
-them. A heavy locomotive cannot be packed back into a kit. A rail warehouse
+them. A crowbar packs a heavy locomotive back into an unfurnished kit when it
+stands still, shut down, uncoupled and clear of riders and cargo
+(`pack_problem()`, `pack_into_kit()` in `train_dismantle.dm`); its fuel and
+water are lost. A tender packs into its kit like a platform car. A one-tile
+wagon or engine comes apart with a crowbar into half its cheapest recipe cost
+(`wagon_dismantle_problem()`, `take_apart()`). A rail warehouse
 takes it whole, engine and body sections as one unit (`rail_warehouse_unit()`),
 and it comes out as it went in. The inter-region record
 (`train_transfer_codec.dm`) carries it the same way: the engine as the first

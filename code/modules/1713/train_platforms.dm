@@ -767,9 +767,9 @@ var/global/train_step_plain = FALSE
 	return segs
 
 /obj/structure/trains/platform/proc/dismantle_problem()
-	var/list/L = layout()
-	if (L && L["body"])
-		return "It is built in one piece and cannot be packed into a kit."
+	var/obj/structure/trains/locomotive/E = car_engine()
+	if (E)
+		return E.pack_problem()
 	var/list/segs = car_segments()
 	var/obj/structure/trains/platform/front = null
 	var/obj/structure/trains/platform/back = null
@@ -798,6 +798,10 @@ var/global/train_step_plain = FALSE
 	return null
 
 /obj/structure/trains/platform/proc/dismantle_car(mob/user)
+	// A heavy locomotive comes apart as a whole (train_dismantle.dm).
+	var/obj/structure/trains/locomotive/E = car_engine()
+	if (E)
+		return E.pack_engine(user)
 	var/problem = dismantle_problem()
 	if (problem)
 		to_chat(user, SPAN_WARNING(problem))
