@@ -37,7 +37,8 @@ RETRIEVAL_STOPWORDS = frozenset({
     'from', 'into', 'out', 'any', 'all', 'some', 'way', 'need', 'want', 'should', 'would',
     'could', 'will', 'just', 'like', 'also', 'not', 'but', 'about', 'its', 'use', 'using', 'does',
     'one', 'thing', 'help', 'please', 'round', 'right', 'doing',
-    'find', 'tell', 'know', 'coming', 'much', 'many', 'other', 'another', 'they', 'them', 'here'})
+    'find', 'tell', 'know', 'coming', 'much', 'many', 'other', 'another', 'they', 'them', 'here',
+    'myself', 'yourself'})
 
 
 # Everyday words players use for things the guides name differently. Added words
@@ -51,6 +52,8 @@ QUESTION_SYNONYMS = {
     'language': 'languages', 'translate': 'translation', 'interface': 'hud', 'screen': 'hud',
     'travel': 'trail', 'continent': 'land region climate', 'country': 'land region climate',
     'territory': 'province', 'claim': 'take hold', 'capture': 'take siege', 'conquer': 'province siege',
+    'dry': 'wet wring', 'soaked': 'wet wring',
+    'ss14': 'tile tap step', 'ss13': 'tile tap step', 'pixel': 'tile tap step', 'grid': 'tile tap step', 'smooth': 'tile tap step',
 }
 # Irregular forms the suffix fold cannot reach, so "where is it grown" finds "Where they grow".
 IRREGULAR_WORDS = {
@@ -63,7 +66,7 @@ IRREGULAR_WORDS = {
 
 def question_synonyms(text, words):
     extra = set()
-    for word in re.findall(r'[a-z]{3,}', text.lower()):
+    for word in re.findall(r'[a-z][a-z0-9]{2,}', text.lower()):
         # "continents" widens the search like "continent" does.
         singular = word[:-1] if word.endswith('s') else word
         extra |= retrieval_terms(QUESTION_SYNONYMS.get(word) or QUESTION_SYNONYMS.get(singular, ''))
@@ -78,7 +81,7 @@ def retrieval_terms(text, stopwords=frozenset()):
     English: taming and tame both become 'tam'.
     """
     words = set()
-    for word in re.findall(r'[a-z]{3,}', text.lower()):
+    for word in re.findall(r'[a-z][a-z0-9]{2,}', text.lower()):
         if word in stopwords:
             continue
         word = IRREGULAR_WORDS.get(word, word)
@@ -327,7 +330,11 @@ def wiki_chunks(source, limit=WIKI_CHUNK_CHARS):
         pieces.append(piece)
         for index, piece in enumerate(pieces):
             heading = titles[-1] if titles else ''
-            if (pending and index == 0 and len(pieces) == 1 and pending[0][:1] == titles[:1]
+            # A heading that is itself a question (the FAQ page) keeps its own excerpt:
+            # merged, a dozen answers shared the first question's heading and link, and
+            # the model answered "there is no way" beside the right answer.
+            asked = heading.endswith('?') or (pending and pending[0] and pending[0][-1].endswith('?'))
+            if (pending and index == 0 and len(pieces) == 1 and pending[0][:1] == titles[:1] and not asked
                     and len(pending[3]) + len(piece) + len(heading) + 2 <= limit):
                 pending[2].append(heading)
                 pending[3] += '\n\n' + heading + '\n' + piece

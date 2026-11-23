@@ -97,6 +97,12 @@ class WikiAnswerTests(unittest.TestCase):
         for removed in ('Other.md', '<img', '```', '---'):
             self.assertNotIn(removed, nets)
         self.assertEqual(bridge.wiki_anchor('Walking to a neighbouring land'), 'walking-to-a-neighbouring-land')
+        # A question heading keeps its own excerpt and link (the FAQ page), however short.
+        faq = bridge.wiki_chunks('# FAQ\n## Moving\n### How do I switch to tile movement?\nUse Tap To Step.\n### How do I climb?\nClimb Up.\n## Notes\nShort.\n### More\nAlso short.\n')
+        self.assertEqual([anchor for _, anchor, _ in faq][-3:], ['how-do-i-switch-to-tile-movement', 'how-do-i-climb', 'notes'])
+        self.assertNotIn('Climb Up', faq[-3][2])
+        self.assertIn('Also short.', faq[-1][2])
+        self.assertEqual(bridge.question_synonyms('ss14 movement', set()), bridge.retrieval_terms('tile tap step'))
 
     def test_hidden_topics_and_internal_names_are_withheld(self):
         text = bridge.wiki_plain('| 5 | Quick-cast spell 5 |\nA clear spell of weather.\n- [Nations RP (Persistence Beta)](Persistence_Beta.md)\nThe wizard casts a spell with a wand.\n')
