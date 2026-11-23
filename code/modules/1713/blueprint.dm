@@ -22,6 +22,10 @@
 	var/cost_wood = 0
 	var/cost_steel = 0
 
+/obj/item/blueprint/gun/examine(mob/user)
+	..()
+	to_chat(user, "<span class='notice'>Use it in hand to see its design code.</span>")
+
 /obj/item/blueprint/gun/arisaka
 	name = "Arisaka Type 99 Blueprint"
 	custom_name = "Arisaka Type 99"

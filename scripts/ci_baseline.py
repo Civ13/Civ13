@@ -3023,6 +3023,10 @@ SUITES = {
     'paintings': {'files': ('tests/paintings/test_paintings.py',),
         'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
                   'tests/sprites/create_paintings.py')},
+    'gun_blueprints': {'files': ('tests/gun_blueprints/test_sources.py',),
+        'paths': ('tests/gun_blueprints/', 'code/modules/1713/gunsmithing/gun_design_code.dm'), 'shared_paths': (
+            'code/modules/1713/gunsmithing/gunsmith.dm', 'code/modules/1713/blueprint.dm',
+            'code/modules/paintings/design_codes.dm')},
     'design_codes': {'files': ('tests/design_codes/test_design_codes.py',),
         'paths': ('tests/design_codes/', 'code/modules/paintings/design_codes.dm'), 'shared_paths': (
             'code/modules/paintings/', 'code/game/objects/structures/sign_flags.dm',
