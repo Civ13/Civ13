@@ -34,8 +34,8 @@ An accolade you have earned waits for you until you claim it, in any land. Once 
 | Wanderer | Live in 3 different lands | 15 |
 | World Traveller | Live in every land of the world | 40 |
 | Aviator | Fly an aircraft and land it safely | 30 |
-| Maker | Craft 25 different things with one character | 10 |
-| Artisan | Craft 100 different things with one character | 30 |
+| Maker | Craft 100 different things with one character | 10 |
+| Artisan | Craft 500 different things with one character | 30 |
 | Smelter | Light a furnace or a tatara to smelt metal | 10 |
 | Farmer | Harvest a ripe crop | 5 |
 | Herder | Tame an animal | 10 |
